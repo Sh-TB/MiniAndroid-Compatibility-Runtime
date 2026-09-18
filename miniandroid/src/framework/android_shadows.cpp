@@ -3020,6 +3020,25 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
             // by dalvik_value_to_arg), then try resolving from the heap.
             if (!ctx.args[0].string_val.empty()) {
                 n->text = ctx.args[0].string_val;
+            } else if (heap_ && ctx.args[0].object_id != 0 &&
+                       heap_->has_object(ctx.args[0].object_id)) {
+                // F-104 (S58): CharSequence args are REAL heap objects whose
+                // characters live in fields — StringBuilder accumulates into
+                // "sb_value" (EXP-094 law). The old placeholder ("[obj:N]")
+                // broke the Notes read face: the ReadTask's StringBuilder
+                // text never reached the EditText model and the markdown
+                // pipeline rendered an empty body.
+                std::string extracted;
+                for (const char* fn : {"sb_value", "value", "message", "text"}) {
+                    std::string fv;
+                    if (heap_->get_object_string_field(ctx.args[0].object_id,
+                                                       fn, fv) &&
+                        !fv.empty()) {
+                        extracted = fv;
+                        break;
+                    }
+                }
+                n->text = extracted;
             } else {
                 // Try to resolve the string from the heap
                 // The object_id may point to a String created by LocaleController.getString()

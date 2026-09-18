@@ -6,7 +6,7 @@
    "R-NEW-376"
   ],
   "last_updated": "S57 2026-09-18",
-  "note": "S57 ROADMAP-3-CLOSURE: R-NEW-344 ROOT-CAUSED-FIXED (F-086 Long.compare bridge law; 15→31 proven at the runtime boundary; regression-protected). Stale dooz faces R-NEW-025/323/330/333/335/351 closed SUPERSEDED-BY-EVIDENCE / NOT-REPRODUCIBLE against current-face runs. R-NEW-376 is the remaining dooz frontier (v18+v23 alias observations). R-NEW-352 stays BLOCKED on the R-NEW-350 default-ON decision (microtimer retry loop).",
+  "note": "S57 ROADMAP-3-CLOSURE: R-NEW-344 ROOT-CAUSED-FIXED (F-086 Long.compare bridge law; 15\u219231 proven at the runtime boundary; regression-protected). Stale dooz faces R-NEW-025/323/330/333/335/351 closed SUPERSEDED-BY-EVIDENCE / NOT-REPRODUCIBLE against current-face runs. R-NEW-376 is the remaining dooz frontier (v18+v23 alias observations). R-NEW-352 stays BLOCKED on the R-NEW-350 default-ON decision (microtimer retry loop).",
   "total": 349,
   "verified_fixed": 41,
   "by_status": {
@@ -22,7 +22,7 @@
    "PARTIAL-FIX": 1,
    "SUPERSEDED-BY-EVIDENCE": 1
   },
-  "primary_frontier": "R-NEW-361 (dooz v18+v23 converge: ScatterMap/probe arithmetic — refined R-NEW-335)",
+  "primary_frontier": "R-NEW-361 (dooz v18+v23 converge: ScatterMap/probe arithmetic \u2014 refined R-NEW-335)",
   "status_vocabulary": [
    "OBSERVED-FAIL",
    "ROOT-CAUSED-FIXED",
@@ -43,7 +43,7 @@
    "status": "PARTIAL",
    "priority": "P0",
    "fg": true,
-   "evidence": "F-029a Handler.createAsync→main singleton (CM4); virtual-clock single-owner audit (session-11)",
+   "evidence": "F-029a Handler.createAsync\u2192main singleton (CM4); virtual-clock single-owner audit (session-11)",
    "missing": "enqueue order edges, IdleHandler, sync barriers, quit",
    "next": "registry probe MQ-01: enqueue past/now/future + remove-by-identity",
    "commit": "8de5382b"
@@ -193,7 +193,7 @@
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "fg": true,
-   "evidence": "F-029 getDeclaredMethod/getMethod/Method.invoke→recursive bridge; regression-caught & reconciled (microtimer Room path)",
+   "evidence": "F-029 getDeclaredMethod/getMethod/Method.invoke\u2192recursive bridge; regression-caught & reconciled (microtimer Room path)",
    "missing": "generic exception wrapping fidelity",
    "next": "keep protected; fixture on next battery pass",
    "commit": "8de5382b"
@@ -205,7 +205,7 @@
    "fg": false,
    "evidence": "F-029 core",
    "missing": "getDeclaredFields/inherited-member walk",
-   "next": "hidden-gap list (audit §H)",
+   "next": "hidden-gap list (audit \u00a7H)",
    "commit": "8de5382b"
   },
   {
@@ -263,7 +263,7 @@
    "status": "VERIFIED-CORRECT",
    "priority": "P2",
    "fg": false,
-   "evidence": "single logical UI-thread engine law (report §K1)",
+   "evidence": "single logical UI-thread engine law (report \u00a7K1)",
    "missing": "-",
    "next": "regression-watch",
    "commit": "-"
@@ -283,7 +283,7 @@
    "status": "SUPERSEDED-BY-EVIDENCE",
    "priority": "P0",
    "fg": true,
-   "evidence": "dooz ComposeView children=0, 0/2073600 non-white (run/m9_merge_dooz at CMM) | S57 CLOSURE: S57: dooz ComposeView children=0 face (m9/CMM era) does not reproduce at any post-S24 face; current v23 face is the R-NEW-376 ctor-climb after R-NEW-344 fix — superseded",
+   "evidence": "dooz ComposeView children=0, 0/2073600 non-white (run/m9_merge_dooz at CMM) | S57 CLOSURE: S57: dooz ComposeView children=0 face (m9/CMM era) does not reproduce at any post-S24 face; current v23 face is the R-NEW-376 ctor-climb after R-NEW-344 fix \u2014 superseded",
    "missing": "first-frame traversal pipeline",
    "next": "M9 frontier: dispatch pump + lifecycle registry (R-NEW-279/285)",
    "commit": "0383f19f",
@@ -326,7 +326,7 @@
    "fg": false,
    "evidence": "NoClassDefFoundError paths exercised",
    "missing": "error-type matrix",
-   "next": "CONDITIONAL (audit §B)",
+   "next": "CONDITIONAL (audit \u00a7B)",
    "commit": "-"
   },
   {
@@ -376,7 +376,7 @@
    "fg": false,
    "evidence": "density approximation verified (G04)",
    "missing": "locale/qualifier selection",
-   "next": "RESEARCHED P2 (audit §O)",
+   "next": "RESEARCHED P2 (audit \u00a7O)",
    "commit": "-"
   },
   {
@@ -534,7 +534,7 @@
    "status": "RESEARCHED-NOT-IMPLEMENTED",
    "priority": "P3",
    "fg": false,
-   "evidence": "interpreter — ART-specific binding N/A as-is",
+   "evidence": "interpreter \u2014 ART-specific binding N/A as-is",
    "missing": "-",
    "next": "radar retained",
    "commit": "-"
@@ -584,7 +584,7 @@
    "status": "UNPROVEN",
    "priority": "P2",
    "fg": false,
-   "evidence": "packed/sparse payload edge shapes RESEARCHED (audit §A gaps)",
+   "evidence": "packed/sparse payload edge shapes RESEARCHED (audit \u00a7A gaps)",
    "missing": "-",
    "next": "CONDITIONAL",
    "commit": "-"
@@ -774,7 +774,7 @@
    "status": "NOT-APPLICABLE",
    "priority": "P3",
    "fg": false,
-   "evidence": "software renderer architecture — no DisplayList/RenderNode substrate by design",
+   "evidence": "software renderer architecture \u2014 no DisplayList/RenderNode substrate by design",
    "missing": "-",
    "next": "radar retained for HW path",
    "commit": "-"
@@ -825,7 +825,7 @@
    "priority": "P2",
    "fg": false,
    "evidence": "corpus",
-   "missing": "intrinsic→measure law",
+   "missing": "intrinsic\u2192measure law",
    "next": "on demand",
    "commit": "-"
   },
@@ -844,7 +844,7 @@
    "status": "VERIFIED-CORRECT",
    "priority": "P0",
    "fg": true,
-   "evidence": "hello_color END-TO-END: ARSC→layout→drawable→view→draw→pixels; 3-run byte-identical frame 11e0056320d8546d (CM9, merge-verified at CMM)",
+   "evidence": "hello_color END-TO-END: ARSC\u2192layout\u2192drawable\u2192view\u2192draw\u2192pixels; 3-run byte-identical frame 11e0056320d8546d (CM9, merge-verified at CMM)",
    "missing": "-",
    "next": "regression-watch",
    "commit": "96ecc9f4"
@@ -894,7 +894,7 @@
    "status": "PARTIAL",
    "priority": "P2",
    "fg": false,
-   "evidence": "parser bound checks (§N hardening)",
+   "evidence": "parser bound checks (\u00a7N hardening)",
    "missing": "fuzz corpus campaign",
    "next": "tooling class G",
    "commit": "-"
@@ -1004,7 +1004,7 @@
    "status": "UNPROVEN",
    "priority": "P3",
    "fg": false,
-   "evidence": "IntentFilter matching RESEARCHED (audit §L)",
+   "evidence": "IntentFilter matching RESEARCHED (audit \u00a7L)",
    "missing": "-",
    "next": "on demand",
    "commit": "-"
@@ -1264,7 +1264,7 @@
    "status": "PARTIAL",
    "priority": "P2",
    "fg": false,
-   "evidence": "bound checks in dex_parser.cpp (§N)",
+   "evidence": "bound checks in dex_parser.cpp (\u00a7N)",
    "missing": "hostile DEX corpus",
    "next": "tooling class G",
    "commit": "-"
@@ -2434,7 +2434,7 @@
    "status": "NOT-APPLICABLE",
    "priority": "P3",
    "fg": false,
-   "evidence": "software renderer — no layer type",
+   "evidence": "software renderer \u2014 no layer type",
    "missing": "-",
    "next": "radar retained",
    "commit": "-"
@@ -2554,7 +2554,7 @@
    "status": "PARTIAL",
    "priority": "P1",
    "fg": false,
-   "evidence": "touch_dispatcher.cpp; tictactoe_golden 9/9 clicks (§29 battery)",
+   "evidence": "touch_dispatcher.cpp; tictactoe_golden 9/9 clicks (\u00a729 battery)",
    "missing": "ordering matrix",
    "next": "regression-watch",
    "commit": "-"
@@ -2594,8 +2594,8 @@
    "status": "PARTIAL",
    "priority": "P0",
    "fg": true,
-   "evidence": "composition constructs deep into Material3 (1.13M trace lines, M13); state→tree law partial",
-   "missing": "ComposeView children 0→N",
+   "evidence": "composition constructs deep into Material3 (1.13M trace lines, M13); state\u2192tree law partial",
+   "missing": "ComposeView children 0\u2192N",
    "next": "M9 frontier",
    "commit": "96ecc9f4"
   },
@@ -2644,7 +2644,7 @@
    "status": "PARTIAL",
    "priority": "P1",
    "fg": true,
-   "evidence": "frame-clock NOT the symptom-layer root (FALSE-LEAD at lifecycle layer, brief §15); F-050 fixed real pump family (CM8)",
+   "evidence": "frame-clock NOT the symptom-layer root (FALSE-LEAD at lifecycle layer, brief \u00a715); F-050 fixed real pump family (CM8)",
    "missing": "-",
    "next": "with 242",
    "commit": "ad4349a9"
@@ -2744,9 +2744,9 @@
    "status": "PARTIAL",
    "priority": "P2",
    "fg": false,
-   "evidence": "hello_color per-element pixel counts (evidence.json) — early provenance",
+   "evidence": "hello_color per-element pixel counts (evidence.json) \u2014 early provenance",
    "missing": "full provenance chain",
-   "next": "extend tooling (§25 pixel provenance)",
+   "next": "extend tooling (\u00a725 pixel provenance)",
    "commit": "-"
   },
   {
@@ -2834,7 +2834,7 @@
    "status": "VERIFIED-FIXED",
    "priority": "P2",
    "fg": false,
-   "evidence": "F-059 (S17) + S18: WeakReference owner get() verified across full onCreate — no ISE garbage-collected (run/s18_f069_dooz).",
+   "evidence": "F-059 (S17) + S18: WeakReference owner get() verified across full onCreate \u2014 no ISE garbage-collected (run/s18_f069_dooz).",
    "missing": "-",
    "next": "regression-watch",
    "commit": "3093cd48"
@@ -2846,7 +2846,7 @@
    "fg": false,
    "evidence": "Known gap (M9-B analysis)",
    "missing": "implementation + proof",
-   "next": "Known gap (M9-B analysis): no collection-view law at HEAD (grep clean); views must reflect the backing map. Compose/AndroidX uses values() on hot paths. No live failure recorded yet — implement with OpenJDK view semantics + micro-fixture when a trace reaches it.",
+   "next": "Known gap (M9-B analysis): no collection-view law at HEAD (grep clean); views must reflect the backing map. Compose/AndroidX uses values() on hot paths. No live failure recorded yet \u2014 implement with OpenJDK view semantics + micro-fixture when a trace reaches it.",
    "commit": "-"
   },
   {
@@ -2864,9 +2864,9 @@
    "status": "UNPROVEN",
    "priority": "P1",
    "fg": false,
-   "evidence": "FIX-INTENT-001 carries the descriptor on CLASS_REF args (dalvik_engine.cpp ~13167) — component identity proven via unote",
+   "evidence": "FIX-INTENT-001 carries the descriptor on CLASS_REF args (dalvik_engine.cpp ~13167) \u2014 component identity proven via unote",
    "missing": "implementation + proof",
-   "next": "FIX-INTENT-001 carries the descriptor on CLASS_REF args (dalvik_engine.cpp ~13167) — component identity proven via unote. Full law (interned identity: two const-class of same type → same heap object, == comparable) not separately proven. Micro-proof pending.",
+   "next": "FIX-INTENT-001 carries the descriptor on CLASS_REF args (dalvik_engine.cpp ~13167) \u2014 component identity proven via unote. Full law (interned identity: two const-class of same type \u2192 same heap object, == comparable) not separately proven. Micro-proof pending.",
    "commit": "-"
   },
   {
@@ -2904,7 +2904,7 @@
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "fg": true,
-   "evidence": "LIVE: FIELD-TRACE put-obj Lg/b;.i obj#15 value=obj#0 after second Lg/b;.d (double removeObserver) → eldest()!! NPE. ",
+   "evidence": "LIVE: FIELD-TRACE put-obj Lg/b;.i obj#15 value=obj#0 after second Lg/b;.d (double removeObserver) \u2192 eldest()!! NPE. ",
    "missing": "-",
    "next": "regression-watch",
    "commit": "3093cd48"
@@ -2924,7 +2924,7 @@
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "fg": true,
-   "evidence": "LIVE: Kotlin T::class.java field round-trip → 'null cannot be cast to non-null type java.lang.Class'. ",
+   "evidence": "LIVE: Kotlin T::class.java field round-trip \u2192 'null cannot be cast to non-null type java.lang.Class'. ",
    "missing": "-",
    "next": "regression-watch",
    "commit": "3093cd48"
@@ -2964,7 +2964,7 @@
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "fg": true,
-   "evidence": "LIVE: areEqual false → IAE 'No initializer set for given class androidx.lifecycle.A'. ",
+   "evidence": "LIVE: areEqual false \u2192 IAE 'No initializer set for given class androidx.lifecycle.A'. ",
    "missing": "-",
    "next": "regression-watch",
    "commit": "3093cd48"
@@ -2974,7 +2974,7 @@
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "fg": true,
-   "evidence": "F-070 (S19): identity-equals law answered for app-DEX receivers; F/d0.a ISE 1→0; Recomposer creation proceeds (dooz 3-run 31ddd4d5, battery ALL PASS).",
+   "evidence": "F-070 (S19): identity-equals law answered for app-DEX receivers; F/d0.a ISE 1\u21920; Recomposer creation proceeds (dooz 3-run 31ddd4d5, battery ALL PASS).",
    "missing": "-",
    "next": "regression-watch",
    "commit": "f95b4b1f"
@@ -2984,7 +2984,7 @@
    "status": "VERIFIED-FIXED",
    "priority": "P1",
    "fg": true,
-   "evidence": "F-071 (S20): ROOT was NOT the parent walk (TAG-TRACE proved 725→102→8→101 intact). The 3rc range-invoke path leaked the enclosing static flag into try_shadow_dispatch → receiver_id=0 → getParent null → checkNotNull NPE. Range ops now set the flag from their own opcode (RAII restore); NPE gone; dooz rc=0 uncaught=0 (run/s20_f073).",
+   "evidence": "F-071 (S20): ROOT was NOT the parent walk (TAG-TRACE proved 725\u2192102\u21928\u2192101 intact). The 3rc range-invoke path leaked the enclosing static flag into try_shadow_dispatch \u2192 receiver_id=0 \u2192 getParent null \u2192 checkNotNull NPE. Range ops now set the flag from their own opcode (RAII restore); NPE gone; dooz rc=0 uncaught=0 (run/s20_f073).",
    "missing": "-",
    "next": "regression-watch",
    "commit": "7178c890"
@@ -2994,7 +2994,7 @@
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "fg": true,
-   "evidence": "LIVE: compose CompositionImpl.recordModificationsOf CAS(null→values) returned true but stored null → drainPendingModificationsLocked read null → ComposeRuntimeError 'concurrently is not supported'. ",
+   "evidence": "LIVE: compose CompositionImpl.recordModificationsOf CAS(null\u2192values) returned true but stored null \u2192 drainPendingModificationsLocked read null \u2192 ComposeRuntimeError 'concurrently is not supported'. ",
    "missing": "-",
    "next": "regression-watch",
    "commit": "7178c890"
@@ -3004,7 +3004,7 @@
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "fg": true,
-   "evidence": "LIVE: R8 file-level sentinel `val PendingApplyNoModifications = Any()` (class exactly Ljava/lang/Object;) — areEqual(x,x) answered false → composeRuntimeError 'corrupt pendingModifications drain'. ",
+   "evidence": "LIVE: R8 file-level sentinel `val PendingApplyNoModifications = Any()` (class exactly Ljava/lang/Object;) \u2014 areEqual(x,x) answered false \u2192 composeRuntimeError 'corrupt pendingModifications drain'. ",
    "missing": "-",
    "next": "regression-watch",
    "commit": "7178c890"
@@ -3014,7 +3014,7 @@
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "fg": true,
-   "evidence": "LIVE S21: dooz drain dispatched UC009-WIRE Runnable id=687 class=Lb2/h; with ZERO b2/h.run records in the 306k-line log; DEX truth (scripts/forensic/s21_frame_probe.py + androguard): Lb2/h; = kotlinx DispatchedContinuation, NO run() declared — entrypoint DispatchedTask.run (LW1/N;) on the superclass; upstream law: ART virtual dispatch resolves on the runtime class hierarchy. ",
+   "evidence": "LIVE S21: dooz drain dispatched UC009-WIRE Runnable id=687 class=Lb2/h; with ZERO b2/h.run records in the 306k-line log; DEX truth (scripts/forensic/s21_frame_probe.py + androguard): Lb2/h; = kotlinx DispatchedContinuation, NO run() declared \u2014 entrypoint DispatchedTask.run (LW1/N;) on the superclass; upstream law: ART virtual dispatch resolves on the runtime class hierarchy. ",
    "missing": "-",
    "next": "regression-watch",
    "commit": "PENDING-S21"
@@ -3034,7 +3034,7 @@
    "status": "IMPLEMENTED",
    "priority": "P0",
    "fg": true,
-   "evidence": "S22 [M3-19-CYCLE] LB1/a;.B re-entered (depth=17) stubbed the runner's coroutineScope start; [S22] gate: pre-fix exactly one E0.t entry with ZERO E0$a.t/F0.t/K.u entries; DEX decode (s21_frame_probe + androguard): W1/D.c=coroutineScope tail-calls B1/a.B=startCoroutineUninterceptedOrReturn; W1/l0.e=withContext, W1/l0.a=launch; LF/E0.t=recompositionRunner, LF/E0$a->F/F0.t=the while-loop with awaitWorkAvailable+withFrameNanos. Upstream: kotlinx start helpers are static, depth-bounded, legitimately re-entrant. FIX F-076: active-cycle identity key extended to statics — leading object-arg ids (up to 2) appended; per-coroutine keys for nested starts, same-identity cycle stub preserved, MAX_RECURSION_DEPTH backstop. IMPACT: post-fix [S22] entry#3 E0$a.t, #4 F0.j, #5 F0.t — runner loop STARTS; initial composition advances into slot-table writes; dooz now exception-honest (rc=1 at the NEXT root F-077 instead of silent rc=0 death); cycle stubs 8->5; battery 91/92 (only pre-existing GATE H), F-074/F-050/§28/§29 all PASS.",
+   "evidence": "S22 [M3-19-CYCLE] LB1/a;.B re-entered (depth=17) stubbed the runner's coroutineScope start; [S22] gate: pre-fix exactly one E0.t entry with ZERO E0$a.t/F0.t/K.u entries; DEX decode (s21_frame_probe + androguard): W1/D.c=coroutineScope tail-calls B1/a.B=startCoroutineUninterceptedOrReturn; W1/l0.e=withContext, W1/l0.a=launch; LF/E0.t=recompositionRunner, LF/E0$a->F/F0.t=the while-loop with awaitWorkAvailable+withFrameNanos. Upstream: kotlinx start helpers are static, depth-bounded, legitimately re-entrant. FIX F-076: active-cycle identity key extended to statics \u2014 leading object-arg ids (up to 2) appended; per-coroutine keys for nested starts, same-identity cycle stub preserved, MAX_RECURSION_DEPTH backstop. IMPACT: post-fix [S22] entry#3 E0$a.t, #4 F0.j, #5 F0.t \u2014 runner loop STARTS; initial composition advances into slot-table writes; dooz now exception-honest (rc=1 at the NEXT root F-077 instead of silent rc=0 death); cycle stubs 8->5; battery 91/92 (only pre-existing GATE H), F-074/F-050/\u00a728/\u00a729 all PASS.",
    "missing": "micro-fixture with real DEX nested coroutine start (next pass); F-077 (R-NEW-301) blocks the dooz pixel chain downstream",
    "next": "micro-test + close after F-077 clears the dooz path",
    "commit": "PENDING-S22"
@@ -3044,7 +3044,7 @@
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "fg": true,
-   "evidence": "S22, first root reached AFTER F-076 (runner loop starts): initial composition (b1.k WrappedComposition.setContent -> F/y.b ComposerImpl -> F/l.s0 SlotTable -> K/f.putAll -> K/t.m merge -> K/t.s nodeAt) dies: NPE 'null cannot be cast to non-null type TrieNode' at the check-cast in K/t.s. [TRIENODE] heap probe: builder node o1820 born dataMap=0x08000000 nodeMap=0 len=1 then mutated to a=134676546(6 bits) b=0x80000000(1 bit) len=13 null_slots=12 — bitmaps claim 7 entries, buffer holds 1 non-null; later a=160401768(13) b=2 bits len=28 null=26 vs claimed 15. kotlinx.collections.immutable invariant: buffer.size == popcount(dataMap)+popcount(nodeMap), node-claimed slots never null. Integer.bitCount/Long.bitCount bridges verified CORRECT — corruption window narrowed to the mutable-put buffer-fill family K/t.k/l/n/o (index math or aput into the grown buffer). || S35 CLOSURE (closed-by-supersession): symptom GONE at b3409007 — dooz rc=0 x5 deterministic with initial composition completing past the former K/t.s death point (content lambda n1/u.k executes x18, rememberNavController returns, 3 destinations register, full navigation stack executes as real bytecode; S34 record sec.1, probes TSTATE/READSIDE/NSPUSH). The break was eliminated collectively by the F-090..F-100 law chain; the single fixing law was not isolated (forensics debt, MINIANDROID_S22_TRACE=1 probe retained). Closure record: docs/maintenance/F_LEDGER_CLOSURE_S35.md. F-100's twin ledger entry closed same session.",
+   "evidence": "S22, first root reached AFTER F-076 (runner loop starts): initial composition (b1.k WrappedComposition.setContent -> F/y.b ComposerImpl -> F/l.s0 SlotTable -> K/f.putAll -> K/t.m merge -> K/t.s nodeAt) dies: NPE 'null cannot be cast to non-null type TrieNode' at the check-cast in K/t.s. [TRIENODE] heap probe: builder node o1820 born dataMap=0x08000000 nodeMap=0 len=1 then mutated to a=134676546(6 bits) b=0x80000000(1 bit) len=13 null_slots=12 \u2014 bitmaps claim 7 entries, buffer holds 1 non-null; later a=160401768(13) b=2 bits len=28 null=26 vs claimed 15. kotlinx.collections.immutable invariant: buffer.size == popcount(dataMap)+popcount(nodeMap), node-claimed slots never null. Integer.bitCount/Long.bitCount bridges verified CORRECT \u2014 corruption window narrowed to the mutable-put buffer-fill family K/t.k/l/n/o (index math or aput into the grown buffer). || S35 CLOSURE (closed-by-supersession): symptom GONE at b3409007 \u2014 dooz rc=0 x5 deterministic with initial composition completing past the former K/t.s death point (content lambda n1/u.k executes x18, rememberNavController returns, 3 destinations register, full navigation stack executes as real bytecode; S34 record sec.1, probes TSTATE/READSIDE/NSPUSH). The break was eliminated collectively by the F-090..F-100 law chain; the single fixing law was not isolated (forensics debt, MINIANDROID_S22_TRACE=1 probe retained). Closure record: docs/maintenance/F_LEDGER_CLOSURE_S35.md. F-100's twin ledger entry closed same session.",
    "missing": "exact instruction in the K/t.k/l/n/o family (probe in place: MINIANDROID_S22_TRACE=1 prints [TRIENODE] ctor/s/m with heap state)",
    "next": "trace one put() op from N/d$a.put to the slot write",
    "commit": "S35-F-LEDGER-CLOSURE"
@@ -3054,8 +3054,8 @@
    "status": "VERIFIED-FIXED",
    "priority": "P1",
    "fg": true,
-   "evidence": "MC4 fix at working-tree binary (layout_inflater.cpp + android_shadows requestLayout law + execution_engine re-measure gate). Root cause was THREE stacked gaps, all fixed: (1) measure_layout FrameLayout/ScrollView branch pinned every child at (parentLeft,parentTop) — lp_margin_left/top never added and lp_gravity never consulted — now full AOSP FrameLayout.layoutChildren law (default parentLeft+leftMargin / parentTop+topMargin; CENTER adds ml-mr; RIGHT/BOTTOM subtract mr/mb); (2) root-spec mapped UNSET(INT_MIN) to wrap_content — now MATCH_PARENT per AOSP ViewRootImpl.setView window law (root fills 1080x1920; demo root measured 600x1432 before); (3) DEX-driven tree mutations never re-measured — the render-time re-measure was gated on rt.loaded() only, so programmatic trees measured ONCE at setContentView and every later frame reused stale measured_* geometry. Added AOSP requestLayout law: ViewShadow::layout_dirty raised by add_child/remove_child/removeAllViews/set_layout_params; stage_render_frame re-runs measure_layout when dirty and clears the flag. VERIFICATION: demo validate_demo_proof.sh VALIDATION_PASS (9/9 distinct frames, deterministic replay identical SHA256 sequence); pixel forensics box now MOVES on the declared 5x4 grid: x 220->402->582->762->42 (+180 law) y 504->792->1086->216->504 (+~290 law), colors cycle exact COLORS[] values; full battery fresh-cache run: helloworld_golden(§28) PASS, tictactoe_golden(§29) PASS, only pre-existing GATE H fail remains (zero regressions); hello_color golden frame 11e0056320d8546d... BYTE-IDENTICAL; chessclock deterministic frame e4a2d7c90cd2fd26... BYTE-IDENTICAL.",
-   "missing": "None for this root. (Separate open visual gaps remain: headingcalc display-row text overlap, simplestopwatch GATE H integer-glyph gap, microtimer display text — distinct roots, not this one.)",
+   "evidence": "MC4 fix at working-tree binary (layout_inflater.cpp + android_shadows requestLayout law + execution_engine re-measure gate). Root cause was THREE stacked gaps, all fixed: (1) measure_layout FrameLayout/ScrollView branch pinned every child at (parentLeft,parentTop) \u2014 lp_margin_left/top never added and lp_gravity never consulted \u2014 now full AOSP FrameLayout.layoutChildren law (default parentLeft+leftMargin / parentTop+topMargin; CENTER adds ml-mr; RIGHT/BOTTOM subtract mr/mb); (2) root-spec mapped UNSET(INT_MIN) to wrap_content \u2014 now MATCH_PARENT per AOSP ViewRootImpl.setView window law (root fills 1080x1920; demo root measured 600x1432 before); (3) DEX-driven tree mutations never re-measured \u2014 the render-time re-measure was gated on rt.loaded() only, so programmatic trees measured ONCE at setContentView and every later frame reused stale measured_* geometry. Added AOSP requestLayout law: ViewShadow::layout_dirty raised by add_child/remove_child/removeAllViews/set_layout_params; stage_render_frame re-runs measure_layout when dirty and clears the flag. VERIFICATION: demo validate_demo_proof.sh VALIDATION_PASS (9/9 distinct frames, deterministic replay identical SHA256 sequence); pixel forensics box now MOVES on the declared 5x4 grid: x 220->402->582->762->42 (+180 law) y 504->792->1086->216->504 (+~290 law), colors cycle exact COLORS[] values; full battery fresh-cache run: helloworld_golden(\u00a728) PASS, tictactoe_golden(\u00a729) PASS, only pre-existing GATE H fail remains (zero regressions); hello_color golden frame 11e0056320d8546d... BYTE-IDENTICAL; chessclock deterministic frame e4a2d7c90cd2fd26... BYTE-IDENTICAL.",
+   "missing": "None for this root. (Separate open visual gaps remain: headingcalc display-row text overlap, simplestopwatch GATE H integer-glyph gap, microtimer display text \u2014 distinct roots, not this one.)",
    "next": "CLOSED. Fix lives in layout_inflater.cpp (FrameLayout margins law + root MATCH_PARENT window law), android_shadows.{h,cpp} (layout_dirty flag on tree mutators), execution_engine.cpp (dirty-gated render-time re-measure).",
    "commit": "PENDING-MC4"
   },
@@ -3064,7 +3064,7 @@
    "status": "OBSERVED-FAIL",
    "priority": "P2",
    "fg": true,
-   "evidence": "MC4 Telegram campaign: real Telegram v12.10.1 (org.telegram.messenger.web 70389, sha256 f5e1192725772960..., official telegram.org APK) — parse OK (analyze rc=0: package/version/launcher extracted), launch OK, ONE frame rendered with the full 1080x1920 themed window painted (2073600/2073600 px). After ActivityManager.getMemoryClass()=256 fix (eliminated LruCache IllegalArgumentException(\"maxSize <= 0\") x62), the app advances deeper and now hits IllegalStateException(\"called wrong accept method\") x191 inside j$/util/stream (desugared java.util.stream Node builder) reached from MessagesController.getInstance <- ConnectionsManager.getInstance <- LaunchActivity; run rc=124 (570s timeout — still executing, deeper than before). Evidence: docs/evidence/mc4_telegram/ (EVIDENCE.json + distilled logs + painted frame).",
+   "evidence": "MC4 Telegram campaign: real Telegram v12.10.1 (org.telegram.messenger.web 70389, sha256 f5e1192725772960..., official telegram.org APK) \u2014 parse OK (analyze rc=0: package/version/launcher extracted), launch OK, ONE frame rendered with the full 1080x1920 themed window painted (2073600/2073600 px). After ActivityManager.getMemoryClass()=256 fix (eliminated LruCache IllegalArgumentException(\"maxSize <= 0\") x62), the app advances deeper and now hits IllegalStateException(\"called wrong accept method\") x191 inside j$/util/stream (desugared java.util.stream Node builder) reached from MessagesController.getInstance <- ConnectionsManager.getInstance <- LaunchActivity; run rc=124 (570s timeout \u2014 still executing, deeper than before). Evidence: docs/evidence/mc4_telegram/ (EVIDENCE.json + distilled logs + painted frame).",
    "missing": "Desugared java.util.stream builder state machine: j$ Node/Builder classes track which accept overload (primitive vs boxed) may be invoked; the engine's virtual dispatch (or the builder's boolean guards) mismatches, so the guard throws IllegalStateException('called wrong accept method'). Needs overload-accurate invokevirtual dispatch for (I)V vs (Ljava/lang/Object;)V bridges on j$ stream builders.",
    "next": "Disassemble j$/util/stream/r1 etc. from the Telegram APK, reproduce the accept-dispatch path in a fixture, fix the invoke overload resolution, re-run Telegram (expect deeper init; further missing APIs will surface).",
    "commit": "PENDING-MC4"
@@ -3074,49 +3074,49 @@
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "fg": true,
-   "evidence": "S24 dooz campaign: check-cast was a pure pass-through (no register class_desc refinement, no ClassCastException). Kotlin `map[key] as Navigator` left the register poisoned with the container declared type (Ljava/lang/Object; from Map.get) → Object.getClass answered the wrong class → Class.getAnnotation read @Navigator.Name off java.lang.Object → IAE 'No @Navigator.Name annotation found for java.lang.Object' uncaught at MainActivity.onCreate → rc=1 blank Compose frame. F-090: execute_check_cast refines register class_desc to the HEAP runtime class (EXP-059 identity authority; target type as fallback); getClass bridge consults the heap FIRST (AOSP runtime-class law). Generic: fixes every Map.get → check-cast identity consumer (getAnnotation receivers, dispatch)."
+   "evidence": "S24 dooz campaign: check-cast was a pure pass-through (no register class_desc refinement, no ClassCastException). Kotlin `map[key] as Navigator` left the register poisoned with the container declared type (Ljava/lang/Object; from Map.get) \u2192 Object.getClass answered the wrong class \u2192 Class.getAnnotation read @Navigator.Name off java.lang.Object \u2192 IAE 'No @Navigator.Name annotation found for java.lang.Object' uncaught at MainActivity.onCreate \u2192 rc=1 blank Compose frame. F-090: execute_check_cast refines register class_desc to the HEAP runtime class (EXP-059 identity authority; target type as fallback); getClass bridge consults the heap FIRST (AOSP runtime-class law). Generic: fixes every Map.get \u2192 check-cast identity consumer (getAnnotation receivers, dispatch)."
   },
   {
    "id": "R-NEW-317",
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "fg": true,
-   "evidence": "S24: ShadowRegistry F-057 ViewShadow-first routing for getTag/getParent filtered shadows by name()=='ViewShadow' but ViewShadow::name() answers 'View' — the route was DEAD CODE since F-057. Owner-tag walks whose bridge key was an app class (dooz MainActivity receiver → ViewTreeLifecycleOwner.get) fell through the EXP-075 Activity gate to ActivityShadow → no tag/no parent → ISE 'ViewTreeLifecycleOwner not found' → composition died before first frame. F-090c: route by C++ TYPE (dynamic_cast<ViewShadow*>) instead of display name. DEX upstream: androidx ComponentActivity.i stores owners via ViewTreeLifecycleOwner.set on the decor node; the F-023 parent chain (8 under 101) was correct — only the routing was dead."
+   "evidence": "S24: ShadowRegistry F-057 ViewShadow-first routing for getTag/getParent filtered shadows by name()=='ViewShadow' but ViewShadow::name() answers 'View' \u2014 the route was DEAD CODE since F-057. Owner-tag walks whose bridge key was an app class (dooz MainActivity receiver \u2192 ViewTreeLifecycleOwner.get) fell through the EXP-075 Activity gate to ActivityShadow \u2192 no tag/no parent \u2192 ISE 'ViewTreeLifecycleOwner not found' \u2192 composition died before first frame. F-090c: route by C++ TYPE (dynamic_cast<ViewShadow*>) instead of display name. DEX upstream: androidx ComponentActivity.i stores owners via ViewTreeLifecycleOwner.set on the decor node; the F-023 parent chain (8 under 101) was correct \u2014 only the routing was dead."
   },
   {
    "id": "R-NEW-318",
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "fg": true,
-   "evidence": "S24: execute_invoke_interface bridged with the DECLARED interface (Ljava/lang/CharSequence;) instead of the receiver's runtime class — CharSequence.length()/charAt() on a real String found no handler → answered 0 → Kotlin route.isNotBlank() misclassified every non-empty route as blank → NavDestination.setRoute IAE 'Cannot have an empty route' (dooz routes 'game'/'settings'/'about') → onCreate died. F-090d: interface bridge key = heap runtime class (STRING_REF constants → String); F-090e: String.charAt(int) with UTF-8 codepoint decode + surrogate law; F-090f: Character.isWhitespace/isSpaceChar laws (OpenJDK set)."
+   "evidence": "S24: execute_invoke_interface bridged with the DECLARED interface (Ljava/lang/CharSequence;) instead of the receiver's runtime class \u2014 CharSequence.length()/charAt() on a real String found no handler \u2192 answered 0 \u2192 Kotlin route.isNotBlank() misclassified every non-empty route as blank \u2192 NavDestination.setRoute IAE 'Cannot have an empty route' (dooz routes 'game'/'settings'/'about') \u2192 onCreate died. F-090d: interface bridge key = heap runtime class (STRING_REF constants \u2192 String); F-090e: String.charAt(int) with UTF-8 codepoint decode + surrogate law; F-090f: Character.isWhitespace/isSpaceChar laws (OpenJDK set)."
   },
   {
    "id": "R-NEW-319",
    "status": "VERIFIED-FIXED",
    "priority": "P1",
    "fg": true,
-   "evidence": "S24: java.util.UUID had no bridge at all — UUID.randomUUID().toString() answered null → Kotlin null-assert NPE 'randomUUID().toString() must not be null' at MainActivity.onCreate. F-090g: UUID.randomUUID() (version-4/variant-1 per RFC 4122, fixed-seed xorshift stream per the F-086 determinism law) + toString() 8-4-4-4-12 form."
+   "evidence": "S24: java.util.UUID had no bridge at all \u2014 UUID.randomUUID().toString() answered null \u2192 Kotlin null-assert NPE 'randomUUID().toString() must not be null' at MainActivity.onCreate. F-090g: UUID.randomUUID() (version-4/variant-1 per RFC 4122, fixed-seed xorshift stream per the F-086 determinism law) + toString() 8-4-4-4-12 form."
   },
   {
    "id": "R-NEW-320",
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "fg": true,
-   "evidence": "S24: Navigator.state (l.a) is injected by exactly ONE DEX writer (navigation/compose/p.a iput at pc 1394) inside the NavHost attach loop; the loop zero-iterated because Kotlin toReadOnlyMap (z1/A.G → z1/A.H = new LinkedHashMap(source)) produced an EMPTY copy — CollectionShadow.<init> was a no-op that never copied source entries. ISE 'You cannot access the Navigator's state until the Navigator is attached'. F-090h: copy-constructor family law in CollectionShadow (LinkedHashMap(Map)/ArrayList(Collection) copy every entry/element; capacity forms stay no-op)."
+   "evidence": "S24: Navigator.state (l.a) is injected by exactly ONE DEX writer (navigation/compose/p.a iput at pc 1394) inside the NavHost attach loop; the loop zero-iterated because Kotlin toReadOnlyMap (z1/A.G \u2192 z1/A.H = new LinkedHashMap(source)) produced an EMPTY copy \u2014 CollectionShadow.<init> was a no-op that never copied source entries. ISE 'You cannot access the Navigator's state until the Navigator is attached'. F-090h: copy-constructor family law in CollectionShadow (LinkedHashMap(Map)/ArrayList(Collection) copy every entry/element; capacity forms stay no-op)."
   },
   {
    "id": "R-NEW-322",
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "fg": true,
-   "evidence": "S24: invoke call sites passed NO method descriptor to try_recursive_invoke, so the F-023 exact-descriptor overload law could never fire; same-name overloads (z1/i addAll(Collection) vs addAll(I,Collection)) were resolved by the arity heuristic and executed the WRONG body — the 2-arg body's elements register stayed unwritten → M1/i.f NPE 'Parameter specified as non-null is null: method z1.i.addAll, parameter elements' despite the caller passing a non-null obj#2831 (proven by [S24-ADDALL]/[S24-TRI] probes). F-090i: hoisted the resolved proto in execute_invoke_virtual (runtime-type try, F-020 walk, declaring-class fallback), execute_invoke_interface (runtime-class, declared-interface, sig-walk, default-method sites) and reused in execute_invoke_direct (method_desc_081 already present). Generic multi-overload dispatch law for every R8'd app."
+   "evidence": "S24: invoke call sites passed NO method descriptor to try_recursive_invoke, so the F-023 exact-descriptor overload law could never fire; same-name overloads (z1/i addAll(Collection) vs addAll(I,Collection)) were resolved by the arity heuristic and executed the WRONG body \u2014 the 2-arg body's elements register stayed unwritten \u2192 M1/i.f NPE 'Parameter specified as non-null is null: method z1.i.addAll, parameter elements' despite the caller passing a non-null obj#2831 (proven by [S24-ADDALL]/[S24-TRI] probes). F-090i: hoisted the resolved proto in execute_invoke_virtual (runtime-type try, F-020 walk, declaring-class fallback), execute_invoke_interface (runtime-class, declared-interface, sig-walk, default-method sites) and reused in execute_invoke_direct (method_desc_081 already present). Generic multi-overload dispatch law for every R8'd app."
   },
   {
    "id": "R-NEW-323",
    "status": "SUPERSEDED-BY-EVIDENCE",
    "priority": "P0",
    "fg": true,
-   "evidence": "S24 CURRENT FRONTIER: dooz NavHost graph (route=null → NavGraph.id=0) — NavController restore loop c.h reads entry.j.j.o (parent graph id=0) and calls c.e(0) getBackStackEntry(0); the root GRAPH's own NavBackStackEntry was never pushed (upstream pushes ancestor-graph entries during navigate before destination entries; our engine pushed only the destination entry via c.a ← c$e.o with an EMPTY parent list z1/t.i). IAE 'No destination with ID 0 is on the NavController's back stack. The current destination is e$a@2554' uncaught at MainActivity.onCreate → rc=1. Next root: implement the ancestor-graph-entry-push law (upstream navigate-entry-hierarchy) so c.e(0) finds the graph entry. Evidence: run/s24_post_f090i_stderr.txt lines 306566-306612. | S57 CLOSURE: S57: S24 NavHost restore-loop face does not appear in current dooz v23 runs (post-F-086 run reaches Recomposer/ControlledComposition + ctor-climb family) — superseded by the S24-S56 progression",
+   "evidence": "S24 CURRENT FRONTIER: dooz NavHost graph (route=null \u2192 NavGraph.id=0) \u2014 NavController restore loop c.h reads entry.j.j.o (parent graph id=0) and calls c.e(0) getBackStackEntry(0); the root GRAPH's own NavBackStackEntry was never pushed (upstream pushes ancestor-graph entries during navigate before destination entries; our engine pushed only the destination entry via c.a \u2190 c$e.o with an EMPTY parent list z1/t.i). IAE 'No destination with ID 0 is on the NavController's back stack. The current destination is e$a@2554' uncaught at MainActivity.onCreate \u2192 rc=1. Next root: implement the ancestor-graph-entry-push law (upstream navigate-entry-hierarchy) so c.e(0) finds the graph entry. Evidence: run/s24_post_f090i_stderr.txt lines 306566-306612. | S57 CLOSURE: S57: S24 NavHost restore-loop face does not appear in current dooz v23 runs (post-F-086 run reaches Recomposer/ControlledComposition + ctor-climb family) \u2014 superseded by the S24-S56 progression",
    "evidence_note": "raw stderr artifact (run/s24_post_f090i_stderr.txt lines 306566-306612) predates the S48 external-archive law; the first-divergence record above is inline and complete",
    "last_updated": "S57 2026-09-18"
   },
@@ -3125,7 +3125,7 @@
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "fg": true,
-   "evidence": "S25 (F-091+F-091b): dooz died at NavController.addEntryToBackStack link loop (getBackStackEntry(parent.id=0)) because backQueue.addAll(hierarchy) copied NOTHING. Two stacked engine gaps: (a) host-interface dispatch matched Iterator.hasNext() to z1/i.isEmpty()Z by descriptor alone (F-091b gate: declared interface must be DEX-defined); (b) z1/i = minified kotlin.collections.ArrayDeque declares NO iterator()/listIterator() in DEX — implemented the AbstractList bidirectional protocol law (hasNext/next/hasPrevious/previous/nextIndex/previousIndex) driving the receiver's OWN DEX size()/get(I) via try_recursive_invoke (F-091). DEX-collection iteration for every R8-minified Kotlin app."
+   "evidence": "S25 (F-091+F-091b): dooz died at NavController.addEntryToBackStack link loop (getBackStackEntry(parent.id=0)) because backQueue.addAll(hierarchy) copied NOTHING. Two stacked engine gaps: (a) host-interface dispatch matched Iterator.hasNext() to z1/i.isEmpty()Z by descriptor alone (F-091b gate: declared interface must be DEX-defined); (b) z1/i = minified kotlin.collections.ArrayDeque declares NO iterator()/listIterator() in DEX \u2014 implemented the AbstractList bidirectional protocol law (hasNext/next/hasPrevious/previous/nextIndex/previousIndex) driving the receiver's OWN DEX size()/get(I) via try_recursive_invoke (F-091). DEX-collection iteration for every R8-minified Kotlin app."
   },
   {
    "id": "R-NEW-325",
@@ -3139,35 +3139,35 @@
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "fg": true,
-   "evidence": "S25 (F-093/F-093b): STTT ISE 'You need to use a Theme.AppCompat theme' at AppCompatDelegateImpl.createSubDecor — the runtime had NO obtainStyledAttributes bridge. F-093: ActivityShadow.obtainStyledAttributes(int[]) resolves every styleable attr against the activity theme via the canonical ARSC bag query (parent-chain inheritance + one reference hop) and materializes a theme-backed TypedArray (F-036 heap-array convention); F-093b = engine-side TypedArray positional reader law. Every AppCompatActivity app benefits."
+   "evidence": "S25 (F-093/F-093b): STTT ISE 'You need to use a Theme.AppCompat theme' at AppCompatDelegateImpl.createSubDecor \u2014 the runtime had NO obtainStyledAttributes bridge. F-093: ActivityShadow.obtainStyledAttributes(int[]) resolves every styleable attr against the activity theme via the canonical ARSC bag query (parent-chain inheritance + one reference hop) and materializes a theme-backed TypedArray (F-036 heap-array convention); F-093b = engine-side TypedArray positional reader law. Every AppCompatActivity app benefits."
   },
   {
    "id": "R-NEW-327",
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "fg": true,
-   "evidence": "S25 (F-094): STTT's AndroidManifest.xml is PLAIN-TEXT XML (not binary AXML) — binary reader returned application_theme_resid=0. Law: capture application_theme_ref in parse_plain_xml; resolve_theme_attr_value falls back to the ref string ('@style/AppTheme.NoActionBar') → ArscParser::find_id → resid. Odd-build plain-text-manifest family."
+   "evidence": "S25 (F-094): STTT's AndroidManifest.xml is PLAIN-TEXT XML (not binary AXML) \u2014 binary reader returned application_theme_resid=0. Law: capture application_theme_ref in parse_plain_xml; resolve_theme_attr_value falls back to the ref string ('@style/AppTheme.NoActionBar') \u2192 ArscParser::find_id \u2192 resid. Odd-build plain-text-manifest family."
   },
   {
    "id": "R-NEW-328",
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "fg": true,
-   "evidence": "S26 (F-095): dooz compose draw silently no-oped — AndroidComposeView.dispatchDraw → ViewLayer.drawLayer → DrawChildContainer.drawChild → FRAMEWORK ViewGroup.drawChild had NO law → bridge answered void → the ENTIRE compose ViewLayer content draw never executed (0 canvas ops). F-095: (a) ViewGroup.drawChild(Canvas,View,long) law dispatches the CHILD's real draw (dispatchDraw else onDraw) on the SAME canvas; (b) Canvas.isHardwareAccelerated() → false (software-renderer truth; keeps ViewLayer.dispatchDraw + RenderNodeLayer on the correct software paths per upstream 1.6.7). Verified: dooz draw window now reaches LayoutNode.draw → NodeCoordinator.draw → InnerNodeCoordinator.performDraw node-tree walk."
+   "evidence": "S26 (F-095): dooz compose draw silently no-oped \u2014 AndroidComposeView.dispatchDraw \u2192 ViewLayer.drawLayer \u2192 DrawChildContainer.drawChild \u2192 FRAMEWORK ViewGroup.drawChild had NO law \u2192 bridge answered void \u2192 the ENTIRE compose ViewLayer content draw never executed (0 canvas ops). F-095: (a) ViewGroup.drawChild(Canvas,View,long) law dispatches the CHILD's real draw (dispatchDraw else onDraw) on the SAME canvas; (b) Canvas.isHardwareAccelerated() \u2192 false (software-renderer truth; keeps ViewLayer.dispatchDraw + RenderNodeLayer on the correct software paths per upstream 1.6.7). Verified: dooz draw window now reaches LayoutNode.draw \u2192 NodeCoordinator.draw \u2192 InnerNodeCoordinator.performDraw node-tree walk."
   },
   {
    "id": "R-NEW-329",
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "fg": true,
-   "evidence": "S27 (F-096 + F-096b): the compose PLACEMENT gate. ROOT (evidence-grade, static + live): (1) F-096 — the runtime dispatched NO real-DEX View lifecycle for PROGRAMMATIC views: hooks existed for inflate-ctor (G11), leaf onMeasure (F10), onDraw (C013) — but onMeasure/onLayout of androidx AndroidComposeView (created programmatically, overriding BOTH in DEX — verified via androguard: onMeasure(II)V + onLayout(ZIIII)V in dooz classes.dex) never executed → updateRootConstraints/measureOnly + measureAndLayout → root.place(0,0) → placeAt → isPlacedByParent/markNodeAndSubtreeAsPlaced never ran → every LayoutNode isPlaced=false → InnerNodeCoordinator.performDraw skipped all children → 0 canvas ops. F-096: one-time per-node real-DEX lifecycle dispatch (measure EXACTLY(rect) then layout(changed=true,l,t,r,b)) in the render walk, AOSP order. (2) F-096b — View$MeasureSpec.getMode returned the SHIFTED mode (0/1/2); AOSP View.java returns the IN-PLACE masked mode (spec & 0xC0000000: 0/0x40000000/0x80000000) — compose AndroidComposeView.z compares mode == 0x40000000 directly, so the shifted answer hit the else->throw IllegalStateException arm (dooz onMeasure → z pc=31 ISE → app-boundary unwind). POST-FIX: getMode law corrected; dooz compose measure+layout+place chains EXECUTE as real bytecode (F074 super-dispatch walks through node/c, node/l, k0/T placement laws; MSPEC diag evidence); frame SHA UNCHANGED 193466ead8fd21d6 (802px placeholder) — determinism x3 preserved; battery 94/94."
+   "evidence": "S27 (F-096 + F-096b): the compose PLACEMENT gate. ROOT (evidence-grade, static + live): (1) F-096 \u2014 the runtime dispatched NO real-DEX View lifecycle for PROGRAMMATIC views: hooks existed for inflate-ctor (G11), leaf onMeasure (F10), onDraw (C013) \u2014 but onMeasure/onLayout of androidx AndroidComposeView (created programmatically, overriding BOTH in DEX \u2014 verified via androguard: onMeasure(II)V + onLayout(ZIIII)V in dooz classes.dex) never executed \u2192 updateRootConstraints/measureOnly + measureAndLayout \u2192 root.place(0,0) \u2192 placeAt \u2192 isPlacedByParent/markNodeAndSubtreeAsPlaced never ran \u2192 every LayoutNode isPlaced=false \u2192 InnerNodeCoordinator.performDraw skipped all children \u2192 0 canvas ops. F-096: one-time per-node real-DEX lifecycle dispatch (measure EXACTLY(rect) then layout(changed=true,l,t,r,b)) in the render walk, AOSP order. (2) F-096b \u2014 View$MeasureSpec.getMode returned the SHIFTED mode (0/1/2); AOSP View.java returns the IN-PLACE masked mode (spec & 0xC0000000: 0/0x40000000/0x80000000) \u2014 compose AndroidComposeView.z compares mode == 0x40000000 directly, so the shifted answer hit the else->throw IllegalStateException arm (dooz onMeasure \u2192 z pc=31 ISE \u2192 app-boundary unwind). POST-FIX: getMode law corrected; dooz compose measure+layout+place chains EXECUTE as real bytecode (F074 super-dispatch walks through node/c, node/l, k0/T placement laws; MSPEC diag evidence); frame SHA UNCHANGED 193466ead8fd21d6 (802px placeholder) \u2014 determinism x3 preserved; battery 94/94."
   },
   {
    "id": "R-NEW-330",
    "status": "SUPERSEDED-BY-EVIDENCE",
    "priority": "P0",
    "fg": true,
-   "evidence": "S27 CURRENT FRONTIER (dooz, honest-open): IllegalStateException 'DepthSortedSet.remove called on an unattached node' at m0/m.c (DepthSortedSet.remove, upstream DepthSortedSet.kt:67 check(node.isAttached)) ← i.h (MeasureAndLayoutDelegate.measureAndLayout popEach) ← AndroidComposeView.onLayout. The compose measure/layout/place chains now run (R-NEW-329 closed); measureAndLayout pops a relayoutNodes entry whose LayoutNode.owner == null (attach incomplete for at least one node — nearby trace shows [M3-19-CYCLE] active-cycle stub on m0/T;.a during the same window). NEXT: identify the unattached node (add bounded receiver/arg evidence to the DepthSortedSet.remove dispatch) and close the attach-propagation/active-cycle law. | S57 CLOSURE: S57: S27 DepthSortedSet.remove face does not appear in current dooz v23 runs — superseded by later layout/dispatch laws (F-082/F-083 era)",
+   "evidence": "S27 CURRENT FRONTIER (dooz, honest-open): IllegalStateException 'DepthSortedSet.remove called on an unattached node' at m0/m.c (DepthSortedSet.remove, upstream DepthSortedSet.kt:67 check(node.isAttached)) \u2190 i.h (MeasureAndLayoutDelegate.measureAndLayout popEach) \u2190 AndroidComposeView.onLayout. The compose measure/layout/place chains now run (R-NEW-329 closed); measureAndLayout pops a relayoutNodes entry whose LayoutNode.owner == null (attach incomplete for at least one node \u2014 nearby trace shows [M3-19-CYCLE] active-cycle stub on m0/T;.a during the same window). NEXT: identify the unattached node (add bounded receiver/arg evidence to the DepthSortedSet.remove dispatch) and close the attach-propagation/active-cycle law. | S57 CLOSURE: S57: S27 DepthSortedSet.remove face does not appear in current dooz v23 runs \u2014 superseded by later layout/dispatch laws (F-082/F-083 era)",
    "last_updated": "S57 2026-09-18"
   },
   {
@@ -3175,21 +3175,21 @@
    "status": "OBSERVED-FAIL",
    "priority": "P1",
    "fg": true,
-   "evidence": "S27 (cross-app, honest-open): the Fragment host wiring family. STTT (nl.hnogame.tictactoesuperttt_20): FragmentManager 'not been attached to a host' + AppCompat subDecor theme ISE at h.R repeated (pre-existing S25/S26 frontier, unchanged). REAL Telegram v10.14.5 golden (sha f5e1192725772960 — RE-ACQUIRED 2026-09-12, K-26 BLOCKER LIFTED: official dl serves the exact pinned build again): parse + ApplicationLoader.onCreate + LifecycleRegistry machinery execute; frontier = SAME FragmentManager.ensureExecReady 'FragmentManager has not been attached to a host' ISE + SafeIterableMap$IteratorWithAdditions.next active-cycle churn (18k+ stubs) + MessagesController ISE 'called wrong accept method'. One generic family (fragment host attach law) blocks BOTH apps."
+   "evidence": "S27 (cross-app, honest-open): the Fragment host wiring family. STTT (nl.hnogame.tictactoesuperttt_20): FragmentManager 'not been attached to a host' + AppCompat subDecor theme ISE at h.R repeated (pre-existing S25/S26 frontier, unchanged). REAL Telegram v10.14.5 golden (sha f5e1192725772960 \u2014 RE-ACQUIRED 2026-09-12, K-26 BLOCKER LIFTED: official dl serves the exact pinned build again): parse + ApplicationLoader.onCreate + LifecycleRegistry machinery execute; frontier = SAME FragmentManager.ensureExecReady 'FragmentManager has not been attached to a host' ISE + SafeIterableMap$IteratorWithAdditions.next active-cycle churn (18k+ stubs) + MessagesController ISE 'called wrong accept method'. One generic family (fragment host attach law) blocks BOTH apps."
   },
   {
    "id": "R-NEW-332",
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "fg": true,
-   "evidence": "S33 (F-098 + F-099): compose draw pipeline produced no Canvas content ops. ROOT was TWO blockers: (1) F-098 — the active-cycle guard instance-key stubbed SnapshotObserver.observeReads on its 2nd NESTED entry (same singleton observer, different target LayoutNode) killing onNodePlaced->markNodeAndSubtreeAsPlaced->isPlaced; law: key = receiver + up to 2 leading object-arg identities (nested per-LayoutNode observation is upstream-legal). (2) F-099 — the compose-owner draw dispatch gate required children.empty(); the shadow tree legitimately gains AndroidViewsHandler children via real DEX addView; law: a non-framework view node whose chain OVERRIDES dispatchDraw gets the real draw dispatch at visit even with children. POST: isPlaced=TRUE at draw, child.draw recursion + ViewLayer path execute. Residual ops=0 = R-NEW-333."
+   "evidence": "S33 (F-098 + F-099): compose draw pipeline produced no Canvas content ops. ROOT was TWO blockers: (1) F-098 \u2014 the active-cycle guard instance-key stubbed SnapshotObserver.observeReads on its 2nd NESTED entry (same singleton observer, different target LayoutNode) killing onNodePlaced->markNodeAndSubtreeAsPlaced->isPlaced; law: key = receiver + up to 2 leading object-arg identities (nested per-LayoutNode observation is upstream-legal). (2) F-099 \u2014 the compose-owner draw dispatch gate required children.empty(); the shadow tree legitimately gains AndroidViewsHandler children via real DEX addView; law: a non-framework view node whose chain OVERRIDES dispatchDraw gets the real draw dispatch at visit even with children. POST: isPlaced=TRUE at draw, child.draw recursion + ViewLayer path execute. Residual ops=0 = R-NEW-333."
   },
   {
    "id": "R-NEW-333",
    "status": "SUPERSEDED-BY-EVIDENCE",
    "priority": "P0",
    "fg": true,
-   "evidence": "S34 (narrowed, evidence superseded): content-state pairing was NOT the root — the content lambda n1/u.k RUNS; NavHost p.b builds the graph; builder n1/n.o registers game/settings/about via real DEX; p.a inlined graph-set navigates; c$a.a createBackStackEntry + ComposeNavigator push e.d/c$a.e/h1/t.e + flow setValue all execute; sync collectors deliver lists to the remember states. RESIDUAL = p.a never re-runs -> p.a:0e78 gate stays false -> AnimatedContent never invoked -> game screen n1/q.g never composes -> 1 LayoutNode -> 0 canvas ops. Successor = R-NEW-334. | S57 CLOSURE: S57: S34 NavHost content-state face does not appear in current dooz v23 runs — superseded (the run is past the NavHost/composition build stage)",
+   "evidence": "S34 (narrowed, evidence superseded): content-state pairing was NOT the root \u2014 the content lambda n1/u.k RUNS; NavHost p.b builds the graph; builder n1/n.o registers game/settings/about via real DEX; p.a inlined graph-set navigates; c$a.a createBackStackEntry + ComposeNavigator push e.d/c$a.e/h1/t.e + flow setValue all execute; sync collectors deliver lists to the remember states. RESIDUAL = p.a never re-runs -> p.a:0e78 gate stays false -> AnimatedContent never invoked -> game screen n1/q.g never composes -> 1 LayoutNode -> 0 canvas ops. Successor = R-NEW-334. | S57 CLOSURE: S57: S34 NavHost content-state face does not appear in current dooz v23 runs \u2014 superseded (the run is past the NavHost/composition build stage)",
    "last_updated": "S57 2026-09-18"
   },
   {
@@ -3197,7 +3197,7 @@
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "fg": true,
-   "evidence": "S36 FIXED (F-101 dual-store ArrayList(Collection) ctor law). Root chain, live-probed (run/s36_probe1..fix8, MINIANDROID_S36_TRACE): (1) kotlin toMutableList z1/r.K = new ArrayList(Collection) — ctor UNHANDLED → empty copies → c.q (updateBackStackLifecycle) upstream early-return on isEmpty → NavBackStackEntry.maxLifecycle setter b.i NEVER fired ([S36-BI] zero hits) → entries stayed INITIALIZED while host climbed CREATED→STARTED→RESUMED ([S36-BJ]) → populateVisibleEntries (c.n) filtered {max>=STARTED} → EMPTY visible list (o2914, the S35 object) → NavHost never recomposed. First cut wrote heap array[N] fields only — STILL empty in registry mode: the framework CollectionShadow answers isEmpty/size/get from its OWN collections_ store (engine heap fields invisible; 21196 block skipped when shadow_registry_!=nullptr). FIX: F-101 copies via the source's authoritative protocol (size()/get(I) try_recursive_invoke — same readers as F-091) and writes BOTH stores (heap fields + registry CollectionState.elements). POST-FIX LIVE EVIDENCE (run/s36_fix6): [S36-BI] b.i recv=o2878 max->CREATED <c.q<c.b>>; b.i recv=o2855 max->RESUMED <c.q<c.b>>; c$a.b markTransitionComplete path b.i(CREATED) also fires; compose/ui/node/i.h executes (R-NEW-333 residual dead). UPSTREAM LAWS: OpenJDK ArrayList(Collection) elementData=c.toArray(); kotlin toMutableList; github.com/openjdk/jdk + JetBrains/kotlin (links in F-101 header). Regression: battery all-runtime-stages PASS (helloworld 26/26, tictactoe, corpus byte-goldens, GATE H); only EXT-01/02 fail (external reference images /home/z/corpus/external_hello lost in container reset — pre-existing environment gap, not code).",
+   "evidence": "S36 FIXED (F-101 dual-store ArrayList(Collection) ctor law). Root chain, live-probed (run/s36_probe1..fix8, MINIANDROID_S36_TRACE): (1) kotlin toMutableList z1/r.K = new ArrayList(Collection) \u2014 ctor UNHANDLED \u2192 empty copies \u2192 c.q (updateBackStackLifecycle) upstream early-return on isEmpty \u2192 NavBackStackEntry.maxLifecycle setter b.i NEVER fired ([S36-BI] zero hits) \u2192 entries stayed INITIALIZED while host climbed CREATED\u2192STARTED\u2192RESUMED ([S36-BJ]) \u2192 populateVisibleEntries (c.n) filtered {max>=STARTED} \u2192 EMPTY visible list (o2914, the S35 object) \u2192 NavHost never recomposed. First cut wrote heap array[N] fields only \u2014 STILL empty in registry mode: the framework CollectionShadow answers isEmpty/size/get from its OWN collections_ store (engine heap fields invisible; 21196 block skipped when shadow_registry_!=nullptr). FIX: F-101 copies via the source's authoritative protocol (size()/get(I) try_recursive_invoke \u2014 same readers as F-091) and writes BOTH stores (heap fields + registry CollectionState.elements). POST-FIX LIVE EVIDENCE (run/s36_fix6): [S36-BI] b.i recv=o2878 max->CREATED <c.q<c.b>>; b.i recv=o2855 max->RESUMED <c.q<c.b>>; c$a.b markTransitionComplete path b.i(CREATED) also fires; compose/ui/node/i.h executes (R-NEW-333 residual dead). UPSTREAM LAWS: OpenJDK ArrayList(Collection) elementData=c.toArray(); kotlin toMutableList; github.com/openjdk/jdk + JetBrains/kotlin (links in F-101 header). Regression: battery all-runtime-stages PASS (helloworld 26/26, tictactoe, corpus byte-goldens, GATE H); only EXT-01/02 fail (external reference images /home/z/corpus/external_hello lost in container reset \u2014 pre-existing environment gap, not code).",
    "commit": "S36-F101"
   },
   {
@@ -3205,7 +3205,7 @@
    "status": "SUPERSEDED-BY-EVIDENCE",
    "priority": "P0",
    "fg": true,
-   "evidence": "S37 NARROWED (live-captured, MINIANDROID_S37_TRACE h/r.c return probe, run /tmp/s37_dooz_long, 540s budget): h/r + h/u = androidx.collection ScatterSet/MutableScatterSet storage (compose 1.6.7) — identity proven by upstream constants in real DEX: MurmurHashC1=0xcc9e2d51 (h/r.c const), Empty=0x80, Deleted=0xfe, Sentinel=0xff bytes, GroupWidth=8 (1 metadata byte per slot packed 8/long, a[len=2] = capacity<=16), writeMetadata Mirroring (clone group to end — observed 0x69 mirrored in a[0] byte5 / a[1] byte5). Upstream laws fetched: androidx/androidx androidx-main collection/collection/src/commonMain/kotlin/androidx/collection/ScatterSet.kt + ScatterMap.kt (github.com/androidx/androidx — findKeyIndex/probe loop, isFull=byte<0x80, unloadedCapacity(capacity==7)->8 special case). LIVE RETURNS: 106 h/r.c calls captured — 105 SANE (range -7..+7: found slot 0..6 or not-int(insertion 0..6)); 1 WILD: recv=o5057 d=7 f=0 a=[2]{ff007fe200000000, 0000000000000000-family} ret=-319519149 (0xecf48653) -> caller LP/v$a;.c pc=28 not-int -> aput-oob AIOOBE length=7 index=319519148 (deterministic, matches S36 x2). ROOT NARROWED TO METADATA CORRUPTION: the wild receiver's metadata bytes are INVALID (0xe2/0x7f/0x00 — not Empty(0x80)/Deleted(0xfe)/Sentinel(0xff)/H2(<0x80)); a correct upstream probe on ANY metadata returns slot index < capacity(8); our return implies the group-scan bitmask arithmetic consumed an unmasked mixed hash. The corruption happens EARLIER: writeMetadata/init path (shl-long/or-long variable-shift family — cf F-035) or dual-store divergence (e field unreadable via heap on o5057 — registry-shadow store owns fields, cf F-101 dual-store law). NEXT: (1) unit-probe shl-long/ushr-long/or-long with variable register shifts vs OpenJDK semantics; (2) dump o5057's registry-shadow CollectionState at writeMetadata time; (3) fetch upstream scatterSetOf/initializeTable Kotlin for exact init byte pattern. NO-VISUAL side note: dooz_18 at 540s budget now reaches Status: PARTIAL SUCCESS with framebuffer painted (placeholder view family — R-NEW-334 residual wall gone). | S57 CLOSURE: S57: S37 ScatterSet storage face is an ALIAS of the R-NEW-344 ScatterMap family — closed into R-NEW-344 (ROOT-CAUSED-FIXED via F-086)",
+   "evidence": "S37 NARROWED (live-captured, MINIANDROID_S37_TRACE h/r.c return probe, run /tmp/s37_dooz_long, 540s budget): h/r + h/u = androidx.collection ScatterSet/MutableScatterSet storage (compose 1.6.7) \u2014 identity proven by upstream constants in real DEX: MurmurHashC1=0xcc9e2d51 (h/r.c const), Empty=0x80, Deleted=0xfe, Sentinel=0xff bytes, GroupWidth=8 (1 metadata byte per slot packed 8/long, a[len=2] = capacity<=16), writeMetadata Mirroring (clone group to end \u2014 observed 0x69 mirrored in a[0] byte5 / a[1] byte5). Upstream laws fetched: androidx/androidx androidx-main collection/collection/src/commonMain/kotlin/androidx/collection/ScatterSet.kt + ScatterMap.kt (github.com/androidx/androidx \u2014 findKeyIndex/probe loop, isFull=byte<0x80, unloadedCapacity(capacity==7)->8 special case). LIVE RETURNS: 106 h/r.c calls captured \u2014 105 SANE (range -7..+7: found slot 0..6 or not-int(insertion 0..6)); 1 WILD: recv=o5057 d=7 f=0 a=[2]{ff007fe200000000, 0000000000000000-family} ret=-319519149 (0xecf48653) -> caller LP/v$a;.c pc=28 not-int -> aput-oob AIOOBE length=7 index=319519148 (deterministic, matches S36 x2). ROOT NARROWED TO METADATA CORRUPTION: the wild receiver's metadata bytes are INVALID (0xe2/0x7f/0x00 \u2014 not Empty(0x80)/Deleted(0xfe)/Sentinel(0xff)/H2(<0x80)); a correct upstream probe on ANY metadata returns slot index < capacity(8); our return implies the group-scan bitmask arithmetic consumed an unmasked mixed hash. The corruption happens EARLIER: writeMetadata/init path (shl-long/or-long variable-shift family \u2014 cf F-035) or dual-store divergence (e field unreadable via heap on o5057 \u2014 registry-shadow store owns fields, cf F-101 dual-store law). NEXT: (1) unit-probe shl-long/ushr-long/or-long with variable register shifts vs OpenJDK semantics; (2) dump o5057's registry-shadow CollectionState at writeMetadata time; (3) fetch upstream scatterSetOf/initializeTable Kotlin for exact init byte pattern. NO-VISUAL side note: dooz_18 at 540s budget now reaches Status: PARTIAL SUCCESS with framebuffer painted (placeholder view family \u2014 R-NEW-334 residual wall gone). | S57 CLOSURE: S57: S37 ScatterSet storage face is an ALIAS of the R-NEW-344 ScatterMap family \u2014 closed into R-NEW-344 (ROOT-CAUSED-FIXED via F-086)",
    "commit": "S37-NARROWED",
    "last_updated": "S57 2026-09-18"
   },
@@ -3214,31 +3214,31 @@
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P1",
    "fg": true,
-   "evidence": "S38 OBSERVED (hello_widgets advanced fixture, aapt2-linked APK d3b89184c6bf238e053f0a4c28403c0b535a4062fc2d9097630f7ed68de7b61f): probe-click (phase_b, EXP088) hits the only clickable Button; MainActivity.onClick executes END-TO-END as real DEX ([TRY-ENTRY] chain in s38 hw_diag run log): EditText.getText -> String.length -> StringBuilder.<init>/append/toString -> TextView.setText -> TextView.invalidate. RESULT: the target TextView's line renders EMPTY in the final frame — its pre-click default text (AXML @string) ALSO vanishes (pixel-scan: rows 855-930 uniform background in baseline; the same line visible pre-click in the --tap run where the probe is skipped and the scripted tap misses the button). ISOLATION: (1) not the concat — static setText(\"ECHO-STATIC\") clears too (run hw_static); (2) not getText().toString() — removed, still clears (run hw_nogettext); (3) not invalidate() — removed, still clears (run hw_noinv). CONTRAST: the IDENTICAL chain under a LinearLayout root renders (hello_smoke probe click -> counter/box/storageEcho all visibly updated, count=1/pref_now=1/box#1 on screen, SHA f7502490def40523). Structural delta = ScrollView root (AXML-inflated) vs LinearLayout root. FAMILY: ScrollView-child invalidation/redraw after click-dispatch (draw pass reads the node in a state where text glyphs are gone). NEXT: (1) trace ViewLayer/software_renderer glyph path for the echo node at draw time (is node->text empty or is the draw skipped); (2) compare ViewShadow::set_text caller ids — verify the setText receiver id equals the inflated echo node id; (3) minimal repro: ScrollView>LinearLayout>TextView + Button probe-click fixture (no EditText, no ImageView, no Table). FIX LAW CANDIDATE: ScrollView re-measure of invalidated child before final draw. || S38-RESOLUTION: minimal repro scroll_min (ScrollView>LinearLayout>TextView+Button, APK sha256 b9afb40738c4608ef5e3137ebc29119a49f91f5953d29b771638120f61173aa9) DID NOT reproduce the blank — 'clicked 1' renders (faint, same contrast family); hello_widgets re-run at HEAD shows faint 'echo: (empty)' pre-fix, fully readable post-fix; post-fix screenshot proves the single most complete View-world frame in the archive (8 widget kinds, all readable on the app's own dark background). Fixture hello_widgets rebuilt APK sha256 d3b89184c6bf238e(rebuild; original registration cited 461436b1... from the pre-restore source tree).",
+   "evidence": "S38 OBSERVED (hello_widgets advanced fixture, aapt2-linked APK d3b89184c6bf238e053f0a4c28403c0b535a4062fc2d9097630f7ed68de7b61f): probe-click (phase_b, EXP088) hits the only clickable Button; MainActivity.onClick executes END-TO-END as real DEX ([TRY-ENTRY] chain in s38 hw_diag run log): EditText.getText -> String.length -> StringBuilder.<init>/append/toString -> TextView.setText -> TextView.invalidate. RESULT: the target TextView's line renders EMPTY in the final frame \u2014 its pre-click default text (AXML @string) ALSO vanishes (pixel-scan: rows 855-930 uniform background in baseline; the same line visible pre-click in the --tap run where the probe is skipped and the scripted tap misses the button). ISOLATION: (1) not the concat \u2014 static setText(\"ECHO-STATIC\") clears too (run hw_static); (2) not getText().toString() \u2014 removed, still clears (run hw_nogettext); (3) not invalidate() \u2014 removed, still clears (run hw_noinv). CONTRAST: the IDENTICAL chain under a LinearLayout root renders (hello_smoke probe click -> counter/box/storageEcho all visibly updated, count=1/pref_now=1/box#1 on screen, SHA f7502490def40523). Structural delta = ScrollView root (AXML-inflated) vs LinearLayout root. FAMILY: ScrollView-child invalidation/redraw after click-dispatch (draw pass reads the node in a state where text glyphs are gone). NEXT: (1) trace ViewLayer/software_renderer glyph path for the echo node at draw time (is node->text empty or is the draw skipped); (2) compare ViewShadow::set_text caller ids \u2014 verify the setText receiver id equals the inflated echo node id; (3) minimal repro: ScrollView>LinearLayout>TextView + Button probe-click fixture (no EditText, no ImageView, no Table). FIX LAW CANDIDATE: ScrollView re-measure of invalidated child before final draw. || S38-RESOLUTION: minimal repro scroll_min (ScrollView>LinearLayout>TextView+Button, APK sha256 b9afb40738c4608ef5e3137ebc29119a49f91f5953d29b771638120f61173aa9) DID NOT reproduce the blank \u2014 'clicked 1' renders (faint, same contrast family); hello_widgets re-run at HEAD shows faint 'echo: (empty)' pre-fix, fully readable post-fix; post-fix screenshot proves the single most complete View-world frame in the archive (8 widget kinds, all readable on the app's own dark background). Fixture hello_widgets rebuilt APK sha256 d3b89184c6bf238e(rebuild; original registration cited 461436b1... from the pre-restore source tree).",
    "commit": "S38-NEW",
    "severity": "P1",
    "resolved_session": "S38",
-   "root_cause": "NOT a text-loss or click bug. The full DEX click chain works end-to-end (probe-click -> ViewShadow dispatch -> real DEX onClick -> getText '(empty)' -> setText('echo: (empty)') -> re-render). Proof: [U007_LAYOUT_DEBUG=4] VSTACK shows echo TextView id=14 re-measured 533x44 -> 254x44 between pass 1 and pass 2 = the POST-CLICK string was laid out from real app state; pixel forensics of the pre-fix frame: echo-row glyph pixels are exactly RGB(224,224,224)=#FFE0E0E0 (the app-requested w_text_c, byte-perfect rendering) over the EXP-092 synthetic container fill RGB(225,225,225) =GREY_200 — a delta of 1 per channel, human-invisible. The reported 'blank echo row' was this contrast casualty. The deeper AOSP deviation: EXP-092 filled GREY_200 over every non-full-screen bg-less container, which MASKED the ScrollView's own android:background=@color/w_bg #FF101418 (the dark band 1560..1920 = exactly the region below the LinearLayout's content bottom 1493+padding). AOSP View.java law: a View with no background is TRANSPARENT; the ancestor background shows through.",
-   "fix": "execution_engine.cpp stage_render_frame draw loop: before the EXP-092 GREY_200 container fill, walk node->parent_id chain; if ANY ancestor carries bg_color!=0 or bg_drawable_path or bg_shape_valid, skip the synthetic fill (transparent-container AOSP law; ancestor pixels already cover the area). Regression gate: fresh full battery 92 stages, ALL pixel goldens + interaction/determinism goldens re-run PASS (helloworld §28, tictactoe §29, G06/G07/G08, F-020/024/025/026/027/028/030/040/044/050/074, GATE H); only 2 fails = the documented missing external fixture HelloWorldSelfAware APK environment gap (S37-known, not code). hello_smoke + scroll_min byte-stable behavior (no bg ancestor -> GREY_200 visibility fill retained)."
+   "root_cause": "NOT a text-loss or click bug. The full DEX click chain works end-to-end (probe-click -> ViewShadow dispatch -> real DEX onClick -> getText '(empty)' -> setText('echo: (empty)') -> re-render). Proof: [U007_LAYOUT_DEBUG=4] VSTACK shows echo TextView id=14 re-measured 533x44 -> 254x44 between pass 1 and pass 2 = the POST-CLICK string was laid out from real app state; pixel forensics of the pre-fix frame: echo-row glyph pixels are exactly RGB(224,224,224)=#FFE0E0E0 (the app-requested w_text_c, byte-perfect rendering) over the EXP-092 synthetic container fill RGB(225,225,225) =GREY_200 \u2014 a delta of 1 per channel, human-invisible. The reported 'blank echo row' was this contrast casualty. The deeper AOSP deviation: EXP-092 filled GREY_200 over every non-full-screen bg-less container, which MASKED the ScrollView's own android:background=@color/w_bg #FF101418 (the dark band 1560..1920 = exactly the region below the LinearLayout's content bottom 1493+padding). AOSP View.java law: a View with no background is TRANSPARENT; the ancestor background shows through.",
+   "fix": "execution_engine.cpp stage_render_frame draw loop: before the EXP-092 GREY_200 container fill, walk node->parent_id chain; if ANY ancestor carries bg_color!=0 or bg_drawable_path or bg_shape_valid, skip the synthetic fill (transparent-container AOSP law; ancestor pixels already cover the area). Regression gate: fresh full battery 92 stages, ALL pixel goldens + interaction/determinism goldens re-run PASS (helloworld \u00a728, tictactoe \u00a729, G06/G07/G08, F-020/024/025/026/027/028/030/040/044/050/074, GATE H); only 2 fails = the documented missing external fixture HelloWorldSelfAware APK environment gap (S37-known, not code). hello_smoke + scroll_min byte-stable behavior (no bg ancestor -> GREY_200 visibility fill retained)."
   },
   {
    "id": "R-NEW-337",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P1",
    "fg": true,
-   "evidence": "S39 OBSERVED (dooz v23 newer variant io.github.yamin8000.dooz_23.apk, run /tmp/s38_runs/dooz23_vtree2, stderr 242k lines): ComposeView (Lho; view=624) first onMeasure -> ensureCompositionCreated chain dies on real kotlinx.coroutines bytecode: stack #10 Lr;.onMeasure -> #9 Lr;.g -> #8 Lr;.j -> #7 Lr;.k -> #5/#6 Lxo0;.a/Lyo0;.a -> #4 Lh62;.e -> #3 Lxz1;.I -> #2/#1 Ls;.h0/.g -> #0 Loj0;.T (JobSupport.makeCompletingOnce) pc=49 THROWS IllegalStateException \"Job Lkp1;@828 is already complete or completing, but is being completed with Lwl;@856\" (4 occurrences in log). Lkp1;.T/.M/.d0 all F074-super-dispatch to ancestor Loj0; (receiver o828 preserved): T=makeCompletingOnce, M=state read, d0=tryMakeCompleting(state,proposedUpdate) -> returned already-completing sentinel -> real code threw. Catch-all in Lr;.g catches then its own catch body rethrows; uncaught at MainActivity.onCreate invoke_pc=317 -> APP BOUNDARY unwind (status downgraded). Layout continues (Lho; rect 1080x1920 laid out, LIFEWIN-CLOSE dispatched) but C013-ONDRAW dispatched=NO ops=0 -> inline placeholder -> EMPTY GREY SCREEN (screenshot: only corner text 'ho'). KEY FACT: this is the FIRST composition creation (first measure pass, no earlier measure in log) — the job o828 was 'already complete or completing' before any prior composition attempt, so its JobSupport state was completed/corrupted between creation (onCreate) and first measure. Earlier SGET trace: Loj0;.e read as 0 by method=P and <init>.",
-   "root_cause": "atomicfu-transformed kotlinx.coroutines runs ALL volatile state via sun.misc.Unsafe reflection (theUnsafe.objectFieldOffset(Class.getDeclaredField(name)) -> getObjectVolatile/putObjectVolatile/compareAndSwapObject with the offset stored in static long fields, e.g. Loj0;.e/.f). The engine had NO shadow for getDeclaredField, java.lang.reflect.Field, or sun.misc.Unsafe — every call REC-MISS -> offsets 0, reads null. JobSupport (Loj0;) then read its own Active state (Lh20;=Empty{isActive=true}, heap-proven obj#505 fields=.e=1) as obj#0 null -> d0 pc=0 `state !is Incomplete` (instance-of Lmf0;) wrongly TRUE -> COMPLETING_ALREADY_COMPLETING sentinel (Lqi0;.y) -> makeCompletingOnce(T) threw ISE 'already complete or completing' on the FIRST composition (probe evidence: INSTANCEOF-DIAG obj=obj#0 class=-).",
+   "evidence": "S39 OBSERVED (dooz v23 newer variant io.github.yamin8000.dooz_23.apk, run /tmp/s38_runs/dooz23_vtree2, stderr 242k lines): ComposeView (Lho; view=624) first onMeasure -> ensureCompositionCreated chain dies on real kotlinx.coroutines bytecode: stack #10 Lr;.onMeasure -> #9 Lr;.g -> #8 Lr;.j -> #7 Lr;.k -> #5/#6 Lxo0;.a/Lyo0;.a -> #4 Lh62;.e -> #3 Lxz1;.I -> #2/#1 Ls;.h0/.g -> #0 Loj0;.T (JobSupport.makeCompletingOnce) pc=49 THROWS IllegalStateException \"Job Lkp1;@828 is already complete or completing, but is being completed with Lwl;@856\" (4 occurrences in log). Lkp1;.T/.M/.d0 all F074-super-dispatch to ancestor Loj0; (receiver o828 preserved): T=makeCompletingOnce, M=state read, d0=tryMakeCompleting(state,proposedUpdate) -> returned already-completing sentinel -> real code threw. Catch-all in Lr;.g catches then its own catch body rethrows; uncaught at MainActivity.onCreate invoke_pc=317 -> APP BOUNDARY unwind (status downgraded). Layout continues (Lho; rect 1080x1920 laid out, LIFEWIN-CLOSE dispatched) but C013-ONDRAW dispatched=NO ops=0 -> inline placeholder -> EMPTY GREY SCREEN (screenshot: only corner text 'ho'). KEY FACT: this is the FIRST composition creation (first measure pass, no earlier measure in log) \u2014 the job o828 was 'already complete or completing' before any prior composition attempt, so its JobSupport state was completed/corrupted between creation (onCreate) and first measure. Earlier SGET trace: Loj0;.e read as 0 by method=P and <init>.",
+   "root_cause": "atomicfu-transformed kotlinx.coroutines runs ALL volatile state via sun.misc.Unsafe reflection (theUnsafe.objectFieldOffset(Class.getDeclaredField(name)) -> getObjectVolatile/putObjectVolatile/compareAndSwapObject with the offset stored in static long fields, e.g. Loj0;.e/.f). The engine had NO shadow for getDeclaredField, java.lang.reflect.Field, or sun.misc.Unsafe \u2014 every call REC-MISS -> offsets 0, reads null. JobSupport (Loj0;) then read its own Active state (Lh20;=Empty{isActive=true}, heap-proven obj#505 fields=.e=1) as obj#0 null -> d0 pc=0 `state !is Incomplete` (instance-of Lmf0;) wrongly TRUE -> COMPLETING_ALREADY_COMPLETING sentinel (Lqi0;.y) -> makeCompletingOnce(T) threw ISE 'already complete or completing' on the FIRST composition (probe evidence: INSTANCEOF-DIAG obj=obj#0 class=-).",
    "fix": "Implemented the full atomicfu-via-Unsafe contract in try_shadow_dispatch: Class.getDeclaredField/getDeclaredFields -> heap Field objects (declaring_class/field_name/field_type from dex_report_); Field.getName/getType/getDeclaringClass/getModifiers/setAccessible/get/set; Modifier.isStatic; Class.isAssignableFrom; Unsafe singleton (theUnsafe via Field.get) + objectFieldOffset (deterministic 8-aligned registry (class,field)<->offset), getObjectVolatile/getObject/putObjectVolatile/putOrderedObject/putObject (heap-backed via offset reverse map), compareAndSwapObject/Int/Long (heap CAS by object identity), getIntVolatile/putIntVolatile/getLongVolatile/putLongVolatile variants, arrayBaseOffset/arrayIndexScale. Post-fix: 30 offsets registered (Loj0;._state$volatile->40, _parentHandle$volatile->48, ...), ZERO 'already complete' ISE, dooz first composition completes. Regression: hello_smoke/hello_widgets byte-identical renders.",
    "severity": "high",
    "commit": "S39-NEW",
-   "next": "(1) Field-write trace on Loj0; instance o828 between object creation and throw: who wrote the state field (Loj0;.e/_state slot) and with what value — expect either a premature makeCompleting/complete call from engine re-dispatch or dual-store corruption (R-NEW-335 family: state read from wrong store). (2) Identify Lkp1;/Lwl;/Ls; via APK mapping (kp1 may be Recomposer's LazyStandaloneCoroutine; Ls;.g/h0 = startCoroutineCancellable family). (3) Check whether engine ran the coroutine start path TWICE (duplicate Ls;.g entries for same receiver in api_trace/lifecycle_trace). (4) Fix-law candidates: honor JobSupport state machine exactly — if tryMakeCompleting returns already-completing sentinel on a job the engine itself completed, the completion was duplicated engine-side; trace and remove the duplicate dispatch at its source (preferred) vs masking sentinel in T (rejected: hides real state bug)."
+   "next": "(1) Field-write trace on Loj0; instance o828 between object creation and throw: who wrote the state field (Loj0;.e/_state slot) and with what value \u2014 expect either a premature makeCompleting/complete call from engine re-dispatch or dual-store corruption (R-NEW-335 family: state read from wrong store). (2) Identify Lkp1;/Lwl;/Ls; via APK mapping (kp1 may be Recomposer's LazyStandaloneCoroutine; Ls;.g/h0 = startCoroutineCancellable family). (3) Check whether engine ran the coroutine start path TWICE (duplicate Ls;.g entries for same receiver in api_trace/lifecycle_trace). (4) Fix-law candidates: honor JobSupport state machine exactly \u2014 if tryMakeCompleting returns already-completing sentinel on a job the engine itself completed, the completion was duplicated engine-side; trace and remove the duplicate dispatch at its source (preferred) vs masking sentinel in T (rejected: hides real state bug)."
   },
   {
    "id": "R-NEW-338",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P1",
    "fg": true,
-   "evidence": "S39 OBSERVED (dooz23 run dooz23_r337fix stderr:242045): after R-NEW-337 fix, kotlinx.coroutines stack-trace sanitizer Lqi0;.Q(RuntimeException,String) threw NPE 'null array in Arrays.copyOfRange' — its getStackTrace() call dispatched through bridge_to_api with the RUNTIME exception class (R8-obfuscated, e.g. Lbd1;/Lwr;) and the M3-19 guard demanded class_name to contain Throwable/Exception/Error -> silently unmatched -> null trace -> copyOfRange(null,...) -> f060-copy-null synthetic NPE.",
+   "evidence": "S39 OBSERVED (dooz23 run dooz23_r337fix stderr:242045): after R-NEW-337 fix, kotlinx.coroutines stack-trace sanitizer Lqi0;.Q(RuntimeException,String) threw NPE 'null array in Arrays.copyOfRange' \u2014 its getStackTrace() call dispatched through bridge_to_api with the RUNTIME exception class (R8-obfuscated, e.g. Lbd1;/Lwr;) and the M3-19 guard demanded class_name to contain Throwable/Exception/Error -> silently unmatched -> null trace -> copyOfRange(null,...) -> f060-copy-null synthetic NPE.",
    "root_cause": "Throwable.getStackTrace guard matched DECLARED-class name substrings instead of dispatching the INHERITED Throwable contract for any receiver class; R8 obfuscation hides Throwable ancestry in class names.",
    "fix": "Guard widened: getStackTrace/fillInStackTrace/getStackTraceDepth/setStackTrace dispatch for ANY receiver class (Thread excluded, keeps its own law). setStackTrace stores the sanitized array on the exception ('stack_trace' heap field); getStackTrace returns the stored sanitized array when present (round-trip), else builds real frames. Post-fix: zero copyOfRange NPEs in dooz23.",
    "severity": "high",
@@ -3249,34 +3249,34 @@
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P1",
    "fg": true,
-   "evidence": "S39 OBSERVED (dooz23 runs r338fix/r339c/r339d): AndroidComposeView (Lt4; extends ViewGroup) ctor threw ISE 'Required value was null.' at engine pc=415 (caller-PC forensics: THROWABLE-STACK-PC Lc91;.f caller_pc=415) — the Kotlin checkNotNull of the autofill chain: Lob;.b(View) -> View.getAutofillId() returned NULL (no ViewShadow handler) -> Lwd;.a (AutofillId holder) null -> Ld1;.e cast null -> branch to throw. Companion: the SECOND context.getSystemService(AutofillManager::class.java) in the same ctor needed dual-layer coverage (bridge_to_api + try_shadow_dispatch).",
-   "root_cause": "(a) View.getAutofillId unimplemented (AOSP: every view has a non-null AutofillId from its ctor on API 26+); (b) Context.getSystemService(Class) resolved only in the bridge layer — dispatch paths that enter via try_shadow_dispatch answered null.",
+   "evidence": "S39 OBSERVED (dooz23 runs r338fix/r339c/r339d): AndroidComposeView (Lt4; extends ViewGroup) ctor threw ISE 'Required value was null.' at engine pc=415 (caller-PC forensics: THROWABLE-STACK-PC Lc91;.f caller_pc=415) \u2014 the Kotlin checkNotNull of the autofill chain: Lob;.b(View) -> View.getAutofillId() returned NULL (no ViewShadow handler) -> Lwd;.a (AutofillId holder) null -> Ld1;.e cast null -> branch to throw. Companion: the SECOND context.getSystemService(AutofillManager::class.java) in the same ctor needed dual-layer coverage (bridge_to_api + try_shadow_dispatch).",
+   "root_cause": "(a) View.getAutofillId unimplemented (AOSP: every view has a non-null AutofillId from its ctor on API 26+); (b) Context.getSystemService(Class) resolved only in the bridge layer \u2014 dispatch paths that enter via try_shadow_dispatch answered null.",
    "fix": "ViewShadow.getAutofillId: lazily creates ONE memoized AutofillId heap object per view (ViewNode.autofill_id_obj) with view_id field; same object every call. getSystemService(Class/Service-string) registry mirrored into try_shadow_dispatch ([R339-SVC] lines). Post-fix: zero ISE; view tree becomes REAL (C013-LEAFCHK: ComposeView Lho; children=1 = AndroidComposeView Lt4; attached; placeholder no longer drawn).",
    "severity": "high",
    "commit": "S39-FIX",
-   "next": "Frontier advanced: composition machinery survives; content nodes not yet composed (Lt4; children=0, framebuffer white = real draw path pending). Next probe: Recomposer frame pump — does the Choreographer frame callback / MonotonicFrameClock withFrameNanos chain dispatch so composition produces content nodes? (R-NEW-340 candidate.)"
+   "next": "Frontier advanced: composition machinery survives; content nodes not yet composed (Lt4; children=0, framebuffer white = real draw path pending). Next probe: Recomposer frame pump \u2014 does the Choreographer frame callback / MonotonicFrameClock withFrameNanos chain dispatch so composition produces content nodes? (R-NEW-340 candidate.)"
   },
   {
    "id": "R-NEW-340",
    "status": "PARTIAL-FIX",
    "priority": "P1",
    "fg": true,
-   "evidence": "S39 OBSERVED (dooz23 runs r339f/r340): (a) F-050 launch frame pump ran at log:242402 with pending_cb=0 -> quiescence at tick=0; (b) the Recomposer posted its Choreographer.FrameCallback DURING onCreate at log:242620 ([CHOREO] postFrameCallback cb=757 class=Lh9;) — after the pump; (c) no second pump existed -> withFrameNanos never resumed -> zero content nodes (white frame). FIX APPLIED: post-lifecycle pump in stage_capture_output (max_frames=16) -> [CHOREO] doFrame tick fired, runnable id=1231 (Lrx; resume machinery) drained, Recomposer job machinery advanced (Lkp1; o1050/o1316 state reads, .Q(ZLkj0;) await path) — DEEPEST Compose execution yet recorded for dooz23.",
+   "evidence": "S39 OBSERVED (dooz23 runs r339f/r340): (a) F-050 launch frame pump ran at log:242402 with pending_cb=0 -> quiescence at tick=0; (b) the Recomposer posted its Choreographer.FrameCallback DURING onCreate at log:242620 ([CHOREO] postFrameCallback cb=757 class=Lh9;) \u2014 after the pump; (c) no second pump existed -> withFrameNanos never resumed -> zero content nodes (white frame). FIX APPLIED: post-lifecycle pump in stage_capture_output (max_frames=16) -> [CHOREO] doFrame tick fired, runnable id=1231 (Lrx; resume machinery) drained, Recomposer job machinery advanced (Lkp1; o1050/o1316 state reads, .Q(ZLkj0;) await path) \u2014 DEEPEST Compose execution yet recorded for dooz23.",
    "root_cause": "Frame-pump ordering: the only pump ran before onCreate's composition posted its first FrameCallback; AOSP vsync is a continuous process, the runtime pumped once.",
-   "fix": "stage_capture_output now pumps up to 16 frame ticks right before capture (last-frame law). First pump tick fires the posted callback and resumes the Recomposer; residual gap (NEXT): after the resumed recomposition pass, the Recomposer suspends WITHOUT posting another frame callback (no [CHOREO] postFrameCallback after the resume; quiescence at tick=1) — the next suspension is not frame-gated or the re-post path is dropped.",
+   "fix": "stage_capture_output now pumps up to 16 frame ticks right before capture (last-frame law). First pump tick fires the posted callback and resumes the Recomposer; residual gap (NEXT): after the resumed recomposition pass, the Recomposer suspends WITHOUT posting another frame callback (no [CHOREO] postFrameCallback after the resume; quiescence at tick=1) \u2014 the next suspension is not frame-gated or the re-post path is dropped.",
    "severity": "high",
    "commit": "S39-FIX2",
-   "next": "(1) Trace the resumed recomposition pass to its next suspension point: which suspend function does Lkp1;.Q(ZLkj0;) land on after the resume — another withFrameNanos (would re-post) or CancellableContinuation suspended on a Latch/Mutex that never completes? (2) Check AndroidUiDispatcher dispatch semantics: Compose's Recomposer 'runRecomposition' loop re-arms via dispatcher.dispatch — verify [QUEUE] enqueue follows the resume. (3) Candidate fix: bounded outer pump loop (repeat pump while progress, mirroring AOSP continuous vsync) vs fixing the missed re-post at its source."
+   "next": "(1) Trace the resumed recomposition pass to its next suspension point: which suspend function does Lkp1;.Q(ZLkj0;) land on after the resume \u2014 another withFrameNanos (would re-post) or CancellableContinuation suspended on a Latch/Mutex that never completes? (2) Check AndroidUiDispatcher dispatch semantics: Compose's Recomposer 'runRecomposition' loop re-arms via dispatcher.dispatch \u2014 verify [QUEUE] enqueue follows the resume. (3) Candidate fix: bounded outer pump loop (repeat pump while progress, mirroring AOSP continuous vsync) vs fixing the missed re-post at its source."
   },
   {
    "id": "R-NEW-341",
-   "title": "getApplicationContext served a plain Context singleton — Hilt Application resolution ISE killed dooz23 first composition",
+   "title": "getApplicationContext served a plain Context singleton \u2014 Hilt Application resolution ISE killed dooz23 first composition",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P0",
    "app": "io.github.yamin8000.dooz_23 (dooz, PRIORITY-1)",
    "observed": "ISE 'Could not find an Application in the given context: Context@7' thrown from Lk2;.b pc=776..880 (HiltViewModelFactory Application resolution: getApplicationContext() -> instanceof Application -> ContextWrapper.getBaseContext() walk -> throw). Escaped MainActivity.onCreate; composition died; white frame.",
    "root_cause": "Engine law gap: Context.getApplicationContext() returned get_or_create_singleton('Landroid/content/Context;') (plain object, class_desc Context) instead of THE Application instance. AOSP: ActivityThread.handleBindApplication creates ONE Application object (manifest android:name class) and getApplicationContext()/getApplication() serve THAT object. Hilt type-checks it (instanceof Application, Lxb0;.d() unwrap to the Dagger component).",
-   "fix": "(1) bind_manifest_application() in dalvik_engine.cpp — runs INSIDE execute_apk_with_activity AFTER dex_report_ + secondary-DEX injection (the old runtime-side EXP093-APP trio ran with dex_report=NULL: [TRY-ENTRY] dex_report=NULL evidence, run r340 — App.onCreate's Dagger component build silently degraded, only 80 ins). Instantiates the manifest class (hint set_application_class_hint from both runtime paths + self-discovery fallback: single DEX class with superclass Landroid/app/Application;), runs <init>/attachBaseContext/onCreate via REAL DEX, records application_object_id_/application_class_desc_, stores ApplicationLoader.applicationContext, publishes identity to ActivityShadow. (2) P0.7 getApplicationContext serves application_object_id_ (fallback old behavior). (3) ActivityShadow.getApplicationContext serves application_heap_id_. (4) Manifest-activity path REUSES the bound object instead of allocating a second plain Application.",
+   "fix": "(1) bind_manifest_application() in dalvik_engine.cpp \u2014 runs INSIDE execute_apk_with_activity AFTER dex_report_ + secondary-DEX injection (the old runtime-side EXP093-APP trio ran with dex_report=NULL: [TRY-ENTRY] dex_report=NULL evidence, run r340 \u2014 App.onCreate's Dagger component build silently degraded, only 80 ins). Instantiates the manifest class (hint set_application_class_hint from both runtime paths + self-discovery fallback: single DEX class with superclass Landroid/app/Application;), runs <init>/attachBaseContext/onCreate via REAL DEX, records application_object_id_/application_class_desc_, stores ApplicationLoader.applicationContext, publishes identity to ActivityShadow. (2) P0.7 getApplicationContext serves application_object_id_ (fallback old behavior). (3) ActivityShadow.getApplicationContext serves application_heap_id_. (4) Manifest-activity path REUSES the bound object instead of allocating a second plain Application.",
    "evidence": "runs r341 (ISE gone, errors 6->2), r354 (0 errors, SUCCESS); [R341-APP] bound application obj#6 (Lio/github/yamin8000/dooz/ui/App;)",
    "discovered": "S40",
    "fixed_in": "S40"
@@ -3288,7 +3288,7 @@
    "priority": "P1",
    "app": "io.github.yamin8000.dooz_23 (dooz, PRIORITY-1)",
    "observed": "MainActivity.<init> registers the injector Lae0;(this) into Leq;->a (CopyOnWriteArraySet); Ljm;.onCreate iterates the set and dispatches Lb11;->a(activity) (fast path Leq;->b != null skipped: b set only in Ljm;.onCreate). With add REC-MISS the set stayed empty -> injection never ran -> 'lateinit property settings has not been initialized' (Lxl; from Lqi0;.S, Le;.q @944 reads MainActivity.B) killed the resumed composition coroutine.",
-   "root_cause": "(a) CollectionShadow.handles_class missed Ljava/util/concurrent/CopyOnWriteArraySet; (and the COWAL path lacked the concurrent/ segment). (b) CollectionShadow next() returned elements typed Ljava/lang/Object; — invoke-interface dispatch on the yielded observer could not find the DEX implementation.",
+   "root_cause": "(a) CollectionShadow.handles_class missed Ljava/util/concurrent/CopyOnWriteArraySet; (and the COWAL path lacked the concurrent/ segment). (b) CollectionShadow next() returned elements typed Ljava/lang/Object; \u2014 invoke-interface dispatch on the yielded observer could not find the DEX implementation.",
    "fix": "(1) handles_class += concurrent/CopyOnWriteArraySet + concurrent/CopyOnWriteArrayList. (2) add() set semantics for COW sets (addIfAbsent: contains check, return false when present). (3) HeapAllocator.get_object_class() (virtual, default false) + DalvikHeapAdapter override (heap get(id)->class_descriptor); next() returns the element's REAL runtime class. Evidence: [S24-COLL] add obj=165 elems 0->1->2, iterator/hasNext/next live, injectors dispatched (Lem;.a ran; Lae0;.a chain reached Lls;).",
    "evidence": "runs r344 (probe), r345 (real-class next), r347/r349/r351/r352 (FIELD-TRACE chain: A guard -> Lls;.a read -> B=<unset>)",
    "discovered": "S40",
@@ -3296,10 +3296,10 @@
   },
   {
    "id": "R-NEW-343",
-   "title": "java.lang.Class.cast(Object) unimplemented — Hilt component-holder unwrap Lpm;.B null-poisoned the whole DI chain",
+   "title": "java.lang.Class.cast(Object) unimplemented \u2014 Hilt component-holder unwrap Lpm;.B null-poisoned the whole DI chain",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P0",
-   "app": "io.github.yamin8000.dooz_23 (dooz, PRIORITY-1) — general: any DI framework",
+   "app": "io.github.yamin8000.dooz_23 (dooz, PRIORITY-1) \u2014 general: any DI framework",
    "observed": "Lpm;.B(obj, class): 'if (obj instanceof Lwb0;) return class.cast(obj); elif (obj instanceof Lxb0;) recurse obj.d(); else ISE'. With cast() unimplemented the OK path answered null -> Lns;.(null) -> Lls;.(null,null) -> Settings provider.get() null -> MainActivity.B injected <unset> -> lateinit ISE on the resumed compose coroutine (Le;.q @944). FIELD-TRACE r352: Lns;.a = <unset> despite Lps;.<init> having stored b=self=obj#14 (r351).",
    "root_cause": "No 'cast' handler anywhere in the engine (bridge_to_api/try_shadow_dispatch/shadows) for Ljava/lang/Class; receivers (CLASS_REF with referent_desc).",
    "fix": "R-NEW-343 law in the Class bridge (next to getName): cast(null)=null; castable (is_subclass_of incl. F-023 interface closure) -> return the SAME reference (identity law); else throw_deferred ClassCastException ('X cannot be cast to Y'). Evidence r354: [R343-CAST] Lps; as Ll2; obj#14 OK; run status SUCCESS with 0 errors (first dooz23 run ever with a clean report).",
@@ -3309,115 +3309,117 @@
   },
   {
    "id": "R-NEW-344",
-   "title": "dooz23 ScatterMap full-table probe spin: second grow computed newCapacity=15 instead of nextCapacity(15)=31 — ROOT-CAUSED as missing java.lang.Long bridge (F-086), fixed + regression-tested at S57",
+   "title": "dooz23 ScatterMap full-table probe spin: second grow computed newCapacity=15 instead of nextCapacity(15)=31 \u2014 ROOT-CAUSED as missing java.lang.Long bridge (F-086), fixed + regression-tested at S57",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P0",
    "app": "io.github.yamin8000.dooz_23 (dooz, PRIORITY-1)",
    "observed": "S56 refinement (post F-083 + F-084): R-NEW-361 no longer appears in v23. MainActivity.onCreate now drives Recomposer (Lnb0;) / ControlledComposition (Lwo;) dirty-scope ScatterMap (Lbw0;) machinery. Full lifecycle traced (MINIANDROID_FIELD_TRACE=e + MINIANDROID_META_STORE_TRACE, obj o2658): <init>(6) -> f(6) cap 7 budget e=6 -> 6 inserts -> grow at e=0 via f(15) (resize #1 CORRECT: new metadata o4644, cap 15, e=loaded(15)-6=8) -> 8 more inserts (size 14) -> grow check at e=0 entered the R8-inlined resize: convertMetadataForCleanup ran (bit-exact vs upstream: 0xfefefefefefe80fe written at d pc=235) and 14 entries were re-inserted INTO THE SAME ARRAYS (no new allocation, all meta-stores arr=o4644) -> resize epilogue wrote e=0 = loaded(15)-14, i.e. newCapacity stayed 15 (must be 31) -> table 15/15 with zero EMPTY bytes -> probe spin (HALT-LOOP 2.4M insns at d pc=28 iget-object).",
-   "root_cause_hypothesis": "TWO engine-level laws: (1) PRIMARY (open): the second grow's nextCapacity computation (Lmg1;.b = mul-int/lit8 #2 + add-int/lit8 #1 -> cap*2+1) or its branch into f() mis-executed — the epilogue budget e=loaded(newCap)-14=0 pins newCap=15; cap-7 grow (nextCapacity(7)=15 via f) worked, so the failure is value/branch-specific, not a blanket lit8/2addr break. (2) SECONDARY (FIXED as F-084): the halted callee fed a stale last_invoke_return_ to the caller's move-result — the garbage slot index -733270216 face.",
-   "next": "(1) Trace Lmg1;.b invocation + return values around insert #16 (MINIANDROID_FIELD_TRACE scope is insufficient for static helpers with single-letter fields — extend the S56 locals-diag to the Lmg1; frame). (2) Compare the cap-7 grow flow (e==0 -> f(15) RAN) vs the cap-15 grow flow (e==0 -> no f) at the d() pc=128 if-nez branch +531 — the divergence pinpoints the mis-executed op. (3) After the root fix, expect resize(31): new metadata LongArray(5) + values[31], budget e=loaded(31)-14=27-14=13.",
-   "evidence": "S57 chain: (1) repro at HEAD 28b644b7 — HALT-LOOP in Lbw0;.d pc=28 (bytecode_size=671), blank frame 0/2073600, run/s57_r344_repro/; (2) androguard disasm of dooz23 (scripts/s57_andro_lbw0.py): the R8-inlined growth decision at Lbw0;.d pc=170-199 is Long.compare(size*32 ^ Long.MIN_VALUE, capacity*25 ^ Long.MIN_VALUE) + if-gtz → f(Lmg1;.b(nextCapacity)=cap*2+1) at pc=494-506; the fall-through (pc=201-482) is convertMetadataForCleanup + same-cap refill (aput 0xFEFEFEFEFEFEFEFE at pc=235 — bit-exact vs S56); (3) bridge_to_api had NO Long.compare handler → STUBBED typed-zero exit returned 0 → if-gtz false → cleanup path; the cap-7 grow branches at pc=172 (capacity<=8 → pc=491) and never touches the compare, which is why only the SECOND grow failed; (4) fix F-086: Long.compare/compareUnsigned 64-bit law in the F-055 Long block; (5) post-fix: capacity field trace on obj#2658 shows 7 → 15 → 31 (run/s57_r344_proof2/), HALT-LOOP 0, F084-HALT-RETURN 0, aput-oob gone",
+   "root_cause_hypothesis": "TWO engine-level laws: (1) PRIMARY (open): the second grow's nextCapacity computation (Lmg1;.b = mul-int/lit8 #2 + add-int/lit8 #1 -> cap*2+1) or its branch into f() mis-executed \u2014 the epilogue budget e=loaded(newCap)-14=0 pins newCap=15; cap-7 grow (nextCapacity(7)=15 via f) worked, so the failure is value/branch-specific, not a blanket lit8/2addr break. (2) SECONDARY (FIXED as F-084): the halted callee fed a stale last_invoke_return_ to the caller's move-result \u2014 the garbage slot index -733270216 face.",
+   "next": "(1) Trace Lmg1;.b invocation + return values around insert #16 (MINIANDROID_FIELD_TRACE scope is insufficient for static helpers with single-letter fields \u2014 extend the S56 locals-diag to the Lmg1; frame). (2) Compare the cap-7 grow flow (e==0 -> f(15) RAN) vs the cap-15 grow flow (e==0 -> no f) at the d() pc=128 if-nez branch +531 \u2014 the divergence pinpoints the mis-executed op. (3) After the root fix, expect resize(31): new metadata LongArray(5) + values[31], budget e=loaded(31)-14=27-14=13.",
+   "evidence": "S57 chain: (1) repro at HEAD 28b644b7 \u2014 HALT-LOOP in Lbw0;.d pc=28 (bytecode_size=671), blank frame 0/2073600, run/s57_r344_repro/; (2) androguard disasm of dooz23 (scripts/s57_andro_lbw0.py): the R8-inlined growth decision at Lbw0;.d pc=170-199 is Long.compare(size*32 ^ Long.MIN_VALUE, capacity*25 ^ Long.MIN_VALUE) + if-gtz \u2192 f(Lmg1;.b(nextCapacity)=cap*2+1) at pc=494-506; the fall-through (pc=201-482) is convertMetadataForCleanup + same-cap refill (aput 0xFEFEFEFEFEFEFEFE at pc=235 \u2014 bit-exact vs S56); (3) bridge_to_api had NO Long.compare handler \u2192 STUBBED typed-zero exit returned 0 \u2192 if-gtz false \u2192 cleanup path; the cap-7 grow branches at pc=172 (capacity<=8 \u2192 pc=491) and never touches the compare, which is why only the SECOND grow failed; (4) fix F-086: Long.compare/compareUnsigned 64-bit law in the F-055 Long block; (5) post-fix: capacity field trace on obj#2658 shows 7 \u2192 15 \u2192 31 (run/s57_r344_proof2/), HALT-LOOP 0, F084-HALT-RETURN 0, aput-oob gone",
    "discovered": "S40",
-   "next_action": "CLOSED for R-NEW-344. Dooz v23 execution continues into the R-NEW-376 ctor-climb family (Lgz1;.<init> depth=2048 self-delegation face observed post-fix — same root cause as the v18 frontier; no new ID created)",
+   "next_action": "CLOSED for R-NEW-344. Dooz v23 execution continues into the R-NEW-376 ctor-climb family (Lgz1;.<init> depth=2048 self-delegation face observed post-fix \u2014 same root cause as the v18 frontier; no new ID created)",
    "last_updated": "S57 2026-09-18"
   },
   {
    "id": "R-NEW-345",
-   "title": "runBlocking/BlockingCoroutine joinBlocking livelock — kotlinx event-loop state machine + worker threads never observed their own work; HALT-LOOP destroyed two coroutine frames; dooz theme-load never completed",
+   "title": "runBlocking/BlockingCoroutine joinBlocking livelock \u2014 kotlinx event-loop state machine + worker threads never observed their own work; HALT-LOOP destroyed two coroutine frames; dooz theme-load never completed",
    "status": "IMPLEMENTED",
    "priority": "P0",
    "fg": true,
-   "app": "io.github.yamin8000.dooz_23 (dooz, PRIORITY-1) — general: any app calling runBlocking at startup (ViewModel init, DataStore reads)",
-   "observed": "S41 reruns (run_a/run_b/run_c with forensic env): dooz23 MainActivity.onCreate runBlocking { theme = settings.getTheme() } (GitHub-first: yamin8000/Dooz master MainActivity.kt L41) NEVER completed. joinBlocking spin = 200k+ F074 lines on Ljf;(BlockingEventLoop)/Lhf;(BlockingCoroutine) receivers, ZERO real work; ended ONLY via 2x [HALT-LOOP] frame destruction (Lqq0;.a @242304, Lvs0;.O @442352 — 50k visits each). After the kills the composition machinery started but produced an EMPTY content composition (root-only LayoutNode tree, 0 content nodes, blank frame) = the downstream face of R-NEW-344. DataStoreImpl (Lh8;) 0 returns; zero Thread.start dispatches; zero scheduler classes executed.",
-   "root_cause": "FOUR stacked generic gaps (all fixed): (1) SUPER-DISPATCH IDENTITY: execute_invoke_super appended a '<super>' marker to the declaring class before bridge_to_api, so framework-ancestor super-calls (kotlinx Worker.start{ super.start() } -> Thread.start) never reached ThreadShadow — no worker ever ran. (2) Thread subclasses with NO Runnable ctor target were silent no-ops at ThreadShadow.start (F-THREAD-TICK only handled recorded runnables). (3) LockSupport.park* resolved to silent void: the only yield point never drained cross-queue work, and parked worker loops spun at full interpreter speed (fix_r3: 2.8M instructions inside Lsr;.run). (4) Unsafe get-and-set family MISSING (getAndAddLong/getAndAddInt/getAndSetObject/getAndSetInt/getAndSetLong/compareAndSwapLong) — kotlinx atomicfu compiles AtomicLong/AtomicReference state machines (EventLoopBase useCount/shared packed long, ConcurrentLinkedQueue head/tail unlink) to DIRECT Unsafe ops; missing ops answered silent garbage so the event loop never observed its own enqueued tasks.",
-   "fix": "Four generic laws (no class-name hacks): (a) SUPER-DISPATCH IDENTITY — bridge_to_api receives the CLEAN declaring class; '<super>' kept only in the api_trace log. (b) THREAD SELF-RUN — ThreadShadow.start with no recorded Runnable queues a SELF-run (thread,thread); the drain invokes the receiver's own REAL DEX run() (AOSP Thread.start virtual-dispatch law). (c) PARK-DRAIN — LockSupport.park/parkNanos/parkUntil = deterministic yield point: bounded drain (main MessageQueue runnables via REAL DEX run(), Choreographer due doFrame callbacks, pending Thread starts), reentrancy-guarded (depth<=3); unpark = no-op; park at drain depth>=1 with zero work sets park_yield_pending_ -> [PARK-YIELD] graceful frame-chain suspension at the drain boundary (parked-worker law; main-thread park at depth 0 NEVER yields — joinBlocking must re-check isCompleted). (d) UNSAFE FAMILY CLOSURE — compareAndSwapLong/getAndAddLong/getAndAddInt/getAndSetObject/getAndSetInt/getAndSetLong implemented over the SAME heap store as iput/iget (R-NEW-337 one-store law).",
-   "evidence": "/tmp/s41/: fix_r1 (park-drain fired, work_units=0 — pre-super-fix), fix_r2 (super-fix, still spin — workers never created), fix_r3 (self-run law: 3x [THREAD-START] Lsr; workers, REAL DEX run() executed, 2.8M ins in worker loop), fix_r4 (FULL PIPELINE COMPLETED: 3x [PARK-YIELD], 0 HALT-LOOP, runBlocking completed, DataStore read REACHED (13 NPEs at Lot;.a/Liu;.d = NEW frontier R-NEW-346), run finished <280s, status SUCCESS). Upstream: kotlinx.coroutines BlockingCoroutine.joinBlocking + EventLoopImplBase (Lo30; fields _queue$volatile@160/_delayed$volatile@168/_isCompleted$volatile@176 proven via [R337-UNSAFE] clinit offsets), dooz sources fetched from github.com/yamin8000/Dooz master.",
+   "app": "io.github.yamin8000.dooz_23 (dooz, PRIORITY-1) \u2014 general: any app calling runBlocking at startup (ViewModel init, DataStore reads)",
+   "observed": "S41 reruns (run_a/run_b/run_c with forensic env): dooz23 MainActivity.onCreate runBlocking { theme = settings.getTheme() } (GitHub-first: yamin8000/Dooz master MainActivity.kt L41) NEVER completed. joinBlocking spin = 200k+ F074 lines on Ljf;(BlockingEventLoop)/Lhf;(BlockingCoroutine) receivers, ZERO real work; ended ONLY via 2x [HALT-LOOP] frame destruction (Lqq0;.a @242304, Lvs0;.O @442352 \u2014 50k visits each). After the kills the composition machinery started but produced an EMPTY content composition (root-only LayoutNode tree, 0 content nodes, blank frame) = the downstream face of R-NEW-344. DataStoreImpl (Lh8;) 0 returns; zero Thread.start dispatches; zero scheduler classes executed.",
+   "root_cause": "FOUR stacked generic gaps (all fixed): (1) SUPER-DISPATCH IDENTITY: execute_invoke_super appended a '<super>' marker to the declaring class before bridge_to_api, so framework-ancestor super-calls (kotlinx Worker.start{ super.start() } -> Thread.start) never reached ThreadShadow \u2014 no worker ever ran. (2) Thread subclasses with NO Runnable ctor target were silent no-ops at ThreadShadow.start (F-THREAD-TICK only handled recorded runnables). (3) LockSupport.park* resolved to silent void: the only yield point never drained cross-queue work, and parked worker loops spun at full interpreter speed (fix_r3: 2.8M instructions inside Lsr;.run). (4) Unsafe get-and-set family MISSING (getAndAddLong/getAndAddInt/getAndSetObject/getAndSetInt/getAndSetLong/compareAndSwapLong) \u2014 kotlinx atomicfu compiles AtomicLong/AtomicReference state machines (EventLoopBase useCount/shared packed long, ConcurrentLinkedQueue head/tail unlink) to DIRECT Unsafe ops; missing ops answered silent garbage so the event loop never observed its own enqueued tasks.",
+   "fix": "Four generic laws (no class-name hacks): (a) SUPER-DISPATCH IDENTITY \u2014 bridge_to_api receives the CLEAN declaring class; '<super>' kept only in the api_trace log. (b) THREAD SELF-RUN \u2014 ThreadShadow.start with no recorded Runnable queues a SELF-run (thread,thread); the drain invokes the receiver's own REAL DEX run() (AOSP Thread.start virtual-dispatch law). (c) PARK-DRAIN \u2014 LockSupport.park/parkNanos/parkUntil = deterministic yield point: bounded drain (main MessageQueue runnables via REAL DEX run(), Choreographer due doFrame callbacks, pending Thread starts), reentrancy-guarded (depth<=3); unpark = no-op; park at drain depth>=1 with zero work sets park_yield_pending_ -> [PARK-YIELD] graceful frame-chain suspension at the drain boundary (parked-worker law; main-thread park at depth 0 NEVER yields \u2014 joinBlocking must re-check isCompleted). (d) UNSAFE FAMILY CLOSURE \u2014 compareAndSwapLong/getAndAddLong/getAndAddInt/getAndSetObject/getAndSetInt/getAndSetLong implemented over the SAME heap store as iput/iget (R-NEW-337 one-store law).",
+   "evidence": "/tmp/s41/: fix_r1 (park-drain fired, work_units=0 \u2014 pre-super-fix), fix_r2 (super-fix, still spin \u2014 workers never created), fix_r3 (self-run law: 3x [THREAD-START] Lsr; workers, REAL DEX run() executed, 2.8M ins in worker loop), fix_r4 (FULL PIPELINE COMPLETED: 3x [PARK-YIELD], 0 HALT-LOOP, runBlocking completed, DataStore read REACHED (13 NPEs at Lot;.a/Liu;.d = NEW frontier R-NEW-346), run finished <280s, status SUCCESS). Upstream: kotlinx.coroutines BlockingCoroutine.joinBlocking + EventLoopImplBase (Lo30; fields _queue$volatile@160/_delayed$volatile@168/_isCompleted$volatile@176 proven via [R337-UNSAFE] clinit offsets), dooz sources fetched from github.com/yamin8000/Dooz master.",
    "discovered": "S41",
    "fixed_in": "S41",
-   "next": "R-NEW-346: DataStore read NPE chain (Lot;.a invoke_pc=0x18/0x9, Liu;.d — 13 EXC-UNCAUGHT-TOP, non-fatal) — the datastore actor's file-read path hits null; then R-NEW-344 content composition (still root-only tree).",
+   "next": "R-NEW-346: DataStore read NPE chain (Lot;.a invoke_pc=0x18/0x9, Liu;.d \u2014 13 EXC-UNCAUGHT-TOP, non-fatal) \u2014 the datastore actor's file-read path hits null; then R-NEW-344 content composition (still root-only tree).",
    "impact": "dooz23: from NEVER-COMPLETING run + 2 destroyed frames + empty composition to full startup pipeline in <280s with clean yields. Generic: every runBlocking caller (ViewModel init, DataStore, settings loads) and every kotlinx scheduler worker benefits."
   },
   {
    "id": "R-NEW-347",
-   "title": "dooz23 first-frame chain (compose BOM 2026.06.01 / runtime 1.11.4): AndroidComposeView never attached, never DEX-measured, View.measure void, File path/name family missing — content composition started but root stayed 0x0",
+   "title": "dooz23 first-frame chain (compose BOM 2026.06.01 / runtime 1.11.4): AndroidComposeView never attached, never DEX-measured, View.measure void, File path/name family missing \u2014 content composition started but root stayed 0x0",
    "status": "IMPLEMENTED",
    "priority": "P0",
-   "app": "io.github.yamin8000.dooz_23 (dooz, PRIORITY-1) — general: any compose app; File/String laws general JVM",
+   "app": "io.github.yamin8000.dooz_23 (dooz, PRIORITY-1) \u2014 general: any compose app; File/String laws general JVM",
    "observed": "S42 run_a: UC009 attach wave ran BEFORE the AndroidComposeView existed (created lazily during first onMeasure via ensureCompositionCreated -> La72;.a pc=112 addView into the already-attached ComposeView) -> pending onReadyForComposition request (Lt4;->n0) stored but NEVER consumed (Lt4;.onAttachedToWindow pc 640-662 is the ONLY consumer) -> content lambda never ran. Post-attach-fix (run_b): composition started (ComposerImpl Lxk0; live, slot ops), but Lt4; measured 0x0: (1) F10 DEX onMeasure hook skipped containers; (2) overrides_on_measure flag never set on the invoke-direct ctor path; (3) View.measure(I I)V was silent-void so AbstractComposeView.onMeasure's child.measure() never measured AndroidComposeView (DEX Lr;.i: getChildAt(0) -> child.measure(childSpec) -> setMeasuredDimension(child.measuredWidth+padding)); (4) getMeasuredWidth/Height had NO implementation; (5) the DataStore file-name lambda (Lg8;.a) hit File.getName()==null -> uncaught NPE killed the pass (run_i: SIOOBE from lastIndexOf garbage; run_k: File(null, \"datastore/settings.preferences_pb\") path capture empty).",
    "root_cause": "Six stacked generic gaps vs AOSP/OpenJDK contracts (all fixed, zero class hacks): (1) AOSP ViewGroup.addViewInner child-attach law missing; (2) UC009/attach one-shot guard missing (double-dispatch window); (3) F10 real-DEX onMeasure law excluded containers + invoke-direct ctor path never recorded overrides_on_measure; (4) AOSP View.measure(final) contract missing (measure -> onMeasure dispatch -> default getDefaultSize fallback) + getMeasuredWidth/Height accessors missing; (5) java.io.File name-component law missing (getName/getPath/getParent/getParentFile/isAbsolute/getAbsolutePath); (6) java.io.File constructor path-assembly law missing (incl. OpenJDK File(null, child) degradation) + String.lastIndexOf(int[,int]) law missing (fromIndex<0 -> -1).",
    "fix": "All six laws implemented (S42, commits S42/S42-fix2): ViewShadow pending_child_attaches_ queue + record/consume (android_shadows.h/cpp); engine dispatch_attached_subtree_from() + bridge_to_api pending-consume + UC009 one-shot guard (dalvik_engine.h/cpp); F10 hook extended to containers by overrides_on_measure (layout_inflater.cpp); receiver-based View.measure law BEFORE try_shadow_dispatch + View.onMeasure default write-through + dex/measured one-store sync + getMeasuredWidth/Height accessors; File name-component + ctor path-assembly laws; String.lastIndexOf law. Evidence: [R347-ATTACH] parent=888 attached -> pending child-attach child=1512/1513; [R347-ATTACH] onAttachedToWindow dispatched view=1512/1513 class=Lt4;; [R347-MEASURE] view=1512 class=Lt4; dex_onmeasure=YES (real compose measure world ran); [R347-FILE-CTOR] path=\"datastore/settings.preferences_pb\"; [R347-FILE] getName -> \"settings.preferences_pb\"; [R347-LILO] lastIndexOf(46,22) -> 8; substring -> \"preferences_pb\" (DataStore file chain complete). Regression: gmdice 108922 / microtimer 65090 / unote 14850 nonwhite EXACT S41 goldens.",
    "severity": "high",
    "commit": "S42",
-   "next": "R-NEW-348: composition pass (44 ComposerImpl calls) terminates at Lpz0;.c1 -> U0(Z)Lwt0; null bail — compose 1.11.4 composition-capabilities orchestration (Lqz0;.g = capability bits 128|0x400000; root-node Lkz0;.d composer != querying composer -> null) — the app content lambda ({ Content() } -> Dooz composables) is still never invoked; that gate is the exact next frontier."
+   "next": "R-NEW-348: composition pass (44 ComposerImpl calls) terminates at Lpz0;.c1 -> U0(Z)Lwt0; null bail \u2014 compose 1.11.4 composition-capabilities orchestration (Lqz0;.g = capability bits 128|0x400000; root-node Lkz0;.d composer != querying composer -> null) \u2014 the app content lambda ({ Content() } -> Dooz composables) is still never invoked; that gate is the exact next frontier."
   },
   {
    "id": "R-NEW-348",
-   "title": "dooz23: compose 1.11.4 composition-capabilities gate — Lpz0;.c1() aborts via U0(Z)Lwt0;==null before ever invoking the app content lambda",
+   "title": "dooz23: compose 1.11.4 composition-capabilities gate \u2014 Lpz0;.c1() aborts via U0(Z)Lwt0;==null before ever invoking the app content lambda",
    "status": "SUPERSEDED-BY-EVIDENCE",
    "priority": "P0",
-   "app": "io.github.yamin8000.dooz_23 (dooz, PRIORITY-1) — general: compose runtime 1.11.x apps",
-   "observed": "S42 run_l/run_m with R-NEW-347 fixed: chain Ls7;.i(ComposeViewContext) runs (RET-TRACE: returns Le12; obj#232 = COROUTINE_SUSPENDED sentinel — outer wrapper suspends, inner composeInitial ran synchronously per runtime 1.11.4 sources fetched from Google Maven); ComposerImpl Lxk0; executed ~44 real calls (K0 composer wiring, m0(J), Z0, slot ops S(IILjava/util/Map;Lf90;Lf90;), l1, l0, c1, U0(Z)x2) then TRUE QUIESCENCE — zero io.github.yamin8000.dooz composables executed (only MainActivity lifecycle dispatches); root LayoutNode (Lel0;) empty -> Lt4;.onMeasure dex_onmeasure=YES but 0x0 -> blank frame (nonwhite=0).",
-   "root_cause_hypothesis": "S43 GROUND TRUTH (replaces the S42 'composition-services' hypothesis): the Lqz0;.g capability bits are compose-ui NodeKind flags — bit 7 (0x80) = Nodes.OnRemeasured (MeasuredSizeAwareModifierNode), bit 22 (0x400000) = Nodes.LayoutAware (ui/commonMain/.../node/NodeKind.kt); Lpz0;.c1/U0 = the OnRemeasured dispatch over the NodeCoordinator chain (a NORMAL null-chain path, not the blocker — c1 dispatches the OnRemeasured class and an empty chain falls through to Lje1;.B legitimately). The content-lambda milestone was BLOCKED further upstream by R-NEW-349 (attach-before-measure ordering) and then by the protobuf DataStore chain (R-NEW-350/351); the invokeComposable contract itself is confirmed from 1.11.4 sources (jvmAndAndroidMain Expect: composable as Function2<Composer,Int,Unit> -> realFn(composer, 1); DEX map: Lr90;=Function2, Lj90;=ComposableLambda (abstract h(Object,Object)Object), Lom;=ComposableLambdaImpl wrapper, Lrr0;=MainActivity content lambda).",
-   "next": "(1) Identify Lwt0;/Lkz0;/Lje1; against runtime 1.11.4 sources (already at /tmp/s42/runtime_src, ui 1.11.4 at /tmp/s42/ui_src): map ControlledComposition capability flags (bits 128, 0x400000) and the composition-services registration path — WHO must set Lkz0;->d (owner's composer) and WHEN; (2) verify the owner (AndroidComposeView Owner) wiring: Lkz0;.d is set at composition creation — probe whether our run created TWO composers (one from the suspended Ls7;.i wrapper, one from composeInitial) making the root-node lookup mismatch; (3) implement the missing generic law(s) in the capabilities/orchestration path; (4) then the content lambda { Content() } should finally invoke the Dooz composables.",
+   "app": "io.github.yamin8000.dooz_23 (dooz, PRIORITY-1) \u2014 general: compose runtime 1.11.x apps",
+   "observed": "S42 run_l/run_m with R-NEW-347 fixed: chain Ls7;.i(ComposeViewContext) runs (RET-TRACE: returns Le12; obj#232 = COROUTINE_SUSPENDED sentinel \u2014 outer wrapper suspends, inner composeInitial ran synchronously per runtime 1.11.4 sources fetched from Google Maven); ComposerImpl Lxk0; executed ~44 real calls (K0 composer wiring, m0(J), Z0, slot ops S(IILjava/util/Map;Lf90;Lf90;), l1, l0, c1, U0(Z)x2) then TRUE QUIESCENCE \u2014 zero io.github.yamin8000.dooz composables executed (only MainActivity lifecycle dispatches); root LayoutNode (Lel0;) empty -> Lt4;.onMeasure dex_onmeasure=YES but 0x0 -> blank frame (nonwhite=0).",
+   "root_cause_hypothesis": "S43 GROUND TRUTH (replaces the S42 'composition-services' hypothesis): the Lqz0;.g capability bits are compose-ui NodeKind flags \u2014 bit 7 (0x80) = Nodes.OnRemeasured (MeasuredSizeAwareModifierNode), bit 22 (0x400000) = Nodes.LayoutAware (ui/commonMain/.../node/NodeKind.kt); Lpz0;.c1/U0 = the OnRemeasured dispatch over the NodeCoordinator chain (a NORMAL null-chain path, not the blocker \u2014 c1 dispatches the OnRemeasured class and an empty chain falls through to Lje1;.B legitimately). The content-lambda milestone was BLOCKED further upstream by R-NEW-349 (attach-before-measure ordering) and then by the protobuf DataStore chain (R-NEW-350/351); the invokeComposable contract itself is confirmed from 1.11.4 sources (jvmAndAndroidMain Expect: composable as Function2<Composer,Int,Unit> -> realFn(composer, 1); DEX map: Lr90;=Function2, Lj90;=ComposableLambda (abstract h(Object,Object)Object), Lom;=ComposableLambdaImpl wrapper, Lrr0;=MainActivity content lambda).",
+   "next": "(1) Identify Lwt0;/Lkz0;/Lje1; against runtime 1.11.4 sources (already at /tmp/s42/runtime_src, ui 1.11.4 at /tmp/s42/ui_src): map ControlledComposition capability flags (bits 128, 0x400000) and the composition-services registration path \u2014 WHO must set Lkz0;->d (owner's composer) and WHEN; (2) verify the owner (AndroidComposeView Owner) wiring: Lkz0;.d is set at composition creation \u2014 probe whether our run created TWO composers (one from the suspended Ls7;.i wrapper, one from composeInitial) making the root-node lookup mismatch; (3) implement the missing generic law(s) in the capabilities/orchestration path; (4) then the content lambda { Content() } should finally invoke the Dooz composables.",
    "evidence": "/tmp/s42/run_l + run_m stderr: [RET-TRACE] Ls7;.i -> obj#232 Le12; ; Lxk0; call chain tail ...c1() -> U0(Z)x2 -> silence; screenshot nonwhite=0",
    "discovered": "S42"
   },
   {
    "id": "R-NEW-349",
-   "title": "dooz23 onCreate death: eager measure inside setContentView(View) dispatched real DEX AbstractComposeView.onMeasure on an UNATTACHED tree — windowRecomposer checkPrecondition(isAttachedToWindow) threw ISE before any composition existed",
+   "title": "dooz23 onCreate death: eager measure inside setContentView(View) dispatched real DEX AbstractComposeView.onMeasure on an UNATTACHED tree \u2014 windowRecomposer checkPrecondition(isAttachedToWindow) threw ISE before any composition existed",
    "status": "IMPLEMENTED",
    "priority": "P0",
-   "app": "io.github.yamin8000.dooz_23 (dooz, PRIORITY-1) — general: every app whose setContentView(View) tree contains DEX onMeasure overrides",
+   "app": "io.github.yamin8000.dooz_23 (dooz, PRIORITY-1) \u2014 general: every app whose setContentView(View) tree contains DEX onMeasure overrides",
    "observed": "S43 baseline (d5073b4d + R-NEW-347): stderr L242810 [THROWABLE-MSG] ISE \"Cannot locate windowRecomposer; View Lho;@960 is not attached to a window\" thrown from Log0;.b pc=2 (WindowRecomposer.android.kt:288) during the U007 eager measure; L242833 [U007-MEASURE] completes; L242834 APP-BOUNDARY escape at MainActivity.onCreate invoke_pc=306; the S42 attach wave fired only LATER (L242916+). Chain: Ljm;.setContentView -> measure_layout -> custom_view_measure_hook_ -> DEX Lr;.onMeasure (AbstractComposeView) -> Lr;.g ensureCompositionCreated -> Log0;.b windowRecomposer -> require(isAttachedToWindow)=FALSE.",
-   "root_cause": "ORDERING violation of the AOSP ViewRootImpl.performTraversals first-traversal law: dispatchAttachedToWindow (whole tree, mAttachInfo stored BEFORE onAttachedToWindow per view) MUST precede performMeasure — on AOSP no measure pass ever observes an unattached view. The engine ran the eager measure INLINE inside ActivityShadow.setContentView while the content tree's attach state was still false; compose relies on the AOSP order (ensureCompositionCreated runs from onMeasure only because AOSP guarantees attach-first).",
+   "root_cause": "ORDERING violation of the AOSP ViewRootImpl.performTraversals first-traversal law: dispatchAttachedToWindow (whole tree, mAttachInfo stored BEFORE onAttachedToWindow per view) MUST precede performMeasure \u2014 on AOSP no measure pass ever observes an unattached view. The engine ran the eager measure INLINE inside ActivityShadow.setContentView while the content tree's attach state was still false; compose relies on the AOSP order (ensureCompositionCreated runs from onMeasure only because AOSP guarantees attach-first).",
    "fix": "(1) ViewShadow.record_pending_setcontent_attach_measure(parent, root) + consume (android_shadows.h/cpp): the shadow (no interpreter access) RECORDS instead of measuring. (2) Engine bridge consume (dalvik_engine.cpp): on setContentView -> dispatch_attached_subtree_from(content_root) [attach wave, mark-first + DEX onAttachedToWindow, one-shot guarded] THEN measure_layout(root) [the U007 measure, now on an attached tree]. Evidence run_r349: [R349-ORDER] deferred attach+measure root=960 -> [R347-ATTACH] onAttachedToWindow view=960 Lho; -> child=1241 Lt4; created+attached DURING the wave (ensureCompositionCreated from the AOSP attach path) -> measure done; windowRecomposer ISE count 1 -> 0. Regression: battery 90/92 (only pre-existing EXT-01/02 external-fixture gaps); gmdice 108922 -> 1,745,009 nonwhite (16x); unote 14,850 -> 236,521 (16x); ChessClock screenshot SHA e4a2d7c9... byte-identical golden; microtimer 1,042,368 (A/B-verified equal to S42 baseline after the SCOPE fix below).",
    "severity": "high",
    "commit": "S43",
-   "next": "SCOPE NOTE: an S43 draft also drained pending_child_attaches after setContentView — that fired DEX onAttachedToWindow for XML-inflated trees (microtimer RoTimeControl) before their post-inflate field setup, a lateinit ISE escaped onCreate and the app went white (A/B-proven). The landed law drains pending-child-attaches at addView/addViewInLayout ONLY; the R349 attach wave starts from the recorded content root only."
+   "next": "SCOPE NOTE: an S43 draft also drained pending_child_attaches after setContentView \u2014 that fired DEX onAttachedToWindow for XML-inflated trees (microtimer RoTimeControl) before their post-inflate field setup, a lateinit ISE escaped onCreate and the app went white (A/B-proven). The landed law drains pending-child-attaches at addView/addViewInLayout ONLY; the R349 attach wave starts from the recorded content root only."
   },
   {
    "id": "R-NEW-350",
    "title": "protobuf-javalite MessageInfo chain dead: 3-arg Class.forName(String,Z,ClassLoader) silently void + Class.asSubclass unimplemented -> defaultInstanceMap never populated -> UOE 'No factory is available for message type' / bare ISE killed the DataStore theme read",
    "status": "IMPLEMENTED",
    "priority": "P0",
-   "app": "io.github.yamin8000.dooz_23 (dooz, PRIORITY-1) — general: any DataStore/protobuf-lite app",
+   "app": "io.github.yamin8000.dooz_23 (dooz, PRIORITY-1) \u2014 general: any DataStore/protobuf-lite app",
    "observed": "S43 baseline: runBlocking{settings.getTheme()} (MainActivity.onCreate) -> DataStore read -> Las0;.<init> Class.forName('androidx.datastore.preferences.protobuf.DescriptorMessageInfoFactory') CNFE (EXPECTED javalite fallback, correctly caught) -> composite factory Lzr0;=[Lyb0;->b(GeneratedMessageInfoFactory), fallback] -> Lyb0;.b isSupported TRUE ([R350-IAA] recv=Lbc0; arg=Ly81; -> TRUE) -> Lyb0;.a asSubclass SILENT-NULL -> Lbc0;.d received NULL Class ([R350-SHAPE] a0k8=NULL_REF) -> forName silent -> defaultInstanceMap.get x2 NULL -> dynamicMethod(GET_DEFAULT_INSTANCE) NULL -> bare ISE -> RuntimeException('Unable to get message info for y81') x23 -> escaped MainActivity.onCreate invoke_pc=0xc1.",
-   "root_cause": "Two stacked host-class gaps: (1) java.lang.Class.forName overloads — the 3-arg form was dispatched by the interpreter (idx=6825, [R350-FN2] proof) but never reached the bridge forName branch (zero [R350-FN]/[R350-BR] logs, zero CNFE) — silently void, so initialize=true NEVER ran the message class <clinit> and defaultInstanceMap stayed empty; (2) java.lang.Class.asSubclass(Class) implemented NOWHERE — OpenJDK law: returns the SAME Class reference when assignable, else CCE; its silent-void null poisoned every downstream step (Lbc0;.d(null) -> getName/getClassLoader/forName on null).",
-   "fix": "(1) Class.forName OVERLOAD LAW at the interpreter level in execute_invoke_static BEFORE try_recursive_invoke/bridge (same pre-emption pattern as the R-NEW-347 View.measure law): dotted-name -> L-descriptor -> class_info_index_ resolve -> ensure_class_initialized when the initialize flag is set (both overloads carry it in args[1]) -> make_class CLASS_REF; unknown name -> deferred ClassNotFoundException (real law). (2) Class.asSubclass law in the Class bridge next to cast: null-target -> NPE; assignable (is_subclass_of on the L-FORM referent — the first attempt wrongly used the dotted form and answered CCE for Ly81; asSubclass Lbc0;) -> SAME reference identity; else deferred CCE. ENABLING GATE: the forName interpreter law is DEFAULT-OFF (MINIANDROID_R350_LAW=1) because unconditionally-ON it starved microtimer's Room initDb retry loop (see R-NEW-352); dooz23 evidence runs enable it. Evidence (dooz, MINIANDROID_R350_LAW=1): windowRecomposer ISE 0; 'Unable to get message info' 23 -> 0; [R350-ASSUB] Ly81; asSubclass Lbc0; -> SAME reference; Ly81;.<clinit> result=OK + defaultInstanceMap.put; the run advances into the FIRST real MessageSchema build (R-NEW-351).",
+   "root_cause": "Two stacked host-class gaps: (1) java.lang.Class.forName overloads \u2014 the 3-arg form was dispatched by the interpreter (idx=6825, [R350-FN2] proof) but never reached the bridge forName branch (zero [R350-FN]/[R350-BR] logs, zero CNFE) \u2014 silently void, so initialize=true NEVER ran the message class <clinit> and defaultInstanceMap stayed empty; (2) java.lang.Class.asSubclass(Class) implemented NOWHERE \u2014 OpenJDK law: returns the SAME Class reference when assignable, else CCE; its silent-void null poisoned every downstream step (Lbc0;.d(null) -> getName/getClassLoader/forName on null).",
+   "fix": "(1) Class.forName OVERLOAD LAW at the interpreter level in execute_invoke_static BEFORE try_recursive_invoke/bridge (same pre-emption pattern as the R-NEW-347 View.measure law): dotted-name -> L-descriptor -> class_info_index_ resolve -> ensure_class_initialized when the initialize flag is set (both overloads carry it in args[1]) -> make_class CLASS_REF; unknown name -> deferred ClassNotFoundException (real law). (2) Class.asSubclass law in the Class bridge next to cast: null-target -> NPE; assignable (is_subclass_of on the L-FORM referent \u2014 the first attempt wrongly used the dotted form and answered CCE for Ly81; asSubclass Lbc0;) -> SAME reference identity; else deferred CCE. ENABLING GATE: the forName interpreter law is DEFAULT-OFF (MINIANDROID_R350_LAW=1) because unconditionally-ON it starved microtimer's Room initDb retry loop (see R-NEW-352); dooz23 evidence runs enable it. Evidence (dooz, MINIANDROID_R350_LAW=1): windowRecomposer ISE 0; 'Unable to get message info' 23 -> 0; [R350-ASSUB] Ly81; asSubclass Lbc0; -> SAME reference; Ly81;.<clinit> result=OK + defaultInstanceMap.put; the run advances into the FIRST real MessageSchema build (R-NEW-351).",
    "severity": "high",
    "commit": "S43",
    "next": "R-NEW-351: the schema-table builder AIOOBE is now the frontier inside the first real DataStore parse; microtimer interaction documented as R-NEW-352."
   },
   {
    "id": "R-NEW-351",
-   "title": "dooz23 FIRST real protobuf schema build dies: MessageSchema table builder Llt0;.w aput-oob 'length=1; index=1' — the int[] field table sized from the parsed MessageInfo is 1 short for the writer loop",
+   "title": "dooz23 FIRST real protobuf schema build dies: MessageSchema table builder Llt0;.w aput-oob 'length=1; index=1' \u2014 the int[] field table sized from the parsed MessageInfo is 1 short for the writer loop",
    "status": "SUPERSEDED-BY-EVIDENCE",
    "priority": "P0",
-   "app": "io.github.yamin8000.dooz_23 (dooz, PRIORITY-1) — general: any DataStore/protobuf-lite app (every read/write needs the schema)",
-   "observed": "S43 run (MINIANDROID_R350_LAW=1, post R-NEW-349/350): chain advances past the factory (isSupported TRUE, asSubclass SAME-reference, defaultInstance registered via <clinit>, [R337-UNSAFE] objectFieldOffset Ly81;.preferences_ -> 280) into Llt0;.w (MessageSchema ctor, DEX size 1009B) — aput v1, v11, v7 at byte 0x772 (pc unit 953) throws ArrayIndexOutOfBoundsException length=1 index=1; the exception unwinds 20 frames through the compose-coroutine machinery and escapes MainActivity.onCreate. nonwhite=2 (the first non-white pixels ever recorded for dooz23 — the render stack painted something).",
-   "root_cause_hypothesis": "The int[] table at the aput was new-array'd with a size derived from the MessageInfo (Lta1;) contents — the objects array (filled-new-array {v2,v3} [Ljava/lang/Object; = field-name + field-type, LENGTH 2 in DEX law) and/or the schema-string counts. The filled-new-array handler's arg extraction was audited (UNIFIED_011.2 FNA-FIX is correct in HEAD), so the suspicion is upstream: either the info-string counts (MUTF-8 NUL handling verified CORRECT — 0xC0 0x80 decodes to a real 0x00 byte, so split('\\u0000') should work) or a table-builder loop bound vs the objects-array length mismatch inside Llt0;.w needs a per-instruction trace. protobuf MessageSchema.kt/java sources are the next oracle (github.com/protocolbuffers/protobuf + the javalite jar).",
-   "next": "(1) Dump Llt0;.w fully (1009B) and the Lta1; ctor to map which array (v11 rebinding) the aput targets and where its size comes from; (2) probe the objects array the engine built at Ly81;.c case 3 (filled-new-array {v2,v3}) — verify heap length == 2; (3) validate against protobuf MessageSchema field-table law (fields_count*3 / *2 sizing visible at 0x2f2/0x2fa); (4) close -> the DataStore theme read completes -> runBlocking unblocks -> the compose content lambda composes for real.",
-   "evidence": "/tmp/s43_sweep/dooz_on.log [SYNTH-EXC] aput-oob method=Llt0;.w pc=953 + [R337-UNSAFE] offset 280 caller=Llt0;.w; crash.log 38 EXC (all one AIOOBE unwind); nonwhite=2/2073600 | S57 CLOSURE: S57: Llt0;.w aput-oob \"length=1; index=1\" does not reproduce in current dooz v23 runs (grep Llt0 → parser/reflect lines only; the protobuf chain proceeds via honest M3-REFLECT fallbacks) — NOT-REPRODUCIBLE, superseded by the R-NEW-347/349/350 law chain",
+   "app": "io.github.yamin8000.dooz_23 (dooz, PRIORITY-1) \u2014 general: any DataStore/protobuf-lite app (every read/write needs the schema)",
+   "observed": "S43 run (MINIANDROID_R350_LAW=1, post R-NEW-349/350): chain advances past the factory (isSupported TRUE, asSubclass SAME-reference, defaultInstance registered via <clinit>, [R337-UNSAFE] objectFieldOffset Ly81;.preferences_ -> 280) into Llt0;.w (MessageSchema ctor, DEX size 1009B) \u2014 aput v1, v11, v7 at byte 0x772 (pc unit 953) throws ArrayIndexOutOfBoundsException length=1 index=1; the exception unwinds 20 frames through the compose-coroutine machinery and escapes MainActivity.onCreate. nonwhite=2 (the first non-white pixels ever recorded for dooz23 \u2014 the render stack painted something).",
+   "root_cause_hypothesis": "The int[] table at the aput was new-array'd with a size derived from the MessageInfo (Lta1;) contents \u2014 the objects array (filled-new-array {v2,v3} [Ljava/lang/Object; = field-name + field-type, LENGTH 2 in DEX law) and/or the schema-string counts. The filled-new-array handler's arg extraction was audited (UNIFIED_011.2 FNA-FIX is correct in HEAD), so the suspicion is upstream: either the info-string counts (MUTF-8 NUL handling verified CORRECT \u2014 0xC0 0x80 decodes to a real 0x00 byte, so split('\\u0000') should work) or a table-builder loop bound vs the objects-array length mismatch inside Llt0;.w needs a per-instruction trace. protobuf MessageSchema.kt/java sources are the next oracle (github.com/protocolbuffers/protobuf + the javalite jar).",
+   "next": "(1) Dump Llt0;.w fully (1009B) and the Lta1; ctor to map which array (v11 rebinding) the aput targets and where its size comes from; (2) probe the objects array the engine built at Ly81;.c case 3 (filled-new-array {v2,v3}) \u2014 verify heap length == 2; (3) validate against protobuf MessageSchema field-table law (fields_count*3 / *2 sizing visible at 0x2f2/0x2fa); (4) close -> the DataStore theme read completes -> runBlocking unblocks -> the compose content lambda composes for real.",
+   "evidence": "/tmp/s43_sweep/dooz_on.log [SYNTH-EXC] aput-oob method=Llt0;.w pc=953 + [R337-UNSAFE] offset 280 caller=Llt0;.w; crash.log 38 EXC (all one AIOOBE unwind); nonwhite=2/2073600 | S57 CLOSURE: S57: Llt0;.w aput-oob \"length=1; index=1\" does not reproduce in current dooz v23 runs (grep Llt0 \u2192 parser/reflect lines only; the protobuf chain proceeds via honest M3-REFLECT fallbacks) \u2014 NOT-REPRODUCIBLE, superseded by the R-NEW-347/349/350 law chain",
    "discovered": "S43",
    "last_updated": "S57 2026-09-18"
   },
   {
    "id": "R-NEW-352",
-   "title": "microtimer Room initDb retry loop under interpreter-level forName resolution — 50k re-visits of the SAME forName invoke starve the run budget (the reason R-NEW-350 is env-gated MINIANDROID_R350_LAW=1)",
-   "status": "OBSERVED-FAIL",
-   "priority": "P1",
-   "app": "dubrowgn.microtimer_8 — general: Room getGeneratedImplementation users",
+   "title": "microtimer Room initDb retry loop under interpreter-level forName resolution \u2014 50k re-visits of the SAME forName invoke starve the run budget (the reason R-NEW-350 is env-gated MINIANDROID_R350_LAW=1)",
+   "status": "PROVEN-FIXED",
+   "priority": "P2",
+   "app": "dubrowgn.microtimer_8 \u2014 general: Room getGeneratedImplementation users",
    "observed": "S43 A/B (stash->rebuild->run vs unstash->rebuild->run, hash-pinned APK): S42 baseline renders 1,042,368 nonwhite rc=0 with the BRIDGE-level forName resolving Database_Impl ([M3-REFLECT] Class.forName 'dubrowgn.microtimer.db.Database_Impl' -> ...); with the interpreter-level forName law ON, MainActivity.onCreate re-visits the forName invoke (pc_units=266) 50001x (HALT-LOOP guard), a lateinit ISE (Lm/c; via La/e;.n 'lateinit property ... has not been initialized') escapes at invoke_pc=266 and the frame goes white rc=1.",
-   "root_cause_hypothesis": "Under interpreter-level resolution the forName return (CLASS_REF + ensure_class_initialized) reaches Room's getGeneratedImplementation differently than under bridge-level resolution — the app's own code then retries the SAME invoke in a loop instead of proceeding. The retry loop's back-edge and the differing post-forName step (getDeclaredConstructor/newInstance path) need a frame-level trace; the interpreter law also bypasses the try_recursive_invoke layer where the M3-19 active-cycle guard would have stubbed re-entrant repeats at near-zero cost.",
+   "root_cause_hypothesis": "Under interpreter-level resolution the forName return (CLASS_REF + ensure_class_initialized) reaches Room's getGeneratedImplementation differently than under bridge-level resolution \u2014 the app's own code then retries the SAME invoke in a loop instead of proceeding. The retry loop's back-edge and the differing post-forName step (getDeclaredConstructor/newInstance path) need a frame-level trace; the interpreter law also bypasses the try_recursive_invoke layer where the M3-19 active-cycle guard would have stubbed re-entrant repeats at near-zero cost.",
    "next": "(1) Trace the loop body between two forName visits (move-result -> checkNotNull -> getDeclaredConstructor -> newInstance -> which branch jumps back); (2) compare the S42 bridge-path result shape (was ensure_class_initialized actually reached? was the return CLASS_REF or a stale value?) against the interpreter-law result; (3) either restore loop-progress semantics (why did the S42 path leave the app green) or make the interpreter law idempotent-cheap and re-enable it by default.",
-   "evidence": "/tmp/s43_sweep/mt_ab.log (baseline green, bridge forName resolve) vs /tmp/s43_sweep/mt7.log (50k [R350-FN2]+[R350-FORNAME] pairs, HALT-LOOP) — A/B discipline: identical APK sha, identical flags except the law gate",
-   "discovered": "S43"
+   "evidence": "S58 A/B re-proof at the fixed HEAD: microtimer R-NEW-350-law-ON vs law-OFF PIXEL-IDENTICAL (1,041,437 non-white both; rc=0; HALT-LOOP 0; exactly 2 forName resolutions \u2014 no retry storm; miniandroid/run/s58_r352_lawON vs s58_r352_lawOFF). The S43 50k-revisit loop was the missing pc-advance contract, root-caused and fixed at S44 (R-NEW-355). The forName law is DEFAULT-ON now (MINIANDROID_R350_LAW=0 opt-out). Corpus re-verified pixel-identical to S57 records: chessclock 2,040,736 nb / notes 2,073,600 nb / unote 236,520 nb. Docs/evidence/s58_r376/.",
+   "discovered": "S43",
+   "fixed": "S58 (blocker = R-NEW-355 pc-advance, fixed S44)",
+   "last_updated": "S58 2026-09-18"
   },
   {
    "id": "R-NEW-353",
    "status": "VERIFIED-FIXED",
    "priority": "P0",
-   "title": "String.charAt bridge law drops its result — bridge result-out contract",
+   "title": "String.charAt bridge law drops its result \u2014 bridge result-out contract",
    "discovered": "S44",
    "fixed": "S44",
    "evidence": "dooz23 MessageSchema decode: charAt returned CHAR into a local r but never wrote the bridge `result` out-param; last_invoke_return_ stayed stale 0 -> protobuf newSchemaForRawMessageInfo decoded fieldCount=0 from a valid 12-char info string -> numEntries=0 -> int[0] table -> legacy-grow aput AIOOBE (length=1; index=1) at Llt0;.w pc=953 -> MainActivity.onCreate dead -> blank frame (S43 frontier R-NEW-351 root). Fix: result = r (result-out contract; the StringBuilder charAt law already honored it).",
@@ -3427,17 +3429,17 @@
    "id": "R-NEW-354",
    "status": "VERIFIED-FIXED",
    "priority": "P0",
-   "title": "Framework-class registry law — Class.forName must answer engine framework surface",
+   "title": "Framework-class registry law \u2014 Class.forName must answer engine framework surface",
    "discovered": "S44",
    "fixed": "S44",
-   "evidence": "compose-ui 1.11.4 AndroidComposeView.onAttachedToWindow (Lt4; pc 84-198) StrictMode block: Class.forName(\"android.os.SystemProperties\") -> deferred CNFE derailed the attach method; deferred compose request Lt4;->n0 never consumed (pc 640-662); Lf90;.i bootstrap never dispatched; compose measured 0x0 zero children. Fix: deterministic framework registry {android.os.SystemProperties} answers CLASS_REF (default-on — engine surface, not app-DEX; no R-NEW-352-class retry risk).",
+   "evidence": "compose-ui 1.11.4 AndroidComposeView.onAttachedToWindow (Lt4; pc 84-198) StrictMode block: Class.forName(\"android.os.SystemProperties\") -> deferred CNFE derailed the attach method; deferred compose request Lt4;->n0 never consumed (pc 640-662); Lf90;.i bootstrap never dispatched; compose measured 0x0 zero children. Fix: deterministic framework registry {android.os.SystemProperties} answers CLASS_REF (default-on \u2014 engine surface, not app-DEX; no R-NEW-352-class retry risk).",
    "regression": "goldens byte-identical"
   },
   {
    "id": "R-NEW-355",
    "status": "VERIFIED-FIXED",
    "priority": "P0",
-   "title": "INVOKE PC-ADVANCE CONTRACT — interpreter-level forName law exits never advanced pc_",
+   "title": "INVOKE PC-ADVANCE CONTRACT \u2014 interpreter-level forName law exits never advanced pc_",
    "discovered": "S44",
    "fixed": "S44",
    "evidence": "execute_invoke_static normal exit = pc_ = pc+3 (35c); the R-NEW-350 law early returns (success + CNFE paths) skipped it -> the SAME forName invoke re-executed forever -> 50001 visits -> HALT-LOOP. THIS IS THE TRUE R-NEW-352 ROOT: microtimer's 'Room initDb retry loop' (50001 re-visits of the SAME forName invoke) was the missing pc advance, not app retries. Fix: pc_ = pc + 3 on all 3 law exits.",
@@ -3450,7 +3452,7 @@
    "title": "Button-family clickable-default law (platform style android:clickable=true)",
    "discovered": "S44",
    "fixed": "S44",
-   "evidence": "TicTacToe Classic 3x3 board (9 XML Buttons, listeners wired in code) inflated clickable=0 — the inflater honored only explicit android:clickable; AOSP Widget.Material.Button style sets clickable=true. Touch-target law (CLICKABLE||LONG_CLICKABLE||handler) found no target; taps bounced target=0 on a fully rendered board. Fix: Button/ImageButton/CheckBox/RadioButton/ToggleButton/CheckedTextView/CompoundButton default clickable=true in the inflater.",
+   "evidence": "TicTacToe Classic 3x3 board (9 XML Buttons, listeners wired in code) inflated clickable=0 \u2014 the inflater honored only explicit android:clickable; AOSP Widget.Material.Button style sets clickable=true. Touch-target law (CLICKABLE||LONG_CLICKABLE||handler) found no target; taps bounced target=0 on a fully rendered board. Fix: Button/ImageButton/CheckBox/RadioButton/ToggleButton/CheckedTextView/CompoundButton default clickable=true in the inflater.",
    "regression": "goldens byte-identical"
   },
   {
@@ -3460,7 +3462,7 @@
    "title": "Resources.getIdentifier law (dynamic id resolution) + receiver-shift fix",
    "discovered": "S44",
    "fixed": "S44",
-   "evidence": "TicTacToe Classic resolves board ids at runtime: Resources.getIdentifier(\"button_ij\",\"id\",pkg) -> findViewById -> setOnClickListener. getIdentifier was unhandled (P1.4 EXP-052 logged name=\"\" defType=\"button_00\" — the receiver-slot shift is on record there). Fix: name-resolution law over the inflated tree's android:id names (ViewShadow::find_android_id_by_name) + receiver-shifted arg convention (args[1..3]).",
+   "evidence": "TicTacToe Classic resolves board ids at runtime: Resources.getIdentifier(\"button_ij\",\"id\",pkg) -> findViewById -> setOnClickListener. getIdentifier was unhandled (P1.4 EXP-052 logged name=\"\" defType=\"button_00\" \u2014 the receiver-slot shift is on record there). Fix: name-resolution law over the inflated tree's android:id names (ViewShadow::find_android_id_by_name) + receiver-shifted arg convention (args[1..3]).",
    "regression": "goldens byte-identical"
   },
   {
@@ -3470,37 +3472,37 @@
    "title": "java.lang.reflect.Array.newInstance law (1-D + n-D dimensions)",
    "discovered": "S44",
    "fixed": "S44",
-   "evidence": "TicTacToe Classic MainActivity.<init>: buttons = (Button[][]) Array.newInstance(Button.class, int[]{3,3}) — invoke unanswered (REC-MISS -> null) -> field null -> FIRST listener registration died aput-null NPE (onCreate pc=79) -> all nine cells listener-less (dead board). Fix: recursive nested-array allocation under the heap __array_length__/array[i] convention; evidence obj#10 [[LButton; dims=[3,3].",
+   "evidence": "TicTacToe Classic MainActivity.<init>: buttons = (Button[][]) Array.newInstance(Button.class, int[]{3,3}) \u2014 invoke unanswered (REC-MISS -> null) -> field null -> FIRST listener registration died aput-null NPE (onCreate pc=79) -> all nine cells listener-less (dead board). Fix: recursive nested-array allocation under the heap __array_length__/array[i] convention; evidence obj#10 [[LButton; dims=[3,3].",
    "regression": "goldens byte-identical"
   },
   {
    "id": "R-NEW-359",
    "status": "VERIFIED-FIXED",
    "priority": "P0",
-   "title": "View.post/postDelayed/removeCallbacks + Activity.runOnUiThread silently swallowed their Runnables (handled_void, no enqueue) — the deferred compose-request chain never reached the main MessageQueue",
+   "title": "View.post/postDelayed/removeCallbacks + Activity.runOnUiThread silently swallowed their Runnables (handled_void, no enqueue) \u2014 the deferred compose-request chain never reached the main MessageQueue",
    "discovered": "S45",
    "fixed": "S45",
-   "evidence": "AOSP View.java post() = attachInfo.mHandler.post(action) (or RunQueue on attach); Activity.runOnUiThread posts when off-UI-thread. Engine law: View.post → HandlerShadow.enqueue(r,0) via registry find_as<HandlerShadow> ([R359-VPOST] runnable=2770 evidence), runOnUiThread → same queue ([R359-UI]). One MessageQueue ordering law. dooz23: ComposeView children 0→1, deferred composition request EXECUTES for the first time; ComposeView Lho; now carries the AndroidComposeView child. Regression: TicTacToe §29 ALL PASS, battery 90/92 (only pre-existing EXT-01/02), ChessClock golden byte-identical e4a2d7c9…, gmdice/microtimer/unote SHA-identical.",
+   "evidence": "AOSP View.java post() = attachInfo.mHandler.post(action) (or RunQueue on attach); Activity.runOnUiThread posts when off-UI-thread. Engine law: View.post \u2192 HandlerShadow.enqueue(r,0) via registry find_as<HandlerShadow> ([R359-VPOST] runnable=2770 evidence), runOnUiThread \u2192 same queue ([R359-UI]). One MessageQueue ordering law. dooz23: ComposeView children 0\u21921, deferred composition request EXECUTES for the first time; ComposeView Lho; now carries the AndroidComposeView child. Regression: TicTacToe \u00a729 ALL PASS, battery 90/92 (only pre-existing EXT-01/02), ChessClock golden byte-identical e4a2d7c9\u2026, gmdice/microtimer/unote SHA-identical.",
    "regression": "none"
   },
   {
    "id": "R-NEW-360",
    "status": "VERIFIED-FIXED",
    "priority": "P0",
-   "title": "ArrayList(Collection) copy-ctor law blind to R8-renamed wrapper collections (Arrays$ArrayList Lzc; has no get(I); kotlin ArrayDeque Lad; is circular) — copies came out EMPTY → NoSuchElementException('List is empty.') in NavController.popBackStack killed the first composition",
+   "title": "ArrayList(Collection) copy-ctor law blind to R8-renamed wrapper collections (Arrays$ArrayList Lzc; has no get(I); kotlin ArrayDeque Lad; is circular) \u2014 copies came out EMPTY \u2192 NoSuchElementException('List is empty.') in NavController.popBackStack killed the first composition",
    "discovered": "S45",
    "fixed": "S45",
-   "evidence": "F-101 cascade extended (engine F-101 site + CollectionShadow copy-ctor + HeapAllocator.get_object_field_names/get_object_ref_field/get_object_array_ref_element typed APIs): 1) __array_length__ raw array, 2) size()+get(I) real-DEX, 3) ITERATOR contract (hasNext/next via try_recursive_invoke — [R360-COPY] 'src=4488 (Lzc;) via ITERATOR elems=1'), 4) backing-array field probe last resort. Contract-mismatch restart guard (size promised ≠ delivered → redo via iterator). OpenJDK: ArrayList(Collection)=c.toArray().",
+   "evidence": "F-101 cascade extended (engine F-101 site + CollectionShadow copy-ctor + HeapAllocator.get_object_field_names/get_object_ref_field/get_object_array_ref_element typed APIs): 1) __array_length__ raw array, 2) size()+get(I) real-DEX, 3) ITERATOR contract (hasNext/next via try_recursive_invoke \u2014 [R360-COPY] 'src=4488 (Lzc;) via ITERATOR elems=1'), 4) backing-array field probe last resort. Contract-mismatch restart guard (size promised \u2260 delivered \u2192 redo via iterator). OpenJDK: ArrayList(Collection)=c.toArray().",
    "regression": "none"
   },
   {
    "id": "R-NEW-361",
    "status": "VERIFIED-FIXED",
    "priority": "P1",
-   "title": "R-NEW-335 REFINED (dooz v18+v23 converge on one face): compose SlotTable/ScatterMap probe arithmetic yields NEGATIVE corrupt indices (v23: aput-oob length=15 index=-733270216 in Lbw0;.a after HALT-LOOP in Lbw0;.d 2.4M instrs; v18: length=2 index=-76748249 in LP/v$a;.a after HALT-LOOP in Lh/r;.b) — metadata Arrays.fill VERIFIED CORRECT ([F040-DIAG] fill([J,0,2,0x8080808080808080) xN), wide ushr/shr laws verified correct — corruption sits in the probe/binary-search index computation (identity hashCode of DEX objects suspected: key.hashCode() feeding murmur h2/slot math)",
+   "title": "R-NEW-335 REFINED (dooz v18+v23 converge on one face): compose SlotTable/ScatterMap probe arithmetic yields NEGATIVE corrupt indices (v23: aput-oob length=15 index=-733270216 in Lbw0;.a after HALT-LOOP in Lbw0;.d 2.4M instrs; v18: length=2 index=-76748249 in LP/v$a;.a after HALT-LOOP in Lh/r;.b) \u2014 metadata Arrays.fill VERIFIED CORRECT ([F040-DIAG] fill([J,0,2,0x8080808080808080) xN), wide ushr/shr laws verified correct \u2014 corruption sits in the probe/binary-search index computation (identity hashCode of DEX objects suspected: key.hashCode() feeding murmur h2/slot math)",
    "discovered": "S45",
    "fixed": "S55 (F-083)",
-   "evidence": "run /tmp logs ephemeral; [R360-COPY]/[R359-VPOST]/[F040-DIAG] lines captured in s45 session record; both dooz variants converge here AFTER R-NEW-359/360 (previous blockers are gone). NEXT: (1) instrument hashCode dispatch on the aput-oob receiver frame ([S44-R351]-style register dump at Lbw0;.a pc=8), (2) verify int-to-long/neg-long/shr-long-2addr metadata slice math against androidx.collection sources, (3) micro-fixture: ScatterMap set/get from a fixture APK (reuse exp052 toolchain). | S49 FORENSIC UPDATE (2026-09-16): (A) v18 signature reproduced at S49 HEAD [HALT-LOOP Lh/r;.c PC=0x1c 50001 visits op=0x54(iget-object) + aput-oob length=7 index=613985991 LP/v$a;.c pc=28]; index value VARIES run-to-run (vs S45 -76748249) consistent with identity-hash provenance. (B) Full androguard disasm: Lh/r;=androidx.collection ScatterMap (mask=capacity convention capacity=2^k-1), LP/v$a;.c=set-with-insertion-point caller (invoke Lh/r;.find -> not-int on negative); Lh/r;.c=findImpl with the masked group straddle (metadata[i]>>>b | metadata[i+1]<<(64-b) & (-(long)b>>63)). (C) 64-bit op surface EXONERATED by tests/fixtures/r361_metadata_probe (bit-visualization fixture, JVM-compared): writeRawMetadata all slots OK, Sentinel@capacity OK, mirror-cloneIndex OK, long[] clone/arraycopy/manual-copy independence OK, full SWAR match/empty chain (mul-long broadcast, xor-long, sub-long borrow chain, not-long, and-long) ALL JVM-EXACT. (D) Live-trace anomalies: failing tables' metadata words contain 0x00 (h2=0 legal-full) and 0xFF (Sentinel) bytes at ILLEGAL positions with ZERO EMPTY(0x80) bytes -> probe can never terminate (maskEmpty()==0 forever, probeIndex+=8 never moves probeOffset when capacity==8 slots i.e. single group). (E) NEXT (supersedes prior NEXT): (1) heap/field dump of the live failing table object at HALT time (metadata word contents + keys[] + _size + growthLimit + capacity) to identify WHICH write path produced the ghost bytes; (2) instrument resizeStorage rehash loop (does rehash see stable hashCode per key object across snapshots? identity-hash avalanche of object_id is stable per id — verify no per-snapshot obj-id churn); (3) probe compose snapshot array-copy trigger points (who clones metadata arrays and when) — the copy ops themselves are proven exact. | S55 ROOT-CAUSE+FIX (F-083): the probe spin was DOWNSTREAM. Env-gated dispatch trace (MINIANDROID_F040_DIAG) proved 55 of 56 Ln/a;.r (Kotlin LongArray-fill helper) invocations executed with their Arrays.fill dispatch SUCCESS, but the 56th — Lh/r;.d initializing map o5051 — entered try_recursive_invoke at depth=80 == MAX_RECURSION_DEPTH and was SILENTLY dropped onto the API bridge (log() is verbose-only). EXP-053 law: each DEX frame costs ~80KB C++ stack → 80-frame cap under the 8MB process stack. Dropped void initializer → metadata stayed heap-zero; Lh/r;.d pc=48 aput-wide then wrote 0xff007f6600000000 (ghost bytes, zero EMPTY 0x80) vs the correct 0xff80808080808080 seen on all healthy maps ([R361-STORE] traces) → findImpl probe never terminates → HALT-LOOP → synthetic aput-oob. FIX F-083 (generic, no interpreter-layout change): (1) cmd_run executes the engine on a dedicated pthread with a 1GB VIRTUAL stack (Linux commits on touch; ART contract: app recursion is bounded by the thread stack, not a frame count); (2) MAX_RECURSION_DEPTH 80 → 2048 (2048 × 80KB ≈ 164MB worst case, inside the reservation); (3) limit-drop is now ALWAYS loud ([RECURSION-LIMIT] stderr) — a dropped void initializer is a state-corrupting event and must never be silent. POST-FIX RUN: no HALT-LOOP, no aput-oob, metadata init correct, MainActivity.onStart/onResume dispatched for the first time in campaign history. HYGIENE: F-074 super-dispatch trace was ALWAYS-ON stderr incl. a heap message lookup per inherited call — throttled Compose-heavy apps to ~1.6K instr/s (Dooz could not reach first frame in 10 min); now env-gated (MINIANDROID_F074_TRACE), law code unchanged. SUCCESSOR: R-NEW-376 (post-F-083 ctor-climb frontier).",
+   "evidence": "run /tmp logs ephemeral; [R360-COPY]/[R359-VPOST]/[F040-DIAG] lines captured in s45 session record; both dooz variants converge here AFTER R-NEW-359/360 (previous blockers are gone). NEXT: (1) instrument hashCode dispatch on the aput-oob receiver frame ([S44-R351]-style register dump at Lbw0;.a pc=8), (2) verify int-to-long/neg-long/shr-long-2addr metadata slice math against androidx.collection sources, (3) micro-fixture: ScatterMap set/get from a fixture APK (reuse exp052 toolchain). | S49 FORENSIC UPDATE (2026-09-16): (A) v18 signature reproduced at S49 HEAD [HALT-LOOP Lh/r;.c PC=0x1c 50001 visits op=0x54(iget-object) + aput-oob length=7 index=613985991 LP/v$a;.c pc=28]; index value VARIES run-to-run (vs S45 -76748249) consistent with identity-hash provenance. (B) Full androguard disasm: Lh/r;=androidx.collection ScatterMap (mask=capacity convention capacity=2^k-1), LP/v$a;.c=set-with-insertion-point caller (invoke Lh/r;.find -> not-int on negative); Lh/r;.c=findImpl with the masked group straddle (metadata[i]>>>b | metadata[i+1]<<(64-b) & (-(long)b>>63)). (C) 64-bit op surface EXONERATED by tests/fixtures/r361_metadata_probe (bit-visualization fixture, JVM-compared): writeRawMetadata all slots OK, Sentinel@capacity OK, mirror-cloneIndex OK, long[] clone/arraycopy/manual-copy independence OK, full SWAR match/empty chain (mul-long broadcast, xor-long, sub-long borrow chain, not-long, and-long) ALL JVM-EXACT. (D) Live-trace anomalies: failing tables' metadata words contain 0x00 (h2=0 legal-full) and 0xFF (Sentinel) bytes at ILLEGAL positions with ZERO EMPTY(0x80) bytes -> probe can never terminate (maskEmpty()==0 forever, probeIndex+=8 never moves probeOffset when capacity==8 slots i.e. single group). (E) NEXT (supersedes prior NEXT): (1) heap/field dump of the live failing table object at HALT time (metadata word contents + keys[] + _size + growthLimit + capacity) to identify WHICH write path produced the ghost bytes; (2) instrument resizeStorage rehash loop (does rehash see stable hashCode per key object across snapshots? identity-hash avalanche of object_id is stable per id \u2014 verify no per-snapshot obj-id churn); (3) probe compose snapshot array-copy trigger points (who clones metadata arrays and when) \u2014 the copy ops themselves are proven exact. | S55 ROOT-CAUSE+FIX (F-083): the probe spin was DOWNSTREAM. Env-gated dispatch trace (MINIANDROID_F040_DIAG) proved 55 of 56 Ln/a;.r (Kotlin LongArray-fill helper) invocations executed with their Arrays.fill dispatch SUCCESS, but the 56th \u2014 Lh/r;.d initializing map o5051 \u2014 entered try_recursive_invoke at depth=80 == MAX_RECURSION_DEPTH and was SILENTLY dropped onto the API bridge (log() is verbose-only). EXP-053 law: each DEX frame costs ~80KB C++ stack \u2192 80-frame cap under the 8MB process stack. Dropped void initializer \u2192 metadata stayed heap-zero; Lh/r;.d pc=48 aput-wide then wrote 0xff007f6600000000 (ghost bytes, zero EMPTY 0x80) vs the correct 0xff80808080808080 seen on all healthy maps ([R361-STORE] traces) \u2192 findImpl probe never terminates \u2192 HALT-LOOP \u2192 synthetic aput-oob. FIX F-083 (generic, no interpreter-layout change): (1) cmd_run executes the engine on a dedicated pthread with a 1GB VIRTUAL stack (Linux commits on touch; ART contract: app recursion is bounded by the thread stack, not a frame count); (2) MAX_RECURSION_DEPTH 80 \u2192 2048 (2048 \u00d7 80KB \u2248 164MB worst case, inside the reservation); (3) limit-drop is now ALWAYS loud ([RECURSION-LIMIT] stderr) \u2014 a dropped void initializer is a state-corrupting event and must never be silent. POST-FIX RUN: no HALT-LOOP, no aput-oob, metadata init correct, MainActivity.onStart/onResume dispatched for the first time in campaign history. HYGIENE: F-074 super-dispatch trace was ALWAYS-ON stderr incl. a heap message lookup per inherited call \u2014 throttled Compose-heavy apps to ~1.6K instr/s (Dooz could not reach first frame in 10 min); now env-gated (MINIANDROID_F074_TRACE), law code unchanged. SUCCESSOR: R-NEW-376 (post-F-083 ctor-climb frontier).",
    "regression": "",
    "last_updated": "S49 2026-09-16"
   },
@@ -3509,15 +3511,15 @@
    "status": "VERIFIED-FIXED",
    "priority": "P1",
    "fg": false,
-   "title": "SharedPreferences shadow hard-coded the EXP-era data dir 'org.telegram.messenger/shared_prefs' for EVERY app — any non-Telegram APK's getSharedPreferences loaded from / stored into the wrong package directory",
-   "summary": "S48 §14 obsolete-stub audit hit: dalvik_engine.cpp built prefs paths as app_data_root()/\"org.telegram.messenger\"/shared_prefs — a leftover from the era when Telegram was the only corpus target. AOSP ContextImpl.getPreferencesDir law: prefs live under the RUNNING APPLICATION's package dir. Fix resolves the directory from the manifest-derived package_name_ (the same source Context.getPackageName uses), empty-package falls back to unknown.package.",
+   "title": "SharedPreferences shadow hard-coded the EXP-era data dir 'org.telegram.messenger/shared_prefs' for EVERY app \u2014 any non-Telegram APK's getSharedPreferences loaded from / stored into the wrong package directory",
+   "summary": "S48 \u00a714 obsolete-stub audit hit: dalvik_engine.cpp built prefs paths as app_data_root()/\"org.telegram.messenger\"/shared_prefs \u2014 a leftover from the era when Telegram was the only corpus target. AOSP ContextImpl.getPreferencesDir law: prefs live under the RUNNING APPLICATION's package dir. Fix resolves the directory from the manifest-derived package_name_ (the same source Context.getPackageName uses), empty-package falls back to unknown.package.",
    "root_cause": "hard-coded EXP-era package string in the SharedPreferences load (dalvik_engine.cpp ~20720) and store (~20932) paths",
    "affected_subsystem": "storage / SharedPreferences shadow",
    "upstream_law": "AOSP ContextImpl.getPreferencesDir(): <data>/shared_prefs under the calling app's data dir",
    "fix": "prefs_dir = app_data_root() / <manifest package> / shared_prefs (both sites)",
    "fix_commit": "S48 (see git log R-NEW-367)",
    "verification_command": "bash scripts/test/run_test_battery.sh",
-   "verification_result": "BATTERY GATE: ALL PASS (94 stages) — zero regressions; goldens byte-identical",
+   "verification_result": "BATTERY GATE: ALL PASS (94 stages) \u2014 zero regressions; goldens byte-identical",
    "evidence": "docs/testing/BATTERY_INDEX.json; S48 session worklog",
    "next": "re-run persistence chain (F-012) on the next dooz session to confirm cross-process restore uses the corrected dir"
   },
@@ -3526,7 +3528,7 @@
    "status": "VERIFIED-FIXED",
    "priority": "P1",
    "fg": false,
-   "title": "uNote main-menu buttons unreachable for input — REFUTED at S56: the 16-probe grid (y 300..1780) never covered the bottom 44px button band (y=1876..1920); a tap at the real coordinates hits, consumes, and launches NoteEdition",
+   "title": "uNote main-menu buttons unreachable for input \u2014 REFUTED at S56: the 16-probe grid (y 300..1780) never covered the bottom 44px button band (y=1876..1920); a tap at the real coordinates hits, consumes, and launches NoteEdition",
    "summary": "S56 re-probe: EXP092-RENDER places Add note/Search/Quit at y=1876..1920 (nodes 13/14/15, 360x44 each). Canonical tap pipeline at (270,1898): G06-TAP DOWN target=13 consumed=1, UP click_posted=1 -> app's own addNote ran -> startActivity -> NoteEdition.onCreate dispatched (its PreferenceManager/getApplicationContext calls logged). Paint rect == touch rect; the old no-engine-fix-needed verdict stands: no geometry law was broken, the probe grid predates the current layout.",
    "root_cause": "NOT YET ROOT-CAUSED. Evidence: /tmp/s52_persist run grid (external), frames/manifest.json per run shows event law='no touch target' + visible_texts present. Paint path and touch-hit path disagree on geometry; needs view-tree bounds dump (verbose run + exp059 tool) to compare ButtonShadow layout params vs hit-test rect.",
    "evidence": {
@@ -3536,7 +3538,7 @@
     "head": "S56 working tree (F-084 + F-085), battery ALL PASS 96/96"
    },
    "next": "uNote ladder continues at NoteEdition: PreferenceManager.getDefaultSharedPreferences + Activity.getApplicationContext REC-MISS surface (new, minor); notes.db persistence ladder unchanged as the L10 target.",
-   "fixed": "S56 (premise refuted — no engine defect)"
+   "fixed": "S56 (premise refuted \u2014 no engine defect)"
   },
   {
    "id": "R-NEW-375",
@@ -3548,40 +3550,90 @@
   },
   {
    "id": "R-NEW-376",
-   "status": "OBSERVED-FAIL",
-   "priority": "P1",
-   "title": "Dooz v18 post-F-083 frontier: Compose init builds constructor-invocation chains that exceed the 2048-frame depth budget (9 cap-climbs in one run: Lj/j0;.<init> ×7 [okhttp-family: extends LB/b;, ctor delegation LinkedHashMap,I→Map overload verified in DEX], Lt0/t;.<init>+LE0/c;.<init> ×2 [t0/t↔E0/c alternation: t0/t.<init> invokes LE0/c;.<init>(J)V, E0/c extends LB/b; with an if(j!=0) throw IllegalArgumentException guard on its long field]) — each climb costs 2048 × 80KB committed stack + interpreter work, so the run cannot finish in budget (rc=124 at ~900K instructions; diag tracing ~1.6-5K instr/s); a cap-drop leaves the half-initialized object corrupt (same law as R-NEW-361)",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P0",
+   "title": "Dooz ctor-climb: Compose init constructor-invocation chains exceeding the 2048-frame budget (v18 Lj/j0; x7 + Lt0/t;/LE0/c; x2; v23 Lgz1; x3 + Lbp1; x1) \u2014 impossible-in-valid-DEX self-delegating face",
    "discovered": "S55",
-   "fixed": "",
-   "evidence": "miniandroid/run/s55_dooz_hop2/diag_stderr.log (key excerpts in docs/evidence/s55_dooz/). [TRI-F040] hop chain: j/A;.c → j0.<init>(argc=8) depth=49 → j0.<init>(argc=7) depth=50 → j0.<init>(argc=7) depth=51→…∞ same receiver o5197 (cyclic this()-delegation is impossible in valid DEX → engine mis-dispatch or retry loop). [R376-DIRECT]: t0/t.<init> → LE0/c;.<init>(J)V argc=2 alternates with LE0/c.<init> → Object.<init> no-op; every resolved target is LEGAL — the loop driver is NOT a wrong-resolution invoke. LE0/c;.<init>(J)V body (DEX-verified): iput-wide a:J; sget X/r.g:J; if-nez → throw IllegalArgumentException; the runtime shows NO IllegalArgumentException — guard not firing. NEXT (ranked): (1) extend [TRI-F040] to print the wide arg VALUES per t0/t↔E0/c hop — constant long across hops ⇒ self-delegation mis-dispatch; varying ⇒ finite-but-huge chain (raise budget / shrink 80KB frame cost); (2) if mis-dispatch: instrument execute_invoke_direct ctor-target selection for the t0/t overload set (15 ctor overloads observed at one depth); (3) M3-19 active-cycle law exempts <init> from stubbing (correct — stub ctors return garbage) but gives ctor-cycles NO termination — evaluate a bounded synthetic StackOverflowError unwind (ART law) for pure-ctor cycles. REPRO: MINIANDROID_F040_DIAG=1 ./miniandroid/build/miniandroid run apk_cache/io.github.yamin8000.dooz_18.apk; v23 expected to converge (R-NEW-361 face already converged). | S57 ALIAS (v23, post-F-086): [RECURSION-LIMIT] frame dropped: Lgz1;.<init> depth=2048 caller=Lgz1;.<init> (×3) + Lbp1;.<init> ×1 — the same impossible-in-valid-DEX self-delegating ctor face on dooz v23; run/s57_r344_proof2/",
-   "last_updated": "S57 2026-09-18"
+   "fixed": "S58 F-102",
+   "evidence": "ROOT CAUSE (F-102, generic): the 3rc invoke path (invoke-*/range) dropped the call site method PROTO at the try_recursive_invoke boundary (default \"\") \u2014 the F-023 exact-descriptor overload law could not fire and the arity heuristic (prefer LARGEST bytecode body) re-selected the CALLING overload itself -> same-receiver self-recursion to the depth cap. DEX ground truth: scripts/s58_gz1_forensic.py (Lgz1;/Lbp1; Kotlin default-args ladders; argc identical across overloads, descriptors distinct). Post-fix: RECURSION-LIMIT count 0 on v18 AND v23 (miniandroid/run/s58_r376_post4, s58_r376_v18; v18 rc=0 310k+ instructions with the Choreographer doFrame loop alive). Regression: semantic_long_cmp_conv_test f102_range_ctor_overload_exact_dispatch (discriminating). Docs/evidence/s58_r376/.",
+   "last_updated": "S58 2026-09-18"
   },
   {
    "id": "R-NEW-377",
    "status": "VERIFIED-FIXED",
    "priority": "P1",
-   "title": "billthefarmer Notes v139 renders RENDER_ONLY: FAB click swapped NOTHING — ViewSwitcher.setDisplayedChild (the read<->edit face state machine) was a REC-MISS silent no-op (no ViewAnimator family law in ViewShadow). S53-era \"ListView item paint\" hypothesis REFUTED by S55 tree forensics: v139 has NO ListView — main layout = FrameLayout → ViewSwitcher[ScrollView+EditText | MarkdownView] + FAB ViewSwitcher[2× ImageButton]",
+   "title": "billthefarmer Notes v139 renders RENDER_ONLY: FAB click swapped NOTHING \u2014 ViewSwitcher.setDisplayedChild (the read<->edit face state machine) was a REC-MISS silent no-op (no ViewAnimator family law in ViewShadow). S53-era \"ListView item paint\" hypothesis REFUTED by S55 tree forensics: v139 has NO ListView \u2014 main layout = FrameLayout \u2192 ViewSwitcher[ScrollView+EditText | MarkdownView] + FAB ViewSwitcher[2\u00d7 ImageButton]",
    "discovered": "S55",
    "fixed": "S55 (F-082)",
-   "evidence": "F-082 (generic, AOSP ViewAnimator.java law): setDisplayedChild/getDisplayedChild/showNext/showPrevious on the ViewShadow node model — AOSP clamp (whichChild >= count → count-1; < 0 → 0; exact formula covers the childless case), showOnly visibility walk (child i VISIBLE iff i == whichChild, others GONE), requestLayout dirty flag. Regression: tests/view_animator_law_test.cpp — 18 checks (clamp high/low, walk, no-wraparound end pins, get law, childless hostile, dispatch closure), ALL PASS, wired into the battery as \"F-082 ViewAnimator law (expect 15)\" [18 actual]. RUNTIME PROOF: Notes v139 --click-test FAB → animateAccept → setDisplayedChild → frame delta 2,057,718 px (99.23% of frame), probed=3 state_changed=1 (was 0/3 at S53); click frames byte-identical across two binaries/runs (SHA256 in docs/evidence/s55_notes*/SHA256SUMS: cf521b16… / ae697935…). REMAINING (honest, NOT app-specific patchable): note CONTENT still blank-class — the read face is Lorg.billthefarmer.markdown.MarkdownView which extends Landroid/webkit/WebView (runtime dex parser verified); getSettings/setWebViewClient REC-MISS → the markdown load pipeline never starts → honest inline placeholder. Next dependency = a generic WebView content model (P1 shared framework); implementing it app-specifically is forbidden per the campaign scope laws. Editor face (ScrollView+EditText) inflates, measures and renders; fresh data dir = empty note is CORRECT."
+   "evidence": "F-082 (generic, AOSP ViewAnimator.java law): setDisplayedChild/getDisplayedChild/showNext/showPrevious on the ViewShadow node model \u2014 AOSP clamp (whichChild >= count \u2192 count-1; < 0 \u2192 0; exact formula covers the childless case), showOnly visibility walk (child i VISIBLE iff i == whichChild, others GONE), requestLayout dirty flag. Regression: tests/view_animator_law_test.cpp \u2014 18 checks (clamp high/low, walk, no-wraparound end pins, get law, childless hostile, dispatch closure), ALL PASS, wired into the battery as \"F-082 ViewAnimator law (expect 15)\" [18 actual]. RUNTIME PROOF: Notes v139 --click-test FAB \u2192 animateAccept \u2192 setDisplayedChild \u2192 frame delta 2,057,718 px (99.23% of frame), probed=3 state_changed=1 (was 0/3 at S53); click frames byte-identical across two binaries/runs (SHA256 in docs/evidence/s55_notes*/SHA256SUMS: cf521b16\u2026 / ae697935\u2026). REMAINING (honest, NOT app-specific patchable): note CONTENT still blank-class \u2014 the read face is Lorg.billthefarmer.markdown.MarkdownView which extends Landroid/webkit/WebView (runtime dex parser verified); getSettings/setWebViewClient REC-MISS \u2192 the markdown load pipeline never starts \u2192 honest inline placeholder. Next dependency = a generic WebView content model (P1 shared framework); implementing it app-specifically is forbidden per the campaign scope laws. Editor face (ScrollView+EditText) inflates, measures and renders; fresh data dir = empty note is CORRECT."
   },
   {
    "id": "F-084",
-   "title": "HALT-RETURN containment law: a callee frame that exits via the loop-detector/instruction-budget halt has NO defined return value — the engine must not deliver the stale last_invoke_return_ to the caller's move-result",
+   "title": "HALT-RETURN containment law: a callee frame that exits via the loop-detector/instruction-budget halt has NO defined return value \u2014 the engine must not deliver the stale last_invoke_return_ to the caller's move-result",
    "status": "IMPLEMENTED+TESTED",
    "priority": "P0",
    "discovered": "S56",
    "fixed": "S56",
-   "evidence": "Pre-fix: dooz v23 Lbw0;.d (ScatterMap probe) halted after 2.4M instructions; caller Lbw0;.a pc=8 consumed the stale word as a slot index (-733270216) -> aput-oob -> AIOOBE -> APP BOUNDARY death in MainActivity.onCreate. Fix: discriminate the abnormal halt (halted_ && !halted_on_return_ — every NORMAL return also sets halted_) and escalate as deferred VirtualMachineError (F084-HALT-RETURN). Proof: battery ALL PASS 96/96 (the first attempt without the discriminator broke corpus stages 59-63 and was fixed pre-commit); simplestopwatch rc=0 with zero F084 fires; dooz v23 face changed from garbage-index AIOOBE to the honest halt propagation. docs/evidence/s56_dooz23/."
+   "evidence": "Pre-fix: dooz v23 Lbw0;.d (ScatterMap probe) halted after 2.4M instructions; caller Lbw0;.a pc=8 consumed the stale word as a slot index (-733270216) -> aput-oob -> AIOOBE -> APP BOUNDARY death in MainActivity.onCreate. Fix: discriminate the abnormal halt (halted_ && !halted_on_return_ \u2014 every NORMAL return also sets halted_) and escalate as deferred VirtualMachineError (F084-HALT-RETURN). Proof: battery ALL PASS 96/96 (the first attempt without the discriminator broke corpus stages 59-63 and was fixed pre-commit); simplestopwatch rc=0 with zero F084 fires; dooz v23 face changed from garbage-index AIOOBE to the honest halt propagation. docs/evidence/s56_dooz23/."
   },
   {
    "id": "F-086",
    "status": "IMPLEMENTED+TESTED",
    "priority": "P0",
-   "title": "java.lang.Long 64-bit comparison bridge family (compare/compareUnsigned, OpenJDK Long.java law) — closes the STUBBED-typed-zero class for wide-arg static invokes",
-   "evidence": "miniandroid/src/dex/dalvik_engine.cpp (F-055 Long block, S57): compare is signed 64-bit (-1/0/+1), compareUnsigned unsigned; regression tests/semantic_long_cmp_conv_test.cpp f086 group 6/6 PASS (battery stage \"semantic long/cmp/conv (expect 20)\"), including the bit-exact dooz23 growth idiom compare(448^MIN, 375^MIN)==+1; post-fix runtime proof: Lbw0;.f capacity 7→15→31 on dooz23 (docs/evidence/s57_dooz23/)",
+   "title": "java.lang.Long 64-bit comparison bridge family (compare/compareUnsigned, OpenJDK Long.java law) \u2014 closes the STUBBED-typed-zero class for wide-arg static invokes",
+   "evidence": "miniandroid/src/dex/dalvik_engine.cpp (F-055 Long block, S57): compare is signed 64-bit (-1/0/+1), compareUnsigned unsigned; regression tests/semantic_long_cmp_conv_test.cpp f086 group 6/6 PASS (battery stage \"semantic long/cmp/conv (expect 20)\"), including the bit-exact dooz23 growth idiom compare(448^MIN, 375^MIN)==+1; post-fix runtime proof: Lbw0;.f capacity 7\u219215\u219231 on dooz23 (docs/evidence/s57_dooz23/)",
    "first_seen": "S57 2026-09-18",
    "last_updated": "S57 2026-09-18"
+  },
+  {
+   "id": "R-NEW-378",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P0",
+   "title": "Dooz post-F-102 cascade: compose rememberSaveable ACCEPTABLE_CLASSES IAE \"Can't put value with type null into saved state\" (Ljb1;.f via Lje;.<init> pc=73..104) + Class-keyed map IAE \"Key must be a class\" (Lwl0;.containsKey instance-of) \u2014 APP BOUNDARY unwind at MainActivity.onCreate invoke_pc=317",
+   "discovered": "S58",
+   "fixed": "S58 F-103",
+   "evidence": "ROOT CAUSE (F-103, generic): (1) Class.isInstance/isAssignableFrom had NO handler -> STUBBED typed-zero 0 for all 29 ACCEPTABLE_CLASSES; (2) Class tokens minted from a private counter collided with real heap ids -> \u00a719 runtime-class dispatch sent Class-token receivers to UNRELATED objects; (3) execute_instance_of trusted the register's cached class_desc unless EMPTY \u2014 the CollectionShadow round-trip degraded the tag to \"Ljava/lang/Object;\", defeating heap-authority lookup. FIX: Class type-question laws over class_to_superclass_/interfaces_ + HEAP-BACKED Class tokens (const-class allocates Ljava/lang/Class; with __referent_desc; F-069 identity preserved) + instance-of heap-authority law. Post-fix: both IAE faces = 0 (miniandroid/run/s58_r376_post3/post4). Regression: f103_class_isInstance_string_exact, f103_class_isAssignableFrom_subclass, f103_instanceof_heap_subclass. Docs/evidence/s58_r376/.",
+   "last_updated": "S58 2026-09-18"
+  },
+  {
+   "id": "R-NEW-379",
+   "status": "OBSERVED-FAIL",
+   "priority": "P1",
+   "title": "Dooz next frontier (post F-102/F-103): compose init dies at ViewTreeLifecycleOwner \u2014 ISE \"ViewTreeLifecycleOwner not found from Lho;@1074\" (Log0;.c) uncaught at MainActivity.onCreate invoke_pc=317; the owner-tag walk finds no ViewTreeLifecycleOwner on the decor/compose root chain (predecessor face R-NEW-317 fixed only the ViewShadow routing; the owner SET law + walk extension remain)",
+   "discovered": "S58",
+   "fixed": "",
+   "evidence": "miniandroid/run/s58_dooz_final/stderr.log ([THROWABLE-MSG] x4, APP BOUNDARY unwind; framebuffer 2,073,600 nb \u2014 themed window painted before death). Next ranked: (1) ViewTreeLifecycleOwner.set/get law on the ViewShadow node model (ComponentActivity.onCreate sets the owner on the decor view; get walks parents); (2) WindowRecomposer law (checkPrecondition isAttachedToWindow). Blocks the entire Compose family below the composition bootstrap.",
+   "last_updated": "S58 2026-09-18"
+  },
+  {
+   "id": "F-102",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P0",
+   "title": "F-102 (S58): 3rc invoke-*/range descriptor dispatch law \u2014 pass the call site proto to try_recursive_invoke on both attempts (F-023 exact-descriptor selection); fixes the ctor-climb self-recursion (R-NEW-376)",
+   "discovered": "S58",
+   "fixed": "S58",
+   "evidence": "See R-NEW-376; fix in dalvik_engine.cpp range-invoke case (range_proto hoisted + passed); regression f102_range_ctor_overload_exact_dispatch.",
+   "last_updated": "S58 2026-09-18"
+  },
+  {
+   "id": "F-103",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P0",
+   "title": "F-103 (S58): java.lang.Class type-question laws (isInstance/isAssignableFrom over the real hierarchy), HEAP-BACKED Class tokens (const-class allocates a Ljava/lang/Class; object with __referent_desc; kills the token/heap id-space collision), and the instance-of runtime-type authority law (heap class wins over the register tag)",
+   "discovered": "S58",
+   "fixed": "S58",
+   "evidence": "See R-NEW-378; regressions f103_* (3 checks).",
+   "last_updated": "S58 2026-09-18"
+  },
+  {
+   "id": "F-104",
+   "status": "IMPLEMENTED",
+   "priority": "P1",
+   "title": "F-104 (S58): io/state law family \u2014 FileInputStream/FileReader sandbox ctor law + \"file:\" stream keys in cached_asset_bytes (4 MiB bound); Uri.fromFile/getPath/getScheme/getLastPathSegment; ContentResolver.openInputStream; AsyncTask.execute (doInBackground+onPostExecute dispatch, ancestor-walk recognized); EnumSet.of; java.util.regex Pattern.compile / Matcher.find/matches/group/appendReplacement/appendTail (std::regex); requestPermissions -> onRequestPermissionsResult callback dispatch; BufferedInputStream joins the EXP-071 wrapper-propagation chain; [EXP093-FNA] trace env-gated (F-074 hygiene)",
+   "discovered": "S58",
+   "fixed": "S58",
+   "evidence": "Notes v139 real read chain proven live: seeded sandbox doc -> app defaultFile/readNote/ReadTask -> openInputStream (present=1) -> readLine x10 real lines -> setText sb_value extraction (230 chars verified) -> markdownCheck appendTail (230 chars preserved). Battery 96/96 ALL PASS at this HEAD. Remaining: commonmark parse->render yields an empty body (F-085 stays open at that face). Docs/evidence/s58_r376/.",
+   "last_updated": "S58 2026-09-18"
   }
  ]
 }

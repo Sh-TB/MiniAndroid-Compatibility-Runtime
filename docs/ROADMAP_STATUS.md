@@ -1,4 +1,4 @@
-# ROADMAP_STATUS — Canonical, Reconciled (S57)
+# ROADMAP_STATUS — Canonical, Reconciled (S58)
 
 > **SINGLE SOURCE OF TRUTH for what is done, what is open, and what is next.**
 > Reconciles ALL historical roadmaps against actual committed evidence: nothing
@@ -27,7 +27,16 @@
 
 ## 2. What was fixed THIS session (root cause → law → proof)
 
-S55/S56 rows retained below the S57 row for continuity.
+S58 rows above the S57 row for continuity.
+
+| ID | Blocker | Root cause (evidence) | Fix | Proof |
+|---|---|---|---|---|
+| **F-102 (S58)** | R-NEW-376 dooz ctor-climb: Compose init ctor chains hit the 2048-frame cap — v23 `Lgz1;.<init>` ×3 + `Lbp1;.<init>` ×1, v18 `Lj/j0;` ×7 + `Lt0/t;`/`LE0/c;` ×2, caller==callee, same receiver | The 3rc invoke path (invoke-*/range) DROPPED the call-site method PROTO at the try_recursive_invoke boundary (default "") → the F-023 exact-descriptor overload law could not fire → the arity heuristic (prefer LARGEST bytecode body) re-selected the CALLING ctor overload itself → same-receiver self-recursion. DEX ground truth (androguard, scripts/s58_gz1_forensic.py): Kotlin default-args ladders — overload1(mask+I)→overload2, argc identical, descriptors distinct, NO self-call in valid DEX | Range-invoke dispatch passes the resolved proto (`range_proto` hoisted + passed on both attempts); when the proto misses, the heuristic path is unchanged | RECURSION-LIMIT count **0** on v18 AND v23 (was 4 on v23); v18 rc=0 at 310k+ instructions with the Choreographer doFrame loop alive (Compose composing); regression `f102_range_ctor_overload_exact_dispatch` (discriminating: pre-fix picks the larger (I)V overload → f==0; post-fix exact-descriptor → f==127). Evidence: docs/evidence/s58_r376/ |
+| **F-103 (S58)** | R-NEW-378 cascade past R-NEW-376: compose rememberSaveable IAE "Can't put value with type null into saved state" (Lje;.<init> ACCEPTABLE_CLASSES loop) + IAE "Key must be a class" (Lwl0;.containsKey instance-of) → APP BOUNDARY unwind at MainActivity.onCreate | (1) `Class.isInstance/isAssignableFrom` had NO handler → STUBBED typed-zero 0 for all 29 elements; (2) Class tokens minted from a private counter collided with real heap ids → §19 runtime-class dispatch sent Class-token receivers to UNRELATED objects; (3) instance-of trusted the register's cached class_desc unless EMPTY — the CollectionShadow round-trip degraded the token tag to "Ljava/lang/Object;" | Class type-question laws over class_to_superclass_/class_to_interfaces_; HEAP-BACKED Class tokens (const-class allocates a real Ljava/lang/Class; object with `__referent_desc`; F-069 identity preserved); instance-of runtime-type authority law (heap class wins over the register tag) | Both IAE faces = 0 post-fix; regressions f103_isInstance_string_exact / f103_isAssignableFrom_subclass / f103_instanceof_heap_subclass; same failure family as F-086 (missing handler → typed-zero → wrong branch). Evidence: docs/evidence/s58_r376/ |
+| **F-104 (S58)** | F-085 Notes content path: the app's real read chain died silently (file ABSENT → stream EOF → empty model → empty markdown body) | io/state surface gaps: no FileInputStream sandbox reads (assets only), no Uri.fromFile/getPath/getLastPathSegment, no ContentResolver.openInputStream, no AsyncTask.execute dispatch, no EnumSet.of, no java.util.regex Pattern/Matcher (appendTail destroyed the text in mediaCheck), requestPermissions auto-grant never dispatched the callback | Law family: FileInputStream/FileReader sandbox ctor + "file:" stream keys (4 MiB bound); Uri file-scheme family; ContentResolver.openInputStream; AsyncTask.execute (doInBackground+onPostExecute, ancestor-walk recognized); EnumSet.of; regex Pattern.compile/Matcher.find/matches/group/appendReplacement/appendTail (std::regex); onRequestPermissionsResult dispatch; BufferedInputStream joins EXP-071 propagation; [EXP093-FNA] trace env-gated (F-074 hygiene) | Notes real read chain PROVEN live: seeded sandbox doc → app defaultFile/readNote/ReadTask → openInputStream present=1 → readLine ×10 REAL lines → setText sb_value extraction (230 chars verified) → markdownCheck appendTail (230 chars preserved). REMAINING: commonmark parse→render yields an empty body (F-085 open at that face). Battery 96/96 at this HEAD |
+| **R-NEW-352 closure (S58)** | microtimer Room initDb 50k forName retry loop starving the run budget (the R-NEW-350 default-OFF reason) | STALE BLOCKER: the S43 A/B pre-dated R-NEW-355 (S44) — the retry loop was the missing pc-advance contract, already root-caused+fixed | Re-proved A/B at the fixed HEAD: microtimer law-ON vs law-OFF PIXEL-IDENTICAL (1,041,437 non-white both; rc=0; HALT-LOOP 0; 2 forName resolutions); the forName law is DEFAULT-ON (MINIANDROID_R350_LAW=0 opt-out) | Corpus pixel-identical to S57 records: chessclock 2,040,736 nb / notes 2,073,600 nb / unote 236,520 nb; 3-run determinism (dooz v23 ef47a2d3cdc6929e ×3) |
+
+S55/S56/S57 rows retained below for continuity.
 
 | ID | Blocker | Root cause (evidence) | Fix | Proof |
 |---|---|---|---|---|
@@ -42,35 +51,30 @@ S55/S56 rows retained below the S57 row for continuity.
 
 ## 3. Active frontier (P0 first, attack order)
 
-S57 state after R-NEW-344 closure:
+S58 state after R-NEW-376 closure:
 
-1. **R-NEW-376 — Dooz ctor-climb frontier (v18 + v23 alias observations)**
-   (OBSERVED-FAIL, P0-for-Dooz, pinned S55, S57-confirmed on v23).
-   Compose init builds constructor chains that exceed the 2048-frame
-   budget (v18: 9 cap-climbs; v23 post-F-086: Lgz1;.<init> ×3 +
-   Lbp1;.<init> ×1, self-delegating face — impossible in valid DEX →
-   engine ctor-target mis-selection). NEXT (unchanged, ranked in the
-   registry entry): wide-arg VALUE trace per ctor hop (constant ⇒
-   mis-dispatch; varying ⇒ finite-but-huge chain) → ctor-target selection
-   fix or frame-cost reduction. *Unblocks Dooz first frame and the
-   Compose family.*
-2. **WebView content model — model SHIPPED (F-085); end-to-end content
-   probe pending** (P1, was R-NEW-377 BLOCKED-PINNED). The WebView call
-   surface (getSettings/setWebViewClient/load family) now dispatches
-   generically and the render law extracts visible text. Remaining for
-   the L5→L7 claim: a full note-create→save→read-face UI flow proving
-   pixels from a real document (needs the multi-step click sequence).
-3. **Persistence ladder L10** (P2) for the interactive apps — ChessClock
-   first (start clock → close → reopen → state kept). uNote ladder
-   continues at NoteEdition (PreferenceManager/getApplicationContext
-   surface).
-4. **Telegram init chain** (P2). Ranked: REC-MISS static-init surface →
+1. **R-NEW-379 — Dooz ViewTreeLifecycleOwner frontier (P1, pinned S58)**
+   (OBSERVED-FAIL). Past F-102/F-103, Compose init dies at
+   `ISE "ViewTreeLifecycleOwner not found from Lho;@1074"` (Log0;.c) —
+   uncaught at MainActivity.onCreate invoke_pc=317; the themed window
+   paints (2,073,600 nb) before death. The S24 R-NEW-317 fix covered the
+   ViewShadow routing only; the owner SET law (ComponentActivity.onCreate
+   sets the owner on the decor view) + get-walk extension remain.
+   NEXT: ViewTreeLifecycleOwner.set/get law on the ViewShadow node model
+   → WindowRecomposer law (checkPrecondition isAttachedToWindow).
+   *Unblocks the entire Compose family below the composition bootstrap.*
+2. **F-085 content probe — chain live, commonmark face remains** (P1).
+   The real read chain is PROVEN live end-to-end through the app's own
+   code (seeded doc → defaultFile/readNote/ReadTask → openInputStream →
+   readLine ×10 real lines → setText 230 chars → markdownCheck appendTail
+   230 chars). REMAINING: the commonmark Parser.parse → HtmlRenderer.render
+   DEX chain yields an empty body (loadData bytes=251, text_chars=0).
+3. **uNote NoteEdition ladder** (P2) — continues from the S56-proven
+   L6 input→navigation (PreferenceManager/getApplicationContext surface).
+4. **Persistence ladder L10** (P2) for the interactive apps — ChessClock
+   first (start clock → close → reopen → state kept).
+5. **Telegram init chain** (P2). Ranked: REC-MISS static-init surface →
    SafeIterableMap iterator law → NativeLoader boundary decision.
-5. **R-NEW-352** (P2, exact-dependency BLOCKED): the R-NEW-350 forName
-   law stays env-gated default-OFF because microtimer's Room initDb
-   retry loop starves the run budget when it is ON (A/B-proven S43).
-   Unblocking requires the retry-loop root cause; until then it is a
-   recorded dependency, not an open investigation.
 
 ## 4. BLOCKED (external dependency — do not spend runtime sessions)
 
@@ -93,15 +97,14 @@ S57 state after R-NEW-344 closure:
   foreign HEADs quarantined as unverified), gallery s54_frames (12 JPGs),
   toolchain bootstrap re-proven, EXT fixture re-fetched SHA-verified.
 
-## 6. Direct answers (S54 §12, S57 refresh)
+## 6. Direct answers (S54 §12, S58 refresh)
 
-**What is the biggest runtime blocker?** The Compose ctor-climb frontier
-**R-NEW-376** (constructor chains exceeding the 2048-frame budget; observed
-on dooz v18 AND v23 — S57 alias confirmation) holds the entire modern
-Compose app class (Dooz, RTTT, emmanuelmess tictactoe) below L5. The other
-half of the old Compose pair — **R-NEW-344** (ScatterMap full-table probe
-spin) — is ROOT-CAUSED-FIXED at S57 (F-086 Long.compare bridge law;
-capacity 7→15→31 proven at the runtime boundary; regression-protected).
+**What is the biggest runtime blocker?** The Compose init chain after the
+F-102/F-103 fixes: **R-NEW-379** (ViewTreeLifecycleOwner owner-tag walk) —
+Dooz v23 now runs past the ctor-climb AND the saved-state/class-key faces
+into Compose attach, and dies at the ViewTreeLifecycleOwner lookup.
+R-NEW-344 (F-086, S57) and R-NEW-376 (F-102, S58) are both
+ROOT-CAUSED-FIXED with regression protection.
 
 **What prevents complete HelloWorld?** Nothing — HelloWorldSelfAware is
 visually proven end-to-end (L7 via EXT-01/02) at the current HEAD.
@@ -110,22 +113,18 @@ visually proven end-to-end (L7 via EXT-01/02) at the current HEAD.
 F-Droid game) and Chess Clock both demonstrate launch→input→state→rendered
 change at this HEAD, and tictactoe_golden proves 9-tap win-state play.
 
-**What prevents Dooz?** R-NEW-376 (ctor-climb; the pinned frontier —
-S57 confirmed the same face on v23 post-F-086). R-NEW-344 (ScatterMap)
-is VERIFIED-FIXED via F-086: the 15→31 resize is proven, no probe spin,
-no fabricated returns. The pre-S55 blocker R-NEW-361 is VERIFIED-FIXED
-(F-083).
+**What prevents Dooz?** R-NEW-379 (ViewTreeLifecycleOwner walk; the pinned
+frontier). R-NEW-376 (ctor-climb) is ROOT-CAUSED-FIXED via F-102: the 3rc
+descriptor-dispatch law, RECURSION-LIMIT 0 on both v18 and v23, regression-
+protected. The saved-state cascade (R-NEW-378) is ROOT-CAUSED-FIXED via F-103.
 
 **What prevents Notes content rendering?** The WebView content model is
-SHIPPED (F-085): the WebView call surface (getSettings/setWebViewClient/
-load family) dispatches generically and the render law extracts visible
-text. The remaining gap to the L5→L7 claim is the end-to-end content
-probe (a real note-create→save→read-face UI flow with pixel proof). The
-app's state machine itself is FIXED (F-082) — mode-switch input→state→
-render is proven at 2.06M px. uNote's main-menu input chain is PROVEN at
-S56 (R-NEW-368 premise refuted: the old 16-probe grid never covered the
-bottom-44px button band; a coordinate-correct tap consumed and launched
-NoteEdition).
+SHIPPED (F-085) and the real read chain is now PROVEN live through the
+app's own code (F-104: file→stream→reader→model, 230 chars verified into
+the EditText and through markdownCheck). The remaining gap is INSIDE the
+commonmark Parser.parse → HtmlRenderer.render DEX chain (empty body at
+loadData). The app's state machine itself is FIXED (F-082). uNote's
+main-menu input chain is PROVEN at S56 (R-NEW-368 premise refuted).
 
 **What prevents Telegram?** Init-chain depth (REC-MISS surface, SafeIterableMap
 stub, NativeLoader boundary) — no frame within the 540 s budget. Note: F-083's
@@ -133,7 +132,7 @@ deep-stack thread directly attacks the depth side of this frontier too.
 
 **What prevents general APK compatibility?** The long tail of framework REC-MISS
 surface plus the Compose P0s; every fixed law transfers (F-080/F-081/F-082/
-F-083/F-084/F-085 were found in one app and are corpus-generic).
+F-083/F-084/F-085/F-102/F-103/F-104 were found in one app and are corpus-generic).
 
 **What prevents one genuinely fully runnable application?** Nothing —
 HelloWorldSelfAware IS the fully runnable reference application (full chain +

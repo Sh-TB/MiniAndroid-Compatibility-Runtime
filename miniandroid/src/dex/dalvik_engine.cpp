@@ -33,6 +33,7 @@
 #include <algorithm>
 #include <iostream>
 #include <fstream>
+#include <regex>
 #include <sstream>
 #include <iomanip>
 #include <cassert>
@@ -331,6 +332,8 @@ void DalvikExecutionEngine::build_class_dex_index(const dex::DexReport& report) 
     // type_idx but their class_defs are not in the APK. So we pre-populate the
     // map with the known Android framework View hierarchy.
     class_to_superclass_.clear();
+    // F-103 (S58, R-NEW-378): reset the declared-interfaces index alongside.
+    class_to_interfaces_.clear();
     // Framework View hierarchy (from AOSP):
     static const std::pair<std::string, std::string> framework_views[] = {
         {"Landroid/view/View;", "Ljava/lang/Object;"},
@@ -396,6 +399,11 @@ void DalvikExecutionEngine::build_class_dex_index(const dex::DexReport& report) 
         // the Class.getAnnotation bridge.
         if (!cls.class_annotations.empty()) {
             class_annotations_[cls.name] = cls.class_annotations;
+        }
+        // F-103 (S58, R-NEW-378): index declared interfaces for the
+        // Class.isInstance/isAssignableFrom assignability walk.
+        if (!cls.interfaces.empty()) {
+            class_to_interfaces_[cls.name] = cls.interfaces;
         }
     }
     std::cerr << "[EXP068] Built class→superclass map: " << class_to_superclass_.size()
@@ -3471,11 +3479,30 @@ bool DalvikExecutionEngine::resolve_asset_stream(uint32_t start_id,
 }
 
 // Pass-3 (K-34): asset bytes extracted once per path, then cached.
+// F-104 (S58): "file:<abs>" keys serve SANDBOX file bytes (one disk read,
+// cached; 4 MiB bound with an honest diagnostic on oversize) — the
+// FileInputStream/FileReader ctor law registers those keys.
 const std::string& DalvikExecutionEngine::cached_asset_bytes(const std::string& path) {
     auto it = asset_bytes_cache_.find(path);
     if (it != asset_bytes_cache_.end()) return it->second;
     std::string content;
-    if (!apk_path_.empty()) {
+    if (path.rfind("file:", 0) == 0) {
+        std::error_code f104_ec;
+        std::filesystem::path fp(path.substr(5));
+        if (std::filesystem::exists(fp, f104_ec) && !f104_ec) {
+            static constexpr size_t kMaxSandboxRead = 4u << 20;  // 4 MiB
+            auto sz = std::filesystem::file_size(fp, f104_ec);
+            if (!f104_ec && sz <= kMaxSandboxRead) {
+                std::ifstream in(fp, std::ios::binary);
+                if (in)
+                    content.assign(std::istreambuf_iterator<char>(in),
+                                   std::istreambuf_iterator<char>());
+            } else if (!f104_ec) {
+                std::cerr << "[F104-READ] file exceeds " << kMaxSandboxRead
+                          << " bytes — read refused: " << path << std::endl;
+            }
+        }
+    } else if (!apk_path_.empty()) {
         std::string cmd = "unzip -p '" + apk_path_ + "' 'assets/" + path + "' 2>/dev/null";
         FILE* pipe = popen(cmd.c_str(), "r");
         if (pipe) {
@@ -4682,7 +4709,8 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // can find the asset through the chain.
     if (method_name == "<init>") {
         if ((declaring_class.find("InputStreamReader") != std::string::npos ||
-             declaring_class.find("BufferedReader") != std::string::npos) &&
+             declaring_class.find("BufferedReader") != std::string::npos ||
+             declaring_class.find("BufferedInputStream") != std::string::npos) &&
             args.size() >= 2 &&
             args[0].type == DalvikType::OBJECT_REF &&
             args[1].type == DalvikType::OBJECT_REF) {
@@ -9696,6 +9724,19 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 // (often the Paint in drawRect(l,t,r,b,paint)) fell off the
                 // end entirely. Static calls have no receiver slot.
                 std::vector<DalvikValue> args;
+                // F-102 (S58, R-NEW-376): the call site's method PROTO is a
+                // first-class part of the invoke contract (35c path resolves
+                // and passes it — F-023 exact-descriptor overload law). The
+                // 3rc path resolved it only locally for signature-aware arg
+                // building and DROPPED it at the try_recursive_invoke
+                // boundary (default ""), so every range ctor-delegation
+                // ladder (Kotlin default-args: gz1/bp1/j0 in dooz v18+v23)
+                // fell into the arity heuristic which prefers the LARGEST
+                // bytecode body — re-selecting the CALLING overload itself
+                // → same-receiver self-recursion to the depth cap. Hoist the
+                // proto to dispatch scope and pass it to both dispatch
+                // attempts below.
+                std::string range_proto = "<unknown>";
                 {
                     // Collect the RAW register window first (receiver first
                     // for instance calls), then apply signature conversion.
@@ -9707,7 +9748,6 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     }
                     const bool is_static_call =
                         (instr & 0xFF) == static_cast<uint8_t>(Opcode::INVOKE_STATIC_RANGE);
-                    std::string range_proto = "<unknown>";
                     if (dex_report_) {
                         range_proto = resolve_method_proto_for_dex(method_idx, current_dex_index_);
                     }
@@ -9787,15 +9827,18 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 bool recursively_invoked = false;
                 if (config_.enable_api_bridge) {
                     // §19: runtime class first for virtual/interface dispatch
+                    // F-102: pass the resolved range proto on BOTH attempts —
+                    // exact (class, name, desc) selection per the F-023 law;
+                    // when the proto misses the heuristic path is unchanged.
                     if (!range_runtime_class.empty() && range_runtime_class != class_name &&
                         try_recursive_invoke(range_runtime_class, method_name,
-                                             args, return_val, result)) {
+                                             args, return_val, result, range_proto)) {
                         last_invoke_return_ = return_val;
                         recursively_invoked = true;
                         status = ApiCallTrace::Status::IMPLEMENTED;
                     }
                     if (!recursively_invoked &&
-                        try_recursive_invoke(class_name, method_name, args, return_val, result)) { last_invoke_return_ = return_val;
+                        try_recursive_invoke(class_name, method_name, args, return_val, result, range_proto)) { last_invoke_return_ = return_val;
                         recursively_invoked = true;
                         status = ApiCallTrace::Status::IMPLEMENTED;
                     }
@@ -10882,9 +10925,20 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     heap_.set_object_field(arr_id, field_name, src_val);
                 }
 
-                std::cerr << "[EXP093-FNA] filled-new-array type=" << type_desc
-                          << " count=" << src_regs.size()
-                          << " arr_id=" << arr_id << std::endl;
+                // S58 hygiene: was ALWAYS-ON stderr (F-074 law violation —
+                // per-run noise + throughput cost on FNA-heavy Compose
+                // apps). Env-gated, bounded, same format.
+                {
+                    static thread_local const bool fna_trace =
+                        std::getenv("MINIANDROID_FNA_TRACE") != nullptr;
+                    static thread_local uint64_t fna_n = 0;
+                    if (fna_trace && fna_n < 200) {
+                        ++fna_n;
+                        std::cerr << "[EXP093-FNA] filled-new-array type=" << type_desc
+                                  << " count=" << src_regs.size()
+                                  << " arr_id=" << arr_id << std::endl;
+                    }
+                }
 
                 DalvikValue result_val;
                 result_val.type = DalvikType::OBJECT_REF;
@@ -12144,12 +12198,30 @@ bool DalvikExecutionEngine::execute_const_class(uint32_t pc, InstructionTrace& t
     // androidx.lifecycle.A" → first frame died. The token is stable per
     // descriptor for the whole run (identity), and distinct descriptors
     // never share a token.
+    //
+    // F-103 (S58, R-NEW-378): HEAP-BACKED CLASS TOKENS. ART Class objects
+    // are real heap objects; minting tokens from a PRIVATE counter
+    // (class_token_counter_) made token ids collide with real heap object
+    // ids (both count from 1). Every §19 runtime-class dispatch on a
+    // Class-token receiver then resolved to some UNRELATED early heap
+    // object — e.g. the compose DisposableSaveableStateRegistry
+    // ACCEPTABLE_CLASSES loop (Lje;.<init>(Lhf1;)V pc=98) dispatched
+    // Class.isInstance to whichever object owned the colliding id, the
+    // call fell to a STUBBED typed-zero false for all 29 elements, and
+    // rememberSaveable threw IAE "Can't put value with type null into
+    // saved state" → APP BOUNDARY unwind → blank frame. The token is now
+    // a REAL heap object of class Ljava/lang/Class; carrying the referent
+    // descriptor in the __referent_desc field, so receiver-class
+    // resolution lands on Ljava/lang/Class; and the identity map stores
+    // the heap id (stable per descriptor — F-069 preserved).
     uint32_t token = 0;
     auto tok_it = class_token_ids_.find(type_desc);
     if (tok_it != class_token_ids_.end()) {
         token = tok_it->second;
     } else {
-        token = ++class_token_counter_;
+        token = heap_.allocate("Ljava/lang/Class;", pc_, 0);
+        heap_.set_object_field(token, "__referent_desc",
+                               DalvikValue::make_string(type_desc, 0));
         class_token_ids_.emplace(type_desc, token);
     }
 
@@ -12459,8 +12531,25 @@ bool DalvikExecutionEngine::execute_instance_of(uint32_t pc, InstructionTrace& t
     bool is_instance = false;
     if (src_val.type == DalvikType::OBJECT_REF && src_val.object_id != 0) {
         std::string obj_class = src_val.class_desc;
-        if (obj_class.empty() && heap_.has_object(src_val.object_id)) {
-            obj_class = heap_.get(src_val.object_id)->class_descriptor;
+        // F-103 (S58, R-NEW-378) ART RUNTIME-TYPE LAW: the class of the
+        // object a reference points to is the AUTHORITY for instance-of;
+        // the register's cached class_desc is only a hint. The hint can be
+        // empty (never heap-consulted before) or a non-informative /
+        // degraded tag after a shadow round-trip — e.g. a Class token
+        // stored via CollectionShadow.add and read back with
+        // handled_object(elem, "Ljava/lang/Object;") arrives tagged
+        // "Ljava/lang/Object;" while the heap object at that id IS the
+        // Ljava/lang/Class; token. androidx Class-keyed maps
+        // (Lwl0;.containsKey pc=0: instance-of key, Ljava/lang/Class;)
+        // then threw IAE "Key must be a class" and dooz died at APP
+        // BOUNDARY in MainActivity.onCreate. Consult the heap FIRST; the
+        // register tag is only a fallback for references with no heap
+        // record (synthesized values).
+        if (src_val.object_id != 0 && heap_.has_object(src_val.object_id)) {
+            auto* heap_obj = heap_.get(src_val.object_id);
+            if (heap_obj && !heap_obj->class_descriptor.empty()) {
+                obj_class = heap_obj->class_descriptor;
+            }
         }
         if (!obj_class.empty()) {
             // Check if obj_class is a subclass of target_type (or equal)
@@ -13427,6 +13516,27 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
             s24_flow < 120) {
             ++s24_flow;
             std::cerr << "[S24-PA-FLOW] virtual pc=" << pc << std::endl;
+        }
+    }
+
+    // S58 R-NEW-378 probe (env-gated, bounded): every invoke-virtual from
+    // the compose SaveableStateProvider init frame — reveals the
+    // ACCEPTABLE_CLASSES loop traffic (isEmpty/size/get/isInstance) and
+    // where each dispatch actually landed.
+    {
+        static thread_local uint64_t je_flow = 0;
+        if (std::getenv("MINIANDROID_CLASS_LAW_TRACE") != nullptr &&
+            current_class_ == "Lje;" && current_method_ == "<init>" &&
+            je_flow < 40) {
+            ++je_flow;
+            uint16_t je_mi = bytecode_[pc + 1];
+            std::cerr << "[JE-FLOW] virtual pc=" << pc
+                      << " method_idx=" << je_mi
+                      << " -> "
+                      << (dex_report_ ? resolve_method_class_for_dex(je_mi, current_dex_index_) : "?")
+                      << "."
+                      << (dex_report_ ? resolve_method_name_for_dex(je_mi, current_dex_index_) : "?")
+                      << std::endl;
         }
     }
 
@@ -14658,8 +14768,20 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
         }
     }
 
-    static thread_local const bool r350_law_on =
-        std::getenv("MINIANDROID_R350_LAW") != nullptr;
+    // S58 (R-NEW-352 CLOSED): DEFAULT-ON. The recorded blocker — microtimer's
+    // Room initDb loop re-visiting the SAME forName invoke 50k× and starving
+    // the run budget (A/B-proven S43) — was the MISSING PC-ADVANCE CONTRACT,
+    // root-caused and fixed at S44 (R-NEW-355): every forName exit below now
+    // advances pc_ past the 35c invoke before returning. S58 A/B re-proof at
+    // the fixed HEAD: microtimer law-ON vs law-OFF are PIXEL-IDENTICAL
+    // (1,041,437 non-white both; rc=0; HALT-LOOP 0; exactly 2 forName
+    // resolutions — no retry storm; run/s58_r352_lawON vs s58_r352_lawOFF).
+    // MINIANDROID_R350_LAW=0 is preserved as an explicit opt-out for A/B
+    // hygiene runs.
+    static thread_local const bool r350_law_off =
+        std::getenv("MINIANDROID_R350_LAW") != nullptr &&
+        std::getenv("MINIANDROID_R350_LAW")[0] == '0';
+    static thread_local const bool r350_law_on = !r350_law_off;
     if (r350_law_on && class_name == "Ljava/lang/Class;" &&
         method_name == "forName") {
         // R-NEW-350 diagnostic: the 3-arg call's name argument may arrive
@@ -17384,6 +17506,61 @@ uint64_t DalvikExecutionEngine::drain_park_queues_bounded(const char* reason) {
     return work_units;
 }
 
+// ─────────────────────────────────────────────────────────────────────────
+// F-103 (S58, R-NEW-378): OpenJDK Class.isAssignableFrom assignability walk.
+// Law (OpenJDK Class.java / AOSP): `to.isAssignableFrom(from)` is true iff
+// `from` is the same class, a subclass, a implementor of `to` (transitively),
+// or — for arrays — component-covariant into `to`. `java.lang.Object`
+// accepts every reference type. Primitives only match themselves. The walk
+// is bounded (16 super hops / 8 interface expansions) like the existing
+// try_recursive_invoke_on_super bound.
+// ─────────────────────────────────────────────────────────────────────────
+bool DalvikExecutionEngine::dalvik_class_assignable(const std::string& from_desc,
+                                                    const std::string& to_desc) {
+    if (from_desc.empty() || to_desc.empty()) return false;
+    if (from_desc == to_desc) return true;
+    if (to_desc == "Ljava/lang/Object;") {
+        // Reference types (L...; and [...) are Objects; primitives are not.
+        return from_desc[0] == 'L' || from_desc[0] == '[';
+    }
+    // Array covariance: X[] assignable to Y[] iff X assignable to Y;
+    // every array is assignable to Object[]'s super-chain (Object,
+    // Cloneable, java.io.Serializable).
+    if (from_desc[0] == '[' && to_desc[0] == '[') {
+        // Component-wise: strip one bracket pair and recurse.
+        return dalvik_class_assignable(from_desc.substr(1), to_desc.substr(1));
+    }
+    if (from_desc[0] == '[' && (to_desc == "Ljava/lang/Cloneable;" ||
+                                to_desc == "Ljava/io/Serializable;")) {
+        return true;  // JLS: arrays implement Cloneable + Serializable
+    }
+    // Primitive descriptors only match by identity (handled above).
+    if (from_desc.size() == 1 || to_desc.size() == 1) return false;
+    // Superclass walk (bounded, same bound as try_recursive_invoke_on_super).
+    static constexpr int kMaxAssignHops = 16;
+    std::string walk = from_desc;
+    for (int hop = 0; hop < kMaxAssignHops; ++hop) {
+        auto sup_it = class_to_superclass_.find(walk);
+        if (sup_it == class_to_superclass_.end()) break;
+        walk = sup_it->second;
+        if (walk.empty()) break;
+        if (walk == to_desc) return true;
+        // Interface declared anywhere along the super chain counts.
+        auto ifc_it = class_to_interfaces_.find(walk);
+        if (ifc_it != class_to_interfaces_.end()) {
+            for (const auto& ifc : ifc_it->second)
+                if (ifc == to_desc) return true;
+        }
+    }
+    // Directly-declared interfaces of `from` itself.
+    auto ifc_it = class_to_interfaces_.find(from_desc);
+    if (ifc_it != class_to_interfaces_.end()) {
+        for (const auto& ifc : ifc_it->second)
+            if (ifc == to_desc) return true;
+    }
+    return false;
+}
+
 bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                           const std::string& method,
                                           const std::vector<DalvikValue>& args,
@@ -17991,6 +18168,548 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
+    }
+    // ────────────────────────────────────────────────────────────────────
+    // F-103 (S58, R-NEW-378): java.lang.Class type-question laws —
+    // isInstance(Object)Z / isAssignableFrom(Class)Z (OpenJDK Class.java:
+    // isInstance(obj) == isAssignableFrom(obj.getClass())).
+    // ROOT CAUSE evidence (dooz v23): compose DisposableSaveableStateRegistry's
+    // ACCEPTABLE_CLASSES loop (Lje;.<init>(Lhf1;)V pc=73..104) invoked
+    // Class.isInstance across 29 const-class elements for the UUID String
+    // saveable key; with NO handler the STUBBED typed-zero exit answered 0
+    // for every element → rememberSaveable threw
+    // IllegalArgumentException "Can't put value with type null into saved
+    // state" (the "null" is the engine stringifying the Class token) →
+    // APP BOUNDARY unwind in MainActivity.onCreate → blank frame. Same
+    // failure family as F-086 (missing handler → typed-zero → wrong branch).
+    // Receiver token: args[0] (CLASS_REF carries the descriptor directly;
+    // a heap Class object carries it in class_desc).
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/lang/Class;" &&
+        (method == "isInstance" || method == "isAssignableFrom")) {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        // F-103 diagnostic (env-gated, bounded): arg shapes reaching the law.
+        static thread_local const bool cls_law_trace =
+            std::getenv("MINIANDROID_CLASS_LAW_TRACE") != nullptr;
+        static thread_local uint64_t cls_law_n = 0;
+        if (cls_law_trace && cls_law_n < 60) {
+            ++cls_law_n;
+            std::cerr << "[CLASS-LAW] " << method << " argc=" << args.size();
+            for (size_t ci = 0; ci < args.size() && ci < 3; ++ci)
+                std::cerr << " a" << ci << ":t" << static_cast<int>(args[ci].type)
+                          << (args[ci].class_desc.empty()
+                                  ? ""
+                                  : ("(" + args[ci].class_desc + ")"));
+            std::cerr << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+        }
+        std::string token_desc =
+            args.empty() ? std::string() : args[0].class_desc;
+        // F-103 heap-backed tokens: after a shadow round-trip (e.g.
+        // ArrayList.add/get) the token arrives as an OBJECT_REF whose heap
+        // object is the Ljava/lang/Class; record minted by const-class —
+        // resolve the referent descriptor from __referent_desc.
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+            auto* tok_obj = heap_.get(args[0].object_id);
+            if (tok_obj && tok_obj->class_descriptor == "Ljava/lang/Class;") {
+                auto ref = heap_.get_object_field(args[0].object_id,
+                                                  "__referent_desc");
+                if (ref.has_value() && ref->type == DalvikType::STRING_REF &&
+                    !ref->string_val.empty())
+                    token_desc = ref->string_val;
+            }
+        }
+        bool answer = false;
+        if (!token_desc.empty() && args.size() > 1) {
+            const DalvikValue& probe = args[1];
+            std::string probe_desc;
+            if (probe.type == DalvikType::CLASS_REF ||
+                probe.type == DalvikType::OBJECT_REF)
+                probe_desc = probe.class_desc;
+            else if (probe.type == DalvikType::STRING_REF)
+                probe_desc = "Ljava/lang/String;";
+            if (!probe_desc.empty()) {
+                // isInstance: token.isInstance(value) → assignable(value→token)
+                // isAssignableFrom: token.isAssignableFrom(cls)
+                //                  → assignable(cls→token)
+                answer = dalvik_class_assignable(probe_desc, token_desc);
+            } else if (probe.type == DalvikType::NULL_REF) {
+                answer = false;  // OpenJDK: isInstance(null) → false
+            }
+        }
+        result = DalvikValue::make_bool(answer);
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────
+    // F-104 (S58, F-085 end-to-end): java.io.FileInputStream / FileReader
+    // over the FILE SANDBOX. Android law: the ctor opens the file and
+    // subsequent reads serve its bytes. The engine's read laws
+    // (BufferedReader.readLine / InputStream.read/available, EXP-071 +
+    // Pass-3 K-34) already serve bytes through the open_assets_ stream
+    // map — but ONLY for APK assets, so a real app read path
+    // (Notes.readFile → new FileInputStream(File) → InputStreamReader →
+    // BufferedReader.readLine loop → EditText → commonmark → WebView)
+    // hit EOF immediately and the document never reached the model.
+    // Law: resolve the File path under the ONE app-data root (R-NEW-346
+    // longest-string-field law + data_root.h), register the stream in
+    // open_assets_ under a "file:<abs>" key; the EXP-071 wrapper
+    // propagation and the read laws consume it unchanged and
+    // cached_asset_bytes serves the bytes from disk.
+    // ────────────────────────────────────────────────────────────────────
+    if ((class_name == "Ljava/io/FileInputStream;" ||
+         class_name == "Ljava/io/FileReader;") &&
+        method == "<init>" && args.size() >= 2 &&
+        args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0) {
+        std::string fpath;
+        if (args[1].type == DalvikType::STRING_REF) {
+            fpath = args[1].string_val;
+        } else if (args[1].type == DalvikType::OBJECT_REF &&
+                   args[1].object_id != 0 && heap_.has_object(args[1].object_id)) {
+            // R-NEW-346: the File object's longest string field is the path.
+            const auto* fobj = heap_.get(args[1].object_id);
+            if (fobj) {
+                for (const auto& [fname, fval] : fobj->fields)
+                    if (fval.type == DalvikType::STRING_REF &&
+                        fval.string_val.size() > fpath.size())
+                        fpath = fval.string_val;
+            }
+        }
+        if (!fpath.empty()) {
+            std::filesystem::path p =
+                (fpath[0] == '/')
+                    ? std::filesystem::path(fpath)
+                    : std::filesystem::path(Storage::app_data_root()) / fpath;
+            std::error_code f104_ec;
+            bool present = std::filesystem::exists(p, f104_ec) && !f104_ec;
+            // Register the stream either way: reads on an absent file
+            // answer EOF (loud diagnostic at the read law), matching the
+            // existing asset-law shape.
+            open_assets_[args[0].object_id] = {std::string("file:") + p.string(), 0};
+            std::cerr << "[F104-FIS] stream=o" << args[0].object_id
+                      << " path=\"" << p.string()
+                      << "\" present=" << (present ? 1 : 0)
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    // ────────────────────────────────────────────────────────────────────
+    // F-104 (S58) continued: android.net.Uri FILE-SCHEME family +
+    // ContentResolver.openInputStream — the read chain the Notes app
+    // actually uses (defaultFile → Uri.fromFile → readNote →
+    // ReadTask.doInBackground → ContentResolver.openInputStream(uri) →
+    // BufferedInputStream → InputStreamReader → BufferedReader.readLine).
+    // AOSP laws: Uri.fromFile(File) synthesizes a hierarchical file-scheme
+    // Uri whose encoded path is the file's absolute path; openInputStream
+    // opens the referenced stream. The engine model: a Uri heap object
+    // carries "scheme"/"path" string fields; openInputStream allocates the
+    // stream object and registers it in open_assets_ under "file:<abs>"
+    // so the EXP-071 wrapper chain + read laws serve REAL sandbox bytes.
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/net/Uri;" && method == "fromFile" &&
+        !args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+        args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+        // fromFile is STATIC — args[0] IS the File (no receiver slot).
+        std::string fpath;
+        const auto* fobj = heap_.get(args[0].object_id);
+        if (fobj) {
+            for (const auto& [fname, fval] : fobj->fields)
+                if (fval.type == DalvikType::STRING_REF &&
+                    fval.string_val.size() > fpath.size())
+                    fpath = fval.string_val;  // R-NEW-346 longest-string law
+        }
+        uint32_t uri_id = heap_.allocate("Landroid/net/Uri;", pc_, 0);
+        DalvikValue sv;
+        sv.type = DalvikType::STRING_REF;
+        if (!fpath.empty() && fpath[0] != '/') {
+            std::filesystem::path abs =
+                std::filesystem::path(Storage::app_data_root()) / fpath;
+            sv.string_val = abs.string();
+        } else {
+            sv.string_val = fpath;
+        }
+        heap_.set_object_field(uri_id, "path", sv);
+        DalvikValue sch;
+        sch.type = DalvikType::STRING_REF;
+        sch.string_val = "file";
+        heap_.set_object_field(uri_id, "scheme", sch);
+        std::cerr << "[F104-URI] fromFile path=\"" << sv.string_val << "\""
+                  << " caller=" << current_class_ << "."
+                  << current_method_ << std::endl;
+        result = DalvikValue::make_object(uri_id, "Landroid/net/Uri;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (class_name == "Landroid/net/Uri;" &&
+        (method == "getPath" || method == "getScheme" ||
+         method == "getLastPathSegment") &&
+        !args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+        args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+        const auto* uobj = heap_.get(args[0].object_id);
+        std::string upath, uscheme;
+        if (uobj) {
+            for (const auto& [fname, fval] : uobj->fields) {
+                if (fval.type != DalvikType::STRING_REF) continue;
+                if (fname == "path") upath = fval.string_val;
+                else if (fname == "scheme") uscheme = fval.string_val;
+                else {
+                    // fallback: longest string field = path (R-NEW-346)
+                    if (fval.string_val.size() > upath.size())
+                        upath = fval.string_val;
+                }
+            }
+        }
+        if (method == "getScheme") {
+            if (!uscheme.empty()) {
+                result = DalvikValue::make_string(uscheme, 0);
+            } else {
+                result = DalvikValue::make_null();
+            }
+        } else if (method == "getLastPathSegment") {
+            auto slash = upath.rfind('/');
+            result = DalvikValue::make_string(
+                slash == std::string::npos ? upath : upath.substr(slash + 1), 0);
+        } else {
+            if (!upath.empty()) {
+                result = DalvikValue::make_string(upath, 0);
+            } else {
+                result = DalvikValue::make_null();
+            }
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (class_name == "Landroid/content/ContentResolver;" &&
+        method == "openInputStream" && args.size() >= 2 &&
+        args[1].type == DalvikType::OBJECT_REF) {
+        std::string upath;
+        if (args[1].object_id != 0 && heap_.has_object(args[1].object_id)) {
+            const auto* uobj = heap_.get(args[1].object_id);
+            if (uobj) {
+                for (const auto& [fname, fval] : uobj->fields)
+                    if (fval.type == DalvikType::STRING_REF &&
+                        fval.string_val.size() > upath.size())
+                        upath = fval.string_val;  // longest string = path
+            }
+        }
+        uint32_t stream_id = heap_.allocate("Ljava/io/InputStream;", pc_, 0);
+        if (!upath.empty()) {
+            std::filesystem::path p =
+                (upath[0] == '/')
+                    ? std::filesystem::path(upath)
+                    : std::filesystem::path(Storage::app_data_root()) / upath;
+            std::error_code cr_ec;
+            bool present = std::filesystem::exists(p, cr_ec) && !cr_ec;
+            open_assets_[stream_id] = {std::string("file:") + p.string(), 0};
+            std::cerr << "[F104-CRIS] stream=o" << stream_id << " path=\""
+                      << p.string() << "\" present=" << (present ? 1 : 0)
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+        } else {
+            std::cerr << "[F104-CRIS] stream=o" << stream_id
+                      << " uri has no resolvable path — EOF law"
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+        }
+        result = DalvikValue::make_object(stream_id, "Ljava/io/InputStream;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────
+    // F-104 (S58) continued: android.os.AsyncTask.execute — the AOSP
+    // contract is execute(Params...) → doInBackground(Params...) →
+    // onPostExecute(Result). No engine law existed, so every AsyncTask
+    // body (Notes ReadTask file read, FindTask, LoadMarkdown tasks)
+    // silently never ran. Headless model: dispatch doInBackground
+    // SYNCHRONOUSLY on the task object (same executor-model law as the
+    // runOnUiThread / R-NEW-345 drain family), then onPostExecute with
+    // the result. execute() returns the task itself (AOSP).
+    // ────────────────────────────────────────────────────────────────────
+    if (method == "execute" &&
+        !args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+        args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+        // The bridge receives the RECEIVER's RUNTIME class (§19 law) — a
+        // concrete task subclass (e.g. Notes$ReadTask), never the declaring
+        // Landroid/os/AsyncTask; itself. Recognize the contract by walking
+        // the receiver class's superclass chain for the AsyncTask ancestor.
+        bool is_async_task = (class_name == "Landroid/os/AsyncTask;");
+        {
+            std::string walk = class_name;
+            for (int hop = 0; hop < 6 && !is_async_task; ++hop) {
+                auto sup_it = class_to_superclass_.find(walk);
+                if (sup_it == class_to_superclass_.end()) break;
+                walk = sup_it->second;
+                if (walk.empty() || walk == "Ljava/lang/Object;") break;
+                if (walk == "Landroid/os/AsyncTask;") is_async_task = true;
+            }
+        }
+        if (is_async_task) {
+        uint32_t task_id = args[0].object_id;
+        std::string task_class = heap_.get(task_id)->class_descriptor;
+        std::vector<DalvikValue> di_args;
+        di_args.push_back(args[0]);
+        di_args.push_back(args.size() >= 2 ? args[1] : DalvikValue::make_null());
+        DalvikValue di_ret;
+        DalvikExecutionResult di_result;
+        ApiCallTrace::Status di_status = ApiCallTrace::Status::STUBBED;
+        if (try_recursive_invoke(task_class, "doInBackground", di_args,
+                                 di_ret, di_result,
+                                 "([Ljava/lang/Object;)Ljava/lang/Object;")) {
+            std::vector<DalvikValue> post_args;
+            post_args.push_back(args[0]);
+            post_args.push_back(di_ret);
+            DalvikValue post_ret;
+            DalvikExecutionResult post_result;
+            ApiCallTrace::Status post_status = ApiCallTrace::Status::STUBBED;
+            try_recursive_invoke(task_class, "onPostExecute", post_args,
+                                 post_ret, post_result,
+                                 "(Ljava/lang/Object;)V");
+            std::cerr << "[F104-ATASK] " << task_class
+                      << " execute → doInBackground + onPostExecute dispatched"
+                      << std::endl;
+        } else {
+            std::cerr << "[F104-ATASK] " << task_class
+                      << " doInBackground NOT dispatchable" << std::endl;
+        }
+        result = args[0];
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+        }
+    }
+    // ────────────────────────────────────────────────────────────────────
+    // F-104 (S58) continued: java.util.EnumSet.of(E...) — OpenJDK law:
+    // returns an immutable-capable set containing exactly the given enum
+    // constants. No law existed → STUBBED null → the commonmark autolink
+    // extension's EnumSet.of(URL, EMAIL) fed NULL into
+    // LinkExtractor.Builder.linkTypes → NPE "linkTypes must not be null"
+    // killed the Notes markdown render mid-pipeline.
+    // Engine model: allocate an EnumSet heap object storing the elements
+    // as array[i] fields — the R-NEW-360 array-backed-source copy law then
+    // serves HashSet(Collection)/ArrayList(Collection) consumers unchanged.
+    // Static overload family: args ARE the elements (no receiver slot).
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/util/EnumSet;" && method == "of" && !args.empty()) {
+        uint32_t set_id = heap_.allocate("Ljava/util/EnumSet;", pc_, 0);
+        int n_elems = 0;
+        for (const auto& ea : args) {
+            if (ea.type == DalvikType::OBJECT_REF && ea.object_id != 0) {
+                heap_.set_object_field(set_id, "array[" + std::to_string(n_elems) + "]",
+                                       ea);
+                n_elems++;
+            }
+        }
+        heap_.set_object_field(set_id, "__array_length__",
+                               DalvikValue::make_int(n_elems));
+        std::cerr << "[F104-ENUMSET] of(" << args.size() << " args) -> o"
+                  << set_id << " elems=" << n_elems
+                  << " caller=" << current_class_ << "."
+                  << current_method_ << std::endl;
+        result = DalvikValue::make_object(set_id, "Ljava/util/EnumSet;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────
+    // F-104 (S58) continued: java.util.regex Pattern/Matcher family —
+    // OpenJDK law over std::regex (ECMAScript grammar covers the common
+    // Java pattern subset the corpus uses). No law existed at all:
+    // Pattern.matcher returned null, Matcher.find() typed-zero false,
+    // appendTail was a silent void — which DESTROYED the document text in
+    // Notes.mediaCheck (MEDIA_PATTERN.matcher(text).find() == false →
+    // appendTail on a fresh StringBuffer → empty CharSequence → the
+    // markdown render body was empty even though the file content had
+    // already been read line-by-line into the EditText).
+    // Engine model: Pattern.compile stores the regex string on the heap
+    // object; Pattern.matcher mints a Matcher carrying regex+input+state;
+    // find/matches/group/appendReplacement/appendTail run the real match
+    // via std::regex and keep state in heap fields.
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/util/regex/Pattern;" && method == "compile" &&
+        !args.empty()) {
+        // static: args[0] = regex string
+        std::string rx = args[0].type == DalvikType::STRING_REF
+                             ? args[0].string_val
+                             : std::string();
+        uint32_t pid = heap_.allocate("Ljava/util/regex/Pattern;", pc_, 0);
+        heap_.set_object_field(pid, "regex", DalvikValue::make_string(rx, 0));
+        result = DalvikValue::make_object(pid, "Ljava/util/regex/Pattern;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (class_name == "Ljava/util/regex/Pattern;" && method == "matcher" &&
+        args.size() >= 2 && args[0].type == DalvikType::OBJECT_REF &&
+        args[1].type == DalvikType::STRING_REF) {
+        std::string rx;
+        {
+            auto rv = heap_.get_object_field(args[0].object_id, "regex");
+            if (rv.has_value() && rv->type == DalvikType::STRING_REF)
+                rx = rv->string_val;
+        }
+        uint32_t mid = heap_.allocate("Ljava/util/regex/Matcher;", pc_, 0);
+        heap_.set_object_field(mid, "regex", DalvikValue::make_string(rx, 0));
+        heap_.set_object_field(mid, "input",
+                               DalvikValue::make_string(args[1].string_val, 0));
+        heap_.set_object_field(mid, "search_pos", DalvikValue::make_int(0));
+        heap_.set_object_field(mid, "append_pos", DalvikValue::make_int(0));
+        heap_.set_object_field(mid, "match_start", DalvikValue::make_int(-1));
+        heap_.set_object_field(mid, "match_end", DalvikValue::make_int(-1));
+        result = DalvikValue::make_object(mid, "Ljava/util/regex/Matcher;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (class_name == "Ljava/util/regex/Matcher;" && !args.empty() &&
+        args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0 &&
+        (method == "find" || method == "matches" || method == "group" ||
+         method == "appendReplacement" || method == "appendTail" ||
+         method == "groupCount")) {
+        uint32_t mid = args[0].object_id;
+        auto get_str = [&](const char* fn, std::string& out) {
+            auto v = heap_.get_object_field(mid, fn);
+            if (v.has_value() && v->type == DalvikType::STRING_REF) out = v->string_val;
+        };
+        auto get_int = [&](const char* fn, int32_t& out) {
+            auto v = heap_.get_object_field(mid, fn);
+            if (v.has_value() && v->type == DalvikType::INT32) out = v->int_val;
+        };
+        auto set_int = [&](const char* fn, int32_t val) {
+            heap_.set_object_field(mid, fn, DalvikValue::make_int(val));
+        };
+        std::string rx, input;
+        get_str("regex", rx);
+        get_str("input", input);
+        int32_t search_pos = 0, append_pos = 0, m_start = -1, m_end = -1;
+        get_int("search_pos", search_pos);
+        get_int("append_pos", append_pos);
+        get_int("match_start", m_start);
+        get_int("match_end", m_end);
+        // Last-match group store: "group<i>" fields, refreshed per find.
+        std::vector<std::string> groups;
+        if (method == "find" || method == "matches") {
+            groups.clear();
+            bool matched = false;
+            std::smatch mres;
+            try {
+                if (method == "find") {
+                    if (!rx.empty() && search_pos <= static_cast<int32_t>(input.size())) {
+                        std::string tail = input.substr(search_pos);
+                        std::regex re(rx, std::regex::ECMAScript);
+                        matched = std::regex_search(tail, mres, re);
+                        if (matched) {
+                            m_start = search_pos + static_cast<int32_t>(mres.position(0));
+                            m_end = m_start + static_cast<int32_t>(mres.length(0));
+                            search_pos = m_end > search_pos ? m_end : search_pos + 1;
+                        }
+                    }
+                } else {
+                    if (!rx.empty()) {
+                        std::regex re(rx, std::regex::ECMAScript);
+                        matched = std::regex_match(input, mres, re);
+                        if (matched) { m_start = 0; m_end = static_cast<int32_t>(input.size()); }
+                    }
+                }
+            } catch (const std::regex_error& e) {
+                std::cerr << "[F104-REGEX] regex error for \"" << rx.substr(0, 60)
+                          << "\": " << e.what() << std::endl;
+                matched = false;
+            }
+            if (matched) {
+                for (size_t gi = 0; gi < mres.size(); ++gi) {
+                    std::string g = mres[gi].matched ? mres[gi].str() : std::string();
+                    groups.push_back(g);
+                    heap_.set_object_field(mid, "group" + std::to_string(gi),
+                                           DalvikValue::make_string(g, 0));
+                }
+                set_int("match_start", m_start);
+                set_int("match_end", m_end);
+                set_int("search_pos", search_pos);
+                heap_.set_object_field(mid, "matched", DalvikValue::make_bool(true));
+                result = DalvikValue::make_bool(true);
+            } else {
+                heap_.set_object_field(mid, "matched", DalvikValue::make_bool(false));
+                result = DalvikValue::make_bool(false);
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "groupCount") {
+            // Group count unknown without re-matching; report stored groups-1.
+            int32_t n = 0;
+            while (true) {
+                std::string g;
+                std::string fn = "group" + std::to_string(n);
+                auto v = heap_.get_object_field(mid, fn);
+                if (!v.has_value() || v->type != DalvikType::STRING_REF) break;
+                ++n;
+            }
+            result = DalvikValue::make_int(n > 0 ? n - 1 : 0);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "group") {
+            int32_t gi = 0;
+            if (args.size() >= 2 && args[1].type == DalvikType::INT32)
+                gi = args[1].int_val;
+            std::string g;
+            get_str(("group" + std::to_string(gi)).c_str(), g);
+            result = DalvikValue::make_string(g, 0);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // appendReplacement / appendTail: the StringBuffer receiver is
+        // args[1] (instance call on Matcher: args[0]=matcher, args[1]=sb).
+        if (method == "appendReplacement" || method == "appendTail") {
+            uint32_t sb_id = (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF)
+                                 ? args[1].object_id : 0;
+            std::string repl;
+            if (method == "appendReplacement" && args.size() >= 3 &&
+                args[2].type == DalvikType::STRING_REF)
+                repl = args[2].string_val;
+            if (sb_id != 0 && heap_.has_object(sb_id)) {
+                auto sbv = heap_.get_object_field(sb_id, "sb_value");
+                std::string cur;
+                if (sbv.has_value() && sbv->type == DalvikType::STRING_REF)
+                    cur = sbv->string_val;
+                std::string piece;
+                if (method == "appendTail") {
+                    if (append_pos <= static_cast<int32_t>(input.size()))
+                        piece = input.substr(append_pos);
+                    append_pos = static_cast<int32_t>(input.size());
+                } else if (m_start >= 0 && m_start <= (int32_t)input.size() &&
+                           m_end <= (int32_t)input.size()) {
+                    piece = input.substr(append_pos, m_start - append_pos);
+                    // $N group substitution ($$ = literal $).
+                    std::string out;
+                    for (size_t ri = 0; ri < repl.size(); ++ri) {
+                        if (repl[ri] == '$' && ri + 1 < repl.size()) {
+                            if (repl[ri + 1] == '$') { out += '$'; ++ri; continue; }
+                            size_t dj = ri + 1;
+                            while (dj < repl.size() && isdigit(static_cast<unsigned char>(repl[dj]))) ++dj;
+                            if (dj > ri + 1) {
+                                int gi = std::stoi(repl.substr(ri + 1, dj - ri - 1));
+                                std::string g;
+                                get_str(("group" + std::to_string(gi)).c_str(), g);
+                                out += g;
+                                ri = dj - 1;
+                                continue;
+                            }
+                        }
+                        out += repl[ri];
+                    }
+                    piece += out;
+                    append_pos = m_end;
+                } else {
+                    piece = repl;  // no pending match — AOSP would ISE; fail-soft
+                }
+                set_int("append_pos", append_pos);
+                heap_.set_object_field(sb_id, "sb_value",
+                                       DalvikValue::make_string(cur + piece, 0));
+            }
+            result = DalvikValue::make_object(mid, "Ljava/util/regex/Matcher;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
     }
     if (class_name == "Ljava/lang/reflect/Constructor;" &&
         method == "newInstance") {
@@ -21020,8 +21739,67 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // (controlled testing — in real Android, user would see dialog)
         std::cerr << "[EXP093-PERM] requestPermissions(requestCode=" << request_code
                   << ") → auto-granted (headless mode)" << std::endl;
-        // TODO: Call onRequestPermissionsResult on the Activity
-        // For now, just return success
+        // F-104 (S58): AOSP Activity.requestPermissions contract — the
+        // callback MUST dispatch. The headless law auto-grants and
+        // delivers onRequestPermissionsResult(requestCode, permissions,
+        // grantResults=GRANTED) on the receiver. Notes.readNote requests
+        // READ/WRITE_EXTERNAL_STORAGE and RETURNS; without the callback
+        // dispatch the note content load silently dies (the app waits for
+        // the result that never arrives).
+        {
+            std::vector<std::string> granted_perms;
+            std::vector<DalvikValue> perm_vals;
+            if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF &&
+                args[1].object_id != 0 && heap_.has_object(args[1].object_id)) {
+                const auto* arr = heap_.get(args[1].object_id);
+                int32_t alen = 0;
+                if (arr) {
+                    auto lv = arr->get_field("__array_length__");
+                    if (lv.type == DalvikType::INT32) alen = lv.int_val;
+                }
+                for (int32_t ai = 0; ai < alen; ++ai) {
+                    auto ev = arr->get_field("array[" + std::to_string(ai) + "]");
+                    if (ev.type == DalvikType::STRING_REF) {
+                        granted_perms.push_back(ev.string_val);
+                        perm_vals.push_back(ev);
+                        permission_state_[ev.string_val] = 0;  // GRANTED
+                    }
+                }
+            }
+            // grantResults int[] — all PERMISSION_GRANTED (0).
+            uint32_t grants_id = heap_.allocate("[I", pc_, 0);
+            heap_.set_object_field(grants_id, "__array_length__",
+                                   DalvikValue::make_int(static_cast<int32_t>(granted_perms.size())));
+            for (size_t gi = 0; gi < granted_perms.size(); ++gi)
+                heap_.set_object_field(grants_id, "array[" + std::to_string(gi) + "]",
+                                       DalvikValue::make_int(0));
+            std::vector<DalvikValue> cb_args;
+            cb_args.push_back(args.empty() ? DalvikValue::make_null() : args[0]);
+            cb_args.push_back(DalvikValue::make_int(request_code));
+            cb_args.push_back(args.size() >= 2
+                                  ? args[1]
+                                  : DalvikValue::make_null());
+            cb_args.push_back(DalvikValue::make_object(grants_id, "[I"));
+            std::string activity_class =
+                (args.empty() || args[0].type != DalvikType::OBJECT_REF)
+                    ? std::string()
+                    : args[0].class_desc;
+            if (activity_class.empty() && !args.empty() &&
+                args[0].type == DalvikType::OBJECT_REF &&
+                args[0].object_id != 0 && heap_.has_object(args[0].object_id))
+                activity_class = heap_.get(args[0].object_id)->class_descriptor;
+            if (!activity_class.empty()) {
+                DalvikValue cb_ret;
+                DalvikExecutionResult cb_result;
+                ApiCallTrace::Status cb_status = ApiCallTrace::Status::STUBBED;
+                if (try_recursive_invoke(activity_class,
+                                         "onRequestPermissionsResult",
+                                         cb_args, cb_ret, cb_result, "(I[Ljava/lang/String;[I)V")) {
+                    std::cerr << "[EXP093-PERM] onRequestPermissionsResult dispatched on "
+                              << activity_class << std::endl;
+                }
+            }
+        }
         result = DalvikValue::make_void();
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
@@ -27265,10 +28043,14 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         return true;
     }
 
-    // InputStreamReader.<init> / BufferedReader.<init> → propagate asset.
+    // InputStreamReader.<init> / BufferedReader.<init> / BufferedInputStream.<init>
+    // → propagate asset. (F-104: BufferedInputStream joins the chain — the
+    // Notes ReadTask wraps ContentResolver.openInputStream in
+    // BufferedInputStream → InputStreamReader → BufferedReader.)
     if (method == "<init>" &&
         (class_name.find("InputStreamReader") != std::string::npos ||
-         class_name.find("BufferedReader") != std::string::npos) &&
+         class_name.find("BufferedReader") != std::string::npos ||
+         class_name.find("BufferedInputStream") != std::string::npos) &&
         args.size() >= 2 &&
         args[0].type == DalvikType::OBJECT_REF &&
         args[1].type == DalvikType::OBJECT_REF) {

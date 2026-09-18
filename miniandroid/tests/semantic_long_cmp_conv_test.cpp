@@ -133,6 +133,7 @@ static double as_double(const miniandroid::dalvik::DalvikValue& v) {
         case T::INT64:   return static_cast<double>(v.long_val);
         case T::FLOAT32: return static_cast<double>(v.float_val);
         case T::FLOAT64: return v.double_val;
+        case T::BOOLEAN: return v.bool_val ? 1.0 : 0.0;
         default:         return 0;
     }
 }
@@ -407,6 +408,229 @@ int main() {
             double got = ret && ret->return_value ? as_double(*ret->return_value) : -999;
             record("f086_long_compare_unsigned", got == 1.0,
                    "expected +1 (unsigned 2^64-1 > 1), got " + std::to_string(got));
+        }
+    }
+
+    // ── F-102/F-103 (S58 R-NEW-376 + R-NEW-378) ──────────────────────────
+    //
+    // F-102 law: the 3rc invoke path must pass the call site's method PROTO
+    // to try_recursive_invoke so the F-023 exact-(class, name, desc)
+    // overload law selects the target. Pre-fix the range path dropped the
+    // proto; the arity heuristic preferred the LARGER bytecode body —
+    // re-selecting the CALLING ctor overload itself → same-receiver
+    // self-recursion to the depth cap (dooz v18 Lj/j0; ×7 / v23 Lgz1; ×3 +
+    // Lbp1; ×1 RECURSION-LIMIT drops, caller==callee).
+    //
+    // Discrimination: LSemA; carries <init>(I)V (NOP-padded, LARGER, sets
+    // g:I) and <init>()V (SMALL, sets f:J = 127). The entry invokes
+    // <init>()V via invoke-direct/range. Post-fix: exact descriptor match
+    // → <init>()V runs → f == 127. Pre-fix: the heuristic picks the larger
+    // <init>(I)V → f is never written → 0. (The fixture's proto fallback
+    // resolves the call site to "()V" — the same non-empty-descriptor path
+    // real APKs exercise.)
+    {
+        MethodInfo ctor_i;  // <init>(I)V — padded LARGE so the pre-fix
+                            // "prefer larger bytecode" heuristic picks it
+        ctor_i.name = "<init>";
+        ctor_i.descriptor = "(I)V";
+        ctor_i.defining_class = "LSemA;";
+        ctor_i.registers_size = 6;   // v4 = this, v5 = p1 (I)
+        ctor_i.ins_size = 2;
+        ctor_i.outs_size = 2;
+        {
+            std::vector<uint16_t> c;
+            for (int i = 0; i < 40; ++i) c.push_back(0x0000);  // nop padding
+            // iput vA=5(src), vB=4(obj), g@field_idx1 (22c: B|A|op BBBB)
+            c.push_back(static_cast<uint16_t>((4 << 12) | (5 << 8) | 0x59));
+            c.push_back(static_cast<uint16_t>(1));
+            c.push_back(w11x(0, 0x0E));  // return-void
+            ctor_i.bytecode = c;
+        }
+        MethodInfo ctor_v;  // <init>()V — sets f = 127
+        ctor_v.name = "<init>";
+        ctor_v.descriptor = "()V";
+        ctor_v.defining_class = "LSemA;";
+        ctor_v.registers_size = 5;   // v4 = this
+        ctor_v.ins_size = 1;
+        ctor_v.outs_size = 2;
+        {
+            std::vector<uint16_t> c;
+            // const-wide/16 v0, 127 (21s)
+            c.push_back(w11x(0, 0x16));
+            c.push_back(static_cast<uint16_t>(127));
+            // iput-wide vA=0(src), vB=4(obj), f@field_idx0
+            c.push_back(static_cast<uint16_t>((4 << 12) | (0 << 8) | 0x5A));
+            c.push_back(static_cast<uint16_t>(0));
+            c.push_back(w11x(0, 0x0E));  // return-void
+            ctor_v.bytecode = c;
+        }
+
+        MethodInfo entry;
+        entry.name = "f102_range_ctor_overload_exact";
+        entry.descriptor = "()J";
+        entry.defining_class = "LSemTest;";
+        entry.registers_size = 6;
+        entry.ins_size = 0;
+        entry.outs_size = 3;
+        {
+            std::vector<uint16_t> c;
+            // new-instance v2, LSemA; (type_idx 0)
+            c.push_back(w11x(2, 0x22));
+            c.push_back(0);
+            // invoke-direct/range {v2}, LSemA;-><init>()V (3rc: AA|op BBBB CCCC)
+            c.push_back(static_cast<uint16_t>((1 << 8) | 0x76));
+            c.push_back(0);  // method_idx 0
+            c.push_back(2);  // first_reg = v2
+            // iget-wide vA=0(dest), vB=2(obj), f@field_idx0
+            c.push_back(static_cast<uint16_t>((2 << 12) | (0 << 8) | 0x53));
+            c.push_back(static_cast<uint16_t>(0));
+            c.push_back(w11x(0, opc::RETURN_WIDE));
+            entry.bytecode = c;
+        }
+
+        DexReport report;
+        report.strings = {"f", "g", "<init>"};
+        report.types = {"LSemA;", "LSemTest;", "J", "I"};
+        report.field_ids.push_back({0, 2, 0});  // LSemA;.f : J
+        report.field_ids.push_back({0, 3, 1});  // LSemA;.g : I
+        report.method_ids.push_back({0, 0, 2});  // LSemA;.<init>
+        ClassInfo ca;
+        ca.name = "LSemA;";
+        ca.superclass_name = "Ljava/lang/Object;";
+        ca.direct_methods.push_back(ctor_i);
+        ca.direct_methods.push_back(ctor_v);
+        report.classes.push_back(ca);
+        ClassInfo ct;
+        ct.name = "LSemTest;";
+        ct.superclass_name = "Ljava/lang/Object;";
+        ct.direct_methods.push_back(entry);
+        report.classes.push_back(ct);
+
+        DalvikExecutionResult r = engine.execute_method(entry, report, {}, false);
+        const miniandroid::dalvik::InstructionTrace* ret = nullptr;
+        for (const auto& t : r.instruction_traces)
+            if (t.status == miniandroid::dalvik::InstructionTrace::Status::HALT_RETURN) ret = &t;
+        double got = ret && ret->return_value ? as_double(*ret->return_value) : -999;
+        record("f102_range_ctor_overload_exact_dispatch", got == 127.0,
+               "expected 127 (the ()V overload stored it; larger (I)V body must "
+               "NOT be selected), got " + std::to_string(got));
+    }
+
+    // ── F-103 (S58 R-NEW-378): java.lang.Class type-question laws ────────
+    //
+    // Law (OpenJDK Class.java): isInstance(obj) == isAssignableFrom(
+    // obj.getClass()); both walk the real class hierarchy. Pre-fix there
+    // was NO handler → STUBBED typed-zero 0 → the compose
+    // DisposableSaveableStateRegistry ACCEPTABLE_CLASSES loop missed for
+    // all 29 elements → rememberSaveable threw IAE "Can't put value with
+    // type null into saved state" → APP BOUNDARY unwind (dooz v23
+    // MainActivity.onCreate invoke_pc=317 → blank frame).
+    //
+    // Also pinned here: const-class HEAP-BACKED tokens (the token is a real
+    // Ljava/lang/Class; heap object carrying __referent_desc, so §19
+    // receiver-class resolution and shadow round-trips keep the token
+    // identity) and the instance-of runtime-type authority walk.
+    {
+        // Shared report pieces: LSemBase; <- LSemSub; hierarchy.
+        DexReport base_report;
+        base_report.strings = {"<init>", "isInstance", "isAssignableFrom"};
+        base_report.types = {"LSemBase;", "LSemSub;", "LSemTest;",
+                             "Ljava/lang/String;", "Ljava/lang/Class;"};
+        ClassInfo cb;
+        cb.name = "LSemBase;";
+        cb.superclass_name = "Ljava/lang/Object;";
+        base_report.classes.push_back(cb);
+        ClassInfo cs;
+        cs.name = "LSemSub;";
+        cs.superclass_name = "LSemBase;";
+        base_report.classes.push_back(cs);
+        ClassInfo ct2;
+        ct2.name = "LSemTest;";
+        ct2.superclass_name = "Ljava/lang/Object;";
+        base_report.classes.push_back(ct2);
+
+        auto class_law_run = [&](MethodInfo mi, DexReport report) {
+            return engine.execute_method(mi, report, {}, false);
+        };
+        auto halt_return = [](DalvikExecutionResult& r)
+            -> const miniandroid::dalvik::InstructionTrace* {
+            for (const auto& t : r.instruction_traces)
+                if (t.status == miniandroid::dalvik::InstructionTrace::Status::HALT_RETURN)
+                    return &t;
+            return nullptr;
+        };
+
+        {   // isInstance exact: String.class.isInstance("x") == true
+            MethodInfo mi;
+            mi.name = "f103_isInstance_string_exact";
+            mi.descriptor = "()I";
+            mi.defining_class = "LSemTest;";
+            mi.registers_size = 8; mi.ins_size = 0; mi.outs_size = 2;
+            std::vector<uint16_t> c;
+            c.push_back(w11x(2, 0x1C)); c.push_back(3);   // const-class v2, String
+            c.push_back(w11x(3, 0x1A)); c.push_back(3);   // const-string v3, strings[3]="x"
+            // invoke-virtual {v2, v3}, Class.isInstance (method_ids slot 0)
+            c.push_back(static_cast<uint16_t>((2 << 12) | 0x6E));
+            c.push_back(0);
+            c.push_back(static_cast<uint16_t>(2 | (3 << 4)));
+            c.push_back(w11x(0, opc::MOVE_RESULT));
+            c.push_back(w11x(0, opc::RETURN));
+            mi.bytecode = c;
+            DexReport rep = base_report;
+            rep.strings.push_back("x");  // idx 3
+            rep.method_ids.push_back({4, 0, 1});  // Class.isInstance
+            DalvikExecutionResult r = class_law_run(mi, rep);
+            const auto* ret = halt_return(r);
+            double got = ret && ret->return_value ? as_double(*ret->return_value) : -999;
+            record("f103_class_isInstance_string_exact", got == 1.0,
+                   "expected 1 (String token vs String value), got " + std::to_string(got));
+        }
+        {   // isAssignableFrom subclass walk: Base.isAssignableFrom(Sub)
+            MethodInfo mi;
+            mi.name = "f103_isAssignableFrom_subclass";
+            mi.descriptor = "()I";
+            mi.defining_class = "LSemTest;";
+            mi.registers_size = 8; mi.ins_size = 0; mi.outs_size = 2;
+            std::vector<uint16_t> c;
+            c.push_back(w11x(2, 0x1C)); c.push_back(0);   // const-class v2, LSemBase;
+            c.push_back(w11x(3, 0x1C)); c.push_back(1);   // const-class v3, LSemSub;
+            // invoke-virtual {v2, v3}, Class.isAssignableFrom (method_ids slot 1)
+            c.push_back(static_cast<uint16_t>((2 << 12) | 0x6E));
+            c.push_back(1);
+            c.push_back(static_cast<uint16_t>(2 | (3 << 4)));
+            c.push_back(w11x(0, opc::MOVE_RESULT));
+            c.push_back(w11x(0, opc::RETURN));
+            mi.bytecode = c;
+            DexReport rep = base_report;
+            rep.method_ids.push_back({4, 0, 1});  // Class.isInstance
+            rep.method_ids.push_back({4, 0, 2});  // Class.isAssignableFrom
+            DalvikExecutionResult r = class_law_run(mi, rep);
+            const auto* ret = halt_return(r);
+            double got = ret && ret->return_value ? as_double(*ret->return_value) : -999;
+            record("f103_class_isAssignableFrom_subclass", got == 1.0,
+                   "expected 1 (Sub is assignable to Base), got " + std::to_string(got));
+        }
+        {   // instance-of runtime-type authority: new LSemSub; instanceof LSemBase;
+            MethodInfo mi;
+            mi.name = "f103_instanceof_heap_subclass";
+            mi.descriptor = "()I";
+            mi.defining_class = "LSemTest;";
+            mi.registers_size = 8; mi.ins_size = 0; mi.outs_size = 2;
+            std::vector<uint16_t> c;
+            c.push_back(w11x(2, 0x22)); c.push_back(1);   // new-instance v2, LSemSub;
+            // instance-of v0, v2, LSemBase; (22c: dest vA=0 low nibble of high
+            // byte, src vB=0? — canonical: (dest<<8)|op with src/type encoded
+            // BB|CC — here: vA=0, vB=2, type@1)
+            c.push_back(static_cast<uint16_t>((2 << 12) | (0 << 8) | 0x20));
+            c.push_back(static_cast<uint16_t>(1));
+            c.push_back(w11x(0, opc::RETURN));
+            mi.bytecode = c;
+            DalvikExecutionResult r = class_law_run(mi, base_report);
+            const auto* ret = halt_return(r);
+            double got = ret && ret->return_value ? as_double(*ret->return_value) : -999;
+            record("f103_instanceof_heap_subclass", got == 1.0,
+                   "expected 1 (heap object of LSemSub; through the superclass "
+                   "walk), got " + std::to_string(got));
         }
     }
 
