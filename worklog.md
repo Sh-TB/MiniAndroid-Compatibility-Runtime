@@ -841,3 +841,27 @@ Stage Summary:
   by refutation, refined R-NEW-344 to a precise ranked next step,
   published the pending S55 queue, and verified everything from a fresh
   clone. Battery ALL PASS 96/96 at HEAD 83f1b76e.
+
+---
+Task ID: S57
+Agent: Super Z (main)
+Task: ROADMAP 3 CLOSURE — R-NEW-344 fix + legacy-debt reconciliation (no new roadmap, no new branches)
+
+Work Log:
+- §12 remote truth verified: HEAD 28b644b7 = origin/main (stale tracking ref refreshed via fetch; 0/0 ahead/behind; single branch; tags in sync).
+- §11 security audit: no credentials in config/remotes/tracked files/history (pickaxe over github_pat_/ghp_ prefixes; S51 filter-repo purge already removed the old fragment). Session token never entered any commit.
+- Corpus re-fetched SHA-verified after container reset (apk_cache + EXT fixture + toolchain bootstrap re-proven; aapt2 2.20 / ECJ / D8 / android-34).
+- R-NEW-344 REPRODUCED at HEAD (HALT-LOOP Lbw0;.d pc=28, blank frame) — miniandroid/run/s57_r344_repro/.
+- Bytecode ground truth via androguard (scripts/s57_andro_lbw0.py): the R8-inlined ScatterMap growth decision is Long.compare(size*32 ^ MIN, capacity*25 ^ MIN) + if-gtz → f(nextCapacity(cap)) at pc=494-506; fall-through = convertMetadataForCleanup + same-cap refill.
+- ROOT CAUSE: bridge_to_api had NO Long.compare/compareUnsigned handler → STUBBED typed-zero exit returned 0 → if-gtz not-taken → cleanup branch. Cap-7 grow never reaches the compare (capacity<=8 → pc=491), which is why only the SECOND grow failed.
+- FIX F-086 (generic): 64-bit compare family in the F-055 Long block (OpenJDK Long.java law) — miniandroid/src/dex/dalvik_engine.cpp.
+- §6 PROOF: capacity field trace obj#2658: 7 → 15 → 31 (miniandroid/run/s57_r344_proof2/); HALT-LOOP 0; F084 fires 0; aput-oob gone.
+- REGRESSION: semantic_long_cmp_conv_test f086 group 6/6 (incl. bit-exact dooz23 idiom); battery stage label honestly updated "expect 14"→"expect 20".
+- §32 GATE: BATTERY GATE: ALL PASS (92 executed-or-cached stages at this HEAD, 0 FAIL; EXT-01/02 + corpus stages included). Real-APK corpus re-run: chessclock 2,040,736 nb (sha16 ecc001fd8e33519a), notes 2,073,600 nb (cf521b168a9b4ed2), unote 236,520 nb (7b30d52201bb22ac) — miniandroid/run/s57_corpus/.
+- Registry synced (scripts/s57_registry_update.py): R-NEW-344 → ROOT-CAUSED-FIXED; F-086 registered; R-NEW-025/323/330/333/335/351 → SUPERSEDED-BY-EVIDENCE (current-face non-reproduction); R-NEW-376 absorbs the v23 ctor-climb alias (Lgz1;.<init> depth=2048 ×3 + Lbp1;.<init> ×1); open_frontiers = [R-NEW-376].
+- Canonical docs synced: ROADMAP_STATUS §2/§3/§6 (S57), KNOWLEDGE_INDEX §0b F-086 row, ACHIEVEMENTS dooz v23 row + count summary; evidence docs/evidence/s57_dooz23/ (F086_EVIDENCE.md + SHA256SUMS, 7/7 verified).
+
+Stage Summary:
+- R-NEW-344 CLOSED: ROOT-CAUSED-FIXED via F-086, regression-protected, 15→31 proven at the runtime boundary.
+- Remaining dooz frontier: R-NEW-376 (ctor-climb; v18+v23 alias observations) — P0-for-Dooz.
+- No new roadmap/branch/IDs created; all closures reference existing items per §37.
