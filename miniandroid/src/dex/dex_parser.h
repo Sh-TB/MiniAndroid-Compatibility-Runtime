@@ -255,6 +255,29 @@ struct ClassInfo {
     std::vector<MethodInfo> all_methods() const;
     std::vector<MethodInfo> get_method(const std::string& name) const;
     std::optional<MethodInfo> get_constructor() const;
+
+    // F-107c2 (R-NEW-381, S61): non-copying method iteration.
+    // all_methods() builds a fresh vector of MethodInfo (bytecode vectors
+    // included) on every call; interpreter-loop callers (override queries,
+    // method-resolution walks, the is_a classifier chain) only ITERATE.
+    // Each such call copied the class's entire method table — the profile
+    // showed 773k MethodInfo copies per 75s run.
+    template <class F>
+    void for_each_method(F&& f) const {
+        for (const auto& m : direct_methods) f(m);
+        for (const auto& m : virtual_methods) f(m);
+    }
+    // Count without copying.
+    size_t method_count() const {
+        return direct_methods.size() + virtual_methods.size();
+    }
+    // First method with the given name (pointer, nullptr if absent) —
+    // replaces the by-value get_method(name) in boolean-existence queries.
+    const MethodInfo* find_method(const std::string& name) const {
+        for (const auto& m : direct_methods) if (m.name == name) return &m;
+        for (const auto& m : virtual_methods) if (m.name == name) return &m;
+        return nullptr;
+    }
 };
 
 // Complete DEX report

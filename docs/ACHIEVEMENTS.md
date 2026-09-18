@@ -42,6 +42,30 @@ only rescued class is dark UI with rich palettes (helloworld_ext01, 256
 colors). Blank/white/black frames are NEVER stored as images — they are
 recorded as text, exactly as done in §3.2.
 
+## 0f. S61 Runtime Spotlight Corpus (Phase A) — the capability-driven sweep
+
+> **S61 corpus law**: selection by Android-capability coverage (not
+> randomness); every APK F-Droid-sourced + SHA-verified; every L-level
+> recorded honestly from run artifacts (screenshots, render-walk traces,
+> lifecycle traces). Canonical data: `docs/corpus/spotlight_manifest.json`
+> + `docs/corpus/spotlight_results.json`; narrative:
+> `docs/corpus/SPOTLIGHT_COVERAGE.md`.
+
+| Bucket | Count | Notes |
+|--------|-------|-------|
+| F-Droid apps fetched (SHA-verified manifest) | **53** | api/v1-driven; idempotent pipeline `scripts/s61_spotlight_fetch.py` |
+| Apps executed in the S61 sweep (budget 60s, real-dalvik) | **52** | `scripts/s61_spotlight_run.py`; per-app run dir + classified.json |
+| Pre-existing corpus apps (earlier sessions) | **9** | dooz v18/v23, Notes, uNote, GM Dice, ChessClock, microtimer, simplestopwatch, headingcalculator |
+| **Total corpus (Phase A)** | **61** | Phase B (100) deferred — pipeline is idempotent |
+| L5 — drawing to framebuffer | **7** | diary (2,073,600 px), tuner (1,823,360), accordion (935,172), pckeyboard (208,440), shorty (44,684), siggen (47,809), schildbach.wallet (5,695) |
+| L4 — real measured geometry | **3** | giggity, ghostsq.commander, jens.automation2 |
+| L2 — Activity/lifecycle dispatched | **39** | modern androidx/recycler/compose-heavy apps |
+| L1 — DEX/class loading, lifecycle incomplete | **3** | bouncy (libGDX/SurfaceView), two solitaire suites — honest frontier faces |
+| Simple Games Spotlight subset | **8** (+3 pre-existing L7 games) | minesweeper, ludo, memory, sgtpuzzles, solitaire ×2, 2048, bouncy |
+
+**Sweep evidence**: `run/s61_spotlight/<package>/` (screenshot.png +
+SHA256, stderr trace, report.md, classified.json per app).
+
 ## 1. Master matrix — current-HEAD verdicts
 
 Verdicts at HEAD `8c575f71` + F-080/F-081 (S54) unless marked **[S53]**

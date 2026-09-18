@@ -11,6 +11,72 @@
 #include <fstream>
 #include <filesystem>
 #include <cstdlib>
+// ─── S61 PERF: poor-man's sampling profiler (env MINIANDROID_SAMPLE=1) ───
+#include <execinfo.h>
+#include <dlfcn.h>
+#include <signal.h>
+#include <sys/time.h>
+#include <unistd.h>
+#include <vector>
+#include <algorithm>
+namespace {
+struct SampleProfiler {
+    static SampleProfiler& inst() { static SampleProfiler s; return s; }
+    std::vector<std::vector<void*>> samples;
+    static void handler(int) {
+        void* bt[24];
+        int n = backtrace(bt, 24);
+        std::vector<void*> s(bt, bt + n);
+        auto& sp = inst();
+        if (sp.samples.size() < 100000) sp.samples.push_back(s);
+    }
+    void start() {
+        struct sigaction sa{};
+        sa.sa_handler = &SampleProfiler::handler;
+        sigemptyset(&sa.sa_mask);
+        sa.sa_flags = SA_RESTART;
+        sigaction(SIGPROF, &sa, nullptr);
+        struct itimerval timer{};
+        timer.it_interval.tv_usec = 10000;  // 10ms
+        timer.it_value.tv_usec = 10000;
+        setitimer(ITIMER_PROF, &timer, nullptr);
+    }
+    void stop_and_report() {
+        struct itimerval zero{};
+        setitimer(ITIMER_PROF, &zero, nullptr);
+        fprintf(stderr, "[SAMPLES] total=%zu\n", samples.size());
+        // top unique innermost-frame PCs
+        std::vector<void*> tops;
+        for (auto& s : samples) if (!s.empty()) tops.push_back(s[1] ? s[1] : s[0]);
+        std::sort(tops.begin(), tops.end());
+        // count contiguous runs
+        size_t i = 0;
+        std::vector<std::pair<void*, size_t>> counts;
+        while (i < tops.size()) {
+            size_t j = i;
+            while (j < tops.size() && tops[j] == tops[i]) ++j;
+            counts.push_back({tops[i], j - i});
+            i = j;
+        }
+        std::sort(counts.begin(), counts.end(),
+                  [](auto& a, auto& b){ return a.second > b.second; });
+        for (size_t k = 0; k < counts.size() && k < 40; ++k) {
+            char* dem = nullptr;
+            char buf[128];
+            void* addr = counts[k].first;
+            Dl_info info{};
+            if (dladdr(addr, &info) && info.dli_sname)
+                fprintf(stderr, "[SAMPLE-TOP] %5zu  %s (+%p)\n", counts[k].second,
+                        info.dli_sname, (void*)((char*)addr - (char*)info.dli_saddr));
+            else
+                fprintf(stderr, "[SAMPLE-TOP] %5zu  %p\n", counts[k].second, addr);
+            (void)dem; (void)buf;
+        }
+        fflush(stderr);
+    }
+};
+}
+#define S61_SAMPLE 1
 #include <cstring>
 #include <pthread.h>
 
@@ -371,8 +437,28 @@ int main(int argc, char* argv[]) {
     
     // Parse options
     runtime::ExecutionConfig config;
+    if (std::getenv("MINIANDROID_SAMPLE")) {
+        SampleProfiler::inst().start();
+        atexit([] { SampleProfiler::inst().stop_and_report(); });
+    }
     std::string apk_path;
     bool verbose = false;
+
+    // F-107b2 (R-NEW-381, S61): per-instruction tracing is OFF by default
+    // (trace_cap=0). The gprof profile showed the always-on InstructionTrace
+    // machinery (Clock::now() ×2 per instruction + ring-buffer erase O(n))
+    // is a top-2 interpreter cost while its output is a forensic artifact,
+    // not primary evidence. Opt in per run: MINIANDROID_TRACE_CAP=<n>.
+    if (const char* tc = std::getenv("MINIANDROID_TRACE_CAP"); tc && *tc) {
+        unsigned long v = std::strtoul(tc, nullptr, 10);
+        config.trace_cap = static_cast<size_t>(v);
+        std::cout << "[*] TRACE-CAP enabled (" << v << " instruction traces)" << std::endl;
+    }
+    if (const char* ac = std::getenv("MINIANDROID_API_TRACE_CAP"); ac && *ac) {
+        unsigned long v = std::strtoul(ac, nullptr, 10);
+        config.api_call_trace_cap = static_cast<size_t>(v);
+        std::cout << "[*] API-TRACE-CAP set to " << v << std::endl;
+    }
     
     for (int i = 2; i < argc; i++) {
         std::string arg = argv[i];

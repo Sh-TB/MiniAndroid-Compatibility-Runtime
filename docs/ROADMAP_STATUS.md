@@ -27,7 +27,14 @@
 
 ## 2. What was fixed THIS session (root cause → law → proof)
 
-S60 rows above the S59 row for continuity.
+S61 rows above the S60 row for continuity.
+
+| ID | Blocker | Root cause (evidence) | Fix | Proof |
+|---|---|---|---|---|
+| **F-107 a/b/b2/c/c2/d (S61)** | R-NEW-381 supporting fix: the dooz v23 composition could not complete inside ANY practical budget — measured evidence-machinery overhead dominating the interpreter (gprof + rdtsc phase timers, 60-90s dooz v23 runs) | MEASURED facts: (1) function-local `static` containers of std::string in the hot path cost thread-safe-init guards + `__cxa_atexit` cleanup-thunk churn — `__tcf_0` entered **739M times ≈ 50% of wall** plus 464M std::function `_M_manager` calls; (2) per-instruction InstructionTrace (Clock::now ×2 + operand strings) with an O(n) `erase(begin)` ring (the engine's own EXP-045 note: top-2 cost) — `trace_cap` defaulted ON at 2000; (3) the ApiCallTrace cap erased one element from the FRONT of a 5000-element vector per push after saturation (7230 erases ≈ 0.9 s); (4) `is_subclass_of`'s interface-closure `collect()` did a LINEAR SCAN of every `dex_report_->classes` entry (up to 3052 ClassInfo records) per chain step inside the is_a classifier (millions of queries); (5) `ClassInfo::all_methods()/get_method()` returned BY VALUE — the native-method check copied the whole method table on EVERY `try_recursive_invoke` (773k MethodInfo copies); (6) the overload search copied the class's method table (~40 KB) per invoke | **F-107a**: hot-path statics → trivially-destructible `const char*` tables (zero guard, zero thunk; framework_views, builtin_exc_parent, content_measure ×2, kLocaleConsts, kOrdinals(KvInt), svc maps, kSystemProps, kCharsetAliases, view_parents, normal_permissions, service maps). **F-107b**: `batched_cap_push` — bounded-lag FIFO (cap+BATCH then one range-erase; identical order semantics, 1/64 the memmove). **F-107b2**: per-instruction traces default OFF (`trace_cap=0`), opt-in `MINIANDROID_TRACE_CAP` (API traces stay on — primary evidence); ExecutionConfig plumb. **F-107c**: interface closure via the F-103 `class_to_interfaces_` index (O(log n)) instead of the linear scan. **F-107c2**: `for_each_method/method_count/find_method` non-copying accessors; native check + `class_chain_defines_method` iterate in place. **F-107d**: overload selection iterates direct/virtual tables via stable pointers (dex_report_->classes never mutates after load — verified zero mutation sites); F-023 exact-descriptor + EXP-080 lambda-name laws unchanged | `__tcf_0` GONE from the profile (post-fix 60s run: 0 entries); goldens PASS; battery ALL PASS 96 (after the test-oracle opt-in fix: the three semantic harnesses read `instruction_traces` for HALT_RETURN and now set `engine.config_.trace_cap = 2000` explicitly — the runtime default stays OFF per the law). Phase-timer evidence retained (`MINIANDROID_PERF_PHASES=1` prints `[PERF-PHASE]` + `[PERF-OPS]` opcode histogram at exit). Honest note: the composition still exceeds practical budgets — the remaining cost is 627 cold `<clinit>` class-init chains + the invoke tree (real interpreted work; AOSP EnsureInitialized law), visible per-run via the phase timers |
+| **F-108 (S61)** | R-NEW-381 draw-path face: the render walk NEVER dispatched the Compose owner under R8 minification — dooz v23's AndroidComposeView is `Lt4;` and ComposeView is `Lho;` (DEX ground truth `scripts/s61_r381_dex_truth.py`: **0** `Landroidx/compose/` class names survive R8; 21 androidx names kept only for Parcelizer/serialization) | The UC009 expansion + F-099 owner gates keyed the compose identity on the literal `Landroidx/compose/` prefix — wiped by R8; with the degenerate measure (0x105, budget-casualty) the size gate also failed, so `dispatch_custom_view_draw` never ran → white frame | **F-108 R8-rename identity law**: a non-framework class whose ancestry OVERRIDES `dispatchDraw` carries the compose draw-dispatch contract (F-099's own rationale, now the gate). UC009 expansion + the owner gate + a children-empty contract branch all key on `chain_overrides_method(class, "dispatchDraw")` — the DEX hierarchy survives renaming, package names do not. No app names hardcoded | Deep 560s run (run/s61_r381_deep): `[UC009-DRAW] dispatchDraw-contract view expanded to parent rect 1080x1920`; `[C013-ONDRAW] view=1359 class=Lt4; dispatched=YES` (the interpreted dispatchDraw of the R8-renamed AndroidComposeView EXECUTED — 0 canvas ops because the composition has not produced LayoutNodes yet); framebuffer **197 non-white px (was 0)**. Evidence: docs/evidence/s61_r381/ |
+
+S60 rows below the S61 row for continuity.
 
 | ID | Blocker | Root cause (evidence) | Fix | Proof |
 |---|---|---|---|---|
@@ -59,18 +66,19 @@ S55/S56/S57 rows retained below for continuity.
 
 ## 3. Active frontier (P0 first, attack order)
 
-S60 state after R-NEW-380 closure:
+S61 state after F-107 (evidence-cost laws) + F-108 (R8-rename identity law):
 
-1. **R-NEW-381 — Dooz first-frame content / the Compose draw path (P1, pinned S60)**
-   (OBSERVED-FAIL). Past F-106a/b/c the FULL creation chain runs with ZERO
-   exceptions: the Hilt factory resolves GameViewModel (Lk2;.b case-1 +
-   SavedStateHandle machinery), the ViewModel constructs with its real
-   SettingsRepository dependency, rememberSaveable registers under valid
-   radix-36 keys, and the Choreographer frame loop is alive. The first frame
-   is still DARK (post_f106_screenshot.png non-black 0.0000 — the same face
-   as the S59 post2 evidence). NEXT: the AndroidComposeView draw chain —
-   draw/dispatchDraw → Canvas ops → the software framebuffer walk; verify the
-   Compose owner surface (setContent → attach → draw). *R-NEW-380 must NOT be
+1. **R-NEW-381 — Dooz first-frame content / composition volume (P1, pinned
+   S60; S61 face refined)** (OBSERVED-FAIL). The Compose draw path is now
+   WIRED: F-108 identifies the R8-renamed owner by the dispatchDraw-override
+   contract (Lt4; expanded to 1080x1920) and the interpreted dispatchDraw
+   EXECUTED (C013-ONDRAW dispatched=YES) — 0 canvas ops because the
+   composition has not produced LayoutNodes yet. MEASURED (S61 phase timers):
+   the composition volume = 627 cold `<clinit>` class-init chains + ~23K
+   invokes + ~700K instructions (560s run) — real interpreted work, not a
+   semantic bug. NEXT: (a) composition completion — longer evidence budget
+   or the cold-init/invoke throughput frontier; (b) when LayoutNodes exist,
+   verify dispatchDraw → CanvasShadow ops → pixels. *R-NEW-380 must NOT be
    reopened — the creation chain is closed.*
 2. **F-085 content probe — chain live, commonmark face remains** (P1).
    The real read chain is PROVEN live end-to-end through the app's own

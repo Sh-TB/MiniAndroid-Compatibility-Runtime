@@ -1,0 +1,8 @@
+[PROGRESS] 400000 total instructions executed (currently in Lqn1;.c PC=32/43) RSS=63 MB
+[PROGRESS] 500000 total instructions executed (currently in Lrz1;.g PC=30/103) RSS=63 MB
+[PROGRESS] 600000 total instructions executed (currently in Lrm;.h PC=27/2314) RSS=77 MB
+[PROGRESS] 700000 total instructions executed (currently in Lnb0;.p PC=92/1604) RSS=85 MB
+[UC009-DRAW] dispatchDraw-contract view expanded to parent rect 1080x1920
+[C013-ONDRAW] view=1359 class=Lt4; dispatched=YES ops=0
+[EXP092-COPY] fb has 197 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ has 197 non-white pixels

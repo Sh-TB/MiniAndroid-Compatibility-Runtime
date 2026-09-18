@@ -1473,7 +1473,12 @@ public:
         // EXP-042 Phase 1: Ring-buffer caps. These bound memory regardless of
         // how many instructions execute. Set to 0 to disable capping (NOT
         // recommended for real APKs — will OOM).
-        size_t trace_cap = 2000;             // last N instruction traces
+        // F-107b2 (S61): instruction traces are FORENSIC artifacts, not
+        // primary evidence — default OFF (0) so the per-instruction
+        // Clock::now()/ring-buffer cost never taxes normal runs. Opt in via
+        // MINIANDROID_TRACE_CAP. API-call traces stay ON (bounded, batched
+        // cap) — they are primary run evidence (api_trace.json).
+        size_t trace_cap = 0;                // 0 = no per-instruction traces
         size_t api_call_trace_cap = 5000;    // last N API call traces
         size_t completed_frame_cap = 100;   // last N completed stack frames
         size_t allocation_log_cap = 1000;    // last N heap allocations

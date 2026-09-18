@@ -159,6 +159,10 @@ static bool expect(DalvikExecutionEngine& engine, const char* name,
 int main() {
     std::cout << "== semantic_long_cmp_conv_test — Dalvik 64-bit / NaN / conversion semantics ==\n";
     DalvikExecutionEngine engine;
+    // S61 F-107b2: the runtime default disables per-instruction traces
+    // (evidence-cost law). These TEST ORACLES read instruction_traces for
+    // the HALT_RETURN record, so they opt into forensic tracing explicitly.
+    engine.config_.trace_cap = 2000;
     const int64_t TWO_POW_32 = 4294967296LL;
 
     // ── RESULT_001: long arithmetic in full 64-bit ────────────────────────

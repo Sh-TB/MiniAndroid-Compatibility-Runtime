@@ -1081,3 +1081,29 @@ Stage Summary:
 - S60 CLOSED: R-NEW-380 ROOT-CAUSED-FIXED (F-106 a/b/c); R-NEW-381 honestly
   registered as the pinned successor (P1, the Compose draw path). The dooz
   creation chain (R-NEW-344 → 376 → 378 → 379 → 380) is fully closed.
+
+---
+Task ID: S61
+Agent: Super Z (main)
+Task: Roadmap-3 Closure continuation from real HEAD (cac7ba5) — R-NEW-381 (Compose draw path) root cause + Runtime Spotlight Corpus Phase A + search-tool benchmark + provenance inventory; no new branch/campaign.
+
+Work Log:
+- RECON: HEAD == origin/main == cac7ba5c (S60-PUSH-VERIFY), tree clean; registry read (R-NEW-381 the single open frontier, P1); open roots R-NEW-228/303/331 re-checked — no new evidence, left untouched.
+- R-NEW-381 REPRO (dooz v23, 420s): frame white 0 non-white px; trace shows Lt4; measured 0x105 FAILED(no write-back), budget expiry mid-composition. DEX ground truth (scripts/s61_r381_dex_truth.py): dooz v23 has ZERO Landroidx/compose/ class names — R8 renamed AndroidComposeView→Lt4; / ComposeView→Lho; (both → ViewGroup); 21 androidx names survive (Parcelizers). The name-prefix gates can NEVER match.
+- PROFILE (gprof, then -fno-ipa-icf, then rdtsc phase timers + opcode histogram — 6 measurement rounds): (1) __tcf_0 static-destructor thunk 739M entries ≈ 50% wall (function-local statics of std::string) + 464M std::function _M_manager; (2) per-instruction InstructionTrace (trace_cap default ON) with O(n) erase(begin) ring; (3) ApiCallTrace cap front-erase per push; (4) is_subclass_of interface closure = LINEAR SCAN of all 3052 classes per chain step (is_a classifier); (5) all_methods()/get_method() by-value copies (native check per invoke — 773k MethodInfo copies; overload search ~40KB/invoke); (6) final isolation: ensure_class_initialized COLD path = 627 class-init chains dominate the composition (real interpreted work — AOSP EnsureInitialized law).
+- FIXES F-107a/b/b2/c/c2/d (all generic, zero semantics change): trivially-destructible const char* tables (12 sites); batched_cap_push bounded-lag FIFO for trace caps; per-instruction traces default OFF (MINIANDROID_TRACE_CAP opt-in; ExecutionConfig plumb); interface closure via the F-103 class_to_interfaces_ index; non-copying for_each_method/find_method accessors; in-place overload selection (dex_report_->classes mutation-free verified).
+- FIX F-108 (R8-rename identity law): compose draw-path identity via chain_overrides_method(class,"dispatchDraw") for non-framework classes — UC009 parent-rect expansion + F-099 owner gate + children-empty contract branch all re-keyed. No app names hardcoded.
+- REGRESSION CATCH + FIX: the semantic harnesses read r.instruction_traces for HALT_RETURN — F-107b2 emptied them (3 tests failed). Test oracles now opt into forensic tracing explicitly (engine.config_.trace_cap=2000); the RUNTIME default stays OFF per the law. BATTERY: fresh full run **96 stages ALL PASS** (the earlier "88" was a --resume counting artifact; fresh run = 96/0/0). Goldens PASS.
+- DEEP EVIDENCE (run/s61_r381_deep, 560s): 700K instructions; [UC009-DRAW] dispatchDraw-contract view expanded to 1080x1920; [C013-ONDRAW] view=1359 class=Lt4; dispatched=YES (0 ops — composition has not produced LayoutNodes yet); framebuffer 197 non-white px (was 0). Honest face: composition volume = 627 cold <clinit> chains + ~23K invokes; phase timers make it visible per run (MINIANDROID_PERF_PHASES=1). R-NEW-381 face refined in registry; NOT closed.
+- RUNTIME SPOTLIGHT CORPUS PHASE A: scripts/s61_spotlight_fetch.py (F-Droid api/v1-driven, SHA-verified, capability-tagged): **53 apps** fetched (2 waves, 139 probed ids). scripts/s61_spotlight_run.py (sweep + honest L-classifier from run artifacts): **52 apps executed** — L5=7 (diary 2,073,600 px; tuner; accordion; pckeyboard; shorty; siggen; schildbach.wallet), L4=3, L2=39, L1=3 (bouncy/solitaire×2 — honest frontier faces). +9 pre-existing = **61 corpus apps**. Canonical docs: docs/corpus/SPOTLIGHT_COVERAGE.md + manifest + results JSON. Zero APKs committed (apk_cache gitignored).
+- SEARCH TOOLS REAL USE: Go 1.22.5 installed → zoekt (index 0.45s/324 files/7.9MB) + google codesearch built; benchmarked on 5 real campaign queries vs ripgrep (rg 7-8ms ground truth; zoekt 35-49ms, under-reported 2/5 — recorded limitation; csearch 2ms, silently under-indexed the 1.2MB dalvik_engine.cpp). Probe: UNAVAILABLE (multi-round negative). Ledger: docs/corpus/SEARCH_LEDGER.md (2 duplicate-research reuses recorded).
+- PROVENANCE: docs/corpus/UPSTREAM_INVENTORY.md — implementation layers (MOTHER/DERIVED/EXTRACTED/REFERENCE/COMPATIBILITY/ANALYSIS/TEST ORACLE/RESEARCH ONLY), android-34.jar = API surface NOT implementation, S61 law extractions (R8 identity, EnsureInitialized cost model, evidence-cost laws).
+- CANONICAL SYNC: ROADMAP_STATUS §2 (F-107/F-108 rows) + §3 (R-NEW-381 S61 face); KNOWLEDGE_INDEX §0c (5 rows); ACHIEVEMENTS §0f (corpus matrix). Registry: R-NEW-381 face + S61 note; no status inflation (R-NEW-381 stays OBSERVED-FAIL).
+- SECURITY: secret guard --tree PASS (fail-closed). tools/go + tools/gopath gitignored (253M/1.7G local toolchain, reproducible via ledger recipe). gmon.out removed.
+
+Stage Summary:
+- R-NEW-381 draw chain WIRED (F-108) + measured composition-volume frontier recorded; the create chain (R-NEW-344→376→378→379→380) stays closed.
+- Engine evidence-cost laws landed with battery 96/96; per-run phase-timer visibility added.
+- Corpus Phase A: 61 apps with capability coverage + honest L-levels; games subset 8+3.
+- Search ledger + provenance inventory + corpus matrix in canonical docs.
+- Remaining pinned frontier: R-NEW-381 composition volume (P1) + F-085 commonmark face (P1) + P2 ladders (uNote NoteEdition, Persistence L10, Telegram init).
