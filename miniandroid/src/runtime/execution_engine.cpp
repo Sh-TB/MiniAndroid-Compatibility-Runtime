@@ -200,7 +200,13 @@ ExecutionResult ExecutionEngine::execute(const std::string& path, const Executio
 bool ExecutionEngine::stage_load_apk(const std::string& path, ExecutionResult& result) {
     trace_engine_.info("ExecutionEngine", "stage_load_apk", "Loading APK: " + path);
     
-    apk_parser_.set_verbose(true);  // Always verbose for now
+    // S60 hygiene (F-074 precedent): the always-on parser dumps wrote ~240K
+    // stderr lines per run (dozes classes.dex) and consumed a large share of
+    // the first-frame wall-clock budget. Parse semantics UNCHANGED; set
+    // MINIANDROID_PARSE_VERBOSE=1 to restore the forensic dump.
+    static const bool parse_verbose =
+        std::getenv("MINIANDROID_PARSE_VERBOSE") != nullptr;
+    apk_parser_.set_verbose(parse_verbose);
     
     result.apk_info = apk_parser_.parse(path);
     
@@ -241,8 +247,11 @@ bool ExecutionEngine::stage_parse_dex( ExecutionResult& result) {
         return false;
     }
     
-    // EXP-031.6: Enable verbose DEX parser logging for debugging
-    dex_parser_.set_verbose(true);
+    // EXP-031.6: verbose DEX parser logging is now opt-in via
+    // MINIANDROID_PARSE_VERBOSE (S60 hygiene — see the note above).
+    static const bool parse_verbose =
+        std::getenv("MINIANDROID_PARSE_VERBOSE") != nullptr;
+    dex_parser_.set_verbose(parse_verbose);
     
     result.dex_report = dex_parser_.parse_data(dex_data, "classes.dex");
     
@@ -651,6 +660,8 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
         // ===================================================================
         // CALL DALVIK ENGINE - This is the REAL execution path
         // ===================================================================
+        // S60 (R-NEW-380): propagate the wall-clock soft budget (0 = off).
+        dalvik_engine_.config_.max_wall_ms = config.max_wall_seconds * 1000ULL;
         auto dalvik_result = dalvik_engine_.execute_apk_with_activity(
             result.apk_info.apk_path,
             result.dex_report,

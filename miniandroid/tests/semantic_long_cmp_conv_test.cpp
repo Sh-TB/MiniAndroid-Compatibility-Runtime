@@ -684,6 +684,302 @@ int main() {
         }
     }
 
+    // ── F-106 (S60, R-NEW-380): reflection surface law family ────────────
+    //
+    // dooz v23 R-NEW-380: the androidx ViewModelProvider NewInstanceFactory
+    // fallback (Leo;.n) executes
+    //     ctor = modelClass.getDeclaredConstructor(null);
+    //     if (!Modifier.isPublic(ctor.getModifiers()))
+    //         throw new RuntimeException("Cannot create an instance of " + modelClass);
+    //     return ctor.newInstance();
+    // Pre-fix EVERY step typed-zero'd: the getDeclaredConstructor record
+    // lost the referent identity (keyed "Ljava/lang/Class;"),
+    // Constructor.getModifiers() and Modifier.isPublic(I) had NO handlers →
+    // 0 → the THROW branch for every class (Leo;.n pc=53, depth 81), and
+    // the message rendered an EMPTY class name (no Class.toString law).
+    // Discrimination: pre-fix the full-chain fixture takes the not-public
+    // branch (returns 0) and the NSM fixture returns normally; post-fix
+    // the chain runs the real <init> (returns 127) and the missing-ctor
+    // lookup throws NoSuchMethodException (uncaught, recorded).
+    {
+        DexReport f106;
+        f106.strings = {"<init>", "getDeclaredConstructor", "getModifiers",
+                        "isPublic", "newInstance", "toString", "g"};
+        f106.types = {"LSemA;", "LSemB;", "LSemTest;", "Ljava/lang/Class;",
+                      "Ljava/lang/reflect/Constructor;",
+                      "Ljava/lang/reflect/Modifier;",
+                      "Ljava/lang/Object;", "I", "Ljava/lang/Long;"};
+        f106.method_ids.push_back({3, 0, 1});  // Class.getDeclaredConstructor
+        f106.method_ids.push_back({4, 0, 2});  // Constructor.getModifiers
+        f106.method_ids.push_back({5, 0, 3});  // Modifier.isPublic
+        f106.method_ids.push_back({4, 0, 4});  // Constructor.newInstance
+        f106.method_ids.push_back({3, 0, 5});  // Class.toString
+        f106.method_ids.push_back({8, 0, 5});  // Long.toString
+        f106.field_ids.push_back({0, 7, 6});   // LSemA;.g : I
+
+        ClassInfo ca;
+        ca.name = "LSemA;";
+        ca.superclass_name = "Ljava/lang/Object;";
+        MethodInfo ctor_v;  // public <init>()V — sets g = 127
+        ctor_v.name = "<init>";
+        ctor_v.descriptor = "()V";
+        ctor_v.defining_class = "LSemA;";
+        ctor_v.is_constructor = true;
+        ctor_v.access_flags = 0x1;  // public
+        ctor_v.registers_size = 5;
+        ctor_v.ins_size = 1;
+        ctor_v.outs_size = 2;
+        {
+            std::vector<uint16_t> c;
+            c.push_back(w11x(0, 0x13));  // const/16 v0, 127
+            c.push_back(static_cast<uint16_t>(127));
+            c.push_back(static_cast<uint16_t>((4 << 12) | (0 << 8) | 0x59));
+            c.push_back(static_cast<uint16_t>(0));  // iput v0, v4(this), g@0
+            c.push_back(w11x(0, 0x0E));  // return-void
+            ctor_v.bytecode = c;
+        }
+        MethodInfo ctor_i;  // <init>(I)V — exists but NOT the no-arg match
+        ctor_i.name = "<init>";
+        ctor_i.descriptor = "(I)V";
+        ctor_i.defining_class = "LSemA;";
+        ctor_i.is_constructor = true;
+        ctor_i.access_flags = 0x1;
+        ctor_i.parameters = {"I"};
+        ctor_i.registers_size = 6;
+        ctor_i.ins_size = 2;
+        ctor_i.outs_size = 2;
+        ctor_i.bytecode = {w11x(0, 0x0E)};  // return-void
+        ca.direct_methods.push_back(ctor_v);
+        ca.direct_methods.push_back(ctor_i);
+        f106.classes.push_back(ca);
+
+        ClassInfo cb;  // LSemB; — ONLY <init>(I)V: no no-arg ctor exists
+        cb.name = "LSemB;";
+        cb.superclass_name = "Ljava/lang/Object;";
+        MethodInfo ctor_bi;
+        ctor_bi.name = "<init>";
+        ctor_bi.descriptor = "(I)V";
+        ctor_bi.defining_class = "LSemB;";
+        ctor_bi.is_constructor = true;
+        ctor_bi.access_flags = 0x1;
+        ctor_bi.parameters = {"I"};
+        ctor_bi.registers_size = 6;
+        ctor_bi.ins_size = 2;
+        ctor_bi.outs_size = 2;
+        ctor_bi.bytecode = {w11x(0, 0x0E)};
+        cb.direct_methods.push_back(ctor_bi);
+        f106.classes.push_back(cb);
+
+        ClassInfo ct6;
+        ct6.name = "LSemTest;";
+        ct6.superclass_name = "Ljava/lang/Object;";
+        f106.classes.push_back(ct6);
+
+        auto f106_run = [&](MethodInfo mi) {
+            return engine.execute_method(mi, f106, {}, false);
+        };
+        auto f106_ret = [](DalvikExecutionResult& r)
+            -> const miniandroid::dalvik::InstructionTrace* {
+            for (const auto& t : r.instruction_traces)
+                if (t.status == miniandroid::dalvik::InstructionTrace::Status::HALT_RETURN)
+                    return &t;
+            return nullptr;
+        };
+
+        {   // full chain: const-class → getDeclaredConstructor(null) →
+            // getModifiers → Modifier.isPublic → newInstance → real <init>.
+            MethodInfo mi;
+            mi.name = "f106_newinstancefactory_full_chain";
+            mi.descriptor = "()I";
+            mi.defining_class = "LSemTest;";
+            mi.registers_size = 12;
+            mi.ins_size = 0;
+            mi.outs_size = 3;
+            std::vector<uint16_t> c;
+            c.push_back(w11x(2, 0x1C)); c.push_back(0);   // const-class v2, LSemA;
+            c.push_back((0 << 12) | (3 << 8) | 0x12);     // const/4 v3, null
+            c.push_back((2 << 12) | 0x6E);                // invoke-virtual {v2,v3}
+            c.push_back(0);                               //   getDeclaredConstructor
+            c.push_back(2 | (3 << 4));
+            c.push_back(w11x(4, 0x0C));                   // move-result-object v4
+            c.push_back((1 << 12) | 0x6E);                // invoke-virtual {v4}
+            c.push_back(1);                               //   getModifiers
+            c.push_back(4);
+            c.push_back(w11x(5, 0x0A));                   // move-result v5
+            c.push_back((1 << 12) | 0x71);                // invoke-static {v5}
+            c.push_back(2);                               //   Modifier.isPublic
+            c.push_back(5);
+            c.push_back(w11x(6, 0x0A));                   // move-result v6
+            c.push_back((6 << 8) | 0x38);                 // if-eqz v6, +9 → not-public
+            c.push_back(9);
+            c.push_back((1 << 12) | 0x6E);                // invoke-virtual {v4}
+            c.push_back(3);                               //   newInstance
+            c.push_back(4);
+            c.push_back(w11x(7, 0x0C));                   // move-result-object v7
+            c.push_back((7 << 12) | (0 << 8) | 0x52);     // iget v0, v7, g@0
+            c.push_back(static_cast<uint16_t>(0));
+            c.push_back(w11x(0, opc::RETURN));            // return v0 (127)
+            c.push_back((0 << 12) | (0 << 8) | 0x12);     // const/4 v0, 0
+            c.push_back(w11x(0, opc::RETURN));            // return 0 (not-public)
+            mi.bytecode = c;
+            DalvikExecutionResult r = f106_run(mi);
+            const auto* ret = f106_ret(r);
+            double got = ret && ret->return_value ? as_double(*ret->return_value) : -999;
+            record("f106_newinstancefactory_full_chain", got == 127.0,
+                   "expected 127 (the public no-arg ctor ran through "
+                   "getDeclaredConstructor → getModifiers → isPublic → "
+                   "newInstance), got " + std::to_string(got));
+        }
+        {   // missing constructor → NoSuchMethodException (uncaught: the
+            // fixture has no catch; M3 FINDING-016 records the in-flight
+            // exception). Pre-fix: no throw — the legacy record law
+            // returned normally.
+            MethodInfo mi;
+            mi.name = "f106_getdeclaredconstructor_missing_throws_nsm";
+            mi.descriptor = "()I";
+            mi.defining_class = "LSemTest;";
+            mi.registers_size = 8;
+            mi.ins_size = 0;
+            mi.outs_size = 2;
+            std::vector<uint16_t> c;
+            c.push_back(w11x(2, 0x1C)); c.push_back(1);   // const-class v2, LSemB;
+            c.push_back((0 << 12) | (3 << 8) | 0x12);     // const/4 v3, null
+            c.push_back((2 << 12) | 0x6E);                // invoke-virtual {v2,v3}
+            c.push_back(0);                               //   getDeclaredConstructor
+            c.push_back(2 | (3 << 4));
+            c.push_back(w11x(0, opc::MOVE_RESULT));       // move-result v0
+            c.push_back(w11x(0, opc::RETURN));            // return v0
+            mi.bytecode = c;
+            DalvikExecutionResult r = f106_run(mi);
+            const auto* ret = f106_ret(r);
+            // Post-fix: the deferred NoSuchMethodException unwinds the frame
+            // (no catch in this fixture) → the method NEVER returns normally.
+            // Pre-fix: the legacy record law returned a Constructor record
+            // and the fixture completed with a normal return.
+            record("f106_getdeclaredconstructor_missing_throws_nsm", ret == nullptr,
+                   std::string(ret == nullptr
+                                   ? "PASS: no normal return — the deferred "
+                                     "NoSuchMethodException unwound the frame"
+                                   : "FAIL: fixture returned normally — no "
+                                     "NoSuchMethodException was raised"));
+        }
+        {   // Constructor.getModifiers() answers the DEX access flags (1).
+            MethodInfo mi;
+            mi.name = "f106_constructor_getmodifiers_public";
+            mi.descriptor = "()I";
+            mi.defining_class = "LSemTest;";
+            mi.registers_size = 8;
+            mi.ins_size = 0;
+            mi.outs_size = 2;
+            std::vector<uint16_t> c;
+            c.push_back(w11x(2, 0x1C)); c.push_back(0);   // const-class v2, LSemA;
+            c.push_back((0 << 12) | (3 << 8) | 0x12);     // const/4 v3, null
+            c.push_back((2 << 12) | 0x6E);                // getDeclaredConstructor
+            c.push_back(0);
+            c.push_back(2 | (3 << 4));
+            c.push_back(w11x(4, 0x0C));                   // move-result-object v4
+            c.push_back((1 << 12) | 0x6E);                // getModifiers
+            c.push_back(1);
+            c.push_back(4);
+            c.push_back(w11x(0, opc::MOVE_RESULT));       // move-result v0
+            c.push_back(w11x(0, opc::RETURN));
+            mi.bytecode = c;
+            DalvikExecutionResult r = f106_run(mi);
+            const auto* ret = f106_ret(r);
+            double got = ret && ret->return_value ? as_double(*ret->return_value) : -999;
+            record("f106_constructor_getmodifiers_public", got == 1.0,
+                   "expected 1 (ACC_PUBLIC of the declared no-arg ctor), got " +
+                   std::to_string(got));
+        }
+        {   // Modifier.isPublic bit law: 0x10001 (public|constructor) → 1.
+            MethodInfo mi;
+            mi.name = "f106_modifier_ispublic_bitlaw";
+            mi.descriptor = "()I";
+            mi.defining_class = "LSemTest;";
+            mi.registers_size = 8;
+            mi.ins_size = 0;
+            mi.outs_size = 2;
+            std::vector<uint16_t> c;
+            c.push_back(w11x(2, 0x14));                   // const v2, 0x10001
+            c.push_back(static_cast<uint16_t>(0x0001));
+            c.push_back(static_cast<uint16_t>(0x0001));
+            c.push_back((1 << 12) | 0x71);                // invoke-static {v2}
+            c.push_back(2);                               //   Modifier.isPublic
+            c.push_back(2);
+            c.push_back(w11x(0, opc::MOVE_RESULT));
+            c.push_back(w11x(0, opc::RETURN));
+            mi.bytecode = c;
+            DalvikExecutionResult r = f106_run(mi);
+            const auto* ret = f106_ret(r);
+            double got = ret && ret->return_value ? as_double(*ret->return_value) : -999;
+            record("f106_modifier_ispublic_bitlaw", got == 1.0,
+                   "expected 1 (Modifier.isPublic(0x10001)), got " +
+                   std::to_string(got));
+        }
+        {   // Class token toString: "class " + dotted name (OpenJDK law).
+            MethodInfo mi;
+            mi.name = "f106_class_tostring_token";
+            mi.descriptor = "()Ljava/lang/String;";
+            mi.defining_class = "LSemTest;";
+            mi.registers_size = 8;
+            mi.ins_size = 0;
+            mi.outs_size = 2;
+            std::vector<uint16_t> c;
+            c.push_back(w11x(2, 0x1C)); c.push_back(0);   // const-class v2, LSemA;
+            c.push_back((1 << 12) | 0x6E);                // invoke-virtual {v2}
+            c.push_back(4);                               //   Class.toString
+            c.push_back(2);
+            c.push_back(w11x(0, 0x0C));                   // move-result-object v0
+            c.push_back(w11x(0, 0x11));                   // return-object v0
+            mi.bytecode = c;
+            DalvikExecutionResult r = f106_run(mi);
+            const auto* ret = f106_ret(r);
+            std::string got = ret && ret->return_value &&
+                                      ret->return_value->type ==
+                                          miniandroid::dalvik::DalvikType::STRING_REF
+                                  ? ret->return_value->string_val
+                                  : std::string("<no-string>");
+            record("f106_class_tostring_token",
+                   got == "class SemA",
+                   "expected \"class SemA\" (OpenJDK Class.toString of the "
+                   "package-less LSemA;), got \"" + got + "\"");
+        }
+        {   // Long.toString(J, I) radix-36 — the Compose rememberSaveable
+            // registry key (Lpm;.W: Long.toString(compositeKeyHash, 36)).
+            // Pre-fix: NO handler → typed-zero "" → registerProvider("") →
+            // IAE "Registered key is empty or blank" (dooz v23, Ldf1;.a).
+            MethodInfo mi;
+            mi.name = "f106_long_tostring_radix36";
+            mi.descriptor = "()Ljava/lang/String;";
+            mi.defining_class = "LSemTest;";
+            mi.registers_size = 8;
+            mi.ins_size = 0;
+            mi.outs_size = 3;
+            std::vector<uint16_t> c;
+            c.push_back(w11x(2, 0x16));                   // const-wide/16 v2, 127
+            c.push_back(static_cast<uint16_t>(127));
+            c.push_back(w11x(4, 0x13));                   // const/16 v4, 36
+            c.push_back(static_cast<uint16_t>(36));
+            c.push_back((2 << 12) | 0x71);                // invoke-static {v2,v4}
+            c.push_back(5);                               //   Long.toString(J I)
+            c.push_back(2 | (4 << 4));                    // wide pair v2 + int v4
+            c.push_back(w11x(0, 0x0C));                   // move-result-object v0
+            c.push_back(w11x(0, 0x11));                   // return-object v0
+            mi.bytecode = c;
+            DalvikExecutionResult r = f106_run(mi);
+            const auto* ret = f106_ret(r);
+            std::string got2 = ret && ret->return_value &&
+                                      ret->return_value->type ==
+                                          miniandroid::dalvik::DalvikType::STRING_REF
+                                  ? ret->return_value->string_val
+                                  : std::string("<no-string>");
+            record("f106_long_tostring_radix36",
+                   got2 == "3j",
+                   "expected \"3j\" (127 in base 36 — the rememberSaveable "
+                   "key shape), got \"" + got2 + "\"");
+        }
+    }
+
     std::cout << "\nRESULT: " << g_pass << " passed, " << g_fail << " failed\n";
     return g_fail == 0 ? 0 : 1;
 }

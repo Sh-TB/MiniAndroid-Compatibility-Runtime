@@ -1457,6 +1457,10 @@ public:
         bool verbose = false;
         bool debug_output = false;
         uint64_t max_instructions = 100000000;  // EXP-042: 100M (was 10M)
+        // S60 (R-NEW-380): wall-clock soft budget in ms (0 = disabled).
+        // When > 0 the DEX dispatch halts gracefully at the deadline (the
+        // same evidence-preserving stop as the instruction budget).
+        uint64_t max_wall_ms = 0;
         bool stop_on_unimplemented = false;  // EXP-089: Don't halt on unimplemented opcodes
         bool generate_trace = true;
         bool enable_api_bridge = true;

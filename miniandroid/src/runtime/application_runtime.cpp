@@ -1087,6 +1087,8 @@ bool ApplicationRuntime::execute_on_create() {
         // what allow Telegram to run past 100 M instructions without OOM.
         // See docs/exp042/EXP042_MEMORY_ANALYSIS.md for the full audit.
         dalvik_engine.config_.max_instructions = 100000000;          // 100 M
+        // S60: wall-clock soft budget (0 = off). Propagated from the CLI.
+        dalvik_engine.config_.max_wall_ms = config_.max_wall_seconds * 1000ULL;
         dalvik_engine.config_.stop_on_unimplemented = false;
         dalvik_engine.config_.verbose = false; // EXP-041
         dalvik_engine.config_.enable_api_bridge = true;

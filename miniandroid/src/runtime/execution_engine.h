@@ -74,6 +74,10 @@ struct ExecutionConfig {
     // listener, re-render, and record which clicks change pixels (L9→L12:
     // touch accepted → callback executed → state changed → second frame).
     bool click_test = false;
+    // S60 (R-NEW-380): wall-clock soft budget for the DEX dispatch (seconds;
+    // 0 = disabled). Graceful stop identical to the instruction budget —
+    // the end-of-run evidence pipeline (screenshot/trace/report) still runs.
+    uint64_t max_wall_seconds = 0;
     // DEMO-CLICK-SEQUENCE (2026-09-04): deterministic multi-interaction capture.
     // When > 0, dispatch this many sequential clicks (round-robin over all
     // clickable views), re-render through the SAME pipeline after each click,

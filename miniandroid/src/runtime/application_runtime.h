@@ -91,6 +91,13 @@ struct RuntimeConfig {
     int framebuffer_width = 480;
     int framebuffer_height = 800;
     uint32_t max_instructions = 5000000;
+    // S60 (R-NEW-380): wall-clock soft budget for the whole run (seconds).
+    // 0 = disabled (all existing behavior preserved). When > 0, the DEX
+    // dispatch halts gracefully at the deadline exactly like the
+    // instruction budget, so the first-frame evidence pipeline
+    // (screenshot + trace + report) still runs. Mirrors the emulator
+    // session-timeout contract; app-agnostic.
+    uint64_t max_wall_seconds = 0;
     bool stop_on_unimplemented = false;
     bool generate_evidence = true;
     // UNIFIED_011.2 CLICK-TEST (§10/§11): generic touch-interaction probe.
@@ -109,6 +116,7 @@ struct RuntimeConfig {
             {"framebuffer_width", framebuffer_width},
             {"framebuffer_height", framebuffer_height},
             {"max_instructions", max_instructions},
+            {"max_wall_seconds", max_wall_seconds},
             {"stop_on_unimplemented", stop_on_unimplemented},
             {"generate_evidence", generate_evidence},
             {"click_test", click_test}

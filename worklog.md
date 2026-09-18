@@ -1039,3 +1039,23 @@ Stage Summary:
   toolchain + corpus + EXT fixture re-bootstrapped SHA-verified this
   session; battery ALL PASS; corpus determinism identical to the S57/S58
   records.
+
+---
+Task ID: S60
+Agent: Super Z (main)
+Task: Roadmap-3 Closure continuation — R-NEW-380 (Dooz ViewModelProvider create face, P1) closure + regressions + push
+
+Work Log:
+- Repository truth re-verified at session start: HEAD == origin/main == 2487f5b1 (S59-PUSH-VERIFY), tree clean. Registry read: R-NEW-344/376/352/379 all closed; R-NEW-380 the single open frontier (P1). No new roadmap/branch/campaign.
+- DEX ground truth first (scripts/s60_r380_forensic.py + s60_hb0_ctors.py): Leo;.n is the androidx NewInstanceFactory fallback (getDeclaredConstructor → getModifiers → Modifier.isPublic → newInstance → throw at pc=53); Lhb0; (GameViewModel post-R8) has ONE ctor <init>(Lql1;) (Lql1;=SettingsRepository) and NO no-arg ctor; Lhf1;=SavedStateHandle; Luf1;.a=findMatchingConstructor (getConstructors + param-list equality); upstream source fetched at tag 1.0.23 confirms @HiltViewModel/@AndroidEntryPoint/hiltViewModel() wiring (Ltl;.R=createHiltViewModelFactory; Lyd0;=ViewModelProviderImpl with the c=Lk2;(1,extras) Hilt SavedStateHandle factory; Lwl0;=the Dagger map-keys binding; Lk2; case-1 = HiltViewModelFactory.create with the @HiltViewModelMap multi-binding lookup).
+- Runtime faces fixed one at a time (each re-run): (1) RuntimeException "Cannot create an instance of " at Leo;.n → (2) NSM-honest face with EMPTY message name → (3) post-F-106a the same RuntimeException with the CORRECT name "class hb0" (the F-106 diagnostic law) → (4) post-F-106b (unmodifiableMap) IAE "Registered key is empty or blank" at Ldf1;.a depth=21 → (5) post-F-106c (Long.toString radix) ZERO exceptions, the Hilt path resolves, the GameViewModel constructs.
+- FIX F-106 (generic law family, dalvik_engine.cpp): (a) Class.getDeclaredConstructor/getConstructor full upstream contract (referent via __referent_desc; exact param-descriptor match from the Class[] arg; getConstructor=public-only; no match → NoSuchMethodException via throw_deferred; match → record with class_desc=REFERENT + __reflect_mods + __reflect_params); Constructor.getModifiers/getParameterTypes; the Modifier static bit family (isPublic..isStrict); Class.toString() token law (Class-token section + StringBuilder stringify_arg for CLASS_REF and heap-token shapes). (b) Collections.unmodifiableMap/Set/Collection (view delegates to the backing container — the unmodifiableList precedent). (c) Long.toString(J)/(J,I) — signed 64-bit radix 2..36, MIN_VALUE-safe, out-of-range → IAE.
+- Harness (S60): --max-seconds wall-clock soft budget (graceful stop identical to the instruction budget; end-of-run evidence pipeline preserved; 0 = off, all existing behavior unchanged); EXP093-APUT per-op trace and the always-on parser dumps env-gated (MINIANDROID_EXP093_APUT_TRACE / MINIANDROID_PARSE_VERBOSE) per the F-074 hygiene law — bounds/store semantics unchanged.
+- Regression: semantic battery 32/32 (six new f106 records; fixed a fixture-side opcode error 0x39→0x38 if-eqz — DEX truth from androguard; engine was correct); dooz v18 healthy (run/s60_v18_reg, 0 errors, Choreographer doFrame alive, deeper than S58); BATTERY GATE: ALL PASS (96 stages); battery semantic label expect 26 → 32 (count law documented, never reduced).
+- Post-fix dooz v23 evidence (run/s60_r380_post7, --max-seconds 480): ZERO exceptions before the budget stop; create chain resolves through the app's OWN Hilt factory (Lk2;.b case-1 SavedStateHandle machinery; Lqs; as Lxd0; attach OK obj#5385); GameViewModel constructs (Lq32;.c + game-state class inits from the ctor body); onStart/onResume dispatched; frame loop alive. Honest successor face: first frame still dark (same face as S59 post2 evidence) — the Compose draw path.
+- Registry synced (scripts/s60_registry_update.py): R-NEW-380 → ROOT-CAUSED-FIXED (F-106); R-NEW-381 registered (OBSERVED-FAIL, P1, the Compose draw path); open_frontiers = [R-NEW-381]. Canonical docs synced (ROADMAP_STATUS §1/§2/§3/§6, KNOWLEDGE_INDEX F-106 row, ACHIEVEMENTS dooz S60 row); evidence docs/evidence/s60_r380/ (F106_EVIDENCE.md + pre/post keylines + screenshots + SHA256SUMS).
+
+Stage Summary:
+- R-NEW-380 CLOSED: the entire dooz creation chain (R-NEW-344 → 376 → 378 → 379 → 380) is now ROOT-CAUSED-FIXED with regression protection; the app's own Hilt/DI machinery runs in the interpreter end-to-end.
+- Remaining pinned frontier: R-NEW-381 (P1, the Compose draw path) + the F-085 commonmark face (P1) + the P2 ladders (uNote NoteEdition, Persistence L10, Telegram init).
+- No new roadmap/branch/campaign; all closures reference existing items; historical evidence untouched.

@@ -1,0 +1,12 @@
+245837:[THROWABLE-MSG] Ljava/lang/RuntimeException; msg="Cannot create an instance of class hb0" caller=Ljb1;.g pc=14 depth=82
+245862:[EXCEPTION] method=Ljb1;.g pc=17 exception=Ljava/lang/RuntimeException; msg="Cannot create an instance of class hb0" try_range=(none) handler=NOT_FOUND msg="Cannot create an instance of class hb0"
+245865:[EXCEPTION] method=Lt3;.q pc=166 exception=Ljava/lang/RuntimeException; msg="Cannot create an instance of class hb0" try_range=(no try covering pc) handler=NOT_FOUND msg="Cannot create an instance of class hb0"
+245869:[EXCEPTION] method=Lnb0;.n pc=162 exception=Ljava/lang/RuntimeException; msg="Cannot create an instance of class hb0" try_range=[156,163) handler=FOUND handler_addr=64 catch_type=<catch-all> msg="Cannot create an instance of class hb0"
+[F106-CTOR] getDeclaredConstructor Lhb0; params=[] → NoSuchMethodException caller=Leo;.n
+[SYNTH-EXC] F106-CTOR (deferred): Ljava/lang/NoSuchMethodException; (hb0.<init>()) method=Leo;.n pc=3 → deferred handler @0x0x39 type=Ljava/lang/NoSuchMethodException;
+245835:[F106-CTOR] getDeclaredConstructor Lhb0; params=[] → NoSuchMethodException caller=Leo;.n
+245836:[SYNTH-EXC] F106-CTOR (deferred): Ljava/lang/NoSuchMethodException; (hb0.<init>()) method=Leo;.n pc=3 → deferred handler @0x0x39 type=Ljava/lang/NoSuchMethodException;
+245837:[THROWABLE-MSG] Ljava/lang/RuntimeException; msg="Cannot create an instance of class hb0" caller=Ljb1;.g pc=14 depth=82
+245862:[EXCEPTION] method=Ljb1;.g pc=17 exception=Ljava/lang/RuntimeException; msg="Cannot create an instance of class hb0" try_range=(none) handler=NOT_FOUND msg="Cannot create an instance of class hb0"
+245865:[EXCEPTION] method=Lt3;.q pc=166 exception=Ljava/lang/RuntimeException; msg="Cannot create an instance of class hb0" try_range=(no try covering pc) handler=NOT_FOUND msg="Cannot create an instance of class hb0"
+245869:[EXCEPTION] method=Lnb0;.n pc=162 exception=Ljava/lang/RuntimeException; msg="Cannot create an instance of class hb0" try_range=[156,163) handler=FOUND handler_addr=64 catch_type=<catch-all> msg="Cannot create an instance of class hb0"
