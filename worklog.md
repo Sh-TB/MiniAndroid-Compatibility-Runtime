@@ -1013,3 +1013,29 @@ Stage Summary:
 - Remaining pinned frontier: R-NEW-380 (P1) + F-085 commonmark face (P1) +
   the P2 ladders (uNote NoteEdition, Persistence L10, Telegram init).
 - No new roadmap/branch/campaign; all closures reference existing items.
+
+---
+Task ID: S59-PUSH-VERIFY
+Agent: Super Z (main)
+Task: S59 publish + verification
+
+Work Log:
+- Secret guard: fail-closed scan PASS at push (tree mode; the Telegram
+  corpus APK in the gitignored download/ cache is out of scan scope by
+  the guard's ls-files --exclude-standard design; the empty-staged
+  amend edge case was diagnosed as a no-op scan artifact, not a
+  finding).
+- PUSH VERIFIED: b0271429..bbcbe3b9 main -> main (1 logical commit: F-105
+  engine laws + f105 regressions + battery label, forensic scripts s59_*,
+  evidence s59_r379, registry R-NEW-379 closed / R-NEW-380 registered,
+  canonical docs S59, worklog). Credential used via ephemeral env only;
+  unset after push; never written to any tracked file.
+- ls-remote confirms remote HEAD = bbcbe3b9 = local HEAD; working tree
+  clean after the push.
+
+Stage Summary:
+- S59 CLOSED: R-NEW-379 ROOT-CAUSED-FIXED (F-105a/b/c); R-NEW-380 honestly
+  registered as the pinned successor (P1). Repository self-contained:
+  toolchain + corpus + EXT fixture re-bootstrapped SHA-verified this
+  session; battery ALL PASS; corpus determinism identical to the S57/S58
+  records.
