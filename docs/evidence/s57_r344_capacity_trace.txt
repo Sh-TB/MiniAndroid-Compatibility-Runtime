@@ -1,0 +1,5 @@
+[FIELD-TRACE] put Lbw0;.f Lbw0;.c obj#2658 value=7
+[FIELD-TRACE] put Lbw0;.f Lbw0;.c obj#2658 value=15
+[FIELD-TRACE] put Lbw0;.f Lbw0;.c obj#2658 value=31
+      1 [RECURSION-LIMIT] frame dropped: Lbp1;.<init> depth=2048 caller=Lbp1;.<init>
+      3 [RECURSION-LIMIT] frame dropped: Lgz1;.<init> depth=2048 caller=Lgz1;.<init>

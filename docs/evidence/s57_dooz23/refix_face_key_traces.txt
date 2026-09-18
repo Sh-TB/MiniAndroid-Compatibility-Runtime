@@ -1,0 +1,2 @@
+[HALT-LOOP] Infinite loop at PC=0x1c in Lbw0;.d (visited 50001 times in this frame, bytecode_size=671, op_at_pc=0x0x0054).
+[SYNTH-EXC] F084-HALT-RETURN (deferred): Ljava/lang/VirtualMachineError; (F084 interpreter halt in callee (no return value): Infinite loop at PC=0x1c in Lbw0;.d (visited 50001 times in this frame, bytecode_size=671, op_at_pc=0x0x0054).) method=Lbw0;.d pc=28 → uncaught (deferred frame unwind + propagate)
