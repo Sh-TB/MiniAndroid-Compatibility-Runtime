@@ -742,6 +742,41 @@ bool DalvikExecutionEngine::is_view_class(const std::string& class_desc) const {
     return is_subclass_of(class_desc, "Landroid/view/View;");
 }
 
+// ────────────────────────────────────────────────────────────────────────
+// F-105 (S59, R-NEW-379) — DECLARATION↔HEAP CLASS RECONCILIATION.
+// Shared by execute_instance_of and execute_check_cast. Resolves the
+// runtime class of a reference from its creation-site declaration
+// (register class_desc) and the heap record at the referenced id.
+//
+// The engine intentionally shares ONE integer id space between shadow
+// entities and heap objects (F-023 activity-as-view: the activity
+// object's id IS the activity's view node id), so the heap record at a
+// referenced id may belong to a DIFFERENT entity than the one the
+// reference means. Reconciliation rules (see the long law comment in
+// execute_instance_of):
+//   • declaration empty / Ljava/lang/Object; → heap record wins (F-103:
+//     generic wrapper tags carry no runtime-type information).
+//   • CONSISTENT pair (one assignable to the other) → the MORE SPECIFIC
+//     side wins.
+//   • CONTRADICTION (neither assignable) → the DECLARATION wins: the
+//     reference means the entity its creator declared; the heap record
+//     at the shared integer is a different entity.
+// ────────────────────────────────────────────────────────────────────────
+std::string DalvikExecutionEngine::reconcile_class_decl(
+    const std::string& declared, uint32_t object_id) const {
+    if (object_id == 0 || !heap_.has_object(object_id)) return declared;
+    const auto* ho = heap_.get(object_id);
+    if (!ho || ho->class_descriptor.empty()) return declared;
+    const std::string& hc = ho->class_descriptor;
+    const bool decl_generic =
+        declared.empty() || declared == "Ljava/lang/Object;";
+    if (decl_generic) return hc;                    // F-103 authority
+    if (hc == declared) return declared;            // agreed
+    if (is_subclass_of(hc, declared)) return hc;    // heap refines
+    if (is_subclass_of(declared, hc)) return declared;  // decl sharper
+    return declared;                                // CONTRADICTION (F-105)
+}
+
 // ============================================================================
 // UNIFIED_011.3 TYPED-CATCH (§18): exception-type compatibility.
 //
@@ -12479,12 +12514,16 @@ bool DalvikExecutionEngine::execute_check_cast(uint32_t pc, InstructionTrace& tr
     // Exception yet — framework-side interface closure is not fully parsed;
     // a hard CCE here would wrongly reject valid framework casts).
     if (val.type == DalvikType::OBJECT_REF && val.object_id != 0) {
-        std::string runtime_desc = val.class_desc;
-        if (heap_.has_object(val.object_id)) {
-            if (const auto* obj = heap_.get(val.object_id);
-                obj && !obj->class_descriptor.empty())
-                runtime_desc = obj->class_descriptor;
-        }
+        // F-105 (S59, R-NEW-379): reconcile the register's creation-site
+        // declaration with the heap record instead of letting the heap
+        // record overwrite it unconditionally. The F-090 heap-authority
+        // refinement poisoned view references whose id collides with an
+        // unrelated heap object (activity-as-view: getParent result
+        // declared Landroid/view/View; refined to heap#20's
+        // MainActivity → the follow-up shadow dispatch lost the View
+        // routing and the ViewTreeLifecycleOwner walk dead-ended).
+        std::string runtime_desc =
+            reconcile_class_decl(val.class_desc, val.object_id);
         std::string refined =
             !runtime_desc.empty() ? runtime_desc : target_type;
         if (!refined.empty() && refined != "<unknown>" &&
@@ -12529,28 +12568,56 @@ bool DalvikExecutionEngine::execute_instance_of(uint32_t pc, InstructionTrace& t
     // Now we use is_subclass_of() which walks the DEX superclass chain.
     DalvikValue src_val = get_register(src);
     bool is_instance = false;
-    if (src_val.type == DalvikType::OBJECT_REF && src_val.object_id != 0) {
-        std::string obj_class = src_val.class_desc;
-        // F-103 (S58, R-NEW-378) ART RUNTIME-TYPE LAW: the class of the
-        // object a reference points to is the AUTHORITY for instance-of;
-        // the register's cached class_desc is only a hint. The hint can be
-        // empty (never heap-consulted before) or a non-informative /
-        // degraded tag after a shadow round-trip — e.g. a Class token
-        // stored via CollectionShadow.add and read back with
-        // handled_object(elem, "Ljava/lang/Object;") arrives tagged
-        // "Ljava/lang/Object;" while the heap object at that id IS the
-        // Ljava/lang/Class; token. androidx Class-keyed maps
-        // (Lwl0;.containsKey pc=0: instance-of key, Ljava/lang/Class;)
-        // then threw IAE "Key must be a class" and dooz died at APP
-        // BOUNDARY in MainActivity.onCreate. Consult the heap FIRST; the
-        // register tag is only a fallback for references with no heap
-        // record (synthesized values).
-        if (src_val.object_id != 0 && heap_.has_object(src_val.object_id)) {
-            auto* heap_obj = heap_.get(src_val.object_id);
-            if (heap_obj && !heap_obj->class_descriptor.empty()) {
-                obj_class = heap_obj->class_descriptor;
-            }
+    // F-105c (S59, R-NEW-379): INSTANCE-OF ON A CLASS TOKEN VALUE.
+    // const-class (F-069/F-103) yields a CLASS_REF whose ref_id is the
+    // heap-backed Ljava/lang/Class; token and whose class_desc is the
+    // REFERENT descriptor (Lhb0; — the class the token represents, not
+    // the token's own class). ART law: `X.class instanceof Y` classifies
+    // the TOKEN — the token's runtime class IS java.lang.Class — so
+    // `key instanceof Class` is TRUE for every class literal. Live face
+    // (dooz v23): ViewModelProvider's ViewModelStore key guard
+    // (Lwl0;.containsKey pc=0: instance-of key, Ljava/lang/Class; on the
+    // KClass.java round-trip value stored via Ljj;->a) rejected the
+    // CLASS_REF → IAE "Key must be a class" at depth 79 → APP BOUNDARY
+    // unwind. Classify CLASS_REF values by the token's heap record.
+    if (src_val.type == DalvikType::CLASS_REF && src_val.ref_id != 0) {
+        std::string tok_cls = "Ljava/lang/Class;";
+        if (heap_.has_object(src_val.ref_id)) {
+            const auto* tok = heap_.get(src_val.ref_id);
+            if (tok && !tok->class_descriptor.empty())
+                tok_cls = tok->class_descriptor;
         }
+        is_instance = is_subclass_of(tok_cls, target_type);
+    }
+    else if (src_val.type == DalvikType::OBJECT_REF && src_val.object_id != 0) {
+        // F-103 (S58, R-NEW-378) ART RUNTIME-TYPE LAW: the class of the
+        // object a reference points to is the AUTHORITY for instance-of.
+        // The register's cached class_desc can be empty or a degraded
+        // generic tag ("Ljava/lang/Object;" after a shadow round-trip) —
+        // in those cases the heap record is the only type information.
+        //
+        // F-105 (S59, R-NEW-379) — DECLARATION↔HEAP RECONCILIATION LAW.
+        // The heap record is the authority ONLY when it does not
+        // contradict the reference's creation-site declaration. The
+        // engine intentionally shares ONE integer id space between
+        // shadow entities and heap objects (F-023 activity-as-view: the
+        // activity object's id IS the activity's view node id), so a
+        // heap record at a referenced id may belong to a DIFFERENT
+        // entity than the one the reference means. Live face (dooz
+        // v23): ViewShadow.getParent returned the activity-as-view node
+        // id 20 declared "Landroid/view/View;" while heap#20 is the
+        // MainActivity → the F-103 heap-authority classified the parent
+        // reference as MainActivity → `parent as? View`
+        // (instance-of, Landroid/view/View; in the Lxd1;.g walk) was
+        // FALSE → the ViewTreeLifecycleOwner walk dead-ended at the
+        // first hop → WindowRecomposer ISE "ViewTreeLifecycleOwner not
+        // found from Lho;@1074" (R-NEW-379 APP BOUNDARY unwind).
+        // reconcile_class_decl implements the rules: generic declaration
+        // → heap wins; consistent pair → the more specific wins;
+        // CONTRADICTION → the creation-site declaration wins (the heap
+        // record at the shared integer belongs to a different entity).
+        std::string obj_class =
+            reconcile_class_decl(src_val.class_desc, src_val.object_id);
         if (!obj_class.empty()) {
             // Check if obj_class is a subclass of target_type (or equal)
             is_instance = is_subclass_of(obj_class, target_type);
@@ -12567,23 +12634,36 @@ bool DalvikExecutionEngine::execute_instance_of(uint32_t pc, InstructionTrace& t
     if (std::getenv("MINIANDROID_INSTANCEOF_TRACE") &&
         (current_class_ == "Loj0;" || current_class_ == "Lkp1;" ||
          target_type == "Ljava/util/Set;" ||
-         target_type == "[Ljava/lang/Object;")) {
+         target_type == "[Ljava/lang/Object;" ||
+         // S59 R-NEW-379: view-tree owner walks (Lxd1;.g) check
+         // `parent as? View` after a static-wrapper getParent — log the
+         // authoritative classification for View targets too.
+         target_type == "Landroid/view/View;" ||
+         target_type == "Landroid/view/ViewParent;" ||
+         // S59 R-NEW-379 follow-up: Lwl0;.containsKey "Key must be a
+         // class" at depth 79 — the Class-key guard classification.
+         target_type == "Ljava/lang/Class;")) {
         static thread_local uint64_t iof_n = 0;
         if (iof_n < 200) {
             ++iof_n;
             std::string oc = (src_val.type == DalvikType::OBJECT_REF)
                                  ? src_val.class_desc : std::string("-");
-            if (src_val.type == DalvikType::OBJECT_REF && oc.empty() &&
-                heap_.has_object(src_val.object_id)) {
-                oc = heap_.get(src_val.object_id)->class_descriptor;
+            std::string hc;
+            if (src_val.type == DalvikType::OBJECT_REF &&
+                src_val.object_id != 0 && heap_.has_object(src_val.object_id)) {
+                hc = heap_.get(src_val.object_id)->class_descriptor;
             }
+            // S59 R-NEW-379 diag: the printed class must be the EFFECTIVE
+            // authority (heap wins when non-empty) — register tag alone
+            // mislabels the check.
+            std::string eff = oc;
+            if (!hc.empty()) eff = hc;
             fprintf(stderr,
-                    "[INSTANCEOF-DIAG] %s.%s pc=%u target=%s obj=obj#%u class=%s "
-                    "is_instance=%s\n",
+                    "[INSTANCEOF-DIAG] %s.%s pc=%u target=%s obj=obj#%u class=%s heap=%s is_instance=%s\n",
                     current_class_.c_str(), current_method_.c_str(), pc,
                     target_type.c_str(),
                     src_val.type == DalvikType::OBJECT_REF ? src_val.object_id : 0u,
-                    oc.c_str(), is_instance ? "TRUE" : "FALSE");
+                    oc.c_str(), hc.c_str(), is_instance ? "TRUE" : "FALSE");
             // R-NEW-337 forensics: does dex_report_ actually know this class
             // and its implements-set? Empty closure / missing class def here
             // is exactly how `Lh20; instanceof Lmf0;` degrades to false.
@@ -15067,6 +15147,31 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
         // overloads on the runtime class correctly.
         if (try_recursive_invoke(heap_obj->class_descriptor, method_name,
                                  args, return_val, result, iface_proto)) {
+            // S59 R-NEW-379 DIAG: the runtime-first dispatch claims success
+            // — surface the resolved class/method and the return shape so
+            // silent typed-zero/void returns become visible.
+            if (std::getenv("MINIANDROID_IFACE_FAIL_TRACE")) {
+                fprintf(stderr,
+                        "[IFACE-RT] %s.%s%s via runtime %s (recv obj#%u) "
+                        "ret_type=%d ret_id=%u\n",
+                        class_name.c_str(), method_name.c_str(),
+                        iface_proto.c_str(),
+                        heap_obj->class_descriptor.c_str(),
+                        args.empty() ? 0u : args[0].object_id,
+                        static_cast<int>(return_val.type), return_val.object_id);
+                // S59: dump the receiver's stored fields for empty returns
+                // (Ljj;.a returned empty for every KClass — was the <init>
+                // iput ever persisted?)
+                if (return_val.type != DalvikType::OBJECT_REF) {
+                    std::string fl;
+                    for (const auto& [fn, fv] : heap_obj->fields) {
+                        fl += fn + "(t" + std::to_string(static_cast<int>(fv.type)) +
+                              ",id" + std::to_string(fv.object_id) + ") ";
+                    }
+                    fprintf(stderr, "[IFACE-RT]   recv fields: %s\n",
+                            fl.c_str());
+                }
+            }
             last_invoke_return_ = return_val;
             trace.invoked_method =
                 heap_obj->class_descriptor + "." + method_name;
@@ -15244,6 +15349,27 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
                   << " heap_class=" << heap_class
                   << " static_class=" << class_name
                   << std::endl;
+    }
+
+    // S59 R-NEW-379 DIAG (env-gated): why did the interface dispatch end
+    // at the bridge fallback? Logs the receiver identity and heap state
+    // for every interface call that reached this point without a REAL DEX
+    // dispatch (no runtime-class hit, no declared-interface body, no
+    // signature/default-method walk success).
+    if (std::getenv("MINIANDROID_IFACE_FAIL_TRACE") &&
+        !args.empty()) {
+        const DalvikValue& r0 = args[0];
+        std::string r0_heap = "<none>";
+        if (r0.type == DalvikType::OBJECT_REF && r0.object_id != 0 &&
+            heap_.has_object(r0.object_id)) {
+            r0_heap = heap_.get(r0.object_id)->class_descriptor;
+        }
+        fprintf(stderr,
+                "[IFACE-FAIL] %s.%s%s recv_type=%d recv_id=%u recv_tag=%s "
+                "heap=%s\n",
+                class_name.c_str(), method_name.c_str(), iface_proto.c_str(),
+                static_cast<int>(r0.type), r0.object_id,
+                r0.class_desc.c_str(), r0_heap.c_str());
     }
 
     // EXP-048: Fall through to bridge_to_api for interface methods
@@ -16834,6 +16960,15 @@ static DalvikValue call_result_to_dalvik(const framework::CallResult& r) {
         default:                           return DalvikValue::make_void();
     }
 }
+
+// ────────────────────────────────────────────────────────────────────────
+// F-105 (S59, R-NEW-379) — NOTE on the failed re-homing design: re-homing
+// contradicted shadow references onto heap proxies was prototyped and
+// REJECTED — the proxy id breaks the NEXT shadow hop (getTag/getParent on
+// the proxy id find no ViewShadow node — the entity's id IS the shadow
+// table key). The law lives in execute_instance_of instead: reconcile the
+// register's creation-site class declaration with the heap record there.
+// ────────────────────────────────────────────────────────────────────────
 
 bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
                                                 const std::string& method,

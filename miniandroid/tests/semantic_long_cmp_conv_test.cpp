@@ -632,6 +632,56 @@ int main() {
                    "expected 1 (heap object of LSemSub; through the superclass "
                    "walk), got " + std::to_string(got));
         }
+        {   // F-105c (S59 R-NEW-379): const-class token instanceof Class == true.
+            // The const-class value is a CLASS_REF whose ref_id is the
+            // heap-backed Ljava/lang/Class; token and whose class_desc is the
+            // REFERENT (LSemBase;). ART law: X.class's runtime class IS
+            // java.lang.Class, so `X.class instanceof Class` is TRUE for every
+            // X. Pre-fix the guard `instance-of key, Ljava/lang/Class;` rejected
+            // every CLASS_REF (type != OBJECT_REF) → ViewModelProvider's
+            // ViewModelStore key check threw IAE "Key must be a class" (dooz
+            // v23 Lwl0;.containsKey, depth 79, APP BOUNDARY unwind).
+            MethodInfo mi;
+            mi.name = "f105_instanceof_classtoken_is_class";
+            mi.descriptor = "()I";
+            mi.defining_class = "LSemTest;";
+            mi.registers_size = 8; mi.ins_size = 0; mi.outs_size = 2;
+            std::vector<uint16_t> c;
+            c.push_back(w11x(2, 0x1C)); c.push_back(0);   // const-class v2, LSemBase;
+            // instance-of v0, v2, Ljava/lang/Class; (type@4)
+            c.push_back(static_cast<uint16_t>((2 << 12) | (0 << 8) | 0x20));
+            c.push_back(static_cast<uint16_t>(4));
+            c.push_back(w11x(0, opc::RETURN));
+            mi.bytecode = c;
+            DalvikExecutionResult r = class_law_run(mi, base_report);
+            const auto* ret = halt_return(r);
+            double got = ret && ret->return_value ? as_double(*ret->return_value) : -999;
+            record("f105_instanceof_classtoken_is_class", got == 1.0,
+                   "expected 1 (the LSemBase; class token's runtime class is "
+                   "java.lang.Class), got " + std::to_string(got));
+        }
+        {   // F-105c companion: the token is NOT the referent class.
+            // `LSemBase.class instanceof LSemBase` must be FALSE on ART (the
+            // token is a java.lang.Class object, not an LSemBase instance).
+            MethodInfo mi;
+            mi.name = "f105_instanceof_classtoken_not_referent";
+            mi.descriptor = "()I";
+            mi.defining_class = "LSemTest;";
+            mi.registers_size = 8; mi.ins_size = 0; mi.outs_size = 2;
+            std::vector<uint16_t> c;
+            c.push_back(w11x(2, 0x1C)); c.push_back(0);   // const-class v2, LSemBase;
+            // instance-of v0, v2, LSemBase; (type@0)
+            c.push_back(static_cast<uint16_t>((2 << 12) | (0 << 8) | 0x20));
+            c.push_back(static_cast<uint16_t>(0));
+            c.push_back(w11x(0, opc::RETURN));
+            mi.bytecode = c;
+            DalvikExecutionResult r = class_law_run(mi, base_report);
+            const auto* ret = halt_return(r);
+            double got = ret && ret->return_value ? as_double(*ret->return_value) : -999;
+            record("f105_instanceof_classtoken_not_referent", got == 0.0,
+                   "expected 0 (a Class token is not an instance of its own "
+                   "referent class), got " + std::to_string(got));
+        }
     }
 
     std::cout << "\nRESULT: " << g_pass << " passed, " << g_fail << " failed\n";

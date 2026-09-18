@@ -941,3 +941,75 @@ Stage Summary:
   F-104 shipped. Dooz advanced past TWO stacked P0 faces into Compose attach;
   next pinned frontier R-NEW-379 (ViewTreeLifecycleOwner walk). No new
   roadmap/branch/campaign; all closures reference existing items.
+
+---
+Task ID: S59
+Agent: Super Z (main)
+Task: ROADMAP 3 CLOSURE — R-NEW-379 closure (F-105), R-NEW-380 discovery; no new roadmap/branch/campaigns
+
+Work Log:
+- §12 remote truth verified: HEAD b0271429 == origin/main (ls-remote; 0/0
+  ahead/behind; working tree clean). Environment re-bootstrapped after the
+  container reset: toolchain (aapt2/ECJ/D8/android-34 via
+  scripts/build/bootstrap_toolchain.sh), dooz corpus (v18 via fetch_corpus;
+  v23 direct with SHA256 299eab21... == the recorded provenance), EXT
+  fixture re-fetched SHA-verified (HelloWorldSelfAware APK 009b4671... ==
+  the frozen record).
+- R-NEW-379 REPRODUCED at HEAD (run/s59_repro): ISE "ViewTreeLifecycleOwner
+  not found from Lho;@1074" x4 at MainActivity.onCreate invoke_pc=317.
+- DEX ground truth (6 forensic scripts): the walk = Lxd1;.g(View)Lvo0;
+  (lifecycle 2.8 ViewTreeLifecycleOwner.get) looping getTag(view,
+  2131230840) → getParent → instance-of(parent, View); 2131230840 =
+  0x7F080078 = R.id.view_tree_lifecycle_owner (aapt2-verified); ZERO setTag
+  sites for that key in the app DEX (owner install = androidx library
+  machinery absent from the APK).
+- Runtime root cause (INSTANCEOF-DIAG): (D1) the parent hop aborted —
+  ViewShadow node 20 is the F-023 activity-as-view node; heap#20 is the
+  MainActivity, so the F-103 heap-authority classified the VIEW reference
+  as the ACTIVITY → `parent as? View` FALSE → walk dead-ended at hop 1.
+  (D2) nobody ever wrote the owner tag.
+- FIX F-105 (three generic laws): (a) reconcile_class_decl() —
+  declaration/heap reconciliation in instance-of + check-cast (generic →
+  heap wins; consistent → more specific wins; contradiction → the
+  creation-site declaration wins; re-homing onto proxies was prototyped
+  and REJECTED — it breaks the next shadow hop). (b) ActivityShadow
+  setContentView(View) installs the ACTIVITY object under the app's OWN
+  view_tree_lifecycle_owner id (name-resolved via arsc find_id) on the
+  activity-as-view node before the attach wave. (c) instance-of classifies
+  CLASS_REF values (const-class tokens) by the token heap record —
+  X.class instanceof Class == TRUE; X.class instanceof X == FALSE.
+- Post-fix: F105-OWNER install; walk hit at node 20; the app dialog
+  machinery (Le81;.<init>) propagates the owner onto the decor in its own
+  DEX; ISE 0 (was x4); execution advanced depth 8 → 81. Intermediate face
+  on the way: IAE "Key must be a class" (Lwl0;.containsKey) at depth 79 —
+  fixed by F-105c in the same session.
+- NEW HONEST FRONTIER R-NEW-380 (P1, OBSERVED-FAIL): RuntimeException
+  "Cannot create an instance of " (class-name EMPTY) at Leo;.n pc=53
+  depth=81 — the ViewModelProvider create chain (Lyd0;.b → Ltf1;.b →
+  Lt32;.b → Lt32;.d → Leo;.n) reaches the throwing factory fallback while
+  constructing the app GameViewModel; next steps pinned (CLASS_REF
+  toString/getName surface; ctor discovery; Constructor.newInstance → real
+  <init>).
+- REGRESSION: semantic battery 26/26 (f105_instanceof_classtoken_is_class +
+  f105_instanceof_classtoken_not_referent added; label expect 24 → 26).
+  BATTERY GATE: ALL PASS (88 stages, fresh state dir; stage-count variance
+  vs S58 = environment availability: Telegram/OpenLauncher upstream hash
+  drift, TinyMusicPlayer 404). Corpus determinism: chessclock
+  ecc001fd8e33519a / notes cf521b168a9b4ed2 / unote 7b30d52201bb22ac —
+  all == the S57/S58 records. dooz v18: Choreographer doFrame loop alive,
+  0 throwables (same healthy face as S58).
+- Registry synced (scripts/s59_registry_update.py): R-NEW-379 →
+  ROOT-CAUSED-FIXED (F-105); R-NEW-380 registered (OBSERVED-FAIL, P1);
+  open_frontiers = [R-NEW-380]. Canonical docs synced (ROADMAP_STATUS
+  S59 §2/§3/§6, KNOWLEDGE_INDEX 0b F-105 row + R-NEW-379 row, ACHIEVEMENTS
+  dooz row); evidence docs/evidence/s59_r379/ (F105_EVIDENCE.md + key-line
+  excerpts + SHA256SUMS + post-fix screenshot).
+
+Stage Summary:
+- R-NEW-379 CLOSED: the Compose attach contract (ViewTreeLifecycleOwner)
+  runs end-to-end in the app's own DEX; dooz v23 is past FOUR stacked P0/P1
+  faces (R-NEW-344 → 376 → 378 → 379) and executes deeper than ever
+  (depth 81, inside ViewModelProvider create).
+- Remaining pinned frontier: R-NEW-380 (P1) + F-085 commonmark face (P1) +
+  the P2 ladders (uNote NoteEdition, Persistence L10, Telegram init).
+- No new roadmap/branch/campaign; all closures reference existing items.
