@@ -48,6 +48,7 @@ void print_usage(const char* program_name) {
     std::cout << "  --height <pixels>      Screen height (default: 1920)\n";
     std::cout << "  --text <text>          Override displayed text\n";
     std::cout << "  --click-test           Dispatch real clicks on clickable views after the first frame\n";
+    std::cout << "  --max-seconds <s>      Wall-clock soft budget for the run (graceful evidence stop)\n";
     std::cout << "  --long-press <x>,<y>   Long-press gesture at coordinates after the first frame\n";
     std::cout << "  --tap <x>,<y>         Canonical tap gesture (DOWN/UP law pipeline) after the first frame\n";
     std::cout << "                         (hit test -> 500ms timeout -> onLongClick; consumed\n";
@@ -392,6 +393,14 @@ int main(int argc, char* argv[]) {
             // touch → callback → state change → second frame (§10).
             config.click_test = true;
             std::cout << "[*] CLICK-TEST enabled (dispatch real clicks after first frame)\n";
+        } else if (arg == "--max-seconds" && i + 1 < argc) {
+            // S60 (R-NEW-380): wall-clock soft budget for the DEX dispatch.
+            // Graceful stop identical to the instruction budget — the
+            // end-of-run evidence pipeline (screenshot/trace/report) still
+            // runs. 0 (default) = disabled.
+            config.max_wall_seconds = static_cast<uint64_t>(std::stoul(argv[++i]));
+            std::cout << "[*] MAX-SECONDS enabled (" << config.max_wall_seconds
+                      << " s wall-clock soft budget)\n";
         } else if (arg == "--click-count" && i + 1 < argc) {
             // DEMO-CLICK-SEQUENCE: dispatch N sequential clicks (round-robin
             // over all clickable views), re-rendering and saving a PNG frame
