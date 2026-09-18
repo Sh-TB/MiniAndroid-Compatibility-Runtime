@@ -865,3 +865,17 @@ Stage Summary:
 - R-NEW-344 CLOSED: ROOT-CAUSED-FIXED via F-086, regression-protected, 15→31 proven at the runtime boundary.
 - Remaining dooz frontier: R-NEW-376 (ctor-climb; v18+v23 alias observations) — P0-for-Dooz.
 - No new roadmap/branch/IDs created; all closures reference existing items per §37.
+
+---
+Task ID: S57-PUSH-VERIFY
+Agent: Super Z (main)
+Task: S57 publish + fresh-clone verification
+
+Work Log:
+- 3 logical commits (7087d038 fix, 07b5d8b3 evidence, 153dc0ff canonical), fail-closed secret guard PASS ×3.
+- PUSH VERIFIED: 28b644b7..153dc0ff main -> main; credential staged outside the repo (0600), destroyed immediately after push; ls-remote confirms remote HEAD = 153dc0ff = local HEAD.
+- FRESH-CLONE VERIFIED: clone at 153dc0ff → miniandroid build OK → make resource_trace → battery ALL PASS (0 FAIL; EXT-01 9/9, EXT-02 12/12, F-074 golden, corpus stages). Clone removed after verification.
+
+Stage Summary:
+- §36 stop conditions: old debt reconciled with evidence; R-NEW-344 closed; HelloWorld + real-game + full battery pass; docs synced; security clean; remote verified; fresh clone proves the repository is self-contained.
+- Honest remaining frontier (recorded, not hidden): R-NEW-376 (Dooz ctor-climb, P0-for-Dooz) + F-085 end-to-end Notes content probe (P1) + R-NEW-352 exact-dependency BLOCKED.
