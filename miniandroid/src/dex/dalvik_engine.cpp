@@ -9421,7 +9421,16 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     DalvikValue idx_val = get_register(vCC); \
                     DalvikValue src_val = get_register(vAA); \
                     int32_t idx = dalvik_int_value(idx_val); \
-                    if (strcmp(op_name, "aput-object") == 0) { \
+                    /* S60 hygiene (F-074 precedent): the per-op aput trace is \
+                     * now env-gated. The always-on stderr write dominated the \
+                     * wall clock of long Compose compositions (dooz v23 \
+                     * GameScreen: ~250K logged aputs in the slots-array fill) \
+                     * and pushed the first-frame run past every session \
+                     * budget. Bounds-check + store semantics are UNCHANGED. */ \
+                    static thread_local const bool exp093_aput_trace = \
+                        std::getenv("MINIANDROID_EXP093_APUT_TRACE") != nullptr; \
+                    if (exp093_aput_trace && \
+                        strcmp(op_name, "aput-object") == 0) { \
                         std::cerr << "[EXP093-APUT] " << op_name \
                                   << " v" << (int)vAA << "→arr[v" << (int)vBB \
                                   << "] idx_v" << (int)vCC \
@@ -11781,6 +11790,31 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             halted_ = true;
             log("HALT: " + halt_reason_);
             break;
+        }
+
+        // S60 (R-NEW-380): wall-clock soft budget — a graceful stop that
+        // mirrors the instruction budget so long real-APK compositions
+        // (dooz v23 GameScreen) still deliver the end-of-run evidence
+        // pipeline (screenshot/trace/report) within a bounded session.
+        // 0 = disabled; every pre-existing path is unchanged.
+        if (config_.max_wall_ms > 0) {
+            static thread_local std::chrono::steady_clock::time_point
+                wall_start;
+            static thread_local bool wall_started = false;
+            if (!wall_started) {
+                wall_start = std::chrono::steady_clock::now();
+                wall_started = true;
+            }
+            auto elapsed_ms = std::chrono::duration_cast<
+                std::chrono::milliseconds>(
+                std::chrono::steady_clock::now() - wall_start).count();
+            if (elapsed_ms >= static_cast<long long>(config_.max_wall_ms)) {
+                halt_reason_ = "Wall-clock budget reached (" +
+                               std::to_string(config_.max_wall_ms) + " ms)";
+                halted_ = true;
+                log("HALT: " + halt_reason_);
+                break;
+            }
         }
         
         // Check for return
@@ -18233,8 +18267,169 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
     }
     if (class_name == "Ljava/lang/Class;" &&
-        (method == "getDeclaredMethod" || method == "getMethod" ||
-         method == "getDeclaredConstructor" || method == "getConstructor")) {
+        (method == "getDeclaredConstructor" || method == "getConstructor")) {
+        // ────────────────────────────────────────────────────────────────
+        // F-106 (S60, R-NEW-380): Class.getDeclaredConstructor/getConstructor
+        // full upstream contract (OpenJDK Class.java + Constructor.java).
+        //
+        // ROOT-CAUSE evidence (dooz v23 R-NEW-380, Leo;.n pc=53 depth=81 —
+        // the androidx ViewModelProvider NewInstanceFactory fallback):
+        // the pre-F-106 handler minted a Constructor record keyed on
+        // args[0].class_desc — for the F-103 HEAP-BACKED Class token that
+        // is "Ljava/lang/Class;" (the token's RUNTIME class), so the
+        // referent identity was lost; Constructor.getModifiers() and
+        // Modifier.isPublic(I) had NO handlers → STUBBED typed-zero 0 →
+        // the DEX's `if (!Modifier.isPublic(ctor.getModifiers())) throw
+        // RuntimeException("Cannot create an instance of " + modelClass)`
+        // took the THROW branch for every class (the F-086 family:
+        // missing handler → typed-zero → wrong branch), and the message
+        // rendered an EMPTY class name (no Class.toString law).
+        //
+        // Upstream laws implemented here (generic, app-agnostic):
+        //   1. Referent identity: a heap-backed Class token resolves
+        //      through __referent_desc (same authority as F-103/F-105).
+        //   2. The (possibly null) Class[] parameter argument selects the
+        //      constructor by EXACT parameter descriptor list.
+        //   3. getDeclaredConstructor: any DECLARED ctor matches;
+        //      getConstructor: only PUBLIC (ACC_PUBLIC) ctors.
+        //   4. No match → NoSuchMethodException (OpenJDK: this is the
+        //      canonical reflective failure — the caller's catch block
+        //      is the upstream-designed path; e.g. Leo;.n logs + returns
+        //      null, which is how a ViewModel without a no-arg ctor
+        //      honestly reaches the ViewModelProvider fallback chain).
+        //   5. Match → the record carries class_desc = the REFERENT (so
+        //      the Constructor.newInstance shim binds the real class),
+        //      __reflect_class, __reflect_name = "<init>", the ctor's
+        //      raw access flags (__reflect_mods) and its parameter
+        //      descriptor list (__reflect_params, comma-joined).
+        // ────────────────────────────────────────────────────────────────
+        std::string referent = args.empty() ? std::string() : args[0].class_desc;
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+            auto* tok = heap_.get(args[0].object_id);
+            if (tok && tok->class_descriptor == "Ljava/lang/Class;") {
+                auto ref = heap_.get_object_field(args[0].object_id,
+                                                  "__referent_desc");
+                if (ref.has_value() && ref->type == DalvikType::STRING_REF &&
+                    !ref->string_val.empty())
+                    referent = ref->string_val;
+            }
+        }
+        // Extract the requested parameter descriptor list from the Class[]
+        // argument (args[1]; null → the no-arg constructor).
+        std::vector<std::string> want_params;
+        if (args.size() > 1 && args[1].type == DalvikType::OBJECT_REF &&
+            args[1].object_id != 0 && heap_.has_object(args[1].object_id)) {
+            auto len_f = heap_.get_object_field(args[1].object_id,
+                                                "__array_length__");
+            int n = len_f.has_value() ? len_f->int_val : 0;
+            for (int pi = 0; pi < n; pi++) {
+                auto el = heap_.get_object_field(
+                    args[1].object_id, "array[" + std::to_string(pi) + "]");
+                if (!el.has_value()) continue;
+                std::string pd = el->class_desc;
+                if (el->type == DalvikType::OBJECT_REF &&
+                    el->object_id != 0 && heap_.has_object(el->object_id)) {
+                    auto* etok = heap_.get(el->object_id);
+                    if (etok && etok->class_descriptor == "Ljava/lang/Class;") {
+                        auto eref = heap_.get_object_field(
+                            el->object_id, "__referent_desc");
+                        if (eref.has_value() &&
+                            eref->type == DalvikType::STRING_REF &&
+                            !eref->string_val.empty())
+                            pd = eref->string_val;
+                    }
+                }
+                if (!pd.empty()) want_params.push_back(pd);
+            }
+        }
+        const bool ctor_public_only = method == "getConstructor";
+        bool matched = false;
+        std::string matched_desc;
+        uint32_t matched_mods = 0;
+        std::string matched_param_list;
+        if (!referent.empty()) {
+            auto cit = class_info_index_.find(referent);
+            if (cit != class_info_index_.end()) {
+                const auto& ci = dex_report_->classes[cit->second];
+                for (const auto& mi : ci.direct_methods) {
+                    if (!mi.is_constructor) continue;
+                    if (mi.parameters != want_params) continue;
+                    if (ctor_public_only &&
+                        (mi.access_flags & 0x1) == 0)
+                        continue;  // getConstructor law: public only
+                    matched = true;
+                    matched_desc = mi.descriptor;
+                    matched_mods = mi.access_flags;
+                    for (size_t pi = 0; pi < mi.parameters.size(); ++pi)
+                        matched_param_list +=
+                            (pi ? "," : "") + mi.parameters[pi];
+                    break;
+                }
+            }
+        }
+        if (!matched) {
+            // OpenJDK law: no matching declared constructor →
+            // NoSuchMethodException (the caller's catch block is the
+            // designed path — dooz Leo;.n logs and returns null).
+            auto dotted_name = [](const std::string& desc) {
+                if (desc.size() < 3 || desc[0] != 'L' || desc.back() != ';')
+                    return desc;
+                std::string d;
+                for (auto c : desc.substr(1, desc.size() - 2))
+                    d.push_back(c == '/' ? '.' : c);
+                return d;
+            };
+            std::string msg = dotted_name(referent) + "." +
+                              (matched_param_list.empty()
+                                   ? "<init>()"
+                                   : "<init>(" + matched_param_list + ")");
+            std::cerr << "[F106-CTOR] " << method << " " << referent
+                      << " params=[";
+            for (size_t pi = 0; pi < want_params.size(); ++pi)
+                std::cerr << want_params[pi]
+                          << (pi + 1 < want_params.size() ? "," : "");
+            std::cerr << "] → NoSuchMethodException caller="
+                      << current_class_ << "." << current_method_
+                      << std::endl;
+            throw_deferred("Ljava/lang/NoSuchMethodException;", msg,
+                           "F106-CTOR");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_null();
+            return true;
+        }
+        const std::string rec_cls = "Ljava/lang/reflect/Constructor;";
+        uint32_t rec = heap_.allocate(rec_cls, pc_,
+                                      call_stack_.empty()
+                                          ? 0
+                                          : call_stack_.top().frame_id);
+        heap_.set_object_field(rec, "class_desc",
+                               DalvikValue::make_string(referent, 0));
+        heap_.set_object_field(rec, "__reflect_class",
+                               DalvikValue::make_string(referent, 0));
+        heap_.set_object_field(rec, "__reflect_name",
+                               DalvikValue::make_string("<init>", 0));
+        heap_.set_object_field(rec, "__reflect_mods",
+                               DalvikValue::make_int(
+                                   static_cast<int32_t>(matched_mods)));
+        heap_.set_object_field(
+            rec, "__reflect_params",
+            DalvikValue::make_string(matched_param_list, 0));
+        result = DalvikValue::make_object(rec, rec_cls);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        std::cerr << "[F106-CTOR] " << method << " " << referent
+                  << " params=[";
+        for (size_t pi = 0; pi < want_params.size(); ++pi)
+            std::cerr << want_params[pi]
+                      << (pi + 1 < want_params.size() ? "," : "");
+        std::cerr << "] → ctor#" << rec << " mods=0x" << std::hex
+                  << matched_mods << std::dec << " (" << matched_desc
+                  << ") caller=" << current_class_ << "." << current_method_
+                  << std::endl;
+        return true;
+    }
+    if (class_name == "Ljava/lang/Class;" &&
+        (method == "getDeclaredMethod" || method == "getMethod")) {
         // args: [0]=receiver Class, [1]=name String, [2]=Class[] params
         std::string reflected = args.empty() ? "" : args[0].class_desc;
         if (reflected.empty() && !args.empty() &&
@@ -18847,6 +19042,124 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
     }
     if (class_name == "Ljava/lang/reflect/Constructor;" &&
+        method == "getModifiers") {
+        // F-106 (S60, R-NEW-380): Constructor.getModifiers()I — OpenJDK
+        // Constructor.java: returns the modifier bits of the DECLARED
+        // constructor. The F-106 getDeclaredConstructor law stores the
+        // ctor's raw DEX access flags on the record (__reflect_mods);
+        // DEX and JVM share the public/private/static/final/abstract
+        // bit positions, so the value answers Modifier.isXxx directly.
+        // Pre-fix: NO handler → STUBBED typed-zero 0 → Modifier.isPublic
+        // (also handler-less → 0) → androidx NewInstanceFactory took the
+        // "ctor not public" THROW branch for every reflective creation
+        // (dooz v23 Leo;.n pc=53 "Cannot create an instance of ",
+        // depth 81). Missing-handler → typed-zero → wrong branch: the
+        // same failure family as F-086/F-103.
+        result = DalvikValue::make_int(0);
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+            auto mods = heap_.get_object_field(args[0].object_id,
+                                               "__reflect_mods");
+            if (mods.has_value() && mods->type == DalvikType::INT32) {
+                result = DalvikValue::make_int(mods->int_val);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            // Records minted before the F-106 record law (no
+            // __reflect_mods): resolve the no-arg constructor's flags
+            // from the bound class (the Leo;.n shape).
+            std::string rcls;
+            auto cdesc = heap_.get_object_field(args[0].object_id,
+                                                "class_desc");
+            if (cdesc.has_value() && cdesc->type == DalvikType::STRING_REF)
+                rcls = cdesc->string_val;
+            if (rcls.empty()) {
+                auto cls_f = heap_.get_object_field(args[0].object_id,
+                                                    "__reflect_class");
+                if (cls_f.has_value() && cls_f->type == DalvikType::STRING_REF)
+                    rcls = cls_f->string_val;
+            }
+            auto cit = class_info_index_.find(rcls);
+            if (cit != class_info_index_.end()) {
+                const auto& ci = dex_report_->classes[cit->second];
+                for (const auto& mi : ci.direct_methods) {
+                    if (!mi.is_constructor || !mi.parameters.empty()) continue;
+                    result = DalvikValue::make_int(
+                        static_cast<int32_t>(mi.access_flags));
+                    break;
+                }
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (class_name == "Ljava/lang/reflect/Constructor;" &&
+        method == "getParameterTypes") {
+        // F-106 (S60): Constructor.getParameterTypes()()Ljava/lang/Class; —
+        // OpenJDK law: a fresh Class[] of the declared parameter types.
+        // Needed by the androidx factory ctor-matching helper
+        // (findMatchingConstructor: getConstructors() → getParameterTypes()
+        // → List.equals against the supported signature lists).
+        result = DalvikValue::make_null();
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+            std::vector<std::string> params;
+            auto pv = heap_.get_object_field(args[0].object_id,
+                                             "__reflect_params");
+            if (pv.has_value() && pv->type == DalvikType::STRING_REF &&
+                !pv->string_val.empty()) {
+                const std::string& s = pv->string_val;
+                size_t pos = 0;
+                while (pos <= s.size()) {
+                    size_t comma = s.find(',', pos);
+                    if (comma == std::string::npos) {
+                        params.push_back(s.substr(pos));
+                        break;
+                    }
+                    params.push_back(s.substr(pos, comma - pos));
+                    pos = comma + 1;
+                }
+            } else {
+                // Fallback: resolve from the bound class by descriptor.
+                std::string rcls;
+                auto cdesc = heap_.get_object_field(args[0].object_id,
+                                                    "class_desc");
+                if (cdesc.has_value() && cdesc->type == DalvikType::STRING_REF)
+                    rcls = cdesc->string_val;
+                auto cit = class_info_index_.find(rcls);
+                if (cit != class_info_index_.end()) {
+                    const auto& ci = dex_report_->classes[cit->second];
+                    for (const auto& mi : ci.direct_methods) {
+                        if (!mi.is_constructor || !mi.parameters.empty())
+                            continue;
+                        params = mi.parameters;
+                        break;
+                    }
+                }
+            }
+            uint32_t arr_id = heap_.allocate("[Ljava/lang/Class;", pc_, 0);
+            heap_.set_object_field(arr_id, "__array_length__",
+                                   DalvikValue::make_int(
+                                       static_cast<int32_t>(params.size())));
+            for (size_t pi = 0; pi < params.size(); ++pi) {
+                DalvikValue tok = DalvikValue::make_class(
+                    params[pi], instruction_sequence_);
+                heap_.set_object_field(
+                    arr_id, "array[" + std::to_string(pi) + "]", tok);
+            }
+            DalvikValue av;
+            av.type = DalvikType::OBJECT_REF;
+            av.object_id = arr_id;
+            av.class_desc = "[Ljava/lang/Class;";
+            av.int_val = static_cast<int64_t>(params.size());
+            result = av;
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (class_name == "Ljava/lang/reflect/Constructor;" &&
         method == "newInstance") {
         // args: [0]=Constructor receiver, [1]=Object[] ctor params.
         // Identity fields: FIX-M3-012b law stores "class_desc"; F-029
@@ -19110,6 +19423,29 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 case DalvikType::FLOAT32: return std::to_string(a.float_val);
                 case DalvikType::FLOAT64: return std::to_string(a.double_val);
                 case DalvikType::NULL_REF: return "null";
+                case DalvikType::CLASS_REF: {
+                    // F-106 (S60, R-NEW-380): a CLASS_REF value carries the
+                    // referent in class_desc; stringify per OpenJDK
+                    // Class.toString(). Pre-fix this fell to `default: ""` —
+                    // the literal mechanism behind the EMPTY class name in
+                    // the dooz v23 "Cannot create an instance of " message.
+                    if (a.class_desc.size() > 2 && a.class_desc[0] == 'L' &&
+                        a.class_desc.back() == ';') {
+                        std::string dotted;
+                        for (auto c : a.class_desc.substr(
+                                 1, a.class_desc.size() - 2))
+                            dotted.push_back(c == '/' ? '.' : c);
+                        bool is_iface = false;
+                        auto iit = class_info_index_.find(a.class_desc);
+                        if (iit != class_info_index_.end())
+                            is_iface = (dex_report_->classes[iit->second]
+                                            .access_flags &
+                                        0x200) != 0;
+                        return std::string(is_iface ? "interface " : "class ") +
+                               dotted;
+                    }
+                    return a.class_desc;
+                }
                 case DalvikType::OBJECT_REF: {
                     if (heap_.has_object(a.object_id)) {
                         // A String or another StringBuilder — read its value.
@@ -19119,6 +19455,41 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                         }
                         if (sv.has_value() && sv->type == DalvikType::STRING_REF) {
                             return sv->string_val;
+                        }
+                        // F-106 (S60, R-NEW-380): a heap-backed Class token
+                        // stringifies per OpenJDK Class.toString(): the
+                        // token's referent renders as "class <dotted>" (or
+                        // "interface <dotted>"). Pre-fix the token fell to
+                        // the Object.toString identity fallback, so every
+                        // message built around a Class token carried an
+                        // EMPTY/garbage name — the dooz v23
+                        // "Cannot create an instance of " face rendered
+                        // nothing after "of " (R-NEW-380 diagnostic gap).
+                        auto* tok = heap_.get(a.object_id);
+                        if (tok &&
+                            tok->class_descriptor == "Ljava/lang/Class;") {
+                            auto ref = heap_.get_object_field(
+                                a.object_id, "__referent_desc");
+                            if (ref.has_value() &&
+                                ref->type == DalvikType::STRING_REF &&
+                                !ref->string_val.empty()) {
+                                std::string dotted;
+                                for (auto c : ref->string_val.substr(
+                                         1, ref->string_val.size() - 2))
+                                    dotted.push_back(c == '/' ? '.' : c);
+                                bool is_iface = false;
+                                auto iit =
+                                    class_info_index_.find(ref->string_val);
+                                if (iit != class_info_index_.end()) {
+                                    is_iface =
+                                        (dex_report_->classes[iit->second]
+                                             .access_flags &
+                                         0x200) != 0;
+                                }
+                                return std::string(is_iface ? "interface "
+                                                            : "class ") +
+                                       dotted;
+                            }
                         }
                     }
                     // Per OpenJDK Object.toString: ClassName@hexIdentityHash
@@ -19679,7 +20050,19 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // the F-036 iterator law serves them with zero new machinery.
     if (class_name == "Ljava/util/Collections;" &&
         (method == "singletonList" || method == "emptyList" ||
-         method == "unmodifiableList")) {
+         method == "unmodifiableList" || method == "unmodifiableMap" ||
+         method == "unmodifiableSet" || method == "unmodifiableCollection")) {
+        // F-106b (S60, R-NEW-380): Collections.unmodifiableMap/Set/Collection.
+        // OpenJDK Collections.unmodifiableMap returns a read-only VIEW that
+        // delegates every read (containsKey/get/size/isEmpty) to the backing
+        // map. Pre-fix: NO handler → STUBBED typed-zero NULL → the Hilt
+        // ViewModelStore-key binding (dooz v23 Lls;.a() →
+        // unmodifiableMap({hb0, bm1}) → new Lwl0;(null)) carried a NULL
+        // backing map → Lwl0;.containsKey(hb0) answered FALSE →
+        // ViewModelProviderImpl fell to the DEFAULT factory chain
+        // (SavedStateViewModelFactory → NewInstanceFactory → F-106's
+        // honest NoSuchMethodException) instead of the Hilt multi-binding
+        // creation path. Same law family as unmodifiableList below.
         uint32_t list_id = heap_.allocate("Ljava/util/Collections$SingletonList;", pc_, 0);
         int32_t n = 0;
         if (method == "singletonList" && args.size() >= 1) {
@@ -19690,6 +20073,16 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             // AOSP: an unmodifiable view delegates iteration — return the
             // backing list itself (single-threaded engine: same observable
             // ordering; the immutability guard is not observable here).
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = args[0];
+            return true;
+        } else if ((method == "unmodifiableMap" || method == "unmodifiableSet" ||
+                    method == "unmodifiableCollection") &&
+                   args.size() >= 1 && args[0].type == DalvikType::OBJECT_REF) {
+            // AOSP: an unmodifiable view delegates every read to the backing
+            // container — return the backing container itself (the
+            // single-threaded engine cannot observe the immutability guard;
+            // same law as the unmodifiableList branch above).
             status = ApiCallTrace::Status::IMPLEMENTED;
             result = args[0];
             return true;
@@ -23338,6 +23731,24 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             result = DalvikValue::make_string(dotted, 0);
             return true;
         }
+        // F-106 (S60, R-NEW-380): Class.toString() — OpenJDK law:
+        // toString() == (isInterface() ? "interface " : "class ") + getName()
+        // (primitives render bare). The dooz v23 factory fallback built its
+        // RuntimeException message through StringBuilder.append(modelClass)
+        // → String.valueOf → Class.toString; with no handler the name
+        // portion rendered EMPTY ("Cannot create an instance of "),
+        // destroying the diagnostic surface of the R-NEW-380 face.
+        if (method == "toString" && !dotted.empty()) {
+            bool is_iface = false;
+            auto iit = class_info_index_.find(referent_desc);
+            if (iit != class_info_index_.end())
+                is_iface = (dex_report_->classes[iit->second].access_flags &
+                            0x200) != 0;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_string(
+                std::string(is_iface ? "interface " : "class ") + dotted, 0);
+            return true;
+        }
         // ────────────────────────────────────────────────────────────────
         // R-NEW-350 (S43): java.lang.Class.asSubclass(Class) — OpenJDK law:
         //   receiver.asSubclass(clazz) returns THIS Class object (the same
@@ -24734,6 +25145,85 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             status = ApiCallTrace::Status::IMPLEMENTED;
             result = DalvikValue::make_string(u64_str((uint64_t)as_i64(args[0]), 8), 0);
             return true;
+        }
+        if (method == "toString" && !args.empty()) {
+            // F-106c (S60, R-NEW-380): Long.toString(J) / Long.toString(J, I).
+            // OpenJDK law (Long.java): signed 64-bit rendering in the given
+            // radix (2..36, digits 0-9a-z; out-of-range radix → IAE).
+            //
+            // ROOT-CAUSE evidence (dooz v23, post F-106/F-106b): the Compose
+            // rememberSaveable key is Long.toString(compositeKeyHash, 36)
+            // (Lpm;.W pc=0x0e). With NO handler the STUBBED typed-zero
+            // returned an EMPTY string →
+            // DisposableSaveableStateRegistry.registerProvider("") →
+            // IAE "Registered key is empty or blank" (Ldf1;.a, depth 21) →
+            // the FIRST rememberSaveable in the composition killed
+            // MainActivity.onCreate. Same F-086 family: missing handler →
+            // typed-zero → wrong branch.
+            int64_t value = as_i64(args[0]);
+            int radix = 10;
+            if (args.size() >= 2 && args[1].type == DalvikType::INT32)
+                radix = args[1].int_val;
+            if (radix < 2 || radix > 36) {
+                throw_deferred("Ljava/lang/IllegalArgumentException;",
+                               "radix " + std::to_string(radix) +
+                                   " out of range",
+                               "f106-longradix");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_null();
+                return true;
+            }
+            // Unsigned magnitude (correct for Long.MIN_VALUE: 0x8000...0
+            // negated stays 0x8000...0 in the unsigned domain).
+            uint64_t mag = value < 0 ? 0ULL - static_cast<uint64_t>(value)
+                                     : static_cast<uint64_t>(value);
+            static const char* digits =
+                "0123456789abcdefghijklmnopqrstuvwxyz";
+            std::string out;
+            do {
+                out.insert(out.begin(), digits[mag % (unsigned)radix]);
+                mag /= (unsigned)radix;
+            } while (mag);
+            if (value < 0) out.insert(out.begin(), '-');
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_string(out, 0);
+            return true;
+        }
+    }
+    if (class_name == "Ljava/lang/reflect/Modifier;" && args.size() >= 1) {
+        // F-106 (S60, R-NEW-380): java.lang.reflect.Modifier static family —
+        // JVM-spec bit laws (OpenJDK Modifier.java). The DEX access-flag
+        // bits for PUBLIC..ABSTRACT occupy the same positions as the JVM
+        // modifier bits, so Constructor.getModifiers() (F-106) answers
+        // these predicates directly.
+        // Pre-fix: NO handler → STUBBED typed-zero 0 for every predicate →
+        // androidx NewInstanceFactory's `if (!Modifier.isPublic(
+        // ctor.getModifiers())) throw RuntimeException("Cannot create an
+        // instance of " + modelClass)` ALWAYS took the throw branch (dooz
+        // v23 R-NEW-380, Leo;.n pc=53, depth 81). Same F-086 family.
+        const auto& mv = args[0];
+        int mods = (mv.type == DalvikType::INT32)
+                       ? mv.int_val
+                       : (mv.type == DalvikType::INT64
+                              ? static_cast<int>(mv.long_val)
+                              : 0);
+        static const struct {
+            const char* name;
+            int bit;
+        } kModLaws[] = {
+            {"isPublic", 0x1},        {"isPrivate", 0x2},
+            {"isProtected", 0x4},     {"isStatic", 0x8},
+            {"isFinal", 0x10},        {"isSynchronized", 0x20},
+            {"isVolatile", 0x40},     {"isTransient", 0x80},
+            {"isNative", 0x100},      {"isInterface", 0x200},
+            {"isAbstract", 0x400},    {"isStrict", 0x800},
+        };
+        for (const auto& ml : kModLaws) {
+            if (method == ml.name) {
+                result = DalvikValue::make_bool((mods & ml.bit) != 0);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
         }
     }
     if (class_name == "Ljava/lang/Math;" && args.size() >= 1) {

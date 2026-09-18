@@ -111,7 +111,7 @@ fi
 
 # semantic battery binaries (relinked against current objects)
 if cached "semantic pass3 bridge (expect 66)"; then
-    skip "link semantic_long_cmp_conv_test"; skip "semantic long/cmp/conv (expect 26)"
+    skip "link semantic_long_cmp_conv_test"; skip "semantic long/cmp/conv (expect 32)"
     skip "link semantic_switch_parse_neg_test"; skip "semantic switch parse-neg (expect 25)"
     skip "link semantic_pass3_bridge_test"; skip "semantic pass3 bridge (expect 66)"
 else
@@ -126,7 +126,7 @@ for t in semantic_long_cmp_conv_test semantic_switch_parse_neg_test semantic_pas
 done
 
 ./build/semantic_long_cmp_conv_test > /tmp/battery_lcc.out 2>&1
-gate "semantic long/cmp/conv (expect 26)" $?
+gate "semantic long/cmp/conv (expect 32)" $?
 ./build/semantic_switch_parse_neg_test > /tmp/battery_swpn.out 2>&1
 gate "semantic switch parse-neg (expect 25)" $?
 ./build/semantic_pass3_bridge_test > /tmp/battery_p3b.out 2>&1
