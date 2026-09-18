@@ -1107,3 +1107,17 @@ Stage Summary:
 - Corpus Phase A: 61 apps with capability coverage + honest L-levels; games subset 8+3.
 - Search ledger + provenance inventory + corpus matrix in canonical docs.
 - Remaining pinned frontier: R-NEW-381 composition volume (P1) + F-085 commonmark face (P1) + P2 ladders (uNote NoteEdition, Persistence L10, Telegram init).
+
+---
+Task ID: S61-PUSH-VERIFY
+Agent: Super Z (main)
+Task: S61 publish + verification
+
+Work Log:
+- Secret guard: --tree PASS + --staged PASS before the push (fail-closed); token used via ephemeral env interpolation only, unset immediately after; never written to any tracked file.
+- PUSH VERIFIED: cac7ba5c..297bbe42 main -> main (1 logical commit: F-107a/b/b2/c/c2/d evidence-cost laws + F-108 R8-rename identity law + phase-timer PerfKit + semantic-oracle trace opt-in fix + s61_r381_dex_truth.py + Spotlight fetch/run pipeline + corpus manifest/results/coverage matrix + SEARCH_LEDGER + UPSTREAM_INVENTORY + registry/canonical/worklog sync + docs/evidence/s61_r381/).
+- ls-remote: remote HEAD 297bbe42651d == local HEAD. Working tree clean.
+- FRESH-CLONE: cloned published main (297bbe42651d); make -j2 BUILD_RC=0; helloworld_golden 26/26 PASS; tictactoe_golden 8/8 PASS; dooz v18 executes from the published source (doFrame machinery alive). Repository self-contained.
+
+Stage Summary:
+- S61 CLOSED: F-107 (evidence-cost laws, measured) + F-108 (R8-rename identity) landed with battery 96/96; R-NEW-381 face honestly refined (draw chain wired; composition volume = the remaining face, 627 cold <clinit> chains measured); Runtime Spotlight Corpus Phase A achieved (61 apps, capability coverage, honest L-levels); search tools really built+benchmarked; provenance inventory canonical.
