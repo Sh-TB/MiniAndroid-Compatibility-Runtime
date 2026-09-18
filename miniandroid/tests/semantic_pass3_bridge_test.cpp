@@ -1488,6 +1488,10 @@ static void group_parse(DalvikExecutionEngine& e) {
 int main(int argc, char** argv) {
     std::string only = (argc > 1) ? argv[1] : "";
     DalvikExecutionEngine engine;
+    // S61 F-107b2: the runtime default disables per-instruction traces
+    // (evidence-cost law). These TEST ORACLES read instruction_traces for
+    // the HALT_RETURN record, so they opt into forensic tracing explicitly.
+    engine.config_.trace_cap = 2000;
     if (only.empty() || only == "xml") group_xml(engine);
     if (only.empty() || only == "ar") group_atomic(engine);
     if (only.empty() || only == "st") group_stream(engine);

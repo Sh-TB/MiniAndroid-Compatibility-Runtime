@@ -662,6 +662,8 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
         // ===================================================================
         // S60 (R-NEW-380): propagate the wall-clock soft budget (0 = off).
         dalvik_engine_.config_.max_wall_ms = config.max_wall_seconds * 1000ULL;
+        dalvik_engine_.config_.trace_cap = config.trace_cap;                    // F-107b2
+        dalvik_engine_.config_.api_call_trace_cap = config.api_call_trace_cap;  // F-107b2
         auto dalvik_result = dalvik_engine_.execute_apk_with_activity(
             result.apk_info.apk_path,
             result.dex_report,
@@ -2122,6 +2124,20 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                 // shadows — that exclusion kept every Compose app blank.
                                 bool compose_view_class =
                                     node->class_desc.find("Landroidx/compose/") == 0;
+                                // F-108 (R-NEW-381, S61): R8-RENAMED COMPOSE IDENTITY LAW.
+                                // The literal Landroidx/compose/ prefix is wiped by R8
+                                // minification (dooz v23: AndroidComposeView = Lt4;,
+                                // ComposeView = Lho; — 0 androidx/compose class names
+                                // survive). The DEX HIERARCHY survives renaming, so the
+                                // identity of a compose owner under obfuscation is its
+                                // AOSP ViewGroup CONTRACT: a non-framework class whose
+                                // ancestry OVERRIDES dispatchDraw carries the compose
+                                // draw-dispatch contract (F-099's own rationale, now
+                                // applied without the name gate). No app names hardcoded.
+                                bool f108_dispatchdraw_contract =
+                                    !framework_class &&
+                                    dalvik_engine_.chain_overrides_method(
+                                        node->class_desc, "dispatchDraw");
                                 bool has_own_content =
                                     !node->text.empty() ||
                                     !node->image_drawable_path.empty() ||
@@ -2145,7 +2161,13 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                 // AndroidComposeView measures degenerate (e.g.
                                 // 1080x36). AOSP truth: it fills its ComposeView
                                 // parent — expand BEFORE the size gate.
-                                if (compose_view_class) {
+                                // F-108: expansion gate = the dispatchDraw CONTRACT
+                                // (was compose_view_class = the androidx prefix, which
+                                // R8 renames away). AOSP law: AbstractComposeView adds
+                                // its AndroidComposeView child with MATCH_PARENT — a
+                                // degenerate measure (0x0 / 0x105) on a non-framework
+                                // ViewGroup-descendant draw owner fills its parent.
+                                if (f108_dispatchdraw_contract) {
                                     auto rit = visited_rects.find(node->parent_id);
                                     if (rit != visited_rects.end() &&
                                         (rit->second.second.first > w || rit->second.second.second > h)) {
@@ -2153,7 +2175,7 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                         top = rit->second.first.second;
                                         w = rit->second.second.first;
                                         h = rit->second.second.second;
-                                        std::cerr << "[UC009-DRAW] AndroidComposeView expanded to ComposeView rect "
+                                        std::cerr << "[UC009-DRAW] dispatchDraw-contract view expanded to parent rect "
                                                   << w << "x" << h << std::endl;
                                     }
                                 }
@@ -2171,14 +2193,18 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                 bool dispatchdraw_override =
                                     dalvik_engine_.chain_overrides_method(
                                         node->class_desc, "dispatchDraw");
+                                // F-108: the owner gate no longer requires the
+                                // androidx name prefix — the override IS the contract.
                                 bool f099_owner_gate =
-                                    compose_view_class && dispatchdraw_override &&
+                                    dispatchdraw_override && !framework_class &&
                                     !node->children.empty() &&
                                     !has_own_content && w > 40 && h > 40 &&
                                     node->visibility == 0;
                                 if (((!framework_class || compose_view_class) && node->children.empty() &&
                                     !has_own_content && w > 40 && h > 40 &&
-                                    node->visibility == 0) || f099_owner_gate) {
+                                    node->visibility == 0) || f099_owner_gate ||
+                                    (f108_dispatchdraw_contract && node->children.empty() &&
+                                     !has_own_content && node->visibility == 0)) {
                                     bool drew_real = false;
                                     if (task.view_id != 0 && shadow_registry_) {
                                         if (auto* canvas_shadow =

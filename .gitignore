@@ -165,3 +165,7 @@ miniandroid/run/
 # message at bef5f601 (raw pre-fix traces; commit dropped, SHAs archived on
 # disk). Curated evidence belongs in docs/evidence/<session>/ + SHA256SUMS.
 /run/
+
+# S61: local Go toolchain + zoekt/codesearch build (SEARCH_LEDGER documents them; binaries are reproducible via the ledger recipe)
+/tools/go/
+/tools/gopath/
