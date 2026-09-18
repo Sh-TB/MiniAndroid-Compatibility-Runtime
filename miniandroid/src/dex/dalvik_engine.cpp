@@ -23714,6 +23714,42 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             while (v) { s.insert(s.begin(), d[v % (unsigned)radix]); v /= (unsigned)radix; }
             return s;
         };
+        // ────────────────────────────────────────────────────────────────
+        // S57 R-NEW-344 — java.lang.Long 64-bit comparison family (F-086).
+        //
+        // OpenJDK law (Long.java): compare(x,y) is a SIGNED 64-bit compare
+        // (-1/0/+1); compareUnsigned is the same on the unsigned domain.
+        //
+        // Evidence (dooz v23, androidx.collection ScatterMap 1.4.x growth
+        // decision, R8-inlined into Lbw0;.d): the second-table grow compiles
+        // Kotlin's load-factor check into
+        //   Long.compare(size*32 ^ Long.MIN_VALUE, capacity*25 ^ Long.MIN_VALUE)
+        //   + if-gtz  → resize to nextCapacity(cap)=cap*2+1
+        // (the XOR Long.MIN_VALUE idiom is the standard unsigned-compare
+        // lowering; correct math at cap 15/size 14 gives 448^MIN > 375^MIN
+        // → +1 → resize). Without a bridge handler the call fell to the
+        // STUBBED typed-zero exit → compare "0" → if-gtz false → the
+        // cleanup-instead-of-resize branch converted Full→Deleted and
+        // re-filled the SAME capacity-15 arrays → zero EMPTY metadata →
+        // probe loop never terminates (HALT-LOOP) → blank first frame.
+        // The cap-7 grow never touched the compare (capacity<=8 branches
+        // straight to the resize path), which is why only the SECOND grow
+        // failed. Affects every Kotlin/R8 `size*32 >u cap*25`-style idiom
+        // and any sorted-structure comparator — corpus-generic.
+        // ────────────────────────────────────────────────────────────────
+        if ((method == "compare" || method == "compareUnsigned") && args.size() >= 2) {
+            int64_t a = as_i64(args[0]), b = as_i64(args[1]);
+            int r;
+            if (method == "compare") {
+                r = a < b ? -1 : (a > b ? 1 : 0);
+            } else {
+                uint64_t ua = static_cast<uint64_t>(a), ub = static_cast<uint64_t>(b);
+                r = ua < ub ? -1 : (ua > ub ? 1 : 0);
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int(r);
+            return true;
+        }
         if (method == "numberOfTrailingZeros" && args.size() >= 1) {
             uint64_t v = (uint64_t)as_i64(args[0]);
             int n = 64;
