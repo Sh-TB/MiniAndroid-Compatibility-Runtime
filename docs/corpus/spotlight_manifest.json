@@ -1,0 +1,1337 @@
+{
+ "schema": "spotlight-corpus-v1",
+ "generated": "2026-09-18",
+ "source": "https://f-droid.org",
+ "apps": [
+  {
+   "package": "com.dozingcatsoftware.bouncy",
+   "version_code": 43,
+   "name": "com.dozingcatsoftware.bouncy",
+   "capabilities": [
+    "game",
+    "canvas",
+    "physics",
+    "touch",
+    "game-loop",
+    "threading"
+   ],
+   "source_url": "https://f-droid.org/repo/com.dozingcatsoftware.bouncy_43.apk",
+   "sha256": "ffda0d9cb0b1b2aa58be9559dda891c4fa24391bc481d297a8e3d96c31f62721",
+   "size_bytes": 3233743
+  },
+  {
+   "package": "org.secuso.privacyfriendlysolitaire",
+   "version_code": 4,
+   "name": "org.secuso.privacyfriendlysolitaire",
+   "capabilities": [
+    "game",
+    "touch",
+    "state-machine",
+    "card-layout",
+    "dialog"
+   ],
+   "source_url": "https://f-droid.org/repo/org.secuso.privacyfriendlysolitaire_4.apk",
+   "sha256": "b0e2adf991f949821fb28389b7c91ea2e1f743dc22c47a5738bc5980b66603ae",
+   "size_bytes": 5825311
+  },
+  {
+   "package": "org.secuso.privacyfriendly2048",
+   "version_code": 100,
+   "name": "org.secuso.privacyfriendly2048",
+   "capabilities": [
+    "game",
+    "grid-layout",
+    "touch-swipe",
+    "state-machine",
+    "sqlite"
+   ],
+   "source_url": "https://f-droid.org/repo/org.secuso.privacyfriendly2048_100.apk",
+   "sha256": "02c799d3d582669daf2acf920093c68d2933f60aa937bb72fa2a805557233fe8",
+   "size_bytes": 9294779
+  },
+  {
+   "package": "org.secuso.privacyfriendlyminesweeper",
+   "version_code": 100,
+   "name": "org.secuso.privacyfriendlyminesweeper",
+   "capabilities": [
+    "game",
+    "grid-layout",
+    "touch",
+    "state-machine",
+    "timer"
+   ],
+   "source_url": "https://f-droid.org/repo/org.secuso.privacyfriendlyminesweeper_100.apk",
+   "sha256": "cfd5aa57b5dafdf688a6ff2ef2e580b0ab636a47d71bd0e51db2ca21ce7cadff",
+   "size_bytes": 6238865
+  },
+  {
+   "package": "de.tobiasbielefeld.solitaire",
+   "version_code": 71,
+   "name": "de.tobiasbielefeld.solitaire",
+   "capabilities": [
+    "game",
+    "touch",
+    "state-machine",
+    "animation",
+    "preferences"
+   ],
+   "source_url": "https://f-droid.org/repo/de.tobiasbielefeld.solitaire_71.apk",
+   "sha256": "fdfaf7cad18e4416989b337b5c60b71158c54652384e564fe3e6386421504220",
+   "size_bytes": 16738109
+  },
+  {
+   "package": "name.boyle.chris.sgtpuzzles",
+   "version_code": 149,
+   "name": "name.boyle.chris.sgtpuzzles",
+   "capabilities": [
+    "game",
+    "canvas",
+    "touch",
+    "multi-screen",
+    "state-machine"
+   ],
+   "source_url": "https://f-droid.org/repo/name.boyle.chris.sgtpuzzles_149.apk",
+   "sha256": "6b36d5537984523c57984a784156eb853a92c940fded286483687484f3d652e4",
+   "size_bytes": 10576188
+  },
+  {
+   "package": "org.billthefarmer.diary",
+   "version_code": 1105,
+   "name": "org.billthefarmer.diary",
+   "capabilities": [
+    "listview",
+    "sqlite",
+    "preferences",
+    "date-widgets",
+    "menu"
+   ],
+   "source_url": "https://f-droid.org/repo/org.billthefarmer.diary_1105.apk",
+   "sha256": "979e8cd8702ab5c0440c2cd094de0d6bdf109632857002966e62af5e9add93ef",
+   "size_bytes": 238619
+  },
+  {
+   "package": "org.billthefarmer.tuner",
+   "version_code": 158,
+   "name": "org.billthefarmer.tuner",
+   "capabilities": [
+    "canvas",
+    "audio",
+    "custom-view",
+    "threading"
+   ],
+   "source_url": "https://f-droid.org/repo/org.billthefarmer.tuner_158.apk",
+   "sha256": "7fbfaee87f3402f7c4b269ac42a36a2ff2c91b382655647efad23d631caff944",
+   "size_bytes": 181149
+  },
+  {
+   "package": "org.billthefarmer.shorty",
+   "version_code": 116,
+   "name": "org.billthefarmer.shorty",
+   "capabilities": [
+    "intent",
+    "shortcut",
+    "textview"
+   ],
+   "source_url": "https://f-droid.org/repo/org.billthefarmer.shorty_116.apk",
+   "sha256": "0fb027c3b436f0b335d6c7397539fcbf25fd683688c893a9d494ff43e0c1f4b3",
+   "size_bytes": 126299
+  },
+  {
+   "package": "org.billthefarmer.accordion",
+   "version_code": 122,
+   "name": "org.billthefarmer.accordion",
+   "capabilities": [
+    "custom-view",
+    "canvas",
+    "touch",
+    "audio"
+   ],
+   "source_url": "https://f-droid.org/repo/org.billthefarmer.accordion_122.apk",
+   "sha256": "015f1adcfad79fd858de7f666634d9811714ab251f65868ce1282ed0a0340624",
+   "size_bytes": 7339861
+  },
+  {
+   "package": "org.ligi.passandroid",
+   "version_code": 373,
+   "name": "org.ligi.passandroid",
+   "capabilities": [
+    "storage",
+    "json",
+    "listview",
+    "imageview"
+   ],
+   "source_url": "https://f-droid.org/repo/org.ligi.passandroid_373.apk",
+   "sha256": "1b2f35f99dff9c26812c3650b6c2754dabd85b024dcd692e6f2c3aea698b8bda",
+   "size_bytes": 3663282
+  },
+  {
+   "package": "org.secuso.privacyfriendlynotes",
+   "version_code": 105,
+   "name": "org.secuso.privacyfriendlynotes",
+   "capabilities": [
+    "sqlite",
+    "edittext",
+    "listview",
+    "dialog",
+    "multi-screen"
+   ],
+   "source_url": "https://f-droid.org/repo/org.secuso.privacyfriendlynotes_105.apk",
+   "sha256": "71e874f45fa4655f14296fce13791a82f994ea9bc26699f433383f0b4d334037",
+   "size_bytes": 8483558
+  },
+  {
+   "package": "org.secuso.privacyfriendlytodolist",
+   "version_code": 103,
+   "name": "org.secuso.privacyfriendlytodolist",
+   "capabilities": [
+    "sqlite",
+    "recycler-view",
+    "dialog",
+    "alarm"
+   ],
+   "source_url": "https://f-droid.org/repo/org.secuso.privacyfriendlytodolist_103.apk",
+   "sha256": "80c6f68ec94a561157ad8db4d335003d2b2c8aeba2b649ab9f446b44743fc0af",
+   "size_bytes": 8758556
+  },
+  {
+   "package": "org.secuso.privacyfriendlyactivitytracker",
+   "version_code": 100,
+   "name": "org.secuso.privacyfriendlyactivitytracker",
+   "capabilities": [
+    "sqlite",
+    "service",
+    "sensor",
+    "listview"
+   ],
+   "source_url": "https://f-droid.org/repo/org.secuso.privacyfriendlyactivitytracker_100.apk",
+   "sha256": "e4041cb724f97f4830ff0ae3e250cb5fd71a834bd72c4507f09cb7149fbf9047",
+   "size_bytes": 9952634
+  },
+  {
+   "package": "org.secuso.privacyfriendlypaindiary",
+   "version_code": 100,
+   "name": "org.secuso.privacyfriendlypaindiary",
+   "capabilities": [
+    "sqlite",
+    "fragment",
+    "viewpager",
+    "dialog"
+   ],
+   "source_url": "https://f-droid.org/repo/org.secuso.privacyfriendlypaindiary_100.apk",
+   "sha256": "d1fbb4ce037d51784be7c00dfeb846932dda06298472885882dbaa0cfe714f94",
+   "size_bytes": 8109007
+  },
+  {
+   "package": "org.secuso.privacyfriendlyludo",
+   "version_code": 100,
+   "name": "org.secuso.privacyfriendlyludo",
+   "capabilities": [
+    "game",
+    "canvas",
+    "touch",
+    "state-machine",
+    "dialog"
+   ],
+   "source_url": "https://f-droid.org/repo/org.secuso.privacyfriendlyludo_100.apk",
+   "sha256": "b86427e1c4e874372be3f4f87bc26739a96c37e87ef7d87650568fcc01fe487b",
+   "size_bytes": 7638010
+  },
+  {
+   "package": "org.zephyrsoft.trackworktime",
+   "version_code": 72,
+   "name": "org.zephyrsoft.trackworktime",
+   "capabilities": [
+    "sqlite",
+    "service",
+    "alarm",
+    "listview",
+    "preferences"
+   ],
+   "source_url": "https://f-droid.org/repo/org.zephyrsoft.trackworktime_72.apk",
+   "sha256": "e70ae4a5dff464df9276e22bcad2bce7ab7fa238530c1ba76964ed4954379b1f",
+   "size_bytes": 8638752
+  },
+  {
+   "package": "net.gaast.giggity",
+   "version_code": 769,
+   "name": "net.gaast.giggity",
+   "capabilities": [
+    "networking",
+    "sqlite",
+    "listview",
+    "alarm"
+   ],
+   "source_url": "https://f-droid.org/repo/net.gaast.giggity_769.apk",
+   "sha256": "46066e1bbd1b1cd8bda910d862e2145f3f83b0366523c4ebe36c7a1f0881eeec",
+   "size_bytes": 454009
+  },
+  {
+   "package": "es.wolfi.app.passman",
+   "version_code": 20,
+   "name": "es.wolfi.app.passman",
+   "capabilities": [
+    "networking",
+    "listview",
+    "preferences"
+   ],
+   "source_url": "https://f-droid.org/repo/es.wolfi.app.passman_20.apk",
+   "sha256": "35503e4f26ab073c8c864705446dd9c1beaa178129524b1f9fb0169d887714c3",
+   "size_bytes": 21393766
+  },
+  {
+   "package": "com.manichord.mgit",
+   "version_code": 240,
+   "name": "com.manichord.mgit",
+   "capabilities": [
+    "networking",
+    "sqlite",
+    "listview",
+    "threading"
+   ],
+   "source_url": "https://f-droid.org/repo/com.manichord.mgit_240.apk",
+   "sha256": "39120843da48bb63ac665eefa3020ea85c4a5b7826f403295be49f97e57e00ba",
+   "size_bytes": 10936001
+  },
+  {
+   "package": "hu.vmiklos.plees_tracker",
+   "version_code": 66,
+   "name": "hu.vmiklos.plees_tracker",
+   "capabilities": [
+    "sqlite",
+    "service",
+    "listview",
+    "chart"
+   ],
+   "source_url": "https://f-droid.org/repo/hu.vmiklos.plees_tracker_66.apk",
+   "sha256": "b50acf3fc7e3a04fa4637cc6ec6b36b59daae6e6607e154b5d4cca1c78dcb60e",
+   "size_bytes": 8672293
+  },
+  {
+   "package": "org.kde.kdeconnect_tp",
+   "version_code": 13516,
+   "name": "org.kde.kdeconnect_tp",
+   "capabilities": [
+    "networking",
+    "service",
+    "listview"
+   ],
+   "source_url": "https://f-droid.org/repo/org.kde.kdeconnect_tp_13516.apk",
+   "sha256": "f2c43bb816f8d39cf9490c0c69caaea9b321402e91bb6a4451c717109e4f4d68",
+   "size_bytes": 6794284
+  },
+  {
+   "package": "fr.gouv.etalab.mastodon",
+   "version_code": 569,
+   "name": "fr.gouv.etalab.mastodon",
+   "capabilities": [
+    "networking",
+    "listview",
+    "imageview",
+    "recycler-view"
+   ],
+   "source_url": "https://f-droid.org/repo/fr.gouv.etalab.mastodon_569.apk",
+   "sha256": "90a45704a6e4cf980f0256e36ab5e6cd87cfc3232b00b3329e9aeeb1f86c1e12",
+   "size_bytes": 40240490
+  },
+  {
+   "package": "org.secuso.privacyfriendlymemory",
+   "version_code": null,
+   "name": "org.secuso.privacyfriendlymemory",
+   "capabilities": [
+    "game",
+    "memory-card",
+    "touch",
+    "animation"
+   ],
+   "source_url": "https://f-droid.org/repo/org.secuso.privacyfriendlymemory.apk",
+   "sha256": "82f83d9ea572240acabe45bcff9809f724d26f474896b150dcfd49d84037d8c6",
+   "size_bytes": 8638470,
+   "recovered_from_partial_run": true
+  },
+  {
+   "package": "org.quantumbadger.redreader",
+   "version_code": null,
+   "name": "org.quantumbadger.redreader",
+   "capabilities": [
+    "networking",
+    "listview",
+    "recycler-view",
+    "imageview",
+    "markdown"
+   ],
+   "source_url": "https://f-droid.org/repo/org.quantumbadger.redreader.apk",
+   "sha256": "641512cee55154cd0c811e435d5f60b9b9e6d65a2103e0a34389c9fe5b4484f2",
+   "size_bytes": 9523976,
+   "recovered_from_partial_run": true
+  },
+  {
+   "package": "com.mendhak.gpslogger",
+   "version_code": null,
+   "name": "com.mendhak.gpslogger",
+   "capabilities": [
+    "gps",
+    "service",
+    "storage",
+    "listview",
+    "preferences"
+   ],
+   "source_url": "https://f-droid.org/repo/com.mendhak.gpslogger.apk",
+   "sha256": "1aa6e7ce15a3d4ec8fbec2571b1f96d509a798fb93c0206351162d547a50950a",
+   "size_bytes": 8033712,
+   "recovered_from_partial_run": true
+  },
+  {
+   "package": "org.ligi.survivalmanual",
+   "version_code": null,
+   "name": "org.ligi.survivalmanual",
+   "capabilities": [
+    "webview",
+    "listview",
+    "scrolling",
+    "search"
+   ],
+   "source_url": "https://f-droid.org/repo/org.ligi.survivalmanual.apk",
+   "sha256": "6dbc943ce56b34a531fb7e0d6b668f980544389db40da0de7ca440f9f0ba3174",
+   "size_bytes": 8121175,
+   "recovered_from_partial_run": true
+  },
+  {
+   "package": "de.blinkt.openvpn",
+   "version_code": null,
+   "name": "de.blinkt.openvpn",
+   "capabilities": [
+    "service",
+    "networking",
+    "jni",
+    "preferences"
+   ],
+   "source_url": "https://f-droid.org/repo/de.blinkt.openvpn.apk",
+   "sha256": "3ce86b641d1627820d8f05606a3fb58d966ffa8360c234563b3c5e1bd3a8490a",
+   "size_bytes": 39765197,
+   "recovered_from_partial_run": true
+  },
+  {
+   "package": "com.fsck.k9",
+   "version_code": null,
+   "name": "com.fsck.k9",
+   "capabilities": [
+    "networking",
+    "sqlite",
+    "service",
+    "listview",
+    "intent"
+   ],
+   "source_url": "https://f-droid.org/repo/com.fsck.k9.apk",
+   "sha256": "92cd3a81c7a8d066e517a50932fe85424de7752cb72e76032174d53ec36a2741",
+   "size_bytes": 10751521,
+   "recovered_from_partial_run": true
+  },
+  {
+   "package": "org.totschnig.myexpenses",
+   "version_code": null,
+   "name": "org.totschnig.myexpenses",
+   "capabilities": [
+    "sqlite",
+    "listview",
+    "dialog",
+    "export"
+   ],
+   "source_url": "https://f-droid.org/repo/org.totschnig.myexpenses.apk",
+   "sha256": "44f86212e40f706aa427d74fdc0f386e6f28c656d6eea590b87a9c9ca1b06109",
+   "size_bytes": 48515119,
+   "recovered_from_partial_run": true
+  },
+  {
+   "package": "com.nononsenseapps.notepad",
+   "version_code": null,
+   "name": "com.nononsenseapps.notepad",
+   "capabilities": [
+    "sqlite",
+    "listview",
+    "fragment",
+    "dialog",
+    "sync"
+   ],
+   "source_url": "https://f-droid.org/repo/com.nononsenseapps.notepad.apk",
+   "sha256": "ed44d7aff78498a598ac92e831c859649281c8cdbd4d0e17130cbdde80755114",
+   "size_bytes": 3055997,
+   "recovered_from_partial_run": true
+  },
+  {
+   "package": "org.dmfs.tasks",
+   "version_code": null,
+   "name": "org.dmfs.tasks",
+   "capabilities": [
+    "sqlite",
+    "sync",
+    "widget",
+    "listview"
+   ],
+   "source_url": "https://f-droid.org/repo/org.dmfs.tasks.apk",
+   "sha256": "7f3a1528142c8a8a0ab1ecf6b83f0620eb31cd8daa94b299149c21982e3c2f14",
+   "size_bytes": 3685910,
+   "recovered_from_partial_run": true
+  },
+  {
+   "package": "com.ghostsq.commander",
+   "version_code": null,
+   "name": "com.ghostsq.commander",
+   "capabilities": [
+    "storage",
+    "listview",
+    "custom-view",
+    "multi-screen"
+   ],
+   "source_url": "https://f-droid.org/repo/com.ghostsq.commander.apk",
+   "sha256": "7e80608184f463d0837328998983beb30799d13de2d5b28dca8f76978dc8a05c",
+   "size_bytes": 4988095,
+   "recovered_from_partial_run": true
+  },
+  {
+   "package": "de.grobox.liberario",
+   "version_code": null,
+   "name": "de.grobox.liberario",
+   "capabilities": [
+    "networking",
+    "listview",
+    "fragment"
+   ],
+   "source_url": "https://f-droid.org/repo/de.grobox.liberario.apk",
+   "sha256": "00ebcff767b548c1a836e2ca270a80cc04f7cab22ca5ae76a349b42856fb06f6",
+   "size_bytes": 43964416,
+   "recovered_from_partial_run": true
+  },
+  {
+   "package": "org.billthefarmer.siggen",
+   "version_code": null,
+   "name": "org.billthefarmer.siggen",
+   "capabilities": [
+    "audio",
+    "custom-view",
+    "canvas",
+    "threading"
+   ],
+   "source_url": "https://f-droid.org/repo/org.billthefarmer.siggen.apk",
+   "sha256": "e2cad1884047d80856141432169baaf9313722188ef5881e9c2a15d78b1d3601",
+   "size_bytes": 93505,
+   "recovered_from_partial_run": true
+  },
+  {
+   "package": "com.better.alarm",
+   "version_code": null,
+   "name": "com.better.alarm",
+   "capabilities": [
+    "alarm",
+    "service",
+    "listview",
+    "preferences"
+   ],
+   "source_url": "https://f-droid.org/repo/com.better.alarm.apk",
+   "sha256": "0931a729f0c6a0d477e232704f66b97a2fb3fe23f7973df3fc3a41b18fb72a83",
+   "size_bytes": 7928703,
+   "recovered_from_partial_run": true
+  },
+  {
+   "package": "org.pocketworkstation.pckeyboard",
+   "version_code": null,
+   "name": "org.pocketworkstation.pckeyboard",
+   "capabilities": [
+    "ime",
+    "service",
+    "custom-view",
+    "preferences"
+   ],
+   "source_url": "https://f-droid.org/repo/org.pocketworkstation.pckeyboard.apk",
+   "sha256": "641ab8a614f496765bb841665aa894fdb9d1f908c22ffb01af2059c7600ed0d3",
+   "size_bytes": 2837713,
+   "recovered_from_partial_run": true
+  },
+  {
+   "package": "com.jens.automation2",
+   "version_code": null,
+   "name": "com.jens.automation2",
+   "capabilities": [
+    "service",
+    "sqlite",
+    "listview",
+    "preferences"
+   ],
+   "source_url": "https://f-droid.org/repo/com.jens.automation2.apk",
+   "sha256": "e4878ac5a7308f886747214168abffa332f8ae5577bcd1ab9ea8d6a41e84df87",
+   "size_bytes": 5962623,
+   "recovered_from_partial_run": true
+  },
+  {
+   "package": "com.simplemobiletools.flashlight",
+   "version_code": null,
+   "name": "com.simplemobiletools.flashlight",
+   "capabilities": [
+    "camera",
+    "service",
+    "widget"
+   ],
+   "source_url": "https://f-droid.org/repo/com.simplemobiletools.flashlight.apk",
+   "sha256": "b4cd07c40a3d5711461670a2f460a1447acf3836c0e90471b7ba5c8b4c2f9bb3",
+   "size_bytes": 9960893,
+   "recovered_from_partial_run": true
+  },
+  {
+   "package": "net.fabiszewski.ulogger",
+   "version_code": null,
+   "name": "net.fabiszewski.ulogger",
+   "capabilities": [
+    "gps",
+    "networking",
+    "service",
+    "sqlite"
+   ],
+   "source_url": "https://f-droid.org/repo/net.fabiszewski.ulogger.apk",
+   "sha256": "e403b15d9c5aab8b386031295a4d3bbcc40e5106b95910e14b000330f5259697",
+   "size_bytes": 1352860,
+   "recovered_from_partial_run": true
+  },
+  {
+   "package": "com.vrem.wifianalyzer",
+   "version_code": null,
+   "name": "com.vrem.wifianalyzer",
+   "capabilities": [
+    "wifi",
+    "canvas",
+    "graph",
+    "listview"
+   ],
+   "source_url": "https://f-droid.org/repo/com.vrem.wifianalyzer.apk",
+   "sha256": "282a06fcc5ce5d889799113a1c6edf5e408b0902acc542308ad21051a2a7cc2b",
+   "size_bytes": 2119103,
+   "recovered_from_partial_run": true
+  },
+  {
+   "package": "org.sufficientlysecure.keychain",
+   "version_code": null,
+   "name": "org.sufficientlysecure.keychain",
+   "capabilities": [
+    "crypto",
+    "listview",
+    "sqlite",
+    "intent"
+   ],
+   "source_url": "https://f-droid.org/repo/org.sufficientlysecure.keychain.apk",
+   "sha256": "f88374b9113aa9ddba865258bd989eb3ac2ca1577d92e59d6e84228e080674ce",
+   "size_bytes": 12043256,
+   "recovered_from_partial_run": true
+  },
+  {
+   "package": "de.westnordost.streetcomplete",
+   "version_code": null,
+   "name": "de.westnordost.streetcomplete",
+   "capabilities": [
+    "map",
+    "canvas",
+    "sqlite",
+    "dialog"
+   ],
+   "source_url": "https://f-droid.org/repo/de.westnordost.streetcomplete.apk",
+   "sha256": "9845b2e86f6e92440d7a1ed4742b861ef46d866e3f141e666fc7e41dcdd443ec",
+   "size_bytes": 96482236,
+   "recovered_from_partial_run": true
+  },
+  {
+   "package": "de.schildbach.wallet",
+   "version_code": null,
+   "name": "de.schildbach.wallet",
+   "capabilities": [
+    "crypto",
+    "networking",
+    "sqlite",
+    "service"
+   ],
+   "source_url": "https://f-droid.org/repo/de.schildbach.wallet.apk",
+   "sha256": "bc6d078854a74281e2ad07d5a7bc5ff68a322a809eb1e0bade1e4549e8f00090",
+   "size_bytes": 3166547,
+   "recovered_from_partial_run": true
+  },
+  {
+   "package": "de.ph1b.audiobook",
+   "version_code": null,
+   "name": "de.ph1b.audiobook",
+   "capabilities": [
+    "audio",
+    "service",
+    "listview",
+    "storage"
+   ],
+   "source_url": "https://f-droid.org/repo/de.ph1b.audiobook.apk",
+   "sha256": "21cff18073d15e350e5845f2043d1f07d944f0dee420d7cfa25fd9196f05e8b8",
+   "size_bytes": 7010566,
+   "recovered_from_partial_run": true
+  },
+  {
+   "package": "de.mm20.launcher2.release",
+   "version_code": null,
+   "name": "de.mm20.launcher2.release",
+   "capabilities": [
+    "launcher",
+    "listview",
+    "recycler-view",
+    "preferences"
+   ],
+   "source_url": "https://f-droid.org/repo/de.mm20.launcher2.release.apk",
+   "sha256": "a83264c6fb437aad083c61206a4e79dba555300dbd4578fa17c0c43f55798739",
+   "size_bytes": 14003675,
+   "recovered_from_partial_run": true
+  },
+  {
+   "package": "de.kaffeemitkoffein.tinyweatherforecastgermany",
+   "version_code": null,
+   "name": "de.kaffeemitkoffein.tinyweatherforecastgermany",
+   "capabilities": [
+    "networking",
+    "listview",
+    "canvas",
+    "widgets"
+   ],
+   "source_url": "https://f-droid.org/repo/de.kaffeemitkoffein.tinyweatherforecastgermany.apk",
+   "sha256": "bdb0f6165096c99dc8cafafe38021b22d985ebd8270d0c08f7b5d43cc7dfb066",
+   "size_bytes": 7546567,
+   "recovered_from_partial_run": true
+  },
+  {
+   "package": "hu.vmiklos.plees_tracker",
+   "version_code": 66,
+   "name": "hu.vmiklos.plees_tracker",
+   "capabilities": [
+    "sqlite",
+    "service",
+    "listview",
+    "chart"
+   ],
+   "source_url": "https://f-droid.org/repo/hu.vmiklos.plees_tracker_66.apk",
+   "sha256": "b50acf3fc7e3a04fa4637cc6ec6b36b59daae6e6607e154b5d4cca1c78dcb60e",
+   "size_bytes": 8672293
+  },
+  {
+   "package": "net.sourceforge.opencamera",
+   "version_code": null,
+   "name": "net.sourceforge.opencamera",
+   "capabilities": [
+    "camera",
+    "canvas",
+    "custom-view",
+    "preferences"
+   ],
+   "source_url": "https://f-droid.org/repo/net.sourceforge.opencamera.apk",
+   "sha256": "ca5672ca8c7174554ca0b07b5b26e505817a05142f571cf2abe67e790c30249c",
+   "size_bytes": 4973923,
+   "recovered_from_partial_run": true
+  },
+  {
+   "package": "org.secuso.privacyfriendlysketching",
+   "version_code": null,
+   "name": "org.secuso.privacyfriendlysketching",
+   "capabilities": [],
+   "source_url": "https://f-droid.org/repo/org.secuso.privacyfriendlysketching.apk",
+   "sha256": "cdfd575dbca76fa3c1d7916bd38c2ed3ed7dc7c0d5fd8cdefb0cf16eaa15e261",
+   "size_bytes": 13242013,
+   "recovered_from_partial_run": true
+  },
+  {
+   "package": "org.andstatus.app",
+   "version_code": null,
+   "name": "org.andstatus.app",
+   "capabilities": [
+    "networking",
+    "listview",
+    "service"
+   ],
+   "source_url": "https://f-droid.org/repo/org.andstatus.app.apk",
+   "sha256": "8fa68144623e16fc72b1c187a798c25be17846ac28ab5fac59c13b2316079c4c",
+   "size_bytes": 8944313,
+   "recovered_from_partial_run": true
+  },
+  {
+   "package": "org.primftpd",
+   "version_code": null,
+   "name": "org.primftpd",
+   "capabilities": [
+    "service",
+    "networking",
+    "storage"
+   ],
+   "source_url": "https://f-droid.org/repo/org.primftpd.apk",
+   "sha256": "d36566e774e2d0446dcbb41438d22e62d198688aac2711ba7afaa6ea2fdd577d",
+   "size_bytes": 11236956,
+   "recovered_from_partial_run": true
+  },
+  {
+   "package": "org.secuso.privacyfriendlypin",
+   "version_code": 100,
+   "name": "org.secuso.privacyfriendlypin",
+   "capabilities": [
+    "dialog",
+    "state-machine"
+   ],
+   "source_url": "https://f-droid.org/repo/org.secuso.privacyfriendlypin_100.apk",
+   "sha256": "d3d17402e3b40896a73365019ebdb7df6877c62bfb8cd8ac794673eec16824bf",
+   "size_bytes": 4911109
+  }
+ ],
+ "unavailable": [
+  {
+   "package": "com.uberspot.a2048",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.gauravjassal.rockpaper",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.pixeldroid.pixel_dungeon_2",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.nkanaev.numberpaint",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.riellocke.sevenwondersscorekeeper",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "fr.rboisbande.score",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "jp.sekf.kqueue.game",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.devictor.dsmilingwood",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "de.j4velin.ultimateChase",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.piepmatzhuhn.memorygame",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "at.tomomas.2048",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.thirtydays.bomb",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.fussballspielen.tipp",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.hobbyone.moviedb",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.billthefarmer.viewer",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.billthefarmer.timber",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.billthefarmer.weather",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.billthefarmer.expense",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.billthefarmer.calc",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.billthefarmer.highlight",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.billthefarmer.markdown",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.billthefarmer.clipboard",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.billthefarmer.speaker",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.billthefarmer.ringtones",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.billthefarmer.sync",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "de.duenndns.mtmusic",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "de.duenndns.sslmemo",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "dubrowgn.waketime",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.debian.eugen.scaleimageview",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.ligi.tracedroid",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.blogspot.app4mobile.lifecalc",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.jarsilio.android.wildlog",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.nkanaev.lunula",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.secuso.privacyfriendlyweather",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.secuso.privacyfriendlynetmonitor",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.secuso.privacyfriendlybackupsolitaire",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.secuso.privacyfriendlycodescanner",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.secuso.privacyfriendlytrainingplan",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.secuso.privacyfriendlypbackup",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.secuso.privacyfriendlyflashlight",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.secuso.privacyfriendlyrockpaperscissors",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.secuso.privacyfriendlytictactoe",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.secuso.privacyfriendlyrideplanner",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.secuso.privacyfriendlyoffice",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.secuso.privacyfriendlycipher",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.secuso.privacyfriendlymanager",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.secuso.privacyfriendlyfooddiary",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.secuso.privacyfriendlyskygs",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.secuso.privacyfriendly \u0438\u043d\u0442\u0435\u0440\u0432\u0430\u043b\u044c\u043d\u0430",
+   "reason": "URL can't contain control characters. '/api/v1/packages/org.secuso.privacyfriendly \u0438\u043d\u0442\u0435\u0440\u0432\u0430\u043b\u044c\u043d\u0430' (found at least ' ')"
+  },
+  {
+   "package": "me.ghobadh.sample",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.varlorg.unote_u",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.github.axet.bookreader",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.github.axet.tonebadge",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.github.axet.smsgate",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.github.axet.sound",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.github.axet.duper",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "net.gaast.deoxide",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "at.linuxnet.saferplan",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.liberty.android.fantastiskmemo",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.bubble.zerolith",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "ru.hakovellow.teacherload",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "cz.muni.fi.xklinec.whitecards",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.artifex.mupdfdemo",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "eu.lindenbaum.ball",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.landrovar.harmony",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.dozingcatsoftware.cameraapp",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "io.github.domstolene.application",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "it.feio.android.omninotes",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "jp.yokomark.logoview",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.nutomicsyncthingandroid",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "de.stuffit.app",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "net.sylvek.sharemyposition",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.secuso.privacyfriendlyrockpaperscissors",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.secuso.privacyfriendlytictactoe",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.secuso.privacyfriendlysnake",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.secuso.privacyfriendlycompass",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.secuso.privacyfriendlymetricconverter",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.secuso.privacyfriendlyinvestmentcalculator",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.secuso.privacyfriendlyirc",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.secuso.privacyfriendlyfinance",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.secuso.privacyfriendlyhealth",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.yaaic",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.quran.labs.androidquran",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.github.yeriomin.yalpstore",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.billthefarmer.mididriver",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.billthefarmer.organelle",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.billthefarmer.stories",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.billthefarmer.feed",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.billthefarmer.zigzag",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.billthefarmer.money",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.billthefarmer.levels",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.billthefarmer.piper",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.philliphsu.clock2",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.ligi.blexplorer",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "de.tobiasbielefeld.bubblelevel",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.android2.calculator3",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "eu.veldsoft.sokoban",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "eu.veldsoft.tictactoe3d",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.stoutner.privacybrowser",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.simplemobiletools.calculator",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.simplemobiletools.clock",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.simplemobiletools.draw",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.simplemobiletools.filemanager",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.simplemobiletools.musicplayer",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.simplemobiletools.notes",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.simplemobiletools.gallery",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "de.j4velin.wallpaper.changer",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "me.sheimi.sgit",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.urbandroid.sleep",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.ustwo.lander",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "de.j4velin.fitnesscharts",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "de.ponyhof.rechentrainer",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "de.trevor.minecart",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "de.wintermute.spaceinv",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "de.thomasluehr.scoreboard",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "de.titans.chip8",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "de.tobiasbielefeld.ck3timer",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "de.treichel.schwimmen",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "de.nubignum.malefiz",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "de.starchild.fourconnect",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "de.fgerbig.spacegui",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "de.joergjahnke.game.android.blasterki",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "de.marshal.hexruler",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "de.serosoft.quickdevtrivial",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "de.spieleck.app.nfs9",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.thunderrabbit.mtglife",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.github.wrdlbrnft.searchablelists",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.xlythe.calculator.material",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.markuspage.android.atimetracker",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.nolanlawson.logcat",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.irccloud.android",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "eu.basicairdata.graziano.gpslogger",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "com.dozukm.dozukm",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.secuso.privacyfriendlystaffmembers",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.secuso.privacyfriendlystaffbase",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.secuso.privacyfriendlyscribbler",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.secuso.privacyfriendlycodescanner",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.secuso.privacyfriendlyquicksettings",
+   "reason": "HTTP Error 404: Not Found"
+  },
+  {
+   "package": "org.secuso.privacyfriendlyweather",
+   "reason": "HTTP Error 404: Not Found"
+  }
+ ],
+ "count": 53
+}

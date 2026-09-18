@@ -30,6 +30,8 @@
 #include "../storage/sqlite_shadow.h"    // M3 F-ROOM-CHAIN: SQLite family shadow
 #include "../resources/resource_runtime.h"  // G10 FIX-G10-002: early classifier wiring
 #include <chrono>
+#include <x86intrin.h>  // S61 PERF: __rdtsc phase timers
+#include <atomic>
 #include <algorithm>
 #include <iostream>
 #include <fstream>
@@ -69,6 +71,159 @@ static bool field_trace_active(const char* field_name, const char* where) {
     static thread_local uint32_t budget = 2000;
     return budget-- > 0;
 }
+// ─────────────────────────────────────────────────────────────────────────
+// F-107a (R-NEW-381, S61): trivially-destructible lookup tables.
+//
+// ROOT CAUSE (gprof, dooz v23 90s profile): function-local `static` containers
+// of std::string (map/set/vector) in the interpreter's hot path cost a
+// thread-safe-init guard + a __cxa_atexit cleanup thunk (__tcf_N) at every
+// reference. The profile showed the cleanup thunk __tcf_0 entered 739M times
+// (50% of wall) plus 464M std::function/_M_manager churn and 259M json
+// destroys — while the interpreter core (fetch_decode_execute) was <2%.
+// The engine spent its budget on evidence/static machinery, not execution.
+//
+// LAW (F-107a): the interpreter hot path must not contain function-local
+// statics with non-trivial destructors. Data tables become file-scope arrays
+// of const char* (trivially destructible → zero guard, zero cleanup thunk,
+// zero construction). Small-table linear scans also beat std::map lookups
+// for ≤64-entry tables (cache locality), so this is not a trade.
+// ─────────────────────────────────────────────────────────────────────────
+// (ambient namespace: miniandroid::dalvik — F-107a helpers below)
+struct KvPair { const char* k; const char* v; };
+struct KvInt { const char* k; int v; };
+
+inline const char* kv_table_find(const KvPair* tbl, size_t n, const std::string& k) {
+    for (size_t i = 0; i < n; ++i) if (k == tbl[i].k) return tbl[i].v;
+    return nullptr;
+}
+inline int kvint_table_find(const KvInt* tbl, size_t n, const std::string& k, int def) {
+    for (size_t i = 0; i < n; ++i) if (k == tbl[i].k) return tbl[i].v;
+    return def;
+}
+
+// F-107b (R-NEW-381, S61): batched FIFO cap for trace vectors.
+// The old law erased ONE element from the FRONT on every push once the cap
+// was reached — vector::erase(begin) is O(n) per call (the gprof profile
+// showed _M_erase at 0.94s/7230 calls). Batching: let the vector grow to
+// cap+BATCH, then drop BATCH in ONE erase — identical FIFO order, identical
+// steady-state cap (bounded lag of BATCH), 1/BATCH the memmove traffic.
+template <class T>
+inline void batched_cap_push(std::vector<T>& v, const size_t cap, T&& item) {
+    constexpr size_t BATCH = 64;
+    if (cap > 0 && v.size() >= cap + BATCH) {
+        v.erase(v.begin(), v.begin() + static_cast<long>(BATCH));
+    }
+    v.push_back(std::move(item));
+}
+inline bool kv_table_contains(const KvPair* tbl, size_t n, const std::string& k) {
+    for (size_t i = 0; i < n; ++i) if (k == tbl[i].k) return true;
+    return false;
+}
+inline const char* str_table_contains(const char* const* tbl, size_t n, const std::string& k) {
+    for (size_t i = 0; i < n; ++i) if (k == tbl[i]) return tbl[i];
+    return nullptr;
+}
+
+// ─── S61 PERF PHASE TIMERS (F-107 forensics; env MINIANDROID_PERF_PHASES=1) ───
+// Zero-cost when disabled (one relaxed load per phase). Prints at engine dtor.
+// (ambient namespace — S61 PERF)
+struct PhaseClock {
+    struct Phase {
+        std::atomic<uint64_t> ns{0};
+        std::atomic<uint64_t> calls{0};
+    };
+    bool on = false;
+    Phase invoke_internal;    // execute_method_internal
+    Phase recursive_invoke;   // try_recursive_invoke
+    Phase bridge;             // bridge_to_api
+    Phase fetch_exec;         // fetch_decode_execute (the instruction loop)
+    Phase subclass;           // is_subclass_of
+    Phase overrides;          // chain_overrides_method
+    Phase invoke_resolve;     // try_recursive_invoke: entry → dispatch decision
+    Phase invoke_execute;     // execute_method_internal call inside tri
+    Phase invoke_native;      // JNI/native dispatch
+    Phase invoke_bridge;      // bridge_to_api call inside tri
+    Phase em_setup;           // execute_method_internal: entry → frame push
+    Phase em_fetch;           // the fetch_decode_execute call
+    Phase em_pop;             // fetch end → return
+    Phase resolve_field_ph;   // resolve_field
+    Phase class_init_ph;      // ensure_class_initialized
+    Phase sget_resolve_ph;    // sget handler: resolve_field portion
+    Phase sget_init_ph;       // sget handler: ensure_class_initialized portion
+    Phase sget_tail_ph;       // sget handler: storage lookup + synthesis
+    std::atomic<uint64_t> ci_warm{0}, ci_cold{0}, ci_skipfw{0};
+    Phase find_class;         // class_info_index_ lookups are cheap; skip
+    void enter(Phase& ph, uint64_t& t0) {
+        if (!on) return;
+        t0 = __rdtsc(); ++ph.calls;
+    }
+    void exit(Phase& ph, uint64_t t0) {
+        if (!on) return;
+        ph.ns.fetch_add(__rdtsc() - t0, std::memory_order_relaxed);
+    }
+};
+inline PhaseClock& phase_clock() {
+    static PhaseClock pc;
+    return pc;
+}
+// end S61 PERF
+
+// S61 PERF: per-opcode tick histogram (256 opcodes).
+struct OpHistogram {
+    std::atomic<uint64_t> ns[256];
+    std::atomic<uint64_t> count[256];
+    OpHistogram() { for (int i = 0; i < 256; ++i) { ns[i].store(0); count[i].store(0); } }
+};
+inline OpHistogram& op_hist() { static OpHistogram h; return h; }
+inline std::atomic<uint64_t>& f107_init_depth() { static std::atomic<uint64_t> d{0}; return d; }
+
+// F-107a: file-scope trivially-destructible framework View hierarchy table
+// (was a function-local static array of std::pair<std::string,std::string> in
+// build_class_dex_index — its __cxa_atexit cleanup thunk was the profile #1).
+static const miniandroid::dalvik::KvPair kFrameworkViews[] = {
+    {"Landroid/view/View;", "Ljava/lang/Object;"},
+    {"Landroid/view/ViewGroup;", "Landroid/view/View;"},
+    {"Landroid/widget/LinearLayout;", "Landroid/view/ViewGroup;"},
+    {"Landroid/widget/FrameLayout;", "Landroid/view/ViewGroup;"},
+    {"Landroid/widget/RelativeLayout;", "Landroid/view/ViewGroup;"},
+    {"Landroid/widget/ScrollView;", "Landroid/widget/FrameLayout;"},
+    {"Landroid/widget/HorizontalScrollView;", "Landroid/widget/FrameLayout;"},
+    {"Landroid/widget/TextView;", "Landroid/view/View;"},
+    {"Landroid/widget/EditText;", "Landroid/widget/TextView;"},
+    {"Landroid/widget/Button;", "Landroid/widget/TextView;"},
+    {"Landroid/widget/ImageButton;", "Landroid/widget/ImageView;"},
+    {"Landroid/widget/ImageView;", "Landroid/view/View;"},
+    {"Landroid/widget/CheckBox;", "Landroid/widget/Button;"},
+    {"Landroid/widget/RadioButton;", "Landroid/widget/Button;"},
+    {"Landroid/widget/ToggleButton;", "Landroid/widget/Button;"},
+    {"Landroid/widget/CheckedTextView;", "Landroid/widget/TextView;"},
+    {"Landroid/widget/AutoCompleteTextView;", "Landroid/widget/EditText;"},
+    {"Landroid/widget/MultiAutoCompleteTextView;", "Landroid/widget/AutoCompleteTextView;"},
+    {"Landroid/widget/Space;", "Landroid/view/View;"},
+    {"Landroid/view/TextureView;", "Landroid/view/View;"},
+    {"Landroid/view/SurfaceView;", "Landroid/view/View;"},
+    {"Landroid/content/Context;", "Ljava/lang/Object;"},
+    {"Landroid/content/ContextWrapper;", "Landroid/content/Context;"},
+    {"Landroid/app/Activity;", "Landroid/content/ContextWrapper;"},
+    {"Landroidx/appcompat/app/AppCompatActivity;", "Landroid/app/Activity;"},
+    {"Landroidx/fragment/app/FragmentActivity;", "Landroidx/appcompat/app/AppCompatActivity;"},
+    {"Landroidx/fragment/app/Fragment;", "Ljava/lang/Object;"},
+    {"Landroidx/appcompat/widget/AppCompatTextView;", "Landroid/widget/TextView;"},
+    {"Landroidx/appcompat/widget/AppCompatEditText;", "Landroid/widget/EditText;"},
+    {"Landroidx/appcompat/widget/AppCompatButton;", "Landroid/widget/Button;"},
+    {"Landroidx/appcompat/widget/AppCompatImageView;", "Landroid/widget/ImageView;"},
+    {"Landroidx/appcompat/widget/AppCompatCheckBox;", "Landroid/widget/CheckBox;"},
+    {"Landroid/widget/ViewAnimator;", "Landroid/widget/FrameLayout;"},
+    {"Landroid/widget/ViewSwitcher;", "Landroid/widget/ViewAnimator;"},
+    {"Landroid/widget/ViewFlipper;", "Landroid/widget/ViewAnimator;"},
+    {"Landroid/widget/TableLayout;", "Landroid/widget/LinearLayout;"},
+    {"Landroid/widget/TableRow;", "Landroid/widget/LinearLayout;"},
+    {"Landroid/widget/RadioGroup;", "Landroid/widget/LinearLayout;"},
+    {"Landroid/widget/GridLayout;", "Landroid/view/ViewGroup;"},
+    {"Landroid/widget/Toolbar;", "Landroid/view/ViewGroup;"},
+};
+static const size_t kNumFrameworkViews = sizeof(kFrameworkViews) / sizeof(kFrameworkViews[0]);
+
 static std::string dalvik_value_to_string(const DalvikValue& v) {
     switch (v.type) {
         case DalvikType::INT32:
@@ -239,6 +394,57 @@ DalvikExecutionEngine::DalvikExecutionEngine()
     // When BLOCKER-002 (method_ids parsing) and BLOCKER-003 (field_ids parsing)
     // land, a real MethodResolver will be wired in here.
     : vtable_dispatcher_(nullptr) {
+    phase_clock().on = std::getenv("MINIANDROID_PERF_PHASES") != nullptr;  // S61 PERF
+    if (phase_clock().on) {
+        atexit([] {
+            // S61 PERF: per-opcode histogram (the dtor never runs; print here).
+            OpHistogram& h = op_hist();
+            std::vector<std::pair<uint64_t, int>> tops;
+            for (int o = 0; o < 256; ++o) {
+                uint64_t v = h.ns[o].load();
+                if (v > 0) tops.push_back({v, o});
+            }
+            std::sort(tops.begin(), tops.end(), std::greater<>());
+            fprintf(stderr, "[PERF-OPS] top opcodes by ticks:\n");
+            for (size_t k = 0; k < tops.size() && k < 12; ++k) {
+                fprintf(stderr, "  op=0x%02x calls=%-9llu ticks=%-13llu est_ms=%llu\n",
+                        tops[k].second, (unsigned long long)h.count[tops[k].second].load(),
+                        (unsigned long long)tops[k].first,
+                        (unsigned long long)(tops[k].first / 3000000ULL));
+            }
+            fflush(stderr);
+            auto pr = [](const char* name, const PhaseClock::Phase& ph) {
+                fprintf(stderr, "[PERF-PHASE] %-24s calls=%-10llu ticks=%-14llu\n",
+                        name, (unsigned long long)ph.calls.load(),
+                        (unsigned long long)ph.ns.load());
+            };
+            pr("execute_method_internal", phase_clock().invoke_internal);
+            pr("try_recursive_invoke", phase_clock().recursive_invoke);
+            pr("bridge_to_api", phase_clock().bridge);
+            pr("fetch_decode_exec", phase_clock().fetch_exec);
+            pr("is_subclass_of", phase_clock().subclass);
+            pr("chain_overrides", phase_clock().overrides);
+        pr("tri.resolve", phase_clock().invoke_resolve);
+        pr("tri.execute", phase_clock().invoke_execute);
+        pr("tri.native", phase_clock().invoke_native);
+        pr("tri.bridge", phase_clock().invoke_bridge);
+        pr("em.setup", phase_clock().em_setup);
+        pr("em.fetch", phase_clock().em_fetch);
+        pr("em.pop", phase_clock().em_pop);
+        pr("resolve_field", phase_clock().resolve_field_ph);
+        pr("class_init", phase_clock().class_init_ph);
+        pr("sget.resolve", phase_clock().sget_resolve_ph);
+        pr("sget.init", phase_clock().sget_init_ph);
+        pr("sget.tail", phase_clock().sget_tail_ph);
+        fprintf(stderr, "[PERF-CI] warm=%llu skipfw=%llu cold=%llu\n",
+                (unsigned long long)phase_clock().ci_warm.load(),
+                (unsigned long long)phase_clock().ci_skipfw.load(),
+                (unsigned long long)(phase_clock().class_init_ph.calls.load()
+                                     - phase_clock().ci_warm.load()
+                                     - phase_clock().ci_skipfw.load()));
+            fflush(stderr);
+        });
+    }
     log("DalvikExecutionEngine initialized");
 }
 
@@ -334,59 +540,10 @@ void DalvikExecutionEngine::build_class_dex_index(const dex::DexReport& report) 
     class_to_superclass_.clear();
     // F-103 (S58, R-NEW-378): reset the declared-interfaces index alongside.
     class_to_interfaces_.clear();
-    // Framework View hierarchy (from AOSP):
-    static const std::pair<std::string, std::string> framework_views[] = {
-        {"Landroid/view/View;", "Ljava/lang/Object;"},
-        {"Landroid/view/ViewGroup;", "Landroid/view/View;"},
-        {"Landroid/widget/LinearLayout;", "Landroid/view/ViewGroup;"},
-        {"Landroid/widget/FrameLayout;", "Landroid/view/ViewGroup;"},
-        {"Landroid/widget/RelativeLayout;", "Landroid/view/ViewGroup;"},
-        {"Landroid/widget/ScrollView;", "Landroid/widget/FrameLayout;"},
-        {"Landroid/widget/HorizontalScrollView;", "Landroid/widget/FrameLayout;"},
-        {"Landroid/widget/TextView;", "Landroid/view/View;"},
-        {"Landroid/widget/EditText;", "Landroid/widget/TextView;"},
-        {"Landroid/widget/Button;", "Landroid/widget/TextView;"},
-        {"Landroid/widget/ImageButton;", "Landroid/widget/ImageView;"},
-        {"Landroid/widget/ImageView;", "Landroid/view/View;"},
-        {"Landroid/widget/CheckBox;", "Landroid/widget/Button;"},
-        {"Landroid/widget/RadioButton;", "Landroid/widget/Button;"},
-        {"Landroid/widget/ToggleButton;", "Landroid/widget/Button;"},
-        {"Landroid/widget/CheckedTextView;", "Landroid/widget/TextView;"},
-        {"Landroid/widget/AutoCompleteTextView;", "Landroid/widget/EditText;"},
-        {"Landroid/widget/MultiAutoCompleteTextView;", "Landroid/widget/AutoCompleteTextView;"},
-        {"Landroid/widget/Space;", "Landroid/view/View;"},
-        {"Landroid/view/TextureView;", "Landroid/view/View;"},
-        {"Landroid/view/SurfaceView;", "Landroid/view/View;"},
-        // Activity hierarchy (EXP-071: needed for instanceof checks)
-        {"Landroid/content/Context;", "Ljava/lang/Object;"},
-        {"Landroid/content/ContextWrapper;", "Landroid/content/Context;"},
-        {"Landroid/app/Activity;", "Landroid/content/ContextWrapper;"},
-        {"Landroidx/appcompat/app/AppCompatActivity;", "Landroid/app/Activity;"},
-        {"Landroidx/fragment/app/FragmentActivity;", "Landroidx/appcompat/app/AppCompatActivity;"},
-        // Fragment hierarchy
-        {"Landroidx/fragment/app/Fragment;", "Ljava/lang/Object;"},
-        // AppCompat widgets (AndroidX)
-        {"Landroidx/appcompat/widget/AppCompatTextView;", "Landroid/widget/TextView;"},
-        {"Landroidx/appcompat/widget/AppCompatEditText;", "Landroid/widget/EditText;"},
-        {"Landroidx/appcompat/widget/AppCompatButton;", "Landroid/widget/Button;"},
-        {"Landroidx/appcompat/widget/AppCompatImageView;", "Landroid/widget/ImageView;"},
-        {"Landroidx/appcompat/widget/AppCompatCheckBox;", "Landroid/widget/CheckBox;"},
-        // G10 FIX-G10-002 (AOSP framework hierarchy, factual):
-        // container families the inflater must classify by ancestry.
-        // ViewAnimator extends FrameLayout; ViewSwitcher/ViewFlipper extend
-        // ViewAnimator; TableLayout/TableRow/RadioGroup extend LinearLayout;
-        // GridLayout/Toolbar extend ViewGroup. (AOSP frameworks/base/core.)
-        {"Landroid/widget/ViewAnimator;", "Landroid/widget/FrameLayout;"},
-        {"Landroid/widget/ViewSwitcher;", "Landroid/widget/ViewAnimator;"},
-        {"Landroid/widget/ViewFlipper;", "Landroid/widget/ViewAnimator;"},
-        {"Landroid/widget/TableLayout;", "Landroid/widget/LinearLayout;"},
-        {"Landroid/widget/TableRow;", "Landroid/widget/LinearLayout;"},
-        {"Landroid/widget/RadioGroup;", "Landroid/widget/LinearLayout;"},
-        {"Landroid/widget/GridLayout;", "Landroid/view/ViewGroup;"},
-        {"Landroid/widget/Toolbar;", "Landroid/view/ViewGroup;"},
-    };
-    for (const auto& [cls, sup] : framework_views) {
-        class_to_superclass_[cls] = sup;
+    // Framework View hierarchy (from AOSP). F-107a: table above is
+    // trivially destructible — no guard, no cleanup thunk.
+    for (size_t fwv = 0; fwv < kNumFrameworkViews; ++fwv) {
+        class_to_superclass_[kFrameworkViews[fwv].k] = kFrameworkViews[fwv].v;
     }
     // Now add APK-defined classes from the DEX report.
     int apk_class_count = 0;
@@ -624,6 +781,8 @@ fallback:
 
 bool DalvikExecutionEngine::is_subclass_of(const std::string& class_desc,
                                              const std::string& ancestor_desc) const {
+    uint64_t f107_t0 = 0; phase_clock().enter(phase_clock().subclass, f107_t0);
+    struct F107Guard { PhaseClock::Phase& ph; uint64_t t0; ~F107Guard(){{ phase_clock().exit(ph, t0);}} } f107_guard{phase_clock().subclass, f107_t0};
     // G12 FIX-G12-001b (descriptor form law): the UI layer hands us
     // dot-form descriptors (Lfoo.bar.Baz; from AXML tags) while the
     // class_to_superclass_ map and the framework ancestry table are
@@ -665,15 +824,20 @@ bool DalvikExecutionEngine::is_subclass_of(const std::string& class_desc,
         if (!dex_report_ || want.empty()) return false;
         std::vector<std::string> ifq;
         std::unordered_set<std::string> ifv;
+        // F-107c (R-NEW-381, S61): O(log n) index lookup instead of a linear
+        // scan of every dex_report_->classes entry. The classifier runs
+        // millions of times per run (is_a wiring for measure/layout/instance-
+        // of); each old collect() walked up to 3052 ClassInfo records — the
+        // single largest profile cost after the static-churn fix. The
+        // class_to_interfaces_ index (F-103) holds the SAME data keyed by
+        // class descriptor and is rebuilt by build_class_dex_index.
         auto collect = [&](const std::string& c) {
-            for (const auto& cd : dex_report_->classes) {
-                if (cd.name != c) continue;
-                for (const auto& ifc : cd.interfaces) {
-                    if (!ifc.empty() && ifv.insert(ifc).second) {
-                        ifq.push_back(framework::normalize_class_desc(ifc));
-                    }
+            auto cit = class_to_interfaces_.find(c);
+            if (cit == class_to_interfaces_.end()) return;
+            for (const auto& ifc : cit->second) {
+                if (!ifc.empty() && ifv.insert(ifc).second) {
+                    ifq.push_back(framework::normalize_class_desc(ifc));
                 }
-                break;  // found the class def
             }
         };
         collect(cls);
@@ -798,47 +962,43 @@ bool DalvikExecutionEngine::is_exception_subtype(const std::string& exc_desc,
     }
 
     // Built-in framework exception hierarchy (child → parent).
-    static const std::unordered_map<std::string, std::string> builtin_exc_parent = {
-        // java.lang core
-        {"Ljava/lang/Exception;", "Ljava/lang/Throwable;"},
-        {"Ljava/lang/RuntimeException;", "Ljava/lang/Exception;"},
-        {"Ljava/lang/NullPointerException;", "Ljava/lang/RuntimeException;"},
-        {"Ljava/lang/IndexOutOfBoundsException;", "Ljava/lang/RuntimeException;"},
-        {"Ljava/lang/ArrayIndexOutOfBoundsException;", "Ljava/lang/IndexOutOfBoundsException;"},
-        {"Ljava/lang/StringIndexOutOfBoundsException;", "Ljava/lang/IndexOutOfBoundsException;"},
-        {"Ljava/lang/ArithmeticException;", "Ljava/lang/RuntimeException;"},
-        {"Ljava/lang/IllegalArgumentException;", "Ljava/lang/RuntimeException;"},
-        {"Ljava/lang/NumberFormatException;", "Ljava/lang/IllegalArgumentException;"},
-        {"Ljava/lang/IllegalStateException;", "Ljava/lang/RuntimeException;"},
-        {"Ljava/lang/ClassCastException;", "Ljava/lang/RuntimeException;"},
-        {"Ljava/lang/UnsupportedOperationException;", "Ljava/lang/RuntimeException;"},
-        {"Ljava/lang/NegativeArraySizeException;", "Ljava/lang/RuntimeException;"},
-        {"Ljava/lang/ArrayStoreException;", "Ljava/lang/RuntimeException;"},
-        {"Ljava/util/ConcurrentModificationException;", "Ljava/lang/RuntimeException;"},
-        {"Ljava/lang/SecurityException;", "Ljava/lang/RuntimeException;"},
-        {"Ljava/lang/InterruptedException;", "Ljava/lang/Exception;"},
-        {"Ljava/lang/ClassNotFoundException;", "Ljava/lang/Exception;"},
-        {"Ljava/lang/ReflectiveOperationException;", "Ljava/lang/Exception;"},
-        // java.io
-        {"Ljava/io/IOException;", "Ljava/lang/Exception;"},
-        {"Ljava/io/FileNotFoundException;", "Ljava/io/IOException;"},
-        {"Ljava/io/EOFException;", "Ljava/io/IOException;"},
-        // java.util
-        {"Ljava/util/NoSuchElementException;", "Ljava/lang/RuntimeException;"},
-        {"Ljava/util/InputMismatchException;", "Ljava/util/NoSuchElementException;"},
-        // org.json (Android framework JSON)
-        {"Lorg/json/JSONException;", "Ljava/lang/Exception;"},
-        // org.xmlpull (Android framework XML pull parser — Pass-3 K-35)
-        {"Lorg/xmlpull/v1/XmlPullParserException;", "Ljava/lang/Exception;"},
-        // Errors (rare, but typed catches for Error exist in real apps)
-        {"Ljava/lang/Error;", "Ljava/lang/Throwable;"},
-        {"Ljava/lang/OutOfMemoryError;", "Ljava/lang/VirtualMachineError;"},
-        {"Ljava/lang/StackOverflowError;", "Ljava/lang/VirtualMachineError;"},
-        {"Ljava/lang/VirtualMachineError;", "Ljava/lang/Error;"},
-        {"Ljava/lang/AssertionError;", "Ljava/lang/Error;"},
-        {"Ljava/lang/NoClassDefFoundError;", "Ljava/lang/LinkageError;"},
-        {"Ljava/lang/LinkageError;", "Ljava/lang/Error;"},
-    };
+    static const miniandroid::dalvik::KvPair kBuiltinExcParent[] = {
+    {"Ljava/lang/Exception;", "Ljava/lang/Throwable;"},
+    {"Ljava/lang/RuntimeException;", "Ljava/lang/Exception;"},
+    {"Ljava/lang/NullPointerException;", "Ljava/lang/RuntimeException;"},
+    {"Ljava/lang/IndexOutOfBoundsException;", "Ljava/lang/RuntimeException;"},
+    {"Ljava/lang/ArrayIndexOutOfBoundsException;", "Ljava/lang/IndexOutOfBoundsException;"},
+    {"Ljava/lang/StringIndexOutOfBoundsException;", "Ljava/lang/IndexOutOfBoundsException;"},
+    {"Ljava/lang/ArithmeticException;", "Ljava/lang/RuntimeException;"},
+    {"Ljava/lang/IllegalArgumentException;", "Ljava/lang/RuntimeException;"},
+    {"Ljava/lang/NumberFormatException;", "Ljava/lang/IllegalArgumentException;"},
+    {"Ljava/lang/IllegalStateException;", "Ljava/lang/RuntimeException;"},
+    {"Ljava/lang/ClassCastException;", "Ljava/lang/RuntimeException;"},
+    {"Ljava/lang/UnsupportedOperationException;", "Ljava/lang/RuntimeException;"},
+    {"Ljava/lang/NegativeArraySizeException;", "Ljava/lang/RuntimeException;"},
+    {"Ljava/lang/ArrayStoreException;", "Ljava/lang/RuntimeException;"},
+    {"Ljava/util/ConcurrentModificationException;", "Ljava/lang/RuntimeException;"},
+    {"Ljava/lang/SecurityException;", "Ljava/lang/RuntimeException;"},
+    {"Ljava/lang/InterruptedException;", "Ljava/lang/Exception;"},
+    {"Ljava/lang/ClassNotFoundException;", "Ljava/lang/Exception;"},
+    {"Ljava/lang/ReflectiveOperationException;", "Ljava/lang/Exception;"},
+    {"Ljava/io/IOException;", "Ljava/lang/Exception;"},
+    {"Ljava/io/FileNotFoundException;", "Ljava/io/IOException;"},
+    {"Ljava/io/EOFException;", "Ljava/io/IOException;"},
+    {"Ljava/util/NoSuchElementException;", "Ljava/lang/RuntimeException;"},
+    {"Ljava/util/InputMismatchException;", "Ljava/util/NoSuchElementException;"},
+    {"Lorg/json/JSONException;", "Ljava/lang/Exception;"},
+    {"Lorg/xmlpull/v1/XmlPullParserException;", "Ljava/lang/Exception;"},
+    {"Ljava/lang/Error;", "Ljava/lang/Throwable;"},
+    {"Ljava/lang/OutOfMemoryError;", "Ljava/lang/VirtualMachineError;"},
+    {"Ljava/lang/StackOverflowError;", "Ljava/lang/VirtualMachineError;"},
+    {"Ljava/lang/VirtualMachineError;", "Ljava/lang/Error;"},
+    {"Ljava/lang/AssertionError;", "Ljava/lang/Error;"},
+    {"Ljava/lang/NoClassDefFoundError;", "Ljava/lang/LinkageError;"},
+    {"Ljava/lang/LinkageError;", "Ljava/lang/Error;"},
+};
+static const size_t kBuiltinExcParent_N = sizeof(kBuiltinExcParent) / sizeof(kBuiltinExcParent[0]);
+
 
     // Walk both chains simultaneously (merged walk, cycle-safe).
     std::string via_dex = exc_desc;
@@ -858,18 +1018,19 @@ bool DalvikExecutionEngine::is_exception_subtype(const std::string& exc_desc,
             via_dex = dex_it->second;
         } else {
             // not DEX-defined: fall through to built-in chain for next step
-            auto b_it = builtin_exc_parent.find(via_dex);
-            via_dex = (b_it != builtin_exc_parent.end())
-                    ? b_it->second : "Ljava/lang/Object;";
+            const char* b1 = kv_table_find(kBuiltinExcParent, kBuiltinExcParent_N, via_dex);
+            via_dex = b1 ? b1 : "Ljava/lang/Object;";
         }
         // advance built-in chain
-        auto b_it2 = builtin_exc_parent.find(via_builtin);
-        if (b_it2 != builtin_exc_parent.end()) {
-            via_builtin = b_it2->second;
-        } else {
-            auto d_it = class_to_superclass_.find(via_builtin);
-            via_builtin = (d_it != class_to_superclass_.end())
-                    ? d_it->second : "Ljava/lang/Object;";
+        {
+            const char* b2 = kv_table_find(kBuiltinExcParent, kBuiltinExcParent_N, via_builtin);
+            if (b2) {
+                via_builtin = b2;
+            } else {
+                auto d_it = class_to_superclass_.find(via_builtin);
+                via_builtin = (d_it != class_to_superclass_.end())
+                        ? d_it->second : "Ljava/lang/Object;";
+            }
         }
     }
     return false;
@@ -912,28 +1073,32 @@ bool DalvikExecutionEngine::class_chain_defines_method(
     // Framework classes whose measure law is CONTENT-based (runtime
     // implements their onMeasure semantics directly). Factual AOSP
     // hierarchy (frameworks/base core/java/android/widget).
-    static const std::set<std::string> content_measure_classes = {
-        "Landroid/widget/TextView;", "Landroid/widget/EditText;",
-        "Landroid/widget/Button;", "Landroid/widget/CheckBox;",
-        "Landroid/widget/RadioButton;", "Landroid/widget/ImageView;",
-        "Landroid/widget/ProgressBar;",
-        "Landroidx/appcompat/widget/AppCompatTextView;",
-        "Landroidx/appcompat/widget/AppCompatEditText;",
-        "Landroidx/appcompat/widget/AppCompatButton;",
-        "Landroidx/appcompat/widget/AppCompatImageView;",
-        "Landroidx/appcompat/widget/AppCompatCheckBox;",
-    };
+    static const miniandroid::dalvik::KvPair kContentMeasureClasses[] = {
+    {"Landroid/widget/TextView;", ""},
+    {"Landroid/widget/EditText;", ""},
+    {"Landroid/widget/Button;", ""},
+    {"Landroid/widget/CheckBox;", ""},
+    {"Landroid/widget/RadioButton;", ""},
+    {"Landroid/widget/ImageView;", ""},
+    {"Landroid/widget/ProgressBar;", ""},
+    {"Landroidx/appcompat/widget/AppCompatTextView;", ""},
+    {"Landroidx/appcompat/widget/AppCompatEditText;", ""},
+    {"Landroidx/appcompat/widget/AppCompatButton;", ""},
+    {"Landroidx/appcompat/widget/AppCompatImageView;", ""},
+    {"Landroidx/appcompat/widget/AppCompatCheckBox;", ""},
+};
+static const size_t kContentMeasureClasses_N = sizeof(kContentMeasureClasses) / sizeof(kContentMeasureClasses[0]);
+
     std::string cur = class_desc;
     int guard = 0;
     while (!cur.empty() && guard++ < 16) {
         auto cit = class_info_index_.find(cur);
         if (cit != class_info_index_.end() && dex_report_) {
             const auto& cls = dex_report_->classes[cit->second];
-            for (const auto& m : cls.all_methods()) {
-                if (m.name == method) return true;
-            }
+            // F-107c2: iterate without copying the method table.
+            if (cls.find_method(method) != nullptr) return true;
         }
-        if (content_measure_classes.count(cur)) return false;
+        if (kv_table_contains(kContentMeasureClasses, kContentMeasureClasses_N, cur)) return false;
         // MASTER-2 FIX-MEASURE-001 (override-query law): reaching a plain
         // framework View family means the APP chain does NOT define the
         // method — View.onMeasure is FRAMEWORK-OWNED. The query answers
@@ -973,21 +1138,26 @@ bool DalvikExecutionEngine::class_chain_defines_method(
 // aosp_default_measure stays false at the flag sites.
 bool DalvikExecutionEngine::runtime_content_measure_class(
     const std::string& class_desc) const {
-    static const std::set<std::string> content_measure_classes = {
-        "Landroid/widget/TextView;", "Landroid/widget/EditText;",
-        "Landroid/widget/Button;", "Landroid/widget/CheckBox;",
-        "Landroid/widget/RadioButton;", "Landroid/widget/ImageView;",
-        "Landroid/widget/ProgressBar;",
-        "Landroidx/appcompat/widget/AppCompatTextView;",
-        "Landroidx/appcompat/widget/AppCompatEditText;",
-        "Landroidx/appcompat/widget/AppCompatButton;",
-        "Landroidx/appcompat/widget/AppCompatImageView;",
-        "Landroidx/appcompat/widget/AppCompatCheckBox;",
-    };
+    static const miniandroid::dalvik::KvPair kContentMeasureClasses1[] = {
+    {"Landroid/widget/TextView;", ""},
+    {"Landroid/widget/EditText;", ""},
+    {"Landroid/widget/Button;", ""},
+    {"Landroid/widget/CheckBox;", ""},
+    {"Landroid/widget/RadioButton;", ""},
+    {"Landroid/widget/ImageView;", ""},
+    {"Landroid/widget/ProgressBar;", ""},
+    {"Landroidx/appcompat/widget/AppCompatTextView;", ""},
+    {"Landroidx/appcompat/widget/AppCompatEditText;", ""},
+    {"Landroidx/appcompat/widget/AppCompatButton;", ""},
+    {"Landroidx/appcompat/widget/AppCompatImageView;", ""},
+    {"Landroidx/appcompat/widget/AppCompatCheckBox;", ""},
+};
+static const size_t kContentMeasureClasses1_N = sizeof(kContentMeasureClasses1) / sizeof(kContentMeasureClasses1[0]);
+
     std::string cur = class_desc;
     int guard = 0;
     while (!cur.empty() && guard++ < 16) {
-        if (content_measure_classes.count(cur)) return true;
+        if (kv_table_contains(kContentMeasureClasses1, kContentMeasureClasses1_N, cur)) return true;
         auto cit = class_info_index_.find(cur);
         if (cit != class_info_index_.end() && dex_report_) return false;
         if (cur == "Landroid/view/View;" || cur == "Landroid/view/SurfaceView;")
@@ -1995,6 +2165,9 @@ bool DalvikExecutionEngine::execute_method_internal(
     const uint8_t* tries_data,
     size_t tries_data_size
 ) {
+    uint64_t f107_t0 = 0; phase_clock().enter(phase_clock().invoke_internal, f107_t0);
+    struct F107Guard { PhaseClock::Phase& ph; uint64_t t0; ~F107Guard(){{ phase_clock().exit(ph, t0);}} } f107_guard{phase_clock().invoke_internal, f107_t0};
+    uint64_t f107_su0 = 0; phase_clock().enter(phase_clock().em_setup, f107_su0);  // S61 setup
     current_result_ = &result;
     bytecode_ = bytecode;
     halted_ = false;
@@ -3151,12 +3324,16 @@ bool DalvikExecutionEngine::execute_method_internal(
     // R-NEW-339: capture the caller's invoke pc before it is overwritten —
     // pc_ still holds the invoke site in the CALLER frame here.
     call_stack_.set_last_invoke_pc(pc_);
+    phase_clock().em_setup.ns.fetch_add(__rdtsc() - f107_su0);  // S61 setup ends
     call_stack_.push_frame(std::move(frame));
     current_registers_ = &call_stack_.top().registers;
     pc_ = 0;
     
     // Execute until halt
+    uint64_t f107_fe0 = 0; phase_clock().enter(phase_clock().em_fetch, f107_fe0);  // S61
     bool success = fetch_decode_execute(result);
+    phase_clock().exit(phase_clock().em_fetch, f107_fe0);
+    uint64_t f107_pp0 = 0; phase_clock().enter(phase_clock().em_pop, f107_pp0);  // S61
 
     // EXP-042 Phase 1: memory probe after each method returns. This lets us
     // see whether memory grows linearly with recursive call count (a leak)
@@ -3219,6 +3396,8 @@ bool DalvikExecutionEngine::execute_method_internal(
 //   - We guard against re-entrancy: if the class is currently being
 //     initialized (in_initialization_ set), we return immediately.
 bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_descriptor) {
+    uint64_t f107_t0 = 0; phase_clock().enter(phase_clock().class_init_ph, f107_t0);
+    struct F107Guard { PhaseClock::Phase& ph; uint64_t t0; ~F107Guard(){{ phase_clock().exit(ph, t0);}} } f107_guard{phase_clock().class_init_ph, f107_t0};
     // G12 FIX-G12-001b (descriptor form law): normalize BEFORE any prefix
     // test — the UI/init layer hands us dot-form descriptors
     // (Landroid.app.AppComponentFactory;) and the framework-namespace skip
@@ -3233,6 +3412,7 @@ bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_de
     // Already initialized?
     if (initialized_classes_.count(normalized) > 0 ||
         initialized_classes_.count(class_descriptor) > 0) {
+        phase_clock().ci_warm.fetch_add(1, std::memory_order_relaxed);
         return true;
     }
     // Framework classes — skip <clinit> (they're stubbed).
@@ -3269,6 +3449,7 @@ bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_de
              normalized.rfind("Lkotlinx/", 0) == 0 ||
              normalized.rfind("Lcom/google/", 0) == 0 ||
              normalized.rfind("Lj$/", 0) == 0)) {
+            phase_clock().ci_skipfw.fetch_add(1, std::memory_order_relaxed);
             initialized_classes_.insert(normalized);
             initialized_classes_.insert(class_descriptor);
             return true;
@@ -3316,6 +3497,8 @@ bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_de
     const dex::ClassInfo& cls_ref = dex_report_->classes[class_it->second];
     // Mark initialized BEFORE running <clinit> to prevent re-entrancy.
     initialized_classes_.insert(class_descriptor);
+    struct F107InitDepth { ~F107InitDepth() { f107_init_depth().fetch_sub(1); } } f107_idg;
+    f107_init_depth().fetch_add(1);
 
     // EXP-062: Count fields with defaults for this class
     {
@@ -3956,8 +4139,21 @@ bool DalvikExecutionEngine::try_recursive_invoke_on_super(
         auto cit = class_info_index_.find(sup);
         if (cit != class_info_index_.end()) {
             const dex::ClassInfo& sup_cls = dex_report_->classes[cit->second];
-            for (const auto& m : sup_cls.all_methods()) {
-                if (m.name != method_name || m.bytecode.empty()) continue;
+            // F-107c2: iterate direct+virtual tables in place (no copy) —
+            // same order and same empty-bytecode skip as the old
+            // all_methods() loop, zero MethodInfo copies.
+            const auto f107c2_iter = [&](auto&& body) {
+                for (const auto& m : sup_cls.direct_methods) {
+                    if (m.name != method_name || m.bytecode.empty()) continue;
+                    if (body(m)) return true;
+                }
+                for (const auto& m : sup_cls.virtual_methods) {
+                    if (m.name != method_name || m.bytecode.empty()) continue;
+                    if (body(m)) return true;
+                }
+                return false;
+            };
+            bool dispatched_f107c2 = f107c2_iter([&](const auto& m) {
                 // S55: the F-074 forensic trace used to be ALWAYS-ON
                 // stderr — including a heap message lookup per dispatch.
                 // Compose-heavy apps make MILLIONS of inherited calls;
@@ -3996,7 +4192,8 @@ bool DalvikExecutionEngine::try_recursive_invoke_on_super(
                 std::cerr << std::endl;
                 return try_recursive_invoke(sup, method_name, args, return_val,
                                             result, method_descriptor);
-            }
+            });
+            if (dispatched_f107c2) return true;
         }
         walk = sup;  // method not on this ancestor — keep climbing
     }
@@ -4011,6 +4208,9 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     DalvikExecutionResult& result,
     const std::string& method_descriptor
 ) {
+    uint64_t f107_t0 = 0; phase_clock().enter(phase_clock().recursive_invoke, f107_t0);
+    struct F107Guard { PhaseClock::Phase& ph; uint64_t t0; ~F107Guard(){{ phase_clock().exit(ph, t0);}} } f107_guard{phase_clock().recursive_invoke, f107_t0};
+    uint64_t f107_r0 = 0; phase_clock().enter(phase_clock().invoke_resolve, f107_r0);  // resolve begins
     // S55 R-NEW-361 dispatch trace (env-gated): every entry for the Kotlin
     // LongArray-fill helper and the Arrays.fill bridge target — catches a
     // dropped dispatch (the o5051 map initialized with a garbage metadata
@@ -6210,18 +6410,34 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // Before the overload search skips them (bytecode.empty()), we check if a JNI
     // handler is registered and dispatch to it.
     {
-        auto all_methods_check = cls_ref.all_methods();
-        for (const auto& method : all_methods_check) {
-            if (method.name != method_name) continue;
-            if (!(method.access_flags & 0x100)) continue;  // Not ACC_NATIVE
+        // F-107c2 (S61): iterate in place over direct+virtual tables —
+        // this block runs on EVERY try_recursive_invoke; the old
+        // all_methods() copy moved the whole method table (bytecode vectors
+        // included) 13k+ times per run. Same order + overload semantics:
+        // the first ACC_NATIVE method with the requested name dispatches.
+        const dex::MethodInfo* native_hit = nullptr;
+        for (const auto& mm : cls_ref.direct_methods) {
+            if (mm.name == method_name && (mm.access_flags & 0x100)) {
+                native_hit = &mm; break;
+            }
+        }
+        if (!native_hit) {
+            for (const auto& mm : cls_ref.virtual_methods) {
+                if (mm.name == method_name && (mm.access_flags & 0x100)) {
+                    native_hit = &mm; break;
+                }
+            }
+        }
+        for (const dex::MethodInfo* method = native_hit; method != nullptr;
+             method = nullptr) {
             // Found a native method — dispatch to JNI bridge
             log("🔌 JNI DISPATCH: " + class_descriptor + "." + method_name +
-                method.descriptor + " (native)");
+                method->descriptor + " (native)");
             // Build JNI call context from args
             jni::NativeCallContext jni_ctx;
             jni_ctx.class_desc = class_descriptor;
             jni_ctx.method_name = method_name;
-            jni_ctx.signature = method.descriptor;
+            jni_ctx.signature = method->descriptor;
             for (const auto& arg : args) {
                 if (arg.type == DalvikType::INT32 || arg.type == DalvikType::BOOLEAN) {
                     jni_ctx.int_args.push_back(arg.int_val);
@@ -6247,9 +6463,9 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                                                double_ret, string_ret, obj_ret, is_obj_ret);
             // Convert result to DalvikValue based on return type
             char ret_type = 'V';
-            size_t paren = method.descriptor.rfind(')');
-            if (paren != std::string::npos && paren + 1 < method.descriptor.size()) {
-                ret_type = method.descriptor[paren + 1];
+            size_t paren = method->descriptor.rfind(')');
+            if (paren != std::string::npos && paren + 1 < method->descriptor.size()) {
+                ret_type = method->descriptor[paren + 1];
             }
             switch (ret_type) {
                 case 'I': case 'Z': case 'B': case 'S': case 'C':
@@ -6289,12 +6505,27 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // kept alive in this scope, but storing by value makes the code
     // robust against future refactoring and is safer for recursive
     // invoke paths where the call stack gets deep.
-    auto all_methods = cls_ref.all_methods();  // keep the vector alive
-    std::optional<dex::MethodInfo> best_match;     // by value (EXP-054)
-    std::optional<dex::MethodInfo> fallback_match;  // by value (EXP-054)
+    // F-107d (R-NEW-381, S61): iterate the class's direct+virtual method
+    // tables IN PLACE. The old all_methods() copy moved the class's whole
+    // method table (bytecode vectors included) on EVERY invoke — ~40KB of
+    // malloc+memcpy per call for Compose-sized classes, ~1GB churn across a
+    // 23K-invoke run (the profile's largest unaccounted cost). Pointer
+    // stability law: dex_report_->classes is built once at load and NEVER
+    // mutated afterwards (verified: zero push/resize/clear/erase sites), so
+    // pointers into cls_ref.direct_methods/virtual_methods remain valid
+    // across recursive execution. best_match/fallback_match now hold
+    // pointers; selection semantics (F-023 exact-descriptor law, EXP-080
+    // lambda-name law, arity fallback) are unchanged.
+    std::vector<const dex::MethodInfo*> f107_cands;
+    f107_cands.reserve(cls_ref.direct_methods.size() + cls_ref.virtual_methods.size());
+    for (const auto& m : cls_ref.direct_methods) f107_cands.push_back(&m);
+    for (const auto& m : cls_ref.virtual_methods) f107_cands.push_back(&m);
+    const dex::MethodInfo* best_match = nullptr;
+    const dex::MethodInfo* fallback_match = nullptr;
     size_t arg_count = args.size();
 
-    for (const auto& method : all_methods) {
+    for (const dex::MethodInfo* method_ptr : f107_cands) {
+        const dex::MethodInfo& method = *method_ptr;
         if (class_descriptor == "LE1/c;" && method_name == "<init>" &&
             std::getenv("MINIANDROID_E1_DIAG")) {
             std::cerr << "[E1-SEL] cand " << method.name << method.descriptor
@@ -6319,7 +6550,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         if (!method_descriptor.empty() && method.name == method_name &&
             method.descriptor == method_descriptor &&
             !method.bytecode.empty()) {
-            best_match = method;
+            best_match = method_ptr;
             break;
         }
         // EXP-080: D8 renames lambda methods during compilation.
@@ -6597,20 +6828,20 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                 // may shadow the real version (bytecode_size=1468) from another.
                 // Fix: prefer the method with the LARGEST bytecode.
                 if (!best_match || method.bytecode.size() > best_match->bytecode.size()) {
-                    best_match = method;  // copy by value (EXP-054)
+                    best_match = method_ptr;  // F-107d: stable pointer (EXP-054 ownership law superseded)
                 }
                 // Don't break — continue searching for a larger bytecode version
             }
             if (!fallback_match) {
-                fallback_match = method;  // keep as fallback for type mismatch
+                fallback_match = method_ptr;  // keep as fallback for type mismatch
             }
         }
     }
 
-    std::optional<dex::MethodInfo> selected_opt = best_match ? best_match : fallback_match;
+    const dex::MethodInfo* selected_ptr = best_match ? best_match : fallback_match;
 
-    if (selected_opt) {
-        const auto& method = *selected_opt;  // safe: selected_opt owns the MethodInfo
+    if (selected_ptr) {
+        const dex::MethodInfo& method = *selected_ptr;  // F-107d: stable pointer into dex_report_
         // Found a method with bytecode — recursively execute!
         log("🔄 RECURSIVE INVOKE: " + cls_ref.name + "." + method.name +
             method.descriptor + " (" + std::to_string(method.bytecode.size()) + " instructions)");
@@ -6741,6 +6972,9 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                       << std::endl;
         }
 
+        phase_clock().exit(phase_clock().invoke_resolve, f107_r0);  // resolve ends
+        uint64_t f107_e0 = 0; phase_clock().enter(phase_clock().invoke_execute, f107_e0);
+        struct F107EGuard { PhaseClock::Phase& ph; uint64_t t0; ~F107EGuard(){ phase_clock().exit(ph, t0);} } f107_eguard{phase_clock().invoke_execute, f107_e0};
         execute_method_internal(
             cls_ref.name,
             method.name,
@@ -7958,6 +8192,8 @@ bool DalvikExecutionEngine::dispatch_view_lifecycle_once(
 
 bool DalvikExecutionEngine::chain_overrides_method(
     const std::string& class_desc, const char* method) {
+    uint64_t f107_t0 = 0; phase_clock().enter(phase_clock().overrides, f107_t0);
+    struct F107Guard { PhaseClock::Phase& ph; uint64_t t0; ~F107Guard(){{ phase_clock().exit(ph, t0);}} } f107_guard{phase_clock().overrides, f107_t0};
     std::string cls = class_desc;
     if (!cls.empty() && cls[0] == 'L' && cls.find('.') != std::string::npos) {
         std::string norm = "L";
@@ -8861,6 +9097,8 @@ inline float bits_i2f(int32_t i) {
 }  // namespace
 
 bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) {
+    uint64_t f107_t0 = 0; phase_clock().enter(phase_clock().fetch_exec, f107_t0);
+    struct F107Guard { PhaseClock::Phase& ph; uint64_t t0; ~F107Guard(){{ phase_clock().exit(ph, t0);}} } f107_guard{phase_clock().fetch_exec, f107_t0};
     // EXP-071 Phase 6 debug: Log entry to fetch_decode_execute for setCountry.
     if (current_method_ == "setCountry" && current_class_.find("PhoneView") != std::string::npos) {
         std::cerr << "[EXP071-FDE-ENTER] " << current_class_ << "." << current_method_
@@ -8961,6 +9199,8 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
         // `(instr >> 4) & 0xF` for the arg count).
         uint16_t raw_word = fetch_opcode(pc_);
         uint16_t opcode = raw_word & 0xFF;  // LOW BYTE only
+        uint64_t f107_op0 = phase_clock().on ? __rdtsc() : 0;  // S61 PERF
+        uint32_t f107_d0 = recursion_depth_;
         trace.opcode_hex = raw_word;        // Keep raw word for trace evidence
 
         // S55 R-NEW-361 (env-gated): full instruction stream of the Kotlin
@@ -9898,10 +10138,9 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 api_trace.method = method_name;
                 api_trace.status = status;
                 api_trace.pc = pc_;
-                if (config_.api_call_trace_cap > 0 && result.api_call_traces.size() >= config_.api_call_trace_cap) {
-                    result.api_call_traces.erase(result.api_call_traces.begin());
-                }
-                result.api_call_traces.push_back(api_trace);
+                batched_cap_push(result.api_call_traces,
+                                  static_cast<size_t>(config_.api_call_trace_cap),
+                                  std::move(api_trace));
 
                 trace.invoked_method = class_name + "." + method_name;
                 pc_ = pc_ + 3;
@@ -11712,6 +11951,15 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             }
         }
         
+        const bool f107_is_invoke = (opcode >= 0x6e && opcode <= 0x72) || (opcode >= 0x74 && opcode <= 0x78);
+        // S61: also suppress accumulation while inside a nested <clinit>
+        // chain — the triggering sget's own entry already covers the tree.
+        const bool f107_in_init = f107_init_depth().load(std::memory_order_relaxed) > 0;
+        if (phase_clock().on && f107_op0 && !f107_is_invoke && !f107_in_init) {  // S61: invokes excluded (their cost = nested instructions)
+            op_hist().ns[opcode].fetch_add(__rdtsc() - f107_op0, std::memory_order_relaxed);
+            op_hist().count[opcode].fetch_add(1, std::memory_order_relaxed);
+        }
+
         // EXP-045 Phase 2: Skip per-instruction trace recording when trace_cap is 0.
         // This eliminates InstructionTrace construction, Clock::now() calls, and
         // ring-buffer push_back — the #2 performance bottleneck after class lookup.
@@ -12756,6 +13004,8 @@ bool DalvikExecutionEngine::execute_instance_of(uint32_t pc, InstructionTrace& t
 // ============================================================================
 
 DalvikExecutionEngine::FieldResolution DalvikExecutionEngine::resolve_field(uint16_t field_idx) {
+    uint64_t f107_t0 = 0; phase_clock().enter(phase_clock().resolve_field_ph, f107_t0);
+    struct F107Guard { PhaseClock::Phase& ph; uint64_t t0; ~F107Guard(){{ phase_clock().exit(ph, t0);}} } f107_guard{phase_clock().resolve_field_ph, f107_t0};
     FieldResolution resolution;
     
     if (!dex_report_) {
@@ -12853,7 +13103,10 @@ bool DalvikExecutionEngine::execute_iget(uint32_t pc, InstructionTrace& trace) {
     uint8_t obj_reg = (instr >> 12) & 0xF;
     uint16_t field_idx = bytecode_[pc + 1];
     
+    uint64_t f107_sr0 = 0; phase_clock().enter(phase_clock().sget_resolve_ph, f107_sr0);
     FieldResolution field_res = resolve_field(field_idx);
+    phase_clock().exit(phase_clock().sget_resolve_ph, f107_sr0);
+    uint64_t f107_si0 = 0; phase_clock().enter(phase_clock().sget_init_ph, f107_si0);
     DalvikValue result_value;
     result_value.type = DalvikType::INT32;
     result_value.int_val = 0;
@@ -13339,13 +13592,19 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
     uint8_t dest_reg = (instr >> 8) & 0xFF;
     uint16_t field_idx = bytecode_[pc + 1];
 
+    uint64_t f107_sr0 = 0; phase_clock().enter(phase_clock().sget_resolve_ph, f107_sr0);
     FieldResolution field_res = resolve_field(field_idx);
+    phase_clock().exit(phase_clock().sget_resolve_ph, f107_sr0);
+    uint64_t f107_si0 = 0; phase_clock().enter(phase_clock().sget_init_ph, f107_si0);
 
     // EXP-053: Ensure the class is initialized before reading its static field.
     if (field_res.resolved) {
         ensure_class_initialized(field_res.class_descriptor);
     }
 
+    phase_clock().exit(phase_clock().sget_init_ph, f107_si0);
+    uint64_t f107_st0 = 0; phase_clock().enter(phase_clock().sget_tail_ph, f107_st0);
+    struct F107TailGuard { PhaseClock::Phase& ph; uint64_t t0; ~F107TailGuard(){ phase_clock().exit(ph, t0);} } f107_tailguard{phase_clock().sget_tail_ph, f107_st0};
     DalvikValue result_value;
     result_value.type = DalvikType::NULL_REF;
     result_value.object_id = 0;
@@ -13431,30 +13690,43 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
                 // static objects; materialize them (cached per static_key so
                 // identity comparisons hold) with __locale_tag__ carrying the
                 // AOSP tag for String-case/Locale-sensitive bridges.
-                static const std::map<std::string, std::string> kLocaleConsts = {
-                    {"CANADA", "en_CA"}, {"CANADA_FRENCH", "fr_CA"},
-                    {"CHINA", "zh_CN"}, {"CHINESE", "zh"},
-                    {"ENGLISH", "en"}, {"FRANCE", "fr_FR"},
-                    {"FRENCH", "fr"}, {"GERMAN", "de"},
-                    {"GERMANY", "de_DE"}, {"ITALIAN", "it"},
-                    {"ITALY", "it_IT"}, {"JAPAN", "ja_JP"},
-                    {"JAPANESE", "ja"}, {"KOREA", "ko_KR"},
-                    {"KOREAN", "ko"}, {"PRC", "zh_CN"},
-                    {"ROOT", ""}, {"SIMPLIFIED_CHINESE", "zh_CN"},
-                    {"TAIWAN", "zh_TW"}, {"TRADITIONAL_CHINESE", "zh_TW"},
-                    {"UK", "en_GB"}, {"US", "en_US"}};
-                auto lit = kLocaleConsts.find(field_res.field_name);
-                if (lit != kLocaleConsts.end()) {
+                static const miniandroid::dalvik::KvPair t_kLocaleConsts[] = {
+    {"CANADA", "en_CA"},
+    {"CANADA_FRENCH", "fr_CA"},
+    {"CHINA", "zh_CN"},
+    {"CHINESE", "zh"},
+    {"ENGLISH", "en"},
+    {"FRANCE", "fr_FR"},
+    {"FRENCH", "fr"},
+    {"GERMAN", "de"},
+    {"GERMANY", "de_DE"},
+    {"ITALIAN", "it"},
+    {"ITALY", "it_IT"},
+    {"JAPAN", "ja_JP"},
+    {"JAPANESE", "ja"},
+    {"KOREA", "ko_KR"},
+    {"KOREAN", "ko"},
+    {"PRC", "zh_CN"},
+    {"SIMPLIFIED_CHINESE", "zh_CN"},
+    {"TAIWAN", "zh_TW"},
+    {"TRADITIONAL_CHINESE", "zh_TW"},
+    {"UK", "en_GB"},
+    {"US", "en_US"},
+};
+                const char* lv = kv_table_find(t_kLocaleConsts,
+                        sizeof(t_kLocaleConsts) / sizeof(t_kLocaleConsts[0]),
+                        field_res.field_name);
+                if (lv) {
                     uint32_t loc_id = heap_.allocate("Ljava/util/Locale;", pc, 0);
                     heap_.set_object_field(loc_id, "__locale_tag__",
-                                           DalvikValue::make_string(lit->second, 0));
+                                           DalvikValue::make_string(lv, 0));
                     heap_.set_object_field(loc_id, "__locale_name__",
                                            DalvikValue::make_string(field_res.field_name, 0));
                     result_value = DalvikValue::make_object(loc_id,
                                                             "Ljava/util/Locale;");
                     static_field_storage_[static_key] = result_value;
                     std::cerr << "[LOCALE-CONST] synthesized Locale."
-                              << field_res.field_name << " tag=\"" << lit->second
+                              << field_res.field_name << " tag=\"" << lv
                               << "\" oid=" << loc_id << std::endl;
                 } else {
                     static_field_storage_[static_key] = result_value;
@@ -14021,7 +14293,7 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
     api_trace.pc = pc;
     api_trace.frame_id = call_stack_.empty() ? 0 : call_stack_.top().frame_id;
     
-    if (config_.api_call_trace_cap > 0 && result.api_call_traces.size() >= config_.api_call_trace_cap) { result.api_call_traces.erase(result.api_call_traces.begin()); } result.api_call_traces.push_back(api_trace);
+    batched_cap_push(result.api_call_traces, static_cast<size_t>(config_.api_call_trace_cap), std::move(api_trace));
     
     // EXP-035: Evidence trace with VTable dispatch information
     trace.invoked_method = resolved_method;
@@ -14198,7 +14470,7 @@ uint8_t arg_count = static_cast<uint8_t>((instr >> 12) & 0xF);
     api_trace.status = api_status;
     api_trace.pc = pc;
     api_trace.frame_id = call_stack_.empty() ? 0 : call_stack_.top().frame_id;
-    if (config_.api_call_trace_cap > 0 && result.api_call_traces.size() >= config_.api_call_trace_cap) { result.api_call_traces.erase(result.api_call_traces.begin()); } result.api_call_traces.push_back(api_trace);
+    batched_cap_push(result.api_call_traces, static_cast<size_t>(config_.api_call_trace_cap), std::move(api_trace));
 
     // Trace evidence
     trace.invoked_method = resolved_method;
@@ -14417,7 +14689,7 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
     api_trace.method = method_name;
     api_trace.status = status;
     api_trace.pc = pc;
-    if (config_.api_call_trace_cap > 0 && result.api_call_traces.size() >= config_.api_call_trace_cap) { result.api_call_traces.erase(result.api_call_traces.begin()); } result.api_call_traces.push_back(api_trace);
+    batched_cap_push(result.api_call_traces, static_cast<size_t>(config_.api_call_trace_cap), std::move(api_trace));
     
     trace.invoked_method = class_name + "." + method_name;
     trace.operands.push_back({"method", std::to_string(method_idx)});
@@ -15036,7 +15308,7 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
     api_trace.method = method_name;
     api_trace.status = status;
     api_trace.pc = pc;
-    if (config_.api_call_trace_cap > 0 && result.api_call_traces.size() >= config_.api_call_trace_cap) { result.api_call_traces.erase(result.api_call_traces.begin()); } result.api_call_traces.push_back(api_trace);
+    batched_cap_push(result.api_call_traces, static_cast<size_t>(config_.api_call_trace_cap), std::move(api_trace));
 
     trace.invoked_method = class_name + "." + method_name;
 
@@ -15439,7 +15711,7 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
     api_trace.method = method_name;
     api_trace.status = status;
     api_trace.pc = pc;
-    if (config_.api_call_trace_cap > 0 && result.api_call_traces.size() >= config_.api_call_trace_cap) { result.api_call_traces.erase(result.api_call_traces.begin()); } result.api_call_traces.push_back(api_trace);
+    batched_cap_push(result.api_call_traces, static_cast<size_t>(config_.api_call_trace_cap), std::move(api_trace));
 
     trace.invoked_method = class_name + "." + method_name;
 
@@ -16795,101 +17067,82 @@ static std::vector<DalvikValue> build_invoke_args(
 // drawing call. Ordinals below are the fixed AOSP declaration orders.
 static int framework_enum_ordinal(const std::string& class_desc,
                                   const std::string& field_name) {
-    static const std::map<std::string, int> kOrdinals = {
-        // android.graphics.Paint$Style
-        {"Landroid/graphics/Paint$Style;.FILL", 0},
-        {"Landroid/graphics/Paint$Style;.STROKE", 1},
-        {"Landroid/graphics/Paint$Style;.FILL_AND_STROKE", 2},
-        // android.graphics.Paint$Cap
-        {"Landroid/graphics/Paint$Cap;.BUTT", 0},
-        {"Landroid/graphics/Paint$Cap;.ROUND", 1},
-        {"Landroid/graphics/Paint$Cap;.SQUARE", 2},
-        // android.graphics.Paint$Join
-        {"Landroid/graphics/Paint$Join;.MITER", 0},
-        {"Landroid/graphics/Paint$Join;.ROUND", 1},
-        {"Landroid/graphics/Paint$Join;.BEVEL", 2},
-        // android.graphics.Paint$Align
-        {"Landroid/graphics/Paint$Align;.LEFT", 0},
-        {"Landroid/graphics/Paint$Align;.CENTER", 1},
-        {"Landroid/graphics/Paint$Align;.RIGHT", 2},
-        // android.graphics.Path$FillType
-        {"Landroid/graphics/Path$FillType;.WINDING", 0},
-        {"Landroid/graphics/Path$FillType;.EVEN_ODD", 1},
-        {"Landroid/graphics/Path$FillType;.INVERSE_WINDING", 2},
-        {"Landroid/graphics/Path$FillType;.INVERSE_EVEN_ODD", 3},
-        // android.graphics.Path$Direction
-        {"Landroid/graphics/Path$Direction;.CCW", 0},
-        {"Landroid/graphics/Path$Direction;.CW", 1},
-        // android.graphics.PorterDuff$Mode (AOSP declaration order)
-        {"Landroid/graphics/PorterDuff$Mode;.CLEAR", 0},
-        {"Landroid/graphics/PorterDuff$Mode;.SRC", 1},
-        {"Landroid/graphics/PorterDuff$Mode;.DST", 2},
-        {"Landroid/graphics/PorterDuff$Mode;.SRC_OVER", 3},
-        {"Landroid/graphics/PorterDuff$Mode;.DST_OVER", 4},
-        {"Landroid/graphics/PorterDuff$Mode;.SRC_IN", 5},
-        {"Landroid/graphics/PorterDuff$Mode;.DST_IN", 6},
-        {"Landroid/graphics/PorterDuff$Mode;.SRC_OUT", 7},
-        {"Landroid/graphics/PorterDuff$Mode;.DST_OUT", 8},
-        {"Landroid/graphics/PorterDuff$Mode;.SRC_ATOP", 9},
-        {"Landroid/graphics/PorterDuff$Mode;.DST_ATOP", 10},
-        {"Landroid/graphics/PorterDuff$Mode;.XOR", 11},
-        {"Landroid/graphics/PorterDuff$Mode;.DARKEN", 12},
-        {"Landroid/graphics/PorterDuff$Mode;.LIGHTEN", 13},
-        {"Landroid/graphics/PorterDuff$Mode;.MULTIPLY", 14},
-        {"Landroid/graphics/PorterDuff$Mode;.SCREEN", 15},
-        {"Landroid/graphics/PorterDuff$Mode;.ADD", 16},
-        {"Landroid/graphics/PorterDuff$Mode;.OVERLAY", 17},
-        // android.graphics.Shader$TileMode
-        {"Landroid/graphics/Shader$TileMode;.CLAMP", 0},
-        {"Landroid/graphics/Shader$TileMode;.REPEAT", 1},
-        {"Landroid/graphics/Shader$TileMode;.MIRROR", 2},
-        // android.graphics.Region$Op
-        {"Landroid/graphics/Region$Op;.DIFFERENCE", 0},
-        {"Landroid/graphics/Region$Op;.INTERSECT", 1},
-        {"Landroid/graphics/Region$Op;.UNION", 2},
-        {"Landroid/graphics/Region$Op;.XOR", 3},
-        {"Landroid/graphics/Region$Op;.REVERSE_DIFFERENCE", 4},
-        {"Landroid/graphics/Region$Op;.REPLACE", 5},
-        // android.graphics.Bitmap$Config
-        {"Landroid/graphics/Bitmap$Config;.ALPHA_8", 0},
-        {"Landroid/graphics/Bitmap$Config;.RGB_565", 1},
-        {"Landroid/graphics/Bitmap$Config;.ARGB_4444", 2},
-        {"Landroid/graphics/Bitmap$Config;.ARGB_8888", 3},
-        // android.view.View$Visibility
-        {"Landroid/view/View$Visibility;.VISIBLE", 0},
-        {"Landroid/view/View$Visibility;.INVISIBLE", 1},
-        {"Landroid/view/View$Visibility;.GONE", 2},
-        // F-023: java.util.concurrent.TimeUnit (AOSP declaration order).
-        // kotlinx.coroutines Dispatchers.Default init (CoroutineScheduler)
-        // reads TimeUnit.SECONDS and converts keep-alive via toNanos; a
-        // NULL constant + bridged-to-zero conversion produced
-        // "Idle worker keep alive time 0 must be positive" IAE and killed
-        // Compose composition (dooz M1/i.f chain).
-        {"Ljava/util/concurrent/TimeUnit;.NANOS", 0},
-        {"Ljava/util/concurrent/TimeUnit;.MICROSECONDS", 1},
-        {"Ljava/util/concurrent/TimeUnit;.MILLISECONDS", 2},
-        {"Ljava/util/concurrent/TimeUnit;.SECONDS", 3},
-        {"Ljava/util/concurrent/TimeUnit;.MINUTES", 4},
-        {"Ljava/util/concurrent/TimeUnit;.HOURS", 5},
-        {"Ljava/util/concurrent/TimeUnit;.DAYS", 6},
-        // android.text.TextUtils$TruncateAt
-        {"Landroid/text/TextUtils$TruncateAt;.START", 0},
-        {"Landroid/text/TextUtils$TruncateAt;.MIDDLE", 1},
-        {"Landroid/text/TextUtils$TruncateAt;.END", 2},
-        {"Landroid/text/TextUtils$TruncateAt;.MARQUEE", 3},
-        {"Landroid/text/TextUtils$TruncateAt;.END_SMALL", 4},
-        // android.widget.ImageView$ScaleType
-        {"Landroid/widget/ImageView$ScaleType;.MATRIX", 0},
-        {"Landroid/widget/ImageView$ScaleType;.FIT_XY", 1},
-        {"Landroid/widget/ImageView$ScaleType;.FIT_START", 2},
-        {"Landroid/widget/ImageView$ScaleType;.FIT_CENTER", 3},
-        {"Landroid/widget/ImageView$ScaleType;.FIT_END", 4},
-        {"Landroid/widget/ImageView$ScaleType;.CENTER", 5},
-        {"Landroid/widget/ImageView$ScaleType;.CENTER_CROP", 6},
-        {"Landroid/widget/ImageView$ScaleType;.CENTER_INSIDE", 7},
-    };
-    auto it = kOrdinals.find(class_desc + "." + field_name);
-    return it != kOrdinals.end() ? it->second : -1;
+    static const miniandroid::dalvik::KvInt kOrdinals[] = {
+    {"Landroid/graphics/Paint$Style;.FILL", 0},
+    {"Landroid/graphics/Paint$Style;.STROKE", 1},
+    {"Landroid/graphics/Paint$Style;.FILL_AND_STROKE", 2},
+    {"Landroid/graphics/Paint$Cap;.BUTT", 0},
+    {"Landroid/graphics/Paint$Cap;.ROUND", 1},
+    {"Landroid/graphics/Paint$Cap;.SQUARE", 2},
+    {"Landroid/graphics/Paint$Join;.MITER", 0},
+    {"Landroid/graphics/Paint$Join;.ROUND", 1},
+    {"Landroid/graphics/Paint$Join;.BEVEL", 2},
+    {"Landroid/graphics/Paint$Align;.LEFT", 0},
+    {"Landroid/graphics/Paint$Align;.CENTER", 1},
+    {"Landroid/graphics/Paint$Align;.RIGHT", 2},
+    {"Landroid/graphics/Path$FillType;.WINDING", 0},
+    {"Landroid/graphics/Path$FillType;.EVEN_ODD", 1},
+    {"Landroid/graphics/Path$FillType;.INVERSE_WINDING", 2},
+    {"Landroid/graphics/Path$FillType;.INVERSE_EVEN_ODD", 3},
+    {"Landroid/graphics/Path$Direction;.CCW", 0},
+    {"Landroid/graphics/Path$Direction;.CW", 1},
+    {"Landroid/graphics/PorterDuff$Mode;.CLEAR", 0},
+    {"Landroid/graphics/PorterDuff$Mode;.SRC", 1},
+    {"Landroid/graphics/PorterDuff$Mode;.DST", 2},
+    {"Landroid/graphics/PorterDuff$Mode;.SRC_OVER", 3},
+    {"Landroid/graphics/PorterDuff$Mode;.DST_OVER", 4},
+    {"Landroid/graphics/PorterDuff$Mode;.SRC_IN", 5},
+    {"Landroid/graphics/PorterDuff$Mode;.DST_IN", 6},
+    {"Landroid/graphics/PorterDuff$Mode;.SRC_OUT", 7},
+    {"Landroid/graphics/PorterDuff$Mode;.DST_OUT", 8},
+    {"Landroid/graphics/PorterDuff$Mode;.SRC_ATOP", 9},
+    {"Landroid/graphics/PorterDuff$Mode;.DST_ATOP", 10},
+    {"Landroid/graphics/PorterDuff$Mode;.XOR", 11},
+    {"Landroid/graphics/PorterDuff$Mode;.DARKEN", 12},
+    {"Landroid/graphics/PorterDuff$Mode;.LIGHTEN", 13},
+    {"Landroid/graphics/PorterDuff$Mode;.MULTIPLY", 14},
+    {"Landroid/graphics/PorterDuff$Mode;.SCREEN", 15},
+    {"Landroid/graphics/PorterDuff$Mode;.ADD", 16},
+    {"Landroid/graphics/PorterDuff$Mode;.OVERLAY", 17},
+    {"Landroid/graphics/Shader$TileMode;.CLAMP", 0},
+    {"Landroid/graphics/Shader$TileMode;.REPEAT", 1},
+    {"Landroid/graphics/Shader$TileMode;.MIRROR", 2},
+    {"Landroid/graphics/Region$Op;.DIFFERENCE", 0},
+    {"Landroid/graphics/Region$Op;.INTERSECT", 1},
+    {"Landroid/graphics/Region$Op;.UNION", 2},
+    {"Landroid/graphics/Region$Op;.XOR", 3},
+    {"Landroid/graphics/Region$Op;.REVERSE_DIFFERENCE", 4},
+    {"Landroid/graphics/Region$Op;.REPLACE", 5},
+    {"Landroid/graphics/Bitmap$Config;.ALPHA_8", 0},
+    {"Landroid/graphics/Bitmap$Config;.RGB_565", 1},
+    {"Landroid/graphics/Bitmap$Config;.ARGB_4444", 2},
+    {"Landroid/graphics/Bitmap$Config;.ARGB_8888", 3},
+    {"Landroid/view/View$Visibility;.VISIBLE", 0},
+    {"Landroid/view/View$Visibility;.INVISIBLE", 1},
+    {"Landroid/view/View$Visibility;.GONE", 2},
+    {"Ljava/util/concurrent/TimeUnit;.NANOS", 0},
+    {"Ljava/util/concurrent/TimeUnit;.MICROSECONDS", 1},
+    {"Ljava/util/concurrent/TimeUnit;.MILLISECONDS", 2},
+    {"Ljava/util/concurrent/TimeUnit;.SECONDS", 3},
+    {"Ljava/util/concurrent/TimeUnit;.MINUTES", 4},
+    {"Ljava/util/concurrent/TimeUnit;.HOURS", 5},
+    {"Ljava/util/concurrent/TimeUnit;.DAYS", 6},
+    {"Landroid/text/TextUtils$TruncateAt;.START", 0},
+    {"Landroid/text/TextUtils$TruncateAt;.MIDDLE", 1},
+    {"Landroid/text/TextUtils$TruncateAt;.END", 2},
+    {"Landroid/text/TextUtils$TruncateAt;.MARQUEE", 3},
+    {"Landroid/text/TextUtils$TruncateAt;.END_SMALL", 4},
+    {"Landroid/widget/ImageView$ScaleType;.MATRIX", 0},
+    {"Landroid/widget/ImageView$ScaleType;.FIT_XY", 1},
+    {"Landroid/widget/ImageView$ScaleType;.FIT_START", 2},
+    {"Landroid/widget/ImageView$ScaleType;.FIT_CENTER", 3},
+    {"Landroid/widget/ImageView$ScaleType;.FIT_END", 4},
+    {"Landroid/widget/ImageView$ScaleType;.CENTER", 5},
+    {"Landroid/widget/ImageView$ScaleType;.CENTER_CROP", 6},
+    {"Landroid/widget/ImageView$ScaleType;.CENTER_INSIDE", 7},
+};
+    return kvint_table_find(kOrdinals, sizeof(kOrdinals) / sizeof(kOrdinals[0]),
+                            class_desc + "." + field_name, -1);
 }
 
 // EXP-051: Convert a DalvikValue (engine type) into a CallContext::Arg
@@ -17031,59 +17284,63 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
         if (args.size() >= 2 && args[1].type == DalvikType::STRING_REF) {
             svc_name339 = args[1].string_val;
         } else if (args.size() >= 2 && args[1].type == DalvikType::CLASS_REF) {
-            static const std::map<std::string, std::string> svc_cls339 = {
-                {"Landroid/view/WindowManager;",                       "window"},
-                {"Landroid/view/LayoutInflater;",                     "layout_inflater"},
-                {"Landroid/app/ActivityManager;",                     "activity"},
-                {"Landroid/view/inputmethod/InputMethodManager;",    "input_method"},
-                {"Landroid/app/NotificationManager;",                 "notification"},
-                {"Landroid/app/AlarmManager;",                        "alarm"},
-                {"Landroid/media/AudioManager;",                      "audio"},
-                {"Landroid/content/ClipboardManager;",                "clipboard"},
-                {"Landroid/net/ConnectivityManager;",                 "connectivity"},
-                {"Landroid/app/UiModeManager;",                       "uimode"},
-                {"Landroid/app/SearchManager;",                       "search"},
-                {"Landroid/app/KeyguardManager;",                     "keyguard"},
-                {"Landroid/location/LocationManager;",                "location"},
-                {"Landroid/accounts/AccountManager;",                 "account"},
-                {"Landroid/os/PowerManager;",                         "power"},
-                {"Landroid/os/Vibrator;",                             "vibrator"},
-                {"Landroid/hardware/SensorManager;",                  "sensor"},
-                {"Landroid/hardware/display/DisplayManager;",         "display"},
-                {"Landroid/view/accessibility/AccessibilityManager;", "accessibility"},
-                {"Landroid/view/autofill/AutofillManager;",           "autofill"},
-            };
-            auto cit = svc_cls339.find(args[1].class_desc);
-            if (cit != svc_cls339.end()) svc_name339 = cit->second;
+            static const miniandroid::dalvik::KvPair t_svc_cls339[] = {
+    {"Landroid/view/WindowManager;", "window"},
+    {"Landroid/view/LayoutInflater;", "layout_inflater"},
+    {"Landroid/app/ActivityManager;", "activity"},
+    {"Landroid/view/inputmethod/InputMethodManager;", "input_method"},
+    {"Landroid/app/NotificationManager;", "notification"},
+    {"Landroid/app/AlarmManager;", "alarm"},
+    {"Landroid/media/AudioManager;", "audio"},
+    {"Landroid/content/ClipboardManager;", "clipboard"},
+    {"Landroid/net/ConnectivityManager;", "connectivity"},
+    {"Landroid/app/UiModeManager;", "uimode"},
+    {"Landroid/app/SearchManager;", "search"},
+    {"Landroid/app/KeyguardManager;", "keyguard"},
+    {"Landroid/location/LocationManager;", "location"},
+    {"Landroid/accounts/AccountManager;", "account"},
+    {"Landroid/os/PowerManager;", "power"},
+    {"Landroid/os/Vibrator;", "vibrator"},
+    {"Landroid/hardware/SensorManager;", "sensor"},
+    {"Landroid/hardware/display/DisplayManager;", "display"},
+    {"Landroid/view/accessibility/AccessibilityManager;", "accessibility"},
+    {"Landroid/view/autofill/AutofillManager;", "autofill"},
+};
+            const char* cn = kv_table_find(t_svc_cls339,
+                    sizeof(t_svc_cls339) / sizeof(t_svc_cls339[0]),
+                    args[1].class_desc);
+            if (cn) svc_name339 = cn;
         }
-        static const std::map<std::string, std::string> svc_map339 = {
-            {"window",         "Landroid/view/WindowManager;"},
-            {"layout_inflater", "Landroid/view/LayoutInflater;"},
-            {"activity",       "Landroid/app/ActivityManager;"},
-            {"input_method",   "Landroid/view/inputmethod/InputMethodManager;"},
-            {"notification",   "Landroid/app/NotificationManager;"},
-            {"alarm",          "Landroid/app/AlarmManager;"},
-            {"audio",          "Landroid/media/AudioManager;"},
-            {"clipboard",      "Landroid/content/ClipboardManager;"},
-            {"connectivity",   "Landroid/net/ConnectivityManager;"},
-            {"uimode",         "Landroid/app/UiModeManager;"},
-            {"search",         "Landroid/app/SearchManager;"},
-            {"keyguard",       "Landroid/app/KeyguardManager;"},
-            {"location",       "Landroid/location/LocationManager;"},
-            {"account",        "Landroid/accounts/AccountManager;"},
-            {"power",          "Landroid/os/PowerManager;"},
-            {"vibrator",       "Landroid/os/Vibrator;"},
-            {"sensor",         "Landroid/hardware/SensorManager;"},
-            {"display",        "Landroid/hardware/display/DisplayManager;"},
-            {"accessibility",  "Landroid/view/accessibility/AccessibilityManager;"},
-            {"autofill",       "Landroid/view/autofill/AutofillManager;"},
-        };
-        auto sit = svc_map339.find(svc_name339);
-        if (sit != svc_map339.end()) {
-            result = get_or_create_singleton(sit->second);
+        static const miniandroid::dalvik::KvPair t_svc_map339[] = {
+    {"window", "Landroid/view/WindowManager;"},
+    {"layout_inflater", "Landroid/view/LayoutInflater;"},
+    {"activity", "Landroid/app/ActivityManager;"},
+    {"input_method", "Landroid/view/inputmethod/InputMethodManager;"},
+    {"notification", "Landroid/app/NotificationManager;"},
+    {"alarm", "Landroid/app/AlarmManager;"},
+    {"audio", "Landroid/media/AudioManager;"},
+    {"clipboard", "Landroid/content/ClipboardManager;"},
+    {"connectivity", "Landroid/net/ConnectivityManager;"},
+    {"uimode", "Landroid/app/UiModeManager;"},
+    {"search", "Landroid/app/SearchManager;"},
+    {"keyguard", "Landroid/app/KeyguardManager;"},
+    {"location", "Landroid/location/LocationManager;"},
+    {"account", "Landroid/accounts/AccountManager;"},
+    {"power", "Landroid/os/PowerManager;"},
+    {"vibrator", "Landroid/os/Vibrator;"},
+    {"sensor", "Landroid/hardware/SensorManager;"},
+    {"display", "Landroid/hardware/display/DisplayManager;"},
+    {"accessibility", "Landroid/view/accessibility/AccessibilityManager;"},
+    {"autofill", "Landroid/view/autofill/AutofillManager;"},
+};
+        const char* sv = kv_table_find(t_svc_map339,
+                sizeof(t_svc_map339) / sizeof(t_svc_map339[0]),
+                svc_name339);
+        if (sv) {
+            result = get_or_create_singleton(sv);
             status = ApiCallTrace::Status::IMPLEMENTED;
             std::cerr << "[R339-SVC] getSystemService(\"" << svc_name339
-                      << "\") → " << sit->second
+                      << "\") → " << sv
                       << " (shadow layer, caller=" << current_class_ << "."
                       << current_method_ << ")" << std::endl;
             return true;
@@ -17736,6 +17993,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                           DalvikValue& result,
                                           ApiCallTrace::Status& status,
                                           uint32_t method_idx_hint) {
+    uint64_t f107_t0 = 0; phase_clock().enter(phase_clock().bridge, f107_t0);
+    struct F107Guard { PhaseClock::Phase& ph; uint64_t t0; ~F107Guard(){{ phase_clock().exit(ph, t0);}} } f107_guard{phase_clock().bridge, f107_t0};
     // ────────────────────────────────────────────────────────────────────
     // R-NEW-350 probe (S43, env-gated read-only): forName calls reaching
     // the BRIDGE — log the arg KINDS so the arg-shape mismatch that skips
@@ -20247,17 +20506,17 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // ────────────────────────────────────────────────────────────────────────
     if (class_name == "Ljava/lang/System;" && method == "getProperty" &&
         (args.size() == 1 || args.size() == 2)) {
-        static const std::map<std::string, std::string> kSystemProps = {
-            {"java.io.tmpdir", "/tmp"},
-            {"line.separator", "\n"},
-            {"file.separator", "/"},
-            {"path.separator", ":"},
-            {"java.vm.name", "MiniAndroid Compatibility Runtime"},
-            {"java.version", "17"},
-            {"os.name", "Linux"},
-            {"os.arch", "aarch64"},
-            {"os.version", "5.15.0-miniandroid"},
-        };
+        static const miniandroid::dalvik::KvPair t_kSystemProps[] = {
+    {"java.io.tmpdir", "/tmp"},
+    {"line.separator", "\n"},
+    {"file.separator", "/"},
+    {"path.separator", ":"},
+    {"java.vm.name", "MiniAndroid Compatibility Runtime"},
+    {"java.version", "17"},
+    {"os.name", "Linux"},
+    {"os.arch", "aarch64"},
+    {"os.version", "5.15.0-miniandroid"},
+};
         std::string key;
         bool have_key = false;
         if (args[0].type == DalvikType::STRING_REF) {
@@ -20273,9 +20532,12 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 have_key = true;
             }
         }
-        auto pit = have_key ? kSystemProps.find(key) : kSystemProps.end();
-        if (pit != kSystemProps.end()) {
-            result = DalvikValue::make_string(pit->second, 0);
+        const char* pv = have_key
+                ? kv_table_find(t_kSystemProps,
+                        sizeof(t_kSystemProps) / sizeof(t_kSystemProps[0]), key)
+                : nullptr;
+        if (pv) {
+            result = DalvikValue::make_string(pv, 0);
         } else if (args.size() == 2 && args[1].type == DalvikType::OBJECT_REF &&
                    !args[1].is_null && args[1].object_id != 0) {
             // getProperty(key, def): unset key answers the caller's default
@@ -20319,22 +20581,31 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
-        static const std::map<std::string, std::string> kCharsetAliases = {
-            {"UTF-8", "UTF-8"}, {"UTF-16", "UTF-16"},
-            {"UTF-16BE", "UTF-16BE"}, {"UTF-16LE", "UTF-16LE"},
-            {"US-ASCII", "US-ASCII"}, {"ISO-8859-1", "ISO-8859-1"},
-            {"ASCII", "US-ASCII"}, {"8859_1", "ISO-8859-1"},
-            {"utf8", "UTF-8"}, {"utf-8", "UTF-8"}, {"UTF8", "UTF-8"},
-        };
+        static const miniandroid::dalvik::KvPair t_kCharsetAliases[] = {
+    {"UTF-8", "UTF-8"},
+    {"UTF-16", "UTF-16"},
+    {"UTF-16BE", "UTF-16BE"},
+    {"UTF-16LE", "UTF-16LE"},
+    {"US-ASCII", "US-ASCII"},
+    {"ISO-8859-1", "ISO-8859-1"},
+    {"ASCII", "US-ASCII"},
+    {"8859_1", "ISO-8859-1"},
+    {"utf8", "UTF-8"},
+    {"utf-8", "UTF-8"},
+    {"UTF8", "UTF-8"},
+};
         std::string want;
         bool have = false;
         if (!args.empty() && args[0].type == DalvikType::STRING_REF) {
             want = args[0].string_val;
             have = true;
         }
-        auto cit = have ? kCharsetAliases.find(want) : kCharsetAliases.end();
-        if (cit != kCharsetAliases.end()) {
-            result = make_charset(cit->second);
+        const char* cv = have
+                ? kv_table_find(t_kCharsetAliases,
+                        sizeof(t_kCharsetAliases) / sizeof(t_kCharsetAliases[0]), want)
+                : nullptr;
+        if (cv) {
+            result = make_charset(cv);
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
@@ -21780,14 +22051,14 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // class_to_superclass_; the retry fires only when the chain reaches
         // a View-family ancestor. Framework-prefixed classes with no View
         // ancestor (Ljava/*, Landroidx/*, …) never match.
-        static const std::vector<std::string> view_parents = {
-            "Landroid/view/View;",
-            "Landroid/view/ViewGroup;",
-            "Landroid/widget/TextView;",
-            "Landroid/widget/ImageView;",
-            "Landroid/widget/Button;",
-            "Landroid/widget/EditText;",
-        };
+        static const char* const t_view_parents[] = {
+    "Landroid/view/View;",
+    "Landroid/view/ViewGroup;",
+    "Landroid/widget/TextView;",
+    "Landroid/widget/ImageView;",
+    "Landroid/widget/Button;",
+    "Landroid/widget/EditText;",
+};
         // Determine the receiver's runtime class (args[0] for instance calls).
         std::string f020_recv_class;
         if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
@@ -21820,7 +22091,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
         }
         if (f020_view_ancestry) {
-            for (const auto& parent : view_parents) {
+            for (size_t vpi = 0; vpi < sizeof(t_view_parents) / sizeof(t_view_parents[0]); ++vpi) {
+                const std::string parent(t_view_parents[vpi]);
                 if (try_shadow_dispatch(parent, method, args, result, status)) {
                     return true;
                 }
@@ -22202,22 +22474,24 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             // Default: normal permissions are granted, dangerous are denied
             // Per AOSP: checkPermission returns GRANTED for normal permissions
             // without requiring runtime request.
-            static const std::set<std::string> normal_permissions = {
-                "android.permission.INTERNET",
-                "android.permission.ACCESS_NETWORK_STATE",
-                "android.permission.ACCESS_WIFI_STATE",
-                "android.permission.CHANGE_WIFI_STATE",
-                "android.permission.VIBRATE",
-                "android.permission.WAKE_LOCK",
-                "android.permission.RECEIVE_BOOT_COMPLETED",
-                "android.permission.NFC",
-                "android.permission.BLUETOOTH",
-                "android.permission.BLUETOOTH_ADMIN",
-                "android.permission.FOREGROUND_SERVICE",
-                "android.permission.POST_NOTIFICATIONS",
-                "android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS",
-            };
-            if (normal_permissions.count(perm_name) > 0) {
+            static const miniandroid::dalvik::KvPair t_normal_permissions[] = {
+    {"android.permission.INTERNET", ""},
+    {"android.permission.ACCESS_NETWORK_STATE", ""},
+    {"android.permission.ACCESS_WIFI_STATE", ""},
+    {"android.permission.CHANGE_WIFI_STATE", ""},
+    {"android.permission.VIBRATE", ""},
+    {"android.permission.WAKE_LOCK", ""},
+    {"android.permission.RECEIVE_BOOT_COMPLETED", ""},
+    {"android.permission.NFC", ""},
+    {"android.permission.BLUETOOTH", ""},
+    {"android.permission.BLUETOOTH_ADMIN", ""},
+    {"android.permission.FOREGROUND_SERVICE", ""},
+    {"android.permission.POST_NOTIFICATIONS", ""},
+    {"android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS", ""},
+};
+            if (kv_table_contains(t_normal_permissions,
+                    sizeof(t_normal_permissions) / sizeof(t_normal_permissions[0]),
+                    perm_name)) {
                 result_val = 0;  // PERMISSION_GRANTED
             } else {
                 result_val = -1;  // PERMISSION_DENIED
@@ -23228,77 +23502,71 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // the string service_map entries (same registry, two views).
         if (service_name.empty() && args.size() >= 2 &&
             args[1].type == DalvikType::CLASS_REF) {
-            static const std::map<std::string, std::string> service_class_map = {
-                {"Landroid/view/WindowManager;",                       "window"},
-                {"Landroid/view/LayoutInflater;",                     "layout_inflater"},
-                {"Landroid/app/ActivityManager;",                     "activity"},
-                {"Landroid/view/inputmethod/InputMethodManager;",    "input_method"},
-                {"Landroid/app/NotificationManager;",                 "notification"},
-                {"Landroid/app/AlarmManager;",                        "alarm"},
-                {"Landroid/media/AudioManager;",                      "audio"},
-                {"Landroid/content/ClipboardManager;",                "clipboard"},
-                {"Landroid/net/ConnectivityManager;",                 "connectivity"},
-                {"Landroid/app/UiModeManager;",                       "uimode"},
-                {"Landroid/app/SearchManager;",                       "search"},
-                {"Landroid/app/KeyguardManager;",                     "keyguard"},
-                {"Landroid/location/LocationManager;",                "location"},
-                {"Landroid/accounts/AccountManager;",                 "account"},
-                {"Landroid/os/PowerManager;",                         "power"},
-                {"Landroid/os/Vibrator;",                             "vibrator"},
-                {"Landroid/hardware/SensorManager;",                  "sensor"},
-                {"Landroid/hardware/display/DisplayManager;",         "display"},
-                {"Landroid/view/accessibility/AccessibilityManager;", "accessibility"},
-                {"Landroid/view/autofill/AutofillManager;",           "autofill"},
-            };
-            auto cit = service_class_map.find(args[1].class_desc);
-            if (cit != service_class_map.end()) {
-                service_name = cit->second;
+            static const miniandroid::dalvik::KvPair t_service_class_map[] = {
+    {"Landroid/view/WindowManager;", "window"},
+    {"Landroid/view/LayoutInflater;", "layout_inflater"},
+    {"Landroid/app/ActivityManager;", "activity"},
+    {"Landroid/view/inputmethod/InputMethodManager;", "input_method"},
+    {"Landroid/app/NotificationManager;", "notification"},
+    {"Landroid/app/AlarmManager;", "alarm"},
+    {"Landroid/media/AudioManager;", "audio"},
+    {"Landroid/content/ClipboardManager;", "clipboard"},
+    {"Landroid/net/ConnectivityManager;", "connectivity"},
+    {"Landroid/app/UiModeManager;", "uimode"},
+    {"Landroid/app/SearchManager;", "search"},
+    {"Landroid/app/KeyguardManager;", "keyguard"},
+    {"Landroid/location/LocationManager;", "location"},
+    {"Landroid/accounts/AccountManager;", "account"},
+    {"Landroid/os/PowerManager;", "power"},
+    {"Landroid/os/Vibrator;", "vibrator"},
+    {"Landroid/hardware/SensorManager;", "sensor"},
+    {"Landroid/hardware/display/DisplayManager;", "display"},
+    {"Landroid/view/accessibility/AccessibilityManager;", "accessibility"},
+    {"Landroid/view/autofill/AutofillManager;", "autofill"},
+};
+            const char* scn = kv_table_find(t_service_class_map,
+                    sizeof(t_service_class_map) / sizeof(t_service_class_map[0]),
+                    args[1].class_desc);
+            if (scn) {
+                service_name = scn;
             }
         }
 
         // Service name → service class descriptor mapping
-        static const std::map<std::string, std::string> service_map = {
-            {"window",         "Landroid/view/WindowManager;"},
-            {"layout_inflater", "Landroid/view/LayoutInflater;"},
-            {"activity",       "Landroid/app/ActivityManager;"},
-            {"input_method",   "Landroid/view/inputmethod/InputMethodManager;"},
-            {"notification",   "Landroid/app/NotificationManager;"},
-            {"alarm",          "Landroid/app/AlarmManager;"},
-            {"audio",          "Landroid/media/AudioManager;"},
-            {"clipboard",      "Landroid/content/ClipboardManager;"},
-            {"connectivity",   "Landroid/net/ConnectivityManager;"},
-            {"uimode",         "Landroid/app/UiModeManager;"},
-            {"search",         "Landroid/app/SearchManager;"},
-            {"keyguard",       "Landroid/app/KeyguardManager;"},
-            {"location",       "Landroid/location/LocationManager;"},
-            {"account",        "Landroid/accounts/AccountManager;"},
-            {"power",          "Landroid/os/PowerManager;"},
-            {"vibrator",       "Landroid/os/Vibrator;"},
-            {"sensor",         "Landroid/hardware/SensorManager;"},
-            {"display",        "Landroid/hardware/display/DisplayManager;"},
-            // F-032 (MASTER-5 §C) — AOSP Context.java service registry law:
-            // every KNOWN service constant must resolve to a non-null
-            // manager object (AOSP SystemServiceRegistry registers one
-            // factory per service name; getSystemService never returns null
-            // for them — null is only for UNKNOWN names). First real-APK
-            // hit: dooz Compose accessibility chain —
-            // AndroidComposeViewAccessibilityDelegateCompat$inner.<init>
-            // calls context.getSystemService(ACCESSIBILITY_SERVICE) and the
-            // Kotlin !! (Intrinsics.checkNotNullExpressionValue) threw NPE,
-            // killing the composition before any content node existed.
-            {"accessibility",  "Landroid/view/accessibility/AccessibilityManager;"},
-            {"autofill",       "Landroid/view/autofill/AutofillManager;"},
-        };
+        static const miniandroid::dalvik::KvPair t_service_map[] = {
+    {"window", "Landroid/view/WindowManager;"},
+    {"layout_inflater", "Landroid/view/LayoutInflater;"},
+    {"activity", "Landroid/app/ActivityManager;"},
+    {"input_method", "Landroid/view/inputmethod/InputMethodManager;"},
+    {"notification", "Landroid/app/NotificationManager;"},
+    {"alarm", "Landroid/app/AlarmManager;"},
+    {"audio", "Landroid/media/AudioManager;"},
+    {"clipboard", "Landroid/content/ClipboardManager;"},
+    {"connectivity", "Landroid/net/ConnectivityManager;"},
+    {"uimode", "Landroid/app/UiModeManager;"},
+    {"search", "Landroid/app/SearchManager;"},
+    {"keyguard", "Landroid/app/KeyguardManager;"},
+    {"location", "Landroid/location/LocationManager;"},
+    {"account", "Landroid/accounts/AccountManager;"},
+    {"power", "Landroid/os/PowerManager;"},
+    {"vibrator", "Landroid/os/Vibrator;"},
+    {"sensor", "Landroid/hardware/SensorManager;"},
+    {"display", "Landroid/hardware/display/DisplayManager;"},
+    {"accessibility", "Landroid/view/accessibility/AccessibilityManager;"},
+    {"autofill", "Landroid/view/autofill/AutofillManager;"},
+};
 
-        auto it = service_map.find(service_name);
-        if (it != service_map.end()) {
+        const char* smp = kv_table_find(t_service_map,
+                sizeof(t_service_map) / sizeof(t_service_map[0]),
+                service_name);
+        if (smp) {
             // Return a singleton service object for known services.
             // The object is minimal — methods called on it will be
             // handled by bridge_to_api or return defaults.
-            result = get_or_create_singleton(it->second);
+            result = get_or_create_singleton(smp);
             status = ApiCallTrace::Status::IMPLEMENTED;
             std::cerr << "[EXP093-SVC] getSystemService(\"" << service_name
-                      << "\") → " << it->second << std::endl;
+                      << "\") → " << smp << std::endl;
         } else {
             // Unknown service — return null (honest, not fake success)
             result = DalvikValue::make_null();

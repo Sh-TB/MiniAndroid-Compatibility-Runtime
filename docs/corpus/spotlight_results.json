@@ -1,0 +1,1015 @@
+{
+ "schema": "spotlight-results-v1",
+ "budget_seconds": 60,
+ "apps": [
+  {
+   "package": "com.dozingcatsoftware.bouncy",
+   "version_code": 43,
+   "capabilities": [
+    "game",
+    "canvas",
+    "physics",
+    "touch",
+    "game-loop",
+    "threading"
+   ],
+   "sha256": "ffda0d9cb0b1b2aa58be9559dda891c4fa24391bc481d297a8e3d96c31f62721",
+   "run_dir": "run/s61_spotlight/com.dozingcatsoftware.bouncy",
+   "wall_seconds": 0.5,
+   "l_level": 1,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 0,
+   "screenshot_sha256": "4219c5116ea2a867c480d9e7e0585633044994f3619db306152e285749ace217",
+   "screenshot_bytes": 35523
+  },
+  {
+   "package": "org.secuso.privacyfriendlysolitaire",
+   "version_code": 4,
+   "capabilities": [
+    "game",
+    "touch",
+    "state-machine",
+    "card-layout",
+    "dialog"
+   ],
+   "sha256": "b0e2adf991f949821fb28389b7c91ea2e1f743dc22c47a5738bc5980b66603ae",
+   "run_dir": "run/s61_spotlight/org.secuso.privacyfriendlysolitaire",
+   "wall_seconds": 1.0,
+   "l_level": 1,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 0,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "org.secuso.privacyfriendly2048",
+   "version_code": 100,
+   "capabilities": [
+    "game",
+    "grid-layout",
+    "touch-swipe",
+    "state-machine",
+    "sqlite"
+   ],
+   "sha256": "02c799d3d582669daf2acf920093c68d2933f60aa937bb72fa2a805557233fe8",
+   "run_dir": "run/s61_spotlight/org.secuso.privacyfriendly2048",
+   "wall_seconds": 3.3,
+   "l_level": 1,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 0,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "org.secuso.privacyfriendlyminesweeper",
+   "version_code": 100,
+   "capabilities": [
+    "game",
+    "grid-layout",
+    "touch",
+    "state-machine",
+    "timer"
+   ],
+   "sha256": "cfd5aa57b5dafdf688a6ff2ef2e580b0ab636a47d71bd0e51db2ca21ce7cadff",
+   "run_dir": "run/s61_spotlight/org.secuso.privacyfriendlyminesweeper",
+   "wall_seconds": 2.7,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 0,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "de.tobiasbielefeld.solitaire",
+   "version_code": 71,
+   "capabilities": [
+    "game",
+    "touch",
+    "state-machine",
+    "animation",
+    "preferences"
+   ],
+   "sha256": "fdfaf7cad18e4416989b337b5c60b71158c54652384e564fe3e6386421504220",
+   "run_dir": "run/s61_spotlight/de.tobiasbielefeld.solitaire",
+   "wall_seconds": 0.3,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 32,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "name.boyle.chris.sgtpuzzles",
+   "version_code": 149,
+   "capabilities": [
+    "game",
+    "canvas",
+    "touch",
+    "multi-screen",
+    "state-machine"
+   ],
+   "sha256": "6b36d5537984523c57984a784156eb853a92c940fded286483687484f3d652e4",
+   "run_dir": "run/s61_spotlight/name.boyle.chris.sgtpuzzles",
+   "wall_seconds": 0.5,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 0,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "org.billthefarmer.diary",
+   "version_code": 1105,
+   "capabilities": [
+    "listview",
+    "sqlite",
+    "preferences",
+    "date-widgets",
+    "menu"
+   ],
+   "sha256": "979e8cd8702ab5c0440c2cd094de0d6bdf109632857002966e62af5e9add93ef",
+   "run_dir": "run/s61_spotlight/org.billthefarmer.diary",
+   "wall_seconds": 1.5,
+   "l_level": 5,
+   "render_nodes": 5,
+   "geometric_nodes": 5,
+   "nonwhite_pixels": 2073600,
+   "total_pixels": 2073600,
+   "errors": 0,
+   "screenshot_sha256": "cf521b168a9b4ed23b2b56b354ec420ff112cbe5640b151f7af163e5533f2a01",
+   "screenshot_bytes": 11281
+  },
+  {
+   "package": "org.billthefarmer.tuner",
+   "version_code": 158,
+   "capabilities": [
+    "canvas",
+    "audio",
+    "custom-view",
+    "threading"
+   ],
+   "sha256": "7fbfaee87f3402f7c4b269ac42a36a2ff2c91b382655647efad23d631caff944",
+   "run_dir": "run/s61_spotlight/org.billthefarmer.tuner",
+   "wall_seconds": 0.3,
+   "l_level": 5,
+   "render_nodes": 7,
+   "geometric_nodes": 7,
+   "nonwhite_pixels": 1823360,
+   "total_pixels": 2073600,
+   "errors": 0,
+   "screenshot_sha256": "aee594823799e8af649a9e3885a2ef6d886bb79f247878ac20ec18d3fd2a2758",
+   "screenshot_bytes": 10434
+  },
+  {
+   "package": "org.billthefarmer.shorty",
+   "version_code": 116,
+   "capabilities": [
+    "intent",
+    "shortcut",
+    "textview"
+   ],
+   "sha256": "0fb027c3b436f0b335d6c7397539fcbf25fd683688c893a9d494ff43e0c1f4b3",
+   "run_dir": "run/s61_spotlight/org.billthefarmer.shorty",
+   "wall_seconds": 0.2,
+   "l_level": 5,
+   "render_nodes": 13,
+   "geometric_nodes": 13,
+   "nonwhite_pixels": 44684,
+   "total_pixels": 2073600,
+   "errors": 0,
+   "screenshot_sha256": "b87f4dfd5e27b6ca637bddb4d6b8c6d5be36d066f01a380fe165803bcdc9a25c",
+   "screenshot_bytes": 32399
+  },
+  {
+   "package": "org.billthefarmer.accordion",
+   "version_code": 122,
+   "capabilities": [
+    "custom-view",
+    "canvas",
+    "touch",
+    "audio"
+   ],
+   "sha256": "015f1adcfad79fd858de7f666634d9811714ab251f65868ce1282ed0a0340624",
+   "run_dir": "run/s61_spotlight/org.billthefarmer.accordion",
+   "wall_seconds": 0.3,
+   "l_level": 5,
+   "render_nodes": 52,
+   "geometric_nodes": 50,
+   "nonwhite_pixels": 935172,
+   "total_pixels": 2073600,
+   "errors": 0,
+   "screenshot_sha256": "07795dad50b1b0b2c72e50a502ddbed8015dc5fdf13d50e063c3fc0214885cbd",
+   "screenshot_bytes": 15976
+  },
+  {
+   "package": "org.ligi.passandroid",
+   "version_code": 373,
+   "capabilities": [
+    "storage",
+    "json",
+    "listview",
+    "imageview"
+   ],
+   "sha256": "1b2f35f99dff9c26812c3650b6c2754dabd85b024dcd692e6f2c3aea698b8bda",
+   "run_dir": "run/s61_spotlight/org.ligi.passandroid",
+   "wall_seconds": 12.3,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 32,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "org.secuso.privacyfriendlynotes",
+   "version_code": 105,
+   "capabilities": [
+    "sqlite",
+    "edittext",
+    "listview",
+    "dialog",
+    "multi-screen"
+   ],
+   "sha256": "71e874f45fa4655f14296fce13791a82f994ea9bc26699f433383f0b4d334037",
+   "run_dir": "run/s61_spotlight/org.secuso.privacyfriendlynotes",
+   "wall_seconds": 3.0,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 0,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "org.secuso.privacyfriendlytodolist",
+   "version_code": 103,
+   "capabilities": [
+    "sqlite",
+    "recycler-view",
+    "dialog",
+    "alarm"
+   ],
+   "sha256": "80c6f68ec94a561157ad8db4d335003d2b2c8aeba2b649ab9f446b44743fc0af",
+   "run_dir": "run/s61_spotlight/org.secuso.privacyfriendlytodolist",
+   "wall_seconds": 11.3,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 32,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "org.secuso.privacyfriendlyactivitytracker",
+   "version_code": 100,
+   "capabilities": [
+    "sqlite",
+    "service",
+    "sensor",
+    "listview"
+   ],
+   "sha256": "e4041cb724f97f4830ff0ae3e250cb5fd71a834bd72c4507f09cb7149fbf9047",
+   "run_dir": "run/s61_spotlight/org.secuso.privacyfriendlyactivitytracker",
+   "wall_seconds": 3.1,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 0,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "org.secuso.privacyfriendlypaindiary",
+   "version_code": 100,
+   "capabilities": [
+    "sqlite",
+    "fragment",
+    "viewpager",
+    "dialog"
+   ],
+   "sha256": "d1fbb4ce037d51784be7c00dfeb846932dda06298472885882dbaa0cfe714f94",
+   "run_dir": "run/s61_spotlight/org.secuso.privacyfriendlypaindiary",
+   "wall_seconds": 1.3,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 0,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "org.secuso.privacyfriendlyludo",
+   "version_code": 100,
+   "capabilities": [
+    "game",
+    "canvas",
+    "touch",
+    "state-machine",
+    "dialog"
+   ],
+   "sha256": "b86427e1c4e874372be3f4f87bc26739a96c37e87ef7d87650568fcc01fe487b",
+   "run_dir": "run/s61_spotlight/org.secuso.privacyfriendlyludo",
+   "wall_seconds": 2.6,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 0,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "org.zephyrsoft.trackworktime",
+   "version_code": 72,
+   "capabilities": [
+    "sqlite",
+    "service",
+    "alarm",
+    "listview",
+    "preferences"
+   ],
+   "sha256": "e70ae4a5dff464df9276e22bcad2bce7ab7fa238530c1ba76964ed4954379b1f",
+   "run_dir": "run/s61_spotlight/org.zephyrsoft.trackworktime",
+   "wall_seconds": 6.0,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 32,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "net.gaast.giggity",
+   "version_code": 769,
+   "capabilities": [
+    "networking",
+    "sqlite",
+    "listview",
+    "alarm"
+   ],
+   "sha256": "46066e1bbd1b1cd8bda910d862e2145f3f83b0366523c4ebe36c7a1f0881eeec",
+   "run_dir": "run/s61_spotlight/net.gaast.giggity",
+   "wall_seconds": 0.3,
+   "l_level": 4,
+   "render_nodes": 3,
+   "geometric_nodes": 2,
+   "nonwhite_pixels": 0,
+   "total_pixels": 2073600,
+   "errors": 9,
+   "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093",
+   "screenshot_bytes": 10351
+  },
+  {
+   "package": "es.wolfi.app.passman",
+   "version_code": 20,
+   "capabilities": [
+    "networking",
+    "listview",
+    "preferences"
+   ],
+   "sha256": "35503e4f26ab073c8c864705446dd9c1beaa178129524b1f9fb0169d887714c3",
+   "run_dir": "run/s61_spotlight/es.wolfi.app.passman",
+   "wall_seconds": 5.1,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 32,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "com.manichord.mgit",
+   "version_code": 240,
+   "capabilities": [
+    "networking",
+    "sqlite",
+    "listview",
+    "threading"
+   ],
+   "sha256": "39120843da48bb63ac665eefa3020ea85c4a5b7826f403295be49f97e57e00ba",
+   "run_dir": "run/s61_spotlight/com.manichord.mgit",
+   "wall_seconds": 61.1,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 21,
+   "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093",
+   "screenshot_bytes": 10351
+  },
+  {
+   "package": "org.kde.kdeconnect_tp",
+   "version_code": 13516,
+   "capabilities": [
+    "networking",
+    "service",
+    "listview"
+   ],
+   "sha256": "f2c43bb816f8d39cf9490c0c69caaea9b321402e91bb6a4451c717109e4f4d68",
+   "run_dir": "run/s61_spotlight/org.kde.kdeconnect_tp",
+   "wall_seconds": 2.1,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 27,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "fr.gouv.etalab.mastodon",
+   "version_code": 569,
+   "capabilities": [
+    "networking",
+    "listview",
+    "imageview",
+    "recycler-view"
+   ],
+   "sha256": "90a45704a6e4cf980f0256e36ab5e6cd87cfc3232b00b3329e9aeeb1f86c1e12",
+   "run_dir": "run/s61_spotlight/fr.gouv.etalab.mastodon",
+   "wall_seconds": 2.8,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 21,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "org.secuso.privacyfriendlymemory",
+   "version_code": null,
+   "capabilities": [
+    "game",
+    "memory-card",
+    "touch",
+    "animation"
+   ],
+   "sha256": "82f83d9ea572240acabe45bcff9809f724d26f474896b150dcfd49d84037d8c6",
+   "run_dir": "run/s61_spotlight/org.secuso.privacyfriendlymemory",
+   "wall_seconds": 0.9,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 0,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "org.quantumbadger.redreader",
+   "version_code": null,
+   "capabilities": [
+    "networking",
+    "listview",
+    "recycler-view",
+    "imageview",
+    "markdown"
+   ],
+   "sha256": "641512cee55154cd0c811e435d5f60b9b9e6d65a2103e0a34389c9fe5b4484f2",
+   "run_dir": "run/s61_spotlight/org.quantumbadger.redreader",
+   "wall_seconds": 3.9,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 14,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "com.mendhak.gpslogger",
+   "version_code": null,
+   "capabilities": [
+    "gps",
+    "service",
+    "storage",
+    "listview",
+    "preferences"
+   ],
+   "sha256": "1aa6e7ce15a3d4ec8fbec2571b1f96d509a798fb93c0206351162d547a50950a",
+   "run_dir": "run/s61_spotlight/com.mendhak.gpslogger",
+   "wall_seconds": 6.4,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 32,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "org.ligi.survivalmanual",
+   "version_code": null,
+   "capabilities": [
+    "webview",
+    "listview",
+    "scrolling",
+    "search"
+   ],
+   "sha256": "6dbc943ce56b34a531fb7e0d6b668f980544389db40da0de7ca440f9f0ba3174",
+   "run_dir": "run/s61_spotlight/org.ligi.survivalmanual",
+   "wall_seconds": 8.7,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 32,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "de.blinkt.openvpn",
+   "version_code": null,
+   "capabilities": [
+    "service",
+    "networking",
+    "jni",
+    "preferences"
+   ],
+   "sha256": "3ce86b641d1627820d8f05606a3fb58d966ffa8360c234563b3c5e1bd3a8490a",
+   "run_dir": "run/s61_spotlight/de.blinkt.openvpn",
+   "wall_seconds": 2.3,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 28,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "com.fsck.k9",
+   "version_code": null,
+   "capabilities": [
+    "networking",
+    "sqlite",
+    "service",
+    "listview",
+    "intent"
+   ],
+   "sha256": "92cd3a81c7a8d066e517a50932fe85424de7752cb72e76032174d53ec36a2741",
+   "run_dir": "run/s61_spotlight/com.fsck.k9",
+   "wall_seconds": 46.9,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 20,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "org.totschnig.myexpenses",
+   "version_code": null,
+   "capabilities": [
+    "sqlite",
+    "listview",
+    "dialog",
+    "export"
+   ],
+   "sha256": "44f86212e40f706aa427d74fdc0f386e6f28c656d6eea590b87a9c9ca1b06109",
+   "run_dir": "run/s61_spotlight/org.totschnig.myexpenses",
+   "wall_seconds": 2.9,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 15,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "com.nononsenseapps.notepad",
+   "version_code": null,
+   "capabilities": [
+    "sqlite",
+    "listview",
+    "fragment",
+    "dialog",
+    "sync"
+   ],
+   "sha256": "ed44d7aff78498a598ac92e831c859649281c8cdbd4d0e17130cbdde80755114",
+   "run_dir": "run/s61_spotlight/com.nononsenseapps.notepad",
+   "wall_seconds": 0.5,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 7,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "org.dmfs.tasks",
+   "version_code": null,
+   "capabilities": [
+    "sqlite",
+    "sync",
+    "widget",
+    "listview"
+   ],
+   "sha256": "7f3a1528142c8a8a0ab1ecf6b83f0620eb31cd8daa94b299149c21982e3c2f14",
+   "run_dir": "run/s61_spotlight/org.dmfs.tasks",
+   "wall_seconds": 44.9,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 32,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "com.ghostsq.commander",
+   "version_code": null,
+   "capabilities": [
+    "storage",
+    "listview",
+    "custom-view",
+    "multi-screen"
+   ],
+   "sha256": "7e80608184f463d0837328998983beb30799d13de2d5b28dca8f76978dc8a05c",
+   "run_dir": "run/s61_spotlight/com.ghostsq.commander",
+   "wall_seconds": 60.8,
+   "l_level": 4,
+   "render_nodes": 1,
+   "geometric_nodes": 1,
+   "nonwhite_pixels": 0,
+   "total_pixels": 2073600,
+   "errors": 6,
+   "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093",
+   "screenshot_bytes": 10351
+  },
+  {
+   "package": "de.grobox.liberario",
+   "version_code": null,
+   "capabilities": [
+    "networking",
+    "listview",
+    "fragment"
+   ],
+   "sha256": "00ebcff767b548c1a836e2ca270a80cc04f7cab22ca5ae76a349b42856fb06f6",
+   "run_dir": "run/s61_spotlight/de.grobox.liberario",
+   "wall_seconds": 2.3,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 32,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "org.billthefarmer.siggen",
+   "version_code": null,
+   "capabilities": [
+    "audio",
+    "custom-view",
+    "canvas",
+    "threading"
+   ],
+   "sha256": "e2cad1884047d80856141432169baaf9313722188ef5881e9c2a15d78b1d3601",
+   "run_dir": "run/s61_spotlight/org.billthefarmer.siggen",
+   "wall_seconds": 0.2,
+   "l_level": 5,
+   "render_nodes": 20,
+   "geometric_nodes": 5,
+   "nonwhite_pixels": 47809,
+   "total_pixels": 2073600,
+   "errors": 0,
+   "screenshot_sha256": "7e5e14a3a5fa229ec378c0dfc204124a9c4ec05c7954a2142be00c6fd4fda5ac",
+   "screenshot_bytes": 16300
+  },
+  {
+   "package": "com.better.alarm",
+   "version_code": null,
+   "capabilities": [
+    "alarm",
+    "service",
+    "listview",
+    "preferences"
+   ],
+   "sha256": "0931a729f0c6a0d477e232704f66b97a2fb3fe23f7973df3fc3a41b18fb72a83",
+   "run_dir": "run/s61_spotlight/com.better.alarm",
+   "wall_seconds": 9.0,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 32,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "org.pocketworkstation.pckeyboard",
+   "version_code": null,
+   "capabilities": [
+    "ime",
+    "service",
+    "custom-view",
+    "preferences"
+   ],
+   "sha256": "641ab8a614f496765bb841665aa894fdb9d1f908c22ffb01af2059c7600ed0d3",
+   "run_dir": "run/s61_spotlight/org.pocketworkstation.pckeyboard",
+   "wall_seconds": 0.4,
+   "l_level": 5,
+   "render_nodes": 12,
+   "geometric_nodes": 11,
+   "nonwhite_pixels": 208440,
+   "total_pixels": 2073600,
+   "errors": 0,
+   "screenshot_sha256": "122beca62146191178ce59fa8ef2d2a7b53fae319e6f49d332a91c7ba3fbc46e",
+   "screenshot_bytes": 27441
+  },
+  {
+   "package": "com.jens.automation2",
+   "version_code": null,
+   "capabilities": [
+    "service",
+    "sqlite",
+    "listview",
+    "preferences"
+   ],
+   "sha256": "e4878ac5a7308f886747214168abffa332f8ae5577bcd1ab9ea8d6a41e84df87",
+   "run_dir": "run/s61_spotlight/com.jens.automation2",
+   "wall_seconds": 0.7,
+   "l_level": 4,
+   "render_nodes": 4,
+   "geometric_nodes": 3,
+   "nonwhite_pixels": 0,
+   "total_pixels": 2073600,
+   "errors": 0,
+   "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093",
+   "screenshot_bytes": 10351
+  },
+  {
+   "package": "com.simplemobiletools.flashlight",
+   "version_code": null,
+   "capabilities": [
+    "camera",
+    "service",
+    "widget"
+   ],
+   "sha256": "b4cd07c40a3d5711461670a2f460a1447acf3836c0e90471b7ba5c8b4c2f9bb3",
+   "run_dir": "run/s61_spotlight/com.simplemobiletools.flashlight",
+   "wall_seconds": 0.8,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 5,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "net.fabiszewski.ulogger",
+   "version_code": null,
+   "capabilities": [
+    "gps",
+    "networking",
+    "service",
+    "sqlite"
+   ],
+   "sha256": "e403b15d9c5aab8b386031295a4d3bbcc40e5106b95910e14b000330f5259697",
+   "run_dir": "run/s61_spotlight/net.fabiszewski.ulogger",
+   "wall_seconds": 1.0,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 32,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "com.vrem.wifianalyzer",
+   "version_code": null,
+   "capabilities": [
+    "wifi",
+    "canvas",
+    "graph",
+    "listview"
+   ],
+   "sha256": "282a06fcc5ce5d889799113a1c6edf5e408b0902acc542308ad21051a2a7cc2b",
+   "run_dir": "run/s61_spotlight/com.vrem.wifianalyzer",
+   "wall_seconds": 27.1,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 32,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "org.sufficientlysecure.keychain",
+   "version_code": null,
+   "capabilities": [
+    "crypto",
+    "listview",
+    "sqlite",
+    "intent"
+   ],
+   "sha256": "f88374b9113aa9ddba865258bd989eb3ac2ca1577d92e59d6e84228e080674ce",
+   "run_dir": "run/s61_spotlight/org.sufficientlysecure.keychain",
+   "wall_seconds": 61.2,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 17,
+   "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093",
+   "screenshot_bytes": 10351
+  },
+  {
+   "package": "de.westnordost.streetcomplete",
+   "version_code": null,
+   "capabilities": [
+    "map",
+    "canvas",
+    "sqlite",
+    "dialog"
+   ],
+   "sha256": "9845b2e86f6e92440d7a1ed4742b861ef46d866e3f141e666fc7e41dcdd443ec",
+   "run_dir": "run/s61_spotlight/de.westnordost.streetcomplete",
+   "wall_seconds": 12.7,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 32,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "de.schildbach.wallet",
+   "version_code": null,
+   "capabilities": [
+    "crypto",
+    "networking",
+    "sqlite",
+    "service"
+   ],
+   "sha256": "bc6d078854a74281e2ad07d5a7bc5ff68a322a809eb1e0bade1e4549e8f00090",
+   "run_dir": "run/s61_spotlight/de.schildbach.wallet",
+   "wall_seconds": 8.1,
+   "l_level": 5,
+   "render_nodes": 7,
+   "geometric_nodes": 1,
+   "nonwhite_pixels": 5695,
+   "total_pixels": 2073600,
+   "errors": 32,
+   "screenshot_sha256": "cf180982d8b38db8f38fa449f7630962787e7d0e27456fc5b954abeb1fb1e1ea",
+   "screenshot_bytes": 11753
+  },
+  {
+   "package": "de.ph1b.audiobook",
+   "version_code": null,
+   "capabilities": [
+    "audio",
+    "service",
+    "listview",
+    "storage"
+   ],
+   "sha256": "21cff18073d15e350e5845f2043d1f07d944f0dee420d7cfa25fd9196f05e8b8",
+   "run_dir": "run/s61_spotlight/de.ph1b.audiobook",
+   "wall_seconds": 2.8,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 16,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "de.mm20.launcher2.release",
+   "version_code": null,
+   "capabilities": [
+    "launcher",
+    "listview",
+    "recycler-view",
+    "preferences"
+   ],
+   "sha256": "a83264c6fb437aad083c61206a4e79dba555300dbd4578fa17c0c43f55798739",
+   "run_dir": "run/s61_spotlight/de.mm20.launcher2.release",
+   "wall_seconds": 17.3,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 0,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "de.kaffeemitkoffein.tinyweatherforecastgermany",
+   "version_code": null,
+   "capabilities": [
+    "networking",
+    "listview",
+    "canvas",
+    "widgets"
+   ],
+   "sha256": "bdb0f6165096c99dc8cafafe38021b22d985ebd8270d0c08f7b5d43cc7dfb066",
+   "run_dir": "run/s61_spotlight/de.kaffeemitkoffein.tinyweatherforecastgermany",
+   "wall_seconds": 0.4,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 0,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "hu.vmiklos.plees_tracker",
+   "version_code": 66,
+   "capabilities": [
+    "sqlite",
+    "service",
+    "listview",
+    "chart"
+   ],
+   "sha256": "b50acf3fc7e3a04fa4637cc6ec6b36b59daae6e6607e154b5d4cca1c78dcb60e",
+   "run_dir": "run/s61_spotlight/hu.vmiklos.plees_tracker",
+   "wall_seconds": 5.4,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 32,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "net.sourceforge.opencamera",
+   "version_code": null,
+   "capabilities": [
+    "camera",
+    "canvas",
+    "custom-view",
+    "preferences"
+   ],
+   "sha256": "ca5672ca8c7174554ca0b07b5b26e505817a05142f571cf2abe67e790c30249c",
+   "run_dir": "run/s61_spotlight/net.sourceforge.opencamera",
+   "wall_seconds": 6.5,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 32,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "org.secuso.privacyfriendlysketching",
+   "version_code": null,
+   "capabilities": [],
+   "sha256": "cdfd575dbca76fa3c1d7916bd38c2ed3ed7dc7c0d5fd8cdefb0cf16eaa15e261",
+   "run_dir": "run/s61_spotlight/org.secuso.privacyfriendlysketching",
+   "wall_seconds": 2.8,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 0,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "org.andstatus.app",
+   "version_code": null,
+   "capabilities": [
+    "networking",
+    "listview",
+    "service"
+   ],
+   "sha256": "8fa68144623e16fc72b1c187a798c25be17846ac28ab5fac59c13b2316079c4c",
+   "run_dir": "run/s61_spotlight/org.andstatus.app",
+   "wall_seconds": 6.9,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 21,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "org.primftpd",
+   "version_code": null,
+   "capabilities": [
+    "service",
+    "networking",
+    "storage"
+   ],
+   "sha256": "d36566e774e2d0446dcbb41438d22e62d198688aac2711ba7afaa6ea2fdd577d",
+   "run_dir": "run/s61_spotlight/org.primftpd",
+   "wall_seconds": 5.2,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 32,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  },
+  {
+   "package": "org.secuso.privacyfriendlypin",
+   "version_code": 100,
+   "capabilities": [
+    "dialog",
+    "state-machine"
+   ],
+   "sha256": "d3d17402e3b40896a73365019ebdb7df6877c62bfb8cd8ac794673eec16824bf",
+   "run_dir": "run/s61_spotlight/org.secuso.privacyfriendlypin",
+   "wall_seconds": 0.5,
+   "l_level": 2,
+   "render_nodes": 0,
+   "geometric_nodes": 0,
+   "errors": 6,
+   "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "screenshot_bytes": 10362
+  }
+ ]
+}

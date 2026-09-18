@@ -78,6 +78,13 @@ struct ExecutionConfig {
     // 0 = disabled). Graceful stop identical to the instruction budget —
     // the end-of-run evidence pipeline (screenshot/trace/report) still runs.
     uint64_t max_wall_seconds = 0;
+
+    // F-107b2 (S61): per-instruction trace caps. Mirrors the dalvik Config
+    // fields; mapped in stage_execute_application_real_dalvik. trace_cap=0
+    // (default) disables the per-instruction trace machinery (forensic
+    // artifact, not primary evidence) — opt in via MINIANDROID_TRACE_CAP.
+    size_t trace_cap = 0;
+    size_t api_call_trace_cap = 5000;
     // DEMO-CLICK-SEQUENCE (2026-09-04): deterministic multi-interaction capture.
     // When > 0, dispatch this many sequential clicks (round-robin over all
     // clickable views), re-render through the SAME pipeline after each click,
