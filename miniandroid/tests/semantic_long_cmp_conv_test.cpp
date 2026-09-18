@@ -93,6 +93,13 @@ static void emit_23x(std::vector<uint16_t>& c, uint16_t op, uint8_t va, uint8_t 
     c.push_back(w11x(va, op));
     c.push_back(static_cast<uint16_t>(vb | (vc << 8)));
 }
+static void emit_invoke_static(std::vector<uint16_t>& c, uint16_t method_idx) {
+    // 35c: AG|op BBBB FEDC — argc=2, regs {v2, v4} (two WIDE register pairs,
+    // per the J J parameter list of Long.compare/compareUnsigned).
+    c.push_back(static_cast<uint16_t>((2 << 12) | 0x71));
+    c.push_back(method_idx);
+    c.push_back(static_cast<uint16_t>(2 | (4 << 4)));
+}
 
 // Run a bytecode snippet in one synthetic method; return execution result.
 static DalvikExecutionResult run(DalvikExecutionEngine& engine, const std::vector<uint16_t>& code,
@@ -267,6 +274,140 @@ int main() {
         c.push_back(w12x(1, 0, opc::INT_TO_SHORT));  // low16 sign-extend → -32768
         c.push_back(w11x(1, opc::RETURN));
         expect(engine, "int_to_short_sign_extend", c, false, 1, -32768.0);
+    }
+
+    // ── F-086 (S57 R-NEW-344): java.lang.Long.compare/compareUnsigned ─────
+    //
+    // Bridge law (OpenJDK Long.java): compare is a SIGNED 64-bit compare
+    // (-1/0/+1); compareUnsigned compares on the unsigned domain. The
+    // discriminating case is the exact dooz v23 ScatterMap growth idiom
+    // (R8-inlined Lbw0;.d): Long.compare(size*32 ^ Long.MIN_VALUE,
+    // capacity*25 ^ Long.MIN_VALUE) must return +1 (448^MIN > 375^MIN);
+    // the pre-fix bridge had NO Long.compare handler, so the STUBBED
+    // typed-zero exit returned 0 → if-gtz fell through → cleanup instead
+    // of resize → full-table probe spin → blank first frame (R-NEW-344).
+    {
+        auto cmp_snippet = [&](const char* name, int64_t a, int64_t b,
+                               std::vector<std::string>& strings) {
+            // find name index in strings (or append)
+            uint16_t ni = 0;
+            for (size_t i = 0; i < strings.size(); ++i)
+                if (strings[i] == name) { ni = static_cast<uint16_t>(i); break; }
+            if (ni == 0 && !(strings.size() && strings[0] == name)) {
+                strings.push_back(name);
+                ni = static_cast<uint16_t>(strings.size() - 1);
+            }
+            std::vector<uint16_t> c;
+            emit_const_wide(c, 2, a);   // wide pair v2-v3
+            emit_const_wide(c, 4, b);   // wide pair v4-v5
+            emit_invoke_static(c, ni);  // invoke-static {v2, v4}, Long.name
+            c.push_back(w11x(0, opc::MOVE_RESULT));
+            c.push_back(w11x(0, opc::RETURN));
+            return c;
+        };
+
+        // Build the report with method_ids for Long.compare/compareUnsigned.
+        auto cmp_run = [&](const std::vector<uint16_t>& code,
+                           const std::vector<std::string>& names,
+                           const std::string& desc, const std::string& name) {
+            MethodInfo mi;
+            mi.name = name;
+            mi.descriptor = desc;
+            mi.defining_class = "LSemTest;";
+            mi.registers_size = 16;
+            mi.ins_size = 0;
+            mi.outs_size = 5;
+            mi.bytecode = code;
+
+            DexReport report;
+            report.strings = names;
+            report.types.push_back("Ljava/lang/Long;");
+            report.types.push_back("LSemTest;");
+            report.method_ids.push_back({0, 0, 0});  // names[0] = "compare"
+            if (names.size() > 1) report.method_ids.push_back({0, 0, 1});
+            ClassInfo ci;
+            ci.name = "LSemTest;";
+            ci.superclass_name = "Ljava/lang/Object;";
+            ci.direct_methods.push_back(mi);
+            report.classes.push_back(ci);
+            return engine.execute_method(ci.direct_methods[0], report, {}, false);
+        };
+
+        // The dooz23 growth idiom, bit-exact:
+        //   compare(448 ^ LONG_MIN, 375 ^ LONG_MIN) == +1
+        {
+            std::vector<std::string> names{"compare"};
+            auto c = cmp_snippet("compare",
+                                 (int64_t)448 ^ (int64_t)0x8000000000000000ULL,
+                                 (int64_t)375 ^ (int64_t)0x8000000000000000ULL,
+                                 names);
+            DalvikExecutionResult r = cmp_run(c, names, "()I", "f086_compare_scattermap_idiom");
+            const miniandroid::dalvik::InstructionTrace* ret = nullptr;
+            for (const auto& t : r.instruction_traces)
+                if (t.status == miniandroid::dalvik::InstructionTrace::Status::HALT_RETURN) ret = &t;
+            double got = ret && ret->return_value ? as_double(*ret->return_value) : -999;
+            record("f086_long_compare_scattermap_growth_idiom", got == 1.0,
+                   "expected +1 (resize decision), got " + std::to_string(got));
+        }
+        {   // plain signed: compare(5, 3) == 1
+            std::vector<std::string> names{"compare"};
+            auto c = cmp_snippet("compare", 5, 3, names);
+            DalvikExecutionResult r = cmp_run(c, names, "()I", "f086_compare_pos");
+            const miniandroid::dalvik::InstructionTrace* ret = nullptr;
+            for (const auto& t : r.instruction_traces)
+                if (t.status == miniandroid::dalvik::InstructionTrace::Status::HALT_RETURN) ret = &t;
+            double got = ret && ret->return_value ? as_double(*ret->return_value) : -999;
+            record("f086_long_compare_pos_gt", got == 1.0,
+                   "expected +1, got " + std::to_string(got));
+        }
+        {   // negative-vs-positive: compare(-7, 3) == -1 (a 32-bit/unsigned
+            // misread of the high word would give +1)
+            std::vector<std::string> names{"compare"};
+            auto c = cmp_snippet("compare", -7, 3, names);
+            DalvikExecutionResult r = cmp_run(c, names, "()I", "f086_compare_neg");
+            const miniandroid::dalvik::InstructionTrace* ret = nullptr;
+            for (const auto& t : r.instruction_traces)
+                if (t.status == miniandroid::dalvik::InstructionTrace::Status::HALT_RETURN) ret = &t;
+            double got = ret && ret->return_value ? as_double(*ret->return_value) : -999;
+            record("f086_long_compare_signed_neg", got == -1.0,
+                   "expected -1, got " + std::to_string(got));
+        }
+        {   // LONG_MIN vs LONG_MAX == -1 (full-width discrimination)
+            std::vector<std::string> names{"compare"};
+            auto c = cmp_snippet("compare",
+                                 (int64_t)0x8000000000000000ULL,
+                                 (int64_t)0x7FFFFFFFFFFFFFFFULL, names);
+            DalvikExecutionResult r = cmp_run(c, names, "()I", "f086_compare_minmax");
+            const miniandroid::dalvik::InstructionTrace* ret = nullptr;
+            for (const auto& t : r.instruction_traces)
+                if (t.status == miniandroid::dalvik::InstructionTrace::Status::HALT_RETURN) ret = &t;
+            double got = ret && ret->return_value ? as_double(*ret->return_value) : -999;
+            record("f086_long_compare_min_max", got == -1.0,
+                   "expected -1, got " + std::to_string(got));
+        }
+        {   // equal: compare(42, 42) == 0
+            std::vector<std::string> names{"compare"};
+            auto c = cmp_snippet("compare", 42, 42, names);
+            DalvikExecutionResult r = cmp_run(c, names, "()I", "f086_compare_eq");
+            const miniandroid::dalvik::InstructionTrace* ret = nullptr;
+            for (const auto& t : r.instruction_traces)
+                if (t.status == miniandroid::dalvik::InstructionTrace::Status::HALT_RETURN) ret = &t;
+            double got = ret && ret->return_value ? as_double(*ret->return_value) : -999;
+            record("f086_long_compare_equal", got == 0.0,
+                   "expected 0, got " + std::to_string(got));
+        }
+        {   // unsigned domain: compareUnsigned(-1, 1) == +1 (signed would say -1)
+            std::vector<std::string> names{"compare", "compareUnsigned"};
+            auto c = cmp_snippet("compareUnsigned",
+                                 (int64_t)-1, (int64_t)1, names);
+            DalvikExecutionResult r = cmp_run(c, names, "()I", "f086_compare_unsigned");
+            const miniandroid::dalvik::InstructionTrace* ret = nullptr;
+            for (const auto& t : r.instruction_traces)
+                if (t.status == miniandroid::dalvik::InstructionTrace::Status::HALT_RETURN) ret = &t;
+            double got = ret && ret->return_value ? as_double(*ret->return_value) : -999;
+            record("f086_long_compare_unsigned", got == 1.0,
+                   "expected +1 (unsigned 2^64-1 > 1), got " + std::to_string(got));
+        }
     }
 
     std::cout << "\nRESULT: " << g_pass << " passed, " << g_fail << " failed\n";
