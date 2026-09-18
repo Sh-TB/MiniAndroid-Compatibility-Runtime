@@ -64,7 +64,7 @@ fixes legitimately change their frames).
 | 9 | Simple Keyboard | 145 | `d83060833dc2bc97` | F-Droid | SUCCESS (entry screen — IME, no launch UI) | L5 (entry class `eb16ab5c…`) | NOT TESTED |
 | 10 | RTTT (kirkezz) | 1.3 (vc3) | `704fa51869ad7ff4` | F-Droid | SUCCESS (entry screen; Compose frontier) | L5 (entry class) | NOT TESTED |
 | 11 | Dooz v18 | 18 | `d81292cd346dcb23` | F-Droid | **PARTIAL [S55]** — R-NEW-361 **ROOT-CAUSED + FIXED (F-083)**: ScatterMap ghost-metadata probe spin eliminated (HALT-LOOP gone; MainActivity.onStart/onResume dispatched for the first time); new frontier **R-NEW-376** pinned (post-F-083 ctor-climb exceeds the 2048-frame budget) | L3 → L4-in-progress (composition runs, first frame not yet reached) | NOT TESTED |
-| 12 | Dooz v23 | 23 | (corpus) | F-Droid | **PARTIAL** — deterministic pipeline completion, blank first frame | L4 (blank `31ddd4d5…`) | NOT TESTED |
+| 12 | Dooz v23 | 23 | `299eab21ac8b3c61` | F-Droid | **PARTIAL [S57]** — R-NEW-344 **ROOT-CAUSED + FIXED (F-086 Long.compare bridge law)**: the ScatterMap second-grow decision no longer falls into the cleanup-instead-of-resize branch; capacity 7→15→31 proven at the runtime boundary (docs/evidence/s57_dooz23/); NO probe spin, NO fabricated returns; run advances into **R-NEW-376** ctor-climb (v18+v23 same family) | L4 (composition runs; first frame not yet reached — R-NEW-376) | NOT TESTED |
 | 13 | TicTacToe (emmanuelmess) | 3 | `760fe5acf7b39435` | F-Droid | PARTIAL — blank first frame | L4 (blank class) | NOT TESTED |
 | 14 | Telegram v12 | 12.10.1 (vc70389) | `f5e1192725772960` | telegram.org | **PARTIAL** — 540 s inside real init, no frame yet | L3-attempt (init depth) | NOT TESTED |
 | 15 | WhatsApp | — | **NO APK** (0-byte placeholder) | — | **BLOCKED — APK unavailable** | — | — |
@@ -81,14 +81,15 @@ fixes legitimately change their frames).
 | 26 | Tiny Music Player | 1.0 | `d7bcb24d101b04be` | F-Droid | era record (campaign014) | era record | NOT TESTED |
 | 27 | TicTacToe Classic (palahsu) | ? | `752852c94c980788…` | legacy cache | **BLOCKED — APK unavailable** (cache lost; F-Droid `com.palahsu.ttt` NOT_FOUND at S54); historical S37 full-render + S44 playable record stands at its recorded HEADs | era: L9 | — |
 
-**Count summary (S55, HEAD 646952b6+F-082/F-083):** SUCCESS with real recognizable
+**Count summary (S57, HEAD 28b644b7+F-086):** SUCCESS with real recognizable
 GUI **6** (Chess Clock, GM Dice, MicroTimer, Simple Stopwatch, Heading
 Calculator, uNote) + **Notes upgraded to L7 mode-switch** (content face still
-blank-class — WebView dependency pinned) — **6 with proven input→state-change
+blank-class — WebView end-to-end probe pinned) — **6 with proven input→state-change
 screenshot pairs** (GM Dice additionally renders the app-specific dice-roll
-result; uNote input blocked by R-NEW-368) · entry-class 2 · PARTIAL 13 ·
-BLOCKED 2 (WhatsApp no APK; TicTacToe Classic no APK) · persistence
-storage-round-trip verified 2.
+result) · entry-class 2 · PARTIAL 13 · BLOCKED 2 (WhatsApp no APK; TicTacToe
+Classic no APK) · persistence storage-round-trip verified 2 · S57 corpus
+gate re-run at F-086 HEAD: chessclock 2,040,736 nb, notes 2,073,600 nb,
+unote 236,520 nb (run/s57_corpus).
 
 ## 2. In-repo fixture achievements (strongest ladder proofs)
 
