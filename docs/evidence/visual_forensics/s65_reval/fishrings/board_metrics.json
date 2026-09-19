@@ -1,0 +1,16 @@
+{
+  "FRAME": "/home/z/my-project/docs/evidence/visual_forensics/s65_reval/fishrings/board_full.png",
+  "file_size": 90004,
+  "sha256": "bb09f55f4c710ee672f361efcbe482b7a554b5e2ca51c80485ba7363b0730667",
+  "format": "PNG",
+  "width": 1080,
+  "height": 1920,
+  "bit_depth": 8,
+  "color_type": 2,
+  "nonwhite_pixels": 2072211,
+  "total_pixels": 2073600,
+  "nonwhite_pct": 99.933,
+  "content_bbox": "(0,0)-(1079,1919) w=1080 h=1920",
+  "unique_colors": 6666,
+  "pixel_source": "PIL"
+}

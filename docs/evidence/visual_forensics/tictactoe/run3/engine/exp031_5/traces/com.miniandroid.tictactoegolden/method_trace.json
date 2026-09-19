@@ -1,0 +1,668 @@
+{
+  "apk_name": "s66_tictactoe.apk",
+  "main_class": "Lcom/miniandroid/tictactoegolden/MainActivity;",
+  "main_method": "onCreate",
+  "methods": [
+    {
+      "class": "Lcom/miniandroid/tictactoegolden/MainActivity;",
+      "entry_point": true,
+      "method": "onCreate",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/app/Activity;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v11",
+        "v12"
+      ],
+      "class": "Landroid/app/Activity;<super>",
+      "invocation_type": "virtual",
+      "method": "onCreate",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/LinearLayout;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v12",
+        "p4294967285"
+      ],
+      "class": "Landroid/widget/LinearLayout;",
+      "invocation_type": "virtual",
+      "method": "setOrientation",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/TextView;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967285",
+        "p4294967286"
+      ],
+      "class": "Landroid/widget/TextView;",
+      "invocation_type": "virtual",
+      "method": "setText",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/LinearLayout$LayoutParams;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v12",
+        "p4294967286",
+        "p4294967285"
+      ],
+      "class": "Landroid/widget/LinearLayout;",
+      "invocation_type": "virtual",
+      "method": "addView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/LinearLayout;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "p4294967285"
+      ],
+      "class": "Landroid/widget/LinearLayout;",
+      "invocation_type": "virtual",
+      "method": "setOrientation",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/LinearLayout$LayoutParams;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v12",
+        "v4",
+        "v5"
+      ],
+      "class": "Landroid/widget/LinearLayout;",
+      "invocation_type": "virtual",
+      "method": "addView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "v9"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setText",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/LinearLayout$LayoutParams;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/miniandroid/tictactoegolden/MainActivity$CellListener;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "v10"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "v8",
+        "v9"
+      ],
+      "class": "Landroid/widget/LinearLayout;",
+      "invocation_type": "virtual",
+      "method": "addView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "v9"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setText",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/LinearLayout$LayoutParams;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/miniandroid/tictactoegolden/MainActivity$CellListener;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "v10"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "v8",
+        "v9"
+      ],
+      "class": "Landroid/widget/LinearLayout;",
+      "invocation_type": "virtual",
+      "method": "addView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "v9"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setText",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/LinearLayout$LayoutParams;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/miniandroid/tictactoegolden/MainActivity$CellListener;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "v10"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "v8",
+        "v9"
+      ],
+      "class": "Landroid/widget/LinearLayout;",
+      "invocation_type": "virtual",
+      "method": "addView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/LinearLayout;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "p4294967285"
+      ],
+      "class": "Landroid/widget/LinearLayout;",
+      "invocation_type": "virtual",
+      "method": "setOrientation",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/LinearLayout$LayoutParams;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v12",
+        "v4",
+        "v5"
+      ],
+      "class": "Landroid/widget/LinearLayout;",
+      "invocation_type": "virtual",
+      "method": "addView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "v9"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setText",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/LinearLayout$LayoutParams;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/miniandroid/tictactoegolden/MainActivity$CellListener;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "v10"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "v8",
+        "v9"
+      ],
+      "class": "Landroid/widget/LinearLayout;",
+      "invocation_type": "virtual",
+      "method": "addView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "v9"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setText",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/LinearLayout$LayoutParams;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/miniandroid/tictactoegolden/MainActivity$CellListener;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "v10"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "v8",
+        "v9"
+      ],
+      "class": "Landroid/widget/LinearLayout;",
+      "invocation_type": "virtual",
+      "method": "addView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "v9"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setText",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/LinearLayout$LayoutParams;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/miniandroid/tictactoegolden/MainActivity$CellListener;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "v10"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "v8",
+        "v9"
+      ],
+      "class": "Landroid/widget/LinearLayout;",
+      "invocation_type": "virtual",
+      "method": "addView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/LinearLayout;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "p4294967285"
+      ],
+      "class": "Landroid/widget/LinearLayout;",
+      "invocation_type": "virtual",
+      "method": "setOrientation",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/LinearLayout$LayoutParams;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v12",
+        "v4",
+        "v5"
+      ],
+      "class": "Landroid/widget/LinearLayout;",
+      "invocation_type": "virtual",
+      "method": "addView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "v9"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setText",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/LinearLayout$LayoutParams;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/miniandroid/tictactoegolden/MainActivity$CellListener;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "v10"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "v8",
+        "v9"
+      ],
+      "class": "Landroid/widget/LinearLayout;",
+      "invocation_type": "virtual",
+      "method": "addView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "v9"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setText",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/LinearLayout$LayoutParams;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/miniandroid/tictactoegolden/MainActivity$CellListener;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "v10"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "v8",
+        "v9"
+      ],
+      "class": "Landroid/widget/LinearLayout;",
+      "invocation_type": "virtual",
+      "method": "addView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "v9"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setText",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/LinearLayout$LayoutParams;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/miniandroid/tictactoegolden/MainActivity$CellListener;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "v10"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "v8",
+        "v9"
+      ],
+      "class": "Landroid/widget/LinearLayout;",
+      "invocation_type": "virtual",
+      "method": "addView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v11",
+        "v12"
+      ],
+      "class": "Lcom/miniandroid/tictactoegolden/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "setContentView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    }
+  ],
+  "timestamp": "2026-09-19T20:39:16Z",
+  "total_api_calls": 75
+}

@@ -1522,3 +1522,70 @@ Stage Summary:
   registered: OBJECT-IDENTITY (next highest-leverage target).
 - No new campaign/branch/roadmap; no app-specific hacks; S64 push debt
   explicitly carried (PENDING-PUSH) — see S65-PUSH-VERIFY entry.
+
+---
+Task ID: 1
+Agent: Super Z (main)
+Task: S66 — FULL VISUAL PROOF + RENDERER FORENSICS (per user brief: no visual claims
+  without real full frames; discriminate screenshot-pipeline vs framebuffer vs renderer
+  vs layout bugs; Dooz/TicTacToe hard visual proof; S65 re-validation; push debt)
+
+Work Log:
+- PUSH FIRST (user PAT, "تمامیپوش"): ls-remote auth ✓ → pushed 64d830b4..45f26590
+  (4 commits incl. S64 b34b74a2 debt) → post-push ls-remote == local HEAD, ahead=0;
+  secret guard PASS (PAT never entered repo/config).
+- §1/§10 pipeline probe: new fixture s66_canvas_probe (real onDraw DEX, 11 ops,
+  exact coords/colors); built (APK 69553417…) + run; T2..T9 pixel-EXACT; alpha
+  #FF7E7E (1-LSB truncation documented); T10 clipRect ink outside clip = engine's
+  pre-registered noop (UNSUPPORTED_CANVAS_OPERATION observed in stderr); T11 Persian
+  text = 0 px (ASCII-only BitmapFont law) — both REGISTERED, not hidden.
+- §2 scripts/s66_png_metrics.py: metrics/rawppm/diff/probe/puredecode; pure-python
+  zlib decoder == PIL byte-identical; S65 evidence SHAs reproduce worklog values.
+- §10 raw-vs-PNG: PPM raw SHA == PNG pixel SHA, 0 mismatches → encoder FAITHFUL;
+  SCREENSHOT_PIPELINE_BUG / FRAMEBUFFER_BUG both NOT FOUND.
+- §4/§9 TicTacToe: 3-run package (scripts/s66_tictactoe_package.sh); 12/12 frames
+  byte-deterministic; visual inspection of win frame; initial→win diff 4,097 px.
+- F-120/R-NEW-387 DISCOVERED from the pixels (marks at cell top-left) and
+  ROOT-CAUSED FROM THE LAW: AOSP Button.java:221 buttonStyle → Widget.Material.Button
+  gravity=center; engine text stage needs text_gravity&0x11, default was 0;
+  generic fix at node creation (both create_view + get_or_create_node;
+  CompoundButton/ImageButton excluded; XML/DEX override precedence preserved).
+  Side-finding: view_renderer.cpp/real_layout.cpp NOT compiled by Makefile (dead
+  non-compiling code — hygiene item).
+- §15/§16 rerun chain after fix: canvas probe byte-identical (law-consistent);
+  TicTacToe ×3 new deterministic frames (marks centered, glyph centers
+  x=180/540/900 exact); battery 92/94 (only EXT-01/02 environmental) = ZERO
+  regressions; FishRings/OPMT/TriPeaks boards byte-identical to S65 SHAs; lobby/
+  menu SHA changes = exactly the F-120 law change (Button labels).
+- §3 Dooz HONEST: v18/v23 re-fetched (SHAs match corpus); placeholder frames
+  (117/197 px); blocker traced: compose LayoutNode "layout state is not idle
+  before measure starts" ISE ×7 (Log0;.b) → NO-VISUAL-PROOF / RENDER_BLOCKED
+  (registered, not fixed — own campaign).
+- §7/§16 TriPeaks board visual inspection exposed R-NEW-388: 31 card ImageViews
+  at (0,0) (upstream uses alignParent+margin idiom — activity_game.xml fetched);
+  engine RL solver computes rl_cached_left but live render reads measured_left →
+  wiring/law gap + narrow-wrap label overlap; painter proven FAITHFUL. REGISTERED
+  (next campaign), TriPeaks visual status PARTIAL.
+- §12 S65 re-validation: FishRings S10 chain re-proven (SHAs byte-match S65;
+  blue→pink ball state change visible in frames); TriPeaks board 49e02f75 ==
+  S65; OPMT board b7606908 == S65, rc=1 stopper unchanged.
+- §13/§14 packaging + report: docs/evidence/visual_forensics/ (canvas_probe/
+  tictactoe×3/dooz/s65_reval/upstream law files + SHA256SUMS 104 entries) +
+  S66_REPORT.md with the full §14 status table.
+- §17 Searchlight: AOSP Button.java + styles.xml fetched into evidence; TriPeaks
+  pinned clone re-fetch @62f3609 (SHA-verified) + source greps; compiler probe;
+  zoekt shards lost to reset — honestly noted in ledger, replaced by fetched-file
+  citations (no bare counts).
+- Docs: ACHIEVEMENTS §0e6, SEARCH_LEDGER S66 section, worklog (this entry).
+
+Stage Summary:
+- PUSH DEBT: ZERO (all commits on origin/main; ahead=0 at stage start).
+- NEW LAWS: F-120 button-style gravity (R-NEW-387) SHIPPED + regression-clean.
+- REGISTERED OPEN: R-NEW-388 (TriPeaks RL geometry wiring + wrap-measure),
+  Dooz compose LayoutNode measure-precondition ISE, non-ASCII glyph coverage,
+  clipRect enforcement (pre-registered noop), 1-LSB alpha rounding note,
+  dead view_renderer/real_layout hygiene item.
+- VISUAL VERDICTS: TicTacToe VISUALLY_PROVEN ×3; FishRings VISUALLY_PROVEN
+  (S10 re-proven); TriPeaks/OPMT PARTIAL (honest); Dooz NO-VISUAL-PROOF
+  (honest); capture infrastructure INFRASTRUCTURE_PROVEN.
+- Battery 92/94 + EXT-01/02 environmental — zero new regressions.

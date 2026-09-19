@@ -1,0 +1,17 @@
+{
+  "raw_framebuffer": "/home/z/my-project/docs/evidence/visual_forensics/canvas_probe/probe_raw_framebuffer.ppm",
+  "png": "/home/z/my-project/docs/evidence/visual_forensics/canvas_probe/probe_full.png",
+  "raw_width": 1080,
+  "raw_height": 1920,
+  "raw_bytes": 6220800,
+  "expected_bytes": 6220800,
+  "raw_size_consistent": true,
+  "raw_pixel_sha256_rgb": "125432292d3c7095957e03b028aa11aebadd17119422848837531efcb2099c23",
+  "png_width": 1080,
+  "png_height": 1920,
+  "png_pixel_sha256_rgb": "125432292d3c7095957e03b028aa11aebadd17119422848837531efcb2099c23",
+  "dimensions_match": true,
+  "byte_mismatches": 0,
+  "pixel_identical": true,
+  "verdict": "RAW==PNG: encoder faithful"
+}

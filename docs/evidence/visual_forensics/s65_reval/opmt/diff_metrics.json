@@ -1,0 +1,25 @@
+{
+  "frame_a": "/home/z/my-project/docs/evidence/visual_forensics/s65_reval/opmt/menu_full.png",
+  "frame_b": "/home/z/my-project/docs/evidence/visual_forensics/s65_reval/opmt/game_partial_full.png",
+  "sha_a": "62619caa3b31066e5b79577076785aac320ca504639fac6e230c5e2e07650e28",
+  "sha_b": "9801d008dde79a3fd253c268e060b8dfb95aa203f62faad5f50cf94c521294e6",
+  "size_a": [
+    1080,
+    1920
+  ],
+  "size_b": [
+    1080,
+    1920
+  ],
+  "changed_pixels": 461172,
+  "changed_pct": 22.2402,
+  "change_bbox": [
+    1,
+    37,
+    1080,
+    1846
+  ],
+  "diff_image": "/home/z/my-project/docs/evidence/visual_forensics/s65_reval/opmt/menu_vs_game_diff.png",
+  "diff_image_sha256": "c91320c07fe14096cfe527026ac509f6f32665a0bf873cef1c09eed8ed803ea9",
+  "verdict": "CHANGED (461172 px)"
+}
