@@ -76,3 +76,12 @@ package id + versionCode + SHA256 recorded in
 `miniandroid/APK_REGISTRY.json` continues to govern the regression
 subset. Decompilers are NOT used for open-source apps (source-first
 law); DEX forensics is used for closed-source apps only (Telegram).
+
+
+## S62 upstream law extractions (2026-09-19)
+
+| Finding | SOURCE | ALGORITHM / SEMANTIC LAW | TEST | MiniAndroid target |
+|---|---|---|---|---|
+| androidx ColorSpace Rgb static init is a REAL compute workload | androidx.compose.ui.graphics ColorSpaces.kt / android.graphics.ColorSpace (R8-renamed in dooz v23 as Lug0;/Lqk;/Lbl;/Lnd1; chain) | <clinit> eagerly builds per-colorspace transfer tables: 1,04-sample loops invoking a 180-unit transfer function 1,024 times = 184K interpreted instructions from ONE 23-unit <clinit> | run/s62_lbl_trace M3 METHOD-TRACE + scripts/s62_clinit_costs.py (top-10 chains = 74% of class-init time) | R-NEW-381 face: composition volume is REAL work; the lever is interpreter constant costs, not semantic patches |
+| androidx FragmentManager host attach contract | androidx fragment FragmentActivity/FragmentController/FragmentManager.ensureExecReady | ensureExecReady throws ISE "FragmentManager has not been attached to a host." when mHost == null; the attach leg (FragmentController.attachHost) must run before any transaction | 3 spotlight games + Telegram golden all die at the SAME ISE (run/s62_game_mines + probes; csearch cross-hit) | R-NEW-331: ensure the real attachHost leg executes on the activity's mFragments object when the superclass chain contains FragmentActivity |
+| Interpreter constant-cost inventory (S62) | this engine, measured | insn.pre 0.026% + insn.post 0.084% (bookkeeping clean); sget-object 23.3ms/call cold trigger; tri.resolve 15.8µs + em.setup 22.7µs per invoke; DalvikValue = 2×std::string per register access | PERF-PHASE/PERF-OPS/PERF-CI + S62 bucket timers (env MINIANDROID_PERF_PHASES=1) | F-109a/c landed (marginal); F-110 lever registered (per-invoke constants + register value copy cost) |

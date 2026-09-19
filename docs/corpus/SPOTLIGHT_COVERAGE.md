@@ -124,3 +124,18 @@ Not attempted this session: the 53-app fetch + 52-app sweep consumed the
 session's execution budget. The fetch pipeline is idempotent — extend the
 candidate list and re-run `scripts/s61_spotlight_fetch.py` then
 `scripts/s61_spotlight_run.py`.
+
+
+## S62 games update (2026-09-19) — first L6 + the fragment blocker family
+
+| App | S61 L | S62 change |
+|---|---|---|
+| com.dozingcatsoftware.bouncy | L1 | **L6 PROVEN** (run/s62_bouncy_l6, --click-count 6): 6/6 clicks dispatched into real DEX XML-onClick handlers on BouncyActivity (scoreViewClicked, doPreviousTable, doQuit, hideHighScore); 7 frames; render-state transition proven by frame SHA pair 4219c5116ea2 (frames 0-2) -> 52e4ddacc8ac (frames 3-6). Not claimed L7 (no multi-round game-loop interaction proof). Evidence: docs/evidence/s62_r381/ |
+| org.secuso.privacyfriendlyminesweeper | L2 | BLOCKED at R-NEW-331: FragmentManager.ensureExecReady ISE "not been attached to a host" at SplashActivity.onCreate -> app-boundary unwind |
+| org.secuso.privacyfriendlymemory | L2 | BLOCKED at R-NEW-331 (same face) |
+| org.secuso.privacyfriendly2048 | L2 | BLOCKED at R-NEW-331 (same face) |
+
+The fragment host attach law (R-NEW-331) is now the single generic gate for
+4+ spotlight games AND the Telegram init face (csearch cross-evidence).
+L-level discipline unchanged: 61 registered apps; L-levels restated only
+from run artifacts.

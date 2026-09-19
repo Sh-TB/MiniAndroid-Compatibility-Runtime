@@ -564,7 +564,11 @@ public:
     void write_v(uint8_t reg, const DalvikValue& value) {
         if (reg < size_) {
             registers_[reg] = value;
-            written_.insert(reg);
+            // F-109a (S62): written-set as a fixed bitmap — the old
+            // std::set<uint8_t> did a red-black tree insert PER REGISTER
+            // WRITE (the hot path writes 2-5 registers per instruction).
+            // Same ordered iteration semantics for get_written_registers().
+            written_bits_[reg >> 6] |= (1ULL << (reg & 63));
         }
     }
     
@@ -572,7 +576,7 @@ public:
         uint8_t reg = param_start_ + param_idx;
         if (reg < size_) {
             registers_[reg] = value;
-            written_.insert(reg);
+            written_bits_[reg >> 6] |= (1ULL << (reg & 63));
         }
     }
     
@@ -594,7 +598,18 @@ public:
     uint32_t get_ins_count() const { return ins_count_; }
     
     std::vector<uint8_t> get_written_registers() const {
-        return std::vector<uint8_t>(written_.begin(), written_.end());
+        // F-109a: iterate the bitmap in ascending register order (identical
+        // output to the old ordered set).
+        std::vector<uint8_t> out;
+        for (uint32_t w = 0; w < 4; ++w) {
+            uint64_t bits = written_bits_[w];
+            while (bits) {
+                uint8_t b = (uint8_t)(__builtin_ctzll(bits));
+                out.push_back((uint8_t)(w * 64 + b));
+                bits &= bits - 1;
+            }
+        }
+        return out;
     }
     
     json dump() const {
@@ -612,7 +627,7 @@ public:
                                      : ("v" + std::to_string(i));
             entry["index"] = i;
             entry["value"] = registers_[i].to_json();
-            entry["written"] = (written_.count(i) > 0);
+            entry["written"] = ((written_bits_[i >> 6] >> (i & 63)) & 1ULL) != 0;
             result["registers"].push_back(entry);
         }
         return result;
@@ -635,7 +650,8 @@ private:
     uint32_t param_start_ = 0;
     uint32_t pc_ = 0;
     std::vector<DalvikValue> registers_;
-    std::set<uint8_t> written_;
+    // F-109a: fixed 256-bit written-register bitmap (registers are uint8_t).
+    uint64_t written_bits_[4] = {0, 0, 0, 0};
 };
 
 // ============================================================================
