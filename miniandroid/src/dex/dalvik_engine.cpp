@@ -18268,6 +18268,84 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                       << "." << method << " argc=" << args.size() << std::endl;
         }
     }
+    // ────────────────────────────────────────────────────────────────────
+    // S67 FOUNDATION (F-122, f08_canvasops fixture 2026-09-19): android
+    // .graphics.Color static factories. Upstream law (AOSP Color.java):
+    //   rgb(r,g,b)  = 0xFF000000 | (r&0xFF)<<16 | (g&0xFF)<<8 | (b&0xFF)
+    //   argb(a,r,g,b) = (a&0xFF)<<24 | (r&0xFF)<<16 | (g&0xFF)<<8 | (b&0xFF)
+    //   parseColor("#RRGGBB"/"#AARRGGBB") = the parsed AARRGGBB int
+    // Previously these were REC-MISS (returned the int default 0 =
+    // alpha 0), so every Paint.setColor(Color.rgb(...)) rendered INVISIBLE
+    // (alpha-0 blend no-op) — silent-wrongness at the smallest primitive
+    // with fan-out to every custom-drawing app. These are pure static
+    // functions: no receiver, args carry the raw channels.
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/graphics/Color;") {
+        auto chan = [](const DalvikValue& v) -> int32_t {
+            int32_t x = v.int_val;
+            if (x < 0) x = 0;
+            if (x > 255) x = 255;
+            return x & 0xFF;
+        };
+        if (method == "rgb" && args.size() >= 3) {
+            int32_t c = 0xFF000000 | (chan(args[0]) << 16) | (chan(args[1]) << 8) |
+                        chan(args[2]);
+            result = DalvikValue::make_int(c);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "argb" && args.size() >= 4) {
+            int32_t c = (chan(args[0]) << 24) | (chan(args[1]) << 16) |
+                        (chan(args[2]) << 8) | chan(args[3]);
+            result = DalvikValue::make_int(c);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "parseColor" && !args.empty() &&
+            args[0].type == DalvikType::STRING_REF) {
+            const std::string& s = args[0].string_val;
+            auto hexv = [](const std::string& h) -> int32_t {
+                int32_t v = 0;
+                for (char ch : h) {
+                    int d;
+                    if (ch >= '0' && ch <= '9') d = ch - '0';
+                    else if (ch >= 'a' && ch <= 'f') d = ch - 'a' + 10;
+                    else if (ch >= 'A' && ch <= 'F') d = ch - 'A' + 10;
+                    else return -1;
+                    v = (v << 4) | d;
+                }
+                return v;
+            };
+            bool ok = false;
+            int32_t c = 0;
+            if (s.size() == 7 && s[0] == '#') {
+                int32_t rgb = hexv(s.substr(1));
+                if (rgb >= 0) { c = 0xFF000000 | rgb; ok = true; }
+            } else if (s.size() == 9 && s[0] == '#') {
+                int32_t argb = hexv(s.substr(1));
+                if (argb >= 0) { c = argb; ok = true; }
+            } else if ((s.size() == 5 || s.size() == 4) && s[0] == '#') {
+                // #ARGB/#RGB short form (Color.java law: each nibble doubles)
+                int32_t v = hexv(s.substr(1));
+                if (v >= 0) {
+                    auto dup = [](int32_t x) { return (x & 0xF) * 0x11; };
+                    int n = (int)s.size() - 1;
+                    c = (n == 4 ? dup(v >> 12) << 24 : 0xFF000000) |
+                        (dup(v >> 8) << 16) | (dup(v >> 4) << 8) | dup(v);
+                    ok = true;
+                }
+            }
+            if (ok) {
+                result = DalvikValue::make_int(c);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            // AOSP parseColor throws IllegalArgumentException on bad input.
+            throw_deferred("Ljava/lang/IllegalArgumentException;",
+                           "Unknown color: " + s, "S67 Color.parseColor");
+            return false;
+        }
+    }
     // R-NEW-345 PARK-DRAIN LAW (generic; kotlinx.coroutines + AOSP semantics).
     // Root cause: joinBlocking spin — dooz23 runBlocking(BlockingCoroutine +
     // BlockingEventLoop) never completed because the only yield point
@@ -23894,22 +23972,60 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // ────────────────────────────────────────────────────────────────────────
     if (method == "getDimensionPixelSize" &&
         class_name.find("Resources") != std::string::npos) {
-        int32_t resid = args.size() >= 1 ? args[0].int_val : 0;
+        // ────────────────────────────────────────────────────────────────
+        // S67 FOUNDATION (A2 root cause, f32_dimen fixture 2026-09-19):
+        // getDimensionPixelSize is a VIRTUAL Resources method — the
+        // dispatch packs args[0] = this(Resources), args[1] = resid. The
+        // handler previously read args[0].int_val, i.e. the receiver
+        // object id (always 0 for the Resources singleton), so EVERY call
+        // logged resid=0x0 and returned the silent 24px default while the
+        // real resource id was in args[1]. Arg-index law matches the
+        // sibling getResourceEntryName handler directly below.
+        // Layer 2 of the fix (the seed): resource_dimen_values_ now holds
+        // density-converted device px (see execution_engine.cpp seeding),
+        // so the returned value satisfies the complexToDimensionPixelSize
+        // contract instead of the raw dp mantissa.
+        // ────────────────────────────────────────────────────────────────
+        int32_t resid = 0;
+        if (args.size() >= 2) resid = args[1].int_val;
+        else if (args.size() == 1) resid = args[0].int_val;  // static-dispatch form
         int32_t dimen_val = 24;  // default 24px
         bool resolved = false;
-        auto it = field_name_by_resid_.find(resid);
-        if (it != field_name_by_resid_.end()) {
-            const std::string& name = it->second;
-            auto dit = resource_dimen_values_.find(name);
-            if (dit != resource_dimen_values_.end()) {
-                dimen_val = dit->second;
-                resolved = true;
+        // ────────────────────────────────────────────────────────────────
+        // S67 FOUNDATION (A2 layer 3, f32_dimen fixture): ARSC-FIRST
+        // resolution — the same precedence the sibling getColor handler
+        // above uses. The field_name_by_resid_ name-map path depends on
+        // R$-class load-time seeding that not every SGET route triggers;
+        // the ARSC itself is authoritative and independent of DEX R-class
+        // parsing. Conversion through the canonical
+        // complexToDimensionPixelSize law (unit decode × density + the one
+        // rounding site). Fallback: name-map (density-converted seed).
+        // ────────────────────────────────────────────────────────────────
+        {
+            auto& rt = resources::ResourceRuntime::instance();
+            if (rt.loaded()) {
+                auto v = rt.arsc().resolve_value((uint32_t)resid);
+                if (v && v->type == resources::DataType::DIMENSION) {
+                    dimen_val = resources::complex_unit_to_dimension_pixel_size(
+                        v->dim_unit, v->dim_value, resources::DensityContext{});
+                    resolved = true;
+                }
+            }
+        }
+        if (!resolved) {
+            auto it = field_name_by_resid_.find(resid);
+            if (it != field_name_by_resid_.end()) {
+                const std::string& name = it->second;
+                auto dit = resource_dimen_values_.find(name);
+                if (dit != resource_dimen_values_.end()) {
+                    dimen_val = dit->second;
+                    resolved = true;
+                }
             }
         }
         std::cerr << "[RES] getDimensionPixelSize resid=0x" << std::hex << resid << std::dec
-                  << " name=" << (it != field_name_by_resid_.end() ? it->second : "<unknown>")
                   << " → " << dimen_val << "px"
-                  << (resolved ? "" : " (default 24px — not resolved)")
+                  << (resolved ? " (ARSC/type-table)" : " (default 24px — not resolved)")
                   << std::endl;
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_int(dimen_val);

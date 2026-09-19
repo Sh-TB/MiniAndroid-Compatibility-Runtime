@@ -1,0 +1,19 @@
+{
+  "clickable_views": 1,
+  "frame1_sha_note": "screenshot.png (already written by stage_capture_output)",
+  "per_view": [
+    {
+      "changed_px": 2073273,
+      "class": "Landroid/widget/Button;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lcom/miniandroid/f27nav/MainActivity$1;",
+      "screenshot": "click_frame_0.png",
+      "state_changed": true,
+      "view_id": 9
+    }
+  ],
+  "views_changed_second_frame": 1,
+  "views_probed": 1,
+  "xml_onclick_views": 0
+}

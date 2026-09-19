@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.miniandroid.f27nav"
+    android:versionCode="1" android:versionName="1.0">
+    <application android:label="F27 Nav">
+        <activity android:name="com.miniandroid.f27nav.MainActivity" android:label="F27 Nav">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+            <activity android:name="com.miniandroid.f27nav.SecondActivity" android:label="F27 Second"/>
+    </application>
+</manifest>

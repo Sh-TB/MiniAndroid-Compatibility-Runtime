@@ -215,14 +215,57 @@ size_t CanvasShadow::replay(renderer::SoftwareCanvas& canvas,
                 // Recorded with width/height convention (unlike DRAW_RECT).
                 const float x1 = left + op.x, y1 = top + op.y;
                 const float x2 = x1 + op.w, y2 = y1 + op.h;
-                // v1: filled rect (corner radius recorded but not rasterized).
-                if (op.stroke) {
-                    canvas.draw_rect(x1, y1, x2, y1 + op.stroke_w, c);
-                    canvas.draw_rect(x1, y2 - op.stroke_w, x2, y2, c);
-                    canvas.draw_rect(x1, y1, x1 + op.stroke_w, y2, c);
-                    canvas.draw_rect(x2 - op.stroke_w, y1, x2, y2, c);
-                } else {
-                    canvas.draw_rect(x1, y1, x2, y2, c);
+                // S67 FOUNDATION (B7): real rounded-corner rasterization.
+                // Upstream law (AOSP Skia RRect / Canvas.drawRoundRect): the
+                // shape is the rect minus its four corners, each corner an
+                // axis-aligned quarter-circle of radius min(rx, geometry).
+                // Rasterized by per-row spans: rows outside the corner bands
+                // span the full width; rows inside a corner band span from
+                // the quarter-circle chord. Previously v1 drew a plain rect
+                // (radius recorded but not rasterized) — every Compose card /
+                // Material shape rendered with square corners.
+                const float rad = std::min({op.r, op.w * 0.5f, op.h * 0.5f});
+                if (rad <= 0.5f) {
+                    if (op.stroke) {
+                        canvas.draw_rect(x1, y1, x2, y1 + op.stroke_w, c);
+                        canvas.draw_rect(x1, y2 - op.stroke_w, x2, y2, c);
+                        canvas.draw_rect(x1, y1, x1 + op.stroke_w, y2, c);
+                        canvas.draw_rect(x2 - op.stroke_w, y1, x2, y2, c);
+                    } else {
+                        canvas.draw_rect(x1, y1, x2, y2, c);
+                    }
+                    break;
+                }
+                const float rad_sq = rad * rad;
+                for (int yy = (int)std::floor(y1); yy < (int)std::ceil(y2); yy++) {
+                    // Row-center space (pixel centers at +0.5).
+                    const float py = (float)yy + 0.5f;
+                    float row_l = x1, row_r = x2;
+                    // Top/bottom corner bands: shrink the span by the chord.
+                    float dy_top = (y1 + rad) - py;
+                    float dy_bot = py - (y2 - rad);
+                    float inset = 0.f;
+                    if (dy_top > 0.f) {
+                        inset = rad - std::sqrt(std::max(0.f, rad_sq - dy_top * dy_top));
+                    } else if (dy_bot > 0.f) {
+                        inset = rad - std::sqrt(std::max(0.f, rad_sq - dy_bot * dy_bot));
+                    }
+                    row_l += inset;
+                    row_r -= inset;
+                    if (row_r <= row_l) continue;
+                    if (op.stroke) {
+                        // Stroke: top/bottom edge rows + side columns of this
+                        // span (approximation: constant stroke width, honest
+                        // AOSP-equivalent geometry for the frame-evidence law).
+                        if (py - y1 < (float)op.stroke_w || y2 - py <= (float)op.stroke_w) {
+                            canvas.draw_rect(row_l, py - 0.5f, row_r, py + 0.5f, c);
+                        } else {
+                            canvas.draw_rect(row_l, py - 0.5f, row_l + op.stroke_w, py + 0.5f, c);
+                            canvas.draw_rect(row_r - op.stroke_w, py - 0.5f, row_r, py + 0.5f, c);
+                        }
+                    } else {
+                        canvas.draw_rect(row_l, py - 0.5f, row_r, py + 0.5f, c);
+                    }
                 }
                 break;
             }
@@ -419,6 +462,23 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         const uint32_t recv = ctx.receiver_id;
         if (m == "setColor") {
             paint_color_[recv] = (uint32_t)ctx.arg_as_int(0, 0xFF000000);
+            return CallResult::handled_void();
+        }
+        if (m == "setARGB") {
+            // ────────────────────────────────────────────────────────────
+            // S67 FOUNDATION (A5, f08_canvasops fixture): Paint.setARGB was
+            // UNHANDLED — the call fell through to not_handled(), the paint
+            // color stayed 0xFF000000, and every setARGB-colored shape drew
+            // black (or was silently dropped). Upstream law (AOSP Paint
+            // .java setARGB): setARGB(a,r,g,b) == setColor((a<<24)|(r<<16)|
+            // (g<<8)|b) with per-channel 8-bit truncation. Same storage as
+            // setColor so every downstream consumer (paint_color()) sees it.
+            // ────────────────────────────────────────────────────────────
+            uint32_t a = (uint32_t)ctx.arg_as_int(0, 255) & 0xFF;
+            uint32_t r = (uint32_t)ctx.arg_as_int(1, 0) & 0xFF;
+            uint32_t g = (uint32_t)ctx.arg_as_int(2, 0) & 0xFF;
+            uint32_t b = (uint32_t)ctx.arg_as_int(3, 0) & 0xFF;
+            paint_color_[recv] = (a << 24) | (r << 16) | (g << 8) | b;
             return CallResult::handled_void();
         }
         if (m == "getColor") {
@@ -788,16 +848,21 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_void();
     }
     if (m == "drawRoundRect") {
-        // Compose backgrounds/cards are round rects. Approximate as rect with
-        // corner radius recorded (replay draws filled rect — honest v1).
+        // S67 FOUNDATION (F-123, f08_canvasops fixture): AOSP arg-index law.
+        // The float overload signature is drawRoundRect(left, top, right,
+        // bottom, rx, ry, Paint) — PAINT LAST (index 6). The handler
+        // previously assumed (l,t,r,b,paint,rx,ry), so the paint id was
+        // read from the rx float slot: every drawRoundRect rendered with
+        // the default paint color (black) regardless of the app's Paint —
+        // fan-out across every card/rounded-shape UI in the corpus.
         DrawOp op; op.kind = DrawOp::Kind::DRAW_ROUNDRECT;
-        // args are (l,t,r,b,paint,rx,ry)
         float l = arg_as_float(ctx, 0), t = arg_as_float(ctx, 1);
         float r = arg_as_float(ctx, 2), b = arg_as_float(ctx, 3);
         op.x = l + tx_; op.y = t + ty_; op.w = r - l; op.h = b - t;
-        op.r = arg_as_float(ctx, 5, 0.f);
-        uint32_t paint_id = ctx.arg_as_object(4);
+        op.r = arg_as_float(ctx, 4, 0.f);          // rx (AOSP slot 4)
+        uint32_t paint_id = ctx.arg_as_object(6);  // Paint (AOSP slot 6)
         op.color = paint_color(paint_id);
+        op.stroke = paint_style_.count(paint_id) && paint_style_[paint_id] >= 1;
         auto sw2 = paint_stroke_w_.find(paint_id);
         op.stroke_w = sw2 != paint_stroke_w_.end() ? sw2->second : 1.f;
         target().push_back(op);

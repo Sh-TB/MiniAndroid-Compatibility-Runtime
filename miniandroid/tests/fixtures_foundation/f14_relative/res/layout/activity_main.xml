@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="#FFFFFFFF">
+    <View android:id="@+id/anchor" android:layout_width="300px" android:layout_height="300px"
+        android:layout_alignParentTop="true" android:layout_alignParentRight="true"
+        android:background="#FFFF0000"/>
+    <View android:id="@+id/belowv" android:layout_width="300px" android:layout_height="300px"
+        android:layout_below="@id/anchor" android:layout_alignParentLeft="true"
+        android:background="#FF00FF00"/>
+    <View android:id="@+id/rightof" android:layout_width="200px" android:layout_height="200px"
+        android:layout_toRightOf="@id/belowv" android:layout_alignTop="@id/belowv"
+        android:background="#FF0000FF"/>
+    <View android:layout_width="400px" android:layout_height="400px"
+        android:layout_centerInParent="true" android:background="#FF00FFFF"/>
+</RelativeLayout>
