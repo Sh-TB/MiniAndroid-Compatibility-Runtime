@@ -67,3 +67,14 @@ tree this session.
   existing `scripts/forensic/m3_dex_super_probe.py` was located and
   reused (superclass walk pattern), avoiding a fourth independent DEX
   header parser.
+
+## S62 additions (2026-09-19) — R-NEW-381 / R-NEW-331 workload
+
+| Query | zoekt (result / latency) | csearch (hits / latency) | ripgrep ground truth | Outcome |
+|---|---|---|---|---|
+| `attachHost` (miniandroid/src + docs, re-indexed: 117 src + 963 docs files, shards 7.9+30.3 MB) | 0 rows displayed (CLI) | 1 hit, 2 ms (docs/maintenance/s47_session_record.md) | 1 file | **zoekt under-report reproduced** (2nd instance, same limitation family as S61); csearch = hit; ledger value: prevented re-deriving the S47 fragment-host note |
+| `ensureExecReady` (csearch over src+docs) | — | 4+ hits, 2 ms (docs/evidence/mc4_telegram/tg_run1_distilled.log) | same | **Cross-corpus reuse: the Telegram golden carries the SAME FragmentManager ISE face as the 3 spotlight games → R-NEW-331 consumer count 3 games + Telegram, duplicate research avoided** |
+
+S62 scripts: `scripts/s62_ts_stderr.py` (line-timestamped stderr wrapper),
+`scripts/s62_clinit_costs.py` (per-<clinit> duration distribution),
+`scripts/s62_disasm_heavy_clinit.py` (heaviest-chain disassembler).

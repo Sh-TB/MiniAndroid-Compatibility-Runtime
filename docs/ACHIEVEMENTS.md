@@ -42,6 +42,14 @@ only rescued class is dark UI with rich palettes (helloworld_ext01, 256
 colors). Blank/white/black frames are NEVER stored as images — they are
 recorded as text, exactly as done in §3.2.
 
+## 0e2. S62 Games Spotlight — first real-APK L6 (input → state → render)
+
+| Achievement | Evidence | Class |
+|---|---|---|
+| **bouncy L6 PROVEN** (com.dozingcatsoftware.bouncy, source-backed F-Droid): --click-count 6 → 6/6 clicks dispatched into the app's REAL DEX XML-onClick handlers on BouncyActivity (scoreViewClicked, doPreviousTable, doQuit, hideHighScore); 7 frames recorded; render-state transition proven by frame SHA pair 4219c5116ea2 (frames 0-2) → 52e4ddacc8ac (frames 3-6) — two distinct UI states in one run. Honest: not claimed L7 (no multi-round game-loop interaction proof) | run/s62_bouncy_l6/; docs/evidence/s62_r381/bouncy_frame*.png + SHA256SUMS | EXECUTED+OBSERVED |
+| Games blocked family measured: minesweeper + memory + 2048 all die at the SAME generic gate (R-NEW-331 FragmentManager.ensureExecReady ISE) with full first-engine androidx chain evidence — one fix, 3+ game consumers + Telegram | run/s62_game_mines, run/s62_probe_*; run/s62_mines_trace.log | OBSERVED |
+| F-109a/c landed (register-write bitmap + strcmp arith dispatch; goldens 26/8, battery 96/96) with an HONEST marginal verdict (~9-10% rate) and the F-110 measured lever registered | docs/evidence/s62_r381/S62_REPORT.md | IMPLEMENTED+TESTED |
+
 ## 0f. S61 Runtime Spotlight Corpus (Phase A) — the capability-driven sweep
 
 > **S61 corpus law**: selection by Android-capability coverage (not

@@ -66,7 +66,14 @@ S55/S56/S57 rows retained below for continuity.
 
 ## 3. Active frontier (P0 first, attack order)
 
-S61 state after F-107 (evidence-cost laws) + F-108 (R8-rename identity law):
+S62 state after F-109 (written-bitmap + strcmp arith; measured marginal) and
+the S62 measured decomposition (bucket timers, per-<clinit> durations, op
+self-times — docs/evidence/s62_r381/S62_REPORT.md). Games corpus first L6:
+bouncy (input -> callback -> state transition -> render change, frame SHA
+pair 4219c5116ea2 / 52e4ddacc8ac). R-NEW-331 gained 3 game consumers
+(minesweeper / memory / 2048 all die at FragmentManager.ensureExecReady
+ISE) + the first-engine precision: the real androidx chain runs and returns
+OK, but the FragmentController.attachHost leg never dispatches.
 
 1. **R-NEW-381 — Dooz first-frame content / composition volume (P1, pinned
    S60; S61 face refined)** (OBSERVED-FAIL). The Compose draw path is now

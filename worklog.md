@@ -1121,3 +1121,82 @@ Work Log:
 
 Stage Summary:
 - S61 CLOSED: F-107 (evidence-cost laws, measured) + F-108 (R8-rename identity) landed with battery 96/96; R-NEW-381 face honestly refined (draw chain wired; composition volume = the remaining face, 627 cold <clinit> chains measured); Runtime Spotlight Corpus Phase A achieved (61 apps, capability coverage, honest L-levels); search tools really built+benchmarked; provenance inventory canonical.
+
+---
+Task ID: S62
+Agent: Super Z (main)
+Task: Continue from real HEAD (2023af60, S61-PUSH-VERIFY) — R-NEW-381 measured
+decomposition (F-107 honest A/B + S62 instrumentation + F-109), regression
+battery, Games Spotlight first L6, search-tool real use, registry/canonical
+sync; no new campaign/branch.
+
+Work Log:
+- RECON: HEAD == origin/main == 2023af60; registry read (R-NEW-381 the
+  single open frontier P1); S61 achievements preserved (not re-derived).
+- ENV CONSTRAINT DISCOVERED: background processes are killed between tool
+  calls (nohup AND setsid) — all long runs moved to foreground (<=9.5 min).
+- F-107 A/B (directive D): pre-F-107 binary (run/miniandroid.release.bak,
+  verified no PERF-PHASE strings) vs HEAD build, dooz v23, 480s each,
+  same idle machine: throughput UNCHANGED (700K vs ~690K instr; per-100K
+  segments within noise). HONEST: F-107's profile wins did not move
+  wall-clock; the 0->197px frame move was F-108's draw contract at budget
+  stop. Recorded in docs/evidence/s62_r381/S62_REPORT.md.
+- S62 INSTRUMENTATION (env-gated, zero-cost off): per-instruction rdtsc
+  buckets insn.pre/insn.sw_non/insn.sw_inv/insn.post in fetch_decode_execute
+  + atexit print. TSC calibrated 3.20 GHz. Result: bookkeeping CLEAN
+  (pre 0.026%, post 0.084% of wall); class_init phase = 46.8% of wall
+  (warm=7527/skipfw=42/cold=718 in 91s).
+- PER-<clinit> DURATION LAW (scripts/s62_clinit_costs.py over timestamped
+  stderr): 245 paired chains = 42.9s; top-10 = 74%, top-50 = 95%; heaviest
+  Lug0; (23-instr <clinit>!) = 7.1s.
+- CAUSAL CHAIN (engine M3 METHOD-TRACE, run/s62_lbl_trace): Lug0;->Lqk;->
+  Lbl;-> 1,024 x Lnd1;.c (180 units) — register evidence ("Display P3",
+  "NTSC (1953)", "SMPTE-C RGB", "scRGB IEC 61966-2-2:2003") identifies the
+  androidx ColorSpace Rgb transfer-table static init = 90% of ALL executed
+  instructions (184K of ~205K).
+- OP SELF-TIME (in-init histogram suppression removed for one run):
+  sget-object 23.3ms/call (37% wall), new-instance 9.4ms (14.5%), sget
+  88ms/235 calls — ~69% of wall = first-touch sget/new-instance carrying
+  cold-init subtrees. Simple ops are us-fast.
+- FIXES F-109a/c (generic, zero semantics): DexRegisterFile written-set
+  std::set<uint8_t> -> fixed 256-bit bitmap (identical ordered iteration);
+  23 x std::string(op) arith temporaries -> strcmp. Honest measurement:
+  ~9-10% instruction-rate gain (100K @ 25.0s vs 27.4s) — MARGINAL;
+  frontier unchanged. REGRESSION: helloworld golden 26/26, tictactoe
+  golden 8/8, BATTERY ALL PASS 96.
+- F-110 LEVER REGISTERED (measured): per-invoke constants tri.resolve
+  15.8us + em.setup 22.7us; DalvikValue = 2xstd::string per register
+  access; DalvikValue std::string copies + per-op trace string fields.
+- GAMES SPOTLIGHT L6 (bouncy, --click-count 6, 300s): 6/6 clicks dispatched
+  into real DEX XML-onClick handlers on BouncyActivity; 7 frames; render
+  state transition PROVEN by frame SHA pair 4219c5116ea2 -> 52e4ddacc8ac.
+  Representative frames committed (35.5KB + 20KB). Honest: no L7 claim.
+- R-NEW-331 GAINS 3 GAME CONSUMERS: minesweeper/memory/2048 all die at the
+  SAME real-DEX ISE (FragmentManager.ensureExecReady "not been attached to
+  a host") — first-engine precision captured (run/s62_mines_trace.log):
+  the full androidx chain (FragmentActivity.<init> -> HostCallbacks ->
+  FragmentController.createController -> FragmentHostCallback ->
+  FragmentManagerImpl -> FragmentActivity.onCreate -> ComponentActivity
+  .onCreate -> performRestore) dispatches and returns OK, yet
+  FragmentController.attachHost never dispatches. 4th consumer: Telegram
+  (csearch cross-hit on docs/evidence/mc4_telegram).
+- SEARCH TOOLS REAL USE (ledger rows): zoekt re-index (117 src + 963 docs
+  files, shards 7.9+30.3MB) + `attachHost` query (0 rows displayed —
+  under-report limitation reproduced 2nd time); csearch `ensureExecReady`
+  2ms -> Telegram cross-evidence (duplicate-research reuse recorded).
+- CANONICAL SYNC: registry (R-NEW-381 S62 face + R-NEW-331 S62 face);
+  ROADMAP_STATUS (F-109 row + S62 frontier header); KNOWLEDGE_INDEX 0c
+  S62 block (6 rows); ACHIEVEMENTS 0e2 (games L6 + blocked family);
+  SEARCH_LEDGER S62 rows; SPOTLIGHT_COVERAGE S62 games block;
+  UPSTREAM_INVENTORY S62 law rows (ColorSpace workload, fragment host
+  attach contract, interpreter constant-cost inventory).
+
+Stage Summary:
+- R-NEW-381: the composition frontier is now MEASURED to the leaf op
+  (real androidx work at ~1,459-2,200 inst/s; the lever is per-invoke
+  constants + register value copies — F-110 registered). Draw chain
+  stays WIRED (F-108); no fake "Compose working" claims.
+- Games Spotlight: first real-APK L6 proven with causal evidence chain
+  (input -> callback -> state -> render SHA change).
+- Battery 96/96 + goldens at the F-109 HEAD; all S62 evidence committed
+  compact (2 small PNGs + report + SHAs); zero APKs/logs in the tree.

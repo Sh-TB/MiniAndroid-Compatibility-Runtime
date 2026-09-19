@@ -16,6 +16,7 @@
 #include "../api/android_stubs.h"
 #include "../storage/data_root.h"
 #include <filesystem>
+#include <cstring>  // F-109c: strcmp arith dispatch (S62)
 #include "../diagnostics/mem_probe.h"
 #include "../diagnostics/click_audit.h"  // UNIFIED_002 EXP-100: env-gated click audit (DIAGNOSTIC)
 #include "../jni/jni_bridge.h"
@@ -153,6 +154,14 @@ struct PhaseClock {
     Phase sget_tail_ph;       // sget handler: storage lookup + synthesis
     std::atomic<uint64_t> ci_warm{0}, ci_cold{0}, ci_skipfw{0};
     Phase find_class;         // class_info_index_ lookups are cheap; skip
+    // S62 R-NEW-381: per-instruction bucket split (env-gated, zero-cost off).
+    // Answers where the ~640us/instruction actually sits: pre-switch loop
+    // top, the invoke-kind switch cases, the non-invoke switch cases, or the
+    // post-switch bookkeeping. Sum over the TOP-LEVEL frame ≈ wall.
+    Phase insn_pre;           // while-top → before switch
+    Phase insn_sw_non;        // non-invoke switch cases
+    Phase insn_sw_inv;        // invoke-kind switch cases (incl. nested bodies)
+    Phase insn_post;          // after switch → while bottom
     void enter(Phase& ph, uint64_t& t0) {
         if (!on) return;
         t0 = __rdtsc(); ++ph.calls;
@@ -436,6 +445,10 @@ DalvikExecutionEngine::DalvikExecutionEngine()
         pr("sget.resolve", phase_clock().sget_resolve_ph);
         pr("sget.init", phase_clock().sget_init_ph);
         pr("sget.tail", phase_clock().sget_tail_ph);
+        pr("insn.pre", phase_clock().insn_pre);
+        pr("insn.sw_non", phase_clock().insn_sw_non);
+        pr("insn.sw_inv", phase_clock().insn_sw_inv);
+        pr("insn.post", phase_clock().insn_post);
         fprintf(stderr, "[PERF-CI] warm=%llu skipfw=%llu cold=%llu\n",
                 (unsigned long long)phase_clock().ci_warm.load(),
                 (unsigned long long)phase_clock().ci_skipfw.load(),
@@ -9108,6 +9121,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                   << std::endl;
     }
     while (!halted_ && pc_ < bytecode_.size()) {
+        uint64_t s62_pre0 = phase_clock().on ? __rdtsc() : 0;  // S62 bucket: pre
         InstructionTrace trace;
         trace.sequence = instruction_sequence_++;
         trace.pc_before = pc_;
@@ -9238,7 +9252,11 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
         
         // Decode and execute
         bool success = true;
-        
+        // S62 bucket: switch split by invoke-kind (the op histogram excludes
+        // invoke ops — this recovers their handler cost, nested bodies incl.)
+        const bool s62_inv = (opcode >= 0x6e && opcode <= 0x72) ||
+                             (opcode >= 0x74 && opcode <= 0x78);
+        uint64_t s62_sw0 = phase_clock().on ? __rdtsc() : 0;
         switch (opcode) {
             // Constants
             case Opcode::CONST_4:
@@ -11794,23 +11812,23 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                                    : (a.type == DalvikType::INT32 ? static_cast<int64_t>(a.int_val) : 0); \
                         int64_t bv = (b.type == DalvikType::INT64) ? b.long_val \
                                    : (b.type == DalvikType::INT32 ? static_cast<int64_t>(b.int_val) : 0); \
-                        if ((std::string(op) == "div" || std::string(op) == "rem") && bv == 0) { \
+                        if ((strcmp(op, "div") == 0 || strcmp(op, "rem") == 0) && bv == 0) { \
                             /* MASTER RECONCILIATION (K-29): throws instead of yield-0. */ \
                             throw_deferred("Ljava/lang/ArithmeticException;", "divide by zero", "ARITH-W2A"); \
                             pc_ += 1; \
                             break; \
                         } \
-                        if (std::string(op) == "add") result_val.long_val = av + bv; \
-                        else if (std::string(op) == "sub") result_val.long_val = av - bv; \
-                        else if (std::string(op) == "mul") result_val.long_val = av * bv; \
-                        else if (std::string(op) == "div") result_val.long_val = (bv != 0) ? av / bv : 0; \
-                        else if (std::string(op) == "rem") result_val.long_val = (bv != 0) ? av % bv : 0; \
-                        else if (std::string(op) == "and") result_val.long_val = av & bv; \
-                        else if (std::string(op) == "or")  result_val.long_val = av | bv; \
-                        else if (std::string(op) == "xor") result_val.long_val = av ^ bv; \
-                        else if (std::string(op) == "shl") result_val.long_val = av << static_cast<int>(bv & 0x3f); \
-                        else if (std::string(op) == "shr") result_val.long_val = av >> static_cast<int>(bv & 0x3f); \
-                        else if (std::string(op) == "ushr") result_val.long_val = static_cast<int64_t>(static_cast<uint64_t>(av) >> static_cast<int>(bv & 0x3f)); \
+                        if (strcmp(op, "add") == 0) result_val.long_val = av + bv; \
+                        else if (strcmp(op, "sub") == 0) result_val.long_val = av - bv; \
+                        else if (strcmp(op, "mul") == 0) result_val.long_val = av * bv; \
+                        else if (strcmp(op, "div") == 0) result_val.long_val = (bv != 0) ? av / bv : 0; \
+                        else if (strcmp(op, "rem") == 0) result_val.long_val = (bv != 0) ? av % bv : 0; \
+                        else if (strcmp(op, "and") == 0) result_val.long_val = av & bv; \
+                        else if (strcmp(op, "or") == 0)  result_val.long_val = av | bv; \
+                        else if (strcmp(op, "xor") == 0) result_val.long_val = av ^ bv; \
+                        else if (strcmp(op, "shl") == 0) result_val.long_val = av << static_cast<int>(bv & 0x3f); \
+                        else if (strcmp(op, "shr") == 0) result_val.long_val = av >> static_cast<int>(bv & 0x3f); \
+                        else if (strcmp(op, "ushr") == 0) result_val.long_val = static_cast<int64_t>(static_cast<uint64_t>(av) >> static_cast<int>(bv & 0x3f)); \
                         if (std::getenv("MINIANDROID_WIDE_DIAG")) { \
                             std::cerr << "[WIDE-DIAG] " << op_name << " @" << current_class_ << "." \
                                       << current_method_ << " v" << (int)vA << "(J=" << av << ") v" \
@@ -11820,11 +11838,11 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                         /* F-028 law: slots reinterpreted AS float32 */ \
                         uint32_t a28b = dalvik_raw_bits32(a); std::memcpy(&af, &a28b, 4); \
                         uint32_t b28b = dalvik_raw_bits32(b); std::memcpy(&bf, &b28b, 4); \
-                        if (std::string(op) == "add") result_val.float_val = af + bf; \
-                        else if (std::string(op) == "sub") result_val.float_val = af - bf; \
-                        else if (std::string(op) == "mul") result_val.float_val = af * bf; \
-                        else if (std::string(op) == "div") result_val.float_val = (bf != 0) ? af / bf : 0; \
-                        else if (std::string(op) == "rem") result_val.float_val = fmodf(af, bf); \
+                        if (strcmp(op, "add") == 0) result_val.float_val = af + bf; \
+                        else if (strcmp(op, "sub") == 0) result_val.float_val = af - bf; \
+                        else if (strcmp(op, "mul") == 0) result_val.float_val = af * bf; \
+                        else if (strcmp(op, "div") == 0) result_val.float_val = (bf != 0) ? af / bf : 0; \
+                        else if (strcmp(op, "rem") == 0) result_val.float_val = fmodf(af, bf); \
                     } else { \
                         double ad = (a.type == DalvikType::FLOAT64) ? a.double_val \
                                   : (a.type == DalvikType::INT64 ? bits_l2d(a.long_val) \
@@ -11832,11 +11850,11 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                         double bd = (b.type == DalvikType::FLOAT64) ? b.double_val \
                                   : (b.type == DalvikType::INT64 ? bits_l2d(b.long_val) \
                                   : (b.type == DalvikType::FLOAT32 ? (double)b.float_val : (double)b.int_val)); \
-                        if (std::string(op) == "add") result_val.double_val = ad + bd; \
-                        else if (std::string(op) == "sub") result_val.double_val = ad - bd; \
-                        else if (std::string(op) == "mul") result_val.double_val = ad * bd; \
-                        else if (std::string(op) == "div") result_val.double_val = (bd != 0) ? ad / bd : 0; \
-                        else if (std::string(op) == "rem") result_val.double_val = fmod(ad, bd); \
+                        if (strcmp(op, "add") == 0) result_val.double_val = ad + bd; \
+                        else if (strcmp(op, "sub") == 0) result_val.double_val = ad - bd; \
+                        else if (strcmp(op, "mul") == 0) result_val.double_val = ad * bd; \
+                        else if (strcmp(op, "div") == 0) result_val.double_val = (bd != 0) ? ad / bd : 0; \
+                        else if (strcmp(op, "rem") == 0) result_val.double_val = fmod(ad, bd); \
                     } \
                     set_register(vA, result_val); \
                     trace.opcode_name = op_name; \
@@ -11917,6 +11935,18 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 break;
         }
 
+        uint64_t s62_sw1 = phase_clock().on ? __rdtsc() : 0;
+        if (phase_clock().on) {
+            (s62_inv ? phase_clock().insn_sw_inv : phase_clock().insn_sw_non)
+                .ns.fetch_add(s62_sw1 - s62_sw0, std::memory_order_relaxed);
+            (s62_inv ? phase_clock().insn_sw_inv : phase_clock().insn_sw_non)
+                .calls.fetch_add(1, std::memory_order_relaxed);
+            phase_clock().insn_pre.ns.fetch_add(s62_sw0 - s62_pre0,
+                                                std::memory_order_relaxed);
+            phase_clock().insn_pre.calls.fetch_add(1,
+                                                   std::memory_order_relaxed);
+        }
+
         // UNIFIED_011.3 EXC-PROPAGATE: apply a deferred catch-handler jump.
         // The invoke handlers advance pc_ (pc_ = pc_ + instr_len) after
         // try_recursive_invoke returns; when caller-side catch matching
@@ -11952,10 +11982,10 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
         }
         
         const bool f107_is_invoke = (opcode >= 0x6e && opcode <= 0x72) || (opcode >= 0x74 && opcode <= 0x78);
-        // S61: also suppress accumulation while inside a nested <clinit>
-        // chain — the triggering sget's own entry already covers the tree.
-        const bool f107_in_init = f107_init_depth().load(std::memory_order_relaxed) > 0;
-        if (phase_clock().on && f107_op0 && !f107_is_invoke && !f107_in_init) {  // S61: invokes excluded (their cost = nested instructions)
+        // S62 DIAG (one-shot measurement): record ALL non-invoke ops including
+        // inside <clinit> chains — the f107_in_init gate hid the hot-loop op
+        // mix (90% of instructions run inside class-init chains).
+        if (phase_clock().on && f107_op0 && !f107_is_invoke) {  // S62: invokes excluded (nested bodies)
             op_hist().ns[opcode].fetch_add(__rdtsc() - f107_op0, std::memory_order_relaxed);
             op_hist().count[opcode].fetch_add(1, std::memory_order_relaxed);
         }
@@ -12069,6 +12099,13 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
         if (halted_on_return_) {
             log("Method returned successfully");
             break;
+        }
+        // S62 bucket: post-switch bookkeeping
+        if (phase_clock().on) {
+            phase_clock().insn_post.ns.fetch_add(__rdtsc() - s62_sw1,
+                                                 std::memory_order_relaxed);
+            phase_clock().insn_post.calls.fetch_add(1,
+                                                    std::memory_order_relaxed);
         }
     }
     
