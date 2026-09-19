@@ -145,3 +145,33 @@ REPOSITORIES_CHECKED 9 app repos + aosp-mirror + F-Droid index; DOMAINS 5
 IMPLEMENTATIONS_FOUND 4; TESTS_FOUND 0 (honesty row); SEARCH_EXHAUSTED no.
 Every search changed a decision (build order, law citations, staging laws);
 none were decorative.
+
+## S65 — Spotlight 4 (3 NEW source-first apps: TriPeaks / FishRings / OPMT)
+
+Environment: zoekt (@ 153817f643cd) + cindex/csearch (v1.2.0) + Go 1.26.0
+REBUILT after the 3rd container reset (same GOPROXY=direct recipe). The
+container kills ALL background processes between tool calls — every long
+job (Go install, zoekt build, battery, engine build, 3-run determinism)
+ran FOREGROUND this session.
+F-Droid index-v2.json (60,145,769 B / 4,408 packages) downloaded and
+scanned locally (scripts/s65_candidate_survey.py): 45 keywords → 120-hit
+shortlist; scripts/s65_probe.py probed 120 candidates in parallel against
+raw.githubusercontent gradle/pubspec signatures (no API quota) → tiered.
+
+| Query | Tool (result) | Outcome |
+|---|---|---|
+| `cardClickListener` | zoekt → GameActivity.java:74 + :437-477 (52 bindings) | CONFIRMED the field-initialized-listener pattern pre-build; predicted the <init> face before the first run |
+| `ccwa` | zoekt → Rings.java:138 + 3 sites + GameActivity.java:35 | FishRings ring-rotation state surface mapped pre-build |
+| `nextInt` | zoekt → Deck.java:98 / Rings.java:216 / Ai.java:49 | every Random-bound surface in the candidate corpus located |
+| `buttonOnClickMethod` | zoekt → OPMT GameActivity.java:59-67 | 9 lambda registrations (B1..B9) — Tier-0 input face confirmed |
+| `randomAi` | csearch → Ai.java ×2 | cross-tool consistency with zoekt |
+| F-Droid scan (45 kw) | local index scan → 120 shortlist | sidhant947 family = Flutter (excluded by probe, not opinion) |
+| gradle/pubspec probes ×120 | parallel raw reads | androidx/compose/ndk/libgdx/flutter tiers; 6 finalists cloned pinned |
+| Instrumentation.java:1448 | AOSP raw @ main | newActivity(ClassLoader,String,Intent) → constructor law (F-118) |
+| Integer.java:106 + Array.java:74/110 | OpenJDK raw @ master | TYPE = Class.getPrimitiveClass("int"); newInstance contract (F-119a/b) |
+
+TOTAL_SEARCHES 9 · UNIQUE_QUERIES 9 · REPOSITORIES_CHECKED 9 · DOMAINS 4
+(f-droid, github raw, aosp, openjdk) · RELEVANT_HITS 14 ·
+IMPLEMENTATIONS_FOUND 3 · TESTS_FOUND 0 (honesty: no upstream
+instrumentation tests for these faces) · SEARCH_EXHAUSTED no
+(OBJECT-IDENTITY family queries queued in S65_REPORT §7).

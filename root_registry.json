@@ -1,12 +1,12 @@
 {
  "baseline_head": "5a2b7d99",
  "summary": {
-  "total_roots": 366,
+  "total_roots": 372,
   "open_frontiers": [
    "R-NEW-381"
   ],
-  "last_updated": "S64 2026-09-19",
-  "note": "S64 breadth: 3 NEW source-first apps executed (pmk S6 det render; FreeKlondike S10 full interaction chain; shopping-list-calc S9 click→state→changed-frame). New law families: F-114 prefs null-default/setDefaultValues/getDefaultSharedPreferences (R-NEW-383), F-115 Timer+virtual-clock + F-116 meta-data + F-117 scheduled-tap (R-NEW-384). Battery 92/94 + EXT-01/02 environmental (upstream HelloWorldSelfAware repo deleted). || S60 ROADMAP-3-CLOSURE: R-NEW-380 ROOT-CAUSED-FIXED (F-106 a/b/c — reflection-surface law family + unmodifiable views + Long.toString radix; the dooz v23 ViewModelProvider create chain now resolves through the app's own Hilt factory and the GameViewModel constructs with zero exceptions). R-NEW-381 registered as the honest successor (the Compose draw path — first-frame content). No new roadmap/branch/campaign. || S62: games corpus first L6 (bouncy, input->state->render, frame SHA pair); F-109a/c landed (marginal, measured); R-NEW-381 decomposed to the per-op/per-invoke constant-cost frontier.",
+  "last_updated": "S65 2026-09-19",
+  "note": "S65 breadth: 3 NEW source-first apps executed (TriPeaks S7 + det ×3, FishRings S10 PROVEN with 3 input→state→changed-frame interactions det ×3, OPMT S6 + app-own nextInt(0) stopper). New laws: F-118 activity-constructor (R-NEW-385 — G08 launches now run <init>; 3 consumers day one) + F-119 X.TYPE/primitive-array (R-NEW-386). New open family: OBJECT-IDENTITY (field/array element view-ref identity churn — blocks TriPeaks S8/OPMT S7+, forensic trail recorded). Battery 92/94 + EXT-01/02 environmental; zero regressions. S64 commit carried PENDING-PUSH into this session (no credential); S65 commit carries both. || S64: 3 apps (pmk S6, FreeKlondike S10, SLC S9) + F-114..F-117.",
   "total": 349,
   "verified_fixed": 43,
   "by_status": {
@@ -3729,6 +3729,42 @@
    "fg": true,
    "first_seen": "S64 first FreeKlondike source-first run",
    "evidence": "SOURCE OBSERVATION: SplashActivity.onResume → Timer.schedule(task, metaData timeout=5000) → run → startActivity(Class.forName(metaData redirect)). MINIANDROID TRACE: [REC-MISS] Timer/TimerTask/schedule (task never ran); metaData.getInt → typed-zero 0; early taps hit the splash (target=0). UPSTREAM: OpenJDK Timer.sched/mainLoop fixed-delay law; AOSP PackageItemInfo.metaData contract. SEMANTIC LAWS: F-115 Timer-on-MessageQueue (+__timer_period__ re-enqueue; F-115b revision: launch quiescence does NOT advance the virtual clock — GATE H/G07 goldens frozen; timers fire under time-driven --frames); F-116 meta-data manifest capture + getActivityInfo Bundle (numeric→INT32) + getComponentName; F-117 scheduled-tap law (tap k fires at frame k). FIXED: splash-trapped 0 px → full chain splash→menu→New Game→GameActivity→deck 'Deal!' response; frames f3c81cfb97f59754 / f9639e683ca736f6, det ×3; S10. SECOND APP: simplestopwatch Timer fired via F-115 (motivated the F-115b revision). Evidence: docs/evidence/s64_spotlight/S64_REPORT.md §3,§6"
+  },
+  {
+   "id": "F-118",
+   "title": "Activity-constructor law (R-NEW-385) — every activity-construction path must run the declared no-arg <init>()V before onCreate (Instrumentation.newActivity / performLaunchActivity contract)",
+   "status": "IMPLEMENTED+TESTED",
+   "priority": "P0",
+   "fg": true,
+   "first_seen": "S65 (TriPeaks v1.2.1 source-first build)",
+   "evidence": "G08 startActivity path (ExecutionEngine::consume_pending_intent) did heap.allocate() + onCreate and SKIPPED <init>: instance-field initializers never ran, so TriPeaks GameActivity's field-initialized cardClickListener stayed typed-zero; setOnClickListener registered listener_id=0 ([EXP060-LISTENER]) and all 52 card taps were silently dead (DOWN hit, no PerformClick). Upstream: AOSP Instrumentation.java:1448 newActivity(ClassLoader,String,Intent) → instantiateActivity (constructor runs; fetched 2026-09-19 from aosp-mirror/platform_frameworks_base @ main). Fix: <init> dispatched via try_recursive_invoke with a [G08-LIFECYCLE] record. After: listener_id=38, UI-EVENT CLICK → GameActivity$1 (real handler). Second consumers day one: OPMT GameActivity <init> 26 insns, FishRings GameActivity chain. Regression: battery 92/94 + EXT-01/02 environmental, zero new failures. Evidence: docs/evidence/s65_spotlight/S65_REPORT.md §3"
+  },
+  {
+   "id": "R-NEW-385",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P0",
+   "title": "TriPeaks dead card taps (field-initialized listener = typed-zero)",
+   "fg": true,
+   "first_seen": "S65 first TriPeaks board interaction",
+   "evidence": "SOURCE: GameActivity.java:74 field-initialized View.OnClickListener. TRACE: GameActivity;.<init> never executed (no TRY-ENTRY) while the launch activity's <init> ran — the G08 path skipped the constructor. UPSTREAM: Instrumentation.newActivity contract. LAW: F-118. AFTER: clicks dispatch to the real GameActivity$1; later stages blocked by the OBJECT-IDENTITY family (recorded, deferred). Evidence: docs/evidence/s65_spotlight/S65_REPORT.md §3"
+  },
+  {
+   "id": "F-119",
+   "title": "X.TYPE primitive-class + primitive-array descriptor law (R-NEW-386) — Integer.TYPE & friends answer canonical Class objects; Array.newInstance builds [I-style descriptors for primitives",
+   "status": "IMPLEMENTED+TESTED",
+   "priority": "P0",
+   "fg": true,
+   "first_seen": "S65 (FishRings v1.23 source-first build)",
+   "evidence": "[SGET-MISS] Ljava/lang/Integer;.TYPE obj_id=0 → Array.newInstance(NULL, dims) → null matrix → aput-null NPE in FishRingsForAndroid Rings.init (3 uncaught, rc=1 PARTIAL). Upstream: OpenJDK Integer.java:106 'public static final Class<Integer> TYPE = Class.getPrimitiveClass(\"int\")' — JVM-injected, never written by <clinit>; Array.java:74/110 newInstance contract (fetched 2026-09-19 from openjdk/jdk @ master). Laws: (a) X.TYPE for Integer/Boolean/Byte/Character/Short/Long/Float/Double/Void → primitive Class descriptors I/Z/B/C/S/J/F/D/V; (b) Array.newInstance primitive components build '[I'-style descriptors (no L...; wrapper), recursively ('[[I') so check-cast succeeds. After: [R358-ANEW] newInstance(I, dims=[3,12]) -> [[I; rc=0 SUCCESS; FishRings full chain S10 det ×3. Regression: battery 92/94 zero new failures (TicTacToe R-NEW-358 Button[][] golden PASS on the changed path). Evidence: docs/evidence/s65_spotlight/S65_REPORT.md §4"
+  },
+  {
+   "id": "R-NEW-386",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P0",
+   "title": "FishRings board NPE (Integer.TYPE typed-zero → null matrix)",
+   "fg": true,
+   "first_seen": "S65 first FishRings run",
+   "evidence": "SOURCE (dex dump): Rings.<init> int[12][3] board = Array.newInstance(Integer.TYPE, new int[]{12,3}). TRACE: [SGET-MISS] Integer.TYPE → null → [SYNTH-EXC] aput-null NPE. UPSTREAM: Integer.java:106 + Array.java:74/110. LAW: F-119a/b. AFTER: rc=0, full interaction chain, changed frames 483,395/478,169/7,347 px, det ×3, S10 PROVEN. Evidence: docs/evidence/s65_spotlight/S65_REPORT.md §4"
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign."

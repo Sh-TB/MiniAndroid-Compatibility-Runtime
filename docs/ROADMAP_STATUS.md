@@ -66,6 +66,34 @@ S55/S56/S57 rows retained below for continuity.
 
 ## 3. Active frontier (P0 first, attack order)
 
+S65 state (open-source APK spotlight 4 — breadth first continues): **3 NEW
+SOURCE-FIRST APPS EXECUTED** — FishRings v1.23 (VelbazhdSoftwareLLC/
+FishRingsForAndroid @dc3807e, APK 14d7dd80) **S10 PROVEN**: launch →
+F-115 Timer splash → GameActivity → 3× tap → REAL handlers GameActivity$5/$6
+→ rings.ccwa/cwa state → changed frames 2,072,211 → 483,395 → 478,169 →
+7,347 px, det ×3 byte-identical. TriPeaks v1.2.1 (VelbazhdSoftwareLLC/
+TriPeaksSolitaireForAndroid @62f3609, APK 52272ae6) **S7**: full chain
+splash→lobby→New Game→GameActivity; 52 card taps reached the REAL
+GameActivity$1 handler post-**F-118/R-NEW-385** (activity-constructor law:
+AOSP Instrumentation.java:1448 newActivity → the declared no-arg <init>()
+MUST run before onCreate — the G08 path skipped it, so field-initialized
+listeners were typed-zero; 3 consumers day one). OPMT v0.1.2 (20Nick/OPMT
+@3240c4cf, APK 4f91e380) **S6**: real-strings menu → real lambda →
+GameActivity onCreate; app-own nextInt(0) stopper. **F-119/R-NEW-386**:
+Integer.TYPE JVM-injected Class constant (OpenJDK Integer.java:106) +
+Array.newInstance primitive descriptors ("[I"-style, JLS/DEX) — FishRings
+rc=1 PARTIAL → rc=0 S10; TicTacToe R-NEW-358 golden PASS on the changed
+path. Battery 92/94 + EXT-01/02 environmental — ZERO regressions. Survey
+breadth: F-Droid 45-keyword scan → 120 shortlist → parallel raw-gradle
+signature probes (flutter/libgdx/kivy excluded by evidence) → 3 picks
+cloned pinned; 8 deferred-by-facts. NEW OPEN FAMILY: **OBJECT-IDENTITY**
+(field/array-element object-ref churn — cardsViews[] comparisons fail,
+listener field 38→273) — the NEXT highest-leverage target (blocks
+TriPeaks S8 + OPMT S7+; field-initialized listeners are a very common app
+pattern). S64 commit carried PENDING-PUSH into this session (no credential);
+the S65 commit carries both. Evidence: docs/evidence/s65_spotlight/
+S65_REPORT.md.
+
 S63 state (open-source APK spotlight 2 — breadth first continues): **FIRST
 SOURCE-FIRST L6 (S10)** — gmdice v12 (ge0rg/gamemasterdice @6353926f,
 APK ee9f7396) built aapt2/ECJ/D8 → executed → UI → render (1,744,539 px)

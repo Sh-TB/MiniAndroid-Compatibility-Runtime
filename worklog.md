@@ -1441,3 +1441,84 @@ Stage Summary:
 - Corpus gains: 3 new source-first apps; pmk S6 faces recorded as families.
 - No new campaign/branch/roadmap; no app-specific hacks; every law generic
   with ≥2-consumer reach or recorded reusability.
+
+---
+Task ID: S65-MAIN
+Agent: Super Z (main)
+Task: S65 breadth spotlight — 3 NEW open-source APKs built from source and
+executed; evidence over claims; S64 push-verify step recovered.
+
+Work Log:
+- RECON first: HEAD b34b74a2 (S64) was 1 commit AHEAD of origin/main —
+  the S64 PUSH-VERIFY step was incomplete; NO GitHub credential in this
+  session's env (git push dry-run: "could not read Username") → recorded
+  PENDING-PUSH, carried by the S65 commit. Tree clean.
+- ENVIRONMENT: container reset between user turns 3× (toolchain/engine/
+  Go/zoekt/tmp wiped each time; ALL background processes killed between
+  tool calls → every long job run FOREGROUND). Toolchain restored via
+  bootstrap_toolchain.sh; engine rebuilt 2× (F-118, F-119 builds);
+  zoekt/csearch/Go rebuilt (same GOPROXY=direct recipe).
+- Candidate survey (REAL, evidence-grade): F-Droid index-v2.json (60.1MB,
+  4,408 pkgs) scanned locally (scripts/s65_candidate_survey.py, 45
+  keywords → 120 shortlist); scripts/s65_probe.py probed all 120 in
+  parallel via raw.githubusercontent gradle/pubspec signatures (no API
+  quota) → flutter/libgdx/kivy/kotlin/external-jar candidates EXCLUDED
+  BY EVIDENCE (sidhant947 family, CardsWithCats, BlockDrop, sokobang,
+  OpenFool, FairyMahjong, juvavum, Eidetic, open-chaos-chess — 8+2
+  deferred with facts). Picks: TriPeaks @62f3609, FishRings @dc3807e
+  (FreeKlondike's author, plain-Activity architecture), OPMT @3240c4cf.
+- STAGING: scripts/s65_stage_candidates.sh (tracked) — FishRings/OPMT
+  manifests staged vc/name; OPMT themes re-parented to framework
+  Material + library attrs dropped (siggen staged-styles law);
+  ConstraintLayout menu → FrameLayout + srcCompat→android:src
+  (staged-layouts law; game board untouched); androidx compile-stub
+  (AppCompatActivity passthrough + AppCompatDelegate no-op) per the
+  android-34-stubs law.
+- NEW-001 TriPeaks BUILD: APK 52272ae6…, 79 entries. EXECUTE: full chain
+  splash→F-115 Timer→Class.forName→lobby→tap New Game→GameActivity.
+  BLOCKER: 52 card taps dead — [EXP060] listener_id=0; ROOT-CAUSED: G08
+  startActivity path skipped <init> (GameActivity;.<init> never ran; the
+  field-initialized cardClickListener stayed typed-zero). SEARCHLIGHT:
+  zoekt "cardClickListener" pre-build + AOSP Instrumentation.java:1448
+  newActivity law → F-118/R-NEW-385 fix (consume_pending_intent runs
+  <init> with [G08-LIFECYCLE] record). AFTER: listener_id=38, CLICK →
+  GameActivity$1 real handler. Honest stopper: app-own guard IOOBE via
+  the OBJECT-IDENTITY family (cardsViews[] element identity churn 38→273
+  evidence) → S7 PROVEN, S8 deferred, det ×3.
+- NEW-002 FishRings BUILD: APK 14d7dd80…, 37 entries. First run rc=1
+  PARTIAL: 3× aput-null NPE — [SGET-MISS] Integer.TYPE obj_id=0 →
+  Array.newInstance(NULL, dims). SEARCHLIGHT: dex dump showed the
+  int[12][3] pattern; OpenJDK Integer.java:106 (TYPE =
+  Class.getPrimitiveClass) + Array.java:74/110 → F-119/R-NEW-386 (X.TYPE
+  law + primitive-array descriptors "[I"-style). AFTER: [R358-ANEW]
+  newInstance(I, dims=[3,12]) → [[I; rc=0; FULL CHAIN → 3× tap → REAL
+  handlers GameActivity$5/$6 (rings.ccwa/cwa → updateInfo) → changed
+  frames 2,072,211→483,395→478,169→7,347 px. STAGE S10 PROVEN, det ×3
+  (598ddbfa×4→96668475→86990d43→bd2bad7e→e027b021×2, byte-identical).
+- NEW-003 OPMT BUILD: APK 4f91e380…, 17 entries. Menu render (real
+  strings, 214,144 px) → tap → MainMenu lambda → startActivity →
+  GameActivity <init> 26 insns (F-118 second consumer) → onCreate 1756
+  insns. Honest stopper: app-own nextInt(0) (empty move list from the
+  same OBJECT-IDENTITY family) → S6 PROVEN, det ×3 (RC=1 deterministic).
+- REGRESSION: battery 94 stages → 92 PASS + only EXT-01/02
+  (environmental, pre-existing) — ZERO regressions from F-118+F-119;
+  TicTacToe R-NEW-358 Button[][] golden PASS on the changed
+  Array.newInstance path; all fixture pixel goldens byte-identical.
+- DOCS/REGISTRY: root_registry 368→372 (scripts/s65_registry_update.py);
+  ACHIEVEMENTS §0e5 (6 rows); KNOWLEDGE_INDEX 4 rows; SEARCH_LEDGER S65
+  section (9 searches, none decorative); SPOTLIGHT_COVERAGE Phase B +3
+  rows; ROADMAP_STATUS S65 frontier paragraph + OBJECT-IDENTITY family;
+  evidence docs/evidence/s65_spotlight/ (S65_REPORT.md + 6 PNGs +
+  SHA256SUMS).
+
+Stage Summary:
+- FINAL NUMBERS: NEW apps FORENSICED 6; BUILT 3; EXECUTED 3; WITH UI 3;
+  WITH MEANINGFUL RENDER 3; WITH INPUT 3; WITH REAL HANDLER 3; WITH
+  STATE MUTATION 1 full (FishRings) + partial faces; WITH CHANGED FRAME
+  1 full (FishRings, 3 interactions); L6+ = FishRings S10 (corpus total
+  S10 = 4); det ×3 for ALL 3 apps.
+- New generic laws: F-118 (activity-constructor, 3 consumers day one),
+  F-119a/b (X.TYPE + primitive-array descriptors). New open family
+  registered: OBJECT-IDENTITY (next highest-leverage target).
+- No new campaign/branch/roadmap; no app-specific hacks; S64 push debt
+  explicitly carried (PENDING-PUSH) — see S65-PUSH-VERIFY entry.
