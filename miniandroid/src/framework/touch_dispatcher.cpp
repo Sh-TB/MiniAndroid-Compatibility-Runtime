@@ -40,9 +40,16 @@ TouchDispatcher::TouchDispatcher(ViewShadow* views, HandlerShadow* handler,
 // OnClickListener, or a LongClickListener each set the respective AOSP flag
 // (setOnLongClickListener → setLongClickable, View.java L5930+).
 bool TouchDispatcher::view_touchable(const ViewShadow::ViewNode& n) const {
+    // F-110e (S62+): a view with an OnTouchListener IS a touch target.
+    // AOSP View.dispatchTouchEvent (View.java L16741+): the mOnTouchListener
+    // gate runs BEFORE clickability matters — `li.mOnTouchListener != null &&
+    // mViewFlags ENABLED && li.mOnTouchListener.onTouch(this, event)` — so a
+    // plain (non-clickable) view that called setOnTouchListener receives
+    // DOWN. First real hit: anuto GameView (game board) is tap-dead without
+    // this arm (target=0 at its own screen coords).
     return n.clickable || n.long_clickable || !n.onClick_handler.empty() ||
            n.click_listener_id != 0 || !n.click_listener_class.empty() ||
-           n.long_click_listener_id != 0;
+           n.long_click_listener_id != 0 || n.touch_listener_id != 0;
 }
 
 uint32_t TouchDispatcher::schedule(TokenState& slot, const char* label,
@@ -72,6 +79,7 @@ void TouchDispatcher::reset_gesture() {
     gesture_target_ = 0;
     pressed_ = false;
     has_performed_long_press_ = false;
+    touch_listener_owns_ = false;  // F-110e
 }
 
 void TouchDispatcher::press(uint32_t view_id, int x, int y,
@@ -153,6 +161,25 @@ nlohmann::json TouchDispatcher::dispatch(uint32_t root_id,
                 break;
             }
 
+            // F-110e (S62+): OnTouchListener DOWN arm. AOSP
+            // View.dispatchTouchEvent (View.java L16741-16760): if the
+            // listener exists and ENABLED, onTouch(DOWN) runs FIRST; when it
+            // returns true the result is consumed and the internal
+            // touch-event processing (pressed feedback, long-press arming,
+            // PerformClick) is skipped entirely.
+            if (n->touch_listener_id != 0 && touch_fn_) {
+                bool consumed_by_listener = false;
+                const bool dispatched =
+                    touch_fn_(target, 0 /*ACTION_DOWN*/, ev.x, ev.y,
+                              consumed_by_listener);
+                rec["touch_dispatched"] = dispatched;
+                rec["touch_listener_consumed"] = consumed_by_listener;
+                if (dispatched && consumed_by_listener) {
+                    touch_listener_owns_ = true;
+                    rec["consumed"] = true;
+                    break;
+                }
+            }
             // Enabled + touchable: DOWN shows pressed feedback immediately
             // (non-scrolling-container law, View.java L17119-17125) and arms
             // the 500ms long-press check (checkForLongClick).
@@ -213,6 +240,20 @@ nlohmann::json TouchDispatcher::dispatch(uint32_t root_id,
                 unpress(gesture_target_, &rec);
                 rec["consumed"] = touchable;
                 rec["disabled_law"] = true;
+                reset_gesture();
+                break;
+            }
+            // F-110e (S62+): OnTouchListener UP arm — when the listener
+            // consumed the DOWN it owns the whole gesture (AOSP law: no
+            // internal handling → no PerformClick post).
+            if (touch_listener_owns_ && touch_fn_) {
+                bool consumed_by_listener = false;
+                const bool dispatched =
+                    touch_fn_(gesture_target_, 1 /*ACTION_UP*/, ev.x, ev.y,
+                              consumed_by_listener);
+                rec["touch_dispatched"] = dispatched;
+                rec["touch_listener_consumed"] = consumed_by_listener;
+                rec["consumed"] = dispatched;
                 reset_gesture();
                 break;
             }

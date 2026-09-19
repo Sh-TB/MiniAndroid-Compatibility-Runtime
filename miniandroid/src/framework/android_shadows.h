@@ -137,6 +137,22 @@ public:
     // Public mutator: allows the LooperShadow to bind to the same id.
     void set_main_thread_id(uint32_t id) { main_thread_id_ = id; }
 
+    // ── F-110d (S62+): CURRENT-THREAD IDENTITY LAW ─────────────────────
+    // AOSP Thread.currentThread() returns the thread object of the thread
+    // EXECUTING the code — not a fixed main singleton. The serialized
+    // engine runs a drained thread's run() body run-to-completion on the
+    // single virtual thread; while such a body is active, currentThread()
+    // must return THAT thread's heap object (first real hit: anuto
+    // GameLoop.isThreadChangeNeeded gates every GameEngine.post through
+    // Thread.currentThread() != mGameThread — with the main singleton
+    // returned, the app's own game-thread handoff re-posted loadMap
+    // forever and the message queue never drained). The engine sets this
+    // for the duration of a drained body (save/restore, nested-safe).
+    void set_active_drained_thread(uint32_t oid) { active_drained_thread_ = oid; }
+    uint32_t current_thread_id() const {
+        return active_drained_thread_ != 0 ? active_drained_thread_ : main_thread_id_;
+    }
+
     // ── M3 F-THREAD-TICK: deterministic virtual-thread law ────────────────
     // Thread.<init>(Runnable[, ...]) records the thread's target Runnable.
     // Thread.start() (or run()) marks a pending inline execution; the ENGINE
@@ -164,6 +180,7 @@ private:
     uint32_t main_thread_id_ = 0;
     std::map<uint32_t, uint32_t> runnables_;              // thread → target
     std::vector<std::pair<uint32_t, uint32_t>> pending_starts_;
+    uint32_t active_drained_thread_ = 0;  // F-110d: 0 = main thread
 };
 
 // ─────────────────────────────────────────────────────────────────────────

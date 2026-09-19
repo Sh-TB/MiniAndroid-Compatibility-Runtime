@@ -1010,13 +1010,21 @@ CallResult ThreadShadow::dispatch(const CallContext& ctx) {
         // MASTER-TRIAGE: cap-limited identity evidence (Looper.getThread vs
         // Thread.currentThread object ids) — the androidx main-thread law
         // depends on these being the SAME heap object.
+        // F-110d (S62+): CURRENT-THREAD IDENTITY LAW — inside a drained
+        // run-to-completion thread body, currentThread() returns THAT
+        // thread's heap object (AOSP: the thread executing the code);
+        // outside one, the main thread singleton (unchanged androidx law).
+        uint32_t tid = current_thread_id();
         static thread_local uint64_t tid_log = 0;
         if (tid_log < 8) {
             tid_log++;
-            std::cerr << "[THREAD-ID] currentThread -> obj=" << main_thread_id_
-                      << " (class=" << ctx.class_name << ")" << std::endl;
+            std::cerr << "[THREAD-ID] currentThread -> obj=" << tid
+                      << " (class=" << ctx.class_name
+                      << (active_drained_thread_ != 0 ? ", drained-body identity)"
+                                                      : ", main identity)")
+                      << ")" << std::endl;
         }
-        return CallResult::handled_object(main_thread_id_, "Ljava/lang/Thread;");
+        return CallResult::handled_object(tid, "Ljava/lang/Thread;");
     }
     if (m == "getName") {
         return CallResult::handled_string(MAIN_THREAD_NAME);

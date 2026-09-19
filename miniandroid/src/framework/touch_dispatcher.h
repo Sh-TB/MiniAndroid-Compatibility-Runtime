@@ -74,12 +74,17 @@ public:
     // onLongClick's return value.
     using ClickFn = std::function<bool(uint32_t view_id)>;
     using LongClickFn = std::function<bool(uint32_t view_id, bool& consumed)>;
+    // F-110e (S62+): touch-listener dispatch (View.OnTouchListener.onTouch).
+    // `consumed` = the listener's boolean return (true = owns the gesture).
+    using TouchFn = std::function<bool(uint32_t view_id, int action, float x,
+                                       float y, bool& consumed)>;
 
     TouchDispatcher(ViewShadow* views, HandlerShadow* handler,
                     const Config& cfg = Config());
 
     void set_click_dispatch(ClickFn fn) { click_fn_ = std::move(fn); }
     void set_long_click_dispatch(LongClickFn fn) { long_click_fn_ = std::move(fn); }
+    void set_touch_dispatch(TouchFn fn) { touch_fn_ = std::move(fn); }
 
     // Dispatch one event through the AOSP onTouchEvent law. Returns the
     // dispatch record (also appended to the cumulative trace).
@@ -118,6 +123,8 @@ private:
     Config cfg_;
     ClickFn click_fn_;
     LongClickFn long_click_fn_;
+    TouchFn touch_fn_;               // F-110e
+    bool touch_listener_owns_ = false;  // F-110e: listener consumed DOWN
 
     // Single active gesture (single-pointer model — multi-touch is an
     // explicit documented boundary).

@@ -66,14 +66,19 @@ S55/S56/S57 rows retained below for continuity.
 
 ## 3. Active frontier (P0 first, attack order)
 
-S62 state after F-109 (written-bitmap + strcmp arith; measured marginal) and
-the S62 measured decomposition (bucket timers, per-<clinit> durations, op
-self-times — docs/evidence/s62_r381/S62_REPORT.md). Games corpus first L6:
-bouncy (input -> callback -> state transition -> render change, frame SHA
-pair 4219c5116ea2 / 52e4ddacc8ac). R-NEW-331 gained 3 game consumers
-(minesweeper / memory / 2048 all die at FragmentManager.ensureExecReady
-ISE) + the first-engine precision: the real androidx chain runs and returns
-OK, but the FragmentController.attachHost leg never dispatches.
+S62+ state (open-source APK spotlight mission — breadth first): **2 NEW
+open-source apps built FROM SOURCE and executed** — anuto (L5 + real
+onTouch consumed=true) and OpenSudoku (L5 + 3/3 real click dispatch).
+F-110 lever IMPLEMENTED (result-snapshot deferral = measured 57.8x
+instruction-rate A/B) + 5 companion laws (F-110b/c/d/e, F-111, F-112) —
+all with first-hit evidence and battery 96/96 + goldens + G06-G08
+determinism ALL PASS after the changes (docs/evidence/s62plus_spotlight/
+S62PLUS_REPORT.md). Games corpus first L6: bouncy (input -> callback ->
+state transition -> render change, frame SHA pair 4219c5116ea2 /
+52e4ddacc8ac). R-NEW-331 gained 3 game consumers (minesweeper / memory /
+2048 all die at FragmentManager.ensureExecReady ISE) + the first-engine
+precision: the real androidx chain runs and returns OK, but the
+FragmentController.attachHost leg never dispatches.
 
 1. **R-NEW-381 — Dooz first-frame content / composition volume (P1, pinned
    S60; S61 face refined)** (OBSERVED-FAIL). The Compose draw path is now

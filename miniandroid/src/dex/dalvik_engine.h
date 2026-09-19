@@ -1316,6 +1316,11 @@ public:
     // `view_object_id` is the heap object_id of the target View.
     // Returns true if a listener was found and dispatched.
     bool dispatch_click(uint32_t view_object_id);
+    // F-110e (S62+): dispatch a touch listener (View.OnTouchListener.onTouch)
+    // for the G06 DOWN/UP pipeline. `consumed` mirrors the listener's boolean
+    // return (true = the listener owns the gesture, AOSP View.dispatchTouchEvent).
+    bool dispatch_touch_listener(uint32_t view_object_id, int action,
+                                 float x, float y, bool& consumed);
     // GOLDEN-02: AOSP View.performLongClick() law — dispatch to the
     // registered OnLongClickListener.onLongClick(View)Z via
     // try_recursive_invoke, using the REAL listener object stored by
