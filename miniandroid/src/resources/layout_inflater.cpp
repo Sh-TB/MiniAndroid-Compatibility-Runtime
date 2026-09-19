@@ -677,7 +677,14 @@ uint32_t LayoutInflater::inflate_element(framework::ViewShadow* views, const Axm
     if (el.name == "requestFocus" || el.name == "requestLayout" || el.name == "tag") return 0;
 
     std::string class_desc;
-    const AxmlAttribute* class_attr = el.attr("class");
+    // S62+ (AOSP LayoutInflater.createViewFromTag law): the custom-view form
+    // <view class="com.example.MyView"> carries the class attribute with NO
+    // namespace — upstream reads it via getAttributeValue(null, "class").
+    // The AXML parser gives no-namespace attributes ns="", so the lookup must
+    // use the namespace-agnostic form (attr(n, "") matches any ns). The
+    // android-ns-default lookup previously missed it and degraded real custom
+    // views to generic Landroid/view/View; (anuto GameView never constructed).
+    const AxmlAttribute* class_attr = el.attr("class", "");
     if (class_attr) class_desc = class_to_descriptor(!class_attr->raw_value.empty()
                                                      ? class_attr->raw_value
                                                      : class_attr->value.string_value);

@@ -13,6 +13,8 @@ Updated: 2026-09-12 · Binary: F-076 build (active-cycle static-identity law) at
 | Game-2: uNote | app.varlorg.unote_30 be91103f… | ✅ | ✅ | ✅ rc=0 | ✅ | ✅ | ✅ | **236,520 non-white** | via corpus prior | ✅ | VISIBLE EXECUTION PROVEN |
 | Game-2: dooz (Compose) | io.github.yamin8000.dooz_18 d81292cd… | ✅ | ✅ | ✅ rc=0→1 honest | children=1 | 0 | 0 | 0 (blocked by F-077) | blocked | ✅ SHA 31ddd4d5b8e6 ×3 | S22 FRONTIER — F-077 open |
 | Simple Stopwatch | omegacentauri_26 | ✅ | ✅ | ✅ rc=0 | partial | 1 | partial | action-bar glyphs missing | n/a | ✅ | GATE H root queued (R-NEW-302 candidate) |
+| **NEW S62+: anuto (source-first)** | built from source 8794573d… (github mjaun/android-anuto @ 33ed89e3) | ✅ | ✅ | ✅ rc=0 | ✅ real Application bound + onCreate + GameLoop.start | ✅ | ✅ REAL GameView.onDraw (C013 dispatched=YES) | ✅ 2,073,600 non-white (app-driven drawColor) | ✅ tap→GameView.onTouch dispatched, consumed=true (real DEX) | ✅ SHA 11a38a5aeeff45a6 ×3 | **L5 PROVEN + input→state dispatched** (sprites = canvas bitmap family, recorded frontier) |
+| **NEW S62+: OpenSudoku (source-first)** | built from source 712b4a41… (github romario333/opensudoku @ d1914649) | ✅ | ✅ | ✅ rc=0, 0 errors | ✅ FolderListActivity + ListView + Button visible text | ✅ | ✅ | ✅ 2,029,440 non-white | ✅ 3/3 CLICK → real FolderListActivity$1 listener DISPATCHED | ✅ SHA 11671b9c439b2e10 ×3 | **L5 PROVEN + input dispatched** (button body = external http intent, honest no-op; DB rows = typed-zero data path) |
 
 ## Battery (Law 15 — honest)
 

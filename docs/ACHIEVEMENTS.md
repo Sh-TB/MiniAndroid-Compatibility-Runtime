@@ -50,6 +50,15 @@ recorded as text, exactly as done in §3.2.
 | Games blocked family measured: minesweeper + memory + 2048 all die at the SAME generic gate (R-NEW-331 FragmentManager.ensureExecReady ISE) with full first-engine androidx chain evidence — one fix, 3+ game consumers + Telegram | run/s62_game_mines, run/s62_probe_*; run/s62_mines_trace.log | OBSERVED |
 | F-109a/c landed (register-write bitmap + strcmp arith dispatch; goldens 26/8, battery 96/96) with an HONEST marginal verdict (~9-10% rate) and the F-110 measured lever registered | docs/evidence/s62_r381/S62_REPORT.md | IMPLEMENTED+TESTED |
 
+## 0e2. S62+ Open-Source APK Spotlight — 2 NEW source-first apps executed (breadth mission)
+
+| Achievement | Evidence | Status |
+|---|---|---|
+| **anuto L5 PROVEN + input→state dispatched** (ch.logixisland.anuto, GPLv2, built FROM SOURCE aapt2/ECJ/D8, APK 8794573d…): real AnutoApplication bound (onCreate 14,751 insns), GameActivity.onCreate real chain, custom GameView constructed via G11 law, REAL GameView.onDraw dispatched (C013 dispatched=YES, app-driven 2,073,600 non-white px), --tap 540,960 → onTouch dispatched consumed=true (app's own DEX returns true) → screenToGame → TowerSelector.selectTowerAt. 3-run det 11a38a5aeeff45a6 ×3. Honest: sprites need the canvas bitmap family (recorded frontier) | docs/evidence/s62plus_spotlight/S62PLUS_REPORT.md §1a + anuto_frame0_after_onDraw.png | EXECUTED+OBSERVED (L5) |
+| **OpenSudoku L5 PROVEN + input dispatched** (cz.romario.opensudoku, GPLv3, built FROM SOURCE, APK 712b4a41…): FolderListActivity real onCreate, visible text "Get more puzzles online" rendered, 2,029,440 non-white px, 0 errors; --click-count 3 → 3/3 CLICK dispatched to real FolderListActivity$1 DEX listener (handler = external http intent, honest no-op). 3-run det 11671b9c439b2e10 ×3 | docs/evidence/s62plus_spotlight/S62PLUS_REPORT.md §1b + opensudoku_frame0_folderlist.png | EXECUTED+OBSERVED (L5) |
+| **F-110 lever IMPLEMENTED (a–e family)**: result-snapshot deferral (outermost-only; gprof root cause 387.6M pair<string,string> copies) → **57.8× instruction rate** A/B (128,076→7,400,000+ insns, same 25s anuto budget); thread-sleep yield law; ArrayList add(int,E)/remove(int)/remove(Object); currentThread drained-body identity; touch-target law + MotionEvent family + framework static-int table. Battery 96/96 + goldens + G06-G08 determinism ALL PASS after the changes | docs/evidence/s62plus_spotlight/S62PLUS_REPORT.md §2 | IMPLEMENTED+TESTED |
+| F-111 `<view class=...>` namespace law + F-112 manifest Application buildClassName law (both ROOT-CAUSED-FIXED with first-hit evidence and cross-consumer reach) | docs/evidence/s62plus_spotlight/S62PLUS_REPORT.md §3 | ROOT-CAUSED-FIXED |
+
 ## 0f. S61 Runtime Spotlight Corpus (Phase A) — the capability-driven sweep
 
 > **S61 corpus law**: selection by Android-capability coverage (not

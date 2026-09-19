@@ -1229,3 +1229,66 @@ Stage Summary:
   with battery 96/96; games corpus first L6 (bouncy); R-NEW-331 +3 game
   consumers with first-engine precision; search ledger extended; GitHub
   clean and light.
+
+---
+Task ID: S62+
+Agent: Super Z (main)
+Task: Open-source APK spotlight — increase count of REAL open-source APKs executed launch→UI→(input→state→render); no new campaign/branch/roadmap; F-110 optimization only if it blocks a new APK (it did)
+
+Work Log:
+- RECON: local HEAD was b0271429 (S58) — BEHIND origin/main 7cf1f02f (S62-PUSH-VERIFY);
+  fast-forwarded to the true S62 state before any work; registry/F-110/F-109/R-NEW-381
+  statuses verified from root_registry.json + docs, NOT from reports.
+- Candidate scan (source-first): reviewed Antiyoy (BUILD_BLOCKED — repo has no Android
+  app module/manifest), Blockinger (Tier 2: support-v4 FragmentActivity + SQLite),
+  OpenSudoku (Tier 2, Ant layout = direct fixture-builder fit), 2048-android (WebView,
+  skipped per directive), anuto (TIER 1 winner: pure android.* framework, zero deps,
+  SurfaceView-free View.onDraw game engine, gradle-but-source-buildable).
+- BUILD: anuto APK built from source (aapt2 compile+link res/ + ECJ android-34 + D8;
+  staged manifest needed package= from gradle namespace) SHA 8794573d…; OpenSudoku APK
+  SHA 712b4a41… (54→139 classes).
+- EXECUTE anuto: first run exposed 3 stacked faces (all root-caused same session):
+  (1) manifest .AnutoApplication degraded to L/AnutoApplication; → default Application
+  fallback → F-112 buildClassName law; (2) <view class=...> class attr missed by the
+  android-ns-default lookup → generic View placeholder → F-111 namespace law;
+  (3) at budget: F-110a result-snapshot deferral (THE measured lever) — gprof root
+  cause 387,639,677 pair<string,string> copies from execute_method_internal copying
+  result.heap + result.call_stack at EVERY nested method exit; outermost-only
+  snapshot → 57.8× A/B (128,076 → 7,400,000+ insns in the same 25s budget).
+- EXECUTE anuto round 2: GameLoop.run drained body spun MessageQueue.processMessages
+  → F-110b thread-sleep yield law + F-110c ArrayList add(int,E)/remove(int)/
+  remove(Object) laws + F-110d currentThread drained-body identity law (loadMap
+  re-post loop root cause). Post-fix: [SLEEP-YIELD] fired, onCreate completed rc=0.
+- anuto RESULT: L5 PROVEN — real GameView.onDraw dispatched (C013 ops=2, app-driven
+  2,073,600 non-white px), --tap → onTouch DISPATCHED consumed=true (real DEX
+  screenToGame → TowerSelector.selectTowerAt). 3-run det 11a38a5aeeff45a6 ×3.
+- EXECUTE OpenSudoku: rc=0 0 errors on FIRST run after the laws landed; real UI
+  (ListView 1080x1876 + Button visible text), 2,029,440 non-white px; 3/3 clicks
+  dispatched to real FolderListActivity$1 listener; 3-run det 11671b9c439b2e10 ×3.
+  L5 PROVEN + input dispatched (handler body = external http intent, honest no-op).
+- F-110e touch family (found via anuto tap target=0): view_touchable now includes
+  touch listeners (AOSP dispatchTouchEvent gate order), dispatch_touch_listener +
+  MotionEvent materialization/getters + framework static-int table (ACTION_UP=1 was
+  unreachable via typed-zero). Tap pipeline re-proven end-to-end into app DEX.
+- REGRESSION: battery 96/96 ALL PASS after all engine changes (first run's 32
+  fixture-build fails = tools/ NOT bootstrapped in this fresh container — restored
+  via the documented bootstrap_toolchain.sh; EXT fixtures re-fetched from frozen
+  URLs, APK SHA 009b4671 matches). Goldens (helloworld 26 checks, tictactoe),
+  G06 tap determinism, G07 lifecycle, G08 navigation all PASS.
+- DOCS/REGISTRY: root_registry F-110 → IMPLEMENTED+TESTED, F-111/F-112 added
+  (scripts/s62plus_registry_update.py; 364 roots); EXECUTION_MATRIX +2 new rows;
+  SPOTLIGHT coverage Phase B noted; KNOWLEDGE_INDEX S62+ rows; ACHIEVEMENTS
+  S62+ section; evidence docs/evidence/s62plus_spotlight/ (report + frames +
+  SHA256SUMS).
+
+Stage Summary:
+- NEW open-source APKs BUILT = 2 (anuto, OpenSudoku); EXECUTED = 2; UI-PROVEN (L5) = 2;
+  input→handler dispatched = 2 (anuto consumed=true; OpenSudoku 3/3); L6-visible = 0
+  (honest — anuto needs the canvas bitmap family, OpenSudoku's handler is an external
+  intent; both recorded as frontiers, not hidden).
+- NEW GENERIC FIXES = 7 (F-110a result-snapshot deferral 57.8×; F-110b sleep-yield;
+  F-110c ArrayList insert/remove; F-110d current-thread identity; F-110e touch-target +
+  MotionEvent; F-111 <view class> namespace; F-112 Application buildClassName) — each
+  with first-hit consumer + upstream law citation.
+- No new campaign/branch/roadmap; battery 96/96; goldens preserved; HEAD == origin/main
+  to be verified after push.

@@ -279,6 +279,9 @@ static std::vector<DalvikValue> build_invoke_args(
 // table sget-object of Paint.Style.STROKE etc. materializes NULL).
 static int framework_enum_ordinal(const std::string& class_desc,
                                   const std::string& field_name);
+// F-110e: framework static INT constant table (definition near the enum table).
+static int framework_static_int(const std::string& class_desc,
+                                const std::string& field_name);
 
 // CHAR-PROBE campaign: numeric view of an integer-like primitive register.
 // The interpreter carries CHAR/BOOLEAN/BYTE/SHORT values in int_val once
@@ -3369,8 +3372,24 @@ bool DalvikExecutionEngine::execute_method_internal(
     }
     
     // Update result
-    result.call_stack = call_stack_;
-    result.heap = heap_;
+    // F-110a (S62+, R-NEW-381 lever, MEASURED): result-snapshot deferral law.
+    // The two assignments below deep-copy the ENTIRE heap (all objects × all
+    // field maps of pair<string,DalvikValue>) and the ENTIRE call stack (all
+    // frames × all registers) into `result`. execute_method_internal is
+    // RECURSIVE: every nested invoke shares this same result sink
+    // (try_recursive_invoke(..., *current_result_) at the class-init site and
+    // the invoke handlers), so each of the N nested method exits performed a
+    // full O(heap) copy that its parent exit immediately overwrote.
+    // Measured (anuto 25s startup run, gprof): 387.6M pair<string,string>
+    // vector element copies (__do_uninit_copy) — the dominant single cost of
+    // the whole run; startup executed only 128K instructions in 25s of
+    // user CPU. Outermost-only assignment preserves the EXACT final result
+    // content (the outermost exit is the last write in every nesting chain)
+    // while removing the O(N × heap_size) quadratic copying.
+    if (call_stack_.empty()) {
+        result.call_stack = call_stack_;
+        result.heap = heap_;
+    }
     
     if (halted_on_return_) {
         result.final_status = DalvikExecutionResult::FinalStatus::COMPLETED_SUCCESS;
@@ -8229,6 +8248,71 @@ bool DalvikExecutionEngine::chain_overrides_method(
 // no Telegram-specific code is needed here.
 //
 // Returns true if a listener was found and dispatched.
+bool DalvikExecutionEngine::dispatch_touch_listener(uint32_t view_object_id,
+                                                    int action, float x,
+                                                    float y, bool& consumed) {
+    consumed = false;
+    if (shadow_registry_ == nullptr) return false;
+    auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+    if (view_shadow == nullptr) return false;
+    const auto* node = view_shadow->find_node(view_object_id);
+    if (node == nullptr || node->touch_listener_id == 0) return false;
+
+    uint32_t listener_id = node->touch_listener_id;
+    std::string listener_class;
+    if (heap_.has_object(listener_id)) {
+        listener_class = heap_.get(listener_id)->class_descriptor;
+    }
+    if (listener_class.empty()) {
+        listener_class = "Landroid/view/View$OnTouchListener;";
+    }
+    // F-110e: normalize dotted descriptors (heap class_descriptors of
+    // custom-view objects may be dotted — same law as the C013 draw path's
+    // dotted→slashed normalization; the DEX class index uses slashed).
+    if (!listener_class.empty() && listener_class[0] == 'L' &&
+        listener_class.find('.') != std::string::npos) {
+        std::string norm = "L";
+        for (size_t i = 1; i < listener_class.size(); ++i)
+            norm += (listener_class[i] == '.') ? '/' : listener_class[i];
+        listener_class = norm;
+    }
+
+    // Materialize the MotionEvent (AOSP View.dispatchTouchEvent passes the
+    // same MotionEvent object to every listener arm). The receiver-side
+    // getters (getAction/getX/getY) read the __action__/__x__/__y__ fields
+    // through the MotionEvent bridge law.
+    uint32_t ev_id = heap_.allocate("Landroid/view/MotionEvent;", pc_,
+                                    call_stack_.empty() ? 0
+                                                        : call_stack_.top().frame_id);
+    heap_.set_object_field(ev_id, "__action__", DalvikValue::make_int(action));
+    heap_.set_object_field(ev_id, "__x__", DalvikValue::make_float(x));
+    heap_.set_object_field(ev_id, "__y__", DalvikValue::make_float(y));
+
+    std::cerr << "[UI-EVENT] event=TOUCH"
+              << " action=" << action
+              << " view_object=" << view_object_id
+              << " view_class=" << node->class_desc
+              << " listener=" << listener_id
+              << " listener_class=" << listener_class
+              << std::endl;
+
+    // AOSP OnTouchListener.onTouch(View v, MotionEvent event)Z:
+    //   args[0] = this (listener)  args[1] = the View  args[2] = the event.
+    std::vector<DalvikValue> args;
+    args.push_back(DalvikValue::make_object(listener_id, listener_class));
+    args.push_back(DalvikValue::make_object(view_object_id, node->class_desc));
+    args.push_back(DalvikValue::make_object(ev_id, "Landroid/view/MotionEvent;"));
+    DalvikValue ret = DalvikValue::make_void();
+    DalvikExecutionResult res;
+    bool dispatched = try_recursive_invoke(listener_class, "onTouch", args,
+                                           ret, res);
+    if (dispatched && ret.type == DalvikType::BOOLEAN) consumed = ret.int_val != 0;
+    std::cerr << "[UI-EVENT] event=TOUCH action=" << action << " result="
+              << (dispatched ? "DISPATCHED" : "FAILED")
+              << " consumed=" << (consumed ? "true" : "false") << std::endl;
+    return dispatched;
+}
+
 bool DalvikExecutionEngine::dispatch_click(uint32_t view_object_id) {
     if (shadow_registry_ == nullptr) {
         std::cerr << "[EXP060-CLICK] no shadow registry — cannot dispatch" << std::endl;
@@ -13716,6 +13800,14 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
                 result_value = DalvikValue::make_object(box_id,
                                                         "Ljava/lang/Boolean;");
                 static_field_storage_[static_key] = result_value;
+            } else if (const int static_int_val = framework_static_int(
+                           field_res.class_descriptor, field_res.field_name);
+                       static_int_val >= 0) {
+                // F-110e (S62+): framework static INT constant synthesis.
+                // Cached per static_key like the enum law above so identity
+                // semantics hold for later sgets of the same constant.
+                result_value = DalvikValue::make_int(static_int_val);
+                static_field_storage_[static_key] = result_value;
             } else if (field_res.class_descriptor == "Ljava/util/Locale;") {
                 // M3 F-ROOM-CHAIN: java.util.Locale constant synthesis.
                 // microtimer v8 Room init reads Locale.US inside the R8-inlined
@@ -17182,6 +17274,31 @@ static int framework_enum_ordinal(const std::string& class_desc,
                             class_desc + "." + field_name, -1);
 }
 
+// F-110e (S62+): framework static INT constant table (AOSP values).
+// The sget (int) opcode on android.* static final ints previously fell to
+// the typed-zero default because the class is not in app DEX and its
+// <clinit> never runs. MotionEvent.ACTION_DOWN (0) compared correctly by
+// accident, but every non-zero constant (ACTION_UP=1, MOVE=2, CANCEL=3)
+// compared false — a touch listener's `event.getAction() == ACTION_UP`
+// arm could never fire. Table = AOSP MotionEvent.java values.
+static int framework_static_int(const std::string& class_desc,
+                                const std::string& field_name) {
+    static const miniandroid::dalvik::KvInt kStaticInts[] = {
+    {"Landroid/view/MotionEvent;.ACTION_DOWN", 0},
+    {"Landroid/view/MotionEvent;.ACTION_UP", 1},
+    {"Landroid/view/MotionEvent;.ACTION_MOVE", 2},
+    {"Landroid/view/MotionEvent;.ACTION_CANCEL", 3},
+    {"Landroid/view/MotionEvent;.ACTION_OUTSIDE", 4},
+    {"Landroid/view/MotionEvent;.ACTION_POINTER_DOWN", 5},
+    {"Landroid/view/MotionEvent;.ACTION_POINTER_UP", 6},
+    {"Landroid/view/MotionEvent;.ACTION_MASK", 255},
+    };
+    const std::string key = class_desc + "." + field_name;
+    for (const auto& e : kStaticInts)
+        if (key == e.k) return e.v;
+    return -1;
+}
+
 // EXP-051: Convert a DalvikValue (engine type) into a CallContext::Arg
 // (shadow-registry type). This is the only translation point — keeping
 // the engine and the shadow registry decoupled.
@@ -17854,6 +17971,8 @@ std::string DalvikExecutionEngine::java_format_walk(
 // virtual-dispatch law, no fake callback.
 void DalvikExecutionEngine::run_thread_start_body(uint32_t thread_oid,
                                                   uint32_t target_oid) {
+    if (shadow_registry_ == nullptr) return;
+    auto* ts_shadow = shadow_registry_->find_as<framework::ThreadShadow>();
     uint32_t run_oid = target_oid ? target_oid : thread_oid;
     // Resolve the receiver's RUNTIME class from the heap (lambda/interface
     // impls and Thread subclasses each live in their own classes).
@@ -17867,8 +17986,29 @@ void DalvikExecutionEngine::run_thread_start_body(uint32_t thread_oid,
     DalvikValue run_ret;
     DalvikExecutionResult run_res;
     std::vector<DalvikValue> run_args{self};
+    // F-110d (S62+): while this body runs, Thread.currentThread() resolves
+    // to THIS thread's heap object (AOSP identity law). Save/restore so a
+    // nested drain (a body starting another thread) restores the outer
+    // identity when the inner body ends.
+    uint32_t saved_active_thread = 0;
+    if (ts_shadow) {
+        saved_active_thread = ts_shadow->current_thread_id() ==
+                                      ts_shadow->main_thread_id()
+                                  ? 0
+                                  : ts_shadow->current_thread_id();
+        ts_shadow->set_active_drained_thread(thread_oid);
+    }
+    // F-110b companion: a drained body runs at drain depth >= 1, so the
+    // THREAD-SLEEP YIELD LAW (Thread.sleep inside a drained body) is
+    // eligible. Without depth accounting, an infinite while(running)
+    // {cycle; sleep(TICK);} body spins at the start site until the
+    // loop-visit cap halts it (anuto GameLoop.run).
+    int saved_drain_depth = park_drain_last_depth_;
+    park_drain_last_depth_ = (saved_drain_depth < 1) ? 1 : saved_drain_depth;
     bool ran = try_recursive_invoke(rcls, "run", run_args, run_ret, run_res,
                                     "()V");
+    park_drain_last_depth_ = saved_drain_depth;
+    if (ts_shadow) ts_shadow->set_active_drained_thread(saved_active_thread);
     if (park_yield_pending_) {
         park_yield_pending_ = false;  // parked worker frame chain fully unwound
     }
@@ -18168,6 +18308,67 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             while (ts->consume_pending_start(t_oid, r_oid)) {
                 run_thread_start_body(t_oid, r_oid);
             }
+        }
+    }
+    // F-110b (S62+, R-NEW-345 companion): THREAD-SLEEP YIELD LAW.
+    // Thread.sleep(ms) reached INSIDE a run-to-completion drained thread
+    // body (park_drain_last_depth_ >= 1) is a deterministic yield point.
+    // Upstream law (AOSP Thread.sleep): sleep suspends THIS thread only —
+    // the caller thread must proceed. The serialized engine's honest
+    // counterpart (same principle as the R-NEW-345 parked-worker yield
+    // law): suspend the DEX frame chain at the drain boundary instead of
+    // spinning. Without it, any real game/scheduler loop of the shape
+    // while(running){ cycle(); sleep(TICK); } executes run-to-completion
+    // at the Thread.start() site and spins until the loop-visit cap halts
+    // it — the deferred VirtualMachineError then poisons the whole
+    // onCreate (APP BOUNDARY unwind; first real hit: anuto GameLoop.run,
+    // 50K-visit halt at PC=0x1 in MessageQueue.processMessages).
+    // Deterministic time law (M3 FIX-M3-014): sleep advances the SAME
+    // virtual clock SystemClock.sleep advances — no wall time, no thread
+    // suspension.
+    if (class_name == "Ljava/lang/Thread;" && method == "sleep" &&
+        shadow_registry_ != nullptr) {
+        if (!args.empty() && args[0].long_val > 0) {
+            if (auto* hs = shadow_registry_->find_as<framework::HandlerShadow>())
+                hs->advance_virtual(args[0].long_val);
+        }
+        if (park_drain_last_depth_ >= 1) {
+            park_yield_pending_ = true;
+            static thread_local uint64_t sleep_yield_log = 0;
+            if (sleep_yield_log < 24) {
+                ++sleep_yield_log;
+                std::cerr << "[SLEEP-YIELD] thread body suspended at sleep"
+                          << " (drain depth=" << park_drain_last_depth_
+                          << ") at " << current_class_ << "."
+                          << current_method_ << std::endl;
+            }
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_void();
+        return true;
+    }
+    // F-110e (S62+): MotionEvent receiver-side getters. The G06 touch
+    // pipeline materializes the event object with __action__/__x__/__y__
+    // heap fields; AOSP MotionEvent.getAction()/getX()/getY() read them.
+    if (class_name == "Landroid/view/MotionEvent;" && !args.empty()) {
+        uint32_t ev_id = args[0].object_id;
+        if (method == "getAction" || method == "getActionMasked") {
+            auto f = heap_.get_object_field(ev_id, "__action__");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = f.has_value() ? *f : DalvikValue::make_int(0);
+            return true;
+        }
+        if (method == "getX") {
+            auto f = heap_.get_object_field(ev_id, "__x__");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = f.has_value() ? *f : DalvikValue::make_float(0.f);
+            return true;
+        }
+        if (method == "getY") {
+            auto f = heap_.get_object_field(ev_id, "__y__");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = f.has_value() ? *f : DalvikValue::make_float(0.f);
+            return true;
         }
     }
     // S24 frontier probe (env-gated): every getTag/getParent bridge entry —
@@ -26228,7 +26429,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     if (class_name == "Ljava/util/ArrayList;" ||
         class_name.find("ArrayList") != std::string::npos ||
         class_name.find("List;") != std::string::npos) {
-        if (method == "add" && args.size() >= 2) {
+        if (method == "add" && args.size() == 2) {
             uint32_t this_id = args[0].object_id;
             auto* obj = heap_.get(this_id);
             if (obj) {
@@ -26241,6 +26442,127 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
             status = ApiCallTrace::Status::IMPLEMENTED;
             result = DalvikValue::make_bool(true);
+            return true;
+        }
+        // F-110c (S62+): java.util.ArrayList E add(int index, E element) —
+        // the 3-arg (receiver, index, element) INSERT law. Upstream
+        // ArrayList.add(int,E) shifts elements at index.. right by one and
+        // appends at index. The old 2-arg-only handler mis-took the index
+        // for the element on this overload (first real hit: anuto
+        // MessageQueue.postAfterTicks inserts its entries at the sorted
+        // position mQueue.add(i, entry) — the queue contents were corrupt).
+        if (method == "add" && args.size() >= 3 &&
+            args[1].type == DalvikType::INT32) {
+            uint32_t this_id = args[0].object_id;
+            int32_t at = args[1].int_val;
+            auto* obj = heap_.get(this_id);
+            if (obj) {
+                auto lenf = obj->fields.find("__array_length__");
+                int32_t len = (lenf != obj->fields.end() &&
+                               lenf->second.type == DalvikType::INT32)
+                                  ? lenf->second.int_val : 0;
+                if (at < 0) at = 0;
+                if (at > len) at = len;
+                for (int32_t i = len; i > at; --i) {
+                    auto src = obj->fields.find("array[" + std::to_string(i - 1) + "]");
+                    DalvikValue v = (src != obj->fields.end()) ? src->second
+                                                               : DalvikValue();
+                    heap_.set_object_field(this_id, "array[" + std::to_string(i) + "]", v);
+                }
+                heap_.set_object_field(this_id, "array[" + std::to_string(at) + "]", args[2]);
+                heap_.set_object_field(this_id, "__array_length__",
+                                       DalvikValue::make_int(len + 1));
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+        // F-110c: java.util.ArrayList E remove(int index) — the drain law.
+        // Upstream: removes the element at index, shifts the tail left,
+        // decrements size, returns the removed element. Without this law
+        // every drain loop of the shape while(!q.isEmpty()){ e=q.get(0);
+        // q.remove(0); ... } spins forever (first real hit: anuto
+        // MessageQueue.processMessages — the loop-visit cap halted the app
+        // and the deferred VirtualMachineError destroyed onCreate).
+        if (method == "remove" && args.size() == 2 &&
+            args[1].type == DalvikType::INT32) {
+            uint32_t this_id = args[0].object_id;
+            int32_t at = args[1].int_val;
+            auto* obj = heap_.get(this_id);
+            DalvikValue removed = DalvikValue::make_null();
+            if (obj) {
+                auto lenf = obj->fields.find("__array_length__");
+                int32_t len = (lenf != obj->fields.end() &&
+                               lenf->second.type == DalvikType::INT32)
+                                  ? lenf->second.int_val : 0;
+                if (at >= 0 && at < len) {
+                    auto fit = obj->fields.find("array[" + std::to_string(at) + "]");
+                    if (fit != obj->fields.end()) removed = fit->second;
+                    for (int32_t i = at; i < len - 1; ++i) {
+                        auto nxt = obj->fields.find("array[" + std::to_string(i + 1) + "]");
+                        DalvikValue v = (nxt != obj->fields.end()) ? nxt->second
+                                                                   : DalvikValue();
+                        heap_.set_object_field(this_id, "array[" + std::to_string(i) + "]", v);
+                    }
+                    obj->fields.erase("array[" + std::to_string(len - 1) + "]");
+                    heap_.set_object_field(this_id, "__array_length__",
+                                           DalvikValue::make_int(len - 1));
+                } else if (at >= 0 && at >= len) {
+                    // Upstream throws IndexOutOfBoundsException — deferred
+                    // error keeps the containment law (no silent success).
+                    throw_deferred("Ljava/lang/IndexOutOfBoundsException;",
+                                   "ArrayList.remove(" + std::to_string(at) +
+                                       ") size=" + std::to_string(len),
+                                   "ARRAYLIST-REMOVE-OOB");
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = removed;
+            return true;
+        }
+        // F-110c: java.util.ArrayList boolean remove(Object o) — first
+        // occurrence removal (invoke-interface List.remove sites declare
+        // the Object overload; the arg is a ref, not an index).
+        if (method == "remove" && args.size() == 2 &&
+            (args[1].type == DalvikType::OBJECT_REF ||
+             args[1].type == DalvikType::STRING_REF ||
+             args[1].type == DalvikType::NULL_REF)) {
+            uint32_t this_id = args[0].object_id;
+            auto* obj = heap_.get(this_id);
+            bool removed_any = false;
+            if (obj) {
+                auto lenf = obj->fields.find("__array_length__");
+                int32_t len = (lenf != obj->fields.end() &&
+                               lenf->second.type == DalvikType::INT32)
+                                  ? lenf->second.int_val : 0;
+                for (int32_t i = 0; i < len && !removed_any; ++i) {
+                    auto fit = obj->fields.find("array[" + std::to_string(i) + "]");
+                    if (fit == obj->fields.end()) continue;
+                    bool eq;
+                    if (args[1].type == DalvikType::STRING_REF)
+                        eq = (fit->second.type == DalvikType::STRING_REF &&
+                              fit->second.string_val == args[1].string_val);
+                    else
+                        eq = (fit->second.type == args[1].type &&
+                              fit->second.object_id == args[1].object_id);
+                    if (eq) {
+                        for (int32_t j = i; j < len - 1; ++j) {
+                            auto nxt = obj->fields.find("array[" + std::to_string(j + 1) + "]");
+                            DalvikValue v = (nxt != obj->fields.end()) ? nxt->second
+                                                                       : DalvikValue();
+                            heap_.set_object_field(this_id, "array[" + std::to_string(j) + "]", v);
+                        }
+                        obj->fields.erase("array[" + std::to_string(len - 1) + "]");
+                        heap_.set_object_field(this_id, "__array_length__",
+                                               DalvikValue::make_int(len - 1));
+                        removed_any = true;
+                    }
+                }
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_bool(removed_any);
             return true;
         }
         if (method == "get" && args.size() >= 2) {
