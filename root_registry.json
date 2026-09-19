@@ -3693,6 +3693,24 @@
     "ch.logixisland.anuto",
     "any app declaring a relative Application class"
    ]
+  },
+  {
+   "id": "F-113",
+   "title": "java.security.SecureRandom IS-A Random bridge law (R-NEW-382) — framework-subclass virtual dispatch must resolve ancestor laws",
+   "status": "IMPLEMENTED+TESTED",
+   "priority": "P0",
+   "fg": true,
+   "first_seen": "S63 (gmdice v1.2 source-first build)",
+   "evidence": "miniandroid/src/dex/dalvik_engine.cpp F-086 block (S63): bridge_to_api receives the STATIC receiver class; SecureRandom instance calls never reached the F-086 Random law (Random + ThreadLocalRandom only) and nextInt(bound) answered typed-zero 0 — every die rolled 1 in gmdice (5x [EXP091-SETTEXT] text=\"1\"). Upstream law: OpenJDK SecureRandom.java:157 'public class SecureRandom extends java.util.Random' + :828 'protected final int next(int numBits)' (fetched from github.com/openjdk/jdk). Fix: law family += Ljava/security/SecureRandom;. Post-fix: dice 6/5/3/2, rollresult texts 6/5/3/2, frame SHA pair 5312266e→fa1d8612, pixel diff 1,584 px 100% inside the result band; 3-run det fa1d8612 ×3. Regression: battery ALL PASS (94 stages executed) on the fixed binary. Evidence: docs/evidence/s63_spotlight/S63_REPORT.md §1-§2"
+  },
+  {
+   "id": "R-NEW-382",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P0",
+   "title": "gmdice dice roll typed-zero face (SecureRandom.nextInt → 0)",
+   "fg": true,
+   "first_seen": "S63 first gmdice source-first run",
+   "evidence": "SOURCE OBSERVATION: gen.nextInt(sides) with Random generator = new SecureRandom(). MINIANDROID TRACE: 5 rolls all \"1\"; [REC-MISS] SecureRandom.nextInt → static-class bridge misses F-086. UPSTREAM: OpenJDK SecureRandom extends Random (:157), next(int) override (:828). SEMANTIC LAW: SecureRandom IS-A Random → F-113. FIXED: dice 6/5/3/2, changed frame proven (1,584 px diff in the rollresult band). Evidence: docs/evidence/s63_spotlight/S63_REPORT.md §1"
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign."

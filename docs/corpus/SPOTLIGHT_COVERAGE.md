@@ -5,6 +5,16 @@ manifest) + `docs/corpus/spotlight_results.json` (execution results).
 Selection law: capability coverage, not randomness — every app carries
 capability tags; the sweep records the honest L-level the runtime reaches.
 
+## Phase B additions — source-first spotlight (S62+ / S63)
+
+| App | Build | Session | Stage / L | Evidence |
+|---|---|---|---|---|
+| ch.logixisland.anuto | source-first 8794573d… (mjaun/android-anuto @33ed89e3) | S62+ | S6/L5 + tap→onTouch consumed=true (canvas-bitmap frontier recorded) | docs/evidence/s62plus_spotlight/ |
+| cz.romario.opensudoku | source-first 712b4a41… (romario333/opensudoku @d1914649) | S62+ | S6/L5 + 3/3 clicks dispatched (external-intent no-op) | docs/evidence/s62plus_spotlight/ |
+| de.duenndns.gmdice | source-first ee9f7396… (ge0rg/gamemasterdice @6353926f) | S63 | **S10/L6 PROVEN**: 1,744,539 px; 5/5 clicks→GameMasterDice.onClick; dice 6/5/3/2 post-F-113; frame SHA 5312266e→fa1d8612; diff 1,584 px in result band; det ×3 | docs/evidence/s63_spotlight/ |
+| org.billthefarmer.siggen | source-first c83d21c6… (billthefarmer/sig-gen @ master) | S63 | S7: 47,809 px (== S61 prebuilt count); 5/5 clicks→Main.onClick; audio.waveform mutation; custom views 0x0 (frontier); det ×3 | docs/evidence/s63_spotlight/ |
+| org.blockinger.game | surveyed, NOT built (vocollapse/Blockinger @8b26057f) | S63 | DEFERRED — support-v4 FragmentActivity + SurfaceView = two known heavy families | S63_REPORT.md §0 fact matrix |
+
 ## Phase A execution summary
 
 | Metric | Value |

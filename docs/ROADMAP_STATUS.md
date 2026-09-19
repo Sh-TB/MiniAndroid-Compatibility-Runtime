@@ -66,6 +66,25 @@ S55/S56/S57 rows retained below for continuity.
 
 ## 3. Active frontier (P0 first, attack order)
 
+S63 state (open-source APK spotlight 2 — breadth first continues): **FIRST
+SOURCE-FIRST L6 (S10)** — gmdice v12 (ge0rg/gamemasterdice @6353926f,
+APK ee9f7396) built aapt2/ECJ/D8 → executed → UI → render (1,744,539 px)
+→ 5/5 clicks → real GameMasterDice.onClick → StandardDiceSet.roll →
+SecureRandom.nextInt → dice 6/5/3/2 → setText → frame SHA 5312266e →
+fa1d8612 with a 1,584-px diff confined to the rollresult band; 3-run
+deterministic ×3. Enabler: **F-113 / R-NEW-382** (SecureRandom IS-A Random
+bridge law; OpenJDK SecureRandom.java:157/:828; bridge receives the STATIC
+receiver class) — battery ALL PASS (94 executed incl. goldens + corpus) on
+the fixed binary. Second new app: siggen v1.76 (billthefarmer/sig-gen,
+APK c83d21c6) S7 — FQCN-tag custom views inflated, 47,809 px == S61
+prebuilt count (cross-validation), 5/5 clicks → Main.onClick →
+audio.waveform mutation (audio-path state, honest no pixel face; custom
+view measure 0x0 = frontier). Tool law: zoekt under-report ROOT-CAUSED
+(default trigram cap excludes 1.2MB files; raised cap = complete results);
+csearch per-file limit reproduced 3rd time. Blockinger surveyed and
+DEFERRED (support-v4 FragmentActivity + SurfaceView). Evidence:
+docs/evidence/s63_spotlight/S63_REPORT.md.
+
 S62+ state (open-source APK spotlight mission — breadth first): **2 NEW
 open-source apps built FROM SOURCE and executed** — anuto (L5 + real
 onTouch consumed=true) and OpenSudoku (L5 + 3/3 real click dispatch).
