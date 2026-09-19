@@ -10,6 +10,14 @@
 
 Snapshot: 745 tracked `.md` files — 441 KEEP (knowledge/process), 185 HISTORY (era records), 111 EVIDENCE (compact, cited), plus 290 tracked `.json` (indexes/fixtures/oracles — classified below).
 
+## 0c. S63 additions
+
+| Law / finding | Layer | Statement | Status | Priority | In-repo | Evidence |
+|--------|-------|-----------|--------|----------|---------|----------|
+| F-113 SecureRandom IS-A Random bridge law (R-NEW-382) | engine | bridge_to_api receives the STATIC receiver class; SecureRandom instances never reached the F-086 Random law (Random + ThreadLocalRandom only) → nextInt(bound) typed-zero 0 (all gmdice dice read 1). OpenJDK law: SecureRandom.java:157 extends java.util.Random, :828 next(int) override supplies the bit stream while Random.nextInt(bound) keeps the contract. Fix: law family += Ljava/security/SecureRandom; | IMPLEMENTED+TESTED (battery ALL PASS 94 executed; dice 6/5/3/2; pixel diff 1,584 px in result band; 3-run det ×3) | P0 | YES | docs/evidence/s63_spotlight/S63_REPORT.md §1 |
+| S63 spotlight: first SOURCE-FIRST L6 | corpus | gmdice v12 (ge0rg/gamemasterdice @6353926f) APK ee9f7396 built aapt2/ECJ/D8 → executed → UI → render (1,744,539 px) → 5/5 clicks → real handler → state mutation (dice 6/5/3/2) → changed frame (SHA 5312266e→fa1d8612, diff confined to the result band) — repeatable ×3. siggen v1.76 (billthefarmer/sig-gen) APK c83d21c6 → rc=0, FQCN-tag custom views inflated, 47,809 px == S61 prebuilt count, 5/5 clicks, R.id.sine case + audio.waveform mutation (S7 honest) | EXECUTED+OBSERVED (S10/L6 + S7/L5) | P0 | YES | docs/evidence/s63_spotlight/S63_REPORT.md §1-§2 |
+| zoekt large-file under-report root cause | tools | zoekt-index default max_trigram_count silently EXCLUDES very large files (dalvik_engine.cpp 1.2MB → 0 hits); raised cap (100000000) → complete results (found F-113 lines at 20878). Explains the S61/S62 "under-report" open question. csearch per-file trigram limit reproduced 3rd time (candidate sources fine at 3ms). zoekt+cindex/csearch rebuilt this session (Go 1.26.0; go module proxy stalls — GOPROXY=direct works) | OBSERVED (tool law) | P1 | YES | docs/evidence/s63_spotlight/S63_REPORT.md §4 |
+
 ## 0c. S62 additions
 
 | Law / finding | Layer | Statement | Status | Priority | In-repo | Evidence |
