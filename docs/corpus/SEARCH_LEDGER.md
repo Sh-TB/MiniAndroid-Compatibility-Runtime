@@ -112,3 +112,36 @@ vocollapse/Blockinger, openjdk/jdk) + fdroiddata metadata; DOMAINS_CHECKED 4
 RELEVANT_HITS 12; IMPLEMENTATIONS_FOUND 2 (SecureRandom.next upstream law;
 gradle BuildConfig generation contract); TESTS_FOUND 0 (upstream gmdice has
 no test suite — honesty row); SEARCH_EXHAUSTED no.
+
+## S64 additions (2026-09-19) — 3-candidate breadth survey + prefs/Timer/meta-data searchlight chain
+
+Environment: zoekt (@ 153817f643cd) + cindex/csearch (v1.2.0) + Go 1.26.0
+REBUILT again after the container reset (same GOPROXY=direct recipe).
+F-Droid index-v2.json (60,145,769 B / 4,408 packages) downloaded ONCE and
+scanned locally (scripts/s64_candidate_survey.py) — 20 keywords → 69 hits →
+52 shortlisted; GitHub probes rate-limited mid-run (core remaining 0,
+recorded) → switched to direct git clones (pinned SHAs).
+
+| Query | zoekt (result) | csearch (hits) | Outcome |
+|---|---|---|---|
+| `onKeypadButtonTouched` (cand shard) | 13+ hits (XML android:onClick + handler) | 5+ lines | pmk input path classified xml_onClick (decision changed: not only touch-listener) |
+| `Emulator extends Thread` | Emulator.java:10 | 1 line | pmk threading = real Thread subclass (build-value signal) |
+| `setContentView file:GameActivity.java` | FK line 293 | — | FK game launch path mapped pre-build |
+| `startActivity file:SplashActivity.java` | FK redirect path | — | predicted the Timer+meta-data face BEFORE the first run |
+| `addTextChangedListener` | — | 5 files (SLC MainActivity:582) | SLC input model = TextWatcher family |
+
+Upstream contract fetches (raw.githubusercontent, aosp-mirror/platform_frameworks_base @ main):
+- SharedPreferencesImpl.java:307-313 — getString @Nullable default law (F-114a)
+- PreferenceManager.java:67 + :661-673 — setDefaultValues one-shot guard law (F-114b/c)
+- OpenJDK java/util/Timer.java sched()/mainLoop — fixed-delay repeat law (F-115)
+
+F-Droid API v1 (-L): com.cax.pmk.ext (3.3.1/331), eu.veldsoft.free.klondike
+(2.0.1/3), io.github.buildsbyben.shoppinglistcalc (2.0/15) — version pins
+for the staged builds.
+
+Cumulative S64: TOTAL_SEARCHES 17 documented queries; UNIQUE_QUERIES 17;
+REPOSITORIES_CHECKED 9 app repos + aosp-mirror + F-Droid index; DOMAINS 5
+(github, f-droid, aosp raw, openjdk-law, go module proxy); RELEVANT_HITS 24;
+IMPLEMENTATIONS_FOUND 4; TESTS_FOUND 0 (honesty row); SEARCH_EXHAUSTED no.
+Every search changed a decision (build order, law citations, staging laws);
+none were decorative.

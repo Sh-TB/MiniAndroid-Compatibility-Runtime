@@ -87,6 +87,11 @@ struct ManifestInfo {
     };
     std::vector<ActivityInfo> activities;
     
+    // F-116 (R-NEW-384 family): <meta-data> name/value pairs — AOSP
+    // PackageItemInfo.metaData contract (application level + per-activity).
+    std::vector<std::pair<std::string, std::string>> application_meta_data;
+    std::map<std::string, std::vector<std::pair<std::string, std::string>>> activity_meta_data;
+    
     // Permissions
     std::vector<std::string> permissions;
     

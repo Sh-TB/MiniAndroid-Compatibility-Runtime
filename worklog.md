@@ -1389,3 +1389,55 @@ Stage Summary:
   siggen S7), F-113/R-NEW-382 closed with full searchlight chain, zoekt
   tool-law root cause diagnosed and fixed procedure, battery ALL PASS on
   the fixed binary, GitHub clean and light.
+
+---
+Task ID: S64-MAIN
+Agent: Super Z (main)
+Task: S64 breadth spotlight — 3 NEW open-source APKs built from source and executed; evidence over claims
+
+Work Log:
+- RECON first: HEAD == origin/main == 64d830b4 (S63-PUSH-VERIFY), tree clean;
+  toolchain + engine ABSENT (container reset) → bootstrap_toolchain.sh + make;
+  zoekt/csearch/Go ABSENT → rebuilt (Go 1.26.0, zoekt @153817f643cd,
+  codesearch v1.2.0, GOPROXY=direct recipe). Battery baseline measured fresh:
+  94 stages, 92 PASS + EXT-01/02 FAIL = environmental (Appliberated/
+  HelloWorldSelfAware upstream repo DELETED — 404 verified; S45 precedent).
+- Candidate survey (REAL, evidence-grade): F-Droid index-v2.json (60.1 MB,
+  4,408 pkgs) downloaded + scanned locally (20 keywords → 69 hits → 52
+  shortlisted); GitHub probes rate-limited mid-run (recorded) → direct git
+  clones of 6 candidates; fact-matrix forensics: BMI_Calculator/AlexCalc/
+  rttt DEFERRED pre-build (support-v4/fragments/SDL); picks: pmk-android
+  @100eea1, FreeKlondike @789dba5, shopping-list-calc @e1d3f74; staging per
+  the anuto/gmdice law (package= + BuildConfig generation).
+- NEW-001 pmk (МК-61 emulator): first run NFE (prefs null-default → ""
+  + setDefaultValues no-op + getDefaultSharedPreferences NULL receiver).
+  Searchlight: AOSP SharedPreferencesImpl.java:307-313 + PreferenceManager.java:
+  67/:661-673 → F-114a/b/c generic laws. AFTER: rc=0, 179 views, det frame
+  c9a2a7035c75c9c8 ×3. STAGE S6. Honest: table-measure-skin + seekbar-drag
+  families block interaction state (recorded, deferred).
+- NEW-002 FreeKlondike: first run splash-trapped (Timer REC-MISS + meta-data
+  typed-zero). F-115 Timer-on-MessageQueue (+periodic re-enqueue) + F-116
+  meta-data law + F-117 scheduled-tap law (tap k at frame k). F-115b REVISED
+  after first battery run regressed G07 + GATE H (launch quiescence must not
+  advance the clock) — reverted to frozen launch-frame semantics; timers fire
+  under --frames. AFTER: full chain splash→Timer(5s)→menu→tap New Game→
+  GameActivity→deck "Deal!" response; frames 64bf2071→f3c81cfb (2,073,600 px)
+  →f9639e68 (8,120 px); det ×3. STAGE S10 PROVEN.
+- NEW-003 shopping-list-calc: rc=0 FIRST RUN (no fixes). --click-test 7/7
+  real lambdas, state_changed=TRUE, frame 2cd328b3→94e90357 (8,348 px),
+  det ×3. STAGE S9 PROVEN.
+- REGRESSION: battery 94 stages → 92 PASS + only EXT-01/02 (environmental);
+  goldens byte-identical (helloworld 26, tictactoe 8, G06 21+det, G08 17+det,
+  GATE H image pipeline). Zero engine regressions from F-114..F-117.
+- Registries: root_registry 366→368 roots (R-NEW-383/384 ROOT-CAUSED-FIXED);
+  ACHIEVEMENTS §0e4 (8 rows); KNOWLEDGE_INDEX 5 rows; SEARCH_LEDGER S64
+  section (17 searches, none decorative); evidence docs/evidence/s64_spotlight/
+  (S64_REPORT.md + 7 PNGs + SHA256SUMS, 216 KB).
+
+Stage Summary:
+- FINAL NUMBERS: NEW apps SURVEYED 8; FORENSICED 6; BUILT 3; EXECUTED 3;
+  WITH UI 3; WITH MEANINGFUL RENDER 3; WITH INPUT 3; WITH REAL HANDLER 3;
+  WITH STATE MUTATION 2; WITH CHANGED FRAME 2; L6+ 2 (FK S10, SLC S9).
+- Corpus gains: 3 new source-first apps; pmk S6 faces recorded as families.
+- No new campaign/branch/roadmap; no app-specific hacks; every law generic
+  with ≥2-consumer reach or recorded reusability.

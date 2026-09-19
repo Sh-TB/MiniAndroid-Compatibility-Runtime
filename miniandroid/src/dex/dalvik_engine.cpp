@@ -22,6 +22,7 @@
 #include "../jni/jni_bridge.h"
 // EXP-051: Shadow registry integration.
 #include "../framework/shadow_registry.h"
+#include <functional>
 #include "../framework/android_shadows.h"
 #include "../framework/choreographer_shadow.h"  // R-NEW-345 park-drain: vsync during park
 #include "../framework/dialog_shadow.h"
@@ -19307,6 +19308,63 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
     }
     // ────────────────────────────────────────────────────────────────────
+    // F-115 (R-NEW-384) — java.util.Timer law family. OpenJDK law
+    // (java/util/Timer.java: schedule(TimerTask, long delay) → sched(task,
+    // delay, 0) single-shot; schedule(task, delay, period) fixed-delay
+    // repeat; scheduleAtFixedRate fixed-rate repeat). No law existed →
+    // REC-MISS no-ops → every deferred Timer task never ran. Real-world
+    // face: eu.veldsoft.free.klondike SplashActivity.onResume
+    // Timer.schedule(redirect, 5000) never fired → the app was trapped on
+    // the splash screen (MenuActivity unreachable).
+    // Engine model (established F-104/F-110 headless dispatch law): the
+    // TimerTask heap object rides the SAME HandlerShadow MessageQueue as
+    // Handler.post; the virtual-clock pump fires task.run() after the
+    // delay. Periodic tasks re-enqueue at dispatch time via the
+    // __timer_period__ heap field (single engine-wide re-enqueue law).
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/util/Timer;" &&
+        (method == "schedule" || method == "scheduleAtFixedRate")) {
+        if (args.size() >= 3 && args[1].type == DalvikType::OBJECT_REF &&
+            args[1].object_id != 0 && heap_.has_object(args[1].object_id)) {
+            uint32_t task_id = args[1].object_id;
+            int64_t delay_ms = 0, period_ms = 0;
+            if (args[2].type == DalvikType::INT64) delay_ms = args[2].long_val;
+            else if (args[2].type == DalvikType::INT32) delay_ms = args[2].int_val;
+            if (args.size() >= 4) {
+                if (args[3].type == DalvikType::INT64) period_ms = args[3].long_val;
+                else if (args[3].type == DalvikType::INT32) period_ms = args[3].int_val;
+            }
+            heap_.set_object_field(task_id, "__timer_period__",
+                                   DalvikValue::make_long(period_ms));
+            if (auto* hs = shadow_registry_
+                               ? shadow_registry_->find_as<framework::HandlerShadow>()
+                               : nullptr) {
+                hs->enqueue(task_id, delay_ms, "Timer.schedule");
+                std::cerr << "[F115-TIMER] " << method
+                          << " task=o" << task_id
+                          << " delay=" << delay_ms << "ms period=" << period_ms
+                          << "ms caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+            } else {
+                std::cerr << "[F115-TIMER] no HandlerShadow — task=o" << task_id
+                          << " NOT queued" << std::endl;
+            }
+        }
+        result = DalvikValue::make_void();
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (class_name == "Ljava/util/Timer;" &&
+        (method == "cancel" || method == "purge")) {
+        // AOSP Timer.cancel(): terminate the timer; its already-enqueued
+        // tasks stay pending until their time (openjdk runs them unless
+        // purge). Engine model: the queue is virtual-clock driven; a
+        // cancelled timer's tasks are left to the established drain law.
+        result = DalvikValue::make_void();
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────
     // F-104 (S58) continued: java.util.EnumSet.of(E...) — OpenJDK law:
     // returns an immutable-capable set containing exactly the given enum
     // constants. No law existed → STUBBED null → the commonmark autolink
@@ -22646,6 +22704,117 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // F-116 (R-NEW-384 family) — ComponentName + ActivityInfo.metaData laws.
+    // AOSP laws:
+    //   Context/Activity.getComponentName() → new ComponentName(this,getClass())
+    //     (the component of the CALLING activity).
+    //   PackageManager.getActivityInfo(ComponentName, flags) → ActivityInfo
+    //     whose superclass PackageItemInfo carries `metaData` — the Bundle
+    //     built from the <activity> <meta-data android:name android:value>
+    //     manifest children (PackageParser.parseActivity →
+    //     PackageItemInfo.metaData; Bundle value typing: numeric strings →
+    //     Intger, otherwise String — PackageParser relies on
+    //     Fragment/TypedValue coercion; the Bundle carries what the AXML
+    //     typed: string values stay strings, "5000" stays a string on ART
+    //     BUT meta.getInt("timeout", 0) still reads it because PackageParser
+    //     stores TypedValue-typed entries. Engine model: store the manifest
+    //     string AND type numeric-looking values INT32 so getInt/getString
+    //     both answer per the calling app's expectation — one typing law for
+    //     every app; real-world face: eu.veldsoft.free.klondike
+    //     SplashActivity reads meta timeout=5000 (int) + redirect (string).
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getComponentName" &&
+        (class_name.find("Context") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos)) {
+        uint32_t cn_id = heap_.allocate("Landroid/content/ComponentName;", pc_,
+                                        call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+        DalvikValue pkg_v = DalvikValue::make_string(
+            package_name_.empty() ? "unknown.package" : package_name_, 0);
+        // The calling activity: current_class_ at this dispatch is the
+        // activity whose getComponentName ran; fall back to the manifest
+        // package root only when no caller class is known.
+        std::string act = current_class_;
+        if (act.empty() || act == "Landroid/app/Activity;") {
+            act = "L" + package_name_ + ";";
+        }
+        DalvikValue cls_v = DalvikValue::make_string(act, 0);
+        heap_.set_object_field(cn_id, "mPackage", pkg_v);
+        heap_.set_object_field(cn_id, "mClass", cls_v);
+        result = DalvikValue::make_object(cn_id, "Landroid/content/ComponentName;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (method == "getActivityInfo" &&
+        class_name.find("PackageManager") != std::string::npos) {
+        // Resolve the target activity class from the ComponentName arg.
+        std::string act_class;
+        if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF &&
+            args[1].object_id != 0 && heap_.has_object(args[1].object_id)) {
+            auto cls_f = heap_.get_object_field(args[1].object_id, "mClass");
+            if (cls_f.has_value() && cls_f->type == DalvikType::STRING_REF)
+                act_class = cls_f->string_val;
+        }
+        // Normalize: ".Foo" → pkg.Foo; "Foo" (no dot) → pkg.Foo.
+        auto normalize = [&](std::string c) {
+            if (c.empty()) return c;
+            if (c[0] == '.') return package_name_ + c;
+            if (c.find('.') == std::string::npos) return package_name_ + "." + c;
+            return c;
+        };
+        std::string norm = normalize(act_class);
+        // Trim an L...; descriptor to a bare class name for table lookup.
+        std::string bare = norm;
+        if (!bare.empty() && bare.front() == 'L' && bare.back() == ';')
+            bare = bare.substr(1, bare.size() - 2);
+        // Descriptor form uses slashes; manifest names use dots.
+        for (auto& ch : bare) if (ch == '/') ch = '.';
+        // Meta-data lookup: exact → bare → suffix match (manifest R8-free
+        // names usually exact; descriptor form differs by L/; only).
+        const std::vector<std::pair<std::string, std::string>>* md = nullptr;
+        auto it = activity_meta_data_.find(norm);
+        if (it == activity_meta_data_.end()) it = activity_meta_data_.find(bare);
+        if (it != activity_meta_data_.end()) md = &it->second;
+        if (!md) {
+            for (const auto& [k, v] : activity_meta_data_) {
+                if (!k.empty() && (norm.rfind(k) != std::string::npos ||
+                                   bare.rfind(k) != std::string::npos)) {
+                    md = &v;
+                    break;
+                }
+            }
+        }
+        // ActivityInfo + metaData Bundle.
+        uint32_t ai_id = heap_.allocate("Landroid/content/pm/ActivityInfo;", pc_,
+                                        call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+        uint32_t bundle_id = heap_.allocate("Landroid/os/Bundle;", pc_,
+                                            call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+        if (md) {
+            for (const auto& [k, v] : *md) {
+                // Numeric-typing law (see block comment): integers → INT32.
+                static const std::string digits = "0123456789";
+                bool numeric = !v.empty() &&
+                               v.find_first_not_of(digits) == std::string::npos;
+                if (numeric)
+                    heap_.set_object_field(bundle_id, "bundle:" + k,
+                                           DalvikValue::make_int(std::stoi(v)));
+                else
+                    heap_.set_object_field(bundle_id, "bundle:" + k,
+                                           DalvikValue::make_string(v, 0));
+            }
+        }
+        heap_.set_object_field(ai_id, "metaData",
+                               DalvikValue::make_object(bundle_id, "Landroid/os/Bundle;"));
+        heap_.set_object_field(ai_id, "name",
+                               DalvikValue::make_string(bare, 0));
+        result = DalvikValue::make_object(ai_id, "Landroid/content/pm/ActivityInfo;");
+        std::cerr << "[F116-ACTINFO] " << bare << " metaData="
+                  << (md ? std::to_string(md->size()) : std::string("0 (no manifest entries)"))
+                  << std::endl;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // P0.10 — PackageManager.getPackageInfo → PackageInfo
     // EXP-093/F011: Use manifest-derived package identity instead of hardcoded
     // Telegram values. This is a GENERIC fix — affects ALL APKs.
@@ -22859,6 +23028,88 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // F-114c — PreferenceManager.getDefaultSharedPreferences(Context) law.
+    // AOSP PreferenceManager.java: getDefaultSharedPreferencesName(context) =
+    // context.getPackageName() + "_preferences"; delegates to
+    // context.getSharedPreferences(name, MODE_PRIVATE). Without this bridge
+    // the call answered null and every later prefs getString/getBoolean ran
+    // on a NULL receiver (real-world face: com.cax.pmk activateSettings).
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getDefaultSharedPreferences" &&
+        class_name.find("PreferenceManager") != std::string::npos) {
+        std::string prefs_name = (package_name_.empty() ? std::string("unknown.package")
+                                                        : package_name_) + "_preferences";
+        std::string prefs_desc = "Landroid/content/SharedPreferences;";
+        uint32_t obj_id = heap_.allocate(prefs_desc, pc_,
+                                        call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+        DalvikValue name_val;
+        name_val.type = DalvikType::STRING_REF;
+        name_val.string_val = prefs_name;
+        name_val.ref_id = 0;
+        heap_.set_object_field(obj_id, "prefs_name", name_val);
+        std::string prefs_pkg = package_name_.empty() ? std::string("unknown.package") : package_name_;
+        std::string prefs_dir = (std::filesystem::path(Storage::app_data_root()) /
+                               prefs_pkg / "shared_prefs").string();
+        std::string prefs_file = prefs_dir + "/" + prefs_name + ".xml";
+        std::ifstream infile(prefs_file);
+        if (infile.is_open()) {
+            std::string line;
+            while (std::getline(infile, line)) {
+                size_t name_pos = line.find("name=\"");
+                if (name_pos == std::string::npos) continue;
+                size_t name_start = name_pos + 6;
+                size_t name_end = line.find("\"", name_start);
+                if (name_end == std::string::npos) continue;
+                std::string key = line.substr(name_start, name_end - name_start);
+                if (line.find("<string ") != std::string::npos) {
+                    size_t val_start = line.find(">", name_end) + 1;
+                    size_t val_end = line.find("</string>", val_start);
+                    if (val_end != std::string::npos) {
+                        heap_.set_object_field(obj_id, key,
+                            DalvikValue::make_string(line.substr(val_start, val_end - val_start), 0));
+                    }
+                } else if (line.find("<int ") != std::string::npos) {
+                    size_t val_pos = line.find("value=\"", name_end);
+                    if (val_pos != std::string::npos) {
+                        size_t val_start = val_pos + 7;
+                        size_t val_end = line.find("\"", val_start);
+                        heap_.set_object_field(obj_id, key,
+                            DalvikValue::make_int(std::stoi(line.substr(val_start, val_end - val_start))));
+                    }
+                } else if (line.find("<boolean ") != std::string::npos) {
+                    size_t val_pos = line.find("value=\"", name_end);
+                    if (val_pos != std::string::npos) {
+                        size_t val_start = val_pos + 7;
+                        size_t val_end = line.find("\"", val_start);
+                        heap_.set_object_field(obj_id, key,
+                            DalvikValue::make_bool(line.substr(val_start, val_end - val_start) == "true"));
+                    }
+                } else if (line.find("<long ") != std::string::npos) {
+                    size_t val_pos = line.find("value=\"", name_end);
+                    if (val_pos != std::string::npos) {
+                        size_t val_start = val_pos + 7;
+                        size_t val_end = line.find("\"", val_start);
+                        heap_.set_object_field(obj_id, key,
+                            DalvikValue::make_long(std::stoll(line.substr(val_start, val_end - val_start))));
+                    }
+                } else if (line.find("<float ") != std::string::npos) {
+                    size_t val_pos = line.find("value=\"", name_end);
+                    if (val_pos != std::string::npos) {
+                        size_t val_start = val_pos + 7;
+                        size_t val_end = line.find("\"", val_start);
+                        heap_.set_object_field(obj_id, key,
+                            DalvikValue::make_float(std::stof(line.substr(val_start, val_end - val_start))));
+                    }
+                }
+            }
+            std::cerr << "[F114C-DEFAULTSP] loaded " << prefs_file << std::endl;
+        }
+        result = DalvikValue::make_object(obj_id, prefs_desc);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // P0.12 — Context.getSharedPreferences → SharedPreferences
     // EXP-048: Returns a heap-allocated SharedPreferences object with the
     // preference name stored as a field, enabling per-name persistence.
@@ -22956,6 +23207,172 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // F-114b (R-NEW-383 family) — PreferenceManager.setDefaultValues contract.
+    // AOSP law (aosp-mirror/platform_frameworks_base
+    //  core/java/android/preference/PreferenceManager.java:661-673;
+    //  KEY_HAS_SET_DEFAULT_VALUES at :67): the defaults resource is inflated
+    //  as a preference hierarchy and every preference carrying
+    //  android:key + android:defaultValue is persisted into the named
+    //  shared-preferences file — ONCE, guarded by the
+    //  "_has_set_default_values" flag unless readAgain=true.
+    // The resource may live under ANY xml resource type (real-world face:
+    // com.cax.pmk passes R.layout.activity_preferences — a PreferenceScreen
+    // XML stored under res/layout/). Apps then read the defaults with
+    // getString/getBoolean instead of their (often null) in-code fallbacks
+    // — without this law they NFE-parse nulls that ART never produces.
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name.find("PreferenceManager") != std::string::npos &&
+        method == "setDefaultValues") {
+        // Static forms per AOSP:
+        //   (Context, int resId, boolean readAgain)
+        //   (Context, String spName, int mode, int resId, boolean readAgain)
+        std::string sp_name;
+        int32_t res_id = 0;
+        bool read_again = false;
+        if (args.size() > 1 && args[1].type == DalvikType::STRING_REF) {
+            sp_name = args[1].string_val;
+            if (args.size() > 3 && args[3].type == DalvikType::INT32) res_id = args[3].int_val;
+            if (args.size() > 4) read_again = args[4].bool_val;
+        } else {
+            // 2-arg form: prefs file = getDefaultSharedPreferencesName law
+            // (ContextImpl.getPackageName() + "_preferences").
+            sp_name = (package_name_.empty() ? std::string("unknown.package")
+                                             : package_name_) + "_preferences";
+            if (args.size() > 1 && args[1].type == DalvikType::INT32) res_id = args[1].int_val;
+            if (args.size() > 2) read_again = args[2].bool_val;
+        }
+
+        // AOSP one-shot guard (PreferenceManager.java:666).
+        std::string prefs_pkg = package_name_.empty() ? std::string("unknown.package") : package_name_;
+        std::string prefs_dir = (std::filesystem::path(Storage::app_data_root()) /
+                                 prefs_pkg / "shared_prefs").string();
+        std::string prefs_file = prefs_dir + "/" + sp_name + ".xml";
+        bool already_set = false;
+        {
+            std::ifstream chk(prefs_file);
+            if (chk.is_open()) {
+                std::string l;
+                while (std::getline(chk, l))
+                    if (l.find("_has_set_default_values") != std::string::npos) { already_set = true; break; }
+            }
+        }
+        if (already_set && !read_again) {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+
+        // Resolve the resource id → AXML bytes (any xml-bearing type).
+        std::vector<uint8_t> axml_bytes;
+        {
+            auto& rt = resources::ResourceRuntime::instance();
+            if (!apk_path_.empty() && rt.ensure_loaded(apk_path_) && res_id != 0) {
+                auto r = rt.arsc().resolve((uint32_t)res_id);
+                if (r) {
+                    for (const char* type : {"xml", "layout", "menu"}) {
+                        std::string p = std::string("res/") + type + "/" + r->name + ".xml";
+                        axml_bytes = rt.apk().extract_entry_cached(p);
+                        if (!axml_bytes.empty()) break;
+                    }
+                }
+            }
+        }
+
+        if (!axml_bytes.empty()) {
+            resources::AxmlParser parser;
+            if (parser.parse(axml_bytes)) {
+                // Walk the hierarchy; collect (key → typed default).
+                std::function<void(const resources::AxmlElement&,
+                                   std::map<std::string, DalvikValue>&)> walk =
+                    [&](const resources::AxmlElement& el,
+                        std::map<std::string, DalvikValue>& out) {
+                    const std::string& ename = el.name;
+                    bool container = ename.find("PreferenceScreen") != std::string::npos ||
+                                     ename.find("PreferenceCategory") != std::string::npos ||
+                                     ename == "PreferenceGroup";
+                    const resources::AxmlAttribute* key_a = el.attr("key");
+                    const resources::AxmlAttribute* dv_a = el.attr("defaultValue");
+                    if (!container && key_a && dv_a && !key_a->raw_value.empty()) {
+                        std::string key = key_a->raw_value;
+                        bool boolish = ename.find("CheckBoxPreference") != std::string::npos ||
+                                       ename.find("SwitchPreference") != std::string::npos ||
+                                       ename.find("TwoStatePreference") != std::string::npos ||
+                                       ename.find("TogglePreference") != std::string::npos;
+                        std::string raw = dv_a->raw_value;
+                        if (raw.empty()) {
+                            if (dv_a->value.is_string()) raw = dv_a->value.string_value;
+                            else if (dv_a->value.type == resources::DataType::INT_BOOLEAN)
+                                raw = dv_a->value.data != 0 ? "true" : "false";
+                            else raw = std::to_string((int32_t)dv_a->value.data);
+                        }
+                        if (boolish) {
+                            out[key] = DalvikValue::make_bool(raw == "true" || raw == "1");
+                        } else {
+                            // AOSP law: non-two-state preferences (EditText/
+                            // List/SeekBar/...) persist their default as a
+                            // STRING — pmk reads ListPreference defaults with
+                            // getString + parseInt, so an <int> write would
+                            // type-mismatch on the read side.
+                            out[key] = DalvikValue::make_string(raw, 0);
+                        }
+                    }
+                    for (const auto& c : el.children) walk(c, out);
+                };
+                std::map<std::string, DalvikValue> defaults;
+                walk(parser.root(), defaults);
+
+                // Overlay onto the existing prefs file (fresh first-launch
+                // file usually does not exist yet). Merge law: existing
+                // user-persisted entries WIN over defaults (AOSP first-run
+                // semantics — setDefaultValues runs before user edits).
+                std::map<std::string, std::string> lines_keep;
+                {
+                    std::ifstream in(prefs_file);
+                    if (in.is_open()) {
+                        std::string l;
+                        while (std::getline(in, l)) {
+                            if (l.find("<map>") != std::string::npos ||
+                                l.find("</map>") != std::string::npos ||
+                                l.find("<?xml") != std::string::npos) continue;
+                            if (l.find("name=\"") == std::string::npos) continue;
+                            size_t ns = l.find("name=\"") + 6;
+                            size_t ne = l.find("\"", ns);
+                            if (ne == std::string::npos) continue;
+                            lines_keep[l.substr(ns, ne - ns)] = l;
+                        }
+                    }
+                }
+                for (const auto& [k, v] : defaults)
+                    if (lines_keep.find(k) == lines_keep.end()) {
+                        if (v.type == DalvikType::BOOLEAN)
+                            lines_keep[k] = std::string("    <boolean name=\"") + k + "\" value=\"" + (v.bool_val ? "true" : "false") + "\" />";
+                        else if (v.type == DalvikType::INT32)
+                            lines_keep[k] = std::string("    <int name=\"") + k + "\" value=\"" + std::to_string(v.int_val) + "\" />";
+                        else
+                            lines_keep[k] = std::string("    <string name=\"") + k + "\">" + v.string_val + "</string>";
+                    }
+                lines_keep["_has_set_default_values"] = "    <boolean name=\"_has_set_default_values\" value=\"true\" />";
+                std::string mkdir_cmd = "mkdir -p " + prefs_dir;
+                system(mkdir_cmd.c_str());
+                std::ofstream out(prefs_file);
+                if (out.is_open()) {
+                    out << "<?xml version='1.0' encoding='utf-8' standalone='yes' ?>\n<map>\n";
+                    for (const auto& [k, l] : lines_keep) out << l << "\n";
+                    out << "</map>\n";
+                    std::cerr << "[F114B-SETDEFAULTS] " << sp_name << ".xml written"
+                              << " defaults=" << defaults.size() << std::endl;
+                }
+            } else {
+                std::cerr << "[F114B-SETDEFAULTS] AXML parse failed for resid 0x"
+                          << std::hex << res_id << std::dec << std::endl;
+            }
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_void();
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // EXP-048: SharedPreferences methods — getString, getBoolean, getInt,
     // getLong, contains, edit, Editor.put*, commit, apply
     // ────────────────────────────────────────────────────────────────────────
@@ -22971,7 +23388,31 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
 
         if (method == "getString") {
+            // §24 env-gated probe (F-114 forensics)
+            static thread_local const bool f114_diag =
+                std::getenv("MINIANDROID_F114_DIAG") != nullptr;
+            if (f114_diag) {
+                std::cerr << "[F114-DIAG] prefs getString"
+                          << " class=" << class_name
+                          << " argc=" << args.size();
+                for (size_t di = 0; di < args.size(); ++di)
+                    std::cerr << " a" << di << "(t=" << static_cast<int>(args[di].type)
+                              << ",null=" << args[di].is_null
+                              << ",s=\"" << (args[di].type == DalvikType::STRING_REF ? args[di].string_val : std::string(""))
+                              << "\")";
+                std::cerr << std::endl;
+            }
             std::string key = (args.size() > 1 && args[1].type == DalvikType::STRING_REF) ? args[1].string_val : "";
+            // F-114 (R-NEW-383): AOSP SharedPreferencesImpl.getString law
+            // (aosp-mirror/platform_frameworks_base
+            //  core/java/android/app/SharedPreferencesImpl.java:307-313):
+            //     return v != null ? v : defValue;   // @Nullable defValue
+            // A NULL default must be returned as a NULL reference — coercing
+            // it to "" breaks apps that call Integer.parseInt(s == null ?
+            // "0" : s) (real-world face: com.cax.pmk activateSettings NFE).
+            const bool def_is_null =
+                (args.size() > 2) &&
+                (args[2].is_null || args[2].type == DalvikType::NULL_REF);
             std::string def = (args.size() > 2 && args[2].type == DalvikType::STRING_REF) ? args[2].string_val : "";
             if (prefs_obj_id && heap_.has_object(prefs_obj_id)) {
                 auto val = heap_.get_object_field(prefs_obj_id, key);
@@ -22980,6 +23421,12 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     status = ApiCallTrace::Status::IMPLEMENTED;
                     return true;
                 }
+            }
+            if (def_is_null) {
+                if (f114_diag) std::cerr << "[F114-OUT] returning NULL ref" << std::endl;
+                result = DalvikValue::make_null();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
             }
             result = DalvikValue::make_string(def, 1);
             status = ApiCallTrace::Status::IMPLEMENTED;

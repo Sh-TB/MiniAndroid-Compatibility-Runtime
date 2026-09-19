@@ -1240,6 +1240,15 @@ public:
     }
     // EXP-071 Phase 6: Set the APK path so AssetManager.open can read assets.
     void set_apk_path(const std::string& path) { apk_path_ = path; }
+    // F-116 (R-NEW-384 family): manifest <meta-data> tables for the
+    // PackageManager.getActivityInfo().metaData law (AOSP PackageItemInfo).
+    void set_activity_meta_data(
+        std::map<std::string,
+                 std::vector<std::pair<std::string, std::string>>> activity_md,
+        std::vector<std::pair<std::string, std::string>> application_md) {
+        activity_meta_data_ = std::move(activity_md);
+        application_meta_data_ = std::move(application_md);
+    }
     // EXP-093/F011: Manifest-derived package identity
     void set_package_info(const std::string& pkg, int vcode, const std::string& vname) {
         package_name_ = pkg; version_code_ = vcode; version_name_ = vname;
@@ -2317,6 +2326,11 @@ public:
     std::string package_name_;
     int version_code_ = 0;
     std::string version_name_;
+    // F-116 (R-NEW-384 family): manifest meta-data tables
+    std::map<std::string,
+             std::vector<std::pair<std::string, std::string>>>
+        activity_meta_data_;
+    std::vector<std::pair<std::string, std::string>> application_meta_data_;
     // EXP-093/F008: Permission state map (permission_name → 0=GRANTED, -1=DENIED)
     std::map<std::string, int> permission_state_;
     // Map: heap object_id (InputStream) → (asset_name, line_index)
