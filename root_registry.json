@@ -1,7 +1,7 @@
 {
  "baseline_head": "5a2b7d99",
  "summary": {
-  "total_roots": 354,
+  "total_roots": 364,
   "open_frontiers": [
    "R-NEW-381"
   ],
@@ -3659,6 +3659,40 @@
    "title": "Dooz v23 first-frame content — S61 face: the Compose draw path is now WIRED (F-108 R8-rename law: identity via dispatchDraw-override contract instead of the wiped androidx package prefix) and the dispatch reaches the compose owner view; the remaining gap is COMPOSITION VOLUME — the interpreted composition (627 cold class inits + ~23K invokes + ~700K instructions) does not complete inside practical budgets, so dispatchDraw still yields 0 canvas ops.",
    "evidence": "S62 MEASURED DECOMPOSITION (docs/evidence/s62_r381/S62_REPORT.md; run/s62_f107_ab_before, run/s62_f107_ab_after, run/s62_buckets, run/s62_opself, run/s62_f109_measure, run/s62_lbl_trace): (1) F-107 A/B on identical budgets: instruction throughput UNCHANGED (700K vs ~690K instr @480s; segments within noise) — the 0->197px frame move at budget stop was F-108's dispatchDraw-contract, not F-107 throughput; (2) S62 bucket timers (insn.pre 0.026%/insn.post 0.084% of wall): loop bookkeeping CLEAN; (3) per-<clinit> duration law: top-10 chains = 74% of class-init time (Lug0; 23-instr <clinit> = 7.1s), top-50 = 95%; (4) the 7.1s chain = Lug0;->Lqk;->Lbl;-> 1,024x Lnd1;.c = androidx ColorSpace Rgb transfer-table static init (register evidence: 'Display P3','NTSC (1953)','SMPTE-C RGB','scRGB') = 90% of all executed instructions; (5) op self-time: sget-object 23.3ms/call (37% wall), new-instance 9.4ms (14.5%), sget 88ms — ~69% of wall = first-touch sget/new-instance carrying cold-init subtrees of REAL interpreted work; (6) F-109a/c (written-set bitmap + strcmp arith dispatch) = ~9-10% instruction-rate gain, honest: marginal, frontier unchanged; battery ALL PASS 96 + goldens 26/8.",
    "next": "(a) F-110 lever (measured, registered): per-invoke constants tri.resolve 15.8us + em.setup 22.7us and DalvikValue copy cost (2xstd::string per register read/write) — the composition needs ~700K instructions; at current ~1,459-2,200 inst/s it completes only past ~480s; a 3-6x constant-cost reduction is the path to completion inside evidence budgets. (b) When composition completes: verify dispatchDraw -> CanvasShadow ops -> real Compose pixels. R-NEW-380 stays closed."
+  },
+  {
+   "id": "F-110",
+   "title": "Per-invoke/per-exit constant-cost lever (registered S62, measured)",
+   "status": "IMPLEMENTED+TESTED",
+   "family": "S62+ spotlight unblock push",
+   "note": "F-110a result-snapshot deferral: execute_method_internal deep-copied result.call_stack + result.heap at EVERY (incl. nested) method exit — O(N x heap) quadratic; gprof anuto 25s startup: 387,639,677 pair<string,string> copies. Outermost-only snapshot preserves the exact final result content. A/B same APK same 25s budget: 128,076 -> 7,400,000+ instructions (57.8x), RSS 41MB -> 335MB (deeper reach). F-110b THREAD-SLEEP YIELD: Thread.sleep inside a run-to-completion drained body = deterministic yield (virtual clock advance + frame-chain suspend at drain boundary); first hit anuto GameLoop.run 50K-visit spin -> APP BOUNDARY unwind. F-110c ArrayList add(int,E)/remove(int)/remove(Object) heap-backed laws (upstream shift semantics + deferred IOOBE); first hit anuto MessageQueue.processMessages drain loop could never remove the head (infinite loop + 2.1GB balloon). F-110d CURRENT-THREAD IDENTITY: Thread.currentThread() returns the drained thread's heap object while its body runs (save/restore, nested-safe); main singleton unchanged outside. First hit anuto isThreadChangeNeeded gating (loadMap re-post forever). F-110e TOUCH-TARGET + MotionEvent: view_touchable includes touch_listener_id (AOSP dispatchTouchEvent listener gate before clickability); dispatch_touch_listener onTouch(View,MotionEvent)Z with consumed semantics; MotionEvent materialization + getAction/getX/getY bridge; framework static INT constant table (MotionEvent.ACTION_*). Evidence: docs/evidence/s62plus_spotlight/S62PLUS_REPORT.md",
+   "consumers": [
+    "ch.logixisland.anuto (GameLoop.run yield + currentThread identity)",
+    "ch.logixisland.anuto (MessageQueue drain via ArrayList remove laws)",
+    "ch.logixisland.anuto (GameView touch target + onTouch dispatch)",
+    "generic: any drained thread body with a sleep loop",
+    "generic: any ArrayList insert/remove/indexed-add drain pattern"
+   ]
+  },
+  {
+   "id": "F-111",
+   "title": "LayoutInflater <view class=...> no-namespace class attribute law",
+   "status": "ROOT-CAUSED-FIXED",
+   "note": "AOSP LayoutInflater.createViewFromTag reads the custom-view class via getAttributeValue(null, \"class\") — NO namespace. The AXML parser gives no-namespace attributes ns=\"\"; the inflater's el.attr(\"class\") defaulted to ns=\"android\" and missed, degrading <view class=\"FQCN\"> to a generic Landroid/view/View; and bypassing the G11 DEX-constructor hook (the app's real game board was a hollow placeholder). Fix: namespace-agnostic lookup. First hit: anuto GameView (ch.logixisland.anuto.view.game.GameView) — after the fix the G11 (Context,AttributeSet) ctor law constructs the REAL view and the C013 draw path dispatches its REAL onDraw. Evidence: docs/evidence/s62plus_spotlight/S62PLUS_REPORT.md",
+   "consumers": [
+    "ch.logixisland.anuto (GameView)",
+    "any app using <view class=...>"
+   ]
+  },
+  {
+   "id": "F-112",
+   "title": "Manifest <application> android:name buildClassName law (leading-dot join)",
+   "status": "ROOT-CAUSED-FIXED",
+   "note": "AOSP PackageParser.buildClassName: leading '.' joins the manifest package; a name with no dot also joins; otherwise as-is. application_name was taken raw: '.AnutoApplication' degraded to 'L/AnutoApplication;' -> 'not present in DEX' -> default Application fallback -> the app's real Application.onCreate never ran (no app singleton; custom-view ctor depending on it fails). Fix: same three-branch law the main-activity name already applies. Post-fix: [R341-APP] instantiating Application Lch/logixisland/anuto/AnutoApplication; onCreate OK ins=14751. Evidence: docs/evidence/s62plus_spotlight/S62PLUS_REPORT.md",
+   "consumers": [
+    "ch.logixisland.anuto",
+    "any app declaring a relative Application class"
+   ]
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign."

@@ -476,7 +476,23 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
     if (name == "application") {
         result_.application_label = get_attribute_value(attrs, "label");
         // EXP-093/F005: Extract custom Application class name.
+        // S62+ (AOSP PackageParser.buildClassName law): a leading '.' joins
+        // the manifest package; a name with NO dot at all also joins the
+        // package; otherwise the name is fully qualified as-is. This is the
+        // same three-branch law the main-activity name already applies.
+        // Without it ".AnutoApplication" degraded to "L/AnutoApplication;"
+        // and the app's real Application class never bound (default
+        // Application fallback ran instead — no sInstance, custom-view
+        // constructors depending on the app singleton failed).
         result_.application_name = get_attribute_value(attrs, "name");
+        {
+            const std::string& n = result_.application_name;
+            if (!n.empty() && n[0] == '.') {
+                result_.application_name = result_.package_name + n;
+            } else if (!n.empty() && n.find('.') == std::string::npos) {
+                result_.application_name = result_.package_name + "." + n;
+            }
+        }
         // VISUAL-CAMPAIGN G49: android:theme (attr id 0x01010000) is a
         // REFERENCE to a style resource — capture the raw resid so the
         // renderer can resolve the window background.

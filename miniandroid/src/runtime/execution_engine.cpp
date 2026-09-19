@@ -509,6 +509,12 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                         return dalvik_engine_.dispatch_long_click(view_id,
                                                                   consumed);
                     });
+                touch_dispatcher_->set_touch_dispatch(
+                    [this](uint32_t view_id, int action, float x, float y,
+                           bool& consumed) -> bool {
+                        return dalvik_engine_.dispatch_touch_listener(
+                            view_id, action, x, y, consumed);
+                    });
             }
         }
         std::cerr << "[EXP086-P1] Configured dalvik_engine_ with "
