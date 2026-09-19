@@ -1,0 +1,16 @@
+{
+  "FRAME": "/home/z/my-project/docs/evidence/visual_forensics/s65_reval/tripeaks/lobby_full.png",
+  "file_size": 34446,
+  "sha256": "b513d78be598ace03d5d09717eb83398dd39adf111856f0998f075c8021b8436",
+  "format": "PNG",
+  "width": 1080,
+  "height": 1920,
+  "bit_depth": 8,
+  "color_type": 2,
+  "nonwhite_pixels": 205638,
+  "total_pixels": 2073600,
+  "nonwhite_pct": 9.917,
+  "content_bbox": "(0,10)-(1079,301) w=1080 h=292",
+  "unique_colors": 449,
+  "pixel_source": "PIL"
+}

@@ -1,0 +1,16 @@
+{
+  "FRAME": "/home/z/my-project/docs/evidence/visual_forensics/dooz/v23_full.png",
+  "file_size": 10464,
+  "sha256": "3273786a4410af048aa98720a9393bcc71c3549028039c5a7d5cf7b273bba2f1",
+  "format": "PNG",
+  "width": 1080,
+  "height": 1920,
+  "bit_depth": 8,
+  "color_type": 2,
+  "nonwhite_pixels": 197,
+  "total_pixels": 2073600,
+  "nonwhite_pct": 0.01,
+  "content_bbox": "(0,0)-(33,104) w=34 h=105",
+  "unique_colors": 3,
+  "pixel_source": "PIL"
+}

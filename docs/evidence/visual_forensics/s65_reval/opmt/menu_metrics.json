@@ -1,0 +1,16 @@
+{
+  "FRAME": "/home/z/my-project/docs/evidence/visual_forensics/s65_reval/opmt/menu_full.png",
+  "file_size": 26221,
+  "sha256": "62619caa3b31066e5b79577076785aac320ca504639fac6e230c5e2e07650e28",
+  "format": "PNG",
+  "width": 1080,
+  "height": 1920,
+  "bit_depth": 8,
+  "color_type": 2,
+  "nonwhite_pixels": 213286,
+  "total_pixels": 2073600,
+  "nonwhite_pct": 10.286,
+  "content_bbox": "(277,37)-(1079,1845) w=803 h=1809",
+  "unique_colors": 226,
+  "pixel_source": "PIL"
+}

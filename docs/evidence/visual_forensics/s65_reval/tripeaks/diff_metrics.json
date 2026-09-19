@@ -1,0 +1,25 @@
+{
+  "frame_a": "/home/z/my-project/docs/evidence/visual_forensics/s65_reval/tripeaks/lobby_full.png",
+  "frame_b": "/home/z/my-project/docs/evidence/visual_forensics/s65_reval/tripeaks/board_full.png",
+  "sha_a": "b513d78be598ace03d5d09717eb83398dd39adf111856f0998f075c8021b8436",
+  "sha_b": "c3014c5cb6c2068730fb7d30b1cb533bbfc5d9d8769cca230031ee7d2cece149",
+  "size_a": [
+    1080,
+    1920
+  ],
+  "size_b": [
+    1080,
+    1920
+  ],
+  "changed_pixels": 2073600,
+  "changed_pct": 100.0,
+  "change_bbox": [
+    0,
+    0,
+    1080,
+    1920
+  ],
+  "diff_image": "/home/z/my-project/docs/evidence/visual_forensics/s65_reval/tripeaks/lobby_vs_board_diff.png",
+  "diff_image_sha256": "525abc8e05c18b71bafee618cf125daa2f7d3dfdecfec45ddd0919cd6999523b",
+  "verdict": "CHANGED (2073600 px)"
+}

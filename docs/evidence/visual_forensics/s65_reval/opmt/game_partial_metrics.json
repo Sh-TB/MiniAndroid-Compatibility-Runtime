@@ -1,0 +1,16 @@
+{
+  "FRAME": "/home/z/my-project/docs/evidence/visual_forensics/s65_reval/opmt/game_partial_full.png",
+  "file_size": 39178,
+  "sha256": "9801d008dde79a3fd253c268e060b8dfb95aa203f62faad5f50cf94c521294e6",
+  "format": "PNG",
+  "width": 1080,
+  "height": 1920,
+  "bit_depth": 8,
+  "color_type": 2,
+  "nonwhite_pixels": 266734,
+  "total_pixels": 2073600,
+  "nonwhite_pct": 12.863,
+  "content_bbox": "(1,226)-(1029,1457) w=1029 h=1232",
+  "unique_colors": 240,
+  "pixel_source": "PIL"
+}

@@ -1,0 +1,25 @@
+{
+  "frame_a": "/home/z/my-project/docs/evidence/visual_forensics/s65_reval/fishrings/board_full.png",
+  "frame_b": "/home/z/my-project/docs/evidence/visual_forensics/s65_reval/fishrings/after_tap3_full.png",
+  "sha_a": "bb09f55f4c710ee672f361efcbe482b7a554b5e2ca51c80485ba7363b0730667",
+  "sha_b": "365602413a50ee8bd3a7deb1a8638475ca595008cd156d39b8d460c899cbb035",
+  "size_a": [
+    1080,
+    1920
+  ],
+  "size_b": [
+    1080,
+    1920
+  ],
+  "changed_pixels": 483644,
+  "changed_pct": 23.3239,
+  "change_bbox": [
+    3,
+    6,
+    783,
+    1824
+  ],
+  "diff_image": "/home/z/my-project/docs/evidence/visual_forensics/s65_reval/fishrings/board_vs_after_tap3_diff.png",
+  "diff_image_sha256": "9b9e4db10f6dbc27525b189cad3b6c1e4a0248a1f5343c306287791dc1165a42",
+  "verdict": "CHANGED (483644 px)"
+}

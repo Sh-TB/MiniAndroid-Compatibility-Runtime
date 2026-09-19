@@ -1,0 +1,25 @@
+{
+  "frame_a": "/home/z/my-project/docs/evidence/visual_forensics/tictactoe/run1/initial_full.png",
+  "frame_b": "/home/z/my-project/docs/evidence/visual_forensics/tictactoe/run1/win_full.png",
+  "sha_a": "613cfccc0f27b5bf8c0eb88bcb34221305c25a5d4b77d675849575be5e36cb47",
+  "sha_b": "2e80e8c0b8aab2349e059d7f5eb9b3679bbb31844d81d5ae9c88547ea40217ee",
+  "size_a": [
+    1080,
+    1920
+  ],
+  "size_b": [
+    1080,
+    1920
+  ],
+  "changed_pixels": 4097,
+  "changed_pct": 0.1976,
+  "change_bbox": [
+    37,
+    8,
+    914,
+    1620
+  ],
+  "diff_image": "/home/z/my-project/docs/evidence/visual_forensics/tictactoe/run1/diff.png",
+  "diff_image_sha256": "0d59223c8421338cf2242051f22293783f8d422a60bbc0826e547a9487178290",
+  "verdict": "CHANGED (4097 px)"
+}

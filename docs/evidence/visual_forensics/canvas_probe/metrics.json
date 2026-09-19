@@ -1,0 +1,28 @@
+{
+  "FRAME": "/home/z/my-project/docs/evidence/visual_forensics/canvas_probe/probe_full.png",
+  "file_size": 11648,
+  "sha256": "28fe5f4859f567bd51358bcdf28f5f8787ef9ceeeb05fec8e571b0466fa7d23f",
+  "format": "PNG",
+  "width": 1080,
+  "height": 1920,
+  "bit_depth": 8,
+  "color_type": 2,
+  "nonwhite_pixels": 128904,
+  "total_pixels": 2073600,
+  "nonwhite_pct": 6.216,
+  "content_bbox": "(100,100)-(879,1299) w=780 h=1200",
+  "unique_colors": 8,
+  "pixel_source": "PIL",
+  "pixel_probes": {
+    "200,150": "#FF0000 a=255",
+    "550,130": "#0000FF a=255",
+    "750,130": "#808080 a=255",
+    "500,400": "#00FF00 a=255",
+    "800,300": "#0000FF a=255",
+    "200,1000": "#FF7E7E a=255",
+    "620,1250": "#FFFF00 a=255",
+    "550,1230": "#FFFF00 a=255",
+    "150,695": "#000000 a=255",
+    "100,1500": "#FFFFFF a=255"
+  }
+}

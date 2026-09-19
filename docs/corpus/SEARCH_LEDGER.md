@@ -175,3 +175,23 @@ TOTAL_SEARCHES 9 · UNIQUE_QUERIES 9 · REPOSITORIES_CHECKED 9 · DOMAINS 4
 IMPLEMENTATIONS_FOUND 3 · TESTS_FOUND 0 (honesty: no upstream
 instrumentation tests for these faces) · SEARCH_EXHAUSTED no
 (OBJECT-IDENTITY family queries queued in S65_REPORT §7).
+
+---
+
+## S66 — Full Visual Proof + Renderer Forensics (2026-09-19)
+
+| Source file / query | Repository / origin | Law it grounds |
+|---|---|---|
+| aosp_Button.java:221 (`return com.android.internal.R.attr.buttonStyle;`) | aosp-mirror/platform_frameworks_base @ main (fetched, in S66 evidence) | F-120 Button default-style gravity = theme buttonStyle (Widget.Material.Button) |
+| core/res/res/values/styles.xml — Widget.Material.Button `android:gravity` | aosp-mirror @ main (fetched) | F-120 center_horizontal\|center_vertical style default |
+| activity_game.xml @ TriPeaks 62f3609 (pinned clone re-fetch, SHA-verified) | VelbazhdSoftwareLLC/TriPeaksSolitaireForAndroid | R-NEW-388: cards positioned by alignParentLeft/Top + marginLeft/Top (margins-as-offsets idiom); stats by alignParentBottom tiers |
+| CardBoard.java @ 62f3609 | same | CardBoard is a plain model class (no View) — collapse is engine layout-side, not app-side |
+| ViewShadow::ViewNode gravity member | g++ -fsyntax-only compiler probe (S66) | proved `gravity` member absent → view_renderer.cpp/real_layout.cpp not in Makefile build (dead code, no runtime effect) |
+| execution_engine.cpp G36/G47 text stage + canvas_shadow.cpp warn_noop + software_renderer blend/PNGWriter | engine source forensics | live gravity consumer; clipRect pre-registered noop; source-over blend; faithful encoder |
+
+TOTAL_SEARCHES 6 · UNIQUE_QUERIES 6 · REPOSITORIES_CHECKED 4
+(aosp, VelbazhdSoftwareLLC/TriPeaks, engine source, local toolchain) ·
+RELEVANT_HITS 6 · IMPLEMENTATIONS_FOUND 1 (F-120 shipped + rerun chain) ·
+TESTS_FOUND 0 · HONESTY NOTE: zoekt/csearch shards lost to container reset;
+NOT rebuilt this stage — every S66 item cites a fetched file, SHA-verified clone,
+or compiler/source probe instead of a bare result count.

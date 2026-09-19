@@ -1,0 +1,15 @@
+{
+  "FRAME": "/home/z/my-project/docs/evidence/visual_forensics/canvas_probe/probe_full.png",
+  "decoder": "pure-python zlib (independence layer)",
+  "sha256_file": "28fe5f4859f567bd51358bcdf28f5f8787ef9ceeeb05fec8e571b0466fa7d23f",
+  "sha256_decoded_rgba": "5266b4c5b5085e4b7cdc99e5713331601adb202a0059dc88b0a83fb40c47020f",
+  "width": 1080,
+  "height": 1920,
+  "nonwhite_pixels": 128904,
+  "total_pixels": 2073600,
+  "nonwhite_pct": 6.216,
+  "content_bbox": "(100,100)-(879,1299) w=780 h=1200",
+  "unique_colors": 8,
+  "pil_sha256_decoded_rgba": "5266b4c5b5085e4b7cdc99e5713331601adb202a0059dc88b0a83fb40c47020f",
+  "pure_vs_pil_identical": true
+}
