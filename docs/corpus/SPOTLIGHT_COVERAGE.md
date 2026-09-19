@@ -5,7 +5,7 @@ manifest) + `docs/corpus/spotlight_results.json` (execution results).
 Selection law: capability coverage, not randomness — every app carries
 capability tags; the sweep records the honest L-level the runtime reaches.
 
-## Phase B additions — source-first spotlight (S62+ / S63)
+## Phase B additions — source-first spotlight (S62+ / S63 / S64 / S65)
 
 | App | Build | Session | Stage / L | Evidence |
 |---|---|---|---|---|
@@ -14,6 +14,9 @@ capability tags; the sweep records the honest L-level the runtime reaches.
 | de.duenndns.gmdice | source-first ee9f7396… (ge0rg/gamemasterdice @6353926f) | S63 | **S10/L6 PROVEN**: 1,744,539 px; 5/5 clicks→GameMasterDice.onClick; dice 6/5/3/2 post-F-113; frame SHA 5312266e→fa1d8612; diff 1,584 px in result band; det ×3 | docs/evidence/s63_spotlight/ |
 | org.billthefarmer.siggen | source-first c83d21c6… (billthefarmer/sig-gen @ master) | S63 | S7: 47,809 px (== S61 prebuilt count); 5/5 clicks→Main.onClick; audio.waveform mutation; custom views 0x0 (frontier); det ×3 | docs/evidence/s63_spotlight/ |
 | org.blockinger.game | surveyed, NOT built (vocollapse/Blockinger @8b26057f) | S63 | DEFERRED — support-v4 FragmentActivity + SurfaceView = two known heavy families | S63_REPORT.md §0 fact matrix |
+| eu.veldsoft.tri.peaks | source-first 52272ae6… (VelbazhdSoftwareLLC/TriPeaksSolitaireForAndroid @62f3609) | S65 | **S7**: splash→F-115 Timer→lobby→New Game→GameActivity; 52 cards bound listener_id=38 post-F-118; click→GameActivity$1 real handler; app-own guard IOOBE stops S8 (OBJECT-IDENTITY family recorded); det ×3 | docs/evidence/s65_spotlight/ |
+| eu.veldsoft.fish.rings | source-first 14d7dd80… (VelbazhdSoftwareLLC/FishRingsForAndroid @dc3807e) | S65 | **S10 PROVEN**: full chain splash→Timer→GameActivity→3× input→GameActivity$5/$6→rings state→changed frames 483,395/478,169/7,347 px; post-F-119; det ×3 byte-identical | docs/evidence/s65_spotlight/ |
+| one.scarecrow.games.OPMT | source-first 4f91e380… (20Nick/OPMT @3240c4cf; androidx compile-stub + staged themes/layouts) | S65 | S6 + chain: menu render 214,144 px (real strings)→click→MainMenu lambda→GameActivity <init>(F-118)→onCreate 1756 insns; app-own nextInt(0) stopper (OBJECT-IDENTITY family); det ×3 | docs/evidence/s65_spotlight/ |
 
 ## Phase A execution summary
 

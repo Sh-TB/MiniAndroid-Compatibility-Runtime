@@ -13893,6 +13893,36 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
                 }
                 static_field_storage_[static_key] = result_value;
             } else {
+                // F-119 (R-NEW-386): X.TYPE primitive-class law.
+                // OpenJDK Integer.java: `public static final Class<Integer>
+                // TYPE = int.class;` (and the same for the other boxes) —
+                // the primitive Class constants are JVM-injected, never
+                // written by <clinit>. With no seed the sget-object answered
+                // typed-zero NULL and Array.newInstance(Integer.TYPE, dims)
+                // produced a null matrix (FishRingsForAndroid Rings.<init>
+                // evidence: int[12][3] board → aput-null NPE in Rings.init).
+                // Descriptor: the primitive letters (JLS/DEX spec) — mirrored
+                // by the Array.newInstance primitive-component arm below.
+                static const std::map<std::string, std::string>
+                    k_primitive_type_desc = {
+                        {"Ljava/lang/Integer;", "I"},
+                        {"Ljava/lang/Boolean;", "Z"},
+                        {"Ljava/lang/Byte;", "B"},
+                        {"Ljava/lang/Character;", "C"},
+                        {"Ljava/lang/Short;", "S"},
+                        {"Ljava/lang/Long;", "J"},
+                        {"Ljava/lang/Float;", "F"},
+                        {"Ljava/lang/Double;", "D"},
+                        {"Ljava/lang/Void;", "V"},
+                    };
+                auto prim = k_primitive_type_desc.find(
+                    field_res.class_descriptor);
+                if (prim != k_primitive_type_desc.end() &&
+                    field_res.field_name == "TYPE") {
+                    result_value = DalvikValue::make_class(
+                        prim->second, instruction_sequence_);
+                    static_field_storage_[static_key] = result_value;
+                } else {
                 // M3 FINDING-013 miss-probe: print the missing key and the
                 // presence of ANY same-class keys in storage — a clinit that
                 // ran but whose writes are invisible here means the two
@@ -13924,6 +13954,7 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
                     }
                 }
                 static_field_storage_[static_key] = result_value;
+                }
             }
         }
     }
@@ -18654,11 +18685,27 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         else if (args[0].type == DalvikType::OBJECT_REF)
             comp_desc = args[0].class_desc;
         if (!comp_desc.empty()) {
+            // F-119 (R-NEW-386): primitive-component descriptor law. DEX/JLS
+            // array descriptors for primitives are "[I"-style (no L...;
+            // wrapper). FishRingsForAndroid Rings.<init>:
+            // int[12][3] board = Array.newInstance(Integer.TYPE, [12,3]) —
+            // with the L-wrapper the check-cast [[I failed and the board
+            // field stayed null.
+            auto make_array_elem_desc =
+                [](const std::string& elem) -> std::string {
+                if (elem.size() == 1 &&
+                    std::string("IZBCSJFDV").find(elem[0]) !=
+                        std::string::npos) {
+                    return "[" + elem;
+                }
+                return "[L" + elem + ";";
+            };
             // 1-D: (Class, int length). n-D: (Class, int[] dimensions).
             std::function<DalvikValue(const std::string&, int)> make_1d =
                 [&](const std::string& elem_desc, int len) -> DalvikValue {
+                std::string arr_desc = make_array_elem_desc(elem_desc);
                 uint32_t arr_id = heap_.allocate(
-                    "[L" + elem_desc + ";", pc_, 0);
+                    arr_desc, pc_, 0);
                 heap_.set_object_field(arr_id, "__array_length__",
                     DalvikValue::make_int(len < 0 ? 0 : len));
                 heap_.set_object_field(arr_id, "__new_array_length__",
@@ -18666,7 +18713,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 DalvikValue av;
                 av.type = DalvikType::OBJECT_REF;
                 av.object_id = arr_id;
-                av.class_desc = "[L" + elem_desc + ";";
+                av.class_desc = arr_desc;
                 av.int_val = len < 0 ? 0 : len;
                 return av;
             };
@@ -18675,8 +18722,10 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 // Strip the L...; wrapper for the element descriptor of a
                 // 1-D object array: newInstance(Button.class, 5) answers
                 // Landroid/widget/Button;[ ] — descriptor "[Landroid/...;".
+                // F-119: primitives answer "[I"-style (no L wrapper).
+                std::string one_d_desc = make_array_elem_desc(elem);
                 uint32_t arr_id = heap_.allocate(
-                    "[L" + elem, pc_, 0);
+                    one_d_desc, pc_, 0);
                 int len = args[1].int_val < 0 ? 0 : args[1].int_val;
                 heap_.set_object_field(arr_id, "__array_length__",
                     DalvikValue::make_int(len));
@@ -18685,7 +18734,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 DalvikValue av;
                 av.type = DalvikType::OBJECT_REF;
                 av.object_id = arr_id;
-                av.class_desc = "[L" + elem;
+                av.class_desc = one_d_desc;
                 av.int_val = len;
                 result = av;
                 status = ApiCallTrace::Status::IMPLEMENTED;
@@ -18714,8 +18763,10 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                         if (di + 1 == dims.size()) {
                             // innermost: element type is the component.
                             std::string elem = comp_desc;
+                            std::string inner_desc =
+                                make_array_elem_desc(elem);
                             uint32_t arr_id = heap_.allocate(
-                                "[L" + elem, pc_, 0);
+                                inner_desc, pc_, 0);
                             heap_.set_object_field(arr_id,
                                 "__array_length__",
                                 DalvikValue::make_int(len));
@@ -18725,7 +18776,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                             DalvikValue av;
                             av.type = DalvikType::OBJECT_REF;
                             av.object_id = arr_id;
-                            av.class_desc = "[L" + elem;
+                            av.class_desc = inner_desc;
                             av.int_val = len;
                             return av;
                         }

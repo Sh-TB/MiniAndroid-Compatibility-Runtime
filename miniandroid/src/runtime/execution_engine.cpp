@@ -4288,6 +4288,41 @@ nlohmann::json ExecutionEngine::consume_pending_intent() {
     // ── B.onCreate WITH the launching intent ─────────────────────────────
     auto& heap = dalvik_engine_.get_heap_public();
     uint32_t b_id = heap.allocate(cls, 0, 0);
+    // F-118 (R-NEW-385): AOSP Instrumentation.newActivity law —
+    // ActivityThread.performLaunchActivity builds the activity via
+    // newInstance(), so the DECLARED no-arg <init>()V executes BEFORE
+    // onCreate (java/lang/Class.newInstance contract, OpenJDK). The G08
+    // launch previously skipped the constructor: instance-field
+    // initializers never ran, so field-initialized listeners
+    // (`private View.OnClickListener x = new View.OnClickListener(){...}`,
+    // TriPeaks GameActivity evidence) stayed typed-zero, setOnClickListener
+    // registered listener_id=0 ([EXP060-LISTENER] listener_id=0), and every
+    // tap on such views was silently dead (DOWN hit the view, no
+    // PerformClick post). Mirrors the launch-activity path, which already
+    // runs the same law (dalvik_engine.cpp run_activity_default_init at
+    // execute_apk_with_activity).
+    {
+        miniandroid::dalvik::DalvikValue init_ret;
+        miniandroid::dalvik::DalvikExecutionResult init_res;
+        std::vector<miniandroid::dalvik::DalvikValue> init_args;
+        init_args.push_back(
+            miniandroid::dalvik::DalvikValue::make_object(b_id, cls));
+        bool init_ok = false;
+        try {
+            init_ok = dalvik_engine_.try_recursive_invoke(
+                cls, "<init>", init_args, init_ret, init_res, "()V");
+        } catch (const std::exception& e) {
+            init_res.halt_reason = e.what();
+        }
+        nlohmann::json ir;
+        ir["method"] = "<init>";
+        ir["class"] = cls;
+        ir["dispatched"] = init_ok;
+        ir["instructions"] = init_res.total_instructions_executed;
+        rec["callbacks"].push_back(ir);
+        std::cerr << "[G08-LIFECYCLE] " << ir.dump()
+                  << " (F-118 constructor law)" << std::endl;
+    }
     uint32_t intent_obj = pi->intent_object_id;
     if (intent_obj == 0)
         intent_obj = heap.allocate("Landroid/content/Intent;", 0, 0);
