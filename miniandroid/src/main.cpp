@@ -479,6 +479,12 @@ int main(int argc, char* argv[]) {
             // touch → callback → state change → second frame (§10).
             config.click_test = true;
             std::cout << "[*] CLICK-TEST enabled (dispatch real clicks after first frame)\n";
+        } else if (arg == "--dump-view-tree") {
+            // S67 FOUNDATION: dump the live ViewShadow tree to
+            // <output>/view_tree.json (canonical view→pixel provenance
+            // artifact; x/y/w/h/class/text/visibility per node).
+            config.dump_view_tree = true;
+            std::cout << "[*] DUMP-VIEW-TREE enabled (view_tree.json after final capture)\n";
         } else if (arg == "--max-seconds" && i + 1 < argc) {
             // S60 (R-NEW-380): wall-clock soft budget for the DEX dispatch.
             // Graceful stop identical to the instruction budget — the

@@ -11,6 +11,7 @@
 #include "../renderer/software_renderer.h"
 #include "../fonts/text_shaper.h"
 #include "../resources/resource_runtime.h"
+#include "../resources/res_id.h"  // S67 A2: canonical complexToDimensionPixelSize law
 #include "../resources/res_config.h"  // G04 §4: device_config() density law
 // EXP-086 Phase 7 (B4 FIX): HandlerShadow for Runnable queue drain
 #include "../framework/android_shadows.h"
@@ -572,8 +573,23 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                     auto v = arsc.resolve_value(resid);
                     if (v.has_value() && v->type == resources::DataType::DIMENSION &&
                         !name.empty()) {
+                        // ────────────────────────────────────────────────
+                        // S67 FOUNDATION (A2, user §3 resource contract):
+                        // AOSP TypedValue.complexToDimensionPixelSize law —
+                        // Resources.getDimensionPixelSize returns DEVICE
+                        // PIXELS (value × density, round-half-away + nonzero
+                        // floor), NOT the raw dp mantissa. The seed below
+                        // previously stored v->dim_value unconverted, so
+                        // "100dp" read back as 100px at the 420dpi device law
+                        // (expected 262px) — a silent-wrongness primitive with
+                        // fan-out to every programmatic layout sized from
+                        // dimension resources. Conversion routes through the
+                        // canonical res_id.cpp law (one rounding site).
+                        // ────────────────────────────────────────────────
                         dalvik_engine_.resource_dimen_values_[name] =
-                            static_cast<int32_t>(v->dim_value);
+                            resources::complex_unit_to_dimension_pixel_size(
+                                v->dim_unit, v->dim_value,
+                                resources::DensityContext{});
                         a_dim++;
                     }
                 }
@@ -1945,6 +1961,17 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                                                     std::move(items)))
                                             .first;
                             }
+                            // S67 FOUNDATION (A4, f06_invisible fixture):
+                            // AOSP View.draw visibility law — a view with
+                            // INVISIBLE (4) draws NO own content (background,
+                            // shape, border, text, image). The f06 fixture
+                            // pixel-proved INVISIBLE views were fully drawn
+                            // (only GONE pruned) — silent-wrongness with
+                            // fan-out to visibility-dependent UIs. Children
+                            // of an INVISIBLE ViewGroup still draw (AOSP
+                            // dispatchDraw runs under an INVISIBLE parent);
+                            // the child queue below only prunes GONE.
+                            const bool node_invisible = (node->visibility == 4);
                             uint32_t eff_bg_color = node->bg_color;
                             if (sl_it != state_list_cache_.end() &&
                                 sl_it->second.first) {
@@ -1966,11 +1993,11 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                 node->bg_shape_valid &&
                                 !(eff_bg_color != 0 && !node->bg_from_xml);
                             if (f053_shape_owns) eff_bg_color = 0;
-                            if (f053_shape_owns) {
+                            if (f053_shape_owns && !node_invisible) {
                                 bool drew_shape = f053_draw_shape_background(
                                     *node, fb, left, top, w, h);
                                 if (drew_shape) drew_bg = true;
-                            } else if (eff_bg_color != 0) {
+                            } else if (eff_bg_color != 0 && !node_invisible) {
                                 // ARGB int → RGBA
                                 uint32_t c = eff_bg_color;
                                 renderer::RGBA rgba{
@@ -2033,7 +2060,7 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                             // container draws its own stroke — a bordered box is
                             // the closest generic representation.
                             bool is_edit_text = dalvik_engine_.is_subclass_of(node->class_desc, "Landroid/widget/EditText;");
-                            if (is_edit_text && w > 4 && h > 4) {
+                            if (is_edit_text && w > 4 && h > 4 && !node_invisible) {
                                 renderer::RGBA border{0x99, 0x99, 0x99, 0xFF};
                                 // 1px border via 4 rects (thin box)
                                 canvas.draw_rect(left, top, right, top + 1, border);
@@ -2050,7 +2077,7 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                             // Replaces the fixed 8x16 BitmapFont (which
                             // ignored textSize/colour/bold and rendered
                             // microscopic text on density-scaled screens).
-                            if (!node->text.empty()) {
+                            if (!node->text.empty() && !node_invisible) {
                                 float ts = node->text_size_px > 0
                                          ? node->text_size_px
                                          : 14.0f * config.density;
@@ -2319,7 +2346,7 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                             };
                             bool is_image_view = node->class_desc.find("ImageView") != std::string::npos ||
                                                  node->class_desc.find("ImageButton") != std::string::npos;
-                            if (is_image_view && !node->image_drawable_path.empty()) {
+                            if (is_image_view && !node->image_drawable_path.empty() && !node_invisible) {
                                 auto png_data = apk_parser_.extract_entry_cached(node->image_drawable_path);
                                 if (!png_data.empty() && png_data.size() >= 8 &&
                                     png_data[0] == 0x89 && png_data[1] == 0x50 &&
@@ -2372,7 +2399,7 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                     }
                                 }
                             }
-                            if (is_image_view && node->image_drawable_path.empty() &&
+                            if (is_image_view && node->image_drawable_path.empty() && !node_invisible &&
                                 (node->image_resource_id != 0 ||
                                  !node->src_drawable_path.empty())) {
                                 // UNIFIED_011.2 IMAGE-RES-RENDER (§13/§14): replace the
@@ -2482,7 +2509,7 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                             // row buttons set 17 = Gravity.CENTER); CENTER
                             // centers the intrinsic-size image inside the view
                             // bounds without scaling (AOSP gravity resolution).
-                            if (!node->fg_drawable_path.empty()) {
+                            if (!node->fg_drawable_path.empty() && !node_invisible) {
                                 auto fg_data =
                                     apk_parser_.extract_entry_cached(node->fg_drawable_path);
                                 if (fg_data.size() >= 4) {
@@ -2522,7 +2549,7 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                             }
 
                             // EXP-098 (CM-027): RLottie animation decode + draw.
-                            if (is_image_view) {
+                            if (is_image_view && !node_invisible) {
                                 auto* mut_node = const_cast<framework::ViewShadow::ViewNode*>(node);
                                 if (mut_node->anim_raw_resid != 0 &&
                                     !mut_node->anim_decode_attempted &&
@@ -2653,6 +2680,9 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                             for (uint32_t child_id : node->children) {
                                 const auto* cnode = view_shadow->find_node(child_id);
                                 if (!cnode) continue;
+                                // S67 A4 parity: GONE children render nothing in
+                                // the legacy EXP-095 fallback path either.
+                                if (cnode->visibility == 8) continue;
                                 auto measured = measure_node(cnode, w);
                                 int tw = measured.first, th = measured.second;
                                 int cw, ch;
@@ -2913,6 +2943,24 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
 bool ExecutionEngine::stage_capture_output( ExecutionResult& result, const ExecutionConfig& config) {
     trace_engine_.info("ExecutionEngine", "stage_capture_output", "Capturing output");
     // ────────────────────────────────────────────────────────────────────
+    // S67 FOUNDATION (§1 evidence pipeline): ViewTree provenance dump.
+    // Written BEFORE the screenshot-disabled early-return so the tree is
+    // captured even for screenshot-less runs. Uses the same
+    // DalvikExecutionEngine::dump_view_tree the legacy EXP-061 flow used;
+    // now reachable from the standard `run` command via --dump-view-tree.
+    // ────────────────────────────────────────────────────────────────────
+    if (config.dump_view_tree) {
+        fs::create_directories(config.output_directory);
+        const std::string vt_path = config.output_directory + "/view_tree.json";
+        if (dalvik_engine_.dump_view_tree(vt_path)) {
+            trace_engine_.info("ExecutionEngine", "stage_capture_output",
+                               "view_tree.json dumped (S67 provenance law)");
+        } else {
+            trace_engine_.warning("ExecutionEngine", "stage_capture_output",
+                                  "view_tree.json dump FAILED (no ViewShadow/registry)");
+        }
+    }
+    // ────────────────────────────────────────────────────────────────────
     // R-NEW-340: post-lifecycle frame pump (the last-frame law).
     // The F-050 launch pump runs BEFORE onCreate's composition finishes —
     // dooz23's Recomposer posts its Choreographer.FrameCallback
@@ -3057,6 +3105,20 @@ bool ExecutionEngine::stage_click_test( ExecutionResult& result, const Execution
     auto probe = [&](bool disp) -> size_t {
         framebuffer_ = frame1;
         if (disp) {
+            // ────────────────────────────────────────────────────────────
+            // S67 FOUNDATION (user §12 state→render law + G08 contract):
+            // AOSP processes the click message FULLY before the next frame
+            // traversal — onClick may enqueue framework work (startActivity
+            // → H.LAUNCH_ACTIVITY, finish() cascades, posted runnables) and
+            // the next vsync renders the tree that work produced. MiniAndroid
+            // defers startActivity/finish to frame-boundary consumers, so
+            // the probe must drain them HERE — otherwise a click that
+            // legally launches B renders changed_px=0 (frame shows A) and
+            // the evidence records a false "no state change" (f27_nav
+            // fixture finding, 2026-09-19).
+            // ────────────────────────────────────────────────────────────
+            consume_pending_intent();
+            consume_finish_cascade();
             // UNIFIED_011.3 VISUAL-ORACLE (§22/§23): re-render through the
             // SAME pipeline as frame 1. The previous ad-hoc path
             // (content_view->measure/layout/draw) bypassed the real renderer

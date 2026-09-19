@@ -69,6 +69,11 @@ struct ExecutionConfig {
     // Tracing settings
     bool verbose_logging = false;
     bool generate_screenshot = true;
+    // S67 FOUNDATION (§1 evidence pipeline): dump the live ViewShadow tree to
+    // <output>/view_tree.json after the final capture. This is the canonical
+    // view→pixel provenance artifact (x/y/w/h/class/text/visibility per node)
+    // and was previously only reachable through the legacy EXP-061 flow.
+    bool dump_view_tree = false;
     // UNIFIED_011.2 CLICK-TEST (§10/§11): generic touch probe. After the first
     // frame is captured, dispatch a real click on every view with a registered
     // listener, re-render, and record which clicks change pixels (L9→L12:
