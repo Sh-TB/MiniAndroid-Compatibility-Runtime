@@ -41,6 +41,27 @@ if 'android:versionCode' not in src:
                       'package="one.scarecrow.games.OPMT" android:versionCode="1" android:versionName="0.1.2">', 1)
 open(sys.argv[2], "w").write(src)
 EOF
+# OPMT staged-styles transform (siggen law): the app theme references
+# Material Components library attrs (colorPrimaryVariant/colorSecondaryVariant/
+# colorOnSecondary) absent from the standalone aapt2 stub table. Drop those
+# items, resolve statusBarColor to a literal color. Build-level adaptation
+# only; recorded in the S65 report.
+python3 - "$OUT/opmt" <<'EOF'
+import re, sys
+base = sys.argv[1]
+for f in (f"{base}/res/values/themes.xml", f"{base}/res/values-night/themes.xml"):
+    try:
+        s = open(f).read()
+    except FileNotFoundError:
+        continue
+    for attr in ("colorPrimaryVariant", "colorSecondaryVariant", "colorOnSecondary"):
+        s = re.sub(r'\s*<item name="%s">[^<]*</item>' % attr, "", s)
+    s = s.replace("?attr/colorPrimaryVariant", "@color/purple_700")
+    s = s.replace(' xmlns:tools="http://schemas.android.com/tools"', "")
+    s = re.sub(r' tools:targetApi="l"', "", s)
+    open(f, "w").write(s)
+print("opmt themes transformed")
+EOF
 
 echo "STAGED:"
 for d in tripeaks fishrings opmt; do
