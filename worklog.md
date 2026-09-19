@@ -1616,3 +1616,15 @@ Stage Summary:
 - Remaining P0 (registered, law+plan, no code this session): A1 ?attr-at-inflate, A3 non-PNG silent drop, A6 Canvas non-ASCII text, A7 manifest label/icon, A9 canvas dims, A10 Theme.resolveAttribute.
 - Evidence: docs/foundation/* (6 matrices + report + census + worklist), docs/evidence/foundation/{fixtures,determinism}, run/s67_reval/*.
 - All fixes follow the contract cycle; no app-specific patches; every failure documented ROOT CAUSE.
+---
+Task ID: S67-finalize
+Agent: Super Z (main agent)
+Task: commit + secret scan + push.
+
+Work Log:
+- Secret scan: staged diff grep for PAT patterns (github_pat_/ghp_/gh*) clean; binary files excluded with --text re-scan; no credentials in tree.
+- Commit 62402341 created (505 files: 7 engine law fixes + 19 fixtures + 6 matrices + report + harness scripts).
+- Push: FAILED (no credential in session env — container reset cleared it; PAT not present this session). HEAD 62402341 ahead of origin/main 289e33d3 by 1. STATUS: PENDING-PUSH (honest).
+
+Stage Summary:
+- Local: commit complete, clean tree. Push debt: 1 commit (62402341). Next session with credential: `git push origin HEAD`.
