@@ -169,3 +169,4 @@ miniandroid/run/
 # S61: local Go toolchain + zoekt/codesearch build (SEARCH_LEDGER documents them; binaries are reproducible via the ledger recipe)
 /tools/go/
 /tools/gopath/
+zoektdb
