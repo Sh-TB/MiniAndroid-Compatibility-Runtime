@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.miniandroid.f31res"
+    android:versionCode="1" android:versionName="1.0">
+    <application android:label="F31 Resources">
+        <activity android:name="com.miniandroid.f31res.MainActivity" android:label="F31 Resources">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

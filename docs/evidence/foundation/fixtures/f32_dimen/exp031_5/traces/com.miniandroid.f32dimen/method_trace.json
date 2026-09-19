@@ -1,0 +1,130 @@
+{
+  "apk_name": "f32_dimen.apk",
+  "main_class": "Lcom/miniandroid/f32dimen/MainActivity;",
+  "main_method": "onCreate",
+  "methods": [
+    {
+      "class": "Lcom/miniandroid/f32dimen/MainActivity;",
+      "entry_point": true,
+      "method": "onCreate",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/app/Activity;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "v4"
+      ],
+      "class": "Landroid/app/Activity;<super>",
+      "invocation_type": "virtual",
+      "method": "onCreate",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "v4"
+      ],
+      "class": "Lcom/miniandroid/f32dimen/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "setContentView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Lcom/miniandroid/f32dimen/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getResources",
+      "return_value": "Landroid/content/res/Resources;#10",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "p4294967293"
+      ],
+      "class": "Landroid/content/res/Resources;",
+      "invocation_type": "virtual",
+      "method": "getDimensionPixelSize",
+      "return_value": "263",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/TextView;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294",
+        "v4"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "append",
+      "return_value": "Ljava/lang/StringBuilder;#12",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "toString",
+      "return_value": "\"PX=263\"",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "v4"
+      ],
+      "class": "Landroid/widget/TextView;",
+      "invocation_type": "virtual",
+      "method": "setText",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "v4"
+      ],
+      "class": "Lcom/miniandroid/f32dimen/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#8",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "p4294967293"
+      ],
+      "class": "Landroid/widget/LinearLayout;",
+      "invocation_type": "virtual",
+      "method": "addView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    }
+  ],
+  "timestamp": "2026-09-19T23:19:55Z",
+  "total_api_calls": 12
+}

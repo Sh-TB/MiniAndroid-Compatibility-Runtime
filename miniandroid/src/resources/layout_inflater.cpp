@@ -979,8 +979,26 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
         }
         else if (n == "onClick") a.onClick = raw;
         else if (n == "visibility") {
-            if (at.value.is_int()) a.visibility = (int)at.value.data;
-            else a.visibility = raw == "invisible" ? 4 : raw == "gone" ? 8 : 0;
+            if (at.value.is_int()) {
+                // ────────────────────────────────────────────────────────
+                // S67 FOUNDATION (F-124, f06_invisible fixture): AOSP
+                // View.java visibility-space law. android:visibility is
+                // declared in the framework attrs as the enum
+                // {visible=0, invisible=1, gone=2}; aapt2 compiles the
+                // XML attribute into THAT space. The View flags live in a
+                // DIFFERENT space — VISIBLE=0, INVISIBLE=4, GONE=8 — and
+                // ViewProps maps them (VIEW_VISIBILITY_VALUES). The raw
+                // attr int was passed through unchanged, so an XML-
+                // invisible view stored 1 → the renderer's GONE(8) prune
+                // missed it and the view drew. (DEX callers of
+                // setVisibility already use the 4/8 constants — only the
+                // XML path needed the mapping.)
+                // ────────────────────────────────────────────────────────
+                const int d = (int)at.value.data;
+                a.visibility = d == 1 ? 4 : d == 2 ? 8 : (d == 0 ? 0 : d);
+            } else {
+                a.visibility = raw == "invisible" ? 4 : raw == "gone" ? 8 : 0;
+            }
         }
         else if (n == "clickable") a.clickable = (raw == "true") || at.value.is_reference();
         else if (n == "enabled") node.enabled = raw != "false";
@@ -2495,8 +2513,22 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                     int cmt = cn->lp_margin_top, cmb = cn->lp_margin_bottom;
                     if (vg >= 0) {
                         int vf = vg & 0x70;
-                        if (vf == 0x50) y = ct + ch - h - cmb;
-                        else            y = ct + (ch - h) / 2 + cmt - cmb;
+                        // ────────────────────────────────────────────────
+                        // S67 FOUNDATION (C3, f18_lltop fixture): AOSP
+                        // LinearLayout.layoutHorizontal cross-axis switch
+                        // (LinearLayout.java @android-14 L1445-1470):
+                        //   TOP (0x30)    → childTop = parentTop + topMargin
+                        //   CENTER (0x10) → parentTop + (pH-ch)/2 + margins
+                        //   BOTTOM (0x50) → parentBottom - ch - bottomMargin
+                        // Previously TOP fell through the two-way test into
+                        // the CENTER branch — an explicit
+                        // layout_gravity="top" child was vertically CENTERED
+                        // (f18_lltop pixel evidence: child at y=760 in a
+                        // 1920px container; AOSP law y=0).
+                        // ────────────────────────────────────────────────
+                        if (vf == 0x50)      y = ct + ch - h - cmb;
+                        else if (vf == 0x10) y = ct + (ch - h) / 2 + cmt - cmb;
+                        else                 y = ct + cmt;  // TOP + default
                     } else {
                         y = ct + cmt;
                     }

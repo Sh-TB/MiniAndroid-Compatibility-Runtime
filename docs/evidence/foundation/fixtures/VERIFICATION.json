@@ -1,0 +1,153 @@
+[
+ {
+  "fixture": "f18_lltop",
+  "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f18_lltop/screenshot.png",
+  "asserts": [
+   {
+    "label": "layout_gravity=top child at top of horizontal LL",
+    "at": [
+     100,
+     200
+    ],
+    "expected": [
+     255,
+     0,
+     0
+    ],
+    "actual": [
+     255,
+     0,
+     0
+    ],
+    "ok": true
+   },
+   {
+    "label": "still inside 400px-tall child",
+    "at": [
+     100,
+     390
+    ],
+    "expected": [
+     255,
+     0,
+     0
+    ],
+    "actual": [
+     255,
+     0,
+     0
+    ],
+    "ok": true
+   },
+   {
+    "label": "below child bottom (LL height 1920 \u2192 child ends at 400)",
+    "at": [
+     100,
+     420
+    ],
+    "expected": [
+     255,
+     255,
+     255
+    ],
+    "actual": [
+     255,
+     255,
+     255
+    ],
+    "ok": true
+   }
+  ],
+  "status": "PASS",
+  "width": 1080,
+  "height": 1920,
+  "screenshot_sha256": "6965d332d0ef11d8955b5c2aaf6fa409623b1ece38cf33feb74d57423d3b54a6",
+  "nonwhite": 80000,
+  "bbox": [
+   0,
+   0,
+   199,
+   399
+  ]
+ },
+ {
+  "fixture": "f21_button",
+  "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f21_button/screenshot.png",
+  "asserts": [
+   {
+    "label": "bg white top-left",
+    "at": [
+     100,
+     100
+    ],
+    "expected": [
+     255,
+     255,
+     255
+    ],
+    "actual": [
+     255,
+     255,
+     255
+    ],
+    "ok": true
+   },
+   {
+    "label": "default Button fill at center (Material default)",
+    "at": [
+     540,
+     960
+    ],
+    "expected": [
+     111,
+     168,
+     220
+    ],
+    "actual": [
+     111,
+     168,
+     220
+    ],
+    "ok": true
+   },
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "changed_px=1584 state_changed=True"
+   }
+  ],
+  "status": "PASS",
+  "width": 1080,
+  "height": 1920,
+  "screenshot_sha256": "393f7bcbdf2c95126b08f34131f2939846549868879d9b12f601192d00da1a18",
+  "nonwhite": 74860,
+  "bbox": [
+   312,
+   818,
+   764,
+   1076
+  ]
+ },
+ {
+  "fixture": "f27_nav",
+  "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f27_nav/screenshot.png",
+  "asserts": [
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "changed_px=2073273 state_changed=True"
+   }
+  ],
+  "status": "PASS",
+  "width": 1080,
+  "height": 1920,
+  "screenshot_sha256": "7980817663207a0b7024ae293523de9464038c074ee0def157900362213d7bb4",
+  "nonwhite": 2073600,
+  "bbox": [
+   0,
+   0,
+   1079,
+   1919
+  ]
+ }
+]

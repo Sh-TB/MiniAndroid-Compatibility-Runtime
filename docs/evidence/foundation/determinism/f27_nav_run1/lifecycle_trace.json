@@ -1,0 +1,58 @@
+{
+  "activity": "Lcom/miniandroid/f27nav/SecondActivity;",
+  "activity_launch": null,
+  "apk": "/home/z/my-project/upload/foundation_apks/f27_nav.apk",
+  "final_state": "RESUMED",
+  "finish_cascade": null,
+  "transitions": [
+    {
+      "from": "PROCESS_CREATED",
+      "reason": "Activity.onCreate() executed via DEX interpreter (ActivityThread.performLaunchActivity law)",
+      "success": true,
+      "to": "ACTIVITY_CREATED",
+      "virtual_ms": 1000000000
+    },
+    {
+      "from": "ACTIVITY_CREATED",
+      "reason": "Activity.onStart() dispatched via DEX engine (framework stub answered — super-class law; record state advances regardless)",
+      "success": true,
+      "to": "STARTED",
+      "virtual_ms": 1000000000
+    },
+    {
+      "from": "STARTED",
+      "reason": "Activity.onResume() dispatched via DEX engine (handleResumeActivity law) (framework stub answered — super-class law; record state advances regardless)",
+      "success": true,
+      "to": "RESUMED",
+      "virtual_ms": 1000000000
+    },
+    {
+      "from": "RESUMED",
+      "reason": "switch: A.onPause (TransactionExecutor law: pause is FIRST)",
+      "success": true,
+      "to": "PAUSED",
+      "virtual_ms": 1000000000
+    },
+    {
+      "from": "PAUSED",
+      "reason": "B.onCreate via DEX (performLaunchActivity law): Lcom/miniandroid/f27nav/SecondActivity;",
+      "success": false,
+      "to": "ACTIVITY_CREATED",
+      "virtual_ms": 1000000000
+    },
+    {
+      "from": "PAUSED",
+      "reason": "B.onStart via DEX: Lcom/miniandroid/f27nav/SecondActivity;",
+      "success": false,
+      "to": "STARTED",
+      "virtual_ms": 1000000000
+    },
+    {
+      "from": "PAUSED",
+      "reason": "B.onResume via DEX (handleResumeActivity law): Lcom/miniandroid/f27nav/SecondActivity;",
+      "success": true,
+      "to": "RESUMED",
+      "virtual_ms": 1000000000
+    }
+  ]
+}

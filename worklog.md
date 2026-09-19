@@ -1589,3 +1589,30 @@ Stage Summary:
   (S10 re-proven); TriPeaks/OPMT PARTIAL (honest); Dooz NO-VISUAL-PROOF
   (honest); capture infrastructure INFRASTRUCTURE_PROVEN.
 - Battery 92/94 + EXT-01/02 environmental — zero new regressions.
+---
+Task ID: S67
+Agent: Super Z (main agent)
+Task: FOUNDATION HARDENING — user's 26-section base-contract campaign (no new apps, no new spotlight). Snowball-law fan-out-first census, then implement-verify-regress cycle.
+
+Work Log:
+- RECON (Wave 0, no code changes): HEAD 289e33d3 == origin/main (push debt zero, S66 in), tree clean; toolchain re-bootstrapped (bootstrap_toolchain.sh) + engine rebuilt; three parallel deep-census passes (renderer+capture, layout/measure, resource/text/image) + manual runtime/input/lifecycle census → docs/foundation/S67_RECON.md + S67_MY_CENSUS.md (A1-A10/B1-B12/C1-C12/D1-D7 fan-out-first).
+- MASTER WORKLIST: docs/foundation/S67_MASTER_WORKLIST.md merges my census with the user's 26 sections into 12 waves with the contract cycle as law.
+- Micro-corpus harness: tests/fixtures_foundation/<fXX>/ (19 fixtures) + build_run_fixtures.sh + verify_foundation.py (independent PIL re-decode, pixel asserts, ViewTree asserts — anti-false-success) + determinism_3run.sh; --dump-view-tree engine flag added (ViewTree provenance was unreachable from `run`).
+- FIXES (each: upstream law → micro fixture → real APK → regression):
+  F-121 click-probe drains pending intent/finish before re-render (AOSP Looper law; f27_nav 2,073,273px + B bg #CCEEFF);
+  F-122 Color.rgb/argb/parseColor static factories (were REC-MISS→0→invisible; AOSP Color.java);
+  F-123 drawRoundRect AOSP arg order (l,t,r,b,rx,ry,PAINT) + real corner-radius rasterization;
+  F-124 XML visibility attr space {0,1,2}→View {0,4,8} (aapt2 enum vs ViewProps);
+  A2 getDimensionPixelSize: args[1]-not-this + ARSC-first + complexToDimensionPixelSize density law (100dp→263px exact);
+  A4 INVISIBLE own-content gate (children still render per dispatchDraw law);
+  C3 horizontal-LL cross-axis TOP(0x30) was centered (LinearLayout L1445-1470 switch).
+- REGISTERED with pixel proof (not guesses): clipRect NO-OP (245 leak px), scale/rotate NO-OP (unscaled coords), Canvas text ASCII-only (A6), plus A1/A3/A7/A9/A10/B/C/D families in FOUNDATION_GAP_MATRIX.md.
+- Persian shaping PROVEN on TextView path: joined سلام vs spaced س ل ا م = 47% narrower ink bbox (HarfBuzz joining), 24,297 ink px.
+- Verification: fixtures 17/17 PASS post-fix; determinism 6/6 ×3 (frame+ViewTree SHA); goldens byte-match: TicTacToe initial 613cfccc… + win 2e80e8c0…, FishRings 5/5 frames, OPMT menu+game, TriPeaks splash+lobby; miniandroid_test 4/4; hello_color byte-stable across fix epochs. ZERO regressions.
+- Matrices: FOUNDATION_{GAP,TEST,RENDER,RESOURCE,LAYOUT,RUNTIME}_MATRIX.md + S67_REPORT.md with the user's exact counters.
+
+Stage Summary:
+- New laws shipped: F-121, F-122, F-123, F-124, A2, A4, C3 + --dump-view-tree evidence law.
+- Remaining P0 (registered, law+plan, no code this session): A1 ?attr-at-inflate, A3 non-PNG silent drop, A6 Canvas non-ASCII text, A7 manifest label/icon, A9 canvas dims, A10 Theme.resolveAttribute.
+- Evidence: docs/foundation/* (6 matrices + report + census + worklist), docs/evidence/foundation/{fixtures,determinism}, run/s67_reval/*.
+- All fixes follow the contract cycle; no app-specific patches; every failure documented ROOT CAUSE.
