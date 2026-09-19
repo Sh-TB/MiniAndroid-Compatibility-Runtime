@@ -1292,3 +1292,77 @@ Stage Summary:
   with first-hit consumer + upstream law citation.
 - No new campaign/branch/roadmap; battery 96/96; goldens preserved; HEAD == origin/main
   to be verified after push.
+
+---
+Task ID: S63
+Agent: Super Z (main)
+Task: Open-source APK Spotlight 2 (breadth mission continues) — more REAL
+open-source APKs built from source + executed; source forensics; search
+tools actually used; no new campaign/branch/roadmap.
+
+Work Log:
+- RECON: local HEAD == origin/main == f7ae6432 (S62+ spotlight), tree
+  clean; battery-capable binary restored (container rebuild); zoekt/
+  codesearch ABSENT (rebuilt this session, see below). No prior claims
+  assumed — everything re-verified from repo state.
+- Candidate survey (GitHub API authed + F-Droid API; evidence in report):
+  gmdice (ge0rg/gamemasterdice — 8 java files, ListActivity, ZERO support
+  libs/fragments/db, prebuilt v8 already reached L7 in campaign014),
+  siggen (billthefarmer/sig-gen — plain Activity + FQCN-tag custom views,
+  prebuilt L5/0-errors in S61 sweep), Blockinger (vocollapse — DEFERRED:
+  GameActivity extends support-v4 FragmentActivity = the R-NEW-331 ISE
+  family, rendering via SurfaceView = canvas-bitmap family). Fact matrix
+  in docs/evidence/s63_spotlight/S63_REPORT.md §0.
+- NEW-001 gmdice v12 BUILD: aapt2/ECJ/D8, 35 classes, APK ee9f7396…
+  (manifest package= staged from gradle — anuto law reused).
+- EXECUTE first run rc=0 0 errors: real ListActivity onCreate, visible
+  buttons "1d6/1d20/1d6+4/...", 1,744,539 non-white px; the "..." click
+  ran the app's own selectDice → AlertDialog create/show painted (items=3).
+  5/5 CLICKs dispatched to the real handler; app roll chain executed BUT
+  every die = 1 (typed-zero).
+- SEARCHLIGHT CHAIN: source (Random gen = new SecureRandom) → trace
+  (REC-MISS SecureRandom.nextInt; bridge receives STATIC receiver class;
+  F-086 matched only Random/ThreadLocalRandom) → upstream (OpenJDK
+  SecureRandom.java:157 extends Random, :828 next(int) override — fetched
+  from github.com/openjdk/jdk) → SEMANTIC LAW F-113/R-NEW-382 → generic
+  fix (law family += Ljava/security/SecureRandom;) → battery ALL PASS
+  (94 stages executed incl. helloworld 26 checks, tictactoe, G06 tap
+  3-run det, G07, G08, EXT-01/02, 3-run corpus block; S62 tree recorded
+  96, delta = 2 environment-conditional stages — honest) → rerun.
+- gmdice POST-FIX: dice 6/5/3/2; rollresult texts 6/5/3/2; final frame
+  text "2"; RAW frame SHA pair 5312266e… → fa1d8612…; pixel diff 1,584 px
+  100% inside the rollresult band (bbox 514-564 × 1672-1750); 3-run det
+  fa1d8612 ×3. S10/L6 PROVEN — the FIRST source-first build to prove the
+  full input→handler→state→changed-frame chain.
+- NEW-002 siggen v1.76 BUILD: package= staged; API-35
+  windowOptOutEdgeToEdgeEnforcement attrs removed from staged styles (SDK-34
+  aapt2); generated BuildConfig.java (gradle artifact). APK c83d21c6….
+- EXECUTE rc=0: plain-Activity Main onCreate; custom views Scale/Knob/
+  Display INFLATED FROM FQCN TAGS (generic LayoutInflater law); 47,809
+  non-white px — IDENTICAL to the S61 prebuilt sweep number (source-vs-
+  prebuilt cross-validation); 5/5 clicks dispatched; Main.onClick ran the
+  R.id.sine case → audio.waveform mutation in real DEX. Honest: audio-path
+  state has no pixel face; custom views measure 0x0 → S7, not S9. 3-run
+  det 7e5e14a3 ×3.
+- SEARCH TOOLS REAL USE (rebuilt + used): Go 1.26.0 installed (module
+  proxy stalls — GOPROXY=direct works); zoekt-index shards (engine 117
+  files/7.9MB, gmdice, siggen) + cindex (3.99MB→1.68MB in 0.13s).
+  MISSION-VALIDATING DISCOVERY: zoekt large-file under-report (S61/S62
+  open question) ROOT-CAUSED = default max_trigram_count silently excludes
+  1.2MB files; raised cap → complete results (F-113 lines found). csearch
+  per-file limit reproduced 3rd time. Ledger rows in
+  docs/corpus/SEARCH_LEDGER.md (S63 additions).
+- DOCS/REGISTRY: root_registry F-113 + R-NEW-382 added (366 roots;
+  scripts/s63_registry_update.py); ACHIEVEMENTS §0e3; KNOWLEDGE_INDEX §0c
+  S63 block; SPOTLIGHT_COVERAGE Phase B table; EXECUTION_MATRIX +2 rows;
+  ROADMAP_STATUS S63 frontier paragraph; evidence docs/evidence/
+  s63_spotlight/ (report + 3 compact PNGs + SHA256SUMS).
+
+Stage Summary:
+- NEW source-first APKs BUILT = 2 (gmdice ee9f7396, siggen c83d21c6);
+  EXECUTED = 2; S10/L6 PROVEN = 1 (gmdice); S7 = 1 (siggen); NEW GENERIC
+  FIX = 1 (F-113, R-NEW-382 closed); REGRESSION = battery ALL PASS on the
+  fixed binary; goldens preserved; tool-law root cause closed (zoekt
+  trigram cap); Blockinger honestly deferred with forensics recorded.
+- No new campaign/branch/roadmap; HEAD == origin/main verified after push
+  (see S63-PUSH-VERIFY).

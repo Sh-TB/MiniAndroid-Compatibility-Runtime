@@ -78,3 +78,37 @@ tree this session.
 S62 scripts: `scripts/s62_ts_stderr.py` (line-timestamped stderr wrapper),
 `scripts/s62_clinit_costs.py` (per-<clinit> duration distribution),
 `scripts/s62_disasm_heavy_clinit.py` (heaviest-chain disassembler).
+
+## S63 additions (2026-09-19) — gmdice F-113 searchlight + tool root cause
+
+Environment rebuild: this container lost `tools/gopath` + `tools/go`;
+zoekt (@ 153817f643cd) + cindex/csearch (google/codesearch v1.2.0) REBUILT
+this session with Go 1.26.0 (tarball from go.dev; `go install` via the
+default module proxy STALLED — `GOPROXY=direct` fetches from GitHub
+directly and worked; recorded as the reproducible install recipe).
+
+| Query | zoekt (result / latency) | csearch (hits / latency) | ripgrep ground truth | Outcome |
+|---|---|---|---|---|
+| `SecureRandom` (engine shard, DEFAULT max_trigram_count) | **0 hits** (0.03s) | 0 in dalvik_engine.cpp (1.2MB) | 1 file | zoekt under-report reproduced on a FRESH index → not stale-index flake |
+| `SecureRandom` (engine shard, `-max_trigram_count 100000000`) | **found F-113 lines 20878..20893** (0.03s; shard 4.7MB) | — | same | **ROOT CAUSE of the S61/S62 under-report: zoekt silently excludes files beyond the default trigram cap.** zoekt stays in the toolkit with the flag documented |
+| `nextInt` (engine shard, high cap) | 8 lines | 0 (per-file trigram limit, REPRODUCED 3rd time) | 8 | zoekt(high-cap) == rg == engine truth |
+| `selectDice` (gmdice shard) | 3 hits (0.03s) | 3 hits (3ms) | 3 | candidate launch-chain verification before build |
+| `SecureRandom` (cindex over candidate sources) | — | 8 lines (GameMasterDice field + imports) | 8 | confirmed the receiver type feeding the F-113 face |
+| `nextInt` (cindex over candidate sources) | — | Standard/FUDGE/DSA/Coin roll paths | 4 files | the state-mutation law chain for the report |
+
+Duplicates prevented / decisions changed this session:
+- zoekt's "under-report" is now a DIAGNOSED tool law (trigram cap), not an
+  open question — S61 finding #2 and S62's 0-row `attachHost` are explained
+  by the same mechanism.
+- csearch's per-file limit (S61 finding #3) reproduced with a 3rd data point.
+- Before writing F-113 the ledger + zoekt(high-cap) check confirmed NO prior
+  SecureRandom law existed anywhere in the engine (F-086 was the only Random
+  family) — no parallel mechanism created.
+
+Cumulative S63: TOTAL_SEARCHES 9 documented queries; UNIQUE_QUERIES 9;
+REPOSITORIES_CHECKED 4 (ge0rg/gamemasterdice, billthefarmer/sig-gen,
+vocollapse/Blockinger, openjdk/jdk) + fdroiddata metadata; DOMAINS_CHECKED 4
+(github, f-droid, openjdk raw, go module proxy);
+RELEVANT_HITS 12; IMPLEMENTATIONS_FOUND 2 (SecureRandom.next upstream law;
+gradle BuildConfig generation contract); TESTS_FOUND 0 (upstream gmdice has
+no test suite — honesty row); SEARCH_EXHAUSTED no.

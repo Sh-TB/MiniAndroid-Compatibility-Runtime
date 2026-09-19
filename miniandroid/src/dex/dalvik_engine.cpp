@@ -20875,8 +20875,21 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
+    // F-113 (R-NEW-382) — SecureRandom IS-A Random: the bridge dispatch
+    // receives the STATIC receiver class (SecureRandom), so a subclass
+    // instance never reached the F-086 Random law and nextInt(bound)
+    // answered the typed-zero 0 (every die rolled 1 in gmdice v1.2:
+    // 5 rolls -> 5x [EXP091-SETTEXT] text="1").
+    // Upstream law: OpenJDK SecureRandom.java:157 "public class
+    // SecureRandom extends java.util.Random" and :828 "protected final
+    // int next(int numBits)" — SecureRandom supplies the bit stream while
+    // Random.nextInt(bound) keeps the public contract (modulo-bias
+    // rejection). ThreadLocalRandom (already in this law) is the same
+    // inheritance shape. Deterministic law: the xorshift stream stands
+    // in for the entropy source (provenance law — identical traces).
     if ((class_name == "Ljava/util/Random;" ||
-         class_name == "Ljava/util/concurrent/ThreadLocalRandom;") &&
+         class_name == "Ljava/util/concurrent/ThreadLocalRandom;" ||
+         class_name == "Ljava/security/SecureRandom;") &&
         method == "nextInt" && args.size() >= 1) {
         // Deterministic xorshift32 seeded per-engine; identical across runs
         // (provenance law). nextInt(bound) uses the OpenJDK modulo-bias
