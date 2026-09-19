@@ -107,7 +107,9 @@ ExecutionResult ExecutionEngine::execute(const std::string& path, const Executio
     if (success && config.long_press_enabled) stage_long_press(result, config);
     // G06 §4/§6: canonical tap gesture through the TouchDispatcher law
     // pipeline (DOWN → pressed frame → UP → queued callbacks → drained frame).
-    if (success && config.tap_enabled) stage_tap(result, config);
+    // F-117: when --frames drives the virtual clock, taps defer to the
+    // frame-sequence stage (scheduled-tap law — one tap per frame boundary).
+    if (success && config.tap_enabled && config.frame_count <= 0) stage_tap(result, config);
     if (success && config.frame_count > 0) stage_frame_sequence(result, config);
 
     // G07 §10: final frame boundary — apply any still-pending finish() and
@@ -367,6 +369,10 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
             result.apk_info.package_name,
             result.apk_info.version_code,
             result.apk_info.version_name);
+        // F-116 (R-NEW-384 family): manifest <meta-data> tables for the
+        // PackageManager.getActivityInfo().metaData law.
+        dalvik_engine_.set_activity_meta_data(result.apk_info.activity_meta_data,
+                                              result.apk_info.application_meta_data);
         // M3 F-018: EXACT-ALARM CAPABILITY LAW (AOSP API 31+) — derived
         // from the RUNNING APK's manifest permission list, never
         // hardcoded per-app. MiniAndroid INSTALL-TIME GRANT identity:
@@ -3364,6 +3370,30 @@ void ExecutionEngine::invoke_handler_runnable(uint32_t rid) {
         std::vector<miniandroid::dalvik::DalvikValue> args;
         args.push_back(miniandroid::dalvik::DalvikValue::make_object(rid, cls));
         dalvik_engine_.try_recursive_invoke(cls, "run", args, ret, drain_result);
+        // F-115 (R-NEW-384) java.util.Timer periodic re-enqueue law: a
+        // TimerTask enqueued with period>0 re-posts itself after every
+        // run (OpenJDK Timer.sched → mainLoop fixed-delay repeat). The
+        // period rides the task heap object set at schedule() time.
+        {
+            auto period_val = heap.get_object_field(rid, "__timer_period__");
+            int64_t period_ms = 0;
+            if (period_val.has_value()) {
+                if (period_val->type == miniandroid::dalvik::DalvikType::INT64)
+                    period_ms = period_val->long_val;
+                else if (period_val->type == miniandroid::dalvik::DalvikType::INT32)
+                    period_ms = period_val->int_val;
+            }
+            if (period_ms > 0) {
+                if (auto* hs = shadow_registry_
+                                   ? shadow_registry_->find_as<framework::HandlerShadow>()
+                                   : nullptr) {
+                    hs->enqueue(rid, period_ms, "Timer.schedule-periodic");
+                    std::cerr << "[F115-TIMER] task o" << rid
+                              << " re-enqueued (period=" << period_ms << "ms)"
+                              << std::endl;
+                }
+            }
+        }
         std::cerr << "[EXP090-DRAIN] Runnable id=" << rid << " invoked" << std::endl;
     } catch (const std::exception& e) {
         std::cerr << "[EXP090-DRAIN] Runnable drain failed: " << e.what() << std::endl;
@@ -3416,6 +3446,7 @@ int ExecutionEngine::pump_compose_frames(int max_frames) {
     if (!cs) return 0;
     auto* hs = registry->find_as<framework::HandlerShadow>();
     int fired_frames = 0;
+    int clock_advances_ = 0;  // F-115b: virtual-clock advance budget
     // [F100-IDLEDRAIN] AOSP MessageQueue idle law: messages dispatch on idle
     // INDEPENDENT of vsync (the Choreographer frame is only one wake source;
     // AndroidUiDispatcher.dispatch posts BOTH a handler message and a frame
@@ -3454,6 +3485,14 @@ int ExecutionEngine::pump_compose_frames(int max_frames) {
             }
         }
         if (!did_work) {
+            // F-115b REVISED (R-NEW-384 family): the LAUNCH-frame quiescence
+            // does NOT advance the virtual clock. Contract: the launch frame
+            // is the app state at Looper time ≈ 0 (a real device's first
+            // frame predates any deferred timer); GATE H/G07 goldens freeze
+            // exactly this semantics. java.util.Timer entries still fire —
+            // under the TIME-DRIVEN capture (--frames advances the clock,
+            // drain fires due entries; F-117 taps schedule per frame). The
+            // plain-run quiescence stays the frozen launch-frame law.
             std::cerr << "[F100-STATE] quiescence at tick=" << tick
                       << " pending_cb=" << cs->has_pending_callbacks()
                       << " queue_size=" << (hs ? hs->queue_size() : 999) << std::endl;
@@ -3574,6 +3613,55 @@ bool ExecutionEngine::stage_frame_sequence( ExecutionResult& result, const Execu
             if (!launch.is_null()) manifest["activity_launch"] = launch;
             nlohmann::json fin = consume_finish_cascade();
             if (!fin.is_null()) manifest["finish_cascade"] = fin;
+        }
+
+        // F-117 (R-NEW-384 family) — SCHEDULED-TAP LAW. AOSP input timing:
+        // a scripted touch lands at its LOOPER TIME. When --frames drives
+        // the virtual clock, queued taps fire one per frame boundary (tap
+        // k at frame k, after the frame's clock advance + drain), so each
+        // tap hits the screen the app shows at that Looper time (real
+        // face: FreeKlondike's MenuActivity only exists after the 5s
+        // splash Timer; an early tap would hit the splash WebView).
+        if (config.tap_enabled &&
+            k - 1 < static_cast<int>(config.tap_sequence.size()) &&
+            touch_dispatcher_ && shadow_registry_) {
+            auto* activity_shadow =
+                shadow_registry_->find_as<framework::ActivityShadow>();
+            if (!activity_shadow) {
+                std::cerr << "[F117-TAP] no ActivityShadow — tap skipped"
+                          << std::endl;
+            } else {
+            const auto& [tpx, tpy] = config.tap_sequence[k - 1];
+            uint32_t tap_root = activity_shadow->content_view_id();
+            auto down_rec = touch_dispatcher_->dispatch(
+                tap_root, {framework::TouchAction::DOWN, tpx, tpy});
+            const uint32_t tap_target = down_rec.value("target_view_id", 0u);
+            std::cerr << "[F117-TAP] frame " << k << " DOWN (" << tpx << ","
+                      << tpy << ") target=" << tap_target << std::endl;
+            if (tap_target != 0) {
+                hs->advance_virtual(20);   // pressed-state window
+                stage_render_frame(result, config);
+                hs->advance_virtual(30);   // t0+50ms UP → PerformClick queue
+                touch_dispatcher_->dispatch(
+                    tap_root, {framework::TouchAction::UP, tpx, tpy});
+            }
+            // Drain the tap's posted callbacks (PerformClick → DEX onClick).
+            for (int round = 0; round < 8; ++round) {
+                std::vector<uint32_t> tap_drained;
+                if (hs->drain_ready(&tap_drained) == 0) break;
+                for (uint32_t rid : tap_drained) invoke_handler_runnable(rid);
+            }
+            hs->advance_virtual(70);       // UnsetPressedState window
+            for (int round = 0; round < 8; ++round) {
+                std::vector<uint32_t> tap_drained;
+                if (hs->drain_ready(&tap_drained) == 0) break;
+                for (uint32_t rid : tap_drained) invoke_handler_runnable(rid);
+            }
+            nlohmann::json tap_launch = consume_pending_intent();
+            if (!tap_launch.is_null()) manifest["activity_launch"] = tap_launch;
+            nlohmann::json tap_fin = consume_finish_cascade();
+            if (!tap_fin.is_null()) manifest["finish_cascade"] = tap_fin;
+            }  // F-117 else-branch close
         }
 
         stage_render_frame(result, config);  // re-render CURRENT state

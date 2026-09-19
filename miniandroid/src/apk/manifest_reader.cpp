@@ -559,7 +559,27 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
             log("Permission: " + perm);
         }
     }
-    
+
+    // F-116 (R-NEW-384 family): <meta-data> capture — activity-level and
+    // application-level (AOSP PackageItemInfo.metaData contract). Values are
+    // stored as the raw manifest string; the read side types numeric-looking
+    // values as Bundle ints (Bundle.getInt) and keeps the rest as strings.
+    if (name == "meta-data") {
+        std::string md_name = get_attribute_value(attrs, "name");
+        std::string md_value = get_attribute_value(attrs, "value");
+        if (!md_name.empty()) {
+            if (in_activity_ && !current_activity_name_.empty()) {
+                result_.activity_meta_data[current_activity_name_].push_back(
+                    {md_name, md_value});
+                log("Activity meta-data: " + current_activity_name_ + "::" +
+                    md_name + "=" + md_value);
+            } else {
+                result_.application_meta_data.push_back({md_name, md_value});
+                log("Application meta-data: " + md_name + "=" + md_value);
+            }
+        }
+    }
+
     // Handle uses-feature elements
     if (name == "uses-feature") {
         std::string feature = get_attribute_value(attrs, "name");
