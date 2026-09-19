@@ -1,0 +1,16 @@
+{
+  "FRAME": "/home/z/my-project/docs/evidence/visual_forensics/s65_reval/tripeaks/board_full.png",
+  "file_size": 85892,
+  "sha256": "c3014c5cb6c2068730fb7d30b1cb533bbfc5d9d8769cca230031ee7d2cece149",
+  "format": "PNG",
+  "width": 1080,
+  "height": 1920,
+  "bit_depth": 8,
+  "color_type": 2,
+  "nonwhite_pixels": 2073600,
+  "total_pixels": 2073600,
+  "nonwhite_pct": 100.0,
+  "content_bbox": "(0,0)-(1079,1919) w=1080 h=1920",
+  "unique_colors": 9589,
+  "pixel_source": "PIL"
+}

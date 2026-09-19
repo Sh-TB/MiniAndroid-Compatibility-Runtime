@@ -23,6 +23,53 @@ namespace miniandroid { namespace framework {
 
 using json = nlohmann::json;
 
+// ─────────────────────────────────────────────────────────────────────────
+// F-120 (R-NEW-387) — AOSP Button default-style gravity law.
+//
+// S66 visual forensics found Button text painted at the view's top-left
+// (TicTacToe R-NEW-358 win frame: marks at cell top-left instead of cell
+// centers). Root cause, from the law (NOT the symptom):
+//   Upstream platform_frameworks_base:
+//     widget/Button.java — every Button constructor resolves
+//     com.android.internal.R.attr.buttonStyle:
+//         super(context, attrs, com.android.internal.R.attr.buttonStyle)
+//     res/values/styles.xml — Widget.Material.Button (the theme's
+//     buttonStyle default) declares
+//         <item name="android:gravity">center_horizontal|center_vertical</item>
+//     widget/TextView.java — the constructor consumes the style bag:
+//         case R.styleable.TextView_gravity: mGravity = a.getInt(attr, mGravity)
+//   Therefore a freshly constructed Button answers getGravity() ==
+//   CENTER_HORIZONTAL|CENTER_VERTICAL before any XML attribute or
+//   setGravity() call — the center gravity comes from the STYLE, which is
+//   invisible to this runtime's per-attribute inflate path (it only sees
+//   android:gravity when the XML literally declares it). Without the
+//   style-resolved default, text_gravity stays 0 (top|left) and the text
+//   stage (execution_engine.cpp G36/G47 block) positions the label at
+//   padding origin.
+// Generic fix: apply the style-resolved default ONCE at node creation for
+// the center-gravity Button family. Later writes keep precedence exactly
+// as upstream: XML android:gravity (apply_element_attrs) and DEX
+// Button.setGravity (set_text_gravity) both run after creation and
+// overwrite this value. CompoundButton children (CheckBox/RadioButton/
+// Switch) carry their own start-aligned compound styles and ImageButton
+// centers content via scaleType — all excluded by the class-shape guard.
+// ─────────────────────────────────────────────────────────────────────────
+static bool is_center_gravity_button_class(const std::string& cd) {
+    if (cd.find("Button;") == std::string::npos) return false;
+    if (cd.find("ImageButton;") != std::string::npos ||
+        cd.find("RadioButton;") != std::string::npos ||
+        cd.find("CheckBox;") != std::string::npos ||
+        cd.find("CompoundButton;") != std::string::npos ||
+        cd.find("Switch;") != std::string::npos) {
+        return false;
+    }
+    return true;
+}
+
+// AOSP Gravity bit encoding used by this runtime (see ViewNode lp_gravity
+// docs): CENTER_HORIZONTAL = 0x1, CENTER_VERTICAL = 0x10, CENTER = 0x11.
+static constexpr int kButtonStyleDefaultGravity = 0x11;
+
 // ============================================================================
 // EXP-087 Phase 3 (B2 FIX): inflate_view_tree — recursively create ViewShadow
 // nodes from the layout cache JSON. Each node has:
@@ -2205,6 +2252,11 @@ uint32_t ViewShadow::create_view(const std::string& class_desc) {
     auto node = std::make_unique<ViewNode>();
     node->view_id = id;
     node->class_desc = class_desc;
+    // F-120 (R-NEW-387): resolve the Button default-style gravity at node
+    // creation (Button.java buttonStyle → Widget.Material.Button
+    // android:gravity=center). XML/DEX overrides later keep precedence.
+    if (is_center_gravity_button_class(node->class_desc))
+        node->text_gravity = kButtonStyleDefaultGravity;
     nodes_[id] = std::move(node);
     return id;
 }
@@ -2223,6 +2275,10 @@ ViewShadow::ViewNode* ViewShadow::get_or_create_node(uint32_t view_id,
     // — without this, downstream lookups by class substring (e.g.
     // "FragmentFloatingButton") fail because the node has the parent class.
     node->class_desc = class_desc;
+    // F-120 (R-NEW-387): same Button style-gravity law as create_view —
+    // DEX-allocated Buttons enter the tree through get_or_create_node.
+    if (is_center_gravity_button_class(node->class_desc))
+        node->text_gravity = kButtonStyleDefaultGravity;
     auto* raw = node.get();
     nodes_[view_id] = std::move(node);
     return raw;
