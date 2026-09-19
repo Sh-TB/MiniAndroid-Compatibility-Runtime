@@ -1,14 +1,14 @@
 {
  "baseline_head": "5a2b7d99",
  "summary": {
-  "total_roots": 364,
+  "total_roots": 366,
   "open_frontiers": [
    "R-NEW-381"
   ],
-  "last_updated": "S62 2026-09-19",
-  "note": "S60 ROADMAP-3-CLOSURE: R-NEW-380 ROOT-CAUSED-FIXED (F-106 a/b/c — reflection-surface law family + unmodifiable views + Long.toString radix; the dooz v23 ViewModelProvider create chain now resolves through the app's own Hilt factory and the GameViewModel constructs with zero exceptions). R-NEW-381 registered as the honest successor (the Compose draw path — first-frame content). No new roadmap/branch/campaign. || S62: games corpus first L6 (bouncy, input->state->render, frame SHA pair); F-109a/c landed (marginal, measured); R-NEW-381 decomposed to the per-op/per-invoke constant-cost frontier.",
+  "last_updated": "S64 2026-09-19",
+  "note": "S64 breadth: 3 NEW source-first apps executed (pmk S6 det render; FreeKlondike S10 full interaction chain; shopping-list-calc S9 click→state→changed-frame). New law families: F-114 prefs null-default/setDefaultValues/getDefaultSharedPreferences (R-NEW-383), F-115 Timer+virtual-clock + F-116 meta-data + F-117 scheduled-tap (R-NEW-384). Battery 92/94 + EXT-01/02 environmental (upstream HelloWorldSelfAware repo deleted). || S60 ROADMAP-3-CLOSURE: R-NEW-380 ROOT-CAUSED-FIXED (F-106 a/b/c — reflection-surface law family + unmodifiable views + Long.toString radix; the dooz v23 ViewModelProvider create chain now resolves through the app's own Hilt factory and the GameViewModel constructs with zero exceptions). R-NEW-381 registered as the honest successor (the Compose draw path — first-frame content). No new roadmap/branch/campaign. || S62: games corpus first L6 (bouncy, input->state->render, frame SHA pair); F-109a/c landed (marginal, measured); R-NEW-381 decomposed to the per-op/per-invoke constant-cost frontier.",
   "total": 349,
-  "verified_fixed": 41,
+  "verified_fixed": 43,
   "by_status": {
    "PARTIAL": 103,
    "VERIFIED-CORRECT": 45,
@@ -18,7 +18,7 @@
    "RESEARCHED-NOT-IMPLEMENTED": 16,
    "NOT-APPLICABLE": 42,
    "IMPLEMENTED": 5,
-   "ROOT-CAUSED-FIXED": 7,
+   "ROOT-CAUSED-FIXED": 9,
    "PARTIAL-FIX": 1,
    "SUPERSEDED-BY-EVIDENCE": 1
   },
@@ -3711,6 +3711,24 @@
    "fg": true,
    "first_seen": "S63 first gmdice source-first run",
    "evidence": "SOURCE OBSERVATION: gen.nextInt(sides) with Random generator = new SecureRandom(). MINIANDROID TRACE: 5 rolls all \"1\"; [REC-MISS] SecureRandom.nextInt → static-class bridge misses F-086. UPSTREAM: OpenJDK SecureRandom extends Random (:157), next(int) override (:828). SEMANTIC LAW: SecureRandom IS-A Random → F-113. FIXED: dice 6/5/3/2, changed frame proven (1,584 px diff in the rollresult band). Evidence: docs/evidence/s63_spotlight/S63_REPORT.md §1"
+  },
+  {
+   "id": "R-NEW-383",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P0",
+   "title": "pmk activateSettings NFE face (prefs null-default coercion + PreferenceManager defaults contract)",
+   "fg": true,
+   "first_seen": "S64 first pmk-android source-first run",
+   "evidence": "SOURCE OBSERVATION: activateSettings parses getString(key, null) with Integer/Float.parseFloat; defaults come from PreferenceManager.setDefaultValues(ctx, R.layout.activity_preferences, false) — a PreferenceScreen XML under res/layout/. MINIANDROID TRACE: NFE 'For input string: \"\"' — prefs bridge coerced the NULL default to \"\"; getDefaultSharedPreferences answered a NULL receiver; setDefaultValues was a no-op (typed-zero). UPSTREAM: AOSP SharedPreferencesImpl.java:307-313 (@Nullable defValue returns as null reference); PreferenceManager.java:67 KEY_HAS_SET_DEFAULT_VALUES + :661-673 one-shot guard; getDefaultSharedPreferencesName = <pkg>_preferences. SEMANTIC LAWS: F-114a null-default; F-114b setDefaultValues (parse defaults XML → persist + flag; CheckBoxPreference→boolean, else string); F-114c getDefaultSharedPreferences. FIXED: rc=1/2 NFEs/0 views → rc=0 SUCCESS views=179 deterministic frame c9a2a7035c75c9c8 ×3. SECOND APP: omegacentauri simplestopwatch (24 defaults via same law). Evidence: docs/evidence/s64_spotlight/S64_REPORT.md §2"
+  },
+  {
+   "id": "R-NEW-384",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P0",
+   "title": "FreeKlondike splash-trap face (java.util.Timer REC-MISS + manifest meta-data typed-zero + tap scheduling)",
+   "fg": true,
+   "first_seen": "S64 first FreeKlondike source-first run",
+   "evidence": "SOURCE OBSERVATION: SplashActivity.onResume → Timer.schedule(task, metaData timeout=5000) → run → startActivity(Class.forName(metaData redirect)). MINIANDROID TRACE: [REC-MISS] Timer/TimerTask/schedule (task never ran); metaData.getInt → typed-zero 0; early taps hit the splash (target=0). UPSTREAM: OpenJDK Timer.sched/mainLoop fixed-delay law; AOSP PackageItemInfo.metaData contract. SEMANTIC LAWS: F-115 Timer-on-MessageQueue (+__timer_period__ re-enqueue; F-115b revision: launch quiescence does NOT advance the virtual clock — GATE H/G07 goldens frozen; timers fire under time-driven --frames); F-116 meta-data manifest capture + getActivityInfo Bundle (numeric→INT32) + getComponentName; F-117 scheduled-tap law (tap k fires at frame k). FIXED: splash-trapped 0 px → full chain splash→menu→New Game→GameActivity→deck 'Deal!' response; frames f3c81cfb97f59754 / f9639e683ca736f6, det ×3; S10. SECOND APP: simplestopwatch Timer fired via F-115 (motivated the F-115b revision). Evidence: docs/evidence/s64_spotlight/S64_REPORT.md §3,§6"
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign."

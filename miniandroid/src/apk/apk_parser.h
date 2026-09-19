@@ -51,6 +51,11 @@ struct ApkInfo {
     // EXP-093/F005: Custom Application class from manifest
     std::string application_name;
     
+    // F-116 (R-NEW-384 family): activity/application <meta-data> tables
+    // (AOSP PackageItemInfo.metaData contract).
+    std::vector<std::pair<std::string, std::string>> application_meta_data;
+    std::map<std::string, std::vector<std::pair<std::string, std::string>>> activity_meta_data;
+    
     // Permissions
     std::vector<std::string> permissions;
     
