@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+		android:orientation="horizontal"
+		android:minWidth="300sp"
+		android:gravity="center"
+		android:layout_width="fill_parent" 
+		android:layout_height="fill_parent">
+
+		<de.duenndns.gmdice.SignedNumberPicker
+		        android:id="@+id/spin_count"
+			android:layout_weight="1"
+			android:layout_width="10dp"
+			android:layout_height="wrap_content" />
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textSize="24sp"
+			android:text="d" />
+
+		<Spinner android:id="@+id/spin_sides"
+			android:prompt="@string/spin_sides"
+			android:layout_weight="1"
+			android:layout_width="35dp"
+			android:layout_height="wrap_content" />
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textSize="24sp"
+			android:text="±" />
+
+		<de.duenndns.gmdice.SignedNumberPicker
+		        android:id="@+id/spin_modifier"
+			android:layout_weight="1"
+			android:layout_width="10dp"
+			android:layout_height="wrap_content" />
+</LinearLayout>

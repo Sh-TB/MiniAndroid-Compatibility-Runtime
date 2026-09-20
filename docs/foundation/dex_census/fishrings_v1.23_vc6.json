@@ -1,0 +1,1191 @@
+{
+ "apk": "fishrings_v1.23_vc6.apk",
+ "package": "eu.veldsoft.fish.rings",
+ "versionCode": "6",
+ "app_classes": 23,
+ "app_methods": 67,
+ "api_call_sites": 336,
+ "distinct_apis": 105,
+ "top_target_classes": [
+  [
+   "Leu/veldsoft/fish/rings/GameActivity;",
+   87
+  ],
+  [
+   "Leu/veldsoft/fish/rings/Rings;",
+   35
+  ],
+  [
+   "Ljava/lang/Math;",
+   25
+  ],
+  [
+   "Landroid/view/View;",
+   24
+  ],
+  [
+   "Ljava/lang/Double;",
+   24
+  ],
+  [
+   "Ljava/lang/Object;",
+   21
+  ],
+  [
+   "Ljava/lang/String;",
+   18
+  ],
+  [
+   "Landroid/app/Activity;",
+   12
+  ],
+  [
+   "Leu/veldsoft/fish/rings/SplashActivity;",
+   10
+  ],
+  [
+   "Landroid/content/Intent;",
+   8
+  ],
+  [
+   "Landroid/media/MediaPlayer;",
+   8
+  ],
+  [
+   "Landroid/widget/Toast;",
+   6
+  ],
+  [
+   "Leu/veldsoft/fish/rings/InstructionActivity;",
+   6
+  ],
+  [
+   "Landroid/widget/ImageView;",
+   5
+  ],
+  [
+   "Landroid/view/MenuItem;",
+   5
+  ],
+  [
+   "Ljava/lang/reflect/Array;",
+   4
+  ],
+  [
+   "Landroid/content/res/Resources;",
+   3
+  ],
+  [
+   "Landroid/view/Window;",
+   2
+  ],
+  [
+   "Ljava/util/regex/Pattern;",
+   2
+  ],
+  [
+   "Ljava/util/Random;",
+   2
+  ],
+  [
+   "Ljava/lang/Class;",
+   2
+  ],
+  [
+   "Landroid/webkit/WebView;",
+   2
+  ],
+  [
+   "Landroid/content/pm/PackageManager;",
+   2
+  ],
+  [
+   "Landroid/os/Bundle;",
+   2
+  ],
+  [
+   "Ljava/util/Timer;",
+   2
+  ]
+ ],
+ "api_sites": [
+  {
+   "target_class": "Leu/veldsoft/fish/rings/GameActivity;",
+   "method": "findViewById",
+   "descriptor": "(I)",
+   "call_sites": 59
+  },
+  {
+   "target_class": "Ljava/lang/Double;",
+   "method": "isNaN",
+   "descriptor": "(D)",
+   "call_sites": 24
+  },
+  {
+   "target_class": "Landroid/view/View;",
+   "method": "setOnClickListener",
+   "descriptor": "(Landroid/view/View$OnClickListener;)",
+   "call_sites": 22
+  },
+  {
+   "target_class": "Ljava/lang/Object;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 18
+  },
+  {
+   "target_class": "Ljava/lang/Math;",
+   "method": "pow",
+   "descriptor": "(D D)",
+   "call_sites": 18
+  },
+  {
+   "target_class": "Ljava/lang/String;",
+   "method": "charAt",
+   "descriptor": "(I)",
+   "call_sites": 14
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/GameActivity;",
+   "method": "access$0",
+   "descriptor": "(Leu/veldsoft/fish/rings/GameActivity;)",
+   "call_sites": 6
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/GameActivity;",
+   "method": "access$1",
+   "descriptor": "(Leu/veldsoft/fish/rings/GameActivity;)",
+   "call_sites": 6
+  },
+  {
+   "target_class": "Landroid/app/Activity;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 5
+  },
+  {
+   "target_class": "Landroid/view/MenuItem;",
+   "method": "getItemId",
+   "descriptor": "()",
+   "call_sites": 5
+  },
+  {
+   "target_class": "Landroid/app/Activity;",
+   "method": "onCreate",
+   "descriptor": "(Landroid/os/Bundle;)",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/Rings;",
+   "method": "ccwa",
+   "descriptor": "()",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/Rings;",
+   "method": "cwa",
+   "descriptor": "()",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/Rings;",
+   "method": "ccwb",
+   "descriptor": "()",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/Rings;",
+   "method": "cwb",
+   "descriptor": "()",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/Rings;",
+   "method": "ccwc",
+   "descriptor": "()",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/Rings;",
+   "method": "cwc",
+   "descriptor": "()",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Landroid/widget/ImageView;",
+   "method": "setImageResource",
+   "descriptor": "(I)",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Landroid/media/MediaPlayer;",
+   "method": "start",
+   "descriptor": "()",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Landroid/media/MediaPlayer;",
+   "method": "create",
+   "descriptor": "(Landroid/content/Context; I)",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/Rings;",
+   "method": "init",
+   "descriptor": "(I I)",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Landroid/content/Intent;",
+   "method": "<init>",
+   "descriptor": "(Landroid/content/Context; Ljava/lang/Class;)",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Ljava/lang/reflect/Array;",
+   "method": "newInstance",
+   "descriptor": "(Ljava/lang/Class; [I)",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Landroid/content/res/Resources;",
+   "method": "getString",
+   "descriptor": "(I)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/GameActivity;",
+   "method": "startActivity",
+   "descriptor": "(Landroid/content/Intent;)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Landroid/widget/Toast;",
+   "method": "show",
+   "descriptor": "()",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/GameActivity;",
+   "method": "repaint",
+   "descriptor": "()",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Ljava/lang/Math;",
+   "method": "cos",
+   "descriptor": "(D)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Ljava/lang/Math;",
+   "method": "sin",
+   "descriptor": "(D)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/GameActivity;",
+   "method": "updateInfo",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/Rings;",
+   "method": "isSolved",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Ljava/lang/Object;",
+   "method": "toString",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Ljava/lang/String;",
+   "method": "toUpperCase",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/GameActivity;",
+   "method": "getWindow",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/view/Window;",
+   "method": "getDecorView",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/InstructionActivity;",
+   "method": "findViewById",
+   "descriptor": "(I)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/widget/Toast;",
+   "method": "makeText",
+   "descriptor": "(Landroid/content/Context; Ljava/lang/CharSequence; I)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Ljava/lang/String;",
+   "method": "length",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/SplashActivity;",
+   "method": "findViewById",
+   "descriptor": "(I)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/SplashActivity;",
+   "method": "getPackageManager",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/SplashActivity;",
+   "method": "getComponentName",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/content/pm/PackageManager;",
+   "method": "getActivityInfo",
+   "descriptor": "(Landroid/content/ComponentName; I)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/AboutActivity;",
+   "method": "setContentView",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/GameActivity;",
+   "method": "getResources",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/net/Uri;",
+   "method": "parse",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/content/Intent;",
+   "method": "<init>",
+   "descriptor": "(Ljava/lang/String; Landroid/net/Uri;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/GameActivity$1;",
+   "method": "<init>",
+   "descriptor": "(Leu/veldsoft/fish/rings/GameActivity;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/GameActivity$2;",
+   "method": "<init>",
+   "descriptor": "(Leu/veldsoft/fish/rings/GameActivity;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/GameActivity$3;",
+   "method": "<init>",
+   "descriptor": "(Leu/veldsoft/fish/rings/GameActivity;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/GameActivity$4;",
+   "method": "<init>",
+   "descriptor": "(Leu/veldsoft/fish/rings/GameActivity;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/GameActivity$5;",
+   "method": "<init>",
+   "descriptor": "(Leu/veldsoft/fish/rings/GameActivity;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/GameActivity$6;",
+   "method": "<init>",
+   "descriptor": "(Leu/veldsoft/fish/rings/GameActivity;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/Toast;",
+   "method": "makeText",
+   "descriptor": "(Landroid/content/Context; I I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/Rings;",
+   "method": "getState",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/GameActivity;",
+   "method": "sound",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/GameActivity;",
+   "method": "congratulate",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/app/Activity;",
+   "method": "onActivityResult",
+   "descriptor": "(I I Landroid/content/Intent;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/content/Intent;",
+   "method": "getCharSequenceExtra",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/Rings;",
+   "method": "evaluate",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/GameActivity;",
+   "method": "setContentView",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/GameActivity$7;",
+   "method": "<init>",
+   "descriptor": "(Leu/veldsoft/fish/rings/GameActivity;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/ImageView;",
+   "method": "setOnClickListener",
+   "descriptor": "(Landroid/view/View$OnClickListener;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/view/View;",
+   "method": "getWidth",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/view/View;",
+   "method": "getHeight",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/Rings;",
+   "method": "<init>",
+   "descriptor": "(I I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/GameActivity;",
+   "method": "getMenuInflater",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/view/MenuInflater;",
+   "method": "inflate",
+   "descriptor": "(I Landroid/view/Menu;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/app/Activity;",
+   "method": "onCreateOptionsMenu",
+   "descriptor": "(Landroid/view/Menu;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/Rings;",
+   "method": "shuffle",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/GameActivity;",
+   "method": "startActivityForResult",
+   "descriptor": "(Landroid/content/Intent; I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/HelpActivity;",
+   "method": "setContentView",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/EditText;",
+   "method": "getText",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/content/Intent;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/content/Intent;",
+   "method": "putExtra",
+   "descriptor": "(Ljava/lang/String; Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/InstructionActivity;",
+   "method": "setResult",
+   "descriptor": "(I Landroid/content/Intent;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/regex/Pattern;",
+   "method": "compile",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/regex/Pattern;",
+   "method": "matcher",
+   "descriptor": "(Ljava/lang/CharSequence;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/regex/Matcher;",
+   "method": "matches",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/InstructionActivity;",
+   "method": "finish",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/InstructionActivity;",
+   "method": "getResources",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/InstructionActivity;",
+   "method": "setContentView",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/InstructionActivity$1;",
+   "method": "<init>",
+   "descriptor": "(Leu/veldsoft/fish/rings/InstructionActivity;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/Button;",
+   "method": "setOnClickListener",
+   "descriptor": "(Landroid/view/View$OnClickListener;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/Random;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/Rings;",
+   "method": "compareTo",
+   "descriptor": "(Leu/veldsoft/fish/rings/Rings;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/lang/Math;",
+   "method": "sqrt",
+   "descriptor": "(D)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/Arrays;",
+   "method": "deepToString",
+   "descriptor": "([Ljava/lang/Object;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/Random;",
+   "method": "nextInt",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/TimerTask;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/SplashActivity;",
+   "method": "access$0",
+   "descriptor": "(Leu/veldsoft/fish/rings/SplashActivity;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/lang/Class;",
+   "method": "forName",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/SplashActivity;",
+   "method": "startActivity",
+   "descriptor": "(Landroid/content/Intent;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/SplashActivity;",
+   "method": "setContentView",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/webkit/WebView;",
+   "method": "getSettings",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/webkit/WebSettings;",
+   "method": "setJavaScriptEnabled",
+   "descriptor": "(Z)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/webkit/WebView;",
+   "method": "loadUrl",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/os/Bundle;",
+   "method": "getInt",
+   "descriptor": "(Ljava/lang/String; I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/os/Bundle;",
+   "method": "getString",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/lang/Object;",
+   "method": "getClass",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/lang/Class;",
+   "method": "toString",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/SplashActivity;",
+   "method": "getResources",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/app/Activity;",
+   "method": "onResume",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/Timer;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/fish/rings/SplashActivity$1;",
+   "method": "<init>",
+   "descriptor": "(Leu/veldsoft/fish/rings/SplashActivity;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/Timer;",
+   "method": "schedule",
+   "descriptor": "(Ljava/util/TimerTask; J)",
+   "call_sites": 1
+  }
+ ],
+ "method_apis": {
+  "Leu/veldsoft/fish/rings/AboutActivity;-><init>()V": [
+   "Landroid/app/Activity;;.<init>"
+  ],
+  "Leu/veldsoft/fish/rings/AboutActivity;->onCreate(Landroid/os/Bundle;)V": [
+   "Landroid/app/Activity;;.onCreate",
+   "Leu/veldsoft/fish/rings/AboutActivity;;.setContentView"
+  ],
+  "Leu/veldsoft/fish/rings/GameActivity$1;-><init>(Leu/veldsoft/fish/rings/GameActivity;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/fish/rings/GameActivity$1;->onClick(Landroid/view/View;)V": [
+   "Leu/veldsoft/fish/rings/GameActivity;;.access$0",
+   "Leu/veldsoft/fish/rings/Rings;;.ccwa",
+   "Leu/veldsoft/fish/rings/GameActivity;;.access$1"
+  ],
+  "Leu/veldsoft/fish/rings/GameActivity$2;-><init>(Leu/veldsoft/fish/rings/GameActivity;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/fish/rings/GameActivity$2;->onClick(Landroid/view/View;)V": [
+   "Leu/veldsoft/fish/rings/GameActivity;;.access$0",
+   "Leu/veldsoft/fish/rings/Rings;;.cwa",
+   "Leu/veldsoft/fish/rings/GameActivity;;.access$1"
+  ],
+  "Leu/veldsoft/fish/rings/GameActivity$3;-><init>(Leu/veldsoft/fish/rings/GameActivity;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/fish/rings/GameActivity$3;->onClick(Landroid/view/View;)V": [
+   "Leu/veldsoft/fish/rings/GameActivity;;.access$0",
+   "Leu/veldsoft/fish/rings/Rings;;.ccwb",
+   "Leu/veldsoft/fish/rings/GameActivity;;.access$1"
+  ],
+  "Leu/veldsoft/fish/rings/GameActivity$4;-><init>(Leu/veldsoft/fish/rings/GameActivity;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/fish/rings/GameActivity$4;->onClick(Landroid/view/View;)V": [
+   "Leu/veldsoft/fish/rings/GameActivity;;.access$0",
+   "Leu/veldsoft/fish/rings/Rings;;.cwb",
+   "Leu/veldsoft/fish/rings/GameActivity;;.access$1"
+  ],
+  "Leu/veldsoft/fish/rings/GameActivity$5;-><init>(Leu/veldsoft/fish/rings/GameActivity;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/fish/rings/GameActivity$5;->onClick(Landroid/view/View;)V": [
+   "Leu/veldsoft/fish/rings/GameActivity;;.access$0",
+   "Leu/veldsoft/fish/rings/Rings;;.ccwc",
+   "Leu/veldsoft/fish/rings/GameActivity;;.access$1"
+  ],
+  "Leu/veldsoft/fish/rings/GameActivity$6;-><init>(Leu/veldsoft/fish/rings/GameActivity;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/fish/rings/GameActivity$6;->onClick(Landroid/view/View;)V": [
+   "Leu/veldsoft/fish/rings/GameActivity;;.access$0",
+   "Leu/veldsoft/fish/rings/Rings;;.cwc",
+   "Leu/veldsoft/fish/rings/GameActivity;;.access$1"
+  ],
+  "Leu/veldsoft/fish/rings/GameActivity$7;-><init>(Leu/veldsoft/fish/rings/GameActivity;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/fish/rings/GameActivity$7;->onClick(Landroid/view/View;)V": [
+   "Leu/veldsoft/fish/rings/GameActivity;;.getResources",
+   "Landroid/content/res/Resources;;.getString",
+   "Landroid/net/Uri;;.parse",
+   "Landroid/content/Intent;;.<init>",
+   "Leu/veldsoft/fish/rings/GameActivity;;.startActivity"
+  ],
+  "Leu/veldsoft/fish/rings/GameActivity;-><init>()V": [
+   "Landroid/app/Activity;;.<init>",
+   "Leu/veldsoft/fish/rings/GameActivity$1;;.<init>",
+   "Leu/veldsoft/fish/rings/GameActivity$2;;.<init>",
+   "Leu/veldsoft/fish/rings/GameActivity$3;;.<init>",
+   "Leu/veldsoft/fish/rings/GameActivity$4;;.<init>",
+   "Leu/veldsoft/fish/rings/GameActivity$5;;.<init>",
+   "Leu/veldsoft/fish/rings/GameActivity$6;;.<init>"
+  ],
+  "Leu/veldsoft/fish/rings/GameActivity;->access$1(Leu/veldsoft/fish/rings/GameActivity;)V": [
+   "Leu/veldsoft/fish/rings/GameActivity;;.updateInfo"
+  ],
+  "Leu/veldsoft/fish/rings/GameActivity;->congratulate()V": [
+   "Leu/veldsoft/fish/rings/Rings;;.isSolved",
+   "Landroid/widget/Toast;;.makeText",
+   "Landroid/widget/Toast;;.show"
+  ],
+  "Leu/veldsoft/fish/rings/GameActivity;->repaint()V": [
+   "Leu/veldsoft/fish/rings/Rings;;.getState",
+   "Landroid/widget/ImageView;;.setImageResource",
+   "Landroid/widget/ImageView;;.setImageResource",
+   "Landroid/widget/ImageView;;.setImageResource",
+   "Landroid/widget/ImageView;;.setImageResource"
+  ],
+  "Leu/veldsoft/fish/rings/GameActivity;->sound()V": [
+   "Leu/veldsoft/fish/rings/Rings;;.isSolved",
+   "Landroid/media/MediaPlayer;;.start",
+   "Landroid/media/MediaPlayer;;.start"
+  ],
+  "Leu/veldsoft/fish/rings/GameActivity;->updateInfo()V": [
+   "Leu/veldsoft/fish/rings/GameActivity;;.sound",
+   "Leu/veldsoft/fish/rings/GameActivity;;.repaint",
+   "Leu/veldsoft/fish/rings/GameActivity;;.congratulate"
+  ],
+  "Leu/veldsoft/fish/rings/GameActivity;->onActivityResult(I I Landroid/content/Intent;)V": [
+   "Landroid/app/Activity;;.onActivityResult",
+   "Landroid/content/Intent;;.getCharSequenceExtra",
+   "Ljava/lang/Object;;.toString",
+   "Ljava/lang/String;;.toUpperCase",
+   "Leu/veldsoft/fish/rings/Rings;;.evaluate",
+   "Leu/veldsoft/fish/rings/GameActivity;;.updateInfo"
+  ],
+  "Leu/veldsoft/fish/rings/GameActivity;->onCreate(Landroid/os/Bundle;)V": [
+   "Leu/veldsoft/fish/rings/GameActivity;;.setContentView",
+   "Landroid/media/MediaPlayer;;.create",
+   "Landroid/media/MediaPlayer;;.create",
+   "Landroid/media/MediaPlayer;;.create",
+   "Landroid/media/MediaPlayer;;.create",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Landroid/view/View;;.setOnClickListener",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Landroid/view/View;;.setOnClickListener",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Landroid/view/View;;.setOnClickListener",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Landroid/view/View;;.setOnClickListener",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Landroid/view/View;;.setOnClickListener",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Landroid/view/View;;.setOnClickListener",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Landroid/view/View;;.setOnClickListener",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Landroid/view/View;;.setOnClickListener",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Landroid/view/View;;.setOnClickListener",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Landroid/view/View;;.setOnClickListener",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Landroid/view/View;;.setOnClickListener",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Landroid/view/View;;.setOnClickListener",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Landroid/view/View;;.setOnClickListener",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Landroid/view/View;;.setOnClickListener",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Landroid/view/View;;.setOnClickListener",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Landroid/view/View;;.setOnClickListener",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Landroid/view/View;;.setOnClickListener",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Landroid/view/View;;.setOnClickListener",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Landroid/view/View;;.setOnClickListener",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Landroid/view/View;;.setOnClickListener",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Landroid/view/View;;.setOnClickListener",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Landroid/view/View;;.setOnClickListener",
+   "Leu/veldsoft/fish/rings/GameActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/GameActivity$7;;.<init>",
+   "Landroid/widget/ImageView;;.setOnClickListener",
+   "Leu/veldsoft/fish/rings/GameActivity;;.getWindow",
+   "Landroid/view/Window;;.getDecorView",
+   "Landroid/view/View;;.getWidth",
+   "Leu/veldsoft/fish/rings/GameActivity;;.getWindow",
+   "Landroid/view/Window;;.getDecorView",
+   "Landroid/view/View;;.getHeight",
+   "Leu/veldsoft/fish/rings/Rings;;.<init>"
+  ],
+  "Leu/veldsoft/fish/rings/GameActivity;->onCreateOptionsMenu(Landroid/view/Menu;)Z": [
+   "Leu/veldsoft/fish/rings/GameActivity;;.getMenuInflater",
+   "Landroid/view/MenuInflater;;.inflate",
+   "Landroid/app/Activity;;.onCreateOptionsMenu"
+  ],
+  "Leu/veldsoft/fish/rings/GameActivity;->onOptionsItemSelected(Landroid/view/MenuItem;)Z": [
+   "Landroid/view/MenuItem;;.getItemId",
+   "Leu/veldsoft/fish/rings/Rings;;.init",
+   "Landroid/media/MediaPlayer;;.start",
+   "Leu/veldsoft/fish/rings/GameActivity;;.repaint",
+   "Landroid/view/MenuItem;;.getItemId",
+   "Leu/veldsoft/fish/rings/Rings;;.shuffle",
+   "Landroid/media/MediaPlayer;;.start",
+   "Leu/veldsoft/fish/rings/GameActivity;;.repaint",
+   "Landroid/view/MenuItem;;.getItemId",
+   "Landroid/content/Intent;;.<init>",
+   "Leu/veldsoft/fish/rings/GameActivity;;.startActivityForResult",
+   "Landroid/view/MenuItem;;.getItemId",
+   "Landroid/content/Intent;;.<init>",
+   "Leu/veldsoft/fish/rings/GameActivity;;.startActivity",
+   "Landroid/view/MenuItem;;.getItemId",
+   "Landroid/content/Intent;;.<init>",
+   "Leu/veldsoft/fish/rings/GameActivity;;.startActivity"
+  ],
+  "Leu/veldsoft/fish/rings/HelpActivity;-><init>()V": [
+   "Landroid/app/Activity;;.<init>"
+  ],
+  "Leu/veldsoft/fish/rings/HelpActivity;->onCreate(Landroid/os/Bundle;)V": [
+   "Landroid/app/Activity;;.onCreate",
+   "Leu/veldsoft/fish/rings/HelpActivity;;.setContentView"
+  ],
+  "Leu/veldsoft/fish/rings/InstructionActivity$1;-><init>(Leu/veldsoft/fish/rings/InstructionActivity;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/fish/rings/InstructionActivity$1;->onClick(Landroid/view/View;)V": [
+   "Leu/veldsoft/fish/rings/InstructionActivity;;.findViewById",
+   "Landroid/widget/EditText;;.getText",
+   "Ljava/lang/Object;;.toString",
+   "Landroid/content/Intent;;.<init>",
+   "Landroid/content/Intent;;.putExtra",
+   "Leu/veldsoft/fish/rings/InstructionActivity;;.setResult",
+   "Ljava/lang/String;;.toUpperCase",
+   "Ljava/util/regex/Pattern;;.compile",
+   "Ljava/util/regex/Pattern;;.matcher",
+   "Ljava/util/regex/Matcher;;.matches",
+   "Leu/veldsoft/fish/rings/InstructionActivity;;.finish",
+   "Leu/veldsoft/fish/rings/InstructionActivity;;.getResources",
+   "Landroid/content/res/Resources;;.getString",
+   "Landroid/widget/Toast;;.makeText",
+   "Landroid/widget/Toast;;.show"
+  ],
+  "Leu/veldsoft/fish/rings/InstructionActivity;-><init>()V": [
+   "Landroid/app/Activity;;.<init>"
+  ],
+  "Leu/veldsoft/fish/rings/InstructionActivity;->onCreate(Landroid/os/Bundle;)V": [
+   "Landroid/app/Activity;;.onCreate",
+   "Leu/veldsoft/fish/rings/InstructionActivity;;.setContentView",
+   "Leu/veldsoft/fish/rings/InstructionActivity;;.findViewById",
+   "Leu/veldsoft/fish/rings/InstructionActivity$1;;.<init>",
+   "Landroid/widget/Button;;.setOnClickListener"
+  ],
+  "Leu/veldsoft/fish/rings/R$id;-><init>()V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/fish/rings/R$layout;-><init>()V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/fish/rings/R$menu;-><init>()V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/fish/rings/R$mipmap;-><init>()V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/fish/rings/R$raw;-><init>()V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/fish/rings/R$string;-><init>()V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/fish/rings/R$style;-><init>()V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/fish/rings/R;-><init>()V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/fish/rings/Rings;-><clinit>()V": [
+   "Ljava/util/Random;;.<init>"
+  ],
+  "Leu/veldsoft/fish/rings/Rings;-><init>()V": [
+   "Ljava/lang/Object;;.<init>",
+   "Ljava/lang/reflect/Array;;.newInstance",
+   "Ljava/lang/reflect/Array;;.newInstance",
+   "Leu/veldsoft/fish/rings/Rings;;.init"
+  ],
+  "Leu/veldsoft/fish/rings/Rings;-><init>(I I)V": [
+   "Ljava/lang/Object;;.<init>",
+   "Ljava/lang/reflect/Array;;.newInstance",
+   "Ljava/lang/reflect/Array;;.newInstance",
+   "Leu/veldsoft/fish/rings/Rings;;.init"
+  ],
+  "Leu/veldsoft/fish/rings/Rings;->action(I I)Z": [
+   "Ljava/lang/Math;;.pow",
+   "Ljava/lang/Math;;.pow",
+   "Ljava/lang/Double;;.isNaN",
+   "Ljava/lang/Math;;.pow",
+   "Leu/veldsoft/fish/rings/Rings;;.cwc",
+   "Ljava/lang/Math;;.pow",
+   "Ljava/lang/Math;;.pow",
+   "Ljava/lang/Double;;.isNaN",
+   "Ljava/lang/Math;;.pow",
+   "Leu/veldsoft/fish/rings/Rings;;.ccwc",
+   "Ljava/lang/Math;;.pow",
+   "Ljava/lang/Math;;.pow",
+   "Ljava/lang/Double;;.isNaN",
+   "Ljava/lang/Math;;.pow",
+   "Leu/veldsoft/fish/rings/Rings;;.cwb",
+   "Ljava/lang/Math;;.pow",
+   "Ljava/lang/Math;;.pow",
+   "Ljava/lang/Double;;.isNaN",
+   "Ljava/lang/Math;;.pow",
+   "Leu/veldsoft/fish/rings/Rings;;.ccwb",
+   "Ljava/lang/Math;;.pow",
+   "Ljava/lang/Math;;.pow",
+   "Ljava/lang/Double;;.isNaN",
+   "Ljava/lang/Math;;.pow",
+   "Leu/veldsoft/fish/rings/Rings;;.ccwa",
+   "Ljava/lang/Math;;.pow",
+   "Ljava/lang/Math;;.pow",
+   "Ljava/lang/Double;;.isNaN",
+   "Ljava/lang/Math;;.pow",
+   "Leu/veldsoft/fish/rings/Rings;;.cwa"
+  ],
+  "Leu/veldsoft/fish/rings/Rings;->compareTo(Ljava/lang/Object;)I": [
+   "Leu/veldsoft/fish/rings/Rings;;.compareTo"
+  ],
+  "Leu/veldsoft/fish/rings/Rings;->distance(Leu/veldsoft/fish/rings/Rings;)D": [
+   "Ljava/lang/Math;;.sqrt",
+   "Ljava/lang/Double;;.isNaN"
+  ],
+  "Leu/veldsoft/fish/rings/Rings;->evaluate(Ljava/lang/String;)Z": [
+   "Ljava/lang/String;;.length",
+   "Ljava/lang/String;;.charAt",
+   "Ljava/lang/String;;.charAt",
+   "Ljava/lang/String;;.charAt",
+   "Ljava/lang/String;;.charAt",
+   "Ljava/lang/String;;.charAt",
+   "Leu/veldsoft/fish/rings/Rings;;.cwa",
+   "Ljava/lang/String;;.charAt",
+   "Leu/veldsoft/fish/rings/Rings;;.cwb",
+   "Ljava/lang/String;;.charAt",
+   "Leu/veldsoft/fish/rings/Rings;;.cwc",
+   "Ljava/lang/String;;.charAt",
+   "Ljava/lang/String;;.charAt",
+   "Ljava/lang/String;;.charAt",
+   "Ljava/lang/String;;.charAt",
+   "Ljava/lang/String;;.charAt",
+   "Leu/veldsoft/fish/rings/Rings;;.ccwa",
+   "Ljava/lang/String;;.charAt",
+   "Leu/veldsoft/fish/rings/Rings;;.ccwb",
+   "Ljava/lang/String;;.charAt",
+   "Leu/veldsoft/fish/rings/Rings;;.ccwc"
+  ],
+  "Leu/veldsoft/fish/rings/Rings;->init(I I)V": [
+   "Ljava/lang/Double;;.isNaN",
+   "Ljava/lang/Double;;.isNaN",
+   "Ljava/lang/Double;;.isNaN",
+   "Ljava/lang/Double;;.isNaN",
+   "Ljava/lang/Math;;.cos",
+   "Ljava/lang/Double;;.isNaN",
+   "Ljava/lang/Double;;.isNaN",
+   "Ljava/lang/Math;;.sin",
+   "Ljava/lang/Double;;.isNaN",
+   "Ljava/lang/Double;;.isNaN",
+   "Ljava/lang/Double;;.isNaN",
+   "Ljava/lang/Math;;.cos",
+   "Ljava/lang/Double;;.isNaN",
+   "Ljava/lang/Double;;.isNaN",
+   "Ljava/lang/Math;;.sin",
+   "Ljava/lang/Double;;.isNaN",
+   "Ljava/lang/Double;;.isNaN",
+   "Ljava/lang/Math;;.cos",
+   "Ljava/lang/Double;;.isNaN",
+   "Ljava/lang/Double;;.isNaN",
+   "Ljava/lang/Double;;.isNaN",
+   "Ljava/lang/Math;;.sin",
+   "Ljava/lang/Double;;.isNaN"
+  ],
+  "Leu/veldsoft/fish/rings/Rings;->reset()V": [
+   "Leu/veldsoft/fish/rings/Rings;;.init"
+  ],
+  "Leu/veldsoft/fish/rings/Rings;->shuffle()V": [
+   "Ljava/util/Arrays;;.deepToString",
+   "Ljava/lang/String;;.length",
+   "Ljava/util/Random;;.nextInt",
+   "Leu/veldsoft/fish/rings/Rings;;.ccwc",
+   "Leu/veldsoft/fish/rings/Rings;;.cwc",
+   "Leu/veldsoft/fish/rings/Rings;;.ccwb",
+   "Leu/veldsoft/fish/rings/Rings;;.cwb",
+   "Leu/veldsoft/fish/rings/Rings;;.ccwa",
+   "Leu/veldsoft/fish/rings/Rings;;.cwa"
+  ],
+  "Leu/veldsoft/fish/rings/SplashActivity$1;-><init>(Leu/veldsoft/fish/rings/SplashActivity;)V": [
+   "Ljava/util/TimerTask;;.<init>"
+  ],
+  "Leu/veldsoft/fish/rings/SplashActivity$1;->run()V": [
+   "Leu/veldsoft/fish/rings/SplashActivity;;.access$0",
+   "Ljava/lang/Class;;.forName",
+   "Landroid/content/Intent;;.<init>",
+   "Leu/veldsoft/fish/rings/SplashActivity;;.startActivity"
+  ],
+  "Leu/veldsoft/fish/rings/SplashActivity;-><init>()V": [
+   "Landroid/app/Activity;;.<init>"
+  ],
+  "Leu/veldsoft/fish/rings/SplashActivity;->onCreate(Landroid/os/Bundle;)V": [
+   "Landroid/app/Activity;;.onCreate",
+   "Leu/veldsoft/fish/rings/SplashActivity;;.setContentView",
+   "Leu/veldsoft/fish/rings/SplashActivity;;.findViewById",
+   "Landroid/webkit/WebView;;.getSettings",
+   "Landroid/webkit/WebSettings;;.setJavaScriptEnabled",
+   "Leu/veldsoft/fish/rings/SplashActivity;;.findViewById",
+   "Landroid/webkit/WebView;;.loadUrl",
+   "Leu/veldsoft/fish/rings/SplashActivity;;.getPackageManager",
+   "Leu/veldsoft/fish/rings/SplashActivity;;.getComponentName",
+   "Landroid/content/pm/PackageManager;;.getActivityInfo",
+   "Landroid/os/Bundle;;.getInt",
+   "Leu/veldsoft/fish/rings/SplashActivity;;.getPackageManager",
+   "Leu/veldsoft/fish/rings/SplashActivity;;.getComponentName",
+   "Landroid/content/pm/PackageManager;;.getActivityInfo",
+   "Landroid/os/Bundle;;.getString",
+   "Ljava/lang/Object;;.getClass",
+   "Ljava/lang/Class;;.toString",
+   "Leu/veldsoft/fish/rings/SplashActivity;;.getResources",
+   "Landroid/content/res/Resources;;.getString",
+   "Landroid/widget/Toast;;.makeText",
+   "Landroid/widget/Toast;;.show"
+  ],
+  "Leu/veldsoft/fish/rings/SplashActivity;->onResume()V": [
+   "Landroid/app/Activity;;.onResume",
+   "Ljava/util/Timer;;.<init>",
+   "Leu/veldsoft/fish/rings/SplashActivity$1;;.<init>",
+   "Ljava/util/Timer;;.schedule"
+  ]
+ }
+}

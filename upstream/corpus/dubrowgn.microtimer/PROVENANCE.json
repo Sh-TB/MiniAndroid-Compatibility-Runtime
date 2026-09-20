@@ -1,0 +1,13 @@
+{
+ "apk": "dubrowgn.microtimer_8.apk",
+ "package": "dubrowgn.microtimer",
+ "versionCode": 8,
+ "source_repo": "dubrowgn/micro-timer",
+ "source_commit": "825faf52fbcb886e8ef6637bcb0e8478b4b0162e",
+ "tarball_sha256": "c944358caba5d51dd0eebc05cbdc95926fe296c1101330a0c25216ca205c6eaf",
+ "tarball_bytes": 111232,
+ "extracted": true,
+ "fetched_at": "2026-09-20T04:39:59Z",
+ "metadata_origin": "https://gitlab.com/fdroid/fdroiddata/-/raw/master/metadata/dubrowgn.microtimer.yml",
+ "codeload_origin": "https://codeload.github.com/dubrowgn/micro-timer/tar.gz/825faf52fbcb886e8ef6637bcb0e8478b4b0162e"
+}

@@ -1,0 +1,1048 @@
+{
+ "apk": "com.github.muellerma.stopwatch_6.apk",
+ "package": "com.github.muellerma.stopwatch",
+ "versionCode": "6",
+ "app_classes": 18,
+ "app_methods": 48,
+ "api_call_sites": 179,
+ "distinct_apis": 112,
+ "top_target_classes": [
+  [
+   "Ljava/lang/StringBuilder;",
+   24
+  ],
+  [
+   "Lkotlin/jvm/internal/Intrinsics;",
+   14
+  ],
+  [
+   "Landroid/util/Log;",
+   11
+  ],
+  [
+   "Landroidx/core/app/NotificationCompat$Builder;",
+   10
+  ],
+  [
+   "Landroid/app/Service;",
+   8
+  ],
+  [
+   "Landroid/content/Context;",
+   6
+  ],
+  [
+   "Landroid/app/NotificationChannel;",
+   5
+  ],
+  [
+   "Landroid/service/quicksettings/TileService;",
+   5
+  ],
+  [
+   "Ljava/lang/Long;",
+   5
+  ],
+  [
+   "Lcom/github/muellerma/stopwatch/StopwatchService$onStartCommand$1;",
+   5
+  ],
+  [
+   "Lcom/github/muellerma/stopwatch/StopwatchService;",
+   4
+  ],
+  [
+   "Ljava/lang/Class;",
+   4
+  ],
+  [
+   "Lcom/github/muellerma/stopwatch/StopwatchApp;",
+   4
+  ],
+  [
+   "Lkotlin/Pair;",
+   4
+  ],
+  [
+   "Ljava/lang/Object;",
+   3
+  ],
+  [
+   "Lcom/github/muellerma/stopwatch/ServiceStatus;",
+   3
+  ],
+  [
+   "Ljava/util/Iterator;",
+   3
+  ],
+  [
+   "Lcom/github/muellerma/stopwatch/StopwatchTile$Companion;",
+   3
+  ],
+  [
+   "Lcom/github/muellerma/stopwatch/StopwatchService$Companion;",
+   3
+  ],
+  [
+   "Landroidx/core/content/ContextCompat;",
+   3
+  ],
+  [
+   "Lcom/github/muellerma/stopwatch/StopwatchTile;",
+   3
+  ],
+  [
+   "Landroid/service/quicksettings/Tile;",
+   3
+  ],
+  [
+   "Ljava/lang/Iterable;",
+   2
+  ],
+  [
+   "Landroid/content/Intent;",
+   2
+  ],
+  [
+   "Landroid/os/PowerManager$WakeLock;",
+   2
+  ]
+ ],
+ "api_sites": [
+  {
+   "target_class": "Landroid/util/Log;",
+   "method": "d",
+   "descriptor": "(Ljava/lang/String; Ljava/lang/String;)",
+   "call_sites": 10
+  },
+  {
+   "target_class": "Ljava/lang/StringBuilder;",
+   "method": "append",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 9
+  },
+  {
+   "target_class": "Ljava/lang/StringBuilder;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 5
+  },
+  {
+   "target_class": "Ljava/lang/StringBuilder;",
+   "method": "toString",
+   "descriptor": "()",
+   "call_sites": 5
+  },
+  {
+   "target_class": "Lkotlin/jvm/internal/Intrinsics;",
+   "method": "checkNotNullExpressionValue",
+   "descriptor": "(Ljava/lang/Object; Ljava/lang/String;)",
+   "call_sites": 5
+  },
+  {
+   "target_class": "Ljava/lang/Long;",
+   "method": "valueOf",
+   "descriptor": "(J)",
+   "call_sites": 5
+  },
+  {
+   "target_class": "Ljava/lang/Class;",
+   "method": "getSimpleName",
+   "descriptor": "()",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Landroid/app/Service;",
+   "method": "getApplication",
+   "descriptor": "()",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Lkotlin/jvm/internal/Intrinsics;",
+   "method": "checkNotNull",
+   "descriptor": "(Ljava/lang/Object; Ljava/lang/String;)",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Ljava/lang/Object;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Lkotlin/jvm/internal/Intrinsics;",
+   "method": "checkNotNullParameter",
+   "descriptor": "(Ljava/lang/Object; Ljava/lang/String;)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Landroid/content/Context;",
+   "method": "getString",
+   "descriptor": "(I)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Ljava/lang/Iterable;",
+   "method": "iterator",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Ljava/util/Iterator;",
+   "method": "hasNext",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lcom/github/muellerma/stopwatch/StopwatchService;",
+   "method": "access$getTAG$cp",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Ljava/lang/StringBuilder;",
+   "method": "append",
+   "descriptor": "(Ljava/lang/Object;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lcom/github/muellerma/stopwatch/StopwatchApp;",
+   "method": "getLastStatusUpdate",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Ljava/lang/Integer;",
+   "method": "valueOf",
+   "descriptor": "(I)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lkotlin/Pair;",
+   "method": "<init>",
+   "descriptor": "(Ljava/lang/Object; Ljava/lang/Object;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lcom/github/muellerma/stopwatch/StopwatchTile;",
+   "method": "setTileState",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Ljava/util/Arrays;",
+   "method": "copyOf",
+   "descriptor": "([Ljava/lang/Object; I)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Ljava/lang/String;",
+   "method": "format",
+   "descriptor": "(Ljava/lang/String; [Ljava/lang/Object;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lcom/github/muellerma/stopwatch/ServiceStatus;",
+   "method": "<init>",
+   "descriptor": "(Lkotlin/jvm/internal/DefaultConstructorMarker;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Ljava/lang/StringBuilder;",
+   "method": "append",
+   "descriptor": "(J)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroidx/core/content/ContextCompat;",
+   "method": "getSystemService",
+   "descriptor": "(Landroid/content/Context; Ljava/lang/Class;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lkotlin/jvm/internal/Intrinsics;",
+   "method": "checkNotNull",
+   "descriptor": "(Ljava/lang/Object;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lcom/github/muellerma/stopwatch/StopwatchServiceKt;",
+   "method": "safeRelease",
+   "descriptor": "(Landroid/os/PowerManager$WakeLock;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lkotlinx/coroutines/Job$DefaultImpls;",
+   "method": "cancel$default",
+   "descriptor": "(Lkotlinx/coroutines/Job; Ljava/util/concurrent/CancellationException; I Ljava/lang/Object;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lcom/github/muellerma/stopwatch/StopwatchApp;",
+   "method": "notifyObservers",
+   "descriptor": "(Lcom/github/muellerma/stopwatch/ServiceStatus;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lcom/github/muellerma/stopwatch/StopwatchService$onStartCommand$1;",
+   "method": "<init>",
+   "descriptor": "(Lcom/github/muellerma/stopwatch/StopwatchService; Lkotlin/coroutines/Continuation;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lkotlin/ResultKt;",
+   "method": "throwOnFailure",
+   "descriptor": "(Ljava/lang/Object;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lcom/github/muellerma/stopwatch/ServiceStatus;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/app/Application;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/ArrayList;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lcom/github/muellerma/stopwatch/StopwatchTile$Companion;",
+   "method": "requestTileStateUpdate",
+   "descriptor": "(Landroid/content/Context;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/Iterator;",
+   "method": "next",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroidx/appcompat/view/SupportMenuInflater$MenuState$$ExternalSyntheticThrowCCEIfNotNull0;",
+   "method": "m",
+   "descriptor": "(Ljava/lang/Object;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/app/NotificationChannel;",
+   "method": "setShowBadge",
+   "descriptor": "(Z)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/app/NotificationChannel;",
+   "method": "enableVibration",
+   "descriptor": "(Z)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/app/NotificationChannel;",
+   "method": "enableLights",
+   "descriptor": "(Z)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/app/NotificationChannel;",
+   "method": "setSound",
+   "descriptor": "(Landroid/net/Uri; Landroid/media/AudioAttributes;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/app/NotificationManager;",
+   "method": "createNotificationChannel",
+   "descriptor": "(Landroid/app/NotificationChannel;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/app/NotificationChannel;",
+   "method": "<init>",
+   "descriptor": "(Ljava/lang/String; Ljava/lang/CharSequence; I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lcom/github/muellerma/stopwatch/StopwatchService$Companion;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/lang/StringBuilder;",
+   "method": "append",
+   "descriptor": "(Z)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/content/Intent;",
+   "method": "<init>",
+   "descriptor": "(Landroid/content/Context; Ljava/lang/Class;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/content/Context;",
+   "method": "getPackageName",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/content/Intent;",
+   "method": "setPackage",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroidx/core/content/ContextCompat;",
+   "method": "startForegroundService",
+   "descriptor": "(Landroid/content/Context; Landroid/content/Intent;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/content/Context;",
+   "method": "stopService",
+   "descriptor": "(Landroid/content/Intent;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/os/PowerManager$WakeLock;",
+   "method": "release",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/util/Log;",
+   "method": "d",
+   "descriptor": "(Ljava/lang/String; Ljava/lang/String; Ljava/lang/Throwable;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lcom/github/muellerma/stopwatch/StopwatchTile$Companion;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lcom/github/muellerma/stopwatch/StopwatchTile;",
+   "method": "access$getTAG$cp",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/content/ComponentName;",
+   "method": "<init>",
+   "descriptor": "(Landroid/content/Context; Ljava/lang/Class;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/service/quicksettings/TileService;",
+   "method": "requestListeningState",
+   "descriptor": "(Landroid/content/Context; Landroid/content/ComponentName;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lcom/github/muellerma/stopwatch/StopwatchTile$Companion;",
+   "method": "<init>",
+   "descriptor": "(Lkotlin/jvm/internal/DefaultConstructorMarker;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/service/quicksettings/TileService;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/service/quicksettings/TileService;",
+   "method": "getQsTile",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lcom/github/muellerma/stopwatch/ServiceStatus$Running;",
+   "method": "getSeconds",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lcom/github/muellerma/stopwatch/StopwatchTileKt;",
+   "method": "toFormattedTime",
+   "descriptor": "(J)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lkotlin/Pair;",
+   "method": "component1",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/lang/Number;",
+   "method": "intValue",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lkotlin/Pair;",
+   "method": "component2",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/service/quicksettings/Tile;",
+   "method": "setState",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/service/quicksettings/Tile;",
+   "method": "setLabel",
+   "descriptor": "(Ljava/lang/CharSequence;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/service/quicksettings/Tile;",
+   "method": "updateTile",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lkotlin/NoWhenBranchMatchedException;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/content/Context;",
+   "method": "getApplicationContext",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lcom/github/muellerma/stopwatch/StopwatchService$Companion;",
+   "method": "changeState",
+   "descriptor": "(Landroid/content/Context; Z)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/service/quicksettings/TileService;",
+   "method": "onStartListening",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/service/quicksettings/TileService;",
+   "method": "onTileAdded",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lcom/github/muellerma/stopwatch/ServiceStatus$Stopped;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lcom/github/muellerma/stopwatch/StopwatchService$Companion;",
+   "method": "<init>",
+   "descriptor": "(Lkotlin/jvm/internal/DefaultConstructorMarker;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/app/Service;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lkotlinx/coroutines/JobKt;",
+   "method": "Job$default",
+   "descriptor": "(Lkotlinx/coroutines/Job; I Ljava/lang/Object;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroidx/core/app/NotificationCompat$Builder;",
+   "method": "<init>",
+   "descriptor": "(Landroid/content/Context; Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroidx/core/app/NotificationCompat$Builder;",
+   "method": "setContentTitle",
+   "descriptor": "(Ljava/lang/CharSequence;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroidx/core/app/NotificationCompat$Builder;",
+   "method": "setTicker",
+   "descriptor": "(Ljava/lang/CharSequence;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroidx/core/app/NotificationCompat$Builder;",
+   "method": "setSmallIcon",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroidx/core/app/NotificationCompat$Builder;",
+   "method": "setOngoing",
+   "descriptor": "(Z)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroidx/core/app/NotificationCompat$Builder;",
+   "method": "setShowWhen",
+   "descriptor": "(Z)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/lang/System;",
+   "method": "currentTimeMillis",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroidx/core/app/NotificationCompat$Builder;",
+   "method": "setWhen",
+   "descriptor": "(J)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroidx/core/app/NotificationCompat$Builder;",
+   "method": "setCategory",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroidx/core/app/NotificationCompat$Builder;",
+   "method": "setForegroundServiceBehavior",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroidx/core/app/NotificationCompat$Builder;",
+   "method": "build",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lcom/github/muellerma/stopwatch/StopwatchService;",
+   "method": "getCoroutineContext",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/app/Service;",
+   "method": "onCreate",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lcom/github/muellerma/stopwatch/StopwatchService$$ExternalSyntheticApiModelOutline6;",
+   "method": "m",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lcom/github/muellerma/stopwatch/StopwatchService$$ExternalSyntheticApiModelOutline5;",
+   "method": "m",
+   "descriptor": "(Ljava/lang/String; Ljava/lang/CharSequence; I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lcom/github/muellerma/stopwatch/StopwatchService$$ExternalSyntheticApiModelOutline0;",
+   "method": "m",
+   "descriptor": "(Landroid/app/NotificationChannel; Z)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lcom/github/muellerma/stopwatch/StopwatchService$$ExternalSyntheticApiModelOutline1;",
+   "method": "m",
+   "descriptor": "(Landroid/app/NotificationChannel; Z)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lcom/github/muellerma/stopwatch/StopwatchService$$ExternalSyntheticApiModelOutline2;",
+   "method": "m",
+   "descriptor": "(Landroid/app/NotificationChannel; Z)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lcom/github/muellerma/stopwatch/StopwatchService$$ExternalSyntheticApiModelOutline3;",
+   "method": "m",
+   "descriptor": "(Landroid/app/NotificationChannel; Landroid/net/Uri; Landroid/media/AudioAttributes;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lcom/github/muellerma/stopwatch/StopwatchService$$ExternalSyntheticApiModelOutline4;",
+   "method": "m",
+   "descriptor": "(Landroid/app/NotificationManager; Landroid/app/NotificationChannel;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lcom/github/muellerma/stopwatch/StopwatchService;",
+   "method": "getNotification",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/app/Service;",
+   "method": "startForeground",
+   "descriptor": "(I Landroid/app/Notification;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/app/Service;",
+   "method": "onDestroy",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/os/PowerManager;",
+   "method": "newWakeLock",
+   "descriptor": "(I Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/os/PowerManager$WakeLock;",
+   "method": "acquire",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lkotlin/coroutines/jvm/internal/SuspendLambda;",
+   "method": "<init>",
+   "descriptor": "(I Lkotlin/coroutines/Continuation;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lcom/github/muellerma/stopwatch/StopwatchService$onStartCommand$1;",
+   "method": "invoke",
+   "descriptor": "(Lkotlinx/coroutines/CoroutineScope; Lkotlin/coroutines/Continuation;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lcom/github/muellerma/stopwatch/StopwatchService$onStartCommand$1;",
+   "method": "create",
+   "descriptor": "(Ljava/lang/Object; Lkotlin/coroutines/Continuation;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lcom/github/muellerma/stopwatch/StopwatchService$onStartCommand$1;",
+   "method": "invokeSuspend",
+   "descriptor": "(Ljava/lang/Object;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lkotlin/coroutines/intrinsics/IntrinsicsKt;",
+   "method": "getCOROUTINE_SUSPENDED",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/lang/IllegalStateException;",
+   "method": "<init>",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lkotlin/ranges/LongRange;",
+   "method": "<init>",
+   "descriptor": "(J J)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lkotlin/collections/LongIterator;",
+   "method": "nextLong",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lcom/github/muellerma/stopwatch/ServiceStatus$Running;",
+   "method": "<init>",
+   "descriptor": "(J)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lkotlin/time/DurationKt;",
+   "method": "toDuration",
+   "descriptor": "(I Lkotlin/time/DurationUnit;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lkotlinx/coroutines/DelayKt;",
+   "method": "delay-VtjQ1oo",
+   "descriptor": "(J Lkotlin/coroutines/Continuation;)",
+   "call_sites": 1
+  }
+ ],
+ "method_apis": {
+  "Lcom/github/muellerma/stopwatch/ServiceStatus;-><init>()V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lcom/github/muellerma/stopwatch/ServiceStatus;-><init>(Lkotlin/jvm/internal/DefaultConstructorMarker;)V": [
+   "Lcom/github/muellerma/stopwatch/ServiceStatus;;.<init>"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchApp;-><init>()V": [
+   "Landroid/app/Application;;.<init>",
+   "Ljava/util/ArrayList;;.<init>"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchApp;->notifyObservers(Lcom/github/muellerma/stopwatch/ServiceStatus;)V": [
+   "Lkotlin/jvm/internal/Intrinsics;;.checkNotNullParameter",
+   "Ljava/lang/Iterable;;.iterator",
+   "Ljava/util/Iterator;;.hasNext",
+   "Lcom/github/muellerma/stopwatch/StopwatchTile$Companion;;.requestTileStateUpdate",
+   "Ljava/util/Iterator;;.next",
+   "Landroidx/appcompat/view/SupportMenuInflater$MenuState$$ExternalSyntheticThrowCCEIfNotNull0;;.m"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchService$$ExternalSyntheticApiModelOutline0;->m(Landroid/app/NotificationChannel; Z)V": [
+   "Landroid/app/NotificationChannel;;.setShowBadge"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchService$$ExternalSyntheticApiModelOutline1;->m(Landroid/app/NotificationChannel; Z)V": [
+   "Landroid/app/NotificationChannel;;.enableVibration"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchService$$ExternalSyntheticApiModelOutline2;->m(Landroid/app/NotificationChannel; Z)V": [
+   "Landroid/app/NotificationChannel;;.enableLights"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchService$$ExternalSyntheticApiModelOutline3;->m(Landroid/app/NotificationChannel; Landroid/net/Uri; Landroid/media/AudioAttributes;)V": [
+   "Landroid/app/NotificationChannel;;.setSound"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchService$$ExternalSyntheticApiModelOutline4;->m(Landroid/app/NotificationManager; Landroid/app/NotificationChannel;)V": [
+   "Landroid/app/NotificationManager;;.createNotificationChannel"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchService$$ExternalSyntheticApiModelOutline5;->m(Ljava/lang/String; Ljava/lang/CharSequence; I)Landroid/app/NotificationChannel;": [
+   "Landroid/app/NotificationChannel;;.<init>"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchService$Companion;-><init>()V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchService$Companion;-><init>(Lkotlin/jvm/internal/DefaultConstructorMarker;)V": [
+   "Lcom/github/muellerma/stopwatch/StopwatchService$Companion;;.<init>"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchService$Companion;->changeState(Landroid/content/Context; Z)V": [
+   "Lkotlin/jvm/internal/Intrinsics;;.checkNotNullParameter",
+   "Lcom/github/muellerma/stopwatch/StopwatchService;;.access$getTAG$cp",
+   "Ljava/lang/StringBuilder;;.<init>",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.toString",
+   "Landroid/util/Log;;.d",
+   "Landroid/content/Intent;;.<init>",
+   "Landroid/content/Context;;.getPackageName",
+   "Landroid/content/Intent;;.setPackage",
+   "Landroidx/core/content/ContextCompat;;.startForegroundService",
+   "Landroid/content/Context;;.stopService"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchServiceKt;->safeRelease(Landroid/os/PowerManager$WakeLock;)V": [
+   "Landroid/os/PowerManager$WakeLock;;.release",
+   "Ljava/lang/StringBuilder;;.<init>",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.toString",
+   "Landroid/util/Log;;.d"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchTile$Companion;-><init>()V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchTile$Companion;-><init>(Lkotlin/jvm/internal/DefaultConstructorMarker;)V": [
+   "Lcom/github/muellerma/stopwatch/StopwatchTile$Companion;;.<init>"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchTile$Companion;->requestTileStateUpdate(Landroid/content/Context;)V": [
+   "Lkotlin/jvm/internal/Intrinsics;;.checkNotNullParameter",
+   "Lcom/github/muellerma/stopwatch/StopwatchTile;;.access$getTAG$cp",
+   "Landroid/util/Log;;.d",
+   "Landroid/content/ComponentName;;.<init>",
+   "Landroid/service/quicksettings/TileService;;.requestListeningState"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchTile;-><clinit>()V": [
+   "Lcom/github/muellerma/stopwatch/StopwatchTile$Companion;;.<init>",
+   "Ljava/lang/Class;;.getSimpleName"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchTile;-><init>()V": [
+   "Landroid/service/quicksettings/TileService;;.<init>"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchTile;->setTileState()V": [
+   "Landroid/app/Service;;.getApplication",
+   "Lkotlin/jvm/internal/Intrinsics;;.checkNotNull",
+   "Lcom/github/muellerma/stopwatch/StopwatchApp;;.getLastStatusUpdate",
+   "Ljava/lang/StringBuilder;;.<init>",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.toString",
+   "Landroid/util/Log;;.d",
+   "Landroid/service/quicksettings/TileService;;.getQsTile",
+   "Ljava/lang/Integer;;.valueOf",
+   "Landroid/content/Context;;.getString",
+   "Lkotlin/Pair;;.<init>",
+   "Ljava/lang/Integer;;.valueOf",
+   "Lcom/github/muellerma/stopwatch/ServiceStatus$Running;;.getSeconds",
+   "Lcom/github/muellerma/stopwatch/StopwatchTileKt;;.toFormattedTime",
+   "Lkotlin/Pair;;.<init>",
+   "Lkotlin/Pair;;.component1",
+   "Ljava/lang/Number;;.intValue",
+   "Lkotlin/Pair;;.component2",
+   "Landroid/service/quicksettings/Tile;;.setState",
+   "Landroid/service/quicksettings/Tile;;.setLabel",
+   "Landroid/service/quicksettings/Tile;;.updateTile",
+   "Lkotlin/NoWhenBranchMatchedException;;.<init>"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchTile;->onClick()V": [
+   "Landroid/util/Log;;.d",
+   "Landroid/app/Service;;.getApplication",
+   "Lkotlin/jvm/internal/Intrinsics;;.checkNotNull",
+   "Lcom/github/muellerma/stopwatch/StopwatchApp;;.getLastStatusUpdate",
+   "Landroid/content/Context;;.getApplicationContext",
+   "Lkotlin/jvm/internal/Intrinsics;;.checkNotNullExpressionValue",
+   "Lcom/github/muellerma/stopwatch/StopwatchService$Companion;;.changeState"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchTile;->onStartListening()V": [
+   "Landroid/util/Log;;.d",
+   "Lcom/github/muellerma/stopwatch/StopwatchTile;;.setTileState",
+   "Landroid/service/quicksettings/TileService;;.onStartListening"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchTile;->onTileAdded()V": [
+   "Landroid/util/Log;;.d",
+   "Lcom/github/muellerma/stopwatch/StopwatchTile;;.setTileState",
+   "Landroid/service/quicksettings/TileService;;.onTileAdded"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchTileKt;->toFormattedTime(J)Ljava/lang/String;": [
+   "Ljava/lang/Long;;.valueOf",
+   "Ljava/lang/Long;;.valueOf",
+   "Ljava/util/Arrays;;.copyOf",
+   "Ljava/lang/String;;.format",
+   "Lkotlin/jvm/internal/Intrinsics;;.checkNotNullExpressionValue",
+   "Ljava/lang/Long;;.valueOf",
+   "Ljava/lang/Long;;.valueOf",
+   "Ljava/lang/Long;;.valueOf",
+   "Ljava/util/Arrays;;.copyOf",
+   "Ljava/lang/String;;.format"
+  ],
+  "Lcom/github/muellerma/stopwatch/ServiceStatus$Running;-><init>(J)V": [
+   "Lcom/github/muellerma/stopwatch/ServiceStatus;;.<init>"
+  ],
+  "Lcom/github/muellerma/stopwatch/ServiceStatus$Running;->toString()Ljava/lang/String;": [
+   "Ljava/lang/Class;;.getSimpleName",
+   "Ljava/lang/StringBuilder;;.<init>",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.toString"
+  ],
+  "Lcom/github/muellerma/stopwatch/ServiceStatus$Stopped;-><clinit>()V": [
+   "Lcom/github/muellerma/stopwatch/ServiceStatus$Stopped;;.<init>"
+  ],
+  "Lcom/github/muellerma/stopwatch/ServiceStatus$Stopped;-><init>()V": [
+   "Lcom/github/muellerma/stopwatch/ServiceStatus;;.<init>"
+  ],
+  "Lcom/github/muellerma/stopwatch/ServiceStatus$Stopped;->toString()Ljava/lang/String;": [
+   "Ljava/lang/Class;;.getSimpleName",
+   "Lkotlin/jvm/internal/Intrinsics;;.checkNotNullExpressionValue"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchService;-><clinit>()V": [
+   "Lcom/github/muellerma/stopwatch/StopwatchService$Companion;;.<init>",
+   "Ljava/lang/Class;;.getSimpleName"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchService;-><init>()V": [
+   "Landroid/app/Service;;.<init>",
+   "Lkotlinx/coroutines/JobKt;;.Job$default"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchService;->getNotification(Ljava/lang/String;)Landroid/app/Notification;": [
+   "Landroidx/core/app/NotificationCompat$Builder;;.<init>",
+   "Landroidx/core/app/NotificationCompat$Builder;;.setContentTitle",
+   "Landroidx/core/app/NotificationCompat$Builder;;.setTicker",
+   "Landroidx/core/app/NotificationCompat$Builder;;.setSmallIcon",
+   "Landroidx/core/app/NotificationCompat$Builder;;.setOngoing",
+   "Landroidx/core/app/NotificationCompat$Builder;;.setShowWhen",
+   "Ljava/lang/System;;.currentTimeMillis",
+   "Landroidx/core/app/NotificationCompat$Builder;;.setWhen",
+   "Landroidx/core/app/NotificationCompat$Builder;;.setCategory",
+   "Landroidx/core/app/NotificationCompat$Builder;;.setForegroundServiceBehavior",
+   "Landroidx/core/app/NotificationCompat$Builder;;.build",
+   "Lkotlin/jvm/internal/Intrinsics;;.checkNotNullExpressionValue"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchService;->getCoroutineContext()Lkotlin/coroutines/CoroutineContext;": [
+   "Lcom/github/muellerma/stopwatch/StopwatchService;;.getCoroutineContext"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchService;->onCreate()V": [
+   "Landroid/util/Log;;.d",
+   "Landroid/app/Service;;.onCreate",
+   "Landroidx/core/content/ContextCompat;;.getSystemService",
+   "Lkotlin/jvm/internal/Intrinsics;;.checkNotNull",
+   "Lcom/github/muellerma/stopwatch/StopwatchService$$ExternalSyntheticApiModelOutline6;;.m",
+   "Landroid/content/Context;;.getString",
+   "Lcom/github/muellerma/stopwatch/StopwatchService$$ExternalSyntheticApiModelOutline5;;.m",
+   "Lcom/github/muellerma/stopwatch/StopwatchService$$ExternalSyntheticApiModelOutline0;;.m",
+   "Lcom/github/muellerma/stopwatch/StopwatchService$$ExternalSyntheticApiModelOutline1;;.m",
+   "Lcom/github/muellerma/stopwatch/StopwatchService$$ExternalSyntheticApiModelOutline2;;.m",
+   "Lcom/github/muellerma/stopwatch/StopwatchService$$ExternalSyntheticApiModelOutline3;;.m",
+   "Lcom/github/muellerma/stopwatch/StopwatchService$$ExternalSyntheticApiModelOutline4;;.m",
+   "Landroid/content/Context;;.getString",
+   "Lkotlin/jvm/internal/Intrinsics;;.checkNotNullExpressionValue",
+   "Lcom/github/muellerma/stopwatch/StopwatchService;;.getNotification",
+   "Landroid/app/Service;;.startForeground"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchService;->onDestroy()V": [
+   "Landroid/util/Log;;.d",
+   "Landroid/app/Service;;.onDestroy",
+   "Lcom/github/muellerma/stopwatch/StopwatchServiceKt;;.safeRelease",
+   "Lkotlinx/coroutines/Job$DefaultImpls;;.cancel$default",
+   "Landroid/app/Service;;.getApplication",
+   "Lkotlin/jvm/internal/Intrinsics;;.checkNotNull",
+   "Lcom/github/muellerma/stopwatch/StopwatchApp;;.notifyObservers"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchService;->onStartCommand(Landroid/content/Intent; I I)I": [
+   "Landroid/util/Log;;.d",
+   "Lkotlinx/coroutines/Job$DefaultImpls;;.cancel$default",
+   "Lcom/github/muellerma/stopwatch/StopwatchService$onStartCommand$1;;.<init>",
+   "Lcom/github/muellerma/stopwatch/StopwatchServiceKt;;.safeRelease",
+   "Landroidx/core/content/ContextCompat;;.getSystemService",
+   "Lkotlin/jvm/internal/Intrinsics;;.checkNotNull",
+   "Landroid/os/PowerManager;;.newWakeLock",
+   "Landroid/os/PowerManager$WakeLock;;.acquire"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchService$onStartCommand$1;-><init>(Lcom/github/muellerma/stopwatch/StopwatchService; Lkotlin/coroutines/Continuation;)V": [
+   "Lkotlin/coroutines/jvm/internal/SuspendLambda;;.<init>"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchService$onStartCommand$1;->create(Ljava/lang/Object; Lkotlin/coroutines/Continuation;)Lkotlin/coroutines/Continuation;": [
+   "Lcom/github/muellerma/stopwatch/StopwatchService$onStartCommand$1;;.<init>"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchService$onStartCommand$1;->invoke(Ljava/lang/Object; Ljava/lang/Object;)Ljava/lang/Object;": [
+   "Lcom/github/muellerma/stopwatch/StopwatchService$onStartCommand$1;;.invoke"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchService$onStartCommand$1;->invoke(Lkotlinx/coroutines/CoroutineScope; Lkotlin/coroutines/Continuation;)Ljava/lang/Object;": [
+   "Lcom/github/muellerma/stopwatch/StopwatchService$onStartCommand$1;;.create",
+   "Lcom/github/muellerma/stopwatch/StopwatchService$onStartCommand$1;;.invokeSuspend"
+  ],
+  "Lcom/github/muellerma/stopwatch/StopwatchService$onStartCommand$1;->invokeSuspend(Ljava/lang/Object;)Ljava/lang/Object;": [
+   "Lkotlin/coroutines/intrinsics/IntrinsicsKt;;.getCOROUTINE_SUSPENDED",
+   "Lkotlin/ResultKt;;.throwOnFailure",
+   "Ljava/lang/IllegalStateException;;.<init>",
+   "Lkotlin/ResultKt;;.throwOnFailure",
+   "Lkotlin/ranges/LongRange;;.<init>",
+   "Ljava/lang/Iterable;;.iterator",
+   "Ljava/util/Iterator;;.hasNext",
+   "Lkotlin/collections/LongIterator;;.nextLong",
+   "Lcom/github/muellerma/stopwatch/StopwatchService;;.access$getTAG$cp",
+   "Ljava/lang/StringBuilder;;.<init>",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.toString",
+   "Landroid/util/Log;;.d",
+   "Landroid/app/Service;;.getApplication",
+   "Lkotlin/jvm/internal/Intrinsics;;.checkNotNull",
+   "Lcom/github/muellerma/stopwatch/ServiceStatus$Running;;.<init>",
+   "Lcom/github/muellerma/stopwatch/StopwatchApp;;.notifyObservers",
+   "Lkotlin/time/DurationKt;;.toDuration",
+   "Lkotlinx/coroutines/DelayKt;;.delay-VtjQ1oo"
+  ]
+ }
+}

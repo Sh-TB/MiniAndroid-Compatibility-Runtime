@@ -1,0 +1,359 @@
+{
+ "note": "Stage graphs: nodes = functions extracted from the LIVE TUs; edges = intra-TU name-calls (static). Dead TUs excluded.",
+ "stages": {
+  "render": {
+   "tus": [
+    "src/renderer/software_renderer.cpp",
+    "src/fonts/text_shaper.cpp",
+    "src/framework/canvas_shadow.cpp"
+   ],
+   "node_count": 13,
+   "nodes": {
+    "src/renderer/software_renderer.cpp::rd_be32": {
+     "line": 241,
+     "guards": []
+    },
+    "src/renderer/software_renderer.cpp::probe_image_size": {
+     "line": 247,
+     "guards": []
+    },
+    "src/renderer/software_renderer.cpp::png_mem_read": {
+     "line": 432,
+     "guards": []
+    },
+    "src/renderer/software_renderer.cpp::png_color_type_name": {
+     "line": 442,
+     "guards": []
+    },
+    "src/renderer/software_renderer.cpp::stage_to_string": {
+     "line": 541,
+     "guards": []
+    },
+    "src/renderer/software_renderer.cpp::jpeg_error_exit": {
+     "line": 1039,
+     "guards": []
+    },
+    "src/renderer/software_renderer.cpp::image_format_name": {
+     "line": 1139,
+     "guards": []
+    },
+    "src/renderer/software_renderer.cpp::decode_image_bytes": {
+     "line": 1155,
+     "guards": []
+    },
+    "src/fonts/text_shaper.cpp::utf8_to_u32": {
+     "line": 31,
+     "guards": []
+    },
+    "src/fonts/text_shaper.cpp::raster_key": {
+     "line": 665,
+     "guards": []
+    },
+    "src/framework/canvas_shadow.cpp::to_rgba": {
+     "line": 15,
+     "guards": []
+    },
+    "src/framework/canvas_shadow.cpp::arg_as_float": {
+     "line": 24,
+     "guards": []
+    },
+    "src/framework/canvas_shadow.cpp::contour_is_convex": {
+     "line": 100,
+     "guards": []
+    }
+   },
+   "edges": [
+    [
+     "src/renderer/software_renderer.cpp::decode_image_bytes",
+     "src/renderer/software_renderer.cpp::image_format_name"
+    ],
+    [
+     "src/renderer/software_renderer.cpp::probe_image_size",
+     "src/renderer/software_renderer.cpp::rd_be32"
+    ]
+   ]
+  },
+  "lifecycle": {
+   "tus": [
+    "src/runtime/application_runtime.cpp",
+    "src/framework/lifecycle_controller.cpp"
+   ],
+   "node_count": 10,
+   "nodes": {
+    "src/runtime/application_runtime.cpp::state_to_string": {
+     "line": 60,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::string_to_state": {
+     "line": 84,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::api_category_to_string": {
+     "line": 106,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::string_to_api_category": {
+     "line": 118,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::impl_status_to_string": {
+     "line": 128,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::string_to_impl_status": {
+     "line": 139,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::dispatch_type_to_string": {
+     "line": 148,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::failure_type_to_string": {
+     "line": 159,
+     "guards": []
+    },
+    "src/framework/lifecycle_controller.cpp::lifecycle_phase_name": {
+     "line": 9,
+     "guards": []
+    },
+    "src/framework/lifecycle_controller.cpp::valid_from": {
+     "line": 34,
+     "guards": []
+    }
+   },
+   "edges": []
+  },
+  "input": {
+   "tus": [
+    "src/framework/touch_dispatcher.cpp",
+    "src/runtime/application_runtime.cpp"
+   ],
+   "node_count": 10,
+   "nodes": {
+    "src/framework/touch_dispatcher.cpp::node_at": {
+     "line": 14,
+     "guards": []
+    },
+    "src/framework/touch_dispatcher.cpp::touch_action_name": {
+     "line": 24,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::state_to_string": {
+     "line": 60,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::string_to_state": {
+     "line": 84,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::api_category_to_string": {
+     "line": 106,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::string_to_api_category": {
+     "line": 118,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::impl_status_to_string": {
+     "line": 128,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::string_to_impl_status": {
+     "line": 139,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::dispatch_type_to_string": {
+     "line": 148,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::failure_type_to_string": {
+     "line": 159,
+     "guards": []
+    }
+   },
+   "edges": []
+  },
+  "resource": {
+   "tus": [
+    "src/resources/arsc_parser.cpp",
+    "src/resources/axml_parser.cpp",
+    "src/resources/layout_inflater.cpp",
+    "src/resources/resource_runtime.cpp",
+    "src/resources/resource_parser.cpp",
+    "src/resources/res_config.cpp"
+   ],
+   "node_count": 11,
+   "nodes": {
+    "src/resources/arsc_parser.cpp::rd32": {
+     "line": 12,
+     "guards": []
+    },
+    "src/resources/arsc_parser.cpp::resolution_error_name": {
+     "line": 529,
+     "guards": []
+    },
+    "src/resources/axml_parser.cpp::ax_rd32": {
+     "line": 10,
+     "guards": []
+    },
+    "src/resources/layout_inflater.cpp::li_parse_hex_color": {
+     "line": 24,
+     "guards": []
+    },
+    "src/resources/layout_inflater.cpp::content_w": {
+     "line": 1451,
+     "guards": []
+    },
+    "src/resources/layout_inflater.cpp::content_h": {
+     "line": 1454,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::resource_type_to_string": {
+     "line": 19,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::string_to_resource_type": {
+     "line": 35,
+     "guards": []
+    },
+    "src/resources/res_config.cpp::le32": {
+     "line": 11,
+     "guards": []
+    },
+    "src/resources/res_config.cpp::build_device_config": {
+     "line": 383,
+     "guards": []
+    },
+    "src/resources/res_config.cpp::device_config": {
+     "line": 441,
+     "guards": []
+    }
+   },
+   "edges": [
+    [
+     "src/resources/res_config.cpp::device_config",
+     "src/resources/res_config.cpp::build_device_config"
+    ]
+   ]
+  },
+  "runtime": {
+   "tus": [
+    "src/dex/dalvik_engine.cpp",
+    "src/dex/class_resolver.cpp",
+    "src/runtime/application_runtime.cpp"
+   ],
+   "node_count": 27,
+   "nodes": {
+    "src/dex/dalvik_engine.cpp::field_trace_active": {
+     "line": 51,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::kv_table_find": {
+     "line": 87,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::kvint_table_find": {
+     "line": 91,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::batched_cap_push": {
+     "line": 103,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::kv_table_contains": {
+     "line": 110,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::str_table_contains": {
+     "line": 114,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::phase_clock": {
+     "line": 165,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::dalvik_value_to_string": {
+     "line": 227,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::dalvik_int_value": {
+     "line": 282,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::dalvik_raw_bits32": {
+     "line": 303,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::xml_unescape_pass3": {
+     "line": 3664,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::conv_f2i": {
+     "line": 9153,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::conv_f2l": {
+     "line": 9159,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::bits_l2d": {
+     "line": 9170,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::bits_i2f": {
+     "line": 9179,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::decode_22t": {
+     "line": 16707,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::parse_proto_param_types": {
+     "line": 16965,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::dalvik_value_to_arg": {
+     "line": 17242,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::call_result_to_dalvik": {
+     "line": 17326,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::state_to_string": {
+     "line": 60,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::string_to_state": {
+     "line": 84,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::api_category_to_string": {
+     "line": 106,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::string_to_api_category": {
+     "line": 118,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::impl_status_to_string": {
+     "line": 128,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::string_to_impl_status": {
+     "line": 139,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::dispatch_type_to_string": {
+     "line": 148,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::failure_type_to_string": {
+     "line": 159,
+     "guards": []
+    }
+   },
+   "edges": []
+  }
+ }
+}

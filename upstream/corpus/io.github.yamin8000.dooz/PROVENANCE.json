@@ -1,0 +1,13 @@
+{
+ "apk": "io.github.yamin8000.dooz_23.apk",
+ "package": "io.github.yamin8000.dooz",
+ "versionCode": "23",
+ "source_repo": "yamin8000/Dooz",
+ "source_commit": "0c60e78b861a29fab26cc11e7e7a30a419527064",
+ "tarball_sha256": "a0d7676da2075c28e5e6de9ba67355fc8a1c7f5abfad2855c5a2631f91f8293d",
+ "tarball_bytes": 700264,
+ "extracted": true,
+ "fetched_at": "2026-09-20T04:41:06Z",
+ "metadata_origin": "https://gitlab.com/fdroid/fdroiddata/-/raw/master/metadata/io.github.yamin8000.dooz.yml",
+ "codeload_origin": "https://codeload.github.com/yamin8000/Dooz/tar.gz/0c60e78b861a29fab26cc11e7e7a30a419527064"
+}

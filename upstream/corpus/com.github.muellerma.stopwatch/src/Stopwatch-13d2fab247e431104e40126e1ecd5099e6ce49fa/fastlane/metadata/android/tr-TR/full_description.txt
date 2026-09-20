@@ -1,0 +1,3 @@
+Bu uygulama hızlı kutucuk olarak bir kronometre sağlar. Başlatıcı simgesi yok, sadece kutucuk var.
+
+Bildirim teknik nedenlerden dolayı gereklidir. Bu uygulamanın bildirimlerini sessize almanızı tavsiye ederiz.

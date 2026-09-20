@@ -195,3 +195,26 @@ RELEVANT_HITS 6 · IMPLEMENTATIONS_FOUND 1 (F-120 shipped + rerun chain) ·
 TESTS_FOUND 0 · HONESTY NOTE: zoekt/csearch shards lost to container reset;
 NOT rebuilt this stage — every S66 item cites a fetched file, SHA-verified clone,
 or compiler/source probe instead of a bare result count.
+
+---
+
+## S69 — FINAL FOUNDATION / SOURCE-LINKED RUNTIME CAMPAIGN (2026-09-20)
+
+| Source file / query | Repository / origin | Law it grounds |
+|---|---|---|
+| fdroiddata metadata yml ×11 (SourceCode + per-versionCode commit pins) | gitlab.com/fdroid/fdroiddata @ master (raw fetches) | §1 SOURCE-FIRST: every corpus APK pinned to the exact commit F-Droid built (upstream/corpus/*/PROVENANCE.json, tarball SHAs) |
+| VelbazhdSoftwareLLC/TriPeaksSolitaireForAndroid @62f3609 (codeload) | session ledger S66 S3 (re-fetch, SHA-verified) | TriPeaks source tree for R-NEW-388 + source_map |
+| VelbazhdSoftwareLLC/FishRingsForAndroid @dc3807e (codeload) | session ledger S65 | FishRings source tree (6/6 source↔DEX class match) |
+| 20Nick/OPMT @3240c4cf (codeload) | worklog S65 | OPMT source tree (7 source files mapped) |
+| OpenJDK Double.java (isNaN :1031 `(v!=v)`, isInfinite :1048, compare :1538 bits-ordering) | openjdk/jdk @ master raw (docs/upstream/openjdk/Double.java, sha256 84888960313b0461…) | F-135 Double NaN/infinite/compare laws |
+| OpenJDK Float.java (isNaN :631 `(f!=f)`) | same (sha256 fd27083f3f868524…) | F-135 Float law |
+| corpus DEX census (androguard invoke-* walk, 213,251 sites) | upload/canonical_apks/* | §13/§14 fan-out: Double/Float NaN family = 694 sites × 7 APKs → F-135 priority |
+| live dispatch traces (--dump-api-trace) ×10 APKs | run/s69_live/*/api_calls.json (summarized live_runs.json) | bouncy 480× STUB→IMPL NaN flip proof; REC-MISS = dispatch-path log (not failure) law |
+
+TOTAL_SEARCHES 8 · UNIQUE_QUERIES 8 · REPOSITORIES_CHECKED 11 (10 pinned +
+OpenJDK) · DOMAINS 5 (gitlab-fdroid, github-codeload, raw.githubusercontent,
+f-droid API, local DEX) · RELEVANT_HITS 10 · IMPLEMENTATIONS_FOUND 1 (F-135
+shipped) · TESTS_FOUND 1 (f52_nanlaw) · HONESTY NOTE: gitlab.com archive/git
+endpoints 403'd all session — uNote stays UNPINNED @4165c80d (identified, not
+fetched); GitHub API rate-limited (60/h unauth) — codeload used instead (no
+quota); every §17 item cites a fetched file or SHA, none a bare count.
