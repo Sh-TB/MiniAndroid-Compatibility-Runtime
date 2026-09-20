@@ -50,6 +50,8 @@ struct InflateStats {
     int includes_expanded = 0;
     int ids_resolved = 0;
     int unresolved_refs = 0;
+    int theme_attrs_resolved = 0;      // S68 W2: ?attr resolved via theme
+    int unresolved_theme_attrs = 0;    // S68 W2: unresolvable ?attr (reported)
     std::vector<std::string> warnings;
     std::string to_json() const;
 };

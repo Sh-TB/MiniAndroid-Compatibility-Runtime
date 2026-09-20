@@ -237,6 +237,11 @@ FIXTURES = {
     (600, 500, WHITE, "no bleed below bitmap rows"),
  ],
  "f49_canstext": [],
+ "f51_themeattr": [
+    (390, 196, (35,69,103), "?attr/customColor from theme bag (A1)"),
+    (390, 590, (0,150,136), "?android:attr/colorAccent LIGHT flavor (A10)"),
+    (390, 983, (32,32,32), "?android:attr/textColorPrimary state-list law"),
+ ],
  "f50_imagefmt": [
     (150, 75, (255,0,255), "JPEG drawable decoded (A3: no silent drop)"),
     (150, 590, (0,255,255), "WebP drawable decoded"),
