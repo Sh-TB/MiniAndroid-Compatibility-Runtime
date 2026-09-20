@@ -282,6 +282,32 @@ public:
                     int dst_x, int dst_y,
                     int dst_w = 0, int dst_h = 0);
 
+    // ── S68 FOUNDATION (drawBitmap src/dst law, §12) ────────────────────
+    // AOSP Canvas.drawBitmap(bitmap, srcRect, dstRect, paint) contract:
+    // the SOURCE SUBSET (sx, sy, sw, sh in source pixels) is selected first
+    // (crop), then scaled into the DESTINATION rect (dx, dy, dw, dh).
+    // Nearest-neighbour sampling (Paint.FilterBitmap default = false law —
+    // android.graphics.Paint: "FilterBitmap flag: use bilinear filtering
+    // when false, nearest is the default"). Alpha "over" composited.
+    // Honors the canvas clip rect set by set_clip().
+    void draw_image_region(const uint8_t* src_rgba, int src_w, int src_h,
+                           int sx, int sy, int sw, int sh,
+                           int dx, int dy, int dw, int dh);
+
+    // ── S68 FOUNDATION (Canvas clip law, §12) ───────────────────────────
+    // AOSP Canvas: clipRect restricts drawing to the intersection with the
+    // current clip. The clip is DEVICE space; every later draw intersects
+    // with it. FrameBuffer itself is clip-free (one flat pixel array), so
+    // the clip lives on the SoftwareCanvas that funnels every primitive.
+    // Axis: framebuffer pixels (NOT view space) — replay maps into it.
+    void set_clip(float left, float top, float right, float bottom);
+    void clear_clip();
+    bool has_clip() const { return clip_active_; }
+
+    // S68: framebuffer accessor — the Canvas text path draws shaped glyphs
+    // directly onto the framebuffer (TextShaper.draw(FrameBuffer&,...)).
+    FrameBuffer& fb() { return *framebuffer_; }
+
     const std::vector<CanvasCommand>& get_commands() const { return commands_; }
     uint64_t get_command_count() const { return command_sequence_; }
     json to_trace_json() const;
@@ -291,6 +317,15 @@ private:
     uint64_t command_sequence_ = 0;
     std::vector<CanvasCommand> commands_;
     BitmapFont default_font_;
+    // S68 clip state (device space, inclusive-exclusive like draw spans):
+    bool clip_active_ = false;
+    float clip_l_ = 0, clip_t_ = 0, clip_r_ = 0, clip_b_ = 0;
+    // Returns false when (x, y) is clipped out.
+    bool clip_allows(int x, int y) const {
+        if (!clip_active_) return true;
+        return x >= (int)clip_l_ && x < (int)clip_r_ &&
+               y >= (int)clip_t_ && y < (int)clip_b_;
+    }
 };
 
 // ============================================================================
@@ -426,6 +461,27 @@ struct FitRect {
 };
 FitRect fit_center_rect(int src_w, int src_h, int box_x, int box_y,
                         int box_w, int box_h);
+
+// ── S68 FOUNDATION (A3 image pipeline law, §13) ──────────────────────────
+// ONE format-detecting decode entry point for EVERY image consumer
+// (ImageView resource path, BitmapFactory shadow, drawable loading).
+// AOSP BitmapFactory.java maps an encoded byte stream to a Bitmap via the
+// format-specific decoder chosen by the container signature — the choice
+// is made ON THE BYTES (magic numbers), never on the file extension.
+//
+// Detected formats (magic):
+//   PNG  89 50 4E 47        → PNGDecoder (libpng)
+//   JPEG FF D8 FF           → JPEGDecoder (libjpeg)
+//   WebP RIFF....WEBP       → WebPDecoder (libwebp)
+//   GIF  GIF87a / GIF89a    → EXPLICIT UNSUPPORTED: ok=false with error
+//     "GIF format not supported (no decoder wired)" — Android apps get a
+//     failed decode + Drawable failure, NEVER a silently-dropped view.
+//   XML  '<'                → not a bitmap: ok=false "not a bitmap format".
+//       (vector/state-list XML drawables are the inflater's domain.)
+// Returns true iff out->ok (decoded pixels available).
+bool decode_image_bytes(const std::vector<uint8_t>& bytes, DecodedImage* out);
+// Format label for traces: "png" | "jpeg" | "webp" | "gif" | "xml" | "unknown".
+std::string image_format_name(const std::vector<uint8_t>& bytes);
 
 class PNGDecoder {
 public:

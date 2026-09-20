@@ -15,6 +15,7 @@
 #include <png.h>
 #include <csetjmp>
 #include <algorithm>
+#include <iostream>
 
 // EXP-097 §5/§6: Image codec libraries.
 // libwebp is Google's reference WebP decoder (BSD) — AOSP's Bitmap region
@@ -150,6 +151,13 @@ json LayoutNode::to_json() const {
 SoftwareCanvas::SoftwareCanvas(FrameBuffer* framebuffer)
     : framebuffer_(framebuffer), command_sequence_(0) {}
 
+// ── S68 FOUNDATION: canvas clip (AOSP clipRect law — see header) ──────
+void SoftwareCanvas::set_clip(float left, float top, float right, float bottom) {
+    clip_active_ = true;
+    clip_l_ = left; clip_t_ = top; clip_r_ = right; clip_b_ = bottom;
+}
+void SoftwareCanvas::clear_clip() { clip_active_ = false; }
+
 void SoftwareCanvas::draw_color(RGBA color) {
     framebuffer_->clear(color);
     
@@ -168,7 +176,7 @@ void SoftwareCanvas::draw_rect(float left, float top, float right, float bottom,
     
     for (int y = y1; y < y2 && y < framebuffer_->get_height(); y++) {
         for (int x = x1; x < x2 && x < framebuffer_->get_width(); x++) {
-            if (x >= 0 && y >= 0) {
+            if (x >= 0 && y >= 0 && clip_allows(x, y)) {
                 framebuffer_->set_pixel(x, y, color);
             }
         }
@@ -200,7 +208,8 @@ void SoftwareCanvas::draw_text(const std::string& text, float x, float y, RGBA c
             uint8_t bitmap_row = glyph->bitmap[row];
             for (int col = 0; col < 8; col++) {
                 if (bitmap_row & (0x80 >> col)) {
-                    framebuffer_->set_pixel(current_x + col, start_y + row, color);
+                    if (clip_allows(current_x + col, start_y + row))
+                        framebuffer_->set_pixel(current_x + col, start_y + row, color);
                 }
             }
         }
@@ -348,26 +357,40 @@ FitRect fit_center_rect(int src_w, int src_h, int box_x, int box_y,
 void SoftwareCanvas::draw_image(const uint8_t* src_rgba, int src_w, int src_h,
                                 int dst_x, int dst_y,
                                 int dst_w, int dst_h) {
+    draw_image_region(src_rgba, src_w, src_h,
+                      0, 0, src_w, src_h,
+                      dst_x, dst_y, dst_w, dst_h);
+}
+
+void SoftwareCanvas::draw_image_region(const uint8_t* src_rgba, int src_w, int src_h,
+                                       int sx, int sy, int sw, int sh,
+                                       int dx, int dy, int dw, int dh) {
     if (!src_rgba || src_w <= 0 || src_h <= 0) return;
-    if (dst_w <= 0)  dst_w = src_w;
-    if (dst_h <= 0)  dst_h = src_h;
+    // S68 (§13): empty source subset draws nothing (AOSP drawBitmap law:
+    // an empty src rect is a no-op; a null bitmap throws NPE upstream).
+    if (sw <= 0 || sh <= 0) return;
+    if (dw <= 0) dw = sw;
+    if (dh <= 0) dh = sh;
 
     int fb_w = framebuffer_->get_width();
     int fb_h = framebuffer_->get_height();
 
-    for (int dy = 0; dy < dst_h; dy++) {
-        int sy = (dy * src_h) / dst_h;  // nearest-neighbour
-        if (sy < 0 || sy >= src_h) continue;
-        for (int dx = 0; dx < dst_w; dx++) {
-            int sx = (dx * src_w) / dst_w;
-            if (sx < 0 || sx >= src_w) continue;
+    for (int yy = 0; yy < dh; yy++) {
+        // S68: nearest-neighbour sampling INSIDE the source subset
+        // (Paint.FilterBitmap=false default law — see header).
+        int srcy = sy + (yy * sh) / dh;
+        if (srcy < 0 || srcy >= src_h) continue;
+        for (int xx = 0; xx < dw; xx++) {
+            int srcx = sx + (xx * sw) / dw;
+            if (srcx < 0 || srcx >= src_w) continue;
 
-            const uint8_t* p = src_rgba + (sy * src_w + sx) * 4;
+            const uint8_t* p = src_rgba + (srcy * src_w + srcx) * 4;
             RGBA src(p[0], p[1], p[2], p[3]);
 
-            int x = dst_x + dx;
-            int y = dst_y + dy;
+            int x = dx + xx;
+            int y = dy + yy;
             if (x < 0 || x >= fb_w || y < 0 || y >= fb_h) continue;
+            if (!clip_allows(x, y)) continue;
 
             // Alpha-blend with existing pixel
             RGBA dst = framebuffer_->get_pixel(x, y);
@@ -380,8 +403,9 @@ void SoftwareCanvas::draw_image(const uint8_t* src_rgba, int src_w, int src_h,
     cmd.type = "drawImage";
     cmd.sequence = ++command_sequence_;
     cmd.params["src_size"] = {{"w", src_w}, {"h", src_h}};
-    cmd.params["dst_pos"]   = {{"x", dst_x}, {"y", dst_y}};
-    cmd.params["dst_size"]  = {{"w", dst_w}, {"h", dst_h}};
+    cmd.params["src_rect"] = {{"x", sx}, {"y", sy}, {"w", sw}, {"h", sh}};
+    cmd.params["dst_pos"]   = {{"x", dx}, {"y", dy}};
+    cmd.params["dst_size"]  = {{"w", dw}, {"h", dh}};
     commands_.push_back(cmd);
 }
 
@@ -1106,6 +1130,62 @@ DecodedImage JPEGDecoder::decode_file(const std::string& path) {
     }
     return decode(std::vector<uint8_t>((std::istreambuf_iterator<char>(f)),
                                        std::istreambuf_iterator<char>()));
+}
+
+// ============================================================================
+// ── S68 FOUNDATION (A3): shared format-detecting decoder (see header law) ──
+// ONE entry point used by every image consumer. Replaces the three duplicated
+// magic-number switch blocks in execution_engine.cpp (§2 duplicate-impl
+// hygiene) and guarantees non-PNG drawables NEVER silently drop: the format
+// is named in the error, so an unsupported container is OBSERVABLE.
+// ============================================================================
+std::string image_format_name(const std::vector<uint8_t>& bytes) {
+    const size_t n = bytes.size();
+    if (n >= 4 && bytes[0] == 0x89 && bytes[1] == 0x50 &&
+        bytes[2] == 0x4E && bytes[3] == 0x47) return "png";
+    if (n >= 3 && bytes[0] == 0xFF && bytes[1] == 0xD8 && bytes[2] == 0xFF)
+        return "jpeg";
+    if (n >= 12 && bytes[0] == 'R' && bytes[1] == 'I' && bytes[2] == 'F' &&
+        bytes[3] == 'F' && bytes[8] == 'W' && bytes[9] == 'E' &&
+        bytes[10] == 'B' && bytes[11] == 'P') return "webp";
+    if (n >= 6 && bytes[0] == 'G' && bytes[1] == 'I' && bytes[2] == 'F' &&
+        bytes[3] == '8' && (bytes[4] == '7' || bytes[4] == '9') &&
+        bytes[5] == 'a') return "gif";
+    if (n >= 1 && bytes[0] == '<') return "xml";
+    return "unknown";
+}
+
+bool decode_image_bytes(const std::vector<uint8_t>& bytes, DecodedImage* out) {
+    if (!out) return false;
+    *out = DecodedImage{};
+    if (bytes.empty()) {
+        out->error = "empty image buffer";
+        return false;
+    }
+    const std::string fmt = image_format_name(bytes);
+    if (fmt == "png") {
+        *out = PNGDecoder::decode(bytes);
+        return out->ok;
+    }
+    if (fmt == "jpeg") {
+        *out = JPEGDecoder::decode(bytes);
+        return out->ok;
+    }
+    if (fmt == "webp") {
+        *out = WebPDecoder::decode(bytes);
+        return out->ok;
+    }
+    if (fmt == "gif") {
+        // EXPLICIT UNSUPPORTED (§0/§13): never a silent drop. No animated-GIF
+        // decoder is wired; the container is NAMED so every log/trace shows
+        // exactly which format failed.
+        out->error = "GIF format not supported (no decoder wired)";
+        std::cerr << "[IMAGE-DECODE] EXPLICIT-UNSUPPORTED format=gif ("
+                  << bytes.size() << " bytes)" << std::endl;
+        return false;
+    }
+    out->error = "not a bitmap format (" + fmt + ")";
+    return false;
 }
 
 #if defined(MINIANDROID_HAVE_LOTTIE) && MINIANDROID_HAVE_LOTTIE

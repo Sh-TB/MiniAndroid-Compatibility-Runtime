@@ -1,49 +1,192 @@
 [
  {
-  "fixture": "f18_lltop",
-  "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f18_lltop/screenshot.png",
+  "fixture": "f01_color",
+  "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f01_color/screenshot.png",
   "asserts": [
    {
-    "label": "layout_gravity=top child at top of horizontal LL",
+    "label": "band1 red",
     "at": [
-     100,
+     540,
+     240
+    ],
+    "expected": [
+     255,
+     0,
+     0
+    ],
+    "actual": [
+     255,
+     0,
+     0
+    ],
+    "ok": true
+   },
+   {
+    "label": "band2 green",
+    "at": [
+     540,
+     720
+    ],
+    "expected": [
+     0,
+     255,
+     0
+    ],
+    "actual": [
+     0,
+     255,
+     0
+    ],
+    "ok": true
+   },
+   {
+    "label": "band3 blue",
+    "at": [
+     540,
+     1200
+    ],
+    "expected": [
+     0,
+     0,
+     255
+    ],
+    "actual": [
+     0,
+     0,
+     255
+    ],
+    "ok": true
+   },
+   {
+    "label": "band4 black",
+    "at": [
+     540,
+     1680
+    ],
+    "expected": [
+     0,
+     0,
+     0
+    ],
+    "actual": [
+     0,
+     0,
+     0
+    ],
+    "ok": true
+   },
+   {
+    "label": "band1 edge-left",
+    "at": [
+     5,
+     478
+    ],
+    "expected": [
+     255,
+     0,
+     0
+    ],
+    "actual": [
+     255,
+     0,
+     0
+    ],
+    "ok": true
+   },
+   {
+    "label": "band2 edge-left (boundary@480)",
+    "at": [
+     5,
+     482
+    ],
+    "expected": [
+     0,
+     255,
+     0
+    ],
+    "actual": [
+     0,
+     255,
+     0
+    ],
+    "ok": true
+   }
+  ],
+  "status": "PASS",
+  "width": 1080,
+  "height": 1920,
+  "screenshot_sha256": "60967ee86d1f9f888c354a148cf73773ec251dfe29f4d67160dbbbca22955c8f",
+  "nonwhite": 2073600,
+  "bbox": [
+   0,
+   0,
+   1079,
+   1919
+  ]
+ },
+ {
+  "fixture": "f03_alpha",
+  "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f03_alpha/screenshot.png",
+  "asserts": [
+   {
+    "label": "50% red over white (upper)",
+    "at": [
+     540,
      200
     ],
     "expected": [
      255,
-     0,
-     0
+     128,
+     128
     ],
     "actual": [
      255,
-     0,
-     0
+     126,
+     126
     ],
     "ok": true
    },
    {
-    "label": "still inside 400px-tall child",
+    "label": "lower stays white",
     "at": [
-     100,
-     390
+     540,
+     1700
     ],
     "expected": [
      255,
-     0,
-     0
+     255,
+     255
     ],
     "actual": [
      255,
-     0,
-     0
+     255,
+     255
     ],
     "ok": true
    },
    {
-    "label": "below child bottom (LL height 1920 \u2192 child ends at 400)",
+    "label": "alpha band extends to y=959",
     "at": [
-     100,
-     420
+     5,
+     958
+    ],
+    "expected": [
+     255,
+     128,
+     128
+    ],
+    "actual": [
+     255,
+     126,
+     126
+    ],
+    "ok": true
+   },
+   {
+    "label": "alpha band ends at y=960",
+    "at": [
+     5,
+     962
     ],
     "expected": [
      255,
@@ -61,13 +204,478 @@
   "status": "PASS",
   "width": 1080,
   "height": 1920,
-  "screenshot_sha256": "6965d332d0ef11d8955b5c2aaf6fa409623b1ece38cf33feb74d57423d3b54a6",
-  "nonwhite": 80000,
+  "screenshot_sha256": "3bde4ce3f553908dbc8f3f9b5bcaf0401fded44923b5257ca97f68188968d861",
+  "nonwhite": 1036800,
   "bbox": [
    0,
    0,
-   199,
-   399
+   1079,
+   959
+  ]
+ },
+ {
+  "fixture": "f04_text",
+  "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f04_text/screenshot.png",
+  "asserts": [
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "nonwhite in (0, 0, 600, 300) = 14248 (min 200)"
+   },
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "texts=['Hello 12345'] expected~'Hello 12345'"
+   }
+  ],
+  "status": "PASS",
+  "width": 1080,
+  "height": 1920,
+  "screenshot_sha256": "e4c44e669fb553c77322944ef5234678ca37e05e5e56b80f48aed6d1c145450c",
+  "nonwhite": 14929,
+  "bbox": [
+   10,
+   18,
+   618,
+   98
+  ]
+ },
+ {
+  "fixture": "f05_persian",
+  "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f05_persian/screenshot.png",
+  "asserts": [
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "nonwhite in (0, 0, 900, 500) = 24218 (min 100)"
+   }
+  ],
+  "status": "PASS",
+  "width": 1080,
+  "height": 1920,
+  "screenshot_sha256": "5155e7ed5e078ccd25a2a393d2fddb8aae1426233a1c58ee1e2e0dc69df73deb",
+  "nonwhite": 24218,
+  "bbox": [
+   0,
+   18,
+   734,
+   246
+  ]
+ },
+ {
+  "fixture": "f11_linear",
+  "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f11_linear/screenshot.png",
+  "asserts": [
+   {
+    "label": "third1 AA0000",
+    "at": [
+     540,
+     320
+    ],
+    "expected": [
+     170,
+     0,
+     0
+    ],
+    "actual": [
+     170,
+     0,
+     0
+    ],
+    "ok": true
+   },
+   {
+    "label": "third2 00AA00",
+    "at": [
+     540,
+     960
+    ],
+    "expected": [
+     0,
+     170,
+     0
+    ],
+    "actual": [
+     0,
+     170,
+     0
+    ],
+    "ok": true
+   },
+   {
+    "label": "third3 0000AA",
+    "at": [
+     540,
+     1600
+    ],
+    "expected": [
+     0,
+     0,
+     170
+    ],
+    "actual": [
+     0,
+     0,
+     170
+    ],
+    "ok": true
+   },
+   {
+    "label": "boundary 640 -1px red",
+    "at": [
+     5,
+     639
+    ],
+    "expected": [
+     170,
+     0,
+     0
+    ],
+    "actual": [
+     170,
+     0,
+     0
+    ],
+    "ok": true
+   },
+   {
+    "label": "boundary 640 +1px green",
+    "at": [
+     5,
+     641
+    ],
+    "expected": [
+     0,
+     170,
+     0
+    ],
+    "actual": [
+     0,
+     170,
+     0
+    ],
+    "ok": true
+   },
+   {
+    "label": "boundary 1280 -1px green",
+    "at": [
+     5,
+     1279
+    ],
+    "expected": [
+     0,
+     170,
+     0
+    ],
+    "actual": [
+     0,
+     170,
+     0
+    ],
+    "ok": true
+   },
+   {
+    "label": "boundary 1280 +1px blue",
+    "at": [
+     5,
+     1281
+    ],
+    "expected": [
+     0,
+     0,
+     170
+    ],
+    "actual": [
+     0,
+     0,
+     170
+    ],
+    "ok": true
+   },
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "FrameLayout at (0,0,1080,640)"
+   },
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "FrameLayout at (0,640,1080,640)"
+   },
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "FrameLayout at (0,1280,1080,640)"
+   }
+  ],
+  "status": "PASS",
+  "width": 1080,
+  "height": 1920,
+  "screenshot_sha256": "9bfcff18ed649c47721629f96734e8c33e2be5e0a4346e5d7e2153bedaf6e04c",
+  "nonwhite": 2073600,
+  "bbox": [
+   0,
+   0,
+   1079,
+   1919
+  ]
+ },
+ {
+  "fixture": "f13_frame",
+  "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f13_frame/screenshot.png",
+  "asserts": [
+   {
+    "label": "TL red",
+    "at": [
+     100,
+     100
+    ],
+    "expected": [
+     255,
+     0,
+     0
+    ],
+    "actual": [
+     255,
+     0,
+     0
+    ],
+    "ok": true
+   },
+   {
+    "label": "center green",
+    "at": [
+     540,
+     960
+    ],
+    "expected": [
+     0,
+     255,
+     0
+    ],
+    "actual": [
+     0,
+     255,
+     0
+    ],
+    "ok": true
+   },
+   {
+    "label": "BR blue",
+    "at": [
+     980,
+     1820
+    ],
+    "expected": [
+     0,
+     0,
+     255
+    ],
+    "actual": [
+     0,
+     0,
+     255
+    ],
+    "ok": true
+   },
+   {
+    "label": "bg 202020",
+    "at": [
+     540,
+     60
+    ],
+    "expected": [
+     32,
+     32,
+     32
+    ],
+    "actual": [
+     32,
+     32,
+     32
+    ],
+    "ok": true
+   },
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "View at (0,0,200,200)"
+   },
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "View at (440,860,200,200)"
+   },
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "View at (880,1720,200,200)"
+   }
+  ],
+  "status": "PASS",
+  "width": 1080,
+  "height": 1920,
+  "screenshot_sha256": "866b3b4700aa5cc417b78c4de4493a4eedc4ee695e8092915ccf86273682e45a",
+  "nonwhite": 2073600,
+  "bbox": [
+   0,
+   0,
+   1079,
+   1919
+  ]
+ },
+ {
+  "fixture": "f14_relative",
+  "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f14_relative/screenshot.png",
+  "asserts": [
+   {
+    "label": "anchor top-right red",
+    "at": [
+     930,
+     150
+    ],
+    "expected": [
+     255,
+     0,
+     0
+    ],
+    "actual": [
+     255,
+     0,
+     0
+    ],
+    "ok": true
+   },
+   {
+    "label": "below+alignParentLeft green",
+    "at": [
+     150,
+     450
+    ],
+    "expected": [
+     0,
+     255,
+     0
+    ],
+    "actual": [
+     0,
+     255,
+     0
+    ],
+    "ok": true
+   },
+   {
+    "label": "toRightOf blue",
+    "at": [
+     450,
+     450
+    ],
+    "expected": [
+     0,
+     0,
+     255
+    ],
+    "actual": [
+     0,
+     0,
+     255
+    ],
+    "ok": true
+   },
+   {
+    "label": "centerInParent cyan",
+    "at": [
+     540,
+     960
+    ],
+    "expected": [
+     0,
+     255,
+     255
+    ],
+    "actual": [
+     0,
+     255,
+     255
+    ],
+    "ok": true
+   },
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "View at (780,0,300,300)"
+   },
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "View at (0,300,300,300)"
+   },
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "View at (300,300,200,200)"
+   },
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "View at (340,760,400,400)"
+   }
+  ],
+  "status": "PASS",
+  "width": 1080,
+  "height": 1920,
+  "screenshot_sha256": "95115e108144e91e728a6c2f3471f2984e88ae8279cc55504f4f13ee7911c877",
+  "nonwhite": 380000,
+  "bbox": [
+   0,
+   0,
+   1079,
+   1159
+  ]
+ },
+ {
+  "fixture": "f31_resources",
+  "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f31_resources/screenshot.png",
+  "asserts": [
+   {
+    "label": "bg @color/brand 00695C",
+    "at": [
+     540,
+     100
+    ],
+    "expected": [
+     0,
+     105,
+     92
+    ],
+    "actual": [
+     0,
+     105,
+     92
+    ],
+    "ok": true
+   },
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "nonwhite in (0, 0, 900, 300) = 270000 (min 200)"
+   },
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "texts=['Resource String Works'] expected~'Resource String Works'"
+   }
+  ],
+  "status": "PASS",
+  "width": 1080,
+  "height": 1920,
+  "screenshot_sha256": "767d81ef861dbcab841148238ab9de6d38ab136fcbf65f689a742398f7c0b43a",
+  "nonwhite": 2073600,
+  "bbox": [
+   0,
+   0,
+   1079,
+   1919
   ]
  },
  {
@@ -147,6 +755,738 @@
    0,
    0,
    1079,
+   1919
+  ]
+ },
+ {
+  "fixture": "f38_identity",
+  "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f38_identity/screenshot.png",
+  "asserts": [
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "texts=['IDENT=true,false,v=42'] expected~'IDENT=true,false,v=42'"
+   }
+  ],
+  "status": "PASS",
+  "width": 1080,
+  "height": 1920,
+  "screenshot_sha256": "252bfd25403b004398f3d4cf016bfbe7eba5ed55ccb9f872e7cd4086e3a9d67a",
+  "nonwhite": 4044,
+  "bbox": [
+   3,
+   7,
+   417,
+   38
+  ]
+ },
+ {
+  "fixture": "f45_exceptions",
+  "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f45_exceptions/screenshot.png",
+  "asserts": [
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "texts=['EXC=CAUGHT_AIOOBE'] expected~'EXC=CAUGHT_AIOOBE'"
+   }
+  ],
+  "status": "PASS",
+  "width": 1080,
+  "height": 1920,
+  "screenshot_sha256": "b4e5904706f006edd77b240a04aed8c127decea66a4737bda015454fd75cb56d",
+  "nonwhite": 4271,
+  "bbox": [
+   3,
+   8,
+   412,
+   43
+  ]
+ },
+ {
+  "fixture": "f06_invisible",
+  "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f06_invisible/screenshot.png",
+  "asserts": [
+   {
+    "label": "INVISIBLE view must not draw (A4+F-124)",
+    "at": [
+     10,
+     10
+    ],
+    "expected": [
+     255,
+     255,
+     255
+    ],
+    "actual": [
+     255,
+     255,
+     255
+    ],
+    "ok": true
+   },
+   {
+    "label": "INVISIBLE view area stays white",
+    "at": [
+     540,
+     960
+    ],
+    "expected": [
+     255,
+     255,
+     255
+    ],
+    "actual": [
+     255,
+     255,
+     255
+    ],
+    "ok": true
+   },
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "View at (0,0,1080,800)"
+   }
+  ],
+  "status": "PASS",
+  "width": 1080,
+  "height": 1920,
+  "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093",
+  "nonwhite": 0,
+  "bbox": null
+ },
+ {
+  "fixture": "f18_lltop",
+  "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f18_lltop/screenshot.png",
+  "asserts": [
+   {
+    "label": "layout_gravity=top child at top of horizontal LL",
+    "at": [
+     100,
+     200
+    ],
+    "expected": [
+     255,
+     0,
+     0
+    ],
+    "actual": [
+     255,
+     0,
+     0
+    ],
+    "ok": true
+   },
+   {
+    "label": "still inside 400px-tall child",
+    "at": [
+     100,
+     390
+    ],
+    "expected": [
+     255,
+     0,
+     0
+    ],
+    "actual": [
+     255,
+     0,
+     0
+    ],
+    "ok": true
+   },
+   {
+    "label": "below child bottom (LL height 1920 \u2192 child ends at 400)",
+    "at": [
+     100,
+     420
+    ],
+    "expected": [
+     255,
+     255,
+     255
+    ],
+    "actual": [
+     255,
+     255,
+     255
+    ],
+    "ok": true
+   }
+  ],
+  "status": "PASS",
+  "width": 1080,
+  "height": 1920,
+  "screenshot_sha256": "6965d332d0ef11d8955b5c2aaf6fa409623b1ece38cf33feb74d57423d3b54a6",
+  "nonwhite": 80000,
+  "bbox": [
+   0,
+   0,
+   199,
+   399
+  ]
+ },
+ {
+  "fixture": "f32_dimen",
+  "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f32_dimen/screenshot.png",
+  "asserts": [
+   {
+    "label": "probe view #123456 at top (262px tall)",
+    "at": [
+     540,
+     130
+    ],
+    "expected": [
+     18,
+     52,
+     86
+    ],
+    "actual": [
+     18,
+     52,
+     86
+    ],
+    "ok": true
+   },
+   {
+    "label": "below probe view",
+    "at": [
+     540,
+     500
+    ],
+    "expected": [
+     255,
+     255,
+     255
+    ],
+    "actual": [
+     255,
+     255,
+     255
+    ],
+    "ok": true
+   },
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "texts=['PX=263'] expected~'PX=263'"
+   }
+  ],
+  "status": "PASS",
+  "width": 1080,
+  "height": 1920,
+  "screenshot_sha256": "bca01057cdc8a472f1edefec4b6e41aac10306ca9f32fc8f318b1c3a45559fca",
+  "nonwhite": 284429,
+  "bbox": [
+   0,
+   0,
+   1079,
+   296
+  ]
+ },
+ {
+  "fixture": "f08_canvasops",
+  "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f08_canvasops/screenshot.png",
+  "asserts": [
+   {
+    "label": "drawRect fill red",
+    "at": [
+     200,
+     80
+    ],
+    "expected": [
+     255,
+     0,
+     0
+    ],
+    "actual": [
+     255,
+     0,
+     0
+    ],
+    "ok": true
+   },
+   {
+    "label": "drawCircle fill blue",
+    "at": [
+     140,
+     280
+    ],
+    "expected": [
+     0,
+     0,
+     255
+    ],
+    "actual": [
+     0,
+     0,
+     255
+    ],
+    "ok": true
+   },
+   {
+    "label": "drawCircle stroke ring top (F-122: Color.rgb)",
+    "at": [
+     420,
+     200
+    ],
+    "expected": [
+     0,
+     150,
+     0
+    ],
+    "actual": [
+     0,
+     150,
+     0
+    ],
+    "ok": true
+   },
+   {
+    "label": "drawLine black",
+    "at": [
+     400,
+     500
+    ],
+    "expected": [
+     0,
+     0,
+     0
+    ],
+    "actual": [
+     0,
+     0,
+     0
+    ],
+    "ok": true
+   },
+   {
+    "label": "translate+drawRect purple",
+    "at": [
+     450,
+     1300
+    ],
+    "expected": [
+     128,
+     0,
+     128
+    ],
+    "actual": [
+     128,
+     0,
+     128
+    ],
+    "ok": true
+   },
+   {
+    "label": "Paint.setARGB blue (A5)",
+    "at": [
+     200,
+     1350
+    ],
+    "expected": [
+     0,
+     0,
+     200
+    ],
+    "actual": [
+     0,
+     0,
+     200
+    ],
+    "ok": true
+   },
+   {
+    "label": "drawRoundRect brown center (F-123 arg law)",
+    "at": [
+     660,
+     1350
+    ],
+    "expected": [
+     180,
+     120,
+     60
+    ],
+    "actual": [
+     180,
+     120,
+     60
+    ],
+    "ok": true
+   },
+   {
+    "label": "clipRect region gets teal fill",
+    "at": [
+     100,
+     1030
+    ],
+    "expected": [
+     0,
+     180,
+     180
+    ],
+    "actual": [
+     0,
+     180,
+     180
+    ],
+    "ok": true
+   },
+   {
+    "label": "clipRect ENFORCED: no leak outside clip (S68)",
+    "at": [
+     500,
+     1030
+    ],
+    "expected": [
+     255,
+     255,
+     255
+    ],
+    "actual": [
+     255,
+     255,
+     255
+    ],
+    "ok": true
+   },
+   {
+    "label": "rotate APPLIED: rect rotated away from origin (S68 law)",
+    "at": [
+     700,
+     1170
+    ],
+    "expected": [
+     255,
+     255,
+     255
+    ],
+    "actual": [
+     255,
+     255,
+     255
+    ],
+    "ok": true
+   },
+   {
+    "label": "scale(2,2) APPLIED: probe at doubled coords (S68 law)",
+    "at": [
+     130,
+     1665
+    ],
+    "expected": [
+     255,
+     140,
+     0
+    ],
+    "actual": [
+     255,
+     140,
+     0
+    ],
+    "ok": true
+   },
+   {
+    "label": "scale(2,2) APPLIED: pre-scale coords empty (S68 law)",
+    "at": [
+     60,
+     830
+    ],
+    "expected": [
+     255,
+     255,
+     255
+    ],
+    "actual": [
+     255,
+     255,
+     255
+    ],
+    "ok": true
+   },
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "nonwhite in (0, 400, 900, 600) = 8714 (min 300)"
+   }
+  ],
+  "status": "PASS",
+  "width": 1080,
+  "height": 1920,
+  "screenshot_sha256": "de1888bed01058f40766706d36268e18b48592443a462f9595db336aea930e07",
+  "nonwhite": 215611,
+  "bbox": [
+   39,
+   20,
+   859,
+   1689
+  ]
+ },
+ {
+  "fixture": "f05b_persian2",
+  "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f05b_persian2/screenshot.png",
+  "asserts": [
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "nonwhite in (0, 0, 1080, 400) = 24297 (min 2000)"
+   }
+  ],
+  "status": "PASS",
+  "width": 1080,
+  "height": 1920,
+  "screenshot_sha256": "5d2e29e25e0c4667090444bbd34753f06e76862016b083eecca8c57d55049f0a",
+  "nonwhite": 24297,
+  "bbox": [
+   0,
+   26,
+   585,
+   370
+  ]
+ },
+ {
+  "fixture": "f48_bitmap",
+  "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f48_bitmap/screenshot.png",
+  "asserts": [
+   {
+    "label": "decodeResource PNG drawn red (BitmapStore law)",
+    "at": [
+     70,
+     60
+    ],
+    "expected": [
+     255,
+     0,
+     0
+    ],
+    "actual": [
+     255,
+     0,
+     0
+    ],
+    "ok": true
+   },
+   {
+    "label": "createBitmap+eraseColor green",
+    "at": [
+     260,
+     85
+    ],
+    "expected": [
+     0,
+     200,
+     0
+    ],
+    "actual": [
+     0,
+     200,
+     0
+    ],
+    "ok": true
+   },
+   {
+    "label": "createScaledBitmap 240x45 green",
+    "at": [
+     320,
+     222
+    ],
+    "expected": [
+     0,
+     200,
+     0
+    ],
+    "actual": [
+     0,
+     200,
+     0
+    ],
+    "ok": true
+   },
+   {
+    "label": "createBitmap crop 50x50 green",
+    "at": [
+     65,
+     225
+    ],
+    "expected": [
+     0,
+     200,
+     0
+    ],
+    "actual": [
+     0,
+     200,
+     0
+    ],
+    "ok": true
+   },
+   {
+    "label": "no bleed below bitmap rows",
+    "at": [
+     600,
+     500
+    ],
+    "expected": [
+     255,
+     255,
+     255
+    ],
+    "actual": [
+     255,
+     255,
+     255
+    ],
+    "ok": true
+   }
+  ],
+  "status": "PASS",
+  "width": 1080,
+  "height": 1920,
+  "screenshot_sha256": "3a0aa5021977900298270be59244c6a13874cb6453433350f3ba347bc01263c3",
+  "nonwhite": 32992,
+  "bbox": [
+   40,
+   40,
+   636,
+   386
+  ]
+ },
+ {
+  "fixture": "f49_canstext",
+  "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f49_canstext/screenshot.png",
+  "asserts": [
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "nonwhite in (40, 60, 500, 180) = 1908 (min 200)"
+   },
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "nonwhite in (40, 240, 600, 360) = 2386 (min 200)"
+   },
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "nonwhite in (40, 420, 500, 520) = 2699 (min 100)"
+   }
+  ],
+  "status": "PASS",
+  "width": 1080,
+  "height": 1920,
+  "screenshot_sha256": "aa5d1397c5196ca67d943a1d1105f7339a3b4e4e47ff501043925cf0acc1b5cc",
+  "nonwhite": 6993,
+  "bbox": [
+   59,
+   91,
+   314,
+   479
+  ]
+ },
+ {
+  "fixture": "f50_imagefmt",
+  "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f50_imagefmt/screenshot.png",
+  "asserts": [
+   {
+    "label": "JPEG drawable decoded (A3: no silent drop)",
+    "at": [
+     150,
+     75
+    ],
+    "expected": [
+     255,
+     0,
+     255
+    ],
+    "actual": [
+     255,
+     0,
+     254
+    ],
+    "ok": true
+   },
+   {
+    "label": "WebP drawable decoded",
+    "at": [
+     150,
+     590
+    ],
+    "expected": [
+     0,
+     255,
+     255
+    ],
+    "actual": [
+     1,
+     255,
+     254
+    ],
+    "ok": true
+   },
+   {
+    "label": "palette PNG decoded exactly",
+    "at": [
+     150,
+     983
+    ],
+    "expected": [
+     255,
+     128,
+     0
+    ],
+    "actual": [
+     255,
+     128,
+     0
+    ],
+    "ok": true
+   },
+   {
+    "label": "grayscale PNG decoded exactly",
+    "at": [
+     150,
+     1377
+    ],
+    "expected": [
+     128,
+     128,
+     128
+    ],
+    "actual": [
+     128,
+     128,
+     128
+    ],
+    "ok": true
+   },
+   {
+    "label": "GIF = explicit placeholder 0xCC (named failure)",
+    "at": [
+     150,
+     1770
+    ],
+    "expected": [
+     204,
+     204,
+     204
+    ],
+    "actual": [
+     204,
+     204,
+     204
+    ],
+    "ok": true
+   }
+  ],
+  "status": "PASS",
+  "width": 1080,
+  "height": 1920,
+  "screenshot_sha256": "e7dc280004537d20b9fb97eaafe680c5167e7d36eca0bf6934b7033f5680bb77",
+  "nonwhite": 1297603,
+  "bbox": [
+   5,
+   0,
+   782,
    1919
   ]
  }

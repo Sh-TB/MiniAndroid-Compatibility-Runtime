@@ -6,6 +6,7 @@
 #include "android_shadows.h"
 #include "dialog_shadow.h"
 #include "canvas_shadow.h"
+#include "bitmap_shadow.h"
 #include "clipboard_shadow.h"
 #include "locks_shadow.h"
 #include "atomic_shadow.h"
@@ -274,6 +275,9 @@ void register_platform_shadows(ShadowRegistry& reg) {
     reg.register_shadow<ViewShadow>();
     reg.register_shadow<DialogShadow>();
     reg.register_shadow<ArrayAdapterShadow>();
+    // S68 §12/§13: Bitmap/BitmapFactory pixel store — BEFORE CanvasShadow so
+    // drawBitmap resolves pixels (Canvas itself never decodes).
+    reg.register_shadow<BitmapShadow>();
     reg.register_shadow<CanvasShadow>();
     reg.register_shadow<LayoutInflaterShadow>();
     reg.register_shadow<ClipboardShadow>();
