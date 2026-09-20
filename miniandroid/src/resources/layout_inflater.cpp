@@ -1055,6 +1055,15 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
         else if (n == "lines") a.num_lines = atoi(raw.c_str());
         else if (n == "singleLine") a.single_line = at.value.is_bool() ? at.value.data != 0 : raw == "true";
         else if (n == "elevation") a.elevation_px = parse_dim_attr(&at, stats);
+        // F-142b (AOSP ImageView.java L1141+ measure contract, XML path):
+        // android:maxWidth / android:maxHeight compile to TYPED DIMENSION
+        // (or legacy raw "42.000000dip" strings) — parse through the ONE
+        // canonical dimension law (same as every other dim attr).
+        // android:adjustViewBounds follows the MASTER-2 compiled-boolean
+        // law (TYPED 0x12 bool or raw "true" fallback).
+        else if (n == "maxWidth") a.max_w = parse_dim_attr(&at, stats);
+        else if (n == "maxHeight") a.max_h = parse_dim_attr(&at, stats);
+        else if (n == "adjustViewBounds") a.adjust_view_bounds = at.value.is_bool() ? at.value.data != 0 : raw == "true";
         // layout_* relative positioning params (RelativeLayout) — recorded, best-effort
         // MASTER-2 FIX-MEASURE-002b (compiled-boolean law): layout booleans
         // in release-minified AXML carry NO raw string (value type 0x12,
@@ -1161,6 +1170,9 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
     node.weight_sum_valid = a.weight_sum_valid;
     node.lp_margin_left = a.ml; node.lp_margin_top = a.mt;
     node.lp_margin_right = a.mr; node.lp_margin_bottom = a.mb;
+    // F-142b: XML measure caps on the node (consumed by the wrap measure).
+    node.max_w = a.max_w; node.max_h = a.max_h;
+    node.adjust_view_bounds = a.adjust_view_bounds;
     node.lp_width = a.layout_width; node.lp_height = a.layout_height;
     // M3 FIX-M3-002: style-bag layout params — AOSP obtainStyledAttributes
     // precedence: the direct XML attribute wins; when the XML is silent the
@@ -2188,6 +2200,44 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
             int iw = 0, ih = 0;
             if (image_intrinsic_size(n->src_drawable_path, n->src_density, &iw, &ih) ||
                 image_intrinsic_size(n->image_drawable_path, n->src_density, &iw, &ih)) {
+                // F-142b (AOSP ImageView.java onMeasure L1141+ law): the
+                // desired size is the density-scaled intrinsic, THEN the
+                // XML measure caps apply:
+                //   widthFit  = maxWidth>0  && desiredW > maxWidth
+                //   heightFit = maxHeight>0 && desiredH > maxHeight
+                //   both fit  → aspect-true fit into the max box;
+                //   one fits  → cap that axis, rescale the other by the
+                //               SAME factor (adjustViewBounds keeps aspect);
+                //   no caps   → intrinsic unchanged.
+                // Evidence: fishrings 300x300 mdpi fish on a 420dpi device
+                // measured 788x788 (and clamped 896x1113 by AT_MOST) where
+                // AOSP measures 110x110 (maxWidth=42dip/maxHeight=60dip +
+                // adjustViewBounds). Applied BEFORE the AT_MOST spec clamp.
+                const bool is_img_family =
+                    n->class_desc.find("ImageView") != std::string::npos ||
+                    n->class_desc.find("ImageButton") != std::string::npos;
+                if (is_img_family && (n->max_w > 0 || n->max_h > 0)) {
+                    const bool width_fit = n->max_w > 0 && iw > n->max_w;
+                    const bool height_fit = n->max_h > 0 && ih > n->max_h;
+                    if (width_fit && height_fit) {
+                        const float aspect = (float)iw / (float)ih;
+                        if ((float)n->max_w / (float)n->max_h > aspect) {
+                            iw = (int)std::lround(n->max_h * aspect);
+                            ih = n->max_h;
+                        } else {
+                            ih = (int)std::lround(n->max_w / aspect);
+                            iw = n->max_w;
+                        }
+                    } else if (width_fit) {
+                        if (n->adjust_view_bounds)
+                            ih = (int)std::lround((float)ih * n->max_w / iw);
+                        iw = n->max_w;
+                    } else if (height_fit) {
+                        if (n->adjust_view_bounds)
+                            iw = (int)std::lround((float)iw * n->max_h / ih);
+                        ih = n->max_h;
+                    }
+                }
                 content_w = std::max(content_w, iw);
                 content_h = std::max(content_h, ih);
                 n->src_w = iw; n->src_h = ih;   // evidence + draw-path reuse
@@ -2389,12 +2439,14 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
             auto* n = views->find_node(vid);
             if (!n) return;
             fprintf(stderr,
-                "[U007-LAYOUT] %*sview %u %s id_name=%s lp=%d/%d weight=%d "
+                "[U007-LAYOUT] %*sview %u %s id_name=%s lp=%d/%d m=%d,%d,%d,%d weight=%d "
                 "orient=%d measured=%dx%d at=(%d,%d) vis=%d clickable=%d "
                 "text_size=%.1f lines=%d below='%s' above='%s' "
                 "right_of='%s' left_of='%s' cgrav=0x%x text='%s'\n",
                 depth * 2, "", vid, n->class_desc.c_str(),
                 n->android_id_name.c_str(), n->lp_width, n->lp_height,
+                n->lp_margin_left, n->lp_margin_top,
+                n->lp_margin_right, n->lp_margin_bottom,
                 n->layout_weight, n->orientation, n->measured_width,
                 n->measured_height,
                 n->measured_left, n->measured_top, n->visibility,
@@ -2800,10 +2852,20 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                             }
                         } else if (cn->rel_align_parent_bottom) {
                             y = ct + ch - b.h - cn->lp_margin_bottom;
+                        // F-142a (AOSP RelativeLayout applyVerticalSizeRules /
+                        // positionChildVertical law): an alignParentTop child
+                        // sits at paddingTop + topMargin; the flow-top default
+                        // is the SAME law (no-rule child → padding + margin).
+                        // centerVertical: the margin box is centered —
+                        // topMargin − bottomMargin offsets the center (same
+                        // law the LinearLayout/FrameLayout branches apply).
+                        // Evidence: fishrings activity_game 41 fish/arrows
+                        // measured margins m=184,184 but painted stacked at
+                        // (0,0) — only bottom/right-anchored views landed.
                         } else if (cn->rel_center_in_parent || cn->rel_center_vertical) {
-                            y = ct + (ch - b.h) / 2;
+                            y = ct + (ch - b.h) / 2 + cn->lp_margin_top - cn->lp_margin_bottom;
                         } else if (cn->rel_align_parent_top || pass == 0) {
-                            y = ct;              // alignParentTop / flow top
+                            y = ct + cn->lp_margin_top;   // alignParentTop / flow top
                         }
                         if (y != b.y || b.done) {
                             b.y = y;
@@ -2828,11 +2890,16 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                                 x = boxes[rid].x + boxes[rid].w - b.w - cn->lp_margin_right;
                             }
                         } else if (cn->rel_center_in_parent || cn->rel_center_horizontal) {
-                            x = cl + (cw - b.w) / 2;
+                            x = cl + (cw - b.w) / 2 + cn->lp_margin_left - cn->lp_margin_right;
                         } else if (cn->rel_align_parent_right) {
                             x = cl + cw - b.w - cn->lp_margin_right;
+                        // F-142a (AOSP applyHorizontalSizeRules law):
+                        // alignParentLeft → mLeft = paddingLeft + leftMargin;
+                        // flow-left default = the same law; centerHorizontal
+                        // offsets by leftMargin − rightMargin (gravity law
+                        // shared with the LinearLayout branch above).
                         } else if (cn->rel_align_parent_left || pass == 0) {
-                            x = cl;              // alignParentLeft / flow left
+                            x = cl + cn->lp_margin_left;  // alignParentLeft / flow left
                         }
                         if (x != b.x || b.done) {
                             b.x = x;

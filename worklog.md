@@ -1982,3 +1982,23 @@ Work Log:
 Stage Summary:
 - CONSTITUTION_V2.md is the permanent law of this campaign; impact quantified BEFORE/AFTER with evidence.
 - Next: wave-2 executes the evidence-selected root F-142 (fishrings ImageView src->bitmap, P1 best KPI/root) then F-141 (P0 null laws), per #169 directive.
+
+---
+Task ID: S72-W2-1
+Agent: Super Z (main)
+Task: Wave-2 evidence-selected root F-142 — full loop to real APK + screenshot + regression.
+
+Work Log:
+- CONSTITUTION V2 stored at repo root (CONSTITUTION_V2.md, committed) + measured rule impact for the user.
+- F-142 wave-1 hypothesis DISPROVEN by fresh evidence: current binary resolved mipmap src refs and painted 1 fish pre-fix (2,068,844 px); wave-1 "0%" was splash-surface measurement.
+- Real roots found via runtime probes ([U007-LAYOUT] margin dump + AXML dump + render pos): (a) RL final-layout fixpoint dropped margins in alignParentLeft/Top+center+flow branches; (b) maxWidth/maxHeight/adjustViewBounds never parsed (ImageView onMeasure cap law missing).
+- Upstream laws: AOSP RelativeLayout applySizeRules (mLeft=paddingLeft+leftMargin); AOSP ImageView.java onMeasure L1141+ aspect-true caps. Both patched in layout_inflater.cpp; ViewNode/Attrs fields added.
+- Real APK proof: fishrings full game board (4 groups + rings + arrows + logo), frame_008 2,072,819 px, determinism x3 BYTE-IDENTICAL sha a341e3ad9092f640.
+- Regression: 9/9 previously-rendering apps byte-identical (pre s71_live vs post); battery fixture stages PASS (M3 6/6; checker regex updated for extended debug dump — no behavioral regression; EXT-01/02 environmental unchanged).
+- Wave-1 dashboard delta contradiction reported per #162 (tripeaks pre-fix frames already 205,273 px — measure-surface flaw, not behavior change).
+- NEW law registered F-145 (OPEN, P1): final screenshot captures splash window, not top-of-stack window (fishrings 2,072,819 vs 0; tripeaks 205,273 vs 0; dooz 197 vs 92).
+- Registry 390 -> 391: F-142 ROOT-CAUSED-FIXED (two roots, fan-out, real-app proof), F-145 OPEN.
+
+Stage Summary:
+- KPI-2 +1 real UI (fishrings); generic layout laws closed with ZERO regressions; honest dashboard law gap (F-145) registered for next wave.
+- FOUNDATION STATUS: NOT COMPLETE (frontier moved).
