@@ -117,6 +117,25 @@ public:
     std::optional<ResValue> resolve_theme_attr_value(const std::string& apk_path,
                                                      uint32_t attr_key);
 
+    // ── S68 W2 (A1/A10): ?attr resolution service ────────────────────────
+    // AOSP law: ?attr/name (TypedValue TYPE_ATTRIBUTE) resolves through the
+    // THEME of the context — the LAUNCH activity's theme when set, else the
+    // application theme. When the theme chain lacks the attr and the id is
+    // a FRAMEWORK attr (0x01xxxxxx), the AOSP framework theme default
+    // applies (framework_theme_attrs.h, generated from AOSP law files).
+    // Flavor (dark=Theme.Material vs light=Theme.Material.Light) follows
+    // the framework's *.Light naming convention on the parent chain.
+    struct LaunchTheme {
+        uint32_t resid = 0;      // resolved theme style id (0 = none)
+        int flavor = 0;          // 0 = dark (Theme.Material), 1 = light
+        bool valid = false;
+    };
+    LaunchTheme resolve_launch_theme(const std::string& apk_path);
+    // flavor_hint: 0 dark / 1 light; -1 = detect from the theme chain.
+    std::optional<ResValue> resolve_theme_attr_typed(const std::string& apk_path,
+                                                     uint32_t attr_key,
+                                                     int flavor_hint = -1);
+
     // Evidence dump
     std::string stats_json() const;
 

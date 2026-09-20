@@ -16,7 +16,7 @@
     "requirement": "This APK ran because MiniAndroid executed its bytecode, NOT because the framework pretended it ran."
   },
   "metrics": {
-    "execution_time_ms": 1.303981,
+    "execution_time_ms": 1.610087,
     "main_class": "Lcom/miniandroid/f04text/MainActivity;",
     "main_method": "onCreate",
     "total_api_calls": 3,
@@ -27,7 +27,7 @@
   "reasons": [
     "Less than 100 instructions executed (6)"
   ],
-  "timestamp": "2026-09-20T01:21:10Z",
+  "timestamp": "2026-09-20T01:55:45Z",
   "title": "Real Dalvik Bytecode Execution Proof",
   "trace_files_generated": [
     "opcode_trace.json",

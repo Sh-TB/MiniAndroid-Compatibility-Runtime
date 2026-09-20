@@ -105,6 +105,11 @@ struct ManifestInfo {
     // (attribute 0x01010000, REFERENCE value) — the style whose
     // windowBackground item paints the window behind all content.
     uint32_t application_theme_resid = 0;
+    // S68 W2 (A1/A10): per-ACTIVITY android:theme override (AOSP
+    // ActivityInfo.theme — overrides <application android:theme> for the
+    // activity's window/theme resolution). Captured for the MAIN activity.
+    uint32_t activity_theme_resid = 0;
+    std::string activity_theme_ref;   // plain-text manifest fallback
     // F-094 (R-NEW-327): plain-text manifests store android:theme as a
     // REFERENCE STRING ("@style/AppTheme.NoActionBar") — no binary attr
     // id exists. The resolver turns the name into a resid through the
@@ -313,6 +318,7 @@ private:
     ManifestInfo result_;
     int depth_ = 0;
     bool in_activity_ = false;
+    uint32_t activity_theme_resid_pending_ = 0;   // S68 W2: android:theme of the element being parsed
     std::string current_activity_name_;
     std::string current_activity_target_;  // EXP-038: targetActivity for activity-alias
     bool activity_has_main_action_ = false;

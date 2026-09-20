@@ -1384,6 +1384,77 @@
   ]
  },
  {
+  "fixture": "f51_themeattr",
+  "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f51_themeattr/screenshot.png",
+  "asserts": [
+   {
+    "label": "?attr/customColor from theme bag (A1)",
+    "at": [
+     390,
+     196
+    ],
+    "expected": [
+     35,
+     69,
+     103
+    ],
+    "actual": [
+     35,
+     69,
+     103
+    ],
+    "ok": true
+   },
+   {
+    "label": "?android:attr/colorAccent LIGHT flavor (A10)",
+    "at": [
+     390,
+     590
+    ],
+    "expected": [
+     0,
+     150,
+     136
+    ],
+    "actual": [
+     0,
+     150,
+     136
+    ],
+    "ok": true
+   },
+   {
+    "label": "?android:attr/textColorPrimary state-list law",
+    "at": [
+     390,
+     983
+    ],
+    "expected": [
+     32,
+     32,
+     32
+    ],
+    "actual": [
+     32,
+     32,
+     32
+    ],
+    "ok": true
+   }
+  ],
+  "status": "PASS",
+  "width": 1080,
+  "height": 1920,
+  "screenshot_sha256": "fdd863dd63aa47ae2982166e641d016499ed4b7736b7581797ecb3ffcc9b192c",
+  "nonwhite": 931416,
+  "bbox": [
+   0,
+   0,
+   787,
+   1181
+  ]
+ },
+ {
   "fixture": "f50_imagefmt",
   "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f50_imagefmt/screenshot.png",
   "asserts": [

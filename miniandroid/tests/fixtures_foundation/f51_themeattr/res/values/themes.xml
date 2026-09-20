@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- S68 W2: theme with an app-defined attr + a framework Light parent.
+         The parent-chain *.Light convention selects the LIGHT flavor -->
+    <style name="AppTheme" parent="android:Theme.Material.Light">
+        <item name="customColor">#FF234567</item>
+    </style>
+</resources>

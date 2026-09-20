@@ -2,6 +2,7 @@
  * UNIFIED_007 — ResourceRuntime implementation.
  */
 #include "resource_runtime.h"
+#include "framework_theme_attrs.h"
 #include "../apk/manifest_reader.h"
 #include <fstream>
 #include <iostream>
@@ -171,6 +172,116 @@ std::optional<ResValue> ResourceRuntime::resolve_theme_attr_value(
         out = *r.value();
     }
     return out;
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// S68 W2 (A1/A10): ?attr resolution service (see resource_runtime.h law).
+// ─────────────────────────────────────────────────────────────────────────
+ResourceRuntime::LaunchTheme ResourceRuntime::resolve_launch_theme(
+        const std::string& apk_path) {
+    LaunchTheme out;
+    if (!ensure_loaded(apk_path)) return out;
+
+    uint32_t theme_resid = 0;
+    std::string theme_ref;
+    std::vector<uint8_t> mf = apk_.extract_entry_cached("AndroidManifest.xml");
+    if (mf.empty()) return out;
+    apk::ManifestReader mr;
+    apk::ManifestInfo mi = mr.parse(mf);
+    // AOSP ActivityInfo.theme law: the ACTIVITY theme overrides the
+    // application theme for the launch window.
+    if (mi.activity_theme_resid != 0) theme_resid = mi.activity_theme_resid;
+    else if (mi.application_theme_resid != 0) theme_resid = mi.application_theme_resid;
+    else {
+        // F-094 law: plain-text manifests carry android:theme as a
+        // reference string — resolve through the canonical ARSC find_id.
+        theme_ref = !mi.activity_theme_ref.empty() ? mi.activity_theme_ref
+                                                   : mi.application_theme_ref;
+        std::string ref = theme_ref;
+        if (ref.rfind("@", 0) == 0) ref.erase(0, 1);
+        std::string type = "style", name = ref;
+        size_t slash = ref.find('/');
+        if (slash != std::string::npos) {
+            type = ref.substr(0, slash);
+            name = ref.substr(slash + 1);
+        }
+        if (type.rfind("android:", 0) == 0) type.erase(0, 8);
+        if (auto id = arsc_.find_id(mi.package_name, type, name))
+            theme_resid = *id;
+    }
+    if (theme_resid == 0) return out;
+    out.resid = theme_resid;
+
+    // Flavor law: walk the theme style NAME + parent chain; the framework's
+    // *.Light convention decides dark vs light (generic, never app-specific).
+    // Framework style ids (0x0103xxxx) do not resolve through the app ARSC
+    // (aapt2 does not embed framework-res) — the walk consults the AOSP
+    // public.xml style-id law for the framework theme roots.
+    static const struct { uint32_t id; bool light; } FRAMEWORK_THEMES[] = {
+        {0x01030224u, false},  // Theme.Material            (AOSP public.xml)
+        {0x01030237u, true},   // Theme.Material.Light
+        {0x01030128u, false},  // Theme.DeviceDefault
+        {0x0103012bu, true},   // Theme.DeviceDefault.Light
+        {0x0103006bu, false},  // Theme.Holo
+        {0x0103006eu, true},   // Theme.Holo.Light
+    };
+    uint32_t cur = theme_resid;
+    for (int hop = 0; hop < 8 && cur != 0; hop++) {
+        bool resolved_framework = false;
+        for (const auto& ft : FRAMEWORK_THEMES) {
+            if (ft.id == cur) { out.flavor = ft.light ? 1 : 0; resolved_framework = true; break; }
+        }
+        if (resolved_framework) break;
+        auto e = arsc_.resolve(cur);
+        if (!e) break;
+        if (e->name.find("Light") != std::string::npos) { out.flavor = 1; break; }
+        const ArscEntry* best = e->best();
+        cur = best ? best->bag_parent : 0;
+    }
+    out.valid = true;
+    return out;
+}
+
+std::optional<ResValue> ResourceRuntime::resolve_theme_attr_typed(
+        const std::string& apk_path, uint32_t attr_key, int flavor_hint) {
+    // 1. Theme chain (activity theme > application theme).
+    LaunchTheme lt = resolve_launch_theme(apk_path);
+    if (lt.valid) {
+        auto v = arsc_.bag_value(lt.resid, attr_key, device_config());
+        if (v) {
+            ResValue out = *v;
+            if (out.is_reference()) {
+                ResolutionResult r = arsc_.resolve_full(out.ref_id, device_config());
+                if (r.ok) out = *r.value();
+            }
+            return out;
+        }
+    }
+    // 2. Framework theme defaults (AOSP law; generated table).
+    if ((attr_key >> 24) == 0x01) {
+        const int flavor = flavor_hint >= 0 ? flavor_hint : lt.flavor;
+        for (size_t i = 0; i < FRAMEWORK_THEME_ATTR_COUNT; i++) {
+            const auto& fa = FRAMEWORK_THEME_ATTRS[i];
+            if (fa.id != attr_key) continue;
+            ResValue out;
+            const uint32_t raw = flavor == 1 ? fa.light : fa.dark;
+            // disabledAlpha is an AOSP FRACTION (TypedValue FRACTION_UNIT:
+            // data = value * (1<<15)); booleans carry INT_BOOLEAN; the rest
+            // are colors/ints (INT_HEX consumers accept is_int()).
+            if (attr_key == 0x01010033 /*disabledAlpha*/) {
+                out.type = DataType::FRACTION;
+                out.data = (int32_t)raw;
+            } else if (attr_key == 0x0101020d /*windowFullscreen*/) {
+                out.type = DataType::INT_BOOLEAN;
+                out.data = (int32_t)raw;
+            } else {
+                out.type = DataType::INT_HEX;
+                out.data = (int32_t)raw;
+            }
+            return out;
+        }
+    }
+    return std::nullopt;
 }
 
 } // namespace resources
