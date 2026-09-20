@@ -1129,9 +1129,16 @@ CallResult ThreadShadow::dispatch(const CallContext& ctx) {
     }
     if (m == "interrupt" || m == "join" ||
         m == "setDaemon" || m == "setName" || m == "setPriority" ||
-        m == "sleep" || m == "yield" || m == "holdsLock" ||
+        m == "yield" || m == "holdsLock" ||
         m == "getContextClassLoader" || m == "setContextClassLoader" ||
         m == "getUncaughtExceptionHandler" || m == "setUncaughtExceptionHandler") {
+        // F-150 (S72-W4): "sleep" REMOVED from this no-op family — it was
+        // shadowing the real Thread.sleep law (dalvik_engine DEX-bridge:
+        // advance the ONE virtual clock + F-110b yield when inside a
+        // drained thread body). With the no-op, every app game-loop
+        // (while(!done){tick; sleep(T);}) spun at its loop head until the
+        // F-084 visit cap (50001 visits) — silent wrongness (§038), first
+        // observed on zhangman.github.snake GameMainThread.run.
         return CallResult::handled_void();
     }
     if (m == "equals") {

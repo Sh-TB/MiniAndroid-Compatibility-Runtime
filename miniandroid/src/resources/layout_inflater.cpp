@@ -1126,6 +1126,41 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
         // lost those anchors.
         else if (n == "layout_alignParentLeft") { a.rel_align_parent_left = at.value.is_bool() ? at.value.data != 0 : raw == "true"; }
         else if (n == "layout_alignParentRight") { a.rel_align_parent_right = at.value.is_bool() ? at.value.data != 0 : raw == "true"; }
+        // F-148 (S72-W4): ConstraintLayout.LayoutParams anchor family
+        // (XML path). The anchor VALUE is either the literal "parent"
+        // sentinel or a sibling id reference — resolved to a NAME with the
+        // same compiled-reference fallback law as the rel_* family above
+        // (AXML value type 0x03 without a raw string resolves via the arsc
+        // id table). start/end map onto left/right (LTR).
+        else if (n.rfind("layout_constraint", 0) == 0) {
+            std::string nm;
+            auto cl_anchor = [&]() {
+                if (raw == "parent") { nm = "parent"; return; }
+                nm = parse_ref(raw).name;
+                if (!nm.empty() && nm[0] == '+') nm.erase(nm.begin());
+                if (nm.empty() && at.value.is_reference()) {
+                    if (id_names_.empty())
+                        for (auto& [rid, rnm] : arsc_.list_type("", "id"))
+                            id_names_[rid] = rnm;
+                    auto it = id_names_.find(at.value.ref_id);
+                    if (it != id_names_.end()) nm = it->second;
+                }
+            };
+            if (n == "layout_constraintLeft_toLeftOf")   { cl_anchor(); a.cl_left_to = nm;  a.cl_left_edge = 1; }
+            else if (n == "layout_constraintLeft_toRightOf")  { cl_anchor(); a.cl_left_to = nm;  a.cl_left_edge = 2; }
+            else if (n == "layout_constraintStart_toStartOf") { cl_anchor(); a.cl_left_to = nm;  a.cl_left_edge = 1; }
+            else if (n == "layout_constraintStart_toEndOf")   { cl_anchor(); a.cl_left_to = nm;  a.cl_left_edge = 2; }
+            else if (n == "layout_constraintRight_toRightOf") { cl_anchor(); a.cl_right_to = nm; a.cl_right_edge = 2; }
+            else if (n == "layout_constraintRight_toLeftOf")  { cl_anchor(); a.cl_right_to = nm; a.cl_right_edge = 1; }
+            else if (n == "layout_constraintEnd_toEndOf")     { cl_anchor(); a.cl_right_to = nm; a.cl_right_edge = 2; }
+            else if (n == "layout_constraintEnd_toStartOf")   { cl_anchor(); a.cl_right_to = nm; a.cl_right_edge = 1; }
+            else if (n == "layout_constraintTop_toTopOf")     { cl_anchor(); a.cl_top_to = nm;   a.cl_top_edge = 1; }
+            else if (n == "layout_constraintTop_toBottomOf")  { cl_anchor(); a.cl_top_to = nm;   a.cl_top_edge = 2; }
+            else if (n == "layout_constraintBottom_toBottomOf"){ cl_anchor(); a.cl_bottom_to = nm; a.cl_bottom_edge = 2; }
+            else if (n == "layout_constraintBottom_toTopOf")  { cl_anchor(); a.cl_bottom_to = nm; a.cl_bottom_edge = 1; }
+            else if (n == "layout_constraintHorizontal_bias") a.cl_bias_x = atof(raw.c_str());
+            else if (n == "layout_constraintVertical_bias")   a.cl_bias_y = atof(raw.c_str());
+        }
     }
 
     // Apply to node
@@ -1242,6 +1277,13 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
     node.rel_center_in_parent = a.rel_center_in_parent;
     node.rel_center_horizontal = a.rel_center_horizontal;
     node.rel_center_vertical = a.rel_center_vertical;
+    // F-148: ConstraintLayout anchors onto the node (same name-resolution
+    // contract as the rel_* family; consumed by the CL measure branch).
+    node.cl_left_to = a.cl_left_to; node.cl_left_edge = a.cl_left_edge;
+    node.cl_right_to = a.cl_right_to; node.cl_right_edge = a.cl_right_edge;
+    node.cl_top_to = a.cl_top_to; node.cl_top_edge = a.cl_top_edge;
+    node.cl_bottom_to = a.cl_bottom_to; node.cl_bottom_edge = a.cl_bottom_edge;
+    node.cl_bias_x = a.cl_bias_x; node.cl_bias_y = a.cl_bias_y;
     if (a.bg_color != 0) { node.bg_color = a.bg_color; node.bg_from_xml = true; }
     if (!a.bg_drawable.empty()) {
         node.bg_drawable_path = a.bg_drawable; node.bg_from_xml = true;
@@ -1717,6 +1759,12 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
         // ===================================================================
         const bool is_rl_container =
             container && is_a(n->class_desc, "Landroid/widget/RelativeLayout;");
+        // F-148 (S72-W4): ConstraintLayout container law. Descriptor
+        // substring match (support + androidx descriptors; the class lives
+        // in a LIBRARY, not the platform hierarchy, so is_a() cannot walk
+        // an ancestry chain for it — same family law as ViewPager).
+        const bool is_cl_container =
+            container && n->class_desc.find("ConstraintLayout") != std::string::npos;
         int content_w = 0, content_h = 0;
         bool rl_edges_aggregated = false;
         if (is_rl_container) {
@@ -1958,6 +2006,246 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
             }
             (void)cg_default;
             rl_edges_aggregated = true;
+        } else if (is_cl_container) {
+        // ===================================================================
+        // F-148 (S72-W4): ConstraintLayout measure law (AOSP
+        // ConstraintLayout resolving, anchor subset; ground truth:
+        // zhangman.github.snake activity_main @ b4968c39 — every child
+        // measured 0-wide / stacked at x=0 before this law, AOSP resolves
+        // snake_view to EXACTLY(1080) and each button to its fixed dp size
+        // at a biased position).
+        //
+        // AOSP structure implemented here (per-axis, topological):
+        //   1. anchors resolve to target EDGES with the child's own margin
+        //      on the anchored side; "parent" anchors bind to the padding
+        //      box (paddingLeft/paddingRight law);
+        //   2. dimension law:
+        //        MATCH_CONSTRAINT (lp == 0) + both anchors → EXACTLY span
+        //        fixed size + both anchors  → EXACTLY min(lp, span), then
+        //                                     bias-positioned in the span
+        //        wrap + both anchors        → AT_MOST span, bias-positioned
+        //        one anchor                 → edge = anchor ± margin; the
+        //                                     other edge from measured size
+        //        no anchors                 → (0,0) + margins (AOSP default)
+        //   3. bias law (ConstraintLayout.LayoutParams): leftover = span −
+        //      size; offset = bias × leftover; default bias 0.5 (centered);
+        //   4. resolved edges cache into the SAME onLayout-replay contract
+        //      the RelativeLayout pass uses (rl_cached_* + rl_edges_valid),
+        //      consumed by the is_cl layout branch below.
+        // Hostile deviations (documented, same no-crash law as RL):
+        //   - AOSP resolves one global Cassowary system (Guideline/chains/
+        //     RATIO/groups included); the runtime resolves per-axis
+        //     topologically and falls back to declaration order on cycles.
+        //   - baseline anchors, dimensionRatio, percent sizes and chains
+        //     are NOT in this subset (unparsed attrs fall back to the
+        //     no-anchor law; recorded in the F-148 registry entry).
+        // ===================================================================
+        const int NOT_SET = INT_MIN;
+        struct CEdge { int l = NOT_SET, r = NOT_SET, t = NOT_SET, b = NOT_SET; };
+        std::map<uint32_t, CEdge> cedges;
+
+        auto cl_name_to_id = [&](const std::string& nm) -> uint32_t {
+            if (nm.empty() || nm == "parent") return 0;
+            for (uint32_t cid : n->children) {
+                auto* cn = views->find_node(cid);
+                if (cn && cn->visibility != 8 && cn->android_id_name == nm)
+                    return cid;
+            }
+            return 0;
+        };
+        // Same Kahn law as the RL pass above (AOSP DependencyGraph).
+        auto cl_topo = [&](auto&& deps_of) -> std::vector<size_t> {
+            const size_t N = n->children.size();
+            std::vector<size_t> indeg(N, 0), order;
+            std::vector<std::vector<size_t>> adj(N);
+            for (size_t i = 0; i < N; i++)
+                for (uint32_t dep : deps_of(i)) {
+                    if (!dep) continue;
+                    for (size_t j = 0; j < N; j++)
+                        if (j != i && n->children[j] == dep) {
+                            adj[j].push_back(i);
+                            indeg[i]++;
+                        }
+                }
+            std::vector<size_t> ready;
+            for (size_t i = 0; i < N; i++)
+                if (!indeg[i]) ready.push_back(i);
+            while (!ready.empty()) {
+                size_t u = ready.back(); ready.pop_back();
+                order.push_back(u);
+                for (size_t v : adj[u])
+                    if (--indeg[v] == 0) ready.push_back(v);
+            }
+            if (order.size() != N) {
+                if (getenv("U007_LAYOUT_DEBUG"))
+                    fprintf(stderr, "[U007-LAYOUT] ConstraintLayout circular "
+                                    "dependency — declaration order fallback\n");
+                order.resize(N);
+                for (size_t i = 0; i < N; i++) order[i] = i;
+            }
+            return order;
+        };
+
+        const int myWidth = sw.mode == M_UNSPEC ? -1 : sw.size;
+        const int myHeight = sh.mode == M_UNSPEC ? -1 : sh.size;
+
+        // ---- horizontal pass (sorted) ----
+        for (size_t i : cl_topo([&](size_t i) -> std::vector<uint32_t> {
+                 auto* cn = views->find_node(n->children[i]);
+                 if (!cn) return {};
+                 return {cl_name_to_id(cn->cl_left_to),
+                         cl_name_to_id(cn->cl_right_to)};
+             })) {
+            auto* cn = views->find_node(n->children[i]);
+            if (!cn || cn->visibility == 8) { child_sizes[i] = {0, 0}; continue; }
+            CEdge& e = cedges[n->children[i]];
+            if (cn->cl_left_edge) {
+                if (cn->cl_left_to == "parent")
+                    e.l = n->padding_left + cn->lp_margin_left;
+                else if (uint32_t a = cl_name_to_id(cn->cl_left_to)) {
+                    const int ax = (cn->cl_left_edge == 1) ? cedges[a].l
+                                                           : cedges[a].r;
+                    e.l = ax + cn->lp_margin_left;
+                }
+            }
+            if (cn->cl_right_edge) {
+                if (cn->cl_right_to == "parent")
+                    e.r = myWidth - n->padding_right - cn->lp_margin_right;
+                else if (uint32_t a = cl_name_to_id(cn->cl_right_to)) {
+                    const int ax = (cn->cl_right_edge == 1) ? cedges[a].l
+                                                            : cedges[a].r;
+                    e.r = ax - cn->lp_margin_right;
+                }
+            }
+            // width spec (both-anchors law; single/no-anchor fallback)
+            Spec wspec;
+            const bool h_both = e.l != NOT_SET && e.r != NOT_SET;
+            if (h_both) {
+                const int span = std::max(0, e.r - e.l);
+                if (cn->lp_width == 0)            wspec = {span, M_EXACTLY};
+                else if (cn->lp_width >= 0)       wspec = {std::min(cn->lp_width, span), M_EXACTLY};
+                else                              wspec = {span, M_AT_MOST};
+            } else if (cn->lp_width >= 0) {
+                wspec = {cn->lp_width, M_EXACTLY};
+            } else {
+                wspec = child_spec(sw, hpad + cn->lp_margin_left + cn->lp_margin_right,
+                                   cn->lp_width);
+            }
+            // height spec: resolved in the vertical pass; fixed stays exact.
+            Spec hspec = cn->lp_height >= 0 ? Spec{cn->lp_height, M_EXACTLY}
+                                            : child_spec(sh, vpad + cn->lp_margin_top + cn->lp_margin_bottom,
+                                                         cn->lp_height);
+            auto sz = measure(n->children[i], wspec, hspec, depth + 1);
+            child_sizes[i] = sz;
+            if (h_both) {
+                if (cn->lp_width != 0) {
+                    const int span = std::max(0, e.r - e.l);
+                    const int w = sz.first;
+                    const int off = (int)(cn->cl_bias_x * (float)(span - w));
+                    e.l += off; e.r = e.l + w;
+                }  // MATCH_CONSTRAINT: edges already span the full width
+            } else if (e.l != NOT_SET) {
+                e.r = e.l + sz.first;
+            } else if (e.r != NOT_SET) {
+                e.l = e.r - sz.first;
+            } else {
+                e.l = n->padding_left + cn->lp_margin_left;  // AOSP (0,0) default
+                e.r = e.l + sz.first;
+            }
+            cn->rl_cached_left = e.l;
+            cn->rl_cached_right = e.r;
+        }
+
+        // ---- vertical pass (sorted) ----
+        for (size_t i : cl_topo([&](size_t i) -> std::vector<uint32_t> {
+                 auto* cn = views->find_node(n->children[i]);
+                 if (!cn) return {};
+                 return {cl_name_to_id(cn->cl_top_to),
+                         cl_name_to_id(cn->cl_bottom_to)};
+             })) {
+            auto* cn = views->find_node(n->children[i]);
+            if (!cn || cn->visibility == 8) { child_sizes[i] = {0, 0}; continue; }
+            CEdge& e = cedges[n->children[i]];
+            if (cn->cl_top_edge) {
+                if (cn->cl_top_to == "parent")
+                    e.t = n->padding_top + cn->lp_margin_top;
+                else if (uint32_t a = cl_name_to_id(cn->cl_top_to)) {
+                    const int ay = (cn->cl_top_edge == 1) ? cedges[a].t
+                                                          : cedges[a].b;
+                    e.t = ay + cn->lp_margin_top;
+                }
+            }
+            if (cn->cl_bottom_edge) {
+                if (cn->cl_bottom_to == "parent")
+                    e.b = myHeight - n->padding_bottom - cn->lp_margin_bottom;
+                else if (uint32_t a = cl_name_to_id(cn->cl_bottom_to)) {
+                    const int ay = (cn->cl_bottom_edge == 1) ? cedges[a].t
+                                                             : cedges[a].b;
+                    e.b = ay - cn->lp_margin_bottom;
+                }
+            }
+            // width spec: horizontal edges are final now (both-anchors law).
+            const bool w_both = e.l != NOT_SET && e.r != NOT_SET;
+            Spec wspec;
+            if (w_both) {
+                const int span = std::max(0, e.r - e.l);
+                if (cn->lp_width == 0)            wspec = {span, M_EXACTLY};
+                else if (cn->lp_width >= 0)       wspec = {std::min(cn->lp_width, span), M_EXACTLY};
+                else                              wspec = {span, M_AT_MOST};
+            } else if (cn->lp_width >= 0) {
+                wspec = {cn->lp_width, M_EXACTLY};
+            } else {
+                wspec = child_spec(sw, hpad + cn->lp_margin_left + cn->lp_margin_right,
+                                   cn->lp_width);
+            }
+            Spec hspec;
+            const bool v_both = e.t != NOT_SET && e.b != NOT_SET;
+            if (v_both) {
+                const int span = std::max(0, e.b - e.t);
+                if (cn->lp_height == 0)            hspec = {span, M_EXACTLY};
+                else if (cn->lp_height >= 0)       hspec = {std::min(cn->lp_height, span), M_EXACTLY};
+                else                               hspec = {span, M_AT_MOST};
+            } else if (cn->lp_height >= 0) {
+                hspec = {cn->lp_height, M_EXACTLY};
+            } else {
+                hspec = child_spec(sh, vpad + cn->lp_margin_top + cn->lp_margin_bottom,
+                                   cn->lp_height);
+            }
+            auto sz = measure(n->children[i], wspec, hspec, depth + 1);
+            child_sizes[i] = sz;
+            if (v_both) {
+                if (cn->lp_height != 0) {
+                    const int span = std::max(0, e.b - e.t);
+                    const int h = sz.second;
+                    const int off = (int)(cn->cl_bias_y * (float)(span - h));
+                    e.t += off; e.b = e.t + h;
+                }  // MATCH_CONSTRAINT: edges already span the full height
+            } else if (e.t != NOT_SET) {
+                e.b = e.t + sz.second;
+            } else if (e.b != NOT_SET) {
+                e.t = e.b - sz.second;
+            } else {
+                e.t = n->padding_top + cn->lp_margin_top;  // AOSP (0,0) default
+                e.b = e.t + sz.second;
+            }
+            // F-148: cache the FULL resolved edge set (onLayout replay).
+            cn->rl_cached_left = e.l;
+            cn->rl_cached_top = e.t;
+            cn->rl_cached_right = e.r;
+            cn->rl_cached_bottom = e.b;
+            cn->rl_edges_valid = true;
+        }
+
+        // AOSP wrap-CL content: max extents over resolved EDGES, margins
+        // included (same law as the RL aggregation above).
+        content_w = 0; content_h = 0;
+        for (size_t i = 0; i < n->children.size(); i++) {
+            auto* cn = views->find_node(n->children[i]);
+            if (!cn || cn->visibility == 8) continue;
+            const CEdge& e = cedges[n->children[i]];
+            if (e.r != INT_MIN) content_w = std::max(content_w, e.r + cn->lp_margin_right);
+            if (e.b != INT_MIN) content_h = std::max(content_h, e.b + cn->lp_margin_bottom);
+        }
         } else for (size_t i = 0; i < n->children.size(); i++) {
             auto* cn = views->find_node(n->children[i]);
             if (!cn) { child_sizes[i] = {0, 0}; continue; }
@@ -2487,6 +2775,8 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
         bool is_ll = is_a(n->class_desc, "Landroid/widget/LinearLayout;");
         bool is_fl = is_a(n->class_desc, "Landroid/widget/FrameLayout;");
         bool is_rl = is_a(n->class_desc, "Landroid/widget/RelativeLayout;");
+        // F-148: CL layout branch (descriptor match, same law as measure).
+        bool is_cl = n->class_desc.find("ConstraintLayout") != std::string::npos;
         bool is_scroll = n->class_desc.find("ScrollView") != std::string::npos &&
                          n->class_desc.find("Horizontal") == std::string::npos;
         bool horizontal = n->orientation != 1;   // FIX-G10-001: unset (-1) = HORIZONTAL
@@ -2776,6 +3066,30 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                     stack.push_back({cid, x, y, w, h});
                     y += h + cn->lp_margin_bottom;
                 }
+            }
+        } else if (is_cl) {
+            // F-148 (S72-W4): ConstraintLayout.onLayout — pure replay of
+            // the edges the measure-phase solver resolved (same AOSP replay
+            // contract as RelativeLayout above; every visible CL child got
+            // rl_cached_* + rl_edges_valid there). A child without cached
+            // edges (programmatic addView) keeps the AOSP (0,0)+margins
+            // default.
+            for (uint32_t cid : kids) {
+                auto* cn = views->find_node(cid);
+                if (!cn) continue;
+                const int bx = cn->rl_edges_valid
+                                   ? cl + cn->rl_cached_left - n->padding_left
+                                   : cl + cn->lp_margin_left;
+                const int by = cn->rl_edges_valid
+                                   ? ct + cn->rl_cached_top - n->padding_top
+                                   : ct + cn->lp_margin_top;
+                const int bw = cn->rl_edges_valid
+                                   ? std::max(0, cn->rl_cached_right - cn->rl_cached_left)
+                                   : cn->measured_width;
+                const int bh = cn->rl_edges_valid
+                                   ? std::max(0, cn->rl_cached_bottom - cn->rl_cached_top)
+                                   : cn->measured_height;
+                stack.push_back({cid, bx, by, bw, bh});
             }
         } else if (is_fl || is_rl || is_scroll) {
             if (is_rl) {
