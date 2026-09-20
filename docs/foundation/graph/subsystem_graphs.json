@@ -7,46 +7,260 @@
     "src/fonts/text_shaper.cpp",
     "src/framework/canvas_shadow.cpp"
    ],
-   "node_count": 13,
+   "node_count": 71,
    "nodes": {
+    "src/renderer/software_renderer.cpp::BitmapFont": {
+     "line": 65,
+     "guards": []
+    },
+    "src/renderer/software_renderer.cpp::initialize_ascii_glyphs": {
+     "line": 69,
+     "guards": []
+    },
+    "src/renderer/software_renderer.cpp::fill_remaining_glyphs": {
+     "line": 79,
+     "guards": []
+    },
+    "src/renderer/software_renderer.cpp::get_glyph": {
+     "line": 100,
+     "guards": []
+    },
+    "src/renderer/software_renderer.cpp::measure_text": {
+     "line": 107,
+     "guards": []
+    },
+    "src/renderer/software_renderer.cpp::to_info_json": {
+     "line": 118,
+     "guards": []
+    },
+    "src/renderer/software_renderer.cpp::to_json": {
+     "line": 560,
+     "guards": []
+    },
+    "src/renderer/software_renderer.cpp::set_clip": {
+     "line": 155,
+     "guards": []
+    },
+    "src/renderer/software_renderer.cpp::draw_color": {
+     "line": 161,
+     "guards": []
+    },
+    "src/renderer/software_renderer.cpp::draw_rect": {
+     "line": 171,
+     "guards": []
+    },
+    "src/renderer/software_renderer.cpp::draw_text": {
+     "line": 193,
+     "guards": []
+    },
+    "src/renderer/software_renderer.cpp::to_trace_json": {
+     "line": 231,
+     "guards": []
+    },
     "src/renderer/software_renderer.cpp::rd_be32": {
-     "line": 241,
+     "line": 244,
      "guards": []
     },
     "src/renderer/software_renderer.cpp::probe_image_size": {
-     "line": 247,
+     "line": 250,
+     "guards": []
+    },
+    "src/renderer/software_renderer.cpp::fit_center_rect": {
+     "line": 327,
+     "guards": []
+    },
+    "src/renderer/software_renderer.cpp::draw_image": {
+     "line": 357,
+     "guards": []
+    },
+    "src/renderer/software_renderer.cpp::draw_image_region": {
+     "line": 365,
      "guards": []
     },
     "src/renderer/software_renderer.cpp::png_mem_read": {
-     "line": 432,
+     "line": 435,
      "guards": []
     },
     "src/renderer/software_renderer.cpp::png_color_type_name": {
-     "line": 442,
+     "line": 445,
+     "guards": []
+    },
+    "src/renderer/software_renderer.cpp::decode": {
+     "line": 1298,
+     "guards": []
+    },
+    "src/renderer/software_renderer.cpp::decode_file": {
+     "line": 1307,
      "guards": []
     },
     "src/renderer/software_renderer.cpp::stage_to_string": {
-     "line": 541,
+     "line": 544,
+     "guards": []
+    },
+    "src/renderer/software_renderer.cpp::render": {
+     "line": 583,
+     "guards": []
+    },
+    "src/renderer/software_renderer.cpp::perform_layout": {
+     "line": 635,
+     "guards": []
+    },
+    "src/renderer/software_renderer.cpp::perform_measurement": {
+     "line": 659,
+     "guards": []
+    },
+    "src/renderer/software_renderer.cpp::perform_draw": {
+     "line": 665,
+     "guards": []
+    },
+    "src/renderer/software_renderer.cpp::build_layout_tree": {
+     "line": 702,
+     "guards": [
+      "android.app.Activity"
+     ]
+    },
+    "src/renderer/software_renderer.cpp::layout_view": {
+     "line": 735,
+     "guards": [
+      "android.app.Activity"
+     ]
+    },
+    "src/renderer/software_renderer.cpp::get_layout_trace": {
+     "line": 764,
+     "guards": []
+    },
+    "src/renderer/software_renderer.cpp::get_measure_trace": {
+     "line": 772,
+     "guards": []
+    },
+    "src/renderer/software_renderer.cpp::get_canvas_trace": {
+     "line": 792,
+     "guards": []
+    },
+    "src/renderer/software_renderer.cpp::get_render_trace": {
+     "line": 799,
+     "guards": []
+    },
+    "src/renderer/software_renderer.cpp::get_text_render_trace": {
+     "line": 811,
+     "guards": [
+      "drawText"
+     ]
+    },
+    "src/renderer/software_renderer.cpp::write_png": {
+     "line": 834,
+     "guards": []
+    },
+    "src/renderer/software_renderer.cpp::generate_screenshot_info": {
+     "line": 885,
      "guards": []
     },
     "src/renderer/software_renderer.cpp::jpeg_error_exit": {
-     "line": 1039,
+     "line": 1042,
      "guards": []
     },
     "src/renderer/software_renderer.cpp::image_format_name": {
-     "line": 1139,
+     "line": 1142,
      "guards": []
     },
     "src/renderer/software_renderer.cpp::decode_image_bytes": {
-     "line": 1155,
-     "guards": []
+     "line": 1158,
+     "guards": [
+      "gif",
+      "jpeg",
+      "png",
+      "webp"
+     ]
     },
     "src/fonts/text_shaper.cpp::utf8_to_u32": {
-     "line": 31,
+     "line": 35,
+     "guards": []
+    },
+    "src/fonts/text_shaper.cpp::instance": {
+     "line": 61,
+     "guards": []
+    },
+    "src/fonts/text_shaper.cpp::TextShaper": {
+     "line": 192,
+     "guards": []
+    },
+    "src/fonts/text_shaper.cpp::load_face": {
+     "line": 210,
+     "guards": []
+    },
+    "src/fonts/text_shaper.cpp::hash_string": {
+     "line": 222,
+     "guards": []
+    },
+    "src/fonts/text_shaper.cpp::shape": {
+     "line": 238,
+     "guards": []
+    },
+    "src/fonts/text_shaper.cpp::line_height": {
+     "line": 392,
+     "guards": []
+    },
+    "src/fonts/text_shaper.cpp::resolve_face": {
+     "line": 401,
+     "guards": []
+    },
+    "src/fonts/text_shaper.cpp::resolve_family": {
+     "line": 449,
+     "guards": [
+      "courier",
+      "courier new",
+      "default",
+      "monaco",
+      "monospace",
+      "sans",
+      "sans-serif",
+      "sans-serif-black"
+     ]
+    },
+    "src/fonts/text_shaper.cpp::has_family": {
+     "line": 495,
+     "guards": [
+      "monaco",
+      "monospace",
+      "sans-serif-monospace",
+      "serif",
+      "serif-monospace"
+     ]
+    },
+    "src/fonts/text_shaper.cpp::font_metrics": {
+     "line": 516,
+     "guards": []
+    },
+    "src/fonts/text_shaper.cpp::staticlayout_line_boxes": {
+     "line": 567,
+     "guards": []
+    },
+    "src/fonts/text_shaper.cpp::metrics": {
+     "line": 591,
+     "guards": []
+    },
+    "src/fonts/text_shaper.cpp::register_app_font_memory": {
+     "line": 618,
+     "guards": []
+    },
+    "src/fonts/text_shaper.cpp::register_app_font": {
+     "line": 645,
      "guards": []
     },
     "src/fonts/text_shaper.cpp::raster_key": {
-     "line": 665,
+     "line": 669,
+     "guards": []
+    },
+    "src/fonts/text_shaper.cpp::raster_glyph": {
+     "line": 676,
+     "guards": []
+    },
+    "src/fonts/text_shaper.cpp::draw": {
+     "line": 734,
+     "guards": []
+    },
+    "src/fonts/text_shaper.cpp::layout_text": {
+     "line": 849,
      "guards": []
     },
     "src/framework/canvas_shadow.cpp::to_rgba": {
@@ -57,19 +271,312 @@
      "line": 24,
      "guards": []
     },
+    "src/framework/canvas_shadow.cpp::flatten_cubic": {
+     "line": 40,
+     "guards": []
+    },
+    "src/framework/canvas_shadow.cpp::flatten_quad": {
+     "line": 52,
+     "guards": []
+    },
+    "src/framework/canvas_shadow.cpp::append_oval_contour": {
+     "line": 63,
+     "guards": []
+    },
+    "src/framework/canvas_shadow.cpp::append_arc_points": {
+     "line": 77,
+     "guards": []
+    },
+    "src/framework/canvas_shadow.cpp::arc_start_point": {
+     "line": 93,
+     "guards": []
+    },
     "src/framework/canvas_shadow.cpp::contour_is_convex": {
      "line": 100,
      "guards": []
+    },
+    "src/framework/canvas_shadow.cpp::append_roundrect_contour": {
+     "line": 120,
+     "guards": []
+    },
+    "src/framework/canvas_shadow.cpp::read_rectf_fields": {
+     "line": 157,
+     "guards": []
+    },
+    "src/framework/canvas_shadow.cpp::begin_frame": {
+     "line": 168,
+     "guards": []
+    },
+    "src/framework/canvas_shadow.cpp::warn_noop": {
+     "line": 180,
+     "guards": []
+    },
+    "src/framework/canvas_shadow.cpp::replay": {
+     "line": 189,
+     "guards": []
+    },
+    "src/framework/canvas_shadow.cpp::dispatch": {
+     "line": 507,
+     "guards": [
+      "Landroid/view/RenderNode;",
+      "<init>",
+      "addArc",
+      "addCircle",
+      "addOval",
+      "addPath",
+      "addRect",
+      "addRoundRect"
+     ]
     }
    },
    "edges": [
+    [
+     "src/fonts/text_shaper.cpp::TextShaper",
+     "src/fonts/text_shaper.cpp::load_face"
+    ],
+    [
+     "src/fonts/text_shaper.cpp::draw",
+     "src/fonts/text_shaper.cpp::raster_glyph"
+    ],
+    [
+     "src/fonts/text_shaper.cpp::draw",
+     "src/fonts/text_shaper.cpp::raster_key"
+    ],
+    [
+     "src/fonts/text_shaper.cpp::draw",
+     "src/fonts/text_shaper.cpp::resolve_face"
+    ],
+    [
+     "src/fonts/text_shaper.cpp::draw",
+     "src/fonts/text_shaper.cpp::shape"
+    ],
+    [
+     "src/fonts/text_shaper.cpp::font_metrics",
+     "src/fonts/text_shaper.cpp::resolve_face"
+    ],
+    [
+     "src/fonts/text_shaper.cpp::layout_text",
+     "src/fonts/text_shaper.cpp::font_metrics"
+    ],
+    [
+     "src/fonts/text_shaper.cpp::layout_text",
+     "src/fonts/text_shaper.cpp::instance"
+    ],
+    [
+     "src/fonts/text_shaper.cpp::layout_text",
+     "src/fonts/text_shaper.cpp::shape"
+    ],
+    [
+     "src/fonts/text_shaper.cpp::layout_text",
+     "src/fonts/text_shaper.cpp::staticlayout_line_boxes"
+    ],
+    [
+     "src/fonts/text_shaper.cpp::line_height",
+     "src/fonts/text_shaper.cpp::metrics"
+    ],
+    [
+     "src/fonts/text_shaper.cpp::metrics",
+     "src/fonts/text_shaper.cpp::resolve_face"
+    ],
+    [
+     "src/fonts/text_shaper.cpp::register_app_font",
+     "src/fonts/text_shaper.cpp::register_app_font_memory"
+    ],
+    [
+     "src/fonts/text_shaper.cpp::shape",
+     "src/fonts/text_shaper.cpp::hash_string"
+    ],
+    [
+     "src/fonts/text_shaper.cpp::shape",
+     "src/fonts/text_shaper.cpp::resolve_face"
+    ],
+    [
+     "src/fonts/text_shaper.cpp::shape",
+     "src/fonts/text_shaper.cpp::utf8_to_u32"
+    ],
+    [
+     "src/framework/canvas_shadow.cpp::append_oval_contour",
+     "src/framework/canvas_shadow.cpp::flatten_cubic"
+    ],
+    [
+     "src/framework/canvas_shadow.cpp::append_roundrect_contour",
+     "src/framework/canvas_shadow.cpp::append_arc_points"
+    ],
+    [
+     "src/framework/canvas_shadow.cpp::dispatch",
+     "src/framework/canvas_shadow.cpp::append_arc_points"
+    ],
+    [
+     "src/framework/canvas_shadow.cpp::dispatch",
+     "src/framework/canvas_shadow.cpp::append_oval_contour"
+    ],
+    [
+     "src/framework/canvas_shadow.cpp::dispatch",
+     "src/framework/canvas_shadow.cpp::append_roundrect_contour"
+    ],
+    [
+     "src/framework/canvas_shadow.cpp::dispatch",
+     "src/framework/canvas_shadow.cpp::arc_start_point"
+    ],
+    [
+     "src/framework/canvas_shadow.cpp::dispatch",
+     "src/framework/canvas_shadow.cpp::arg_as_float"
+    ],
+    [
+     "src/framework/canvas_shadow.cpp::dispatch",
+     "src/framework/canvas_shadow.cpp::contour_is_convex"
+    ],
+    [
+     "src/framework/canvas_shadow.cpp::dispatch",
+     "src/framework/canvas_shadow.cpp::flatten_cubic"
+    ],
+    [
+     "src/framework/canvas_shadow.cpp::dispatch",
+     "src/framework/canvas_shadow.cpp::flatten_quad"
+    ],
+    [
+     "src/framework/canvas_shadow.cpp::dispatch",
+     "src/framework/canvas_shadow.cpp::read_rectf_fields"
+    ],
+    [
+     "src/framework/canvas_shadow.cpp::dispatch",
+     "src/framework/canvas_shadow.cpp::warn_noop"
+    ],
+    [
+     "src/framework/canvas_shadow.cpp::replay",
+     "src/framework/canvas_shadow.cpp::to_rgba"
+    ],
+    [
+     "src/renderer/software_renderer.cpp::BitmapFont",
+     "src/renderer/software_renderer.cpp::initialize_ascii_glyphs"
+    ],
+    [
+     "src/renderer/software_renderer.cpp::decode",
+     "src/renderer/software_renderer.cpp::png_color_type_name"
+    ],
+    [
+     "src/renderer/software_renderer.cpp::decode_file",
+     "src/renderer/software_renderer.cpp::decode"
+    ],
+    [
+     "src/renderer/software_renderer.cpp::decode_image_bytes",
+     "src/renderer/software_renderer.cpp::decode"
+    ],
     [
      "src/renderer/software_renderer.cpp::decode_image_bytes",
      "src/renderer/software_renderer.cpp::image_format_name"
     ],
     [
+     "src/renderer/software_renderer.cpp::draw_color",
+     "src/renderer/software_renderer.cpp::to_json"
+    ],
+    [
+     "src/renderer/software_renderer.cpp::draw_image",
+     "src/renderer/software_renderer.cpp::draw_image_region"
+    ],
+    [
+     "src/renderer/software_renderer.cpp::draw_rect",
+     "src/renderer/software_renderer.cpp::to_json"
+    ],
+    [
+     "src/renderer/software_renderer.cpp::draw_text",
+     "src/renderer/software_renderer.cpp::get_glyph"
+    ],
+    [
+     "src/renderer/software_renderer.cpp::draw_text",
+     "src/renderer/software_renderer.cpp::measure_text"
+    ],
+    [
+     "src/renderer/software_renderer.cpp::draw_text",
+     "src/renderer/software_renderer.cpp::to_json"
+    ],
+    [
+     "src/renderer/software_renderer.cpp::generate_screenshot_info",
+     "src/renderer/software_renderer.cpp::stage_to_string"
+    ],
+    [
+     "src/renderer/software_renderer.cpp::get_canvas_trace",
+     "src/renderer/software_renderer.cpp::to_trace_json"
+    ],
+    [
+     "src/renderer/software_renderer.cpp::get_layout_trace",
+     "src/renderer/software_renderer.cpp::to_json"
+    ],
+    [
+     "src/renderer/software_renderer.cpp::get_measure_trace",
+     "src/renderer/software_renderer.cpp::to_info_json"
+    ],
+    [
+     "src/renderer/software_renderer.cpp::get_render_trace",
+     "src/renderer/software_renderer.cpp::get_canvas_trace"
+    ],
+    [
+     "src/renderer/software_renderer.cpp::get_render_trace",
+     "src/renderer/software_renderer.cpp::get_layout_trace"
+    ],
+    [
+     "src/renderer/software_renderer.cpp::get_render_trace",
+     "src/renderer/software_renderer.cpp::stage_to_string"
+    ],
+    [
+     "src/renderer/software_renderer.cpp::get_render_trace",
+     "src/renderer/software_renderer.cpp::to_info_json"
+    ],
+    [
+     "src/renderer/software_renderer.cpp::get_render_trace",
+     "src/renderer/software_renderer.cpp::to_json"
+    ],
+    [
+     "src/renderer/software_renderer.cpp::get_text_render_trace",
+     "src/renderer/software_renderer.cpp::to_info_json"
+    ],
+    [
+     "src/renderer/software_renderer.cpp::get_text_render_trace",
+     "src/renderer/software_renderer.cpp::to_json"
+    ],
+    [
+     "src/renderer/software_renderer.cpp::initialize_ascii_glyphs",
+     "src/renderer/software_renderer.cpp::fill_remaining_glyphs"
+    ],
+    [
+     "src/renderer/software_renderer.cpp::measure_text",
+     "src/renderer/software_renderer.cpp::get_glyph"
+    ],
+    [
+     "src/renderer/software_renderer.cpp::perform_draw",
+     "src/renderer/software_renderer.cpp::draw_color"
+    ],
+    [
+     "src/renderer/software_renderer.cpp::perform_draw",
+     "src/renderer/software_renderer.cpp::draw_text"
+    ],
+    [
+     "src/renderer/software_renderer.cpp::perform_layout",
+     "src/renderer/software_renderer.cpp::build_layout_tree"
+    ],
+    [
+     "src/renderer/software_renderer.cpp::perform_layout",
+     "src/renderer/software_renderer.cpp::layout_view"
+    ],
+    [
      "src/renderer/software_renderer.cpp::probe_image_size",
      "src/renderer/software_renderer.cpp::rd_be32"
+    ],
+    [
+     "src/renderer/software_renderer.cpp::render",
+     "src/renderer/software_renderer.cpp::perform_draw"
+    ],
+    [
+     "src/renderer/software_renderer.cpp::render",
+     "src/renderer/software_renderer.cpp::perform_layout"
+    ],
+    [
+     "src/renderer/software_renderer.cpp::render",
+     "src/renderer/software_renderer.cpp::perform_measurement"
+    ],
+    [
+     "src/renderer/software_renderer.cpp::to_trace_json",
+     "src/renderer/software_renderer.cpp::to_json"
     ]
    ]
   },
@@ -78,38 +585,213 @@
     "src/runtime/application_runtime.cpp",
     "src/framework/lifecycle_controller.cpp"
    ],
-   "node_count": 10,
+   "node_count": 50,
    "nodes": {
     "src/runtime/application_runtime.cpp::state_to_string": {
-     "line": 60,
+     "line": 65,
      "guards": []
     },
     "src/runtime/application_runtime.cpp::string_to_state": {
-     "line": 84,
-     "guards": []
+     "line": 89,
+     "guards": [
+      "ACTIVITY_CREATED",
+      "ACTIVITY_RESOLVED",
+      "ACTIVITY_RESUMED",
+      "ACTIVITY_STARTED",
+      "APK_LOADED",
+      "COMPLETED",
+      "CONTENT_LOADED",
+      "CREATED"
+     ]
     },
     "src/runtime/application_runtime.cpp::api_category_to_string": {
-     "line": 106,
+     "line": 111,
      "guards": []
     },
     "src/runtime/application_runtime.cpp::string_to_api_category": {
-     "line": 118,
-     "guards": []
+     "line": 123,
+     "guards": [
+      "ACTIVITY",
+      "CONTEXT",
+      "LAYOUT",
+      "RENDERER",
+      "RESOURCE",
+      "VIEW"
+     ]
     },
     "src/runtime/application_runtime.cpp::impl_status_to_string": {
-     "line": 128,
+     "line": 133,
      "guards": []
     },
     "src/runtime/application_runtime.cpp::string_to_impl_status": {
-     "line": 139,
-     "guards": []
+     "line": 144,
+     "guards": [
+      "IMPLEMENTED",
+      "NOT_APPLICABLE",
+      "PARTIAL",
+      "STUBBED",
+      "UNIMPLEMENTED"
+     ]
     },
     "src/runtime/application_runtime.cpp::dispatch_type_to_string": {
-     "line": 148,
+     "line": 153,
      "guards": []
     },
     "src/runtime/application_runtime.cpp::failure_type_to_string": {
-     "line": 159,
+     "line": 164,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::ApplicationRuntime": {
+     "line": 206,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::initialize_subsystems": {
+     "line": 218,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::initialize_shadow_registry": {
+     "line": 254,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::cleanup": {
+     "line": 292,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::get_timestamp": {
+     "line": 296,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::transition_to": {
+     "line": 308,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::record_transition": {
+     "line": 327,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::execute_apk": {
+     "line": 349,
+     "guards": [
+      " << std::endl;\n        std::cout << "
+     ]
+    },
+    "src/runtime/application_runtime.cpp::load_apk": {
+     "line": 455,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::resolve_manifest": {
+     "line": 533,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::load_dex": {
+     "line": 619,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::resolve_launcher_activity": {
+     "line": 778,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::create_application": {
+     "line": 890,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::execute_lifecycle": {
+     "line": 952,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::execute_on_create": {
+     "line": 1018,
+     "guards": [
+      "Landroid/view/View;",
+      " << std::endl;\n\n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            for (const auto& [oid, obj] : dalvik_engine.get_heap().all_objects()) {\n                if (obj.class_descriptor == "
+     ]
+    },
+    "src/runtime/application_runtime.cpp::get_instruction_trace": {
+     "line": 1828,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::initialize_resources": {
+     "line": 1837,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::load_content_view": {
+     "line": 1913,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::perform_layout": {
+     "line": 1988,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::render_frame": {
+     "line": 2066,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::save_screenshot": {
+     "line": 2149,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::get_framebuffer": {
+     "line": 2190,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::record_api_call": {
+     "line": 2198,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::record_dispatch": {
+     "line": 2219,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::record_failure": {
+     "line": 2223,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::to_json": {
+     "line": 2236,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::generate_state_trace": {
+     "line": 2280,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::generate_component_map": {
+     "line": 2296,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::generate_failure_report": {
+     "line": 2351,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::generate_golden_end_to_end": {
+     "line": 2381,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::write_all_evidence": {
+     "line": 2427,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::drain_handler_queue": {
+     "line": 2469,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::has_pending_intent": {
+     "line": 2474,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::take_pending_intent_target_class": {
+     "line": 2478,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::get_content_view_id": {
+     "line": 2485,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::set_current_activity": {
+     "line": 2490,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::generate_shadow_report": {
+     "line": 2498,
      "guards": []
     },
     "src/framework/lifecycle_controller.cpp::lifecycle_phase_name": {
@@ -119,16 +801,389 @@
     "src/framework/lifecycle_controller.cpp::valid_from": {
      "line": 34,
      "guards": []
+    },
+    "src/framework/lifecycle_controller.cpp::transition_to": {
+     "line": 60,
+     "guards": []
+    },
+    "src/framework/lifecycle_controller.cpp::finish_cascade": {
+     "line": 74,
+     "guards": []
+    },
+    "src/framework/lifecycle_controller.cpp::to_json": {
+     "line": 95,
+     "guards": []
     }
    },
-   "edges": []
+   "edges": [
+    [
+     "src/framework/lifecycle_controller.cpp::finish_cascade",
+     "src/framework/lifecycle_controller.cpp::transition_to"
+    ],
+    [
+     "src/framework/lifecycle_controller.cpp::to_json",
+     "src/framework/lifecycle_controller.cpp::lifecycle_phase_name"
+    ],
+    [
+     "src/framework/lifecycle_controller.cpp::transition_to",
+     "src/framework/lifecycle_controller.cpp::valid_from"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::ApplicationRuntime",
+     "src/runtime/application_runtime.cpp::cleanup"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::ApplicationRuntime",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::ApplicationRuntime",
+     "src/runtime/application_runtime.cpp::initialize_shadow_registry"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::ApplicationRuntime",
+     "src/runtime/application_runtime.cpp::initialize_subsystems"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::create_application",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::create_application",
+     "src/runtime/application_runtime.cpp::record_api_call"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::create_application",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::create_application",
+     "src/runtime/application_runtime.cpp::transition_to"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::create_application"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::drain_handler_queue"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::execute_lifecycle"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::execute_on_create"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::initialize_resources"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::load_apk"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::load_content_view"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::load_dex"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::perform_layout"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::render_frame"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::resolve_launcher_activity"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::resolve_manifest"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::save_screenshot"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::transition_to"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::write_all_evidence"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_lifecycle",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_lifecycle",
+     "src/runtime/application_runtime.cpp::record_api_call"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_lifecycle",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_lifecycle",
+     "src/runtime/application_runtime.cpp::transition_to"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_on_create",
+     "src/runtime/application_runtime.cpp::drain_handler_queue"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_on_create",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_on_create",
+     "src/runtime/application_runtime.cpp::record_api_call"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_on_create",
+     "src/runtime/application_runtime.cpp::record_dispatch"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_on_create",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_on_create",
+     "src/runtime/application_runtime.cpp::transition_to"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::generate_component_map",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::generate_failure_report",
+     "src/runtime/application_runtime.cpp::failure_type_to_string"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::generate_failure_report",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::generate_failure_report",
+     "src/runtime/application_runtime.cpp::to_json"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::generate_golden_end_to_end",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::generate_golden_end_to_end",
+     "src/runtime/application_runtime.cpp::state_to_string"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::generate_state_trace",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::generate_state_trace",
+     "src/runtime/application_runtime.cpp::state_to_string"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::generate_state_trace",
+     "src/runtime/application_runtime.cpp::to_json"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::initialize_resources",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::initialize_resources",
+     "src/runtime/application_runtime.cpp::record_api_call"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::initialize_resources",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::load_apk",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::load_apk",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::load_apk",
+     "src/runtime/application_runtime.cpp::transition_to"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::load_content_view",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::load_content_view",
+     "src/runtime/application_runtime.cpp::record_api_call"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::load_content_view",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::load_content_view",
+     "src/runtime/application_runtime.cpp::transition_to"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::load_dex",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::load_dex",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::load_dex",
+     "src/runtime/application_runtime.cpp::transition_to"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::perform_layout",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::perform_layout",
+     "src/runtime/application_runtime.cpp::record_api_call"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::perform_layout",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::perform_layout",
+     "src/runtime/application_runtime.cpp::transition_to"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::record_failure",
+     "src/runtime/application_runtime.cpp::failure_type_to_string"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::record_transition",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::render_frame",
+     "src/runtime/application_runtime.cpp::get_framebuffer"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::render_frame",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::render_frame",
+     "src/runtime/application_runtime.cpp::record_api_call"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::render_frame",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::render_frame",
+     "src/runtime/application_runtime.cpp::transition_to"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::resolve_launcher_activity",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::resolve_launcher_activity",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::resolve_launcher_activity",
+     "src/runtime/application_runtime.cpp::transition_to"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::resolve_manifest",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::resolve_manifest",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::resolve_manifest",
+     "src/runtime/application_runtime.cpp::transition_to"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::save_screenshot",
+     "src/runtime/application_runtime.cpp::get_framebuffer"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::save_screenshot",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::save_screenshot",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::to_json",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::to_json",
+     "src/runtime/application_runtime.cpp::state_to_string"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::transition_to",
+     "src/runtime/application_runtime.cpp::record_transition"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::transition_to",
+     "src/runtime/application_runtime.cpp::state_to_string"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::write_all_evidence",
+     "src/runtime/application_runtime.cpp::generate_component_map"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::write_all_evidence",
+     "src/runtime/application_runtime.cpp::generate_failure_report"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::write_all_evidence",
+     "src/runtime/application_runtime.cpp::generate_golden_end_to_end"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::write_all_evidence",
+     "src/runtime/application_runtime.cpp::generate_shadow_report"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::write_all_evidence",
+     "src/runtime/application_runtime.cpp::generate_state_trace"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::write_all_evidence",
+     "src/runtime/application_runtime.cpp::to_json"
+    ]
+   ]
   },
   "input": {
    "tus": [
     "src/framework/touch_dispatcher.cpp",
     "src/runtime/application_runtime.cpp"
    ],
-   "node_count": 10,
+   "node_count": 55,
    "nodes": {
     "src/framework/touch_dispatcher.cpp::node_at": {
      "line": 14,
@@ -138,40 +1193,643 @@
      "line": 24,
      "guards": []
     },
+    "src/framework/touch_dispatcher.cpp::view_touchable": {
+     "line": 42,
+     "guards": []
+    },
+    "src/framework/touch_dispatcher.cpp::schedule": {
+     "line": 55,
+     "guards": [
+      "CheckForLongPress",
+      "PerformClick"
+     ]
+    },
+    "src/framework/touch_dispatcher.cpp::unschedule": {
+     "line": 70,
+     "guards": []
+    },
+    "src/framework/touch_dispatcher.cpp::reset_gesture": {
+     "line": 75,
+     "guards": []
+    },
+    "src/framework/touch_dispatcher.cpp::press": {
+     "line": 85,
+     "guards": []
+    },
+    "src/framework/touch_dispatcher.cpp::unpress": {
+     "line": 99,
+     "guards": []
+    },
+    "src/framework/touch_dispatcher.cpp::dispatch": {
+     "line": 108,
+     "guards": []
+    },
+    "src/framework/touch_dispatcher.cpp::fire_framework_callback": {
+     "line": 313,
+     "guards": []
+    },
     "src/runtime/application_runtime.cpp::state_to_string": {
-     "line": 60,
+     "line": 65,
      "guards": []
     },
     "src/runtime/application_runtime.cpp::string_to_state": {
-     "line": 84,
-     "guards": []
+     "line": 89,
+     "guards": [
+      "ACTIVITY_CREATED",
+      "ACTIVITY_RESOLVED",
+      "ACTIVITY_RESUMED",
+      "ACTIVITY_STARTED",
+      "APK_LOADED",
+      "COMPLETED",
+      "CONTENT_LOADED",
+      "CREATED"
+     ]
     },
     "src/runtime/application_runtime.cpp::api_category_to_string": {
-     "line": 106,
+     "line": 111,
      "guards": []
     },
     "src/runtime/application_runtime.cpp::string_to_api_category": {
-     "line": 118,
-     "guards": []
+     "line": 123,
+     "guards": [
+      "ACTIVITY",
+      "CONTEXT",
+      "LAYOUT",
+      "RENDERER",
+      "RESOURCE",
+      "VIEW"
+     ]
     },
     "src/runtime/application_runtime.cpp::impl_status_to_string": {
-     "line": 128,
+     "line": 133,
      "guards": []
     },
     "src/runtime/application_runtime.cpp::string_to_impl_status": {
-     "line": 139,
-     "guards": []
+     "line": 144,
+     "guards": [
+      "IMPLEMENTED",
+      "NOT_APPLICABLE",
+      "PARTIAL",
+      "STUBBED",
+      "UNIMPLEMENTED"
+     ]
     },
     "src/runtime/application_runtime.cpp::dispatch_type_to_string": {
-     "line": 148,
+     "line": 153,
      "guards": []
     },
     "src/runtime/application_runtime.cpp::failure_type_to_string": {
-     "line": 159,
+     "line": 164,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::ApplicationRuntime": {
+     "line": 206,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::initialize_subsystems": {
+     "line": 218,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::initialize_shadow_registry": {
+     "line": 254,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::cleanup": {
+     "line": 292,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::get_timestamp": {
+     "line": 296,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::transition_to": {
+     "line": 308,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::record_transition": {
+     "line": 327,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::execute_apk": {
+     "line": 349,
+     "guards": [
+      " << std::endl;\n        std::cout << "
+     ]
+    },
+    "src/runtime/application_runtime.cpp::load_apk": {
+     "line": 455,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::resolve_manifest": {
+     "line": 533,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::load_dex": {
+     "line": 619,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::resolve_launcher_activity": {
+     "line": 778,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::create_application": {
+     "line": 890,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::execute_lifecycle": {
+     "line": 952,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::execute_on_create": {
+     "line": 1018,
+     "guards": [
+      "Landroid/view/View;",
+      " << std::endl;\n\n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            for (const auto& [oid, obj] : dalvik_engine.get_heap().all_objects()) {\n                if (obj.class_descriptor == "
+     ]
+    },
+    "src/runtime/application_runtime.cpp::get_instruction_trace": {
+     "line": 1828,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::initialize_resources": {
+     "line": 1837,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::load_content_view": {
+     "line": 1913,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::perform_layout": {
+     "line": 1988,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::render_frame": {
+     "line": 2066,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::save_screenshot": {
+     "line": 2149,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::get_framebuffer": {
+     "line": 2190,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::record_api_call": {
+     "line": 2198,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::record_dispatch": {
+     "line": 2219,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::record_failure": {
+     "line": 2223,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::to_json": {
+     "line": 2236,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::generate_state_trace": {
+     "line": 2280,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::generate_component_map": {
+     "line": 2296,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::generate_failure_report": {
+     "line": 2351,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::generate_golden_end_to_end": {
+     "line": 2381,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::write_all_evidence": {
+     "line": 2427,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::drain_handler_queue": {
+     "line": 2469,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::has_pending_intent": {
+     "line": 2474,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::take_pending_intent_target_class": {
+     "line": 2478,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::get_content_view_id": {
+     "line": 2485,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::set_current_activity": {
+     "line": 2490,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::generate_shadow_report": {
+     "line": 2498,
      "guards": []
     }
    },
-   "edges": []
+   "edges": [
+    [
+     "src/framework/touch_dispatcher.cpp::dispatch",
+     "src/framework/touch_dispatcher.cpp::node_at"
+    ],
+    [
+     "src/framework/touch_dispatcher.cpp::dispatch",
+     "src/framework/touch_dispatcher.cpp::press"
+    ],
+    [
+     "src/framework/touch_dispatcher.cpp::dispatch",
+     "src/framework/touch_dispatcher.cpp::reset_gesture"
+    ],
+    [
+     "src/framework/touch_dispatcher.cpp::dispatch",
+     "src/framework/touch_dispatcher.cpp::schedule"
+    ],
+    [
+     "src/framework/touch_dispatcher.cpp::dispatch",
+     "src/framework/touch_dispatcher.cpp::touch_action_name"
+    ],
+    [
+     "src/framework/touch_dispatcher.cpp::dispatch",
+     "src/framework/touch_dispatcher.cpp::unpress"
+    ],
+    [
+     "src/framework/touch_dispatcher.cpp::dispatch",
+     "src/framework/touch_dispatcher.cpp::unschedule"
+    ],
+    [
+     "src/framework/touch_dispatcher.cpp::dispatch",
+     "src/framework/touch_dispatcher.cpp::view_touchable"
+    ],
+    [
+     "src/framework/touch_dispatcher.cpp::fire_framework_callback",
+     "src/framework/touch_dispatcher.cpp::unpress"
+    ],
+    [
+     "src/framework/touch_dispatcher.cpp::reset_gesture",
+     "src/framework/touch_dispatcher.cpp::unschedule"
+    ],
+    [
+     "src/framework/touch_dispatcher.cpp::schedule",
+     "src/framework/touch_dispatcher.cpp::unschedule"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::ApplicationRuntime",
+     "src/runtime/application_runtime.cpp::cleanup"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::ApplicationRuntime",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::ApplicationRuntime",
+     "src/runtime/application_runtime.cpp::initialize_shadow_registry"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::ApplicationRuntime",
+     "src/runtime/application_runtime.cpp::initialize_subsystems"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::create_application",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::create_application",
+     "src/runtime/application_runtime.cpp::record_api_call"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::create_application",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::create_application",
+     "src/runtime/application_runtime.cpp::transition_to"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::create_application"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::drain_handler_queue"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::execute_lifecycle"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::execute_on_create"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::initialize_resources"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::load_apk"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::load_content_view"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::load_dex"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::perform_layout"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::render_frame"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::resolve_launcher_activity"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::resolve_manifest"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::save_screenshot"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::transition_to"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::write_all_evidence"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_lifecycle",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_lifecycle",
+     "src/runtime/application_runtime.cpp::record_api_call"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_lifecycle",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_lifecycle",
+     "src/runtime/application_runtime.cpp::transition_to"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_on_create",
+     "src/runtime/application_runtime.cpp::drain_handler_queue"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_on_create",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_on_create",
+     "src/runtime/application_runtime.cpp::record_api_call"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_on_create",
+     "src/runtime/application_runtime.cpp::record_dispatch"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_on_create",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_on_create",
+     "src/runtime/application_runtime.cpp::transition_to"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::generate_component_map",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::generate_failure_report",
+     "src/runtime/application_runtime.cpp::failure_type_to_string"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::generate_failure_report",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::generate_failure_report",
+     "src/runtime/application_runtime.cpp::to_json"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::generate_golden_end_to_end",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::generate_golden_end_to_end",
+     "src/runtime/application_runtime.cpp::state_to_string"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::generate_state_trace",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::generate_state_trace",
+     "src/runtime/application_runtime.cpp::state_to_string"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::generate_state_trace",
+     "src/runtime/application_runtime.cpp::to_json"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::initialize_resources",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::initialize_resources",
+     "src/runtime/application_runtime.cpp::record_api_call"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::initialize_resources",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::load_apk",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::load_apk",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::load_apk",
+     "src/runtime/application_runtime.cpp::transition_to"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::load_content_view",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::load_content_view",
+     "src/runtime/application_runtime.cpp::record_api_call"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::load_content_view",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::load_content_view",
+     "src/runtime/application_runtime.cpp::transition_to"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::load_dex",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::load_dex",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::load_dex",
+     "src/runtime/application_runtime.cpp::transition_to"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::perform_layout",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::perform_layout",
+     "src/runtime/application_runtime.cpp::record_api_call"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::perform_layout",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::perform_layout",
+     "src/runtime/application_runtime.cpp::transition_to"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::record_failure",
+     "src/runtime/application_runtime.cpp::failure_type_to_string"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::record_transition",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::render_frame",
+     "src/runtime/application_runtime.cpp::get_framebuffer"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::render_frame",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::render_frame",
+     "src/runtime/application_runtime.cpp::record_api_call"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::render_frame",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::render_frame",
+     "src/runtime/application_runtime.cpp::transition_to"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::resolve_launcher_activity",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::resolve_launcher_activity",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::resolve_launcher_activity",
+     "src/runtime/application_runtime.cpp::transition_to"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::resolve_manifest",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::resolve_manifest",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::resolve_manifest",
+     "src/runtime/application_runtime.cpp::transition_to"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::save_screenshot",
+     "src/runtime/application_runtime.cpp::get_framebuffer"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::save_screenshot",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::save_screenshot",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::to_json",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::to_json",
+     "src/runtime/application_runtime.cpp::state_to_string"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::transition_to",
+     "src/runtime/application_runtime.cpp::record_transition"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::transition_to",
+     "src/runtime/application_runtime.cpp::state_to_string"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::write_all_evidence",
+     "src/runtime/application_runtime.cpp::generate_component_map"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::write_all_evidence",
+     "src/runtime/application_runtime.cpp::generate_failure_report"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::write_all_evidence",
+     "src/runtime/application_runtime.cpp::generate_golden_end_to_end"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::write_all_evidence",
+     "src/runtime/application_runtime.cpp::generate_shadow_report"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::write_all_evidence",
+     "src/runtime/application_runtime.cpp::generate_state_trace"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::write_all_evidence",
+     "src/runtime/application_runtime.cpp::to_json"
+    ]
+   ]
   },
   "resource": {
    "tus": [
@@ -182,57 +1840,1071 @@
     "src/resources/resource_parser.cpp",
     "src/resources/res_config.cpp"
    ],
-   "node_count": 11,
+   "node_count": 121,
    "nodes": {
     "src/resources/arsc_parser.cpp::rd32": {
-     "line": 12,
+     "line": 15,
+     "guards": []
+    },
+    "src/resources/arsc_parser.cpp::parse_string_pool": {
+     "line": 32,
+     "guards": []
+    },
+    "src/resources/arsc_parser.cpp::config_to_string": {
+     "line": 49,
+     "guards": []
+    },
+    "src/resources/arsc_parser.cpp::decode_res_value": {
+     "line": 100,
+     "guards": []
+    },
+    "src/resources/arsc_parser.cpp::parse_type_chunk": {
+     "line": 143,
+     "guards": []
+    },
+    "src/resources/arsc_parser.cpp::parse_package": {
+     "line": 300,
+     "guards": []
+    },
+    "src/resources/arsc_parser.cpp::parse": {
+     "line": 368,
+     "guards": []
+    },
+    "src/resources/arsc_parser.cpp::finish_index": {
+     "line": 412,
+     "guards": []
+    },
+    "src/resources/arsc_parser.cpp::best_for": {
+     "line": 449,
+     "guards": []
+    },
+    "src/resources/arsc_parser.cpp::best": {
+     "line": 476,
+     "guards": []
+    },
+    "src/resources/arsc_parser.cpp::resolve": {
+     "line": 480,
+     "guards": []
+    },
+    "src/resources/arsc_parser.cpp::find_id": {
+     "line": 508,
      "guards": []
     },
     "src/resources/arsc_parser.cpp::resolution_error_name": {
-     "line": 529,
+     "line": 532,
+     "guards": []
+    },
+    "src/resources/arsc_parser.cpp::resolve_full": {
+     "line": 545,
+     "guards": []
+    },
+    "src/resources/arsc_parser.cpp::to_json": {
+     "line": 791,
+     "guards": []
+    },
+    "src/resources/arsc_parser.cpp::bag_value": {
+     "line": 646,
+     "guards": []
+    },
+    "src/resources/arsc_parser.cpp::resolve_value": {
+     "line": 677,
+     "guards": []
+    },
+    "src/resources/arsc_parser.cpp::resolve_string": {
+     "line": 686,
+     "guards": []
+    },
+    "src/resources/arsc_parser.cpp::list_type": {
+     "line": 692,
+     "guards": []
+    },
+    "src/resources/arsc_parser.cpp::apk_path_for": {
+     "line": 711,
+     "guards": []
+    },
+    "src/resources/arsc_parser.cpp::select_file": {
+     "line": 746,
      "guards": []
     },
     "src/resources/axml_parser.cpp::ax_rd32": {
-     "line": 10,
+     "line": 18,
+     "guards": []
+    },
+    "src/resources/axml_parser.cpp::ns_short": {
+     "line": 31,
+     "guards": [
+      "http://schemas.android.com/apk/res-auto",
+      "http://schemas.android.com/apk/res/android"
+     ]
+    },
+    "src/resources/axml_parser.cpp::parse_string_pool": {
+     "line": 40,
+     "guards": []
+    },
+    "src/resources/axml_parser.cpp::parse": {
+     "line": 54,
+     "guards": [
+      "android"
+     ]
+    },
+    "src/resources/axml_parser.cpp::to_json": {
+     "line": 177,
      "guards": []
     },
     "src/resources/layout_inflater.cpp::li_parse_hex_color": {
-     "line": 24,
+     "line": 26,
+     "guards": []
+    },
+    "src/resources/layout_inflater.cpp::parse_ref": {
+     "line": 60,
+     "guards": [
+      "bool",
+      "color",
+      "colors",
+      "dimen",
+      "drawable",
+      "id",
+      "integer",
+      "layout"
+     ]
+    },
+    "src/resources/layout_inflater.cpp::parse_hex_color": {
+     "line": 91,
+     "guards": []
+    },
+    "src/resources/layout_inflater.cpp::gravity_bits": {
+     "line": 95,
+     "guards": []
+    },
+    "src/resources/layout_inflater.cpp::class_to_descriptor": {
+     "line": 110,
+     "guards": []
+    },
+    "src/resources/layout_inflater.cpp::is_app_class_descriptor": {
+     "line": 193,
+     "guards": []
+    },
+    "src/resources/layout_inflater.cpp::find_apk_file": {
+     "line": 213,
+     "guards": []
+    },
+    "src/resources/layout_inflater.cpp::drawable_path_for_name": {
+     "line": 235,
+     "guards": []
+    },
+    "src/resources/layout_inflater.cpp::drawable_file_for_name": {
+     "line": 248,
+     "guards": []
+    },
+    "src/resources/layout_inflater.cpp::drawable_path_for_resid": {
+     "line": 268,
+     "guards": []
+    },
+    "src/resources/layout_inflater.cpp::drawable_file_for_resid": {
+     "line": 272,
+     "guards": []
+    },
+    "src/resources/layout_inflater.cpp::resolve_string_ref": {
+     "line": 284,
+     "guards": []
+    },
+    "src/resources/layout_inflater.cpp::resolve_color": {
+     "line": 293,
+     "guards": []
+    },
+    "src/resources/layout_inflater.cpp::resolve_dimen_px": {
+     "line": 313,
+     "guards": [
+      "dip",
+      "dp",
+      "in",
+      "mm",
+      "pt",
+      "px",
+      "sp"
+     ]
+    },
+    "src/resources/layout_inflater.cpp::parse_dim_attr": {
+     "line": 351,
+     "guards": []
+    },
+    "src/resources/layout_inflater.cpp::parse_color_attr": {
+     "line": 363,
+     "guards": []
+    },
+    "src/resources/layout_inflater.cpp::resolve_size_or_match": {
+     "line": 383,
+     "guards": [
+      "-1",
+      "-2",
+      "@null",
+      "fill_parent",
+      "match_parent",
+      "wrap_content"
+     ]
+    },
+    "src/resources/layout_inflater.cpp::resolve_id_attr": {
+     "line": 411,
+     "guards": []
+    },
+    "src/resources/layout_inflater.cpp::density_context": {
+     "line": 467,
+     "guards": []
+    },
+    "src/resources/layout_inflater.cpp::apply_style_item": {
+     "line": 471,
+     "guards": []
+    },
+    "src/resources/layout_inflater.cpp::apply_style": {
+     "line": 552,
+     "guards": []
+    },
+    "src/resources/layout_inflater.cpp::apply_style_by_name": {
+     "line": 609,
+     "guards": []
+    },
+    "src/resources/layout_inflater.cpp::resolve_text_appearance": {
+     "line": 616,
+     "guards": []
+    },
+    "src/resources/layout_inflater.cpp::inflate_element": {
+     "line": 656,
+     "guards": [
+      "include",
+      "merge",
+      "requestFocus",
+      "requestLayout",
+      "tag"
+     ]
+    },
+    "src/resources/layout_inflater.cpp::apply_element_attrs": {
+     "line": 800,
+     "guards": [
+      "1",
+      "background",
+      "clickable",
+      "elegantTextHeight",
+      "elevation",
+      "enabled",
+      "fontFamily",
+      "gone"
+     ]
+    },
+    "src/resources/layout_inflater.cpp::apply_shape_background": {
+     "line": 1272,
+     "guards": [
+      "corners",
+      "gradient",
+      "line",
+      "oval",
+      "ring",
+      "solid",
+      "stroke"
+     ]
+    },
+    "src/resources/layout_inflater.cpp::inflate_layout_resid": {
+     "line": 1372,
+     "guards": []
+    },
+    "src/resources/layout_inflater.cpp::inflate_layout_by_name": {
+     "line": 1403,
+     "guards": []
+    },
+    "src/resources/layout_inflater.cpp::to_json": {
+     "line": 1410,
      "guards": []
     },
     "src/resources/layout_inflater.cpp::content_w": {
-     "line": 1451,
+     "line": 1453,
      "guards": []
     },
     "src/resources/layout_inflater.cpp::content_h": {
-     "line": 1454,
+     "line": 1456,
+     "guards": []
+    },
+    "src/resources/layout_inflater.cpp::image_intrinsic_size": {
+     "line": 1468,
+     "guards": []
+    },
+    "src/resources/layout_inflater.cpp::measure_layout": {
+     "line": 1501,
+     "guards": [
+      "3",
+      "4"
+     ]
+    },
+    "src/resources/resource_runtime.cpp::instance": {
+     "line": 13,
+     "guards": []
+    },
+    "src/resources/resource_runtime.cpp::ensure_loaded": {
+     "line": 18,
+     "guards": []
+    },
+    "src/resources/resource_runtime.cpp::stats_json": {
+     "line": 65,
+     "guards": []
+    },
+    "src/resources/resource_runtime.cpp::resolve_window_background_argb": {
+     "line": 84,
+     "guards": []
+    },
+    "src/resources/resource_runtime.cpp::resolve_theme_attr_value": {
+     "line": 115,
+     "guards": []
+    },
+    "src/resources/resource_runtime.cpp::resolve_launch_theme": {
+     "line": 180,
+     "guards": []
+    },
+    "src/resources/resource_runtime.cpp::resolve_theme_attr_typed": {
+     "line": 245,
      "guards": []
     },
     "src/resources/resource_parser.cpp::resource_type_to_string": {
-     "line": 19,
+     "line": 24,
      "guards": []
     },
     "src/resources/resource_parser.cpp::string_to_resource_type": {
-     "line": 35,
+     "line": 40,
+     "guards": [
+      "attr",
+      "color",
+      "dimen",
+      "drawable",
+      "id",
+      "layout",
+      "mipmap",
+      "raw"
+     ]
+    },
+    "src/resources/resource_parser.cpp::to_json": {
+     "line": 756,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::parse": {
+     "line": 91,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::parse_file": {
+     "line": 110,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::parse_node": {
+     "line": 127,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::parse_attributes": {
+     "line": 282,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::trim": {
+     "line": 338,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::unescape_xml": {
+     "line": 345,
+     "guards": [
+      "&amp;",
+      "&apos;",
+      "&gt;",
+      "&lt;",
+      "&quot;"
+     ]
+    },
+    "src/resources/resource_parser.cpp::set_package": {
+     "line": 390,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::register_type": {
+     "line": 394,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::map_resource_id": {
+     "line": 399,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::resolve_id": {
+     "line": 404,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::find_by_name": {
+     "line": 408,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::has_resource": {
+     "line": 416,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::load_from_arsc": {
+     "line": 420,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::detect_and_load_arsc": {
+     "line": 451,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::load_from_xml": {
+     "line": 481,
+     "guards": [
+      "string"
+     ]
+    },
+    "src/resources/resource_parser.cpp::load_from_xml_file": {
+     "line": 544,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::load_from_apk": {
+     "line": 561,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::get_by_name": {
+     "line": 577,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::get_by_id": {
+     "line": 585,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::resolve_string": {
+     "line": 593,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::classify_path": {
+     "line": 618,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::scan_apk_entries": {
+     "line": 650,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::scan_apk": {
+     "line": 684,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::add_entry": {
+     "line": 696,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::get_entry": {
+     "line": 700,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::get_entries_by_type": {
+     "line": 709,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::get_supported_count": {
+     "line": 719,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::get_parsed_count": {
+     "line": 727,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::has_layouts": {
+     "line": 735,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::has_strings": {
+     "line": 742,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::has_arsc": {
+     "line": 749,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::inflate": {
+     "line": 780,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::inflate_from_xml": {
+     "line": 845,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::inflate_from_apk": {
+     "line": 859,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::inflate_node": {
+     "line": 877,
+     "guards": [
+      "Button",
+      "ImageView",
+      "LinearLayout",
+      "TextView"
+     ]
+    },
+    "src/resources/resource_parser.cpp::create_view": {
+     "line": 927,
+     "guards": [
+      "text"
+     ]
+    },
+    "src/resources/resource_parser.cpp::apply_attributes": {
+     "line": 965,
+     "guards": [
+      "text"
+     ]
+    },
+    "src/resources/resource_parser.cpp::parse_layout_params": {
+     "line": 1006,
+     "guards": [
+      "android",
+      "fill_parent",
+      "layout_gravity",
+      "layout_height",
+      "layout_margin",
+      "layout_marginBottom",
+      "layout_marginLeft",
+      "layout_marginRight"
+     ]
+    },
+    "src/resources/resource_parser.cpp::resolve_attribute_value": {
+     "line": 1061,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::initialize": {
+     "line": 1091,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::initialize_from_data": {
+     "line": 1130,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::load_all_resources": {
+     "line": 1144,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::inflate_layout": {
+     "line": 1162,
+     "guards": []
+    },
+    "src/resources/resource_parser.cpp::extract_entry": {
+     "line": 1176,
      "guards": []
     },
     "src/resources/res_config.cpp::le32": {
-     "line": 11,
+     "line": 20,
      "guards": []
     },
-    "src/resources/res_config.cpp::build_device_config": {
-     "line": 383,
+    "src/resources/res_config.cpp::from_bytes": {
+     "line": 24,
      "guards": []
     },
-    "src/resources/res_config.cpp::device_config": {
-     "line": 441,
+    "src/resources/res_config.cpp::compute_fields": {
+     "line": 68,
+     "guards": []
+    },
+    "src/resources/res_config.cpp::unpack_language": {
+     "line": 81,
+     "guards": []
+    },
+    "src/resources/res_config.cpp::unpack_country": {
+     "line": 87,
+     "guards": []
+    },
+    "src/resources/res_config.cpp::langs_are_equivalent": {
+     "line": 94,
+     "guards": []
+    },
+    "src/resources/res_config.cpp::match": {
+     "line": 99,
+     "guards": []
+    },
+    "src/resources/res_config.cpp::is_locale_better_than": {
+     "line": 166,
      "guards": []
     }
    },
    "edges": [
     [
-     "src/resources/res_config.cpp::device_config",
-     "src/resources/res_config.cpp::build_device_config"
+     "src/resources/arsc_parser.cpp::apk_path_for",
+     "src/resources/arsc_parser.cpp::resolve"
+    ],
+    [
+     "src/resources/arsc_parser.cpp::apk_path_for",
+     "src/resources/arsc_parser.cpp::select_file"
+    ],
+    [
+     "src/resources/arsc_parser.cpp::bag_value",
+     "src/resources/arsc_parser.cpp::best_for"
+    ],
+    [
+     "src/resources/arsc_parser.cpp::bag_value",
+     "src/resources/arsc_parser.cpp::resolve"
+    ],
+    [
+     "src/resources/arsc_parser.cpp::best",
+     "src/resources/arsc_parser.cpp::best_for"
+    ],
+    [
+     "src/resources/arsc_parser.cpp::config_to_string",
+     "src/resources/arsc_parser.cpp::rd32"
+    ],
+    [
+     "src/resources/arsc_parser.cpp::decode_res_value",
+     "src/resources/arsc_parser.cpp::rd32"
+    ],
+    [
+     "src/resources/arsc_parser.cpp::list_type",
+     "src/resources/arsc_parser.cpp::resolve"
+    ],
+    [
+     "src/resources/arsc_parser.cpp::parse",
+     "src/resources/arsc_parser.cpp::finish_index"
+    ],
+    [
+     "src/resources/arsc_parser.cpp::parse",
+     "src/resources/arsc_parser.cpp::parse_package"
+    ],
+    [
+     "src/resources/arsc_parser.cpp::parse",
+     "src/resources/arsc_parser.cpp::parse_string_pool"
+    ],
+    [
+     "src/resources/arsc_parser.cpp::parse",
+     "src/resources/arsc_parser.cpp::rd32"
+    ],
+    [
+     "src/resources/arsc_parser.cpp::parse_package",
+     "src/resources/arsc_parser.cpp::parse_string_pool"
+    ],
+    [
+     "src/resources/arsc_parser.cpp::parse_package",
+     "src/resources/arsc_parser.cpp::parse_type_chunk"
+    ],
+    [
+     "src/resources/arsc_parser.cpp::parse_package",
+     "src/resources/arsc_parser.cpp::rd32"
+    ],
+    [
+     "src/resources/arsc_parser.cpp::parse_string_pool",
+     "src/resources/arsc_parser.cpp::parse"
+    ],
+    [
+     "src/resources/arsc_parser.cpp::parse_type_chunk",
+     "src/resources/arsc_parser.cpp::config_to_string"
+    ],
+    [
+     "src/resources/arsc_parser.cpp::parse_type_chunk",
+     "src/resources/arsc_parser.cpp::decode_res_value"
+    ],
+    [
+     "src/resources/arsc_parser.cpp::parse_type_chunk",
+     "src/resources/arsc_parser.cpp::rd32"
+    ],
+    [
+     "src/resources/arsc_parser.cpp::resolve_full",
+     "src/resources/arsc_parser.cpp::best_for"
+    ],
+    [
+     "src/resources/arsc_parser.cpp::resolve_full",
+     "src/resources/arsc_parser.cpp::resolve"
+    ],
+    [
+     "src/resources/arsc_parser.cpp::resolve_string",
+     "src/resources/arsc_parser.cpp::resolve_value"
+    ],
+    [
+     "src/resources/arsc_parser.cpp::resolve_value",
+     "src/resources/arsc_parser.cpp::resolve_full"
+    ],
+    [
+     "src/resources/arsc_parser.cpp::select_file",
+     "src/resources/arsc_parser.cpp::best_for"
+    ],
+    [
+     "src/resources/arsc_parser.cpp::select_file",
+     "src/resources/arsc_parser.cpp::resolve"
+    ],
+    [
+     "src/resources/arsc_parser.cpp::select_file",
+     "src/resources/arsc_parser.cpp::resolve_full"
+    ],
+    [
+     "src/resources/arsc_parser.cpp::to_json",
+     "src/resources/arsc_parser.cpp::best"
+    ],
+    [
+     "src/resources/arsc_parser.cpp::to_json",
+     "src/resources/arsc_parser.cpp::resolution_error_name"
+    ],
+    [
+     "src/resources/arsc_parser.cpp::to_json",
+     "src/resources/arsc_parser.cpp::resolve"
+    ],
+    [
+     "src/resources/axml_parser.cpp::parse",
+     "src/resources/axml_parser.cpp::ax_rd32"
+    ],
+    [
+     "src/resources/axml_parser.cpp::parse",
+     "src/resources/axml_parser.cpp::ns_short"
+    ],
+    [
+     "src/resources/axml_parser.cpp::parse",
+     "src/resources/axml_parser.cpp::parse_string_pool"
+    ],
+    [
+     "src/resources/axml_parser.cpp::parse_string_pool",
+     "src/resources/axml_parser.cpp::parse"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::apply_element_attrs",
+     "src/resources/layout_inflater.cpp::apply_shape_background"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::apply_element_attrs",
+     "src/resources/layout_inflater.cpp::apply_style"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::apply_element_attrs",
+     "src/resources/layout_inflater.cpp::apply_style_by_name"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::apply_element_attrs",
+     "src/resources/layout_inflater.cpp::drawable_file_for_name"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::apply_element_attrs",
+     "src/resources/layout_inflater.cpp::drawable_file_for_resid"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::apply_element_attrs",
+     "src/resources/layout_inflater.cpp::gravity_bits"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::apply_element_attrs",
+     "src/resources/layout_inflater.cpp::li_parse_hex_color"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::apply_element_attrs",
+     "src/resources/layout_inflater.cpp::parse_color_attr"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::apply_element_attrs",
+     "src/resources/layout_inflater.cpp::parse_dim_attr"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::apply_element_attrs",
+     "src/resources/layout_inflater.cpp::parse_ref"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::apply_element_attrs",
+     "src/resources/layout_inflater.cpp::resolve_color"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::apply_element_attrs",
+     "src/resources/layout_inflater.cpp::resolve_dimen_px"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::apply_element_attrs",
+     "src/resources/layout_inflater.cpp::resolve_size_or_match"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::apply_element_attrs",
+     "src/resources/layout_inflater.cpp::resolve_string_ref"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::apply_element_attrs",
+     "src/resources/layout_inflater.cpp::resolve_text_appearance"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::apply_shape_background",
+     "src/resources/layout_inflater.cpp::parse_color_attr"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::apply_shape_background",
+     "src/resources/layout_inflater.cpp::parse_dim_attr"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::apply_style",
+     "src/resources/layout_inflater.cpp::apply_style_item"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::apply_style_by_name",
+     "src/resources/layout_inflater.cpp::apply_style"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::apply_style_item",
+     "src/resources/layout_inflater.cpp::density_context"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::drawable_file_for_name",
+     "src/resources/layout_inflater.cpp::find_apk_file"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::drawable_path_for_name",
+     "src/resources/layout_inflater.cpp::drawable_file_for_name"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::drawable_path_for_resid",
+     "src/resources/layout_inflater.cpp::drawable_file_for_resid"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::inflate_element",
+     "src/resources/layout_inflater.cpp::apply_element_attrs"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::inflate_element",
+     "src/resources/layout_inflater.cpp::class_to_descriptor"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::inflate_element",
+     "src/resources/layout_inflater.cpp::find_apk_file"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::inflate_element",
+     "src/resources/layout_inflater.cpp::is_app_class_descriptor"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::inflate_element",
+     "src/resources/layout_inflater.cpp::parse_ref"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::inflate_element",
+     "src/resources/layout_inflater.cpp::resolve_id_attr"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::inflate_layout_by_name",
+     "src/resources/layout_inflater.cpp::inflate_layout_resid"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::inflate_layout_resid",
+     "src/resources/layout_inflater.cpp::find_apk_file"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::inflate_layout_resid",
+     "src/resources/layout_inflater.cpp::inflate_element"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::inflate_layout_resid",
+     "src/resources/layout_inflater.cpp::measure_layout"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::measure_layout",
+     "src/resources/layout_inflater.cpp::image_intrinsic_size"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::parse_color_attr",
+     "src/resources/layout_inflater.cpp::resolve_color"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::parse_dim_attr",
+     "src/resources/layout_inflater.cpp::density_context"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::parse_dim_attr",
+     "src/resources/layout_inflater.cpp::resolve_dimen_px"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::parse_hex_color",
+     "src/resources/layout_inflater.cpp::li_parse_hex_color"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::resolve_color",
+     "src/resources/layout_inflater.cpp::li_parse_hex_color"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::resolve_color",
+     "src/resources/layout_inflater.cpp::parse_ref"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::resolve_dimen_px",
+     "src/resources/layout_inflater.cpp::density_context"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::resolve_dimen_px",
+     "src/resources/layout_inflater.cpp::parse_ref"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::resolve_id_attr",
+     "src/resources/layout_inflater.cpp::parse_ref"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::resolve_size_or_match",
+     "src/resources/layout_inflater.cpp::parse_dim_attr"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::resolve_size_or_match",
+     "src/resources/layout_inflater.cpp::resolve_dimen_px"
+    ],
+    [
+     "src/resources/layout_inflater.cpp::resolve_text_appearance",
+     "src/resources/layout_inflater.cpp::density_context"
+    ],
+    [
+     "src/resources/res_config.cpp::from_bytes",
+     "src/resources/res_config.cpp::compute_fields"
+    ],
+    [
+     "src/resources/res_config.cpp::from_bytes",
+     "src/resources/res_config.cpp::le32"
+    ],
+    [
+     "src/resources/res_config.cpp::is_locale_better_than",
+     "src/resources/res_config.cpp::compute_fields"
+    ],
+    [
+     "src/resources/res_config.cpp::is_locale_better_than",
+     "src/resources/res_config.cpp::langs_are_equivalent"
+    ],
+    [
+     "src/resources/res_config.cpp::match",
+     "src/resources/res_config.cpp::langs_are_equivalent"
+    ],
+    [
+     "src/resources/resource_parser.cpp::apply_attributes",
+     "src/resources/resource_parser.cpp::parse_layout_params"
+    ],
+    [
+     "src/resources/resource_parser.cpp::apply_attributes",
+     "src/resources/resource_parser.cpp::resolve_attribute_value"
+    ],
+    [
+     "src/resources/resource_parser.cpp::create_view",
+     "src/resources/resource_parser.cpp::resolve_attribute_value"
+    ],
+    [
+     "src/resources/resource_parser.cpp::inflate",
+     "src/resources/resource_parser.cpp::inflate_node"
+    ],
+    [
+     "src/resources/resource_parser.cpp::inflate_from_apk",
+     "src/resources/resource_parser.cpp::inflate_from_xml"
+    ],
+    [
+     "src/resources/resource_parser.cpp::inflate_from_xml",
+     "src/resources/resource_parser.cpp::inflate"
+    ],
+    [
+     "src/resources/resource_parser.cpp::inflate_from_xml",
+     "src/resources/resource_parser.cpp::parse"
+    ],
+    [
+     "src/resources/resource_parser.cpp::inflate_node",
+     "src/resources/resource_parser.cpp::apply_attributes"
+    ],
+    [
+     "src/resources/resource_parser.cpp::inflate_node",
+     "src/resources/resource_parser.cpp::create_view"
+    ],
+    [
+     "src/resources/resource_parser.cpp::initialize",
+     "src/resources/resource_parser.cpp::detect_and_load_arsc"
+    ],
+    [
+     "src/resources/resource_parser.cpp::initialize",
+     "src/resources/resource_parser.cpp::scan_apk_entries"
+    ],
+    [
+     "src/resources/resource_parser.cpp::initialize_from_data",
+     "src/resources/resource_parser.cpp::detect_and_load_arsc"
+    ],
+    [
+     "src/resources/resource_parser.cpp::load_all_resources",
+     "src/resources/resource_parser.cpp::load_from_apk"
+    ],
+    [
+     "src/resources/resource_parser.cpp::load_from_apk",
+     "src/resources/resource_parser.cpp::load_from_xml"
+    ],
+    [
+     "src/resources/resource_parser.cpp::load_from_xml",
+     "src/resources/resource_parser.cpp::parse"
+    ],
+    [
+     "src/resources/resource_parser.cpp::load_from_xml_file",
+     "src/resources/resource_parser.cpp::load_from_xml"
+    ],
+    [
+     "src/resources/resource_parser.cpp::parse",
+     "src/resources/resource_parser.cpp::parse_node"
+    ],
+    [
+     "src/resources/resource_parser.cpp::parse_attributes",
+     "src/resources/resource_parser.cpp::trim"
+    ],
+    [
+     "src/resources/resource_parser.cpp::parse_attributes",
+     "src/resources/resource_parser.cpp::unescape_xml"
+    ],
+    [
+     "src/resources/resource_parser.cpp::parse_file",
+     "src/resources/resource_parser.cpp::parse"
+    ],
+    [
+     "src/resources/resource_parser.cpp::parse_node",
+     "src/resources/resource_parser.cpp::parse_attributes"
+    ],
+    [
+     "src/resources/resource_parser.cpp::parse_node",
+     "src/resources/resource_parser.cpp::trim"
+    ],
+    [
+     "src/resources/resource_parser.cpp::parse_node",
+     "src/resources/resource_parser.cpp::unescape_xml"
+    ],
+    [
+     "src/resources/resource_parser.cpp::resolve_attribute_value",
+     "src/resources/resource_parser.cpp::resolve_string"
+    ],
+    [
+     "src/resources/resource_parser.cpp::resolve_string",
+     "src/resources/resource_parser.cpp::get_by_name"
+    ],
+    [
+     "src/resources/resource_parser.cpp::scan_apk",
+     "src/resources/resource_parser.cpp::scan_apk_entries"
+    ],
+    [
+     "src/resources/resource_parser.cpp::scan_apk_entries",
+     "src/resources/resource_parser.cpp::classify_path"
+    ],
+    [
+     "src/resources/resource_parser.cpp::scan_apk_entries",
+     "src/resources/resource_parser.cpp::resource_type_to_string"
+    ],
+    [
+     "src/resources/resource_parser.cpp::to_json",
+     "src/resources/resource_parser.cpp::get_parsed_count"
+    ],
+    [
+     "src/resources/resource_parser.cpp::to_json",
+     "src/resources/resource_parser.cpp::get_supported_count"
+    ],
+    [
+     "src/resources/resource_parser.cpp::to_json",
+     "src/resources/resource_parser.cpp::has_arsc"
+    ],
+    [
+     "src/resources/resource_parser.cpp::to_json",
+     "src/resources/resource_parser.cpp::has_layouts"
+    ],
+    [
+     "src/resources/resource_parser.cpp::to_json",
+     "src/resources/resource_parser.cpp::has_strings"
+    ],
+    [
+     "src/resources/resource_parser.cpp::to_json",
+     "src/resources/resource_parser.cpp::resource_type_to_string"
+    ],
+    [
+     "src/resources/resource_runtime.cpp::resolve_launch_theme",
+     "src/resources/resource_runtime.cpp::ensure_loaded"
+    ],
+    [
+     "src/resources/resource_runtime.cpp::resolve_theme_attr_typed",
+     "src/resources/resource_runtime.cpp::resolve_launch_theme"
+    ],
+    [
+     "src/resources/resource_runtime.cpp::resolve_theme_attr_value",
+     "src/resources/resource_runtime.cpp::ensure_loaded"
+    ],
+    [
+     "src/resources/resource_runtime.cpp::resolve_window_background_argb",
+     "src/resources/resource_runtime.cpp::ensure_loaded"
     ]
    ]
   },
@@ -242,118 +2914,2917 @@
     "src/dex/class_resolver.cpp",
     "src/runtime/application_runtime.cpp"
    ],
-   "node_count": 27,
+   "node_count": 196,
    "nodes": {
     "src/dex/dalvik_engine.cpp::field_trace_active": {
-     "line": 51,
+     "line": 61,
      "guards": []
     },
     "src/dex/dalvik_engine.cpp::kv_table_find": {
-     "line": 87,
+     "line": 97,
      "guards": []
     },
     "src/dex/dalvik_engine.cpp::kvint_table_find": {
-     "line": 91,
+     "line": 101,
      "guards": []
     },
     "src/dex/dalvik_engine.cpp::batched_cap_push": {
-     "line": 103,
+     "line": 113,
      "guards": []
     },
     "src/dex/dalvik_engine.cpp::kv_table_contains": {
-     "line": 110,
+     "line": 120,
      "guards": []
     },
     "src/dex/dalvik_engine.cpp::str_table_contains": {
-     "line": 114,
+     "line": 124,
      "guards": []
     },
     "src/dex/dalvik_engine.cpp::phase_clock": {
-     "line": 165,
+     "line": 175,
      "guards": []
     },
     "src/dex/dalvik_engine.cpp::dalvik_value_to_string": {
-     "line": 227,
+     "line": 237,
      "guards": []
     },
     "src/dex/dalvik_engine.cpp::dalvik_int_value": {
-     "line": 282,
+     "line": 292,
      "guards": []
     },
     "src/dex/dalvik_engine.cpp::dalvik_raw_bits32": {
-     "line": 303,
+     "line": 313,
      "guards": []
     },
+    "src/dex/dalvik_engine.cpp::to_string": {
+     "line": 337,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::to_json": {
+     "line": 355,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::DalvikExecutionEngine": {
+     "line": 468,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::build_class_dex_index": {
+     "line": 480,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::inject_secondary_dex_classes": {
+     "line": 642,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::read_dex_string_from_raw": {
+     "line": 737,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::resolve_string_for_dex": {
+     "line": 769,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::is_subclass_of": {
+     "line": 799,
+     "guards": [
+      "Ljava/lang/Object;"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::is_view_class": {
+     "line": 922,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::reconcile_class_decl": {
+     "line": 946,
+     "guards": [
+      "Ljava/lang/Object;"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::is_exception_subtype": {
+     "line": 973,
+     "guards": [
+      "Ljava/lang/Object;",
+      "Ljava/lang/Throwable;"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::is_text_view_class": {
+     "line": 1056,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::is_edit_text_class": {
+     "line": 1060,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::is_image_view_class": {
+     "line": 1064,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::is_button_class": {
+     "line": 1068,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::is_view_group_class": {
+     "line": 1072,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::class_chain_defines_method": {
+     "line": 1088,
+     "guards": [
+      "Landroid/view/SurfaceView;",
+      "Landroid/view/View;"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::runtime_content_measure_class": {
+     "line": 1156,
+     "guards": [
+      "Landroid/view/SurfaceView;",
+      "Landroid/view/View;"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::resolve_method_name_for_dex": {
+     "line": 1194,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::resolve_method_class_for_dex": {
+     "line": 1223,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::resolve_type_for_dex": {
+     "line": 1265,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::resolve_method_proto_for_dex": {
+     "line": 1306,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::execute_apk": {
+     "line": 1401,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::execute_apk_with_activity": {
+     "line": 1411,
+     "guards": [
+      ");\n    \n    \n    if (!dex_report.classes.empty()) {\n        log(",
+      ");\n    \n    int total_methods = 0;\n    int methods_with_bytecode = 0;\n    int methods_without_bytecode = 0;\n    int total_instructions = 0;\n    \n    for (const auto& cls : dex_report.classes) {\n        log(",
+      ");\n    log(",
+      "main",
+      "onCreate"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::execute_method": {
+     "line": 2033,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::dump_frame_locals_diag": {
+     "line": 2088,
+     "guards": [
+      "Larray;"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::ensure_class_initialized": {
+     "line": 3431,
+     "guards": [
+      "J"
+     ]
+    },
     "src/dex/dalvik_engine.cpp::xml_unescape_pass3": {
-     "line": 3664,
+     "line": 3674,
+     "guards": [
+      "amp",
+      "apos",
+      "gt",
+      "lt",
+      "quot"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::resolve_asset_stream": {
+     "line": 3704,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::cached_asset_bytes": {
+     "line": 3736,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::xml_pull_advance": {
+     "line": 3774,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::run_activity_default_init": {
+     "line": 3912,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::bind_manifest_application": {
+     "line": 3948,
+     "guards": [
+      "Landroid/app/Application;"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::dispatch_activity_lifecycle_callbacks": {
+     "line": 4091,
+     "guards": [
+      "onActivityCreated",
+      "onActivityDestroyed",
+      "onActivityPostCreated",
+      "onActivityPostDestroyed",
+      "onActivityPreCreated",
+      "onActivityPreDestroyed",
+      "onActivitySaveInstanceState"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::try_recursive_invoke_on_super": {
+     "line": 4153,
+     "guards": [
+      "Ljava/lang/Object;"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::try_recursive_invoke": {
+     "line": 4236,
+     "guards": [
+      "LE0/c;",
+      "LE1/c;",
+      "LF/F;",
+      "LF/V0;",
+      "LF/w;",
+      "LW1/G;",
+      "Landroid/text/TextUtils;",
+      "Landroidx/compose/ui/platform/AndroidComposeView;"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::dispatch_custom_view_draw": {
+     "line": 7889,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::run_custom_view_constructor": {
+     "line": 7954,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::dispatch_custom_view_measure": {
+     "line": 8089,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::dispatch_view_lifecycle_once": {
+     "line": 8152,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::chain_overrides_method": {
+     "line": 8226,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::dispatch_touch_listener": {
+     "line": 8252,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::dispatch_click": {
+     "line": 8317,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::dispatch_long_click": {
+     "line": 8529,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::dispatch_runnable": {
+     "line": 8680,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::dispatch_view_attached": {
+     "line": 8754,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::dispatch_attached_subtree_from": {
+     "line": 8881,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::dispatch_click_by_class": {
+     "line": 8949,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::dispatch_text_input": {
+     "line": 8988,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::dispatch_text_input_by_class": {
+     "line": 9043,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::dump_view_tree": {
+     "line": 9060,
      "guards": []
     },
     "src/dex/dalvik_engine.cpp::conv_f2i": {
-     "line": 9153,
+     "line": 9163,
      "guards": []
     },
     "src/dex/dalvik_engine.cpp::conv_f2l": {
-     "line": 9159,
+     "line": 9169,
      "guards": []
     },
     "src/dex/dalvik_engine.cpp::bits_l2d": {
-     "line": 9170,
+     "line": 9180,
      "guards": []
     },
     "src/dex/dalvik_engine.cpp::bits_i2f": {
-     "line": 9179,
+     "line": 9189,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::fetch_decode_execute": {
+     "line": 9197,
+     "guards": [
+      "LC0/b;",
+      "Lj/b;",
+      "Lj/i;",
+      "Llt0;",
+      "Ln/a;",
+      "add",
+      "and",
+      "div"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::find_catch_handler_for_pc": {
+     "line": 12214,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::throw_deferred": {
+     "line": 12302,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::raise_synthetic_exception": {
+     "line": 12344,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::populate_resource_drawable_paths": {
+     "line": 12396,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::populate_drawable_paths_from_arsc": {
+     "line": 12466,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::fetch_opcode": {
+     "line": 12499,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::execute_const_4": {
+     "line": 12510,
+     "guards": [
+      "addFragmentToStack",
+      "onFragmentCreate"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::execute_const_16": {
+     "line": 12551,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::execute_const": {
+     "line": 12567,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::execute_const_string": {
+     "line": 12584,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::execute_const_class": {
+     "line": 12613,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::execute_move": {
+     "line": 12679,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::execute_move_object": {
+     "line": 12700,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::execute_move_object_from16": {
+     "line": 12735,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::execute_move_result": {
+     "line": 12754,
+     "guards": [
+      "addFragmentToStack"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::execute_move_result_object": {
+     "line": 12785,
+     "guards": [
+      "onCreate"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::execute_new_instance": {
+     "line": 12828,
+     "guards": [
+      "<unknown>"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::execute_check_cast": {
+     "line": 12883,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::execute_instance_of": {
+     "line": 12946,
+     "guards": [
+      "Landroid/view/View;",
+      "Landroid/view/ViewParent;",
+      "Ljava/lang/Class;",
+      "Ljava/util/Set;",
+      "Lkp1;",
+      "Loj0;",
+      "[Ljava/lang/Object;",
+      "fillNextCodeParams"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::resolve_field": {
+     "line": 13128,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::execute_iget": {
+     "line": 13218,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::execute_iget_object": {
+     "line": 13270,
+     "guards": [
+      "addFragmentToStack",
+      "country",
+      "getCurrentUser",
+      "isClientActivated",
+      "parentLayout",
+      "presentFragment"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::execute_iput": {
+     "line": 13422,
+     "guards": [
+      "countryState",
+      "currentViewNum"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::execute_iput_object": {
+     "line": 13515,
+     "guards": [
+      "Landroidx/navigation/l;",
+      "<init>",
+      "a",
+      "actionBarLayout",
+      "parentLayout"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::execute_sget": {
+     "line": 13627,
+     "guards": [
+      "compose_view_saveable_id_tag"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::execute_sget_object": {
+     "line": 13708,
+     "guards": [
+      "Ljava/io/File;",
+      "Ljava/lang/Boolean;",
+      "Ljava/util/Locale;",
+      "Lz1/t;",
+      "FALSE",
+      "TRUE",
+      "TYPE",
+      "i"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::execute_sput": {
+     "line": 13985,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::execute_sput_object": {
+     "line": 14009,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::execute_invoke_virtual": {
+     "line": 14049,
+     "guards": [
+      "Landroidx/navigation/c;",
+      "Landroidx/navigation/compose/p;",
+      "Lh1/t;",
+      "Ljava/lang/Object;",
+      "Lje;",
+      "<init>",
+      "a",
+      "addAll"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::execute_invoke_super": {
+     "line": 14506,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::execute_invoke_direct": {
+     "line": 14653,
+     "guards": [
+      "LE0/c;",
+      "LE1/c;",
+      "Lj/j0;",
+      "Ljava/lang/Object;",
+      "Lt0/t;",
+      "<init>"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::execute_invoke_static": {
+     "line": 14899,
+     "guards": [
+      "Ljava/lang/Class;",
+      "Ljava/lang/System;",
+      "Lt4;",
+      "<init>",
+      "D",
+      "F",
+      "J",
+      "executeOnUIThread"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::execute_invoke_interface": {
+     "line": 15498,
+     "guards": [
+      "Ljava/lang/Object;",
+      "addFragmentToStack"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::execute_return_void": {
+     "line": 15887,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::execute_return": {
+     "line": 15901,
+     "guards": [
+      "LF/F$a;",
+      "LP/j;",
+      "addFragmentToStack",
+      "d",
+      "onFragmentCreate",
+      "q"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::execute_return_object": {
+     "line": 16019,
+     "guards": [
+      "LF/F$b;",
+      "LF/F;",
+      "LP/g$a;",
+      "LP/l;",
+      "Landroidx/compose/ui/platform/AndroidComposeView$o;"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::execute_return_wide": {
+     "line": 16104,
+     "guards": [
+      "currentTimeMillis",
+      "getDuration",
+      "getLong",
+      "getSize",
+      "getTime",
+      "nextLong"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::execute_goto": {
+     "line": 16158,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::execute_if_eqz": {
+     "line": 16327,
+     "guards": [
+      "addFragmentToStack",
+      "lambda$onNextPressed$22",
+      "setPage"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::execute_if_nez": {
+     "line": 16433,
+     "guards": [
+      "addFragmentToStack",
+      "afterTextChanged",
+      "fillNextCodeParams",
+      "lambda$new$12",
+      "onNextPressed",
+      "setCountry",
+      "setPage"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::execute_if_ltz": {
+     "line": 16583,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::execute_if_gez": {
+     "line": 16639,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::execute_if_gtz": {
+     "line": 16675,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::execute_if_lez": {
+     "line": 16711,
      "guards": []
     },
     "src/dex/dalvik_engine.cpp::decode_22t": {
-     "line": 16707,
+     "line": 16766,
      "guards": []
     },
-    "src/dex/dalvik_engine.cpp::parse_proto_param_types": {
+    "src/dex/dalvik_engine.cpp::do_22t_branch": {
+     "line": 16777,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::handle_unimplemented": {
      "line": 16965,
      "guards": []
     },
+    "src/dex/dalvik_engine.cpp::set_register": {
+     "line": 17009,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::set_wide_pair": {
+     "line": 17020,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::get_register": {
+     "line": 17038,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::register_name": {
+     "line": 17045,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::parse_proto_param_types": {
+     "line": 17060,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::build_invoke_args": {
+     "line": 17095,
+     "guards": [
+      "D",
+      "F",
+      "J"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::framework_enum_ordinal": {
+     "line": 17229,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::framework_static_int": {
+     "line": 17316,
+     "guards": []
+    },
     "src/dex/dalvik_engine.cpp::dalvik_value_to_arg": {
-     "line": 17242,
+     "line": 17337,
      "guards": []
     },
     "src/dex/dalvik_engine.cpp::call_result_to_dalvik": {
-     "line": 17326,
+     "line": 17421,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::try_shadow_dispatch": {
+     "line": 17446,
+     "guards": [
+      "Landroid/view/Choreographer;",
+      "<clinit>",
+      "<init>",
+      "executeOnUIThread",
+      "getSystemService",
+      "removeFrameCallback",
+      "runOnUIThread"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::seed_framework_device_statics": {
+     "line": 17747,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::java_format_walk": {
+     "line": 17780,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::run_thread_start_body": {
+     "line": 18002,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::drain_park_queues_bounded": {
+     "line": 18058,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::dalvik_class_assignable": {
+     "line": 18151,
+     "guards": [
+      "Ljava/io/Serializable;",
+      "Ljava/lang/Cloneable;",
+      "Ljava/lang/Object;"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::bridge_to_api": {
+     "line": 18197,
+     "guards": [
+      "Landroid/app/Activity;",
+      "Landroid/content/ContentResolver;",
+      "Landroid/content/res/Resources;",
+      "Landroid/content/res/TypedArray;",
+      "Landroid/graphics/Color;",
+      "Landroid/net/Uri;",
+      "Landroid/os/AsyncTask;",
+      "Landroid/text/TextUtils;"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::get_or_create_singleton": {
+     "line": 30460,
+     "guards": [
+      "Landroid/content/res/Configuration;",
+      "Landroid/util/DisplayMetrics;",
+      "Ljava/io/File;"
+     ]
+    },
+    "src/dex/dalvik_engine.cpp::log": {
+     "line": 30533,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::to_hex": {
+     "line": 30539,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::to_hex16": {
+     "line": 30545,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::read_signed_literal": {
+     "line": 30551,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::get_timestamp": {
+     "line": 30556,
+     "guards": []
+    },
+    "src/dex/dalvik_engine.cpp::to_full_report": {
+     "line": 30568,
+     "guards": []
+    },
+    "src/dex/class_resolver.cpp::ClassResolver": {
+     "line": 24,
+     "guards": []
+    },
+    "src/dex/class_resolver.cpp::resolve": {
+     "line": 27,
+     "guards": []
+    },
+    "src/dex/class_resolver.cpp::resolve_target": {
+     "line": 31,
+     "guards": []
+    },
+    "src/dex/class_resolver.cpp::find_activities": {
+     "line": 295,
+     "guards": []
+    },
+    "src/dex/class_resolver.cpp::is_activity_class": {
+     "line": 307,
+     "guards": []
+    },
+    "src/dex/class_resolver.cpp::find_main_activity": {
+     "line": 334,
+     "guards": []
+    },
+    "src/dex/class_resolver.cpp::resolve_on_create": {
+     "line": 372,
+     "guards": [
+      "onCreate"
+     ]
+    },
+    "src/dex/class_resolver.cpp::extract_bytecode_info": {
+     "line": 422,
+     "guards": []
+    },
+    "src/dex/class_resolver.cpp::resolve_method": {
+     "line": 449,
+     "guards": []
+    },
+    "src/dex/class_resolver.cpp::to_hex": {
+     "line": 462,
+     "guards": []
+    },
+    "src/dex/class_resolver.cpp::to_readable_class": {
+     "line": 468,
+     "guards": []
+    },
+    "src/dex/class_resolver.cpp::validate_entry_point": {
+     "line": 487,
+     "guards": []
+    },
+    "src/dex/class_resolver.cpp::log": {
+     "line": 498,
+     "guards": []
+    },
+    "src/dex/class_resolver.cpp::add_stage": {
+     "line": 504,
      "guards": []
     },
     "src/runtime/application_runtime.cpp::state_to_string": {
-     "line": 60,
+     "line": 65,
      "guards": []
     },
     "src/runtime/application_runtime.cpp::string_to_state": {
-     "line": 84,
-     "guards": []
+     "line": 89,
+     "guards": [
+      "ACTIVITY_CREATED",
+      "ACTIVITY_RESOLVED",
+      "ACTIVITY_RESUMED",
+      "ACTIVITY_STARTED",
+      "APK_LOADED",
+      "COMPLETED",
+      "CONTENT_LOADED",
+      "CREATED"
+     ]
     },
     "src/runtime/application_runtime.cpp::api_category_to_string": {
-     "line": 106,
+     "line": 111,
      "guards": []
     },
     "src/runtime/application_runtime.cpp::string_to_api_category": {
-     "line": 118,
-     "guards": []
+     "line": 123,
+     "guards": [
+      "ACTIVITY",
+      "CONTEXT",
+      "LAYOUT",
+      "RENDERER",
+      "RESOURCE",
+      "VIEW"
+     ]
     },
     "src/runtime/application_runtime.cpp::impl_status_to_string": {
-     "line": 128,
+     "line": 133,
      "guards": []
     },
     "src/runtime/application_runtime.cpp::string_to_impl_status": {
-     "line": 139,
-     "guards": []
+     "line": 144,
+     "guards": [
+      "IMPLEMENTED",
+      "NOT_APPLICABLE",
+      "PARTIAL",
+      "STUBBED",
+      "UNIMPLEMENTED"
+     ]
     },
     "src/runtime/application_runtime.cpp::dispatch_type_to_string": {
-     "line": 148,
+     "line": 153,
      "guards": []
     },
     "src/runtime/application_runtime.cpp::failure_type_to_string": {
-     "line": 159,
+     "line": 164,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::ApplicationRuntime": {
+     "line": 206,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::initialize_subsystems": {
+     "line": 218,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::initialize_shadow_registry": {
+     "line": 254,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::cleanup": {
+     "line": 292,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::get_timestamp": {
+     "line": 296,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::transition_to": {
+     "line": 308,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::record_transition": {
+     "line": 327,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::execute_apk": {
+     "line": 349,
+     "guards": [
+      " << std::endl;\n        std::cout << "
+     ]
+    },
+    "src/runtime/application_runtime.cpp::load_apk": {
+     "line": 455,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::resolve_manifest": {
+     "line": 533,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::load_dex": {
+     "line": 619,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::resolve_launcher_activity": {
+     "line": 778,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::create_application": {
+     "line": 890,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::execute_lifecycle": {
+     "line": 952,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::execute_on_create": {
+     "line": 1018,
+     "guards": [
+      "Landroid/view/View;",
+      " << std::endl;\n\n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            for (const auto& [oid, obj] : dalvik_engine.get_heap().all_objects()) {\n                if (obj.class_descriptor == "
+     ]
+    },
+    "src/runtime/application_runtime.cpp::get_instruction_trace": {
+     "line": 1828,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::initialize_resources": {
+     "line": 1837,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::load_content_view": {
+     "line": 1913,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::perform_layout": {
+     "line": 1988,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::render_frame": {
+     "line": 2066,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::save_screenshot": {
+     "line": 2149,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::get_framebuffer": {
+     "line": 2190,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::record_api_call": {
+     "line": 2198,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::record_dispatch": {
+     "line": 2219,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::record_failure": {
+     "line": 2223,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::to_json": {
+     "line": 2236,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::generate_state_trace": {
+     "line": 2280,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::generate_component_map": {
+     "line": 2296,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::generate_failure_report": {
+     "line": 2351,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::generate_golden_end_to_end": {
+     "line": 2381,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::write_all_evidence": {
+     "line": 2427,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::drain_handler_queue": {
+     "line": 2469,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::has_pending_intent": {
+     "line": 2474,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::take_pending_intent_target_class": {
+     "line": 2478,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::get_content_view_id": {
+     "line": 2485,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::set_current_activity": {
+     "line": 2490,
+     "guards": []
+    },
+    "src/runtime/application_runtime.cpp::generate_shadow_report": {
+     "line": 2498,
      "guards": []
     }
    },
-   "edges": []
+   "edges": [
+    [
+     "src/dex/class_resolver.cpp::add_stage",
+     "src/dex/class_resolver.cpp::log"
+    ],
+    [
+     "src/dex/class_resolver.cpp::extract_bytecode_info",
+     "src/dex/class_resolver.cpp::log"
+    ],
+    [
+     "src/dex/class_resolver.cpp::extract_bytecode_info",
+     "src/dex/class_resolver.cpp::to_hex"
+    ],
+    [
+     "src/dex/class_resolver.cpp::find_activities",
+     "src/dex/class_resolver.cpp::is_activity_class"
+    ],
+    [
+     "src/dex/class_resolver.cpp::find_main_activity",
+     "src/dex/class_resolver.cpp::find_activities"
+    ],
+    [
+     "src/dex/class_resolver.cpp::find_main_activity",
+     "src/dex/class_resolver.cpp::to_readable_class"
+    ],
+    [
+     "src/dex/class_resolver.cpp::resolve",
+     "src/dex/class_resolver.cpp::resolve_target"
+    ],
+    [
+     "src/dex/class_resolver.cpp::resolve_on_create",
+     "src/dex/class_resolver.cpp::log"
+    ],
+    [
+     "src/dex/class_resolver.cpp::resolve_on_create",
+     "src/dex/class_resolver.cpp::to_hex"
+    ],
+    [
+     "src/dex/class_resolver.cpp::resolve_target",
+     "src/dex/class_resolver.cpp::add_stage"
+    ],
+    [
+     "src/dex/class_resolver.cpp::resolve_target",
+     "src/dex/class_resolver.cpp::extract_bytecode_info"
+    ],
+    [
+     "src/dex/class_resolver.cpp::resolve_target",
+     "src/dex/class_resolver.cpp::find_activities"
+    ],
+    [
+     "src/dex/class_resolver.cpp::resolve_target",
+     "src/dex/class_resolver.cpp::is_activity_class"
+    ],
+    [
+     "src/dex/class_resolver.cpp::resolve_target",
+     "src/dex/class_resolver.cpp::log"
+    ],
+    [
+     "src/dex/class_resolver.cpp::resolve_target",
+     "src/dex/class_resolver.cpp::resolve_on_create"
+    ],
+    [
+     "src/dex/class_resolver.cpp::resolve_target",
+     "src/dex/class_resolver.cpp::to_readable_class"
+    ],
+    [
+     "src/dex/class_resolver.cpp::resolve_target",
+     "src/dex/class_resolver.cpp::validate_entry_point"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::DalvikExecutionEngine",
+     "src/dex/dalvik_engine.cpp::log"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::bind_manifest_application",
+     "src/dex/dalvik_engine.cpp::get_or_create_singleton"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::bind_manifest_application",
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::bridge_to_api",
+     "src/dex/dalvik_engine.cpp::cached_asset_bytes"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::bridge_to_api",
+     "src/dex/dalvik_engine.cpp::call_result_to_dalvik"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::bridge_to_api",
+     "src/dex/dalvik_engine.cpp::dalvik_class_assignable"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::bridge_to_api",
+     "src/dex/dalvik_engine.cpp::dalvik_int_value"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::bridge_to_api",
+     "src/dex/dalvik_engine.cpp::dalvik_value_to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::bridge_to_api",
+     "src/dex/dalvik_engine.cpp::dispatch_attached_subtree_from"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::bridge_to_api",
+     "src/dex/dalvik_engine.cpp::drain_park_queues_bounded"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::bridge_to_api",
+     "src/dex/dalvik_engine.cpp::ensure_class_initialized"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::bridge_to_api",
+     "src/dex/dalvik_engine.cpp::get_or_create_singleton"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::bridge_to_api",
+     "src/dex/dalvik_engine.cpp::is_subclass_of"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::bridge_to_api",
+     "src/dex/dalvik_engine.cpp::java_format_walk"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::bridge_to_api",
+     "src/dex/dalvik_engine.cpp::kv_table_contains"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::bridge_to_api",
+     "src/dex/dalvik_engine.cpp::kv_table_find"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::bridge_to_api",
+     "src/dex/dalvik_engine.cpp::log"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::bridge_to_api",
+     "src/dex/dalvik_engine.cpp::phase_clock"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::bridge_to_api",
+     "src/dex/dalvik_engine.cpp::resolve_asset_stream"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::bridge_to_api",
+     "src/dex/dalvik_engine.cpp::resolve_method_proto_for_dex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::bridge_to_api",
+     "src/dex/dalvik_engine.cpp::run_thread_start_body"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::bridge_to_api",
+     "src/dex/dalvik_engine.cpp::throw_deferred"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::bridge_to_api",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::bridge_to_api",
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::bridge_to_api",
+     "src/dex/dalvik_engine.cpp::try_shadow_dispatch"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::bridge_to_api",
+     "src/dex/dalvik_engine.cpp::xml_pull_advance"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::build_class_dex_index",
+     "src/dex/dalvik_engine.cpp::is_subclass_of"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::build_class_dex_index",
+     "src/dex/dalvik_engine.cpp::log"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::build_class_dex_index",
+     "src/dex/dalvik_engine.cpp::read_dex_string_from_raw"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::build_class_dex_index",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::chain_overrides_method",
+     "src/dex/dalvik_engine.cpp::class_chain_defines_method"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::chain_overrides_method",
+     "src/dex/dalvik_engine.cpp::phase_clock"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::class_chain_defines_method",
+     "src/dex/dalvik_engine.cpp::kv_table_contains"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::dalvik_value_to_string",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::dispatch_activity_lifecycle_callbacks",
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::dispatch_attached_subtree_from",
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::dispatch_click",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::dispatch_click",
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::dispatch_click_by_class",
+     "src/dex/dalvik_engine.cpp::dispatch_click"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::dispatch_click_by_class",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::dispatch_custom_view_draw",
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::dispatch_custom_view_measure",
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::dispatch_long_click",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::dispatch_long_click",
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::dispatch_runnable",
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::dispatch_text_input_by_class",
+     "src/dex/dalvik_engine.cpp::dispatch_text_input"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::dispatch_touch_listener",
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::dispatch_view_attached",
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::dispatch_view_lifecycle_once",
+     "src/dex/dalvik_engine.cpp::class_chain_defines_method"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::dispatch_view_lifecycle_once",
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::do_22t_branch",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::drain_park_queues_bounded",
+     "src/dex/dalvik_engine.cpp::run_thread_start_body"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::drain_park_queues_bounded",
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::dump_frame_locals_diag",
+     "src/dex/dalvik_engine.cpp::get_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::dump_frame_locals_diag",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::dump_view_tree",
+     "src/dex/dalvik_engine.cpp::is_button_class"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::dump_view_tree",
+     "src/dex/dalvik_engine.cpp::is_edit_text_class"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::dump_view_tree",
+     "src/dex/dalvik_engine.cpp::is_image_view_class"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::dump_view_tree",
+     "src/dex/dalvik_engine.cpp::is_text_view_class"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::dump_view_tree",
+     "src/dex/dalvik_engine.cpp::is_view_class"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::dump_view_tree",
+     "src/dex/dalvik_engine.cpp::is_view_group_class"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::ensure_class_initialized",
+     "src/dex/dalvik_engine.cpp::phase_clock"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::ensure_class_initialized",
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_apk",
+     "src/dex/dalvik_engine.cpp::execute_apk_with_activity"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_apk_with_activity",
+     "src/dex/dalvik_engine.cpp::bind_manifest_application"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_apk_with_activity",
+     "src/dex/dalvik_engine.cpp::dispatch_activity_lifecycle_callbacks"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_apk_with_activity",
+     "src/dex/dalvik_engine.cpp::get_timestamp"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_apk_with_activity",
+     "src/dex/dalvik_engine.cpp::inject_secondary_dex_classes"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_apk_with_activity",
+     "src/dex/dalvik_engine.cpp::log"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_apk_with_activity",
+     "src/dex/dalvik_engine.cpp::run_activity_default_init"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_apk_with_activity",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_apk_with_activity",
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_check_cast",
+     "src/dex/dalvik_engine.cpp::get_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_check_cast",
+     "src/dex/dalvik_engine.cpp::reconcile_class_decl"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_check_cast",
+     "src/dex/dalvik_engine.cpp::resolve_type_for_dex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_check_cast",
+     "src/dex/dalvik_engine.cpp::set_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_check_cast",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_const",
+     "src/dex/dalvik_engine.cpp::set_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_const",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_const_16",
+     "src/dex/dalvik_engine.cpp::set_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_const_16",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_const_4",
+     "src/dex/dalvik_engine.cpp::set_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_const_4",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_const_class",
+     "src/dex/dalvik_engine.cpp::resolve_type_for_dex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_const_class",
+     "src/dex/dalvik_engine.cpp::set_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_const_class",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_const_string",
+     "src/dex/dalvik_engine.cpp::resolve_string_for_dex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_const_string",
+     "src/dex/dalvik_engine.cpp::set_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_const_string",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_goto",
+     "src/dex/dalvik_engine.cpp::to_hex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_goto",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_if_eqz",
+     "src/dex/dalvik_engine.cpp::get_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_if_eqz",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_if_gez",
+     "src/dex/dalvik_engine.cpp::get_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_if_gez",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_if_gtz",
+     "src/dex/dalvik_engine.cpp::get_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_if_gtz",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_if_lez",
+     "src/dex/dalvik_engine.cpp::get_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_if_lez",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_if_ltz",
+     "src/dex/dalvik_engine.cpp::get_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_if_ltz",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_if_nez",
+     "src/dex/dalvik_engine.cpp::get_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_if_nez",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_iget",
+     "src/dex/dalvik_engine.cpp::dalvik_value_to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_iget",
+     "src/dex/dalvik_engine.cpp::field_trace_active"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_iget",
+     "src/dex/dalvik_engine.cpp::get_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_iget",
+     "src/dex/dalvik_engine.cpp::phase_clock"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_iget",
+     "src/dex/dalvik_engine.cpp::resolve_field"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_iget",
+     "src/dex/dalvik_engine.cpp::set_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_iget",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_iget_object",
+     "src/dex/dalvik_engine.cpp::field_trace_active"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_iget_object",
+     "src/dex/dalvik_engine.cpp::get_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_iget_object",
+     "src/dex/dalvik_engine.cpp::resolve_field"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_iget_object",
+     "src/dex/dalvik_engine.cpp::set_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_iget_object",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_instance_of",
+     "src/dex/dalvik_engine.cpp::get_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_instance_of",
+     "src/dex/dalvik_engine.cpp::is_subclass_of"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_instance_of",
+     "src/dex/dalvik_engine.cpp::reconcile_class_decl"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_instance_of",
+     "src/dex/dalvik_engine.cpp::register_name"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_instance_of",
+     "src/dex/dalvik_engine.cpp::resolve_type_for_dex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_instance_of",
+     "src/dex/dalvik_engine.cpp::set_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_instance_of",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_direct",
+     "src/dex/dalvik_engine.cpp::batched_cap_push"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_direct",
+     "src/dex/dalvik_engine.cpp::bridge_to_api"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_direct",
+     "src/dex/dalvik_engine.cpp::build_invoke_args"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_direct",
+     "src/dex/dalvik_engine.cpp::class_chain_defines_method"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_direct",
+     "src/dex/dalvik_engine.cpp::get_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_direct",
+     "src/dex/dalvik_engine.cpp::log"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_direct",
+     "src/dex/dalvik_engine.cpp::parse_proto_param_types"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_direct",
+     "src/dex/dalvik_engine.cpp::resolve_method_class_for_dex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_direct",
+     "src/dex/dalvik_engine.cpp::resolve_method_name_for_dex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_direct",
+     "src/dex/dalvik_engine.cpp::resolve_method_proto_for_dex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_direct",
+     "src/dex/dalvik_engine.cpp::runtime_content_measure_class"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_direct",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_direct",
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_interface",
+     "src/dex/dalvik_engine.cpp::batched_cap_push"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_interface",
+     "src/dex/dalvik_engine.cpp::bridge_to_api"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_interface",
+     "src/dex/dalvik_engine.cpp::build_invoke_args"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_interface",
+     "src/dex/dalvik_engine.cpp::get_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_interface",
+     "src/dex/dalvik_engine.cpp::parse_proto_param_types"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_interface",
+     "src/dex/dalvik_engine.cpp::resolve_method_class_for_dex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_interface",
+     "src/dex/dalvik_engine.cpp::resolve_method_name_for_dex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_interface",
+     "src/dex/dalvik_engine.cpp::resolve_method_proto_for_dex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_interface",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_interface",
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_static",
+     "src/dex/dalvik_engine.cpp::batched_cap_push"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_static",
+     "src/dex/dalvik_engine.cpp::bridge_to_api"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_static",
+     "src/dex/dalvik_engine.cpp::ensure_class_initialized"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_static",
+     "src/dex/dalvik_engine.cpp::get_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_static",
+     "src/dex/dalvik_engine.cpp::resolve_method_class_for_dex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_static",
+     "src/dex/dalvik_engine.cpp::resolve_method_name_for_dex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_static",
+     "src/dex/dalvik_engine.cpp::resolve_method_proto_for_dex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_static",
+     "src/dex/dalvik_engine.cpp::throw_deferred"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_static",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_static",
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_super",
+     "src/dex/dalvik_engine.cpp::batched_cap_push"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_super",
+     "src/dex/dalvik_engine.cpp::bridge_to_api"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_super",
+     "src/dex/dalvik_engine.cpp::build_invoke_args"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_super",
+     "src/dex/dalvik_engine.cpp::get_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_super",
+     "src/dex/dalvik_engine.cpp::log"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_super",
+     "src/dex/dalvik_engine.cpp::parse_proto_param_types"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_super",
+     "src/dex/dalvik_engine.cpp::register_name"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_super",
+     "src/dex/dalvik_engine.cpp::resolve_method_class_for_dex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_super",
+     "src/dex/dalvik_engine.cpp::resolve_method_name_for_dex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_super",
+     "src/dex/dalvik_engine.cpp::resolve_method_proto_for_dex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_super",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_super",
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_virtual",
+     "src/dex/dalvik_engine.cpp::batched_cap_push"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_virtual",
+     "src/dex/dalvik_engine.cpp::bridge_to_api"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_virtual",
+     "src/dex/dalvik_engine.cpp::build_invoke_args"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_virtual",
+     "src/dex/dalvik_engine.cpp::get_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_virtual",
+     "src/dex/dalvik_engine.cpp::log"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_virtual",
+     "src/dex/dalvik_engine.cpp::parse_proto_param_types"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_virtual",
+     "src/dex/dalvik_engine.cpp::register_name"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_virtual",
+     "src/dex/dalvik_engine.cpp::resolve_method_class_for_dex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_virtual",
+     "src/dex/dalvik_engine.cpp::resolve_method_name_for_dex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_virtual",
+     "src/dex/dalvik_engine.cpp::resolve_method_proto_for_dex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_virtual",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_invoke_virtual",
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_iput",
+     "src/dex/dalvik_engine.cpp::dalvik_value_to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_iput",
+     "src/dex/dalvik_engine.cpp::field_trace_active"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_iput",
+     "src/dex/dalvik_engine.cpp::get_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_iput",
+     "src/dex/dalvik_engine.cpp::resolve_field"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_iput",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_iput_object",
+     "src/dex/dalvik_engine.cpp::dalvik_value_to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_iput_object",
+     "src/dex/dalvik_engine.cpp::field_trace_active"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_iput_object",
+     "src/dex/dalvik_engine.cpp::get_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_iput_object",
+     "src/dex/dalvik_engine.cpp::resolve_field"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_iput_object",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_method",
+     "src/dex/dalvik_engine.cpp::build_class_dex_index"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_method",
+     "src/dex/dalvik_engine.cpp::get_timestamp"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_move",
+     "src/dex/dalvik_engine.cpp::get_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_move",
+     "src/dex/dalvik_engine.cpp::register_name"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_move",
+     "src/dex/dalvik_engine.cpp::set_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_move",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_move_object",
+     "src/dex/dalvik_engine.cpp::get_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_move_object",
+     "src/dex/dalvik_engine.cpp::register_name"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_move_object",
+     "src/dex/dalvik_engine.cpp::set_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_move_object",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_move_object_from16",
+     "src/dex/dalvik_engine.cpp::get_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_move_object_from16",
+     "src/dex/dalvik_engine.cpp::set_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_move_object_from16",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_move_result",
+     "src/dex/dalvik_engine.cpp::set_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_move_result",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_move_result_object",
+     "src/dex/dalvik_engine.cpp::set_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_move_result_object",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_new_instance",
+     "src/dex/dalvik_engine.cpp::ensure_class_initialized"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_new_instance",
+     "src/dex/dalvik_engine.cpp::log"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_new_instance",
+     "src/dex/dalvik_engine.cpp::resolve_type_for_dex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_new_instance",
+     "src/dex/dalvik_engine.cpp::set_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_new_instance",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_return",
+     "src/dex/dalvik_engine.cpp::get_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_return",
+     "src/dex/dalvik_engine.cpp::log"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_return",
+     "src/dex/dalvik_engine.cpp::to_hex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_return",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_return_object",
+     "src/dex/dalvik_engine.cpp::get_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_return_object",
+     "src/dex/dalvik_engine.cpp::log"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_return_object",
+     "src/dex/dalvik_engine.cpp::to_hex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_return_object",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_return_void",
+     "src/dex/dalvik_engine.cpp::log"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_return_void",
+     "src/dex/dalvik_engine.cpp::to_hex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_return_wide",
+     "src/dex/dalvik_engine.cpp::get_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_return_wide",
+     "src/dex/dalvik_engine.cpp::log"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_return_wide",
+     "src/dex/dalvik_engine.cpp::to_hex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_return_wide",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_sget",
+     "src/dex/dalvik_engine.cpp::ensure_class_initialized"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_sget",
+     "src/dex/dalvik_engine.cpp::resolve_field"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_sget",
+     "src/dex/dalvik_engine.cpp::set_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_sget",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_sget_object",
+     "src/dex/dalvik_engine.cpp::ensure_class_initialized"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_sget_object",
+     "src/dex/dalvik_engine.cpp::framework_enum_ordinal"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_sget_object",
+     "src/dex/dalvik_engine.cpp::framework_static_int"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_sget_object",
+     "src/dex/dalvik_engine.cpp::kv_table_find"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_sget_object",
+     "src/dex/dalvik_engine.cpp::phase_clock"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_sget_object",
+     "src/dex/dalvik_engine.cpp::resolve_field"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_sget_object",
+     "src/dex/dalvik_engine.cpp::set_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_sget_object",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_sput",
+     "src/dex/dalvik_engine.cpp::get_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_sput",
+     "src/dex/dalvik_engine.cpp::resolve_field"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_sput",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_sput_object",
+     "src/dex/dalvik_engine.cpp::get_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_sput_object",
+     "src/dex/dalvik_engine.cpp::resolve_field"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::execute_sput_object",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::batched_cap_push"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::bits_i2f"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::bits_l2d"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::bridge_to_api"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::build_invoke_args"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::conv_f2i"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::conv_f2l"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::dalvik_int_value"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::dalvik_raw_bits32"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::dalvik_value_to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::dump_frame_locals_diag"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_check_cast"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_const"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_const_16"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_const_4"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_const_class"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_const_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_goto"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_if_eqz"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_if_gez"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_if_gtz"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_if_lez"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_if_ltz"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_if_nez"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_iget"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_iget_object"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_instance_of"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_invoke_direct"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_invoke_interface"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_invoke_static"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_invoke_super"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_invoke_virtual"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_iput"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_iput_object"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_move"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_move_object"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_move_object_from16"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_move_result"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_move_result_object"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_new_instance"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_return"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_return_object"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_return_void"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_return_wide"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_sget"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_sget_object"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_sput"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::execute_sput_object"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::fetch_opcode"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::get_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::handle_unimplemented"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::is_exception_subtype"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::log"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::parse_proto_param_types"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::phase_clock"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::raise_synthetic_exception"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::resolve_method_class_for_dex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::resolve_method_name_for_dex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::resolve_method_proto_for_dex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::resolve_string_for_dex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::resolve_type_for_dex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::set_register"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::set_wide_pair"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::throw_deferred"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::to_hex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::to_hex16"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::fetch_decode_execute",
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::find_catch_handler_for_pc",
+     "src/dex/dalvik_engine.cpp::is_exception_subtype"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::find_catch_handler_for_pc",
+     "src/dex/dalvik_engine.cpp::resolve_type_for_dex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::framework_enum_ordinal",
+     "src/dex/dalvik_engine.cpp::kvint_table_find"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::handle_unimplemented",
+     "src/dex/dalvik_engine.cpp::log"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::handle_unimplemented",
+     "src/dex/dalvik_engine.cpp::to_hex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::handle_unimplemented",
+     "src/dex/dalvik_engine.cpp::to_hex16"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::inject_secondary_dex_classes",
+     "src/dex/dalvik_engine.cpp::log"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::inject_secondary_dex_classes",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::is_button_class",
+     "src/dex/dalvik_engine.cpp::is_subclass_of"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::is_edit_text_class",
+     "src/dex/dalvik_engine.cpp::is_subclass_of"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::is_exception_subtype",
+     "src/dex/dalvik_engine.cpp::kv_table_find"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::is_image_view_class",
+     "src/dex/dalvik_engine.cpp::is_subclass_of"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::is_subclass_of",
+     "src/dex/dalvik_engine.cpp::phase_clock"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::is_text_view_class",
+     "src/dex/dalvik_engine.cpp::is_subclass_of"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::is_view_class",
+     "src/dex/dalvik_engine.cpp::is_subclass_of"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::is_view_group_class",
+     "src/dex/dalvik_engine.cpp::is_subclass_of"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::java_format_walk",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::raise_synthetic_exception",
+     "src/dex/dalvik_engine.cpp::find_catch_handler_for_pc"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::raise_synthetic_exception",
+     "src/dex/dalvik_engine.cpp::to_hex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::reconcile_class_decl",
+     "src/dex/dalvik_engine.cpp::is_subclass_of"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::register_name",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::resolve_field",
+     "src/dex/dalvik_engine.cpp::log"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::resolve_field",
+     "src/dex/dalvik_engine.cpp::phase_clock"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::resolve_field",
+     "src/dex/dalvik_engine.cpp::read_dex_string_from_raw"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::resolve_field",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::resolve_method_class_for_dex",
+     "src/dex/dalvik_engine.cpp::read_dex_string_from_raw"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::resolve_method_name_for_dex",
+     "src/dex/dalvik_engine.cpp::read_dex_string_from_raw"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::resolve_method_name_for_dex",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::resolve_method_proto_for_dex",
+     "src/dex/dalvik_engine.cpp::read_dex_string_from_raw"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::resolve_string_for_dex",
+     "src/dex/dalvik_engine.cpp::read_dex_string_from_raw"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::resolve_string_for_dex",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::resolve_type_for_dex",
+     "src/dex/dalvik_engine.cpp::read_dex_string_from_raw"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::run_activity_default_init",
+     "src/dex/dalvik_engine.cpp::log"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::run_activity_default_init",
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::run_custom_view_constructor",
+     "src/dex/dalvik_engine.cpp::class_chain_defines_method"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::run_custom_view_constructor",
+     "src/dex/dalvik_engine.cpp::runtime_content_measure_class"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::run_custom_view_constructor",
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::run_thread_start_body",
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::runtime_content_measure_class",
+     "src/dex/dalvik_engine.cpp::kv_table_contains"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::throw_deferred",
+     "src/dex/dalvik_engine.cpp::find_catch_handler_for_pc"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::throw_deferred",
+     "src/dex/dalvik_engine.cpp::to_hex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::to_full_report",
+     "src/dex/dalvik_engine.cpp::to_json"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke",
+     "src/dex/dalvik_engine.cpp::cached_asset_bytes"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke",
+     "src/dex/dalvik_engine.cpp::dalvik_value_to_arg"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke",
+     "src/dex/dalvik_engine.cpp::dispatch_runnable"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke",
+     "src/dex/dalvik_engine.cpp::find_catch_handler_for_pc"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke",
+     "src/dex/dalvik_engine.cpp::get_or_create_singleton"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke",
+     "src/dex/dalvik_engine.cpp::log"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke",
+     "src/dex/dalvik_engine.cpp::phase_clock"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke",
+     "src/dex/dalvik_engine.cpp::resolve_asset_stream"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke",
+     "src/dex/dalvik_engine.cpp::throw_deferred"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke",
+     "src/dex/dalvik_engine.cpp::to_hex"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke",
+     "src/dex/dalvik_engine.cpp::to_string"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke",
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke_on_super"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke_on_super",
+     "src/dex/dalvik_engine.cpp::try_recursive_invoke"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::try_shadow_dispatch",
+     "src/dex/dalvik_engine.cpp::call_result_to_dalvik"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::try_shadow_dispatch",
+     "src/dex/dalvik_engine.cpp::dalvik_value_to_arg"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::try_shadow_dispatch",
+     "src/dex/dalvik_engine.cpp::get_or_create_singleton"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::try_shadow_dispatch",
+     "src/dex/dalvik_engine.cpp::kv_table_find"
+    ],
+    [
+     "src/dex/dalvik_engine.cpp::xml_pull_advance",
+     "src/dex/dalvik_engine.cpp::xml_unescape_pass3"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::ApplicationRuntime",
+     "src/runtime/application_runtime.cpp::cleanup"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::ApplicationRuntime",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::ApplicationRuntime",
+     "src/runtime/application_runtime.cpp::initialize_shadow_registry"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::ApplicationRuntime",
+     "src/runtime/application_runtime.cpp::initialize_subsystems"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::create_application",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::create_application",
+     "src/runtime/application_runtime.cpp::record_api_call"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::create_application",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::create_application",
+     "src/runtime/application_runtime.cpp::transition_to"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::create_application"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::drain_handler_queue"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::execute_lifecycle"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::execute_on_create"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::initialize_resources"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::load_apk"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::load_content_view"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::load_dex"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::perform_layout"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::render_frame"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::resolve_launcher_activity"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::resolve_manifest"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::save_screenshot"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::transition_to"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_apk",
+     "src/runtime/application_runtime.cpp::write_all_evidence"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_lifecycle",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_lifecycle",
+     "src/runtime/application_runtime.cpp::record_api_call"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_lifecycle",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_lifecycle",
+     "src/runtime/application_runtime.cpp::transition_to"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_on_create",
+     "src/runtime/application_runtime.cpp::drain_handler_queue"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_on_create",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_on_create",
+     "src/runtime/application_runtime.cpp::record_api_call"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_on_create",
+     "src/runtime/application_runtime.cpp::record_dispatch"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_on_create",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::execute_on_create",
+     "src/runtime/application_runtime.cpp::transition_to"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::generate_component_map",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::generate_failure_report",
+     "src/runtime/application_runtime.cpp::failure_type_to_string"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::generate_failure_report",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::generate_failure_report",
+     "src/runtime/application_runtime.cpp::to_json"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::generate_golden_end_to_end",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::generate_golden_end_to_end",
+     "src/runtime/application_runtime.cpp::state_to_string"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::generate_state_trace",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::generate_state_trace",
+     "src/runtime/application_runtime.cpp::state_to_string"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::generate_state_trace",
+     "src/runtime/application_runtime.cpp::to_json"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::initialize_resources",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::initialize_resources",
+     "src/runtime/application_runtime.cpp::record_api_call"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::initialize_resources",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::load_apk",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::load_apk",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::load_apk",
+     "src/runtime/application_runtime.cpp::transition_to"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::load_content_view",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::load_content_view",
+     "src/runtime/application_runtime.cpp::record_api_call"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::load_content_view",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::load_content_view",
+     "src/runtime/application_runtime.cpp::transition_to"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::load_dex",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::load_dex",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::load_dex",
+     "src/runtime/application_runtime.cpp::transition_to"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::perform_layout",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::perform_layout",
+     "src/runtime/application_runtime.cpp::record_api_call"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::perform_layout",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::perform_layout",
+     "src/runtime/application_runtime.cpp::transition_to"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::record_failure",
+     "src/runtime/application_runtime.cpp::failure_type_to_string"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::record_transition",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::render_frame",
+     "src/runtime/application_runtime.cpp::get_framebuffer"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::render_frame",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::render_frame",
+     "src/runtime/application_runtime.cpp::record_api_call"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::render_frame",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::render_frame",
+     "src/runtime/application_runtime.cpp::transition_to"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::resolve_launcher_activity",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::resolve_launcher_activity",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::resolve_launcher_activity",
+     "src/runtime/application_runtime.cpp::transition_to"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::resolve_manifest",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::resolve_manifest",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::resolve_manifest",
+     "src/runtime/application_runtime.cpp::transition_to"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::save_screenshot",
+     "src/runtime/application_runtime.cpp::get_framebuffer"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::save_screenshot",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::save_screenshot",
+     "src/runtime/application_runtime.cpp::record_failure"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::to_json",
+     "src/runtime/application_runtime.cpp::get_timestamp"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::to_json",
+     "src/runtime/application_runtime.cpp::state_to_string"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::transition_to",
+     "src/runtime/application_runtime.cpp::record_transition"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::transition_to",
+     "src/runtime/application_runtime.cpp::state_to_string"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::write_all_evidence",
+     "src/runtime/application_runtime.cpp::generate_component_map"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::write_all_evidence",
+     "src/runtime/application_runtime.cpp::generate_failure_report"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::write_all_evidence",
+     "src/runtime/application_runtime.cpp::generate_golden_end_to_end"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::write_all_evidence",
+     "src/runtime/application_runtime.cpp::generate_shadow_report"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::write_all_evidence",
+     "src/runtime/application_runtime.cpp::generate_state_trace"
+    ],
+    [
+     "src/runtime/application_runtime.cpp::write_all_evidence",
+     "src/runtime/application_runtime.cpp::to_json"
+    ]
+   ]
   }
  }
 }
