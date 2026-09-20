@@ -244,6 +244,11 @@ FIXTURES = {
     (390, 590, (0,150,136), "?android:attr/colorAccent LIGHT flavor (A10)"),
     (390, 983, (32,32,32), "?android:attr/textColorPrimary state-list law"),
  ],
+ "f53_getstring": [
+    # F-136 (S70): semantics asserted via ViewTree + per-row ink regions
+    # (EXTRAS); glyph-stroke point asserts are anti-alias-fragile — same
+    # proof style as f04_text (bbox/region + VT text, S67 law).
+ ],
  "f52_nanlaw": [
     (540, 50,   NAN_OK,  "Double.isNaN(NaN)==true (OpenJDK :1031)"),
     (540, 150,  NAN_OK,  "Double.isNaN(1.5)==false (not NaN)"),
@@ -275,6 +280,11 @@ EXTRAS.update({
  "f45_exceptions": [chk_viewtree_text("EXC=CAUGHT_AIOOBE")],
  "f06_invisible": [chk_viewtree_geom("View", 0, 0, 1080, 800)],
  "f32_dimen": [chk_viewtree_text("PX=263")],
+ "f53_getstring": [chk_viewtree_text("Context GetString Works"),
+                   chk_viewtree_text("S70 wave S70 code 136"),
+                   chk_viewtree_text("Resources Direct Path"),
+                   chk_nonwhite_in((0, 0, 1080, 210), 800),
+                   chk_nonwhite_in((0, 210, 1080, 420), 800)],
  "f08_canvasops": [chk_nonwhite_in((0, 400, 900, 600), 300)],
  "f05b_persian2": [chk_nonwhite_in((0, 0, 1080, 400), 2000)],
  "f49_canstext": [chk_nonwhite_in((40, 60, 500, 180), 200),

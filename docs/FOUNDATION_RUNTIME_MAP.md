@@ -163,3 +163,22 @@ Claims in this map and their evidence class:
 - REC-MISS lines are DISPATCH-PATH logs, not failures (they precede bridge
   dispatch for framework classes); gaps are recorded only via STUBBED/MISSING
   statuses and named fixtures
+
+
+---
+
+## S70 ADDENDUM — ACTIVE DIAGNOSTIC ENGINE (RUNTIME UNDERSTANDING)
+
+The map is no longer a document to read — it is a graph to QUERY.
+
+- Canonical machine map: `docs/foundation/knowledge_graph.json`
+  (graph_build.py; status law v2: LIVE-IMPL > LIVE-PARTIAL > LIVE-STUB >
+  SERVED-STATIC > EXERCISED-OK(weak) > SUSPECT-FAIL-ONLY > UNSERVED-none).
+- Query CLI: `python3 tools/architecture/graph_query.py {api|why-stubbed|
+  why-pixel|blast-radius|failure|gaps|classify}`.
+- Failure drill-down (§17): `python3 tools/architecture/diagnose.py
+  <failure-id>` / `--live <app>` — 17 sections, GAP markers for missing links.
+- Upstream oracle: `docs/foundation/upstream_oracle.json` (F-135 OpenJDK
+  Double/Float, F-136 AOSP Context/Resources strings, F-120 Button gravity).
+- S70 wave record: `docs/foundation/S70_REPORT.md` (census defects fixed,
+  served surface 0→2,921 pairs, F-136 fix cycle, R-NEW-389 registered).

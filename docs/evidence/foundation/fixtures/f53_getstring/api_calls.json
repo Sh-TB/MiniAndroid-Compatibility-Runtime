@@ -1,0 +1,220 @@
+[
+ {
+  "api": "Landroid/app/Activity;.<init>",
+  "arguments": [],
+  "class": "Landroid/app/Activity;",
+  "descriptor": "",
+  "execution_us": 0.0,
+  "frame_id": 0,
+  "method": "<init>",
+  "pc": 0,
+  "return_value": "",
+  "sequence": 0,
+  "status": "STUBBED"
+ },
+ {
+  "api": "Landroid/app/Activity;<super>.onCreate",
+  "arguments": [
+   "v3",
+   "v4"
+  ],
+  "class": "Landroid/app/Activity;<super>",
+  "descriptor": "",
+  "execution_us": 0.0,
+  "frame_id": 2,
+  "method": "onCreate",
+  "pc": 0,
+  "return_value": "void",
+  "sequence": 1,
+  "status": "IMPLEMENTED"
+ },
+ {
+  "api": "Lcom/miniandroid/f53str/MainActivity;.setContentView",
+  "arguments": [
+   "v3",
+   "v4"
+  ],
+  "class": "Lcom/miniandroid/f53str/MainActivity;",
+  "descriptor": "",
+  "execution_us": 0.0,
+  "frame_id": 2,
+  "method": "setContentView",
+  "pc": 5,
+  "return_value": "void",
+  "sequence": 2,
+  "status": "IMPLEMENTED"
+ },
+ {
+  "api": "Lcom/miniandroid/f53str/MainActivity;.getString",
+  "arguments": [
+   "v3",
+   "v4"
+  ],
+  "class": "Lcom/miniandroid/f53str/MainActivity;",
+  "descriptor": "",
+  "execution_us": 0.0,
+  "frame_id": 2,
+  "method": "getString",
+  "pc": 11,
+  "return_value": "\"Context GetString Works\"",
+  "sequence": 3,
+  "status": "IMPLEMENTED"
+ },
+ {
+  "api": "Lcom/miniandroid/f53str/MainActivity;.findViewById",
+  "arguments": [
+   "v3",
+   "p4294967293"
+  ],
+  "class": "Lcom/miniandroid/f53str/MainActivity;",
+  "descriptor": "",
+  "execution_us": 0.0,
+  "frame_id": 2,
+  "method": "findViewById",
+  "pc": 17,
+  "return_value": "Landroid/view/View;#9",
+  "sequence": 4,
+  "status": "IMPLEMENTED"
+ },
+ {
+  "api": "Landroid/widget/TextView;.setText",
+  "arguments": [
+   "p4294967293",
+   "v4"
+  ],
+  "class": "Landroid/widget/TextView;",
+  "descriptor": "",
+  "execution_us": 0.0,
+  "frame_id": 2,
+  "method": "setText",
+  "pc": 25,
+  "return_value": "void",
+  "sequence": 5,
+  "status": "IMPLEMENTED"
+ },
+ {
+  "api": "Ljava/lang/Integer;.valueOf",
+  "arguments": [],
+  "class": "Ljava/lang/Integer;",
+  "descriptor": "",
+  "execution_us": 0.0,
+  "frame_id": 0,
+  "method": "valueOf",
+  "pc": 30,
+  "return_value": "",
+  "sequence": 6,
+  "status": "IMPLEMENTED"
+ },
+ {
+  "api": "Lcom/miniandroid/f53str/MainActivity;.getString",
+  "arguments": [
+   "v3",
+   "v4",
+   "p4294967293"
+  ],
+  "class": "Lcom/miniandroid/f53str/MainActivity;",
+  "descriptor": "",
+  "execution_us": 0.0,
+  "frame_id": 2,
+  "method": "getString",
+  "pc": 48,
+  "return_value": "\"S70 wave S70 code 136\"",
+  "sequence": 7,
+  "status": "IMPLEMENTED"
+ },
+ {
+  "api": "Lcom/miniandroid/f53str/MainActivity;.findViewById",
+  "arguments": [
+   "v3",
+   "p4294967293"
+  ],
+  "class": "Lcom/miniandroid/f53str/MainActivity;",
+  "descriptor": "",
+  "execution_us": 0.0,
+  "frame_id": 2,
+  "method": "findViewById",
+  "pc": 55,
+  "return_value": "Landroid/view/View;#10",
+  "sequence": 8,
+  "status": "IMPLEMENTED"
+ },
+ {
+  "api": "Landroid/widget/TextView;.setText",
+  "arguments": [
+   "p4294967293",
+   "v4"
+  ],
+  "class": "Landroid/widget/TextView;",
+  "descriptor": "",
+  "execution_us": 0.0,
+  "frame_id": 2,
+  "method": "setText",
+  "pc": 63,
+  "return_value": "void",
+  "sequence": 9,
+  "status": "IMPLEMENTED"
+ },
+ {
+  "api": "Lcom/miniandroid/f53str/MainActivity;.getResources",
+  "arguments": [
+   "v3"
+  ],
+  "class": "Lcom/miniandroid/f53str/MainActivity;",
+  "descriptor": "",
+  "execution_us": 0.0,
+  "frame_id": 2,
+  "method": "getResources",
+  "pc": 66,
+  "return_value": "Landroid/content/res/Resources;#14",
+  "sequence": 10,
+  "status": "IMPLEMENTED"
+ },
+ {
+  "api": "Landroid/content/res/Resources;.getString",
+  "arguments": [
+   "v4",
+   "p4294967293"
+  ],
+  "class": "Landroid/content/res/Resources;",
+  "descriptor": "",
+  "execution_us": 0.0,
+  "frame_id": 2,
+  "method": "getString",
+  "pc": 72,
+  "return_value": "\"Resources Direct Path\"",
+  "sequence": 11,
+  "status": "IMPLEMENTED"
+ },
+ {
+  "api": "Lcom/miniandroid/f53str/MainActivity;.findViewById",
+  "arguments": [
+   "v3",
+   "p4294967293"
+  ],
+  "class": "Lcom/miniandroid/f53str/MainActivity;",
+  "descriptor": "",
+  "execution_us": 0.0,
+  "frame_id": 2,
+  "method": "findViewById",
+  "pc": 79,
+  "return_value": "Landroid/view/View;#11",
+  "sequence": 12,
+  "status": "IMPLEMENTED"
+ },
+ {
+  "api": "Landroid/widget/TextView;.setText",
+  "arguments": [
+   "p4294967293",
+   "v4"
+  ],
+  "class": "Landroid/widget/TextView;",
+  "descriptor": "",
+  "execution_us": 0.0,
+  "frame_id": 2,
+  "method": "setText",
+  "pc": 87,
+  "return_value": "void",
+  "sequence": 13,
+  "status": "IMPLEMENTED"
+ }
+]

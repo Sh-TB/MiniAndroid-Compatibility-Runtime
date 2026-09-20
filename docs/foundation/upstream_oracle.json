@@ -1,0 +1,298 @@
+{
+ "generated": "2026-09-20T07:03:43Z",
+ "generator": "tools/architecture/build_upstream_oracle.py",
+ "law": "records EXTRACTED from pinned upstream files + served surface + census; missing evidence stays null; upstream pins carry the license headers of their sources",
+ "count": 7,
+ "records": [
+  {
+   "id": "F-135-Double.isNaN",
+   "api": "Ljava/lang/Double;.isNaN",
+   "fix": "F-135",
+   "version": "OpenJDK (pinned snapshot, GPL-2.0/Classpath)",
+   "upstream_project": "OpenJDK (java.lang)",
+   "upstream_source_file": "docs/upstream/openjdk/Double.java",
+   "upstream_lines": [
+    {
+     "line": 1031,
+     "text": "public static boolean isNaN(double v) {"
+    }
+   ],
+   "semantic_law": "v != v (IEEE 754 NaN self-inequality)",
+   "edge_cases": [
+    "NaN",
+    "-Infinity",
+    "+Infinity",
+    "signed zero"
+   ],
+   "null_behavior": "n/a (primitive args)",
+   "exceptions": [],
+   "tests": {
+    "fixture": "f52_nanlaw",
+    "status": "9/9 PASS"
+   },
+   "miniandroid_implementation": [
+    "src/dex/dalvik_engine.cpp:18197 [bridge_to_api]"
+   ],
+   "consumers": {
+    "static_call_sites": 218,
+    "apks": [
+     "bouncy.apk",
+     "com.emmanuelmess.tictactoe_3.apk",
+     "dooz_23_toplevel.apk",
+     "dubrowgn.microtimer_8.apk",
+     "fishrings_v1.23_vc6.apk",
+     "io.github.yamin8000.dooz_23.apk",
+     "tripeaks_v1.2.1_vc4.apk"
+    ]
+   }
+  },
+  {
+   "id": "F-135-Double.isInfinite",
+   "api": "Ljava/lang/Double;.isInfinite",
+   "fix": "F-135",
+   "version": "OpenJDK (pinned snapshot, GPL-2.0/Classpath)",
+   "upstream_project": "OpenJDK (java.lang)",
+   "upstream_source_file": "docs/upstream/openjdk/Double.java",
+   "upstream_lines": [
+    {
+     "line": 1048,
+     "text": "public static boolean isInfinite(double v) {"
+    }
+   ],
+   "semantic_law": "abs(v) == MAX_INFINITY (Float/Double.MAX_VALUE bound)",
+   "edge_cases": [
+    "NaN",
+    "-Infinity",
+    "+Infinity",
+    "signed zero"
+   ],
+   "null_behavior": "n/a (primitive args)",
+   "exceptions": [],
+   "tests": {
+    "fixture": "f52_nanlaw",
+    "status": "9/9 PASS"
+   },
+   "miniandroid_implementation": [],
+   "consumers": {
+    "static_call_sites": 2,
+    "apks": [
+     "bouncy.apk"
+    ]
+   }
+  },
+  {
+   "id": "F-135-Double.compare",
+   "api": "Ljava/lang/Double;.compare",
+   "fix": "F-135",
+   "version": "OpenJDK (pinned snapshot, GPL-2.0/Classpath)",
+   "upstream_project": "OpenJDK (java.lang)",
+   "upstream_source_file": "docs/upstream/openjdk/Double.java",
+   "upstream_lines": [
+    {
+     "line": 1538,
+     "text": "public static int compare(double d1, double d2) {"
+    }
+   ],
+   "semantic_law": "canonical-bits total ordering: NaN > +Inf, -0.0 < +0.0, else numerical order (Double.java:1538 / Float.java:1324)",
+   "edge_cases": [
+    "NaN",
+    "-Infinity",
+    "+Infinity",
+    "signed zero"
+   ],
+   "null_behavior": "n/a (primitive args)",
+   "exceptions": [],
+   "tests": {
+    "fixture": "f52_nanlaw",
+    "status": "9/9 PASS"
+   },
+   "miniandroid_implementation": [
+    "src/dex/dalvik_engine.cpp:18197 [bridge_to_api]"
+   ],
+   "consumers": {
+    "static_call_sites": 16,
+    "apks": [
+     "bouncy.apk",
+     "dooz_23_toplevel.apk",
+     "io.github.yamin8000.dooz_23.apk"
+    ]
+   }
+  },
+  {
+   "id": "F-135-Float.isNaN",
+   "api": "Ljava/lang/Float;.isNaN",
+   "fix": "F-135",
+   "version": "OpenJDK (pinned snapshot, GPL-2.0/Classpath)",
+   "upstream_project": "OpenJDK (java.lang)",
+   "upstream_source_file": "docs/upstream/openjdk/Float.java",
+   "upstream_lines": [
+    {
+     "line": 631,
+     "text": "public static boolean isNaN(float v) {"
+    }
+   ],
+   "semantic_law": "v != v (IEEE 754 NaN self-inequality)",
+   "edge_cases": [
+    "NaN",
+    "-Infinity",
+    "+Infinity",
+    "signed zero"
+   ],
+   "null_behavior": "n/a (primitive args)",
+   "exceptions": [],
+   "tests": {
+    "fixture": "f52_nanlaw",
+    "status": "9/9 PASS"
+   },
+   "miniandroid_implementation": [
+    "src/dex/dalvik_engine.cpp:18197 [bridge_to_api]"
+   ],
+   "consumers": {
+    "static_call_sites": 178,
+    "apks": [
+     "dooz_23_toplevel.apk",
+     "io.github.yamin8000.dooz_23.apk"
+    ]
+   }
+  },
+  {
+   "id": "F-135-Float.isInfinite",
+   "api": "Ljava/lang/Float;.isInfinite",
+   "fix": "F-135",
+   "version": "OpenJDK (pinned snapshot, GPL-2.0/Classpath)",
+   "upstream_project": "OpenJDK (java.lang)",
+   "upstream_source_file": "docs/upstream/openjdk/Float.java",
+   "upstream_lines": [
+    {
+     "line": 648,
+     "text": "public static boolean isInfinite(float v) {"
+    }
+   ],
+   "semantic_law": "abs(v) == MAX_INFINITY (Float/Double.MAX_VALUE bound)",
+   "edge_cases": [
+    "NaN",
+    "-Infinity",
+    "+Infinity",
+    "signed zero"
+   ],
+   "null_behavior": "n/a (primitive args)",
+   "exceptions": [],
+   "tests": {
+    "fixture": "f52_nanlaw",
+    "status": "9/9 PASS"
+   },
+   "miniandroid_implementation": [
+    "src/dex/dalvik_engine.cpp:18197 [bridge_to_api]"
+   ],
+   "consumers": {
+    "static_call_sites": 8,
+    "apks": [
+     "dooz_23_toplevel.apk",
+     "io.github.yamin8000.dooz_23.apk"
+    ]
+   }
+  },
+  {
+   "id": "F-135-Float.compare",
+   "api": "Ljava/lang/Float;.compare",
+   "fix": "F-135",
+   "version": "OpenJDK (pinned snapshot, GPL-2.0/Classpath)",
+   "upstream_project": "OpenJDK (java.lang)",
+   "upstream_source_file": "docs/upstream/openjdk/Float.java",
+   "upstream_lines": [
+    {
+     "line": 1324,
+     "text": "public static int compare(float f1, float f2) {"
+    }
+   ],
+   "semantic_law": "canonical-bits total ordering: NaN > +Inf, -0.0 < +0.0, else numerical order (Double.java:1538 / Float.java:1324)",
+   "edge_cases": [
+    "NaN",
+    "-Infinity",
+    "+Infinity",
+    "signed zero"
+   ],
+   "null_behavior": "n/a (primitive args)",
+   "exceptions": [],
+   "tests": {
+    "fixture": "f52_nanlaw",
+    "status": "9/9 PASS"
+   },
+   "miniandroid_implementation": [
+    "src/dex/dalvik_engine.cpp:18197 [bridge_to_api]"
+   ],
+   "consumers": {
+    "static_call_sites": 260,
+    "apks": [
+     "dooz_23_toplevel.apk",
+     "io.github.yamin8000.dooz_23.apk"
+    ]
+   }
+  },
+  {
+   "id": "F-136-Context.getString",
+   "api": "Landroid/content/Context;.getString",
+   "fix": "F-136",
+   "version": "AOSP frameworks/base main (fetched 2026-09-20)",
+   "upstream_project": "AOSP (android.content / android.content.res)",
+   "upstream_source_file": "docs/upstream/aosp/CONTEXT_STRING_LAW.md",
+   "upstream_lines": [
+    {
+     "line": 12,
+     "text": "959:    public final String getString(@StringRes int resId) {"
+    },
+    {
+     "line": 16,
+     "text": "976:    public final String getString(@StringRes int resId, Object... formatArgs) {"
+    },
+    {
+     "line": 30,
+     "text": "464:    @NonNull public CharSequence getText(@StringRes int id) throws NotFoundException {"
+    },
+    {
+     "line": 39,
+     "text": "564:    public String getString(@StringRes int id) throws NotFoundException {"
+    },
+    {
+     "line": 43,
+     "text": "588:    public String getString(@StringRes int id, Object... formatArgs) throws NotFoundException {"
+    }
+   ],
+   "semantic_law": "Context.getString/getText are FINAL and NEVER resolve locally \u2014 they delegate to getResources(); Resources resolves through the asset manager (ARSC) as the single canonical table; formatted overload == String.format(raw, formatArgs) (Context.java:945-978 \u2192 Resources.java:464-592)",
+   "edge_cases": [
+    "unknown resid (AOSP: NotFoundException; MiniAndroid documented deviation: '' + stderr flag, M3-007b pattern)",
+    "D8-remapped small-ordinal resIds (legacy name-map fallback)",
+    "formatted args with %s/%d specifiers (java_format_walk)"
+   ],
+   "null_behavior": "unresolved \u2192 MiniAndroid returns '' (deviation, recorded)",
+   "exceptions": [
+    "AOSP throws NotFoundException; MiniAndroid does not (recorded deviation)"
+   ],
+   "tests": {
+    "fixture": "f53_getstring",
+    "status": "5/5 PASS"
+   },
+   "miniandroid_implementation": [
+    "src/dex/dalvik_engine.cpp:29026 [bridge_to_api]",
+    "src/dex/dalvik_engine.cpp:24250 [bridge_to_api]"
+   ],
+   "consumers": {
+    "static_call_sites_context": 130,
+    "static_call_sites_resources": 51,
+    "static_call_sites_context_getText": 0,
+    "apks": [
+     "app.varlorg.unote_30.apk",
+     "bouncy.apk",
+     "com.emmanuelmess.tictactoe_3.apk",
+     "com.github.muellerma.stopwatch_6.apk",
+     "de.duenndns.gmdice_8.apk",
+     "dooz_23_toplevel.apk",
+     "dubrowgn.microtimer_8.apk",
+     "fishrings_v1.23_vc6.apk",
+     "io.github.yamin8000.dooz_23.apk",
+     "tripeaks_v1.2.1_vc4.apk"
+    ]
+   }
+  }
+ ]
+}

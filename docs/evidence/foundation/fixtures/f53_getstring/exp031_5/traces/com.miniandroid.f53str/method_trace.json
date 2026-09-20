@@ -1,0 +1,159 @@
+{
+  "apk_name": "f53_getstring.apk",
+  "main_class": "Lcom/miniandroid/f53str/MainActivity;",
+  "main_method": "onCreate",
+  "methods": [
+    {
+      "class": "Lcom/miniandroid/f53str/MainActivity;",
+      "entry_point": true,
+      "method": "onCreate",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/app/Activity;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "v4"
+      ],
+      "class": "Landroid/app/Activity;<super>",
+      "invocation_type": "virtual",
+      "method": "onCreate",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "v4"
+      ],
+      "class": "Lcom/miniandroid/f53str/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "setContentView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "v4"
+      ],
+      "class": "Lcom/miniandroid/f53str/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getString",
+      "return_value": "\"Context GetString Works\"",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "p4294967293"
+      ],
+      "class": "Lcom/miniandroid/f53str/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#9",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "v4"
+      ],
+      "class": "Landroid/widget/TextView;",
+      "invocation_type": "virtual",
+      "method": "setText",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Integer;",
+      "invocation_type": "virtual",
+      "method": "valueOf",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "v4",
+        "p4294967293"
+      ],
+      "class": "Lcom/miniandroid/f53str/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getString",
+      "return_value": "\"S70 wave S70 code 136\"",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "p4294967293"
+      ],
+      "class": "Lcom/miniandroid/f53str/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#10",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "v4"
+      ],
+      "class": "Landroid/widget/TextView;",
+      "invocation_type": "virtual",
+      "method": "setText",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Lcom/miniandroid/f53str/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getResources",
+      "return_value": "Landroid/content/res/Resources;#14",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "p4294967293"
+      ],
+      "class": "Landroid/content/res/Resources;",
+      "invocation_type": "virtual",
+      "method": "getString",
+      "return_value": "\"Resources Direct Path\"",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "p4294967293"
+      ],
+      "class": "Lcom/miniandroid/f53str/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#11",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "v4"
+      ],
+      "class": "Landroid/widget/TextView;",
+      "invocation_type": "virtual",
+      "method": "setText",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    }
+  ],
+  "timestamp": "2026-09-20T06:38:02Z",
+  "total_api_calls": 14
+}
