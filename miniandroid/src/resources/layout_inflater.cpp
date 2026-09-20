@@ -2,6 +2,7 @@
  * UNIFIED_007 — Real Layout Inflater implementation.
  */
 #include "layout_inflater.h"
+#include "resource_runtime.h"  // S68 W2: ?attr/theme resolution service
 #include <unordered_set>
 
 #include "../fonts/text_shaper.h"
@@ -471,10 +472,22 @@ bool LayoutInflater::apply_style_item(Attrs& a, uint32_t attr_key,
                                       const ResValue& item, InflateStats& stats) {
     (void)stats;
     ResValue v = item;
+    // S68 W2 (A1/A10): a style item may be a THEME reference
+    // (<item name="textColor">?attr/textColorPrimary</item> — TypedValue
+    // TYPE_ATTRIBUTE): resolve through the theme service FIRST (a theme
+    // attr id is NOT an ARSC entry id — the generic deref below would read
+    // the attr DEFINITION, not the themed value).
+    if (v.type == DataType::ATTRIBUTE) {
+        auto tv = resources::ResourceRuntime::instance().resolve_theme_attr_typed(
+            apk_path_, v.ref_id);
+        if (!tv) return false;
+        v = *tv;
+        stats.theme_attrs_resolved++;
+    }
     // AOSP Style law: a style item may itself be a reference
     // (e.g. <item name="textColor">@color/foo</item>) — dereference through
     // the canonical resolver before interpreting.
-    if (v.is_reference()) {
+    else if (v.is_reference()) {
         auto rv = arsc_.resolve_value(v.ref_id);
         if (!rv) return false;
         v = *rv;
@@ -785,7 +798,38 @@ uint32_t LayoutInflater::inflate_element(framework::ViewShadow* views, const Axm
 }
 
 void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
-                                         const AxmlElement& el, Attrs& a, InflateStats& stats) {
+                                         const AxmlElement& el_in, Attrs& a, InflateStats& stats) {
+    // ── S68 W2 (A1/A10): ?attr/theme attribute pre-pass ──────────────────
+    // AOSP TypedValue law: TYPE_ATTRIBUTE (0x02) values ("?attr/name") are
+    // resolved through the CONTEXT THEME at inflation time — the resolved
+    // value replaces the attribute for EVERY downstream consumer (text
+    // color, background, textSize, visibility, ...). Resolved here ONCE on
+    // a mutable element copy so no consumer can misread an attr id as a
+    // resource id. Unresolved app attrs fall back to the View default
+    // (AOSP behavior); unresolved FRAMEWORK attrs are reported.
+    AxmlElement el = el_in;
+    {
+        static const bool w2diag = std::getenv("MINIANDROID_W2_DIAG") != nullptr;
+        for (auto& at : el.attributes) {
+            if (at.value.type != DataType::ATTRIBUTE) continue;
+            auto tv = resources::ResourceRuntime::instance().resolve_theme_attr_typed(
+                apk_path_, at.value.ref_id);
+            if (tv) {
+                if (w2diag)
+                    fprintf(stderr, "[W2-ATTR] ?0x%08x -> type=%d data=0x%x\n",
+                            at.value.ref_id, (int)tv->type, (int)tv->data);
+                at.value = *tv;
+                stats.theme_attrs_resolved++;
+            } else {
+                stats.unresolved_theme_attrs++;
+                if ((at.value.ref_id >> 24) == 0x01)
+                    fprintf(stderr,
+                            "[W2-ATTR] framework attr 0x%08x DEFERRED-BY-CONTRACT "
+                            "(no theme value, no framework default)\n",
+                            at.value.ref_id);
+            }
+        }
+    }
     auto raw_of = [&](const AxmlAttribute* at) -> std::string {
         if (!at) return "";
         return !at->raw_value.empty() ? at->raw_value : at->value.string_value;
@@ -936,7 +980,13 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
                                           : (raw != "false");
         }
         else if (n == "background") {
-            if (at.value.is_reference()) {
+            // S68 W2 (A1/A10): theme-resolved values arrive as typed
+            // INT_HEX/INT_DEC colors (the pre-pass already dereferenced the
+            // ?attr indirection) — consume the data directly.
+            if (at.value.is_color() || at.value.is_int()) {
+                a.bg_color = (uint32_t)at.value.data;
+            }
+            else if (at.value.is_reference()) {
                 uint16_t sel_d = 0;
                 std::string p = drawable_file_for_resid(at.value.ref_id, &sel_d);
                 if (!p.empty()) { a.bg_drawable = p; a.bg_drawable_density = sel_d; }

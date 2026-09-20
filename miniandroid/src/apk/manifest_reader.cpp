@@ -519,6 +519,16 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
     // is never resolved.
     if (name == "activity" || name == "activity-alias") {
         current_activity_name_ = get_attribute_value(attrs, "name");
+        // S68 W2 (A1/A10): per-activity android:theme (attr 0x01010000).
+        // Captured when this activity IS the main activity (its theme
+        // governs the launch window per ActivityInfo.theme law).
+        for (const auto& a : attrs) {
+            if (get_string(a.name_index) == "theme" &&
+                (a.value_data_type == 0x01 || a.value_data_type == 0x02)) {
+                activity_theme_resid_pending_ = a.value_data;
+                break;
+            }
+        }
         // EXP-038: For activity-alias, also capture targetActivity (the real class)
         current_activity_target_ = get_attribute_value(attrs, "targetActivity");
         activity_has_main_action_ = false;
@@ -627,6 +637,10 @@ void ManifestReader::process_end_element(const std::string& ns, const std::strin
                         break;
                     }
                 }
+                // S68 W2 (A1/A10): this IS the main activity → its
+                // android:theme governs the launch window (ActivityInfo.theme
+                // overrides <application android:theme>).
+                result_.activity_theme_resid = activity_theme_resid_pending_;
                 
                 log("Main Activity: " + result_.main_activity + " (" + result_.main_activity_full + ")");
             }
