@@ -74,6 +74,13 @@ struct ExecutionConfig {
     // view→pixel provenance artifact (x/y/w/h/class/text/visibility per node)
     // and was previously only reachable through the legacy EXP-061 flow.
     bool dump_view_tree = false;
+    // S69 SOURCE-LINKED CAMPAIGN (§2B API graph / §13 API coverage matrix):
+    // dump the engine's ApiCallTrace ring (every invoke bridged to the
+    // framework during the main DEX execution — class, method, descriptor,
+    // status IMPLEMENTED/STUBBED/MISSING/ERROR) to <output>/api_calls.json.
+    // This is the LIVE dispatch surface — ground truth that pairs with the
+    // static served-API extraction in tools/architecture/.
+    bool dump_api_trace = false;
     // UNIFIED_011.2 CLICK-TEST (§10/§11): generic touch probe. After the first
     // frame is captured, dispatch a real click on every view with a registered
     // listener, re-render, and record which clicks change pixels (L9→L12:

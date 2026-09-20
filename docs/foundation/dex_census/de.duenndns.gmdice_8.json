@@ -1,0 +1,1950 @@
+{
+ "apk": "de.duenndns.gmdice_8.apk",
+ "package": "de.duenndns.gmdice",
+ "versionCode": "8",
+ "app_classes": 23,
+ "app_methods": 104,
+ "api_call_sites": 465,
+ "distinct_apis": 199,
+ "top_target_classes": [
+  [
+   "Ljava/lang/StringBuilder;",
+   77
+  ],
+  [
+   "Ljava/lang/Integer;",
+   51
+  ],
+  [
+   "Lde/duenndns/gmdice/GameMasterDice;",
+   40
+  ],
+  [
+   "Lde/duenndns/gmdice/DiceSet;",
+   32
+  ],
+  [
+   "Ljava/lang/String;",
+   28
+  ],
+  [
+   "Landroid/app/AlertDialog$Builder;",
+   24
+  ],
+  [
+   "Lde/duenndns/gmdice/SignedNumberPicker;",
+   18
+  ],
+  [
+   "Ljava/util/ArrayList;",
+   17
+  ],
+  [
+   "Landroid/widget/NumberPicker;",
+   16
+  ],
+  [
+   "Ljava/lang/Object;",
+   14
+  ],
+  [
+   "Landroid/widget/Button;",
+   14
+  ],
+  [
+   "Landroid/widget/ArrayAdapter;",
+   11
+  ],
+  [
+   "Landroid/widget/EditText;",
+   8
+  ],
+  [
+   "Landroid/content/SharedPreferences;",
+   7
+  ],
+  [
+   "Landroid/util/Log;",
+   6
+  ],
+  [
+   "Lde/duenndns/gmdice/DiceCache;",
+   6
+  ],
+  [
+   "Ljava/util/Random;",
+   5
+  ],
+  [
+   "Lde/duenndns/gmdice/OnDiceChange;",
+   5
+  ],
+  [
+   "Ljava/lang/CharSequence;",
+   5
+  ],
+  [
+   "Landroid/app/ListActivity;",
+   5
+  ],
+  [
+   "Lde/duenndns/gmdice/RollResultAdapter;",
+   5
+  ],
+  [
+   "Landroid/content/SharedPreferences$Editor;",
+   5
+  ],
+  [
+   "Ljava/util/Iterator;",
+   4
+  ],
+  [
+   "Landroid/app/AlertDialog;",
+   4
+  ],
+  [
+   "Ljava/util/List;",
+   3
+  ]
+ ],
+ "api_sites": [
+  {
+   "target_class": "Ljava/lang/Integer;",
+   "method": "valueOf",
+   "descriptor": "(I)",
+   "call_sites": 44
+  },
+  {
+   "target_class": "Ljava/lang/StringBuilder;",
+   "method": "append",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 36
+  },
+  {
+   "target_class": "Ljava/lang/StringBuilder;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 15
+  },
+  {
+   "target_class": "Ljava/lang/StringBuilder;",
+   "method": "toString",
+   "descriptor": "()",
+   "call_sites": 15
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/DiceSet;",
+   "method": "getDiceSet",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 14
+  },
+  {
+   "target_class": "Ljava/lang/Object;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 11
+  },
+  {
+   "target_class": "Ljava/lang/String;",
+   "method": "format",
+   "descriptor": "(Ljava/lang/String; [Ljava/lang/Object;)",
+   "call_sites": 8
+  },
+  {
+   "target_class": "Ljava/lang/StringBuilder;",
+   "method": "append",
+   "descriptor": "(I)",
+   "call_sites": 7
+  },
+  {
+   "target_class": "Ljava/util/ArrayList;",
+   "method": "add",
+   "descriptor": "(Ljava/lang/Object;)",
+   "call_sites": 6
+  },
+  {
+   "target_class": "Landroid/util/Log;",
+   "method": "d",
+   "descriptor": "(Ljava/lang/String; Ljava/lang/String;)",
+   "call_sites": 6
+  },
+  {
+   "target_class": "Ljava/lang/String;",
+   "method": "length",
+   "descriptor": "()",
+   "call_sites": 5
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/DiceSet;",
+   "method": "toString",
+   "descriptor": "()",
+   "call_sites": 5
+  },
+  {
+   "target_class": "Ljava/lang/String;",
+   "method": "equals",
+   "descriptor": "(Ljava/lang/Object;)",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Ljava/lang/Integer;",
+   "method": "parseInt",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/DiceSet;",
+   "method": "getDiceSet",
+   "descriptor": "()",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/DiceSet;",
+   "method": "getDiceSet",
+   "descriptor": "(I I I)",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/DiceSet;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Ljava/util/Random;",
+   "method": "nextInt",
+   "descriptor": "(I)",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Landroid/widget/ArrayAdapter;",
+   "method": "add",
+   "descriptor": "(Ljava/lang/Object;)",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Ljava/lang/StringBuilder;",
+   "method": "append",
+   "descriptor": "(Ljava/lang/Object;)",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Ljava/lang/CharSequence;",
+   "method": "toString",
+   "descriptor": "()",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/GameMasterDice;",
+   "method": "getString",
+   "descriptor": "(I)",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Landroid/app/AlertDialog$Builder;",
+   "method": "<init>",
+   "descriptor": "(Landroid/content/Context;)",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Landroid/app/AlertDialog$Builder;",
+   "method": "create",
+   "descriptor": "()",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Landroid/app/AlertDialog;",
+   "method": "show",
+   "descriptor": "()",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Ljava/lang/String;",
+   "method": "valueOf",
+   "descriptor": "(I)",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Ljava/lang/String;",
+   "method": "split",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Ljava/util/List;",
+   "method": "contains",
+   "descriptor": "(Ljava/lang/Object;)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/OnDiceChange;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/GameMasterDice;",
+   "method": "roll",
+   "descriptor": "(Lde/duenndns/gmdice/DiceSet; I)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/GameMasterDice;",
+   "method": "configureDice",
+   "descriptor": "(Lde/duenndns/gmdice/DiceSet; Lde/duenndns/gmdice/OnDiceChange;)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Landroid/app/AlertDialog$Builder;",
+   "method": "setPositiveButton",
+   "descriptor": "(I Landroid/content/DialogInterface$OnClickListener;)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Landroid/content/SharedPreferences;",
+   "method": "getBoolean",
+   "descriptor": "(Ljava/lang/String; Z)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Landroid/app/AlertDialog$Builder;",
+   "method": "setTitle",
+   "descriptor": "(I)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Landroid/widget/Button;",
+   "method": "getText",
+   "descriptor": "()",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/GameMasterDice;",
+   "method": "findViewById",
+   "descriptor": "(I)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/SignedNumberPicker;",
+   "method": "init",
+   "descriptor": "()",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/SignedNumberPicker;",
+   "method": "init",
+   "descriptor": "(Landroid/view/View;)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/StandardDiceSet;",
+   "method": "<init>",
+   "descriptor": "(I I I)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/FUDGEDiceSet;",
+   "method": "<init>",
+   "descriptor": "(I I)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Ljava/lang/Object;",
+   "method": "getClass",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Ljava/util/ArrayList;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Ljava/util/ArrayList;",
+   "method": "size",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Ljava/util/ArrayList;",
+   "method": "iterator",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Ljava/util/Iterator;",
+   "method": "hasNext",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Ljava/util/Iterator;",
+   "method": "next",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/widget/Button;",
+   "method": "setText",
+   "descriptor": "(Ljava/lang/CharSequence;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/GameMasterDice;",
+   "method": "selectDice",
+   "descriptor": "(Lde/duenndns/gmdice/DiceSet; Z Lde/duenndns/gmdice/OnDiceChange;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/SignedNumberPicker;",
+   "method": "getRealValue",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/GameMasterDice;",
+   "method": "access$000",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/OnDiceChange;",
+   "method": "onDiceChange",
+   "descriptor": "(Lde/duenndns/gmdice/DiceSet;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/app/AlertDialog$Builder;",
+   "method": "setMessage",
+   "descriptor": "(Ljava/lang/CharSequence;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/app/AlertDialog$Builder;",
+   "method": "setNeutralButton",
+   "descriptor": "(I Landroid/content/DialogInterface$OnClickListener;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/GameMasterDice;",
+   "method": "getWindow",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/app/AlertDialog$Builder;",
+   "method": "setNegativeButton",
+   "descriptor": "(I Landroid/content/DialogInterface$OnClickListener;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/content/SharedPreferences;",
+   "method": "getString",
+   "descriptor": "(Ljava/lang/String; Ljava/lang/String;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/widget/Button;",
+   "method": "setOnClickListener",
+   "descriptor": "(Landroid/view/View$OnClickListener;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/widget/Button;",
+   "method": "setOnLongClickListener",
+   "descriptor": "(Landroid/view/View$OnLongClickListener;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/widget/Button;",
+   "method": "getBackground",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/graphics/drawable/Drawable;",
+   "method": "setColorFilter",
+   "descriptor": "(I Landroid/graphics/PorterDuff$Mode;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/GameMasterDice;",
+   "method": "getResources",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/content/res/Resources;",
+   "method": "getColor",
+   "descriptor": "(I)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/widget/Button;",
+   "method": "setTextColor",
+   "descriptor": "(I)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/GameMasterDice;",
+   "method": "getListView",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/RollResultAdapter;",
+   "method": "getItem",
+   "descriptor": "(I)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/GameMasterDice;",
+   "method": "configKeepScreenOn",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/widget/ArrayAdapter;",
+   "method": "<init>",
+   "descriptor": "(Landroid/content/Context; I)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/view/View;",
+   "method": "findViewById",
+   "descriptor": "(I)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/content/SharedPreferences;",
+   "method": "edit",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/content/SharedPreferences$Editor;",
+   "method": "putString",
+   "descriptor": "(Ljava/lang/String; Ljava/lang/String;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/content/SharedPreferences$Editor;",
+   "method": "commit",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/text/Spanned;",
+   "method": "subSequence",
+   "descriptor": "(I I)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Ljava/lang/String;",
+   "method": "valueOf",
+   "descriptor": "(Ljava/lang/Object;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/SignedNumberPicker;",
+   "method": "setValueFromEditText",
+   "descriptor": "(Landroid/widget/EditText;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/widget/NumberPicker;",
+   "method": "getValue",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/widget/NumberPicker;",
+   "method": "setValue",
+   "descriptor": "(I)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/widget/EditText;",
+   "method": "getText",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/widget/NumberPicker;",
+   "method": "setMaxValue",
+   "descriptor": "(I)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/DSADiceSet;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/lang/String;",
+   "method": "indexOf",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/Coin;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/content/Context;",
+   "method": "getString",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/ArrayList;",
+   "method": "remove",
+   "descriptor": "(Ljava/lang/Object;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/ArrayList;",
+   "method": "add",
+   "descriptor": "(I Ljava/lang/Object;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/ArrayList;",
+   "method": "remove",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/ArrayList;",
+   "method": "get",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/ArrayList;",
+   "method": "clear",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/net/Uri;",
+   "method": "parse",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/content/Intent;",
+   "method": "<init>",
+   "descriptor": "(Ljava/lang/String; Landroid/net/Uri;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/GameMasterDice;",
+   "method": "startActivity",
+   "descriptor": "(Landroid/content/Intent;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/Spinner;",
+   "method": "getSelectedItem",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/ArrayAdapter;",
+   "method": "getItem",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/ArrayAdapter;",
+   "method": "getCount",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/app/ListActivity;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/DiceCache;",
+   "method": "<init>",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/Random;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/GameMasterDice;",
+   "method": "getPackageManager",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/GameMasterDice;",
+   "method": "getPackageName",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/content/pm/PackageManager;",
+   "method": "getPackageInfo",
+   "descriptor": "(Ljava/lang/String; I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/app/AlertDialog$Builder;",
+   "method": "setTitle",
+   "descriptor": "(Ljava/lang/CharSequence;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/app/AlertDialog$Builder;",
+   "method": "setIcon",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/GameMasterDice$1;",
+   "method": "<init>",
+   "descriptor": "(Lde/duenndns/gmdice/GameMasterDice;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/view/Window;",
+   "method": "addFlags",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/GameMasterDice;",
+   "method": "invalidateOptionsMenu",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/view/Window;",
+   "method": "clearFlags",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/GameMasterDice;",
+   "method": "getSystemService",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/view/LayoutInflater;",
+   "method": "inflate",
+   "descriptor": "(I Landroid/view/ViewGroup; Z)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/GameMasterDice;",
+   "method": "setupSpinner",
+   "descriptor": "(Landroid/view/View; I [Ljava/lang/String; Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/app/AlertDialog$Builder;",
+   "method": "setView",
+   "descriptor": "(Landroid/view/View;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/GameMasterDice$5;",
+   "method": "<init>",
+   "descriptor": "(Lde/duenndns/gmdice/GameMasterDice; Lde/duenndns/gmdice/DiceSet; Lde/duenndns/gmdice/OnDiceChange;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/lang/Integer;",
+   "method": "toString",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/DiceCache;",
+   "method": "loadFromString",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/GameMasterDice$2;",
+   "method": "<init>",
+   "descriptor": "(Lde/duenndns/gmdice/GameMasterDice;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/app/ListActivity;",
+   "method": "onCreate",
+   "descriptor": "(Landroid/os/Bundle;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/GameMasterDice;",
+   "method": "setContentView",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/GameMasterDice;",
+   "method": "setTitle",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/preference/PreferenceManager;",
+   "method": "getDefaultSharedPreferences",
+   "descriptor": "(Landroid/content/Context;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/Button;",
+   "method": "setTransformationMethod",
+   "descriptor": "(Landroid/text/method/TransformationMethod;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/GameMasterDice;",
+   "method": "getApplicationContext",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/RollResultAdapter;",
+   "method": "<init>",
+   "descriptor": "(Landroid/content/Context;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/GameMasterDice;",
+   "method": "setListAdapter",
+   "descriptor": "(Landroid/widget/ListAdapter;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/os/Bundle;",
+   "method": "getParcelable",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/ListView;",
+   "method": "onRestoreInstanceState",
+   "descriptor": "(Landroid/os/Parcelable;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/GameMasterDice;",
+   "method": "getMenuInflater",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/view/MenuInflater;",
+   "method": "inflate",
+   "descriptor": "(I Landroid/view/Menu;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/RollResult;",
+   "method": "showDetails",
+   "descriptor": "(Landroid/content/Context;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/DiceCache;",
+   "method": "get",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/GameMasterDice$3;",
+   "method": "<init>",
+   "descriptor": "(Lde/duenndns/gmdice/GameMasterDice;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/GameMasterDice$4;",
+   "method": "<init>",
+   "descriptor": "(Lde/duenndns/gmdice/GameMasterDice; Landroid/widget/Button;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/view/MenuItem;",
+   "method": "getItemId",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/GameMasterDice;",
+   "method": "toggleKeepScreenOn",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/RollResultAdapter;",
+   "method": "clear",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/TextView;",
+   "method": "setText",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/GameMasterDice;",
+   "method": "aboutDialog",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/app/ListActivity;",
+   "method": "onPause",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/GameMasterDice;",
+   "method": "storeDicePrefs",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/view/Menu;",
+   "method": "findItem",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/view/MenuItem;",
+   "method": "setIcon",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/app/ListActivity;",
+   "method": "onResume",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/GameMasterDice;",
+   "method": "loadDicePrefs",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/ListView;",
+   "method": "onSaveInstanceState",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/os/Bundle;",
+   "method": "putParcelable",
+   "descriptor": "(Ljava/lang/String; Landroid/os/Parcelable;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/app/ListActivity;",
+   "method": "onSaveInstanceState",
+   "descriptor": "(Landroid/os/Bundle;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/DiceSet;",
+   "method": "roll",
+   "descriptor": "(Landroid/content/Context; Ljava/util/Random;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/DiceCache;",
+   "method": "add",
+   "descriptor": "(Lde/duenndns/gmdice/DiceSet;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/TextView;",
+   "method": "setText",
+   "descriptor": "(Ljava/lang/CharSequence;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/RollResult;",
+   "method": "<init>",
+   "descriptor": "(Ljava/lang/String; I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/RollResultAdapter;",
+   "method": "add",
+   "descriptor": "(Ljava/lang/Object;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/Arrays;",
+   "method": "asList",
+   "descriptor": "([Ljava/lang/Object;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/DiceCache;",
+   "method": "populate",
+   "descriptor": "(Landroid/widget/ArrayAdapter; Ljava/util/List;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/GameMasterDice$7;",
+   "method": "<init>",
+   "descriptor": "(Lde/duenndns/gmdice/GameMasterDice; Landroid/widget/ArrayAdapter; Lde/duenndns/gmdice/DiceSet; Lde/duenndns/gmdice/OnDiceChange;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/app/AlertDialog$Builder;",
+   "method": "setAdapter",
+   "descriptor": "(Landroid/widget/ListAdapter; Landroid/content/DialogInterface$OnClickListener;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/SignedNumberPicker;",
+   "method": "setMinValue",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/SignedNumberPicker;",
+   "method": "setMaxValue",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/SignedNumberPicker;",
+   "method": "setValue",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/SignedNumberPicker;",
+   "method": "setWrapSelectorWheel",
+   "descriptor": "(Z)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/ArrayAdapter;",
+   "method": "<init>",
+   "descriptor": "(Landroid/content/Context; I [Ljava/lang/Object;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/ArrayAdapter;",
+   "method": "setDropDownViewResource",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/Spinner;",
+   "method": "setAdapter",
+   "descriptor": "(Landroid/widget/SpinnerAdapter;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/Spinner;",
+   "method": "setSelection",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/DiceCache;",
+   "method": "toString",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/content/SharedPreferences$Editor;",
+   "method": "putBoolean",
+   "descriptor": "(Ljava/lang/String; Z)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/ArrayAdapter;",
+   "method": "getView",
+   "descriptor": "(I Landroid/view/View; Landroid/view/ViewGroup;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/TextView;",
+   "method": "setTextColor",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/EditText;",
+   "method": "selectAll",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/SignedNumberPicker$OnTextFocusChangedListener;",
+   "method": "onTextFocusChanged",
+   "descriptor": "(Z)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/SignedNumberPicker;",
+   "method": "access$000",
+   "descriptor": "(Lde/duenndns/gmdice/SignedNumberPicker; Landroid/widget/EditText;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/SignedNumberPicker;",
+   "method": "access$300",
+   "descriptor": "(Lde/duenndns/gmdice/SignedNumberPicker;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/NumberPicker$OnValueChangeListener;",
+   "method": "onValueChange",
+   "descriptor": "(Landroid/widget/NumberPicker; I I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/text/method/NumberKeyListener;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/lang/CharSequence;",
+   "method": "subSequence",
+   "descriptor": "(I I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/text/Spanned;",
+   "method": "length",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/SignedNumberPicker$InputTextFilter;",
+   "method": "getSelectedPos",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/NumberPicker;",
+   "method": "<init>",
+   "descriptor": "(Landroid/content/Context;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/NumberPicker;",
+   "method": "<init>",
+   "descriptor": "(Landroid/content/Context; Landroid/util/AttributeSet;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/NumberPicker;",
+   "method": "<init>",
+   "descriptor": "(Landroid/content/Context; Landroid/util/AttributeSet; I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/SignedNumberPicker$1;",
+   "method": "<init>",
+   "descriptor": "(Lde/duenndns/gmdice/SignedNumberPicker;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/NumberPicker;",
+   "method": "setFormatter",
+   "descriptor": "(Landroid/widget/NumberPicker$Formatter;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/EditText;",
+   "method": "setInputType",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/SignedNumberPicker$InputTextFilter;",
+   "method": "<init>",
+   "descriptor": "(Lde/duenndns/gmdice/SignedNumberPicker;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/EditText;",
+   "method": "setFilters",
+   "descriptor": "([Landroid/text/InputFilter;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/SignedNumberPicker$2;",
+   "method": "<init>",
+   "descriptor": "(Lde/duenndns/gmdice/SignedNumberPicker;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/EditText;",
+   "method": "setOnFocusChangeListener",
+   "descriptor": "(Landroid/view/View$OnFocusChangeListener;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/lang/String;",
+   "method": "replace",
+   "descriptor": "(Ljava/lang/CharSequence; Ljava/lang/CharSequence;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/text/TextUtils;",
+   "method": "isEmpty",
+   "descriptor": "(Ljava/lang/CharSequence;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/SignedNumberPicker;",
+   "method": "access$101",
+   "descriptor": "(Lde/duenndns/gmdice/SignedNumberPicker;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/EditText;",
+   "method": "setText",
+   "descriptor": "(Ljava/lang/CharSequence;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/lang/Object;",
+   "method": "toString",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/lang/Integer;",
+   "method": "valueOf",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/lang/Integer;",
+   "method": "intValue",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/SignedNumberPicker;",
+   "method": "access$201",
+   "descriptor": "(Lde/duenndns/gmdice/SignedNumberPicker; I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/NumberPicker;",
+   "method": "addView",
+   "descriptor": "(Landroid/view/View;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/NumberPicker;",
+   "method": "addView",
+   "descriptor": "(Landroid/view/View; I Landroid/view/ViewGroup$LayoutParams;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/NumberPicker;",
+   "method": "addView",
+   "descriptor": "(Landroid/view/View; Landroid/view/ViewGroup$LayoutParams;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/EditText;",
+   "method": "hasFocus",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/NumberPicker;",
+   "method": "getMaxValue",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/NumberPicker;",
+   "method": "setMinValue",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lde/duenndns/gmdice/SignedNumberPicker$3;",
+   "method": "<init>",
+   "descriptor": "(Lde/duenndns/gmdice/SignedNumberPicker;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/NumberPicker;",
+   "method": "setOnValueChangedListener",
+   "descriptor": "(Landroid/widget/NumberPicker$OnValueChangeListener;)",
+   "call_sites": 1
+  }
+ ],
+ "method_apis": {
+  "Lde/duenndns/gmdice/DiceSet;-><init>()V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lde/duenndns/gmdice/DiceSet;->getDiceSet()Lde/duenndns/gmdice/DiceSet;": [
+   "Lde/duenndns/gmdice/StandardDiceSet;;.<init>"
+  ],
+  "Lde/duenndns/gmdice/DiceSet;->getDiceSet(I I I)Lde/duenndns/gmdice/DiceSet;": [
+   "Lde/duenndns/gmdice/StandardDiceSet;;.<init>"
+  ],
+  "Lde/duenndns/gmdice/DiceSet;->getDiceSet(Ljava/lang/String;)Lde/duenndns/gmdice/DiceSet;": [
+   "Ljava/lang/String;;.equals",
+   "Lde/duenndns/gmdice/DSADiceSet;;.<init>",
+   "Ljava/lang/String;;.split",
+   "Ljava/lang/Integer;;.parseInt",
+   "Ljava/lang/String;;.equals",
+   "Ljava/lang/Integer;;.parseInt",
+   "Ljava/lang/String;;.indexOf",
+   "Lde/duenndns/gmdice/Coin;;.<init>",
+   "Lde/duenndns/gmdice/DiceSet;;.getDiceSet",
+   "Ljava/lang/Integer;;.parseInt",
+   "Lde/duenndns/gmdice/FUDGEDiceSet;;.<init>",
+   "Lde/duenndns/gmdice/DiceSet;;.getDiceSet",
+   "Lde/duenndns/gmdice/DiceSet;;.getDiceSet"
+  ],
+  "Lde/duenndns/gmdice/DiceSet;->equals(Ljava/lang/Object;)Z": [
+   "Ljava/lang/Object;;.getClass",
+   "Ljava/lang/Object;;.getClass"
+  ],
+  "Lde/duenndns/gmdice/Coin;-><init>()V": [
+   "Lde/duenndns/gmdice/DiceSet;;.<init>"
+  ],
+  "Lde/duenndns/gmdice/Coin;->roll(Landroid/content/Context; Ljava/util/Random;)Ljava/lang/String;": [
+   "Ljava/util/Random;;.nextInt",
+   "Landroid/content/Context;;.getString"
+  ],
+  "Lde/duenndns/gmdice/DSADiceSet;-><init>()V": [
+   "Lde/duenndns/gmdice/DiceSet;;.<init>"
+  ],
+  "Lde/duenndns/gmdice/DSADiceSet;->roll(Landroid/content/Context; Ljava/util/Random;)Ljava/lang/String;": [
+   "Ljava/lang/StringBuilder;;.<init>",
+   "Ljava/util/Random;;.nextInt",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.toString"
+  ],
+  "Lde/duenndns/gmdice/DiceCache;-><init>(I)V": [
+   "Ljava/lang/Object;;.<init>",
+   "Ljava/util/ArrayList;;.<init>",
+   "Lde/duenndns/gmdice/DiceSet;;.getDiceSet",
+   "Ljava/util/ArrayList;;.add",
+   "Lde/duenndns/gmdice/DiceSet;;.getDiceSet",
+   "Ljava/util/ArrayList;;.add",
+   "Lde/duenndns/gmdice/DiceSet;;.getDiceSet",
+   "Ljava/util/ArrayList;;.add",
+   "Lde/duenndns/gmdice/DiceSet;;.getDiceSet",
+   "Ljava/util/ArrayList;;.add",
+   "Lde/duenndns/gmdice/DiceSet;;.getDiceSet",
+   "Ljava/util/ArrayList;;.add"
+  ],
+  "Lde/duenndns/gmdice/DiceCache;->add(Lde/duenndns/gmdice/DiceSet;)V": [
+   "Ljava/util/ArrayList;;.remove",
+   "Ljava/util/ArrayList;;.add",
+   "Ljava/util/ArrayList;;.size",
+   "Ljava/util/ArrayList;;.remove"
+  ],
+  "Lde/duenndns/gmdice/DiceCache;->get(I)Lde/duenndns/gmdice/DiceSet;": [
+   "Ljava/util/ArrayList;;.size",
+   "Lde/duenndns/gmdice/DiceSet;;.getDiceSet",
+   "Ljava/util/ArrayList;;.get"
+  ],
+  "Lde/duenndns/gmdice/DiceCache;->loadFromString(Ljava/lang/String;)V": [
+   "Ljava/lang/String;;.split",
+   "Ljava/util/ArrayList;;.clear",
+   "Ljava/lang/String;;.length",
+   "Lde/duenndns/gmdice/DiceSet;;.getDiceSet",
+   "Ljava/util/ArrayList;;.add"
+  ],
+  "Lde/duenndns/gmdice/DiceCache;->populate(Landroid/widget/ArrayAdapter; Ljava/util/List;)V": [
+   "Ljava/util/ArrayList;;.iterator",
+   "Ljava/util/Iterator;;.hasNext",
+   "Ljava/util/Iterator;;.next",
+   "Ljava/util/List;;.contains",
+   "Lde/duenndns/gmdice/DiceSet;;.toString",
+   "Landroid/widget/ArrayAdapter;;.add",
+   "Lde/duenndns/gmdice/DiceSet;;.getDiceSet",
+   "Ljava/util/List;;.contains",
+   "Landroid/widget/ArrayAdapter;;.add",
+   "Lde/duenndns/gmdice/DiceSet;;.getDiceSet",
+   "Ljava/util/List;;.contains",
+   "Landroid/widget/ArrayAdapter;;.add"
+  ],
+  "Lde/duenndns/gmdice/DiceCache;->toString()Ljava/lang/String;": [
+   "Ljava/lang/StringBuilder;;.<init>",
+   "Ljava/util/ArrayList;;.iterator",
+   "Ljava/util/Iterator;;.hasNext",
+   "Ljava/util/Iterator;;.next",
+   "Lde/duenndns/gmdice/DiceSet;;.toString",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.toString"
+  ],
+  "Lde/duenndns/gmdice/FUDGEDiceSet;-><init>()V": [
+   "Lde/duenndns/gmdice/FUDGEDiceSet;;.<init>"
+  ],
+  "Lde/duenndns/gmdice/FUDGEDiceSet;-><init>(I I)V": [
+   "Lde/duenndns/gmdice/DiceSet;;.<init>"
+  ],
+  "Lde/duenndns/gmdice/FUDGEDiceSet;->roll(Landroid/content/Context; Ljava/util/Random;)Ljava/lang/String;": [
+   "Ljava/lang/StringBuilder;;.<init>",
+   "Ljava/util/Random;;.nextInt",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/String;;.format",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/String;;.format",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.toString"
+  ],
+  "Lde/duenndns/gmdice/FUDGEDiceSet;->toString()Ljava/lang/String;": [
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/String;;.format",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/String;;.format"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice$1;-><init>(Lde/duenndns/gmdice/GameMasterDice;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice$1;->onClick(Landroid/content/DialogInterface; I)V": [
+   "Landroid/net/Uri;;.parse",
+   "Landroid/content/Intent;;.<init>",
+   "Lde/duenndns/gmdice/GameMasterDice;;.startActivity"
+  ],
+  "Lde/duenndns/gmdice/OnDiceChange;-><init>()V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice$2;-><init>(Lde/duenndns/gmdice/GameMasterDice;)V": [
+   "Lde/duenndns/gmdice/OnDiceChange;;.<init>"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice$2;->onDiceChange(Lde/duenndns/gmdice/DiceSet;)V": [
+   "Lde/duenndns/gmdice/GameMasterDice;;.roll"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice$3;-><init>(Lde/duenndns/gmdice/GameMasterDice;)V": [
+   "Lde/duenndns/gmdice/OnDiceChange;;.<init>"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice$3;->onDiceChange(Lde/duenndns/gmdice/DiceSet;)V": [
+   "Lde/duenndns/gmdice/GameMasterDice;;.roll"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice$4;-><init>(Lde/duenndns/gmdice/GameMasterDice; Landroid/widget/Button;)V": [
+   "Lde/duenndns/gmdice/OnDiceChange;;.<init>"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice$4;->onDiceChange(Lde/duenndns/gmdice/DiceSet;)V": [
+   "Lde/duenndns/gmdice/DiceSet;;.toString",
+   "Landroid/widget/Button;;.setText"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice$5;-><init>(Lde/duenndns/gmdice/GameMasterDice; Lde/duenndns/gmdice/DiceSet; Lde/duenndns/gmdice/OnDiceChange;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice$5;->onClick(Landroid/content/DialogInterface; I)V": [
+   "Lde/duenndns/gmdice/GameMasterDice;;.selectDice"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice$6;-><init>(Lde/duenndns/gmdice/GameMasterDice; Lde/duenndns/gmdice/SignedNumberPicker; Landroid/widget/Spinner; Lde/duenndns/gmdice/SignedNumberPicker; Lde/duenndns/gmdice/OnDiceChange;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice$6;->onClick(Landroid/content/DialogInterface; I)V": [
+   "Lde/duenndns/gmdice/SignedNumberPicker;;.getRealValue",
+   "Ljava/lang/Integer;;.valueOf",
+   "Landroid/widget/Spinner;;.getSelectedItem",
+   "Lde/duenndns/gmdice/SignedNumberPicker;;.getRealValue",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/String;;.format",
+   "Lde/duenndns/gmdice/DiceSet;;.getDiceSet",
+   "Lde/duenndns/gmdice/GameMasterDice;;.access$000",
+   "Ljava/lang/StringBuilder;;.<init>",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.toString",
+   "Landroid/util/Log;;.d",
+   "Lde/duenndns/gmdice/OnDiceChange;;.onDiceChange"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice$7;-><init>(Lde/duenndns/gmdice/GameMasterDice; Landroid/widget/ArrayAdapter; Lde/duenndns/gmdice/DiceSet; Lde/duenndns/gmdice/OnDiceChange;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice$7;->onClick(Landroid/content/DialogInterface; I)V": [
+   "Landroid/widget/ArrayAdapter;;.getItem",
+   "Ljava/lang/CharSequence;;.toString",
+   "Lde/duenndns/gmdice/GameMasterDice;;.access$000",
+   "Ljava/lang/StringBuilder;;.<init>",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.toString",
+   "Landroid/util/Log;;.d",
+   "Landroid/widget/ArrayAdapter;;.getCount",
+   "Lde/duenndns/gmdice/GameMasterDice;;.configureDice",
+   "Lde/duenndns/gmdice/DiceSet;;.getDiceSet",
+   "Lde/duenndns/gmdice/OnDiceChange;;.onDiceChange"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice;-><clinit>()V": [
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice;-><init>()V": [
+   "Landroid/app/ListActivity;;.<init>",
+   "Lde/duenndns/gmdice/DiceSet;;.getDiceSet",
+   "Lde/duenndns/gmdice/DiceSet;;.getDiceSet",
+   "Lde/duenndns/gmdice/DiceSet;;.getDiceSet",
+   "Lde/duenndns/gmdice/DiceSet;;.getDiceSet",
+   "Lde/duenndns/gmdice/DiceCache;;.<init>",
+   "Ljava/util/Random;;.<init>"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice;->aboutDialog()V": [
+   "Lde/duenndns/gmdice/GameMasterDice;;.getString",
+   "Lde/duenndns/gmdice/GameMasterDice;;.getPackageManager",
+   "Lde/duenndns/gmdice/GameMasterDice;;.getPackageName",
+   "Landroid/content/pm/PackageManager;;.getPackageInfo",
+   "Ljava/lang/StringBuilder;;.<init>",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.toString",
+   "Ljava/lang/StringBuilder;;.<init>",
+   "Lde/duenndns/gmdice/GameMasterDice;;.getString",
+   "Ljava/lang/StringBuilder;;.append",
+   "Lde/duenndns/gmdice/GameMasterDice;;.getString",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.toString",
+   "Landroid/app/AlertDialog$Builder;;.<init>",
+   "Landroid/app/AlertDialog$Builder;;.setTitle",
+   "Landroid/app/AlertDialog$Builder;;.setIcon",
+   "Landroid/app/AlertDialog$Builder;;.setMessage",
+   "Landroid/app/AlertDialog$Builder;;.setPositiveButton",
+   "Lde/duenndns/gmdice/GameMasterDice$1;;.<init>",
+   "Landroid/app/AlertDialog$Builder;;.setNeutralButton",
+   "Landroid/app/AlertDialog$Builder;;.create",
+   "Landroid/app/AlertDialog;;.show"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice;->configKeepScreenOn()V": [
+   "Landroid/content/SharedPreferences;;.getBoolean",
+   "Lde/duenndns/gmdice/GameMasterDice;;.getWindow",
+   "Landroid/view/Window;;.addFlags",
+   "Lde/duenndns/gmdice/GameMasterDice;;.invalidateOptionsMenu",
+   "Lde/duenndns/gmdice/GameMasterDice;;.getWindow",
+   "Landroid/view/Window;;.clearFlags"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice;->configureDice(Lde/duenndns/gmdice/DiceSet; Lde/duenndns/gmdice/OnDiceChange;)V": [
+   "Lde/duenndns/gmdice/GameMasterDice;;.getSystemService",
+   "Landroid/view/LayoutInflater;;.inflate",
+   "Lde/duenndns/gmdice/GameMasterDice;;.setupSpinner",
+   "Landroid/app/AlertDialog$Builder;;.<init>",
+   "Landroid/app/AlertDialog$Builder;;.setTitle",
+   "Landroid/app/AlertDialog$Builder;;.setView",
+   "Landroid/app/AlertDialog$Builder;;.setPositiveButton",
+   "Lde/duenndns/gmdice/GameMasterDice$5;;.<init>",
+   "Landroid/app/AlertDialog$Builder;;.setNeutralButton",
+   "Landroid/app/AlertDialog$Builder;;.setNegativeButton",
+   "Landroid/app/AlertDialog$Builder;;.create",
+   "Landroid/app/AlertDialog;;.show",
+   "Ljava/lang/Integer;;.toString"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice;->loadDicePrefs()V": [
+   "Landroid/content/SharedPreferences;;.getString",
+   "Ljava/lang/String;;.split",
+   "Ljava/lang/StringBuilder;;.<init>",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.toString",
+   "Landroid/util/Log;;.d",
+   "Lde/duenndns/gmdice/DiceSet;;.getDiceSet",
+   "Landroid/content/SharedPreferences;;.getString",
+   "Lde/duenndns/gmdice/DiceCache;;.loadFromString"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice;->onClick(Landroid/view/View;)V": [
+   "Lde/duenndns/gmdice/DiceSet;;.getDiceSet",
+   "Lde/duenndns/gmdice/GameMasterDice$2;;.<init>",
+   "Lde/duenndns/gmdice/GameMasterDice;;.selectDice",
+   "Landroid/widget/Button;;.getText",
+   "Ljava/lang/CharSequence;;.toString",
+   "Lde/duenndns/gmdice/DiceSet;;.getDiceSet",
+   "Lde/duenndns/gmdice/GameMasterDice;;.roll"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice;->onCreate(Landroid/os/Bundle;)V": [
+   "Landroid/app/ListActivity;;.onCreate",
+   "Lde/duenndns/gmdice/GameMasterDice;;.setContentView",
+   "Lde/duenndns/gmdice/GameMasterDice;;.setTitle",
+   "Landroid/preference/PreferenceManager;;.getDefaultSharedPreferences",
+   "Lde/duenndns/gmdice/GameMasterDice;;.findViewById",
+   "Landroid/widget/Button;;.setOnClickListener",
+   "Landroid/widget/Button;;.setOnLongClickListener",
+   "Landroid/widget/Button;;.setTransformationMethod",
+   "Landroid/widget/Button;;.getBackground",
+   "Landroid/graphics/drawable/Drawable;;.setColorFilter",
+   "Lde/duenndns/gmdice/GameMasterDice;;.getResources",
+   "Landroid/content/res/Resources;;.getColor",
+   "Landroid/widget/Button;;.setTextColor",
+   "Lde/duenndns/gmdice/GameMasterDice;;.findViewById",
+   "Landroid/widget/Button;;.setOnClickListener",
+   "Landroid/widget/Button;;.setOnLongClickListener",
+   "Landroid/widget/Button;;.getBackground",
+   "Landroid/graphics/drawable/Drawable;;.setColorFilter",
+   "Lde/duenndns/gmdice/GameMasterDice;;.getResources",
+   "Landroid/content/res/Resources;;.getColor",
+   "Landroid/widget/Button;;.setTextColor",
+   "Lde/duenndns/gmdice/GameMasterDice;;.findViewById",
+   "Lde/duenndns/gmdice/GameMasterDice;;.getApplicationContext",
+   "Lde/duenndns/gmdice/RollResultAdapter;;.<init>",
+   "Lde/duenndns/gmdice/GameMasterDice;;.setListAdapter",
+   "Lde/duenndns/gmdice/GameMasterDice;;.getListView",
+   "Landroid/os/Bundle;;.getParcelable",
+   "Landroid/widget/ListView;;.onRestoreInstanceState"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice;->onCreateOptionsMenu(Landroid/view/Menu;)Z": [
+   "Lde/duenndns/gmdice/GameMasterDice;;.getMenuInflater",
+   "Landroid/view/MenuInflater;;.inflate"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice;->onListItemClick(Landroid/widget/ListView; Landroid/view/View; I J)V": [
+   "Lde/duenndns/gmdice/RollResultAdapter;;.getItem",
+   "Lde/duenndns/gmdice/RollResult;;.showDetails"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice;->onLongClick(Landroid/view/View;)Z": [
+   "Ljava/lang/StringBuilder;;.<init>",
+   "Ljava/lang/StringBuilder;;.append",
+   "Landroid/widget/Button;;.getText",
+   "Ljava/lang/CharSequence;;.toString",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.toString",
+   "Landroid/util/Log;;.d",
+   "Lde/duenndns/gmdice/DiceCache;;.get",
+   "Lde/duenndns/gmdice/GameMasterDice$3;;.<init>",
+   "Lde/duenndns/gmdice/GameMasterDice;;.configureDice",
+   "Landroid/widget/Button;;.getText",
+   "Ljava/lang/CharSequence;;.toString",
+   "Lde/duenndns/gmdice/DiceSet;;.getDiceSet",
+   "Lde/duenndns/gmdice/GameMasterDice$4;;.<init>",
+   "Lde/duenndns/gmdice/GameMasterDice;;.configureDice"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice;->onOptionsItemSelected(Landroid/view/MenuItem;)Z": [
+   "Landroid/view/MenuItem;;.getItemId",
+   "Lde/duenndns/gmdice/GameMasterDice;;.toggleKeepScreenOn",
+   "Lde/duenndns/gmdice/RollResultAdapter;;.clear",
+   "Landroid/widget/TextView;;.setText",
+   "Lde/duenndns/gmdice/GameMasterDice;;.aboutDialog"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice;->onPause()V": [
+   "Landroid/app/ListActivity;;.onPause",
+   "Lde/duenndns/gmdice/GameMasterDice;;.storeDicePrefs"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice;->onPrepareOptionsMenu(Landroid/view/Menu;)Z": [
+   "Landroid/view/Menu;;.findItem",
+   "Landroid/content/SharedPreferences;;.getBoolean",
+   "Landroid/view/MenuItem;;.setIcon"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice;->onResume()V": [
+   "Landroid/app/ListActivity;;.onResume",
+   "Lde/duenndns/gmdice/GameMasterDice;;.loadDicePrefs",
+   "Lde/duenndns/gmdice/DiceSet;;.toString",
+   "Landroid/widget/Button;;.setText",
+   "Lde/duenndns/gmdice/GameMasterDice;;.configKeepScreenOn"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice;->onSaveInstanceState(Landroid/os/Bundle;)V": [
+   "Lde/duenndns/gmdice/GameMasterDice;;.getListView",
+   "Landroid/widget/ListView;;.onSaveInstanceState",
+   "Landroid/os/Bundle;;.putParcelable",
+   "Landroid/app/ListActivity;;.onSaveInstanceState"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice;->roll(Lde/duenndns/gmdice/DiceSet; I)V": [
+   "Lde/duenndns/gmdice/DiceSet;;.roll",
+   "Lde/duenndns/gmdice/DiceCache;;.add",
+   "Landroid/widget/TextView;;.setText",
+   "Ljava/lang/StringBuilder;;.<init>",
+   "Lde/duenndns/gmdice/DiceSet;;.toString",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.toString",
+   "Ljava/lang/StringBuilder;;.<init>",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.toString",
+   "Landroid/util/Log;;.d",
+   "Lde/duenndns/gmdice/RollResult;;.<init>",
+   "Lde/duenndns/gmdice/RollResultAdapter;;.add"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice;->selectDice(Lde/duenndns/gmdice/DiceSet; Z Lde/duenndns/gmdice/OnDiceChange;)V": [
+   "Landroid/widget/ArrayAdapter;;.<init>",
+   "Ljava/util/Arrays;;.asList",
+   "Lde/duenndns/gmdice/DiceCache;;.populate",
+   "Lde/duenndns/gmdice/GameMasterDice;;.getString",
+   "Landroid/widget/ArrayAdapter;;.add",
+   "Landroid/app/AlertDialog$Builder;;.<init>",
+   "Landroid/app/AlertDialog$Builder;;.setTitle",
+   "Lde/duenndns/gmdice/GameMasterDice$7;;.<init>",
+   "Landroid/app/AlertDialog$Builder;;.setAdapter",
+   "Landroid/app/AlertDialog$Builder;;.setNegativeButton",
+   "Landroid/app/AlertDialog$Builder;;.create",
+   "Landroid/app/AlertDialog;;.show",
+   "Ljava/util/ArrayList;;.<init>"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice;->setupNumPicker(Landroid/view/View; I I I I)Lde/duenndns/gmdice/SignedNumberPicker;": [
+   "Landroid/view/View;;.findViewById",
+   "Ljava/lang/StringBuilder;;.<init>",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.toString",
+   "Landroid/util/Log;;.d",
+   "Lde/duenndns/gmdice/SignedNumberPicker;;.setMinValue",
+   "Lde/duenndns/gmdice/SignedNumberPicker;;.setMaxValue",
+   "Lde/duenndns/gmdice/SignedNumberPicker;;.setValue",
+   "Lde/duenndns/gmdice/SignedNumberPicker;;.setWrapSelectorWheel"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice;->setupSpinner(Landroid/view/View; I [Ljava/lang/String; Ljava/lang/String;)Landroid/widget/Spinner;": [
+   "Landroid/view/View;;.findViewById",
+   "Landroid/widget/ArrayAdapter;;.<init>",
+   "Landroid/widget/ArrayAdapter;;.setDropDownViewResource",
+   "Landroid/widget/Spinner;;.setAdapter",
+   "Ljava/lang/String;;.equals",
+   "Landroid/widget/Spinner;;.setSelection"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice;->storeDicePrefs()V": [
+   "Ljava/lang/StringBuilder;;.<init>",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Landroid/content/SharedPreferences;;.edit",
+   "Ljava/lang/StringBuilder;;.toString",
+   "Landroid/content/SharedPreferences$Editor;;.putString",
+   "Lde/duenndns/gmdice/DiceCache;;.toString",
+   "Landroid/content/SharedPreferences$Editor;;.putString",
+   "Landroid/content/SharedPreferences$Editor;;.commit"
+  ],
+  "Lde/duenndns/gmdice/GameMasterDice;->toggleKeepScreenOn()V": [
+   "Landroid/content/SharedPreferences;;.getBoolean",
+   "Landroid/content/SharedPreferences;;.edit",
+   "Landroid/content/SharedPreferences$Editor;;.putBoolean",
+   "Landroid/content/SharedPreferences$Editor;;.commit",
+   "Lde/duenndns/gmdice/GameMasterDice;;.configKeepScreenOn"
+  ],
+  "Lde/duenndns/gmdice/RollResult;-><init>(Ljava/lang/String; I)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lde/duenndns/gmdice/RollResult;->showDetails(Landroid/content/Context;)V": [
+   "Landroid/app/AlertDialog$Builder;;.<init>",
+   "Landroid/app/AlertDialog$Builder;;.setTitle",
+   "Landroid/app/AlertDialog$Builder;;.setMessage",
+   "Landroid/app/AlertDialog$Builder;;.setPositiveButton",
+   "Landroid/app/AlertDialog$Builder;;.create",
+   "Landroid/app/AlertDialog;;.show"
+  ],
+  "Lde/duenndns/gmdice/RollResultAdapter;-><init>(Landroid/content/Context;)V": [
+   "Landroid/widget/ArrayAdapter;;.<init>"
+  ],
+  "Lde/duenndns/gmdice/RollResultAdapter;->getView(I Landroid/view/View; Landroid/view/ViewGroup;)Landroid/view/View;": [
+   "Landroid/widget/ArrayAdapter;;.getView",
+   "Lde/duenndns/gmdice/RollResultAdapter;;.getItem",
+   "Landroid/widget/TextView;;.setTextColor"
+  ],
+  "Lde/duenndns/gmdice/SignedNumberPicker$1;-><init>(Lde/duenndns/gmdice/SignedNumberPicker;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lde/duenndns/gmdice/SignedNumberPicker$1;->format(I)Ljava/lang/String;": [
+   "Ljava/lang/String;;.valueOf"
+  ],
+  "Lde/duenndns/gmdice/SignedNumberPicker$2;-><init>(Lde/duenndns/gmdice/SignedNumberPicker;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lde/duenndns/gmdice/SignedNumberPicker$2;->onFocusChange(Landroid/view/View; Z)V": [
+   "Landroid/widget/EditText;;.selectAll",
+   "Lde/duenndns/gmdice/SignedNumberPicker$OnTextFocusChangedListener;;.onTextFocusChanged",
+   "Lde/duenndns/gmdice/SignedNumberPicker;;.access$000"
+  ],
+  "Lde/duenndns/gmdice/SignedNumberPicker$3;-><init>(Lde/duenndns/gmdice/SignedNumberPicker;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lde/duenndns/gmdice/SignedNumberPicker$3;->onValueChange(Landroid/widget/NumberPicker; I I)V": [
+   "Lde/duenndns/gmdice/SignedNumberPicker;;.access$300",
+   "Landroid/widget/NumberPicker$OnValueChangeListener;;.onValueChange"
+  ],
+  "Lde/duenndns/gmdice/SignedNumberPicker$InputTextFilter;-><init>(Lde/duenndns/gmdice/SignedNumberPicker;)V": [
+   "Landroid/text/method/NumberKeyListener;;.<init>"
+  ],
+  "Lde/duenndns/gmdice/SignedNumberPicker$InputTextFilter;->getSelectedPos(Ljava/lang/String;)I": [
+   "Ljava/lang/Integer;;.parseInt"
+  ],
+  "Lde/duenndns/gmdice/SignedNumberPicker$InputTextFilter;->filter(Ljava/lang/CharSequence; I I Landroid/text/Spanned; I I)Ljava/lang/CharSequence;": [
+   "Ljava/lang/CharSequence;;.subSequence",
+   "Ljava/lang/StringBuilder;;.<init>",
+   "Landroid/text/Spanned;;.subSequence",
+   "Ljava/lang/String;;.valueOf",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Landroid/text/Spanned;;.length",
+   "Landroid/text/Spanned;;.subSequence",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.toString",
+   "Ljava/lang/String;;.equals",
+   "Lde/duenndns/gmdice/SignedNumberPicker$InputTextFilter;;.getSelectedPos",
+   "Ljava/lang/String;;.length",
+   "Ljava/lang/String;;.valueOf",
+   "Ljava/lang/String;;.length",
+   "Ljava/lang/String;;.length",
+   "Ljava/lang/String;;.valueOf",
+   "Ljava/lang/String;;.length"
+  ],
+  "Lde/duenndns/gmdice/SignedNumberPicker;-><init>(Landroid/content/Context;)V": [
+   "Landroid/widget/NumberPicker;;.<init>",
+   "Lde/duenndns/gmdice/SignedNumberPicker;;.init"
+  ],
+  "Lde/duenndns/gmdice/SignedNumberPicker;-><init>(Landroid/content/Context; Landroid/util/AttributeSet;)V": [
+   "Landroid/widget/NumberPicker;;.<init>",
+   "Lde/duenndns/gmdice/SignedNumberPicker;;.init"
+  ],
+  "Lde/duenndns/gmdice/SignedNumberPicker;-><init>(Landroid/content/Context; Landroid/util/AttributeSet; I)V": [
+   "Landroid/widget/NumberPicker;;.<init>",
+   "Lde/duenndns/gmdice/SignedNumberPicker;;.init"
+  ],
+  "Lde/duenndns/gmdice/SignedNumberPicker;->access$000(Lde/duenndns/gmdice/SignedNumberPicker; Landroid/widget/EditText;)V": [
+   "Lde/duenndns/gmdice/SignedNumberPicker;;.setValueFromEditText"
+  ],
+  "Lde/duenndns/gmdice/SignedNumberPicker;->access$101(Lde/duenndns/gmdice/SignedNumberPicker;)I": [
+   "Landroid/widget/NumberPicker;;.getValue"
+  ],
+  "Lde/duenndns/gmdice/SignedNumberPicker;->access$201(Lde/duenndns/gmdice/SignedNumberPicker; I)V": [
+   "Landroid/widget/NumberPicker;;.setValue"
+  ],
+  "Lde/duenndns/gmdice/SignedNumberPicker;->init()V": [
+   "Lde/duenndns/gmdice/SignedNumberPicker$1;;.<init>",
+   "Landroid/widget/NumberPicker;;.setFormatter",
+   "Landroid/widget/EditText;;.setInputType",
+   "Lde/duenndns/gmdice/SignedNumberPicker$InputTextFilter;;.<init>",
+   "Landroid/widget/EditText;;.setFilters",
+   "Lde/duenndns/gmdice/SignedNumberPicker$2;;.<init>",
+   "Landroid/widget/EditText;;.setOnFocusChangeListener"
+  ],
+  "Lde/duenndns/gmdice/SignedNumberPicker;->setValueFromEditText(Landroid/widget/EditText;)V": [
+   "Landroid/widget/EditText;;.getText",
+   "Ljava/lang/String;;.valueOf",
+   "Ljava/lang/String;;.replace",
+   "Landroid/text/TextUtils;;.isEmpty",
+   "Lde/duenndns/gmdice/SignedNumberPicker;;.access$101",
+   "Ljava/lang/String;;.valueOf",
+   "Landroid/widget/EditText;;.setText",
+   "Landroid/widget/EditText;;.getText",
+   "Ljava/lang/Object;;.toString",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.intValue",
+   "Lde/duenndns/gmdice/SignedNumberPicker;;.access$201"
+  ],
+  "Lde/duenndns/gmdice/SignedNumberPicker;->addView(Landroid/view/View;)V": [
+   "Landroid/widget/NumberPicker;;.addView",
+   "Lde/duenndns/gmdice/SignedNumberPicker;;.init"
+  ],
+  "Lde/duenndns/gmdice/SignedNumberPicker;->addView(Landroid/view/View; I Landroid/view/ViewGroup$LayoutParams;)V": [
+   "Landroid/widget/NumberPicker;;.addView",
+   "Lde/duenndns/gmdice/SignedNumberPicker;;.init"
+  ],
+  "Lde/duenndns/gmdice/SignedNumberPicker;->addView(Landroid/view/View; Landroid/view/ViewGroup$LayoutParams;)V": [
+   "Landroid/widget/NumberPicker;;.addView",
+   "Lde/duenndns/gmdice/SignedNumberPicker;;.init"
+  ],
+  "Lde/duenndns/gmdice/SignedNumberPicker;->getRealValue()I": [
+   "Landroid/widget/EditText;;.hasFocus",
+   "Lde/duenndns/gmdice/SignedNumberPicker;;.setValueFromEditText",
+   "Landroid/widget/NumberPicker;;.getValue"
+  ],
+  "Lde/duenndns/gmdice/SignedNumberPicker;->setMaxValue(I)V": [
+   "Landroid/widget/NumberPicker;;.setMaxValue"
+  ],
+  "Lde/duenndns/gmdice/SignedNumberPicker;->setMinValue(I)V": [
+   "Landroid/widget/NumberPicker;;.getMaxValue",
+   "Landroid/widget/NumberPicker;;.setMaxValue",
+   "Landroid/widget/NumberPicker;;.setMinValue"
+  ],
+  "Lde/duenndns/gmdice/SignedNumberPicker;->setOnValueChangedListener(Landroid/widget/NumberPicker$OnValueChangeListener;)V": [
+   "Lde/duenndns/gmdice/SignedNumberPicker$3;;.<init>",
+   "Landroid/widget/NumberPicker;;.setOnValueChangedListener"
+  ],
+  "Lde/duenndns/gmdice/SignedNumberPicker;->setValue(I)V": [
+   "Landroid/widget/NumberPicker;;.setValue"
+  ],
+  "Lde/duenndns/gmdice/StandardDiceSet;-><init>(I I I)V": [
+   "Lde/duenndns/gmdice/DiceSet;;.<init>"
+  ],
+  "Lde/duenndns/gmdice/StandardDiceSet;->roll(Landroid/content/Context; Ljava/util/Random;)Ljava/lang/String;": [
+   "Ljava/lang/StringBuilder;;.<init>",
+   "Ljava/util/Random;;.nextInt",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/String;;.format",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.toString"
+  ],
+  "Lde/duenndns/gmdice/StandardDiceSet;->toString()Ljava/lang/String;": [
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/String;;.format",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/String;;.format"
+  ]
+ }
+}

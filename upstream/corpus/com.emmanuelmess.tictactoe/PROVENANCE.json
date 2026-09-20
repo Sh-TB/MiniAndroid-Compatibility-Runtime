@@ -1,0 +1,13 @@
+{
+ "apk": "com.emmanuelmess.tictactoe_3.apk",
+ "package": "com.emmanuelmess.tictactoe",
+ "versionCode": "3",
+ "source_repo": "github.com/EmmanuelMess/TicTacToeGame",
+ "source_commit": "v1.0.0",
+ "tarball_sha256": "bf1698ede5c91191b35ec73f4f12c4693ac89e491cca1a94b128e4c26dd89bc0",
+ "tarball_bytes": 625009,
+ "extracted": true,
+ "fetched_at": "2026-09-20T04:42:56Z",
+ "metadata_origin": "https://gitlab.com/fdroid/fdroiddata/-/raw/master/metadata/com.emmanuelmess.tictactoe.yml",
+ "codeload_origin": "https://codeload.github.com/github.com/EmmanuelMess/TicTacToeGame/tar.gz/v1.0.0"
+}

@@ -1,0 +1,1387 @@
+{
+ "apk": "opmt_v0.1.2_vc1.apk",
+ "package": "one.scarecrow.games.OPMT",
+ "versionCode": "1",
+ "app_classes": 31,
+ "app_methods": 103,
+ "api_call_sites": 320,
+ "distinct_apis": 127,
+ "top_target_classes": [
+  [
+   "Lone/scarecrow/games/OPMT/GameActivity;",
+   60
+  ],
+  [
+   "Lone/scarecrow/games/OPMT/Game/Pieces;",
+   48
+  ],
+  [
+   "Ljava/lang/String;",
+   29
+  ],
+  [
+   "Ljava/lang/Object;",
+   28
+  ],
+  [
+   "Landroid/widget/Button;",
+   27
+  ],
+  [
+   "Lone/scarecrow/games/OPMT/Game/Board;",
+   22
+  ],
+  [
+   "Lone/scarecrow/games/OPMT/MainMenu;",
+   21
+  ],
+  [
+   "Ljava/lang/Boolean;",
+   12
+  ],
+  [
+   "Landroid/app/AlertDialog$Builder;",
+   11
+  ],
+  [
+   "Ljava/lang/StringBuilder;",
+   7
+  ],
+  [
+   "Lone/scarecrow/games/OPMT/Game/Ai;",
+   6
+  ],
+  [
+   "Landroidx/appcompat/app/AppCompatActivity;",
+   6
+  ],
+  [
+   "Ljava/util/List;",
+   4
+  ],
+  [
+   "Landroid/content/Intent;",
+   4
+  ],
+  [
+   "Ljava/lang/Integer;",
+   3
+  ],
+  [
+   "Landroid/content/DialogInterface;",
+   3
+  ],
+  [
+   "Ljava/util/Random;",
+   2
+  ],
+  [
+   "Ljava/util/Iterator;",
+   2
+  ],
+  [
+   "Landroid/app/AlertDialog;",
+   2
+  ],
+  [
+   "Landroid/view/Window;",
+   2
+  ],
+  [
+   "Ljava/util/ArrayList;",
+   1
+  ],
+  [
+   "Landroid/widget/TextView;",
+   1
+  ],
+  [
+   "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda0;",
+   1
+  ],
+  [
+   "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda1;",
+   1
+  ],
+  [
+   "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda2;",
+   1
+  ]
+ ],
+ "api_sites": [
+  {
+   "target_class": "Ljava/lang/Object;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 28
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/Game/Pieces;",
+   "method": "getPieceType",
+   "descriptor": "(I)",
+   "call_sites": 16
+  },
+  {
+   "target_class": "Landroid/widget/Button;",
+   "method": "setOnClickListener",
+   "descriptor": "(Landroid/view/View$OnClickListener;)",
+   "call_sites": 13
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity;",
+   "method": "getString",
+   "descriptor": "(I)",
+   "call_sites": 12
+  },
+  {
+   "target_class": "Ljava/lang/String;",
+   "method": "contains",
+   "descriptor": "(Ljava/lang/CharSequence;)",
+   "call_sites": 11
+  },
+  {
+   "target_class": "Ljava/lang/String;",
+   "method": "equals",
+   "descriptor": "(Ljava/lang/Object;)",
+   "call_sites": 11
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity;",
+   "method": "findViewById",
+   "descriptor": "(I)",
+   "call_sites": 11
+  },
+  {
+   "target_class": "Landroid/widget/Button;",
+   "method": "getId",
+   "descriptor": "()",
+   "call_sites": 9
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity;",
+   "method": "buttonOnClickMethod",
+   "descriptor": "(I)",
+   "call_sites": 9
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/Game/Pieces;",
+   "method": "setPieceType",
+   "descriptor": "(I Ljava/lang/String;)",
+   "call_sites": 7
+  },
+  {
+   "target_class": "Ljava/lang/Boolean;",
+   "method": "booleanValue",
+   "descriptor": "()",
+   "call_sites": 7
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/Game/Pieces;",
+   "method": "findEmptySpace",
+   "descriptor": "()",
+   "call_sites": 6
+  },
+  {
+   "target_class": "Ljava/lang/String;",
+   "method": "toLowerCase",
+   "descriptor": "()",
+   "call_sites": 6
+  },
+  {
+   "target_class": "Landroid/widget/Button;",
+   "method": "setBackgroundResource",
+   "descriptor": "(I)",
+   "call_sites": 5
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/MainMenu;",
+   "method": "startActivity",
+   "descriptor": "(Landroid/content/Intent;)",
+   "call_sites": 5
+  },
+  {
+   "target_class": "Ljava/lang/Boolean;",
+   "method": "valueOf",
+   "descriptor": "(Z)",
+   "call_sites": 5
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/Game/Board;",
+   "method": "isValidMove",
+   "descriptor": "(I Ljava/lang/String; I)",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/Game/Pieces;",
+   "method": "getSelectedPiece",
+   "descriptor": "()",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/Game/Board;",
+   "method": "getCurrentTurn",
+   "descriptor": "()",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/MainMenu;",
+   "method": "findViewById",
+   "descriptor": "(I)",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Ljava/lang/StringBuilder;",
+   "method": "append",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Landroidx/appcompat/app/AppCompatActivity;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity;",
+   "method": "checkWin",
+   "descriptor": "()",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/Game/Board;",
+   "method": "isWin",
+   "descriptor": "(Lone/scarecrow/games/OPMT/Game/Pieces;)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/Game/Ai;",
+   "method": "run",
+   "descriptor": "(Lone/scarecrow/games/OPMT/Game/Board; Lone/scarecrow/games/OPMT/Game/Pieces;)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity;",
+   "method": "getString",
+   "descriptor": "(I [Ljava/lang/Object;)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Landroid/content/DialogInterface;",
+   "method": "dismiss",
+   "descriptor": "()",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Landroidx/appcompat/app/AppCompatActivity;",
+   "method": "onCreate",
+   "descriptor": "(Landroid/os/Bundle;)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/MainMenu;",
+   "method": "getString",
+   "descriptor": "(I)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Ljava/lang/Integer;",
+   "method": "intValue",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/Game/Pieces;",
+   "method": "select",
+   "descriptor": "(I)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/Game/Pieces;",
+   "method": "findAllBlackPieces",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/Game/Pieces;",
+   "method": "findAllWhitePieces",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/Game/Pieces;",
+   "method": "movePiece",
+   "descriptor": "(I)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/Game/Board;",
+   "method": "switchTurn",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/Game/Pieces;",
+   "method": "resetPieces",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/Game/Board;",
+   "method": "isColor",
+   "descriptor": "(I Ljava/lang/String;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/Game/Board;",
+   "method": "isCurrentTurn",
+   "descriptor": "(I)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity;",
+   "method": "setAllBackgroundResourceValue",
+   "descriptor": "(Lone/scarecrow/games/OPMT/Game/Pieces;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity;",
+   "method": "setTextBox",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/app/AlertDialog$Builder;",
+   "method": "<init>",
+   "descriptor": "(Landroid/content/Context;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/app/AlertDialog$Builder;",
+   "method": "setCancelable",
+   "descriptor": "(Z)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/app/AlertDialog$Builder;",
+   "method": "setPositiveButton",
+   "descriptor": "(Ljava/lang/CharSequence; Landroid/content/DialogInterface$OnClickListener;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/app/AlertDialog$Builder;",
+   "method": "create",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/app/AlertDialog;",
+   "method": "show",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/view/Window;",
+   "method": "setFlags",
+   "descriptor": "(I I)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/content/Intent;",
+   "method": "<init>",
+   "descriptor": "(Landroid/content/Context; Ljava/lang/Class;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/Game/Ai;",
+   "method": "returnValidMoves",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/Random;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/List;",
+   "method": "size",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/Random;",
+   "method": "nextInt",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/lang/StringBuilder;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/List;",
+   "method": "iterator",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/Iterator;",
+   "method": "hasNext",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/List;",
+   "method": "get",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/Iterator;",
+   "method": "next",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/lang/StringBuilder;",
+   "method": "append",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/ArrayList;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/lang/Integer;",
+   "method": "valueOf",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/List;",
+   "method": "add",
+   "descriptor": "(Ljava/lang/Object;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/Game/Ai;",
+   "method": "randomAi",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/Game/Pieces;",
+   "method": "unselect",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/Game/Pieces;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/Game/Board;",
+   "method": "getStrings",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/Game/Pieces;",
+   "method": "setStrings",
+   "descriptor": "([Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/Game/Pieces;",
+   "method": "isAnySelected",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/Game/Pieces;",
+   "method": "unselect",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/lang/String;",
+   "method": "valueOf",
+   "descriptor": "(Ljava/lang/Object;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/lang/StringBuilder;",
+   "method": "<init>",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/lang/StringBuilder;",
+   "method": "toString",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity;",
+   "method": "lambda$9$one-scarecrow-games-OPMT-GameActivity",
+   "descriptor": "(Landroid/content/DialogInterface; I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity;",
+   "method": "lambda$0$one-scarecrow-games-OPMT-GameActivity",
+   "descriptor": "(Landroid/view/View;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity;",
+   "method": "lambda$1$one-scarecrow-games-OPMT-GameActivity",
+   "descriptor": "(Landroid/view/View;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity;",
+   "method": "lambda$2$one-scarecrow-games-OPMT-GameActivity",
+   "descriptor": "(Landroid/view/View;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity;",
+   "method": "lambda$3$one-scarecrow-games-OPMT-GameActivity",
+   "descriptor": "(Landroid/view/View;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity;",
+   "method": "lambda$4$one-scarecrow-games-OPMT-GameActivity",
+   "descriptor": "(Landroid/view/View;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity;",
+   "method": "lambda$5$one-scarecrow-games-OPMT-GameActivity",
+   "descriptor": "(Landroid/view/View;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity;",
+   "method": "lambda$6$one-scarecrow-games-OPMT-GameActivity",
+   "descriptor": "(Landroid/view/View;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity;",
+   "method": "lambda$7$one-scarecrow-games-OPMT-GameActivity",
+   "descriptor": "(Landroid/view/View;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity;",
+   "method": "lambda$8$one-scarecrow-games-OPMT-GameActivity",
+   "descriptor": "(Landroid/view/View;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/Game/Ai;",
+   "method": "<init>",
+   "descriptor": "(Z I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/Game/Board;",
+   "method": "runTurn",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/Game/Board;",
+   "method": "getCurrentTurn",
+   "descriptor": "(Z)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity;",
+   "method": "win",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity;",
+   "method": "setBackgroundResourceValue",
+   "descriptor": "(I Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/widget/TextView;",
+   "method": "setText",
+   "descriptor": "(Ljava/lang/CharSequence;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/app/AlertDialog$Builder;",
+   "method": "setMessage",
+   "descriptor": "(Ljava/lang/CharSequence;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda0;",
+   "method": "<init>",
+   "descriptor": "(Lone/scarecrow/games/OPMT/GameActivity;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity;",
+   "method": "getIntent",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity;",
+   "method": "finish",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity;",
+   "method": "startActivity",
+   "descriptor": "(Landroid/content/Intent;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity;",
+   "method": "setContentView",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity;",
+   "method": "getWindow",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda1;",
+   "method": "<init>",
+   "descriptor": "(Lone/scarecrow/games/OPMT/GameActivity;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda2;",
+   "method": "<init>",
+   "descriptor": "(Lone/scarecrow/games/OPMT/GameActivity;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda3;",
+   "method": "<init>",
+   "descriptor": "(Lone/scarecrow/games/OPMT/GameActivity;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda4;",
+   "method": "<init>",
+   "descriptor": "(Lone/scarecrow/games/OPMT/GameActivity;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda5;",
+   "method": "<init>",
+   "descriptor": "(Lone/scarecrow/games/OPMT/GameActivity;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda6;",
+   "method": "<init>",
+   "descriptor": "(Lone/scarecrow/games/OPMT/GameActivity;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda7;",
+   "method": "<init>",
+   "descriptor": "(Lone/scarecrow/games/OPMT/GameActivity;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda8;",
+   "method": "<init>",
+   "descriptor": "(Lone/scarecrow/games/OPMT/GameActivity;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda9;",
+   "method": "<init>",
+   "descriptor": "(Lone/scarecrow/games/OPMT/GameActivity;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/Game/Board;",
+   "method": "<init>",
+   "descriptor": "(Ljava/lang/String; Ljava/lang/String; Ljava/lang/String; Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/Game/Board;",
+   "method": "getPieces",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/GameActivity;",
+   "method": "getButtonNameToId",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/MainMenu;",
+   "method": "lambda$0$one-scarecrow-games-OPMT-MainMenu",
+   "descriptor": "(Landroid/view/View;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/MainMenu;",
+   "method": "lambda$1$one-scarecrow-games-OPMT-MainMenu",
+   "descriptor": "(Landroid/view/View;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/MainMenu;",
+   "method": "lambda$2$one-scarecrow-games-OPMT-MainMenu",
+   "descriptor": "(Landroid/view/View;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/MainMenu;",
+   "method": "lambda$3$one-scarecrow-games-OPMT-MainMenu",
+   "descriptor": "(Landroid/view/View;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/MainMenu;",
+   "method": "lambda$4$one-scarecrow-games-OPMT-MainMenu",
+   "descriptor": "(Landroid/content/DialogInterface; I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/MainMenu;",
+   "method": "lambda$5$one-scarecrow-games-OPMT-MainMenu",
+   "descriptor": "(Landroid/content/DialogInterface; I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/app/AlertDialog$Builder;",
+   "method": "setTitle",
+   "descriptor": "(Ljava/lang/CharSequence;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/MainMenu$$ExternalSyntheticLambda4;",
+   "method": "<init>",
+   "descriptor": "(Lone/scarecrow/games/OPMT/MainMenu;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/MainMenu$$ExternalSyntheticLambda5;",
+   "method": "<init>",
+   "descriptor": "(Lone/scarecrow/games/OPMT/MainMenu;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/app/AlertDialog$Builder;",
+   "method": "setNegativeButton",
+   "descriptor": "(Ljava/lang/CharSequence; Landroid/content/DialogInterface$OnClickListener;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/content/Intent;",
+   "method": "<init>",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/net/Uri;",
+   "method": "parse",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/content/Intent;",
+   "method": "setData",
+   "descriptor": "(Landroid/net/Uri;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/MainMenu;",
+   "method": "showComputerBox",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/MainMenu;",
+   "method": "setContentView",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroidx/appcompat/app/AppCompatDelegate;",
+   "method": "setDefaultNightMode",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/MainMenu;",
+   "method": "getWindow",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/MainMenu$$ExternalSyntheticLambda0;",
+   "method": "<init>",
+   "descriptor": "(Lone/scarecrow/games/OPMT/MainMenu;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/MainMenu$$ExternalSyntheticLambda1;",
+   "method": "<init>",
+   "descriptor": "(Lone/scarecrow/games/OPMT/MainMenu;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/MainMenu$$ExternalSyntheticLambda2;",
+   "method": "<init>",
+   "descriptor": "(Lone/scarecrow/games/OPMT/MainMenu;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/MainMenu$$ExternalSyntheticLambda3;",
+   "method": "<init>",
+   "descriptor": "(Lone/scarecrow/games/OPMT/MainMenu;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Lone/scarecrow/games/OPMT/settingsActivity;",
+   "method": "setContentView",
+   "descriptor": "(I)",
+   "call_sites": 1
+  }
+ ],
+ "method_apis": {
+  "Lone/scarecrow/games/OPMT/Game/Ai;-><init>(Z I)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lone/scarecrow/games/OPMT/Game/Ai;->randomAi()V": [
+   "Lone/scarecrow/games/OPMT/Game/Ai;;.returnValidMoves",
+   "Ljava/util/Random;;.<init>",
+   "Ljava/util/List;;.size",
+   "Ljava/util/Random;;.nextInt",
+   "Ljava/lang/StringBuilder;;.<init>",
+   "Ljava/util/List;;.iterator",
+   "Ljava/util/Iterator;;.hasNext",
+   "Ljava/util/List;;.get",
+   "Ljava/lang/Integer;;.intValue",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.select",
+   "Ljava/util/Iterator;;.next",
+   "Ljava/lang/Integer;;.intValue",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append"
+  ],
+  "Lone/scarecrow/games/OPMT/Game/Ai;->returnValidMoves()Ljava/util/List;": [
+   "Ljava/util/ArrayList;;.<init>",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.findAllBlackPieces",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.findAllWhitePieces",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.getPieceType",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.findEmptySpace",
+   "Lone/scarecrow/games/OPMT/Game/Board;;.isValidMove",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/List;;.add"
+  ],
+  "Lone/scarecrow/games/OPMT/Game/Ai;->run(Lone/scarecrow/games/OPMT/Game/Board; Lone/scarecrow/games/OPMT/Game/Pieces;)V": [
+   "Lone/scarecrow/games/OPMT/Game/Ai;;.randomAi",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.findEmptySpace",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.movePiece",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.unselect",
+   "Lone/scarecrow/games/OPMT/Game/Board;;.switchTurn"
+  ],
+  "Lone/scarecrow/games/OPMT/Game/Board;-><init>(Ljava/lang/String; Ljava/lang/String; Ljava/lang/String; Ljava/lang/String;)V": [
+   "Ljava/lang/Object;;.<init>",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.<init>",
+   "Lone/scarecrow/games/OPMT/Game/Board;;.getStrings",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.setStrings",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.resetPieces"
+  ],
+  "Lone/scarecrow/games/OPMT/Game/Board;->isCurrentTurn(I)Z": [
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.getPieceType",
+   "Ljava/lang/String;;.contains"
+  ],
+  "Lone/scarecrow/games/OPMT/Game/Board;->validMoveAdjacencyCheck(I Ljava/lang/String; I I I I)Z": [
+   "Lone/scarecrow/games/OPMT/Game/Board;;.isColor",
+   "Lone/scarecrow/games/OPMT/Game/Board;;.isColor"
+  ],
+  "Lone/scarecrow/games/OPMT/Game/Board;->getCurrentTurn(Z)Ljava/lang/String;": [
+   "Ljava/lang/String;;.equals"
+  ],
+  "Lone/scarecrow/games/OPMT/Game/Board;->isColor(I Ljava/lang/String;)Z": [
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.getPieceType",
+   "Ljava/lang/String;;.contains"
+  ],
+  "Lone/scarecrow/games/OPMT/Game/Board;->isWin(Lone/scarecrow/games/OPMT/Game/Pieces;)Z": [
+   "Ljava/lang/String;;.equals",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.findAllBlackPieces",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.findAllWhitePieces",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.getPieceType",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.findEmptySpace",
+   "Lone/scarecrow/games/OPMT/Game/Board;;.isValidMove"
+  ],
+  "Lone/scarecrow/games/OPMT/Game/Board;->runTurn(I)Lone/scarecrow/games/OPMT/Game/Pieces;": [
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.isAnySelected",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.getSelectedPiece",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.getPieceType",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.findEmptySpace",
+   "Lone/scarecrow/games/OPMT/Game/Board;;.isValidMove",
+   "Lone/scarecrow/games/OPMT/Game/Board;;.isCurrentTurn",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.findEmptySpace",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.movePiece",
+   "Lone/scarecrow/games/OPMT/Game/Board;;.switchTurn",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.unselect",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.getPieceType",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.findEmptySpace",
+   "Lone/scarecrow/games/OPMT/Game/Board;;.isValidMove",
+   "Lone/scarecrow/games/OPMT/Game/Board;;.isCurrentTurn",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.select"
+  ],
+  "Lone/scarecrow/games/OPMT/Game/Board;->switchTurn()V": [
+   "Ljava/lang/String;;.equals",
+   "Ljava/lang/String;;.equals"
+  ],
+  "Lone/scarecrow/games/OPMT/Game/Pieces;-><init>()V": [
+   "Ljava/lang/Object;;.<init>",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.resetPieces"
+  ],
+  "Lone/scarecrow/games/OPMT/Game/Pieces;->setPieceType(I Ljava/lang/String;)V": [
+   "Ljava/lang/String;;.toLowerCase"
+  ],
+  "Lone/scarecrow/games/OPMT/Game/Pieces;->findAllBlackPieces()[I": [
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.getPieceType",
+   "Ljava/lang/String;;.contains"
+  ],
+  "Lone/scarecrow/games/OPMT/Game/Pieces;->findAllWhitePieces()[I": [
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.getPieceType",
+   "Ljava/lang/String;;.contains"
+  ],
+  "Lone/scarecrow/games/OPMT/Game/Pieces;->findEmptySpace()I": [
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.getPieceType",
+   "Ljava/lang/String;;.contains"
+  ],
+  "Lone/scarecrow/games/OPMT/Game/Pieces;->getSelectedPiece()I": [
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.getPieceType",
+   "Ljava/lang/String;;.contains"
+  ],
+  "Lone/scarecrow/games/OPMT/Game/Pieces;->isAnySelected()Z": [
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.getSelectedPiece"
+  ],
+  "Lone/scarecrow/games/OPMT/Game/Pieces;->movePiece(I)V": [
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.getPieceType",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.getSelectedPiece",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.getPieceType",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.setPieceType",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.setPieceType"
+  ],
+  "Lone/scarecrow/games/OPMT/Game/Pieces;->select(I)V": [
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.getPieceType",
+   "Ljava/lang/String;;.contains",
+   "Ljava/lang/String;;.valueOf",
+   "Ljava/lang/StringBuilder;;.<init>",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.toString",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.setPieceType"
+  ],
+  "Lone/scarecrow/games/OPMT/Game/Pieces;->unselect()V": [
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.getSelectedPiece",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.getPieceType",
+   "Ljava/lang/String;;.contains",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.setPieceType",
+   "Ljava/lang/String;;.contains",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.setPieceType"
+  ],
+  "Lone/scarecrow/games/OPMT/Game/Pieces;->unselect(I)V": [
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.getPieceType",
+   "Ljava/lang/String;;.contains",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.setPieceType",
+   "Ljava/lang/String;;.contains",
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.setPieceType"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda0;-><init>(Lone/scarecrow/games/OPMT/GameActivity;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda0;->onClick(Landroid/content/DialogInterface; I)V": [
+   "Lone/scarecrow/games/OPMT/GameActivity;;.lambda$9$one-scarecrow-games-OPMT-GameActivity"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda1;-><init>(Lone/scarecrow/games/OPMT/GameActivity;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda1;->onClick(Landroid/view/View;)V": [
+   "Lone/scarecrow/games/OPMT/GameActivity;;.lambda$0$one-scarecrow-games-OPMT-GameActivity"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda2;-><init>(Lone/scarecrow/games/OPMT/GameActivity;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda2;->onClick(Landroid/view/View;)V": [
+   "Lone/scarecrow/games/OPMT/GameActivity;;.lambda$1$one-scarecrow-games-OPMT-GameActivity"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda3;-><init>(Lone/scarecrow/games/OPMT/GameActivity;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda3;->onClick(Landroid/view/View;)V": [
+   "Lone/scarecrow/games/OPMT/GameActivity;;.lambda$2$one-scarecrow-games-OPMT-GameActivity"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda4;-><init>(Lone/scarecrow/games/OPMT/GameActivity;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda4;->onClick(Landroid/view/View;)V": [
+   "Lone/scarecrow/games/OPMT/GameActivity;;.lambda$3$one-scarecrow-games-OPMT-GameActivity"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda5;-><init>(Lone/scarecrow/games/OPMT/GameActivity;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda5;->onClick(Landroid/view/View;)V": [
+   "Lone/scarecrow/games/OPMT/GameActivity;;.lambda$4$one-scarecrow-games-OPMT-GameActivity"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda6;-><init>(Lone/scarecrow/games/OPMT/GameActivity;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda6;->onClick(Landroid/view/View;)V": [
+   "Lone/scarecrow/games/OPMT/GameActivity;;.lambda$5$one-scarecrow-games-OPMT-GameActivity"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda7;-><init>(Lone/scarecrow/games/OPMT/GameActivity;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda7;->onClick(Landroid/view/View;)V": [
+   "Lone/scarecrow/games/OPMT/GameActivity;;.lambda$6$one-scarecrow-games-OPMT-GameActivity"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda8;-><init>(Lone/scarecrow/games/OPMT/GameActivity;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda8;->onClick(Landroid/view/View;)V": [
+   "Lone/scarecrow/games/OPMT/GameActivity;;.lambda$7$one-scarecrow-games-OPMT-GameActivity"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda9;-><init>(Lone/scarecrow/games/OPMT/GameActivity;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda9;->onClick(Landroid/view/View;)V": [
+   "Lone/scarecrow/games/OPMT/GameActivity;;.lambda$8$one-scarecrow-games-OPMT-GameActivity"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity;-><init>()V": [
+   "Landroidx/appcompat/app/AppCompatActivity;;.<init>",
+   "Ljava/lang/Boolean;;.booleanValue",
+   "Lone/scarecrow/games/OPMT/Game/Ai;;.<init>"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity;->buttonOnClickMethod(I)V": [
+   "Lone/scarecrow/games/OPMT/Game/Board;;.runTurn",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.checkWin",
+   "Lone/scarecrow/games/OPMT/Game/Board;;.isWin",
+   "Ljava/lang/Boolean;;.booleanValue",
+   "Ljava/lang/Boolean;;.booleanValue",
+   "Lone/scarecrow/games/OPMT/Game/Board;;.getCurrentTurn",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.getString",
+   "Ljava/lang/String;;.equals",
+   "Lone/scarecrow/games/OPMT/Game/Ai;;.run",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.checkWin",
+   "Lone/scarecrow/games/OPMT/Game/Board;;.isWin",
+   "Ljava/lang/Boolean;;.booleanValue",
+   "Ljava/lang/Boolean;;.booleanValue",
+   "Lone/scarecrow/games/OPMT/Game/Board;;.getCurrentTurn",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.getString",
+   "Ljava/lang/String;;.equals",
+   "Lone/scarecrow/games/OPMT/Game/Ai;;.run",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.checkWin",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.setAllBackgroundResourceValue"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity;->checkWin()V": [
+   "Lone/scarecrow/games/OPMT/Game/Board;;.isWin",
+   "Lone/scarecrow/games/OPMT/Game/Board;;.getCurrentTurn",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.win",
+   "Lone/scarecrow/games/OPMT/Game/Board;;.getCurrentTurn",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.getString",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.setTextBox"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity;->getButtonNameToId(I)I": [
+   "Landroid/widget/Button;;.getId",
+   "Landroid/widget/Button;;.getId",
+   "Landroid/widget/Button;;.getId",
+   "Landroid/widget/Button;;.getId",
+   "Landroid/widget/Button;;.getId",
+   "Landroid/widget/Button;;.getId",
+   "Landroid/widget/Button;;.getId",
+   "Landroid/widget/Button;;.getId",
+   "Landroid/widget/Button;;.getId"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity;->setAllBackgroundResourceValue(Lone/scarecrow/games/OPMT/Game/Pieces;)V": [
+   "Lone/scarecrow/games/OPMT/Game/Pieces;;.getPieceType",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.setBackgroundResourceValue"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity;->setTextBox(Ljava/lang/String;)V": [
+   "Landroid/widget/TextView;;.setText"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity;->win(Ljava/lang/String;)V": [
+   "Landroid/app/AlertDialog$Builder;;.<init>",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.getString",
+   "Landroid/app/AlertDialog$Builder;;.setMessage",
+   "Landroid/app/AlertDialog$Builder;;.setCancelable",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.getString",
+   "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda0;;.<init>",
+   "Landroid/app/AlertDialog$Builder;;.setPositiveButton",
+   "Landroid/app/AlertDialog$Builder;;.create",
+   "Landroid/app/AlertDialog;;.show"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity;->lambda$0$one-scarecrow-games-OPMT-GameActivity(Landroid/view/View;)V": [
+   "Lone/scarecrow/games/OPMT/GameActivity;;.buttonOnClickMethod"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity;->lambda$1$one-scarecrow-games-OPMT-GameActivity(Landroid/view/View;)V": [
+   "Lone/scarecrow/games/OPMT/GameActivity;;.buttonOnClickMethod"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity;->lambda$2$one-scarecrow-games-OPMT-GameActivity(Landroid/view/View;)V": [
+   "Lone/scarecrow/games/OPMT/GameActivity;;.buttonOnClickMethod"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity;->lambda$3$one-scarecrow-games-OPMT-GameActivity(Landroid/view/View;)V": [
+   "Lone/scarecrow/games/OPMT/GameActivity;;.buttonOnClickMethod"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity;->lambda$4$one-scarecrow-games-OPMT-GameActivity(Landroid/view/View;)V": [
+   "Lone/scarecrow/games/OPMT/GameActivity;;.buttonOnClickMethod"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity;->lambda$5$one-scarecrow-games-OPMT-GameActivity(Landroid/view/View;)V": [
+   "Lone/scarecrow/games/OPMT/GameActivity;;.buttonOnClickMethod"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity;->lambda$6$one-scarecrow-games-OPMT-GameActivity(Landroid/view/View;)V": [
+   "Lone/scarecrow/games/OPMT/GameActivity;;.buttonOnClickMethod"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity;->lambda$7$one-scarecrow-games-OPMT-GameActivity(Landroid/view/View;)V": [
+   "Lone/scarecrow/games/OPMT/GameActivity;;.buttonOnClickMethod"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity;->lambda$8$one-scarecrow-games-OPMT-GameActivity(Landroid/view/View;)V": [
+   "Lone/scarecrow/games/OPMT/GameActivity;;.buttonOnClickMethod"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity;->lambda$9$one-scarecrow-games-OPMT-GameActivity(Landroid/content/DialogInterface; I)V": [
+   "Landroid/content/DialogInterface;;.dismiss",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.getIntent",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.finish",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.startActivity"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity;->onCreate(Landroid/os/Bundle;)V": [
+   "Landroidx/appcompat/app/AppCompatActivity;;.onCreate",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.setContentView",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.getWindow",
+   "Landroid/view/Window;;.setFlags",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.findViewById",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.findViewById",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.findViewById",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.findViewById",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.findViewById",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.findViewById",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.findViewById",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.findViewById",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.findViewById",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.findViewById",
+   "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda1;;.<init>",
+   "Landroid/widget/Button;;.setOnClickListener",
+   "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda2;;.<init>",
+   "Landroid/widget/Button;;.setOnClickListener",
+   "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda3;;.<init>",
+   "Landroid/widget/Button;;.setOnClickListener",
+   "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda4;;.<init>",
+   "Landroid/widget/Button;;.setOnClickListener",
+   "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda5;;.<init>",
+   "Landroid/widget/Button;;.setOnClickListener",
+   "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda6;;.<init>",
+   "Landroid/widget/Button;;.setOnClickListener",
+   "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda7;;.<init>",
+   "Landroid/widget/Button;;.setOnClickListener",
+   "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda8;;.<init>",
+   "Landroid/widget/Button;;.setOnClickListener",
+   "Lone/scarecrow/games/OPMT/GameActivity$$ExternalSyntheticLambda9;;.<init>",
+   "Landroid/widget/Button;;.setOnClickListener",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.getString",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.getString",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.getString",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.getString",
+   "Lone/scarecrow/games/OPMT/Game/Board;;.<init>",
+   "Ljava/lang/Boolean;;.booleanValue",
+   "Ljava/lang/Boolean;;.booleanValue",
+   "Lone/scarecrow/games/OPMT/Game/Board;;.getPieces",
+   "Lone/scarecrow/games/OPMT/Game/Ai;;.run",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.setAllBackgroundResourceValue",
+   "Lone/scarecrow/games/OPMT/Game/Board;;.getCurrentTurn",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.getString",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.setTextBox"
+  ],
+  "Lone/scarecrow/games/OPMT/GameActivity;->setBackgroundResourceValue(I Ljava/lang/String;)V": [
+   "Lone/scarecrow/games/OPMT/GameActivity;;.getButtonNameToId",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.findViewById",
+   "Ljava/lang/String;;.toLowerCase",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.getString",
+   "Ljava/lang/String;;.equals",
+   "Landroid/widget/Button;;.setBackgroundResource",
+   "Ljava/lang/String;;.toLowerCase",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.getString",
+   "Ljava/lang/String;;.equals",
+   "Landroid/widget/Button;;.setBackgroundResource",
+   "Ljava/lang/String;;.toLowerCase",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.getString",
+   "Ljava/lang/String;;.equals",
+   "Landroid/widget/Button;;.setBackgroundResource",
+   "Ljava/lang/String;;.toLowerCase",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.getString",
+   "Ljava/lang/String;;.equals",
+   "Landroid/widget/Button;;.setBackgroundResource",
+   "Ljava/lang/String;;.toLowerCase",
+   "Lone/scarecrow/games/OPMT/GameActivity;;.getString",
+   "Ljava/lang/String;;.equals",
+   "Landroid/widget/Button;;.setBackgroundResource"
+  ],
+  "Lone/scarecrow/games/OPMT/MainMenu$$ExternalSyntheticLambda0;-><init>(Lone/scarecrow/games/OPMT/MainMenu;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lone/scarecrow/games/OPMT/MainMenu$$ExternalSyntheticLambda0;->onClick(Landroid/view/View;)V": [
+   "Lone/scarecrow/games/OPMT/MainMenu;;.lambda$0$one-scarecrow-games-OPMT-MainMenu"
+  ],
+  "Lone/scarecrow/games/OPMT/MainMenu$$ExternalSyntheticLambda1;-><init>(Lone/scarecrow/games/OPMT/MainMenu;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lone/scarecrow/games/OPMT/MainMenu$$ExternalSyntheticLambda1;->onClick(Landroid/view/View;)V": [
+   "Lone/scarecrow/games/OPMT/MainMenu;;.lambda$1$one-scarecrow-games-OPMT-MainMenu"
+  ],
+  "Lone/scarecrow/games/OPMT/MainMenu$$ExternalSyntheticLambda2;-><init>(Lone/scarecrow/games/OPMT/MainMenu;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lone/scarecrow/games/OPMT/MainMenu$$ExternalSyntheticLambda2;->onClick(Landroid/view/View;)V": [
+   "Lone/scarecrow/games/OPMT/MainMenu;;.lambda$2$one-scarecrow-games-OPMT-MainMenu"
+  ],
+  "Lone/scarecrow/games/OPMT/MainMenu$$ExternalSyntheticLambda3;-><init>(Lone/scarecrow/games/OPMT/MainMenu;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lone/scarecrow/games/OPMT/MainMenu$$ExternalSyntheticLambda3;->onClick(Landroid/view/View;)V": [
+   "Lone/scarecrow/games/OPMT/MainMenu;;.lambda$3$one-scarecrow-games-OPMT-MainMenu"
+  ],
+  "Lone/scarecrow/games/OPMT/MainMenu$$ExternalSyntheticLambda4;-><init>(Lone/scarecrow/games/OPMT/MainMenu;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lone/scarecrow/games/OPMT/MainMenu$$ExternalSyntheticLambda4;->onClick(Landroid/content/DialogInterface; I)V": [
+   "Lone/scarecrow/games/OPMT/MainMenu;;.lambda$4$one-scarecrow-games-OPMT-MainMenu"
+  ],
+  "Lone/scarecrow/games/OPMT/MainMenu$$ExternalSyntheticLambda5;-><init>(Lone/scarecrow/games/OPMT/MainMenu;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lone/scarecrow/games/OPMT/MainMenu$$ExternalSyntheticLambda5;->onClick(Landroid/content/DialogInterface; I)V": [
+   "Lone/scarecrow/games/OPMT/MainMenu;;.lambda$5$one-scarecrow-games-OPMT-MainMenu"
+  ],
+  "Lone/scarecrow/games/OPMT/MainMenu;-><init>()V": [
+   "Landroidx/appcompat/app/AppCompatActivity;;.<init>"
+  ],
+  "Lone/scarecrow/games/OPMT/MainMenu;->showComputerBox()V": [
+   "Landroid/app/AlertDialog$Builder;;.<init>",
+   "Landroid/app/AlertDialog$Builder;;.setCancelable",
+   "Lone/scarecrow/games/OPMT/MainMenu;;.getString",
+   "Landroid/app/AlertDialog$Builder;;.setTitle",
+   "Lone/scarecrow/games/OPMT/MainMenu;;.getString",
+   "Lone/scarecrow/games/OPMT/MainMenu$$ExternalSyntheticLambda4;;.<init>",
+   "Landroid/app/AlertDialog$Builder;;.setPositiveButton",
+   "Lone/scarecrow/games/OPMT/MainMenu;;.getString",
+   "Lone/scarecrow/games/OPMT/MainMenu$$ExternalSyntheticLambda5;;.<init>",
+   "Landroid/app/AlertDialog$Builder;;.setNegativeButton",
+   "Landroid/app/AlertDialog$Builder;;.create",
+   "Landroid/app/AlertDialog;;.show"
+  ],
+  "Lone/scarecrow/games/OPMT/MainMenu;->lambda$0$one-scarecrow-games-OPMT-MainMenu(Landroid/view/View;)V": [
+   "Landroid/content/Intent;;.<init>",
+   "Landroid/net/Uri;;.parse",
+   "Landroid/content/Intent;;.setData",
+   "Lone/scarecrow/games/OPMT/MainMenu;;.startActivity"
+  ],
+  "Lone/scarecrow/games/OPMT/MainMenu;->lambda$1$one-scarecrow-games-OPMT-MainMenu(Landroid/view/View;)V": [
+   "Ljava/lang/Boolean;;.valueOf",
+   "Lone/scarecrow/games/OPMT/MainMenu;;.showComputerBox"
+  ],
+  "Lone/scarecrow/games/OPMT/MainMenu;->lambda$2$one-scarecrow-games-OPMT-MainMenu(Landroid/view/View;)V": [
+   "Ljava/lang/Boolean;;.valueOf",
+   "Lone/scarecrow/games/OPMT/MainMenu;;.startActivity"
+  ],
+  "Lone/scarecrow/games/OPMT/MainMenu;->lambda$3$one-scarecrow-games-OPMT-MainMenu(Landroid/view/View;)V": [
+   "Landroid/content/Intent;;.<init>",
+   "Lone/scarecrow/games/OPMT/MainMenu;;.startActivity"
+  ],
+  "Lone/scarecrow/games/OPMT/MainMenu;->lambda$4$one-scarecrow-games-OPMT-MainMenu(Landroid/content/DialogInterface; I)V": [
+   "Ljava/lang/Boolean;;.valueOf",
+   "Lone/scarecrow/games/OPMT/MainMenu;;.startActivity",
+   "Landroid/content/DialogInterface;;.dismiss"
+  ],
+  "Lone/scarecrow/games/OPMT/MainMenu;->lambda$5$one-scarecrow-games-OPMT-MainMenu(Landroid/content/DialogInterface; I)V": [
+   "Ljava/lang/Boolean;;.valueOf",
+   "Lone/scarecrow/games/OPMT/MainMenu;;.startActivity",
+   "Landroid/content/DialogInterface;;.dismiss"
+  ],
+  "Lone/scarecrow/games/OPMT/MainMenu;->onCreate(Landroid/os/Bundle;)V": [
+   "Landroidx/appcompat/app/AppCompatActivity;;.onCreate",
+   "Lone/scarecrow/games/OPMT/MainMenu;;.setContentView",
+   "Landroidx/appcompat/app/AppCompatDelegate;;.setDefaultNightMode",
+   "Lone/scarecrow/games/OPMT/MainMenu;;.getWindow",
+   "Landroid/view/Window;;.setFlags",
+   "Lone/scarecrow/games/OPMT/MainMenu;;.findViewById",
+   "Lone/scarecrow/games/OPMT/MainMenu;;.findViewById",
+   "Lone/scarecrow/games/OPMT/MainMenu;;.findViewById",
+   "Lone/scarecrow/games/OPMT/MainMenu;;.findViewById",
+   "Landroid/content/Intent;;.<init>",
+   "Lone/scarecrow/games/OPMT/MainMenu$$ExternalSyntheticLambda0;;.<init>",
+   "Landroid/widget/Button;;.setOnClickListener",
+   "Lone/scarecrow/games/OPMT/MainMenu$$ExternalSyntheticLambda1;;.<init>",
+   "Landroid/widget/Button;;.setOnClickListener",
+   "Lone/scarecrow/games/OPMT/MainMenu$$ExternalSyntheticLambda2;;.<init>",
+   "Landroid/widget/Button;;.setOnClickListener",
+   "Lone/scarecrow/games/OPMT/MainMenu$$ExternalSyntheticLambda3;;.<init>",
+   "Landroid/widget/Button;;.setOnClickListener"
+  ],
+  "Lone/scarecrow/games/OPMT/R$color;-><init>()V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lone/scarecrow/games/OPMT/R$drawable;-><init>()V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lone/scarecrow/games/OPMT/R$id;-><init>()V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lone/scarecrow/games/OPMT/R$layout;-><init>()V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lone/scarecrow/games/OPMT/R$mipmap;-><init>()V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lone/scarecrow/games/OPMT/R$string;-><init>()V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lone/scarecrow/games/OPMT/R$style;-><init>()V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lone/scarecrow/games/OPMT/R;-><init>()V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Lone/scarecrow/games/OPMT/settingsActivity;-><init>()V": [
+   "Landroidx/appcompat/app/AppCompatActivity;;.<init>"
+  ],
+  "Lone/scarecrow/games/OPMT/settingsActivity;->onCreate(Landroid/os/Bundle;)V": [
+   "Landroidx/appcompat/app/AppCompatActivity;;.onCreate",
+   "Lone/scarecrow/games/OPMT/settingsActivity;;.setContentView"
+  ],
+  "Lone/scarecrow/games/OPMT/values;-><clinit>()V": [
+   "Ljava/lang/Boolean;;.valueOf"
+  ],
+  "Lone/scarecrow/games/OPMT/values;-><init>()V": [
+   "Ljava/lang/Object;;.<init>"
+  ]
+ }
+}

@@ -1,4 +1,4 @@
-# FOUNDATION_GAP_MATRIX — canonical (S68; S67 base, W1/W2 kills recorded)
+# FOUNDATION_GAP_MATRIX — canonical (S69; S68 base, W1/W2 kills + F-135 recorded)
 # Order: fan-out-first (snowball law). Statuses: PROVEN PARTIAL IMPLEMENTED TESTED OBSERVED RESEARCHED BLOCKED UNTESTED
 
 ## P0 — smallest primitive × most consumers (silent-wrongness)
@@ -18,6 +18,7 @@
 | F-122 | Color.rgb/argb/parseColor | every custom-drawing app | FIXED S67: static factory law | AOSP Color.java | f08 R2-stroke PASS | canvas apps | colors returned 0 → invisible | DONE |
 | F-123 | drawRoundRect arg order | cards/rounded UIs | FIXED S67: (l,t,r,b,rx,ry,PAINT) + real radius raster | AOSP Canvas.drawRoundRect | f08 R9 PASS | Compose cards | paint read from rx slot → black squares | DONE |
 | F-124 | visibility XML enum space | every XML app | FIXED S67: {0,1,2}→{0,4,8} mapping | ViewProps VIEW_VISIBILITY_VALUES | f06 PASS | corpus-wide | invisible→1 → drawn | DONE |
+| F-135 | Double/Float isNaN·isInfinite·compare | 694 static sites × 7 APKs (bouncy 141, dooz 217, fishrings 24, tictactoe 28…) | FIXED S69: NaN=(v!=v), isInfinite=abs>MAX, compare=canonical-bits ordering (NaN>+Inf, −0.0<+0.0) | OpenJDK Double.java:1031/1048/1538, Float.java:631 (fetched, SHA'd) | f52_nanlaw 9/9 rows EXACT | bouncy NaN flips 480× STUB→IMPL, frames byte-stable; fishrings/tripeaks chains byte-identical | NaN guards took the wrong side silently | DONE |
 
 ## P1 — missing foundation (degrade loudly or registered)
 

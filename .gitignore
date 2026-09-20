@@ -170,3 +170,10 @@ miniandroid/run/
 /tools/go/
 /tools/gopath/
 zoektdb
+
+# S69 source pins: tarballs are re-fetchable via PROVENANCE.json (codeload URL
+# + SHA256); the two heavy extracted trees (tripeaks 12M, bouncy 8.8M) stay
+# external — their key law files are curated under docs/upstream/apps/.
+upstream/corpus/**/*.tar.gz
+upstream/corpus/com.dozingcatsoftware.bouncy/src/
+upstream/corpus/eu.veldsoft.tri.peaks/src/

@@ -1,0 +1,13 @@
+{
+ "apk": "de.duenndns.gmdice_8.apk",
+ "package": "de.duenndns.gmdice",
+ "versionCode": "8",
+ "source_repo": "github.com/ge0rg/gamemasterdice",
+ "source_commit": "1.0",
+ "tarball_sha256": "41db9e715006d42a670a7e0da794ec054747b43536a0f05598fbf0ab054a829e",
+ "tarball_bytes": 50215,
+ "extracted": true,
+ "fetched_at": "2026-09-20T04:42:57Z",
+ "metadata_origin": "https://gitlab.com/fdroid/fdroiddata/-/raw/master/metadata/de.duenndns.gmdice.yml",
+ "codeload_origin": "https://codeload.github.com/github.com/ge0rg/gamemasterdice/tar.gz/1.0"
+}

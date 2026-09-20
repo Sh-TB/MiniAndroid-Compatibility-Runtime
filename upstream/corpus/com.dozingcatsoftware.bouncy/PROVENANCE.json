@@ -1,0 +1,13 @@
+{
+ "apk": "bouncy.apk",
+ "package": "com.dozingcatsoftware.bouncy",
+ "versionCode": 43,
+ "source_repo": "dozingcat/Vector-Pinball",
+ "source_commit": "b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9",
+ "tarball_sha256": "4c1bfc05e584c19a03d46a710248f0020888a902f2959ed43d3af7de8f22043e",
+ "tarball_bytes": 3729538,
+ "extracted": true,
+ "fetched_at": "2026-09-20T04:39:54Z",
+ "metadata_origin": "https://gitlab.com/fdroid/fdroiddata/-/raw/master/metadata/com.dozingcatsoftware.bouncy.yml",
+ "codeload_origin": "https://codeload.github.com/dozingcat/Vector-Pinball/tar.gz/b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9"
+}

@@ -21476,6 +21476,125 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         return true;
     }
     // ────────────────────────────────────────────────────────────────────
+    // F-135 (S69 SOURCE-LINKED): Double/Float NaN / infinite / compare
+    // family. OpenJDK law (docs/upstream/openjdk/{Double,Float}.java,
+    // fetched + SHA-recorded this session):
+    //   Double.isNaN(v)      = (v != v)                 Double.java:1031
+    //   Double.isInfinite(v) = Math.abs(v) > MAX_VALUE   Double.java:1048
+    //   Float.isNaN(v)       = (v != v)                  Float.java:631
+    //   Float.isInfinite(v)  = Math.abs(v) > MAX_VALUE   Float.java
+    //   Double.compare(d1,d2): d1<d2 → -1; d1>d2 → 1; else the
+    //     doubleToLongBits ordering (Double.java:1538) — which
+    //     distinguishes -0.0 < +0.0 and NaN > +Inf.
+    //   Float.compare: same law over floatToIntBits (Float.java).
+    // ROOT CAUSE of the old answer: the bridge fell through to a stub that
+    // returned false/0 — every NaN-guard branch (dooz Compose layout
+    // arithmetic ×217 call sites, Vector-Pinball physics ×141, FishRings
+    // ×24) took the WRONG side silently. STUBBED → IMPLEMENTED with real
+    // IEEE-754 semantics; generic java.lang law, no app special-casing.
+    // ────────────────────────────────────────────────────────────────────
+    if ((class_name == "Ljava/lang/Double;" || class_name == "Ljava/lang/Float;") &&
+        args.size() >= 1 &&
+        (method == "isNaN" || method == "isInfinite")) {
+        // S69 F-135 debug (env-gated): arg decode visibility.
+        if (std::getenv("MINIANDROID_F135_TRACE") != nullptr) {
+            std::cerr << "[F135] " << class_name << "." << method
+                      << " arg0.type=" << (int)args[0].type
+                      << " double_val=" << args[0].double_val
+                      << " long_val=0x" << std::hex << args[0].long_val
+                      << std::dec << std::endl;
+        }
+        bool is_nan = false, is_inf = false;
+        if (class_name == "Ljava/lang/Double;") {
+            double d = 0.0;
+            if (args[0].type == DalvikType::FLOAT64) d = args[0].double_val;
+            else if (args[0].type == DalvikType::INT64) {
+                std::memcpy(&d, &args[0].long_val, sizeof(d));
+            } else if (args[0].type == DalvikType::FLOAT32) d = args[0].float_val;
+            is_nan = (d != d);  // OpenJDK Double.java:1032
+            is_inf = std::abs(d) > 1.7976931348623157e308;  // :1049
+        } else {
+            float f = 0.0f;
+            if (args[0].type == DalvikType::FLOAT32) f = args[0].float_val;
+            else if (args[0].type == DalvikType::INT32) {
+                std::memcpy(&f, &args[0].int_val, sizeof(f));
+            } else if (args[0].type == DalvikType::FLOAT64) f = (float)args[0].double_val;
+            is_nan = (f != f);  // OpenJDK Float.java:632
+            is_inf = std::abs(f) > 3.4028234663852886e38f;
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_int(method == "isNaN" ? (is_nan ? 1 : 0)
+                                                         : (is_inf ? 1 : 0));
+        return true;
+    }
+    if (class_name == "Ljava/lang/Double;" && method == "compare" &&
+        args.size() >= 2) {
+        auto decode_d = [&](const DalvikValue& v) -> double {
+            if (v.type == DalvikType::FLOAT64) return v.double_val;
+            if (v.type == DalvikType::INT64) {
+                double d;
+                std::memcpy(&d, &v.long_val, sizeof(d));
+                return d;
+            }
+            if (v.type == DalvikType::FLOAT32) return (double)v.float_val;
+            return 0.0;
+        };
+        double d1 = decode_d(args[0]), d2 = decode_d(args[1]);
+        int32_t cmp;
+        if (d1 < d2) cmp = -1;
+        else if (d1 > d2) cmp = 1;
+        else {
+            // Double.java:1546-1552 — canonical-bits ordering (NaN, ±0.0)
+            auto canon_bits = [](double d) -> int64_t {
+                int64_t bits;
+                std::memcpy(&bits, &d, sizeof(bits));
+                if ((bits & 0x7ff0000000000000LL) == 0x7ff0000000000000LL &&
+                    (bits & 0x000fffffffffffffLL) != 0) {
+                    bits = 0x7ff8000000000000LL;  // canonical NaN
+                }
+                return bits;
+            };
+            int64_t b1 = canon_bits(d1), b2 = canon_bits(d2);
+            cmp = (b1 == b2) ? 0 : (b1 < b2 ? -1 : 1);
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_int(cmp);
+        return true;
+    }
+    if (class_name == "Ljava/lang/Float;" && method == "compare" &&
+        args.size() >= 2) {
+        auto decode_f = [&](const DalvikValue& v) -> float {
+            if (v.type == DalvikType::FLOAT32) return v.float_val;
+            if (v.type == DalvikType::INT32) {
+                float f;
+                std::memcpy(&f, &v.int_val, sizeof(f));
+                return f;
+            }
+            if (v.type == DalvikType::FLOAT64) return (float)v.double_val;
+            return 0.0f;
+        };
+        float f1 = decode_f(args[0]), f2 = decode_f(args[1]);
+        int32_t cmp;
+        if (f1 < f2) cmp = -1;
+        else if (f1 > f2) cmp = 1;
+        else {
+            auto canon_bits = [](float f) -> int32_t {
+                int32_t bits;
+                std::memcpy(&bits, &f, sizeof(bits));
+                if ((bits & 0x7f800000u) == 0x7f800000u &&
+                    (bits & 0x007fffffu) != 0) {
+                    bits = 0x7fc00000;  // canonical NaN
+                }
+                return bits;
+            };
+            int32_t b1 = canon_bits(f1), b2 = canon_bits(f2);
+            cmp = (b1 == b2) ? 0 : (b1 < b2 ? -1 : 1);
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_int(cmp);
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────
     // F-101 (S36, R-NEW-334 ROOT): java.util.ArrayList.<init>(Collection)
     // constructor law — the copy-constructor must CONSUME the source
     // collection (JDK contract: elementData = c.toArray(); size = length).
