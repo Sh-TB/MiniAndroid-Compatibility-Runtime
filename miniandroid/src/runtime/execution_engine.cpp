@@ -19,6 +19,7 @@
 #include "../framework/pending_intent_shadow.h"
 #include "../framework/choreographer_shadow.h"
 #include "../framework/canvas_shadow.h"
+#include "../framework/bitmap_shadow.h"
 // EXP-087 Phase 3 (B2 FIX): DalvikHeapAdapter for shadow heap access
 #include "../framework/heap_adapter.h"
 
@@ -686,6 +687,57 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
         }
 
         // ===================================================================
+        // S68 §12/§13: BitmapFactory.decodeResource resolver hook —
+        // registered BEFORE activity execution (decodeResource can run in
+        // onCreate; the previous late registration in stage_render_frame
+        // missed it — f48 evidence). Value-captured entries: the resolver
+        // outlives this scope (render stages run after it returns).
+        {
+            auto entry_names_shared =
+                std::make_shared<std::vector<std::string>>();
+            for (const auto& e : apk_parser_.list_entries(result.apk_info.apk_path))
+                entry_names_shared->push_back(e.name);
+            std::string apk_path_copy = result.apk_info.apk_path;
+            std::cerr << "[BMF-RESOLVER] registering resolver EARLY (entries="
+                      << entry_names_shared->size() << ")" << std::endl;
+            framework::BitmapShadow::set_drawable_bytes_resolver(
+                [this, apk_path_copy, entry_names_shared](
+                        uint32_t resid, std::vector<uint8_t>& bytes,
+                        std::string& path, uint16_t& density) -> bool {
+                    auto& by_resid = dalvik_engine_.resource_drawable_path_by_resid_;
+                    auto hit = by_resid.find(resid);
+                    if (hit == by_resid.end()) {
+                        auto& rt = resources::ResourceRuntime::instance();
+                        if (!rt.ensure_loaded(apk_path_copy)) {
+                            std::cerr << "[BMF-RESOLVER] resid=0x" << std::hex << resid
+                                      << std::dec << " ensure_loaded FAILED" << std::endl;
+                            return false;
+                        }
+                        auto sel = rt.arsc().select_file(resid, *entry_names_shared,
+                                                         resources::device_config());
+                        if (!sel) {
+                            std::cerr << "[BMF-RESOLVER] resid=0x" << std::hex << resid
+                                      << std::dec << " select_file null (entries="
+                                      << entry_names_shared->size() << ")" << std::endl;
+                            return false;
+                        }
+                        by_resid[resid] = sel->path;
+                        dalvik_engine_.resource_drawable_density_by_resid_[resid] =
+                            sel->selected_density();
+                        path = sel->path;
+                        density = sel->selected_density();
+                    } else {
+                        path = hit->second;
+                        auto d = dalvik_engine_.drawable_density_by_resid().find(resid);
+                        density = d != dalvik_engine_.drawable_density_by_resid().end()
+                                      ? d->second : 0;
+                    }
+                    bytes = apk_parser_.extract_entry_cached(path);
+                    if (bytes.empty())
+                        std::cerr << "[BMF-RESOLVER] extract EMPTY for '" << path << "'" << std::endl;
+                    return !bytes.empty();
+                });
+        }
         // CALL DALVIK ENGINE - This is the REAL execution path
         // ===================================================================
         // S60 (R-NEW-380): propagate the wall-clock soft budget (0 = off).
@@ -1635,6 +1687,9 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
             }
         }
         dalvik_engine_.populate_resource_drawable_paths(entry_names);
+        // S68 §12/§13: the BitmapFactory.decodeResource resolver hook is
+        // registered EARLY (before activity execution) — see the
+        // [BMF-RESOLVER] block in the execute path above.
     }
 
     // EXP-088 Phase A2: Real measure/layout + BitmapFont text rendering.
@@ -2251,6 +2306,9 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                             int ondraw_ops =
                                                 dalvik_engine_.dispatch_custom_view_draw(task.view_id);
                                             if (ondraw_ops > 0) {
+                                                canvas_shadow->set_canvas_size(
+                                                    canvas.fb().get_width(),
+                                                    canvas.fb().get_height());
                                                 canvas_shadow->replay(canvas, font,
                                                                       (float)left, (float)top,
                                                                       (float)w, (float)h);
@@ -2347,12 +2405,23 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                             bool is_image_view = node->class_desc.find("ImageView") != std::string::npos ||
                                                  node->class_desc.find("ImageButton") != std::string::npos;
                             if (is_image_view && !node->image_drawable_path.empty() && !node_invisible) {
+                                // S68 §13 (A3 fix): ONE format-detecting decoder for
+                                // ALL image consumers. The previous PNG-magic-only
+                                // gate silently dropped JPEG/WebP drawables set via
+                                // setImageDrawable (the "IMG?" placeholder) — every
+                                // non-PNG container now decodes or reports NAMED
+                                // failure, never a silent drop.
                                 auto png_data = apk_parser_.extract_entry_cached(node->image_drawable_path);
-                                if (!png_data.empty() && png_data.size() >= 8 &&
-                                    png_data[0] == 0x89 && png_data[1] == 0x50 &&
-                                    png_data[2] == 0x4E && png_data[3] == 0x47) {
-                                    auto decoded = renderer::PNGDecoder::decode(png_data);
-                                    if (decoded.ok && !decoded.rgba.empty()) {
+                                renderer::DecodedImage decoded;
+                                {
+                                    renderer::decode_image_bytes(png_data, &decoded);
+                                    std::string fmt = renderer::image_format_name(png_data);
+                                    if (!decoded.ok && fmt != "unknown" && fmt != "xml")
+                                        std::cerr << "[IMG-RES-RENDER] decode FAILED '" 
+                                                  << node->image_drawable_path << "': "
+                                                  << decoded.error << std::endl;
+                                }
+                                if (decoded.ok && !decoded.rgba.empty()) {
                                         // G04 §4/§12: density scale (selected config →
                                         // device) + FIT_CENTER in the padding-excluded
                                         // box (ImageView.java L255 default scaleType law).
@@ -2397,7 +2466,6 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                                        top + font.get_line_height(),
                                                        renderer::Colors::GREY_800, &font);
                                     }
-                                }
                             }
                             if (is_image_view && node->image_drawable_path.empty() && !node_invisible &&
                                 (node->image_resource_id != 0 ||
@@ -2426,31 +2494,11 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
 
                                 if (!resolved_img_path.empty()) {
                                     auto img_data = apk_parser_.extract_entry_cached(resolved_img_path);
+                                    // S68 §13 (A3 fix): shared decoder (dedup law) —
+                                    // format named on failure, never silent.
                                     renderer::DecodedImage decoded;
-                                    bool attempted = false;
-                                    if (img_data.size() >= 4) {
-                                        // PNG: 89 50 4E 47
-                                        if (img_data[0] == 0x89 && img_data[1] == 0x50 &&
-                                            img_data[2] == 0x4E && img_data[3] == 0x47) {
-                                            attempted = true;
-                                            decoded = renderer::PNGDecoder::decode(img_data);
-                                        }
-                                        // JPEG: FF D8 FF
-                                        else if (img_data[0] == 0xFF && img_data[1] == 0xD8 &&
-                                                 img_data[2] == 0xFF) {
-                                            attempted = true;
-                                            decoded = renderer::JPEGDecoder::decode(img_data);
-                                        }
-                                        // WebP: "RIFF" .... "WEBP"
-                                        else if (img_data[0] == 'R' && img_data[1] == 'I' &&
-                                                 img_data[2] == 'F' && img_data[3] == 'F' &&
-                                                 img_data.size() >= 12 &&
-                                                 img_data[8] == 'W' && img_data[9] == 'E' &&
-                                                 img_data[10] == 'B' && img_data[11] == 'P') {
-                                            attempted = true;
-                                            decoded = renderer::WebPDecoder::decode(img_data);
-                                        }
-                                    }
+                                    const bool attempted =
+                                        renderer::decode_image_bytes(img_data, &decoded);
                                     if (attempted && decoded.ok && !decoded.rgba.empty()) {
                                         // G04 §4/§12: same density + FIT_CENTER law as
                                         // every other image draw (single shared helper);
@@ -2513,24 +2561,11 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                 auto fg_data =
                                     apk_parser_.extract_entry_cached(node->fg_drawable_path);
                                 if (fg_data.size() >= 4) {
+                                    // S68 §13: shared decoder (dedup law — was the
+                                    // third copy of the magic-number switch).
                                     renderer::DecodedImage fgd;
-                                    bool fg_attempted = false;
-                                    if (fg_data[0] == 0x89 && fg_data[1] == 0x50 &&
-                                        fg_data[2] == 0x4E && fg_data[3] == 0x47) {
-                                        fg_attempted = true;
-                                        fgd = renderer::PNGDecoder::decode(fg_data);
-                                    } else if (fg_data[0] == 0xFF && fg_data[1] == 0xD8 &&
-                                               fg_data[2] == 0xFF) {
-                                        fg_attempted = true;
-                                        fgd = renderer::JPEGDecoder::decode(fg_data);
-                                    } else if (fg_data[0] == 'R' && fg_data[1] == 'I' &&
-                                               fg_data[2] == 'F' && fg_data[3] == 'F' &&
-                                               fg_data.size() >= 12 &&
-                                               fg_data[8] == 'W' && fg_data[9] == 'E' &&
-                                               fg_data[10] == 'B' && fg_data[11] == 'P') {
-                                        fg_attempted = true;
-                                        fgd = renderer::WebPDecoder::decode(fg_data);
-                                    }
+                                    const bool fg_attempted =
+                                        renderer::decode_image_bytes(fg_data, &fgd);
                                     if (fg_attempted && fgd.ok && !fgd.rgba.empty()) {
                                         // density-scaled intrinsic, centered.
                                         const float dscale =
@@ -2818,6 +2853,9 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                                 shadow_registry_->find_as<framework::CanvasShadow>()) {
                                             ondraw_ops = dalvik_engine_.dispatch_custom_view_draw(cv.view_id);
                                             if (ondraw_ops > 0) {
+                                                canvas_shadow->set_canvas_size(
+                                                    canvas.fb().get_width(),
+                                                    canvas.fb().get_height());
                                                 canvas_shadow->replay(canvas, font,
                                                                       (float)cv.l, (float)cv.t,
                                                                       (float)cv.w, (float)cv.h);

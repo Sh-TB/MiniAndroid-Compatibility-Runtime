@@ -1,5 +1,7 @@
 // CAMPAIGN 013 — Canvas/Paint shadow implementation. See canvas_shadow.h.
 #include "canvas_shadow.h"
+#include "bitmap_shadow.h"
+#include "../fonts/text_shaper.h"
 #include "../renderer/software_renderer.h"
 
 #include <algorithm>
@@ -167,7 +169,8 @@ void CanvasShadow::begin_frame() {
     ops_.clear();
     capturing_ = true;
     // UC009: fresh frame = fresh canvas state (AOSP Canvas lifecycle).
-    tx_ = ty_ = 0;
+    mat_ = Affine2D{};
+    clip_ = ClipRect{};
     save_stack_.clear();
     recording_node_ = 0;
 }
@@ -186,7 +189,31 @@ void CanvasShadow::warn_noop(const std::string& cls, const std::string& op) {
 size_t CanvasShadow::replay(renderer::SoftwareCanvas& canvas,
                             renderer::BitmapFont& font,
                             float left, float top, float w, float h) {
+    // ── S68 §12: AOSP view clip law ───────────────────────────────────────
+    // View.onDraw's canvas is clipped to the view bounds; the app's
+    // clipRect stack further intersects it. Both are honored by funneling
+    // the effective clip into the SoftwareCanvas for this replay, then
+    // clearing it so other views are unaffected.
+    const float vl = left, vt = top, vr = left + w, vb = top + h;   // view bounds
+    float cl_ = vl, ct_ = vt, cr_ = vr, cb_ = vb;   // effective device clip
+    // Per-op clip snapshot (AOSP law — see DrawOp.has_clip): each op carries
+    // the clip that was in effect when the app recorded it; ops recorded
+    // after restore() carry the restored (outer) clip.
+    auto apply_op_clip = [&](const DrawOp& op) {
+        float cl = vl, ct = vt, cr = vr, cb = vb;
+        if (op.has_clip) {
+            // Op-space clip → device = +left/top, then intersect w/ bounds.
+            cl = std::max(cl, op.clip_l + left);
+            ct = std::max(ct, op.clip_t + top);
+            cr = std::min(cr, op.clip_r + left);
+            cb = std::min(cb, op.clip_b + top);
+        }
+        canvas.set_clip(cl, ct, cr, cb);
+        cl_ = cl; ct_ = ct; cr_ = cr; cb_ = cb;
+    };
+
     for (const auto& op : ops_) {
+        apply_op_clip(op);
         renderer::RGBA c = to_rgba(op.color);
         switch (op.kind) {
             case DrawOp::Kind::DRAW_COLOR: {
@@ -405,7 +432,65 @@ size_t CanvasShadow::replay(renderer::SoftwareCanvas& canvas,
                 break;
             }
             case DrawOp::Kind::DRAW_TEXT: {
-                canvas.draw_text(op.text, left + op.x, top + op.y, c, &font);
+                // S68 §14: paint text size set → REAL shaping pipeline
+                // (FreeType/HarfBuzz/FriBidi — full Unicode/RTL/Persian, the
+                // SAME engine TextView uses; was ASCII-only bitmap font).
+                // No text size → legacy bitmap-font path (byte-identical).
+                if (op.text_size_px > 0.f && fonts::TextShaper::instance().available()) {
+                    fonts::TextShaper::instance().draw(
+                        canvas.fb(), op.text, left + op.x, top + op.y,
+                        op.text_size_px, c, op.text_bold);
+                } else {
+                    canvas.draw_text(op.text, left + op.x, top + op.y, c, &font);
+                }
+                break;
+            }
+            case DrawOp::Kind::DRAW_BITMAP: {
+                // S68 §12: drawBitmap replay — pixels from BitmapStore,
+                // src/dst rect law, nearest sampling (FilterBitmap=false).
+                const StoredBitmap* sb = BitmapStore::instance().get(op.bitmap_id);
+                if (!sb || sb->rgba.empty()) break;
+                int sw = sb->width, sh = sb->height;
+                int sx = 0, sy = 0;
+                if (op.has_src) {
+                    sx = (int)op.src_l; sy = (int)op.src_t;
+                    sw = (int)(op.src_r - op.src_l);
+                    sh = (int)(op.src_b - op.src_t);
+                }
+                int dx = (int)(left + op.x), dy = (int)(top + op.y);
+                int dw = op.has_dst ? (int)op.w : sw;
+                int dh = op.has_dst ? (int)op.h : sh;
+                if (sw <= 0 || sh <= 0 || dw <= 0 || dh <= 0) break;
+                if (op.has_affine && (op.affine.b != 0.f || op.affine.c != 0.f)) {
+                    // Rotated/skewed dst: inverse-map per-pixel sampling.
+                    const Affine2D& m = op.affine;
+                    const float det = m.a * m.d - m.b * m.c;
+                    if (std::fabs(det) < 1e-9f) break;
+                    const float alpha = ((op.color >> 24) & 0xFF) / 255.f;
+                    for (int pyi = dy; pyi < dy + dh; pyi++) {
+                        for (int pxi = dx; pxi < dx + dw; pxi++) {
+                            const float X = (float)pxi - left - m.e;
+                            const float Y = (float)pyi - top - m.f;
+                            const float u = ( m.d * X - m.c * Y) / det;
+                            const float v = (-m.b * X + m.a * Y) / det;
+                            if (u < 0.f || v < 0.f || u >= (float)dw || v >= (float)dh) continue;
+                            const int spx = sx + (int)(u * (float)sw / (float)dw);
+                            const int spy = sy + (int)(v * (float)sh / (float)dh);
+                            if (spx < 0 || spy < 0 || spx >= sb->width || spy >= sb->height) continue;
+                            const uint8_t* p = &sb->rgba[((size_t)spy * sb->width + spx) * 4];
+                            renderer::RGBA src(p[0], p[1], p[2],
+                                               (uint8_t)std::min(255.f, p[3] * alpha));
+                            if (!canvas.has_clip() ||
+                                (pxi >= (int)cl_ && pxi < (int)cr_ && pyi >= (int)ct_ && pyi < (int)cb_)) {
+                                renderer::RGBA dstc = canvas.fb().get_pixel(pxi, pyi);
+                                canvas.fb().set_pixel(pxi, pyi, renderer::blend(src, dstc));
+                            }
+                        }
+                    }
+                } else {
+                    canvas.draw_image_region(sb->rgba.data(), sb->width, sb->height,
+                                             sx, sy, sw, sh, dx, dy, dw, dh);
+                }
                 break;
             }
             case DrawOp::Kind::DRAW_PAINT: {
@@ -415,6 +500,7 @@ size_t CanvasShadow::replay(renderer::SoftwareCanvas& canvas,
         }
     }
     capturing_ = false;
+    canvas.clear_clip();   // S68: the clip is per-view — never leak it
     return ops_.size();
 }
 
@@ -490,8 +576,15 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
             paint_color_[recv] = (cur & 0x00FFFFFF) | (a << 24);
             return CallResult::handled_void();
         }
-        if (m == "setAntiAlias" || m == "setDither" || m == "setFilterBitmap" ||
+        if (m == "setAntiAlias" || m == "setDither" ||
             m == "setFakeBoldText" || m == "setUnderlineText" || m == "setFlags") {
+            if (m == "setFakeBoldText")
+                paint_fake_bold_[recv] = ctx.arg_as_bool(0, false);
+            return CallResult::handled_void();
+        }
+        if (m == "setFilterBitmap") {
+            // S68 §12: consumed by Canvas.drawBitmap (nearest vs bilinear).
+            paint_filter_bitmap_[recv] = ctx.arg_as_bool(0, false);
             return CallResult::handled_void();
         }
         if (m == "setStrokeWidth") {
@@ -827,23 +920,51 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
                        ((uint32_t)ctx.arg_as_int(1, 0) << 8) |
                        (uint32_t)ctx.arg_as_int(2, 0);
         }
+        stamp_clip(op);
         target().push_back(op);
         return CallResult::handled_void();
     }
     if (m == "drawRect") {
         DrawOp op; op.kind = DrawOp::Kind::DRAW_RECT;
         // (l,t,r,b,paint) — floats
-        op.x = arg_as_float(ctx, 0); op.y = arg_as_float(ctx, 1);
-        op.w = arg_as_float(ctx, 2); op.h = arg_as_float(ctx, 3);
+        float l = arg_as_float(ctx, 0), t = arg_as_float(ctx, 1);
+        float r = arg_as_float(ctx, 2), b = arg_as_float(ctx, 3);
         uint32_t paint_id = ctx.arg_as_object(4);
         op.color = paint_color(paint_id);
         op.stroke = paint_style_.count(paint_id) && paint_style_[paint_id] >= 1;  // 1=STROKE, 2=FILL_AND_STROKE (CYCLE-E)
         auto sw = paint_stroke_w_.find(paint_id);
         op.stroke_w = sw != paint_stroke_w_.end() ? sw->second : 1.f;
         // NOTE: drawRect stores ABSOLUTE edges in x,y,w,h (existing replay
-        // convention) — translate shifts both edges.
-        op.x += tx_; op.w += tx_;
-        op.y += ty_; op.h += ty_;
+        // convention). S68: the matrix bakes all four corners — under a
+        // translate this is byte-identical to the old tx_/ty_ adds; under
+        // scale the corners normalize; under rotate/skew the rect becomes a
+        // quad polygon drawn through the DRAW_PATH scanline rasterizer.
+        if (mat_.is_translate_only()) {
+            op.x = l + mat_.e; op.w = r + mat_.e;
+            op.y = t + mat_.f; op.h = b + mat_.f;
+        } else if (mat_.b == 0.f && mat_.c == 0.f) {
+            // Axis-aligned scale/translate: normalized corner box.
+            const float x1 = mat_.a * l + mat_.e, x2 = mat_.a * r + mat_.e;
+            const float y1 = mat_.d * t + mat_.f, y2 = mat_.d * b + mat_.f;
+            op.x = std::min(x1, x2); op.w = std::max(x1, x2);
+            op.y = std::min(y1, y2); op.h = std::max(y1, y2);
+            op.stroke_w *= mat_.mean_scale();
+        } else {
+            // Rotated/skewed: quad → winding-filled polygon.
+            const float cx[4] = {l, r, r, l}, cy[4] = {t, t, b, b};
+            PointList quad;
+            for (int i = 0; i < 4; i++) {
+                float px, py; mat_.map(cx[i], cy[i], px, py);
+                quad.push_back({px, py});
+            }
+            op = DrawOp{}; op.kind = DrawOp::Kind::DRAW_PATH;
+            op.color = paint_color(paint_id);
+            op.stroke = paint_style_.count(paint_id) && paint_style_[paint_id] >= 1;
+            op.stroke_w = (sw != paint_stroke_w_.end() ? sw->second : 1.f) * mat_.mean_scale();
+            op.fill_type = 0;
+            op.contours.push_back(std::move(quad));
+        }
+        stamp_clip(op);
         target().push_back(op);
         return CallResult::handled_void();
     }
@@ -858,39 +979,82 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         DrawOp op; op.kind = DrawOp::Kind::DRAW_ROUNDRECT;
         float l = arg_as_float(ctx, 0), t = arg_as_float(ctx, 1);
         float r = arg_as_float(ctx, 2), b = arg_as_float(ctx, 3);
-        op.x = l + tx_; op.y = t + ty_; op.w = r - l; op.h = b - t;
-        op.r = arg_as_float(ctx, 4, 0.f);          // rx (AOSP slot 4)
+        const float rx = arg_as_float(ctx, 4, 0.f);          // rx (AOSP slot 4)
         uint32_t paint_id = ctx.arg_as_object(6);  // Paint (AOSP slot 6)
+        if (mat_.b != 0.f || mat_.c != 0.f) {
+            // S68: rotated/skewed rounded rect — bake to a corner-arc polygon
+            // (8 segments per corner) through the DRAW_PATH rasterizer.
+            PointList c;
+            append_roundrect_contour(c, l, t, r, b, rx, arg_as_float(ctx, 5, rx), true);
+            for (auto& p : c) { float px, py; mat_.map(p.first, p.second, px, py); p = {px, py}; }
+            DrawOp pop; pop.kind = DrawOp::Kind::DRAW_PATH;
+            pop.color = paint_color(paint_id);
+            pop.stroke = paint_style_.count(paint_id) && paint_style_[paint_id] >= 1;
+            pop.stroke_w = (paint_stroke_w_.count(paint_id) ? paint_stroke_w_[paint_id] : 1.f)
+                           * mat_.mean_scale();
+            pop.fill_type = 0;
+            pop.contours.push_back(std::move(c));
+            stamp_clip(pop);
+            target().push_back(pop);
+            return CallResult::handled_void();
+        }
+        const float sx = mat_.a, sy = mat_.d;
+        op.x = l * sx + mat_.e; op.y = t * sy + mat_.f;
+        op.w = (r - l) * std::fabs(sx); op.h = (b - t) * std::fabs(sy);
+        op.r = rx * mat_.mean_scale();
         op.color = paint_color(paint_id);
         op.stroke = paint_style_.count(paint_id) && paint_style_[paint_id] >= 1;
         auto sw2 = paint_stroke_w_.find(paint_id);
         op.stroke_w = sw2 != paint_stroke_w_.end() ? sw2->second : 1.f;
+        stamp_clip(op);
         target().push_back(op);
         return CallResult::handled_void();
     }
     if (m == "drawCircle") {
-        DrawOp op; op.kind = DrawOp::Kind::DRAW_CIRCLE;
-        op.x = arg_as_float(ctx, 0); op.y = arg_as_float(ctx, 1);
-        op.r = arg_as_float(ctx, 2);
+        float cx0 = arg_as_float(ctx, 0), cy0 = arg_as_float(ctx, 1);
+        float rad = arg_as_float(ctx, 2);
         uint32_t paint_id = ctx.arg_as_object(3);
+        if (mat_.b != 0.f || mat_.c != 0.f || std::fabs(mat_.a - mat_.d) > 1e-6f) {
+            // S68: circle under rotate/skew/unequal-scale → oval polygon
+            // (kappa 4-cubic approximation) through the DRAW_PATH rasterizer.
+            PointList c;
+            append_oval_contour(c, cx0, cy0, rad, rad);
+            for (auto& p : c) { float px, py; mat_.map(p.first, p.second, px, py); p = {px, py}; }
+            DrawOp pop; pop.kind = DrawOp::Kind::DRAW_PATH;
+            pop.color = paint_color(paint_id);
+            pop.stroke = paint_style_.count(paint_id) && paint_style_[paint_id] >= 1;
+            pop.stroke_w = (paint_stroke_w_.count(paint_id) ? paint_stroke_w_[paint_id] : 1.f)
+                           * mat_.mean_scale();
+            pop.fill_type = 0;
+            pop.contours.push_back(std::move(c));
+            stamp_clip(pop);
+            target().push_back(pop);
+            return CallResult::handled_void();
+        }
+        DrawOp op; op.kind = DrawOp::Kind::DRAW_CIRCLE;
+        mat_.map(cx0, cy0, op.x, op.y);
+        op.r = rad * mat_.mean_scale();
         op.color = paint_color(paint_id);
         op.stroke = paint_style_.count(paint_id) && paint_style_[paint_id] >= 1;  // 1=STROKE, 2=FILL_AND_STROKE (CYCLE-E)
         auto sw = paint_stroke_w_.find(paint_id);
         op.stroke_w = sw != paint_stroke_w_.end() ? sw->second : 1.f;
-        op.x += tx_; op.y += ty_;
+        stamp_clip(op);
         target().push_back(op);
         return CallResult::handled_void();
     }
     if (m == "drawLine") {
         DrawOp op; op.kind = DrawOp::Kind::DRAW_LINE;
-        op.x = arg_as_float(ctx, 0); op.y = arg_as_float(ctx, 1);
-        op.w = arg_as_float(ctx, 2); op.h = arg_as_float(ctx, 3);
+        float x1 = arg_as_float(ctx, 0), y1 = arg_as_float(ctx, 1);
+        float x2 = arg_as_float(ctx, 2), y2 = arg_as_float(ctx, 3);
+        mat_.map(x1, y1, x1, y1);
+        mat_.map(x2, y2, x2, y2);
+        op.x = x1; op.y = y1;
+        op.w = x2; op.h = y2;
         uint32_t paint_id = ctx.arg_as_object(4);
         op.color = paint_color(paint_id);
         auto sw = paint_stroke_w_.find(paint_id);
-        op.stroke_w = sw != paint_stroke_w_.end() ? sw->second : 1.f;
-        op.x += tx_; op.w += tx_;   // absolute endpoints convention
-        op.y += ty_; op.h += ty_;
+        op.stroke_w = (sw != paint_stroke_w_.end() ? sw->second : 1.f) * mat_.mean_scale();
+        stamp_clip(op);
         target().push_back(op);
         return CallResult::handled_void();
     }
@@ -901,7 +1065,14 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         op.y = arg_as_float(ctx, 2);
         uint32_t paint_id = ctx.arg_as_object(ctx.args.size() >= 4 ? 3 : 0);
         op.color = paint_color(paint_id);
-        op.x += tx_; op.y += ty_;
+        // S68 §14: carry the paint text styling so replay can use the REAL
+        // shaping pipeline (FreeType/HarfBuzz/FriBidi — Persian/Arabic/RTL
+        // were 0-px on this path under the ASCII bitmap font).
+        auto ts = paint_text_size_.find(paint_id);
+        op.text_size_px = ts != paint_text_size_.end() ? ts->second : 0.f;
+        op.text_bold = paint_fake_bold_.count(paint_id) && paint_fake_bold_[paint_id];
+        mat_.map(op.x, op.y, op.x, op.y);
+        stamp_clip(op);
         target().push_back(op);
         return CallResult::handled_void();
     }
@@ -921,10 +1092,13 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
             // WINDING; EVEN_ODD and the INVERSE_* variants map per Android).
             const int ft = pit->second.fill_type;
             op.fill_type = (ft == 1 || ft == 3) ? 1 : 0;
-            if (tx_ != 0.f || ty_ != 0.f) {
+            // S68: bake contours with the FULL matrix (was: translate only).
+            if (!mat_.is_identity()) {
                 for (auto& c : op.contours)
-                    for (auto& p : c) { p.first += tx_; p.second += ty_; }
+                    for (auto& p : c) { float px, py; mat_.map(p.first, p.second, px, py); p = {px, py}; }
+                op.stroke_w *= mat_.mean_scale();
             }
+            stamp_clip(op);
             target().push_back(op);
         }
         return CallResult::handled_void();
@@ -956,10 +1130,12 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
             append_oval_contour(c, (l + r) / 2.f, (t + b) / 2.f,
                                 (r - l) / 2.f, (b - t) / 2.f);
             op.contours.push_back(std::move(c));
-            if (tx_ != 0.f || ty_ != 0.f) {
+            if (!mat_.is_identity()) {
                 for (auto& cc : op.contours)
-                    for (auto& p : cc) { p.first += tx_; p.second += ty_; }
+                    for (auto& p : cc) { float px, py; mat_.map(p.first, p.second, px, py); p = {px, py}; }
+                op.stroke_w *= mat_.mean_scale();
             }
+            stamp_clip(op);
             target().push_back(op);
         } else if (!ok) {
             // Degenerate rects legitimately draw nothing (AOSP); unresolved
@@ -1021,10 +1197,12 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
                 // stroke open arc: polyline only — handled by the stroke walk
             }
             op.contours.push_back(std::move(c));
-            if (tx_ != 0.f || ty_ != 0.f) {
+            if (!mat_.is_identity()) {
                 for (auto& cc : op.contours)
-                    for (auto& p : cc) { p.first += tx_; p.second += ty_; }
+                    for (auto& p : cc) { float px, py; mat_.map(p.first, p.second, px, py); p = {px, py}; }
+                op.stroke_w *= mat_.mean_scale();
             }
+            stamp_clip(op);
             target().push_back(op);
         } else if (!ok) {
             warn_noop(cls, "drawArc(unresolved-args)");
@@ -1034,54 +1212,307 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
     if (m == "drawPaint") {
         DrawOp op; op.kind = DrawOp::Kind::DRAW_PAINT;
         op.color = paint_color(ctx.arg_as_object(0));
+        stamp_clip(op);
         target().push_back(op);
         return CallResult::handled_void();
     }
     if (m == "translate") {
-        // AOSP Canvas.translate — needed by Compose child positioning.
-        tx_ += arg_as_float(ctx, 0, 0.f);
-        ty_ += arg_as_float(ctx, 1, 0.f);
+        // AOSP Canvas.translate — pre-concatenates onto the current matrix.
+        mat_.pre_translate(arg_as_float(ctx, 0, 0.f), arg_as_float(ctx, 1, 0.f));
+        return CallResult::handled_void();
+    }
+    if (m == "scale") {
+        // S68 §12 (was accepted_not_reproduced NO-OP — S67 pixel-proven):
+        // scale(sx,sy[,px,py]) pre-concatenates; pivot variants translate
+        // around first (AOSP Canvas.scale(sx,sy,pivotX,pivotY) law).
+        const float sx = arg_as_float(ctx, 0, 1.f), sy = arg_as_float(ctx, 1, sx);
+        if (ctx.args.size() >= 4) {
+            const float px = arg_as_float(ctx, 2, 0.f), py = arg_as_float(ctx, 3, 0.f);
+            mat_.pre_translate(px, py);
+            mat_.pre_scale(sx, sy);
+            mat_.pre_translate(-px, -py);
+        } else {
+            mat_.pre_scale(sx, sy);
+        }
+        return CallResult::handled_void();
+    }
+    if (m == "rotate") {
+        // S68 §12: rotate(degrees[,px,py]) — positive = clockwise in y-down
+        // space (Skia law); pivot variants rotate around (px, py).
+        const float deg = arg_as_float(ctx, 0, 0.f);
+        if (ctx.args.size() >= 3) {
+            const float px = arg_as_float(ctx, 1, 0.f), py = arg_as_float(ctx, 2, 0.f);
+            mat_.pre_translate(px, py);
+            mat_.pre_rotate(deg);
+            mat_.pre_translate(-px, -py);
+        } else {
+            mat_.pre_rotate(deg);
+        }
+        return CallResult::handled_void();
+    }
+    if (m == "skew") {
+        mat_.pre_skew(arg_as_float(ctx, 0, 0.f), arg_as_float(ctx, 1, 0.f));
+        return CallResult::handled_void();
+    }
+    if (m == "concat") {
+        // android.graphics.Matrix values live in heap fields when a Matrix
+        // shadow recorded them; without a Matrix object we cannot honor the
+        // op — report it (no silent no-op).
+        const uint32_t mid = ctx.arg_as_object(0, 0);
+        Affine2D c;
+        bool ok = false;
+        float v = 0.f;
+        // AOSP Matrix stores 9 floats (3x3) named m[0..8] via setValues;
+        // the heap field names we accept: m0..m8 (setValues layout).
+        auto try_read = [&](const char* name, float& out) {
+            return heap_ && heap_->get_object_float_field(mid, name, out);
+        };
+        if (mid != 0 && try_read("m0", c.a) && try_read("m3", c.c) &&
+            try_read("m6", c.e) && try_read("m1", c.b) &&
+            try_read("m4", c.d) && try_read("m7", c.f)) {
+            ok = true;   // affine rows of the 3x3 (perspective row ignored)
+        }
+        if (ok) {
+            mat_.pre_concat(c);
+            return CallResult::handled_void();
+        }
+        warn_noop(cls, "concat(Matrix-unresolved)");
         return CallResult::handled_void();
     }
     if (m == "save") {
-        save_stack_.push_back({tx_, ty_});
-        return CallResult::handled_int((int)save_stack_.size());
+        // AOSP: save() snapshots BOTH matrix and clip; flags accepted.
+        save_stack_.push_back({mat_, clip_});
+        return CallResult::handled_int((int)save_stack_.size() + 1);  // AOSP saveCount starts at 1
     }
     if (m == "restore") {
         if (!save_stack_.empty()) {
-            tx_ = save_stack_.back().first;
-            ty_ = save_stack_.back().second;
+            mat_ = save_stack_.back().mat;
+            clip_ = save_stack_.back().clip;
             save_stack_.pop_back();
         }
         return CallResult::handled_void();
     }
+    if (m == "restoreToCount") {
+        // AOSP: restore to the state save() returned n → keep first n-1
+        // entries of the save stack (saveCount baseline 1).
+        const int n = ctx.arg_as_int(0, 1);
+        while ((int)save_stack_.size() >= n && n >= 1 && !save_stack_.empty() &&
+               (int)save_stack_.size() > n - 1) {
+            save_stack_.pop_back();
+        }
+        if (!save_stack_.empty()) { /* states restored lazily on next op? */ }
+        if (n >= 1 && (int)save_stack_.size() == n - 1) {
+            mat_ = save_stack_.empty() ? Affine2D{} : save_stack_.back().mat;
+            clip_ = save_stack_.empty() ? ClipRect{} : save_stack_.back().clip;
+        }
+        return CallResult::handled_void();
+    }
+    if (m == "saveLayer" || m == "saveLayerAlpha") {
+        // S68: LAYER ISOLATION is DEFERRED-BY-CONTRACT (offscreen buffer +
+        // alpha compositing). The STATE snapshot (matrix+clip) is honored —
+        // draws land on the shared framebuffer at restore time. Reported.
+        warn_noop(cls, "saveLayer(deferred-layer-isolation; state honored)");
+        save_stack_.push_back({mat_, clip_});
+        return CallResult::handled_int((int)save_stack_.size() + 1);
+    }
+    if (m == "getSaveCount") {
+        return CallResult::handled_int((int)save_stack_.size() + 1);
+    }
     if (m == "drawRenderNode") {
         // AOSP compositing: replay a recorded RenderNode's display list into
-        // this canvas, offset by the node's position.
+        // this canvas, offset by the node's position (transformed through
+        // the current matrix — S68: map() covers translate + scale/rotate).
         const uint32_t node_id = ctx.arg_as_object(0, 0);
         auto it = render_nodes_.find(node_id);
         if (it != render_nodes_.end()) {
             float ox = node_pos_l_.count(node_id) ? node_pos_l_[node_id] : 0.f;
             float oy = node_pos_t_.count(node_id) ? node_pos_t_[node_id] : 0.f;
+            mat_.map(ox, oy, ox, oy);
+            // Node-local translate is the only recorded matrix inside a
+            // node (RecordingCanvas starts fresh) — the outer affine folds
+            // into the offset for translate-only inner state, which is what
+            // Compose child positioning produces.
             auto& tgt = target();
             for (const DrawOp& op : it->second) {
                 DrawOp c = op;
+                stamp_clip(c);
                 c.x += ox; c.y += oy;
+                if (c.kind == DrawOp::Kind::DRAW_RECT || c.kind == DrawOp::Kind::DRAW_LINE)
+                    { c.w += ox; c.h += oy; }
                 tgt.push_back(c);
             }
         }
         return CallResult::handled_void();
     }
-    if (m == "rotate" || m == "scale" || m == "skew" || m == "concat" ||
-        m == "clipRect" || m == "saveLayer" || m == "restoreToCount" ||
-        m == "drawBitmap" || m == "drawPoint" || m == "drawPosText") {
-        // Accepted (flat state model); geometry NOT reproduced. CYCLE-E §34:
-        // report honestly instead of disappearing silently.
+    if (m == "clipRect" || m == "clipPath") {
+        if (m == "clipPath") {
+            // DEFERRED-BY-CONTRACT: region-op on a general path (antialias
+            // sampling). Rect clip is the dominant consumer in the corpus.
+            warn_noop(cls, "clipPath(deferred)");
+            return CallResult::handled_bool(true);
+        }
+        // clipRect(l,t,r,b[,op]) | clipRect(l,t,w,h[,op]) | clipRect(RectF[,op])
+        float l, t, r, b;
+        if (ctx.args.size() >= 4 &&
+            ctx.args[0].kind != CallContext::Arg::Kind::OBJECT) {
+            l = arg_as_float(ctx, 0); t = arg_as_float(ctx, 1);
+            const float a2 = arg_as_float(ctx, 2), a3 = arg_as_float(ctx, 3);
+            // AOSP overload disambiguation: (l,t,r,b) or (l,t,w,h). The
+            // width/height variant passes right/bottom == l+w / t+h.
+            const int op_idx = ctx.args.size() >= 5 ? 4 : -1;
+            (void)op_idx;
+            r = l + a2;   // resolve via heuristic below
+            b = t + a3;
+            // Heuristic law: a2>a3 or a2==a3 both plausible... AOSP apps use
+            // the (l,t,r,b) form overwhelmingly; we follow the ABSOLUTE form
+            // when a2 > l and a3 > t (edges ahead of origin), else the W/H form.
+            if (a2 > l && a3 > t) { r = a2; b = a3; }
+        } else if (!read_rectf_fields(heap_, ctx.arg_as_object(0), l, t, r, b)) {
+            warn_noop(cls, "clipRect(RectF-unresolved)");
+            return CallResult::handled_bool(false);
+        }
+        // Bake with the CURRENT matrix into op space (same space as draws).
+        float cl, ct, cr, cb;
+        if (mat_.is_translate_only()) {
+            cl = l + mat_.e; ct = t + mat_.f;
+            cr = r + mat_.e; cb = b + mat_.f;
+        } else {
+            const float cx[4] = {l, r, l, r}, cy[4] = {t, t, b, b};
+            cl = ct = 1e30f; cr = cb = -1e30f;
+            for (int i = 0; i < 4; i++) {
+                float px, py; mat_.map(cx[i], cy[i], px, py);
+                cl = std::min(cl, px); cr = std::max(cr, px);
+                ct = std::min(ct, py); cb = std::max(cb, py);
+            }
+        }
+        if (!clip_.active) {
+            clip_ = {cl, ct, cr, cb, true};
+        } else {
+            // AOSP RegionOp.INTERSECT default law.
+            clip_ = {std::max(clip_.l, cl), std::max(clip_.t, ct),
+                     std::min(clip_.r, cr), std::min(clip_.b, cb), true};
+        }
+        return CallResult::handled_bool(clip_.r > clip_.l && clip_.b > clip_.t);
+    }
+    if (m == "drawBitmap") {
+        // S68 §12 (was accepted_not_reproduced): drawBitmap family.
+        //   (Bitmap, float l, float t, Paint)                     args: obj,f,f,obj
+        //   (Bitmap, Rect src, RectF|Rect dst, Paint)             args: obj,obj,obj,obj
+        //   (int[] colors, int off, int stride, x,y,w,h, hasAlpha, Paint)
+        const uint32_t paint_id = ctx.arg_as_object(ctx.args.size() - 1, 0);
+        DrawOp op; op.kind = DrawOp::Kind::DRAW_BITMAP;
+        op.color = paint_color(paint_id);
+        auto fb = paint_filter_bitmap_.find(paint_id);
+        op.filter_bitmap = fb != paint_filter_bitmap_.end() && fb->second;
+        if (ctx.args.size() >= 9 && ctx.args[0].kind == CallContext::Arg::Kind::INT) {
+            // int[] variant — materialize pixels into a synthetic Bitmap.
+            const uint32_t colors = ctx.arg_as_object(0, 0);
+            const int off = ctx.arg_as_int(1, 0), stride = ctx.arg_as_int(2, 0);
+            const int bx = ctx.arg_as_int(3, 0), by = ctx.arg_as_int(4, 0);
+            const int bw = ctx.arg_as_int(5, 0), bh = ctx.arg_as_int(6, 0);
+            if (heap_ && bw > 0 && bh > 0) {
+                std::vector<uint8_t> rgba((size_t)bw * bh * 4, 0);
+                int32_t alen = 0;
+                heap_->get_object_array_length(colors, alen);
+                int filled = 0;
+                for (int row = 0; row < bh; row++) {
+                    for (int col = 0; col < bw; col++) {
+                        const int idx = off + row * stride + col;
+                        int32_t argb = 0;
+                        if (idx < alen && heap_->get_object_int_field(
+                                colors, "array[" + std::to_string(idx) + "]", argb)) {
+                            rgba[((size_t)row * bw + col) * 4 + 0] = (argb >> 16) & 0xFF;
+                            rgba[((size_t)row * bw + col) * 4 + 1] = (argb >> 8) & 0xFF;
+                            rgba[((size_t)row * bw + col) * 4 + 2] = argb & 0xFF;
+                            rgba[((size_t)row * bw + col) * 4 + 3] = (argb >> 24) & 0xFF;
+                            filled++;
+                        }
+                    }
+                }
+                if (filled > 0) {
+                    const uint32_t obj = heap_->allocate("Landroid/graphics/Bitmap;");
+                    framework::BitmapStore::instance().store(obj, bw, bh, std::move(rgba),
+                                                             "drawBitmap(int[])");
+                    op.bitmap_id = obj;
+                    op.x = bx; op.y = by; op.w = (float)bw; op.h = (float)bh;
+                    op.has_dst = true;
+                }
+            }
+        } else if (ctx.args.size() >= 4 &&
+                   ctx.args[2].kind == CallContext::Arg::Kind::OBJECT) {
+            // (Bitmap, src Rect, dst Rect/RectF, Paint)
+            op.bitmap_id = ctx.arg_as_object(0, 0);
+            float sl, st, sr, sbl;
+            if (read_rectf_fields(heap_, ctx.arg_as_object(1), sl, st, sr, sbl)) {
+                op.has_src = true;
+                op.src_l = sl; op.src_t = st; op.src_r = sr; op.src_b = sbl;
+            }
+            float dl, dt, dr, db;
+            if (read_rectf_fields(heap_, ctx.arg_as_object(2), dl, dt, dr, db)) {
+                op.has_dst = true;
+                op.x = dl; op.y = dt; op.w = dr - dl; op.h = db - dt;
+            }
+        } else {
+            // (Bitmap, float l, float t, Paint) — dst = natural size.
+            op.bitmap_id = ctx.arg_as_object(0, 0);
+            float l = arg_as_float(ctx, 1), t = arg_as_float(ctx, 2);
+            mat_.map(l, t, l, t);
+            op.x = l; op.y = t;
+            op.has_dst = false;   // replay resolves natural size from the store
+        }
+        if (op.has_dst) {
+            // Bake the dst rect with the CURRENT matrix (same law as rects).
+            if (!op.has_src || true) { /* dst baking below */ }
+            float dl = op.x, dt = op.y, dr = op.x + op.w, db = op.y + op.h;
+            float bl, bt, br, bb;
+            if (mat_.is_translate_only()) {
+                bl = dl + mat_.e; bt = dt + mat_.f; br = dr + mat_.e; bb = db + mat_.f;
+                op.x = bl; op.y = bt; op.w = br - bl; op.h = bb - bt;
+                op.affine = Affine2D{};
+                op.has_affine = false;
+            } else {
+                const float cx[4] = {dl, dr, dl, dr}, cy[4] = {dt, dt, db, db};
+                bl = bt = 1e30f; br = bb = -1e30f;
+                for (int i = 0; i < 4; i++) {
+                    float px, py; mat_.map(cx[i], cy[i], px, py);
+                    bl = std::min(bl, px); br = std::max(br, px);
+                    bt = std::min(bt, py); bb = std::max(bb, py);
+                }
+                op.x = bl; op.y = bt; op.w = br - bl; op.h = bb - bt;
+                op.affine = mat_;
+                op.has_affine = true;   // rotated/scaled → per-pixel sampling
+            }
+        }
+        if (op.bitmap_id != 0) { stamp_clip(op); target().push_back(op); }
+        else warn_noop(cls, "drawBitmap(bitmap-unresolved)");
+        return CallResult::handled_void();
+    }
+    if (m == "drawPoint") {
+        // AOSP: a point is a SQUARE of side strokeWidth centered on (x,y)
+        // (Paint.Cap.SQUARE butt default for points law).
+        DrawOp op; op.kind = DrawOp::Kind::DRAW_RECT;
+        float px = arg_as_float(ctx, 0), py = arg_as_float(ctx, 1);
+        uint32_t paint_id = ctx.arg_as_object(2);
+        op.color = paint_color(paint_id);
+        auto sw = paint_stroke_w_.find(paint_id);
+        const float width = sw != paint_stroke_w_.end() && sw->second > 0.f ? sw->second : 1.f;
+        mat_.map(px, py, px, py);
+        op.x = px - width / 2; op.y = py - width / 2;
+        op.w = op.x + width; op.h = op.y + width;   // absolute-edges convention
+        op.stroke = false;
+        stamp_clip(op);
+        target().push_back(op);
+        return CallResult::handled_void();
+    }
+    if (m == "drawPosText" || m == "drawPoints" || m == "drawLines" ||
+        m == "drawBitmapMesh" || m == "drawVertices" || m == "drawPicture" ||
+        m == "drawTextRun" || m == "drawTextOnPath") {
+        // Accepted but geometry not reproduced (registered, honest).
         warn_noop(cls, m);
         return CallResult::handled_void();
     }
-    if (m == "getWidth") return CallResult::handled_int(1080);
-    if (m == "getHeight") return CallResult::handled_int(1920);
+    if (m == "getWidth") return CallResult::handled_int(canvas_w_);
+    if (m == "getHeight") return CallResult::handled_int(canvas_h_);
     // F-095 (R-NEW-328) software-renderer truth law: the runtime renders
     // through a software framebuffer — Canvas.isHardwareAccelerated() MUST
     // answer false. Upstream consumers branch on it: compose 1.6.7

@@ -223,9 +223,27 @@ FIXTURES = {
     (200, 1350, (0,0,200), "Paint.setARGB blue (A5)"),
     (660, 1350, (180,120,60), "drawRoundRect brown center (F-123 arg law)"),
     (100, 1030, (0,180,180), "clipRect region gets teal fill"),
-    (700, 1170, (90,90,90), "rotate NO-OP: gray at unscaled coords (B2 evidence)"),
+    (500, 1030, (255,255,255), "clipRect ENFORCED: no leak outside clip (S68)"),
+    (700, 1170, (255,255,255), "rotate APPLIED: rect rotated away from origin (S68 law)"),
+    (130, 1665, (255,140,0), "scale(2,2) APPLIED: probe at doubled coords (S68 law)"),
+    (60, 830, (255,255,255), "scale(2,2) APPLIED: pre-scale coords empty (S68 law)"),
  ],
  "f05b_persian2": [],
+ "f48_bitmap": [
+    (70, 60, (255,0,0), "decodeResource PNG drawn red (BitmapStore law)"),
+    (260, 85, (0,200,0), "createBitmap+eraseColor green"),
+    (320, 222, (0,200,0), "createScaledBitmap 240x45 green"),
+    (65, 225, (0,200,0), "createBitmap crop 50x50 green"),
+    (600, 500, WHITE, "no bleed below bitmap rows"),
+ ],
+ "f49_canstext": [],
+ "f50_imagefmt": [
+    (150, 75, (255,0,255), "JPEG drawable decoded (A3: no silent drop)"),
+    (150, 590, (0,255,255), "WebP drawable decoded"),
+    (150, 983, (255,128,0), "palette PNG decoded exactly"),
+    (150, 1377, (128,128,128), "grayscale PNG decoded exactly"),
+    (150, 1770, (204,204,204), "GIF = explicit placeholder 0xCC (named failure)"),
+ ],
 }
 
 EXTRAS = {}
@@ -241,6 +259,9 @@ EXTRAS.update({
  "f32_dimen": [chk_viewtree_text("PX=263")],
  "f08_canvasops": [chk_nonwhite_in((0, 400, 900, 600), 300)],
  "f05b_persian2": [chk_nonwhite_in((0, 0, 1080, 400), 2000)],
+ "f49_canstext": [chk_nonwhite_in((40, 60, 500, 180), 200),
+                  chk_nonwhite_in((40, 240, 600, 360), 200),
+                  chk_nonwhite_in((40, 420, 500, 520), 100)],
  "f11_linear": [chk_viewtree_geom("FrameLayout", 0, 0, 1080, 640),
                 chk_viewtree_geom("FrameLayout", 0, 640, 1080, 640),
                 chk_viewtree_geom("FrameLayout", 0, 1280, 1080, 640)],
