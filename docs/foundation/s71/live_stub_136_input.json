@@ -1,0 +1,2142 @@
+[
+ {
+  "api": "<unknown>.add",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 2,
+  "live_status": {
+   "STUBBED": 2
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "<unknown>.addOnDrawListener",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "<unknown>.asIntBuffer",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 4,
+  "live_status": {
+   "STUBBED": 4
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "<unknown>.availableProcessors",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "<unknown>.beginTransaction",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 2,
+  "live_status": {
+   "STUBBED": 2
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "<unknown>.commit",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 2,
+  "live_status": {
+   "STUBBED": 2
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "<unknown>.contains",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 5,
+  "live_status": {
+   "STUBBED": 5
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "<unknown>.executePendingTransactions",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 2,
+  "live_status": {
+   "STUBBED": 2
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "<unknown>.findFragmentByTag",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 2,
+  "live_status": {
+   "STUBBED": 2
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "<unknown>.getClass",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 14,
+  "live_status": {
+   "STUBBED": 14
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "<unknown>.getRefreshRate",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "<unknown>.isAnonymousClass",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 2,
+  "live_status": {
+   "STUBBED": 2
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "<unknown>.isArray",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 2,
+  "live_status": {
+   "STUBBED": 2
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "<unknown>.isLocalClass",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 2,
+  "live_status": {
+   "STUBBED": 2
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "<unknown>.isPrimitive",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 2,
+  "live_status": {
+   "STUBBED": 2
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "<unknown>.list",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "<unknown>.longValue",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "<unknown>.order",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 4,
+  "live_status": {
+   "STUBBED": 4
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "<unknown>.resolveAttribute",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "<unknown>.set",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "<unknown>.setColorFilter",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 5,
+  "live_status": {
+   "STUBBED": 5
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "<unknown>.setMargins",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "<unknown>.setStatusBarColor",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "<unknown>.startsWith",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 5,
+  "live_status": {
+   "STUBBED": 5
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/app/Application;.getCacheDir",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/app/Application;.getDatabasePath",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 3,
+  "live_status": {
+   "STUBBED": 3
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/app/Application;.getSystemService",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/app/Application;.getTheme",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/app/Application;<super>.attachBaseContext",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/app/Application;<super>.onCreate",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/app/KeyguardManager;.requestDismissKeyguard",
+  "fanout": 1,
+  "apks": [
+   "dubrowgn.microtimer_8.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/app/NotificationChannel;.<init>",
+  "fanout": 3,
+  "apks": [
+   "app.varlorg.unote_30.apk",
+   "com.github.muellerma.stopwatch_6.apk",
+   "dubrowgn.microtimer_8.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/app/NotificationChannel;.setDescription",
+  "fanout": 2,
+  "apks": [
+   "app.varlorg.unote_30.apk",
+   "dubrowgn.microtimer_8.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/app/NotificationManager;.canUseFullScreenIntent",
+  "fanout": 1,
+  "apks": [
+   "dubrowgn.microtimer_8.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/app/NotificationManager;.createNotificationChannel",
+  "fanout": 3,
+  "apks": [
+   "app.varlorg.unote_30.apk",
+   "com.github.muellerma.stopwatch_6.apk",
+   "dubrowgn.microtimer_8.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/content/Intent;.getExtras",
+  "fanout": 10,
+  "apks": [
+   "dooz_23_toplevel.apk",
+   "io.github.yamin8000.dooz_23.apk"
+  ],
+  "live_calls": 2,
+  "live_status": {
+   "STUBBED": 2
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/content/IntentFilter;.<init>",
+  "fanout": 1,
+  "apks": [
+   "bouncy.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/content/pm/PackageManager;.hasSystemFeature",
+  "fanout": 5,
+  "apks": [
+   "com.emmanuelmess.tictactoe_3.apk",
+   "dooz_23_toplevel.apk",
+   "io.github.yamin8000.dooz_23.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/database/sqlite/SQLiteDatabase;.equals",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 3,
+  "live_status": {
+   "STUBBED": 3
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/graphics/drawable/ShapeDrawable;.<init>",
+  "fanout": 1,
+  "apks": [
+   "app.varlorg.unote_30.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/graphics/drawable/ShapeDrawable;.getPaint",
+  "fanout": 1,
+  "apks": [
+   "app.varlorg.unote_30.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/graphics/drawable/ShapeDrawable;.setShape",
+  "fanout": 1,
+  "apks": [
+   "app.varlorg.unote_30.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/graphics/drawable/shapes/RectShape;.<init>",
+  "fanout": 1,
+  "apks": [
+   "app.varlorg.unote_30.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/media/SoundPool;.<init>",
+  "fanout": 2,
+  "apks": [
+   "bouncy.apk",
+   "com.emmanuelmess.tictactoe_3.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/net/Uri;.parse",
+  "fanout": 25,
+  "apks": [
+   "app.varlorg.unote_30.apk",
+   "com.emmanuelmess.tictactoe_3.apk",
+   "de.duenndns.gmdice_8.apk",
+   "dooz_23_toplevel.apk",
+   "dubrowgn.microtimer_8.apk",
+   "fishrings_v1.23_vc6.apk",
+   "io.github.yamin8000.dooz_23.apk",
+   "opmt_v0.1.2_vc1.apk",
+   "tripeaks_v1.2.1_vc4.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/os/Bundle;.<init>",
+  "fanout": 20,
+  "apks": [
+   "dooz_23_toplevel.apk",
+   "io.github.yamin8000.dooz_23.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/os/PowerManager;.isIgnoringBatteryOptimizations",
+  "fanout": 1,
+  "apks": [
+   "dubrowgn.microtimer_8.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/support/multidex/MultiDexApplication;.getApplicationInfo",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/util/TypedValue;.<init>",
+  "fanout": 15,
+  "apks": [
+   "app.varlorg.unote_30.apk",
+   "dooz_23_toplevel.apk",
+   "io.github.yamin8000.dooz_23.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/util/TypedValue;.applyDimension",
+  "fanout": 1,
+  "apks": [
+   "app.varlorg.unote_30.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/view/SurfaceHolder;.setFormat",
+  "fanout": 5,
+  "apks": [
+   "bouncy.apk",
+   "com.emmanuelmess.tictactoe_3.apk"
+  ],
+  "live_calls": 2,
+  "live_status": {
+   "STUBBED": 2
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/view/View;.getResources",
+  "fanout": 12,
+  "apks": [
+   "dooz_23_toplevel.apk",
+   "io.github.yamin8000.dooz_23.apk"
+  ],
+  "live_calls": 2,
+  "live_status": {
+   "STUBBED": 2
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/view/View;.getSystemUiVisibility",
+  "fanout": 18,
+  "apks": [
+   "app.varlorg.unote_30.apk",
+   "dooz_23_toplevel.apk",
+   "io.github.yamin8000.dooz_23.apk"
+  ],
+  "live_calls": 5,
+  "live_status": {
+   "STUBBED": 5
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/view/View;.getViewTreeObserver",
+  "fanout": 37,
+  "apks": [
+   "app.varlorg.unote_30.apk",
+   "com.emmanuelmess.tictactoe_3.apk",
+   "dooz_23_toplevel.apk",
+   "io.github.yamin8000.dooz_23.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/view/View;.setSystemUiVisibility",
+  "fanout": 20,
+  "apks": [
+   "app.varlorg.unote_30.apk",
+   "bouncy.apk",
+   "dooz_23_toplevel.apk",
+   "io.github.yamin8000.dooz_23.apk"
+  ],
+  "live_calls": 5,
+  "live_status": {
+   "STUBBED": 5
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/view/Window;.getAttributes",
+  "fanout": 12,
+  "apks": [
+   "dooz_23_toplevel.apk",
+   "io.github.yamin8000.dooz_23.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/view/Window;.getInsetsController",
+  "fanout": 3,
+  "apks": [
+   "bouncy.apk",
+   "dooz_23_toplevel.apk",
+   "io.github.yamin8000.dooz_23.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/view/Window;.setDecorFitsSystemWindows",
+  "fanout": 4,
+  "apks": [
+   "dooz_23_toplevel.apk",
+   "io.github.yamin8000.dooz_23.apk"
+  ],
+  "live_calls": 2,
+  "live_status": {
+   "STUBBED": 2
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/view/Window;.setNavigationBarColor",
+  "fanout": 9,
+  "apks": [
+   "bouncy.apk",
+   "dooz_23_toplevel.apk",
+   "io.github.yamin8000.dooz_23.apk"
+  ],
+  "live_calls": 2,
+  "live_status": {
+   "STUBBED": 2
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/view/Window;.setNavigationBarContrastEnforced",
+  "fanout": 2,
+  "apks": [
+   "dooz_23_toplevel.apk",
+   "io.github.yamin8000.dooz_23.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/view/Window;.setStatusBarColor",
+  "fanout": 9,
+  "apks": [
+   "app.varlorg.unote_30.apk",
+   "dooz_23_toplevel.apk",
+   "io.github.yamin8000.dooz_23.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/view/Window;.setStatusBarContrastEnforced",
+  "fanout": 2,
+  "apks": [
+   "dooz_23_toplevel.apk",
+   "io.github.yamin8000.dooz_23.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/view/WindowManager;.getDefaultDisplay",
+  "fanout": 17,
+  "apks": [
+   "bouncy.apk",
+   "com.emmanuelmess.tictactoe_3.apk",
+   "dooz_23_toplevel.apk",
+   "io.github.yamin8000.dooz_23.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/widget/Button;.getBackground",
+  "fanout": 2,
+  "apks": [
+   "de.duenndns.gmdice_8.apk"
+  ],
+  "live_calls": 5,
+  "live_status": {
+   "STUBBED": 5
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/widget/Button;.setTextSize",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 3,
+  "live_status": {
+   "STUBBED": 3
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/widget/Button;.setTransformationMethod",
+  "fanout": 1,
+  "apks": [
+   "de.duenndns.gmdice_8.apk"
+  ],
+  "live_calls": 4,
+  "live_status": {
+   "STUBBED": 4
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/widget/CheckBox;.setChecked",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 2,
+  "live_status": {
+   "STUBBED": 2
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/widget/CheckBox;.setOnCheckedChangeListener",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 2,
+  "live_status": {
+   "STUBBED": 2
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/widget/CheckBox;.setTextSize",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 2,
+  "live_status": {
+   "STUBBED": 2
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/widget/EditText;.addTextChangedListener",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 2,
+  "live_status": {
+   "STUBBED": 2
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/widget/EditText;.setTextSize",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/widget/GridView;.setAdapter",
+  "fanout": 1,
+  "apks": [
+   "bouncy.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/widget/GridView;.setOnItemClickListener",
+  "fanout": 1,
+  "apks": [
+   "bouncy.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/widget/ListView;.setAdapter",
+  "fanout": 3,
+  "apks": [
+   "app.varlorg.unote_30.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/widget/ListView;.setDivider",
+  "fanout": 1,
+  "apks": [
+   "app.varlorg.unote_30.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/widget/ListView;.setDividerHeight",
+  "fanout": 1,
+  "apks": [
+   "app.varlorg.unote_30.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/widget/ListView;.setOnItemClickListener",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Landroid/widget/TextView;.setTextSize",
+  "fanout": 63,
+  "apks": [
+   "app.varlorg.unote_30.apk",
+   "bouncy.apk",
+   "dubrowgn.microtimer_8.apk"
+  ],
+  "live_calls": 2,
+  "live_status": {
+   "STUBBED": 2
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Lapp/varlorg/unote/NoteMain;.getWindow",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Lapp/varlorg/unote/NoteMain;.registerForContextMenu",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Lapp/varlorg/unote/NoteMain;.setTheme",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Lcom.dozingcatsoftware.bouncy.GLFieldView;.getHolder",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 2,
+  "live_status": {
+   "STUBBED": 2
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Lcom.dozingcatsoftware.bouncy.GLFieldView;.setEGLContextClientVersion",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Lcom.dozingcatsoftware.bouncy.GLFieldView;.setRenderMode",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Lcom.dozingcatsoftware.bouncy.GLFieldView;.setRenderer",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Lcom/badlogic/gdx/backends/android/AndroidApplication;<super>.onCreate",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Lcom/dozingcatsoftware/bouncy/BouncyActivity;.getAssets",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 2,
+  "live_status": {
+   "STUBBED": 2
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Lcom/dozingcatsoftware/bouncy/BouncyActivity;.getBaseContext",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 4,
+  "live_status": {
+   "STUBBED": 4
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Lcom/dozingcatsoftware/bouncy/BouncyActivity;.registerReceiver",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Lcom/dozingcatsoftware/bouncy/BouncyActivity;.requestWindowFeature",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Lcom/dozingcatsoftware/bouncy/BouncyActivity;.setVolumeControlStream",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Lcom/dozingcatsoftware/bouncy/GLFieldView;.setEGLConfigChooser",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Lde/duenndns/gmdice/GameMasterDice;.getResources",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 5,
+  "live_status": {
+   "STUBBED": 5
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Lde/duenndns/gmdice/GameMasterDice;.setListAdapter",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Lde/duenndns/gmdice/GameMasterDice;.setTitle",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Ldubrowgn/microtimer/MainActivity;.setShowWhenLocked",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Ldubrowgn/microtimer/MainActivity;.setTurnScreenOn",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Lg10;.setWillNotDraw",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Lho;.addOnAttachStateChangeListener",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Lho;.setClipChildren",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Lho;.setClipToPadding",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Lho;.setImportantForAccessibility",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Lio/github/yamin8000/dooz/ui/App;.getApplicationContext",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Lio/github/yamin8000/dooz/ui/MainActivity;.getFragmentManager",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 2,
+  "live_status": {
+   "STUBBED": 2
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Lio/github/yamin8000/dooz/ui/MainActivity;.getLastNonConfigurationInstance",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Lj$/util/concurrent/ConcurrentHashMap;.newKeySet",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Ljava/io/ByteArrayOutputStream;.<init>",
+  "fanout": 23,
+  "apks": [
+   "bouncy.apk",
+   "com.emmanuelmess.tictactoe_3.apk",
+   "dooz_23_toplevel.apk",
+   "io.github.yamin8000.dooz_23.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Ljava/io/ByteArrayOutputStream;.toByteArray",
+  "fanout": 23,
+  "apks": [
+   "bouncy.apk",
+   "com.emmanuelmess.tictactoe_3.apk",
+   "dooz_23_toplevel.apk",
+   "io.github.yamin8000.dooz_23.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Ljava/io/ByteArrayOutputStream;.write",
+  "fanout": 3,
+  "apks": [
+   "bouncy.apk",
+   "com.emmanuelmess.tictactoe_3.apk"
+  ],
+  "live_calls": 11,
+  "live_status": {
+   "STUBBED": 11
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Ljava/lang/Enum;.valueOf",
+  "fanout": 260,
+  "apks": [
+   "bouncy.apk",
+   "com.emmanuelmess.tictactoe_3.apk",
+   "dooz_23_toplevel.apk",
+   "io.github.yamin8000.dooz_23.apk",
+   "tripeaks_v1.2.1_vc4.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Ljava/lang/Long;.getLong",
+  "fanout": 2,
+  "apks": [
+   "dooz_23_toplevel.apk",
+   "io.github.yamin8000.dooz_23.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Ljava/lang/Runtime;.getRuntime",
+  "fanout": 13,
+  "apks": [
+   "bouncy.apk",
+   "com.emmanuelmess.tictactoe_3.apk",
+   "dooz_23_toplevel.apk",
+   "io.github.yamin8000.dooz_23.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Ljava/lang/String;.<init>",
+  "fanout": 81,
+  "apks": [
+   "bouncy.apk",
+   "com.emmanuelmess.tictactoe_3.apk",
+   "dooz_23_toplevel.apk",
+   "io.github.yamin8000.dooz_23.apk",
+   "tripeaks_v1.2.1_vc4.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Ljava/lang/Thread;.interrupted",
+  "fanout": 18,
+  "apks": [
+   "dooz_23_toplevel.apk",
+   "io.github.yamin8000.dooz_23.apk"
+  ],
+  "live_calls": 2,
+  "live_status": {
+   "STUBBED": 2
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Ljava/lang/ThreadLocal;.<init>",
+  "fanout": 27,
+  "apks": [
+   "bouncy.apk",
+   "dooz_23_toplevel.apk",
+   "dubrowgn.microtimer_8.apk",
+   "io.github.yamin8000.dooz_23.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Ljava/lang/ThreadLocal;.get",
+  "fanout": 30,
+  "apks": [
+   "bouncy.apk",
+   "dooz_23_toplevel.apk",
+   "dubrowgn.microtimer_8.apk",
+   "io.github.yamin8000.dooz_23.apk"
+  ],
+  "live_calls": 3,
+  "live_status": {
+   "STUBBED": 3
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Ljava/lang/ThreadLocal;.set",
+  "fanout": 20,
+  "apks": [
+   "bouncy.apk",
+   "dooz_23_toplevel.apk",
+   "io.github.yamin8000.dooz_23.apk"
+  ],
+  "live_calls": 2,
+  "live_status": {
+   "STUBBED": 2
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Ljava/nio/ByteBuffer;.allocateDirect",
+  "fanout": 20,
+  "apks": [
+   "bouncy.apk",
+   "com.emmanuelmess.tictactoe_3.apk"
+  ],
+  "live_calls": 4,
+  "live_status": {
+   "STUBBED": 4
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Ljava/nio/ByteOrder;.nativeOrder",
+  "fanout": 28,
+  "apks": [
+   "bouncy.apk",
+   "com.emmanuelmess.tictactoe_3.apk",
+   "dooz_23_toplevel.apk",
+   "io.github.yamin8000.dooz_23.apk"
+  ],
+  "live_calls": 5,
+  "live_status": {
+   "STUBBED": 5
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Ljava/util/ArrayDeque;.<init>",
+  "fanout": 2,
+  "apks": [
+   "bouncy.apk",
+   "dubrowgn.microtimer_8.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Ljava/util/Arrays;.sort",
+  "fanout": 45,
+  "apks": [
+   "app.varlorg.unote_30.apk",
+   "bouncy.apk",
+   "com.emmanuelmess.tictactoe_3.apk",
+   "dooz_23_toplevel.apk",
+   "dubrowgn.microtimer_8.apk",
+   "io.github.yamin8000.dooz_23.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Ljava/util/BitSet;.<init>",
+  "fanout": 2,
+  "apks": [
+   "dubrowgn.microtimer_8.apk"
+  ],
+  "live_calls": 2,
+  "live_status": {
+   "STUBBED": 2
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Ljava/util/LinkedHashSet;.<init>",
+  "fanout": 35,
+  "apks": [
+   "bouncy.apk",
+   "dooz_23_toplevel.apk",
+   "dubrowgn.microtimer_8.apk",
+   "io.github.yamin8000.dooz_23.apk"
+  ],
+  "live_calls": 3,
+  "live_status": {
+   "STUBBED": 3
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Ljava/util/List;.contains",
+  "fanout": 53,
+  "apks": [
+   "bouncy.apk",
+   "de.duenndns.gmdice_8.apk",
+   "dooz_23_toplevel.apk",
+   "io.github.yamin8000.dooz_23.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Ljava/util/PriorityQueue;.<init>",
+  "fanout": 5,
+  "apks": [
+   "bouncy.apk",
+   "dooz_23_toplevel.apk",
+   "io.github.yamin8000.dooz_23.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Ljava/util/Random;.<init>",
+  "fanout": 25,
+  "apks": [
+   "bouncy.apk",
+   "com.emmanuelmess.tictactoe_3.apk",
+   "de.duenndns.gmdice_8.apk",
+   "dooz_23_toplevel.apk",
+   "fishrings_v1.23_vc6.apk",
+   "io.github.yamin8000.dooz_23.apk",
+   "opmt_v0.1.2_vc1.apk",
+   "tripeaks_v1.2.1_vc4.apk"
+  ],
+  "live_calls": 5,
+  "live_status": {
+   "STUBBED": 5
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Ljava/util/TreeMap;.<init>",
+  "fanout": 7,
+  "apks": [
+   "dooz_23_toplevel.apk",
+   "dubrowgn.microtimer_8.apk",
+   "io.github.yamin8000.dooz_23.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Ljava/util/TreeMap;.ceilingEntry",
+  "fanout": 1,
+  "apks": [
+   "dubrowgn.microtimer_8.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Ljava/util/TreeMap;.size",
+  "fanout": 6,
+  "apks": [
+   "dooz_23_toplevel.apk",
+   "dubrowgn.microtimer_8.apk",
+   "io.github.yamin8000.dooz_23.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Ljavax/microedition/khronos/egl/EGL10;.eglChooseConfig",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Ljavax/microedition/khronos/egl/EGL10;.eglGetDisplay",
+  "fanout": 3,
+  "apks": [
+   "com.emmanuelmess.tictactoe_3.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Ljavax/microedition/khronos/egl/EGL10;.eglInitialize",
+  "fanout": 2,
+  "apks": [
+   "com.emmanuelmess.tictactoe_3.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Ljavax/microedition/khronos/egl/EGL10;.eglTerminate",
+  "fanout": 2,
+  "apks": [
+   "com.emmanuelmess.tictactoe_3.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Ljavax/microedition/khronos/egl/EGLContext;.getEGL",
+  "fanout": 4,
+  "apks": [
+   "com.emmanuelmess.tictactoe_3.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Lone/scarecrow/games/OPMT/MainMenu;.getWindow",
+  "fanout": 0,
+  "apks": [],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ },
+ {
+  "api": "Lorg/json/JSONObject;.keys",
+  "fanout": 1,
+  "apks": [
+   "bouncy.apk"
+  ],
+  "live_calls": 1,
+  "live_status": {
+   "STUBBED": 1
+  },
+  "silent_wrong": false,
+  "noop_flags": [],
+  "tested_by": [],
+  "upstream_docs": [],
+  "failures": []
+ }
+]
