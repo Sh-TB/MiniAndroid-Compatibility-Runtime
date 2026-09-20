@@ -35,9 +35,13 @@ def main(path):
     rows = {}
     for m in re.finditer(
             r"\[U007-LAYOUT\]([ ]*)view (\d+) (\S+); id_name=(\S*) "
-            r"lp=(-?\d+)/(-?\d+) weight=(-?\d+) orient=(-?\d+) "
+            r"lp=(-?\d+)/(-?\d+)"          # F-142a wave added optional "m=l,t,r,b " between
+            r"(?: m=(-?\d+),(-?\d+),(-?\d+),(-?\d+))?"  # lp/ and weight — tolerate both
+            r" weight=(-?\d+) orient=(-?\d+) "
             r"measured=(\d+)x(\d+) at=\((-?\d+),(-?\d+)\)", log):
-        depth, vid, cls, idname, lpw, lph, weight, orient, mw, mh, l, t = m.groups()
+        depth, vid, cls, idname, lpw, lph = m.group(1), m.group(2), m.group(3), m.group(4), m.group(5), m.group(6)
+        weight, orient, mw, mh, l, t = (m.group(11), m.group(12), m.group(13),
+                                        m.group(14), m.group(15), m.group(16))
         rows[int(vid)] = dict(cls=cls, idname=idname, lpw=int(lpw), lph=int(lph),
                               weight=int(weight), mw=int(mw), mh=int(mh),
                               left=int(l), top=int(t), depth=(len(depth) - 1) // 2)

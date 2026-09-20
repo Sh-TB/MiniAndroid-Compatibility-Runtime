@@ -173,6 +173,10 @@ private:
         int  style_margin_all = INT_MIN; // layout_margin px (all edges)
         int  ml = 0, mt = 0, mr = 0, mb = 0;
         int  pl = 0, pt = 0, pr = 0, pb = 0;
+        // F-142b: android:maxWidth/maxHeight (px) + adjustViewBounds —
+        // AOSP ImageView.java onMeasure measure-cap contract (XML path).
+        int  max_w = 0, max_h = 0;
+        bool adjust_view_bounds = false;
         int  orientation = -1;
         int  gravity = -1;        // android:gravity (container content gravity)
         int  layout_gravity = -1; // child gravity inside parent

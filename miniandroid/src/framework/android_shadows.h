@@ -1034,6 +1034,13 @@ public:
                                          // mForeground) — measured like src and
                                          // drawn over the content each frame.
         std::string src_drawable_path;   // APK entry path of ImageView src
+        // F-142b (AOSP ImageView.java onMeasure L1141+ law): XML measure
+        // caps — android:maxWidth/maxHeight (px, density-resolved at parse)
+        // and android:adjustViewBounds. The wrap-content measure applies
+        // them AFTER the density-scaled intrinsic size: min(max_*, desired)
+        // with aspect-true rescale of the opposite axis. 0 = no cap.
+        int  max_w = 0, max_h = 0;
+        bool adjust_view_bounds = false;
         // F-053 (M9): GradientDrawable <shape> law — parsed ONCE at inflate
         // time by the live LayoutInflater from the bg .xml drawable (AOSP
         // GradientDrawable.inflate → GradientState). The render walk draws
