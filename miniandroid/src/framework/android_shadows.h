@@ -26,6 +26,7 @@
 #include <deque>
 #include <atomic>
 #include <map>
+#include <set>
 #include <memory>
 #include <string>
 #include <climits>
@@ -175,11 +176,53 @@ public:
         runnable_oid = front.second;
         return true;
     }
+    // F-150 (S72-W4): YIELDED-THREAD REGISTRY. A drained thread body that
+    // hit Thread.sleep unwound at the yield point (F-110b law) — AOSP
+    // semantics: the thread is BLOCKED on sleep, not dead; it resumes when
+    // the sleep elapses. The engine's deterministic counterpart: the body
+    // re-drains at the first scheduler boundary whose virtual time reached
+    // the recorded WAKE time (now + sleep-ms). Threads whose body completed
+    // WITHOUT yielding (loop exit / return) are NOT in this set and never
+    // re-drain. The recorded value is (run-target, wake_at_ms) so
+    // (Runnable)-ctor threads re-drain their TARGET body, not the
+    // framework Thread.run.
+    void mark_thread_yielded(uint32_t thread_oid, uint32_t target_oid,
+                             int64_t wake_at_ms) {
+        if (thread_oid)
+            yielded_threads_[thread_oid] = {target_oid ? target_oid
+                                                       : thread_oid,
+                                            wake_at_ms};
+    }
+    void clear_thread_yielded(uint32_t thread_oid) {
+        yielded_threads_.erase(thread_oid);
+    }
+    // Pops the earliest-wake due thread (deterministic order law). Returns
+    // false when nothing is due at now_ms.
+    bool take_due_yielded(int64_t now_ms, uint32_t& thread_oid,
+                          uint32_t& target_oid) {
+        bool found = false;
+        uint32_t best_oid = 0;
+        int64_t best_wake = 0;
+        for (const auto& [oid, entry] : yielded_threads_) {
+            if (entry.second > now_ms) continue;
+            if (!found || entry.second < best_wake) {
+                found = true;
+                best_oid = oid;
+                best_wake = entry.second;
+            }
+        }
+        if (!found) return false;
+        thread_oid = best_oid;
+        target_oid = yielded_threads_[best_oid].first;
+        yielded_threads_.erase(best_oid);
+        return true;
+    }
 
 private:
     uint32_t main_thread_id_ = 0;
     std::map<uint32_t, uint32_t> runnables_;              // thread → target
     std::vector<std::pair<uint32_t, uint32_t>> pending_starts_;
+    std::map<uint32_t, std::pair<uint32_t, int64_t>> yielded_threads_;
     uint32_t active_drained_thread_ = 0;  // F-110d: 0 = main thread
 };
 
@@ -1199,6 +1242,16 @@ public:
         bool rel_align_parent_top = false, rel_align_parent_bottom = false;
         bool rel_center_in_parent = false, rel_center_horizontal = false;
         bool rel_center_vertical = false;
+        // F-148 (S72-W4): ConstraintLayout constraint params (AOSP
+        // ConstraintLayout.LayoutParams, XML path). cl_*_to holds the
+        // anchor target's id NAME ("" = unconstrained; "parent" = the
+        // ConstraintLayout itself); cl_*_edge holds the TARGET's anchor
+        // edge (1 = LEFT/TOP, 2 = RIGHT/BOTTOM). start/end map onto
+        // left/right (LTR). Biases default 0.5.
+        std::string cl_left_to, cl_right_to, cl_top_to, cl_bottom_to;
+        int cl_left_edge = 0, cl_right_edge = 0;
+        int cl_top_edge = 0, cl_bottom_edge = 0;
+        float cl_bias_x = 0.5f, cl_bias_y = 0.5f;
         int text_style = 0;              // AOSP Typeface bits (bold=1, italic=2)
         // G32: android:fontFamily raw string ("monospace", "sans-serif", ...)
         // resolved to a system face via fonts::TextShaper::resolve_family().

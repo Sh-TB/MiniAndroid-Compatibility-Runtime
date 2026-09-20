@@ -128,6 +128,16 @@ recorded as text, exactly as done in §3.2.
 **Sweep evidence**: `run/s61_spotlight/<package>/` (screenshot.png +
 SHA256, stderr trace, report.md, classified.json per app).
 
+## 0g. S72 WAVE 4 — NEW real game (AndroidGameSnake) → MEANINGFUL SCREENSHOT + 3 P0 law families
+
+| Achievement | Evidence | Status |
+|---|---|---|
+| **AndroidGameSnake S10/L6+ SCREENSHOT-PROVEN source-first** (zhangman.github.snake, Apache-2.0, zhangman523/AndroidGameSnake @ b4968c39 v1.0/vc1, APK 54cf48a9…): real-time game-loop family — launch → ConstraintLayout UI (F-148 geometry: snake_view 1080×780, biased button pad) → tap START → CLICK → reStartGame → GameMainThread (Thread subclass self-run law) → 2 ticks/frame EXACT (125ms sleep @ 250ms frame-delay, F-150 wake-time scheduler) → direction taps steer the snake cell-by-cell (BOTTOM/RIGHT/LEFT chains; app's reverse-guard honored) → food (0,0) blue + snake #FF4081 cells painted by the app's own onDraw (801 canvas ops/frame). Final frame: 122314 px non-white, luminance 248.87, entropy 0.3679, dominant #6fa8dc/#ff4081/#0000ff, snake [(7,10),(8,10),(9,10)] + food [(0,0)]; determinism ×3 BYTE-IDENTICAL (pixel sha 1a419545419deb3a, PNG sha 958031dc…) | docs/foundation/S72_WAVE4.md + docs/evidence/s72_w4_snake/ (frames + APK + SHA256SUMS) | **EXECUTED+OBSERVED (S10/L6, SCREENSHOT-PROVEN)** |
+| **F-148 ConstraintLayout anchor family ROOT-CAUSED-FIXED (P0)**: layout_constraint* attrs unparsed → children 0-wide/stacked; now parsed + per-axis topological solver subset (MATCH_CONSTRAINT spread, bias 0.5, one/no-anchor laws, replay contract). Regressions: corpus 10/10 + fixtures 25/25 pixel-SAME | S72_WAVE4.md §2 | ROOT-CAUSED-FIXED |
+| **F-149 Resources.getDisplayMetrics + TypedValue.applyDimension + device-density unity ROOT-CAUSED-FIXED (P0)**: three stacked silent-null/zero gaps (§038) — app dp2px computed 0px → onMeasure 0x0; now the ONE device law (2.625/420 @1080×1920) across getDisplayMetrics + applyDimension bridge + singleton | S72_WAVE4.md §2 | ROOT-CAUSED-FIXED |
+| **F-150 Thread game-loop family ROOT-CAUSED-FIXED (P0)**: 4 stacked roots (sleep no-op shadow; subclass-descriptor receivers — javac emits GameMainThread.sleep; starts drained only in parks; no yield-resume) → hierarchy-aware is_thread_receiver + frame-boundary start/yield drains + wake-time registry. The while(!done){tick;sleep;} family (bouncy wall, secuso walls) becomes reachable | S72_WAVE4.md §2 | ROOT-CAUSED-FIXED |
+| **Constitution-impact re-test (185 rules)**: fresh 10-APK corpus re-run on the unchanged W3 binary = 10/10 pixel-identical, dooz ×3 byte-identical (baselines reproduce, nothing rotted); dooz 197→23472 px / unote recovery / fishrings board stand as measured constitution-era deltas; F-146/F-147 re-probed UNCHANGED (still OPEN — honest) | run/s72_w4_corpus + run/s72_w4b_corpus | RE-VALIDATED |
+
 ## 1. Master matrix — current-HEAD verdicts
 
 Verdicts at HEAD `8c575f71` + F-080/F-081 (S54) unless marked **[S53]**

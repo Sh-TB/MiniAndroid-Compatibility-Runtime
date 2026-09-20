@@ -224,6 +224,17 @@ private:
         bool rel_align_parent_top = false, rel_align_parent_bottom = false;
         bool rel_center_in_parent = false, rel_center_horizontal = false;
         bool rel_center_vertical = false;
+        // F-148 (S72-W4): ConstraintLayout.LayoutParams anchor family.
+        // cl_*_to = anchor target (sibling id NAME, or the literal
+        // "parent" sentinel); cl_*_edge = which EDGE of the target the
+        // child edge binds to (1 = target LEFT/TOP, 2 = target
+        // RIGHT/BOTTOM). start/end map onto left/right (LTR law; RTL
+        // mapping is a recorded future family). Biases default 0.5 per
+        // AOSP ConstraintLayout.LayoutParams.
+        std::string cl_left_to, cl_right_to, cl_top_to, cl_bottom_to;
+        int cl_left_edge = 0, cl_right_edge = 0;
+        int cl_top_edge = 0, cl_bottom_edge = 0;
+        float cl_bias_x = 0.5f, cl_bias_y = 0.5f;
         // applied style values
         bool from_style_text_size = false;
         uint32_t style_text_color = 0;

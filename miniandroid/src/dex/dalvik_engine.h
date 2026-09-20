@@ -2077,6 +2077,13 @@ public:
     // hierarchy (framework supers are not in the APK DEX) and returns the
     // nearest ancestor name the substring guards can see, or "" if none.
     std::string framework_ancestor_for_dispatch(const std::string& cls);
+    // F-150 (S72-W4): hierarchy-aware Thread receiver law. javac compiles
+    // unqualified Thread member calls inside subclasses against the
+    // SUBCLASS descriptor (invoke-static GameMainThread;->sleep(J)V —
+    // ground truth: the snake APK method_ids table @ b4968c39), so the
+    // Thread laws (sleep advance+yield, start/run self-run drain) must
+    // match the RESOLVED superclass chain, not the literal receiver class.
+    bool is_thread_receiver(const std::string& cls);
     // R-NEW-345 park-drain law: LockSupport.park* = the deterministic-yield
     // point. Bounded drain of the cross-queue runnable work (main MessageQueue
     // runnables, Choreographer due frame callbacks, pending Thread starts) so
@@ -2212,6 +2219,7 @@ public:
     // drain_park_queues_bounded) so only the parked worker's frame chain
     // unwinds.
     bool park_yield_pending_ = false;
+    int64_t park_yield_wake_at_ = 0;  // F-150: virtual-clock wake time
     // R-NEW-345: drain depth of the most recent drain_park_queues_bounded
     // entry (0 = main-thread context, >= 1 = inside a drained worker run).
     int park_drain_last_depth_ = 0;
