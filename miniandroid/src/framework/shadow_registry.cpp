@@ -221,6 +221,15 @@ void register_platform_shadows(ShadowRegistry& reg) {
     reg.register_shadow<ArchTaskExecutorShadow>();
     reg.register_shadow<CollectionShadow>();
     reg.register_shadow<ThreadShadow>();
+    // F-141 chain (S72-W3): java.lang.Runtime singleton law — registered
+    // with the subsystem shadows (exact-class claim) BEFORE any catch-all
+    // path. Evidence: dooz Lxr1;.<clinit> needed Runtime.getRuntime().
+    // availableProcessors() during Dispatchers.Default init; the generic
+    // stub returned null and the F-141 NPE law fired at the consumer.
+    reg.register_shadow<RuntimeShadow>();
+    // F-141c (S72-W3): android.app.FragmentManager/FragmentTransaction —
+    // androidx LifecycleDispatcher report-fragment install path (dooz).
+    reg.register_shadow<FragmentManagerShadow>();
     reg.register_shadow<LooperShadow>();
     reg.register_shadow<HandlerShadow>();
     reg.register_shadow<ActivityShadow>();

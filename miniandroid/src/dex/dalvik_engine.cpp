@@ -10174,6 +10174,26 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
 
                 trace.opcode_name = "invoke-*/range";
 
+                // ────────────────────────────────────────────────────────
+                // F-141 (S72-W3): ART NULL-RECEIVER LAW for range invokes.
+                // Every non-static 3rc form (virtual/super/direct/interface)
+                // treats args[0] as the receiver (CYCLE-E law). ART throws
+                // NPE at the invoke site before the callee body executes.
+                // Evidence (dooz S72-W1): invoke-virtual/range pc155
+                // dispatched Lrz1;.l entry #49 with this=NULL (t=8); the
+                // trie walk corrupted state until arraycopy(null) NPE fired
+                // at the WRONG site — first divergence hidden.
+                // ────────────────────────────────────────────────────────
+                if ((instr & 0xFF) != static_cast<uint8_t>(Opcode::INVOKE_STATIC_RANGE) &&
+                    !args.empty() && f141_is_null_receiver(args[0])) {
+                    throw_deferred("Ljava/lang/NullPointerException;",
+                                   "Attempt to invoke '" + class_name + "." +
+                                       method_name + "' on a null object reference",
+                                   "f141-null-recv-range");
+                    pc_ += 3;  // 3rc length; a catch handler redirect overrides pc
+                    break;
+                }
+
                 // ────────────────────────────────────────────────────────────
                 // M3 FIX-M3-008 (§19 HEAP CLASS IDENTITY LAW):
                 // For invoke-virtual/range and invoke-interface/range the
@@ -14256,6 +14276,50 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
         }
     }
     
+    // ────────────────────────────────────────────────────────────────────
+    // F-141 (S72-W3): ART NULL-RECEIVER INVOKE LAW. ART's interpreter
+    // throws NullPointerException at the invoke site — BEFORE the callee
+    // body executes — when an instance invoke's receiver is null
+    // ("Attempt to invoke virtual method '<sig>' on a null object
+    // reference"). The old path logged "would be NullPointerException"
+    // and dispatched anyway: the callee ran with this=NULL, state
+    // corruption compounded silently (dooz PersistentHashMapBuilder
+    // putAll trie walk, entry #49 this=NULL → arraycopy(null) NPE at the
+    // wrong site — first divergence hidden behind the last symptom,
+    // constitution §030/§039/§177).
+    // Covers NULL_REF and OBJECT_REF/object_id==0 (engine-wide null).
+    // ────────────────────────────────────────────────────────────────────
+    if (!args.empty() && f141_is_null_receiver(args[0])) {
+        // F-141 DIAG (env-gated, bounded, remove after root closure §112-114):
+        // dump the receiver value identity + current frame register window —
+        // answers "which register carried the null receiver".
+        if (std::getenv("MINIANDROID_F141_DIAG") && current_registers_) {
+            std::cerr << "[F141-DIAG] " << current_class_ << "."
+                      << current_method_ << " pc=" << pc_
+                      << " recv_type=" << static_cast<int>(args[0].type)
+                      << " recv_oid=" << args[0].object_id
+                      << " recv_cls=" << args[0].class_desc
+                      << " bytecode_pc_range=[";
+            for (uint32_t d = 0; d < 12 && pc_ + d < bytecode_.size(); ++d)
+                std::cerr << std::hex << bytecode_[pc_ + d] << std::dec << " ";
+            std::cerr << "] regs:";
+            int dumped = 0;
+            for (const auto& [rid, val] : current_registers_->get_snapshot()) {
+                if (dumped++ >= 24) break;
+                std::cerr << " " << rid << ":t" << static_cast<int>(val.type)
+                          << "/o" << val.object_id;
+            }
+            std::cerr << std::endl;
+        }
+        throw_deferred("Ljava/lang/NullPointerException;",
+                       "Attempt to invoke virtual method '" +
+                           declaring_class + "." + method_name_from_dex +
+                           "' on a null object reference",
+                       "f141-null-recv");
+        pc_ += 3;  // 35c length; a catch handler redirect overrides pc
+        return true;
+    }
+
     // Get the object reference (first arg is 'this' for virtual calls)
     if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
         DalvikValue this_obj = args[0];
@@ -14627,6 +14691,20 @@ uint8_t arg_count = static_cast<uint8_t>((instr >> 12) & 0xF);
     std::string static_type = "<unknown>";
     std::string resolved_method = declaring_class + "." + method_name + " (super)";
 
+    // F-141 (S72-W3): ART null-receiver law — invoke-super with a null
+    // receiver throws NPE at the call site before the ancestor body runs
+    // (ART DoInvoke → ThrowNullPointerExceptionFromInterpreter). Old
+    // behavior logged "would be NullPointerException on real Android"
+    // and dispatched with this=NULL.
+    if (!args.empty() && f141_is_null_receiver(args[0])) {
+        throw_deferred("Ljava/lang/NullPointerException;",
+                       "Attempt to invoke super method '" + declaring_class +
+                           "." + method_name + "' on a null object reference",
+                       "f141-null-recv");
+        pc_ += 3;  // 35c length; a catch handler redirect overrides pc
+        return true;
+    }
+
     if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
         const DalvikValue& this_obj = args[0];
         static_type = this_obj.class_desc;
@@ -14808,6 +14886,19 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
                   << std::endl;
     }
     
+    // F-141 (S72-W3): ART null-receiver law extends to invoke-direct
+    // (constructors/private methods): NPE at the call site before the
+    // callee body executes. Previously invoke-direct had NO null check —
+    // the body ran with this=NULL (silent wrongness, §039/§177).
+    if (!args.empty() && f141_is_null_receiver(args[0])) {
+        throw_deferred("Ljava/lang/NullPointerException;",
+                       "Attempt to invoke direct method '" + class_name +
+                           "." + method_name + "' on a null object reference",
+                       "f141-null-recv");
+        pc_ += 3;  // 35c length; a catch handler redirect overrides pc
+        return true;
+    }
+
     // MASTER CAMPAIGN FIX (F2 constructor-direct law): java.lang.Object.<init>
     // is the compiler-mandated empty constructor (AOSP/ART: Object has no
     // constructor logic; javac/d8 emit invoke-direct Object;-><init>()V as
@@ -15642,6 +15733,19 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
     // Runtime-first also honors the simple case: abstract interfaces miss
     // on the runtime class and fall through unchanged.
     DalvikValue return_val = DalvikValue::make_void();
+    // F-141 (S72-W3): ART null-receiver law — invoke-interface with a null
+    // receiver throws NPE at the call site (ART: "Attempt to invoke
+    // interface method '<sig>' on a null object reference"). Previously
+    // the dispatch walk ran with heap_obj = nullptr and silent null
+    // semantics.
+    if (!args.empty() && f141_is_null_receiver(args[0])) {
+        throw_deferred("Ljava/lang/NullPointerException;",
+                       "Attempt to invoke interface method '" + class_name +
+                           "." + method_name + "' on a null object reference",
+                       "f141-null-recv");
+        pc_ += 3;  // 35c length; a catch handler redirect overrides pc
+        return true;
+    }
     // Resolve the receiver's heap object once for the whole dispatch walk.
     const auto* heap_obj =
         (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
@@ -21058,10 +21162,11 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     //   (consistent with F-079 File constants), plus the identity set
     //   java.vm.name / java.version / os.name / os.arch / os.version.
     // Unknown keys answer null (the real contract — no silent empty string).
+    // S72-W3: table hoisted to this scope so the F-141b boxed-reader family
+    // (Long.getLong/Integer.getInteger/Boolean.getBoolean) reads the SAME
+    // property authority — one table, one contract.
     // ────────────────────────────────────────────────────────────────────────
-    if (class_name == "Ljava/lang/System;" && method == "getProperty" &&
-        (args.size() == 1 || args.size() == 2)) {
-        static const miniandroid::dalvik::KvPair t_kSystemProps[] = {
+    static const miniandroid::dalvik::KvPair t_kSystemProps[] = {
     {"java.io.tmpdir", "/tmp"},
     {"line.separator", "\n"},
     {"file.separator", "/"},
@@ -21072,6 +21177,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     {"os.arch", "aarch64"},
     {"os.version", "5.15.0-miniandroid"},
 };
+    if (class_name == "Ljava/lang/System;" && method == "getProperty" &&
+        (args.size() == 1 || args.size() == 2)) {
         std::string key;
         bool have_key = false;
         if (args[0].type == DalvikType::STRING_REF) {
@@ -21101,6 +21208,211 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         } else {
             result = DalvikValue::make_null();
         }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // F-141b (S72-W3) — SYSTEM-PROPERTY BOXED-READER FAMILY (OpenJDK law).
+    // Long.getLong / Integer.getInteger / Boolean.getBoolean read the SAME
+    // platform property table as System.getProperty (F-080 below) and
+    // answer a BOXED value. OpenJDK (Long.java/Integer.java):
+    //   getLong(nm, val): getLong(nm, null) coalesced to valueOf(default) —
+    //   NEVER null when a primitive default is supplied; a numeric property
+    //   value decodes per Long.decode/Integer.decode (sign, 0x/0# hex,
+    //   leading-0 octal, decimal; malformed value → the default, per the
+    //   decode try/catch law). Boolean.getBoolean answers
+    //   Boolean.parseBoolean(getProperty(nm)) — a primitive, never null.
+    // Evidence (dooz S72-W3): kotlinx DefaultExecutor init
+    //   Long.getLong("kotlinx.coroutines.DefaultExecutor.keepAlive", 1000L)
+    //   .longValue()
+    // fell to the generic stub → null → Long.longValue() on the null box
+    // → the F-141 null-receiver NPE law fired (xu.<clinit> pc=24) and
+    // unwound the vs/vx/kv/gt1 <clinit> chain out of MainActivity.onCreate.
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/lang/Long;" && method == "getLong" &&
+        (args.size() == 2 || args.size() == 3) &&
+        !args.empty() &&
+        (args[0].type == DalvikType::STRING_REF ||
+         args[0].type == DalvikType::OBJECT_REF)) {
+        std::string key141;
+        bool have_key141 = false;
+        if (args[0].type == DalvikType::STRING_REF) {
+            key141 = args[0].string_val;
+            have_key141 = true;
+        } else {
+            auto kv = heap_.get_object_field(args[0].object_id,
+                                             "__string_value__");
+            if (kv.has_value() && kv->type == DalvikType::STRING_REF) {
+                key141 = kv->string_val;
+                have_key141 = true;
+            }
+        }
+        // Long.decode law: sign, 0x/0# hex, leading-0 octal, decimal.
+        auto decode_141 = [](const std::string& s, int64_t& out) -> bool {
+            if (s.empty()) return false;
+            size_t i = 0;
+            bool neg = false;
+            if (s[0] == '+' || s[0] == '-') { neg = (s[0] == '-'); i = 1; }
+            if (i >= s.size()) return false;
+            int base = 10;
+            if (s[i] == '0' && i + 1 < s.size() &&
+                (s[i + 1] == 'x' || s[i + 1] == 'X' || s[i + 1] == '#')) {
+                base = 16; i += 2;
+            } else if (s[i] == '0' && i + 1 < s.size()) {
+                base = 8; i += 1;
+            }
+            if (i >= s.size()) return false;
+            int64_t v = 0;
+            for (; i < s.size(); ++i) {
+                int d;
+                char c = s[i];
+                if (c >= '0' && c <= '9') d = c - '0';
+                else if (c >= 'a' && c <= 'f') d = c - 'a' + 10;
+                else if (c >= 'A' && c <= 'F') d = c - 'A' + 10;
+                else return false;
+                if (d >= base) return false;
+                v = v * base + d;
+            }
+            out = neg ? -v : v;
+            return true;
+        };
+        const char* pv141 = have_key141
+                ? kv_table_find(t_kSystemProps,
+                        sizeof(t_kSystemProps) / sizeof(t_kSystemProps[0]),
+                        key141)
+                : nullptr;
+        int64_t decoded141 = 0;
+        bool have_val141 = pv141 ? decode_141(pv141, decoded141) : false;
+        if (have_val141) {
+            uint32_t box_id = heap_.allocate("Ljava/lang/Long;", pc_, 0);
+            heap_.set_object_field(box_id, "value",
+                                   DalvikValue::make_long(decoded141));
+            result = DalvikValue::make_object(box_id, "Ljava/lang/Long;");
+        } else if (args.size() >= 3) {
+            // Unmerged wide default (proto unresolved): (String, lo, hi).
+            int64_t def = (static_cast<int64_t>(args[1].int_val) &
+                           0xFFFFFFFFLL) |
+                          (static_cast<int64_t>(args[2].int_val) << 32);
+            uint32_t box_id = heap_.allocate("Ljava/lang/Long;", pc_, 0);
+            heap_.set_object_field(box_id, "value",
+                                   DalvikValue::make_long(def));
+            result = DalvikValue::make_object(box_id, "Ljava/lang/Long;");
+        } else if (args[1].type == DalvikType::INT64 ||
+                   args[1].type == DalvikType::INT32) {
+            // (String, J): box the primitive default — NEVER null (OpenJDK).
+            int64_t def = args[1].type == DalvikType::INT64
+                              ? args[1].long_val
+                              : static_cast<int64_t>(args[1].int_val);
+            uint32_t box_id = heap_.allocate("Ljava/lang/Long;", pc_, 0);
+            heap_.set_object_field(box_id, "value",
+                                   DalvikValue::make_long(def));
+            result = DalvikValue::make_object(box_id, "Ljava/lang/Long;");
+        } else {
+            // (String, Long): answer the caller's boxed default verbatim
+            // (may be null — the real law for the boxed overload).
+            result = args[1];
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (class_name == "Ljava/lang/Integer;" && method == "getInteger" &&
+        args.size() == 2 &&
+        (args[0].type == DalvikType::STRING_REF ||
+         args[0].type == DalvikType::OBJECT_REF)) {
+        std::string key141;
+        bool have_key141 = false;
+        if (args[0].type == DalvikType::STRING_REF) {
+            key141 = args[0].string_val;
+            have_key141 = true;
+        } else {
+            auto kv = heap_.get_object_field(args[0].object_id,
+                                             "__string_value__");
+            if (kv.has_value() && kv->type == DalvikType::STRING_REF) {
+                key141 = kv->string_val;
+                have_key141 = true;
+            }
+        }
+        const char* pv141 = have_key141
+                ? kv_table_find(t_kSystemProps,
+                        sizeof(t_kSystemProps) / sizeof(t_kSystemProps[0]),
+                        key141)
+                : nullptr;
+        auto decode_i141 = [](const std::string& s, int32_t& out) -> bool {
+            if (s.empty()) return false;
+            size_t i = 0;
+            bool neg = false;
+            if (s[0] == '+' || s[0] == '-') { neg = (s[0] == '-'); i = 1; }
+            if (i >= s.size()) return false;
+            int base = 10;
+            if (s[i] == '0' && i + 1 < s.size() &&
+                (s[i + 1] == 'x' || s[i + 1] == 'X' || s[i + 1] == '#')) {
+                base = 16; i += 2;
+            } else if (s[i] == '0' && i + 1 < s.size()) {
+                base = 8; i += 1;
+            }
+            if (i >= s.size()) return false;
+            int64_t v = 0;
+            for (; i < s.size(); ++i) {
+                int d;
+                char c = s[i];
+                if (c >= '0' && c <= '9') d = c - '0';
+                else if (c >= 'a' && c <= 'f') d = c - 'a' + 10;
+                else if (c >= 'A' && c <= 'F') d = c - 'A' + 10;
+                else return false;
+                if (d >= base) return false;
+                v = v * base + d;
+            }
+            if (neg) v = -v;
+            if (v < -2147483648LL || v > 2147483647LL) return false;
+            out = static_cast<int32_t>(v);
+            return true;
+        };
+        int32_t decoded141 = 0;
+        bool have_val141 = pv141 ? decode_i141(pv141, decoded141) : false;
+        if (have_val141) {
+            uint32_t box_id = heap_.allocate("Ljava/lang/Integer;", pc_, 0);
+            heap_.set_object_field(box_id, "value",
+                                   DalvikValue::make_int(decoded141));
+            result = DalvikValue::make_object(box_id, "Ljava/lang/Integer;");
+        } else if (args[1].type == DalvikType::INT32) {
+            // (String, I): box the primitive default — NEVER null.
+            uint32_t box_id = heap_.allocate("Ljava/lang/Integer;", pc_, 0);
+            heap_.set_object_field(box_id, "value",
+                                   DalvikValue::make_int(args[1].int_val));
+            result = DalvikValue::make_object(box_id, "Ljava/lang/Integer;");
+        } else {
+            // (String, Integer): boxed default verbatim (may be null).
+            result = args[1];
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (class_name == "Ljava/lang/Boolean;" && method == "getBoolean" &&
+        args.size() == 1 &&
+        (args[0].type == DalvikType::STRING_REF ||
+         args[0].type == DalvikType::OBJECT_REF)) {
+        std::string key141;
+        bool have_key141 = false;
+        if (args[0].type == DalvikType::STRING_REF) {
+            key141 = args[0].string_val;
+            have_key141 = true;
+        } else {
+            auto kv = heap_.get_object_field(args[0].object_id,
+                                             "__string_value__");
+            if (kv.has_value() && kv->type == DalvikType::STRING_REF) {
+                key141 = kv->string_val;
+                have_key141 = true;
+            }
+        }
+        // Boolean.getBoolean law: parseBoolean(getProperty(nm)) — absent
+        // key answers false; "true" (case-insensitive) answers true.
+        const char* pv141 = have_key141
+                ? kv_table_find(t_kSystemProps,
+                        sizeof(t_kSystemProps) / sizeof(t_kSystemProps[0]),
+                        key141)
+                : nullptr;
+        bool b141 = pv141 ? (std::string(pv141) == "true") : false;
+        result = DalvikValue::make_bool(b141);
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
@@ -22865,13 +23177,87 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
-    // P0.2 — Context.getResources → Resources singleton
+    // P0.2 — Context/Activity/View.getResources → Resources singleton
+    // F-141d (S72-W3): View receivers added — AOSP View.java law:
+    // getResources() returns mResources (captured from the view's
+    // context/ViewRootImpl at construction), NEVER null for a constructed
+    // view. Evidence (dooz): the Compose init lambda (we.run) runs the
+    // class-identity idiom  view.getResources().getClass(); the STUBBED
+    // null answer fired the F-141 null-receiver NPE law (we.run pc=42)
+    // and unwound the composition chain out of MainActivity.onCreate.
+    // One Resources singleton = the engine's single resource authority
+    // (same object Activity.getResources() answers; the per-configuration
+    // Resources overlay subset is not modeled).
     // ────────────────────────────────────────────────────────────────────────
     if (method == "getResources" &&
         (class_name.find("Context") != std::string::npos ||
-         class_name.find("Activity") != std::string::npos)) {
+         class_name.find("Activity") != std::string::npos ||
+         class_name.find("View") != std::string::npos)) {
         result = get_or_create_singleton("Landroid/content/res/Resources;");
         status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // F-141f (S72-W3) — Context.getTheme + Theme.resolveAttribute law
+    // (AOSP ContextThemeWrapper.java / Resources.java). getTheme() returns
+    // the context's Theme — created at attach(), NEVER null;
+    // resolveAttribute(resid, outValue, resolveRefs) resolves the attr id
+    // against the theme chain and fills the caller's TypedValue per the
+    // AOSP TypedValue contract (type/data/resourceId/string heap fields),
+    // answering true iff resolved (false = attr not in theme — real law).
+    // Evidence (unote S72-W3): NoteMain.onCreate pc=43 runs
+    //   getTheme().resolveAttribute(R.attr.X, tv, true);
+    // the null-theme stub fired the F-141 null-receiver NPE law and killed
+    // onCreate (unote 236520 → 23472 px vs wave-2 — the law correctly
+    // surfacing the latent null per §177). Theme authority: the SAME
+    // ResourceRuntime theme chain the F-093 obtainStyledAttributes law
+    // uses — one theme authority, one contract.
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getTheme" &&
+        (class_name.find("Context") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos ||
+         class_name.find("Service") != std::string::npos ||
+         class_name.find("Application") != std::string::npos)) {
+        result = get_or_create_singleton(
+            "Landroid/content/res/Resources$Theme;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (method == "resolveAttribute" &&
+        class_name == "Landroid/content/res/Resources$Theme;" &&
+        args.size() >= 3 && args[1].type == DalvikType::OBJECT_REF &&
+        args[1].object_id != 0) {
+        int32_t resid141 = dalvik_int_value(args[0]);
+        // Subset boundary (documented): the engine resolves the theme
+        // parent chain fully, so resolveRefs=false collapses to true —
+        // same authority the F-093 TypedArray law uses.
+        uint32_t tv_id = args[1].object_id;
+        auto& rt141 = resources::ResourceRuntime::instance();
+        auto v141 = rt141.resolve_theme_attr_typed(apk_path_,
+                                                   (uint32_t)resid141);
+        if (v141) {
+            heap_.set_object_field(tv_id, "type",
+                                   DalvikValue::make_int(
+                                       (int32_t)(uint8_t)v141->type));
+            heap_.set_object_field(tv_id, "data",
+                                   DalvikValue::make_int(
+                                       (int32_t)v141->data));
+            heap_.set_object_field(
+                tv_id, "resourceId",
+                DalvikValue::make_int(
+                    v141->is_reference() ? (int32_t)v141->ref_id : 0));
+            if (v141->is_string()) {
+                heap_.set_object_field(tv_id, "string",
+                                       DalvikValue::make_string(
+                                           v141->string_value, 0));
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_bool(true);
+            return true;
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_bool(false);
         return true;
     }
 
@@ -26178,6 +26564,21 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // register's static type. Registers may carry container declared
         // types (Map.get → Ljava/lang/Object;) or stale refinement; the
         // heap record is the identity authority (EXP-059 law).
+        // F-141e (S72-W3): STRING_REF receivers are first-class here —
+        // ART answers String.class for any non-null receiver, and a
+        // string constant/ref carries its identity even when heap-backed
+        // object machinery is not engaged. Evidence (dooz g8.a DataStore
+        // path): getClass on the "preferences_pb" string fell through to
+        // the generic stub (null), and the consumer's follow-up invoke
+        // fired the F-141 null-receiver NPE law mid-composition.
+        if (!args.empty() && args[0].type == DalvikType::STRING_REF) {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_class(
+                args[0].class_desc.empty() ? "Ljava/lang/String;"
+                                           : args[0].class_desc,
+                instruction_sequence_);
+            return true;
+        }
         if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
             args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
             if (const auto* obj = heap_.get(args[0].object_id);
