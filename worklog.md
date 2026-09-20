@@ -1652,3 +1652,23 @@ Stage Summary:
 - Canvas is now a real recording canvas: matrix + clip + bitmap + Unicode text, all per-op state law. The three S67 NO-OPs (clipRect/scale/rotate) are pixel-proven FIXED with metamorphic asserts.
 - Zero regressions across battery + 19 old fixtures (byte-identical SHAs) + canonical APK corpus (byte-identical frames).
 - Next: W2 ?attr/theme-at-inflate (A1/A10), W3 RelativeLayout geometry wiring (R-NEW-388), W4 DEX opcode census refresh + coverage docs + Q1-Q10 report.
+
+---
+Task ID: S68-W2
+Agent: Super Z (main agent)
+Task: FINAL BASE CLOSURE W2 — ?attr/theme resolution (A1/A10) + campaign bookkeeping.
+
+Work Log:
+- AOSP law mining (§4): fetched oreo-release public.xml (attr+style ids), themes_material.xml, colors_material.xml, colors.xml, colors_holo/legacy, bools.xml, 14 res/color state lists into docs/upstream/aosp/ (SHAs in FRAMEWORK_ATTR_PROVENANCE.md). Generator scripts/s68_gen_framework_theme_attrs.py → framework_theme_attrs.h: 22 attrs resolved EXACTLY as AOSP resolves them (state-list hand-expansion colorForeground×contentAlpha; @bool; @dimen floats; ?attr chains inside the theme), 5 DEFERRED recorded with reasons.
+- F-131/132 theme service: ResourceRuntime::resolve_launch_theme (activity theme > application theme, F-094 ref fallback both levels) + resolve_theme_attr_typed (bag_value → framework defaults for 0x01xxxxxx ids); flavor law = *.Light name walk + framework style-id table (Theme.Material 0x01030224 / .Light 0x01030237 / DeviceDefault 0x01030128/.Light 0x0103012b / Holo 0x0103006b/.Light 0x0103006e — framework parents cannot resolve in the app ARSC).
+- F-133 inflate pre-pass: apply_element_attrs resolves TYPE_ATTRIBUTE values once on a mutable element copy (every downstream consumer sees the themed value); style-bag ?attr items resolve through the theme service BEFORE the generic deref; background consumer accepts typed INT colors; stats counters added.
+- F-134 ManifestReader: per-activity android:theme captured for the MAIN activity (binary parse + pending member).
+- Fixture f51_themeattr: ?attr/customColor == #234567 EXACT (theme bag); ?android:attr/colorAccent == #009688 EXACT (LIGHT flavor via parent-chain id); ?android:attr/textColorPrimary == (32,32,32) (state-list law). Registered in verify_foundation.py → 21/21 PASS.
+- Regression: battery 92/94 (env only); canonical corpus 9/9 byte-stable (incl. OPMT/TriPeaks unchanged through the theme change).
+- Docs: FOUNDATION_GAP_MATRIX.md updated (A1/A3/A6/A9/A10 + B1/B2/B3/B8 → FIXED with law+fixture refs; counts denominator 75); S68_REPORT.md written (§26 coverage table, §27 before/after, §32 Q1-Q10, §28-30 gates; FOUNDATION COMPLETE = NO — A7 + R-NEW-388 remain).
+- Commits: 95040a39 (W1), 75f62771 (W2), 5d3aeed1 (W1 worklog). Push PENDING ×4 (no credential in session env).
+
+Stage Summary:
+- Two P0 families killed with pixel proof: Canvas foundation (matrix/clip/bitmap/text — the S67 NO-OPs are now metamorphic-asserted laws) and ?attr/theme resolution (app bags + framework defaults + flavor law).
+- Zero regressions anywhere: 21/21 fixtures, 92/94 battery, 9/9 canonical APKs byte-stable.
+- Remaining P0: A7 (manifest label/icon), R-NEW-388 (TriPeaks RL geometry). Next wave candidates + the 7 canonical docs listed in §31.
