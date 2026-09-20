@@ -3895,10 +3895,21 @@
   {
    "id": "F-141",
    "title": "ART null-receiver invoke NPE law + null-propagation hardening (dooz PersistentHashMap trie corruption)",
-   "status": "OPEN",
+   "status": "ROOT-CAUSED-FIXED",
    "priority": "P0",
-   "evidence": "S72_WAVE1.md §4: invoke-virtual null-this executes DEX body silently; F-075 misses NULL_REF; corruption compounds until arraycopy(null) NPE escapes MainActivity.onCreate; dooz fb=197px",
-   "session": "S72"
+   "evidence": "dooz: W2 silent dispatch produced this=NULL trie corruption (PersistentHashMapBuilder.putAll entry #49); with the law: 5 successive first-divergence sites each root-caused and law-fixed; dooz frame_008 nonwhite 197→23472 (splash surface now real content), determinism x3 BYTE-IDENTICAL (sha eb16ab5c68fa...); unote regression caused by the law (resolveAttribute null-theme) FIXED by F-141f: 23472→231120 px recovered; corpus regression: 4 SAME / 5 UP / 0 unexpected DOWN; fixtures 25/25 pixel-SAME, zero f141 breaks; gmdice x3 BYTE-IDENTICAL",
+   "session": "S72",
+   "upstream_law": "AOSP ART interpreter DoInvoke: instance invoke with null receiver throws NullPointerException at the call site BEFORE any callee body executes; OpenJDK Runtime/Long/Integer/Boolean + AOSP Activity/FragmentManager/View/Theme laws for the null producers surfaced by the law",
+   "fix": [
+    "F-141a: ART null-receiver NPE law — throw_deferred NPE at the invoke site in ALL five instance-invoke paths (35c virtual/super/direct/interface + 3rc range), replacing the log-only silent dispatch (dalvik_engine.cpp; f141_is_null_receiver helper, dalvik_engine.h)",
+    "F-141b: Runtime.getRuntime()/availableProcessors() — OpenJDK Runtime.java singleton law (RuntimeShadow, framework/android_shadows.cpp); dooz xr1.<clinit> Dispatchers.Default init",
+    "F-141c: Long.getLong/Integer.getInteger/Boolean.getBoolean boxed-reader family over the F-080 platform property table (never null with primitive default; decode law) — dooz xu.<clinit> DefaultExecutor.keepAlive",
+    "F-141d: Activity.getFragmentManager() non-null + FragmentManager/FragmentTransaction minimal subset (FragmentManagerShadow) — androidx LifecycleDispatcher report-fragment install path (im.onCreate→mc1.b)",
+    "F-141e: View.getResources() → Resources singleton (P0.2 View receivers) — Compose init lambda we.run class-identity idiom",
+    "F-141f: Context.getTheme() non-null + Theme.resolveAttribute law (theme chain authority = F-093 ResourceRuntime; TypedValue type/data/resourceId/string fill) — unote NoteMain.onCreate pc=43",
+    "F-088 ext: Object.getClass on STRING_REF receivers answers String.class (never null) — dooz g8.a DataStore path"
+   ],
+   "fanout": "Law-level: every instance-invoke in every APK now carries ART NPE semantics; 6 null-producer APIs/classes closed (Runtime, boxed-readers, FragmentManager family, View.getResources, getTheme/resolveAttribute, string getClass); affected real apps this wave: dooz, unote, gmdice, microtimer, fishrings, tripeaks"
   },
   {
    "id": "F-142",
@@ -3952,6 +3963,24 @@
    "upstream_law": "AOSP SurfaceControl/WindowManager: screenshots capture the focused/top-of-stack window of the default display",
    "next_action": "capture stage must follow the active/focused window (content_view switch) instead of the first window",
    "impact": "KPI-2 (stable screenshots) misreported for every multi-activity app; dashboard honesty depends on it"
+  },
+  {
+   "id": "F-146",
+   "title": "dooz: ur.e(J) invoked on null receiver at g8.a pc=569 (coroutine state machine; null producer upstream of the call)",
+   "status": "OPEN",
+   "priority": "P1",
+   "evidence": "S72-W3: f141 law surfaced the site (recv_type=8 NULL_REF, F141-DIAG v4:t8/o0); escapes MainActivity.onCreate at 0xc1; next: trace the producer of the null ur receiver in the compose/coroutine path",
+   "next_action": "trace v4's def chain in g8.a (engine-pc domain), identify the null producer API, law-fix per upstream",
+   "session": "S72"
+  },
+  {
+   "id": "F-147",
+   "title": "dooz: ViewGroup.getChildAt(I) on null receiver at MainActivity.onCreate pc=228 (v10 null — likely a findViewById/content-view resolution gap)",
+   "status": "OPEN",
+   "priority": "P1",
+   "evidence": "S72-W3: f141 law surfaced the site (recv NULL_REF; method_idx 1592 = android.view.ViewGroup.getChildAt); second boundary escape at 0xb4",
+   "next_action": "trace v10's producer (findViewById/content lookup) in onCreate's pc domain; classify findViewById resolution law",
+   "session": "S72"
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry↔docs single-source-of-truth restored); registry 372→374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots.",
