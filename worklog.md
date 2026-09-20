@@ -1967,3 +1967,18 @@ Stage Summary:
   -> first new real screenshot) then F-141 (dooz null laws -> compose
   family). No runtime implementation landed this wave by design.
 - FOUNDATION STATUS: NOT COMPLETE (evidence-backed; frontier moved).
+
+---
+Task ID: S72-W2-0
+Agent: Super Z (main)
+Task: Adopt uploaded MASTER CODER CONSTITUTION V2 as permanent binding memory; measure rule impact; proceed to next step.
+
+Work Log:
+- User uploaded full constitution (169 rules) as upload/Pasted Content_1789927574094.txt; read END-TO-END (3737 lines, zero skimming).
+- Stored verbatim at repo root: CONSTITUTION_V2.md (committed to git = durable memory across sessions/compaction).
+- MEMORY PROTOCOL for all future agents: worklog.md read is mandatory (existing rule); CONSTITUTION_V2.md at repo root is now BINDING OPERATION LAW. On any conflict, constitution wins. The 10 absolute prohibitions (#168) and 9 always-on priorities apply to every commit, claim, and report.
+- Measured rule impact with real evidence (see S72 reply report): push debt 11->0, 4/4 blanks root-caused, pixel-level KPI dashboard, F-141 silent-null engine law found via env-gated probes, stale evidence downgraded (fishrings), honest status labels enforced.
+
+Stage Summary:
+- CONSTITUTION_V2.md is the permanent law of this campaign; impact quantified BEFORE/AFTER with evidence.
+- Next: wave-2 executes the evidence-selected root F-142 (fishrings ImageView src->bitmap, P1 best KPI/root) then F-141 (P0 null laws), per #169 directive.
