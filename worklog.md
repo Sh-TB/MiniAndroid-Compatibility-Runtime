@@ -1628,3 +1628,27 @@ Work Log:
 
 Stage Summary:
 - Local: commit complete, clean tree. Push debt: 1 commit (62402341). Next session with credential: `git push origin HEAD`.
+
+---
+Task ID: S68-W1
+Agent: Super Z (main agent)
+Task: FINAL BASE CLOSURE — FOUNDATION ZERO-GAP campaign (user 34-section directive). Wave 1: Canvas foundation + Bitmap/BitmapFactory + image dedup.
+
+Work Log:
+- RECON: HEAD 37af0384 ahead of origin/main by 2 (62402341 S67 + docs) — PENDING-PUSH ×2 (no credential in session); tree clean; engine binary up-to-date; androguard reinstalled (venv); go/zoekt lost to container reset (recorded, not rebuilt — ripgrep/git grep/nm/objdump/PIL/aapt2/d8/androguard cover the campaign's discovery needs).
+- BUILD GRAPH CENSUS (scripts/s68_build_graph_census.py → docs/foundation/S68_BUILD_GRAPH.{md,json}): 40 LIVE-COMPILED / 50 LIVE-INCLUDED / 27 DEAD. Dead: audio/, gles/, games/tictactoe3d.h, 8 exp mains, view_renderer.cpp+real_layout.cpp (S66 hygiene item confirmed), AND 4 dex TUs (api_dispatcher, exception_system, execution_guard, execution_observatory) — transitively-dead duplicates; the LIVE exception system + API bridge live in dalvik_engine.cpp (51 THROWABLE refs, bridge_to_api). CMakeLists.txt references non-existent dex_interpreter.cpp → stale; Makefile is canonical.
+- BASELINE (BEFORE-state): battery 92/94 (EXT-01/02 env only); foundation fixtures 17/17; canonical corpus captured with per-app recipes (run/s68_baseline) — fishrings frame_004 = 2,072,211 px reproduces S65 chain exactly; libGDX tictactoe = blank + GdxRuntimeException (pre-existing registered state); dooz23 = 197 px placeholder (registered).
+- FIXES (each: upstream law → fixture → real APK → regression):
+  F-125 Canvas full affine (SkCanvas law) — scale/rotate/skew/concat real; save/restore snapshot matrix+clip; rects/circles/roundrects bake under matrix (rotate/skew → polygon through winding rasterizer); stroke × sqrt|det|.
+  F-126 clipRect per-op snapshot — ROOT CAUSE of persistent leak: clip was read at replay time (post-restore = inactive); now stamped into each DrawOp at record time; enforced in SoftwareCanvas for all primitives; view-bounds clip per View.draw law; leak 245px → 0.
+  F-127 drawBitmap family + drawPoint + real canvas dims (was hardcoded 1080x1920).
+  F-128 BitmapShadow (21st shadow) + BitmapStore: decodeResource/decodeByteArray/decodeFile, createBitmap family, eraseColor/getPixel(s)/setPixel, scaledBitmap; engine resolver hook registered EARLY (pre-onCreate — the late stage_render_frame registration missed onCreate decodeResource; f48 evidence); GIF/XML EXPLICIT-UNSUPPORTED.
+  F-129 decode_image_bytes shared decoder replaces 3 duplicated magic-switch blocks (setImageDrawable JPEG/WebP no longer silent-dropped).
+  F-130 Canvas text → TextShaper when paint textSize set (one shaping engine law); Persian Canvas ink 0 → 1,858 px.
+- FIXTURES: f48_bitmap/f49_canstext/f50_imagefmt added; f08 asserts updated to post-fix metamorphic laws; verifier 20/20 PASS; determinism ×3 byte-identical; battery 92/94 after count-law update 20→21/22→23; canonical corpus BYTE-STABLE (7/7 checked SHAs == before; bouncy 53177d4a full-frame).
+- Commit 95040a39 (secret guard PASS). Push still PENDING ×3 (no credential in session).
+
+Stage Summary:
+- Canvas is now a real recording canvas: matrix + clip + bitmap + Unicode text, all per-op state law. The three S67 NO-OPs (clipRect/scale/rotate) are pixel-proven FIXED with metamorphic asserts.
+- Zero regressions across battery + 19 old fixtures (byte-identical SHAs) + canonical APK corpus (byte-identical frames).
+- Next: W2 ?attr/theme-at-inflate (A1/A10), W3 RelativeLayout geometry wiring (R-NEW-388), W4 DEX opcode census refresh + coverage docs + Q1-Q10 report.
