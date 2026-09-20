@@ -1,0 +1,2031 @@
+{
+ "count": 387,
+ "classes": [
+  {
+   "class": "FileSandbox",
+   "header": "src/api/android_context.h",
+   "bases": []
+  },
+  {
+   "class": "SharedPreferences",
+   "header": "src/api/android_context.h",
+   "bases": []
+  },
+  {
+   "class": "Resources",
+   "header": "src/api/android_context.h",
+   "bases": []
+  },
+  {
+   "class": "AssetManager",
+   "header": "src/api/android_context.h",
+   "bases": []
+  },
+  {
+   "class": "PackageManager",
+   "header": "src/api/android_context.h",
+   "bases": []
+  },
+  {
+   "class": "ContextConfig",
+   "header": "src/api/android_context.h",
+   "bases": []
+  },
+  {
+   "class": "Context",
+   "header": "src/api/android_context.h",
+   "bases": []
+  },
+  {
+   "class": "ApplicationInfo",
+   "header": "src/api/android_context.h",
+   "bases": []
+  },
+  {
+   "class": "ContextWrapper",
+   "header": "src/api/android_context.h",
+   "bases": [
+    "public Context"
+   ]
+  },
+  {
+   "class": "ApplicationContext",
+   "header": "src/api/android_context.h",
+   "bases": [
+    "public ContextWrapper"
+   ]
+  },
+  {
+   "class": "Bundle",
+   "header": "src/api/android_stubs.h",
+   "bases": []
+  },
+  {
+   "class": "Context",
+   "header": "src/api/android_stubs.h",
+   "bases": []
+  },
+  {
+   "class": "Activity",
+   "header": "src/api/android_stubs.h",
+   "bases": []
+  },
+  {
+   "class": "View",
+   "header": "src/api/android_stubs.h",
+   "bases": []
+  },
+  {
+   "class": "ViewGroup",
+   "header": "src/api/android_stubs.h",
+   "bases": []
+  },
+  {
+   "class": "TextView",
+   "header": "src/api/android_stubs.h",
+   "bases": []
+  },
+  {
+   "class": "Canvas",
+   "header": "src/api/android_stubs.h",
+   "bases": []
+  },
+  {
+   "class": "Paint",
+   "header": "src/api/android_stubs.h",
+   "bases": []
+  },
+  {
+   "class": "AndroidObject",
+   "header": "src/api/android_stubs.h",
+   "bases": []
+  },
+  {
+   "class": "Bundle",
+   "header": "src/api/android_stubs.h",
+   "bases": [
+    "public AndroidObject"
+   ]
+  },
+  {
+   "class": "Context",
+   "header": "src/api/android_stubs.h",
+   "bases": [
+    "public AndroidObject"
+   ]
+  },
+  {
+   "class": "Paint",
+   "header": "src/api/android_stubs.h",
+   "bases": [
+    "public AndroidObject"
+   ]
+  },
+  {
+   "class": "Canvas",
+   "header": "src/api/android_stubs.h",
+   "bases": [
+    "public AndroidObject"
+   ]
+  },
+  {
+   "class": "View",
+   "header": "src/api/android_stubs.h",
+   "bases": [
+    "public AndroidObject",
+    "enable_shared_from_this"
+   ]
+  },
+  {
+   "class": "ViewGroup",
+   "header": "src/api/android_stubs.h",
+   "bases": [
+    "public View"
+   ]
+  },
+  {
+   "class": "TextView",
+   "header": "src/api/android_stubs.h",
+   "bases": [
+    "public View"
+   ]
+  },
+  {
+   "class": "Activity",
+   "header": "src/api/android_stubs.h",
+   "bases": [
+    "public Context"
+   ]
+  },
+  {
+   "class": "ApiCallRecord",
+   "header": "src/api/android_stubs.h",
+   "bases": []
+  },
+  {
+   "class": "ApiRegistry",
+   "header": "src/api/android_stubs.h",
+   "bases": []
+  },
+  {
+   "class": "PrefValue",
+   "header": "src/api/shared_prefs.h",
+   "bases": []
+  },
+  {
+   "class": "PrefsResult",
+   "header": "src/api/shared_prefs.h",
+   "bases": []
+  },
+  {
+   "class": "SharedPreferences",
+   "header": "src/api/shared_prefs.h",
+   "bases": []
+  },
+  {
+   "class": "SharedPreferencesEditor",
+   "header": "src/api/shared_prefs.h",
+   "bases": []
+  },
+  {
+   "class": "SharedPreferencesEditor",
+   "header": "src/api/shared_prefs.h",
+   "bases": []
+  },
+  {
+   "class": "SharedPreferences",
+   "header": "src/api/shared_prefs.h",
+   "bases": []
+  },
+  {
+   "class": "ApkInfo",
+   "header": "src/apk/apk_parser.h",
+   "bases": []
+  },
+  {
+   "class": "ZipLocalFileHeader",
+   "header": "src/apk/apk_parser.h",
+   "bases": []
+  },
+  {
+   "class": "ZipCentralDirEntry",
+   "header": "src/apk/apk_parser.h",
+   "bases": []
+  },
+  {
+   "class": "ZipEndOfCentralDir",
+   "header": "src/apk/apk_parser.h",
+   "bases": []
+  },
+  {
+   "class": "ZipEntry",
+   "header": "src/apk/apk_parser.h",
+   "bases": []
+  },
+  {
+   "class": "ApkParser",
+   "header": "src/apk/apk_parser.h",
+   "bases": []
+  },
+  {
+   "class": "ManifestInfo",
+   "header": "src/apk/manifest_reader.h",
+   "bases": []
+  },
+  {
+   "class": "ActivityInfo",
+   "header": "src/apk/manifest_reader.h",
+   "bases": []
+  },
+  {
+   "class": "AxmlChunkHeader",
+   "header": "src/apk/manifest_reader.h",
+   "bases": []
+  },
+  {
+   "class": "AxmlHeader",
+   "header": "src/apk/manifest_reader.h",
+   "bases": []
+  },
+  {
+   "class": "AxmlStringPoolHeader",
+   "header": "src/apk/manifest_reader.h",
+   "bases": []
+  },
+  {
+   "class": "AxmlResourceIdsHeader",
+   "header": "src/apk/manifest_reader.h",
+   "bases": []
+  },
+  {
+   "class": "AxmlStartNamespace",
+   "header": "src/apk/manifest_reader.h",
+   "bases": []
+  },
+  {
+   "class": "AxmlEndNamespace",
+   "header": "src/apk/manifest_reader.h",
+   "bases": []
+  },
+  {
+   "class": "AxmlStartElement",
+   "header": "src/apk/manifest_reader.h",
+   "bases": []
+  },
+  {
+   "class": "AxmlEndElement",
+   "header": "src/apk/manifest_reader.h",
+   "bases": []
+  },
+  {
+   "class": "AxmlAttribute",
+   "header": "src/apk/manifest_reader.h",
+   "bases": []
+  },
+  {
+   "class": "ManifestReader",
+   "header": "src/apk/manifest_reader.h",
+   "bases": []
+  },
+  {
+   "class": "DecodedPcm",
+   "header": "src/audio/audio_engine.h",
+   "bases": []
+  },
+  {
+   "class": "MediaPlayer",
+   "header": "src/audio/audio_engine.h",
+   "bases": []
+  },
+  {
+   "class": "TransitionRecord",
+   "header": "src/audio/audio_engine.h",
+   "bases": []
+  },
+  {
+   "class": "SoundPool",
+   "header": "src/audio/audio_engine.h",
+   "bases": []
+  },
+  {
+   "class": "AudioTrack",
+   "header": "src/audio/audio_engine.h",
+   "bases": []
+  },
+  {
+   "class": "ApiCallContext",
+   "header": "src/dex/api_dispatcher.h",
+   "bases": []
+  },
+  {
+   "class": "ApiResult",
+   "header": "src/dex/api_dispatcher.h",
+   "bases": []
+  },
+  {
+   "class": "IApiResolver",
+   "header": "src/dex/api_dispatcher.h",
+   "bases": []
+  },
+  {
+   "class": "ObjectResolver",
+   "header": "src/dex/api_dispatcher.h",
+   "bases": [
+    "public IApiResolver"
+   ]
+  },
+  {
+   "class": "StringResolver",
+   "header": "src/dex/api_dispatcher.h",
+   "bases": [
+    "public IApiResolver"
+   ]
+  },
+  {
+   "class": "ClassResolver",
+   "header": "src/dex/api_dispatcher.h",
+   "bases": [
+    "public IApiResolver"
+   ]
+  },
+  {
+   "class": "ActivityResolver",
+   "header": "src/dex/api_dispatcher.h",
+   "bases": [
+    "public IApiResolver"
+   ]
+  },
+  {
+   "class": "ViewResolver",
+   "header": "src/dex/api_dispatcher.h",
+   "bases": [
+    "public IApiResolver"
+   ]
+  },
+  {
+   "class": "TextViewResolver",
+   "header": "src/dex/api_dispatcher.h",
+   "bases": [
+    "public IApiResolver"
+   ]
+  },
+  {
+   "class": "BundleResolver",
+   "header": "src/dex/api_dispatcher.h",
+   "bases": [
+    "public IApiResolver"
+   ]
+  },
+  {
+   "class": "LogResolver",
+   "header": "src/dex/api_dispatcher.h",
+   "bases": [
+    "public IApiResolver"
+   ]
+  },
+  {
+   "class": "ApiDispatcher",
+   "header": "src/dex/api_dispatcher.h",
+   "bases": []
+  },
+  {
+   "class": "EntryPoint",
+   "header": "src/dex/class_resolver.h",
+   "bases": []
+  },
+  {
+   "class": "ExecutionTrace",
+   "header": "src/dex/class_resolver.h",
+   "bases": []
+  },
+  {
+   "class": "PipelineStage",
+   "header": "src/dex/class_resolver.h",
+   "bases": []
+  },
+  {
+   "class": "MethodMapEntry",
+   "header": "src/dex/class_resolver.h",
+   "bases": []
+  },
+  {
+   "class": "Issue",
+   "header": "src/dex/class_resolver.h",
+   "bases": []
+  },
+  {
+   "class": "ClassResolver",
+   "header": "src/dex/class_resolver.h",
+   "bases": []
+  },
+  {
+   "class": "ShadowRegistry",
+   "header": "src/dex/dalvik_engine.h",
+   "bases": []
+  },
+  {
+   "class": "CallResult",
+   "header": "src/dex/dalvik_engine.h",
+   "bases": []
+  },
+  {
+   "class": "HeapAllocator",
+   "header": "src/dex/dalvik_engine.h",
+   "bases": []
+  },
+  {
+   "class": "DalvikValue",
+   "header": "src/dex/dalvik_engine.h",
+   "bases": []
+  },
+  {
+   "class": "DexRegisterFile",
+   "header": "src/dex/dalvik_engine.h",
+   "bases": []
+  },
+  {
+   "class": "StackFrame",
+   "header": "src/dex/dalvik_engine.h",
+   "bases": []
+  },
+  {
+   "class": "HeapObject",
+   "header": "src/dex/dalvik_engine.h",
+   "bases": []
+  },
+  {
+   "class": "DalvikHeap",
+   "header": "src/dex/dalvik_engine.h",
+   "bases": []
+  },
+  {
+   "class": "CallStack",
+   "header": "src/dex/dalvik_engine.h",
+   "bases": []
+  },
+  {
+   "class": "InstructionTrace",
+   "header": "src/dex/dalvik_engine.h",
+   "bases": []
+  },
+  {
+   "class": "Operand",
+   "header": "src/dex/dalvik_engine.h",
+   "bases": []
+  },
+  {
+   "class": "ApiCallTrace",
+   "header": "src/dex/dalvik_engine.h",
+   "bases": []
+  },
+  {
+   "class": "DalvikExecutionResult",
+   "header": "src/dex/dalvik_engine.h",
+   "bases": []
+  },
+  {
+   "class": "DalvikExecutionEngine",
+   "header": "src/dex/dalvik_engine.h",
+   "bases": []
+  },
+  {
+   "class": "Config",
+   "header": "src/dex/dalvik_engine.h",
+   "bases": []
+  },
+  {
+   "class": "XmlPullState",
+   "header": "src/dex/dalvik_engine.h",
+   "bases": []
+  },
+  {
+   "class": "FieldResolution",
+   "header": "src/dex/dalvik_engine.h",
+   "bases": []
+  },
+  {
+   "class": "PendingAnim",
+   "header": "src/dex/dalvik_engine.h",
+   "bases": []
+  },
+  {
+   "class": "Value",
+   "header": "src/dex/dex_interpreter_batch.h",
+   "bases": []
+  },
+  {
+   "class": "RegisterFile",
+   "header": "src/dex/dex_interpreter_batch.h",
+   "bases": []
+  },
+  {
+   "class": "HeapObject",
+   "header": "src/dex/dex_interpreter_batch.h",
+   "bases": []
+  },
+  {
+   "class": "ObjectHeap",
+   "header": "src/dex/dex_interpreter_batch.h",
+   "bases": []
+  },
+  {
+   "class": "ApiCallTraceEntry",
+   "header": "src/dex/dex_interpreter_batch.h",
+   "bases": []
+  },
+  {
+   "class": "ObjectCreationTraceEntry",
+   "header": "src/dex/dex_interpreter_batch.h",
+   "bases": []
+  },
+  {
+   "class": "ConstructorTraceEntry",
+   "header": "src/dex/dex_interpreter_batch.h",
+   "bases": []
+  },
+  {
+   "class": "FailureReportEntry",
+   "header": "src/dex/dex_interpreter_batch.h",
+   "bases": []
+  },
+  {
+   "class": "InstructionTraceEntry",
+   "header": "src/dex/dex_interpreter_batch.h",
+   "bases": []
+  },
+  {
+   "class": "Operand",
+   "header": "src/dex/dex_interpreter_batch.h",
+   "bases": []
+  },
+  {
+   "class": "BatchExecutionTrace",
+   "header": "src/dex/dex_interpreter_batch.h",
+   "bases": []
+  },
+  {
+   "class": "BatchInterpreterConfig",
+   "header": "src/dex/dex_interpreter_batch.h",
+   "bases": []
+  },
+  {
+   "class": "DexInterpreterBatch",
+   "header": "src/dex/dex_interpreter_batch.h",
+   "bases": []
+  },
+  {
+   "class": "DexHeader",
+   "header": "src/dex/dex_parser.h",
+   "bases": []
+  },
+  {
+   "class": "DexStringId",
+   "header": "src/dex/dex_parser.h",
+   "bases": []
+  },
+  {
+   "class": "DexTypeId",
+   "header": "src/dex/dex_parser.h",
+   "bases": []
+  },
+  {
+   "class": "DexProtoId",
+   "header": "src/dex/dex_parser.h",
+   "bases": []
+  },
+  {
+   "class": "DexFieldId",
+   "header": "src/dex/dex_parser.h",
+   "bases": []
+  },
+  {
+   "class": "DexMethodId",
+   "header": "src/dex/dex_parser.h",
+   "bases": []
+  },
+  {
+   "class": "DexClassDef",
+   "header": "src/dex/dex_parser.h",
+   "bases": []
+  },
+  {
+   "class": "DexClassDataHeader",
+   "header": "src/dex/dex_parser.h",
+   "bases": []
+  },
+  {
+   "class": "DexEncodedField",
+   "header": "src/dex/dex_parser.h",
+   "bases": []
+  },
+  {
+   "class": "DexEncodedMethod",
+   "header": "src/dex/dex_parser.h",
+   "bases": []
+  },
+  {
+   "class": "DexCodeItem",
+   "header": "src/dex/dex_parser.h",
+   "bases": []
+  },
+  {
+   "class": "MethodInfo",
+   "header": "src/dex/dex_parser.h",
+   "bases": []
+  },
+  {
+   "class": "FieldInfo",
+   "header": "src/dex/dex_parser.h",
+   "bases": []
+  },
+  {
+   "class": "ClassInfo",
+   "header": "src/dex/dex_parser.h",
+   "bases": []
+  },
+  {
+   "class": "DexReport",
+   "header": "src/dex/dex_parser.h",
+   "bases": []
+  },
+  {
+   "class": "DexParser",
+   "header": "src/dex/dex_parser.h",
+   "bases": []
+  },
+  {
+   "class": "EncodedValue",
+   "header": "src/dex/encoded_value.h",
+   "bases": []
+  },
+  {
+   "class": "TryCatchEntry",
+   "header": "src/dex/exception_system.h",
+   "bases": []
+  },
+  {
+   "class": "TryCatchTable",
+   "header": "src/dex/exception_system.h",
+   "bases": []
+  },
+  {
+   "class": "DalvikException",
+   "header": "src/dex/exception_system.h",
+   "bases": []
+  },
+  {
+   "class": "StackFrame",
+   "header": "src/dex/exception_system.h",
+   "bases": []
+  },
+  {
+   "class": "ExceptionManager",
+   "header": "src/dex/exception_system.h",
+   "bases": []
+  },
+  {
+   "class": "ExecutionLimits",
+   "header": "src/dex/execution_guard.h",
+   "bases": []
+  },
+  {
+   "class": "ExecutionLimitExceeded",
+   "header": "src/dex/execution_guard.h",
+   "bases": [
+    "runtime_error"
+   ]
+  },
+  {
+   "class": "ExecutionGuard",
+   "header": "src/dex/execution_guard.h",
+   "bases": []
+  },
+  {
+   "class": "LastViolation",
+   "header": "src/dex/execution_guard.h",
+   "bases": []
+  },
+  {
+   "class": "RegisterState",
+   "header": "src/dex/execution_observatory.h",
+   "bases": []
+  },
+  {
+   "class": "InstructionRecord",
+   "header": "src/dex/execution_observatory.h",
+   "bases": []
+  },
+  {
+   "class": "MethodExecutionRecord",
+   "header": "src/dex/execution_observatory.h",
+   "bases": []
+  },
+  {
+   "class": "ApiCallRecord",
+   "header": "src/dex/execution_observatory.h",
+   "bases": []
+  },
+  {
+   "class": "TimeoutRecord",
+   "header": "src/dex/execution_observatory.h",
+   "bases": []
+  },
+  {
+   "class": "ExceptionRecord",
+   "header": "src/dex/execution_observatory.h",
+   "bases": []
+  },
+  {
+   "class": "ExecutionObservatory",
+   "header": "src/dex/execution_observatory.h",
+   "bases": []
+  },
+  {
+   "class": "DecodeResult",
+   "header": "src/dex/mutf8.h",
+   "bases": []
+  },
+  {
+   "class": "TraceExporter",
+   "header": "src/dex/trace_exporter.h",
+   "bases": []
+  },
+  {
+   "class": "TraceEntry",
+   "header": "src/diagnostics/trace_engine.h",
+   "bases": []
+  },
+  {
+   "class": "ErrorRecord",
+   "header": "src/diagnostics/trace_engine.h",
+   "bases": []
+  },
+  {
+   "class": "ScreenshotRecord",
+   "header": "src/diagnostics/trace_engine.h",
+   "bases": []
+  },
+  {
+   "class": "ExecutionMetrics",
+   "header": "src/diagnostics/trace_engine.h",
+   "bases": []
+  },
+  {
+   "class": "TraceEngine",
+   "header": "src/diagnostics/trace_engine.h",
+   "bases": []
+  },
+  {
+   "class": "ScopedTimer",
+   "header": "src/diagnostics/trace_engine.h",
+   "bases": []
+  },
+  {
+   "class": "ShapedGlyph",
+   "header": "src/fonts/text_shaper.h",
+   "bases": []
+  },
+  {
+   "class": "ShapedText",
+   "header": "src/fonts/text_shaper.h",
+   "bases": []
+  },
+  {
+   "class": "TextLayoutLine",
+   "header": "src/fonts/text_shaper.h",
+   "bases": []
+  },
+  {
+   "class": "TextLayout",
+   "header": "src/fonts/text_shaper.h",
+   "bases": []
+  },
+  {
+   "class": "FontMetrics",
+   "header": "src/fonts/text_shaper.h",
+   "bases": []
+  },
+  {
+   "class": "RasterPub",
+   "header": "src/fonts/text_shaper.h",
+   "bases": []
+  },
+  {
+   "class": "TextShaper",
+   "header": "src/fonts/text_shaper.h",
+   "bases": []
+  },
+  {
+   "class": "Face",
+   "header": "src/fonts/text_shaper.h",
+   "bases": []
+  },
+  {
+   "class": "ArchTaskExecutorShadow",
+   "header": "src/framework/android_shadows.h",
+   "bases": [
+    "public Shadow"
+   ]
+  },
+  {
+   "class": "ThreadShadow",
+   "header": "src/framework/android_shadows.h",
+   "bases": [
+    "public Shadow"
+   ]
+  },
+  {
+   "class": "LooperShadow",
+   "header": "src/framework/android_shadows.h",
+   "bases": [
+    "public Shadow"
+   ]
+  },
+  {
+   "class": "HandlerShadow",
+   "header": "src/framework/android_shadows.h",
+   "bases": [
+    "public Shadow"
+   ]
+  },
+  {
+   "class": "QueuedRunnable",
+   "header": "src/framework/android_shadows.h",
+   "bases": []
+  },
+  {
+   "class": "IntentShadow",
+   "header": "src/framework/android_shadows.h",
+   "bases": [
+    "public Shadow"
+   ]
+  },
+  {
+   "class": "PendingIntent",
+   "header": "src/framework/android_shadows.h",
+   "bases": []
+  },
+  {
+   "class": "ActivityShadow",
+   "header": "src/framework/android_shadows.h",
+   "bases": [
+    "public Shadow"
+   ]
+  },
+  {
+   "class": "ActivityRecord",
+   "header": "src/framework/android_shadows.h",
+   "bases": []
+  },
+  {
+   "class": "LifecycleCallbackEntry",
+   "header": "src/framework/android_shadows.h",
+   "bases": []
+  },
+  {
+   "class": "LayoutInflaterShadow",
+   "header": "src/framework/android_shadows.h",
+   "bases": [
+    "public Shadow"
+   ]
+  },
+  {
+   "class": "ViewShadow",
+   "header": "src/framework/android_shadows.h",
+   "bases": [
+    "public Shadow"
+   ]
+  },
+  {
+   "class": "ViewNode",
+   "header": "src/framework/android_shadows.h",
+   "bases": []
+  },
+  {
+   "class": "BgStateItem",
+   "header": "src/framework/android_shadows.h",
+   "bases": []
+  },
+  {
+   "class": "TagValue",
+   "header": "src/framework/android_shadows.h",
+   "bases": []
+  },
+  {
+   "class": "WebSettingsShadow",
+   "header": "src/framework/android_shadows.h",
+   "bases": [
+    "public Shadow"
+   ]
+  },
+  {
+   "class": "Prop",
+   "header": "src/framework/android_shadows.h",
+   "bases": []
+  },
+  {
+   "class": "CollectionShadow",
+   "header": "src/framework/android_shadows.h",
+   "bases": [
+    "public Shadow"
+   ]
+  },
+  {
+   "class": "CollectionState",
+   "header": "src/framework/android_shadows.h",
+   "bases": []
+  },
+  {
+   "class": "ViewElem",
+   "header": "src/framework/android_shadows.h",
+   "bases": []
+  },
+  {
+   "class": "AtomicShadow",
+   "header": "src/framework/atomic_shadow.h",
+   "bases": [
+    "public Shadow"
+   ]
+  },
+  {
+   "class": "AtomicCell",
+   "header": "src/framework/atomic_shadow.h",
+   "bases": []
+  },
+  {
+   "class": "ArrayCell",
+   "header": "src/framework/atomic_shadow.h",
+   "bases": []
+  },
+  {
+   "class": "StoredBitmap",
+   "header": "src/framework/bitmap_shadow.h",
+   "bases": []
+  },
+  {
+   "class": "BitmapStore",
+   "header": "src/framework/bitmap_shadow.h",
+   "bases": []
+  },
+  {
+   "class": "BitmapShadow",
+   "header": "src/framework/bitmap_shadow.h",
+   "bases": [
+    "public Shadow"
+   ]
+  },
+  {
+   "class": "CanvasShadow",
+   "header": "src/framework/canvas_shadow.h",
+   "bases": []
+  },
+  {
+   "class": "PaintShadow",
+   "header": "src/framework/canvas_shadow.h",
+   "bases": []
+  },
+  {
+   "class": "Affine2D",
+   "header": "src/framework/canvas_shadow.h",
+   "bases": []
+  },
+  {
+   "class": "DrawOp",
+   "header": "src/framework/canvas_shadow.h",
+   "bases": []
+  },
+  {
+   "class": "CanvasShadow",
+   "header": "src/framework/canvas_shadow.h",
+   "bases": [
+    "public Shadow"
+   ]
+  },
+  {
+   "class": "miniandroid",
+   "header": "src/framework/canvas_shadow.h",
+   "bases": [
+    "BitmapFont& font"
+   ]
+  },
+  {
+   "class": "PathData",
+   "header": "src/framework/canvas_shadow.h",
+   "bases": []
+  },
+  {
+   "class": "ChoreographerShadow",
+   "header": "src/framework/choreographer_shadow.h",
+   "bases": [
+    "public Shadow"
+   ]
+  },
+  {
+   "class": "DueFrame",
+   "header": "src/framework/choreographer_shadow.h",
+   "bases": []
+  },
+  {
+   "class": "PendingCallback",
+   "header": "src/framework/choreographer_shadow.h",
+   "bases": []
+  },
+  {
+   "class": "ClipboardShadow",
+   "header": "src/framework/clipboard_shadow.h",
+   "bases": [
+    "public Shadow"
+   ]
+  },
+  {
+   "class": "ClipEntry",
+   "header": "src/framework/clipboard_shadow.h",
+   "bases": []
+  },
+  {
+   "class": "ViewShadow",
+   "header": "src/framework/dialog_shadow.h",
+   "bases": []
+  },
+  {
+   "class": "DialogWindow",
+   "header": "src/framework/dialog_shadow.h",
+   "bases": []
+  },
+  {
+   "class": "Btn",
+   "header": "src/framework/dialog_shadow.h",
+   "bases": []
+  },
+  {
+   "class": "ToastState",
+   "header": "src/framework/dialog_shadow.h",
+   "bases": []
+  },
+  {
+   "class": "DialogShadow",
+   "header": "src/framework/dialog_shadow.h",
+   "bases": [
+    "public Shadow"
+   ]
+  },
+  {
+   "class": "ArrayAdapterShadow",
+   "header": "src/framework/dialog_shadow.h",
+   "bases": [
+    "public Shadow"
+   ]
+  },
+  {
+   "class": "ExecutorShadow",
+   "header": "src/framework/executor_shadow.h",
+   "bases": [
+    "public Shadow"
+   ]
+  },
+  {
+   "class": "ExecutorState",
+   "header": "src/framework/executor_shadow.h",
+   "bases": []
+  },
+  {
+   "class": "DalvikHeapAdapter",
+   "header": "src/framework/heap_adapter.h",
+   "bases": [
+    "public HeapAllocator"
+   ]
+  },
+  {
+   "class": "LifecycleController",
+   "header": "src/framework/lifecycle_controller.h",
+   "bases": []
+  },
+  {
+   "class": "Entry",
+   "header": "src/framework/lifecycle_controller.h",
+   "bases": []
+  },
+  {
+   "class": "LocksShadow",
+   "header": "src/framework/locks_shadow.h",
+   "bases": [
+    "public Shadow"
+   ]
+  },
+  {
+   "class": "LockState",
+   "header": "src/framework/locks_shadow.h",
+   "bases": []
+  },
+  {
+   "class": "PendingIntentShadow",
+   "header": "src/framework/pending_intent_shadow.h",
+   "bases": [
+    "public Shadow"
+   ]
+  },
+  {
+   "class": "Record",
+   "header": "src/framework/pending_intent_shadow.h",
+   "bases": []
+  },
+  {
+   "class": "CallContext",
+   "header": "src/framework/shadow_registry.h",
+   "bases": []
+  },
+  {
+   "class": "Arg",
+   "header": "src/framework/shadow_registry.h",
+   "bases": []
+  },
+  {
+   "class": "CallResult",
+   "header": "src/framework/shadow_registry.h",
+   "bases": []
+  },
+  {
+   "class": "HeapAllocator",
+   "header": "src/framework/shadow_registry.h",
+   "bases": []
+  },
+  {
+   "class": "ShadowRegistry",
+   "header": "src/framework/shadow_registry.h",
+   "bases": []
+  },
+  {
+   "class": "Shadow",
+   "header": "src/framework/shadow_registry.h",
+   "bases": []
+  },
+  {
+   "class": "ShadowRegistry",
+   "header": "src/framework/shadow_registry.h",
+   "bases": []
+  },
+  {
+   "class": "Stats",
+   "header": "src/framework/shadow_registry.h",
+   "bases": []
+  },
+  {
+   "class": "TouchEvent",
+   "header": "src/framework/touch_dispatcher.h",
+   "bases": []
+  },
+  {
+   "class": "TouchConfig",
+   "header": "src/framework/touch_dispatcher.h",
+   "bases": []
+  },
+  {
+   "class": "TouchDispatcher",
+   "header": "src/framework/touch_dispatcher.h",
+   "bases": []
+  },
+  {
+   "class": "TokenState",
+   "header": "src/framework/touch_dispatcher.h",
+   "bases": []
+  },
+  {
+   "class": "TicTacToe",
+   "header": "src/games/tictactoe3d.h",
+   "bases": []
+  },
+  {
+   "class": "Vec3",
+   "header": "src/games/tictactoe3d.h",
+   "bases": []
+  },
+  {
+   "class": "Face",
+   "header": "src/games/tictactoe3d.h",
+   "bases": []
+  },
+  {
+   "class": "Box3D",
+   "header": "src/games/tictactoe3d.h",
+   "bases": []
+  },
+  {
+   "class": "Board3DRenderer",
+   "header": "src/games/tictactoe3d.h",
+   "bases": []
+  },
+  {
+   "class": "PGLShaderFuncs",
+   "header": "src/gles/gles20_bridge.h",
+   "bases": []
+  },
+  {
+   "class": "GLES20Bridge",
+   "header": "src/gles/gles20_bridge.h",
+   "bases": []
+  },
+  {
+   "class": "Stats",
+   "header": "src/gles/gles20_bridge.h",
+   "bases": []
+  },
+  {
+   "class": "PGLBackend",
+   "header": "src/gles/pgl_backend.h",
+   "bases": []
+  },
+  {
+   "class": "NativeCallContext",
+   "header": "src/jni/jni_bridge.h",
+   "bases": []
+  },
+  {
+   "class": "NativeMethodEntry",
+   "header": "src/jni/jni_bridge.h",
+   "bases": []
+  },
+  {
+   "class": "JNIBridge",
+   "header": "src/jni/jni_bridge.h",
+   "bases": []
+  },
+  {
+   "class": "BitmapGlyphEntry",
+   "header": "src/renderer/bitmap_font_data.h",
+   "bases": []
+  },
+  {
+   "class": "TextViewRuntimeObject",
+   "header": "src/renderer/software_renderer.h",
+   "bases": []
+  },
+  {
+   "class": "ViewRuntimeObject",
+   "header": "src/renderer/software_renderer.h",
+   "bases": []
+  },
+  {
+   "class": "ActivityRuntimeObject",
+   "header": "src/renderer/software_renderer.h",
+   "bases": []
+  },
+  {
+   "class": "EnhancedObjectHeap",
+   "header": "src/renderer/software_renderer.h",
+   "bases": []
+  },
+  {
+   "class": "RGBA",
+   "header": "src/renderer/software_renderer.h",
+   "bases": []
+  },
+  {
+   "class": "FrameBuffer",
+   "header": "src/renderer/software_renderer.h",
+   "bases": []
+  },
+  {
+   "class": "BitmapFont",
+   "header": "src/renderer/software_renderer.h",
+   "bases": []
+  },
+  {
+   "class": "Glyph",
+   "header": "src/renderer/software_renderer.h",
+   "bases": []
+  },
+  {
+   "class": "TextMetrics",
+   "header": "src/renderer/software_renderer.h",
+   "bases": []
+  },
+  {
+   "class": "LayoutBounds",
+   "header": "src/renderer/software_renderer.h",
+   "bases": []
+  },
+  {
+   "class": "LayoutNode",
+   "header": "src/renderer/software_renderer.h",
+   "bases": []
+  },
+  {
+   "class": "CanvasCommand",
+   "header": "src/renderer/software_renderer.h",
+   "bases": []
+  },
+  {
+   "class": "SoftwareCanvas",
+   "header": "src/renderer/software_renderer.h",
+   "bases": []
+  },
+  {
+   "class": "RenderStatistics",
+   "header": "src/renderer/software_renderer.h",
+   "bases": []
+  },
+  {
+   "class": "RenderPipeline",
+   "header": "src/renderer/software_renderer.h",
+   "bases": []
+  },
+  {
+   "class": "PNGWriter",
+   "header": "src/renderer/software_renderer.h",
+   "bases": []
+  },
+  {
+   "class": "DecodedImage",
+   "header": "src/renderer/software_renderer.h",
+   "bases": []
+  },
+  {
+   "class": "ImageSizeProbe",
+   "header": "src/renderer/software_renderer.h",
+   "bases": []
+  },
+  {
+   "class": "FitRect",
+   "header": "src/renderer/software_renderer.h",
+   "bases": []
+  },
+  {
+   "class": "PNGDecoder",
+   "header": "src/renderer/software_renderer.h",
+   "bases": []
+  },
+  {
+   "class": "WebPDecoder",
+   "header": "src/renderer/software_renderer.h",
+   "bases": []
+  },
+  {
+   "class": "JPEGDecoder",
+   "header": "src/renderer/software_renderer.h",
+   "bases": []
+  },
+  {
+   "class": "RLottieDecoder",
+   "header": "src/renderer/software_renderer.h",
+   "bases": []
+  },
+  {
+   "class": "DecodedAnim",
+   "header": "src/renderer/software_renderer.h",
+   "bases": []
+  },
+  {
+   "class": "ViewRenderer",
+   "header": "src/renderer/view_renderer.h",
+   "bases": []
+  },
+  {
+   "class": "Stats",
+   "header": "src/renderer/view_renderer.h",
+   "bases": []
+  },
+  {
+   "class": "Box",
+   "header": "src/renderer/view_renderer.h",
+   "bases": []
+  },
+  {
+   "class": "ResValue",
+   "header": "src/resources/arsc_parser.h",
+   "bases": []
+  },
+  {
+   "class": "ArscEntry",
+   "header": "src/resources/arsc_parser.h",
+   "bases": []
+  },
+  {
+   "class": "ResolutionStep",
+   "header": "src/resources/arsc_parser.h",
+   "bases": []
+  },
+  {
+   "class": "ResolutionResult",
+   "header": "src/resources/arsc_parser.h",
+   "bases": []
+  },
+  {
+   "class": "ResolvedResource",
+   "header": "src/resources/arsc_parser.h",
+   "bases": []
+  },
+  {
+   "class": "ArscParser",
+   "header": "src/resources/arsc_parser.h",
+   "bases": []
+  },
+  {
+   "class": "FileSelection",
+   "header": "src/resources/arsc_parser.h",
+   "bases": []
+  },
+  {
+   "class": "Stats",
+   "header": "src/resources/arsc_parser.h",
+   "bases": []
+  },
+  {
+   "class": "Pool",
+   "header": "src/resources/arsc_parser.h",
+   "bases": []
+  },
+  {
+   "class": "TypeChunk",
+   "header": "src/resources/arsc_parser.h",
+   "bases": []
+  },
+  {
+   "class": "Package",
+   "header": "src/resources/arsc_parser.h",
+   "bases": []
+  },
+  {
+   "class": "AxmlAttribute",
+   "header": "src/resources/axml_parser.h",
+   "bases": []
+  },
+  {
+   "class": "AxmlElement",
+   "header": "src/resources/axml_parser.h",
+   "bases": []
+  },
+  {
+   "class": "AxmlParser",
+   "header": "src/resources/axml_parser.h",
+   "bases": []
+  },
+  {
+   "class": "DeviceMetrics",
+   "header": "src/resources/layout_inflater.h",
+   "bases": []
+  },
+  {
+   "class": "InflateStats",
+   "header": "src/resources/layout_inflater.h",
+   "bases": []
+  },
+  {
+   "class": "LayoutInflater",
+   "header": "src/resources/layout_inflater.h",
+   "bases": []
+  },
+  {
+   "class": "Attrs",
+   "header": "src/resources/layout_inflater.h",
+   "bases": []
+  },
+  {
+   "class": "ParsedRef",
+   "header": "src/resources/layout_inflater.h",
+   "bases": []
+  },
+  {
+   "class": "InflateReport",
+   "header": "src/resources/real_layout.h",
+   "bases": []
+  },
+  {
+   "class": "RealInflater",
+   "header": "src/resources/real_layout.h",
+   "bases": []
+  },
+  {
+   "class": "RView",
+   "header": "src/resources/real_layout.h",
+   "bases": []
+  },
+  {
+   "class": "RView",
+   "header": "src/resources/real_layout.h",
+   "bases": []
+  },
+  {
+   "class": "ResTableConfig",
+   "header": "src/resources/res_config.h",
+   "bases": []
+  },
+  {
+   "class": "ResId",
+   "header": "src/resources/res_id.h",
+   "bases": []
+  },
+  {
+   "class": "DensityContext",
+   "header": "src/resources/res_id.h",
+   "bases": []
+  },
+  {
+   "class": "UnsupportedResourceReport",
+   "header": "src/resources/resource_parser.h",
+   "bases": []
+  },
+  {
+   "class": "FailureReporter",
+   "header": "src/resources/resource_parser.h",
+   "bases": []
+  },
+  {
+   "class": "ResourceId",
+   "header": "src/resources/resource_parser.h",
+   "bases": []
+  },
+  {
+   "class": "PackageInfo",
+   "header": "src/resources/resource_parser.h",
+   "bases": []
+  },
+  {
+   "class": "StringResource",
+   "header": "src/resources/resource_parser.h",
+   "bases": []
+  },
+  {
+   "class": "XmlAttribute",
+   "header": "src/resources/resource_parser.h",
+   "bases": []
+  },
+  {
+   "class": "XmlNode",
+   "header": "src/resources/resource_parser.h",
+   "bases": []
+  },
+  {
+   "class": "SimpleXmlParser",
+   "header": "src/resources/resource_parser.h",
+   "bases": []
+  },
+  {
+   "class": "ResourceTable",
+   "header": "src/resources/resource_parser.h",
+   "bases": []
+  },
+  {
+   "class": "StringResources",
+   "header": "src/resources/resource_parser.h",
+   "bases": []
+  },
+  {
+   "class": "ResourceEntry",
+   "header": "src/resources/resource_parser.h",
+   "bases": []
+  },
+  {
+   "class": "ResourceInventory",
+   "header": "src/resources/resource_parser.h",
+   "bases": []
+  },
+  {
+   "class": "LayoutParams",
+   "header": "src/resources/resource_parser.h",
+   "bases": []
+  },
+  {
+   "class": "InflateResult",
+   "header": "src/resources/resource_parser.h",
+   "bases": []
+  },
+  {
+   "class": "LayoutInflater",
+   "header": "src/resources/resource_parser.h",
+   "bases": []
+  },
+  {
+   "class": "ResourceManagerState",
+   "header": "src/resources/resource_parser.h",
+   "bases": []
+  },
+  {
+   "class": "ResourceManager",
+   "header": "src/resources/resource_parser.h",
+   "bases": []
+  },
+  {
+   "class": "ResourceRuntime",
+   "header": "src/resources/resource_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "LaunchTheme",
+   "header": "src/resources/resource_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "ResStringPool",
+   "header": "src/resources/string_pool.h",
+   "bases": []
+  },
+  {
+   "class": "ApkParser",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "ApkInfo",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "ManifestInfo",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "DexParser",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "ClassResolver",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "DexInterpreter",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "DexReport",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "ExecutionTrace",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "EntryPoint",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "BatchExecutionTrace",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "EnhancedObjectHeap",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "ActivityRuntimeObject",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "ResourceManager",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "LayoutInflater",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "InflateResult",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "RenderPipeline",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "FrameBuffer",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "LayoutNode",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "TraceEngine",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "ShadowRegistry",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "DalvikHeapAdapter",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "ThreadShadow",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "LooperShadow",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "HandlerShadow",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "ActivityShadow",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "IntentShadow",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "ViewShadow",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "ArchTaskExecutorShadow",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "CollectionShadow",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "RuntimeConfig",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "StateTransition",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "ApiCallRecord",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "ApiDatabaseEntry",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "MethodDispatchRecord",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "FailureRecord",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "CrashCheckpoint",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "ApplicationRuntime",
+   "header": "src/runtime/application_runtime.h",
+   "bases": []
+  },
+  {
+   "class": "ExecutionConfig",
+   "header": "src/runtime/execution_engine.h",
+   "bases": []
+  },
+  {
+   "class": "ExecutionResult",
+   "header": "src/runtime/execution_engine.h",
+   "bases": []
+  },
+  {
+   "class": "ExecutionEngine",
+   "header": "src/runtime/execution_engine.h",
+   "bases": []
+  },
+  {
+   "class": "MethodMetadata",
+   "header": "src/runtime/object_model.h",
+   "bases": []
+  },
+  {
+   "class": "FieldMetadata",
+   "header": "src/runtime/object_model.h",
+   "bases": []
+  },
+  {
+   "class": "ClassMetadata",
+   "header": "src/runtime/object_model.h",
+   "bases": []
+  },
+  {
+   "class": "RuntimeObject",
+   "header": "src/runtime/object_model.h",
+   "bases": []
+  },
+  {
+   "class": "ObjectIdManager",
+   "header": "src/runtime/object_model.h",
+   "bases": []
+  },
+  {
+   "class": "AllocationRecord",
+   "header": "src/runtime/object_model.h",
+   "bases": []
+  },
+  {
+   "class": "EnhancedObjectHeap",
+   "header": "src/runtime/object_model.h",
+   "bases": []
+  },
+  {
+   "class": "InheritanceNode",
+   "header": "src/runtime/object_model.h",
+   "bases": []
+  },
+  {
+   "class": "InheritancePath",
+   "header": "src/runtime/object_model.h",
+   "bases": []
+  },
+  {
+   "class": "InheritanceRegistry",
+   "header": "src/runtime/object_model.h",
+   "bases": []
+  },
+  {
+   "class": "ActivityRuntimeObject",
+   "header": "src/runtime/object_model.h",
+   "bases": [
+    "public RuntimeObject"
+   ]
+  },
+  {
+   "class": "ViewRuntimeObject",
+   "header": "src/runtime/object_model.h",
+   "bases": [
+    "public RuntimeObject"
+   ]
+  },
+  {
+   "class": "TextViewRuntimeObject",
+   "header": "src/runtime/object_model.h",
+   "bases": [
+    "public ViewRuntimeObject"
+   ]
+  },
+  {
+   "class": "RuntimeClassInfo",
+   "header": "src/runtime/runtime_metadata.h",
+   "bases": []
+  },
+  {
+   "class": "InstanceFieldInfo",
+   "header": "src/runtime/runtime_metadata.h",
+   "bases": []
+  },
+  {
+   "class": "StaticFieldEntry",
+   "header": "src/runtime/runtime_metadata.h",
+   "bases": []
+  },
+  {
+   "class": "RuntimeMethodInfo",
+   "header": "src/runtime/runtime_metadata.h",
+   "bases": []
+  },
+  {
+   "class": "VirtualDispatchTable",
+   "header": "src/runtime/runtime_metadata.h",
+   "bases": []
+  },
+  {
+   "class": "InstanceFieldInfo",
+   "header": "src/runtime/runtime_metadata.h",
+   "bases": []
+  },
+  {
+   "class": "StaticFieldEntry",
+   "header": "src/runtime/runtime_metadata.h",
+   "bases": []
+  },
+  {
+   "class": "RuntimeMethodInfo",
+   "header": "src/runtime/runtime_metadata.h",
+   "bases": []
+  },
+  {
+   "class": "VirtualDispatchTable",
+   "header": "src/runtime/runtime_metadata.h",
+   "bases": []
+  },
+  {
+   "class": "RuntimeClassInfo",
+   "header": "src/runtime/runtime_metadata.h",
+   "bases": []
+  },
+  {
+   "class": "RuntimeMetadataContainer",
+   "header": "src/runtime/runtime_metadata.h",
+   "bases": []
+  },
+  {
+   "class": "InvocationContext",
+   "header": "src/runtime/vtable_dispatch.h",
+   "bases": []
+  },
+  {
+   "class": "MethodResolver",
+   "header": "src/runtime/vtable_dispatch.h",
+   "bases": []
+  },
+  {
+   "class": "VirtualDispatcher",
+   "header": "src/runtime/vtable_dispatch.h",
+   "bases": []
+  },
+  {
+   "class": "VTableDemoSystem",
+   "header": "src/runtime/vtable_dispatch.h",
+   "bases": []
+  },
+  {
+   "class": "SandboxConfig",
+   "header": "src/storage/file_sandbox.h",
+   "bases": []
+  },
+  {
+   "class": "SandboxPathInfo",
+   "header": "src/storage/file_sandbox.h",
+   "bases": []
+  },
+  {
+   "class": "FileInfo",
+   "header": "src/storage/file_sandbox.h",
+   "bases": []
+  },
+  {
+   "class": "FileSandbox",
+   "header": "src/storage/file_sandbox.h",
+   "bases": []
+  },
+  {
+   "class": "sqlite3",
+   "header": "src/storage/sqlite_shadow.h",
+   "bases": []
+  },
+  {
+   "class": "sqlite3_stmt",
+   "header": "src/storage/sqlite_shadow.h",
+   "bases": []
+  },
+  {
+   "class": "DatabaseShadow",
+   "header": "src/storage/sqlite_shadow.h",
+   "bases": [
+    "Shadow"
+   ]
+  },
+  {
+   "class": "HelperState",
+   "header": "src/storage/sqlite_shadow.h",
+   "bases": []
+  },
+  {
+   "class": "DbState",
+   "header": "src/storage/sqlite_shadow.h",
+   "bases": []
+  },
+  {
+   "class": "StmtState",
+   "header": "src/storage/sqlite_shadow.h",
+   "bases": []
+  },
+  {
+   "class": "CursorState",
+   "header": "src/storage/sqlite_shadow.h",
+   "bases": []
+  },
+  {
+   "class": "Cell",
+   "header": "src/storage/sqlite_shadow.h",
+   "bases": []
+  }
+ ]
+}

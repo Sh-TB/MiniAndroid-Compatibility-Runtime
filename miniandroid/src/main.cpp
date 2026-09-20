@@ -479,6 +479,13 @@ int main(int argc, char* argv[]) {
             // touch → callback → state change → second frame (§10).
             config.click_test = true;
             std::cout << "[*] CLICK-TEST enabled (dispatch real clicks after first frame)\n";
+        } else if (arg == "--dump-api-trace") {
+            // S69 SOURCE-LINKED CAMPAIGN: dump the engine's ApiCallTrace
+            // ring to <output>/api_calls.json (live dispatch surface:
+            // class.method + descriptor + IMPLEMENTED/STUBBED/MISSING/ERROR
+            // status per call). Data source of the API coverage matrix.
+            config.dump_api_trace = true;
+            std::cout << "[*] DUMP-API-TRACE enabled (api_calls.json after execution)\n";
         } else if (arg == "--dump-view-tree") {
             // S67 FOUNDATION: dump the live ViewShadow tree to
             // <output>/view_tree.json (canonical view→pixel provenance

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:launchMode="singleTop"
+    android:orientation="vertical"
+    tools:context=".MainActivity" >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+
+        <LinearLayout
+            android:id="@+id/layoutAlarms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+    </ScrollView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/div" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <ImageButton
+            android:id="@+id/btnClear"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:backgroundTint="@color/background"
+            android:tint="@color/foreground"
+            android:src="@drawable/ico_clear" />
+
+        <dubrowgn.microtimer.RoTimeControl
+            android:id="@+id/lblInput"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/btnBackspace"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:backgroundTint="@color/background"
+            android:tint="@color/foreground"
+            android:src="@drawable/ico_backspace" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/div" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginHorizontal="@dimen/button_margin_out"
+        android:layout_marginTop="@dimen/button_margin_out" >
+
+        <Button
+            style="@style/NumberButton"
+            android:id="@+id/btn1"
+            android:text="1" />
+
+        <Button
+            style="@style/NumberButton"
+            android:id="@+id/btn2"
+            android:text="2" />
+
+        <Button
+            style="@style/NumberButton"
+            android:id="@+id/btn3"
+            android:text="3" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginHorizontal="@dimen/button_margin_out" >
+
+        <Button
+            style="@style/NumberButton"
+            android:id="@+id/btn4"
+            android:text="4" />
+
+        <Button
+            style="@style/NumberButton"
+            android:id="@+id/btn5"
+            android:text="5" />
+
+        <Button
+            style="@style/NumberButton"
+            android:id="@+id/btn6"
+            android:text="6" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginHorizontal="@dimen/button_margin_out" >
+
+        <Button
+            style="@style/NumberButton"
+            android:id="@+id/btn7"
+            android:text="7" />
+
+        <Button
+            style="@style/NumberButton"
+            android:id="@+id/btn8"
+            android:text="8" />
+
+        <Button
+            style="@style/NumberButton"
+            android:id="@+id/btn9"
+            android:text="9" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginBottom="@dimen/button_margin_out"
+        android:layout_marginHorizontal="@dimen/button_margin_out" >
+
+        <Button
+            style="@style/NumberButton"
+            android:id="@+id/btn00"
+            android:text="00"/>
+
+        <Button
+            style="@style/NumberButton"
+            android:id="@+id/btn0"
+            android:text="0"/>
+
+        <Button
+            style="@style/PadButton"
+            android:id="@+id/btnStart"
+            android:backgroundTint="@color/start"
+            android:foreground="@drawable/ico_play_28"
+            android:foregroundGravity="center" />
+
+    </LinearLayout>
+</LinearLayout>

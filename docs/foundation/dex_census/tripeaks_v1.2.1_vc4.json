@@ -1,0 +1,2483 @@
+{
+ "apk": "tripeaks_v1.2.1_vc4.apk",
+ "package": "eu.veldsoft.tri.peaks",
+ "versionCode": "4",
+ "app_classes": 34,
+ "app_methods": 170,
+ "api_call_sites": 930,
+ "distinct_apis": 204,
+ "top_target_classes": [
+  [
+   "Leu/veldsoft/tri/peaks/GameState;",
+   137
+  ],
+  [
+   "Leu/veldsoft/tri/peaks/GameActivity;",
+   100
+  ],
+  [
+   "Ljava/lang/Integer;",
+   98
+  ],
+  [
+   "Leu/veldsoft/tri/peaks/Card;",
+   95
+  ],
+  [
+   "Leu/veldsoft/tri/peaks/Deck;",
+   70
+  ],
+  [
+   "Leu/veldsoft/tri/peaks/CardBoard;",
+   57
+  ],
+  [
+   "Ljava/util/Map;",
+   54
+  ],
+  [
+   "Ljava/lang/StringBuilder;",
+   48
+  ],
+  [
+   "Landroid/widget/ImageView;",
+   38
+  ],
+  [
+   "Ljava/lang/Object;",
+   27
+  ],
+  [
+   "Landroid/widget/TextView;",
+   16
+  ],
+  [
+   "Leu/veldsoft/tri/peaks/Card$Rank;",
+   15
+  ],
+  [
+   "Landroid/app/AlertDialog$Builder;",
+   14
+  ],
+  [
+   "Ljava/util/EnumSet;",
+   13
+  ],
+  [
+   "Landroid/app/Activity;",
+   12
+  ],
+  [
+   "Leu/veldsoft/tri/peaks/SplashActivity;",
+   10
+  ],
+  [
+   "Ljava/lang/String;",
+   9
+  ],
+  [
+   "Leu/veldsoft/tri/peaks/LobbyActivity;",
+   9
+  ],
+  [
+   "Ljava/text/DecimalFormat;",
+   7
+  ],
+  [
+   "Landroid/widget/Button;",
+   6
+  ],
+  [
+   "Leu/veldsoft/tri/peaks/Base64Coder;",
+   6
+  ],
+  [
+   "Ljava/lang/Enum;",
+   6
+  ],
+  [
+   "Ljavax/crypto/Cipher;",
+   6
+  ],
+  [
+   "Leu/veldsoft/tri/peaks/Card$Suit;",
+   5
+  ],
+  [
+   "Landroid/content/Intent;",
+   5
+  ]
+ ],
+ "api_sites": [
+  {
+   "target_class": "Ljava/lang/Integer;",
+   "method": "valueOf",
+   "descriptor": "(I)",
+   "call_sites": 96
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameActivity;",
+   "method": "findViewById",
+   "descriptor": "(I)",
+   "call_sites": 79
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/Deck;",
+   "method": "cardAtPosition",
+   "descriptor": "(I)",
+   "call_sites": 66
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/Card;",
+   "method": "getIndex",
+   "descriptor": "()",
+   "call_sites": 54
+  },
+  {
+   "target_class": "Ljava/util/Map;",
+   "method": "put",
+   "descriptor": "(Ljava/lang/Object; Ljava/lang/Object;)",
+   "call_sites": 52
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/CardBoard;",
+   "method": "getState",
+   "descriptor": "()",
+   "call_sites": 32
+  },
+  {
+   "target_class": "Landroid/widget/ImageView;",
+   "method": "setOnClickListener",
+   "descriptor": "(Landroid/view/View$OnClickListener;)",
+   "call_sites": 31
+  },
+  {
+   "target_class": "Ljava/lang/Object;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 24
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/Card$Rank;",
+   "method": "<init>",
+   "descriptor": "(Ljava/lang/String; I I Ljava/lang/String;)",
+   "call_sites": 13
+  },
+  {
+   "target_class": "Ljava/lang/StringBuilder;",
+   "method": "append",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 13
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameState;",
+   "method": "getCheats",
+   "descriptor": "()",
+   "call_sites": 13
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameState;",
+   "method": "getGameScore",
+   "descriptor": "()",
+   "call_sites": 12
+  },
+  {
+   "target_class": "Landroid/widget/TextView;",
+   "method": "setText",
+   "descriptor": "(Ljava/lang/CharSequence;)",
+   "call_sites": 12
+  },
+  {
+   "target_class": "Ljava/lang/StringBuilder;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 11
+  },
+  {
+   "target_class": "Ljava/lang/StringBuilder;",
+   "method": "append",
+   "descriptor": "(I)",
+   "call_sites": 11
+  },
+  {
+   "target_class": "Ljava/lang/StringBuilder;",
+   "method": "toString",
+   "descriptor": "()",
+   "call_sites": 11
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameState;",
+   "method": "getScore",
+   "descriptor": "()",
+   "call_sites": 8
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameState;",
+   "method": "getDiscardIndex",
+   "descriptor": "()",
+   "call_sites": 8
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameState;",
+   "method": "setScore",
+   "descriptor": "(I)",
+   "call_sites": 7
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameState;",
+   "method": "setGameScore",
+   "descriptor": "(I)",
+   "call_sites": 7
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameState;",
+   "method": "getRemainingCards",
+   "descriptor": "()",
+   "call_sites": 7
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameState;",
+   "method": "getStreak",
+   "descriptor": "()",
+   "call_sites": 7
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/Card;",
+   "method": "setX",
+   "descriptor": "(I)",
+   "call_sites": 7
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/Card;",
+   "method": "setY",
+   "descriptor": "(I)",
+   "call_sites": 7
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameActivity;",
+   "method": "access$0",
+   "descriptor": "(Leu/veldsoft/tri/peaks/GameActivity;)",
+   "call_sites": 7
+  },
+  {
+   "target_class": "Landroid/widget/Button;",
+   "method": "setOnClickListener",
+   "descriptor": "(Landroid/view/View$OnClickListener;)",
+   "call_sites": 6
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameState;",
+   "method": "getSessionScore",
+   "descriptor": "()",
+   "call_sites": 6
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameState;",
+   "method": "setSessionScore",
+   "descriptor": "(I)",
+   "call_sites": 6
+  },
+  {
+   "target_class": "Ljava/util/EnumSet;",
+   "method": "contains",
+   "descriptor": "(Ljava/lang/Object;)",
+   "call_sites": 6
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/Card;",
+   "method": "flip",
+   "descriptor": "(Z)",
+   "call_sites": 6
+  },
+  {
+   "target_class": "Landroid/app/Activity;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 5
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/Card;",
+   "method": "setInvisible",
+   "descriptor": "()",
+   "call_sites": 5
+  },
+  {
+   "target_class": "Landroid/app/Activity;",
+   "method": "onCreate",
+   "descriptor": "(Landroid/os/Bundle;)",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/Card$Suit;",
+   "method": "<init>",
+   "descriptor": "(Ljava/lang/String; I Ljava/lang/String;)",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameState;",
+   "method": "setHighScore",
+   "descriptor": "(I)",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameState;",
+   "method": "setDiscardIndex",
+   "descriptor": "(I)",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameState;",
+   "method": "setStreak",
+   "descriptor": "(I)",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/CardBoard;",
+   "method": "redeal",
+   "descriptor": "()",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameActivity;",
+   "method": "repaint",
+   "descriptor": "()",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Landroid/widget/ImageView;",
+   "method": "setImageResource",
+   "descriptor": "(I)",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Ljava/lang/Double;",
+   "method": "isNaN",
+   "descriptor": "(D)",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Landroid/content/Intent;",
+   "method": "<init>",
+   "descriptor": "(Landroid/content/Context; Ljava/lang/Class;)",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/LobbyActivity;",
+   "method": "findViewById",
+   "descriptor": "(I)",
+   "call_sites": 4
+  },
+  {
+   "target_class": "Ljava/lang/IllegalArgumentException;",
+   "method": "<init>",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Ljava/lang/Enum;",
+   "method": "<init>",
+   "descriptor": "(Ljava/lang/String; I)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Ljava/lang/Enum;",
+   "method": "valueOf",
+   "descriptor": "(Ljava/lang/Class; Ljava/lang/String;)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Ljava/lang/System;",
+   "method": "arraycopy",
+   "descriptor": "(Ljava/lang/Object; I Ljava/lang/Object; I I)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Ljava/lang/Object;",
+   "method": "getClass",
+   "descriptor": "()",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Ljava/lang/Boolean;",
+   "method": "hashCode",
+   "descriptor": "()",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameState;",
+   "method": "getHighScore",
+   "descriptor": "()",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameState;",
+   "method": "getCardsInPlay",
+   "descriptor": "()",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameState;",
+   "method": "setHasCheatedYet",
+   "descriptor": "(Z)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameState;",
+   "method": "setLowScore",
+   "descriptor": "(I)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameState;",
+   "method": "setNumberOfGames",
+   "descriptor": "(I)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameState;",
+   "method": "setHighStreak",
+   "descriptor": "(I)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/CardBoard;",
+   "method": "setStatus",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/Card;",
+   "method": "isInvisible",
+   "descriptor": "()",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/Card;",
+   "method": "flip",
+   "descriptor": "()",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/Card;",
+   "method": "setVisible",
+   "descriptor": "()",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameState;",
+   "method": "setRemainingCards",
+   "descriptor": "(I)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/Cheat;",
+   "method": "<init>",
+   "descriptor": "(Ljava/lang/String; I I)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameActivity;",
+   "method": "access$2",
+   "descriptor": "(Leu/veldsoft/tri/peaks/GameActivity;)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Landroid/widget/ImageView;",
+   "method": "setImageBitmap",
+   "descriptor": "(Landroid/graphics/Bitmap;)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Ljava/text/DecimalFormat;",
+   "method": "format",
+   "descriptor": "(J)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameState;",
+   "method": "setCardsInPlay",
+   "descriptor": "(I)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameState;",
+   "method": "setRemainingPeaks",
+   "descriptor": "(I)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/LobbyActivity;",
+   "method": "startActivity",
+   "descriptor": "(Landroid/content/Intent;)",
+   "call_sites": 3
+  },
+  {
+   "target_class": "Ljava/lang/String;",
+   "method": "toCharArray",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/Base64Coder;",
+   "method": "decode",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/Base64Coder;",
+   "method": "encode",
+   "descriptor": "([B)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Ljava/lang/String;",
+   "method": "<init>",
+   "descriptor": "([C)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Ljava/lang/StringBuilder;",
+   "method": "append",
+   "descriptor": "(Ljava/lang/Object;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameState;",
+   "method": "getHighStreak",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameState;",
+   "method": "getLowScore",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameState;",
+   "method": "getNumberOfGames",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameState;",
+   "method": "getNumberOfSessionGames",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameState;",
+   "method": "isHasCheatedYet",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Ljava/util/EnumSet;",
+   "method": "clear",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/Card;",
+   "method": "getRank",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Ljavax/crypto/SecretKey;",
+   "method": "getAlgorithm",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Ljavax/crypto/Cipher;",
+   "method": "getInstance",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Ljavax/crypto/Cipher;",
+   "method": "init",
+   "descriptor": "(I Ljava/security/Key; Ljava/security/spec/AlgorithmParameterSpec;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Ljavax/crypto/Cipher;",
+   "method": "doFinal",
+   "descriptor": "([B)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/Card;",
+   "method": "isFacingDown",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameActivity;",
+   "method": "access$1",
+   "descriptor": "(Leu/veldsoft/tri/peaks/GameActivity;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/content/res/Resources;",
+   "method": "getString",
+   "descriptor": "(I)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/CardBoard;",
+   "method": "getPenalty",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Ljava/text/DecimalFormat;",
+   "method": "<init>",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/widget/TextView;",
+   "method": "setVisibility",
+   "descriptor": "(I)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Ljava/util/Map;",
+   "method": "get",
+   "descriptor": "(Ljava/lang/Object;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Ljava/lang/Integer;",
+   "method": "intValue",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/widget/TextView;",
+   "method": "setText",
+   "descriptor": "(I)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Ljava/text/DecimalFormat;",
+   "method": "format",
+   "descriptor": "(D)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/CardBoard;",
+   "method": "getStatus",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/widget/Toast;",
+   "method": "makeText",
+   "descriptor": "(Landroid/content/Context; Ljava/lang/CharSequence; I)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/widget/Toast;",
+   "method": "show",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/app/AlertDialog$Builder;",
+   "method": "<init>",
+   "descriptor": "(Landroid/content/Context;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/app/AlertDialog$Builder;",
+   "method": "setTitle",
+   "descriptor": "(Ljava/lang/CharSequence;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/app/AlertDialog$Builder;",
+   "method": "setMessage",
+   "descriptor": "(Ljava/lang/CharSequence;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/app/AlertDialog$Builder;",
+   "method": "setIcon",
+   "descriptor": "(I)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/app/AlertDialog$Builder;",
+   "method": "setPositiveButton",
+   "descriptor": "(I Landroid/content/DialogInterface$OnClickListener;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/app/AlertDialog$Builder;",
+   "method": "setNegativeButton",
+   "descriptor": "(I Landroid/content/DialogInterface$OnClickListener;)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/app/AlertDialog$Builder;",
+   "method": "show",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/app/Activity;",
+   "method": "onResume",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameState;",
+   "method": "setNumberOfSessionGames",
+   "descriptor": "(I)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/SplashActivity;",
+   "method": "findViewById",
+   "descriptor": "(I)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/SplashActivity;",
+   "method": "getPackageManager",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/SplashActivity;",
+   "method": "getComponentName",
+   "descriptor": "()",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Landroid/content/pm/PackageManager;",
+   "method": "getActivityInfo",
+   "descriptor": "(Landroid/content/ComponentName; I)",
+   "call_sites": 2
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/AboutUsActivity;",
+   "method": "finish",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/AboutUsActivity;",
+   "method": "setContentView",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/AboutUsActivity;",
+   "method": "findViewById",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/AboutUsActivity$1;",
+   "method": "<init>",
+   "descriptor": "(Leu/veldsoft/tri/peaks/AboutUsActivity;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/Base64Coder;",
+   "method": "decode",
+   "descriptor": "([C)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/lang/String;",
+   "method": "<init>",
+   "descriptor": "([B)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/Base64Coder;",
+   "method": "encode",
+   "descriptor": "([B I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/lang/String;",
+   "method": "getBytes",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/Card$Rank;",
+   "method": "hashCode",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/Card$Suit;",
+   "method": "hashCode",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameState;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/CardBoard;",
+   "method": "getScore",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/CardBoard;",
+   "method": "getGameScore",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/CardBoard;",
+   "method": "getSessionScore",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/CardBoard;",
+   "method": "getStreak",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/CardBoard;",
+   "method": "getNumGames",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/CardBoard;",
+   "method": "getSessionGames",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/CardBoard;",
+   "method": "getHighScore",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/CardBoard;",
+   "method": "getLowScore",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/CardBoard;",
+   "method": "getHighStreak",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/EnumSet;",
+   "method": "isEmpty",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/Deck;",
+   "method": "shuffle",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/Deck;",
+   "method": "setAllVisible",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/Deck;",
+   "method": "deal",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameState;",
+   "method": "redeal",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/Deck;",
+   "method": "setAllInvisible",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameState;",
+   "method": "reset",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/EnumSet;",
+   "method": "add",
+   "descriptor": "(Ljava/lang/Object;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/EnumSet;",
+   "method": "remove",
+   "descriptor": "(Ljava/lang/Object;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/EnumSet;",
+   "method": "addAll",
+   "descriptor": "(Ljava/util/Collection;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/Card$Rank;",
+   "method": "isAdjacentTo",
+   "descriptor": "(Leu/veldsoft/tri/peaks/Card$Rank;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameState;",
+   "method": "doValidMove",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/Card;",
+   "method": "getX",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/Card;",
+   "method": "getY",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/Random;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/lang/IndexOutOfBoundsException;",
+   "method": "<init>",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/Random;",
+   "method": "nextInt",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljavax/crypto/spec/PBEKeySpec;",
+   "method": "<init>",
+   "descriptor": "([C [B I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljavax/crypto/SecretKeyFactory;",
+   "method": "getInstance",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljavax/crypto/SecretKeyFactory;",
+   "method": "generateSecret",
+   "descriptor": "(Ljava/security/spec/KeySpec;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljavax/crypto/spec/PBEParameterSpec;",
+   "method": "<init>",
+   "descriptor": "([B I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/lang/String;",
+   "method": "<init>",
+   "descriptor": "([B Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/lang/String;",
+   "method": "getBytes",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/CardBoard;",
+   "method": "updateState",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameActivity;",
+   "method": "getResources",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/net/Uri;",
+   "method": "parse",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/content/Intent;",
+   "method": "<init>",
+   "descriptor": "(Ljava/lang/String; Landroid/net/Uri;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameActivity;",
+   "method": "startActivity",
+   "descriptor": "(Landroid/content/Intent;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/CardBoard;",
+   "method": "reset",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/CardBoard;",
+   "method": "doPenalty",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/HashMap;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameActivity$1;",
+   "method": "<init>",
+   "descriptor": "(Leu/veldsoft/tri/peaks/GameActivity;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/lang/Math;",
+   "method": "abs",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/CardBoard;",
+   "method": "getAllStats",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/lang/String;",
+   "method": "equals",
+   "descriptor": "(Ljava/lang/Object;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/Card;",
+   "method": "isFacingUp",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameActivity;",
+   "method": "setContentView",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameActivity$2;",
+   "method": "<init>",
+   "descriptor": "(Leu/veldsoft/tri/peaks/GameActivity;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/CardBoard;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameActivity;",
+   "method": "getMenuInflater",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/view/MenuInflater;",
+   "method": "inflate",
+   "descriptor": "(I Landroid/view/Menu;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/view/MenuItem;",
+   "method": "getItemId",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameActivity;",
+   "method": "finish",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameActivity$3;",
+   "method": "<init>",
+   "descriptor": "(Leu/veldsoft/tri/peaks/GameActivity;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameActivity$4;",
+   "method": "<init>",
+   "descriptor": "(Leu/veldsoft/tri/peaks/GameActivity;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/app/Activity;",
+   "method": "onOptionsItemSelected",
+   "descriptor": "(Landroid/view/MenuItem;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/EnumSet;",
+   "method": "noneOf",
+   "descriptor": "(Ljava/lang/Class;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/GameState;",
+   "method": "getRemainingPeaks",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/HelpActivity;",
+   "method": "finish",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/HelpActivity;",
+   "method": "setContentView",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/HelpActivity;",
+   "method": "findViewById",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/HelpActivity$1;",
+   "method": "<init>",
+   "descriptor": "(Leu/veldsoft/tri/peaks/HelpActivity;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/LobbyActivity;",
+   "method": "finish",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/LobbyActivity;",
+   "method": "setContentView",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/LobbyActivity$1;",
+   "method": "<init>",
+   "descriptor": "(Leu/veldsoft/tri/peaks/LobbyActivity;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/LobbyActivity$2;",
+   "method": "<init>",
+   "descriptor": "(Leu/veldsoft/tri/peaks/LobbyActivity;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/LobbyActivity$3;",
+   "method": "<init>",
+   "descriptor": "(Leu/veldsoft/tri/peaks/LobbyActivity;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/LobbyActivity$4;",
+   "method": "<init>",
+   "descriptor": "(Leu/veldsoft/tri/peaks/LobbyActivity;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/lang/Exception;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/lang/Exception;",
+   "method": "<init>",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/TimerTask;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/SplashActivity;",
+   "method": "access$0",
+   "descriptor": "(Leu/veldsoft/tri/peaks/SplashActivity;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/lang/Class;",
+   "method": "forName",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/SplashActivity;",
+   "method": "startActivity",
+   "descriptor": "(Landroid/content/Intent;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/SplashActivity;",
+   "method": "setContentView",
+   "descriptor": "(I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/webkit/WebView;",
+   "method": "getSettings",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/webkit/WebSettings;",
+   "method": "setJavaScriptEnabled",
+   "descriptor": "(Z)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/webkit/WebView;",
+   "method": "loadUrl",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/os/Bundle;",
+   "method": "getInt",
+   "descriptor": "(Ljava/lang/String; I)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Landroid/os/Bundle;",
+   "method": "getString",
+   "descriptor": "(Ljava/lang/String;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/lang/Class;",
+   "method": "toString",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/SplashActivity;",
+   "method": "getResources",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/Timer;",
+   "method": "<init>",
+   "descriptor": "()",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Leu/veldsoft/tri/peaks/SplashActivity$1;",
+   "method": "<init>",
+   "descriptor": "(Leu/veldsoft/tri/peaks/SplashActivity;)",
+   "call_sites": 1
+  },
+  {
+   "target_class": "Ljava/util/Timer;",
+   "method": "schedule",
+   "descriptor": "(Ljava/util/TimerTask; J)",
+   "call_sites": 1
+  }
+ ],
+ "method_apis": {
+  "Leu/veldsoft/tri/peaks/AboutUsActivity$1;-><init>(Leu/veldsoft/tri/peaks/AboutUsActivity;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/AboutUsActivity$1;->onClick(Landroid/view/View;)V": [
+   "Leu/veldsoft/tri/peaks/AboutUsActivity;;.finish"
+  ],
+  "Leu/veldsoft/tri/peaks/AboutUsActivity;-><init>()V": [
+   "Landroid/app/Activity;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/AboutUsActivity;->onCreate(Landroid/os/Bundle;)V": [
+   "Landroid/app/Activity;;.onCreate",
+   "Leu/veldsoft/tri/peaks/AboutUsActivity;;.setContentView",
+   "Leu/veldsoft/tri/peaks/AboutUsActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/AboutUsActivity$1;;.<init>",
+   "Landroid/widget/Button;;.setOnClickListener"
+  ],
+  "Leu/veldsoft/tri/peaks/Base64Coder;-><init>()V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/Base64Coder;->decode(Ljava/lang/String;)[B": [
+   "Ljava/lang/String;;.toCharArray",
+   "Leu/veldsoft/tri/peaks/Base64Coder;;.decode"
+  ],
+  "Leu/veldsoft/tri/peaks/Base64Coder;->decode([C)[B": [
+   "Ljava/lang/IllegalArgumentException;;.<init>",
+   "Ljava/lang/IllegalArgumentException;;.<init>",
+   "Ljava/lang/IllegalArgumentException;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/Base64Coder;->decodeString(Ljava/lang/String;)Ljava/lang/String;": [
+   "Leu/veldsoft/tri/peaks/Base64Coder;;.decode",
+   "Ljava/lang/String;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/Base64Coder;->encode([B)[C": [
+   "Leu/veldsoft/tri/peaks/Base64Coder;;.encode"
+  ],
+  "Leu/veldsoft/tri/peaks/Base64Coder;->encodeString(Ljava/lang/String;)Ljava/lang/String;": [
+   "Ljava/lang/String;;.getBytes",
+   "Leu/veldsoft/tri/peaks/Base64Coder;;.encode",
+   "Ljava/lang/String;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/Card$Rank;-><clinit>()V": [
+   "Leu/veldsoft/tri/peaks/Card$Rank;;.<init>",
+   "Leu/veldsoft/tri/peaks/Card$Rank;;.<init>",
+   "Leu/veldsoft/tri/peaks/Card$Rank;;.<init>",
+   "Leu/veldsoft/tri/peaks/Card$Rank;;.<init>",
+   "Leu/veldsoft/tri/peaks/Card$Rank;;.<init>",
+   "Leu/veldsoft/tri/peaks/Card$Rank;;.<init>",
+   "Leu/veldsoft/tri/peaks/Card$Rank;;.<init>",
+   "Leu/veldsoft/tri/peaks/Card$Rank;;.<init>",
+   "Leu/veldsoft/tri/peaks/Card$Rank;;.<init>",
+   "Leu/veldsoft/tri/peaks/Card$Rank;;.<init>",
+   "Leu/veldsoft/tri/peaks/Card$Rank;;.<init>",
+   "Leu/veldsoft/tri/peaks/Card$Rank;;.<init>",
+   "Leu/veldsoft/tri/peaks/Card$Rank;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/Card$Rank;-><init>(Ljava/lang/String; I I Ljava/lang/String;)V": [
+   "Ljava/lang/Enum;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/Card$Rank;->valueOf(Ljava/lang/String;)Leu/veldsoft/tri/peaks/Card$Rank;": [
+   "Ljava/lang/Enum;;.valueOf"
+  ],
+  "Leu/veldsoft/tri/peaks/Card$Rank;->values()[Leu/veldsoft/tri/peaks/Card$Rank;": [
+   "Ljava/lang/System;;.arraycopy"
+  ],
+  "Leu/veldsoft/tri/peaks/Card$Suit;-><clinit>()V": [
+   "Leu/veldsoft/tri/peaks/Card$Suit;;.<init>",
+   "Leu/veldsoft/tri/peaks/Card$Suit;;.<init>",
+   "Leu/veldsoft/tri/peaks/Card$Suit;;.<init>",
+   "Leu/veldsoft/tri/peaks/Card$Suit;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/Card$Suit;-><init>(Ljava/lang/String; I Ljava/lang/String;)V": [
+   "Ljava/lang/Enum;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/Card$Suit;->valueOf(Ljava/lang/String;)Leu/veldsoft/tri/peaks/Card$Suit;": [
+   "Ljava/lang/Enum;;.valueOf"
+  ],
+  "Leu/veldsoft/tri/peaks/Card$Suit;->values()[Leu/veldsoft/tri/peaks/Card$Suit;": [
+   "Ljava/lang/System;;.arraycopy"
+  ],
+  "Leu/veldsoft/tri/peaks/Card;-><init>(Leu/veldsoft/tri/peaks/Card$Rank; Leu/veldsoft/tri/peaks/Card$Suit; Z Z I I)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/Card;->equals(Ljava/lang/Object;)Z": [
+   "Ljava/lang/Object;;.getClass",
+   "Ljava/lang/Object;;.getClass"
+  ],
+  "Leu/veldsoft/tri/peaks/Card;->hashCode()I": [
+   "Ljava/lang/Boolean;;.hashCode",
+   "Ljava/lang/Boolean;;.hashCode",
+   "Leu/veldsoft/tri/peaks/Card$Rank;;.hashCode",
+   "Leu/veldsoft/tri/peaks/Card$Suit;;.hashCode",
+   "Ljava/lang/Boolean;;.hashCode"
+  ],
+  "Leu/veldsoft/tri/peaks/Card;->toString()Ljava/lang/String;": [
+   "Ljava/lang/StringBuilder;;.<init>",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.toString"
+  ],
+  "Leu/veldsoft/tri/peaks/CardBoard;-><init>()V": [
+   "Ljava/lang/Object;;.<init>",
+   "Leu/veldsoft/tri/peaks/GameState;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/CardBoard;->doPenalty(I)V": [
+   "Leu/veldsoft/tri/peaks/GameState;;.getScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.setScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.getSessionScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.setSessionScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.getGameScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.setGameScore"
+  ],
+  "Leu/veldsoft/tri/peaks/CardBoard;->getAllStats()[I": [
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getScore",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getGameScore",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getSessionScore",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getStreak",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getNumGames",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getSessionGames",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getHighScore",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getLowScore",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getHighStreak"
+  ],
+  "Leu/veldsoft/tri/peaks/CardBoard;->getCheats()Ljava/util/EnumSet;": [
+   "Leu/veldsoft/tri/peaks/GameState;;.getCheats"
+  ],
+  "Leu/veldsoft/tri/peaks/CardBoard;->getGameScore()I": [
+   "Leu/veldsoft/tri/peaks/GameState;;.getGameScore"
+  ],
+  "Leu/veldsoft/tri/peaks/CardBoard;->getHighScore()I": [
+   "Leu/veldsoft/tri/peaks/GameState;;.getHighScore"
+  ],
+  "Leu/veldsoft/tri/peaks/CardBoard;->getHighStreak()I": [
+   "Leu/veldsoft/tri/peaks/GameState;;.getHighStreak"
+  ],
+  "Leu/veldsoft/tri/peaks/CardBoard;->getLowScore()I": [
+   "Leu/veldsoft/tri/peaks/GameState;;.getLowScore"
+  ],
+  "Leu/veldsoft/tri/peaks/CardBoard;->getNumGames()I": [
+   "Leu/veldsoft/tri/peaks/GameState;;.getNumberOfGames"
+  ],
+  "Leu/veldsoft/tri/peaks/CardBoard;->getPenalty()I": [
+   "Leu/veldsoft/tri/peaks/GameState;;.getCheats",
+   "Ljava/util/EnumSet;;.contains",
+   "Leu/veldsoft/tri/peaks/GameState;;.getCardsInPlay",
+   "Leu/veldsoft/tri/peaks/GameState;;.getRemainingCards",
+   "Leu/veldsoft/tri/peaks/GameState;;.getCardsInPlay"
+  ],
+  "Leu/veldsoft/tri/peaks/CardBoard;->getScore()I": [
+   "Leu/veldsoft/tri/peaks/GameState;;.getScore"
+  ],
+  "Leu/veldsoft/tri/peaks/CardBoard;->getSessionGames()I": [
+   "Leu/veldsoft/tri/peaks/GameState;;.getNumberOfSessionGames"
+  ],
+  "Leu/veldsoft/tri/peaks/CardBoard;->getSessionScore()I": [
+   "Leu/veldsoft/tri/peaks/GameState;;.getSessionScore"
+  ],
+  "Leu/veldsoft/tri/peaks/CardBoard;->getStreak()I": [
+   "Leu/veldsoft/tri/peaks/GameState;;.getStreak"
+  ],
+  "Leu/veldsoft/tri/peaks/CardBoard;->hasCheated()Z": [
+   "Leu/veldsoft/tri/peaks/GameState;;.isHasCheatedYet"
+  ],
+  "Leu/veldsoft/tri/peaks/CardBoard;->isCheating()Z": [
+   "Leu/veldsoft/tri/peaks/GameState;;.getCheats",
+   "Ljava/util/EnumSet;;.isEmpty"
+  ],
+  "Leu/veldsoft/tri/peaks/CardBoard;->redeal()V": [
+   "Leu/veldsoft/tri/peaks/Deck;;.shuffle",
+   "Leu/veldsoft/tri/peaks/Deck;;.setAllVisible",
+   "Leu/veldsoft/tri/peaks/Deck;;.deal",
+   "Leu/veldsoft/tri/peaks/GameState;;.redeal"
+  ],
+  "Leu/veldsoft/tri/peaks/CardBoard;->reset()V": [
+   "Leu/veldsoft/tri/peaks/Deck;;.setAllInvisible",
+   "Leu/veldsoft/tri/peaks/GameState;;.reset"
+  ],
+  "Leu/veldsoft/tri/peaks/CardBoard;->setCheat(Leu/veldsoft/tri/peaks/Cheat; Z)V": [
+   "Leu/veldsoft/tri/peaks/GameState;;.getCheats",
+   "Ljava/util/EnumSet;;.contains",
+   "Leu/veldsoft/tri/peaks/GameState;;.getCheats",
+   "Ljava/util/EnumSet;;.add",
+   "Leu/veldsoft/tri/peaks/GameState;;.getCheats",
+   "Ljava/util/EnumSet;;.contains",
+   "Leu/veldsoft/tri/peaks/GameState;;.getCheats",
+   "Ljava/util/EnumSet;;.remove",
+   "Leu/veldsoft/tri/peaks/GameState;;.setHasCheatedYet"
+  ],
+  "Leu/veldsoft/tri/peaks/CardBoard;->setCheated(Z)V": [
+   "Leu/veldsoft/tri/peaks/GameState;;.setHasCheatedYet"
+  ],
+  "Leu/veldsoft/tri/peaks/CardBoard;->setCheats(Ljava/util/EnumSet;)V": [
+   "Leu/veldsoft/tri/peaks/GameState;;.getCheats",
+   "Ljava/util/EnumSet;;.clear",
+   "Leu/veldsoft/tri/peaks/GameState;;.getCheats",
+   "Ljava/util/EnumSet;;.addAll"
+  ],
+  "Leu/veldsoft/tri/peaks/CardBoard;->setStats([I)V": [
+   "Leu/veldsoft/tri/peaks/GameState;;.setScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.setHighScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.setLowScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.setNumberOfGames",
+   "Leu/veldsoft/tri/peaks/GameState;;.setHighStreak"
+  ],
+  "Leu/veldsoft/tri/peaks/CardBoard;->updateState(I)V": [
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getState",
+   "Leu/veldsoft/tri/peaks/GameState;;.getCheats",
+   "Ljava/util/EnumSet;;.contains",
+   "Leu/veldsoft/tri/peaks/Card;;.getRank",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getState",
+   "Leu/veldsoft/tri/peaks/GameState;;.getDiscardIndex",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getRank",
+   "Leu/veldsoft/tri/peaks/Card$Rank;;.isAdjacentTo",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getState",
+   "Leu/veldsoft/tri/peaks/GameState;;.getDiscardIndex",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.setInvisible",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getState",
+   "Leu/veldsoft/tri/peaks/GameState;;.doValidMove",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getState",
+   "Leu/veldsoft/tri/peaks/GameState;;.getRemainingCards",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.setStatus",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.setStatus",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.isInvisible",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.flip",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.flip",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getState",
+   "Leu/veldsoft/tri/peaks/GameState;;.getDiscardIndex",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getX",
+   "Leu/veldsoft/tri/peaks/Card;;.setX",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getState",
+   "Leu/veldsoft/tri/peaks/GameState;;.getDiscardIndex",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getY",
+   "Leu/veldsoft/tri/peaks/Card;;.setY",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getState",
+   "Leu/veldsoft/tri/peaks/GameState;;.getDiscardIndex",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.setInvisible",
+   "Leu/veldsoft/tri/peaks/Card;;.flip",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.setVisible",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getState",
+   "Leu/veldsoft/tri/peaks/GameState;;.setDiscardIndex",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getState",
+   "Leu/veldsoft/tri/peaks/GameState;;.setStreak",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getState",
+   "Leu/veldsoft/tri/peaks/GameState;;.getCheats",
+   "Ljava/util/EnumSet;;.contains",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getState",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getState",
+   "Leu/veldsoft/tri/peaks/GameState;;.getScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.setScore",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getState",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getState",
+   "Leu/veldsoft/tri/peaks/GameState;;.getGameScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.setGameScore",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getState",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getState",
+   "Leu/veldsoft/tri/peaks/GameState;;.getSessionScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.setSessionScore",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getState",
+   "Leu/veldsoft/tri/peaks/GameState;;.getGameScore",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getState",
+   "Leu/veldsoft/tri/peaks/GameState;;.getLowScore",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getState",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getState",
+   "Leu/veldsoft/tri/peaks/GameState;;.getGameScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.setLowScore",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getState",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getState",
+   "Leu/veldsoft/tri/peaks/GameState;;.getRemainingCards",
+   "Leu/veldsoft/tri/peaks/GameState;;.setRemainingCards"
+  ],
+  "Leu/veldsoft/tri/peaks/Cheat;-><clinit>()V": [
+   "Leu/veldsoft/tri/peaks/Cheat;;.<init>",
+   "Leu/veldsoft/tri/peaks/Cheat;;.<init>",
+   "Leu/veldsoft/tri/peaks/Cheat;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/Cheat;-><init>(Ljava/lang/String; I I)V": [
+   "Ljava/lang/Enum;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/Cheat;->valueOf(Ljava/lang/String;)Leu/veldsoft/tri/peaks/Cheat;": [
+   "Ljava/lang/Enum;;.valueOf"
+  ],
+  "Leu/veldsoft/tri/peaks/Cheat;->values()[Leu/veldsoft/tri/peaks/Cheat;": [
+   "Ljava/lang/System;;.arraycopy"
+  ],
+  "Leu/veldsoft/tri/peaks/Constants;-><clinit>()V": [
+   "Ljava/util/Random;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/Constants;-><init>()V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/Deck;-><init>()V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/Deck;->cardAtPosition(I)Leu/veldsoft/tri/peaks/Card;": [
+   "Ljava/lang/IndexOutOfBoundsException;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/Deck;->deal()V": [
+   "Leu/veldsoft/tri/peaks/Card;;.setVisible",
+   "Leu/veldsoft/tri/peaks/Card;;.setX",
+   "Leu/veldsoft/tri/peaks/Card;;.setY",
+   "Leu/veldsoft/tri/peaks/Card;;.flip",
+   "Leu/veldsoft/tri/peaks/Card;;.setX",
+   "Leu/veldsoft/tri/peaks/Card;;.setY",
+   "Leu/veldsoft/tri/peaks/Card;;.flip",
+   "Leu/veldsoft/tri/peaks/Card;;.setInvisible",
+   "Leu/veldsoft/tri/peaks/Card;;.setX",
+   "Leu/veldsoft/tri/peaks/Card;;.setY",
+   "Leu/veldsoft/tri/peaks/Card;;.flip",
+   "Leu/veldsoft/tri/peaks/Card;;.setX",
+   "Leu/veldsoft/tri/peaks/Card;;.setY",
+   "Leu/veldsoft/tri/peaks/Card;;.flip",
+   "Leu/veldsoft/tri/peaks/Card;;.setX",
+   "Leu/veldsoft/tri/peaks/Card;;.setY",
+   "Leu/veldsoft/tri/peaks/Card;;.flip",
+   "Leu/veldsoft/tri/peaks/Card;;.setX",
+   "Leu/veldsoft/tri/peaks/Card;;.setY",
+   "Leu/veldsoft/tri/peaks/Card;;.flip"
+  ],
+  "Leu/veldsoft/tri/peaks/Deck;->setAllInvisible()V": [
+   "Leu/veldsoft/tri/peaks/Card;;.setInvisible"
+  ],
+  "Leu/veldsoft/tri/peaks/Deck;->setAllVisible()V": [
+   "Leu/veldsoft/tri/peaks/Card;;.setVisible"
+  ],
+  "Leu/veldsoft/tri/peaks/Deck;->shuffle()V": [
+   "Ljava/util/Random;;.nextInt"
+  ],
+  "Leu/veldsoft/tri/peaks/Encryptor;-><init>(Ljava/lang/String;)V": [
+   "Ljava/lang/Object;;.<init>",
+   "Ljava/lang/String;;.toCharArray",
+   "Ljavax/crypto/spec/PBEKeySpec;;.<init>",
+   "Ljavax/crypto/SecretKeyFactory;;.getInstance",
+   "Ljavax/crypto/SecretKeyFactory;;.generateSecret",
+   "Ljavax/crypto/SecretKey;;.getAlgorithm",
+   "Ljavax/crypto/Cipher;;.getInstance",
+   "Ljavax/crypto/SecretKey;;.getAlgorithm",
+   "Ljavax/crypto/Cipher;;.getInstance",
+   "Ljavax/crypto/spec/PBEParameterSpec;;.<init>",
+   "Ljavax/crypto/Cipher;;.init",
+   "Ljavax/crypto/Cipher;;.init"
+  ],
+  "Leu/veldsoft/tri/peaks/Encryptor;->decrypt(Ljava/lang/String;)Ljava/lang/String;": [
+   "Leu/veldsoft/tri/peaks/Base64Coder;;.decode",
+   "Ljavax/crypto/Cipher;;.doFinal",
+   "Ljava/lang/String;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/Encryptor;->encrypt(Ljava/lang/String;)Ljava/lang/String;": [
+   "Ljava/lang/String;;.getBytes",
+   "Ljavax/crypto/Cipher;;.doFinal",
+   "Leu/veldsoft/tri/peaks/Base64Coder;;.encode",
+   "Ljava/lang/String;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/GameActivity$1;-><init>(Leu/veldsoft/tri/peaks/GameActivity;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/GameActivity$1;->onClick(Landroid/view/View;)V": [
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.isInvisible",
+   "Leu/veldsoft/tri/peaks/Card;;.isFacingDown",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.access$0",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getState",
+   "Leu/veldsoft/tri/peaks/GameState;;.getDiscardIndex",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.access$1",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.access$1",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.access$0",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.updateState",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.access$2"
+  ],
+  "Leu/veldsoft/tri/peaks/GameActivity$2;-><init>(Leu/veldsoft/tri/peaks/GameActivity;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/GameActivity$2;->onClick(Landroid/view/View;)V": [
+   "Leu/veldsoft/tri/peaks/GameActivity;;.getResources",
+   "Landroid/content/res/Resources;;.getString",
+   "Landroid/net/Uri;;.parse",
+   "Landroid/content/Intent;;.<init>",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.startActivity"
+  ],
+  "Leu/veldsoft/tri/peaks/GameActivity$3;-><init>(Leu/veldsoft/tri/peaks/GameActivity;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/GameActivity$3;->onClick(Landroid/content/DialogInterface; I)V": [
+   "Leu/veldsoft/tri/peaks/GameActivity;;.access$0",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.reset",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.access$0",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.redeal",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.access$2"
+  ],
+  "Leu/veldsoft/tri/peaks/GameActivity$4;-><init>(Leu/veldsoft/tri/peaks/GameActivity;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/GameActivity$4;->onClick(Landroid/content/DialogInterface; I)V": [
+   "Leu/veldsoft/tri/peaks/GameActivity;;.access$0",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.access$0",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getPenalty",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.doPenalty",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.access$0",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.redeal",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.access$2"
+  ],
+  "Leu/veldsoft/tri/peaks/GameActivity;-><init>()V": [
+   "Landroid/app/Activity;;.<init>",
+   "Ljava/util/HashMap;;.<init>",
+   "Ljava/text/DecimalFormat;;.<init>",
+   "Ljava/text/DecimalFormat;;.<init>",
+   "Leu/veldsoft/tri/peaks/GameActivity$1;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/GameActivity;->access$2(Leu/veldsoft/tri/peaks/GameActivity;)V": [
+   "Leu/veldsoft/tri/peaks/GameActivity;;.repaint"
+  ],
+  "Leu/veldsoft/tri/peaks/GameActivity;->repaint()V": [
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getState",
+   "Leu/veldsoft/tri/peaks/GameState;;.isHasCheatedYet",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/TextView;;.setVisibility",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/TextView;;.setVisibility",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getState",
+   "Leu/veldsoft/tri/peaks/GameState;;.getDiscardIndex",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.get",
+   "Ljava/lang/Integer;;.intValue",
+   "Landroid/widget/ImageView;;.setImageResource",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getState",
+   "Leu/veldsoft/tri/peaks/GameState;;.getRemainingCards",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/ImageView;;.setImageResource",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/ImageView;;.setImageBitmap",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getState",
+   "Leu/veldsoft/tri/peaks/GameState;;.getScore",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/TextView;;.setText",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/TextView;;.setText",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getState",
+   "Leu/veldsoft/tri/peaks/GameState;;.getScore",
+   "Ljava/lang/Math;;.abs",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Ljava/lang/StringBuilder;;.<init>",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.toString",
+   "Landroid/widget/TextView;;.setText",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Ljava/lang/StringBuilder;;.<init>",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getState",
+   "Leu/veldsoft/tri/peaks/GameState;;.getRemainingCards",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.toString",
+   "Landroid/widget/TextView;;.setText",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getAllStats",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Ljava/lang/StringBuilder;;.<init>",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.toString",
+   "Landroid/widget/TextView;;.setText",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Ljava/lang/StringBuilder;;.<init>",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.toString",
+   "Landroid/widget/TextView;;.setText",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Ljava/lang/StringBuilder;;.<init>",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.toString",
+   "Landroid/widget/TextView;;.setText",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Ljava/lang/StringBuilder;;.<init>",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/text/DecimalFormat;;.format",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.toString",
+   "Landroid/widget/TextView;;.setText",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Ljava/text/DecimalFormat;;.format",
+   "Landroid/widget/TextView;;.setText",
+   "Ljava/lang/Double;;.isNaN",
+   "Ljava/lang/Double;;.isNaN",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Ljava/text/DecimalFormat;;.format",
+   "Landroid/widget/TextView;;.setText",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Ljava/lang/StringBuilder;;.<init>",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.toString",
+   "Landroid/widget/TextView;;.setText",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Ljava/lang/StringBuilder;;.<init>",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.toString",
+   "Landroid/widget/TextView;;.setText",
+   "Ljava/lang/Double;;.isNaN",
+   "Ljava/lang/Double;;.isNaN",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Ljava/lang/StringBuilder;;.<init>",
+   "Ljava/text/DecimalFormat;;.format",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.toString",
+   "Landroid/widget/TextView;;.setText",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Ljava/lang/StringBuilder;;.<init>",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/text/DecimalFormat;;.format",
+   "Ljava/lang/StringBuilder;;.append",
+   "Ljava/lang/StringBuilder;;.toString",
+   "Landroid/widget/TextView;;.setText",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getStatus",
+   "Ljava/lang/String;;.equals",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getStatus",
+   "Landroid/widget/Toast;;.makeText",
+   "Landroid/widget/Toast;;.show",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.setStatus",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getState",
+   "Leu/veldsoft/tri/peaks/GameState;;.getDiscardIndex",
+   "Landroid/widget/ImageView;;.setImageBitmap",
+   "Leu/veldsoft/tri/peaks/Card;;.isInvisible",
+   "Landroid/widget/ImageView;;.setImageBitmap",
+   "Leu/veldsoft/tri/peaks/Card;;.isFacingUp",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getState",
+   "Leu/veldsoft/tri/peaks/GameState;;.getCheats",
+   "Ljava/util/EnumSet;;.contains",
+   "Leu/veldsoft/tri/peaks/Card;;.isFacingDown",
+   "Landroid/widget/ImageView;;.setImageResource",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.get",
+   "Ljava/lang/Integer;;.intValue",
+   "Landroid/widget/ImageView;;.setImageResource"
+  ],
+  "Leu/veldsoft/tri/peaks/GameActivity;->onCreate(Landroid/os/Bundle;)V": [
+   "Leu/veldsoft/tri/peaks/GameActivity;;.setContentView",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.getIndex",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/lang/Integer;;.valueOf",
+   "Ljava/util/Map;;.put",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/ImageView;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/ImageView;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/ImageView;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/ImageView;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/ImageView;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/ImageView;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/ImageView;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/ImageView;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/ImageView;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/ImageView;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/ImageView;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/ImageView;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/ImageView;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/ImageView;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/ImageView;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/ImageView;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/ImageView;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/ImageView;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/ImageView;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/ImageView;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/ImageView;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/ImageView;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/ImageView;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/ImageView;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/ImageView;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/ImageView;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/ImageView;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/ImageView;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/ImageView;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Landroid/widget/ImageView;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/GameActivity$2;;.<init>",
+   "Landroid/widget/ImageView;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.<init>",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.redeal",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.repaint"
+  ],
+  "Leu/veldsoft/tri/peaks/GameActivity;->onCreateOptionsMenu(Landroid/view/Menu;)Z": [
+   "Leu/veldsoft/tri/peaks/GameActivity;;.getMenuInflater",
+   "Landroid/view/MenuInflater;;.inflate"
+  ],
+  "Leu/veldsoft/tri/peaks/GameActivity;->onOptionsItemSelected(Landroid/view/MenuItem;)Z": [
+   "Landroid/view/MenuItem;;.getItemId",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.finish",
+   "Landroid/app/AlertDialog$Builder;;.<init>",
+   "Landroid/app/AlertDialog$Builder;;.setTitle",
+   "Landroid/app/AlertDialog$Builder;;.setMessage",
+   "Landroid/app/AlertDialog$Builder;;.setIcon",
+   "Leu/veldsoft/tri/peaks/GameActivity$3;;.<init>",
+   "Landroid/app/AlertDialog$Builder;;.setPositiveButton",
+   "Landroid/app/AlertDialog$Builder;;.setNegativeButton",
+   "Landroid/app/AlertDialog$Builder;;.show",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.getPenalty",
+   "Landroid/app/AlertDialog$Builder;;.<init>",
+   "Landroid/app/AlertDialog$Builder;;.setTitle",
+   "Landroid/app/AlertDialog$Builder;;.setMessage",
+   "Landroid/app/AlertDialog$Builder;;.setIcon",
+   "Leu/veldsoft/tri/peaks/GameActivity$4;;.<init>",
+   "Landroid/app/AlertDialog$Builder;;.setPositiveButton",
+   "Landroid/app/AlertDialog$Builder;;.setNegativeButton",
+   "Landroid/app/AlertDialog$Builder;;.show",
+   "Leu/veldsoft/tri/peaks/CardBoard;;.redeal",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.repaint",
+   "Landroid/app/Activity;;.onOptionsItemSelected"
+  ],
+  "Leu/veldsoft/tri/peaks/GameActivity;->onResume()V": [
+   "Landroid/app/Activity;;.onResume",
+   "Leu/veldsoft/tri/peaks/GameActivity;;.repaint"
+  ],
+  "Leu/veldsoft/tri/peaks/GameState;-><init>()V": [
+   "Ljava/lang/Object;;.<init>",
+   "Ljava/util/EnumSet;;.noneOf"
+  ],
+  "Leu/veldsoft/tri/peaks/GameState;->doValidMove(I)V": [
+   "Leu/veldsoft/tri/peaks/GameState;;.setDiscardIndex",
+   "Leu/veldsoft/tri/peaks/GameState;;.getStreak",
+   "Leu/veldsoft/tri/peaks/GameState;;.setStreak",
+   "Leu/veldsoft/tri/peaks/GameState;;.getCardsInPlay",
+   "Leu/veldsoft/tri/peaks/GameState;;.setCardsInPlay",
+   "Leu/veldsoft/tri/peaks/GameState;;.getScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.getStreak",
+   "Leu/veldsoft/tri/peaks/GameState;;.setScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.getGameScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.getStreak",
+   "Leu/veldsoft/tri/peaks/GameState;;.setGameScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.getSessionScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.getStreak",
+   "Leu/veldsoft/tri/peaks/GameState;;.setSessionScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.getStreak",
+   "Leu/veldsoft/tri/peaks/GameState;;.getHighStreak",
+   "Leu/veldsoft/tri/peaks/GameState;;.getStreak",
+   "Leu/veldsoft/tri/peaks/GameState;;.setHighStreak",
+   "Leu/veldsoft/tri/peaks/GameState;;.getGameScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.getHighScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.getGameScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.setHighScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.getRemainingPeaks",
+   "Leu/veldsoft/tri/peaks/GameState;;.setRemainingPeaks",
+   "Leu/veldsoft/tri/peaks/GameState;;.getScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.setScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.getGameScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.setGameScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.getSessionScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.setSessionScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.getRemainingCards",
+   "Leu/veldsoft/tri/peaks/GameState;;.getScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.setScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.getGameScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.setGameScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.getSessionScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.setSessionScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.getRemainingCards",
+   "Leu/veldsoft/tri/peaks/Deck;;.cardAtPosition",
+   "Leu/veldsoft/tri/peaks/Card;;.setInvisible",
+   "Leu/veldsoft/tri/peaks/GameState;;.getGameScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.getHighScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.getGameScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.setHighScore"
+  ],
+  "Leu/veldsoft/tri/peaks/GameState;->redeal()V": [
+   "Leu/veldsoft/tri/peaks/GameState;;.setRemainingCards",
+   "Leu/veldsoft/tri/peaks/GameState;;.setCardsInPlay",
+   "Leu/veldsoft/tri/peaks/GameState;;.setRemainingPeaks",
+   "Leu/veldsoft/tri/peaks/GameState;;.setStreak",
+   "Leu/veldsoft/tri/peaks/GameState;;.setGameScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.setDiscardIndex",
+   "Leu/veldsoft/tri/peaks/GameState;;.getNumberOfGames",
+   "Leu/veldsoft/tri/peaks/GameState;;.setNumberOfGames",
+   "Leu/veldsoft/tri/peaks/GameState;;.getNumberOfSessionGames",
+   "Leu/veldsoft/tri/peaks/GameState;;.setNumberOfSessionGames"
+  ],
+  "Leu/veldsoft/tri/peaks/GameState;->reset()V": [
+   "Leu/veldsoft/tri/peaks/GameState;;.setDiscardIndex",
+   "Leu/veldsoft/tri/peaks/GameState;;.setScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.setGameScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.setSessionScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.setStreak",
+   "Leu/veldsoft/tri/peaks/GameState;;.setRemainingCards",
+   "Leu/veldsoft/tri/peaks/GameState;;.setCardsInPlay",
+   "Leu/veldsoft/tri/peaks/GameState;;.setRemainingPeaks",
+   "Leu/veldsoft/tri/peaks/GameState;;.setNumberOfGames",
+   "Leu/veldsoft/tri/peaks/GameState;;.setNumberOfSessionGames",
+   "Leu/veldsoft/tri/peaks/GameState;;.setHighScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.setLowScore",
+   "Leu/veldsoft/tri/peaks/GameState;;.setHighStreak",
+   "Leu/veldsoft/tri/peaks/GameState;;.getCheats",
+   "Ljava/util/EnumSet;;.clear",
+   "Leu/veldsoft/tri/peaks/GameState;;.setHasCheatedYet"
+  ],
+  "Leu/veldsoft/tri/peaks/HelpActivity$1;-><init>(Leu/veldsoft/tri/peaks/HelpActivity;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/HelpActivity$1;->onClick(Landroid/view/View;)V": [
+   "Leu/veldsoft/tri/peaks/HelpActivity;;.finish"
+  ],
+  "Leu/veldsoft/tri/peaks/HelpActivity;-><init>()V": [
+   "Landroid/app/Activity;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/HelpActivity;->onCreate(Landroid/os/Bundle;)V": [
+   "Landroid/app/Activity;;.onCreate",
+   "Leu/veldsoft/tri/peaks/HelpActivity;;.setContentView",
+   "Leu/veldsoft/tri/peaks/HelpActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/HelpActivity$1;;.<init>",
+   "Landroid/widget/Button;;.setOnClickListener"
+  ],
+  "Leu/veldsoft/tri/peaks/LobbyActivity$1;-><init>(Leu/veldsoft/tri/peaks/LobbyActivity;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/LobbyActivity$1;->onClick(Landroid/view/View;)V": [
+   "Landroid/content/Intent;;.<init>",
+   "Leu/veldsoft/tri/peaks/LobbyActivity;;.startActivity"
+  ],
+  "Leu/veldsoft/tri/peaks/LobbyActivity$2;-><init>(Leu/veldsoft/tri/peaks/LobbyActivity;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/LobbyActivity$2;->onClick(Landroid/view/View;)V": [
+   "Landroid/content/Intent;;.<init>",
+   "Leu/veldsoft/tri/peaks/LobbyActivity;;.startActivity"
+  ],
+  "Leu/veldsoft/tri/peaks/LobbyActivity$3;-><init>(Leu/veldsoft/tri/peaks/LobbyActivity;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/LobbyActivity$3;->onClick(Landroid/view/View;)V": [
+   "Leu/veldsoft/tri/peaks/LobbyActivity;;.finish"
+  ],
+  "Leu/veldsoft/tri/peaks/LobbyActivity$4;-><init>(Leu/veldsoft/tri/peaks/LobbyActivity;)V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/LobbyActivity$4;->onClick(Landroid/view/View;)V": [
+   "Landroid/content/Intent;;.<init>",
+   "Leu/veldsoft/tri/peaks/LobbyActivity;;.startActivity"
+  ],
+  "Leu/veldsoft/tri/peaks/LobbyActivity;-><init>()V": [
+   "Landroid/app/Activity;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/LobbyActivity;->onCreate(Landroid/os/Bundle;)V": [
+   "Landroid/app/Activity;;.onCreate",
+   "Leu/veldsoft/tri/peaks/LobbyActivity;;.setContentView",
+   "Leu/veldsoft/tri/peaks/LobbyActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/LobbyActivity$1;;.<init>",
+   "Landroid/widget/Button;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/LobbyActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/LobbyActivity$2;;.<init>",
+   "Landroid/widget/Button;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/LobbyActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/LobbyActivity$3;;.<init>",
+   "Landroid/widget/Button;;.setOnClickListener",
+   "Leu/veldsoft/tri/peaks/LobbyActivity;;.findViewById",
+   "Leu/veldsoft/tri/peaks/LobbyActivity$4;;.<init>",
+   "Landroid/widget/Button;;.setOnClickListener"
+  ],
+  "Leu/veldsoft/tri/peaks/NewPlayerException;-><init>()V": [
+   "Ljava/lang/Exception;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/NewPlayerException;-><init>(Ljava/lang/String;)V": [
+   "Ljava/lang/Exception;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/R$color;-><init>()V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/R$drawable;-><init>()V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/R$id;-><init>()V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/R$layout;-><init>()V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/R$string;-><init>()V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/R$style;-><init>()V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/R;-><init>()V": [
+   "Ljava/lang/Object;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/SplashActivity$1;-><init>(Leu/veldsoft/tri/peaks/SplashActivity;)V": [
+   "Ljava/util/TimerTask;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/SplashActivity$1;->run()V": [
+   "Leu/veldsoft/tri/peaks/SplashActivity;;.access$0",
+   "Ljava/lang/Class;;.forName",
+   "Landroid/content/Intent;;.<init>",
+   "Leu/veldsoft/tri/peaks/SplashActivity;;.startActivity"
+  ],
+  "Leu/veldsoft/tri/peaks/SplashActivity;-><init>()V": [
+   "Landroid/app/Activity;;.<init>"
+  ],
+  "Leu/veldsoft/tri/peaks/SplashActivity;->onCreate(Landroid/os/Bundle;)V": [
+   "Landroid/app/Activity;;.onCreate",
+   "Leu/veldsoft/tri/peaks/SplashActivity;;.setContentView",
+   "Leu/veldsoft/tri/peaks/SplashActivity;;.findViewById",
+   "Landroid/webkit/WebView;;.getSettings",
+   "Landroid/webkit/WebSettings;;.setJavaScriptEnabled",
+   "Leu/veldsoft/tri/peaks/SplashActivity;;.findViewById",
+   "Landroid/webkit/WebView;;.loadUrl",
+   "Leu/veldsoft/tri/peaks/SplashActivity;;.getPackageManager",
+   "Leu/veldsoft/tri/peaks/SplashActivity;;.getComponentName",
+   "Landroid/content/pm/PackageManager;;.getActivityInfo",
+   "Landroid/os/Bundle;;.getInt",
+   "Leu/veldsoft/tri/peaks/SplashActivity;;.getPackageManager",
+   "Leu/veldsoft/tri/peaks/SplashActivity;;.getComponentName",
+   "Landroid/content/pm/PackageManager;;.getActivityInfo",
+   "Landroid/os/Bundle;;.getString",
+   "Ljava/lang/Object;;.getClass",
+   "Ljava/lang/Class;;.toString",
+   "Leu/veldsoft/tri/peaks/SplashActivity;;.getResources",
+   "Landroid/content/res/Resources;;.getString",
+   "Landroid/widget/Toast;;.makeText",
+   "Landroid/widget/Toast;;.show"
+  ],
+  "Leu/veldsoft/tri/peaks/SplashActivity;->onResume()V": [
+   "Landroid/app/Activity;;.onResume",
+   "Ljava/util/Timer;;.<init>",
+   "Leu/veldsoft/tri/peaks/SplashActivity$1;;.<init>",
+   "Ljava/util/Timer;;.schedule"
+  ]
+ }
+}

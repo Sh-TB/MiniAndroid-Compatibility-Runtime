@@ -8,6 +8,8 @@ from PIL import Image
 
 OUT = "/home/z/my-project/docs/evidence/foundation/fixtures"
 RED, GREEN, BLUE, BLACK, WHITE = (255,0,0), (0,255,0), (0,0,255), (0,0,0), (255,255,255)
+# S69 F-135: OK row color of f52_nanlaw (0xFF1B8A44 over white, opaque)
+NAN_OK = (27, 138, 68)
 
 def sha256(path):
     h = hashlib.sha256()
@@ -241,6 +243,17 @@ FIXTURES = {
     (390, 196, (35,69,103), "?attr/customColor from theme bag (A1)"),
     (390, 590, (0,150,136), "?android:attr/colorAccent LIGHT flavor (A10)"),
     (390, 983, (32,32,32), "?android:attr/textColorPrimary state-list law"),
+ ],
+ "f52_nanlaw": [
+    (540, 50,   NAN_OK,  "Double.isNaN(NaN)==true (OpenJDK :1031)"),
+    (540, 150,  NAN_OK,  "Double.isNaN(1.5)==false (not NaN)"),
+    (540, 250,  NAN_OK,  "Double.isInfinite(+Inf)==true (:1048)"),
+    (540, 350,  NAN_OK,  "Double.isInfinite(-Inf)==true"),
+    (540, 450,  NAN_OK,  "Float.isNaN(NaN)==true (Float.java:631)"),
+    (540, 550,  NAN_OK,  "Double.compare(1.0,2.0)==-1"),
+    (540, 650,  NAN_OK,  "Double.compare(NaN,1.0)==+1 (bits law)"),
+    (540, 750,  NAN_OK,  "Float.compare(+0.0,-0.0)==+1 (±0.0 law)"),
+    (540, 850,  NAN_OK,  "Float.compare(2.0,2.0)==0"),
  ],
  "f50_imagefmt": [
     (150, 75, (255,0,255), "JPEG drawable decoded (A3: no silent drop)"),

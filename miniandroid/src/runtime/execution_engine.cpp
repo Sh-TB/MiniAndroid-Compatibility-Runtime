@@ -751,6 +751,30 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
             config.verbose_logging
         );
 
+        // ────────────────────────────────────────────────────────────────
+        // S69 SOURCE-LINKED CAMPAIGN: API dispatch trace dump (the LIVE
+        // dispatch surface). Every invoke the engine bridged to the
+        // framework layer during the main execution — with per-call status
+        // (IMPLEMENTED / STUBBED / MISSING / ERROR). This is the ground
+        // truth that the static served-API extractor pairs against
+        // (tools/architecture/), and the data source of the API coverage
+        // matrix (docs/foundation/api_matrix.json).
+        // ────────────────────────────────────────────────────────────────
+        if (config.dump_api_trace) {
+            fs::create_directories(config.output_directory);
+            nlohmann::json atraces = nlohmann::json::array();
+            for (const auto& t : dalvik_result.api_call_traces) {
+                atraces.push_back(t.to_json());
+            }
+            std::ofstream af(config.output_directory + "/api_calls.json");
+            if (af) {
+                af << atraces.dump(1) << std::endl;
+                trace_engine_.info("ExecutionEngine",
+                                   "stage_execute_application_real_dalvik",
+                                   "api_calls.json dumped (S69 live dispatch surface)");
+            }
+        }
+
         // M3 FINDING-016: record the in-flight uncaught exceptions into the
         // TraceEngine NOW (before stage_generate_reports writes crash.log —
         // the final status mapping runs too late for report inclusion).

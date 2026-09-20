@@ -1,0 +1,4425 @@
+{
+ "generated": "2026-09-20T05:30:17Z",
+ "law": "\u00a73 source\u2194runtime cross-reference: source file \u2194 DEX class \u2194 android API \u2194 runtime status \u2194 frame evidence",
+ "apps": [
+  {
+   "apk": "bouncy.apk",
+   "package": "com.dozingcatsoftware.bouncy",
+   "source_repo": "dozingcat/Vector-Pinball",
+   "source_commit": "b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9",
+   "provenance": "/home/z/my-project/upstream/corpus/com.dozingcatsoftware.bouncy/PROVENANCE.json",
+   "source_files": 60,
+   "source_root": "/home/z/my-project/upstream/corpus/com.dozingcatsoftware.bouncy/src",
+   "census": "/home/z/my-project/docs/foundation/dex_census/bouncy.json",
+   "app_classes": 1987,
+   "app_methods": 19459,
+   "api_call_sites": 45582,
+   "source_to_dex": {
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/bouncy/BouncyPreferences.java": {
+     "dex_class": "Lcom/dozingcatsoftware/bouncy/BouncyPreferences;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/bouncy/AboutActivity.java": {
+     "dex_class": "Lcom/dozingcatsoftware/bouncy/AboutActivity;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/bouncy/VPSoundpool.java": {
+     "dex_class": "Lcom/dozingcatsoftware/bouncy/VPSoundpool;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/bouncy/CanvasFieldView.java": {
+     "dex_class": "Lcom/dozingcatsoftware/bouncy/CanvasFieldView;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/bouncy/FieldViewManager.java": {
+     "dex_class": "Lcom/dozingcatsoftware/bouncy/FieldViewManager;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/bouncy/GL20Renderer.java": {
+     "dex_class": "Lcom/dozingcatsoftware/bouncy/GL20Renderer;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/bouncy/TableThumbnailRenderer.java": {
+     "dex_class": "Lcom/dozingcatsoftware/bouncy/TableThumbnailRenderer;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/bouncy/ScoreView.java": {
+     "dex_class": "Lcom/dozingcatsoftware/bouncy/ScoreView;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/bouncy/FieldLayoutReader.java": {
+     "dex_class": "Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/bouncy/GLFieldView.java": {
+     "dex_class": "Lcom/dozingcatsoftware/bouncy/GLFieldView;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/bouncy/OrientationListener.java": {
+     "dex_class": "Lcom/dozingcatsoftware/bouncy/OrientationListener;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/bouncy/GL10Renderer.java": {
+     "dex_class": "Lcom/dozingcatsoftware/bouncy/GL10Renderer;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/bouncy/BouncyActivity.java": {
+     "dex_class": "Lcom/dozingcatsoftware/bouncy/BouncyActivity;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/bouncy/util/GLVertexList.java": {
+     "dex_class": "Lcom/dozingcatsoftware/bouncy/util/GLVertexList;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/bouncy/util/GLVertexListManager.java": {
+     "dex_class": "Lcom/dozingcatsoftware/bouncy/util/GLVertexListManager;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/bouncy/util/TrigLookupTable.java": {
+     "dex_class": "Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/bouncy/util/JSONUtils.java": {
+     "dex_class": "Lcom/dozingcatsoftware/bouncy/util/JSONUtils;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/elements/DropTargetGroupElement.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/elements/DropTargetGroupElement;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/elements/RolloverGroupElement.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/elements/RolloverGroupElement;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/elements/SpinnerElement.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/elements/SpinnerElement;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/elements/SensorElement.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/elements/SensorElement;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/elements/WallElement.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/elements/WallElement;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/elements/WallPathElement.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/elements/WallPathElement;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/elements/FlipperElement.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/elements/FlipperElement;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/elements/Box2DFactory.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/elements/Box2DFactory;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/elements/FieldElementCollection.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/elements/FieldElementCollection;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/elements/BumperElement.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/elements/BumperElement;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/elements/WallArcElement.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/elements/WallArcElement;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/elements/FieldElement.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/elements/FieldElement;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/fields/Field3Delegate.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/fields/Field3Delegate;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/fields/Field5Delegate.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/fields/Field5Delegate;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/fields/Field6Delegate.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/fields/Field6Delegate;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/fields/Field7Delegate.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/fields/Field7Delegate;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/fields/Field9Delegate.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/fields/Field9Delegate;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/fields/Field1Delegate.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/fields/Field1Delegate;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/fields/StarData.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/fields/StarData;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/fields/Field2Delegate.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/fields/Field2Delegate;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/fields/Stars.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/fields/Stars;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/fields/Field4Delegate.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/fields/Field4Delegate;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/fields/Field8Delegate.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/fields/Field8Delegate;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/util/FrameRateManager.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/util/FrameRateManager;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/util/IOUtils.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/util/IOUtils;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/util/MathUtils.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/util/MathUtils;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/model/IStringResolver.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/model/IStringResolver;",
+     "dex_class_present": false
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/model/Shape.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/model/Shape;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/model/IFieldRenderer.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/model/IFieldRenderer;",
+     "dex_class_present": false
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/model/Field.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/model/Field;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/model/DigitShapes.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/model/DigitShapes;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/model/Ball.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/model/Ball;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/model/WorldLayers.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/model/WorldLayers;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/model/GameMessage.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/model/GameMessage;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/model/GameState.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/model/GameState;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/model/AudioPlayer.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/model/AudioPlayer;",
+     "dex_class_present": false
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/model/IDrawable.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/model/IDrawable;",
+     "dex_class_present": false
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/model/FieldDriver.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/model/FieldDriver;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/model/FieldLayout.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/model/ScoreAnimation.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/model/ScoreAnimation;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/model/BaseFieldDelegate.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/model/BaseFieldDelegate;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/main/java/com/dozingcatsoftware/vectorpinball/model/Color.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/model/Color;",
+     "dex_class_present": true
+    },
+    "Vector-Pinball-b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9/app/src/test/java/com/dozingcatsoftware/vectorpinball/fields/Field9DelegateTest.java": {
+     "dex_class": "Lcom/dozingcatsoftware/vectorpinball/fields/Field9DelegateTest;",
+     "dex_class_present": false
+    }
+   },
+   "classes_mapped": 55,
+   "mapping_coverage": 0.03,
+   "mapping_note": "name-based package-path match; R8/ProGuard-obfuscated classes (short names like La1;) are UNMAPPED by design \u2014 recorded, not guessed",
+   "runtime_status": "SUCCESS",
+   "max_frame_nonwhite": 2073600,
+   "view_tree_nodes": 34,
+   "method_api_edges": {},
+   "method_api_edges_note": "live_status: status of the API when the runtime ran this APK (IMPLEMENTED/STUBBED) \u2014 null when not reached at runtime"
+  },
+  {
+   "apk": "com.emmanuelmess.tictactoe_3.apk",
+   "package": "com.emmanuelmess.tictactoe",
+   "source_repo": "github.com/EmmanuelMess/TicTacToeGame",
+   "source_commit": "v1.0.0",
+   "provenance": "/home/z/my-project/upstream/corpus/com.emmanuelmess.tictactoe/PROVENANCE.json",
+   "source_files": 10,
+   "source_root": "/home/z/my-project/upstream/corpus/com.emmanuelmess.tictactoe/src",
+   "census": "/home/z/my-project/docs/foundation/dex_census/com.emmanuelmess.tictactoe_3.json",
+   "app_classes": 1257,
+   "app_methods": 14092,
+   "api_call_sites": 36515,
+   "source_to_dex": {
+    "TicTacToeGame-1.0.0/android/src/com/emmanuelmess/tictactoe/AndroidLauncher.java": {
+     "dex_class": "LTicTacToeGame-1.0.0/android/src/com/emmanuelmess/tictactoe/AndroidLauncher;",
+     "dex_class_present": false
+    },
+    "TicTacToeGame-1.0.0/core/src/com/emmanuelmess/tictactoe/TicTacToeText.kt": {
+     "dex_class": "LTicTacToeGame-1.0.0/core/src/com/emmanuelmess/tictactoe/TicTacToeText;",
+     "dex_class_present": false
+    },
+    "TicTacToeGame-1.0.0/core/src/com/emmanuelmess/tictactoe/GameData.kt": {
+     "dex_class": "LTicTacToeGame-1.0.0/core/src/com/emmanuelmess/tictactoe/GameData;",
+     "dex_class_present": false
+    },
+    "TicTacToeGame-1.0.0/core/src/com/emmanuelmess/tictactoe/XOText.kt": {
+     "dex_class": "LTicTacToeGame-1.0.0/core/src/com/emmanuelmess/tictactoe/XOText;",
+     "dex_class_present": false
+    },
+    "TicTacToeGame-1.0.0/core/src/com/emmanuelmess/tictactoe/DrawableShape.kt": {
+     "dex_class": "LTicTacToeGame-1.0.0/core/src/com/emmanuelmess/tictactoe/DrawableShape;",
+     "dex_class_present": false
+    },
+    "TicTacToeGame-1.0.0/core/src/com/emmanuelmess/tictactoe/TicTacToeGame.kt": {
+     "dex_class": "LTicTacToeGame-1.0.0/core/src/com/emmanuelmess/tictactoe/TicTacToeGame;",
+     "dex_class_present": false
+    },
+    "TicTacToeGame-1.0.0/core/src/com/emmanuelmess/tictactoe/XActor.kt": {
+     "dex_class": "LTicTacToeGame-1.0.0/core/src/com/emmanuelmess/tictactoe/XActor;",
+     "dex_class_present": false
+    },
+    "TicTacToeGame-1.0.0/core/src/com/emmanuelmess/tictactoe/OActor.kt": {
+     "dex_class": "LTicTacToeGame-1.0.0/core/src/com/emmanuelmess/tictactoe/OActor;",
+     "dex_class_present": false
+    },
+    "TicTacToeGame-1.0.0/core/src/com/emmanuelmess/tictactoe/Coreographer.kt": {
+     "dex_class": "LTicTacToeGame-1.0.0/core/src/com/emmanuelmess/tictactoe/Coreographer;",
+     "dex_class_present": false
+    },
+    "TicTacToeGame-1.0.0/core/src/com/emmanuelmess/tictactoe/TicTacToeRenderer.kt": {
+     "dex_class": "LTicTacToeGame-1.0.0/core/src/com/emmanuelmess/tictactoe/TicTacToeRenderer;",
+     "dex_class_present": false
+    }
+   },
+   "classes_mapped": 0,
+   "mapping_coverage": 0.0,
+   "mapping_note": "name-based package-path match; R8/ProGuard-obfuscated classes (short names like La1;) are UNMAPPED by design \u2014 recorded, not guessed",
+   "runtime_status": "PARTIAL SUCCESS",
+   "max_frame_nonwhite": 0,
+   "view_tree_nodes": 3,
+   "method_api_edges": {
+    "Lcom/badlogic/gdx/backends/android/APKExpansionSupport;->getAPKExpansionFiles(Landroid/content/Context; I I)[Ljava/lang/String;": {
+     "android_apis": [
+      "Landroid/content/Context;;.getPackageName",
+      "Landroid/os/Environment;;.getExternalStorageDirectory",
+      "Landroid/os/Environment;;.getExternalStorageState"
+     ],
+     "live_status": [
+      null,
+      null,
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidInput$3$1$1;->run()V": {
+     "android_apis": [
+      "Landroid/widget/EditText;;.getText"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidInput$3;->run()V": {
+     "android_apis": [
+      "Landroid/app/AlertDialog$Builder;;.<init>",
+      "Landroid/app/AlertDialog$Builder;;.setNegativeButton",
+      "Landroid/app/AlertDialog$Builder;;.setOnCancelListener",
+      "Landroid/app/AlertDialog$Builder;;.setPositiveButton",
+      "Landroid/app/AlertDialog$Builder;;.setTitle",
+      "Landroid/app/AlertDialog$Builder;;.setView",
+      "Landroid/app/AlertDialog$Builder;;.show",
+      "Landroid/content/Context;;.getString",
+      "Landroid/widget/EditText;;.<init>",
+      "Landroid/widget/EditText;;.setHint",
+      "Landroid/widget/EditText;;.setSingleLine",
+      "Landroid/widget/EditText;;.setText"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidInput$4;->run()V": {
+     "android_apis": [
+      "Landroid/content/Context;;.getSystemService",
+      "Landroid/view/View;;.getWindowToken",
+      "Landroid/view/View;;.setFocusable",
+      "Landroid/view/View;;.setFocusableInTouchMode",
+      "Landroid/view/inputmethod/InputMethodManager;;.hideSoftInputFromWindow",
+      "Landroid/view/inputmethod/InputMethodManager;;.showSoftInput"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidInput$SensorListener;->onSensorChanged(Landroid/hardware/SensorEvent;)V": {
+     "android_apis": [
+      "Landroid/hardware/Sensor;;.getType"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidLiveWallpaperService$AndroidWallpaperEngine;-><init>(Lcom/badlogic/gdx/backends/android/AndroidLiveWallpaperService;)V": {
+     "android_apis": [
+      "Landroid/service/wallpaper/WallpaperService$Engine;;.<init>",
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidLiveWallpaperService$AndroidWallpaperEngine;->notifySurfaceChanged(I I I Z)V": {
+     "android_apis": [
+      "Landroid/util/Log;;.d",
+      "Landroid/view/SurfaceHolder$Callback;;.surfaceChanged"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidLiveWallpaperService$AndroidWallpaperEngine;->notifyVisibilityChanged(Z)V": {
+     "android_apis": [
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidLiveWallpaperService$AndroidWallpaperEngine;->onCommand(Ljava/lang/String; I I I Landroid/os/Bundle; Z)Landroid/os/Bundle;": {
+     "android_apis": [
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidLiveWallpaperService$AndroidWallpaperEngine;->onCreate(Landroid/view/SurfaceHolder;)V": {
+     "android_apis": [
+      "Landroid/service/wallpaper/WallpaperService$Engine;;.onCreate",
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidLiveWallpaperService$AndroidWallpaperEngine;->onDestroy()V": {
+     "android_apis": [
+      "Landroid/service/wallpaper/WallpaperService$Engine;;.onDestroy"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidLiveWallpaperService$AndroidWallpaperEngine;->onPause()V": {
+     "android_apis": [
+      "Landroid/util/Log;;.d",
+      "Landroid/util/Log;;.e",
+      "Landroid/util/Log;;.i"
+     ],
+     "live_status": [
+      null,
+      null,
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidLiveWallpaperService$AndroidWallpaperEngine;->onResume()V": {
+     "android_apis": [
+      "Landroid/util/Log;;.d",
+      "Landroid/util/Log;;.i",
+      "Landroid/view/SurfaceHolder$Callback;;.surfaceCreated",
+      "Landroid/view/SurfaceHolder$Callback;;.surfaceDestroyed"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidLiveWallpaperService$AndroidWallpaperEngine;->onSurfaceChanged(Landroid/view/SurfaceHolder; I I I)V": {
+     "android_apis": [
+      "Landroid/service/wallpaper/WallpaperService$Engine;;.onSurfaceChanged",
+      "Landroid/util/Log;;.d",
+      "Landroid/util/Log;;.i",
+      "Landroid/view/Surface;;.isValid",
+      "Landroid/view/SurfaceHolder;;.getSurface"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidLiveWallpaperService$AndroidWallpaperEngine;->onSurfaceCreated(Landroid/view/SurfaceHolder;)V": {
+     "android_apis": [
+      "Landroid/service/wallpaper/WallpaperService$Engine;;.onSurfaceCreated",
+      "Landroid/util/Log;;.d",
+      "Landroid/util/Log;;.i",
+      "Landroid/view/SurfaceHolder$Callback;;.surfaceCreated",
+      "Landroid/view/SurfaceHolder$Callback;;.surfaceDestroyed",
+      "Landroid/view/SurfaceHolder;;.removeCallback"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidLiveWallpaperService$AndroidWallpaperEngine;->onSurfaceDestroyed(Landroid/view/SurfaceHolder;)V": {
+     "android_apis": [
+      "Landroid/service/wallpaper/WallpaperService$Engine;;.onSurfaceDestroyed",
+      "Landroid/util/Log;;.d",
+      "Landroid/util/Log;;.i",
+      "Landroid/view/SurfaceHolder$Callback;;.surfaceDestroyed"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidLiveWallpaperService$AndroidWallpaperEngine;->onVisibilityChanged(Z)V": {
+     "android_apis": [
+      "Landroid/service/wallpaper/WallpaperService$Engine;;.onVisibilityChanged",
+      "Landroid/util/Log;;.d",
+      "Landroid/view/Surface;;.isValid",
+      "Landroid/view/SurfaceHolder;;.getSurface"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidLiveWallpaperService;-><init>()V": {
+     "android_apis": [
+      "Landroid/service/wallpaper/WallpaperService;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidLiveWallpaperService;->finalize()V": {
+     "android_apis": [
+      "Landroid/util/Log;;.i"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidLiveWallpaperService;->getSurfaceHolder()Landroid/view/SurfaceHolder;": {
+     "android_apis": [
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidLiveWallpaperService;->initialize(Lcom/badlogic/gdx/ApplicationListener; Lcom/badlogic/gdx/backends/android/AndroidApplicationConfiguration;)V": {
+     "android_apis": [
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidLiveWallpaperService;->onCreate()V": {
+     "android_apis": [
+      "Landroid/service/wallpaper/WallpaperService;;.onCreate",
+      "Landroid/util/Log;;.d",
+      "Landroid/util/Log;;.i"
+     ],
+     "live_status": [
+      null,
+      null,
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidLiveWallpaperService;->onCreateApplication()V": {
+     "android_apis": [
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidLiveWallpaperService;->onCreateEngine()Landroid/service/wallpaper/WallpaperService$Engine;": {
+     "android_apis": [
+      "Landroid/util/Log;;.d",
+      "Landroid/util/Log;;.i"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidLiveWallpaperService;->onDeepPauseApplication()V": {
+     "android_apis": [
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidLiveWallpaperService;->onDestroy()V": {
+     "android_apis": [
+      "Landroid/service/wallpaper/WallpaperService;;.onDestroy",
+      "Landroid/util/Log;;.d",
+      "Landroid/util/Log;;.i"
+     ],
+     "live_status": [
+      null,
+      null,
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidMouseHandler;->onGenericMotion(Landroid/view/MotionEvent; Lcom/badlogic/gdx/backends/android/AndroidInput;)Z": {
+     "android_apis": [
+      "Landroid/view/MotionEvent;;.getAction",
+      "Landroid/view/MotionEvent;;.getAxisValue",
+      "Landroid/view/MotionEvent;;.getSource",
+      "Landroid/view/MotionEvent;;.getX",
+      "Landroid/view/MotionEvent;;.getY"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidNet$1;->run()V": {
+     "android_apis": [
+      "Landroid/content/Intent;;.<init>",
+      "Landroid/content/Intent;;.addFlags"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard$1;-><init>(Landroid/content/Context;)V": {
+     "android_apis": [
+      "Landroid/widget/TextView;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard$1;->getDefaultMovementMethod()Landroid/text/method/MovementMethod;": {
+     "android_apis": [
+      "Landroid/text/method/ArrowKeyMovementMethod;;.getInstance"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard$1;->onKeyDown(I Landroid/view/KeyEvent;)Z": {
+     "android_apis": [
+      "Landroid/util/Log;;.d",
+      "Landroid/view/KeyEvent;;.getKeyCode",
+      "Landroid/widget/TextView;;.onKeyDown"
+     ],
+     "live_status": [
+      null,
+      null,
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard$1;->onKeyUp(I Landroid/view/KeyEvent;)Z": {
+     "android_apis": [
+      "Landroid/util/Log;;.d",
+      "Landroid/view/KeyEvent;;.getKeyCode",
+      "Landroid/widget/TextView;;.onKeyUp"
+     ],
+     "live_status": [
+      null,
+      null,
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard$2$1;->run()V": {
+     "android_apis": [
+      "Landroid/app/Dialog;;.getWindow",
+      "Landroid/content/Context;;.getSystemService",
+      "Landroid/view/Window;;.setSoftInputMode",
+      "Landroid/view/inputmethod/InputMethodManager;;.showSoftInput"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard$2$2;->onPreDraw()Z": {
+     "android_apis": [
+      "Landroid/app/Dialog;;.dismiss",
+      "Landroid/view/View;;.getLocationOnScreen"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard$2;->run()V": {
+     "android_apis": [
+      "Landroid/app/Dialog;;.getWindow",
+      "Landroid/app/Dialog;;.show",
+      "Landroid/os/Handler;;.post",
+      "Landroid/view/View;;.getViewTreeObserver",
+      "Landroid/view/ViewTreeObserver;;.addOnPreDrawListener",
+      "Landroid/view/Window;;.findViewById"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard$PassThroughEditable;->append(C)Landroid/text/Editable;": {
+     "android_apis": [
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard$PassThroughEditable;->append(Ljava/lang/CharSequence;)Landroid/text/Editable;": {
+     "android_apis": [
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard$PassThroughEditable;->append(Ljava/lang/CharSequence; I I)Landroid/text/Editable;": {
+     "android_apis": [
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard$PassThroughEditable;->charAt(I)C": {
+     "android_apis": [
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard$PassThroughEditable;->clear()V": {
+     "android_apis": [
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard$PassThroughEditable;->clearSpans()V": {
+     "android_apis": [
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard$PassThroughEditable;->delete(I I)Landroid/text/Editable;": {
+     "android_apis": [
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard$PassThroughEditable;->getChars(I I [C I)V": {
+     "android_apis": [
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard$PassThroughEditable;->getFilters()[Landroid/text/InputFilter;": {
+     "android_apis": [
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard$PassThroughEditable;->getSpanEnd(Ljava/lang/Object;)I": {
+     "android_apis": [
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard$PassThroughEditable;->getSpanFlags(Ljava/lang/Object;)I": {
+     "android_apis": [
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard$PassThroughEditable;->getSpanStart(Ljava/lang/Object;)I": {
+     "android_apis": [
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard$PassThroughEditable;->getSpans(I I Ljava/lang/Class;)[Ljava/lang/Object;": {
+     "android_apis": [
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard$PassThroughEditable;->insert(I Ljava/lang/CharSequence;)Landroid/text/Editable;": {
+     "android_apis": [
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard$PassThroughEditable;->insert(I Ljava/lang/CharSequence; I I)Landroid/text/Editable;": {
+     "android_apis": [
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard$PassThroughEditable;->length()I": {
+     "android_apis": [
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard$PassThroughEditable;->nextSpanTransition(I I Ljava/lang/Class;)I": {
+     "android_apis": [
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard$PassThroughEditable;->removeSpan(Ljava/lang/Object;)V": {
+     "android_apis": [
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard$PassThroughEditable;->replace(I I Ljava/lang/CharSequence;)Landroid/text/Editable;": {
+     "android_apis": [
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard$PassThroughEditable;->replace(I I Ljava/lang/CharSequence; I I)Landroid/text/Editable;": {
+     "android_apis": [
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard$PassThroughEditable;->setFilters([Landroid/text/InputFilter;)V": {
+     "android_apis": [
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard$PassThroughEditable;->setSpan(Ljava/lang/Object; I I I)V": {
+     "android_apis": [
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard$PassThroughEditable;->subSequence(I I)Ljava/lang/CharSequence;": {
+     "android_apis": [
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard;->createDialog()Landroid/app/Dialog;": {
+     "android_apis": [
+      "Landroid/app/Dialog;;.<init>",
+      "Landroid/app/Dialog;;.setContentView",
+      "Landroid/view/ViewGroup$LayoutParams;;.<init>",
+      "Landroid/widget/FrameLayout$LayoutParams;;.<init>",
+      "Landroid/widget/FrameLayout;;.<init>",
+      "Landroid/widget/FrameLayout;;.addView",
+      "Landroid/widget/FrameLayout;;.setLayoutParams",
+      "Landroid/widget/FrameLayout;;.setOnTouchListener",
+      "Landroid/widget/TextView;;.getImeOptions",
+      "Landroid/widget/TextView;;.setFocusable",
+      "Landroid/widget/TextView;;.setFocusableInTouchMode",
+      "Landroid/widget/TextView;;.setImeOptions",
+      "Landroid/widget/TextView;;.setLayoutParams",
+      "Landroid/widget/TextView;;.setOnKeyListener"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard;->setVisible(Z)V": {
+     "android_apis": [
+      "Landroid/app/Dialog;;.dismiss",
+      "Landroid/os/Handler;;.post"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidVisibilityListener$1;->onSystemUiVisibilityChange(I)V": {
+     "android_apis": [
+      "Landroid/os/Handler;;.post"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/AndroidVisibilityListener;->createListener(Lcom/badlogic/gdx/backends/android/AndroidApplicationBase;)V": {
+     "android_apis": [
+      "Landroid/view/View;;.setOnSystemUiVisibilityChangeListener",
+      "Landroid/view/Window;;.getDecorView"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/ZipResourceFile$ZipEntryRO;->getAssetFileDescriptor()Landroid/content/res/AssetFileDescriptor;": {
+     "android_apis": [
+      "Landroid/os/ParcelFileDescriptor;;.open"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/ZipResourceFile$ZipEntryRO;->setOffsetFromFile(Ljava/io/RandomAccessFile; Ljava/nio/ByteBuffer;)V": {
+     "android_apis": [
+      "Landroid/util/Log;;.w"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/ZipResourceFile;->addPatchFile(Ljava/lang/String;)V": {
+     "android_apis": [
+      "Landroid/util/Log;;.d",
+      "Landroid/util/Log;;.i",
+      "Landroid/util/Log;;.v",
+      "Landroid/util/Log;;.w"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/ZipResourceFile;->getInputStream(Ljava/lang/String;)Ljava/io/InputStream;": {
+     "android_apis": [
+      "Landroid/content/res/AssetFileDescriptor;;.createInputStream"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20$1;-><init>(Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; Landroid/view/View; Z)V": {
+     "android_apis": [
+      "Landroid/view/inputmethod/BaseInputConnection;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20$1;->sendDownUpKeyEventForBackwardCompatibility(I)V": {
+     "android_apis": [
+      "Landroid/os/SystemClock;;.uptimeMillis",
+      "Landroid/view/inputmethod/BaseInputConnection;;.sendKeyEvent"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20$1;->deleteSurroundingText(I I)Z": {
+     "android_apis": [
+      "Landroid/view/inputmethod/BaseInputConnection;;.deleteSurroundingText"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20$ConfigChooser;->printConfig(Ljavax/microedition/khronos/egl/EGL10; Ljavax/microedition/khronos/egl/EGLDisplay; Ljavax/microedition/khronos/egl/EGLConfig;)V": {
+     "android_apis": [
+      "Landroid/util/Log;;.w"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20$ConfigChooser;->printConfigs(Ljavax/microedition/khronos/egl/EGL10; Ljavax/microedition/khronos/egl/EGLDisplay; [Ljavax/microedition/khronos/egl/EGLConfig;)V": {
+     "android_apis": [
+      "Landroid/util/Log;;.w"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20$ContextFactory;->createContext(Ljavax/microedition/khronos/egl/EGL10; Ljavax/microedition/khronos/egl/EGLDisplay; Ljavax/microedition/khronos/egl/EGLConfig;)Ljavax/microedition/khronos/egl/EGLContext;": {
+     "android_apis": [
+      "Landroid/util/Log;;.w"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20;-><init>(Landroid/content/Context; Lcom/badlogic/gdx/backends/android/surfaceview/ResolutionStrategy; I)V": {
+     "android_apis": [
+      "Landroid/opengl/GLSurfaceView;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20;-><init>(Landroid/content/Context; Z I I Lcom/badlogic/gdx/backends/android/surfaceview/ResolutionStrategy;)V": {
+     "android_apis": [
+      "Landroid/opengl/GLSurfaceView;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20;->checkEglError(Ljava/lang/String; Ljavax/microedition/khronos/egl/EGL10;)Z": {
+     "android_apis": [
+      "Landroid/util/Log;;.e"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20;->init(Z I I)V": {
+     "android_apis": [
+      "Landroid/view/SurfaceHolder;;.setFormat"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20API18$1;-><init>(Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20API18; Landroid/view/View; Z)V": {
+     "android_apis": [
+      "Landroid/view/inputmethod/BaseInputConnection;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20API18$1;->sendDownUpKeyEventForBackwardCompatibility(I)V": {
+     "android_apis": [
+      "Landroid/os/SystemClock;;.uptimeMillis",
+      "Landroid/view/inputmethod/BaseInputConnection;;.sendKeyEvent"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20API18$1;->deleteSurroundingText(I I)Z": {
+     "android_apis": [
+      "Landroid/view/inputmethod/BaseInputConnection;;.deleteSurroundingText"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20API18$ConfigChooser;->printConfig(Ljavax/microedition/khronos/egl/EGL10; Ljavax/microedition/khronos/egl/EGLDisplay; Ljavax/microedition/khronos/egl/EGLConfig;)V": {
+     "android_apis": [
+      "Landroid/util/Log;;.w"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20API18$ConfigChooser;->printConfigs(Ljavax/microedition/khronos/egl/EGL10; Ljavax/microedition/khronos/egl/EGLDisplay; [Ljavax/microedition/khronos/egl/EGLConfig;)V": {
+     "android_apis": [
+      "Landroid/util/Log;;.w"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceViewAPI18$EglHelper;->logEglErrorAsWarning(Ljava/lang/String; Ljava/lang/String; I)V": {
+     "android_apis": [
+      "Landroid/util/Log;;.w"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceViewAPI18$EglHelper;->createGL()Ljavax/microedition/khronos/opengles/GL;": {
+     "android_apis": [
+      "Landroid/opengl/GLDebugHelper;;.wrap"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceViewAPI18$EglHelper;->createSurface()Z": {
+     "android_apis": [
+      "Landroid/util/Log;;.e"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceViewAPI18$EglHelper;->start()V": {
+     "android_apis": [
+      "Landroid/opengl/GLSurfaceView$EGLConfigChooser;;.chooseConfig"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceViewAPI18$GLThread;->guardedRun()V": {
+     "android_apis": [
+      "Landroid/opengl/GLSurfaceView$Renderer;;.onDrawFrame",
+      "Landroid/opengl/GLSurfaceView$Renderer;;.onSurfaceChanged",
+      "Landroid/opengl/GLSurfaceView$Renderer;;.onSurfaceCreated"
+     ],
+     "live_status": [
+      null,
+      null,
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceViewAPI18$LogWriter;->flushBuilder()V": {
+     "android_apis": [
+      "Landroid/util/Log;;.v"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceViewAPI18;-><init>(Landroid/content/Context;)V": {
+     "android_apis": [
+      "Landroid/view/SurfaceView;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceViewAPI18;-><init>(Landroid/content/Context; Landroid/util/AttributeSet;)V": {
+     "android_apis": [
+      "Landroid/view/SurfaceView;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceViewAPI18;->init()V": {
+     "android_apis": [
+      "Landroid/view/SurfaceHolder;;.addCallback",
+      "Landroid/view/SurfaceHolder;;.setFormat"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceViewAPI18;->onAttachedToWindow()V": {
+     "android_apis": [
+      "Landroid/view/SurfaceView;;.onAttachedToWindow"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceViewAPI18;->onDetachedFromWindow()V": {
+     "android_apis": [
+      "Landroid/view/SurfaceView;;.onDetachedFromWindow"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/surfaceview/GdxEglConfigChooser;->printConfig(Ljavax/microedition/khronos/egl/EGL10; Ljavax/microedition/khronos/egl/EGLDisplay; Ljavax/microedition/khronos/egl/EGLConfig;)V": {
+     "android_apis": [
+      "Landroid/util/Log;;.w"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/badlogic/gdx/backends/android/surfaceview/GdxEglConfigChooser;->printConfigs(Ljavax/microedition/khronos/egl/EGL10; Ljavax/microedition/khronos/egl/EGLDisplay; [Ljavax/microedition/khronos/egl/EGLConfig;)V": {
+     "android_apis": [
+      "Landroid/util/Log;;.w"
+     ],
+     "live_status": [
+      null
+     ]
+    }
+   },
+   "method_api_edges_note": "live_status: status of the API when the runtime ran this APK (IMPLEMENTED/STUBBED) \u2014 null when not reached at runtime"
+  },
+  {
+   "apk": "com.github.muellerma.stopwatch_6.apk",
+   "package": "com.github.muellerma.stopwatch",
+   "source_repo": "mueller-ma/Stopwatch",
+   "source_commit": "13d2fab247e431104e40126e1ecd5099e6ce49fa",
+   "provenance": "/home/z/my-project/upstream/corpus/com.github.muellerma.stopwatch/PROVENANCE.json",
+   "source_files": 3,
+   "source_root": "/home/z/my-project/upstream/corpus/com.github.muellerma.stopwatch/src",
+   "census": "/home/z/my-project/docs/foundation/dex_census/com.github.muellerma.stopwatch_6.json",
+   "app_classes": 18,
+   "app_methods": 48,
+   "api_call_sites": 179,
+   "source_to_dex": {
+    "Stopwatch-13d2fab247e431104e40126e1ecd5099e6ce49fa/app/src/main/java/com/github/muellerma/stopwatch/StopwatchTile.kt": {
+     "dex_class": "Lcom/github/muellerma/stopwatch/StopwatchTile;",
+     "dex_class_present": true
+    },
+    "Stopwatch-13d2fab247e431104e40126e1ecd5099e6ce49fa/app/src/main/java/com/github/muellerma/stopwatch/StopwatchService.kt": {
+     "dex_class": "Lcom/github/muellerma/stopwatch/StopwatchService;",
+     "dex_class_present": true
+    },
+    "Stopwatch-13d2fab247e431104e40126e1ecd5099e6ce49fa/app/src/main/java/com/github/muellerma/stopwatch/StopwatchApp.kt": {
+     "dex_class": "Lcom/github/muellerma/stopwatch/StopwatchApp;",
+     "dex_class_present": true
+    }
+   },
+   "classes_mapped": 3,
+   "mapping_coverage": 0.176,
+   "mapping_note": "name-based package-path match; R8/ProGuard-obfuscated classes (short names like La1;) are UNMAPPED by design \u2014 recorded, not guessed",
+   "runtime_status": "PARTIAL SUCCESS",
+   "max_frame_nonwhite": 23472,
+   "view_tree_nodes": 1,
+   "method_api_edges": {
+    "Lcom/github/muellerma/stopwatch/StopwatchApp;-><init>()V": {
+     "android_apis": [
+      "Landroid/app/Application;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/github/muellerma/stopwatch/StopwatchService$$ExternalSyntheticApiModelOutline0;->m(Landroid/app/NotificationChannel; Z)V": {
+     "android_apis": [
+      "Landroid/app/NotificationChannel;;.setShowBadge"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/github/muellerma/stopwatch/StopwatchService$$ExternalSyntheticApiModelOutline1;->m(Landroid/app/NotificationChannel; Z)V": {
+     "android_apis": [
+      "Landroid/app/NotificationChannel;;.enableVibration"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/github/muellerma/stopwatch/StopwatchService$$ExternalSyntheticApiModelOutline2;->m(Landroid/app/NotificationChannel; Z)V": {
+     "android_apis": [
+      "Landroid/app/NotificationChannel;;.enableLights"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/github/muellerma/stopwatch/StopwatchService$$ExternalSyntheticApiModelOutline3;->m(Landroid/app/NotificationChannel; Landroid/net/Uri; Landroid/media/AudioAttributes;)V": {
+     "android_apis": [
+      "Landroid/app/NotificationChannel;;.setSound"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/github/muellerma/stopwatch/StopwatchService$$ExternalSyntheticApiModelOutline4;->m(Landroid/app/NotificationManager; Landroid/app/NotificationChannel;)V": {
+     "android_apis": [
+      "Landroid/app/NotificationManager;;.createNotificationChannel"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/github/muellerma/stopwatch/StopwatchService$$ExternalSyntheticApiModelOutline5;->m(Ljava/lang/String; Ljava/lang/CharSequence; I)Landroid/app/NotificationChannel;": {
+     "android_apis": [
+      "Landroid/app/NotificationChannel;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/github/muellerma/stopwatch/StopwatchService$Companion;->changeState(Landroid/content/Context; Z)V": {
+     "android_apis": [
+      "Landroid/content/Context;;.getPackageName",
+      "Landroid/content/Context;;.stopService",
+      "Landroid/content/Intent;;.<init>",
+      "Landroid/content/Intent;;.setPackage",
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Lcom/github/muellerma/stopwatch/StopwatchServiceKt;->safeRelease(Landroid/os/PowerManager$WakeLock;)V": {
+     "android_apis": [
+      "Landroid/os/PowerManager$WakeLock;;.release",
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Lcom/github/muellerma/stopwatch/StopwatchTile$Companion;->requestTileStateUpdate(Landroid/content/Context;)V": {
+     "android_apis": [
+      "Landroid/content/ComponentName;;.<init>",
+      "Landroid/service/quicksettings/TileService;;.requestListeningState",
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null,
+      null,
+      null
+     ]
+    },
+    "Lcom/github/muellerma/stopwatch/StopwatchTile;-><init>()V": {
+     "android_apis": [
+      "Landroid/service/quicksettings/TileService;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/github/muellerma/stopwatch/StopwatchTile;->setTileState()V": {
+     "android_apis": [
+      "Landroid/app/Service;;.getApplication",
+      "Landroid/content/Context;;.getString",
+      "Landroid/service/quicksettings/Tile;;.setLabel",
+      "Landroid/service/quicksettings/Tile;;.setState",
+      "Landroid/service/quicksettings/Tile;;.updateTile",
+      "Landroid/service/quicksettings/TileService;;.getQsTile",
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Lcom/github/muellerma/stopwatch/StopwatchTile;->onClick()V": {
+     "android_apis": [
+      "Landroid/app/Service;;.getApplication",
+      "Landroid/content/Context;;.getApplicationContext",
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null,
+      null,
+      null
+     ]
+    },
+    "Lcom/github/muellerma/stopwatch/StopwatchTile;->onStartListening()V": {
+     "android_apis": [
+      "Landroid/service/quicksettings/TileService;;.onStartListening",
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Lcom/github/muellerma/stopwatch/StopwatchTile;->onTileAdded()V": {
+     "android_apis": [
+      "Landroid/service/quicksettings/TileService;;.onTileAdded",
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Lcom/github/muellerma/stopwatch/StopwatchService;-><init>()V": {
+     "android_apis": [
+      "Landroid/app/Service;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lcom/github/muellerma/stopwatch/StopwatchService;->onCreate()V": {
+     "android_apis": [
+      "Landroid/app/Service;;.onCreate",
+      "Landroid/app/Service;;.startForeground",
+      "Landroid/content/Context;;.getString",
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Lcom/github/muellerma/stopwatch/StopwatchService;->onDestroy()V": {
+     "android_apis": [
+      "Landroid/app/Service;;.getApplication",
+      "Landroid/app/Service;;.onDestroy",
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null,
+      null,
+      null
+     ]
+    },
+    "Lcom/github/muellerma/stopwatch/StopwatchService;->onStartCommand(Landroid/content/Intent; I I)I": {
+     "android_apis": [
+      "Landroid/os/PowerManager$WakeLock;;.acquire",
+      "Landroid/os/PowerManager;;.newWakeLock",
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null,
+      null,
+      null
+     ]
+    },
+    "Lcom/github/muellerma/stopwatch/StopwatchService$onStartCommand$1;->invokeSuspend(Ljava/lang/Object;)Ljava/lang/Object;": {
+     "android_apis": [
+      "Landroid/app/Service;;.getApplication",
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    }
+   },
+   "method_api_edges_note": "live_status: status of the API when the runtime ran this APK (IMPLEMENTED/STUBBED) \u2014 null when not reached at runtime"
+  },
+  {
+   "apk": "de.duenndns.gmdice_8.apk",
+   "package": "de.duenndns.gmdice",
+   "source_repo": "github.com/ge0rg/gamemasterdice",
+   "source_commit": "1.0",
+   "provenance": "/home/z/my-project/upstream/corpus/de.duenndns.gmdice/PROVENANCE.json",
+   "source_files": 8,
+   "source_root": "/home/z/my-project/upstream/corpus/de.duenndns.gmdice/src",
+   "census": "/home/z/my-project/docs/foundation/dex_census/de.duenndns.gmdice_8.json",
+   "app_classes": 23,
+   "app_methods": 104,
+   "api_call_sites": 465,
+   "source_to_dex": {
+    "gamemasterdice-1.0/src/de/duenndns/gmdice/StandardDiceSet.java": {
+     "dex_class": "Lgamemasterdice-1.0/src/de/duenndns/gmdice/StandardDiceSet;",
+     "dex_class_present": false
+    },
+    "gamemasterdice-1.0/src/de/duenndns/gmdice/Coin.java": {
+     "dex_class": "Lgamemasterdice-1.0/src/de/duenndns/gmdice/Coin;",
+     "dex_class_present": false
+    },
+    "gamemasterdice-1.0/src/de/duenndns/gmdice/DiceCache.java": {
+     "dex_class": "Lgamemasterdice-1.0/src/de/duenndns/gmdice/DiceCache;",
+     "dex_class_present": false
+    },
+    "gamemasterdice-1.0/src/de/duenndns/gmdice/DiceSet.java": {
+     "dex_class": "Lgamemasterdice-1.0/src/de/duenndns/gmdice/DiceSet;",
+     "dex_class_present": false
+    },
+    "gamemasterdice-1.0/src/de/duenndns/gmdice/FUDGEDiceSet.java": {
+     "dex_class": "Lgamemasterdice-1.0/src/de/duenndns/gmdice/FUDGEDiceSet;",
+     "dex_class_present": false
+    },
+    "gamemasterdice-1.0/src/de/duenndns/gmdice/SignedNumberPicker.java": {
+     "dex_class": "Lgamemasterdice-1.0/src/de/duenndns/gmdice/SignedNumberPicker;",
+     "dex_class_present": false
+    },
+    "gamemasterdice-1.0/src/de/duenndns/gmdice/DSADiceSet.java": {
+     "dex_class": "Lgamemasterdice-1.0/src/de/duenndns/gmdice/DSADiceSet;",
+     "dex_class_present": false
+    },
+    "gamemasterdice-1.0/src/de/duenndns/gmdice/GameMasterDice.java": {
+     "dex_class": "Lgamemasterdice-1.0/src/de/duenndns/gmdice/GameMasterDice;",
+     "dex_class_present": false
+    }
+   },
+   "classes_mapped": 0,
+   "mapping_coverage": 0.0,
+   "mapping_note": "name-based package-path match; R8/ProGuard-obfuscated classes (short names like La1;) are UNMAPPED by design \u2014 recorded, not guessed",
+   "runtime_status": "SUCCESS",
+   "max_frame_nonwhite": 182628,
+   "view_tree_nodes": 11,
+   "method_api_edges": {
+    "Lde/duenndns/gmdice/Coin;->roll(Landroid/content/Context; Ljava/util/Random;)Ljava/lang/String;": {
+     "android_apis": [
+      "Landroid/content/Context;;.getString"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/DiceCache;->populate(Landroid/widget/ArrayAdapter; Ljava/util/List;)V": {
+     "android_apis": [
+      "Landroid/widget/ArrayAdapter;;.add"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/GameMasterDice$1;->onClick(Landroid/content/DialogInterface; I)V": {
+     "android_apis": [
+      "Landroid/content/Intent;;.<init>",
+      "Landroid/net/Uri;;.parse"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/GameMasterDice$4;->onDiceChange(Lde/duenndns/gmdice/DiceSet;)V": {
+     "android_apis": [
+      "Landroid/widget/Button;;.setText"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/GameMasterDice$6;->onClick(Landroid/content/DialogInterface; I)V": {
+     "android_apis": [
+      "Landroid/util/Log;;.d",
+      "Landroid/widget/Spinner;;.getSelectedItem"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/GameMasterDice$7;->onClick(Landroid/content/DialogInterface; I)V": {
+     "android_apis": [
+      "Landroid/util/Log;;.d",
+      "Landroid/widget/ArrayAdapter;;.getCount",
+      "Landroid/widget/ArrayAdapter;;.getItem"
+     ],
+     "live_status": [
+      null,
+      null,
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/GameMasterDice;-><init>()V": {
+     "android_apis": [
+      "Landroid/app/ListActivity;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/GameMasterDice;->aboutDialog()V": {
+     "android_apis": [
+      "Landroid/app/AlertDialog$Builder;;.<init>",
+      "Landroid/app/AlertDialog$Builder;;.create",
+      "Landroid/app/AlertDialog$Builder;;.setIcon",
+      "Landroid/app/AlertDialog$Builder;;.setMessage",
+      "Landroid/app/AlertDialog$Builder;;.setNeutralButton",
+      "Landroid/app/AlertDialog$Builder;;.setPositiveButton",
+      "Landroid/app/AlertDialog$Builder;;.setTitle",
+      "Landroid/app/AlertDialog;;.show",
+      "Landroid/content/pm/PackageManager;;.getPackageInfo"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/GameMasterDice;->configKeepScreenOn()V": {
+     "android_apis": [
+      "Landroid/content/SharedPreferences;;.getBoolean",
+      "Landroid/view/Window;;.addFlags",
+      "Landroid/view/Window;;.clearFlags"
+     ],
+     "live_status": [
+      null,
+      null,
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/GameMasterDice;->configureDice(Lde/duenndns/gmdice/DiceSet; Lde/duenndns/gmdice/OnDiceChange;)V": {
+     "android_apis": [
+      "Landroid/app/AlertDialog$Builder;;.<init>",
+      "Landroid/app/AlertDialog$Builder;;.create",
+      "Landroid/app/AlertDialog$Builder;;.setNegativeButton",
+      "Landroid/app/AlertDialog$Builder;;.setNeutralButton",
+      "Landroid/app/AlertDialog$Builder;;.setPositiveButton",
+      "Landroid/app/AlertDialog$Builder;;.setTitle",
+      "Landroid/app/AlertDialog$Builder;;.setView",
+      "Landroid/app/AlertDialog;;.show",
+      "Landroid/view/LayoutInflater;;.inflate"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/GameMasterDice;->loadDicePrefs()V": {
+     "android_apis": [
+      "Landroid/content/SharedPreferences;;.getString",
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/GameMasterDice;->onClick(Landroid/view/View;)V": {
+     "android_apis": [
+      "Landroid/widget/Button;;.getText"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/GameMasterDice;->onCreate(Landroid/os/Bundle;)V": {
+     "android_apis": [
+      "Landroid/app/ListActivity;;.onCreate",
+      "Landroid/content/res/Resources;;.getColor",
+      "Landroid/graphics/drawable/Drawable;;.setColorFilter",
+      "Landroid/os/Bundle;;.getParcelable",
+      "Landroid/preference/PreferenceManager;;.getDefaultSharedPreferences",
+      "Landroid/widget/Button;;.getBackground",
+      "Landroid/widget/Button;;.setOnClickListener",
+      "Landroid/widget/Button;;.setOnLongClickListener",
+      "Landroid/widget/Button;;.setTextColor",
+      "Landroid/widget/Button;;.setTransformationMethod",
+      "Landroid/widget/ListView;;.onRestoreInstanceState"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/GameMasterDice;->onCreateOptionsMenu(Landroid/view/Menu;)Z": {
+     "android_apis": [
+      "Landroid/view/MenuInflater;;.inflate"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/GameMasterDice;->onLongClick(Landroid/view/View;)Z": {
+     "android_apis": [
+      "Landroid/util/Log;;.d",
+      "Landroid/widget/Button;;.getText"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/GameMasterDice;->onOptionsItemSelected(Landroid/view/MenuItem;)Z": {
+     "android_apis": [
+      "Landroid/view/MenuItem;;.getItemId",
+      "Landroid/widget/TextView;;.setText"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/GameMasterDice;->onPause()V": {
+     "android_apis": [
+      "Landroid/app/ListActivity;;.onPause"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/GameMasterDice;->onPrepareOptionsMenu(Landroid/view/Menu;)Z": {
+     "android_apis": [
+      "Landroid/content/SharedPreferences;;.getBoolean",
+      "Landroid/view/Menu;;.findItem",
+      "Landroid/view/MenuItem;;.setIcon"
+     ],
+     "live_status": [
+      null,
+      null,
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/GameMasterDice;->onResume()V": {
+     "android_apis": [
+      "Landroid/app/ListActivity;;.onResume",
+      "Landroid/widget/Button;;.setText"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/GameMasterDice;->onSaveInstanceState(Landroid/os/Bundle;)V": {
+     "android_apis": [
+      "Landroid/app/ListActivity;;.onSaveInstanceState",
+      "Landroid/os/Bundle;;.putParcelable",
+      "Landroid/widget/ListView;;.onSaveInstanceState"
+     ],
+     "live_status": [
+      null,
+      null,
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/GameMasterDice;->roll(Lde/duenndns/gmdice/DiceSet; I)V": {
+     "android_apis": [
+      "Landroid/util/Log;;.d",
+      "Landroid/widget/TextView;;.setText"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/GameMasterDice;->selectDice(Lde/duenndns/gmdice/DiceSet; Z Lde/duenndns/gmdice/OnDiceChange;)V": {
+     "android_apis": [
+      "Landroid/app/AlertDialog$Builder;;.<init>",
+      "Landroid/app/AlertDialog$Builder;;.create",
+      "Landroid/app/AlertDialog$Builder;;.setAdapter",
+      "Landroid/app/AlertDialog$Builder;;.setNegativeButton",
+      "Landroid/app/AlertDialog$Builder;;.setTitle",
+      "Landroid/app/AlertDialog;;.show",
+      "Landroid/widget/ArrayAdapter;;.<init>",
+      "Landroid/widget/ArrayAdapter;;.add"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/GameMasterDice;->setupNumPicker(Landroid/view/View; I I I I)Lde/duenndns/gmdice/SignedNumberPicker;": {
+     "android_apis": [
+      "Landroid/util/Log;;.d",
+      "Landroid/view/View;;.findViewById"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/GameMasterDice;->setupSpinner(Landroid/view/View; I [Ljava/lang/String; Ljava/lang/String;)Landroid/widget/Spinner;": {
+     "android_apis": [
+      "Landroid/view/View;;.findViewById",
+      "Landroid/widget/ArrayAdapter;;.<init>",
+      "Landroid/widget/ArrayAdapter;;.setDropDownViewResource",
+      "Landroid/widget/Spinner;;.setAdapter",
+      "Landroid/widget/Spinner;;.setSelection"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/GameMasterDice;->storeDicePrefs()V": {
+     "android_apis": [
+      "Landroid/content/SharedPreferences$Editor;;.commit",
+      "Landroid/content/SharedPreferences$Editor;;.putString",
+      "Landroid/content/SharedPreferences;;.edit"
+     ],
+     "live_status": [
+      null,
+      null,
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/GameMasterDice;->toggleKeepScreenOn()V": {
+     "android_apis": [
+      "Landroid/content/SharedPreferences$Editor;;.commit",
+      "Landroid/content/SharedPreferences$Editor;;.putBoolean",
+      "Landroid/content/SharedPreferences;;.edit",
+      "Landroid/content/SharedPreferences;;.getBoolean"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/RollResult;->showDetails(Landroid/content/Context;)V": {
+     "android_apis": [
+      "Landroid/app/AlertDialog$Builder;;.<init>",
+      "Landroid/app/AlertDialog$Builder;;.create",
+      "Landroid/app/AlertDialog$Builder;;.setMessage",
+      "Landroid/app/AlertDialog$Builder;;.setPositiveButton",
+      "Landroid/app/AlertDialog$Builder;;.setTitle",
+      "Landroid/app/AlertDialog;;.show"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/RollResultAdapter;-><init>(Landroid/content/Context;)V": {
+     "android_apis": [
+      "Landroid/widget/ArrayAdapter;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/RollResultAdapter;->getView(I Landroid/view/View; Landroid/view/ViewGroup;)Landroid/view/View;": {
+     "android_apis": [
+      "Landroid/widget/ArrayAdapter;;.getView",
+      "Landroid/widget/TextView;;.setTextColor"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/SignedNumberPicker$2;->onFocusChange(Landroid/view/View; Z)V": {
+     "android_apis": [
+      "Landroid/widget/EditText;;.selectAll"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/SignedNumberPicker$3;->onValueChange(Landroid/widget/NumberPicker; I I)V": {
+     "android_apis": [
+      "Landroid/widget/NumberPicker$OnValueChangeListener;;.onValueChange"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/SignedNumberPicker$InputTextFilter;-><init>(Lde/duenndns/gmdice/SignedNumberPicker;)V": {
+     "android_apis": [
+      "Landroid/text/method/NumberKeyListener;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/SignedNumberPicker$InputTextFilter;->filter(Ljava/lang/CharSequence; I I Landroid/text/Spanned; I I)Ljava/lang/CharSequence;": {
+     "android_apis": [
+      "Landroid/text/Spanned;;.length",
+      "Landroid/text/Spanned;;.subSequence"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/SignedNumberPicker;-><init>(Landroid/content/Context;)V": {
+     "android_apis": [
+      "Landroid/widget/NumberPicker;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/SignedNumberPicker;-><init>(Landroid/content/Context; Landroid/util/AttributeSet;)V": {
+     "android_apis": [
+      "Landroid/widget/NumberPicker;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/SignedNumberPicker;-><init>(Landroid/content/Context; Landroid/util/AttributeSet; I)V": {
+     "android_apis": [
+      "Landroid/widget/NumberPicker;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/SignedNumberPicker;->access$101(Lde/duenndns/gmdice/SignedNumberPicker;)I": {
+     "android_apis": [
+      "Landroid/widget/NumberPicker;;.getValue"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/SignedNumberPicker;->access$201(Lde/duenndns/gmdice/SignedNumberPicker; I)V": {
+     "android_apis": [
+      "Landroid/widget/NumberPicker;;.setValue"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/SignedNumberPicker;->init()V": {
+     "android_apis": [
+      "Landroid/widget/EditText;;.setFilters",
+      "Landroid/widget/EditText;;.setInputType",
+      "Landroid/widget/EditText;;.setOnFocusChangeListener",
+      "Landroid/widget/NumberPicker;;.setFormatter"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/SignedNumberPicker;->setValueFromEditText(Landroid/widget/EditText;)V": {
+     "android_apis": [
+      "Landroid/text/TextUtils;;.isEmpty",
+      "Landroid/widget/EditText;;.getText",
+      "Landroid/widget/EditText;;.setText"
+     ],
+     "live_status": [
+      null,
+      null,
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/SignedNumberPicker;->addView(Landroid/view/View;)V": {
+     "android_apis": [
+      "Landroid/widget/NumberPicker;;.addView"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/SignedNumberPicker;->addView(Landroid/view/View; I Landroid/view/ViewGroup$LayoutParams;)V": {
+     "android_apis": [
+      "Landroid/widget/NumberPicker;;.addView"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/SignedNumberPicker;->addView(Landroid/view/View; Landroid/view/ViewGroup$LayoutParams;)V": {
+     "android_apis": [
+      "Landroid/widget/NumberPicker;;.addView"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/SignedNumberPicker;->getRealValue()I": {
+     "android_apis": [
+      "Landroid/widget/EditText;;.hasFocus",
+      "Landroid/widget/NumberPicker;;.getValue"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/SignedNumberPicker;->setMaxValue(I)V": {
+     "android_apis": [
+      "Landroid/widget/NumberPicker;;.setMaxValue"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/SignedNumberPicker;->setMinValue(I)V": {
+     "android_apis": [
+      "Landroid/widget/NumberPicker;;.getMaxValue",
+      "Landroid/widget/NumberPicker;;.setMaxValue",
+      "Landroid/widget/NumberPicker;;.setMinValue"
+     ],
+     "live_status": [
+      null,
+      null,
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/SignedNumberPicker;->setOnValueChangedListener(Landroid/widget/NumberPicker$OnValueChangeListener;)V": {
+     "android_apis": [
+      "Landroid/widget/NumberPicker;;.setOnValueChangedListener"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lde/duenndns/gmdice/SignedNumberPicker;->setValue(I)V": {
+     "android_apis": [
+      "Landroid/widget/NumberPicker;;.setValue"
+     ],
+     "live_status": [
+      null
+     ]
+    }
+   },
+   "method_api_edges_note": "live_status: status of the API when the runtime ran this APK (IMPLEMENTED/STUBBED) \u2014 null when not reached at runtime"
+  },
+  {
+   "apk": "dubrowgn.microtimer_8.apk",
+   "package": "dubrowgn.microtimer",
+   "source_repo": "dubrowgn/micro-timer",
+   "source_commit": "825faf52fbcb886e8ef6637bcb0e8478b4b0162e",
+   "provenance": "/home/z/my-project/upstream/corpus/dubrowgn.microtimer/PROVENANCE.json",
+   "source_files": 10,
+   "source_root": "/home/z/my-project/upstream/corpus/dubrowgn.microtimer/src",
+   "census": "/home/z/my-project/docs/foundation/dex_census/dubrowgn.microtimer_8.json",
+   "app_classes": 127,
+   "app_methods": 653,
+   "api_call_sites": 2893,
+   "source_to_dex": {
+    "micro-timer-825faf52fbcb886e8ef6637bcb0e8478b4b0162e/app/src/main/java/dubrowgn/microtimer/Dec6Duration.kt": {
+     "dex_class": "Ldubrowgn/microtimer/Dec6Duration;",
+     "dex_class_present": false
+    },
+    "micro-timer-825faf52fbcb886e8ef6637bcb0e8478b4b0162e/app/src/main/java/dubrowgn/microtimer/AlarmReceiver.kt": {
+     "dex_class": "Ldubrowgn/microtimer/AlarmReceiver;",
+     "dex_class_present": true
+    },
+    "micro-timer-825faf52fbcb886e8ef6637bcb0e8478b4b0162e/app/src/main/java/dubrowgn/microtimer/Vibration.kt": {
+     "dex_class": "Ldubrowgn/microtimer/Vibration;",
+     "dex_class_present": false
+    },
+    "micro-timer-825faf52fbcb886e8ef6637bcb0e8478b4b0162e/app/src/main/java/dubrowgn/microtimer/MainActivity.kt": {
+     "dex_class": "Ldubrowgn/microtimer/MainActivity;",
+     "dex_class_present": true
+    },
+    "micro-timer-825faf52fbcb886e8ef6637bcb0e8478b4b0162e/app/src/main/java/dubrowgn/microtimer/TimerControl.kt": {
+     "dex_class": "Ldubrowgn/microtimer/TimerControl;",
+     "dex_class_present": false
+    },
+    "micro-timer-825faf52fbcb886e8ef6637bcb0e8478b4b0162e/app/src/main/java/dubrowgn/microtimer/RoTimeControl.kt": {
+     "dex_class": "Ldubrowgn/microtimer/RoTimeControl;",
+     "dex_class_present": true
+    },
+    "micro-timer-825faf52fbcb886e8ef6637bcb0e8478b4b0162e/app/src/main/java/dubrowgn/microtimer/db/Dec6DurationConverter.kt": {
+     "dex_class": "Ldubrowgn/microtimer/db/Dec6DurationConverter;",
+     "dex_class_present": false
+    },
+    "micro-timer-825faf52fbcb886e8ef6637bcb0e8478b4b0162e/app/src/main/java/dubrowgn/microtimer/db/AlarmDao.kt": {
+     "dex_class": "Ldubrowgn/microtimer/db/AlarmDao;",
+     "dex_class_present": false
+    },
+    "micro-timer-825faf52fbcb886e8ef6637bcb0e8478b4b0162e/app/src/main/java/dubrowgn/microtimer/db/Database.kt": {
+     "dex_class": "Ldubrowgn/microtimer/db/Database;",
+     "dex_class_present": true
+    },
+    "micro-timer-825faf52fbcb886e8ef6637bcb0e8478b4b0162e/app/src/main/java/dubrowgn/microtimer/db/Alarm.kt": {
+     "dex_class": "Ldubrowgn/microtimer/db/Alarm;",
+     "dex_class_present": false
+    }
+   },
+   "classes_mapped": 4,
+   "mapping_coverage": 0.037,
+   "mapping_note": "name-based package-path match; R8/ProGuard-obfuscated classes (short names like La1;) are UNMAPPED by design \u2014 recorded, not guessed",
+   "runtime_status": "SUCCESS",
+   "max_frame_nonwhite": 1041437,
+   "view_tree_nodes": 37,
+   "method_api_edges": {
+    "La/e;->j(Landroid/database/Cursor; Ljava/lang/String;)I": {
+     "android_apis": [
+      "Landroid/database/Cursor;;.getColumnIndex",
+      "Landroid/database/Cursor;;.getColumnNames",
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null,
+      null,
+      null
+     ]
+    },
+    "Ld/a;->a(Ljava/lang/Object;)I": {
+     "android_apis": [
+      "Landroid/graphics/drawable/Icon;;.getResId"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Ld/a;->b(Ljava/lang/Object;)Ljava/lang/String;": {
+     "android_apis": [
+      "Landroid/graphics/drawable/Icon;;.getResPackage"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Ld/a;->c(Ljava/lang/Object;)I": {
+     "android_apis": [
+      "Landroid/graphics/drawable/Icon;;.getType"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Ld/a;->d(Ljava/lang/Object;)Landroid/net/Uri;": {
+     "android_apis": [
+      "Landroid/graphics/drawable/Icon;;.getUri"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Ldubrowgn/microtimer/AlarmReceiver;-><init>()V": {
+     "android_apis": [
+      "Landroid/content/BroadcastReceiver;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Ldubrowgn/microtimer/AlarmReceiver;->onReceive(Landroid/content/Context; Landroid/content/Intent;)V": {
+     "android_apis": [
+      "Landroid/app/Notification$Builder;;.<init>",
+      "Landroid/app/Notification$Builder;;.build",
+      "Landroid/app/Notification$Builder;;.setAutoCancel",
+      "Landroid/app/Notification$Builder;;.setCategory",
+      "Landroid/app/Notification$Builder;;.setColor",
+      "Landroid/app/Notification$Builder;;.setContentText",
+      "Landroid/app/Notification$Builder;;.setContentTitle",
+      "Landroid/app/Notification$Builder;;.setFullScreenIntent",
+      "Landroid/app/Notification$Builder;;.setSmallIcon",
+      "Landroid/app/Notification$Builder;;.setVisibility",
+      "Landroid/app/NotificationManager;;.notify",
+      "Landroid/app/PendingIntent;;.getActivity",
+      "Landroid/content/Context;;.getString",
+      "Landroid/content/Context;;.getSystemService",
+      "Landroid/content/Intent;;.<init>",
+      "Landroid/content/Intent;;.getLongExtra",
+      "Landroid/content/Intent;;.getStringExtra",
+      "Landroid/content/Intent;;.setFlags",
+      "Landroid/util/Log;;.d",
+      "Landroid/util/Log;;.e"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Ldubrowgn/microtimer/MainActivity;-><init>()V": {
+     "android_apis": [
+      "Landroid/app/Activity;;.<init>",
+      "Landroid/os/Handler;;.<init>",
+      "Landroid/os/Looper;;.getMainLooper"
+     ],
+     "live_status": [
+      null,
+      null,
+      null
+     ]
+    },
+    "Ldubrowgn/microtimer/MainActivity;->c(Ljava/lang/String;)V": {
+     "android_apis": [
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Ldubrowgn/microtimer/MainActivity;->a(Ll/a;)Lk/g;": {
+     "android_apis": [
+      "Landroid/view/ViewGroup;;.addView"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Ldubrowgn/microtimer/MainActivity;->b(Ll/a;)Landroid/app/PendingIntent;": {
+     "android_apis": [
+      "Landroid/app/PendingIntent;;.getBroadcast",
+      "Landroid/content/Intent;;.<init>",
+      "Landroid/content/Intent;;.putExtra",
+      "Landroid/content/Intent;;.setAction",
+      "Landroid/content/Intent;;.setFlags"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Ldubrowgn/microtimer/MainActivity;->e(Lk/g;)V": {
+     "android_apis": [
+      "Landroid/os/Handler;;.postDelayed",
+      "Landroid/os/SystemClock;;.elapsedRealtime"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Ldubrowgn/microtimer/MainActivity;->onCreate(Landroid/os/Bundle;)V": {
+     "android_apis": [
+      "Landroid/app/Activity;;.findViewById",
+      "Landroid/app/Activity;;.requestPermissions",
+      "Landroid/app/Activity;;.setContentView",
+      "Landroid/app/Activity;;.setShowWhenLocked",
+      "Landroid/app/Activity;;.setTurnScreenOn",
+      "Landroid/app/ActivityManager;;.isLowRamDevice",
+      "Landroid/app/KeyguardManager;;.requestDismissKeyguard",
+      "Landroid/app/NotificationChannel;;.<init>",
+      "Landroid/app/NotificationChannel;;.setDescription",
+      "Landroid/app/NotificationManager;;.canUseFullScreenIntent",
+      "Landroid/app/NotificationManager;;.createNotificationChannel",
+      "Landroid/content/Context;;.checkSelfPermission",
+      "Landroid/content/Context;;.getSystemService",
+      "Landroid/content/Context;;.startActivity",
+      "Landroid/content/Intent;;.<init>",
+      "Landroid/database/Cursor;;.close",
+      "Landroid/database/Cursor;;.getCount",
+      "Landroid/database/Cursor;;.getInt",
+      "Landroid/database/Cursor;;.getLong",
+      "Landroid/database/Cursor;;.isNull"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Ldubrowgn/microtimer/MainActivity;->onDestroy()V": {
+     "android_apis": [
+      "Landroid/app/Activity;;.onDestroy"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Ldubrowgn/microtimer/MainActivity;->onPause()V": {
+     "android_apis": [
+      "Landroid/app/Activity;;.onPause",
+      "Landroid/app/AlarmManager;;.setExactAndAllowWhileIdle",
+      "Landroid/content/Context;;.getSystemService",
+      "Landroid/os/Handler;;.removeCallbacksAndMessages",
+      "Landroid/os/SystemClock;;.elapsedRealtime",
+      "Landroid/os/Vibrator;;.cancel",
+      "Landroid/util/Log;;.d",
+      "Landroid/util/Log;;.e",
+      "Landroid/view/ViewGroup;;.getChildAt",
+      "Landroid/view/ViewGroup;;.getChildCount"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Ldubrowgn/microtimer/MainActivity;->onResume()V": {
+     "android_apis": [
+      "Landroid/app/Activity;;.onResume",
+      "Landroid/app/AlarmManager;;.cancel",
+      "Landroid/content/Context;;.getSystemService",
+      "Landroid/view/ViewGroup;;.getChildAt",
+      "Landroid/view/ViewGroup;;.getChildCount"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Ldubrowgn/microtimer/RoTimeControl;-><init>(Landroid/content/Context;)V": {
+     "android_apis": [
+      "Landroid/widget/FrameLayout;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Ldubrowgn/microtimer/RoTimeControl;-><init>(Landroid/content/Context; Landroid/util/AttributeSet;)V": {
+     "android_apis": [
+      "Landroid/widget/FrameLayout;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Ldubrowgn/microtimer/RoTimeControl;->a()V": {
+     "android_apis": [
+      "Landroid/view/View;;.getContext",
+      "Landroid/view/View;;.setLayoutParams",
+      "Landroid/view/View;;.setTextAlignment",
+      "Landroid/view/ViewGroup;;.addView",
+      "Landroid/widget/LinearLayout$LayoutParams;;.<init>",
+      "Landroid/widget/TextView;;.<init>",
+      "Landroid/widget/TextView;;.setHint",
+      "Landroid/widget/TextView;;.setTextSize",
+      "Landroid/widget/TextView;;.setTypeface"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Ldubrowgn/microtimer/RoTimeControl;->b(Lk/a;)V": {
+     "android_apis": [
+      "Landroid/widget/TextView;;.setText"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Ldubrowgn/microtimer/db/Database;->b()V": {
+     "android_apis": [
+      "Landroid/os/Looper;;.getMainLooper",
+      "Landroid/os/Looper;;.getThread"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Le/n;->a()Lo/i;": {
+     "android_apis": [
+      "Landroid/database/Cursor;;.getInt",
+      "Landroid/database/Cursor;;.moveToNext"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Le/n;->run()V": {
+     "android_apis": [
+      "Landroid/util/Log;;.e"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Le/o;->b()Z": {
+     "android_apis": [
+      "Landroid/util/Log;;.e"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Le/o;->d(Lg/b;)V": {
+     "android_apis": [
+      "Landroid/util/Log;;.e"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Le/p;->run()V": {
+     "android_apis": [
+      "Landroid/util/Log;;.w"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Le/q;->a(Ljava/util/Set;)V": {
+     "android_apis": [
+      "Landroid/util/Log;;.w"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Le/t;->onServiceConnected(Landroid/content/ComponentName; Landroid/os/IBinder;)V": {
+     "android_apis": [
+      "Landroid/os/IBinder;;.queryLocalInterface"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Le/u;-><init>(Landroid/content/Context; Ljava/lang/String; Landroid/content/Intent; Le/o; Ljava/util/concurrent/Executor;)V": {
+     "android_apis": [
+      "Landroid/content/Context;;.bindService",
+      "Landroid/content/Context;;.getApplicationContext"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Le/w;-><init>(Landroidx/room/MultiInstanceInvalidationService;)V": {
+     "android_apis": [
+      "Landroid/os/RemoteCallbackList;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lg/c;->a(Ljava/lang/String;)V": {
+     "android_apis": [
+      "Landroid/database/sqlite/SQLiteDatabase;;.deleteDatabase",
+      "Landroid/util/Log;;.w"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Lh/a;->newCursor(Landroid/database/sqlite/SQLiteDatabase; Landroid/database/sqlite/SQLiteCursorDriver; Ljava/lang/String; Landroid/database/sqlite/SQLiteQuery;)Landroid/database/Cursor;": {
+     "android_apis": [
+      "Landroid/database/sqlite/SQLiteCursor;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lh/d;->onCorruption(Landroid/database/sqlite/SQLiteDatabase;)V": {
+     "android_apis": [
+      "Landroid/util/Log;;.e"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lh/f;-><init>(Landroid/content/Context; Ljava/lang/String; Le/y; Lg/c; Z)V": {
+     "android_apis": [
+      "Landroid/content/Context;;.getCacheDir"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lh/f;->close()V": {
+     "android_apis": [
+      "Landroid/database/sqlite/SQLiteOpenHelper;;.close"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lh/f;->onConfigure(Landroid/database/sqlite/SQLiteDatabase;)V": {
+     "android_apis": [
+      "Landroid/database/sqlite/SQLiteDatabase;;.getVersion",
+      "Landroid/database/sqlite/SQLiteDatabase;;.setMaxSqlCacheSize"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Lh/f;->q(Z)Lg/b;": {
+     "android_apis": [
+      "Landroid/database/sqlite/SQLiteOpenHelper;;.getDatabaseName"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lh/f;->u(Z)Landroid/database/sqlite/SQLiteDatabase;": {
+     "android_apis": [
+      "Landroid/database/sqlite/SQLiteOpenHelper;;.getReadableDatabase",
+      "Landroid/database/sqlite/SQLiteOpenHelper;;.getWritableDatabase"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Lh/f;->v(Z)Landroid/database/sqlite/SQLiteDatabase;": {
+     "android_apis": [
+      "Landroid/content/Context;;.deleteDatabase",
+      "Landroid/content/Context;;.getDatabasePath",
+      "Landroid/database/sqlite/SQLiteOpenHelper;;.close",
+      "Landroid/database/sqlite/SQLiteOpenHelper;;.getDatabaseName",
+      "Landroid/util/Log;;.w"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Li/a;->a(Z)V": {
+     "android_apis": [
+      "Landroid/util/Log;;.w"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lj/b;->f(I I)I": {
+     "android_apis": [
+      "Landroid/os/Parcel;;.readInt"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lj/b;->g(Landroid/os/Parcelable; I)Landroid/os/Parcelable;": {
+     "android_apis": [
+      "Landroid/os/Parcel;;.readParcelable"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lj/b;->h()Lj/d;": {
+     "android_apis": [
+      "Landroid/os/Parcel;;.readString"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lj/b;->j(Lj/d;)V": {
+     "android_apis": [
+      "Landroid/os/Parcel;;.dataPosition",
+      "Landroid/os/Parcel;;.setDataPosition",
+      "Landroid/os/Parcel;;.writeInt",
+      "Landroid/os/Parcel;;.writeString",
+      "Landroid/util/SparseIntArray;;.get"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Lk/b;->a(Landroid/app/AlarmManager;)Z": {
+     "android_apis": [
+      "Landroid/app/AlarmManager;;.canScheduleExactAlarms"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lk/g;-><init>(Landroid/content/Context; Ll/a;)V": {
+     "android_apis": [
+      "Landroid/content/Context;;.getDrawable",
+      "Landroid/content/res/ColorStateList;;.valueOf",
+      "Landroid/graphics/Color;;.rgb",
+      "Landroid/view/View;;.setBackgroundTintList",
+      "Landroid/view/View;;.setForeground",
+      "Landroid/view/View;;.setForegroundGravity",
+      "Landroid/view/View;;.setForegroundTintList",
+      "Landroid/view/View;;.setLayoutParams",
+      "Landroid/view/View;;.setOnClickListener",
+      "Landroid/view/ViewGroup;;.addView",
+      "Landroid/widget/Button;;.<init>",
+      "Landroid/widget/LinearLayout$LayoutParams;;.<init>",
+      "Landroid/widget/LinearLayout;;.<init>",
+      "Landroid/widget/LinearLayout;;.setOrientation"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Lk/g;->a()V": {
+     "android_apis": [
+      "Landroid/content/res/ColorStateList;;.valueOf",
+      "Landroid/view/View;;.setBackgroundTintList",
+      "Landroid/view/View;;.setEnabled",
+      "Landroid/view/ViewGroup;;.addView",
+      "Landroid/view/ViewGroup;;.removeView",
+      "Landroid/widget/TextView;;.setTextColor"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Lk/h;->a(Landroid/content/Context;)V": {
+     "android_apis": [
+      "Landroid/content/Context;;.getSystemService",
+      "Landroid/media/AudioAttributes$Builder;;.<init>",
+      "Landroid/media/AudioAttributes$Builder;;.build",
+      "Landroid/media/AudioAttributes$Builder;;.setUsage",
+      "Landroid/os/VibrationEffect;;.createWaveform",
+      "Landroid/os/Vibrator;;.vibrate",
+      "Landroid/util/Log;;.d"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Ll/a;->a()V": {
+     "android_apis": [
+      "Landroid/os/SystemClock;;.elapsedRealtime"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Ll/e;->a(Lh/c;)Le/z;": {
+     "android_apis": [
+      "Landroid/database/Cursor;;.getColumnCount",
+      "Landroid/database/Cursor;;.getColumnIndex",
+      "Landroid/database/Cursor;;.getInt",
+      "Landroid/database/Cursor;;.getString",
+      "Landroid/database/Cursor;;.moveToNext",
+      "Landroid/database/Cursor;;.moveToPosition"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Le/a0;->c(Lh/c;)V": {
+     "android_apis": [
+      "Landroid/database/Cursor;;.getInt",
+      "Landroid/database/Cursor;;.moveToFirst"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Le/a0;->e(Lh/c;)V": {
+     "android_apis": [
+      "Landroid/database/Cursor;;.getInt",
+      "Landroid/database/Cursor;;.getString",
+      "Landroid/database/Cursor;;.moveToFirst",
+      "Landroid/util/Log;;.e"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Le/a0;->f(Lh/c; I I)V": {
+     "android_apis": [
+      "Landroid/database/Cursor;;.getString",
+      "Landroid/database/Cursor;;.moveToNext"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Le/d0;->a()Ljava/lang/Object;": {
+     "android_apis": [
+      "Landroid/content/Context;;.getNoBackupFilesDir",
+      "Landroid/database/sqlite/SQLiteOpenHelper;;.setWriteAheadLoggingEnabled"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Le/g;->c([Ljava/lang/String;)V": {
+     "android_apis": [
+      "Landroid/os/IBinder;;.transact",
+      "Landroid/os/Parcel;;.obtain",
+      "Landroid/os/Parcel;;.recycle",
+      "Landroid/os/Parcel;;.writeInterfaceToken",
+      "Landroid/os/Parcel;;.writeStringArray"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Le/i;->a(I [Ljava/lang/String;)V": {
+     "android_apis": [
+      "Landroid/os/IBinder;;.transact",
+      "Landroid/os/Parcel;;.obtain",
+      "Landroid/os/Parcel;;.recycle",
+      "Landroid/os/Parcel;;.writeInt",
+      "Landroid/os/Parcel;;.writeInterfaceToken",
+      "Landroid/os/Parcel;;.writeStringArray"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Le/i;->b(Le/h; Ljava/lang/String;)I": {
+     "android_apis": [
+      "Landroid/os/IBinder;;.transact",
+      "Landroid/os/Parcel;;.obtain",
+      "Landroid/os/Parcel;;.readException",
+      "Landroid/os/Parcel;;.readInt",
+      "Landroid/os/Parcel;;.recycle",
+      "Landroid/os/Parcel;;.writeInterfaceToken",
+      "Landroid/os/Parcel;;.writeString",
+      "Landroid/os/Parcel;;.writeStrongInterface"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Le/s;-><init>(Le/u;)V": {
+     "android_apis": [
+      "Landroid/os/Binder;;.<init>",
+      "Landroid/os/Binder;;.attachInterface"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    }
+   },
+   "method_api_edges_note": "live_status: status of the API when the runtime ran this APK (IMPLEMENTED/STUBBED) \u2014 null when not reached at runtime"
+  },
+  {
+   "apk": "fishrings_v1.23_vc6.apk",
+   "package": "eu.veldsoft.fish.rings",
+   "source_repo": "VelbazhdSoftwareLLC/FishRingsForAndroid",
+   "source_commit": "dc3807e7d405843453afc798c6cc02205b65e1fb",
+   "provenance": "/home/z/my-project/upstream/corpus/eu.veldsoft.fish.rings/PROVENANCE.json",
+   "source_files": 6,
+   "source_root": "/home/z/my-project/upstream/corpus/eu.veldsoft.fish.rings/src",
+   "census": "/home/z/my-project/docs/foundation/dex_census/fishrings_v1.23_vc6.json",
+   "app_classes": 23,
+   "app_methods": 67,
+   "api_call_sites": 336,
+   "source_to_dex": {
+    "Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/FishRingsForAndroid/src/main/java/eu/veldsoft/fish/rings/AboutActivity.java": {
+     "dex_class": "Leu/veldsoft/fish/rings/AboutActivity;",
+     "dex_class_present": true
+    },
+    "Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/FishRingsForAndroid/src/main/java/eu/veldsoft/fish/rings/Rings.java": {
+     "dex_class": "Leu/veldsoft/fish/rings/Rings;",
+     "dex_class_present": true
+    },
+    "Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/FishRingsForAndroid/src/main/java/eu/veldsoft/fish/rings/SplashActivity.java": {
+     "dex_class": "Leu/veldsoft/fish/rings/SplashActivity;",
+     "dex_class_present": true
+    },
+    "Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/FishRingsForAndroid/src/main/java/eu/veldsoft/fish/rings/GameActivity.java": {
+     "dex_class": "Leu/veldsoft/fish/rings/GameActivity;",
+     "dex_class_present": true
+    },
+    "Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/FishRingsForAndroid/src/main/java/eu/veldsoft/fish/rings/HelpActivity.java": {
+     "dex_class": "Leu/veldsoft/fish/rings/HelpActivity;",
+     "dex_class_present": true
+    },
+    "Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/FishRingsForAndroid/src/main/java/eu/veldsoft/fish/rings/InstructionActivity.java": {
+     "dex_class": "Leu/veldsoft/fish/rings/InstructionActivity;",
+     "dex_class_present": true
+    }
+   },
+   "classes_mapped": 6,
+   "mapping_coverage": 0.261,
+   "mapping_note": "name-based package-path match; R8/ProGuard-obfuscated classes (short names like La1;) are UNMAPPED by design \u2014 recorded, not guessed",
+   "runtime_status": "SUCCESS",
+   "max_frame_nonwhite": 2072211,
+   "view_tree_nodes": 3,
+   "method_api_edges": {
+    "Leu/veldsoft/fish/rings/AboutActivity;-><init>()V": {
+     "android_apis": [
+      "Landroid/app/Activity;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Leu/veldsoft/fish/rings/AboutActivity;->onCreate(Landroid/os/Bundle;)V": {
+     "android_apis": [
+      "Landroid/app/Activity;;.onCreate"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Leu/veldsoft/fish/rings/GameActivity$7;->onClick(Landroid/view/View;)V": {
+     "android_apis": [
+      "Landroid/content/Intent;;.<init>",
+      "Landroid/content/res/Resources;;.getString",
+      "Landroid/net/Uri;;.parse"
+     ],
+     "live_status": [
+      null,
+      null,
+      null
+     ]
+    },
+    "Leu/veldsoft/fish/rings/GameActivity;-><init>()V": {
+     "android_apis": [
+      "Landroid/app/Activity;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Leu/veldsoft/fish/rings/GameActivity;->congratulate()V": {
+     "android_apis": [
+      "Landroid/widget/Toast;;.makeText",
+      "Landroid/widget/Toast;;.show"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Leu/veldsoft/fish/rings/GameActivity;->repaint()V": {
+     "android_apis": [
+      "Landroid/widget/ImageView;;.setImageResource"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Leu/veldsoft/fish/rings/GameActivity;->sound()V": {
+     "android_apis": [
+      "Landroid/media/MediaPlayer;;.start"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Leu/veldsoft/fish/rings/GameActivity;->onActivityResult(I I Landroid/content/Intent;)V": {
+     "android_apis": [
+      "Landroid/app/Activity;;.onActivityResult",
+      "Landroid/content/Intent;;.getCharSequenceExtra"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Leu/veldsoft/fish/rings/GameActivity;->onCreate(Landroid/os/Bundle;)V": {
+     "android_apis": [
+      "Landroid/media/MediaPlayer;;.create",
+      "Landroid/view/View;;.getHeight",
+      "Landroid/view/View;;.getWidth",
+      "Landroid/view/View;;.setOnClickListener",
+      "Landroid/view/Window;;.getDecorView",
+      "Landroid/widget/ImageView;;.setOnClickListener"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Leu/veldsoft/fish/rings/GameActivity;->onCreateOptionsMenu(Landroid/view/Menu;)Z": {
+     "android_apis": [
+      "Landroid/app/Activity;;.onCreateOptionsMenu",
+      "Landroid/view/MenuInflater;;.inflate"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Leu/veldsoft/fish/rings/GameActivity;->onOptionsItemSelected(Landroid/view/MenuItem;)Z": {
+     "android_apis": [
+      "Landroid/content/Intent;;.<init>",
+      "Landroid/media/MediaPlayer;;.start",
+      "Landroid/view/MenuItem;;.getItemId"
+     ],
+     "live_status": [
+      null,
+      null,
+      null
+     ]
+    },
+    "Leu/veldsoft/fish/rings/HelpActivity;-><init>()V": {
+     "android_apis": [
+      "Landroid/app/Activity;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Leu/veldsoft/fish/rings/HelpActivity;->onCreate(Landroid/os/Bundle;)V": {
+     "android_apis": [
+      "Landroid/app/Activity;;.onCreate"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Leu/veldsoft/fish/rings/InstructionActivity$1;->onClick(Landroid/view/View;)V": {
+     "android_apis": [
+      "Landroid/content/Intent;;.<init>",
+      "Landroid/content/Intent;;.putExtra",
+      "Landroid/content/res/Resources;;.getString",
+      "Landroid/widget/EditText;;.getText",
+      "Landroid/widget/Toast;;.makeText",
+      "Landroid/widget/Toast;;.show"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Leu/veldsoft/fish/rings/InstructionActivity;-><init>()V": {
+     "android_apis": [
+      "Landroid/app/Activity;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Leu/veldsoft/fish/rings/InstructionActivity;->onCreate(Landroid/os/Bundle;)V": {
+     "android_apis": [
+      "Landroid/app/Activity;;.onCreate",
+      "Landroid/widget/Button;;.setOnClickListener"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Leu/veldsoft/fish/rings/SplashActivity$1;->run()V": {
+     "android_apis": [
+      "Landroid/content/Intent;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Leu/veldsoft/fish/rings/SplashActivity;-><init>()V": {
+     "android_apis": [
+      "Landroid/app/Activity;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Leu/veldsoft/fish/rings/SplashActivity;->onCreate(Landroid/os/Bundle;)V": {
+     "android_apis": [
+      "Landroid/app/Activity;;.onCreate",
+      "Landroid/content/pm/PackageManager;;.getActivityInfo",
+      "Landroid/content/res/Resources;;.getString",
+      "Landroid/os/Bundle;;.getInt",
+      "Landroid/os/Bundle;;.getString",
+      "Landroid/webkit/WebSettings;;.setJavaScriptEnabled",
+      "Landroid/webkit/WebView;;.getSettings",
+      "Landroid/webkit/WebView;;.loadUrl",
+      "Landroid/widget/Toast;;.makeText",
+      "Landroid/widget/Toast;;.show"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Leu/veldsoft/fish/rings/SplashActivity;->onResume()V": {
+     "android_apis": [
+      "Landroid/app/Activity;;.onResume"
+     ],
+     "live_status": [
+      null
+     ]
+    }
+   },
+   "method_api_edges_note": "live_status: status of the API when the runtime ran this APK (IMPLEMENTED/STUBBED) \u2014 null when not reached at runtime"
+  },
+  {
+   "apk": "tripeaks_v1.2.1_vc4.apk",
+   "package": "eu.veldsoft.tri.peaks",
+   "source_repo": "VelbazhdSoftwareLLC/TriPeaksSolitaireForAndroid",
+   "source_commit": "62f3609",
+   "provenance": "/home/z/my-project/upstream/corpus/eu.veldsoft.tri.peaks/PROVENANCE.json",
+   "source_files": 14,
+   "source_root": "/home/z/my-project/upstream/corpus/eu.veldsoft.tri.peaks/src",
+   "census": "/home/z/my-project/docs/foundation/dex_census/tripeaks_v1.2.1_vc4.json",
+   "app_classes": 34,
+   "app_methods": 170,
+   "api_call_sites": 930,
+   "source_to_dex": {
+    "Tri-Peaks-Solitaire-for-Android-62f3609/TriPeaksSolitaireForAndroid/src/main/java/eu/veldsoft/tri/peaks/Card.java": {
+     "dex_class": "Leu/veldsoft/tri/peaks/Card;",
+     "dex_class_present": true
+    },
+    "Tri-Peaks-Solitaire-for-Android-62f3609/TriPeaksSolitaireForAndroid/src/main/java/eu/veldsoft/tri/peaks/Deck.java": {
+     "dex_class": "Leu/veldsoft/tri/peaks/Deck;",
+     "dex_class_present": true
+    },
+    "Tri-Peaks-Solitaire-for-Android-62f3609/TriPeaksSolitaireForAndroid/src/main/java/eu/veldsoft/tri/peaks/SplashActivity.java": {
+     "dex_class": "Leu/veldsoft/tri/peaks/SplashActivity;",
+     "dex_class_present": true
+    },
+    "Tri-Peaks-Solitaire-for-Android-62f3609/TriPeaksSolitaireForAndroid/src/main/java/eu/veldsoft/tri/peaks/Constants.java": {
+     "dex_class": "Leu/veldsoft/tri/peaks/Constants;",
+     "dex_class_present": true
+    },
+    "Tri-Peaks-Solitaire-for-Android-62f3609/TriPeaksSolitaireForAndroid/src/main/java/eu/veldsoft/tri/peaks/GameActivity.java": {
+     "dex_class": "Leu/veldsoft/tri/peaks/GameActivity;",
+     "dex_class_present": true
+    },
+    "Tri-Peaks-Solitaire-for-Android-62f3609/TriPeaksSolitaireForAndroid/src/main/java/eu/veldsoft/tri/peaks/GameState.java": {
+     "dex_class": "Leu/veldsoft/tri/peaks/GameState;",
+     "dex_class_present": true
+    },
+    "Tri-Peaks-Solitaire-for-Android-62f3609/TriPeaksSolitaireForAndroid/src/main/java/eu/veldsoft/tri/peaks/Cheat.java": {
+     "dex_class": "Leu/veldsoft/tri/peaks/Cheat;",
+     "dex_class_present": true
+    },
+    "Tri-Peaks-Solitaire-for-Android-62f3609/TriPeaksSolitaireForAndroid/src/main/java/eu/veldsoft/tri/peaks/LobbyActivity.java": {
+     "dex_class": "Leu/veldsoft/tri/peaks/LobbyActivity;",
+     "dex_class_present": true
+    },
+    "Tri-Peaks-Solitaire-for-Android-62f3609/TriPeaksSolitaireForAndroid/src/main/java/eu/veldsoft/tri/peaks/Base64Coder.java": {
+     "dex_class": "Leu/veldsoft/tri/peaks/Base64Coder;",
+     "dex_class_present": true
+    },
+    "Tri-Peaks-Solitaire-for-Android-62f3609/TriPeaksSolitaireForAndroid/src/main/java/eu/veldsoft/tri/peaks/HelpActivity.java": {
+     "dex_class": "Leu/veldsoft/tri/peaks/HelpActivity;",
+     "dex_class_present": true
+    },
+    "Tri-Peaks-Solitaire-for-Android-62f3609/TriPeaksSolitaireForAndroid/src/main/java/eu/veldsoft/tri/peaks/AboutUsActivity.java": {
+     "dex_class": "Leu/veldsoft/tri/peaks/AboutUsActivity;",
+     "dex_class_present": true
+    },
+    "Tri-Peaks-Solitaire-for-Android-62f3609/TriPeaksSolitaireForAndroid/src/main/java/eu/veldsoft/tri/peaks/Encryptor.java": {
+     "dex_class": "Leu/veldsoft/tri/peaks/Encryptor;",
+     "dex_class_present": true
+    },
+    "Tri-Peaks-Solitaire-for-Android-62f3609/TriPeaksSolitaireForAndroid/src/main/java/eu/veldsoft/tri/peaks/NewPlayerException.java": {
+     "dex_class": "Leu/veldsoft/tri/peaks/NewPlayerException;",
+     "dex_class_present": true
+    },
+    "Tri-Peaks-Solitaire-for-Android-62f3609/TriPeaksSolitaireForAndroid/src/main/java/eu/veldsoft/tri/peaks/CardBoard.java": {
+     "dex_class": "Leu/veldsoft/tri/peaks/CardBoard;",
+     "dex_class_present": true
+    }
+   },
+   "classes_mapped": 14,
+   "mapping_coverage": 0.412,
+   "mapping_note": "name-based package-path match; R8/ProGuard-obfuscated classes (short names like La1;) are UNMAPPED by design \u2014 recorded, not guessed",
+   "runtime_status": "SUCCESS",
+   "max_frame_nonwhite": 205638,
+   "view_tree_nodes": 3,
+   "method_api_edges": {
+    "Leu/veldsoft/tri/peaks/AboutUsActivity;-><init>()V": {
+     "android_apis": [
+      "Landroid/app/Activity;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Leu/veldsoft/tri/peaks/AboutUsActivity;->onCreate(Landroid/os/Bundle;)V": {
+     "android_apis": [
+      "Landroid/app/Activity;;.onCreate",
+      "Landroid/widget/Button;;.setOnClickListener"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Leu/veldsoft/tri/peaks/GameActivity$2;->onClick(Landroid/view/View;)V": {
+     "android_apis": [
+      "Landroid/content/Intent;;.<init>",
+      "Landroid/content/res/Resources;;.getString",
+      "Landroid/net/Uri;;.parse"
+     ],
+     "live_status": [
+      null,
+      null,
+      null
+     ]
+    },
+    "Leu/veldsoft/tri/peaks/GameActivity;-><init>()V": {
+     "android_apis": [
+      "Landroid/app/Activity;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Leu/veldsoft/tri/peaks/GameActivity;->repaint()V": {
+     "android_apis": [
+      "Landroid/widget/ImageView;;.setImageBitmap",
+      "Landroid/widget/ImageView;;.setImageResource",
+      "Landroid/widget/TextView;;.setText",
+      "Landroid/widget/TextView;;.setVisibility",
+      "Landroid/widget/Toast;;.makeText",
+      "Landroid/widget/Toast;;.show"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Leu/veldsoft/tri/peaks/GameActivity;->onCreate(Landroid/os/Bundle;)V": {
+     "android_apis": [
+      "Landroid/widget/ImageView;;.setOnClickListener"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Leu/veldsoft/tri/peaks/GameActivity;->onCreateOptionsMenu(Landroid/view/Menu;)Z": {
+     "android_apis": [
+      "Landroid/view/MenuInflater;;.inflate"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Leu/veldsoft/tri/peaks/GameActivity;->onOptionsItemSelected(Landroid/view/MenuItem;)Z": {
+     "android_apis": [
+      "Landroid/app/Activity;;.onOptionsItemSelected",
+      "Landroid/app/AlertDialog$Builder;;.<init>",
+      "Landroid/app/AlertDialog$Builder;;.setIcon",
+      "Landroid/app/AlertDialog$Builder;;.setMessage",
+      "Landroid/app/AlertDialog$Builder;;.setNegativeButton",
+      "Landroid/app/AlertDialog$Builder;;.setPositiveButton",
+      "Landroid/app/AlertDialog$Builder;;.setTitle",
+      "Landroid/app/AlertDialog$Builder;;.show",
+      "Landroid/view/MenuItem;;.getItemId"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Leu/veldsoft/tri/peaks/GameActivity;->onResume()V": {
+     "android_apis": [
+      "Landroid/app/Activity;;.onResume"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Leu/veldsoft/tri/peaks/HelpActivity;-><init>()V": {
+     "android_apis": [
+      "Landroid/app/Activity;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Leu/veldsoft/tri/peaks/HelpActivity;->onCreate(Landroid/os/Bundle;)V": {
+     "android_apis": [
+      "Landroid/app/Activity;;.onCreate",
+      "Landroid/widget/Button;;.setOnClickListener"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Leu/veldsoft/tri/peaks/LobbyActivity$1;->onClick(Landroid/view/View;)V": {
+     "android_apis": [
+      "Landroid/content/Intent;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Leu/veldsoft/tri/peaks/LobbyActivity$2;->onClick(Landroid/view/View;)V": {
+     "android_apis": [
+      "Landroid/content/Intent;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Leu/veldsoft/tri/peaks/LobbyActivity$4;->onClick(Landroid/view/View;)V": {
+     "android_apis": [
+      "Landroid/content/Intent;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Leu/veldsoft/tri/peaks/LobbyActivity;-><init>()V": {
+     "android_apis": [
+      "Landroid/app/Activity;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Leu/veldsoft/tri/peaks/LobbyActivity;->onCreate(Landroid/os/Bundle;)V": {
+     "android_apis": [
+      "Landroid/app/Activity;;.onCreate",
+      "Landroid/widget/Button;;.setOnClickListener"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Leu/veldsoft/tri/peaks/SplashActivity$1;->run()V": {
+     "android_apis": [
+      "Landroid/content/Intent;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Leu/veldsoft/tri/peaks/SplashActivity;-><init>()V": {
+     "android_apis": [
+      "Landroid/app/Activity;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Leu/veldsoft/tri/peaks/SplashActivity;->onCreate(Landroid/os/Bundle;)V": {
+     "android_apis": [
+      "Landroid/app/Activity;;.onCreate",
+      "Landroid/content/pm/PackageManager;;.getActivityInfo",
+      "Landroid/content/res/Resources;;.getString",
+      "Landroid/os/Bundle;;.getInt",
+      "Landroid/os/Bundle;;.getString",
+      "Landroid/webkit/WebSettings;;.setJavaScriptEnabled",
+      "Landroid/webkit/WebView;;.getSettings",
+      "Landroid/webkit/WebView;;.loadUrl",
+      "Landroid/widget/Toast;;.makeText",
+      "Landroid/widget/Toast;;.show"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Leu/veldsoft/tri/peaks/SplashActivity;->onResume()V": {
+     "android_apis": [
+      "Landroid/app/Activity;;.onResume"
+     ],
+     "live_status": [
+      null
+     ]
+    }
+   },
+   "method_api_edges_note": "live_status: status of the API when the runtime ran this APK (IMPLEMENTED/STUBBED) \u2014 null when not reached at runtime"
+  },
+  {
+   "apk": "io.github.yamin8000.dooz_23.apk",
+   "package": "io.github.yamin8000.dooz",
+   "source_repo": "yamin8000/Dooz",
+   "source_commit": "0c60e78b861a29fab26cc11e7e7a30a419527064",
+   "provenance": "/home/z/my-project/upstream/corpus/io.github.yamin8000.dooz/PROVENANCE.json",
+   "source_files": 68,
+   "source_root": "/home/z/my-project/upstream/corpus/io.github.yamin8000.dooz/src",
+   "census": "/home/z/my-project/docs/foundation/dex_census/io.github.yamin8000.dooz_23.json",
+   "app_classes": 3021,
+   "app_methods": 13832,
+   "api_call_sites": 72937,
+   "source_to_dex": {
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_about/src/main/java/io/github/yamin8000/dooz/feature_about/ui/About.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_about/ui/About;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/app/src/main/java/io/github/yamin8000/dooz/ui/App.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/ui/App;",
+     "dex_class_present": true
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/app/src/main/java/io/github/yamin8000/dooz/ui/MainActivity.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/ui/MainActivity;",
+     "dex_class_present": true
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/app/src/main/java/io/github/yamin8000/dooz/util/Constants.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/util/Constants;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/app/src/main/java/io/github/yamin8000/dooz/ui/navigation/Nav.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/ui/navigation/Nav;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_settings/src/main/java/io/github/yamin8000/dooz/feature_settings/ui/Settings.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_settings/ui/Settings;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_settings/src/main/java/io/github/yamin8000/dooz/feature_settings/ui/SettingsViewModel.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_settings/ui/SettingsViewModel;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_settings/src/main/java/io/github/yamin8000/dooz/feature_settings/ui/SettingsEvent.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_settings/ui/SettingsEvent;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_settings/src/main/java/io/github/yamin8000/dooz/feature_settings/ui/SettingsState.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_settings/ui/SettingsState;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_settings/src/main/java/io/github/yamin8000/dooz/feature_settings/ui/UiSettingsTab.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_settings/ui/UiSettingsTab;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_settings/src/main/java/io/github/yamin8000/dooz/feature_settings/ui/SettingsAction.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_settings/ui/SettingsAction;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_settings/src/main/java/io/github/yamin8000/dooz/feature_settings/domain/model/SettingsTab.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_settings/domain/model/SettingsTab;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_settings/src/main/java/io/github/yamin8000/dooz/feature_settings/ui/components/NameField.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_settings/ui/components/NameField;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_settings/src/main/java/io/github/yamin8000/dooz/feature_settings/ui/components/SettingsItem.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_settings/ui/components/SettingsItem;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_settings/src/main/java/io/github/yamin8000/dooz/feature_settings/ui/components/PlayerSettings.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_settings/ui/components/PlayerSettings;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_settings/src/main/java/io/github/yamin8000/dooz/feature_settings/ui/components/SettingsSelectorDialog.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_settings/ui/components/SettingsSelectorDialog;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_settings/src/main/java/io/github/yamin8000/dooz/feature_settings/ui/components/GameSettings.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_settings/ui/components/GameSettings;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_settings/src/main/java/io/github/yamin8000/dooz/feature_settings/ui/components/GeneralSettings.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_settings/ui/components/GeneralSettings;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_settings/src/main/java/io/github/yamin8000/dooz/feature_settings/ui/components/SettingsItemCard.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_settings/ui/components/SettingsItemCard;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/common/src/main/java/io/github/yamin8000/dooz/common/di/CommonModule.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/common/di/CommonModule;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/common/src/main/java/io/github/yamin8000/dooz/common/util/Utility.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/common/util/Utility;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/common/src/main/java/io/github/yamin8000/dooz/common/util/Constants.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/common/util/Constants;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/common/src/main/java/io/github/yamin8000/dooz/common/util/LocaleUtils.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/common/util/LocaleUtils;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/common/src/main/java/io/github/yamin8000/dooz/common/domain/model/FirstPlayerPolicy.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/common/domain/model/FirstPlayerPolicy;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/common/src/main/java/io/github/yamin8000/dooz/common/domain/model/ThemeSetting.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/common/domain/model/ThemeSetting;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/common/src/main/java/io/github/yamin8000/dooz/common/domain/model/PlayerType.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/common/domain/model/PlayerType;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/common/src/main/java/io/github/yamin8000/dooz/common/domain/model/Player.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/common/domain/model/Player;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/common/src/main/java/io/github/yamin8000/dooz/common/domain/model/GameType.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/common/domain/model/GameType;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/common/src/main/java/io/github/yamin8000/dooz/common/domain/model/GamePlayersType.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/common/domain/model/GamePlayersType;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/common/src/main/java/io/github/yamin8000/dooz/common/domain/model/DoozCell.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/common/domain/model/DoozCell;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/common/src/main/java/io/github/yamin8000/dooz/common/domain/model/AiDifficulty.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/common/domain/model/AiDifficulty;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/common/src/main/java/io/github/yamin8000/dooz/common/domain/repository/SettingsRepository.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/common/domain/repository/SettingsRepository;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/common/src/main/java/io/github/yamin8000/dooz/common/ui/theme/Color.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/common/ui/theme/Color;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/common/src/main/java/io/github/yamin8000/dooz/common/ui/theme/Theme.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/common/ui/theme/Theme;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/common/src/main/java/io/github/yamin8000/dooz/common/ui/theme/Type.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/common/ui/theme/Type;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/common/src/main/java/io/github/yamin8000/dooz/common/ui/theme/Sizes.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/common/ui/theme/Sizes;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/common/src/main/java/io/github/yamin8000/dooz/common/ui/components/ScaffoldWithTitle.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/common/ui/components/ScaffoldWithTitle;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/common/src/main/java/io/github/yamin8000/dooz/common/ui/components/MySnackbar.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/common/ui/components/MySnackbar;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/common/src/main/java/io/github/yamin8000/dooz/common/ui/components/AppText.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/common/ui/components/AppText;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/common/src/main/java/io/github/yamin8000/dooz/common/ui/components/Ripple.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/common/ui/components/Ripple;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/common/src/main/java/io/github/yamin8000/dooz/common/ui/components/SingleLinePersianText.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/common/ui/components/SingleLinePersianText;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/common/src/main/java/io/github/yamin8000/dooz/common/ui/components/SwitchWithText.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/common/ui/components/SwitchWithText;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/common/src/main/java/io/github/yamin8000/dooz/common/ui/components/Shapes.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/common/ui/components/Shapes;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/common/src/main/java/io/github/yamin8000/dooz/common/ui/components/ClickableIcon.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/common/ui/components/ClickableIcon;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/common/src/main/java/io/github/yamin8000/dooz/common/data/datasource/DataStore.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/common/data/datasource/DataStore;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/common/src/main/java/io/github/yamin8000/dooz/common/data/repository/SettingsDataStoreRepository.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/common/data/repository/SettingsDataStoreRepository;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/common/src/main/java/io/github/yamin8000/dooz/common/util/datastore/DataStoreHelper.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/common/util/datastore/DataStoreHelper;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/common/src/main/java/io/github/yamin8000/dooz/common/util/datastore/SettingsKeys.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/common/util/datastore/SettingsKeys;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_game/src/main/java/io/github/yamin8000/dooz/feature_game/domain/GameConstants.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_game/domain/GameConstants;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_game/src/main/java/io/github/yamin8000/dooz/feature_game/ui/Game.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_game/ui/Game;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_game/src/main/java/io/github/yamin8000/dooz/feature_game/ui/GameEvent.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_game/ui/GameEvent;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_game/src/main/java/io/github/yamin8000/dooz/feature_game/ui/GameAction.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_game/ui/GameAction;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_game/src/main/java/io/github/yamin8000/dooz/feature_game/ui/GameViewModel.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_game/ui/GameViewModel;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_game/src/main/java/io/github/yamin8000/dooz/feature_game/ui/GameState.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_game/ui/GameState;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_game/src/main/java/io/github/yamin8000/dooz/feature_game/util/Utility.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_game/util/Utility;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_game/src/main/java/io/github/yamin8000/dooz/feature_game/domain/logic/GameLogic.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_game/domain/logic/GameLogic;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_game/src/main/java/io/github/yamin8000/dooz/feature_game/domain/logic/SimpleGameLogic.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_game/domain/logic/SimpleGameLogic;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_game/src/main/java/io/github/yamin8000/dooz/feature_game/domain/ai/GameAi.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_game/domain/ai/GameAi;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_game/src/main/java/io/github/yamin8000/dooz/feature_game/domain/ai/SimpleGameBlankCell.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_game/domain/ai/SimpleGameBlankCell;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_game/src/main/java/io/github/yamin8000/dooz/feature_game/domain/ai/SimpleGameAi.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_game/domain/ai/SimpleGameAi;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_game/src/main/java/io/github/yamin8000/dooz/feature_game/ui/components/PlayerCard.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_game/ui/components/PlayerCard;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_game/src/main/java/io/github/yamin8000/dooz/feature_game/ui/components/PlayerCards.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_game/ui/components/PlayerCards;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_game/src/main/java/io/github/yamin8000/dooz/feature_game/ui/components/PlayerDice.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_game/ui/components/PlayerDice;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_game/src/main/java/io/github/yamin8000/dooz/feature_game/ui/components/GameBoard.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_game/ui/components/GameBoard;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_game/src/main/java/io/github/yamin8000/dooz/feature_game/ui/components/GameResult.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_game/ui/components/GameResult;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_game/src/main/java/io/github/yamin8000/dooz/feature_game/ui/components/DoozItem.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_game/ui/components/DoozItem;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_game/src/main/java/io/github/yamin8000/dooz/feature_game/ui/components/GameInfoCard.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_game/ui/components/GameInfoCard;",
+     "dex_class_present": false
+    },
+    "Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/feature_game/src/main/java/io/github/yamin8000/dooz/feature_game/ui/components/GameTopAppBar.kt": {
+     "dex_class": "Lio/github/yamin8000/dooz/feature_game/ui/components/GameTopAppBar;",
+     "dex_class_present": false
+    }
+   },
+   "classes_mapped": 2,
+   "mapping_coverage": 0.001,
+   "mapping_note": "name-based package-path match; R8/ProGuard-obfuscated classes (short names like La1;) are UNMAPPED by design \u2014 recorded, not guessed",
+   "runtime_status": null,
+   "max_frame_nonwhite": null,
+   "view_tree_nodes": null,
+   "method_api_edges": {
+    "La02;-><clinit>()V": {
+     "android_apis": [
+      "Landroid/os/Trace;;.endSection",
+      "Landroid/util/Log;;.w"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "La02;->a(Landroid/content/Context; La80; Landroid/content/res/Resources; Ljava/lang/String; I Lqi0;)Landroid/graphics/Typeface;": {
+     "android_apis": [
+      "Landroid/graphics/Typeface$CustomFallbackBuilder;;.<init>",
+      "Landroid/graphics/Typeface$CustomFallbackBuilder;;.addCustomFallback",
+      "Landroid/graphics/Typeface$CustomFallbackBuilder;;.build",
+      "Landroid/graphics/Typeface$CustomFallbackBuilder;;.setSystemFallback",
+      "Landroid/graphics/fonts/Font$Builder;;.build",
+      "Landroid/graphics/fonts/Font$Builder;;.setFontVariationSettings",
+      "Landroid/graphics/fonts/FontFamily$Builder;;.<init>",
+      "Landroid/graphics/fonts/FontFamily$Builder;;.build",
+      "Landroid/os/Handler;;.<init>",
+      "Landroid/os/Looper;;.getMainLooper",
+      "Landroid/text/TextUtils;;.isEmpty",
+      "Landroid/util/Log;;.e",
+      "Landroid/util/Log;;.w"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "La02;->b(Landroid/content/res/Resources; Ljava/lang/String; I)Ljava/lang/String;": {
+     "android_apis": [
+      "Landroid/content/res/Resources;;.getResourcePackageName"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "La02;->c(Ljava/lang/String;)Landroid/graphics/Typeface;": {
+     "android_apis": [
+      "Landroid/graphics/Typeface;;.create",
+      "Landroid/graphics/Typeface;;.equals"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "La02;->d(Landroid/graphics/Typeface;)Landroid/graphics/fonts/Font;": {
+     "android_apis": [
+      "Landroid/graphics/Paint;;.<init>",
+      "Landroid/graphics/Paint;;.setTextSize",
+      "Landroid/graphics/Paint;;.setTypeface"
+     ],
+     "live_status": [
+      null,
+      null,
+      null
+     ]
+    },
+    "Lg5;->B(Ln1; Lqj1;)V": {
+     "android_apis": [
+      "Landroid/view/accessibility/AccessibilityNodeInfo;;.setCollectionItemInfo"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lg5;->r(Lqj1; Landroid/content/res/Resources;)Ljava/lang/String;": {
+     "android_apis": [
+      "Landroid/content/res/Resources;;.getString"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "La41;->writeToParcel(Landroid/os/Parcel; I)V": {
+     "android_apis": [
+      "Landroid/os/Parcel;;.writeLong"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "La4;->a(Luj;)V": {
+     "android_apis": [
+      "Landroid/content/ClipData;;.newPlainText",
+      "Landroid/content/ClipboardManager;;.setPrimaryClip"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "La61;->a(Landroid/view/WindowInsets; I)Ljava/util/List;": {
+     "android_apis": [
+      "Landroid/view/WindowInsets;;.getBoundingRects"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "La61;->b(Landroid/app/PictureInPictureUiState;)V": {
+     "android_apis": [
+      "Landroid/app/PictureInPictureUiState;;.isTransitioningToPip"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "La61;->c(Landroid/text/StaticLayout$Builder;)V": {
+     "android_apis": [
+      "Landroid/text/StaticLayout$Builder;;.setUseBoundsForWidth"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "La61;->d(Landroid/view/WindowInsets; I)Ljava/util/List;": {
+     "android_apis": [
+      "Landroid/view/WindowInsets;;.getBoundingRectsIgnoringVisibility"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "La72;-><clinit>()V": {
+     "android_apis": [
+      "Landroid/view/ViewGroup$LayoutParams;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "La72;->a(Lr; Lko; Lom;)Lx62;": {
+     "android_apis": [
+      "Landroid/view/View;;.getContext",
+      "Landroid/view/View;;.getTag",
+      "Landroid/view/View;;.setTag",
+      "Landroid/view/ViewGroup;;.getChildAt",
+      "Landroid/view/ViewGroup;;.getChildCount",
+      "Landroid/view/ViewGroup;;.removeAllViews"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Lad0;-><clinit>()V": {
+     "android_apis": [
+      "Landroid/graphics/Canvas;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lad0;-><init>(Lm00;)V": {
+     "android_apis": [
+      "Landroid/graphics/Rect;;.<init>",
+      "Landroid/view/View;;.generateViewId",
+      "Landroid/view/View;;.getResources",
+      "Landroid/view/View;;.setClipBounds",
+      "Landroid/view/ViewGroup;;.addView"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Lad0;->B(F)V": {
+     "android_apis": [
+      "Landroid/view/View;;.setScaleY"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lad0;->C()Landroid/graphics/Matrix;": {
+     "android_apis": [
+      "Landroid/view/View;;.getMatrix"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lad0;->D(I I J)V": {
+     "android_apis": [
+      "Landroid/view/View;;.getClipToOutline",
+      "Landroid/view/View;;.layout",
+      "Landroid/view/View;;.offsetLeftAndRight",
+      "Landroid/view/View;;.offsetTopAndBottom",
+      "Landroid/view/View;;.setPivotX",
+      "Landroid/view/View;;.setPivotY"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Lad0;->F(F)V": {
+     "android_apis": [
+      "Landroid/content/res/Resources;;.getDisplayMetrics",
+      "Landroid/view/View;;.setCameraDistance"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Lad0;->L(J)V": {
+     "android_apis": [
+      "Landroid/view/View;;.setPivotX",
+      "Landroid/view/View;;.setPivotY"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Lad0;->N(I)V": {
+     "android_apis": [
+      "Landroid/view/View;;.setLayerType"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lad0;->b()V": {
+     "android_apis": [
+      "Landroid/view/View;;.setRotationX"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lad0;->c(F)V": {
+     "android_apis": [
+      "Landroid/view/View;;.setAlpha"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lad0;->e(F)V": {
+     "android_apis": [
+      "Landroid/view/View;;.setElevation"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lad0;->g()V": {
+     "android_apis": [
+      "Landroid/view/View;;.setTranslationY"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lad0;->h()V": {
+     "android_apis": [
+      "Landroid/view/View;;.setRotationY"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lad0;->k(Landroid/graphics/Outline; J)V": {
+     "android_apis": [
+      "Landroid/view/View;;.getClipToOutline",
+      "Landroid/view/View;;.invalidateOutline",
+      "Landroid/view/View;;.setClipToOutline"
+     ],
+     "live_status": [
+      null,
+      null,
+      null
+     ]
+    },
+    "Lad0;->l()V": {
+     "android_apis": [
+      "Landroid/graphics/Paint;;.<init>",
+      "Landroid/graphics/Paint;;.setColorFilter"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Lad0;->m(F)V": {
+     "android_apis": [
+      "Landroid/view/View;;.setScaleX"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lad0;->n(I)V": {
+     "android_apis": [
+      "Landroid/graphics/Paint;;.<init>",
+      "Landroid/graphics/Paint;;.setXfermode",
+      "Landroid/graphics/PorterDuffXfermode;;.<init>"
+     ],
+     "live_status": [
+      null,
+      null,
+      null
+     ]
+    },
+    "Lad0;->o()F": {
+     "android_apis": [
+      "Landroid/content/res/Resources;;.getDisplayMetrics",
+      "Landroid/view/View;;.getCameraDistance"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Lad0;->p()V": {
+     "android_apis": [
+      "Landroid/view/ViewGroup;;.removeViewInLayout"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lad0;->r()V": {
+     "android_apis": [
+      "Landroid/view/View;;.setTranslationX"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lad0;->s(Ldi;)V": {
+     "android_apis": [
+      "Landroid/graphics/Canvas;;.isHardwareAccelerated",
+      "Landroid/view/View;;.getClipToOutline",
+      "Landroid/view/View;;.getDrawingTime",
+      "Landroid/view/View;;.getHeight",
+      "Landroid/view/View;;.getWidth",
+      "Landroid/view/View;;.setClipBounds"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Lad0;->t(Z)V": {
+     "android_apis": [
+      "Landroid/view/View;;.setClipToOutline"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lad0;->w(Low; Lnk0; Lrc0; Ln3;)V": {
+     "android_apis": [
+      "Landroid/view/View;;.getDrawingTime",
+      "Landroid/view/View;;.getParent",
+      "Landroid/view/View;;.isAttachedToWindow",
+      "Landroid/view/View;;.setVisibility",
+      "Landroid/view/ViewGroup;;.addView"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Lad0;->z()V": {
+     "android_apis": [
+      "Landroid/view/View;;.setRotation"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Leo;->I(Landroid/content/res/XmlResourceParser; Landroid/content/res/Resources;)La80;": {
+     "android_apis": [
+      "Landroid/content/res/Resources;;.obtainAttributes",
+      "Landroid/content/res/TypedArray;;.getInt",
+      "Landroid/content/res/TypedArray;;.getInteger",
+      "Landroid/content/res/TypedArray;;.getResourceId",
+      "Landroid/content/res/TypedArray;;.getString",
+      "Landroid/content/res/TypedArray;;.hasValue",
+      "Landroid/content/res/TypedArray;;.recycle",
+      "Landroid/util/Xml;;.asAttributeSet"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Leo;->J(Landroid/content/res/Resources; I)Ljava/util/List;": {
+     "android_apis": [
+      "Landroid/content/res/Resources;;.getStringArray",
+      "Landroid/content/res/Resources;;.obtainTypedArray",
+      "Landroid/content/res/TypedArray;;.getResourceId",
+      "Landroid/content/res/TypedArray;;.getType",
+      "Landroid/content/res/TypedArray;;.length",
+      "Landroid/content/res/TypedArray;;.recycle",
+      "Landroid/util/Base64;;.decode"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Leo;->L(Landroid/view/inputmethod/EditorInfo; Ljava/lang/CharSequence;)V": {
+     "android_apis": [
+      "Landroid/text/TextUtils;;.concat"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Leo;->M(Landroid/view/inputmethod/EditorInfo; Ljava/lang/CharSequence; I I)V": {
+     "android_apis": [
+      "Landroid/os/BaseBundle;;.putInt",
+      "Landroid/os/Bundle;;.<init>",
+      "Landroid/os/Bundle;;.putCharSequence",
+      "Landroid/text/SpannableStringBuilder;;.<init>"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Leo;->Q(Lfw1;)Landroid/view/inputmethod/ExtractedText;": {
+     "android_apis": [
+      "Landroid/view/inputmethod/ExtractedText;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Leo;->c(Ljava/lang/String; Z Lnb0; I)V": {
+     "android_apis": [
+      "Landroid/content/res/Resources;;.getString"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Leo;->x(Las0;)J": {
+     "android_apis": [
+      "Landroid/view/DragEvent;;.getX",
+      "Landroid/view/DragEvent;;.getY"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    }
+   },
+   "method_api_edges_note": "live_status: status of the API when the runtime ran this APK (IMPLEMENTED/STUBBED) \u2014 null when not reached at runtime"
+  },
+  {
+   "apk": "opmt_v0.1.2_vc1.apk",
+   "package": "one.scarecrow.games.OPMT",
+   "source_repo": "20Nick/OPMT",
+   "source_commit": "3240c4cf",
+   "provenance": "/home/z/my-project/upstream/corpus/one.scarecrow.games.OPMT/PROVENANCE.json",
+   "source_files": 9,
+   "source_root": "/home/z/my-project/upstream/corpus/one.scarecrow.games.OPMT/src",
+   "census": "/home/z/my-project/docs/foundation/dex_census/opmt_v0.1.2_vc1.json",
+   "app_classes": 31,
+   "app_methods": 103,
+   "api_call_sites": 320,
+   "source_to_dex": {
+    "OPMT-3240c4cf/app/src/main/java/one/scarecrow/games/OPMT/settingsActivity.java": {
+     "dex_class": "Lone/scarecrow/games/OPMT/settingsActivity;",
+     "dex_class_present": true
+    },
+    "OPMT-3240c4cf/app/src/main/java/one/scarecrow/games/OPMT/GameActivity.java": {
+     "dex_class": "Lone/scarecrow/games/OPMT/GameActivity;",
+     "dex_class_present": true
+    },
+    "OPMT-3240c4cf/app/src/main/java/one/scarecrow/games/OPMT/MainMenu.java": {
+     "dex_class": "Lone/scarecrow/games/OPMT/MainMenu;",
+     "dex_class_present": true
+    },
+    "OPMT-3240c4cf/app/src/main/java/one/scarecrow/games/OPMT/values.java": {
+     "dex_class": "Lone/scarecrow/games/OPMT/values;",
+     "dex_class_present": true
+    },
+    "OPMT-3240c4cf/app/src/main/java/one/scarecrow/games/OPMT/Game/Ai.java": {
+     "dex_class": "Lone/scarecrow/games/OPMT/Game/Ai;",
+     "dex_class_present": true
+    },
+    "OPMT-3240c4cf/app/src/main/java/one/scarecrow/games/OPMT/Game/Pieces.java": {
+     "dex_class": "Lone/scarecrow/games/OPMT/Game/Pieces;",
+     "dex_class_present": true
+    },
+    "OPMT-3240c4cf/app/src/main/java/one/scarecrow/games/OPMT/Game/Board.java": {
+     "dex_class": "Lone/scarecrow/games/OPMT/Game/Board;",
+     "dex_class_present": true
+    },
+    "OPMT-3240c4cf/app/src/test/java/com/Scarecrow/games/OPMT/ExampleUnitTest.java": {
+     "dex_class": "Lcom/Scarecrow/games/OPMT/ExampleUnitTest;",
+     "dex_class_present": false
+    },
+    "OPMT-3240c4cf/app/src/androidTest/java/com/Scarecrow/games/OPMT/ExampleInstrumentedTest.java": {
+     "dex_class": "Lcom/Scarecrow/games/OPMT/ExampleInstrumentedTest;",
+     "dex_class_present": false
+    }
+   },
+   "classes_mapped": 7,
+   "mapping_coverage": 0.226,
+   "mapping_note": "name-based package-path match; R8/ProGuard-obfuscated classes (short names like La1;) are UNMAPPED by design \u2014 recorded, not guessed",
+   "runtime_status": "SUCCESS",
+   "max_frame_nonwhite": 213286,
+   "view_tree_nodes": 7,
+   "method_api_edges": {
+    "Lone/scarecrow/games/OPMT/GameActivity;->getButtonNameToId(I)I": {
+     "android_apis": [
+      "Landroid/widget/Button;;.getId"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lone/scarecrow/games/OPMT/GameActivity;->setTextBox(Ljava/lang/String;)V": {
+     "android_apis": [
+      "Landroid/widget/TextView;;.setText"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lone/scarecrow/games/OPMT/GameActivity;->win(Ljava/lang/String;)V": {
+     "android_apis": [
+      "Landroid/app/AlertDialog$Builder;;.<init>",
+      "Landroid/app/AlertDialog$Builder;;.create",
+      "Landroid/app/AlertDialog$Builder;;.setCancelable",
+      "Landroid/app/AlertDialog$Builder;;.setMessage",
+      "Landroid/app/AlertDialog$Builder;;.setPositiveButton",
+      "Landroid/app/AlertDialog;;.show"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Lone/scarecrow/games/OPMT/GameActivity;->lambda$9$one-scarecrow-games-OPMT-GameActivity(Landroid/content/DialogInterface; I)V": {
+     "android_apis": [
+      "Landroid/content/DialogInterface;;.dismiss"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lone/scarecrow/games/OPMT/GameActivity;->onCreate(Landroid/os/Bundle;)V": {
+     "android_apis": [
+      "Landroid/view/Window;;.setFlags",
+      "Landroid/widget/Button;;.setOnClickListener"
+     ],
+     "live_status": [
+      null,
+      null
+     ]
+    },
+    "Lone/scarecrow/games/OPMT/GameActivity;->setBackgroundResourceValue(I Ljava/lang/String;)V": {
+     "android_apis": [
+      "Landroid/widget/Button;;.setBackgroundResource"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lone/scarecrow/games/OPMT/MainMenu;->showComputerBox()V": {
+     "android_apis": [
+      "Landroid/app/AlertDialog$Builder;;.<init>",
+      "Landroid/app/AlertDialog$Builder;;.create",
+      "Landroid/app/AlertDialog$Builder;;.setCancelable",
+      "Landroid/app/AlertDialog$Builder;;.setNegativeButton",
+      "Landroid/app/AlertDialog$Builder;;.setPositiveButton",
+      "Landroid/app/AlertDialog$Builder;;.setTitle",
+      "Landroid/app/AlertDialog;;.show"
+     ],
+     "live_status": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "Lone/scarecrow/games/OPMT/MainMenu;->lambda$0$one-scarecrow-games-OPMT-MainMenu(Landroid/view/View;)V": {
+     "android_apis": [
+      "Landroid/content/Intent;;.<init>",
+      "Landroid/content/Intent;;.setData",
+      "Landroid/net/Uri;;.parse"
+     ],
+     "live_status": [
+      null,
+      null,
+      null
+     ]
+    },
+    "Lone/scarecrow/games/OPMT/MainMenu;->lambda$3$one-scarecrow-games-OPMT-MainMenu(Landroid/view/View;)V": {
+     "android_apis": [
+      "Landroid/content/Intent;;.<init>"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lone/scarecrow/games/OPMT/MainMenu;->lambda$4$one-scarecrow-games-OPMT-MainMenu(Landroid/content/DialogInterface; I)V": {
+     "android_apis": [
+      "Landroid/content/DialogInterface;;.dismiss"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lone/scarecrow/games/OPMT/MainMenu;->lambda$5$one-scarecrow-games-OPMT-MainMenu(Landroid/content/DialogInterface; I)V": {
+     "android_apis": [
+      "Landroid/content/DialogInterface;;.dismiss"
+     ],
+     "live_status": [
+      null
+     ]
+    },
+    "Lone/scarecrow/games/OPMT/MainMenu;->onCreate(Landroid/os/Bundle;)V": {
+     "android_apis": [
+      "Landroid/content/Intent;;.<init>",
+      "Landroid/view/Window;;.setFlags",
+      "Landroid/widget/Button;;.setOnClickListener"
+     ],
+     "live_status": [
+      null,
+      null,
+      null
+     ]
+    }
+   },
+   "method_api_edges_note": "live_status: status of the API when the runtime ran this APK (IMPLEMENTED/STUBBED) \u2014 null when not reached at runtime"
+  }
+ ]
+}

@@ -1,0 +1,5 @@
+{
+ "note": "Static extraction of (class,method) string-guard pairs per dispatch function. Cross-product within a function is an honest OVER-approximation; live run traces are ground truth.",
+ "count": 0,
+ "pairs": []
+}

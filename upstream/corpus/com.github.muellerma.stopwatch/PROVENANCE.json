@@ -1,0 +1,13 @@
+{
+ "apk": "com.github.muellerma.stopwatch_6.apk",
+ "package": "com.github.muellerma.stopwatch",
+ "versionCode": 6,
+ "source_repo": "mueller-ma/Stopwatch",
+ "source_commit": "13d2fab247e431104e40126e1ecd5099e6ce49fa",
+ "tarball_sha256": "2d84912e1f95c82d9ea7268513b18a8e7628c507455a83df8515efb73c37c0f3",
+ "tarball_bytes": 615451,
+ "extracted": true,
+ "fetched_at": "2026-09-20T04:39:56Z",
+ "metadata_origin": "https://gitlab.com/fdroid/fdroiddata/-/raw/master/metadata/com.github.muellerma.stopwatch.yml",
+ "codeload_origin": "https://codeload.github.com/mueller-ma/Stopwatch/tar.gz/13d2fab247e431104e40126e1ecd5099e6ce49fa"
+}

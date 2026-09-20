@@ -1,0 +1,3425 @@
+{
+ "generated": "2026-09-20T05:32:34Z",
+ "campaign": "S69 FINAL FOUNDATION / SOURCE-LINKED RUNTIME",
+ "chain": [
+  "APK",
+  "DEX",
+  "Class",
+  "Method",
+  "Instruction/API",
+  "Runtime subsystem",
+  "Framework state",
+  "View",
+  "Layout",
+  "Canvas",
+  "Framebuffer",
+  "PNG/PPM",
+  "Pixel evidence"
+ ],
+ "build_graph": {
+  "verdicts": null,
+  "note": "LIVE/DEAD classification; dead TUs excluded from graphs"
+ },
+ "class_graph": {
+  "count": 387,
+  "classes": [
+   {
+    "class": "FileSandbox",
+    "header": "src/api/android_context.h",
+    "bases": []
+   },
+   {
+    "class": "SharedPreferences",
+    "header": "src/api/android_context.h",
+    "bases": []
+   },
+   {
+    "class": "Resources",
+    "header": "src/api/android_context.h",
+    "bases": []
+   },
+   {
+    "class": "AssetManager",
+    "header": "src/api/android_context.h",
+    "bases": []
+   },
+   {
+    "class": "PackageManager",
+    "header": "src/api/android_context.h",
+    "bases": []
+   },
+   {
+    "class": "ContextConfig",
+    "header": "src/api/android_context.h",
+    "bases": []
+   },
+   {
+    "class": "Context",
+    "header": "src/api/android_context.h",
+    "bases": []
+   },
+   {
+    "class": "ApplicationInfo",
+    "header": "src/api/android_context.h",
+    "bases": []
+   },
+   {
+    "class": "ContextWrapper",
+    "header": "src/api/android_context.h",
+    "bases": [
+     "public Context"
+    ]
+   },
+   {
+    "class": "ApplicationContext",
+    "header": "src/api/android_context.h",
+    "bases": [
+     "public ContextWrapper"
+    ]
+   },
+   {
+    "class": "Bundle",
+    "header": "src/api/android_stubs.h",
+    "bases": []
+   },
+   {
+    "class": "Context",
+    "header": "src/api/android_stubs.h",
+    "bases": []
+   },
+   {
+    "class": "Activity",
+    "header": "src/api/android_stubs.h",
+    "bases": []
+   },
+   {
+    "class": "View",
+    "header": "src/api/android_stubs.h",
+    "bases": []
+   },
+   {
+    "class": "ViewGroup",
+    "header": "src/api/android_stubs.h",
+    "bases": []
+   },
+   {
+    "class": "TextView",
+    "header": "src/api/android_stubs.h",
+    "bases": []
+   },
+   {
+    "class": "Canvas",
+    "header": "src/api/android_stubs.h",
+    "bases": []
+   },
+   {
+    "class": "Paint",
+    "header": "src/api/android_stubs.h",
+    "bases": []
+   },
+   {
+    "class": "AndroidObject",
+    "header": "src/api/android_stubs.h",
+    "bases": []
+   },
+   {
+    "class": "Bundle",
+    "header": "src/api/android_stubs.h",
+    "bases": [
+     "public AndroidObject"
+    ]
+   },
+   {
+    "class": "Context",
+    "header": "src/api/android_stubs.h",
+    "bases": [
+     "public AndroidObject"
+    ]
+   },
+   {
+    "class": "Paint",
+    "header": "src/api/android_stubs.h",
+    "bases": [
+     "public AndroidObject"
+    ]
+   },
+   {
+    "class": "Canvas",
+    "header": "src/api/android_stubs.h",
+    "bases": [
+     "public AndroidObject"
+    ]
+   },
+   {
+    "class": "View",
+    "header": "src/api/android_stubs.h",
+    "bases": [
+     "public AndroidObject",
+     "enable_shared_from_this"
+    ]
+   },
+   {
+    "class": "ViewGroup",
+    "header": "src/api/android_stubs.h",
+    "bases": [
+     "public View"
+    ]
+   },
+   {
+    "class": "TextView",
+    "header": "src/api/android_stubs.h",
+    "bases": [
+     "public View"
+    ]
+   },
+   {
+    "class": "Activity",
+    "header": "src/api/android_stubs.h",
+    "bases": [
+     "public Context"
+    ]
+   },
+   {
+    "class": "ApiCallRecord",
+    "header": "src/api/android_stubs.h",
+    "bases": []
+   },
+   {
+    "class": "ApiRegistry",
+    "header": "src/api/android_stubs.h",
+    "bases": []
+   },
+   {
+    "class": "PrefValue",
+    "header": "src/api/shared_prefs.h",
+    "bases": []
+   },
+   {
+    "class": "PrefsResult",
+    "header": "src/api/shared_prefs.h",
+    "bases": []
+   },
+   {
+    "class": "SharedPreferences",
+    "header": "src/api/shared_prefs.h",
+    "bases": []
+   },
+   {
+    "class": "SharedPreferencesEditor",
+    "header": "src/api/shared_prefs.h",
+    "bases": []
+   },
+   {
+    "class": "SharedPreferencesEditor",
+    "header": "src/api/shared_prefs.h",
+    "bases": []
+   },
+   {
+    "class": "SharedPreferences",
+    "header": "src/api/shared_prefs.h",
+    "bases": []
+   },
+   {
+    "class": "ApkInfo",
+    "header": "src/apk/apk_parser.h",
+    "bases": []
+   },
+   {
+    "class": "ZipLocalFileHeader",
+    "header": "src/apk/apk_parser.h",
+    "bases": []
+   },
+   {
+    "class": "ZipCentralDirEntry",
+    "header": "src/apk/apk_parser.h",
+    "bases": []
+   },
+   {
+    "class": "ZipEndOfCentralDir",
+    "header": "src/apk/apk_parser.h",
+    "bases": []
+   },
+   {
+    "class": "ZipEntry",
+    "header": "src/apk/apk_parser.h",
+    "bases": []
+   },
+   {
+    "class": "ApkParser",
+    "header": "src/apk/apk_parser.h",
+    "bases": []
+   },
+   {
+    "class": "ManifestInfo",
+    "header": "src/apk/manifest_reader.h",
+    "bases": []
+   },
+   {
+    "class": "ActivityInfo",
+    "header": "src/apk/manifest_reader.h",
+    "bases": []
+   },
+   {
+    "class": "AxmlChunkHeader",
+    "header": "src/apk/manifest_reader.h",
+    "bases": []
+   },
+   {
+    "class": "AxmlHeader",
+    "header": "src/apk/manifest_reader.h",
+    "bases": []
+   },
+   {
+    "class": "AxmlStringPoolHeader",
+    "header": "src/apk/manifest_reader.h",
+    "bases": []
+   },
+   {
+    "class": "AxmlResourceIdsHeader",
+    "header": "src/apk/manifest_reader.h",
+    "bases": []
+   },
+   {
+    "class": "AxmlStartNamespace",
+    "header": "src/apk/manifest_reader.h",
+    "bases": []
+   },
+   {
+    "class": "AxmlEndNamespace",
+    "header": "src/apk/manifest_reader.h",
+    "bases": []
+   },
+   {
+    "class": "AxmlStartElement",
+    "header": "src/apk/manifest_reader.h",
+    "bases": []
+   },
+   {
+    "class": "AxmlEndElement",
+    "header": "src/apk/manifest_reader.h",
+    "bases": []
+   },
+   {
+    "class": "AxmlAttribute",
+    "header": "src/apk/manifest_reader.h",
+    "bases": []
+   },
+   {
+    "class": "ManifestReader",
+    "header": "src/apk/manifest_reader.h",
+    "bases": []
+   },
+   {
+    "class": "DecodedPcm",
+    "header": "src/audio/audio_engine.h",
+    "bases": []
+   },
+   {
+    "class": "MediaPlayer",
+    "header": "src/audio/audio_engine.h",
+    "bases": []
+   },
+   {
+    "class": "TransitionRecord",
+    "header": "src/audio/audio_engine.h",
+    "bases": []
+   },
+   {
+    "class": "SoundPool",
+    "header": "src/audio/audio_engine.h",
+    "bases": []
+   },
+   {
+    "class": "AudioTrack",
+    "header": "src/audio/audio_engine.h",
+    "bases": []
+   },
+   {
+    "class": "ApiCallContext",
+    "header": "src/dex/api_dispatcher.h",
+    "bases": []
+   },
+   {
+    "class": "ApiResult",
+    "header": "src/dex/api_dispatcher.h",
+    "bases": []
+   },
+   {
+    "class": "IApiResolver",
+    "header": "src/dex/api_dispatcher.h",
+    "bases": []
+   },
+   {
+    "class": "ObjectResolver",
+    "header": "src/dex/api_dispatcher.h",
+    "bases": [
+     "public IApiResolver"
+    ]
+   },
+   {
+    "class": "StringResolver",
+    "header": "src/dex/api_dispatcher.h",
+    "bases": [
+     "public IApiResolver"
+    ]
+   },
+   {
+    "class": "ClassResolver",
+    "header": "src/dex/api_dispatcher.h",
+    "bases": [
+     "public IApiResolver"
+    ]
+   },
+   {
+    "class": "ActivityResolver",
+    "header": "src/dex/api_dispatcher.h",
+    "bases": [
+     "public IApiResolver"
+    ]
+   },
+   {
+    "class": "ViewResolver",
+    "header": "src/dex/api_dispatcher.h",
+    "bases": [
+     "public IApiResolver"
+    ]
+   },
+   {
+    "class": "TextViewResolver",
+    "header": "src/dex/api_dispatcher.h",
+    "bases": [
+     "public IApiResolver"
+    ]
+   },
+   {
+    "class": "BundleResolver",
+    "header": "src/dex/api_dispatcher.h",
+    "bases": [
+     "public IApiResolver"
+    ]
+   },
+   {
+    "class": "LogResolver",
+    "header": "src/dex/api_dispatcher.h",
+    "bases": [
+     "public IApiResolver"
+    ]
+   },
+   {
+    "class": "ApiDispatcher",
+    "header": "src/dex/api_dispatcher.h",
+    "bases": []
+   },
+   {
+    "class": "EntryPoint",
+    "header": "src/dex/class_resolver.h",
+    "bases": []
+   },
+   {
+    "class": "ExecutionTrace",
+    "header": "src/dex/class_resolver.h",
+    "bases": []
+   },
+   {
+    "class": "PipelineStage",
+    "header": "src/dex/class_resolver.h",
+    "bases": []
+   },
+   {
+    "class": "MethodMapEntry",
+    "header": "src/dex/class_resolver.h",
+    "bases": []
+   },
+   {
+    "class": "Issue",
+    "header": "src/dex/class_resolver.h",
+    "bases": []
+   },
+   {
+    "class": "ClassResolver",
+    "header": "src/dex/class_resolver.h",
+    "bases": []
+   },
+   {
+    "class": "ShadowRegistry",
+    "header": "src/dex/dalvik_engine.h",
+    "bases": []
+   },
+   {
+    "class": "CallResult",
+    "header": "src/dex/dalvik_engine.h",
+    "bases": []
+   },
+   {
+    "class": "HeapAllocator",
+    "header": "src/dex/dalvik_engine.h",
+    "bases": []
+   },
+   {
+    "class": "DalvikValue",
+    "header": "src/dex/dalvik_engine.h",
+    "bases": []
+   },
+   {
+    "class": "DexRegisterFile",
+    "header": "src/dex/dalvik_engine.h",
+    "bases": []
+   },
+   {
+    "class": "StackFrame",
+    "header": "src/dex/dalvik_engine.h",
+    "bases": []
+   },
+   {
+    "class": "HeapObject",
+    "header": "src/dex/dalvik_engine.h",
+    "bases": []
+   },
+   {
+    "class": "DalvikHeap",
+    "header": "src/dex/dalvik_engine.h",
+    "bases": []
+   },
+   {
+    "class": "CallStack",
+    "header": "src/dex/dalvik_engine.h",
+    "bases": []
+   },
+   {
+    "class": "InstructionTrace",
+    "header": "src/dex/dalvik_engine.h",
+    "bases": []
+   },
+   {
+    "class": "Operand",
+    "header": "src/dex/dalvik_engine.h",
+    "bases": []
+   },
+   {
+    "class": "ApiCallTrace",
+    "header": "src/dex/dalvik_engine.h",
+    "bases": []
+   },
+   {
+    "class": "DalvikExecutionResult",
+    "header": "src/dex/dalvik_engine.h",
+    "bases": []
+   },
+   {
+    "class": "DalvikExecutionEngine",
+    "header": "src/dex/dalvik_engine.h",
+    "bases": []
+   },
+   {
+    "class": "Config",
+    "header": "src/dex/dalvik_engine.h",
+    "bases": []
+   },
+   {
+    "class": "XmlPullState",
+    "header": "src/dex/dalvik_engine.h",
+    "bases": []
+   },
+   {
+    "class": "FieldResolution",
+    "header": "src/dex/dalvik_engine.h",
+    "bases": []
+   },
+   {
+    "class": "PendingAnim",
+    "header": "src/dex/dalvik_engine.h",
+    "bases": []
+   },
+   {
+    "class": "Value",
+    "header": "src/dex/dex_interpreter_batch.h",
+    "bases": []
+   },
+   {
+    "class": "RegisterFile",
+    "header": "src/dex/dex_interpreter_batch.h",
+    "bases": []
+   },
+   {
+    "class": "HeapObject",
+    "header": "src/dex/dex_interpreter_batch.h",
+    "bases": []
+   },
+   {
+    "class": "ObjectHeap",
+    "header": "src/dex/dex_interpreter_batch.h",
+    "bases": []
+   },
+   {
+    "class": "ApiCallTraceEntry",
+    "header": "src/dex/dex_interpreter_batch.h",
+    "bases": []
+   },
+   {
+    "class": "ObjectCreationTraceEntry",
+    "header": "src/dex/dex_interpreter_batch.h",
+    "bases": []
+   },
+   {
+    "class": "ConstructorTraceEntry",
+    "header": "src/dex/dex_interpreter_batch.h",
+    "bases": []
+   },
+   {
+    "class": "FailureReportEntry",
+    "header": "src/dex/dex_interpreter_batch.h",
+    "bases": []
+   },
+   {
+    "class": "InstructionTraceEntry",
+    "header": "src/dex/dex_interpreter_batch.h",
+    "bases": []
+   },
+   {
+    "class": "Operand",
+    "header": "src/dex/dex_interpreter_batch.h",
+    "bases": []
+   },
+   {
+    "class": "BatchExecutionTrace",
+    "header": "src/dex/dex_interpreter_batch.h",
+    "bases": []
+   },
+   {
+    "class": "BatchInterpreterConfig",
+    "header": "src/dex/dex_interpreter_batch.h",
+    "bases": []
+   },
+   {
+    "class": "DexInterpreterBatch",
+    "header": "src/dex/dex_interpreter_batch.h",
+    "bases": []
+   },
+   {
+    "class": "DexHeader",
+    "header": "src/dex/dex_parser.h",
+    "bases": []
+   },
+   {
+    "class": "DexStringId",
+    "header": "src/dex/dex_parser.h",
+    "bases": []
+   },
+   {
+    "class": "DexTypeId",
+    "header": "src/dex/dex_parser.h",
+    "bases": []
+   },
+   {
+    "class": "DexProtoId",
+    "header": "src/dex/dex_parser.h",
+    "bases": []
+   },
+   {
+    "class": "DexFieldId",
+    "header": "src/dex/dex_parser.h",
+    "bases": []
+   },
+   {
+    "class": "DexMethodId",
+    "header": "src/dex/dex_parser.h",
+    "bases": []
+   },
+   {
+    "class": "DexClassDef",
+    "header": "src/dex/dex_parser.h",
+    "bases": []
+   },
+   {
+    "class": "DexClassDataHeader",
+    "header": "src/dex/dex_parser.h",
+    "bases": []
+   },
+   {
+    "class": "DexEncodedField",
+    "header": "src/dex/dex_parser.h",
+    "bases": []
+   },
+   {
+    "class": "DexEncodedMethod",
+    "header": "src/dex/dex_parser.h",
+    "bases": []
+   },
+   {
+    "class": "DexCodeItem",
+    "header": "src/dex/dex_parser.h",
+    "bases": []
+   },
+   {
+    "class": "MethodInfo",
+    "header": "src/dex/dex_parser.h",
+    "bases": []
+   },
+   {
+    "class": "FieldInfo",
+    "header": "src/dex/dex_parser.h",
+    "bases": []
+   },
+   {
+    "class": "ClassInfo",
+    "header": "src/dex/dex_parser.h",
+    "bases": []
+   },
+   {
+    "class": "DexReport",
+    "header": "src/dex/dex_parser.h",
+    "bases": []
+   },
+   {
+    "class": "DexParser",
+    "header": "src/dex/dex_parser.h",
+    "bases": []
+   },
+   {
+    "class": "EncodedValue",
+    "header": "src/dex/encoded_value.h",
+    "bases": []
+   },
+   {
+    "class": "TryCatchEntry",
+    "header": "src/dex/exception_system.h",
+    "bases": []
+   },
+   {
+    "class": "TryCatchTable",
+    "header": "src/dex/exception_system.h",
+    "bases": []
+   },
+   {
+    "class": "DalvikException",
+    "header": "src/dex/exception_system.h",
+    "bases": []
+   },
+   {
+    "class": "StackFrame",
+    "header": "src/dex/exception_system.h",
+    "bases": []
+   },
+   {
+    "class": "ExceptionManager",
+    "header": "src/dex/exception_system.h",
+    "bases": []
+   },
+   {
+    "class": "ExecutionLimits",
+    "header": "src/dex/execution_guard.h",
+    "bases": []
+   },
+   {
+    "class": "ExecutionLimitExceeded",
+    "header": "src/dex/execution_guard.h",
+    "bases": [
+     "runtime_error"
+    ]
+   },
+   {
+    "class": "ExecutionGuard",
+    "header": "src/dex/execution_guard.h",
+    "bases": []
+   },
+   {
+    "class": "LastViolation",
+    "header": "src/dex/execution_guard.h",
+    "bases": []
+   },
+   {
+    "class": "RegisterState",
+    "header": "src/dex/execution_observatory.h",
+    "bases": []
+   },
+   {
+    "class": "InstructionRecord",
+    "header": "src/dex/execution_observatory.h",
+    "bases": []
+   },
+   {
+    "class": "MethodExecutionRecord",
+    "header": "src/dex/execution_observatory.h",
+    "bases": []
+   },
+   {
+    "class": "ApiCallRecord",
+    "header": "src/dex/execution_observatory.h",
+    "bases": []
+   },
+   {
+    "class": "TimeoutRecord",
+    "header": "src/dex/execution_observatory.h",
+    "bases": []
+   },
+   {
+    "class": "ExceptionRecord",
+    "header": "src/dex/execution_observatory.h",
+    "bases": []
+   },
+   {
+    "class": "ExecutionObservatory",
+    "header": "src/dex/execution_observatory.h",
+    "bases": []
+   },
+   {
+    "class": "DecodeResult",
+    "header": "src/dex/mutf8.h",
+    "bases": []
+   },
+   {
+    "class": "TraceExporter",
+    "header": "src/dex/trace_exporter.h",
+    "bases": []
+   },
+   {
+    "class": "TraceEntry",
+    "header": "src/diagnostics/trace_engine.h",
+    "bases": []
+   },
+   {
+    "class": "ErrorRecord",
+    "header": "src/diagnostics/trace_engine.h",
+    "bases": []
+   },
+   {
+    "class": "ScreenshotRecord",
+    "header": "src/diagnostics/trace_engine.h",
+    "bases": []
+   },
+   {
+    "class": "ExecutionMetrics",
+    "header": "src/diagnostics/trace_engine.h",
+    "bases": []
+   },
+   {
+    "class": "TraceEngine",
+    "header": "src/diagnostics/trace_engine.h",
+    "bases": []
+   },
+   {
+    "class": "ScopedTimer",
+    "header": "src/diagnostics/trace_engine.h",
+    "bases": []
+   },
+   {
+    "class": "ShapedGlyph",
+    "header": "src/fonts/text_shaper.h",
+    "bases": []
+   },
+   {
+    "class": "ShapedText",
+    "header": "src/fonts/text_shaper.h",
+    "bases": []
+   },
+   {
+    "class": "TextLayoutLine",
+    "header": "src/fonts/text_shaper.h",
+    "bases": []
+   },
+   {
+    "class": "TextLayout",
+    "header": "src/fonts/text_shaper.h",
+    "bases": []
+   },
+   {
+    "class": "FontMetrics",
+    "header": "src/fonts/text_shaper.h",
+    "bases": []
+   },
+   {
+    "class": "RasterPub",
+    "header": "src/fonts/text_shaper.h",
+    "bases": []
+   },
+   {
+    "class": "TextShaper",
+    "header": "src/fonts/text_shaper.h",
+    "bases": []
+   },
+   {
+    "class": "Face",
+    "header": "src/fonts/text_shaper.h",
+    "bases": []
+   },
+   {
+    "class": "ArchTaskExecutorShadow",
+    "header": "src/framework/android_shadows.h",
+    "bases": [
+     "public Shadow"
+    ]
+   },
+   {
+    "class": "ThreadShadow",
+    "header": "src/framework/android_shadows.h",
+    "bases": [
+     "public Shadow"
+    ]
+   },
+   {
+    "class": "LooperShadow",
+    "header": "src/framework/android_shadows.h",
+    "bases": [
+     "public Shadow"
+    ]
+   },
+   {
+    "class": "HandlerShadow",
+    "header": "src/framework/android_shadows.h",
+    "bases": [
+     "public Shadow"
+    ]
+   },
+   {
+    "class": "QueuedRunnable",
+    "header": "src/framework/android_shadows.h",
+    "bases": []
+   },
+   {
+    "class": "IntentShadow",
+    "header": "src/framework/android_shadows.h",
+    "bases": [
+     "public Shadow"
+    ]
+   },
+   {
+    "class": "PendingIntent",
+    "header": "src/framework/android_shadows.h",
+    "bases": []
+   },
+   {
+    "class": "ActivityShadow",
+    "header": "src/framework/android_shadows.h",
+    "bases": [
+     "public Shadow"
+    ]
+   },
+   {
+    "class": "ActivityRecord",
+    "header": "src/framework/android_shadows.h",
+    "bases": []
+   },
+   {
+    "class": "LifecycleCallbackEntry",
+    "header": "src/framework/android_shadows.h",
+    "bases": []
+   },
+   {
+    "class": "LayoutInflaterShadow",
+    "header": "src/framework/android_shadows.h",
+    "bases": [
+     "public Shadow"
+    ]
+   },
+   {
+    "class": "ViewShadow",
+    "header": "src/framework/android_shadows.h",
+    "bases": [
+     "public Shadow"
+    ]
+   },
+   {
+    "class": "ViewNode",
+    "header": "src/framework/android_shadows.h",
+    "bases": []
+   },
+   {
+    "class": "BgStateItem",
+    "header": "src/framework/android_shadows.h",
+    "bases": []
+   },
+   {
+    "class": "TagValue",
+    "header": "src/framework/android_shadows.h",
+    "bases": []
+   },
+   {
+    "class": "WebSettingsShadow",
+    "header": "src/framework/android_shadows.h",
+    "bases": [
+     "public Shadow"
+    ]
+   },
+   {
+    "class": "Prop",
+    "header": "src/framework/android_shadows.h",
+    "bases": []
+   },
+   {
+    "class": "CollectionShadow",
+    "header": "src/framework/android_shadows.h",
+    "bases": [
+     "public Shadow"
+    ]
+   },
+   {
+    "class": "CollectionState",
+    "header": "src/framework/android_shadows.h",
+    "bases": []
+   },
+   {
+    "class": "ViewElem",
+    "header": "src/framework/android_shadows.h",
+    "bases": []
+   },
+   {
+    "class": "AtomicShadow",
+    "header": "src/framework/atomic_shadow.h",
+    "bases": [
+     "public Shadow"
+    ]
+   },
+   {
+    "class": "AtomicCell",
+    "header": "src/framework/atomic_shadow.h",
+    "bases": []
+   },
+   {
+    "class": "ArrayCell",
+    "header": "src/framework/atomic_shadow.h",
+    "bases": []
+   },
+   {
+    "class": "StoredBitmap",
+    "header": "src/framework/bitmap_shadow.h",
+    "bases": []
+   },
+   {
+    "class": "BitmapStore",
+    "header": "src/framework/bitmap_shadow.h",
+    "bases": []
+   },
+   {
+    "class": "BitmapShadow",
+    "header": "src/framework/bitmap_shadow.h",
+    "bases": [
+     "public Shadow"
+    ]
+   },
+   {
+    "class": "CanvasShadow",
+    "header": "src/framework/canvas_shadow.h",
+    "bases": []
+   },
+   {
+    "class": "PaintShadow",
+    "header": "src/framework/canvas_shadow.h",
+    "bases": []
+   },
+   {
+    "class": "Affine2D",
+    "header": "src/framework/canvas_shadow.h",
+    "bases": []
+   },
+   {
+    "class": "DrawOp",
+    "header": "src/framework/canvas_shadow.h",
+    "bases": []
+   },
+   {
+    "class": "CanvasShadow",
+    "header": "src/framework/canvas_shadow.h",
+    "bases": [
+     "public Shadow"
+    ]
+   },
+   {
+    "class": "miniandroid",
+    "header": "src/framework/canvas_shadow.h",
+    "bases": [
+     "BitmapFont& font"
+    ]
+   },
+   {
+    "class": "PathData",
+    "header": "src/framework/canvas_shadow.h",
+    "bases": []
+   },
+   {
+    "class": "ChoreographerShadow",
+    "header": "src/framework/choreographer_shadow.h",
+    "bases": [
+     "public Shadow"
+    ]
+   },
+   {
+    "class": "DueFrame",
+    "header": "src/framework/choreographer_shadow.h",
+    "bases": []
+   },
+   {
+    "class": "PendingCallback",
+    "header": "src/framework/choreographer_shadow.h",
+    "bases": []
+   },
+   {
+    "class": "ClipboardShadow",
+    "header": "src/framework/clipboard_shadow.h",
+    "bases": [
+     "public Shadow"
+    ]
+   },
+   {
+    "class": "ClipEntry",
+    "header": "src/framework/clipboard_shadow.h",
+    "bases": []
+   },
+   {
+    "class": "ViewShadow",
+    "header": "src/framework/dialog_shadow.h",
+    "bases": []
+   },
+   {
+    "class": "DialogWindow",
+    "header": "src/framework/dialog_shadow.h",
+    "bases": []
+   },
+   {
+    "class": "Btn",
+    "header": "src/framework/dialog_shadow.h",
+    "bases": []
+   },
+   {
+    "class": "ToastState",
+    "header": "src/framework/dialog_shadow.h",
+    "bases": []
+   },
+   {
+    "class": "DialogShadow",
+    "header": "src/framework/dialog_shadow.h",
+    "bases": [
+     "public Shadow"
+    ]
+   },
+   {
+    "class": "ArrayAdapterShadow",
+    "header": "src/framework/dialog_shadow.h",
+    "bases": [
+     "public Shadow"
+    ]
+   },
+   {
+    "class": "ExecutorShadow",
+    "header": "src/framework/executor_shadow.h",
+    "bases": [
+     "public Shadow"
+    ]
+   },
+   {
+    "class": "ExecutorState",
+    "header": "src/framework/executor_shadow.h",
+    "bases": []
+   },
+   {
+    "class": "DalvikHeapAdapter",
+    "header": "src/framework/heap_adapter.h",
+    "bases": [
+     "public HeapAllocator"
+    ]
+   },
+   {
+    "class": "LifecycleController",
+    "header": "src/framework/lifecycle_controller.h",
+    "bases": []
+   },
+   {
+    "class": "Entry",
+    "header": "src/framework/lifecycle_controller.h",
+    "bases": []
+   },
+   {
+    "class": "LocksShadow",
+    "header": "src/framework/locks_shadow.h",
+    "bases": [
+     "public Shadow"
+    ]
+   },
+   {
+    "class": "LockState",
+    "header": "src/framework/locks_shadow.h",
+    "bases": []
+   },
+   {
+    "class": "PendingIntentShadow",
+    "header": "src/framework/pending_intent_shadow.h",
+    "bases": [
+     "public Shadow"
+    ]
+   },
+   {
+    "class": "Record",
+    "header": "src/framework/pending_intent_shadow.h",
+    "bases": []
+   },
+   {
+    "class": "CallContext",
+    "header": "src/framework/shadow_registry.h",
+    "bases": []
+   },
+   {
+    "class": "Arg",
+    "header": "src/framework/shadow_registry.h",
+    "bases": []
+   },
+   {
+    "class": "CallResult",
+    "header": "src/framework/shadow_registry.h",
+    "bases": []
+   },
+   {
+    "class": "HeapAllocator",
+    "header": "src/framework/shadow_registry.h",
+    "bases": []
+   },
+   {
+    "class": "ShadowRegistry",
+    "header": "src/framework/shadow_registry.h",
+    "bases": []
+   },
+   {
+    "class": "Shadow",
+    "header": "src/framework/shadow_registry.h",
+    "bases": []
+   },
+   {
+    "class": "ShadowRegistry",
+    "header": "src/framework/shadow_registry.h",
+    "bases": []
+   },
+   {
+    "class": "Stats",
+    "header": "src/framework/shadow_registry.h",
+    "bases": []
+   },
+   {
+    "class": "TouchEvent",
+    "header": "src/framework/touch_dispatcher.h",
+    "bases": []
+   },
+   {
+    "class": "TouchConfig",
+    "header": "src/framework/touch_dispatcher.h",
+    "bases": []
+   },
+   {
+    "class": "TouchDispatcher",
+    "header": "src/framework/touch_dispatcher.h",
+    "bases": []
+   },
+   {
+    "class": "TokenState",
+    "header": "src/framework/touch_dispatcher.h",
+    "bases": []
+   },
+   {
+    "class": "TicTacToe",
+    "header": "src/games/tictactoe3d.h",
+    "bases": []
+   },
+   {
+    "class": "Vec3",
+    "header": "src/games/tictactoe3d.h",
+    "bases": []
+   },
+   {
+    "class": "Face",
+    "header": "src/games/tictactoe3d.h",
+    "bases": []
+   },
+   {
+    "class": "Box3D",
+    "header": "src/games/tictactoe3d.h",
+    "bases": []
+   },
+   {
+    "class": "Board3DRenderer",
+    "header": "src/games/tictactoe3d.h",
+    "bases": []
+   },
+   {
+    "class": "PGLShaderFuncs",
+    "header": "src/gles/gles20_bridge.h",
+    "bases": []
+   },
+   {
+    "class": "GLES20Bridge",
+    "header": "src/gles/gles20_bridge.h",
+    "bases": []
+   },
+   {
+    "class": "Stats",
+    "header": "src/gles/gles20_bridge.h",
+    "bases": []
+   },
+   {
+    "class": "PGLBackend",
+    "header": "src/gles/pgl_backend.h",
+    "bases": []
+   },
+   {
+    "class": "NativeCallContext",
+    "header": "src/jni/jni_bridge.h",
+    "bases": []
+   },
+   {
+    "class": "NativeMethodEntry",
+    "header": "src/jni/jni_bridge.h",
+    "bases": []
+   },
+   {
+    "class": "JNIBridge",
+    "header": "src/jni/jni_bridge.h",
+    "bases": []
+   },
+   {
+    "class": "BitmapGlyphEntry",
+    "header": "src/renderer/bitmap_font_data.h",
+    "bases": []
+   },
+   {
+    "class": "TextViewRuntimeObject",
+    "header": "src/renderer/software_renderer.h",
+    "bases": []
+   },
+   {
+    "class": "ViewRuntimeObject",
+    "header": "src/renderer/software_renderer.h",
+    "bases": []
+   },
+   {
+    "class": "ActivityRuntimeObject",
+    "header": "src/renderer/software_renderer.h",
+    "bases": []
+   },
+   {
+    "class": "EnhancedObjectHeap",
+    "header": "src/renderer/software_renderer.h",
+    "bases": []
+   },
+   {
+    "class": "RGBA",
+    "header": "src/renderer/software_renderer.h",
+    "bases": []
+   },
+   {
+    "class": "FrameBuffer",
+    "header": "src/renderer/software_renderer.h",
+    "bases": []
+   },
+   {
+    "class": "BitmapFont",
+    "header": "src/renderer/software_renderer.h",
+    "bases": []
+   },
+   {
+    "class": "Glyph",
+    "header": "src/renderer/software_renderer.h",
+    "bases": []
+   },
+   {
+    "class": "TextMetrics",
+    "header": "src/renderer/software_renderer.h",
+    "bases": []
+   },
+   {
+    "class": "LayoutBounds",
+    "header": "src/renderer/software_renderer.h",
+    "bases": []
+   },
+   {
+    "class": "LayoutNode",
+    "header": "src/renderer/software_renderer.h",
+    "bases": []
+   },
+   {
+    "class": "CanvasCommand",
+    "header": "src/renderer/software_renderer.h",
+    "bases": []
+   },
+   {
+    "class": "SoftwareCanvas",
+    "header": "src/renderer/software_renderer.h",
+    "bases": []
+   },
+   {
+    "class": "RenderStatistics",
+    "header": "src/renderer/software_renderer.h",
+    "bases": []
+   },
+   {
+    "class": "RenderPipeline",
+    "header": "src/renderer/software_renderer.h",
+    "bases": []
+   },
+   {
+    "class": "PNGWriter",
+    "header": "src/renderer/software_renderer.h",
+    "bases": []
+   },
+   {
+    "class": "DecodedImage",
+    "header": "src/renderer/software_renderer.h",
+    "bases": []
+   },
+   {
+    "class": "ImageSizeProbe",
+    "header": "src/renderer/software_renderer.h",
+    "bases": []
+   },
+   {
+    "class": "FitRect",
+    "header": "src/renderer/software_renderer.h",
+    "bases": []
+   },
+   {
+    "class": "PNGDecoder",
+    "header": "src/renderer/software_renderer.h",
+    "bases": []
+   },
+   {
+    "class": "WebPDecoder",
+    "header": "src/renderer/software_renderer.h",
+    "bases": []
+   },
+   {
+    "class": "JPEGDecoder",
+    "header": "src/renderer/software_renderer.h",
+    "bases": []
+   },
+   {
+    "class": "RLottieDecoder",
+    "header": "src/renderer/software_renderer.h",
+    "bases": []
+   },
+   {
+    "class": "DecodedAnim",
+    "header": "src/renderer/software_renderer.h",
+    "bases": []
+   },
+   {
+    "class": "ViewRenderer",
+    "header": "src/renderer/view_renderer.h",
+    "bases": []
+   },
+   {
+    "class": "Stats",
+    "header": "src/renderer/view_renderer.h",
+    "bases": []
+   },
+   {
+    "class": "Box",
+    "header": "src/renderer/view_renderer.h",
+    "bases": []
+   },
+   {
+    "class": "ResValue",
+    "header": "src/resources/arsc_parser.h",
+    "bases": []
+   },
+   {
+    "class": "ArscEntry",
+    "header": "src/resources/arsc_parser.h",
+    "bases": []
+   },
+   {
+    "class": "ResolutionStep",
+    "header": "src/resources/arsc_parser.h",
+    "bases": []
+   },
+   {
+    "class": "ResolutionResult",
+    "header": "src/resources/arsc_parser.h",
+    "bases": []
+   },
+   {
+    "class": "ResolvedResource",
+    "header": "src/resources/arsc_parser.h",
+    "bases": []
+   },
+   {
+    "class": "ArscParser",
+    "header": "src/resources/arsc_parser.h",
+    "bases": []
+   },
+   {
+    "class": "FileSelection",
+    "header": "src/resources/arsc_parser.h",
+    "bases": []
+   },
+   {
+    "class": "Stats",
+    "header": "src/resources/arsc_parser.h",
+    "bases": []
+   },
+   {
+    "class": "Pool",
+    "header": "src/resources/arsc_parser.h",
+    "bases": []
+   },
+   {
+    "class": "TypeChunk",
+    "header": "src/resources/arsc_parser.h",
+    "bases": []
+   },
+   {
+    "class": "Package",
+    "header": "src/resources/arsc_parser.h",
+    "bases": []
+   },
+   {
+    "class": "AxmlAttribute",
+    "header": "src/resources/axml_parser.h",
+    "bases": []
+   },
+   {
+    "class": "AxmlElement",
+    "header": "src/resources/axml_parser.h",
+    "bases": []
+   },
+   {
+    "class": "AxmlParser",
+    "header": "src/resources/axml_parser.h",
+    "bases": []
+   },
+   {
+    "class": "DeviceMetrics",
+    "header": "src/resources/layout_inflater.h",
+    "bases": []
+   },
+   {
+    "class": "InflateStats",
+    "header": "src/resources/layout_inflater.h",
+    "bases": []
+   },
+   {
+    "class": "LayoutInflater",
+    "header": "src/resources/layout_inflater.h",
+    "bases": []
+   },
+   {
+    "class": "Attrs",
+    "header": "src/resources/layout_inflater.h",
+    "bases": []
+   },
+   {
+    "class": "ParsedRef",
+    "header": "src/resources/layout_inflater.h",
+    "bases": []
+   },
+   {
+    "class": "InflateReport",
+    "header": "src/resources/real_layout.h",
+    "bases": []
+   },
+   {
+    "class": "RealInflater",
+    "header": "src/resources/real_layout.h",
+    "bases": []
+   },
+   {
+    "class": "RView",
+    "header": "src/resources/real_layout.h",
+    "bases": []
+   },
+   {
+    "class": "RView",
+    "header": "src/resources/real_layout.h",
+    "bases": []
+   },
+   {
+    "class": "ResTableConfig",
+    "header": "src/resources/res_config.h",
+    "bases": []
+   },
+   {
+    "class": "ResId",
+    "header": "src/resources/res_id.h",
+    "bases": []
+   },
+   {
+    "class": "DensityContext",
+    "header": "src/resources/res_id.h",
+    "bases": []
+   },
+   {
+    "class": "UnsupportedResourceReport",
+    "header": "src/resources/resource_parser.h",
+    "bases": []
+   },
+   {
+    "class": "FailureReporter",
+    "header": "src/resources/resource_parser.h",
+    "bases": []
+   },
+   {
+    "class": "ResourceId",
+    "header": "src/resources/resource_parser.h",
+    "bases": []
+   },
+   {
+    "class": "PackageInfo",
+    "header": "src/resources/resource_parser.h",
+    "bases": []
+   },
+   {
+    "class": "StringResource",
+    "header": "src/resources/resource_parser.h",
+    "bases": []
+   },
+   {
+    "class": "XmlAttribute",
+    "header": "src/resources/resource_parser.h",
+    "bases": []
+   },
+   {
+    "class": "XmlNode",
+    "header": "src/resources/resource_parser.h",
+    "bases": []
+   },
+   {
+    "class": "SimpleXmlParser",
+    "header": "src/resources/resource_parser.h",
+    "bases": []
+   },
+   {
+    "class": "ResourceTable",
+    "header": "src/resources/resource_parser.h",
+    "bases": []
+   },
+   {
+    "class": "StringResources",
+    "header": "src/resources/resource_parser.h",
+    "bases": []
+   },
+   {
+    "class": "ResourceEntry",
+    "header": "src/resources/resource_parser.h",
+    "bases": []
+   },
+   {
+    "class": "ResourceInventory",
+    "header": "src/resources/resource_parser.h",
+    "bases": []
+   },
+   {
+    "class": "LayoutParams",
+    "header": "src/resources/resource_parser.h",
+    "bases": []
+   },
+   {
+    "class": "InflateResult",
+    "header": "src/resources/resource_parser.h",
+    "bases": []
+   },
+   {
+    "class": "LayoutInflater",
+    "header": "src/resources/resource_parser.h",
+    "bases": []
+   },
+   {
+    "class": "ResourceManagerState",
+    "header": "src/resources/resource_parser.h",
+    "bases": []
+   },
+   {
+    "class": "ResourceManager",
+    "header": "src/resources/resource_parser.h",
+    "bases": []
+   },
+   {
+    "class": "ResourceRuntime",
+    "header": "src/resources/resource_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "LaunchTheme",
+    "header": "src/resources/resource_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "ResStringPool",
+    "header": "src/resources/string_pool.h",
+    "bases": []
+   },
+   {
+    "class": "ApkParser",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "ApkInfo",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "ManifestInfo",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "DexParser",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "ClassResolver",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "DexInterpreter",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "DexReport",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "ExecutionTrace",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "EntryPoint",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "BatchExecutionTrace",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "EnhancedObjectHeap",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "ActivityRuntimeObject",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "ResourceManager",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "LayoutInflater",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "InflateResult",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "RenderPipeline",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "FrameBuffer",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "LayoutNode",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "TraceEngine",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "ShadowRegistry",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "DalvikHeapAdapter",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "ThreadShadow",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "LooperShadow",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "HandlerShadow",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "ActivityShadow",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "IntentShadow",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "ViewShadow",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "ArchTaskExecutorShadow",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "CollectionShadow",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "RuntimeConfig",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "StateTransition",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "ApiCallRecord",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "ApiDatabaseEntry",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "MethodDispatchRecord",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "FailureRecord",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "CrashCheckpoint",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "ApplicationRuntime",
+    "header": "src/runtime/application_runtime.h",
+    "bases": []
+   },
+   {
+    "class": "ExecutionConfig",
+    "header": "src/runtime/execution_engine.h",
+    "bases": []
+   },
+   {
+    "class": "ExecutionResult",
+    "header": "src/runtime/execution_engine.h",
+    "bases": []
+   },
+   {
+    "class": "ExecutionEngine",
+    "header": "src/runtime/execution_engine.h",
+    "bases": []
+   },
+   {
+    "class": "MethodMetadata",
+    "header": "src/runtime/object_model.h",
+    "bases": []
+   },
+   {
+    "class": "FieldMetadata",
+    "header": "src/runtime/object_model.h",
+    "bases": []
+   },
+   {
+    "class": "ClassMetadata",
+    "header": "src/runtime/object_model.h",
+    "bases": []
+   },
+   {
+    "class": "RuntimeObject",
+    "header": "src/runtime/object_model.h",
+    "bases": []
+   },
+   {
+    "class": "ObjectIdManager",
+    "header": "src/runtime/object_model.h",
+    "bases": []
+   },
+   {
+    "class": "AllocationRecord",
+    "header": "src/runtime/object_model.h",
+    "bases": []
+   },
+   {
+    "class": "EnhancedObjectHeap",
+    "header": "src/runtime/object_model.h",
+    "bases": []
+   },
+   {
+    "class": "InheritanceNode",
+    "header": "src/runtime/object_model.h",
+    "bases": []
+   },
+   {
+    "class": "InheritancePath",
+    "header": "src/runtime/object_model.h",
+    "bases": []
+   },
+   {
+    "class": "InheritanceRegistry",
+    "header": "src/runtime/object_model.h",
+    "bases": []
+   },
+   {
+    "class": "ActivityRuntimeObject",
+    "header": "src/runtime/object_model.h",
+    "bases": [
+     "public RuntimeObject"
+    ]
+   },
+   {
+    "class": "ViewRuntimeObject",
+    "header": "src/runtime/object_model.h",
+    "bases": [
+     "public RuntimeObject"
+    ]
+   },
+   {
+    "class": "TextViewRuntimeObject",
+    "header": "src/runtime/object_model.h",
+    "bases": [
+     "public ViewRuntimeObject"
+    ]
+   },
+   {
+    "class": "RuntimeClassInfo",
+    "header": "src/runtime/runtime_metadata.h",
+    "bases": []
+   },
+   {
+    "class": "InstanceFieldInfo",
+    "header": "src/runtime/runtime_metadata.h",
+    "bases": []
+   },
+   {
+    "class": "StaticFieldEntry",
+    "header": "src/runtime/runtime_metadata.h",
+    "bases": []
+   },
+   {
+    "class": "RuntimeMethodInfo",
+    "header": "src/runtime/runtime_metadata.h",
+    "bases": []
+   },
+   {
+    "class": "VirtualDispatchTable",
+    "header": "src/runtime/runtime_metadata.h",
+    "bases": []
+   },
+   {
+    "class": "InstanceFieldInfo",
+    "header": "src/runtime/runtime_metadata.h",
+    "bases": []
+   },
+   {
+    "class": "StaticFieldEntry",
+    "header": "src/runtime/runtime_metadata.h",
+    "bases": []
+   },
+   {
+    "class": "RuntimeMethodInfo",
+    "header": "src/runtime/runtime_metadata.h",
+    "bases": []
+   },
+   {
+    "class": "VirtualDispatchTable",
+    "header": "src/runtime/runtime_metadata.h",
+    "bases": []
+   },
+   {
+    "class": "RuntimeClassInfo",
+    "header": "src/runtime/runtime_metadata.h",
+    "bases": []
+   },
+   {
+    "class": "RuntimeMetadataContainer",
+    "header": "src/runtime/runtime_metadata.h",
+    "bases": []
+   },
+   {
+    "class": "InvocationContext",
+    "header": "src/runtime/vtable_dispatch.h",
+    "bases": []
+   },
+   {
+    "class": "MethodResolver",
+    "header": "src/runtime/vtable_dispatch.h",
+    "bases": []
+   },
+   {
+    "class": "VirtualDispatcher",
+    "header": "src/runtime/vtable_dispatch.h",
+    "bases": []
+   },
+   {
+    "class": "VTableDemoSystem",
+    "header": "src/runtime/vtable_dispatch.h",
+    "bases": []
+   },
+   {
+    "class": "SandboxConfig",
+    "header": "src/storage/file_sandbox.h",
+    "bases": []
+   },
+   {
+    "class": "SandboxPathInfo",
+    "header": "src/storage/file_sandbox.h",
+    "bases": []
+   },
+   {
+    "class": "FileInfo",
+    "header": "src/storage/file_sandbox.h",
+    "bases": []
+   },
+   {
+    "class": "FileSandbox",
+    "header": "src/storage/file_sandbox.h",
+    "bases": []
+   },
+   {
+    "class": "sqlite3",
+    "header": "src/storage/sqlite_shadow.h",
+    "bases": []
+   },
+   {
+    "class": "sqlite3_stmt",
+    "header": "src/storage/sqlite_shadow.h",
+    "bases": []
+   },
+   {
+    "class": "DatabaseShadow",
+    "header": "src/storage/sqlite_shadow.h",
+    "bases": [
+     "Shadow"
+    ]
+   },
+   {
+    "class": "HelperState",
+    "header": "src/storage/sqlite_shadow.h",
+    "bases": []
+   },
+   {
+    "class": "DbState",
+    "header": "src/storage/sqlite_shadow.h",
+    "bases": []
+   },
+   {
+    "class": "StmtState",
+    "header": "src/storage/sqlite_shadow.h",
+    "bases": []
+   },
+   {
+    "class": "CursorState",
+    "header": "src/storage/sqlite_shadow.h",
+    "bases": []
+   },
+   {
+    "class": "Cell",
+    "header": "src/storage/sqlite_shadow.h",
+    "bases": []
+   }
+  ]
+ },
+ "served_api": {
+  "count": 0,
+  "pairs": [],
+  "note": "Static extraction of (class,method) string-guard pairs per dispatch function. Cross-product within a function is an honest OVER-approximation; live run traces are ground truth."
+ },
+ "subsystem_graphs": {
+  "note": "Stage graphs: nodes = functions extracted from the LIVE TUs; edges = intra-TU name-calls (static). Dead TUs excluded.",
+  "stages": {
+   "render": {
+    "tus": [
+     "src/renderer/software_renderer.cpp",
+     "src/fonts/text_shaper.cpp",
+     "src/framework/canvas_shadow.cpp"
+    ],
+    "node_count": 13,
+    "nodes": {
+     "src/renderer/software_renderer.cpp::rd_be32": {
+      "line": 241,
+      "guards": []
+     },
+     "src/renderer/software_renderer.cpp::probe_image_size": {
+      "line": 247,
+      "guards": []
+     },
+     "src/renderer/software_renderer.cpp::png_mem_read": {
+      "line": 432,
+      "guards": []
+     },
+     "src/renderer/software_renderer.cpp::png_color_type_name": {
+      "line": 442,
+      "guards": []
+     },
+     "src/renderer/software_renderer.cpp::stage_to_string": {
+      "line": 541,
+      "guards": []
+     },
+     "src/renderer/software_renderer.cpp::jpeg_error_exit": {
+      "line": 1039,
+      "guards": []
+     },
+     "src/renderer/software_renderer.cpp::image_format_name": {
+      "line": 1139,
+      "guards": []
+     },
+     "src/renderer/software_renderer.cpp::decode_image_bytes": {
+      "line": 1155,
+      "guards": []
+     },
+     "src/fonts/text_shaper.cpp::utf8_to_u32": {
+      "line": 31,
+      "guards": []
+     },
+     "src/fonts/text_shaper.cpp::raster_key": {
+      "line": 665,
+      "guards": []
+     },
+     "src/framework/canvas_shadow.cpp::to_rgba": {
+      "line": 15,
+      "guards": []
+     },
+     "src/framework/canvas_shadow.cpp::arg_as_float": {
+      "line": 24,
+      "guards": []
+     },
+     "src/framework/canvas_shadow.cpp::contour_is_convex": {
+      "line": 100,
+      "guards": []
+     }
+    },
+    "edges": [
+     [
+      "src/renderer/software_renderer.cpp::decode_image_bytes",
+      "src/renderer/software_renderer.cpp::image_format_name"
+     ],
+     [
+      "src/renderer/software_renderer.cpp::probe_image_size",
+      "src/renderer/software_renderer.cpp::rd_be32"
+     ]
+    ]
+   },
+   "lifecycle": {
+    "tus": [
+     "src/runtime/application_runtime.cpp",
+     "src/framework/lifecycle_controller.cpp"
+    ],
+    "node_count": 10,
+    "nodes": {
+     "src/runtime/application_runtime.cpp::state_to_string": {
+      "line": 60,
+      "guards": []
+     },
+     "src/runtime/application_runtime.cpp::string_to_state": {
+      "line": 84,
+      "guards": []
+     },
+     "src/runtime/application_runtime.cpp::api_category_to_string": {
+      "line": 106,
+      "guards": []
+     },
+     "src/runtime/application_runtime.cpp::string_to_api_category": {
+      "line": 118,
+      "guards": []
+     },
+     "src/runtime/application_runtime.cpp::impl_status_to_string": {
+      "line": 128,
+      "guards": []
+     },
+     "src/runtime/application_runtime.cpp::string_to_impl_status": {
+      "line": 139,
+      "guards": []
+     },
+     "src/runtime/application_runtime.cpp::dispatch_type_to_string": {
+      "line": 148,
+      "guards": []
+     },
+     "src/runtime/application_runtime.cpp::failure_type_to_string": {
+      "line": 159,
+      "guards": []
+     },
+     "src/framework/lifecycle_controller.cpp::lifecycle_phase_name": {
+      "line": 9,
+      "guards": []
+     },
+     "src/framework/lifecycle_controller.cpp::valid_from": {
+      "line": 34,
+      "guards": []
+     }
+    },
+    "edges": []
+   },
+   "input": {
+    "tus": [
+     "src/framework/touch_dispatcher.cpp",
+     "src/runtime/application_runtime.cpp"
+    ],
+    "node_count": 10,
+    "nodes": {
+     "src/framework/touch_dispatcher.cpp::node_at": {
+      "line": 14,
+      "guards": []
+     },
+     "src/framework/touch_dispatcher.cpp::touch_action_name": {
+      "line": 24,
+      "guards": []
+     },
+     "src/runtime/application_runtime.cpp::state_to_string": {
+      "line": 60,
+      "guards": []
+     },
+     "src/runtime/application_runtime.cpp::string_to_state": {
+      "line": 84,
+      "guards": []
+     },
+     "src/runtime/application_runtime.cpp::api_category_to_string": {
+      "line": 106,
+      "guards": []
+     },
+     "src/runtime/application_runtime.cpp::string_to_api_category": {
+      "line": 118,
+      "guards": []
+     },
+     "src/runtime/application_runtime.cpp::impl_status_to_string": {
+      "line": 128,
+      "guards": []
+     },
+     "src/runtime/application_runtime.cpp::string_to_impl_status": {
+      "line": 139,
+      "guards": []
+     },
+     "src/runtime/application_runtime.cpp::dispatch_type_to_string": {
+      "line": 148,
+      "guards": []
+     },
+     "src/runtime/application_runtime.cpp::failure_type_to_string": {
+      "line": 159,
+      "guards": []
+     }
+    },
+    "edges": []
+   },
+   "resource": {
+    "tus": [
+     "src/resources/arsc_parser.cpp",
+     "src/resources/axml_parser.cpp",
+     "src/resources/layout_inflater.cpp",
+     "src/resources/resource_runtime.cpp",
+     "src/resources/resource_parser.cpp",
+     "src/resources/res_config.cpp"
+    ],
+    "node_count": 11,
+    "nodes": {
+     "src/resources/arsc_parser.cpp::rd32": {
+      "line": 12,
+      "guards": []
+     },
+     "src/resources/arsc_parser.cpp::resolution_error_name": {
+      "line": 529,
+      "guards": []
+     },
+     "src/resources/axml_parser.cpp::ax_rd32": {
+      "line": 10,
+      "guards": []
+     },
+     "src/resources/layout_inflater.cpp::li_parse_hex_color": {
+      "line": 24,
+      "guards": []
+     },
+     "src/resources/layout_inflater.cpp::content_w": {
+      "line": 1451,
+      "guards": []
+     },
+     "src/resources/layout_inflater.cpp::content_h": {
+      "line": 1454,
+      "guards": []
+     },
+     "src/resources/resource_parser.cpp::resource_type_to_string": {
+      "line": 19,
+      "guards": []
+     },
+     "src/resources/resource_parser.cpp::string_to_resource_type": {
+      "line": 35,
+      "guards": []
+     },
+     "src/resources/res_config.cpp::le32": {
+      "line": 11,
+      "guards": []
+     },
+     "src/resources/res_config.cpp::build_device_config": {
+      "line": 383,
+      "guards": []
+     },
+     "src/resources/res_config.cpp::device_config": {
+      "line": 441,
+      "guards": []
+     }
+    },
+    "edges": [
+     [
+      "src/resources/res_config.cpp::device_config",
+      "src/resources/res_config.cpp::build_device_config"
+     ]
+    ]
+   },
+   "runtime": {
+    "tus": [
+     "src/dex/dalvik_engine.cpp",
+     "src/dex/class_resolver.cpp",
+     "src/runtime/application_runtime.cpp"
+    ],
+    "node_count": 27,
+    "nodes": {
+     "src/dex/dalvik_engine.cpp::field_trace_active": {
+      "line": 51,
+      "guards": []
+     },
+     "src/dex/dalvik_engine.cpp::kv_table_find": {
+      "line": 87,
+      "guards": []
+     },
+     "src/dex/dalvik_engine.cpp::kvint_table_find": {
+      "line": 91,
+      "guards": []
+     },
+     "src/dex/dalvik_engine.cpp::batched_cap_push": {
+      "line": 103,
+      "guards": []
+     },
+     "src/dex/dalvik_engine.cpp::kv_table_contains": {
+      "line": 110,
+      "guards": []
+     },
+     "src/dex/dalvik_engine.cpp::str_table_contains": {
+      "line": 114,
+      "guards": []
+     },
+     "src/dex/dalvik_engine.cpp::phase_clock": {
+      "line": 165,
+      "guards": []
+     },
+     "src/dex/dalvik_engine.cpp::dalvik_value_to_string": {
+      "line": 227,
+      "guards": []
+     },
+     "src/dex/dalvik_engine.cpp::dalvik_int_value": {
+      "line": 282,
+      "guards": []
+     },
+     "src/dex/dalvik_engine.cpp::dalvik_raw_bits32": {
+      "line": 303,
+      "guards": []
+     },
+     "src/dex/dalvik_engine.cpp::xml_unescape_pass3": {
+      "line": 3664,
+      "guards": []
+     },
+     "src/dex/dalvik_engine.cpp::conv_f2i": {
+      "line": 9153,
+      "guards": []
+     },
+     "src/dex/dalvik_engine.cpp::conv_f2l": {
+      "line": 9159,
+      "guards": []
+     },
+     "src/dex/dalvik_engine.cpp::bits_l2d": {
+      "line": 9170,
+      "guards": []
+     },
+     "src/dex/dalvik_engine.cpp::bits_i2f": {
+      "line": 9179,
+      "guards": []
+     },
+     "src/dex/dalvik_engine.cpp::decode_22t": {
+      "line": 16707,
+      "guards": []
+     },
+     "src/dex/dalvik_engine.cpp::parse_proto_param_types": {
+      "line": 16965,
+      "guards": []
+     },
+     "src/dex/dalvik_engine.cpp::dalvik_value_to_arg": {
+      "line": 17242,
+      "guards": []
+     },
+     "src/dex/dalvik_engine.cpp::call_result_to_dalvik": {
+      "line": 17326,
+      "guards": []
+     },
+     "src/runtime/application_runtime.cpp::state_to_string": {
+      "line": 60,
+      "guards": []
+     },
+     "src/runtime/application_runtime.cpp::string_to_state": {
+      "line": 84,
+      "guards": []
+     },
+     "src/runtime/application_runtime.cpp::api_category_to_string": {
+      "line": 106,
+      "guards": []
+     },
+     "src/runtime/application_runtime.cpp::string_to_api_category": {
+      "line": 118,
+      "guards": []
+     },
+     "src/runtime/application_runtime.cpp::impl_status_to_string": {
+      "line": 128,
+      "guards": []
+     },
+     "src/runtime/application_runtime.cpp::string_to_impl_status": {
+      "line": 139,
+      "guards": []
+     },
+     "src/runtime/application_runtime.cpp::dispatch_type_to_string": {
+      "line": 148,
+      "guards": []
+     },
+     "src/runtime/application_runtime.cpp::failure_type_to_string": {
+      "line": 159,
+      "guards": []
+     }
+    },
+    "edges": []
+   }
+  }
+ },
+ "api_matrix_summary": {
+  "UNSERVED": 3442,
+  "LIVE-STUB": 68,
+  "LIVE-PARTIAL": 1,
+  "LIVE-IMPL": 163
+ },
+ "api_matrix_top_unserved_android": [
+  {
+   "api": "Landroid/os/Trace;.endSection",
+   "dex_call_sites": 286,
+   "apks_using": {
+    "dooz_23_toplevel.apk": 143,
+    "io.github.yamin8000.dooz_23.apk": 143
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/content/Context;.getString",
+   "dex_call_sites": 130,
+   "apks_using": {
+    "app.varlorg.unote_30.apk": 111,
+    "bouncy.apk": 1,
+    "com.emmanuelmess.tictactoe_3.apk": 2,
+    "com.github.muellerma.stopwatch_6.apk": 3,
+    "de.duenndns.gmdice_8.apk": 1,
+    "dooz_23_toplevel.apk": 4,
+    "dubrowgn.microtimer_8.apk": 1,
+    "io.github.yamin8000.dooz_23.apk": 4
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/os/Trace;.beginSection",
+   "dex_call_sites": 106,
+   "apks_using": {
+    "dooz_23_toplevel.apk": 53,
+    "io.github.yamin8000.dooz_23.apk": 53
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/content/Context;.getSystemService",
+   "dex_call_sites": 84,
+   "apks_using": {
+    "app.varlorg.unote_30.apk": 1,
+    "bouncy.apk": 4,
+    "com.emmanuelmess.tictactoe_3.apk": 12,
+    "dooz_23_toplevel.apk": 8,
+    "dubrowgn.microtimer_8.apk": 13,
+    "io.github.yamin8000.dooz_23.apk": 8
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/graphics/Rect;.<init>",
+   "dex_call_sites": 82,
+   "apks_using": {
+    "bouncy.apk": 2,
+    "dooz_23_toplevel.apk": 3,
+    "io.github.yamin8000.dooz_23.apk": 3
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/util/Log;.e",
+   "dex_call_sites": 81,
+   "apks_using": {
+    "app.varlorg.unote_30.apk": 9,
+    "bouncy.apk": 2,
+    "com.emmanuelmess.tictactoe_3.apk": 3,
+    "dooz_23_toplevel.apk": 11,
+    "dubrowgn.microtimer_8.apk": 3,
+    "io.github.yamin8000.dooz_23.apk": 11
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/view/accessibility/AccessibilityNodeInfo;.getExtras",
+   "dex_call_sites": 80,
+   "apks_using": {
+    "dooz_23_toplevel.apk": 40,
+    "io.github.yamin8000.dooz_23.apk": 40
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/view/View;.setVisibility",
+   "dex_call_sites": 79,
+   "apks_using": {
+    "app.varlorg.unote_30.apk": 52,
+    "bouncy.apk": 21,
+    "dooz_23_toplevel.apk": 3,
+    "io.github.yamin8000.dooz_23.apk": 3
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/widget/TextView;.setText",
+   "dex_call_sites": 71,
+   "apks_using": {
+    "app.varlorg.unote_30.apk": 50,
+    "bouncy.apk": 3,
+    "de.duenndns.gmdice_8.apk": 1,
+    "dubrowgn.microtimer_8.apk": 1,
+    "opmt_v0.1.2_vc1.apk": 1,
+    "tripeaks_v1.2.1_vc4.apk": 2
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/app/Activity;.findViewById",
+   "dex_call_sites": 67,
+   "apks_using": {
+    "app.varlorg.unote_30.apk": 51,
+    "dubrowgn.microtimer_8.apk": 16
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/view/ViewGroup;.getChildAt",
+   "dex_call_sites": 63,
+   "apks_using": {
+    "app.varlorg.unote_30.apk": 3,
+    "dooz_23_toplevel.apk": 29,
+    "dubrowgn.microtimer_8.apk": 2,
+    "io.github.yamin8000.dooz_23.apk": 29
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/content/Intent;.putExtra",
+   "dex_call_sites": 54,
+   "apks_using": {
+    "app.varlorg.unote_30.apk": 6,
+    "bouncy.apk": 1,
+    "dooz_23_toplevel.apk": 1,
+    "dubrowgn.microtimer_8.apk": 1,
+    "fishrings_v1.23_vc6.apk": 1,
+    "io.github.yamin8000.dooz_23.apk": 1
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/view/KeyEvent;.getKeyCode",
+   "dex_call_sites": 53,
+   "apks_using": {
+    "com.emmanuelmess.tictactoe_3.apk": 9,
+    "dooz_23_toplevel.apk": 22,
+    "io.github.yamin8000.dooz_23.apk": 22
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/view/MotionEvent;.getActionMasked",
+   "dex_call_sites": 52,
+   "apks_using": {
+    "dooz_23_toplevel.apk": 26,
+    "io.github.yamin8000.dooz_23.apk": 26
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/text/Layout;.getText",
+   "dex_call_sites": 52,
+   "apks_using": {
+    "dooz_23_toplevel.apk": 26,
+    "io.github.yamin8000.dooz_23.apk": 26
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/view/View;.isAttachedToWindow",
+   "dex_call_sites": 50,
+   "apks_using": {
+    "dooz_23_toplevel.apk": 25,
+    "io.github.yamin8000.dooz_23.apk": 25
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/widget/EditText;.getText",
+   "dex_call_sites": 47,
+   "apks_using": {
+    "app.varlorg.unote_30.apk": 43,
+    "com.emmanuelmess.tictactoe_3.apk": 1,
+    "de.duenndns.gmdice_8.apk": 2,
+    "fishrings_v1.23_vc6.apk": 1
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/view/View;.setOnClickListener",
+   "dex_call_sites": 47,
+   "apks_using": {
+    "app.varlorg.unote_30.apk": 8,
+    "dubrowgn.microtimer_8.apk": 17,
+    "fishrings_v1.23_vc6.apk": 22
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/content/res/Resources;.getString",
+   "dex_call_sites": 47,
+   "apks_using": {
+    "dooz_23_toplevel.apk": 3,
+    "fishrings_v1.23_vc6.apk": 3,
+    "io.github.yamin8000.dooz_23.apk": 3,
+    "tripeaks_v1.2.1_vc4.apk": 2
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/text/Spannable;.setSpan",
+   "dex_call_sites": 42,
+   "apks_using": {
+    "dooz_23_toplevel.apk": 21,
+    "io.github.yamin8000.dooz_23.apk": 21
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/content/res/TypedArray;.getChangingConfigurations",
+   "dex_call_sites": 42,
+   "apks_using": {
+    "dooz_23_toplevel.apk": 21,
+    "io.github.yamin8000.dooz_23.apk": 21
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/os/Handler;.post",
+   "dex_call_sites": 40,
+   "apks_using": {
+    "com.emmanuelmess.tictactoe_3.apk": 10,
+    "dooz_23_toplevel.apk": 15,
+    "io.github.yamin8000.dooz_23.apk": 15
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/view/View;.getHandler",
+   "dex_call_sites": 38,
+   "apks_using": {
+    "dooz_23_toplevel.apk": 19,
+    "io.github.yamin8000.dooz_23.apk": 19
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/graphics/ColorSpace;.get",
+   "dex_call_sites": 38,
+   "apks_using": {
+    "dooz_23_toplevel.apk": 19,
+    "io.github.yamin8000.dooz_23.apk": 19
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/view/View;.getWidth",
+   "dex_call_sites": 37,
+   "apks_using": {
+    "app.varlorg.unote_30.apk": 10,
+    "dooz_23_toplevel.apk": 13,
+    "fishrings_v1.23_vc6.apk": 1,
+    "io.github.yamin8000.dooz_23.apk": 13
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/os/BaseBundle;.containsKey",
+   "dex_call_sites": 36,
+   "apks_using": {
+    "dooz_23_toplevel.apk": 18,
+    "io.github.yamin8000.dooz_23.apk": 18
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/view/ViewGroup;.getChildCount",
+   "dex_call_sites": 35,
+   "apks_using": {
+    "bouncy.apk": 1,
+    "dooz_23_toplevel.apk": 16,
+    "dubrowgn.microtimer_8.apk": 2,
+    "io.github.yamin8000.dooz_23.apk": 16
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/view/MotionEvent;.getY",
+   "dex_call_sites": 34,
+   "apks_using": {
+    "app.varlorg.unote_30.apk": 3,
+    "bouncy.apk": 1,
+    "com.emmanuelmess.tictactoe_3.apk": 1,
+    "dooz_23_toplevel.apk": 3,
+    "io.github.yamin8000.dooz_23.apk": 3
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/view/ViewGroup;.addView",
+   "dex_call_sites": 34,
+   "apks_using": {
+    "app.varlorg.unote_30.apk": 3,
+    "bouncy.apk": 2,
+    "dooz_23_toplevel.apk": 1,
+    "dubrowgn.microtimer_8.apk": 7,
+    "io.github.yamin8000.dooz_23.apk": 1
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/view/View;.post",
+   "dex_call_sites": 34,
+   "apks_using": {
+    "app.varlorg.unote_30.apk": 2,
+    "dooz_23_toplevel.apk": 16,
+    "io.github.yamin8000.dooz_23.apk": 16
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/content/res/Resources;.getConfiguration",
+   "dex_call_sites": 34,
+   "apks_using": {
+    "app.varlorg.unote_30.apk": 1,
+    "com.emmanuelmess.tictactoe_3.apk": 3,
+    "dooz_23_toplevel.apk": 15,
+    "io.github.yamin8000.dooz_23.apk": 15
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/view/MotionEvent;.getX",
+   "dex_call_sites": 33,
+   "apks_using": {
+    "app.varlorg.unote_30.apk": 1,
+    "bouncy.apk": 1,
+    "com.emmanuelmess.tictactoe_3.apk": 1,
+    "dooz_23_toplevel.apk": 3,
+    "io.github.yamin8000.dooz_23.apk": 3
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/content/Context;.startActivity",
+   "dex_call_sites": 32,
+   "apks_using": {
+    "app.varlorg.unote_30.apk": 24,
+    "bouncy.apk": 1,
+    "dooz_23_toplevel.apk": 2,
+    "dubrowgn.microtimer_8.apk": 3,
+    "io.github.yamin8000.dooz_23.apk": 2
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/os/BaseBundle;.putInt",
+   "dex_call_sites": 32,
+   "apks_using": {
+    "dooz_23_toplevel.apk": 16,
+    "io.github.yamin8000.dooz_23.apk": 16
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/text/Layout;.getLineStart",
+   "dex_call_sites": 32,
+   "apks_using": {
+    "dooz_23_toplevel.apk": 16,
+    "io.github.yamin8000.dooz_23.apk": 16
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/os/Bundle;.putAll",
+   "dex_call_sites": 32,
+   "apks_using": {
+    "dooz_23_toplevel.apk": 16,
+    "io.github.yamin8000.dooz_23.apk": 16
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/widget/EdgeEffect;.finish",
+   "dex_call_sites": 32,
+   "apks_using": {
+    "dooz_23_toplevel.apk": 16,
+    "io.github.yamin8000.dooz_23.apk": 16
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/widget/ImageView;.setOnClickListener",
+   "dex_call_sites": 32,
+   "apks_using": {
+    "fishrings_v1.23_vc6.apk": 1,
+    "tripeaks_v1.2.1_vc4.apk": 31
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/app/AlertDialog;.getButton",
+   "dex_call_sites": 31,
+   "apks_using": {
+    "app.varlorg.unote_30.apk": 31
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/view/View;.getMeasuredHeight",
+   "dex_call_sites": 31,
+   "apks_using": {
+    "app.varlorg.unote_30.apk": 19,
+    "dooz_23_toplevel.apk": 6,
+    "io.github.yamin8000.dooz_23.apk": 6
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/view/View;.getHeight",
+   "dex_call_sites": 31,
+   "apks_using": {
+    "app.varlorg.unote_30.apk": 4,
+    "dooz_23_toplevel.apk": 13,
+    "fishrings_v1.23_vc6.apk": 1,
+    "io.github.yamin8000.dooz_23.apk": 13
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/content/res/TypedArray;.getString",
+   "dex_call_sites": 30,
+   "apks_using": {
+    "dooz_23_toplevel.apk": 15,
+    "io.github.yamin8000.dooz_23.apk": 15
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/content/res/TypedArray;.getFloat",
+   "dex_call_sites": 30,
+   "apks_using": {
+    "dooz_23_toplevel.apk": 15,
+    "io.github.yamin8000.dooz_23.apk": 15
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/os/BaseBundle;.getInt",
+   "dex_call_sites": 30,
+   "apks_using": {
+    "dooz_23_toplevel.apk": 2,
+    "io.github.yamin8000.dooz_23.apk": 2
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/os/Parcel;.writeInt",
+   "dex_call_sites": 29,
+   "apks_using": {
+    "app.varlorg.unote_30.apk": 1,
+    "dooz_23_toplevel.apk": 11,
+    "dubrowgn.microtimer_8.apk": 6,
+    "io.github.yamin8000.dooz_23.apk": 11
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/graphics/RectF;.<init>",
+   "dex_call_sites": 28,
+   "apks_using": {
+    "bouncy.apk": 2,
+    "dooz_23_toplevel.apk": 5,
+    "io.github.yamin8000.dooz_23.apk": 5
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/content/res/TypedArray;.recycle",
+   "dex_call_sites": 28,
+   "apks_using": {
+    "dooz_23_toplevel.apk": 14,
+    "io.github.yamin8000.dooz_23.apk": 14
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/view/View;.removeCallbacks",
+   "dex_call_sites": 28,
+   "apks_using": {
+    "dooz_23_toplevel.apk": 14,
+    "io.github.yamin8000.dooz_23.apk": 14
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/text/Spanned;.getSpans",
+   "dex_call_sites": 28,
+   "apks_using": {
+    "dooz_23_toplevel.apk": 14,
+    "io.github.yamin8000.dooz_23.apk": 14
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/app/Activity;.finish",
+   "dex_call_sites": 27,
+   "apks_using": {
+    "app.varlorg.unote_30.apk": 19,
+    "dooz_23_toplevel.apk": 4,
+    "io.github.yamin8000.dooz_23.apk": 4
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/database/Cursor;.getString",
+   "dex_call_sites": 27,
+   "apks_using": {
+    "app.varlorg.unote_30.apk": 14,
+    "dubrowgn.microtimer_8.apk": 13
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/view/View;.getRootView",
+   "dex_call_sites": 27,
+   "apks_using": {
+    "app.varlorg.unote_30.apk": 7,
+    "dooz_23_toplevel.apk": 10,
+    "io.github.yamin8000.dooz_23.apk": 10
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/content/ContextWrapper;.getBaseContext",
+   "dex_call_sites": 27,
+   "apks_using": {
+    "app.varlorg.unote_30.apk": 5,
+    "dooz_23_toplevel.apk": 11,
+    "io.github.yamin8000.dooz_23.apk": 11
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/database/Cursor;.getInt",
+   "dex_call_sites": 27,
+   "apks_using": {
+    "app.varlorg.unote_30.apk": 4,
+    "dooz_23_toplevel.apk": 4,
+    "dubrowgn.microtimer_8.apk": 15,
+    "io.github.yamin8000.dooz_23.apk": 4
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/view/View;.invalidate",
+   "dex_call_sites": 27,
+   "apks_using": {
+    "app.varlorg.unote_30.apk": 1,
+    "dooz_23_toplevel.apk": 13,
+    "io.github.yamin8000.dooz_23.apk": 13
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/os/Parcel;.readInt",
+   "dex_call_sites": 27,
+   "apks_using": {
+    "app.varlorg.unote_30.apk": 1,
+    "dooz_23_toplevel.apk": 10,
+    "dubrowgn.microtimer_8.apk": 6,
+    "io.github.yamin8000.dooz_23.apk": 10
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/os/ParcelFileDescriptor;.close",
+   "dex_call_sites": 26,
+   "apks_using": {
+    "dooz_23_toplevel.apk": 13,
+    "io.github.yamin8000.dooz_23.apk": 13
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/view/InputEvent;.isFromSource",
+   "dex_call_sites": 26,
+   "apks_using": {
+    "dooz_23_toplevel.apk": 13,
+    "io.github.yamin8000.dooz_23.apk": 13
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/app/AlertDialog$Builder;.<init>",
+   "dex_call_sites": 25,
+   "apks_using": {
+    "app.varlorg.unote_30.apk": 16,
+    "com.emmanuelmess.tictactoe_3.apk": 1,
+    "de.duenndns.gmdice_8.apk": 4,
+    "opmt_v0.1.2_vc1.apk": 2,
+    "tripeaks_v1.2.1_vc4.apk": 2
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  },
+  {
+   "api": "Landroid/text/SpannableString;.setSpan",
+   "dex_call_sites": 25,
+   "apks_using": {
+    "app.varlorg.unote_30.apk": 1,
+    "dooz_23_toplevel.apk": 12,
+    "io.github.yamin8000.dooz_23.apk": 12
+   },
+   "status": "UNSERVED",
+   "live_status_counts": null,
+   "live_observed_apks": [],
+   "static_dispatch_sites": []
+  }
+ ],
+ "source_inventory": [
+  {
+   "apk": "app.varlorg.unote_30.apk",
+   "package": "app.varlorg.unote",
+   "pinned": false,
+   "repo": null,
+   "commit": null
+  },
+  {
+   "apk": "bouncy.apk",
+   "package": "com.dozingcatsoftware.bouncy",
+   "pinned": true,
+   "repo": "dozingcat/Vector-Pinball",
+   "commit": "b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9"
+  },
+  {
+   "apk": "com.emmanuelmess.tictactoe_3.apk",
+   "package": "com.emmanuelmess.tictactoe",
+   "pinned": true,
+   "repo": "github.com/EmmanuelMess/TicTacToeGame",
+   "commit": "v1.0.0"
+  },
+  {
+   "apk": "com.github.muellerma.stopwatch_6.apk",
+   "package": "com.github.muellerma.stopwatch",
+   "pinned": true,
+   "repo": "mueller-ma/Stopwatch",
+   "commit": "13d2fab247e431104e40126e1ecd5099e6ce49fa"
+  },
+  {
+   "apk": "de.duenndns.gmdice_8.apk",
+   "package": "de.duenndns.gmdice",
+   "pinned": true,
+   "repo": "github.com/ge0rg/gamemasterdice",
+   "commit": "1.0"
+  },
+  {
+   "apk": "dooz_23_toplevel.apk",
+   "package": "io.github.yamin8000.dooz",
+   "pinned": true,
+   "repo": "yamin8000/Dooz",
+   "commit": "0c60e78b861a29fab26cc11e7e7a30a419527064"
+  },
+  {
+   "apk": "dubrowgn.microtimer_8.apk",
+   "package": "dubrowgn.microtimer",
+   "pinned": true,
+   "repo": "dubrowgn/micro-timer",
+   "commit": "825faf52fbcb886e8ef6637bcb0e8478b4b0162e"
+  },
+  {
+   "apk": "fishrings_v1.23_vc6.apk",
+   "package": "eu.veldsoft.fish.rings",
+   "pinned": true,
+   "repo": "VelbazhdSoftwareLLC/FishRingsForAndroid",
+   "commit": "dc3807e7d405843453afc798c6cc02205b65e1fb"
+  },
+  {
+   "apk": "io.github.yamin8000.dooz_23.apk",
+   "package": "io.github.yamin8000.dooz",
+   "pinned": true,
+   "repo": "yamin8000/Dooz",
+   "commit": "0c60e78b861a29fab26cc11e7e7a30a419527064"
+  },
+  {
+   "apk": "opmt_v0.1.2_vc1.apk",
+   "package": "one.scarecrow.games.OPMT",
+   "pinned": true,
+   "repo": "20Nick/OPMT",
+   "commit": "3240c4cf"
+  },
+  {
+   "apk": "tripeaks_v1.2.1_vc4.apk",
+   "package": "eu.veldsoft.tri.peaks",
+   "pinned": true,
+   "repo": "VelbazhdSoftwareLLC/TriPeaksSolitaireForAndroid",
+   "commit": "62f3609"
+  }
+ ],
+ "live_runs": [
+  {
+   "apk": "app.varlorg.unote_30.apk",
+   "status": "SUCCESS",
+   "api_calls": 108,
+   "max_frame_nonwhite": 236520
+  },
+  {
+   "apk": "bouncy.apk",
+   "status": "SUCCESS",
+   "api_calls": 1465,
+   "max_frame_nonwhite": 2073600
+  },
+  {
+   "apk": "com.emmanuelmess.tictactoe_3.apk",
+   "status": "PARTIAL SUCCESS",
+   "api_calls": 41,
+   "max_frame_nonwhite": 0
+  },
+  {
+   "apk": "com.github.muellerma.stopwatch_6.apk",
+   "status": "PARTIAL SUCCESS",
+   "api_calls": 5,
+   "max_frame_nonwhite": 23472
+  },
+  {
+   "apk": "de.duenndns.gmdice_8.apk",
+   "status": "SUCCESS",
+   "api_calls": 141,
+   "max_frame_nonwhite": 182628
+  },
+  {
+   "apk": "dooz_23_toplevel.apk",
+   "status": "PARTIAL SUCCESS",
+   "api_calls": 2157,
+   "max_frame_nonwhite": 197
+  },
+  {
+   "apk": "dubrowgn.microtimer_8.apk",
+   "status": "SUCCESS",
+   "api_calls": 376,
+   "max_frame_nonwhite": 1041437
+  },
+  {
+   "apk": "fishrings_v1.23_vc6.apk",
+   "status": "SUCCESS",
+   "api_calls": 16,
+   "max_frame_nonwhite": 2072211
+  },
+  {
+   "apk": "opmt_v0.1.2_vc1.apk",
+   "status": "SUCCESS",
+   "api_calls": 20,
+   "max_frame_nonwhite": 213286
+  },
+  {
+   "apk": "tripeaks_v1.2.1_vc4.apk",
+   "status": "SUCCESS",
+   "api_calls": 16,
+   "max_frame_nonwhite": 205638
+  }
+ ],
+ "source_map_summary": [
+  {
+   "apk": "bouncy.apk",
+   "source_files": 60,
+   "classes_mapped": 55,
+   "app_classes": 1987,
+   "coverage": 0.03
+  },
+  {
+   "apk": "com.emmanuelmess.tictactoe_3.apk",
+   "source_files": 10,
+   "classes_mapped": 0,
+   "app_classes": 1257,
+   "coverage": 0.0
+  },
+  {
+   "apk": "com.github.muellerma.stopwatch_6.apk",
+   "source_files": 3,
+   "classes_mapped": 3,
+   "app_classes": 18,
+   "coverage": 0.176
+  },
+  {
+   "apk": "de.duenndns.gmdice_8.apk",
+   "source_files": 8,
+   "classes_mapped": 0,
+   "app_classes": 23,
+   "coverage": 0.0
+  },
+  {
+   "apk": "dubrowgn.microtimer_8.apk",
+   "source_files": 10,
+   "classes_mapped": 4,
+   "app_classes": 127,
+   "coverage": 0.037
+  },
+  {
+   "apk": "fishrings_v1.23_vc6.apk",
+   "source_files": 6,
+   "classes_mapped": 6,
+   "app_classes": 23,
+   "coverage": 0.261
+  },
+  {
+   "apk": "tripeaks_v1.2.1_vc4.apk",
+   "source_files": 14,
+   "classes_mapped": 14,
+   "app_classes": 34,
+   "coverage": 0.412
+  },
+  {
+   "apk": "io.github.yamin8000.dooz_23.apk",
+   "source_files": 68,
+   "classes_mapped": 2,
+   "app_classes": 3021,
+   "coverage": 0.001
+  },
+  {
+   "apk": "opmt_v0.1.2_vc1.apk",
+   "source_files": 9,
+   "classes_mapped": 7,
+   "app_classes": 31,
+   "coverage": 0.226
+  }
+ ],
+ "failure_index_summary": {
+  "count": 372
+ }
+}

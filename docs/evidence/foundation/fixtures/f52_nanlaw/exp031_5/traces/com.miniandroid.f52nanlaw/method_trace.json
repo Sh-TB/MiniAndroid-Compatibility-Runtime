@@ -1,0 +1,618 @@
+{
+  "apk_name": "f52_nanlaw.apk",
+  "main_class": "Lcom/miniandroid/f52nanlaw/MainActivity;",
+  "main_method": "onCreate",
+  "methods": [
+    {
+      "class": "Lcom/miniandroid/f52nanlaw/MainActivity;",
+      "entry_point": true,
+      "method": "onCreate",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/app/Activity;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v10",
+        "v11"
+      ],
+      "class": "Landroid/app/Activity;<super>",
+      "invocation_type": "virtual",
+      "method": "onCreate",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/LinearLayout;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v11",
+        "p4294967286"
+      ],
+      "class": "Landroid/widget/LinearLayout;",
+      "invocation_type": "virtual",
+      "method": "setOrientation",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Double;",
+      "invocation_type": "virtual",
+      "method": "isNaN",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/LinearLayout$LayoutParams;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967292",
+        "p4294967293"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "setLayoutParams",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967292",
+        "v5"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "setBackgroundColor",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v10",
+        "v3"
+      ],
+      "class": "Lcom/miniandroid/f52nanlaw/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "row",
+      "return_value": "Landroid/view/View;#9",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v11",
+        "v3"
+      ],
+      "class": "Landroid/widget/LinearLayout;",
+      "invocation_type": "virtual",
+      "method": "addView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Double;",
+      "invocation_type": "virtual",
+      "method": "isNaN",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/LinearLayout$LayoutParams;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967292",
+        "p4294967293"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "setLayoutParams",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967292",
+        "v5"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "setBackgroundColor",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v10",
+        "v3"
+      ],
+      "class": "Lcom/miniandroid/f52nanlaw/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "row",
+      "return_value": "Landroid/view/View;#11",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v11",
+        "v3"
+      ],
+      "class": "Landroid/widget/LinearLayout;",
+      "invocation_type": "virtual",
+      "method": "addView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Double;",
+      "invocation_type": "virtual",
+      "method": "isInfinite",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/LinearLayout$LayoutParams;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967292",
+        "p4294967293"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "setLayoutParams",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967292",
+        "v5"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "setBackgroundColor",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v10",
+        "v3"
+      ],
+      "class": "Lcom/miniandroid/f52nanlaw/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "row",
+      "return_value": "Landroid/view/View;#13",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v11",
+        "v3"
+      ],
+      "class": "Landroid/widget/LinearLayout;",
+      "invocation_type": "virtual",
+      "method": "addView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Double;",
+      "invocation_type": "virtual",
+      "method": "isInfinite",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/LinearLayout$LayoutParams;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967292",
+        "p4294967293"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "setLayoutParams",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967292",
+        "v5"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "setBackgroundColor",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v10",
+        "v3"
+      ],
+      "class": "Lcom/miniandroid/f52nanlaw/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "row",
+      "return_value": "Landroid/view/View;#15",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v11",
+        "v3"
+      ],
+      "class": "Landroid/widget/LinearLayout;",
+      "invocation_type": "virtual",
+      "method": "addView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Float;",
+      "invocation_type": "virtual",
+      "method": "isNaN",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/LinearLayout$LayoutParams;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967292",
+        "p4294967293"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "setLayoutParams",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967292",
+        "v5"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "setBackgroundColor",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v10",
+        "v3"
+      ],
+      "class": "Lcom/miniandroid/f52nanlaw/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "row",
+      "return_value": "Landroid/view/View;#17",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v11",
+        "v3"
+      ],
+      "class": "Landroid/widget/LinearLayout;",
+      "invocation_type": "virtual",
+      "method": "addView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Double;",
+      "invocation_type": "virtual",
+      "method": "compare",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/LinearLayout$LayoutParams;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967292",
+        "p4294967293"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "setLayoutParams",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967292",
+        "v5"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "setBackgroundColor",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v10",
+        "v3"
+      ],
+      "class": "Lcom/miniandroid/f52nanlaw/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "row",
+      "return_value": "Landroid/view/View;#19",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v11",
+        "v3"
+      ],
+      "class": "Landroid/widget/LinearLayout;",
+      "invocation_type": "virtual",
+      "method": "addView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Double;",
+      "invocation_type": "virtual",
+      "method": "compare",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/LinearLayout$LayoutParams;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967292",
+        "p4294967293"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "setLayoutParams",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967292",
+        "v5"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "setBackgroundColor",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v10",
+        "p4294967287"
+      ],
+      "class": "Lcom/miniandroid/f52nanlaw/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "row",
+      "return_value": "Landroid/view/View;#21",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v11",
+        "p4294967287"
+      ],
+      "class": "Landroid/widget/LinearLayout;",
+      "invocation_type": "virtual",
+      "method": "addView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Float;",
+      "invocation_type": "virtual",
+      "method": "compare",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/LinearLayout$LayoutParams;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967292",
+        "p4294967293"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "setLayoutParams",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967292",
+        "v5"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "setBackgroundColor",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v10",
+        "p4294967286"
+      ],
+      "class": "Lcom/miniandroid/f52nanlaw/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "row",
+      "return_value": "Landroid/view/View;#23",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v11",
+        "p4294967286"
+      ],
+      "class": "Landroid/widget/LinearLayout;",
+      "invocation_type": "virtual",
+      "method": "addView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Float;",
+      "invocation_type": "virtual",
+      "method": "compare",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/LinearLayout$LayoutParams;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967292",
+        "p4294967293"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "setLayoutParams",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967292",
+        "v5"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "setBackgroundColor",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v10",
+        "v4"
+      ],
+      "class": "Lcom/miniandroid/f52nanlaw/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "row",
+      "return_value": "Landroid/view/View;#25",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v11",
+        "p4294967286"
+      ],
+      "class": "Landroid/widget/LinearLayout;",
+      "invocation_type": "virtual",
+      "method": "addView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v10",
+        "v11"
+      ],
+      "class": "Lcom/miniandroid/f52nanlaw/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "setContentView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    }
+  ],
+  "timestamp": "2026-09-20T05:19:33Z",
+  "total_api_calls": 68
+}

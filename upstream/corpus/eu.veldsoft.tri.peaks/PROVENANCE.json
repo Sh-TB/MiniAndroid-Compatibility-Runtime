@@ -1,0 +1,13 @@
+{
+ "apk": "tripeaks_v1.2.1_vc4.apk",
+ "package": "eu.veldsoft.tri.peaks",
+ "versionCode": "4",
+ "source_repo": "VelbazhdSoftwareLLC/TriPeaksSolitaireForAndroid",
+ "source_commit": "62f3609",
+ "tarball_sha256": "715509509e81a836cc7ab62e25ffc92eda2063866925f44af4ce17059270ac50",
+ "tarball_bytes": 3848090,
+ "extracted": true,
+ "fetched_at": "2026-09-20T04:41:08Z",
+ "metadata_origin": "session-ledger:docs/corpus/SEARCH_LEDGER.md S66 S3",
+ "codeload_origin": "https://codeload.github.com/VelbazhdSoftwareLLC/TriPeaksSolitaireForAndroid/tar.gz/62f3609"
+}

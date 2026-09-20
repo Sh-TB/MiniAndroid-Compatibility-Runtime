@@ -1,0 +1,13 @@
+{
+ "apk": "opmt_v0.1.2_vc1.apk",
+ "package": "one.scarecrow.games.OPMT",
+ "versionCode": "1",
+ "source_repo": "20Nick/OPMT",
+ "source_commit": "3240c4cf",
+ "tarball_sha256": "9875cdffc4bc0b9848efba5adb9d8516b87b09a5efdbe38dd7912a07c412c517",
+ "tarball_bytes": 628324,
+ "extracted": true,
+ "fetched_at": "2026-09-20T04:41:07Z",
+ "metadata_origin": "session-ledger:worklog S65 (OPMT @3240c4cf)",
+ "codeload_origin": "https://codeload.github.com/20Nick/OPMT/tar.gz/3240c4cf"
+}

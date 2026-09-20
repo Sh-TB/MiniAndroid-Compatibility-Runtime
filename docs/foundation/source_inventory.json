@@ -1,0 +1,337 @@
+{
+ "generated": "2026-09-20T04:40:02Z",
+ "apks": [
+  {
+   "apk": "app.varlorg.unote_30.apk",
+   "apk_sha256": "be91103f0e7db44361de5e918d9130dab4ac137bab5bd946a0fd8dab88bc2cc0",
+   "package": "app.varlorg.unote",
+   "versionCode": "30",
+   "versionName": "1.8.0",
+   "minSdk": "21",
+   "targetSdk": "34",
+   "fdroid": {
+    "source_code": "https://gitlab.com/Varlorg/uNote/tree/HEAD",
+    "repo": "https://gitlab.com/Varlorg/uNote.git"
+   },
+   "pinned": false,
+   "pin_error": "tarball fetch failed gitlab.com/Varlorg/uNote@4165c80d3b198f1c5e1c185f975a34b09c00f06e",
+   "fdroid_build_pin": {
+    "versionName": "1.8.0",
+    "versionCode": 30,
+    "commit": "4165c80d3b198f1c5e1c185f975a34b09c00f06e",
+    "subdir": "app"
+   }
+  },
+  {
+   "apk": "bouncy.apk",
+   "apk_sha256": "ffda0d9cb0b1b2aa58be9559dda891c4fa24391bc481d297a8e3d96c31f62721",
+   "package": "com.dozingcatsoftware.bouncy",
+   "versionCode": "43",
+   "versionName": "1.16.0",
+   "minSdk": "4",
+   "targetSdk": "37",
+   "fdroid": {
+    "source_code": "https://github.com/dozingcat/Vector-Pinball",
+    "repo": "https://github.com/dozingcat/Vector-Pinball.git"
+   },
+   "fdroid_build_pin": {
+    "versionName": "1.16.0",
+    "versionCode": 43,
+    "commit": "b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9",
+    "subdir": "app"
+   },
+   "pinned": true,
+   "provenance": {
+    "apk": "bouncy.apk",
+    "package": "com.dozingcatsoftware.bouncy",
+    "versionCode": 43,
+    "source_repo": "dozingcat/Vector-Pinball",
+    "source_commit": "b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9",
+    "tarball_sha256": "4c1bfc05e584c19a03d46a710248f0020888a902f2959ed43d3af7de8f22043e",
+    "tarball_bytes": 3729538,
+    "extracted": true,
+    "fetched_at": "2026-09-20T04:39:54Z",
+    "metadata_origin": "https://gitlab.com/fdroid/fdroiddata/-/raw/master/metadata/com.dozingcatsoftware.bouncy.yml",
+    "codeload_origin": "https://codeload.github.com/dozingcat/Vector-Pinball/tar.gz/b8c57cd5929b052ca6b7c3bd34cbb409af7d7af9"
+   }
+  },
+  {
+   "apk": "com.emmanuelmess.tictactoe_3.apk",
+   "apk_sha256": "760fe5acf7b394354bf02b7b3484c3eb442b491c1fa4325603ad3250f0dfa394",
+   "package": "com.emmanuelmess.tictactoe",
+   "versionCode": "3",
+   "versionName": "1.0.0",
+   "minSdk": "14",
+   "targetSdk": "29",
+   "fdroid": {
+    "source_code": "https://github.com/EmmanuelMess/TicTacToeGame",
+    "repo": "https://github.com/EmmanuelMess/TicTacToeGame"
+   },
+   "fdroid_build_pin": {
+    "versionName": "1.0.0",
+    "versionCode": 3,
+    "commit": "v1.0.0",
+    "subdir": "android"
+   },
+   "pinned": true,
+   "provenance": {
+    "apk": "com.emmanuelmess.tictactoe_3.apk",
+    "package": "com.emmanuelmess.tictactoe",
+    "versionCode": "3",
+    "source_repo": "github.com/EmmanuelMess/TicTacToeGame",
+    "source_commit": "v1.0.0",
+    "tarball_sha256": "bf1698ede5c91191b35ec73f4f12c4693ac89e491cca1a94b128e4c26dd89bc0",
+    "tarball_bytes": 625009,
+    "extracted": true,
+    "fetched_at": "2026-09-20T04:42:56Z",
+    "metadata_origin": "https://gitlab.com/fdroid/fdroiddata/-/raw/master/metadata/com.emmanuelmess.tictactoe.yml",
+    "codeload_origin": "https://codeload.github.com/github.com/EmmanuelMess/TicTacToeGame/tar.gz/v1.0.0"
+   }
+  },
+  {
+   "apk": "com.github.muellerma.stopwatch_6.apk",
+   "apk_sha256": "3b6a10c8dc8ddc727de02cb543072efc43c2589c8ed9f6cf7d147ba0a2580355",
+   "package": "com.github.muellerma.stopwatch",
+   "versionCode": "6",
+   "versionName": "1.5",
+   "minSdk": "24",
+   "targetSdk": "33",
+   "fdroid": {
+    "source_code": "https://github.com/mueller-ma/Stopwatch",
+    "repo": "https://github.com/mueller-ma/Stopwatch.git"
+   },
+   "fdroid_build_pin": {
+    "versionName": "1.5",
+    "versionCode": 6,
+    "commit": "13d2fab247e431104e40126e1ecd5099e6ce49fa",
+    "subdir": "app"
+   },
+   "pinned": true,
+   "provenance": {
+    "apk": "com.github.muellerma.stopwatch_6.apk",
+    "package": "com.github.muellerma.stopwatch",
+    "versionCode": 6,
+    "source_repo": "mueller-ma/Stopwatch",
+    "source_commit": "13d2fab247e431104e40126e1ecd5099e6ce49fa",
+    "tarball_sha256": "2d84912e1f95c82d9ea7268513b18a8e7628c507455a83df8515efb73c37c0f3",
+    "tarball_bytes": 615451,
+    "extracted": true,
+    "fetched_at": "2026-09-20T04:39:56Z",
+    "metadata_origin": "https://gitlab.com/fdroid/fdroiddata/-/raw/master/metadata/com.github.muellerma.stopwatch.yml",
+    "codeload_origin": "https://codeload.github.com/mueller-ma/Stopwatch/tar.gz/13d2fab247e431104e40126e1ecd5099e6ce49fa"
+   }
+  },
+  {
+   "apk": "de.duenndns.gmdice_8.apk",
+   "apk_sha256": "1621eda11b5dbc0c232b54c652d27aeab2f8a3c95be2c1f0632d6233b12d8a85",
+   "package": "de.duenndns.gmdice",
+   "versionCode": "8",
+   "versionName": "1.0",
+   "minSdk": "11",
+   "targetSdk": "27",
+   "fdroid": {
+    "source_code": "https://github.com/ge0rg/gamemasterdice",
+    "repo": "https://github.com/ge0rg/gamemasterdice.git"
+   },
+   "pinned": true,
+   "fdroid_build_pin": {
+    "versionName": "1.0",
+    "versionCode": 8,
+    "commit": "1.0"
+   },
+   "provenance": {
+    "apk": "de.duenndns.gmdice_8.apk",
+    "package": "de.duenndns.gmdice",
+    "versionCode": "8",
+    "source_repo": "github.com/ge0rg/gamemasterdice",
+    "source_commit": "1.0",
+    "tarball_sha256": "41db9e715006d42a670a7e0da794ec054747b43536a0f05598fbf0ab054a829e",
+    "tarball_bytes": 50215,
+    "extracted": true,
+    "fetched_at": "2026-09-20T04:42:57Z",
+    "metadata_origin": "https://gitlab.com/fdroid/fdroiddata/-/raw/master/metadata/de.duenndns.gmdice.yml",
+    "codeload_origin": "https://codeload.github.com/github.com/ge0rg/gamemasterdice/tar.gz/1.0"
+   }
+  },
+  {
+   "apk": "dooz_23_toplevel.apk",
+   "apk_sha256": "299eab21ac8b3c6192edbd887966554fef84ad026d269b9067310215201b362b",
+   "package": "io.github.yamin8000.dooz",
+   "versionCode": "23",
+   "versionName": "1.0.23",
+   "minSdk": "24",
+   "targetSdk": "37",
+   "fdroid": {
+    "source_code": "https://github.com/yamin8000/Dooz",
+    "repo": "https://github.com/yamin8000/Dooz.git"
+   },
+   "fdroid_build_pin": {
+    "versionName": "1.0.23",
+    "versionCode": 23,
+    "commit": "0c60e78b861a29fab26cc11e7e7a30a419527064",
+    "subdir": "app"
+   },
+   "pinned": true,
+   "provenance": {
+    "apk": "dooz_23_toplevel.apk",
+    "package": "io.github.yamin8000.dooz",
+    "versionCode": 23,
+    "source_repo": "yamin8000/Dooz",
+    "source_commit": "0c60e78b861a29fab26cc11e7e7a30a419527064",
+    "tarball_sha256": "a0d7676da2075c28e5e6de9ba67355fc8a1c7f5abfad2855c5a2631f91f8293d",
+    "tarball_bytes": 700264,
+    "extracted": true,
+    "fetched_at": "2026-09-20T04:39:58Z",
+    "metadata_origin": "https://gitlab.com/fdroid/fdroiddata/-/raw/master/metadata/io.github.yamin8000.dooz.yml",
+    "codeload_origin": "https://codeload.github.com/yamin8000/Dooz/tar.gz/0c60e78b861a29fab26cc11e7e7a30a419527064"
+   }
+  },
+  {
+   "apk": "dubrowgn.microtimer_8.apk",
+   "apk_sha256": "79c6f730f64886e7b6561c2eed1a4420201e6e44a53b635dbb14c0689fd19828",
+   "package": "dubrowgn.microtimer",
+   "versionCode": "8",
+   "versionName": "1.8",
+   "minSdk": "28",
+   "targetSdk": "34",
+   "fdroid": {
+    "source_code": "https://github.com/dubrowgn/micro-timer",
+    "repo": "https://github.com/dubrowgn/micro-timer.git"
+   },
+   "fdroid_build_pin": {
+    "versionName": "1.8",
+    "versionCode": 8,
+    "commit": "825faf52fbcb886e8ef6637bcb0e8478b4b0162e",
+    "subdir": "app"
+   },
+   "pinned": true,
+   "provenance": {
+    "apk": "dubrowgn.microtimer_8.apk",
+    "package": "dubrowgn.microtimer",
+    "versionCode": 8,
+    "source_repo": "dubrowgn/micro-timer",
+    "source_commit": "825faf52fbcb886e8ef6637bcb0e8478b4b0162e",
+    "tarball_sha256": "c944358caba5d51dd0eebc05cbdc95926fe296c1101330a0c25216ca205c6eaf",
+    "tarball_bytes": 111232,
+    "extracted": true,
+    "fetched_at": "2026-09-20T04:39:59Z",
+    "metadata_origin": "https://gitlab.com/fdroid/fdroiddata/-/raw/master/metadata/dubrowgn.microtimer.yml",
+    "codeload_origin": "https://codeload.github.com/dubrowgn/micro-timer/tar.gz/825faf52fbcb886e8ef6637bcb0e8478b4b0162e"
+   }
+  },
+  {
+   "apk": "fishrings_v1.23_vc6.apk",
+   "apk_sha256": "14d7dd80f7563c6a17c8d4b0fc2a5ca0ef468711fbdb1803306b090bd7c641ed",
+   "package": "eu.veldsoft.fish.rings",
+   "versionCode": "6",
+   "versionName": "1.23",
+   "minSdk": "24",
+   "targetSdk": null,
+   "fdroid": {
+    "source_code": "https://github.com/VelbazhdSoftwareLLC/FishRingsForAndroid",
+    "repo": "https://github.com/VelbazhdSoftwareLLC/FishRingsForAndroid"
+   },
+   "fdroid_build_pin": {
+    "versionName": "1.23",
+    "versionCode": 6,
+    "commit": "dc3807e7d405843453afc798c6cc02205b65e1fb",
+    "subdir": "FishRingsForAndroid"
+   },
+   "pinned": true,
+   "provenance": {
+    "apk": "fishrings_v1.23_vc6.apk",
+    "package": "eu.veldsoft.fish.rings",
+    "versionCode": 6,
+    "source_repo": "VelbazhdSoftwareLLC/FishRingsForAndroid",
+    "source_commit": "dc3807e7d405843453afc798c6cc02205b65e1fb",
+    "tarball_sha256": "ffb13f0ec1a2807b9f43d8f7c094a092d422845a97a16ddacbc3ef1e80fd6458",
+    "tarball_bytes": 951169,
+    "extracted": true,
+    "fetched_at": "2026-09-20T04:40:00Z",
+    "metadata_origin": "https://gitlab.com/fdroid/fdroiddata/-/raw/master/metadata/eu.veldsoft.fish.rings.yml",
+    "codeload_origin": "https://codeload.github.com/VelbazhdSoftwareLLC/FishRingsForAndroid/tar.gz/dc3807e7d405843453afc798c6cc02205b65e1fb"
+   }
+  },
+  {
+   "apk": "io.github.yamin8000.dooz_23.apk",
+   "apk_sha256": "299eab21ac8b3c6192edbd887966554fef84ad026d269b9067310215201b362b",
+   "package": "io.github.yamin8000.dooz",
+   "versionCode": "23",
+   "versionName": "1.0.23",
+   "minSdk": "24",
+   "targetSdk": "37",
+   "fdroid": {
+    "source_code": "https://github.com/yamin8000/Dooz",
+    "repo": "https://github.com/yamin8000/Dooz.git"
+   },
+   "pinned": true,
+   "fdroid_build_pin": {
+    "versionName": "1.0.23",
+    "versionCode": 23,
+    "commit": "0c60e78b861a29fab26cc11e7e7a30a419527064",
+    "subdir": "app"
+   },
+   "provenance": {
+    "apk": "io.github.yamin8000.dooz_23.apk",
+    "package": "io.github.yamin8000.dooz",
+    "versionCode": "23",
+    "source_repo": "yamin8000/Dooz",
+    "source_commit": "0c60e78b861a29fab26cc11e7e7a30a419527064",
+    "tarball_sha256": "a0d7676da2075c28e5e6de9ba67355fc8a1c7f5abfad2855c5a2631f91f8293d",
+    "tarball_bytes": 700264,
+    "extracted": true,
+    "fetched_at": "2026-09-20T04:41:06Z",
+    "metadata_origin": "https://gitlab.com/fdroid/fdroiddata/-/raw/master/metadata/io.github.yamin8000.dooz.yml",
+    "codeload_origin": "https://codeload.github.com/yamin8000/Dooz/tar.gz/0c60e78b861a29fab26cc11e7e7a30a419527064"
+   }
+  },
+  {
+   "apk": "opmt_v0.1.2_vc1.apk",
+   "apk_sha256": "4f91e3801780684a7bfdf33de97646cf0e9a1b4913c3ea0699efddeae5368366",
+   "package": "one.scarecrow.games.OPMT",
+   "versionCode": "1",
+   "versionName": "0.1.2",
+   "minSdk": "24",
+   "targetSdk": null,
+   "fdroid": {},
+   "pinned": true,
+   "provenance": {
+    "apk": "opmt_v0.1.2_vc1.apk",
+    "package": "one.scarecrow.games.OPMT",
+    "versionCode": "1",
+    "source_repo": "20Nick/OPMT",
+    "source_commit": "3240c4cf",
+    "tarball_sha256": "9875cdffc4bc0b9848efba5adb9d8516b87b09a5efdbe38dd7912a07c412c517",
+    "tarball_bytes": 628324,
+    "extracted": true,
+    "fetched_at": "2026-09-20T04:41:07Z",
+    "metadata_origin": "session-ledger:worklog S65 (OPMT @3240c4cf)",
+    "codeload_origin": "https://codeload.github.com/20Nick/OPMT/tar.gz/3240c4cf"
+   }
+  },
+  {
+   "apk": "tripeaks_v1.2.1_vc4.apk",
+   "apk_sha256": "52272ae619c0fec88dfd9b4a22be0c411edda8564edd7a11af107398799f894c",
+   "package": "eu.veldsoft.tri.peaks",
+   "versionCode": "4",
+   "versionName": "1.2.1",
+   "minSdk": "24",
+   "targetSdk": null,
+   "fdroid": {},
+   "pinned": true,
+   "provenance": {
+    "apk": "tripeaks_v1.2.1_vc4.apk",
+    "package": "eu.veldsoft.tri.peaks",
+    "versionCode": "4",
+    "source_repo": "VelbazhdSoftwareLLC/TriPeaksSolitaireForAndroid",
+    "source_commit": "62f3609",
+    "tarball_sha256": "715509509e81a836cc7ab62e25ffc92eda2063866925f44af4ce17059270ac50",
+    "tarball_bytes": 3848090,
+    "extracted": true,
+    "fetched_at": "2026-09-20T04:41:08Z",
+    "metadata_origin": "session-ledger:docs/corpus/SEARCH_LEDGER.md S66 S3",
+    "codeload_origin": "https://codeload.github.com/VelbazhdSoftwareLLC/TriPeaksSolitaireForAndroid/tar.gz/62f3609"
+   }
+  }
+ ]
+}

@@ -1,0 +1,13 @@
+{
+ "apk": "fishrings_v1.23_vc6.apk",
+ "package": "eu.veldsoft.fish.rings",
+ "versionCode": 6,
+ "source_repo": "VelbazhdSoftwareLLC/FishRingsForAndroid",
+ "source_commit": "dc3807e7d405843453afc798c6cc02205b65e1fb",
+ "tarball_sha256": "ffb13f0ec1a2807b9f43d8f7c094a092d422845a97a16ddacbc3ef1e80fd6458",
+ "tarball_bytes": 951169,
+ "extracted": true,
+ "fetched_at": "2026-09-20T04:40:00Z",
+ "metadata_origin": "https://gitlab.com/fdroid/fdroiddata/-/raw/master/metadata/eu.veldsoft.fish.rings.yml",
+ "codeload_origin": "https://codeload.github.com/VelbazhdSoftwareLLC/FishRingsForAndroid/tar.gz/dc3807e7d405843453afc798c6cc02205b65e1fb"
+}

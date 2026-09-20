@@ -1672,3 +1672,87 @@ Stage Summary:
 - Two P0 families killed with pixel proof: Canvas foundation (matrix/clip/bitmap/text — the S67 NO-OPs are now metamorphic-asserted laws) and ?attr/theme resolution (app bags + framework defaults + flavor law).
 - Zero regressions anywhere: 21/21 fixtures, 92/94 battery, 9/9 canonical APKs byte-stable.
 - Remaining P0: A7 (manifest label/icon), R-NEW-388 (TriPeaks RL geometry). Next wave candidates + the 7 canonical docs listed in §31.
+---
+Task ID: S69
+Agent: Super Z (main agent)
+Task: FINAL FOUNDATION / SOURCE-LINKED RUNTIME CAMPAIGN — 25-section directive
+  (§0 no blind debugging · §1 source-first · §2 six graphs · §3 cross-reference
+  · §13 API coverage matrix · §14 fan-out first · §17 fix cycle · §25 anti-
+  false-success).
+
+Work Log:
+- RECON (zero code changes): HEAD 8c917d41 clean, 6 commits ahead of origin
+  (PENDING-PUSH ×6, no credential in session); toolchain re-bootstrapped
+  (aapt2/ecj/r8/android-34), engine rebuilt, androguard installed; baseline
+  re-validated BEFORE changes: 21/21 fixtures, battery 92/94 (EXT-01/02 env),
+  canonical corpus recipes from the S65 ledger.
+- SOURCE INVENTORY (§1): scripts/s69_source_inventory{,_complete}.py pin every
+  corpus APK via fdroiddata build metadata (SourceCode + per-versionCode
+  commit) → tarball codeload + PROVENANCE.json (SHA256). RESULT 10/11 pinned:
+  bouncy=Vector-Pinball@b8c57cd, stopwatch=Stopwatch@13d2fab, dooz×2=Dooz@
+  0c60e78, microtimer=micro-timer@825faf, fishrings=FishRingsForAndroid@
+  dc3807e, tripeaks=TriPeaks@62f3609 (ledger pin), opmt=OPMT@3240c4cf (ledger
+  pin), tictactoe=TicTacToeGame@v1.0.0, gmdice=gamemasterdice@1.0;
+  uNote UNPINNED honestly (gitlab 403 all session; commit 4165c80d identified).
+- GRAPHS (§2): tools/architecture/engine_extractor.py parses the LIVE TUs
+  (dead excluded per S68_BUILD_GRAPH): class graph 387 classes; served-API
+  string-guard surface; subsystem call chains (render/lifecycle/input/
+  resource/runtime) → docs/foundation/graph/*.json (over-approximations
+  flagged in-band).
+- DEX CENSUS (§13/§14): dex_census.py walks all 11 APKs with androguard →
+  3674 distinct framework APIs, 213,251 call sites, per-API fan-out × APK
+  (docs/foundation/dex_census/). Bug found & fixed during build: invoke
+  operand parsing must regex the method ref (positional splits broke on "v0,
+  Lx;->m()V" shapes).
+- LIVE DISPATCH SURFACE: new runtime flag --dump-api-trace (S67
+  --dump-view-tree pattern; main.cpp flag → execution_engine.cpp dumps
+  ApiCallTrace ring after execute) → api_calls.json per run.
+  scripts/s69_live_runs.sh runs the whole corpus with the canonical S65
+  recipe (--execution-mode real-dalvik --frames 9 --frame-delay 1500) and
+  summarizes to live_runs.json (per-frame nonwhite + SHA + REC-MISS census +
+  STUB census). Verification: fishrings frame_004 = 2,072,211 px == S65 chain.
+- API MATRIX: build_api_matrix.py merges static fan-out × live status ×
+  static surface → api_matrix.json (status law; LIVE-IMPL 163 / LIVE-PARTIAL
+  1 / LIVE-STUB 68 / UNSERVED 3442 mostly Ljava interpreter-intrinsics;
+  android.* UNSERVED ranked by fan-out: Trace.beginSection, Context.getString,
+  getSystemService, Rect.<init>…).
+- SOURCE MAP (§3): build_source_map.py → source↔DEX 1:1 for non-obfuscated
+  apps (fishrings 6/6, tripeaks 14/14, OPMT 7 files, bouncy 55 files, dooz
+  R8-obfuscated 2/68 UNMAPPED honest), each mapped class carrying its android
+  API edges + live statuses + frame evidence.
+- FAILURE INDEX (§5): build_failure_index.py → root_registry's 372 roots in
+  the campaign schema (nulls preserved, never invented) → failure_index.json.
+- FIX WAVE F-135 (fan-out first: 694 static sites × 7 APKs; bouncy 480×
+  STUBBED at runtime): OpenJDK law fetched (Double.java isNaN:1031 (v!=v),
+  isInfinite:1048 abs>MAX, compare:1538 canonical-bits ordering NaN>+Inf /
+  -0.0<+0.0; Float.java:631) → generic implementation in dalvik_engine.cpp
+  (no app special-casing) → micro fixture f52_nanlaw (9 rows, NaN/±Inf
+  PRODUCED via IEEE div, each row an exact-color assertion) → 9/9 rows exact
+  → bouncy NaN family flips 480× STUB→IMPL with frames byte-stable → f52
+  determinism ×3 byte-identical (b9d4fdb3…) → regression: 22/22 fixtures,
+  battery 92/94 (EXT-01/02 only), canonical corpus frames byte-identical
+  (fishrings 2072211, tripeaks 205638).
+- Aggregator: runtime_graph.json (§21 machine-readable map) +
+  docs/FOUNDATION_RUNTIME_MAP.md (the canonical chain with per-hop
+  implementation/index/gaps) + S69_REPORT.md + SEARCH_LEDGER S69 section +
+  FOUNDATION_GAP_MATRIX updated (F-135 row).
+- Hygiene (§5): .gitignore extended — source tarballs + the two heavy
+  extracted trees (tripeaks 12M, bouncy 8.8M) stay external/re-fetchable via
+  PROVENANCE; key law files curated into docs/upstream/apps/{tripeaks,bouncy};
+  tracked corpus addition = 4.6MB; determinism/fixture evidence timestamp
+  churn reverted, only meaningful deltas staged.
+
+Stage Summary:
+- New laws shipped: F-135 (OpenJDK NaN/infinite/compare family) — full §17
+  cycle, pixel + live-flip + determinism + regression proof.
+- New permanent tooling: tools/architecture/ (5 generators + README) +
+  --dump-api-trace + s69_live_runs.sh + source pin inventory.
+- New machine-readable indexes: api_matrix.json, source_map.json,
+  failure_index.json, runtime_graph.json, source_inventory.json, live_runs.json,
+  graph/{class_graph,served_api,subsystem_graphs}.json, dex_census/.
+- Remaining P0 (registered, not hidden): R-NEW-388 (TriPeaks RL geometry —
+  source+pixel+trace provenance now in one record), A7 (manifest label/icon),
+  LIVE-STUB tail (68 APIs), uNote pin (gitlab 403), dooz Compose (§19
+  separate campaign). FOUNDATION COMPLETE = NO (honest, §22).
+- Push debt: 7 commits total after this session's commit — PENDING-PUSH (no
+  credential in session env).
