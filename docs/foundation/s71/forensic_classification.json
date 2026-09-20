@@ -5,8 +5,8 @@
   {
    "api": "<unknown>.add",
    "old_status": "LIVE-STUB",
-   "classification": "UNKNOWN",
-   "family": "",
+   "classification": "TRUE-MISSING",
+   "family": "FRAGMENT-TX-LAW",
    "silent_wrong": false,
    "dispatch": "",
    "source_evidence": "",
@@ -30,7 +30,7 @@
    "tested_by": [],
    "upstream_docs": [],
    "noop_flags": [],
-   "note": "no correlation row \u2014 needs caller-context review"
+   "note": "dooz seq1225 f650 \u2014 FragmentTransaction.add between beginTransaction(1222) and commit(1226); receiver is the synthesized FragmentManager stub; part of the FRAGMENT-TX-LAW root"
   },
   {
    "api": "<unknown>.addOnDrawListener",
@@ -3134,12 +3134,12 @@
   {
    "api": "Lj$/util/concurrent/ConcurrentHashMap;.newKeySet",
    "old_status": "LIVE-STUB",
-   "classification": "UNKNOWN",
-   "family": "",
-   "silent_wrong": false,
-   "dispatch": "",
-   "source_evidence": "",
-   "upstream": "",
+   "classification": "TRUE-MISSING",
+   "family": "DESUGAR-SHIM-LAW",
+   "silent_wrong": true,
+   "dispatch": "bridge \u2014 no handler (rg newKeySet \u2192 0 hits); engine already recognizes j$ CHM for Telegram's FormatCache .e/.f methods (dalvik_engine.cpp:5114-5390) \u2014 the shim class IS platform surface by precedent",
+   "source_evidence": "dalvik_engine.cpp:5114-5134 (j$ CHM precedent block); no newKeySet guard anywhere",
+   "upstream": "OpenJDK CHM.newKeySet(): KeySetView backed by the map; add=putIfAbsent(key,PRESENT); iterate keys",
    "static_sites": 0,
    "static_apks": 0,
    "live_calls_s70": 1,
@@ -3157,7 +3157,7 @@
    "tested_by": [],
    "upstream_docs": [],
    "noop_flags": [],
-   "note": "no resolution row and no static guard pair \u2014 needs manual forensic review"
+   "note": "bouncy seq72 frame0; j$ = D8 desugar shim (baked into APK) \u2192 platform surface; stub set \u2192 downstream add/contains silently no-op (silent-wrong, not crash)"
   },
   {
    "api": "Ljava/io/ByteArrayOutputStream;.<init>",

@@ -6,6 +6,8 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdio>
+#include <cstdlib>
 #include <iostream>
 
 namespace miniandroid { namespace framework {
@@ -164,6 +166,37 @@ bool read_rectf_fields(HeapAllocator* heap, uint32_t rect_id,
 }
 
 }  // namespace
+
+// ── S71 R-NEW-389 FIRST-PIXEL-DIVERGENCE instrumentation ────────────────
+// Env-gated (MINIANDROID_CANVAS_OP_TRACE=<path>) per-op evidence line:
+//   seq kind x y w h r color stroke stroke_w text_size bold
+//   clip_l clip_t clip_r clip_b  a b c d e f  text
+// Everything is the RESOLVED record-time state (what the rasterizer sees).
+void CanvasShadow::push_op(DrawOp op) {
+    if (op_trace_seq_ < kOpTraceCap) {
+        if (!op_trace_) {
+            const char* p = std::getenv("MINIANDROID_CANVAS_OP_TRACE");
+            if (p && *p) op_trace_ = std::fopen(p, "w");
+        }
+        if (op_trace_) {
+            const char* kind_names[] = {"COLOR", "RECT", "ROUNDRECT",
+                                        "CIRCLE", "LINE", "TEXT", "PAINT",
+                                        "PATH", "BITMAP"};
+            const char* kn = kind_names[static_cast<int>(op.kind)];
+            std::fprintf(op_trace_,
+                         "%llu %s %.3f %.3f %.3f %.3f %.3f %08x %d %.3f "
+                         "%.3f %d %d %d %d %d %.6f %.6f %.6f %.6f %.6f "
+                         "%.6f \"%s\"\n",
+                         static_cast<unsigned long long>(op_trace_seq_++),
+                         kn, op.x, op.y, op.w, op.h, op.r, op.color,
+                         op.stroke ? 1 : 0, op.stroke_w, op.text_size_px,
+                         op.text_bold ? 1 : 0, op.clip_l, op.clip_t,
+                         op.clip_r, op.clip_b, mat_.a, mat_.b, mat_.c,
+                         mat_.d, mat_.e, mat_.f, op.text.c_str());
+        }
+    }
+    target().push_back(std::move(op));
+}
 
 void CanvasShadow::begin_frame() {
     ops_.clear();
@@ -921,7 +954,7 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
                        (uint32_t)ctx.arg_as_int(2, 0);
         }
         stamp_clip(op);
-        target().push_back(op);
+        push_op(std::move(op));
         return CallResult::handled_void();
     }
     if (m == "drawRect") {
@@ -965,7 +998,7 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
             op.contours.push_back(std::move(quad));
         }
         stamp_clip(op);
-        target().push_back(op);
+        push_op(std::move(op));
         return CallResult::handled_void();
     }
     if (m == "drawRoundRect") {
@@ -995,7 +1028,7 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
             pop.fill_type = 0;
             pop.contours.push_back(std::move(c));
             stamp_clip(pop);
-            target().push_back(pop);
+            push_op(std::move(pop));
             return CallResult::handled_void();
         }
         const float sx = mat_.a, sy = mat_.d;
@@ -1007,7 +1040,7 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         auto sw2 = paint_stroke_w_.find(paint_id);
         op.stroke_w = sw2 != paint_stroke_w_.end() ? sw2->second : 1.f;
         stamp_clip(op);
-        target().push_back(op);
+        push_op(std::move(op));
         return CallResult::handled_void();
     }
     if (m == "drawCircle") {
@@ -1028,7 +1061,7 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
             pop.fill_type = 0;
             pop.contours.push_back(std::move(c));
             stamp_clip(pop);
-            target().push_back(pop);
+            push_op(std::move(pop));
             return CallResult::handled_void();
         }
         DrawOp op; op.kind = DrawOp::Kind::DRAW_CIRCLE;
@@ -1039,7 +1072,7 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         auto sw = paint_stroke_w_.find(paint_id);
         op.stroke_w = sw != paint_stroke_w_.end() ? sw->second : 1.f;
         stamp_clip(op);
-        target().push_back(op);
+        push_op(std::move(op));
         return CallResult::handled_void();
     }
     if (m == "drawLine") {
@@ -1055,7 +1088,7 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         auto sw = paint_stroke_w_.find(paint_id);
         op.stroke_w = (sw != paint_stroke_w_.end() ? sw->second : 1.f) * mat_.mean_scale();
         stamp_clip(op);
-        target().push_back(op);
+        push_op(std::move(op));
         return CallResult::handled_void();
     }
     if (m == "drawText") {
@@ -1073,7 +1106,7 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         op.text_bold = paint_fake_bold_.count(paint_id) && paint_fake_bold_[paint_id];
         mat_.map(op.x, op.y, op.x, op.y);
         stamp_clip(op);
-        target().push_back(op);
+        push_op(std::move(op));
         return CallResult::handled_void();
     }
     if (m == "drawPath") {
@@ -1099,7 +1132,7 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
                 op.stroke_w *= mat_.mean_scale();
             }
             stamp_clip(op);
-            target().push_back(op);
+            push_op(std::move(op));
         }
         return CallResult::handled_void();
     }
@@ -1136,7 +1169,7 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
                 op.stroke_w *= mat_.mean_scale();
             }
             stamp_clip(op);
-            target().push_back(op);
+            push_op(std::move(op));
         } else if (!ok) {
             // Degenerate rects legitimately draw nothing (AOSP); unresolved
             // ARGUMENTS are a compat problem worth reporting.
@@ -1203,7 +1236,7 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
                 op.stroke_w *= mat_.mean_scale();
             }
             stamp_clip(op);
-            target().push_back(op);
+            push_op(std::move(op));
         } else if (!ok) {
             warn_noop(cls, "drawArc(unresolved-args)");
         }
@@ -1213,7 +1246,7 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         DrawOp op; op.kind = DrawOp::Kind::DRAW_PAINT;
         op.color = paint_color(ctx.arg_as_object(0));
         stamp_clip(op);
-        target().push_back(op);
+        push_op(std::move(op));
         return CallResult::handled_void();
     }
     if (m == "translate") {
@@ -1332,14 +1365,13 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
             // node (RecordingCanvas starts fresh) — the outer affine folds
             // into the offset for translate-only inner state, which is what
             // Compose child positioning produces.
-            auto& tgt = target();
             for (const DrawOp& op : it->second) {
                 DrawOp c = op;
                 stamp_clip(c);
                 c.x += ox; c.y += oy;
                 if (c.kind == DrawOp::Kind::DRAW_RECT || c.kind == DrawOp::Kind::DRAW_LINE)
                     { c.w += ox; c.h += oy; }
-                tgt.push_back(c);
+                push_op(std::move(c));
             }
         }
         return CallResult::handled_void();
@@ -1483,7 +1515,7 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
                 op.has_affine = true;   // rotated/scaled → per-pixel sampling
             }
         }
-        if (op.bitmap_id != 0) { stamp_clip(op); target().push_back(op); }
+        if (op.bitmap_id != 0) { stamp_clip(op); push_op(std::move(op)); }
         else warn_noop(cls, "drawBitmap(bitmap-unresolved)");
         return CallResult::handled_void();
     }
@@ -1501,7 +1533,7 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         op.w = op.x + width; op.h = op.y + width;   // absolute-edges convention
         op.stroke = false;
         stamp_clip(op);
-        target().push_back(op);
+        push_op(std::move(op));
         return CallResult::handled_void();
     }
     if (m == "drawPosText" || m == "drawPoints" || m == "drawLines" ||
