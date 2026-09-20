@@ -30504,6 +30504,31 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
     }
 
+    // ── S71 ROOT LAW #1: ancestry dispatch (retry BEFORE stub fallthrough) ─
+    // Every guard above matches with class_name.find("Context")/find(
+    // "Activity")-style substrings. A receiver whose runtime class is an
+    // app subclass (NoteMain, BouncyActivity, MultiDexApplication, dooz
+    // ui/App, …) missed ALL of them and was about to become a silent
+    // type-default stub. AOSP law: Application/Service extend Context;
+    // Activity extends ContextThemeWrapper extends Context — the receiver
+    // IS a framework object. One bounded re-dispatch with the nearest
+    // guard-visible framework ancestor gives every existing guard its
+    // AOSP semantics WITHOUT touching the 39 substring sites.
+    {
+        const std::string ancestor = framework_ancestor_for_dispatch(class_name);
+        if (!ancestor.empty() && ancestor != class_name) {
+            static thread_local uint64_t ancestry_retry_n = 0;
+            if (ancestry_retry_n < 64) {
+                ++ancestry_retry_n;
+                std::cerr << "[S71-ANCESTRY] re-dispatch " << class_name
+                          << " as " << ancestor << " for ." << method
+                          << std::endl;
+            }
+            return bridge_to_api(ancestor, method, args, result, status,
+                                 method_idx_hint);
+        }
+    }
+
     // Default: stubbed but not crashing.
     //
     // UC-CM-001 (closes F012, Coder 3 systemic finding):
@@ -30553,6 +30578,49 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
     result = DalvikValue::make_void();
     return true;
+}
+
+// ── S71 ROOT LAW #1: ancestry dispatch helper ──────────────────────────────
+// Walks the receiver's superclass chain — DEX chain via class_to_superclass_
+// (populated from every loaded dex at :568/:718) plus the built-in AOSP
+// platform hierarchy (framework supers are NOT in the APK's DEX) — and
+// returns the nearest ancestor name that the substring dispatch guards can
+// see (Context/Activity/Service/Application families), or "" when the
+// receiver has no framework ancestor. Bounded: 12 DEX hops max; the
+// platform table itself terminates at Context (terminal, not a key).
+// Platform hierarchy source: AOSP Application/Service/Activity/ContextWrapper
+// class declarations (docs/upstream/aosp/CONTEXT_STRING_LAW.md pin).
+std::string DalvikExecutionEngine::framework_ancestor_for_dispatch(
+    const std::string& cls) {
+    static const char* kGuardFamilies[] = {"Context", "Activity", "Service",
+                                           "Application"};
+    auto matches_guard_family = [&](const std::string& c) {
+        for (const char* f : kGuardFamilies)
+            if (c.find(f) != std::string::npos) return true;
+        return false;
+    };
+    // AOSP platform hierarchy (class → direct superclass).
+    static const std::map<std::string, std::string> kPlatformSuper = {
+        {"Landroid/app/Application;", "Landroid/content/Context;"},
+        {"Landroid/app/Service;", "Landroid/content/Context;"},
+        {"Landroid/app/Activity;", "Landroid/content/ContextThemeWrapper;"},
+        {"Landroid/app/Dialog;", "Landroid/content/Context;"},
+        {"Landroid/content/ContextThemeWrapper;", "Landroid/content/Context;"},
+        {"Landroid/content/ContextWrapper;", "Landroid/content/Context;"},
+    };
+    std::string cur = cls;
+    for (int hop = 0; hop < 12 && !cur.empty(); ++hop) {
+        auto it = class_to_superclass_.find(cur);
+        std::string sup = (it != class_to_superclass_.end()) ? it->second : "";
+        if (sup.empty()) {
+            auto pit = kPlatformSuper.find(cur);
+            if (pit != kPlatformSuper.end()) sup = pit->second;
+        }
+        if (sup.empty()) break;
+        if (matches_guard_family(sup)) return sup;
+        cur = sup;
+    }
+    return "";
 }
 
 // EXP-042 Phase 4: Singleton cache helper.

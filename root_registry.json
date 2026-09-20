@@ -3768,21 +3768,21 @@
   },
   {
    "id": "R-NEW-388",
-   "status": "ROOT-CAUSED-NOT-FIXED",
-   "priority": "P1",
-   "title": "TriPeaks card ImageViews collapsed at (0,0) \u2014 RL alignParent+margin wiring gap",
+   "status": "ROOT-CAUSED-REMEASURED-GENERIC-OK",
+   "priority": "P2",
+   "title": "TriPeaks geometry \u2014 generic RL anchor laws PROVEN on f14 (current binary); game screen blocked at SplashActivity (app-specific path)",
    "fg": true,
    "first_seen": "S66 TriPeaks visual forensics (commit 289e33d3)",
-   "evidence": "SOURCE (pinned TriPeaks@62f3609): board XML uses RelativeLayout alignParent* + margin idiom per card ImageView. TRACE: engine rl_cached_left \u2192 measured_left wiring gap + narrow-wrap overlap \u2192 cards render collapsed at (0,0); painter proven faithful (canvas probe byte-identical). UPSTREAM: AOSP RelativeLayout applyHorizontalSizeRules/VerticalSizeRules (measure pass law). PLAN: source-linked geometry chain \u2014 inflate params \u2192 measure rules \u2192 measured_left/top wiring \u2192 render bounds; fixture first (RL margin+alignParent), then TriPeaks real APK, pixel proof, determinism \u00d73, regression battery. Evidence: docs/foundation/FOUNDATION_GAP_MATRIX.md; docs/foundation/FOUNDATION_LAYOUT_MATRIX.md (C1/C2); docs/evidence/visual_forensics/ (S66)."
+   "evidence": "S71 re-measure (docs/foundation/s71/R-NEW-388_REMEASURE.md): f14_relative fixture on current binary \u2014 alignParentRight x=780, centerInParent (340,760), below=/margin chain y=300, no (0,0) collapse; S66 wiring-gap claim stale for HEAD. Fresh canonical runs never reach GameActivity (ViewTree = splash RelativeLayout+WebView only). TriPeaks card geometry demoted from foundation list until splash navigation is crossed; upstream law unchanged (AOSP RL measure rules)."
   },
   {
    "id": "A7",
    "status": "ROOT-CAUSED-NOT-FIXED",
    "priority": "P2",
-   "title": "Manifest label/icon \u2014 label REFERENCE unresolved, icon unparsed (launcher identity wrong corpus-wide)",
+   "title": "Manifest label/icon \u2014 identity consumer law missing (label raw in parse, zero runtime consumers, icon unparsed)",
    "fg": true,
    "first_seen": "S67 foundation matrix A-series (95040a39/75f62771 wave)",
-   "evidence": "SOURCE: every APK manifest label of REFERENCE form resolves to the raw '@0x\u2026' string; icon attribute never parsed. UPSTREAM LAW: AOSP PackageParser + Resources.resolveReference \u2014 label/icon resolve through ARSC (pkg-local + android: namespace fallback). IMPACT: launcher identity wrong for every corpus APK (visual: activity title bar / app label surfaces). PLAN: ARSC-first reference resolution reuse (A2 law path), fixture (f53_manifest_label), real APK proof, determinism \u00d73. Evidence: docs/foundation/FOUNDATION_GAP_MATRIX.md row A7."
+   "evidence": "S71 chain (docs/foundation/s71/A7_CONTRACT_CHAIN.md): application_label captured raw (manifest_reader.cpp:477/:822), never ARSC-resolved, ZERO consumers (rg: parser+header only); getApplicationInfo returns bare singleton (dalvik_engine.cpp:24768, guard itself Context/Activity-substring = ancestry case); icon never parsed; NO title-bar surface on HEAD -> the S66 'raw @0x in pixels' impact claim corrected: raw string surfaces in engine.log only. Generic contract = manifest reference resolve at consume time (PackageParser + resolveReference law) + getApplicationLabel/labelRes/icon consumer law. Fixture path f53_manifest_label unchanged; bundles with F-137 ancestry + DRAWABLE-LAW (icon)."
   },
   {
    "id": "F-136",
@@ -3795,12 +3795,12 @@
   },
   {
    "id": "R-NEW-389",
-   "status": "OBSERVED-FAIL",
+   "status": "ROOT-CAUSED-SEMANTIC",
    "priority": "P1",
-   "title": "bouncy 81-px top-band divergence across builds \u2014 dispatch-identical, ViewTree-identical, cause unidentified",
+   "title": "bouncy 81-px top-band divergence \u2014 ROOT-CAUSED: F-136 collateral (splash hint now renders), NOT nondeterminism",
    "fg": true,
    "first_seen": "S70 corpus A/B regression (F-136 wave)",
-   "evidence": "OBSERVED: bouncy frame_000 sha 53177d4a (S69 golden; reproduced by S69-source rebuilds AND a comment-only-probe rebuild) vs 4f41dda2 (F-136 builds, x3 deterministic). PIXEL: 81 px in band (3,0)-(93,4), (24,24,24)->(255,255,0) \u2014 score-bar top band. EVIDENCE AGAINST A DISPATCH CAUSE: bridged api_calls.json status/count aggregates IDENTICAL pre/post; ViewTree node texts IDENTICAL; getString dispatch markers identical (3x EXP088-B-DISPATCH, no F136 markers). DETERMINISM: per-binary x3 byte-identical on both sides \u2014 build-sensitive, not run-sensitive. SUSPICION (unproven): paint/layout state sensitive to binary layout (UB class) in a path without dispatch or ViewTree provenance. NEXT: instrument the score-bar paint path (SoftwareRenderer top band), audit for uninitialized/order-dependent state; per \u00a725 F-136's collateral claim is bounded to the 23/23 fixture battery + 9/10 corpus apps until this closes."
+   "evidence": "S71 FIRST PIXEL DIVERGENCE (op level, docs/foundation/s71/R-NEW-389_ROOT_CAUSE.md): canvas op trace (MINIANDROID_CANVAS_OP_TRACE, render-neutral) differs in exactly ONE field between b88e09d9 golden build and F-136 build: drawText text content \"\" -> \"Touch to start\" (ScoreView.java:226 getString(R.string.touch_to_start_message)). Controls: current-source x3 + golden-source x3 byte-identical (4f41dda2 / 53177d4a); comment-only probe x1 from S70. Prior 'dispatch-identical' observation explained: trace records register NAMES as arguments (dalvik_engine.cpp:14451 arg_names), so string content was invisible; ViewTree identical because ScoreView draws via Canvas, not TextViews. Direction: toward fidelity (AOSP would render the string). Bounds F-136 collateral to 1 string draw site."
   },
   {
    "id": "F-121",
@@ -3873,7 +3873,26 @@
    "fg": true,
    "first_seen": "S69 source-linked campaign (b88e09d9)",
    "evidence": "OpenJDK Double.java isNaN:1031 (v!=v), isInfinite:1048 (abs>MAX), compare:1538 canonical-bits ordering NaN>+Inf / -0.0<+0.0; Float.java:631/:1324. S69 commit b88e09d9: generic implementation in dalvik_engine.cpp; micro fixture f52_nanlaw (9 rows, NaN/\u00b1Inf PRODUCED via IEEE div, exact-color assertions, 9/9); determinism \u00d73 byte-identical; regression 22/22 fixtures + battery 92/94 + canonical corpus frames byte-identical; bouncy frames byte-stable. Oracle: docs/foundation/upstream_oracle.json F-135-* records."
+  },
+  {
+   "id": "F-137",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P0",
+   "title": "ANCESTRY-DISPATCH root law \u2014 substring guards miss app subclasses (Application/Activity/Service receivers fell to type-default stub)",
+   "fg": true,
+   "first_seen": "S71 W5 forensic classification: 22 ANCESTRY-ROOT records (6 FALSE-UNSERVED, rank #1 family by trace-window coupling 194 APIs)",
+   "evidence": "UPSTREAM: AOSP hierarchy Application/Service extend Context; Activity extends ContextThemeWrapper extends Context (docs/upstream/aosp/CONTEXT_STRING_LAW.md pin + AOSP class declarations). FIX (no guard sites touched): framework_ancestor_for_dispatch() walks class_to_superclass_ (DEX) + built-in platform table, single retry at the bridge stub fallthrough (dalvik_engine.cpp:30507-30530). PROOF: gmdice GameMasterDice.getResources STUBBED->IMPLEMENTED x5, unote NoteMain.getWindow ->IMPLEMENTED, dooz App.getApplicationContext ->IMPLEMENTED + App.getClass x2 IMPLEMENTED (<unknown>.getClass 14->12); MultiDexApplication.getApplicationInfo chain fires (Application->Context). Battery 92/94 (EXT-01/02 = missing external fixture APK in fresh container, environmental). Pixels: 5/6 apps byte-identical pre/post; dooz new sha 736592d0 x3 deterministic with exactly the predicted conversions. TRUE-MISSING ancestry rows (setTitle/setTheme/setShowWhenLocked/setTurnScreenOn) still need method laws \u2014 predicted by classification, unchanged by design."
+  },
+  {
+   "id": "F-138",
+   "status": "REGISTERED",
+   "priority": "P1",
+   "title": "ScoreView hint HUD geometry \u2014 bitmap-font text drawn at (0,0) (legacy text path, text_size=0)",
+   "fg": true,
+   "first_seen": "S71 R-NEW-389 op-trace forensics (canvas op #1)",
+   "evidence": "bouncy ScoreView hint 'Touch to start' renders at (0,0) via the legacy bitmap-font path (op trace text_size=0, matrix identity); on-device it positions per ScoreView layout. Cosmetic positioning + real text-shaping for the HUD surface; separate from R-NEW-389 (root-caused) \u2014 do not bundle with string-law work."
   }
  ],
- "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry\u2194docs single-source-of-truth restored); registry 372\u2192374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots."
+ "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry\u2194docs single-source-of-truth restored); registry 372\u2192374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots.",
+ "total": 386
 }

@@ -27,9 +27,22 @@ def load(p, d=None):
     return json.loads(p.read_text()) if p.exists() else d
 
 
+def freshest_live_base():
+    """S71 fix: prefer the NEWEST live-run generation (s71_live > s69_live).
+    Previously s69_live was hardcoded → the RENDER/API sections could cite
+    stale pre-fix artifacts (S71 W7: stale-data false-lead found in the
+    F-136 bundle, which showed the S69 golden sha while the current binary
+    deterministically produces the R-NEW-389 sha)."""
+    for gen in ("s71_live", "s69_live"):
+        base = ROOT / "run" / gen
+        if base.exists() and any(base.iterdir()):
+            return base
+    return ROOT / "run" / "s69_live"
+
+
 def resolve_app_dir(appkey):
-    """fuzzy: 'tripeaks' → run/s69_live/tripeaks_v1.2.1_vc4/"""
-    base = ROOT / "run" / "s69_live"
+    """fuzzy: 'tripeaks' → run/<newest-live>/tripeaks_v1.2.1_vc4/"""
+    base = freshest_live_base()
     if not appkey:
         return None
     d = base / appkey
@@ -272,6 +285,7 @@ def diagnose_live(g, app, frame=None):
             print(f"unknown app {app}")
             return 1
     print(f"  pin: {a['pin'].get('repo')} @ {a['pin'].get('commit')}")
+    appdir = resolve_app_dir(app)  # S71: freshest live generation
     live = a.get("live") or {}
     shot = live.get("screenshot") or {}
     frames = live.get("frames") or []
@@ -280,8 +294,8 @@ def diagnose_live(g, app, frame=None):
     print(f"  frames: {len(frames)} ({len(shas)} distinct) "
           f"nonwhite(s)={sorted({f['nonwhite'] for f in frames})}")
 
-    # FIRST DIVERGENCE classification (S66 forensics law):
-    tr = load(ROOT / f"run/s69_live/{app}/api_calls.json", [])
+    # FIRST DIVERGENCE classification (S66 forensics law)
+    tr = load(appdir / "api_calls.json", []) if appdir else []
     stubs = [e for e in tr if e.get("status") == "STUBBED"]
     impl_fail = [e for e in tr if e.get("status") not in ("STUBBED", "IMPLEMENTED")]
     section("FIRST DIVERGENCE (live classification)")
@@ -301,7 +315,7 @@ def diagnose_live(g, app, frame=None):
     if impl_fail:
         print(f"  live other-status dispatches: {len(impl_fail)}")
 
-    vt = load(ROOT / f"run/s69_live/{app}/view_tree.json")
+    vt = load(appdir / "view_tree.json") if appdir else {}
     section("VIEW / LAYOUT")
     if vt:
         def count(n):
@@ -348,7 +362,8 @@ def diagnose_live(g, app, frame=None):
     print("  (candidates are hypotheses with evidence, NOT verdicts — §0)")
 
     section("EVIDENCE")
-    print(f"  run/s69_live/{app}/ (api_calls.json, view_tree.json, frames)")
+    print(f"  {(appdir or '(no live dir resolved)')}/ (api_calls.json, "
+          f"view_tree.json, frames)")
     print(f"  docs/foundation/live_runs.json")
     return 0
 

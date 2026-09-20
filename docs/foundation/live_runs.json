@@ -1,66 +1,14 @@
 {
- "generated": "S69",
+ "generated": "S71 refresh from run/s71_live",
  "runs": [
   {
    "apk": "app.varlorg.unote_30.apk",
-   "dir": "/home/z/my-project/run/s69_live/app.varlorg.unote_30",
+   "dir": "/home/z/my-project/run/s71_live/app.varlorg.unote_30",
    "status": "SUCCESS",
    "rc_zero": true,
-   "screenshot": {
-    "sha256": "bbef6631ad0d70bc69ce868d9c3b6499575293c61689065c4e7654ee01868ba8",
-    "nonwhite": 236520,
-    "width": 1080,
-    "height": 1920
-   },
-   "frames": [
-    {
-     "frame": "frame_000.png",
-     "nonwhite": 236520,
-     "sha256": "bbef6631ad0d70bc69ce868d9c3b6499575293c61689065c4e7654ee01868ba8"
-    },
-    {
-     "frame": "frame_001.png",
-     "nonwhite": 236520,
-     "sha256": "bbef6631ad0d70bc69ce868d9c3b6499575293c61689065c4e7654ee01868ba8"
-    },
-    {
-     "frame": "frame_002.png",
-     "nonwhite": 236520,
-     "sha256": "bbef6631ad0d70bc69ce868d9c3b6499575293c61689065c4e7654ee01868ba8"
-    },
-    {
-     "frame": "frame_003.png",
-     "nonwhite": 236520,
-     "sha256": "bbef6631ad0d70bc69ce868d9c3b6499575293c61689065c4e7654ee01868ba8"
-    },
-    {
-     "frame": "frame_004.png",
-     "nonwhite": 236520,
-     "sha256": "bbef6631ad0d70bc69ce868d9c3b6499575293c61689065c4e7654ee01868ba8"
-    },
-    {
-     "frame": "frame_005.png",
-     "nonwhite": 236520,
-     "sha256": "bbef6631ad0d70bc69ce868d9c3b6499575293c61689065c4e7654ee01868ba8"
-    },
-    {
-     "frame": "frame_006.png",
-     "nonwhite": 236520,
-     "sha256": "bbef6631ad0d70bc69ce868d9c3b6499575293c61689065c4e7654ee01868ba8"
-    },
-    {
-     "frame": "frame_007.png",
-     "nonwhite": 236520,
-     "sha256": "bbef6631ad0d70bc69ce868d9c3b6499575293c61689065c4e7654ee01868ba8"
-    },
-    {
-     "frame": "frame_008.png",
-     "nonwhite": 236520,
-     "sha256": "bbef6631ad0d70bc69ce868d9c3b6499575293c61689065c4e7654ee01868ba8"
-    }
-   ],
-   "max_frame_nonwhite": 236520,
-   "view_tree_nodes": 16,
+   "generation": "s71",
+   "max_frame_nonwhite": 237600,
+   "view_tree_nodes": 1,
    "view_tree_sha256": "a2e4a1bdef42a102820f352f833a01fa95c3708b0dab49798f60574d448f83d9",
    "api_calls": {
     "total": 108,
@@ -70,132 +18,68 @@
     },
     "sha256": "a4031adaacd8ec8f8319d2ef431768c9d1924c1da5b1a753b063cd9f3ba223b5"
    },
-   "rec_miss_lines": 233,
-   "rec_miss_top": [
-    [
-     "Landroid/app/Activity;.findViewById",
-     26
-    ],
-    [
-     "Landroid/widget/TextView;.setTextSize",
-     14
-    ],
-    [
-     "Landroid/content/SharedPreferences;.getBoolean",
-     9
-    ],
-    [
-     "Landroid/database/sqlite/SQLiteOpenHelper;.getWritableDatabase",
-     8
-    ],
-    [
-     "Landroid/widget/TextView;.getLineCount",
-     6
-    ],
-    [
-     "Landroid/widget/Button;.setTextSize",
-     5
-    ],
-    [
-     "Landroid/view/View;.setVisibility",
-     4
-    ],
-    [
-     "Landroid/widget/TextView;.addTextChangedListener",
-     4
-    ],
-    [
-     "Landroid/view/View;.getLayoutParams",
-     4
-    ],
-    [
-     "Landroid/view/View;.setLayoutParams",
-     4
-    ],
-    [
-     "Landroid/content/Context;.getApplicationContext",
-     3
-    ],
-    [
-     "Landroid/app/Activity;.getWindow",
-     3
-    ],
-    [
-     "Landroid/content/SharedPreferences;.getString",
-     3
-    ],
-    [
-     "Ljava/lang/Integer;.parseInt",
-     3
-    ],
-    [
-     "Landroid/widget/Button;.getLineCount",
-     3
-    ]
-   ],
-   "unsupported_lines": 0,
-   "unsupported_top": []
-  },
-  {
-   "apk": "bouncy.apk",
-   "dir": "/home/z/my-project/run/s69_live/bouncy",
-   "status": "SUCCESS",
-   "rc_zero": true,
    "screenshot": {
-    "sha256": "53177d4a100eda406863ca22c357b0724f7e2c0246b13869f1b3eabd6a327092",
-    "nonwhite": 2073600,
+    "sha256": "bbef6631ad0d70bc69ce868d9c3b6499575293c61689065c4e7654ee01868ba8",
+    "nonwhite": 237600,
     "width": 1080,
     "height": 1920
    },
    "frames": [
     {
      "frame": "frame_000.png",
-     "nonwhite": 2073600,
-     "sha256": "53177d4a100eda406863ca22c357b0724f7e2c0246b13869f1b3eabd6a327092"
+     "nonwhite": 237600,
+     "sha256": "bbef6631ad0d70bc69ce868d9c3b6499575293c61689065c4e7654ee01868ba8"
     },
     {
      "frame": "frame_001.png",
-     "nonwhite": 2073600,
-     "sha256": "53177d4a100eda406863ca22c357b0724f7e2c0246b13869f1b3eabd6a327092"
+     "nonwhite": 237600,
+     "sha256": "bbef6631ad0d70bc69ce868d9c3b6499575293c61689065c4e7654ee01868ba8"
     },
     {
      "frame": "frame_002.png",
-     "nonwhite": 2073600,
-     "sha256": "53177d4a100eda406863ca22c357b0724f7e2c0246b13869f1b3eabd6a327092"
+     "nonwhite": 237600,
+     "sha256": "bbef6631ad0d70bc69ce868d9c3b6499575293c61689065c4e7654ee01868ba8"
     },
     {
      "frame": "frame_003.png",
-     "nonwhite": 2073600,
-     "sha256": "53177d4a100eda406863ca22c357b0724f7e2c0246b13869f1b3eabd6a327092"
+     "nonwhite": 237600,
+     "sha256": "bbef6631ad0d70bc69ce868d9c3b6499575293c61689065c4e7654ee01868ba8"
     },
     {
      "frame": "frame_004.png",
-     "nonwhite": 2073600,
-     "sha256": "53177d4a100eda406863ca22c357b0724f7e2c0246b13869f1b3eabd6a327092"
+     "nonwhite": 237600,
+     "sha256": "bbef6631ad0d70bc69ce868d9c3b6499575293c61689065c4e7654ee01868ba8"
     },
     {
      "frame": "frame_005.png",
-     "nonwhite": 2073600,
-     "sha256": "53177d4a100eda406863ca22c357b0724f7e2c0246b13869f1b3eabd6a327092"
+     "nonwhite": 237600,
+     "sha256": "bbef6631ad0d70bc69ce868d9c3b6499575293c61689065c4e7654ee01868ba8"
     },
     {
      "frame": "frame_006.png",
-     "nonwhite": 2073600,
-     "sha256": "53177d4a100eda406863ca22c357b0724f7e2c0246b13869f1b3eabd6a327092"
+     "nonwhite": 237600,
+     "sha256": "bbef6631ad0d70bc69ce868d9c3b6499575293c61689065c4e7654ee01868ba8"
     },
     {
      "frame": "frame_007.png",
-     "nonwhite": 2073600,
-     "sha256": "53177d4a100eda406863ca22c357b0724f7e2c0246b13869f1b3eabd6a327092"
+     "nonwhite": 237600,
+     "sha256": "bbef6631ad0d70bc69ce868d9c3b6499575293c61689065c4e7654ee01868ba8"
     },
     {
      "frame": "frame_008.png",
-     "nonwhite": 2073600,
-     "sha256": "53177d4a100eda406863ca22c357b0724f7e2c0246b13869f1b3eabd6a327092"
+     "nonwhite": 237600,
+     "sha256": "bbef6631ad0d70bc69ce868d9c3b6499575293c61689065c4e7654ee01868ba8"
     }
-   ],
+   ]
+  },
+  {
+   "apk": "bouncy.apk",
+   "dir": "/home/z/my-project/run/s71_live/bouncy",
+   "status": "SUCCESS",
+   "rc_zero": true,
+   "generation": "s71",
    "max_frame_nonwhite": 2073600,
-   "view_tree_nodes": 34,
+   "view_tree_nodes": 1,
    "view_tree_sha256": "c41e8cbde73465cb3dc71a01df118b887ba97f5bf67c7dd305da2f5c6b4b7c88",
    "api_calls": {
     "total": 1465,
@@ -205,132 +89,68 @@
     },
     "sha256": "b8f357e9ff6065acea562deb4a4a0eb35e00b89ad3a0b84ae8eab10a16309717"
    },
-   "rec_miss_lines": 400,
-   "rec_miss_top": [
-    [
-     "Ljava/lang/Double;.isNaN",
-     106
-    ],
-    [
-     "Ljava/lang/Math;.sin",
-     53
-    ],
-    [
-     "Ljava/lang/Math;.cos",
-     53
-    ],
-    [
-     "Ljava/lang/Enum;.<init>",
-     15
-    ],
-    [
-     "Ljava/util/Map;.get",
-     14
-    ],
-    [
-     "Ljava/lang/System;.getProperty",
-     13
-    ],
-    [
-     "Ljava/lang/Integer;.valueOf",
-     11
-    ],
-    [
-     "Ljava/io/ByteArrayOutputStream;.write",
-     11
-    ],
-    [
-     "Ljava/lang/StringBuilder;.append",
-     8
-    ],
-    [
-     "Landroid/graphics/Paint;.<init>",
-     6
-    ],
-    [
-     "Landroid/graphics/Paint;.setAntiAlias",
-     6
-    ],
-    [
-     "Landroid/util/Log;.i",
-     5
-    ],
-    [
-     "Ljava/lang/StringBuilder;.<init>",
-     5
-    ],
-    [
-     "Ljava/lang/StringBuilder;.toString",
-     5
-    ],
-    [
-     "Landroid/graphics/Paint;.setARGB",
-     5
-    ]
-   ],
-   "unsupported_lines": 0,
-   "unsupported_top": []
-  },
-  {
-   "apk": "com.emmanuelmess.tictactoe_3.apk",
-   "dir": "/home/z/my-project/run/s69_live/com.emmanuelmess.tictactoe_3",
-   "status": "PARTIAL SUCCESS",
-   "rc_zero": false,
    "screenshot": {
-    "sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093",
-    "nonwhite": 0,
+    "sha256": "4f41dda2616627151c260553fb3e5368f3b1498000786b93fc43e1cc27b26e3a",
+    "nonwhite": 2073600,
     "width": 1080,
     "height": 1920
    },
    "frames": [
     {
      "frame": "frame_000.png",
-     "nonwhite": 0,
-     "sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
+     "nonwhite": 2073600,
+     "sha256": "4f41dda2616627151c260553fb3e5368f3b1498000786b93fc43e1cc27b26e3a"
     },
     {
      "frame": "frame_001.png",
-     "nonwhite": 0,
-     "sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
+     "nonwhite": 2073600,
+     "sha256": "4f41dda2616627151c260553fb3e5368f3b1498000786b93fc43e1cc27b26e3a"
     },
     {
      "frame": "frame_002.png",
-     "nonwhite": 0,
-     "sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
+     "nonwhite": 2073600,
+     "sha256": "4f41dda2616627151c260553fb3e5368f3b1498000786b93fc43e1cc27b26e3a"
     },
     {
      "frame": "frame_003.png",
-     "nonwhite": 0,
-     "sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
+     "nonwhite": 2073600,
+     "sha256": "4f41dda2616627151c260553fb3e5368f3b1498000786b93fc43e1cc27b26e3a"
     },
     {
      "frame": "frame_004.png",
-     "nonwhite": 0,
-     "sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
+     "nonwhite": 2073600,
+     "sha256": "4f41dda2616627151c260553fb3e5368f3b1498000786b93fc43e1cc27b26e3a"
     },
     {
      "frame": "frame_005.png",
-     "nonwhite": 0,
-     "sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
+     "nonwhite": 2073600,
+     "sha256": "4f41dda2616627151c260553fb3e5368f3b1498000786b93fc43e1cc27b26e3a"
     },
     {
      "frame": "frame_006.png",
-     "nonwhite": 0,
-     "sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
+     "nonwhite": 2073600,
+     "sha256": "4f41dda2616627151c260553fb3e5368f3b1498000786b93fc43e1cc27b26e3a"
     },
     {
      "frame": "frame_007.png",
-     "nonwhite": 0,
-     "sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
+     "nonwhite": 2073600,
+     "sha256": "4f41dda2616627151c260553fb3e5368f3b1498000786b93fc43e1cc27b26e3a"
     },
     {
      "frame": "frame_008.png",
-     "nonwhite": 0,
-     "sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
+     "nonwhite": 2073600,
+     "sha256": "4f41dda2616627151c260553fb3e5368f3b1498000786b93fc43e1cc27b26e3a"
     }
-   ],
+   ]
+  },
+  {
+   "apk": "com.emmanuelmess.tictactoe_3.apk",
+   "dir": "/home/z/my-project/run/s71_live/com.emmanuelmess.tictactoe_3",
+   "status": "SUCCESS",
+   "rc_zero": true,
+   "generation": "s71",
    "max_frame_nonwhite": 0,
-   "view_tree_nodes": 3,
+   "view_tree_nodes": 1,
    "view_tree_sha256": "fc2f81fab6801cf450b596452cb15e32c12aa05f4d9833e78cc0b6c38b412a54",
    "api_calls": {
     "total": 41,
@@ -340,127 +160,67 @@
     },
     "sha256": "f3600ef8f377ecb560ba9764c281f528a995aa4a78ca9b84970b4e1e0b6581cb"
    },
-   "rec_miss_lines": 15,
-   "rec_miss_top": [
-    [
-     "Ljava/lang/System;.nanoTime",
-     2
-    ],
-    [
-     "Landroid/app/Activity;.<init>",
-     1
-    ],
-    [
-     "Ljava/lang/reflect/Array;.newInstance",
-     1
-    ],
-    [
-     "Landroid/widget/RelativeLayout;.<init>",
-     1
-    ],
-    [
-     "Ljavax/microedition/khronos/egl/EGLContext;.getEGL",
-     1
-    ],
-    [
-     "Ljavax/microedition/khronos/egl/EGL10;.eglGetDisplay",
-     1
-    ],
-    [
-     "Ljavax/microedition/khronos/egl/EGL10;.eglInitialize",
-     1
-    ],
-    [
-     "Ljavax/microedition/khronos/egl/EGL10;.eglChooseConfig",
-     1
-    ],
-    [
-     "Ljavax/microedition/khronos/egl/EGL10;.eglTerminate",
-     1
-    ],
-    [
-     "Ljava/lang/RuntimeException;.<init>",
-     1
-    ],
-    [
-     "Landroid/widget/RelativeLayout;.addView",
-     1
-    ],
-    [
-     "Landroid/widget/RelativeLayout;.onAttachedToWindow",
-     1
-    ],
-    [
-     "Landroid/util/Log;.i",
-     1
-    ],
-    [
-     "Landroid/app/Activity;.onResume",
-     1
-    ]
-   ],
-   "unsupported_lines": 0,
-   "unsupported_top": []
-  },
-  {
-   "apk": "com.github.muellerma.stopwatch_6.apk",
-   "dir": "/home/z/my-project/run/s69_live/com.github.muellerma.stopwatch_6",
-   "status": "PARTIAL SUCCESS",
-   "rc_zero": false,
    "screenshot": {
-    "sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
-    "nonwhite": 23472,
+    "sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093",
+    "nonwhite": 0,
     "width": 1080,
     "height": 1920
    },
    "frames": [
     {
      "frame": "frame_000.png",
-     "nonwhite": 23472,
-     "sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
+     "nonwhite": 0,
+     "sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
     },
     {
      "frame": "frame_001.png",
-     "nonwhite": 23472,
-     "sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
+     "nonwhite": 0,
+     "sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
     },
     {
      "frame": "frame_002.png",
-     "nonwhite": 23472,
-     "sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
+     "nonwhite": 0,
+     "sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
     },
     {
      "frame": "frame_003.png",
-     "nonwhite": 23472,
-     "sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
+     "nonwhite": 0,
+     "sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
     },
     {
      "frame": "frame_004.png",
-     "nonwhite": 23472,
-     "sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
+     "nonwhite": 0,
+     "sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
     },
     {
      "frame": "frame_005.png",
-     "nonwhite": 23472,
-     "sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
+     "nonwhite": 0,
+     "sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
     },
     {
      "frame": "frame_006.png",
-     "nonwhite": 23472,
-     "sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
+     "nonwhite": 0,
+     "sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
     },
     {
      "frame": "frame_007.png",
-     "nonwhite": 23472,
-     "sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
+     "nonwhite": 0,
+     "sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
     },
     {
      "frame": "frame_008.png",
-     "nonwhite": 23472,
-     "sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
+     "nonwhite": 0,
+     "sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
     }
-   ],
-   "max_frame_nonwhite": 23472,
+   ]
+  },
+  {
+   "apk": "com.github.muellerma.stopwatch_6.apk",
+   "dir": "/home/z/my-project/run/s71_live/com.github.muellerma.stopwatch_6",
+   "status": "SUCCESS",
+   "rc_zero": true,
+   "generation": "s71",
+   "max_frame_nonwhite": 23520,
    "view_tree_nodes": 1,
    "view_tree_sha256": "b25f744196e70436424cbf931f61a0ee8182c11a845556481259e5f84b6f0330",
    "api_calls": {
@@ -470,76 +230,68 @@
     },
     "sha256": "f8480d98beb4c8c541eacb06c3858ec45aaa59964924bcf1991527533019c62a"
    },
-   "rec_miss_lines": 1,
-   "rec_miss_top": [
-    [
-     "Landroid/app/Application;.<init>",
-     1
-    ]
-   ],
-   "unsupported_lines": 0,
-   "unsupported_top": []
-  },
-  {
-   "apk": "de.duenndns.gmdice_8.apk",
-   "dir": "/home/z/my-project/run/s69_live/de.duenndns.gmdice_8",
-   "status": "SUCCESS",
-   "rc_zero": true,
    "screenshot": {
-    "sha256": "de98358c68f0f884ca6a1e0c69ff0147c1927411ebec95032ba5210ece159a6b",
-    "nonwhite": 182628,
+    "sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+    "nonwhite": 23520,
     "width": 1080,
     "height": 1920
    },
    "frames": [
     {
      "frame": "frame_000.png",
-     "nonwhite": 182628,
-     "sha256": "de98358c68f0f884ca6a1e0c69ff0147c1927411ebec95032ba5210ece159a6b"
+     "nonwhite": 23520,
+     "sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
     },
     {
      "frame": "frame_001.png",
-     "nonwhite": 182628,
-     "sha256": "de98358c68f0f884ca6a1e0c69ff0147c1927411ebec95032ba5210ece159a6b"
+     "nonwhite": 23520,
+     "sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
     },
     {
      "frame": "frame_002.png",
-     "nonwhite": 182628,
-     "sha256": "de98358c68f0f884ca6a1e0c69ff0147c1927411ebec95032ba5210ece159a6b"
+     "nonwhite": 23520,
+     "sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
     },
     {
      "frame": "frame_003.png",
-     "nonwhite": 182628,
-     "sha256": "de98358c68f0f884ca6a1e0c69ff0147c1927411ebec95032ba5210ece159a6b"
+     "nonwhite": 23520,
+     "sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
     },
     {
      "frame": "frame_004.png",
-     "nonwhite": 182628,
-     "sha256": "de98358c68f0f884ca6a1e0c69ff0147c1927411ebec95032ba5210ece159a6b"
+     "nonwhite": 23520,
+     "sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
     },
     {
      "frame": "frame_005.png",
-     "nonwhite": 182628,
-     "sha256": "de98358c68f0f884ca6a1e0c69ff0147c1927411ebec95032ba5210ece159a6b"
+     "nonwhite": 23520,
+     "sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
     },
     {
      "frame": "frame_006.png",
-     "nonwhite": 182628,
-     "sha256": "de98358c68f0f884ca6a1e0c69ff0147c1927411ebec95032ba5210ece159a6b"
+     "nonwhite": 23520,
+     "sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
     },
     {
      "frame": "frame_007.png",
-     "nonwhite": 182628,
-     "sha256": "de98358c68f0f884ca6a1e0c69ff0147c1927411ebec95032ba5210ece159a6b"
+     "nonwhite": 23520,
+     "sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
     },
     {
      "frame": "frame_008.png",
-     "nonwhite": 182628,
-     "sha256": "de98358c68f0f884ca6a1e0c69ff0147c1927411ebec95032ba5210ece159a6b"
+     "nonwhite": 23520,
+     "sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
     }
-   ],
-   "max_frame_nonwhite": 182628,
-   "view_tree_nodes": 11,
+   ]
+  },
+  {
+   "apk": "de.duenndns.gmdice_8.apk",
+   "dir": "/home/z/my-project/run/s71_live/de.duenndns.gmdice_8",
+   "status": "SUCCESS",
+   "rc_zero": true,
+   "generation": "s71",
+   "max_frame_nonwhite": 182564,
+   "view_tree_nodes": 1,
    "view_tree_sha256": "b4da25918eba808e2cd65bd319768615944d5e6a9991a22b4eda8ebef3e0d348",
    "api_calls": {
     "total": 141,
@@ -549,132 +301,68 @@
     },
     "sha256": "3da5882850b1c1e5027ec1bb413aebf3b589f8643a0de3112a7dd0775a57168a"
    },
-   "rec_miss_lines": 100,
-   "rec_miss_top": [
-    [
-     "Ljava/lang/Integer;.valueOf",
-     38
-    ],
-    [
-     "Ljava/lang/Integer;.parseInt",
-     5
-    ],
-    [
-     "Landroid/widget/Button;.setOnClickListener",
-     5
-    ],
-    [
-     "Landroid/widget/Button;.setOnLongClickListener",
-     5
-    ],
-    [
-     "Landroid/widget/Button;.getBackground",
-     5
-    ],
-    [
-     "Landroid/graphics/drawable/Drawable;.setColorFilter",
-     5
-    ],
-    [
-     "Landroid/content/res/Resources;.getColor",
-     5
-    ],
-    [
-     "Landroid/widget/Button;.setTextColor",
-     5
-    ],
-    [
-     "Landroid/widget/Button;.onAttachedToWindow",
-     5
-    ],
-    [
-     "Landroid/widget/Button;.setTransformationMethod",
-     4
-    ],
-    [
-     "Landroid/widget/Button;.setText",
-     4
-    ],
-    [
-     "Landroid/widget/LinearLayout;.onAttachedToWindow",
-     2
-    ],
-    [
-     "Landroid/widget/TextView;.onAttachedToWindow",
-     2
-    ],
-    [
-     "Landroid/app/ListActivity;.<init>",
-     1
-    ],
-    [
-     "Ljava/util/Random;.<init>",
-     1
-    ]
-   ],
-   "unsupported_lines": 0,
-   "unsupported_top": []
-  },
-  {
-   "apk": "dooz_23_toplevel.apk",
-   "dir": "/home/z/my-project/run/s69_live/dooz_23_toplevel",
-   "status": "PARTIAL SUCCESS",
-   "rc_zero": false,
    "screenshot": {
-    "sha256": "3273786a4410af048aa98720a9393bcc71c3549028039c5a7d5cf7b273bba2f1",
-    "nonwhite": 197,
+    "sha256": "de98358c68f0f884ca6a1e0c69ff0147c1927411ebec95032ba5210ece159a6b",
+    "nonwhite": 182564,
     "width": 1080,
     "height": 1920
    },
    "frames": [
     {
      "frame": "frame_000.png",
-     "nonwhite": 197,
-     "sha256": "3273786a4410af048aa98720a9393bcc71c3549028039c5a7d5cf7b273bba2f1"
+     "nonwhite": 182564,
+     "sha256": "de98358c68f0f884ca6a1e0c69ff0147c1927411ebec95032ba5210ece159a6b"
     },
     {
      "frame": "frame_001.png",
-     "nonwhite": 197,
-     "sha256": "3273786a4410af048aa98720a9393bcc71c3549028039c5a7d5cf7b273bba2f1"
+     "nonwhite": 182564,
+     "sha256": "de98358c68f0f884ca6a1e0c69ff0147c1927411ebec95032ba5210ece159a6b"
     },
     {
      "frame": "frame_002.png",
-     "nonwhite": 197,
-     "sha256": "3273786a4410af048aa98720a9393bcc71c3549028039c5a7d5cf7b273bba2f1"
+     "nonwhite": 182564,
+     "sha256": "de98358c68f0f884ca6a1e0c69ff0147c1927411ebec95032ba5210ece159a6b"
     },
     {
      "frame": "frame_003.png",
-     "nonwhite": 197,
-     "sha256": "3273786a4410af048aa98720a9393bcc71c3549028039c5a7d5cf7b273bba2f1"
+     "nonwhite": 182564,
+     "sha256": "de98358c68f0f884ca6a1e0c69ff0147c1927411ebec95032ba5210ece159a6b"
     },
     {
      "frame": "frame_004.png",
-     "nonwhite": 197,
-     "sha256": "3273786a4410af048aa98720a9393bcc71c3549028039c5a7d5cf7b273bba2f1"
+     "nonwhite": 182564,
+     "sha256": "de98358c68f0f884ca6a1e0c69ff0147c1927411ebec95032ba5210ece159a6b"
     },
     {
      "frame": "frame_005.png",
-     "nonwhite": 197,
-     "sha256": "3273786a4410af048aa98720a9393bcc71c3549028039c5a7d5cf7b273bba2f1"
+     "nonwhite": 182564,
+     "sha256": "de98358c68f0f884ca6a1e0c69ff0147c1927411ebec95032ba5210ece159a6b"
     },
     {
      "frame": "frame_006.png",
-     "nonwhite": 197,
-     "sha256": "3273786a4410af048aa98720a9393bcc71c3549028039c5a7d5cf7b273bba2f1"
+     "nonwhite": 182564,
+     "sha256": "de98358c68f0f884ca6a1e0c69ff0147c1927411ebec95032ba5210ece159a6b"
     },
     {
      "frame": "frame_007.png",
-     "nonwhite": 197,
-     "sha256": "3273786a4410af048aa98720a9393bcc71c3549028039c5a7d5cf7b273bba2f1"
+     "nonwhite": 182564,
+     "sha256": "de98358c68f0f884ca6a1e0c69ff0147c1927411ebec95032ba5210ece159a6b"
     },
     {
      "frame": "frame_008.png",
-     "nonwhite": 197,
-     "sha256": "3273786a4410af048aa98720a9393bcc71c3549028039c5a7d5cf7b273bba2f1"
+     "nonwhite": 182564,
+     "sha256": "de98358c68f0f884ca6a1e0c69ff0147c1927411ebec95032ba5210ece159a6b"
     }
-   ],
-   "max_frame_nonwhite": 197,
-   "view_tree_nodes": 39,
+   ]
+  },
+  {
+   "apk": "dooz_23_toplevel.apk",
+   "dir": "/home/z/my-project/run/s71_live/dooz_23_toplevel",
+   "status": "SUCCESS",
+   "rc_zero": true,
+   "generation": "s71",
+   "max_frame_nonwhite": 328,
+   "view_tree_nodes": 1,
    "view_tree_sha256": "3c1aa17fa5cd96220582db9fa3fb183c7101558c7e36098046f864568a03189f",
    "api_calls": {
     "total": 2157,
@@ -684,132 +372,68 @@
     },
     "sha256": "a534d2830c63f30bcb6838e55b81efa196c680c01550afb40c56e70c2f45deeb"
    },
-   "rec_miss_lines": 400,
-   "rec_miss_top": [
-    [
-     "Ljava/lang/Enum;.<init>",
-     101
-    ],
-    [
-     "Ljava/lang/Object;.getClass",
-     52
-    ],
-    [
-     "Ljava/lang/Enum;.compareTo",
-     24
-    ],
-    [
-     "Ljava/lang/Object;.hashCode",
-     18
-    ],
-    [
-     "Ljava/lang/Long;.numberOfTrailingZeros",
-     12
-    ],
-    [
-     "Ljava/lang/ref/WeakReference;.get",
-     12
-    ],
-    [
-     "Ljava/lang/ref/Reference;.get",
-     12
-    ],
-    [
-     "Ljava/lang/Object;.equals",
-     12
-    ],
-    [
-     "Ljava/util/concurrent/CopyOnWriteArrayList;.<init>",
-     8
-    ],
-    [
-     "Landroid/os/Looper;.getMainLooper",
-     7
-    ],
-    [
-     "Landroid/os/Looper;.getThread",
-     7
-    ],
-    [
-     "Ljava/lang/Thread;.currentThread",
-     7
-    ],
-    [
-     "Ljava/util/LinkedHashMap;.<init>",
-     6
-    ],
-    [
-     "Lsun/misc/Unsafe;.getObjectVolatile",
-     6
-    ],
-    [
-     "Ljava/lang/Enum;.equals",
-     6
-    ]
-   ],
-   "unsupported_lines": 0,
-   "unsupported_top": []
-  },
-  {
-   "apk": "dubrowgn.microtimer_8.apk",
-   "dir": "/home/z/my-project/run/s69_live/dubrowgn.microtimer_8",
-   "status": "SUCCESS",
-   "rc_zero": true,
    "screenshot": {
-    "sha256": "ca87aa264e791f7ac72e7aee88968c9c883e5a90ade408303b26f3b2b199ece6",
-    "nonwhite": 1041437,
+    "sha256": "3273786a4410af048aa98720a9393bcc71c3549028039c5a7d5cf7b273bba2f1",
+    "nonwhite": 328,
     "width": 1080,
     "height": 1920
    },
    "frames": [
     {
      "frame": "frame_000.png",
-     "nonwhite": 1041437,
-     "sha256": "ca87aa264e791f7ac72e7aee88968c9c883e5a90ade408303b26f3b2b199ece6"
+     "nonwhite": 328,
+     "sha256": "3273786a4410af048aa98720a9393bcc71c3549028039c5a7d5cf7b273bba2f1"
     },
     {
      "frame": "frame_001.png",
-     "nonwhite": 1041437,
-     "sha256": "ca87aa264e791f7ac72e7aee88968c9c883e5a90ade408303b26f3b2b199ece6"
+     "nonwhite": 328,
+     "sha256": "3273786a4410af048aa98720a9393bcc71c3549028039c5a7d5cf7b273bba2f1"
     },
     {
      "frame": "frame_002.png",
-     "nonwhite": 1041437,
-     "sha256": "ca87aa264e791f7ac72e7aee88968c9c883e5a90ade408303b26f3b2b199ece6"
+     "nonwhite": 328,
+     "sha256": "3273786a4410af048aa98720a9393bcc71c3549028039c5a7d5cf7b273bba2f1"
     },
     {
      "frame": "frame_003.png",
-     "nonwhite": 1041437,
-     "sha256": "ca87aa264e791f7ac72e7aee88968c9c883e5a90ade408303b26f3b2b199ece6"
+     "nonwhite": 328,
+     "sha256": "3273786a4410af048aa98720a9393bcc71c3549028039c5a7d5cf7b273bba2f1"
     },
     {
      "frame": "frame_004.png",
-     "nonwhite": 1041437,
-     "sha256": "ca87aa264e791f7ac72e7aee88968c9c883e5a90ade408303b26f3b2b199ece6"
+     "nonwhite": 328,
+     "sha256": "3273786a4410af048aa98720a9393bcc71c3549028039c5a7d5cf7b273bba2f1"
     },
     {
      "frame": "frame_005.png",
-     "nonwhite": 1041437,
-     "sha256": "ca87aa264e791f7ac72e7aee88968c9c883e5a90ade408303b26f3b2b199ece6"
+     "nonwhite": 328,
+     "sha256": "3273786a4410af048aa98720a9393bcc71c3549028039c5a7d5cf7b273bba2f1"
     },
     {
      "frame": "frame_006.png",
-     "nonwhite": 1041437,
-     "sha256": "ca87aa264e791f7ac72e7aee88968c9c883e5a90ade408303b26f3b2b199ece6"
+     "nonwhite": 328,
+     "sha256": "3273786a4410af048aa98720a9393bcc71c3549028039c5a7d5cf7b273bba2f1"
     },
     {
      "frame": "frame_007.png",
-     "nonwhite": 1041437,
-     "sha256": "ca87aa264e791f7ac72e7aee88968c9c883e5a90ade408303b26f3b2b199ece6"
+     "nonwhite": 328,
+     "sha256": "3273786a4410af048aa98720a9393bcc71c3549028039c5a7d5cf7b273bba2f1"
     },
     {
      "frame": "frame_008.png",
-     "nonwhite": 1041437,
-     "sha256": "ca87aa264e791f7ac72e7aee88968c9c883e5a90ade408303b26f3b2b199ece6"
+     "nonwhite": 328,
+     "sha256": "3273786a4410af048aa98720a9393bcc71c3549028039c5a7d5cf7b273bba2f1"
     }
-   ],
-   "max_frame_nonwhite": 1041437,
-   "view_tree_nodes": 37,
+   ]
+  },
+  {
+   "apk": "dubrowgn.microtimer_8.apk",
+   "dir": "/home/z/my-project/run/s71_live/dubrowgn.microtimer_8",
+   "status": "SUCCESS",
+   "rc_zero": true,
+   "generation": "s71",
+   "max_frame_nonwhite": 1041468,
+   "view_tree_nodes": 1,
    "view_tree_sha256": "208c0b9fea6122663e4b5c0ee4ba8beca7560e84d2c1668f269e84adf6eac061",
    "api_calls": {
     "total": 376,
@@ -819,132 +443,68 @@
     },
     "sha256": "3b4ce4a1d677ba9c71f873ca497345274e04eaa5dee3429acf0e3d9b461217ed"
    },
-   "rec_miss_lines": 385,
-   "rec_miss_top": [
-    [
-     "Landroid/app/Activity;.findViewById",
-     32
-    ],
-    [
-     "Landroid/view/View;.setOnClickListener",
-     28
-    ],
-    [
-     "Landroid/widget/Button;.setOnClickListener",
-     12
-    ],
-    [
-     "Landroid/widget/TextView;.setOnClickListener",
-     12
-    ],
-    [
-     "Landroid/database/sqlite/SQLiteOpenHelper;.getDatabaseName",
-     12
-    ],
-    [
-     "Landroid/widget/Button;.onAttachedToWindow",
-     12
-    ],
-    [
-     "Landroid/content/Context;.getSystemService",
-     11
-    ],
-    [
-     "Ljava/util/Iterator;.hasNext",
-     8
-    ],
-    [
-     "Ljava/lang/Class;.getName",
-     7
-    ],
-    [
-     "Landroid/util/Log;.d",
-     7
-    ],
-    [
-     "Landroid/widget/LinearLayout;.onAttachedToWindow",
-     7
-    ],
-    [
-     "Ljava/lang/StringBuilder;.append",
-     6
-    ],
-    [
-     "Landroid/database/sqlite/SQLiteOpenHelper;.getWritableDatabase",
-     6
-    ],
-    [
-     "Ljava/util/LinkedHashMap;.<init>",
-     5
-    ],
-    [
-     "Ljava/util/concurrent/atomic/AtomicBoolean;.<init>",
-     5
-    ]
-   ],
-   "unsupported_lines": 0,
-   "unsupported_top": []
-  },
-  {
-   "apk": "fishrings_v1.23_vc6.apk",
-   "dir": "/home/z/my-project/run/s69_live/fishrings_v1.23_vc6",
-   "status": "SUCCESS",
-   "rc_zero": true,
    "screenshot": {
-    "sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093",
-    "nonwhite": 0,
+    "sha256": "ca87aa264e791f7ac72e7aee88968c9c883e5a90ade408303b26f3b2b199ece6",
+    "nonwhite": 1041468,
     "width": 1080,
     "height": 1920
    },
    "frames": [
     {
      "frame": "frame_000.png",
-     "nonwhite": 0,
-     "sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
+     "nonwhite": 1041468,
+     "sha256": "ca87aa264e791f7ac72e7aee88968c9c883e5a90ade408303b26f3b2b199ece6"
     },
     {
      "frame": "frame_001.png",
-     "nonwhite": 0,
-     "sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
+     "nonwhite": 1041468,
+     "sha256": "ca87aa264e791f7ac72e7aee88968c9c883e5a90ade408303b26f3b2b199ece6"
     },
     {
      "frame": "frame_002.png",
-     "nonwhite": 0,
-     "sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
+     "nonwhite": 1041468,
+     "sha256": "ca87aa264e791f7ac72e7aee88968c9c883e5a90ade408303b26f3b2b199ece6"
     },
     {
      "frame": "frame_003.png",
-     "nonwhite": 0,
-     "sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
+     "nonwhite": 1041468,
+     "sha256": "ca87aa264e791f7ac72e7aee88968c9c883e5a90ade408303b26f3b2b199ece6"
     },
     {
      "frame": "frame_004.png",
-     "nonwhite": 2072211,
-     "sha256": "4d82ab98be58832faaa2d21b9b99f2f54d2bea587f4fc5cb05c9adb45b67ea47"
+     "nonwhite": 1041468,
+     "sha256": "ca87aa264e791f7ac72e7aee88968c9c883e5a90ade408303b26f3b2b199ece6"
     },
     {
      "frame": "frame_005.png",
-     "nonwhite": 2072211,
-     "sha256": "4d82ab98be58832faaa2d21b9b99f2f54d2bea587f4fc5cb05c9adb45b67ea47"
+     "nonwhite": 1041468,
+     "sha256": "ca87aa264e791f7ac72e7aee88968c9c883e5a90ade408303b26f3b2b199ece6"
     },
     {
      "frame": "frame_006.png",
-     "nonwhite": 2072211,
-     "sha256": "4d82ab98be58832faaa2d21b9b99f2f54d2bea587f4fc5cb05c9adb45b67ea47"
+     "nonwhite": 1041468,
+     "sha256": "ca87aa264e791f7ac72e7aee88968c9c883e5a90ade408303b26f3b2b199ece6"
     },
     {
      "frame": "frame_007.png",
-     "nonwhite": 2072211,
-     "sha256": "4d82ab98be58832faaa2d21b9b99f2f54d2bea587f4fc5cb05c9adb45b67ea47"
+     "nonwhite": 1041468,
+     "sha256": "ca87aa264e791f7ac72e7aee88968c9c883e5a90ade408303b26f3b2b199ece6"
     },
     {
      "frame": "frame_008.png",
-     "nonwhite": 2072211,
-     "sha256": "4d82ab98be58832faaa2d21b9b99f2f54d2bea587f4fc5cb05c9adb45b67ea47"
+     "nonwhite": 1041468,
+     "sha256": "ca87aa264e791f7ac72e7aee88968c9c883e5a90ade408303b26f3b2b199ece6"
     }
-   ],
-   "max_frame_nonwhite": 2072211,
-   "view_tree_nodes": 3,
+   ]
+  },
+  {
+   "apk": "fishrings_v1.23_vc6.apk",
+   "dir": "/home/z/my-project/run/s71_live/fishrings_v1.23_vc6",
+   "status": "SUCCESS",
+   "rc_zero": true,
+   "generation": "s71",
+   "max_frame_nonwhite": 2072220,
+   "view_tree_nodes": 1,
    "view_tree_sha256": "4563e04d3a349e914152bc914ec365a0399245a4a5c90659caac0819f9253e8a",
    "api_calls": {
     "total": 16,
@@ -954,180 +514,6 @@
     },
     "sha256": "d17d6ef1d1cb0c67996017073b0d009f4fe92656aec94f74deb81923934a2c7d"
    },
-   "rec_miss_lines": 400,
-   "rec_miss_top": [
-    [
-     "Ljava/lang/Double;.isNaN",
-     152
-    ],
-    [
-     "Ljava/lang/Math;.min",
-     62
-    ],
-    [
-     "Landroid/view/View;.setOnClickListener",
-     44
-    ],
-    [
-     "Ljava/lang/Math;.cos",
-     30
-    ],
-    [
-     "Ljava/lang/Math;.sqrt",
-     30
-    ],
-    [
-     "Ljava/lang/Math;.sin",
-     30
-    ],
-    [
-     "Landroid/widget/ImageView;.setOnClickListener",
-     23
-    ],
-    [
-     "Landroid/media/MediaPlayer;.create",
-     4
-    ],
-    [
-     "Landroid/app/Activity;.<init>",
-     2
-    ],
-    [
-     "Landroid/app/Activity;.onCreate",
-     2
-    ],
-    [
-     "Landroid/content/pm/PackageManager;.getActivityInfo",
-     2
-    ],
-    [
-     "Landroid/view/Window;.getDecorView",
-     2
-    ],
-    [
-     "Ljava/lang/reflect/Array;.newInstance",
-     2
-    ],
-    [
-     "Landroid/webkit/WebView;.getSettings",
-     1
-    ],
-    [
-     "Landroid/webkit/WebSettings;.setJavaScriptEnabled",
-     1
-    ]
-   ],
-   "unsupported_lines": 0,
-   "unsupported_top": []
-  },
-  {
-   "apk": "opmt_v0.1.2_vc1.apk",
-   "dir": "/home/z/my-project/run/s69_live/opmt_v0.1.2_vc1",
-   "status": "SUCCESS",
-   "rc_zero": true,
-   "screenshot": {
-    "sha256": "62619caa3b31066e5b79577076785aac320ca504639fac6e230c5e2e07650e28",
-    "nonwhite": 213286,
-    "width": 1080,
-    "height": 1920
-   },
-   "frames": [
-    {
-     "frame": "frame_000.png",
-     "nonwhite": 213286,
-     "sha256": "62619caa3b31066e5b79577076785aac320ca504639fac6e230c5e2e07650e28"
-    },
-    {
-     "frame": "frame_001.png",
-     "nonwhite": 213286,
-     "sha256": "62619caa3b31066e5b79577076785aac320ca504639fac6e230c5e2e07650e28"
-    },
-    {
-     "frame": "frame_002.png",
-     "nonwhite": 213286,
-     "sha256": "62619caa3b31066e5b79577076785aac320ca504639fac6e230c5e2e07650e28"
-    },
-    {
-     "frame": "frame_003.png",
-     "nonwhite": 213286,
-     "sha256": "62619caa3b31066e5b79577076785aac320ca504639fac6e230c5e2e07650e28"
-    },
-    {
-     "frame": "frame_004.png",
-     "nonwhite": 213286,
-     "sha256": "62619caa3b31066e5b79577076785aac320ca504639fac6e230c5e2e07650e28"
-    },
-    {
-     "frame": "frame_005.png",
-     "nonwhite": 213286,
-     "sha256": "62619caa3b31066e5b79577076785aac320ca504639fac6e230c5e2e07650e28"
-    },
-    {
-     "frame": "frame_006.png",
-     "nonwhite": 213286,
-     "sha256": "62619caa3b31066e5b79577076785aac320ca504639fac6e230c5e2e07650e28"
-    },
-    {
-     "frame": "frame_007.png",
-     "nonwhite": 213286,
-     "sha256": "62619caa3b31066e5b79577076785aac320ca504639fac6e230c5e2e07650e28"
-    },
-    {
-     "frame": "frame_008.png",
-     "nonwhite": 213286,
-     "sha256": "62619caa3b31066e5b79577076785aac320ca504639fac6e230c5e2e07650e28"
-    }
-   ],
-   "max_frame_nonwhite": 213286,
-   "view_tree_nodes": 7,
-   "view_tree_sha256": "1d584f6f136e1caee8fb62fcacff1f166be474f1b6545ae71b173820418c4973",
-   "api_calls": {
-    "total": 20,
-    "by_status": {
-     "IMPLEMENTED": 19,
-     "STUBBED": 1
-    },
-    "sha256": "ae7fe8785c17a569310e24d8034d207fc761850600e9442aeea57e1f08d4ed21"
-   },
-   "rec_miss_lines": 13,
-   "rec_miss_top": [
-    [
-     "Landroid/widget/Button;.setOnClickListener",
-     4
-    ],
-    [
-     "Landroid/widget/Button;.onAttachedToWindow",
-     4
-    ],
-    [
-     "Landroid/app/Activity;.<init>",
-     1
-    ],
-    [
-     "Landroid/view/Window;.setFlags",
-     1
-    ],
-    [
-     "Landroid/content/Intent;.<init>",
-     1
-    ],
-    [
-     "Landroid/widget/FrameLayout;.onAttachedToWindow",
-     1
-    ],
-    [
-     "Landroid/widget/LinearLayout;.onAttachedToWindow",
-     1
-    ]
-   ],
-   "unsupported_lines": 0,
-   "unsupported_top": []
-  },
-  {
-   "apk": "tripeaks_v1.2.1_vc4.apk",
-   "dir": "/home/z/my-project/run/s69_live/tripeaks_v1.2.1_vc4",
-   "status": "SUCCESS",
-   "rc_zero": true,
    "screenshot": {
     "sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093",
     "nonwhite": 0,
@@ -1157,32 +543,110 @@
     },
     {
      "frame": "frame_004.png",
-     "nonwhite": 205638,
-     "sha256": "b513d78be598ace03d5d09717eb83398dd39adf111856f0998f075c8021b8436"
+     "nonwhite": 2072220,
+     "sha256": "4d82ab98be58832faaa2d21b9b99f2f54d2bea587f4fc5cb05c9adb45b67ea47"
     },
     {
      "frame": "frame_005.png",
-     "nonwhite": 205638,
-     "sha256": "b513d78be598ace03d5d09717eb83398dd39adf111856f0998f075c8021b8436"
+     "nonwhite": 2072220,
+     "sha256": "4d82ab98be58832faaa2d21b9b99f2f54d2bea587f4fc5cb05c9adb45b67ea47"
     },
     {
      "frame": "frame_006.png",
-     "nonwhite": 205638,
-     "sha256": "b513d78be598ace03d5d09717eb83398dd39adf111856f0998f075c8021b8436"
+     "nonwhite": 2072220,
+     "sha256": "4d82ab98be58832faaa2d21b9b99f2f54d2bea587f4fc5cb05c9adb45b67ea47"
     },
     {
      "frame": "frame_007.png",
-     "nonwhite": 205638,
-     "sha256": "b513d78be598ace03d5d09717eb83398dd39adf111856f0998f075c8021b8436"
+     "nonwhite": 2072220,
+     "sha256": "4d82ab98be58832faaa2d21b9b99f2f54d2bea587f4fc5cb05c9adb45b67ea47"
     },
     {
      "frame": "frame_008.png",
-     "nonwhite": 205638,
-     "sha256": "b513d78be598ace03d5d09717eb83398dd39adf111856f0998f075c8021b8436"
+     "nonwhite": 2072220,
+     "sha256": "4d82ab98be58832faaa2d21b9b99f2f54d2bea587f4fc5cb05c9adb45b67ea47"
     }
-   ],
-   "max_frame_nonwhite": 205638,
-   "view_tree_nodes": 3,
+   ]
+  },
+  {
+   "apk": "opmt_v0.1.2_vc1.apk",
+   "dir": "/home/z/my-project/run/s71_live/opmt_v0.1.2_vc1",
+   "status": "SUCCESS",
+   "rc_zero": true,
+   "generation": "s71",
+   "max_frame_nonwhite": 211564,
+   "view_tree_nodes": 1,
+   "view_tree_sha256": "1d584f6f136e1caee8fb62fcacff1f166be474f1b6545ae71b173820418c4973",
+   "api_calls": {
+    "total": 20,
+    "by_status": {
+     "IMPLEMENTED": 19,
+     "STUBBED": 1
+    },
+    "sha256": "ae7fe8785c17a569310e24d8034d207fc761850600e9442aeea57e1f08d4ed21"
+   },
+   "screenshot": {
+    "sha256": "62619caa3b31066e5b79577076785aac320ca504639fac6e230c5e2e07650e28",
+    "nonwhite": 211564,
+    "width": 1080,
+    "height": 1920
+   },
+   "frames": [
+    {
+     "frame": "frame_000.png",
+     "nonwhite": 211564,
+     "sha256": "62619caa3b31066e5b79577076785aac320ca504639fac6e230c5e2e07650e28"
+    },
+    {
+     "frame": "frame_001.png",
+     "nonwhite": 211564,
+     "sha256": "62619caa3b31066e5b79577076785aac320ca504639fac6e230c5e2e07650e28"
+    },
+    {
+     "frame": "frame_002.png",
+     "nonwhite": 211564,
+     "sha256": "62619caa3b31066e5b79577076785aac320ca504639fac6e230c5e2e07650e28"
+    },
+    {
+     "frame": "frame_003.png",
+     "nonwhite": 211564,
+     "sha256": "62619caa3b31066e5b79577076785aac320ca504639fac6e230c5e2e07650e28"
+    },
+    {
+     "frame": "frame_004.png",
+     "nonwhite": 211564,
+     "sha256": "62619caa3b31066e5b79577076785aac320ca504639fac6e230c5e2e07650e28"
+    },
+    {
+     "frame": "frame_005.png",
+     "nonwhite": 211564,
+     "sha256": "62619caa3b31066e5b79577076785aac320ca504639fac6e230c5e2e07650e28"
+    },
+    {
+     "frame": "frame_006.png",
+     "nonwhite": 211564,
+     "sha256": "62619caa3b31066e5b79577076785aac320ca504639fac6e230c5e2e07650e28"
+    },
+    {
+     "frame": "frame_007.png",
+     "nonwhite": 211564,
+     "sha256": "62619caa3b31066e5b79577076785aac320ca504639fac6e230c5e2e07650e28"
+    },
+    {
+     "frame": "frame_008.png",
+     "nonwhite": 211564,
+     "sha256": "62619caa3b31066e5b79577076785aac320ca504639fac6e230c5e2e07650e28"
+    }
+   ]
+  },
+  {
+   "apk": "tripeaks_v1.2.1_vc4.apk",
+   "dir": "/home/z/my-project/run/s71_live/tripeaks_v1.2.1_vc4",
+   "status": "SUCCESS",
+   "rc_zero": true,
+   "generation": "s71",
+   "max_frame_nonwhite": 205980,
+   "view_tree_nodes": 1,
    "view_tree_sha256": "af5626a69c6bda66ac0223d3af611368d0cc397181493764b737dedf6cd83c95",
    "api_calls": {
     "total": 16,
@@ -1192,71 +656,59 @@
     },
     "sha256": "20a20224f0bb34ba13eede14e745dc97532caf5260760fbf638d832259b19f02"
    },
-   "rec_miss_lines": 22,
-   "rec_miss_top": [
-    [
-     "Landroid/widget/Button;.setOnClickListener",
-     4
-    ],
-    [
-     "Landroid/app/Activity;.<init>",
-     2
-    ],
-    [
-     "Landroid/app/Activity;.onCreate",
-     2
-    ],
-    [
-     "Landroid/content/pm/PackageManager;.getActivityInfo",
-     2
-    ],
-    [
-     "Landroid/webkit/WebView;.getSettings",
-     1
-    ],
-    [
-     "Landroid/webkit/WebSettings;.setJavaScriptEnabled",
-     1
-    ],
-    [
-     "Landroid/webkit/WebView;.loadUrl",
-     1
-    ],
-    [
-     "Landroid/os/Bundle;.getInt",
-     1
-    ],
-    [
-     "Landroid/os/Bundle;.getString",
-     1
-    ],
-    [
-     "Landroid/app/Activity;.onResume",
-     1
-    ],
-    [
-     "Ljava/util/Timer;.<init>",
-     1
-    ],
-    [
-     "Ljava/util/TimerTask;.<init>",
-     1
-    ],
-    [
-     "Ljava/util/Timer;.schedule",
-     1
-    ],
-    [
-     "Landroid/widget/RelativeLayout;.onAttachedToWindow",
-     1
-    ],
-    [
-     "Landroid/webkit/WebView;.onAttachedToWindow",
-     1
-    ]
-   ],
-   "unsupported_lines": 0,
-   "unsupported_top": []
+   "screenshot": {
+    "sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093",
+    "nonwhite": 0,
+    "width": 1080,
+    "height": 1920
+   },
+   "frames": [
+    {
+     "frame": "frame_000.png",
+     "nonwhite": 0,
+     "sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
+    },
+    {
+     "frame": "frame_001.png",
+     "nonwhite": 0,
+     "sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
+    },
+    {
+     "frame": "frame_002.png",
+     "nonwhite": 0,
+     "sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
+    },
+    {
+     "frame": "frame_003.png",
+     "nonwhite": 0,
+     "sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
+    },
+    {
+     "frame": "frame_004.png",
+     "nonwhite": 205980,
+     "sha256": "b513d78be598ace03d5d09717eb83398dd39adf111856f0998f075c8021b8436"
+    },
+    {
+     "frame": "frame_005.png",
+     "nonwhite": 205980,
+     "sha256": "b513d78be598ace03d5d09717eb83398dd39adf111856f0998f075c8021b8436"
+    },
+    {
+     "frame": "frame_006.png",
+     "nonwhite": 205980,
+     "sha256": "b513d78be598ace03d5d09717eb83398dd39adf111856f0998f075c8021b8436"
+    },
+    {
+     "frame": "frame_007.png",
+     "nonwhite": 205980,
+     "sha256": "b513d78be598ace03d5d09717eb83398dd39adf111856f0998f075c8021b8436"
+    },
+    {
+     "frame": "frame_008.png",
+     "nonwhite": 205980,
+     "sha256": "b513d78be598ace03d5d09717eb83398dd39adf111856f0998f075c8021b8436"
+    }
+   ]
   }
  ]
 }

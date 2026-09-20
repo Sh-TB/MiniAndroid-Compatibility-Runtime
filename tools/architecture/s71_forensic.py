@@ -150,6 +150,22 @@ RESOLUTION = {
         "note": "same family root as ThreadLocal.get.",
         "dispatch": "bridge — no guard", "source": "see ThreadLocal.get",
         "upstream": "OpenJDK ThreadLocal.set"},
+    "Lj$/util/concurrent/ConcurrentHashMap;.newKeySet": {
+        "dispatch": "bridge — no handler (rg newKeySet → 0 hits); engine "
+                    "already recognizes j$ CHM for Telegram's FormatCache "
+                    ".e/.f methods (dalvik_engine.cpp:5114-5390) — the shim "
+                    "class IS platform surface by precedent",
+        "source": "dalvik_engine.cpp:5114-5134 (j$ CHM precedent block); "
+                  "no newKeySet guard anywhere",
+        "upstream": "OpenJDK CHM.newKeySet(): KeySetView backed by the map; "
+                    "add=putIfAbsent(key,PRESENT); iterate keys",
+        "classification": "TRUE-MISSING",
+        "silent_wrong": True,
+        "note": "bouncy seq72 frame0; j$ = D8 desugar shim (baked into APK) "
+                "→ platform surface; stub set → downstream add/contains "
+                "silently no-op (silent-wrong, not crash)",
+        "family": "DESUGAR-SHIM-LAW",
+    },
     "Ljava/util/Random;.<init>": {
         "dispatch": "bridge ctor stub + WORKING nextInt law",
         "source": "Random.<init> has no guard, but nextInt IS implemented "
@@ -335,6 +351,19 @@ UNKNOWN_METHOD_ROWS = {
     "setMargins": ("LAYOUT-LAW", "TRUE-MISSING", "1× void default"),
     "setStatusBarColor": ("WINDOW-CHROME", "INTRINSIC", "cosmetic in this runtime"),
     "getRefreshRate": ("WINDOW-CHROME", "PARTIAL", "returns 0.0 — harmless default"),
+    # S71 W6: <unknown>.add resolved by caller-context forensics (dooz
+    # seq 1218-1227): MainActivity.getFragmentManager (stub→null) →
+    # <unknown>.findFragmentByTag → <unknown>.beginTransaction → Fragment+
+    # oc1;<init> → <unknown>.add → <unknown>.commit(ret=0) →
+    # <unknown>.executePendingTransactions(false). Receiver is a synthesized
+    # stub object (unresolvable class) but the METHOD IDENTITY is
+    # FragmentTransaction.add — FRAGMENT-TX-LAW family, same root as
+    # beginTransaction/commit rows above.
+    "add": ("FRAGMENT-TX-LAW", "TRUE-MISSING",
+            "dooz seq1225 f650 — FragmentTransaction.add between "
+            "beginTransaction(1222) and commit(1226); receiver is the "
+            "synthesized FragmentManager stub; part of the FRAGMENT-TX-LAW "
+            "root"),
 }
 
 

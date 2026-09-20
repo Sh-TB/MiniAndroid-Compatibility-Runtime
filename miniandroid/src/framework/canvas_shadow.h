@@ -219,6 +219,18 @@ private:
     std::vector<DrawOp>& target() {
         return recording_node_ ? render_nodes_[recording_node_] : ops_;
     }
+    // ── S71 R-NEW-389 instrumentation (env-gated, render-neutral) ─────────
+    // MINIANDROID_CANVAS_OP_TRACE=<path>: append one line per recorded
+    // DrawOp — kind, geometry, resolved paint state (color/stroke/width/
+    // text size/bold), clip, and the record-time matrix snapshot. FIRST
+    // PIXEL DIVERGENCE evidence: diffing this trace between two builds of
+    // different source (golden vs current) names the first op whose
+    // arguments/state differ — no screenshot guessing. OFF by default; the
+    // only cost when OFF is one null-pointer check per op.
+    void push_op(DrawOp op);
+    FILE* op_trace_ = nullptr;       // lazily opened on first traced op
+    uint64_t op_trace_seq_ = 0;
+    static constexpr uint64_t kOpTraceCap = 200000;   // bounded evidence cap
     std::map<uint32_t, uint32_t> paint_color_;    // paint obj -> ARGB
     std::map<uint32_t, float> paint_stroke_w_;    // paint obj -> width
     std::map<uint32_t, int> paint_style_;         // paint obj -> 0 fill / 1 stroke

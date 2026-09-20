@@ -86,10 +86,17 @@ def main():
             if (site['tu'], site['function'], site['line']) not in seen_keys:
                 served_by_api[k].append(site)
 
-    # ── 3. live traces (ground truth) ─────────────────────────────────────
+    # ── 3. live traces (ground truth) ────────────────────────────────────
+    # S71 freshest-live law: s71_live (current-binary re-run) outranks
+    # s69_live (S69-era). A stale-but-present dir must never mask fresh
+    # evidence; a missing dir must not silently blank the graph.
+    live_base = next((ROOT / "run" / g for g in ("s71_live", "s69_live")
+                      if (ROOT / "run" / g).exists()
+                      and any((ROOT / "run" / g).glob("*/api_calls.json"))),
+                     ROOT / "run" / "s69_live")
     live_status = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))  # api->app->status->n
     live_calls = defaultdict(int)
-    for d in sorted((ROOT / "run" / "s69_live").glob("*")):
+    for d in sorted(live_base.glob("*")):
         tr = d / "api_calls.json"
         if not tr.exists():
             continue
@@ -191,7 +198,9 @@ def main():
     for a in smap.get("apps", []):
         apk = a["apk"]
         runs = runs_by_apk.get(apk, {})
-        vt = load(f"run/s69_live/{apk.replace('.apk','')}/view_tree.json", None)
+        vt = load(f"run/s71_live/{apk.replace('.apk','')}/view_tree.json",
+                  None) or load(
+            f"run/s69_live/{apk.replace('.apk','')}/view_tree.json", None)
         vtn = 0
         top_classes = []
         if isinstance(vt, dict):

@@ -2034,6 +2034,17 @@ public:
                        const std::vector<DalvikValue>& args, DalvikValue& result,
                        ApiCallTrace::Status& status,
                        uint32_t method_idx_hint = 0xFFFFFFFFu);
+    // ── S71 ROOT LAW #1: ancestry dispatch ────────────────────────────────
+    // 39+ framework guards match with class_name.find("Context")/find(
+    // "Activity") — a receiver whose RUNTIME class is an app subclass (or
+    // Application/MultiDexApplication) misses every guard and falls to the
+    // type-default stub. AOSP law: app classes ARE framework classes
+    // (Application/Service extend Context; Activity extends
+    // ContextThemeWrapper extends Context). This helper walks the DEX
+    // superclass chain (class_to_superclass_) plus the built-in platform
+    // hierarchy (framework supers are not in the APK DEX) and returns the
+    // nearest ancestor name the substring guards can see, or "" if none.
+    std::string framework_ancestor_for_dispatch(const std::string& cls);
     // R-NEW-345 park-drain law: LockSupport.park* = the deterministic-yield
     // point. Bounded drain of the cross-queue runnable work (main MessageQueue
     // runnables, Choreographer due frame callbacks, pending Thread starts) so
