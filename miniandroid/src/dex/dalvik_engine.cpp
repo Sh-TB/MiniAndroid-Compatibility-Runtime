@@ -13314,6 +13314,32 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
                           << std::endl;
             }
             auto field_val = heap_.get_object_field(obj_ref.object_id, field_res.field_name);
+            // S72 null-field probe (env-gated, bounded, read-only): a read
+            // where the heap object has NO ENTRY for the field means the
+            // iput never ran (silent-lost write or skipped <init>) — the
+            // engine then answers null-with-empty-desc downstream, which is
+            // how dooz's trie nodes reached arraycopy(null).
+            if (!field_val.has_value()) {
+                static thread_local const char* nf_filter =
+                    std::getenv("MINIANDROID_NULLFIELD_TRACE");
+                static thread_local uint64_t nf_n = 0;
+                if (nf_filter && nf_n < 30) {
+                    if (std::string(nf_filter) == "*" ||
+                        field_res.field_name == nf_filter) {
+                        ++nf_n;
+                        const HeapObject* hobj = heap_.get(obj_ref.object_id);
+                        std::cerr << "[NULLFIELD] "
+                                  << (hobj ? hobj->class_descriptor
+                                           : field_res.class_descriptor)
+                                  << "->" << field_res.field_name
+                                  << " obj#" << obj_ref.object_id
+                                  << " UNSET (iput never ran)"
+                                  << " caller=" << current_class_ << "."
+                                  << current_method_ << " pc=" << pc
+                                  << std::endl;
+                    }
+                }
+            }
             if (field_val.has_value()) {
                 result_value = field_val.value();
                 // ── F-065 (R-NEW-289): const-class FIELD ROUND-TRIP law ────
@@ -13610,6 +13636,37 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
                       << " value=" << dalvik_value_to_string(src_val) << std::endl;
         }
 
+    } else if (field_res.resolved) {
+        // S72 silent-lost-write probe (env-gated, bounded): the iput fell
+        // into the legacy drop path — the write VANISHES and the field
+        // later reads back as null-with-empty-desc. This is the write-side
+        // twin of the [NULLFIELD] read probe (dooz trie-node evidence).
+        {
+            static thread_local const char* nf_filter =
+                std::getenv("MINIANDROID_NULLFIELD_TRACE");
+            static thread_local uint64_t nd_n = 0;
+            if (nf_filter && nd_n < 30) {
+                if (std::string(nf_filter) == "*" ||
+                    field_res.field_name == nf_filter) {
+                    ++nd_n;
+                    std::cerr << "[IPUT-DROP] "
+                              << field_res.class_descriptor << "."
+                              << field_res.field_name
+                              << " value_oid="
+                              << (src_val.type == DalvikType::OBJECT_REF
+                                      ? src_val.object_id : 0)
+                              << " recv_type=" << static_cast<int>(obj_ref.type)
+                              << " recv_oid=" << obj_ref.object_id
+                              << " recv_desc=" << obj_ref.class_desc
+                              << " heap_has="
+                              << (obj_ref.type == DalvikType::OBJECT_REF &&
+                                  heap_.has_object(obj_ref.object_id) ? 1 : 0)
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << " pc=" << pc
+                              << std::endl;
+                }
+            }
+        }
     }
     // EXP-042 Phase 2: never return false; just advance pc_.
 
@@ -20845,6 +20902,79 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         if (args[0].type != DalvikType::OBJECT_REF || args[0].is_null ||
             args[2].type != DalvikType::OBJECT_REF || args[2].is_null ||
             args[0].object_id == 0 || args[2].object_id == 0) {
+            // S72 BLOCKER-HUNT (env-gated, bounded, render-neutral): the
+            // arraycopy null law is CORRECT upstream behavior (OpenJDK
+            // System.arraycopy NPE contract); the foundation defect is the
+            // null PRODUCER upstream. Dump which array is null + where it
+            // came from so the first-null-producer is one grep away
+            // (dooz: NPE escaped MainActivity.onCreate → blank UI).
+            {
+                static thread_local uint64_t ac_null_n = 0;
+                if (std::getenv("MINIANDROID_ARRAYCOPY_TRACE") != nullptr &&
+                    ac_null_n < 40) {
+                    ++ac_null_n;
+                    const bool src_bad =
+                        args[0].type != DalvikType::OBJECT_REF ||
+                        args[0].is_null || args[0].object_id == 0;
+                    const bool dst_bad =
+                        args[2].type != DalvikType::OBJECT_REF ||
+                        args[2].is_null || args[2].object_id == 0;
+                    std::cerr << "[AC-NULL] src_bad=" << src_bad
+                              << " dst_bad=" << dst_bad
+                              << " src_desc=" << args[0].class_desc
+                              << " dst_desc=" << args[2].class_desc
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << " pc=" << pc_
+                              << " stack=";
+                    // Innermost-first snapshot (read-only; CAPMAIGN 010 R14).
+                    auto snap = call_stack_.snapshot_top_first();
+                    const size_t n = std::min<size_t>(snap.size(), 8);
+                    for (size_t i = 0; i < n; ++i) {
+                        std::cerr << snap[i].first << "."
+                                  << snap[i].second;
+                        if (i + 1 < n) std::cerr << " <- ";
+                    }
+                    std::cerr << std::endl;
+                    // S72 null-producer probe: dump the 4 frames below the
+                    // arraycopy caller — object registers + their heap "d"
+                    // field (the trie-node field that produced the null
+                    // array is one line away — Lrz1;->d in dooz).
+                    {
+                        auto fr = call_stack_.peek_frames_top_first(5);
+                        for (size_t k = 1; k < fr.size(); ++k) {
+                            const StackFrame& sf = fr[k];
+                            std::cerr << "[AC-NULL-FRAME] depth=" << k
+                                      << " " << sf.class_name << "."
+                                      << sf.method_name
+                                      << " caller_pc=" << sf.caller_pc
+                                      << " regs:";
+                            for (uint8_t r = 0; r < 20; ++r) {
+                                DalvikValue rv = sf.registers.read_v(r);
+                                if (rv.type == DalvikType::OBJECT_REF) {
+                                    std::cerr << " v" << int(r) << "="
+                                              << rv.object_id << ":"
+                                              << rv.class_desc
+                                              << (rv.is_null ? "(NULL)" : "");
+                                    if (!rv.is_null && rv.object_id != 0) {
+                                        auto df = heap_.get_object_field(
+                                            rv.object_id, "d");
+                                        std::cerr << "[d="
+                                                  << (df.has_value()
+                                                          ? df->class_desc
+                                                          : "?")
+                                                  << (df.has_value() &&
+                                                              df->is_null
+                                                          ? "=NULL"
+                                                          : "")
+                                                  << "]";
+                                    }
+                                }
+                            }
+                            std::cerr << std::endl;
+                        }
+                    }
+                }
+            }
             throw_deferred("Ljava/lang/NullPointerException;",
                            "arraycopy: null array argument",
                            "f078-arraycopy-null");

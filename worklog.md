@@ -1912,3 +1912,58 @@ Stage Summary:
   gap surface; no priority is set by raw counts anywhere.
 - Push debt: 10 commits PENDING-PUSH (no credential in session env; PAT
   handling rule honored — record, never fake-push).
+
+---
+Task ID: S72-W1
+Agent: Super Z (main agent)
+Task: SCREENSHOT-FIRST FOUNDATION CLOSURE — push all pending commits (user
+supplied PAT), then raise the analysis→real-APK→screenshot ratio: verify
+S71 baseline, build the pixel-level APK dashboard, first-divergence every
+blank APK, connect to root families, select the first root implementations.
+
+Work Log:
+- PUSH DEBT CLEARED: 11 commits (289e33d3..82156d03) pushed to origin/main
+  via user PAT (one-shot env var, never stored, unset after; repo
+  fail-closed secret-guard PASS; manual range scan clean — only the
+  documented scan-procedure text matches).
+- Pixel-level dashboard (fresh traces, nonwhite/2073600): bouncy 100%,
+  microtimer 50.2%, unote 11.4%, opmt 10.3%, gmdice 8.8%, stopwatch 1.1%,
+  tictactoe/dooz/fishrings/tripeaks 0%. Five apps with real UI confirmed.
+- STOPWATCH root-caused (NOT an engine bug): manifest declares NO activity
+  (QS Tile + foreground Service + provider only). Engine correctly has no
+  launch target. New foundation family: Service launch/lifecycle (zero
+  engine support, grep-verified) -> F-143.
+- DOOZ deep chain root-caused with new instrumentation: arraycopy(null) NPE
+  @ Lid;.K pc=3 escapes MainActivity.onCreate (ART arraycopy law is
+  CORRECT; the null producer is the defect). [AC-NULL] probe isolated the
+  single site: PersistentHashMapBuilder.putAll trie walk (Lrz1;.l recursion
+  via invoke-virtual/range pc155). [PARAM-TRACE] proved entry #49 receives
+  this=NULL (t=8) while #1..#48 are real nodes. Law gaps confirmed:
+  invoke-virtual on null receiver does NOT throw NPE (ART does), F-075
+  move-result-object misses NULL_REF, corruption compounds silently until
+  the NPE fires at the wrong site. Registered F-141 (P0). REC-MISS lines
+  re-verified as benign DEX-lookup logs (Enum F-020 law present; F-137
+  ancestry present).
+- FISHRINGS: S71-era trace was stale-behavior; CURRENT binary already
+  switches windows on startActivity (splash -> GameActivity 44-view tree,
+  pump renders node=29 children=43 with real geometry). Remaining root:
+  layout-inflated ImageView src->bitmap resolution never happens -> 0 px.
+  Registered F-142 (P1, best KPI/root ratio: real canvas game).
+- TICTACTOE: libGDX GL family (EGLContext.getEGL -> checkGL20 ->
+  GdxRuntimeException) — deferred per Rule 8. F-144 (P2).
+- Tooling (env-gated, render-neutral): [AC-NULL]+[AC-NULL-FRAME] arraycopy
+  null-producer dump with deep register/heap-field snapshot (new read-only
+  CallStack::peek_frames_top_first), [NULLFIELD]/[IPUT-DROP] silent-lost
+  field write probes, scripts/s72_disasm_lid.py.
+- Evidence: docs/foundation/S72_WAVE1.md (dashboard + 4 first-divergence
+  chains + tooling + status). Registry 386 -> 390 (F-141..F-144).
+- Hygiene: probes env-gated and bounded; no secrets handled; worklog +
+  S72_WAVE1 + registry in one commit.
+
+Stage Summary:
+- Push debt zero; dashboard baseline fixed at pixel level; 4/4 blank-app
+  first divergences now root-caused with machine evidence (S71: 2 unproven).
+- First implementation roots selected BY EVIDENCE: F-142 (fishrings paint
+  -> first new real screenshot) then F-141 (dooz null laws -> compose
+  family). No runtime implementation landed this wave by design.
+- FOUNDATION STATUS: NOT COMPLETE (evidence-backed; frontier moved).

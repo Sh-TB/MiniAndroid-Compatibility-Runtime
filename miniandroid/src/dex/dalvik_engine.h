@@ -990,6 +990,19 @@ public:
         return out;
     }
 
+    // S72 forensics: deep-copy snapshots of the top-N LIVE frames (top
+    // first). Bounded N (~5 frames ≈ 10 KB) and env-gated call sites keep
+    // this diagnostic-only. Returned by value — no dangling pointers.
+    std::vector<StackFrame> peek_frames_top_first(size_t n) const {
+        std::vector<StackFrame> out;
+        auto temp = stack_;
+        while (!temp.empty() && out.size() < n) {
+            out.push_back(temp.top());
+            temp.pop();
+        }
+        return out;
+    }
+
     json dump_current_stack() const {
         json arr = json::array();
         
