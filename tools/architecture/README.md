@@ -44,3 +44,30 @@ its upstream commit via fdroiddata build metadata (SourceCode + per-versionCode
 commit), fetch the tarball (codeload / GitLab archive), and write
 `upstream/corpus/<pkg>/PROVENANCE.json` (tarball SHA256 included). Session-ledger
 pins (S65/S66) cover the three veldsoft/OPMT apps.
+
+## S70 additions (RUNTIME UNDERSTANDING / ACTIVE DIAGNOSTIC ENGINE)
+
+| tool | purpose | outputs |
+|---|---|---|
+| `graph_build.py` | fuses every index + trace + fixture registry + census into ONE queryable knowledge graph (node/edge law in module docstring; over-approx flagged in-band) | `docs/foundation/knowledge_graph.json` |
+| `graph_query.py` | query CLI: `api` / `why-stubbed` / `why-pixel` / `blast-radius` / `failure` / `gaps` / `classify` | stdout (evidence-cited answers) |
+| `diagnose.py` | automatic failure drill-down (§PHASE 17): `diagnose <failure-id>` and `diagnose --live <app>` — 17-section bundle with FIRST-DIVERGENCE classification; missing links print `GAP:` + what is needed, never invented | stdout |
+| `build_upstream_oracle.py` | upstream law records (§PHASE 4): law lines grep-verified against pinned upstream files, implementation sites from served_api, consumers from census | `docs/foundation/upstream_oracle.json` |
+
+S70 extractor fixes (all three were silent S69 defects, found by USE-first census):
+1. function parser missed `Class::method(...)` + multi-line signatures (parsed 19
+   of ~600 functions in dalvik_engine.cpp);
+2. guard extraction ran on STRING-BLANKED text (structurally unable to find any
+   pair — served surface was 0);
+3. substring-family dispatch (`class_name.find("Context")`, F-033 getSystemService,
+   EXT-01 getString) was invisible; now extracted with an OR-aware ±4-line
+   proximity law and resolved to descriptor keys at graph-build time.
+
+Regeneration order (S70):
+```bash
+python3 tools/architecture/engine_extractor.py      # served_api + functions
+python3 tools/architecture/build_api_matrix.py      # (see its own doc)
+python3 tools/architecture/graph_build.py           # knowledge_graph.json
+python3 tools/architecture/build_upstream_oracle.py # upstream_oracle.json
+```
+Live traces: `bash scripts/s69_live_runs.sh` (unchanged).

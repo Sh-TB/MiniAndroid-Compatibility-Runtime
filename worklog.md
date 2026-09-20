@@ -1756,3 +1756,83 @@ Stage Summary:
   separate campaign). FOUNDATION COMPLETE = NO (honest, §22).
 - Push debt: 7 commits total after this session's commit — PENDING-PUSH (no
   credential in session env).
+
+---
+Task ID: S70
+Agent: Super Z (main agent)
+Task: RUNTIME UNDERSTANDING / ACTIVE SOURCE-LINKED DIAGNOSTIC ENGINE — 25-phase
+  directive (information must become actionable; USE S69 tools first; queryable
+  graph; failure auto-trace; fan-out priority; upstream oracle; no false progress).
+
+Work Log:
+- RECON: HEAD b88e09d9, 7 commits PENDING-PUSH (no credential in session env);
+  engine binary + corpus + S69 traces + venv all intact.
+- W0 CENSUS (Rule 2, USE-first): ran every S69 tool and probed the mandated
+  queries. FOUND the matrix-integrity defect: api_matrix labeled
+  Color.rgb/Canvas.clipRect/Canvas.scale UNSERVED although the engine
+  implements them (verified dalvik_engine.cpp:18290, canvas_shadow.cpp:1347).
+- Census root causes (3 extractor defects, all fixed in place):
+  (1) function parser missed Class::method + multi-line signatures
+      (19 of ~600 functions parsed in dalvik_engine.cpp);
+  (2) guard extraction ran on STRING-BLANKED bodies (0 pairs by construction);
+  (3) substring-family dispatch (class_name.find("Context"), F-033
+      getSystemService, EXT-01 getString) invisible to == guards.
+  Served surface: 0 -> 2,921 pairs (ordered 938 / shadow+cross 1,983),
+  functions 71 -> 609. OR-aware ±4-line proximity law + fragment->descriptor
+  resolution added (getSystemService/getString families now served with real
+  sites 17466/24460/29026/24250).
+- W1 ACTIVE GRAPH: tools/architecture/graph_build.py ->
+  docs/foundation/knowledge_graph.json (6,396 APIs; status law v2 with
+  bridge-blindness reconciliation: 929 LIVE-IMPL / 136 LIVE-STUB / 2,264
+  SERVED-STATIC / EXERCISED-OK(weak) / SUSPECT-FAIL-ONLY(1,797) / 0 UNSERVED;
+  62 fixtures; 384 failures; 9 apps; warn_noop silent-wrong surface).
+- W2 DIAGNOSE: tools/architecture/diagnose.py — `diagnose <failure-id>` +
+  `--live <app>`; 17 mandated sections; FIRST-DIVERGENCE classification
+  (blank+static vs blank+changing vs changing+ink); GAP markers never invent.
+- W3/W4: graph_query.py — api / why-stubbed / why-pixel / blast-radius /
+  failure / gaps (fan-out×risk) / classify (P0-P3). Top-ranked gaps measured;
+  SUSPECT list headed by android.os.Trace family (dooz-only exercisers).
+- W5 AUDIT: R-NEW-388 + A7 found registered ONLY in gap-matrix docs —
+  registered into root_registry (372->374). S67/S69 F-numbers (F-121..F-124,
+  A2, A4, C3, F-135) also missing -> back-registered (374->382). Registry↔docs
+  single-source-of-truth restored (scripts/s70_register_*.py).
+- W7 FIX WAVE F-136 (top fan-out, clean law): string resolution used the
+  legacy name-map as PRIMARY (violating F-080/M3-007 ARSC-first precedent);
+  Resources formatted overload ignored args; getText unserved.
+  Upstream pinned: docs/upstream/aosp/CONTEXT_STRING_LAW.md (AOSP
+  Context.java:945-978 + Resources.java:464-592, googlesource main).
+  Fix: dalvik_engine.cpp Resources block + Context-family block ARSC-first
+  (rt.arsc().resolve_string), name-map fallback, java_format_walk for
+  formatted overloads, receiver-first resid law, getText served.
+  PROOF: new fixture f53_getstring (3 law paths; ViewTree texts + row inks)
+  PASS 5/5; determinism x3 byte-identical 8c11659a7ca24512; foundation
+  battery 23/23 PASS (zero regressions); corpus A/B (fresh pre-build vs F-136,
+  same recipes) 9/10 apps byte-identical.
+- R-NEW-389 (OPEN, P1): bouncy frame_000 sha 53177d4a (S69 golden; reproduced
+  by S69-source builds AND comment-only probe build) vs 4f41dda2 (F-136
+  builds, x3 deterministic); 81 px in band (3,0)-(93,4) dark->yellow;
+  bridged dispatch traces IDENTICAL (0 diffs), ViewTree texts IDENTICAL,
+  3x EXP088 getString markers identical; cause NOT identified (paint-path
+  layout sensitivity suspected, unproven). Registered honestly; bounds the
+  F-136 collateral claim (§25).
+- W8 ORACLE: tools/architecture/build_upstream_oracle.py ->
+  docs/foundation/upstream_oracle.json (7 records; law lines grep-verified
+  against pinned files; impl sites from served surface; consumers from census).
+- Phase 18 BEFORE/AFTER: diagnose bundles for F-121/F-122/F-123/F-124/A2/A4/
+  C3/F-135/F-136/R-NEW-388 = 17 sections, 25-42 evidence lines, 7-11 GAP
+  markers each (GAPs = what records never captured: first_divergence pairs,
+  per-failure state snapshots — next registry-schema frontier).
+- Hygiene: .gitignore already isolates run/ + upstream tarballs; evidence
+  additions are fixture dirs + indexes only; no credentials handled.
+
+Stage Summary:
+- Deliverables: knowledge_graph.json, upstream_oracle.json, graph_query.py,
+  diagnose.py, graph_build.py, build_upstream_oracle.py, f53_getstring,
+  S70_REPORT.md, runtime map + gap matrix addenda, registry 384 roots.
+- Success criterion: for a NEW stall, one command now yields where (dispatch
+  site file:line), why (law record + gap marker), which API/class (status +
+  fan-out × APK), what blast radius (blast-radius), and what to test next
+  (missing-test section) — measured on 10 historical failures.
+- FOUNDATION COMPLETE = NO (honest): R-NEW-389 open; 136 LIVE-STUB (P0=10,
+  P1=126); SUSPECT-FAIL-ONLY surface measured; dooz compose separate campaign.
+- Push debt: 8 commits PENDING-PUSH (no credential in session env).

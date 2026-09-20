@@ -1560,5 +1560,47 @@
    782,
    1919
   ]
+ },
+ {
+  "fixture": "f53_getstring",
+  "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f53_getstring/screenshot.png",
+  "asserts": [
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "texts=['Context GetString Works', 'S70 wave S70 code 136', 'Resources Direct Path'] expected~'Context GetString Works'"
+   },
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "texts=['Context GetString Works', 'S70 wave S70 code 136', 'Resources Direct Path'] expected~'S70 wave S70 code 136'"
+   },
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "texts=['Context GetString Works', 'S70 wave S70 code 136', 'Resources Direct Path'] expected~'Resources Direct Path'"
+   },
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "nonwhite in (0, 0, 1080, 210) = 23133 (min 800)"
+   },
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "nonwhite in (0, 210, 1080, 420) = 40909 (min 800)"
+   }
+  ],
+  "status": "PASS",
+  "width": 1080,
+  "height": 1920,
+  "screenshot_sha256": "8c11659a7ca24512dd9547f44e47ccab9f57298c4caadee5378c69581bc6dd8c",
+  "nonwhite": 64042,
+  "bbox": [
+   2,
+   15,
+   1054,
+   395
+  ]
  }
 ]

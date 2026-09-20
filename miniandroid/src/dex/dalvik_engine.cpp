@@ -24245,30 +24245,90 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
     }
 
-    // EXP-052: Resources.getString(int) → String
-    // EXP-063: Look up resource by name via field_name_by_resid_
-    if (method == "getString" &&
+    // F-136 (S70): Resources.getString(int[, Object...]) / getText(int) → String
+    // AOSP LAW (Resources.java:464-592, docs/upstream/aosp/CONTEXT_STRING_LAW.md):
+    //   getText(id)      → asset-manager (ARSC) resolution — the canonical
+    //                      table answers ANY resid (single resolution path);
+    //   getString(id)    → getText(id).toString();
+    //   getString(id,f…) → String.format(getString(id), formatArgs).
+    // F-080/M3-007 precedent: name-keyed side caches are FALLBACK ONLY — the
+    // canonical ARSC resolver (rt.arsc().resolve_string) is primary. The
+    // previous EXP-052 block resolved ONLY via field_name_by_resid_ →
+    // resource_string_values_ (silent "" for any non-seeded resid) and the
+    // formatted overload was never wired (args silently ignored).
+    // Documented deviation (M3-007b pattern): unresolved keeps "" + stderr
+    // flag instead of AOSP's NotFoundException to avoid crashing consumers
+    // that survive failed lookups today.
+    if ((method == "getString" || method == "getText") &&
         class_name.find("Resources") != std::string::npos) {
-        int32_t resid = args.size() >= 1 ? args[0].int_val : 0;
-        // EXP-063: Try to resolve via resource_name → value mapping
-        std::string resolved;
-        auto it = field_name_by_resid_.find(resid);
-        if (it != field_name_by_resid_.end()) {
-            const std::string& field_name = it->second;
-            auto sit = resource_string_values_.find(field_name);
-            if (sit != resource_string_values_.end()) {
-                resolved = sit->second;
+        // F-080 receiver-first defensive resid law: the resid is the FIRST
+        // int-typed argument; receiver/theme are references and can never
+        // be the resid.
+        int32_t resid = 0;
+        for (const auto& a : args) {
+            if (a.type == DalvikType::INT32 || a.type == DalvikType::BOOLEAN ||
+                a.type == DalvikType::CHAR) {
+                resid = a.int_val;
+                break;
             }
         }
-        if (!resolved.empty()) {
-            std::cerr << "[RES] getString resid=0x" << std::hex << resid << std::dec
-                      << " → \"" << resolved << "\"" << std::endl;
+        std::string resolved;
+        bool resolved_flag = false;
+        {
+            auto& rt = resources::ResourceRuntime::instance();
+            if (rt.loaded()) {
+                auto s = rt.arsc().resolve_string((uint32_t)resid);
+                if (s) {
+                    resolved = *s;
+                    resolved_flag = true;
+                }
+            }
+        }
+        if (!resolved_flag) {
+            // legacy name-map fallback (pre-F136 seeded values only)
+            auto it = field_name_by_resid_.find(resid);
+            if (it != field_name_by_resid_.end()) {
+                const std::string& field_name = it->second;
+                auto sit = resource_string_values_.find(field_name);
+                if (sit != resource_string_values_.end()) {
+                    resolved = sit->second;
+                    resolved_flag = true;
+                }
+            }
+        }
+        // formatted overload: getString(id, Object... formatArgs) —
+        // DEX varargs arrive as ONE Object[] (mirrors the String.format
+        // block below); format the RESOLVED raw string, never the resid.
+        if (method == "getString" && resolved_flag && args.size() >= 2) {
+            std::vector<DalvikValue> fargs;
+            bool have_array = false;
+            for (const auto& a : args) {
+                if (a.type == DalvikType::OBJECT_REF && heap_.has_object(a.object_id)) {
+                    auto lenf = heap_.get_object_field(a.object_id, "__array_length__");
+                    if (lenf.has_value() && lenf->type == DalvikType::INT32) {
+                        have_array = true;
+                        int arr_len = lenf->int_val;
+                        for (int k = 0; k < arr_len; ++k) {
+                            auto el = heap_.get_object_field(
+                                a.object_id, "array[" + std::to_string(k) + "]");
+                            if (el.has_value()) fargs.push_back(*el);
+                        }
+                    }
+                }
+            }
+            (void)have_array;
+            if (!fargs.empty()) resolved = java_format_walk(resolved, fargs);
+        }
+        if (resolved_flag) {
+            std::cerr << "[RES-F136] getString resid=0x" << std::hex << resid
+                      << std::dec << " → \"" << resolved << "\"" << std::endl;
             status = ApiCallTrace::Status::IMPLEMENTED;
             result = DalvikValue::make_string(resolved, 0);
             return true;
         }
-        std::cerr << "[RES] getString resid=0x" << std::hex << resid
-                  << std::dec << " → \"\" (not resolved)" << std::endl;
+        std::cerr << "[RES-F136] getString resid=0x" << std::hex << resid
+                  << std::dec << " → \"\" (F136-UNRESOLVED)"
+                  << std::endl;
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_string("", 0);
         return true;
@@ -29045,6 +29105,46 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             resid = args[0].int_val;
         }
         if (resid >= 0) {
+            // F-136 (S70) — AOSP single-resolution-path law
+            // (Context.java:959-978 → Resources.java:464-592):
+            // Context.getString/getText MUST resolve through the same
+            // canonical resource table as Resources.getString — the ARSC
+            // resolver (F-080/M3-007 precedent for colors). The legacy
+            // field_name_by_resid_ → resource_string_values_ name-map below
+            // stays strictly as FALLBACK for values the ARSC cannot answer
+            // (D8-remapped small ordinals etc.).
+            {
+                auto& rt = resources::ResourceRuntime::instance();
+                if (rt.loaded()) {
+                    auto s = rt.arsc().resolve_string((uint32_t)resid);
+                    if (s) {
+                        // formatted overload (AOSP getString(id, formatArgs))
+                        std::vector<DalvikValue> fargs;
+                        size_t fidx = (args.size() >= 2 && args[1].type == DalvikType::INT32) ? 2 : 1;
+                        if (args.size() > fidx && args[fidx].type == DalvikType::OBJECT_REF &&
+                            heap_.has_object(args[fidx].object_id)) {
+                            uint32_t arr_id = args[fidx].object_id;
+                            int arr_len = 0;
+                            auto len_field = heap_.get_object_field(arr_id, "__array_length__");
+                            if (len_field.has_value() && len_field->type == DalvikType::INT32)
+                                arr_len = len_field->int_val;
+                            for (int k = 0; k < arr_len; ++k) {
+                                auto elem = heap_.get_object_field(arr_id, "array[" + std::to_string(k) + "]");
+                                if (elem.has_value()) fargs.push_back(*elem);
+                            }
+                        }
+                        std::string output = fargs.empty()
+                            ? *s
+                            : java_format_walk(*s, fargs);
+                        std::cerr << "[CTX-F136] getString(resid=0x" << std::hex << resid
+                                  << std::dec << ", fargs=" << fargs.size()
+                                  << ") → \"" << output << "\"" << std::endl;
+                        result = DalvikValue::make_string(output, 0);
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                        return true;
+                    }
+                }
+            }
             // First try the normal field_name_by_resid_ lookup
             auto fn_it = field_name_by_resid_.find(resid);
             // EXP-093: If not found and resid is small (D8 shrinker remap),

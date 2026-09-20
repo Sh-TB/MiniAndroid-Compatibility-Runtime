@@ -47,3 +47,29 @@
 - real APK cross-validations: canonical corpus 9/9 byte-stable vs BEFORE-state (fishrings/gmdice/stopwatch/microtimer/unote/bouncy/dooz23 + OPMT + TriPeaks), battery 92/94 (EXT-01/02 environmental only)
 - remaining P0 registered but NOT implemented: A7 (manifest label/icon) — law known, no code; R-NEW-388 (TriPeaks RL geometry wiring) — registered, next wave
 - remaining P1/P2: see above (B4 layer isolation, B5/B6, B7, B9/B10, B12, C/D families)
+
+
+---
+
+## S70 REFRESH (active-engine era)
+
+| id | area | status | note |
+|---|---|---|---|
+| F-136 | string resolution | FIXED (S70) | ARSC-first law both blocks; f53 fixture; battery 23/23; corpus 9/10 byte-identical |
+| R-NEW-389 | bouncy top-band | OPEN (P1) | 81-px divergence across builds, dispatch/ViewTree-identical; renderer instrumentation needed |
+| LIVE-STUB tail | runtime | classified | P0=10 (Enum.valueOf, String.<init>, TextView.setTextSize, Arrays.sort, ThreadLocal×3, Random, List.contains, LinkedHashSet), P1=126 |
+| SUSPECT-FAIL-ONLY | runtime | measured | 1,797 APIs exercised only by partial-success runs (weak signal; top = Trace family via stuck dooz compose) |
+| registry hygiene | process | FIXED | S67/S69 F-numbers + R-NEW-388/A7 back-registered; registry 372→384 roots (single source of truth) |
+
+
+---
+
+## S70 REFRESH (active-engine era)
+
+| id | area | status | note |
+|---|---|---|---|
+| F-136 | string resolution | FIXED (S70) | ARSC-first law both blocks; f53 fixture; battery 23/23; corpus 9/10 byte-identical |
+| R-NEW-389 | bouncy top-band | OPEN (P1) | 81-px divergence across builds, dispatch/ViewTree-identical; renderer instrumentation needed |
+| LIVE-STUB tail | runtime | classified | P0=10 (Enum.valueOf, String.<init>, TextView.setTextSize, Arrays.sort, ThreadLocal×3, Random, List.contains, LinkedHashSet), P1=126 |
+| SUSPECT-FAIL-ONLY | runtime | measured | 1,797 APIs exercised only by partial-success runs (weak signal; top = Trace family via stuck dooz compose) |
+| registry hygiene | process | FIXED | S67/S69 F-numbers + R-NEW-388/A7 back-registered; registry 372→384 roots (single source of truth) |
