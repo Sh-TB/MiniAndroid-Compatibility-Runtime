@@ -1,0 +1,4022 @@
+{
+ "generated": "S71 FORENSIC TRIAGE",
+ "pipeline": "static \u2192 live-trace \u2192 engine-source \u2192 dispatch \u2192 intrinsic \u2192 upstream \u2192 consumers \u2192 tests \u2192 class",
+ "records": [
+  {
+   "api": "<unknown>.add",
+   "old_status": "LIVE-STUB",
+   "classification": "UNKNOWN",
+   "family": "",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 2,
+   "live_calls_s71": 2,
+   "live_status_s71": {
+    "STUBBED": 2
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "null": 2
+   },
+   "live_descriptor_shapes": {
+    "?": 2
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "no correlation row \u2014 needs caller-context review"
+  },
+  {
+   "api": "<unknown>.addOnDrawListener",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "VIEWOBSERVER-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "1\u00d7 void default"
+  },
+  {
+   "api": "<unknown>.asIntBuffer",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "NIO-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 4,
+   "live_calls_s71": 4,
+   "live_status_s71": {
+    "STUBBED": 4
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {
+    "null": 4
+   },
+   "live_descriptor_shapes": {
+    "?": 4
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "4\u00d7 null \u2014 real miss"
+  },
+  {
+   "api": "<unknown>.availableProcessors",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "RUNTIME-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "0": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "1\u00d7 0 default"
+  },
+  {
+   "api": "<unknown>.beginTransaction",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "FRAGMENT-TX-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 2,
+   "live_calls_s71": 2,
+   "live_status_s71": {
+    "STUBBED": 2
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "null": 2
+   },
+   "live_descriptor_shapes": {
+    "?": 2
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "2\u00d7 void default"
+  },
+  {
+   "api": "<unknown>.commit",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "FRAGMENT-TX-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 2,
+   "live_calls_s71": 2,
+   "live_status_s71": {
+    "STUBBED": 2
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "0": 2
+   },
+   "live_descriptor_shapes": {
+    "?": 2
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "2\u00d7 void/bool default"
+  },
+  {
+   "api": "<unknown>.contains",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "COLLECTION-ELEMENTS-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 5,
+   "live_calls_s71": 5,
+   "live_status_s71": {
+    "STUBBED": 5
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {
+    "false": 5
+   },
+   "live_descriptor_shapes": {
+    "?": 5
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "5\u00d7 false type-default \u2014 real miss"
+  },
+  {
+   "api": "<unknown>.executePendingTransactions",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "FRAGMENT-TX-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 2,
+   "live_calls_s71": 2,
+   "live_status_s71": {
+    "STUBBED": 2
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "false": 2
+   },
+   "live_descriptor_shapes": {
+    "?": 2
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "2\u00d7 default"
+  },
+  {
+   "api": "<unknown>.findFragmentByTag",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "FRAGMENT-TX-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 2,
+   "live_calls_s71": 2,
+   "live_status_s71": {
+    "STUBBED": 2
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "null": 2
+   },
+   "live_descriptor_shapes": {
+    "?": 2
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "2\u00d7 null default"
+  },
+  {
+   "api": "<unknown>.getClass",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "OBJECT-CLASS-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 14,
+   "live_calls_s71": 14,
+   "live_status_s71": {
+    "STUBBED": 14
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "null": 14
+   },
+   "live_descriptor_shapes": {
+    "?": 14
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "14\u00d7 null in dooz23 \u2014 Object.getClass F-088 exists but its receiver coverage misses these objects; behavior gap real"
+  },
+  {
+   "api": "<unknown>.getRefreshRate",
+   "old_status": "LIVE-STUB",
+   "classification": "PARTIAL",
+   "family": "WINDOW-CHROME",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {
+    "0.000000f": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "returns 0.0 \u2014 harmless default"
+  },
+  {
+   "api": "<unknown>.isAnonymousClass",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "CLASS-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 2,
+   "live_calls_s71": 2,
+   "live_status_s71": {
+    "STUBBED": 2
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "false": 2
+   },
+   "live_descriptor_shapes": {
+    "?": 2
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "2\u00d7 false default"
+  },
+  {
+   "api": "<unknown>.isArray",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "CLASS-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 2,
+   "live_calls_s71": 2,
+   "live_status_s71": {
+    "STUBBED": 2
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "false": 2
+   },
+   "live_descriptor_shapes": {
+    "?": 2
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "2\u00d7 false default"
+  },
+  {
+   "api": "<unknown>.isLocalClass",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "CLASS-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 2,
+   "live_calls_s71": 2,
+   "live_status_s71": {
+    "STUBBED": 2
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "false": 2
+   },
+   "live_descriptor_shapes": {
+    "?": 2
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "2\u00d7 false default"
+  },
+  {
+   "api": "<unknown>.isPrimitive",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "CLASS-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 2,
+   "live_calls_s71": 2,
+   "live_status_s71": {
+    "STUBBED": 2
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "false": 2
+   },
+   "live_descriptor_shapes": {
+    "?": 2
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "2\u00d7 false default"
+  },
+  {
+   "api": "<unknown>.list",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "IO-FILE-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {
+    "null": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "1\u00d7 null default"
+  },
+  {
+   "api": "<unknown>.longValue",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "BOXING-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "0L": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "1\u00d7 0 default"
+  },
+  {
+   "api": "<unknown>.order",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "NIO-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 4,
+   "live_calls_s71": 4,
+   "live_status_s71": {
+    "STUBBED": 4
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {
+    "null": 4
+   },
+   "live_descriptor_shapes": {
+    "?": 4
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "4\u00d7 null \u2014 ByteBuffer.order miss"
+  },
+  {
+   "api": "<unknown>.resolveAttribute",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "THEME-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "app.varlorg.unote_30.apk"
+   ],
+   "live_return_values": {
+    "false": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "1\u00d7 default"
+  },
+  {
+   "api": "<unknown>.set",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "MAP-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "app.varlorg.unote_30.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "1\u00d7 void default"
+  },
+  {
+   "api": "<unknown>.setColorFilter",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "DRAWABLE-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 5,
+   "live_calls_s71": 5,
+   "live_status_s71": {
+    "STUBBED": 5
+   },
+   "live_apks_s71": [
+    "de.duenndns.gmdice_8.apk"
+   ],
+   "live_return_values": {
+    "void": 5
+   },
+   "live_descriptor_shapes": {
+    "?": 5
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "5\u00d7 void default"
+  },
+  {
+   "api": "<unknown>.setMargins",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "LAYOUT-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "app.varlorg.unote_30.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "1\u00d7 void default"
+  },
+  {
+   "api": "<unknown>.setStatusBarColor",
+   "old_status": "LIVE-STUB",
+   "classification": "INTRINSIC",
+   "family": "WINDOW-CHROME",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "app.varlorg.unote_30.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "cosmetic in this runtime"
+  },
+  {
+   "api": "<unknown>.startsWith",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "STRING-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 5,
+   "live_calls_s71": 5,
+   "live_status_s71": {
+    "STUBBED": 5
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {
+    "false": 5
+   },
+   "live_descriptor_shapes": {
+    "?": 5
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "5\u00d7 false type-default \u2014 real miss"
+  },
+  {
+   "api": "Landroid/app/Application;.getCacheDir",
+   "old_status": "LIVE-STUB",
+   "classification": "FALSE-UNSERVED",
+   "family": "ANCESTRY-ROOT[io-file]",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dubrowgn.microtimer_8.apk"
+   ],
+   "live_return_values": {
+    "null": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "guard body EXISTS (substring-scoped to Context/Activity); app/Application receiver misses it \u2192 ancestry-dispatch root law fixes WITHOUT a new body"
+  },
+  {
+   "api": "Landroid/app/Application;.getDatabasePath",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "ANCESTRY-ROOT[io-file]",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 3,
+   "live_calls_s71": 3,
+   "live_status_s71": {
+    "STUBBED": 3
+   },
+   "live_apks_s71": [
+    "dubrowgn.microtimer_8.apk"
+   ],
+   "live_return_values": {
+    "null": 3
+   },
+   "live_descriptor_shapes": {
+    "?": 3
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "no guard body; ancestry dispatch is necessary but a method law must also be written"
+  },
+  {
+   "api": "Landroid/app/Application;.getSystemService",
+   "old_status": "LIVE-STUB",
+   "classification": "FALSE-UNSERVED",
+   "family": "ANCESTRY-ROOT[ctx-svc]",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dubrowgn.microtimer_8.apk"
+   ],
+   "live_return_values": {
+    "null": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "guard body EXISTS (substring-scoped to Context/Activity); app/Application receiver misses it \u2192 ancestry-dispatch root law fixes WITHOUT a new body"
+  },
+  {
+   "api": "Landroid/app/Application;.getTheme",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "ANCESTRY-ROOT[theme]",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "app.varlorg.unote_30.apk"
+   ],
+   "live_return_values": {
+    "null": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "no guard body; ancestry dispatch is necessary but a method law must also be written"
+  },
+  {
+   "api": "Landroid/app/Application;<super>.attachBaseContext",
+   "old_status": "LIVE-STUB",
+   "classification": "IMPLEMENTED-CORRECT",
+   "family": "SUPER-CALL-BOOKKEEPING",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/app/Application;<super>.onCreate",
+   "old_status": "LIVE-STUB",
+   "classification": "IMPLEMENTED-CORRECT",
+   "family": "SUPER-CALL-BOOKKEEPING",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/app/KeyguardManager;.requestDismissKeyguard",
+   "old_status": "LIVE-STUB",
+   "classification": "INTRINSIC",
+   "family": "PKG-FEATURE-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 1,
+   "static_apks": 1,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dubrowgn.microtimer_8.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/app/NotificationChannel;.<init>",
+   "old_status": "LIVE-STUB",
+   "classification": "INTRINSIC",
+   "family": "",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 3,
+   "static_apks": 3,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dubrowgn.microtimer_8.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "subsystem has no equivalent in this runtime's architecture (software renderer / no audio / no notification daemon)"
+  },
+  {
+   "api": "Landroid/app/NotificationChannel;.setDescription",
+   "old_status": "LIVE-STUB",
+   "classification": "INTRINSIC",
+   "family": "",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 2,
+   "static_apks": 2,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dubrowgn.microtimer_8.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "subsystem has no equivalent in this runtime's architecture (software renderer / no audio / no notification daemon)"
+  },
+  {
+   "api": "Landroid/app/NotificationManager;.canUseFullScreenIntent",
+   "old_status": "LIVE-STUB",
+   "classification": "INTRINSIC",
+   "family": "",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 1,
+   "static_apks": 1,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dubrowgn.microtimer_8.apk"
+   ],
+   "live_return_values": {
+    "false": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "subsystem has no equivalent in this runtime's architecture (software renderer / no audio / no notification daemon)"
+  },
+  {
+   "api": "Landroid/app/NotificationManager;.createNotificationChannel",
+   "old_status": "LIVE-STUB",
+   "classification": "INTRINSIC",
+   "family": "",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 3,
+   "static_apks": 3,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dubrowgn.microtimer_8.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "subsystem has no equivalent in this runtime's architecture (software renderer / no audio / no notification daemon)"
+  },
+  {
+   "api": "Landroid/content/Intent;.getExtras",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "BUNDLE-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 10,
+   "static_apks": 2,
+   "live_calls_s70": 2,
+   "live_calls_s71": 2,
+   "live_status_s71": {
+    "STUBBED": 2
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "null": 2
+   },
+   "live_descriptor_shapes": {
+    "?": 2
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/content/IntentFilter;.<init>",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "INTENTFILTER-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 1,
+   "static_apks": 1,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/content/pm/PackageManager;.hasSystemFeature",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "PKG-FEATURE-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 5,
+   "static_apks": 3,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "false": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/database/sqlite/SQLiteDatabase;.equals",
+   "old_status": "LIVE-STUB",
+   "classification": "IMPLEMENTED-WRONG",
+   "family": "OBJECT-EQUALS-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 3,
+   "live_calls_s71": 3,
+   "live_status_s71": {
+    "STUBBED": 3
+   },
+   "live_apks_s71": [
+    "dubrowgn.microtimer_8.apk"
+   ],
+   "live_return_values": {
+    "false": 3
+   },
+   "live_descriptor_shapes": {
+    "?": 3
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/graphics/drawable/ShapeDrawable;.<init>",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "DRAWABLE-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 1,
+   "static_apks": 1,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "app.varlorg.unote_30.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/graphics/drawable/ShapeDrawable;.getPaint",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "DRAWABLE-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 1,
+   "static_apks": 1,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "app.varlorg.unote_30.apk"
+   ],
+   "live_return_values": {
+    "null": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/graphics/drawable/ShapeDrawable;.setShape",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "DRAWABLE-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 1,
+   "static_apks": 1,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "app.varlorg.unote_30.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/graphics/drawable/shapes/RectShape;.<init>",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "DRAWABLE-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 1,
+   "static_apks": 1,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "app.varlorg.unote_30.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/media/SoundPool;.<init>",
+   "old_status": "LIVE-STUB",
+   "classification": "INTRINSIC",
+   "family": "",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 2,
+   "static_apks": 2,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "subsystem has no equivalent in this runtime's architecture (software renderer / no audio / no notification daemon)"
+  },
+  {
+   "api": "Landroid/net/Uri;.parse",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "URI-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 25,
+   "static_apks": 9,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dubrowgn.microtimer_8.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/os/Bundle;.<init>",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "BUNDLE-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 20,
+   "static_apks": 2,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/os/PowerManager;.isIgnoringBatteryOptimizations",
+   "old_status": "LIVE-STUB",
+   "classification": "INTRINSIC",
+   "family": "PKG-FEATURE-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 1,
+   "static_apks": 1,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dubrowgn.microtimer_8.apk"
+   ],
+   "live_return_values": {
+    "false": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/support/multidex/MultiDexApplication;.getApplicationInfo",
+   "old_status": "LIVE-STUB",
+   "classification": "FALSE-UNSERVED",
+   "family": "ANCESTRY-ROOT[ctx-pm]",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {
+    "null": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "guard body EXISTS (substring-scoped to Context/Activity); app/Application receiver misses it \u2192 ancestry-dispatch root law fixes WITHOUT a new body"
+  },
+  {
+   "api": "Landroid/util/TypedValue;.<init>",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "TYPEDVALUE-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 15,
+   "static_apks": 3,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "app.varlorg.unote_30.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/util/TypedValue;.applyDimension",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "TYPEDVALUE-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 1,
+   "static_apks": 1,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "app.varlorg.unote_30.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/view/SurfaceHolder;.setFormat",
+   "old_status": "LIVE-STUB",
+   "classification": "INTRINSIC",
+   "family": "WINDOW-CHROME",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 5,
+   "static_apks": 2,
+   "live_calls_s70": 2,
+   "live_calls_s71": 2,
+   "live_status_s71": {
+    "STUBBED": 2
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 2
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/view/View;.getResources",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "VIEW-RES-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 12,
+   "static_apks": 2,
+   "live_calls_s70": 2,
+   "live_calls_s71": 2,
+   "live_status_s71": {
+    "STUBBED": 2
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "null": 2
+   },
+   "live_descriptor_shapes": {
+    "?": 2
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/view/View;.getSystemUiVisibility",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "WINDOW-CHROME",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 18,
+   "static_apks": 3,
+   "live_calls_s70": 5,
+   "live_calls_s71": 5,
+   "live_status_s71": {
+    "STUBBED": 5
+   },
+   "live_apks_s71": [
+    "app.varlorg.unote_30.apk",
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "0": 5
+   },
+   "live_descriptor_shapes": {
+    "?": 5
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/view/View;.getViewTreeObserver",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "VIEWOBSERVER-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 37,
+   "static_apks": 4,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "null": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/view/View;.setSystemUiVisibility",
+   "old_status": "LIVE-STUB",
+   "classification": "INTRINSIC",
+   "family": "WINDOW-CHROME",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 20,
+   "static_apks": 4,
+   "live_calls_s70": 5,
+   "live_calls_s71": 5,
+   "live_status_s71": {
+    "STUBBED": 5
+   },
+   "live_apks_s71": [
+    "app.varlorg.unote_30.apk",
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "void": 5
+   },
+   "live_descriptor_shapes": {
+    "?": 5
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/view/Window;.getAttributes",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "WINDOW-CHROME",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 12,
+   "static_apks": 2,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "null": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/view/Window;.getInsetsController",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "WINDOW-CHROME",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 3,
+   "static_apks": 3,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "null": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/view/Window;.setDecorFitsSystemWindows",
+   "old_status": "LIVE-STUB",
+   "classification": "INTRINSIC",
+   "family": "WINDOW-CHROME",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 4,
+   "static_apks": 2,
+   "live_calls_s70": 2,
+   "live_calls_s71": 2,
+   "live_status_s71": {
+    "STUBBED": 2
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "void": 2
+   },
+   "live_descriptor_shapes": {
+    "?": 2
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/view/Window;.setNavigationBarColor",
+   "old_status": "LIVE-STUB",
+   "classification": "INTRINSIC",
+   "family": "WINDOW-CHROME",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 9,
+   "static_apks": 3,
+   "live_calls_s70": 2,
+   "live_calls_s71": 2,
+   "live_status_s71": {
+    "STUBBED": 2
+   },
+   "live_apks_s71": [
+    "bouncy.apk",
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "void": 2
+   },
+   "live_descriptor_shapes": {
+    "?": 2
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/view/Window;.setNavigationBarContrastEnforced",
+   "old_status": "LIVE-STUB",
+   "classification": "INTRINSIC",
+   "family": "WINDOW-CHROME",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 2,
+   "static_apks": 2,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/view/Window;.setStatusBarColor",
+   "old_status": "LIVE-STUB",
+   "classification": "INTRINSIC",
+   "family": "WINDOW-CHROME",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 9,
+   "static_apks": 3,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/view/Window;.setStatusBarContrastEnforced",
+   "old_status": "LIVE-STUB",
+   "classification": "INTRINSIC",
+   "family": "WINDOW-CHROME",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 2,
+   "static_apks": 2,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/view/WindowManager;.getDefaultDisplay",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "WINDOW-CHROME",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 17,
+   "static_apks": 4,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/widget/Button;.getBackground",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "WIDGET-LISTENER-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 2,
+   "static_apks": 1,
+   "live_calls_s70": 5,
+   "live_calls_s71": 5,
+   "live_status_s71": {
+    "STUBBED": 5
+   },
+   "live_apks_s71": [
+    "de.duenndns.gmdice_8.apk"
+   ],
+   "live_return_values": {
+    "null": 5
+   },
+   "live_descriptor_shapes": {
+    "?": 5
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/widget/Button;.setTextSize",
+   "old_status": "LIVE-STUB",
+   "classification": "PARTIAL",
+   "family": "TEXTSIZE-FAMILY",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 3,
+   "live_calls_s71": 3,
+   "live_status_s71": {
+    "STUBBED": 3
+   },
+   "live_apks_s71": [
+    "app.varlorg.unote_30.apk"
+   ],
+   "live_return_values": {
+    "void": 3
+   },
+   "live_descriptor_shapes": {
+    "?": 3
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/widget/Button;.setTransformationMethod",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "WIDGET-LISTENER-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 1,
+   "static_apks": 1,
+   "live_calls_s70": 4,
+   "live_calls_s71": 4,
+   "live_status_s71": {
+    "STUBBED": 4
+   },
+   "live_apks_s71": [
+    "de.duenndns.gmdice_8.apk"
+   ],
+   "live_return_values": {
+    "void": 4
+   },
+   "live_descriptor_shapes": {
+    "?": 4
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/widget/CheckBox;.setChecked",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "WIDGET-LISTENER-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 2,
+   "live_calls_s71": 2,
+   "live_status_s71": {
+    "STUBBED": 2
+   },
+   "live_apks_s71": [
+    "app.varlorg.unote_30.apk"
+   ],
+   "live_return_values": {
+    "void": 2
+   },
+   "live_descriptor_shapes": {
+    "?": 2
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/widget/CheckBox;.setOnCheckedChangeListener",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "WIDGET-LISTENER-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 2,
+   "live_calls_s71": 2,
+   "live_status_s71": {
+    "STUBBED": 2
+   },
+   "live_apks_s71": [
+    "app.varlorg.unote_30.apk"
+   ],
+   "live_return_values": {
+    "void": 2
+   },
+   "live_descriptor_shapes": {
+    "?": 2
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/widget/CheckBox;.setTextSize",
+   "old_status": "LIVE-STUB",
+   "classification": "PARTIAL",
+   "family": "TEXTSIZE-FAMILY",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 2,
+   "live_calls_s71": 2,
+   "live_status_s71": {
+    "STUBBED": 2
+   },
+   "live_apks_s71": [
+    "app.varlorg.unote_30.apk"
+   ],
+   "live_return_values": {
+    "void": 2
+   },
+   "live_descriptor_shapes": {
+    "?": 2
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/widget/EditText;.addTextChangedListener",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "WIDGET-LISTENER-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 2,
+   "live_calls_s71": 2,
+   "live_status_s71": {
+    "STUBBED": 2
+   },
+   "live_apks_s71": [
+    "app.varlorg.unote_30.apk"
+   ],
+   "live_return_values": {
+    "void": 2
+   },
+   "live_descriptor_shapes": {
+    "?": 2
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/widget/EditText;.setTextSize",
+   "old_status": "LIVE-STUB",
+   "classification": "PARTIAL",
+   "family": "TEXTSIZE-FAMILY",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "app.varlorg.unote_30.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/widget/GridView;.setAdapter",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "WIDGET-LISTENER-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 1,
+   "static_apks": 1,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/widget/GridView;.setOnItemClickListener",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "WIDGET-LISTENER-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 1,
+   "static_apks": 1,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/widget/ListView;.setAdapter",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "WIDGET-LISTENER-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 3,
+   "static_apks": 1,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "app.varlorg.unote_30.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/widget/ListView;.setDivider",
+   "old_status": "LIVE-STUB",
+   "classification": "INTRINSIC",
+   "family": "WIDGET-LISTENER-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 1,
+   "static_apks": 1,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "app.varlorg.unote_30.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/widget/ListView;.setDividerHeight",
+   "old_status": "LIVE-STUB",
+   "classification": "INTRINSIC",
+   "family": "WIDGET-LISTENER-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 1,
+   "static_apks": 1,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "app.varlorg.unote_30.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/widget/ListView;.setOnItemClickListener",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "WIDGET-LISTENER-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "app.varlorg.unote_30.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Landroid/widget/TextView;.setTextSize",
+   "old_status": "LIVE-STUB",
+   "classification": "PARTIAL",
+   "family": "TEXTSIZE-FAMILY",
+   "silent_wrong": false,
+   "dispatch": "bridge handler EXISTS and applies px (EXT-AOSP-002) but never sets status=IMPLEMENTED / returns true \u2192 bookkeeping STUBBED",
+   "source_evidence": "dalvik_engine.cpp:20437-20480 (AOSP TextView.java@1cdfff55 L4720-4762); guard matches method name for ANY class (Button/CheckBox/EditText inherit the same path)",
+   "upstream": "AOSP TextView.setTextSp + TypedValue.applyDimension COMPLEX_UNIT_SP \u00d7 scaledDensity",
+   "static_sites": 63,
+   "static_apks": 3,
+   "live_calls_s70": 2,
+   "live_calls_s71": 2,
+   "live_status_s71": {
+    "STUBBED": 2
+   },
+   "live_apks_s71": [
+    "app.varlorg.unote_30.apk"
+   ],
+   "live_return_values": {
+    "void": 2
+   },
+   "live_descriptor_shapes": {
+    "?": 2
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "behavior may apply; trace records STUBBED for all 5 setTextSize variants (TextView/Button/CheckBox/EditText). Bookkeeping defect + unproven px path (needs fixture evidence before trusting). NOT a clean TRUE-MISSING."
+  },
+  {
+   "api": "Lapp/varlorg/unote/NoteMain;.getWindow",
+   "old_status": "LIVE-STUB",
+   "classification": "FALSE-UNSERVED",
+   "family": "ANCESTRY-ROOT[window]",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "app.varlorg.unote_30.apk"
+   ],
+   "live_return_values": {
+    "null": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "guard body EXISTS (substring-scoped to Context/Activity); app/Application receiver misses it \u2192 ancestry-dispatch root law fixes WITHOUT a new body"
+  },
+  {
+   "api": "Lapp/varlorg/unote/NoteMain;.registerForContextMenu",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "ANCESTRY-ROOT[menu]",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "app.varlorg.unote_30.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "no guard body; ancestry dispatch is necessary but a method law must also be written"
+  },
+  {
+   "api": "Lapp/varlorg/unote/NoteMain;.setTheme",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "ANCESTRY-ROOT[theme]",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "app.varlorg.unote_30.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "no guard body; ancestry dispatch is necessary but a method law must also be written"
+  },
+  {
+   "api": "Lcom.dozingcatsoftware.bouncy.GLFieldView;.getHolder",
+   "old_status": "LIVE-STUB",
+   "classification": "APP-SPECIFIC",
+   "family": "",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 2,
+   "live_calls_s71": 2,
+   "live_status_s71": {
+    "STUBBED": 2
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {
+    "null": 2
+   },
+   "live_descriptor_shapes": {
+    "?": 2
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "non-platform class"
+  },
+  {
+   "api": "Lcom.dozingcatsoftware.bouncy.GLFieldView;.setEGLContextClientVersion",
+   "old_status": "LIVE-STUB",
+   "classification": "APP-SPECIFIC",
+   "family": "",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "non-platform class"
+  },
+  {
+   "api": "Lcom.dozingcatsoftware.bouncy.GLFieldView;.setRenderMode",
+   "old_status": "LIVE-STUB",
+   "classification": "APP-SPECIFIC",
+   "family": "",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "non-platform class"
+  },
+  {
+   "api": "Lcom.dozingcatsoftware.bouncy.GLFieldView;.setRenderer",
+   "old_status": "LIVE-STUB",
+   "classification": "APP-SPECIFIC",
+   "family": "",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "non-platform class"
+  },
+  {
+   "api": "Lcom/badlogic/gdx/backends/android/AndroidApplication;<super>.onCreate",
+   "old_status": "LIVE-STUB",
+   "classification": "APP-SPECIFIC",
+   "family": "",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "com.emmanuelmess.tictactoe_3.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "receiver class is app-defined; not a platform foundation API (runtime-class walk miss or misattributed receiver)"
+  },
+  {
+   "api": "Lcom/dozingcatsoftware/bouncy/BouncyActivity;.getAssets",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "ANCESTRY-ROOT[assets]",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 2,
+   "live_calls_s71": 2,
+   "live_status_s71": {
+    "STUBBED": 2
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {
+    "null": 2
+   },
+   "live_descriptor_shapes": {
+    "?": 2
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "no guard body; ancestry dispatch is necessary but a method law must also be written"
+  },
+  {
+   "api": "Lcom/dozingcatsoftware/bouncy/BouncyActivity;.getBaseContext",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "ANCESTRY-ROOT[ctx-wrapper]",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 4,
+   "live_calls_s71": 4,
+   "live_status_s71": {
+    "STUBBED": 4
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {
+    "null": 4
+   },
+   "live_descriptor_shapes": {
+    "?": 4
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "no guard body; ancestry dispatch is necessary but a method law must also be written"
+  },
+  {
+   "api": "Lcom/dozingcatsoftware/bouncy/BouncyActivity;.registerReceiver",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "ANCESTRY-ROOT[ctx-svc]",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {
+    "null": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "no guard body; ancestry dispatch is necessary but a method law must also be written"
+  },
+  {
+   "api": "Lcom/dozingcatsoftware/bouncy/BouncyActivity;.requestWindowFeature",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "ANCESTRY-ROOT[window]",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {
+    "false": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "no guard body; ancestry dispatch is necessary but a method law must also be written"
+  },
+  {
+   "api": "Lcom/dozingcatsoftware/bouncy/BouncyActivity;.setVolumeControlStream",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "ANCESTRY-ROOT[window]",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "no guard body; ancestry dispatch is necessary but a method law must also be written"
+  },
+  {
+   "api": "Lcom/dozingcatsoftware/bouncy/GLFieldView;.setEGLConfigChooser",
+   "old_status": "LIVE-STUB",
+   "classification": "APP-SPECIFIC",
+   "family": "",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "receiver class is app-defined; not a platform foundation API (runtime-class walk miss or misattributed receiver)"
+  },
+  {
+   "api": "Lde/duenndns/gmdice/GameMasterDice;.getResources",
+   "old_status": "LIVE-STUB",
+   "classification": "FALSE-UNSERVED",
+   "family": "ANCESTRY-ROOT[res]",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 5,
+   "live_calls_s71": 5,
+   "live_status_s71": {
+    "STUBBED": 5
+   },
+   "live_apks_s71": [
+    "de.duenndns.gmdice_8.apk"
+   ],
+   "live_return_values": {
+    "null": 5
+   },
+   "live_descriptor_shapes": {
+    "?": 5
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "guard body EXISTS (substring-scoped to Context/Activity); app/Application receiver misses it \u2192 ancestry-dispatch root law fixes WITHOUT a new body"
+  },
+  {
+   "api": "Lde/duenndns/gmdice/GameMasterDice;.setListAdapter",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "ANCESTRY-ROOT[list-activity]",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "de.duenndns.gmdice_8.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "no guard body; ancestry dispatch is necessary but a method law must also be written"
+  },
+  {
+   "api": "Lde/duenndns/gmdice/GameMasterDice;.setTitle",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "ANCESTRY-ROOT[activity]",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "de.duenndns.gmdice_8.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "no guard body; ancestry dispatch is necessary but a method law must also be written"
+  },
+  {
+   "api": "Ldubrowgn/microtimer/MainActivity;.setShowWhenLocked",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "ANCESTRY-ROOT[window]",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dubrowgn.microtimer_8.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "no guard body; ancestry dispatch is necessary but a method law must also be written"
+  },
+  {
+   "api": "Ldubrowgn/microtimer/MainActivity;.setTurnScreenOn",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "ANCESTRY-ROOT[window]",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dubrowgn.microtimer_8.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "no guard body; ancestry dispatch is necessary but a method law must also be written"
+  },
+  {
+   "api": "Lg10;.setWillNotDraw",
+   "old_status": "LIVE-STUB",
+   "classification": "APP-SPECIFIC",
+   "family": "",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "receiver class is app-defined; not a platform foundation API (runtime-class walk miss or misattributed receiver)"
+  },
+  {
+   "api": "Lho;.addOnAttachStateChangeListener",
+   "old_status": "LIVE-STUB",
+   "classification": "APP-SPECIFIC",
+   "family": "",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "receiver class is app-defined; not a platform foundation API (runtime-class walk miss or misattributed receiver)"
+  },
+  {
+   "api": "Lho;.setClipChildren",
+   "old_status": "LIVE-STUB",
+   "classification": "APP-SPECIFIC",
+   "family": "",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "receiver class is app-defined; not a platform foundation API (runtime-class walk miss or misattributed receiver)"
+  },
+  {
+   "api": "Lho;.setClipToPadding",
+   "old_status": "LIVE-STUB",
+   "classification": "APP-SPECIFIC",
+   "family": "",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "receiver class is app-defined; not a platform foundation API (runtime-class walk miss or misattributed receiver)"
+  },
+  {
+   "api": "Lho;.setImportantForAccessibility",
+   "old_status": "LIVE-STUB",
+   "classification": "APP-SPECIFIC",
+   "family": "",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "void": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "receiver class is app-defined; not a platform foundation API (runtime-class walk miss or misattributed receiver)"
+  },
+  {
+   "api": "Lio/github/yamin8000/dooz/ui/App;.getApplicationContext",
+   "old_status": "LIVE-STUB",
+   "classification": "FALSE-UNSERVED",
+   "family": "ANCESTRY-ROOT[ctx-wrapper]",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "null": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "guard body EXISTS (substring-scoped to Context/Activity); app/Application receiver misses it \u2192 ancestry-dispatch root law fixes WITHOUT a new body"
+  },
+  {
+   "api": "Lio/github/yamin8000/dooz/ui/MainActivity;.getFragmentManager",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "ANCESTRY-ROOT[activity]",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 2,
+   "live_calls_s71": 2,
+   "live_status_s71": {
+    "STUBBED": 2
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "null": 2
+   },
+   "live_descriptor_shapes": {
+    "?": 2
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "no guard body; ancestry dispatch is necessary but a method law must also be written"
+  },
+  {
+   "api": "Lio/github/yamin8000/dooz/ui/MainActivity;.getLastNonConfigurationInstance",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "ANCESTRY-ROOT[activity]",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "null": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "no guard body; ancestry dispatch is necessary but a method law must also be written"
+  },
+  {
+   "api": "Lj$/util/concurrent/ConcurrentHashMap;.newKeySet",
+   "old_status": "LIVE-STUB",
+   "classification": "UNKNOWN",
+   "family": "",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "no resolution row and no static guard pair \u2014 needs manual forensic review"
+  },
+  {
+   "api": "Ljava/io/ByteArrayOutputStream;.<init>",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "BAOS-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 23,
+   "static_apks": 4,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Ljava/io/ByteArrayOutputStream;.toByteArray",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "BAOS-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 23,
+   "static_apks": 4,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {
+    "null": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Ljava/io/ByteArrayOutputStream;.write",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "BAOS-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 3,
+   "static_apks": 2,
+   "live_calls_s70": 11,
+   "live_calls_s71": 11,
+   "live_status_s71": {
+    "STUBBED": 11
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {
+    "void": 11
+   },
+   "live_descriptor_shapes": {
+    "?": 11
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Ljava/lang/Enum;.valueOf",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "ENUM-LAW",
+   "silent_wrong": true,
+   "dispatch": "bridge (called from compiler-generated concrete-enum valueOf bodies, which the interpreter runs as DEX)",
+   "source_evidence": "dalvik_engine.cpp:28737-28790 enum law handles <init>/compareTo/ordinal/name/toString only; valueOf falls to the default type-null stub",
+   "upstream": "libcore/ojluni java.lang.Enum.valueOf(Class,String): null type/name \u2192 NPE; non-enum class \u2192 IAE; unknown name \u2192 IAE 'No enum constant \u2026'; else the shared constant",
+   "static_sites": 260,
+   "static_apks": 5,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "260 static sites are INSIDE compiler-generated concrete valueOf(String) DEX bodies (census dooz23: 74 sites; e.g. Lal0;->valueOf runs Enum.valueOf(Class,String) via bridge). Default stub returns NULL \u2192 every string\u2192enum parse fails silently downstream."
+  },
+  {
+   "api": "Ljava/lang/Long;.getLong",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "PROPS-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 2,
+   "static_apks": 2,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Ljava/lang/Runtime;.getRuntime",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "RUNTIME-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 13,
+   "static_apks": 4,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Ljava/lang/String;.<init>",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "STRING-CTOR-LAW",
+   "silent_wrong": true,
+   "dispatch": "bridge (invoke-direct on new-instance'd String object)",
+   "source_evidence": "no String;<init> guard anywhere in dalvik_engine.cpp (rg 'String;\" && method == \"<init>\"' \u2192 0 hits); only instance methods (length/charAt/\u2026) have handlers",
+   "upstream": "libcore/ojluni String.java ctors: ([C) / ([C,II) copy chars; ([B,Charset)/( [B,String) decode; (String) copy",
+   "static_sites": 81,
+   "static_apks": 5,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "81 sites; dominant overloads ([C III)=39, ([C)=10, ([B charset \u2026)=20. new-instance allocates an empty heap String; <init> stub leaves content empty \u2192 downstream length/charAt/append see empty string (silent, not a crash)."
+  },
+  {
+   "api": "Ljava/lang/Thread;.interrupted",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "THREAD-STATE-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 18,
+   "static_apks": 2,
+   "live_calls_s70": 2,
+   "live_calls_s71": 2,
+   "live_status_s71": {
+    "STUBBED": 2
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 2
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Ljava/lang/ThreadLocal;.<init>",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "THREADLOCAL-LAW",
+   "silent_wrong": true,
+   "dispatch": "bridge \u2014 no guard",
+   "source_evidence": "see ThreadLocal.get",
+   "upstream": "OpenJDK ThreadLocal.<init>",
+   "static_sites": 27,
+   "static_apks": 4,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "same family root as ThreadLocal.get/set \u2014 one law."
+  },
+  {
+   "api": "Ljava/lang/ThreadLocal;.get",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "THREADLOCAL-LAW",
+   "silent_wrong": true,
+   "dispatch": "bridge \u2014 no ThreadLocal guard anywhere",
+   "source_evidence": "rg '\"Ljava/lang/ThreadLocal;\"' \u2192 0 hits (only ThreadLocalRandom F-086 exists)",
+   "upstream": "OpenJDK ThreadLocal: per-thread map keyed by the ThreadLocal instance; get \u2192 initial value after set; unset \u2192 initialValue (null unless overridden)",
+   "static_sites": 30,
+   "static_apks": 4,
+   "live_calls_s70": 3,
+   "live_calls_s71": 3,
+   "live_status_s71": {
+    "STUBBED": 3
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk",
+    "dubrowgn.microtimer_8.apk"
+   ],
+   "live_return_values": {
+    "null": 3
+   },
+   "live_descriptor_shapes": {
+    "?": 3
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "get 30 + set 20 + <init> 27 sites \u00d7 4 APKs. get\u2192null default poisons every lazy-init/computeIfAbsent-via-TL pattern; set\u2192void hides state loss."
+  },
+  {
+   "api": "Ljava/lang/ThreadLocal;.set",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "THREADLOCAL-LAW",
+   "silent_wrong": true,
+   "dispatch": "bridge \u2014 no guard",
+   "source_evidence": "see ThreadLocal.get",
+   "upstream": "OpenJDK ThreadLocal.set",
+   "static_sites": 20,
+   "static_apks": 3,
+   "live_calls_s70": 2,
+   "live_calls_s71": 2,
+   "live_status_s71": {
+    "STUBBED": 2
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk"
+   ],
+   "live_return_values": {
+    "void": 2
+   },
+   "live_descriptor_shapes": {
+    "?": 2
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "same family root as ThreadLocal.get."
+  },
+  {
+   "api": "Ljava/nio/ByteBuffer;.allocateDirect",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "NIO-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 20,
+   "static_apks": 2,
+   "live_calls_s70": 4,
+   "live_calls_s71": 4,
+   "live_status_s71": {
+    "STUBBED": 4
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 4
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Ljava/nio/ByteOrder;.nativeOrder",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "NIO-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 28,
+   "static_apks": 4,
+   "live_calls_s70": 5,
+   "live_calls_s71": 5,
+   "live_status_s71": {
+    "STUBBED": 5
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 5
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Ljava/util/ArrayDeque;.<init>",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "COLLECTION-ELEMENTS-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 2,
+   "static_apks": 2,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dubrowgn.microtimer_8.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Ljava/util/Arrays;.sort",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "ARRAYS-ORDER-LAW",
+   "silent_wrong": true,
+   "dispatch": "bridge \u2014 no guard at all",
+   "source_evidence": "rg 'method == \"sort\"' \u2192 0 hits; Arrays has asList (:20698) and fill (:21307) only",
+   "upstream": "OpenJDK Arrays.sort: dual-pivot quicksort (primitives) / TimSort (objects, stable); POST-STATE law: array is permuted into total order",
+   "static_sites": 45,
+   "static_apks": 6,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "45 sites \u00d7 6 APKs. Void return \u2192 default stub hides that the array was never permuted \u2192 silent wrong order downstream (scores, leaderboards, timers)."
+  },
+  {
+   "api": "Ljava/util/BitSet;.<init>",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "BITSET-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 2,
+   "static_apks": 1,
+   "live_calls_s70": 2,
+   "live_calls_s71": 2,
+   "live_status_s71": {
+    "STUBBED": 2
+   },
+   "live_apks_s71": [
+    "dubrowgn.microtimer_8.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 2
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Ljava/util/LinkedHashSet;.<init>",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "COLLECTION-ELEMENTS-LAW",
+   "silent_wrong": true,
+   "dispatch": "bridge \u2014 no HashSet/LinkedHashSet guard",
+   "source_evidence": "rg 'HashSet' \u2192 comment only (:19505)",
+   "upstream": "OpenJDK LinkedHashSet: insertion-ordered set backed by linked hash buckets; Collection ctor copies + dedups",
+   "static_sites": 35,
+   "static_apks": 4,
+   "live_calls_s70": 3,
+   "live_calls_s71": 3,
+   "live_status_s71": {
+    "STUBBED": 3
+   },
+   "live_apks_s71": [
+    "dooz_23_toplevel.apk",
+    "dubrowgn.microtimer_8.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 3
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "35 sites \u00d7 4 APKs; ctor stub \u2192 set stays EMPTY \u2192 add/contains/iterate silently wrong (dedup loops never dedup)."
+  },
+  {
+   "api": "Ljava/util/List;.contains",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "COLLECTION-ELEMENTS-LAW",
+   "silent_wrong": true,
+   "dispatch": "bridge after F-068 runtime-class-first walk misses",
+   "source_evidence": "contains handlers exist ONLY for TreeSet (dalvik_engine.cpp:27182) and SharedPreferences (:23731); no List/ArrayList/Collection contains guard",
+   "upstream": "OpenJDK ArrayList.contains(o): o==null ? scan for null : o.equals(element) scan",
+   "static_sites": 53,
+   "static_apks": 4,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "53 sites + Collection.contains 48 sites. Default stub returns FALSE (Z law) \u2192 membership checks silently wrong. Receiver runtime class is frequently a shadow/synthesized ArrayList \u2192 runtime-class walk cannot find a DEX body."
+  },
+  {
+   "api": "Ljava/util/PriorityQueue;.<init>",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "COLLECTION-ELEMENTS-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 5,
+   "static_apks": 3,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Ljava/util/Random;.<init>",
+   "old_status": "LIVE-STUB",
+   "classification": "PARTIAL",
+   "family": "RANDOM-LAW",
+   "silent_wrong": false,
+   "dispatch": "bridge ctor stub + WORKING nextInt law",
+   "source_evidence": "Random.<init> has no guard, but nextInt IS implemented (F-086 dalvik_engine.cpp:21077-21125, deterministic policy)",
+   "upstream": "OpenJDK Random(seed): split-mix64 per next(); this runtime pins a deterministic seed law (documented)",
+   "static_sites": 25,
+   "static_apks": 8,
+   "live_calls_s70": 5,
+   "live_calls_s71": 5,
+   "live_status_s71": {
+    "STUBBED": 5
+   },
+   "live_apks_s71": [
+    "bouncy.apk",
+    "de.duenndns.gmdice_8.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 5
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "ctor no-op is harmless because nextInt keys on class+args, not heap state; classification PARTIAL (ctor unbookkeeped, behavior served by F-086). verify nextInt live in gmdice."
+  },
+  {
+   "api": "Ljava/util/TreeMap;.<init>",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "COLLECTION-ELEMENTS-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 7,
+   "static_apks": 3,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dubrowgn.microtimer_8.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Ljava/util/TreeMap;.ceilingEntry",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "COLLECTION-ELEMENTS-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 1,
+   "static_apks": 1,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dubrowgn.microtimer_8.apk"
+   ],
+   "live_return_values": {
+    "null": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Ljava/util/TreeMap;.size",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "COLLECTION-ELEMENTS-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 6,
+   "static_apks": 3,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "dubrowgn.microtimer_8.apk"
+   ],
+   "live_return_values": {
+    "0": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  },
+  {
+   "api": "Ljavax/microedition/khronos/egl/EGL10;.eglChooseConfig",
+   "old_status": "LIVE-STUB",
+   "classification": "INTRINSIC",
+   "family": "",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "com.emmanuelmess.tictactoe_3.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "subsystem has no equivalent in this runtime's architecture (software renderer / no audio / no notification daemon)"
+  },
+  {
+   "api": "Ljavax/microedition/khronos/egl/EGL10;.eglGetDisplay",
+   "old_status": "LIVE-STUB",
+   "classification": "INTRINSIC",
+   "family": "",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 3,
+   "static_apks": 1,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "com.emmanuelmess.tictactoe_3.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "subsystem has no equivalent in this runtime's architecture (software renderer / no audio / no notification daemon)"
+  },
+  {
+   "api": "Ljavax/microedition/khronos/egl/EGL10;.eglInitialize",
+   "old_status": "LIVE-STUB",
+   "classification": "INTRINSIC",
+   "family": "",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 2,
+   "static_apks": 1,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "com.emmanuelmess.tictactoe_3.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "subsystem has no equivalent in this runtime's architecture (software renderer / no audio / no notification daemon)"
+  },
+  {
+   "api": "Ljavax/microedition/khronos/egl/EGL10;.eglTerminate",
+   "old_status": "LIVE-STUB",
+   "classification": "INTRINSIC",
+   "family": "",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 2,
+   "static_apks": 1,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "com.emmanuelmess.tictactoe_3.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "subsystem has no equivalent in this runtime's architecture (software renderer / no audio / no notification daemon)"
+  },
+  {
+   "api": "Ljavax/microedition/khronos/egl/EGLContext;.getEGL",
+   "old_status": "LIVE-STUB",
+   "classification": "INTRINSIC",
+   "family": "",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 4,
+   "static_apks": 1,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "com.emmanuelmess.tictactoe_3.apk"
+   ],
+   "live_return_values": {},
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "subsystem has no equivalent in this runtime's architecture (software renderer / no audio / no notification daemon)"
+  },
+  {
+   "api": "Lone/scarecrow/games/OPMT/MainMenu;.getWindow",
+   "old_status": "LIVE-STUB",
+   "classification": "FALSE-UNSERVED",
+   "family": "ANCESTRY-ROOT[window]",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 0,
+   "static_apks": 0,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "opmt_v0.1.2_vc1.apk"
+   ],
+   "live_return_values": {
+    "null": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "guard body EXISTS (substring-scoped to Context/Activity); app/Application receiver misses it \u2192 ancestry-dispatch root law fixes WITHOUT a new body"
+  },
+  {
+   "api": "Lorg/json/JSONObject;.keys",
+   "old_status": "LIVE-STUB",
+   "classification": "TRUE-MISSING",
+   "family": "JSON-LAW",
+   "silent_wrong": false,
+   "dispatch": "",
+   "source_evidence": "",
+   "upstream": "",
+   "static_sites": 1,
+   "static_apks": 1,
+   "live_calls_s70": 1,
+   "live_calls_s71": 1,
+   "live_status_s71": {
+    "STUBBED": 1
+   },
+   "live_apks_s71": [
+    "bouncy.apk"
+   ],
+   "live_return_values": {
+    "null": 1
+   },
+   "live_descriptor_shapes": {
+    "?": 1
+   },
+   "tested_by": [],
+   "upstream_docs": [],
+   "noop_flags": [],
+   "note": "family source-scan (S71 W5): see s71 report \u00a7families"
+  }
+ ]
+}
