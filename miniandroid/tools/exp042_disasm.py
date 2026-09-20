@@ -2,7 +2,7 @@
 """Proper Dalvik disassembler — handles multi-unit instructions correctly."""
 import sys, zipfile, struct
 
-apk = '/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp038_telegram/Telegram.apk'
+apk = sys.argv[2] if len(sys.argv) > 2 else apk
 target = sys.argv[1] if len(sys.argv) > 1 else 'Theme.getColor'
 
 # (op, name, num_code_units, format_id)

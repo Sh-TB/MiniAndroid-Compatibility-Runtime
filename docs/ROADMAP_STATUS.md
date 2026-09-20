@@ -27,6 +27,14 @@
 
 ## 2. What was fixed THIS session (root cause → law → proof)
 
+S72-W4 rows above the S61 row for continuity.
+
+| ID | Blocker | Root cause (evidence) | Fix | Proof |
+|---|---|---|---|---|
+| **F-148 (S72-W4)** | ConstraintLayout anchor family unimplemented — children 0-wide/stacked (snake real APK: SnakePanelView 0×105, buttons sequential at x=0) | layout_constraint* attrs unparsed; no CL measure/layout semantics in the inflater | parse 12 anchors + 2 biases; per-axis topological CL measure branch (MATCH_CONSTRAINT spread, bias, one/no-anchor laws, padding-box parent anchors); layout phase replay (RL contract) | snake_view EXACTLY(1080)×780; biased button pad EXACT (BOTTOM span 799 × 0.5); corpus 10/10 + fixtures 25/25 pixel-SAME |
+| **F-149 (S72-W4)** | app dp2px computed 0px → SnakePanelView.onMeasure 0x0 (three stacked silent gaps, §038) | Resources.getDisplayMetrics unimplemented (silent null); DisplayMetrics singleton density=1.0 contradicting the 2.625 device authority; TypedValue.applyDimension DEX bridge missing | getDisplayMetrics answers the device law (2.625/420, scaledDensity, xdpi/ydpi); applyDimension exact AOSP switch over heap fields; singleton aligned | SnakePanelView 1080×780 = 20×15dp×2.625 EXACTLY; buttons 197×118 = 75×45dp; corpus 10/10 pixel-SAME |
+| **F-150 (S72-W4)** | Thread game-loop family dead: F084 halt (50001 visits) at GameMainThread.run — VirtualMachineError poisoned onCreate | 4 stacked roots: ThreadShadow no-op swallowed sleep; javac emits the SUBCLASS descriptor for sleep/start (method_ids ground truth) vs literal Thread guards; starts drained only in parks; no yield-resume for sleep-blocked bodies | sleep de-nooped; is_thread_receiver() DEX-chain law (3 sites); frame-boundary start/yield drains (bounded 4/8); wake-time registry (thread→{target,wake}); sleep inside drained bodies records wake without advancing the shared clock | 2 ticks/frame EXACT; direction taps steer cell-by-cell; reverse-guard honored; final snake+food frame ×3 BYTE-IDENTICAL (pixel sha 1a419545419deb3a); corpus 10/10 pixel-SAME |
+
 S61 rows above the S60 row for continuity.
 
 | ID | Blocker | Root cause (evidence) | Fix | Proof |

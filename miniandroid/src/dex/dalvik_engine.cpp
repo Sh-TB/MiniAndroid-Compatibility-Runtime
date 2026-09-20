@@ -18204,6 +18204,18 @@ void DalvikExecutionEngine::run_thread_start_body(uint32_t thread_oid,
     if (ts_shadow) ts_shadow->set_active_drained_thread(saved_active_thread);
     if (park_yield_pending_) {
         park_yield_pending_ = false;  // parked worker frame chain fully unwound
+        // F-150 (S72-W4): the body is BLOCKED on Thread.sleep (AOSP), not
+        // dead — register it with its WAKE time so the first scheduler
+        // boundary at/after the wake re-drains the body. Deterministic
+        // counterpart of the sleep elapsing on a real concurrent runtime.
+        if (ts_shadow)
+            ts_shadow->mark_thread_yielded(thread_oid,
+                                           target_oid ? target_oid
+                                                      : thread_oid,
+                                           park_yield_wake_at_);
+    } else if (ts_shadow && thread_oid != 0) {
+        // Body completed (loop exit / return) — never re-drain it.
+        ts_shadow->clear_thread_yielded(thread_oid);
     }
     std::cerr << "[THREAD-START] drained oid=" << run_oid << " cls=" << rcls
               << (target_oid == thread_oid && thread_oid != 0
@@ -18572,7 +18584,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // Runnable ctor target recorded) starts, ThreadShadow queues a SELF-run
     // (thread_oid, thread_oid); the drain below invokes the receiver's own
     // REAL DEX run() body — the AOSP Thread.start() virtual-dispatch law.
-    if (class_name == "Ljava/lang/Thread;" &&
+    if ((class_name == "Ljava/lang/Thread;" || is_thread_receiver(class_name)) &&
         (method == "start" || method == "run") && shadow_registry_ != nullptr) {
         if (auto* ts = shadow_registry_->find_as<framework::ThreadShadow>()) {
             uint32_t t_oid = 0, r_oid = 0;
@@ -18597,14 +18609,35 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // Deterministic time law (M3 FIX-M3-014): sleep advances the SAME
     // virtual clock SystemClock.sleep advances — no wall time, no thread
     // suspension.
-    if (class_name == "Ljava/lang/Thread;" && method == "sleep" &&
+    if (is_thread_receiver(class_name) && method == "sleep" &&
         shadow_registry_ != nullptr) {
-        if (!args.empty() && args[0].long_val > 0) {
+        // F-150: receiver class resolved through the superclass chain —
+        // javac emits the SUBCLASS descriptor for unqualified Thread.sleep
+        // inside Thread subclasses (snake GameMainThread ground truth).
+        // AOSP time law (M3 FIX-M3-014): sleep is REAL time on the ONE
+        // virtual clock — outside drained bodies (main-thread quiescence)
+        // it advances the clock; INSIDE a drained thread body at a frame
+        // boundary the clock is owned by the boundary (the frame renders
+        // AT that instant), so the body only records its WAKE time
+        // (now + ms) and yields — the next boundary at/after the wake
+        // resumes it. Advancing here would corrupt the frame timeline and
+        // make every later slice instantly due (self-perpetuating drain).
+        if (park_drain_last_depth_ < 1 && !args.empty() &&
+            args[0].long_val > 0) {
             if (auto* hs = shadow_registry_->find_as<framework::HandlerShadow>())
                 hs->advance_virtual(args[0].long_val);
         }
         if (park_drain_last_depth_ >= 1) {
             park_yield_pending_ = true;
+            if (auto* hs =
+                    shadow_registry_->find_as<framework::HandlerShadow>()) {
+                const int64_t ms150 =
+                    (!args.empty() && args[0].long_val > 0) ? args[0].long_val
+                                                            : 0;
+                park_yield_wake_at_ = hs->virtual_now_ms() + ms150;
+            } else {
+                park_yield_wake_at_ = 0;
+            }
             static thread_local uint64_t sleep_yield_log = 0;
             if (sleep_yield_log < 24) {
                 ++sleep_yield_log;
@@ -22934,7 +22967,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             // family class) — otherwise every executor task runs twice
             // (enqueue drain + inline), which the f020_executor fixture
             // exposed as executedCount=9 instead of 3.
-            if (class_name == "Ljava/lang/Thread;" &&
+            if ((class_name == "Ljava/lang/Thread;" ||
+                 is_thread_receiver(class_name)) &&
                 (method == "start" || method == "run") &&
                 shadow_registry_ != nullptr) {
                 if (auto* ts = shadow_registry_->find_as<framework::ThreadShadow>()) {
@@ -23194,6 +23228,87 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
          class_name.find("Activity") != std::string::npos ||
          class_name.find("View") != std::string::npos)) {
         result = get_or_create_singleton("Landroid/content/res/Resources;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // F-149 (S72-W4) — Resources.getDisplayMetrics + TypedValue.
+    // applyDimension law (AOSP Resources.java L1148 getDisplayMetrics;
+    // TypedValue.java L1019 applyDimension switch).
+    //   1. getDisplayMetrics() returns the CURRENT display metrics — NEVER
+    //      null and NEVER a zero/foreign-density object. The metrics MUST
+    //      carry the same device profile every other law uses (the ONE
+    //      device-density authority 2.625 @1080x1920 — the same constant
+    //      the inflater DeviceMetrics and the A2 dimension law apply).
+    //      Before this law the call fell through unimplemented (silent
+    //      null), and the DisplayMetrics singleton was pre-populated with
+    //      density=1.0 — a SILENT cross-component divergence (§038): the
+    //      app's dp2px computed 0 px, SnakePanelView.onMeasure returned
+    //      0x0 and the whole game board collapsed (first-divergence trace
+    //      [DEX-MEASURE] spec AT_MOST(1080)xUNSPEC -> 0x0,
+    //      zhangman.github.snake @ b4968c39).
+    //   2. applyDimension(unit, value, metrics) = the exact AOSP switch
+    //      over the metrics object's heap fields (px identity; dip ×
+    //      density; sp × scaledDensity; pt × xdpi/72; in × xdpi; mm ×
+    //      xdpi/25.4). res_id.cpp's complex_unit_to_dimension_px is the
+    //      SAME switch for the inflater path — one semantic, two call
+    //      surfaces.
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getDisplayMetrics" &&
+        class_name == "Landroid/content/res/Resources;") {
+        DalvikValue dm = get_or_create_singleton("Landroid/util/DisplayMetrics;");
+        // Re-assert the device fields on every call (idempotent; guards any
+        // earlier density=1.0 population from the legacy singleton path).
+        auto set_f = [&](const char* f, float v) {
+            heap_.set_object_field(dm.object_id, f, DalvikValue::make_float(v));
+        };
+        auto set_i = [&](const char* f, int32_t v) {
+            heap_.set_object_field(dm.object_id, f, DalvikValue::make_int(v));
+        };
+        set_f("density", 2.625f);      // THE device-density law (2.625 = 420/160)
+        set_i("densityDpi", 420);      // DENSITY_420 — matches density law
+        set_f("scaledDensity", 2.625f);// fontScale 1.0 (F-023 default)
+        set_i("widthPixels", 1080);    // device profile law
+        set_i("heightPixels", 1920);
+        set_f("xdpi", 420.0f);
+        set_f("ydpi", 420.0f);
+        result = dm;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (method == "applyDimension" &&
+        class_name == "Landroid/util/TypedValue;" && args.size() >= 3) {
+        const int32_t unit = dalvik_int_value(args[0]);
+        const float value = args[1].type == DalvikType::FLOAT32
+                                ? args[1].float_val
+                                : (float)dalvik_int_value(args[1]);
+        float density = 2.625f, scaled = 2.625f, xdpi = 420.0f;
+        if (args[2].type == DalvikType::OBJECT_REF && args[2].object_id != 0) {
+            auto rd = [&](const char* f, float def) -> float {
+                auto v = heap_.get_object_field(args[2].object_id, f);
+                return v.has_value() &&
+                               (v->type == DalvikType::FLOAT32 ||
+                                v->type == DalvikType::INT32)
+                           ? (v->type == DalvikType::FLOAT32 ? v->float_val
+                                                             : (float)v->int_val)
+                           : def;
+            };
+            density = rd("density", density);
+            scaled = rd("scaledDensity", density);
+            xdpi = rd("xdpi", xdpi);
+        }
+        float px = value;  // AOSP default: unknown unit returns value
+        switch (unit) {    // TypedValue.COMPLEX_UNIT_* (identity bits)
+            case 0: px = value; break;                       // UNIT_PX
+            case 1: px = value * density; break;             // UNIT_DIP
+            case 2: px = value * scaled; break;              // UNIT_SP
+            case 3: px = value * xdpi * (1.0f / 72.0f); break; // UNIT_PT
+            case 4: px = value * xdpi; break;                // UNIT_IN
+            case 5: px = value * xdpi * (1.0f / 25.4f); break; // UNIT_MM
+            default: px = value; break;
+        }
+        result = DalvikValue::make_float(px);
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
@@ -31154,6 +31269,29 @@ std::string DalvikExecutionEngine::framework_ancestor_for_dispatch(
     return "";
 }
 
+// F-150 (S72-W4): hierarchy-aware Thread receiver test. Ground truth:
+// zhangman.github.snake @ b4968c39 — GameMainThread.run's unqualified
+// sleep(1000/mSpeed) compiles to invoke-static
+// Lzhangman/github/snake/SnakePanelView$GameMainThread;->sleep(J)V (javac
+// emits the SUBCLASS descriptor for inherited static members), and
+// reStartGame's new GameMainThread().start() compiles to invoke-virtual on
+// the SUBCLASS. Literal `class_name == Thread` guards never saw those
+// calls: the loop spun to the F-084 cap (silent wrongness, §038). The
+// DEX superclass chain (class_to_superclass_, loaded from every dex)
+// resolves the receiver to Thread; Object terminates the walk.
+bool DalvikExecutionEngine::is_thread_receiver(const std::string& cls) {
+    if (cls == "Ljava/lang/Thread;") return true;
+    std::string cur = cls;
+    for (int hop = 0; hop < 12 && !cur.empty(); ++hop) {
+        auto it = class_to_superclass_.find(cur);
+        if (it == class_to_superclass_.end()) return false;
+        cur = it->second;
+        if (cur == "Ljava/lang/Thread;") return true;
+        if (cur == "Ljava/lang/Object;") return false;
+    }
+    return false;
+}
+
 // EXP-042 Phase 4: Singleton cache helper.
 // Returns an existing heap object for the given class descriptor, or allocates
 // a fresh one. Cached in api_singletons_ so that getResources() always returns
@@ -31178,12 +31316,18 @@ DalvikValue DalvikExecutionEngine::get_or_create_singleton(const std::string& cl
     if (class_desc == "Landroid/util/DisplayMetrics;") {
         DalvikValue density;
         density.type = DalvikType::FLOAT32;
-        density.float_val = 1.0f;  // mdpi
+        density.float_val = 2.625f;  // THE device-density law (F-149: was
+                                     // 1.0 — silently diverged from the
+                                     // inflater DeviceMetrics authority)
         heap_.set_object_field(obj_id, "density", density);
         DalvikValue density_dpi;
         density_dpi.type = DalvikType::INT32;
-        density_dpi.int_val = 160;  // DENSITY_MEDIUM
+        density_dpi.int_val = 420;  // DENSITY_420 — matches 2.625 density
         heap_.set_object_field(obj_id, "densityDpi", density_dpi);
+        DalvikValue scaled_d;
+        scaled_d.type = DalvikType::FLOAT32;
+        scaled_d.float_val = 2.625f;  // fontScale 1.0 (F-023 default)
+        heap_.set_object_field(obj_id, "scaledDensity", scaled_d);
         DalvikValue width_px;
         width_px.type = DalvikType::INT32;
         width_px.int_val = 1080;

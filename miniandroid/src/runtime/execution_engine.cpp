@@ -3739,6 +3739,44 @@ bool ExecutionEngine::stage_frame_sequence( ExecutionResult& result, const Execu
             if (!fin.is_null()) manifest["finish_cascade"] = fin;
         }
 
+        // F-150 (S72-W4) — DETERMINISTIC THREAD-START / YIELDED-BODY DRAIN
+        // at the frame boundary. AOSP Thread.start() runs the body on a
+        // concurrent thread; the engine's serialized equivalent is the
+        // scheduler boundary (same law family as F-115 "timers fire under
+        // --frames"): (a) starts queued since the last boundary run their
+        // first slice now; (b) bodies blocked on Thread.sleep (F-110b
+        // yield, registered by run_thread_start_body) resume their next
+        // slice — each boundary = one deterministic tick of the app's
+        // while(!done){tick; sleep(T);} game-loop family. Bodies that ran
+        // to completion (no yield) are never re-drained. Bounded per
+        // boundary (4 starts + 8 yielded slices) so a hostile corpus run
+        // cannot wedge a frame.
+        if (auto* ts150 =
+                shadow_registry_->find_as<framework::ThreadShadow>()) {
+            uint32_t t_oid = 0, r_oid = 0;
+            int started = 0;
+            while (started < 4 && ts150->consume_pending_start(t_oid, r_oid)) {
+                ++started;
+                dalvik_engine_.run_thread_start_body(t_oid, r_oid);
+            }
+            // F-150: AOSP sleep law — a body blocked on Thread.sleep resumes
+            // at its recorded WAKE time on the one virtual clock (earliest
+            // wake first; bounded per boundary).
+            int resumed = 0;
+            uint32_t y_oid = 0, yr_oid = 0;
+            int64_t now150 = hs ? hs->virtual_now_ms() : INT64_MAX;
+            while (resumed < 8 &&
+                   ts150->take_due_yielded(now150, y_oid, yr_oid)) {
+                ++resumed;
+                dalvik_engine_.run_thread_start_body(y_oid, yr_oid);
+                now150 = hs ? hs->virtual_now_ms() : INT64_MAX;
+            }
+            if (started || resumed)
+                std::cerr << "[F150-THREAD] boundary frame " << k
+                          << ": started=" << started
+                          << " resumed=" << resumed << std::endl;
+        }
+
         // F-117 (R-NEW-384 family) — SCHEDULED-TAP LAW. AOSP input timing:
         // a scripted touch lands at its LOOPER TIME. When --frames drives
         // the virtual clock, queued taps fire one per frame boundary (tap

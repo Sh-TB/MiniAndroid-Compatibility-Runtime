@@ -2056,3 +2056,62 @@ Stage Summary:
   unote/gmdice/microtimer/fishrings/tripeaks); ZERO regressions.
 - FOUNDATION STATUS: NOT COMPLETE (frontier moved: P0 closed, 2 new P1s
   localized, F-145 open).
+
+---
+Task ID: S72-W4
+Agent: Super Z (main)
+Task: (a) test all old games/apps against the 185-rule constitution (measure
+impact); (b) S72-W4: pick a NEW open-source game and take it SOURCE → APK →
+MiniAndroid → EXECUTION → INPUT → STATE → RENDER → MEANINGFUL SCREENSHOT.
+
+Work Log:
+- Constitution-impact re-test: fresh 10-APK corpus re-run on the unchanged W3
+  binary — 10/10 pixel-identical (SHAs match W3), dooz det ×3 byte-identical;
+  25 fixtures pixel-SAME. W1→W4 deltas (dooz 197→23472, unote recovered
+  231120, fishrings 2073360) stand as the measured constitution-era impact.
+- Game selection (evidence-based): reused S63/S64/S65 survey + deferred-by-facts;
+  GitHub API probes excluded super-snake (libGDX), MangoSnake (Kotlin),
+  Flutter families. SELECTED zhangman523/AndroidGameSnake @ b4968c39
+  (Apache-2.0, 5 source files, real-time game-loop family — NOT a
+  TicTacToe/ConnectFour architecture duplicate).
+- Built from pinned source: aapt2/ECJ/D8 canonical recipe; appcompat-v7
+  compile-stub (OPMT law); staged res (theme parent + color attrs + 30
+  ConstraintLayout attr ids, siggen law); app sources UNTOUCHED.
+  APK snake_v1.0_vc1 sha256 54cf48a9…
+- F-148 (P0, ROOT-CAUSED-FIXED): ConstraintLayout anchor family — parsed 12
+  anchor attrs + biases; per-axis topological measure branch (MATCH_CONSTRAINT
+  spread, bias 0.5, one/no-anchor laws); layout replay. Geometry now EXACT
+  (snake_view 1080×780; BOTTOM span 799 × bias 0.5).
+- F-149 (P0, ROOT-CAUSED-FIXED): Resources.getDisplayMetrics silent-null +
+  DisplayMetrics density=1.0 (silent divergence from the 2.625 device law) +
+  missing TypedValue.applyDimension bridge → dp2px 0 → onMeasure 0x0. Fixed
+  all three; SnakePanelView measures 1080×780 EXACTLY.
+- F-150 (P0, ROOT-CAUSED-FIXED): Thread game-loop family dead — F084 halt
+  (50001 visits) in GameMainThread.run. Four roots: ThreadShadow no-op
+  swallowed sleep; javac emits SUBCLASS descriptors for sleep/start (DEX
+  method_ids ground truth) vs literal Thread guards; starts drained only in
+  parks; no resume for sleep-blocked bodies. Fixed: sleep de-noop,
+  is_thread_receiver DEX-chain law (3 sites), frame-boundary start/yield
+  drains (bounded), wake-time registry; sleep inside drained bodies records
+  wake without advancing the shared clock.
+- Real-app chain PROVEN: launch → tap START → CLICK → reStartGame →
+  Thread.start self-run → 2 ticks/frame EXACT → direction taps steer the
+  snake cell-by-cell (reverse-guard honored) → final frame snake [(7,10),
+  (8,10),(9,10)] + food [(0,0)], 122314 px, all pixels from the app's own DEX
+  onDraw (801 ops/frame). Screenshot metrics recorded. DETERMINISM ×3
+  BYTE-IDENTICAL (pixel sha 1a419545419deb3a).
+- Regression: corpus 10/10 pixel-SAME post-F148/149/150; fixtures 25/25
+  pixel-SAME; dooz ×3 unchanged — ZERO regressions.
+- F-146/F-147 re-probed on the current binary: UNCHANGED (same first
+  divergences; 23472 px) — honest OPEN, not folded into W4 success.
+- Docs: registry 393→396; S72_WAVE4.md; ACHIEVEMENTS §0g; ROADMAP_STATUS §2
+  W4 rows; KNOWLEDGE_INDEX §0c; evidence package docs/evidence/s72_w4_snake/.
+- Tooling: exp042_disasm.py method-table corruption fixed + APK-arg support;
+  s72_w4 toolchain scripts persisted.
+
+Stage Summary:
+- FIRST SCREENSHOT-PROVEN real-time game-loop app (new architecture family);
+  3 P0 generic laws closed with zero regressions; constitution impact
+  re-measured with fresh evidence.
+- FOUNDATION STATUS: NOT COMPLETE (frontier moved; F-145/F-146/F-147 + CL
+  subset boundaries + F-150 deviation notes remain open).

@@ -10,6 +10,15 @@
 
 Snapshot: 745 tracked `.md` files — 441 KEEP (knowledge/process), 185 HISTORY (era records), 111 EVIDENCE (compact, cited), plus 290 tracked `.json` (indexes/fixtures/oracles — classified below).
 
+## 0c. S72-W4 additions
+
+| File | Class | Role |
+|---|---|---|
+| `docs/foundation/S72_WAVE4.md` | EVIDENCE | W4 record: AndroidGameSnake source-first SCREENSHOT-PROVEN chain + F-148 (ConstraintLayout anchors) / F-149 (getDisplayMetrics + applyDimension + density unity) / F-150 (Thread game-loop: sleep de-noop, subclass receivers, frame-boundary drains, wake registry) + constitution-impact re-test |
+| `docs/evidence/s72_w4_snake/` | EVIDENCE | 4 annotated frames + built APK + SHA256SUMS (final pixel sha 1a419545419deb3a ×3 byte-identical) |
+| `scripts/s72_w4_*.py/.sh` | KEEP | build/corpus/fixtures/measure/proof/registry tooling (deterministic recipes) |
+| `CONSTITUTION_V2.md` (root, W2) | KEEP-law | binding operation law for every claim in this wave |
+
 ## 0c. S63 additions
 
 | Law / finding | Layer | Statement | Status | Priority | In-repo | Evidence |
