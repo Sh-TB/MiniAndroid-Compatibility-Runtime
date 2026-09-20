@@ -1836,3 +1836,79 @@ Stage Summary:
 - FOUNDATION COMPLETE = NO (honest): R-NEW-389 open; 136 LIVE-STUB (P0=10,
   P1=126); SUSPECT-FAIL-ONLY surface measured; dooz compose separate campaign.
 - Push debt: 8 commits PENDING-PUSH (no credential in session env).
+
+---
+Task ID: S71
+Agent: Super Z (main agent)
+Task: FOUNDATION FORENSIC TRIAGE — upgrade the S70 diagnostic engine into a
+  trusted foundation-gap decision system (RULE 0: classify the whole P0/P1
+  surface before any implementation; USE S70 tools, never build a second
+  system).
+
+Work Log:
+- Resumed mid-session state: pre-context-loss incarnation had already built
+  s71_forensic.py + fresh s71_live traces (10 canonical APKs) + a first-pass
+  classification. Verified, then continued from the exact incomplete edge.
+- USE-first census found and fixed 2 engine-tool defects in place:
+  diagnose.py hardcoded run/s69_live (stale-data false lead — the F-136
+  bundle cited the S69 golden sha while the current binary produces the
+  R-NEW-389 sha) and graph_build.py hardcoded trace dir (silent 0-LIVE graph
+  when the dir vanished). Freshest-live law added to both; live_runs.json
+  rebuilt from fresh traces (S69 archive kept); graph rebuilt reproduces the
+  S70 status law exactly (6,396 APIs / 929 LIVE-IMPL / 136 LIVE-STUB / 2,264
+  SERVED-STATIC / 0 UNSERVED).
+- Forensic classification completed 136/136 (9-way) with 0 UNKNOWN:
+  87 TRUE-MISSING / 22 INTRINSIC / 11 APP-SPECIFIC / 7 FALSE-UNSERVED /
+  6 PARTIAL / 2 IMPLEMENTED-CORRECT / 1 IMPLEMENTED-WRONG. Both initial
+  UNKNOWNs resolved with caller-context evidence (<unknown>.add = dooz
+  FragmentTransaction chain; j$ CHM newKeySet = desugar-shim law, j$ surface
+  already recognized engine-side for Telegram).
+- 10 historical failures re-run via diagnose on fresh data: no false leads
+  remain after the stale-path fix.
+- R-NEW-389 ROOT-CAUSED (was OPEN): built an env-gated, render-neutral
+  canvas OP trace (canvas_shadow push_op, MINIANDROID_CANVAS_OP_TRACE),
+  rebuilt the S69 golden source in a git worktree (b88e09d9) with the
+  identical instrumentation, and diffed op streams under the mandate control
+  matrix (current ×3, golden ×3, comment-only ×1 — all deterministic;
+  golden 53177d4a / current 4f41dda2 reproduced). The sole op divergence:
+  drawText content "" -> "Touch to start" (ScoreView.java:226 getString) =
+  F-136 ARSC-first collateral, SEMANTIC. Nondeterminism hypothesis
+  DISPROVED. Root recorder defect documented: api_trace.arguments records
+  register NAMES, hiding string content from dispatch diffs.
+- R-NEW-388 re-measured: generic RL anchor laws PROVEN on f14 with the
+  current binary; TriPeaks blocked at SplashActivity (WebView splash,
+  app-specific) -> demoted from the foundation gap list.
+- A7 corrected: label raw-captured with ZERO runtime consumers, icon never
+  parsed, no title-bar surface -> impact is log-only today; registered the
+  generic identity-consumer law (manifest ref resolve at consume time +
+  getApplicationLabel/icon), bundles with ancestry + DRAWABLE-LAW.
+- Semantic families: 36 raw -> 16 semantic laws; family_ranking.json ranks
+  roots by depth-weighted fan-out + trace-window coupling (194 coupled APIs
+  for #1) + silent-wrong counts.
+- FIX F-137 (evidence-selected root): ancestry-dispatch law —
+  framework_ancestor_for_dispatch() walks class_to_superclass_ (DEX) plus a
+  built-in AOSP platform hierarchy table, one bounded retry at the bridge
+  stub fallthrough; ZERO guard sites touched. Proof: gmdice getResources x5,
+  unote getWindow, dooz getApplicationContext + getClass x2 converted
+  STUBBED->IMPLEMENTED (exactly the predicted FALSE-UNSERVED set);
+  MultiDexApplication->Application->Context chain fires; battery 92/94
+  (EXT-01/02 = missing external fixture APK in fresh container —
+  environmental; toolchain restored via bootstrap); pixels 5/6 apps
+  byte-identical pre/post, dooz new sha 736592d0 x3 deterministic.
+- Registry 384->386 (F-137 FIXED, F-138 registered; R-NEW-389 ->
+  ROOT-CAUSED-SEMANTIC; R-NEW-388 -> REMEASURED-GENERIC-OK; A7 corrected).
+- Hygiene: secret scan on staged diff = 0 hits; commit 1271b869.
+
+Stage Summary:
+- Deliverables: docs/foundation/S71_REPORT.md (FOUNDATION GATE + 10-section
+  report), s71/{forensic_classification,family_ranking}.json,
+  R-NEW-389_ROOT_CAUSE.md, R-NEW-388_REMEASURE.md, A7_CONTRACT_CHAIN.md,
+  live_runs_s69_archive.json, s71_forensic.py, s71_coupling.py,
+  s71_refresh_live_runs.py, s71_register.py, canvas op trace
+  instrumentation, F-137 ancestry-dispatch fix, golden-source worktree at
+  run/s69_src (pinned b88e09d9 for future golden rebuilds).
+- S71 success criteria 10/10 met. FOUNDATION COMPLETE = NO (honest): 87
+  TRUE-MISSING -> 81 after F-137 conversions remain as the evidence-backed
+  gap surface; no priority is set by raw counts anywhere.
+- Push debt: 10 commits PENDING-PUSH (no credential in session env; PAT
+  handling rule honored — record, never fake-push).
