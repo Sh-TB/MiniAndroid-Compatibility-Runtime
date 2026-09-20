@@ -1883,6 +1883,25 @@ public:
                         const std::string& message,
                         const char* origin_tag);
 
+    // ────────────────────────────────────────────────────────────────────
+    // F-141 (S72-W3): ART NULL-RECEIVER INVOKE LAW — receiver null test.
+    // Null = NULL_REF type, or OBJECT_REF with object_id 0 (the engine-wide
+    // null-object convention; same test as the 3rc dispatch path).
+    // Upstream law (AOSP ART interpreter, DoInvoke /
+    // ThrowNullPointerExceptionFromInterpreter): an instance invoke whose
+    // receiver is null throws NullPointerException from the CALLER frame
+    // at the invoke site, BEFORE any callee body executes. MiniAndroid
+    // previously logged the condition and dispatched anyway — silent
+    // wrongness (constitution §039/§177): the callee ran with this=NULL,
+    // corruption compounded (dooz PersistentHashMapBuilder.putAll trie
+    // walk, entry #49 this=NULL), and the crash surfaced at the WRONG
+    // site (arraycopy NPE), hiding the first divergence.
+    // ────────────────────────────────────────────────────────────────────
+    static bool f141_is_null_receiver(const DalvikValue& v) {
+        return v.type == DalvikType::NULL_REF ||
+               (v.type == DalvikType::OBJECT_REF && v.object_id == 0);
+    }
+
     // FINAL CANONICAL MASTER RECONCILIATION Pass-3 (K-35): REAL XmlPullParser
     // pull-parse state — event machine advances on next().
     // NOTE: struct must precede the member-function declarations below.

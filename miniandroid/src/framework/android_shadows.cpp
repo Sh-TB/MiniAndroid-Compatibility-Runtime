@@ -1152,6 +1152,73 @@ CallResult ThreadShadow::dispatch(const CallContext& ctx) {
 // ─────────────────────────────────────────────────────────────────────────
 // LooperShadow
 // ─────────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────
+// RuntimeShadow (F-141 chain, S72-W3): OpenJDK Runtime.java law.
+// getRuntime() returns the class-initialized singleton — the SAME
+// object_id on every call (identity contract). availableProcessors()
+// returns the fixed device-profile core count (deterministic run ×3 law;
+// MINIANDROID_CORES env override for controlled probes). Static getRuntime
+// arrives with no receiver; instance methods dispatch on the singleton.
+// ─────────────────────────────────────────────────────────────────────────
+CallResult FragmentManagerShadow::dispatch(const CallContext& ctx) {
+    const auto& m = ctx.method;
+    if (ctx.class_name == "Landroid/app/FragmentManager;") {
+        if (m == "findFragmentByTag" || m == "findFragmentById") {
+            // Fragment registry starts empty in this runtime — the honest
+            // answer is null; the androidx LifecycleDispatcher installs the
+            // report fragment on seeing null (install-on-miss contract).
+            return CallResult::handled_null();
+        }
+        if (m == "beginTransaction") {
+            if (!heap_) return CallResult::not_handled();
+            uint32_t tx_id = heap_->allocate("Landroid/app/FragmentTransaction;");
+            return CallResult::handled_object(tx_id,
+                                              "Landroid/app/FragmentTransaction;");
+        }
+        if (m == "executePendingTransactions") {
+            return CallResult::handled_bool(true);
+        }
+    }
+    if (ctx.class_name == "Landroid/app/FragmentTransaction;") {
+        if (m == "add" || m == "replace" || m == "remove" || m == "hide" ||
+            m == "show" || m == "detach" || m == "attach") {
+            // BackStackRecord fluent law: every op returns the SAME
+            // transaction (this) — object identity is part of the contract.
+            if (ctx.has_receiver && ctx.receiver_id != 0)
+                return CallResult::handled_object(ctx.receiver_id,
+                                                  ctx.class_name);
+            return CallResult::handled_void();
+        }
+        if (m == "commitNow" || m == "commitNowAllowingStateLoss") {
+            return CallResult::handled_void();
+        }
+        if (m == "commit" || m == "commitAllowingStateLoss") {
+            // BackStackRecord.commit → int id (non-negative in AOSP).
+            return CallResult::handled_int(0);
+        }
+    }
+    return CallResult::not_handled();
+}
+
+CallResult RuntimeShadow::dispatch(const CallContext& ctx) {
+    const auto& m = ctx.method;
+    if (m == "getRuntime") {
+        if (!heap_ || runtime_id_ == 0) return CallResult::not_handled();
+        return CallResult::handled_object(runtime_id_, "Ljava/lang/Runtime;");
+    }
+    if (m == "availableProcessors") {
+        static const int32_t kCores = []() {
+            if (const char* env = std::getenv("MINIANDROID_CORES")) {
+                int v = std::atoi(env);
+                if (v > 0) return v;
+            }
+            return 4;  // deterministic device profile
+        }();
+        return CallResult::handled_int(kCores);
+    }
+    return CallResult::not_handled();
+}
+
 CallResult LooperShadow::dispatch(const CallContext& ctx) {
     const auto& m = ctx.method;
     // M3 FIX-M3-014 (§9 event loop / deterministic time law):
@@ -2149,10 +2216,28 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
         }
         return CallResult::not_handled();
     }
+    if (m == "getFragmentManager") {
+        // F-141c (S72-W3): AOSP Activity.java law — getFragmentManager()
+        // returns the Activity's FragmentManager (mFragments.get-
+        // FragmentManager()), NEVER null for a live activity. Evidence
+        // (dooz): androidx LifecycleDispatcher (mc1.b) runs
+        //   activity.getFragmentManager().findFragmentByTag(report_fragment_tag)
+        // on every activity create; the legacy stub answered null → the
+        // F-141 null-receiver NPE law fired (mc1.b pc=25) and unwound
+        // im.onCreate → jm.onCreate → MainActivity.onCreate.
+        // Identity: one FragmentManager singleton per runtime (deterministic
+        // single-activity subset; multi-activity identity sits behind F-145).
+        if (heap_) {
+            uint32_t fm_id = heap_->get_or_create("Landroid/app/FragmentManager;");
+            return CallResult::handled_object(fm_id,
+                                              "Landroid/app/FragmentManager;");
+        }
+        return CallResult::not_handled();
+    }
     if (m == "getResources" || m == "getPackageManager" || m == "getPackageName" ||
         m == "getClassLoader" || m == "getFilesDir" || m == "getCacheDir" ||
         m == "getSharedPreferences" || m == "getWindow" || m == "getWindowManager" ||
-        m == "getFragmentManager" || m == "getCallingActivity" || m == "getCallingPackage" ||
+        m == "getCallingActivity" || m == "getCallingPackage" ||
         m == "startActivityFromChild" ||
         m == "startActivityIfNeeded" || m == "startNextMatchingActivity") {
         // Let these fall through to the legacy bridge which has more

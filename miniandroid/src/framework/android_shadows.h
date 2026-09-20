@@ -184,6 +184,89 @@ private:
 };
 
 // ─────────────────────────────────────────────────────────────────────────
+// RuntimeShadow (F-141 chain, S72-W3) — java.lang.Runtime minimal semantic
+// subset per the OpenJDK law (Runtime.java):
+//   * private static final Runtime currentRuntime = new Runtime();
+//   * public static Runtime getRuntime() { return currentRuntime; }
+// The singleton identity is part of the contract: every getRuntime() call
+// returns the SAME heap object, and instance methods run on it.
+//   * availableProcessors(): OpenJDK/ART return the VM's usable core count.
+//     kotlinx.coroutines sizes Dispatchers.Default with it during <clinit>
+//     (dooz: Lxr1;.<clinit> invoke-virtual Runtime.availableProcessors on
+//     the getRuntime() result). Engine device profile: FIXED core count
+//     (deterministic run ×3 law, §121) — default 4, MINIANDROID_CORES env
+//     override for controlled probes only.
+// Evidence: dooz S72-W3 — getRuntime() fell through to the generic stub and
+// returned null; the F-141 null-receiver NPE law fired at Lxr1;.<clinit>
+// pc=4 ("Attempt to invoke virtual method '...Runtime;.availableProcessors'
+// on a null object reference"), unwinding the os.get → vs/vx/kv/gt1
+// <clinit> chain out of MainActivity.onCreate (the real first divergence
+// chain, previously masked by the silent null-receiver dispatch).
+// ─────────────────────────────────────────────────────────────────────────
+class RuntimeShadow : public Shadow {
+public:
+    std::string name() const override { return "Runtime"; }
+    void init(HeapAllocator* heap) override {
+        heap_ = heap;
+        // OpenJDK law: the singleton exists once, at class initialization.
+        if (heap_) runtime_id_ = heap_->get_or_create("Ljava/lang/Runtime;");
+    }
+    bool handles_class(const std::string& class_name) const override {
+        return class_name == "Ljava/lang/Runtime;";
+    }
+    CallResult dispatch(const CallContext& ctx) override;
+    std::vector<std::string> implemented_methods() const override {
+        return {"getRuntime", "availableProcessors"};
+    }
+    std::vector<std::string> stubbed_methods() const override {
+        return {"gc", "exit", "halt", "totalMemory", "freeMemory", "maxMemory"};
+    }
+    uint32_t runtime_id() const { return runtime_id_; }
+private:
+    HeapAllocator* heap_ = nullptr;
+    uint32_t runtime_id_ = 0;
+};
+
+// ────────────────────────────────────────────────────────────────────────
+// FragmentManagerShadow (F-141c, S72-W3) — android.app.FragmentManager /
+// FragmentTransaction minimal semantic subset per AOSP
+// (FragmentManager.java / BackStackRecord.java):
+//   * findFragmentByTag/Id: answers the fragment committed under that
+//     identity — the runtime's fragment registry starts EMPTY, so the
+//     honest answer is null (the androidx LifecycleDispatcher contract:
+//     null → install the report fragment via beginTransaction).
+//   * beginTransaction(): a NEW FragmentTransaction object per call
+//     (AOSP: new BackStackRecord(this)).
+//   * FragmentTransaction ops (add/replace/remove/hide/show/detach/
+//     attach) return the SAME transaction object (fluent this).
+//   * commit()/commitAllowingStateLoss() → int id; commitNow* → void.
+//   * executePendingTransactions() → true (pending ops ran now).
+// Evidence: dooz androidx LifecycleDispatcher report-fragment install
+// (im.onCreate → mc1.b → getFragmentManager → findFragmentByTag null →
+// beginTransaction().add(new ReportFragment(), tag).commit() →
+// executePendingTransactions()); the null getFragmentManager answer
+// fired the F-141 NPE law and killed the activity chain.
+// ────────────────────────────────────────────────────────────────────────
+class FragmentManagerShadow : public Shadow {
+public:
+    std::string name() const override { return "FragmentManager"; }
+    void init(HeapAllocator* heap) override { heap_ = heap; }
+    bool handles_class(const std::string& class_name) const override {
+        return class_name == "Landroid/app/FragmentManager;" ||
+               class_name == "Landroid/app/FragmentTransaction;";
+    }
+    CallResult dispatch(const CallContext& ctx) override;
+    std::vector<std::string> implemented_methods() const override {
+        return {"findFragmentByTag", "findFragmentById", "beginTransaction",
+                "add", "replace", "remove", "hide", "show", "detach",
+                "attach", "commit", "commitAllowingStateLoss", "commitNow",
+                "commitNowAllowingStateLoss", "executePendingTransactions"};
+    }
+private:
+    HeapAllocator* heap_ = nullptr;
+};
+
+// ─────────────────────────────────────────────────────────────────────────
 // LooperShadow — owns the single main Looper object.
 //
 // Identity contract:

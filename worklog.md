@@ -2015,3 +2015,44 @@ Work Log:
 
 Stage Summary:
 - PUSH STATUS: PENDING-PUSH (14 commits: session records + constitution + wave-2 fix). No credential stored anywhere; secret-guard PASS on every commit.
+
+---
+Task ID: S72-W3
+Agent: Super Z (main)
+Task: F-141 (P0) full loop — ART null-receiver invoke law + null-producer
+closure to real APK + screenshot + regression.
+
+Work Log:
+- F-141a law fix: ART NPE at the invoke site in ALL five instance-invoke
+  paths (35c virtual/super/direct/interface + 3rc range), replacing the
+  log-only silent dispatch. f141_is_null_receiver = NULL_REF or
+  OBJECT_REF/oid==0; throw_deferred convention (pc_+=3, return true);
+  catch-redirect + frame-unwind propagation carry it.
+- Law surfaced 5 successive TRUE first divergences; each producer closed
+  with an upstream-law fix: F-141b Runtime.getRuntime/availableProcessors
+  (RuntimeShadow, OpenJDK singleton law), F-141c Long.getLong/
+  Integer.getInteger/Boolean.getBoolean boxed-reader family over the F-080
+  property table, F-141d Activity.getFragmentManager non-null +
+  FragmentManager/FragmentTransaction subset (FragmentManagerShadow; androidx
+  LifecycleDispatcher install path), F-141e View.getResources → Resources
+  singleton, F-141f Context.getTheme + Theme.resolveAttribute over the F-093
+  theme chain (TypedValue type/data/resourceId/string), F-088 ext string
+  getClass → String.class.
+- The law correctly BROKE unote mid-wave (its W2 success leaned on silent
+  null-theming, §177); F-141f recovered it with REAL theme resolution.
+- Remaining dooz divergences precisely localized and registered: F-146
+  (ur.e(J) on null @g8.a pc=569, F141-DIAG v4 null), F-147 (ViewGroup.
+  getChildAt on null @MainActivity.onCreate pc=228) — next wave queue.
+- Regression: corpus 4 SAME / 5 UP / unote recovered, ZERO unexplained
+  deltas; fixtures 25/25 pixel-SAME, zero f141 breaks; dooz x3 + gmdice x3
+  BYTE-IDENTICAL. dooz 197→23472 px real content; unote 231120 recovered.
+- F141-DIAG probe env-gated/bounded/documented (§111-116).
+- Evidence: docs/foundation/S72_WAVE3.md; registry 386→393 (F-141
+  ROOT-CAUSED-FIXED, F-146/F-147 registered).
+
+Stage Summary:
+- KPI-4 +1 (F-141 closed); KPI-1 candidates improved (dooz paints real
+  surface content; 6 null-producer APIs closed with fan-out across dooz/
+  unote/gmdice/microtimer/fishrings/tripeaks); ZERO regressions.
+- FOUNDATION STATUS: NOT COMPLETE (frontier moved: P0 closed, 2 new P1s
+  localized, F-145 open).
