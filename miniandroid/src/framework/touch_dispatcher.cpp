@@ -5,7 +5,9 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdlib>
 #include <functional>
+#include <iostream>
 
 namespace miniandroid {
 namespace framework {
@@ -128,15 +130,40 @@ nlohmann::json TouchDispatcher::dispatch(uint32_t root_id,
             // CLICKABLE/LONG_CLICKABLE. Target selection ignores `enabled`
             // (ViewGroup.getTouchTarget → canViewReceivePointerEvents checks
             // visibility only); the response gating is the disabled law.
+            // ────────────────────────────────────────────────────────────
+            // R-NEW-399 (S79) — AOSP ViewGroup child-dispatch law: children
+            // are bounds-checked INDEPENDENTLY of their ancestors. In AOSP,
+            // ViewGroup.dispatchTouchEvent iterates the child list and asks
+            // isTransformedTouchPointInView(x, y, child) PER CHILD; the
+            // parent's own bounds never gate the descent. The previous walk
+            // returned (pruned the subtree) whenever an ANCESTOR's node
+            // geometry did not contain the point — so any stale/unmeasured
+            // ancestor (e.g. a custom-view root inflated as -1x-1, or an
+            // inflated-but-shadow-unmeasured RelativeLayout chain) made
+            // every descendant tap-dead (target=0) even though the render
+            // layout placed the children correctly on screen. Evidence:
+            // fishrings board taps at (540,960)/(270,960)/(810,960) →
+            // target=0 while the board paints (run/s79_reproofs/fishrings_s10).
+            // MINIANDROID_HITPROBE=1 logs every walked node (render-neutral,
+            // stderr-only probe) to keep the producer trace inspectable.
             uint32_t target = 0;
-            std::function<void(uint32_t)> walk = [&](uint32_t id) {
+            const bool hitprobe = getenv("MINIANDROID_HITPROBE") != nullptr;
+            std::function<void(uint32_t, int)> walk = [&](uint32_t id,
+                                                          int depth) {
                 const auto* n = views_->find_node(id);
                 if (!n || n->visibility != 0) return;
-                if (!node_at(n, ev.x, ev.y)) return;
-                if (view_touchable(*n)) target = id;  // deepest touchable wins
-                for (uint32_t cid : n->children) walk(cid);
+                const bool at = node_at(n, ev.x, ev.y);
+                if (hitprobe)
+                    std::cerr << "[HITPROBE] d=" << depth << " id=" << id
+                              << " " << n->class_desc << " (" << n->x << ","
+                              << n->y << " " << n->width << "x" << n->height
+                              << ") at=" << at << " touchable="
+                              << view_touchable(*n) << " kids="
+                              << n->children.size() << std::endl;
+                if (at && view_touchable(*n)) target = id;  // deepest wins
+                for (uint32_t cid : n->children) walk(cid, depth + 1);
             };
-            walk(root_id);
+            walk(root_id, 0);
             gesture_target_ = target;
             rec["target_view_id"] = target;
             if (const auto* tn = views_->find_node(target))

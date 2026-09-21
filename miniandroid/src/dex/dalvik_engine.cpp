@@ -18477,6 +18477,112 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             drawwin_miss_count++;
         }
     }
+    // ────────────────────────────────────────────────────────────────────
+    // R-NEW-400 (S79) — AOSP MediaPlayer object law (F-155 fix).
+    // UPSTREAM: android.media.MediaPlayer (frameworks/base/media/java/
+    //   android/media/MediaPlayer.java):
+    //   static create(Context, int resid) = new MediaPlayer() +
+    //     setDataSource(resId) + prepare() → returns a NON-NULL player in
+    //     the PREPARED state (the "create" convenience never returns null
+    //     for a valid resource; it throws on failure instead).
+    //   State machine (class doc table): start() legal from
+    //     {Prepared, Started, Paused, PlaybackCompleted}; pause() from
+    //     {Started, Paused}; stop() from {Prepared, Started, Paused,
+    //     Stopped}; release() from any; reset() → Idle.
+    // PRODUCER (S79): FishRings GameActivity.sound() called MediaPlayer
+    //   .start() on a NULL player — MediaPlayer.create was a REC-MISS stub
+    //   returning the typed default (null) → deferred f141-null-recv NPE
+    //   aborted GameActivity$1..$4.onClick BEFORE the ring-rotation logic
+    //   ran → taps dispatched but the board never changed
+    //   (run/s79_reproofs/fishrings_r399b). Same §12 silent-propagation
+    //   family as F-152 (doPrivileged null) — framework object law must
+    //   hold so app logic survives its own sound path.
+    // IMPLEMENTATION: create() allocates a REAL heap object with the
+    //   AOSP state in the __mp_state__ field (2=Prepared); instance
+    //   methods transition per the legal table (illegal → ERROR state
+    //   logged, matching the C++ audio::MediaPlayer table). Audio output
+    //   itself is a no-op (software runtime has no speaker), but the
+    //   OBJECT/STATE law is what app control flow depends on.
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/media/MediaPlayer;") {
+        auto mp_state_of = [&](uint32_t oid) -> int {
+            auto v = heap_.get_object_field(oid, "__mp_state__");
+            return (v && v->type == DalvikType::INT32) ? v->int_val : 0;
+        };
+        if (method == "create") {
+            // create(Context, int) / create(Context, Uri) — static: args[0]
+            // is the Context, args[1] the source. Returns Prepared player.
+            uint32_t mp_id = heap_.allocate("Landroid/media/MediaPlayer;",
+                                            pc_, 0);
+            heap_.set_object_field(mp_id, "__mp_state__",
+                                   DalvikValue::make_int(2 /*PREPARED*/));
+            result = DalvikValue::make_object(
+                mp_id, "Landroid/media/MediaPlayer;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            std::cerr << "[R400-MEDIA] MediaPlayer.create → non-null "
+                      << "PREPARED player obj_id=" << mp_id
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+            return true;
+        }
+        // instance methods: args[0] is the receiver (EXP-071 Phase 8 law).
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0) {
+            const uint32_t mp_id = args[0].object_id;
+            const int st = mp_state_of(mp_id);
+            auto legal = [&](std::initializer_list<int> from) {
+                for (int f : from)
+                    if (st == f) return true;
+                return false;
+            };
+            auto set_state = [&](int ns) {
+                heap_.set_object_field(mp_id, "__mp_state__",
+                                       DalvikValue::make_int(ns));
+            };
+            if (method == "start") {
+                if (legal({2, 3, 4, 6})) {   // Prepared/Started/Paused/Completed
+                    set_state(3 /*STARTED*/);
+                    std::cerr << "[R400-MEDIA] MediaPlayer.start obj_id="
+                              << mp_id << " state " << st << "→STARTED"
+                              << std::endl;
+                } else {
+                    set_state(8 /*ERROR*/);
+                    std::cerr << "[R400-MEDIA] MediaPlayer.start obj_id="
+                              << mp_id << " ILLEGAL from state=" << st
+                              << " (AOSP state table) → ERROR" << std::endl;
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;   // void result — control flow resumes
+            }
+            if (method == "pause") {
+                if (legal({3, 4})) set_state(4); else set_state(8);
+                std::cerr << "[R400-MEDIA] MediaPlayer.pause obj_id=" << mp_id
+                          << " from=" << st << std::endl;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "stop") {
+                if (legal({2, 3, 4, 5})) set_state(5); else set_state(8);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "release") {
+                set_state(7 /*RELEASED*/);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "reset") {
+                set_state(0 /*IDLE*/);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "isPlaying") {
+                result = DalvikValue::make_int(st == 3 ? 1 : 0);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+    }
     // M3 FINDING-011 diagnostics (bounded): function-entry probe.
     if ((method == "setTag" || method == "getTag")) {
         static thread_local uint64_t tag_probe = 0;
