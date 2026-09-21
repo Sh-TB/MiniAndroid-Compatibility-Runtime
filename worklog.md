@@ -2187,3 +2187,60 @@ Stage Summary:
   GIF + trace + 3/3 byte-identical, zero regressions, push verified.
 - No new F-numbers; F-117 extension documented; dooz metric honestly
   reclassified; black-region painter root-cause is the queued lead.
+
+---
+Task ID: S74-MAIN
+Agent: Super Z (main)
+Task: S74 GAME-CHANGER — Android Compatibility Platform Architecture + App
+Dossiers + Knowledge Graph + Reusable Execution Skill (architecture wave;
+zero runtime code changes).
+
+Work Log:
+- PHASE 0 RECON: HEAD 038f0be6 == origin/main (fetch + rev-parse), clean
+  tree, 0 pending commits (S73 push debt already cleared); issues #1-#23
+  inventoried via REST API (14 canonical [EXEC] #10-#23, no duplicates);
+  S73_REPORT/ACHIEVEMENTS/ROADMAP_STATUS/KNOWLEDGE_INDEX/worklog read as
+  evidence sources; root_registry.json located (roots list 396).
+- PHASE 1-4 ARCHITECTURE: docs/compatibility/{apps,tools,capabilities} +
+  docs/knowledge/laws emitted by scripts/s74_emit.py from evidence-derived
+  data modules (s74_data_apps1/2.py, s74_data_platform.py, s74_data_laws.py):
+  14 app dossiers (identity/C1-C14/blocker/next-task/laws/capabilities/
+  evidence links), 12 tool profiles (canonical UPSTREAM_INVENTORY provenance
+  classes), 15 capability records, 31 knowledge records (20 VERIFIED, 8
+  OBSERVED open, 2 RESEARCHED, 1 SUPERSEDED false-claim CLAIM-DOOZ-23472-
+  VISUAL preserved per taskbook §68). All statuses from the canonical
+  vocabulary; unknowns null/NOT_OBSERVED/PENDING (no invention).
+- PHASE 5: docs/compatibility/CAPABILITY_MATRIX.md generated from the
+  records (17 columns, evidence-cited, no scores).
+- PHASE 6: docs/execution-skill/SKILL.md — vendor-neutral 22-step
+  execution loop, read-order token law, evidence/screenshot-provenance laws,
+  autonomous-gameplay ladder, safe stop/resume.
+- PHASE 9: tools/validate_compatibility_graph.py (JSON/schema/status/ref/
+  C1-C14/evidence-paths/registry-drift/index/matrix gates) +
+  tools/promote_knowledge.py (single-step pipeline, VERIFIED requires
+  test+evidence+source, append-only journal). Validator caught TWO real
+  defects: (1) root_registry.json summary.total_roots=372 stale vs roots
+  list 396; (2) F-120 (S66 button-gravity law) never back-registered. Fixed
+  both (scripts/s74_registry_fix.py): registry now 397 roots, summary
+  repaired. Validator final: PASS exit 0 (14/12/15/31, registry 397).
+- PHASE 10: README (platform + skill links + core law), ROADMAP_STATUS §1
+  (2 new S74 rows), KNOWLEDGE_INDEX §0e, INDEX.json (7 new entrypoints).
+- PHASE 11 REGRESSION: Level A fixtures 25/25 rc=0 f141-throws=0 (S74 re-run
+  on current binary, matches S73 record); Level C fidelity probe — exact S73
+  autonomous 23-tap schedule replayed fresh -> 90/90 frames byte-identical
+  vs committed run_01 (run/s74_fidelity_probe/); Level B battery not re-run
+  (no runtime change — S73 verdict stands, recorded honestly). ACHIEVEMENTS
+  §0i added (execution-focused rows only).
+- ISSUE SYNC: one dated dossier-link comment per issue #10-#23 (14 comments,
+  English-only, no body rewrites) — Issue<->Profile synchronization §62.
+- REPORT: docs/evidence/S74/S74_REPORT.md (8 sections + honest gaps).
+- GIT: 7 logical commits (architecture/knowledge/skill/tools/registry/docs/
+  evidence); secret scan before push; push verified via ls-remote.
+
+Stage Summary:
+- S74 GAME_CHANGER_STATUS: DONE (20/20 output items of taskbook §73, with
+  honest skeleton security/persistence profiles recorded as NOT_OBSERVED/
+  PENDING rather than invented; no version bump — no runtime change).
+- The next agent can resolve "run and fix Snake" or "continue Dooz" from the
+  dossier -> issue -> blocker -> laws -> capabilities chain without scanning
+  the repository (the taskbook §78 final test).
