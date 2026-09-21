@@ -226,6 +226,19 @@ Canonical files — one per role:
   knowledge/research files (per-file classification + pipeline knowledge map).
 - **[Roadmap Status](docs/ROADMAP_STATUS.md)** — the reconciled canonical
   roadmap (all historical roadmaps folded in; P0 frontier ranked).
+- **[Compatibility Platform](docs/compatibility/README.md)** (S74) — the
+  operational memory: per-app compatibility dossiers (`apps/*.json`),
+  tool/source profiles (`tools/*.json`), capability records
+  (`capabilities/*.json`), canonical knowledge records
+  (`docs/knowledge/laws/*.json`), and the evidence-backed
+  [Capability Matrix](docs/compatibility/CAPABILITY_MATRIX.md).
+  **Runtime Core is shared; Compatibility Status is app-specific.**
+- **[Android Execution Skill](docs/execution-skill/SKILL.md)** (S74) —
+  vendor-neutral, token-efficient workflow any coding agent follows to run one
+  APK, find its blocker, reuse verified knowledge, fix the runtime, prove the
+  result, and update dossier + issue (validated by
+  `tools/validate_compatibility_graph.py`; knowledge promotion via
+  `tools/promote_knowledge.py`).
 - Navigation hub: **[`docs/INDEX.md`](docs/INDEX.md)** (machine-readable twin:
   `docs/INDEX.json`) — architecture, testing, runtime, dex, resources,
   lifecycle, rendering, input, persistence, upstream laws, releases, forensic

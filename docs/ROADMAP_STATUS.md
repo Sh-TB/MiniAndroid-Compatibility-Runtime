@@ -26,6 +26,8 @@
 | Regression battery | **VERIFIED** | "BATTERY GATE: ALL PASS (96 stages)" at current HEAD (92 stages when the external EXT fixture is absent — the two EXT run stages collapse; the count law is documented in the battery script) |
 | Autonomous gameplay on a real APK (input→state→render→repro) | **OBSERVED [S73]** | AndroidGameSnake: 88 moves / 22 turns / 1 food capture, 3/3 runs byte-identical, trace + GIF — docs/evidence/s73_snake_autoplay/ (see ACHIEVEMENTS §0h) |
 | Canonical GitHub execution ledger | **IMPLEMENTED [S73]** | [EXEC] issues #10–#23 (one per tracked app, duplicate-checked) + dated evidence comments |
+| Compatibility platform (5 layers: app dossiers / tool profiles / canonical knowledge / execution skill / capability matrix) | **IMPLEMENTED [S74]** | docs/compatibility/ (14 app dossiers + 12 tool profiles + 15 capabilities), docs/knowledge/laws/ (31 records, 20 VERIFIED), docs/execution-skill/SKILL.md, docs/compatibility/CAPABILITY_MATRIX.md |
+| Compatibility-graph validator + knowledge-promotion tool | **TESTED [S74]** | tools/validate_compatibility_graph.py (PASS at S74 HEAD: references/statuses/provenance/evidence/registry-drift/index) — caught and forced the F-120 back-registration + stale registry-summary repair; tools/promote_knowledge.py (single-step pipeline, VERIFIED requires test+evidence+source, journal) |
 
 ## 2. What was fixed THIS session (root cause → law → proof)
 
