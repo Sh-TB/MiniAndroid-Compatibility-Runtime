@@ -3784,16 +3784,34 @@ bool ExecutionEngine::stage_frame_sequence( ExecutionResult& result, const Execu
         // tap hits the screen the app shows at that Looper time (real
         // face: FreeKlondike's MenuActivity only exists after the 5s
         // splash Timer; an early tap would hit the splash WebView).
-        if (config.tap_enabled &&
-            k - 1 < static_cast<int>(config.tap_sequence.size()) &&
-            touch_dispatcher_ && shadow_registry_) {
+        // S73 F-117 EXTENSION — scheduled tap timing: `--tap x,y@frame`
+        // fires the tap after frame `frame` renders (real user cadence:
+        // fingers tap at Looper times BETWEEN rendered frames, not at every
+        // frame). Legacy form (no '@') keeps the EXACT old law: tap k at
+        // frame k. All taps still flow through the canonical TouchDispatcher
+        // DOWN/UP law pipeline — no input bypass.
+        std::vector<size_t> f117_due;
+        if (config.tap_enabled && touch_dispatcher_ && shadow_registry_) {
+            if (config.tap_at_frames.empty()) {
+                if (k - 1 < static_cast<int>(config.tap_sequence.size()))
+                    f117_due.push_back(static_cast<size_t>(k - 1));
+            } else if (config.tap_at_frames.size() ==
+                       config.tap_sequence.size()) {
+                for (size_t f117_t = 0; f117_t < config.tap_at_frames.size();
+                     ++f117_t)
+                    if (config.tap_at_frames[f117_t] == k)
+                        f117_due.push_back(f117_t);
+            }
+        }
+        if (!f117_due.empty()) {
             auto* activity_shadow =
                 shadow_registry_->find_as<framework::ActivityShadow>();
             if (!activity_shadow) {
                 std::cerr << "[F117-TAP] no ActivityShadow — tap skipped"
                           << std::endl;
             } else {
-            const auto& [tpx, tpy] = config.tap_sequence[k - 1];
+            for (size_t f117_i : f117_due) {
+            const auto& [tpx, tpy] = config.tap_sequence[f117_i];
             uint32_t tap_root = activity_shadow->content_view_id();
             auto down_rec = touch_dispatcher_->dispatch(
                 tap_root, {framework::TouchAction::DOWN, tpx, tpy});
@@ -3823,6 +3841,7 @@ bool ExecutionEngine::stage_frame_sequence( ExecutionResult& result, const Execu
             if (!tap_launch.is_null()) manifest["activity_launch"] = tap_launch;
             nlohmann::json tap_fin = consume_finish_cascade();
             if (!tap_fin.is_null()) manifest["finish_cascade"] = tap_fin;
+            }  // S73 per-due-tap loop close
             }  // F-117 else-branch close
         }
 

@@ -1,0 +1,3029 @@
+{
+ "run_id": "s73_autonomous_run_02",
+ "engine": "MiniAndroid real-dalvik",
+ "apk": "snake_v1.0_vc1.apk",
+ "apk_sha256_16": "54cf48a9",
+ "input_model": "scheduled taps x,y@frame through canonical TouchDispatcher DOWN/UP law pipeline",
+ "vision": "rendered-frame pixel extraction: snake #FF4081, food #0000ff on 20x20 grid (39px cells)",
+ "frames": [
+  {
+   "frame": 0,
+   "file": "frame_000.png",
+   "screenshot_sha256": "407020eadd2aa4cd",
+   "state_hash": "db9fa07bde003ca9",
+   "observed_snake": [],
+   "observed_food": [],
+   "head": null,
+   "direction": null
+  },
+  {
+   "frame": 1,
+   "file": "frame_001.png",
+   "screenshot_sha256": "765ec80addc30fd9",
+   "state_hash": "0e7b3fe7a8eba2df",
+   "observed_snake": [
+    [
+     10,
+     10
+    ],
+    [
+     11,
+     10
+    ]
+   ],
+   "observed_food": [
+    [
+     0,
+     0
+    ]
+   ],
+   "head": [
+    11,
+    10
+   ],
+   "direction": "R",
+   "input": "tap(98,839)@frame1"
+  },
+  {
+   "frame": 2,
+   "file": "frame_002.png",
+   "screenshot_sha256": "56f1d463e0f39733",
+   "state_hash": "cb0277b4812a4b7b",
+   "observed_snake": [
+    [
+     10,
+     10
+    ],
+    [
+     11,
+     10
+    ],
+    [
+     12,
+     10
+    ]
+   ],
+   "observed_food": [
+    [
+     0,
+     0
+    ]
+   ],
+   "head": [
+    12,
+    10
+   ],
+   "direction": "R",
+   "event": [
+    "START_GROW_TICK"
+   ]
+  },
+  {
+   "frame": 3,
+   "file": "frame_003.png",
+   "screenshot_sha256": "ce3eaee29eb723da",
+   "state_hash": "9b64e908aaf31a59",
+   "observed_snake": [
+    [
+     11,
+     10
+    ],
+    [
+     12,
+     10
+    ],
+    [
+     13,
+     10
+    ]
+   ],
+   "observed_food": [
+    [
+     0,
+     0
+    ]
+   ],
+   "head": [
+    13,
+    10
+   ],
+   "direction": "R"
+  },
+  {
+   "frame": 4,
+   "file": "frame_004.png",
+   "screenshot_sha256": "0b817e8a1d188990",
+   "state_hash": "c8d065062574d445",
+   "observed_snake": [
+    [
+     12,
+     10
+    ],
+    [
+     13,
+     10
+    ],
+    [
+     14,
+     10
+    ]
+   ],
+   "observed_food": [
+    [
+     0,
+     0
+    ]
+   ],
+   "head": [
+    14,
+    10
+   ],
+   "direction": "R"
+  },
+  {
+   "frame": 5,
+   "file": "frame_005.png",
+   "screenshot_sha256": "eca189bc66db07f4",
+   "state_hash": "739591473a7ff989",
+   "observed_snake": [
+    [
+     13,
+     10
+    ],
+    [
+     14,
+     10
+    ],
+    [
+     15,
+     10
+    ]
+   ],
+   "observed_food": [
+    [
+     0,
+     0
+    ]
+   ],
+   "head": [
+    15,
+    10
+   ],
+   "direction": "R"
+  },
+  {
+   "frame": 6,
+   "file": "frame_006.png",
+   "screenshot_sha256": "2ae25e9ce003a384",
+   "state_hash": "97b41797bb548c7d",
+   "observed_snake": [
+    [
+     14,
+     10
+    ],
+    [
+     15,
+     10
+    ],
+    [
+     16,
+     10
+    ]
+   ],
+   "observed_food": [
+    [
+     0,
+     0
+    ]
+   ],
+   "head": [
+    16,
+    10
+   ],
+   "direction": "R"
+  },
+  {
+   "frame": 7,
+   "file": "frame_007.png",
+   "screenshot_sha256": "a9097497817c12b1",
+   "state_hash": "87d35035dd9af16c",
+   "observed_snake": [
+    [
+     15,
+     10
+    ],
+    [
+     16,
+     10
+    ],
+    [
+     17,
+     10
+    ]
+   ],
+   "observed_food": [
+    [
+     0,
+     0
+    ]
+   ],
+   "head": [
+    17,
+    10
+   ],
+   "direction": "R",
+   "input": "tap(539,860)@frame7"
+  },
+  {
+   "frame": 8,
+   "file": "frame_008.png",
+   "screenshot_sha256": "8f105b93d5df2e78",
+   "state_hash": "67c443dbbab249e0",
+   "observed_snake": [
+    [
+     17,
+     9
+    ],
+    [
+     16,
+     10
+    ],
+    [
+     17,
+     10
+    ]
+   ],
+   "observed_food": [
+    [
+     0,
+     0
+    ]
+   ],
+   "head": [
+    17,
+    9
+   ],
+   "direction": "U"
+  },
+  {
+   "frame": 9,
+   "file": "frame_009.png",
+   "screenshot_sha256": "5e5a326b86065e47",
+   "state_hash": "1ac9b07572e9a6e0",
+   "observed_snake": [
+    [
+     17,
+     8
+    ],
+    [
+     17,
+     9
+    ],
+    [
+     17,
+     10
+    ]
+   ],
+   "observed_food": [
+    [
+     0,
+     0
+    ]
+   ],
+   "head": [
+    17,
+    8
+   ],
+   "direction": "U"
+  },
+  {
+   "frame": 10,
+   "file": "frame_010.png",
+   "screenshot_sha256": "ca124050023202c1",
+   "state_hash": "363c03bdb33cbac2",
+   "observed_snake": [
+    [
+     17,
+     7
+    ],
+    [
+     17,
+     8
+    ],
+    [
+     17,
+     9
+    ]
+   ],
+   "observed_food": [
+    [
+     0,
+     0
+    ]
+   ],
+   "head": [
+    17,
+    7
+   ],
+   "direction": "U"
+  },
+  {
+   "frame": 11,
+   "file": "frame_011.png",
+   "screenshot_sha256": "69e95c6195a5c487",
+   "state_hash": "1feac4df7678eec4",
+   "observed_snake": [
+    [
+     17,
+     6
+    ],
+    [
+     17,
+     7
+    ],
+    [
+     17,
+     8
+    ]
+   ],
+   "observed_food": [
+    [
+     0,
+     0
+    ]
+   ],
+   "head": [
+    17,
+    6
+   ],
+   "direction": "U"
+  },
+  {
+   "frame": 12,
+   "file": "frame_012.png",
+   "screenshot_sha256": "f355a1bdd6bc8683",
+   "state_hash": "628a7499b35862c7",
+   "observed_snake": [
+    [
+     17,
+     5
+    ],
+    [
+     17,
+     6
+    ],
+    [
+     17,
+     7
+    ]
+   ],
+   "observed_food": [
+    [
+     0,
+     0
+    ]
+   ],
+   "head": [
+    17,
+    5
+   ],
+   "direction": "U"
+  },
+  {
+   "frame": 13,
+   "file": "frame_013.png",
+   "screenshot_sha256": "2b4eae1069075782",
+   "state_hash": "47cc63f70e5cfab4",
+   "observed_snake": [
+    [
+     17,
+     4
+    ],
+    [
+     17,
+     5
+    ],
+    [
+     17,
+     6
+    ]
+   ],
+   "observed_food": [
+    [
+     0,
+     0
+    ]
+   ],
+   "head": [
+    17,
+    4
+   ],
+   "direction": "U"
+  },
+  {
+   "frame": 14,
+   "file": "frame_014.png",
+   "screenshot_sha256": "b69b25565f467dde",
+   "state_hash": "3ac0c2684d9b5ff7",
+   "observed_snake": [
+    [
+     17,
+     3
+    ],
+    [
+     17,
+     4
+    ],
+    [
+     17,
+     5
+    ]
+   ],
+   "observed_food": [
+    [
+     0,
+     0
+    ]
+   ],
+   "head": [
+    17,
+    3
+   ],
+   "direction": "U"
+  },
+  {
+   "frame": 15,
+   "file": "frame_015.png",
+   "screenshot_sha256": "5623a7c9b952e98b",
+   "state_hash": "c9fc15690ae5edac",
+   "observed_snake": [
+    [
+     17,
+     2
+    ],
+    [
+     17,
+     3
+    ],
+    [
+     17,
+     4
+    ]
+   ],
+   "observed_food": [
+    [
+     0,
+     0
+    ]
+   ],
+   "head": [
+    17,
+    2
+   ],
+   "direction": "U"
+  },
+  {
+   "frame": 16,
+   "file": "frame_016.png",
+   "screenshot_sha256": "bc6fd58eca189801",
+   "state_hash": "090b118d0d431de2",
+   "observed_snake": [
+    [
+     17,
+     1
+    ],
+    [
+     17,
+     2
+    ],
+    [
+     17,
+     3
+    ]
+   ],
+   "observed_food": [
+    [
+     0,
+     0
+    ]
+   ],
+   "head": [
+    17,
+    1
+   ],
+   "direction": "U"
+  },
+  {
+   "frame": 17,
+   "file": "frame_017.png",
+   "screenshot_sha256": "7ee3976b795f4dd8",
+   "state_hash": "953e9123e9a2e1e7",
+   "observed_snake": [
+    [
+     17,
+     0
+    ],
+    [
+     17,
+     1
+    ],
+    [
+     17,
+     2
+    ]
+   ],
+   "observed_food": [
+    [
+     0,
+     0
+    ]
+   ],
+   "head": [
+    17,
+    0
+   ],
+   "direction": "U",
+   "input": "tap(220,999)@frame17"
+  },
+  {
+   "frame": 18,
+   "file": "frame_018.png",
+   "screenshot_sha256": "2f4647f357afe35b",
+   "state_hash": "ac7d5a2828af4c2e",
+   "observed_snake": [
+    [
+     16,
+     0
+    ],
+    [
+     17,
+     0
+    ],
+    [
+     17,
+     1
+    ]
+   ],
+   "observed_food": [
+    [
+     0,
+     0
+    ]
+   ],
+   "head": [
+    16,
+    0
+   ],
+   "direction": "L"
+  },
+  {
+   "frame": 19,
+   "file": "frame_019.png",
+   "screenshot_sha256": "a6146e3f500755f2",
+   "state_hash": "c02fd65115aa8bb1",
+   "observed_snake": [
+    [
+     15,
+     0
+    ],
+    [
+     16,
+     0
+    ],
+    [
+     17,
+     0
+    ]
+   ],
+   "observed_food": [
+    [
+     0,
+     0
+    ]
+   ],
+   "head": [
+    15,
+    0
+   ],
+   "direction": "L"
+  },
+  {
+   "frame": 20,
+   "file": "frame_020.png",
+   "screenshot_sha256": "19cbbd82e2a23554",
+   "state_hash": "8201f0c0b0bf877a",
+   "observed_snake": [
+    [
+     14,
+     0
+    ],
+    [
+     15,
+     0
+    ],
+    [
+     16,
+     0
+    ]
+   ],
+   "observed_food": [
+    [
+     0,
+     0
+    ]
+   ],
+   "head": [
+    14,
+    0
+   ],
+   "direction": "L"
+  },
+  {
+   "frame": 21,
+   "file": "frame_021.png",
+   "screenshot_sha256": "822bc07e2e221aed",
+   "state_hash": "7e24e7f38e76f75c",
+   "observed_snake": [
+    [
+     13,
+     0
+    ],
+    [
+     14,
+     0
+    ],
+    [
+     15,
+     0
+    ]
+   ],
+   "observed_food": [
+    [
+     0,
+     0
+    ]
+   ],
+   "head": [
+    13,
+    0
+   ],
+   "direction": "L"
+  },
+  {
+   "frame": 22,
+   "file": "frame_022.png",
+   "screenshot_sha256": "95354141c1805c79",
+   "state_hash": "6708ec1abc1cbab5",
+   "observed_snake": [
+    [
+     12,
+     0
+    ],
+    [
+     13,
+     0
+    ],
+    [
+     14,
+     0
+    ]
+   ],
+   "observed_food": [
+    [
+     0,
+     0
+    ]
+   ],
+   "head": [
+    12,
+    0
+   ],
+   "direction": "L"
+  },
+  {
+   "frame": 23,
+   "file": "frame_023.png",
+   "screenshot_sha256": "7a73eb25c2925ce4",
+   "state_hash": "e98805ca14d15132",
+   "observed_snake": [
+    [
+     11,
+     0
+    ],
+    [
+     12,
+     0
+    ],
+    [
+     13,
+     0
+    ]
+   ],
+   "observed_food": [
+    [
+     0,
+     0
+    ]
+   ],
+   "head": [
+    11,
+    0
+   ],
+   "direction": "L"
+  },
+  {
+   "frame": 24,
+   "file": "frame_024.png",
+   "screenshot_sha256": "1e9b2d399237cd0d",
+   "state_hash": "ce191a943359ec3b",
+   "observed_snake": [
+    [
+     10,
+     0
+    ],
+    [
+     11,
+     0
+    ],
+    [
+     12,
+     0
+    ]
+   ],
+   "observed_food": [
+    [
+     0,
+     0
+    ]
+   ],
+   "head": [
+    10,
+    0
+   ],
+   "direction": "L"
+  },
+  {
+   "frame": 25,
+   "file": "frame_025.png",
+   "screenshot_sha256": "2ac8dfd6cfb51918",
+   "state_hash": "2dfeaaee9183ec49",
+   "observed_snake": [
+    [
+     9,
+     0
+    ],
+    [
+     10,
+     0
+    ],
+    [
+     11,
+     0
+    ]
+   ],
+   "observed_food": [
+    [
+     0,
+     0
+    ]
+   ],
+   "head": [
+    9,
+    0
+   ],
+   "direction": "L"
+  },
+  {
+   "frame": 26,
+   "file": "frame_026.png",
+   "screenshot_sha256": "8e7d7567058b10f4",
+   "state_hash": "014dbf5e978c0f05",
+   "observed_snake": [
+    [
+     8,
+     0
+    ],
+    [
+     9,
+     0
+    ],
+    [
+     10,
+     0
+    ]
+   ],
+   "observed_food": [
+    [
+     0,
+     0
+    ]
+   ],
+   "head": [
+    8,
+    0
+   ],
+   "direction": "L"
+  },
+  {
+   "frame": 27,
+   "file": "frame_027.png",
+   "screenshot_sha256": "ec577431fef974a7",
+   "state_hash": "c94f920ed8a81ac6",
+   "observed_snake": [
+    [
+     7,
+     0
+    ],
+    [
+     8,
+     0
+    ],
+    [
+     9,
+     0
+    ]
+   ],
+   "observed_food": [
+    [
+     0,
+     0
+    ]
+   ],
+   "head": [
+    7,
+    0
+   ],
+   "direction": "L"
+  },
+  {
+   "frame": 28,
+   "file": "frame_028.png",
+   "screenshot_sha256": "4ed59c62ab98289f",
+   "state_hash": "91a736565dea1e5c",
+   "observed_snake": [
+    [
+     6,
+     0
+    ],
+    [
+     7,
+     0
+    ],
+    [
+     8,
+     0
+    ]
+   ],
+   "observed_food": [
+    [
+     0,
+     0
+    ]
+   ],
+   "head": [
+    6,
+    0
+   ],
+   "direction": "L"
+  },
+  {
+   "frame": 29,
+   "file": "frame_029.png",
+   "screenshot_sha256": "2a81ab43784813b0",
+   "state_hash": "07c4f1245d0aa865",
+   "observed_snake": [
+    [
+     5,
+     0
+    ],
+    [
+     6,
+     0
+    ],
+    [
+     7,
+     0
+    ]
+   ],
+   "observed_food": [
+    [
+     0,
+     0
+    ]
+   ],
+   "head": [
+    5,
+    0
+   ],
+   "direction": "L"
+  },
+  {
+   "frame": 30,
+   "file": "frame_030.png",
+   "screenshot_sha256": "bb1a4b2912e3439c",
+   "state_hash": "d957ab6729f1babf",
+   "observed_snake": [
+    [
+     4,
+     0
+    ],
+    [
+     5,
+     0
+    ],
+    [
+     6,
+     0
+    ]
+   ],
+   "observed_food": [
+    [
+     0,
+     0
+    ]
+   ],
+   "head": [
+    4,
+    0
+   ],
+   "direction": "L"
+  },
+  {
+   "frame": 31,
+   "file": "frame_031.png",
+   "screenshot_sha256": "904a36bab6b3b247",
+   "state_hash": "88b43a4b691a05c9",
+   "observed_snake": [
+    [
+     3,
+     0
+    ],
+    [
+     4,
+     0
+    ],
+    [
+     5,
+     0
+    ]
+   ],
+   "observed_food": [
+    [
+     0,
+     0
+    ]
+   ],
+   "head": [
+    3,
+    0
+   ],
+   "direction": "L"
+  },
+  {
+   "frame": 32,
+   "file": "frame_032.png",
+   "screenshot_sha256": "6966f25b66a5cbe0",
+   "state_hash": "bb02b105db34749d",
+   "observed_snake": [
+    [
+     2,
+     0
+    ],
+    [
+     3,
+     0
+    ],
+    [
+     4,
+     0
+    ]
+   ],
+   "observed_food": [
+    [
+     0,
+     0
+    ]
+   ],
+   "head": [
+    2,
+    0
+   ],
+   "direction": "L"
+  },
+  {
+   "frame": 33,
+   "file": "frame_033.png",
+   "screenshot_sha256": "879b5330f1d77f07",
+   "state_hash": "0ba144cacfdab2de",
+   "observed_snake": [
+    [
+     1,
+     0
+    ],
+    [
+     2,
+     0
+    ],
+    [
+     3,
+     0
+    ]
+   ],
+   "observed_food": [
+    [
+     0,
+     0
+    ]
+   ],
+   "head": [
+    1,
+    0
+   ],
+   "direction": "L"
+  },
+  {
+   "frame": 34,
+   "file": "frame_034.png",
+   "screenshot_sha256": "24a7057e4818d78a",
+   "state_hash": "dc545d34e0677b24",
+   "observed_snake": [
+    [
+     0,
+     0
+    ],
+    [
+     1,
+     0
+    ],
+    [
+     2,
+     0
+    ],
+    [
+     3,
+     0
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    0,
+    0
+   ],
+   "direction": "L",
+   "input": "tap(539,1457)@frame34",
+   "event": [
+    "GROWTH",
+    "FOOD_CAPTURED"
+   ]
+  },
+  {
+   "frame": 35,
+   "file": "frame_035.png",
+   "screenshot_sha256": "ac10e9a9f4d17098",
+   "state_hash": "e674c30a675c0e00",
+   "observed_snake": [
+    [
+     0,
+     0
+    ],
+    [
+     1,
+     0
+    ],
+    [
+     2,
+     0
+    ],
+    [
+     0,
+     1
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    0,
+    1
+   ],
+   "direction": "D"
+  },
+  {
+   "frame": 36,
+   "file": "frame_036.png",
+   "screenshot_sha256": "9e988a4c4586b5f7",
+   "state_hash": "f1c10cc0e652075f",
+   "observed_snake": [
+    [
+     0,
+     0
+    ],
+    [
+     1,
+     0
+    ],
+    [
+     0,
+     1
+    ],
+    [
+     0,
+     2
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    0,
+    2
+   ],
+   "direction": "D"
+  },
+  {
+   "frame": 37,
+   "file": "frame_037.png",
+   "screenshot_sha256": "d49f59af9f29ca62",
+   "state_hash": "c170489b78807cad",
+   "observed_snake": [
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     1
+    ],
+    [
+     0,
+     2
+    ],
+    [
+     0,
+     3
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    0,
+    3
+   ],
+   "direction": "D"
+  },
+  {
+   "frame": 38,
+   "file": "frame_038.png",
+   "screenshot_sha256": "cc3cb12ffd19c304",
+   "state_hash": "eee54add744448d6",
+   "observed_snake": [
+    [
+     0,
+     1
+    ],
+    [
+     0,
+     2
+    ],
+    [
+     0,
+     3
+    ],
+    [
+     0,
+     4
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    0,
+    4
+   ],
+   "direction": "D"
+  },
+  {
+   "frame": 39,
+   "file": "frame_039.png",
+   "screenshot_sha256": "2bbc4ae2fb31af07",
+   "state_hash": "8fe4d4595f9a1570",
+   "observed_snake": [
+    [
+     0,
+     2
+    ],
+    [
+     0,
+     3
+    ],
+    [
+     0,
+     4
+    ],
+    [
+     0,
+     5
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    0,
+    5
+   ],
+   "direction": "D"
+  },
+  {
+   "frame": 40,
+   "file": "frame_040.png",
+   "screenshot_sha256": "7f91253f47b3a6d8",
+   "state_hash": "3c79800f29c04bf8",
+   "observed_snake": [
+    [
+     0,
+     3
+    ],
+    [
+     0,
+     4
+    ],
+    [
+     0,
+     5
+    ],
+    [
+     0,
+     6
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    0,
+    6
+   ],
+   "direction": "D"
+  },
+  {
+   "frame": 41,
+   "file": "frame_041.png",
+   "screenshot_sha256": "afd09926b7c1bbe5",
+   "state_hash": "18513083fe42e0ea",
+   "observed_snake": [
+    [
+     0,
+     4
+    ],
+    [
+     0,
+     5
+    ],
+    [
+     0,
+     6
+    ],
+    [
+     0,
+     7
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    0,
+    7
+   ],
+   "direction": "D",
+   "input": "tap(858,999)@frame41"
+  },
+  {
+   "frame": 42,
+   "file": "frame_042.png",
+   "screenshot_sha256": "8b98c671b18f4833",
+   "state_hash": "1cb4704f349e2e5a",
+   "observed_snake": [
+    [
+     0,
+     5
+    ],
+    [
+     0,
+     6
+    ],
+    [
+     0,
+     7
+    ],
+    [
+     1,
+     7
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    1,
+    7
+   ],
+   "direction": "R"
+  },
+  {
+   "frame": 43,
+   "file": "frame_043.png",
+   "screenshot_sha256": "1cb75e58f00460d2",
+   "state_hash": "fb17de4dfaf7813c",
+   "observed_snake": [
+    [
+     0,
+     6
+    ],
+    [
+     0,
+     7
+    ],
+    [
+     1,
+     7
+    ],
+    [
+     2,
+     7
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    2,
+    7
+   ],
+   "direction": "R",
+   "input": "tap(539,1457)@frame43"
+  },
+  {
+   "frame": 44,
+   "file": "frame_044.png",
+   "screenshot_sha256": "ebf96b572a9f5c5d",
+   "state_hash": "c65e543877a7a163",
+   "observed_snake": [
+    [
+     0,
+     7
+    ],
+    [
+     1,
+     7
+    ],
+    [
+     2,
+     7
+    ],
+    [
+     2,
+     8
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    2,
+    8
+   ],
+   "direction": "D"
+  },
+  {
+   "frame": 45,
+   "file": "frame_045.png",
+   "screenshot_sha256": "364f7975946feed1",
+   "state_hash": "f2bcbff1a86a0459",
+   "observed_snake": [
+    [
+     1,
+     7
+    ],
+    [
+     2,
+     7
+    ],
+    [
+     2,
+     8
+    ],
+    [
+     2,
+     9
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    2,
+    9
+   ],
+   "direction": "D",
+   "input": "tap(858,999)@frame45"
+  },
+  {
+   "frame": 46,
+   "file": "frame_046.png",
+   "screenshot_sha256": "a5df343626d98bd2",
+   "state_hash": "a5dcd3412dad9ad1",
+   "observed_snake": [
+    [
+     2,
+     7
+    ],
+    [
+     2,
+     8
+    ],
+    [
+     2,
+     9
+    ],
+    [
+     3,
+     9
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    3,
+    9
+   ],
+   "direction": "R"
+  },
+  {
+   "frame": 47,
+   "file": "frame_047.png",
+   "screenshot_sha256": "180a15195b409aea",
+   "state_hash": "cdaaa1c27b7d6011",
+   "observed_snake": [
+    [
+     2,
+     8
+    ],
+    [
+     2,
+     9
+    ],
+    [
+     3,
+     9
+    ],
+    [
+     4,
+     9
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    4,
+    9
+   ],
+   "direction": "R",
+   "input": "tap(539,1457)@frame47"
+  },
+  {
+   "frame": 48,
+   "file": "frame_048.png",
+   "screenshot_sha256": "2d7d2076cefa74fa",
+   "state_hash": "b1ef2eff7ca4b50b",
+   "observed_snake": [
+    [
+     2,
+     9
+    ],
+    [
+     3,
+     9
+    ],
+    [
+     4,
+     9
+    ],
+    [
+     4,
+     10
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    4,
+    10
+   ],
+   "direction": "D"
+  },
+  {
+   "frame": 49,
+   "file": "frame_049.png",
+   "screenshot_sha256": "3fd925d76c46f5a5",
+   "state_hash": "c80509c08f553ae4",
+   "observed_snake": [
+    [
+     3,
+     9
+    ],
+    [
+     4,
+     9
+    ],
+    [
+     4,
+     10
+    ],
+    [
+     4,
+     11
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    4,
+    11
+   ],
+   "direction": "D",
+   "input": "tap(858,999)@frame49"
+  },
+  {
+   "frame": 50,
+   "file": "frame_050.png",
+   "screenshot_sha256": "d7cf7e79e5d73ca7",
+   "state_hash": "b515017f3a0bac64",
+   "observed_snake": [
+    [
+     4,
+     9
+    ],
+    [
+     4,
+     10
+    ],
+    [
+     4,
+     11
+    ],
+    [
+     5,
+     11
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    5,
+    11
+   ],
+   "direction": "R"
+  },
+  {
+   "frame": 51,
+   "file": "frame_051.png",
+   "screenshot_sha256": "d292d6634ddd1d34",
+   "state_hash": "e7d519f7296d7fbb",
+   "observed_snake": [
+    [
+     4,
+     10
+    ],
+    [
+     4,
+     11
+    ],
+    [
+     5,
+     11
+    ],
+    [
+     6,
+     11
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    6,
+    11
+   ],
+   "direction": "R",
+   "input": "tap(539,1457)@frame51"
+  },
+  {
+   "frame": 52,
+   "file": "frame_052.png",
+   "screenshot_sha256": "c8b7238e139ea431",
+   "state_hash": "bfa8f3fcd913935d",
+   "observed_snake": [
+    [
+     4,
+     11
+    ],
+    [
+     5,
+     11
+    ],
+    [
+     6,
+     11
+    ],
+    [
+     6,
+     12
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    6,
+    12
+   ],
+   "direction": "D"
+  },
+  {
+   "frame": 53,
+   "file": "frame_053.png",
+   "screenshot_sha256": "135f456609ea5cd6",
+   "state_hash": "c7d3a5d9e1ab4246",
+   "observed_snake": [
+    [
+     5,
+     11
+    ],
+    [
+     6,
+     11
+    ],
+    [
+     6,
+     12
+    ],
+    [
+     6,
+     13
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    6,
+    13
+   ],
+   "direction": "D",
+   "input": "tap(858,999)@frame53"
+  },
+  {
+   "frame": 54,
+   "file": "frame_054.png",
+   "screenshot_sha256": "711d48306de35eb6",
+   "state_hash": "3084d9a5b18e699e",
+   "observed_snake": [
+    [
+     6,
+     11
+    ],
+    [
+     6,
+     12
+    ],
+    [
+     6,
+     13
+    ],
+    [
+     7,
+     13
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    7,
+    13
+   ],
+   "direction": "R"
+  },
+  {
+   "frame": 55,
+   "file": "frame_055.png",
+   "screenshot_sha256": "c59305156870f0ec",
+   "state_hash": "8ba53c93e8f0715e",
+   "observed_snake": [
+    [
+     6,
+     12
+    ],
+    [
+     6,
+     13
+    ],
+    [
+     7,
+     13
+    ],
+    [
+     8,
+     13
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    8,
+    13
+   ],
+   "direction": "R",
+   "input": "tap(539,1457)@frame55"
+  },
+  {
+   "frame": 56,
+   "file": "frame_056.png",
+   "screenshot_sha256": "a947e04d238351b3",
+   "state_hash": "938e3d255f440f38",
+   "observed_snake": [
+    [
+     6,
+     13
+    ],
+    [
+     7,
+     13
+    ],
+    [
+     8,
+     13
+    ],
+    [
+     8,
+     14
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    8,
+    14
+   ],
+   "direction": "D"
+  },
+  {
+   "frame": 57,
+   "file": "frame_057.png",
+   "screenshot_sha256": "cc83947315761a73",
+   "state_hash": "0593a1fac1a89b56",
+   "observed_snake": [
+    [
+     7,
+     13
+    ],
+    [
+     8,
+     13
+    ],
+    [
+     8,
+     14
+    ],
+    [
+     8,
+     15
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    8,
+    15
+   ],
+   "direction": "D",
+   "input": "tap(858,999)@frame57"
+  },
+  {
+   "frame": 58,
+   "file": "frame_058.png",
+   "screenshot_sha256": "6285f58d8f5b7fbc",
+   "state_hash": "33a29589982964e3",
+   "observed_snake": [
+    [
+     8,
+     13
+    ],
+    [
+     8,
+     14
+    ],
+    [
+     8,
+     15
+    ],
+    [
+     9,
+     15
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    9,
+    15
+   ],
+   "direction": "R"
+  },
+  {
+   "frame": 59,
+   "file": "frame_059.png",
+   "screenshot_sha256": "b9f7c817933ae2a6",
+   "state_hash": "5698be46176a8d01",
+   "observed_snake": [
+    [
+     8,
+     14
+    ],
+    [
+     8,
+     15
+    ],
+    [
+     9,
+     15
+    ],
+    [
+     10,
+     15
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    10,
+    15
+   ],
+   "direction": "R",
+   "input": "tap(539,1457)@frame59"
+  },
+  {
+   "frame": 60,
+   "file": "frame_060.png",
+   "screenshot_sha256": "5cbe8231a9029796",
+   "state_hash": "1c1ce00c7459ef5c",
+   "observed_snake": [
+    [
+     8,
+     15
+    ],
+    [
+     9,
+     15
+    ],
+    [
+     10,
+     15
+    ],
+    [
+     10,
+     16
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    10,
+    16
+   ],
+   "direction": "D"
+  },
+  {
+   "frame": 61,
+   "file": "frame_061.png",
+   "screenshot_sha256": "412088220212f0e0",
+   "state_hash": "680b94e18cfa18dc",
+   "observed_snake": [
+    [
+     9,
+     15
+    ],
+    [
+     10,
+     15
+    ],
+    [
+     10,
+     16
+    ],
+    [
+     10,
+     17
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    10,
+    17
+   ],
+   "direction": "D"
+  },
+  {
+   "frame": 62,
+   "file": "frame_062.png",
+   "screenshot_sha256": "9b6fc7e33cd35e06",
+   "state_hash": "751283213dc5243e",
+   "observed_snake": [
+    [
+     10,
+     15
+    ],
+    [
+     10,
+     16
+    ],
+    [
+     10,
+     17
+    ],
+    [
+     10,
+     18
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    10,
+    18
+   ],
+   "direction": "D"
+  },
+  {
+   "frame": 63,
+   "file": "frame_063.png",
+   "screenshot_sha256": "18b156aff41c7414",
+   "state_hash": "18bf9e8e2690b8b8",
+   "observed_snake": [
+    [
+     10,
+     16
+    ],
+    [
+     10,
+     17
+    ],
+    [
+     10,
+     18
+    ],
+    [
+     10,
+     19
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    10,
+    19
+   ],
+   "direction": "D"
+  },
+  {
+   "frame": 64,
+   "file": "frame_064.png",
+   "screenshot_sha256": "a78040b61e3b3f10",
+   "state_hash": "a00e1928f0ee54d3",
+   "observed_snake": [
+    [
+     10,
+     0
+    ],
+    [
+     10,
+     17
+    ],
+    [
+     10,
+     18
+    ],
+    [
+     10,
+     19
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    10,
+    0
+   ],
+   "direction": null
+  },
+  {
+   "frame": 65,
+   "file": "frame_065.png",
+   "screenshot_sha256": "2ab121fbacf17426",
+   "state_hash": "85667dac7d49dc59",
+   "observed_snake": [
+    [
+     10,
+     0
+    ],
+    [
+     10,
+     1
+    ],
+    [
+     10,
+     18
+    ],
+    [
+     10,
+     19
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    10,
+    1
+   ],
+   "direction": "D"
+  },
+  {
+   "frame": 66,
+   "file": "frame_066.png",
+   "screenshot_sha256": "6beea12ca0990be5",
+   "state_hash": "0211a3f744a60338",
+   "observed_snake": [
+    [
+     10,
+     0
+    ],
+    [
+     10,
+     1
+    ],
+    [
+     10,
+     2
+    ],
+    [
+     10,
+     19
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    10,
+    2
+   ],
+   "direction": "D",
+   "input": "tap(858,999)@frame66"
+  },
+  {
+   "frame": 67,
+   "file": "frame_067.png",
+   "screenshot_sha256": "3ce6363386e945e9",
+   "state_hash": "c3c35d132bdc8eb6",
+   "observed_snake": [
+    [
+     10,
+     0
+    ],
+    [
+     10,
+     1
+    ],
+    [
+     10,
+     2
+    ],
+    [
+     11,
+     2
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    11,
+    2
+   ],
+   "direction": "R"
+  },
+  {
+   "frame": 68,
+   "file": "frame_068.png",
+   "screenshot_sha256": "36b5d50b37fd58a3",
+   "state_hash": "99dbe966069279e3",
+   "observed_snake": [
+    [
+     10,
+     1
+    ],
+    [
+     10,
+     2
+    ],
+    [
+     11,
+     2
+    ],
+    [
+     12,
+     2
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    12,
+    2
+   ],
+   "direction": "R",
+   "input": "tap(539,1457)@frame68"
+  },
+  {
+   "frame": 69,
+   "file": "frame_069.png",
+   "screenshot_sha256": "0335b75de92ccc3b",
+   "state_hash": "0fb813815d69399f",
+   "observed_snake": [
+    [
+     10,
+     2
+    ],
+    [
+     11,
+     2
+    ],
+    [
+     12,
+     2
+    ],
+    [
+     12,
+     3
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    12,
+    3
+   ],
+   "direction": "D"
+  },
+  {
+   "frame": 70,
+   "file": "frame_070.png",
+   "screenshot_sha256": "bfc692a3241fe3e8",
+   "state_hash": "d896b4477cc23602",
+   "observed_snake": [
+    [
+     11,
+     2
+    ],
+    [
+     12,
+     2
+    ],
+    [
+     12,
+     3
+    ],
+    [
+     12,
+     4
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    12,
+    4
+   ],
+   "direction": "D",
+   "input": "tap(858,999)@frame70"
+  },
+  {
+   "frame": 71,
+   "file": "frame_071.png",
+   "screenshot_sha256": "fd8f7615319f462b",
+   "state_hash": "589eeb963f3139f5",
+   "observed_snake": [
+    [
+     12,
+     2
+    ],
+    [
+     12,
+     3
+    ],
+    [
+     12,
+     4
+    ],
+    [
+     13,
+     4
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    13,
+    4
+   ],
+   "direction": "R"
+  },
+  {
+   "frame": 72,
+   "file": "frame_072.png",
+   "screenshot_sha256": "38b1a117d545d821",
+   "state_hash": "ebc7be3224c86a0a",
+   "observed_snake": [
+    [
+     12,
+     3
+    ],
+    [
+     12,
+     4
+    ],
+    [
+     13,
+     4
+    ],
+    [
+     14,
+     4
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    14,
+    4
+   ],
+   "direction": "R",
+   "input": "tap(539,1457)@frame72"
+  },
+  {
+   "frame": 73,
+   "file": "frame_073.png",
+   "screenshot_sha256": "cb45937a2161591b",
+   "state_hash": "37a92dc08dadedc5",
+   "observed_snake": [
+    [
+     12,
+     4
+    ],
+    [
+     13,
+     4
+    ],
+    [
+     14,
+     4
+    ],
+    [
+     14,
+     5
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    14,
+    5
+   ],
+   "direction": "D"
+  },
+  {
+   "frame": 74,
+   "file": "frame_074.png",
+   "screenshot_sha256": "4d114923d9091f57",
+   "state_hash": "ed29baf1e9ac341b",
+   "observed_snake": [
+    [
+     13,
+     4
+    ],
+    [
+     14,
+     4
+    ],
+    [
+     14,
+     5
+    ],
+    [
+     14,
+     6
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    14,
+    6
+   ],
+   "direction": "D",
+   "input": "tap(858,999)@frame74"
+  },
+  {
+   "frame": 75,
+   "file": "frame_075.png",
+   "screenshot_sha256": "5ded70385eadafba",
+   "state_hash": "ff8c7ea1ba8c7f6f",
+   "observed_snake": [
+    [
+     14,
+     4
+    ],
+    [
+     14,
+     5
+    ],
+    [
+     14,
+     6
+    ],
+    [
+     15,
+     6
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    15,
+    6
+   ],
+   "direction": "R"
+  },
+  {
+   "frame": 76,
+   "file": "frame_076.png",
+   "screenshot_sha256": "a4de68b3aac3b94c",
+   "state_hash": "6b4246662ffc3d0d",
+   "observed_snake": [
+    [
+     14,
+     5
+    ],
+    [
+     14,
+     6
+    ],
+    [
+     15,
+     6
+    ],
+    [
+     16,
+     6
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    16,
+    6
+   ],
+   "direction": "R",
+   "input": "tap(539,1457)@frame76"
+  },
+  {
+   "frame": 77,
+   "file": "frame_077.png",
+   "screenshot_sha256": "802d84c36e600236",
+   "state_hash": "84641ba6f41174e2",
+   "observed_snake": [
+    [
+     14,
+     6
+    ],
+    [
+     15,
+     6
+    ],
+    [
+     16,
+     6
+    ],
+    [
+     16,
+     7
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    16,
+    7
+   ],
+   "direction": "D"
+  },
+  {
+   "frame": 78,
+   "file": "frame_078.png",
+   "screenshot_sha256": "b31622988a8dd509",
+   "state_hash": "353f9b2d062f7367",
+   "observed_snake": [
+    [
+     15,
+     6
+    ],
+    [
+     16,
+     6
+    ],
+    [
+     16,
+     7
+    ],
+    [
+     16,
+     8
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    16,
+    8
+   ],
+   "direction": "D",
+   "input": "tap(858,999)@frame78"
+  },
+  {
+   "frame": 79,
+   "file": "frame_079.png",
+   "screenshot_sha256": "ad00af0757b50071",
+   "state_hash": "198d68198f7eec3c",
+   "observed_snake": [
+    [
+     16,
+     6
+    ],
+    [
+     16,
+     7
+    ],
+    [
+     16,
+     8
+    ],
+    [
+     17,
+     8
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    17,
+    8
+   ],
+   "direction": "R"
+  },
+  {
+   "frame": 80,
+   "file": "frame_080.png",
+   "screenshot_sha256": "a601527684d1bb01",
+   "state_hash": "d8e057a9717b9f18",
+   "observed_snake": [
+    [
+     16,
+     7
+    ],
+    [
+     16,
+     8
+    ],
+    [
+     17,
+     8
+    ],
+    [
+     18,
+     8
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    18,
+    8
+   ],
+   "direction": "R",
+   "input": "tap(539,1457)@frame80"
+  },
+  {
+   "frame": 81,
+   "file": "frame_081.png",
+   "screenshot_sha256": "1051d61d0c6ca185",
+   "state_hash": "b723c3cf5b0e6ef9",
+   "observed_snake": [
+    [
+     16,
+     8
+    ],
+    [
+     17,
+     8
+    ],
+    [
+     18,
+     8
+    ],
+    [
+     18,
+     9
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    18,
+    9
+   ],
+   "direction": "D"
+  },
+  {
+   "frame": 82,
+   "file": "frame_082.png",
+   "screenshot_sha256": "b717929901a97b79",
+   "state_hash": "0c7a384fcb275a1a",
+   "observed_snake": [
+    [
+     17,
+     8
+    ],
+    [
+     18,
+     8
+    ],
+    [
+     18,
+     9
+    ],
+    [
+     18,
+     10
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    18,
+    10
+   ],
+   "direction": "D",
+   "input": "tap(858,999)@frame82"
+  },
+  {
+   "frame": 83,
+   "file": "frame_083.png",
+   "screenshot_sha256": "287d316e2c371af5",
+   "state_hash": "0f949acfbba961ff",
+   "observed_snake": [
+    [
+     18,
+     8
+    ],
+    [
+     18,
+     9
+    ],
+    [
+     18,
+     10
+    ],
+    [
+     19,
+     10
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    19,
+    10
+   ],
+   "direction": "R"
+  },
+  {
+   "frame": 84,
+   "file": "frame_084.png",
+   "screenshot_sha256": "eaa394ed97470ab5",
+   "state_hash": "aed68ae3efa626a9",
+   "observed_snake": [
+    [
+     18,
+     9
+    ],
+    [
+     0,
+     10
+    ],
+    [
+     18,
+     10
+    ],
+    [
+     19,
+     10
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    0,
+    10
+   ],
+   "direction": null
+  },
+  {
+   "frame": 85,
+   "file": "frame_085.png",
+   "screenshot_sha256": "84d3ec1a78fc0b69",
+   "state_hash": "2ecd2edb718705a0",
+   "observed_snake": [
+    [
+     0,
+     10
+    ],
+    [
+     1,
+     10
+    ],
+    [
+     18,
+     10
+    ],
+    [
+     19,
+     10
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    1,
+    10
+   ],
+   "direction": "R"
+  },
+  {
+   "frame": 86,
+   "file": "frame_086.png",
+   "screenshot_sha256": "03110e9f4d081529",
+   "state_hash": "9deb68b9a6c82a15",
+   "observed_snake": [
+    [
+     0,
+     10
+    ],
+    [
+     1,
+     10
+    ],
+    [
+     2,
+     10
+    ],
+    [
+     19,
+     10
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    2,
+    10
+   ],
+   "direction": "R"
+  },
+  {
+   "frame": 87,
+   "file": "frame_087.png",
+   "screenshot_sha256": "d5471b1cb4bd8907",
+   "state_hash": "1c50c0d52cab727c",
+   "observed_snake": [
+    [
+     0,
+     10
+    ],
+    [
+     1,
+     10
+    ],
+    [
+     2,
+     10
+    ],
+    [
+     3,
+     10
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    3,
+    10
+   ],
+   "direction": "R"
+  },
+  {
+   "frame": 88,
+   "file": "frame_088.png",
+   "screenshot_sha256": "e26ac46bc7b142e9",
+   "state_hash": "83350c40c4202309",
+   "observed_snake": [
+    [
+     1,
+     10
+    ],
+    [
+     2,
+     10
+    ],
+    [
+     3,
+     10
+    ],
+    [
+     4,
+     10
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    4,
+    10
+   ],
+   "direction": "R"
+  },
+  {
+   "frame": 89,
+   "file": "frame_089.png",
+   "screenshot_sha256": "f1f6be2eaed1d08e",
+   "state_hash": "8e1c57a2351ed669",
+   "observed_snake": [
+    [
+     2,
+     10
+    ],
+    [
+     3,
+     10
+    ],
+    [
+     4,
+     10
+    ],
+    [
+     5,
+     10
+    ]
+   ],
+   "observed_food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "head": [
+    5,
+    10
+   ],
+   "direction": "R"
+  }
+ ]
+}

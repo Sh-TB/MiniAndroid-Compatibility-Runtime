@@ -2128,3 +2128,62 @@ Work Log:
 
 Stage Summary:
 - PUSH STATUS: PENDING-PUSH (17 commits: S72-W1..W4). No fake success.
+
+---
+Task ID: S73-MAIN
+Agent: Super Z (main)
+Task: S73 — GitHub Execution Tracking + Historical APK Evidence + Autonomous
+Snake Gameplay (user also provided the PAT; directive: publish all old pushes).
+
+Work Log:
+- PUSHED AND VERIFIED: 18 pre-existing pending commits (acad15fd..e25c0371)
+  pushed to origin/main with the user-supplied PAT (env-var only, never
+  written to any tracked file); ls-remote verified remote main == local HEAD;
+  secret-guard PASS at push time.
+- Container-reset recovery: build/ + toolchain were wiped; runtime binary
+  rebuilt from HEAD sources (make). Fidelity proven: dooz det ×3
+  byte-identical 0e334abe1b10b592; snake W4 legacy recipe re-verified
+  byte-identical final pixel sha 1a419545419deb3a (--frames 14).
+- Engine extension (F-117 scheduled-input): `--tap x,y@frame` — tap fires
+  after frame k renders (real user cadence). Legacy form (no @) keeps the
+  exact old law (verified byte-identical vs stored W4 frames). Files:
+  execution_engine.h/.cpp + main.cpp (all-or-none validation).
+- Autonomous snake controller (PART C): pixel-only vision (#FF4081/#0000ff,
+  20×20/39px grid) + scheduled real taps through the canonical TouchDispatcher
+  DOWN/UP pipeline. 4 decision iterations → GOALS_MET: 88 moves, 22 accepted
+  turns, 1 FOOD CAPTURE (frame 34: growth 3→4, food respawn (0,0)→(9,0)),
+  no game-over. 3-run replay: 3/3 IDENTICAL (90/90 frames per-run PNG sha
+  equality). Evidence: docs/evidence/s73_snake_autoplay/ (run_01..03 +
+  gameplay_trace.json + SHA256SUMS + determinism_proof.json +
+  screenshot_metrics.json + snake_autoplay.gif 39KB from real frames).
+- C4 probes (real taps): reverse-guard REJECTED; WRAP LAW discovered
+  ((19,10)→(0,10) — no wall death); self-collision game-over OBSERVED
+  (frame 94, panel → game-over surface 1,868,783 px); restart via START
+  after game-over NOT observed (honest open).
+- GitHub ledger (PART A): 15 labels + 14 canonical [EXEC] issues (#10–#23),
+  duplicate-checked; #10 HelloWorld / #11 TicTacToe / #12 ConnectFour closed
+  as documented completed states; dated evidence comments on #13–#23.
+- Historical corpus re-run (PART B): 10 canonical APKs + snake on the
+  rebuilt binary; per-app pixel faces recorded (unote 231120, bouncy 2073600,
+  gmdice 182628, microtimer 1041437, fishrings board 2073360 @frames 4–8,
+  opmt 213286, tripeaks lobby 205638, tictactoe blank-class face).
+- HONEST FINDING (B4): dooz "23472 px" = pure-black (0,0)–(489,47) region,
+  byte-identical to Stopwatch (NO launchable Activity) → engine-default
+  black region, NOT dooz content. Dated reclassification posted on #14;
+  F-146/F-147/F-145 unchanged; F-141 stays CLOSED; painter root-cause queued
+  as open lead (no law claimed without upstream evidence).
+- Regression (PART F): fixtures 25/25 rc=0, f141-throws = 0; corpus re-run;
+  dooz ×3; snake autonomous ×3 identical; zero regressions.
+- Docs (PART G/H): ACHIEVEMENTS §0h, ROADMAP_STATUS §1 rows, KNOWLEDGE_INDEX
+  §0d, docs/evidence/S73/S73_REPORT.md (PART K fields 1–7). Registry
+  unchanged at 396 roots (no new generic laws; app-specific laws recorded in
+  the snake issue).
+- Issues note: background nohup batteries die with the tool session in this
+  environment; batteries re-run foreground in batches (s73_corpus_one.sh).
+
+Stage Summary:
+- S73 closed as SUCCESS per the FINAL SUCCESS CRITERIA: ledger live, audit
+  honest (one reclassification), snake autonomously played with real-input
+  GIF + trace + 3/3 byte-identical, zero regressions, push verified.
+- No new F-numbers; F-117 extension documented; dooz metric honestly
+  reclassified; black-region painter root-cause is the queued lead.
