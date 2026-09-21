@@ -13948,6 +13948,41 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
                 } else {
                     static_field_storage_[static_key] = result_value;
                 }
+            } else if (field_res.class_descriptor == "Ljava/util/Collections;" &&
+                       (field_res.field_name == "EMPTY_SET" ||
+                        field_res.field_name == "EMPTY_LIST" ||
+                        field_res.field_name == "EMPTY_MAP")) {
+                // R-NEW-397 (S78, F-154): java.util.Collections empty-singleton
+                // static-final law. OpenJDK Collections.java:
+                //   public static final Set  EMPTY_SET  = new EmptySet<>();
+                //   public static final List EMPTY_LIST = new EmptyList<>();
+                //   public static final Map  EMPTY_MAP  = new EmptyMap<>();
+                // JVM-injected-at-clinit constants — never null. Evidence:
+                // dooz DataStore first-launch parse — Ljs0;.entrySet (REAL dex
+                // bytecode) sgets Collections.EMPTY_SET; with no seed the
+                // sget answered typed-zero NULL → Set.iterator() NPE at
+                // Lh3;.h pc=36 → uncaught past all app frames (run/
+                // s78_f152_postfix2). Materialized as heap-backed EMPTY
+                // singletons ("__array_length__"=0) so the F-036 iterator
+                // machinery + the R-NEW-397 Empty-family dispatch below
+                // answer every read. Cached per static_key — identity holds.
+                const char* empty_cls = nullptr;
+                if (field_res.field_name == "EMPTY_SET")
+                    empty_cls = "Ljava/util/Collections$EmptySet;";
+                else if (field_res.field_name == "EMPTY_LIST")
+                    empty_cls = "Ljava/util/Collections$EmptyList;";
+                else
+                    empty_cls = "Ljava/util/Collections$EmptyMap;";
+                uint32_t e_id = heap_.allocate(empty_cls, pc, 0);
+                heap_.set_object_field(e_id, "__array_length__",
+                                       DalvikValue::make_int(0));
+                heap_.set_object_field(e_id, "__iterator_pos__",
+                                       DalvikValue::make_int(0));
+                result_value = DalvikValue::make_object(e_id, empty_cls);
+                static_field_storage_[static_key] = result_value;
+                std::cerr << "[R-NEW-397] synthesized Collections."
+                          << field_res.field_name << " obj#" << e_id
+                          << std::endl;
             } else if (field_res.class_descriptor == "Ljava/io/File;" &&
                        (field_res.field_name == "separator" ||
                         field_res.field_name == "separatorChar" ||
@@ -19402,6 +19437,11 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         result = DalvikValue::make_bool(answer);
         return true;
     }
+    // NOTE (S78): java.lang.Class.cast(Object) is implemented by the proven
+    // R-NEW-343 law (Hilt DI unwrap evidence, runs r341..r353) further below
+    // in this function — identity for castable, null for null, CCE via the
+    // deferred machinery. Do NOT register a second cast law here (§22
+    // one-canonical-source).
     // ────────────────────────────────────────────────────────────────────
     // F-104 (S58, F-085 end-to-end): java.io.FileInputStream / FileReader
     // over the FILE SANDBOX. Android law: the ctor opens the file and
@@ -20982,6 +21022,120 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_object(list_id, "Ljava/util/Collections$SingletonList;");
         return true;
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // R-NEW-397 (S78, F-154) — Collections EMPTY-family read dispatch.
+    // OpenJDK Collections.EmptySet/EmptyList/EmptyMap contract: every read
+    // succeeds; size=0, isEmpty=true, contains*=false, iterator() yields
+    // nothing, Map views (entrySet/keySet/values) return empty views, Map.get
+    // → null, List.get(i) → IndexOutOfBoundsException, exhausted next() →
+    // NoSuchElementException. SCOPE LAW: answers ONLY when the receiver is
+    // one of the R-NEW-397 heap singletons (class_descriptor check) —
+    // everything else falls through unchanged. Declared class at the call
+    // site may be the INTERFACE (Ljava/util/Set;/Map;/Collection;/List;)
+    // while the runtime object is the Empty singleton, so dispatch is by
+    // receiver identity, not by declared name. Consumer: dooz DataStore
+    // parse (Lh3;.h pc=36 Set.iterator over the default-message map —
+    // empty on first launch; upstream-identical observable: zero entries).
+    // ────────────────────────────────────────────────────────────────────────
+    if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+        args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+        auto* recv_obj = heap_.get(args[0].object_id);
+        const std::string& rd = recv_obj ? recv_obj->class_descriptor : "";
+        const bool is_empty_set =
+            (rd == "Ljava/util/Collections$EmptySet;");
+        const bool is_empty_list =
+            (rd == "Ljava/util/Collections$EmptyList;");
+        const bool is_empty_map =
+            (rd == "Ljava/util/Collections$EmptyMap;");
+        if (is_empty_set || is_empty_list || is_empty_map) {
+            // Reusable singleton lookups for view-returning methods.
+            auto empty_singleton = [&](const char* field_key,
+                                       const char* cls) -> DalvikValue {
+                auto it397 = static_field_storage_.find(field_key);
+                if (it397 != static_field_storage_.end() &&
+                    it397->second.type == DalvikType::OBJECT_REF)
+                    return it397->second;
+                uint32_t nid = heap_.allocate(cls, pc_, 0);
+                heap_.set_object_field(nid, "__array_length__",
+                                       DalvikValue::make_int(0));
+                heap_.set_object_field(nid, "__iterator_pos__",
+                                       DalvikValue::make_int(0));
+                DalvikValue nv = DalvikValue::make_object(nid, cls);
+                static_field_storage_[field_key] = nv;
+                return nv;
+            };
+            if (method == "size") {
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_int(0);
+                return true;
+            }
+            if (method == "isEmpty") {
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_bool(true);
+                return true;
+            }
+            if (method == "contains" || method == "containsKey" ||
+                method == "containsValue" || method == "containsAll") {
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_bool(false);
+                return true;
+            }
+            if (method == "get" || method == "getOrDefault") {
+                // Map.get → null; List.get(i) → IOOBE (real contract).
+                if (is_empty_list) {
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    throw_deferred("Ljava/lang/IndexOutOfBoundsException;",
+                                   "Empty list has no element at index",
+                                   "R-NEW-397-EMPTY-LIST-GET");
+                    result = DalvikValue::make_null();
+                    return true;
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_null();
+                return true;
+            }
+            if (method == "entrySet" || method == "keySet") {
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = empty_singleton("Ljava/util/Collections;.EMPTY_SET",
+                                         "Ljava/util/Collections$EmptySet;");
+                return true;
+            }
+            if (method == "values") {
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = empty_singleton("Ljava/util/Collections;.EMPTY_LIST",
+                                         "Ljava/util/Collections$EmptyList;");
+                return true;
+            }
+            if (method == "iterator") {
+                // Self-as-iterator (house pattern): position reset, the
+                // hasNext/next laws answer the following invokes.
+                heap_.set_object_field(args[0].object_id, "__iterator_pos__",
+                                       DalvikValue::make_int(0));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_object(args[0].object_id,
+                                                  "Ljava/util/Iterator;");
+                return true;
+            }
+            if (method == "hasNext") {
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_bool(false);
+                return true;
+            }
+            if (method == "next") {
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                throw_deferred("Ljava/util/NoSuchElementException;",
+                               "Empty collection iterator exhausted",
+                               "R-NEW-397-EMPTY-ITER");
+                result = DalvikValue::make_null();
+                return true;
+            }
+            // Unknown read on an Empty singleton: LOUD frontier, then the
+            // typed default (never a silent law-less answer).
+            std::cerr << "[R-NEW-397-MISS] " << method << " on " << rd
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+        }
     }
     // ────────────────────────────────────────────────────────────────────────
     // F-087c (R-NEW-313) — annotation-proxy element dispatch.
@@ -25878,6 +26032,39 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 for (const auto& fd : cd.static_fields) add337(fd);
                 break;
             }
+            // R-NEW-396 (S78, F-152 chain): SYNTHETIC-CLASS declared-fields
+            // subset. Classes that exist only as engine bridges (no DEX
+            // class_def) yielded [] — protobuf UnsafeUtil's action (dooz
+            // Ln12;.run) iterates Unsafe.class.getDeclaredFields() hunting
+            // the static `theUnsafe` field; 0 fields → the scan found
+            // nothing → run() returned null → doPrivileged (R-NEW-395)
+            // honestly propagated that null → Llt0;->o null → F-152 NPE at
+            // Llt0;.w pc=808. Law: the engine's synthetic declared-field
+            // surface must mirror the singular getDeclaredField
+            // auto-registration (R-NEW-337's "compile-time constant,
+            // genuinely declared" principle) — a synthetic class answers
+            // with its KNOWN declared-field subset, seeded here for
+            // Lsun/misc/Unsafe; (theUnsafe, type Unsafe). Upstream:
+            // OpenJDK sun.misc.Unsafe declares private static Unsafe
+            // theUnsafe; protobuf UnsafeUtil + kotlinx.atomicfu consume it.
+            if (fids.empty() && referent_desc == "Lsun/misc/Unsafe;") {
+                uint32_t fid396 = heap_.allocate(
+                    "Ljava/lang/reflect/Field;", pc_, 0);
+                heap_.set_object_field(
+                    fid396, "declaring_class",
+                    DalvikValue::make_string(referent_desc, 0));
+                heap_.set_object_field(
+                    fid396, "field_name",
+                    DalvikValue::make_string("theUnsafe", 0));
+                heap_.set_object_field(
+                    fid396, "field_type",
+                    DalvikValue::make_string("Lsun/misc/Unsafe;", 0));
+                fids.push_back(fid396);
+                std::cerr << "[R-NEW-396] getDeclaredFields("
+                          << referent_desc
+                          << "): synthetic declared-field subset seeded"
+                             " (theUnsafe)" << std::endl;
+            }
             // [LField; array — elements live as "array[i]" object fields
             // (the engine-wide array convention used by aget/aput).
             uint32_t arr_id = heap_.allocate(
@@ -26123,6 +26310,75 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             return v->string_val;
         };
 
+    // ────────────────────────────────────────────────────────────────────
+    // R-NEW-395 (S78, F-152 root cause): java.security.AccessController
+    // .doPrivileged law. Upstream: libcore
+    // luni/src/main/java/java/security/AccessController.java —
+    //   doPrivileged(PrivilegedAction action)          { return action.run(); }
+    //   doPrivileged(PrivilegedExceptionAction action) { return action.run(); }
+    //   (+ AccessControlContext overloads — the SAME action.run() contract).
+    // The action object's virtual run()Ljava/lang/Object; MUST be executed
+    // and its result returned. The prior silent stub returned the typed
+    // default (null) WITHOUT dispatching run() — protobuf UnsafeUtil static
+    // init (THE_UNSAFE = (Unsafe) AccessController.doPrivileged(new n12()))
+    // stored a null Unsafe into Llt0;->o, and the first Unsafe use NPE'd
+    // (F-152: Llt0;.w pc=808, sget-object v2, Llt0;->o at pc=490 →
+    // objectFieldOffset on null receiver). check-cast of null is a legal
+    // no-op (JVM law), so the null propagated silently from <clinit> to the
+    // crash site — a §12 silent-failure chain end-to-end.
+    // Consumer: dooz/protobuf UnsafeUtil family (evidence: F-152 progression,
+    //   run/s78_f152_repro; disasm scripts/s78_lt0_disasm.py).
+    // Exception wrap: libcore wraps checked exceptions from
+    // PrivilegedExceptionAction in PrivilegedActionException — NOT modeled
+    // here (no consumer evidence; recorded in BLAST_RADIUS). A null answer
+    // when dispatch fails stays VISIBLE via [R-NEW-395-MISS] (never silent).
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/security/AccessController;" &&
+        method.rfind("doPrivileged", 0) == 0) {
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0 && !args[0].class_desc.empty()) {
+            std::vector<DalvikValue> run_args;
+            run_args.push_back(args[0]);  // receiver = the action object
+            DalvikValue run_ret = DalvikValue::make_null();
+            DalvikExecutionResult run_result;
+            bool ok = try_recursive_invoke(args[0].class_desc, "run",
+                                           run_args, run_ret, run_result);
+            if (!ok) {
+                // Superclass-chain fallback (bounded, EXP070 dispatch law):
+                // the action may implement PrivilegedAction on a supertype.
+                std::string cur = args[0].class_desc;
+                for (int hop = 0; hop < 6; ++hop) {
+                    auto sup_it = class_to_superclass_.find(cur);
+                    if (sup_it == class_to_superclass_.end()) break;
+                    cur = sup_it->second;
+                    if (cur.empty() || cur == "Ljava/lang/Object;") break;
+                    ok = try_recursive_invoke(cur, "run", run_args,
+                                              run_ret, run_result);
+                    if (ok) break;
+                }
+            }
+            if (ok) {
+                std::cerr << "[R-NEW-395] doPrivileged dispatched "
+                          << args[0].class_desc << ".run() -> t"
+                          << static_cast<int>(run_ret.type);
+                if (run_ret.type == DalvikType::OBJECT_REF)
+                    std::cerr << " obj#" << run_ret.object_id
+                              << " (" << run_ret.class_desc << ")";
+                std::cerr << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+                result = run_ret;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            // Dispatch failed — LOUD, honest frontier (never silent).
+            std::cerr << "[R-NEW-395-MISS] doPrivileged: no run() dispatchable on "
+                      << args[0].class_desc << " caller=" << current_class_
+                      << "." << current_method_
+                      << " — falling through to typed default" << std::endl;
+        }
+        // Non-object / null action arg: fall through to the typed default
+        // below (STUBBED status keeps the audit honest).
+    }
         if (class_name == "Ljava/lang/reflect/Field;") {
             // args[0] = the Field receiver for all instance methods
             std::string decl337, name337, type337;
