@@ -32,7 +32,11 @@
  },
  "concurrency": {},
  "storage": {},
- "persistence": {},
+ "persistence": {
+  "status_note": "NO_PERSISTENCE_OBSERVED (no files in data root)",
+  "probe": "relaunch_same_data_root (s74-ops)",
+  "verdict": "NO_PERSISTENCE_OBSERVED"
+ },
  "network": {
   "requested": [],
   "observed": [],
@@ -40,13 +44,20 @@
   "status": "NOT_OBSERVED"
  },
  "security": {
-  "permissions_declared": [],
+  "permissions_declared": [
+   "android.permission.INTERNET"
+  ],
   "permissions_observed": [],
   "exported_components": [],
   "filesystem": "NOT_OBSERVED",
   "network": "NOT_OBSERVED",
   "sensitive_apis": [],
-  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)"
+  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)",
+  "permissions_declared_source": "aapt2 dump badging at s74-ops HEAD",
+  "launchable_activities": [
+   "eu.veldsoft.fish.rings.SplashActivity"
+  ],
+  "network_observed": "NOT_OBSERVED (runtime has no real network stack; no egress possible)"
  },
  "evidence": {
   "primary": [
@@ -58,7 +69,7 @@
  },
  "regression": {},
  "blocker": "game-logic depth (real ring rotation rules) unexercised at HEAD; input legs historical",
- "next_task": "re-run S65 interaction recipe at HEAD; probe one full ring-rotation round via real taps",
+ "next_task": "tap-based rotation interaction probe at HEAD (completes V2/V3 stages)",
  "completion": {
   "C1_apk_load": "DONE",
   "C2_manifest_lifecycle": "DONE",
@@ -91,5 +102,47 @@
  "status": "PARTIAL",
  "issue": 19,
  "issue_state": "open",
- "app_id": "fishrings"
+ "app_id": "fishrings",
+ "visual_evidence": {
+  "status": "HUMAN_VISIBLE",
+  "execution_stage": [
+   "V0 launch (splash 0 px)",
+   "V1 board"
+  ],
+  "note": "full colored ball board + rotation arrows + ebinqo logo at HEAD (frames 4+; splash frames 0-3 are 0 px by app design)",
+  "representative_frames": [
+   "01_launch.png",
+   "02_mid_maxdiff.png",
+   "03_final.png"
+  ],
+  "bundle": "docs/evidence/s74_ops/fishrings/",
+  "session": "docs/evidence/s74_ops/fishrings/session.json",
+  "model": "AGENT_OBSERVED vs HUMAN_VISIBLE distinguished per S74-FOLLOW-UP \u00a74"
+ },
+ "what_actually_happened": {
+  "PROVEN": [
+   "board render at HEAD (frame family matching S73 2073360 px record)"
+  ],
+  "OBSERVED": [],
+  "IMPLEMENTED": [],
+  "RESEARCHED": [],
+  "NOT_OBSERVED": [
+   "input interaction at HEAD (S65 historical: fr_board_after_taps; this wave ran launch-only)",
+   "game-logic depth (rotation/capture chain)"
+  ],
+  "BLOCKED": [],
+  "SUPERSEDED": []
+ },
+ "sandbox_profile": {
+  "data_root_probed": true,
+  "observation": "no files created",
+  "boundary_note": "sandbox treated as execution boundary: files under app package dir only; no external paths touched"
+ },
+ "ops_wave": {
+  "wave": "S74 FOLLOW-UP (operational base completion)",
+  "runtime_commit": "3505591b",
+  "binary": "miniandroid/build/miniandroid built at HEAD (zero runtime changes this wave)",
+  "evidence_bundle": "docs/evidence/s74_ops/fishrings/",
+  "human_review": "representative frames individually opened and reviewed by the executing agent before status assignment"
+ }
 }

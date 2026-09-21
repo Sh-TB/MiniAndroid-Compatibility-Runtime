@@ -38,7 +38,11 @@
  },
  "concurrency": {},
  "storage": {},
- "persistence": {},
+ "persistence": {
+  "status_note": "NO_PERSISTENCE_OBSERVED (fixture writes no files)",
+  "probe": "relaunch_same_data_root (s74-ops)",
+  "verdict": "NO_PERSISTENCE_OBSERVED"
+ },
  "network": {
   "requested": [],
   "observed": [],
@@ -52,7 +56,11 @@
   "filesystem": "NOT_OBSERVED",
   "network": "NOT_OBSERVED",
   "sensitive_apis": [],
-  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)"
+  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)",
+  "launchable_activities": [
+   "com.emmanuelmess.tictactoe.AndroidLauncher"
+  ],
+  "network_observed": "NOT_OBSERVED (runtime has no real network stack; no egress possible)"
  },
  "evidence": {
   "primary": [
@@ -61,8 +69,8 @@
   "determinism": "x3 deterministic"
  },
  "regression": {},
- "blocker": null,
- "next_task": "none (completed state documented in #11; GL family F-144 tracked separately, does not gate this app)",
+ "blocker": "real APK: F-144 GL surface family (libgdx createGLSurfaceView NPE) \u2014 fixture proof unaffected",
+ "next_task": "optional: GL compatibility path research (F-144) to unblock the real APK UI; fixture proof stands",
  "completion": {
   "C1_apk_load": "DONE",
   "C2_manifest_lifecycle": "DONE",
@@ -95,5 +103,55 @@
  "status": "DONE",
  "issue": 11,
  "issue_state": "closed",
- "app_id": "tictactoe"
+ "app_id": "tictactoe",
+ "visual_evidence": {
+  "status": "HUMAN_VISIBLE",
+  "execution_stage": [
+   "V0 launch (fixture)",
+   "V1 board (fixture)",
+   "V2 interaction (fixture)",
+   "V4 result (fixture)"
+  ],
+  "note": "fixture-scope human-visible proof (X WINS board); REAL APK at HEAD is NOT_HUMAN_VISIBLE (GL blocker)",
+  "representative_frames": [
+   "01_launch.png",
+   "03_final.png"
+  ],
+  "bundle": "docs/evidence/s74_ops/tictactoe/",
+  "session": "docs/evidence/s74_ops/tictactoe/session.json",
+  "model": "AGENT_OBSERVED vs HUMAN_VISIBLE distinguished per S74-FOLLOW-UP \u00a74"
+ },
+ "what_actually_happened": {
+  "PROVEN": [
+   "golden fixture full game: 9 real clicks -> turn flips -> X WINS at frame 7 (anti-diagonal), 4X+3O frozen tail, run B byte-identical (613cfccc0f27...)",
+   "real APK launch path executes (rc pipeline completes) and the GL divergence is REPRODUCIBLE at HEAD"
+  ],
+  "OBSERVED": [
+   "real APK: libgdx AndroidGraphics NPE chain on createGLSurfaceView (matches F-144 RESEARCHED record)"
+  ],
+  "IMPLEMENTED": [],
+  "RESEARCHED": [
+   "F-144 GL surface family (tracked P2)"
+  ],
+  "NOT_OBSERVED": [
+   "real APK board interaction (blocked by GL family)",
+   "real APK persistence"
+  ],
+  "BLOCKED": [
+   "real APK visual/gameplay: F-144 (GL compatibility path)"
+  ],
+  "SUPERSEDED": []
+ },
+ "sandbox_profile": {
+  "data_root_probed": true,
+  "observation": "fixture runs write no data-root files (validator WORK dirs)",
+  "boundary_note": "sandbox treated as execution boundary: files under app package dir only; no external paths touched"
+ },
+ "ops_wave": {
+  "wave": "S74 FOLLOW-UP (operational base completion)",
+  "runtime_commit": "3505591b",
+  "binary": "miniandroid/build/miniandroid built at HEAD (zero runtime changes this wave)",
+  "evidence_bundle": "docs/evidence/s74_ops/tictactoe/",
+  "human_review": "representative frames individually opened and reviewed by the executing agent before status assignment"
+ }
 }

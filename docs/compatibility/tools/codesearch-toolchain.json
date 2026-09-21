@@ -14,5 +14,12 @@
  "laws_learned": [],
  "consumers": [],
  "evidence": "docs/evidence/s63_spotlight/S63_REPORT.md \u00a74",
- "limitations": "research tooling; not part of the runtime"
+ "limitations": "research tooling; not part of the runtime",
+ "utilization": {
+  "verdict": "RESEARCHED_ONLY",
+  "note": "source-lookup sessions only (law provenance hunts); no direct runtime consumer",
+  "law": "utilization derived from recorded consumers/laws/evidence; unused tools labeled honestly (S74-FOLLOW-UP \u00a713/\u00a714/\u00a733)",
+  "consumers_recorded": 0,
+  "laws_learned_recorded": 0
+ }
 }

@@ -30,5 +30,12 @@
   "androidgamesnake"
  ],
  "evidence": "docs/evidence/S72_WAVE3 record (commit 048b0e31); root_registry.json F-141 entry",
- "limitations": "MiniAndroid is NOT an ART fork \u2014 per-opcode laws re-derived first-party (UPSTREAM_INVENTORY DERIVED class)"
+ "limitations": "MiniAndroid is NOT an ART fork \u2014 per-opcode laws re-derived first-party (UPSTREAM_INVENTORY DERIVED class)",
+ "utilization": {
+  "verdict": "USED",
+  "note": "consumer chain: F-141 invoke-null-receiver law -> all real-APK apps; F-146/F-147 Dooz frontier records",
+  "law": "utilization derived from recorded consumers/laws/evidence; unused tools labeled honestly (S74-FOLLOW-UP \u00a713/\u00a714/\u00a733)",
+  "consumers_recorded": 3,
+  "laws_learned_recorded": 6
+ }
 }

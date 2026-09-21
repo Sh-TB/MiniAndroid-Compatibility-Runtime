@@ -22,5 +22,13 @@
   "cap-view-inflate-layout"
  ],
  "first_discovered": "S72-W3",
- "last_verified": "S73"
+ "last_verified": "S73",
+ "utilization": {
+  "verdict": "USED_BY_EXECUTION",
+  "consumer_apps": [
+   "unote"
+  ],
+  "test": "unote themed UI 231120 px recovered",
+  "evidence": "S72-W3 closure (commit 048b0e31)"
+ }
 }

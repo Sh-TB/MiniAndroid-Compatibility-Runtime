@@ -15,5 +15,12 @@
   "telegram"
  ],
  "evidence": "docs/ACHIEVEMENTS.md ASC column per app",
- "limitations": "NEVER source of truth / semantic authority \u2014 chain: ASC OBSERVED -> UPSTREAM CONFIRMED -> IMPLEMENTED -> TESTED -> OBSERVED IN APK (taskbook \u00a743)"
+ "limitations": "NEVER source of truth / semantic authority \u2014 chain: ASC OBSERVED -> UPSTREAM CONFIRMED -> IMPLEMENTED -> TESTED -> OBSERVED IN APK (taskbook \u00a743)",
+ "utilization": {
+  "verdict": "RESEARCHED_ONLY",
+  "note": "per \u00a743: research assistant only; OBSERVED->UPSTREAM confirmations mediated through it, no runtime role",
+  "law": "utilization derived from recorded consumers/laws/evidence; unused tools labeled honestly (S74-FOLLOW-UP \u00a713/\u00a714/\u00a733)",
+  "consumers_recorded": 1,
+  "laws_learned_recorded": 0
+ }
 }

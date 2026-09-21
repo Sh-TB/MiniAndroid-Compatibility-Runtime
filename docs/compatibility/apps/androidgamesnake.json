@@ -48,7 +48,11 @@
   "thread": "F-150 game-loop family: sleep de-noop, javac subclass-descriptor receivers, frame-boundary start/yield drains, wake-time registry"
  },
  "storage": {},
- "persistence": {},
+ "persistence": {
+  "status_note": "NOT_OBSERVED (no data-root probe in S73 session; restart-after-game-over also honestly NOT observed)",
+  "probe": "relaunch_same_data_root (s74-ops)",
+  "verdict": "NOT_OBSERVED"
+ },
  "network": {
   "requested": [],
   "observed": [],
@@ -62,7 +66,8 @@
   "filesystem": "NOT_OBSERVED",
   "network": "NOT_OBSERVED",
   "sensitive_apis": [],
-  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)"
+  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)",
+  "network_observed": "NOT_OBSERVED (runtime has no real network stack; no egress possible)"
  },
  "evidence": {
   "primary": [
@@ -79,7 +84,7 @@
   "corpus": "10/10 pixel-SAME post-F148/149/150"
  },
  "blocker": "restart-after-game-over path unproven (possibly Dialog-based; not exercised \u2014 honest open, recorded in #13)",
- "next_task": "prove restart-after-game-over via real tap on the game-over surface; then C9 persistence ladder if the app persists any state",
+ "next_task": "optional new task only: restart-after-game-over probe (explicitly selected); otherwise preserve S73 state",
  "completion": {
   "C1_apk_load": "DONE",
   "C2_manifest_lifecycle": "DONE",
@@ -126,5 +131,54 @@
  "status": "OBSERVED",
  "issue": 13,
  "issue_state": "closed",
- "app_id": "androidgamesnake"
+ "app_id": "androidgamesnake",
+ "visual_evidence": {
+  "status": "HUMAN_VISIBLE",
+  "execution_stage": [
+   "V0 launch",
+   "V1 board",
+   "V2 interaction",
+   "V3 state change (food capture)",
+   "V4 game-over"
+  ],
+  "note": "S73 committed frames re-wired as representative evidence (taskbook \u00a78: no re-run); frame_000 launch / frame_034 food capture / final snake+food",
+  "representative_frames": [
+   "01_launch.png",
+   "02_food_capture_frame034.png",
+   "03_final.png"
+  ],
+  "bundle": "docs/evidence/s74_ops/androidgamesnake/",
+  "session": "docs/evidence/s74_ops/androidgamesnake/session.json",
+  "model": "AGENT_OBSERVED vs HUMAN_VISIBLE distinguished per S74-FOLLOW-UP \u00a74"
+ },
+ "what_actually_happened": {
+  "PROVEN": [
+   "S73 autonomous gameplay chain: 88 moves / 22 turns / 1 food capture / 23 scheduled real taps (F-117)",
+   "3-run byte-identical 90/90 frames; S74 fidelity probe replayed fresh byte-identical at HEAD",
+   "reverse-direction rejection, WRAP law, self-collision game-over"
+  ],
+  "OBSERVED": [],
+  "IMPLEMENTED": [
+   "F-150 game-loop family (sleep de-noop, javac subclass receivers, frame-boundary drains)"
+  ],
+  "RESEARCHED": [],
+  "NOT_OBSERVED": [
+   "restart after game-over",
+   "persistence/close-reopen with data-root probe"
+  ],
+  "BLOCKED": [],
+  "SUPERSEDED": []
+ },
+ "sandbox_profile": {
+  "data_root_probed": false,
+  "observation": "not probed this wave (\u00a78: preserve existing S73 session as-is)",
+  "boundary_note": "sandbox treated as execution boundary: files under app package dir only; no external paths touched"
+ },
+ "ops_wave": {
+  "wave": "S74 FOLLOW-UP (operational base completion)",
+  "runtime_commit": "3505591b",
+  "binary": "miniandroid/build/miniandroid built at HEAD (zero runtime changes this wave)",
+  "evidence_bundle": "docs/evidence/s74_ops/androidgamesnake/",
+  "human_review": "representative frames individually opened and reviewed by the executing agent before status assignment"
+ }
 }

@@ -26,5 +26,15 @@
   "cap-ancestor-dispatch"
  ],
  "first_discovered": "S71",
- "last_verified": "S73"
+ "last_verified": "S73",
+ "utilization": {
+  "verdict": "USED_BY_EXECUTION",
+  "consumer_apps": [
+   "gmdice",
+   "unote",
+   "dooz"
+  ],
+  "test": "gmdice getResources x5 / unote getWindow / dooz getApplicationContext + getClass x2 -> IMPLEMENTED; battery 92/94 (EXT stages environmental)",
+  "evidence": "S71 record (commit 1271b869)"
+ }
 }

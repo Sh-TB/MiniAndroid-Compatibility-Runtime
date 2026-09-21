@@ -22,5 +22,12 @@
   "cap-screenshot-quality-gate"
  ],
  "first_discovered": "S72-W3 (as frontier)",
- "last_verified": "S73 (sharpened)"
+ "last_verified": "S73 (sharpened)",
+ "utilization": {
+  "verdict": "OBSERVED_ONLY",
+  "consumer_apps": [
+   "dooz"
+  ],
+  "note": "seen in execution, not formalized as a semantic law"
+ }
 }

@@ -23,5 +23,14 @@
   "cap-dex-interpreter"
  ],
  "first_discovered": "S72-W3",
- "last_verified": "S73"
+ "last_verified": "S73",
+ "utilization": {
+  "verdict": "USED_BY_EXECUTION",
+  "consumer_apps": [
+   "dooz",
+   "gmdice"
+  ],
+  "test": "fixtures 25/25 f141-throws=0",
+  "evidence": "S72-W3 null-producer closure (commit 048b0e31)"
+ }
 }

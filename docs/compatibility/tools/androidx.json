@@ -23,5 +23,12 @@
   "gmdice"
  ],
  "evidence": "run/s62_mines_trace.log; docs/evidence/s64_spotlight/S64_REPORT.md \u00a72",
- "limitations": "subset only; ensureExecReady-style guards verified where exercised"
+ "limitations": "subset only; ensureExecReady-style guards verified where exercised",
+ "utilization": {
+  "verdict": "USED",
+  "note": "consumer chain: FragmentManager subset law; Unote/TriPeaks/Telegram androidx families",
+  "law": "utilization derived from recorded consumers/laws/evidence; unused tools labeled honestly (S74-FOLLOW-UP \u00a713/\u00a714/\u00a733)",
+  "consumers_recorded": 3,
+  "laws_learned_recorded": 3
+ }
 }

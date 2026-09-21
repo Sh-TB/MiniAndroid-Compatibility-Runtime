@@ -24,5 +24,9 @@
  ],
  "first_discovered": "S72-W3 (as claim)",
  "last_verified": "S73 (reclassified)",
- "notes": "PRESERVED as an evidence-quality lesson (taskbook \u00a768): pixel count != semantic visual proof. Never delete; mark SUPERSEDED and link the correction."
+ "notes": "PRESERVED as an evidence-quality lesson (taskbook \u00a768): pixel count != semantic visual proof. Never delete; mark SUPERSEDED and link the correction.",
+ "utilization": {
+  "verdict": "SUPERSEDED",
+  "note": "preserved per \u00a768 history law"
+ }
 }

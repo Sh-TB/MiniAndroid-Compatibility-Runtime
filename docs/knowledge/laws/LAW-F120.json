@@ -21,5 +21,14 @@
   "cap-view-inflate-layout"
  ],
  "first_discovered": "S70",
- "last_verified": "S73"
+ "last_verified": "S73",
+ "utilization": {
+  "verdict": "USED_BY_EXECUTION",
+  "consumer_apps": [
+   "androidgamesnake",
+   "gmdice"
+  ],
+  "test": "S70 oracle verification",
+  "evidence": "tools/architecture upstream_oracle.json (grep-verified)"
+ }
 }

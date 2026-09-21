@@ -23,5 +23,16 @@
   "cap-apk-pipeline"
  ],
  "first_discovered": "early DEX era",
- "last_verified": "S73 (corpus re-run)"
+ "last_verified": "S73 (corpus re-run)",
+ "utilization": {
+  "verdict": "USED_BY_EXECUTION",
+  "consumer_apps": [
+   "helloworld",
+   "androidgamesnake",
+   "dooz",
+   "telegram"
+  ],
+  "test": "battery string stages; corpus-wide constant-string rendering (helloworld app-computed hash)",
+  "evidence": "dex string table decoder in MiniAndroid DEX parser"
+ }
 }

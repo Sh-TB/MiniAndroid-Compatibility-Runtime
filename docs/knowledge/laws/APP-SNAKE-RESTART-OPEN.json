@@ -21,5 +21,12 @@
  "capabilities": [],
  "first_discovered": "S73",
  "last_verified": "S73",
- "notes": "Negative-evidence record; do not upgrade without a proven restart transition."
+ "notes": "Negative-evidence record; do not upgrade without a proven restart transition.",
+ "utilization": {
+  "verdict": "OBSERVED_ONLY",
+  "consumer_apps": [
+   "androidgamesnake"
+  ],
+  "note": "seen in execution, not formalized as a semantic law"
+ }
 }

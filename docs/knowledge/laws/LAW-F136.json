@@ -24,5 +24,15 @@
   "cap-apk-pipeline"
  ],
  "first_discovered": "S70",
- "last_verified": "S73"
+ "last_verified": "S73",
+ "utilization": {
+  "verdict": "USED_BY_EXECUTION",
+  "consumer_apps": [
+   "bouncy",
+   "androidgamesnake",
+   "gmdice"
+  ],
+  "test": "f53_getstring 3 law paths PASS 5/5 + determinism x3 byte-identical (8c11659a7ca24512)",
+  "evidence": "docs/upstream/aosp/CONTEXT_STRING_LAW.md"
+ }
 }

@@ -29,7 +29,11 @@
  "state": {},
  "concurrency": {},
  "storage": {},
- "persistence": {},
+ "persistence": {
+  "status_note": "NO_PERSISTENCE_OBSERVED (no files in data root)",
+  "probe": "relaunch_same_data_root (s74-ops)",
+  "verdict": "NO_PERSISTENCE_OBSERVED"
+ },
  "network": {
   "requested": [],
   "observed": [],
@@ -37,13 +41,20 @@
   "status": "NOT_OBSERVED"
  },
  "security": {
-  "permissions_declared": [],
+  "permissions_declared": [
+   "android.permission.INTERNET"
+  ],
   "permissions_observed": [],
   "exported_components": [],
   "filesystem": "NOT_OBSERVED",
   "network": "NOT_OBSERVED",
   "sensitive_apis": [],
-  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)"
+  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)",
+  "permissions_declared_source": "aapt2 dump badging at s74-ops HEAD",
+  "launchable_activities": [
+   "eu.veldsoft.tri.peaks.SplashActivity"
+  ],
+  "network_observed": "NOT_OBSERVED (runtime has no real network stack; no egress possible)"
  },
  "evidence": {
   "primary": [
@@ -53,7 +64,7 @@
  },
  "regression": {},
  "blocker": "R-NEW-388 (remeasured S71: generic RL anchor laws PROVEN on f14; TriPeaks blocked at splash = app-specific OBJECT-IDENTITY), visual progression blocked",
- "next_task": "isolate the app-specific object-identity divergence at splash->lobby->game transition; keep generic RL laws out of scope (they are proven)",
+ "next_task": "R-NEW-388 OBJECT-IDENTITY root-cause wave to unblock the board; lobby evidence stands",
  "completion": {
   "C1_apk_load": "DONE",
   "C2_manifest_lifecycle": "DONE",
@@ -83,5 +94,52 @@
  "status": "BLOCKED",
  "issue": 20,
  "issue_state": "open",
- "app_id": "tripeaks"
+ "app_id": "tripeaks",
+ "visual_evidence": {
+  "status": "HUMAN_VISIBLE",
+  "execution_stage": [
+   "V0 launch (splash 0 px frames 0-6)",
+   "V1 lobby (frame 7+)"
+  ],
+  "note": "'Welcome to the Tri Peaks Solitaire for Android!' + New Game/About Us/Help/Exit menu; 205,061 px (S73 family 205,638 px)",
+  "representative_frames": [
+   "01_splash_black.png",
+   "02_lobby.png",
+   "03_final_lobby.png"
+  ],
+  "bundle": "docs/evidence/s74_ops/tripeaks/",
+  "session": "docs/evidence/s74_ops/tripeaks/session.json",
+  "model": "AGENT_OBSERVED vs HUMAN_VISIBLE distinguished per S74-FOLLOW-UP \u00a74"
+ },
+ "what_actually_happened": {
+  "PROVEN": [
+   "splash->lobby transition at HEAD (14-frame run; lobby from frame 7) \u2014 NEW current-HEAD evidence (S73 recorded lobby via shorter recipe)"
+  ],
+  "OBSERVED": [
+   "tap 440,120@9 on 'New Game' hit-test target=0 (menu is not a per-view listener surface at HEAD)"
+  ],
+  "IMPLEMENTED": [],
+  "RESEARCHED": [
+   "R-NEW-388 app-specific OBJECT-IDENTITY (game board path)"
+  ],
+  "NOT_OBSERVED": [
+   "game board at HEAD (S65 historical tp_game_board.png on older binary)"
+  ],
+  "BLOCKED": [
+   "R-NEW-388 for the board render path (generic RL anchor laws stay proven)"
+  ],
+  "SUPERSEDED": []
+ },
+ "sandbox_profile": {
+  "data_root_probed": false,
+  "observation": "no files created",
+  "boundary_note": "sandbox treated as execution boundary: files under app package dir only; no external paths touched"
+ },
+ "ops_wave": {
+  "wave": "S74 FOLLOW-UP (operational base completion)",
+  "runtime_commit": "3505591b",
+  "binary": "miniandroid/build/miniandroid built at HEAD (zero runtime changes this wave)",
+  "evidence_bundle": "docs/evidence/s74_ops/tripeaks/",
+  "human_review": "representative frames individually opened and reviewed by the executing agent before status assignment"
+ }
 }

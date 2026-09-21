@@ -17,5 +17,12 @@
   "dooz"
  ],
  "evidence": "S72-W1 dooz deep-chain root cause (commit acad15fd): arraycopy(null) NPE @ Lid;.K -> PersistentHashMapBuilder.putAll trie walk -> invoke-virtual/range this=NULL",
- "limitations": "observations not promoted to generic law without upstream verification"
+ "limitations": "observations not promoted to generic law without upstream verification",
+ "utilization": {
+  "verdict": "USED",
+  "note": "consumer chain: AtomicReferenceArray semantics -> Dooz state queue law record",
+  "law": "utilization derived from recorded consumers/laws/evidence; unused tools labeled honestly (S74-FOLLOW-UP \u00a713/\u00a714/\u00a733)",
+  "consumers_recorded": 1,
+  "laws_learned_recorded": 1
+ }
 }

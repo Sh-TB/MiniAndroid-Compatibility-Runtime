@@ -25,5 +25,12 @@
   "blockinger"
  ],
  "evidence": "docs/foundation/S72_WAVE4.md SOURCE block; S73 rebuild record",
- "limitations": "toolchain re-fetched after container resets (bootstrap script persists the recipe)"
+ "limitations": "toolchain re-fetched after container resets (bootstrap script persists the recipe)",
+ "utilization": {
+  "verdict": "USED",
+  "note": "consumer chain: aapt2/ECJ/D8/stubs -> every fixture + snake/unote-class APK builds at HEAD",
+  "law": "utilization derived from recorded consumers/laws/evidence; unused tools labeled honestly (S74-FOLLOW-UP \u00a713/\u00a714/\u00a733)",
+  "consumers_recorded": 5,
+  "laws_learned_recorded": 0
+ }
 }
