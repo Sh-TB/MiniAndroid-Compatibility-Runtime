@@ -1,0 +1,814 @@
+{
+ "rc_run_a": 0,
+ "dialog_layout": {
+  "l": 80,
+  "t": 848,
+  "w": 920,
+  "h": 224
+ },
+ "positive_btn_center": [
+  758,
+  1022
+ ],
+ "probes": {
+  "positive_label_blue_px_frame94": 0,
+  "self_collision_game_over": {
+   "first_game_over_frame": 94,
+   "verdict": "GAME-OVER OBSERVED"
+  },
+  "restart_via_dialog": {
+   "probe": "tap positive button at (758,1022) @99",
+   "frozen_game_over_cells": [],
+   "first_changed_snake_frame": 99,
+   "cells_at_change": [
+    [
+     10,
+     10
+    ],
+    [
+     11,
+     10
+    ]
+   ],
+   "verdict": "RESTART OBSERVED (snake state changed after dialog-button tap)"
+  },
+  "positive_label_paint": {
+   "blue_px_expected_by_law": "DialogShadow painter draws button labels in 0x0062CC",
+   "blue_px_found_frame94": 0,
+   "root_cause": "the painter constructs a bare BitmapFont (ASCII glyph set); the CJK labels \u91cd\u65b0\u5f00\u59cb/\u9000\u51fa have no glyphs -> 0 painted pixels. The ASCII message 'Game Over!' paints (grey 33,33,33 measured).",
+   "impact": "HONEST RESIDUAL: dialog button labels are invisible (pixels), NOT claimed fixed. The INPUT path (R-NEW-394 bounds + topmost-window routing) is the fix this wave proves; the restart click does not require glyph rendering.",
+   "verdict": "RESTART FUNCTIONAL, LABEL PAINT RESIDUAL REGISTERED"
+  }
+ },
+ "rc_run_b": 0,
+ "taps_run_b": 27,
+ "frames_observed": 128,
+ "events": {
+  "moves": 120,
+  "turns": 25,
+  "captures": 2
+ },
+ "timeline_90_127": {
+  "90": {
+   "snake": [
+    [
+     3,
+     10
+    ],
+    [
+     4,
+     10
+    ],
+    [
+     5,
+     10
+    ],
+    [
+     6,
+     10
+    ]
+   ],
+   "head": [
+    6,
+    10
+   ],
+   "dir": "R",
+   "game_over": false
+  },
+  "91": {
+   "snake": [
+    [
+     4,
+     10
+    ],
+    [
+     5,
+     10
+    ],
+    [
+     6,
+     10
+    ],
+    [
+     6,
+     11
+    ]
+   ],
+   "head": [
+    6,
+    11
+   ],
+   "dir": "D",
+   "game_over": false
+  },
+  "92": {
+   "snake": [
+    [
+     5,
+     10
+    ],
+    [
+     6,
+     10
+    ],
+    [
+     5,
+     11
+    ],
+    [
+     6,
+     11
+    ]
+   ],
+   "head": [
+    5,
+    11
+   ],
+   "dir": "L",
+   "game_over": false
+  },
+  "93": {
+   "snake": [
+    [
+     6,
+     10
+    ],
+    [
+     5,
+     11
+    ],
+    [
+     6,
+     11
+    ]
+   ],
+   "head": null,
+   "dir": null,
+   "game_over": false
+  },
+  "94": {
+   "snake": [],
+   "head": null,
+   "dir": null,
+   "game_over": true
+  },
+  "95": {
+   "snake": [],
+   "head": null,
+   "dir": null,
+   "game_over": true
+  },
+  "96": {
+   "snake": [],
+   "head": null,
+   "dir": null,
+   "game_over": true
+  },
+  "97": {
+   "snake": [],
+   "head": null,
+   "dir": null,
+   "game_over": true
+  },
+  "98": {
+   "snake": [],
+   "head": null,
+   "dir": null,
+   "game_over": true
+  },
+  "99": {
+   "snake": [
+    [
+     10,
+     10
+    ],
+    [
+     11,
+     10
+    ]
+   ],
+   "head": [
+    10,
+    10
+   ],
+   "dir": null,
+   "game_over": false
+  },
+  "100": {
+   "snake": [
+    [
+     10,
+     10
+    ],
+    [
+     11,
+     10
+    ],
+    [
+     12,
+     10
+    ]
+   ],
+   "head": [
+    12,
+    10
+   ],
+   "dir": null,
+   "game_over": false
+  },
+  "101": {
+   "snake": [
+    [
+     11,
+     10
+    ],
+    [
+     12,
+     10
+    ],
+    [
+     13,
+     10
+    ]
+   ],
+   "head": [
+    13,
+    10
+   ],
+   "dir": "R",
+   "game_over": false
+  },
+  "102": {
+   "snake": [
+    [
+     12,
+     10
+    ],
+    [
+     13,
+     10
+    ],
+    [
+     14,
+     10
+    ]
+   ],
+   "head": [
+    14,
+    10
+   ],
+   "dir": "R",
+   "game_over": false
+  },
+  "103": {
+   "snake": [
+    [
+     13,
+     10
+    ],
+    [
+     14,
+     10
+    ],
+    [
+     15,
+     10
+    ]
+   ],
+   "head": [
+    15,
+    10
+   ],
+   "dir": "R",
+   "game_over": false
+  },
+  "104": {
+   "snake": [
+    [
+     14,
+     10
+    ],
+    [
+     15,
+     10
+    ],
+    [
+     16,
+     10
+    ]
+   ],
+   "head": [
+    16,
+    10
+   ],
+   "dir": "R",
+   "game_over": false
+  },
+  "105": {
+   "snake": [
+    [
+     15,
+     10
+    ],
+    [
+     16,
+     10
+    ],
+    [
+     17,
+     10
+    ]
+   ],
+   "head": [
+    17,
+    10
+   ],
+   "dir": "R",
+   "game_over": false
+  },
+  "106": {
+   "snake": [
+    [
+     16,
+     10
+    ],
+    [
+     17,
+     10
+    ],
+    [
+     18,
+     10
+    ]
+   ],
+   "head": [
+    18,
+    10
+   ],
+   "dir": "R",
+   "game_over": false
+  },
+  "107": {
+   "snake": [
+    [
+     17,
+     10
+    ],
+    [
+     18,
+     10
+    ],
+    [
+     19,
+     10
+    ]
+   ],
+   "head": [
+    19,
+    10
+   ],
+   "dir": "R",
+   "game_over": false
+  },
+  "108": {
+   "snake": [
+    [
+     0,
+     10
+    ],
+    [
+     18,
+     10
+    ],
+    [
+     19,
+     10
+    ]
+   ],
+   "head": [
+    0,
+    10
+   ],
+   "dir": null,
+   "game_over": false
+  },
+  "109": {
+   "snake": [
+    [
+     0,
+     10
+    ],
+    [
+     1,
+     10
+    ],
+    [
+     19,
+     10
+    ]
+   ],
+   "head": [
+    1,
+    10
+   ],
+   "dir": "R",
+   "game_over": false
+  },
+  "110": {
+   "snake": [
+    [
+     0,
+     10
+    ],
+    [
+     1,
+     10
+    ],
+    [
+     2,
+     10
+    ]
+   ],
+   "head": [
+    2,
+    10
+   ],
+   "dir": "R",
+   "game_over": false
+  },
+  "111": {
+   "snake": [
+    [
+     1,
+     10
+    ],
+    [
+     2,
+     10
+    ],
+    [
+     3,
+     10
+    ]
+   ],
+   "head": [
+    3,
+    10
+   ],
+   "dir": "R",
+   "game_over": false
+  },
+  "112": {
+   "snake": [
+    [
+     2,
+     10
+    ],
+    [
+     3,
+     10
+    ],
+    [
+     4,
+     10
+    ]
+   ],
+   "head": [
+    4,
+    10
+   ],
+   "dir": "R",
+   "game_over": false
+  },
+  "113": {
+   "snake": [
+    [
+     3,
+     10
+    ],
+    [
+     4,
+     10
+    ],
+    [
+     5,
+     10
+    ]
+   ],
+   "head": [
+    5,
+    10
+   ],
+   "dir": "R",
+   "game_over": false
+  },
+  "114": {
+   "snake": [
+    [
+     4,
+     10
+    ],
+    [
+     5,
+     10
+    ],
+    [
+     6,
+     10
+    ]
+   ],
+   "head": [
+    6,
+    10
+   ],
+   "dir": "R",
+   "game_over": false
+  },
+  "115": {
+   "snake": [
+    [
+     5,
+     10
+    ],
+    [
+     6,
+     10
+    ],
+    [
+     7,
+     10
+    ]
+   ],
+   "head": [
+    7,
+    10
+   ],
+   "dir": "R",
+   "game_over": false
+  },
+  "116": {
+   "snake": [
+    [
+     6,
+     10
+    ],
+    [
+     7,
+     10
+    ],
+    [
+     8,
+     10
+    ]
+   ],
+   "head": [
+    8,
+    10
+   ],
+   "dir": "R",
+   "game_over": false
+  },
+  "117": {
+   "snake": [
+    [
+     7,
+     10
+    ],
+    [
+     8,
+     10
+    ],
+    [
+     9,
+     10
+    ]
+   ],
+   "head": [
+    9,
+    10
+   ],
+   "dir": "R",
+   "game_over": false
+  },
+  "118": {
+   "snake": [
+    [
+     8,
+     10
+    ],
+    [
+     9,
+     10
+    ],
+    [
+     10,
+     10
+    ]
+   ],
+   "head": [
+    10,
+    10
+   ],
+   "dir": "R",
+   "game_over": false
+  },
+  "119": {
+   "snake": [
+    [
+     9,
+     10
+    ],
+    [
+     10,
+     10
+    ],
+    [
+     11,
+     10
+    ]
+   ],
+   "head": [
+    11,
+    10
+   ],
+   "dir": "R",
+   "game_over": false
+  },
+  "120": {
+   "snake": [
+    [
+     10,
+     10
+    ],
+    [
+     11,
+     10
+    ],
+    [
+     12,
+     10
+    ]
+   ],
+   "head": [
+    12,
+    10
+   ],
+   "dir": "R",
+   "game_over": false
+  },
+  "121": {
+   "snake": [
+    [
+     11,
+     10
+    ],
+    [
+     12,
+     10
+    ],
+    [
+     13,
+     10
+    ]
+   ],
+   "head": [
+    13,
+    10
+   ],
+   "dir": "R",
+   "game_over": false
+  },
+  "122": {
+   "snake": [
+    [
+     12,
+     10
+    ],
+    [
+     13,
+     10
+    ],
+    [
+     14,
+     10
+    ]
+   ],
+   "head": [
+    14,
+    10
+   ],
+   "dir": "R",
+   "game_over": false
+  },
+  "123": {
+   "snake": [
+    [
+     13,
+     10
+    ],
+    [
+     14,
+     10
+    ],
+    [
+     15,
+     10
+    ]
+   ],
+   "head": [
+    15,
+    10
+   ],
+   "dir": "R",
+   "game_over": false
+  },
+  "124": {
+   "snake": [
+    [
+     14,
+     10
+    ],
+    [
+     15,
+     10
+    ],
+    [
+     16,
+     10
+    ]
+   ],
+   "head": [
+    16,
+    10
+   ],
+   "dir": "R",
+   "game_over": false
+  },
+  "125": {
+   "snake": [
+    [
+     15,
+     10
+    ],
+    [
+     16,
+     10
+    ],
+    [
+     17,
+     10
+    ]
+   ],
+   "head": [
+    17,
+    10
+   ],
+   "dir": "R",
+   "game_over": false
+  },
+  "126": {
+   "snake": [
+    [
+     16,
+     10
+    ],
+    [
+     17,
+     10
+    ],
+    [
+     18,
+     10
+    ]
+   ],
+   "head": [
+    18,
+    10
+   ],
+   "dir": "R",
+   "game_over": false
+  },
+  "127": {
+   "snake": [
+    [
+     17,
+     10
+    ],
+    [
+     18,
+     10
+    ],
+    [
+     19,
+     10
+    ]
+   ],
+   "head": [
+    19,
+    10
+   ],
+   "dir": "R",
+   "game_over": false
+  }
+ }
+}

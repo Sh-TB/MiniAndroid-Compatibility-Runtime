@@ -1,0 +1,181 @@
+{
+  "apk_name": "snake_v1.0_vc1.apk",
+  "main_class": "Lzhangman/github/snake/MainActivity;",
+  "main_method": "onCreate",
+  "methods": [
+    {
+      "class": "Lzhangman/github/snake/MainActivity;",
+      "entry_point": true,
+      "method": "onCreate",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/app/Activity;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/support/v7/app/AppCompatActivity;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Landroid/app/Activity;<super>",
+      "invocation_type": "virtual",
+      "method": "onCreate",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Landroid/support/v7/app/AppCompatActivity;<super>",
+      "invocation_type": "virtual",
+      "method": "onCreate",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Lzhangman/github/snake/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "setContentView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Lzhangman/github/snake/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#10",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Lzhangman/github/snake/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#442",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p1",
+        "p0"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Lzhangman/github/snake/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#443",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p1",
+        "p0"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Lzhangman/github/snake/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#441",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p1",
+        "p0"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Lzhangman/github/snake/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#444",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p1",
+        "p0"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Lzhangman/github/snake/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#445",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p1",
+        "p0"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    }
+  ],
+  "timestamp": "2026-09-21T15:38:18Z",
+  "total_api_calls": 16
+}
