@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MiniAndroid — Snake Gameplay Proof | اثبات اجرای بازی اسنک</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b27; --border: #2d3748;
+    --text: #e6edf3; --muted: #9aa7b8; --accent: #ff4081; --blue: #58a6ff;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: "Vazirmatn", "Segoe UI", Tahoma, sans-serif;
+    line-height: 1.8; padding: 24px 16px 60px;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.55rem; text-align: center; margin: 18px 0 6px; }
+  h1 .en { color: var(--blue); }
+  .sub { text-align: center; color: var(--muted); margin-bottom: 22px; font-size: .95rem; }
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 18px; margin-bottom: 20px;
+  }
+  .gifbox { text-align: center; }
+  .gifbox img {
+    max-width: 100%; border-radius: 10px;
+    border: 1px solid var(--border); background: #fff;
+  }
+  .caption { color: var(--muted); font-size: .85rem; margin-top: 10px; text-align: center; }
+  h2 { font-size: 1.12rem; margin-bottom: 10px; color: var(--accent); }
+  table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+  td { padding: 7px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  td:first-child { color: var(--muted); white-space: nowrap; width: 42%; }
+  code {
+    background: #0d1117; border: 1px solid var(--border); border-radius: 6px;
+    padding: 1px 6px; font-size: .82em; direction: ltr; unicode-bidi: embed;
+    font-family: "Sarasa Mono SC", Consolas, monospace; color: var(--blue);
+  }
+  .fa { direction: rtl; text-align: right; }
+  .en-block { direction: ltr; text-align: left; }
+  .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .badge {
+    background: #10243a; color: var(--blue); border: 1px solid #1f4a70;
+    border-radius: 999px; padding: 3px 12px; font-size: .8rem;
+  }
+  .ok { color: #3fb950; font-weight: 700; }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .foot { text-align: center; color: var(--muted); font-size: .82rem; margin-top: 26px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1><span class="en">MiniAndroid — Snake Gameplay Proof</span></h1>
+  <div class="sub">اثبات اجرای واقعی بازی اسنک روی MiniAndroid Compatibility Runtime</div>
+
+  <div class="card gifbox">
+    <img src="snake_gameplay.gif" alt="Snake gameplay GIF — real APK execution"
+         width="480" height="854">
+    <div class="caption en-block">
+      snake_v1.0_vc1.apk — rendered by the MiniAndroid engine (real-dalvik),
+      driven only by scheduled screen taps, vision from rendered frames.
+    </div>
+  </div>
+
+  <div class="card fa">
+    <h2>این یعنی چه؟</h2>
+    <p>
+      این گیف، اسکرین‌رندرهای واقعی اجرای APK اصلی بازی Snake روی موتور
+      MiniAndroid است — نه شبیه‌سازی دستی. کنترلر فقط «تپ»‌های زمان‌بندی‌شده
+      روی دکمه‌های جهت‌نامه می‌فرستد (همان مسیری که انگشت کاربر می‌رود) و همهٔ
+      تصمیم‌ها فقط از روی فریم‌های رندرشده گرفته شده است.
+    </p>
+    <p>
+      داستان گیف: <b>بازی ۱</b> — مار خودش می‌رود، می‌چرخد و غذا را می‌گیرد
+      (مار بزرگ می‌شود) تا با برخورد به بدنش، Game Over شود. سپس دیالوگ
+      «Game Over!» با دکمه‌های فارسی <b>«退出 / 重新开始»</b> (خروج / شروع دوباره)
+      نمایش داده می‌شود — متن غیرASCII از مسیر واقعی TextShaper/فونت CJK رندر
+      می‌شود (قانون R-NEW-398). بعد کنترلر روی دکمهٔ «شروع دوباره» تپ می‌زند،
+      دیالوگ بسته می‌شود و <b>بازی ۲</b> با همان کیفیت از نو اجرا می‌شود —
+      یعنی چرخهٔ کامل «بازی → مرگ → دیالوگ → ری‌استارت → بازی» واقعاً کار می‌کند.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>Evidence chain (English)</h2>
+    <table>
+      <tr><td>APK executed</td><td><code>upload/s72_w4_apks/snake_v1.0_vc1.apk</code></td></tr>
+      <tr><td>Engine mode</td><td><code>real-dalvik</code> bytecode interpretation, binary at HEAD <code>527925b7</code></td></tr>
+      <tr><td>Actuator (C1)</td><td>scheduled taps only, via the canonical TouchDispatcher DOWN/UP law — 27 taps (game 1) + restart + 23 taps (game 2)</td></tr>
+      <tr><td>Vision (C3)</td><td>rendered frames only — snake <code>#FF4081</code>, food <code>#0000FF</code> on the 20×20 grid</td></tr>
+      <tr><td>Game 1</td><td class="en-block"><span class="ok">88 moves · 22 turns · 1 food capture</span> → self-collision death (frame 94)</td></tr>
+      <tr><td>Game-Over dialog</td><td class="en-block">paints CJK labels <b>重新开始</b> (28 blue px) + <b>退出</b> via R-NEW-398 (TextShaper + WenQuanYi fallback face)</td></tr>
+      <tr><td>Restart tap</td><td class="en-block">tap on the dialog's positive button (758,1022)@99 → dialog dismissed, board reset observed at frame 99</td></tr>
+      <tr><td>Game 2</td><td class="en-block"><span class="ok">90 moves · 24 turns · 1 food capture</span> → second death at frame 192 (deterministic replay of the same schedule)</td></tr>
+      <tr><td>Determinism (C7)</td><td class="en-block">Level-C fidelity replay on the same binary: <span class="ok">BYTE-IDENTICAL 90/90</span> frames; baseline battery <span class="ok">26/26</span>; pixel verifier <span class="ok">26/26</span></td></tr>
+      <tr><td>Full report</td><td class="en-block"><code>run/s79_snake_gif/s79_gif_report.json</code> in the repository workspace</td></tr>
+    </table>
+    <div class="badges">
+      <span class="badge">real APK</span>
+      <span class="badge">real input pipeline</span>
+      <span class="badge">no state injection</span>
+      <span class="badge">pixel-only vision</span>
+      <span class="badge">deterministic ×2</span>
+    </div>
+  </div>
+
+  <div class="card en-block">
+    <h2>What is MiniAndroid?</h2>
+    <p>
+      An Android compatibility runtime that executes real, unmodified Android
+      APKs (DEX bytecode interpretation + a from-scratch rendering/input stack)
+      outside the Android OS, with an evidence-first engineering process: every
+      fix must carry REPRODUCE → ROOT CAUSE → UPSTREAM LAW → IMPLEMENTATION →
+      TEST → REAL EXECUTION → OBSERVATION → REGRESSION. This wave (S79) proved
+      the full gameplay loop of Snake end-to-end on the runtime.
+    </p>
+    <p style="margin-top:8px">
+      Repository: <a href="https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime">Sh-TB/MiniAndroid-Compatibility-Runtime</a>
+    </p>
+  </div>
+
+  <div class="foot">
+    Generated 2026-09-22 · MiniAndroid S79 wave · GIF is a downscaled derived
+    artifact; every source frame is an authentic engine render.
+  </div>
+
+</div>
+</body>
+</html>
