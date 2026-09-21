@@ -2269,3 +2269,21 @@ Stage Summary:
 - The architecture is now operationally used: every app dossier carries a human-reviewed visual_evidence state + a session bundle a human can open and SEE.
 - Honest labels preserved everywhere; zero runtime changes; zero new registry roots; F-141 stays CLOSED; snake history untouched per §8.
 - Continuation point: (1) GH_TOKEN -> run scripts/s74f_issue_checkpoints.py + verify rendered links (§22); (2) git push + ls-remote verify; (3) optional runtime waves listed in the report §6.
+
+---
+Task ID: S74-FINAL-RECONCILIATION
+Agent: Super Z (main)
+Task: FINAL MASTER RECONCILIATION — prove every previous request/rule/75/169/185 item and S74 requirement with a per-row truth ledger (docs/audit/MASTER_CHECKLIST.md + master_audit.json); publish all pending commits; verify human-visible evidence on GitHub; downgrade false completions.
+
+Work Log:
+- §0 baseline: HEAD 05e84749 = origin/main 3505591b + 5 UNPUBLISHED S74-followup commits (8342340b/d98024dc/b012edac/c2a4bc4a/05e84749); tree clean. docs/audit did NOT exist.
+- Source census: 169 constitution rules = CONSTITUTION_V2.md (#1–#169, adopted verbatim @ 4c8c0e02; 170 headers incl. #0 MISSION). "75" = FOUNDATION_GAP_MATRIX counts line (61 S67 contracts + 14 S68 families); uniquely enumerable = 57 (41 census IDs + 6 F-matrix rows + 10 named S68 fixes F-125..F-134) → COUNT_DISCREPANCY registered (CRITICAL-002), no items invented. "185" = ONLY mention is S72_WAVE4.md §0 user directive "measure the 185 rules' effect"; canonical constitution = 169 rules; 185_ITEM_SOURCE = NOT_FOUND (CRITICAL-003). "S74 Missing Architecture Addendum" = no wave/doc/task exists → SOURCE_NOT_RECOVERED (CRITICAL-004, CAM-S74ADD).
+- Ledger built (scripts/audit/build_master_audit.py): 373 rows = 169 CONST + 57 ITEM75 + 60 REQ-HIST (all worklog tasks) + 10 CAM + 14 APP + 12 TOOL + 31 KNOW + 14 ISSUE + 6 CRITICAL. Status vocab enforced; 0 DONE (no row earned it), 157 IMPLEMENTED, 117 OBSERVED, 18 TESTED, 59 UNVERIFIED, 19 PARTIAL, 1 BLOCKED, 1 SUPERSEDED, 1 N/A.
+- §13 independent frame verification (PIL): APP-TICTACTOE representative_frames are UNIFORM WHITE (extrema 255,255) while dossier claimed HUMAN_VISIBLE → FALSE_HUMAN_VISIBLE confirmed and DOWNGRADED (§31): dossier status → NOT_HUMAN_VISIBLE (real APK, GL blocker F-144); golden fixture X-WINS proof moved to separate golden_fixture_evidence block (§15 separation). APP-CONNECTFOUR frames verified nontrivial but scope = connectfour_golden.apk (in-repo golden, NOT real APK) → evidence_scope marker added (CRITICAL-006). Corrected headline: 9 real-APK HUMAN_VISIBLE + 1 fixture-scope HUMAN_VISIBLE + 4 NOT_HUMAN_VISIBLE (dooz/stopwatch/telegram/tictactoe) — the earlier "11 HUMAN_VISIBLE" claim corrected.
+- §26 GitHub verification (scripts/audit/check_github_evidence.py): 0/14 [EXEC] issues embedded ANY image URLs — human-visible evidence was UNPUBLISHED (validates user suspicion). Remediation: commit+push first, then scripts/s74f_issue_checkpoints.py (existing, reused) posts §6-format checkpoints to #10–#23 with raw.githubusercontent render-checked links; issue #14 corrective comment required (body still states "23472 px real content" — the superseded black-pixel claim; CLAIM-DOOZ-23472-VISUAL stays SUPERSEDED).
+- README navigation: Master Audit bullet added to At-a-glance chain.
+- Security: PAT used in-memory env only (constitution §52); secret scan before every push; no token on disk.
+
+Stage Summary:
+- Deliverables: docs/audit/MASTER_CHECKLIST.md (373-row tables + dashboard) · docs/audit/master_audit.json (§28 schema) · docs/audit/github_evidence_check.json · scripts/audit/{build_master_audit,check_github_evidence,fix_visual_scope}.py · dossier scope-truth fixes (tictactoe/connectfour) · README audit link.
+- Continuation: (1) commit+push; (2) post issue checkpoints; (3) re-verify links HTTP 200; (4) second ledger refresh commit.
