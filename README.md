@@ -233,6 +233,13 @@ Canonical files — one per role:
   (`docs/knowledge/laws/*.json`), and the evidence-backed
   [Capability Matrix](docs/compatibility/CAPABILITY_MATRIX.md).
   **Runtime Core is shared; Compatibility Status is app-specific.**
+- **[Operational Evidence Bundles](docs/evidence/s74_ops/AUDIT_TABLE.md)**
+  (S74 FOLLOW-UP) — per-app human-visible execution evidence
+  (`docs/evidence/s74_ops/<app>/`): representative frames (individually
+  human-reviewed), session.json execution checkpoints, SHA256SUMS, per-app
+  sandbox probes; plus the §27 audit table and the
+  [Tool Utilization Matrix](docs/compatibility/TOOL_UTILIZATION.md)
+  (USED / RESEARCHED_ONLY / AVAILABLE_NOT_USED, no inflation).
 - **[Android Execution Skill](docs/execution-skill/SKILL.md)** (S74) —
   vendor-neutral, token-efficient workflow any coding agent follows to run one
   APK, find its blocker, reuse verified knowledge, fix the runtime, prove the

@@ -97,3 +97,18 @@ index/file mismatches.
 Knowledge promotion: `python3 tools/promote_knowledge.py --help`
 (RAW → CANDIDATE → RESEARCHED → OBSERVED → TESTED → VERIFIED; never blindly
 marks knowledge verified).
+
+## S74 FOLLOW-UP — operational layer (evidence + utilization)
+
+- Per-app execution evidence: `docs/evidence/s74_ops/<app>/` (session.json
+  checkpoint, representative human-reviewed frames, SHA256SUMS, sandbox probe).
+- §27 audit table: `docs/evidence/s74_ops/AUDIT_TABLE.md` (YES/NO/PARTIAL/
+  NOT_APPLICABLE/NOT_OBSERVED — no invented PASS).
+- Tool utilization: `docs/compatibility/TOOL_UTILIZATION.{json,md}` — every
+  tool is USED (with consumer chain), RESEARCHED_ONLY, or AVAILABLE_NOT_USED.
+- Law utilization: every knowledge record carries `utilization`
+  (USED_BY_EXECUTION / OBSERVED_ONLY / RESEARCHED_ONLY / UNUSED_VERIFIED_LAW
+  / SUPERSEDED).
+- Validator: `tools/validate_compatibility_graph.py` now enforces §35
+  operational gates (visual-evidence claims, session/SHA presence, evidence
+  links, persistence/security truthfulness, utilization consistency).
