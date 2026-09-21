@@ -99,8 +99,9 @@ CLOSED only with regression + observation evidence linked.)
 ## Per-record operational view
 
 Fields marked NOT_RECORDED have no canonical source in the registry — they are
-shown honestly, not invented. F-146/F-148 (fixed) and F-152/F-153 (open) are
-expanded below the table.
+shown honestly, not invented. F-146/F-148 (fixed, S76) and F-152/F-153/F-154
+(S78: reproduced → producer-traced → root-caused → fixed → regression-tested)
+are expanded below the table.
 
 | F-ID | APP | SUBSYSTEM | SYMPTOM | PRODUCER | STATUS | EVIDENCE (first 160 chars) |
 |---|---|---|---|---|---|---|
@@ -112,7 +113,7 @@ expanded below the table.
                 f"{r.get('status','NOT_RECORDED')} | {ev[:160].replace('|','\\|').replace(chr(10),' ')} |\n")
     hdr += "\n"
     # expanded sections for the four wave-critical records
-    for fid in ("F-146", "F-148", "F-152", "F-153"):
+    for fid in ("F-146", "F-148", "F-152", "F-153", "F-154"):
         r = next((x for x in fam if x["id"] == fid), None)
         if not r:
             continue
@@ -131,6 +132,11 @@ expanded below the table.
   canonical S76 failure IDs.
 - Root count 397→404 at S76 enumerated exactly: R-NEW-390..394, F-152, F-153;
   F-146 → ROOT-CAUSED-FIXED (no new record).
+- Root count 404→409 at S78 enumerated exactly: F-154 (PARENT_FAILURE F-152),
+  R-NEW-395 (doPrivileged dispatch), R-NEW-396 (synthetic getDeclaredFields
+  subset), R-NEW-397 (Collections EMPTY family), R-NEW-398 (non-ASCII text
+  pipeline routing + CJK fallback face). F-152/F-153/F-154 →
+  ROOT-CAUSED-FIXED.
 """
     return hdr
 
@@ -427,9 +433,24 @@ def progress_report_md():
 | F-152 producer trace | yes | Llt0;.w pc=808 null receiver (S76-registered) | — | — | — | — | no root cause this wave — kept OPEN (no speculative patch, §14 law) | producer trace of Llt0;.w receiver def-chain | registry F-152 |
 | F-153 CJK dialog labels | yes | painter BitmapFont ASCII-only | — | — | — | — | OPEN (font/CJK family; ties to census B10) | route painter through CJK shaper | s76_dialog_restart_report.json |
 
-## Honest debt summary (post-S77)
+## S78 task progress (this wave)
 
-- PUBLISH_BLOCKED: 8+ commits local-only (no GH_TOKEN; constitution §52).
+| Task | STARTED | DISCOVERED | IMPLEMENTED | TESTED | EXECUTED | OBSERVED | BLOCKED | NEXT | EVIDENCE |
+|---|---|---|---|---|---|---|---|---|---|
+| PUBLISH (user PAT provided) | yes | 11 wave commits unpublished (5 S75 + 3 S76 + 3 S77); 593MB accidental UUID snapshot commit d51f1815 in tree | snapshot quarantined on branch backup/s78-accidental-snapshot (real rollback per §28); main reset to c6d14d2e | secret scan clean | pushed c67230be..c6d14d2e | remote HEAD = c6d14d2e verified | — | — | git ls-remote + push output (worklog S78) |
+| F-152 producer trace + fix | yes | pc=490 sget Llt0;->o (null) → pc=808 Unsafe.objectFieldOffset; doPrivileged stub null | R-NEW-395 + R-NEW-396 (dalvik_engine.cpp) | s78_f152_regression.sh 6/6 | unsafeNPE 9→0 | chain progressed to DataStore parse; visual unchanged (NOT_HUMAN_VISIBLE honest) | — | Job ISE + F-147 site (pre-existing) | run/s78_f152_repro, run/s78_regression, scripts/s78_lt0_disasm.py |
+| F-154 (NEW, parent F-152) | yes | Lh3;.h pc=36 Set.iterator NPE; Collections.EMPTY_SET SGET-MISS | R-NEW-397 (seed + Empty-family dispatch) | s78_f152_regression.sh 6/6 | setIterNPE 8→0 | DataStore parse completes | — | — | run/s78_f152_postfix2/3 |
+| F-153 CJK labels + fix | yes | draw_text ASCII-only byte iteration; TextShaper had no CJK face | R-NEW-398 (draw_text routing + kFaceCJK) | s78_f153_regression.py 3/3 | 0→56 positive / 0→28 negative blue px | labels render; restart re-verified RESTART OBSERVED; second life moves 120/turns 25/captures 2 | — | second CJK consumer absent in corpus (§6 recorded) | docs/evidence/s76/snake_dialog_restart/ + f153_regression.json |
+| gmdice §14 replay | yes | — | — | — | 5/5 clicks dispatched; first-click diff 1,506,884 px | result band renders (→ '2 · 4 · 4'; singles '6','5','3') | multi-roll across frames (tap hit-test target=0 — recorded) | decor-offset bounds law for tap target | run/s78_gmdice/clicktest |
+
+## Honest debt summary (post-S78)
+
+- PUBLISH DEBT RESOLVED (S78): 11 wave commits (5 S75 + 3 S76 + 3 S77) pushed
+  to origin/main c6d14d2e with the user-provided PAT; remote HEAD verified.
+  The 593MB accidental UUID snapshot commit d51f1815 was quarantined on
+  backup/s78-accidental-snapshot (rollback preserved; SHA recorded) — NOT
+  published (backup-zip/dump content violates the commit-evidence rules).
+- Historical S77 row: PUBLISH_BLOCKED: 8+ commits local-only (no GH_TOKEN; constitution §52).
 - Foundation census gaps: 16 PENDING + PARTIAL items (ITEM75-008..041 set) —
   tracked in `docs/audit/MASTER_CHECKLIST.md`, unchanged this wave unless
   explicitly fixed.
