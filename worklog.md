@@ -2410,3 +2410,71 @@ Stage Summary:
   zero regressions (26/26, 24/24, validator PASS).
 - Push debt: 4 commits (affc0d57..2835e9c6) — the ONLY unfinished step,
   blocked solely by the missing session token.
+
+---
+Task ID: S76-MAIN
+Agent: Super Z (main)
+Task: "ادامه" — execute the S75 report §Next queued leads: dooz F-146
+upstream producer trace, gmdice roll render path, snake Dialog-restart
+hypothesis, icon bitmap decode capability.
+
+Work Log:
+- PHASE 0: container reset wiped the binary again — bootstrap_toolchain.sh
+  (foreground) + make -j2 rebuild; baseline re-established (battery 26/26
+  rc=0, verifier 24/24) before any change.
+- LEAD 1 (dooz F-146): wrote scripts/s76_g8_disasm.py (standalone dalvik
+  disassembler: exact opcode-size table, method/field/proto ref resolution,
+  --code-off direct mode; fixed sleb-vs-uleb class_data diffs and
+  type_list-size bugs along the way). Full disasm of Lg8;.a (926 units)
+  proved the pc=569 null receiver v4's def: pc=565 File.getAbsoluteFile ->
+  pc=568 move-result-object v4 -> pc=569 Object.getClass. ROOT: the
+  File-RETURNING getAbsoluteFile had NO implementation (R-NEW-347 covered
+  only the String getAbsolutePath). FIX R-NEW-390 (never-null law) +
+  R-NEW-391 (getCanonicalFile/Path — the DataStore singleton guard at
+  Lot;.a pc=37 NPEd on the null canonical File). PROOF: [R347-FILE]
+  getAbsoluteFile -> File o894; guard passes (o895/o897); protobuf schema
+  init runs; escape GONE; new first divergence F-152 (Llt0;.w pc=808)
+  registered.
+- LEAD 2 (gmdice): three stacked roots proven by runtime log + app DEX —
+  R-NEW-392 (TextView SUBSUMPTION: Button.getText via is_subclass_of
+  ancestry walk — the event loop died on the FIRST click from a
+  toString-on-null), R-NEW-393 (View.getBackground() themed-widget
+  non-null + Drawable.setColorFilter tint record — onCreate died at the
+  first loop iteration leaving resultview unassigned -> roll() pc=13
+  setText NPE). PROOF: onCreate completes 5/5 buttons clickable (was 1/5);
+  first click diff 1,511,441 px; roll results "6" -> "5" render
+  (gmdice = second fully interactive app).
+- LEAD 3 (snake): static DEX proof of the dialog restart chain
+  (showMessageDialog -> AlertDialog "Game Over!" -> positive "重新开始" ->
+  $1$1.onClick -> reStartGame). The S75 evidence already SHOWED the dialog
+  but taps were dead (hit-test walked only the activity tree; decor nodes
+  had no bounds). FIX R-NEW-394: decor node ids recorded at build +
+  layout_decor_nodes (bounds mirroring the painter geometry) +
+  decor_root_at topmost-window routing wired into the F117 tap site.
+  PROBE (scripts/s76_snake_dialog_restart.py, two real runs): game-over
+  at frame 94 (exact S73/S75 match) -> tap (758,1022)@99 -> RESTART
+  OBSERVED at frame 99 (snake back at the initial row, fresh game to
+  frame 115+, wall wrap, 2 captures). Honest residual F-153: the painter's
+  bare BitmapFont has no CJK glyphs -> button labels paint 0 px (input
+  path unaffected).
+- LEAD 4 (icon decode): A7b identity chain at the ResourceRuntime site —
+  resid -> arsc.select_file -> extract_entry_cached ->
+  decode_image_bytes -> dims/color/FNV-1a logged. f54 + gmdice both
+  decode logo.png 72x72 rgba, IDENTICAL fnv1a 0x8a66dfd69a301225
+  (cross-app determinism). f54 verifier gate strengthened to assert the
+  A7b DECODED line.
+- REGRESSION after every code change: battery 26/26 rc=0, verifier 24/24
+  PASS (with the strengthened f54 gate), Level C fidelity replay
+  BYTE-IDENTICAL 90/90. Secret guard --staged PASS.
+- DOCS+REGISTRY: registry 397 -> 404 roots (R-NEW-390..394, F-152, F-153;
+  F-146 -> ROOT-CAUSED-FIXED, F-147 note appended; next-free-id scan
+  avoided collisions with the existing F-148..F-150); S76_REPORT.md;
+  ROADMAP_STATUS + ACHIEVEMENTS §0l rows.
+
+Stage Summary:
+- All four actionable queued leads from S75 executed to root cause or
+  proven capability; zero regressions; publish debt unchanged (no
+  GH_TOKEN — one tokened push away, constitution §52).
+- Next: F-152 producer trace (Llt0;.w pc=808 receiver), CJK dialog label
+  font family (F-153), Lsr.run F084 spin (dooz actor), icon Bitmap/Drawable
+  object law, tokened push + S76 issue comments.
