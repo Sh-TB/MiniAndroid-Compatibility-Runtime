@@ -1,6 +1,6 @@
 {
- "generated": "2026-09-21 09:21 UTC",
- "head": "c67230be",
+ "generated": "2026-09-22 (S77 test-reference repair)",
+ "head": "a8704916",
  "counts": {
   "TOTAL_ROWS": 375,
   "CONSTITUTION_RULES": 169,
@@ -33,7 +33,7 @@
   {
    "id": "CONST-001",
    "source": "CONSTITUTION_V2.md#rule-1 (commit 4c8c0e02)",
-   "requirement": "CORE PRINCIPLE \u2014 MASTER CODER CONSTITUTION V2 rule 1",
+   "requirement": "CORE PRINCIPLE — MASTER CODER CONSTITUTION V2 rule 1",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -52,7 +52,7 @@
   {
    "id": "CONST-002",
    "source": "CONSTITUTION_V2.md#rule-2 (commit 4c8c0e02)",
-   "requirement": "SOURCE-FIRST / OPEN-SOURCE-FIRST \u2014 MASTER CODER CONSTITUTION V2 rule 2",
+   "requirement": "SOURCE-FIRST / OPEN-SOURCE-FIRST — MASTER CODER CONSTITUTION V2 rule 2",
    "category": "SOURCE",
    "status": "OBSERVED",
    "implementation": [
@@ -74,7 +74,7 @@
   {
    "id": "CONST-003",
    "source": "CONSTITUTION_V2.md#rule-3 (commit 4c8c0e02)",
-   "requirement": "SOURCE IS SEARCHLIGHT \u2014 MASTER CODER CONSTITUTION V2 rule 3",
+   "requirement": "SOURCE IS SEARCHLIGHT — MASTER CODER CONSTITUTION V2 rule 3",
    "category": "SOURCE",
    "status": "OBSERVED",
    "implementation": [
@@ -96,7 +96,7 @@
   {
    "id": "CONST-004",
    "source": "CONSTITUTION_V2.md#rule-4 (commit 4c8c0e02)",
-   "requirement": "SOURCE / APK / RUNTIME MUST STAY CONNECTED \u2014 MASTER CODER CONSTITUTION V2 rule 4",
+   "requirement": "SOURCE / APK / RUNTIME MUST STAY CONNECTED — MASTER CODER CONSTITUTION V2 rule 4",
    "category": "SOURCE",
    "status": "OBSERVED",
    "implementation": [
@@ -118,7 +118,7 @@
   {
    "id": "CONST-005",
    "source": "CONSTITUTION_V2.md#rule-5 (commit 4c8c0e02)",
-   "requirement": "GLOBAL UPSTREAM IMPLEMENTATION HUNT \u2014 MASTER CODER CONSTITUTION V2 rule 5",
+   "requirement": "GLOBAL UPSTREAM IMPLEMENTATION HUNT — MASTER CODER CONSTITUTION V2 rule 5",
    "category": "SOURCE",
    "status": "OBSERVED",
    "implementation": [
@@ -140,7 +140,7 @@
   {
    "id": "CONST-006",
    "source": "CONSTITUTION_V2.md#rule-6 (commit 4c8c0e02)",
-   "requirement": "NEVER INVENT SEMANTICS \u2014 MASTER CODER CONSTITUTION V2 rule 6",
+   "requirement": "NEVER INVENT SEMANTICS — MASTER CODER CONSTITUTION V2 rule 6",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -159,7 +159,7 @@
   {
    "id": "CONST-007",
    "source": "CONSTITUTION_V2.md#rule-7 (commit 4c8c0e02)",
-   "requirement": "UNKNOWN MUST REMAIN UNKNOWN \u2014 MASTER CODER CONSTITUTION V2 rule 7",
+   "requirement": "UNKNOWN MUST REMAIN UNKNOWN — MASTER CODER CONSTITUTION V2 rule 7",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -178,7 +178,7 @@
   {
    "id": "CONST-008",
    "source": "CONSTITUTION_V2.md#rule-8 (commit 4c8c0e02)",
-   "requirement": "HYPOTHESIS \u2260 ROOT CAUSE \u2014 MASTER CODER CONSTITUTION V2 rule 8",
+   "requirement": "HYPOTHESIS ≠ ROOT CAUSE — MASTER CODER CONSTITUTION V2 rule 8",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -197,7 +197,7 @@
   {
    "id": "CONST-009",
    "source": "CONSTITUTION_V2.md#rule-9 (commit 4c8c0e02)",
-   "requirement": "FRESH-LIVE EVIDENCE LAW \u2014 MASTER CODER CONSTITUTION V2 rule 9",
+   "requirement": "FRESH-LIVE EVIDENCE LAW — MASTER CODER CONSTITUTION V2 rule 9",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -216,7 +216,7 @@
   {
    "id": "CONST-010",
    "source": "CONSTITUTION_V2.md#rule-10 (commit 4c8c0e02)",
-   "requirement": "FRESHNESS CHECK BEFORE ROOT CLAIM \u2014 MASTER CODER CONSTITUTION V2 rule 10",
+   "requirement": "FRESHNESS CHECK BEFORE ROOT CLAIM — MASTER CODER CONSTITUTION V2 rule 10",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -235,7 +235,7 @@
   {
    "id": "CONST-011",
    "source": "CONSTITUTION_V2.md#rule-11 (commit 4c8c0e02)",
-   "requirement": "FAST RECON FIRST \u2014 MASTER CODER CONSTITUTION V2 rule 11",
+   "requirement": "FAST RECON FIRST — MASTER CODER CONSTITUTION V2 rule 11",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -254,7 +254,7 @@
   {
    "id": "CONST-012",
    "source": "CONSTITUTION_V2.md#rule-12 (commit 4c8c0e02)",
-   "requirement": "STATIC GRAPH \u2260 RUNTIME GRAPH \u2014 MASTER CODER CONSTITUTION V2 rule 12",
+   "requirement": "STATIC GRAPH ≠ RUNTIME GRAPH — MASTER CODER CONSTITUTION V2 rule 12",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -273,7 +273,7 @@
   {
    "id": "CONST-013",
    "source": "CONSTITUTION_V2.md#rule-13 (commit 4c8c0e02)",
-   "requirement": "TRACE IDENTITY \u2260 DISPATCH IDENTITY \u2014 MASTER CODER CONSTITUTION V2 rule 13",
+   "requirement": "TRACE IDENTITY ≠ DISPATCH IDENTITY — MASTER CODER CONSTITUTION V2 rule 13",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -292,7 +292,7 @@
   {
    "id": "CONST-014",
    "source": "CONSTITUTION_V2.md#rule-14 (commit 4c8c0e02)",
-   "requirement": "CLASS HIERARCHY FIRST \u2014 MASTER CODER CONSTITUTION V2 rule 14",
+   "requirement": "CLASS HIERARCHY FIRST — MASTER CODER CONSTITUTION V2 rule 14",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -311,7 +311,7 @@
   {
    "id": "CONST-015",
    "source": "CONSTITUTION_V2.md#rule-15 (commit 4c8c0e02)",
-   "requirement": "DISPATCH MUST BE OBSERVABLE \u2014 MASTER CODER CONSTITUTION V2 rule 15",
+   "requirement": "DISPATCH MUST BE OBSERVABLE — MASTER CODER CONSTITUTION V2 rule 15",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -330,7 +330,7 @@
   {
    "id": "CONST-016",
    "source": "CONSTITUTION_V2.md#rule-16 (commit 4c8c0e02)",
-   "requirement": "FIRST DIVERGENCE \u2014 MASTER CODER CONSTITUTION V2 rule 16",
+   "requirement": "FIRST DIVERGENCE — MASTER CODER CONSTITUTION V2 rule 16",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -349,7 +349,7 @@
   {
    "id": "CONST-017",
    "source": "CONSTITUTION_V2.md#rule-17 (commit 4c8c0e02)",
-   "requirement": "SILENT WRONG IS MORE DANGEROUS THAN CRASH \u2014 MASTER CODER CONSTITUTION V2 rule 17",
+   "requirement": "SILENT WRONG IS MORE DANGEROUS THAN CRASH — MASTER CODER CONSTITUTION V2 rule 17",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -368,7 +368,7 @@
   {
    "id": "CONST-018",
    "source": "CONSTITUTION_V2.md#rule-18 (commit 4c8c0e02)",
-   "requirement": "NULL SEMANTICS ARE FIRST-CLASS \u2014 MASTER CODER CONSTITUTION V2 rule 18",
+   "requirement": "NULL SEMANTICS ARE FIRST-CLASS — MASTER CODER CONSTITUTION V2 rule 18",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -387,7 +387,7 @@
   {
    "id": "CONST-019",
    "source": "CONSTITUTION_V2.md#rule-19 (commit 4c8c0e02)",
-   "requirement": "NO SILENT EXECUTION WITHOUT CONTRACT \u2014 MASTER CODER CONSTITUTION V2 rule 19",
+   "requirement": "NO SILENT EXECUTION WITHOUT CONTRACT — MASTER CODER CONSTITUTION V2 rule 19",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -406,7 +406,7 @@
   {
    "id": "CONST-020",
    "source": "CONSTITUTION_V2.md#rule-20 (commit 4c8c0e02)",
-   "requirement": "INSTRUCTION SEMANTICS ARE FOUNDATION \u2014 MASTER CODER CONSTITUTION V2 rule 20",
+   "requirement": "INSTRUCTION SEMANTICS ARE FOUNDATION — MASTER CODER CONSTITUTION V2 rule 20",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -425,7 +425,7 @@
   {
    "id": "CONST-021",
    "source": "CONSTITUTION_V2.md#rule-21 (commit 4c8c0e02)",
-   "requirement": "REGISTER TYPE / WIDTH LAW \u2014 MASTER CODER CONSTITUTION V2 rule 21",
+   "requirement": "REGISTER TYPE / WIDTH LAW — MASTER CODER CONSTITUTION V2 rule 21",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -444,7 +444,7 @@
   {
    "id": "CONST-022",
    "source": "CONSTITUTION_V2.md#rule-22 (commit 4c8c0e02)",
-   "requirement": "GENERATED / DESUGARED / R8 CODE IS A SEPARATE LAYER \u2014 MASTER CODER CONSTITUTION V2 rule 22",
+   "requirement": "GENERATED / DESUGARED / R8 CODE IS A SEPARATE LAYER — MASTER CODER CONSTITUTION V2 rule 22",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -463,7 +463,7 @@
   {
    "id": "CONST-023",
    "source": "CONSTITUTION_V2.md#rule-23 (commit 4c8c0e02)",
-   "requirement": "ENUM / DESUGAR / BRIDGE / SYNTHETIC CODE \u2014 MASTER CODER CONSTITUTION V2 rule 23",
+   "requirement": "ENUM / DESUGAR / BRIDGE / SYNTHETIC CODE — MASTER CODER CONSTITUTION V2 rule 23",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -482,7 +482,7 @@
   {
    "id": "CONST-024",
    "source": "CONSTITUTION_V2.md#rule-24 (commit 4c8c0e02)",
-   "requirement": "RESOURCE NAMES ARE FIRST-CLASS EVIDENCE \u2014 MASTER CODER CONSTITUTION V2 rule 24",
+   "requirement": "RESOURCE NAMES ARE FIRST-CLASS EVIDENCE — MASTER CODER CONSTITUTION V2 rule 24",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -501,7 +501,7 @@
   {
    "id": "CONST-025",
    "source": "CONSTITUTION_V2.md#rule-25 (commit 4c8c0e02)",
-   "requirement": "ARSC / AXML / RESOURCE SEMANTICS \u2014 MASTER CODER CONSTITUTION V2 rule 25",
+   "requirement": "ARSC / AXML / RESOURCE SEMANTICS — MASTER CODER CONSTITUTION V2 rule 25",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -520,7 +520,7 @@
   {
    "id": "CONST-026",
    "source": "CONSTITUTION_V2.md#rule-26 (commit 4c8c0e02)",
-   "requirement": "END-TO-END SEMANTICS \u2014 MASTER CODER CONSTITUTION V2 rule 26",
+   "requirement": "END-TO-END SEMANTICS — MASTER CODER CONSTITUTION V2 rule 26",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -539,7 +539,7 @@
   {
    "id": "CONST-027",
    "source": "CONSTITUTION_V2.md#rule-27 (commit 4c8c0e02)",
-   "requirement": "BLANK SCREEN IS A SYMPTOM \u2014 MASTER CODER CONSTITUTION V2 rule 27",
+   "requirement": "BLANK SCREEN IS A SYMPTOM — MASTER CODER CONSTITUTION V2 rule 27",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -558,7 +558,7 @@
   {
    "id": "CONST-028",
    "source": "CONSTITUTION_V2.md#rule-28 (commit 4c8c0e02)",
-   "requirement": "LAUNCH TARGET MUST BE VERIFIED \u2014 MASTER CODER CONSTITUTION V2 rule 28",
+   "requirement": "LAUNCH TARGET MUST BE VERIFIED — MASTER CODER CONSTITUTION V2 rule 28",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -577,7 +577,7 @@
   {
    "id": "CONST-029",
    "source": "CONSTITUTION_V2.md#rule-29 (commit 4c8c0e02)",
-   "requirement": "LIFECYCLE IS A RUNTIME SUBSYSTEM \u2014 MASTER CODER CONSTITUTION V2 rule 29",
+   "requirement": "LIFECYCLE IS A RUNTIME SUBSYSTEM — MASTER CODER CONSTITUTION V2 rule 29",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -596,7 +596,7 @@
   {
    "id": "CONST-030",
    "source": "CONSTITUTION_V2.md#rule-30 (commit 4c8c0e02)",
-   "requirement": "WINDOW / CONTENT VIEW \u2014 MASTER CODER CONSTITUTION V2 rule 30",
+   "requirement": "WINDOW / CONTENT VIEW — MASTER CODER CONSTITUTION V2 rule 30",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -615,7 +615,7 @@
   {
    "id": "CONST-031",
    "source": "CONSTITUTION_V2.md#rule-31 (commit 4c8c0e02)",
-   "requirement": "VIEWTREE IS NOT VISUAL PROOF \u2014 MASTER CODER CONSTITUTION V2 rule 31",
+   "requirement": "VIEWTREE IS NOT VISUAL PROOF — MASTER CODER CONSTITUTION V2 rule 31",
    "category": "EVIDENCE",
    "status": "OBSERVED",
    "implementation": [
@@ -624,7 +624,7 @@
    "tests": [],
    "execution": [],
    "evidence": [
-    "dooz dossier visual_evidence model AGENT_OBSERVED vs HUMAN_VISIBLE (S74-FOLLOW-UP \u00a74)"
+    "dooz dossier visual_evidence model AGENT_OBSERVED vs HUMAN_VISIBLE (S74-FOLLOW-UP §4)"
    ],
    "github": [
     "CONSTITUTION_V2.md"
@@ -638,7 +638,7 @@
   {
    "id": "CONST-032",
    "source": "CONSTITUTION_V2.md#rule-32 (commit 4c8c0e02)",
-   "requirement": "DRAW-OP PROOF \u2014 MASTER CODER CONSTITUTION V2 rule 32",
+   "requirement": "DRAW-OP PROOF — MASTER CODER CONSTITUTION V2 rule 32",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -657,7 +657,7 @@
   {
    "id": "CONST-033",
    "source": "CONSTITUTION_V2.md#rule-33 (commit 4c8c0e02)",
-   "requirement": "PIXEL PROOF \u2014 MASTER CODER CONSTITUTION V2 rule 33",
+   "requirement": "PIXEL PROOF — MASTER CODER CONSTITUTION V2 rule 33",
    "category": "EVIDENCE",
    "status": "OBSERVED",
    "implementation": [
@@ -678,7 +678,7 @@
   {
    "id": "CONST-034",
    "source": "CONSTITUTION_V2.md#rule-34 (commit 4c8c0e02)",
-   "requirement": "NO FAKE VISUAL SUCCESS \u2014 MASTER CODER CONSTITUTION V2 rule 34",
+   "requirement": "NO FAKE VISUAL SUCCESS — MASTER CODER CONSTITUTION V2 rule 34",
    "category": "EVIDENCE",
    "status": "OBSERVED",
    "implementation": [
@@ -702,7 +702,7 @@
   {
    "id": "CONST-035",
    "source": "CONSTITUTION_V2.md#rule-35 (commit 4c8c0e02)",
-   "requirement": "PIXEL DELTA MUST HAVE SEMANTIC EXPLANATION \u2014 MASTER CODER CONSTITUTION V2 rule 35",
+   "requirement": "PIXEL DELTA MUST HAVE SEMANTIC EXPLANATION — MASTER CODER CONSTITUTION V2 rule 35",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -721,7 +721,7 @@
   {
    "id": "CONST-036",
    "source": "CONSTITUTION_V2.md#rule-36 (commit 4c8c0e02)",
-   "requirement": "CANVAS / DRAW STATE ISOLATION \u2014 MASTER CODER CONSTITUTION V2 rule 36",
+   "requirement": "CANVAS / DRAW STATE ISOLATION — MASTER CODER CONSTITUTION V2 rule 36",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -740,7 +740,7 @@
   {
    "id": "CONST-037",
    "source": "CONSTITUTION_V2.md#rule-37 (commit 4c8c0e02)",
-   "requirement": "INSTRUMENTATION MUST BE BEHAVIOR-NEUTRAL \u2014 MASTER CODER CONSTITUTION V2 rule 37",
+   "requirement": "INSTRUMENTATION MUST BE BEHAVIOR-NEUTRAL — MASTER CODER CONSTITUTION V2 rule 37",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -759,7 +759,7 @@
   {
    "id": "CONST-038",
    "source": "CONSTITUTION_V2.md#rule-38 (commit 4c8c0e02)",
-   "requirement": "PROBE LIFECYCLE \u2014 MASTER CODER CONSTITUTION V2 rule 38",
+   "requirement": "PROBE LIFECYCLE — MASTER CODER CONSTITUTION V2 rule 38",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -778,7 +778,7 @@
   {
    "id": "CONST-039",
    "source": "CONSTITUTION_V2.md#rule-39 (commit 4c8c0e02)",
-   "requirement": "RUNTIME TRACE IS GROUND TRUTH \u2014 MASTER CODER CONSTITUTION V2 rule 39",
+   "requirement": "RUNTIME TRACE IS GROUND TRUTH — MASTER CODER CONSTITUTION V2 rule 39",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -797,7 +797,7 @@
   {
    "id": "CONST-040",
    "source": "CONSTITUTION_V2.md#rule-40 (commit 4c8c0e02)",
-   "requirement": "STATIC ANALYSIS IS SEARCHLIGHT, NOT TRUTH \u2014 MASTER CODER CONSTITUTION V2 rule 40",
+   "requirement": "STATIC ANALYSIS IS SEARCHLIGHT, NOT TRUTH — MASTER CODER CONSTITUTION V2 rule 40",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -816,7 +816,7 @@
   {
    "id": "CONST-041",
    "source": "CONSTITUTION_V2.md#rule-41 (commit 4c8c0e02)",
-   "requirement": "API MATRIX IS NOT COMPATIBILITY \u2014 MASTER CODER CONSTITUTION V2 rule 41",
+   "requirement": "API MATRIX IS NOT COMPATIBILITY — MASTER CODER CONSTITUTION V2 rule 41",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -835,7 +835,7 @@
   {
    "id": "CONST-042",
    "source": "CONSTITUTION_V2.md#rule-42 (commit 4c8c0e02)",
-   "requirement": "STUB COUNT IS NOT PROGRESS \u2014 MASTER CODER CONSTITUTION V2 rule 42",
+   "requirement": "STUB COUNT IS NOT PROGRESS — MASTER CODER CONSTITUTION V2 rule 42",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -854,7 +854,7 @@
   {
    "id": "CONST-043",
    "source": "CONSTITUTION_V2.md#rule-43 (commit 4c8c0e02)",
-   "requirement": "IMPLEMENTED \u2260 CORRECT \u2014 MASTER CODER CONSTITUTION V2 rule 43",
+   "requirement": "IMPLEMENTED ≠ CORRECT — MASTER CODER CONSTITUTION V2 rule 43",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -873,7 +873,7 @@
   {
    "id": "CONST-044",
    "source": "CONSTITUTION_V2.md#rule-44 (commit 4c8c0e02)",
-   "requirement": "TESTED \u2260 PROVEN \u2014 MASTER CODER CONSTITUTION V2 rule 44",
+   "requirement": "TESTED ≠ PROVEN — MASTER CODER CONSTITUTION V2 rule 44",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -892,7 +892,7 @@
   {
    "id": "CONST-045",
    "source": "CONSTITUTION_V2.md#rule-45 (commit 4c8c0e02)",
-   "requirement": "FIXTURE + REAL APP \u2014 MASTER CODER CONSTITUTION V2 rule 45",
+   "requirement": "FIXTURE + REAL APP — MASTER CODER CONSTITUTION V2 rule 45",
    "category": "SOURCE",
    "status": "OBSERVED",
    "implementation": [
@@ -913,7 +913,7 @@
   {
    "id": "CONST-046",
    "source": "CONSTITUTION_V2.md#rule-46 (commit 4c8c0e02)",
-   "requirement": "REAL APP IS EXECUTION TRUTH \u2014 MASTER CODER CONSTITUTION V2 rule 46",
+   "requirement": "REAL APP IS EXECUTION TRUTH — MASTER CODER CONSTITUTION V2 rule 46",
    "category": "SOURCE",
    "status": "OBSERVED",
    "implementation": [
@@ -934,7 +934,7 @@
   {
    "id": "CONST-047",
    "source": "CONSTITUTION_V2.md#rule-47 (commit 4c8c0e02)",
-   "requirement": "BUILD YOUR OWN ARTIFACT WHEN POSSIBLE \u2014 MASTER CODER CONSTITUTION V2 rule 47",
+   "requirement": "BUILD YOUR OWN ARTIFACT WHEN POSSIBLE — MASTER CODER CONSTITUTION V2 rule 47",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -953,7 +953,7 @@
   {
    "id": "CONST-048",
    "source": "CONSTITUTION_V2.md#rule-48 (commit 4c8c0e02)",
-   "requirement": "REAL APP CORPUS \u2014 MASTER CODER CONSTITUTION V2 rule 48",
+   "requirement": "REAL APP CORPUS — MASTER CODER CONSTITUTION V2 rule 48",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -972,7 +972,7 @@
   {
    "id": "CONST-049",
    "source": "CONSTITUTION_V2.md#rule-49 (commit 4c8c0e02)",
-   "requirement": "OPEN-SOURCE APP PRIORITY \u2014 MASTER CODER CONSTITUTION V2 rule 49",
+   "requirement": "OPEN-SOURCE APP PRIORITY — MASTER CODER CONSTITUTION V2 rule 49",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -991,7 +991,7 @@
   {
    "id": "CONST-050",
    "source": "CONSTITUTION_V2.md#rule-50 (commit 4c8c0e02)",
-   "requirement": "DO NOT OVERFIT TO ONE APP \u2014 MASTER CODER CONSTITUTION V2 rule 50",
+   "requirement": "DO NOT OVERFIT TO ONE APP — MASTER CODER CONSTITUTION V2 rule 50",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1010,7 +1010,7 @@
   {
    "id": "CONST-051",
    "source": "CONSTITUTION_V2.md#rule-51 (commit 4c8c0e02)",
-   "requirement": "NO APP-SPECIFIC HACKS \u2014 MASTER CODER CONSTITUTION V2 rule 51",
+   "requirement": "NO APP-SPECIFIC HACKS — MASTER CODER CONSTITUTION V2 rule 51",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1029,7 +1029,7 @@
   {
    "id": "CONST-052",
    "source": "CONSTITUTION_V2.md#rule-52 (commit 4c8c0e02)",
-   "requirement": "GENERIC FIX FAN-OUT \u2014 MASTER CODER CONSTITUTION V2 rule 52",
+   "requirement": "GENERIC FIX FAN-OUT — MASTER CODER CONSTITUTION V2 rule 52",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1048,7 +1048,7 @@
   {
    "id": "CONST-053",
    "source": "CONSTITUTION_V2.md#rule-53 (commit 4c8c0e02)",
-   "requirement": "FIX ONCE, MEASURE IMPACT \u2014 MASTER CODER CONSTITUTION V2 rule 53",
+   "requirement": "FIX ONCE, MEASURE IMPACT — MASTER CODER CONSTITUTION V2 rule 53",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1067,7 +1067,7 @@
   {
    "id": "CONST-054",
    "source": "CONSTITUTION_V2.md#rule-54 (commit 4c8c0e02)",
-   "requirement": "PRIORITY = REAL IMPACT \u2014 MASTER CODER CONSTITUTION V2 rule 54",
+   "requirement": "PRIORITY = REAL IMPACT — MASTER CODER CONSTITUTION V2 rule 54",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1086,7 +1086,7 @@
   {
    "id": "CONST-055",
    "source": "CONSTITUTION_V2.md#rule-55 (commit 4c8c0e02)",
-   "requirement": "GENERIC BUG CAN OUTRANK APP-SPECIFIC BUG \u2014 MASTER CODER CONSTITUTION V2 rule 55",
+   "requirement": "GENERIC BUG CAN OUTRANK APP-SPECIFIC BUG — MASTER CODER CONSTITUTION V2 rule 55",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1105,7 +1105,7 @@
   {
    "id": "CONST-056",
    "source": "CONSTITUTION_V2.md#rule-56 (commit 4c8c0e02)",
-   "requirement": "MULTIPLE ROOTS ARE POSSIBLE \u2014 MASTER CODER CONSTITUTION V2 rule 56",
+   "requirement": "MULTIPLE ROOTS ARE POSSIBLE — MASTER CODER CONSTITUTION V2 rule 56",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1124,7 +1124,7 @@
   {
    "id": "CONST-057",
    "source": "CONSTITUTION_V2.md#rule-57 (commit 4c8c0e02)",
-   "requirement": "FAILURE QUESTIONS \u2014 MASTER CODER CONSTITUTION V2 rule 57",
+   "requirement": "FAILURE QUESTIONS — MASTER CODER CONSTITUTION V2 rule 57",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1143,7 +1143,7 @@
   {
    "id": "CONST-058",
    "source": "CONSTITUTION_V2.md#rule-58 (commit 4c8c0e02)",
-   "requirement": "FIX QUESTIONS \u2014 MASTER CODER CONSTITUTION V2 rule 58",
+   "requirement": "FIX QUESTIONS — MASTER CODER CONSTITUTION V2 rule 58",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1162,7 +1162,7 @@
   {
    "id": "CONST-059",
    "source": "CONSTITUTION_V2.md#rule-59 (commit 4c8c0e02)",
-   "requirement": "CAMPAIGN QUESTIONS \u2014 MASTER CODER CONSTITUTION V2 rule 59",
+   "requirement": "CAMPAIGN QUESTIONS — MASTER CODER CONSTITUTION V2 rule 59",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1181,7 +1181,7 @@
   {
    "id": "CONST-060",
    "source": "CONSTITUTION_V2.md#rule-60 (commit 4c8c0e02)",
-   "requirement": "ROOT STATUS MUST BE EXPLICIT \u2014 MASTER CODER CONSTITUTION V2 rule 60",
+   "requirement": "ROOT STATUS MUST BE EXPLICIT — MASTER CODER CONSTITUTION V2 rule 60",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1200,7 +1200,7 @@
   {
    "id": "CONST-061",
    "source": "CONSTITUTION_V2.md#rule-61 (commit 4c8c0e02)",
-   "requirement": "ENVIRONMENTAL FAILURE \u2260 REGRESSION \u2014 MASTER CODER CONSTITUTION V2 rule 61",
+   "requirement": "ENVIRONMENTAL FAILURE ≠ REGRESSION — MASTER CODER CONSTITUTION V2 rule 61",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1219,7 +1219,7 @@
   {
    "id": "CONST-062",
    "source": "CONSTITUTION_V2.md#rule-62 (commit 4c8c0e02)",
-   "requirement": "NO rc=0 AS PROOF \u2014 MASTER CODER CONSTITUTION V2 rule 62",
+   "requirement": "NO rc=0 AS PROOF — MASTER CODER CONSTITUTION V2 rule 62",
    "category": "EVIDENCE",
    "status": "OBSERVED",
    "implementation": [
@@ -1240,7 +1240,7 @@
   {
    "id": "CONST-063",
    "source": "CONSTITUTION_V2.md#rule-63 (commit 4c8c0e02)",
-   "requirement": "DETERMINISM \u2014 MASTER CODER CONSTITUTION V2 rule 63",
+   "requirement": "DETERMINISM — MASTER CODER CONSTITUTION V2 rule 63",
    "category": "EVIDENCE",
    "status": "TESTED",
    "implementation": [
@@ -1263,7 +1263,7 @@
   {
    "id": "CONST-064",
    "source": "CONSTITUTION_V2.md#rule-64 (commit 4c8c0e02)",
-   "requirement": "FRESH BINARY BEFORE FINAL CLAIM \u2014 MASTER CODER CONSTITUTION V2 rule 64",
+   "requirement": "FRESH BINARY BEFORE FINAL CLAIM — MASTER CODER CONSTITUTION V2 rule 64",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1282,7 +1282,7 @@
   {
    "id": "CONST-065",
    "source": "CONSTITUTION_V2.md#rule-65 (commit 4c8c0e02)",
-   "requirement": "STALE FORENSICS MUST BE LABELED \u2014 MASTER CODER CONSTITUTION V2 rule 65",
+   "requirement": "STALE FORENSICS MUST BE LABELED — MASTER CODER CONSTITUTION V2 rule 65",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1301,7 +1301,7 @@
   {
    "id": "CONST-066",
    "source": "CONSTITUTION_V2.md#rule-66 (commit 4c8c0e02)",
-   "requirement": "EXAMPLE: FISHRINGS LESSON \u2014 MASTER CODER CONSTITUTION V2 rule 66",
+   "requirement": "EXAMPLE: FISHRINGS LESSON — MASTER CODER CONSTITUTION V2 rule 66",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1320,7 +1320,7 @@
   {
    "id": "CONST-067",
    "source": "CONSTITUTION_V2.md#rule-67 (commit 4c8c0e02)",
-   "requirement": "EXAMPLE: DOOZ LESSON \u2014 MASTER CODER CONSTITUTION V2 rule 67",
+   "requirement": "EXAMPLE: DOOZ LESSON — MASTER CODER CONSTITUTION V2 rule 67",
    "category": "EVIDENCE",
    "status": "OBSERVED",
    "implementation": [
@@ -1344,7 +1344,7 @@
   {
    "id": "CONST-068",
    "source": "CONSTITUTION_V2.md#rule-68 (commit 4c8c0e02)",
-   "requirement": "ARRAYCOPY / OPENJDK SEMANTICS \u2014 MASTER CODER CONSTITUTION V2 rule 68",
+   "requirement": "ARRAYCOPY / OPENJDK SEMANTICS — MASTER CODER CONSTITUTION V2 rule 68",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1363,7 +1363,7 @@
   {
    "id": "CONST-069",
    "source": "CONSTITUTION_V2.md#rule-69 (commit 4c8c0e02)",
-   "requirement": "NULL PRODUCER TRACE \u2014 MASTER CODER CONSTITUTION V2 rule 69",
+   "requirement": "NULL PRODUCER TRACE — MASTER CODER CONSTITUTION V2 rule 69",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1382,7 +1382,7 @@
   {
    "id": "CONST-070",
    "source": "CONSTITUTION_V2.md#rule-70 (commit 4c8c0e02)",
-   "requirement": "IPUT/IGET DROPS ARE HIGH PRIORITY \u2014 MASTER CODER CONSTITUTION V2 rule 70",
+   "requirement": "IPUT/IGET DROPS ARE HIGH PRIORITY — MASTER CODER CONSTITUTION V2 rule 70",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1401,7 +1401,7 @@
   {
    "id": "CONST-071",
    "source": "CONSTITUTION_V2.md#rule-71 (commit 4c8c0e02)",
-   "requirement": "OBJECT STATE MUST BE TRACEABLE \u2014 MASTER CODER CONSTITUTION V2 rule 71",
+   "requirement": "OBJECT STATE MUST BE TRACEABLE — MASTER CODER CONSTITUTION V2 rule 71",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1420,7 +1420,7 @@
   {
    "id": "CONST-072",
    "source": "CONSTITUTION_V2.md#rule-72 (commit 4c8c0e02)",
-   "requirement": "CONCURRENCY IS NOT OPTIONAL \u2014 MASTER CODER CONSTITUTION V2 rule 72",
+   "requirement": "CONCURRENCY IS NOT OPTIONAL — MASTER CODER CONSTITUTION V2 rule 72",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1439,7 +1439,7 @@
   {
    "id": "CONST-073",
    "source": "CONSTITUTION_V2.md#rule-73 (commit 4c8c0e02)",
-   "requirement": "ATOMIC FAMILY \u2014 MASTER CODER CONSTITUTION V2 rule 73",
+   "requirement": "ATOMIC FAMILY — MASTER CODER CONSTITUTION V2 rule 73",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1458,7 +1458,7 @@
   {
    "id": "CONST-074",
    "source": "CONSTITUTION_V2.md#rule-74 (commit 4c8c0e02)",
-   "requirement": "PARK / YIELD / THREAD SEMANTICS \u2014 MASTER CODER CONSTITUTION V2 rule 74",
+   "requirement": "PARK / YIELD / THREAD SEMANTICS — MASTER CODER CONSTITUTION V2 rule 74",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1477,7 +1477,7 @@
   {
    "id": "CONST-075",
    "source": "CONSTITUTION_V2.md#rule-75 (commit 4c8c0e02)",
-   "requirement": "COMPOSE IS A STRESS TEST, NOT A SPECIAL CASE \u2014 MASTER CODER CONSTITUTION V2 rule 75",
+   "requirement": "COMPOSE IS A STRESS TEST, NOT A SPECIAL CASE — MASTER CODER CONSTITUTION V2 rule 75",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1496,7 +1496,7 @@
   {
    "id": "CONST-076",
    "source": "CONSTITUTION_V2.md#rule-76 (commit 4c8c0e02)",
-   "requirement": "GL / WEBVIEW / SPECIAL RENDERERS \u2014 MASTER CODER CONSTITUTION V2 rule 76",
+   "requirement": "GL / WEBVIEW / SPECIAL RENDERERS — MASTER CODER CONSTITUTION V2 rule 76",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1515,7 +1515,7 @@
   {
    "id": "CONST-077",
    "source": "CONSTITUTION_V2.md#rule-77 (commit 4c8c0e02)",
-   "requirement": "SPECIAL RENDERER PIPELINES \u2014 MASTER CODER CONSTITUTION V2 rule 77",
+   "requirement": "SPECIAL RENDERER PIPELINES — MASTER CODER CONSTITUTION V2 rule 77",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1534,7 +1534,7 @@
   {
    "id": "CONST-078",
    "source": "CONSTITUTION_V2.md#rule-78 (commit 4c8c0e02)",
-   "requirement": "STOPWATCH LESSON \u2014 MASTER CODER CONSTITUTION V2 rule 78",
+   "requirement": "STOPWATCH LESSON — MASTER CODER CONSTITUTION V2 rule 78",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1553,7 +1553,7 @@
   {
    "id": "CONST-079",
    "source": "CONSTITUTION_V2.md#rule-79 (commit 4c8c0e02)",
-   "requirement": "SOURCE-LEVEL EVIDENCE MUST LINK TO RUNTIME EVIDENCE \u2014 MASTER CODER CONSTITUTION V2 rule 79",
+   "requirement": "SOURCE-LEVEL EVIDENCE MUST LINK TO RUNTIME EVIDENCE — MASTER CODER CONSTITUTION V2 rule 79",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1572,7 +1572,7 @@
   {
    "id": "CONST-080",
    "source": "CONSTITUTION_V2.md#rule-80 (commit 4c8c0e02)",
-   "requirement": "EVERY PIXEL FAILURE MUST HAVE A PATH \u2014 MASTER CODER CONSTITUTION V2 rule 80",
+   "requirement": "EVERY PIXEL FAILURE MUST HAVE A PATH — MASTER CODER CONSTITUTION V2 rule 80",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1591,7 +1591,7 @@
   {
    "id": "CONST-081",
    "source": "CONSTITUTION_V2.md#rule-81 (commit 4c8c0e02)",
-   "requirement": "RESOURCE COLLATERAL DAMAGE \u2014 MASTER CODER CONSTITUTION V2 rule 81",
+   "requirement": "RESOURCE COLLATERAL DAMAGE — MASTER CODER CONSTITUTION V2 rule 81",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1610,7 +1610,7 @@
   {
    "id": "CONST-082",
    "source": "CONSTITUTION_V2.md#rule-82 (commit 4c8c0e02)",
-   "requirement": "OBSERVED \u2260 IMPLEMENTED \u2014 MASTER CODER CONSTITUTION V2 rule 82",
+   "requirement": "OBSERVED ≠ IMPLEMENTED — MASTER CODER CONSTITUTION V2 rule 82",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1629,7 +1629,7 @@
   {
    "id": "CONST-083",
    "source": "CONSTITUTION_V2.md#rule-83 (commit 4c8c0e02)",
-   "requirement": "IMPLEMENTED \u2260 PROVEN \u2014 MASTER CODER CONSTITUTION V2 rule 83",
+   "requirement": "IMPLEMENTED ≠ PROVEN — MASTER CODER CONSTITUTION V2 rule 83",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1648,7 +1648,7 @@
   {
    "id": "CONST-084",
    "source": "CONSTITUTION_V2.md#rule-84 (commit 4c8c0e02)",
-   "requirement": "REAL APP \u2260 FULL COMPATIBILITY \u2014 MASTER CODER CONSTITUTION V2 rule 84",
+   "requirement": "REAL APP ≠ FULL COMPATIBILITY — MASTER CODER CONSTITUTION V2 rule 84",
    "category": "PROCESS",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1667,7 +1667,7 @@
   {
    "id": "CONST-085",
    "source": "CONSTITUTION_V2.md#rule-85 (commit 4c8c0e02)",
-   "requirement": "FOUNDATION ZERO-GAP \u2014 MASTER CODER CONSTITUTION V2 rule 85",
+   "requirement": "FOUNDATION ZERO-GAP — MASTER CODER CONSTITUTION V2 rule 85",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1686,7 +1686,7 @@
   {
    "id": "CONST-086",
    "source": "CONSTITUTION_V2.md#rule-86 (commit 4c8c0e02)",
-   "requirement": "DO NOT OPTIMIZE FOR STUB COUNT \u2014 MASTER CODER CONSTITUTION V2 rule 86",
+   "requirement": "DO NOT OPTIMIZE FOR STUB COUNT — MASTER CODER CONSTITUTION V2 rule 86",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1705,7 +1705,7 @@
   {
    "id": "CONST-087",
    "source": "CONSTITUTION_V2.md#rule-87 (commit 4c8c0e02)",
-   "requirement": "DO NOT OPTIMIZE FOR LOC \u2014 MASTER CODER CONSTITUTION V2 rule 87",
+   "requirement": "DO NOT OPTIMIZE FOR LOC — MASTER CODER CONSTITUTION V2 rule 87",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1724,7 +1724,7 @@
   {
    "id": "CONST-088",
    "source": "CONSTITUTION_V2.md#rule-88 (commit 4c8c0e02)",
-   "requirement": "TOOLS MUST PAY RENT \u2014 MASTER CODER CONSTITUTION V2 rule 88",
+   "requirement": "TOOLS MUST PAY RENT — MASTER CODER CONSTITUTION V2 rule 88",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1743,7 +1743,7 @@
   {
    "id": "CONST-089",
    "source": "CONSTITUTION_V2.md#rule-89 (commit 4c8c0e02)",
-   "requirement": "DO NOT BUILD SECOND TOOL UNNECESSARILY \u2014 MASTER CODER CONSTITUTION V2 rule 89",
+   "requirement": "DO NOT BUILD SECOND TOOL UNNECESSARILY — MASTER CODER CONSTITUTION V2 rule 89",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1762,7 +1762,7 @@
   {
    "id": "CONST-090",
    "source": "CONSTITUTION_V2.md#rule-90 (commit 4c8c0e02)",
-   "requirement": "FAST + DEEP TOOL STRATEGY \u2014 MASTER CODER CONSTITUTION V2 rule 90",
+   "requirement": "FAST + DEEP TOOL STRATEGY — MASTER CODER CONSTITUTION V2 rule 90",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1781,7 +1781,7 @@
   {
    "id": "CONST-091",
    "source": "CONSTITUTION_V2.md#rule-91 (commit 4c8c0e02)",
-   "requirement": "WHOLE-CORPUS FAST RECON \u2014 MASTER CODER CONSTITUTION V2 rule 91",
+   "requirement": "WHOLE-CORPUS FAST RECON — MASTER CODER CONSTITUTION V2 rule 91",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1800,7 +1800,7 @@
   {
    "id": "CONST-092",
    "source": "CONSTITUTION_V2.md#rule-92 (commit 4c8c0e02)",
-   "requirement": "DEEP INVESTIGATION SHOULD FOLLOW IMPACT \u2014 MASTER CODER CONSTITUTION V2 rule 92",
+   "requirement": "DEEP INVESTIGATION SHOULD FOLLOW IMPACT — MASTER CODER CONSTITUTION V2 rule 92",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1819,7 +1819,7 @@
   {
    "id": "CONST-093",
    "source": "CONSTITUTION_V2.md#rule-93 (commit 4c8c0e02)",
-   "requirement": "NO ONE-OFF APP HACK \u2014 MASTER CODER CONSTITUTION V2 rule 93",
+   "requirement": "NO ONE-OFF APP HACK — MASTER CODER CONSTITUTION V2 rule 93",
    "category": "PROCESS",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1838,7 +1838,7 @@
   {
    "id": "CONST-094",
    "source": "CONSTITUTION_V2.md#rule-94 (commit 4c8c0e02)",
-   "requirement": "KNOWLEDGE GRAPH \u2014 MASTER CODER CONSTITUTION V2 rule 94",
+   "requirement": "KNOWLEDGE GRAPH — MASTER CODER CONSTITUTION V2 rule 94",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1857,7 +1857,7 @@
   {
    "id": "CONST-095",
    "source": "CONSTITUTION_V2.md#rule-95 (commit 4c8c0e02)",
-   "requirement": "FAILURE \u2192 KNOWLEDGE GRAPH \u2014 MASTER CODER CONSTITUTION V2 rule 95",
+   "requirement": "FAILURE → KNOWLEDGE GRAPH — MASTER CODER CONSTITUTION V2 rule 95",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1876,7 +1876,7 @@
   {
    "id": "CONST-096",
    "source": "CONSTITUTION_V2.md#rule-96 (commit 4c8c0e02)",
-   "requirement": "WHEN STUCK, FOLLOW THE FILE \u2014 MASTER CODER CONSTITUTION V2 rule 96",
+   "requirement": "WHEN STUCK, FOLLOW THE FILE — MASTER CODER CONSTITUTION V2 rule 96",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1895,7 +1895,7 @@
   {
    "id": "CONST-097",
    "source": "CONSTITUTION_V2.md#rule-97 (commit 4c8c0e02)",
-   "requirement": "SEARCHLIGHT PRINCIPLE \u2014 MASTER CODER CONSTITUTION V2 rule 97",
+   "requirement": "SEARCHLIGHT PRINCIPLE — MASTER CODER CONSTITUTION V2 rule 97",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1914,7 +1914,7 @@
   {
    "id": "CONST-098",
    "source": "CONSTITUTION_V2.md#rule-98 (commit 4c8c0e02)",
-   "requirement": "ROOT-CAUSE EXPANSION \u2014 MASTER CODER CONSTITUTION V2 rule 98",
+   "requirement": "ROOT-CAUSE EXPANSION — MASTER CODER CONSTITUTION V2 rule 98",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1933,7 +1933,7 @@
   {
    "id": "CONST-099",
    "source": "CONSTITUTION_V2.md#rule-99 (commit 4c8c0e02)",
-   "requirement": "FIVE-LAYER FAILURE TRIANGULATION \u2014 MASTER CODER CONSTITUTION V2 rule 99",
+   "requirement": "FIVE-LAYER FAILURE TRIANGULATION — MASTER CODER CONSTITUTION V2 rule 99",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1952,7 +1952,7 @@
   {
    "id": "CONST-100",
    "source": "CONSTITUTION_V2.md#rule-100 (commit 4c8c0e02)",
-   "requirement": "CURRENT RUNTIME OVERRIDES OLD REPORT \u2014 MASTER CODER CONSTITUTION V2 rule 100",
+   "requirement": "CURRENT RUNTIME OVERRIDES OLD REPORT — MASTER CODER CONSTITUTION V2 rule 100",
    "category": "RESOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1971,7 +1971,7 @@
   {
    "id": "CONST-101",
    "source": "CONSTITUTION_V2.md#rule-101 (commit 4c8c0e02)",
-   "requirement": "NO HISTORICAL CLAIM WITHOUT VERSION \u2014 MASTER CODER CONSTITUTION V2 rule 101",
+   "requirement": "NO HISTORICAL CLAIM WITHOUT VERSION — MASTER CODER CONSTITUTION V2 rule 101",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -1990,7 +1990,7 @@
   {
    "id": "CONST-102",
    "source": "CONSTITUTION_V2.md#rule-102 (commit 4c8c0e02)",
-   "requirement": "EVIDENCE MUST BE SMALL AND TARGETED \u2014 MASTER CODER CONSTITUTION V2 rule 102",
+   "requirement": "EVIDENCE MUST BE SMALL AND TARGETED — MASTER CODER CONSTITUTION V2 rule 102",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2009,7 +2009,7 @@
   {
    "id": "CONST-103",
    "source": "CONSTITUTION_V2.md#rule-103 (commit 4c8c0e02)",
-   "requirement": "GITHUB HYGIENE \u2014 MASTER CODER CONSTITUTION V2 rule 103",
+   "requirement": "GITHUB HYGIENE — MASTER CODER CONSTITUTION V2 rule 103",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2028,7 +2028,7 @@
   {
    "id": "CONST-104",
    "source": "CONSTITUTION_V2.md#rule-104 (commit 4c8c0e02)",
-   "requirement": "PUSH MUST BE VERIFIED \u2014 MASTER CODER CONSTITUTION V2 rule 104",
+   "requirement": "PUSH MUST BE VERIFIED — MASTER CODER CONSTITUTION V2 rule 104",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2047,7 +2047,7 @@
   {
    "id": "CONST-105",
    "source": "CONSTITUTION_V2.md#rule-105 (commit 4c8c0e02)",
-   "requirement": "SECRET SAFETY \u2014 MASTER CODER CONSTITUTION V2 rule 105",
+   "requirement": "SECRET SAFETY — MASTER CODER CONSTITUTION V2 rule 105",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2066,7 +2066,7 @@
   {
    "id": "CONST-106",
    "source": "CONSTITUTION_V2.md#rule-106 (commit 4c8c0e02)",
-   "requirement": "WORKLOG \u2014 MASTER CODER CONSTITUTION V2 rule 106",
+   "requirement": "WORKLOG — MASTER CODER CONSTITUTION V2 rule 106",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2085,7 +2085,7 @@
   {
    "id": "CONST-107",
    "source": "CONSTITUTION_V2.md#rule-107 (commit 4c8c0e02)",
-   "requirement": "DO NOT STOP AFTER ONE TODO \u2014 MASTER CODER CONSTITUTION V2 rule 107",
+   "requirement": "DO NOT STOP AFTER ONE TODO — MASTER CODER CONSTITUTION V2 rule 107",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2104,7 +2104,7 @@
   {
    "id": "CONST-108",
    "source": "CONSTITUTION_V2.md#rule-108 (commit 4c8c0e02)",
-   "requirement": "CAMPAIGN STATE \u2014 MASTER CODER CONSTITUTION V2 rule 108",
+   "requirement": "CAMPAIGN STATE — MASTER CODER CONSTITUTION V2 rule 108",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2123,7 +2123,7 @@
   {
    "id": "CONST-109",
    "source": "CONSTITUTION_V2.md#rule-109 (commit 4c8c0e02)",
-   "requirement": "DO NOT LOSE PREVIOUS KNOWLEDGE \u2014 MASTER CODER CONSTITUTION V2 rule 109",
+   "requirement": "DO NOT LOSE PREVIOUS KNOWLEDGE — MASTER CODER CONSTITUTION V2 rule 109",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2142,7 +2142,7 @@
   {
    "id": "CONST-110",
    "source": "CONSTITUTION_V2.md#rule-110 (commit 4c8c0e02)",
-   "requirement": "REUSE VERIFIED OPEN-SOURCE IMPLEMENTATIONS \u2014 MASTER CODER CONSTITUTION V2 rule 110",
+   "requirement": "REUSE VERIFIED OPEN-SOURCE IMPLEMENTATIONS — MASTER CODER CONSTITUTION V2 rule 110",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2161,7 +2161,7 @@
   {
    "id": "CONST-111",
    "source": "CONSTITUTION_V2.md#rule-111 (commit 4c8c0e02)",
-   "requirement": "WINE-DROID LESSON \u2014 MASTER CODER CONSTITUTION V2 rule 111",
+   "requirement": "WINE-DROID LESSON — MASTER CODER CONSTITUTION V2 rule 111",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2180,7 +2180,7 @@
   {
    "id": "CONST-112",
    "source": "CONSTITUTION_V2.md#rule-112 (commit 4c8c0e02)",
-   "requirement": "DO NOT CONFUSE CODE REUSE WITH SEMANTIC REUSE \u2014 MASTER CODER CONSTITUTION V2 rule 112",
+   "requirement": "DO NOT CONFUSE CODE REUSE WITH SEMANTIC REUSE — MASTER CODER CONSTITUTION V2 rule 112",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2199,7 +2199,7 @@
   {
    "id": "CONST-113",
    "source": "CONSTITUTION_V2.md#rule-113 (commit 4c8c0e02)",
-   "requirement": "UPSTREAM TESTS ARE GOLD \u2014 MASTER CODER CONSTITUTION V2 rule 113",
+   "requirement": "UPSTREAM TESTS ARE GOLD — MASTER CODER CONSTITUTION V2 rule 113",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2218,7 +2218,7 @@
   {
    "id": "CONST-114",
    "source": "CONSTITUTION_V2.md#rule-114 (commit 4c8c0e02)",
-   "requirement": "FUZZ / EDGE TESTS \u2014 MASTER CODER CONSTITUTION V2 rule 114",
+   "requirement": "FUZZ / EDGE TESTS — MASTER CODER CONSTITUTION V2 rule 114",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2237,7 +2237,7 @@
   {
    "id": "CONST-115",
    "source": "CONSTITUTION_V2.md#rule-115 (commit 4c8c0e02)",
-   "requirement": "FLOAT / DOUBLE SEMANTICS \u2014 MASTER CODER CONSTITUTION V2 rule 115",
+   "requirement": "FLOAT / DOUBLE SEMANTICS — MASTER CODER CONSTITUTION V2 rule 115",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2256,7 +2256,7 @@
   {
    "id": "CONST-116",
    "source": "CONSTITUTION_V2.md#rule-116 (commit 4c8c0e02)",
-   "requirement": "LONG / DOUBLE WIDTH \u2014 MASTER CODER CONSTITUTION V2 rule 116",
+   "requirement": "LONG / DOUBLE WIDTH — MASTER CODER CONSTITUTION V2 rule 116",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2275,7 +2275,7 @@
   {
    "id": "CONST-117",
    "source": "CONSTITUTION_V2.md#rule-117 (commit 4c8c0e02)",
-   "requirement": "RESOURCE / STRING / MUTF-8 \u2014 MASTER CODER CONSTITUTION V2 rule 117",
+   "requirement": "RESOURCE / STRING / MUTF-8 — MASTER CODER CONSTITUTION V2 rule 117",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2294,7 +2294,7 @@
   {
    "id": "CONST-118",
    "source": "CONSTITUTION_V2.md#rule-118 (commit 4c8c0e02)",
-   "requirement": "PARSING MUST BE SEMANTICALLY COMPLETE \u2014 MASTER CODER CONSTITUTION V2 rule 118",
+   "requirement": "PARSING MUST BE SEMANTICALLY COMPLETE — MASTER CODER CONSTITUTION V2 rule 118",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2313,7 +2313,7 @@
   {
    "id": "CONST-119",
    "source": "CONSTITUTION_V2.md#rule-119 (commit 4c8c0e02)",
-   "requirement": "LAYOUT SEMANTICS \u2014 MASTER CODER CONSTITUTION V2 rule 119",
+   "requirement": "LAYOUT SEMANTICS — MASTER CODER CONSTITUTION V2 rule 119",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2332,7 +2332,7 @@
   {
    "id": "CONST-120",
    "source": "CONSTITUTION_V2.md#rule-120 (commit 4c8c0e02)",
-   "requirement": "RENDERING STATE \u2014 MASTER CODER CONSTITUTION V2 rule 120",
+   "requirement": "RENDERING STATE — MASTER CODER CONSTITUTION V2 rule 120",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2351,7 +2351,7 @@
   {
    "id": "CONST-121",
    "source": "CONSTITUTION_V2.md#rule-121 (commit 4c8c0e02)",
-   "requirement": "INPUT IS REAL BEHAVIOR \u2014 MASTER CODER CONSTITUTION V2 rule 121",
+   "requirement": "INPUT IS REAL BEHAVIOR — MASTER CODER CONSTITUTION V2 rule 121",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2370,7 +2370,7 @@
   {
    "id": "CONST-122",
    "source": "CONSTITUTION_V2.md#rule-122 (commit 4c8c0e02)",
-   "requirement": "STATE TRANSITIONS ARE EVIDENCE \u2014 MASTER CODER CONSTITUTION V2 rule 122",
+   "requirement": "STATE TRANSITIONS ARE EVIDENCE — MASTER CODER CONSTITUTION V2 rule 122",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2389,7 +2389,7 @@
   {
    "id": "CONST-123",
    "source": "CONSTITUTION_V2.md#rule-123 (commit 4c8c0e02)",
-   "requirement": "REGRESSION MATRIX \u2014 MASTER CODER CONSTITUTION V2 rule 123",
+   "requirement": "REGRESSION MATRIX — MASTER CODER CONSTITUTION V2 rule 123",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2408,7 +2408,7 @@
   {
    "id": "CONST-124",
    "source": "CONSTITUTION_V2.md#rule-124 (commit 4c8c0e02)",
-   "requirement": "THREE-RUN RULE \u2014 MASTER CODER CONSTITUTION V2 rule 124",
+   "requirement": "THREE-RUN RULE — MASTER CODER CONSTITUTION V2 rule 124",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2427,7 +2427,7 @@
   {
    "id": "CONST-125",
    "source": "CONSTITUTION_V2.md#rule-125 (commit 4c8c0e02)",
-   "requirement": "REAL IMPROVEMENT MUST BE MEASURED \u2014 MASTER CODER CONSTITUTION V2 rule 125",
+   "requirement": "REAL IMPROVEMENT MUST BE MEASURED — MASTER CODER CONSTITUTION V2 rule 125",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2446,7 +2446,7 @@
   {
    "id": "CONST-126",
    "source": "CONSTITUTION_V2.md#rule-126 (commit 4c8c0e02)",
-   "requirement": "NO FABRICATED METRICS \u2014 MASTER CODER CONSTITUTION V2 rule 126",
+   "requirement": "NO FABRICATED METRICS — MASTER CODER CONSTITUTION V2 rule 126",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2465,7 +2465,7 @@
   {
    "id": "CONST-127",
    "source": "CONSTITUTION_V2.md#rule-127 (commit 4c8c0e02)",
-   "requirement": "NO FAKE \u201cFULLY WORKING\u201d \u2014 MASTER CODER CONSTITUTION V2 rule 127",
+   "requirement": "NO FAKE “FULLY WORKING” — MASTER CODER CONSTITUTION V2 rule 127",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2484,7 +2484,7 @@
   {
    "id": "CONST-128",
    "source": "CONSTITUTION_V2.md#rule-128 (commit 4c8c0e02)",
-   "requirement": "REPORT LANGUAGE \u2014 MASTER CODER CONSTITUTION V2 rule 128",
+   "requirement": "REPORT LANGUAGE — MASTER CODER CONSTITUTION V2 rule 128",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2503,7 +2503,7 @@
   {
    "id": "CONST-129",
    "source": "CONSTITUTION_V2.md#rule-129 (commit 4c8c0e02)",
-   "requirement": "NEVER CALL INVESTIGATION A FIX \u2014 MASTER CODER CONSTITUTION V2 rule 129",
+   "requirement": "NEVER CALL INVESTIGATION A FIX — MASTER CODER CONSTITUTION V2 rule 129",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2522,7 +2522,7 @@
   {
    "id": "CONST-130",
    "source": "CONSTITUTION_V2.md#rule-130 (commit 4c8c0e02)",
-   "requirement": "NEVER CALL A FIX A ROOT CAUSE \u2014 MASTER CODER CONSTITUTION V2 rule 130",
+   "requirement": "NEVER CALL A FIX A ROOT CAUSE — MASTER CODER CONSTITUTION V2 rule 130",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2541,7 +2541,7 @@
   {
    "id": "CONST-131",
    "source": "CONSTITUTION_V2.md#rule-131 (commit 4c8c0e02)",
-   "requirement": "CAMPAIGN END CONDITION \u2014 MASTER CODER CONSTITUTION V2 rule 131",
+   "requirement": "CAMPAIGN END CONDITION — MASTER CODER CONSTITUTION V2 rule 131",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2560,7 +2560,7 @@
   {
    "id": "CONST-132",
    "source": "CONSTITUTION_V2.md#rule-132 (commit 4c8c0e02)",
-   "requirement": "NO \u201cDONE\u201d WITHOUT REMAINING LIST \u2014 MASTER CODER CONSTITUTION V2 rule 132",
+   "requirement": "NO “DONE” WITHOUT REMAINING LIST — MASTER CODER CONSTITUTION V2 rule 132",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2579,7 +2579,7 @@
   {
    "id": "CONST-133",
    "source": "CONSTITUTION_V2.md#rule-133 (commit 4c8c0e02)",
-   "requirement": "PRIORITY LEVELS \u2014 MASTER CODER CONSTITUTION V2 rule 133",
+   "requirement": "PRIORITY LEVELS — MASTER CODER CONSTITUTION V2 rule 133",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2598,7 +2598,7 @@
   {
    "id": "CONST-134",
    "source": "CONSTITUTION_V2.md#rule-134 (commit 4c8c0e02)",
-   "requirement": "P0 \u2014 MASTER CODER CONSTITUTION V2 rule 134",
+   "requirement": "P0 — MASTER CODER CONSTITUTION V2 rule 134",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2617,7 +2617,7 @@
   {
    "id": "CONST-135",
    "source": "CONSTITUTION_V2.md#rule-135 (commit 4c8c0e02)",
-   "requirement": "P1 \u2014 MASTER CODER CONSTITUTION V2 rule 135",
+   "requirement": "P1 — MASTER CODER CONSTITUTION V2 rule 135",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2636,7 +2636,7 @@
   {
    "id": "CONST-136",
    "source": "CONSTITUTION_V2.md#rule-136 (commit 4c8c0e02)",
-   "requirement": "P2 \u2014 MASTER CODER CONSTITUTION V2 rule 136",
+   "requirement": "P2 — MASTER CODER CONSTITUTION V2 rule 136",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2655,7 +2655,7 @@
   {
    "id": "CONST-137",
    "source": "CONSTITUTION_V2.md#rule-137 (commit 4c8c0e02)",
-   "requirement": "P3 \u2014 MASTER CODER CONSTITUTION V2 rule 137",
+   "requirement": "P3 — MASTER CODER CONSTITUTION V2 rule 137",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2674,7 +2674,7 @@
   {
    "id": "CONST-138",
    "source": "CONSTITUTION_V2.md#rule-138 (commit 4c8c0e02)",
-   "requirement": "DOOZ IS A STRESS TARGET \u2014 MASTER CODER CONSTITUTION V2 rule 138",
+   "requirement": "DOOZ IS A STRESS TARGET — MASTER CODER CONSTITUTION V2 rule 138",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2693,7 +2693,7 @@
   {
    "id": "CONST-139",
    "source": "CONSTITUTION_V2.md#rule-139 (commit 4c8c0e02)",
-   "requirement": "TELEGRAM IS 20%, NOT THE WHOLE PROJECT \u2014 MASTER CODER CONSTITUTION V2 rule 139",
+   "requirement": "TELEGRAM IS 20%, NOT THE WHOLE PROJECT — MASTER CODER CONSTITUTION V2 rule 139",
    "category": "PROCESS",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2712,7 +2712,7 @@
   {
    "id": "CONST-140",
    "source": "CONSTITUTION_V2.md#rule-140 (commit 4c8c0e02)",
-   "requirement": "GENERAL ANDROID COMPATIBILITY IS 80% \u2014 MASTER CODER CONSTITUTION V2 rule 140",
+   "requirement": "GENERAL ANDROID COMPATIBILITY IS 80% — MASTER CODER CONSTITUTION V2 rule 140",
    "category": "RESOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2731,7 +2731,7 @@
   {
    "id": "CONST-141",
    "source": "CONSTITUTION_V2.md#rule-141 (commit 4c8c0e02)",
-   "requirement": "OPEN-SOURCE CORPUS STRATEGY \u2014 MASTER CODER CONSTITUTION V2 rule 141",
+   "requirement": "OPEN-SOURCE CORPUS STRATEGY — MASTER CODER CONSTITUTION V2 rule 141",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2750,7 +2750,7 @@
   {
    "id": "CONST-142",
    "source": "CONSTITUTION_V2.md#rule-142 (commit 4c8c0e02)",
-   "requirement": "CURRENT BASELINE MUST BE PRESERVED \u2014 MASTER CODER CONSTITUTION V2 rule 142",
+   "requirement": "CURRENT BASELINE MUST BE PRESERVED — MASTER CODER CONSTITUTION V2 rule 142",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2769,7 +2769,7 @@
   {
    "id": "CONST-143",
    "source": "CONSTITUTION_V2.md#rule-143 (commit 4c8c0e02)",
-   "requirement": "CHANGE MUST HAVE PURPOSE \u2014 MASTER CODER CONSTITUTION V2 rule 143",
+   "requirement": "CHANGE MUST HAVE PURPOSE — MASTER CODER CONSTITUTION V2 rule 143",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2788,7 +2788,7 @@
   {
    "id": "CONST-144",
    "source": "CONSTITUTION_V2.md#rule-144 (commit 4c8c0e02)",
-   "requirement": "COMMIT COUNT IS NOT PROGRESS \u2014 MASTER CODER CONSTITUTION V2 rule 144",
+   "requirement": "COMMIT COUNT IS NOT PROGRESS — MASTER CODER CONSTITUTION V2 rule 144",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2807,7 +2807,7 @@
   {
    "id": "CONST-145",
    "source": "CONSTITUTION_V2.md#rule-145 (commit 4c8c0e02)",
-   "requirement": "LOC REDUCTION IS NOT PROGRESS \u2014 MASTER CODER CONSTITUTION V2 rule 145",
+   "requirement": "LOC REDUCTION IS NOT PROGRESS — MASTER CODER CONSTITUTION V2 rule 145",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2826,7 +2826,7 @@
   {
    "id": "CONST-146",
    "source": "CONSTITUTION_V2.md#rule-146 (commit 4c8c0e02)",
-   "requirement": "EVIDENCE HIERARCHY \u2014 MASTER CODER CONSTITUTION V2 rule 146",
+   "requirement": "EVIDENCE HIERARCHY — MASTER CODER CONSTITUTION V2 rule 146",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2845,7 +2845,7 @@
   {
    "id": "CONST-147",
    "source": "CONSTITUTION_V2.md#rule-147 (commit 4c8c0e02)",
-   "requirement": "FINAL INVESTIGATION PIPELINE \u2014 MASTER CODER CONSTITUTION V2 rule 147",
+   "requirement": "FINAL INVESTIGATION PIPELINE — MASTER CODER CONSTITUTION V2 rule 147",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2864,7 +2864,7 @@
   {
    "id": "CONST-148",
    "source": "CONSTITUTION_V2.md#rule-148 (commit 4c8c0e02)",
-   "requirement": "FINAL VISUAL INVESTIGATION PIPELINE \u2014 MASTER CODER CONSTITUTION V2 rule 148",
+   "requirement": "FINAL VISUAL INVESTIGATION PIPELINE — MASTER CODER CONSTITUTION V2 rule 148",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2883,7 +2883,7 @@
   {
    "id": "CONST-149",
    "source": "CONSTITUTION_V2.md#rule-149 (commit 4c8c0e02)",
-   "requirement": "FINAL RUNTIME INVESTIGATION PIPELINE \u2014 MASTER CODER CONSTITUTION V2 rule 149",
+   "requirement": "FINAL RUNTIME INVESTIGATION PIPELINE — MASTER CODER CONSTITUTION V2 rule 149",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2902,7 +2902,7 @@
   {
    "id": "CONST-150",
    "source": "CONSTITUTION_V2.md#rule-150 (commit 4c8c0e02)",
-   "requirement": "FINAL ROOT-CAUSE STANDARD \u2014 MASTER CODER CONSTITUTION V2 rule 150",
+   "requirement": "FINAL ROOT-CAUSE STANDARD — MASTER CODER CONSTITUTION V2 rule 150",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2921,7 +2921,7 @@
   {
    "id": "CONST-151",
    "source": "CONSTITUTION_V2.md#rule-151 (commit 4c8c0e02)",
-   "requirement": "FINAL FOUNDATION STANDARD \u2014 MASTER CODER CONSTITUTION V2 rule 151",
+   "requirement": "FINAL FOUNDATION STANDARD — MASTER CODER CONSTITUTION V2 rule 151",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2940,7 +2940,7 @@
   {
    "id": "CONST-152",
    "source": "CONSTITUTION_V2.md#rule-152 (commit 4c8c0e02)",
-   "requirement": "THE MOST IMPORTANT RULE \u2014 MASTER CODER CONSTITUTION V2 rule 152",
+   "requirement": "THE MOST IMPORTANT RULE — MASTER CODER CONSTITUTION V2 rule 152",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2959,7 +2959,7 @@
   {
    "id": "CONST-153",
    "source": "CONSTITUTION_V2.md#rule-153 (commit 4c8c0e02)",
-   "requirement": "THE SECOND MOST IMPORTANT RULE \u2014 MASTER CODER CONSTITUTION V2 rule 153",
+   "requirement": "THE SECOND MOST IMPORTANT RULE — MASTER CODER CONSTITUTION V2 rule 153",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2978,7 +2978,7 @@
   {
    "id": "CONST-154",
    "source": "CONSTITUTION_V2.md#rule-154 (commit 4c8c0e02)",
-   "requirement": "THE THIRD MOST IMPORTANT RULE \u2014 MASTER CODER CONSTITUTION V2 rule 154",
+   "requirement": "THE THIRD MOST IMPORTANT RULE — MASTER CODER CONSTITUTION V2 rule 154",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -2997,7 +2997,7 @@
   {
    "id": "CONST-155",
    "source": "CONSTITUTION_V2.md#rule-155 (commit 4c8c0e02)",
-   "requirement": "THE FOURTH MOST IMPORTANT RULE \u2014 MASTER CODER CONSTITUTION V2 rule 155",
+   "requirement": "THE FOURTH MOST IMPORTANT RULE — MASTER CODER CONSTITUTION V2 rule 155",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -3016,7 +3016,7 @@
   {
    "id": "CONST-156",
    "source": "CONSTITUTION_V2.md#rule-156 (commit 4c8c0e02)",
-   "requirement": "THE FIFTH MOST IMPORTANT RULE \u2014 MASTER CODER CONSTITUTION V2 rule 156",
+   "requirement": "THE FIFTH MOST IMPORTANT RULE — MASTER CODER CONSTITUTION V2 rule 156",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -3035,7 +3035,7 @@
   {
    "id": "CONST-157",
    "source": "CONSTITUTION_V2.md#rule-157 (commit 4c8c0e02)",
-   "requirement": "THE SIXTH MOST IMPORTANT RULE \u2014 MASTER CODER CONSTITUTION V2 rule 157",
+   "requirement": "THE SIXTH MOST IMPORTANT RULE — MASTER CODER CONSTITUTION V2 rule 157",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -3054,7 +3054,7 @@
   {
    "id": "CONST-158",
    "source": "CONSTITUTION_V2.md#rule-158 (commit 4c8c0e02)",
-   "requirement": "THE SEVENTH MOST IMPORTANT RULE \u2014 MASTER CODER CONSTITUTION V2 rule 158",
+   "requirement": "THE SEVENTH MOST IMPORTANT RULE — MASTER CODER CONSTITUTION V2 rule 158",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -3073,7 +3073,7 @@
   {
    "id": "CONST-159",
    "source": "CONSTITUTION_V2.md#rule-159 (commit 4c8c0e02)",
-   "requirement": "THE EIGHTH MOST IMPORTANT RULE \u2014 MASTER CODER CONSTITUTION V2 rule 159",
+   "requirement": "THE EIGHTH MOST IMPORTANT RULE — MASTER CODER CONSTITUTION V2 rule 159",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -3092,7 +3092,7 @@
   {
    "id": "CONST-160",
    "source": "CONSTITUTION_V2.md#rule-160 (commit 4c8c0e02)",
-   "requirement": "MASTER OPERATING LOOP \u2014 MASTER CODER CONSTITUTION V2 rule 160",
+   "requirement": "MASTER OPERATING LOOP — MASTER CODER CONSTITUTION V2 rule 160",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -3111,7 +3111,7 @@
   {
    "id": "CONST-161",
    "source": "CONSTITUTION_V2.md#rule-161 (commit 4c8c0e02)",
-   "requirement": "FINAL OUTPUT CONTRACT FOR CODER \u2014 MASTER CODER CONSTITUTION V2 rule 161",
+   "requirement": "FINAL OUTPUT CONTRACT FOR CODER — MASTER CODER CONSTITUTION V2 rule 161",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -3130,7 +3130,7 @@
   {
    "id": "CONST-162",
    "source": "CONSTITUTION_V2.md#rule-162 (commit 4c8c0e02)",
-   "requirement": "NEVER HIDE CONTRADICTIONS \u2014 MASTER CODER CONSTITUTION V2 rule 162",
+   "requirement": "NEVER HIDE CONTRADICTIONS — MASTER CODER CONSTITUTION V2 rule 162",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -3149,7 +3149,7 @@
   {
    "id": "CONST-163",
    "source": "CONSTITUTION_V2.md#rule-163 (commit 4c8c0e02)",
-   "requirement": "NO AUTOMATIC RECLASSIFICATION \u2014 MASTER CODER CONSTITUTION V2 rule 163",
+   "requirement": "NO AUTOMATIC RECLASSIFICATION — MASTER CODER CONSTITUTION V2 rule 163",
    "category": "EVIDENCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -3168,7 +3168,7 @@
   {
    "id": "CONST-164",
    "source": "CONSTITUTION_V2.md#rule-164 (commit 4c8c0e02)",
-   "requirement": "NO \u201cSUCCESS\u201d FROM METRIC IMPROVEMENT ALONE \u2014 MASTER CODER CONSTITUTION V2 rule 164",
+   "requirement": "NO “SUCCESS” FROM METRIC IMPROVEMENT ALONE — MASTER CODER CONSTITUTION V2 rule 164",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -3187,7 +3187,7 @@
   {
    "id": "CONST-165",
    "source": "CONSTITUTION_V2.md#rule-165 (commit 4c8c0e02)",
-   "requirement": "BEHAVIORAL SUCCESS \u2014 MASTER CODER CONSTITUTION V2 rule 165",
+   "requirement": "BEHAVIORAL SUCCESS — MASTER CODER CONSTITUTION V2 rule 165",
    "category": "RENDER",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -3206,7 +3206,7 @@
   {
    "id": "CONST-166",
    "source": "CONSTITUTION_V2.md#rule-166 (commit 4c8c0e02)",
-   "requirement": "ARCHITECTURAL SUCCESS \u2014 MASTER CODER CONSTITUTION V2 rule 166",
+   "requirement": "ARCHITECTURAL SUCCESS — MASTER CODER CONSTITUTION V2 rule 166",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -3225,7 +3225,7 @@
   {
    "id": "CONST-167",
    "source": "CONSTITUTION_V2.md#rule-167 (commit 4c8c0e02)",
-   "requirement": "FINAL PRINCIPLE \u2014 MASTER CODER CONSTITUTION V2 rule 167",
+   "requirement": "FINAL PRINCIPLE — MASTER CODER CONSTITUTION V2 rule 167",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -3244,7 +3244,7 @@
   {
    "id": "CONST-168",
    "source": "CONSTITUTION_V2.md#rule-168 (commit 4c8c0e02)",
-   "requirement": "ABSOLUTE RULE \u2014 MASTER CODER CONSTITUTION V2 rule 168",
+   "requirement": "ABSOLUTE RULE — MASTER CODER CONSTITUTION V2 rule 168",
    "category": "SOURCE",
    "status": "IMPLEMENTED",
    "implementation": [
@@ -3263,7 +3263,7 @@
   {
    "id": "CONST-169",
    "source": "CONSTITUTION_V2.md#rule-169 (commit 4c8c0e02)",
-   "requirement": "CODER EXECUTION DIRECTIVE \u2014 MASTER CODER CONSTITUTION V2 rule 169",
+   "requirement": "CODER EXECUTION DIRECTIVE — MASTER CODER CONSTITUTION V2 rule 169",
    "category": "EVIDENCE",
    "status": "OBSERVED",
    "implementation": [
@@ -3290,7 +3290,9 @@
    "implementation": [
     "A1 fix shipped (S67/S68, see gap matrix row)"
    ],
-   "tests": [],
+   "tests": [
+    "docs/audit/item75_closure.json#ITEM75-001 code_check (pattern='TYPE_ATTRIBUTE', found=True, expect=PRESENT; S75 executed audit)"
+   ],
    "execution": [],
    "evidence": [
     "S75 closure audit: gap matrix FIXED + code fix PRESENT",
@@ -3312,7 +3314,9 @@
    "implementation": [
     "A2 fix shipped (S67/S68, see gap matrix row)"
    ],
-   "tests": [],
+   "tests": [
+    "docs/audit/item75_closure.json#ITEM75-002 code_check (pattern='complexToDimensionPixelSize', found=True, expect=PRESENT; S75 executed audit)"
+   ],
    "execution": [],
    "evidence": [
     "S75 closure audit: gap matrix FIXED + code fix PRESENT",
@@ -3328,13 +3332,15 @@
   {
    "id": "ITEM75-003",
    "source": "docs/foundation/S67_MY_CENSUS.md",
-   "requirement": "[A3] Non-PNG-magic drawable (WebP/JPEG) \u2192 silent blank, no decode attempt, no placeholder",
+   "requirement": "[A3] Non-PNG-magic drawable (WebP/JPEG) → silent blank, no decode attempt, no placeholder",
    "category": "FOUNDATION-CONTRACT",
    "status": "TESTED",
    "implementation": [
     "A3 fix shipped (S67/S68, see gap matrix row)"
    ],
-   "tests": [],
+   "tests": [
+    "docs/audit/item75_closure.json#ITEM75-003 code_check (pattern='decode_image_bytes', found=True, expect=PRESENT; S75 executed audit)"
+   ],
    "execution": [],
    "evidence": [
     "S75 closure audit: gap matrix FIXED + code fix PRESENT",
@@ -3356,7 +3362,9 @@
    "implementation": [
     "A4 fix shipped (S67/S68, see gap matrix row)"
    ],
-   "tests": [],
+   "tests": [
+    "docs/audit/item75_closure.json#ITEM75-004 code_check (pattern='own_content_visible|draws_own_content|INVISIBLE', found=True, expect=PRESENT; S75 executed audit)"
+   ],
    "execution": [],
    "evidence": [
     "S75 closure audit: gap matrix FIXED + code fix PRESENT",
@@ -3372,13 +3380,15 @@
   {
    "id": "ITEM75-005",
    "source": "docs/foundation/S67_MY_CENSUS.md",
-   "requirement": "[A5] Canvas `Paint.setARGB` unhandled \u2192 color stays 0xFF000000",
+   "requirement": "[A5] Canvas `Paint.setARGB` unhandled → color stays 0xFF000000",
    "category": "FOUNDATION-CONTRACT",
    "status": "TESTED",
    "implementation": [
     "A5 fix shipped (S67/S68, see gap matrix row)"
    ],
-   "tests": [],
+   "tests": [
+    "docs/audit/item75_closure.json#ITEM75-005 code_check (pattern='setARGB', found=True, expect=PRESENT; S75 executed audit)"
+   ],
    "execution": [],
    "evidence": [
     "S75 closure audit: gap matrix FIXED + code fix PRESENT",
@@ -3400,7 +3410,9 @@
    "implementation": [
     "A6 fix shipped (S67/S68, see gap matrix row)"
    ],
-   "tests": [],
+   "tests": [
+    "docs/audit/item75_closure.json#ITEM75-006 code_check (pattern='text_shaper|TextShaper', found=True, expect=PRESENT; S75 executed audit)"
+   ],
    "execution": [],
    "evidence": [
     "S75 closure audit: gap matrix FIXED + code fix PRESENT",
@@ -3416,13 +3428,15 @@
   {
    "id": "ITEM75-007",
    "source": "docs/foundation/S67_MY_CENSUS.md",
-   "requirement": "[A7] Manifest label REFERENCE \u2192 literal \"@0x\u2026\"; icon not parsed at all",
+   "requirement": "[A7] Manifest label REFERENCE → literal \"@0x…\"; icon not parsed at all",
    "category": "FOUNDATION-CONTRACT",
    "status": "TESTED",
    "implementation": [
     "A7 fix shipped (S67/S68, see gap matrix row)"
    ],
-   "tests": [],
+   "tests": [
+    "docs/audit/item75_closure.json#ITEM75-007 code_check (pattern='resolve_resid_string|application_label_resid', found=True, expect=PRESENT; S75 executed audit)"
+   ],
    "execution": [],
    "evidence": [
     "S75 closure audit: S75 FIXED: REFERENCE resids captured at parse + resolve_resid_string ARSC resolve wired at ResourceRuntime ensure_loaded (PackageParser labelRes/loadLabel law); f54_manifestlabel fixture proves label '@string/app_name' -> 'F54 LabelProof' + icon resid capture; verifier f54 6/6, 24/24 total",
@@ -3466,7 +3480,9 @@
    "implementation": [
     "A9 fix shipped (S67/S68, see gap matrix row)"
    ],
-   "tests": [],
+   "tests": [
+    "docs/audit/item75_closure.json#ITEM75-009 code_check (pattern='canvas_w_', found=True, expect=PRESENT; S75 executed audit)"
+   ],
    "execution": [],
    "evidence": [
     "S75 closure audit: gap matrix FIXED + code fix PRESENT",
@@ -3488,7 +3504,9 @@
    "implementation": [
     "A10 fix shipped (S67/S68, see gap matrix row)"
    ],
-   "tests": [],
+   "tests": [
+    "docs/audit/item75_closure.json#ITEM75-010 code_check (pattern='bag_value|theme_service', found=True, expect=PRESENT; S75 executed audit)"
+   ],
    "execution": [],
    "evidence": [
     "S75 closure audit: gap matrix FIXED + code fix PRESENT",
@@ -3510,7 +3528,9 @@
    "implementation": [
     "B1 fix shipped (S67/S68, see gap matrix row)"
    ],
-   "tests": [],
+   "tests": [
+    "docs/audit/item75_closure.json#ITEM75-011 code_check (pattern='Affine2D|affine', found=True, expect=PRESENT; S75 executed audit)"
+   ],
    "execution": [],
    "evidence": [
     "S75 closure audit: gap matrix FIXED + code fix PRESENT",
@@ -3532,7 +3552,9 @@
    "implementation": [
     "B2 fix shipped (S67/S68, see gap matrix row)"
    ],
-   "tests": [],
+   "tests": [
+    "docs/audit/item75_closure.json#ITEM75-012 code_check (pattern='clip_allows|set_clip', found=True, expect=PRESENT; S75 executed audit)"
+   ],
    "execution": [],
    "evidence": [
     "S75 closure audit: gap matrix FIXED + code fix PRESENT",
@@ -3554,7 +3576,9 @@
    "implementation": [
     "B3 fix shipped (S67/S68, see gap matrix row)"
    ],
-   "tests": [],
+   "tests": [
+    "docs/audit/item75_closure.json#ITEM75-013 code_check (pattern='BitmapShadow', found=True, expect=PRESENT; S75 executed audit)"
+   ],
    "execution": [],
    "evidence": [
     "S75 closure audit: gap matrix FIXED + code fix PRESENT",
@@ -3601,7 +3625,7 @@
    "tests": [],
    "execution": [],
    "evidence": [
-    "S75 closure audit: setTranslationX/Y/setAlpha/scale/rotation in accept-and-ignore list (canvas_shadow.cpp:569) \u2014 gap stands",
+    "S75 closure audit: setTranslationX/Y/setAlpha/scale/rotation in accept-and-ignore list (canvas_shadow.cpp:569) — gap stands",
     "S75 code check (setTranslationX|setTranslationY|setAbsoluteX): miniandroid/src/framework/canvas_shadow.cpp:569:        if (m == \"setTranslationX\" || m == \"setTranslationY\" || m == \"setElevation\" ||"
    ],
    "github": [
@@ -3623,8 +3647,8 @@
    "tests": [],
    "execution": [],
    "evidence": [
-    "S75 closure audit: no scrollY/scroll-offset support anywhere in miniandroid/src (feature absent \u2014 matrix 'missing' stands)",
-    "S75 code check: ABSENT \u2014 scrollY|setScrollY|getScrollY"
+    "S75 closure audit: no scrollY/scroll-offset support anywhere in miniandroid/src (feature absent — matrix 'missing' stands)",
+    "S75 code check: ABSENT — scrollY|setScrollY|getScrollY"
    ],
    "github": [
     "docs/foundation/FOUNDATION_GAP_MATRIX.md"
@@ -3664,7 +3688,9 @@
    "implementation": [
     "B8 fix shipped (S67/S68, see gap matrix row)"
    ],
-   "tests": [],
+   "tests": [
+    "docs/audit/item75_closure.json#ITEM75-018 code_check (pattern='text_size_px', found=True, expect=PRESENT; S75 executed audit)"
+   ],
    "execution": [],
    "evidence": [
     "S75 closure audit: gap matrix FIXED + code fix PRESENT",
@@ -3689,8 +3715,8 @@
    "tests": [],
    "execution": [],
    "evidence": [
-    "S75 closure audit: text_italic FLAG stored (android_shadows.h:1156) but no italic face/synthesis \u2014 matrix 'missing' stands",
-    "S75 code check: ABSENT \u2014 synthesize_italic|oblique|italic_face"
+    "S75 closure audit: text_italic FLAG stored (android_shadows.h:1156) but no italic face/synthesis — matrix 'missing' stands",
+    "S75 code check: ABSENT — synthesize_italic|oblique|italic_face"
    ],
    "github": [
     "docs/foundation/FOUNDATION_GAP_MATRIX.md"
@@ -3711,8 +3737,8 @@
    "tests": [],
    "execution": [],
    "evidence": [
-    "S75 closure audit: no per-codepoint fallback face chain in src/fonts (only FreeSerif/emoji base \u2014 matrix 'missing' stands)",
-    "S75 code check: ABSENT \u2014 codepoint_fallback|fallback_face|fallback_chain"
+    "S75 closure audit: no per-codepoint fallback face chain in src/fonts (only FreeSerif/emoji base — matrix 'missing' stands)",
+    "S75 code check: ABSENT — codepoint_fallback|fallback_face|fallback_chain"
    ],
    "github": [
     "docs/foundation/FOUNDATION_GAP_MATRIX.md"
@@ -3733,8 +3759,8 @@
    "tests": [],
    "execution": [],
    "evidence": [
-    "S75 closure audit: no view-level android:theme handling in layout_inflater.cpp \u2014 activity-level theme only (F-134); census-only item, gap stands",
-    "S75 code check: ABSENT \u2014 android:theme"
+    "S75 closure audit: no view-level android:theme handling in layout_inflater.cpp — activity-level theme only (F-134); census-only item, gap stands",
+    "S75 code check: ABSENT — android:theme"
    ],
    "github": [
     "docs/foundation/FOUNDATION_GAP_MATRIX.md"
@@ -3755,7 +3781,7 @@
    "tests": [],
    "execution": [],
    "evidence": [
-    "S75 closure audit: @android: branch exists in resolve_id_attr (layout_inflater.cpp:417) \u2014 typed-reference path resolves; non-reference @android: names still return 0 (no framework ARSC)",
+    "S75 closure audit: @android: branch exists in resolve_id_attr (layout_inflater.cpp:417) — typed-reference path resolves; non-reference @android: names still return 0 (no framework ARSC)",
     "S75 code check (@android:|framework_id_table|FRAMEWORK_IDS): miniandroid/src/resources/layout_inflater.cpp:417:    if (s.compare(0, 9, \"@android:\") == 0) {"
    ],
    "github": [
@@ -3768,7 +3794,7 @@
   {
    "id": "ITEM75-023",
    "source": "docs/foundation/S67_MY_CENSUS.md",
-   "requirement": "[C1] Programmatic RelativeLayout children: rl_edges_valid=false \u2192 fixed-point fallback",
+   "requirement": "[C1] Programmatic RelativeLayout children: rl_edges_valid=false → fixed-point fallback",
    "category": "FOUNDATION-CONTRACT",
    "status": "PARTIAL",
    "implementation": [
@@ -3790,7 +3816,7 @@
   {
    "id": "ITEM75-024",
    "source": "docs/foundation/S67_MY_CENSUS.md",
-   "requirement": "[C2] Render-without-measure path on RL trees \u2192 legacy fallback has NO RL branch \u2192 pile at (0,0)",
+   "requirement": "[C2] Render-without-measure path on RL trees → legacy fallback has NO RL branch → pile at (0,0)",
    "category": "FOUNDATION-CONTRACT",
    "status": "PARTIAL",
    "implementation": [
@@ -3800,7 +3826,7 @@
    "execution": [],
    "evidence": [
     "S75 closure audit: gap matrix row (full-row status)",
-    "S75 code check: ABSENT \u2014 measure_before_render|ensure_measured"
+    "S75 code check: ABSENT — measure_before_render|ensure_measured"
    ],
    "github": [
     "docs/foundation/FOUNDATION_GAP_MATRIX.md"
@@ -3818,7 +3844,9 @@
    "implementation": [
     "C3 fix shipped (S67/S68, see gap matrix row)"
    ],
-   "tests": [],
+   "tests": [
+    "docs/audit/item75_closure.json#ITEM75-025 code_check (pattern='f18_lltop', found=True, expect=PRESENT; S75 executed audit)"
+   ],
    "execution": [],
    "evidence": [
     "S75 closure audit: f18_lltop fix branch present (S67 FOUNDATION comment, AOSP LinearLayout.java L1445-1470 law cited inline)",
@@ -3834,7 +3862,7 @@
   {
    "id": "ITEM75-026",
    "source": "docs/foundation/S67_MY_CENSUS.md",
-   "requirement": "[C4] `gravity` one attr \u2192 two fields (container+text conflated)",
+   "requirement": "[C4] `gravity` one attr → two fields (container+text conflated)",
    "category": "FOUNDATION-CONTRACT",
    "status": "PARTIAL",
    "implementation": [
@@ -3910,7 +3938,7 @@
    "execution": [],
    "evidence": [
     "S75 closure audit: RenderNode beginRecording/recording implemented, but setAlpha/setTranslationX/scale/rotation are swallowed no-ops (canvas_shadow.cpp:569)",
-    "S75 code check (RenderNode|render_node): miniandroid/src/framework/canvas_shadow.cpp:545:    // \u2500\u2500 RenderNode (UC009 H-072: Compose recording model) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500"
+    "S75 code check (RenderNode|render_node): miniandroid/src/framework/canvas_shadow.cpp:545:    // ── RenderNode (UC009 H-072: Compose recording model) ─────────────"
    ],
    "github": [
     "docs/foundation/FOUNDATION_GAP_MATRIX.md"
@@ -3922,7 +3950,7 @@
   {
    "id": "ITEM75-030",
    "source": "docs/foundation/S67_MY_CENSUS.md",
-   "requirement": "[C8] FrameBuffer blend forces result alpha=255; PNG encode drops alpha (RGB) \u2014 alpha semantics untestable end-to-end",
+   "requirement": "[C8] FrameBuffer blend forces result alpha=255; PNG encode drops alpha (RGB) — alpha semantics untestable end-to-end",
    "category": "FOUNDATION-CONTRACT",
    "status": "PENDING",
    "implementation": [
@@ -3931,7 +3959,7 @@
    "tests": [],
    "execution": [],
    "evidence": [
-    "S75 closure audit: png_set_IHDR PNG_COLOR_TYPE_RGB confirmed (software_renderer.cpp:863) \u2014 alpha dropped, gap stands",
+    "S75 closure audit: png_set_IHDR PNG_COLOR_TYPE_RGB confirmed (software_renderer.cpp:863) — alpha dropped, gap stands",
     "S75 code check (png_set_IHDR): 863:    png_set_IHDR(png, info, width, height, 8, PNG_COLOR_TYPE_RGB,"
    ],
    "github": [
@@ -3997,7 +4025,7 @@
    "tests": [],
    "execution": [],
    "evidence": [
-    "S75 closure audit: complex_to_fraction still declared (res_id.h:167) with zero consumers \u2014 dead code stands",
+    "S75 closure audit: complex_to_fraction still declared (res_id.h:167) with zero consumers — dead code stands",
     "S75 code check (complex_to_fraction): miniandroid/src/resources/res_id.h:167:float complex_to_fraction(uint32_t complex_data, float base, float pbase);"
    ],
    "github": [
@@ -4020,7 +4048,7 @@
    "execution": [],
    "evidence": [
     "S75 closure audit: DensityContext::from_density(font_scale) plumbing exists (res_id.h:130) with default 1.0; live fontScale source not evidenced",
-    "S75 code check (fontScale|font_scale): miniandroid/src/resources/res_id.h:124:// (= density \u00d7 fontScale), xdpi."
+    "S75 code check (fontScale|font_scale): miniandroid/src/resources/res_id.h:124:// (= density × fontScale), xdpi."
    ],
    "github": [
     "docs/foundation/FOUNDATION_GAP_MATRIX.md"
@@ -4041,7 +4069,7 @@
    "tests": [],
    "execution": [],
    "evidence": [
-    "S75 closure audit: view_renderer.cpp exists (30KB), not in Makefile \u2014 dead file not removed",
+    "S75 closure audit: view_renderer.cpp exists (30KB), not in Makefile — dead file not removed",
     "S75 code check (view_renderer): miniandroid/src/renderer/view_renderer.cpp:3:#include \"view_renderer.h\""
    ],
    "github": [
@@ -4064,7 +4092,7 @@
    "execution": [],
    "evidence": [
     "S75 closure audit: real_layout.cpp + resource_parser.cpp legacy orphans still present in src/resources/",
-    "S75 code check: ABSENT \u2014 real_layout.h|real_layout.cpp"
+    "S75 code check: ABSENT — real_layout.h|real_layout.cpp"
    ],
    "github": [
     "docs/foundation/FOUNDATION_GAP_MATRIX.md"
@@ -4107,7 +4135,7 @@
    "tests": [],
    "execution": [],
    "evidence": [
-    "S75 closure audit: exp088_a4 target now links miniandroid_core (CMakeLists.txt:282) \u2014 lib-set drift likely fixed; target itself remains",
+    "S75 closure audit: exp088_a4 target now links miniandroid_core (CMakeLists.txt:282) — lib-set drift likely fixed; target itself remains",
     "S75 code check (exp088_a4): miniandroid/src/renderer/software_renderer.h:426:// (tools/exp088_a4_png_decoder_test.cpp) still guards the interface."
    ],
    "github": [
@@ -4130,7 +4158,7 @@
    "execution": [],
    "evidence": [
     "S75 closure audit: miniandroid/scripts/build_exp124.sh still references src/renderer/text_shaper.cpp (moved to src/fonts/) + dead real_layout.cpp/view_renderer.cpp",
-    "S75 code check: ABSENT \u2014 build_exp124"
+    "S75 code check: ABSENT — build_exp124"
    ],
    "github": [
     "docs/foundation/FOUNDATION_GAP_MATRIX.md"
@@ -4142,7 +4170,7 @@
   {
    "id": "ITEM75-040",
    "source": "docs/foundation/S67_MY_CENSUS.md",
-   "requirement": "[D6] screenshot PNG alpha dropped (RGB encode) \u2014 capture proven faithful only for opaque frames",
+   "requirement": "[D6] screenshot PNG alpha dropped (RGB encode) — capture proven faithful only for opaque frames",
    "category": "FOUNDATION-CONTRACT",
    "status": "PENDING",
    "implementation": [
@@ -4151,7 +4179,7 @@
    "tests": [],
    "execution": [],
    "evidence": [
-    "S75 closure audit: PNGWriter encodes PNG_COLOR_TYPE_RGB (software_renderer.cpp:863) \u2014 alpha dropped, gap stands",
+    "S75 closure audit: PNGWriter encodes PNG_COLOR_TYPE_RGB (software_renderer.cpp:863) — alpha dropped, gap stands",
     "S75 code check (PNG_COLOR_TYPE_RGB): miniandroid/src/renderer/software_renderer.cpp:863:    png_set_IHDR(png, info, width, height, 8, PNG_COLOR_TYPE_RGB,"
    ],
    "github": [
@@ -4164,7 +4192,7 @@
   {
    "id": "ITEM75-041",
    "source": "docs/foundation/S67_MY_CENSUS.md",
-   "requirement": "[D7] ViewTree JSON vs renderer dual field names (x/y vs measured_left/top) \u2014 same write site today, fragile model",
+   "requirement": "[D7] ViewTree JSON vs renderer dual field names (x/y vs measured_left/top) — same write site today, fragile model",
    "category": "FOUNDATION-CONTRACT",
    "status": "PENDING",
    "implementation": [
@@ -4173,7 +4201,7 @@
    "tests": [],
    "execution": [],
    "evidence": [
-    "S75 closure audit: view_tree.json writes n[x]/n[y] while ViewNode carries measured_left/top (dalvik_engine.cpp:9092) \u2014 dual naming stands",
+    "S75 closure audit: view_tree.json writes n[x]/n[y] while ViewNode carries measured_left/top (dalvik_engine.cpp:9092) — dual naming stands",
     "S75 code check (n[\"x\"]): miniandroid/src/dex/dalvik_engine.cpp:9089:        n[\"x\"] = node->x;"
    ],
    "github": [
@@ -4186,13 +4214,15 @@
   {
    "id": "ITEM75-042",
    "source": "docs/foundation/FOUNDATION_GAP_MATRIX.md",
-   "requirement": "[F-121]  input\u2192pending-work\u2192render | all navigation | FIXED S67: probe drains pending intent/finish before re-render | AOSP Looper message\u2192traversal",
+   "requirement": "[F-121]  input→pending-work→render | all navigation | FIXED S67: probe drains pending intent/finish before re-render | AOSP Looper message→traversal",
    "category": "FOUNDATION-CONTRACT",
    "status": "TESTED",
    "implementation": [
     "F-121 fix shipped (S67/S68, see gap matrix row)"
    ],
-   "tests": [],
+   "tests": [
+    "docs/audit/item75_closure.json#ITEM75-042 code_check (pattern='drain_pending|pending_finish|pending_intent', found=True, expect=PRESENT; S75 executed audit)"
+   ],
    "execution": [],
    "evidence": [
     "S75 closure audit: gap matrix FIXED + code fix PRESENT",
@@ -4214,11 +4244,13 @@
    "implementation": [
     "F-122 fix shipped (S67/S68, see gap matrix row)"
    ],
-   "tests": [],
+   "tests": [
+    "docs/audit/item75_closure.json#ITEM75-043 code_check (pattern='parseColor', found=True, expect=PRESENT; S75 executed audit)"
+   ],
    "execution": [],
    "evidence": [
     "S75 closure audit: gap matrix FIXED + code fix PRESENT",
-    "S75 code check (parseColor): miniandroid/src/framework/state_list.cpp:39:        // #RRGGBB \u2192 opaque (AOSP Color.parseColor law)"
+    "S75 code check (parseColor): miniandroid/src/framework/state_list.cpp:39:        // #RRGGBB → opaque (AOSP Color.parseColor law)"
    ],
    "github": [
     "docs/foundation/FOUNDATION_GAP_MATRIX.md"
@@ -4236,7 +4268,9 @@
    "implementation": [
     "F-123 fix shipped (S67/S68, see gap matrix row)"
    ],
-   "tests": [],
+   "tests": [
+    "docs/audit/item75_closure.json#ITEM75-044 code_check (pattern='drawRoundRect', found=True, expect=PRESENT; S75 executed audit)"
+   ],
    "execution": [],
    "evidence": [
     "S75 closure audit: gap matrix FIXED + code fix PRESENT",
@@ -4252,13 +4286,15 @@
   {
    "id": "ITEM75-045",
    "source": "docs/foundation/FOUNDATION_GAP_MATRIX.md",
-   "requirement": "[F-124]  visibility XML enum space | every XML app | FIXED S67: {0,1,2}\u2192{0,4,8} mapping | ViewProps VIEW_VISIBILITY_VALUES | f06 PASS | corpus-wide ",
+   "requirement": "[F-124]  visibility XML enum space | every XML app | FIXED S67: {0,1,2}→{0,4,8} mapping | ViewProps VIEW_VISIBILITY_VALUES | f06 PASS | corpus-wide ",
    "category": "FOUNDATION-CONTRACT",
    "status": "TESTED",
    "implementation": [
     "F-124 fix shipped (S67/S68, see gap matrix row)"
    ],
-   "tests": [],
+   "tests": [
+    "docs/audit/item75_closure.json#ITEM75-045 code_check (pattern='VIEW_VISIBILITY|visibility_map|enum_space', found=True, expect=PRESENT; S75 executed audit)"
+   ],
    "execution": [],
    "evidence": [
     "S75 closure audit: gap matrix FIXED + code fix PRESENT",
@@ -4274,13 +4310,15 @@
   {
    "id": "ITEM75-046",
    "source": "docs/foundation/FOUNDATION_GAP_MATRIX.md",
-   "requirement": "[F-135]  Double/Float isNaN\u00b7isInfinite\u00b7compare | 694 static sites \u00d7 7 APKs (bouncy 141, dooz 217, fishrings 24, tictactoe 28\u2026) | FIXED S69: NaN=(v!=",
+   "requirement": "[F-135]  Double/Float isNaN·isInfinite·compare | 694 static sites × 7 APKs (bouncy 141, dooz 217, fishrings 24, tictactoe 28…) | FIXED S69: NaN=(v!=",
    "category": "FOUNDATION-CONTRACT",
    "status": "TESTED",
    "implementation": [
     "F-135 fix shipped (S67/S68, see gap matrix row)"
    ],
-   "tests": [],
+   "tests": [
+    "docs/audit/item75_closure.json#ITEM75-046 code_check (pattern='isNaN|v != v|v!=v', found=True, expect=PRESENT; S75 executed audit)"
+   ],
    "execution": [],
    "evidence": [
     "S75 closure audit: gap matrix FIXED + code fix PRESENT",
@@ -4302,11 +4340,13 @@
    "implementation": [
     "F-136 fix shipped (S67/S68, see gap matrix row)"
    ],
-   "tests": [],
+   "tests": [
+    "docs/audit/item75_closure.json#ITEM75-047 code_check (pattern='arsc_first|ARSC-first|resolve_string', found=True, expect=PRESENT; S75 executed audit)"
+   ],
    "execution": [],
    "evidence": [
     "S75 closure audit: gap matrix FIXED + code fix PRESENT",
-    "S75 code check (arsc_first|ARSC-first|resolve_string): miniandroid/src/framework/dialog_shadow.h:91://   1. resolve_strings(resolver) \u2014 resid \u2192 string via the engine's"
+    "S75 code check (arsc_first|ARSC-first|resolve_string): miniandroid/src/framework/dialog_shadow.h:91://   1. resolve_strings(resolver) — resid → string via the engine's"
    ],
    "github": [
     "docs/foundation/FOUNDATION_GAP_MATRIX.md"
@@ -4433,7 +4473,7 @@
   {
    "id": "ITEM75-053",
    "source": "docs/foundation/FOUNDATION_GAP_MATRIX.md (counts line, S68 shipped list)",
-   "requirement": "[F-130] Canvas text via TextShaper when textSize set (Persian joined 1858 px; \u00a714 one-shaping-engine law)",
+   "requirement": "[F-130] Canvas text via TextShaper when textSize set (Persian joined 1858 px; §14 one-shaping-engine law)",
    "category": "FOUNDATION-CONTRACT",
    "status": "TESTED",
    "implementation": [
@@ -4548,13 +4588,13 @@
   {
    "id": "REQ-HIST-001",
    "source": "worklog.md:L9",
-   "requirement": "[S38-MAIN] MASTER CAMPAIGN 3 continuation \u2014 publish old pushes; JPG evidence conversion (user directive: JPG <=100KB, not PNG); Hello World archive expansion (advanced",
+   "requirement": "[S38-MAIN] MASTER CAMPAIGN 3 continuation — publish old pushes; JPG evidence conversion (user directive: JPG <=100KB, not PNG); Hello World archive expansion (advanced",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S38-MAIN (lines 9\u201358)"
+    "worklog.md §S38-MAIN (lines 9–58)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -4569,13 +4609,13 @@
   {
    "id": "REQ-HIST-002",
    "source": "worklog.md:L59",
-   "requirement": "[S39] Continue MASTER CAMPAIGN from wave-4 launch \u2014 check wave-4 results, attack dooz23 render chain, close roots, push everything.",
+   "requirement": "[S39] Continue MASTER CAMPAIGN from wave-4 launch — check wave-4 results, attack dooz23 render chain, close roots, push everything.",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S39 (lines 59\u201383)"
+    "worklog.md §S39 (lines 59–83)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -4590,13 +4630,13 @@
   {
    "id": "REQ-HIST-003",
    "source": "worklog.md:L84",
-   "requirement": "[S40] Multi-front attack on full execution of Dooz v23 + games (user: \"\u0646\u0647 \u06cc\u06a9 \u062d\u0645\u0644\u0647 \u0686\u0646\u062f\u06cc\u0646 \u062d\u0645\u0644\u0647 \u0645\u062a\u0641\u0627\u0648\u062a\" \u2014 not one attack, several different attacks). FRONT-A (dooz23 composition chain) carried it: 3 roots root-caused+FIXED, first clean SUCCESS run ever.",
+   "requirement": "[S40] Multi-front attack on full execution of Dooz v23 + games (user: \"نه یک حمله چندین حمله متفاوت\" — not one attack, several different attacks). FRONT-A (dooz23 composition chain) carried it: 3 roots root-caused+FIXED, first clean SUCCESS run ever.",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S40 (lines 84\u2013104)"
+    "worklog.md §S40 (lines 84–104)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -4611,13 +4651,13 @@
   {
    "id": "REQ-HIST-004",
    "source": "worklog.md:L105",
-   "requirement": "[S41] MULTI-FRONT RUNTIME ATTACK \u2014 dooz23 R-NEW-344/R-NEW-345 forensic + generic fixes + cross-app regression",
+   "requirement": "[S41] MULTI-FRONT RUNTIME ATTACK — dooz23 R-NEW-344/R-NEW-345 forensic + generic fixes + cross-app regression",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S41 (lines 105\u2013125)"
+    "worklog.md §S41 (lines 105–125)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -4632,13 +4672,13 @@
   {
    "id": "REQ-HIST-005",
    "source": "worklog.md:L126",
-   "requirement": "[S41-r2] Attack-6 \u2014 content composition frontier (R-NEW-344 core) round-2 forensic",
+   "requirement": "[S41-r2] Attack-6 — content composition frontier (R-NEW-344 core) round-2 forensic",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S41-r2 (lines 126\u2013144)"
+    "worklog.md §S41-r2 (lines 126–144)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -4653,13 +4693,13 @@
   {
    "id": "REQ-HIST-006",
    "source": "worklog.md:L145",
-   "requirement": "[S42] Attack on the deferred-compose-request frontier (R-NEW-344 core) \u2014 user directive: next attack, everything commented, internet-sourced oracles until the game runs.",
+   "requirement": "[S42] Attack on the deferred-compose-request frontier (R-NEW-344 core) — user directive: next attack, everything commented, internet-sourced oracles until the game runs.",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S42 (lines 145\u2013163)"
+    "worklog.md §S42 (lines 145–163)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -4674,13 +4714,13 @@
   {
    "id": "REQ-HIST-007",
    "source": "worklog.md:L164",
-   "requirement": "[S43] Continue the campaign from the current remote HEAD (container had rewound local to the S15 refactor; 35 S35\u2192S42 commits recovered via fast-forward). Attack the standing frontier R-NEW-348 (dooz23 compose 1.11.4 content-lambda gate) with the Source-First law, multi-target discipline, GitHub/upstream ",
+   "requirement": "[S43] Continue the campaign from the current remote HEAD (container had rewound local to the S15 refactor; 35 S35→S42 commits recovered via fast-forward). Attack the standing frontier R-NEW-348 (dooz23 compose 1.11.4 content-lambda gate) with the Source-First law, multi-target discipline, GitHub/upstream ",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S43 (lines 164\u2013185)"
+    "worklog.md §S43 (lines 164–185)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -4695,13 +4735,13 @@
   {
    "id": "REQ-HIST-008",
    "source": "worklog.md:L186",
-   "requirement": "[S44] Push all achievements to GitHub; continue MASTER CAMPAIGN 3 \u2014 final attack on the Dooz graphics execution; test all downloaded game models; verify TicTacToe graphics + playability.",
+   "requirement": "[S44] Push all achievements to GitHub; continue MASTER CAMPAIGN 3 — final attack on the Dooz graphics execution; test all downloaded game models; verify TicTacToe graphics + playability.",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S44 (lines 186\u2013212)"
+    "worklog.md §S44 (lines 186–212)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -4716,13 +4756,13 @@
   {
    "id": "REQ-HIST-009",
    "source": "worklog.md:L213",
-   "requirement": "[S49-PHASE0] S49 Phase 0 \u2014 SECURITY INCIDENT AUDIT + secret cleanup + permanent fail-closed guard.",
+   "requirement": "[S49-PHASE0] S49 Phase 0 — SECURITY INCIDENT AUDIT + secret cleanup + permanent fail-closed guard.",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S49-PHASE0 (lines 213\u2013251)"
+    "worklog.md §S49-PHASE0 (lines 213–251)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -4743,7 +4783,7 @@
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S49-PUSH-ATTEMPT (lines 252\u2013265)"
+    "worklog.md §S49-PUSH-ATTEMPT (lines 252–265)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -4758,13 +4798,13 @@
   {
    "id": "REQ-HIST-011",
    "source": "worklog.md:L266",
-   "requirement": "[S49-HARDENING] S49 Phase 1 \u2014 post-release hardening: battery restoration + claim verification.",
+   "requirement": "[S49-HARDENING] S49 Phase 1 — post-release hardening: battery restoration + claim verification.",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S49-HARDENING (lines 266\u2013298)"
+    "worklog.md §S49-HARDENING (lines 266–298)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -4779,13 +4819,13 @@
   {
    "id": "REQ-HIST-012",
    "source": "worklog.md:L299",
-   "requirement": "[S49-FRONTIER] S49 Phase 2 \u2014 attack R-NEW-361 (the TRUE registry frontier after the claim audit).",
+   "requirement": "[S49-FRONTIER] S49 Phase 2 — attack R-NEW-361 (the TRUE registry frontier after the claim audit).",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S49-FRONTIER (lines 299\u2013336)"
+    "worklog.md §S49-FRONTIER (lines 299–336)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -4800,13 +4840,13 @@
   {
    "id": "REQ-HIST-013",
    "source": "worklog.md:L337",
-   "requirement": "[S51-PURGE] Owner directive \"remove all old pushes\" \u2014 forensic purge of bloated history (S51 FINALIZATION PHASE 0/1/9) under explicit authorization.",
+   "requirement": "[S51-PURGE] Owner directive \"remove all old pushes\" — forensic purge of bloated history (S51 FINALIZATION PHASE 0/1/9) under explicit authorization.",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S51-PURGE (lines 337\u2013374)"
+    "worklog.md §S51-PURGE (lines 337–374)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -4827,7 +4867,7 @@
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S51-PURGE-DONE (lines 375\u2013413)"
+    "worklog.md §S51-PURGE-DONE (lines 375–413)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -4842,13 +4882,13 @@
   {
    "id": "REQ-HIST-015",
    "source": "worklog.md:L414",
-   "requirement": "[S51-PUSH-VERIFY] Owner directive \"publish all old pushes\" \u2014 fresh PAT provided; verify and",
+   "requirement": "[S51-PUSH-VERIFY] Owner directive \"publish all old pushes\" — fresh PAT provided; verify and",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S51-PUSH-VERIFY (lines 414\u2013451)"
+    "worklog.md §S51-PUSH-VERIFY (lines 414–451)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -4869,7 +4909,7 @@
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S51-ALLFRONT-AUDIT (lines 452\u2013501)"
+    "worklog.md §S51-ALLFRONT-AUDIT (lines 452–501)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -4884,13 +4924,13 @@
   {
    "id": "REQ-HIST-017",
    "source": "worklog.md:L502",
-   "requirement": "[S52-PROFESSIONALIZATION] Owner directive \u2014 from HEAD, upgrade MiniAndroid to professional grade",
+   "requirement": "[S52-PROFESSIONALIZATION] Owner directive — from HEAD, upgrade MiniAndroid to professional grade",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S52-PROFESSIONALIZATION (lines 502\u2013570)"
+    "worklog.md §S52-PROFESSIONALIZATION (lines 502–570)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -4905,13 +4945,13 @@
   {
    "id": "REQ-HIST-018",
    "source": "worklog.md:L571",
-   "requirement": "[S53] S53 \u2014 EXECUTION EVIDENCE + REPOSITORY PROFESSIONALIZATION (quality gate, honest re-verdicts, image/artifact purge, real GUI evidence)",
+   "requirement": "[S53] S53 — EXECUTION EVIDENCE + REPOSITORY PROFESSIONALIZATION (quality gate, honest re-verdicts, image/artifact purge, real GUI evidence)",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S53 (lines 571\u2013631)"
+    "worklog.md §S53 (lines 571–631)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -4932,7 +4972,7 @@
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S53-PUSH-STATUS (lines 632\u2013649)"
+    "worklog.md §S53-PUSH-STATUS (lines 632–649)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -4947,13 +4987,13 @@
   {
    "id": "REQ-HIST-020",
    "source": "worklog.md:L650",
-   "requirement": "[S54] S54 \u2014 FINAL FOUNDATION CLOSURE CAMPAIGN (recon, fresh evidence, HelloWorld visual proof, ChessClock root-cause fix, canonical doc rename, hygiene, push)",
+   "requirement": "[S54] S54 — FINAL FOUNDATION CLOSURE CAMPAIGN (recon, fresh evidence, HelloWorld visual proof, ChessClock root-cause fix, canonical doc rename, hygiene, push)",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S54 (lines 650\u2013675)"
+    "worklog.md §S54 (lines 650–675)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -4974,7 +5014,7 @@
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S54-CORRECTION (lines 676\u2013688)"
+    "worklog.md §S54-CORRECTION (lines 676–688)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -4989,13 +5029,13 @@
   {
    "id": "REQ-HIST-022",
    "source": "worklog.md:L689",
-   "requirement": "[S54-PUSH-VERIFY] Record push + fresh-clone verification (\u00a740/\u00a741)",
+   "requirement": "[S54-PUSH-VERIFY] Record push + fresh-clone verification (§40/§41)",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S54-PUSH-VERIFY (lines 689\u2013702)"
+    "worklog.md §S54-PUSH-VERIFY (lines 689–702)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5010,13 +5050,13 @@
   {
    "id": "REQ-HIST-023",
    "source": "worklog.md:L703",
-   "requirement": "[S55] S55 \u2014 FOUNDATION CLOSURE PHASE 2 (complete the interrupted session: Blocker A Notes/ListView root cause, Blocker B Dooz R-NEW-361, battery, docs, push)",
+   "requirement": "[S55] S55 — FOUNDATION CLOSURE PHASE 2 (complete the interrupted session: Blocker A Notes/ListView root cause, Blocker B Dooz R-NEW-361, battery, docs, push)",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S55 (lines 703\u2013725)"
+    "worklog.md §S55 (lines 703–725)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5031,13 +5071,13 @@
   {
    "id": "REQ-HIST-024",
    "source": "worklog.md:L726",
-   "requirement": "[S55-COMMIT-PUSH-STATUS] Record S55 commit structure + push outcome honestly (\u00a729/\u00a730)",
+   "requirement": "[S55-COMMIT-PUSH-STATUS] Record S55 commit structure + push outcome honestly (§29/§30)",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S55-COMMIT-PUSH-STATUS (lines 726\u2013744)"
+    "worklog.md §S55-COMMIT-PUSH-STATUS (lines 726–744)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5052,13 +5092,13 @@
   {
    "id": "REQ-HIST-025",
    "source": "worklog.md:L745",
-   "requirement": "[S56] S56 \u2014 LEFTOVER CLOSURE (user directive: no new fronts; fix the roadmap-3",
+   "requirement": "[S56] S56 — LEFTOVER CLOSURE (user directive: no new fronts; fix the roadmap-3",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S56 (lines 745\u2013819)"
+    "worklog.md §S56 (lines 745–819)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5079,7 +5119,7 @@
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S56-PUSH-VERIFY (lines 820\u2013845)"
+    "worklog.md §S56-PUSH-VERIFY (lines 820–845)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5094,13 +5134,13 @@
   {
    "id": "REQ-HIST-027",
    "source": "worklog.md:L846",
-   "requirement": "[S57] ROADMAP 3 CLOSURE \u2014 R-NEW-344 fix + legacy-debt reconciliation (no new roadmap, no new branches)",
+   "requirement": "[S57] ROADMAP 3 CLOSURE — R-NEW-344 fix + legacy-debt reconciliation (no new roadmap, no new branches)",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S57 (lines 846\u2013869)"
+    "worklog.md §S57 (lines 846–869)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5121,7 +5161,7 @@
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S57-PUSH-VERIFY (lines 870\u2013883)"
+    "worklog.md §S57-PUSH-VERIFY (lines 870–883)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5136,13 +5176,13 @@
   {
    "id": "REQ-HIST-029",
    "source": "worklog.md:L884",
-   "requirement": "[S58] ROADMAP 3 CLOSURE \u2014 R-NEW-376 closure (F-102), R-NEW-378 cascade (F-103), F-104 io/state law family, R-NEW-352 closure; no new roadmap/branch/campaigns",
+   "requirement": "[S58] ROADMAP 3 CLOSURE — R-NEW-376 closure (F-102), R-NEW-378 cascade (F-103), F-104 io/state law family, R-NEW-352 closure; no new roadmap/branch/campaigns",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S58 (lines 884\u2013945)"
+    "worklog.md §S58 (lines 884–945)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5157,13 +5197,13 @@
   {
    "id": "REQ-HIST-030",
    "source": "worklog.md:L946",
-   "requirement": "[S59] ROADMAP 3 CLOSURE \u2014 R-NEW-379 closure (F-105), R-NEW-380 discovery; no new roadmap/branch/campaigns",
+   "requirement": "[S59] ROADMAP 3 CLOSURE — R-NEW-379 closure (F-105), R-NEW-380 discovery; no new roadmap/branch/campaigns",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S59 (lines 946\u20131017)"
+    "worklog.md §S59 (lines 946–1017)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5184,7 +5224,7 @@
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S59-PUSH-VERIFY (lines 1018\u20131043)"
+    "worklog.md §S59-PUSH-VERIFY (lines 1018–1043)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5199,13 +5239,13 @@
   {
    "id": "REQ-HIST-032",
    "source": "worklog.md:L1044",
-   "requirement": "[S60] Roadmap-3 Closure continuation \u2014 R-NEW-380 (Dooz ViewModelProvider create face, P1) closure + regressions + push",
+   "requirement": "[S60] Roadmap-3 Closure continuation — R-NEW-380 (Dooz ViewModelProvider create face, P1) closure + regressions + push",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S60 (lines 1044\u20131063)"
+    "worklog.md §S60 (lines 1044–1063)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5226,7 +5266,7 @@
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S60-PUSH-VERIFY (lines 1064\u20131085)"
+    "worklog.md §S60-PUSH-VERIFY (lines 1064–1085)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5241,13 +5281,13 @@
   {
    "id": "REQ-HIST-034",
    "source": "worklog.md:L1086",
-   "requirement": "[S61] Roadmap-3 Closure continuation from real HEAD (cac7ba5) \u2014 R-NEW-381 (Compose draw path) root cause + Runtime Spotlight Corpus Phase A + search-tool benchmark + provenance inventory; no new branch/campaign.",
+   "requirement": "[S61] Roadmap-3 Closure continuation from real HEAD (cac7ba5) — R-NEW-381 (Compose draw path) root cause + Runtime Spotlight Corpus Phase A + search-tool benchmark + provenance inventory; no new branch/campaign.",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S61 (lines 1086\u20131111)"
+    "worklog.md §S61 (lines 1086–1111)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5268,7 +5308,7 @@
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S61-PUSH-VERIFY (lines 1112\u20131125)"
+    "worklog.md §S61-PUSH-VERIFY (lines 1112–1125)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5283,13 +5323,13 @@
   {
    "id": "REQ-HIST-036",
    "source": "worklog.md:L1126",
-   "requirement": "[S62] Continue from real HEAD (2023af60, S61-PUSH-VERIFY) \u2014 R-NEW-381 measured",
+   "requirement": "[S62] Continue from real HEAD (2023af60, S61-PUSH-VERIFY) — R-NEW-381 measured",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S62 (lines 1126\u20131204)"
+    "worklog.md §S62 (lines 1126–1204)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5310,7 +5350,7 @@
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S62-PUSH-VERIFY (lines 1205\u20131233)"
+    "worklog.md §S62-PUSH-VERIFY (lines 1205–1233)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5325,13 +5365,13 @@
   {
    "id": "REQ-HIST-038",
    "source": "worklog.md:L1234",
-   "requirement": "[S62+] Open-source APK spotlight \u2014 increase count of REAL open-source APKs executed launch\u2192UI\u2192(input\u2192state\u2192render); no new campaign/branch/roadmap; F-110 optimization only if it blocks a new APK (it did)",
+   "requirement": "[S62+] Open-source APK spotlight — increase count of REAL open-source APKs executed launch→UI→(input→state→render); no new campaign/branch/roadmap; F-110 optimization only if it blocks a new APK (it did)",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S62+ (lines 1234\u20131296)"
+    "worklog.md §S62+ (lines 1234–1296)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5346,13 +5386,13 @@
   {
    "id": "REQ-HIST-039",
    "source": "worklog.md:L1297",
-   "requirement": "[S63] Open-source APK Spotlight 2 (breadth mission continues) \u2014 more REAL",
+   "requirement": "[S63] Open-source APK Spotlight 2 (breadth mission continues) — more REAL",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S63 (lines 1297\u20131370)"
+    "worklog.md §S63 (lines 1297–1370)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5373,7 +5413,7 @@
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S63-PUSH-VERIFY (lines 1371\u20131393)"
+    "worklog.md §S63-PUSH-VERIFY (lines 1371–1393)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5388,13 +5428,13 @@
   {
    "id": "REQ-HIST-041",
    "source": "worklog.md:L1394",
-   "requirement": "[S64-MAIN] S64 breadth spotlight \u2014 3 NEW open-source APKs built from source and executed; evidence over claims",
+   "requirement": "[S64-MAIN] S64 breadth spotlight — 3 NEW open-source APKs built from source and executed; evidence over claims",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S64-MAIN (lines 1394\u20131445)"
+    "worklog.md §S64-MAIN (lines 1394–1445)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5409,13 +5449,13 @@
   {
    "id": "REQ-HIST-042",
    "source": "worklog.md:L1446",
-   "requirement": "[S65-MAIN] S65 breadth spotlight \u2014 3 NEW open-source APKs built from source and",
+   "requirement": "[S65-MAIN] S65 breadth spotlight — 3 NEW open-source APKs built from source and",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S65-MAIN (lines 1446\u20131526)"
+    "worklog.md §S65-MAIN (lines 1446–1526)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5430,13 +5470,13 @@
   {
    "id": "REQ-HIST-043",
    "source": "worklog.md:L1527",
-   "requirement": "[1] S66 \u2014 FULL VISUAL PROOF + RENDERER FORENSICS (per user brief: no visual claims without real full frames; discriminate screenshot-pipeline vs framebuffer vs renderer vs layout bugs; Dooz/TicTacToe hard visual proof; S65 re-validation; push debt)",
+   "requirement": "[1] S66 — FULL VISUAL PROOF + RENDERER FORENSICS (per user brief: no visual claims without real full frames; discriminate screenshot-pipeline vs framebuffer vs renderer vs layout bugs; Dooz/TicTacToe hard visual proof; S65 re-validation; push debt)",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a71 (lines 1527\u20131592)"
+    "worklog.md §1 (lines 1527–1592)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5451,13 +5491,13 @@
   {
    "id": "REQ-HIST-044",
    "source": "worklog.md:L1593",
-   "requirement": "[S67] FOUNDATION HARDENING \u2014 user's 26-section base-contract campaign (no new apps, no new spotlight). Snowball-law fan-out-first census, then implement-verify-regress cycle.",
+   "requirement": "[S67] FOUNDATION HARDENING — user's 26-section base-contract campaign (no new apps, no new spotlight). Snowball-law fan-out-first census, then implement-verify-regress cycle.",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S67 (lines 1593\u20131619)"
+    "worklog.md §S67 (lines 1593–1619)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5478,7 +5518,7 @@
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S67-finalize (lines 1620\u20131632)"
+    "worklog.md §S67-finalize (lines 1620–1632)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5493,13 +5533,13 @@
   {
    "id": "REQ-HIST-046",
    "source": "worklog.md:L1633",
-   "requirement": "[S68-W1] FINAL BASE CLOSURE \u2014 FOUNDATION ZERO-GAP campaign (user 34-section directive). Wave 1: Canvas foundation + Bitmap/BitmapFactory + image dedup.",
+   "requirement": "[S68-W1] FINAL BASE CLOSURE — FOUNDATION ZERO-GAP campaign (user 34-section directive). Wave 1: Canvas foundation + Bitmap/BitmapFactory + image dedup.",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S68-W1 (lines 1633\u20131656)"
+    "worklog.md §S68-W1 (lines 1633–1656)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5514,13 +5554,13 @@
   {
    "id": "REQ-HIST-047",
    "source": "worklog.md:L1657",
-   "requirement": "[S68-W2] FINAL BASE CLOSURE W2 \u2014 ?attr/theme resolution (A1/A10) + campaign bookkeeping.",
+   "requirement": "[S68-W2] FINAL BASE CLOSURE W2 — ?attr/theme resolution (A1/A10) + campaign bookkeeping.",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S68-W2 (lines 1657\u20131675)"
+    "worklog.md §S68-W2 (lines 1657–1675)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5535,13 +5575,13 @@
   {
    "id": "REQ-HIST-048",
    "source": "worklog.md:L1676",
-   "requirement": "[S69] FINAL FOUNDATION / SOURCE-LINKED RUNTIME CAMPAIGN \u2014 25-section directive (\u00a70 no blind debugging \u00b7 \u00a71 source-first \u00b7 \u00a72 six graphs \u00b7 \u00a73 cross-reference \u00b7 \u00a713 API coverage matrix \u00b7 \u00a714 fan-out first \u00b7 \u00a717 fix cycle \u00b7 \u00a725 anti- false-success).",
+   "requirement": "[S69] FINAL FOUNDATION / SOURCE-LINKED RUNTIME CAMPAIGN — 25-section directive (§0 no blind debugging · §1 source-first · §2 six graphs · §3 cross-reference · §13 API coverage matrix · §14 fan-out first · §17 fix cycle · §25 anti- false-success).",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S69 (lines 1676\u20131760)"
+    "worklog.md §S69 (lines 1676–1760)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5556,13 +5596,13 @@
   {
    "id": "REQ-HIST-049",
    "source": "worklog.md:L1761",
-   "requirement": "[S70] RUNTIME UNDERSTANDING / ACTIVE SOURCE-LINKED DIAGNOSTIC ENGINE \u2014 25-phase directive (information must become actionable; USE S69 tools first; queryable graph; failure auto-trace; fan-out priority; upstream oracle; no false progress).",
+   "requirement": "[S70] RUNTIME UNDERSTANDING / ACTIVE SOURCE-LINKED DIAGNOSTIC ENGINE — 25-phase directive (information must become actionable; USE S69 tools first; queryable graph; failure auto-trace; fan-out priority; upstream oracle; no false progress).",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S70 (lines 1761\u20131840)"
+    "worklog.md §S70 (lines 1761–1840)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5577,13 +5617,13 @@
   {
    "id": "REQ-HIST-050",
    "source": "worklog.md:L1841",
-   "requirement": "[S71] FOUNDATION FORENSIC TRIAGE \u2014 upgrade the S70 diagnostic engine into a trusted foundation-gap decision system (RULE 0: classify the whole P0/P1 surface before any implementation; USE S70 tools, never build a second system).",
+   "requirement": "[S71] FOUNDATION FORENSIC TRIAGE — upgrade the S70 diagnostic engine into a trusted foundation-gap decision system (RULE 0: classify the whole P0/P1 surface before any implementation; USE S70 tools, never build a second system).",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S71 (lines 1841\u20131916)"
+    "worklog.md §S71 (lines 1841–1916)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5598,13 +5638,13 @@
   {
    "id": "REQ-HIST-051",
    "source": "worklog.md:L1917",
-   "requirement": "[S72-W1] SCREENSHOT-FIRST FOUNDATION CLOSURE \u2014 push all pending commits (user",
+   "requirement": "[S72-W1] SCREENSHOT-FIRST FOUNDATION CLOSURE — push all pending commits (user",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S72-W1 (lines 1917\u20131971)"
+    "worklog.md §S72-W1 (lines 1917–1971)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5625,7 +5665,7 @@
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S72-W2-0 (lines 1972\u20131986)"
+    "worklog.md §S72-W2-0 (lines 1972–1986)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5640,13 +5680,13 @@
   {
    "id": "REQ-HIST-053",
    "source": "worklog.md:L1987",
-   "requirement": "[S72-W2-1] Wave-2 evidence-selected root F-142 \u2014 full loop to real APK + screenshot + regression.",
+   "requirement": "[S72-W2-1] Wave-2 evidence-selected root F-142 — full loop to real APK + screenshot + regression.",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S72-W2-1 (lines 1987\u20132006)"
+    "worklog.md §S72-W2-1 (lines 1987–2006)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5661,13 +5701,13 @@
   {
    "id": "REQ-HIST-054",
    "source": "worklog.md:L2007",
-   "requirement": "[S72-W2-2] Push verification (constitution #104 \u2014 never fake success).",
+   "requirement": "[S72-W2-2] Push verification (constitution #104 — never fake success).",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S72-W2-2 (lines 2007\u20132019)"
+    "worklog.md §S72-W2-2 (lines 2007–2019)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5682,13 +5722,13 @@
   {
    "id": "REQ-HIST-055",
    "source": "worklog.md:L2020",
-   "requirement": "[S72-W3] F-141 (P0) full loop \u2014 ART null-receiver invoke law + null-producer",
+   "requirement": "[S72-W3] F-141 (P0) full loop — ART null-receiver invoke law + null-producer",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S72-W3 (lines 2020\u20132060)"
+    "worklog.md §S72-W3 (lines 2020–2060)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5709,7 +5749,7 @@
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S72-W4 (lines 2061\u20132119)"
+    "worklog.md §S72-W4 (lines 2061–2119)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5724,13 +5764,13 @@
   {
    "id": "REQ-HIST-057",
    "source": "worklog.md:L2120",
-   "requirement": "[S72-W4-PUSH] Push verification (constitution \u00a7104/\u00a7105).",
+   "requirement": "[S72-W4-PUSH] Push verification (constitution §104/§105).",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S72-W4-PUSH (lines 2120\u20132132)"
+    "worklog.md §S72-W4-PUSH (lines 2120–2132)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5745,13 +5785,13 @@
   {
    "id": "REQ-HIST-058",
    "source": "worklog.md:L2133",
-   "requirement": "[S73-MAIN] S73 \u2014 GitHub Execution Tracking + Historical APK Evidence + Autonomous",
+   "requirement": "[S73-MAIN] S73 — GitHub Execution Tracking + Historical APK Evidence + Autonomous",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S73-MAIN (lines 2133\u20132191)"
+    "worklog.md §S73-MAIN (lines 2133–2191)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5766,13 +5806,13 @@
   {
    "id": "REQ-HIST-059",
    "source": "worklog.md:L2192",
-   "requirement": "[S74-MAIN] S74 GAME-CHANGER \u2014 Android Compatibility Platform Architecture + App",
+   "requirement": "[S74-MAIN] S74 GAME-CHANGER — Android Compatibility Platform Architecture + App",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S74-MAIN (lines 2192\u20132248)"
+    "worklog.md §S74-MAIN (lines 2192–2248)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5787,13 +5827,13 @@
   {
    "id": "REQ-HIST-060",
    "source": "worklog.md:L2249",
-   "requirement": "[S74-FOLLOW-UP (single-agent wave)] S74 FOLLOW-UP WAVE \u2014 Operational Base Completion (execution evidence / issues / sandbox / tools / knowledge)",
+   "requirement": "[S74-FOLLOW-UP (single-agent wave)] S74 FOLLOW-UP WAVE — Operational Base Completion (execution evidence / issues / sandbox / tools / knowledge)",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S74-FOLLOW-UP (single-agent wave) (lines 2249\u20132273)"
+    "worklog.md §S74-FOLLOW-UP (single-agent wave) (lines 2249–2273)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5808,13 +5848,13 @@
   {
    "id": "REQ-HIST-061",
    "source": "worklog.md:L2274",
-   "requirement": "[S74-FINAL-RECONCILIATION] FINAL MASTER RECONCILIATION \u2014 prove every previous request/rule/75/169/185 item and S74 requirement with a per-row truth ledger (docs/audit/MASTER_CHECKLIST.md + master_audit.json); publish all pending commits; verify human-visible evidence on GitHub; downgrade false completions.",
+   "requirement": "[S74-FINAL-RECONCILIATION] FINAL MASTER RECONCILIATION — prove every previous request/rule/75/169/185 item and S74 requirement with a per-row truth ledger (docs/audit/MASTER_CHECKLIST.md + master_audit.json); publish all pending commits; verify human-visible evidence on GitHub; downgrade false completions.",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S74-FINAL-RECONCILIATION (lines 2274\u20132291)"
+    "worklog.md §S74-FINAL-RECONCILIATION (lines 2274–2291)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5829,13 +5869,13 @@
   {
    "id": "REQ-HIST-062",
    "source": "worklog.md:L2292",
-   "requirement": "[S74-FINAL-RECONCILIATION (publish + verify stage)] publish ledger + checkpoints; verify human-visible links end-to-end (\u00a726/\u00a733).",
+   "requirement": "[S74-FINAL-RECONCILIATION (publish + verify stage)] publish ledger + checkpoints; verify human-visible links end-to-end (§26/§33).",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [],
    "execution": [
-    "worklog.md \u00a7S74-FINAL-RECONCILIATION (publish + verify stage) (lines 2292\u20132306)"
+    "worklog.md §S74-FINAL-RECONCILIATION (publish + verify stage) (lines 2292–2306)"
    ],
    "evidence": [
     "worklog entry + commits referenced therein"
@@ -5892,7 +5932,7 @@
   {
    "id": "CAM-S74GC",
    "source": "docs/evidence/S74/S74_REPORT.md",
-   "requirement": "S74 GAME-CHANGER: five-layer architecture \u2014 14 app dossiers, 12 tool profiles, capabilities, knowledge promotion, execution skill, capability matrix+graph; audit of S73 issues",
+   "requirement": "S74 GAME-CHANGER: five-layer architecture — 14 app dossiers, 12 tool profiles, capabilities, knowledge promotion, execution skill, capability matrix+graph; audit of S73 issues",
    "category": "CAMPAIGN",
    "status": "IMPLEMENTED",
    "implementation": [],
@@ -5913,7 +5953,7 @@
   {
    "id": "CAM-S74ADD",
    "source": "SOURCE_NOT_RECOVERED (user campaign list)",
-   "requirement": "S74 'Missing Architecture Addendum' \u2014 no separate wave, doc, or worklog task found; S74-MAIN (S74-GC) built the architecture the label plausibly refers to",
+   "requirement": "S74 'Missing Architecture Addendum' — no separate wave, doc, or worklog task found; S74-MAIN (S74-GC) built the architecture the label plausibly refers to",
    "category": "CAMPAIGN",
    "status": "UNVERIFIED",
    "implementation": [],
@@ -5925,12 +5965,12 @@
    "github": [],
    "issues": [],
    "consumer": [],
-   "gap": "searched: worklog.md (60 tasks), docs/evidence/S74*, docs/foundation/S7*, grep 'addendum|Missing Architecture' across docs/ \u2014 no canonical source found; possible alias of S74-MAIN architecture build"
+   "gap": "searched: worklog.md (60 tasks), docs/evidence/S74*, docs/foundation/S7*, grep 'addendum|Missing Architecture' across docs/ — no canonical source found; possible alias of S74-MAIN architecture build"
   },
   {
    "id": "CAM-S74OPS",
    "source": "docs/evidence/s74_ops/S74_FOLLOWUP_REPORT.md",
-   "requirement": "S74 OPERATIONAL FOLLOW-UP: human-visible evidence campaign \u2014 14 evidence bundles, \u00a727 AUDIT_TABLE.md, visual_evidence blocks (11 HUMAN_VISIBLE / 3 NOT_HUMAN_VISIBLE), tool+law utilization, \u00a735 validator gates, 5 commits (published d7280a15; \u00a76 checkpoints posted + 14/14 links render-verified)",
+   "requirement": "S74 OPERATIONAL FOLLOW-UP: human-visible evidence campaign — 14 evidence bundles, §27 AUDIT_TABLE.md, visual_evidence blocks (11 HUMAN_VISIBLE / 3 NOT_HUMAN_VISIBLE), tool+law utilization, §35 validator gates, 5 commits (published d7280a15; §6 checkpoints posted + 14/14 links render-verified)",
    "category": "CAMPAIGN",
    "status": "OBSERVED",
    "implementation": [],
@@ -6056,7 +6096,7 @@
   {
    "id": "APP-ANDROIDGAMESNAKE",
    "source": "docs/compatibility/apps/androidgamesnake.json",
-   "requirement": "AndroidGameSnake [zhangman.github.snake] \u2014 full-chain execution proof (launch\u2192UI\u2192input\u2192state\u2192render\u2192screenshot\u2192persistence\u2192security)",
+   "requirement": "AndroidGameSnake [zhangman.github.snake] — full-chain execution proof (launch→UI→input→state→render→screenshot→persistence→security)",
    "category": "APP",
    "status": "OBSERVED",
    "implementation": [
@@ -6090,7 +6130,7 @@
   {
    "id": "APP-BOUNCY",
    "source": "docs/compatibility/apps/bouncy.json",
-   "requirement": "Bouncy [com.dozingcatsoftware.bouncy] \u2014 full-chain execution proof (launch\u2192UI\u2192input\u2192state\u2192render\u2192screenshot\u2192persistence\u2192security)",
+   "requirement": "Bouncy [com.dozingcatsoftware.bouncy] — full-chain execution proof (launch→UI→input→state→render→screenshot→persistence→security)",
    "category": "APP",
    "status": "OBSERVED",
    "implementation": [
@@ -6124,7 +6164,7 @@
   {
    "id": "APP-CONNECTFOUR",
    "source": "docs/compatibility/apps/connectfour.json",
-   "requirement": "ConnectFour (golden fixture) [None] \u2014 full-chain execution proof (launch\u2192UI\u2192input\u2192state\u2192render\u2192screenshot\u2192persistence\u2192security)",
+   "requirement": "ConnectFour (golden fixture) [None] — full-chain execution proof (launch→UI→input→state→render→screenshot→persistence→security)",
    "category": "APP",
    "status": "PARTIAL",
    "implementation": [
@@ -6158,7 +6198,7 @@
   {
    "id": "APP-DOOZ",
    "source": "docs/compatibility/apps/dooz.json",
-   "requirement": "Dooz [io.github.yamin8000.dooz] \u2014 full-chain execution proof (launch\u2192UI\u2192input\u2192state\u2192render\u2192screenshot\u2192persistence\u2192security)",
+   "requirement": "Dooz [io.github.yamin8000.dooz] — full-chain execution proof (launch→UI→input→state→render→screenshot→persistence→security)",
    "category": "APP",
    "status": "PARTIAL",
    "implementation": [
@@ -6176,7 +6216,7 @@
     "14"
    ],
    "consumer": [],
-   "gap": "no meaningful human-visible UI proof (engine-default black region (23,472 px) \u2014 truthful blocker evidence attached in )",
+   "gap": "no meaningful human-visible UI proof (engine-default black region (23,472 px) — truthful blocker evidence attached in )",
    "app_id": "dooz",
    "human_visible": "NOT_HUMAN_VISIBLE",
    "nontrivial_frames": 2,
@@ -6192,7 +6232,7 @@
   {
    "id": "APP-FISHRINGS",
    "source": "docs/compatibility/apps/fishrings.json",
-   "requirement": "FishRings [eu.veldsoft.fish.rings] \u2014 full-chain execution proof (launch\u2192UI\u2192input\u2192state\u2192render\u2192screenshot\u2192persistence\u2192security)",
+   "requirement": "FishRings [eu.veldsoft.fish.rings] — full-chain execution proof (launch→UI→input→state→render→screenshot→persistence→security)",
    "category": "APP",
    "status": "OBSERVED",
    "implementation": [
@@ -6226,7 +6266,7 @@
   {
    "id": "APP-GMDICE",
    "source": "docs/compatibility/apps/gmdice.json",
-   "requirement": "GM Dice [de.duenndns.gmdice] \u2014 full-chain execution proof (launch\u2192UI\u2192input\u2192state\u2192render\u2192screenshot\u2192persistence\u2192security)",
+   "requirement": "GM Dice [de.duenndns.gmdice] — full-chain execution proof (launch→UI→input→state→render→screenshot→persistence→security)",
    "category": "APP",
    "status": "OBSERVED",
    "implementation": [
@@ -6260,7 +6300,7 @@
   {
    "id": "APP-HELLOWORLD",
    "source": "docs/compatibility/apps/helloworld.json",
-   "requirement": "HelloWorld (HelloWorldSelfAware) [com.appliberated.helloworldselfaware] \u2014 full-chain execution proof (launch\u2192UI\u2192input\u2192state\u2192render\u2192screenshot\u2192persistence\u2192security)",
+   "requirement": "HelloWorld (HelloWorldSelfAware) [com.appliberated.helloworldselfaware] — full-chain execution proof (launch→UI→input→state→render→screenshot→persistence→security)",
    "category": "APP",
    "status": "OBSERVED",
    "implementation": [
@@ -6294,7 +6334,7 @@
   {
    "id": "APP-MICROTIMER",
    "source": "docs/compatibility/apps/microtimer.json",
-   "requirement": "MicroTimer [dubrowgn.microtimer] \u2014 full-chain execution proof (launch\u2192UI\u2192input\u2192state\u2192render\u2192screenshot\u2192persistence\u2192security)",
+   "requirement": "MicroTimer [dubrowgn.microtimer] — full-chain execution proof (launch→UI→input→state→render→screenshot→persistence→security)",
    "category": "APP",
    "status": "OBSERVED",
    "implementation": [
@@ -6328,7 +6368,7 @@
   {
    "id": "APP-OPMT",
    "source": "docs/compatibility/apps/opmt.json",
-   "requirement": "OPMT (One Plus Minus Three) [one.scarecrow.games.OPMT] \u2014 full-chain execution proof (launch\u2192UI\u2192input\u2192state\u2192render\u2192screenshot\u2192persistence\u2192security)",
+   "requirement": "OPMT (One Plus Minus Three) [one.scarecrow.games.OPMT] — full-chain execution proof (launch→UI→input→state→render→screenshot→persistence→security)",
    "category": "APP",
    "status": "OBSERVED",
    "implementation": [
@@ -6362,7 +6402,7 @@
   {
    "id": "APP-STOPWATCH",
    "source": "docs/compatibility/apps/stopwatch.json",
-   "requirement": "Simple Stopwatch [com.github.muellerma.stopwatch] \u2014 full-chain execution proof (launch\u2192UI\u2192input\u2192state\u2192render\u2192screenshot\u2192persistence\u2192security)",
+   "requirement": "Simple Stopwatch [com.github.muellerma.stopwatch] — full-chain execution proof (launch→UI→input→state→render→screenshot→persistence→security)",
    "category": "APP",
    "status": "PARTIAL",
    "implementation": [
@@ -6380,7 +6420,7 @@
     "22"
    ],
    "consumer": [],
-   "gap": "no meaningful human-visible UI proof (service-only manifest \u2014 NO launchable Activity (aapt2 badging at HEAD confirms l)",
+   "gap": "no meaningful human-visible UI proof (service-only manifest — NO launchable Activity (aapt2 badging at HEAD confirms l)",
    "app_id": "stopwatch",
    "human_visible": "NOT_HUMAN_VISIBLE",
    "nontrivial_frames": 2,
@@ -6396,7 +6436,7 @@
   {
    "id": "APP-TELEGRAM",
    "source": "docs/compatibility/apps/telegram.json",
-   "requirement": "Telegram [org.telegram.messenger] \u2014 full-chain execution proof (launch\u2192UI\u2192input\u2192state\u2192render\u2192screenshot\u2192persistence\u2192security)",
+   "requirement": "Telegram [org.telegram.messenger] — full-chain execution proof (launch→UI→input→state→render→screenshot→persistence→security)",
    "category": "APP",
    "status": "BLOCKED",
    "implementation": [
@@ -6430,7 +6470,7 @@
   {
    "id": "APP-TICTACTOE",
    "source": "docs/compatibility/apps/tictactoe.json",
-   "requirement": "TicTacToe [com.emmanuelmess.tictactoe] \u2014 full-chain execution proof (launch\u2192UI\u2192input\u2192state\u2192render\u2192screenshot\u2192persistence\u2192security)",
+   "requirement": "TicTacToe [com.emmanuelmess.tictactoe] — full-chain execution proof (launch→UI→input→state→render→screenshot→persistence→security)",
    "category": "APP",
    "status": "PARTIAL",
    "implementation": [
@@ -6464,7 +6504,7 @@
   {
    "id": "APP-TRIPEAKS",
    "source": "docs/compatibility/apps/tripeaks.json",
-   "requirement": "TriPeaks [eu.veldsoft.tri.peaks] \u2014 full-chain execution proof (launch\u2192UI\u2192input\u2192state\u2192render\u2192screenshot\u2192persistence\u2192security)",
+   "requirement": "TriPeaks [eu.veldsoft.tri.peaks] — full-chain execution proof (launch→UI→input→state→render→screenshot→persistence→security)",
    "category": "APP",
    "status": "OBSERVED",
    "implementation": [
@@ -6498,7 +6538,7 @@
   {
    "id": "APP-UNOTE",
    "source": "docs/compatibility/apps/unote.json",
-   "requirement": "Unote [app.varlorg.unote] \u2014 full-chain execution proof (launch\u2192UI\u2192input\u2192state\u2192render\u2192screenshot\u2192persistence\u2192security)",
+   "requirement": "Unote [app.varlorg.unote] — full-chain execution proof (launch→UI→input→state→render→screenshot→persistence→security)",
    "category": "APP",
    "status": "OBSERVED",
    "implementation": [
@@ -6532,7 +6572,7 @@
   {
    "id": "TOOL-ANDROIDX",
    "source": "docs/compatibility/tools/androidx.json",
-   "requirement": "AndroidX (appcompat/fragment/preference) \u2014 tool operationalization (USED/RESEARCHED_ONLY/AVAILABLE_NOT_USED + consumer chain)",
+   "requirement": "AndroidX (appcompat/fragment/preference) — tool operationalization (USED/RESEARCHED_ONLY/AVAILABLE_NOT_USED + consumer chain)",
    "category": "TOOL",
    "status": "OBSERVED",
    "implementation": [
@@ -6541,7 +6581,7 @@
    "tests": [],
    "execution": [],
    "evidence": [
-    "run/s62_mines_trace.log; docs/evidence/s64_spotlight/S64_REPORT.md \u00a72"
+    "run/s62_mines_trace.log; docs/evidence/s64_spotlight/S64_REPORT.md §2"
    ],
    "github": [],
    "issues": [],
@@ -6561,7 +6601,7 @@
   {
    "id": "TOOL-AOSP",
    "source": "docs/compatibility/tools/aosp.json",
-   "requirement": "AOSP (frameworks/base + platform frameworks) \u2014 tool operationalization (USED/RESEARCHED_ONLY/AVAILABLE_NOT_USED + consumer chain)",
+   "requirement": "AOSP (frameworks/base + platform frameworks) — tool operationalization (USED/RESEARCHED_ONLY/AVAILABLE_NOT_USED + consumer chain)",
    "category": "TOOL",
    "status": "OBSERVED",
    "implementation": [
@@ -6597,7 +6637,7 @@
   {
    "id": "TOOL-ART",
    "source": "docs/compatibility/tools/art.json",
-   "requirement": "ART (Android Runtime) interpreter semantics \u2014 tool operationalization (USED/RESEARCHED_ONLY/AVAILABLE_NOT_USED + consumer chain)",
+   "requirement": "ART (Android Runtime) interpreter semantics — tool operationalization (USED/RESEARCHED_ONLY/AVAILABLE_NOT_USED + consumer chain)",
    "category": "TOOL",
    "status": "OBSERVED",
    "implementation": [
@@ -6629,7 +6669,7 @@
   {
    "id": "TOOL-ASC",
    "source": "docs/compatibility/tools/asc.json",
-   "requirement": "ASC reconnaissance (Droid ASC, MG1937/ASC) \u2014 tool operationalization (USED/RESEARCHED_ONLY/AVAILABLE_NOT_USED + consumer chain)",
+   "requirement": "ASC reconnaissance (Droid ASC, MG1937/ASC) — tool operationalization (USED/RESEARCHED_ONLY/AVAILABLE_NOT_USED + consumer chain)",
    "category": "TOOL",
    "status": "OBSERVED",
    "implementation": [
@@ -6652,7 +6692,7 @@
   {
    "id": "TOOL-BUILD-TOOLCHAIN",
    "source": "docs/compatibility/tools/build-toolchain.json",
-   "requirement": "Android build toolchain (aapt2 + ECJ + D8/R8) \u2014 tool operationalization (USED/RESEARCHED_ONLY/AVAILABLE_NOT_USED + consumer chain)",
+   "requirement": "Android build toolchain (aapt2 + ECJ + D8/R8) — tool operationalization (USED/RESEARCHED_ONLY/AVAILABLE_NOT_USED + consumer chain)",
    "category": "TOOL",
    "status": "OBSERVED",
    "implementation": [
@@ -6679,7 +6719,7 @@
   {
    "id": "TOOL-CODESEARCH-TOOLCHAIN",
    "source": "docs/compatibility/tools/codesearch-toolchain.json",
-   "requirement": "Code-search toolchain (zoekt + csearch/cindex + Go) \u2014 tool operationalization (USED/RESEARCHED_ONLY/AVAILABLE_NOT_USED + consumer chain)",
+   "requirement": "Code-search toolchain (zoekt + csearch/cindex + Go) — tool operationalization (USED/RESEARCHED_ONLY/AVAILABLE_NOT_USED + consumer chain)",
    "category": "TOOL",
    "status": "OBSERVED",
    "implementation": [
@@ -6688,7 +6728,7 @@
    "tests": [],
    "execution": [],
    "evidence": [
-    "docs/evidence/s63_spotlight/S63_REPORT.md \u00a74"
+    "docs/evidence/s63_spotlight/S63_REPORT.md §4"
    ],
    "github": [],
    "issues": [],
@@ -6700,7 +6740,7 @@
   {
    "id": "TOOL-COMPOSE",
    "source": "docs/compatibility/tools/compose.json",
-   "requirement": "Jetpack Compose (runtime + ui) \u2014 tool operationalization (USED/RESEARCHED_ONLY/AVAILABLE_NOT_USED + consumer chain)",
+   "requirement": "Jetpack Compose (runtime + ui) — tool operationalization (USED/RESEARCHED_ONLY/AVAILABLE_NOT_USED + consumer chain)",
    "category": "TOOL",
    "status": "OBSERVED",
    "implementation": [
@@ -6725,7 +6765,7 @@
   {
    "id": "TOOL-DALVIK",
    "source": "docs/compatibility/tools/dalvik.json",
-   "requirement": "Dalvik executable format (DEX spec) \u2014 tool operationalization (USED/RESEARCHED_ONLY/AVAILABLE_NOT_USED + consumer chain)",
+   "requirement": "Dalvik executable format (DEX spec) — tool operationalization (USED/RESEARCHED_ONLY/AVAILABLE_NOT_USED + consumer chain)",
    "category": "TOOL",
    "status": "OBSERVED",
    "implementation": [
@@ -6754,7 +6794,7 @@
   {
    "id": "TOOL-EXTERNAL-RUNTIMES",
    "source": "docs/compatibility/tools/external-runtimes.json",
-   "requirement": "External emulator/runtime projects (WineDroid et al.) \u2014 tool operationalization (USED/RESEARCHED_ONLY/AVAILABLE_NOT_USED + consumer chain)",
+   "requirement": "External emulator/runtime projects (WineDroid et al.) — tool operationalization (USED/RESEARCHED_ONLY/AVAILABLE_NOT_USED + consumer chain)",
    "category": "TOOL",
    "status": "NOT_APPLICABLE",
    "implementation": [
@@ -6775,7 +6815,7 @@
   {
    "id": "TOOL-KOTLIN",
    "source": "docs/compatibility/tools/kotlin.json",
-   "requirement": "Kotlin (stdlib + compiled form) \u2014 tool operationalization (USED/RESEARCHED_ONLY/AVAILABLE_NOT_USED + consumer chain)",
+   "requirement": "Kotlin (stdlib + compiled form) — tool operationalization (USED/RESEARCHED_ONLY/AVAILABLE_NOT_USED + consumer chain)",
    "category": "TOOL",
    "status": "OBSERVED",
    "implementation": [
@@ -6801,7 +6841,7 @@
   {
    "id": "TOOL-KOTLINX-COROUTINES-ATOMICFU",
    "source": "docs/compatibility/tools/kotlinx-coroutines-atomicfu.json",
-   "requirement": "kotlinx.coroutines + AtomicFU \u2014 tool operationalization (USED/RESEARCHED_ONLY/AVAILABLE_NOT_USED + consumer chain)",
+   "requirement": "kotlinx.coroutines + AtomicFU — tool operationalization (USED/RESEARCHED_ONLY/AVAILABLE_NOT_USED + consumer chain)",
    "category": "TOOL",
    "status": "OBSERVED",
    "implementation": [
@@ -6826,7 +6866,7 @@
   {
    "id": "TOOL-OPENJDK",
    "source": "docs/compatibility/tools/openjdk.json",
-   "requirement": "OpenJDK / libcore (java.* behavior) \u2014 tool operationalization (USED/RESEARCHED_ONLY/AVAILABLE_NOT_USED + consumer chain)",
+   "requirement": "OpenJDK / libcore (java.* behavior) — tool operationalization (USED/RESEARCHED_ONLY/AVAILABLE_NOT_USED + consumer chain)",
    "category": "TOOL",
    "status": "OBSERVED",
    "implementation": [
@@ -6835,7 +6875,7 @@
    "tests": [],
    "execution": [],
    "evidence": [
-    "docs/evidence/s63_spotlight/S63_REPORT.md \u00a71; upstream_oracle.json (7 grep-verified law records)"
+    "docs/evidence/s63_spotlight/S63_REPORT.md §1; upstream_oracle.json (7 grep-verified law records)"
    ],
    "github": [],
    "issues": [],
@@ -6854,7 +6894,7 @@
   {
    "id": "KNOW-APP-DOOZ-COMPOSE-CHAIN",
    "source": "docs/knowledge/laws/APP-DOOZ-COMPOSE-CHAIN.json",
-   "requirement": "Dooz Compose/coroutine deep chain (RESEARCH-stage) \u2014 knowledge law lifecycle (source/semantic/implementation/test/consumer)",
+   "requirement": "Dooz Compose/coroutine deep chain (RESEARCH-stage) — knowledge law lifecycle (source/semantic/implementation/test/consumer)",
    "category": "KNOWLEDGE",
    "status": "PARTIAL",
    "implementation": [],
@@ -6876,7 +6916,7 @@
   {
    "id": "KNOW-APP-SNAKE-RESTART-OPEN",
    "source": "docs/knowledge/laws/APP-SNAKE-RESTART-OPEN.json",
-   "requirement": "Snake restart-after-game-over NOT observed \u2014 knowledge law lifecycle (source/semantic/implementation/test/consumer)",
+   "requirement": "Snake restart-after-game-over NOT observed — knowledge law lifecycle (source/semantic/implementation/test/consumer)",
    "category": "KNOWLEDGE",
    "status": "OBSERVED",
    "implementation": [],
@@ -6900,7 +6940,7 @@
   {
    "id": "KNOW-APP-SNAKE-REVERSE-GUARD",
    "source": "docs/knowledge/laws/APP-SNAKE-REVERSE-GUARD.json",
-   "requirement": "Snake reverse-direction rejection \u2014 knowledge law lifecycle (source/semantic/implementation/test/consumer)",
+   "requirement": "Snake reverse-direction rejection — knowledge law lifecycle (source/semantic/implementation/test/consumer)",
    "category": "KNOWLEDGE",
    "status": "OBSERVED",
    "implementation": [],
@@ -6924,7 +6964,7 @@
   {
    "id": "KNOW-APP-SNAKE-SELFCOLLISION-GAMEOVER",
    "source": "docs/knowledge/laws/APP-SNAKE-SELFCOLLISION-GAMEOVER.json",
-   "requirement": "Snake self-collision game-over \u2014 knowledge law lifecycle (source/semantic/implementation/test/consumer)",
+   "requirement": "Snake self-collision game-over — knowledge law lifecycle (source/semantic/implementation/test/consumer)",
    "category": "KNOWLEDGE",
    "status": "OBSERVED",
    "implementation": [],
@@ -6948,7 +6988,7 @@
   {
    "id": "KNOW-APP-SNAKE-WRAP",
    "source": "docs/knowledge/laws/APP-SNAKE-WRAP.json",
-   "requirement": "Snake wrap law ((19,10) -> (0,10)) \u2014 knowledge law lifecycle (source/semantic/implementation/test/consumer)",
+   "requirement": "Snake wrap law ((19,10) -> (0,10)) — knowledge law lifecycle (source/semantic/implementation/test/consumer)",
    "category": "KNOWLEDGE",
    "status": "OBSERVED",
    "implementation": [],
@@ -6972,7 +7012,7 @@
   {
    "id": "KNOW-CLAIM-DOOZ-23472-VISUAL",
    "source": "docs/knowledge/laws/CLAIM-DOOZ-23472-VISUAL.json",
-   "requirement": "FALSE CLAIM: dooz '23,472 px = visual proof' (SUPERSEDED) \u2014 knowledge law lifecycle (source/semantic/implementation/test/consumer)",
+   "requirement": "FALSE CLAIM: dooz '23,472 px = visual proof' (SUPERSEDED) — knowledge law lifecycle (source/semantic/implementation/test/consumer)",
    "category": "KNOWLEDGE",
    "status": "SUPERSEDED",
    "implementation": [],
@@ -6996,7 +7036,7 @@
   {
    "id": "KNOW-LAW-BOXED-READERS",
    "source": "docs/knowledge/laws/LAW-BOXED-READERS.json",
-   "requirement": "Boxed property-reader family (closed with F-141 wave) \u2014 knowledge law lifecycle (source/semantic/implementation/test/consumer)",
+   "requirement": "Boxed property-reader family (closed with F-141 wave) — knowledge law lifecycle (source/semantic/implementation/test/consumer)",
    "category": "KNOWLEDGE",
    "status": "OBSERVED",
    "implementation": [],
@@ -7021,7 +7061,7 @@
   {
    "id": "KNOW-LAW-F108",
    "source": "docs/knowledge/laws/LAW-F108.json",
-   "requirement": "R8 minification identity law (DEX hierarchy over names) \u2014 knowledge law lifecycle (source/semantic/implementation/test/consumer)",
+   "requirement": "R8 minification identity law (DEX hierarchy over names) — knowledge law lifecycle (source/semantic/implementation/test/consumer)",
    "category": "KNOWLEDGE",
    "status": "OBSERVED",
    "implementation": [],
@@ -7045,7 +7085,7 @@
   {
    "id": "KNOW-LAW-F113",
    "source": "docs/knowledge/laws/LAW-F113.json",
-   "requirement": "SecureRandom IS-A Random bridge law \u2014 knowledge law lifecycle (source/semantic/implementation/test/consumer)",
+   "requirement": "SecureRandom IS-A Random bridge law — knowledge law lifecycle (source/semantic/implementation/test/consumer)",
    "category": "KNOWLEDGE",
    "status": "OBSERVED",
    "implementation": [],
@@ -7069,7 +7109,7 @@
   {
    "id": "KNOW-LAW-F114",
    "source": "docs/knowledge/laws/LAW-F114.json",
-   "requirement": "SharedPreferences family law \u2014 knowledge law lifecycle (source/semantic/implementation/test/consumer)",
+   "requirement": "SharedPreferences family law — knowledge law lifecycle (source/semantic/implementation/test/consumer)",
    "category": "KNOWLEDGE",
    "status": "OBSERVED",
    "implementation": [],
@@ -7095,7 +7135,7 @@
   {
    "id": "KNOW-LAW-F117",
    "source": "docs/knowledge/laws/LAW-F117.json",
-   "requirement": "Scheduled input law (--tap x,y[@frame]) \u2014 knowledge law lifecycle (source/semantic/implementation/test/consumer)",
+   "requirement": "Scheduled input law (--tap x,y[@frame]) — knowledge law lifecycle (source/semantic/implementation/test/consumer)",
    "category": "KNOWLEDGE",
    "status": "OBSERVED",
    "implementation": [],
@@ -7122,7 +7162,7 @@
   {
    "id": "KNOW-LAW-F118",
    "source": "docs/knowledge/laws/LAW-F118.json",
-   "requirement": "Activity constructor law \u2014 knowledge law lifecycle (source/semantic/implementation/test/consumer)",
+   "requirement": "Activity constructor law — knowledge law lifecycle (source/semantic/implementation/test/consumer)",
    "category": "KNOWLEDGE",
    "status": "OBSERVED",
    "implementation": [],
@@ -7146,7 +7186,7 @@
   {
    "id": "KNOW-LAW-F120",
    "source": "docs/knowledge/laws/LAW-F120.json",
-   "requirement": "Button gravity law \u2014 knowledge law lifecycle (source/semantic/implementation/test/consumer)",
+   "requirement": "Button gravity law — knowledge law lifecycle (source/semantic/implementation/test/consumer)",
    "category": "KNOWLEDGE",
    "status": "OBSERVED",
    "implementation": [],
@@ -7169,7 +7209,7 @@
   {
    "id": "KNOW-LAW-F135",
    "source": "docs/knowledge/laws/LAW-F135.json",
-   "requirement": "OpenJDK Double/Float compare NaN law \u2014 knowledge law lifecycle (source/semantic/implementation/test/consumer)",
+   "requirement": "OpenJDK Double/Float compare NaN law — knowledge law lifecycle (source/semantic/implementation/test/consumer)",
    "category": "KNOWLEDGE",
    "status": "OBSERVED",
    "implementation": [],
@@ -7191,7 +7231,7 @@
   {
    "id": "KNOW-LAW-F136",
    "source": "docs/knowledge/laws/LAW-F136.json",
-   "requirement": "Context/Resources strings single-resolution-path law (ARSC-first) \u2014 knowledge law lifecycle (source/semantic/implementation/test/consumer)",
+   "requirement": "Context/Resources strings single-resolution-path law (ARSC-first) — knowledge law lifecycle (source/semantic/implementation/test/consumer)",
    "category": "KNOWLEDGE",
    "status": "OBSERVED",
    "implementation": [],
@@ -7217,7 +7257,7 @@
   {
    "id": "KNOW-LAW-F137",
    "source": "docs/knowledge/laws/LAW-F137.json",
-   "requirement": "Framework ancestry dispatch law \u2014 knowledge law lifecycle (source/semantic/implementation/test/consumer)",
+   "requirement": "Framework ancestry dispatch law — knowledge law lifecycle (source/semantic/implementation/test/consumer)",
    "category": "KNOWLEDGE",
    "status": "OBSERVED",
    "implementation": [],
@@ -7245,7 +7285,7 @@
   {
    "id": "KNOW-LAW-F141",
    "source": "docs/knowledge/laws/LAW-F141.json",
-   "requirement": "ART null-receiver invoke NPE law (all 5 instance-invoke paths) \u2014 knowledge law lifecycle (source/semantic/implementation/test/consumer)",
+   "requirement": "ART null-receiver invoke NPE law (all 5 instance-invoke paths) — knowledge law lifecycle (source/semantic/implementation/test/consumer)",
    "category": "KNOWLEDGE",
    "status": "OBSERVED",
    "implementation": [],
@@ -7273,7 +7313,7 @@
   {
    "id": "KNOW-LAW-F142",
    "source": "docs/knowledge/laws/LAW-F142.json",
-   "requirement": "RelativeLayout MarginLayoutParams + ImageView onMeasure cap law \u2014 knowledge law lifecycle (source/semantic/implementation/test/consumer)",
+   "requirement": "RelativeLayout MarginLayoutParams + ImageView onMeasure cap law — knowledge law lifecycle (source/semantic/implementation/test/consumer)",
    "category": "KNOWLEDGE",
    "status": "OBSERVED",
    "implementation": [],
@@ -7297,7 +7337,7 @@
   {
    "id": "KNOW-LAW-F143",
    "source": "docs/knowledge/laws/LAW-F143.json",
-   "requirement": "Service-launch family (service-only manifests) \u2014 knowledge law lifecycle (source/semantic/implementation/test/consumer)",
+   "requirement": "Service-launch family (service-only manifests) — knowledge law lifecycle (source/semantic/implementation/test/consumer)",
    "category": "KNOWLEDGE",
    "status": "OBSERVED",
    "implementation": [],
@@ -7321,7 +7361,7 @@
   {
    "id": "KNOW-LAW-F144",
    "source": "docs/knowledge/laws/LAW-F144.json",
-   "requirement": "GL surface family (tictactoe-class) \u2014 knowledge law lifecycle (source/semantic/implementation/test/consumer)",
+   "requirement": "GL surface family (tictactoe-class) — knowledge law lifecycle (source/semantic/implementation/test/consumer)",
    "category": "KNOWLEDGE",
    "status": "PARTIAL",
    "implementation": [],
@@ -7343,7 +7383,7 @@
   {
    "id": "KNOW-LAW-F145",
    "source": "docs/knowledge/laws/LAW-F145.json",
-   "requirement": "Dooz visual frontier \u2014 knowledge law lifecycle (source/semantic/implementation/test/consumer)",
+   "requirement": "Dooz visual frontier — knowledge law lifecycle (source/semantic/implementation/test/consumer)",
    "category": "KNOWLEDGE",
    "status": "OBSERVED",
    "implementation": [],
@@ -7367,7 +7407,7 @@
   {
    "id": "KNOW-LAW-F146",
    "source": "docs/knowledge/laws/LAW-F146.json",
-   "requirement": "Dooz g8.a@569 -> ur.e(J) null receiver \u2014 knowledge law lifecycle (source/semantic/implementation/test/consumer)",
+   "requirement": "Dooz g8.a@569 -> ur.e(J) null receiver — knowledge law lifecycle (source/semantic/implementation/test/consumer)",
    "category": "KNOWLEDGE",
    "status": "OBSERVED",
    "implementation": [],
@@ -7391,7 +7431,7 @@
   {
    "id": "KNOW-LAW-F147",
    "source": "docs/knowledge/laws/LAW-F147.json",
-   "requirement": "Dooz onCreate@228 -> ViewGroup.getChildAt on null \u2014 knowledge law lifecycle (source/semantic/implementation/test/consumer)",
+   "requirement": "Dooz onCreate@228 -> ViewGroup.getChildAt on null — knowledge law lifecycle (source/semantic/implementation/test/consumer)",
    "category": "KNOWLEDGE",
    "status": "OBSERVED",
    "implementation": [],
@@ -7415,7 +7455,7 @@
   {
    "id": "KNOW-LAW-F148",
    "source": "docs/knowledge/laws/LAW-F148.json",
-   "requirement": "ConstraintLayout anchor family law \u2014 knowledge law lifecycle (source/semantic/implementation/test/consumer)",
+   "requirement": "ConstraintLayout anchor family law — knowledge law lifecycle (source/semantic/implementation/test/consumer)",
    "category": "KNOWLEDGE",
    "status": "OBSERVED",
    "implementation": [],
@@ -7439,7 +7479,7 @@
   {
    "id": "KNOW-LAW-F149",
    "source": "docs/knowledge/laws/LAW-F149.json",
-   "requirement": "DisplayMetrics/applyDimension + device-density unity law \u2014 knowledge law lifecycle (source/semantic/implementation/test/consumer)",
+   "requirement": "DisplayMetrics/applyDimension + device-density unity law — knowledge law lifecycle (source/semantic/implementation/test/consumer)",
    "category": "KNOWLEDGE",
    "status": "OBSERVED",
    "implementation": [],
@@ -7465,7 +7505,7 @@
   {
    "id": "KNOW-LAW-F150",
    "source": "docs/knowledge/laws/LAW-F150.json",
-   "requirement": "Thread game-loop family law (sleep/start/wake) \u2014 knowledge law lifecycle (source/semantic/implementation/test/consumer)",
+   "requirement": "Thread game-loop family law (sleep/start/wake) — knowledge law lifecycle (source/semantic/implementation/test/consumer)",
    "category": "KNOWLEDGE",
    "status": "OBSERVED",
    "implementation": [],
@@ -7491,12 +7531,12 @@
   {
    "id": "KNOW-LAW-FRAGMENTMANAGER-SUBSET",
    "source": "docs/knowledge/laws/LAW-FRAGMENTMANAGER-SUBSET.json",
-   "requirement": "FragmentManager guarded subset \u2014 knowledge law lifecycle (source/semantic/implementation/test/consumer)",
+   "requirement": "FragmentManager guarded subset — knowledge law lifecycle (source/semantic/implementation/test/consumer)",
    "category": "KNOWLEDGE",
    "status": "OBSERVED",
    "implementation": [],
    "tests": [
-    "R-NEW-331 family: minesweeper/memory/2048 same generic gate \u2014 one fix, 3+ consumers"
+    "R-NEW-331 family: minesweeper/memory/2048 same generic gate — one fix, 3+ consumers"
    ],
    "execution": [],
    "evidence": [
@@ -7513,7 +7553,7 @@
   {
    "id": "KNOW-LAW-MUTF8",
    "source": "docs/knowledge/laws/LAW-MUTF8.json",
-   "requirement": "MUTF-8 string encoding in DEX \u2014 knowledge law lifecycle (source/semantic/implementation/test/consumer)",
+   "requirement": "MUTF-8 string encoding in DEX — knowledge law lifecycle (source/semantic/implementation/test/consumer)",
    "category": "KNOWLEDGE",
    "status": "OBSERVED",
    "implementation": [],
@@ -7538,7 +7578,7 @@
   {
    "id": "KNOW-LAW-THEME-RESOLVEATTRIBUTE",
    "source": "docs/knowledge/laws/LAW-THEME-RESOLVEATTRIBUTE.json",
-   "requirement": "Theme.resolveAttribute chain \u2014 knowledge law lifecycle (source/semantic/implementation/test/consumer)",
+   "requirement": "Theme.resolveAttribute chain — knowledge law lifecycle (source/semantic/implementation/test/consumer)",
    "category": "KNOWLEDGE",
    "status": "OBSERVED",
    "implementation": [],
@@ -7562,7 +7602,7 @@
   {
    "id": "KNOW-LAW-THROW-DEFERRED",
    "source": "docs/knowledge/laws/LAW-THROW-DEFERRED.json",
-   "requirement": "Deferred throw semantics in the interpreter \u2014 knowledge law lifecycle (source/semantic/implementation/test/consumer)",
+   "requirement": "Deferred throw semantics in the interpreter — knowledge law lifecycle (source/semantic/implementation/test/consumer)",
    "category": "KNOWLEDGE",
    "status": "OBSERVED",
    "implementation": [],
@@ -7585,7 +7625,7 @@
   {
    "id": "KNOW-LAW-VIEW-GETRESOURCES",
    "source": "docs/knowledge/laws/LAW-VIEW-GETRESOURCES.json",
-   "requirement": "View.getResources non-null law \u2014 knowledge law lifecycle (source/semantic/implementation/test/consumer)",
+   "requirement": "View.getResources non-null law — knowledge law lifecycle (source/semantic/implementation/test/consumer)",
    "category": "KNOWLEDGE",
    "status": "OBSERVED",
    "implementation": [],
@@ -7623,7 +7663,7 @@
    "github": [],
    "issues": [],
    "consumer": [],
-   "gap": "missing proof: remote publication + link verification | required action: RESOLVED THIS WAVE: audit artifacts committed; ALL pending commits pushed; ls-remote verified; \u00a76 checkpoints posted to issues #10-#23 with render-checked raw URLs | issue: none"
+   "gap": "missing proof: remote publication + link verification | required action: RESOLVED THIS WAVE: audit artifacts committed; ALL pending commits pushed; ls-remote verified; §6 checkpoints posted to issues #10-#23 with render-checked raw URLs | issue: none"
   },
   {
    "id": "CRITICAL-002",
@@ -7653,7 +7693,7 @@
    "implementation": [],
    "tests": [],
    "execution": [
-    "why it looked complete: directive text in S72_WAVE4.md \u00a70"
+    "why it looked complete: directive text in S72_WAVE4.md §0"
    ],
    "evidence": [
     "actual evidence: only mention found; canonical constitution stored = 169 rules (verbatim @ 4c8c0e02)"
@@ -7699,7 +7739,7 @@
    "github": [],
    "issues": [],
    "consumer": [],
-   "gap": "missing proof: FALSE_HUMAN_VISIBLE confirmed and DOWNGRADED this wave: dossier status -> NOT_HUMAN_VISIBLE (real APK) + separate golden_fixture_evidence block (\u00a715) | required action: fixed in docs/compatibility/apps/tictactoe.json | issue: none"
+   "gap": "missing proof: FALSE_HUMAN_VISIBLE confirmed and DOWNGRADED this wave: dossier status -> NOT_HUMAN_VISIBLE (real APK) + separate golden_fixture_evidence block (§15) | required action: fixed in docs/compatibility/apps/tictactoe.json | issue: none"
   },
   {
    "id": "CRITICAL-006",
@@ -7723,7 +7763,7 @@
   {
    "id": "ISSUE-10",
    "source": "github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/10",
-   "requirement": "[EXEC] helloworld: living execution dossier \u2014 checkpoint with human-visible evidence link required",
+   "requirement": "[EXEC] helloworld: living execution dossier — checkpoint with human-visible evidence link required",
    "category": "ISSUE-MAPPING",
    "status": "OBSERVED",
    "implementation": [],
@@ -7733,7 +7773,7 @@
    ],
    "evidence": [
     "app dossier: docs/compatibility/apps/helloworld.json; bundle docs/evidence/s74_ops/helloworld/",
-    "\u00a76 checkpoint published with 2 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
+    "§6 checkpoint published with 2 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
    ],
    "github": [
     "issues/10"
@@ -7747,7 +7787,7 @@
   {
    "id": "ISSUE-11",
    "source": "github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/11",
-   "requirement": "[EXEC] tictactoe: living execution dossier \u2014 checkpoint with human-visible evidence link required",
+   "requirement": "[EXEC] tictactoe: living execution dossier — checkpoint with human-visible evidence link required",
    "category": "ISSUE-MAPPING",
    "status": "OBSERVED",
    "implementation": [],
@@ -7757,7 +7797,7 @@
    ],
    "evidence": [
     "app dossier: docs/compatibility/apps/tictactoe.json; bundle docs/evidence/s74_ops/tictactoe/",
-    "\u00a76 checkpoint published with 3 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
+    "§6 checkpoint published with 3 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
    ],
    "github": [
     "issues/11"
@@ -7771,7 +7811,7 @@
   {
    "id": "ISSUE-12",
    "source": "github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/12",
-   "requirement": "[EXEC] connectfour: living execution dossier \u2014 checkpoint with human-visible evidence link required",
+   "requirement": "[EXEC] connectfour: living execution dossier — checkpoint with human-visible evidence link required",
    "category": "ISSUE-MAPPING",
    "status": "OBSERVED",
    "implementation": [],
@@ -7781,7 +7821,7 @@
    ],
    "evidence": [
     "app dossier: docs/compatibility/apps/connectfour.json; bundle docs/evidence/s74_ops/connectfour/",
-    "\u00a76 checkpoint published with 3 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
+    "§6 checkpoint published with 3 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
    ],
    "github": [
     "issues/12"
@@ -7795,7 +7835,7 @@
   {
    "id": "ISSUE-13",
    "source": "github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/13",
-   "requirement": "[EXEC] androidgamesnake: living execution dossier \u2014 checkpoint with human-visible evidence link required",
+   "requirement": "[EXEC] androidgamesnake: living execution dossier — checkpoint with human-visible evidence link required",
    "category": "ISSUE-MAPPING",
    "status": "OBSERVED",
    "implementation": [],
@@ -7805,7 +7845,7 @@
    ],
    "evidence": [
     "app dossier: docs/compatibility/apps/androidgamesnake.json; bundle docs/evidence/s74_ops/androidgamesnake/",
-    "\u00a76 checkpoint published with 3 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
+    "§6 checkpoint published with 3 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
    ],
    "github": [
     "issues/13"
@@ -7819,7 +7859,7 @@
   {
    "id": "ISSUE-14",
    "source": "github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/14",
-   "requirement": "[EXEC] dooz: living execution dossier \u2014 checkpoint with human-visible evidence link required",
+   "requirement": "[EXEC] dooz: living execution dossier — checkpoint with human-visible evidence link required",
    "category": "ISSUE-MAPPING",
    "status": "OBSERVED",
    "implementation": [],
@@ -7829,7 +7869,7 @@
    ],
    "evidence": [
     "app dossier: docs/compatibility/apps/dooz.json; bundle docs/evidence/s74_ops/dooz/",
-    "\u00a76 checkpoint published with 2 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
+    "§6 checkpoint published with 2 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
    ],
    "github": [
     "issues/14"
@@ -7843,7 +7883,7 @@
   {
    "id": "ISSUE-15",
    "source": "github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/15",
-   "requirement": "[EXEC] unote: living execution dossier \u2014 checkpoint with human-visible evidence link required",
+   "requirement": "[EXEC] unote: living execution dossier — checkpoint with human-visible evidence link required",
    "category": "ISSUE-MAPPING",
    "status": "OBSERVED",
    "implementation": [],
@@ -7853,7 +7893,7 @@
    ],
    "evidence": [
     "app dossier: docs/compatibility/apps/unote.json; bundle docs/evidence/s74_ops/unote/",
-    "\u00a76 checkpoint published with 4 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
+    "§6 checkpoint published with 4 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
    ],
    "github": [
     "issues/15"
@@ -7867,7 +7907,7 @@
   {
    "id": "ISSUE-16",
    "source": "github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/16",
-   "requirement": "[EXEC] telegram: living execution dossier \u2014 checkpoint with human-visible evidence link required",
+   "requirement": "[EXEC] telegram: living execution dossier — checkpoint with human-visible evidence link required",
    "category": "ISSUE-MAPPING",
    "status": "OBSERVED",
    "implementation": [],
@@ -7877,7 +7917,7 @@
    ],
    "evidence": [
     "app dossier: docs/compatibility/apps/telegram.json; bundle docs/evidence/s74_ops/telegram/",
-    "\u00a76 checkpoint published with 1 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
+    "§6 checkpoint published with 1 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
    ],
    "github": [
     "issues/16"
@@ -7891,7 +7931,7 @@
   {
    "id": "ISSUE-17",
    "source": "github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/17",
-   "requirement": "[EXEC] gmdice: living execution dossier \u2014 checkpoint with human-visible evidence link required",
+   "requirement": "[EXEC] gmdice: living execution dossier — checkpoint with human-visible evidence link required",
    "category": "ISSUE-MAPPING",
    "status": "OBSERVED",
    "implementation": [],
@@ -7901,7 +7941,7 @@
    ],
    "evidence": [
     "app dossier: docs/compatibility/apps/gmdice.json; bundle docs/evidence/s74_ops/gmdice/",
-    "\u00a76 checkpoint published with 2 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
+    "§6 checkpoint published with 2 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
    ],
    "github": [
     "issues/17"
@@ -7915,7 +7955,7 @@
   {
    "id": "ISSUE-18",
    "source": "github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/18",
-   "requirement": "[EXEC] microtimer: living execution dossier \u2014 checkpoint with human-visible evidence link required",
+   "requirement": "[EXEC] microtimer: living execution dossier — checkpoint with human-visible evidence link required",
    "category": "ISSUE-MAPPING",
    "status": "OBSERVED",
    "implementation": [],
@@ -7925,7 +7965,7 @@
    ],
    "evidence": [
     "app dossier: docs/compatibility/apps/microtimer.json; bundle docs/evidence/s74_ops/microtimer/",
-    "\u00a76 checkpoint published with 4 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
+    "§6 checkpoint published with 4 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
    ],
    "github": [
     "issues/18"
@@ -7939,7 +7979,7 @@
   {
    "id": "ISSUE-19",
    "source": "github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/19",
-   "requirement": "[EXEC] fishrings: living execution dossier \u2014 checkpoint with human-visible evidence link required",
+   "requirement": "[EXEC] fishrings: living execution dossier — checkpoint with human-visible evidence link required",
    "category": "ISSUE-MAPPING",
    "status": "OBSERVED",
    "implementation": [],
@@ -7949,7 +7989,7 @@
    ],
    "evidence": [
     "app dossier: docs/compatibility/apps/fishrings.json; bundle docs/evidence/s74_ops/fishrings/",
-    "\u00a76 checkpoint published with 3 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
+    "§6 checkpoint published with 3 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
    ],
    "github": [
     "issues/19"
@@ -7963,7 +8003,7 @@
   {
    "id": "ISSUE-20",
    "source": "github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/20",
-   "requirement": "[EXEC] tripeaks: living execution dossier \u2014 checkpoint with human-visible evidence link required",
+   "requirement": "[EXEC] tripeaks: living execution dossier — checkpoint with human-visible evidence link required",
    "category": "ISSUE-MAPPING",
    "status": "OBSERVED",
    "implementation": [],
@@ -7973,7 +8013,7 @@
    ],
    "evidence": [
     "app dossier: docs/compatibility/apps/tripeaks.json; bundle docs/evidence/s74_ops/tripeaks/",
-    "\u00a76 checkpoint published with 3 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
+    "§6 checkpoint published with 3 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
    ],
    "github": [
     "issues/20"
@@ -7987,7 +8027,7 @@
   {
    "id": "ISSUE-21",
    "source": "github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/21",
-   "requirement": "[EXEC] bouncy: living execution dossier \u2014 checkpoint with human-visible evidence link required",
+   "requirement": "[EXEC] bouncy: living execution dossier — checkpoint with human-visible evidence link required",
    "category": "ISSUE-MAPPING",
    "status": "OBSERVED",
    "implementation": [],
@@ -7997,7 +8037,7 @@
    ],
    "evidence": [
     "app dossier: docs/compatibility/apps/bouncy.json; bundle docs/evidence/s74_ops/bouncy/",
-    "\u00a76 checkpoint published with 5 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
+    "§6 checkpoint published with 5 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
    ],
    "github": [
     "issues/21"
@@ -8011,7 +8051,7 @@
   {
    "id": "ISSUE-22",
    "source": "github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/22",
-   "requirement": "[EXEC] stopwatch: living execution dossier \u2014 checkpoint with human-visible evidence link required",
+   "requirement": "[EXEC] stopwatch: living execution dossier — checkpoint with human-visible evidence link required",
    "category": "ISSUE-MAPPING",
    "status": "OBSERVED",
    "implementation": [],
@@ -8021,7 +8061,7 @@
    ],
    "evidence": [
     "app dossier: docs/compatibility/apps/stopwatch.json; bundle docs/evidence/s74_ops/stopwatch/",
-    "\u00a76 checkpoint published with 2 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
+    "§6 checkpoint published with 2 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
    ],
    "github": [
     "issues/22"
@@ -8035,7 +8075,7 @@
   {
    "id": "ISSUE-23",
    "source": "github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/23",
-   "requirement": "[EXEC] opmt: living execution dossier \u2014 checkpoint with human-visible evidence link required",
+   "requirement": "[EXEC] opmt: living execution dossier — checkpoint with human-visible evidence link required",
    "category": "ISSUE-MAPPING",
    "status": "OBSERVED",
    "implementation": [],
@@ -8045,7 +8085,7 @@
    ],
    "evidence": [
     "app dossier: docs/compatibility/apps/opmt.json; bundle docs/evidence/s74_ops/opmt/",
-    "\u00a76 checkpoint published with 5 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
+    "§6 checkpoint published with 5 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
    ],
    "github": [
     "issues/23"
