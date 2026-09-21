@@ -1,0 +1,42 @@
+{
+ "session_format": "s74-ops/1 (S74 FOLLOW-UP WAVE \u00a76 execution checkpoint)",
+ "runtime_commit": "3505591b",
+ "binary": "miniandroid/build/miniandroid (built at HEAD)",
+ "app_dossier": "docs/compatibility/apps/androidgamesnake.json",
+ "evidence_scope": "REUSED_COMMITTED_S73_PROOF (taskbook \u00a78 \u2014 historical truth preserved)",
+ "apk": {
+  "file": "snake_v1.0_vc1.apk",
+  "sha256_16": "54cf48a947f9b690"
+ },
+ "execution_mode": "real-dalvik (bytecode interpretation)",
+ "launch_run": {
+  "source": "docs/evidence/s73_snake_autoplay/run_01",
+  "proven": "88 moves / 22 turns / 1 food capture / 23 scheduled real taps / 3-run byte-identical"
+ },
+ "interaction_run": {
+  "source": "same committed run",
+  "state_changes": "START->run, 22 accepted turns, food capture at frame 34 (snake 3->4)"
+ },
+ "persistence": {
+  "verdict": "NOT_OBSERVED (restart-after-game-over honestly open; no data-root probe in S73 session)"
+ },
+ "manifest_security": {
+  "note": "see dossier security block; session run pre-dates the s74-ops sandbox probe"
+ },
+ "representative_frames": [
+  "01_launch.png",
+  "02_food_capture_frame034.png",
+  "03_final.png"
+ ],
+ "frame_metrics": {
+  "01_launch.png": {
+   "png_sha256_16": "6cc8087e690d97da"
+  },
+  "02_food_capture_frame034.png": {
+   "png_sha256_16": "d4bc62a6862c8a8a"
+  },
+  "03_final.png": {
+   "png_sha256_16": "6cc8087e690d97da"
+  }
+ }
+}

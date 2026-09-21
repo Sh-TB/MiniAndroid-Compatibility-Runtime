@@ -1,0 +1,119 @@
+{
+ "session_format": "s74-ops/1 (S74 FOLLOW-UP WAVE \u00a76 execution checkpoint)",
+ "app_dossier": "docs/compatibility/apps/unote.json",
+ "runtime_commit": "3505591b",
+ "binary": "miniandroid/build/miniandroid (built at HEAD, zero runtime drift vs origin/main)",
+ "apk": {
+  "file": "app.varlorg.unote_30.apk",
+  "sha256_16": "be91103f0e7db443"
+ },
+ "execution_mode": "real-dalvik (bytecode interpretation)",
+ "launch_run": {
+  "rc": 1,
+  "engine_status": "** **SUCCESS** \u2705",
+  "errors": 0,
+  "frames_requested": 6,
+  "tap_schedule": []
+ },
+ "interaction_run": {
+  "rc": 1,
+  "engine_status": "** **SUCCESS** \u2705",
+  "errors": 0,
+  "clicks": 6
+ },
+ "sandbox": {
+  "data_root": "run/s74f_ops/unote/sandbox",
+  "files_created": [
+   {
+    "path": "app.varlorg.unote/databases/notes.db",
+    "size": 12288,
+    "sha256_16": "2bccf9475fe3810d"
+   }
+  ]
+ },
+ "persistence": {
+  "probe": "relaunch_same_data_root",
+  "sandbox_files_before": 1,
+  "relaunch_rc": 1,
+  "sandbox_files_after_relaunch": 1,
+  "sandbox_file_list": [
+   {
+    "path": "app.varlorg.unote/databases/notes.db",
+    "size": 12288,
+    "sha256_16": "2bccf9475fe3810d"
+   }
+  ]
+ },
+ "representative_frames": [
+  "01_launch.png",
+  "03_final.png",
+  "04_frame_000.png",
+  "05_frame_006.png"
+ ],
+ "frame_metrics": {
+  "01_launch.png": {
+   "resolution": [
+    1080,
+    1920
+   ],
+   "nonwhite_px": 231120,
+   "nonblack_px": 2073600,
+   "color_diversity_sampled": 19,
+   "source_run": "launch",
+   "source_frame": "frame_000.png",
+   "png_sha256_16": "6269ba028ebef3e1"
+  },
+  "03_final.png": {
+   "resolution": [
+    1080,
+    1920
+   ],
+   "nonwhite_px": 231120,
+   "nonblack_px": 2073600,
+   "color_diversity_sampled": 19,
+   "source_run": "launch",
+   "source_frame": "frame_005.png",
+   "png_sha256_16": "6269ba028ebef3e1"
+  },
+  "04_frame_000.png": {
+   "resolution": [
+    1080,
+    1920
+   ],
+   "nonwhite_px": 231120,
+   "nonblack_px": 2073600,
+   "color_diversity_sampled": 19,
+   "source_run": "interaction",
+   "source_frame": "frame_000.png",
+   "png_sha256_16": "6269ba028ebef3e1"
+  },
+  "05_frame_006.png": {
+   "resolution": [
+    1080,
+    1920
+   ],
+   "nonwhite_px": 231120,
+   "nonblack_px": 2073600,
+   "color_diversity_sampled": 19,
+   "source_run": "interaction",
+   "source_frame": "frame_006.png",
+   "png_sha256_16": "6269ba028ebef3e1"
+  }
+ },
+ "manifest_security": {
+  "tool": "aapt2 dump badging + permissions",
+  "permissions_declared": [
+   "android.permission.READ_EXTERNAL_STORAGE",
+   "android.permission.WRITE_EXTERNAL_STORAGE",
+   "android.permission.MANAGE_EXTERNAL_STORAGE",
+   "android.permission.SET_ALARM",
+   "android.permission.ALARM_SERVICE",
+   "android.permission.SCHEDULE_EXACT_ALARM",
+   "android.permission.POST_NOTIFICATIONS"
+  ],
+  "launchable_activities": [
+   "app.varlorg.unote.NoteMain"
+  ],
+  "package": "app.varlorg.unote"
+ }
+}

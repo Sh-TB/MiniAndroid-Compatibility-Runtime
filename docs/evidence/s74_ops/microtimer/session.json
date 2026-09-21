@@ -1,0 +1,105 @@
+{
+ "session_format": "s74-ops/1 (S74 FOLLOW-UP WAVE \u00a76 execution checkpoint)",
+ "app_dossier": "docs/compatibility/apps/microtimer.json",
+ "runtime_commit": "3505591b",
+ "binary": "miniandroid/build/miniandroid (built at HEAD, zero runtime drift vs origin/main)",
+ "apk": {
+  "file": "dubrowgn.microtimer_8.apk",
+  "sha256_16": "79c6f730f64886e7"
+ },
+ "execution_mode": "real-dalvik (bytecode interpretation)",
+ "launch_run": {
+  "rc": 1,
+  "engine_status": "** **SUCCESS** \u2705",
+  "errors": 8,
+  "frames_requested": 6,
+  "tap_schedule": []
+ },
+ "interaction_run": {
+  "rc": 1,
+  "engine_status": "** **SUCCESS** \u2705",
+  "errors": 8,
+  "clicks": 6
+ },
+ "sandbox": {
+  "data_root": "run/s74f_ops/microtimer/sandbox",
+  "files_created": []
+ },
+ "persistence": {
+  "probe": "relaunch_same_data_root",
+  "sandbox_files_before": 0,
+  "verdict": "NO_PERSISTENCE_OBSERVED (app created no files in its data root)"
+ },
+ "representative_frames": [
+  "01_launch.png",
+  "03_final.png",
+  "04_frame_000.png",
+  "05_frame_006.png"
+ ],
+ "frame_metrics": {
+  "01_launch.png": {
+   "resolution": [
+    1080,
+    1920
+   ],
+   "nonwhite_px": 1040698,
+   "nonblack_px": 2073600,
+   "color_diversity_sampled": 37,
+   "source_run": "launch",
+   "source_frame": "frame_000.png",
+   "png_sha256_16": "ca87aa264e791f7a"
+  },
+  "03_final.png": {
+   "resolution": [
+    1080,
+    1920
+   ],
+   "nonwhite_px": 1040698,
+   "nonblack_px": 2073600,
+   "color_diversity_sampled": 37,
+   "source_run": "launch",
+   "source_frame": "frame_005.png",
+   "png_sha256_16": "ca87aa264e791f7a"
+  },
+  "04_frame_000.png": {
+   "resolution": [
+    1080,
+    1920
+   ],
+   "nonwhite_px": 1040698,
+   "nonblack_px": 2073600,
+   "color_diversity_sampled": 37,
+   "source_run": "interaction",
+   "source_frame": "frame_000.png",
+   "png_sha256_16": "ca87aa264e791f7a"
+  },
+  "05_frame_006.png": {
+   "resolution": [
+    1080,
+    1920
+   ],
+   "nonwhite_px": 1040698,
+   "nonblack_px": 2073600,
+   "color_diversity_sampled": 63,
+   "source_run": "interaction",
+   "source_frame": "frame_006.png",
+   "png_sha256_16": "b4be91460e56c195"
+  }
+ },
+ "manifest_security": {
+  "tool": "aapt2 dump badging + permissions",
+  "permissions_declared": [
+   "android.permission.POST_NOTIFICATIONS",
+   "android.permission.USE_FULL_SCREEN_INTENT",
+   "android.permission.VIBRATE",
+   "android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS",
+   "android.permission.SCHEDULE_EXACT_ALARM",
+   "android.permission.USE_EXACT_ALARM",
+   "dubrowgn.microtimer.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "launchable_activities": [
+   "dubrowgn.microtimer.MainActivity"
+  ],
+  "package": "dubrowgn.microtimer"
+ }
+}

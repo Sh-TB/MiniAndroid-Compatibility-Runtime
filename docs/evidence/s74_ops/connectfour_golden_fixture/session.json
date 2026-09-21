@@ -1,0 +1,39 @@
+{
+ "session_format": "s74-ops/1 (S74 FOLLOW-UP WAVE \u00a76 execution checkpoint)",
+ "runtime_commit": "3505591b",
+ "binary": "miniandroid/build/miniandroid (built at HEAD)",
+ "app_dossier": "docs/compatibility/apps/connectfour.json",
+ "evidence_scope": "GOLDEN_FIXTURE (in-repo ConnectFour golden; canonical corrected result Y WINS at click 22)",
+ "apk": {
+  "file": "connectfour_golden.apk (built at HEAD by validate_connectfour_golden.sh)",
+  "sha256_16": "see session build log"
+ },
+ "execution_mode": "real-dalvik (bytecode interpretation)",
+ "launch_run": {
+  "validator": "miniandroid/tests/fixtures/connectfour_golden/validate_connectfour_golden.sh",
+  "result": "ALL PASS at HEAD: 24 clicks, R/Y turn flips, Y WINS at click 22 (diagonal), 11R+11Y final, frozen tail 22/23/24, run B byte-identical (38e568bd3815...)"
+ },
+ "interaction_run": {
+  "clicks": 24,
+  "dispatch": "real DEX char[6][7] state machine"
+ },
+ "persistence": {
+  "verdict": "NO_PERSISTENCE_OBSERVED (in-memory board; fixture writes no files)"
+ },
+ "representative_frames": [
+  "01_launch.png",
+  "02_midgame.png",
+  "03_y_wins.png"
+ ],
+ "frame_metrics": {
+  "01_launch.png": {
+   "png_sha256_16": "38e568bd38152907"
+  },
+  "02_midgame.png": {
+   "png_sha256_16": "b67ce0ff93c8f54c"
+  },
+  "03_y_wins.png": {
+   "png_sha256_16": "c70e9444050971b7"
+  }
+ }
+}
