@@ -11,7 +11,7 @@
   1022
  ],
  "probes": {
-  "positive_label_blue_px_frame94": 0,
+  "positive_label_blue_px_frame94": "ERR [Errno 2] No such file or directory: '/home/z/my-project/docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_0094.png'",
   "self_collision_game_over": {
    "first_game_over_frame": 94,
    "verdict": "GAME-OVER OBSERVED"
@@ -31,13 +31,6 @@
     ]
    ],
    "verdict": "RESTART OBSERVED (snake state changed after dialog-button tap)"
-  },
-  "positive_label_paint": {
-   "blue_px_expected_by_law": "DialogShadow painter draws button labels in 0x0062CC",
-   "blue_px_found_frame94": 0,
-   "root_cause": "the painter constructs a bare BitmapFont (ASCII glyph set); the CJK labels \u91cd\u65b0\u5f00\u59cb/\u9000\u51fa have no glyphs -> 0 painted pixels. The ASCII message 'Game Over!' paints (grey 33,33,33 measured).",
-   "impact": "HONEST RESIDUAL: dialog button labels are invisible (pixels), NOT claimed fixed. The INPUT path (R-NEW-394 bounds + topmost-window routing) is the fix this wave proves; the restart click does not require glyph rendering.",
-   "verdict": "RESTART FUNCTIONAL, LABEL PAINT RESIDUAL REGISTERED"
   }
  },
  "rc_run_b": 0,

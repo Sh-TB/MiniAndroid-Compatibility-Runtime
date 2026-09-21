@@ -4,9 +4,9 @@
       "category": "SYSTEM",
       "class": "TraceEngine",
       "level": "INFO",
-      "message": "Session started: EXP-001-20260921-191311-2485",
+      "message": "Session started: EXP-001-20260921-205014-6826",
       "method": "start_session",
-      "timestamp": 1790017991452
+      "timestamp": 1790023814064
     },
     {
       "category": "SYSTEM",
@@ -14,7 +14,7 @@
       "level": "INFO",
       "message": "Loading APK: /home/z/my-project/upload/s72_w4_apks/snake_v1.0_vc1.apk",
       "method": "stage_load_apk",
-      "timestamp": 1790017991452
+      "timestamp": 1790023814064
     },
     {
       "category": "SYSTEM",
@@ -22,7 +22,7 @@
       "level": "INFO",
       "message": "Package: zhangman.github.snake, Main Activity: .MainActivity",
       "method": "stage_load_apk",
-      "timestamp": 1790017991508
+      "timestamp": 1790023814099
     },
     {
       "category": "SYSTEM",
@@ -30,7 +30,7 @@
       "level": "INFO",
       "message": "Parsing DEX files",
       "method": "stage_parse_dex",
-      "timestamp": 1790017991508
+      "timestamp": 1790023814099
     },
     {
       "category": "SYSTEM",
@@ -38,7 +38,7 @@
       "level": "INFO",
       "message": "Parsed 20 classes, 110 methods",
       "method": "stage_parse_dex",
-      "timestamp": 1790017991516
+      "timestamp": 1790023814104
     },
     {
       "category": "SYSTEM",
@@ -46,7 +46,7 @@
       "level": "INFO",
       "message": "Initializing runtime",
       "method": "stage_initialize_runtime",
-      "timestamp": 1790017991516
+      "timestamp": 1790023814104
     },
     {
       "category": "SYSTEM",
@@ -54,7 +54,7 @@
       "level": "INFO",
       "message": "Framebuffer allocated: 1080x1920",
       "method": "stage_initialize_runtime",
-      "timestamp": 1790017991536
+      "timestamp": 1790023814126
     },
     {
       "category": "SYSTEM",
@@ -62,7 +62,7 @@
       "level": "INFO",
       "message": "Loading class definitions",
       "method": "stage_load_classes",
-      "timestamp": 1790017991536
+      "timestamp": 1790023814126
     },
     {
       "category": "DEBUG",
@@ -70,7 +70,7 @@
       "level": "DEBUG",
       "message": "Found class: Landroid/support/annotation/Nullable; extends Ljava/lang/Object; (0 methods)",
       "method": "stage_load_classes",
-      "timestamp": 1790017991536
+      "timestamp": 1790023814126
     },
     {
       "category": "DEBUG",
@@ -78,7 +78,7 @@
       "level": "DEBUG",
       "message": "Found class: Landroid/support/v7/app/AppCompatActivity; extends Landroid/app/Activity; (2 methods)",
       "method": "stage_load_classes",
-      "timestamp": 1790017991536
+      "timestamp": 1790023814126
     },
     {
       "category": "DEBUG",
@@ -86,7 +86,7 @@
       "level": "DEBUG",
       "message": "Found class: Lzhangman/github/snake/GameType; extends Ljava/lang/Object; (0 methods)",
       "method": "stage_load_classes",
-      "timestamp": 1790017991536
+      "timestamp": 1790023814126
     },
     {
       "category": "DEBUG",
@@ -94,7 +94,7 @@
       "level": "DEBUG",
       "message": "Found class: Lzhangman/github/snake/GridPosition; extends Ljava/lang/Object; (5 methods)",
       "method": "stage_load_classes",
-      "timestamp": 1790017991536
+      "timestamp": 1790023814126
     },
     {
       "category": "DEBUG",
@@ -102,7 +102,7 @@
       "level": "DEBUG",
       "message": "Found class: Lzhangman/github/snake/GridSquare; extends Ljava/lang/Object; (3 methods)",
       "method": "stage_load_classes",
-      "timestamp": 1790017991536
+      "timestamp": 1790023814126
     },
     {
       "category": "DEBUG",
@@ -110,7 +110,7 @@
       "level": "DEBUG",
       "message": "Found class: Lzhangman/github/snake/MainActivity; extends Landroid/support/v7/app/AppCompatActivity; (3 methods)",
       "method": "stage_load_classes",
-      "timestamp": 1790017991536
+      "timestamp": 1790023814126
     },
     {
       "category": "DEBUG",
@@ -118,7 +118,7 @@
       "level": "DEBUG",
       "message": "Found class: Lzhangman/github/snake/R$attr; extends Ljava/lang/Object; (1 methods)",
       "method": "stage_load_classes",
-      "timestamp": 1790017991536
+      "timestamp": 1790023814126
     },
     {
       "category": "DEBUG",
@@ -126,7 +126,7 @@
       "level": "DEBUG",
       "message": "Found class: Lzhangman/github/snake/R$color; extends Ljava/lang/Object; (1 methods)",
       "method": "stage_load_classes",
-      "timestamp": 1790017991536
+      "timestamp": 1790023814126
     },
     {
       "category": "DEBUG",
@@ -134,7 +134,7 @@
       "level": "DEBUG",
       "message": "Found class: Lzhangman/github/snake/R$drawable; extends Ljava/lang/Object; (1 methods)",
       "method": "stage_load_classes",
-      "timestamp": 1790017991536
+      "timestamp": 1790023814126
     },
     {
       "category": "DEBUG",
@@ -142,7 +142,7 @@
       "level": "DEBUG",
       "message": "Found class: Lzhangman/github/snake/R$id; extends Ljava/lang/Object; (1 methods)",
       "method": "stage_load_classes",
-      "timestamp": 1790017991536
+      "timestamp": 1790023814126
     },
     {
       "category": "DEBUG",
@@ -150,7 +150,7 @@
       "level": "DEBUG",
       "message": "Found class: Lzhangman/github/snake/R$layout; extends Ljava/lang/Object; (1 methods)",
       "method": "stage_load_classes",
-      "timestamp": 1790017991536
+      "timestamp": 1790023814126
     },
     {
       "category": "DEBUG",
@@ -158,7 +158,7 @@
       "level": "DEBUG",
       "message": "Found class: Lzhangman/github/snake/R$mipmap; extends Ljava/lang/Object; (1 methods)",
       "method": "stage_load_classes",
-      "timestamp": 1790017991536
+      "timestamp": 1790023814126
     },
     {
       "category": "DEBUG",
@@ -166,7 +166,7 @@
       "level": "DEBUG",
       "message": "Found class: Lzhangman/github/snake/R$string; extends Ljava/lang/Object; (1 methods)",
       "method": "stage_load_classes",
-      "timestamp": 1790017991536
+      "timestamp": 1790023814126
     },
     {
       "category": "DEBUG",
@@ -174,7 +174,7 @@
       "level": "DEBUG",
       "message": "Found class: Lzhangman/github/snake/R$style; extends Ljava/lang/Object; (1 methods)",
       "method": "stage_load_classes",
-      "timestamp": 1790017991536
+      "timestamp": 1790023814126
     },
     {
       "category": "DEBUG",
@@ -182,7 +182,7 @@
       "level": "DEBUG",
       "message": "Found class: Lzhangman/github/snake/R; extends Ljava/lang/Object; (1 methods)",
       "method": "stage_load_classes",
-      "timestamp": 1790017991536
+      "timestamp": 1790023814126
     },
     {
       "category": "DEBUG",
@@ -190,7 +190,7 @@
       "level": "DEBUG",
       "message": "Found class: Lzhangman/github/snake/SnakePanelView$1$1; extends Ljava/lang/Object; (2 methods)",
       "method": "stage_load_classes",
-      "timestamp": 1790017991536
+      "timestamp": 1790023814126
     },
     {
       "category": "DEBUG",
@@ -198,7 +198,7 @@
       "level": "DEBUG",
       "message": "Found class: Lzhangman/github/snake/SnakePanelView$1$2; extends Ljava/lang/Object; (2 methods)",
       "method": "stage_load_classes",
-      "timestamp": 1790017991536
+      "timestamp": 1790023814126
     },
     {
       "category": "DEBUG",
@@ -206,7 +206,7 @@
       "level": "DEBUG",
       "message": "Found class: Lzhangman/github/snake/SnakePanelView$1; extends Ljava/lang/Object; (3 methods)",
       "method": "stage_load_classes",
-      "timestamp": 1790017991536
+      "timestamp": 1790023814126
     },
     {
       "category": "DEBUG",
@@ -214,7 +214,7 @@
       "level": "DEBUG",
       "message": "Found class: Lzhangman/github/snake/SnakePanelView$GameMainThread; extends Ljava/lang/Thread; (4 methods)",
       "method": "stage_load_classes",
-      "timestamp": 1790017991536
+      "timestamp": 1790023814126
     },
     {
       "category": "DEBUG",
@@ -222,7 +222,7 @@
       "level": "DEBUG",
       "message": "Found class: Lzhangman/github/snake/SnakePanelView; extends Landroid/view/View; (27 methods)",
       "method": "stage_load_classes",
-      "timestamp": 1790017991536
+      "timestamp": 1790023814126
     },
     {
       "category": "SYSTEM",
@@ -230,7 +230,7 @@
       "level": "INFO",
       "message": "Executing application lifecycle",
       "method": "stage_execute_application",
-      "timestamp": 1790017991536
+      "timestamp": 1790023814126
     },
     {
       "category": "SYSTEM",
@@ -238,7 +238,7 @@
       "level": "INFO",
       "message": "[REAL_DALVIK_INTERPRETER] Starting real bytecode execution",
       "method": "stage_execute_application_real_dalvik",
-      "timestamp": 1790017991536
+      "timestamp": 1790023814126
     },
     {
       "category": "SYSTEM",
@@ -246,7 +246,7 @@
       "level": "INFO",
       "message": "Instructions executed: 35",
       "method": "execute_apk",
-      "timestamp": 1790017991597
+      "timestamp": 1790023814189
     },
     {
       "category": "SYSTEM",
@@ -254,7 +254,7 @@
       "level": "INFO",
       "message": "API calls traced: 16",
       "method": "execute_apk",
-      "timestamp": 1790017991597
+      "timestamp": 1790023814189
     },
     {
       "category": "SYSTEM",
@@ -262,7 +262,7 @@
       "level": "INFO",
       "message": "Heap objects: 445",
       "method": "execute_apk",
-      "timestamp": 1790017991597
+      "timestamp": 1790023814189
     },
     {
       "category": "SYSTEM",
@@ -270,7 +270,7 @@
       "level": "INFO",
       "message": "✅ REAL EXECUTION CONFIRMED - 35 opcodes executed",
       "method": "validation",
-      "timestamp": 1790017991597
+      "timestamp": 1790023814189
     },
     {
       "category": "SYSTEM",
@@ -278,7 +278,7 @@
       "level": "INFO",
       "message": "ExecutionSource = REAL_DALVIK_INTERPRETER (verified)",
       "method": "execution_source",
-      "timestamp": 1790017991597
+      "timestamp": 1790023814189
     },
     {
       "category": "SYSTEM",
@@ -286,7 +286,7 @@
       "level": "INFO",
       "message": "[REAL_DALVIK_INTERPRETER] Creating view from execution evidence",
       "method": "create_view_from_dalvik_result",
-      "timestamp": 1790017991597
+      "timestamp": 1790023814189
     },
     {
       "category": "SYSTEM",
@@ -294,7 +294,7 @@
       "level": "INFO",
       "message": "Creating HelloWorld view",
       "method": "create_hello_world_view",
-      "timestamp": 1790017991597
+      "timestamp": 1790023814189
     },
     {
       "category": "SYSTEM",
@@ -302,7 +302,7 @@
       "level": "INFO",
       "message": "✅ Lifecycle onCreate/onStart/onResume executed as DEX bytecode (REAL_DALVIK_INTERPRETER, entry-time provenance)",
       "method": "lifecycle_source",
-      "timestamp": 1790017991597
+      "timestamp": 1790023814189
     },
     {
       "category": "SYSTEM",
@@ -310,7 +310,7 @@
       "level": "INFO",
       "message": "✅ All lifecycle events sourced from REAL_DALVIK_INTERPRETER",
       "method": "lifecycle_verified",
-      "timestamp": 1790017991597
+      "timestamp": 1790023814189
     },
     {
       "category": "SYSTEM",
@@ -318,7 +318,7 @@
       "level": "INFO",
       "message": "Generating mandatory trace files: /home/z/my-project/docs/evidence/s75/snake_fidelity_probe/exp031_5/traces/zhangman.github.snake",
       "method": "trace_export",
-      "timestamp": 1790017991597
+      "timestamp": 1790023814189
     },
     {
       "category": "SYSTEM",
@@ -326,7 +326,7 @@
       "level": "INFO",
       "message": "✅ Trace files generated successfully",
       "method": "trace_export",
-      "timestamp": 1790017991600
+      "timestamp": 1790023814193
     },
     {
       "category": "SYSTEM",
@@ -334,7 +334,7 @@
       "level": "INFO",
       "message": "  - opcode_trace.json",
       "method": "trace_files",
-      "timestamp": 1790017991600
+      "timestamp": 1790023814193
     },
     {
       "category": "SYSTEM",
@@ -342,7 +342,7 @@
       "level": "INFO",
       "message": "  - method_trace.json",
       "method": "trace_files",
-      "timestamp": 1790017991600
+      "timestamp": 1790023814193
     },
     {
       "category": "SYSTEM",
@@ -350,7 +350,7 @@
       "level": "INFO",
       "message": "  - register_trace.json",
       "method": "trace_files",
-      "timestamp": 1790017991600
+      "timestamp": 1790023814193
     },
     {
       "category": "SYSTEM",
@@ -358,7 +358,7 @@
       "level": "INFO",
       "message": "  - heap_trace.json",
       "method": "trace_files",
-      "timestamp": 1790017991600
+      "timestamp": 1790023814193
     },
     {
       "category": "SYSTEM",
@@ -366,7 +366,7 @@
       "level": "INFO",
       "message": "  - execution_summary.json (contains verdict)",
       "method": "trace_files",
-      "timestamp": 1790017991600
+      "timestamp": 1790023814193
     },
     {
       "category": "SYSTEM",
@@ -374,7 +374,7 @@
       "level": "INFO",
       "message": "skipped: --frames mode supplies its own interaction driver",
       "method": "phase_b_click",
-      "timestamp": 1790017991600
+      "timestamp": 1790023814193
     },
     {
       "category": "SYSTEM",
@@ -382,7 +382,7 @@
       "level": "INFO",
       "message": "Real Dalvik execution complete",
       "method": "stage_execute_application_real_dalvik",
-      "timestamp": 1790017991600
+      "timestamp": 1790023814193
     },
     {
       "category": "SYSTEM",
@@ -390,7 +390,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017991600
+      "timestamp": 1790023814193
     },
     {
       "category": "SYSTEM",
@@ -398,7 +398,7 @@
       "level": "INFO",
       "message": "STATE-LIST bg 'res/drawable/direction_btn_background.xml' parsed: 2 item(s)",
       "method": "stage_render_frame",
-      "timestamp": 1790017991658
+      "timestamp": 1790023814236
     },
     {
       "category": "SYSTEM",
@@ -406,7 +406,7 @@
       "level": "INFO",
       "message": "STATE-LIST bg 'res/drawable/direction_btn_background.xml' parsed: 2 item(s)",
       "method": "stage_render_frame",
-      "timestamp": 1790017991659
+      "timestamp": 1790023814237
     },
     {
       "category": "SYSTEM",
@@ -414,7 +414,7 @@
       "level": "INFO",
       "message": "STATE-LIST bg 'res/drawable/direction_btn_background.xml' parsed: 2 item(s)",
       "method": "stage_render_frame",
-      "timestamp": 1790017991659
+      "timestamp": 1790023814237
     },
     {
       "category": "SYSTEM",
@@ -422,7 +422,7 @@
       "level": "INFO",
       "message": "STATE-LIST bg 'res/drawable/direction_btn_background.xml' parsed: 2 item(s)",
       "method": "stage_render_frame",
-      "timestamp": 1790017991659
+      "timestamp": 1790023814237
     },
     {
       "category": "SYSTEM",
@@ -430,7 +430,7 @@
       "level": "INFO",
       "message": "STATE-LIST bg 'res/drawable/restart_btn_background.xml' parsed: 2 item(s)",
       "method": "stage_render_frame",
-      "timestamp": 1790017991659
+      "timestamp": 1790023814237
     },
     {
       "category": "SYSTEM",
@@ -438,7 +438,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017991685
+      "timestamp": 1790023814262
     },
     {
       "category": "SYSTEM",
@@ -446,7 +446,7 @@
       "level": "INFO",
       "message": "Capturing output",
       "method": "stage_capture_output",
-      "timestamp": 1790017991688
+      "timestamp": 1790023814265
     },
     {
       "category": "SYSTEM",
@@ -454,7 +454,7 @@
       "level": "INFO",
       "message": "view_tree.json dumped (S67 provenance law)",
       "method": "stage_capture_output",
-      "timestamp": 1790017991688
+      "timestamp": 1790023814265
     },
     {
       "category": "SYSTEM",
@@ -462,7 +462,7 @@
       "level": "INFO",
       "message": "post-lifecycle frame pump done",
       "method": "stage_capture_output",
-      "timestamp": 1790017991688
+      "timestamp": 1790023814265
     },
     {
       "category": "SYSTEM",
@@ -470,7 +470,7 @@
       "level": "INFO",
       "message": "Screenshot captured: /home/z/my-project/docs/evidence/s75/snake_fidelity_probe/screenshot.png (1080x1920, 8294400 bytes)",
       "method": "log_screenshot",
-      "timestamp": 1790017991789
+      "timestamp": 1790023814336
     },
     {
       "category": "SYSTEM",
@@ -478,7 +478,7 @@
       "level": "INFO",
       "message": "PNG screenshot saved to: /home/z/my-project/docs/evidence/s75/snake_fidelity_probe/screenshot.png",
       "method": "stage_capture_output",
-      "timestamp": 1790017991789
+      "timestamp": 1790023814336
     },
     {
       "category": "SYSTEM",
@@ -486,7 +486,7 @@
       "level": "INFO",
       "message": "FRAME-SEQUENCE capture (90 frames @ +250ms virtual each)",
       "method": "stage_frame_sequence",
-      "timestamp": 1790017991873
+      "timestamp": 1790023814401
     },
     {
       "category": "SYSTEM",
@@ -494,7 +494,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017992051
+      "timestamp": 1790023814507
     },
     {
       "category": "SYSTEM",
@@ -502,7 +502,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017992116
+      "timestamp": 1790023814571
     },
     {
       "category": "SYSTEM",
@@ -510,7 +510,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017992129
+      "timestamp": 1790023814584
     },
     {
       "category": "SYSTEM",
@@ -518,7 +518,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017992194
+      "timestamp": 1790023814653
     },
     {
       "category": "SYSTEM",
@@ -526,7 +526,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017992307
+      "timestamp": 1790023814762
     },
     {
       "category": "SYSTEM",
@@ -534,7 +534,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017992373
+      "timestamp": 1790023814827
     },
     {
       "category": "SYSTEM",
@@ -542,7 +542,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017992484
+      "timestamp": 1790023814937
     },
     {
       "category": "SYSTEM",
@@ -550,7 +550,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017992564
+      "timestamp": 1790023815002
     },
     {
       "category": "SYSTEM",
@@ -558,7 +558,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017992674
+      "timestamp": 1790023815117
     },
     {
       "category": "SYSTEM",
@@ -566,7 +566,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017992738
+      "timestamp": 1790023815203
     },
     {
       "category": "SYSTEM",
@@ -574,7 +574,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017992848
+      "timestamp": 1790023815315
     },
     {
       "category": "SYSTEM",
@@ -582,7 +582,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017992911
+      "timestamp": 1790023815381
     },
     {
       "category": "SYSTEM",
@@ -590,7 +590,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017993022
+      "timestamp": 1790023815491
     },
     {
       "category": "SYSTEM",
@@ -598,7 +598,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017993089
+      "timestamp": 1790023815557
     },
     {
       "category": "SYSTEM",
@@ -606,7 +606,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017993200
+      "timestamp": 1790023815668
     },
     {
       "category": "SYSTEM",
@@ -614,7 +614,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017993268
+      "timestamp": 1790023815734
     },
     {
       "category": "SYSTEM",
@@ -622,7 +622,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017993272
+      "timestamp": 1790023815738
     },
     {
       "category": "SYSTEM",
@@ -630,7 +630,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017993337
+      "timestamp": 1790023815804
     },
     {
       "category": "SYSTEM",
@@ -638,7 +638,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017993449
+      "timestamp": 1790023815915
     },
     {
       "category": "SYSTEM",
@@ -646,7 +646,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017993514
+      "timestamp": 1790023815985
     },
     {
       "category": "SYSTEM",
@@ -654,7 +654,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017993624
+      "timestamp": 1790023816096
     },
     {
       "category": "SYSTEM",
@@ -662,7 +662,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017993703
+      "timestamp": 1790023816161
     },
     {
       "category": "SYSTEM",
@@ -670,7 +670,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017993816
+      "timestamp": 1790023816274
     },
     {
       "category": "SYSTEM",
@@ -678,7 +678,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017993880
+      "timestamp": 1790023816358
     },
     {
       "category": "SYSTEM",
@@ -686,7 +686,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017993991
+      "timestamp": 1790023816471
     },
     {
       "category": "SYSTEM",
@@ -694,7 +694,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017994058
+      "timestamp": 1790023816536
     },
     {
       "category": "SYSTEM",
@@ -702,7 +702,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017994170
+      "timestamp": 1790023816648
     },
     {
       "category": "SYSTEM",
@@ -710,7 +710,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017994235
+      "timestamp": 1790023816721
     },
     {
       "category": "SYSTEM",
@@ -718,7 +718,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017994347
+      "timestamp": 1790023816831
     },
     {
       "category": "SYSTEM",
@@ -726,7 +726,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017994412
+      "timestamp": 1790023816894
     },
     {
       "category": "SYSTEM",
@@ -734,7 +734,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017994521
+      "timestamp": 1790023817003
     },
     {
       "category": "SYSTEM",
@@ -742,7 +742,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017994584
+      "timestamp": 1790023817068
     },
     {
       "category": "SYSTEM",
@@ -750,7 +750,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017994694
+      "timestamp": 1790023817178
     },
     {
       "category": "SYSTEM",
@@ -758,7 +758,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017994787
+      "timestamp": 1790023817245
     },
     {
       "category": "SYSTEM",
@@ -766,7 +766,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017994897
+      "timestamp": 1790023817363
     },
     {
       "category": "SYSTEM",
@@ -774,7 +774,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017994970
+      "timestamp": 1790023817449
     },
     {
       "category": "SYSTEM",
@@ -782,7 +782,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017995083
+      "timestamp": 1790023817559
     },
     {
       "category": "SYSTEM",
@@ -790,7 +790,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017995149
+      "timestamp": 1790023817625
     },
     {
       "category": "SYSTEM",
@@ -798,7 +798,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017995152
+      "timestamp": 1790023817628
     },
     {
       "category": "SYSTEM",
@@ -806,7 +806,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017995215
+      "timestamp": 1790023817693
     },
     {
       "category": "SYSTEM",
@@ -814,7 +814,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017995326
+      "timestamp": 1790023817804
     },
     {
       "category": "SYSTEM",
@@ -822,7 +822,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017995391
+      "timestamp": 1790023817868
     },
     {
       "category": "SYSTEM",
@@ -830,7 +830,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017995500
+      "timestamp": 1790023817977
     },
     {
       "category": "SYSTEM",
@@ -838,7 +838,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017995563
+      "timestamp": 1790023818041
     },
     {
       "category": "SYSTEM",
@@ -846,7 +846,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017995672
+      "timestamp": 1790023818152
     },
     {
       "category": "SYSTEM",
@@ -854,7 +854,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017995737
+      "timestamp": 1790023818217
     },
     {
       "category": "SYSTEM",
@@ -862,7 +862,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017995847
+      "timestamp": 1790023818338
     },
     {
       "category": "SYSTEM",
@@ -870,7 +870,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017995924
+      "timestamp": 1790023818405
     },
     {
       "category": "SYSTEM",
@@ -878,7 +878,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017996034
+      "timestamp": 1790023818535
     },
     {
       "category": "SYSTEM",
@@ -886,7 +886,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017996098
+      "timestamp": 1790023818618
     },
     {
       "category": "SYSTEM",
@@ -894,7 +894,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017996209
+      "timestamp": 1790023818732
     },
     {
       "category": "SYSTEM",
@@ -902,7 +902,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017996273
+      "timestamp": 1790023818798
     },
     {
       "category": "SYSTEM",
@@ -910,7 +910,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017996384
+      "timestamp": 1790023818914
     },
     {
       "category": "SYSTEM",
@@ -918,7 +918,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017996448
+      "timestamp": 1790023818978
     },
     {
       "category": "SYSTEM",
@@ -926,7 +926,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017996556
+      "timestamp": 1790023819090
     },
     {
       "category": "SYSTEM",
@@ -934,7 +934,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017996619
+      "timestamp": 1790023819157
     },
     {
       "category": "SYSTEM",
@@ -942,7 +942,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017996728
+      "timestamp": 1790023819269
     },
     {
       "category": "SYSTEM",
@@ -950,7 +950,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017996789
+      "timestamp": 1790023819342
     },
     {
       "category": "SYSTEM",
@@ -958,7 +958,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017996899
+      "timestamp": 1790023819456
     },
     {
       "category": "SYSTEM",
@@ -966,7 +966,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017996977
+      "timestamp": 1790023819521
     },
     {
       "category": "SYSTEM",
@@ -974,7 +974,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017997089
+      "timestamp": 1790023819634
     },
     {
       "category": "SYSTEM",
@@ -982,7 +982,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017997156
+      "timestamp": 1790023819719
     },
     {
       "category": "SYSTEM",
@@ -990,7 +990,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017997267
+      "timestamp": 1790023819829
     },
     {
       "category": "SYSTEM",
@@ -998,7 +998,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017997335
+      "timestamp": 1790023819894
     },
     {
       "category": "SYSTEM",
@@ -1006,7 +1006,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017997449
+      "timestamp": 1790023820004
     },
     {
       "category": "SYSTEM",
@@ -1014,7 +1014,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017997511
+      "timestamp": 1790023820068
     },
     {
       "category": "SYSTEM",
@@ -1022,7 +1022,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017997620
+      "timestamp": 1790023820178
     },
     {
       "category": "SYSTEM",
@@ -1030,7 +1030,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017997682
+      "timestamp": 1790023820242
     },
     {
       "category": "SYSTEM",
@@ -1038,7 +1038,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017997790
+      "timestamp": 1790023820353
     },
     {
       "category": "SYSTEM",
@@ -1046,7 +1046,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017997860
+      "timestamp": 1790023820419
     },
     {
       "category": "SYSTEM",
@@ -1054,7 +1054,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017997968
+      "timestamp": 1790023820531
     },
     {
       "category": "SYSTEM",
@@ -1062,7 +1062,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017998046
+      "timestamp": 1790023820598
     },
     {
       "category": "SYSTEM",
@@ -1070,7 +1070,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017998155
+      "timestamp": 1790023820711
     },
     {
       "category": "SYSTEM",
@@ -1078,7 +1078,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017998217
+      "timestamp": 1790023820806
     },
     {
       "category": "SYSTEM",
@@ -1086,7 +1086,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017998220
+      "timestamp": 1790023820809
     },
     {
       "category": "SYSTEM",
@@ -1094,7 +1094,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017998282
+      "timestamp": 1790023820882
     },
     {
       "category": "SYSTEM",
@@ -1102,7 +1102,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017998393
+      "timestamp": 1790023820993
     },
     {
       "category": "SYSTEM",
@@ -1110,7 +1110,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017998459
+      "timestamp": 1790023821059
     },
     {
       "category": "SYSTEM",
@@ -1118,7 +1118,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017998567
+      "timestamp": 1790023821171
     },
     {
       "category": "SYSTEM",
@@ -1126,7 +1126,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017998649
+      "timestamp": 1790023821250
     },
     {
       "category": "SYSTEM",
@@ -1134,7 +1134,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017998758
+      "timestamp": 1790023821364
     },
     {
       "category": "SYSTEM",
@@ -1142,7 +1142,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017998819
+      "timestamp": 1790023821430
     },
     {
       "category": "SYSTEM",
@@ -1150,7 +1150,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017998929
+      "timestamp": 1790023821542
     },
     {
       "category": "SYSTEM",
@@ -1158,7 +1158,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017998992
+      "timestamp": 1790023821608
     },
     {
       "category": "SYSTEM",
@@ -1166,7 +1166,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017999102
+      "timestamp": 1790023821721
     },
     {
       "category": "SYSTEM",
@@ -1174,7 +1174,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017999180
+      "timestamp": 1790023821788
     },
     {
       "category": "SYSTEM",
@@ -1182,7 +1182,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017999292
+      "timestamp": 1790023821900
     },
     {
       "category": "SYSTEM",
@@ -1190,7 +1190,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017999358
+      "timestamp": 1790023821979
     },
     {
       "category": "SYSTEM",
@@ -1198,7 +1198,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017999469
+      "timestamp": 1790023822089
     },
     {
       "category": "SYSTEM",
@@ -1206,7 +1206,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017999532
+      "timestamp": 1790023822156
     },
     {
       "category": "SYSTEM",
@@ -1214,7 +1214,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017999535
+      "timestamp": 1790023822159
     },
     {
       "category": "SYSTEM",
@@ -1222,7 +1222,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017999598
+      "timestamp": 1790023822225
     },
     {
       "category": "SYSTEM",
@@ -1230,7 +1230,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017999709
+      "timestamp": 1790023822339
     },
     {
       "category": "SYSTEM",
@@ -1238,7 +1238,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017999772
+      "timestamp": 1790023822411
     },
     {
       "category": "SYSTEM",
@@ -1246,7 +1246,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017999882
+      "timestamp": 1790023822525
     },
     {
       "category": "SYSTEM",
@@ -1254,7 +1254,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790017999947
+      "timestamp": 1790023822590
     },
     {
       "category": "SYSTEM",
@@ -1262,7 +1262,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790017999950
+      "timestamp": 1790023822594
     },
     {
       "category": "SYSTEM",
@@ -1270,7 +1270,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018000014
+      "timestamp": 1790023822659
     },
     {
       "category": "SYSTEM",
@@ -1278,7 +1278,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018000126
+      "timestamp": 1790023822769
     },
     {
       "category": "SYSTEM",
@@ -1286,7 +1286,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018000206
+      "timestamp": 1790023822834
     },
     {
       "category": "SYSTEM",
@@ -1294,7 +1294,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018000318
+      "timestamp": 1790023822944
     },
     {
       "category": "SYSTEM",
@@ -1302,7 +1302,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018000383
+      "timestamp": 1790023823023
     },
     {
       "category": "SYSTEM",
@@ -1310,7 +1310,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018000386
+      "timestamp": 1790023823026
     },
     {
       "category": "SYSTEM",
@@ -1318,7 +1318,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018000449
+      "timestamp": 1790023823090
     },
     {
       "category": "SYSTEM",
@@ -1326,7 +1326,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018000558
+      "timestamp": 1790023823203
     },
     {
       "category": "SYSTEM",
@@ -1334,7 +1334,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018000621
+      "timestamp": 1790023823267
     },
     {
       "category": "SYSTEM",
@@ -1342,7 +1342,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018000732
+      "timestamp": 1790023823378
     },
     {
       "category": "SYSTEM",
@@ -1350,7 +1350,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018000795
+      "timestamp": 1790023823445
     },
     {
       "category": "SYSTEM",
@@ -1358,7 +1358,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018000798
+      "timestamp": 1790023823449
     },
     {
       "category": "SYSTEM",
@@ -1366,7 +1366,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018000862
+      "timestamp": 1790023823512
     },
     {
       "category": "SYSTEM",
@@ -1374,7 +1374,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018000972
+      "timestamp": 1790023823624
     },
     {
       "category": "SYSTEM",
@@ -1382,7 +1382,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018001038
+      "timestamp": 1790023823696
     },
     {
       "category": "SYSTEM",
@@ -1390,7 +1390,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018001150
+      "timestamp": 1790023823808
     },
     {
       "category": "SYSTEM",
@@ -1398,7 +1398,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018001229
+      "timestamp": 1790023823873
     },
     {
       "category": "SYSTEM",
@@ -1406,7 +1406,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018001233
+      "timestamp": 1790023823876
     },
     {
       "category": "SYSTEM",
@@ -1414,7 +1414,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018001296
+      "timestamp": 1790023823945
     },
     {
       "category": "SYSTEM",
@@ -1422,7 +1422,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018001407
+      "timestamp": 1790023824056
     },
     {
       "category": "SYSTEM",
@@ -1430,7 +1430,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018001472
+      "timestamp": 1790023824137
     },
     {
       "category": "SYSTEM",
@@ -1438,7 +1438,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018001582
+      "timestamp": 1790023824249
     },
     {
       "category": "SYSTEM",
@@ -1446,7 +1446,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018001647
+      "timestamp": 1790023824314
     },
     {
       "category": "SYSTEM",
@@ -1454,7 +1454,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018001650
+      "timestamp": 1790023824317
     },
     {
       "category": "SYSTEM",
@@ -1462,7 +1462,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018001712
+      "timestamp": 1790023824388
     },
     {
       "category": "SYSTEM",
@@ -1470,7 +1470,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018001822
+      "timestamp": 1790023824499
     },
     {
       "category": "SYSTEM",
@@ -1478,7 +1478,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018001885
+      "timestamp": 1790023824563
     },
     {
       "category": "SYSTEM",
@@ -1486,7 +1486,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018001995
+      "timestamp": 1790023824675
     },
     {
       "category": "SYSTEM",
@@ -1494,7 +1494,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018002059
+      "timestamp": 1790023824744
     },
     {
       "category": "SYSTEM",
@@ -1502,7 +1502,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018002062
+      "timestamp": 1790023824747
     },
     {
       "category": "SYSTEM",
@@ -1510,7 +1510,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018002127
+      "timestamp": 1790023824811
     },
     {
       "category": "SYSTEM",
@@ -1518,7 +1518,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018002240
+      "timestamp": 1790023824921
     },
     {
       "category": "SYSTEM",
@@ -1526,7 +1526,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018002339
+      "timestamp": 1790023824985
     },
     {
       "category": "SYSTEM",
@@ -1534,7 +1534,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018002452
+      "timestamp": 1790023825095
     },
     {
       "category": "SYSTEM",
@@ -1542,7 +1542,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018002515
+      "timestamp": 1790023825173
     },
     {
       "category": "SYSTEM",
@@ -1550,7 +1550,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018002518
+      "timestamp": 1790023825175
     },
     {
       "category": "SYSTEM",
@@ -1558,7 +1558,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018002580
+      "timestamp": 1790023825239
     },
     {
       "category": "SYSTEM",
@@ -1566,7 +1566,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018002690
+      "timestamp": 1790023825352
     },
     {
       "category": "SYSTEM",
@@ -1574,7 +1574,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018002755
+      "timestamp": 1790023825416
     },
     {
       "category": "SYSTEM",
@@ -1582,7 +1582,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018002864
+      "timestamp": 1790023825529
     },
     {
       "category": "SYSTEM",
@@ -1590,7 +1590,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018002927
+      "timestamp": 1790023825594
     },
     {
       "category": "SYSTEM",
@@ -1598,7 +1598,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018002930
+      "timestamp": 1790023825597
     },
     {
       "category": "SYSTEM",
@@ -1606,7 +1606,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018002995
+      "timestamp": 1790023825663
     },
     {
       "category": "SYSTEM",
@@ -1614,7 +1614,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018003107
+      "timestamp": 1790023825774
     },
     {
       "category": "SYSTEM",
@@ -1622,7 +1622,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018003170
+      "timestamp": 1790023825841
     },
     {
       "category": "SYSTEM",
@@ -1630,7 +1630,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018003289
+      "timestamp": 1790023825952
     },
     {
       "category": "SYSTEM",
@@ -1638,7 +1638,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018003370
+      "timestamp": 1790023826015
     },
     {
       "category": "SYSTEM",
@@ -1646,7 +1646,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018003373
+      "timestamp": 1790023826019
     },
     {
       "category": "SYSTEM",
@@ -1654,7 +1654,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018003438
+      "timestamp": 1790023826084
     },
     {
       "category": "SYSTEM",
@@ -1662,7 +1662,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018003554
+      "timestamp": 1790023826196
     },
     {
       "category": "SYSTEM",
@@ -1670,7 +1670,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018003617
+      "timestamp": 1790023826276
     },
     {
       "category": "SYSTEM",
@@ -1678,7 +1678,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018003735
+      "timestamp": 1790023826389
     },
     {
       "category": "SYSTEM",
@@ -1686,7 +1686,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018003809
+      "timestamp": 1790023826456
     },
     {
       "category": "SYSTEM",
@@ -1694,7 +1694,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018003921
+      "timestamp": 1790023826568
     },
     {
       "category": "SYSTEM",
@@ -1702,7 +1702,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018003997
+      "timestamp": 1790023826635
     },
     {
       "category": "SYSTEM",
@@ -1710,7 +1710,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018004109
+      "timestamp": 1790023826749
     },
     {
       "category": "SYSTEM",
@@ -1718,7 +1718,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018004175
+      "timestamp": 1790023826822
     },
     {
       "category": "SYSTEM",
@@ -1726,7 +1726,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018004289
+      "timestamp": 1790023826935
     },
     {
       "category": "SYSTEM",
@@ -1734,7 +1734,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018004356
+      "timestamp": 1790023827001
     },
     {
       "category": "SYSTEM",
@@ -1742,7 +1742,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018004466
+      "timestamp": 1790023827114
     },
     {
       "category": "SYSTEM",
@@ -1750,7 +1750,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018004543
+      "timestamp": 1790023827181
     },
     {
       "category": "SYSTEM",
@@ -1758,7 +1758,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018004654
+      "timestamp": 1790023827295
     },
     {
       "category": "SYSTEM",
@@ -1766,7 +1766,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018004720
+      "timestamp": 1790023827376
     },
     {
       "category": "SYSTEM",
@@ -1774,7 +1774,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018004723
+      "timestamp": 1790023827379
     },
     {
       "category": "SYSTEM",
@@ -1782,7 +1782,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018004786
+      "timestamp": 1790023827445
     },
     {
       "category": "SYSTEM",
@@ -1790,7 +1790,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018004896
+      "timestamp": 1790023827556
     },
     {
       "category": "SYSTEM",
@@ -1798,7 +1798,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018004960
+      "timestamp": 1790023827622
     },
     {
       "category": "SYSTEM",
@@ -1806,7 +1806,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018005072
+      "timestamp": 1790023827734
     },
     {
       "category": "SYSTEM",
@@ -1814,7 +1814,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018005136
+      "timestamp": 1790023827799
     },
     {
       "category": "SYSTEM",
@@ -1822,7 +1822,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018005140
+      "timestamp": 1790023827802
     },
     {
       "category": "SYSTEM",
@@ -1830,7 +1830,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018005203
+      "timestamp": 1790023827866
     },
     {
       "category": "SYSTEM",
@@ -1838,7 +1838,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018005315
+      "timestamp": 1790023827978
     },
     {
       "category": "SYSTEM",
@@ -1846,7 +1846,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018005380
+      "timestamp": 1790023828043
     },
     {
       "category": "SYSTEM",
@@ -1854,7 +1854,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018005490
+      "timestamp": 1790023828156
     },
     {
       "category": "SYSTEM",
@@ -1862,7 +1862,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018005567
+      "timestamp": 1790023828219
     },
     {
       "category": "SYSTEM",
@@ -1870,7 +1870,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018005570
+      "timestamp": 1790023828222
     },
     {
       "category": "SYSTEM",
@@ -1878,7 +1878,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018005635
+      "timestamp": 1790023828286
     },
     {
       "category": "SYSTEM",
@@ -1886,7 +1886,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018005747
+      "timestamp": 1790023828398
     },
     {
       "category": "SYSTEM",
@@ -1894,7 +1894,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018005810
+      "timestamp": 1790023828475
     },
     {
       "category": "SYSTEM",
@@ -1902,7 +1902,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018005921
+      "timestamp": 1790023828586
     },
     {
       "category": "SYSTEM",
@@ -1910,7 +1910,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018005985
+      "timestamp": 1790023828652
     },
     {
       "category": "SYSTEM",
@@ -1918,7 +1918,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018005988
+      "timestamp": 1790023828656
     },
     {
       "category": "SYSTEM",
@@ -1926,7 +1926,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018006052
+      "timestamp": 1790023828720
     },
     {
       "category": "SYSTEM",
@@ -1934,7 +1934,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018006162
+      "timestamp": 1790023828831
     },
     {
       "category": "SYSTEM",
@@ -1942,7 +1942,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018006226
+      "timestamp": 1790023828894
     },
     {
       "category": "SYSTEM",
@@ -1950,7 +1950,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018006338
+      "timestamp": 1790023829004
     },
     {
       "category": "SYSTEM",
@@ -1958,7 +1958,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018006402
+      "timestamp": 1790023829069
     },
     {
       "category": "SYSTEM",
@@ -1966,7 +1966,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018006405
+      "timestamp": 1790023829072
     },
     {
       "category": "SYSTEM",
@@ -1974,7 +1974,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018006466
+      "timestamp": 1790023829143
     },
     {
       "category": "SYSTEM",
@@ -1982,7 +1982,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018006576
+      "timestamp": 1790023829254
     },
     {
       "category": "SYSTEM",
@@ -1990,7 +1990,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018006656
+      "timestamp": 1790023829319
     },
     {
       "category": "SYSTEM",
@@ -1998,7 +1998,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018006766
+      "timestamp": 1790023829431
     },
     {
       "category": "SYSTEM",
@@ -2006,7 +2006,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018006828
+      "timestamp": 1790023829515
     },
     {
       "category": "SYSTEM",
@@ -2014,7 +2014,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018006831
+      "timestamp": 1790023829518
     },
     {
       "category": "SYSTEM",
@@ -2022,7 +2022,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018006892
+      "timestamp": 1790023829582
     },
     {
       "category": "SYSTEM",
@@ -2030,7 +2030,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018007004
+      "timestamp": 1790023829694
     },
     {
       "category": "SYSTEM",
@@ -2038,7 +2038,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018007069
+      "timestamp": 1790023829761
     },
     {
       "category": "SYSTEM",
@@ -2046,7 +2046,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018007179
+      "timestamp": 1790023829871
     },
     {
       "category": "SYSTEM",
@@ -2054,7 +2054,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018007245
+      "timestamp": 1790023829951
     },
     {
       "category": "SYSTEM",
@@ -2062,7 +2062,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018007248
+      "timestamp": 1790023829955
     },
     {
       "category": "SYSTEM",
@@ -2070,7 +2070,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018007313
+      "timestamp": 1790023830019
     },
     {
       "category": "SYSTEM",
@@ -2078,7 +2078,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018007424
+      "timestamp": 1790023830131
     },
     {
       "category": "SYSTEM",
@@ -2086,7 +2086,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018007501
+      "timestamp": 1790023830206
     },
     {
       "category": "SYSTEM",
@@ -2094,7 +2094,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018007614
+      "timestamp": 1790023830319
     },
     {
       "category": "SYSTEM",
@@ -2102,7 +2102,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018007689
+      "timestamp": 1790023830386
     },
     {
       "category": "SYSTEM",
@@ -2110,7 +2110,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018007692
+      "timestamp": 1790023830389
     },
     {
       "category": "SYSTEM",
@@ -2118,7 +2118,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018007754
+      "timestamp": 1790023830458
     },
     {
       "category": "SYSTEM",
@@ -2126,7 +2126,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018007865
+      "timestamp": 1790023830568
     },
     {
       "category": "SYSTEM",
@@ -2134,7 +2134,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018007933
+      "timestamp": 1790023830651
     },
     {
       "category": "SYSTEM",
@@ -2142,7 +2142,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018008045
+      "timestamp": 1790023830763
     },
     {
       "category": "SYSTEM",
@@ -2150,7 +2150,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018008109
+      "timestamp": 1790023830831
     },
     {
       "category": "SYSTEM",
@@ -2158,7 +2158,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018008112
+      "timestamp": 1790023830835
     },
     {
       "category": "SYSTEM",
@@ -2166,7 +2166,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018008177
+      "timestamp": 1790023830909
     },
     {
       "category": "SYSTEM",
@@ -2174,7 +2174,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018008288
+      "timestamp": 1790023831086
     },
     {
       "category": "SYSTEM",
@@ -2182,7 +2182,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018008351
+      "timestamp": 1790023831155
     },
     {
       "category": "SYSTEM",
@@ -2190,7 +2190,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018008460
+      "timestamp": 1790023831266
     },
     {
       "category": "SYSTEM",
@@ -2198,7 +2198,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018008520
+      "timestamp": 1790023831358
     },
     {
       "category": "SYSTEM",
@@ -2206,7 +2206,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018008629
+      "timestamp": 1790023831557
     },
     {
       "category": "SYSTEM",
@@ -2214,7 +2214,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018008706
+      "timestamp": 1790023831625
     },
     {
       "category": "SYSTEM",
@@ -2222,7 +2222,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018008815
+      "timestamp": 1790023831738
     },
     {
       "category": "SYSTEM",
@@ -2230,7 +2230,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018008878
+      "timestamp": 1790023831817
     },
     {
       "category": "SYSTEM",
@@ -2238,7 +2238,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018008988
+      "timestamp": 1790023831929
     },
     {
       "category": "SYSTEM",
@@ -2246,7 +2246,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018009054
+      "timestamp": 1790023831992
     },
     {
       "category": "SYSTEM",
@@ -2254,7 +2254,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018009165
+      "timestamp": 1790023832103
     },
     {
       "category": "SYSTEM",
@@ -2262,7 +2262,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018009229
+      "timestamp": 1790023832172
     },
     {
       "category": "SYSTEM",
@@ -2270,7 +2270,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790018009341
+      "timestamp": 1790023832282
     },
     {
       "category": "SYSTEM",
@@ -2278,7 +2278,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790018009404
+      "timestamp": 1790023832348
     },
     {
       "category": "SYSTEM",
@@ -2286,10 +2286,10 @@
       "level": "INFO",
       "message": "Generating reports",
       "method": "stage_generate_reports",
-      "timestamp": 1790018009514
+      "timestamp": 1790023832458
     }
   ],
-  "generated_at": "2026-09-21 19:13:29 UTC",
-  "session_id": "EXP-001-20260921-191311-2485",
+  "generated_at": "2026-09-21 20:50:32 UTC",
+  "session_id": "EXP-001-20260921-205014-6826",
   "total_calls": 286
 }
