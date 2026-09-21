@@ -149,6 +149,21 @@ SHA256, stderr trace, report.md, classified.json per app).
 | **DOOZ METRIC RECLASSIFICATION (honest)**: the "23472 px real content" surface = 23,472 PURE BLACK pixels forming a (0,0)–(489,47) rectangle, BYTE-IDENTICAL to Stopwatch's frame (an app with NO launchable Activity) → engine-default black region, NOT dooz content; dooz's own UI remains unrendered; F-146/F-147/F-145 unchanged and exact; F-141 stays CLOSED; dated correction in #14 (no history rewritten) | run/s73_corpus/{dooz_23_toplevel,com.github.muellerma.stopwatch_6}/ + issue #14 comment | RECLASSIFIED (honest) |
 | **Regression**: fixtures 25/25 rc=0 with zero f141-throws; corpus re-run; dooz det ×3; snake autonomous ×3 identical; zero regressions on the rebuilt binary + F-117 extension | run/s73_fixtures/; S73_REPORT §6 | REGRESSION-CLEAN |
 
+## 0k. S75 CLOSURE — ledger truth closure + A7 P0 fix + queued-lead probes (runtime wave: A7 only)
+
+| Achievement | Evidence | Status |
+|---|---|---|
+| **A7 FIXED (the last P0 "law known, no code" census gap)**: manifest label/icon REFERENCE resids captured at parse (literal "@0x…" degrade removed) + `ManifestReader::resolve_resid_string` ARSC resolve wired at the ResourceRuntime ensure_loaded site (AOSP PackageParser labelRes/loadLabel law; resolution failure reported, never invented) | miniandroid/src/apk/manifest_reader.{h,cpp}; src/runtime/execution_engine.cpp; docs/foundation/s75/S75_REPORT.md §2 | **IMPLEMENTED+TESTED (f54 fixture)** |
+| f54_manifestlabel fixture: `android:label="@string/app_name"` resolved through ARSC → "F54 LabelProof" in engine.log `[A7]` line + ViewTree; icon resid captured (decode honestly NOT claimed) | docs/evidence/foundation/fixtures/f54_manifestlabel/; upload/foundation_apks/f54_manifestlabel.apk (sha 0464ebf8…) | **PROVEN (6/6 asserts)** |
+| ITEM75 ledger closure audit: all 47 UNVERIFIED census rows reconciled against gap-matrix FULL rows + live code (file:line cited) + registry; ROOT CAUSE of the blanket UNVERIFIED found (ledger builder truncated matrix rows at column 2 — status columns never seen) and fixed | docs/audit/ITEM75_CLOSURE.md + item75_closure.json; scripts/audit/item75_closure.py | 19 TESTED / 11 PARTIAL / 17 PENDING, 0 conflicts |
+| Master ledger truth refresh: UNVERIFIED 59 → 4 (only source-not-recoverable rows remain); CRITICAL-001/005/006 → OBSERVED; CAM-S74OPS → OBSERVED; ledger 375 rows | docs/audit/MASTER_CHECKLIST.md; scripts/audit/build_master_audit.py (full-row fix) | RECONCILED |
+| Level C fidelity on the A7 binary: committed snake 23-tap schedule replayed fresh → **90/90 frames byte-identical** (A7 render-neutral, proven) | docs/evidence/s75/snake_fidelity_probe/; scripts/s75_fidelity_probe.py | **REPRODUCED (90/90 BYTE-IDENTICAL)** |
+| Regression: battery 26/26 rc=0 (25 + f54) + verifier 24/24 + graph validator PASS | docs/evidence/foundation/fixtures/VERIFICATION.json | REGRESSION-CLEAN |
+| dooz F-146/F-147 re-probed at HEAD: both escapes reproduced (same sites); NEW OBSERVATION — F-147's null receiver is p0 (frame this) itself, consistent with secondary-to-F-146 (recorded, not claimed as law); black region 23,472 px bbox (0,0)–(488,47) byte-consistent | docs/evidence/s75/dooz_f146_probe/ | OBSERVED (open lead advanced) |
+| gmdice roll-visibility lead reproduced with sharper detail: listener path fires (view 39 "3D20", click_kind=listener) but roll render byte-identical (0 changed px) | docs/evidence/s75/gmdice_roll/ | REPRODUCED (open) |
+| snake restart-after-game-over re-probed at HEAD (S73 C4B design verbatim, schedule recovered from committed trace): game-over OBSERVED at frame 94 (exact S73 match); restart via START@99 still NOT observed — honest open re-verified | docs/evidence/s75/snake_restart_probe/; scripts/s75_snake_restart_probe.py | REPRODUCED (open re-verified) |
+| R-NEW-388 re-verified at HEAD instead of unfounded implementation: f14 RL anchor laws hold exactly (x=780 / (340,760) / y=300); TriPeaks still splash-blocked (app-specific) | docs/foundation/s75/R-NEW-388_HEAD_REVERIFY.md; docs/evidence/s75/rnew388_{f14,tripeaks}/ | CONFIRMED (no code change warranted) |
+
 ## 0j. S74 FOLLOW-UP — operational base completion (evidence wave; runtime untouched)
 
 | Achievement | Evidence | Status |
