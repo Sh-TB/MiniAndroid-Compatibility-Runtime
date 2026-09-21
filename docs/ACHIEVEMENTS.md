@@ -149,6 +149,13 @@ SHA256, stderr trace, report.md, classified.json per app).
 | **DOOZ METRIC RECLASSIFICATION (honest)**: the "23472 px real content" surface = 23,472 PURE BLACK pixels forming a (0,0)–(489,47) rectangle, BYTE-IDENTICAL to Stopwatch's frame (an app with NO launchable Activity) → engine-default black region, NOT dooz content; dooz's own UI remains unrendered; F-146/F-147/F-145 unchanged and exact; F-141 stays CLOSED; dated correction in #14 (no history rewritten) | run/s73_corpus/{dooz_23_toplevel,com.github.muellerma.stopwatch_6}/ + issue #14 comment | RECLASSIFIED (honest) |
 | **Regression**: fixtures 25/25 rc=0 with zero f141-throws; corpus re-run; dooz det ×3; snake autonomous ×3 identical; zero regressions on the rebuilt binary + F-117 extension | run/s73_fixtures/; S73_REPORT §6 | REGRESSION-CLEAN |
 
+## 0i. S74 — Compatibility Platform (architecture wave; runtime untouched)
+
+| Achievement | Evidence | Status |
+|---|---|---|
+| **Level C fidelity probe (real APK, byte-identity)**: the exact S73 autonomous schedule (23 scheduled real taps) replayed fresh on the current binary → **90/90 frames byte-identical vs the committed `run_01` evidence** — the binary+evidence pair at S74 HEAD reproduces proven results with zero runtime drift (S74 made NO runtime code changes; architecture-only wave) | run/s74_fidelity_probe/; scripts/s74_fidelity_probe.py | **REPRODUCED (90/90 BYTE-IDENTICAL)** |
+| **Level A fixtures on the current binary**: 25/25 rc=0, f141-throws=0 (exact S73 record match) | run/s73_fixtures/ (S74 re-run) | REGRESSION-CLEAN |
+
 ## 1. Master matrix — current-HEAD verdicts
 
 Verdicts at HEAD `8c575f71` + F-080/F-081 (S54) unless marked **[S53]**
