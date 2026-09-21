@@ -2244,3 +2244,28 @@ Stage Summary:
 - The next agent can resolve "run and fix Snake" or "continue Dooz" from the
   dossier -> issue -> blocker -> laws -> capabilities chain without scanning
   the repository (the taskbook §78 final test).
+
+---
+Task ID: S74-FOLLOW-UP (single-agent wave)
+Agent: Super Z (main)
+Task: S74 FOLLOW-UP WAVE — Operational Base Completion (execution evidence / issues / sandbox / tools / knowledge)
+
+Work Log:
+- PHASE 0 RECON: HEAD == origin/main == 3505591b verified, clean tree; S74 architecture verified in place (14/12/15/31, validator PASS, registry 397); toolchain re-bootstrapped (bootstrap_toolchain.sh) after container reset; engine rebuilt from HEAD (82.6 MB).
+- EXECUTION CAMPAIGN: 10 real APKs executed at HEAD with per-app --data-root sandboxes (launch + interaction passes where applicable); 2 golden-fixture validators re-run ALL PASS (tictactoe 9-click X WINS byte-identical; connectfour 24-click Y WINS@22 byte-identical); snake evidence re-wired per §8 (no re-run); helloworld golden re-wired; telegram v12.10.3 downloaded from official URL (sha-pinned) + bounded run.
+- HUMAN REVIEW (§22/§23): every representative frame individually opened and reviewed before status assignment; 11 apps HUMAN_VISIBLE, 3 truthful NOT_HUMAN_VISIBLE (dooz engine-default black region; stopwatch service-only no-Activity face; telegram init-NPE engine-default face).
+- REAL FINDINGS: unote notes.db (SQLite) created + survives close/reopen (first corpus persistence proof); microtimer input->state->render at HEAD (00:09:87 display); opmt real AlertDialog; tripeaks lobby newly at HEAD (tap hit-test target=0 on New Game — R-NEW-388 stands); tictactoe real APK = libgdx GL NPE (F-144) — fixture vs real-APK split recorded honestly; gmdice click handler fires but roll render not visible at HEAD + APK identity flag (1621eda1 vs ee9f7396).
+- SECURITY (§10): aapt2 manifest facts recorded for 9 real APKs (declared permissions, launchable activities); neutral classifications; network NOT_OBSERVED everywhere (no real network stack).
+- SANDBOX/PERSISTENCE (§11/§12): per-app data-root probes recorded in session.json; unote persistence OBSERVED; others NO_PERSISTENCE_OBSERVED/NOT_APPLICABLE — nothing left falsely PENDING.
+- TOOLS (§13/§14): 12 profiles get utilization verdicts (8 USED / 3 RESEARCHED_ONLY / 1 AVAILABLE_NOT_USED) + TOOL_UTILIZATION.{json,md}.
+- KNOWLEDGE (§15): 31 law records get utilization blocks (20 USED_BY_EXECUTION / 8 OBSERVED_ONLY / 2 RESEARCHED_ONLY / 1 SUPERSEDED).
+- VALIDATOR (§35): extended with operational evidence gates (visual claims, session/SHA presence, SHA256SUMS link integrity, persistence/security truthfulness, utilization consistency); caught 3 real inconsistencies on first run (connectfour bundle path x2, tictactoe blocker field) -> fixed -> PASS.
+- DOSSIERS (§9): all 14 get what_actually_happened (PROVEN/OBSERVED/IMPLEMENTED/RESEARCHED/NOT_OBSERVED/BLOCKED/SUPERSEDED) + visual_evidence + sandbox_profile + persistence + security merge + ops_wave linkage.
+- AUDIT TABLE (§27): docs/evidence/s74_ops/AUDIT_TABLE.md (exact YES/NO/PARTIAL/NOT_APPLICABLE/NOT_OBSERVED vocabulary, truth-critical notes).
+- REPORT (§37): docs/evidence/s74_ops/S74_FOLLOWUP_REPORT.md (factual; no DONE overclaim).
+- ISSUE CHECKPOINTS (§5/§6): scripts/s74f_issue_checkpoints.py prepared (GitHub-renderable raw URLs for frames) — POSTING BLOCKED: GH_TOKEN not available in this session (constitution §52: token never stored). Comments are one command away.
+
+Stage Summary:
+- The architecture is now operationally used: every app dossier carries a human-reviewed visual_evidence state + a session bundle a human can open and SEE.
+- Honest labels preserved everywhere; zero runtime changes; zero new registry roots; F-141 stays CLOSED; snake history untouched per §8.
+- Continuation point: (1) GH_TOKEN -> run scripts/s74f_issue_checkpoints.py + verify rendered links (§22); (2) git push + ls-remote verify; (3) optional runtime waves listed in the report §6.
