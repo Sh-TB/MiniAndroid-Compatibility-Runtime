@@ -10,6 +10,16 @@
 
 Snapshot: 745 tracked `.md` files — 441 KEEP (knowledge/process), 185 HISTORY (era records), 111 EVIDENCE (compact, cited), plus 290 tracked `.json` (indexes/fixtures/oracles — classified below).
 
+## 0d. S73 additions
+
+| File | Class | Role |
+|---|---|---|
+| `docs/evidence/S73/S73_REPORT.md` | EVIDENCE | S73 canonical report: GitHub ledger (issues #10–#23), app matrix with current-HEAD re-execution metrics, autonomous-snake chain + C4 probes (wrap law, reverse-guard, game-over; restart open), dooz 23472-px metric reclassification (engine-default black region shared with activity-less apps), regression numbers, git/push state |
+| `docs/evidence/s73_snake_autoplay/` | EVIDENCE | autonomous gameplay package: run_01..03 (frames + gameplay_trace.json + SHA256SUMS), determinism_proof.json (3/3 identical, 90 frames), snake_autoplay.gif (real frames), screenshot_metrics.json (B3 gate) |
+| `scripts/s73_snake_controller.py` / `s73_snake_finalize.py` / `s73_snake_c4_probes.py` / `s73_snake_c4b_death_restart.py` / `s73_screenshot_gate.py` | KEEP | autonomous controller (pixel-only vision + scheduled real taps), 3-run finalizer, C4 probe batteries, B3 gate |
+| `scripts/s73_corpus.sh` / `s73_corpus_one.sh` / `s73_fixtures.sh` / `s73_github_issues.py` / `s73_github_comments.py` | KEEP | corpus/fixtures batteries (current HEAD), GitHub ledger tooling (env-var token only) |
+| engine `--tap x,y@frame` (F-117 extension) | KEEP-law | scheduled-input cadence (tap fires after frame k renders); legacy form byte-identical to stored W4 evidence; all-or-none CLI validation |
+
 ## 0c. S72-W4 additions
 
 | File | Class | Role |

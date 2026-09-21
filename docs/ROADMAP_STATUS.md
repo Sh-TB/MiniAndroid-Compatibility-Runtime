@@ -24,6 +24,8 @@
 | Screenshot quality gate + canonical gallery | **VERIFIED** | `s54_frames/` 12 JPGs + SHA256SUMS + REJECTED section; S53→S54 byte-identical replay proof |
 | Lifecycle/input/persistence dispatch | **VERIFIED** | G06/G07/G08 law goldens; SharedPreferences/SQLite round-trips (R-NEW-367) |
 | Regression battery | **VERIFIED** | "BATTERY GATE: ALL PASS (96 stages)" at current HEAD (92 stages when the external EXT fixture is absent — the two EXT run stages collapse; the count law is documented in the battery script) |
+| Autonomous gameplay on a real APK (input→state→render→repro) | **OBSERVED [S73]** | AndroidGameSnake: 88 moves / 22 turns / 1 food capture, 3/3 runs byte-identical, trace + GIF — docs/evidence/s73_snake_autoplay/ (see ACHIEVEMENTS §0h) |
+| Canonical GitHub execution ledger | **IMPLEMENTED [S73]** | [EXEC] issues #10–#23 (one per tracked app, duplicate-checked) + dated evidence comments |
 
 ## 2. What was fixed THIS session (root cause → law → proof)
 

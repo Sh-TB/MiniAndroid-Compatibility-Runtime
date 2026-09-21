@@ -135,6 +135,11 @@ struct ExecutionConfig {
     // A→B→back navigation proofs in one deterministic run.
     bool tap_enabled = false;
     std::vector<std::pair<int, int>> tap_sequence;
+    // S73 F-117 extension: per-tap fire frame for `--tap x,y@frame` (real
+    // user input cadence: fingers tap at Looper times BETWEEN frames).
+    // EMPTY = legacy law exactly (tap k fires at frame k). When non-empty,
+    // size MUST equal tap_sequence.size() (all-or-none, enforced in main).
+    std::vector<int> tap_at_frames;
     bool generate_reports = true;
     
     // EXP-031: Execution mode (CRITICAL - determines real vs fake path)
