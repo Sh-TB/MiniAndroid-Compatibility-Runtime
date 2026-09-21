@@ -1,0 +1,100 @@
+{
+ "record_type": "app_dossier",
+ "schema_version": 1,
+ "package": "de.duenndns.gmdice",
+ "status_note": null,
+ "source": {
+  "repository": "https://github.com/ge0rg/gamemasterdice",
+  "commit": "6353926f067bd41dd914ec7f530771a586125eb6",
+  "license": "GPLv2",
+  "note": "S63 SOURCE-first spotlight: cloned, built, executed (v1.3 line)"
+ },
+ "apk": {
+  "sha256_16": "ee9f7396"
+ },
+ "build": null,
+ "min_sdk": null,
+ "target_sdk": null,
+ "manifest_summary": null,
+ "lifecycle": {},
+ "framework_apis": [],
+ "view_hierarchy": null,
+ "resources": {},
+ "layout": {},
+ "rendering": {
+  "meaningful_frame": "DONE",
+  "pixels": "182628 px",
+  "sha256_16": "a011e9e9eee2cb42"
+ },
+ "input": {
+  "tap": "OBSERVED (S63: 5/5 clicks -> real handler; historical at S73 recipe)"
+ },
+ "state": {
+  "transitions": "S63 L7: dice rolled by the APP (6/5/3/2) -> changed frame, diff confined to result band (SHA 5312266e->fa1d8612); SecureRandom IS-A Random bridge F-113 was the root"
+ },
+ "concurrency": {},
+ "storage": {},
+ "persistence": {},
+ "network": {
+  "requested": [],
+  "observed": [],
+  "apis": [],
+  "status": "NOT_OBSERVED"
+ },
+ "security": {
+  "permissions_declared": [],
+  "permissions_observed": [],
+  "exported_components": [],
+  "filesystem": "NOT_OBSERVED",
+  "network": "NOT_OBSERVED",
+  "sensitive_apis": [],
+  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)"
+ },
+ "evidence": {
+  "primary": [
+   "docs/evidence/s63_spotlight/S63_REPORT.md",
+   "docs/evidence/S73/S73_REPORT.md"
+  ],
+  "screenshot_sha256_16": "a011e9e9eee2cb42",
+  "determinism": "3-run det x3"
+ },
+ "regression": {},
+ "blocker": "ladder open: input/state legs proven at S63, not re-run at current HEAD (historical)",
+ "next_task": "re-run S63 tap recipe at HEAD; expect result-band-only diff; then C9 (SharedPreferences defaults, F-114 family TESTED engine-side)",
+ "completion": {
+  "C1_apk_load": "DONE",
+  "C2_manifest_lifecycle": "DONE",
+  "C3_view_framework": "DONE",
+  "C4_measure_layout": "DONE",
+  "C5_render": "DONE",
+  "C6_input": "OBSERVED",
+  "C7_state_change": "OBSERVED",
+  "C8_rerender": "OBSERVED",
+  "C9_persistence": "PENDING",
+  "C10_concurrency": "PENDING",
+  "C11_security_sandbox": "OBSERVED",
+  "C12_determinism": "DONE",
+  "C13_regression": "DONE",
+  "C14_evidence": "DONE"
+ },
+ "links": {
+  "issue": null,
+  "laws": [
+   "LAW-F113",
+   "LAW-F137",
+   "LAW-F136"
+  ],
+  "capabilities": [
+   "cap-secure-random",
+   "cap-ancestor-dispatch",
+   "cap-state-change-observability"
+  ],
+  "knowledge": [],
+  "evidence_files": []
+ },
+ "name": "GM Dice",
+ "status": "PARTIAL",
+ "issue": 17,
+ "issue_state": "open",
+ "app_id": "gmdice"
+}

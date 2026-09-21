@@ -1,0 +1,27 @@
+{
+ "record_type": "tool_profile",
+ "schema_version": 1,
+ "tool_id": "androidx",
+ "name": "AndroidX (appcompat/fragment/preference)",
+ "url": "https://android.googlesource.com/platform/frameworks/support",
+ "license": "Apache-2.0",
+ "provenance_class": "MOTHER",
+ "provides": "FragmentManager lifecycle, PreferenceManager, MultiDex, appcompat theme chains",
+ "reused": [
+  "FragmentManager subset (guarded lifecycle; R-NEW-331 family blocked minesweeper/memory/2048 \u2014 one fix, 3+ game consumers)",
+  "F-114 PreferenceManager.setDefaultValues XML parse + getDefaultSharedPreferences <pkg>_preferences",
+  "MultiDexApplication chain fires (F-137 ancestry dispatch consumer)"
+ ],
+ "laws_learned": [
+  "LAW-FRAGMENTMANAGER-SUBSET",
+  "LAW-F114",
+  "LAW-F137"
+ ],
+ "consumers": [
+  "dooz",
+  "unote",
+  "gmdice"
+ ],
+ "evidence": "run/s62_mines_trace.log; docs/evidence/s64_spotlight/S64_REPORT.md \u00a72",
+ "limitations": "subset only; ensureExecReady-style guards verified where exercised"
+}

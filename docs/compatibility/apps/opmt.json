@@ -1,0 +1,87 @@
+{
+ "record_type": "app_dossier",
+ "schema_version": 1,
+ "package": "one.scarecrow.games.OPMT",
+ "status_note": null,
+ "source": {
+  "repository": "upstream/corpus (S65 spotlight)",
+  "commit": null,
+  "license": null
+ },
+ "apk": {},
+ "build": null,
+ "min_sdk": null,
+ "target_sdk": null,
+ "manifest_summary": null,
+ "lifecycle": {},
+ "framework_apis": [],
+ "view_hierarchy": null,
+ "resources": {},
+ "layout": {},
+ "rendering": {
+  "meaningful_frame": "DONE",
+  "pixels": "213286 px",
+  "sha256_16": "60e5611daaf01e58"
+ },
+ "input": {
+  "tap": "OBSERVED (historical S6 chain)"
+ },
+ "state": {},
+ "concurrency": {},
+ "storage": {},
+ "persistence": {},
+ "network": {
+  "requested": [],
+  "observed": [],
+  "apis": [],
+  "status": "NOT_OBSERVED"
+ },
+ "security": {
+  "permissions_declared": [],
+  "permissions_observed": [],
+  "exported_components": [],
+  "filesystem": "NOT_OBSERVED",
+  "network": "NOT_OBSERVED",
+  "sensitive_apis": [],
+  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)"
+ },
+ "evidence": {
+  "primary": [
+   "docs/evidence/S73/S73_REPORT.md"
+  ],
+  "screenshot_sha256_16": "60e5611daaf01e58"
+ },
+ "regression": {},
+ "blocker": "app-own IOOBE (OBJECT-IDENTITY class) stops game progression; S65 root: app-own nextInt(0) stopper",
+ "next_task": "isolate the app-own IOOBE path; verify whether Random.nextInt(bound=0) semantics (OpenJDK law: IllegalArgumentException) surface as the app's own crash",
+ "completion": {
+  "C1_apk_load": "DONE",
+  "C2_manifest_lifecycle": "DONE",
+  "C3_view_framework": "DONE",
+  "C4_measure_layout": "DONE",
+  "C5_render": "DONE",
+  "C6_input": "OBSERVED",
+  "C7_state_change": "OBSERVED",
+  "C8_rerender": "OBSERVED",
+  "C9_persistence": "PENDING",
+  "C10_concurrency": "PENDING",
+  "C11_security_sandbox": "OBSERVED",
+  "C12_determinism": "PENDING",
+  "C13_regression": "DONE",
+  "C14_evidence": "DONE"
+ },
+ "links": {
+  "issue": null,
+  "laws": [],
+  "capabilities": [
+   "cap-render-software-framebuffer"
+  ],
+  "knowledge": [],
+  "evidence_files": []
+ },
+ "name": "OPMT (One Plus Minus Three)",
+ "status": "PARTIAL",
+ "issue": 23,
+ "issue_state": "open",
+ "app_id": "opmt"
+}

@@ -1,0 +1,40 @@
+{
+ "record_type": "tool_profile",
+ "schema_version": 1,
+ "tool_id": "aosp",
+ "name": "AOSP (frameworks/base + platform frameworks)",
+ "url": "https://android.googlesource.com/platform/frameworks/base",
+ "license": "Apache-2.0",
+ "provenance_class": "MOTHER",
+ "provides": "authoritative Android framework semantics: View/ViewGroup measure-layout-draw, LayoutInflater, Context/Resources, SharedPreferences, ConstraintLayout/RelativeLayout layout laws, TypedValue/DisplayMetrics",
+ "reused": [
+  "F-148 ConstraintLayout anchor laws (per-axis topological solver mirrors CL measure)",
+  "F-149 DisplayMetrics/applyDimension switch (exact AOSP law)",
+  "F-136 Context.java:945-978 + Resources.java:464-592 single-resolution-path strings law",
+  "F-114 SharedPreferencesImpl.java:307-313 @Nullable default + PreferenceManager.java:661-673 defaults XML",
+  "F-142 RelativeLayout MarginLayoutParams + ImageView onMeasure cap"
+ ],
+ "laws_learned": [
+  "LAW-F148",
+  "LAW-F149",
+  "LAW-F136",
+  "LAW-F114",
+  "LAW-F142",
+  "LAW-F137",
+  "LAW-F120"
+ ],
+ "tests_reused": [
+  "f53_getstring (3 law paths, 5/5)",
+  "foundation fixtures f-family (25 pinned)"
+ ],
+ "consumers": [
+  "androidgamesnake",
+  "unote",
+  "gmdice",
+  "fishrings",
+  "bouncy",
+  "helloworld"
+ ],
+ "evidence": "docs/foundation/S72_WAVE4.md; docs/upstream/aosp/CONTEXT_STRING_LAW.md; docs/upstream/INDEX.md",
+ "limitations": "fetched per-session for each law (tagged); no full framework tree vendored"
+}

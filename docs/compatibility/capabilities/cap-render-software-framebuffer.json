@@ -1,0 +1,28 @@
+{
+ "record_type": "capability_record",
+ "schema_version": 1,
+ "capability_id": "cap-render-software-framebuffer",
+ "name": "Software framebuffer render + per-frame SHA",
+ "implemented": "renderer + canvas shadow (801 ops/frame on snake onDraw)",
+ "laws": [
+  "LAW-F108"
+ ],
+ "tests": [
+  "corpus pixel faces S73 \u00a72 (7 meaningful apps)",
+  "families: F-107 trace-out-of-hot-path"
+ ],
+ "consumers": [
+  "helloworld",
+  "tictactoe",
+  "androidgamesnake",
+  "unote",
+  "gmdice",
+  "microtimer",
+  "fishrings",
+  "bouncy",
+  "opmt",
+  "tripeaks"
+ ],
+ "issue": null,
+ "status": "DONE"
+}

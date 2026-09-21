@@ -1,0 +1,26 @@
+{
+ "record_type": "capability_record",
+ "schema_version": 1,
+ "capability_id": "cap-view-inflate-layout",
+ "name": "View inflate + layout subsets (RL/CL/LL/Frame)",
+ "implemented": "src/framework layout shadows (F-142 RL margins + ImageView cap; F-148 CL anchors)",
+ "laws": [
+  "LAW-F148",
+  "LAW-F142",
+  "LAW-F137"
+ ],
+ "tests": [
+  "snake SnakePanelView EXACT 1080x780",
+  "fixtures 25/25 pixel-SAME",
+  "corpus 10/10 pixel-SAME"
+ ],
+ "consumers": [
+  "androidgamesnake",
+  "fishrings",
+  "tictactoe",
+  "bouncy",
+  "unote"
+ ],
+ "issue": null,
+ "status": "DONE"
+}

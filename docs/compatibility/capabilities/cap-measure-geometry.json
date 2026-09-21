@@ -1,0 +1,21 @@
+{
+ "record_type": "capability_record",
+ "schema_version": 1,
+ "capability_id": "cap-measure-geometry",
+ "name": "Measure geometry (DisplayMetrics/density/applyDimension)",
+ "implemented": "Resources.getDisplayMetrics device law (2.625/420) + TypedValue.applyDimension DEX bridge",
+ "laws": [
+  "LAW-F149"
+ ],
+ "tests": [
+  "buttons 197x118 = 75x45dp x2.625 EXACT",
+  "corpus 10/10 pixel-SAME"
+ ],
+ "consumers": [
+  "androidgamesnake",
+  "gmdice",
+  "microtimer"
+ ],
+ "issue": null,
+ "status": "DONE"
+}

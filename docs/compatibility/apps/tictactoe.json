@@ -1,0 +1,99 @@
+{
+ "record_type": "app_dossier",
+ "schema_version": 1,
+ "package": "com.emmanuelmess.tictactoe",
+ "status_note": null,
+ "source": {
+  "repository": "https://github.com/EmmanuelMess/TicTacToeGame",
+  "commit": null,
+  "license": null,
+  "note": "upstream clone vendored at upstream/corpus/com.emmanuelmess.tictactoe (PROVENANCE per S61 corpus law)"
+ },
+ "apk": {
+  "sha256_16": null
+ },
+ "build": null,
+ "min_sdk": null,
+ "target_sdk": null,
+ "manifest_summary": "single launchable Activity game (View-based, no GL surface in the proven path)",
+ "lifecycle": {
+  "application": "OBSERVED",
+  "activity": "OBSERVED"
+ },
+ "framework_apis": [],
+ "view_hierarchy": null,
+ "resources": {},
+ "layout": {},
+ "rendering": {
+  "backend": "software framebuffer",
+  "meaningful_frame": "DONE"
+ },
+ "input": {
+  "tap": "TESTED",
+  "dispatch": "9-click real chain"
+ },
+ "state": {
+  "transitions": "X/O placement state machine; win state reached",
+  "determinism": "deterministic frames x3"
+ },
+ "concurrency": {},
+ "storage": {},
+ "persistence": {},
+ "network": {
+  "requested": [],
+  "observed": [],
+  "apis": [],
+  "status": "NOT_OBSERVED"
+ },
+ "security": {
+  "permissions_declared": [],
+  "permissions_observed": [],
+  "exported_components": [],
+  "filesystem": "NOT_OBSERVED",
+  "network": "NOT_OBSERVED",
+  "sensitive_apis": [],
+  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)"
+ },
+ "evidence": {
+  "primary": [
+   "docs/testing/VERIFIED_TESTS.md (tictactoe_golden battery section 9/9)"
+  ],
+  "determinism": "x3 deterministic"
+ },
+ "regression": {},
+ "blocker": null,
+ "next_task": "none (completed state documented in #11; GL family F-144 tracked separately, does not gate this app)",
+ "completion": {
+  "C1_apk_load": "DONE",
+  "C2_manifest_lifecycle": "DONE",
+  "C3_view_framework": "DONE",
+  "C4_measure_layout": "DONE",
+  "C5_render": "DONE",
+  "C6_input": "DONE",
+  "C7_state_change": "DONE",
+  "C8_rerender": "DONE",
+  "C9_persistence": "PENDING",
+  "C10_concurrency": "PENDING",
+  "C11_security_sandbox": "OBSERVED",
+  "C12_determinism": "DONE",
+  "C13_regression": "DONE",
+  "C14_evidence": "DONE"
+ },
+ "links": {
+  "issue": null,
+  "laws": [],
+  "capabilities": [
+   "cap-apk-pipeline",
+   "cap-view-inflate-layout",
+   "cap-input-dispatch",
+   "cap-state-change-observability"
+  ],
+  "knowledge": [],
+  "evidence_files": []
+ },
+ "name": "TicTacToe",
+ "status": "DONE",
+ "issue": 11,
+ "issue_state": "closed",
+ "app_id": "tictactoe"
+}

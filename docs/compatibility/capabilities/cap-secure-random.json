@@ -1,0 +1,18 @@
+{
+ "record_type": "capability_record",
+ "schema_version": 1,
+ "capability_id": "cap-secure-random",
+ "name": "SecureRandom IS-A Random bridge",
+ "implemented": "law family += Ljava/security/SecureRandom in bridge_to_api",
+ "laws": [
+  "LAW-F113"
+ ],
+ "tests": [
+  "gmdice dice 6/5/3/2; battery ALL PASS; pixel diff 1,584 px result band; det x3"
+ ],
+ "consumers": [
+  "gmdice"
+ ],
+ "issue": null,
+ "status": "DONE"
+}

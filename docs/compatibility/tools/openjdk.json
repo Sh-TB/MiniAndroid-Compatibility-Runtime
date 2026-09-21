@@ -1,0 +1,29 @@
+{
+ "record_type": "tool_profile",
+ "schema_version": 1,
+ "tool_id": "openjdk",
+ "name": "OpenJDK / libcore (java.* behavior)",
+ "url": "https://github.com/openjdk/jdk (libcore mirror for Android semantics)",
+ "license": "GPL-2.0-with-classpath-exception",
+ "provenance_class": "MOTHER",
+ "provides": "core-class contracts: Double/Float compare, Random/SecureRandom, String, Runtime, collections, atomics",
+ "reused": [
+  "F-135 Double/Float compare NaN law",
+  "F-113 SecureRandom.java:157 extends Random + :828 next(int) override (bridge law)",
+  "Runtime.getRuntime() singleton; String.getClass; boxed property-reader family (closed with F-141 wave)"
+ ],
+ "laws_learned": [
+  "LAW-F135",
+  "LAW-F113",
+  "LAW-BOXED-READERS"
+ ],
+ "tests_reused": [
+  "gmdice dice 6/5/3/2 result-band determinism"
+ ],
+ "consumers": [
+  "gmdice",
+  "opmt"
+ ],
+ "evidence": "docs/evidence/s63_spotlight/S63_REPORT.md \u00a71; upstream_oracle.json (7 grep-verified law records)",
+ "limitations": "Android libcore diverges from upstream JDK at edges; divergences recorded per law, not assumed"
+}

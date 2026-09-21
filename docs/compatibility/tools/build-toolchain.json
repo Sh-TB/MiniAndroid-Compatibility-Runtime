@@ -1,0 +1,29 @@
+{
+ "record_type": "tool_profile",
+ "schema_version": 1,
+ "tool_id": "build-toolchain",
+ "name": "Android build toolchain (aapt2 + ECJ + D8/R8)",
+ "url": "Maven Central (ecj 3.36.0), r8-releases (8.3.37), Google Maven (aapt2), Sable android-34 stubs",
+ "license": "Apache-2.0/EPL (per component)",
+ "provenance_class": "ANALYSIS",
+ "provides": "real Android build chain for source-first APK production \u2014 no handwritten ARSC/AXML writer anywhere in the repo",
+ "reused": [
+  "HelloWorld golden chain (aapt2 -> ECJ -> D8/R8 -> android-34 stubs)",
+  "snake v1.0 build (scripts/s72_w4_build_snake.sh, APK 54cf48a9)",
+  "gmdice v12 build (APK ee9f7396)",
+  "bootstrap: scripts/build/bootstrap_toolchain.sh (container-reset resilient \u2014 proven twice)"
+ ],
+ "laws_learned": [],
+ "tests_reused": [
+  "rebuild fidelity: dooz x3 byte-identical 0e334abe1b10b592; snake W4 recipe byte-identical 1a419545419deb3a"
+ ],
+ "consumers": [
+  "helloworld",
+  "androidgamesnake",
+  "gmdice",
+  "siggen",
+  "blockinger"
+ ],
+ "evidence": "docs/foundation/S72_WAVE4.md SOURCE block; S73 rebuild record",
+ "limitations": "toolchain re-fetched after container resets (bootstrap script persists the recipe)"
+}

@@ -1,0 +1,32 @@
+{
+ "record_type": "capability_record",
+ "schema_version": 1,
+ "capability_id": "cap-apk-pipeline",
+ "name": "APK pipeline (ZIP + ARSC + AXML + DEX parse)",
+ "implemented": "src/runtime/* (apk loader, resources.arsc, binary XML, DEX)",
+ "laws": [
+  "LAW-MUTF8",
+  "LAW-F136"
+ ],
+ "tests": [
+  "battery BATTERY GATE ALL PASS (96 stages; 92 without EXT fixture \u2014 documented count law)"
+ ],
+ "consumers": [
+  "helloworld",
+  "tictactoe",
+  "connectfour",
+  "androidgamesnake",
+  "dooz",
+  "unote",
+  "telegram",
+  "gmdice",
+  "microtimer",
+  "fishrings",
+  "tripeaks",
+  "bouncy",
+  "stopwatch",
+  "opmt"
+ ],
+ "issue": null,
+ "status": "DONE"
+}

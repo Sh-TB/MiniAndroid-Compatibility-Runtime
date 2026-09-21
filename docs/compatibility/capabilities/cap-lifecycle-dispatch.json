@@ -1,0 +1,24 @@
+{
+ "record_type": "capability_record",
+ "schema_version": 1,
+ "capability_id": "cap-lifecycle-dispatch",
+ "name": "Android lifecycle dispatch (Application/Activity)",
+ "implemented": "src/framework lifecycle shadows + execution_engine",
+ "laws": [
+  "LAW-F118"
+ ],
+ "tests": [
+  "G07 golden lifecycle",
+  "G08 navigation"
+ ],
+ "consumers": [
+  "helloworld",
+  "androidgamesnake",
+  "dooz",
+  "gmdice",
+  "unote",
+  "fishrings"
+ ],
+ "issue": null,
+ "status": "DONE"
+}

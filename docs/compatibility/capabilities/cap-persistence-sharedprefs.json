@@ -1,0 +1,19 @@
+{
+ "record_type": "capability_record",
+ "schema_version": 1,
+ "capability_id": "cap-persistence-sharedprefs",
+ "name": "SharedPreferences family (getString @Nullable, defaults XML, <pkg>_preferences)",
+ "implemented": "F-114 family engine implementation",
+ "laws": [
+  "LAW-F114"
+ ],
+ "tests": [
+  "pmk rc=1 NFE -> rc=0 views=179 det x3; simplestopwatch defaults=24"
+ ],
+ "consumers": [
+  "unote",
+  "gmdice"
+ ],
+ "issue": null,
+ "status": "DONE"
+}

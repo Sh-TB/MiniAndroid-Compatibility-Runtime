@@ -1,0 +1,90 @@
+{
+ "record_type": "app_dossier",
+ "schema_version": 1,
+ "package": "dubrowgn.microtimer",
+ "status_note": null,
+ "source": {
+  "repository": "F-Droid (dubrowgn.microtimer)",
+  "commit": null,
+  "license": null
+ },
+ "apk": {},
+ "build": null,
+ "min_sdk": null,
+ "target_sdk": null,
+ "manifest_summary": null,
+ "lifecycle": {},
+ "framework_apis": [],
+ "view_hierarchy": null,
+ "resources": {},
+ "layout": {},
+ "rendering": {
+  "meaningful_frame": "DONE",
+  "pixels": "1041437 px",
+  "sha256_16": "e4869001e3638d69"
+ },
+ "input": {
+  "tap": "OBSERVED (historical L7 keypad->display)"
+ },
+ "state": {},
+ "concurrency": {},
+ "storage": {},
+ "persistence": {},
+ "network": {
+  "requested": [],
+  "observed": [],
+  "apis": [],
+  "status": "NOT_OBSERVED"
+ },
+ "security": {
+  "permissions_declared": [],
+  "permissions_observed": [],
+  "exported_components": [],
+  "filesystem": "NOT_OBSERVED",
+  "network": "NOT_OBSERVED",
+  "sensitive_apis": [],
+  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)"
+ },
+ "evidence": {
+  "primary": [
+   "docs/evidence/S73/S73_REPORT.md",
+   "docs/ACHIEVEMENTS.md"
+  ],
+  "screenshot_sha256_16": "e4869001e3638d69",
+  "determinism": "3-run x3"
+ },
+ "regression": {},
+ "blocker": "ladder open below render (input legs historical)",
+ "next_task": "re-prove keypad->display state change at HEAD; timer thread leg belongs to cap-thread-game-loop consumers",
+ "completion": {
+  "C1_apk_load": "DONE",
+  "C2_manifest_lifecycle": "DONE",
+  "C3_view_framework": "DONE",
+  "C4_measure_layout": "DONE",
+  "C5_render": "DONE",
+  "C6_input": "OBSERVED",
+  "C7_state_change": "OBSERVED",
+  "C8_rerender": "OBSERVED",
+  "C9_persistence": "PENDING",
+  "C10_concurrency": "PENDING",
+  "C11_security_sandbox": "OBSERVED",
+  "C12_determinism": "DONE",
+  "C13_regression": "DONE",
+  "C14_evidence": "DONE"
+ },
+ "links": {
+  "issue": null,
+  "laws": [],
+  "capabilities": [
+   "cap-render-software-framebuffer",
+   "cap-input-dispatch"
+  ],
+  "knowledge": [],
+  "evidence_files": []
+ },
+ "name": "MicroTimer",
+ "status": "PARTIAL",
+ "issue": 18,
+ "issue_state": "open",
+ "app_id": "microtimer"
+}

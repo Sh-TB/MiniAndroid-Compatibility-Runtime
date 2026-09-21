@@ -1,0 +1,95 @@
+{
+ "record_type": "app_dossier",
+ "schema_version": 1,
+ "package": "eu.veldsoft.fish.rings",
+ "status_note": null,
+ "source": {
+  "repository": "https://bitbucket.org/gnastler/Fish-Rings-for-Android (vendored)",
+  "commit": "dc3807e7d405843453afc798c6cc02205b65e1fb",
+  "license": null,
+  "note": "upstream clone vendored at upstream/corpus/eu.veldsoft.fish.rings with PROVENANCE.json"
+ },
+ "apk": {},
+ "build": null,
+ "min_sdk": null,
+ "target_sdk": null,
+ "manifest_summary": null,
+ "lifecycle": {},
+ "framework_apis": [],
+ "view_hierarchy": null,
+ "resources": {},
+ "layout": {},
+ "rendering": {
+  "meaningful_frame": "DONE",
+  "pixels": "board 2073360 px (frames 4-8; splash 0 px frames 0-3)",
+  "sha256_16": "19af37b69965fc48"
+ },
+ "input": {
+  "tap": "OBSERVED (historical: S65 S10 PROVEN 3 input->state->changed-frame interactions det x3; F-142 board fix)"
+ },
+ "state": {
+  "transitions": "S65: 3 input->state->changed-frame interactions, deterministic x3 (S10)"
+ },
+ "concurrency": {},
+ "storage": {},
+ "persistence": {},
+ "network": {
+  "requested": [],
+  "observed": [],
+  "apis": [],
+  "status": "NOT_OBSERVED"
+ },
+ "security": {
+  "permissions_declared": [],
+  "permissions_observed": [],
+  "exported_components": [],
+  "filesystem": "NOT_OBSERVED",
+  "network": "NOT_OBSERVED",
+  "sensitive_apis": [],
+  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)"
+ },
+ "evidence": {
+  "primary": [
+   "docs/evidence/S73/S73_REPORT.md",
+   "docs/evidence/s65_spotlight/S65_REPORT.md"
+  ],
+  "screenshot_sha256_16": "19af37b69965fc48",
+  "determinism": "S65 det x3"
+ },
+ "regression": {},
+ "blocker": "game-logic depth (real ring rotation rules) unexercised at HEAD; input legs historical",
+ "next_task": "re-run S65 interaction recipe at HEAD; probe one full ring-rotation round via real taps",
+ "completion": {
+  "C1_apk_load": "DONE",
+  "C2_manifest_lifecycle": "DONE",
+  "C3_view_framework": "DONE",
+  "C4_measure_layout": "DONE",
+  "C5_render": "DONE",
+  "C6_input": "OBSERVED",
+  "C7_state_change": "OBSERVED",
+  "C8_rerender": "OBSERVED",
+  "C9_persistence": "PENDING",
+  "C10_concurrency": "PENDING",
+  "C11_security_sandbox": "OBSERVED",
+  "C12_determinism": "DONE",
+  "C13_regression": "DONE",
+  "C14_evidence": "DONE"
+ },
+ "links": {
+  "issue": null,
+  "laws": [
+   "LAW-F142"
+  ],
+  "capabilities": [
+   "cap-view-inflate-layout",
+   "cap-state-change-observability"
+  ],
+  "knowledge": [],
+  "evidence_files": []
+ },
+ "name": "FishRings",
+ "status": "PARTIAL",
+ "issue": 19,
+ "issue_state": "open",
+ "app_id": "fishrings"
+}

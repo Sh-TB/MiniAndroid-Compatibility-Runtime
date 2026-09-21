@@ -1,0 +1,26 @@
+{
+ "record_type": "capability_record",
+ "schema_version": 1,
+ "capability_id": "cap-dex-interpreter",
+ "name": "DEX interpreter (tagged-value semantics)",
+ "implemented": "miniandroid/src/dex/dalvik_engine.cpp",
+ "laws": [
+  "LAW-F141",
+  "LAW-THROW-DEFERRED",
+  "LAW-F150"
+ ],
+ "tests": [
+  "fixtures 25/25 rc=0 f141-throws=0",
+  "dooz x3 byte-identical"
+ ],
+ "consumers": [
+  "dooz",
+  "telegram",
+  "androidgamesnake",
+  "gmdice",
+  "opmt",
+  "helloworld"
+ ],
+ "issue": null,
+ "status": "DONE"
+}

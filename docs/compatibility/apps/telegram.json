@@ -1,0 +1,96 @@
+{
+ "record_type": "app_dossier",
+ "schema_version": 1,
+ "package": "org.telegram.messenger",
+ "status_note": "historical evidence (EXP-064..071 checkpoint M); not re-run at current HEAD",
+ "source": {
+  "repository": "telegram.org / GitHub (official source release)",
+  "commit": null,
+  "license": "GPLv2/Telegram (upstream dual)",
+  "note": "closed-source APK; DEX forensics allowed (S61 source-first law carve-out)"
+ },
+ "apk": {
+  "sha256_16": null
+ },
+ "build": null,
+ "min_sdk": null,
+ "target_sdk": null,
+ "manifest_summary": null,
+ "lifecycle": {},
+ "framework_apis": [],
+ "view_hierarchy": null,
+ "resources": {},
+ "layout": {},
+ "rendering": {
+  "meaningful_frame": "OBSERVED (login UI with real WebP images, EXP-064 pixel-proven PhoneView)"
+ },
+ "input": {
+  "tap": "OBSERVED (historical: phone number injected + Next clicked, EXP-069; page transition checkpoint M, EXP-071)"
+ },
+ "state": {
+  "transitions": "login page transition proven at checkpoint M"
+ },
+ "concurrency": {},
+ "storage": {},
+ "persistence": {},
+ "network": {
+  "requested": [],
+  "observed": [],
+  "apis": [],
+  "status": "NOT_OBSERVED"
+ },
+ "security": {
+  "permissions_declared": [],
+  "permissions_observed": [],
+  "exported_components": [],
+  "filesystem": "OBSERVED",
+  "network": "NOT_OBSERVED",
+  "sensitive_apis": [],
+  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)",
+  "notes": "native libs + JNI inventory recorded (docs/runtime/exp042/NATIVE_LIBRARIES.json); manifest permission audit pending; no actual network activity observed in runtime runs (declared != used)"
+ },
+ "evidence": {
+  "primary": [
+   "docs/runtime/EXP071_AUTH_SENDCODE_CALLGRAPH.md",
+   "docs/runtime/exp042/",
+   "docs/EXP071_GIT_HISTORY.md"
+  ],
+  "determinism": null
+ },
+ "regression": {},
+ "blocker": "v12 init budget: burns 540 s inside real init, no frame in budget; not re-run at current HEAD (strategic 20% stress target)",
+ "next_task": "re-baseline Telegram at current HEAD with phase timers (PerfKit MINIANDROID_PERF_PHASES=1); attack init budget hot paths",
+ "completion": {
+  "C1_apk_load": "DONE",
+  "C2_manifest_lifecycle": "PARTIAL",
+  "C3_view_framework": "PARTIAL",
+  "C4_measure_layout": "PARTIAL",
+  "C5_render": "OBSERVED",
+  "C6_input": "OBSERVED",
+  "C7_state_change": "OBSERVED",
+  "C8_rerender": "OBSERVED",
+  "C9_persistence": "PENDING",
+  "C10_concurrency": "PENDING",
+  "C11_security_sandbox": "OBSERVED",
+  "C12_determinism": "PENDING",
+  "C13_regression": "PENDING",
+  "C14_evidence": "OBSERVED"
+ },
+ "links": {
+  "issue": null,
+  "laws": [],
+  "capabilities": [
+   "cap-apk-pipeline",
+   "cap-dex-interpreter"
+  ],
+  "knowledge": [],
+  "evidence_files": [
+   "docs/runtime/exp042/JNI_INVENTORY.json"
+  ]
+ },
+ "name": "Telegram",
+ "status": "PARTIAL",
+ "issue": 16,
+ "issue_state": "open",
+ "app_id": "telegram"
+}

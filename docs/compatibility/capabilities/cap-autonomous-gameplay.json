@@ -1,0 +1,21 @@
+{
+ "record_type": "capability_record",
+ "schema_version": 1,
+ "capability_id": "cap-autonomous-gameplay",
+ "name": "Autonomous gameplay (pixel-only vision + scheduled real taps)",
+ "implemented": "scripts/s73_snake_controller.py \u2014 vision ONLY from rendered frames; actuator ONLY canonical taps; no state injection",
+ "laws": [
+  "LAW-F117",
+  "LAW-F150",
+  "APP-SNAKE-WRAP",
+  "APP-SNAKE-REVERSE-GUARD"
+ ],
+ "tests": [
+  "snake GOALS_MET: 88 moves / 22 turns / 1 food capture (frame 34, growth 3->4); 3/3 byte-identical; trace+GIF+SHA256SUMS"
+ ],
+ "consumers": [
+  "androidgamesnake"
+ ],
+ "issue": 13,
+ "status": "OBSERVED"
+}
