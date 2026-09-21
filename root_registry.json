@@ -1,11 +1,11 @@
 {
  "baseline_head": "5a2b7d99",
  "summary": {
-  "total_roots": 397,
+  "total_roots": 404,
   "open_frontiers": [
    "R-NEW-381"
   ],
-  "last_updated": "S75 2026-09-21",
+  "last_updated": "S76 2026-09-21",
   "note": "S65 breadth: 3 NEW source-first apps executed (TriPeaks S7 + det ×3, FishRings S10 PROVEN with 3 input→state→changed-frame interactions det ×3, OPMT S6 + app-own nextInt(0) stopper). New laws: F-118 activity-constructor (R-NEW-385 — G08 launches now run <init>; 3 consumers day one) + F-119 X.TYPE/primitive-array (R-NEW-386). New open family: OBJECT-IDENTITY (field/array element view-ref identity churn — blocks TriPeaks S8/OPMT S7+, forensic trail recorded). Battery 92/94 + EXT-01/02 environmental; zero regressions. S64 commit carried PENDING-PUSH into this session (no credential); S65 commit carries both. || S64: 3 apps (pmk S6, FreeKlondike S10, SLC S9) + F-114..F-117. | S74: repaired stale summary totals (was 372 vs actual roots list); back-registered F-120 (S66 law) after validator gap detection.",
   "total": 349,
   "verified_fixed": 43,
@@ -3967,9 +3967,9 @@
   {
    "id": "F-146",
    "title": "dooz: ur.e(J) invoked on null receiver at g8.a pc=569 (coroutine state machine; null producer upstream of the call)",
-   "status": "OPEN",
+   "status": "ROOT-CAUSED-FIXED",
    "priority": "P1",
-   "evidence": "S72-W3: f141 law surfaced the site (recv_type=8 NULL_REF, F141-DIAG v4:t8/o0); escapes MainActivity.onCreate at 0xc1; next: trace the producer of the null ur receiver in the compose/coroutine path | S75 HEAD re-probe (docs/evidence/s75/dooz_f146_probe/): escape reproduced at HEAD c67230be (MINIANDROID_F141_DIAG=1) — same g8.a pc=569 site, receiver v4:t8/o0 (NULL_REF), invoked Ljava/lang/Object;.getClass; NEW OBSERVATION (recorded, not claimed as law): the SECONDARY F-147 site fires with p0 (frame this-register) itself t8/o0 NULL — consistent with F-147 being downstream of the F-146 coroutine unwind; black region 23,472 px bbox (0,0)-(488,47) byte-consistent with the reclassified engine-default face; ViewTree = App + 2 View + Lg10 + 2 Loc1 (Compose chain, no game content).",
+   "evidence": "S72-W3: f141 law surfaced the site (recv_type=8 NULL_REF, F141-DIAG v4:t8/o0); escapes MainActivity.onCreate at 0xc1; next: trace the producer of the null ur receiver in the compose/coroutine path | S75 HEAD re-probe (docs/evidence/s75/dooz_f146_probe/): escape reproduced at HEAD c67230be (MINIANDROID_F141_DIAG=1) — same g8.a pc=569 site, receiver v4:t8/o0 (NULL_REF), invoked Ljava/lang/Object;.getClass; NEW OBSERVATION (recorded, not claimed as law): the SECONDARY F-147 site fires with p0 (frame this-register) itself t8/o0 NULL — consistent with F-147 being downstream of the F-146 coroutine unwind; black region 23,472 px bbox (0,0)-(488,47) byte-consistent with the reclassified engine-default face; ViewTree = App + 2 View + Lg10 + 2 Loc1 (Compose chain, no game content). | S76 UPSTREAM PRODUCER TRACE + FIX: traced the pc=569 receiver v4 def-chain in Lg8;.a (DataStore file-name lambda; scripts/s76_g8_disasm.py full disasm): pc=565 File.getAbsoluteFile -> pc=568 move-result-object v4 -> pc=569 Object.getClass on v4. ROOT: java.io.File.getAbsoluteFile() had NO implementation (R-NEW-347 covered only the String variant getAbsolutePath) -> null receiver. FIX R-NEW-390 (File-returning sibling, OpenJDK File.java 'new File(fs.resolve(f.getPath()))' never-null law) + R-NEW-391 (getCanonicalFile/getCanonicalPath for the DataStore singleton guard at Lot;.a pc=37, canonical==absolute in the sandbox). PROOF: [R347-FILE] getAbsoluteFile path=\"...settings.preferences_pb\" -> File o894; the g8.a pc=569 escape is GONE; the dooz chain moved DEEPER: DataStore multi-instance guard passes, protobuf schema init runs, new first divergence Llt0;.w pc=808 (registered F-152). Evidence: docs/evidence/s76/dooz_f146_upstream/.",
    "next_action": "trace v4's def chain in g8.a (engine-pc domain), identify the null producer API, law-fix per upstream",
    "session": "S72"
   },
@@ -3978,7 +3978,7 @@
    "title": "dooz: ViewGroup.getChildAt(I) on null receiver at MainActivity.onCreate pc=228 (v10 null — likely a findViewById/content-view resolution gap)",
    "status": "OPEN",
    "priority": "P1",
-   "evidence": "S72-W3: f141 law surfaced the site (recv NULL_REF; method_idx 1592 = android.view.ViewGroup.getChildAt); second boundary escape at 0xb4 | S75 HEAD re-probe: reproduced at HEAD (MainActivity.onCreate pc=228, recv p0:t8/o0 NULL) — see F-146 entry for the shared probe; secondary-to-F-146 reading recorded as an OBSERVATION, upstream producer trace still OPEN.",
+   "evidence": "S72-W3: f141 law surfaced the site (recv NULL_REF; method_idx 1592 = android.view.ViewGroup.getChildAt); second boundary escape at 0xb4 | S75 HEAD re-probe: reproduced at HEAD (MainActivity.onCreate pc=228, recv p0:t8/o0 NULL) — see F-146 entry for the shared probe; secondary-to-F-146 reading recorded as an OBSERVATION, upstream producer trace still OPEN. | S76: F-146 fix landed (see F-146 entry); the onCreate pc=228 boundary escape (p0 NULL, secondary to the F-146 coroutine unwind) re-observed after the fix — the composition no longer dies at g8.a pc=569 but the boundary escape persists downstream of F-152.",
    "next_action": "trace v10's producer (findViewById/content lookup) in onCreate's pc domain; classify findViewById resolution law",
    "session": "S72"
   },
@@ -4041,6 +4041,41 @@
    "first_seen": "S66 visual forensics (289e33d3)",
    "session": "S74-backreg",
    "evidence": "Law named and applied since S66 (S67_RECON: HEAD 289e33d3 'F-120 button-gravity law'); cited among grep-verified upstream oracle laws in docs/foundation/S70_REPORT.md section 2 (the oracle file itself pins F-135/F-136 records). Back-registered by the S74 compatibility-graph validator, which now fails on generic LAW-F* knowledge records missing from this registry."
+  },
+  {
+   "id": "R-NEW-390",
+   "status": "ROOT-CAUSED-FIXED",
+   "evidence": "java.io.File.getAbsoluteFile() law (S76). Oracle: OpenJDK java/io/File.java getAbsoluteFile() = new File(fs.resolve(getPath())) — NEVER null; the File-returning sibling of getAbsolutePath (R-NEW-347, S42). Implementation: dalvik_engine.cpp R-NEW-347 block extended (getAbsoluteFile branch: fresh File heap object, 'path' field = absolute path, same app-data-root resolution). Real demand: dooz_23 F-146 — the DataStore file-name lambda Lg8;.a calls getAbsoluteFile then getClass on the result (pc=565/568/569); unimplemented -> null -> the F-146 NPE escape that killed the composition. Proof: [R347-FILE] getAbsoluteFile -> File o894 in docs/evidence/s76/dooz_f146_upstream/; battery 26/26 rc=0; verifier 24/24; Level C fidelity byte-identical 90/90."
+  },
+  {
+   "id": "R-NEW-391",
+   "status": "ROOT-CAUSED-FIXED",
+   "evidence": "java.io.File.getCanonicalFile()/getCanonicalPath() law (S76). Oracle: OpenJDK File.java — canonical = absolute + symlink/'.'/'..' resolution, never null; in the runtime's app-data sandbox (no symlinks, path::lexically-normal) canonical == absolute (documented equivalence, not a filesystem walk). Implementation: dalvik_engine.cpp R-NEW-347 block (File-returning + String branches). Real demand: dooz_23 DataStore multi-instance guard Liu;->e Le40; calls g8.a (file lambda) then getCanonicalFile (Lot;.a pc=30) then getAbsolutePath (pc=37) — unimplemented canonical File -> null -> guard NPE -> catch-all retry -> F084-bounded Lsr.run spin. Proof: [R347-FILE] getCanonicalFile -> File o895/o897; guard passes; protobuf schema init runs; dooz/evidence/s76/dooz_f146_upstream/."
+  },
+  {
+   "id": "R-NEW-392",
+   "status": "ROOT-CAUSED-FIXED",
+   "evidence": "TextView SUBSUMPTION law (S76). Oracle: AOSP Button extends TextView; getText()/length() are inherited, not overridden — any TextView-subclass receiver must dispatch to the TextView law. Implementation: dalvik_engine.cpp getText/length intercepts (try_recursive_invoke + bridge_to_api) now walk the DEX superclass chain via is_subclass_of(class, Landroid/widget/TextView;) (EXP-068 map) instead of substring-matching class names. Real demand: gmdice_8 GameMasterDice.onClick calls Button.getText() ('3D20') then CharSequence.toString — REC-MISS null -> toString NPE -> event loop died on the FIRST click (the S75 'listener fires but roll never draws' lead). Proof: docs/evidence/s76/gmdice_roll_visible/ — clicks dispatch, DSADiceSet.roll runs (Random.nextInt x3 + StringBuilder), frames CHANGE (diff_px 1,511,441 first click; roll results '6' then '5' visible)."
+  },
+  {
+   "id": "R-NEW-393",
+   "status": "ROOT-CAUSED-FIXED",
+   "evidence": "View.getBackground() themed-widget non-null law + Drawable.setColorFilter(int, PorterDuff$Mode) (S76). Oracle: AOSP View.java — framework widgets (Button/TextView/EditText/ImageView family) always resolve a background from the theme (Widget.* styles); getBackground() on that family NEVER returns null; Drawable.setColorFilter mutates the drawable paint, never throws on a tracked drawable. Implementation: android_shadows.cpp ViewShadow dispatch (getBackground -> fresh Drawable heap object; bare Views stay null unless bg_color/state-list registered; setTransformationMethod acknowledged void) + dalvik_engine.cpp bridge_to_api setColorFilter (tint_color recorded on the drawable object; framebuffer tint application NOT claimed — honest scope). Real demand: gmdice onCreate loop buttons[i].getBackground().setColorFilter(color, MULTIPLY) — getBackground REC-MISS null -> setColorFilter NPE killed onCreate at the FIRST iteration -> button_more/resultview never assigned -> roll result TextView null (roll() pc=13 setText NPE). Proof: [R393-BG] getBackground -> Drawable o46/o49/o50/o51 + [R393-TINT]; onCreate completes (5/5 buttons clickable vs 1/5 before); gmdice roll renders."
+  },
+  {
+   "id": "R-NEW-394",
+   "status": "ROOT-CAUSED-FIXED",
+   "evidence": "Dialog decor LAYOUT + topmost-window TOUCH law (S76). Oracle: AOSP — a dialog's decor is measured/laid out in its OWN window; WindowManager routes touches to the TOPMOST window whose frame contains the point (dialogs sit above the activity window). Implementation: dialog_shadow.cpp/h — DialogWindow records decor node ids (title/message/items/row/buttons) at build time; layout_decor_nodes() assigns REAL bounds mirroring the painter geometry (pad=24, button row at b-112, thirds split over non-empty labels in neutral/negative/positive order) at show() and each paint; decor_root_at(x,y) returns the topmost showing dialog root covering the point; execution_engine.cpp F117 tap site routes the dispatch root to the dialog decor when covered ([R394-TAP]). Real demand: snake game-over restart is Dialog-based (showMessageDialog -> AlertDialog 'Game Over!' -> positive button '重新开始' -> SnakePanelView$1$1.onClick -> reStartGame, static DEX proof) — S73/S75 START@99 tapped the WRONG window (dialog WAS rendered but tap-dead: target=0). Proof: docs/evidence/s76/snake_dialog_restart/ — tap (758,1022)@99 after game-over at frame 94 -> RESTART OBSERVED at frame 99 (snake back at the initial row, fresh game runs to frame 115+, wall wrap + 2 captures)."
+  },
+  {
+   "id": "F-152",
+   "status": "OPEN",
+   "evidence": "dooz NEW first divergence after R-NEW-390/391 (S76). Site: Llt0;.w pc=808 — null receiver (recv t8/o0) — the compose/protobuf chain now reaches Llt0;.w (the S43-wave disasm subject, 1009 units). Previously masked BY F-146: the coroutine unwind killed the composition before this code ever ran. Evidence: docs/evidence/s76/dooz_f146_upstream/ engine log (F141-DIAG Llt0;.w pc=808); visual state unchanged (nonwhite 23,472 — engine-default face). Honest frontier: producer trace of the Llt0;.w receiver is the NEXT dooz lead."
+  },
+  {
+   "id": "F-153",
+   "status": "OPEN",
+   "evidence": "Dialog button CJK label paint gap (S76, residual of R-NEW-394). The DialogShadow painter constructs a bare BitmapFont (ASCII glyph set); the snake game-over dialog labels 重新开始/退出 paint 0 pixels (blue 0x0062CC label color absent from the dialog frame — pixel-scanned), while the ASCII message 'Game Over!' paints (grey 33,33,33 measured). The dialog buttons are clickable and the restart works (input path proven); only the label GLYPHS are invisible. Fix belongs to the font/CJK family (route the painter through the project CJK-capable shaper/font, cf. f05_persian). Evidence: docs/evidence/s76/snake_dialog_restart/ report.json 'positive_label_paint'."
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry↔docs single-source-of-truth restored); registry 372→374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots.",
