@@ -1,0 +1,184 @@
+{
+  "apk_name": "tripeaks_v1.2.1_vc4.apk",
+  "main_class": "Leu/veldsoft/tri/peaks/SplashActivity;",
+  "main_method": "onCreate",
+  "methods": [
+    {
+      "class": "Leu/veldsoft/tri/peaks/SplashActivity;",
+      "entry_point": true,
+      "method": "onCreate",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/app/Activity;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "v5"
+      ],
+      "class": "Landroid/app/Activity;<super>",
+      "invocation_type": "virtual",
+      "method": "onCreate",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "v5"
+      ],
+      "class": "Leu/veldsoft/tri/peaks/SplashActivity;",
+      "invocation_type": "virtual",
+      "method": "setContentView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "v5"
+      ],
+      "class": "Leu/veldsoft/tri/peaks/SplashActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#10",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967292"
+      ],
+      "class": "Landroid/webkit/WebView;",
+      "invocation_type": "virtual",
+      "method": "getSettings",
+      "return_value": "Landroid/webkit/WebSettings;#11",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967292",
+        "p4294967293"
+      ],
+      "class": "Landroid/webkit/WebSettings;",
+      "invocation_type": "virtual",
+      "method": "setJavaScriptEnabled",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "v5"
+      ],
+      "class": "Leu/veldsoft/tri/peaks/SplashActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#10",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v5",
+        "p4294967292"
+      ],
+      "class": "Landroid/webkit/WebView;",
+      "invocation_type": "virtual",
+      "method": "loadUrl",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4"
+      ],
+      "class": "Leu/veldsoft/tri/peaks/SplashActivity;",
+      "invocation_type": "virtual",
+      "method": "getPackageManager",
+      "return_value": "Landroid/content/pm/PackageManager;#12",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4"
+      ],
+      "class": "Leu/veldsoft/tri/peaks/SplashActivity;",
+      "invocation_type": "virtual",
+      "method": "getComponentName",
+      "return_value": "Landroid/content/ComponentName;#13",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967292",
+        "v2",
+        "v5"
+      ],
+      "class": "Landroid/content/pm/PackageManager;",
+      "invocation_type": "virtual",
+      "method": "getActivityInfo",
+      "return_value": "Landroid/content/pm/ActivityInfo;#14",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967292",
+        "v2",
+        "v3"
+      ],
+      "class": "Landroid/os/Bundle;",
+      "invocation_type": "virtual",
+      "method": "getInt",
+      "return_value": "5000",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4"
+      ],
+      "class": "Leu/veldsoft/tri/peaks/SplashActivity;",
+      "invocation_type": "virtual",
+      "method": "getPackageManager",
+      "return_value": "Landroid/content/pm/PackageManager;#12",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4"
+      ],
+      "class": "Leu/veldsoft/tri/peaks/SplashActivity;",
+      "invocation_type": "virtual",
+      "method": "getComponentName",
+      "return_value": "Landroid/content/ComponentName;#16",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967292",
+        "v2",
+        "v5"
+      ],
+      "class": "Landroid/content/pm/PackageManager;",
+      "invocation_type": "virtual",
+      "method": "getActivityInfo",
+      "return_value": "Landroid/content/pm/ActivityInfo;#17",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v5",
+        "p4294967292"
+      ],
+      "class": "Landroid/os/Bundle;",
+      "invocation_type": "virtual",
+      "method": "getString",
+      "return_value": "\"eu.veldsoft.tri.peaks.LobbyActivity\"",
+      "source": "REAL_DALVIK_INTERPRETER"
+    }
+  ],
+  "timestamp": "2026-09-21T09:08:18Z",
+  "total_api_calls": 16
+}

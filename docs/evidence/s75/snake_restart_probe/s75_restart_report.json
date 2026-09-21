@@ -1,0 +1,272 @@
+{
+ "rc": 0,
+ "taps_total": 27,
+ "frames": 108,
+ "head_at_c67230be": "S75 re-run of S73 C4B at HEAD c67230be",
+ "events": {
+  "moves": 91,
+  "turns": 24,
+  "captures": 1
+ },
+ "probes": {
+  "self_collision_game_over": {
+   "predicted_head_reentry": "(5,10) occupied at tick start (frame 93)",
+   "first_game_over_frame": 94,
+   "verdict": "GAME-OVER OBSERVED"
+  },
+  "restart": {
+   "probe": "tap START@99",
+   "verdict": "NO RESTART OBSERVED"
+  }
+ },
+ "timeline_88_107": {
+  "88": {
+   "snake": [
+    [
+     1,
+     10
+    ],
+    [
+     2,
+     10
+    ],
+    [
+     3,
+     10
+    ],
+    [
+     4,
+     10
+    ]
+   ],
+   "food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "dir": "R",
+   "game_over": false
+  },
+  "89": {
+   "snake": [
+    [
+     2,
+     10
+    ],
+    [
+     3,
+     10
+    ],
+    [
+     4,
+     10
+    ],
+    [
+     5,
+     10
+    ]
+   ],
+   "food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "dir": "R",
+   "game_over": false
+  },
+  "90": {
+   "snake": [
+    [
+     3,
+     10
+    ],
+    [
+     4,
+     10
+    ],
+    [
+     5,
+     10
+    ],
+    [
+     6,
+     10
+    ]
+   ],
+   "food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "dir": "R",
+   "game_over": false
+  },
+  "91": {
+   "snake": [
+    [
+     4,
+     10
+    ],
+    [
+     5,
+     10
+    ],
+    [
+     6,
+     10
+    ],
+    [
+     6,
+     11
+    ]
+   ],
+   "food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "dir": "D",
+   "game_over": false
+  },
+  "92": {
+   "snake": [
+    [
+     5,
+     10
+    ],
+    [
+     6,
+     10
+    ],
+    [
+     5,
+     11
+    ],
+    [
+     6,
+     11
+    ]
+   ],
+   "food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "dir": "L",
+   "game_over": false
+  },
+  "93": {
+   "snake": [
+    [
+     6,
+     10
+    ],
+    [
+     5,
+     11
+    ],
+    [
+     6,
+     11
+    ]
+   ],
+   "food": [
+    [
+     9,
+     0
+    ]
+   ],
+   "dir": null,
+   "game_over": false
+  },
+  "94": {
+   "snake": [],
+   "food": [],
+   "dir": null,
+   "game_over": true
+  },
+  "95": {
+   "snake": [],
+   "food": [],
+   "dir": null,
+   "game_over": true
+  },
+  "96": {
+   "snake": [],
+   "food": [],
+   "dir": null,
+   "game_over": true
+  },
+  "97": {
+   "snake": [],
+   "food": [],
+   "dir": null,
+   "game_over": true
+  },
+  "98": {
+   "snake": [],
+   "food": [],
+   "dir": null,
+   "game_over": true
+  },
+  "99": {
+   "snake": [],
+   "food": [],
+   "dir": null,
+   "game_over": true
+  },
+  "100": {
+   "snake": [],
+   "food": [],
+   "dir": null,
+   "game_over": true
+  },
+  "101": {
+   "snake": [],
+   "food": [],
+   "dir": null,
+   "game_over": true
+  },
+  "102": {
+   "snake": [],
+   "food": [],
+   "dir": null,
+   "game_over": true
+  },
+  "103": {
+   "snake": [],
+   "food": [],
+   "dir": null,
+   "game_over": true
+  },
+  "104": {
+   "snake": [],
+   "food": [],
+   "dir": null,
+   "game_over": true
+  },
+  "105": {
+   "snake": [],
+   "food": [],
+   "dir": null,
+   "game_over": true
+  },
+  "106": {
+   "snake": [],
+   "food": [],
+   "dir": null,
+   "game_over": true
+  },
+  "107": {
+   "snake": [],
+   "food": [],
+   "dir": null,
+   "game_over": true
+  }
+ }
+}
