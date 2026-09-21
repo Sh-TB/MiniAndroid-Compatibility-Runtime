@@ -2303,3 +2303,84 @@ Work Log:
 Stage Summary:
 - S74-FINAL wave complete: truth ledger live on GitHub, all evidence links human-renderable, false completions downgraded (tictactoe) / scope-marked (connectfour), counts reconciled honestly (57/75 enumerable, 185 NOT_FOUND, addendum NOT_RECOVERED).
 - No runtime code changed; no settled fix reopened; F-141 CLOSED; snake history untouched; PAT never persisted (env-only, secret guard PASS on every commit).
+
+---
+Task ID: S75-MAIN
+Agent: Super Z (main)
+Task: S75 CLOSURE WAVE — user directive "execute every remaining incomplete
+command; start all of them; make a big list". Big list = 8 phases built from
+the S74-FINAL ledger (59 UNVERIFIED + 5 PARTIAL + 1 BLOCKED), S74 report §6
+continuation, and S73/S74 queued leads.
+
+Work Log:
+- PHASE 0 RECON: HEAD c67230be == origin/main, clean tree; toolchain
+  re-bootstrapped (aapt2/ecj/r8/stubs) after container reset (background
+  nohup dies with session — re-run FOREGROUND per S73 note); engine rebuilt
+  from HEAD (82.6 MB, make -j2; -j8 OOM-kills cc1plus on dalvik_engine.cpp).
+- BASELINE: battery 25/25 rc=0 + verifier 23/23 PASS on the pre-A7 binary.
+- PHASE 1 ITEM75 CLOSURE AUDIT (scripts/audit/item75_closure.py): all 47
+  UNVERIFIED rows reconciled against (a) gap-matrix FULL rows, (b) live code
+  greps with file:line, (c) registry; ROOT CAUSE found: build_master_audit.py
+  row regex truncated each matrix row at column 2 — FIXED/DONE/PARTIAL status
+  columns were NEVER seen (why all 47 fell to UNVERIFIED). Fixed with
+  full-row capture in both scripts. Result: 19 TESTED / 11 PARTIAL / 17
+  PENDING, 0 conflicts; every ambiguous row semantically reviewed (B5 no-op
+  swallow list, C8 PNG_COLOR_TYPE_RGB, C9/D7 viewtree writer fields, D3
+  Makefile membership, D5 stale text_shaper path, ...).
+- PHASE 2 LEDGER REFRESH: CRITICAL-001/005/006 -> OBSERVED (remediations
+  executed+verified S74-FINAL); CAM-S74OPS -> OBSERVED; TOOL RESEARCHED_ONLY
+  -> OBSERVED (verdict exists, evidence-cited); KNOW research-stage ->
+  PARTIAL (lifecycle honestly stopped); REQ-HIST-062 drift captured (prior
+  session appended worklog after last ledger build) -> ledger 375 rows,
+  UNVERIFIED 59 -> 4 (only CAM-S74ADD + CRITICAL-002/003/004 — sources do
+  not exist; never invented).
+- PHASE 3 A7 FIXED (the last P0 "law known, no code"): manifest_reader
+  captures application_label_resid/application_icon_resid for REFERENCE
+  attrs (literal "@0x" degrade removed); ManifestReader::resolve_resid_string
+  (one ARSC hop, nullopt on miss) wired at the ResourceRuntime ensure_loaded
+  site in execution_engine.cpp (AOSP PackageParser labelRes/loadLabel law);
+  ApkInfo carries identity fields. f54_manifestlabel fixture (deterministic
+  1x1 icon PNG, label REFERENCE @string/app_name): [A7] label resolved
+  "F54 LabelProof" @0x7f040001 + icon resid @0x7f010000 captured; verifier
+  extended with engine.log gate (chk_engine_log) -> f54 6/6, total 24/24.
+- PHASE 4 R-NEW-388 re-verified at HEAD instead of unfounded implementation:
+  f14_relative RL anchor laws hold EXACTLY (alignParentRight x=780,
+  centerInParent (340,760), below-chain y=300, no (0,0) collapse); TriPeaks
+  real APK still splash-blocked (RelativeLayout+WebView only) — registry
+  record CONFIRMED, residual is app-specific navigation; no code change
+  (docs/foundation/s75/R-NEW-388_HEAD_REVERIFY.md).
+- PHASE 5 QUEUED-LEAD PROBES at HEAD: dooz (MINIANDROID_F141_DIAG=1) — both
+  escapes reproduced (g8.a pc=569 v4:t8/o0; MainActivity.onCreate pc=228);
+  NEW OBSERVATION: F-147's null receiver is p0 (frame this) itself ->
+  secondary-to-F-146 reading RECORDED, not claimed as law; black region
+  23,472 px bbox (0,0)-(488,47) byte-consistent; ViewTree App+2View+Lg10+
+  2Loc1. gmdice: lobby 182,628 px matches record; 2 clicks dispatched on
+  real listener path (view 39 "3D20") but frames byte-identical
+  (frame_000==frame_002 sha) -> roll still invisible, lead OPEN with sharper
+  detail. Snake: S73 C4B design re-run at HEAD via
+  scripts/s75_snake_restart_probe.py (23-tap schedule recovered from the
+  committed gameplay_trace.json inputs); game-over OBSERVED at frame 94
+  (exact S73 match; 91 moves, 24 turns, 1 capture); restart via START@99
+  still NOT OBSERVED — honest open re-verified on the current binary.
+- PHASE 6 REGRESSION on the A7 binary: battery 26/26 rc=0; verifier 24/24;
+  Level C fidelity (scripts/s75_fidelity_probe.py, committed schedule
+  replay): BYTE-IDENTICAL 90/90 vs committed run_01 — A7 render-neutral
+  proven; compatibility-graph validator PASS.
+- PHASE 7 DOCS+PUBLISH: registry A7 -> FIXED-S75 (397 roots unchanged),
+  F-146/F-147 evidence appended (append-only); gap matrix A7 row closed;
+  FOUNDATION_RUNTIME_MAP A7/R-NEW-388 + completion line updated;
+  ROADMAP_STATUS 3 S75 rows; ACHIEVEMENTS §0k; S75_REPORT.md; closure +
+  ledger rebuilt; issue comments NOT posted (GH_TOKEN unavailable, §52) —
+  one command away for a tokened session.
+
+Stage Summary:
+- All incomplete commands from prior waves executed or honestly re-bounded:
+  ledger UNVERIFIED 59 -> 4 (rest now evidenced TESTED/PARTIAL/PENDING),
+  A7 implemented+fixture-proven (render-neutral by 90/90 byte-identity),
+  R-NEW-388/​dooz/​gmdice/​snake leads re-verified with NEW datapoints,
+  zero regressions (26/26 battery, 24/24 verifier, validator PASS).
+- No settled fix reopened; F-141 stays CLOSED; snake committed evidence
+  untouched (replays byte-identical); PAT never persisted.
+- Next: dooz F-146 upstream producer trace (coroutine path), gmdice
+  ListView roll-render path, snake Dialog-restart hypothesis, icon bitmap
+  decode capability, GH_TOKEN session for S75 issue comments.

@@ -4,8 +4,8 @@
     {
       "android_view_id": 2130837504,
       "children": [
-        9,
-        11
+        10,
+        12
       ],
       "class": "Landroid/widget/LinearLayout;",
       "clickable": false,
@@ -14,7 +14,7 @@
       "height": 1920,
       "hint": "",
       "image_resource_id": 0,
-      "object_id": 8,
+      "object_id": 9,
       "parent_id": 0,
       "text": "",
       "text_resource_id": 0,
@@ -34,8 +34,8 @@
       "height": 262,
       "hint": "",
       "image_resource_id": 0,
-      "object_id": 9,
-      "parent_id": 8,
+      "object_id": 10,
+      "parent_id": 9,
       "text": "",
       "text_resource_id": 0,
       "view_type": "View",
@@ -54,8 +54,8 @@
       "height": 44,
       "hint": "",
       "image_resource_id": 0,
-      "object_id": 11,
-      "parent_id": 8,
+      "object_id": 12,
+      "parent_id": 9,
       "text": "PX=263",
       "text_resource_id": 0,
       "view_type": "TextView",

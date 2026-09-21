@@ -4,7 +4,7 @@
     {
       "android_view_id": 0,
       "children": [
-        8
+        9
       ],
       "class": "Landroid/view/View;",
       "clickable": false,
@@ -13,7 +13,7 @@
       "height": -1,
       "hint": "",
       "image_resource_id": 0,
-      "object_id": 7,
+      "object_id": 8,
       "parent_id": 0,
       "text": "",
       "text_resource_id": 0,
@@ -33,8 +33,8 @@
       "height": 1920,
       "hint": "",
       "image_resource_id": 0,
-      "object_id": 8,
-      "parent_id": 7,
+      "object_id": 9,
+      "parent_id": 8,
       "text": "INIT=6,5",
       "text_resource_id": 0,
       "view_type": "TextView",

@@ -1455,6 +1455,300 @@
   ]
  },
  {
+  "fixture": "f53_getstring",
+  "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f53_getstring/screenshot.png",
+  "asserts": [
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "texts=['Context GetString Works', 'S70 wave S70 code 136', 'Resources Direct Path'] expected~'Context GetString Works'"
+   },
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "texts=['Context GetString Works', 'S70 wave S70 code 136', 'Resources Direct Path'] expected~'S70 wave S70 code 136'"
+   },
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "texts=['Context GetString Works', 'S70 wave S70 code 136', 'Resources Direct Path'] expected~'Resources Direct Path'"
+   },
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "nonwhite in (0, 0, 1080, 210) = 23133 (min 800)"
+   },
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "nonwhite in (0, 210, 1080, 420) = 40909 (min 800)"
+   }
+  ],
+  "status": "PASS",
+  "width": 1080,
+  "height": 1920,
+  "screenshot_sha256": "8c11659a7ca24512dd9547f44e47ccab9f57298c4caadee5378c69581bc6dd8c",
+  "nonwhite": 64042,
+  "bbox": [
+   2,
+   15,
+   1054,
+   395
+  ]
+ },
+ {
+  "fixture": "f54_manifestlabel",
+  "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f54_manifestlabel/screenshot.png",
+  "asserts": [
+   {
+    "label": "A7 canvas background (warm)",
+    "at": [
+     540,
+     960
+    ],
+    "expected": [
+     248,
+     240,
+     232
+    ],
+    "actual": [
+     248,
+     240,
+     232
+    ],
+    "ok": true
+   },
+   {
+    "label": "A7 canvas lower background",
+    "at": [
+     540,
+     1700
+    ],
+    "expected": [
+     248,
+     240,
+     232
+    ],
+    "actual": [
+     248,
+     240,
+     232
+    ],
+    "ok": true
+   },
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "texts=['F54 LabelProof'] expected~'F54 LabelProof'"
+   },
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "nonwhite in (0, 0, 1080, 400) = 432000 (min 2000)"
+   },
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "engine.log contains: [A7] application label resolved through ARSC: \"F54 LabelProo"
+   },
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "engine.log contains: application icon resid @0x"
+   }
+  ],
+  "status": "PASS",
+  "width": 1080,
+  "height": 1920,
+  "screenshot_sha256": "9f0bb2bef165c2988c6cc2bfbf92347cef00cdfc12a191935cbacdc69e1a463d",
+  "nonwhite": 2073600,
+  "bbox": [
+   0,
+   0,
+   1079,
+   1919
+  ]
+ },
+ {
+  "fixture": "f52_nanlaw",
+  "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f52_nanlaw/screenshot.png",
+  "asserts": [
+   {
+    "label": "Double.isNaN(NaN)==true (OpenJDK :1031)",
+    "at": [
+     540,
+     50
+    ],
+    "expected": [
+     27,
+     138,
+     68
+    ],
+    "actual": [
+     27,
+     138,
+     68
+    ],
+    "ok": true
+   },
+   {
+    "label": "Double.isNaN(1.5)==false (not NaN)",
+    "at": [
+     540,
+     150
+    ],
+    "expected": [
+     27,
+     138,
+     68
+    ],
+    "actual": [
+     27,
+     138,
+     68
+    ],
+    "ok": true
+   },
+   {
+    "label": "Double.isInfinite(+Inf)==true (:1048)",
+    "at": [
+     540,
+     250
+    ],
+    "expected": [
+     27,
+     138,
+     68
+    ],
+    "actual": [
+     27,
+     138,
+     68
+    ],
+    "ok": true
+   },
+   {
+    "label": "Double.isInfinite(-Inf)==true",
+    "at": [
+     540,
+     350
+    ],
+    "expected": [
+     27,
+     138,
+     68
+    ],
+    "actual": [
+     27,
+     138,
+     68
+    ],
+    "ok": true
+   },
+   {
+    "label": "Float.isNaN(NaN)==true (Float.java:631)",
+    "at": [
+     540,
+     450
+    ],
+    "expected": [
+     27,
+     138,
+     68
+    ],
+    "actual": [
+     27,
+     138,
+     68
+    ],
+    "ok": true
+   },
+   {
+    "label": "Double.compare(1.0,2.0)==-1",
+    "at": [
+     540,
+     550
+    ],
+    "expected": [
+     27,
+     138,
+     68
+    ],
+    "actual": [
+     27,
+     138,
+     68
+    ],
+    "ok": true
+   },
+   {
+    "label": "Double.compare(NaN,1.0)==+1 (bits law)",
+    "at": [
+     540,
+     650
+    ],
+    "expected": [
+     27,
+     138,
+     68
+    ],
+    "actual": [
+     27,
+     138,
+     68
+    ],
+    "ok": true
+   },
+   {
+    "label": "Float.compare(+0.0,-0.0)==+1 (\u00b10.0 law)",
+    "at": [
+     540,
+     750
+    ],
+    "expected": [
+     27,
+     138,
+     68
+    ],
+    "actual": [
+     27,
+     138,
+     68
+    ],
+    "ok": true
+   },
+   {
+    "label": "Float.compare(2.0,2.0)==0",
+    "at": [
+     540,
+     850
+    ],
+    "expected": [
+     27,
+     138,
+     68
+    ],
+    "actual": [
+     27,
+     138,
+     68
+    ],
+    "ok": true
+   }
+  ],
+  "status": "PASS",
+  "width": 1080,
+  "height": 1920,
+  "screenshot_sha256": "b9d4fdb3882ff2ff76a1092fc499698ea8150f75e5c636b4a9b21df11c2e15bf",
+  "nonwhite": 972000,
+  "bbox": [
+   0,
+   0,
+   1079,
+   899
+  ]
+ },
+ {
   "fixture": "f50_imagefmt",
   "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f50_imagefmt/screenshot.png",
   "asserts": [
@@ -1559,48 +1853,6 @@
    0,
    782,
    1919
-  ]
- },
- {
-  "fixture": "f53_getstring",
-  "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f53_getstring/screenshot.png",
-  "asserts": [
-   {
-    "label": "_c",
-    "ok": true,
-    "detail": "texts=['Context GetString Works', 'S70 wave S70 code 136', 'Resources Direct Path'] expected~'Context GetString Works'"
-   },
-   {
-    "label": "_c",
-    "ok": true,
-    "detail": "texts=['Context GetString Works', 'S70 wave S70 code 136', 'Resources Direct Path'] expected~'S70 wave S70 code 136'"
-   },
-   {
-    "label": "_c",
-    "ok": true,
-    "detail": "texts=['Context GetString Works', 'S70 wave S70 code 136', 'Resources Direct Path'] expected~'Resources Direct Path'"
-   },
-   {
-    "label": "_c",
-    "ok": true,
-    "detail": "nonwhite in (0, 0, 1080, 210) = 23133 (min 800)"
-   },
-   {
-    "label": "_c",
-    "ok": true,
-    "detail": "nonwhite in (0, 210, 1080, 420) = 40909 (min 800)"
-   }
-  ],
-  "status": "PASS",
-  "width": 1080,
-  "height": 1920,
-  "screenshot_sha256": "8c11659a7ca24512dd9547f44e47ccab9f57298c4caadee5378c69581bc6dd8c",
-  "nonwhite": 64042,
-  "bbox": [
-   2,
-   15,
-   1054,
-   395
   ]
  }
 ]
