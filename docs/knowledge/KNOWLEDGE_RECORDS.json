@@ -6,8 +6,8 @@
   "apps": 14,
   "tools": 12,
   "capabilities": 15,
-  "knowledge_records": 35,
-  "verified_laws": 24,
+  "knowledge_records": 37,
+  "verified_laws": 26,
   "open_or_open_frontier": 10
  },
  "apps": [
@@ -92,7 +92,9 @@
   "LAW-R-NEW-395",
   "LAW-R-NEW-396",
   "LAW-R-NEW-397",
-  "LAW-R-NEW-398"
+  "LAW-R-NEW-398",
+  "LAW-R-NEW-399",
+  "LAW-R-NEW-400"
  ],
  "registry_root": "root_registry.json (F-number source of truth; generic laws carry registry ids)"
 }

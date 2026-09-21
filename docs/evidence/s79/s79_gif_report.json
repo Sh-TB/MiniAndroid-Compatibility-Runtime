@@ -1,0 +1,66 @@
+{
+ "apk": "snake_v1.0_vc1.apk",
+ "engine_mode": "real-dalvik",
+ "actuator": "TouchDispatcher taps only (C1)",
+ "schedule": {
+  "autonomous_taps": 23,
+  "death_extension": [
+   "D@90",
+   "L@91",
+   "U@92"
+  ],
+  "restart_tap": "(758,1022)@99"
+ },
+ "run_a": {
+  "rc": null,
+  "dialog_layout": {
+   "l": 80,
+   "t": 848,
+   "w": 920,
+   "h": 224
+  },
+  "positive_btn_center": [
+   758,
+   1022
+  ],
+  "cjk_positive_label_blue_px": 28
+ },
+ "run_b": {
+  "rc": 0,
+  "frames": 220,
+  "first_game_over_frame": 94,
+  "restart_frame": 99,
+  "first_life_events": {
+   "moves": 88,
+   "turns": 22,
+   "captures": 1
+  },
+  "second_life_events": {
+   "moves": 90,
+   "turns": 24,
+   "captures": 1
+  },
+  "second_game_over_frame": 192,
+  "total_events": {
+   "moves": 183,
+   "turns": 49,
+   "captures": 3
+  }
+ },
+ "verdict": {
+  "gameplay_played": true,
+  "game_over_observed": true,
+  "cjk_dialog_painted": true,
+  "restart_observed": true
+ },
+ "gif": {
+  "path": "/home/z/my-project/download/s79/snake_gameplay.gif",
+  "frames": 70,
+  "segments": {
+   "S1_game1": 31,
+   "S2_dialog": 7,
+   "S3_restart": 1,
+   "S4_game2": 31
+  }
+ }
+}

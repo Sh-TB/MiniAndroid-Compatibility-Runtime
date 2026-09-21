@@ -1,0 +1,106 @@
+{
+ "binary": "miniandroid/build/miniandroid @ S79 (R-NEW-399 + R-NEW-400)",
+ "snake_gif": {
+  "apk": "snake_v1.0_vc1.apk",
+  "engine_mode": "real-dalvik",
+  "actuator": "TouchDispatcher taps only (C1)",
+  "schedule": {
+   "autonomous_taps": 23,
+   "death_extension": [
+    "D@90",
+    "L@91",
+    "U@92"
+   ],
+   "restart_tap": "(758,1022)@99"
+  },
+  "run_a": {
+   "rc": null,
+   "dialog_layout": {
+    "l": 80,
+    "t": 848,
+    "w": 920,
+    "h": 224
+   },
+   "positive_btn_center": [
+    758,
+    1022
+   ],
+   "cjk_positive_label_blue_px": 28
+  },
+  "run_b": {
+   "rc": 0,
+   "frames": 220,
+   "first_game_over_frame": 94,
+   "restart_frame": 99,
+   "first_life_events": {
+    "moves": 88,
+    "turns": 22,
+    "captures": 1
+   },
+   "second_life_events": {
+    "moves": 90,
+    "turns": 24,
+    "captures": 1
+   },
+   "second_game_over_frame": 192,
+   "total_events": {
+    "moves": 183,
+    "turns": 49,
+    "captures": 3
+   }
+  },
+  "verdict": {
+   "gameplay_played": true,
+   "game_over_observed": true,
+   "cjk_dialog_painted": true,
+   "restart_observed": true
+  },
+  "gif": {
+   "path": "/home/z/my-project/download/s79/snake_gameplay.gif",
+   "frames": 70,
+   "segments": {
+    "S1_game1": 31,
+    "S2_dialog": 7,
+    "S3_restart": 1,
+    "S4_game2": 31
+   }
+  }
+ },
+ "gmdice": {
+  "click_test": "5/5 dispatched, results rendered (SETTEXT view_37)",
+  "multi_roll": "tap (580,1848)@6/@14 \u2192 target=41 \u2192 '6' then '5'",
+  "det": "x2"
+ },
+ "microtimer": {
+  "click_test": "12 probed / 11 changed",
+  "timer": "00:00:00 \u2192 00:00:09 \u2192 00:00:98 (running)",
+  "det": "x2"
+ },
+ "unote": {
+  "click_test": "3 probed / 2 changed",
+  "state_change": "Add note \u2192 real editor screen (Title/Note/Save/Return), 13,032 sampled-px diff; notes.db SQLite chain live",
+  "det": "x2"
+ },
+ "fishrings": {
+  "s10_chain": "3 taps \u2192 3 CLICK dispatches (GameActivity$1/$2/$4) \u2192 3 rotations \u2192 3 distinct board states",
+  "det": "x2 (byte-identical frame SHAs)"
+ },
+ "bouncy": {
+  "click_test": "12 probed / 10 changed (Vector Pinball 1.16.0)",
+  "det": "x2",
+  "open": "L7 multi-round game-loop proof"
+ },
+ "opmt": {
+  "click_test": "6/6 changed; 'It is currently black's turn.'",
+  "det": "x2",
+  "open": "app-own IOOBE stopper on in-game loop"
+ },
+ "dooz": {
+  "visual": "23,472 px engine-default face (honest NOT_HUMAN_VISIBLE)",
+  "open": "dooz Job ISE (Loj0;.T pc=49) + F-147 producer trace"
+ },
+ "tripeaks": {
+  "click_test": "0 clickables in lobby tree",
+  "open": "R-NEW-388 layout geometry family + OBJECT-IDENTITY"
+ }
+}
