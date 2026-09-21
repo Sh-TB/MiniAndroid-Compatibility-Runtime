@@ -1,0 +1,25 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "LAW-F143",
+ "title": "Service-launch family (service-only manifests)",
+ "domain": "lifecycle",
+ "scope": "generic",
+ "statement": "An APK whose manifest declares NO launchable Activity (service-only) must not render an Activity UI; the engine-default face is CORRECT. A service-launch capability is required before any UI can exist for such apps.",
+ "status": "OBSERVED",
+ "source": {
+  "origin": "MiniAndroid manifest census (S72-W1)",
+  "file": "root_registry.json F-143"
+ },
+ "test": "stopwatch face byte-identical to no-Activity engine default (0e334abe1b10b592)",
+ "consumers": [
+  "stopwatch"
+ ],
+ "issues": [
+  22
+ ],
+ "capabilities": [],
+ "first_discovered": "S72-W1",
+ "last_verified": "S73",
+ "notes": "OPEN capability gap (by-design blocker for #22), not a runtime bug."
+}

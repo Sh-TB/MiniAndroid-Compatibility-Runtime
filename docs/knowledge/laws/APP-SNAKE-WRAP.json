@@ -1,0 +1,26 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "APP-SNAKE-WRAP",
+ "title": "Snake wrap law ((19,10) -> (0,10))",
+ "domain": "game/snake",
+ "scope": "app",
+ "statement": "AndroidGameSnake wraps at walls: head (19,10) re-enters at (0,10); there is NO wall death in the proven path.",
+ "status": "OBSERVED",
+ "source": {
+  "origin": "S73 C4 probe (real tap, reverse-guard route)",
+  "file": "docs/evidence/S73/S73_REPORT.md \u00a73; issue #13"
+ },
+ "test": "C4 probe on real APK",
+ "consumers": [
+  "androidgamesnake"
+ ],
+ "issues": [
+  13
+ ],
+ "capabilities": [
+  "cap-autonomous-gameplay"
+ ],
+ "first_discovered": "S73",
+ "last_verified": "S73"
+}

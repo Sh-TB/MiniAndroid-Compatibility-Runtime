@@ -1,0 +1,24 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "LAW-F135",
+ "title": "OpenJDK Double/Float compare NaN law",
+ "domain": "jvm",
+ "scope": "generic",
+ "statement": "Double/Float compare orders NaN per OpenJDK (NaN treated as largest; compare returns <0/>0 per spec), not per C++ default operator ordering.",
+ "status": "VERIFIED",
+ "source": {
+  "origin": "OpenJDK Double.java/Float.java",
+  "file": "S69 record (commit b88e09d9); upstream_oracle.json"
+ },
+ "test": "battery stages at S69+",
+ "consumers": [
+  "dooz"
+ ],
+ "issues": [],
+ "capabilities": [
+  "cap-dex-interpreter"
+ ],
+ "first_discovered": "S69",
+ "last_verified": "S73"
+}

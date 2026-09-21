@@ -1,0 +1,26 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "LAW-F118",
+ "title": "Activity constructor law",
+ "domain": "lifecycle",
+ "scope": "generic",
+ "statement": "Activity launches run <init> (G08 launches now execute the constructor chain) per AOSP instantiation order.",
+ "status": "VERIFIED",
+ "source": {
+  "origin": "AOSP Activity instantiation",
+  "file": "root_registry.json F-118 (R-NEW-385)"
+ },
+ "test": "G08 launches; 3 consumers day one",
+ "consumers": [
+  "tripeaks",
+  "fishrings",
+  "opmt"
+ ],
+ "issues": [],
+ "capabilities": [
+  "cap-lifecycle-dispatch"
+ ],
+ "first_discovered": "S65",
+ "last_verified": "S73"
+}

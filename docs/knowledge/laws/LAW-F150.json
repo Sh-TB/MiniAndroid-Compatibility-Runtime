@@ -1,0 +1,30 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "LAW-F150",
+ "title": "Thread game-loop family law (sleep/start/wake)",
+ "domain": "concurrency",
+ "scope": "generic",
+ "statement": "Four stacked roots fixed: (1) ThreadShadow no-op swallowed sleep \u2014 sleep now blocks per semantics; (2) javac emits SUBCLASS descriptors for Thread.sleep/start \u2014 method_ids ground truth wins over literal types (is_thread_receiver DEX-chain law, 3 sites); (3) starts drained only in parks \u2014 frame-boundary start/yield drains (bounded 4/8); (4) no resume for sleep-blocked bodies \u2014 wake-time registry (thread->{target,wake}); sleep inside drained bodies records wake without advancing the shared clock. Documented deviations from wall-clock semantics remain in the notes.",
+ "status": "VERIFIED",
+ "source": {
+  "origin": "OpenJDK Thread.sleep/start semantics + DEX method_ids ground truth",
+  "file": "docs/foundation/S72_WAVE4.md (F-150 row); worklog S72-W4"
+ },
+ "test": "snake 2 ticks/frame EXACT; 88 moves; reverse-guard honored; final frame x3 BYTE-IDENTICAL (1a419545419deb3a); corpus 10/10 + fixtures 25/25 pixel-SAME",
+ "consumers": [
+  "androidgamesnake",
+  "microtimer"
+ ],
+ "issues": [
+  13,
+  18
+ ],
+ "capabilities": [
+  "cap-thread-game-loop",
+  "cap-autonomous-gameplay"
+ ],
+ "first_discovered": "S72-W4",
+ "last_verified": "S73",
+ "notes": "Deviation notes (virtual-clock semantics) are part of the record; never claim wall-clock parity."
+}

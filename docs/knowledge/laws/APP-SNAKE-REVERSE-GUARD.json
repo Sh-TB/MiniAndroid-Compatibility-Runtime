@@ -1,0 +1,26 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "APP-SNAKE-REVERSE-GUARD",
+ "title": "Snake reverse-direction rejection",
+ "domain": "game/snake",
+ "scope": "app",
+ "statement": "The APP rejects 180-degree turns (LEFT tap while moving RIGHT rejected; heads continued (15,10)->(18,10)) \u2014 app-level guard, honored not bypassed.",
+ "status": "OBSERVED",
+ "source": {
+  "origin": "S73 C4 probe",
+  "file": "docs/evidence/S73/S73_REPORT.md \u00a73"
+ },
+ "test": "C4 probe on real APK",
+ "consumers": [
+  "androidgamesnake"
+ ],
+ "issues": [
+  13
+ ],
+ "capabilities": [
+  "cap-autonomous-gameplay"
+ ],
+ "first_discovered": "S73",
+ "last_verified": "S73"
+}

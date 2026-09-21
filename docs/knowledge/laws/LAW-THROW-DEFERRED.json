@@ -1,0 +1,25 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "LAW-THROW-DEFERRED",
+ "title": "Deferred throw semantics in the interpreter",
+ "domain": "interpreter",
+ "scope": "generic",
+ "statement": "Pending exceptions are thrown at the law-governed boundary (not mid-basic-block), matching ART ordering; premature or dropped throws corrupt app control flow.",
+ "status": "VERIFIED",
+ "source": {
+  "origin": "ART interpreter",
+  "file": "dalvik_engine.cpp throw handling"
+ },
+ "test": "battery exception stages; dooz lifecycle reaching onStart/onResume",
+ "consumers": [
+  "dooz",
+  "gmdice"
+ ],
+ "issues": [],
+ "capabilities": [
+  "cap-dex-interpreter"
+ ],
+ "first_discovered": "interpreter era",
+ "last_verified": "S73"
+}
