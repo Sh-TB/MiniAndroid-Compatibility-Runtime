@@ -2384,3 +2384,29 @@ Stage Summary:
 - Next: dooz F-146 upstream producer trace (coroutine path), gmdice
   ListView roll-render path, snake Dialog-restart hypothesis, icon bitmap
   decode capability, GH_TOKEN session for S75 issue comments.
+
+---
+Task ID: S75-PUBLISH-DEBT
+Agent: Super Z (main)
+Task: publish state recording (honesty law — no DONE overclaim).
+
+Work Log:
+- 4 logical commits created locally, secret-guard PASS on every commit:
+  affc0d57 (A7 runtime fix + f54 fixture), 310aba44 (closure audit + ledger
+  truth refresh), 84ac7869 (queued-lead probes + fidelity evidence),
+  2835e9c6 (wave docs + refreshed fixture evidence).
+- git push attempted: FAILED — no GH_TOKEN / credential helper in this
+  session (constitution §52: token never stored; same pattern as
+  S74-FOLLOW-UP). Remote main remains c67230be.
+- Publication is ONE COMMAND for a tokened session:
+  GH_TOKEN=<token> git push origin main  (then git ls-remote verify)
+- GitHub issue comments for the S75 findings (#13/#14/#17/#11) also await
+  the tokened session (scripts/s74f_issue_checkpoints.py pattern).
+
+Stage Summary:
+- All S75 work is complete and committed locally; the wave's deliverables
+  are truth-ledger closure (59->4 UNVERIFIED), A7 FIXED (f54-proven,
+  90/90 render-neutral), queued leads re-verified with new datapoints,
+  zero regressions (26/26, 24/24, validator PASS).
+- Push debt: 4 commits (affc0d57..2835e9c6) — the ONLY unfinished step,
+  blocked solely by the missing session token.
