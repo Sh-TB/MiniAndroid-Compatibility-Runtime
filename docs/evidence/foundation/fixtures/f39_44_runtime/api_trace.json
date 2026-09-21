@@ -4,9 +4,9 @@
       "category": "SYSTEM",
       "class": "TraceEngine",
       "level": "INFO",
-      "message": "Session started: EXP-001-20260921-091918-8726",
+      "message": "Session started: EXP-001-20260921-154505-9914",
       "method": "start_session",
-      "timestamp": 1789982358613
+      "timestamp": 1790005505256
     },
     {
       "category": "SYSTEM",
@@ -14,7 +14,7 @@
       "level": "INFO",
       "message": "Loading APK: /home/z/my-project/upload/foundation_apks/f39_44_runtime.apk",
       "method": "stage_load_apk",
-      "timestamp": 1789982358613
+      "timestamp": 1790005505256
     },
     {
       "category": "SYSTEM",
@@ -22,7 +22,7 @@
       "level": "INFO",
       "message": "Package: com.miniandroid.f3944, Main Activity: com.miniandroid.f3944.MainActivity",
       "method": "stage_load_apk",
-      "timestamp": 1789982358649
+      "timestamp": 1790005505313
     },
     {
       "category": "SYSTEM",
@@ -30,7 +30,7 @@
       "level": "INFO",
       "message": "Parsing DEX files",
       "method": "stage_parse_dex",
-      "timestamp": 1789982358649
+      "timestamp": 1790005505313
     },
     {
       "category": "SYSTEM",
@@ -38,7 +38,7 @@
       "level": "INFO",
       "message": "Parsed 6 classes, 25 methods",
       "method": "stage_parse_dex",
-      "timestamp": 1789982358655
+      "timestamp": 1790005505320
     },
     {
       "category": "SYSTEM",
@@ -46,7 +46,7 @@
       "level": "INFO",
       "message": "Initializing runtime",
       "method": "stage_initialize_runtime",
-      "timestamp": 1789982358655
+      "timestamp": 1790005505320
     },
     {
       "category": "SYSTEM",
@@ -54,7 +54,7 @@
       "level": "INFO",
       "message": "Framebuffer allocated: 1080x1920",
       "method": "stage_initialize_runtime",
-      "timestamp": 1789982358676
+      "timestamp": 1790005505340
     },
     {
       "category": "SYSTEM",
@@ -62,7 +62,7 @@
       "level": "INFO",
       "message": "Loading class definitions",
       "method": "stage_load_classes",
-      "timestamp": 1789982358676
+      "timestamp": 1790005505340
     },
     {
       "category": "DEBUG",
@@ -70,7 +70,7 @@
       "level": "DEBUG",
       "message": "Found class: Lcom/miniandroid/f3944/MainActivity$Base; extends Ljava/lang/Object; (2 methods)",
       "method": "stage_load_classes",
-      "timestamp": 1789982358676
+      "timestamp": 1790005505340
     },
     {
       "category": "DEBUG",
@@ -78,7 +78,7 @@
       "level": "DEBUG",
       "message": "Found class: Lcom/miniandroid/f3944/MainActivity$Box; extends Ljava/lang/Object; (1 methods)",
       "method": "stage_load_classes",
-      "timestamp": 1789982358676
+      "timestamp": 1790005505340
     },
     {
       "category": "DEBUG",
@@ -86,7 +86,7 @@
       "level": "DEBUG",
       "message": "Found class: Lcom/miniandroid/f3944/MainActivity$Shape; extends Ljava/lang/Object; (1 methods)",
       "method": "stage_load_classes",
-      "timestamp": 1789982358676
+      "timestamp": 1790005505340
     },
     {
       "category": "DEBUG",
@@ -94,7 +94,7 @@
       "level": "DEBUG",
       "message": "Found class: Lcom/miniandroid/f3944/MainActivity$Sq; extends Ljava/lang/Object; (2 methods)",
       "method": "stage_load_classes",
-      "timestamp": 1789982358676
+      "timestamp": 1790005505340
     },
     {
       "category": "DEBUG",
@@ -102,7 +102,7 @@
       "level": "DEBUG",
       "message": "Found class: Lcom/miniandroid/f3944/MainActivity$Sub; extends Lcom/miniandroid/f3944/MainActivity$Base; (2 methods)",
       "method": "stage_load_classes",
-      "timestamp": 1789982358676
+      "timestamp": 1790005505340
     },
     {
       "category": "DEBUG",
@@ -110,7 +110,7 @@
       "level": "DEBUG",
       "message": "Found class: Lcom/miniandroid/f3944/MainActivity; extends Landroid/app/Activity; (3 methods)",
       "method": "stage_load_classes",
-      "timestamp": 1789982358676
+      "timestamp": 1790005505340
     },
     {
       "category": "SYSTEM",
@@ -118,7 +118,7 @@
       "level": "INFO",
       "message": "Executing application lifecycle",
       "method": "stage_execute_application",
-      "timestamp": 1789982358676
+      "timestamp": 1790005505340
     },
     {
       "category": "SYSTEM",
@@ -126,7 +126,7 @@
       "level": "INFO",
       "message": "[REAL_DALVIK_INTERPRETER] Starting real bytecode execution",
       "method": "stage_execute_application_real_dalvik",
-      "timestamp": 1789982358676
+      "timestamp": 1790005505340
     },
     {
       "category": "SYSTEM",
@@ -134,7 +134,7 @@
       "level": "INFO",
       "message": "Instructions executed: 132",
       "method": "execute_apk",
-      "timestamp": 1789982358737
+      "timestamp": 1790005505393
     },
     {
       "category": "SYSTEM",
@@ -142,7 +142,7 @@
       "level": "INFO",
       "message": "API calls traced: 38",
       "method": "execute_apk",
-      "timestamp": 1789982358737
+      "timestamp": 1790005505393
     },
     {
       "category": "SYSTEM",
@@ -150,7 +150,7 @@
       "level": "INFO",
       "message": "Heap objects: 24",
       "method": "execute_apk",
-      "timestamp": 1789982358737
+      "timestamp": 1790005505393
     },
     {
       "category": "SYSTEM",
@@ -158,7 +158,7 @@
       "level": "INFO",
       "message": "✅ REAL EXECUTION CONFIRMED - 132 opcodes executed",
       "method": "validation",
-      "timestamp": 1789982358737
+      "timestamp": 1790005505393
     },
     {
       "category": "SYSTEM",
@@ -166,7 +166,7 @@
       "level": "INFO",
       "message": "ExecutionSource = REAL_DALVIK_INTERPRETER (verified)",
       "method": "execution_source",
-      "timestamp": 1789982358737
+      "timestamp": 1790005505393
     },
     {
       "category": "SYSTEM",
@@ -174,7 +174,7 @@
       "level": "INFO",
       "message": "[REAL_DALVIK_INTERPRETER] Creating view from execution evidence",
       "method": "create_view_from_dalvik_result",
-      "timestamp": 1789982358737
+      "timestamp": 1790005505393
     },
     {
       "category": "SYSTEM",
@@ -182,7 +182,7 @@
       "level": "INFO",
       "message": "Using text from API call: v15",
       "method": "create_view_from_dalvik_result",
-      "timestamp": 1789982358737
+      "timestamp": 1790005505393
     },
     {
       "category": "SYSTEM",
@@ -190,7 +190,7 @@
       "level": "INFO",
       "message": "Creating HelloWorld view",
       "method": "create_hello_world_view",
-      "timestamp": 1789982358737
+      "timestamp": 1790005505393
     },
     {
       "category": "SYSTEM",
@@ -198,7 +198,7 @@
       "level": "INFO",
       "message": "✅ Lifecycle onCreate/onStart/onResume executed as DEX bytecode (REAL_DALVIK_INTERPRETER, entry-time provenance)",
       "method": "lifecycle_source",
-      "timestamp": 1789982358737
+      "timestamp": 1790005505393
     },
     {
       "category": "SYSTEM",
@@ -206,7 +206,7 @@
       "level": "INFO",
       "message": "✅ All lifecycle events sourced from REAL_DALVIK_INTERPRETER",
       "method": "lifecycle_verified",
-      "timestamp": 1789982358737
+      "timestamp": 1790005505393
     },
     {
       "category": "SYSTEM",
@@ -214,7 +214,7 @@
       "level": "INFO",
       "message": "Generating mandatory trace files: /home/z/my-project/docs/evidence/foundation/fixtures/f39_44_runtime/exp031_5/traces/com.miniandroid.f3944",
       "method": "trace_export",
-      "timestamp": 1789982358737
+      "timestamp": 1790005505393
     },
     {
       "category": "SYSTEM",
@@ -222,7 +222,7 @@
       "level": "INFO",
       "message": "✅ Trace files generated successfully",
       "method": "trace_export",
-      "timestamp": 1789982358738
+      "timestamp": 1790005505393
     },
     {
       "category": "SYSTEM",
@@ -230,7 +230,7 @@
       "level": "INFO",
       "message": "  - opcode_trace.json",
       "method": "trace_files",
-      "timestamp": 1789982358738
+      "timestamp": 1790005505393
     },
     {
       "category": "SYSTEM",
@@ -238,7 +238,7 @@
       "level": "INFO",
       "message": "  - method_trace.json",
       "method": "trace_files",
-      "timestamp": 1789982358738
+      "timestamp": 1790005505393
     },
     {
       "category": "SYSTEM",
@@ -246,7 +246,7 @@
       "level": "INFO",
       "message": "  - register_trace.json",
       "method": "trace_files",
-      "timestamp": 1789982358738
+      "timestamp": 1790005505393
     },
     {
       "category": "SYSTEM",
@@ -254,7 +254,7 @@
       "level": "INFO",
       "message": "  - heap_trace.json",
       "method": "trace_files",
-      "timestamp": 1789982358738
+      "timestamp": 1790005505393
     },
     {
       "category": "SYSTEM",
@@ -262,7 +262,7 @@
       "level": "INFO",
       "message": "  - execution_summary.json (contains verdict)",
       "method": "trace_files",
-      "timestamp": 1789982358738
+      "timestamp": 1790005505393
     },
     {
       "category": "SYSTEM",
@@ -270,7 +270,7 @@
       "level": "INFO",
       "message": "No views with click listeners found (setContentView may not have been called)",
       "method": "phase_b_click",
-      "timestamp": 1789982358738
+      "timestamp": 1790005505393
     },
     {
       "category": "SYSTEM",
@@ -278,7 +278,7 @@
       "level": "INFO",
       "message": "Real Dalvik execution complete",
       "method": "stage_execute_application_real_dalvik",
-      "timestamp": 1789982358738
+      "timestamp": 1790005505393
     },
     {
       "category": "SYSTEM",
@@ -286,7 +286,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1789982358738
+      "timestamp": 1790005505393
     },
     {
       "category": "SYSTEM",
@@ -294,7 +294,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1789982358821
+      "timestamp": 1790005505466
     },
     {
       "category": "SYSTEM",
@@ -302,7 +302,7 @@
       "level": "INFO",
       "message": "Capturing output",
       "method": "stage_capture_output",
-      "timestamp": 1789982358821
+      "timestamp": 1790005505467
     },
     {
       "category": "SYSTEM",
@@ -310,7 +310,7 @@
       "level": "INFO",
       "message": "view_tree.json dumped (S67 provenance law)",
       "method": "stage_capture_output",
-      "timestamp": 1789982358822
+      "timestamp": 1790005505467
     },
     {
       "category": "SYSTEM",
@@ -318,7 +318,7 @@
       "level": "INFO",
       "message": "post-lifecycle frame pump done",
       "method": "stage_capture_output",
-      "timestamp": 1789982358822
+      "timestamp": 1790005505467
     },
     {
       "category": "SYSTEM",
@@ -326,7 +326,7 @@
       "level": "INFO",
       "message": "Screenshot captured: /home/z/my-project/docs/evidence/foundation/fixtures/f39_44_runtime/screenshot.png (1080x1920, 8294400 bytes)",
       "method": "log_screenshot",
-      "timestamp": 1789982358890
+      "timestamp": 1790005505538
     },
     {
       "category": "SYSTEM",
@@ -334,7 +334,7 @@
       "level": "INFO",
       "message": "PNG screenshot saved to: /home/z/my-project/docs/evidence/foundation/fixtures/f39_44_runtime/screenshot.png",
       "method": "stage_capture_output",
-      "timestamp": 1789982358890
+      "timestamp": 1790005505538
     },
     {
       "category": "SYSTEM",
@@ -342,10 +342,10 @@
       "level": "INFO",
       "message": "Generating reports",
       "method": "stage_generate_reports",
-      "timestamp": 1789982358955
+      "timestamp": 1790005505604
     }
   ],
-  "generated_at": "2026-09-21 09:19:18 UTC",
-  "session_id": "EXP-001-20260921-091918-8726",
+  "generated_at": "2026-09-21 15:45:05 UTC",
+  "session_id": "EXP-001-20260921-154505-9914",
   "total_calls": 43
 }

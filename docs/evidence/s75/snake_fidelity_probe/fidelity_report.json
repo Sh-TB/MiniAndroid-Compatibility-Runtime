@@ -1,6 +1,6 @@
 {
  "probe": "S75 Level C snake fidelity (replay of committed 23-tap schedule)",
- "head": "c67230be",
+ "head": "b326acfd",
  "rc": 0,
  "stored_frames": 90,
  "fresh_frames": 90,

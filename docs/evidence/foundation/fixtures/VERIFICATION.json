@@ -1554,7 +1554,12 @@
    {
     "label": "_c",
     "ok": true,
-    "detail": "engine.log contains: application icon resid @0x"
+    "detail": "engine.log contains: [A7b] icon @0x"
+   },
+   {
+    "label": "_c",
+    "ok": true,
+    "detail": "engine.log contains: DECODED"
    }
   ],
   "status": "PASS",
