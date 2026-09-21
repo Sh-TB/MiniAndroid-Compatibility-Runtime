@@ -2552,3 +2552,63 @@ Stage Summary:
   OBJECT-IDENTITY, persistence ladder), not bookkeeping debt.
 - Next: tokened push (8+ commits), F-152 producer trace, F-153 CJK painter,
   Lsr.run F084 spin, per-step sandbox lifecycle emitter automation.
+
+---
+Task ID: S78-MAIN
+Agent: Super Z (main)
+Task: "S78 — DEEP RUNTIME CLOSURE & EVIDENCE-TO-IMPLEMENTATION WAVE" — use the
+S77 infrastructure to close the deepest real runtime gaps (F-152/F-153 + new
+failures) along the full evidence chain; publish all old pushes (user PAT).
+
+Work Log:
+- §1 BASELINE: HEAD c6d14d2e; binary fresh (R393/R394/R347 markers); battery
+  26/26 rc=0, verifier 26/26 (A7B_GATE_OK), fidelity BYTE-IDENTICAL 90/90.
+- PUBLISH (user instruction + PAT): secret-scan clean → pushed
+  c67230be..c6d14d2e (11 = 5 S75 + 3 S76 + 3 S77); ls-remote verified
+  remote HEAD = c6d14d2e; publish debt 0. Found accidental UUID commit
+  d51f1815 (2931 files, 593 MB: backup zips/caches/toolchain blob) →
+  quarantined on backup/s78-accidental-snapshot (rollback per §28), main
+  reset to c6d14d2e, NOT pushed (commit-evidence rules). Nothing deleted.
+- §2 ARTIFACTS: 9 S77 derived artifacts confirmed (8 MD + sandbox_errors.json;
+  ninth = BLAST_RADIUS.md); master_audit/MASTER_CHECKLIST are canonical inputs.
+- §4 F-152: reproduced (F141-DIAG Llt0;.w pc=808, run/s78_f152_repro); static
+  disasm scripts/s78_lt0_disasm.py (fixed uleb-cumulative decode): pc=490
+  sget Llt0;->o ← clinit o = doPrivileged(new n12()); engine log proved the
+  doPrivileged bridge returned null WITHOUT dispatching run() (check-cast
+  null = legal no-op → silent §12 chain). FIX R-NEW-395 (dispatch run(),
+  libcore law) + R-NEW-396 (synthetic getDeclaredFields subset: Unsafe →
+  theUnsafe; n12.run scans it). POST: unsafeNPE 9→0; R337-UNSAFE real
+  offsets. REGRESSION s78_f152_regression.sh 6/6.
+- F-154 (NEW, parent F-152): Lh3;.h pc=36 Set.iterator NPE ←
+  Collections.EMPTY_SET SGET-MISS. FIX R-NEW-397 (EMPTY_SET/LIST/MAP seed +
+  Empty-family read contract). POST: setIterNPE 8→0. Depth chain
+  F-146→F-152→F-154 registered in registry.
+- §5-6 F-153: producer = draw_text ASCII-only byte iteration (0 px for CJK).
+  FIX R-NEW-398: draw_text routes non-ASCII through TextShaper (ASCII path
+  byte-identical) + kFaceCJK WenQuanYi Zen Hei notdef-fallback (mirrors the
+  emoji pattern). OBSERVED: 重新开始 0→56 blue px, 退出 0→28, ASCII message
+  unchanged. REGRESSION s78_f153_regression.py 3/3. §6: no second CJK
+  consumer in corpus (recorded). Restart probe re-run post-fix: RESTART
+  OBSERVED + second life (120 moves/25 turns/2 captures).
+- §14 gmdice: 5/5 real clicks dispatched; first-click diff 1,506,884 px;
+  results rendered ('2 · 4 · 4', '6','5','3'); nextInt REC-MISS recorded;
+  multi-roll across frames BLOCKED (tap hit-test target=0 — next probe).
+- §21-24: root_registry.json 404→409 (F-152/F-153/F-154 ROOT-CAUSED-FIXED;
+  R-NEW-395..398 USED_BY_EXECUTION); knowledge records 31→35 (VERIFIED ×4);
+  dossiers dooz/snake/gmdice updated (LAST_ERROR/ROOT_CAUSE/LAST_FIX/
+  REGRESSION/NEXT_PROBE/SESSION/EVIDENCE); audit views regenerated via the
+  generator (generator's hardcoded S77 rows extended with S78 progress
+  table — per §24 the generator was fixed, not the output).
+- §26-28: scripts/s78_disk_guard.sh operational (threshold + safe-cleanup
+  candidates + never-delete policy); retention policy documented; repo
+  health: pack 89.47 MiB, history not rewritten.
+- §29 FINAL REGRESSION after all changes: 26/26, 26/26, BYTE-IDENTICAL 90/90.
+
+Stage Summary:
+- S78 acceptance §30 met; completion semantics §31: 3 closed roots each with
+  ROOT CAUSE + LAW + IMPLEMENTATION + TEST + REAL EXECUTION + OBSERVATION +
+  REGRESSION + EVIDENCE — not a fix count.
+- Open frontier honestly carried: F-143/F-144/F-145/F-147, dooz Job ISE
+  (×4 constant, untraced), nextInt REC-MISS, tap hit-test decor-offset law.
+- Next: F-147 null-producer trace (getChildAt REC-MISS chain), JobSupport
+  state-machine law, gmdice multi-roll via decor-offset bounds.

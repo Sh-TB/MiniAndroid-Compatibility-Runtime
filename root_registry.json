@@ -1,26 +1,34 @@
 {
  "baseline_head": "5a2b7d99",
  "summary": {
-  "total_roots": 404,
+  "total_roots": 409,
   "open_frontiers": [
    "R-NEW-381"
   ],
-  "last_updated": "S76 2026-09-21",
+  "last_updated": "S78 (2026-09-22): F-152/F-153 ROOT-CAUSED-FIXED via R-NEW-395/396/397/398; F-154 registered+fixed (depth chain F-146->F-152->F-154)",
   "note": "S65 breadth: 3 NEW source-first apps executed (TriPeaks S7 + det ×3, FishRings S10 PROVEN with 3 input→state→changed-frame interactions det ×3, OPMT S6 + app-own nextInt(0) stopper). New laws: F-118 activity-constructor (R-NEW-385 — G08 launches now run <init>; 3 consumers day one) + F-119 X.TYPE/primitive-array (R-NEW-386). New open family: OBJECT-IDENTITY (field/array element view-ref identity churn — blocks TriPeaks S8/OPMT S7+, forensic trail recorded). Battery 92/94 + EXT-01/02 environmental; zero regressions. S64 commit carried PENDING-PUSH into this session (no credential); S65 commit carries both. || S64: 3 apps (pmk S6, FreeKlondike S10, SLC S9) + F-114..F-117. | S74: repaired stale summary totals (was 372 vs actual roots list); back-registered F-120 (S66 law) after validator gap detection. || S77 CANONICALIZATION (2026-09-22): stale scalar total 397 -> 404 (summary.total_roots and roots length were already 404; no records added or removed). F-NUMBERING RESOLVED: F-151 is a confirmed numbering gap — no record with ID F-151 was ever registered (next-free-id scan at S76 jumped it); F-152 (dooz Llt0;.w pc=808 null receiver) and F-153 (dialog CJK label paint) are the canonical S76 failure IDs. ROOT COUNT 397->404 enumerated exactly: R-NEW-390 (File.getAbsoluteFile), R-NEW-391 (File.getCanonicalFile/Path), R-NEW-392 (TextView subsumption), R-NEW-393 (View.getBackground themed-widget + Drawable.setColorFilter), R-NEW-394 (dialog decor layout + topmost-window touch), F-152, F-153. COMMIT ACCOUNTING: 8 unpublished commits at S77 start = 5 S75 carry-over (affc0d57, 310aba44, 84ac7869, 2835e9c6, b326acfd) + 3 S76 (2f13abe2, 3057ddb3, a8704916); origin/main = c67230be (ls-remote verified). PUBLISH: PUBLISH_BLOCKED (no GH_TOKEN in session; constitution §52).",
-  "total": 349,
+  "total": 409,
   "verified_fixed": 43,
   "by_status": {
    "PARTIAL": 103,
-   "VERIFIED-CORRECT": 45,
+   "VERIFIED-CORRECT": 46,
    "UNPROVEN": 72,
-   "VERIFIED-FIXED": 44,
-   "OBSERVED-FAIL": 13,
+   "VERIFIED-FIXED": 48,
+   "SUPERSEDED-BY-EVIDENCE": 7,
    "RESEARCHED-NOT-IMPLEMENTED": 16,
    "NOT-APPLICABLE": 42,
-   "IMPLEMENTED": 5,
-   "ROOT-CAUSED-FIXED": 9,
+   "OBSERVED-FAIL": 4,
+   "IMPLEMENTED": 6,
+   "ROOT-CAUSED-FIXED": 45,
    "PARTIAL-FIX": 1,
-   "SUPERSEDED-BY-EVIDENCE": 1
+   "PROVEN-FIXED": 1,
+   "IMPLEMENTED+TESTED": 6,
+   "ROOT-CAUSED-REMEASURED-GENERIC-OK": 1,
+   "FIXED-S75": 1,
+   "ROOT-CAUSED-SEMANTIC": 1,
+   "REGISTERED": 1,
+   "OPEN": 4,
+   "USED_BY_EXECUTION": 4
   },
   "primary_frontier": "R-NEW-361 (dooz v18+v23 converge: ScatterMap/probe arithmetic — refined R-NEW-335)",
   "status_vocabulary": [
@@ -4069,15 +4077,51 @@
   },
   {
    "id": "F-152",
-   "status": "OPEN",
-   "evidence": "dooz NEW first divergence after R-NEW-390/391 (S76). Site: Llt0;.w pc=808 — null receiver (recv t8/o0) — the compose/protobuf chain now reaches Llt0;.w (the S43-wave disasm subject, 1009 units). Previously masked BY F-146: the coroutine unwind killed the composition before this code ever ran. Evidence: docs/evidence/s76/dooz_f146_upstream/ engine log (F141-DIAG Llt0;.w pc=808); visual state unchanged (nonwhite 23,472 — engine-default face). Honest frontier: producer trace of the Llt0;.w receiver is the NEXT dooz lead."
+   "status": "ROOT-CAUSED-FIXED",
+   "evidence": "S78 REPRODUCE (run/s78_f152_repro, fresh binary, APK 299eab21...): F141-DIAG Llt0;.w pc=808 recv t8/o0 NULL; static disasm (scripts/s78_lt0_disasm.py): pc=490 sget-object v2, Llt0;->o:Lsun/misc/Unsafe; -> pc=808 invoke-virtual v2, v7, Lsun/misc/Unsafe;->objectFieldOffset(Field)J (meth@0x3178). <clinit> (code 0x15bd94): o = (Unsafe) AccessController.doPrivileged(new n12()); engine log: doPrivileged bridge returned typed-default null WITHOUT dispatching n12.run() — check-cast null = legal no-op (JVM law) so the null propagated silently (§12 chain). FIX R-NEW-395 (doPrivileged dispatches run(), libcore AccessController law) + R-NEW-396 (synthetic-class getDeclaredFields subset: Lsun/misc/Unsafe; -> theUnsafe; n12.run() iterates the array). POST-FIX (run/s78_regression): unsafeNPE 9 -> 0; [R-NEW-395] dispatched 2 sites; [R337-UNSAFE] real offsets (Ltp1;._state$volatile -> 16 etc.). REGRESSION scripts/s78_f152_regression.sh 6/6 PASS. Visual state unchanged (nonwhite 23,472 engine-default face) — dooz remains NOT_HUMAN_VISIBLE; next frontier = pre-existing Job ISE + F-147 secondary site.",
+   "title": "dooz: Llt0;.w pc=808 objectFieldOffset on null receiver (protobuf UnsafeUtil THE_UNSAFE init chain)"
   },
   {
    "id": "F-153",
-   "status": "OPEN",
-   "evidence": "Dialog button CJK label paint gap (S76, residual of R-NEW-394). The DialogShadow painter constructs a bare BitmapFont (ASCII glyph set); the snake game-over dialog labels 重新开始/退出 paint 0 pixels (blue 0x0062CC label color absent from the dialog frame — pixel-scanned), while the ASCII message 'Game Over!' paints (grey 33,33,33 measured). The dialog buttons are clickable and the restart works (input path proven); only the label GLYPHS are invisible. Fix belongs to the font/CJK family (route the painter through the project CJK-capable shaper/font, cf. f05_persian). Evidence: docs/evidence/s76/snake_dialog_restart/ report.json 'positive_label_paint'."
+   "status": "ROOT-CAUSED-FIXED",
+   "evidence": "S78 PRODUCER TRACE: DialogShadow painter -> SoftwareCanvas::draw_text -> BitmapFont (95 ASCII glyphs, byte-wise iteration) — every non-ASCII byte maps to the space glyph -> 0 pixels (§12 silent draw-skip). LAW: Android routes EVERY user-visible string through the platform text pipeline (project TextShaper: UTF-8 -> FriBidi -> HarfBuzz -> FreeType; f05_persian proof) + AOSP fonts.xml fallback chain for missing glyphs. FIX R-NEW-398: draw_text routes non-ASCII through TextShaper (ASCII keeps byte-identical BitmapFont path — 90/90 invariant) + TextShaper kFaceCJK (WenQuanYi Zen Hei) notdef->CJK glyph substitution mirroring the emoji-fallback pattern. CONSUMER-INDEPENDENT: fix at the shared draw_text choke point (dialog title/message/buttons + toast); no other CJK consumer in the 14-app corpus (recorded per S78 §6). OBSERVED (frame_094, docs/evidence/s76/snake_dialog_restart/): positive 重新开始 56 blue px (was 0), negative 退出 28 blue px (was 0), ASCII 'Game Over!' 343 grey px (unchanged path). REGRESSION scripts/s78_f153_regression.py 3/3 PASS. Restart still OBSERVED (two-run probe re-run post-fix, RESTART OBSERVED)."
+  },
+  {
+   "id": "F-154",
+   "title": "dooz: Lh3;.h pc=36 Set.iterator() on null Set (DataStore first-launch parse; Collections.EMPTY_SET SGET-MISS)",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P1",
+   "evidence": "PARENT_FAILURE F-152 (S78 §7 depth chain: F-146 -> F-152 -> F-154). After R-NEW-395/396 the dooz chain ran DEEPER: DataStore read of datastore/settings.preferences_pb (present=0, first launch) -> protobuf parse on the empty stream -> Ljs0;.entrySet (REAL dex bytecode) sgets Ljava/util/Collections;.EMPTY_SET -> [SGET-MISS] typed-default null -> Set.iterator() NPE at Lh3;.h pc=36 (8 occurrences in run/s78_f152_postfix2). ROOT: java.util.Collections EMPTY singletons are JVM-clinit-injected constants — the engine had no seed. LAW R-NEW-397: OpenJDK Collections.java EMPTY_SET/EMPTY_LIST/EMPTY_MAP static finals + Empty-family read contract (size=0, isEmpty=true, contains*=false, iterator empty, Map views empty, exhausted next() -> NoSuchElementException, List.get -> IOOBE). POST-FIX (run/s78_f152_postfix3 / run/s78_regression): setIterNPE 8 -> 0; [R-NEW-397] synthesized Collections.EMPTY_SET/EMPTY_MAP. REGRESSION: covered by scripts/s78_f152_regression.sh (6/6)."
+  },
+  {
+   "id": "R-NEW-395",
+   "title": "java.security.AccessController.doPrivileged law: dispatch the action's run() and return its result (libcore AccessController.java)",
+   "status": "USED_BY_EXECUTION",
+   "priority": "P1",
+   "evidence": "Upstream: libcore luni AccessController.doPrivileged { return action.run(); } (+PrivilegedExceptionAction overloads, same contract). Prior silent stub returned typed-default null without dispatching run() — protobuf UnsafeUtil init stored null Unsafe (F-152 root). Impl: dalvik_engine.cpp bridge_to_api — try_recursive_invoke(class_desc,\"run\",{action}) with bounded superclass fallback; loud [R-NEW-395-MISS] when not dispatchable. Consumer: dooz/protobuf UnsafeUtil (2 init sites). Test: s78_f152_regression.sh 6/6."
+  },
+  {
+   "id": "R-NEW-396",
+   "title": "Class.getDeclaredFields on synthetic (non-DEX) classes answers the known declared-field subset (Lsun/misc/Unsafe; -> theUnsafe)",
+   "status": "USED_BY_EXECUTION",
+   "priority": "P1",
+   "evidence": "Law mirrors R-NEW-337's singular getDeclaredField auto-registration (compile-time constant, genuinely declared). n12.run() (protobuf UnsafeUtil action) iterates Unsafe.class.getDeclaredFields(); 0 fields -> null -> doPrivileged null -> F-152. Impl: dalvik_engine.cpp getDeclaredFields seeds theUnsafe for Lsun/misc/Unsafe;. Test: s78_f152_regression.sh 6/6."
+  },
+  {
+   "id": "R-NEW-397",
+   "title": "java.util.Collections EMPTY_SET/EMPTY_LIST/EMPTY_MAP static-final singletons + Empty-family read contract (OpenJDK Collections.java)",
+   "status": "USED_BY_EXECUTION",
+   "priority": "P1",
+   "evidence": "JVM-clinit-injected constants — never null. SGET-MISS answered null -> F-154 NPE. Impl: execute_sget seed (heap-backed empty singletons with __array_length__=0) + bridge_to_api Empty-family dispatch (size/isEmpty/contains*/get/entrySet/keySet/values/iterator/hasNext/next with real exception contracts). SCOPE: receiver-identity-guarded (Empty singletons only). Consumer: dooz DataStore parse; any Map/Set-empty consumer. Test: s78_f152_regression.sh 6/6."
+  },
+  {
+   "id": "R-NEW-398",
+   "title": "Platform-text-pipeline routing for non-ASCII strings + CJK fallback face (AOSP fonts.xml fallback chain)",
+   "status": "USED_BY_EXECUTION",
+   "priority": "P1",
+   "evidence": "Law 1: SoftwareCanvas::draw_text routes non-ASCII UTF-8 through TextShaper (ASCII keeps the byte-identical BitmapFont path — 90/90 fidelity invariant). Law 2: TextShaper kFaceCJK (WenQuanYi Zen Hei) — remaining .notdef clusters after primary shaping resolve via CJK-face charmap lookup (single-codepoint ideographs; mirrors the existing emoji-fallback pattern). Consumer: snake dialog CJK labels (F-153); dialog+toast paths share the choke point. Test: s78_f153_regression.py 3/3."
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry↔docs single-source-of-truth restored); registry 372→374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots.",
- "total": 404
+ "total": 409
 }

@@ -1,0 +1,28 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "LAW-R-NEW-396",
+ "title": "Synthetic-class getDeclaredFields declared-field subset",
+ "domain": "runtime-semantics",
+ "scope": "engine",
+ "statement": "Classes existing only as engine bridges answer getDeclaredFields with their known declared-field subset; Lsun/misc/Unsafe; exposes theUnsafe (OpenJDK sun.misc.Unsafe: private static Unsafe theUnsafe). The 0-field answer made n12.run() (protobuf UnsafeUtil action) return null.",
+ "status": "VERIFIED",
+ "source": {
+  "origin": "OpenJDK sun/misc/Unsafe.java theUnsafe; R-NEW-337 singular-form auto-registration law",
+  "file": "miniandroid/src/dex/dalvik_engine.cpp getDeclaredFields R-NEW-396 block"
+ },
+ "test": "scripts/s78_f152_regression.sh (6/6)",
+ "consumers": [
+  "dooz"
+ ],
+ "issues": [],
+ "capabilities": [],
+ "first_discovered": "S78",
+ "last_verified": "S78",
+ "utilization": {
+  "verdict": "USED_BY_EXECUTION",
+  "consumer_apps": [
+   "dooz"
+  ]
+ }
+}
