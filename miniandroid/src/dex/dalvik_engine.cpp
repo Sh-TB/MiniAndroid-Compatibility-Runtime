@@ -5064,8 +5064,10 @@ bool DalvikExecutionEngine::try_recursive_invoke(
 
     // EXP-071: TextView.length intercept — dispatch to ViewShadow.getText().length().
     // Without this, onNextPressed's validation reads length=0 and fails.
+    // R-NEW-392 (S76): same TextView SUBSUMPTION law as getText above.
     if (method_name == "length" &&
-        declaring_class.find("TextView") != std::string::npos &&
+        (declaring_class.find("TextView") != std::string::npos ||
+         is_subclass_of(declaring_class, "Landroid/widget/TextView;")) &&
         shadow_registry_ != nullptr) {
         auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
         if (view_shadow != nullptr && !args.empty() &&
@@ -5087,9 +5089,17 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // Per AOSP: TextView.getText() returns the CharSequence that was set
     // via setText(). The DEX bytecode for getText() builds a garbage "View"
     // string via StringBuilder. We intercept and return ViewNode.text.
+    // R-NEW-392 (S76): TextView SUBSUMPTION law — Button/EditText/CheckBox/
+    // RadioButton/... all inherit getText(); the ancestry check walks the
+    // DEX superclass chain (EXP-068 map) instead of enumerating subclasses.
+    // Real demand (gmdice_8): GameMasterDice.onClick calls Button.getText()
+    // ("3D20") then CharSequence.toString — without the law getText was
+    // REC-MISS → null → toString NPE → event loop died on the FIRST click →
+    // roll render never drawn (S75 lead, frames byte-identical).
     if (method_name == "getText" &&
         (declaring_class.find("TextView") != std::string::npos ||
-         declaring_class.find("EditText") != std::string::npos) &&
+         declaring_class.find("EditText") != std::string::npos ||
+         is_subclass_of(declaring_class, "Landroid/widget/TextView;")) &&
         shadow_registry_ != nullptr) {
         auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
         if (view_shadow != nullptr && !args.empty() &&
@@ -27462,6 +27472,39 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // R-NEW-393 (S76): Drawable.setColorFilter(int, PorterDuff$Mode) —
+    // record the tint on the drawable heap object, return void.
+    // Oracle: AOSP Drawable.java setColorFilter(int color, Mode mode) —
+    // mutates the drawable's paint; never throws on a tracked drawable.
+    // Our renderer's button face is driven by the state-list/default-face
+    // machinery; the tint is recorded for evidence and future tint-aware
+    // rendering (honest scope: the framebuffer tint application is NOT
+    // claimed). Paired with R-NEW-393 getBackground() in ViewShadow —
+    // without it gmdice's onCreate died on setColorFilter(null-receiver).
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/graphics/drawable/Drawable;" &&
+        method == "setColorFilter") {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            heap_.has_object(args[0].object_id)) {
+            auto* dobj = heap_.get(args[0].object_id);
+            if (dobj != nullptr && args.size() >= 2 &&
+                args[1].type == DalvikType::INT32) {
+                dobj->fields["tint_color"] =
+                    DalvikValue::make_int(args[1].int_val);
+            }
+            static thread_local uint64_t r393_tint_log = 0;
+            if (r393_tint_log < 12) {
+                ++r393_tint_log;
+                std::cerr << "[R393-TINT] setColorFilter drawable=o"
+                          << args[0].object_id << std::endl;
+            }
+        }
+        result = DalvikValue::make_void();
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // EXP-043 Phase 3: File.<init> — store path, return void
     // ────────────────────────────────────────────────────────────────────────
     if (class_name == "Ljava/io/File;" && method == "<init>") {
@@ -28422,14 +28465,17 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     //   * getAbsolutePath(): absolute paths verbatim; relative paths
     //     resolved against the app-data root (same resolution the R-NEW-346
     //     metadata law uses — one canonical root, no per-app divergence).
-    // Real demand (dooz_23 S42): DataStore's file-name lambda (Lg8;.a —
-    // "preferences_pb" constant + lastIndexOf('.')/substring in the same
-    // block) reads a File state and calls getName() before slicing the
-    // extension. getName() had NO implementation → null → v1.length() /
-    // substring on null → UNCAUGHT NullPointerException
-    // ("STR-BRIDGE (deferred) ... Lg8;.a → uncaught (deferred frame unwind
-    // + propagate)") killed the composition pass mid-flight → the compose
-    // root stayed empty → 0x0 measure → blank frame.
+    //   * getAbsoluteFile(): File(resolve(getPath())) — OpenJDK/File.java
+    //     `return new File(fs.resolve(f.getPath()))` — NEVER null. The
+    //     File-returning sibling of getAbsolutePath; same path resolution,
+    //     fresh heap object, "path" field for symmetric R-NEW-346 reads.
+    // Real demand (dooz_23 S42/S76): the DataStore file-name lambda
+    // (Lg8;.a — "preferences_pb" constant + lastIndexOf('.')/substring in
+    // the same block) reads a File state, calls getName(), slices the
+    // extension, then calls getAbsoluteFile() and getClass() on the result
+    // (S76 F-146 trace: pc=565 getAbsoluteFile → pc=568 move-result-object
+    // v4 → pc=569 invoke-virtual v4 Object.getClass). getAbsoluteFile had
+    // NO implementation → null receiver → F-146 NPE escape at pc=569.
     // The path is read exactly like the R-NEW-346 metadata law: the
     // receiver's longest STRING_REF field (constructed by the generic
     // <init> argument capture).
@@ -28437,7 +28483,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     if (class_name == "Ljava/io/File;" &&
         (method == "getName" || method == "getPath" || method == "getParent" ||
          method == "getParentFile" || method == "isAbsolute" ||
-         method == "getAbsolutePath")) {
+         method == "getAbsolutePath" || method == "getAbsoluteFile" ||
+         method == "getCanonicalPath" || method == "getCanonicalFile")) {
         std::string fpath;
         if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
             heap_.has_object(args[0].object_id)) {
@@ -28479,6 +28526,35 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
         } else if (method == "isAbsolute") {
             result = DalvikValue::make_bool(!fpath.empty() && fpath[0] == '/');
+        } else if (method == "getAbsoluteFile" || method == "getCanonicalFile") {
+            // R-NEW-390 (S76): File-returning sibling of getAbsolutePath.
+            // OpenJDK law: never null; equals getAbsolutePath() as a path.
+            // R-NEW-391 (S76): getCanonicalFile — same never-null contract;
+            // canonical ≡ absolute in the app-data sandbox (the data root
+            // contains no symlinks and no "."/".." survive path()::lexically
+            // — documented equivalence, not a filesystem walk).
+            std::string abspath;
+            if (!fpath.empty() && fpath[0] == '/') {
+                abspath = fpath;
+            } else {
+                abspath = (std::filesystem::path(Storage::app_data_root()) / fpath)
+                              .string();
+            }
+            const uint32_t fid = heap_.allocate("Ljava/io/File;", pc_, 0);
+            if (auto* fobj = heap_.get(fid)) {
+                fobj->fields["path"] = DalvikValue::make_string(abspath, 0);
+            }
+            result = DalvikValue::make_object(fid, "Ljava/io/File;");
+        } else if (method == "getCanonicalPath") {
+            // R-NEW-391 (S76): String sibling — canonical ≡ absolute here.
+            if (!fpath.empty() && fpath[0] == '/') {
+                result = DalvikValue::make_string(fpath, 0);
+            } else {
+                result = DalvikValue::make_string(
+                    (std::filesystem::path(Storage::app_data_root()) / fpath)
+                        .string(),
+                    0);
+            }
         } else {  // getAbsolutePath
             if (!fpath.empty() && fpath[0] == '/') {
                 result = DalvikValue::make_string(fpath, 0);
@@ -30629,9 +30705,11 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // Per AOSP: returns the text that was set via setText().
     // The DEX bytecode builds garbage "View" via StringBuilder.
     // We dispatch to ViewShadow which has the real text.
+    // R-NEW-392 (S76): TextView SUBSUMPTION law (see try_recursive_invoke).
     if (method == "getText" &&
         (class_name.find("TextView") != std::string::npos ||
-         class_name.find("EditText") != std::string::npos) &&
+         class_name.find("EditText") != std::string::npos ||
+         is_subclass_of(class_name, "Landroid/widget/TextView;")) &&
         shadow_registry_ != nullptr) {
         auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
         if (view_shadow != nullptr && !args.empty() &&
