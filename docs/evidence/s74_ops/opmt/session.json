@@ -1,0 +1,110 @@
+{
+ "session_format": "s74-ops/1 (S74 FOLLOW-UP WAVE \u00a76 execution checkpoint)",
+ "app_dossier": "docs/compatibility/apps/opmt.json",
+ "runtime_commit": "3505591b",
+ "binary": "miniandroid/build/miniandroid (built at HEAD, zero runtime drift vs origin/main)",
+ "apk": {
+  "file": "opmt_v0.1.2_vc1.apk",
+  "sha256_16": "4f91e3801780684a"
+ },
+ "execution_mode": "real-dalvik (bytecode interpretation)",
+ "launch_run": {
+  "rc": 0,
+  "engine_status": "** **SUCCESS** \u2705",
+  "errors": 0,
+  "frames_requested": 6,
+  "tap_schedule": []
+ },
+ "interaction_run": {
+  "rc": 0,
+  "engine_status": "** **SUCCESS** \u2705",
+  "errors": 0,
+  "clicks": 4
+ },
+ "sandbox": {
+  "data_root": "run/s74f_ops/opmt/sandbox",
+  "files_created": []
+ },
+ "persistence": {
+  "probe": "relaunch_same_data_root",
+  "sandbox_files_before": 0,
+  "verdict": "NO_PERSISTENCE_OBSERVED (app created no files in its data root)"
+ },
+ "representative_frames": [
+  "01_launch.png",
+  "03_final.png",
+  "04_frame_000.png",
+  "05_frame_002.png",
+  "06_frame_004.png"
+ ],
+ "frame_metrics": {
+  "01_launch.png": {
+   "resolution": [
+    1080,
+    1920
+   ],
+   "nonwhite_px": 213286,
+   "nonblack_px": 2073600,
+   "color_diversity_sampled": 40,
+   "source_run": "launch",
+   "source_frame": "frame_000.png",
+   "png_sha256_16": "62619caa3b31066e"
+  },
+  "03_final.png": {
+   "resolution": [
+    1080,
+    1920
+   ],
+   "nonwhite_px": 213286,
+   "nonblack_px": 2073600,
+   "color_diversity_sampled": 40,
+   "source_run": "launch",
+   "source_frame": "frame_005.png",
+   "png_sha256_16": "62619caa3b31066e"
+  },
+  "04_frame_000.png": {
+   "resolution": [
+    1080,
+    1920
+   ],
+   "nonwhite_px": 213286,
+   "nonblack_px": 2073600,
+   "color_diversity_sampled": 40,
+   "source_run": "interaction",
+   "source_frame": "frame_000.png",
+   "png_sha256_16": "62619caa3b31066e"
+  },
+  "05_frame_002.png": {
+   "resolution": [
+    1080,
+    1920
+   ],
+   "nonwhite_px": 1870446,
+   "nonblack_px": 2068992,
+   "color_diversity_sampled": 41,
+   "source_run": "interaction",
+   "source_frame": "frame_002.png",
+   "png_sha256_16": "06996f85af1fba35"
+  },
+  "06_frame_004.png": {
+   "resolution": [
+    1080,
+    1920
+   ],
+   "nonwhite_px": 1870446,
+   "nonblack_px": 2068992,
+   "color_diversity_sampled": 41,
+   "source_run": "interaction",
+   "source_frame": "frame_004.png",
+   "png_sha256_16": "06996f85af1fba35"
+  }
+ },
+ "manifest_security": {
+  "tool": "aapt2 dump badging + permissions",
+  "permissions_declared": [],
+  "launchable_activities": [
+   "one.scarecrow.games.OPMT.MainMenu"
+  ],
+  "package": "one.scarecrow.games.OPMT"
+ }
+}

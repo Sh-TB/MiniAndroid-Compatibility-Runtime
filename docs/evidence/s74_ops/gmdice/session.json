@@ -1,0 +1,69 @@
+{
+ "session_format": "s74-ops/1 (S74 FOLLOW-UP WAVE \u00a76 execution checkpoint)",
+ "app_dossier": "docs/compatibility/apps/gmdice.json",
+ "runtime_commit": "3505591b",
+ "binary": "miniandroid/build/miniandroid (built at HEAD, zero runtime drift vs origin/main)",
+ "apk": {
+  "file": "de.duenndns.gmdice_8.apk",
+  "sha256_16": "1621eda11b5dbc0c"
+ },
+ "execution_mode": "real-dalvik (bytecode interpretation)",
+ "launch_run": {
+  "rc": 1,
+  "engine_status": "** **SUCCESS** \u2705",
+  "errors": 0,
+  "frames_requested": 6,
+  "tap_schedule": [
+   "348,1848@3",
+   "116,1848@4"
+  ]
+ },
+ "interaction_run": null,
+ "sandbox": {
+  "data_root": "run/s74f_ops/gmdice/sandbox",
+  "files_created": []
+ },
+ "persistence": {
+  "probe": "relaunch_same_data_root",
+  "sandbox_files_before": 0,
+  "verdict": "NO_PERSISTENCE_OBSERVED (app created no files in its data root)"
+ },
+ "representative_frames": [
+  "01_launch.png",
+  "03_final.png"
+ ],
+ "frame_metrics": {
+  "01_launch.png": {
+   "resolution": [
+    1080,
+    1920
+   ],
+   "nonwhite_px": 181495,
+   "nonblack_px": 2073600,
+   "color_diversity_sampled": 69,
+   "source_run": "launch",
+   "source_frame": "frame_000.png",
+   "png_sha256_16": "5438f6e2bd5561e4"
+  },
+  "03_final.png": {
+   "resolution": [
+    1080,
+    1920
+   ],
+   "nonwhite_px": 181495,
+   "nonblack_px": 2073600,
+   "color_diversity_sampled": 69,
+   "source_run": "launch",
+   "source_frame": "frame_005.png",
+   "png_sha256_16": "5438f6e2bd5561e4"
+  }
+ },
+ "manifest_security": {
+  "tool": "aapt2 dump badging + permissions",
+  "permissions_declared": [],
+  "launchable_activities": [
+   "de.duenndns.gmdice.GameMasterDice"
+  ],
+  "package": "de.duenndns.gmdice"
+ }
+}

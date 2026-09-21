@@ -1,0 +1,39 @@
+{
+ "session_format": "s74-ops/1 (S74 FOLLOW-UP WAVE \u00a76 execution checkpoint)",
+ "runtime_commit": "3505591b",
+ "binary": "miniandroid/build/miniandroid (built at HEAD)",
+ "app_dossier": "docs/compatibility/apps/tictactoe.json",
+ "evidence_scope": "GOLDEN_FIXTURE (com.miniandroid.tictactoegolden \u2014 NOT the real APK; real APK = GL-blocker evidence, see tictactoe bundle)",
+ "apk": {
+  "file": "tictactoe_golden.apk (built at HEAD by validate_tictactoe_golden.sh)",
+  "sha256_16": "9d1c2954c675813c"
+ },
+ "execution_mode": "real-dalvik (bytecode interpretation)",
+ "launch_run": {
+  "validator": "miniandroid/tests/fixtures/tictactoe_golden/validate_tictactoe_golden.sh",
+  "result": "ALL PASS at HEAD: 9/9 clicks, X to move -> O to move -> X WINS at frame 7, 4X+3O final, frozen tail, run B byte-identical (613cfccc0f27...)"
+ },
+ "interaction_run": {
+  "clicks": 9,
+  "dispatch": "real DEX Outer$Inner listeners"
+ },
+ "persistence": {
+  "verdict": "NO_PERSISTENCE_OBSERVED (in-memory game state; fixture writes no files)"
+ },
+ "representative_frames": [
+  "01_launch.png",
+  "02_first_move.png",
+  "03_x_wins.png"
+ ],
+ "frame_metrics": {
+  "01_launch.png": {
+   "png_sha256_16": "613cfccc0f27b5bf"
+  },
+  "02_first_move.png": {
+   "png_sha256_16": "c0198ca132bf8622"
+  },
+  "03_x_wins.png": {
+   "png_sha256_16": "2e80e8c0b8aab234"
+  }
+ }
+}

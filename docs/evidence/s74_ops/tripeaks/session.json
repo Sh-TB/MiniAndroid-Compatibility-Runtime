@@ -1,0 +1,51 @@
+{
+ "session_format": "s74-ops/1 (S74 FOLLOW-UP WAVE \u00a76 execution checkpoint)",
+ "runtime_commit": "3505591b",
+ "binary": "miniandroid/build/miniandroid (built at HEAD)",
+ "app_dossier": "docs/compatibility/apps/tripeaks.json",
+ "evidence_scope": "REAL_APK at HEAD (14-frame run; splash->lobby transition at frame 7)",
+ "apk": {
+  "file": "tripeaks_v1.2.1_vc4.apk",
+  "sha256_16": "52272ae619c0fec8"
+ },
+ "execution_mode": "real-dalvik (bytecode interpretation)",
+ "launch_run": {
+  "rc": 0,
+  "frames": 14,
+  "state": "frames 0-6 splash (0 px \u2014 SplashActivity, no draw), frame 7 lobby 205,061 px"
+ },
+ "interaction_run": {
+  "attempt": "tap 440,120@9 on 'New Game' \u2014 hit-test target=0 (menu is not a per-view listener surface)",
+  "result": "board NOT reached at HEAD; R-NEW-388 (OBJECT-IDENTITY) remains the truthful blocker",
+  "historical": "docs/evidence/s65_spotlight/tp_game_board.png (board render, older binary)"
+ },
+ "persistence": {
+  "verdict": "NO_PERSISTENCE_OBSERVED (no files in data root)"
+ },
+ "manifest_security": {
+  "tool": "aapt2 dump badging + permissions",
+  "permissions_declared": [
+   "android.permission.INTERNET"
+  ],
+  "launchable_activities": [
+   "eu.veldsoft.tri.peaks.SplashActivity"
+  ],
+  "package": "eu.veldsoft.tri.peaks"
+ },
+ "representative_frames": [
+  "01_splash_black.png",
+  "02_lobby.png",
+  "03_final_lobby.png"
+ ],
+ "frame_metrics": {
+  "01_splash_black.png": {
+   "png_sha256_16": "31ddd4d5b8e6d18e"
+  },
+  "02_lobby.png": {
+   "png_sha256_16": "b513d78be598ace0"
+  },
+  "03_final_lobby.png": {
+   "png_sha256_16": "b513d78be598ace0"
+  }
+ }
+}

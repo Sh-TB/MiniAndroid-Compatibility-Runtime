@@ -1,0 +1,46 @@
+{
+ "session_format": "s74-ops/1 (S74 FOLLOW-UP WAVE \u00a76 execution checkpoint)",
+ "app_dossier": "docs/compatibility/apps/telegram.json",
+ "runtime_commit": "3505591b",
+ "binary": "miniandroid/build/miniandroid (built at HEAD)",
+ "apk": {
+  "file": "Telegram.apk (official https://telegram.org/dl/android/apk, fetched 2026-09-21)",
+  "sha256": "b6a13e876a8abfde867d8dcfed6ecc93198329aef8e5b860ae0ab7fc0c64beb8",
+  "package": "org.telegram.messenger.web",
+  "versionName": "12.10.3",
+  "versionCode": 70899,
+  "note": "APK not committed per \u00a720 policy; sha pinned for reproducibility"
+ },
+ "execution_mode": "real-dalvik (bytecode interpretation)",
+ "launch_run": {
+  "rc": 1,
+  "engine_status": "SUCCESS (pipeline completed)",
+  "frames": 3,
+  "errors": 32,
+  "screenshot_sha256_16": "eb16ab5c68fa9b6c",
+  "screenshot_semantics": "ENGINE-DEFAULT BLACK REGION (23,472 px) \u2014 NOT Telegram UI; same engine-default class as dooz/stopwatch blank faces"
+ },
+ "visual_evidence": {
+  "status": "NOT_HUMAN_VISIBLE",
+  "execution_stage": [
+   "V0 launch pipeline only"
+  ],
+  "note": "NO_MEANINGFUL_VISUAL_PROOF at HEAD for this build; blocker family = app-init NPE chain (fragment/activity-result/j$/concurrent obfuscated-DEX paths)"
+ },
+ "interaction_run": null,
+ "persistence": {
+  "verdict": "NOT_OBSERVED (init path stops before user flow)"
+ },
+ "manifest_security": {
+  "package": "org.telegram.messenger.web",
+  "permissions_declared_count": "many (messenger-scale: NETWORK, PUSH c2dm, MAPS, etc.)",
+  "note": "full permission list via aapt2 dump badging; DECLARED facts only \u2014 no network egress observed (runtime has no real network stack)"
+ },
+ "historical_proven_paths": [
+  "EXP071 CHECKPOINT_M: real Telegram v12.10.1 auth.sendCode -> mock response -> callback -> LoginActivitySmsView materialized (53 SmsView nodes in 2284-node tree), screenshot SHA c3c208a169a7dadd byte-identical x6 runs",
+  "MC4: 1 frame full-screen themed window (2073600/2073600 px painted), rc=1, init exception family",
+  "This wave: v12.10.3 3 frames, engine-default visual; init budget + init NPE family still the frontier"
+ ],
+ "current_blocker": "app-init NPE family + init budget; UI frontier remains the EXP071-era SmsView path on an older binary",
+ "next_action": "targeted runtime wave: androidx fragment/activity-result NPE chain (post-F-141 family) to reopen the SmsView ladder on the current binary"
+}
