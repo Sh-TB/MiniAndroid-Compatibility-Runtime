@@ -307,7 +307,12 @@ EXTRAS.update({
  "f54_manifestlabel": [chk_viewtree_text("F54 LabelProof"),
                        chk_nonwhite_in((0, 0, 1080, 400), 2000),
                        chk_engine_log("[A7] application label resolved through ARSC: \"F54 LabelProof\""),
-                       chk_engine_log("application icon resid @0x")],
+                       # S76 A7b: the icon capability probe superseded the
+                       # resid-capture log line — the gate now asserts the
+                       # FULL chain (resid -> ARSC file -> DECODED pixels),
+                       # strictly stronger evidence.
+                       chk_engine_log("[A7b] icon @0x"),
+                       chk_engine_log("DECODED")],
  "f08_canvasops": [chk_nonwhite_in((0, 400, 900, 600), 300)],
  "f05b_persian2": [chk_nonwhite_in((0, 0, 1080, 400), 2000)],
  "f49_canstext": [chk_nonwhite_in((40, 60, 500, 180), 200),

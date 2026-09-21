@@ -111,10 +111,10 @@ void DialogShadow::build_decor_tree(DialogWindow& win, ViewShadow* vs) {
     };
 
     if (!win.title.empty()) {
-        add_text_row(win.title, "Landroid/widget/TextView;", true);
+        win.title_node_id = add_text_row(win.title, "Landroid/widget/TextView;", true);
     }
     if (!win.message.empty()) {
-        add_text_row(win.message, "Landroid/widget/TextView;", false);
+        win.message_node_id = add_text_row(win.message, "Landroid/widget/TextView;", false);
     }
     if (win.custom_view_id != 0) {
         // Re-parent the app's own view subtree under the dialog decor root.
@@ -142,6 +142,7 @@ void DialogShadow::build_decor_tree(DialogWindow& win, ViewShadow* vs) {
             n->text = "> " + n->text;              // ASCII single-choice marker
         }
         root->children.push_back(next_decor_id_);
+        win.item_node_ids.push_back(next_decor_id_);
         next_decor_id_++;
     }
     // Button row: horizontal LinearLayout with REAL DialogInterface buttons.
@@ -156,6 +157,7 @@ void DialogShadow::build_decor_tree(DialogWindow& win, ViewShadow* vs) {
         row->text_gravity = 0x11;  // CENTER
         root->children.push_back(next_decor_id_);
         uint32_t row_id = next_decor_id_++;
+        win.row_node_id = row_id;
 
         auto add_button = [&](const DialogWindow::Btn& b) {
             if (b.label.empty() && b.label_resid == 0) return;
@@ -171,6 +173,7 @@ void DialogShadow::build_decor_tree(DialogWindow& win, ViewShadow* vs) {
             n->click_listener_id = b.listener;
             n->text_gravity = 0x11;
             vs->find_node(row_id)->children.push_back(next_decor_id_);
+            win.button_node_ids.push_back(next_decor_id_);
             next_decor_id_++;
         };
         add_button(win.neutral);
@@ -179,6 +182,86 @@ void DialogShadow::build_decor_tree(DialogWindow& win, ViewShadow* vs) {
     }
     std::cerr << "[DIALOG-DECOR] built decor tree root_id=" << win.decor_root_id
               << " rows=" << root->children.size() << std::endl;
+}
+
+// R-NEW-394 (S76): assign REAL bounds to the decor ViewNodes from the
+// window frame, mirroring the painter geometry in render_dialogs (same
+// pad/line-height/button-row constants — click coordinates map to what
+// the user sees). AOSP law: the dialog decor is measured and laid out in
+// its own window; taps hit the decor at window coordinates.
+void DialogShadow::layout_decor_nodes(DialogWindow& win) {
+    auto* vs = views();
+    if (vs == nullptr || win.decor_root_id == 0) return;
+    auto* root = vs->find_node(win.decor_root_id);
+    if (root == nullptr) return;
+    const int l = win.frame_left, t = win.frame_top;
+    const int r = l + win.frame_w, b = t + win.frame_h;
+    const int pad = 24;
+    const int lh = 16;   // BitmapFont line height (painter law constant)
+    root->x = l; root->y = t;
+    root->width = win.frame_w; root->height = win.frame_h;
+    int y = t + pad;
+    if (win.title_node_id != 0) {
+        if (auto* n = vs->find_node(win.title_node_id)) {
+            n->x = l + pad; n->y = y;
+            n->width = win.frame_w - 2 * pad; n->height = lh + 26;
+        }
+        y += lh + 26;
+    }
+    if (win.message_node_id != 0) {
+        if (auto* n = vs->find_node(win.message_node_id)) {
+            int lines = 1 + static_cast<int>(std::count(win.message.begin(),
+                                                        win.message.end(), '\n'));
+            int mh = lines * (lh + 6) + 12;
+            n->x = l + pad; n->y = y;
+            n->width = win.frame_w - 2 * pad; n->height = mh;
+            y += mh;
+        }
+    }
+    for (uint32_t iid : win.item_node_ids) {
+        if (auto* n = vs->find_node(iid)) {
+            n->x = l + pad; n->y = y;
+            n->width = win.frame_w - 2 * pad; n->height = 88;
+            y += 88;
+        }
+    }
+    // Button row pinned to the frame bottom (painter: separator at b-112).
+    const int row_h = 112;
+    if (win.row_node_id != 0) {
+        if (auto* n = vs->find_node(win.row_node_id)) {
+            n->x = l; n->y = b - row_h;
+            n->width = win.frame_w; n->height = row_h;
+        }
+        const size_t cnt = win.button_node_ids.size();
+        if (cnt > 0) {
+            const int seg_w = (win.frame_w - 2 * pad) / static_cast<int>(cnt);
+            int bx = l + pad;
+            for (uint32_t bid : win.button_node_ids) {
+                if (auto* n = vs->find_node(bid)) {
+                    n->x = bx; n->y = b - row_h;
+                    n->width = seg_w; n->height = row_h;
+                }
+                bx += seg_w;
+            }
+        }
+    }
+    std::cerr << "[R394-LAYOUT] decor nodes bounded frame=(" << l << "," << t
+              << " " << win.frame_w << "x" << win.frame_h << ") buttons="
+              << win.button_node_ids.size() << std::endl;
+}
+
+uint32_t DialogShadow::decor_root_at(int x, int y) {
+    // AOSP topmost-window law: later-shown windows sit on top; walk in
+    // reverse creation order so the LAST showing window covering the
+    // point wins.
+    for (auto it = windows_.rbegin(); it != windows_.rend(); ++it) {
+        if (!it->showing || it->decor_root_id == 0) continue;
+        layout_window(*it, 1080, 1920);
+        const int l = it->frame_left, t = it->frame_top;
+        if (x >= l && x < l + it->frame_w && y >= t && y < t + it->frame_h)
+            return it->decor_root_id;
+    }
+    return 0;
 }
 
 CallResult DialogShadow::dispatch(const CallContext& ctx) {
@@ -342,6 +425,7 @@ CallResult DialogShadow::dispatch_dialog(const CallContext& ctx, DialogWindow& w
             // from the message as a fallback (rare in real corpus apps).
             build_decor_tree(win, views());
             layout_window(win, 1080, 1920);
+            layout_decor_nodes(win);   // R-NEW-394: AFTER the frame layout
             std::cerr << "[DIALOG] show() obj=" << win.dialog_obj_id
                       << " decor_root=" << win.decor_root_id
                       << " items=" << win.items.size() << std::endl;
@@ -457,6 +541,7 @@ void DialogShadow::render_dialogs(
     for (auto& win : windows_) {
         if (!win.showing) continue;
         layout_window(win, screen_w, screen_h);
+        layout_decor_nodes(win);  // R-NEW-394: keep decor bounds in sync
 
         // 1. Dim overlay — 40% black over the whole screen.
         {

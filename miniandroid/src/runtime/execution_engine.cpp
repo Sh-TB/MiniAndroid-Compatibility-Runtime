@@ -659,11 +659,57 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                     }
                 }
                 if (result.apk_info.application_icon_resid != 0) {
-                    std::cerr << "[A7] application icon resid @0x" << std::hex
-                              << result.apk_info.application_icon_resid << std::dec
-                              << " captured (bitmap/Drawable decode is a"
-                              << " separate capability — not claimed here)"
-                              << std::endl;
+                    // ── S76 A7b (Lead-4, DRAWABLE-LAW family capability
+                    // probe): the icon IDENTITY CHAIN — resid → ARSC-
+                    // selected file → APK entry → PNG decode → pixel
+                    // stats. Honest scope: this proves the decode
+                    // CAPABILITY (the icon is real, decodable, and its
+                    // pixels are deterministic inputs for any future
+                    // Bitmap/Drawable object law); it does NOT create
+                    // Bitmap/Drawable heap objects or paint launcher
+                    // icons — those are separate semantic steps.
+                    const uint32_t icon_resid =
+                        result.apk_info.application_icon_resid;
+                    std::vector<std::string> entries;
+                    for (const auto& e : rt.apk().list_entries_cached())
+                        entries.push_back(e.name);
+                    auto sel = arsc.select_file(
+                        icon_resid, entries, resources::device_config());
+                    if (sel.has_value()) {
+                        auto bytes =
+                            rt.apk().extract_entry_cached(sel->path);
+                        renderer::DecodedImage img;
+                        if (renderer::decode_image_bytes(bytes, &img) &&
+                            img.ok) {
+                            uint64_t fnv = 1469598103934665603ULL;
+                            for (uint8_t b : img.rgba) {
+                                fnv ^= b;
+                                fnv *= 1099511628211ULL;
+                            }
+                            std::cerr << "[A7b] icon @0x" << std::hex
+                                      << icon_resid << std::dec << " -> "
+                                      << sel->path << " (" << bytes.size()
+                                      << " bytes) DECODED " << img.width
+                                      << "x" << img.height << " "
+                                      << img.color_type_name
+                                      << " rgba_bytes=" << img.rgba.size()
+                                      << " fnv1a=0x" << std::hex << fnv
+                                      << std::dec << std::endl;
+                        } else {
+                            std::cerr << "[A7b] icon @0x" << std::hex
+                                      << icon_resid << std::dec << " -> "
+                                      << sel->path << " DECODE FAILED ("
+                                      << (img.error.empty() ? "unsupported format"
+                                                            : img.error)
+                                      << ") — honest miss" << std::endl;
+                        }
+                    } else {
+                        std::cerr << "[A7b] icon resid @0x" << std::hex
+                                  << icon_resid << std::dec
+                                  << " has NO ARSC file selection (honest"
+                                  << " miss — icon may be an adaptive/"
+                                  << "XML drawable)" << std::endl;
+                    }
                 }
             } else {
                 std::cerr << "[ARSC-VALUES] ResourceRuntime unavailable for "
@@ -3846,6 +3892,23 @@ bool ExecutionEngine::stage_frame_sequence( ExecutionResult& result, const Execu
             for (size_t f117_i : f117_due) {
             const auto& [tpx, tpy] = config.tap_sequence[f117_i];
             uint32_t tap_root = activity_shadow->content_view_id();
+            // R-NEW-394 (S76): AOSP topmost-window touch law — a dialog
+            // window sits ABOVE the activity window; when the tap point
+            // falls inside a showing dialog's frame the dispatch root is
+            // that dialog's decor tree (the snake game-over restart,
+            // gmdice config dialogs, every AlertDialog path). Without
+            // this the tap hit-test only walked the activity tree and
+            // every dialog button was tap-dead (target=0).
+            if (auto* dialog_shadow =
+                    shadow_registry_->find_as<framework::DialogShadow>()) {
+                if (uint32_t decor_root =
+                        dialog_shadow->decor_root_at(tpx, tpy)) {
+                    tap_root = decor_root;
+                    std::cerr << "[R394-TAP] tap (" << tpx << "," << tpy
+                              << ") routed to dialog decor root " << decor_root
+                              << std::endl;
+                }
+            }
             auto down_rec = touch_dispatcher_->dispatch(
                 tap_root, {framework::TouchAction::DOWN, tpx, tpy});
             const uint32_t tap_target = down_rec.value("target_view_id", 0u);

@@ -3399,6 +3399,54 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     if (m == "getLayoutParams") {
         return CallResult::handled_null();
     }
+    // R-NEW-393 (S76): View.getBackground() — themed-widget non-null law.
+    // Oracle: AOSP View.java getBackground() returns mBackground; the
+    // framework widget constructors (Button/TextView/EditText/ImageView
+    // family, View.java View(Context, AttributeSet, defStyleAttr) with
+    // Widget.* styles) always resolve a background drawable from the
+    // theme — the receiver of getBackground() in that family NEVER sees
+    // null on real Android. Our runtime paints those widgets through the
+    // state-list/default-face machinery, so the honest law here is:
+    // return a fresh Drawable heap object linked to the view (its fields
+    // carry the view id so setColorFilter/setState tracking can attach).
+    // Bare View receivers stay null unless a background was registered
+    // programmatically (bg_color / state-list) — the same answer real
+    // Android gives.
+    // Real demand (gmdice_8): GameMasterDice.onCreate loops
+    // buttons[i].getBackground().setColorFilter(color, MULTIPLY) —
+    // getBackground() had NO implementation → null → setColorFilter NPE
+    // killed onCreate at the FIRST loop iteration → button_more/resultview
+    // fields never assigned → the roll result TextView stayed null
+    // (resultview.setText NPE — the S75 "roll invisible" frontier).
+    if (m == "getBackground") {
+        auto* n = get_or_create_node(ctx.receiver_id,
+                                     ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        const std::string& rcls =
+            ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class;
+        bool themed_widget =
+            rcls.find("Button") != std::string::npos ||
+            rcls.find("TextView") != std::string::npos ||
+            rcls.find("EditText") != std::string::npos ||
+            rcls.find("ImageView") != std::string::npos;
+        bool has_bg = n != nullptr && (n->bg_color != 0 ||
+                                       n->image_resource_id != 0);
+        if (themed_widget || has_bg) {
+            uint32_t drawable_id = heap_->allocate(
+                "Landroid/graphics/drawable/Drawable;");
+            std::cerr << "[R393-BG] getBackground view=" << ctx.receiver_id
+                      << " class=" << rcls << " -> Drawable o" << drawable_id
+                      << std::endl;
+            return CallResult::handled_object(
+                drawable_id, "Landroid/graphics/drawable/Drawable;");
+        }
+        return CallResult::handled_null();
+    }
+    // R-NEW-393 (S76): setTransformationMethod(null) — TextView.java law:
+    // sets the transformation method (null = plain text). Render-neutral
+    // at our fidelity; acknowledge instead of REC-MISS noise.
+    if (m == "setTransformationMethod") {
+        return CallResult::handled_void();
+    }
     // EXP-060: Listener registration — store the listener object_id on the
     // ViewNode so a later synthetic CLICK event can dispatch through the
     // listener's onClick method. The listener is an OBJECT_REF passed as

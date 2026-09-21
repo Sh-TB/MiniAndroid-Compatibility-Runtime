@@ -71,6 +71,15 @@ struct DialogWindow {
     // build_decor_tree() on first show().
     uint32_t decor_root_id = 0;
 
+    // R-NEW-394 (S76): decor node ids recorded at build time so the
+    // layout pass can assign REAL bounds (AOSP: the dialog decor is
+    // measured/laid out in its own window — tap coordinates must map).
+    uint32_t title_node_id = 0;
+    uint32_t message_node_id = 0;
+    std::vector<uint32_t> item_node_ids;
+    uint32_t row_node_id = 0;
+    std::vector<uint32_t> button_node_ids;   // order: neutral, negative, positive
+
     // Window frame geometry (computed by layout_window() at show time;
     // the renderer draws the frame and the decor tree inside it).
     int frame_left = 0, frame_top = 0, frame_w = 0, frame_h = 0;
@@ -147,6 +156,13 @@ public:
     // no-listener button clicks still dismiss, matching real Android).
     void dismiss_dialog(uint32_t dialog_obj_id);
 
+    // R-NEW-394 (S76): AOSP topmost-window touch law — dialog windows sit
+    // ABOVE the activity window (WindowManager z-order). Returns the
+    // decor_root_id of the topmost SHOWING window whose frame contains
+    // (x,y), or 0 when no dialog covers the point (the tap then flows to
+    // the activity tree as before).
+    uint32_t decor_root_at(int x, int y);
+
     // CAMPAIGN 013 B1: paint every showing dialog window onto the current
     // frame: dim overlay + window frame + REAL recorded content
     // (title/message/items/buttons). Called by ExecutionEngine after the
@@ -159,6 +175,11 @@ public:
                         const std::function<std::string(int32_t)>& resolver);
 
 private:
+    // R-NEW-394 (S76): assign real bounds to decor ViewNodes from the
+    // window frame (mirror of the painter geometry). Called at show()
+    // after layout_window.
+    void layout_decor_nodes(DialogWindow& win);
+
     ViewShadow* views();  // lazy cross-shadow lookup
 
     CallResult dispatch_builder(const CallContext& ctx, DialogWindow& win);
