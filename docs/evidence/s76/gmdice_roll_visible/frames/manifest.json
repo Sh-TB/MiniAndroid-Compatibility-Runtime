@@ -1,0 +1,322 @@
+{
+  "click_count_requested": 3,
+  "clickable_views": 5,
+  "clicks_dispatched": 3,
+  "frames": [
+    {
+      "event": "launch (no interaction)",
+      "file": "frame_000.png",
+      "index": 0,
+      "png_sha256": "de98358c68f0f884ca6a1e0c69ff0147c1927411ebec95032ba5210ece159a6b",
+      "sha256": "83684b2c041c25a922fcf3d02517b6985dde500f8e08f3c90c28ce6166aaf089",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Push buttons to roll!\n\nLong-press buttons to configure dice.",
+          "view_id": 36
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Roll it!",
+          "view_id": 37
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "3D20",
+          "view_id": 39
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "1d20",
+          "view_id": 40
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "1d6",
+          "view_id": 41
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "1d6+4",
+          "view_id": 42
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "...",
+          "view_id": 43
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 1511441,
+      "click_dispatched": true,
+      "click_kind": "listener",
+      "clicked_view_class": "Landroid/widget/Button;",
+      "clicked_view_id": 43,
+      "event": "click",
+      "file": "frame_001.png",
+      "index": 1,
+      "png_sha256": "3008ed31c437d21a907ec177e5742398b4c682f02289ae9d99922a01b81e4ffc",
+      "sha256": "0053fb0018da7b32646fe32150b29b26a63605263d452fc0a8ec4fcf04f39c0e",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Push buttons to roll!\n\nLong-press buttons to configure dice.",
+          "view_id": 36
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Roll it!",
+          "view_id": 37
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "3D20",
+          "view_id": 39
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "1d20",
+          "view_id": 40
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "1d6",
+          "view_id": 41
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "1d6+4",
+          "view_id": 42
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "...",
+          "view_id": 43
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "1d6",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "1d6",
+          "view_id": 700002
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "1d6",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "1d6",
+          "view_id": 700004
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "1d6",
+          "view_id": 700005
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "3D20",
+          "view_id": 700006
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "4dF",
+          "view_id": 700007
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "More...",
+          "view_id": 700008
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 8711,
+      "click_dispatched": true,
+      "click_kind": "listener",
+      "clicked_view_class": "Landroid/widget/Button;",
+      "clicked_view_id": 42,
+      "event": "click",
+      "file": "frame_002.png",
+      "index": 2,
+      "png_sha256": "841f23d90a749b2fd1f0a70ea32f3424a79ceddd1ec2a69db3c36bf2819bd333",
+      "sha256": "4ed31e7ad49bd48cdf8044f0063c9df4907d5e26fb2e0f785dd662c5f5c39b3f",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Push buttons to roll!\n\nLong-press buttons to configure dice.",
+          "view_id": 36
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "6",
+          "view_id": 37
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "3D20",
+          "view_id": 39
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "1d20",
+          "view_id": 40
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "1d6",
+          "view_id": 41
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "1d6+4",
+          "view_id": 42
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "...",
+          "view_id": 43
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "1d6",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "1d6",
+          "view_id": 700002
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "1d6",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "1d6",
+          "view_id": 700004
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "1d6",
+          "view_id": 700005
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "3D20",
+          "view_id": 700006
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "4dF",
+          "view_id": 700007
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "More...",
+          "view_id": 700008
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 1508,
+      "click_dispatched": true,
+      "click_kind": "listener",
+      "clicked_view_class": "Landroid/widget/Button;",
+      "clicked_view_id": 41,
+      "event": "click",
+      "file": "frame_003.png",
+      "index": 3,
+      "png_sha256": "bb1b5cb3a0b772ca0cd8bd19b0ab92ee5c9ea7444f81210ab722bc3d3c3d23f2",
+      "sha256": "e8de2cf468997c2efd8a48807e3ccbf5210f59a28b5504a95f1e25939fe8892b",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Push buttons to roll!\n\nLong-press buttons to configure dice.",
+          "view_id": 36
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "5",
+          "view_id": 37
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "3D20",
+          "view_id": 39
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "1d20",
+          "view_id": 40
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "1d6",
+          "view_id": 41
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "1d6+4",
+          "view_id": 42
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "...",
+          "view_id": 43
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "1d6",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "1d6",
+          "view_id": 700002
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "1d6",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "1d6",
+          "view_id": 700004
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "1d6",
+          "view_id": 700005
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "3D20",
+          "view_id": 700006
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "4dF",
+          "view_id": 700007
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "More...",
+          "view_id": 700008
+        }
+      ]
+    }
+  ],
+  "screen": {
+    "height": 1920,
+    "width": 1080
+  }
+}

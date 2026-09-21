@@ -1,0 +1,66 @@
+=== Lot; in classes.dex (class_def #1890) ===
+super: Ljava/lang/Object;
+  field instance: Lot;->e:I
+  field instance: La00;->B:Z
+  direct_methods=1 virtual_methods=1
+  direct method[0]: Lot;-><init>(Liu;I)V acc=0x11001 code_off=0xf2588
+  virtual method[0]: Lot;->a()Ljava/lang/Object; acc=0x11 code_off=0xf2480 <== TARGET
+    registers_size=7 ins=1 outs=4 insns=114 units
+    pc=    0 (0x000) iget                       v0, v6, Lot;->e:I
+    pc=    2 (0x002) iget-object                v6, v6, Lot;->f:Liu;
+    pc=    4 (0x004) op-0x2b                    
+    pc=    7 (0x007) iget-object                v6, v6, Liu;->m:Lur1;
+    pc=    9 (0x009) invoke-virtual             v0, Lur1;->getValue()Ljava/lang/Object;
+    pc=   12 (0x00c) move-result-object         v6
+    pc=   13 (0x00d) check-cast                 v6, Lh40;
+    pc=   15 (0x00f) iget-object                v6, v6, Lh40;->b:Lcn1;
+    pc=   17 (0x011) return-object              v6
+    pc=   18 (0x012) iget-object                v6, v6, Liu;->e:Le40;
+    pc=   20 (0x014) const-string               v0, "There are multiple DataStores active for the same file: "
+    pc=   22 (0x016) iget-object                v1, v6, Le40;->b:Lg8;
+    pc=   24 (0x018) invoke-virtual             v0, Lg8;->a()Ljava/lang/Object;
+    pc=   27 (0x01b) move-result-object         v1
+    pc=   28 (0x01c) check-cast                 v1, Ljava/io/File;
+    pc=   30 (0x01e) invoke-virtual             v0, Ljava/io/File;->getCanonicalFile()Ljava/io/File;
+    pc=   33 (0x021) move-result-object         v1
+    pc=   34 (0x022) sget-object                v2, Le40;->d:Ljava/lang/Object;
+    pc=   36 (0x024) op-0x1d                    
+    pc=   37 (0x025) invoke-virtual             v0, Ljava/io/File;->getAbsolutePath()Ljava/lang/String;
+    pc=   40 (0x028) move-result-object         v3
+    pc=   41 (0x029) sget-object                v4, Le40;->c:Ljava/util/LinkedHashSet;
+    pc=   43 (0x02b) invoke-interface           v4, v3, Ljava/util/Set;->contains(Ljava/lang/Object;)Z
+    pc=   46 (0x02e) move-result                v5
+    pc=   47 (0x02f) if-ltz                     v5, ->+32
+    pc=   49 (0x031) invoke-virtual             v0, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+    pc=   52 (0x034) invoke-interface           v4, v3, Ljava/util/Set;->add(Ljava/lang/Object;)Z
+    pc=   55 (0x037) op-0x1e                    
+    pc=   56 (0x038) new-instance               v0, Lh40;
+    pc=   58 (0x03a) iget-object                v6, v6, Le40;->a:Lf90;
+    pc=   60 (0x03c) invoke-interface           v6, v1, Lf90;->i(Ljava/lang/Object;)Ljava/lang/Object;
+    pc=   63 (0x03f) move-result-object         v6
+    pc=   64 (0x040) check-cast                 v6, Lcn1;
+    pc=   66 (0x042) new-instance               v2, Lg8;
+    pc=   68 (0x044) const/16                   v3, #int 8
+    pc=   70 (0x046) invoke-direct              v2, v3, v1, Lg8;-><init>(ILjava/lang/Object;)V
+    pc=   73 (0x049) invoke-direct              v0, v1, v6, v2, Lh40;-><init>(Ljava/io/File;Lcn1;Lg8;)V
+    pc=   76 (0x04c) return-object              v0
+    pc=   77 (0x04d) move-exception             v6
+    pc=   78 (0x04e) goto/16                    ->+1570
+    pc=   80 (0x050) move-exception             v6
+    pc=   81 (0x051) invoke-direct              v6, v0, Ljava/lang/StringBuilder;-><init>(Ljava/lang/String;)V
+    pc=   84 (0x054) invoke-virtual             v6, v3, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+    pc=   87 (0x057) const-string               v0, ". You should either maintain your DataStore as a singleton or confirm that there is no two DataStore's active on the same file (by confirming that the scope is cancelled)."
+    pc=   89 (0x059) invoke-virtual             v6, v0, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+    pc=   92 (0x05c) invoke-virtual             v0, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+    pc=   95 (0x05f) move-result-object         v6
+    pc=   96 (0x060) new-instance               v0, Ljava/lang/IllegalStateException;
+    pc=   98 (0x062) invoke-virtual             v0, Ljava/lang/Object;->toString()Ljava/lang/String;
+    pc=  101 (0x065) move-result-object         v6
+    pc=  102 (0x066) invoke-direct              v0, v6, Ljava/lang/IllegalStateException;-><init>(Ljava/lang/String;)V
+    pc=  105 (0x069) goto                       ->+0
+    pc=  106 (0x06a) op-0x1e                    
+    pc=  107 (0x06b) goto                       ->+6
+    pc=  108 (0x06c) op-0x00                    
+    pc=  110 (0x06e) op-0x00                    
+    pc=  112 (0x070) return-void                
+    pc=  113 (0x071) op-0x00                    

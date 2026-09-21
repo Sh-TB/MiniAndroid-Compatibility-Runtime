@@ -1,0 +1,5254 @@
+{
+  "frame_count_requested": 128,
+  "frame_delay_ms": 250,
+  "frames": [
+    {
+      "event": "launch (no interaction)",
+      "file": "frame_000.png",
+      "index": 0,
+      "png_sha256": "6cc8087e690d97da3abdc4b437b6b8c82d7e95ab75ba44121b04e446a696496a",
+      "sha256": "b6d0307e3b43c83942366fab6b0efb60ce327708112c7d49a70c92a4a3ac00f4",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 4563,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_001.png",
+      "index": 1,
+      "looper_virtual_ms": 1000000370,
+      "png_sha256": "debdce66f8222e1acd85a30162d56dfd51537af1b376adbca981aa1d3c86b4db",
+      "runnables_fired": 0,
+      "sha256": "3043ea42ffcbf39258581dbb88426f655b2acfcd46fc8a3f5bc09a7440558382",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 1521,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_002.png",
+      "index": 2,
+      "looper_virtual_ms": 1000000620,
+      "png_sha256": "7e42ef486deae3354d6a11e191efa4e8a3c87ccf731115a428b24074f286bfcf",
+      "runnables_fired": 0,
+      "sha256": "eea3a07fd7b66a36f9e8e815c7a1c5723aae4b5ef31c277f06536c4b9b39a176",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_003.png",
+      "index": 3,
+      "looper_virtual_ms": 1000000870,
+      "png_sha256": "ee6210e6cbd12b15920b9900cdcbfc9fc9f9cdb5a9cc252920eb9bca62609479",
+      "runnables_fired": 0,
+      "sha256": "58c421a8a86cb4069980a6d671f04613aaee00dec206852082cc773e0ae3e2f7",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_004.png",
+      "index": 4,
+      "looper_virtual_ms": 1000001120,
+      "png_sha256": "ec3b295611bf83477052d97892170a642827aa31f5797ea988a7f0de8df3e275",
+      "runnables_fired": 0,
+      "sha256": "490bedcbb994c921a9b914b8ef60a3679ffca2057324826a0103d08568d5172a",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_005.png",
+      "index": 5,
+      "looper_virtual_ms": 1000001370,
+      "png_sha256": "42dd705dac3513dd6e42cd48bce6f464ed4d0b56155c55d5b334dd2d8df3fc18",
+      "runnables_fired": 0,
+      "sha256": "91840337a559cf398a616e090b7d457ae7a5f4c31f73c0fbd4a5a8679df52423",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_006.png",
+      "index": 6,
+      "looper_virtual_ms": 1000001620,
+      "png_sha256": "074354263f056fa3b371ea062c17b333c845b073f01a5f427ba07e75f3004cb6",
+      "runnables_fired": 0,
+      "sha256": "5e0e1cf584c6068394e76abf81a5368d30ebb0cb4e0fd320870adaebfdbc55d2",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_007.png",
+      "index": 7,
+      "looper_virtual_ms": 1000001990,
+      "png_sha256": "d138ab09b7abac29b40b848438b1dd1e5c0457662ada9a1d6f191e6cdd1411af",
+      "runnables_fired": 0,
+      "sha256": "d5cd39cdd53fe60333589437743e7198352f5f7d6bce94da9fb7ce16fe6e12f4",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_008.png",
+      "index": 8,
+      "looper_virtual_ms": 1000002240,
+      "png_sha256": "2a3fc2733a731facec80f22148d5daf8005b2feeea0fa676782930f8ea09cbca",
+      "runnables_fired": 0,
+      "sha256": "db395c50e57a18351fd93229e405148ffd42824acb1d3a34ca8d1bf7319afa99",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_009.png",
+      "index": 9,
+      "looper_virtual_ms": 1000002490,
+      "png_sha256": "8fc7f102a182095b1d9747c4f5ef4ea353221e6747838395c37ddc2a5423f95a",
+      "runnables_fired": 0,
+      "sha256": "ab5799d8ed36482b2b107220ff193accd0af95d96a6c49b2bbc696ff195a8ddb",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_010.png",
+      "index": 10,
+      "looper_virtual_ms": 1000002740,
+      "png_sha256": "b2b3cca4ab59832c78d9433df31be29bca1ebf207bc0d6587620c1d6b3c58b1f",
+      "runnables_fired": 0,
+      "sha256": "e67d385c98ae806084daf1703a5e28c8be4a66000fc15a1a91075e401e2101f0",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_011.png",
+      "index": 11,
+      "looper_virtual_ms": 1000002990,
+      "png_sha256": "f16fcb84ae8c140afaea0958659c9f3f34ff56184633bd7f55319a61c450e180",
+      "runnables_fired": 0,
+      "sha256": "bfa2121f9d07bb392783985849507453a7a9719632af614f1496784e10e4151b",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_012.png",
+      "index": 12,
+      "looper_virtual_ms": 1000003240,
+      "png_sha256": "347d02f6e581b373dbce1ab4ef9e8a5602b53fac78265515fabd469d75ccb633",
+      "runnables_fired": 0,
+      "sha256": "8438413bb35e9d5325fab1a7b977d23d0a626693c53da84ce9521ccb3401fd99",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_013.png",
+      "index": 13,
+      "looper_virtual_ms": 1000003490,
+      "png_sha256": "af173a746a7b6d84953f64a275d89223ef43c7547c926abca3f6f5f9aba97a85",
+      "runnables_fired": 0,
+      "sha256": "82828e4be2a1242429844aee2194bddf717d16109a5af9d072f6fc493d153081",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_014.png",
+      "index": 14,
+      "looper_virtual_ms": 1000003740,
+      "png_sha256": "05b0b5c05cff3e5a0333904f8e28c54460040af607ac9076f0c1ee327741b4d0",
+      "runnables_fired": 0,
+      "sha256": "351641c562330dff617f7426a0de96bfaa6fd05940ba12358b0f78f131e4ca16",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_015.png",
+      "index": 15,
+      "looper_virtual_ms": 1000003990,
+      "png_sha256": "a0d3b2e074f533b467fe985b838c3a7c26e64cbd9440055e619cabcc8a2e6fd4",
+      "runnables_fired": 0,
+      "sha256": "6a7e727e205969d309bb557536408d7f82ef5b8e11c23e93789d6b0a7919de47",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_016.png",
+      "index": 16,
+      "looper_virtual_ms": 1000004240,
+      "png_sha256": "922df52b934abbae97a24d7305005670c51b228e6a92aa0e9d8053c93fda0a7c",
+      "runnables_fired": 0,
+      "sha256": "b11426f2f90a80b5976e756a888b3a17faffb3d1a21ea96843a03c6693f6a72d",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_017.png",
+      "index": 17,
+      "looper_virtual_ms": 1000004610,
+      "png_sha256": "b877b410e7df17d9f55fefea3ca2ed5399eddceace07a03e89aa070f532c3f3f",
+      "runnables_fired": 0,
+      "sha256": "7c5cbdd864e1cd5a8d09b30e576354ab03338c92adb0a2d8fefc17e88c44f9fe",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_018.png",
+      "index": 18,
+      "looper_virtual_ms": 1000004860,
+      "png_sha256": "e5fde18462d0a59a0094a405ccc0ea8dafbbf21973cccebd8a4484e76dc49159",
+      "runnables_fired": 0,
+      "sha256": "22b310a426c4257357c59d54f4cc679564b06d962f62a4ff43fe74528bd3cad7",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_019.png",
+      "index": 19,
+      "looper_virtual_ms": 1000005110,
+      "png_sha256": "c16814c519e9030e1b5d2997435391220b527a575bd1139887d63549ef2af982",
+      "runnables_fired": 0,
+      "sha256": "f2096e4a6ea4372a69888cee03e6b8f7d094168ef2305cdb90364f523911b77e",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_020.png",
+      "index": 20,
+      "looper_virtual_ms": 1000005360,
+      "png_sha256": "b0cea327a771145adc470f2fb2ca5ad805eb625c3bde239dba2f84c7dd026546",
+      "runnables_fired": 0,
+      "sha256": "7e463c19873b4821269aa46ba00696e80644cb2875b1ea0f756de50a7f9893d5",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_021.png",
+      "index": 21,
+      "looper_virtual_ms": 1000005610,
+      "png_sha256": "5a4b05e971f6528d4e0943a555cbd4f4e73e08d78fe2ba3e9d4e24f48d7db83d",
+      "runnables_fired": 0,
+      "sha256": "3d9ea10ff39551b27358b3bb13c7ecad133143b48c0a031eb208cd66c539df5e",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_022.png",
+      "index": 22,
+      "looper_virtual_ms": 1000005860,
+      "png_sha256": "98751d286526ff058477439aea0b77484442e307bbf11cee0bf72190e9a12168",
+      "runnables_fired": 0,
+      "sha256": "9d2a4e14133ce569bd98a2c77716383016d2f35c5ffa06d29e6b1a55c5422638",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_023.png",
+      "index": 23,
+      "looper_virtual_ms": 1000006110,
+      "png_sha256": "71b611ea1803fbdd4ca90b572279b5db19221a02b8714fec5291d89977f58aa5",
+      "runnables_fired": 0,
+      "sha256": "5f13f2a33591b4cb75b0a4691449565284d2b0da4a1d47755f4009284b012f8f",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_024.png",
+      "index": 24,
+      "looper_virtual_ms": 1000006360,
+      "png_sha256": "b79ee3658d8bcbb95c2bcb570c0897ef2e42432576b9ae61d01e57584339fa88",
+      "runnables_fired": 0,
+      "sha256": "7572b57f6c15d9f9441debb2201a7a04d6290b483a3ce184815b5db60209e26d",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_025.png",
+      "index": 25,
+      "looper_virtual_ms": 1000006610,
+      "png_sha256": "69c1b620a5d9df79d65d0dd15e3ed0ad6e12a555edb331ba619ab48acc9c1324",
+      "runnables_fired": 0,
+      "sha256": "f185b75b09658c58557c62ffae14f8e71f17a5285f0a4d22e35df54744dcf378",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_026.png",
+      "index": 26,
+      "looper_virtual_ms": 1000006860,
+      "png_sha256": "fc58c3599b3179e100af1e2b916608d33ef431c7644baa64e1c14b8ea04574cb",
+      "runnables_fired": 0,
+      "sha256": "baa4d0ed63853ab77850be22a14a03c1c058e74ecebc6c3f05c50042886fafcf",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_027.png",
+      "index": 27,
+      "looper_virtual_ms": 1000007110,
+      "png_sha256": "c53ffcb7e6c7ba7f27359bd7dd7405b95650b21b99a3209d3cda8384541dd63b",
+      "runnables_fired": 0,
+      "sha256": "20679d1d633cf4672373c8e294605e4d4a874128a7f80d6c3776557233a23745",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_028.png",
+      "index": 28,
+      "looper_virtual_ms": 1000007360,
+      "png_sha256": "6c47e41bc74676f9e589a0e305cf07a9f4e405383bcdb960392e6054a0c24c82",
+      "runnables_fired": 0,
+      "sha256": "c2f0180b037e7fc1025f1a1f661defbbcac5a9199cd3374743af33047fe4d504",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_029.png",
+      "index": 29,
+      "looper_virtual_ms": 1000007610,
+      "png_sha256": "977cd26d78bde5c33e8783ec9fb626a827dcb71473f3b84f2df06d0e7b5bec68",
+      "runnables_fired": 0,
+      "sha256": "6aace74f1daf6b88b67ea37711c93d792f513b5cfb2c4258df80675e7834b502",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_030.png",
+      "index": 30,
+      "looper_virtual_ms": 1000007860,
+      "png_sha256": "b410b4230f36e1ecd28f7dc3be9a507b60ccf61bfce26b8216ec38497ffd713d",
+      "runnables_fired": 0,
+      "sha256": "bc1287ec8e7a973d725a230c0f6f0bd11d8e5ec8b48bc91ea6a88dc283732989",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_031.png",
+      "index": 31,
+      "looper_virtual_ms": 1000008110,
+      "png_sha256": "cdbb847373d40997484d70b00b2dfaba77e8c36aa1f4c9d3a09adeef268f548e",
+      "runnables_fired": 0,
+      "sha256": "29dcd0d67244f88854fb088dfc1a6715939b1ec6ef9758e205151bb7996ada99",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_032.png",
+      "index": 32,
+      "looper_virtual_ms": 1000008360,
+      "png_sha256": "fa5db148bef5e2cc3fbf2e1431d9879509c65c8fed64f003c29b84742d46ad2f",
+      "runnables_fired": 0,
+      "sha256": "effc35b897efb77c1dbac66f2f4239d63e6a5ebb0a3a2f2453c6e88d3ce019c8",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_033.png",
+      "index": 33,
+      "looper_virtual_ms": 1000008610,
+      "png_sha256": "e20401c3cdfe8c30b338d19a0e2059433c81803ca517ab6dead868b9c338f5ae",
+      "runnables_fired": 0,
+      "sha256": "d3aad9b89ab949e9b19aff10e0e7a9369a4e70c1b30810539c44de62c3a6ec4f",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_034.png",
+      "index": 34,
+      "looper_virtual_ms": 1000008980,
+      "png_sha256": "d4bc62a6862c8a8a5463c5abe12807e67a0cffe28dc709e925cf6d81ae989292",
+      "runnables_fired": 0,
+      "sha256": "cdd10c0707c646118107336760404caafd4d8d240348fd776e1ca1bc938f1e58",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_035.png",
+      "index": 35,
+      "looper_virtual_ms": 1000009230,
+      "png_sha256": "666017ae7c7d51115aeeb68a34cd0700032bc37a3fe5806d7f3410cbca793488",
+      "runnables_fired": 0,
+      "sha256": "94ab0cefd884652629ac4d691f4783ee536400875059e3acb0720c9274198702",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_036.png",
+      "index": 36,
+      "looper_virtual_ms": 1000009480,
+      "png_sha256": "5b065d37a1999ab68056a489fa3dd5e075be6226c440e6ba0e299273c2f4ef15",
+      "runnables_fired": 0,
+      "sha256": "136d4df758f27c85ddf59d0537f86bbae1d8c34803c17654c9a22d42840b42ff",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_037.png",
+      "index": 37,
+      "looper_virtual_ms": 1000009730,
+      "png_sha256": "9ca767bebafeef6a7303b91bba4dae5b856f9d01ffa10cddd8609e0f8ad04b72",
+      "runnables_fired": 0,
+      "sha256": "db9d5439ce8040e520bc252dcf9b38f9b5b0b5dc96e01e958fea25d7c07b7b77",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_038.png",
+      "index": 38,
+      "looper_virtual_ms": 1000009980,
+      "png_sha256": "dd69377322881ad17ebacc034c5a4cc6b307af052310e84753d0cb311d7232a2",
+      "runnables_fired": 0,
+      "sha256": "f122a75be4e242a85b537167eaded1be187b3152594612bc5260ecbeea34c780",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_039.png",
+      "index": 39,
+      "looper_virtual_ms": 1000010230,
+      "png_sha256": "a54b27a3227dfd715a8b8cbfb9a11d4a73793e9c6fe8fb38a46238eb51c1464b",
+      "runnables_fired": 0,
+      "sha256": "a310097b579a7d1faebbe79b1a7ef17d05c4d95314c8aa9878962a684b117268",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_040.png",
+      "index": 40,
+      "looper_virtual_ms": 1000010480,
+      "png_sha256": "c698a426375b45dd9231f2b31bf09595e211f537e480d3f9efecd33c15c57740",
+      "runnables_fired": 0,
+      "sha256": "6352d5a6d36bdd72f817ae15ad31a6c74656a16d5429ddd33344c25defc933e0",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_041.png",
+      "index": 41,
+      "looper_virtual_ms": 1000010850,
+      "png_sha256": "4a5870d5192d5d078b25ca5c45f5561d096bcc3b66d08496cf1f268e46bb40a0",
+      "runnables_fired": 0,
+      "sha256": "fdbc406179d843d6e8fd05d0acf70f7b1f5c490738ee070fb8d9b852b785b1eb",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_042.png",
+      "index": 42,
+      "looper_virtual_ms": 1000011100,
+      "png_sha256": "2024099ce6073a2f778ae9090cc260cf970169f536180b5564cf69141f0b57cd",
+      "runnables_fired": 0,
+      "sha256": "3fabc2acced4622e4ea88bf116701bcc9f29617a7610d08eb4b5f98520a7f74b",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_043.png",
+      "index": 43,
+      "looper_virtual_ms": 1000011470,
+      "png_sha256": "4fd146e0246cb275186cd5351ce01d01f34c021a215c60766403ee51bf602de8",
+      "runnables_fired": 0,
+      "sha256": "332b0921b4d8b244be0bdb86b537848e7469d65abe11d161710583a2010ad60d",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_044.png",
+      "index": 44,
+      "looper_virtual_ms": 1000011720,
+      "png_sha256": "7180dfff55e553bff2f69921b51e914e089fb5fa24f284695d569ae48cdce4c5",
+      "runnables_fired": 0,
+      "sha256": "8b579626947476e98e1bc0a49d8eb4d194b627d089f8802b7b047af94ae204e5",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_045.png",
+      "index": 45,
+      "looper_virtual_ms": 1000012090,
+      "png_sha256": "6c9b6135294a06b80d83ae7d402710e952cd6a7b85c635dd605f4f06cff1e71f",
+      "runnables_fired": 0,
+      "sha256": "829fc44aad26973502bdc6e1f56348dfd742a97438d0f7d5816e3430584a2425",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_046.png",
+      "index": 46,
+      "looper_virtual_ms": 1000012340,
+      "png_sha256": "737a19eab161bbc905d5a3badbd3aa148e37a414cf5e1668ec026b1fe2924102",
+      "runnables_fired": 0,
+      "sha256": "01ccaa1946e5f6001dba9a2019cc15b0ca548e4311936e1beacb5f11bd23d1f0",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_047.png",
+      "index": 47,
+      "looper_virtual_ms": 1000012710,
+      "png_sha256": "d950d1678864479230d584f72a0377cdce922c14edb9bd967057ee624f8df75e",
+      "runnables_fired": 0,
+      "sha256": "3558c214c939ab4fb9ab55feccec35eed4544817ffd7bc889d81044ad46d4906",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_048.png",
+      "index": 48,
+      "looper_virtual_ms": 1000012960,
+      "png_sha256": "9ffd2cd84b6a719089af6ee10f5b3df355730b9456b086695100677ac2bffd71",
+      "runnables_fired": 0,
+      "sha256": "f3c08d1e4d9a76e4a168c6c06021c6dd6d4553d4a9b57b2fda375726b5634814",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_049.png",
+      "index": 49,
+      "looper_virtual_ms": 1000013330,
+      "png_sha256": "8f3e2b991359116cfae81b3036421f7ebd5b297b0e7e41d9c5c45476012cd7b7",
+      "runnables_fired": 0,
+      "sha256": "54fb2d1c0f86ef112fcebad0756d024a4c6c024686751bb0d09acdbd191c6e4c",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_050.png",
+      "index": 50,
+      "looper_virtual_ms": 1000013580,
+      "png_sha256": "73f59693c202ca038e88aaa36280ce1a653c276c453c34193f7d2e13f6b86903",
+      "runnables_fired": 0,
+      "sha256": "bc378487615bb716e4b578df62dd53310fe27a713986182f733fd851c898e33f",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_051.png",
+      "index": 51,
+      "looper_virtual_ms": 1000013950,
+      "png_sha256": "88adc469cc45efffe5f71bd1c6335ed83259487daa00e558e5443e767debf1cf",
+      "runnables_fired": 0,
+      "sha256": "96620c26cfa0a3de92c49c9ebcfcedc381e078d87fa077ed3b025da3119ad065",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_052.png",
+      "index": 52,
+      "looper_virtual_ms": 1000014200,
+      "png_sha256": "34487ff8303231f09d70519c0fb12e9fe8edace7235dc976a835e18eec64e0fd",
+      "runnables_fired": 0,
+      "sha256": "ccd8f61d0f8dc6409263bd528a70b5ea2442bde81fcf5316e2ec768b6dd857cd",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_053.png",
+      "index": 53,
+      "looper_virtual_ms": 1000014570,
+      "png_sha256": "f5849fb3660caac29597e1867320afacdc322be0a379d42a5e360fb6db27142b",
+      "runnables_fired": 0,
+      "sha256": "5b7e12717ee014ad771f99ee035c819ebbc8969598cbb8b14e375eaf02040485",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_054.png",
+      "index": 54,
+      "looper_virtual_ms": 1000014820,
+      "png_sha256": "91f18081bd351fb1a04dda5c6b81f47cb4cdb07703dc4800d51f683c7c67f8dc",
+      "runnables_fired": 0,
+      "sha256": "9f6845a9da8e7789008968aaab58462ed0c499cd011b60e0da7a01b46761b799",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_055.png",
+      "index": 55,
+      "looper_virtual_ms": 1000015190,
+      "png_sha256": "2cd2e7ee80afb1d6041411ce292d2d4e44f42285cc877341726abb9f9f805660",
+      "runnables_fired": 0,
+      "sha256": "015d7fed189e6913bb62d6e0f97e24bf23709b14d2d93734fe401ed194e09740",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_056.png",
+      "index": 56,
+      "looper_virtual_ms": 1000015440,
+      "png_sha256": "f44add11f0e648eb513c8661614cedf3c96f8a09b8024d50a950388ccec4ca9b",
+      "runnables_fired": 0,
+      "sha256": "1de9d2d6ce4041a67630002d966180e38e6a8c3f41fb12117489f5f5378d7adc",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_057.png",
+      "index": 57,
+      "looper_virtual_ms": 1000015810,
+      "png_sha256": "6094b3ac40d1dc5dae39e9926490a7d5fd1f84ce56130f537f11cf9193af1108",
+      "runnables_fired": 0,
+      "sha256": "627d701a83837427e590819727f0b6ce5b85c46c3f0857da2aeec09ff8552229",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_058.png",
+      "index": 58,
+      "looper_virtual_ms": 1000016060,
+      "png_sha256": "c993ac8e3029d74a3fcdc619f83062e29c1d8edcf1b9decc633263c3a6b1505c",
+      "runnables_fired": 0,
+      "sha256": "a0376a9ee060d2e4c3be1fcab55b2d5597db540699837e357d8e2f8f74aa3281",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_059.png",
+      "index": 59,
+      "looper_virtual_ms": 1000016430,
+      "png_sha256": "a604f66aef7416aeaa588f84b1bc17af26a9eb982b47cb5de58305ce17b1e9d1",
+      "runnables_fired": 0,
+      "sha256": "c3f4e3e5e728d603c7abc04984c44ea02b52fffbd3d2912beb6f741af43cc779",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_060.png",
+      "index": 60,
+      "looper_virtual_ms": 1000016680,
+      "png_sha256": "f46aba67a3a1365a50714a15ae0d4ca057e99bf705f7b2cb5aa77d50f7aa15c1",
+      "runnables_fired": 0,
+      "sha256": "eac689cf7834c6ed16125ae0f57acedabbf8f03408365b565f7d38ec8dc7827c",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_061.png",
+      "index": 61,
+      "looper_virtual_ms": 1000016930,
+      "png_sha256": "9038d99161cf3cbdeb56b99f9a33262f456c11501ff356b383f002231b8e57e5",
+      "runnables_fired": 0,
+      "sha256": "a07b248c7b43adc211ebe8cc7e474d65ad7b300a088205f2d206b9b644417c6b",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_062.png",
+      "index": 62,
+      "looper_virtual_ms": 1000017180,
+      "png_sha256": "bf325a088eae5cf5e374b8b5da5119ea8855c550b34db19c28c50e5dc365e4fd",
+      "runnables_fired": 0,
+      "sha256": "d7bb75d008f5cea293ee9a36e0a5b873e69c3f63a99c62b88be41ea2bccb1339",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_063.png",
+      "index": 63,
+      "looper_virtual_ms": 1000017430,
+      "png_sha256": "a6d9b797528d3c3d6f2fcb64e61ff75479382c36634b2430af60565acdfd4545",
+      "runnables_fired": 0,
+      "sha256": "9d87d1cb46d5140fc19cfd67869b7afcc830d3af0229635b38482fbeea09dd0b",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_064.png",
+      "index": 64,
+      "looper_virtual_ms": 1000017680,
+      "png_sha256": "42e596ce5d22ba68d06640d4ec843925d4fe0289081eeb5ac245eb184eda23ee",
+      "runnables_fired": 0,
+      "sha256": "f1d2d86201a901d6cc9c3b50d570534f7631029d28bd6f86605dfe0574395037",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_065.png",
+      "index": 65,
+      "looper_virtual_ms": 1000017930,
+      "png_sha256": "5088ce95f7d449aa392307e1f9ae6370707a28476766d157cdf7c73bba419d9d",
+      "runnables_fired": 0,
+      "sha256": "031fc61f3b9c8445428c1ee6c840edd360325e69b402d712a6a07e1da6aacc12",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_066.png",
+      "index": 66,
+      "looper_virtual_ms": 1000018300,
+      "png_sha256": "36f1958382c59ad547974a4d1a1a7679dca46c748a48cb2f1171444cb2f7a4f6",
+      "runnables_fired": 0,
+      "sha256": "6be448cd1880c2a3f2f11c27502725ab8e6dc4ee9f3b969a6bf692ee78c31773",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_067.png",
+      "index": 67,
+      "looper_virtual_ms": 1000018550,
+      "png_sha256": "6c07563da5bd6f9a89e714330a0e76146a35203a33d59c55e5111fa601f22802",
+      "runnables_fired": 0,
+      "sha256": "fc47cbe9a3b030cbac22ff6057126e30265a77dd79fe72babbb0c0e066096992",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_068.png",
+      "index": 68,
+      "looper_virtual_ms": 1000018920,
+      "png_sha256": "6aba49c2ac98eab2b002af49d3e69db4644d65bda45d3014c92fa724e9df6964",
+      "runnables_fired": 0,
+      "sha256": "7c0a6c35b6f7dd72a8b5532dd9f1dfd5dc798a6012749bc510c2a8c71454555c",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_069.png",
+      "index": 69,
+      "looper_virtual_ms": 1000019170,
+      "png_sha256": "b6fb805f98cf82bbb7dac05e87176fd97bf8ae8a13de52b0214dcfb6e1cd7eaf",
+      "runnables_fired": 0,
+      "sha256": "101dc83aba1f842ed7251e8d1713b0b9884ef65c42dfa2d64bf54422d1ff0e18",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_070.png",
+      "index": 70,
+      "looper_virtual_ms": 1000019540,
+      "png_sha256": "c16408308b6a76046021a64ab81d5d150316df9ba690c65e5815bbbe427c235c",
+      "runnables_fired": 0,
+      "sha256": "9f5e20dd113cecf19e12f2d1c607af2da698bd36918ccbd50a9b2bb25a5d9763",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_071.png",
+      "index": 71,
+      "looper_virtual_ms": 1000019790,
+      "png_sha256": "4e6611002677456093b187b269f406615bc427e0c2250db9224409494aa74551",
+      "runnables_fired": 0,
+      "sha256": "8a4ddc4191b6959ef3ce78bfd39d06a26eefb24dd1ee93b53c6280918b46b15a",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_072.png",
+      "index": 72,
+      "looper_virtual_ms": 1000020160,
+      "png_sha256": "491df9cddedb4d5d25ad357e66729003ebb0cfd3bd615ce976ee180c9337cc74",
+      "runnables_fired": 0,
+      "sha256": "d3de13af4852b9f6d50905b670e99644558b538ea3fe19413557a06b3e3713e4",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_073.png",
+      "index": 73,
+      "looper_virtual_ms": 1000020410,
+      "png_sha256": "1abceb734fc5b3cf42b7b413c7dcded2a59d7e7e430b6735e2e7f6b461afbc28",
+      "runnables_fired": 0,
+      "sha256": "88cd85ff979d937315dfececf046f63d6713a9c6bdedf06732959849dfb2e9c2",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_074.png",
+      "index": 74,
+      "looper_virtual_ms": 1000020780,
+      "png_sha256": "c08782b25d3dbf31a61e3238c60de323993d5281dc2971c06bbc3cf711673166",
+      "runnables_fired": 0,
+      "sha256": "5fd45fd95cdaf081269a76eaf9a8905a3e41fe842d9d9f82c479ed040ddfe7e2",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_075.png",
+      "index": 75,
+      "looper_virtual_ms": 1000021030,
+      "png_sha256": "6678394537475d880dc0935184a9742791338d6b620e26f5c2eb9bd164c41a33",
+      "runnables_fired": 0,
+      "sha256": "befdf997deba7f53f625f88c5820eb8d4d67004fe0898f14c99c972cb8a74936",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_076.png",
+      "index": 76,
+      "looper_virtual_ms": 1000021400,
+      "png_sha256": "3609c5b1b7142615462253e29cedd0eec995b6eff81603354540b3679df86444",
+      "runnables_fired": 0,
+      "sha256": "9af425ecaf389a6872a952355ef3172b62096ce90a8accb28fde8cc4a602ccc7",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_077.png",
+      "index": 77,
+      "looper_virtual_ms": 1000021650,
+      "png_sha256": "d1e88ffe90f7f3e0f61a9fc996f11f456360fca1f50429f5a0606264c7d22700",
+      "runnables_fired": 0,
+      "sha256": "8f54658d4185f86dd84cc1c8c535e85775f058119dba33c2ca809659681a4a72",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_078.png",
+      "index": 78,
+      "looper_virtual_ms": 1000022020,
+      "png_sha256": "d89c73f27c0b4aa3ff1096b9957369924b339f4cc5d60822a045d7817b022f65",
+      "runnables_fired": 0,
+      "sha256": "c0cc7752b3a1ce4cdf5c4111955349d20edd38002b6931ec7cced63e3b363c11",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_079.png",
+      "index": 79,
+      "looper_virtual_ms": 1000022270,
+      "png_sha256": "3afc3c82999ba7083b06fae921d532fe92a981d2cdfddf73e2381b6a8bc8ee20",
+      "runnables_fired": 0,
+      "sha256": "84de895046c3255464fea5861a390d10ffda8705e4482a4e0482a9e1a1d994e1",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_080.png",
+      "index": 80,
+      "looper_virtual_ms": 1000022640,
+      "png_sha256": "ee166d1544549a50f8f73d8345989f2cf3a4d11109feb0f513b869242c41fdf1",
+      "runnables_fired": 0,
+      "sha256": "476c301aa1e993b9d1ee523480f5e9c33620099baaa1a63d936f2bbaca8c9ba0",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_081.png",
+      "index": 81,
+      "looper_virtual_ms": 1000022890,
+      "png_sha256": "e1f70bcf15e70f3471367eb5efeda72fa1160966e6d12b511c5eb2d52f37860b",
+      "runnables_fired": 0,
+      "sha256": "54bc108adfd8ead359eebb99685ded9494ac66ccf2bf202f7ebce338dbc65405",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_082.png",
+      "index": 82,
+      "looper_virtual_ms": 1000023260,
+      "png_sha256": "1612b1ee8b7e11e4ecc01e39fdd0668a8694a1a42fd5d84136f1283df43f24c1",
+      "runnables_fired": 0,
+      "sha256": "f352a224606f6950ba09c2b28cd2f68d7495c2011b60f987ce86adb2a5fd3c11",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_083.png",
+      "index": 83,
+      "looper_virtual_ms": 1000023510,
+      "png_sha256": "20fb376059e2a367a8902d47ee7f322ed555cfdd323315381e7e1564c0b42458",
+      "runnables_fired": 0,
+      "sha256": "aac5c8f8f697761791014f3088977797e31c6af523298420faf6e67f879c6b64",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_084.png",
+      "index": 84,
+      "looper_virtual_ms": 1000023760,
+      "png_sha256": "05e4e15eadc1d2ffdca1010ffb68b403bc197ea00259cdde834c7fd654397680",
+      "runnables_fired": 0,
+      "sha256": "0b79454d9063f6d51df0357c1acb3d1ee5cdd474fccd0f4c5c8c383d05f7b1a4",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_085.png",
+      "index": 85,
+      "looper_virtual_ms": 1000024010,
+      "png_sha256": "1516faa272a997b14ea7695663ae19d428b5e5ee56913cb527818f161d0cf68c",
+      "runnables_fired": 0,
+      "sha256": "3c22a78c27b9d80a5f95388c384ebf4a97f8e9340ccbeb130a28b3a03046a0f7",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_086.png",
+      "index": 86,
+      "looper_virtual_ms": 1000024260,
+      "png_sha256": "b6b9fa2754b602c78843551acfcdacb9d3b1ede5b0481cfb3d0f5e8f739939c8",
+      "runnables_fired": 0,
+      "sha256": "533e1a9e381eee1519f0386ebc4c2b00ca360f036a712ea498eceb27ddb2fb00",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_087.png",
+      "index": 87,
+      "looper_virtual_ms": 1000024510,
+      "png_sha256": "8d29d6be3f555fb7c353507f49b0b3bfeda50ba6edd5becd4e0dffc129a72379",
+      "runnables_fired": 0,
+      "sha256": "a3a165f50bef41dfbb5fd4d47ad0462d84dbb791bfc0ed2c65618584f4a523b0",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_088.png",
+      "index": 88,
+      "looper_virtual_ms": 1000024760,
+      "png_sha256": "8235b29688748de5e0131d646bb5377d6c75ef45dea3609f559ffda9e96e173e",
+      "runnables_fired": 0,
+      "sha256": "c7184f9d835c43f1bbf1bbba95f688d2264a34760a881d2fbd77267ffdaa8400",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_089.png",
+      "index": 89,
+      "looper_virtual_ms": 1000025010,
+      "png_sha256": "de36e7b83c51ab7be27ed86714af19314c9a066c783b7b18ea478ccf6193487f",
+      "runnables_fired": 0,
+      "sha256": "11f34b7422f832b60efecdb2232d3cd3e7594a7f5c2303d401e17cb3fd4f0598",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_090.png",
+      "index": 90,
+      "looper_virtual_ms": 1000025380,
+      "png_sha256": "4bd8e935bd773d4c50da96d75d7db74a606653f2b7a3c397fe51b59042cf1f31",
+      "runnables_fired": 0,
+      "sha256": "23a544f217dff26cef63b9a683d8565ff19ca402e38ab68fe509b5a12a91f208",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_091.png",
+      "index": 91,
+      "looper_virtual_ms": 1000025750,
+      "png_sha256": "eefe16274511c375e87a90350c2e547a3f717f6d9737b9cdcc9bdecc8e811f3b",
+      "runnables_fired": 0,
+      "sha256": "585960bce94f8674d0bce348bca126b3509718902b1079450e4bdec11951562d",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_092.png",
+      "index": 92,
+      "looper_virtual_ms": 1000026120,
+      "png_sha256": "e6987631c77a4a11e498b5830eb2f4d52c44675dd404a5b5953a52a42aa074b6",
+      "runnables_fired": 0,
+      "sha256": "3fc1aab388cc13f1bcb30c05f7ed13e23b7dc55a359bfe3dd887a42c11038474",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 1521,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_093.png",
+      "index": 93,
+      "looper_virtual_ms": 1000026370,
+      "png_sha256": "53be92ce23c5a44057e9b65424883caf7fd15ca551d935b51ab34af42d1906bf",
+      "runnables_fired": 0,
+      "sha256": "b047eea064019da5b5018431ad86dd6e4862fb9235f39f6a06d2f748c603f18f",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 1934375,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_094.png",
+      "index": 94,
+      "looper_virtual_ms": 1000026620,
+      "png_sha256": "66bebea84d807f01e95ee8a49f2350398885c8b72c79159b5e31c82acbd493be",
+      "runnables_fired": 1,
+      "sha256": "172809e74b3eb9b568685a85ed413293ae3a6bbc9eaa44662365ac1f4eaebbb7",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 0,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_095.png",
+      "index": 95,
+      "looper_virtual_ms": 1000026870,
+      "png_sha256": "66bebea84d807f01e95ee8a49f2350398885c8b72c79159b5e31c82acbd493be",
+      "runnables_fired": 0,
+      "sha256": "172809e74b3eb9b568685a85ed413293ae3a6bbc9eaa44662365ac1f4eaebbb7",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 0,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_096.png",
+      "index": 96,
+      "looper_virtual_ms": 1000027120,
+      "png_sha256": "66bebea84d807f01e95ee8a49f2350398885c8b72c79159b5e31c82acbd493be",
+      "runnables_fired": 0,
+      "sha256": "172809e74b3eb9b568685a85ed413293ae3a6bbc9eaa44662365ac1f4eaebbb7",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 0,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_097.png",
+      "index": 97,
+      "looper_virtual_ms": 1000027370,
+      "png_sha256": "66bebea84d807f01e95ee8a49f2350398885c8b72c79159b5e31c82acbd493be",
+      "runnables_fired": 0,
+      "sha256": "172809e74b3eb9b568685a85ed413293ae3a6bbc9eaa44662365ac1f4eaebbb7",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 0,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_098.png",
+      "index": 98,
+      "looper_virtual_ms": 1000027620,
+      "png_sha256": "66bebea84d807f01e95ee8a49f2350398885c8b72c79159b5e31c82acbd493be",
+      "runnables_fired": 0,
+      "sha256": "172809e74b3eb9b568685a85ed413293ae3a6bbc9eaa44662365ac1f4eaebbb7",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 1934375,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_099.png",
+      "index": 99,
+      "looper_virtual_ms": 1000027990,
+      "png_sha256": "debdce66f8222e1acd85a30162d56dfd51537af1b376adbca981aa1d3c86b4db",
+      "runnables_fired": 0,
+      "sha256": "3043ea42ffcbf39258581dbb88426f655b2acfcd46fc8a3f5bc09a7440558382",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 1521,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_100.png",
+      "index": 100,
+      "looper_virtual_ms": 1000028240,
+      "png_sha256": "7e42ef486deae3354d6a11e191efa4e8a3c87ccf731115a428b24074f286bfcf",
+      "runnables_fired": 0,
+      "sha256": "eea3a07fd7b66a36f9e8e815c7a1c5723aae4b5ef31c277f06536c4b9b39a176",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_101.png",
+      "index": 101,
+      "looper_virtual_ms": 1000028490,
+      "png_sha256": "ee6210e6cbd12b15920b9900cdcbfc9fc9f9cdb5a9cc252920eb9bca62609479",
+      "runnables_fired": 0,
+      "sha256": "58c421a8a86cb4069980a6d671f04613aaee00dec206852082cc773e0ae3e2f7",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_102.png",
+      "index": 102,
+      "looper_virtual_ms": 1000028740,
+      "png_sha256": "ec3b295611bf83477052d97892170a642827aa31f5797ea988a7f0de8df3e275",
+      "runnables_fired": 0,
+      "sha256": "490bedcbb994c921a9b914b8ef60a3679ffca2057324826a0103d08568d5172a",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_103.png",
+      "index": 103,
+      "looper_virtual_ms": 1000028990,
+      "png_sha256": "42dd705dac3513dd6e42cd48bce6f464ed4d0b56155c55d5b334dd2d8df3fc18",
+      "runnables_fired": 0,
+      "sha256": "91840337a559cf398a616e090b7d457ae7a5f4c31f73c0fbd4a5a8679df52423",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_104.png",
+      "index": 104,
+      "looper_virtual_ms": 1000029240,
+      "png_sha256": "074354263f056fa3b371ea062c17b333c845b073f01a5f427ba07e75f3004cb6",
+      "runnables_fired": 0,
+      "sha256": "5e0e1cf584c6068394e76abf81a5368d30ebb0cb4e0fd320870adaebfdbc55d2",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_105.png",
+      "index": 105,
+      "looper_virtual_ms": 1000029490,
+      "png_sha256": "d138ab09b7abac29b40b848438b1dd1e5c0457662ada9a1d6f191e6cdd1411af",
+      "runnables_fired": 0,
+      "sha256": "d5cd39cdd53fe60333589437743e7198352f5f7d6bce94da9fb7ce16fe6e12f4",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_106.png",
+      "index": 106,
+      "looper_virtual_ms": 1000029740,
+      "png_sha256": "abd2d5104cac47207ef573bfd3ee41e9d89077bab161a84b23bfb2db1c2b4e93",
+      "runnables_fired": 0,
+      "sha256": "74a47a7d340242faff9e6ca0f76d0dfb1be6950220511463284f8361e460f795",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_107.png",
+      "index": 107,
+      "looper_virtual_ms": 1000029990,
+      "png_sha256": "0a653fddf994e27cb015d5968db62e9e712313efbd72a2ba51971894be7f6a23",
+      "runnables_fired": 0,
+      "sha256": "0ee442ce85b960f63f9d033706ae72c23ccd602ca6456ba3b65e9f83505d65ee",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_108.png",
+      "index": 108,
+      "looper_virtual_ms": 1000030240,
+      "png_sha256": "080c7dbf6f5a492bf4470a707fdc4a4c1a507462bd7ac122d43f72586f08f6d1",
+      "runnables_fired": 0,
+      "sha256": "409058525cb20a941c571602eb21ebc8cd747c3b006c8fb64fba3670b74d7e69",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_109.png",
+      "index": 109,
+      "looper_virtual_ms": 1000030490,
+      "png_sha256": "ffb2d0101d37b913b82e035cb8a4812cba1177914e4db33427c5577abc775363",
+      "runnables_fired": 0,
+      "sha256": "d748a9ed95b303c21aae364203b71799bb11811165fbbda84da2b5af49c1bf43",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_110.png",
+      "index": 110,
+      "looper_virtual_ms": 1000030740,
+      "png_sha256": "36657faa69eb6e9bb209984c878a00357e3d86dbf2fb5a3e0e4108f264ebdc03",
+      "runnables_fired": 0,
+      "sha256": "87ec6b59895c6aabf19cc72b192278f3aa6e6081c83f4dc132b3da11ec27ede3",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_111.png",
+      "index": 111,
+      "looper_virtual_ms": 1000030990,
+      "png_sha256": "cd757287e08d89c9bb8f2a852aee1245a6cfa8ba296d6be45f4a220b224be63c",
+      "runnables_fired": 0,
+      "sha256": "5c1f6b9c6d70532960b65ff273dc5435b56d4a90532435525da2adfde7682586",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_112.png",
+      "index": 112,
+      "looper_virtual_ms": 1000031240,
+      "png_sha256": "85d6283b176faf232147f41c9ebd379285a1d2c9a7f26481b1f682d06ff3761b",
+      "runnables_fired": 0,
+      "sha256": "2d716d3cb741901f8d77749b389d773695ab6f224b2a331c16ba755a908aaeef",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_113.png",
+      "index": 113,
+      "looper_virtual_ms": 1000031490,
+      "png_sha256": "357ede605213907d98f32819a7aeeb3be5f838b436ca1feb84741908d169c608",
+      "runnables_fired": 0,
+      "sha256": "5c37becde8fff3b175658b2aa6a57b70f50ce99e4d79e2c2fde8b0f783ef461d",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_114.png",
+      "index": 114,
+      "looper_virtual_ms": 1000031740,
+      "png_sha256": "5d64c40e31981d093d6e2b126eabfccc72ea08bcdb4758c1c0e9bc86ad418026",
+      "runnables_fired": 0,
+      "sha256": "2fdd11c7f2cba3e64a0454c3a28b8044f0d0ac6980bbd99d3fefdf7a912ec5f5",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_115.png",
+      "index": 115,
+      "looper_virtual_ms": 1000031990,
+      "png_sha256": "16c06bb03fcd34012d9ebc99088da0989ac133c096b0fddc405f5a2ddbdf4b31",
+      "runnables_fired": 0,
+      "sha256": "f502edc3b74c35b531870c03f6fcc49c21221b7c487798dbca0bcedebb29e3a0",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_116.png",
+      "index": 116,
+      "looper_virtual_ms": 1000032240,
+      "png_sha256": "7a38972faaafc3c4b882deec8a91bb51f432b221fc4d7af4c69c08a3580a020f",
+      "runnables_fired": 0,
+      "sha256": "a3ee0e0e7728955329fca8b2a067614e07186bb2c130f773cb02701727693bfb",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_117.png",
+      "index": 117,
+      "looper_virtual_ms": 1000032490,
+      "png_sha256": "958031dc4f2ae2c3223a9eb7890f1249dcec09065b559adaa718b6d0fe5d4166",
+      "runnables_fired": 0,
+      "sha256": "115b9c5d5a23d7baf505c999a5656600fa9857758b35577c1694c11952c8241a",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_118.png",
+      "index": 118,
+      "looper_virtual_ms": 1000032740,
+      "png_sha256": "9bf98e8d47c6165e5d7c2143afdf2d1a5837933ae21084ab012617b071123540",
+      "runnables_fired": 0,
+      "sha256": "35b6d8b1557a11cc68ea0ab05b09b18675507e946085a269f25e0fd7de3ba981",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_119.png",
+      "index": 119,
+      "looper_virtual_ms": 1000032990,
+      "png_sha256": "e3cd4de144b3b1c262d12991eee183766bf234f500d2d243554b41ec411a2ebb",
+      "runnables_fired": 0,
+      "sha256": "18dd4d7eea56b88dc21dc670cd2be2e120400c86b57cb80b546690d0585a95a6",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_120.png",
+      "index": 120,
+      "looper_virtual_ms": 1000033240,
+      "png_sha256": "7e42ef486deae3354d6a11e191efa4e8a3c87ccf731115a428b24074f286bfcf",
+      "runnables_fired": 0,
+      "sha256": "eea3a07fd7b66a36f9e8e815c7a1c5723aae4b5ef31c277f06536c4b9b39a176",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_121.png",
+      "index": 121,
+      "looper_virtual_ms": 1000033490,
+      "png_sha256": "ee6210e6cbd12b15920b9900cdcbfc9fc9f9cdb5a9cc252920eb9bca62609479",
+      "runnables_fired": 0,
+      "sha256": "58c421a8a86cb4069980a6d671f04613aaee00dec206852082cc773e0ae3e2f7",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_122.png",
+      "index": 122,
+      "looper_virtual_ms": 1000033740,
+      "png_sha256": "ec3b295611bf83477052d97892170a642827aa31f5797ea988a7f0de8df3e275",
+      "runnables_fired": 0,
+      "sha256": "490bedcbb994c921a9b914b8ef60a3679ffca2057324826a0103d08568d5172a",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_123.png",
+      "index": 123,
+      "looper_virtual_ms": 1000033990,
+      "png_sha256": "42dd705dac3513dd6e42cd48bce6f464ed4d0b56155c55d5b334dd2d8df3fc18",
+      "runnables_fired": 0,
+      "sha256": "91840337a559cf398a616e090b7d457ae7a5f4c31f73c0fbd4a5a8679df52423",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_124.png",
+      "index": 124,
+      "looper_virtual_ms": 1000034240,
+      "png_sha256": "074354263f056fa3b371ea062c17b333c845b073f01a5f427ba07e75f3004cb6",
+      "runnables_fired": 0,
+      "sha256": "5e0e1cf584c6068394e76abf81a5368d30ebb0cb4e0fd320870adaebfdbc55d2",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_125.png",
+      "index": 125,
+      "looper_virtual_ms": 1000034490,
+      "png_sha256": "d138ab09b7abac29b40b848438b1dd1e5c0457662ada9a1d6f191e6cdd1411af",
+      "runnables_fired": 0,
+      "sha256": "d5cd39cdd53fe60333589437743e7198352f5f7d6bce94da9fb7ce16fe6e12f4",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_126.png",
+      "index": 126,
+      "looper_virtual_ms": 1000034740,
+      "png_sha256": "abd2d5104cac47207ef573bfd3ee41e9d89077bab161a84b23bfb2db1c2b4e93",
+      "runnables_fired": 0,
+      "sha256": "74a47a7d340242faff9e6ca0f76d0dfb1be6950220511463284f8361e460f795",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 3042,
+      "event": "timer (virtual +250ms)",
+      "file": "frame_127.png",
+      "index": 127,
+      "looper_virtual_ms": 1000034990,
+      "png_sha256": "0a653fddf994e27cb015d5968db62e9e712313efbd72a2ba51971894be7f6a23",
+      "runnables_fired": 0,
+      "sha256": "0ee442ce85b960f63f9d033706ae72c23ccd602ca6456ba3b65e9f83505d65ee",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "TOP",
+          "view_id": 441
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 442
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 443
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "BOTTOM",
+          "view_id": 444
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "START",
+          "view_id": 445
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Game Over!",
+          "view_id": 700001
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "退出",
+          "view_id": 700003
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "重新开始",
+          "view_id": 700004
+        }
+      ]
+    }
+  ],
+  "runnables_fired_total": 1,
+  "screen": {
+    "height": 1920,
+    "width": 1080
+  }
+}
