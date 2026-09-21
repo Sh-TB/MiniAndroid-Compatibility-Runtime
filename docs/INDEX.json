@@ -1,5 +1,5 @@
 {
- "generated": "S48 2026-09-16",
+ "generated": "S74 2026-09-21",
  "entrypoints": {
   "battery_command": "bash scripts/test/run_test_battery.sh",
   "battery_index": "docs/testing/BATTERY_INDEX.json",
@@ -10,7 +10,14 @@
   "release_manifest": "docs/releases/RELEASE_MANIFEST.json",
   "worklog": "docs/maintenance/worklog.md",
   "release_guard": "scripts/release/check_release_artifacts.sh",
-  "toolchain_bootstrap": "scripts/build/bootstrap_toolchain.sh"
+  "toolchain_bootstrap": "scripts/build/bootstrap_toolchain.sh",
+  "compatibility_platform": "docs/compatibility/README.md",
+  "app_dossiers": "docs/compatibility/apps/",
+  "capability_matrix": "docs/compatibility/CAPABILITY_MATRIX.md",
+  "android_execution_skill": "docs/execution-skill/SKILL.md",
+  "knowledge_records": "docs/knowledge/KNOWLEDGE_RECORDS.json",
+  "compatibility_validator": "tools/validate_compatibility_graph.py",
+  "knowledge_promotion": "tools/promote_knowledge.py"
  },
  "current_frontier": {
   "primary": "R-NEW-361",
@@ -100,8 +107,8 @@
   "SUPERSEDED-BY-EVIDENCE"
  ],
  "verified_apps": {
-  "TicTacToe Classic (palahsu)": "fully playable (S44; §29 anchor PASS)",
-  "HelloWorld fixtures": "golden batteries PASS (§28/EXT-01/EXT-02)",
+  "TicTacToe Classic (palahsu)": "fully playable (S44; \u00a729 anchor PASS)",
+  "HelloWorld fixtures": "golden batteries PASS (\u00a728/EXT-01/EXT-02)",
   "dooz v18/v23": "deeper Compose execution; visible frame still open (R-NEW-361)",
   "2048": "corpus-executed; NOT claimed playable",
   "Telegram": "launch + themed frame; R-NEW-303 frontier"

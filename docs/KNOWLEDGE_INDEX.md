@@ -10,6 +10,18 @@
 
 Snapshot: 745 tracked `.md` files — 441 KEEP (knowledge/process), 185 HISTORY (era records), 111 EVIDENCE (compact, cited), plus 290 tracked `.json` (indexes/fixtures/oracles — classified below).
 
+## 0e. S74 additions
+
+| Artifact | Class | Role |
+|---|---|---|
+| `docs/compatibility/` (apps/ tools/ capabilities/ + README + CAPABILITY_MATRIX.md) | KEEP | Compatibility Platform: 14 app dossiers, 12 tool/source profiles, 15 capability records, evidence-backed matrix — the fast-access layer over raw research (agents read this FIRST) |
+| `docs/knowledge/laws/*.json` + `docs/knowledge/KNOWLEDGE_RECORDS.json` | KEEP | 31 canonical knowledge records (20 VERIFIED semantic laws, 8 honest OBSERVED open-frontier, 2 RESEARCHED, 1 SUPERSEDED false-claim `CLAIM-DOOZ-23472-VISUAL` preserved per evidence-quality law) |
+| `docs/execution-skill/SKILL.md` | KEEP | vendor-neutral Android Execution Skill: 22-step execution loop, read order, status/evidence laws, autonomous-gameplay ladder, safe stop/resume |
+| `tools/validate_compatibility_graph.py` | KEEP | graph integrity gate (PASS = references/statuses/provenance/evidence/registry-drift/index all green); forced F-120 back-registration + registry summary repair at S74 |
+| `tools/promote_knowledge.py` | KEEP | knowledge promotion pipeline (RAW→…→VERIFIED; single-step; VERIFIED requires test+evidence+source; append-only journal) |
+| `scripts/s74_*.py` | KEEP | emitter (evidence-derived records + status/cross-ref validation before write) + registry hygiene |
+| `root_registry.json` F-120 entry | KEEP-law | back-registered S66 button-gravity law after validator gap detection; summary totals repaired (397) |
+
 ## 0d. S73 additions
 
 | File | Class | Role |

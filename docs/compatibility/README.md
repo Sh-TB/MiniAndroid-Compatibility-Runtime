@@ -17,7 +17,7 @@ below are what an agent reads FIRST (taskbook §16, §21, §67).
 | **A** | Application Compatibility Dossiers | `apps/*.json` (one per important APK) |
 | **B** | Helper / Tool / Source Dossiers | `tools/*.json` |
 | **C** | Canonical Verified Knowledge Records | `docs/knowledge/laws/*.json` + `docs/knowledge/KNOWLEDGE_RECORDS.json` |
-| **D** | Reusable Android Execution Skill | `skills/android-execution/SKILL.md` |
+| **D** | Reusable Android Execution Skill | `docs/execution-skill/SKILL.md` |
 | **E** | Capability Matrix / Knowledge Graph | `CAPABILITY_MATRIX.md` (generated) + cross-referenced IDs in every record |
 
 Graph law (how records link):
