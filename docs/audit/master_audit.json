@@ -1,6 +1,6 @@
 {
- "generated": "2026-09-21 07:23 UTC",
- "head": "05e84749",
+ "generated": "2026-09-21 07:27 UTC",
+ "head": "d7280a15",
  "counts": {
   "TOTAL_ROWS": 374,
   "CONSTITUTION_RULES": 169,
@@ -21,8 +21,8 @@
    "DUPLICATE": 0,
    "IMPLEMENTED": 157,
    "NOT_APPLICABLE": 1,
-   "OBSERVED": 118,
-   "PARTIAL": 19,
+   "OBSERVED": 132,
+   "PARTIAL": 5,
    "PENDING": 0,
    "SUPERSEDED": 1,
    "TESTED": 18,
@@ -7563,12 +7563,15 @@
    "source": "github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/10",
    "requirement": "[EXEC] helloworld: living execution dossier \u2014 checkpoint with human-visible evidence link required",
    "category": "ISSUE-MAPPING",
-   "status": "PARTIAL",
+   "status": "OBSERVED",
    "implementation": [],
    "tests": [],
-   "execution": [],
+   "execution": [
+    "checkpoint comment posted S74-FINAL; corrective scope/NO_MEANINGFUL_VISUAL_PROOF labels where applicable (dooz/telegram/stopwatch/tictactoe)"
+   ],
    "evidence": [
-    "app dossier: docs/compatibility/apps/helloworld.json; bundle docs/evidence/s74_ops/helloworld/"
+    "app dossier: docs/compatibility/apps/helloworld.json; bundle docs/evidence/s74_ops/helloworld/",
+    "\u00a76 checkpoint published with 2 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
    ],
    "github": [
     "issues/10"
@@ -7577,19 +7580,22 @@
     "10"
    ],
    "consumer": [],
-   "gap": "checkpoint body/comments verified separately (github_evidence_check.json)"
+   "gap": ""
   },
   {
    "id": "ISSUE-11",
    "source": "github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/11",
    "requirement": "[EXEC] tictactoe: living execution dossier \u2014 checkpoint with human-visible evidence link required",
    "category": "ISSUE-MAPPING",
-   "status": "PARTIAL",
+   "status": "OBSERVED",
    "implementation": [],
    "tests": [],
-   "execution": [],
+   "execution": [
+    "checkpoint comment posted S74-FINAL; corrective scope/NO_MEANINGFUL_VISUAL_PROOF labels where applicable (dooz/telegram/stopwatch/tictactoe)"
+   ],
    "evidence": [
-    "app dossier: docs/compatibility/apps/tictactoe.json; bundle docs/evidence/s74_ops/tictactoe/"
+    "app dossier: docs/compatibility/apps/tictactoe.json; bundle docs/evidence/s74_ops/tictactoe/",
+    "\u00a76 checkpoint published with 3 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
    ],
    "github": [
     "issues/11"
@@ -7598,19 +7604,22 @@
     "11"
    ],
    "consumer": [],
-   "gap": "checkpoint body/comments verified separately (github_evidence_check.json)"
+   "gap": ""
   },
   {
    "id": "ISSUE-12",
    "source": "github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/12",
    "requirement": "[EXEC] connectfour: living execution dossier \u2014 checkpoint with human-visible evidence link required",
    "category": "ISSUE-MAPPING",
-   "status": "PARTIAL",
+   "status": "OBSERVED",
    "implementation": [],
    "tests": [],
-   "execution": [],
+   "execution": [
+    "checkpoint comment posted S74-FINAL; corrective scope/NO_MEANINGFUL_VISUAL_PROOF labels where applicable (dooz/telegram/stopwatch/tictactoe)"
+   ],
    "evidence": [
-    "app dossier: docs/compatibility/apps/connectfour.json; bundle docs/evidence/s74_ops/connectfour/"
+    "app dossier: docs/compatibility/apps/connectfour.json; bundle docs/evidence/s74_ops/connectfour/",
+    "\u00a76 checkpoint published with 3 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
    ],
    "github": [
     "issues/12"
@@ -7619,19 +7628,22 @@
     "12"
    ],
    "consumer": [],
-   "gap": "checkpoint body/comments verified separately (github_evidence_check.json)"
+   "gap": ""
   },
   {
    "id": "ISSUE-13",
    "source": "github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/13",
    "requirement": "[EXEC] androidgamesnake: living execution dossier \u2014 checkpoint with human-visible evidence link required",
    "category": "ISSUE-MAPPING",
-   "status": "PARTIAL",
+   "status": "OBSERVED",
    "implementation": [],
    "tests": [],
-   "execution": [],
+   "execution": [
+    "checkpoint comment posted S74-FINAL; corrective scope/NO_MEANINGFUL_VISUAL_PROOF labels where applicable (dooz/telegram/stopwatch/tictactoe)"
+   ],
    "evidence": [
-    "app dossier: docs/compatibility/apps/androidgamesnake.json; bundle docs/evidence/s74_ops/androidgamesnake/"
+    "app dossier: docs/compatibility/apps/androidgamesnake.json; bundle docs/evidence/s74_ops/androidgamesnake/",
+    "\u00a76 checkpoint published with 3 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
    ],
    "github": [
     "issues/13"
@@ -7640,19 +7652,22 @@
     "13"
    ],
    "consumer": [],
-   "gap": "checkpoint body/comments verified separately (github_evidence_check.json)"
+   "gap": ""
   },
   {
    "id": "ISSUE-14",
    "source": "github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/14",
    "requirement": "[EXEC] dooz: living execution dossier \u2014 checkpoint with human-visible evidence link required",
    "category": "ISSUE-MAPPING",
-   "status": "PARTIAL",
+   "status": "OBSERVED",
    "implementation": [],
    "tests": [],
-   "execution": [],
+   "execution": [
+    "checkpoint comment posted S74-FINAL; corrective scope/NO_MEANINGFUL_VISUAL_PROOF labels where applicable (dooz/telegram/stopwatch/tictactoe)"
+   ],
    "evidence": [
-    "app dossier: docs/compatibility/apps/dooz.json; bundle docs/evidence/s74_ops/dooz/"
+    "app dossier: docs/compatibility/apps/dooz.json; bundle docs/evidence/s74_ops/dooz/",
+    "\u00a76 checkpoint published with 2 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
    ],
    "github": [
     "issues/14"
@@ -7661,19 +7676,22 @@
     "14"
    ],
    "consumer": [],
-   "gap": "checkpoint body/comments verified separately (github_evidence_check.json)"
+   "gap": ""
   },
   {
    "id": "ISSUE-15",
    "source": "github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/15",
    "requirement": "[EXEC] unote: living execution dossier \u2014 checkpoint with human-visible evidence link required",
    "category": "ISSUE-MAPPING",
-   "status": "PARTIAL",
+   "status": "OBSERVED",
    "implementation": [],
    "tests": [],
-   "execution": [],
+   "execution": [
+    "checkpoint comment posted S74-FINAL; corrective scope/NO_MEANINGFUL_VISUAL_PROOF labels where applicable (dooz/telegram/stopwatch/tictactoe)"
+   ],
    "evidence": [
-    "app dossier: docs/compatibility/apps/unote.json; bundle docs/evidence/s74_ops/unote/"
+    "app dossier: docs/compatibility/apps/unote.json; bundle docs/evidence/s74_ops/unote/",
+    "\u00a76 checkpoint published with 4 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
    ],
    "github": [
     "issues/15"
@@ -7682,19 +7700,22 @@
     "15"
    ],
    "consumer": [],
-   "gap": "checkpoint body/comments verified separately (github_evidence_check.json)"
+   "gap": ""
   },
   {
    "id": "ISSUE-16",
    "source": "github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/16",
    "requirement": "[EXEC] telegram: living execution dossier \u2014 checkpoint with human-visible evidence link required",
    "category": "ISSUE-MAPPING",
-   "status": "PARTIAL",
+   "status": "OBSERVED",
    "implementation": [],
    "tests": [],
-   "execution": [],
+   "execution": [
+    "checkpoint comment posted S74-FINAL; corrective scope/NO_MEANINGFUL_VISUAL_PROOF labels where applicable (dooz/telegram/stopwatch/tictactoe)"
+   ],
    "evidence": [
-    "app dossier: docs/compatibility/apps/telegram.json; bundle docs/evidence/s74_ops/telegram/"
+    "app dossier: docs/compatibility/apps/telegram.json; bundle docs/evidence/s74_ops/telegram/",
+    "\u00a76 checkpoint published with 1 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
    ],
    "github": [
     "issues/16"
@@ -7703,19 +7724,22 @@
     "16"
    ],
    "consumer": [],
-   "gap": "checkpoint body/comments verified separately (github_evidence_check.json)"
+   "gap": ""
   },
   {
    "id": "ISSUE-17",
    "source": "github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/17",
    "requirement": "[EXEC] gmdice: living execution dossier \u2014 checkpoint with human-visible evidence link required",
    "category": "ISSUE-MAPPING",
-   "status": "PARTIAL",
+   "status": "OBSERVED",
    "implementation": [],
    "tests": [],
-   "execution": [],
+   "execution": [
+    "checkpoint comment posted S74-FINAL; corrective scope/NO_MEANINGFUL_VISUAL_PROOF labels where applicable (dooz/telegram/stopwatch/tictactoe)"
+   ],
    "evidence": [
-    "app dossier: docs/compatibility/apps/gmdice.json; bundle docs/evidence/s74_ops/gmdice/"
+    "app dossier: docs/compatibility/apps/gmdice.json; bundle docs/evidence/s74_ops/gmdice/",
+    "\u00a76 checkpoint published with 2 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
    ],
    "github": [
     "issues/17"
@@ -7724,19 +7748,22 @@
     "17"
    ],
    "consumer": [],
-   "gap": "checkpoint body/comments verified separately (github_evidence_check.json)"
+   "gap": ""
   },
   {
    "id": "ISSUE-18",
    "source": "github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/18",
    "requirement": "[EXEC] microtimer: living execution dossier \u2014 checkpoint with human-visible evidence link required",
    "category": "ISSUE-MAPPING",
-   "status": "PARTIAL",
+   "status": "OBSERVED",
    "implementation": [],
    "tests": [],
-   "execution": [],
+   "execution": [
+    "checkpoint comment posted S74-FINAL; corrective scope/NO_MEANINGFUL_VISUAL_PROOF labels where applicable (dooz/telegram/stopwatch/tictactoe)"
+   ],
    "evidence": [
-    "app dossier: docs/compatibility/apps/microtimer.json; bundle docs/evidence/s74_ops/microtimer/"
+    "app dossier: docs/compatibility/apps/microtimer.json; bundle docs/evidence/s74_ops/microtimer/",
+    "\u00a76 checkpoint published with 4 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
    ],
    "github": [
     "issues/18"
@@ -7745,19 +7772,22 @@
     "18"
    ],
    "consumer": [],
-   "gap": "checkpoint body/comments verified separately (github_evidence_check.json)"
+   "gap": ""
   },
   {
    "id": "ISSUE-19",
    "source": "github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/19",
    "requirement": "[EXEC] fishrings: living execution dossier \u2014 checkpoint with human-visible evidence link required",
    "category": "ISSUE-MAPPING",
-   "status": "PARTIAL",
+   "status": "OBSERVED",
    "implementation": [],
    "tests": [],
-   "execution": [],
+   "execution": [
+    "checkpoint comment posted S74-FINAL; corrective scope/NO_MEANINGFUL_VISUAL_PROOF labels where applicable (dooz/telegram/stopwatch/tictactoe)"
+   ],
    "evidence": [
-    "app dossier: docs/compatibility/apps/fishrings.json; bundle docs/evidence/s74_ops/fishrings/"
+    "app dossier: docs/compatibility/apps/fishrings.json; bundle docs/evidence/s74_ops/fishrings/",
+    "\u00a76 checkpoint published with 3 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
    ],
    "github": [
     "issues/19"
@@ -7766,19 +7796,22 @@
     "19"
    ],
    "consumer": [],
-   "gap": "checkpoint body/comments verified separately (github_evidence_check.json)"
+   "gap": ""
   },
   {
    "id": "ISSUE-20",
    "source": "github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/20",
    "requirement": "[EXEC] tripeaks: living execution dossier \u2014 checkpoint with human-visible evidence link required",
    "category": "ISSUE-MAPPING",
-   "status": "PARTIAL",
+   "status": "OBSERVED",
    "implementation": [],
    "tests": [],
-   "execution": [],
+   "execution": [
+    "checkpoint comment posted S74-FINAL; corrective scope/NO_MEANINGFUL_VISUAL_PROOF labels where applicable (dooz/telegram/stopwatch/tictactoe)"
+   ],
    "evidence": [
-    "app dossier: docs/compatibility/apps/tripeaks.json; bundle docs/evidence/s74_ops/tripeaks/"
+    "app dossier: docs/compatibility/apps/tripeaks.json; bundle docs/evidence/s74_ops/tripeaks/",
+    "\u00a76 checkpoint published with 3 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
    ],
    "github": [
     "issues/20"
@@ -7787,19 +7820,22 @@
     "20"
    ],
    "consumer": [],
-   "gap": "checkpoint body/comments verified separately (github_evidence_check.json)"
+   "gap": ""
   },
   {
    "id": "ISSUE-21",
    "source": "github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/21",
    "requirement": "[EXEC] bouncy: living execution dossier \u2014 checkpoint with human-visible evidence link required",
    "category": "ISSUE-MAPPING",
-   "status": "PARTIAL",
+   "status": "OBSERVED",
    "implementation": [],
    "tests": [],
-   "execution": [],
+   "execution": [
+    "checkpoint comment posted S74-FINAL; corrective scope/NO_MEANINGFUL_VISUAL_PROOF labels where applicable (dooz/telegram/stopwatch/tictactoe)"
+   ],
    "evidence": [
-    "app dossier: docs/compatibility/apps/bouncy.json; bundle docs/evidence/s74_ops/bouncy/"
+    "app dossier: docs/compatibility/apps/bouncy.json; bundle docs/evidence/s74_ops/bouncy/",
+    "\u00a76 checkpoint published with 5 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
    ],
    "github": [
     "issues/21"
@@ -7808,19 +7844,22 @@
     "21"
    ],
    "consumer": [],
-   "gap": "checkpoint body/comments verified separately (github_evidence_check.json)"
+   "gap": ""
   },
   {
    "id": "ISSUE-22",
    "source": "github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/22",
    "requirement": "[EXEC] stopwatch: living execution dossier \u2014 checkpoint with human-visible evidence link required",
    "category": "ISSUE-MAPPING",
-   "status": "PARTIAL",
+   "status": "OBSERVED",
    "implementation": [],
    "tests": [],
-   "execution": [],
+   "execution": [
+    "checkpoint comment posted S74-FINAL; corrective scope/NO_MEANINGFUL_VISUAL_PROOF labels where applicable (dooz/telegram/stopwatch/tictactoe)"
+   ],
    "evidence": [
-    "app dossier: docs/compatibility/apps/stopwatch.json; bundle docs/evidence/s74_ops/stopwatch/"
+    "app dossier: docs/compatibility/apps/stopwatch.json; bundle docs/evidence/s74_ops/stopwatch/",
+    "\u00a76 checkpoint published with 2 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
    ],
    "github": [
     "issues/22"
@@ -7829,19 +7868,22 @@
     "22"
    ],
    "consumer": [],
-   "gap": "checkpoint body/comments verified separately (github_evidence_check.json)"
+   "gap": ""
   },
   {
    "id": "ISSUE-23",
    "source": "github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/23",
    "requirement": "[EXEC] opmt: living execution dossier \u2014 checkpoint with human-visible evidence link required",
    "category": "ISSUE-MAPPING",
-   "status": "PARTIAL",
+   "status": "OBSERVED",
    "implementation": [],
    "tests": [],
-   "execution": [],
+   "execution": [
+    "checkpoint comment posted S74-FINAL; corrective scope/NO_MEANINGFUL_VISUAL_PROOF labels where applicable (dooz/telegram/stopwatch/tictactoe)"
+   ],
    "evidence": [
-    "app dossier: docs/compatibility/apps/opmt.json; bundle docs/evidence/s74_ops/opmt/"
+    "app dossier: docs/compatibility/apps/opmt.json; bundle docs/evidence/s74_ops/opmt/",
+    "\u00a76 checkpoint published with 5 render-verified evidence URLs (HTTP 200, see github_evidence_check.json)"
    ],
    "github": [
     "issues/23"
@@ -7850,7 +7892,7 @@
     "23"
    ],
    "consumer": [],
-   "gap": "checkpoint body/comments verified separately (github_evidence_check.json)"
+   "gap": ""
   }
  ]
 }

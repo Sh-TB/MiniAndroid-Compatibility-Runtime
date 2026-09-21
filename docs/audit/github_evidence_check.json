@@ -5,113 +5,291 @@
    "issue": 10,
    "title": "[EXEC] HelloWorld \u2014 APK Execution & Visual Proof",
    "state": "closed",
-   "body_has_image": false,
-   "image_urls": [],
-   "url_checks": []
+   "body_has_image": true,
+   "image_urls": [
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/helloworld/01_launch.jpg",
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/helloworld/02_frame1.png"
+   ],
+   "url_checks": [
+    {
+     "url": "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/hello",
+     "resp": "200 image/jpeg"
+    },
+    {
+     "url": "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/hello",
+     "resp": "200 image/png"
+    }
+   ]
   },
   {
    "issue": 11,
    "title": "[EXEC] TicTacToe \u2014 APK Execution & Gameplay Proof",
    "state": "closed",
-   "body_has_image": false,
-   "image_urls": [],
-   "url_checks": []
+   "body_has_image": true,
+   "image_urls": [
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/tictactoe_golden_fixture/01_launch.png",
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/tictactoe_golden_fixture/02_first_move.png",
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/tictactoe_golden_fixture/03_x_wins.png"
+   ],
+   "url_checks": [
+    {
+     "url": "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/ticta",
+     "resp": "200 image/png"
+    },
+    {
+     "url": "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/ticta",
+     "resp": "200 image/png"
+    }
+   ]
   },
   {
    "issue": 12,
    "title": "[EXEC] ConnectFour \u2014 APK Execution & Gameplay Proof",
    "state": "closed",
-   "body_has_image": false,
-   "image_urls": [],
-   "url_checks": []
+   "body_has_image": true,
+   "image_urls": [
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/connectfour_golden_fixture/01_launch.png",
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/connectfour_golden_fixture/02_midgame.png",
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/connectfour_golden_fixture/03_y_wins.png"
+   ],
+   "url_checks": [
+    {
+     "url": "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/conne",
+     "resp": "200 image/png"
+    },
+    {
+     "url": "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/conne",
+     "resp": "200 image/png"
+    }
+   ]
   },
   {
    "issue": 13,
    "title": "[EXEC] AndroidGameSnake \u2014 Autonomous Gameplay Proof",
    "state": "closed",
-   "body_has_image": false,
-   "image_urls": [],
-   "url_checks": []
+   "body_has_image": true,
+   "image_urls": [
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/androidgamesnake/01_launch.png",
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/androidgamesnake/02_food_capture_frame034.png",
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/androidgamesnake/03_final.png"
+   ],
+   "url_checks": [
+    {
+     "url": "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/andro",
+     "resp": "200 image/png"
+    },
+    {
+     "url": "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/andro",
+     "resp": "200 image/png"
+    }
+   ]
   },
   {
    "issue": 14,
    "title": "[EXEC] Dooz \u2014 Runtime/UI Completion",
    "state": "open",
-   "body_has_image": false,
-   "image_urls": [],
-   "url_checks": []
+   "body_has_image": true,
+   "image_urls": [
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/dooz/01_launch.png",
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/dooz/03_final.png"
+   ],
+   "url_checks": [
+    {
+     "url": "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/dooz/",
+     "resp": "200 image/png"
+    },
+    {
+     "url": "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/dooz/",
+     "resp": "200 image/png"
+    }
+   ]
   },
   {
    "issue": 15,
    "title": "[EXEC] Unote \u2014 Runtime/UI Completion",
    "state": "open",
-   "body_has_image": false,
-   "image_urls": [],
-   "url_checks": []
+   "body_has_image": true,
+   "image_urls": [
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/unote/01_launch.png",
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/unote/03_final.png",
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/unote/04_frame_000.png",
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/unote/05_frame_006.png"
+   ],
+   "url_checks": [
+    {
+     "url": "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/unote",
+     "resp": "200 image/png"
+    },
+    {
+     "url": "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/unote",
+     "resp": "200 image/png"
+    }
+   ]
   },
   {
    "issue": 16,
    "title": "[EXEC] Telegram \u2014 Runtime Compatibility",
    "state": "open",
-   "body_has_image": false,
-   "image_urls": [],
-   "url_checks": []
+   "body_has_image": true,
+   "image_urls": [
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/telegram/01_launch_engine_default.png"
+   ],
+   "url_checks": [
+    {
+     "url": "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/teleg",
+     "resp": "200 image/png"
+    }
+   ]
   },
   {
    "issue": 17,
    "title": "[EXEC] GMDice \u2014 APK Execution & Visual Proof",
    "state": "open",
-   "body_has_image": false,
-   "image_urls": [],
-   "url_checks": []
+   "body_has_image": true,
+   "image_urls": [
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/gmdice/01_launch.png",
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/gmdice/03_final.png"
+   ],
+   "url_checks": [
+    {
+     "url": "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/gmdic",
+     "resp": "200 image/png"
+    },
+    {
+     "url": "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/gmdic",
+     "resp": "200 image/png"
+    }
+   ]
   },
   {
    "issue": 18,
    "title": "[EXEC] MicroTimer \u2014 APK Execution & Visual Proof",
    "state": "open",
-   "body_has_image": false,
-   "image_urls": [],
-   "url_checks": []
+   "body_has_image": true,
+   "image_urls": [
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/microtimer/01_launch.png",
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/microtimer/03_final.png",
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/microtimer/04_frame_000.png",
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/microtimer/05_frame_006.png"
+   ],
+   "url_checks": [
+    {
+     "url": "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/micro",
+     "resp": "200 image/png"
+    },
+    {
+     "url": "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/micro",
+     "resp": "200 image/png"
+    }
+   ]
   },
   {
    "issue": 19,
    "title": "[EXEC] FishRings \u2014 APK Execution & Gameplay Proof",
    "state": "open",
-   "body_has_image": false,
-   "image_urls": [],
-   "url_checks": []
+   "body_has_image": true,
+   "image_urls": [
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/fishrings/01_launch.png",
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/fishrings/02_mid_maxdiff.png",
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/fishrings/03_final.png"
+   ],
+   "url_checks": [
+    {
+     "url": "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/fishr",
+     "resp": "200 image/png"
+    },
+    {
+     "url": "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/fishr",
+     "resp": "200 image/png"
+    }
+   ]
   },
   {
    "issue": 20,
    "title": "[EXEC] TriPeaks \u2014 APK Execution & Visual Proof",
    "state": "open",
-   "body_has_image": false,
-   "image_urls": [],
-   "url_checks": []
+   "body_has_image": true,
+   "image_urls": [
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/tripeaks/01_splash_black.png",
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/tripeaks/02_lobby.png",
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/tripeaks/03_final_lobby.png"
+   ],
+   "url_checks": [
+    {
+     "url": "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/tripe",
+     "resp": "200 image/png"
+    },
+    {
+     "url": "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/tripe",
+     "resp": "200 image/png"
+    }
+   ]
   },
   {
    "issue": 21,
    "title": "[EXEC] Bouncy \u2014 APK Execution & Visual Proof",
    "state": "open",
-   "body_has_image": false,
-   "image_urls": [],
-   "url_checks": []
+   "body_has_image": true,
+   "image_urls": [
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/bouncy/01_launch.png",
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/bouncy/03_final.png",
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/bouncy/04_frame_000.png",
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/bouncy/05_frame_003.png",
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/bouncy/06_frame_004.png"
+   ],
+   "url_checks": [
+    {
+     "url": "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/bounc",
+     "resp": "200 image/png"
+    },
+    {
+     "url": "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/bounc",
+     "resp": "200 image/png"
+    }
+   ]
   },
   {
    "issue": 22,
    "title": "[EXEC] Stopwatch \u2014 Service-Launch Family",
    "state": "open",
-   "body_has_image": false,
-   "image_urls": [],
-   "url_checks": []
+   "body_has_image": true,
+   "image_urls": [
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/stopwatch/01_launch.png",
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/stopwatch/03_final.png"
+   ],
+   "url_checks": [
+    {
+     "url": "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/stopw",
+     "resp": "200 image/png"
+    },
+    {
+     "url": "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/stopw",
+     "resp": "200 image/png"
+    }
+   ]
   },
   {
    "issue": 23,
    "title": "[EXEC] OPMT \u2014 APK Execution & Visual Proof",
    "state": "open",
-   "body_has_image": false,
-   "image_urls": [],
-   "url_checks": []
+   "body_has_image": true,
+   "image_urls": [
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/opmt/01_launch.png",
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/opmt/03_final.png",
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/opmt/04_frame_000.png",
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/opmt/05_frame_002.png",
+    "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/opmt/06_frame_004.png"
+   ],
+   "url_checks": [
+    {
+     "url": "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/opmt/",
+     "resp": "200 image/png"
+    },
+    {
+     "url": "https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/d7280a15/docs/evidence/s74_ops/opmt/",
+     "resp": "200 image/png"
+    }
+   ]
   }
  ]
 }
