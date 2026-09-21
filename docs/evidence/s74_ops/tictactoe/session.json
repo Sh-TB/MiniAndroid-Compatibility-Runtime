@@ -1,0 +1,66 @@
+{
+ "session_format": "s74-ops/1 (S74 FOLLOW-UP WAVE \u00a76 execution checkpoint)",
+ "app_dossier": "docs/compatibility/apps/tictactoe.json",
+ "runtime_commit": "3505591b",
+ "binary": "miniandroid/build/miniandroid (built at HEAD, zero runtime drift vs origin/main)",
+ "apk": {
+  "file": "com.emmanuelmess.tictactoe_3.apk",
+  "sha256_16": "760fe5acf7b39435"
+ },
+ "execution_mode": "real-dalvik (bytecode interpretation)",
+ "launch_run": {
+  "rc": 1,
+  "engine_status": "** **SUCCESS** \u2705",
+  "errors": 6,
+  "frames_requested": 3,
+  "tap_schedule": []
+ },
+ "interaction_run": null,
+ "sandbox": {
+  "data_root": "run/s74f_ops/tictactoe/sandbox",
+  "files_created": []
+ },
+ "persistence": {
+  "probe": "relaunch_same_data_root",
+  "sandbox_files_before": 0,
+  "verdict": "NO_PERSISTENCE_OBSERVED (app created no files in its data root)"
+ },
+ "representative_frames": [
+  "01_launch.png",
+  "03_final.png"
+ ],
+ "frame_metrics": {
+  "01_launch.png": {
+   "resolution": [
+    1080,
+    1920
+   ],
+   "nonwhite_px": 0,
+   "nonblack_px": 2073600,
+   "color_diversity_sampled": 1,
+   "source_run": "launch",
+   "source_frame": "frame_000.png",
+   "png_sha256_16": "31ddd4d5b8e6d18e"
+  },
+  "03_final.png": {
+   "resolution": [
+    1080,
+    1920
+   ],
+   "nonwhite_px": 0,
+   "nonblack_px": 2073600,
+   "color_diversity_sampled": 1,
+   "source_run": "launch",
+   "source_frame": "frame_002.png",
+   "png_sha256_16": "31ddd4d5b8e6d18e"
+  }
+ },
+ "manifest_security": {
+  "tool": "aapt2 dump badging + permissions",
+  "permissions_declared": [],
+  "launchable_activities": [
+   "com.emmanuelmess.tictactoe.AndroidLauncher"
+  ],
+  "package": "com.emmanuelmess.tictactoe"
+ }
+}

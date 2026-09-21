@@ -1,0 +1,110 @@
+{
+ "session_format": "s74-ops/1 (S74 FOLLOW-UP WAVE \u00a76 execution checkpoint)",
+ "app_dossier": "docs/compatibility/apps/bouncy.json",
+ "runtime_commit": "3505591b",
+ "binary": "miniandroid/build/miniandroid (built at HEAD, zero runtime drift vs origin/main)",
+ "apk": {
+  "file": "bouncy.apk",
+  "sha256_16": "ffda0d9cb0b1b2aa"
+ },
+ "execution_mode": "real-dalvik (bytecode interpretation)",
+ "launch_run": {
+  "rc": 1,
+  "engine_status": "** **SUCCESS** \u2705",
+  "errors": 14,
+  "frames_requested": 6,
+  "tap_schedule": []
+ },
+ "interaction_run": {
+  "rc": 1,
+  "engine_status": "** **SUCCESS** \u2705",
+  "errors": 14,
+  "clicks": 4
+ },
+ "sandbox": {
+  "data_root": "run/s74f_ops/bouncy/sandbox",
+  "files_created": []
+ },
+ "persistence": {
+  "probe": "relaunch_same_data_root",
+  "sandbox_files_before": 0,
+  "verdict": "NO_PERSISTENCE_OBSERVED (app created no files in its data root)"
+ },
+ "representative_frames": [
+  "01_launch.png",
+  "03_final.png",
+  "04_frame_000.png",
+  "05_frame_003.png",
+  "06_frame_004.png"
+ ],
+ "frame_metrics": {
+  "01_launch.png": {
+   "resolution": [
+    1080,
+    1920
+   ],
+   "nonwhite_px": 575523,
+   "nonblack_px": 2073600,
+   "color_diversity_sampled": 64,
+   "source_run": "launch",
+   "source_frame": "frame_000.png",
+   "png_sha256_16": "f1f268c3d005f435"
+  },
+  "03_final.png": {
+   "resolution": [
+    1080,
+    1920
+   ],
+   "nonwhite_px": 575523,
+   "nonblack_px": 2073600,
+   "color_diversity_sampled": 64,
+   "source_run": "launch",
+   "source_frame": "frame_005.png",
+   "png_sha256_16": "f1f268c3d005f435"
+  },
+  "04_frame_000.png": {
+   "resolution": [
+    1080,
+    1920
+   ],
+   "nonwhite_px": 575523,
+   "nonblack_px": 2073600,
+   "color_diversity_sampled": 64,
+   "source_run": "interaction",
+   "source_frame": "frame_000.png",
+   "png_sha256_16": "f1f268c3d005f435"
+  },
+  "05_frame_003.png": {
+   "resolution": [
+    1080,
+    1920
+   ],
+   "nonwhite_px": 1800009,
+   "nonblack_px": 2073600,
+   "color_diversity_sampled": 16,
+   "source_run": "interaction",
+   "source_frame": "frame_003.png",
+   "png_sha256_16": "f15903f6918e1f3b"
+  },
+  "06_frame_004.png": {
+   "resolution": [
+    1080,
+    1920
+   ],
+   "nonwhite_px": 1800009,
+   "nonblack_px": 2073600,
+   "color_diversity_sampled": 16,
+   "source_run": "interaction",
+   "source_frame": "frame_004.png",
+   "png_sha256_16": "f15903f6918e1f3b"
+  }
+ },
+ "manifest_security": {
+  "tool": "aapt2 dump badging + permissions",
+  "permissions_declared": [],
+  "launchable_activities": [
+   "com.dozingcatsoftware.bouncy.BouncyActivity"
+  ],
+  "package": "com.dozingcatsoftware.bouncy"
+ }
+}

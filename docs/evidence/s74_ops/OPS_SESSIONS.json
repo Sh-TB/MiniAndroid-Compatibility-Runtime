@@ -1,0 +1,770 @@
+{
+ "head": "3505591b",
+ "sessions": {
+  "unote": {
+   "session_format": "s74-ops/1 (S74 FOLLOW-UP WAVE \u00a76 execution checkpoint)",
+   "app_dossier": "docs/compatibility/apps/unote.json",
+   "runtime_commit": "3505591b",
+   "binary": "miniandroid/build/miniandroid (built at HEAD, zero runtime drift vs origin/main)",
+   "apk": {
+    "file": "app.varlorg.unote_30.apk",
+    "sha256_16": "be91103f0e7db443"
+   },
+   "execution_mode": "real-dalvik (bytecode interpretation)",
+   "launch_run": {
+    "rc": 1,
+    "engine_status": "** **SUCCESS** \u2705",
+    "errors": 0,
+    "frames_requested": 6,
+    "tap_schedule": []
+   },
+   "interaction_run": {
+    "rc": 1,
+    "engine_status": "** **SUCCESS** \u2705",
+    "errors": 0,
+    "clicks": 6
+   },
+   "sandbox": {
+    "data_root": "run/s74f_ops/unote/sandbox",
+    "files_created": [
+     {
+      "path": "app.varlorg.unote/databases/notes.db",
+      "size": 12288,
+      "sha256_16": "2bccf9475fe3810d"
+     }
+    ]
+   },
+   "persistence": {
+    "probe": "relaunch_same_data_root",
+    "sandbox_files_before": 1,
+    "relaunch_rc": 1,
+    "sandbox_files_after_relaunch": 1,
+    "sandbox_file_list": [
+     {
+      "path": "app.varlorg.unote/databases/notes.db",
+      "size": 12288,
+      "sha256_16": "2bccf9475fe3810d"
+     }
+    ]
+   },
+   "representative_frames": [
+    "01_launch.png",
+    "03_final.png",
+    "04_frame_000.png",
+    "05_frame_006.png"
+   ],
+   "frame_metrics": {
+    "01_launch.png": {
+     "resolution": [
+      1080,
+      1920
+     ],
+     "nonwhite_px": 231120,
+     "nonblack_px": 2073600,
+     "color_diversity_sampled": 19,
+     "source_run": "launch",
+     "source_frame": "frame_000.png",
+     "png_sha256_16": "6269ba028ebef3e1"
+    },
+    "03_final.png": {
+     "resolution": [
+      1080,
+      1920
+     ],
+     "nonwhite_px": 231120,
+     "nonblack_px": 2073600,
+     "color_diversity_sampled": 19,
+     "source_run": "launch",
+     "source_frame": "frame_005.png",
+     "png_sha256_16": "6269ba028ebef3e1"
+    },
+    "04_frame_000.png": {
+     "resolution": [
+      1080,
+      1920
+     ],
+     "nonwhite_px": 231120,
+     "nonblack_px": 2073600,
+     "color_diversity_sampled": 19,
+     "source_run": "interaction",
+     "source_frame": "frame_000.png",
+     "png_sha256_16": "6269ba028ebef3e1"
+    },
+    "05_frame_006.png": {
+     "resolution": [
+      1080,
+      1920
+     ],
+     "nonwhite_px": 231120,
+     "nonblack_px": 2073600,
+     "color_diversity_sampled": 19,
+     "source_run": "interaction",
+     "source_frame": "frame_006.png",
+     "png_sha256_16": "6269ba028ebef3e1"
+    }
+   }
+  },
+  "dooz": {
+   "session_format": "s74-ops/1 (S74 FOLLOW-UP WAVE \u00a76 execution checkpoint)",
+   "app_dossier": "docs/compatibility/apps/dooz.json",
+   "runtime_commit": "3505591b",
+   "binary": "miniandroid/build/miniandroid (built at HEAD, zero runtime drift vs origin/main)",
+   "apk": {
+    "file": "io.github.yamin8000.dooz_23.apk",
+    "sha256_16": "299eab21ac8b3c61"
+   },
+   "execution_mode": "real-dalvik (bytecode interpretation)",
+   "launch_run": {
+    "rc": 1,
+    "engine_status": "** **SUCCESS** \u2705",
+    "errors": 21,
+    "frames_requested": 6,
+    "tap_schedule": []
+   },
+   "interaction_run": null,
+   "sandbox": {
+    "data_root": "run/s74f_ops/dooz/sandbox",
+    "files_created": []
+   },
+   "persistence": {
+    "probe": "relaunch_same_data_root",
+    "sandbox_files_before": 0,
+    "verdict": "NO_PERSISTENCE_OBSERVED (app created no files in its data root)"
+   },
+   "representative_frames": [
+    "01_launch.png",
+    "03_final.png"
+   ],
+   "frame_metrics": {
+    "01_launch.png": {
+     "resolution": [
+      1080,
+      1920
+     ],
+     "nonwhite_px": 23472,
+     "nonblack_px": 2050128,
+     "color_diversity_sampled": 2,
+     "source_run": "launch",
+     "source_frame": "frame_000.png",
+     "png_sha256_16": "eb16ab5c68fa9b6c"
+    },
+    "03_final.png": {
+     "resolution": [
+      1080,
+      1920
+     ],
+     "nonwhite_px": 23472,
+     "nonblack_px": 2050128,
+     "color_diversity_sampled": 2,
+     "source_run": "launch",
+     "source_frame": "frame_005.png",
+     "png_sha256_16": "eb16ab5c68fa9b6c"
+    }
+   }
+  },
+  "gmdice": {
+   "session_format": "s74-ops/1 (S74 FOLLOW-UP WAVE \u00a76 execution checkpoint)",
+   "app_dossier": "docs/compatibility/apps/gmdice.json",
+   "runtime_commit": "3505591b",
+   "binary": "miniandroid/build/miniandroid (built at HEAD, zero runtime drift vs origin/main)",
+   "apk": {
+    "file": "de.duenndns.gmdice_8.apk",
+    "sha256_16": "1621eda11b5dbc0c"
+   },
+   "execution_mode": "real-dalvik (bytecode interpretation)",
+   "launch_run": {
+    "rc": 1,
+    "engine_status": "** **SUCCESS** \u2705",
+    "errors": 0,
+    "frames_requested": 6,
+    "tap_schedule": [
+     "348,1848@3",
+     "116,1848@4"
+    ]
+   },
+   "interaction_run": null,
+   "sandbox": {
+    "data_root": "run/s74f_ops/gmdice/sandbox",
+    "files_created": []
+   },
+   "persistence": {
+    "probe": "relaunch_same_data_root",
+    "sandbox_files_before": 0,
+    "verdict": "NO_PERSISTENCE_OBSERVED (app created no files in its data root)"
+   },
+   "representative_frames": [
+    "01_launch.png",
+    "03_final.png"
+   ],
+   "frame_metrics": {
+    "01_launch.png": {
+     "resolution": [
+      1080,
+      1920
+     ],
+     "nonwhite_px": 181495,
+     "nonblack_px": 2073600,
+     "color_diversity_sampled": 69,
+     "source_run": "launch",
+     "source_frame": "frame_000.png",
+     "png_sha256_16": "5438f6e2bd5561e4"
+    },
+    "03_final.png": {
+     "resolution": [
+      1080,
+      1920
+     ],
+     "nonwhite_px": 181495,
+     "nonblack_px": 2073600,
+     "color_diversity_sampled": 69,
+     "source_run": "launch",
+     "source_frame": "frame_005.png",
+     "png_sha256_16": "5438f6e2bd5561e4"
+    }
+   }
+  },
+  "microtimer": {
+   "session_format": "s74-ops/1 (S74 FOLLOW-UP WAVE \u00a76 execution checkpoint)",
+   "app_dossier": "docs/compatibility/apps/microtimer.json",
+   "runtime_commit": "3505591b",
+   "binary": "miniandroid/build/miniandroid (built at HEAD, zero runtime drift vs origin/main)",
+   "apk": {
+    "file": "dubrowgn.microtimer_8.apk",
+    "sha256_16": "79c6f730f64886e7"
+   },
+   "execution_mode": "real-dalvik (bytecode interpretation)",
+   "launch_run": {
+    "rc": 1,
+    "engine_status": "** **SUCCESS** \u2705",
+    "errors": 8,
+    "frames_requested": 6,
+    "tap_schedule": []
+   },
+   "interaction_run": {
+    "rc": 1,
+    "engine_status": "** **SUCCESS** \u2705",
+    "errors": 8,
+    "clicks": 6
+   },
+   "sandbox": {
+    "data_root": "run/s74f_ops/microtimer/sandbox",
+    "files_created": []
+   },
+   "persistence": {
+    "probe": "relaunch_same_data_root",
+    "sandbox_files_before": 0,
+    "verdict": "NO_PERSISTENCE_OBSERVED (app created no files in its data root)"
+   },
+   "representative_frames": [
+    "01_launch.png",
+    "03_final.png",
+    "04_frame_000.png",
+    "05_frame_006.png"
+   ],
+   "frame_metrics": {
+    "01_launch.png": {
+     "resolution": [
+      1080,
+      1920
+     ],
+     "nonwhite_px": 1040698,
+     "nonblack_px": 2073600,
+     "color_diversity_sampled": 37,
+     "source_run": "launch",
+     "source_frame": "frame_000.png",
+     "png_sha256_16": "ca87aa264e791f7a"
+    },
+    "03_final.png": {
+     "resolution": [
+      1080,
+      1920
+     ],
+     "nonwhite_px": 1040698,
+     "nonblack_px": 2073600,
+     "color_diversity_sampled": 37,
+     "source_run": "launch",
+     "source_frame": "frame_005.png",
+     "png_sha256_16": "ca87aa264e791f7a"
+    },
+    "04_frame_000.png": {
+     "resolution": [
+      1080,
+      1920
+     ],
+     "nonwhite_px": 1040698,
+     "nonblack_px": 2073600,
+     "color_diversity_sampled": 37,
+     "source_run": "interaction",
+     "source_frame": "frame_000.png",
+     "png_sha256_16": "ca87aa264e791f7a"
+    },
+    "05_frame_006.png": {
+     "resolution": [
+      1080,
+      1920
+     ],
+     "nonwhite_px": 1040698,
+     "nonblack_px": 2073600,
+     "color_diversity_sampled": 63,
+     "source_run": "interaction",
+     "source_frame": "frame_006.png",
+     "png_sha256_16": "b4be91460e56c195"
+    }
+   }
+  },
+  "fishrings": {
+   "session_format": "s74-ops/1 (S74 FOLLOW-UP WAVE \u00a76 execution checkpoint)",
+   "app_dossier": "docs/compatibility/apps/fishrings.json",
+   "runtime_commit": "3505591b",
+   "binary": "miniandroid/build/miniandroid (built at HEAD, zero runtime drift vs origin/main)",
+   "apk": {
+    "file": "fishrings_v1.23_vc6.apk",
+    "sha256_16": "14d7dd80f7563c6a"
+   },
+   "execution_mode": "real-dalvik (bytecode interpretation)",
+   "launch_run": {
+    "rc": 0,
+    "engine_status": "** **SUCCESS** \u2705",
+    "errors": 0,
+    "frames_requested": 9,
+    "tap_schedule": []
+   },
+   "interaction_run": null,
+   "sandbox": {
+    "data_root": "run/s74f_ops/fishrings/sandbox",
+    "files_created": []
+   },
+   "persistence": {
+    "probe": "relaunch_same_data_root",
+    "sandbox_files_before": 0,
+    "verdict": "NO_PERSISTENCE_OBSERVED (app created no files in its data root)"
+   },
+   "representative_frames": [
+    "01_launch.png",
+    "02_mid_maxdiff.png",
+    "03_final.png"
+   ],
+   "frame_metrics": {
+    "01_launch.png": {
+     "resolution": [
+      1080,
+      1920
+     ],
+     "nonwhite_px": 0,
+     "nonblack_px": 2073600,
+     "color_diversity_sampled": 1,
+     "source_run": "launch",
+     "source_frame": "frame_000.png",
+     "png_sha256_16": "31ddd4d5b8e6d18e"
+    },
+    "02_mid_maxdiff.png": {
+     "resolution": [
+      1080,
+      1920
+     ],
+     "nonwhite_px": 2070910,
+     "nonblack_px": 99927,
+     "color_diversity_sampled": 864,
+     "source_run": "launch",
+     "source_frame": "frame_007.png",
+     "png_sha256_16": "a341e3ad9092f640"
+    },
+    "03_final.png": {
+     "resolution": [
+      1080,
+      1920
+     ],
+     "nonwhite_px": 2070910,
+     "nonblack_px": 99927,
+     "color_diversity_sampled": 864,
+     "source_run": "launch",
+     "source_frame": "frame_008.png",
+     "png_sha256_16": "a341e3ad9092f640"
+    }
+   }
+  },
+  "tripeaks": {
+   "session_format": "s74-ops/1 (S74 FOLLOW-UP WAVE \u00a76 execution checkpoint)",
+   "app_dossier": "docs/compatibility/apps/tripeaks.json",
+   "runtime_commit": "3505591b",
+   "binary": "miniandroid/build/miniandroid (built at HEAD, zero runtime drift vs origin/main)",
+   "apk": {
+    "file": "tripeaks_v1.2.1_vc4.apk",
+    "sha256_16": "52272ae619c0fec8"
+   },
+   "execution_mode": "real-dalvik (bytecode interpretation)",
+   "launch_run": {
+    "rc": 0,
+    "engine_status": "** **SUCCESS** \u2705",
+    "errors": 0,
+    "frames_requested": 6,
+    "tap_schedule": []
+   },
+   "interaction_run": {
+    "rc": 0,
+    "engine_status": "** **SUCCESS** \u2705",
+    "errors": 0,
+    "clicks": 3
+   },
+   "sandbox": {
+    "data_root": "run/s74f_ops/tripeaks/sandbox",
+    "files_created": []
+   },
+   "persistence": {
+    "probe": "relaunch_same_data_root",
+    "sandbox_files_before": 0,
+    "verdict": "NO_PERSISTENCE_OBSERVED (app created no files in its data root)"
+   },
+   "representative_frames": [
+    "01_launch.png",
+    "03_final.png"
+   ],
+   "frame_metrics": {
+    "01_launch.png": {
+     "resolution": [
+      1080,
+      1920
+     ],
+     "nonwhite_px": 0,
+     "nonblack_px": 2073600,
+     "color_diversity_sampled": 1,
+     "source_run": "launch",
+     "source_frame": "frame_000.png",
+     "png_sha256_16": "31ddd4d5b8e6d18e"
+    },
+    "03_final.png": {
+     "resolution": [
+      1080,
+      1920
+     ],
+     "nonwhite_px": 0,
+     "nonblack_px": 2073600,
+     "color_diversity_sampled": 1,
+     "source_run": "launch",
+     "source_frame": "frame_005.png",
+     "png_sha256_16": "31ddd4d5b8e6d18e"
+    }
+   }
+  },
+  "bouncy": {
+   "session_format": "s74-ops/1 (S74 FOLLOW-UP WAVE \u00a76 execution checkpoint)",
+   "app_dossier": "docs/compatibility/apps/bouncy.json",
+   "runtime_commit": "3505591b",
+   "binary": "miniandroid/build/miniandroid (built at HEAD, zero runtime drift vs origin/main)",
+   "apk": {
+    "file": "bouncy.apk",
+    "sha256_16": "ffda0d9cb0b1b2aa"
+   },
+   "execution_mode": "real-dalvik (bytecode interpretation)",
+   "launch_run": {
+    "rc": 1,
+    "engine_status": "** **SUCCESS** \u2705",
+    "errors": 14,
+    "frames_requested": 6,
+    "tap_schedule": []
+   },
+   "interaction_run": {
+    "rc": 1,
+    "engine_status": "** **SUCCESS** \u2705",
+    "errors": 14,
+    "clicks": 4
+   },
+   "sandbox": {
+    "data_root": "run/s74f_ops/bouncy/sandbox",
+    "files_created": []
+   },
+   "persistence": {
+    "probe": "relaunch_same_data_root",
+    "sandbox_files_before": 0,
+    "verdict": "NO_PERSISTENCE_OBSERVED (app created no files in its data root)"
+   },
+   "representative_frames": [
+    "01_launch.png",
+    "03_final.png",
+    "04_frame_000.png",
+    "05_frame_003.png",
+    "06_frame_004.png"
+   ],
+   "frame_metrics": {
+    "01_launch.png": {
+     "resolution": [
+      1080,
+      1920
+     ],
+     "nonwhite_px": 575523,
+     "nonblack_px": 2073600,
+     "color_diversity_sampled": 64,
+     "source_run": "launch",
+     "source_frame": "frame_000.png",
+     "png_sha256_16": "f1f268c3d005f435"
+    },
+    "03_final.png": {
+     "resolution": [
+      1080,
+      1920
+     ],
+     "nonwhite_px": 575523,
+     "nonblack_px": 2073600,
+     "color_diversity_sampled": 64,
+     "source_run": "launch",
+     "source_frame": "frame_005.png",
+     "png_sha256_16": "f1f268c3d005f435"
+    },
+    "04_frame_000.png": {
+     "resolution": [
+      1080,
+      1920
+     ],
+     "nonwhite_px": 575523,
+     "nonblack_px": 2073600,
+     "color_diversity_sampled": 64,
+     "source_run": "interaction",
+     "source_frame": "frame_000.png",
+     "png_sha256_16": "f1f268c3d005f435"
+    },
+    "05_frame_003.png": {
+     "resolution": [
+      1080,
+      1920
+     ],
+     "nonwhite_px": 1800009,
+     "nonblack_px": 2073600,
+     "color_diversity_sampled": 16,
+     "source_run": "interaction",
+     "source_frame": "frame_003.png",
+     "png_sha256_16": "f15903f6918e1f3b"
+    },
+    "06_frame_004.png": {
+     "resolution": [
+      1080,
+      1920
+     ],
+     "nonwhite_px": 1800009,
+     "nonblack_px": 2073600,
+     "color_diversity_sampled": 16,
+     "source_run": "interaction",
+     "source_frame": "frame_004.png",
+     "png_sha256_16": "f15903f6918e1f3b"
+    }
+   }
+  },
+  "stopwatch": {
+   "session_format": "s74-ops/1 (S74 FOLLOW-UP WAVE \u00a76 execution checkpoint)",
+   "app_dossier": "docs/compatibility/apps/stopwatch.json",
+   "runtime_commit": "3505591b",
+   "binary": "miniandroid/build/miniandroid (built at HEAD, zero runtime drift vs origin/main)",
+   "apk": {
+    "file": "com.github.muellerma.stopwatch_6.apk",
+    "sha256_16": "3b6a10c8dc8ddc72"
+   },
+   "execution_mode": "real-dalvik (bytecode interpretation)",
+   "launch_run": {
+    "rc": 1,
+    "engine_status": "** **FAILURE** \u274c",
+    "errors": 0,
+    "frames_requested": 4,
+    "tap_schedule": []
+   },
+   "interaction_run": null,
+   "sandbox": {
+    "data_root": "run/s74f_ops/stopwatch/sandbox",
+    "files_created": []
+   },
+   "persistence": {
+    "probe": "relaunch_same_data_root",
+    "sandbox_files_before": 0,
+    "verdict": "NO_PERSISTENCE_OBSERVED (app created no files in its data root)"
+   },
+   "representative_frames": [
+    "01_launch.png",
+    "03_final.png"
+   ],
+   "frame_metrics": {
+    "01_launch.png": {
+     "resolution": [
+      1080,
+      1920
+     ],
+     "nonwhite_px": 23472,
+     "nonblack_px": 2050128,
+     "color_diversity_sampled": 2,
+     "source_run": "launch",
+     "source_frame": "frame_000.png",
+     "png_sha256_16": "eb16ab5c68fa9b6c"
+    },
+    "03_final.png": {
+     "resolution": [
+      1080,
+      1920
+     ],
+     "nonwhite_px": 23472,
+     "nonblack_px": 2050128,
+     "color_diversity_sampled": 2,
+     "source_run": "launch",
+     "source_frame": "frame_003.png",
+     "png_sha256_16": "eb16ab5c68fa9b6c"
+    }
+   }
+  },
+  "opmt": {
+   "session_format": "s74-ops/1 (S74 FOLLOW-UP WAVE \u00a76 execution checkpoint)",
+   "app_dossier": "docs/compatibility/apps/opmt.json",
+   "runtime_commit": "3505591b",
+   "binary": "miniandroid/build/miniandroid (built at HEAD, zero runtime drift vs origin/main)",
+   "apk": {
+    "file": "opmt_v0.1.2_vc1.apk",
+    "sha256_16": "4f91e3801780684a"
+   },
+   "execution_mode": "real-dalvik (bytecode interpretation)",
+   "launch_run": {
+    "rc": 0,
+    "engine_status": "** **SUCCESS** \u2705",
+    "errors": 0,
+    "frames_requested": 6,
+    "tap_schedule": []
+   },
+   "interaction_run": {
+    "rc": 0,
+    "engine_status": "** **SUCCESS** \u2705",
+    "errors": 0,
+    "clicks": 4
+   },
+   "sandbox": {
+    "data_root": "run/s74f_ops/opmt/sandbox",
+    "files_created": []
+   },
+   "persistence": {
+    "probe": "relaunch_same_data_root",
+    "sandbox_files_before": 0,
+    "verdict": "NO_PERSISTENCE_OBSERVED (app created no files in its data root)"
+   },
+   "representative_frames": [
+    "01_launch.png",
+    "03_final.png",
+    "04_frame_000.png",
+    "05_frame_002.png",
+    "06_frame_004.png"
+   ],
+   "frame_metrics": {
+    "01_launch.png": {
+     "resolution": [
+      1080,
+      1920
+     ],
+     "nonwhite_px": 213286,
+     "nonblack_px": 2073600,
+     "color_diversity_sampled": 40,
+     "source_run": "launch",
+     "source_frame": "frame_000.png",
+     "png_sha256_16": "62619caa3b31066e"
+    },
+    "03_final.png": {
+     "resolution": [
+      1080,
+      1920
+     ],
+     "nonwhite_px": 213286,
+     "nonblack_px": 2073600,
+     "color_diversity_sampled": 40,
+     "source_run": "launch",
+     "source_frame": "frame_005.png",
+     "png_sha256_16": "62619caa3b31066e"
+    },
+    "04_frame_000.png": {
+     "resolution": [
+      1080,
+      1920
+     ],
+     "nonwhite_px": 213286,
+     "nonblack_px": 2073600,
+     "color_diversity_sampled": 40,
+     "source_run": "interaction",
+     "source_frame": "frame_000.png",
+     "png_sha256_16": "62619caa3b31066e"
+    },
+    "05_frame_002.png": {
+     "resolution": [
+      1080,
+      1920
+     ],
+     "nonwhite_px": 1870446,
+     "nonblack_px": 2068992,
+     "color_diversity_sampled": 41,
+     "source_run": "interaction",
+     "source_frame": "frame_002.png",
+     "png_sha256_16": "06996f85af1fba35"
+    },
+    "06_frame_004.png": {
+     "resolution": [
+      1080,
+      1920
+     ],
+     "nonwhite_px": 1870446,
+     "nonblack_px": 2068992,
+     "color_diversity_sampled": 41,
+     "source_run": "interaction",
+     "source_frame": "frame_004.png",
+     "png_sha256_16": "06996f85af1fba35"
+    }
+   }
+  },
+  "tictactoe": {
+   "session_format": "s74-ops/1 (S74 FOLLOW-UP WAVE \u00a76 execution checkpoint)",
+   "app_dossier": "docs/compatibility/apps/tictactoe.json",
+   "runtime_commit": "3505591b",
+   "binary": "miniandroid/build/miniandroid (built at HEAD, zero runtime drift vs origin/main)",
+   "apk": {
+    "file": "com.emmanuelmess.tictactoe_3.apk",
+    "sha256_16": "760fe5acf7b39435"
+   },
+   "execution_mode": "real-dalvik (bytecode interpretation)",
+   "launch_run": {
+    "rc": 1,
+    "engine_status": "** **SUCCESS** \u2705",
+    "errors": 6,
+    "frames_requested": 3,
+    "tap_schedule": []
+   },
+   "interaction_run": null,
+   "sandbox": {
+    "data_root": "run/s74f_ops/tictactoe/sandbox",
+    "files_created": []
+   },
+   "persistence": {
+    "probe": "relaunch_same_data_root",
+    "sandbox_files_before": 0,
+    "verdict": "NO_PERSISTENCE_OBSERVED (app created no files in its data root)"
+   },
+   "representative_frames": [
+    "01_launch.png",
+    "03_final.png"
+   ],
+   "frame_metrics": {
+    "01_launch.png": {
+     "resolution": [
+      1080,
+      1920
+     ],
+     "nonwhite_px": 0,
+     "nonblack_px": 2073600,
+     "color_diversity_sampled": 1,
+     "source_run": "launch",
+     "source_frame": "frame_000.png",
+     "png_sha256_16": "31ddd4d5b8e6d18e"
+    },
+    "03_final.png": {
+     "resolution": [
+      1080,
+      1920
+     ],
+     "nonwhite_px": 0,
+     "nonblack_px": 2073600,
+     "color_diversity_sampled": 1,
+     "source_run": "launch",
+     "source_frame": "frame_002.png",
+     "png_sha256_16": "31ddd4d5b8e6d18e"
+    }
+   }
+  }
+ }
+}

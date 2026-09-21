@@ -1,0 +1,28 @@
+{
+ "session_format": "s74-ops/1 (S74 FOLLOW-UP WAVE \u00a76 execution checkpoint)",
+ "runtime_commit": "3505591b",
+ "binary": "miniandroid/build/miniandroid (built at HEAD)",
+ "app_dossier": "docs/compatibility/apps/helloworld.json",
+ "evidence_scope": "REUSED_COMMITTED_GOLDEN (byte-stable S53->S54 replay proof; APK not committed per \u00a720 APK policy, sha256_16 009b4671 pinned in dossier)",
+ "execution_mode": "real-dalvik (bytecode interpretation)",
+ "launch_run": {
+  "source": "docs/evidence/s54_frames/helloworld_ext01_base.jpg + GOLDEN_HELLOWORLD.md",
+  "proven": "'hello world' self-aware identity text + API level line rendered; golden byte-stable"
+ },
+ "interaction_run": null,
+ "persistence": {
+  "verdict": "NO_PERSISTENCE_OBSERVED (display-only fixture app)"
+ },
+ "representative_frames": [
+  "01_launch.jpg",
+  "02_frame1.png"
+ ],
+ "frame_metrics": {
+  "01_launch.jpg": {
+   "png_sha256_16": "bee88b1a9d322535"
+  },
+  "02_frame1.png": {
+   "png_sha256_16": "65f6980b65120b18"
+  }
+ }
+}
