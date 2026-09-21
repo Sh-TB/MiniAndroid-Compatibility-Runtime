@@ -137,8 +137,8 @@ LIVE-STUBBED (silent-default) APIs are enumerated in
 
 | ID | Gap | Fan-out / consumer | Next generic fix |
 |---|---|---|---|
-| R-NEW-388 | RelativeLayout alignParent+margin wiring (render reads measured_left, ignores rl_cached_left) + narrow-wrap label overlap | TriPeaks board geometry (real APK consumer; board renders 205,638 px at wrong card positions) | renderer must consume RL-solved geometry; wrap-measure for labels |
-| A7 | manifest label/icon plumbing | every published app | ManifestReader → application label + launcher icon |
+| R-NEW-388 | RelativeLayout alignParent+margin wiring (render reads measured_left, ignores rl_cached_left) + narrow-wrap label overlap | TriPeaks board geometry (real APK consumer; board renders 205,638 px at wrong card positions) | renderer must consume RL-solved geometry; wrap-measure for labels — S75: registry record CONFIRMED at HEAD (f14 laws exact; TriPeaks splash-block app-specific, docs/foundation/s75/R-NEW-388_HEAD_REVERIFY.md); no consumer demands the render-entry law at HEAD |
+| A7 | manifest label/icon plumbing | every published app | **FIXED S75**: resid capture + ARSC resolve (PackageParser labelRes/loadLabel law); f54_manifestlabel 6/6; icon bitmap decode remains a separate capability |
 | B5/B6 | setX/translationX; ScrollView scrollY | drag/scroll apps | node translation field + draw translation |
 | B9/B10 | italic synthesis; non-Latin fallback faces | styled/non-Latin text | synthetic oblique; per-codepoint fallback |
 | C1/C2 residual | RL programmatic; render-without-measure | same family as R-NEW-388 | measure-before-render law |
@@ -146,9 +146,9 @@ LIVE-STUBBED (silent-default) APIs are enumerated in
 | LSTUB tail | 68 distinct LIVE-STUB APIs (see api_matrix) | per-API | wave by fan-out × consumer |
 | uNote pin | source UNPINNED (gitlab 403) | evidence completeness | re-fetch @4165c80d when gitlab reachable |
 
-FOUNDATION COMPLETE = **NO** (honest, §22): R-NEW-388 and A7 remain, plus the
-LIVE-STUB tail. What this campaign adds: every gap is now queryable, pinned
-to consumers by fan-out, and attached to its upstream law.
+FOUNDATION COMPLETE = **NO** (honest, §22, updated S75): R-NEW-388's foundation half is PROVEN at HEAD (re-verified S75; the residual is TriPeaks' app-specific splash navigation) and **A7 is FIXED (S75, f54-proven)**; the remaining tail is the
+LIVE-STUB tail + the 17 evidenced PENDING rows in docs/audit/ITEM75_CLOSURE.md (B5/B6/B9/B10/B11, C6–C11, D1/D2/D5/D6/D7). What this campaign adds: every gap is now queryable, pinned
+to consumers by fan-out, and attached to its upstream law — and each one now carries a code-verified S75 status.
 
 ## 7. Anti-false-success ledger (§25)
 

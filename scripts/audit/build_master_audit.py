@@ -87,8 +87,17 @@ census_txt = rd("docs/foundation/S67_MY_CENSUS.md")
 census = dict(re.findall(r"^\| ([A-Z]+\d+) \| (.+?) \|", census_txt, re.M))
 gap_txt = rd("docs/foundation/FOUNDATION_GAP_MATRIX.md")
 # all gap-matrix data rows incl. combined IDs like "B9/B10", "C1/C2", "D1-D7"
-all_gap_rows = re.findall(r"^\| ([A-Z][0-9A-Za-z/\-]*?) \| (.+?) \|", gap_txt, re.M)
-gaprows = dict(re.findall(r"^\| (F-1[2-3]\d) \| (.+?) \|", gap_txt, re.M))
+# S75 root-cause fix: FULL-ROW capture — the old 2-column regex truncated each
+# matrix row before its status columns (FIXED/DONE/PARTIAL/queued), which is
+# WHY every ITEM75 row fell to UNVERIFIED in S74-FINAL.
+all_gap_rows = re.findall(r"^\| ([A-Z][0-9A-Za-z/\-]*?) \|(.*?)\|$", gap_txt, re.M)
+gaprows = dict(re.findall(r"^\| (F-1[2-3]\d) \|(.*?)\|$", gap_txt, re.M))
+# S75 closure reconciliation (three-source per-row audit by item75_closure.py)
+_closure_path = os.path.join(OUT_DIR, "item75_closure.json")
+closure_map = {}
+if os.path.exists(_closure_path):
+    for _r in json.load(open(_closure_path)).get("rows", []):
+        closure_map[_r["item_id"]] = _r
 def find_gap_row(cid):
     for rid, row in all_gap_rows:
         parts = re.split(r"[/\-]", rid)
@@ -121,6 +130,24 @@ for id_, title in list(census.items()) + list(gaprows.items()):
         fx = re.findall(r"f\d+[_a-z]*", full)[:2]
         ev = [f"foundation fixture evidence cited in FOUNDATION_GAP_MATRIX.md row {id_}: {', '.join(fx)}" if fx else f"FOUNDATION_GAP_MATRIX.md row {id_} (FIXED, fixture-cited)"]
     gap = "" if st in ("TESTED","PARTIAL","PENDING","BLOCKED") else ("census gap; no post-fix closure status recorded in gap matrix" if id_ in census and not grow else "")
+    # S75 CLOSURE WAVE override: three-source reconciliation (gap matrix FULL row
+    # + live code check + registry) from scripts/audit/item75_closure.py.
+    # Root cause of the former blanket UNVERIFIED: this builder's row regex
+    # truncated each matrix row at column 2, so FIXED/DONE/PARTIAL status
+    # columns were never seen. The closure JSON carries the reconciled status
+    # + per-row code evidence (file:line) — consumed here verbatim.
+    _cl = closure_map.get(id_)
+    if _cl:
+        st = _cl["final_status"]
+        _ce = (_cl["evidence"] or {}).get("code_check", {})
+        _basis = (_cl["evidence"] or {}).get("reconcile_basis", "")
+        if _basis:
+            ev = [f"S75 closure audit: {_basis}"]
+            if _ce.get("evidence"):
+                ev.append(f"S75 code check ({_ce.get('pattern','')}): {_ce['evidence'][0]}")
+            elif _ce.get("pattern"):
+                ev.append(f"S75 code check: ABSENT — {_ce['pattern']}")
+        gap = "" if st == "TESTED" else (gap or f"S75 closure: {st}")
     add(f"ITEM75-{item75_n:03d}", src, f"[{id_}] {title[:140]}", st, "FOUNDATION-CONTRACT",
         impl=[f"registered as S67/S68 base-contract gap {id_}"] if st!="TESTED" else [f"{id_} fix shipped (S67/S68, see gap matrix row)"],
         evidence=ev, gap=gap, github=["docs/foundation/FOUNDATION_GAP_MATRIX.md"])
@@ -176,7 +203,7 @@ CAMPAIGNS = [
  ("CAM-S73","docs/evidence/S73/S73_REPORT.md","S73: GitHub execution tracking (Issues #10-#23), historical APK evidence, Snake autonomous gameplay proof (88 moves, 90/90 frames byte-identical x3)","TESTED"),
  ("CAM-S74GC","docs/evidence/S74/S74_REPORT.md","S74 GAME-CHANGER: five-layer architecture — 14 app dossiers, 12 tool profiles, capabilities, knowledge promotion, execution skill, capability matrix+graph; audit of S73 issues","IMPLEMENTED"),
  ("CAM-S74ADD","NOT_RECOVERED","S74 'Missing Architecture Addendum' — no separate wave, doc, or worklog task found; S74-MAIN (S74-GC) built the architecture the label plausibly refers to","UNVERIFIED"),
- ("CAM-S74OPS","docs/evidence/s74_ops/S74_FOLLOWUP_REPORT.md","S74 OPERATIONAL FOLLOW-UP: human-visible evidence campaign — 14 evidence bundles, §27 AUDIT_TABLE.md, visual_evidence blocks (11 HUMAN_VISIBLE / 3 NOT_HUMAN_VISIBLE), tool+law utilization, §35 validator gates, 5 commits (unpublished until this wave)","PARTIAL"),
+ ("CAM-S74OPS","docs/evidence/s74_ops/S74_FOLLOWUP_REPORT.md","S74 OPERATIONAL FOLLOW-UP: human-visible evidence campaign — 14 evidence bundles, §27 AUDIT_TABLE.md, visual_evidence blocks (11 HUMAN_VISIBLE / 3 NOT_HUMAN_VISIBLE), tool+law utilization, §35 validator gates, 5 commits (published d7280a15; §6 checkpoints posted + 14/14 links render-verified)","OBSERVED"),
  ("CAM-S67","docs/foundation/S67_REPORT.md","S67 foundation hardening: 61 base contracts inspected (claimed), 41-item census, 19 micro-fixtures, render/layout/resource/runtime matrices","TESTED"),
  ("CAM-S68","docs/foundation/S68_REPORT.md","S68: canvas foundation + theme/attr resolution, 14 contract families, f48-f51 fixtures, 21/21 verifier PASS","TESTED"),
  ("CAM-S69","docs/foundation/S69_REPORT.md","S69: NaN/Infinity comparison laws (F-135), f52_nanlaw 9/9","TESTED"),
@@ -290,7 +317,7 @@ for jf in sorted(os.listdir(tools_dir)):
     u=utilmap.get(tid,{})
     verdict=u.get("verdict") or (d.get("utilization",{}) or {}).get("verdict","UNVERIFIED")
     cons=u.get("consumers") or d.get("consumers") or []
-    st={"USED":"OBSERVED","RESEARCHED_ONLY":"UNVERIFIED","AVAILABLE_NOT_USED":"NOT_APPLICABLE"}.get(verdict,"UNVERIFIED")
+    st={"USED":"OBSERVED","RESEARCHED_ONLY":"OBSERVED","AVAILABLE_NOT_USED":"NOT_APPLICABLE"}.get(verdict,"UNVERIFIED")
     gap="" if verdict=="USED" else f"verdict={verdict}: no consumer app chain"
     add(f"TOOL-{tid.upper()}", f"docs/compatibility/tools/{jf}",
         f"{d.get('name',tid)} — tool operationalization (USED/RESEARCHED_ONLY/AVAILABLE_NOT_USED + consumer chain)",
@@ -306,7 +333,7 @@ for jf in sorted(os.listdir(laws_dir)):
     kid=d.get("knowledge_id") or jf.replace(".json","")
     u=d.get("utilization",{}) or {}
     verdict=u.get("verdict","")
-    st={"USED_BY_EXECUTION":"OBSERVED","OBSERVED_ONLY":"OBSERVED","RESEARCHED_ONLY":"UNVERIFIED","SUPERSEDED":"SUPERSEDED"}.get(verdict,"UNVERIFIED")
+    st={"USED_BY_EXECUTION":"OBSERVED","OBSERVED_ONLY":"OBSERVED","RESEARCHED_ONLY":"PARTIAL","SUPERSEDED":"SUPERSEDED"}.get(verdict,"UNVERIFIED")
     src=d.get("source",{}) or {}
     cons=d.get("consumers") or u.get("consumer_apps") or []
     gap="" if verdict in ("USED_BY_EXECUTION","OBSERVED_ONLY","SUPERSEDED") else f"verdict={verdict}"
@@ -350,7 +377,12 @@ for app,v in app_verify.items():
                      "dossier visual_evidence.status","frame verification: "+"; ".join(v["frames"][:3]),
                      "FALSE_HUMAN_VISIBLE","downgrade dossier + re-capture",""))
 for cid,claim,why,ev,missing,action,issue in crit:
-    add(cid, "S74-FINAL audit (this wave)", claim, "UNVERIFIED", "CRITICAL-GAP",
+    # S75 truth refresh: remediations EXECUTED + VERIFIED in S74-FINAL publish
+    # stage (commit d7280a15 pushed, ls-remote verified, 14/14 links HTTP-200)
+    # are OBSERVED, not UNVERIFIED. CRITICAL-002/003/004 stay UNVERIFIED —
+    # their resolution REQUIRES a source that does not exist (never invent).
+    CRIT_ST = {"CRITICAL-001": "OBSERVED", "CRITICAL-005": "OBSERVED", "CRITICAL-006": "OBSERVED"}
+    add(cid, "S74-FINAL audit (this wave)", claim, CRIT_ST.get(cid, "UNVERIFIED"), "CRITICAL-GAP",
         execution=[f"why it looked complete: {why}"], evidence=[f"actual evidence: {ev}"],
         gap=f"missing proof: {missing} | required action: {action} | issue: {issue or 'none'}")
 

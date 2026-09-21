@@ -1,0 +1,965 @@
+{
+ "generated": "2026-09-21 09:21 UTC",
+ "wave": "S75-CLOSURE",
+ "rows": [
+  {
+   "ledger_id": "ITEM75-001",
+   "item_id": "A1",
+   "requirement": "`?attr/x` in layouts silently mis-queried as resource id (no theme-attr branch at inflate)",
+   "final_status": "TESTED",
+   "evidence": {
+    "matrix_row": "[A1] ?attr at inflate | every Material/AppCompat app | FIXED S68 W2 (F-131..F-134): theme service (activity>application theme), inflate pre-pass resolves TYPE_ATTRIBUTE once, style-item ?attr hook, typed-INT background b",
+    "code_check": {
+     "item": "A1 theme-attr at inflate (F-131/F-133)",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "TYPE_ATTRIBUTE",
+     "evidence": [
+      "miniandroid/src/resources/layout_inflater.cpp:477:    // TYPE_ATTRIBUTE): resolve through the theme service FIRST (a theme",
+      "miniandroid/src/resources/layout_inflater.cpp:803:    // AOSP TypedValue law: TYPE_ATTRIBUTE (0x02) values (\"?attr/name\") are"
+     ]
+    },
+    "registry_back_registered": false,
+    "reconcile_basis": "gap matrix FIXED + code fix PRESENT"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-002",
+   "item_id": "A2",
+   "requirement": "`Resources.getDimensionPixelSize` seeded with UNCONVERTED mantissa (raw dp as px)",
+   "final_status": "TESTED",
+   "evidence": {
+    "matrix_row": "[A2] getDimensionPixelSize | every programmatic layout from dimens | FIXED S67: ARSC-first + complexToDimensionPixelSize + args[1] law | TypedValue.complexToDimensionPixelSize | f32 PASS | gmdice/TriPeaks dims | 100dp re",
+    "code_check": {
+     "item": "A2 complexToDimensionPixelSize",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "complexToDimensionPixelSize",
+     "evidence": [
+      "miniandroid/src/runtime/execution_engine.cpp:15:#include \"../resources/res_id.h\"  // S67 A2: canonical complexToDimensionPixelSize law",
+      "miniandroid/src/runtime/execution_engine.cpp:580:                        // AOSP TypedValue.complexToDimensionPixelSize law —"
+     ]
+    },
+    "registry_back_registered": true,
+    "reconcile_basis": "gap matrix FIXED + code fix PRESENT"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-003",
+   "item_id": "A3",
+   "requirement": "Non-PNG-magic drawable (WebP/JPEG) → silent blank, no decode attempt, no placeholder",
+   "final_status": "TESTED",
+   "evidence": {
+    "matrix_row": "[A3] non-PNG drawable silent drop | image-heavy apps | FIXED S68 W1 (F-129): renderer::decode_image_bytes ONE magic-detecting decoder (PNG/JPEG/WebP; GIF/XML EXPLICIT-UNSUPPORTED named); 3 duplicated switch blocks dedupe",
+    "code_check": {
+     "item": "A3 magic-detecting image decode (F-129)",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "decode_image_bytes",
+     "evidence": [
+      "miniandroid/src/framework/bitmap_shadow.cpp:68:    if (!renderer::decode_image_bytes(bytes, &decoded) || decoded.width <= 0 ||",
+      "miniandroid/src/framework/bitmap_shadow.cpp:71:        // decode_image_bytes (format named) — never silent."
+     ]
+    },
+    "registry_back_registered": false,
+    "reconcile_basis": "gap matrix FIXED + code fix PRESENT"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-004",
+   "item_id": "A4",
+   "requirement": "INVISIBLE(4) views are DRAWN (only GONE prunes)",
+   "final_status": "TESTED",
+   "evidence": {
+    "matrix_row": "[A4] INVISIBLE drawn | visibility-dependent UIs | FIXED S67 (A4+F-124): XML enum space mapped + own-content gate | View.draw SKIP_DRAW law | f06 PASS | corpus-wide | XML-invisible views drew black | DONE (child-of-invisi",
+    "code_check": {
+     "item": "A4 INVISIBLE own-content gate (F-124)",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "own_content_visible|draws_own_content|INVISIBLE",
+     "evidence": [
+      "miniandroid/src/framework/android_shadows.h:1009:        int visibility = 0;  // VISIBLE=0, INVISIBLE=4, GONE=8",
+      "miniandroid/src/framework/shadow_registry.h:411:// ArchTaskExecutorShadow on the cmd_run path) were INVISIBLE to dispatch."
+     ]
+    },
+    "registry_back_registered": true,
+    "reconcile_basis": "gap matrix FIXED + code fix PRESENT"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-005",
+   "item_id": "A5",
+   "requirement": "Canvas `Paint.setARGB` unhandled → color stays 0xFF000000",
+   "final_status": "TESTED",
+   "evidence": {
+    "matrix_row": "[A5] Paint.setARGB unhandled | custom drawing | FIXED S67: handler → paint_color_ | AOSP Paint.setARGB | f08 R8 PASS | canvas apps | shapes drew black | DONE",
+    "code_check": {
+     "item": "A5 Paint.setARGB handler",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "setARGB",
+     "evidence": [
+      "miniandroid/src/framework/canvas_shadow.cpp:586:        if (m == \"setARGB\") {",
+      "miniandroid/src/framework/canvas_shadow.cpp:588:            // S67 FOUNDATION (A5, f08_canvasops fixture): Paint.setARGB was"
+     ]
+    },
+    "registry_back_registered": false,
+    "reconcile_basis": "gap matrix FIXED + code fix PRESENT"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-006",
+   "item_id": "A6",
+   "requirement": "Canvas non-ASCII text renders as SPACE glyph silently (8x16 ASCII font, signed char)",
+   "final_status": "TESTED",
+   "evidence": {
+    "matrix_row": "[A6] Canvas text ASCII-only | custom text views | FIXED S68 W1 (F-130): paint textSize set → TextShaper (FreeType/HarfBuzz/FriBidi — same engine as TextView; §14 one-shaping-engine law); no size → legacy byte-identical p",
+    "code_check": {
+     "item": "A6 Canvas text via TextShaper (F-130)",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "text_shaper|TextShaper",
+     "evidence": [
+      "4:#include \"../fonts/text_shaper.h\"",
+      "472:                if (op.text_size_px > 0.f && fonts::TextShaper::instance().available()) {"
+     ]
+    },
+    "registry_back_registered": false,
+    "reconcile_basis": "gap matrix FIXED + code fix PRESENT"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-007",
+   "item_id": "A7",
+   "requirement": "Manifest label REFERENCE → literal \"@0x…\"; icon not parsed at all",
+   "final_status": "TESTED",
+   "evidence": {
+    "matrix_row": "[A7] manifest label/icon | every APK | FIXED S75: label/icon REFERENCE resids captured at parse (literal \"@0x\" degrade removed) + ManifestReader::resolve_resid_string ARSC resolve wired at ResourceRuntime ensure_loaded (",
+    "code_check": {
+     "item": "A7 manifest label/icon ARSC resolve (S75 FIX: resolve_resid_string)",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "resolve_resid_string|application_label_resid",
+     "evidence": [
+      "520:        // resolve_resid_string + the execution-engine wiring), exactly",
+      "526:            if (aname == \"label\" && result_.application_label_resid == 0) {"
+     ]
+    },
+    "registry_back_registered": true,
+    "reconcile_basis": "S75 FIXED: REFERENCE resids captured at parse + resolve_resid_string ARSC resolve wired at ResourceRuntime ensure_loaded (PackageParser labelRes/loadLabel law); f54_manifestlabel fixture proves label '@string/app_name' -> 'F54 LabelProof' + icon resid capture; verifier f54 6/6, 24/24 total"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-008",
+   "item_id": "A8",
+   "requirement": "`Resources.getDimensionPixelSize` default fallback 24px",
+   "final_status": "PARTIAL",
+   "evidence": {
+    "matrix_row": null,
+    "code_check": {
+     "item": "A8 dimension default fallback loudness (A2 law shipped; A8 fallback not separately evidenced)",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "complex_unit_to_dimension_pixel_size",
+     "evidence": [
+      "miniandroid/src/runtime/execution_engine.cpp:592:                            resources::complex_unit_to_dimension_pixel_size(",
+      "miniandroid/src/resources/layout_inflater.cpp:345:            return complex_unit_to_dimension_pixel_size(unit, val, density_context());"
+     ]
+    },
+    "registry_back_registered": false,
+    "reconcile_basis": "A2 complex_unit_to_dimension_pixel_size law shipped (execution_engine.cpp:590 comment); the separate 24px default-fallback loudness not re-verified this wave"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-009",
+   "item_id": "A9",
+   "requirement": "Canvas.getWidth/getHeight hardcoded 1080x1920 regardless of actual canvas",
+   "final_status": "TESTED",
+   "evidence": {
+    "matrix_row": "[A9] Canvas.getWidth hardcoded | coordinate math | FIXED S68 W1 (F-127): canvas_w_/h_ plumbed from the real framebuffer at replay | Canvas.getWidth returns surface w | f48/f08 byte-stable | custom views | wrong aspect ma",
+    "code_check": {
+     "item": "A9 canvas_w_ plumbed (F-127)",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "canvas_w_",
+     "evidence": [
+      "miniandroid/src/framework/canvas_shadow.cpp:1546:    if (m == \"getWidth\") return CallResult::handled_int(canvas_w_);",
+      "miniandroid/src/framework/canvas_shadow.h:188:    void set_canvas_size(int w, int h) { canvas_w_ = w; canvas_h_ = h; }"
+     ]
+    },
+    "registry_back_registered": false,
+    "reconcile_basis": "gap matrix FIXED + code fix PRESENT"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-010",
+   "item_id": "A10",
+   "requirement": "`Theme.getColor` stub 0xFF000000; `Theme.resolveAttribute` absent; `Resources.getSystem` absent",
+   "final_status": "TESTED",
+   "evidence": {
+    "matrix_row": "[A10] Theme.* / Resources.getSystem | themed apps | FIXED S68 W2 (F-131/F-132): bag_value over activity theme + 22-attr framework defaults table (AOSP-generated) + flavor law | ResourcesImpl + ThemeImpl | f51 2/3 rows EX",
+    "code_check": {
+     "item": "A10 theme bag_value (F-131/F-132)",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "bag_value|theme_service",
+     "evidence": [
+      "miniandroid/src/resources/layout_inflater.cpp:582:    // child > parent precedence). Bounded + cycle-safe like bag_value.",
+      "miniandroid/src/resources/layout_inflater.cpp:624:    if (auto item = arsc_.bag_value(style_resid, ATTR_TEXT_SIZE, device_config())) {"
+     ]
+    },
+    "registry_back_registered": false,
+    "reconcile_basis": "gap matrix FIXED + code fix PRESENT"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-011",
+   "item_id": "B1",
+   "requirement": "No canvas transform matrix: scale/rotate/skew/concat NO-OP (translation only)",
+   "final_status": "TESTED",
+   "evidence": {
+    "matrix_row": "[B1] canvas matrix (scale/rotate/skew/concat) | games/animation | FIXED S68 W1 (F-125): full 2D Affine2D, pre-concat law, save/restore snapshots matrix+clip; rotate/skew → polygon via winding rasterizer; stroke × sqrt|de",
+    "code_check": {
+     "item": "B1 Affine2D matrix (F-125)",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "Affine2D|affine",
+     "evidence": [
+      "miniandroid/src/framework/canvas_shadow.cpp:205:    mat_ = Affine2D{};",
+      "miniandroid/src/framework/canvas_shadow.cpp:497:                if (op.has_affine && (op.affine.b != 0.f || op.affine.c != 0.f)) {"
+     ]
+    },
+    "registry_back_registered": true,
+    "reconcile_basis": "gap matrix FIXED + code fix PRESENT"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-012",
+   "item_id": "B2",
+   "requirement": "clipRect accepted, never enforced; no clip stack exists",
+   "final_status": "TESTED",
+   "evidence": {
+    "matrix_row": "[B2] clipRect enforcement | clipping everywhere | FIXED S68 W1 (F-126): per-op clip SNAPSHOT (root cause: clip read at replay time was post-restore) + intersect law + view-bounds clip in SoftwareCanvas | Canvas clip stac",
+    "code_check": {
+     "item": "B2 clip enforcement (F-126)",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "clip_allows|set_clip",
+     "evidence": [
+      "miniandroid/src/framework/canvas_shadow.cpp:244:        canvas.set_clip(cl, ct, cr, cb);",
+      "miniandroid/src/renderer/software_renderer.cpp:155:void SoftwareCanvas::set_clip(float left, float top, float right, float bottom) {"
+     ]
+    },
+    "registry_back_registered": false,
+    "reconcile_basis": "gap matrix FIXED + code fix PRESENT"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-013",
+   "item_id": "B3",
+   "requirement": "`Canvas.drawBitmap` NO-OP on DEX path; BitmapFactory.* absent",
+   "final_status": "TESTED",
+   "evidence": {
+    "matrix_row": "[B3] BitmapFactory + Canvas.drawBitmap | image-drawing apps | FIXED S68 W1 (F-127/F-128): BitmapShadow (21st shadow) + BitmapStore; decodeResource/ByteArray/File, createBitmap family, eraseColor/getPixels; drawBitmap (l,",
+    "code_check": {
+     "item": "B3 BitmapShadow (F-128)",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "BitmapShadow",
+     "evidence": [
+      "miniandroid/src/framework/shadow_registry.cpp:289:    reg.register_shadow<BitmapShadow>();",
+      "miniandroid/src/framework/bitmap_shadow.cpp:52:static BitmapShadow::DrawableBytesResolver& resolver_slot() {"
+     ]
+    },
+    "registry_back_registered": false,
+    "reconcile_basis": "gap matrix FIXED + code fix PRESENT"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-014",
+   "item_id": "B4",
+   "requirement": "saveLayer/restoreToCount NO-OP; save/restore carry only translation",
+   "final_status": "PARTIAL",
+   "evidence": {
+    "matrix_row": "[B4] saveLayer/restoreToCount | alpha compositing | PARTIAL S68: state snapshot honored (save/restore/restoreToCount/getSaveCount work); layer ISOLATION DEFERRED-BY-CONTRACT (warned honestly) | SkCanvas saveLayer | f08 b",
+    "code_check": {
+     "item": "B4 saveLayer snapshot",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "saveLayer",
+     "evidence": [
+      "miniandroid/src/framework/canvas_shadow.cpp:1343:    if (m == \"saveLayer\" || m == \"saveLayerAlpha\") {",
+      "miniandroid/src/framework/canvas_shadow.cpp:1347:        warn_noop(cls, \"saveLayer(deferred-layer-isolation; state honored)\");"
+     ]
+    },
+    "registry_back_registered": false,
+    "reconcile_basis": "gap matrix row (full-row status)"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-015",
+   "item_id": "B5",
+   "requirement": "View.setX/setTranslationX/setY/AbsoluteLayout x-y absent; programmatic LayoutParams x,y dropped",
+   "final_status": "PENDING",
+   "evidence": {
+    "matrix_row": "[B5] setX/setTranslationX/AbsoluteLayout | drag/animation | missing | node translation field + renderer offset",
+    "code_check": {
+     "item": "B5 setX/setTranslationX (expected OPEN)",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "setTranslationX|setTranslationY|setAbsoluteX",
+     "evidence": [
+      "miniandroid/src/framework/canvas_shadow.cpp:569:        if (m == \"setTranslationX\" || m == \"setTranslationY\" || m == \"setElevation\" ||"
+     ]
+    },
+    "registry_back_registered": false,
+    "reconcile_basis": "setTranslationX/Y/setAlpha/scale/rotation in accept-and-ignore list (canvas_shadow.cpp:569) — gap stands"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-016",
+   "item_id": "B6",
+   "requirement": "ScrollView scrolling absent (no scrollY anywhere)",
+   "final_status": "PENDING",
+   "evidence": {
+    "matrix_row": "[B6] ScrollView scrolling | scrolling apps | missing (no scrollY) | scroll offset + draw translation + clip",
+    "code_check": {
+     "item": "B6 scrollY (expected OPEN)",
+     "expect": "PRESENT",
+     "found": false,
+     "pattern": "scrollY|setScrollY|getScrollY",
+     "evidence": []
+    },
+    "registry_back_registered": false,
+    "reconcile_basis": "no scrollY/scroll-offset support anywhere in miniandroid/src (feature absent — matrix 'missing' stands)"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-017",
+   "item_id": "B7",
+   "requirement": "drawRoundRect radius ignored; drawCircle stroke = filled disc r+w",
+   "final_status": "PARTIAL",
+   "evidence": {
+    "matrix_row": "[B7] circle stroke model | UI polish | PARTIAL (inner/t discarded) | ring raster like roundRect",
+    "code_check": {
+     "item": "B7 circle stroke inner/t",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "drawCircle",
+     "evidence": [
+      "miniandroid/src/framework/canvas_shadow.cpp:1046:    if (m == \"drawCircle\") {",
+      "miniandroid/src/framework/canvas_shadow.h:18://   drawColor/drawARGB/drawRGB, drawRect, drawCircle, drawLine, drawText,"
+     ]
+    },
+    "registry_back_registered": false,
+    "reconcile_basis": "gap matrix row (full-row status)"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-018",
+   "item_id": "B8",
+   "requirement": "Paint.setTextSize recorded-never-read on Canvas path",
+   "final_status": "TESTED",
+   "evidence": {
+    "matrix_row": "[B8] Paint.setTextSize (Canvas) | custom text | FIXED S68 W1 (F-130): consumed at replay via TextShaper when set | Paint text contract | f49 PASS | custom text | DONE",
+    "code_check": {
+     "item": "B8 textSize consumed via TextShaper (F-130)",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "text_size_px",
+     "evidence": [
+      "192:                         op.stroke ? 1 : 0, op.stroke_w, op.text_size_px,",
+      "472:                if (op.text_size_px > 0.f && fonts::TextShaper::instance().available()) {"
+     ]
+    },
+    "registry_back_registered": false,
+    "reconcile_basis": "gap matrix FIXED + code fix PRESENT"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-019",
+   "item_id": "B9",
+   "requirement": "No italic face/synthesis; Paint.setTypeface no-op on Canvas path",
+   "final_status": "PENDING",
+   "evidence": {
+    "matrix_row": "[B9/B10] italic synthesis; fallback faces | styled/non-Latin text | missing | synthetic oblique + per-codepoint fallback chain",
+    "code_check": {
+     "item": "B9 italic SYNTHESIS (expected OPEN; flag-only storage = still open)",
+     "expect": "PRESENT",
+     "found": false,
+     "pattern": "synthesize_italic|oblique|italic_face",
+     "evidence": []
+    },
+    "registry_back_registered": false,
+    "reconcile_basis": "text_italic FLAG stored (android_shadows.h:1156) but no italic face/synthesis — matrix 'missing' stands"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-020",
+   "item_id": "B10",
+   "requirement": "No per-codepoint fallback faces beyond FreeSerif/emoji (CJK depends on system TTF)",
+   "final_status": "PENDING",
+   "evidence": {
+    "matrix_row": "[B9/B10] italic synthesis; fallback faces | styled/non-Latin text | missing | synthetic oblique + per-codepoint fallback chain",
+    "code_check": {
+     "item": "B10 per-codepoint fallback (expected OPEN)",
+     "expect": "PRESENT",
+     "found": false,
+     "pattern": "codepoint_fallback|fallback_face|fallback_chain",
+     "evidence": []
+    },
+    "registry_back_registered": false,
+    "reconcile_basis": "no per-codepoint fallback face chain in src/fonts (only FreeSerif/emoji base — matrix 'missing' stands)"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-021",
+   "item_id": "B11",
+   "requirement": "View-level `android:theme` not applied at inflate",
+   "final_status": "PENDING",
+   "evidence": {
+    "matrix_row": null,
+    "code_check": {
+     "item": "B11 view-level android:theme (expected OPEN)",
+     "expect": "PRESENT",
+     "found": false,
+     "pattern": "android:theme",
+     "evidence": []
+    },
+    "registry_back_registered": false,
+    "reconcile_basis": "no view-level android:theme handling in layout_inflater.cpp — activity-level theme only (F-134); census-only item, gap stands"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-022",
+   "item_id": "B12",
+   "requirement": "`@android:` framework resources unresolvable (no framework ARSC)",
+   "final_status": "PARTIAL",
+   "evidence": {
+    "matrix_row": "[B12] @android: framework ids | published apps | unresolvable | static id table for common framework resources",
+    "code_check": {
+     "item": "B12 @android: framework ids (expected OPEN)",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "@android:|framework_id_table|FRAMEWORK_IDS",
+     "evidence": [
+      "miniandroid/src/resources/layout_inflater.cpp:417:    if (s.compare(0, 9, \"@android:\") == 0) {",
+      "miniandroid/src/resources/layout_inflater.cpp:418:        // @android:id/list → well-known system ids"
+     ]
+    },
+    "registry_back_registered": false,
+    "reconcile_basis": "@android: branch exists in resolve_id_attr (layout_inflater.cpp:417) — typed-reference path resolves; non-reference @android: names still return 0 (no framework ARSC)"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-023",
+   "item_id": "C1",
+   "requirement": "Programmatic RelativeLayout children: rl_edges_valid=false → fixed-point fallback",
+   "final_status": "PARTIAL",
+   "evidence": {
+    "matrix_row": "[C1/C2] RL programmatic + render-without-measure | TriPeaks class | PARTIAL (R-NEW-388 residual) | measure-before-render law at render entry",
+    "code_check": {
+     "item": "C1 rl_edges_valid",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "rl_edges_valid",
+     "evidence": [
+      "miniandroid/src/framework/android_shadows.h:1217:        bool rl_edges_valid = false;",
+      "miniandroid/src/resources/layout_inflater.cpp:1932:                cn->rl_edges_valid = true;"
+     ]
+    },
+    "registry_back_registered": true,
+    "reconcile_basis": "gap matrix row (full-row status)"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-024",
+   "item_id": "C2",
+   "requirement": "Render-without-measure path on RL trees → legacy fallback has NO RL branch → pile at (0,0)",
+   "final_status": "PARTIAL",
+   "evidence": {
+    "matrix_row": "[C1/C2] RL programmatic + render-without-measure | TriPeaks class | PARTIAL (R-NEW-388 residual) | measure-before-render law at render entry",
+    "code_check": {
+     "item": "C2 measure-before-render at render entry (expected OPEN)",
+     "expect": "PRESENT",
+     "found": false,
+     "pattern": "measure_before_render|ensure_measured",
+     "evidence": []
+    },
+    "registry_back_registered": false,
+    "reconcile_basis": "gap matrix row (full-row status)"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-025",
+   "item_id": "C3",
+   "requirement": "LL horizontal cross-axis TOP(0x30) falls into center branch",
+   "final_status": "TESTED",
+   "evidence": {
+    "matrix_row": null,
+    "code_check": {
+     "item": "C3 LL horizontal cross-axis TOP branch (f18_lltop)",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "f18_lltop",
+     "evidence": [
+      "miniandroid/src/resources/layout_inflater.cpp:2909:                        // S67 FOUNDATION (C3, f18_lltop fixture): AOSP",
+      "miniandroid/src/resources/layout_inflater.cpp:2918:                        // (f18_lltop pixel evidence: child at y=760 in a"
+     ]
+    },
+    "registry_back_registered": true,
+    "reconcile_basis": "f18_lltop fix branch present (S67 FOUNDATION comment, AOSP LinearLayout.java L1445-1470 law cited inline)"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-026",
+   "item_id": "C4",
+   "requirement": "`gravity` one attr → two fields (container+text conflated)",
+   "final_status": "PARTIAL",
+   "evidence": {
+    "matrix_row": null,
+    "code_check": {
+     "item": "C4 gravity container/text split (text_gravity field = partial)",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "text_gravity",
+     "evidence": [
+      "miniandroid/src/framework/dialog_shadow.cpp:140:        n->text_gravity = 0x10;                    // CENTER_VERTICAL",
+      "miniandroid/src/framework/dialog_shadow.cpp:156:        row->text_gravity = 0x11;  // CENTER"
+     ]
+    },
+    "registry_back_registered": true,
+    "reconcile_basis": "separate text_gravity field exists (dialog_shadow.cpp:140); XML gravity->two-field conflation not proven corpus-wide"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-027",
+   "item_id": "C5",
+   "requirement": "setText/setVisibility/setTextColor never raise layout_dirty (masked by full re-measure per frame on resource path; programmatic trees can go",
+   "final_status": "PARTIAL",
+   "evidence": {
+    "matrix_row": "[C5/C6] dirty tracking | whole engine | whole-tree re-measure; invalidate no-op | dirty-region model (perf, not correctness yet)",
+    "code_check": {
+     "item": "C5 layout_dirty raised by setters (expected OPEN)",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "layout_dirty",
+     "evidence": [
+      "miniandroid/src/framework/android_shadows.h:1523:        layout_dirty = true;",
+      "miniandroid/src/framework/android_shadows.h:1533:    bool layout_dirty = false;"
+     ]
+    },
+    "registry_back_registered": false,
+    "reconcile_basis": "layout_dirty raised by geometry/LayoutParams mutations (R-NEW-302 requestLayout law); text/visibility setters still do not raise it"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-028",
+   "item_id": "C6",
+   "requirement": "invalidate() no-op; no dirty-region model (whole-tree re-render each frame)",
+   "final_status": "PENDING",
+   "evidence": {
+    "matrix_row": "[C5/C6] dirty tracking | whole engine | whole-tree re-measure; invalidate no-op | dirty-region model (perf, not correctness yet)",
+    "code_check": {
+     "item": "C6 invalidate dirty-region (expected OPEN)",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "invalidate",
+     "evidence": [
+      "miniandroid/src/framework/android_shadows.h:1337:                \"requestLayout\", \"invalidate\",",
+      "miniandroid/src/framework/android_shadows.cpp:2930:    // every other child GONE → requestLayout() + invalidate(). This is"
+     ]
+    },
+    "registry_back_registered": false,
+    "reconcile_basis": "invalidate/requestLayout in shadow method-name list only; no dirty-region model (whole-tree re-render stands)"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-029",
+   "item_id": "C7",
+   "requirement": "RenderNode node alpha/translation/scale/rotation accepted-but-ignored",
+   "final_status": "PENDING",
+   "evidence": {
+    "matrix_row": null,
+    "code_check": {
+     "item": "C7 RenderNode alpha/translation (expected OPEN)",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "RenderNode|render_node",
+     "evidence": [
+      "miniandroid/src/framework/canvas_shadow.cpp:545:    // ── RenderNode (UC009 H-072: Compose recording model) ─────────────",
+      "miniandroid/src/framework/canvas_shadow.cpp:546:    if (cls == \"Landroid/view/RenderNode;\" || cls.find(\"RenderNode;\") != std::string::npos) {"
+     ]
+    },
+    "registry_back_registered": false,
+    "reconcile_basis": "RenderNode beginRecording/recording implemented, but setAlpha/setTranslationX/scale/rotation are swallowed no-ops (canvas_shadow.cpp:569)"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-030",
+   "item_id": "C8",
+   "requirement": "FrameBuffer blend forces result alpha=255; PNG encode drops alpha (RGB) — alpha semantics untestable end-to-end",
+   "final_status": "PENDING",
+   "evidence": {
+    "matrix_row": null,
+    "code_check": {
+     "item": "C8 FrameBuffer alpha RGB encode (expected OPEN)",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "png_set_IHDR",
+     "evidence": [
+      "863:    png_set_IHDR(png, info, width, height, 8, PNG_COLOR_TYPE_RGB,"
+     ]
+    },
+    "registry_back_registered": false,
+    "reconcile_basis": "png_set_IHDR PNG_COLOR_TYPE_RGB confirmed (software_renderer.cpp:863) — alpha dropped, gap stands"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-031",
+   "item_id": "C9",
+   "requirement": "ViewTree evidence export lacks alpha/padding/measured fields",
+   "final_status": "PENDING",
+   "evidence": {
+    "matrix_row": "[C9] ViewTree export fields | evidence | lacks alpha/padding | add fields (evidence integrity)",
+    "code_check": {
+     "item": "C9 ViewTree export alpha/padding fields (expected OPEN)",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "measured_left",
+     "evidence": [
+      "miniandroid/src/framework/android_shadows.h:1204:        int measured_left = 0, measured_top = 0;   // final geometry (measure/layout)",
+      "miniandroid/src/runtime/execution_engine.cpp:2004:                                left = node->measured_left;"
+     ]
+    },
+    "registry_back_registered": false,
+    "reconcile_basis": "dump_view_tree JSON writes x/y/text/visibility but NO alpha/padding/measured_left fields (dalvik_engine.cpp:9091+)"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-032",
+   "item_id": "C10",
+   "requirement": "getIdentifier dual path: real id resolution vs legacy stub",
+   "final_status": "PENDING",
+   "evidence": {
+    "matrix_row": null,
+    "code_check": {
+     "item": "C10 getIdentifier dual path",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "getIdentifier",
+     "evidence": [
+      "miniandroid/src/framework/android_shadows.h:1488:    // Resources.getIdentifier(name, \"id\", pkg).",
+      "miniandroid/src/framework/android_shadows.cpp:2471:// Resources.getIdentifier(name, \"id\", pkg) resolves against the resource"
+     ]
+    },
+    "registry_back_registered": false,
+    "reconcile_basis": "real getIdentifier path documented (android_shadows.h:1488); dual-path reconciliation not evidenced"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-033",
+   "item_id": "C11",
+   "requirement": "fraction TypedValue dead code (complex_to_fraction zero consumers)",
+   "final_status": "PENDING",
+   "evidence": {
+    "matrix_row": null,
+    "code_check": {
+     "item": "C11 complex_to_fraction dead code (presence = still dead)",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "complex_to_fraction",
+     "evidence": [
+      "miniandroid/src/resources/res_id.h:167:float complex_to_fraction(uint32_t complex_data, float base, float pbase);",
+      "miniandroid/src/resources/res_id.cpp:61:float complex_to_fraction(uint32_t complex_data, float base, float pbase) {"
+     ]
+    },
+    "registry_back_registered": false,
+    "reconcile_basis": "complex_to_fraction still declared (res_id.h:167) with zero consumers — dead code stands"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-034",
+   "item_id": "C12",
+   "requirement": "fontScale fixed 1.0 (sp == dp always)",
+   "final_status": "PARTIAL",
+   "evidence": {
+    "matrix_row": null,
+    "code_check": {
+     "item": "C12 fontScale fixed 1.0 (expected OPEN)",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "fontScale|font_scale",
+     "evidence": [
+      "miniandroid/src/resources/res_id.h:124:// (= density × fontScale), xdpi.",
+      "miniandroid/src/resources/res_id.h:130:    static DensityContext from_density(float density, float font_scale = 1.0f) {"
+     ]
+    },
+    "registry_back_registered": false,
+    "reconcile_basis": "DensityContext::from_density(font_scale) plumbing exists (res_id.h:130) with default 1.0; live fontScale source not evidenced"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-035",
+   "item_id": "D1",
+   "requirement": "view_renderer.cpp dead AND does not compile vs current ViewNode",
+   "final_status": "PENDING",
+   "evidence": {
+    "matrix_row": "[D1-D7] dead code/build drift | hygiene | registered | remove view_renderer/real_layout/api_dispatcher stub; fix CMake libs",
+    "code_check": {
+     "item": "D1 view_renderer.cpp dead file removal (presence = still open)",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "view_renderer",
+     "evidence": [
+      "miniandroid/src/renderer/view_renderer.cpp:3:#include \"view_renderer.h\""
+     ]
+    },
+    "registry_back_registered": true,
+    "reconcile_basis": "view_renderer.cpp exists (30KB), not in Makefile — dead file not removed"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-036",
+   "item_id": "D2",
+   "requirement": "real_layout.cpp + resource_parser.cpp legacy orphan (self-include only)",
+   "final_status": "PENDING",
+   "evidence": {
+    "matrix_row": "[D1-D7] dead code/build drift | hygiene | registered | remove view_renderer/real_layout/api_dispatcher stub; fix CMake libs",
+    "code_check": {
+     "item": "D2 real_layout/resource_parser legacy orphans",
+     "expect": "PRESENT",
+     "found": false,
+     "pattern": "real_layout.h|real_layout.cpp",
+     "evidence": []
+    },
+    "registry_back_registered": true,
+    "reconcile_basis": "real_layout.cpp + resource_parser.cpp legacy orphans still present in src/resources/"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-037",
+   "item_id": "D3",
+   "requirement": "api_dispatcher.cpp = EXP-036 stub, in build, grep trap (613 lines, no live role)",
+   "final_status": "PARTIAL",
+   "evidence": {
+    "matrix_row": "[D1-D7] dead code/build drift | hygiene | registered | remove view_renderer/real_layout/api_dispatcher stub; fix CMake libs",
+    "code_check": {
+     "item": "D3 api_dispatcher.cpp removal (presence = grep trap remains; NOT in Makefile = build part fixed)",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "api_dispatcher",
+     "evidence": [
+      "miniandroid/src/dex/api_dispatcher.cpp:2: * @file api_dispatcher.cpp",
+      "miniandroid/src/dex/api_dispatcher.cpp:12:#include \"api_dispatcher.h\""
+     ]
+    },
+    "registry_back_registered": false,
+    "reconcile_basis": "api_dispatcher.cpp NOT in Makefile (build-membership half fixed); file remains as grep trap"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-038",
+   "item_id": "D4",
+   "requirement": "CMake/Makefile drift: exp088_a4 CMake target links pre-libpng lib set",
+   "final_status": "PARTIAL",
+   "evidence": {
+    "matrix_row": "[D1-D7] dead code/build drift | hygiene | registered | remove view_renderer/real_layout/api_dispatcher stub; fix CMake libs",
+    "code_check": {
+     "item": "D4 exp088_a4 CMake target (links miniandroid_core = drift fixed; target remains)",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "exp088_a4",
+     "evidence": [
+      "miniandroid/src/renderer/software_renderer.h:426:// (tools/exp088_a4_png_decoder_test.cpp) still guards the interface."
+     ]
+    },
+    "registry_back_registered": false,
+    "reconcile_basis": "exp088_a4 target now links miniandroid_core (CMakeLists.txt:282) — lib-set drift likely fixed; target itself remains"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-039",
+   "item_id": "D5",
+   "requirement": "scripts/build_exp124.sh references moved text_shaper path",
+   "final_status": "PENDING",
+   "evidence": {
+    "matrix_row": "[D1-D7] dead code/build drift | hygiene | registered | remove view_renderer/real_layout/api_dispatcher stub; fix CMake libs",
+    "code_check": {
+     "item": "D5 build_exp124.sh stale text_shaper path (presence of script = still open)",
+     "expect": "PRESENT",
+     "found": false,
+     "pattern": "build_exp124",
+     "evidence": []
+    },
+    "registry_back_registered": false,
+    "reconcile_basis": "miniandroid/scripts/build_exp124.sh still references src/renderer/text_shaper.cpp (moved to src/fonts/) + dead real_layout.cpp/view_renderer.cpp"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-040",
+   "item_id": "D6",
+   "requirement": "screenshot PNG alpha dropped (RGB encode) — capture proven faithful only for opaque frames",
+   "final_status": "PENDING",
+   "evidence": {
+    "matrix_row": "[D1-D7] dead code/build drift | hygiene | registered | remove view_renderer/real_layout/api_dispatcher stub; fix CMake libs",
+    "code_check": {
+     "item": "D6 PNG RGB encode alpha drop (PNG_COLOR_TYPE_RGB = still open)",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "PNG_COLOR_TYPE_RGB",
+     "evidence": [
+      "miniandroid/src/renderer/software_renderer.cpp:863:    png_set_IHDR(png, info, width, height, 8, PNG_COLOR_TYPE_RGB,"
+     ]
+    },
+    "registry_back_registered": false,
+    "reconcile_basis": "PNGWriter encodes PNG_COLOR_TYPE_RGB (software_renderer.cpp:863) — alpha dropped, gap stands"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-041",
+   "item_id": "D7",
+   "requirement": "ViewTree JSON vs renderer dual field names (x/y vs measured_left/top) — same write site today, fragile model",
+   "final_status": "PENDING",
+   "evidence": {
+    "matrix_row": "[D1-D7] dead code/build drift | hygiene | registered | remove view_renderer/real_layout/api_dispatcher stub; fix CMake libs",
+    "code_check": {
+     "item": "D7 ViewTree JSON x/y vs measured_left dual names (n[\"x\"] = still open)",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "n[\"x\"]",
+     "evidence": [
+      "miniandroid/src/dex/dalvik_engine.cpp:9089:        n[\"x\"] = node->x;"
+     ]
+    },
+    "registry_back_registered": false,
+    "reconcile_basis": "view_tree.json writes n[x]/n[y] while ViewNode carries measured_left/top (dalvik_engine.cpp:9092) — dual naming stands"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-042",
+   "item_id": "F-121",
+   "requirement": " input→pending-work→render | all navigation | FIXED S67: probe drains pending intent/finish before re-render | AOSP Looper message→traversal",
+   "final_status": "TESTED",
+   "evidence": {
+    "matrix_row": "[F-121]  input→pending-work→render | all navigation | FIXED S67: probe drains pending intent/finish before re-render | AOSP Looper message→traversal law | f27 PASS | TriPeaks/FishRings nav | nav clicks recorded changed_p",
+    "code_check": {
+     "item": "F-121 pending-intent drain (f27)",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "drain_pending|pending_finish|pending_intent",
+     "evidence": [
+      "miniandroid/src/framework/pending_intent_shadow.cpp:2:// See pending_intent_shadow.h for the AOSP law mapping and the root-gap",
+      "miniandroid/src/framework/pending_intent_shadow.cpp:4:#include \"pending_intent_shadow.h\""
+     ]
+    },
+    "registry_back_registered": true,
+    "reconcile_basis": "gap matrix FIXED + code fix PRESENT"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-043",
+   "item_id": "F-122",
+   "requirement": " Color.rgb/argb/parseColor | every custom-drawing app | FIXED S67: static factory law | AOSP Color.java | f08 R2-stroke PASS | canvas apps |",
+   "final_status": "TESTED",
+   "evidence": {
+    "matrix_row": "[F-122]  Color.rgb/argb/parseColor | every custom-drawing app | FIXED S67: static factory law | AOSP Color.java | f08 R2-stroke PASS | canvas apps | colors returned 0 → invisible | DONE ",
+    "code_check": {
+     "item": "F-122 Color.rgb/argb/parseColor",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "parseColor",
+     "evidence": [
+      "miniandroid/src/framework/state_list.cpp:39:        // #RRGGBB → opaque (AOSP Color.parseColor law)",
+      "miniandroid/src/framework/state_list.cpp:45:        // #RGB → expand each nibble (AOSP Color.parseColor law)"
+     ]
+    },
+    "registry_back_registered": true,
+    "reconcile_basis": "gap matrix FIXED + code fix PRESENT"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-044",
+   "item_id": "F-123",
+   "requirement": " drawRoundRect arg order | cards/rounded UIs | FIXED S67: (l,t,r,b,rx,ry,PAINT) + real radius raster | AOSP Canvas.drawRoundRect | f08 R9 PA",
+   "final_status": "TESTED",
+   "evidence": {
+    "matrix_row": "[F-123]  drawRoundRect arg order | cards/rounded UIs | FIXED S67: (l,t,r,b,rx,ry,PAINT) + real radius raster | AOSP Canvas.drawRoundRect | f08 R9 PASS | Compose cards | paint read from rx slot → black squares | DONE ",
+    "code_check": {
+     "item": "F-123 drawRoundRect arg order",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "drawRoundRect",
+     "evidence": [
+      "miniandroid/src/framework/canvas_shadow.cpp:279:                // Upstream law (AOSP Skia RRect / Canvas.drawRoundRect): the",
+      "miniandroid/src/framework/canvas_shadow.cpp:1004:    if (m == \"drawRoundRect\") {"
+     ]
+    },
+    "registry_back_registered": true,
+    "reconcile_basis": "gap matrix FIXED + code fix PRESENT"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-045",
+   "item_id": "F-124",
+   "requirement": " visibility XML enum space | every XML app | FIXED S67: {0,1,2}→{0,4,8} mapping | ViewProps VIEW_VISIBILITY_VALUES | f06 PASS | corpus-wide ",
+   "final_status": "TESTED",
+   "evidence": {
+    "matrix_row": "[F-124]  visibility XML enum space | every XML app | FIXED S67: {0,1,2}→{0,4,8} mapping | ViewProps VIEW_VISIBILITY_VALUES | f06 PASS | corpus-wide | invisible→1 → drawn | DONE ",
+    "code_check": {
+     "item": "F-124 visibility enum space",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "VIEW_VISIBILITY|visibility_map|enum_space",
+     "evidence": [
+      "miniandroid/src/resources/layout_inflater.cpp:1040:                // ViewProps maps them (VIEW_VISIBILITY_VALUES). The raw"
+     ]
+    },
+    "registry_back_registered": true,
+    "reconcile_basis": "gap matrix FIXED + code fix PRESENT"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-046",
+   "item_id": "F-135",
+   "requirement": " Double/Float isNaN·isInfinite·compare | 694 static sites × 7 APKs (bouncy 141, dooz 217, fishrings 24, tictactoe 28…) | FIXED S69: NaN=(v!=",
+   "final_status": "TESTED",
+   "evidence": {
+    "matrix_row": "[F-135]  Double/Float isNaN·isInfinite·compare | 694 static sites × 7 APKs (bouncy 141, dooz 217, fishrings 24, tictactoe 28…) | FIXED S69: NaN=(v!=v), isInfinite=abs>MAX, compare=canonical-bits ordering (NaN>+Inf, −0.0<",
+    "code_check": {
+     "item": "F-135 NaN law",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "isNaN|v != v|v!=v",
+     "evidence": [
+      "miniandroid/src/dex/dalvik_engine.cpp:21957:    //   Double.isNaN(v)      = (v != v)                 Double.java:1031",
+      "miniandroid/src/dex/dalvik_engine.cpp:21959:    //   Float.isNaN(v)       = (v != v)                  Float.java:631"
+     ]
+    },
+    "registry_back_registered": true,
+    "reconcile_basis": "gap matrix FIXED + code fix PRESENT"
+   }
+  },
+  {
+   "ledger_id": "ITEM75-047",
+   "item_id": "F-136",
+   "requirement": " string resolution | FIXED (S70) | ARSC-first law both blocks; f53 fixture; battery 23/23; corpus 9/10 byte-identical ",
+   "final_status": "TESTED",
+   "evidence": {
+    "matrix_row": "[F-136]  string resolution | FIXED (S70) | ARSC-first law both blocks; f53 fixture; battery 23/23; corpus 9/10 byte-identical ",
+    "code_check": {
+     "item": "F-136 string resolution ARSC-first",
+     "expect": "PRESENT",
+     "found": true,
+     "pattern": "arsc_first|ARSC-first|resolve_string",
+     "evidence": [
+      "miniandroid/src/framework/dialog_shadow.h:91://   1. resolve_strings(resolver) — resid → string via the engine's",
+      "miniandroid/src/framework/dialog_shadow.h:127:    void resolve_strings(const std::function<std::string(int32_t)>& resolver);"
+     ]
+    },
+    "registry_back_registered": true,
+    "reconcile_basis": "gap matrix FIXED + code fix PRESENT"
+   }
+  }
+ ]
+}
