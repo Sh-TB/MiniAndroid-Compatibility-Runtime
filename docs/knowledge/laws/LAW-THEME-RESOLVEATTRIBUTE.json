@@ -1,0 +1,26 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "LAW-THEME-RESOLVEATTRIBUTE",
+ "title": "Theme.resolveAttribute chain",
+ "domain": "framework",
+ "scope": "generic",
+ "statement": "Theme attribute resolution follows the AOSP single-resolution-path with typed-value output; getTheme/resolveAttribute must answer real themed values (unote regression recovered via this law).",
+ "status": "VERIFIED",
+ "source": {
+  "origin": "AOSP frameworks/base",
+  "file": "S72-W3 closure (commit 048b0e31)"
+ },
+ "test": "unote themed UI 231120 px recovered",
+ "consumers": [
+  "unote"
+ ],
+ "issues": [
+  15
+ ],
+ "capabilities": [
+  "cap-view-inflate-layout"
+ ],
+ "first_discovered": "S72-W3",
+ "last_verified": "S73"
+}

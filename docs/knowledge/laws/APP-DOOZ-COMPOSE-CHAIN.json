@@ -1,0 +1,24 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "APP-DOOZ-COMPOSE-CHAIN",
+ "title": "Dooz Compose/coroutine deep chain (RESEARCH-stage)",
+ "domain": "compose",
+ "scope": "app",
+ "statement": "DOOZ -> Compose/coroutine -> b2/n -> Segment-like state/queue -> AtomicReferenceArray; measured get ~629k, set ~1, head segment state ~0x40000000. These observations are NOT a complete semantic law without upstream verification (taskbook \u00a740).",
+ "status": "RESEARCHED",
+ "source": {
+  "origin": "S72-W1 deep-chain probes (commit acad15fd)",
+  "file": "S72_WAVE1.md evidence doc"
+ },
+ "test": null,
+ "consumers": [
+  "dooz"
+ ],
+ "issues": [
+  14
+ ],
+ "capabilities": [],
+ "first_discovered": "S72-W1",
+ "last_verified": "S72-W1"
+}

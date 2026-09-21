@@ -1,0 +1,27 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "LAW-MUTF8",
+ "title": "MUTF-8 string encoding in DEX",
+ "domain": "dex",
+ "scope": "generic",
+ "statement": "DEX strings use modified UTF-8 (NUL as 0xC0 0x80, surrogate pairs for astral planes); decoding must reproduce exact UTF-16 semantics for constant-pool fidelity.",
+ "status": "VERIFIED",
+ "source": {
+  "origin": "Dalvik executable format spec / ART",
+  "file": "dex string table decoder in MiniAndroid DEX parser"
+ },
+ "test": "battery string stages; corpus-wide constant-string rendering (helloworld app-computed hash)",
+ "consumers": [
+  "helloworld",
+  "androidgamesnake",
+  "dooz",
+  "telegram"
+ ],
+ "issues": [],
+ "capabilities": [
+  "cap-apk-pipeline"
+ ],
+ "first_discovered": "early DEX era",
+ "last_verified": "S73 (corpus re-run)"
+}

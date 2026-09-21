@@ -1,0 +1,28 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "LAW-F149",
+ "title": "DisplayMetrics/applyDimension + device-density unity law",
+ "domain": "layout",
+ "scope": "generic",
+ "statement": "Resources.getDisplayMetrics must answer the device law (density 2.625/420, scaledDensity, xdpi/ydpi \u2014 never silent null, never singleton density=1.0 contradiction); TypedValue.applyDimension implements the exact AOSP switch over heap fields.",
+ "status": "VERIFIED",
+ "source": {
+  "origin": "AOSP Resources/DisplayMetrics/TypedValue.applyDimension",
+  "file": "docs/foundation/S72_WAVE4.md (F-149 row)"
+ },
+ "test": "SnakePanelView 1080x780 = 20x15dp x 2.625 EXACTLY; buttons 197x118 = 75x45dp; corpus 10/10 pixel-SAME",
+ "consumers": [
+  "androidgamesnake",
+  "gmdice",
+  "microtimer"
+ ],
+ "issues": [
+  13
+ ],
+ "capabilities": [
+  "cap-measure-geometry"
+ ],
+ "first_discovered": "S72-W4",
+ "last_verified": "S73"
+}

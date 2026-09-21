@@ -1,0 +1,28 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "CLAIM-DOOZ-23472-VISUAL",
+ "title": "FALSE CLAIM: dooz '23,472 px = visual proof' (SUPERSEDED)",
+ "domain": "evidence",
+ "scope": "claim",
+ "statement": "The S72-W3/W4 claim that dooz rendered 23,472 px of real content is FALSE: S73 proved those are pure-black pixels forming an engine-default (0,0)-(489,47) region, byte-identical to the no-Activity Stopwatch frame (0e334abe1b10b592). Dooz visual proof remains UNRESOLVED. Determinism facts stand; the INTERPRETATION was corrected.",
+ "status": "SUPERSEDED",
+ "superseded_by": "LAW-F145 + dated reclassification comment on issue #14 + S73_REPORT \u00a75",
+ "source": {
+  "origin": "S73 B4 historical audit",
+  "file": "docs/evidence/S73/S73_REPORT.md \u00a75"
+ },
+ "test": "byte-identity comparison vs no-Activity face",
+ "consumers": [
+  "dooz"
+ ],
+ "issues": [
+  14
+ ],
+ "capabilities": [
+  "cap-screenshot-quality-gate"
+ ],
+ "first_discovered": "S72-W3 (as claim)",
+ "last_verified": "S73 (reclassified)",
+ "notes": "PRESERVED as an evidence-quality lesson (taskbook \u00a768): pixel count != semantic visual proof. Never delete; mark SUPERSEDED and link the correction."
+}

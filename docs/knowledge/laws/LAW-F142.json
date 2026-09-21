@@ -1,0 +1,26 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "LAW-F142",
+ "title": "RelativeLayout MarginLayoutParams + ImageView onMeasure cap law",
+ "domain": "layout",
+ "scope": "generic",
+ "statement": "RL children carry MarginLayoutParams semantics; ImageView onMeasure caps to drawable-intrinsic behavior per AOSP \u2014 fishrings board renders on the current binary because of this law.",
+ "status": "VERIFIED",
+ "source": {
+  "origin": "AOSP RelativeLayout/ImageView",
+  "file": "S72-W2 record (commit f8d5e1e2)"
+ },
+ "test": "fishrings real game board (KPI-2 +1, zero regressions)",
+ "consumers": [
+  "fishrings"
+ ],
+ "issues": [
+  19
+ ],
+ "capabilities": [
+  "cap-view-inflate-layout"
+ ],
+ "first_discovered": "S72-W2",
+ "last_verified": "S73"
+}

@@ -1,0 +1,26 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "LAW-VIEW-GETRESOURCES",
+ "title": "View.getResources non-null law",
+ "domain": "framework",
+ "scope": "generic",
+ "statement": "View.getResources() answers the hosting Resources instance (never null) per AOSP View contract.",
+ "status": "VERIFIED",
+ "source": {
+  "origin": "AOSP frameworks/base View.java",
+  "file": "S72-W3 null-producer closure"
+ },
+ "test": "fixtures 25/25; unote theme recovery 231120 px",
+ "consumers": [
+  "unote"
+ ],
+ "issues": [
+  15
+ ],
+ "capabilities": [
+  "cap-view-inflate-layout"
+ ],
+ "first_discovered": "S72-W3",
+ "last_verified": "S73"
+}

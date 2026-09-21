@@ -1,0 +1,26 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "LAW-F148",
+ "title": "ConstraintLayout anchor family law",
+ "domain": "layout",
+ "scope": "generic",
+ "statement": "layout_constraint* anchor family (12 attrs + 2 biases) requires per-axis topological CL measure semantics: MATCH_CONSTRAINT spread, bias, one/no-anchor laws, padding-box parent anchors; layout phase replays the RL contract.",
+ "status": "VERIFIED",
+ "source": {
+  "origin": "AOSP ConstraintLayout measure pass",
+  "file": "docs/foundation/S72_WAVE4.md (F-148 row)"
+ },
+ "test": "snake SnakePanelView EXACTLY 1080x780; biased button pad EXACT (BOTTOM span 799 x 0.5); corpus 10/10 + fixtures 25/25 pixel-SAME",
+ "consumers": [
+  "androidgamesnake"
+ ],
+ "issues": [
+  13
+ ],
+ "capabilities": [
+  "cap-view-inflate-layout"
+ ],
+ "first_discovered": "S72-W4",
+ "last_verified": "S73"
+}

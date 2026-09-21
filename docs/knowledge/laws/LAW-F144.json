@@ -1,0 +1,25 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "LAW-F144",
+ "title": "GL surface family (tictactoe-class)",
+ "domain": "rendering",
+ "scope": "generic",
+ "statement": "Apps drawing through GL surfaces need a GL compatibility path; tracked P2, does not gate View-based proofs of the same apps.",
+ "status": "RESEARCHED",
+ "source": {
+  "origin": "S72-W1 triage",
+  "file": "root_registry.json F-144"
+ },
+ "test": null,
+ "consumers": [
+  "tictactoe"
+ ],
+ "issues": [
+  11
+ ],
+ "capabilities": [],
+ "first_discovered": "S72-W1",
+ "last_verified": "S72-W1",
+ "notes": "Research-stage record; no implementation claimed."
+}

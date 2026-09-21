@@ -1,0 +1,28 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "LAW-F114",
+ "title": "SharedPreferences family law",
+ "domain": "storage",
+ "scope": "generic",
+ "statement": "(a) getString default is @Nullable (AOSP SharedPreferencesImpl.java:307-313); (b) PreferenceManager.setDefaultValues parses the defaults XML and persists key/defaultValue + _has_set_default_values one-shot flag (:661-673); (c) getDefaultSharedPreferences = <pkg>_preferences.",
+ "status": "VERIFIED",
+ "source": {
+  "origin": "AOSP/AndroidX PreferenceManager.java:661-673",
+  "file": "docs/evidence/s64_spotlight/S64_REPORT.md \u00a72"
+ },
+ "test": "pmk rc=1 NFE -> rc=0 views=179 det x3; second consumer simplestopwatch defaults=24",
+ "consumers": [
+  "unote",
+  "gmdice"
+ ],
+ "issues": [
+  15,
+  17
+ ],
+ "capabilities": [
+  "cap-persistence-sharedprefs"
+ ],
+ "first_discovered": "S64",
+ "last_verified": "S73"
+}

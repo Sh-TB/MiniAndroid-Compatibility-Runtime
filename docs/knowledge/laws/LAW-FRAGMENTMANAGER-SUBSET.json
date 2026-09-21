@@ -1,0 +1,24 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "LAW-FRAGMENTMANAGER-SUBSET",
+ "title": "FragmentManager guarded subset",
+ "domain": "androidx",
+ "scope": "generic",
+ "statement": "The exercised FragmentManager subset (transaction lifecycle, ensureExecReady-style guards) implements androidx semantics for the consumer set; gaps beyond the subset are recorded, not faked.",
+ "status": "VERIFIED",
+ "source": {
+  "origin": "AndroidX fragment",
+  "file": "FragmentManager shadow"
+ },
+ "test": "R-NEW-331 family: minesweeper/memory/2048 same generic gate \u2014 one fix, 3+ consumers",
+ "consumers": [
+  "dooz"
+ ],
+ "issues": [],
+ "capabilities": [
+  "cap-dex-interpreter"
+ ],
+ "first_discovered": "S62",
+ "last_verified": "S73"
+}
