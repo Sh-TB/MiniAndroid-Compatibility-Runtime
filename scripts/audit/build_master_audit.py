@@ -354,17 +354,30 @@ for cid,claim,why,ev,missing,action,issue in crit:
         execution=[f"why it looked complete: {why}"], evidence=[f"actual evidence: {ev}"],
         gap=f"missing proof: {missing} | required action: {action} | issue: {issue or 'none'}")
 
-# ---------------------------------------------------------------- 10. ISSUE mapping (#10-#23)
+# ---------------------------------------------------------------- 10. ISSUE mapping (#10-#23) — published + render-verified (§26)
 ISSUE_APPS={"10":"helloworld","11":"tictactoe","12":"connectfour","13":"androidgamesnake","14":"dooz",
             "15":"unote","16":"telegram","17":"gmdice","18":"microtimer","19":"fishrings","20":"tripeaks",
             "21":"bouncy","22":"stopwatch","23":"opmt"}
+gh_check={}
+_gf=os.path.join(OUT_DIR,"github_evidence_check.json")
+if os.path.exists(_gf):
+    for _r in json.load(open(_gf)).get("results",[]):
+        gh_check[_r["issue"]]=_r
 for num,app in ISSUE_APPS.items():
+    chk=gh_check.get(int(num),{})
+    links_ok=bool(chk.get("url_checks")) and all(c["resp"].startswith("200") for c in chk["url_checks"])
+    st="OBSERVED" if links_ok else "PARTIAL"
+    ev=[f"app dossier: docs/compatibility/apps/{app}.json; bundle docs/evidence/s74_ops/{app}/"]
+    gap=""
+    if links_ok:
+        ev.append(f"§6 checkpoint published with {len(chk.get('image_urls',[]))} render-verified evidence URLs (HTTP 200, see github_evidence_check.json)")
+    else:
+        gap="checkpoint published; render verification pending (github_evidence_check.json)"
     add(f"ISSUE-{num}","github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/"+num,
         f"[EXEC] {app}: living execution dossier — checkpoint with human-visible evidence link required",
-        "PARTIAL", "ISSUE-MAPPING",
-        evidence=[f"app dossier: docs/compatibility/apps/{app}.json; bundle docs/evidence/s74_ops/{app}/"],
-        issues=[num], github=["issues/"+num],
-        gap="checkpoint body/comments verified separately (github_evidence_check.json)")
+        st, "ISSUE-MAPPING",
+        execution=["checkpoint comment posted S74-FINAL; corrective scope/NO_MEANINGFUL_VISUAL_PROOF labels where applicable (dooz/telegram/stopwatch/tictactoe)"],
+        evidence=ev, issues=[num], github=["issues/"+num], gap=gap)
 
 os.makedirs(OUT_DIR, exist_ok=True)
 

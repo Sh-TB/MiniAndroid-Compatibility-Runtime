@@ -2287,3 +2287,19 @@ Work Log:
 Stage Summary:
 - Deliverables: docs/audit/MASTER_CHECKLIST.md (373-row tables + dashboard) · docs/audit/master_audit.json (§28 schema) · docs/audit/github_evidence_check.json · scripts/audit/{build_master_audit,check_github_evidence,fix_visual_scope}.py · dossier scope-truth fixes (tictactoe/connectfour) · README audit link.
 - Continuation: (1) commit+push; (2) post issue checkpoints; (3) re-verify links HTTP 200; (4) second ledger refresh commit.
+
+---
+Task ID: S74-FINAL-RECONCILIATION (publish + verify stage)
+Agent: Super Z (main)
+Task: publish ledger + checkpoints; verify human-visible links end-to-end (§26/§33).
+
+Work Log:
+- Commit d7280a15 (374-row ledger + dossier scope fixes + README + validator) pushed; ls-remote verified remote main == d7280a15 (5 pending S74-followup commits published with it, CRITICAL-001 resolved).
+- Remote file verification: MASTER_CHECKLIST.md 200 on raw.githubusercontent; raw PNG URLs resolve at short SHA.
+- §6 checkpoints posted to ALL [EXEC] issues #10-#23 (scripts/s74f_issue_checkpoints.py, existing, reused); telegram #16 manual addendum (bundle lacked frame_metrics schema — engine-default blocker frame attached explicitly).
+- §26 final verification: 14/14 EXEC issues embed images; ALL links HTTP-200 (docs/audit/github_evidence_check.json). HUMAN_VISIBLE_CLAIM_UNPUBLISHED fully remediated.
+- Ledger refreshed: ISSUE-10..23 → OBSERVED (published + render-verified); validator PASS — 374 rows {IMPLEMENTED 157, OBSERVED 132, TESTED 18, UNVERIFIED 59, PARTIAL 5, BLOCKED 1, N/A 1, SUPERSEDED 1}.
+
+Stage Summary:
+- S74-FINAL wave complete: truth ledger live on GitHub, all evidence links human-renderable, false completions downgraded (tictactoe) / scope-marked (connectfour), counts reconciled honestly (57/75 enumerable, 185 NOT_FOUND, addendum NOT_RECOVERED).
+- No runtime code changed; no settled fix reopened; F-141 CLOSED; snake history untouched; PAT never persisted (env-only, secret guard PASS on every commit).
