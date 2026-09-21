@@ -3478,14 +3478,14 @@
       ]
     },
     {
-      "changed_pixels_vs_previous": 1934375,
+      "changed_pixels_vs_previous": 1934625,
       "event": "timer (virtual +250ms)",
       "file": "frame_094.png",
       "index": 94,
       "looper_virtual_ms": 1000026620,
-      "png_sha256": "66bebea84d807f01e95ee8a49f2350398885c8b72c79159b5e31c82acbd493be",
+      "png_sha256": "c145607602e77f2e32af65e63ea530da66e4a83b5220841b28ce31ae62b774c8",
       "runnables_fired": 1,
-      "sha256": "172809e74b3eb9b568685a85ed413293ae3a6bbc9eaa44662365ac1f4eaebbb7",
+      "sha256": "90bcc479abf5d72cae011bdc45bab0ca919fe75dfe5789d5dfed5354a7f6f850",
       "visible_texts": [
         {
           "class": "Landroid/widget/Button;",
@@ -3535,9 +3535,9 @@
       "file": "frame_095.png",
       "index": 95,
       "looper_virtual_ms": 1000026870,
-      "png_sha256": "66bebea84d807f01e95ee8a49f2350398885c8b72c79159b5e31c82acbd493be",
+      "png_sha256": "c145607602e77f2e32af65e63ea530da66e4a83b5220841b28ce31ae62b774c8",
       "runnables_fired": 0,
-      "sha256": "172809e74b3eb9b568685a85ed413293ae3a6bbc9eaa44662365ac1f4eaebbb7",
+      "sha256": "90bcc479abf5d72cae011bdc45bab0ca919fe75dfe5789d5dfed5354a7f6f850",
       "visible_texts": [
         {
           "class": "Landroid/widget/Button;",
@@ -3587,9 +3587,9 @@
       "file": "frame_096.png",
       "index": 96,
       "looper_virtual_ms": 1000027120,
-      "png_sha256": "66bebea84d807f01e95ee8a49f2350398885c8b72c79159b5e31c82acbd493be",
+      "png_sha256": "c145607602e77f2e32af65e63ea530da66e4a83b5220841b28ce31ae62b774c8",
       "runnables_fired": 0,
-      "sha256": "172809e74b3eb9b568685a85ed413293ae3a6bbc9eaa44662365ac1f4eaebbb7",
+      "sha256": "90bcc479abf5d72cae011bdc45bab0ca919fe75dfe5789d5dfed5354a7f6f850",
       "visible_texts": [
         {
           "class": "Landroid/widget/Button;",
@@ -3639,9 +3639,9 @@
       "file": "frame_097.png",
       "index": 97,
       "looper_virtual_ms": 1000027370,
-      "png_sha256": "66bebea84d807f01e95ee8a49f2350398885c8b72c79159b5e31c82acbd493be",
+      "png_sha256": "c145607602e77f2e32af65e63ea530da66e4a83b5220841b28ce31ae62b774c8",
       "runnables_fired": 0,
-      "sha256": "172809e74b3eb9b568685a85ed413293ae3a6bbc9eaa44662365ac1f4eaebbb7",
+      "sha256": "90bcc479abf5d72cae011bdc45bab0ca919fe75dfe5789d5dfed5354a7f6f850",
       "visible_texts": [
         {
           "class": "Landroid/widget/Button;",
@@ -3691,9 +3691,9 @@
       "file": "frame_098.png",
       "index": 98,
       "looper_virtual_ms": 1000027620,
-      "png_sha256": "66bebea84d807f01e95ee8a49f2350398885c8b72c79159b5e31c82acbd493be",
+      "png_sha256": "c145607602e77f2e32af65e63ea530da66e4a83b5220841b28ce31ae62b774c8",
       "runnables_fired": 0,
-      "sha256": "172809e74b3eb9b568685a85ed413293ae3a6bbc9eaa44662365ac1f4eaebbb7",
+      "sha256": "90bcc479abf5d72cae011bdc45bab0ca919fe75dfe5789d5dfed5354a7f6f850",
       "visible_texts": [
         {
           "class": "Landroid/widget/Button;",
@@ -3743,9 +3743,9 @@
       "file": "frame_099.png",
       "index": 99,
       "looper_virtual_ms": 1000027870,
-      "png_sha256": "66bebea84d807f01e95ee8a49f2350398885c8b72c79159b5e31c82acbd493be",
+      "png_sha256": "c145607602e77f2e32af65e63ea530da66e4a83b5220841b28ce31ae62b774c8",
       "runnables_fired": 0,
-      "sha256": "172809e74b3eb9b568685a85ed413293ae3a6bbc9eaa44662365ac1f4eaebbb7",
+      "sha256": "90bcc479abf5d72cae011bdc45bab0ca919fe75dfe5789d5dfed5354a7f6f850",
       "visible_texts": [
         {
           "class": "Landroid/widget/Button;",
@@ -3795,9 +3795,9 @@
       "file": "frame_100.png",
       "index": 100,
       "looper_virtual_ms": 1000028120,
-      "png_sha256": "66bebea84d807f01e95ee8a49f2350398885c8b72c79159b5e31c82acbd493be",
+      "png_sha256": "c145607602e77f2e32af65e63ea530da66e4a83b5220841b28ce31ae62b774c8",
       "runnables_fired": 0,
-      "sha256": "172809e74b3eb9b568685a85ed413293ae3a6bbc9eaa44662365ac1f4eaebbb7",
+      "sha256": "90bcc479abf5d72cae011bdc45bab0ca919fe75dfe5789d5dfed5354a7f6f850",
       "visible_texts": [
         {
           "class": "Landroid/widget/Button;",
@@ -3847,9 +3847,9 @@
       "file": "frame_101.png",
       "index": 101,
       "looper_virtual_ms": 1000028370,
-      "png_sha256": "66bebea84d807f01e95ee8a49f2350398885c8b72c79159b5e31c82acbd493be",
+      "png_sha256": "c145607602e77f2e32af65e63ea530da66e4a83b5220841b28ce31ae62b774c8",
       "runnables_fired": 0,
-      "sha256": "172809e74b3eb9b568685a85ed413293ae3a6bbc9eaa44662365ac1f4eaebbb7",
+      "sha256": "90bcc479abf5d72cae011bdc45bab0ca919fe75dfe5789d5dfed5354a7f6f850",
       "visible_texts": [
         {
           "class": "Landroid/widget/Button;",
@@ -3899,9 +3899,9 @@
       "file": "frame_102.png",
       "index": 102,
       "looper_virtual_ms": 1000028620,
-      "png_sha256": "66bebea84d807f01e95ee8a49f2350398885c8b72c79159b5e31c82acbd493be",
+      "png_sha256": "c145607602e77f2e32af65e63ea530da66e4a83b5220841b28ce31ae62b774c8",
       "runnables_fired": 0,
-      "sha256": "172809e74b3eb9b568685a85ed413293ae3a6bbc9eaa44662365ac1f4eaebbb7",
+      "sha256": "90bcc479abf5d72cae011bdc45bab0ca919fe75dfe5789d5dfed5354a7f6f850",
       "visible_texts": [
         {
           "class": "Landroid/widget/Button;",
@@ -3951,9 +3951,9 @@
       "file": "frame_103.png",
       "index": 103,
       "looper_virtual_ms": 1000028870,
-      "png_sha256": "66bebea84d807f01e95ee8a49f2350398885c8b72c79159b5e31c82acbd493be",
+      "png_sha256": "c145607602e77f2e32af65e63ea530da66e4a83b5220841b28ce31ae62b774c8",
       "runnables_fired": 0,
-      "sha256": "172809e74b3eb9b568685a85ed413293ae3a6bbc9eaa44662365ac1f4eaebbb7",
+      "sha256": "90bcc479abf5d72cae011bdc45bab0ca919fe75dfe5789d5dfed5354a7f6f850",
       "visible_texts": [
         {
           "class": "Landroid/widget/Button;",
@@ -4003,9 +4003,9 @@
       "file": "frame_104.png",
       "index": 104,
       "looper_virtual_ms": 1000029120,
-      "png_sha256": "66bebea84d807f01e95ee8a49f2350398885c8b72c79159b5e31c82acbd493be",
+      "png_sha256": "c145607602e77f2e32af65e63ea530da66e4a83b5220841b28ce31ae62b774c8",
       "runnables_fired": 0,
-      "sha256": "172809e74b3eb9b568685a85ed413293ae3a6bbc9eaa44662365ac1f4eaebbb7",
+      "sha256": "90bcc479abf5d72cae011bdc45bab0ca919fe75dfe5789d5dfed5354a7f6f850",
       "visible_texts": [
         {
           "class": "Landroid/widget/Button;",
@@ -4055,9 +4055,9 @@
       "file": "frame_105.png",
       "index": 105,
       "looper_virtual_ms": 1000029370,
-      "png_sha256": "66bebea84d807f01e95ee8a49f2350398885c8b72c79159b5e31c82acbd493be",
+      "png_sha256": "c145607602e77f2e32af65e63ea530da66e4a83b5220841b28ce31ae62b774c8",
       "runnables_fired": 0,
-      "sha256": "172809e74b3eb9b568685a85ed413293ae3a6bbc9eaa44662365ac1f4eaebbb7",
+      "sha256": "90bcc479abf5d72cae011bdc45bab0ca919fe75dfe5789d5dfed5354a7f6f850",
       "visible_texts": [
         {
           "class": "Landroid/widget/Button;",
@@ -4107,9 +4107,9 @@
       "file": "frame_106.png",
       "index": 106,
       "looper_virtual_ms": 1000029620,
-      "png_sha256": "66bebea84d807f01e95ee8a49f2350398885c8b72c79159b5e31c82acbd493be",
+      "png_sha256": "c145607602e77f2e32af65e63ea530da66e4a83b5220841b28ce31ae62b774c8",
       "runnables_fired": 0,
-      "sha256": "172809e74b3eb9b568685a85ed413293ae3a6bbc9eaa44662365ac1f4eaebbb7",
+      "sha256": "90bcc479abf5d72cae011bdc45bab0ca919fe75dfe5789d5dfed5354a7f6f850",
       "visible_texts": [
         {
           "class": "Landroid/widget/Button;",
@@ -4159,9 +4159,9 @@
       "file": "frame_107.png",
       "index": 107,
       "looper_virtual_ms": 1000029870,
-      "png_sha256": "66bebea84d807f01e95ee8a49f2350398885c8b72c79159b5e31c82acbd493be",
+      "png_sha256": "c145607602e77f2e32af65e63ea530da66e4a83b5220841b28ce31ae62b774c8",
       "runnables_fired": 0,
-      "sha256": "172809e74b3eb9b568685a85ed413293ae3a6bbc9eaa44662365ac1f4eaebbb7",
+      "sha256": "90bcc479abf5d72cae011bdc45bab0ca919fe75dfe5789d5dfed5354a7f6f850",
       "visible_texts": [
         {
           "class": "Landroid/widget/Button;",
