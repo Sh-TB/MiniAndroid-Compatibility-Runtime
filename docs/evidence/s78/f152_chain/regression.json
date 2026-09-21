@@ -1,0 +1,11 @@
+{
+ "wave": "S78",
+ "target": "F-152 depth chain (R-NEW-395/396/397)",
+ "apk": "io.github.yamin8000.dooz_23.apk",
+ "unsafe_npe_f152": 0,
+ "setiter_npe_f154": 0,
+ "r395_dispatch": 2,
+ "r396_synthetic_fields": 2,
+ "r397_empty_set": 1,
+ "r337_unsafe_offsets": 38
+}
