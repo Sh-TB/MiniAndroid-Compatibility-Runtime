@@ -1,0 +1,26 @@
+{
+ "wave": "S78",
+ "target": "F-153 (R-NEW-398)",
+ "frame": "frame_094.png",
+ "positive_blue_px": 56,
+ "negative_blue_px": 28,
+ "message_grey_px": 343,
+ "pre_fix_positive_blue_px": 0,
+ "checks": [
+  {
+   "check": "positive label \u91cd\u65b0\u5f00\u59cb blue px >= 30",
+   "value": 56,
+   "pass": true
+  },
+  {
+   "check": "negative label \u9000\u51fa blue px >= 10",
+   "value": 28,
+   "pass": true
+  },
+  {
+   "check": "ASCII 'Game Over!' grey px > 0 (unchanged path)",
+   "value": 343,
+   "pass": true
+  }
+ ]
+}
