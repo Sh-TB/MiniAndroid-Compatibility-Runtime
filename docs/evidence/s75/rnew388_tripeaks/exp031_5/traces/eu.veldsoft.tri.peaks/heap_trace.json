@@ -1,0 +1,207 @@
+{
+  "allocations": [],
+  "apk_name": "tripeaks_v1.2.1_vc4.apk",
+  "objects": [
+    {
+      "class_descriptor": "Landroidx/arch/core/executor/ArchTaskExecutor;",
+      "creation_sequence": 0,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 1,
+      "readable_class": "androidx.arch.core.executor.ArchTaskExecutor",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Ljava/lang/Thread;",
+      "creation_sequence": 1,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 2,
+      "readable_class": "java.lang.Thread",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Ljava/lang/Runtime;",
+      "creation_sequence": 2,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 3,
+      "readable_class": "java.lang.Runtime",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/os/Looper;",
+      "creation_sequence": 3,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 4,
+      "readable_class": "android.os.Looper",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/os/MessageQueue;",
+      "creation_sequence": 4,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 5,
+      "readable_class": "android.os.MessageQueue",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/os/Handler;",
+      "creation_sequence": 5,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 6,
+      "readable_class": "android.os.Handler",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/app/Application;",
+      "creation_sequence": 6,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 7,
+      "readable_class": "android.app.Application",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Leu/veldsoft/tri/peaks/SplashActivity;",
+      "creation_sequence": 7,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 2,
+      "initialized": true,
+      "object_id": 8,
+      "readable_class": "eu.veldsoft.tri.peaks.SplashActivity",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/widget/RelativeLayout;",
+      "creation_sequence": 8,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 9,
+      "readable_class": "android.widget.RelativeLayout",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/webkit/WebView;",
+      "creation_sequence": 9,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 10,
+      "readable_class": "android.webkit.WebView",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/webkit/WebSettings;",
+      "creation_sequence": 10,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 11,
+      "readable_class": "android.webkit.WebSettings",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/content/pm/PackageManager;",
+      "creation_sequence": 11,
+      "creator_frame_id": 2,
+      "creator_pc": 38,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 12,
+      "readable_class": "android.content.pm.PackageManager",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/content/ComponentName;",
+      "creation_sequence": 12,
+      "creator_frame_id": 2,
+      "creator_pc": 42,
+      "field_count": 2,
+      "initialized": false,
+      "object_id": 13,
+      "readable_class": "android.content.ComponentName",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/content/pm/ActivityInfo;",
+      "creation_sequence": 13,
+      "creator_frame_id": 2,
+      "creator_pc": 46,
+      "field_count": 2,
+      "initialized": false,
+      "object_id": 14,
+      "readable_class": "android.content.pm.ActivityInfo",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/os/Bundle;",
+      "creation_sequence": 14,
+      "creator_frame_id": 2,
+      "creator_pc": 46,
+      "field_count": 2,
+      "initialized": false,
+      "object_id": 15,
+      "readable_class": "android.os.Bundle",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/content/ComponentName;",
+      "creation_sequence": 15,
+      "creator_frame_id": 2,
+      "creator_pc": 71,
+      "field_count": 2,
+      "initialized": false,
+      "object_id": 16,
+      "readable_class": "android.content.ComponentName",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/content/pm/ActivityInfo;",
+      "creation_sequence": 16,
+      "creator_frame_id": 2,
+      "creator_pc": 75,
+      "field_count": 2,
+      "initialized": false,
+      "object_id": 17,
+      "readable_class": "android.content.pm.ActivityInfo",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/os/Bundle;",
+      "creation_sequence": 17,
+      "creator_frame_id": 2,
+      "creator_pc": 75,
+      "field_count": 2,
+      "initialized": false,
+      "object_id": 18,
+      "readable_class": "android.os.Bundle",
+      "source": "REAL_DALVIK_INTERPRETER"
+    }
+  ],
+  "timestamp": "2026-09-21T09:08:18Z",
+  "total_allocations": 0,
+  "total_objects": 18
+}
