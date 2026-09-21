@@ -1,0 +1,22 @@
+{
+ "record_type": "capability_record",
+ "schema_version": 1,
+ "capability_id": "cap-determinism-replay",
+ "name": "Determinism / 3-run replay protocol",
+ "implemented": "deterministic engine + 3-run comparison (state/event/frame-SHA)",
+ "laws": [],
+ "tests": [
+  "dooz x3 byte-identical 0e334abe1b10b592",
+  "snake autonomous 3/3 IDENTICAL 90/90 frames",
+  "snake W4 legacy byte-identical 1a419545419deb3a",
+  "gmdice det x3"
+ ],
+ "consumers": [
+  "androidgamesnake",
+  "dooz",
+  "gmdice",
+  "connectfour"
+ ],
+ "issue": null,
+ "status": "DONE"
+}

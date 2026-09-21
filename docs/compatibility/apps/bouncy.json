@@ -1,0 +1,91 @@
+{
+ "record_type": "app_dossier",
+ "schema_version": 1,
+ "package": "com.dozingcatsoftware.bouncy",
+ "status_note": null,
+ "source": {
+  "repository": "F-Droid (com.dozingcatsoftware.bouncy), source-backed",
+  "commit": null,
+  "license": null
+ },
+ "apk": {},
+ "build": null,
+ "min_sdk": null,
+ "target_sdk": null,
+ "manifest_summary": null,
+ "lifecycle": {},
+ "framework_apis": [],
+ "view_hierarchy": null,
+ "resources": {},
+ "layout": {},
+ "rendering": {
+  "meaningful_frame": "DONE",
+  "pixels": "2073600 px (100% non-background dashboard)",
+  "sha256_16": "108618ac7c58083b"
+ },
+ "input": {
+  "tap": "OBSERVED (S62: 6/6 clicks dispatched into REAL DEX XML-onClick handlers: scoreViewClicked, doPreviousTable, doQuit, hideHighScore)"
+ },
+ "state": {
+  "transitions": "two distinct UI states proven by frame SHA pair 4219c5116ea2 -> 52e4ddacc8ac (S62 L6)"
+ },
+ "concurrency": {},
+ "storage": {},
+ "persistence": {},
+ "network": {
+  "requested": [],
+  "observed": [],
+  "apis": [],
+  "status": "NOT_OBSERVED"
+ },
+ "security": {
+  "permissions_declared": [],
+  "permissions_observed": [],
+  "exported_components": [],
+  "filesystem": "NOT_OBSERVED",
+  "network": "NOT_OBSERVED",
+  "sensitive_apis": [],
+  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)"
+ },
+ "evidence": {
+  "primary": [
+   "docs/evidence/s62_r381/",
+   "docs/evidence/S73/S73_REPORT.md"
+  ],
+  "screenshot_sha256_16": "108618ac7c58083b"
+ },
+ "regression": {},
+ "blocker": "L7 game-loop interaction proof open (physics loop not autonomously driven); R-NEW-389 81-px top-band cross-build divergence is a boundary note, not this app's blocker",
+ "next_task": "drive the physics loop with scheduled taps (cap-autonomous-gameplay consumer candidate #2)",
+ "completion": {
+  "C1_apk_load": "DONE",
+  "C2_manifest_lifecycle": "DONE",
+  "C3_view_framework": "DONE",
+  "C4_measure_layout": "DONE",
+  "C5_render": "DONE",
+  "C6_input": "OBSERVED",
+  "C7_state_change": "OBSERVED",
+  "C8_rerender": "OBSERVED",
+  "C9_persistence": "PENDING",
+  "C10_concurrency": "PENDING",
+  "C11_security_sandbox": "OBSERVED",
+  "C12_determinism": "PENDING",
+  "C13_regression": "DONE",
+  "C14_evidence": "DONE"
+ },
+ "links": {
+  "issue": null,
+  "laws": [],
+  "capabilities": [
+   "cap-input-dispatch",
+   "cap-autonomous-gameplay"
+  ],
+  "knowledge": [],
+  "evidence_files": []
+ },
+ "name": "Bouncy",
+ "status": "PARTIAL",
+ "issue": 21,
+ "issue_state": "open",
+ "app_id": "bouncy"
+}

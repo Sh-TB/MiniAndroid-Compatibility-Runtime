@@ -1,0 +1,17 @@
+{
+ "record_type": "tool_profile",
+ "schema_version": 1,
+ "tool_id": "external-runtimes",
+ "name": "External emulator/runtime projects (WineDroid et al.)",
+ "url": "various (surveyed)",
+ "license": "varies",
+ "provenance_class": "REFERENCE",
+ "provides": "validation/reference comparisons only \u2014 NEVER source of truth, neverMiniAndroid behavior authority",
+ "reused": [
+  "validation matrix role: MiniAndroid behavior vs AOSP/ART/OpenJDK/AndroidX/other-runtime rows (taskbook \u00a741)"
+ ],
+ "laws_learned": [],
+ "consumers": [],
+ "evidence": "docs/corpus/UPSTREAM_INVENTORY.md REFERENCE class; docs/runtime/knowledge/external-runtime indexes",
+ "limitations": "surveyed, not vendored; no behavior copied without upstream re-verification"
+}

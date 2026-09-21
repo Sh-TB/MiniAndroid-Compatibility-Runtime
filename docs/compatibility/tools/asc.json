@@ -1,0 +1,19 @@
+{
+ "record_type": "tool_profile",
+ "schema_version": 1,
+ "tool_id": "asc",
+ "name": "ASC reconnaissance (Droid ASC, MG1937/ASC)",
+ "url": "external recon tooling",
+ "license": "varies",
+ "provenance_class": "RESEARCH ONLY",
+ "provides": "reconnaissance/comparison aid for APK surface mapping (e.g. Telegram startup path)",
+ "reused": [
+  "Telegram v12 startup path mapping (EXP-042 era)"
+ ],
+ "laws_learned": [],
+ "consumers": [
+  "telegram"
+ ],
+ "evidence": "docs/ACHIEVEMENTS.md ASC column per app",
+ "limitations": "NEVER source of truth / semantic authority \u2014 chain: ASC OBSERVED -> UPSTREAM CONFIRMED -> IMPLEMENTED -> TESTED -> OBSERVED IN APK (taskbook \u00a743)"
+}

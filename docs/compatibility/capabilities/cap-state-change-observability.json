@@ -1,0 +1,22 @@
+{
+ "record_type": "capability_record",
+ "schema_version": 1,
+ "capability_id": "cap-state-change-observability",
+ "name": "State-change observability (input -> callback -> state -> render diff)",
+ "implemented": "frame SHA + pixel-diff probes + trace",
+ "laws": [],
+ "tests": [
+  "gmdice result-band diff (5312266e->fa1d8612)",
+  "bouncy two-state SHA pair (4219c5116ea2->52e4ddacc8ac)",
+  "connectfour 22/24 meaningful transitions"
+ ],
+ "consumers": [
+  "androidgamesnake",
+  "gmdice",
+  "connectfour",
+  "bouncy",
+  "fishrings"
+ ],
+ "issue": null,
+ "status": "DONE"
+}

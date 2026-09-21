@@ -1,0 +1,84 @@
+{
+ "record_type": "app_dossier",
+ "schema_version": 1,
+ "package": "com.github.muellerma.stopwatch",
+ "status_note": "blocked BY DESIGN of the app manifest \u2014 engine behavior is CORRECT (S72-W1 F-143 family)",
+ "source": {
+  "repository": "F-Droid (com.github.muellerma.stopwatch)",
+  "commit": null,
+  "license": null
+ },
+ "apk": {},
+ "build": null,
+ "min_sdk": null,
+ "target_sdk": null,
+ "manifest_summary": null,
+ "lifecycle": {},
+ "framework_apis": [],
+ "view_hierarchy": null,
+ "resources": {},
+ "layout": {},
+ "rendering": {
+  "meaningful_frame": "BLOCKED",
+  "note": "engine-default black region only; CORRECT for an app with no launchable Activity"
+ },
+ "input": {},
+ "state": {},
+ "concurrency": {},
+ "storage": {},
+ "persistence": {},
+ "network": {
+  "requested": [],
+  "observed": [],
+  "apis": [],
+  "status": "NOT_OBSERVED"
+ },
+ "security": {
+  "permissions_declared": [],
+  "permissions_observed": [],
+  "exported_components": [],
+  "filesystem": "NOT_OBSERVED",
+  "network": "NOT_OBSERVED",
+  "sensitive_apis": [],
+  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)"
+ },
+ "evidence": {
+  "primary": [
+   "docs/evidence/S73/S73_REPORT.md"
+  ],
+  "determinism": "face byte-identical to dooz engine-default (0e334abe1b10b592) \u2014 the shared-face fact is the reclassification evidence"
+ },
+ "regression": {},
+ "blocker": "no launchable Activity \u2014 service-only manifest (F-143 service-launch family); needs a service-launch/foreground-notification capability before any UI can exist",
+ "next_task": "implement service-launch family capability (F-143) or reclassify this dossier target as service-execution-only",
+ "completion": {
+  "C1_apk_load": "DONE",
+  "C2_manifest_lifecycle": "BLOCKED",
+  "C3_view_framework": "BLOCKED",
+  "C4_measure_layout": "BLOCKED",
+  "C5_render": "BLOCKED",
+  "C6_input": "BLOCKED",
+  "C7_state_change": "BLOCKED",
+  "C8_rerender": "BLOCKED",
+  "C9_persistence": "PENDING",
+  "C10_concurrency": "PENDING",
+  "C11_security_sandbox": "OBSERVED",
+  "C12_determinism": "DONE",
+  "C13_regression": "DONE",
+  "C14_evidence": "DONE"
+ },
+ "links": {
+  "issue": null,
+  "laws": [
+   "LAW-F143"
+  ],
+  "capabilities": [],
+  "knowledge": [],
+  "evidence_files": []
+ },
+ "name": "Simple Stopwatch",
+ "status": "BLOCKED",
+ "issue": 22,
+ "issue_state": "open",
+ "app_id": "stopwatch"
+}

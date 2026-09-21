@@ -1,0 +1,22 @@
+{
+ "record_type": "tool_profile",
+ "schema_version": 1,
+ "tool_id": "compose",
+ "name": "Jetpack Compose (runtime + ui)",
+ "url": "https://android.googlesource.com/platform/frameworks/support (compose)",
+ "license": "Apache-2.0",
+ "provenance_class": "MOTHER",
+ "provides": "declarative UI runtime: composition, AndroidComposeView, dispatchDraw contract",
+ "reused": [
+  "F-108 identity laws: R8 renames ComposeView->Lho;, AndroidComposeView->Lt4; surviving identity is the DEX hierarchy + dispatchDraw override contract (chain_overrides_method gate)",
+  "Compose execution domain treated as first-class compatibility target (never special-cased)"
+ ],
+ "laws_learned": [
+  "LAW-F108"
+ ],
+ "consumers": [
+  "dooz"
+ ],
+ "evidence": "S61 R-NEW-381 record + root_registry.json",
+ "limitations": "first meaningful Compose frame still blocked (dooz F-145/F-146/F-147)"
+}

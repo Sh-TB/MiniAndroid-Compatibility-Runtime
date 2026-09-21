@@ -1,0 +1,100 @@
+{
+ "record_type": "app_dossier",
+ "schema_version": 1,
+ "package": "io.github.yamin8000.dooz",
+ "status_note": null,
+ "source": {
+  "repository": "https://github.com/yamin8000/Dooz",
+  "commit": null,
+  "license": null,
+  "note": "v23 executes full Hilt/DI/Compose pipeline deterministically (v18 F-083 fixed earlier)"
+ },
+ "apk": {
+  "sha256_16": null
+ },
+ "build": null,
+ "min_sdk": null,
+ "target_sdk": null,
+ "manifest_summary": null,
+ "lifecycle": {},
+ "framework_apis": [],
+ "view_hierarchy": null,
+ "resources": {},
+ "layout": {},
+ "rendering": {
+  "backend": "software framebuffer (Compose -> AndroidComposeView path, F-108 identity laws)",
+  "meaningful_frame": "BLOCKED (F-145 frontier)",
+  "reclassification": "S73 B4 audit: the 23472-px metric is an ENGINE-DEFAULT black region (0,0)-(489,47), byte-identical to the no-Activity Stopwatch frame (sha 0e334abe1b10b592) \u2014 NOT dooz content. Determinism facts stand; interpretation corrected (dated comment on #14)."
+ },
+ "input": {},
+ "state": {
+  "transitions": "lifecycle reaches onCreate->onStart->onResume; UI composition blocked by F-146/F-147"
+ },
+ "concurrency": {
+  "compose_chain": "Kotlin/coroutines/AtomicFU -> Segment-like state/queue -> AtomicReferenceArray: get ~629k, set ~1, head segment state ~0x40000000 \u2014 OBSERVED numbers, NOT yet upstream-verified law"
+ },
+ "storage": {},
+ "persistence": {},
+ "network": {
+  "requested": [],
+  "observed": [],
+  "apis": [],
+  "status": "NOT_OBSERVED"
+ },
+ "security": {
+  "permissions_declared": [],
+  "permissions_observed": [],
+  "exported_components": [],
+  "filesystem": "NOT_OBSERVED",
+  "network": "NOT_OBSERVED",
+  "sensitive_apis": [],
+  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)"
+ },
+ "evidence": {
+  "primary": [
+   "docs/evidence/S73/S73_REPORT.md",
+   "docs/foundation/S72_WAVE3.md"
+  ],
+  "determinism": "x3 byte-identical (0e334abe1b10b592 = engine-default face; honest reclassification)"
+ },
+ "regression": {},
+ "blocker": "F-146 (g8.a@569 -> ur.e(J) null receiver) and F-147 (onCreate@228 -> ViewGroup.getChildAt on null); visual frontier F-145. F-141 stays CLOSED.",
+ "next_task": "root-cause F-146 receiver-null chain (Searchlight: caller->callee->upstream Compose/kotlinx law); engine-default black-region painter is the queued open lead",
+ "completion": {
+  "C1_apk_load": "DONE",
+  "C2_manifest_lifecycle": "PARTIAL",
+  "C3_view_framework": "PARTIAL",
+  "C4_measure_layout": "BLOCKED",
+  "C5_render": "BLOCKED",
+  "C6_input": "BLOCKED",
+  "C7_state_change": "BLOCKED",
+  "C8_rerender": "BLOCKED",
+  "C9_persistence": "PENDING",
+  "C10_concurrency": "PARTIAL",
+  "C11_security_sandbox": "OBSERVED",
+  "C12_determinism": "DONE",
+  "C13_regression": "DONE",
+  "C14_evidence": "DONE"
+ },
+ "links": {
+  "issue": null,
+  "laws": [
+   "LAW-F145",
+   "LAW-F146",
+   "LAW-F147",
+   "LAW-F141",
+   "APP-DOOZ-COMPOSE-CHAIN"
+  ],
+  "capabilities": [
+   "cap-dex-interpreter",
+   "cap-determinism-replay"
+  ],
+  "knowledge": [],
+  "evidence_files": []
+ },
+ "name": "Dooz",
+ "status": "BLOCKED",
+ "issue": 14,
+ "issue_state": "open",
+ "app_id": "dooz"
+}

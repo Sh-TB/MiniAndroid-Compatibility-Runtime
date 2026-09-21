@@ -1,0 +1,24 @@
+{
+ "record_type": "capability_record",
+ "schema_version": 1,
+ "capability_id": "cap-input-dispatch",
+ "name": "Input dispatch (TouchDispatcher DOWN/UP + F-117 scheduled taps)",
+ "implemented": "execution_engine.h/.cpp + main.cpp: --tap x,y and --tap x,y@frame (all-or-none validation)",
+ "laws": [
+  "LAW-F117"
+ ],
+ "tests": [
+  "legacy form byte-identical vs stored W4 frames",
+  "snake 23 scheduled taps incl. START (98,839)@frame1"
+ ],
+ "consumers": [
+  "androidgamesnake",
+  "connectfour",
+  "tictactoe",
+  "gmdice",
+  "bouncy",
+  "fishrings"
+ ],
+ "issue": null,
+ "status": "DONE"
+}
