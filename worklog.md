@@ -2478,3 +2478,77 @@ Stage Summary:
 - Next: F-152 producer trace (Llt0;.w pc=808 receiver), CJK dialog label
   font family (F-153), Lsr.run F084 spin (dooz actor), icon Bitmap/Drawable
   object law, tokened push + S76 issue comments.
+
+---
+Task ID: S77-MAIN
+Agent: Super Z (main)
+Task: "S77 — MASTER MISSING-WORK CLOSURE & OPERATIONALIZATION WAVE" — find all
+requirements/artifacts/workflows claimed in prior waves but not actually
+operational, close them measurably or downgrade with explicit evidence.
+
+Work Log:
+- §0/§1 ENV RECOVERY: disk 100% full (git ops failing) — purged stale Sep-2..11
+  backup bundles (download/BACKUP_*, GAME_CHANGER, RECONCILED zips ~1.5G),
+  gc_work big files, logs/m9_probe* + old dooz/c4/flashlight logs (logged here;
+  all older-commit redundancy preserved in git history). 1.9G freed. run/ and
+  6 other dirs had been replaced by EMPTY root-owned dirs (container reset) —
+  run/ recreated as user dir. Binary at build/miniandroid was STALE (mtime
+  Sep 13; ZERO R347-FILE/R393-BG/R394-TAP markers) → make -j2 rebuild from
+  committed S76 source; markers present after rebuild.
+- §1 BASELINE RE-ESTABLISHED: battery 26/26 rc=0 (scripts/s77_baseline_battery.sh,
+  run/s77_baseline/battery.jsonl); pixel verifier 26/26 SAME vs stored baselines
+  incl. f54 A7B_GATE_OK (scripts/s77_verifier.py); Level C snake fidelity
+  replay BYTE-IDENTICAL 90/90 (scripts/s75_fidelity_probe.py, head a8704916).
+- §2 S76 CANONICALIZED: registry canonical says F-152/F-153 (NOT F-150/151);
+  F-145..F-150 pre-exist; F-151 = confirmed numbering gap (never registered).
+  397→404 enumerated EXACTLY: R-NEW-390..394, F-152, F-153. Commit accounting:
+  8 unpublished = 5 S75 carry-over (affc0d57, 310aba44, 84ac7869, 2835e9c6,
+  b326acfd) + 3 S76 (2f13abe2, 3057ddb3, a8704916); origin/main c67230be
+  ls-remote-verified. No GH_TOKEN → PUBLISH_BLOCKED (recorded, no push).
+  Registry stale scalar total 397→404 fixed + canon note appended
+  (scripts/s77_registry_canonicalize.py).
+- §3 MISSING-WORK DISCOVERY: Explore sweep over worklog + campaign docs
+  (all open markers) → 20 distinct actionable open items + 4 UNVERIFIABLE
+  ledger rows + 3 stale-row hygiene notes; canonical ledger outstanding debt
+  = 17 PARTIAL / 16 PENDING / 4 UNVERIFIED / 1 BLOCKED. Findings persisted in
+  S77_REPORT.md (docs/foundation/s77/).
+- §4 MISSING-ARTIFACT CLOSURE (derived views, §22 one-canonical-source):
+  built scripts/s77_build_audit_views.py → docs/audit/{RUNTIME_FAILURE_REGISTRY,
+  CRASH_HANG_ANR_REGISTRY, SANDBOX_ERROR_REPORT+sandbox_errors.json,
+  SESSION_EVIDENCE_CHAIN, PROGRESS_REPORT (incl. §21 S72–S76 reconciliation),
+  EVIDENCE_LINEAGE, APP_MATRIX (14 apps), BLAST_RADIUS}.md — all generated
+  from root_registry.json + 14 dossiers + s74_ops sessions + knowledge
+  records; absent fields rendered NOT_RECORDED (never invented).
+- §18 LEDGER REPAIR: validate_master_audit.py was FAILING (20× "TESTED
+  without test reference") → scripts/s77_fix_ledger_tests.py linked each row
+  to its EXECUTED S75 code-check in item75_closure.json (20/20, 0 downgrades)
+  → validator PASS (375 rows). Compatibility-graph validator PASS (exit 0).
+- §17 FALSE-COMPLETION SCANNER: scripts/s77_false_completion_scan.py run over
+  15 canonical reports — 212 claim lines, 158 with adjacent evidence, 54
+  flagged; adjudication: no evidence-free strong claims in the current corpus
+  (flags = table-cell pointers outside regex + honest historical lines);
+  SECURITY_PROFILED-vs-OBSERVED vocabulary restated.
+- §8/§9/§15/§16 verified: ASC utilization verdict = RESEARCHED_ONLY (honest);
+  knowledge records 31/31 with consumer mapping; connectfour dossier carries
+  explicit GOLDEN_FIXTURE evidence_scope marker + tictactoe real APK honestly
+  NOT_HUMAN_VISIBLE; s73_screenshot_gate.py operational (metrics diagnostic +
+  full-chain success law).
+- §14 CARRY-OVER: F-152 producer trace NOT attempted this wave (no speculative
+  patch — kept OPEN/REPRODUCED per mandate); F-153 kept OPEN in registry +
+  CRASH registry; gmdice/snake/icon S76 evidence linked into
+  SESSION_EVIDENCE_CHAIN.md + EVIDENCE_LINEAGE.md instead of rebuilt.
+- DOCS: ROADMAP_STATUS S77 row; ACHIEVEMENTS §0m; S77_REPORT.md
+  (docs/foundation/s77/) with the §29 field-by-field truth format.
+- REGRESSION after all changes (doc/audit-only since rebuild): battery 26/26
+  rc=0; verifier 26/26; fidelity 90/90 — re-run recorded in S77_REPORT.md.
+
+Stage Summary:
+- S77 acceptance: A–J,K,L,M,N,P,Q met; O met by keeping F-152 honestly OPEN
+  with real evidence (producer trace remains the dooz lead — not faked);
+  E (progress reporting non-chat) met via PROGRESS_REPORT.md + worklog.
+- The gap between documented claims and repo reality is now measurably small:
+  every claim class has a canonical source + a derived registry view; the
+  remaining OPEN items are runtime frontier (F-152, F-153, CJK font family,
+  OBJECT-IDENTITY, persistence ladder), not bookkeeping debt.
+- Next: tokened push (8+ commits), F-152 producer trace, F-153 CJK painter,
+  Lsr.run F084 spin, per-step sandbox lifecycle emitter automation.
