@@ -583,6 +583,11 @@ void ApkParser::analyze_manifest(const std::vector<uint8_t>& manifest_data, ApkI
     info.main_activity = manifest_info.main_activity;
     info.main_activity_full = manifest_info.main_activity_full;
     info.application_name = manifest_info.application_name;  // EXP-093/F005
+    // S75 (A7): carry the label + label/icon resids (identity fields;
+    // the STRING resolves through the ARSC where Resources exist).
+    info.application_label = manifest_info.application_label;
+    info.application_label_resid = manifest_info.application_label_resid;
+    info.application_icon_resid = manifest_info.application_icon_resid;
     info.permissions = manifest_info.permissions;
     // F-116 (R-NEW-384 family): meta-data tables
     info.application_meta_data = manifest_info.application_meta_data;

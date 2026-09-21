@@ -1,0 +1,48 @@
+{
+  "experiment": "EXP-061",
+  "nodes": [
+    {
+      "android_view_id": 0,
+      "children": [
+        10
+      ],
+      "class": "Landroid/widget/LinearLayout;",
+      "clickable": false,
+      "enabled": true,
+      "has_click_listener": false,
+      "height": 1920,
+      "hint": "",
+      "image_resource_id": 0,
+      "object_id": 9,
+      "parent_id": 0,
+      "text": "",
+      "text_resource_id": 0,
+      "view_type": "ViewGroup",
+      "visibility": 0,
+      "width": 1080,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "android_view_id": 2130837504,
+      "children": [],
+      "class": "Landroid/widget/TextView;",
+      "clickable": false,
+      "enabled": true,
+      "has_click_listener": false,
+      "height": 136,
+      "hint": "",
+      "image_resource_id": 0,
+      "object_id": 10,
+      "parent_id": 9,
+      "text": "F54 LabelProof",
+      "text_resource_id": 0,
+      "view_type": "TextView",
+      "visibility": 0,
+      "width": 851,
+      "x": 0,
+      "y": 0
+    }
+  ],
+  "view_count": 2
+}

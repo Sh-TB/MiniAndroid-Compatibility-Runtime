@@ -12,6 +12,11 @@
 #include <vector>
 #include <map>
 #include <cstdint>
+#include <optional>
+
+// S75 (A7): forward declaration — the resolver takes an ArscParser reference;
+// the full type comes from resources/arsc_parser.h (included by the .cpp).
+namespace miniandroid { namespace resources { class ArscParser; } }
 
 namespace miniandroid {
 namespace apk {
@@ -101,6 +106,16 @@ struct ManifestInfo {
     // Application info
     std::string application_label;
     std::string application_name;  // EXP-093/F005: android:name attribute
+    // S75 FOUNDATION (A7): <application android:label> / android:icon as a
+    // REFERENCE (aapt compiles "@string/app_name" / "@mipmap/ic_launcher"
+    // to a typed REFERENCE whose id sits in the attr data word). AOSP
+    // PackageParser keeps the resid on ApplicationInfo (labelRes /
+    // icon) — it NEVER degrades the reference to a literal string.
+    // Previously the REFERENCE fell through get_attribute_value's
+    // "@0x…" branch, so application_label read back as the literal
+    // "@0x7f0a0000" and the icon attr was not parsed at all.
+    uint32_t application_label_resid = 0;
+    uint32_t application_icon_resid = 0;
     // VISUAL-CAMPAIGN G49: <application android:theme> raw resource id
     // (attribute 0x01010000, REFERENCE value) — the style whose
     // windowBackground item paints the window behind all content.
@@ -259,6 +274,17 @@ public:
      * @return ManifestInfo structure with parsed data
      */
     ManifestInfo parse(const std::vector<uint8_t>& data);
+
+    /**
+     * S75 FOUNDATION (A7): resolve a manifest REFERENCE resid through the
+     * app's resources.arsc (AOSP PackageParser law: ApplicationInfo.labelRes
+     * resolves through Resources.getText at loadLabel() time — the resid is
+     * kept on the info object, resolution happens where Resources exist).
+     * Returns std::nullopt when the resid resolves to nothing (resolution
+     * failure is REPORTED, never invented).
+     */
+    static std::optional<std::string> resolve_resid_string(
+        uint32_t resid, const resources::ArscParser& arsc);
     
     /**
      * Get raw string pool (for debugging)

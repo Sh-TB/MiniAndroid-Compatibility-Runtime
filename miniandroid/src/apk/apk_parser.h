@@ -50,6 +50,13 @@ struct ApkInfo {
 
     // EXP-093/F005: Custom Application class from manifest
     std::string application_name;
+
+    // S75 FOUNDATION (A7): resolved application label + raw label/icon
+    // resids (AOSP ApplicationInfo.labelRes/icon law — the resid is the
+    // identity; the label string resolves through the app's ARSC).
+    std::string application_label;
+    uint32_t application_label_resid = 0;
+    uint32_t application_icon_resid = 0;
     
     // F-116 (R-NEW-384 family): activity/application <meta-data> tables
     // (AOSP PackageItemInfo.metaData contract).
