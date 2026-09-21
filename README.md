@@ -22,6 +22,7 @@
 - **Telegram v12:** parses + launches + burns 540 s inside real init (no frame yet); startup path fully mapped by ASC recon.
 - **Battery:** "BATTERY GATE: ALL PASS (96 stages)" at the current HEAD (`scripts/test/run_test_battery.sh`; 92 stages when the external EXT fixture is absent — documented count law).
 - **Full per-app truth:** [**Achievements & Evidence**](docs/ACHIEVEMENTS.md) — the single canonical record of every real APK execution · gate-passing screenshots: [`docs/evidence/s54_frames/`](docs/evidence/s54_frames).
+- **Master audit (per-item truth ledger):** [**docs/audit/MASTER_CHECKLIST.md**](docs/audit/MASTER_CHECKLIST.md) + [`master_audit.json`](docs/audit/master_audit.json) — every constitution rule (169), foundation contract item, historical request, campaign, all 14 apps, tools, knowledge laws, and critical gaps as individual auditable rows with status/evidence/gap. No summary replaces a row.
 
 ---
 
