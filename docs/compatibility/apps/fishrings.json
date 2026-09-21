@@ -67,7 +67,7 @@
   "screenshot_sha256_16": "19af37b69965fc48",
   "determinism": "S65 det x3"
  },
- "regression": {},
+ "regression": "battery 26/26 + verifier 26/26 + fidelity 90/90 + det x2 board states (cb9ef295be/fd3319ff72/0c74b09a8b)",
  "blocker": "game-logic depth (real ring rotation rules) unexercised at HEAD; input legs historical",
  "next_task": "tap-based rotation interaction probe at HEAD (completes V2/V3 stages)",
  "completion": {
@@ -101,7 +101,7 @@
  "name": "FishRings",
  "status": "PARTIAL",
  "issue": 19,
- "issue_state": "open",
+ "issue_state": "open (S10 interaction chain CLOSED at HEAD; game-end loop open)",
  "app_id": "fishrings",
  "visual_evidence": {
   "status": "HUMAN_VISIBLE",
@@ -117,7 +117,7 @@
   ],
   "bundle": "docs/evidence/s74_ops/fishrings/",
   "session": "docs/evidence/s74_ops/fishrings/session.json",
-  "model": "AGENT_OBSERVED vs HUMAN_VISIBLE distinguished per S74-FOLLOW-UP \u00a74"
+  "model": "AGENT_OBSERVED vs HUMAN_VISIBLE distinguished per S74-FOLLOW-UP §4"
  },
  "what_actually_happened": {
   "PROVEN": [
@@ -144,5 +144,10 @@
   "binary": "miniandroid/build/miniandroid built at HEAD (zero runtime changes this wave)",
   "evidence_bundle": "docs/evidence/s74_ops/fishrings/",
   "human_review": "representative frames individually opened and reviewed by the executing agent before status assignment"
- }
+ },
+ "last_error": "S79: taps dispatched but board static — GameActivity.sound() NPE on null MediaPlayer (F-155, create REC-MISS stub)",
+ "root_cause": "F-155 ROOT-CAUSED (MediaPlayer object law gap) — FIXED R-NEW-400",
+ "last_fix": "R-NEW-400: create → non-null PREPARED player; state table enforced; 0 NPEs post-fix",
+ "next_probe": "catch-the-fish full gameplay loop to game end (win/completion condition) — interaction chain now open at HEAD",
+ "session": "S79 (run/s79_reproofs/fishrings_r400{,_run2})"
 }

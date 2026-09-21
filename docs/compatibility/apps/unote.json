@@ -67,7 +67,7 @@
    "docs/evidence/S73/S73_REPORT.md"
   ],
   "screenshot_sha256_16": "2928a026c4a88a14",
-  "determinism": "3-run x3 (S73 \u00a76)"
+  "determinism": "3-run x3 (S73 §6)"
  },
  "regression": {},
  "blocker": "execution ladder open below render: input/state-change legs unprobed at current HEAD",
@@ -104,7 +104,7 @@
  "name": "Unote",
  "status": "PARTIAL",
  "issue": 15,
- "issue_state": "open",
+ "issue_state": "closed (input → state change visible at HEAD)",
  "app_id": "unote",
  "visual_evidence": {
   "status": "HUMAN_VISIBLE",
@@ -121,7 +121,7 @@
   ],
   "bundle": "docs/evidence/s74_ops/unote/",
   "session": "docs/evidence/s74_ops/unote/session.json",
-  "model": "AGENT_OBSERVED vs HUMAN_VISIBLE distinguished per S74-FOLLOW-UP \u00a74"
+  "model": "AGENT_OBSERVED vs HUMAN_VISIBLE distinguished per S74-FOLLOW-UP §4"
  },
  "what_actually_happened": {
   "PROVEN": [
@@ -153,5 +153,7 @@
   "binary": "miniandroid/build/miniandroid built at HEAD (zero runtime changes this wave)",
   "evidence_bundle": "docs/evidence/s74_ops/unote/",
   "human_review": "representative frames individually opened and reviewed by the executing agent before status assignment"
- }
+ },
+ "last_fix": "S79 re-proof at HEAD: 'Add note' tap → real editor screen (Title/Note fields + Save/Return) — 13,032 sampled-px state change; notes.db SQLite chain live",
+ "session": "S79 (run/s79_reproofs/unote_run{1,2})"
 }

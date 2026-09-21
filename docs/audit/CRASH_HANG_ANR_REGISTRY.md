@@ -18,8 +18,9 @@ missing UI dispatch surface.
 | ERR-C-002 | NOT_RECORDED | F-146 | ROOT-CAUSED-FIXED | S72-W3: f141 law surfaced the site (recv_type=8 NULL_REF, F141-DIAG v4:t8/o0); escapes MainActivity.onCreate at 0xc1; next: trace the producer of the null ur receiver in the compose/coroutine path \| S |
 | ERR-C-003 | NOT_RECORDED | F-147 | OPEN | S72-W3: f141 law surfaced the site (recv NULL_REF; method_idx 1592 = android.view.ViewGroup.getChildAt); second boundary escape at 0xb4 \| S75 HEAD re-probe: reproduced at HEAD (MainActivity.onCreate p |
 | ERR-C-004 | NOT_RECORDED | F-152 | ROOT-CAUSED-FIXED | S78 REPRODUCE (run/s78_f152_repro, fresh binary, APK 299eab21...): F141-DIAG Llt0;.w pc=808 recv t8/o0 NULL; static disasm (scripts/s78_lt0_disasm.py): pc=490 sget-object v2, Llt0;->o:Lsun/misc/Unsafe |
+| ERR-C-005 | NOT_RECORDED | F-155 | ROOT-CAUSED-FIXED | S79 PRODUCER TRACE: fishrings board taps (239,223)/(606,223)/(764,774) dispatched CLICK to real GameActivity$1/$2/$4 listeners, but every onClick died in GameActivity.sound() (pc=10/16) on MediaPlayer |
 
-(4 crash-class F-records; full symptoms in RUNTIME_FAILURE_REGISTRY.md)
+(5 crash-class F-records; full symptoms in RUNTIME_FAILURE_REGISTRY.md)
 
 ## HANG records (ERR-H-*)
 

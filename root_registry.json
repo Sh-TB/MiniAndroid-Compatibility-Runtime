@@ -1,11 +1,11 @@
 {
  "baseline_head": "5a2b7d99",
  "summary": {
-  "total_roots": 409,
+  "total_roots": 412,
   "open_frontiers": [
    "R-NEW-381"
   ],
-  "last_updated": "S78 (2026-09-22): F-152/F-153 ROOT-CAUSED-FIXED via R-NEW-395/396/397/398; F-154 registered+fixed (depth chain F-146->F-152->F-154)",
+  "last_updated": "S79 (2026-09-22): F-155 ROOT-CAUSED-FIXED via R-NEW-400 (MediaPlayer object law; fishrings input->state chain closed at HEAD, det x2); R-NEW-399 implemented (AOSP per-child hit-test walk law + HITPROBE; corpus blockers refuted as stale coordinates — honest note); gmdice multi-roll closed (580,1848 x2 rolls '6'->'5'); microtimer/unote/bouncy/opmt re-proven at HEAD; snake gameplay GIF published to gh-pages site",
   "note": "S65 breadth: 3 NEW source-first apps executed (TriPeaks S7 + det ×3, FishRings S10 PROVEN with 3 input→state→changed-frame interactions det ×3, OPMT S6 + app-own nextInt(0) stopper). New laws: F-118 activity-constructor (R-NEW-385 — G08 launches now run <init>; 3 consumers day one) + F-119 X.TYPE/primitive-array (R-NEW-386). New open family: OBJECT-IDENTITY (field/array element view-ref identity churn — blocks TriPeaks S8/OPMT S7+, forensic trail recorded). Battery 92/94 + EXT-01/02 environmental; zero regressions. S64 commit carried PENDING-PUSH into this session (no credential); S65 commit carries both. || S64: 3 apps (pmk S6, FreeKlondike S10, SLC S9) + F-114..F-117. | S74: repaired stale summary totals (was 372 vs actual roots list); back-registered F-120 (S66 law) after validator gap detection. || S77 CANONICALIZATION (2026-09-22): stale scalar total 397 -> 404 (summary.total_roots and roots length were already 404; no records added or removed). F-NUMBERING RESOLVED: F-151 is a confirmed numbering gap — no record with ID F-151 was ever registered (next-free-id scan at S76 jumped it); F-152 (dooz Llt0;.w pc=808 null receiver) and F-153 (dialog CJK label paint) are the canonical S76 failure IDs. ROOT COUNT 397->404 enumerated exactly: R-NEW-390 (File.getAbsoluteFile), R-NEW-391 (File.getCanonicalFile/Path), R-NEW-392 (TextView subsumption), R-NEW-393 (View.getBackground themed-widget + Drawable.setColorFilter), R-NEW-394 (dialog decor layout + topmost-window touch), F-152, F-153. COMMIT ACCOUNTING: 8 unpublished commits at S77 start = 5 S75 carry-over (affc0d57, 310aba44, 84ac7869, 2835e9c6, b326acfd) + 3 S76 (2f13abe2, 3057ddb3, a8704916); origin/main = c67230be (ls-remote verified). PUBLISH: PUBLISH_BLOCKED (no GH_TOKEN in session; constitution §52).",
   "total": 409,
   "verified_fixed": 43,
@@ -4120,8 +4120,29 @@
    "status": "USED_BY_EXECUTION",
    "priority": "P1",
    "evidence": "Law 1: SoftwareCanvas::draw_text routes non-ASCII UTF-8 through TextShaper (ASCII keeps the byte-identical BitmapFont path — 90/90 fidelity invariant). Law 2: TextShaper kFaceCJK (WenQuanYi Zen Hei) — remaining .notdef clusters after primary shaping resolve via CJK-face charmap lookup (single-codepoint ideographs; mirrors the existing emoji-fallback pattern). Consumer: snake dialog CJK labels (F-153); dialog+toast paths share the choke point. Test: s78_f153_regression.py 3/3."
+  },
+  {
+   "id": "F-155",
+   "title": "fishrings: MediaPlayer.create REC-MISS stub returned null player → GameActivity.sound() NPE aborted ring-rotation onClick (input → state chain dead; the S10 interaction was invisible at HEAD)",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P1",
+   "evidence": "S79 PRODUCER TRACE: fishrings board taps (239,223)/(606,223)/(764,774) dispatched CLICK to real GameActivity$1/$2/$4 listeners, but every onClick died in GameActivity.sound() (pc=10/16) on MediaPlayer.start() of a NULL player — MediaPlayer.create was an unbridged framework call ([REC-MISS] Landroid/media/MediaPlayer;.create) returning the typed default null; the deferred f141-null-recv NPE unwound the listener BEFORE any rotation ran (frames byte-identical, run/s79_reproofs/fishrings_r399b). Same §12 silent-propagation family as F-152 (doPrivileged null). FIX R-NEW-400 below. POST: 0 MediaPlayer NPEs; 3 taps → 3 rotations → 3 distinct board states (f8 cb9ef295be → f9 fd3319ff72 → f11 0c74b09a8b), deterministic x2 (run/s79_reproofs/fishrings_r400{,_run2}). REGRESSION: battery 26/26, verifier 26/26 SAME, snake fidelity BYTE-IDENTICAL 90/90, f152 6/6, f153 3/3."
+  },
+  {
+   "id": "R-NEW-399",
+   "title": "AOSP ViewGroup child-dispatch law: touch targets are bounds-checked per CHILD; ancestor bounds never gate the descent (hit-test walk) + MINIANDROID_HITPROBE",
+   "status": "USED_BY_EXECUTION",
+   "priority": "P1",
+   "evidence": "UPSTREAM: ViewGroup.dispatchTouchEvent iterates children and asks isTransformedTouchPointInView(x,y,child) PER CHILD; the parent's own bounds are never a descent gate. OLD LAW: walk returned (pruned) when an ancestor's node geometry missed the point — any stale/unmeasured ancestor made whole subtrees tap-dead (target=0). PRODUCER: fishrings board taps → target=0 with all 43 board children holding REAL measured geometry ([HITPROBE] logs, run/s79_reproofs/fishrings_r399) — the walk never reached them. NOTE (honest): the two corpus blockers first attributed to this family were REFUTED as stale tap coordinates (gmdice S78 tapped y=1714; the real button row is y=1776..1920 — multi-roll works on the old binary with correct coords; fishrings S65 coords predate the F-142 geometry). The law remains implemented because it is the upstream semantics, is consumer-independent, and the probe makes the walk inspectable. FIX: TouchDispatcher::dispatch DOWN walk descends unconditionally, bounds-check per node. REGRESSION: zero behavioral delta on all goldens (battery 26/26 rc=0, verifier 26/26 SAME, snake fidelity BYTE-IDENTICAL 90/90, f152 6/6, f153 3/3)."
+  },
+  {
+   "id": "R-NEW-400",
+   "title": "AOSP MediaPlayer object law: create() → non-null PREPARED player; start/pause/stop/release/reset per the state-machine table",
+   "status": "USED_BY_EXECUTION",
+   "priority": "P1",
+   "evidence": "UPSTREAM: MediaPlayer.java — static create(Context,resid) = new + setDataSource + prepare (returns non-null PREPARED player; throws on failure, never returns null for a valid resource); state table: start() legal from {Prepared, Started, Paused, PlaybackCompleted}; pause() from {Started, Paused}; stop() from {Prepared, Started, Paused, Stopped}; release() any; reset() → Idle. IMPLEMENTATION (bridge_to_api): create allocates a REAL heap object with __mp_state__=PREPARED; instance methods transition per the table (illegal → ERROR + [R400-MEDIA] log). Audio OUTPUT is a no-op (software runtime, no speaker) — the OBJECT/STATE law is what app control flow depends on. CONSUMER-INDEPENDENT: single choke point (bridge fallthrough) — every app's sound path benefits. Test: fishrings S10 chain closed at HEAD (3 rotations, 3 states, x2 deterministic); MediaPlayer NPEs 1→0 per tap."
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry↔docs single-source-of-truth restored); registry 372→374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots.",
- "total": 409
+ "total": 412
 }

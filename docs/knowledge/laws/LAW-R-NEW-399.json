@@ -1,0 +1,31 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "LAW-R-NEW-399",
+ "title": "Touch targets are bounds-checked per child; ancestor bounds never gate the descent",
+ "domain": "input-semantics",
+ "scope": "engine",
+ "statement": "ViewGroup.dispatchTouchEvent bounds-checks each CHILD independently (isTransformedTouchPointInView); a parent's own bounds are not a descent gate. The engine walk now descends unconditionally and bounds-checks per node; MINIANDROID_HITPROBE=1 logs the walk (render-neutral probe). Honest scope note: no current corpus app is blocked by the old walk — both suspects (gmdice multi-roll, fishrings S65 coords) were refuted as stale tap coordinates; the law is upstream-alignment with a measurable no-regression gate.",
+ "status": "VERIFIED",
+ "source": {
+  "origin": "AOSP ViewGroup.dispatchTouchEvent / isTransformedTouchPointInView (android-14)",
+  "file": "miniandroid/src/framework/touch_dispatcher.cpp (DOWN walk)"
+ },
+ "test": "battery 26/26 + verifier 26/26 SAME + snake fidelity BYTE-IDENTICAL 90/90 + f152 6/6 + f153 3/3 (zero behavioral delta on goldens); probe logs run/s79_reproofs/fishrings_r399/engine.log",
+ "consumers": [
+  "fishrings",
+  "gmdice",
+  "all-input-driven-apps"
+ ],
+ "issues": [],
+ "capabilities": [],
+ "first_discovered": "S79",
+ "last_verified": "S79",
+ "utilization": {
+  "verdict": "USED_BY_EXECUTION",
+  "consumer_apps": [
+   "fishrings",
+   "gmdice"
+  ]
+ }
+}

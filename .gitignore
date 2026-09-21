@@ -177,3 +177,5 @@ zoektdb
 upstream/corpus/**/*.tar.gz
 upstream/corpus/com.dozingcatsoftware.bouncy/src/
 upstream/corpus/eu.veldsoft.tri.peaks/src/
+
+.secrets/

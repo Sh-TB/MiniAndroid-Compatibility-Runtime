@@ -534,3 +534,14 @@ era JPGs). No gallery is generated for its own sake.
 | **Knowledge + registry operationalized**: registry 404→409 (F-154 + R-NEW-395..398); knowledge records 31→35 (verified laws 24); dossiers dooz/snake/gmdice updated per §21; derived views regenerated via fixed generator (§24) | root_registry.json; docs/knowledge/laws/LAW-R-NEW-39*.json; docs/audit/* | **CANONICAL** |
 | **Disk guard + retention**: scripts/s78_disk_guard.sh (STOP_BUILD threshold + safe-cleanup candidates + never-delete policy); retention policy in S78_REPORT §27-28 | scripts/s78_disk_guard.sh | **OPERATIONAL** |
 | **Final regression**: battery 26/26 + verifier 26/26 (A7B_GATE_OK) + fidelity BYTE-IDENTICAL 90/90 after ALL changes | run/s77_baseline/; s75_fidelity_probe output | **GREEN** |
+
+## 0o. S79 — BASE CLOSURE, PUBLISHED GAMEPLAY PROOF & EXECUTION-LADDER SWEEP
+
+| Achievement | Evidence | Status |
+|---|---|---|
+| **SNAKE GAMEPLAY GIF PUBLISHED**: real APK real-dalvik run, autonomous taps only; game1 (88 moves/22 turns/1 capture) → death → CJK Game-Over dialog (重新开始 28 blue px, R-NEW-398) → restart tap@99 → game2 (90 moves/24 turns/1 capture) — 70-frame GIF 0.25MB | download/s79/snake_gameplay.gif; docs/evidence/s79/; gh-pages index.html; run/s79_snake_gif/s79_gif_report.json | **PUBLISHED** |
+| **WEBSITE LIVE**: gh-pages branch (bilingual fa/en evidence page); Pages API 403 (PAT lacks pages:write — recorded); raw.githack serves the page (text/html, 200) + jsDelivr serves the GIF (image/gif, 200) | https://raw.githack.com/Sh-TB/MiniAndroid-Compatibility-Runtime/gh-pages/index.html | **LIVE** |
+| **F-155 ROOT-CAUSED+FIXED+OBSERVED**: fishrings onClick died in sound() NPE on null MediaPlayer (create REC-MISS stub); law R-NEW-400 (create → non-null PREPARED player + AOSP state table); 3 taps → 3 rotations → 3 distinct board states, det x2 | run/s79_reproofs/fishrings_r399b (repro) vs fishrings_r400{,_run2} (post); [R400-MEDIA] logs; docs/evidence/s79/fishrings/ | **FIXED+OBSERVED** |
+| **R-NEW-399 implemented**: AOSP per-child hit-test walk law + MINIANDROID_HITPROBE; S78 decor-offset hypothesis honestly REFUTED (stale coordinates); zero golden delta | miniandroid/src/framework/touch_dispatcher.cpp; probe logs; regression suite | **IMPLEMENTED+TESTED** |
+| **LADDER SWEEP**: #15 unote CLOSED (Add-note → editor 13,032 px + notes.db); #17 gmdice CLOSED (results rendered + multi-roll 6→'5'); #18 microtimer CLOSED (00:00:98 running); #19 fishrings S10 chain closed at HEAD (game-end loop honest open); #21 bouncy + #23 opmt re-proven; #14 dooz/#16 telegram/#20 tripeaks/#22 stopwatch honest frontiers restated | issue comments; run/s79_reproofs/*; docs/evidence/s79/reproofs/ | **3 CLOSED + 7 HONEST** |
+| **FINAL REGRESSION**: battery 26/26 rc=0; verifier 26/26 SAME; snake fidelity BYTE-IDENTICAL 90/90; f152 6/6; f153 3/3 | run/s77_baseline/battery.jsonl; scripts/s77_verifier.py; scripts/s75_fidelity_probe.py | **ALL PASS** |

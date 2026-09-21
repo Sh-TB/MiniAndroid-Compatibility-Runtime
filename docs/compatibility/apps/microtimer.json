@@ -102,7 +102,7 @@
  "name": "MicroTimer",
  "status": "PARTIAL",
  "issue": 18,
- "issue_state": "open",
+ "issue_state": "closed (state change re-proven at HEAD)",
  "app_id": "microtimer",
  "visual_evidence": {
   "status": "HUMAN_VISIBLE",
@@ -121,7 +121,7 @@
   ],
   "bundle": "docs/evidence/s74_ops/microtimer/",
   "session": "docs/evidence/s74_ops/microtimer/session.json",
-  "model": "AGENT_OBSERVED vs HUMAN_VISIBLE distinguished per S74-FOLLOW-UP \u00a74"
+  "model": "AGENT_OBSERVED vs HUMAN_VISIBLE distinguished per S74-FOLLOW-UP §4"
  },
  "what_actually_happened": {
   "PROVEN": [
@@ -151,5 +151,7 @@
   "binary": "miniandroid/build/miniandroid built at HEAD (zero runtime changes this wave)",
   "evidence_bundle": "docs/evidence/s74_ops/microtimer/",
   "human_review": "representative frames individually opened and reviewed by the executing agent before status assignment"
- }
+ },
+ "last_fix": "S79 re-proof at HEAD: clicks → 00:00:00 → 00:00:09 → 00:00:98 (timer running; 11/12 views changed; det x2)",
+ "session": "S79 (run/s79_reproofs/microtimer_run{1,2})"
 }

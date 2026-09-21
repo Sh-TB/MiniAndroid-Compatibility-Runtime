@@ -1,0 +1,31 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "LAW-R-NEW-400",
+ "title": "MediaPlayer.create returns a non-null PREPARED player; instance methods follow the AOSP state table",
+ "domain": "framework-object-semantics",
+ "scope": "engine",
+ "statement": "MediaPlayer.create(Context, resid) never returns null for a valid resource (it throws on failure) — it returns a player in the PREPARED state. start/pause/stop/release/reset transition per the class-doc state table; illegal transitions log and enter ERROR (mirrors the C++ audio::MediaPlayer table). The engine allocates a real heap object with __mp_state__; audio OUTPUT is a no-op in a software runtime. Without this object law, every app whose onClick plays a sound before acting dies silently on a deferred null-receiver NPE (F-155).",
+ "status": "VERIFIED",
+ "source": {
+  "origin": "AOSP android.media.MediaPlayer (frameworks/base/media/java/android/media/MediaPlayer.java)",
+  "file": "src/dex/dalvik_engine.cpp bridge_to_api (R-NEW-400 branch)"
+ },
+ "test": "fishrings S10 chain at HEAD: 3 taps → 3 CLICK dispatches → 3 rotations → 3 distinct board states, deterministic x2; MediaPlayer NPE count 1/tap → 0",
+ "consumers": [
+  "fishrings",
+  "any-app-with-sound-on-click"
+ ],
+ "issues": [
+  "#19"
+ ],
+ "capabilities": [],
+ "first_discovered": "S79",
+ "last_verified": "S79",
+ "utilization": {
+  "verdict": "USED_BY_EXECUTION",
+  "consumer_apps": [
+   "fishrings"
+  ]
+ }
+}

@@ -59,7 +59,7 @@
   "network_observed": "NOT_OBSERVED (runtime has no real network stack; no egress possible)"
  },
  "evidence": "run/s78_gmdice/clicktest engine.log + frames + manifest.json",
- "regression": "S78 replay: 5/5 real clicks DISPATCHED into GameMasterDice listeners; roll() -> Random.nextInt executed (nextInt REC-MISS recorded); result band rendered (initial -> '2 · 4 · 4'; singles '6','5','3'); first-click diff 1,506,884 px",
+ "regression": "battery 26/26; click-test 5/5 dispatched + results rendered (SETTEXT view_37) on the S79 binary",
  "blocker": "ladder open: input/state legs proven at S63, not re-run at current HEAD (historical)",
  "next_task": "re-pin canonical gmdice APK (source-first rebuild or verified download), then re-prove visible roll chain at HEAD",
  "completion": {
@@ -96,7 +96,7 @@
  "name": "GM Dice",
  "status": "PARTIAL",
  "issue": 17,
- "issue_state": "open",
+ "issue_state": "closed (ladder complete at HEAD)",
  "app_id": "gmdice",
  "visual_evidence": {
   "status": "HUMAN_VISIBLE",
@@ -144,9 +144,9 @@
   "evidence_bundle": "docs/evidence/s74_ops/gmdice/",
   "human_review": "representative frames individually opened and reviewed by the executing agent before status assignment"
  },
- "last_error": "none (S78: click->state->render chain re-proven; no new failure)",
- "root_cause": "n/a",
- "last_fix": "n/a (S78 replay only)",
- "next_probe": "multi-roll across frames: --tap hit-test missed the button (target=0) — coordinate bounds of the clickable parent need the decor-offset law; Random.nextInt REC-MISS (F-114 family) still the honesty frontier for result distribution claims",
- "session": "S78 (run/s78_gmdice/clicktest)"
+ "last_error": "S78: multi-roll taps at (540,1714) → target=0 (STALE coordinates — button row is y=1776..1920; NOT a decor law)",
+ "root_cause": "refuted S78 decor-offset hypothesis: hit-test works on the row; the tap y was above the buttons",
+ "last_fix": "S79: taps at real button center (580,1848) → target=41 → results '6' then '5' across frames (multi-roll closed)",
+ "next_probe": "Random.nextInt REC-MISS (F-114 family) — result distribution honesty frontier",
+ "session": "S79 (run/s79_reproofs/gmdice_multiroll{,2})"
 }

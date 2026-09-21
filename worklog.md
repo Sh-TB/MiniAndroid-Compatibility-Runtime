@@ -2612,3 +2612,62 @@ Stage Summary:
   (×4 constant, untraced), nextInt REC-MISS, tap hit-test decor-offset law.
 - Next: F-147 null-producer trace (getChildAt REC-MISS chain), JobSupport
   state-machine law, gmdice multi-roll via decor-offset bounds.
+
+---
+Task ID: S79-MAIN
+Agent: Super Z (main)
+Task: "S79 — BASE CLOSURE, PUBLISHED GAMEPLAY PROOF & EXECUTION-LADDER SWEEP"
+(user directive: complete every unfinished GitHub request; make the base
+fully complete; find forgotten gaps needed to run games/apps; Snake
+gameplay GIF uploaded to a website).
+
+Work Log:
+- BASELINE at 527925b7: battery 26/26, verifier 26/26 SAME, fidelity
+  BYTE-IDENTICAL 90/90, disk 84%.
+- MARQUEE: Snake gameplay GIF built from REAL APK frames (autonomous
+  committed schedule + C4B death extension + dialog restart tap + schedule
+  shifted +98 replaying game 2): game1 88 moves/22 turns/1 capture →
+  death@94 → CJK dialog (重新开始 28 blue px) → restart@99 → game2 90
+  moves/24 turns/1 capture (second death@192). GIF 70 segs 0.25MB at
+  download/s79/ + docs/evidence/s79/ + gh-pages. WEBSITE: gh-pages pushed
+  (index.html fa/en); Pages API 403 (PAT lacks pages:write — recorded);
+  LIVE via raw.githack (text/html 200) + jsDelivr (image/gif 200).
+- F-155 NEW+FIXED (fishrings): taps dispatched CLICK to real
+  GameActivity$1/$2/$4 but board static — producer: onClick died in
+  sound() MediaPlayer.start() on NULL (create = unbridged REC-MISS stub).
+  FIX R-NEW-400 (MediaPlayer object law: create → non-null PREPARED heap
+  object with __mp_state__; start/pause/stop/release/reset per AOSP table;
+  illegal → ERROR). POST: 3 taps → 3 rotations → 3 distinct board states
+  (cb9ef295be/fd3319ff72/0c74b09a8b) det x2; NPE 1→0/tap.
+- R-NEW-399 implemented: AOSP ViewGroup per-child hit-test walk law
+  (ancestor bounds never gate descent) + MINIANDROID_HITPROBE probe.
+  HONEST: S78 "decor-offset" hypothesis REFUTED — gmdice multi-roll taps
+  were stale coords (540,1714 vs real row y=1776..1920); with correct
+  center (580,1848) multi-roll works ('6'→'5' across frames, target=41,
+  det x2) — closed without runtime change.
+- LADDER SWEEP (all 10 open [EXEC] issues re-proven at final binary):
+  #15 unote CLOSED (Add note → real editor, 13,032 sampled-px diff +
+  notes.db chain); #17 gmdice CLOSED (results rendered + multi-roll);
+  #18 microtimer CLOSED (00:00:98 running); #19 fishrings S10 chain
+  closed at HEAD (game-end loop honest OPEN); #21 bouncy 12/10 + #23 opmt
+  6/6 re-proven (honest OPEN items restated); #14 dooz visual unchanged
+  (Job ISE ×2 observed this wave, untraced — honest); #16 telegram
+  historical marker kept; #20 tripeaks + #22 stopwatch honest frontiers.
+  Comments posted on all; #15/#17/#18 closed as completed.
+- CANONICAL: registry 409→412 (F-155 + R-NEW-399 + R-NEW-400) via
+  scripts/s79_registry_update.py; knowledge 35→37 (verified 26);
+  dossiers fishrings/gmdice/microtimer/unote updated; audit views
+  regenerated via generator; S79_REPORT.md; ROADMAP row + ACHIEVEMENTS
+  §0o; evidence package docs/evidence/s79/ (JPG ≤100KB law) + SHA256SUMS.
+- FINAL REGRESSION on the new binary: battery 26/26, verifier 26/26 SAME,
+  fidelity BYTE-IDENTICAL 90/90, f152 6/6, f153 3/3 — zero golden deltas
+  from R-NEW-399/400.
+
+Stage Summary:
+- User's asks delivered: GIF live on a website; all 10 open requests
+  reviewed + evidence-commented; 3 closed with full ladders; 2 runtime
+  laws + 1 failure root-caused-fixed; base re-proven regression-clean.
+- Remaining honest frontier: dooz Job ISE trace, F-147 producer, dooz
+  visual gate (F-145), fishrings game-end loop, bouncy L7, OPMT IOOBE
+  (app-own), tripeaks R-NEW-388 + OBJECT-IDENTITY, stopwatch F-143
+  service-launch, telegram HEAD re-run, Random.nextInt REC-MISS.
