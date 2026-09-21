@@ -1,0 +1,177 @@
+{
+ "schema": "tool-utilization/1 (S74 FOLLOW-UP \u00a714)",
+ "chain": "Tool -> Capability -> Knowledge/Law -> Application -> Evidence",
+ "summary": {
+  "USED": 8,
+  "RESEARCHED_ONLY": 3,
+  "AVAILABLE_NOT_USED": 1
+ },
+ "tools": [
+  {
+   "tool": "androidx",
+   "verdict": "USED",
+   "consumers": [
+    "dooz",
+    "unote",
+    "gmdice"
+   ],
+   "laws_learned": [
+    "LAW-FRAGMENTMANAGER-SUBSET",
+    "LAW-F114",
+    "LAW-F137"
+   ],
+   "evidence": "run/s62_mines_trace.log; docs/evidence/s64_spotlight/S64_REPORT.md \u00a72",
+   "note": "consumer chain: FragmentManager subset law; Unote/TriPeaks/Telegram androidx families"
+  },
+  {
+   "tool": "aosp",
+   "verdict": "USED",
+   "consumers": [
+    "androidgamesnake",
+    "unote",
+    "gmdice",
+    "fishrings",
+    "bouncy",
+    "helloworld"
+   ],
+   "laws_learned": [
+    "LAW-F148",
+    "LAW-F149",
+    "LAW-F136",
+    "LAW-F114",
+    "LAW-F142",
+    "LAW-F137",
+    "LAW-F120"
+   ],
+   "evidence": "docs/foundation/S72_WAVE4.md; docs/upstream/aosp/CONTEXT_STRING_LAW.md; docs/upstream/INDEX.md",
+   "note": "consumer chain: F-148/F-149 laws -> Snake layout; F-136/F-114 laws -> Unote strings/prefs; fixtures family"
+  },
+  {
+   "tool": "art",
+   "verdict": "USED",
+   "consumers": [
+    "dooz",
+    "telegram",
+    "androidgamesnake"
+   ],
+   "laws_learned": [
+    "LAW-F141",
+    "LAW-THROW-DEFERRED",
+    "LAW-BOXED-READERS",
+    "LAW-FRAGMENTMANAGER-SUBSET",
+    "LAW-VIEW-GETRESOURCES",
+    "LAW-THEME-RESOLVEATTRIBUTE"
+   ],
+   "evidence": "docs/evidence/S72_WAVE3 record (commit 048b0e31); root_registry.json F-141 entry",
+   "note": "consumer chain: F-141 invoke-null-receiver law -> all real-APK apps; F-146/F-147 Dooz frontier records"
+  },
+  {
+   "tool": "asc",
+   "verdict": "RESEARCHED_ONLY",
+   "consumers": [
+    "telegram"
+   ],
+   "laws_learned": [],
+   "evidence": "docs/ACHIEVEMENTS.md ASC column per app",
+   "note": "per \u00a743: research assistant only; OBSERVED->UPSTREAM confirmations mediated through it, no runtime role"
+  },
+  {
+   "tool": "build-toolchain",
+   "verdict": "USED",
+   "consumers": [
+    "helloworld",
+    "androidgamesnake",
+    "gmdice",
+    "siggen",
+    "blockinger"
+   ],
+   "laws_learned": [],
+   "evidence": "docs/foundation/S72_WAVE4.md SOURCE block; S73 rebuild record",
+   "note": "consumer chain: aapt2/ECJ/D8/stubs -> every fixture + snake/unote-class APK builds at HEAD"
+  },
+  {
+   "tool": "codesearch-toolchain",
+   "verdict": "RESEARCHED_ONLY",
+   "consumers": [],
+   "laws_learned": [],
+   "evidence": "docs/evidence/s63_spotlight/S63_REPORT.md \u00a74",
+   "note": "source-lookup sessions only (law provenance hunts); no direct runtime consumer"
+  },
+  {
+   "tool": "compose",
+   "verdict": "RESEARCHED_ONLY",
+   "consumers": [
+    "dooz"
+   ],
+   "laws_learned": [
+    "LAW-F108"
+   ],
+   "evidence": "S61 R-NEW-381 record + root_registry.json",
+   "note": "studied as Dooz rendering context (APP-DOOZ-COMPOSE-CHAIN record); no Compose runtime path implemented"
+  },
+  {
+   "tool": "dalvik",
+   "verdict": "USED",
+   "consumers": [
+    "helloworld",
+    "androidgamesnake",
+    "dooz",
+    "telegram"
+   ],
+   "laws_learned": [
+    "LAW-MUTF8",
+    "LAW-F150"
+   ],
+   "evidence": "scripts/forensic/dex_method_dump.py + S72-W4 disasm records",
+   "note": "consumer chain: DEX/interpreter laws -> every real-dalvik execution in the corpus"
+  },
+  {
+   "tool": "external-runtimes",
+   "verdict": "AVAILABLE_NOT_USED",
+   "consumers": [],
+   "laws_learned": [],
+   "evidence": "docs/corpus/UPSTREAM_INVENTORY.md REFERENCE class; docs/runtime/knowledge/external-runtime indexes",
+   "note": "surveyed for semantic reference only; no adoption, no consumers \u2014 honest AVAILABLE_NOT_USED"
+  },
+  {
+   "tool": "kotlin",
+   "verdict": "USED",
+   "consumers": [
+    "dooz",
+    "gmdice"
+   ],
+   "laws_learned": [
+    "LAW-BOXED-READERS"
+   ],
+   "evidence": "S71 forensic triage (136 LIVE-STUB triage; both UNKNOWNs resolved by caller-context evidence)",
+   "note": "consumer chain: Kotlin-object/property-reader laws -> Dooz/Unote chains"
+  },
+  {
+   "tool": "kotlinx-coroutines-atomicfu",
+   "verdict": "USED",
+   "consumers": [
+    "dooz"
+   ],
+   "laws_learned": [
+    "APP-DOOZ-COMPOSE-CHAIN"
+   ],
+   "evidence": "S72-W1 dooz deep-chain root cause (commit acad15fd): arraycopy(null) NPE @ Lid;.K -> PersistentHashMapBuilder.putAll trie walk -> invoke-virtual/range this=NULL",
+   "note": "consumer chain: AtomicReferenceArray semantics -> Dooz state queue law record"
+  },
+  {
+   "tool": "openjdk",
+   "verdict": "USED",
+   "consumers": [
+    "gmdice",
+    "opmt"
+   ],
+   "laws_learned": [
+    "LAW-F135",
+    "LAW-F113",
+    "LAW-BOXED-READERS"
+   ],
+   "evidence": "docs/evidence/s63_spotlight/S63_REPORT.md \u00a71; upstream_oracle.json (7 grep-verified law records)",
+   "note": "consumer chain: F-113 SecureRandom -> gmdice roll; boxed-reader family laws"
+  }
+ ]
+}

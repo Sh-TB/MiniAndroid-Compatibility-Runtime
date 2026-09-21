@@ -34,7 +34,11 @@
   "compose_chain": "Kotlin/coroutines/AtomicFU -> Segment-like state/queue -> AtomicReferenceArray: get ~629k, set ~1, head segment state ~0x40000000 \u2014 OBSERVED numbers, NOT yet upstream-verified law"
  },
  "storage": {},
- "persistence": {},
+ "persistence": {
+  "status_note": "NOT_OBSERVED (launch path stops before user flow)",
+  "probe": "relaunch_same_data_root (s74-ops)",
+  "verdict": "NOT_OBSERVED"
+ },
  "network": {
   "requested": [],
   "observed": [],
@@ -42,13 +46,21 @@
   "status": "NOT_OBSERVED"
  },
  "security": {
-  "permissions_declared": [],
+  "permissions_declared": [
+   "android.permission.VIBRATE",
+   "io.github.yamin8000.dooz.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
   "permissions_observed": [],
   "exported_components": [],
   "filesystem": "NOT_OBSERVED",
   "network": "NOT_OBSERVED",
   "sensitive_apis": [],
-  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)"
+  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)",
+  "permissions_declared_source": "aapt2 dump badging at s74-ops HEAD",
+  "launchable_activities": [
+   "io.github.yamin8000.dooz.ui.MainActivity"
+  ],
+  "network_observed": "NOT_OBSERVED (runtime has no real network stack; no egress possible)"
  },
  "evidence": {
   "primary": [
@@ -59,7 +71,7 @@
  },
  "regression": {},
  "blocker": "F-146 (g8.a@569 -> ur.e(J) null receiver) and F-147 (onCreate@228 -> ViewGroup.getChildAt on null); visual frontier F-145. F-141 stays CLOSED.",
- "next_task": "root-cause F-146 receiver-null chain (Searchlight: caller->callee->upstream Compose/kotlinx law); engine-default black-region painter is the queued open lead",
+ "next_task": "targeted Compose/Compose-view frontier wave (F-145/146/147) \u2014 do not manufacture success",
  "completion": {
   "C1_apk_load": "DONE",
   "C2_manifest_lifecycle": "PARTIAL",
@@ -96,5 +108,54 @@
  "status": "BLOCKED",
  "issue": 14,
  "issue_state": "open",
- "app_id": "dooz"
+ "app_id": "dooz",
+ "visual_evidence": {
+  "status": "NOT_HUMAN_VISIBLE",
+  "execution_stage": [
+   "V0 launch pipeline only"
+  ],
+  "note": "engine-default black region (23,472 px) \u2014 truthful blocker evidence attached in bundle; NO_MEANINGFUL_VISUAL_PROOF",
+  "representative_frames": [
+   "01_launch.png",
+   "03_final.png"
+  ],
+  "bundle": "docs/evidence/s74_ops/dooz/",
+  "session": "docs/evidence/s74_ops/dooz/session.json",
+  "model": "AGENT_OBSERVED vs HUMAN_VISIBLE distinguished per S74-FOLLOW-UP \u00a74"
+ },
+ "what_actually_happened": {
+  "PROVEN": [],
+  "OBSERVED": [
+   "Compose/coroutine init chain executes (b2/n queue -> Segment-like state -> AtomicReferenceArray knowledge chain)",
+   "23,472-px engine-default black region at HEAD (byte-class matches S73 reclassification)"
+  ],
+  "IMPLEMENTED": [],
+  "RESEARCHED": [
+   "F-146 null receiver, F-147 getChildAt-on-null root causes"
+  ],
+  "NOT_OBSERVED": [
+   "first meaningful Compose UI",
+   "interaction",
+   "persistence"
+  ],
+  "BLOCKED": [
+   "F-146 / F-147 (root blockers)",
+   "F-145 visual frontier"
+  ],
+  "SUPERSEDED": [
+   "CLAIM-DOOZ-23472-VISUAL (23,472 px was NEVER Dooz visual proof \u2014 preserved SUPERSEDED record)"
+  ]
+ },
+ "sandbox_profile": {
+  "data_root_probed": true,
+  "observation": "no files created in data root (ops campaign probe)",
+  "boundary_note": "sandbox treated as execution boundary: files under app package dir only; no external paths touched"
+ },
+ "ops_wave": {
+  "wave": "S74 FOLLOW-UP (operational base completion)",
+  "runtime_commit": "3505591b",
+  "binary": "miniandroid/build/miniandroid built at HEAD (zero runtime changes this wave)",
+  "evidence_bundle": "docs/evidence/s74_ops/dooz/",
+  "human_review": "representative frames individually opened and reviewed by the executing agent before status assignment"
+ }
 }

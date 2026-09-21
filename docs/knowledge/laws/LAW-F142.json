@@ -22,5 +22,13 @@
   "cap-view-inflate-layout"
  ],
  "first_discovered": "S72-W2",
- "last_verified": "S73"
+ "last_verified": "S73",
+ "utilization": {
+  "verdict": "USED_BY_EXECUTION",
+  "consumer_apps": [
+   "fishrings"
+  ],
+  "test": "fishrings real game board (KPI-2 +1, zero regressions)",
+  "evidence": "S72-W2 record (commit f8d5e1e2)"
+ }
 }

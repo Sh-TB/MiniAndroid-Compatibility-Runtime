@@ -22,5 +22,15 @@
   "cap-lifecycle-dispatch"
  ],
  "first_discovered": "S65",
- "last_verified": "S73"
+ "last_verified": "S73",
+ "utilization": {
+  "verdict": "USED_BY_EXECUTION",
+  "consumer_apps": [
+   "tripeaks",
+   "fishrings",
+   "opmt"
+  ],
+  "test": "G08 launches; 3 consumers day one",
+  "evidence": "root_registry.json F-118 (R-NEW-385)"
+ }
 }

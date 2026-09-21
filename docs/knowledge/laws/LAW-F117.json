@@ -26,5 +26,16 @@
   "cap-autonomous-gameplay"
  ],
  "first_discovered": "S73",
- "last_verified": "S73"
+ "last_verified": "S73",
+ "utilization": {
+  "verdict": "USED_BY_EXECUTION",
+  "consumer_apps": [
+   "androidgamesnake",
+   "connectfour",
+   "gmdice",
+   "bouncy"
+  ],
+  "test": "legacy byte-identical vs stored W4 frames; snake 23 scheduled taps autonomous session",
+  "evidence": "execution_engine.h/.cpp + main.cpp"
+ }
 }

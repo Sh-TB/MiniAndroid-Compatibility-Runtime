@@ -153,6 +153,93 @@ def main():
     else:
         errs.append("[matrix] docs/compatibility/CAPABILITY_MATRIX.md missing")
 
+    # ------------------------------------------------------------------
+    # S74 FOLLOW-UP WAVE §35 extensions — operational evidence gates.
+    # These verify STRUCTURE + METADATA CONSISTENCY + FILE EXISTENCE only.
+    # They deliberately do NOT infer execution from file existence (§36):
+    # a PNG existing is never treated as "the app executed"; the claim and
+    # the evidence label must simply be consistent with each other.
+    # ------------------------------------------------------------------
+    ops_root = os.path.join(root, "docs/evidence/s74_ops")
+    for rid, r in apps.items():
+        vis = r.get("visual_evidence") or {}
+        status = vis.get("status")
+        if not status:
+            errs.append(f"[app] {rid}: visual_evidence.status missing (§35: every app needs an explicit visual-evidence state)")
+            continue
+        if status not in {"HUMAN_VISIBLE", "NOT_HUMAN_VISIBLE", "NOT_OBSERVED"}:
+            errs.append(f"[app] {rid}: visual_evidence.status invalid: {status}")
+        frames = vis.get("representative_frames", []) or []
+        bundle = vis.get("bundle")
+        if bundle and not os.path.isdir(os.path.join(root, bundle)):
+            errs.append(f"[app] {rid}: visual evidence bundle missing: {bundle}")
+        if status == "HUMAN_VISIBLE":
+            if not frames:
+                errs.append(f"[app] {rid}: claims HUMAN_VISIBLE with no representative frames (§35)")
+            for fr in frames:
+                fp = os.path.join(root, str(bundle or ""), str(fr))
+                if not os.path.exists(fp):
+                    errs.append(f"[app] {rid}: HUMAN_VISIBLE frame file missing: {fr}")
+        if status == "NOT_HUMAN_VISIBLE" and not vis.get("note"):
+            errs.append(f"[app] {rid}: NOT_HUMAN_VISIBLE without an explanatory note (truthfulness law)")
+        # execution claims require an ops session bundle or committed evidence
+        if r.get("status") in {"DONE", "TESTED", "OBSERVED"}:
+            has_session = False
+            for cand in (rid, f"{rid}_golden_fixture"):
+                sp = os.path.join(ops_root, cand, "session.json")
+                if os.path.exists(sp):
+                    has_session = True
+                    sess = json.load(open(sp))
+                    shas = []
+                    for m in (sess.get("frame_metrics") or {}).values():
+                        if m.get("png_sha256_16"):
+                            shas.append(m["png_sha256_16"])
+                    if sess.get("screenshot_sha256_16"):
+                        shas.append(sess["screenshot_sha256_16"])
+                    if not shas:
+                        errs.append(f"[app] {rid}: session bundle has no SHA evidence (§35: evidence with missing SHA)")
+                    sums = os.path.join(ops_root, cand, "SHA256SUMS")
+                    if os.path.exists(sums):
+                        for line in open(sums):
+                            if line.strip():
+                                fn = line.split("  ")[-1].strip()
+                                if not os.path.exists(os.path.join(ops_root, cand, fn)):
+                                    errs.append(f"[app] {rid}: broken evidence link in SHA256SUMS: {fn}")
+                    break
+            if not has_session:
+                prim = r.get("evidence", {}).get("primary", []) or []
+                if not prim:
+                    errs.append(f"[app] {rid}: status {r['status']} but no execution session and no evidence path (§35)")
+
+        # persistence truthfulness
+        pv = str((r.get("persistence") or {}).get("verdict", ""))
+        if "PASS" in pv.upper() and "relaunch" not in str((r.get("persistence") or {}).get("probe", "")).lower():
+            errs.append(f"[app] {rid}: persistence PASS without close/reopen probe (§35)")
+        # blocked claims must name the blocker somewhere
+        wa = r.get("what_actually_happened") or {}
+        if wa.get("BLOCKED") and not r.get("blocker"):
+            if "blocker" not in str(r.get("next_task", "")).lower():
+                errs.append(f"[app] {rid}: BLOCKED truth section present but blocker field empty (§35)")
+
+    for tid, t in tools.items():
+        u = t.get("utilization") or {}
+        v = u.get("verdict")
+        if v not in {"USED", "RESEARCHED_ONLY", "AVAILABLE_NOT_USED"}:
+            errs.append(f"[tool] {tid}: utilization.verdict missing/invalid (§35): {v}")
+        if v == "USED" and not (t.get("consumers") or t.get("laws_learned")):
+            errs.append(f"[tool] {tid}: marked USED without consumer/law evidence (§35)")
+
+    for lid, l in laws.items():
+        u = l.get("utilization") or {}
+        v = u.get("verdict")
+        if not v:
+            errs.append(f"[law] {lid}: utilization block missing (§15/§35)")
+            continue
+        if v == "USED_BY_EXECUTION" and not u.get("consumer_apps"):
+            errs.append(f"[law] {lid}: USED_BY_EXECUTION without consumer apps (§35)")
+        if l.get("status") == "VERIFIED" and v == "UNUSED_VERIFIED_LAW" and u.get("consumer_apps"):
+            errs.append(f"[law] {lid}: UNUSED_VERIFIED_LAW but consumers recorded — inconsistent (§35)")
+
     print(f"Compatibility graph validation: {len(apps)} apps, {len(tools)} tools, "
           f"{len(caps)} capabilities, {len(laws)} knowledge records, "
           f"registry roots={registry_roots}")

@@ -29,7 +29,11 @@
  "state": {},
  "concurrency": {},
  "storage": {},
- "persistence": {},
+ "persistence": {
+  "status_note": "OBSERVED: real SQLite DB created on launch (app.varlorg.unote/databases/notes.db, 12288 B, sha256_16 2bccf9475fe3810d) AND survives relaunch in same data root (SHA unchanged after reopen probe)",
+  "probe": "relaunch_same_data_root (s74-ops)",
+  "verdict": "OBSERVED: real SQLite DB created on launch"
+ },
  "network": {
   "requested": [],
   "observed": [],
@@ -37,13 +41,26 @@
   "status": "NOT_OBSERVED"
  },
  "security": {
-  "permissions_declared": [],
+  "permissions_declared": [
+   "android.permission.READ_EXTERNAL_STORAGE",
+   "android.permission.WRITE_EXTERNAL_STORAGE",
+   "android.permission.MANAGE_EXTERNAL_STORAGE",
+   "android.permission.SET_ALARM",
+   "android.permission.ALARM_SERVICE",
+   "android.permission.SCHEDULE_EXACT_ALARM",
+   "android.permission.POST_NOTIFICATIONS"
+  ],
   "permissions_observed": [],
   "exported_components": [],
   "filesystem": "NOT_OBSERVED",
   "network": "NOT_OBSERVED",
   "sensitive_apis": [],
-  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)"
+  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)",
+  "permissions_declared_source": "aapt2 dump badging at s74-ops HEAD",
+  "launchable_activities": [
+   "app.varlorg.unote.NoteMain"
+  ],
+  "network_observed": "NOT_OBSERVED (runtime has no real network stack; no egress possible)"
  },
  "evidence": {
   "primary": [
@@ -54,7 +71,7 @@
  },
  "regression": {},
  "blocker": "execution ladder open below render: input/state-change legs unprobed at current HEAD",
- "next_task": "run input probe (tap FAB/edit path) -> state change -> re-render; then SharedPreferences persistence leg (F-114 family already TESTED engine-side)",
+ "next_task": "drive Add note -> editor -> save -> reopen -> read-back chain (completes C9 end-to-end with visible note)",
  "completion": {
   "C1_apk_load": "DONE",
   "C2_manifest_lifecycle": "DONE",
@@ -88,5 +105,53 @@
  "status": "PARTIAL",
  "issue": 15,
  "issue_state": "open",
- "app_id": "unote"
+ "app_id": "unote",
+ "visual_evidence": {
+  "status": "HUMAN_VISIBLE",
+  "execution_stage": [
+   "V0 launch",
+   "V1 main UI"
+  ],
+  "note": "search bar + 'Add note / Search / Quit' action bar at HEAD; themed UI 231,120 px matches S73 record",
+  "representative_frames": [
+   "01_launch.png",
+   "03_final.png",
+   "04_frame_000.png",
+   "05_frame_006.png"
+  ],
+  "bundle": "docs/evidence/s74_ops/unote/",
+  "session": "docs/evidence/s74_ops/unote/session.json",
+  "model": "AGENT_OBSERVED vs HUMAN_VISIBLE distinguished per S74-FOLLOW-UP \u00a74"
+ },
+ "what_actually_happened": {
+  "PROVEN": [
+   "launch -> themed main UI at HEAD (231,120 px, byte-matches S73 recipe)",
+   "persistence layer active: notes.db created + survives close/reopen probe"
+  ],
+  "OBSERVED": [
+   "XML onClick dispatch: addNote/search/quit handlers fired (round-robin pass); no visible navigation change in empty-list state"
+  ],
+  "IMPLEMENTED": [
+   "SharedPreferences bridge (F-114), SQLite backend (F-026 room chain)"
+  ],
+  "RESEARCHED": [],
+  "NOT_OBSERVED": [
+   "note creation end-to-end (editor screen)",
+   "note content persistence across reopen"
+  ],
+  "BLOCKED": [],
+  "SUPERSEDED": []
+ },
+ "sandbox_profile": {
+  "data_root_probed": true,
+  "observation": "data-root probe: exactly one file created (notes.db); no external-storage or cache writes observed",
+  "boundary_note": "sandbox treated as execution boundary: files under app package dir only; no external paths touched"
+ },
+ "ops_wave": {
+  "wave": "S74 FOLLOW-UP (operational base completion)",
+  "runtime_commit": "3505591b",
+  "binary": "miniandroid/build/miniandroid built at HEAD (zero runtime changes this wave)",
+  "evidence_bundle": "docs/evidence/s74_ops/unote/",
+  "human_review": "representative frames individually opened and reviewed by the executing agent before status assignment"
+ }
 }

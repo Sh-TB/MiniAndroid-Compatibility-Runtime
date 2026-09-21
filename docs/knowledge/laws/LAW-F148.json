@@ -22,5 +22,13 @@
   "cap-view-inflate-layout"
  ],
  "first_discovered": "S72-W4",
- "last_verified": "S73"
+ "last_verified": "S73",
+ "utilization": {
+  "verdict": "USED_BY_EXECUTION",
+  "consumer_apps": [
+   "androidgamesnake"
+  ],
+  "test": "snake SnakePanelView EXACTLY 1080x780; biased button pad EXACT (BOTTOM span 799 x 0.5); corpus 10/10 + fixtures 25/25 pixel-SAME",
+  "evidence": "docs/foundation/S72_WAVE4.md (F-148 row)"
+ }
 }

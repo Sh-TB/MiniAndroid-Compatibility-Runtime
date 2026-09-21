@@ -22,5 +22,12 @@
   "cap-autonomous-gameplay"
  ],
  "first_discovered": "S73",
- "last_verified": "S73"
+ "last_verified": "S73",
+ "utilization": {
+  "verdict": "OBSERVED_ONLY",
+  "consumer_apps": [
+   "androidgamesnake"
+  ],
+  "note": "seen in execution, not formalized as a semantic law"
+ }
 }

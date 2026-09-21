@@ -13,5 +13,12 @@
  "laws_learned": [],
  "consumers": [],
  "evidence": "docs/corpus/UPSTREAM_INVENTORY.md REFERENCE class; docs/runtime/knowledge/external-runtime indexes",
- "limitations": "surveyed, not vendored; no behavior copied without upstream re-verification"
+ "limitations": "surveyed, not vendored; no behavior copied without upstream re-verification",
+ "utilization": {
+  "verdict": "AVAILABLE_NOT_USED",
+  "note": "surveyed for semantic reference only; no adoption, no consumers \u2014 honest AVAILABLE_NOT_USED",
+  "law": "utilization derived from recorded consumers/laws/evidence; unused tools labeled honestly (S74-FOLLOW-UP \u00a713/\u00a714/\u00a733)",
+  "consumers_recorded": 0,
+  "laws_learned_recorded": 0
+ }
 }

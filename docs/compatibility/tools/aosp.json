@@ -36,5 +36,12 @@
   "helloworld"
  ],
  "evidence": "docs/foundation/S72_WAVE4.md; docs/upstream/aosp/CONTEXT_STRING_LAW.md; docs/upstream/INDEX.md",
- "limitations": "fetched per-session for each law (tagged); no full framework tree vendored"
+ "limitations": "fetched per-session for each law (tagged); no full framework tree vendored",
+ "utilization": {
+  "verdict": "USED",
+  "note": "consumer chain: F-148/F-149 laws -> Snake layout; F-136/F-114 laws -> Unote strings/prefs; fixtures family",
+  "law": "utilization derived from recorded consumers/laws/evidence; unused tools labeled honestly (S74-FOLLOW-UP \u00a713/\u00a714/\u00a733)",
+  "consumers_recorded": 6,
+  "laws_learned_recorded": 7
+ }
 }

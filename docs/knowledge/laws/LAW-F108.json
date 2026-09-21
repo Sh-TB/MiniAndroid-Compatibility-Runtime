@@ -23,5 +23,13 @@
   "cap-dex-interpreter"
  ],
  "first_discovered": "S61",
- "last_verified": "S73"
+ "last_verified": "S73",
+ "utilization": {
+  "verdict": "USED_BY_EXECUTION",
+  "consumer_apps": [
+   "dooz"
+  ],
+  "test": "dooz v23 compose pipeline deterministic execution",
+  "evidence": "root_registry.json F-108"
+ }
 }

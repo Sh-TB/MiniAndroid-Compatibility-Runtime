@@ -26,5 +26,14 @@
  ],
  "first_discovered": "S72-W4",
  "last_verified": "S73",
- "notes": "Deviation notes (virtual-clock semantics) are part of the record; never claim wall-clock parity."
+ "notes": "Deviation notes (virtual-clock semantics) are part of the record; never claim wall-clock parity.",
+ "utilization": {
+  "verdict": "USED_BY_EXECUTION",
+  "consumer_apps": [
+   "androidgamesnake",
+   "microtimer"
+  ],
+  "test": "snake 2 ticks/frame EXACT; 88 moves; reverse-guard honored; final frame x3 BYTE-IDENTICAL (1a419545419deb3a); corpus 10/10 + fixtures 25/25 pixel-SAME",
+  "evidence": "docs/foundation/S72_WAVE4.md (F-150 row); worklog S72-W4"
+ }
 }
