@@ -105,21 +105,37 @@
  "issue_state": "closed",
  "app_id": "tictactoe",
  "visual_evidence": {
-  "status": "HUMAN_VISIBLE",
+  "status": "NOT_HUMAN_VISIBLE",
   "execution_stage": [
    "V0 launch (fixture)",
    "V1 board (fixture)",
    "V2 interaction (fixture)",
    "V4 result (fixture)"
   ],
-  "note": "fixture-scope human-visible proof (X WINS board); REAL APK at HEAD is NOT_HUMAN_VISIBLE (GL blocker)",
+  "note": "REAL APK at HEAD: representative frames 01_launch/03_final are uniform WHITE = NO_MEANINGFUL_VISUAL_PROOF (kept as truthful blocker evidence; GL blocker F-144). Downgraded from HUMAN_VISIBLE by S74-FINAL \u00a713/\u00a731 independent frame verification (blank claim check). Golden-fixture X-WINS proof kept SEPARATE per \u00a715.",
   "representative_frames": [
    "01_launch.png",
    "03_final.png"
   ],
   "bundle": "docs/evidence/s74_ops/tictactoe/",
   "session": "docs/evidence/s74_ops/tictactoe/session.json",
-  "model": "AGENT_OBSERVED vs HUMAN_VISIBLE distinguished per S74-FOLLOW-UP \u00a74"
+  "model": "AGENT_OBSERVED vs HUMAN_VISIBLE distinguished per S74-FOLLOW-UP \u00a74",
+  "evidence_scope": "REAL_APK (docs/evidence/s74_ops/tictactoe/) \u2014 frames verified S74-FINAL: uniform white 1080x1920 extrema(255,255)",
+  "frames_verified": {
+   "01_launch.png": "UNIFORM white (blank)",
+   "03_final.png": "UNIFORM white (blank)"
+  },
+  "golden_fixture_evidence": {
+   "status": "HUMAN_VISIBLE",
+   "evidence_scope": "GOLDEN_FIXTURE (com.miniandroid.tictactoegolden, sha 9d1c2954c675813c) \u2014 NOT the real APK",
+   "bundle": "docs/evidence/s74_ops/tictactoe_golden_fixture/",
+   "frames": [
+    "01_launch.png",
+    "02_first_move.png",
+    "03_x_wins.png"
+   ],
+   "note": "X WINS board human-visible at fixture scope (extrema 33-255, nontrivial); F-144 GL limitation remains the real-APK blocker"
+  }
  },
  "what_actually_happened": {
   "PROVEN": [

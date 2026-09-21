@@ -1,0 +1,117 @@
+{
+ "checked_at_rc": "HEAD",
+ "results": [
+  {
+   "issue": 10,
+   "title": "[EXEC] HelloWorld \u2014 APK Execution & Visual Proof",
+   "state": "closed",
+   "body_has_image": false,
+   "image_urls": [],
+   "url_checks": []
+  },
+  {
+   "issue": 11,
+   "title": "[EXEC] TicTacToe \u2014 APK Execution & Gameplay Proof",
+   "state": "closed",
+   "body_has_image": false,
+   "image_urls": [],
+   "url_checks": []
+  },
+  {
+   "issue": 12,
+   "title": "[EXEC] ConnectFour \u2014 APK Execution & Gameplay Proof",
+   "state": "closed",
+   "body_has_image": false,
+   "image_urls": [],
+   "url_checks": []
+  },
+  {
+   "issue": 13,
+   "title": "[EXEC] AndroidGameSnake \u2014 Autonomous Gameplay Proof",
+   "state": "closed",
+   "body_has_image": false,
+   "image_urls": [],
+   "url_checks": []
+  },
+  {
+   "issue": 14,
+   "title": "[EXEC] Dooz \u2014 Runtime/UI Completion",
+   "state": "open",
+   "body_has_image": false,
+   "image_urls": [],
+   "url_checks": []
+  },
+  {
+   "issue": 15,
+   "title": "[EXEC] Unote \u2014 Runtime/UI Completion",
+   "state": "open",
+   "body_has_image": false,
+   "image_urls": [],
+   "url_checks": []
+  },
+  {
+   "issue": 16,
+   "title": "[EXEC] Telegram \u2014 Runtime Compatibility",
+   "state": "open",
+   "body_has_image": false,
+   "image_urls": [],
+   "url_checks": []
+  },
+  {
+   "issue": 17,
+   "title": "[EXEC] GMDice \u2014 APK Execution & Visual Proof",
+   "state": "open",
+   "body_has_image": false,
+   "image_urls": [],
+   "url_checks": []
+  },
+  {
+   "issue": 18,
+   "title": "[EXEC] MicroTimer \u2014 APK Execution & Visual Proof",
+   "state": "open",
+   "body_has_image": false,
+   "image_urls": [],
+   "url_checks": []
+  },
+  {
+   "issue": 19,
+   "title": "[EXEC] FishRings \u2014 APK Execution & Gameplay Proof",
+   "state": "open",
+   "body_has_image": false,
+   "image_urls": [],
+   "url_checks": []
+  },
+  {
+   "issue": 20,
+   "title": "[EXEC] TriPeaks \u2014 APK Execution & Visual Proof",
+   "state": "open",
+   "body_has_image": false,
+   "image_urls": [],
+   "url_checks": []
+  },
+  {
+   "issue": 21,
+   "title": "[EXEC] Bouncy \u2014 APK Execution & Visual Proof",
+   "state": "open",
+   "body_has_image": false,
+   "image_urls": [],
+   "url_checks": []
+  },
+  {
+   "issue": 22,
+   "title": "[EXEC] Stopwatch \u2014 Service-Launch Family",
+   "state": "open",
+   "body_has_image": false,
+   "image_urls": [],
+   "url_checks": []
+  },
+  {
+   "issue": 23,
+   "title": "[EXEC] OPMT \u2014 APK Execution & Visual Proof",
+   "state": "open",
+   "body_has_image": false,
+   "image_urls": [],
+   "url_checks": []
+  }
+ ]
+}

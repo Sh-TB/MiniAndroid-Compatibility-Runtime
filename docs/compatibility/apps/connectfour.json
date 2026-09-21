@@ -106,7 +106,7 @@
    "V3 state change",
    "V4 result"
   ],
-  "note": "launch 'R to move' -> midgame -> 'Y WINS' full board; validator ALL PASS at HEAD",
+  "note": "launch 'R to move' -> midgame -> 'Y WINS' full board; validator ALL PASS at HEAD. S74-FINAL \u00a713/\u00a715: scope marked GOLDEN_FIXTURE to prevent real-APK conflation; frames verified nontrivial (extrema 33-255).",
   "representative_frames": [
    "01_launch.png",
    "02_midgame.png",
@@ -115,7 +115,8 @@
   "bundle": "docs/evidence/s74_ops/connectfour_golden_fixture/",
   "session": "docs/evidence/s74_ops/connectfour_golden_fixture/session.json",
   "model": "AGENT_OBSERVED vs HUMAN_VISIBLE distinguished per S74-FOLLOW-UP \u00a74",
-  "scope_note": "golden fixture bundle (in-repo ConnectFour golden \u2014 canonical for this dossier)"
+  "scope_note": "golden fixture bundle (in-repo ConnectFour golden \u2014 canonical for this dossier)",
+  "evidence_scope": "GOLDEN_FIXTURE (connectfour_golden.apk built at HEAD by validate_connectfour_golden.sh) \u2014 frames are NOT from the real APK; real-APK execution proven in S73 (issue #12, Y WINS at click 22)"
  },
  "what_actually_happened": {
   "PROVEN": [
