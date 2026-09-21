@@ -178,14 +178,15 @@ TextShaper::TextShaper() {
     }
     if (available_) {
         std::fprintf(stderr,
-            "[TEXTSHAPER] READY primary=%s bold=%s fallback=%s emoji=%s(strike=%d) monospace=%s\n",
+            "[TEXTSHAPER] READY primary=%s bold=%s fallback=%s emoji=%s(strike=%d) monospace=%s cjk=%s\n",
             faces_[kFaceRegular].path.c_str(),
             faces_[kFaceBold].path.c_str(),
             faces_[kFaceFallback].path.c_str(),
             emoji_available_ ? faces_[kFaceEmoji].path.c_str() : "none",
             emoji_strike_px_,
             faces_[kFaceMonospace].ft_face
-                ? faces_[kFaceMonospace].path.c_str() : "MISSING");
+                ? faces_[kFaceMonospace].path.c_str() : "MISSING",
+            cjk_available_ ? faces_[kFaceCJK].path.c_str() : "none");
     }
 }
 
@@ -381,6 +382,36 @@ const ShapedText& TextShaper::shape(const std::string& utf8, float size_px,
                         result.notdef_count--;
                     }
                 }
+            }
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // R-NEW-398 (S78, F-153): CJK ideograph fallback — the AOSP fonts.xml
+    // fallback-chain law. DejaVu/FreeSerif carry no (full) CJK coverage, so
+    // every CJK cluster previously stayed .notdef (tofu or, at the dialog
+    // painter, 0 painted pixels). For every remaining .notdef cluster, look
+    // the ORIGINAL codepoint up in the CJK fallback face (WenQuanYi Zen
+    // Hei): CJK ideographs are single-codepoint — no complex shaping — so
+    // a direct charmap lookup + advance swap is the exact AOSP behavior.
+    // Consumer: snake game-over dialog labels 重新开始/退出 (F-153), and
+    // every future CJK-capable consumer (consumer-independent, S78 §6).
+    // ------------------------------------------------------------------
+    if (result.notdef_count > 0 && cjk_available_) {
+        FT_Face cface = reinterpret_cast<FT_Face>(faces_[kFaceCJK].ft_face);
+        if (FT_Set_Pixel_Sizes(cface, 0, (FT_UInt)std::lround(size_px)) == 0) {
+            for (auto& g : result.glyphs) {
+                if (g.glyph_id != 0 || g.use_emoji) continue;
+                if (g.cluster >= vis.size()) continue;
+                FT_UInt cg = FT_Get_Char_Index(cface, vis[g.cluster]);
+                if (!cg) continue;
+                if (FT_Load_Glyph(cface, cg, FT_LOAD_DEFAULT)) continue;
+                float cadv = (float)(cface->glyph->advance.x >> 6);
+                result.width += cadv - g.x_advance;
+                g.x_advance = cadv;
+                g.use_cjk = true;
+                g.cjk_gid = (uint32_t)cg;
+                result.notdef_count--;
             }
         }
     }
@@ -789,12 +820,20 @@ void TextShaper::draw(renderer::FrameBuffer& fb, const std::string& utf8,
             pen_x += g.x_advance;
             continue;
         }
-        // ----- grayscale path -----
-        uint64_t rk = raster_key(face_idx, size_px, g.glyph_id);
+        // ----- grayscale path (with R-NEW-398 CJK fallback) -----
+        FT_Face use_face = face;
+        int use_face_idx = face_idx;
+        uint32_t use_gid = g.glyph_id;
+        if (g.use_cjk && cjk_available_) {
+            use_face = reinterpret_cast<FT_Face>(faces_[kFaceCJK].ft_face);
+            use_face_idx = kFaceCJK;
+            use_gid = g.cjk_gid;
+        }
+        uint64_t rk = raster_key(use_face_idx, size_px, use_gid);
         auto rit = rasters_.find(rk);
         if (rit == rasters_.end()) {
             RasterPub pub;
-            if (raster_glyph(face, g.glyph_id, size_px, &pub)) {
+            if (raster_glyph(use_face, use_gid, size_px, &pub)) {
                 rit = rasters_.emplace(rk, std::move(pub)).first;
             }
         }

@@ -43,6 +43,12 @@ struct ShapedGlyph {
     bool use_emoji = false;
     uint32_t emoji_gid = 0;
     float emoji_scale = 1.0f;   // requested_px / emoji_strike_px
+    // R-NEW-398 (S78, F-153): CJK fallback — same font-chain pattern as the
+    // emoji fields: when the primary face has no glyph for the cluster, the
+    // glyph id from the CJK fallback face (single-codepoint ideographs, no
+    // complex shaping) is drawn from kFaceCJK instead.
+    bool use_cjk = false;
+    uint32_t cjk_gid = 0;
 };
 
 struct ShapedText {
@@ -211,7 +217,8 @@ private:
     static constexpr int kFaceFallback = 2;  // FreeSerif (wide coverage)
     static constexpr int kFaceEmoji = 3;     // NotoColorEmoji (CBDT)
     static constexpr int kFaceMonospace = 4; // G32: DroidSansMono (AOSP fonts.xml)
-    static constexpr int kBaseFaceCount = 5;
+    static constexpr int kFaceCJK = 5;       // R-NEW-398: CJK ideograph fallback
+    static constexpr int kBaseFaceCount = 6;
 
     bool load_face(int idx, const char* path);
 
@@ -233,6 +240,7 @@ private:
     int resolve_face(bool bold, int face_idx) const;
     bool available_ = false;
     bool emoji_available_ = false;
+    bool cjk_available_ = false;  // R-NEW-398
     int emoji_strike_px_ = 0;   // CBDT fixed strike size (e.g. 128)
 
     void* ft_lib_ = nullptr;      // FT_Library
@@ -248,7 +256,7 @@ private:
     std::unordered_map<uint64_t, ShapedText> shape_cache_;
     uint64_t hash_string(const std::string& s, float size_px, bool bold) const;
 
-    std::string font_paths_[5] = {
+    std::string font_paths_[6] = {
         "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
         "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
         "/usr/share/fonts/truetype/freefont/FreeSerif.ttf",
@@ -257,6 +265,11 @@ private:
         // the candidate dirs below; a missing file is reported, never
         // silently substituted.
         "runtime/data/fonts/DroidSansMono.ttf",
+        // R-NEW-398 (S78, F-153): CJK ideograph fallback face (AOSP
+        // fonts.xml fallback-chain law — missing CJK glyphs resolve through
+        // a CJK-capable face, never tofu). Optional: absent file = loud
+        // diagnostic, CJK strings then honestly report notdef.
+        "/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc",
     };
 };
 
