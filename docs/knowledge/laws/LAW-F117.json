@@ -1,0 +1,30 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "LAW-F117",
+ "title": "Scheduled input law (--tap x,y[@frame])",
+ "domain": "input",
+ "scope": "generic",
+ "statement": "Legacy form (--tap x,y): tap k fires at frame k (byte-identical to stored W4 evidence). Extension (S73): --tap x,y@frame fires the tap AFTER frame k renders (real user cadence between frames). All-or-none CLI validation; recorded fields: target coordinate, target View, frame, event, resulting state change.",
+ "status": "VERIFIED",
+ "source": {
+  "origin": "MiniAndroid execution engine (implementation-defined cadence law)",
+  "file": "execution_engine.h/.cpp + main.cpp"
+ },
+ "test": "legacy byte-identical vs stored W4 frames; snake 23 scheduled taps autonomous session",
+ "consumers": [
+  "androidgamesnake",
+  "connectfour",
+  "gmdice",
+  "bouncy"
+ ],
+ "issues": [
+  13
+ ],
+ "capabilities": [
+  "cap-input-dispatch",
+  "cap-autonomous-gameplay"
+ ],
+ "first_discovered": "S73",
+ "last_verified": "S73"
+}

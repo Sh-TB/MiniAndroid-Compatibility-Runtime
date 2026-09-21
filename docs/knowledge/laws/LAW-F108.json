@@ -1,0 +1,27 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "LAW-F108",
+ "title": "R8 minification identity law (DEX hierarchy over names)",
+ "domain": "compose",
+ "scope": "generic",
+ "statement": "Package-prefix identity is not a contract under R8: ComposeView->Lho;, AndroidComposeView->Lt4; (0 androidx/compose names survive). The SURVIVING identity is the DEX hierarchy + the dispatchDraw override contract; draw-path gates must key on chain_overrides_method(class, dispatchDraw) for non-framework classes.",
+ "status": "VERIFIED",
+ "source": {
+  "origin": "AOSP AbstractComposeView/AndroidComposeView + R8 output of dooz v23 (DEX ground truth scripts/s61_r381_dex_truth.py)",
+  "file": "root_registry.json F-108"
+ },
+ "test": "dooz v23 compose pipeline deterministic execution",
+ "consumers": [
+  "dooz"
+ ],
+ "issues": [
+  14
+ ],
+ "capabilities": [
+  "cap-render-software-framebuffer",
+  "cap-dex-interpreter"
+ ],
+ "first_discovered": "S61",
+ "last_verified": "S73"
+}

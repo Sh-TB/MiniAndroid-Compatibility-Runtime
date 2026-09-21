@@ -1,0 +1,26 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "LAW-F147",
+ "title": "Dooz onCreate@228 -> ViewGroup.getChildAt on null",
+ "domain": "compose",
+ "scope": "generic",
+ "statement": "Second dooz divergence: onCreate@228 calls ViewGroup.getChildAt through a null group reference; upstream ViewGroup.getChildAt contract (index-bounded child access on a real group) is the governing law.",
+ "status": "OBSERVED",
+ "source": {
+  "origin": "AOSP ViewGroup.getChildAt + dooz DEX trace",
+  "file": "root_registry.json F-147"
+ },
+ "test": "re-probe S72-W4 + S73: UNCHANGED",
+ "consumers": [
+  "dooz"
+ ],
+ "issues": [
+  14
+ ],
+ "capabilities": [
+  "cap-dex-interpreter"
+ ],
+ "first_discovered": "S72-W3",
+ "last_verified": "S73 (UNCHANGED)"
+}

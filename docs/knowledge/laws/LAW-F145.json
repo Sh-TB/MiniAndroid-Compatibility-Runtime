@@ -1,0 +1,26 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "LAW-F145",
+ "title": "Dooz visual frontier",
+ "domain": "rendering",
+ "scope": "generic",
+ "statement": "Dooz's own UI surface remains unrendered: the only produced face is the engine-default black region. No visual success may be claimed for dooz until a dooz-content frame passes the provenance gate (ViewTree -> Canvas trace -> state -> screenshot).",
+ "status": "OBSERVED",
+ "source": {
+  "origin": "S73 B4 audit",
+  "file": "docs/evidence/S73/S73_REPORT.md \u00a75"
+ },
+ "test": "reclassification evidence: dooz face == no-Activity stopwatch face (0e334abe1b10b592)",
+ "consumers": [
+  "dooz"
+ ],
+ "issues": [
+  14
+ ],
+ "capabilities": [
+  "cap-screenshot-quality-gate"
+ ],
+ "first_discovered": "S72-W3 (as frontier)",
+ "last_verified": "S73 (sharpened)"
+}

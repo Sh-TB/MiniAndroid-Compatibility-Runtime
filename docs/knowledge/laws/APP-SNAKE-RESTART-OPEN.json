@@ -1,0 +1,25 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "APP-SNAKE-RESTART-OPEN",
+ "title": "Snake restart-after-game-over NOT observed",
+ "domain": "game/snake",
+ "scope": "app",
+ "statement": "Honest negative finding: restart via START after game-over was NOT observed (possibly Dialog-based path, not exercised).",
+ "status": "OBSERVED",
+ "source": {
+  "origin": "S73 C4b probe",
+  "file": "docs/evidence/S73/S73_REPORT.md \u00a73"
+ },
+ "test": "C4b probe (no restart transition observed)",
+ "consumers": [
+  "androidgamesnake"
+ ],
+ "issues": [
+  13
+ ],
+ "capabilities": [],
+ "first_discovered": "S73",
+ "last_verified": "S73",
+ "notes": "Negative-evidence record; do not upgrade without a proven restart transition."
+}

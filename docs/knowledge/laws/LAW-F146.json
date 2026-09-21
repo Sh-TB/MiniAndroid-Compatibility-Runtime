@@ -1,0 +1,26 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "LAW-F146",
+ "title": "Dooz g8.a@569 -> ur.e(J) null receiver",
+ "domain": "compose",
+ "scope": "generic",
+ "statement": "At dooz onCreate->compose init, g8.a@569 invokes ur.e(J) on a null reference. DISTINCT from F-141 (which is closed): this is the current open first divergence of the dooz composition path.",
+ "status": "OBSERVED",
+ "source": {
+  "origin": "S72-W3/W4 probes (re-probed UNCHANGED on current binary)",
+  "file": "root_registry.json F-146"
+ },
+ "test": "re-probe S72-W4 + S73: same first divergence",
+ "consumers": [
+  "dooz"
+ ],
+ "issues": [
+  14
+ ],
+ "capabilities": [
+  "cap-dex-interpreter"
+ ],
+ "first_discovered": "S72-W3",
+ "last_verified": "S73 (UNCHANGED)"
+}

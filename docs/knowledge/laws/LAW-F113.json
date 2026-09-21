@@ -1,0 +1,26 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "LAW-F113",
+ "title": "SecureRandom IS-A Random bridge law",
+ "domain": "jvm",
+ "scope": "generic",
+ "statement": "bridge_to_api receives the STATIC receiver class; SecureRandom instances never reached the F-086 Random law. OpenJDK law: SecureRandom.java:157 extends java.util.Random, :828 next(int) override supplies the bit stream while Random.nextInt(bound) keeps the contract. Fix: law family += Ljava/security/SecureRandom.",
+ "status": "VERIFIED",
+ "source": {
+  "origin": "OpenJDK SecureRandom.java:157/:828",
+  "file": "docs/evidence/s63_spotlight/S63_REPORT.md \u00a71"
+ },
+ "test": "gmdice dice 6/5/3/2; battery ALL PASS; pixel diff 1,584 px result band; det x3",
+ "consumers": [
+  "gmdice"
+ ],
+ "issues": [
+  17
+ ],
+ "capabilities": [
+  "cap-secure-random"
+ ],
+ "first_discovered": "S63",
+ "last_verified": "S73"
+}

@@ -1,0 +1,28 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "LAW-F136",
+ "title": "Context/Resources strings single-resolution-path law (ARSC-first)",
+ "domain": "resources",
+ "scope": "generic",
+ "statement": "strings resolve ARSC-first per the AOSP single-resolution-path (Context.java:945-978 -> Resources.java:464-592); the legacy name-map is a demoted fallback; receiver-first resid law; formatted overload wired to java_format_walk.",
+ "status": "VERIFIED",
+ "source": {
+  "origin": "AOSP Context.java:945-978, Resources.java:464-592",
+  "file": "docs/upstream/aosp/CONTEXT_STRING_LAW.md"
+ },
+ "test": "f53_getstring 3 law paths PASS 5/5 + determinism x3 byte-identical (8c11659a7ca24512)",
+ "consumers": [
+  "bouncy",
+  "androidgamesnake",
+  "gmdice"
+ ],
+ "issues": [
+  21
+ ],
+ "capabilities": [
+  "cap-apk-pipeline"
+ ],
+ "first_discovered": "S70",
+ "last_verified": "S73"
+}

@@ -1,0 +1,26 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "APP-SNAKE-SELFCOLLISION-GAMEOVER",
+ "title": "Snake self-collision game-over",
+ "domain": "game/snake",
+ "scope": "app",
+ "statement": "Head re-entry into an occupied cell triggers game-over: panel switches to the game-over surface (1,868,783 px) at frame 94.",
+ "status": "OBSERVED",
+ "source": {
+  "origin": "S73 C4 probe",
+  "file": "docs/evidence/S73/S73_REPORT.md \u00a73"
+ },
+ "test": "C4 probe on real APK",
+ "consumers": [
+  "androidgamesnake"
+ ],
+ "issues": [
+  13
+ ],
+ "capabilities": [
+  "cap-autonomous-gameplay"
+ ],
+ "first_discovered": "S73",
+ "last_verified": "S73"
+}

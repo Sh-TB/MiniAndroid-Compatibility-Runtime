@@ -1,0 +1,31 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "LAW-F141",
+ "title": "ART null-receiver invoke NPE law (all 5 instance-invoke paths)",
+ "domain": "interpreter",
+ "scope": "generic",
+ "statement": "ART throws NullPointerException when invoke-virtual/super/direct/interface/range executes on a null receiver. MiniAndroid previously executed these silently (F-075 missed NULL_REF), letting poison flow until unrelated crashes. Root-caused and fixed S72-W3; the six null-producer laws (Runtime singleton, boxed-reader family, FragmentManager subset, View.getResources, getTheme/resolveAttribute, String.getClass) closed with it.",
+ "status": "VERIFIED",
+ "source": {
+  "origin": "ART interpreter entry (null receiver check)",
+  "file": "S72-W3 record commit 048b0e31; root_registry.json F-141"
+ },
+ "test": "fixtures 25/25 rc=0 zero f141-throws; dooz 197->23472 px progression at the time; unote theme regression recovered",
+ "consumers": [
+  "dooz",
+  "unote",
+  "telegram"
+ ],
+ "issues": [
+  14,
+  15,
+  16
+ ],
+ "capabilities": [
+  "cap-dex-interpreter"
+ ],
+ "first_discovered": "S72-W1 (registered P0)",
+ "last_verified": "S73 (fixtures 25/25)",
+ "notes": "CLOSED unless new evidence directly reopens it (taskbook \u00a735). F-146/F-147 are DISTINCT open blockers, not F-141 regressions."
+}

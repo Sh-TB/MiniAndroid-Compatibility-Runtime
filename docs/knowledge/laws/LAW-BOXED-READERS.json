@@ -1,0 +1,27 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "LAW-BOXED-READERS",
+ "title": "Boxed property-reader family (closed with F-141 wave)",
+ "domain": "interpreter",
+ "scope": "generic",
+ "statement": "Boxed reader methods must produce non-null receivers per java.lang contract; silent null returns were a null-producer family closed alongside F-141.",
+ "status": "VERIFIED",
+ "source": {
+  "origin": "OpenJDK/Kotlin stdlib compiled forms",
+  "file": "S72-W3 null-producer closure (commit 048b0e31)"
+ },
+ "test": "fixtures 25/25 f141-throws=0",
+ "consumers": [
+  "dooz",
+  "gmdice"
+ ],
+ "issues": [
+  14
+ ],
+ "capabilities": [
+  "cap-dex-interpreter"
+ ],
+ "first_discovered": "S72-W3",
+ "last_verified": "S73"
+}

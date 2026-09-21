@@ -1,0 +1,30 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "LAW-F137",
+ "title": "Framework ancestry dispatch law",
+ "domain": "framework",
+ "scope": "generic",
+ "statement": "framework_ancestor_for_dispatch walks the DEX superclass chain + built-in AOSP platform hierarchy with a single bounded retry at bridge-stub fallthrough; caller-context (not name matching) decides dispatch.",
+ "status": "VERIFIED",
+ "source": {
+  "origin": "AOSP platform hierarchy + app DEX supers",
+  "file": "S71 record (commit 1271b869)"
+ },
+ "test": "gmdice getResources x5 / unote getWindow / dooz getApplicationContext + getClass x2 -> IMPLEMENTED; battery 92/94 (EXT stages environmental)",
+ "consumers": [
+  "gmdice",
+  "unote",
+  "dooz"
+ ],
+ "issues": [
+  17,
+  15,
+  14
+ ],
+ "capabilities": [
+  "cap-ancestor-dispatch"
+ ],
+ "first_discovered": "S71",
+ "last_verified": "S73"
+}
