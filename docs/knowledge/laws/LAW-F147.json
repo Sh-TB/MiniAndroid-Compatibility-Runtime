@@ -22,5 +22,12 @@
   "cap-dex-interpreter"
  ],
  "first_discovered": "S72-W3",
- "last_verified": "S73 (UNCHANGED)"
+ "last_verified": "S73 (UNCHANGED)",
+ "utilization": {
+  "verdict": "OBSERVED_ONLY",
+  "consumer_apps": [
+   "dooz"
+  ],
+  "note": "seen in execution, not formalized as a semantic law"
+ }
 }

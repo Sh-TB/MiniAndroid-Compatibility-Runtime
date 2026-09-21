@@ -31,7 +31,11 @@
  },
  "concurrency": {},
  "storage": {},
- "persistence": {},
+ "persistence": {
+  "status_note": "NO_PERSISTENCE_OBSERVED (no files in data root)",
+  "probe": "relaunch_same_data_root (s74-ops)",
+  "verdict": "NO_PERSISTENCE_OBSERVED"
+ },
  "network": {
   "requested": [],
   "observed": [],
@@ -45,7 +49,11 @@
   "filesystem": "NOT_OBSERVED",
   "network": "NOT_OBSERVED",
   "sensitive_apis": [],
-  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)"
+  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)",
+  "launchable_activities": [
+   "com.dozingcatsoftware.bouncy.BouncyActivity"
+  ],
+  "network_observed": "NOT_OBSERVED (runtime has no real network stack; no egress possible)"
  },
  "evidence": {
   "primary": [
@@ -56,7 +64,7 @@
  },
  "regression": {},
  "blocker": "L7 game-loop interaction proof open (physics loop not autonomously driven); R-NEW-389 81-px top-band cross-build divergence is a boundary note, not this app's blocker",
- "next_task": "drive the physics loop with scheduled taps (cap-autonomous-gameplay consumer candidate #2)",
+ "next_task": "Start Game -> physics loop proof (L7 ladder)",
  "completion": {
   "C1_apk_load": "DONE",
   "C2_manifest_lifecycle": "DONE",
@@ -87,5 +95,53 @@
  "status": "PARTIAL",
  "issue": 21,
  "issue_state": "open",
- "app_id": "bouncy"
+ "app_id": "bouncy",
+ "visual_evidence": {
+  "status": "HUMAN_VISIBLE",
+  "execution_stage": [
+   "V0 launch",
+   "V1 menu",
+   "V2 interaction",
+   "V3 state change"
+  ],
+  "note": "'Select Table / Unlimited Balls / Start Game / High scores / Help / Preferences / Quit' menu; click round-robin navigated to full-screen table-selector state (visible change)",
+  "representative_frames": [
+   "01_launch.png",
+   "03_final.png",
+   "04_frame_000.png",
+   "05_frame_003.png",
+   "06_frame_004.png"
+  ],
+  "bundle": "docs/evidence/s74_ops/bouncy/",
+  "session": "docs/evidence/s74_ops/bouncy/session.json",
+  "model": "AGENT_OBSERVED vs HUMAN_VISIBLE distinguished per S74-FOLLOW-UP \u00a74"
+ },
+ "what_actually_happened": {
+  "PROVEN": [
+   "menu render + click-driven UI navigation at HEAD (menu panel -> full-screen table selector)"
+  ],
+  "OBSERVED": [
+   "XML onClick dispatch: scoreViewClicked/doPreviousTable handlers fired"
+  ],
+  "IMPLEMENTED": [],
+  "RESEARCHED": [],
+  "NOT_OBSERVED": [
+   "physics game loop (L7) \u2014 remains open",
+   "Start Game -> ball field flow this wave"
+  ],
+  "BLOCKED": [],
+  "SUPERSEDED": []
+ },
+ "sandbox_profile": {
+  "data_root_probed": true,
+  "observation": "no files created",
+  "boundary_note": "sandbox treated as execution boundary: files under app package dir only; no external paths touched"
+ },
+ "ops_wave": {
+  "wave": "S74 FOLLOW-UP (operational base completion)",
+  "runtime_commit": "3505591b",
+  "binary": "miniandroid/build/miniandroid built at HEAD (zero runtime changes this wave)",
+  "evidence_bundle": "docs/evidence/s74_ops/bouncy/",
+  "human_review": "representative frames individually opened and reviewed by the executing agent before status assignment"
+ }
 }

@@ -24,5 +24,14 @@
   "cap-persistence-sharedprefs"
  ],
  "first_discovered": "S64",
- "last_verified": "S73"
+ "last_verified": "S73",
+ "utilization": {
+  "verdict": "USED_BY_EXECUTION",
+  "consumer_apps": [
+   "unote",
+   "gmdice"
+  ],
+  "test": "pmk rc=1 NFE -> rc=0 views=179 det x3; second consumer simplestopwatch defaults=24",
+  "evidence": "docs/evidence/s64_spotlight/S64_REPORT.md \u00a72"
+ }
 }

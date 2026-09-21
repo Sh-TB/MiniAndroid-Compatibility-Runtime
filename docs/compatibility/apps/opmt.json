@@ -29,7 +29,11 @@
  "state": {},
  "concurrency": {},
  "storage": {},
- "persistence": {},
+ "persistence": {
+  "status_note": "NO_PERSISTENCE_OBSERVED (no files in data root)",
+  "probe": "relaunch_same_data_root (s74-ops)",
+  "verdict": "NO_PERSISTENCE_OBSERVED"
+ },
  "network": {
   "requested": [],
   "observed": [],
@@ -43,7 +47,11 @@
   "filesystem": "NOT_OBSERVED",
   "network": "NOT_OBSERVED",
   "sensitive_apis": [],
-  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)"
+  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)",
+  "launchable_activities": [
+   "one.scarecrow.games.OPMT.MainMenu"
+  ],
+  "network_observed": "NOT_OBSERVED (runtime has no real network stack; no egress possible)"
  },
  "evidence": {
   "primary": [
@@ -53,7 +61,7 @@
  },
  "regression": {},
  "blocker": "app-own IOOBE (OBJECT-IDENTITY class) stops game progression; S65 root: app-own nextInt(0) stopper",
- "next_task": "isolate the app-own IOOBE path; verify whether Random.nextInt(bound=0) semantics (OpenJDK law: IllegalArgumentException) surface as the app's own crash",
+ "next_task": "OBJECT-IDENTITY root-cause wave (shared with tripeaks R-NEW-388 family)",
  "completion": {
   "C1_apk_load": "DONE",
   "C2_manifest_lifecycle": "DONE",
@@ -83,5 +91,55 @@
  "status": "PARTIAL",
  "issue": 23,
  "issue_state": "open",
- "app_id": "opmt"
+ "app_id": "opmt",
+ "visual_evidence": {
+  "status": "HUMAN_VISIBLE",
+  "execution_stage": [
+   "V0 launch",
+   "V1 menu",
+   "V2 interaction (dialog)"
+  ],
+  "note": "'Play with Friend / Play with Computer / How to play?' menu; click round-robin opened the app's REAL AlertDialog 'Who will go first?' (Human/Computer) at HEAD",
+  "representative_frames": [
+   "01_launch.png",
+   "03_final.png",
+   "04_frame_000.png",
+   "05_frame_002.png",
+   "06_frame_004.png"
+  ],
+  "bundle": "docs/evidence/s74_ops/opmt/",
+  "session": "docs/evidence/s74_ops/opmt/session.json",
+  "model": "AGENT_OBSERVED vs HUMAN_VISIBLE distinguished per S74-FOLLOW-UP \u00a74"
+ },
+ "what_actually_happened": {
+  "PROVEN": [
+   "menu render (213,286 px, byte-matches S73 record) + real AlertDialog render at HEAD"
+  ],
+  "OBSERVED": [
+   "click -> dialog state change (menu -> modal 'Who will go first?')"
+  ],
+  "IMPLEMENTED": [],
+  "RESEARCHED": [
+   "app-own IOOBE (OBJECT-IDENTITY) stops progression past menu/dialog"
+  ],
+  "NOT_OBSERVED": [
+   "game board flow"
+  ],
+  "BLOCKED": [
+   "app-own IOOBE (OBJECT-IDENTITY) for progression beyond menu"
+  ],
+  "SUPERSEDED": []
+ },
+ "sandbox_profile": {
+  "data_root_probed": true,
+  "observation": "no files created",
+  "boundary_note": "sandbox treated as execution boundary: files under app package dir only; no external paths touched"
+ },
+ "ops_wave": {
+  "wave": "S74 FOLLOW-UP (operational base completion)",
+  "runtime_commit": "3505591b",
+  "binary": "miniandroid/build/miniandroid built at HEAD (zero runtime changes this wave)",
+  "evidence_bundle": "docs/evidence/s74_ops/opmt/",
+  "human_review": "representative frames individually opened and reviewed by the executing agent before status assignment"
+ }
 }

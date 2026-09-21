@@ -20,5 +20,13 @@
   "cap-dex-interpreter"
  ],
  "first_discovered": "S69",
- "last_verified": "S73"
+ "last_verified": "S73",
+ "utilization": {
+  "verdict": "USED_BY_EXECUTION",
+  "consumer_apps": [
+   "dooz"
+  ],
+  "test": "battery stages at S69+",
+  "evidence": "S69 record (commit b88e09d9); upstream_oracle.json"
+ }
 }

@@ -18,5 +18,12 @@
   "dooz"
  ],
  "evidence": "S61 R-NEW-381 record + root_registry.json",
- "limitations": "first meaningful Compose frame still blocked (dooz F-145/F-146/F-147)"
+ "limitations": "first meaningful Compose frame still blocked (dooz F-145/F-146/F-147)",
+ "utilization": {
+  "verdict": "RESEARCHED_ONLY",
+  "note": "studied as Dooz rendering context (APP-DOOZ-COMPOSE-CHAIN record); no Compose runtime path implemented",
+  "law": "utilization derived from recorded consumers/laws/evidence; unused tools labeled honestly (S74-FOLLOW-UP \u00a713/\u00a714/\u00a733)",
+  "consumers_recorded": 1,
+  "laws_learned_recorded": 1
+ }
 }

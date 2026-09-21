@@ -26,7 +26,11 @@
  "state": {},
  "concurrency": {},
  "storage": {},
- "persistence": {},
+ "persistence": {
+  "status_note": "NOT_APPLICABLE (no Activity flow; service-only)",
+  "probe": "s74-ops data-root probe",
+  "verdict": "NOT_APPLICABLE"
+ },
  "network": {
   "requested": [],
   "observed": [],
@@ -34,13 +38,21 @@
   "status": "NOT_OBSERVED"
  },
  "security": {
-  "permissions_declared": [],
+  "permissions_declared": [
+   "android.permission.FOREGROUND_SERVICE",
+   "android.permission.FOREGROUND_SERVICE_DATA_SYNC",
+   "android.permission.WAKE_LOCK",
+   "com.github.muellerma.stopwatch.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
   "permissions_observed": [],
   "exported_components": [],
   "filesystem": "NOT_OBSERVED",
   "network": "NOT_OBSERVED",
   "sensitive_apis": [],
-  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)"
+  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)",
+  "permissions_declared_source": "aapt2 dump badging at s74-ops HEAD",
+  "launchable_activities": [],
+  "network_observed": "NOT_OBSERVED (runtime has no real network stack; no egress possible)"
  },
  "evidence": {
   "primary": [
@@ -50,7 +62,7 @@
  },
  "regression": {},
  "blocker": "no launchable Activity \u2014 service-only manifest (F-143 service-launch family); needs a service-launch/foreground-notification capability before any UI can exist",
- "next_task": "implement service-launch family capability (F-143) or reclassify this dossier target as service-execution-only",
+ "next_task": "optional: service-dispatch probe when the service family wave is scheduled",
  "completion": {
   "C1_apk_load": "DONE",
   "C2_manifest_lifecycle": "BLOCKED",
@@ -80,5 +92,50 @@
  "status": "BLOCKED",
  "issue": 22,
  "issue_state": "open",
- "app_id": "stopwatch"
+ "app_id": "stopwatch",
+ "visual_evidence": {
+  "status": "NOT_HUMAN_VISIBLE",
+  "execution_stage": [
+   "V0 pipeline only"
+  ],
+  "note": "service-only manifest \u2014 NO launchable Activity (aapt2 badging at HEAD confirms launchable=[]); engine-default black region is the expected face, NOT an app UI",
+  "representative_frames": [
+   "01_launch.png",
+   "03_final.png"
+  ],
+  "bundle": "docs/evidence/s74_ops/stopwatch/",
+  "session": "docs/evidence/s74_ops/stopwatch/session.json",
+  "model": "AGENT_OBSERVED vs HUMAN_VISIBLE distinguished per S74-FOLLOW-UP \u00a74"
+ },
+ "what_actually_happened": {
+  "PROVEN": [
+   "manifest fact: no launchable activity (F-143 family) \u2014 engine BLOCKED-by-design record is correct",
+   "engine behavior correct: the no-Activity face is the expected engine-default output"
+  ],
+  "OBSERVED": [],
+  "IMPLEMENTED": [],
+  "RESEARCHED": [
+   "F-143 service-only manifest family"
+  ],
+  "NOT_OBSERVED": [
+   "any UI (by design)",
+   "service semantics execution"
+  ],
+  "BLOCKED": [
+   "by design: service-only manifest \u2014 not a runtime defect"
+  ],
+  "SUPERSEDED": []
+ },
+ "sandbox_profile": {
+  "data_root_probed": true,
+  "observation": "no files created",
+  "boundary_note": "sandbox treated as execution boundary: files under app package dir only; no external paths touched"
+ },
+ "ops_wave": {
+  "wave": "S74 FOLLOW-UP (operational base completion)",
+  "runtime_commit": "3505591b",
+  "binary": "miniandroid/build/miniandroid built at HEAD (zero runtime changes this wave)",
+  "evidence_bundle": "docs/evidence/s74_ops/stopwatch/",
+  "human_review": "representative frames individually opened and reviewed by the executing agent before status assignment"
+ }
 }

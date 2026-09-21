@@ -21,5 +21,14 @@
   "cap-dex-interpreter"
  ],
  "first_discovered": "interpreter era",
- "last_verified": "S73"
+ "last_verified": "S73",
+ "utilization": {
+  "verdict": "USED_BY_EXECUTION",
+  "consumer_apps": [
+   "dooz",
+   "gmdice"
+  ],
+  "test": "battery exception stages; dooz lifecycle reaching onStart/onResume",
+  "evidence": "dalvik_engine.cpp throw handling"
+ }
 }

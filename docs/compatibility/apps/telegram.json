@@ -32,7 +32,11 @@
  },
  "concurrency": {},
  "storage": {},
- "persistence": {},
+ "persistence": {
+  "status_note": "NOT_OBSERVED (init path stops before user flow)",
+  "probe": "relaunch_same_data_root (s74-ops)",
+  "verdict": "NOT_OBSERVED"
+ },
  "network": {
   "requested": [],
   "observed": [],
@@ -47,7 +51,8 @@
   "network": "NOT_OBSERVED",
   "sensitive_apis": [],
   "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)",
-  "notes": "native libs + JNI inventory recorded (docs/runtime/exp042/NATIVE_LIBRARIES.json); manifest permission audit pending; no actual network activity observed in runtime runs (declared != used)"
+  "notes": "native libs + JNI inventory recorded (docs/runtime/exp042/NATIVE_LIBRARIES.json); manifest permission audit pending; no actual network activity observed in runtime runs (declared != used)",
+  "network_observed": "NOT_OBSERVED (runtime has no real network stack; no egress possible)"
  },
  "evidence": {
   "primary": [
@@ -59,7 +64,7 @@
  },
  "regression": {},
  "blocker": "v12 init budget: burns 540 s inside real init, no frame in budget; not re-run at current HEAD (strategic 20% stress target)",
- "next_task": "re-baseline Telegram at current HEAD with phase timers (PerfKit MINIANDROID_PERF_PHASES=1); attack init budget hot paths",
+ "next_task": "targeted runtime wave on the androidx fragment/activity-result NPE chain to reopen the SmsView ladder at HEAD",
  "completion": {
   "C1_apk_load": "DONE",
   "C2_manifest_lifecycle": "PARTIAL",
@@ -92,5 +97,48 @@
  "status": "PARTIAL",
  "issue": 16,
  "issue_state": "open",
- "app_id": "telegram"
+ "app_id": "telegram",
+ "visual_evidence": {
+  "status": "NOT_HUMAN_VISIBLE",
+  "execution_stage": [
+   "V0 launch pipeline only"
+  ],
+  "note": "v12.10.3 (official URL, fetched 2026-09-21, sha b6a13e87...) renders engine-default black region (23,472 px); init NPE family",
+  "representative_frames": [],
+  "bundle": "docs/evidence/s74_ops/telegram/",
+  "session": "docs/evidence/s74_ops/telegram/session.json",
+  "model": "AGENT_OBSERVED vs HUMAN_VISIBLE distinguished per S74-FOLLOW-UP \u00a74"
+ },
+ "what_actually_happened": {
+  "PROVEN": [
+   "historical EXP071 CHECKPOINT_M: real Telegram v12.10.1 auth.sendCode -> mock response -> callback -> LoginActivitySmsView materialized (53 SmsView nodes / 2284-node tree); screenshot SHA c3c208a169a7dadd byte-identical x6"
+  ],
+  "OBSERVED": [
+   "v12.10.3 at HEAD: 3 frames render, 32 init-exception family errors (fragment/activity-result/obfuscated-DEX NPE chain)"
+  ],
+  "IMPLEMENTED": [],
+  "RESEARCHED": [
+   "androidx fragment j0.b, activity-result f.d/f.e NPE roots (post-F-141 family)"
+  ],
+  "NOT_OBSERVED": [
+   "SmsView UI at HEAD",
+   "network behavior (runtime has no real network stack; sendRequest is intercepted by controlled boundary)"
+  ],
+  "BLOCKED": [
+   "app-init NPE family + init budget on current official build"
+  ],
+  "SUPERSEDED": []
+ },
+ "sandbox_profile": {
+  "data_root_probed": false,
+  "observation": "no app files observed in data root this wave",
+  "boundary_note": "sandbox treated as execution boundary: files under app package dir only; no external paths touched"
+ },
+ "ops_wave": {
+  "wave": "S74 FOLLOW-UP (operational base completion)",
+  "runtime_commit": "3505591b",
+  "binary": "miniandroid/build/miniandroid built at HEAD (zero runtime changes this wave)",
+  "evidence_bundle": "docs/evidence/s74_ops/telegram/",
+  "human_review": "representative frames individually opened and reviewed by the executing agent before status assignment"
+ }
 }

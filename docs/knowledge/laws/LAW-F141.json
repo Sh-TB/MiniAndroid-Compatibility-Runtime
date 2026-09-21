@@ -27,5 +27,15 @@
  ],
  "first_discovered": "S72-W1 (registered P0)",
  "last_verified": "S73 (fixtures 25/25)",
- "notes": "CLOSED unless new evidence directly reopens it (taskbook \u00a735). F-146/F-147 are DISTINCT open blockers, not F-141 regressions."
+ "notes": "CLOSED unless new evidence directly reopens it (taskbook \u00a735). F-146/F-147 are DISTINCT open blockers, not F-141 regressions.",
+ "utilization": {
+  "verdict": "USED_BY_EXECUTION",
+  "consumer_apps": [
+   "dooz",
+   "unote",
+   "telegram"
+  ],
+  "test": "fixtures 25/25 rc=0 zero f141-throws; dooz 197->23472 px progression at the time; unote theme regression recovered",
+  "evidence": "S72-W3 record commit 048b0e31; root_registry.json F-141"
+ }
 }

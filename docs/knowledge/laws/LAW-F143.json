@@ -21,5 +21,12 @@
  "capabilities": [],
  "first_discovered": "S72-W1",
  "last_verified": "S73",
- "notes": "OPEN capability gap (by-design blocker for #22), not a runtime bug."
+ "notes": "OPEN capability gap (by-design blocker for #22), not a runtime bug.",
+ "utilization": {
+  "verdict": "OBSERVED_ONLY",
+  "consumer_apps": [
+   "stopwatch"
+  ],
+  "note": "seen in execution, not formalized as a semantic law"
+ }
 }

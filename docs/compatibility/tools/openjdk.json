@@ -25,5 +25,12 @@
   "opmt"
  ],
  "evidence": "docs/evidence/s63_spotlight/S63_REPORT.md \u00a71; upstream_oracle.json (7 grep-verified law records)",
- "limitations": "Android libcore diverges from upstream JDK at edges; divergences recorded per law, not assumed"
+ "limitations": "Android libcore diverges from upstream JDK at edges; divergences recorded per law, not assumed",
+ "utilization": {
+  "verdict": "USED",
+  "note": "consumer chain: F-113 SecureRandom -> gmdice roll; boxed-reader family laws",
+  "law": "utilization derived from recorded consumers/laws/evidence; unused tools labeled honestly (S74-FOLLOW-UP \u00a713/\u00a714/\u00a733)",
+  "consumers_recorded": 2,
+  "laws_learned_recorded": 3
+ }
 }

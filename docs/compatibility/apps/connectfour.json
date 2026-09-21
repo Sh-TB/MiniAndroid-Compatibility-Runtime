@@ -35,7 +35,11 @@
  },
  "concurrency": {},
  "storage": {},
- "persistence": {},
+ "persistence": {
+  "status_note": "NO_PERSISTENCE_OBSERVED (in-memory board; fixture writes no files)",
+  "probe": "relaunch_same_data_root (s74-ops)",
+  "verdict": "NO_PERSISTENCE_OBSERVED"
+ },
  "network": {
   "requested": [],
   "observed": [],
@@ -92,5 +96,52 @@
  "status": "DONE",
  "issue": 12,
  "issue_state": "closed",
- "app_id": "connectfour"
+ "app_id": "connectfour",
+ "visual_evidence": {
+  "status": "HUMAN_VISIBLE",
+  "execution_stage": [
+   "V0 launch",
+   "V1 board",
+   "V2 interaction",
+   "V3 state change",
+   "V4 result"
+  ],
+  "note": "launch 'R to move' -> midgame -> 'Y WINS' full board; validator ALL PASS at HEAD",
+  "representative_frames": [
+   "01_launch.png",
+   "02_midgame.png",
+   "03_y_wins.png"
+  ],
+  "bundle": "docs/evidence/s74_ops/connectfour_golden_fixture/",
+  "session": "docs/evidence/s74_ops/connectfour_golden_fixture/session.json",
+  "model": "AGENT_OBSERVED vs HUMAN_VISIBLE distinguished per S74-FOLLOW-UP \u00a74",
+  "scope_note": "golden fixture bundle (in-repo ConnectFour golden \u2014 canonical for this dossier)"
+ },
+ "what_actually_happened": {
+  "PROVEN": [
+   "24 real clicks through real DEX state machine (char[6][7] multianewarray)",
+   "corrected canonical result: Y WINS at click 22 (r+1,c+1 diagonal), 11R+11Y, frozen tail 22/23/24",
+   "deterministic replay byte-identical (38e568bd3815...) at HEAD"
+  ],
+  "OBSERVED": [],
+  "IMPLEMENTED": [],
+  "RESEARCHED": [],
+  "NOT_OBSERVED": [
+   "persistence (state is in-memory by design)"
+  ],
+  "BLOCKED": [],
+  "SUPERSEDED": []
+ },
+ "sandbox_profile": {
+  "data_root_probed": false,
+  "observation": "fixture runs write no data-root files",
+  "boundary_note": "sandbox treated as execution boundary: files under app package dir only; no external paths touched"
+ },
+ "ops_wave": {
+  "wave": "S74 FOLLOW-UP (operational base completion)",
+  "runtime_commit": "3505591b",
+  "binary": "miniandroid/build/miniandroid built at HEAD (zero runtime changes this wave)",
+  "evidence_bundle": "docs/evidence/s74_ops/connectfour/",
+  "human_review": "representative frames individually opened and reviewed by the executing agent before status assignment"
+ }
 }

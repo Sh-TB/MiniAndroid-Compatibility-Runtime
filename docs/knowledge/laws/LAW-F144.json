@@ -21,5 +21,11 @@
  "capabilities": [],
  "first_discovered": "S72-W1",
  "last_verified": "S72-W1",
- "notes": "Research-stage record; no implementation claimed."
+ "notes": "Research-stage record; no implementation claimed.",
+ "utilization": {
+  "verdict": "RESEARCHED_ONLY",
+  "consumer_apps": [
+   "tictactoe"
+  ]
+ }
 }

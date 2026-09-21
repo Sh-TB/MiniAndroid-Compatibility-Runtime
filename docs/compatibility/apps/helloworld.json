@@ -41,7 +41,11 @@
  },
  "concurrency": {},
  "storage": {},
- "persistence": {},
+ "persistence": {
+  "status_note": "NO_PERSISTENCE_OBSERVED (display-only app)",
+  "probe": "relaunch_same_data_root (s74-ops)",
+  "verdict": "NO_PERSISTENCE_OBSERVED"
+ },
  "network": {
   "requested": [],
   "observed": [],
@@ -67,7 +71,7 @@
  },
  "regression": {},
  "blocker": null,
- "next_task": "optional: persistence/concurrency ladder extension (no open blocker)",
+ "next_task": "none (golden control target; optional interactive probe if app variant with input is used)",
  "completion": {
   "C1_apk_load": "DONE",
   "C2_manifest_lifecycle": "DONE",
@@ -107,5 +111,48 @@
  "status": "DONE",
  "issue": 10,
  "issue_state": "closed",
- "app_id": "helloworld"
+ "app_id": "helloworld",
+ "visual_evidence": {
+  "status": "HUMAN_VISIBLE",
+  "execution_stage": [
+   "V0 launch",
+   "V1 main UI"
+  ],
+  "note": "self-aware 'hello world' identity text + API level line; golden byte-stable S53->S54",
+  "representative_frames": [
+   "01_launch.jpg",
+   "02_frame1.png"
+  ],
+  "bundle": "docs/evidence/s74_ops/helloworld/",
+  "session": "docs/evidence/s74_ops/helloworld/session.json",
+  "model": "AGENT_OBSERVED vs HUMAN_VISIBLE distinguished per S74-FOLLOW-UP \u00a74"
+ },
+ "what_actually_happened": {
+  "PROVEN": [
+   "launch render: self-aware identity text drawn (committed golden, byte-stable replay)",
+   "real Android build chain for the in-repo control app (aapt2/ECJ/D8, android-34 stubs)"
+  ],
+  "OBSERVED": [],
+  "IMPLEMENTED": [],
+  "RESEARCHED": [],
+  "NOT_OBSERVED": [
+   "input interaction (app is display-only)",
+   "sandbox file creation",
+   "persistence"
+  ],
+  "BLOCKED": [],
+  "SUPERSEDED": []
+ },
+ "sandbox_profile": {
+  "data_root_probed": false,
+  "observation": "not probed (APK not in repo per \u00a720 policy; golden replay evidence reused)",
+  "boundary_note": "sandbox treated as execution boundary: files under app package dir only; no external paths touched"
+ },
+ "ops_wave": {
+  "wave": "S74 FOLLOW-UP (operational base completion)",
+  "runtime_commit": "3505591b",
+  "binary": "miniandroid/build/miniandroid built at HEAD (zero runtime changes this wave)",
+  "evidence_bundle": "docs/evidence/s74_ops/helloworld/",
+  "human_review": "representative frames individually opened and reviewed by the executing agent before status assignment"
+ }
 }

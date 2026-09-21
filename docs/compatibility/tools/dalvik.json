@@ -23,5 +23,12 @@
   "telegram"
  ],
  "evidence": "scripts/forensic/dex_method_dump.py + S72-W4 disasm records",
- "limitations": null
+ "limitations": null,
+ "utilization": {
+  "verdict": "USED",
+  "note": "consumer chain: DEX/interpreter laws -> every real-dalvik execution in the corpus",
+  "law": "utilization derived from recorded consumers/laws/evidence; unused tools labeled honestly (S74-FOLLOW-UP \u00a713/\u00a714/\u00a733)",
+  "consumers_recorded": 4,
+  "laws_learned_recorded": 2
+ }
 }
