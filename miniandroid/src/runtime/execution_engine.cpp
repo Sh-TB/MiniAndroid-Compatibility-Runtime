@@ -5,6 +5,7 @@
  */
 
 #include "execution_engine.h"
+#include "../apk/manifest_reader.h"  // S75 A7: ManifestReader::resolve_resid_string (ARSC label resolve)
 #include "../dex/trace_exporter.h"  // EXP-031.5: Mandatory trace generation
 #include "../diagnostics/click_audit.h"  // UNIFIED_002 EXP-100: env-gated click audit (DIAGNOSTIC)
 // EXP-086 Phase 3 (B1 FIX): PNGWriter for direct PNG output
@@ -632,6 +633,38 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                           << " dimens=" << a_dim << " bools=" << a_bool
                           << " integers=" << a_int << " raw=" << a_raw
                           << " (ARSC-authoritative resource values)" << std::endl;
+
+                // ── S75 FOUNDATION (A7, user census gap): PackageParser
+                // label/icon resolve through ARSC. The manifest parse kept
+                // the REFERENCE resids (ApplicationInfo.labelRes / icon
+                // law) — the STRING resolves HERE, where the app's ARSC is
+                // loaded (AOSP resolves label at loadLabel() through
+                // Resources, i.e. resources-side, not manifest-side).
+                // Resolution failure is REPORTED (label stays empty) —
+                // never invented, never falls back to the "@0x…" literal.
+                if (result.apk_info.application_label_resid != 0) {
+                    auto lbl = apk::ManifestReader::resolve_resid_string(
+                        result.apk_info.application_label_resid, arsc);
+                    if (lbl.has_value()) {
+                        result.apk_info.application_label = *lbl;
+                        std::cerr << "[A7] application label resolved through ARSC: \""
+                                  << *lbl << "\" (resid @0x" << std::hex
+                                  << result.apk_info.application_label_resid
+                                  << std::dec << ")" << std::endl;
+                    } else {
+                        std::cerr << "[A7] application label resid @0x" << std::hex
+                                  << result.apk_info.application_label_resid << std::dec
+                                  << " did NOT resolve through ARSC (honest miss)"
+                                  << std::endl;
+                    }
+                }
+                if (result.apk_info.application_icon_resid != 0) {
+                    std::cerr << "[A7] application icon resid @0x" << std::hex
+                              << result.apk_info.application_icon_resid << std::dec
+                              << " captured (bitmap/Drawable decode is a"
+                              << " separate capability — not claimed here)"
+                              << std::endl;
+                }
             } else {
                 std::cerr << "[ARSC-VALUES] ResourceRuntime unavailable for "
                           << result.apk_info.apk_path

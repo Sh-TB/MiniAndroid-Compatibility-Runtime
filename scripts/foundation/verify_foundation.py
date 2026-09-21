@@ -119,6 +119,17 @@ def run_fixture(name, pixel_asserts, extra_checks=None):
     return rec
 
 # ---------- extra semantic checks ----------
+def chk_engine_log(sub):
+    """engine.log gate: assert a literal line fragment (e.g. the S75 A7
+    '[A7] application label resolved through ARSC:' resolution proof)."""
+    def _c(run, img):
+        p = os.path.join(OUT, run, "engine.log")
+        if not os.path.exists(p):
+            return (False, "engine.log missing")
+        txt = open(p, encoding="utf-8", errors="replace").read()
+        return ((sub in txt), f"engine.log {'contains' if sub in txt else 'MISSING'}: {sub[:60]}")
+    return _c
+
 def chk_nonwhite_in(img_region_box, min_px):
     def _c(run, img):
         region = img.convert("RGB").crop(img_region_box)
@@ -249,6 +260,14 @@ FIXTURES = {
     # (EXTRAS); glyph-stroke point asserts are anti-alias-fragile — same
     # proof style as f04_text (bbox/region + VT text, S67 law).
  ],
+ "f54_manifestlabel": [
+    # S75 A7: manifest label REFERENCE resolves through ARSC. Pixel asserts
+    # are background-anchored (warm #FFF8F0E8 canvas + 44sp dark text);
+    # the STRING law is asserted via ViewTree text + the engine.log [A7]
+    # resolution line (checked by the A7 log gate below).
+    (540, 960, (0xF8, 0xF0, 0xE8), "A7 canvas background (warm)"),
+    (540, 1700, (0xF8, 0xF0, 0xE8), "A7 canvas lower background"),
+ ],
  "f52_nanlaw": [
     (540, 50,   NAN_OK,  "Double.isNaN(NaN)==true (OpenJDK :1031)"),
     (540, 150,  NAN_OK,  "Double.isNaN(1.5)==false (not NaN)"),
@@ -285,6 +304,10 @@ EXTRAS.update({
                    chk_viewtree_text("Resources Direct Path"),
                    chk_nonwhite_in((0, 0, 1080, 210), 800),
                    chk_nonwhite_in((0, 210, 1080, 420), 800)],
+ "f54_manifestlabel": [chk_viewtree_text("F54 LabelProof"),
+                       chk_nonwhite_in((0, 0, 1080, 400), 2000),
+                       chk_engine_log("[A7] application label resolved through ARSC: \"F54 LabelProof\""),
+                       chk_engine_log("application icon resid @0x")],
  "f08_canvasops": [chk_nonwhite_in((0, 400, 900, 600), 300)],
  "f05b_persian2": [chk_nonwhite_in((0, 0, 1080, 400), 2000)],
  "f49_canstext": [chk_nonwhite_in((40, 60, 500, 180), 200),
