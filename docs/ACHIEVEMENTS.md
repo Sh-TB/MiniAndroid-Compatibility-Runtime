@@ -149,6 +149,18 @@ SHA256, stderr trace, report.md, classified.json per app).
 | **DOOZ METRIC RECLASSIFICATION (honest)**: the "23472 px real content" surface = 23,472 PURE BLACK pixels forming a (0,0)–(489,47) rectangle, BYTE-IDENTICAL to Stopwatch's frame (an app with NO launchable Activity) → engine-default black region, NOT dooz content; dooz's own UI remains unrendered; F-146/F-147/F-145 unchanged and exact; F-141 stays CLOSED; dated correction in #14 (no history rewritten) | run/s73_corpus/{dooz_23_toplevel,com.github.muellerma.stopwatch_6}/ + issue #14 comment | RECLASSIFIED (honest) |
 | **Regression**: fixtures 25/25 rc=0 with zero f141-throws; corpus re-run; dooz det ×3; snake autonomous ×3 identical; zero regressions on the rebuilt binary + F-117 extension | run/s73_fixtures/; S73_REPORT §6 | REGRESSION-CLEAN |
 
+## 0j. S74 FOLLOW-UP — operational base completion (evidence wave; runtime untouched)
+
+| Achievement | Evidence | Status |
+|---|---|---|
+| All 14 canonical apps executed at HEAD `3505591b` with per-app sandbox data roots; 10 real-APK runs + 2 golden-fixture validator runs + 2 reused committed proofs (snake per §8, helloworld golden) | docs/evidence/s74_ops/*/session.json | **EXECUTED (14/14 dossiers audited)** |
+| Human-visible representative evidence per app, each frame individually opened and reviewed by the executing agent before status assignment | docs/evidence/s74_ops/<app>/0*.png | **11 HUMAN_VISIBLE / 3 truthful NOT_HUMAN_VISIBLE** |
+| Unote real SQLite persistence: notes.db created on launch, survives close/reopen in same data root (sha 2bccf9475fe3810d unchanged) | docs/evidence/s74_ops/unote/ | **OBSERVED (first corpus persistence proof)** |
+| MicroTimer real input->state->render at HEAD: keypad clicks populate display (00:09:87) | docs/evidence/s74_ops/microtimer/05_frame_006.png | **OBSERVED at HEAD** |
+| TriPeaks lobby newly proven at HEAD (splash->lobby at frame 7; 205,061 px) | docs/evidence/s74_ops/tripeaks/02_lobby.png | **NEW current-HEAD evidence** |
+| Telegram v12.10.3 (official URL, sha-pinned) re-executed at HEAD: engine-default visual, init NPE family recorded truthfully; historical EXP071 SmsView path preserved | docs/evidence/s74_ops/telegram/session.json | **HONEST BLOCKER EVIDENCE** |
+| Validator extended with §35 operational gates (visual-evidence claims, session/SHA presence, evidence links, persistence/security truthfulness, utilization consistency) — immediately caught 3 real inconsistencies (connectfour bundle path x2, tictactoe blocker field) which were then fixed | tools/validate_compatibility_graph.py | **PASS (extended)** |
+
 ## 0i. S74 — Compatibility Platform (architecture wave; runtime untouched)
 
 | Achievement | Evidence | Status |
