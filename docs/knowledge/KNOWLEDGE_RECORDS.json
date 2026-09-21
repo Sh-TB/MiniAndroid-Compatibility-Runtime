@@ -1,13 +1,13 @@
 {
  "record_type": "knowledge_index",
  "schema_version": 1,
- "canonical_status_rule": "Only VERIFIED knowledge records are canonical semantic laws (taskbook \u00a715).",
+ "canonical_status_rule": "Only VERIFIED knowledge records are canonical semantic laws (taskbook §15).",
  "counts": {
   "apps": 14,
   "tools": 12,
   "capabilities": 15,
-  "knowledge_records": 31,
-  "verified_laws": 20,
+  "knowledge_records": 35,
+  "verified_laws": 24,
   "open_or_open_frontier": 10
  },
  "apps": [
@@ -88,7 +88,11 @@
   "LAW-MUTF8",
   "LAW-THEME-RESOLVEATTRIBUTE",
   "LAW-THROW-DEFERRED",
-  "LAW-VIEW-GETRESOURCES"
+  "LAW-VIEW-GETRESOURCES",
+  "LAW-R-NEW-395",
+  "LAW-R-NEW-396",
+  "LAW-R-NEW-397",
+  "LAW-R-NEW-398"
  ],
  "registry_root": "root_registry.json (F-number source of truth; generic laws carry registry ids)"
 }

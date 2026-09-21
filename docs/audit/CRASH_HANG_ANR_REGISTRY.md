@@ -17,8 +17,9 @@ missing UI dispatch surface.
 | ERR-C-001 | NOT_RECORDED | F-141 | ROOT-CAUSED-FIXED | dooz: W2 silent dispatch produced this=NULL trie corruption (PersistentHashMapBuilder.putAll entry #49); with the law: 5 successive first-divergence sites each root-caused and law-fixed; dooz frame_00 |
 | ERR-C-002 | NOT_RECORDED | F-146 | ROOT-CAUSED-FIXED | S72-W3: f141 law surfaced the site (recv_type=8 NULL_REF, F141-DIAG v4:t8/o0); escapes MainActivity.onCreate at 0xc1; next: trace the producer of the null ur receiver in the compose/coroutine path \| S |
 | ERR-C-003 | NOT_RECORDED | F-147 | OPEN | S72-W3: f141 law surfaced the site (recv NULL_REF; method_idx 1592 = android.view.ViewGroup.getChildAt); second boundary escape at 0xb4 \| S75 HEAD re-probe: reproduced at HEAD (MainActivity.onCreate p |
+| ERR-C-004 | NOT_RECORDED | F-152 | ROOT-CAUSED-FIXED | S78 REPRODUCE (run/s78_f152_repro, fresh binary, APK 299eab21...): F141-DIAG Llt0;.w pc=808 recv t8/o0 NULL; static disasm (scripts/s78_lt0_disasm.py): pc=490 sget-object v2, Llt0;->o:Lsun/misc/Unsafe |
 
-(3 crash-class F-records; full symptoms in RUNTIME_FAILURE_REGISTRY.md)
+(4 crash-class F-records; full symptoms in RUNTIME_FAILURE_REGISTRY.md)
 
 ## HANG records (ERR-H-*)
 
@@ -28,7 +29,8 @@ missing UI dispatch surface.
 | ERR-H-002 | NOT_RECORDED | F-119 | IMPLEMENTED+TESTED | [SGET-MISS] Ljava/lang/Integer;.TYPE obj_id=0 → Array.newInstance(NULL, dims) → null matrix → aput-null NPE in FishRingsForAndroid Rings.init (3 uncaught, rc=1 PARTIAL). Upstream:  |
 | ERR-H-003 | NOT_RECORDED | F-137 | ROOT-CAUSED-FIXED | UPSTREAM: AOSP hierarchy Application/Service extend Context; Activity extends ContextThemeWrapper extends Context (docs/upstream/aosp/CONTEXT_STRING_LAW.md pin + AOSP class declara |
 | ERR-H-004 | NOT_RECORDED | F-150 | ROOT-CAUSED-FIXED | docs/foundation/S72_WAVE4.md + docs/evidence/s72_w4_snake/ (frame chain, metrics, SHAs); determinism x3 BYTE-IDENTICAL (pixel sha 1a419545419deb3a); zero regressions (corpus 10/10  |
-| ERR-H-005 | NOT_RECORDED | F-152 | OPEN | dooz NEW first divergence after R-NEW-390/391 (S76). Site: Llt0;.w pc=808 — null receiver (recv t8/o0) — the compose/protobuf chain now reaches Llt0;.w (the S43-wave disasm subject |
+| ERR-H-005 | NOT_RECORDED | F-152 | ROOT-CAUSED-FIXED | S78 REPRODUCE (run/s78_f152_repro, fresh binary, APK 299eab21...): F141-DIAG Llt0;.w pc=808 recv t8/o0 NULL; static disasm (scripts/s78_lt0_disasm.py): pc=490 sget-object v2, Llt0; |
+| ERR-H-006 | NOT_RECORDED | F-153 | ROOT-CAUSED-FIXED | S78 PRODUCER TRACE: DialogShadow painter -> SoftwareCanvas::draw_text -> BitmapFont (95 ASCII glyphs, byte-wise iteration) — every non-ASCII byte maps to the space glyph -> 0 pixel |
 
 ## ANR-class records (ERR-A-*)
 

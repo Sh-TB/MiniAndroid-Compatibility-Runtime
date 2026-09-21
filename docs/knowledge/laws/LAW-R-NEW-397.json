@@ -1,0 +1,28 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "LAW-R-NEW-397",
+ "title": "Collections EMPTY singletons + Empty-family read contract",
+ "domain": "runtime-semantics",
+ "scope": "engine",
+ "statement": "Collections.EMPTY_SET/EMPTY_LIST/EMPTY_MAP are JVM-clinit-injected non-null immutable singletons; every read succeeds (size=0, isEmpty=true, contains*=false, empty iteration, empty Map views, exhausted next() -> NoSuchElementException, List.get(i) -> IndexOutOfBoundsException). The SGET-MISS null broke dooz DataStore parse (F-154).",
+ "status": "VERIFIED",
+ "source": {
+  "origin": "OpenJDK java/util/Collections.java (EmptySet/EmptyList/EmptyMap)",
+  "file": "miniandroid/src/dex/dalvik_engine.cpp execute_sget seed + bridge_to_api R-NEW-397 dispatch"
+ },
+ "test": "scripts/s78_f152_regression.sh (6/6)",
+ "consumers": [
+  "dooz"
+ ],
+ "issues": [],
+ "capabilities": [],
+ "first_discovered": "S78",
+ "last_verified": "S78",
+ "utilization": {
+  "verdict": "USED_BY_EXECUTION",
+  "consumer_apps": [
+   "dooz"
+  ]
+ }
+}

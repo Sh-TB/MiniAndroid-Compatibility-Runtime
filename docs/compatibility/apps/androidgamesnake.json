@@ -38,7 +38,7 @@
  "input": {
   "tap": "TESTED",
   "scheduled": "F-117 --tap x,y@frame (23 scheduled real taps incl. START (98,839)@frame1)",
-  "dispatch": "canonical TouchDispatcher DOWN/UP path \u2014 no injection"
+  "dispatch": "canonical TouchDispatcher DOWN/UP path — no injection"
  },
  "state": {
   "transitions": "START -> reStartGame -> Thread.start self-run (F-150) -> 2 ticks/frame EXACT; 88 head-advance moves; 22 accepted turns; 1 food capture at frame 34 (snake 3->4, food (0,0)->(9,0)); movement law 1 cell/frame, tap@k effective at frame k+1",
@@ -69,21 +69,9 @@
   "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)",
   "network_observed": "NOT_OBSERVED (runtime has no real network stack; no egress possible)"
  },
- "evidence": {
-  "primary": [
-   "docs/evidence/s73_snake_autoplay/ (run_01..03, gameplay_trace.json, SHA256SUMS, determinism_proof.json, screenshot_metrics.json, snake_autoplay.gif 39073 bytes)",
-   "docs/evidence/s72_w4_snake/",
-   "docs/foundation/S72_WAVE4.md",
-   "docs/evidence/S73/S73_REPORT.md"
-  ],
-  "screenshot_sha256_16": "1a419545419deb3a",
-  "determinism": "3/3 runs byte-identical (90/90 frames per-run PNG sha equality); W4 legacy recipe byte-identical"
- },
- "regression": {
-  "fixtures": "fixtures 25/25 rc=0, f141-throws=0 (run/s73_fixtures, S73 \u00a76)",
-  "corpus": "10/10 pixel-SAME post-F148/149/150"
- },
- "blocker": "restart-after-game-over path unproven (possibly Dialog-based; not exercised \u2014 honest open, recorded in #13)",
+ "evidence": "docs/evidence/s76/snake_dialog_restart/s76_dialog_restart_report.json + run/s78_regression/f153_regression.json",
+ "regression": "scripts/s78_f153_regression.py 3/3 PASS (0->56 positive / 0->28 negative blue px; ASCII message unchanged 343 grey px); dialog restart two-run probe re-run post-fix: RESTART OBSERVED; second life: moves 120, turns 25, captures 2 (frames 94..128)",
+ "blocker": "restart-after-game-over path unproven (possibly Dialog-based; not exercised — honest open, recorded in #13)",
  "next_task": "optional new task only: restart-after-game-over probe (explicitly selected); otherwise preserve S73 state",
  "completion": {
   "C1_apk_load": "DONE",
@@ -141,7 +129,7 @@
    "V3 state change (food capture)",
    "V4 game-over"
   ],
-  "note": "S73 committed frames re-wired as representative evidence (taskbook \u00a78: no re-run); frame_000 launch / frame_034 food capture / final snake+food",
+  "note": "S73 committed frames re-wired as representative evidence (taskbook §8: no re-run); frame_000 launch / frame_034 food capture / final snake+food",
   "representative_frames": [
    "01_launch.png",
    "02_food_capture_frame034.png",
@@ -149,7 +137,7 @@
   ],
   "bundle": "docs/evidence/s74_ops/androidgamesnake/",
   "session": "docs/evidence/s74_ops/androidgamesnake/session.json",
-  "model": "AGENT_OBSERVED vs HUMAN_VISIBLE distinguished per S74-FOLLOW-UP \u00a74"
+  "model": "AGENT_OBSERVED vs HUMAN_VISIBLE distinguished per S74-FOLLOW-UP §4"
  },
  "what_actually_happened": {
   "PROVEN": [
@@ -171,7 +159,7 @@
  },
  "sandbox_profile": {
   "data_root_probed": false,
-  "observation": "not probed this wave (\u00a78: preserve existing S73 session as-is)",
+  "observation": "not probed this wave (§8: preserve existing S73 session as-is)",
   "boundary_note": "sandbox treated as execution boundary: files under app package dir only; no external paths touched"
  },
  "ops_wave": {
@@ -180,5 +168,10 @@
   "binary": "miniandroid/build/miniandroid built at HEAD (zero runtime changes this wave)",
   "evidence_bundle": "docs/evidence/s74_ops/androidgamesnake/",
   "human_review": "representative frames individually opened and reviewed by the executing agent before status assignment"
- }
+ },
+ "last_error": "F-153 dialog CJK labels painted 0 pixels (ASCII-only BitmapFont byte iteration)",
+ "root_cause": "draw_text byte-wise ASCII glyph lookup; no platform-pipeline routing for non-ASCII strings",
+ "last_fix": "R-NEW-398 (S78): draw_text non-ASCII -> TextShaper routing + kFaceCJK (WenQuanYi Zen Hei) fallback face",
+ "next_probe": "Second CJK consumer does not exist in the 14-app corpus (recorded per S78 §6); candidate future probe: toast CJK rendering via the same choke point",
+ "session": "S78 (docs/evidence/s76/snake_dialog_restart re-run on S78 binary)"
 }

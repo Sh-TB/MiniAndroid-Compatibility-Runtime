@@ -58,15 +58,8 @@
   ],
   "network_observed": "NOT_OBSERVED (runtime has no real network stack; no egress possible)"
  },
- "evidence": {
-  "primary": [
-   "docs/evidence/s63_spotlight/S63_REPORT.md",
-   "docs/evidence/S73/S73_REPORT.md"
-  ],
-  "screenshot_sha256_16": "a011e9e9eee2cb42",
-  "determinism": "3-run det x3"
- },
- "regression": {},
+ "evidence": "run/s78_gmdice/clicktest engine.log + frames + manifest.json",
+ "regression": "S78 replay: 5/5 real clicks DISPATCHED into GameMasterDice listeners; roll() -> Random.nextInt executed (nextInt REC-MISS recorded); result band rendered (initial -> '2 · 4 · 4'; singles '6','5','3'); first-click diff 1,506,884 px",
  "blocker": "ladder open: input/state legs proven at S63, not re-run at current HEAD (historical)",
  "next_task": "re-pin canonical gmdice APK (source-first rebuild or verified download), then re-prove visible roll chain at HEAD",
  "completion": {
@@ -118,15 +111,15 @@
   ],
   "bundle": "docs/evidence/s74_ops/gmdice/",
   "session": "docs/evidence/s74_ops/gmdice/session.json",
-  "model": "AGENT_OBSERVED vs HUMAN_VISIBLE distinguished per S74-FOLLOW-UP \u00a74"
+  "model": "AGENT_OBSERVED vs HUMAN_VISIBLE distinguished per S74-FOLLOW-UP §4"
  },
  "what_actually_happened": {
   "PROVEN": [
    "launch render at HEAD (181,495 px family, consistent with S73 182,628 px record)",
-   "F-113 SecureRandom law record (S63: roll chain SecureRandom.nextInt -> setText, 1,584-px result band) \u2014 VERIFIED law, test battery committed"
+   "F-113 SecureRandom law record (S63: roll chain SecureRandom.nextInt -> setText, 1,584-px result band) — VERIFIED law, test battery committed"
   ],
   "OBSERVED": [
-   "click dispatched to real GameMasterDice listener (view 39 '3D20') \u2014 handler executed, no pixel change at HEAD",
+   "click dispatched to real GameMasterDice listener (view 39 '3D20') — handler executed, no pixel change at HEAD",
    "tap 348,1848 / 116,1848 hit roll buttons (target 40/39); CLICK result=DISPATCHED"
   ],
   "IMPLEMENTED": [],
@@ -137,7 +130,7 @@
   ],
   "BLOCKED": [],
   "SUPERSEDED": [],
-  "IDENTITY_FLAG": "local APK sha256_16 1621eda11b5dbc0c differs from dossier-recorded ee9f7396 (F-Droid re-download replaced the local cache file at some session); recorded honestly \u2014 re-pin canonical APK at next source-first rebuild"
+  "IDENTITY_FLAG": "local APK sha256_16 1621eda11b5dbc0c differs from dossier-recorded ee9f7396 (F-Droid re-download replaced the local cache file at some session); recorded honestly — re-pin canonical APK at next source-first rebuild"
  },
  "sandbox_profile": {
   "data_root_probed": true,
@@ -150,5 +143,10 @@
   "binary": "miniandroid/build/miniandroid built at HEAD (zero runtime changes this wave)",
   "evidence_bundle": "docs/evidence/s74_ops/gmdice/",
   "human_review": "representative frames individually opened and reviewed by the executing agent before status assignment"
- }
+ },
+ "last_error": "none (S78: click->state->render chain re-proven; no new failure)",
+ "root_cause": "n/a",
+ "last_fix": "n/a (S78 replay only)",
+ "next_probe": "multi-roll across frames: --tap hit-test missed the button (target=0) — coordinate bounds of the clickable parent need the decor-offset law; Random.nextInt REC-MISS (F-114 family) still the honesty frontier for result distribution claims",
+ "session": "S78 (run/s78_gmdice/clicktest)"
 }

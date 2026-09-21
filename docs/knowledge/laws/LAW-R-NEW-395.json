@@ -1,0 +1,28 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "LAW-R-NEW-395",
+ "title": "AccessController.doPrivileged dispatches the action (libcore)",
+ "domain": "runtime-semantics",
+ "scope": "engine",
+ "statement": "doPrivileged(PrivilegedAction/PrivilegedExceptionAction) executes action.run() and returns its result. The prior silent stub answered the typed default (null) without dispatching run(), so protobuf UnsafeUtil init stored a null Unsafe (F-152: Llt0;.w pc=808 objectFieldOffset on null receiver).",
+ "status": "VERIFIED",
+ "source": {
+  "origin": "libcore luni/src/main/java/java/security/AccessController.java (AOSP); OpenJDK same contract",
+  "file": "miniandroid/src/dex/dalvik_engine.cpp bridge_to_api R-NEW-395 block"
+ },
+ "test": "scripts/s78_f152_regression.sh (6/6, real APK dooz v23)",
+ "consumers": [
+  "dooz"
+ ],
+ "issues": [],
+ "capabilities": [],
+ "first_discovered": "S78",
+ "last_verified": "S78",
+ "utilization": {
+  "verdict": "USED_BY_EXECUTION",
+  "consumer_apps": [
+   "dooz"
+  ]
+ }
+}

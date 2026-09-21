@@ -1,0 +1,28 @@
+{
+ "record_type": "knowledge_record",
+ "schema_version": 1,
+ "knowledge_id": "LAW-R-NEW-398",
+ "title": "Non-ASCII text routes through the platform pipeline; CJK fallback face",
+ "domain": "runtime-semantics",
+ "scope": "engine",
+ "statement": "draw_text routes non-ASCII UTF-8 through TextShaper (UTF-8->FriBidi->HarfBuzz->FreeType); ASCII keeps the byte-identical BitmapFont path (90/90 fidelity invariant). Remaining .notdef CJK clusters resolve through the fonts.xml-style CJK fallback face (WenQuanYi Zen Hei) — never tofu, never a silent 0-pixel draw (F-153).",
+ "status": "VERIFIED",
+ "source": {
+  "origin": "AOSP fonts.xml fallback-chain law + Paint/TextPaint pipeline (android-14)",
+  "file": "miniandroid/src/renderer/software_renderer.cpp draw_text + miniandroid/src/fonts/text_shaper.cpp kFaceCJK"
+ },
+ "test": "scripts/s78_f153_regression.py (3/3; 0->56 blue px on frame_094)",
+ "consumers": [
+  "androidgamesnake"
+ ],
+ "issues": [],
+ "capabilities": [],
+ "first_discovered": "S78",
+ "last_verified": "S78",
+ "utilization": {
+  "verdict": "USED_BY_EXECUTION",
+  "consumer_apps": [
+   "androidgamesnake"
+  ]
+ }
+}
