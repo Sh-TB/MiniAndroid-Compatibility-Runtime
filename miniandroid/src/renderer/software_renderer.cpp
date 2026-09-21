@@ -4,6 +4,7 @@
  */
 
 #include "software_renderer.h"
+#include "../fonts/text_shaper.h"
 #include "runtime/object_model.h"
 #include <fstream>
 #include <chrono>
@@ -193,7 +194,49 @@ void SoftwareCanvas::draw_rect(float left, float top, float right, float bottom,
 void SoftwareCanvas::draw_text(const std::string& text, float x, float y, RGBA color,
                                const BitmapFont* font) {
     const BitmapFont* use_font = font ? font : &default_font_;
-    
+
+    // ── R-NEW-398 (S78, F-153): non-ASCII text routing law ────────────
+    // BitmapFont is an ASCII glyph set (95 glyphs, byte-wise iteration);
+    // every non-ASCII byte maps to the space glyph → 0 pixels painted (a
+    // §12 silent draw-skip: snake game-over dialog labels 重新开始/退出
+    // painted 0 px while the ASCII 'Game Over!' painted fine — F-153).
+    // Android law: EVERY user-visible string flows through the platform
+    // text pipeline. Route non-ASCII strings through TextShaper (UTF-8 →
+    // FriBidi → HarfBuzz → FreeType, with the R-NEW-398 CJK fallback
+    // face). Pure-ASCII strings keep the byte-identical BitmapFont path
+    // (90/90 fidelity-replay invariant). Consumer-independent: every
+    // draw_text caller (dialog title/message/buttons, toast) benefits.
+    {
+        bool has_nonascii = false;
+        for (unsigned char c : text)
+            if (c >= 0x80) { has_nonascii = true; break; }
+        if (has_nonascii) {
+            auto& sh = fonts::TextShaper::instance();
+            if (sh.available()) {
+                // draw_text's y IS the baseline (BitmapFont baseline_offset
+                // = 12 → glyph top at y-12; TextShaper::draw takes the
+                // baseline with the same convention).
+                sh.draw(*framebuffer_, text, x, y, 16.0f, color);
+                CanvasCommand cmd;
+                cmd.type = "drawText";
+                cmd.sequence = ++command_sequence_;
+                cmd.params["text"] = text;
+                cmd.params["position"] = {{"x", static_cast<int>(std::round(x))},
+                                          {"y", static_cast<int>(std::round(y))}};
+                cmd.params["color"] = color.to_json();
+                cmd.params["measured_width"] = 0;
+                cmd.params["measured_height"] = 16;
+                cmd.params["shaper"] = "TextShaper(R-NEW-398)";
+                commands_.push_back(cmd);
+                return;
+            }
+            // Shaper unavailable — LOUD frontier, then the legacy path
+            // (which honestly paints nothing for these bytes).
+            std::cerr << "[R-NEW-398-MISS] TextShaper unavailable for non-ASCII"
+                      << " text (len=" << text.size() << ")" << std::endl;
+        }
+    }
+
     auto metrics = use_font->measure_text(text);
     int start_x = static_cast<int>(std::round(x));
     int start_y = static_cast<int>(std::round(y)) - use_font->get_baseline_offset();
