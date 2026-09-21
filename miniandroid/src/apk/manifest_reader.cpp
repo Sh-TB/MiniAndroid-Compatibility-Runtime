@@ -5,6 +5,7 @@
 
 #include "manifest_reader.h"
 #include "resources/string_pool.h"  // FIND-REUSE-004: the ONE ResStringPool decoder
+#include "resources/arsc_parser.h"  // S75 A7: label/icon resolve through ARSC (-Isrc)
 #include <sstream>
 #include <iomanip>
                                     // (this reader previously walked entries
@@ -507,6 +508,37 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
                 break;
             }
         }
+        // ── S75 FOUNDATION (A7, user census gap): PackageParser label/icon
+        // resolve. AOSP frameworks/base PackageParser.parseApplication
+        // reads android:label / android:icon as TypedValue REFERENCES and
+        // stores the RESID (ApplicationInfo.labelRes / icon) — it never
+        // stringifies the raw reference. Previously a REFERENCE-typed
+        // label fell through get_attribute_value's "@0x…" branch (the
+        // census A7 bug: label read back as the literal "@0x7f0a0000")
+        // and the icon attr was not parsed at all. Law: keep the resid;
+        // the STRING resolves later through resources.arsc (see
+        // resolve_resid_string + the execution-engine wiring), exactly
+        // where AOSP resolves it (Resources.getText — a Resources-side
+        // operation, not a manifest-parse operation).
+        for (const auto& a : attrs) {
+            const std::string aname = get_string(a.name_index);
+            if (a.value_data_type != 0x01 /*REFERENCE*/) continue;
+            if (aname == "label" && result_.application_label_resid == 0) {
+                result_.application_label_resid = a.value_data;
+                // Degrade the literal — the resid is the identity now.
+                // get_attribute_value returned "@0x…" for this attr; keep
+                // application_label empty until the ARSC resolves it.
+                result_.application_label.clear();
+                log("Application label REFERENCE resid captured (A7): @0x" + [] (uint32_t v) {
+                    std::string s; std::stringstream ss; ss << std::hex << v; s = ss.str(); return s;
+                }(a.value_data));
+            } else if (aname == "icon" && result_.application_icon_resid == 0) {
+                result_.application_icon_resid = a.value_data;
+                log("Application icon REFERENCE resid captured (A7): @0x" + [] (uint32_t v) {
+                    std::string s; std::stringstream ss; ss << std::hex << v; s = ss.str(); return s;
+                }(a.value_data));
+            }
+        }
         log("Application label: " + result_.application_label +
             " name: " + result_.application_name);
     }
@@ -649,6 +681,22 @@ void ManifestReader::process_end_element(const std::string& ns, const std::strin
         in_activity_ = false;
         current_activity_name_.clear();
     }
+}
+
+// ── S75 FOUNDATION (A7): PackageParser label/icon resolve ──────────────
+// AOSP law (frameworks/base/core/java/android/content/pm/PackageParser.java
+// + ApplicationInfo.loadLabel): the manifest stores android:label /
+// android:icon as REFERENCE resids; the STRING form is produced by the
+// RESOURCES layer (Resources.getText / Drawable lookup) against the
+// app's resources.arsc — never by stringifying the reference. This
+// helper is that Resources-side hop for MiniAndroid: one ARSC resolve,
+// nullopt on failure (resolution failure is REPORTED, never invented).
+std::optional<std::string> ManifestReader::resolve_resid_string(
+    uint32_t resid, const resources::ArscParser& arsc) {
+    if (resid == 0) return std::nullopt;
+    auto s = arsc.resolve_string(resid);
+    if (s.has_value() && !s->empty()) return s;
+    return std::nullopt;
 }
 
 std::string ManifestReader::get_attribute_value(const std::vector<AxmlAttribute>& attrs,

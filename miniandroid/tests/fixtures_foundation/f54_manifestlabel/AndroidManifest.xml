@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.miniandroid.f54label"
+    android:versionCode="1" android:versionName="1.0">
+    <!-- S75 A7 fixture: label/icon are REFERENCE attrs — aapt2 compiles them
+         to typed REFERENCE entries in the binary manifest. The census A7 gap
+         was: label read back as the literal "@0x7f0a0000"; icon unparsed. -->
+    <application android:label="@string/app_name" android:icon="@drawable/app_icon">
+        <activity android:name="com.miniandroid.f54label.MainActivity" android:label="@string/activity_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
