@@ -1,0 +1,87 @@
+{
+ "record_type": "app_dossier",
+ "schema_version": 1,
+ "package": "eu.veldsoft.tri.peaks",
+ "status_note": null,
+ "source": {
+  "repository": "upstream/corpus/eu.veldsoft.tri.peaks (PROVENANCE.json)",
+  "commit": null,
+  "license": null
+ },
+ "apk": {},
+ "build": null,
+ "min_sdk": null,
+ "target_sdk": null,
+ "manifest_summary": null,
+ "lifecycle": {},
+ "framework_apis": [],
+ "view_hierarchy": null,
+ "resources": {},
+ "layout": {},
+ "rendering": {
+  "meaningful_frame": "PARTIAL",
+  "pixels": "205638 px lobby",
+  "sha256_16": "834928fd671a9560"
+ },
+ "input": {
+  "tap": "OBSERVED (historical S7 lobby clicks)"
+ },
+ "state": {},
+ "concurrency": {},
+ "storage": {},
+ "persistence": {},
+ "network": {
+  "requested": [],
+  "observed": [],
+  "apis": [],
+  "status": "NOT_OBSERVED"
+ },
+ "security": {
+  "permissions_declared": [],
+  "permissions_observed": [],
+  "exported_components": [],
+  "filesystem": "NOT_OBSERVED",
+  "network": "NOT_OBSERVED",
+  "sensitive_apis": [],
+  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)"
+ },
+ "evidence": {
+  "primary": [
+   "docs/evidence/S73/S73_REPORT.md"
+  ],
+  "screenshot_sha256_16": "834928fd671a9560"
+ },
+ "regression": {},
+ "blocker": "R-NEW-388 (remeasured S71: generic RL anchor laws PROVEN on f14; TriPeaks blocked at splash = app-specific OBJECT-IDENTITY), visual progression blocked",
+ "next_task": "isolate the app-specific object-identity divergence at splash->lobby->game transition; keep generic RL laws out of scope (they are proven)",
+ "completion": {
+  "C1_apk_load": "DONE",
+  "C2_manifest_lifecycle": "DONE",
+  "C3_view_framework": "PARTIAL",
+  "C4_measure_layout": "PARTIAL",
+  "C5_render": "PARTIAL",
+  "C6_input": "OBSERVED",
+  "C7_state_change": "BLOCKED",
+  "C8_rerender": "BLOCKED",
+  "C9_persistence": "PENDING",
+  "C10_concurrency": "PENDING",
+  "C11_security_sandbox": "OBSERVED",
+  "C12_determinism": "DONE",
+  "C13_regression": "DONE",
+  "C14_evidence": "DONE"
+ },
+ "links": {
+  "issue": null,
+  "laws": [],
+  "capabilities": [
+   "cap-render-software-framebuffer"
+  ],
+  "knowledge": [],
+  "evidence_files": []
+ },
+ "name": "TriPeaks",
+ "status": "BLOCKED",
+ "issue": 20,
+ "issue_state": "open",
+ "app_id": "tripeaks"
+}

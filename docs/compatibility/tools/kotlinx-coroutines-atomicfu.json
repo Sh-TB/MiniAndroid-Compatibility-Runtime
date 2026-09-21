@@ -1,0 +1,21 @@
+{
+ "record_type": "tool_profile",
+ "schema_version": 1,
+ "tool_id": "kotlinx-coroutines-atomicfu",
+ "name": "kotlinx.coroutines + AtomicFU",
+ "url": "https://github.com/Kotlin/kotlinx.coroutines",
+ "license": "Apache-2.0",
+ "provenance_class": "MOTHER",
+ "provides": "coroutine dispatchers, Segment/queue machinery built on AtomicReferenceArray",
+ "reused": [
+  "Dooz deep chain: Segment-like state/queue -> AtomicReferenceArray \u2014 measured get ~629k, set ~1, head segment state ~0x40000000 (OBSERVED, NOT yet upstream-verified law \u2014 taskbook \u00a740)"
+ ],
+ "laws_learned": [
+  "APP-DOOZ-COMPOSE-CHAIN"
+ ],
+ "consumers": [
+  "dooz"
+ ],
+ "evidence": "S72-W1 dooz deep-chain root cause (commit acad15fd): arraycopy(null) NPE @ Lid;.K -> PersistentHashMapBuilder.putAll trie walk -> invoke-virtual/range this=NULL",
+ "limitations": "observations not promoted to generic law without upstream verification"
+}

@@ -1,0 +1,96 @@
+{
+ "record_type": "app_dossier",
+ "schema_version": 1,
+ "package": null,
+ "status_note": null,
+ "source": {
+  "repository": "in-repo golden fixture",
+  "commit": null,
+  "license": null,
+  "note": "agent-playable 24-step golden; corrected result is canonical (below)"
+ },
+ "apk": {
+  "sha256_16": null
+ },
+ "build": null,
+ "min_sdk": null,
+ "target_sdk": null,
+ "manifest_summary": null,
+ "lifecycle": {},
+ "framework_apis": [],
+ "view_hierarchy": null,
+ "resources": {},
+ "layout": {},
+ "rendering": {
+  "backend": "software framebuffer",
+  "meaningful_frame": "DONE"
+ },
+ "input": {
+  "tap": "TESTED",
+  "dispatch": "24 scheduled clicks"
+ },
+ "state": {
+  "transitions": "22/24 clicks produce meaningful state changes; actual Y win at click 22 (NOT 24); deterministic replay; ID pattern 55->31",
+  "note": "corrected result preserved per taskbook \u00a737 \u2014 accuracy over prettier numbers"
+ },
+ "concurrency": {},
+ "storage": {},
+ "persistence": {},
+ "network": {
+  "requested": [],
+  "observed": [],
+  "apis": [],
+  "status": "NOT_OBSERVED"
+ },
+ "security": {
+  "permissions_declared": [],
+  "permissions_observed": [],
+  "exported_components": [],
+  "filesystem": "NOT_OBSERVED",
+  "network": "NOT_OBSERVED",
+  "sensitive_apis": [],
+  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)"
+ },
+ "evidence": {
+  "primary": [
+   "docs/testing/VERIFIED_TESTS.md",
+   "docs/evidence/S73/S73_REPORT.md"
+  ],
+  "determinism": "deterministic replay (ID pattern 55->31)"
+ },
+ "regression": {},
+ "blocker": null,
+ "next_task": "none (completed state documented in #12)",
+ "completion": {
+  "C1_apk_load": "DONE",
+  "C2_manifest_lifecycle": "DONE",
+  "C3_view_framework": "DONE",
+  "C4_measure_layout": "DONE",
+  "C5_render": "DONE",
+  "C6_input": "DONE",
+  "C7_state_change": "DONE",
+  "C8_rerender": "DONE",
+  "C9_persistence": "PENDING",
+  "C10_concurrency": "PENDING",
+  "C11_security_sandbox": "OBSERVED",
+  "C12_determinism": "DONE",
+  "C13_regression": "DONE",
+  "C14_evidence": "DONE"
+ },
+ "links": {
+  "issue": null,
+  "laws": [],
+  "capabilities": [
+   "cap-input-dispatch",
+   "cap-state-change-observability",
+   "cap-determinism-replay"
+  ],
+  "knowledge": [],
+  "evidence_files": []
+ },
+ "name": "ConnectFour (golden fixture)",
+ "status": "DONE",
+ "issue": 12,
+ "issue_state": "closed",
+ "app_id": "connectfour"
+}

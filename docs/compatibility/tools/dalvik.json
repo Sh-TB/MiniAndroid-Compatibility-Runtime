@@ -1,0 +1,27 @@
+{
+ "record_type": "tool_profile",
+ "schema_version": 1,
+ "tool_id": "dalvik",
+ "name": "Dalvik executable format (DEX spec)",
+ "url": "https://source.android.com/docs/core/runtime/dex-format",
+ "license": "CC-BY/Apache-2.0 (AOSP docs)",
+ "provenance_class": "MOTHER",
+ "provides": "DEX container format, method_ids ground truth, MUTF-8 string encoding, opcode tables",
+ "reused": [
+  "MUTF-8 decoding (LAW-MUTF8)",
+  "F-150 ground-truth law: javac emits SUBCLASS descriptors for Thread.sleep/start \u2014 method_ids is the authority over literal types",
+  "multi-DEX resolution (F-002-era fix, EXP-065 const-string leak)"
+ ],
+ "laws_learned": [
+  "LAW-MUTF8",
+  "LAW-F150"
+ ],
+ "consumers": [
+  "helloworld",
+  "androidgamesnake",
+  "dooz",
+  "telegram"
+ ],
+ "evidence": "scripts/forensic/dex_method_dump.py + S72-W4 disasm records",
+ "limitations": null
+}

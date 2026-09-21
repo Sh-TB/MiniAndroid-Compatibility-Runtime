@@ -1,0 +1,20 @@
+{
+ "record_type": "capability_record",
+ "schema_version": 1,
+ "capability_id": "cap-thread-game-loop",
+ "name": "Thread game-loop family (sleep/start/frame-boundary drains/wake registry)",
+ "implemented": "dalvik_engine ThreadShadow de-noop + is_thread_receiver DEX-chain law + frame-boundary drains (bounded 4/8) + wake-time registry",
+ "laws": [
+  "LAW-F150"
+ ],
+ "tests": [
+  "snake 2 ticks/frame EXACT; 88 moves; reverse-guard honored",
+  "corpus 10/10 + fixtures 25/25 pixel-SAME post-change"
+ ],
+ "consumers": [
+  "androidgamesnake",
+  "microtimer"
+ ],
+ "issue": null,
+ "status": "DONE"
+}

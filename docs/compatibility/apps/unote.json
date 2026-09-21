@@ -1,0 +1,92 @@
+{
+ "record_type": "app_dossier",
+ "schema_version": 1,
+ "package": "app.varlorg.unote",
+ "status_note": null,
+ "source": {
+  "repository": "F-Droid (app.varlorg.unote)",
+  "commit": null,
+  "license": null
+ },
+ "apk": {},
+ "build": null,
+ "min_sdk": null,
+ "target_sdk": null,
+ "manifest_summary": null,
+ "lifecycle": {},
+ "framework_apis": [],
+ "view_hierarchy": null,
+ "resources": {},
+ "layout": {},
+ "rendering": {
+  "meaningful_frame": "DONE",
+  "pixels": "231120 px themed UI recovered via F-141 theme chain (S72-W3)",
+  "sha256_16": "2928a026c4a88a14"
+ },
+ "input": {
+  "tap": "NOT_OBSERVED (unprobed at S73 recipe)"
+ },
+ "state": {},
+ "concurrency": {},
+ "storage": {},
+ "persistence": {},
+ "network": {
+  "requested": [],
+  "observed": [],
+  "apis": [],
+  "status": "NOT_OBSERVED"
+ },
+ "security": {
+  "permissions_declared": [],
+  "permissions_observed": [],
+  "exported_components": [],
+  "filesystem": "NOT_OBSERVED",
+  "network": "NOT_OBSERVED",
+  "sensitive_apis": [],
+  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)"
+ },
+ "evidence": {
+  "primary": [
+   "docs/evidence/S73/S73_REPORT.md"
+  ],
+  "screenshot_sha256_16": "2928a026c4a88a14",
+  "determinism": "3-run x3 (S73 \u00a76)"
+ },
+ "regression": {},
+ "blocker": "execution ladder open below render: input/state-change legs unprobed at current HEAD",
+ "next_task": "run input probe (tap FAB/edit path) -> state change -> re-render; then SharedPreferences persistence leg (F-114 family already TESTED engine-side)",
+ "completion": {
+  "C1_apk_load": "DONE",
+  "C2_manifest_lifecycle": "DONE",
+  "C3_view_framework": "DONE",
+  "C4_measure_layout": "DONE",
+  "C5_render": "DONE",
+  "C6_input": "PENDING",
+  "C7_state_change": "PENDING",
+  "C8_rerender": "PENDING",
+  "C9_persistence": "PENDING",
+  "C10_concurrency": "PENDING",
+  "C11_security_sandbox": "OBSERVED",
+  "C12_determinism": "DONE",
+  "C13_regression": "DONE",
+  "C14_evidence": "DONE"
+ },
+ "links": {
+  "issue": null,
+  "laws": [
+   "LAW-F141",
+   "LAW-F114"
+  ],
+  "capabilities": [
+   "cap-persistence-sharedprefs",
+   "cap-render-software-framebuffer"
+  ],
+  "knowledge": [],
+  "evidence_files": []
+ },
+ "name": "Unote",
+ "status": "PARTIAL",
+ "issue": 15,
+ "issue_state": "open",
+ "app_id": "unote"
+}

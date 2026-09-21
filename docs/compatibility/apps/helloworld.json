@@ -1,0 +1,111 @@
+{
+ "record_type": "app_dossier",
+ "schema_version": 1,
+ "package": "com.appliberated.helloworldselfaware",
+ "status_note": null,
+ "source": {
+  "repository": "F-Droid (com.appliberated.helloworldselfaware)",
+  "commit": null,
+  "license": null,
+  "note": "APK SHA256 009b4671... (SHA-verified control target, ACHIEVEMENTS \u00a71)"
+ },
+ "apk": {
+  "sha256_16": "009b4671"
+ },
+ "build": null,
+ "min_sdk": null,
+ "target_sdk": null,
+ "manifest_summary": "single launchable Activity; typographic self-aware UI (no special permissions recorded)",
+ "lifecycle": {
+  "application": "OBSERVED",
+  "activity": "OBSERVED",
+  "service": null,
+  "broadcast_receiver": null,
+  "content_provider": null
+ },
+ "framework_apis": [],
+ "view_hierarchy": null,
+ "resources": {},
+ "layout": {},
+ "rendering": {
+  "backend": "software framebuffer",
+  "meaningful_frame": "DONE",
+  "typography_golden": "EXT-01 9/9 vs upstream phone screenshot"
+ },
+ "input": {
+  "tap": "TESTED",
+  "dispatch": "EXT-02 interaction 12/12"
+ },
+ "state": {
+  "note": "app-computed hash text rendered \u2014 real DEX execution"
+ },
+ "concurrency": {},
+ "storage": {},
+ "persistence": {},
+ "network": {
+  "requested": [],
+  "observed": [],
+  "apis": [],
+  "status": "NOT_OBSERVED"
+ },
+ "security": {
+  "permissions_declared": [],
+  "permissions_observed": [],
+  "exported_components": [],
+  "filesystem": "NOT_OBSERVED",
+  "network": "NOT_OBSERVED",
+  "sensitive_apis": [],
+  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)"
+ },
+ "evidence": {
+  "primary": [
+   "docs/evidence/s54_frames/helloworld_ext01_base.jpg",
+   "docs/evidence/GOLDEN_HELLOWORLD.md"
+  ],
+  "screenshot_sha256_16": null,
+  "determinism": "golden byte-stable (S53->S54 replay proof)"
+ },
+ "regression": {},
+ "blocker": null,
+ "next_task": "optional: persistence/concurrency ladder extension (no open blocker)",
+ "completion": {
+  "C1_apk_load": "DONE",
+  "C2_manifest_lifecycle": "DONE",
+  "C3_view_framework": "DONE",
+  "C4_measure_layout": "DONE",
+  "C5_render": "DONE",
+  "C6_input": "DONE",
+  "C7_state_change": "DONE",
+  "C8_rerender": "DONE",
+  "C9_persistence": "PENDING",
+  "C10_concurrency": "PENDING",
+  "C11_security_sandbox": "OBSERVED",
+  "C12_determinism": "DONE",
+  "C13_regression": "DONE",
+  "C14_evidence": "DONE"
+ },
+ "links": {
+  "issue": null,
+  "laws": [
+   "LAW-MUTF8",
+   "LAW-F136"
+  ],
+  "capabilities": [
+   "cap-apk-pipeline",
+   "cap-dex-interpreter",
+   "cap-lifecycle-dispatch",
+   "cap-view-inflate-layout",
+   "cap-render-software-framebuffer",
+   "cap-input-dispatch"
+  ],
+  "knowledge": [],
+  "evidence_files": [
+   "docs/evidence/s54_frames/SHA256SUMS"
+  ]
+ },
+ "name": "HelloWorld (HelloWorldSelfAware)",
+ "status": "DONE",
+ "issue": 10,
+ "issue_state": "closed",
+ "app_id": "helloworld"
+}

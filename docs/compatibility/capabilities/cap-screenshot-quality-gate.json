@@ -1,0 +1,18 @@
+{
+ "record_type": "capability_record",
+ "schema_version": 1,
+ "capability_id": "cap-screenshot-quality-gate",
+ "name": "Screenshot quality gate + provenance law",
+ "implemented": "tools/verify_screenshot.py metrics + scripts/s73_screenshot_gate.py (resolution/non-background/entropy/luminance/dominant colors/bounds/SHA256)",
+ "laws": [],
+ "tests": [
+  "B3 gate on s73 snake key frames; Dooz reclassification is the standing negative proof (pixel count != semantic proof)"
+ ],
+ "consumers": [
+  "androidgamesnake",
+  "dooz",
+  "stopwatch"
+ ],
+ "issue": null,
+ "status": "DONE"
+}

@@ -1,0 +1,21 @@
+{
+ "record_type": "capability_record",
+ "schema_version": 1,
+ "capability_id": "cap-ancestor-dispatch",
+ "name": "Framework ancestor dispatch (DEX superclass chain + AOSP hierarchy)",
+ "implemented": "framework_ancestor_for_dispatch + bounded retry at bridge stub fallthrough (F-137)",
+ "laws": [
+  "LAW-F137"
+ ],
+ "tests": [
+  "gmdice getResources x5 / unote getWindow / dooz getApplicationContext + getClass x2 converted STUBBED->IMPLEMENTED",
+  "battery 92/94 (EXT-01/02 environmental)"
+ ],
+ "consumers": [
+  "gmdice",
+  "unote",
+  "dooz"
+ ],
+ "issue": null,
+ "status": "DONE"
+}

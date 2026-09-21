@@ -1,0 +1,18 @@
+{
+ "record_type": "tool_profile",
+ "schema_version": 1,
+ "tool_id": "codesearch-toolchain",
+ "name": "Code-search toolchain (zoekt + csearch/cindex + Go)",
+ "url": "https://github.com/sourcegraph/zoekt",
+ "license": "Apache-2.0 (per tool)",
+ "provenance_class": "RESEARCH ONLY",
+ "provides": "fast upstream/repo law hunting",
+ "reused": [
+  "S63 tool law: zoekt default max_trigram_count silently EXCLUDES very large files (dalvik_engine.cpp 1.2MB -> 0 hits); cap raised to 100000000",
+  "csearch per-file trigram limit (reproduced 3x); GOPROXY=direct works when module proxy stalls (Go 1.26.0)"
+ ],
+ "laws_learned": [],
+ "consumers": [],
+ "evidence": "docs/evidence/s63_spotlight/S63_REPORT.md \u00a74",
+ "limitations": "research tooling; not part of the runtime"
+}

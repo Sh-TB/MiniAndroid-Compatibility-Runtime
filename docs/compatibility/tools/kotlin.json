@@ -1,0 +1,23 @@
+{
+ "record_type": "tool_profile",
+ "schema_version": 1,
+ "tool_id": "kotlin",
+ "name": "Kotlin (stdlib + compiled form)",
+ "url": "https://github.com/JetBrains/kotlin",
+ "license": "Apache-2.0",
+ "provenance_class": "MOTHER",
+ "provides": "Kotlin metadata, compiled lambda/composable shapes, property-reader patterns that surface in DEX",
+ "reused": [
+  "boxed property-reader family closure (F-141 wave)",
+  "j$ desugar-shim law (newKeySet) \u2014 S71 resolved UNKNOWNs"
+ ],
+ "laws_learned": [
+  "LAW-BOXED-READERS"
+ ],
+ "consumers": [
+  "dooz",
+  "gmdice"
+ ],
+ "evidence": "S71 forensic triage (136 LIVE-STUB triage; both UNKNOWNs resolved by caller-context evidence)",
+ "limitations": "Compose-compiler-generated shapes studied under Compose profile"
+}
