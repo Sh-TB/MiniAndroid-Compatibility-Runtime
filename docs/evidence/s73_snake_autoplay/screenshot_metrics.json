@@ -1,0 +1,159 @@
+{
+ "frame_000.png": {
+  "frame": "frame_000.png",
+  "meaning": "LAUNCH (UI + panel, pre-START)",
+  "resolution": "1080x1920",
+  "non_background_px": 116230,
+  "entropy_bits": 0.3369,
+  "luminance": 249.37,
+  "dominant_colors": [
+   [
+    "#ffffff",
+    1957370
+   ],
+   [
+    "#6fa8dc",
+    110282
+   ],
+   [
+    "#212121",
+    3682
+   ],
+   [
+    "#517595",
+    274
+   ],
+   [
+    "#5881a7",
+    197
+   ]
+  ],
+  "content_bounds": [
+   0,
+   780,
+   956,
+   1512
+  ],
+  "png_sha256": "6cc8087e690d97da3abdc4b437b6b8c82d7e95ab75ba44121b04e446a696496a",
+  "pixel_sha256": "407020eadd2aa4cd"
+ },
+ "frame_001.png": {
+  "frame": "frame_001.png",
+  "meaning": "START pressed state",
+  "resolution": "1080x1920",
+  "non_background_px": 120793,
+  "entropy_bits": 0.3613,
+  "luminance": 248.98,
+  "dominant_colors": [
+   [
+    "#ffffff",
+    1952807
+   ],
+   [
+    "#6fa8dc",
+    110282
+   ],
+   [
+    "#212121",
+    3682
+   ],
+   [
+    "#ff4081",
+    3042
+   ],
+   [
+    "#0000ff",
+    1521
+   ]
+  ],
+  "content_bounds": [
+   0,
+   0,
+   956,
+   1512
+  ],
+  "png_sha256": "debdce66f8222e1acd85a30162d56dfd51537af1b376adbca981aa1d3c86b4db",
+  "pixel_sha256": "765ec80addc30fd9"
+ },
+ "frame_034.png": {
+  "frame": "frame_034.png",
+  "meaning": "FOOD CAPTURED (growth 3->4, food (0,0)->(9,0))",
+  "resolution": "1080x1920",
+  "non_background_px": 123835,
+  "entropy_bits": 0.3741,
+  "luminance": 248.77,
+  "dominant_colors": [
+   [
+    "#ffffff",
+    1949765
+   ],
+   [
+    "#6fa8dc",
+    110282
+   ],
+   [
+    "#ff4081",
+    6084
+   ],
+   [
+    "#212121",
+    3682
+   ],
+   [
+    "#0000ff",
+    1521
+   ]
+  ],
+  "content_bounds": [
+   0,
+   0,
+   956,
+   1512
+  ],
+  "png_sha256": "d4bc62a6862c8a8a5463c5abe12807e67a0cffe28dc709e925cf6d81ae989292",
+  "pixel_sha256": "24a7057e4818d78a"
+ },
+ "frame_089.png": {
+  "frame": "frame_089.png",
+  "meaning": "FINAL (autonomous session end, len 4)",
+  "resolution": "1080x1920",
+  "non_background_px": 123835,
+  "entropy_bits": 0.3741,
+  "luminance": 248.77,
+  "dominant_colors": [
+   [
+    "#ffffff",
+    1949765
+   ],
+   [
+    "#6fa8dc",
+    110282
+   ],
+   [
+    "#ff4081",
+    6084
+   ],
+   [
+    "#212121",
+    3682
+   ],
+   [
+    "#0000ff",
+    1521
+   ]
+  ],
+  "content_bounds": [
+   0,
+   0,
+   956,
+   1512
+  ],
+  "png_sha256": "de36e7b83c51ab7be27ed86714af19314c9a066c783b7b18ea478ccf6193487f",
+  "pixel_sha256": "f1f6be2eaed1d08e"
+ },
+ "snake_autoplay.gif": {
+  "png_sha256": "ddf96e09790241f05da7353bb07c435f38530d9187c1ac31df84c6fb4ac7e962",
+  "bytes": 39073,
+  "provenance": "GIF composed ONLY from real run_01 output frames (50% NEAREST scale, 64-color quantize, 250ms/frame)"
+ }
+}

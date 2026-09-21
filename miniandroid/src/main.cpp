@@ -541,18 +541,40 @@ int main(int argc, char* argv[]) {
             // law pipeline: DOWN → pressed frame → UP → queued PerformClick
             // (one-MessageQueue law) → UnsetPressedState → post-click frame.
             std::string spec = argv[++i];
+            // S73 F-117 extension: `x,y@frame` fires the tap after frame
+            // `frame` renders (scheduled-input cadence). All-or-none: if any
+            // tap carries '@', every tap must (validated below).
+            int tap_at_frame = -1;
+            auto at_sign = spec.rfind('@');
+            if (at_sign != std::string::npos) {
+                tap_at_frame = std::stoi(spec.substr(at_sign + 1));
+                spec = spec.substr(0, at_sign);
+            }
             auto comma = spec.find(',');
             if (comma == std::string::npos) {
-                std::cerr << "[ERROR] --tap expects <x>,<y> (got \""
+                std::cerr << "[ERROR] --tap expects <x>,<y> or <x>,<y>@<frame> (got \""
                           << spec << "\")\n";
                 return 1;
             }
             config.tap_enabled = true;
             config.tap_sequence.emplace_back(std::stoi(spec.substr(0, comma)),
                                              std::stoi(spec.substr(comma + 1)));
+            if (tap_at_frame >= 0)
+                config.tap_at_frames.push_back(tap_at_frame);
+            if (!config.tap_at_frames.empty() &&
+                config.tap_at_frames.size() != config.tap_sequence.size()) {
+                std::cerr << "[ERROR] --tap '@frame' is all-or-none: "
+                          << config.tap_sequence.size() << " taps but "
+                          << config.tap_at_frames.size()
+                          << " scheduled frames\n";
+                return 1;
+            }
             std::cout << "[*] TAP gesture " << config.tap_sequence.size()
                       << " queued at (" << config.tap_sequence.back().first
                       << "," << config.tap_sequence.back().second
+                      << (tap_at_frame >= 0
+                              ? (") after frame " + std::to_string(tap_at_frame))
+                              : "")
                       << ") — frames + touch trace saved to <output>/frames/\n";
         } else if (arg == "--frame-delay" && i + 1 < argc) {
             config.frame_delay_ms = std::stoi(argv[++i]);
