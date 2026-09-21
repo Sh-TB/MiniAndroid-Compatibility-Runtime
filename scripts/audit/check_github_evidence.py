@@ -25,7 +25,7 @@ for iss in sorted(exec_issues, key=lambda x:x["number"]):
     for c in comments: bodies.append(c.get("body") or "")
     urls=[]
     for b in bodies:
-        urls += re.findall(r"https://(?:user-images\.githubusercontent\.com|github\.com/user-attachments/assets)[^\s\)\"]+", b)
+        urls += re.findall(r"https://(?:user-images\.githubusercontent\.com|github\.com/user-attachments/assets|raw\.githubusercontent\.com)[^\s\)\"]+", b)
     urls = list(dict.fromkeys(urls))
     detail["body_has_image"] = bool(urls)
     detail["image_urls"]=urls[:6]
