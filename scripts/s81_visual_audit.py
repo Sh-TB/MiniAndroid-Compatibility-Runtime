@@ -196,9 +196,24 @@ def audit_frame(path):
 
 
 def level_of(m):
-    """§17 levels — L5 only via human review, never granted here."""
+    """§17 levels — L5 only via human review, never granted here.
+
+    S54 blank-gate law (S85 hardening, EVID-CLASS-S84 follow-up): the
+    engine-default shell class (white framebuffer + small black status
+    region, eb16ab5c…) measures nonbg_ratio ≈ 0.011 — above the old
+    0.01 "nonblank" line, which let it slip through as L2. Law now:
+    a DOMINANT single-color framebuffer (>= 0.975 of sampled pixels or
+    < 0.035 non-background ratio) can NEVER be L2+ — at most L1 NONBLANK,
+    no matter how many unique colors the status bar contributes.
+    Real text/UI screens measure nonbg >= ~0.05 (bouncy help 0.089,
+    URLChecker 0.322) and keep their honest levels.
+    """
     if m["NON_BACKGROUND_RATIO"] <= 0.001 and m["UNIQUE_COLORS"] <= 2:
         return 0, "LOADED_ONLY"
+    near_blank = (m["NON_BACKGROUND_RATIO"] < 0.035 or
+                  m["DOMINANT_COLOR_RATIO"] >= 0.975)
+    if near_blank:
+        return 1, "NONBLANK_NEARBLANK_GATE"
     nonblank = m["NON_BACKGROUND_RATIO"] > 0.01 or m["UNIQUE_COLORS"] > 8
     if not nonblank:
         return 1, "NONBLANK"
