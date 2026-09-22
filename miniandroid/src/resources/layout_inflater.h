@@ -152,6 +152,12 @@ public:
         return custom_view_measure_hook_;
     }
 
+    // S82-GFX F-NEW-158: exposed — the render stage resolves programmatic
+    // setBackgroundResource(resid) shape drawables through the SAME
+    // inflate-time parse the XML layout path uses (one parse law).
+    void apply_shape_background(framework::ViewShadow::ViewNode& node,
+                                const std::string& xml_path, InflateStats& stats);
+
 private:
     // G04 §8: drawable intrinsic-size probe cache (path → natural dims;
     // {-1,-1} = probe failed — never retried, honest 48dp fallback applies).
@@ -249,8 +255,8 @@ private:
     // ONCE at inflate time into the node's bg_shape_* fields (AOSP
     // GradientDrawable.inflate). No-op when the XML root is not <shape>
     // (selectors keep the draw-time parse_state_list law).
-    void apply_shape_background(framework::ViewShadow::ViewNode& node,
-                                const std::string& xml_path, InflateStats& stats);
+    // Declaration lives in the PUBLIC section (S82-GFX F-NEW-158: the
+    // render stage reuses this one parse law for programmatic bg resids).
     void apply_style(framework::ViewShadow::ViewNode& node, Attrs& a,
                      uint32_t style_resid, InflateStats& stats);
     void apply_style_by_name(framework::ViewShadow::ViewNode& node, Attrs& a,

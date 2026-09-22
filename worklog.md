@@ -2842,3 +2842,26 @@ Stage Summary:
 - Next (S83): F-NEW-156 law attack → 35-title regression wave; F-NEW-157 GL
   surface law; BATCH-02..04; references already in place for L4/L5 when
   renders become non-blank.
+
+---
+Task ID: S82-GFX-REVOLUTION (wave 3)
+Agent: Super Z (main)
+Task: S82-GFX-REVOLUTION — break the shared root cause of "APK executes but graphics never reach the screen"; source-first spotlight, fixture ladder, pixel provenance, one fix → fanout.
+
+Work Log:
+- Repo archaeology first (§3 law): existing fixtures toolchain (ECJ+D8+aapt2, build_fixture_apk.sh), s82_lib run harness, 43 cached APKs (789M, /tmp apk cache), libpng full color-type support confirmed BEFORE any new code.
+- P1 graphics-family scan: scripts/s82gfx_family_scan.py — streaming zip scan (no full extract), hash/mtime-cached, RAM-bounded; 41 executed APKs fingerprinted → docs/corpus/s82/graphics_families.json; families: B=37 C=38 D=30 E=38 G=12 H=16 I=29 J=2 K=1 L=14 M=27 N=33.
+- P2 pixel provenance instrument: miniandroid/src/diagnostics/gfx_provenance.h (MINIANDROID_GFX_PROVENANCE=<json>); evidence-bit chain per image attempt (ASSET_FOUND→RESOURCE_RESOLVED→DECODED→BITMAP_CREATED→VIEW_RECEIVED→DRAW_CALLED) + canvas-drawBitmap replay bits + per-frame census + SCREENSHOT_CAPTURED record; hooks in execution_engine (imageview-direct/resid/background-bitmap + frame census + finalize), canvas_shadow (DRAW_BITMAP), bitmap_shadow (decode).
+- P3 golden fixture ladder (7 fixtures, real aapt2 resources): l0_solid, l1_quadrant (r/g/b/k + alpha checker), l2_colortypes (PNG ct 0/2/3/4/6 + tRNS), l3_density (mdpi..xxxhdpi markers), l4_xmldrawables (shape/gradient/layer-list/selector), l5_canvas (fill/stroke rect, path, text, save/clip/restore), l6_glsurface (GLSurfaceView F-NEW-157 probe). Runner+asserter scripts/s82gfx_run_ladder.py.
+- P4 first-divergence table at HEAD: l1/l2/l3 PASS (decoder, palette PNG, tRNS, density selection, ImageView chain all EXONERATED by pixels); l0/l4 FAIL → F-NEW-158 PROGRAMMATIC-BACKGROUND-DROP: (a) setBackground(Drawable)/setBackgroundDrawable in generic void list, (b) setBackgroundResource parked resid in image_resource_id (clobber + never painted); l5 "FAIL" was a fixture clip bug (runtime clip+stroke MORE correct than test); l6 GL white (frontier, no fake fix).
+- F-NEW-158 FIX (one patch, three TUs): dalvik_engine capture (ColorDrawable.<init>/setColor obj→color map; setBackground(Drawable) lookup→bg_color; setBackgroundResource→new ViewNode.bg_resource_id; bg_from_xml=false last-writer law) + android_shadows setBackgroundResource neutralized + render-side ARSC select_file resolution flowing into EXISTING paint laws (state-list pick / F-053 shape via exposed LayoutInflater::apply_shape_background / bitmap fit-draw) + provenance bits.
+- Regression: foundation battery 26/26 rc=0 (s77_baseline_battery.sh) + pixel goldens 24/24 exact vs VERIFICATION.json nonwhite (0 mismatch). Ladder after fix: 6/7 PASS.
+- P5 fanout probe (scripts/s82gfx_fanout_probe.py): GAME-004 unique colors 111→201 (palette delta recorded in title record, no status inflation); MAND-002 + APP-001 re-traced → NEW F-NEW-159 NULL-FRAMEWORK-RECEIVER NPE (LocaleList.toLanguageTags / WindowInsetsController.setSystemBarsAppearance on null) — F-NEW-156 sub-cluster, exact traces kept; graphics fixes correctly cannot reach lifecycle-unwound titles (§25).
+- P6 outputs: docs/knowledge/graphics/{GRAPHICS_PIPELINE,GRAPHICS_ROOT_CAUSES,PIXEL_PROVENANCE,GRAPHICS_FIX_FANOUT}.md + docs/audit/GRAPHICS_GAP_MATRIX.json (canonical, complement App Matrix); root_cause_graph.{json,md} + compatibility_index.json updated (F-NEW-158 FIXED, F-NEW-159 OPEN); evidence docs/evidence/s82gfx (7 ladder JPGs + fanout screenshots + SHA256SUMS); issues #229/#227/#24 commented with tables + traces (no body rewrites).
+
+Stage Summary:
+- Mission metric (§28): 2 root causes advanced (F-NEW-158 fixed; F-NEW-159 registered with exact NPE signatures), fixture ladder = permanent graphics baseline, provenance instrument = permanent chain auditor, fanout discipline live (1 fix → fixture+corpus proof).
+- Exonerated by pixel evidence: PNG decoder (all color types), palette/tRNS, density selection, ImageView→Canvas→screenshot chain, canvas clip/stroke semantics.
+- Confirmed frontier: GL/EGL surface chain absent (F-NEW-157) — l6 fixture reproduces at HEAD deterministically (white frame, 0 API calls).
+- Honest counters: no status inflation; GAME-004 palette delta evidence-only; NOT_TESTED 157 unchanged.
+- Next: F-NEW-156/159 law attack (shadow LocaleList + WindowInsetsController) → 35-title regression wave; detector scan over remaining 161 APKs (disk-guarded lazy); GL software path design per Anbox/SwiftShader architecture law.

@@ -1,6 +1,7 @@
 // bitmap_shadow.cpp — S68 §12/§13: Bitmap/BitmapFactory implementation.
 // See bitmap_shadow.h for the upstream law.
 #include "bitmap_shadow.h"
+#include "../diagnostics/gfx_provenance.h"
 #include "../renderer/software_renderer.h"
 
 #include <algorithm>
@@ -71,6 +72,10 @@ uint32_t BitmapShadow::decode_and_register(const std::vector<uint8_t>& bytes,
         // decode_image_bytes (format named) — never silent.
         std::cerr << "[BITMAP-FACTORY] decode FAILED (" << desc << "): "
                   << decoded.error << std::endl;
+        if (diagnostics::GfxProvenance::instance().enabled())
+            diagnostics::GfxProvenance::instance().record_image(
+                "bitmapfactory-decode", 0, desc, !bytes.empty(), false, 0, 0,
+                "", 0, 0, 0, 0, 0, false, decoded.error);
         return 0;
     }
     const uint32_t obj = heap->allocate("Landroid/graphics/Bitmap;");
@@ -79,6 +84,11 @@ uint32_t BitmapShadow::decode_and_register(const std::vector<uint8_t>& bytes,
     std::cerr << "[BITMAP-FACTORY] decoded " << desc << " -> Bitmap obj=" << obj
               << " (" << decoded.width << "x" << decoded.height << ", "
               << decoded.color_type_name << ")" << std::endl;
+    if (diagnostics::GfxProvenance::instance().enabled())
+        diagnostics::GfxProvenance::instance().record_image(
+            "bitmapfactory-decode", 0, desc, !bytes.empty(), true,
+            decoded.width, decoded.height, decoded.color_type_name, 0,
+            0, 0, 0, 0, false, "");
     return obj;
 }
 

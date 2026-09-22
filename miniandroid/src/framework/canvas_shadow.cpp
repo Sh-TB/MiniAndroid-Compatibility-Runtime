@@ -1,6 +1,7 @@
 // CAMPAIGN 013 — Canvas/Paint shadow implementation. See canvas_shadow.h.
 #include "canvas_shadow.h"
 #include "bitmap_shadow.h"
+#include "../diagnostics/gfx_provenance.h"
 #include "../fonts/text_shaper.h"
 #include "../renderer/software_renderer.h"
 
@@ -482,7 +483,13 @@ size_t CanvasShadow::replay(renderer::SoftwareCanvas& canvas,
                 // S68 §12: drawBitmap replay — pixels from BitmapStore,
                 // src/dst rect law, nearest sampling (FilterBitmap=false).
                 const StoredBitmap* sb = BitmapStore::instance().get(op.bitmap_id);
-                if (!sb || sb->rgba.empty()) break;
+                if (!sb || sb->rgba.empty()) {
+                    // S82-GFX §6: CANVAS chain bit — bitmap unresolved at replay.
+                    if (diagnostics::GfxProvenance::instance().enabled())
+                        diagnostics::GfxProvenance::instance().record_canvas_bitmap(
+                            op.bitmap_id, false, 0, 0, false);
+                    break;
+                }
                 int sw = sb->width, sh = sb->height;
                 int sx = 0, sy = 0;
                 if (op.has_src) {
@@ -524,6 +531,10 @@ size_t CanvasShadow::replay(renderer::SoftwareCanvas& canvas,
                     canvas.draw_image_region(sb->rgba.data(), sb->width, sb->height,
                                              sx, sy, sw, sh, dx, dy, dw, dh);
                 }
+                // S82-GFX §6: bitmap resolved + CANVAS_WRITTEN evidence.
+                if (diagnostics::GfxProvenance::instance().enabled())
+                    diagnostics::GfxProvenance::instance().record_canvas_bitmap(
+                        op.bitmap_id, true, sb->width, sb->height, true);
                 break;
             }
             case DrawOp::Kind::DRAW_PAINT: {

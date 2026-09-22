@@ -3206,14 +3206,13 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_void();
     }
     if (m == "setBackgroundResource") {
-        // EXP-067: View.setBackgroundResource(int resid)
-        // Store the resource ID for color/drawable resolution.
-        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
-        int32_t resid = ctx.arg_as_int(0, 0);
-        n->image_resource_id = resid;  // reuse field for background
-        std::cerr << "[EXP067-SETBGRES] view_id=" << ctx.receiver_id
-                  << " resid=0x" << std::hex << resid << std::dec
-                  << std::endl;
+        // S82-GFX F-NEW-158: the resid is now captured engine-side
+        // (dalvik_engine post-dispatch hook → ViewShadow::set_bg_resource)
+        // into ViewNode.bg_resource_id. The previous handler REUSED
+        // image_resource_id, which (a) clobbered an ImageView's src resid
+        // set earlier and (b) was never consulted by the background paint
+        // path for non-image views — every programmatic XML-drawable or
+        // bitmap background was silently dropped (fixture l4 evidence).
         return CallResult::handled_void();
     }
     if (m == "setText") {

@@ -1,6 +1,6 @@
 {
  "WAVE": "S82",
- "GENERATED": "2026-09-22T05:56:23Z",
+ "GENERATED": "2026-09-22 S82-GFX-REVOLUTION",
  "SUMMARY": {
   "TITLE_RECORDS": 202,
   "GAME": 100,
@@ -138,6 +138,22 @@
     "APP-089",
     "MAND-001",
     "MAND-002"
+   ]
+  },
+  "F-NEW-158": {
+   "title": "PROGRAMMATIC-BACKGROUND-DROP (setBackground(Drawable)/setBackgroundResource(resid) silently ignored; image_resource_id clobber)",
+   "status": "ROOT_CAUSED_FIXED (S82-GFX; fixture ladder L0/L4 evidence + regression 26/26 + pixel goldens 24/24)",
+   "fanout_sample": [
+    "GAME-004"
+   ]
+  },
+  "F-NEW-159": {
+   "title": "NULL-FRAMEWORK-RECEIVER NPE family (LocaleList.toLanguageTags / WindowInsetsController.setSystemBarsAppearance on null refs \u2192 onCreate APP BOUNDARY unwind; F-NEW-156 sub-cluster)",
+   "status": "OPEN (S82-GFX fanout probe \u00d72 titles re-traced: MAND-002, APP-001 family; exact traces in run/s82gfx/fanout/*.log)",
+   "fanout": [
+    "MAND-002",
+    "APP-001",
+    "subset of F-NEW-156's 35"
    ]
   }
  },
@@ -750,6 +766,13 @@
     },
     "DOMINANT_COLOR_OVERLAP": 0.0,
     "UNIQUE_COLOR_GAP": 0.44
+   },
+   "S82GFX_FANOUT": {
+    "DATE": "2026-09-22",
+    "NOTE": "F-NEW-158 fix re-run; palette delta only \u2014 STATE unchanged pending full battery re-derivation",
+    "UNIQUE_COLORS_BEFORE": 111,
+    "UNIQUE_COLORS_AFTER": 201,
+    "EVIDENCE": "run/s82gfx/fanout/GAME-004/"
    }
   },
   {

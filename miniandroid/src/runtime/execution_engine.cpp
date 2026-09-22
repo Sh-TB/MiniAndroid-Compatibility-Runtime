@@ -8,6 +8,7 @@
 #include "../apk/manifest_reader.h"  // S75 A7: ManifestReader::resolve_resid_string (ARSC label resolve)
 #include "../dex/trace_exporter.h"  // EXP-031.5: Mandatory trace generation
 #include "../diagnostics/click_audit.h"  // UNIFIED_002 EXP-100: env-gated click audit (DIAGNOSTIC)
+#include "../diagnostics/gfx_provenance.h"  // S82-GFX §6: evidence-bit pixel chain
 // EXP-086 Phase 3 (B1 FIX): PNGWriter for direct PNG output
 #include "../renderer/software_renderer.h"
 #include "../fonts/text_shaper.h"
@@ -1763,6 +1764,8 @@ bool f053_draw_shape_background(const framework::ViewShadow::ViewNode& n,
 
 bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const ExecutionConfig& config) {
     trace_engine_.info("ExecutionEngine", "stage_render_frame", "Rendering frame");
+    // S82-GFX §6: provenance instrument — env MINIANDROID_GFX_PROVENANCE=<json>
+    diagnostics::GfxProvenance::instance().begin();
 
     // UNIFIED_011.2 IMAGE-RES-RENDER (§13/§14): populate the R-name → drawable
     // path map once per run from the APK's res/ entry list. Without this the
@@ -2087,6 +2090,102 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                             // (drawableStateChanged → re-pick law).
                             bool is_full_screen = (w >= config.screen_width && h >= config.screen_height);
                             bool drew_bg = false;
+                            // ──────────────────────────────────────────
+                            // S82-GFX F-NEW-158: programmatic background
+                            // resolution (AOSP View.java mBackground law).
+                            // A DEX setBackgroundResource(resid) parks the
+                            // resid on the node; AOSP inflates the drawable
+                            // ONCE and paints every draw. Resolve once per
+                            // node, then flow into the SAME paint laws the
+                            // XML-inflated backgrounds use:
+                            //   bitmap → fit-draw here
+                            //   <selector> → bg_drawable_path → state-list
+                            //                law (block below)
+                            //   <shape> → apply_shape_background fills
+                            //             bg_shape_* → F-053 law below
+                            // ──────────────────────────────────────────
+                            if (node->bg_resource_id != 0 &&
+                                node->bg_resource_path.empty()) {
+                                auto* node_mut = view_shadow->find_node(task.view_id);
+                                std::string pb;
+                                auto& by_resid_bg =
+                                    dalvik_engine_.resource_drawable_path_by_resid_;
+                                auto hit_bg =
+                                    by_resid_bg.find(node->bg_resource_id);
+                                if (hit_bg != by_resid_bg.end()) {
+                                    pb = hit_bg->second;
+                                } else {
+                                    auto& rtb =
+                                        resources::ResourceRuntime::instance();
+                                    if (rtb.ensure_loaded(
+                                            result.apk_info.apk_path)) {
+                                        auto selb = rtb.arsc().select_file(
+                                            node->bg_resource_id,
+                                            apk_entry_names,
+                                            resources::device_config());
+                                        if (selb) {
+                                            pb = selb->path;
+                                            by_resid_bg[node->bg_resource_id] =
+                                                pb;
+                                            dalvik_engine_
+                                                .resource_drawable_density_by_resid_
+                                                [node->bg_resource_id] =
+                                                selb->selected_density();
+                                        }
+                                    }
+                                }
+                                if (!pb.empty()) node_mut->bg_resource_path = pb;
+                            }
+                            if (!node->bg_resource_path.empty() &&
+                                node->visibility != 4 /* INVISIBLE */) {
+                                const std::string& bp =
+                                    node->bg_resource_path;
+                                bool is_xml_bg =
+                                    bp.size() > 4 &&
+                                    bp.compare(bp.size() - 4, 4, ".xml") == 0;
+                                if (is_xml_bg) {
+                                    if (node->bg_drawable_path.empty()) {
+                                        auto* node_mut2 =
+                                            view_shadow->find_node(task.view_id);
+                                        node_mut2->bg_drawable_path = bp;
+                                        resources::InflateStats bg_stats;
+                                        resources::ResourceRuntime::instance()
+                                            .inflater()
+                                            .apply_shape_background(*node_mut2,
+                                                                    bp,
+                                                                    bg_stats);
+                                    }
+                                    // selector/shape paint via the existing
+                                    // laws below — nothing else to do here.
+                                } else {
+                                    auto bdata =
+                                        apk_parser_.extract_entry_cached(bp);
+                                    renderer::DecodedImage bdec;
+                                    renderer::decode_image_bytes(bdata, &bdec);
+                                    bool bg_painted =
+                                        bdec.ok && !bdec.rgba.empty();
+                                    if (bg_painted) {
+                                        canvas.draw_image(
+                                            bdec.rgba.data(), bdec.width,
+                                            bdec.height, left, top, w, h);
+                                        drew_bg = true;
+                                    }
+                                    if (diagnostics::GfxProvenance::instance()
+                                            .enabled())
+                                        diagnostics::GfxProvenance::instance()
+                                            .record_image(
+                                                "background-bitmap",
+                                                node->bg_resource_id, bp,
+                                                !bdata.empty(), bg_painted,
+                                                bdec.width, bdec.height,
+                                                bdec.color_type_name, 0,
+                                                (float)left, (float)top,
+                                                (float)w, (float)h, bg_painted,
+                                                bg_painted
+                                                    ? ""
+                                                    : "BG_BITMAP_DECODE_FAILED");
+                                }
+                            }
                             // G06 §5: selector parse is lazy + cached per
                             // view (parse-once law); the pick itself re-runs
                             // EVERY frame against the node's CURRENT state.
@@ -2523,6 +2622,25 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                             };
                             bool is_image_view = node->class_desc.find("ImageView") != std::string::npos ||
                                                  node->class_desc.find("ImageButton") != std::string::npos;
+                            // S82-GFX §6 divergence probe: a BITMAP background
+                            // (android:background=@drawable/x.png) is recorded —
+                            // the engine tree-walk paints bg color/shape/state-list
+                            // only; if this fires with ASSET_FOUND=1 the gap is
+                            // proven at the DRAW_CALLED=0 stage.
+                            if (diagnostics::GfxProvenance::instance().enabled() &&
+                                !node_invisible && node->bg_drawable_path.size() > 4 &&
+                                node->bg_drawable_path.compare(node->bg_drawable_path.size() - 4, 4,
+                                    ".xml") != 0) {
+                                auto bg_probe = apk_parser_.extract_entry_cached(node->bg_drawable_path);
+                                std::string bfmt = renderer::image_format_name(bg_probe);
+                                if (bfmt != "xml") {
+                                    diagnostics::GfxProvenance::instance().record_image(
+                                        "background-bitmap", 0, node->bg_drawable_path,
+                                        !bg_probe.empty(), false, 0, 0, bfmt, 0,
+                                        (float)left, (float)top, (float)w, (float)h,
+                                        false, "BG_BITMAP_NOT_DRAWN_BY_ENGINE");
+                                }
+                            }
                             if (is_image_view && !node->image_drawable_path.empty() && !node_invisible) {
                                 // S68 §13 (A3 fix): ONE format-detecting decoder for
                                 // ALL image consumers. The previous PNG-magic-only
@@ -2540,6 +2658,16 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                                   << node->image_drawable_path << "': "
                                                   << decoded.error << std::endl;
                                 }
+                                // S82-GFX §6: ASSET_FOUND/DECODED/DRAW_CALLED chain bit
+                                if (diagnostics::GfxProvenance::instance().enabled())
+                                    diagnostics::GfxProvenance::instance().record_image(
+                                        "imageview-direct", node->image_resource_id,
+                                        node->image_drawable_path, !png_data.empty(),
+                                        decoded.ok && !decoded.rgba.empty(),
+                                        decoded.width, decoded.height,
+                                        decoded.color_type_name, node->src_density,
+                                        0, 0, 0, 0, false,
+                                        decoded.ok ? "" : "DECODE_FAILED");
                                 if (decoded.ok && !decoded.rgba.empty()) {
                                         // G04 §4/§12: density scale (selected config →
                                         // device) + FIT_CENTER in the padding-excluded
@@ -2562,6 +2690,14 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                         canvas.draw_image(decoded.rgba.data(),
                                                           decoded.width, decoded.height,
                                                           fr.x, fr.y, fr.w, fr.h);
+                                        if (diagnostics::GfxProvenance::instance().enabled())
+                                            diagnostics::GfxProvenance::instance().record_image(
+                                                "imageview-direct", node->image_resource_id,
+                                                node->image_drawable_path, true,
+                                                true, decoded.width, decoded.height,
+                                                decoded.color_type_name, sel_d,
+                                                (float)fr.x, (float)fr.y,
+                                                (float)fr.w, (float)fr.h, true, "");
                                         trace_engine_.info("ExecutionEngine",
                                             "stage_render_frame",
                                             std::string("Drew image '") + node->image_drawable_path +
@@ -2618,6 +2754,16 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                     renderer::DecodedImage decoded;
                                     const bool attempted =
                                         renderer::decode_image_bytes(img_data, &decoded);
+                                    // S82-GFX §6: resid-resolution chain bit
+                                    if (diagnostics::GfxProvenance::instance().enabled())
+                                        diagnostics::GfxProvenance::instance().record_image(
+                                            "imageview-resid", node->image_resource_id,
+                                            resolved_img_path, !img_data.empty(),
+                                            attempted && decoded.ok, decoded.width,
+                                            decoded.height, decoded.color_type_name,
+                                            resolved_img_density, 0, 0, 0, 0, false,
+                                            attempted ? (decoded.ok ? "" : "DECODE_FAILED")
+                                                      : "EXTRACT_FAILED");
                                     if (attempted && decoded.ok && !decoded.rgba.empty()) {
                                         // G04 §4/§12: same density + FIT_CENTER law as
                                         // every other image draw (single shared helper);
@@ -2634,6 +2780,14 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                         canvas.draw_image(decoded.rgba.data(),
                                                           decoded.width, decoded.height,
                                                           fr.x, fr.y, fr.w, fr.h);
+                                        if (diagnostics::GfxProvenance::instance().enabled())
+                                            diagnostics::GfxProvenance::instance().record_image(
+                                                "imageview-resid", node->image_resource_id,
+                                                resolved_img_path, true, true,
+                                                decoded.width, decoded.height,
+                                                decoded.color_type_name, sel_d,
+                                                (float)fr.x, (float)fr.y,
+                                                (float)fr.w, (float)fr.h, true, "");
                                         trace_engine_.info("ExecutionEngine",
                                             "stage_render_frame",
                                             std::string("IMG-RES-RENDER drew '") +
@@ -3054,6 +3208,28 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                             }
                         }
                         std::cerr << "[EXP092-COPY] framebuffer_ has " << fb_non_white << " non-white pixels" << std::endl;
+                        // S82-GFX §6: SURFACE evidence — composed-frame census.
+                        if (diagnostics::GfxProvenance::instance().enabled()) {
+                            std::map<uint32_t, size_t> color_hist;
+                            for (size_t i = 0; i + 3 < framebuffer_.size(); i += 12) {  // sampled 1/3
+                                uint32_t key = (uint32_t(framebuffer_[i]) << 16) |
+                                               (uint32_t(framebuffer_[i+1]) << 8) |
+                                               uint32_t(framebuffer_[i+2]);
+                                color_hist[key]++;
+                            }
+                            std::vector<std::pair<uint32_t, size_t>> topv(color_hist.begin(), color_hist.end());
+                            std::partial_sort(topv.begin(),
+                                              topv.begin() + std::min<size_t>(8, topv.size()),
+                                              topv.end(),
+                                              [](const auto& a, const auto& b) { return a.second > b.second; });
+                            std::vector<uint32_t> topc;
+                            for (size_t k = 0; k < std::min<size_t>(8, topv.size()); ++k)
+                                topc.push_back(topv[k].first);
+                            diagnostics::GfxProvenance::instance().record_frame_census(
+                                trace_engine_.get_metrics().frames_rendered,
+                                framebuffer_.size() / 4,
+                                (size_t)fb_non_white, color_hist.size(), topc);
+                        }
 
                         trace_engine_.info("ExecutionEngine", "stage_render_frame",
                                            "Rendered ViewShadow tree with BitmapFont (root_id=" +
@@ -3167,6 +3343,18 @@ bool ExecutionEngine::stage_capture_output( ExecutionResult& result, const Execu
                                          framebuffer_.size());
             trace_engine_.info("ExecutionEngine", "stage_capture_output",
                               "PNG screenshot saved to: " + screenshot_path);
+        }
+        // S82-GFX §6: SCREENSHOT_CAPTURED + final census; writes the JSON.
+        if (diagnostics::GfxProvenance::instance().enabled()) {
+            std::map<uint32_t, size_t> shot_hist;
+            size_t shot_nonwhite = 0;
+            for (const auto& c : fb.get_pixels()) {
+                if (c.r != 255 || c.g != 255 || c.b != 255) shot_nonwhite++;
+                uint32_t key = (uint32_t(c.r) << 16) | (uint32_t(c.g) << 8) | uint32_t(c.b);
+                shot_hist[key]++;
+            }
+            diagnostics::GfxProvenance::instance().finalize(
+                screenshot_path, png_ok, shot_nonwhite, shot_hist.size());
         }
     } catch (const std::exception& e) {
         trace_engine_.record_error("PNG_WRITE_ERROR", e.what(),
