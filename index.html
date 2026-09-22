@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MiniAndroid — Snake Gameplay Proof | اثبات اجرای بازی اسنک</title>
+<title>MiniAndroid — Real Gameplay | گیم‌پلی واقعی روی runtime</title>
 <style>
   :root {
     --bg: #0d1117; --card: #161b27; --border: #2d3748;
-    --text: #e6edf3; --muted: #9aa7b8; --accent: #ff4081; --blue: #58a6ff;
+    --text: #e6edf3; --muted: #9aa7b8; --accent: #22c55e; --blue: #58a6ff;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -15,7 +15,7 @@
     font-family: "Vazirmatn", "Segoe UI", Tahoma, sans-serif;
     line-height: 1.8; padding: 24px 16px 60px;
   }
-  .wrap { max-width: 720px; margin: 0 auto; }
+  .wrap { max-width: 780px; margin: 0 auto; }
   h1 { font-size: 1.55rem; text-align: center; margin: 18px 0 6px; }
   h1 .en { color: var(--blue); }
   .sub { text-align: center; color: var(--muted); margin-bottom: 22px; font-size: .95rem; }
@@ -28,8 +28,11 @@
     max-width: 100%; border-radius: 10px;
     border: 1px solid var(--border); background: #fff;
   }
+  .shots { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
+  .shots img { max-width: 46%; border-radius: 8px; border: 1px solid var(--border); }
   .caption { color: var(--muted); font-size: .85rem; margin-top: 10px; text-align: center; }
-  h2 { font-size: 1.12rem; margin-bottom: 10px; color: var(--accent); }
+  h2 { font-size: 1.12rem; margin-bottom: 10px; }
+  h2 .en { color: var(--accent); }
   table { width: 100%; border-collapse: collapse; font-size: .92rem; }
   td { padding: 7px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
   td:first-child { color: var(--muted); white-space: nowrap; width: 42%; }
@@ -37,6 +40,7 @@
     background: #0d1117; border: 1px solid var(--border); border-radius: 6px;
     padding: 1px 6px; font-size: .82em; direction: ltr; unicode-bidi: embed;
     font-family: "Sarasa Mono SC", Consolas, monospace; color: var(--blue);
+    word-break: break-all;
   }
   .fa { direction: rtl; text-align: right; }
   .en-block { direction: ltr; text-align: left; }
@@ -48,84 +52,87 @@
   .ok { color: #3fb950; font-weight: 700; }
   a { color: var(--blue); text-decoration: none; }
   a:hover { text-decoration: underline; }
-  .foot { text-align: center; color: var(--muted); font-size: .82rem; margin-top: 26px; }
+  .stats { color: var(--accent); font-size: .85rem; text-align:center; margin-top:6px; }
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <h1><span class="en">MiniAndroid — Snake Gameplay Proof</span></h1>
-  <div class="sub">اثبات اجرای واقعی بازی اسنک روی MiniAndroid Compatibility Runtime</div>
+  <h1>MiniAndroid <span class="en">— Real Gameplay Proof</span></h1>
+  <div class="sub">سه بازی واقعی (APK واقعی اندروید) اجرا و بازی شده روی runtime سازگاری MiniAndroid — S80</div>
 
-  <div class="card gifbox">
-    <img src="snake_gameplay.gif" alt="Snake gameplay GIF — real APK execution"
-         width="480" height="854">
-    <div class="caption en-block">
-      snake_v1.0_vc1.apk — rendered by the MiniAndroid engine (real-dalvik),
-      driven only by scheduled screen taps, vision from rendered frames.
+  <div class="card">
+    <h2><span class="en">1 · Snake Deluxe</span> — اسنک Deluxe</h2>
+    <div class="gifbox">
+      <img src="snake_gameplay.gif" alt="Snake Deluxe gameplay GIF" loading="lazy">
+    </div>
+    <div class="stats">۹ بار سیب خورده شد · مار از ۳ قطعه به ۱۱ قطعه رسید · SCORE 9 · BEST 9</div>
+    <table class="fa">
+      <tr><td>APK</td><td class="en-block"><code>snake_deluxe_v1.0_vc1.apk</code> — ساخته‌شده در همین موج (S80)، جاوا خالص android.jar</td></tr>
+      <tr><td>گرافیک</td><td class="fa">صفحه شطرنجی تیره، مار سبز راه‌راه با سر و چشم جهت‌دار، سیب با ساقه و برگ، نوار امتیاز — همه با <code>Canvas.onDraw</code> واقعی</td></tr>
+      <tr><td>کنترل</td><td class="fa">دکمه‌های START / TOP / LEFT / RIGHT / BOTTOM — لمس واقعی از طریق TouchDispatcher</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2><span class="en">2 · Mini Tetris</span> — تتریس</h2>
+    <div class="gifbox">
+      <img src="tetris_gameplay.gif" alt="Mini Tetris gameplay GIF" loading="lazy">
+    </div>
+    <div class="stats">۷ مهره چیده و قفل شد · پالت ۷ رنگ کلاسیک · پنل NEXT / SCORE / LINES / LEVEL</div>
+    <table class="fa">
+      <tr><td>APK</td><td class="en-block"><code>tetris_v1.0_vc1.apk</code> — موج S80</td></tr>
+      <tr><td>گرافیک</td><td class="fa">مهره‌های براق گردگوشه باHighlights، شبکه‌ی زمین بازی، پیش‌نمایش مهره بعدی</td></tr>
+      <tr><td>مکانیک</td><td class="fa">چرخش با wall-kick، قفل و حذف سطر، امتیازدهی کلاسیک 100/300/500/800</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2><span class="en">3 · 2048</span> — بازی ۲۰۴۸</h2>
+    <div class="gifbox">
+      <img src="g2048_gameplay.gif" alt="2048 gameplay GIF" loading="lazy">
+    </div>
+    <div class="stats">۶۴ حرکت · SCORE 684 · بالاترین کاشی 64 · مکانیک کلاسیک Gabriele Cirulli</div>
+    <table class="fa">
+      <tr><td>APK</td><td class="en-block"><code>g2048_v1.0_vc1.apk</code> — موج S80</td></tr>
+      <tr><td>گرافیک</td><td class="fa">پالت رنگی اصلی ۲۰۴۸ برای هر مقدار، کاشی‌های گردگوشه با اعداد بولد</td></tr>
+      <tr><td>مکانیک</td><td class="fa">لغزش و ادغام کامل در ۴ جهت، تولید 2/4 بعد از هر حرکت، تشخیص پایان بازی</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2><span class="en">Upload Rules</span> — قوانین آپلود (ثبت‌شده از S80)</h2>
+    <table class="fa">
+      <tr><td>سایت اصلی</td><td class="en-block">این صفحه = شاخه <code>gh-pages</code> همان ریپو</td></tr>
+      <tr><td>لینک زنده (بدون اکانت)</td><td class="en-block">
+        <code>https://raw.githack.com/Sh-TB/MiniAndroid-Compatibility-Runtime/gh-pages/index.html</code><br>
+        <code>https://cdn.jsdelivr.net/gh/Sh-TB/MiniAndroid-Compatibility-Runtime@gh-pages/index.html</code></td></tr>
+      <tr><td>نیاز به اکانت؟</td><td class="fa">مشاهده: <span class="ok">نه</span> — CDNهای githack/jsDelivr بدون اکانت سرو می‌کنند. انتشار (push): فقط با PAT گیت‌هاب که در اختیار runtime است؛ GitHub Pages API با این PAT غیرفعال است (pages:write نیست — ثبت شده) بنابراین مسیر CDN رسمی همین است.</td></tr>
+      <tr><td>قانون ثابت</td><td class="fa">هر GIF/اسکرین‌شات اثبات = فریم‌های واقعی خروجی runtime (بدون دست‌کاری گرافیک)؛ فقط کوچک‌سازی + نوار عنوان باریک مجاز است.</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2 class="en-block">Verification (S80)</h2>
+    <table class="en-block">
+      <tr><td>Snake Deluxe autoplay</td><td class="ok">9 captures</td><td>vision-planned taps, C7 prefix-SHA verified</td></tr>
+      <tr><td>Mini Tetris autoplay</td><td class="ok">7 locks</td><td>greedy placer, pixel-arbitrated anchors</td></tr>
+      <tr><td>2048 autoplay</td><td class="ok">64 moves · 684 pts</td><td>64/64 prefix-SHA verified</td></tr>
+      <tr><td>Golden regression</td><td class="ok">26/26 · 90/90</td><td>battery + verifier SAME + fidelity BYTE-IDENTICAL</td></tr>
+      <tr><td>App ladder sweep</td><td class="ok">20/20 load</td><td>every inventory APK re-run at HEAD</td></tr>
+    </table>
+    <div class="badges">
+      <span class="badge">real-dalvik</span>
+      <span class="badge">Canvas.onDraw</span>
+      <span class="badge">TouchDispatcher</span>
+      <span class="badge">no emulator</span>
+      <span class="badge">no game patches</span>
     </div>
   </div>
 
   <div class="card fa">
-    <h2>این یعنی چه؟</h2>
-    <p>
-      این گیف، اسکرین‌رندرهای واقعی اجرای APK اصلی بازی Snake روی موتور
-      MiniAndroid است — نه شبیه‌سازی دستی. کنترلر فقط «تپ»‌های زمان‌بندی‌شده
-      روی دکمه‌های جهت‌نامه می‌فرستد (همان مسیری که انگشت کاربر می‌رود) و همهٔ
-      تصمیم‌ها فقط از روی فریم‌های رندرشده گرفته شده است.
-    </p>
-    <p>
-      داستان گیف: <b>بازی ۱</b> — مار خودش می‌رود، می‌چرخد و غذا را می‌گیرد
-      (مار بزرگ می‌شود) تا با برخورد به بدنش، Game Over شود. سپس دیالوگ
-      «Game Over!» با دکمه‌های فارسی <b>«退出 / 重新开始»</b> (خروج / شروع دوباره)
-      نمایش داده می‌شود — متن غیرASCII از مسیر واقعی TextShaper/فونت CJK رندر
-      می‌شود (قانون R-NEW-398). بعد کنترلر روی دکمهٔ «شروع دوباره» تپ می‌زند،
-      دیالوگ بسته می‌شود و <b>بازی ۲</b> با همان کیفیت از نو اجرا می‌شود —
-      یعنی چرخهٔ کامل «بازی → مرگ → دیالوگ → ری‌استارت → بازی» واقعاً کار می‌کند.
-    </p>
-  </div>
-
-  <div class="card">
-    <h2>Evidence chain (English)</h2>
-    <table>
-      <tr><td>APK executed</td><td><code>upload/s72_w4_apks/snake_v1.0_vc1.apk</code></td></tr>
-      <tr><td>Engine mode</td><td><code>real-dalvik</code> bytecode interpretation, binary at HEAD <code>527925b7</code></td></tr>
-      <tr><td>Actuator (C1)</td><td>scheduled taps only, via the canonical TouchDispatcher DOWN/UP law — 27 taps (game 1) + restart + 23 taps (game 2)</td></tr>
-      <tr><td>Vision (C3)</td><td>rendered frames only — snake <code>#FF4081</code>, food <code>#0000FF</code> on the 20×20 grid</td></tr>
-      <tr><td>Game 1</td><td class="en-block"><span class="ok">88 moves · 22 turns · 1 food capture</span> → self-collision death (frame 94)</td></tr>
-      <tr><td>Game-Over dialog</td><td class="en-block">paints CJK labels <b>重新开始</b> (28 blue px) + <b>退出</b> via R-NEW-398 (TextShaper + WenQuanYi fallback face)</td></tr>
-      <tr><td>Restart tap</td><td class="en-block">tap on the dialog's positive button (758,1022)@99 → dialog dismissed, board reset observed at frame 99</td></tr>
-      <tr><td>Game 2</td><td class="en-block"><span class="ok">90 moves · 24 turns · 1 food capture</span> → second death at frame 192 (deterministic replay of the same schedule)</td></tr>
-      <tr><td>Determinism (C7)</td><td class="en-block">Level-C fidelity replay on the same binary: <span class="ok">BYTE-IDENTICAL 90/90</span> frames; baseline battery <span class="ok">26/26</span>; pixel verifier <span class="ok">26/26</span></td></tr>
-      <tr><td>Full report</td><td class="en-block"><code>run/s79_snake_gif/s79_gif_report.json</code> in the repository workspace</td></tr>
-    </table>
-    <div class="badges">
-      <span class="badge">real APK</span>
-      <span class="badge">real input pipeline</span>
-      <span class="badge">no state injection</span>
-      <span class="badge">pixel-only vision</span>
-      <span class="badge">deterministic ×2</span>
-    </div>
-  </div>
-
-  <div class="card en-block">
-    <h2>What is MiniAndroid?</h2>
-    <p>
-      An Android compatibility runtime that executes real, unmodified Android
-      APKs (DEX bytecode interpretation + a from-scratch rendering/input stack)
-      outside the Android OS, with an evidence-first engineering process: every
-      fix must carry REPRODUCE → ROOT CAUSE → UPSTREAM LAW → IMPLEMENTATION →
-      TEST → REAL EXECUTION → OBSERVATION → REGRESSION. This wave (S79) proved
-      the full gameplay loop of Snake end-to-end on the runtime.
-    </p>
-    <p style="margin-top:8px">
-      Repository: <a href="https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime">Sh-TB/MiniAndroid-Compatibility-Runtime</a>
-    </p>
-  </div>
-
-  <div class="foot">
-    Generated 2026-09-22 · MiniAndroid S79 wave · GIF is a downscaled derived
-    artifact; every source frame is an authentic engine render.
+    <h2>چطور خودت بازی کنی؟</h2>
+    <p>هر سه بازی APK استاندارد اندروید هستند و روی هر گوشی اندرویدی نصب می‌شوند؛ روی MiniAndroid runtime هم با همین گرافیک اجرا می‌شوند. فایل‌ها در پوشه <code class="ltr">upload/s80_games/</code> ریپو هستند.</p>
   </div>
 
 </div>
