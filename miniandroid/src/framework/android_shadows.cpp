@@ -2907,12 +2907,55 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
             std::cerr << "[EXP088-B-VS] FOUND view_id=" << found << std::endl;
             return CallResult::handled_object(found, "Landroid/view/View;");
         }
+        // ── S83-GFX-BASE (AOSP window content-root law) ──────────────────
+        // android.R.id.content (0x01020002) ALWAYS resolves on a live
+        // window: PhoneWindow installs a content parent (FrameLayout) under
+        // the DecorView at attach time. androidx ComposeView.setContent
+        // does `decor.findViewById<ViewGroup>(R.id.content)` then calls
+        // getChildAt/addView on it — a null here NPEs the whole Compose
+        // root (APP-001 exact trace: ComponentActivityKt.setContent pc=18
+        // "getChildAt on null object reference"). Lazily materialize the
+        // content parent on first lookup (idempotent; deterministic id).
+        if (target_id == 0x01020002 /* android.R.id.content */) {
+            const uint32_t content_id = next_window_content_id_++;
+            auto* content = get_or_create_node(
+                content_id, "Landroid/widget/FrameLayout;");
+            content->android_view_id = 0x01020002;
+            if (search_root != 0) {
+                content->parent_id = search_root;
+                if (auto* root = find_node(search_root))
+                    root->children.push_back(content_id);
+                std::cerr << "[S83-CONTENT] android.R.id.content node="
+                          << content_id << " linked under view="
+                          << search_root << std::endl;
+            }
+            return CallResult::handled_object(content_id,
+                                              "Landroid/widget/FrameLayout;");
+        }
         std::cerr << "[EXP088-B-VS] NOT FOUND" << std::endl;
         return CallResult::handled_null();
     }
     if (m == "findViewWithTag") {
         // Tag is an Object — we don't track tags.
         return CallResult::handled_null();
+    }
+    // ── S83-GFX-BASE: View.getViewTreeObserver() law ─────────────────────
+    if (m == "getViewTreeObserver") {
+        return CallResult::handled_object(view_tree_observer_id_,
+                                          "Landroid/view/ViewTreeObserver;");
+    }
+    if (ctx.class_name.find("ViewTreeObserver") != std::string::npos ||
+        ctx.receiver_class.find("ViewTreeObserver") != std::string::npos) {
+        if (m.rfind("addOn", 0) == 0 || m.rfind("removeOn", 0) == 0) {
+            observer_listener_events_++;
+            return CallResult::handled_void();
+        }
+        if (m == "isAlive") return CallResult::handled_bool(true);
+        if (m == "checkAlive") return CallResult::handled_bool(true);
+        if (m == "dispatchOnDraw" || m == "dispatchOnGlobalLayout" ||
+            m == "dispatchOnPreDraw") {
+            return CallResult::handled_bool(true);
+        }
     }
     if (m == "setVisibility") {
         auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
@@ -2922,6 +2965,37 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     if (m == "getVisibility") {
         const auto* n = find_node(ctx.receiver_id);
         return CallResult::handled_int(n ? n->visibility : 0);
+    }
+    // ── S83-GFX-BASE §19: ImageView.setScaleType law ─────────────────────
+    // AOSP ImageView.setScaleType(ScaleType) stores the enum; the ordinal
+    // drives scale_image_rect at draw (see ViewNode::scale_type).
+    if (m == "setScaleType") {
+        auto* n = get_or_create_node(ctx.receiver_id,
+                                     ctx.receiver_class.empty()
+                                         ? ctx.class_name : ctx.receiver_class);
+        int32_t ord = 3;
+        if (ctx.args.size() >= 1 &&
+            ctx.args[0].kind == CallContext::Arg::Kind::OBJECT && heap_) {
+            int32_t o = 0;
+            if (heap_->get_object_int_field(ctx.args[0].object_id, "ordinal", o))
+                ord = o;
+        } else if (ctx.args.size() >= 1) {
+            ord = ctx.arg_as_int(0, 3);
+        }
+        n->scale_type = (ord >= 0 && ord <= 7) ? (int)ord : 3;
+        return CallResult::handled_void();
+    }
+    if (m == "getScaleType") {
+        const auto* n = find_node(ctx.receiver_id);
+        const int32_t ord = n ? n->scale_type : 3;
+        if (heap_) {
+            const uint32_t obj =
+                heap_->get_or_create("Landroid/widget/ImageView$ScaleType;");
+            heap_->set_object_int_field(obj, "ordinal", ord);
+            return CallResult::handled_object(
+                obj, "Landroid/widget/ImageView$ScaleType;");
+        }
+        return CallResult::handled_null();
     }
     // ── S55 F-082: ViewAnimator displayed-child laws (AOSP
     // ViewAnimator.java, verified against the framework source family:
@@ -3206,14 +3280,13 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_void();
     }
     if (m == "setBackgroundResource") {
-        // EXP-067: View.setBackgroundResource(int resid)
-        // Store the resource ID for color/drawable resolution.
-        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
-        int32_t resid = ctx.arg_as_int(0, 0);
-        n->image_resource_id = resid;  // reuse field for background
-        std::cerr << "[EXP067-SETBGRES] view_id=" << ctx.receiver_id
-                  << " resid=0x" << std::hex << resid << std::dec
-                  << std::endl;
+        // S82-GFX F-NEW-158: the resid is now captured engine-side
+        // (dalvik_engine post-dispatch hook → ViewShadow::set_bg_resource)
+        // into ViewNode.bg_resource_id. The previous handler REUSED
+        // image_resource_id, which (a) clobbered an ImageView's src resid
+        // set earlier and (b) was never consulted by the background paint
+        // path for non-image views — every programmatic XML-drawable or
+        // bitmap background was silently dropped (fixture l4 evidence).
         return CallResult::handled_void();
     }
     if (m == "setText") {

@@ -106,7 +106,14 @@ struct DrawOp {
         DRAW_COLOR, DRAW_RECT, DRAW_ROUNDRECT, DRAW_CIRCLE, DRAW_LINE, DRAW_TEXT, DRAW_PAINT,
         DRAW_PATH,
         // S68 §12: bitmap draw — pixels resolved from BitmapStore at replay.
-        DRAW_BITMAP
+        DRAW_BITMAP,
+        // S83-GFX-BASE (Contract C1): point/line arrays + positioned text —
+        // were accepted-then-NO-OP; now recorded and rasterized.
+        DRAW_POINTS, DRAW_LINES, DRAW_POS_TEXT,
+        // S83-GFX-BASE (Contract C1/C6): real saveLayer isolation — the op
+        // stream carries layer begin/end markers; replay renders the enclosed
+        // ops into an offscreen alpha layer and composites at end.
+        SAVE_LAYER, END_LAYER
     };
     Kind kind = Kind::DRAW_COLOR;
     float x = 0, y = 0, w = 0, h = 0;   // rect: x,y,w,h ; line: x1,y1,x2,y2 in x,y,w,h
@@ -142,6 +149,10 @@ struct DrawOp {
     // lets rotated/scaled destinations sample correctly.
     bool has_affine = false;
     Affine2D affine;
+    // S83: the affine maps BITMAP-PIXEL space exactly (Matrix overload) —
+    // forces per-pixel sampling even for pure-scale affines (b=c=0, a≠1),
+    // which the baked-dst fast path would otherwise approximate.
+    bool affine_exact = false;
     // ── S68 §12: PER-OP CLIP SNAPSHOT (AOSP law) ─────────────────────────
     // The clip in effect AT RECORD TIME applies to this op (ops recorded
     // after clipRect() are clipped; ops after restore() are not). Reading
@@ -150,6 +161,13 @@ struct DrawOp {
     // already deactivated the clip when replay ran).
     bool has_clip = false;
     float clip_l = 0, clip_t = 0, clip_r = 0, clip_b = 0;
+    // ── S83: PER-OP PATH CLIP SNAPSHOT (Contract C1 clipPath) ──────────
+    // Contours in DEVICE space (baked through the record-time matrix, like
+    // the rect clip), rasterized to scanline spans at replay. fill rule:
+    // 0 = WINDING, 1 = EVEN_ODD.
+    bool has_path_clip = false;
+    int path_clip_fill = 0;
+    std::vector<std::vector<std::pair<float, float>>> path_clip_contours;
 };
 
 class CanvasShadow : public Shadow {
@@ -213,7 +231,19 @@ private:
     Affine2D mat_;
     struct ClipRect { float l = 0, t = 0, r = 0, b = 0; bool active = false; };
     ClipRect clip_;                       // view/op space (baked like ops)
-    struct SavedState { Affine2D mat; ClipRect clip; };
+    // S83: path clip state (op-space contours; baked to device in stamp).
+    bool clip_path_active_ = false;
+    int clip_path_fill_ = 0;
+    std::vector<std::vector<std::pair<float, float>>> clip_path_;   // op space
+    struct SavedState {
+        Affine2D mat; ClipRect clip;
+        // S83: saveLayer markers — the state remembers the SAVE_LAYER op so
+        // restore/restoreToCount emit the matching END_LAYER.
+        bool is_layer = false;
+        bool path_clip = false;      // path clip part of the snapshot
+        int path_fill = 0;
+        std::vector<std::vector<std::pair<float, float>>> path;
+    };
     std::vector<SavedState> save_stack_;
 
     std::vector<DrawOp>& target() {
@@ -258,12 +288,29 @@ private:
     std::map<std::string, bool> noop_warned_;
     void warn_noop(const std::string& cls, const std::string& op);
 
-    // S68 §12: stamp the CURRENT clip onto an op at record time.
+    // S68 §12: stamp the CURRENT clip onto an op at record time (rect ∧
+    // path — S83). Path contours are baked to DEVICE space here (op space +
+    // the record-time matrix), matching the rect-clip baking law.
     void stamp_clip(DrawOp& op) const {
         if (clip_.active) {
             op.has_clip = true;
             op.clip_l = clip_.l; op.clip_t = clip_.t;
             op.clip_r = clip_.r; op.clip_b = clip_.b;
+        }
+        if (clip_path_active_ && !clip_path_.empty()) {
+            op.has_path_clip = true;
+            op.path_clip_fill = clip_path_fill_;
+            op.path_clip_contours.clear();
+            for (const auto& ct : clip_path_) {
+                std::vector<std::pair<float, float>> dev;
+                dev.reserve(ct.size());
+                for (const auto& p : ct) {
+                    float px, py;
+                    mat_.map(p.first, p.second, px, py);
+                    dev.push_back({px, py});
+                }
+                op.path_clip_contours.push_back(std::move(dev));
+            }
         }
     }
 

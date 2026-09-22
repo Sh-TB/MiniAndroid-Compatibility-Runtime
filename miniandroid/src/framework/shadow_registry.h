@@ -216,6 +216,24 @@ public:
                                       int32_t value) {
         (void)object_id; (void)field_name; (void)value; return false;
     }
+    // S83-GFX-BASE (§5 Contract C3): float array ELEMENT read. The engine's
+    // register model stores floats as raw bit patterns (F-028 law — see
+    // dalvik_raw_bits32 / ARITH float cases), so a float[] element may sit
+    // in the heap either as a typed FLOAT32 (result of a float ALU op /
+    // fill-array-data [F) or as INT32 raw bits (const + aput). Scalar
+    // get_object_float_field converts INT32 by VALUE (the scalar-field
+    // convention); array elements must reinterpret INT32 as float BITS.
+    virtual bool get_object_array_float_element(uint32_t array_id, size_t index,
+                                                float& out) {
+        (void)array_id; (void)index; (void)out; return false;
+    }
+    // S83-GFX-BASE: float field writes for shadows (android.graphics.Matrix
+    // m0..m8).
+    virtual bool set_object_float_field(uint32_t object_id,
+                                        const std::string& field_name,
+                                        float value) {
+        (void)object_id; (void)field_name; (void)value; return false;
+    }
     // M4 F-028d — ATOMIC FIELD UPDATER LAW: typed heap field access for
     // the java.util.concurrent.atomic.Atomic*FieldUpdater family. ART
     // field updaters read/write the TARGET object's field via Unsafe;

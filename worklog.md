@@ -2827,3 +2827,170 @@ Stage Summary:
   (F-NEW-157), Lifecycling CNFE escape, WebView-only layouts.
 - Next: EGL10 object law (single-fix fanout for 4 GL titles),
   Flutter host surface, BATCH-02 corpus wave.
+Task ID: S82
+Agent: Super Z (main)
+Task: S82 — PER-TITLE COMPATIBILITY TRACKER (user directive: 200 items = 200
+independent permanent compatibility records + independent GitHub issues;
+Issue #24 stays umbrella-only; emulator-tracker pattern; hard execution gates;
+never claim "200 tested" for "200 records").
+
+Work Log:
+- Registry freeze (§3/§4): docs/corpus/s82/title_registry.json from frozen
+  S81 corpus (CORPUS_SEED-pinned order): GAME-001..100, APP-001..100,
+  MAND-001 P9, MAND-002 TimeLimit = 202 records, zero duplicate packages;
+  stopwatch/platformer inventories cross-referenced, 15 inventory-only
+  packages recorded (never dropped); REGISTRY_FREEZE.md.
+- Labels (§21): 46 created idempotently (status ladder family, failure
+  family, workflow family — statuses and failures separated).
+- Issue template: .github/ISSUE_TEMPLATE/title-compatibility.yml (§6,
+  automation-populated).
+- Engine rebuilt (container reset had wiped build/): make -j4 OK; smoke test
+  gmdice PASS.
+- Execution (§12/§27/§49): P9 + TimeLimit full chains (2 runs each; APK SHA,
+  screenshot, official F-Droid references with SHA, structured palette
+  comparison); BATCH-01 21/25 + 4 BLOCKED honest (3 delisted from F-Droid
+  API, 1 persistent download-fail); stopwatch 3/3; platformer 6; 19/20
+  category families; cached gates: F-NEW-156 ×3 reproduced (crash traces),
+  IMAGE_GAP ×3 re-traced, DIALOG real-title retests (solitaire framework
+  AlertDialog$Builder.setItems ×3 DEX-proven callers + mykanji Material;
+  paths gated upstream — no fake pass), PLACEHOLDER zero-garble retest
+  (VF-NEW-002 AFTER-state holds on real titles).
+- NEW ROOT CAUSE F-NEW-157 registered (root_registry 417→418): libGDX
+  AndroidGraphics.createGLSurfaceView NPE → APP-BOUNDARY unwind at
+  MainActivity.onCreate (P9; S80 emmanuelmess precedent). GitHub #228.
+- Status law (§7/§16): two-color + text_px<500 = STATE-NONBLANK +
+  FAIL-PALETTE (blank-face failure), §29 interaction attempt recorded even
+  on dead UI (TAP_DISPATCHED_NO_RESPONSE), L5 never self-granted (§31).
+- Issues (§5/§24/§45): 202 title issues CREATED (idempotent REST
+  identity-index by TITLE_ID marker; registry backfilled ISSUE_NUMBER/URL;
+  zero FAILED); root-cause issues #227/#228/#229 with fanout lists; label
+  query verification 1:1 with registry (§46): compatibility 202, game 100,
+  app 100, mandatory 2, executed 41, not-tested 161, state-nonblank 39,
+  fail-oncreate 35.
+- Issue #24: appended "S82 — PER-TITLE COMPATIBILITY TRACKER" section (§35):
+  progress counters, hard-gate table, 202-row per-title index; original S81
+  body untouched.
+- Dashboard (§32/§33/§41): COMPATIBILITY_INDEX.md + compatibility_index.json
+  + root_cause_graph.md/.json (fanout = regression blast radius).
+- Validator (§44) PASS: no status without evidence; BLOCKED never
+  state-inflated; no auto-L5; 202/202 issues linked.
+- Hygiene (§38-40): disk 7.2G avail; APK cache SHA-dedup (23 removed);
+  hidden-state audit (stash 0, stale worktree pruned, 20 unreachable objects
+  recorded, none evidence-referenced); false-completion scan only pre-existing
+  doc flags; evidence docs/evidence/s82 = 53 JPGs ≤100KB + SHA256SUMS.
+- Commit 2b1dd0fd pushed (secret guard PASS; token never persisted in
+  config/URL; one-shot header/URL auth only).
+
+Stage Summary:
+- Honest counts (§54 respected): 202 records, 205 GitHub issues (202 title +
+  3 root-cause), EXECUTED 41 (25 games, 14 apps, 2 mandatory), BLOCKED 4,
+  NOT_TESTED 157; STATE-NONBLANK 39, STATE-RENDERED 1 (GAME-052 boxcars),
+  STATE-GRAPHICALLY-NONTRIVIAL 1 (GAME-004 balancetheball lvl-2 comparison),
+  INTERACTIVE 0, STATE_CHANGED 0, VISUAL_CORRELATED 0, HUMAN_VERIFIED 0;
+  VISUAL_FAIL vs official references 31, PARTIAL 4; ONCREATE 35; IMAGE_GAP
+  40/41; references 177 OK/25 NA.
+- S82 proved the tracker architecture end-to-end: one fix (#227) will
+  regress 35 title issues; every title has a permanent, human-workable
+  dossier (identity, session, evidence, failure, root-cause link, resolution).
+- Next (S83): F-NEW-156 law attack → 35-title regression wave; F-NEW-157 GL
+  surface law; BATCH-02..04; references already in place for L4/L5 when
+  renders become non-blank.
+
+---
+Task ID: S82-GFX-REVOLUTION (wave 3)
+Agent: Super Z (main)
+Task: S82-GFX-REVOLUTION — break the shared root cause of "APK executes but graphics never reach the screen"; source-first spotlight, fixture ladder, pixel provenance, one fix → fanout.
+
+Work Log:
+- Repo archaeology first (§3 law): existing fixtures toolchain (ECJ+D8+aapt2, build_fixture_apk.sh), s82_lib run harness, 43 cached APKs (789M, /tmp apk cache), libpng full color-type support confirmed BEFORE any new code.
+- P1 graphics-family scan: scripts/s82gfx_family_scan.py — streaming zip scan (no full extract), hash/mtime-cached, RAM-bounded; 41 executed APKs fingerprinted → docs/corpus/s82/graphics_families.json; families: B=37 C=38 D=30 E=38 G=12 H=16 I=29 J=2 K=1 L=14 M=27 N=33.
+- P2 pixel provenance instrument: miniandroid/src/diagnostics/gfx_provenance.h (MINIANDROID_GFX_PROVENANCE=<json>); evidence-bit chain per image attempt (ASSET_FOUND→RESOURCE_RESOLVED→DECODED→BITMAP_CREATED→VIEW_RECEIVED→DRAW_CALLED) + canvas-drawBitmap replay bits + per-frame census + SCREENSHOT_CAPTURED record; hooks in execution_engine (imageview-direct/resid/background-bitmap + frame census + finalize), canvas_shadow (DRAW_BITMAP), bitmap_shadow (decode).
+- P3 golden fixture ladder (7 fixtures, real aapt2 resources): l0_solid, l1_quadrant (r/g/b/k + alpha checker), l2_colortypes (PNG ct 0/2/3/4/6 + tRNS), l3_density (mdpi..xxxhdpi markers), l4_xmldrawables (shape/gradient/layer-list/selector), l5_canvas (fill/stroke rect, path, text, save/clip/restore), l6_glsurface (GLSurfaceView F-NEW-157 probe). Runner+asserter scripts/s82gfx_run_ladder.py.
+- P4 first-divergence table at HEAD: l1/l2/l3 PASS (decoder, palette PNG, tRNS, density selection, ImageView chain all EXONERATED by pixels); l0/l4 FAIL → F-NEW-158 PROGRAMMATIC-BACKGROUND-DROP: (a) setBackground(Drawable)/setBackgroundDrawable in generic void list, (b) setBackgroundResource parked resid in image_resource_id (clobber + never painted); l5 "FAIL" was a fixture clip bug (runtime clip+stroke MORE correct than test); l6 GL white (frontier, no fake fix).
+- F-NEW-158 FIX (one patch, three TUs): dalvik_engine capture (ColorDrawable.<init>/setColor obj→color map; setBackground(Drawable) lookup→bg_color; setBackgroundResource→new ViewNode.bg_resource_id; bg_from_xml=false last-writer law) + android_shadows setBackgroundResource neutralized + render-side ARSC select_file resolution flowing into EXISTING paint laws (state-list pick / F-053 shape via exposed LayoutInflater::apply_shape_background / bitmap fit-draw) + provenance bits.
+- Regression: foundation battery 26/26 rc=0 (s77_baseline_battery.sh) + pixel goldens 24/24 exact vs VERIFICATION.json nonwhite (0 mismatch). Ladder after fix: 6/7 PASS.
+- P5 fanout probe (scripts/s82gfx_fanout_probe.py): GAME-004 unique colors 111→201 (palette delta recorded in title record, no status inflation); MAND-002 + APP-001 re-traced → NEW F-NEW-159 NULL-FRAMEWORK-RECEIVER NPE (LocaleList.toLanguageTags / WindowInsetsController.setSystemBarsAppearance on null) — F-NEW-156 sub-cluster, exact traces kept; graphics fixes correctly cannot reach lifecycle-unwound titles (§25).
+- P6 outputs: docs/knowledge/graphics/{GRAPHICS_PIPELINE,GRAPHICS_ROOT_CAUSES,PIXEL_PROVENANCE,GRAPHICS_FIX_FANOUT}.md + docs/audit/GRAPHICS_GAP_MATRIX.json (canonical, complement App Matrix); root_cause_graph.{json,md} + compatibility_index.json updated (F-NEW-158 FIXED, F-NEW-159 OPEN); evidence docs/evidence/s82gfx (7 ladder JPGs + fanout screenshots + SHA256SUMS); issues #229/#227/#24 commented with tables + traces (no body rewrites).
+
+Stage Summary:
+- Mission metric (§28): 2 root causes advanced (F-NEW-158 fixed; F-NEW-159 registered with exact NPE signatures), fixture ladder = permanent graphics baseline, provenance instrument = permanent chain auditor, fanout discipline live (1 fix → fixture+corpus proof).
+- Exonerated by pixel evidence: PNG decoder (all color types), palette/tRNS, density selection, ImageView→Canvas→screenshot chain, canvas clip/stroke semantics.
+- Confirmed frontier: GL/EGL surface chain absent (F-NEW-157) — l6 fixture reproduces at HEAD deterministically (white frame, 0 API calls).
+- Honest counters: no status inflation; GAME-004 palette delta evidence-only; NOT_TESTED 157 unchanged.
+- Next: F-NEW-156/159 law attack (shadow LocaleList + WindowInsetsController) → 35-title regression wave; detector scan over remaining 161 APKs (disk-guarded lazy); GL software path design per Anbox/SwiftShader architecture law.
+---
+Task ID: S83-GFX-BASE (wave 1, finalize)
+Agent: Super Z (main)
+Task: S83-GFX-BASE — Graphics Foundation Audit + Contract + P0/P1 implementation completion + F-NEW-159 root fix + fanout; finalize the half-committed S83 session work (commit 6c7d2a22 was a session-id WIP with no worklog/no regression).
+
+Work Log:
+- Resumed from an interrupted session: audit + contract + implementation code existed in commit 6c7d2a22 but gates were never run and no worklog entry existed.
+- LADDER COMPLETION: l4c_vector + l4d_ninepatch had built APKs but NO assertions in s82gfx_run_ladder.py — added pixel assertions (vector: viewport scaling/even-odd hole/arc circle; ninepatch: marker-driven stretch positional law — red stripe pinned to left 1:1 zone <100px, blue to right zone >1000px). Ladder 10/10 PASS incl. l6_glsurface (GL real path: app bytecode onDrawFrame → GL10.glClearColor/glClear → PortableGL framebuffer → present → capture; expected (26,153,230) pixel-exact; provenance SURFACE_CREATED..BUFFER_PRESENTED all true). F-NEW-157 advanced (GLSurfaceView/EGL/GL10-GLES11 shadow; libGDX AndroidGraphics chain still open).
+- REGRESSION restored: f54_manifestlabel was 23/24 (engine.log missing in docs/evidence after the S83 refresh — stale artifacts from the pre-S83 binary); canonical build_run_fixtures.sh rerun with current binary → goldens 24/24 (pixel shas unchanged — no pixel drift); battery 26/26 rc=0.
+- F-NEW-159 VERIFIED FIXED: MAND-002 + APP-001 rerun at S83 binary — 0 toLanguageTags/setSystemBarsAppearance occurrences in exception contexts; both advance to per-title next roots (MAND-002: TypedArray.hasValue null + ServiceLoader null; APP-001: kotlin now() must-not-be-null in MyApplication coroutine). Screenshots produced (was API Calls: 0).
+- FANOUT (§ one fix → multiple titles): scripts/s83_fanout_rerun.py — full F-NEW-156 35-title family rerun from cached APKs → run/s83/fanout/FANOUT_S159.json: 35/35 signature-eliminated (exception-context-aware classifier; REC-MISS dispatch lines are the fix working), 35/35 advanced, per-title next blockers named (Godot RuntimeException, GdxRuntimeException, Resources$NotFound, per-title NPEs). NO status inflation: all remain onCreate-boundary; root_cause_graph F-NEW-159 → ROOT-CAUSED-FIXED, F-NEW-157 → ADVANCED; MAND-002/APP-001 records carry S83_OBSERVED.
+- §34 FIRST_DIVERGENCE: implemented in gfx_provenance.h finalize() — canonical C7 chain-order walk per event (first applicable bit=0 while earlier=1; "chain never started" note), per-event + global, derived from recorded bits only. Rebuild + full gates re-run green (ladder 10/10, battery 26/26, goldens 24/24).
+- Hygiene: removed 57MB build-asan binary from git index (was committed in 6c7d2a22; .gitignore'd); audit JSON/MD updated with wave-1 delta table (NinePatch/Vector/Matrix/Canvas→IMPLEMENTED, GLSurfaceView/EGL→PARTIAL, LocaleList/WindowInsetsController→IMPLEMENTED); evidence docs/evidence/s83gfx (12 JPGs ≤100KB + SHA256SUMS); §43 report docs/knowledge/graphics/GRAPHICS_FOUNDATION_STATUS.md.
+- Secret scan: PAT never written to any file/config/URL (one-shot push header only).
+
+Stage Summary:
+- Graphics is now a subsystem with a contract, a 10-fixture pixel ladder, a 27-class machine-canonical audit, and auto-deriving provenance — not a patch collection.
+- Mission metric: 2 root causes advanced (F-NEW-159 ROOT-CAUSED-FIXED with 35-title fanout proof; F-NEW-157 ADVANCED to real GL lifecycle), 3 audit classes MISSING→IMPLEMENTED (Vector, NinePatch, Matrix), Canvas PARTIAL→IMPLEMENTED, l6 GL frontier real-pass.
+- Honest counters: 35 titles still BLOCKED (next roots named); no STATE-*) upgrade; foundation gaps queued (RasterSurface/alpha, Bitmap honesty, LayerDrawable-code, scale types, Paint shader family, Region, GLSL).
+- Next (S83 wave 2): RasterSurface object (C6) + framebuffer alpha preservation; Bitmap density/copy; then per-title next-root waves (Godot/libGDX families) toward first real-app non-blank unlocks.
+
+---
+Task ID: S83-B2
+Agent: Super Z (main)
+Task: User directive (2026-09-22): finish the graphics base completely, then
+run 10 apps + 20 games with REAL screenshots, complete dooz + snake, update
+GitHub per title, final progress table; L0/L1 titles in their best possible
+state; 1-2 random high-level apps.
+
+Work Log:
+- Engine rebuilt clean at 010afcab (build artifacts excluded from history);
+  battery 26/26 rc=0, pixel goldens 24/24, golden ladder 10/10 re-proven.
+- FOUNDATION CLOSURES (§14/C4): (1) <layer-list> LayerDrawable law — items
+  parse in document order, paint bottom→top, per-item insets, item forms =
+  @drawable ref (ARSC canonical) / inline <color> / inline <shape> (full
+  GradientState subset); (2) GradientDrawable RING/LINE + dash strokes —
+  ring annulus (px override or documented ratio law dim/ratio, default 9),
+  line = center horizontal stroke, dash = edge-direction mod pattern;
+  (3) code-level LayerDrawable/GradientDrawable — GradientState setters
+  captured on the drawable object, materialized into bg_layers at
+  setBackground (F-NEW-158 family extension).
+- TOOLCHAIN LAW PINNED: aapt2 compiles android:shape as INT_DEC enum,
+  data word = kind, order rectangle=0 oval=1 line=2 ring=3. The first
+  fixture run caught the swapped ring/line mapping (ring painted a full
+  disc, line nothing) — probes MINIANDROID_SHAPE_TRACE, root cause fixed in
+  both root-shape and layer-item parses + header comments.
+- R-NEW-403 ROOT-CAUSED-FIXED: CollectionShadow::handles_class had no
+  WeakHashMap entry → keySet() null → Set.iterator NPE killed dooz
+  (corpus dooz.apk, Glide RequestManager registry Lg/b;.d) pre-frame.
+  Fix routes WeakHashMap to the real map laws; dooz now renders a shell
+  (6 frames uniq=3); NEXT = WindowRecomposer context chain (R-NEW-344
+  family). Bridge-side keySet/values view law added for registry-less
+  modes. Registry 418→420 (R-NEW-403, R-NEW-404).
+- SWEEP (scripts/s83b_sweep.py + s83b_interact.py): 40 titles at HEAD
+  (26 games, 12 apps, P9/TimeLimit) — provenance-instrumented runs, S81
+  visual audit on final frames, interactive --click-test passes. Levels:
+  Snake Deluxe L3 (82 uniq), Tetris L3 (70), TTT-Classic 9 distinct
+  gameplay states under clicks, gmdice 4 states (dice roll intact),
+  snake autoplay re-proven at HEAD (3 captures, 100-frame continuous run,
+  prefix verified, GIF). Honest L2 = GRAPHICALLY_INCOMPLETE for the
+  onCreate-family faces (no upgrades without evidence).
+- GitHub: 15 title-issue comments + MAND-001/002 + #227 R-NEW-403 note +
+  #24 umbrella S83-B2 summary; PAT restored to .secrets/gh_token
+  (git-ignored; trailing-dot stripped; never echoed into any tracked file).
+- Evidence: docs/evidence/s83b/ (57 JPGs ≤100KB max 43KB + S83B_LADDER.json
+  + SHA256SUMS + snake_head_gameplay.gif 127KB); run/s83b/sweep/*.json.
+
+Stage Summary:
+- Graphics foundation audit closures complete for the render-blocking
+  classes; ladder now 12 fixtures (10 golden + 2 S83-B2), all green with
+  zero pixel drift.
+- Remaining honest frontier: Paint Shader/Xfermode raster, Region,
+  SurfaceView/TextureView, standalone Inset/Clip/Rotate, GLSL, libGDX
+  F-NEW-157, Compose recomposer chain (R-NEW-344 + dooz18).
+- Next: P2 paint effects + P3 GL surface maturation; per-title NEXT roots
+  for the 35-title onCreate family on the new binary.

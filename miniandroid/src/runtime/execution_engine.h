@@ -262,6 +262,16 @@ private:
     // A.onPause → B.onCreate(intent) → B.onStart → B.onResume → A.onStop
     // (TransactionExecutor law) with REAL DEX on both activities.
     nlohmann::json consume_pending_intent();
+    // S83-GFX-BASE §25: GLSurfaceView frame pass — after the view-tree
+    // render, every GLSurfaceView node with a renderer runs its REAL
+    // renderer callbacks (onSurfaceCreated/Changed/DrawFrame via DEX) into
+    // the PortableGL software context, and the PGL frame is presented
+    // (blitted) into the window framebuffer region of that view.
+    bool stage_gl_surfaces(ExecutionResult& result, const ExecutionConfig& config);
+    // S83-GFX-BASE: original render body (stage_render_frame wraps it with
+    // the GL surface pass so every frame path composites GL surfaces).
+    bool stage_render_frame_impl(ExecutionResult& result, const ExecutionConfig& config);
+
     bool stage_generate_reports(ExecutionResult& result, const ExecutionConfig& config);
     
     // Helper methods

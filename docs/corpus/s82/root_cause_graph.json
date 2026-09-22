@@ -1,0 +1,127 @@
+{
+ "F-NEW-156": {
+  "title": "onCreate APP-BOUNDARY-UNWIND family",
+  "fanout": [
+   "GAME-001",
+   "GAME-002",
+   "GAME-003",
+   "GAME-005",
+   "GAME-006",
+   "GAME-007",
+   "GAME-009",
+   "GAME-012",
+   "GAME-014",
+   "GAME-017",
+   "GAME-019",
+   "GAME-020",
+   "GAME-023",
+   "GAME-025",
+   "GAME-034",
+   "GAME-046",
+   "GAME-047",
+   "GAME-048",
+   "GAME-050",
+   "GAME-052",
+   "APP-001",
+   "APP-002",
+   "APP-003",
+   "APP-004",
+   "APP-005",
+   "APP-006",
+   "APP-008",
+   "APP-013",
+   "APP-014",
+   "APP-029",
+   "APP-046",
+   "APP-079",
+   "APP-089",
+   "MAND-001",
+   "MAND-002"
+  ]
+ },
+ "F-NEW-157": {
+  "title": "libGDX AndroidGraphics.createGLSurfaceView NPE (EGL/GLSurfaceView frontier)",
+  "status": "ADVANCED (S83-GFX-BASE §24/25: GLSurfaceViewShadow + EGL object model + GL10/GLES11 routing into PortableGL; l6_glsurface fixture PASS with real app bytecode glClearColor/glClear presented pixel-exact — construction unwind fixed at GLSurfaceView level. libGDX AndroidGraphics chain (createGLSurfaceView specifics) still open; MAND-001 now fails at GdxRuntimeException (deeper, different site — see fanout).",
+  "fanout": [
+   "MAND-001"
+  ]
+ },
+ "VF-NEW-001": {
+  "title": "VF-DIALOG-ITEMS (fixed S81; dialog path gated upstream)",
+  "fanout": [
+   "GAME-014",
+   "GAME-021"
+  ]
+ },
+ "VF-NEW-002": {
+  "title": "VF-PLACEHOLDER-GARBLE (fixed S81; AFTER-state holds on real titles)",
+  "fanout": [
+   "GAME-014 (unote/unote ladder)",
+   "APP (muellerma stopwatch — service family face)"
+  ]
+ },
+ "VF-NEW-003": {
+  "title": "IMAGE_DECODED_VS_RENDERED_GAP chain",
+  "fanout": [
+   "GAME-001",
+   "GAME-002",
+   "GAME-003",
+   "GAME-004",
+   "GAME-005",
+   "GAME-006",
+   "GAME-007",
+   "GAME-008",
+   "GAME-009",
+   "GAME-012",
+   "GAME-014",
+   "GAME-015",
+   "GAME-016",
+   "GAME-017",
+   "GAME-018",
+   "GAME-020",
+   "GAME-023",
+   "GAME-025",
+   "GAME-034",
+   "GAME-046",
+   "GAME-047",
+   "GAME-048",
+   "GAME-050",
+   "GAME-052",
+   "APP-001",
+   "APP-002",
+   "APP-003",
+   "APP-004",
+   "APP-005",
+   "APP-006",
+   "APP-007",
+   "APP-008",
+   "APP-013",
+   "APP-014",
+   "APP-029",
+   "APP-046",
+   "APP-079",
+   "APP-089",
+   "MAND-001",
+   "MAND-002"
+  ]
+ },
+ "F-NEW-158": {
+  "title": "PROGRAMMATIC-BACKGROUND-DROP (setBackground(Drawable)/setBackgroundResource(resid) silently ignored; image_resource_id clobber)",
+  "status": "ROOT_CAUSED_FIXED (S82-GFX; fixture ladder L0/L4 evidence + regression 26/26 + pixel goldens 24/24)",
+  "fanout": [
+   "l0_solid fixture",
+   "l4_xmldrawables fixture",
+   "GAME-004",
+   "PROGRAMMATIC-UI titles across corpus (static families B/C/D/E — see graphics_families.json)"
+  ]
+ },
+ "F-NEW-159": {
+  "title": "NULL-FRAMEWORK-RECEIVER NPE family (LocaleList.toLanguageTags / WindowInsetsController.setSystemBarsAppearance on null refs → onCreate APP BOUNDARY unwind; F-NEW-156 sub-cluster)",
+  "status": "ROOT-CAUSED-FIXED (S83-GFX-BASE §32: LocaleInsetsShadow semantic shadow — real LocaleList/Locale/WindowInsetsController heap objects with AOSP state laws; NOT catch/null masking). Regression: battery 26/26 + goldens 24/24 + ladder 10/10. Fanout rerun at S83 binary: 35/35 F-NEW-156-family titles re-executed, 35/35 signature-eliminated (0 exception-context recurrences), 35/35 advanced past the old blocker to per-title next roots (evidence run/s83/fanout/FANOUT_S159.json).",
+  "fanout": [
+   "MAND-002",
+   "APP-001",
+   "F-NEW-156 full 35 (all advanced, per-title next blockers named)"
+  ]
+ }
+}

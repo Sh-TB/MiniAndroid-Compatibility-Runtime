@@ -1028,6 +1028,24 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
             }
         }
         else if (n == "onClick") a.onClick = raw;
+        else if (n == "scaleType") {
+            // S83-GFX-BASE (§19 ImageView scale-type law). AOSP
+            // ImageView.ScaleType declaration order = XML enum ordinal space:
+            // matrix 0, fitXY 1, fitStart 2, fitCenter 3, fitEnd 4, center 5,
+            // centerCrop 6, centerInside 7. aapt2 compiles the framework attr
+            // enum into that ordinal space (value/data) or the string form
+            // survives for legacy layouts.
+            static const char* kScaleTypeNames[] = {
+                "matrix", "fitXY", "fitStart", "fitCenter",
+                "fitEnd", "center", "centerCrop", "centerInside"};
+            int st = -1;
+            if (at.value.is_int()) st = (int)at.value.data;
+            if (st < 0) {
+                for (int i = 0; i < 8; i++)
+                    if (raw == kScaleTypeNames[i]) { st = i; break; }
+            }
+            a.scale_type = (st >= 0 && st <= 7) ? st : 3;
+        }
         else if (n == "visibility") {
             if (at.value.is_int()) {
                 // ────────────────────────────────────────────────────────
@@ -1301,6 +1319,8 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
         node.src_drawable_path = a.src_drawable;
         node.src_density = a.src_drawable_density;          // G04 §4
     }
+    // S83-GFX-BASE §19: scale type flows to the render law.
+    node.scale_type = a.scale_type;
     // width/height semantics on node
     node.width = a.layout_width;
     node.height = a.layout_height;
@@ -1338,19 +1358,76 @@ void LayoutInflater::apply_shape_background(framework::ViewShadow::ViewNode& nod
         return;
     }
     const AxmlElement& root = parser.root();
+    if (root.name == "vector") {
+        // S83-GFX-BASE §14: vector drawables ride the SAME background
+        // resolution entry (bg_resource_path / bg_drawable_path) but fill
+        // the bg_vector_* node state instead of bg_shape_*.
+        apply_vector_background(node, xml_path, stats);
+        return;
+    }
+    if (root.name == "layer-list") {
+        // S83-B2 §14: LayerDrawable law — parse items bottom→top into
+        // node.bg_layers; the draw walk paints each via per-kind laws.
+        apply_layer_list_background(node, xml_path, stats);
+        return;
+    }
     if (root.name != "shape") return;   // selector / other drawable law untouched
 
     node.bg_shape_valid = true;
 
     if (const auto* k = root.attr("shape", "android")) {
-        const std::string s = !k->raw_value.empty() ? k->raw_value : k->value.string_value;
-        // AOSP GradientState shape constants (R.styleable): rectangle=0,
-        // oval=1, ring=2, line=3.
-        if (s == "oval") node.bg_shape_kind = 1;
-        else if (s == "ring") node.bg_shape_kind = 2;
-        else if (s == "line") node.bg_shape_kind = 3;
-        else node.bg_shape_kind = 0;
+        // aapt2 compiles android:shape as the GradientDrawableShape ENUM
+        // (INT_DEC data = rectangle 0 / oval 1 / ring 2 / line 3); hostile
+        // or hand-built AXML may carry the raw string instead.
+        if (!k->raw_value.empty()) {
+            const std::string& s = k->raw_value;
+            if (s == "oval") node.bg_shape_kind = 1;
+            else if (s == "line") node.bg_shape_kind = 2;
+            else if (s == "ring") node.bg_shape_kind = 3;
+            else node.bg_shape_kind = 0;
+        } else if (k->value.type == DataType::INT_DEC ||
+                   k->value.type == DataType::INT_HEX) {
+            node.bg_shape_kind = (int)(uint32_t)k->value.data & 3;
+        } else {
+            const std::string& s = k->value.string_value;
+            if (s == "oval") node.bg_shape_kind = 1;
+            else if (s == "line") node.bg_shape_kind = 2;
+            else if (s == "ring") node.bg_shape_kind = 3;
+            else node.bg_shape_kind = 0;
+        }
+        static thread_local const bool shape_trace =
+            std::getenv("MINIANDROID_SHAPE_TRACE") != nullptr;
+        if (shape_trace)
+            std::cerr << "[S83B2-SHAPE] root=" << root.name
+                      << " kind=" << node.bg_shape_kind
+                      << " path=" << xml_path
+                      << " node=" << &node << std::endl;
     }
+    // S83-B2 §14: GradientDrawable RING state — root-level attrs
+    // (GradientState mInnerRadius/mThickness + the two ratios). The ratio
+    // law is the documented one: "inner radius equals the drawable's
+    // width divided by innerRadiusRatio" (default 9), same for thickness.
+    auto root_dim = [&](const char* name, float* dst) {
+        if (const auto* a = root.attr(name, "android")) {
+            float px = (float)parse_dim_attr(a, stats);
+            *dst = px;   // raw px form (may be unset→0, ratio governs)
+        }
+    };
+    root_dim("innerRadius", &node.bg_shape_inner_radius);
+    root_dim("thickness", &node.bg_shape_thickness);
+    auto root_ratio = [&](const char* name, float* dst) {
+        if (const auto* a = root.attr(name, "android")) {
+            const std::string& rv = a->raw_value;
+            if (!rv.empty()) *dst = atof(rv.c_str());
+            else if (a->value.is_int()) *dst = (float)(int32_t)a->value.data;
+            else if (a->value.type == DataType::FLOAT) {
+                float f; std::memcpy(&f, &a->value.data, sizeof(float));
+                *dst = f;
+            }
+        }
+    };
+    root_ratio("innerRadiusRatio", &node.bg_shape_inner_ratio);
+    root_ratio("thicknessRatio", &node.bg_shape_thick_ratio);
 
     std::function<void(const AxmlElement&)> walk = [&](const AxmlElement& el) {
         if (el.name == "solid") {
@@ -1414,10 +1491,184 @@ void LayoutInflater::apply_shape_background(framework::ViewShadow::ViewNode& nod
                     node.bg_shape_grad_angle = atoi(ang->raw_value.c_str());
                 node.bg_shape_grad_angle = ((node.bg_shape_grad_angle % 360) + 360) % 360;
             }
+        } else if (el.name == "size") {
+            // S83-B2 §14: <size width/height> — recorded for completeness;
+            // bounds come from the view law, the size element informs
+            // getIntrinsicWidth/Height on real Android (no pixel effect here
+            // once the view bounds are known).
         }
         for (const auto& ch : el.children) walk(ch);
     };
     for (const auto& ch : root.children) walk(ch);
+}
+
+// ---------------------------------------------------------------------------
+// S83-B2 §14: LayerDrawable <layer-list> law (AOSP LayerDrawable.inflate).
+// Items parse in DOCUMENT ORDER; the draw walk renders index 0 first
+// (bottom) and later items over it. Each <item>:
+//   * android:drawable="@ref"  → resolved through the canonical ARSC
+//     engine into an APK path (bitmap/.9.png/xml drawable);
+//   * android:color / "@color/x" → inline color layer (ColorDrawable law);
+//   * an inline <shape> child  → parsed into the layer's GradientState
+//     subset (same element semantics as the <shape> root walk above);
+//   * left/top/right/bottom    → per-layer insets (setLayerInset px law).
+// ---------------------------------------------------------------------------
+void LayoutInflater::apply_layer_list_background(framework::ViewShadow::ViewNode& node,
+                                                 const std::string& xml_path,
+                                                 InflateStats& stats) {
+    std::vector<uint8_t> xml = apk_.extract_entry_cached(xml_path);
+    if (xml.empty()) xml = apk_.extract_entry(apk_path_, xml_path);
+    if (xml.empty()) {
+        stats.warnings.push_back("layer-list extract failed: " + xml_path);
+        return;
+    }
+    AxmlParser parser;
+    if (!parser.parse(xml)) {
+        stats.warnings.push_back("layer-list AXML parse failed: " + xml_path);
+        return;
+    }
+    const AxmlElement& root = parser.root();
+    if (root.name != "layer-list") return;
+
+    node.bg_layers.clear();
+    node.bg_layers_valid = true;
+
+    // Fill a BgLayer's shape subset from an inline <shape> element tree
+    // (identical element semantics to the node-level shape walk).
+    std::function<void(const AxmlElement&,
+                       framework::ViewShadow::ViewNode::BgLayer&)> shape_walk =
+        [&](const AxmlElement& el, framework::ViewShadow::ViewNode::BgLayer& L) {
+        if (el.name == "solid") {
+            uint32_t c = parse_color_attr(el.attr("color", "android"), stats);
+            if (c != 0) { L.shape_has_solid = true; L.shape_solid = c; }
+        } else if (el.name == "stroke") {
+            if (const auto* w = el.attr("width", "android")) {
+                float px = (float)parse_dim_attr(w, stats);
+                if (px > 0) { L.shape_has_stroke = true; L.shape_sw = px; }
+            }
+            uint32_t c = parse_color_attr(el.attr("color", "android"), stats);
+            if (c != 0) { L.shape_has_stroke = true; L.shape_sc = c; }
+            const AxmlAttribute* dw = el.attr("dashWidth", "android");
+            const AxmlAttribute* dg = el.attr("dashGap", "android");
+            if (dw || dg) {
+                L.shape_has_dash = true;
+                if (dw) L.shape_dw = (float)parse_dim_attr(dw, stats);
+                if (dg) L.shape_dg = (float)parse_dim_attr(dg, stats);
+            }
+        } else if (el.name == "corners") {
+            if (const auto* r = el.attr("radius", "android"))
+                L.shape_radius = (float)parse_dim_attr(r, stats);
+        } else if (el.name == "gradient") {
+            const AxmlAttribute* s = el.attr("startColor", "android");
+            const AxmlAttribute* e = el.attr("endColor", "android");
+            uint32_t sc = parse_color_attr(s, stats);
+            uint32_t ec = parse_color_attr(e, stats);
+            if (s && sc != 0) { L.shape_has_gradient = true; L.shape_gs = sc; }
+            if (e && ec != 0) { L.shape_has_gradient = true; L.shape_ge = ec; }
+            if (const auto* ang = el.attr("angle", "android")) {
+                if (ang->value.is_int() || ang->value.type == DataType::INT_DEC ||
+                    ang->value.type == DataType::INT_HEX)
+                    L.shape_ga = (int)(int32_t)ang->value.data;
+                else if (!ang->raw_value.empty())
+                    L.shape_ga = atoi(ang->raw_value.c_str());
+                L.shape_ga = ((L.shape_ga % 360) + 360) % 360;
+            }
+        }
+        for (const auto& ch : el.children) shape_walk(ch, L);
+    };
+
+    for (const auto& item : root.children) {
+        if (item.name != "item") continue;
+        framework::ViewShadow::ViewNode::BgLayer L;
+        if (const auto* a = item.attr("left", "android"))
+            L.left = parse_dim_attr(a, stats);
+        if (const auto* a = item.attr("top", "android"))
+            L.top = parse_dim_attr(a, stats);
+        if (const auto* a = item.attr("right", "android"))
+            L.right = parse_dim_attr(a, stats);
+        if (const auto* a = item.attr("bottom", "android"))
+            L.bottom = parse_dim_attr(a, stats);
+
+        // inline child drawable (shape law)
+        for (const auto& ch : item.children) {
+            if (ch.name == "color") {
+                // <item><color android:color="#..."/></item> — ColorDrawable law
+                uint32_t c = parse_color_attr(ch.attr("color", "android"), stats);
+                if (c != 0) { L.kind = 1; L.color = c; }
+            } else if (ch.name == "shape") {
+                L.kind = 2;
+                if (const auto* k = ch.attr("shape", "android")) {
+                    if (!k->raw_value.empty()) {
+                        const std::string& s = k->raw_value;
+                        if (s == "oval") L.shape_kind = 1;
+                        else if (s == "line") L.shape_kind = 2;
+                        else if (s == "ring") L.shape_kind = 3;
+                    } else if (k->value.type == DataType::INT_DEC ||
+                               k->value.type == DataType::INT_HEX) {
+                        L.shape_kind = (int)(uint32_t)k->value.data & 3;
+                    } else {
+                        const std::string& s = k->value.string_value;
+                        if (s == "oval") L.shape_kind = 1;
+                        else if (s == "line") L.shape_kind = 2;
+                        else if (s == "ring") L.shape_kind = 3;
+                    }
+                }
+                // root-level ring attrs
+                if (const auto* a = ch.attr("innerRadius", "android"))
+                    L.shape_inner_r = (float)parse_dim_attr(a, stats);
+                if (const auto* a = ch.attr("thickness", "android"))
+                    L.shape_thick = (float)parse_dim_attr(a, stats);
+                if (const auto* a = ch.attr("innerRadiusRatio", "android")) {
+                    if (!a->raw_value.empty()) L.shape_ir_ratio = atof(a->raw_value.c_str());
+                }
+                if (const auto* a = ch.attr("thicknessRatio", "android")) {
+                    if (!a->raw_value.empty()) L.shape_tk_ratio = atof(a->raw_value.c_str());
+                }
+                shape_walk(ch, L);
+            }
+        }
+        // android:drawable / android:color attribute law
+        const AxmlAttribute* dr = item.attr("drawable", "android");
+        const AxmlAttribute* ca = item.attr("color", "android");
+        if (dr) {
+            if (dr->value.is_reference()) {
+                uint16_t sel_d = 0;
+                std::string p = drawable_file_for_resid(dr->value.ref_id, &sel_d);
+                if (!p.empty()) { L.path = p; if (L.kind == 0) L.kind = 3; }
+            } else if (!dr->raw_value.empty() && dr->raw_value[0] == '@') {
+                auto ref = parse_ref(dr->raw_value);
+                if (ref.kind == RefKind::DRAWABLE) {
+                    std::string p = drawable_path_for_name(ref.name);
+                    if (!p.empty()) { L.path = p; if (L.kind == 0) L.kind = 3; }
+                } else if (ref.kind == RefKind::COLOR) {
+                    L.color = resolve_color(dr->raw_value, stats);
+                    if (L.color != 0) L.kind = 1;
+                }
+            } else if (!dr->raw_value.empty() && dr->raw_value[0] == '#') {
+                L.color = li_parse_hex_color(dr->raw_value);
+                if (L.color != 0) L.kind = 1;
+            }
+            // nested xml drawable: kind 5 (shape/selector/vector dispatch at
+            // draw time through apply_shape_background's root dispatch)
+            if (L.kind == 3 && L.path.size() > 4 &&
+                L.path.compare(L.path.size() - 4, 4, ".xml") == 0)
+                L.kind = 5;
+        } else if (ca) {
+            if (ca->value.is_color()) {
+                L.color = ca->value.data;
+                L.kind = 1;
+            } else if (!ca->raw_value.empty() && ca->raw_value[0] == '#') {
+                L.color = li_parse_hex_color(ca->raw_value);
+                if (L.color != 0) L.kind = 1;
+            } else if (!ca->raw_value.empty() && ca->raw_value[0] == '@') {
+                L.color = resolve_color(ca->raw_value, stats);
+                if (L.color != 0) L.kind = 1;
+            }
+        }
+        if (L.kind != 0) node.bg_layers.push_back(std::move(L));
+    }
+    if (node.bg_layers.empty()) node.bg_layers_valid = false;
+    else stats.drawables_resolved++;
 }
 
 // ---------------------------------------------------------------------------
