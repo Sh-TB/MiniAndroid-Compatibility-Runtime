@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg_cream">#FAF8EF</color>
+    <color name="board">#BBADA0</color>
+    <color name="empty">#CDC1B4</color>
+    <color name="orange">#F59563</color>
+    <color name="btn_slate">#8F7A66</color>
+    <color name="white">#FFFFFF</color>
+</resources>
