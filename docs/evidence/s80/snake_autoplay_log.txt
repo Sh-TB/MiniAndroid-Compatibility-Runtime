@@ -1,0 +1,16 @@
+cycle 1: head=(8, 7) d=R path=1 captures=1 +1 taps (committed@9)
+cycle 2: head=(8, 2) d=U path=4 captures=2 +3 taps (committed@17)
+cycle 3: head=(10, 0) d=R path=19 captures=3 +2 taps (committed@40)
+cycle 4: head=(2, 15) d=L path=13 captures=4 +2 taps (committed@57)
+cycle 5: head=(13, 9) d=R path=13 captures=5 +2 taps (committed@74)
+cycle 6: head=(5, 0) d=L path=19 captures=6 +3 taps (committed@97)
+cycle 7: head=(13, 7) d=U path=19 captures=7 +3 taps (committed@120)
+cycle 8: head=(4, 1) d=R path=19 captures=8 +2 taps (committed@143)
+cycle 9: head=(14, 13) d=R path=6 captures=9 +1 taps (committed@153)
+Traceback (most recent call last):
+  File "/home/z/my-project/scripts/s80_sd_autoplay.py", line 297, in <module>
+    main()
+  File "/home/z/my-project/scripts/s80_sd_autoplay.py", line 283, in main
+    assert not mism, f"final prefix mismatch at {mism[:3]}"
+           ^^^^^^^^
+AssertionError: final prefix mismatch at [146]

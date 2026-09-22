@@ -1,0 +1,205 @@
+{
+ "generated": "S80 ladder sweep at HEAD",
+ "results": [
+  {
+   "apk": "snake_v1.0_vc1.apk",
+   "label": "Snake (AndroidGameSnake)",
+   "preclass": "real game",
+   "rc": 0,
+   "errors": "0",
+   "frames": 12,
+   "nonwhite_last": 116992,
+   "status": "LOAD_OK"
+  },
+  {
+   "apk": "snake_deluxe_v1.0_vc1.apk",
+   "label": "Snake Deluxe (S80)",
+   "preclass": "real game",
+   "rc": 0,
+   "errors": "0",
+   "frames": 12,
+   "nonwhite_last": 2056736,
+   "status": "LOAD_OK"
+  },
+  {
+   "apk": "tetris_v1.0_vc1.apk",
+   "label": "Mini Tetris (S80)",
+   "preclass": "real game",
+   "rc": 0,
+   "errors": "0",
+   "frames": 12,
+   "nonwhite_last": 2059952,
+   "status": "LOAD_OK"
+  },
+  {
+   "apk": "g2048_v1.0_vc1.apk",
+   "label": "2048 (S80)",
+   "preclass": "real game",
+   "rc": 0,
+   "errors": "0",
+   "frames": 12,
+   "nonwhite_last": 2067328,
+   "status": "LOAD_OK"
+  },
+  {
+   "apk": "app.varlorg.unote_30.apk",
+   "label": "uNote",
+   "preclass": null,
+   "rc": 1,
+   "errors": "1",
+   "frames": 12,
+   "nonwhite_last": 233280,
+   "status": "RC_1"
+  },
+  {
+   "apk": "com.chessclock.android_29.apk",
+   "label": "Chess Clock",
+   "preclass": null,
+   "rc": 1,
+   "errors": "1",
+   "frames": 12,
+   "nonwhite_last": 2073600,
+   "status": "RC_1"
+  },
+  {
+   "apk": "com.emmanuelmess.tictactoe_3.apk",
+   "label": "TicTacToe (emmanuelmess)",
+   "preclass": null,
+   "rc": 1,
+   "errors": "6",
+   "frames": 12,
+   "nonwhite_last": 0,
+   "status": "RC_1"
+  },
+  {
+   "apk": "com.github.muellerma.stopwatch_6.apk",
+   "label": "Stopwatch (muellerma)",
+   "preclass": "no-Activity boundary",
+   "rc": 1,
+   "errors": "0",
+   "frames": 12,
+   "nonwhite_last": 23616,
+   "status": "RC_1"
+  },
+  {
+   "apk": "de.duenndns.gmdice_8.apk",
+   "label": "gmdice",
+   "preclass": null,
+   "rc": 0,
+   "errors": "0",
+   "frames": 12,
+   "nonwhite_last": 182160,
+   "status": "LOAD_OK"
+  },
+  {
+   "apk": "dooz_23_toplevel.apk",
+   "label": "Dooz",
+   "preclass": "Compose boundary",
+   "rc": 1,
+   "errors": "17",
+   "frames": 12,
+   "nonwhite_last": 23616,
+   "status": "RC_1"
+  },
+  {
+   "apk": "dubrowgn.microtimer_8.apk",
+   "label": "MicroTimer",
+   "preclass": null,
+   "rc": 1,
+   "errors": "8",
+   "frames": 12,
+   "nonwhite_last": 1041104,
+   "status": "RC_1"
+  },
+  {
+   "apk": "nl.hansdezwart.bgclock_2.apk",
+   "label": "BGClock",
+   "preclass": "WebView boundary",
+   "rc": 1,
+   "errors": "2",
+   "frames": 12,
+   "nonwhite_last": 2073600,
+   "status": "RC_1"
+  },
+  {
+   "apk": "omegacentauri.mobi.simplestopwatch_26.apk",
+   "label": "Simple Stopwatch",
+   "preclass": null,
+   "rc": 1,
+   "errors": "5",
+   "frames": 12,
+   "nonwhite_last": 1943696,
+   "status": "RC_1"
+  },
+  {
+   "apk": "org.billthefarmer.notes_139.apk",
+   "label": "Notes (billthefarmer)",
+   "preclass": null,
+   "rc": 0,
+   "errors": "0",
+   "frames": 12,
+   "nonwhite_last": 2073600,
+   "status": "LOAD_OK"
+  },
+  {
+   "apk": "org.debian.eugen.headingcalculator_1.apk",
+   "label": "Heading Calculator",
+   "preclass": null,
+   "rc": 1,
+   "errors": "3",
+   "frames": 12,
+   "nonwhite_last": 2047168,
+   "status": "RC_1"
+  },
+  {
+   "apk": "rkr.simplekeyboard.inputmethod_145.apk",
+   "label": "Simple Keyboard",
+   "preclass": null,
+   "rc": 0,
+   "errors": "0",
+   "frames": 12,
+   "nonwhite_last": 23616,
+   "status": "LOAD_OK"
+  },
+  {
+   "apk": "fishrings_v1.23_vc6.apk",
+   "label": "fishrings",
+   "preclass": null,
+   "rc": 0,
+   "errors": "0",
+   "frames": 12,
+   "nonwhite_last": 0,
+   "status": "LOAD_OK_DARK"
+  },
+  {
+   "apk": "opmt_v0.1.2_vc1.apk",
+   "label": "OPMT",
+   "preclass": null,
+   "rc": 0,
+   "errors": "0",
+   "frames": 12,
+   "nonwhite_last": 214048,
+   "status": "LOAD_OK"
+  },
+  {
+   "apk": "tripeaks_v1.2.1_vc4.apk",
+   "label": "tripeaks",
+   "preclass": null,
+   "rc": 0,
+   "errors": "0",
+   "frames": 12,
+   "nonwhite_last": 0,
+   "status": "LOAD_OK_DARK"
+  },
+  {
+   "apk": "bouncy.apk",
+   "label": "bouncy",
+   "preclass": null,
+   "rc": 1,
+   "errors": "14",
+   "frames": 12,
+   "nonwhite_last": 2073600,
+   "status": "RC_1"
+  }
+ ]
+}

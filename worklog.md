@@ -2671,3 +2671,49 @@ Stage Summary:
   visual gate (F-145), fishrings game-end loop, bouncy L7, OPMT IOOBE
   (app-own), tripeaks R-NEW-388 + OBJECT-IDENTITY, stopwatch F-143
   service-launch, telegram HEAD re-run, Random.nextInt REC-MISS.
+
+---
+Task ID: S80-MAIN
+Agent: Super Z (main)
+Task: "S80 — REAL GAMES, GAMEPLAY PROOF & APP-LADDER SWEEP" (user directive:
+the S79 snake GIF looked unacceptable; add 1–2 more games; record the
+upload site in the rules; find and fix everything the base was missing so
+all apps/games run).
+
+Work Log:
+- ROOT-CAUSED the complaint: the S79 GIF was a faithful render of a
+  minimal upstream app + our ugly annotation banners. Fix = build games
+  worth watching, keep the real-APK evidence chain.
+- Built THREE real games (pure android.jar, canonical toolchain; toolchain
+  snapshot used after in-repo tools/ loss): Snake Deluxe, Mini Tetris,
+  2048. Discovered + documented 3 runtime laws at app level: static-state
+  law (click-listener instance mutation invisible to render), Thread
+  law (Runnable-target never runs; subclass run() does; final design =
+  main-looper postDelayed ticker), empirical 420ms tick schedule.
+- Autoplays (vision-based, C1/C3/C4/C7): Snake 9/9 captures (214-frame
+  continuous run), Tetris 7 pixel-arbitrated locks (253-frame run),
+  2048 64 moves/684 pts (267-frame run, 255 prefix-verified).
+- GIFs from real frames (clean captions) + website rebuilt (three-game
+  gallery + upload rules) → gh-pages pushed d554f3e..4beacdf; jsDelivr
+  view 200 verified (no account); raw.githack 403 (rate-limited, recorded).
+- APP-LADDER SWEEP: 20 APKs re-run at HEAD — 8 LOAD_OK, 2 dark-by-design,
+  6 RC_1-with-honest-render, 3 documented boundaries, 1 new boundary
+  (emmanuelmess tictactoe = libGDX GL/EGL); zero regressions.
+- R-NEW-401 (getExternalCacheDir → File) engine rebuild; Telegram depth
+  honest-open (ImageLoader pc=289 + REC-MISS cluster queued); registry
+  412→413; audit ledger PASS.
+- GOLDEN RE-PROOF after rebuild: battery 26/26, verifier 26/26 SAME,
+  fidelity BYTE-IDENTICAL 90/90.
+- Evidence: docs/evidence/s80/ (GIFs, 9 JPG frames ≤31KB, sweep report,
+  logs, SHA256SUMS); docs/foundation/s80/S80_REPORT.md; ROADMAP/ACHIEVEMENTS
+  rows.
+
+Stage Summary:
+- User's asks delivered: three real games with real graphics on the site;
+  upload rules recorded (no-account view via jsDelivr, PAT-only publish);
+  every app/game re-run at HEAD with honest classifications; the base
+  gained R-NEW-401 + three documented runtime laws.
+- Next: Telegram ImageLoader pc=289 disasm + REC-MISS bridge wave
+  (SparseArray/SharedPreferences/ThreadLocal/WeakReference), Tetris
+  line-clear GIF v2, OBJECT-IDENTITY root cause (the static-state
+  workaround's underlying defect).

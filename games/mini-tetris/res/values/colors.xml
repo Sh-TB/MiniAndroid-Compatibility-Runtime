@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg_dark">#0B1020</color>
+    <color name="board_dark">#111834</color>
+    <color name="cyan">#06B6D4</color>
+    <color name="blue">#3B82F6</color>
+    <color name="btn_slate">#2B3654</color>
+    <color name="white">#FFFFFF</color>
+</resources>
