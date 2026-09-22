@@ -19,6 +19,7 @@
 #include <cstring>  // F-109c: strcmp arith dispatch (S62)
 #include "../diagnostics/mem_probe.h"
 #include "../diagnostics/click_audit.h"  // UNIFIED_002 EXP-100: env-gated click audit (DIAGNOSTIC)
+#include "../diagnostics/gfx_provenance.h"  // S82-GFX §6: evidence-bit pixel chain
 #include "../jni/jni_bridge.h"
 // EXP-051: Shadow registry integration.
 #include "../framework/shadow_registry.h"
@@ -20903,6 +20904,74 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                       << std::endl;
         }
     }
+
+    // ────────────────────────────────────────────────────────────────────
+    // S82-GFX F-NEW-158: programmatic background family (AOSP View.java
+    // mBackground swap law). Fixture ladder evidence (l0/l4):
+    //   * setBackgroundDrawable(Drawable)/setBackground(Drawable) fell into
+    //     the generic void list — ColorDrawable colors were dropped.
+    //   * setBackgroundResource(resid) REUSED image_resource_id — never
+    //     consulted by the background paint path (and it clobbered
+    //     ImageView src ids). Both silently blanked programmatic UIs.
+    // Captures:
+    //   1. ColorDrawable.<init>(I) / setColor(I) → obj → color map.
+    //   2. setBackground(Drawable) → color lookup → set_bg_color
+    //      (bg_from_xml=false via F-053 last-writer law).
+    //   3. setBackgroundResource(I) → ViewShadow::set_bg_resource.
+    // Non-color drawables (NinePatch/Vector/…) record an honest
+    // UNSUPPORTED_PROGRAMMATIC_DRAWABLE provenance bit — never a fake pass.
+    // ────────────────────────────────────────────────────────────────────
+    if (shadow_registry_ != nullptr && args.size() >= 1 &&
+        args[0].type == DalvikType::OBJECT_REF) {
+        auto* vs = shadow_registry_->find_as<framework::ViewShadow>();
+        if (vs != nullptr) {
+            // 1a. ColorDrawable.<init>(int color)
+            if (class_name.find("ColorDrawable;") != std::string::npos &&
+                method == "<init>" && args.size() >= 2 &&
+                args[1].type == DalvikType::INT32) {
+                vs->record_color_drawable(
+                    args[0].object_id,
+                    static_cast<uint32_t>(args[1].int_val));
+            }
+            // 1b. ColorDrawable.setColor(int color)
+            if (class_name.find("ColorDrawable;") != std::string::npos &&
+                method == "setColor" && args.size() >= 2 &&
+                args[1].type == DalvikType::INT32) {
+                vs->record_color_drawable(
+                    args[0].object_id,
+                    static_cast<uint32_t>(args[1].int_val));
+            }
+            // 2. setBackground(Drawable) / setBackgroundDrawable(Drawable)
+            if ((method == "setBackground" || method == "setBackgroundDrawable") &&
+                args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF) {
+                uint32_t color = 0;
+                if (vs->lookup_color_drawable(args[1].object_id, &color)) {
+                    vs->set_bg_color(args[0].object_id, color);
+                    std::cerr << "[S82GFX-BG158] view=" << args[0].object_id
+                              << " ColorDrawable color=0x" << std::hex << color
+                              << std::dec << " captured" << std::endl;
+                } else {
+                    if (diagnostics::GfxProvenance::instance().enabled())
+                        diagnostics::GfxProvenance::instance().record_image(
+                            "background-bitmap", 0,
+                            "drawable_obj=" + std::to_string(args[1].object_id),
+                            true, false, 0, 0, "drawable", 0, 0, 0, 0, 0,
+                            false, "UNSUPPORTED_PROGRAMMATIC_DRAWABLE");
+                }
+            }
+            // 3. setBackgroundResource(int resid)
+            if (method == "setBackgroundResource" && args.size() >= 2 &&
+                args[1].type == DalvikType::INT32) {
+                vs->set_bg_resource(args[0].object_id,
+                                    static_cast<uint32_t>(args[1].int_val));
+                std::cerr << "[S82GFX-BG158] view=" << args[0].object_id
+                          << " resid=0x" << std::hex
+                          << static_cast<uint32_t>(args[1].int_val) << std::dec
+                          << " -> bg_resource_id" << std::endl;
+            }
+        }
+    }
+
 
     // EXP-098 (CM-027): AndroidUtilities.dp(float) → int.
     // Per AOSP source: dp(value) = (int)(value * density + 0.5).
