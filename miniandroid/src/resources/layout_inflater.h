@@ -165,6 +165,15 @@ public:
     void apply_vector_background(framework::ViewShadow::ViewNode& node,
                                  const std::string& xml_path, InflateStats& stats);
 
+    // S83-B2 §14: LayerDrawable <layer-list> inflation — AOSP
+    // LayerDrawable.inflate: items in DOCUMENT ORDER render bottom→top;
+    // each <item> carries android:drawable (ref) OR an inline child
+    // drawable (<shape>), plus optional left/top/right/bottom insets.
+    // Parses into node.bg_layers; draw walk paints via the per-kind laws.
+    void apply_layer_list_background(framework::ViewShadow::ViewNode& node,
+                                     const std::string& xml_path,
+                                     InflateStats& stats);
+
 private:
     // G04 §8: drawable intrinsic-size probe cache (path → natural dims;
     // {-1,-1} = probe failed — never retried, honest 48dp fallback applies).

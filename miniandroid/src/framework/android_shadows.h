@@ -25,6 +25,8 @@
 #include <chrono>
 #include <deque>
 #include <atomic>
+#include <iostream>
+#include <cstdlib>
 #include <map>
 #include <set>
 #include <memory>
@@ -1185,7 +1187,7 @@ public:
         // AOSP parses but no fixture exercises (ring/line kinds, dash) are
         // recorded honestly and reported DETECTED-NOT-EXERCISED.
         bool bg_shape_valid = false;     // bg drawable XML root was <shape>
-        int bg_shape_kind = 0;           // AOSP: 0 rectangle, 1 oval, 2 ring, 3 line
+        int bg_shape_kind = 0;           // GradientDrawable: 0 RECT, 1 OVAL, 2 LINE, 3 RING
         bool bg_shape_has_solid = false;
         uint32_t bg_shape_solid = 0;
         bool bg_shape_has_gradient = false;
@@ -1220,9 +1222,46 @@ public:
         };
         bool bg_vector_valid = false;
         VectorDrawableData bg_vector;
-        bool bg_shape_has_dash = false;          // recorded; NOT rendered (honest
-        float bg_shape_dash_width = 0.0f;        //  DETECTED-NOT-EXERCISED until a
-        float bg_shape_dash_gap = 0.0f;          //  real APK demands it)
+        bool bg_shape_has_dash = false;          // S83-B2 §14: dash strokes RENDER
+        float bg_shape_dash_width = 0.0f;        //  (scanline dash law, f053 draw)
+        float bg_shape_dash_gap = 0.0f;
+        // ── S83-B2 §14: GradientDrawable RING state (AOSP GradientState).
+        // innerRadius/thickness are px; ratio forms are "bounds dim / ratio"
+        // (developer.android.com GradientDrawable law). <0 = unset.
+        float bg_shape_inner_radius = -1.0f;
+        float bg_shape_thickness = -1.0f;
+        float bg_shape_inner_ratio = -1.0f;      // default 9.0 (AOSP doc law)
+        float bg_shape_thick_ratio = -1.0f;      // default 9.0
+        // ── S83-B2 §14: LayerDrawable (layer-list XML + code-level) law.
+        // Items render bottom→top in DOCUMENT ORDER (AOSP LayerDrawable.draw).
+        struct BgLayer {
+            int left = 0, top = 0, right = 0, bottom = 0;   // setLayerInset px
+            int kind = 0;              // 1 color, 2 shape, 3 bitmap/.9.png, 4 vector, 5 nested xml
+            uint32_t color = 0;        // kind 1
+            // shape state (kind 2) — GradientState subset
+            int shape_kind = 0;
+            bool shape_has_solid = false; uint32_t shape_solid = 0;
+            bool shape_has_gradient = false; uint32_t shape_gs = 0, shape_ge = 0;
+            int shape_ga = 0;
+            float shape_radius = 0.0f;
+            bool shape_has_stroke = false; float shape_sw = 0.0f; uint32_t shape_sc = 0;
+            bool shape_has_dash = false; float shape_dw = 0.0f, shape_dg = 0.0f;
+            float shape_inner_r = -1.0f, shape_thick = -1.0f;
+            float shape_ir_ratio = -1.0f, shape_tk_ratio = -1.0f;
+            // bitmap / nested xml / vector path (kinds 3/4/5)
+            std::string path;
+        };
+        std::vector<BgLayer> bg_layers;         // XML layer-list items (document order)
+        bool bg_layers_valid = false;
+        // Code-level LayerDrawable children: heap object ids + insets
+        // (captured at LayerDrawable.<init>(Drawable[]) / setLayerInset —
+        // the same capture law F-NEW-158 established for ColorDrawable).
+        struct CodeLayer {
+            uint32_t drawable_obj = 0;
+            int left = 0, top = 0, right = 0, bottom = 0;
+        };
+        std::vector<CodeLayer> bg_code_layers;
+        bool bg_code_layers_valid = false;
         std::string onClick_handler;     // android:onClick method name (real DEX callback)
         int layout_weight = 0;           // LinearLayout weight
         // G04 §9: container weightSum (raw XML value; valid flag distinguishes
@@ -1637,6 +1676,126 @@ public:
         return true;
     }
 
+    // ── S83-B2 §14: code-level LayerDrawable + GradientDrawable capture ──
+    // AOSP law: LayerDrawable.<init>(Drawable[]) stores the layer array;
+    // setLayerInset(i,l,t,r,b) mutates layer i's insets; View.setBackground
+    // parks the object as mBackground (drawn every draw). We mirror the
+    // object graph on the shadow side: obj → children(+insets).
+    struct GradientState {
+        int shape = 0;                    // 0 RECT, 1 OVAL, 2 LINE, 3 RING
+        bool has_color = false; uint32_t color = 0;
+        float radius = -1.0f;
+        bool has_stroke = false; float stroke_w = 0.0f; uint32_t stroke_color = 0;
+        float inner_radius = -1.0f, thickness = -1.0f;
+        float inner_ratio = -1.0f, thick_ratio = -1.0f;
+    };
+    void record_gradient_drawable(uint32_t drawable_obj, const GradientState& st) {
+        gradient_states_[drawable_obj] = st;
+    }
+    void mutate_gradient_color(uint32_t drawable_obj, uint32_t color) {
+        auto it = gradient_states_.find(drawable_obj);
+        if (it != gradient_states_.end()) { it->second.has_color = true; it->second.color = color; }
+    }
+    bool lookup_gradient_drawable(uint32_t drawable_obj, GradientState* out) const {
+        auto it = gradient_states_.find(drawable_obj);
+        if (it == gradient_states_.end() || !out) return false;
+        *out = it->second;
+        return true;
+    }
+    void record_layer_children(uint32_t layer_obj, const std::vector<uint32_t>& kids) {
+        auto& v = layer_children_[layer_obj];
+        v.clear();
+        for (uint32_t k : kids) v.push_back({k, 0, 0, 0, 0});
+    }
+    bool record_layer_inset(uint32_t layer_obj, int idx, int l, int t, int r, int b) {
+        auto it = layer_children_.find(layer_obj);
+        if (it == layer_children_.end() || idx < 0 ||
+            idx >= (int)it->second.size()) return false;
+        it->second[idx] = {it->second[idx].drawable_obj, l, t, r, b};
+        return true;
+    }
+    const std::vector<ViewNode::CodeLayer>* lookup_layer_children(uint32_t layer_obj) const {
+        auto it = layer_children_.find(layer_obj);
+        return it == layer_children_.end() ? nullptr : &it->second;
+    }
+
+    // S83-B2 §14: materialize a code-level drawable object into the view's
+    // background state (AOSP View.mBackground swap law). Resolution order:
+    // LayerDrawable children → bg_layers (each child: GradientDrawable state
+    // → shape layer, ColorDrawable → color layer; unsupported children skip
+    // honestly), then direct GradientDrawable → bg_shape_*, then direct
+    // ColorDrawable → bg_color. Returns false for untracked drawables
+    // (caller records the honest UNSUPPORTED provenance bit).
+    bool apply_code_background(uint32_t view_id, uint32_t drawable_obj) {
+        auto* n = get_or_create_node(view_id, "");
+        if (n == nullptr) return false;
+        n->bg_from_xml = false;   // programmatic write = last-writer law
+        auto lit = layer_children_.find(drawable_obj);
+        if (lit != layer_children_.end()) {
+            n->bg_layers.clear();
+            for (const auto& cl : lit->second) {
+                ViewNode::BgLayer L;
+                if (std::getenv("MINIANDROID_SHAPE_TRACE"))
+                    std::cerr << "[S83B2-MAT] child o" << cl.drawable_obj
+                              << " grad=" << (gradient_states_.count(cl.drawable_obj) ? 1 : 0)
+                              << " color=" << (color_drawable_colors_.count(cl.drawable_obj) ? 1 : 0)
+                              << std::endl;
+                L.left = cl.left; L.top = cl.top;
+                L.right = cl.right; L.bottom = cl.bottom;
+                auto git = gradient_states_.find(cl.drawable_obj);
+                if (git != gradient_states_.end()) {
+                    const auto& st = git->second;
+                    L.kind = 2;
+                    L.shape_kind = st.shape;
+                    L.shape_has_solid = st.has_color;
+                    L.shape_solid = st.color;
+                    L.shape_radius = st.radius >= 0 ? st.radius : 0.0f;
+                    L.shape_has_stroke = st.has_stroke;
+                    L.shape_sw = st.stroke_w;
+                    L.shape_sc = st.stroke_color;
+                    L.shape_inner_r = st.inner_radius;
+                    L.shape_thick = st.thickness;
+                    L.shape_ir_ratio = st.inner_ratio;
+                    L.shape_tk_ratio = st.thick_ratio;
+                } else {
+                    uint32_t col = 0;
+                    if (!lookup_color_drawable(cl.drawable_obj, &col)) continue;
+                    L.kind = 1;
+                    L.color = col;
+                }
+                n->bg_layers.push_back(L);
+            }
+            if (!n->bg_layers.empty()) {
+                n->bg_layers_valid = true;
+                return true;
+            }
+            return false;
+        }
+        auto git = gradient_states_.find(drawable_obj);
+        if (git != gradient_states_.end()) {
+            const auto& st = git->second;
+            n->bg_shape_valid = true;
+            n->bg_shape_kind = st.shape;
+            n->bg_shape_has_solid = st.has_color;
+            n->bg_shape_solid = st.color;
+            if (st.radius >= 0) n->bg_shape_corner_radius = st.radius;
+            n->bg_shape_has_stroke = st.has_stroke;
+            n->bg_shape_stroke_width = st.stroke_w;
+            n->bg_shape_stroke_color = st.stroke_color;
+            n->bg_shape_inner_radius = st.inner_radius;
+            n->bg_shape_thickness = st.thickness;
+            n->bg_shape_inner_ratio = st.inner_ratio;
+            n->bg_shape_thick_ratio = st.thick_ratio;
+            return true;
+        }
+        uint32_t col = 0;
+        if (lookup_color_drawable(drawable_obj, &col)) {
+            n->bg_color = col;
+            return true;
+        }
+        return false;
+    }
+
     // EXP-098 (CM-027): Store RLottie animation frame RGBA buffer on the
     // ViewNode. Called by the engine-side setAnimation intercept after
     // rlottie renders the requested frame(s). When the renderer visits
@@ -1687,6 +1846,9 @@ private:
     // (recorded at ColorDrawable.<init>(I)/setColor(I); read by
     // setBackground(Drawable)/setBackgroundDrawable(Drawable) dispatch).
     std::map<uint32_t, uint32_t> color_drawable_colors_;
+    // S83-B2 §14: code-level GradientDrawable states + LayerDrawable children.
+    std::map<uint32_t, GradientState> gradient_states_;
+    std::map<uint32_t, std::vector<ViewNode::CodeLayer>> layer_children_;
     // F-062: APK-captured compose_view_saveable_id_tag resource id
     // (set once by the interpreter's sget capture; single-threaded).
     static std::atomic<int32_t> compose_saveable_id_key_;
@@ -1789,6 +1951,13 @@ public:
                class_name == "Ljava/util/Iterable;" ||  // F-064: view iteration via interface call site
                class_name == "Ljava/util/CopyOnWriteArrayList;" ||
                class_name == "Ljava/util/HashMap;" ||
+               // S83-B2 (R-NEW-403): dooz18 evidence — Glide's lifecycle
+               // registry (Lg/b; = RequestManagerFragment Tracker) is a
+               // WeakHashMap; with no handles_class entry every WeakHashMap
+               // op REC-MISSed and keySet() answered null → Set.iterator()
+               // NPE killed onCreate. Route the whole family to the real
+               // CollectionShadow map laws (put/get/keySet/values/entrySet).
+               class_name == "Ljava/util/WeakHashMap;" ||
                class_name == "Ljava/util/LinkedHashMap;" ||  // F-064: Kotlin Reflection clinit uses it directly
                class_name == "Ljava/util/Map;" ||
                class_name == "Ljava/util/Map$Entry;" ||  // F-064: entrySet() elements (getKey/getValue)
