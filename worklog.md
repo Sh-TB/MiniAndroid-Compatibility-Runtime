@@ -2865,3 +2865,23 @@ Stage Summary:
 - Confirmed frontier: GL/EGL surface chain absent (F-NEW-157) — l6 fixture reproduces at HEAD deterministically (white frame, 0 API calls).
 - Honest counters: no status inflation; GAME-004 palette delta evidence-only; NOT_TESTED 157 unchanged.
 - Next: F-NEW-156/159 law attack (shadow LocaleList + WindowInsetsController) → 35-title regression wave; detector scan over remaining 161 APKs (disk-guarded lazy); GL software path design per Anbox/SwiftShader architecture law.
+---
+Task ID: S83-GFX-BASE (wave 1, finalize)
+Agent: Super Z (main)
+Task: S83-GFX-BASE — Graphics Foundation Audit + Contract + P0/P1 implementation completion + F-NEW-159 root fix + fanout; finalize the half-committed S83 session work (commit 6c7d2a22 was a session-id WIP with no worklog/no regression).
+
+Work Log:
+- Resumed from an interrupted session: audit + contract + implementation code existed in commit 6c7d2a22 but gates were never run and no worklog entry existed.
+- LADDER COMPLETION: l4c_vector + l4d_ninepatch had built APKs but NO assertions in s82gfx_run_ladder.py — added pixel assertions (vector: viewport scaling/even-odd hole/arc circle; ninepatch: marker-driven stretch positional law — red stripe pinned to left 1:1 zone <100px, blue to right zone >1000px). Ladder 10/10 PASS incl. l6_glsurface (GL real path: app bytecode onDrawFrame → GL10.glClearColor/glClear → PortableGL framebuffer → present → capture; expected (26,153,230) pixel-exact; provenance SURFACE_CREATED..BUFFER_PRESENTED all true). F-NEW-157 advanced (GLSurfaceView/EGL/GL10-GLES11 shadow; libGDX AndroidGraphics chain still open).
+- REGRESSION restored: f54_manifestlabel was 23/24 (engine.log missing in docs/evidence after the S83 refresh — stale artifacts from the pre-S83 binary); canonical build_run_fixtures.sh rerun with current binary → goldens 24/24 (pixel shas unchanged — no pixel drift); battery 26/26 rc=0.
+- F-NEW-159 VERIFIED FIXED: MAND-002 + APP-001 rerun at S83 binary — 0 toLanguageTags/setSystemBarsAppearance occurrences in exception contexts; both advance to per-title next roots (MAND-002: TypedArray.hasValue null + ServiceLoader null; APP-001: kotlin now() must-not-be-null in MyApplication coroutine). Screenshots produced (was API Calls: 0).
+- FANOUT (§ one fix → multiple titles): scripts/s83_fanout_rerun.py — full F-NEW-156 35-title family rerun from cached APKs → run/s83/fanout/FANOUT_S159.json: 35/35 signature-eliminated (exception-context-aware classifier; REC-MISS dispatch lines are the fix working), 35/35 advanced, per-title next blockers named (Godot RuntimeException, GdxRuntimeException, Resources$NotFound, per-title NPEs). NO status inflation: all remain onCreate-boundary; root_cause_graph F-NEW-159 → ROOT-CAUSED-FIXED, F-NEW-157 → ADVANCED; MAND-002/APP-001 records carry S83_OBSERVED.
+- §34 FIRST_DIVERGENCE: implemented in gfx_provenance.h finalize() — canonical C7 chain-order walk per event (first applicable bit=0 while earlier=1; "chain never started" note), per-event + global, derived from recorded bits only. Rebuild + full gates re-run green (ladder 10/10, battery 26/26, goldens 24/24).
+- Hygiene: removed 57MB build-asan binary from git index (was committed in 6c7d2a22; .gitignore'd); audit JSON/MD updated with wave-1 delta table (NinePatch/Vector/Matrix/Canvas→IMPLEMENTED, GLSurfaceView/EGL→PARTIAL, LocaleList/WindowInsetsController→IMPLEMENTED); evidence docs/evidence/s83gfx (12 JPGs ≤100KB + SHA256SUMS); §43 report docs/knowledge/graphics/GRAPHICS_FOUNDATION_STATUS.md.
+- Secret scan: PAT never written to any file/config/URL (one-shot push header only).
+
+Stage Summary:
+- Graphics is now a subsystem with a contract, a 10-fixture pixel ladder, a 27-class machine-canonical audit, and auto-deriving provenance — not a patch collection.
+- Mission metric: 2 root causes advanced (F-NEW-159 ROOT-CAUSED-FIXED with 35-title fanout proof; F-NEW-157 ADVANCED to real GL lifecycle), 3 audit classes MISSING→IMPLEMENTED (Vector, NinePatch, Matrix), Canvas PARTIAL→IMPLEMENTED, l6 GL frontier real-pass.
+- Honest counters: 35 titles still BLOCKED (next roots named); no STATE-*) upgrade; foundation gaps queued (RasterSurface/alpha, Bitmap honesty, LayerDrawable-code, scale types, Paint shader family, Region, GLSL).
+- Next (S83 wave 2): RasterSurface object (C6) + framebuffer alpha preservation; Bitmap density/copy; then per-title next-root waves (Godot/libGDX families) toward first real-app non-blank unlocks.

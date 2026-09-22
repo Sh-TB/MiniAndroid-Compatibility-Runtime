@@ -7,6 +7,9 @@
 #include "dialog_shadow.h"
 #include "canvas_shadow.h"
 #include "bitmap_shadow.h"
+#include "matrix_shadow.h"
+#include "locale_insets_shadow.h"
+#include "gl_surface_shadow.h"
 #include "clipboard_shadow.h"
 #include "locks_shadow.h"
 #include "atomic_shadow.h"
@@ -281,12 +284,26 @@ void register_platform_shadows(ShadowRegistry& reg) {
     // the view catch-all (WebSettings getters would otherwise be claimed
     // by method-name heuristics on the wrong receiver domain).
     reg.register_shadow<WebSettingsShadow>();
+    // S83-GFX-BASE §32: F-NEW-159 semantic shadows — android.os.LocaleList /
+    // java.util.Locale / android.view.WindowInsetsController. Registered
+    // BEFORE ViewShadow (exact-class claims) so the catch-all view path can
+    // never capture these descriptors; the producers (Configuration.
+    // getLocales, Window.getInsetsController) resolve in the engine bridge.
+    reg.register_shadow<LocaleInsetsShadow>();
+    // S83-GFX-BASE §24/§25: GLSurfaceView + GL10/EGL model — registered
+    // BEFORE ViewShadow; GL-specific methods handled here, View methods
+    // fall through to the ViewShadow catch-all (GLSurfaceView IS-A View).
+    reg.register_shadow<GLSurfaceViewShadow>();
     reg.register_shadow<ViewShadow>();
     reg.register_shadow<DialogShadow>();
     reg.register_shadow<ArrayAdapterShadow>();
     // S68 §12/§13: Bitmap/BitmapFactory pixel store — BEFORE CanvasShadow so
     // drawBitmap resolves pixels (Canvas itself never decodes).
     reg.register_shadow<BitmapShadow>();
+    // S83-GFX-BASE §C1: android.graphics.Matrix — real 3x3 value semantics
+    // (m0..m8 heap fields). Registered BEFORE CanvasShadow so Canvas.concat
+    // / drawBitmap(Bitmap,Matrix,Paint) resolve matrices. Exact-class claim.
+    reg.register_shadow<MatrixShadow>();
     reg.register_shadow<CanvasShadow>();
     reg.register_shadow<LayoutInflaterShadow>();
     reg.register_shadow<ClipboardShadow>();

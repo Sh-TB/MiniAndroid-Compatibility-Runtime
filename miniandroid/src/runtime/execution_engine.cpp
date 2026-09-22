@@ -18,6 +18,8 @@
 // EXP-086 Phase 7 (B4 FIX): HandlerShadow for Runnable queue drain
 #include "../framework/android_shadows.h"
 #include "../framework/dialog_shadow.h"
+#include "../framework/gl_surface_shadow.h"
+#include "../gles/pgl_backend.h"
 #include "../framework/pending_intent_shadow.h"
 #include "../framework/choreographer_shadow.h"
 #include "../framework/canvas_shadow.h"
@@ -53,23 +55,23 @@ static uint16_t g04_selected_source_density(uint16_t selected_density) {
 
 static renderer::FitRect g04_image_draw_rect(
         int decoded_w, int decoded_h, uint16_t selected_density,
-        int box_x, int box_y, int box_w, int box_h) {
+        int box_x, int box_y, int box_w, int box_h, int scale_type = 3) {
     int src_w = decoded_w, src_h = decoded_h;
     uint16_t src_density = g04_selected_source_density(selected_density);
-    if (src_density > 0) {
-        uint16_t target = resources::device_config().density;   // single device law
-        if (target > 0 && src_density != target) {
-            float scale = float(target) / float(src_density);
-            // BitmapFactory scales the BITMAP ITSELF: intrinsic size =
-            // natural × target/source (rounded). Guard the int ceiling.
-            if (decoded_w > 0 && decoded_h > 0 &&
-                decoded_w * decoded_h < (1 << 24)) {   // allocation-safety bound
-                src_w = std::max(1, (int)std::lround(decoded_w * scale));
-                src_h = std::max(1, (int)std::lround(decoded_h * scale));
-            }
+    uint16_t target = resources::device_config().density;   // single device law
+    if (target > 0 && src_density != target) {
+        float scale = float(target) / float(src_density);
+        // BitmapFactory scales the BITMAP ITSELF: intrinsic size =
+        // natural × target/source (rounded). Guard the int ceiling.
+        if (decoded_w > 0 && decoded_h > 0 &&
+            decoded_w * decoded_h < (1 << 24)) {   // allocation-safety bound
+            src_w = std::max(1, (int)std::lround(decoded_w * scale));
+            src_h = std::max(1, (int)std::lround(decoded_h * scale));
         }
     }
-    return renderer::fit_center_rect(src_w, src_h, box_x, box_y, box_w, box_h);
+    // S83-GFX-BASE §19: the node's scale type picks the placement law.
+    return renderer::scale_image_rect(scale_type, src_w, src_h,
+                                      box_x, box_y, box_w, box_h);
 }
 
 ExecutionEngine::ExecutionEngine() {
@@ -1687,6 +1689,301 @@ bool f053_pixel_inside(const framework::ViewShadow::ViewNode& n,
            py < top + (int)sw || py > bottom - (int)sw;
 }
 
+// ── S83-GFX-BASE §14: NinePatchDrawable paint law ───────────────────────
+// AOSP NinePatch (Res_png_9patch + aapt2 PNG cruncher):
+//   * aapt2 CRUNCHES .9.png resources: the 1-px layout border is stripped
+//     and the patch metadata moves into the custom "npTc" PNG chunk. The
+//     stored image = CONTENT ONLY; divs are content-space coordinates.
+//   * npTc payload layout (empirically pinned on aapt2 8.13.2 outputs —
+//     two calibration fixtures, marker math verified):
+//       [0] wasDeserialized=0, [1] numXDivs, [2] numYDivs, [3] numColors
+//       int32 magic 0x20000000, int32 magic 0x28000000   (fixed header)
+//       int32 padL, padR, padT, padB                     (big-endian)
+//       int32 magic 0x30000000
+//       int32 xDivs[numXDivs]  (start,end pairs, BE, content coords)
+//       int32 yDivs[numYDivs]
+//       int32 colors[numColors] (BE ARGB transparency info)
+//   * stretch zones = the (start,end) div pairs; fixed zones keep source
+//     size; stretch zones share the leftover bounds proportionally.
+//   * UNCRUNCHED .9.png (raw assets): markers live in the 1-px border —
+//     black runs on the top row (x stretch) / left column (y stretch).
+bool f053_ninepatch_parse_nptc(const std::vector<uint8_t>& png,
+                               std::vector<int>& xdivs, std::vector<int>& ydivs,
+                               int pads[4]) {
+    size_t pos = 8;   // skip signature
+    while (pos + 8 <= png.size()) {
+        const uint32_t len = ((uint32_t)png[pos] << 24) | ((uint32_t)png[pos+1] << 16) |
+                             ((uint32_t)png[pos+2] << 8) | png[pos+3];
+        const std::string type((const char*)&png[pos+4], 4);
+        if (type == "npTc" && pos + 8 + len <= png.size() && len >= 8) {
+            auto be32 = [&](size_t o) -> int32_t {
+                return (int32_t)(((uint32_t)png[o] << 24) | ((uint32_t)png[o+1] << 16) |
+                                 ((uint32_t)png[o+2] << 8) | (uint32_t)png[o+3]);
+            };
+            const size_t base = pos + 8;
+            const int nx = png[base + 1], ny = png[base + 2];
+            if (nx <= 0 || ny <= 0 || (nx % 2) || (ny % 2)) return false;
+            // magic header sanity (aapt2 fixed words)
+            if ((uint32_t)be32(base + 4) != 0x20000000u) return false;
+            if ((uint32_t)be32(base + 8) != 0x28000000u) return false;
+            pads[0] = be32(base + 12);
+            pads[1] = be32(base + 16);
+            pads[2] = be32(base + 20);
+            pads[3] = be32(base + 24);
+            if ((uint32_t)be32(base + 28) != 0x30000000u) return false;
+            size_t o = base + 32;
+            xdivs.clear(); ydivs.clear();
+            for (int i = 0; i < nx; ++i, o += 4) xdivs.push_back(be32(o));
+            for (int i = 0; i < ny; ++i, o += 4) ydivs.push_back(be32(o));
+            return true;
+        }
+        pos += 12 + len;
+    }
+    return false;
+}
+
+// Stretch-zone destination mapping: fixed zones 1:1, stretch zones share
+// the leftover bounds proportionally (AOSP NinePatch.draw law).
+static std::vector<int> f053_np_dst_map(int src_len,
+                                        const std::vector<int>& divs,
+                                        int dst_len) {
+    std::vector<int> map(std::max(0, src_len), 0);
+    if (src_len <= 0 || dst_len <= 0) return map;
+    if (divs.empty() || (divs.size() % 2)) {
+        for (int i = 0; i < src_len; ++i)
+            map[i] = (int)((float)i * dst_len / src_len);
+        return map;
+    }
+    // zones: [0,d0) fixed, [d0,d1) stretch, [d1,d2) fixed, ...
+    struct Zone { int start, end; bool stretch; };
+    std::vector<Zone> zones;
+    int cursor = 0;
+    for (size_t k = 0; k + 1 < divs.size(); k += 2) {
+        const int s = std::max(0, divs[k]), e = std::min(src_len, divs[k+1]);
+        if (e <= s) continue;
+        if (s > cursor) zones.push_back({cursor, s, false});
+        zones.push_back({s, e, true});
+        cursor = e;
+    }
+    if (cursor < src_len) zones.push_back({cursor, src_len, false});
+    long fixed_total = 0, stretch_total = 0;
+    for (const auto& z : zones) {
+        if (z.stretch) stretch_total += z.end - z.start;
+        else fixed_total += z.end - z.start;
+    }
+    const int dst_stretch = std::max(0, dst_len - (int)fixed_total);
+    const float k = stretch_total > 0 ? (float)dst_stretch / (float)stretch_total : 0.f;
+    int d = 0;
+    for (const auto& z : zones) {
+        const int zlen = z.end - z.start;
+        if (z.stretch) {
+            const int zdst = std::max(1, (int)std::lround(zlen * k));
+            for (int i = 0; i < zlen; ++i)
+                map[z.start + i] = d + (int)((float)i * zdst / zlen);
+            d += zdst;
+        } else {
+            for (int i = 0; i < zlen; ++i) map[z.start + i] = d + i;
+            d += zlen;
+        }
+    }
+    return map;
+}
+
+bool f053_draw_ninepatch_background(const renderer::DecodedImage& img,
+                                    renderer::SoftwareCanvas& canvas,
+                                    const std::vector<uint8_t>& png_bytes,
+                                    int left, int top, int w, int h) {
+    if (!img.ok || img.rgba.empty()) return false;
+    const int W = img.width, H = img.height;
+    if (W < 1 || H < 1 || w <= 0 || h <= 0) return false;
+    if (w >= W && h >= H && w == W && h == H) {
+        // 1:1 bounds: straight blit, no patch math needed.
+        canvas.draw_image(img.rgba.data(), W, H, left, top, W, H);
+        return true;
+    }
+    std::vector<int> xdivs, ydivs;
+    int pads[4] = {0, 0, 0, 0};
+    bool have_nptc = f053_ninepatch_parse_nptc(png_bytes, xdivs, ydivs, pads);
+    if (!have_nptc) {
+        // UNCRUNCHED fallback: 1-px border markers (content 1..W-2).
+        if (W < 3 || H < 3) return false;
+        auto is_marker = [&](int x, int y) {
+            const uint8_t* p = &img.rgba[((size_t)y * W + x) * 4];
+            return p[3] > 200 && p[0] < 16 && p[1] < 16 && p[2] < 16;
+        };
+        for (int x = 1; x < W - 1; ++x)
+            if (is_marker(x, 0) && (x == 1 || !is_marker(x - 1, 0)))
+                xdivs.push_back(x - 1);   // start (content space)
+        for (int x = 1; x < W - 1; ++x)
+            if (is_marker(x, 0) && (x == W - 2 || !is_marker(x + 1, 0)))
+                xdivs.push_back(x);       // end (content space, exclusive)
+        for (int y = 1; y < H - 1; ++y)
+            if (is_marker(0, y) && (y == 1 || !is_marker(0, y - 1)))
+                ydivs.push_back(y - 1);
+        for (int y = 1; y < H - 1; ++y)
+            if (is_marker(0, y) && (y == H - 2 || !is_marker(0, y + 1)))
+                ydivs.push_back(y);
+        if (xdivs.empty() || ydivs.empty()) {
+            // no stretch markers → patch cannot stretch (AOSP: draw 1:1)
+            return false;
+        }
+    }
+    const auto map_x = f053_np_dst_map(W, xdivs, w);
+    const auto map_y = f053_np_dst_map(H, ydivs, h);
+    // Nearest-neighbour sample per destination pixel; monotonic inverse walk.
+    auto invert = [&](const std::vector<int>& map, int src_len, int dst,
+                      int& src_out) {
+        int lo = 0, hi = src_len - 1;
+        while (lo < hi) {
+            const int mid = (lo + hi + 1) / 2;
+            if (map[mid] <= dst) lo = mid; else hi = mid - 1;
+        }
+        src_out = lo;
+    };
+    for (int dy = 0; dy < h; ++dy) {
+        int sy;
+        invert(map_y, H, dy, sy);
+        for (int dx = 0; dx < w; ++dx) {
+            int sx;
+            invert(map_x, W, dx, sx);
+            const uint8_t* p = &img.rgba[((size_t)sy * W + sx) * 4];
+            if (p[3] == 0) continue;
+            renderer::RGBA c{p[0], p[1], p[2], p[3]};
+            if (c.a == 255) {
+                canvas.target()->set_pixel(left + dx, top + dy, c);
+            } else {
+                renderer::RGBA dstc = canvas.target()->get_pixel(left + dx, top + dy);
+                const uint32_t a = c.a, ia = 255 - a;
+                c.r = (uint8_t)((c.r * a + dstc.r * ia) / 255);
+                c.g = (uint8_t)((c.g * a + dstc.g * ia) / 255);
+                c.b = (uint8_t)((c.b * a + dstc.b * ia) / 255);
+                c.a = 255;
+                canvas.target()->set_pixel(left + dx, top + dy, c);
+            }
+        }
+    }
+    return true;
+}
+
+// ── S83-GFX-BASE §14: VectorDrawable paint law ──────────────────────────
+// AOSP VectorDrawable.draw: the viewport maps onto the drawable bounds
+// (scale = bounds / viewport per axis), every path renders fill-then-stroke
+// with its own colors/alphas; fill rule = winding default / evenOdd.
+// Scanline rasterization shared with the Canvas drawPath law (one law).
+bool f053_draw_vector_background(const framework::ViewShadow::ViewNode& n,
+                                 renderer::FrameBuffer& fb,
+                                 int left, int top, int w, int h) {
+    if (!n.bg_vector_valid || n.bg_vector.paths.empty()) return false;
+    if (w <= 0 || h <= 0) return true;
+    const float vpw = n.bg_vector.viewport_w, vph = n.bg_vector.viewport_h;
+    if (vpw <= 0 || vph <= 0) return false;
+    const float sx = (float)w / vpw, sy = (float)h / vph;
+    auto to_rgba = [](uint32_t c, float alpha) {
+        uint8_t a = (uint8_t)std::lround(((c >> 24) & 0xFF) * alpha);
+        return renderer::RGBA{(uint8_t)((c >> 16) & 0xFF),
+                              (uint8_t)((c >> 8) & 0xFF),
+                              (uint8_t)(c & 0xFF), a};
+    };
+    auto blend = [&](int px, int py, renderer::RGBA c) {
+        if (c.a == 0) return;
+        if (c.a == 255) { fb.set_pixel(px, py, c); return; }
+        renderer::RGBA dst = fb.get_pixel(px, py);
+        const uint32_t a = c.a, ia = 255 - a;
+        c.r = (uint8_t)((c.r * a + dst.r * ia) / 255);
+        c.g = (uint8_t)((c.g * a + dst.g * ia) / 255);
+        c.b = (uint8_t)((c.b * a + dst.b * ia) / 255);
+        c.a = 255;
+        fb.set_pixel(px, py, c);
+    };
+    // Per-path scanline fill (winding/even-odd) in viewport space scaled to
+    // bounds; edges are scaled once per path.
+    struct Edge { float x1, y1, x2, y2; };
+    for (const auto& pd : n.bg_vector.paths) {
+        if (!pd.has_fill || pd.contours.empty()) continue;
+        std::vector<Edge> edges;
+        float min_y = 1e30f, max_y = -1e30f;
+        for (const auto& ct : pd.contours) {
+            for (size_t i = 0; i < ct.size(); ++i) {
+                const auto& p0 = ct[i];
+                const auto& p1 = ct[(i + 1) % ct.size()];
+                const float ax = left + p0.first * sx, ay = top + p0.second * sy;
+                const float bx = left + p1.first * sx, by = top + p1.second * sy;
+                if (ay != by) edges.push_back({ax, ay, bx, by});
+                min_y = std::min(min_y, std::min(ay, by));
+                max_y = std::max(max_y, std::max(ay, by));
+            }
+        }
+        if (edges.empty() || max_y < min_y) continue;
+        const int y0 = std::max((int)std::floor(min_y), top);
+        const int y1 = std::min((int)std::ceil(max_y), top + h);
+        const bool winding = pd.fill_type == 0;
+        const renderer::RGBA fill_c = to_rgba(pd.fill_color, pd.fill_alpha);
+        for (int y = y0; y < y1; ++y) {
+            const float sy_c = (float)y + 0.5f;
+            std::vector<std::pair<float, int>> xs;
+            for (const auto& e : edges) {
+                if ((sy_c >= e.y1 && sy_c < e.y2) || (sy_c >= e.y2 && sy_c < e.y1)) {
+                    const float t = (sy_c - e.y1) / (e.y2 - e.y1);
+                    xs.push_back({e.x1 + t * (e.x2 - e.x1), e.y2 > e.y1 ? 1 : -1});
+                }
+            }
+            std::sort(xs.begin(), xs.end(),
+                      [](const auto& a, const auto& b) { return a.first < b.first; });
+            if (winding) {
+                int wind = 0; float start = 0.f; bool inside = false;
+                for (const auto& cr : xs) {
+                    if (!inside) { start = cr.first; inside = true; wind = cr.second; }
+                    else {
+                        wind += cr.second;
+                        if (wind == 0) {
+                            const int xa = std::max((int)std::ceil(start), left);
+                            const int xb = std::min((int)std::ceil(cr.first), left + w);
+                            for (int x = xa; x < xb; ++x) blend(x, y, fill_c);
+                            inside = false;
+                        }
+                    }
+                }
+                if (inside) {
+                    const int xa = std::max((int)std::ceil(start), left);
+                    const int xb = std::min((int)std::ceil(xs.back().first), left + w);
+                    for (int x = xa; x < xb; ++x) blend(x, y, fill_c);
+                }
+            } else {
+                for (size_t i = 0; i + 1 < xs.size(); i += 2) {
+                    const int xa = std::max((int)std::ceil(xs[i].first), left);
+                    const int xb = std::min((int)std::ceil(xs[i + 1].first), left + w);
+                    for (int x = xa; x < xb; ++x) blend(x, y, fill_c);
+                }
+            }
+        }
+    }
+    // Strokes: contour outlines (same walk as the shape stroke law).
+    for (const auto& pd : n.bg_vector.paths) {
+        if (!pd.has_stroke || pd.contours.empty()) continue;
+        const renderer::RGBA sc = to_rgba(pd.stroke_color, pd.stroke_alpha);
+        const float sw = std::max(1.f, pd.stroke_width *
+                                      std::max(sx, sy) * 0.5f);
+        for (const auto& ct : pd.contours) {
+            for (size_t i = 0; i + 1 < ct.size(); ++i) {
+                const float ax = left + ct[i].first * sx;
+                const float ay = top + ct[i].second * sy;
+                const float bx = left + ct[i + 1].first * sx;
+                const float by = top + ct[i + 1].second * sy;
+                const float dx = bx - ax, dy = by - ay;
+                const int steps = (int)std::max({std::fabs(dx), std::fabs(dy), 1.f});
+                for (int s2 = 0; s2 <= steps; ++s2) {
+                    const float px = ax + dx * s2 / steps;
+                    const float py = ay + dy * s2 / steps;
+                    for (int oy2 = 0; oy2 < (int)std::ceil(sw); ++oy2)
+                        for (int ox2 = 0; ox2 < (int)std::ceil(sw); ++ox2)
+                            blend((int)(px + ox2), (int)(py + oy2), sc);
+                }
+            }
+        }
+    }
+    return true;
+}
+
 bool f053_draw_shape_background(const framework::ViewShadow::ViewNode& n,
                                 renderer::FrameBuffer& fb,
                                 int left, int top, int w, int h) {
@@ -1763,6 +2060,15 @@ bool f053_draw_shape_background(const framework::ViewShadow::ViewNode& n,
 }  // namespace
 
 bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const ExecutionConfig& config) {
+    // S83-GFX-BASE §25: EVERY render pass composites GL surfaces after the
+    // view tree (frame sequences, taps and click re-renders included) — the
+    // GL frame must never lag the framebuffer capture.
+    const bool ok = stage_render_frame_impl(result, config);
+    if (ok) stage_gl_surfaces(result, config);
+    return ok;
+}
+
+bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const ExecutionConfig& config) {
     trace_engine_.info("ExecutionEngine", "stage_render_frame", "Rendering frame");
     // S82-GFX §6: provenance instrument — env MINIANDROID_GFX_PROVENANCE=<json>
     diagnostics::GfxProvenance::instance().begin();
@@ -2164,10 +2470,25 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                     renderer::decode_image_bytes(bdata, &bdec);
                                     bool bg_painted =
                                         bdec.ok && !bdec.rgba.empty();
-                                    if (bg_painted) {
+                                    // S83-GFX-BASE §14: .9.png → the
+                                    // NinePatch stretch law (markers from the
+                                    // 1-px layout border), NOT a plain
+                                    // full-stretch draw.
+                                    const bool is_9png =
+                                        bp.size() > 6 &&
+                                        bp.compare(bp.size() - 6, 6,
+                                                   ".9.png") == 0;
+                                    bool np_drew = false;
+                                    if (bg_painted && is_9png) {
+                                        np_drew = f053_draw_ninepatch_background(
+                                            bdec, canvas, bdata, left, top, w, h);
+                                    }
+                                    if (bg_painted && !np_drew) {
                                         canvas.draw_image(
                                             bdec.rgba.data(), bdec.width,
                                             bdec.height, left, top, w, h);
+                                    }
+                                    if (bg_painted) {
                                         drew_bg = true;
                                     }
                                     if (diagnostics::GfxProvenance::instance()
@@ -2250,7 +2571,18 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                 node->bg_shape_valid &&
                                 !(eff_bg_color != 0 && !node->bg_from_xml);
                             if (f053_shape_owns) eff_bg_color = 0;
-                            if (f053_shape_owns && !node_invisible) {
+                            // S83-GFX-BASE §14: vector law — same ownership
+                            // semantics as the shape law (XML bg owns unless
+                            // a programmatic write swapped mBackground).
+                            bool f053_vector_owns =
+                                node->bg_vector_valid &&
+                                !(eff_bg_color != 0 && !node->bg_from_xml);
+                            if (f053_vector_owns) eff_bg_color = 0;
+                            if (f053_vector_owns && !node_invisible) {
+                                bool drew_vec = f053_draw_vector_background(
+                                    *node, fb, left, top, w, h);
+                                if (drew_vec) drew_bg = true;
+                            } else if (f053_shape_owns && !node_invisible) {
                                 bool drew_shape = f053_draw_shape_background(
                                     *node, fb, left, top, w, h);
                                 if (drew_shape) drew_bg = true;
@@ -2686,7 +3018,8 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                             decoded.width, decoded.height, sel_d,
                                             left + pl, top + pt,
                                             std::max(1, w - pl - pr),
-                                            std::max(1, h - pt - pb));
+                                            std::max(1, h - pt - pb),
+                                            node->scale_type);
                                         canvas.draw_image(decoded.rgba.data(),
                                                           decoded.width, decoded.height,
                                                           fr.x, fr.y, fr.w, fr.h);
@@ -2776,7 +3109,8 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                             decoded.width, decoded.height, sel_d,
                                             left + pl, top + pt,
                                             std::max(1, w - pl - pr),
-                                            std::max(1, h - pt - pb));
+                                            std::max(1, h - pt - pb),
+                                            node->scale_type);
                                         canvas.draw_image(decoded.rgba.data(),
                                                           decoded.width, decoded.height,
                                                           fr.x, fr.y, fr.w, fr.h);
@@ -3269,6 +3603,70 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
 
     trace_engine_.info("ExecutionEngine", "stage_render_frame", "Frame rendered successfully");
 
+    return true;
+}
+
+bool ExecutionEngine::stage_gl_surfaces(ExecutionResult& result,
+                                        const ExecutionConfig& config) {
+    (void)result;
+    framework::ViewShadow* views = nullptr;
+    if (shadow_registry_) views = shadow_registry_->find_as<framework::ViewShadow>();
+    if (!views) return true;
+    bool any = false;
+    for (const auto& [vid, node] : views->all_nodes()) {
+        (void)node;
+        // measured geometry (the view walk already laid the tree out)
+        auto* n = views->find_node(vid);
+        if (!n || n->class_desc.find("GLSurfaceView") == std::string::npos)
+            continue;
+        const int gw = n->laid_out ? n->measured_width : n->width;
+        const int gh = n->laid_out ? n->measured_height : n->height;
+        const int gx = n->laid_out ? n->measured_left : n->x;
+        const int gy = n->laid_out ? n->measured_top : n->y;
+        if (gw <= 0 || gh <= 0) continue;
+        // PGL context FIRST: the renderer callbacks issue real gl* calls —
+        // the context must be current before onSurfaceCreated runs (the
+        // pre-init ordering segfaulted in a NULL-context clear).
+        auto& pgl = gles::PGLBackend::instance();
+        std::string err;
+        if (!pgl.init(gw, gh, err)) {
+            trace_engine_.record_error("GL_INIT", err, "stage_gl_surfaces", "");
+            continue;
+        }
+        pgl.make_current();
+        bool first = false;
+        const bool drew = dalvik_engine_.dispatch_gl_surface_view_frame(
+            vid, gw, gh, &first);
+        if (!drew) continue;
+        any = true;
+        const uint32_t* src = pgl.pixels();
+        if (!src) continue;
+        const int cw = std::min(gw, config.screen_width - gx);
+        const int ch = std::min(gh, config.screen_height - gy);
+        for (int y = 0; y < ch; ++y) {
+            for (int x = 0; x < cw; ++x) {
+                const uint32_t px = src[(size_t)y * gw + x];
+                const size_t idx =
+                    ((size_t)(gy + y) * config.screen_width + (gx + x)) * 4;
+                if (idx + 3 >= framebuffer_.size()) continue;
+                // PGL pix_t = RGBA8888 (R lowest byte, little-endian order)
+                framebuffer_[idx + 0] = (uint8_t)(px & 0xFF);
+                framebuffer_[idx + 1] = (uint8_t)((px >> 8) & 0xFF);
+                framebuffer_[idx + 2] = (uint8_t)((px >> 16) & 0xFF);
+                framebuffer_[idx + 3] = 0xFF;
+            }
+        }
+        trace_engine_.info("ExecutionEngine", "stage_gl_surfaces",
+                           "GL frame presented " + std::to_string(gw) + "x" +
+                               std::to_string(gh) + (first ? " (surface created)" : ""));
+        if (diagnostics::GfxProvenance::instance().enabled()) {
+            diagnostics::GfxProvenance::instance().record_gl_presented(
+                vid, gw, gh, first);
+        }
+    }
+    if (!any) return true;
+    trace_engine_.info("ExecutionEngine", "stage_gl_surfaces",
+                       "GL surface pass complete");
     return true;
 }
 

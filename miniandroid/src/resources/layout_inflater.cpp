@@ -1028,6 +1028,24 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
             }
         }
         else if (n == "onClick") a.onClick = raw;
+        else if (n == "scaleType") {
+            // S83-GFX-BASE (§19 ImageView scale-type law). AOSP
+            // ImageView.ScaleType declaration order = XML enum ordinal space:
+            // matrix 0, fitXY 1, fitStart 2, fitCenter 3, fitEnd 4, center 5,
+            // centerCrop 6, centerInside 7. aapt2 compiles the framework attr
+            // enum into that ordinal space (value/data) or the string form
+            // survives for legacy layouts.
+            static const char* kScaleTypeNames[] = {
+                "matrix", "fitXY", "fitStart", "fitCenter",
+                "fitEnd", "center", "centerCrop", "centerInside"};
+            int st = -1;
+            if (at.value.is_int()) st = (int)at.value.data;
+            if (st < 0) {
+                for (int i = 0; i < 8; i++)
+                    if (raw == kScaleTypeNames[i]) { st = i; break; }
+            }
+            a.scale_type = (st >= 0 && st <= 7) ? st : 3;
+        }
         else if (n == "visibility") {
             if (at.value.is_int()) {
                 // ────────────────────────────────────────────────────────
@@ -1301,6 +1319,8 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
         node.src_drawable_path = a.src_drawable;
         node.src_density = a.src_drawable_density;          // G04 §4
     }
+    // S83-GFX-BASE §19: scale type flows to the render law.
+    node.scale_type = a.scale_type;
     // width/height semantics on node
     node.width = a.layout_width;
     node.height = a.layout_height;
@@ -1338,6 +1358,13 @@ void LayoutInflater::apply_shape_background(framework::ViewShadow::ViewNode& nod
         return;
     }
     const AxmlElement& root = parser.root();
+    if (root.name == "vector") {
+        // S83-GFX-BASE §14: vector drawables ride the SAME background
+        // resolution entry (bg_resource_path / bg_drawable_path) but fill
+        // the bg_vector_* node state instead of bg_shape_*.
+        apply_vector_background(node, xml_path, stats);
+        return;
+    }
     if (root.name != "shape") return;   // selector / other drawable law untouched
 
     node.bg_shape_valid = true;
