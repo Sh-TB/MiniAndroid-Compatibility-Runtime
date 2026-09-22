@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_dark">
+
+    <com.miniandroid.snakedeluxe.GameView
+        android:id="@+id/game"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="18dp">
+
+        <Button
+            android:id="@+id/btn_start"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_start"
+            android:textColor="@color/white"
+            android:textSize="26sp"
+            android:text="START" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btn_top"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:background="@drawable/btn_slate"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:text="TOP" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btn_left"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_marginEnd="24dp"
+                android:background="@drawable/btn_slate"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:text="LEFT" />
+
+            <Button
+                android:id="@+id/btn_right"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_marginStart="24dp"
+                android:background="@drawable/btn_slate"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:text="RIGHT" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btn_bottom"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:background="@drawable/btn_slate"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:text="BOTTOM" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
