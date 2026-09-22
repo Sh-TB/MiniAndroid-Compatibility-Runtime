@@ -52,6 +52,10 @@ namespace dalvik {
 // in try_recursive_invoke (defined later in this file at line ~5795).
 static framework::CallContext::Arg dalvik_value_to_arg(const DalvikValue& v);
 
+// S83 APX-ACT forward declaration — the shadow-result → DalvikValue
+// converter is defined later in this file (EXP-051, near try_shadow_dispatch).
+static DalvikValue call_result_to_dalvik(const framework::CallResult& r);
+
 // ─── M3 FIELD-TRACE (AG diagnostic) ───────────────────────────────────────
 // MINIANDROID_FIELD_TRACE=<substr> — env-gated, deterministic, bounded.
 // Logs iget/iput field accesses whose FIELD NAME contains <substr>, or ALL
@@ -4513,6 +4517,105 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         std::cerr << std::endl;
     }
     if (!dex_report_) return false;
+
+    // ────────────────────────────────────────────────────────────────────
+    // S83 APX-ACT SEMANTIC SHADOW LAW (F-NEW-156 family root fix).
+    //
+    // Every appcompat app ships REAL androidx DEX (appcompat/fragment/
+    // core bundled). Executing that bytecode end-to-end requires the full
+    // AppCompatDelegateImpl window-decor state machine (createSubDecor,
+    // styled-attribute panels, ActionBar plumbing) — engine-unsupported
+    // territory. Evidence (S83 campaign, crypto.o0o0o0o0o.games.blackjack):
+    //   * NPE unwinding Landroidx/fragment/app/FragmentActivity;.onCreate
+    //     @invoke_pc=0xc — mFragmentLifecycleRegistry is null because the
+    //     <init> field-initializer chain (FragmentController.createController
+    //     / new LifecycleRegistry) never completes under the engine.
+    //   * ISE unwinding Landroidx/appcompat/app/AppCompatDelegateImpl;
+    //     .ensureSubDecor — createSubDecor needs PhoneWindow decor
+    //     semantics the engine does not model.
+    // Both unwind to MainActivity.onCreate [APP-BOUNDARY] → blank frame.
+    //
+    // FIX (semantic shadow — the F-NEW-159 sanctioned tool class, NOT a
+    // null/catch bypass): answer the androidx activity trio at the
+    // framework boundary with the OBSERVABLE contract:
+    //   * AppCompatActivity/FragmentActivity.onCreate(Bundle) → framework
+    //     super-chain semantics (void; lifecycle handled by the app-level
+    //     onCreate law). Fragment dispatch on the shadow host = no-op —
+    //     no fragment transaction exists before super.onCreate returns.
+    //   * AppCompatActivity.setContentView(int|View) → ActivityShadow
+    //     setContentView (U007 real inflation + F-023 parent link +
+    //     F-105b view-tree owner tags) — the same law plain-Activity apps
+    //     get, which is the AOSP-observable outcome of the delegate path.
+    //   * AppCompatActivity.findViewById(int) → ActivityShadow findViewById
+    //     (searches the REAL inflated tree; ensureSubDecor never runs).
+    // Scope guard: androidx.activity.ComponentActivity is deliberately NOT
+    // intercepted — dooz (Compose) executes its real bytecode 3 fixes deep
+    // (S39/S40); intercepting it would regress that frontier.
+    // ────────────────────────────────────────────────────────────────────
+    if (declaring_class == "Landroidx/appcompat/app/AppCompatActivity;" ||
+        declaring_class == "Landroidx/fragment/app/FragmentActivity;" ||
+        // S83 addition: the LEGACY support library trio — same delegate
+        // state machine, same death chain (tobiasbielefeld solitaire:
+        // android/support/v7/app/h.<init> NPE'd on Window.getCallback).
+        declaring_class == "Landroid/support/v7/app/AppCompatActivity;" ||
+        declaring_class == "Landroid/support/v4/app/FragmentActivity;" ||
+        declaring_class == "Landroid/support/v4/app/BaseFragmentActivityDonut;" ||
+        declaring_class == "Landroid/support/v4/app/BaseFragmentActivityHoneycomb;" ||
+        declaring_class == "Landroid/support/v4/app/SupportActivity;") {
+        if (method_name == "onCreate") {
+            std::cerr << "[S83-APXACT] onCreate semantic shadow: "
+                      << declaring_class
+                      << " (appcompat delegate state machine bypassed at the"
+                         " framework boundary; app onCreate continues)"
+                      << std::endl;
+            return_val = DalvikValue::make_void();
+            last_invoke_return_ = return_val;
+            recursion_depth_--;
+            return true;
+        }
+        if (method_name == "setContentView" && args.size() >= 2) {
+            framework::CallContext ctx;
+            ctx.has_receiver = args[0].type == DalvikType::OBJECT_REF;
+            ctx.receiver_id = ctx.has_receiver ? args[0].object_id : 0;
+            ctx.receiver_class = ctx.has_receiver ? args[0].class_desc
+                                                  : "Landroid/app/Activity;";
+            ctx.class_name = "Landroid/app/Activity;";
+            ctx.method = "setContentView";
+            for (size_t s83i = 1; s83i < args.size(); ++s83i)
+                ctx.args.push_back(dalvik_value_to_arg(args[s83i]));
+            auto cr = shadow_registry_ ? shadow_registry_->dispatch(ctx)
+                                       : framework::CallResult{};
+            if (cr.handled) {
+                std::cerr << "[S83-APXACT] setContentView semantic shadow: "
+                          << declaring_class
+                          << " → ActivityShadow U007 inflate path" << std::endl;
+                return_val = call_result_to_dalvik(cr);
+                last_invoke_return_ = return_val;
+                recursion_depth_--;
+                return true;
+            }
+            // shadow miss → honest fall-through to the real bytecode
+        }
+        if (method_name == "findViewById" && args.size() >= 2) {
+            framework::CallContext ctx;
+            ctx.has_receiver = args[0].type == DalvikType::OBJECT_REF;
+            ctx.receiver_id = ctx.has_receiver ? args[0].object_id : 0;
+            ctx.receiver_class = ctx.has_receiver ? args[0].class_desc
+                                                  : "Landroid/app/Activity;";
+            ctx.class_name = "Landroid/app/Activity;";
+            ctx.method = "findViewById";
+            for (size_t s83i = 1; s83i < args.size(); ++s83i)
+                ctx.args.push_back(dalvik_value_to_arg(args[s83i]));
+            auto cr = shadow_registry_ ? shadow_registry_->dispatch(ctx)
+                                       : framework::CallResult{};
+            if (cr.handled) {
+                return_val = call_result_to_dalvik(cr);
+                last_invoke_return_ = return_val;
+                recursion_depth_--;
+                return true;
+            }
+        }
+    }
 
     if (declaring_class == "Lz1/r;" && method_name == "A") {
         static thread_local uint64_t lsz_n = 0;
@@ -17744,6 +17847,9 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
     {"Landroid/hardware/display/DisplayManager;", "display"},
     {"Landroid/view/accessibility/AccessibilityManager;", "accessibility"},
     {"Landroid/view/autofill/AutofillManager;", "autofill"},
+    // S83: input service — boxcars EbitenView.initialize registers an input
+    // device listener at onCreate; a null InputManager NPE'd APP-BOUNDARY.
+    {"Landroid/hardware/input/InputManager;", "input"},
 };
             const char* cn = kv_table_find(t_svc_cls339,
                     sizeof(t_svc_cls339) / sizeof(t_svc_cls339[0]),
@@ -17771,6 +17877,8 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
     {"display", "Landroid/hardware/display/DisplayManager;"},
     {"accessibility", "Landroid/view/accessibility/AccessibilityManager;"},
     {"autofill", "Landroid/view/autofill/AutofillManager;"},
+    // S83: input service (see the class-table note above).
+    {"input", "Landroid/hardware/input/InputManager;"},
 };
         const char* sv = kv_table_find(t_svc_map339,
                 sizeof(t_svc_map339) / sizeof(t_svc_map339[0]),
@@ -18551,6 +18659,65 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     //   itself is a no-op (software runtime has no speaker), but the
     //   OBJECT/STATE law is what app control flow depends on.
     // ────────────────────────────────────────────────────────────────────
+    // ────────────────────────────────────────────────────────────────────
+    // S83 AUDIO-ATTRIBUTES-BUILDER LAW (AOSP android.media contract).
+    // AOSP AudioAttributes.Builder is a fluent ctor-chain object: new
+    // Builder() → setUsage/setContentType/setFlags/... (each returns THIS)
+    // → build() → AudioAttributes. Evidence (S83 campaign,
+    // com.astroloop.game): SoundManager.init ran
+    //   new AudioAttributes.Builder().setContentType(ContentType.MOVIE)...
+    // the NEW-INSTANCE of the nested Builder answered null (no ctor law)
+    // → NPE "setContentType on a null object reference" → onCreate
+    // APP-BOUNDARY unwind → blank frame. The object law: Builder non-null,
+    // setters fluent-this, build() non-null AudioAttributes (audio OUTPUT
+    // remains a no-op — the software runtime has no speaker — same law
+    // boundary as MediaPlayer above).
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/media/AudioAttributes$Builder;") {
+        if (method == "<init>") {
+            if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+                heap_.set_object_field(args[0].object_id, "__is_audio_attr_builder__",
+                                       DalvikValue::make_int(1));
+            }
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0 &&
+            (method == "setUsage" || method == "setContentType" ||
+             method == "setFlags" || method == "setAllowedCapturePolicy")) {
+            result = args[0];  // fluent: return THIS (AOSP Builder law)
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "build" && !args.empty() &&
+            args[0].type == DalvikType::OBJECT_REF) {
+            uint32_t aa_id = heap_.allocate("Landroid/media/AudioAttributes;",
+                                            pc_, 0);
+            heap_.set_object_field(aa_id, "__from_builder__",
+                                   DalvikValue::make_int(1));
+            result = DalvikValue::make_object(aa_id,
+                                              "Landroid/media/AudioAttributes;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    if (class_name == "Landroid/media/AudioAttributes;") {
+        if (method == "<init>") {
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0 &&
+            (method == "getContentType" || method == "getUsage" ||
+             method == "getFlags" || method == "getAllowedCapturePolicy")) {
+            result = DalvikValue::make_int(0);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
     if (class_name == "Landroid/media/MediaPlayer;") {
         auto mp_state_of = [&](uint32_t oid) -> int {
             auto v = heap_.get_object_field(oid, "__mp_state__");
@@ -21560,6 +21727,68 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // S83 LOCALE-DEFAULT LAW (AOSP java.util.Locale contract).
+    // OpenJDK/AOSP: Locale.getDefault() returns the process default Locale —
+    // set by Resources/AssetManager during VM/Context attach and NEVER null
+    // (a null default would break every Locale-sensitive call: toLowerCase,
+    // String.format, DateFormat, ...). Evidence (S83 campaign,
+    // de.tobiasbielefeld.solitaire): MainApplication.attachBaseContext read
+    // Locale.getDefault() → answered null (generic miss) →
+    // c/k.b NPE "Locale.getLanguage on a null object reference" →
+    // APP-BOUNDARY unwind → blank frame.
+    // The materialized object mirrors the LOCALE-CONST law (above in the
+    // sget path): heap Locale with __locale_tag__ + __locale_name__, so the
+    // Locale-sensitive bridges (String case ops, format) read the same tag.
+    // Cached identity (static storage) — getDefault() returns the SAME
+    // object across calls, matching the JVM default-locale singleton.
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/util/Locale;" && method == "getDefault") {
+        static uint32_t s83_default_locale_id = 0;
+        if (s83_default_locale_id == 0 ||
+            !heap_.has_object(s83_default_locale_id)) {
+            s83_default_locale_id = heap_.allocate("Ljava/util/Locale;", 0, 0);
+            heap_.set_object_field(s83_default_locale_id, "__locale_tag__",
+                                   DalvikValue::make_string("en_US", 0));
+            heap_.set_object_field(s83_default_locale_id, "__locale_name__",
+                                   DalvikValue::make_string("default", 0));
+        }
+        result = DalvikValue::make_object(s83_default_locale_id,
+                                          "Ljava/util/Locale;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    // S83 LOCALE-ACCESSOR FAMILY: getDefault* / getLanguage / getCountry /
+    // getDisplayName on a materialized Locale answer the tag components
+    // (AOSP Locale.java). Covers the R8-inlined chains that immediately
+    // dereference the accessor result (solitaire c/k.b: getDefault()
+    // .getLanguage()).
+    if (class_name == "Ljava/util/Locale;" &&
+        (method == "getLanguage" || method == "getCountry" ||
+         method == "getVariant" || method == "toString" ||
+         method == "getDisplayName" || method == "toLanguageTag" ||
+         method == "getISO3Language")) {
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0) {
+            auto tag = heap_.get_object_field(args[0].object_id,
+                                              "__locale_tag__");
+            std::string t = tag.has_value() && tag->type == DalvikType::STRING_REF
+                                ? tag->string_val
+                                : "en_US";
+            std::string ans;
+            if (method == "getLanguage") ans = t.substr(0, t.find('_'));
+            else if (method == "getCountry") {
+                size_t us = t.find('_');
+                ans = (us == std::string::npos) ? "" : t.substr(us + 1);
+            } else if (method == "getVariant") ans = "";
+            else if (method == "toLanguageTag") ans = t;
+            else if (method == "getISO3Language") ans = t.substr(0, t.find('_'));
+            else ans = t;  // toString / getDisplayName
+            result = DalvikValue::make_string(ans, 0);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
     }
     // ────────────────────────────────────────────────────────────────────────
     // F-141b (S72-W3) — SYSTEM-PROPERTY BOXED-READER FAMILY (OpenJDK law).
@@ -24913,6 +25142,134 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // S83 WINDOW-CALLBACK LAW (AOSP Window.java contract).
+    // AOSP: Window.getCallback() returns the Window.Callback (an Activity
+    // IS one — Activity extends Window.Callback and PhoneWindow holds it
+    // from attach()). NEVER null after attach. Evidence (S83 campaign,
+    // tobiasbielefeld solitaire): android/support/v7/app/h.<init> (legacy
+    // AppCompatActivity) read getWindow().getCallback() → null → NPE →
+    // GameSelector.onCreate APP-BOUNDARY unwind. Answer the activity
+    // object itself (it is the AOSP callback implementor).
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getCallback" &&
+        class_name.find("Landroid/view/Window") != std::string::npos) {
+        if (shadow_registry_) {
+            if (auto* act = shadow_registry_->find_as<framework::ActivityShadow>()) {
+                uint32_t act_id = act->current_activity_id();
+                if (act_id != 0 && heap_.has_object(act_id)) {
+                    result = DalvikValue::make_object(act_id,
+                                                      "Landroid/app/Activity;");
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+            }
+        }
+        // no live activity — honest null (pre-attach window)
+        result = DalvikValue::make_null();
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // S83 SOUNDPOOL-BUILDER LAW (AOSP android.media contract; mirrors the
+    // AudioAttributes$Builder law above). Evidence (S83 campaign,
+    // com.astroloop.game): SoundManager.init built a SoundPool via
+    //   new SoundPool.Builder().setAudioAttributes(..).setMaxStreams(..)..
+    // the Builder answered null → NPE "setAudioAttributes on a null object
+    // reference" → APP-BOUNDARY unwind. Fluent-this setters + non-null
+    // build(); audio OUTPUT is a no-op (software runtime, no speaker).
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/media/SoundPool$Builder;") {
+        if (method == "<init>") {
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0 &&
+            (method == "setAudioAttributes" || method == "setMaxStreams" ||
+             method == "setContentType" || method == "setUsage")) {
+            result = args[0];  // fluent: return THIS
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "build" && !args.empty() &&
+            args[0].type == DalvikType::OBJECT_REF) {
+            uint32_t sp_id = heap_.allocate("Landroid/media/SoundPool;",
+                                            pc_, 0);
+            heap_.set_object_field(sp_id, "__sp_state__",
+                                   DalvikValue::make_int(1));
+            result = DalvikValue::make_object(sp_id,
+                                              "Landroid/media/SoundPool;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    if (class_name == "Landroid/media/SoundPool;") {
+        if (method == "<init>") {
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // load()/play()/unload() — honest stubs returning plausible ids;
+        // the software runtime produces no audio (documented boundary).
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0 &&
+            (method == "load" || method == "play")) {
+            static int32_t s83_sound_id_seq = 100;
+            result = DalvikValue::make_int(s83_sound_id_seq++);
+            status = ApiCallTrace::Status::STUBBED;
+            return true;
+        }
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0 &&
+            (method == "unload" || method == "release" || method == "stop" ||
+             method == "pause" || method == "resume" ||
+             method == "setVolume" || method == "autoPause" ||
+             method == "autoResume" || method == "setOnLoadCompleteListener")) {
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::STUBBED;
+            return true;
+        }
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // S83 VIEW-TREE-OBSERVER LAW (AOSP View.java contract).
+    // OpenJDK/AOSP: View.getViewTreeObserver() NEVER returns null — every
+    // view carries (or lazily attaches) a ViewTreeObserver. Evidence
+    // (S83 campaign, com.simondalvai.ball2box → Godot FullScreenGodotApp):
+    // androidx.activity ReportFullyDrawnExecutorApi16Impl.viewCreated ran
+    //   getWindow().getDecorView().getViewTreeObserver().addOnDrawListener(..)
+    // the accessor answered null (generic miss) → NPE "addOnDrawListener on
+    // a null object reference" → APP-BOUNDARY unwind → blank frame.
+    // Listener-registration methods accept and record (void) — the observer
+    // is the process-wide singleton; per-view attach distinctions are not
+    // observable to these call sites.
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getViewTreeObserver" &&
+        class_name.find("Landroid/view/View") != std::string::npos) {
+        result = get_or_create_singleton("Landroid/view/ViewTreeObserver;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (class_name == "Landroid/view/ViewTreeObserver;" &&
+        (method == "addOnDrawListener" || method == "addOnGlobalLayoutListener" ||
+         method == "addOnPreDrawListener" || method == "addOnScrollChangedListener" ||
+         method == "addOnWindowFocusChangeListener" ||
+         method == "addOnTouchModeChangeListener" ||
+         method == "removeOnDrawListener" || method == "removeGlobalOnLayoutListener" ||
+         method == "removeOnPreDrawListener" || method == "isAlive" ||
+         method == "checkAccess")) {
+        if (method == "isAlive") {
+            result = DalvikValue::make_bool(true);
+        } else {
+            result = DalvikValue::make_void();
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // P1.3c — Array clone (F-023 array-copy law)
     // `clone()` on a heap array must return a fresh array of the SAME class
     // and length with all elements copied (AOSP Object.clone() semantics
@@ -25569,6 +25926,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     {"Landroid/hardware/display/DisplayManager;", "display"},
     {"Landroid/view/accessibility/AccessibilityManager;", "accessibility"},
     {"Landroid/view/autofill/AutofillManager;", "autofill"},
+    // S83: input service (mirror of the try_shadow_dispatch copy).
+    {"Landroid/hardware/input/InputManager;", "input"},
 };
             const char* scn = kv_table_find(t_service_class_map,
                     sizeof(t_service_class_map) / sizeof(t_service_class_map[0]),
@@ -25600,6 +25959,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     {"display", "Landroid/hardware/display/DisplayManager;"},
     {"accessibility", "Landroid/view/accessibility/AccessibilityManager;"},
     {"autofill", "Landroid/view/autofill/AutofillManager;"},
+    {"input", "Landroid/hardware/input/InputManager;"},
 };
 
         const char* smp = kv_table_find(t_service_map,

@@ -2772,3 +2772,58 @@ Stage Summary:
 - Honest status: CORPUS_READY, EXECUTION_PARTIAL (not 200_APPS_VERIFIED).
 - Next: F-NEW-156 per-face disasm→law chain; P9/TimeLimit build+run with
   reference-vs-MiniAndroid comparison; BATCH-02..04; probe v2 ListView.
+
+---
+Task ID: S83-MAIN
+Agent: Super Z (main)
+Task: "S83-GFX-BASE completion + validation campaign" (user: execute all
+remaining items until the graphics BASE is done; validate 10 apps + 20
+games with REAL screenshots; complete دوز (TicTacToe) + مار (Snake);
+progress table; update GitHub per title).
+
+Work Log:
+- Runtime rebuilt from scratch (build/ was empty): 41 TUs, link clean.
+  Battery re-established 26/26 rc=0 BEFORE changes.
+- TicTacToe Deluxe (دوز) CREATED as games/tictactoe-deluxe (pure
+  android.jar: GameView.onDraw board + 9 cell buttons + AI on
+  main-looper Handler + deterministic LCG). Built with canonical
+  aapt2/ECJ/D8 toolchain; Tetris + 2048 APKs rebuilt from sources.
+- Campaign (scripts/s83_campaign.py): 23 games + 10 apps + 2 HIGH apps,
+  final frame real-captured per title, S81 visual audit instrument
+  applied — 35/35 real PNG frames.
+- SIX root-caused engine laws (semantic shadows / AOSP object laws,
+  regression-clean each rebuild):
+  * S83 APX-ACT: androidx/support activity trio semantic shadow —
+    FragmentActivity.onCreate NPE (mFragmentLifecycleRegistry null) +
+    AppCompatDelegateImpl.ensureSubDecor ISE root-caused via disasm
+    (androguard, scripts/s83_disasm_appcompat.py); setContentView/
+    findViewById/onCreate answered at the framework boundary (U007
+    inflate + F-023 parent link + F-105b owners). Fanout: Mines
+    uniq 2→37, 8 titles rc 1→0.
+  * S83 CANVAS-GEOMETRY (P0): View.onDraw canvas size = view bounds,
+    NOT framebuffer 1080x1920 (both C013 replay sites). TicTacToe
+    board overflow root cause; snake unaffected-by-luck documented.
+  * S83 LOCALE-DEFAULT: Locale.getDefault() singleton + accessor
+    family (solitaire attachBaseContext NPE).
+  * S83 INPUT-SERVICE: getSystemService("input") → InputManager, 4
+    tables (boxcars).
+  * S83 VIEW-TREE-OBSERVER: non-null VTO + listener family (ball2box).
+  * S83 AUDIO-OBJECTS: AudioAttributes$Builder + SoundPool$Builder
+    fluent laws (astroloop).
+- دوز COMPLETE (real captures): X center → AI replies → O wins middle
+  column w/ yellow strike → PHONE WINS! 0:1 → round-over AlertDialog →
+  NEXT ROUND → round-2 fresh board, score preserved (5 stage JPGs).
+- مار re-proven at new HEAD: board → chase → death → GAME OVER dialog
+  → restart (4 stage JPGs).
+- REGRESSION: battery 26/26 after EVERY law (4 rebuild cycles);
+  frame_px spots identical (f53 64042, f54 2073600).
+- Evidence: docs/evidence/s83 (44 JPG ≤100KB + SHA256SUMS, 309KB);
+  S83_REPORT.md (progress tables + frontiers).
+
+Stage Summary:
+- 35/35 titles produce real screenshots; 13 games/apps render real
+  content (L2/L3); 6 engine laws landed; دوز/مار complete.
+- New frontiers: FlutterEngine surface chain, GL viewport family
+  (F-NEW-157), Lifecycling CNFE escape, WebView-only layouts.
+- Next: EGL10 object law (single-fix fanout for 4 GL titles),
+  Flutter host surface, BATCH-02 corpus wave.

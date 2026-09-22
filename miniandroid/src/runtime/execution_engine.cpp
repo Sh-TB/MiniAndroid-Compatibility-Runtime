@@ -2419,9 +2419,26 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                             int ondraw_ops =
                                                 dalvik_engine_.dispatch_custom_view_draw(task.view_id);
                                             if (ondraw_ops > 0) {
+                                                // S83 CANVAS-GEOMETRY LAW (P0
+                                                // Graphics Contract — Canvas
+                                                // dimension clause): View.onDraw's
+                                                // canvas reports the VIEW's own
+                                                // width/height (AOSP View.java:
+                                                // onDraw runs on a canvas clipped
+                                                // to the view bounds; the view's
+                                                // coordinate space starts at its
+                                                // own top-left). The old code
+                                                // reported the FRAMEBUFFER size
+                                                // (1080x1920) — any app that
+                                                // centers content vertically
+                                                // (cv.getHeight()/2) laid out
+                                                // against a phantom window and
+                                                // the replay clip amputated the
+                                                // lower half (TicTacToe Deluxe:
+                                                // board grid computed for y=477..
+                                                // 1497 inside a ~790px view).
                                                 canvas_shadow->set_canvas_size(
-                                                    canvas.fb().get_width(),
-                                                    canvas.fb().get_height());
+                                                    (int)w, (int)h);
                                                 canvas_shadow->replay(canvas, font,
                                                                       (float)left, (float)top,
                                                                       (float)w, (float)h);
@@ -2972,9 +2989,11 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                                 shadow_registry_->find_as<framework::CanvasShadow>()) {
                                             ondraw_ops = dalvik_engine_.dispatch_custom_view_draw(cv.view_id);
                                             if (ondraw_ops > 0) {
+                                                // S83 CANVAS-GEOMETRY LAW (P0):
+                                                // view-bounds canvas size — same
+                                                // law as the inline replay site.
                                                 canvas_shadow->set_canvas_size(
-                                                    canvas.fb().get_width(),
-                                                    canvas.fb().get_height());
+                                                    (int)cv.w, (int)cv.h);
                                                 canvas_shadow->replay(canvas, font,
                                                                       (float)cv.l, (float)cv.t,
                                                                       (float)cv.w, (float)cv.h);

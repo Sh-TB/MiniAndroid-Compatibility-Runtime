@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_dark">
+
+    <com.miniandroid.tictactoedeluxe.GameView
+        android:id="@+id/game"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="14dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button android:id="@+id/c1"
+                android:layout_width="0dp" android:layout_height="86dp"
+                android:layout_weight="1" android:layout_margin="6dp"
+                android:background="@drawable/btn_cell"
+                android:textColor="@color/white" android:textSize="26sp"
+                android:text="1" />
+            <Button android:id="@+id/c2"
+                android:layout_width="0dp" android:layout_height="86dp"
+                android:layout_weight="1" android:layout_margin="6dp"
+                android:background="@drawable/btn_cell"
+                android:textColor="@color/white" android:textSize="26sp"
+                android:text="2" />
+            <Button android:id="@+id/c3"
+                android:layout_width="0dp" android:layout_height="86dp"
+                android:layout_weight="1" android:layout_margin="6dp"
+                android:background="@drawable/btn_cell"
+                android:textColor="@color/white" android:textSize="26sp"
+                android:text="3" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button android:id="@+id/c4"
+                android:layout_width="0dp" android:layout_height="86dp"
+                android:layout_weight="1" android:layout_margin="6dp"
+                android:background="@drawable/btn_cell"
+                android:textColor="@color/white" android:textSize="26sp"
+                android:text="4" />
+            <Button android:id="@+id/c5"
+                android:layout_width="0dp" android:layout_height="86dp"
+                android:layout_weight="1" android:layout_margin="6dp"
+                android:background="@drawable/btn_cell"
+                android:textColor="@color/white" android:textSize="26sp"
+                android:text="5" />
+            <Button android:id="@+id/c6"
+                android:layout_width="0dp" android:layout_height="86dp"
+                android:layout_weight="1" android:layout_margin="6dp"
+                android:background="@drawable/btn_cell"
+                android:textColor="@color/white" android:textSize="26sp"
+                android:text="6" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button android:id="@+id/c7"
+                android:layout_width="0dp" android:layout_height="86dp"
+                android:layout_weight="1" android:layout_margin="6dp"
+                android:background="@drawable/btn_cell"
+                android:textColor="@color/white" android:textSize="26sp"
+                android:text="7" />
+            <Button android:id="@+id/c8"
+                android:layout_width="0dp" android:layout_height="86dp"
+                android:layout_weight="1" android:layout_margin="6dp"
+                android:background="@drawable/btn_cell"
+                android:textColor="@color/white" android:textSize="26sp"
+                android:text="8" />
+            <Button android:id="@+id/c9"
+                android:layout_width="0dp" android:layout_height="86dp"
+                android:layout_weight="1" android:layout_margin="6dp"
+                android:background="@drawable/btn_cell"
+                android:textColor="@color/white" android:textSize="26sp"
+                android:text="9" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button android:id="@+id/btn_new"
+                android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:layout_margin="6dp"
+                android:background="@drawable/btn_start"
+                android:textColor="@color/white" android:textSize="22sp"
+                android:text="NEW GAME" />
+
+            <Button android:id="@+id/btn_mode"
+                android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:layout_margin="6dp"
+                android:background="@drawable/btn_slate"
+                android:textColor="@color/white" android:textSize="22sp"
+                android:text="MODE: VS PHONE" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
