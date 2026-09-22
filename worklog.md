@@ -2717,3 +2717,58 @@ Stage Summary:
   (SparseArray/SharedPreferences/ThreadLocal/WeakReference), Tetris
   line-clear GIF v2, OBJECT-IDENTITY root cause (the static-state
   workaround's underlying defect).
+---
+Task ID: S81-MAIN
+Agent: Super Z (main)
+Task: "S81 — REAL APP VISUAL COMPATIBILITY & 200-APP OPEN-SOURCE CORPUS
+CAMPAIGN" (user spec: EXECUTED ≠ VISUALLY COMPATIBLE; two-color/monochrome
+screens are Visual Compatibility Failures; F-Droid corpus with provenance;
+P9 + TimeLimit mandatory; 100 games + 100 apps; batches with disk guard).
+
+Work Log:
+- DISK GUARD (P0 §32-34): entry 98%/205MB → safe cleanup of stale scratch
+  (S35-era run outputs, old probe logs, autoplay raw frames; canonical
+  evidence untouched) → 33%/6.3GB. DISK_AVAILABLE recorded per batch.
+- VISUAL AUDIT INSTRUMENT (R-NEW-402): scripts/s81_visual_audit.py —
+  metrics (UNIQUE_COLORS/COLOR_ENTROPY/DOMINANT ratios/luminance/
+  saturation/region classes with boxes), detector flags (MONOCHROME_LIKE,
+  MISSING_IMAGES_SUSPECTED, IMAGE_DECODED_VS_RENDERED_GAP...), levels 0-5,
+  thresholds as in-file constants, no single score (§36).
+- LADDER RE-AUDIT at HEAD (§39/§49): 18 APKs re-run + audited — zero
+  third-party apps at L3 (only S80 games); 7 apps flagged
+  IMAGE_DECODED_VS_RENDERED_GAP (24-32 rasters in APK, 0 image pixels on
+  screen); 7 HUMAN_VISIBLE statuses DOWNGRADED in APP_MATRIX via generator.
+- ROOT CAUSE WORKFLOW (§43): probe fixture (fixtures/s81_visual_probe, 4
+  phases) isolated API families. VF-NEW-001 setItems array dropped
+  (items=0) → FIXED in both dispatch layers (heap "array[i]" materialized
+  into DialogWindow::items; AOSP Builder law) → items=3 painted with
+  dividers. VF-NEW-002 placeholder garble = raw class descriptor painted
+  as screen text (located via MINIANDROID_TEXT_TRACE probe) → neutral
+  bottom-left marker; Notes/Stopwatch screenshots clean.
+- REGRESSION: battery 26/26 rc=0, fidelity BYTE-IDENTICAL 90/90, f152 6/6,
+  f153 3/3, spot pixel-golden 4/4 (f024/f026/f028/f030 end-to-end).
+- CORPUS (§4-15): docs/corpus/s81/corpus_index.json — P9 v0.1.1 (vc11,
+  github.com/tube42/9p) + TimeLimit v7.7.1 (vc231, codeberg) with reference
+  screenshot URLs; stopwatch 16 + platformer 10 inventories; 100 games +
+  100 apps seeded deterministic selection (CORPUS_SEED recorded); 4×25
+  mixed batch plan. Category slugs verified live.
+- BATCH-01 (§13/§14): 25 fresh F-Droid APKs (SHA256+size recorded) —
+  20/25 RENDERED, 1 partial, 4 no-frames, 1 download-fail. F-NEW-156
+  registered: dominant fresh-corpus frontier = onCreate APP BOUNDARY
+  unwind (first NPE before/at setContentView → blank uniq=2 screen;
+  faces: solitaire GameSelector#3, heading-calc MainActivity#6,
+  chessclock#2, simplestopwatch#18 findViewById-null).
+- REGISTRY 413→417 (VF-NEW-001/002, F-NEW-156, R-NEW-402); APP_MATRIX S81
+  columns (§35) + DOWNGRADE markers via generator; GitHub issue #24
+  (evidence format §28/§29); evidence package docs/evidence/s81/ (12 JPGs
+  ≤100KB + corpus + reports + SHA256SUMS); S81_REPORT.md + ACHIEVEMENTS.
+- Engine rebuild: S81 text probes (env-gated MINIANDROID_TEXT_TRACE) +
+  2 VF fixes; aapt2 toolchain re-bootstrapped for AXML forensics.
+
+Stage Summary:
+- The user's "two-color gameplay/render" complaint is now a MEASURED
+  property: 2 root-caused runtime fixes (regression-proven) + a corpus
+  instrument that exposes the true frontier (onCreate unwind family).
+- Honest status: CORPUS_READY, EXECUTION_PARTIAL (not 200_APPS_VERIFIED).
+- Next: F-NEW-156 per-face disasm→law chain; P9/TimeLimit build+run with
+  reference-vs-MiniAndroid comparison; BATCH-02..04; probe v2 ListView.

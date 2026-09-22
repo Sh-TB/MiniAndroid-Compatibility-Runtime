@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff">
+    <ImageView
+        android:id="@+id/xml_image"
+        android:src="@drawable/picon"
+        android:layout_width="96dp"
+        android:layout_height="96dp" />
+    <TextView
+        android:id="@+id/color_text"
+        android:text="PROBE-COLOR-REF"
+        android:textColor="@color/pred"
+        android:textSize="24sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <Button
+        android:id="@+id/shape_btn"
+        android:text="PROBE-BTN"
+        android:background="@drawable/pbg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <ImageView
+        android:id="@+id/prog_image"
+        android:layout_width="96dp"
+        android:layout_height="96dp" />
+</LinearLayout>

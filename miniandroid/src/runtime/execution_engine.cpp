@@ -2236,6 +2236,16 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                             // ignored textSize/colour/bold and rendered
                             // microscopic text on density-scaled screens).
                             if (!node->text.empty() && !node_invisible) {
+                                // S81: opt-in text-draw trace (visual root-cause
+                                // workflow §43 LOCATE step)
+                                static const bool s_text_trace =
+                                    std::getenv("MINIANDROID_TEXT_TRACE") != nullptr;
+                                if (s_text_trace)
+                                    std::cerr << "[S81-TEXT] class=" << node->class_desc
+                                              << " at(" << left << "," << top
+                                              << ") wh(" << w << "," << h
+                                              << ") text=\"" << node->text.substr(0, 60)
+                                              << "\"" << std::endl;
                                 float ts = node->text_size_px > 0
                                          ? node->text_size_px
                                          : 14.0f * config.density;
@@ -2437,15 +2447,21 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                                        renderer::RGBA{0xD8, 0xD8, 0xD8, 0xFF});
                                         canvas.draw_rect(left, top, left + 1, bottom,
                                                        renderer::RGBA{0xD8, 0xD8, 0xD8, 0xFF});
-                                        std::string simple = node->class_desc;
-                                        size_t slash = simple.rfind('/');
-                                        if (slash != std::string::npos)
-                                            simple = simple.substr(slash + 1);
-                                        if (!simple.empty() && simple.back() == ';')
-                                            simple.pop_back();
-                                        canvas.draw_text(simple, left + 12,
-                                                       top + font.get_line_height() + 12,
-                                                       renderer::RGBA{0x99, 0x99, 0x99, 0xFF},
+                                        // S81 FIX-4 (VF-PLACEHOLDER-GARBLE):
+                                        // the label used to be the raw class
+                                        // descriptor (e.g.
+                                        // "Lorg.billthefarmer.markdown.MarkdownView")
+                                        // at the top-left of a full-screen
+                                        // region — that debug string WAS the
+                                        // user-visible garble in Notes and
+                                        // Simple Stopwatch screenshots. Honest
+                                        // marker kept, but neutral, small, at
+                                        // the region's bottom-left; the class
+                                        // name stays in the stderr trace only.
+                                        canvas.draw_text("custom view (not rendered)",
+                                                       left + 8,
+                                                       bottom - font.get_line_height() - 8,
+                                                       renderer::RGBA{0xB4, 0xB4, 0xB4, 0xFF},
                                                        &font);
                                         std::cerr << "[C013-CUSTOMVIEW] inline placeholder: "
                                                   << node->class_desc
@@ -2978,15 +2994,14 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                                    renderer::RGBA{0xD8, 0xD8, 0xD8, 0xFF});
                                     canvas.draw_rect(cv.l, cv.t, cv.l + 1, cv.t + cv.h,
                                                    renderer::RGBA{0xD8, 0xD8, 0xD8, 0xFF});
-                                    std::string simple = cv.cls;
-                                    size_t slash = simple.rfind('/');
-                                    if (slash != std::string::npos)
-                                        simple = simple.substr(slash + 1);
-                                    if (!simple.empty() && simple.back() == ';')
-                                        simple.pop_back();
-                                    canvas.draw_text(simple, cv.l + 12,
-                                                   cv.t + font.get_line_height() + 12,
-                                                   renderer::RGBA{0x99, 0x99, 0x99, 0xFF},
+                                    // S81 FIX-4 (VF-PLACEHOLDER-GARBLE):
+                                    // neutral bottom-left marker instead of the
+                                    // raw class descriptor (same law as the
+                                    // inline placeholder site above).
+                                    canvas.draw_text("custom view (not rendered)",
+                                                   cv.l + 8,
+                                                   cv.t + cv.h - font.get_line_height() - 8,
+                                                   renderer::RGBA{0xB4, 0xB4, 0xB4, 0xFF},
                                                    &font);
                                     std::cerr << "[C013-CUSTOMVIEW] placeholder drawn: "
                                               << cv.cls << " at (" << cv.l << "," << cv.t

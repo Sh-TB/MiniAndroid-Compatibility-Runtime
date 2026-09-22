@@ -1094,6 +1094,15 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
     if (m == "drawText") {
         DrawOp op; op.kind = DrawOp::Kind::DRAW_TEXT;
         op.text = ctx.arg_as_string(0);
+        // S81: opt-in canvas text trace (§43 LOCATE step — app-drawn text)
+        static const bool s_ctext_trace = std::getenv("MINIANDROID_TEXT_TRACE") != nullptr;
+        if (s_ctext_trace) {
+            float tx_ = 0.f, ty_ = 0.f;
+            mat_.map(op.x, op.y, tx_, ty_);
+            std::cerr << "[S81-CANVAS-TEXT] op=(" << op.x << "," << op.y
+                      << ")->(" << tx_ << "," << ty_ << ") text=\""
+                      << op.text.substr(0, 60) << "\"" << std::endl;
+        }
         op.x = arg_as_float(ctx, 1);
         op.y = arg_as_float(ctx, 2);
         uint32_t paint_id = ctx.arg_as_object(ctx.args.size() >= 4 ? 3 : 0);
