@@ -25566,6 +25566,26 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // R-NEW-401 (S80): Context.getExternalCacheDir → File.
+    // AOSP ContextImpl.getExternalCacheDir returns the external cache
+    // directory (or null when external storage is unavailable). Telegram's
+    // ImageLoader init chain calls it before any other storage probe and
+    // dereferences the result — an unbridged call returned null and the
+    // init died with a null-receiver NPE at ImageLoader.<init> pc=289
+    // (14 in-flight exceptions, blank shell render). The runtime emulates
+    // external storage as AVAILABLE, mirroring the getExternalFilesDir
+    // P1.7 bridge exactly.
+    if (method == "getExternalCacheDir" &&
+        (class_name.find("Context") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos ||
+         class_name.find("Application") != std::string::npos ||
+         class_name.find("Service") != std::string::npos)) {
+        result = get_or_create_singleton("Ljava/io/File;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // F-045 (MASTER CAMPAIGN 4): System.identityHashCode(Object) → int.
     // OpenJDK ojluni System.java law: returns the same hash code for a
     // given object for its ENTIRE lifetime (the default hashCode —
