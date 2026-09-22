@@ -103,5 +103,24 @@
    "MAND-001",
    "MAND-002"
   ]
+ },
+ "F-NEW-158": {
+  "title": "PROGRAMMATIC-BACKGROUND-DROP (setBackground(Drawable)/setBackgroundResource(resid) silently ignored; image_resource_id clobber)",
+  "status": "ROOT_CAUSED_FIXED (S82-GFX; fixture ladder L0/L4 evidence + regression 26/26 + pixel goldens 24/24)",
+  "fanout": [
+   "l0_solid fixture",
+   "l4_xmldrawables fixture",
+   "GAME-004",
+   "PROGRAMMATIC-UI titles across corpus (static families B/C/D/E \u2014 see graphics_families.json)"
+  ]
+ },
+ "F-NEW-159": {
+  "title": "NULL-FRAMEWORK-RECEIVER NPE family (LocaleList.toLanguageTags / WindowInsetsController.setSystemBarsAppearance on null refs \u2192 onCreate APP BOUNDARY unwind; F-NEW-156 sub-cluster)",
+  "status": "OPEN (S82-GFX fanout probe \u00d72 titles re-traced: MAND-002, APP-001 family; exact traces in run/s82gfx/fanout/*.log)",
+  "fanout": [
+   "MAND-002",
+   "APP-001",
+   "subset of F-NEW-156's 35"
+  ]
  }
 }

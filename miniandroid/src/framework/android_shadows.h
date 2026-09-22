@@ -1118,6 +1118,13 @@ public:
         // EXP-095 (CM-020): Background color from setBackgroundColor(int).
         // 0xFFFFFFFF white is the View default; 0 = unset.
         uint32_t bg_color = 0;
+        // S82-GFX F-NEW-158: programmatic setBackgroundResource(resid).
+        // AOSP View.java: resid → drawable INFLATED ONCE (mBackground),
+        // painted every draw. bg_resource_path = resolved APK path (set at
+        // render stage); the old code reused image_resource_id which
+        // clobbered ImageView src ids and was never consulted for bg.
+        uint32_t bg_resource_id = 0;
+        std::string bg_resource_path;
         // EXP-095: ScrollView scrolling container marker (content laid out
         // inside, potentially taller than screen).
         bool is_scroll_container = false;
@@ -1575,6 +1582,30 @@ public:
         if (n != nullptr) n->bg_color = argb;
     }
 
+    // S82-GFX F-NEW-158: programmatic background family.
+    // setBackgroundResource(int resid) — store the resid; the render stage
+    // resolves it (ARSC select_file) to a state-list / shape / bitmap and
+    // paints with the SAME draw laws the XML-inflated backgrounds use.
+    void set_bg_resource(uint32_t view_id, uint32_t resid) {
+        auto* n = get_or_create_node(view_id, "");
+        if (n != nullptr) {
+            n->bg_resource_id = resid;
+            n->bg_from_xml = false;  // AOSP last-writer law
+        }
+    }
+    // ColorDrawable color capture: obj id → color (AOSP mBackgroundState).
+    void record_color_drawable(uint32_t drawable_obj, uint32_t color) {
+        color_drawable_colors_[drawable_obj] = color;
+    }
+    // returns false when the object is not a color-carrying drawable we
+    // captured (VectorDrawable/NinePatch/… — honest boundary).
+    bool lookup_color_drawable(uint32_t drawable_obj, uint32_t* out) const {
+        auto it = color_drawable_colors_.find(drawable_obj);
+        if (it == color_drawable_colors_.end() || !out) return false;
+        *out = it->second;
+        return true;
+    }
+
     // EXP-098 (CM-027): Store RLottie animation frame RGBA buffer on the
     // ViewNode. Called by the engine-side setAnimation intercept after
     // rlottie renders the requested frame(s). When the renderer visits
@@ -1621,6 +1652,10 @@ private:
     // one settings object per WebView, created at construction in AOSP).
     std::map<uint32_t, uint32_t> view_settings_;
     std::map<uint32_t, std::unique_ptr<ViewNode>> nodes_;
+    // S82-GFX F-NEW-158: ColorDrawable object id → captured ARGB color
+    // (recorded at ColorDrawable.<init>(I)/setColor(I); read by
+    // setBackground(Drawable)/setBackgroundDrawable(Drawable) dispatch).
+    std::map<uint32_t, uint32_t> color_drawable_colors_;
     // F-062: APK-captured compose_view_saveable_id_tag resource id
     // (set once by the interpreter's sget capture; single-threaded).
     static std::atomic<int32_t> compose_saveable_id_key_;
