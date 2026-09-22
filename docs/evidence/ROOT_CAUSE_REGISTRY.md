@@ -24,6 +24,35 @@
   cascade) — so instantiable classes STAY on the caught-CNFE path that
   real apps handle gracefully. The bridge is deliberately minimal.
 
+## F-NEW-163 / F-NEW-163b — Context-family Resources + Resources.getSystem — **FIXED (S85)**
+
+- **Signature:** `[SYNTH-EXC] f141-null-recv: NullPointerException (Attempt to invoke
+  virtual method 'Landroid/content/res/Resources;.getDisplayMetrics' on a null object
+  reference) method=Lnet/sourceforge/solitaire_cg/SolitaireView;.<init> pc=23` →
+  APP-BOUNDARY unwind out of `SolitaireCG.onCreate`.
+- **Root cause (163):** the P0.2 `getResources()` law matched only class-NAME
+  substrings (`Context|Activity|View`). App subclasses of the Context family
+  (`Solitaire extends Application`, custom `Application`/`Service` subclasses) matched
+  none, so `getResources()` answered null. AOSP law: EVERY Context-family instance
+  answers `getResources()`.
+- **Root cause (163b):** `Resources.getSystem()` (static) was unimplemented → null.
+  SolitaireCG overrides `SolitaireView.getResources()` and its body calls
+  `Resources.getSystem()`; AOSP law: never null (shared system Resources).
+- **Fix:** hierarchy-walk fallback over the Context roots
+  (`Context/Activity/Application/Service/ContentProvider/ContextThemeWrapper`) via
+  `is_subclass_of` before the singleton is denied + `Resources.getSystem()` static
+  law answering the same Resources singleton
+  (`miniandroid/src/dex/dalvik_engine.cpp`, S85 comment blocks).
+- **A/B proof (S85):** solitaire_cg rc 1→0, exceptions 0, 9 frames, L2 UI;
+  battery 26/26 + golden ladder 10/10 + S83-B2 ladder 2/2 unchanged.
+- **S85 near-blank gate (EVID-CLASS-S85):** the S85 audit hardening
+  (`scripts/s81_visual_audit.py` level_of) now classifies the engine-default
+  shell class (white framebuffer + small black status region, nonbg_ratio≈0.011,
+  content SHA eb16ab5c…) as L1-NEARBLANK-GATE — it can no longer pass L2 via its
+  status-bar pixels. All S85-era claims re-judged; 72 records honestly demoted to
+  OBSERVED (S54 blank-gate law). The remaining VERIFIED/INTERACTIVE counts are
+  content-verified.
+
 ## F-NEW-161 — Compose UI runtime internals — **OPEN (fan-out ≈ 24 titles)**
 
 - **Signature chain:** `kotlin.reflect.jvm.internal.ReflectionFactoryImpl`
