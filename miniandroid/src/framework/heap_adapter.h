@@ -178,6 +178,37 @@ public:
         return true;
     }
 
+    // S83-GFX-BASE: float field writes (android.graphics.Matrix m0..m8).
+    bool set_object_float_field(uint32_t object_id, const std::string& field_name,
+                                float value) override {
+        if (!heap_) return false;
+        dalvik::DalvikValue v;
+        v.type = dalvik::DalvikType::FLOAT32;
+        v.float_val = value;
+        heap_->set_object_field(object_id, field_name, v);
+        return true;
+    }
+
+    // S83-GFX-BASE (Contract C3): float array ELEMENT read — see base-class
+    // note. FLOAT32 → float_val; INT32 → raw-bits reinterpret (F-028 law).
+    bool get_object_array_float_element(uint32_t array_id, size_t index,
+                                        float& out) override {
+        if (!heap_) return false;
+        auto v = heap_->get_object_field(
+            array_id, "array[" + std::to_string(index) + "]");
+        if (!v) return false;
+        if (v->type == dalvik::DalvikType::FLOAT32) {
+            out = v->float_val;
+            return true;
+        }
+        if (v->type == dalvik::DalvikType::INT32) {
+            const uint32_t bits = static_cast<uint32_t>(v->int_val);
+            std::memcpy(&out, &bits, sizeof(out));
+            return true;
+        }
+        return false;
+    }
+
     // M4 F-028d — Atomic*FieldUpdater heap field access.
     bool get_object_ref_field(uint32_t object_id,
                               const std::string& field_name,

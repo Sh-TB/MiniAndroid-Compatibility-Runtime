@@ -1,0 +1,3465 @@
+{
+ "WAVE": "S82-GFX-REVOLUTION",
+ "GENERATED": "2026-09-22T06:48:50.670599",
+ "SCANNED": 41,
+ "NOT_ON_DISK": 161,
+ "FAMILY_COUNTS": {
+  "FAMILY-B": 37,
+  "FAMILY-C": 38,
+  "FAMILY-D": 30,
+  "FAMILY-E": 38,
+  "FAMILY-G": 12,
+  "FAMILY-H": 16,
+  "FAMILY-I": 29,
+  "FAMILY-M": 27,
+  "FAMILY-N": 33,
+  "FAMILY-J": 2,
+  "FAMILY-L": 14,
+  "FAMILY-K": 1
+ },
+ "FAMILY_LABELS": {
+  "FAMILY-A": "resource/density selection",
+  "FAMILY-B": "bitmap decode",
+  "FAMILY-C": "drawable inflation",
+  "FAMILY-D": "ImageView",
+  "FAMILY-E": "Canvas/imperative draw",
+  "FAMILY-G": "EGL/GLES",
+  "FAMILY-H": "SurfaceView/TextureView",
+  "FAMILY-I": "custom native engine",
+  "FAMILY-J": "libGDX",
+  "FAMILY-K": "SDL",
+  "FAMILY-L": "Compose",
+  "FAMILY-M": "WebView",
+  "FAMILY-N": "view animation"
+ },
+ "TITLES": [
+  {
+   "TITLE_ID": "GAME-001",
+   "TYPE": "game",
+   "PACKAGE": "com.qwde.ccm",
+   "CATEGORY": "board-game",
+   "APK": "com.qwde.ccm_5.apk",
+   "APK_SHA256": "dd57ead2dc7671e4a658864ba48003e5bd434d2719703ebdd870a8c0b5217edb",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 16,
+    "RES_JPG": 0,
+    "RES_WEBP": 24,
+    "RES_XML": 30,
+    "RES_XML_DRAWABLE": 8,
+    "NINEPATCH": 12,
+    "PALETTE_PNG": 0,
+    "ALPHA_PNG": 1,
+    "TRNS_PNG": 0,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [
+     "libc++_shared.so",
+     "libgodot_android.so"
+    ],
+    "PNG_COLOR_TYPES": {
+     "0": 6,
+     "2": 9,
+     "6": 1
+    },
+    "DEX_MARKERS": {
+     "EGL": 8,
+     "OPENGL_ES1": 2,
+     "SURFACEVIEW": 1,
+     "WEBVIEW": 1,
+     "BITMAPFACTORY": 1,
+     "BITMAP": 1,
+     "CANVAS": 1,
+     "CANVAS_PATH": 1,
+     "COLORSTATELIST": 1,
+     "IMAGEVIEW": 1,
+     "IMAGEDECODER": 1,
+     "VIEW_ANIMATION": 9,
+     "SUPPORT_LIB": 15
+    },
+    "MAX_PNG_SIDE": 432,
+    "ASSETS": 372,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-D",
+    "FAMILY-E",
+    "FAMILY-G",
+    "FAMILY-H",
+    "FAMILY-I",
+    "FAMILY-M",
+    "FAMILY-N"
+   ]
+  },
+  {
+   "TITLE_ID": "GAME-002",
+   "TYPE": "game",
+   "PACKAGE": "com.astroloop.game",
+   "CATEGORY": "action-game",
+   "APK": "com.astroloop.game_4.apk",
+   "APK_SHA256": "d1904c3b2050657b043918346c3c09df2320d6f01cbfbf3357ad5e3284f1d879",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 232,
+    "RES_JPG": 0,
+    "RES_WEBP": 0,
+    "RES_XML": 90,
+    "RES_XML_DRAWABLE": 6,
+    "NINEPATCH": 74,
+    "PALETTE_PNG": 5,
+    "ALPHA_PNG": 213,
+    "TRNS_PNG": 5,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [],
+    "PNG_COLOR_TYPES": {
+     "6": 107,
+     "4": 106,
+     "0": 4,
+     "2": 10,
+     "3": 5
+    },
+    "DEX_MARKERS": {
+     "SURFACEVIEW": 1,
+     "BITMAPFACTORY": 1,
+     "BITMAP": 6,
+     "CANVAS": 128,
+     "CANVAS_PATH": 2,
+     "COLORSTATELIST": 1,
+     "IMAGEVIEW": 2,
+     "VIEW_ANIMATION": 2,
+     "SUPPORT_LIB": 2
+    },
+    "MAX_PNG_SIDE": 1024,
+    "ASSETS": 4,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-D",
+    "FAMILY-E",
+    "FAMILY-H",
+    "FAMILY-N"
+   ]
+  },
+  {
+   "TITLE_ID": "GAME-003",
+   "TYPE": "game",
+   "PACKAGE": "app.halma",
+   "CATEGORY": "board-game",
+   "APK": "app.halma_15.apk",
+   "APK_SHA256": "b994337244e2136b54f96f75038fe70d9562635cce50af6387d906ee048d0ec0",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 121,
+    "RES_JPG": 0,
+    "RES_WEBP": 0,
+    "RES_XML": 28,
+    "RES_XML_DRAWABLE": 0,
+    "NINEPATCH": 13,
+    "PALETTE_PNG": 3,
+    "ALPHA_PNG": 102,
+    "TRNS_PNG": 1,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [
+     "libgdx.so"
+    ],
+    "PNG_COLOR_TYPES": {
+     "2": 10,
+     "6": 56,
+     "3": 3,
+     "4": 46,
+     "0": 6
+    },
+    "DEX_MARKERS": {
+     "LIBGDX": 1433,
+     "EGL": 6,
+     "OPENGL_ES1": 1,
+     "OPENGL_ES2PLUS": 2,
+     "GLSURFACEVIEW": 1,
+     "WEBVIEW": 1,
+     "BITMAPFACTORY": 1,
+     "BITMAP": 1,
+     "CANVAS": 1,
+     "CANVAS_PATH": 1,
+     "GRADIENT_DRAWABLE": 1,
+     "COLORSTATELIST": 1,
+     "IMAGEVIEW": 1,
+     "VIEW_ANIMATION": 5,
+     "SUPPORT_LIB": 22
+    },
+    "MAX_PNG_SIDE": 2048,
+    "ASSETS": 42,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-D",
+    "FAMILY-E",
+    "FAMILY-G",
+    "FAMILY-I",
+    "FAMILY-J",
+    "FAMILY-M",
+    "FAMILY-N"
+   ]
+  },
+  {
+   "TITLE_ID": "GAME-004",
+   "TYPE": "game",
+   "PACKAGE": "com.jeffliu.balancetheball",
+   "CATEGORY": "action-game",
+   "APK": "com.jeffliu.balancetheball_4.apk",
+   "APK_SHA256": "6180534b151e4d50365b21483f3719e32f207a42675dee20227de449c875c1e2",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 6,
+    "RES_JPG": 0,
+    "RES_WEBP": 0,
+    "RES_XML": 3,
+    "RES_XML_DRAWABLE": 1,
+    "NINEPATCH": 0,
+    "PALETTE_PNG": 6,
+    "ALPHA_PNG": 0,
+    "TRNS_PNG": 0,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [],
+    "PNG_COLOR_TYPES": {
+     "3": 6
+    },
+    "DEX_MARKERS": {
+     "CANVAS": 1
+    },
+    "MAX_PNG_SIDE": 432,
+    "ASSETS": 0,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-C",
+    "FAMILY-E"
+   ]
+  },
+  {
+   "TITLE_ID": "GAME-005",
+   "TYPE": "game",
+   "PACKAGE": "crypto.o0o0o0o0o.games.blackjack",
+   "CATEGORY": "card-game",
+   "APK": "crypto.o0o0o0o0o.games.blackjack_4.apk",
+   "APK_SHA256": "70e9979d2fd731cbb941f91f9308deb993f7cc8c839bbe94947aa92f2d371303",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 176,
+    "RES_JPG": 0,
+    "RES_WEBP": 0,
+    "RES_XML": 468,
+    "RES_XML_DRAWABLE": 106,
+    "NINEPATCH": 110,
+    "PALETTE_PNG": 12,
+    "ALPHA_PNG": 143,
+    "TRNS_PNG": 5,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [],
+    "PNG_COLOR_TYPES": {
+     "4": 122,
+     "0": 10,
+     "3": 12,
+     "6": 21,
+     "2": 11
+    },
+    "DEX_MARKERS": {
+     "WEBVIEW": 1,
+     "BITMAPFACTORY": 1,
+     "BITMAP": 1,
+     "CANVAS": 1,
+     "CANVAS_PATH": 1,
+     "VECTOR": 1,
+     "GRADIENT_DRAWABLE": 1,
+     "STATELIST": 1,
+     "COLORSTATELIST": 1,
+     "IMAGEVIEW": 2,
+     "IMAGEDECODER": 1,
+     "VIEW_ANIMATION": 17,
+     "VECTOR_ANDROIDX": 47,
+     "SUPPORT_LIB": 15
+    },
+    "MAX_PNG_SIDE": 432,
+    "ASSETS": 23,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-D",
+    "FAMILY-E",
+    "FAMILY-M",
+    "FAMILY-N"
+   ]
+  },
+  {
+   "TITLE_ID": "GAME-006",
+   "TYPE": "game",
+   "PACKAGE": "eu.veldsoft.no.thanks",
+   "CATEGORY": "card-game",
+   "APK": "eu.veldsoft.no.thanks_1.apk",
+   "APK_SHA256": "0de8e6e045b3d8f6635270d1ba0cef65e5fb6db8815452f02bca4350b85ee244",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 215,
+    "RES_JPG": 0,
+    "RES_WEBP": 0,
+    "RES_XML": 584,
+    "RES_XML_DRAWABLE": 190,
+    "NINEPATCH": 110,
+    "PALETTE_PNG": 5,
+    "ALPHA_PNG": 147,
+    "TRNS_PNG": 5,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [],
+    "PNG_COLOR_TYPES": {
+     "4": 122,
+     "6": 25,
+     "0": 11,
+     "2": 52,
+     "3": 5
+    },
+    "DEX_MARKERS": {
+     "COMPOSE": 10384,
+     "WEBVIEW": 2,
+     "BITMAPFACTORY": 1,
+     "BITMAP": 5,
+     "CANVAS": 5,
+     "CANVAS_PATH": 4,
+     "COLORSTATELIST": 2,
+     "IMAGEVIEW": 4,
+     "IMAGEDECODER": 1,
+     "VIEW_ANIMATION": 25,
+     "VECTOR_ANDROIDX": 49,
+     "SUPPORT_LIB": 17,
+     "VECTOR": 1,
+     "GRADIENT_DRAWABLE": 1,
+     "STATELIST": 1
+    },
+    "MAX_PNG_SIDE": 491,
+    "ASSETS": 3,
+    "DEX_FILES": 2
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-D",
+    "FAMILY-E",
+    "FAMILY-L",
+    "FAMILY-M",
+    "FAMILY-N"
+   ]
+  },
+  {
+   "TITLE_ID": "GAME-007",
+   "TYPE": "game",
+   "PACKAGE": "com.simondalvai.ball2box",
+   "CATEGORY": "shooter-game",
+   "APK": "com.simondalvai.ball2box_69.apk",
+   "APK_SHA256": "aef33b17a0ae3c90cd3f73c19ab280b8ef34debe602066b55fa1aebab0de316a",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 36,
+    "RES_JPG": 0,
+    "RES_WEBP": 0,
+    "RES_XML": 30,
+    "RES_XML_DRAWABLE": 6,
+    "NINEPATCH": 12,
+    "PALETTE_PNG": 6,
+    "ALPHA_PNG": 2,
+    "TRNS_PNG": 0,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [
+     "libc++_shared.so",
+     "libgodot_android.so"
+    ],
+    "PNG_COLOR_TYPES": {
+     "0": 6,
+     "2": 22,
+     "6": 2,
+     "3": 6
+    },
+    "DEX_MARKERS": {
+     "EGL": 8,
+     "OPENGL_ES1": 2,
+     "SURFACEVIEW": 1,
+     "WEBVIEW": 1,
+     "BITMAPFACTORY": 1,
+     "BITMAP": 1,
+     "CANVAS": 1,
+     "CANVAS_PATH": 1,
+     "GRADIENT_DRAWABLE": 1,
+     "COLORSTATELIST": 1,
+     "IMAGEVIEW": 1,
+     "IMAGEDECODER": 1,
+     "VIEW_ANIMATION": 9,
+     "SUPPORT_LIB": 15
+    },
+    "MAX_PNG_SIDE": 720,
+    "ASSETS": 536,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-D",
+    "FAMILY-E",
+    "FAMILY-G",
+    "FAMILY-H",
+    "FAMILY-I",
+    "FAMILY-M",
+    "FAMILY-N"
+   ]
+  },
+  {
+   "TITLE_ID": "GAME-008",
+   "TYPE": "game",
+   "PACKAGE": "si.palcka.tarok",
+   "CATEGORY": "card-game",
+   "APK": "si.palcka.tarok_203.apk",
+   "APK_SHA256": "f956d84eb4801d3779adc5f5c36775c11bc2ac7d37d4f3264412f1e978f0aa15",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 216,
+    "RES_JPG": 0,
+    "RES_WEBP": 54,
+    "RES_XML": 85,
+    "RES_XML_DRAWABLE": 12,
+    "NINEPATCH": 74,
+    "PALETTE_PNG": 14,
+    "ALPHA_PNG": 198,
+    "TRNS_PNG": 14,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [
+     "libapp.so",
+     "libdatastore_shared_counter.so",
+     "libflutter.so",
+     "libmedia_kit_native_event_loop.so",
+     "libmediakitandroidhelper.so",
+     "libmpv.so"
+    ],
+    "PNG_COLOR_TYPES": {
+     "3": 14,
+     "6": 27,
+     "4": 171,
+     "0": 4
+    },
+    "DEX_MARKERS": {
+     "SURFACEVIEW": 1,
+     "TEXTUREVIEW": 1,
+     "WEBVIEW": 1,
+     "BITMAPFACTORY": 1,
+     "BITMAP": 1,
+     "CANVAS": 1,
+     "CANVAS_PATH": 1,
+     "VECTOR": 1,
+     "GRADIENT_DRAWABLE": 1,
+     "STATELIST": 1,
+     "COLORSTATELIST": 1,
+     "IMAGEVIEW": 2,
+     "IMAGEDECODER": 1,
+     "VIEW_ANIMATION": 3,
+     "SUPPORT_LIB": 2
+    },
+    "MAX_PNG_SIDE": 192,
+    "ASSETS": 27,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-D",
+    "FAMILY-E",
+    "FAMILY-H",
+    "FAMILY-I",
+    "FAMILY-M",
+    "FAMILY-N"
+   ]
+  },
+  {
+   "TITLE_ID": "GAME-009",
+   "TYPE": "game",
+   "PACKAGE": "cos.premy.mines",
+   "CATEGORY": "puzzle-game",
+   "APK": "cos.premy.mines_16.apk",
+   "APK_SHA256": "18faef7028457f4d123ac8d781f3ecdbf9e29b451468d5d6a348df28e8842aa7",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 264,
+    "RES_JPG": 0,
+    "RES_WEBP": 0,
+    "RES_XML": 230,
+    "RES_XML_DRAWABLE": 52,
+    "NINEPATCH": 110,
+    "PALETTE_PNG": 11,
+    "ALPHA_PNG": 234,
+    "TRNS_PNG": 11,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [],
+    "PNG_COLOR_TYPES": {
+     "4": 205,
+     "0": 10,
+     "2": 9,
+     "3": 11,
+     "6": 29
+    },
+    "DEX_MARKERS": {
+     "WEBVIEW": 1,
+     "BITMAPFACTORY": 1,
+     "BITMAP": 1,
+     "CANVAS": 1,
+     "CANVAS_PATH": 1,
+     "VECTOR": 1,
+     "GRADIENT_DRAWABLE": 1,
+     "STATELIST": 1,
+     "COLORSTATELIST": 1,
+     "IMAGEVIEW": 2,
+     "VIEW_ANIMATION": 18,
+     "SUPPORT_LIB": 2305
+    },
+    "MAX_PNG_SIDE": 192,
+    "ASSETS": 0,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-D",
+    "FAMILY-E",
+    "FAMILY-M",
+    "FAMILY-N"
+   ]
+  },
+  {
+   "TITLE_ID": "GAME-010",
+   "TYPE": "game",
+   "PACKAGE": "com.sidhant.puzzle",
+   "CATEGORY": "puzzle-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-011",
+   "TYPE": "game",
+   "PACKAGE": "com.ivylopez.authsrng",
+   "CATEGORY": "casual-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-012",
+   "TYPE": "game",
+   "PACKAGE": "io.github.hathibelagal.mykanji",
+   "CATEGORY": "educational-game",
+   "APK": "io.github.hathibelagal.mykanji_7.apk",
+   "APK_SHA256": "b20274a0885d03ba6947f82975c90e8415a4174dded8409e4798f92cb3a763a1",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 206,
+    "RES_JPG": 0,
+    "RES_WEBP": 15,
+    "RES_XML": 648,
+    "RES_XML_DRAWABLE": 235,
+    "NINEPATCH": 110,
+    "PALETTE_PNG": 6,
+    "ALPHA_PNG": 181,
+    "TRNS_PNG": 5,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [],
+    "PNG_COLOR_TYPES": {
+     "6": 25,
+     "4": 156,
+     "0": 10,
+     "2": 9,
+     "3": 6
+    },
+    "DEX_MARKERS": {
+     "WEBVIEW": 1,
+     "BITMAPFACTORY": 1,
+     "BITMAP": 1,
+     "CANVAS": 1,
+     "CANVAS_PATH": 1,
+     "VECTOR": 1,
+     "GRADIENT_DRAWABLE": 1,
+     "STATELIST": 1,
+     "COLORSTATELIST": 1,
+     "IMAGEVIEW": 2,
+     "IMAGEDECODER": 1,
+     "VIEW_ANIMATION": 17,
+     "VECTOR_ANDROIDX": 47,
+     "SUPPORT_LIB": 22
+    },
+    "MAX_PNG_SIDE": 1025,
+    "ASSETS": 12,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-D",
+    "FAMILY-E",
+    "FAMILY-M",
+    "FAMILY-N"
+   ]
+  },
+  {
+   "TITLE_ID": "GAME-013",
+   "TYPE": "game",
+   "PACKAGE": "io.github.ebraminio.bouncy",
+   "CATEGORY": "action-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-014",
+   "TYPE": "game",
+   "PACKAGE": "de.tobiasbielefeld.solitaire",
+   "CATEGORY": "card-game",
+   "APK": "de.tobiasbielefeld.solitaire_71.apk",
+   "APK_SHA256": "fdfaf7cad18e4416989b337b5c60b71158c54652384e564fe3e6386421504220",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 297,
+    "RES_JPG": 0,
+    "RES_WEBP": 0,
+    "RES_XML": 340,
+    "RES_XML_DRAWABLE": 130,
+    "NINEPATCH": 110,
+    "PALETTE_PNG": 11,
+    "ALPHA_PNG": 267,
+    "TRNS_PNG": 11,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [],
+    "PNG_COLOR_TYPES": {
+     "4": 203,
+     "0": 17,
+     "6": 64,
+     "2": 2,
+     "3": 11
+    },
+    "DEX_MARKERS": {
+     "BITMAPFACTORY": 1,
+     "BITMAP": 2,
+     "CANVAS": 1,
+     "CANVAS_PATH": 1,
+     "VECTOR": 1,
+     "GRADIENT_DRAWABLE": 1,
+     "STATELIST": 1,
+     "COLORSTATELIST": 1,
+     "IMAGEVIEW": 3,
+     "VIEW_ANIMATION": 17,
+     "SUPPORT_LIB": 1114
+    },
+    "MAX_PNG_SIDE": 2660,
+    "ASSETS": 0,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-D",
+    "FAMILY-E",
+    "FAMILY-N"
+   ]
+  },
+  {
+   "TITLE_ID": "GAME-015",
+   "TYPE": "game",
+   "PACKAGE": "eu.quelltext.memory",
+   "CATEGORY": "educational-game",
+   "APK": "eu.quelltext.memory_7.apk",
+   "APK_SHA256": "4dd3957983e3c3f38c673f898d9659d5e0251f97137bab5254eafdcdbc9fa27c",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 40,
+    "RES_JPG": 12,
+    "RES_WEBP": 0,
+    "RES_XML": 4,
+    "RES_XML_DRAWABLE": 3,
+    "NINEPATCH": 0,
+    "PALETTE_PNG": 6,
+    "ALPHA_PNG": 34,
+    "TRNS_PNG": 0,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [],
+    "PNG_COLOR_TYPES": {
+     "6": 34,
+     "3": 6
+    },
+    "DEX_MARKERS": {
+     "WEBVIEW": 1
+    },
+    "MAX_PNG_SIDE": 432,
+    "ASSETS": 31,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-C",
+    "FAMILY-M"
+   ]
+  },
+  {
+   "TITLE_ID": "GAME-016",
+   "TYPE": "game",
+   "PACKAGE": "com.sidhant.queens",
+   "CATEGORY": "puzzle-game",
+   "APK": "com.sidhant.queens_93.apk",
+   "APK_SHA256": "e4ba8df1594ac07fc32f5f3e40d770e5a2dba01d430214af2cfc8f9c66448935",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 27,
+    "RES_JPG": 0,
+    "RES_WEBP": 0,
+    "RES_XML": 2,
+    "RES_XML_DRAWABLE": 0,
+    "NINEPATCH": 0,
+    "PALETTE_PNG": 7,
+    "ALPHA_PNG": 15,
+    "TRNS_PNG": 7,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [
+     "libapp.so",
+     "libdartjni.so",
+     "libflutter.so"
+    ],
+    "PNG_COLOR_TYPES": {
+     "3": 7,
+     "0": 5,
+     "6": 15
+    },
+    "DEX_MARKERS": {
+     "SURFACEVIEW": 1,
+     "TEXTUREVIEW": 1,
+     "WEBVIEW": 1,
+     "BITMAPFACTORY": 1,
+     "BITMAP": 1,
+     "CANVAS": 1,
+     "CANVAS_PATH": 1,
+     "COLORSTATELIST": 1,
+     "IMAGEDECODER": 1,
+     "SUPPORT_LIB": 2
+    },
+    "MAX_PNG_SIDE": 1024,
+    "ASSETS": 10,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-E",
+    "FAMILY-H",
+    "FAMILY-I",
+    "FAMILY-M"
+   ]
+  },
+  {
+   "TITLE_ID": "GAME-017",
+   "TYPE": "game",
+   "PACKAGE": "page.codeberg.lanticy.guandan",
+   "CATEGORY": "card-game",
+   "APK": "page.codeberg.lanticy.guandan_7.apk",
+   "APK_SHA256": "ccc74b5948154e7f53b5c6eddaef1640afc229fb02f71778da7992a658be7021",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 15,
+    "RES_JPG": 0,
+    "RES_WEBP": 0,
+    "RES_XML": 2,
+    "RES_XML_DRAWABLE": 0,
+    "NINEPATCH": 0,
+    "PALETTE_PNG": 5,
+    "ALPHA_PNG": 5,
+    "TRNS_PNG": 5,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [
+     "libandroidx.graphics.path.so"
+    ],
+    "PNG_COLOR_TYPES": {
+     "2": 5,
+     "6": 5,
+     "3": 5
+    },
+    "DEX_MARKERS": {
+     "COMPOSE": 1875,
+     "BITMAP": 1,
+     "CANVAS": 1,
+     "CANVAS_PATH": 1,
+     "COLORSTATELIST": 1,
+     "VIEW_ANIMATION": 4,
+     "SUPPORT_LIB": 2
+    },
+    "MAX_PNG_SIDE": 432,
+    "ASSETS": 2,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-E",
+    "FAMILY-I",
+    "FAMILY-L",
+    "FAMILY-N"
+   ]
+  },
+  {
+   "TITLE_ID": "GAME-018",
+   "TYPE": "game",
+   "PACKAGE": "xyz.deepdaikon.quinb",
+   "CATEGORY": "action-game",
+   "APK": "xyz.deepdaikon.quinb_10.apk",
+   "APK_SHA256": "bd720d019b85bac7aa08013bf2b50f331d76d736bfe681753a43c8215e002d69",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 46,
+    "RES_JPG": 0,
+    "RES_WEBP": 0,
+    "RES_XML": 22,
+    "RES_XML_DRAWABLE": 0,
+    "NINEPATCH": 12,
+    "PALETTE_PNG": 13,
+    "ALPHA_PNG": 24,
+    "TRNS_PNG": 8,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [
+     "libapp.so",
+     "libflutter.so"
+    ],
+    "PNG_COLOR_TYPES": {
+     "6": 24,
+     "3": 13,
+     "0": 9
+    },
+    "DEX_MARKERS": {
+     "SURFACEVIEW": 1,
+     "TEXTUREVIEW": 1,
+     "WEBVIEW": 1,
+     "BITMAPFACTORY": 1,
+     "BITMAP": 1,
+     "CANVAS": 1,
+     "CANVAS_PATH": 1,
+     "COLORSTATELIST": 1,
+     "IMAGEVIEW": 1,
+     "IMAGEDECODER": 1,
+     "SUPPORT_LIB": 2
+    },
+    "MAX_PNG_SIDE": 1800,
+    "ASSETS": 87,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-D",
+    "FAMILY-E",
+    "FAMILY-H",
+    "FAMILY-I",
+    "FAMILY-M"
+   ]
+  },
+  {
+   "TITLE_ID": "GAME-019",
+   "TYPE": "game",
+   "PACKAGE": "com.vayunmathur.games.solitaire",
+   "CATEGORY": "card-game",
+   "APK": "com.vayunmathur.games.solitaire_20260804.apk",
+   "APK_SHA256": "e87536851b7e9edcea2a5ee8e404bd88e6fea1cf32b15ad4f7b50952d1c0c2e6",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 0,
+    "RES_JPG": 0,
+    "RES_WEBP": 0,
+    "RES_XML": 5,
+    "RES_XML_DRAWABLE": 0,
+    "NINEPATCH": 0,
+    "PALETTE_PNG": 0,
+    "ALPHA_PNG": 0,
+    "TRNS_PNG": 0,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [
+     "libandroidx.graphics.path.so",
+     "libdatastore_shared_counter.so"
+    ],
+    "PNG_COLOR_TYPES": {},
+    "DEX_MARKERS": {
+     "COMPOSE": 2157,
+     "BITMAP": 1,
+     "CANVAS": 1,
+     "CANVAS_PATH": 1,
+     "COLORSTATELIST": 1,
+     "VIEW_ANIMATION": 2,
+     "SUPPORT_LIB": 2
+    },
+    "MAX_PNG_SIDE": 0,
+    "ASSETS": 3,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-E",
+    "FAMILY-I",
+    "FAMILY-L",
+    "FAMILY-N"
+   ]
+  },
+  {
+   "TITLE_ID": "GAME-020",
+   "TYPE": "game",
+   "PACKAGE": "bim.app",
+   "CATEGORY": "action-game",
+   "APK": "bim.app_1600.apk",
+   "APK_SHA256": "82b5ba2e96dc551903b4b818a96ca8e46dfd31427ae422708b2aaaeada84b5a6",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 29,
+    "RES_JPG": 0,
+    "RES_WEBP": 0,
+    "RES_XML": 2,
+    "RES_XML_DRAWABLE": 0,
+    "NINEPATCH": 0,
+    "PALETTE_PNG": 1,
+    "ALPHA_PNG": 20,
+    "TRNS_PNG": 1,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [
+     "libbim.so"
+    ],
+    "PNG_COLOR_TYPES": {
+     "6": 9,
+     "4": 11,
+     "3": 1,
+     "2": 7,
+     "0": 1
+    },
+    "DEX_MARKERS": {
+     "EGL": 4,
+     "OPENGL_ES1": 1,
+     "GLSURFACEVIEW": 1,
+     "WEBVIEW": 1,
+     "BITMAPFACTORY": 1,
+     "BITMAP": 1,
+     "CANVAS": 1,
+     "VECTOR": 1,
+     "GRADIENT_DRAWABLE": 1,
+     "COLORSTATELIST": 1,
+     "IMAGEVIEW": 1,
+     "VIEW_ANIMATION": 1,
+     "SUPPORT_LIB": 2
+    },
+    "MAX_PNG_SIDE": 2046,
+    "ASSETS": 51,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-D",
+    "FAMILY-E",
+    "FAMILY-G",
+    "FAMILY-I",
+    "FAMILY-M",
+    "FAMILY-N"
+   ]
+  },
+  {
+   "TITLE_ID": "GAME-021",
+   "TYPE": "game",
+   "PACKAGE": "de.schwarz.boardgamepal",
+   "CATEGORY": "board-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-022",
+   "TYPE": "game",
+   "PACKAGE": "com.dash1971.maia_chess",
+   "CATEGORY": "board-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-023",
+   "TYPE": "game",
+   "PACKAGE": "org.secuso.privacyfriendlybattleship",
+   "CATEGORY": "board-game",
+   "APK": "org.secuso.privacyfriendlybattleship_101.apk",
+   "APK_SHA256": "beeedcbbefc3b013242926f11f51194900d00f0578def44c8d2a3cf924d800e0",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 216,
+    "RES_JPG": 0,
+    "RES_WEBP": 0,
+    "RES_XML": 758,
+    "RES_XML_DRAWABLE": 233,
+    "NINEPATCH": 110,
+    "PALETTE_PNG": 25,
+    "ALPHA_PNG": 171,
+    "TRNS_PNG": 20,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [],
+    "PNG_COLOR_TYPES": {
+     "4": 127,
+     "6": 44,
+     "3": 25,
+     "0": 10,
+     "2": 10
+    },
+    "DEX_MARKERS": {
+     "WEBVIEW": 1,
+     "BITMAPFACTORY": 1,
+     "BITMAP": 8,
+     "CANVAS": 1,
+     "CANVAS_PATH": 1,
+     "VECTOR": 1,
+     "GRADIENT_DRAWABLE": 1,
+     "STATELIST": 1,
+     "COLORSTATELIST": 1,
+     "IMAGEVIEW": 2,
+     "IMAGEDECODER": 1,
+     "VIEW_ANIMATION": 18,
+     "VECTOR_ANDROIDX": 47,
+     "SUPPORT_LIB": 198
+    },
+    "MAX_PNG_SIDE": 1152,
+    "ASSETS": 2,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-D",
+    "FAMILY-E",
+    "FAMILY-M",
+    "FAMILY-N"
+   ]
+  },
+  {
+   "TITLE_ID": "GAME-024",
+   "TYPE": "game",
+   "PACKAGE": "com.kingalex.kingpong",
+   "CATEGORY": "casual-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-025",
+   "TYPE": "game",
+   "PACKAGE": "com.vovagorodok.blichess",
+   "CATEGORY": "board-game",
+   "APK": "com.vovagorodok.blichess_29.apk",
+   "APK_SHA256": "3ae86223a70439511f32ffe7489de6050b430dd9692d7a45ae6506933dddc69d",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 209,
+    "RES_JPG": 16,
+    "RES_WEBP": 0,
+    "RES_XML": 197,
+    "RES_XML_DRAWABLE": 22,
+    "NINEPATCH": 110,
+    "PALETTE_PNG": 22,
+    "ALPHA_PNG": 155,
+    "TRNS_PNG": 18,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [
+     "libc++_shared.so",
+     "libstockfish-variants.so",
+     "libstockfish.so"
+    ],
+    "PNG_COLOR_TYPES": {
+     "3": 22,
+     "6": 26,
+     "0": 23,
+     "4": 129,
+     "2": 9
+    },
+    "DEX_MARKERS": {
+     "WEBVIEW": 1,
+     "BITMAPFACTORY": 1,
+     "BITMAP": 1,
+     "CANVAS": 1,
+     "CANVAS_PATH": 1,
+     "VECTOR": 1,
+     "COLORSTATELIST": 1,
+     "IMAGEVIEW": 2,
+     "IMAGEDECODER": 1,
+     "VIEW_ANIMATION": 16,
+     "VECTOR_ANDROIDX": 47,
+     "SUPPORT_LIB": 52
+    },
+    "MAX_PNG_SIDE": 860,
+    "ASSETS": 707,
+    "DEX_FILES": 2
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-D",
+    "FAMILY-E",
+    "FAMILY-I",
+    "FAMILY-M",
+    "FAMILY-N"
+   ]
+  },
+  {
+   "TITLE_ID": "GAME-026",
+   "TYPE": "game",
+   "PACKAGE": "io.itch.pirate_solitaire",
+   "CATEGORY": "card-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-027",
+   "TYPE": "game",
+   "PACKAGE": "com.dozingcatsoftware.dodge",
+   "CATEGORY": "action-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-028",
+   "TYPE": "game",
+   "PACKAGE": "com.helddertierwelt.mentalmath",
+   "CATEGORY": "educational-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-029",
+   "TYPE": "game",
+   "PACKAGE": "com.sidhant.bubbleshooter",
+   "CATEGORY": "puzzle-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-030",
+   "TYPE": "game",
+   "PACKAGE": "net.tigr.navyfleetbattle",
+   "CATEGORY": "board-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-031",
+   "TYPE": "game",
+   "PACKAGE": "com.hazelhope.dubster.hamtest",
+   "CATEGORY": "educational-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-032",
+   "TYPE": "game",
+   "PACKAGE": "ca.rmen.nounours",
+   "CATEGORY": "casual-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-033",
+   "TYPE": "game",
+   "PACKAGE": "com.nima.triviaapp",
+   "CATEGORY": "educational-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-034",
+   "TYPE": "game",
+   "PACKAGE": "ru.wohlsoft.thextech.fdroid",
+   "CATEGORY": "platformer-game",
+   "APK": "ru.wohlsoft.thextech.fdroid_1030703.apk",
+   "APK_SHA256": "768aaa9ad0a08d8dc5640e70f298d688e593b9627b96e9f9cdbacdb487268edd",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 239,
+    "RES_JPG": 0,
+    "RES_WEBP": 0,
+    "RES_XML": 738,
+    "RES_XML_DRAWABLE": 233,
+    "NINEPATCH": 110,
+    "PALETTE_PNG": 9,
+    "ALPHA_PNG": 210,
+    "TRNS_PNG": 8,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [
+     "libthextech.so"
+    ],
+    "PNG_COLOR_TYPES": {
+     "6": 86,
+     "3": 9,
+     "4": 124,
+     "0": 10,
+     "2": 10
+    },
+    "DEX_MARKERS": {
+     "SDL": 67,
+     "SURFACEVIEW": 1,
+     "WEBVIEW": 1,
+     "BITMAPFACTORY": 1,
+     "BITMAP": 1,
+     "CANVAS": 1,
+     "CANVAS_PATH": 1,
+     "VECTOR": 1,
+     "GRADIENT_DRAWABLE": 1,
+     "STATELIST": 1,
+     "COLORSTATELIST": 1,
+     "IMAGEVIEW": 2,
+     "IMAGEDECODER": 1,
+     "VIEW_ANIMATION": 17,
+     "VECTOR_ANDROIDX": 47,
+     "SUPPORT_LIB": 17
+    },
+    "MAX_PNG_SIDE": 848,
+    "ASSETS": 3,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-D",
+    "FAMILY-E",
+    "FAMILY-H",
+    "FAMILY-I",
+    "FAMILY-K",
+    "FAMILY-M",
+    "FAMILY-N"
+   ]
+  },
+  {
+   "TITLE_ID": "GAME-035",
+   "TYPE": "game",
+   "PACKAGE": "com.willie.mancala",
+   "CATEGORY": "board-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-036",
+   "TYPE": "game",
+   "PACKAGE": "org.lichess.mobileV2",
+   "CATEGORY": "board-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-037",
+   "TYPE": "game",
+   "PACKAGE": "de.georgsieber.ballbreak",
+   "CATEGORY": "action-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-038",
+   "TYPE": "game",
+   "PACKAGE": "com.quietgrid.app",
+   "CATEGORY": "puzzle-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-039",
+   "TYPE": "game",
+   "PACKAGE": "com.octbit.rutmath",
+   "CATEGORY": "educational-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-040",
+   "TYPE": "game",
+   "PACKAGE": "com.galaxyrio.sudokusolver",
+   "CATEGORY": "puzzle-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-041",
+   "TYPE": "game",
+   "PACKAGE": "org.lufebe16.pysolfc",
+   "CATEGORY": "card-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-042",
+   "TYPE": "game",
+   "PACKAGE": "com.kaeruct.raumballer",
+   "CATEGORY": "shooter-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-043",
+   "TYPE": "game",
+   "PACKAGE": "com.sanskritbasics.memory",
+   "CATEGORY": "educational-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-044",
+   "TYPE": "game",
+   "PACKAGE": "com.smorgasbork.hotdeath",
+   "CATEGORY": "card-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-045",
+   "TYPE": "game",
+   "PACKAGE": "com.serwylo.retrowars",
+   "CATEGORY": "action-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-046",
+   "TYPE": "game",
+   "PACKAGE": "org.opensurge2d.surgeengine",
+   "CATEGORY": "platformer-game",
+   "APK": "org.opensurge2d.surgeengine_30650.apk",
+   "APK_SHA256": "c1020c5a1e594b2189816ac39f657e827b9a4d22d199d72228ed7e276d70be77",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 145,
+    "RES_JPG": 0,
+    "RES_WEBP": 0,
+    "RES_XML": 3,
+    "RES_XML_DRAWABLE": 0,
+    "NINEPATCH": 0,
+    "PALETTE_PNG": 0,
+    "ALPHA_PNG": 128,
+    "TRNS_PNG": 0,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [
+     "libphysfs.so",
+     "liballegro_image.so",
+     "liballegro_color.so",
+     "liballegro_font.so",
+     "liballegro_memfile.so",
+     "liballegro_dialog.so",
+     "liballegro_main.so",
+     "libopensurge.so",
+     "liballegro_primitives.so",
+     "liballegro.so",
+     "liballegro_ttf.so",
+     "liballegro_audio.so",
+     "liballegro_physfs.so",
+     "liballegro_acodec.so"
+    ],
+    "PNG_COLOR_TYPES": {
+     "6": 128,
+     "2": 17
+    },
+    "DEX_MARKERS": {
+     "EGL": 7,
+     "SURFACEVIEW": 1,
+     "BITMAPFACTORY": 1,
+     "BITMAP": 1,
+     "CANVAS": 1
+    },
+    "MAX_PNG_SIDE": 4096,
+    "ASSETS": 554,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-E",
+    "FAMILY-G",
+    "FAMILY-H",
+    "FAMILY-I"
+   ]
+  },
+  {
+   "TITLE_ID": "GAME-047",
+   "TYPE": "game",
+   "PACKAGE": "com.eightsines.firestrike.opensource",
+   "CATEGORY": "shooter-game",
+   "APK": "com.eightsines.firestrike.opensource_2000.apk",
+   "APK_SHA256": "66467fada7c5149e59fdbfc9bb94892e50b61c1343bdd18b351d484887caca79",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 288,
+    "RES_JPG": 1,
+    "RES_WEBP": 0,
+    "RES_XML": 269,
+    "RES_XML_DRAWABLE": 111,
+    "NINEPATCH": 116,
+    "PALETTE_PNG": 11,
+    "ALPHA_PNG": 251,
+    "TRNS_PNG": 11,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [
+     "librenderer.so"
+    ],
+    "PNG_COLOR_TYPES": {
+     "6": 61,
+     "4": 190,
+     "2": 16,
+     "3": 11,
+     "0": 10
+    },
+    "DEX_MARKERS": {
+     "EGL": 7,
+     "OPENGL_ES1": 3,
+     "SURFACEVIEW": 1,
+     "WEBVIEW": 1,
+     "BITMAPFACTORY": 1,
+     "BITMAP": 1,
+     "CANVAS": 1,
+     "CANVAS_PATH": 1,
+     "VECTOR": 1,
+     "GRADIENT_DRAWABLE": 1,
+     "STATELIST": 1,
+     "COLORSTATELIST": 1,
+     "IMAGEVIEW": 3,
+     "VIEW_ANIMATION": 16,
+     "SUPPORT_LIB": 2
+    },
+    "MAX_PNG_SIDE": 1600,
+    "ASSETS": 148,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-D",
+    "FAMILY-E",
+    "FAMILY-G",
+    "FAMILY-H",
+    "FAMILY-I",
+    "FAMILY-M",
+    "FAMILY-N"
+   ]
+  },
+  {
+   "TITLE_ID": "GAME-048",
+   "TYPE": "game",
+   "PACKAGE": "com.clavierhaus.gnubg",
+   "CATEGORY": "board-game",
+   "APK": "com.clavierhaus.gnubg_102.apk",
+   "APK_SHA256": "a951da343ca91f10512d888802123cb040c4be72dc3d3eb58ce8ddfab80d78ff",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 64,
+    "RES_JPG": 0,
+    "RES_WEBP": 0,
+    "RES_XML": 24,
+    "RES_XML_DRAWABLE": 2,
+    "NINEPATCH": 12,
+    "PALETTE_PNG": 1,
+    "ALPHA_PNG": 48,
+    "TRNS_PNG": 0,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [
+     "libandroidx.graphics.path.so",
+     "libdatastore_shared_counter.so",
+     "libffi.so",
+     "libgio-2.0.so",
+     "libgirepository-2.0.so",
+     "libglib-2.0.so",
+     "libgmodule-2.0.so",
+     "libgnubg-engine.so",
+     "libgobject-2.0.so",
+     "libgthread-2.0.so",
+     "libintl.so",
+     "libz.so"
+    ],
+    "PNG_COLOR_TYPES": {
+     "4": 34,
+     "2": 9,
+     "6": 14,
+     "0": 6,
+     "3": 1
+    },
+    "DEX_MARKERS": {
+     "SURFACEVIEW": 1,
+     "TEXTUREVIEW": 1,
+     "COMPOSE": 15388,
+     "WEBVIEW": 1,
+     "BITMAPFACTORY": 1,
+     "BITMAP": 5,
+     "CANVAS": 6,
+     "CANVAS_PATH": 6,
+     "COLORSTATELIST": 3,
+     "IMAGEVIEW": 2,
+     "IMAGEDECODER": 1,
+     "VIEW_ANIMATION": 7,
+     "SUPPORT_LIB": 22
+    },
+    "MAX_PNG_SIDE": 4495,
+    "ASSETS": 15,
+    "DEX_FILES": 2
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-D",
+    "FAMILY-E",
+    "FAMILY-H",
+    "FAMILY-I",
+    "FAMILY-L",
+    "FAMILY-M",
+    "FAMILY-N"
+   ]
+  },
+  {
+   "TITLE_ID": "GAME-049",
+   "TYPE": "game",
+   "PACKAGE": "com.sidhant.arrowescape",
+   "CATEGORY": "puzzle-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-050",
+   "TYPE": "game",
+   "PACKAGE": "com.vovagorodok.blidraughts",
+   "CATEGORY": "board-game",
+   "APK": "com.vovagorodok.blidraughts_3.apk",
+   "APK_SHA256": "f7f4582fa24607d87c304c3acaca0cc150fa311da22e469cd15150c73d20ba2d",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 208,
+    "RES_JPG": 12,
+    "RES_WEBP": 0,
+    "RES_XML": 196,
+    "RES_XML_DRAWABLE": 22,
+    "NINEPATCH": 110,
+    "PALETTE_PNG": 17,
+    "ALPHA_PNG": 172,
+    "TRNS_PNG": 16,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [
+     "libc++_shared.so",
+     "libscan.so"
+    ],
+    "PNG_COLOR_TYPES": {
+     "6": 31,
+     "4": 141,
+     "3": 17,
+     "0": 10,
+     "2": 9
+    },
+    "DEX_MARKERS": {
+     "WEBVIEW": 1,
+     "BITMAPFACTORY": 1,
+     "BITMAP": 1,
+     "CANVAS": 1,
+     "CANVAS_PATH": 1,
+     "VECTOR": 1,
+     "COLORSTATELIST": 1,
+     "IMAGEVIEW": 2,
+     "IMAGEDECODER": 1,
+     "VIEW_ANIMATION": 16,
+     "VECTOR_ANDROIDX": 47,
+     "SUPPORT_LIB": 52
+    },
+    "MAX_PNG_SIDE": 860,
+    "ASSETS": 350,
+    "DEX_FILES": 2
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-D",
+    "FAMILY-E",
+    "FAMILY-I",
+    "FAMILY-M",
+    "FAMILY-N"
+   ]
+  },
+  {
+   "TITLE_ID": "GAME-051",
+   "TYPE": "game",
+   "PACKAGE": "com.yepgoryo.EggReturnsHome",
+   "CATEGORY": "platformer-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-052",
+   "TYPE": "game",
+   "PACKAGE": "com.rocket9labs.boxcars",
+   "CATEGORY": "board-game",
+   "APK": "com.rocket9labs.boxcars_104090.apk",
+   "APK_SHA256": "11d97ae669d97e893026ac5fc5449fe4476f5ac7363bf8bda2ef0f79fde3ac6f",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 0,
+    "RES_JPG": 0,
+    "RES_WEBP": 15,
+    "RES_XML": 3,
+    "RES_XML_DRAWABLE": 0,
+    "NINEPATCH": 0,
+    "PALETTE_PNG": 0,
+    "ALPHA_PNG": 0,
+    "TRNS_PNG": 0,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [
+     "libgojni.so"
+    ],
+    "PNG_COLOR_TYPES": {},
+    "DEX_MARKERS": {
+     "EGL": 1,
+     "OPENGL_ES1": 1,
+     "GLSURFACEVIEW": 1
+    },
+    "MAX_PNG_SIDE": 0,
+    "ASSETS": 0,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-G",
+    "FAMILY-I"
+   ]
+  },
+  {
+   "TITLE_ID": "GAME-053",
+   "TYPE": "game",
+   "PACKAGE": "io.github.johnathan.minesweeper",
+   "CATEGORY": "puzzle-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-054",
+   "TYPE": "game",
+   "PACKAGE": "org.piepmeyer.gauguin",
+   "CATEGORY": "puzzle-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-055",
+   "TYPE": "game",
+   "PACKAGE": "jwtc.android.chess",
+   "CATEGORY": "board-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-056",
+   "TYPE": "game",
+   "PACKAGE": "org.pipoypipagames.cowsrevenge",
+   "CATEGORY": "platformer-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-057",
+   "TYPE": "game",
+   "PACKAGE": "org.bobstuff.bobball",
+   "CATEGORY": "action-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-058",
+   "TYPE": "game",
+   "PACKAGE": "com.vayunmathur.games.alchemist",
+   "CATEGORY": "casual-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-059",
+   "TYPE": "game",
+   "PACKAGE": "ru.hyst329.openfool",
+   "CATEGORY": "card-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-060",
+   "TYPE": "game",
+   "PACKAGE": "org.codeberg.scovillo.bubble",
+   "CATEGORY": "action-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-061",
+   "TYPE": "game",
+   "PACKAGE": "com.towerillusion.abdal",
+   "CATEGORY": "board-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-062",
+   "TYPE": "game",
+   "PACKAGE": "com.sidhant.blockblast",
+   "CATEGORY": "puzzle-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-063",
+   "TYPE": "game",
+   "PACKAGE": "org.quentin_bettoum.librememorygame",
+   "CATEGORY": "educational-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-064",
+   "TYPE": "game",
+   "PACKAGE": "com.fairytrick.fairymahjong",
+   "CATEGORY": "puzzle-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-065",
+   "TYPE": "game",
+   "PACKAGE": "com.tacticmaster",
+   "CATEGORY": "board-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-066",
+   "TYPE": "game",
+   "PACKAGE": "com.joeld.minesweeper",
+   "CATEGORY": "puzzle-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-067",
+   "TYPE": "game",
+   "PACKAGE": "com.adilhanney.ricochlime",
+   "CATEGORY": "shooter-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-068",
+   "TYPE": "game",
+   "PACKAGE": "com.dozingcatsoftware.cardswithcats",
+   "CATEGORY": "card-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-069",
+   "TYPE": "game",
+   "PACKAGE": "eu.veldsoft.scribe4",
+   "CATEGORY": "board-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-070",
+   "TYPE": "game",
+   "PACKAGE": "me.lecaro.breakout",
+   "CATEGORY": "action-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-071",
+   "TYPE": "game",
+   "PACKAGE": "cube.run",
+   "CATEGORY": "action-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-072",
+   "TYPE": "game",
+   "PACKAGE": "fr.arnaudguyon.spacevertex",
+   "CATEGORY": "action-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-073",
+   "TYPE": "game",
+   "PACKAGE": "de.saschahlusiak.freebloks",
+   "CATEGORY": "board-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-074",
+   "TYPE": "game",
+   "PACKAGE": "org.secuso.privacyfriendlymemory",
+   "CATEGORY": "educational-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-075",
+   "TYPE": "game",
+   "PACKAGE": "paper.loop",
+   "CATEGORY": "action-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-076",
+   "TYPE": "game",
+   "PACKAGE": "dev.serwin.AnarchRE",
+   "CATEGORY": "shooter-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-077",
+   "TYPE": "game",
+   "PACKAGE": "com.dozingcatsoftware.mouse_pounce",
+   "CATEGORY": "card-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-078",
+   "TYPE": "game",
+   "PACKAGE": "com.sidhant.shikaku",
+   "CATEGORY": "puzzle-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-079",
+   "TYPE": "game",
+   "PACKAGE": "eve.game.tracker",
+   "CATEGORY": "card-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-080",
+   "TYPE": "game",
+   "PACKAGE": "com.sanskritbasics",
+   "CATEGORY": "educational-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-081",
+   "TYPE": "game",
+   "PACKAGE": "eu.veldsoft.vitosha.blackjack",
+   "CATEGORY": "card-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-082",
+   "TYPE": "game",
+   "PACKAGE": "com.mostafa.brickblast",
+   "CATEGORY": "casual-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-083",
+   "TYPE": "game",
+   "PACKAGE": "com.fr.laboussole.track",
+   "CATEGORY": "educational-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-084",
+   "TYPE": "game",
+   "PACKAGE": "eu.mokrzycki.learndigits",
+   "CATEGORY": "educational-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-085",
+   "TYPE": "game",
+   "PACKAGE": "com.game.asteroids_revenge",
+   "CATEGORY": "action-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-086",
+   "TYPE": "game",
+   "PACKAGE": "paper.loop2",
+   "CATEGORY": "action-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-087",
+   "TYPE": "game",
+   "PACKAGE": "org.pgnapps.pk2",
+   "CATEGORY": "platformer-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-088",
+   "TYPE": "game",
+   "PACKAGE": "org.secuso.privacyfriendlydame",
+   "CATEGORY": "board-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-089",
+   "TYPE": "game",
+   "PACKAGE": "com.itsfrz.tictactoe",
+   "CATEGORY": "board-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-090",
+   "TYPE": "game",
+   "PACKAGE": "nodomain.playmaker",
+   "CATEGORY": "platformer-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-091",
+   "TYPE": "game",
+   "PACKAGE": "com.chenyifaer.fafarunner",
+   "CATEGORY": "action-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-092",
+   "TYPE": "game",
+   "PACKAGE": "org.secuso.privacyfriendlysolitaire",
+   "CATEGORY": "card-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-093",
+   "TYPE": "game",
+   "PACKAGE": "com.movietrivia.filmfacts",
+   "CATEGORY": "educational-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-094",
+   "TYPE": "game",
+   "PACKAGE": "com.attenomy.janken",
+   "CATEGORY": "casual-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-095",
+   "TYPE": "game",
+   "PACKAGE": "com.sidhant.nonogram",
+   "CATEGORY": "puzzle-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-096",
+   "TYPE": "game",
+   "PACKAGE": "garden.lina.oblique_strategies",
+   "CATEGORY": "card-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-097",
+   "TYPE": "game",
+   "PACKAGE": "com.dozingcatsoftware.bouncy",
+   "CATEGORY": "casual-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-098",
+   "TYPE": "game",
+   "PACKAGE": "com.sidhant.triplematch",
+   "CATEGORY": "puzzle-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-099",
+   "TYPE": "game",
+   "PACKAGE": "net.sourceforge.solitaire_cg",
+   "CATEGORY": "card-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "GAME-100",
+   "TYPE": "game",
+   "PACKAGE": "eu.veldsoft.tuty.fruty.slot",
+   "CATEGORY": "casual-game",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-001",
+   "TYPE": "app",
+   "PACKAGE": "com.hfut.schedule",
+   "CATEGORY": "internet",
+   "APK": "com.hfut.schedule_2724.apk",
+   "APK_SHA256": "bc2b586a58bd6eba4641c5509e9d2f1c55b32f952b5820295ecc08838a3534db",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 182,
+    "RES_JPG": 0,
+    "RES_WEBP": 12,
+    "RES_XML": 1927,
+    "RES_XML_DRAWABLE": 34,
+    "NINEPATCH": 110,
+    "PALETTE_PNG": 6,
+    "ALPHA_PNG": 156,
+    "TRNS_PNG": 5,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [
+     "libandroidx.graphics.path.so",
+     "libbsdiff.so",
+     "libdatastore_shared_counter.so",
+     "libimage_processing_util_jni.so",
+     "libjpeg.so",
+     "libleptonica.so",
+     "libpngx.so",
+     "libsurface_util_jni.so",
+     "libtesseract.so"
+    ],
+    "PNG_COLOR_TYPES": {
+     "4": 122,
+     "6": 34,
+     "0": 10,
+     "2": 10,
+     "3": 6
+    },
+    "DEX_MARKERS": {
+     "COMPOSE": 27630,
+     "BITMAPFACTORY": 4,
+     "BITMAP": 16,
+     "CANVAS": 10,
+     "CANVAS_PATH": 7,
+     "COLORSTATELIST": 8,
+     "IMAGEVIEW": 4,
+     "VIEW_ANIMATION": 24,
+     "OPENGL_ES2PLUS": 2,
+     "SURFACEVIEW": 1,
+     "TEXTUREVIEW": 2,
+     "VECTOR_ANDROIDX": 39,
+     "SUPPORT_LIB": 24,
+     "WEBVIEW": 7,
+     "VECTOR": 1,
+     "GRADIENT_DRAWABLE": 1,
+     "IMAGEDECODER": 2
+    },
+    "MAX_PNG_SIDE": 860,
+    "ASSETS": 3,
+    "DEX_FILES": 5
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-D",
+    "FAMILY-E",
+    "FAMILY-G",
+    "FAMILY-H",
+    "FAMILY-I",
+    "FAMILY-L",
+    "FAMILY-M",
+    "FAMILY-N"
+   ]
+  },
+  {
+   "TITLE_ID": "APP-002",
+   "TYPE": "app",
+   "PACKAGE": "foehnix.widget",
+   "CATEGORY": "weather",
+   "APK": "foehnix.widget_40.apk",
+   "APK_SHA256": "960913f40cefe5f4542554ef603305586b87ca0b03b25f28f09abeec7a9cf857",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 185,
+    "RES_JPG": 0,
+    "RES_WEBP": 0,
+    "RES_XML": 207,
+    "RES_XML_DRAWABLE": 31,
+    "NINEPATCH": 110,
+    "PALETTE_PNG": 6,
+    "ALPHA_PNG": 160,
+    "TRNS_PNG": 6,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [],
+    "PNG_COLOR_TYPES": {
+     "4": 132,
+     "0": 10,
+     "6": 28,
+     "3": 6,
+     "2": 9
+    },
+    "DEX_MARKERS": {
+     "WEBVIEW": 1,
+     "BITMAPFACTORY": 1,
+     "BITMAP": 1,
+     "CANVAS": 1,
+     "CANVAS_PATH": 1,
+     "VECTOR": 1,
+     "GRADIENT_DRAWABLE": 1,
+     "COLORSTATELIST": 1,
+     "IMAGEVIEW": 2,
+     "IMAGEDECODER": 1,
+     "VIEW_ANIMATION": 16,
+     "VECTOR_ANDROIDX": 47,
+     "SUPPORT_LIB": 17
+    },
+    "MAX_PNG_SIDE": 192,
+    "ASSETS": 0,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-D",
+    "FAMILY-E",
+    "FAMILY-M",
+    "FAMILY-N"
+   ]
+  },
+  {
+   "TITLE_ID": "APP-003",
+   "TYPE": "app",
+   "PACKAGE": "de.seemoo.at_tracking_detection",
+   "CATEGORY": "connectivity",
+   "APK": "de.seemoo.at_tracking_detection_68.apk",
+   "APK_SHA256": "583fc839caff840e7735dfeb28dd5a586e1fec101661e38db7eebb5b120907d4",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 186,
+    "RES_JPG": 3,
+    "RES_WEBP": 17,
+    "RES_XML": 759,
+    "RES_XML_DRAWABLE": 199,
+    "NINEPATCH": 99,
+    "PALETTE_PNG": 15,
+    "ALPHA_PNG": 167,
+    "TRNS_PNG": 15,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [
+     "libandroidx.graphics.path.so"
+    ],
+    "PNG_COLOR_TYPES": {
+     "6": 42,
+     "4": 125,
+     "0": 4,
+     "3": 15
+    },
+    "DEX_MARKERS": {
+     "COMPOSE": 53,
+     "BITMAPFACTORY": 1,
+     "BITMAP": 1,
+     "CANVAS": 1,
+     "CANVAS_PATH": 1,
+     "VECTOR": 1,
+     "GRADIENT_DRAWABLE": 1,
+     "STATELIST": 1,
+     "COLORSTATELIST": 1,
+     "IMAGEVIEW": 2,
+     "IMAGEDECODER": 1,
+     "VIEW_ANIMATION": 14,
+     "SUPPORT_LIB": 2
+    },
+    "MAX_PNG_SIDE": 1728,
+    "ASSETS": 59,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-D",
+    "FAMILY-E",
+    "FAMILY-I",
+    "FAMILY-L",
+    "FAMILY-N"
+   ]
+  },
+  {
+   "TITLE_ID": "APP-004",
+   "TYPE": "app",
+   "PACKAGE": "org.nitri.opentopo",
+   "CATEGORY": "navigation",
+   "APK": "org.nitri.opentopo_82.apk",
+   "APK_SHA256": "0fa0362afc6f8f0c95a43e9aa6dfa3e6891dca0755d043cbac08d63557c22da3",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 213,
+    "RES_JPG": 0,
+    "RES_WEBP": 0,
+    "RES_XML": 453,
+    "RES_XML_DRAWABLE": 87,
+    "NINEPATCH": 111,
+    "PALETTE_PNG": 15,
+    "ALPHA_PNG": 179,
+    "TRNS_PNG": 14,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [
+     "libandroidx.graphics.path.so"
+    ],
+    "PNG_COLOR_TYPES": {
+     "4": 129,
+     "6": 50,
+     "0": 10,
+     "2": 9,
+     "3": 15
+    },
+    "DEX_MARKERS": {
+     "COMPOSE": 58,
+     "WEBVIEW": 1,
+     "BITMAPFACTORY": 1,
+     "BITMAP": 2,
+     "CANVAS": 1,
+     "CANVAS_PATH": 1,
+     "VECTOR": 1,
+     "GRADIENT_DRAWABLE": 1,
+     "STATELIST": 1,
+     "COLORSTATELIST": 1,
+     "IMAGEVIEW": 2,
+     "VIEW_ANIMATION": 13,
+     "SUPPORT_LIB": 3
+    },
+    "MAX_PNG_SIDE": 860,
+    "ASSETS": 5,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-D",
+    "FAMILY-E",
+    "FAMILY-I",
+    "FAMILY-L",
+    "FAMILY-M",
+    "FAMILY-N"
+   ]
+  },
+  {
+   "TITLE_ID": "APP-005",
+   "TYPE": "app",
+   "PACKAGE": "com.newsblur",
+   "CATEGORY": "reading",
+   "APK": "com.newsblur_289.apk",
+   "APK_SHA256": "c97cd75908e32c446d18245677bfd219b78752ffe8e69fb3889320ef41532967",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 234,
+    "RES_JPG": 0,
+    "RES_WEBP": 568,
+    "RES_XML": 820,
+    "RES_XML_DRAWABLE": 89,
+    "NINEPATCH": 110,
+    "PALETTE_PNG": 6,
+    "ALPHA_PNG": 161,
+    "TRNS_PNG": 5,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [
+     "libandroidx.graphics.path.so"
+    ],
+    "PNG_COLOR_TYPES": {
+     "4": 130,
+     "6": 31,
+     "0": 10,
+     "2": 57,
+     "3": 6
+    },
+    "DEX_MARKERS": {
+     "COMPOSE": 164,
+     "WEBVIEW": 1,
+     "BITMAPFACTORY": 1,
+     "BITMAP": 1,
+     "CANVAS": 1,
+     "CANVAS_PATH": 1,
+     "VECTOR": 1,
+     "GRADIENT_DRAWABLE": 1,
+     "STATELIST": 1,
+     "COLORSTATELIST": 1,
+     "IMAGEVIEW": 3,
+     "IMAGEDECODER": 1,
+     "VIEW_ANIMATION": 12,
+     "SUPPORT_LIB": 2
+    },
+    "MAX_PNG_SIDE": 1024,
+    "ASSETS": 14,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-D",
+    "FAMILY-E",
+    "FAMILY-I",
+    "FAMILY-L",
+    "FAMILY-M",
+    "FAMILY-N"
+   ]
+  },
+  {
+   "TITLE_ID": "APP-006",
+   "TYPE": "app",
+   "PACKAGE": "de.taz.android.app.free",
+   "CATEGORY": "multimedia",
+   "APK": "de.taz.android.app.free_20102900.apk",
+   "APK_SHA256": "86f14e1101e7f98952bc402234a7223e99a9defa100a4e12918ee3d88192e448",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 390,
+    "RES_JPG": 0,
+    "RES_WEBP": 0,
+    "RES_XML": 1150,
+    "RES_XML_DRAWABLE": 272,
+    "NINEPATCH": 110,
+    "PALETTE_PNG": 26,
+    "ALPHA_PNG": 310,
+    "TRNS_PNG": 40,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [
+     "libconscrypt_jni.so",
+     "libdatastore_shared_counter.so",
+     "libmupdf_java.so"
+    ],
+    "PNG_COLOR_TYPES": {
+     "2": 23,
+     "0": 31,
+     "4": 245,
+     "6": 65,
+     "3": 26
+    },
+    "DEX_MARKERS": {
+     "OPENGL_ES2PLUS": 3,
+     "SURFACEVIEW": 2,
+     "TEXTUREVIEW": 2,
+     "WEBVIEW": 4,
+     "BITMAPFACTORY": 3,
+     "BITMAP": 4,
+     "CANVAS": 3,
+     "CANVAS_PATH": 2,
+     "GRADIENT_DRAWABLE": 2,
+     "COLORSTATELIST": 3,
+     "IMAGEVIEW": 11,
+     "IMAGEDECODER": 2,
+     "VIEW_ANIMATION": 30,
+     "VECTOR_ANDROIDX": 49,
+     "SUPPORT_LIB": 200,
+     "EGL": 1,
+     "OPENGL_ES1": 1,
+     "GLSURFACEVIEW": 1,
+     "VECTOR": 1,
+     "STATELIST": 1
+    },
+    "MAX_PNG_SIDE": 2048,
+    "ASSETS": 35,
+    "DEX_FILES": 6
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-D",
+    "FAMILY-E",
+    "FAMILY-G",
+    "FAMILY-H",
+    "FAMILY-I",
+    "FAMILY-M",
+    "FAMILY-N"
+   ]
+  },
+  {
+   "TITLE_ID": "APP-007",
+   "TYPE": "app",
+   "PACKAGE": "com.bupkis.tirailleur",
+   "CATEGORY": "calculator",
+   "APK": "com.bupkis.tirailleur_13.apk",
+   "APK_SHA256": "474d9ecc0038a7744adc657e9f81605de6c96f34cb0b7924f7a2685699dcd60b",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 21,
+    "RES_JPG": 0,
+    "RES_WEBP": 0,
+    "RES_XML": 14,
+    "RES_XML_DRAWABLE": 0,
+    "NINEPATCH": 12,
+    "PALETTE_PNG": 5,
+    "ALPHA_PNG": 0,
+    "TRNS_PNG": 2,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [
+     "libapp.so",
+     "libflutter.so",
+     "libsqlite3.so"
+    ],
+    "PNG_COLOR_TYPES": {
+     "3": 5,
+     "2": 10,
+     "0": 6
+    },
+    "DEX_MARKERS": {
+     "SURFACEVIEW": 1,
+     "TEXTUREVIEW": 1,
+     "BITMAPFACTORY": 1,
+     "BITMAP": 1,
+     "CANVAS": 1,
+     "CANVAS_PATH": 1,
+     "COLORSTATELIST": 1,
+     "IMAGEDECODER": 1,
+     "SUPPORT_LIB": 2
+    },
+    "MAX_PNG_SIDE": 860,
+    "ASSETS": 31,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-E",
+    "FAMILY-H",
+    "FAMILY-I"
+   ]
+  },
+  {
+   "TITLE_ID": "APP-008",
+   "TYPE": "app",
+   "PACKAGE": "io.github.aoc_normal",
+   "CATEGORY": "clock",
+   "APK": "io.github.aoc_normal_1.apk",
+   "APK_SHA256": "7d049e2276f0c1ae46775e1d8cc897fb57e700c64e071cf843198e9532d9a0dc",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 180,
+    "RES_JPG": 0,
+    "RES_WEBP": 0,
+    "RES_XML": 567,
+    "RES_XML_DRAWABLE": 192,
+    "NINEPATCH": 110,
+    "PALETTE_PNG": 5,
+    "ALPHA_PNG": 151,
+    "TRNS_PNG": 5,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [],
+    "PNG_COLOR_TYPES": {
+     "4": 122,
+     "0": 10,
+     "2": 14,
+     "6": 29,
+     "3": 5
+    },
+    "DEX_MARKERS": {
+     "WEBVIEW": 1,
+     "BITMAPFACTORY": 1,
+     "BITMAP": 1,
+     "CANVAS": 1,
+     "CANVAS_PATH": 1,
+     "VECTOR": 1,
+     "GRADIENT_DRAWABLE": 1,
+     "STATELIST": 1,
+     "COLORSTATELIST": 1,
+     "IMAGEVIEW": 2,
+     "IMAGEDECODER": 1,
+     "VIEW_ANIMATION": 17,
+     "VECTOR_ANDROIDX": 47,
+     "SUPPORT_LIB": 17
+    },
+    "MAX_PNG_SIDE": 432,
+    "ASSETS": 1,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-D",
+    "FAMILY-E",
+    "FAMILY-M",
+    "FAMILY-N"
+   ]
+  },
+  {
+   "TITLE_ID": "APP-009",
+   "TYPE": "app",
+   "PACKAGE": "fr.shiningcat.binclockwidget",
+   "CATEGORY": "clock",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-010",
+   "TYPE": "app",
+   "PACKAGE": "net.diffengine.romandigitalclock",
+   "CATEGORY": "clock",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-011",
+   "TYPE": "app",
+   "PACKAGE": "eu.weblibre.gecko",
+   "CATEGORY": "internet",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-012",
+   "TYPE": "app",
+   "PACKAGE": "com.jherkenhoff.qalculate",
+   "CATEGORY": "calculator",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-013",
+   "TYPE": "app",
+   "PACKAGE": "site.leos.apps.lespas",
+   "CATEGORY": "gallery",
+   "APK": "site.leos.apps.lespas_118.apk",
+   "APK_SHA256": "be129b43f84752e4af2ea2475b68134fbf0bdab17ba5d65fe742e6621fffb640",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 334,
+    "RES_JPG": 0,
+    "RES_WEBP": 0,
+    "RES_XML": 1239,
+    "RES_XML_DRAWABLE": 280,
+    "NINEPATCH": 129,
+    "PALETTE_PNG": 20,
+    "ALPHA_PNG": 295,
+    "TRNS_PNG": 19,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [
+     "libglues.so",
+     "libtensorflowlite_gpu_jni.so",
+     "libtensorflowlite_jni.so"
+    ],
+    "PNG_COLOR_TYPES": {
+     "4": 208,
+     "6": 87,
+     "0": 10,
+     "2": 9,
+     "3": 20
+    },
+    "DEX_MARKERS": {
+     "EGL": 2,
+     "OPENGL_ES1": 8,
+     "OPENGL_ES2PLUS": 3,
+     "GLSURFACEVIEW": 2,
+     "SURFACEVIEW": 1,
+     "TEXTUREVIEW": 1,
+     "COMPOSE": 6,
+     "WEBVIEW": 2,
+     "BITMAPFACTORY": 4,
+     "BITMAP": 8,
+     "CANVAS": 4,
+     "CANVAS_PATH": 4,
+     "GRADIENT_DRAWABLE": 2,
+     "COLORSTATELIST": 3,
+     "IMAGEVIEW": 10,
+     "IMAGEDECODER": 2,
+     "VIEW_ANIMATION": 38,
+     "VECTOR_ANDROIDX": 49,
+     "SUPPORT_LIB": 199,
+     "VECTOR": 1,
+     "STATELIST": 5
+    },
+    "MAX_PNG_SIDE": 860,
+    "ASSETS": 5,
+    "DEX_FILES": 5
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-D",
+    "FAMILY-E",
+    "FAMILY-G",
+    "FAMILY-H",
+    "FAMILY-I",
+    "FAMILY-L",
+    "FAMILY-M",
+    "FAMILY-N"
+   ]
+  },
+  {
+   "TITLE_ID": "APP-014",
+   "TYPE": "app",
+   "PACKAGE": "me.river.nightbell",
+   "CATEGORY": "development",
+   "APK": "me.river.nightbell_41.apk",
+   "APK_SHA256": "e4972ad68a1550339edb71bab866bd32d045057c85349ee857954b107eed8fe1",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 16,
+    "RES_JPG": 0,
+    "RES_WEBP": 0,
+    "RES_XML": 37,
+    "RES_XML_DRAWABLE": 2,
+    "NINEPATCH": 12,
+    "PALETTE_PNG": 1,
+    "ALPHA_PNG": 0,
+    "TRNS_PNG": 0,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [
+     "libandroidx.graphics.path.so",
+     "libdatastore_shared_counter.so"
+    ],
+    "PNG_COLOR_TYPES": {
+     "2": 9,
+     "0": 6,
+     "3": 1
+    },
+    "DEX_MARKERS": {
+     "COMPOSE": 157,
+     "WEBVIEW": 1,
+     "BITMAPFACTORY": 1,
+     "BITMAP": 1,
+     "CANVAS": 1,
+     "CANVAS_PATH": 1,
+     "COLORSTATELIST": 1,
+     "VIEW_ANIMATION": 5,
+     "SUPPORT_LIB": 2
+    },
+    "MAX_PNG_SIDE": 860,
+    "ASSETS": 3,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-E",
+    "FAMILY-I",
+    "FAMILY-L",
+    "FAMILY-M",
+    "FAMILY-N"
+   ]
+  },
+  {
+   "TITLE_ID": "APP-015",
+   "TYPE": "app",
+   "PACKAGE": "com.madlonkay.orgro",
+   "CATEGORY": "development",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-016",
+   "TYPE": "app",
+   "PACKAGE": "org.forkgram.classic",
+   "CATEGORY": "internet",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-017",
+   "TYPE": "app",
+   "PACKAGE": "com.kompact",
+   "CATEGORY": "multimedia",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-018",
+   "TYPE": "app",
+   "PACKAGE": "com.ma.tehro",
+   "CATEGORY": "navigation",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-019",
+   "TYPE": "app",
+   "PACKAGE": "net.bible.android.activity",
+   "CATEGORY": "reading",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-020",
+   "TYPE": "app",
+   "PACKAGE": "net.osmand.plus",
+   "CATEGORY": "navigation",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-021",
+   "TYPE": "app",
+   "PACKAGE": "com.tutpro.baresip.plus",
+   "CATEGORY": "internet",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-022",
+   "TYPE": "app",
+   "PACKAGE": "it.fast4x.riplay",
+   "CATEGORY": "multimedia",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-023",
+   "TYPE": "app",
+   "PACKAGE": "org.stingle.photos",
+   "CATEGORY": "gallery",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-024",
+   "TYPE": "app",
+   "PACKAGE": "com.forrestguice.suntimeswidget",
+   "CATEGORY": "clock",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-025",
+   "TYPE": "app",
+   "PACKAGE": "com.vayunmathur.clock",
+   "CATEGORY": "clock",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-026",
+   "TYPE": "app",
+   "PACKAGE": "com.luc4n3x.levyra",
+   "CATEGORY": "multimedia",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-027",
+   "TYPE": "app",
+   "PACKAGE": "com.firebirdberlin.nightdream.noGms",
+   "CATEGORY": "clock",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-028",
+   "TYPE": "app",
+   "PACKAGE": "com.vagujhelyigergely.calculatorm3",
+   "CATEGORY": "calculator",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-029",
+   "TYPE": "app",
+   "PACKAGE": "com.hegocre.nextcloudpasswords",
+   "CATEGORY": "security",
+   "APK": "com.hegocre.nextcloudpasswords_49.apk",
+   "APK_SHA256": "b8ee43950d3fd8473a78e85494af0800f9f0ba50be49a1d55aff8362ab2d4b9c",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 157,
+    "RES_JPG": 0,
+    "RES_WEBP": 5,
+    "RES_XML": 145,
+    "RES_XML_DRAWABLE": 15,
+    "NINEPATCH": 98,
+    "PALETTE_PNG": 7,
+    "ALPHA_PNG": 145,
+    "TRNS_PNG": 7,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [
+     "libandroidx.graphics.path.so",
+     "libdatastore_shared_counter.so",
+     "libimage_processing_util_jni.so",
+     "libjnidispatch.so",
+     "libsodium.so",
+     "libsurface_util_jni.so",
+     "libzxingcpp_android.so"
+    ],
+    "PNG_COLOR_TYPES": {
+     "4": 122,
+     "6": 23,
+     "0": 4,
+     "3": 7,
+     "2": 1
+    },
+    "DEX_MARKERS": {
+     "OPENGL_ES2PLUS": 1,
+     "SURFACEVIEW": 1,
+     "TEXTUREVIEW": 1,
+     "COMPOSE": 58,
+     "WEBVIEW": 1,
+     "BITMAPFACTORY": 1,
+     "BITMAP": 1,
+     "CANVAS": 1,
+     "CANVAS_PATH": 1,
+     "VECTOR": 1,
+     "COLORSTATELIST": 1,
+     "IMAGEVIEW": 2,
+     "IMAGEDECODER": 1,
+     "VIEW_ANIMATION": 5,
+     "SUPPORT_LIB": 2
+    },
+    "MAX_PNG_SIDE": 512,
+    "ASSETS": 3,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-D",
+    "FAMILY-E",
+    "FAMILY-G",
+    "FAMILY-H",
+    "FAMILY-I",
+    "FAMILY-L",
+    "FAMILY-M",
+    "FAMILY-N"
+   ]
+  },
+  {
+   "TITLE_ID": "APP-030",
+   "TYPE": "app",
+   "PACKAGE": "com.chmouel.liseur",
+   "CATEGORY": "reading",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-031",
+   "TYPE": "app",
+   "PACKAGE": "protectedwp.safespace",
+   "CATEGORY": "security",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-032",
+   "TYPE": "app",
+   "PACKAGE": "dev.gpxit.app",
+   "CATEGORY": "navigation",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-033",
+   "TYPE": "app",
+   "PACKAGE": "com.srkovnar.legacyphotoframe",
+   "CATEGORY": "gallery",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-034",
+   "TYPE": "app",
+   "PACKAGE": "com.nfcarchiver.nfc_archiver",
+   "CATEGORY": "connectivity",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-035",
+   "TYPE": "app",
+   "PACKAGE": "org.ojrandom.paiesque",
+   "CATEGORY": "connectivity",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-036",
+   "TYPE": "app",
+   "PACKAGE": "com.greenart7c3.nostrsigner",
+   "CATEGORY": "security",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-037",
+   "TYPE": "app",
+   "PACKAGE": "com.divinelink.scenepeek",
+   "CATEGORY": "multimedia",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-038",
+   "TYPE": "app",
+   "PACKAGE": "app.fedilab.castlab",
+   "CATEGORY": "gallery",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-039",
+   "TYPE": "app",
+   "PACKAGE": "de.schliweb.makeacopy",
+   "CATEGORY": "multimedia",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-040",
+   "TYPE": "app",
+   "PACKAGE": "fr.corenting.convertisseureurofranc",
+   "CATEGORY": "calculator",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-041",
+   "TYPE": "app",
+   "PACKAGE": "io.paperterm.app",
+   "CATEGORY": "development",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-042",
+   "TYPE": "app",
+   "PACKAGE": "org.ucam.ssb22.pinyinfdroid",
+   "CATEGORY": "reading",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-043",
+   "TYPE": "app",
+   "PACKAGE": "com.kolakek.pimiwidget",
+   "CATEGORY": "weather",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-044",
+   "TYPE": "app",
+   "PACKAGE": "is.xyz.mpv",
+   "CATEGORY": "multimedia",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-045",
+   "TYPE": "app",
+   "PACKAGE": "orinasa.njarasoa.maripanatokana",
+   "CATEGORY": "weather",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-046",
+   "TYPE": "app",
+   "PACKAGE": "tibarj.tranquilstopwatch",
+   "CATEGORY": "stopwatch",
+   "APK": "tibarj.tranquilstopwatch_17.apk",
+   "APK_SHA256": "7bc31fae5cd2e9d815414dafb437f9a9a2fd21f4dc16d9929adc5fec962c5cb7",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 166,
+    "RES_JPG": 0,
+    "RES_WEBP": 10,
+    "RES_XML": 723,
+    "RES_XML_DRAWABLE": 251,
+    "NINEPATCH": 110,
+    "PALETTE_PNG": 6,
+    "ALPHA_PNG": 141,
+    "TRNS_PNG": 5,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [],
+    "PNG_COLOR_TYPES": {
+     "4": 122,
+     "6": 19,
+     "0": 10,
+     "2": 9,
+     "3": 6
+    },
+    "DEX_MARKERS": {
+     "BITMAP": 1,
+     "CANVAS": 1,
+     "CANVAS_PATH": 1,
+     "VECTOR": 1,
+     "GRADIENT_DRAWABLE": 1,
+     "STATELIST": 1,
+     "COLORSTATELIST": 1,
+     "IMAGEVIEW": 2,
+     "VIEW_ANIMATION": 10,
+     "SUPPORT_LIB": 2
+    },
+    "MAX_PNG_SIDE": 860,
+    "ASSETS": 2,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-D",
+    "FAMILY-E",
+    "FAMILY-N"
+   ]
+  },
+  {
+   "TITLE_ID": "APP-047",
+   "TYPE": "app",
+   "PACKAGE": "com.davidtakac.bura",
+   "CATEGORY": "weather",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-048",
+   "TYPE": "app",
+   "PACKAGE": "m.co.rh.id.a_news_provider",
+   "CATEGORY": "reading",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-049",
+   "TYPE": "app",
+   "PACKAGE": "de.quaddyservices.dynamicnightlight",
+   "CATEGORY": "clock",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-050",
+   "TYPE": "app",
+   "PACKAGE": "com.ominous.quickweather",
+   "CATEGORY": "weather",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-051",
+   "TYPE": "app",
+   "PACKAGE": "cn.rbc.termuc",
+   "CATEGORY": "development",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-052",
+   "TYPE": "app",
+   "PACKAGE": "com.kaii.photos",
+   "CATEGORY": "gallery",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-053",
+   "TYPE": "app",
+   "PACKAGE": "com.co3",
+   "CATEGORY": "reading",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-054",
+   "TYPE": "app",
+   "PACKAGE": "com.crome.forecastpoint",
+   "CATEGORY": "weather",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-055",
+   "TYPE": "app",
+   "PACKAGE": "com.metromusic",
+   "CATEGORY": "multimedia",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-056",
+   "TYPE": "app",
+   "PACKAGE": "com.bbzone.isitprime",
+   "CATEGORY": "calculator",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-057",
+   "TYPE": "app",
+   "PACKAGE": "com.vsmartcard.acardemulator",
+   "CATEGORY": "development",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-058",
+   "TYPE": "app",
+   "PACKAGE": "com.iris.gallery",
+   "CATEGORY": "gallery",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-059",
+   "TYPE": "app",
+   "PACKAGE": "com.adeeteya.digital_calculator",
+   "CATEGORY": "calculator",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-060",
+   "TYPE": "app",
+   "PACKAGE": "lab.rreedd.oriens",
+   "CATEGORY": "clock",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-061",
+   "TYPE": "app",
+   "PACKAGE": "org.godotengine.editor.v4",
+   "CATEGORY": "development",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-062",
+   "TYPE": "app",
+   "PACKAGE": "foss.cnugteren.nlweer",
+   "CATEGORY": "weather",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-063",
+   "TYPE": "app",
+   "PACKAGE": "com.axiel7.anihyou",
+   "CATEGORY": "reading",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-064",
+   "TYPE": "app",
+   "PACKAGE": "joshuatee.wx",
+   "CATEGORY": "weather",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-065",
+   "TYPE": "app",
+   "PACKAGE": "net.aliasvault.app",
+   "CATEGORY": "security",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-066",
+   "TYPE": "app",
+   "PACKAGE": "uk.org.boddie.android.weatherforecast",
+   "CATEGORY": "weather",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-067",
+   "TYPE": "app",
+   "PACKAGE": "de.phasenrauscher.bicyweather",
+   "CATEGORY": "weather",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-068",
+   "TYPE": "app",
+   "PACKAGE": "com.fixupxer",
+   "CATEGORY": "internet",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-069",
+   "TYPE": "app",
+   "PACKAGE": "com.github.vauvenal5.yaga",
+   "CATEGORY": "gallery",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-070",
+   "TYPE": "app",
+   "PACKAGE": "fr.ign.geoportail",
+   "CATEGORY": "navigation",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-071",
+   "TYPE": "app",
+   "PACKAGE": "com.kylecorry.trail_sense",
+   "CATEGORY": "navigation",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-072",
+   "TYPE": "app",
+   "PACKAGE": "de.kaffeemitkoffein.tinyweatherforecastgermany",
+   "CATEGORY": "weather",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-073",
+   "TYPE": "app",
+   "PACKAGE": "dudeofx.eval",
+   "CATEGORY": "calculator",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-074",
+   "TYPE": "app",
+   "PACKAGE": "it.rignanese.leo.slimfacebook",
+   "CATEGORY": "internet",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-075",
+   "TYPE": "app",
+   "PACKAGE": "org.fossify.gallery",
+   "CATEGORY": "gallery",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-076",
+   "TYPE": "app",
+   "PACKAGE": "deckers.thibault.aves.libre",
+   "CATEGORY": "gallery",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-077",
+   "TYPE": "app",
+   "PACKAGE": "io.github.lordofpolls.shellwave",
+   "CATEGORY": "development",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-078",
+   "TYPE": "app",
+   "PACKAGE": "org.fossify.clock",
+   "CATEGORY": "clock",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-079",
+   "TYPE": "app",
+   "PACKAGE": "com.justdeax.composeStopwatch",
+   "CATEGORY": "stopwatch",
+   "APK": "com.justdeax.composeStopwatch_1009011.apk",
+   "APK_SHA256": "dbf937ebbe7c0b3d24c07fa0ede7cb53ea117f7071db3b61f1c96b7d257cda55",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 0,
+    "RES_JPG": 0,
+    "RES_WEBP": 5,
+    "RES_XML": 17,
+    "RES_XML_DRAWABLE": 0,
+    "NINEPATCH": 0,
+    "PALETTE_PNG": 0,
+    "ALPHA_PNG": 0,
+    "TRNS_PNG": 0,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [
+     "libandroidx.graphics.path.so",
+     "libdatastore_shared_counter.so"
+    ],
+    "PNG_COLOR_TYPES": {},
+    "DEX_MARKERS": {
+     "COMPOSE": 56,
+     "BITMAP": 1,
+     "CANVAS": 1,
+     "CANVAS_PATH": 1,
+     "COLORSTATELIST": 1,
+     "VIEW_ANIMATION": 5,
+     "SUPPORT_LIB": 2
+    },
+    "MAX_PNG_SIDE": 0,
+    "ASSETS": 2,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-E",
+    "FAMILY-I",
+    "FAMILY-L",
+    "FAMILY-N"
+   ]
+  },
+  {
+   "TITLE_ID": "APP-080",
+   "TYPE": "app",
+   "PACKAGE": "yetzio.yetcalc",
+   "CATEGORY": "calculator",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-081",
+   "TYPE": "app",
+   "PACKAGE": "trailence.org",
+   "CATEGORY": "navigation",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-082",
+   "TYPE": "app",
+   "PACKAGE": "com.barghest.mesh",
+   "CATEGORY": "connectivity",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-083",
+   "TYPE": "app",
+   "PACKAGE": "dev.otaj.zelp",
+   "CATEGORY": "connectivity",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-084",
+   "TYPE": "app",
+   "PACKAGE": "takagi.ru.monica.fdroid",
+   "CATEGORY": "security",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-085",
+   "TYPE": "app",
+   "PACKAGE": "org.fossify.math",
+   "CATEGORY": "calculator",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-086",
+   "TYPE": "app",
+   "PACKAGE": "com.vicolo.chrono",
+   "CATEGORY": "clock",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-087",
+   "TYPE": "app",
+   "PACKAGE": "com.freetime.geoweather",
+   "CATEGORY": "weather",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-088",
+   "TYPE": "app",
+   "PACKAGE": "com.foxdebug.acode",
+   "CATEGORY": "development",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-089",
+   "TYPE": "app",
+   "PACKAGE": "me.timeto.app",
+   "CATEGORY": "stopwatch",
+   "APK": "me.timeto.app_624.apk",
+   "APK_SHA256": "cff24d4b5043e2683c5de425662ad6723cce99aee55af35b142d496f4b762191",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 210,
+    "RES_JPG": 1,
+    "RES_WEBP": 0,
+    "RES_XML": 1391,
+    "RES_XML_DRAWABLE": 224,
+    "NINEPATCH": 110,
+    "PALETTE_PNG": 6,
+    "ALPHA_PNG": 147,
+    "TRNS_PNG": 5,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [
+     "libandroidx.graphics.path.so"
+    ],
+    "PNG_COLOR_TYPES": {
+     "4": 122,
+     "6": 25,
+     "0": 10,
+     "2": 47,
+     "3": 6
+    },
+    "DEX_MARKERS": {
+     "COMPOSE": 144,
+     "BITMAP": 1,
+     "CANVAS": 1,
+     "CANVAS_PATH": 1,
+     "GRADIENT_DRAWABLE": 1,
+     "STATELIST": 1,
+     "COLORSTATELIST": 1,
+     "IMAGEVIEW": 2,
+     "VIEW_ANIMATION": 7,
+     "SUPPORT_LIB": 2
+    },
+    "MAX_PNG_SIDE": 2287,
+    "ASSETS": 1,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-D",
+    "FAMILY-E",
+    "FAMILY-I",
+    "FAMILY-L",
+    "FAMILY-N"
+   ]
+  },
+  {
+   "TITLE_ID": "APP-090",
+   "TYPE": "app",
+   "PACKAGE": "org.sherpr.app",
+   "CATEGORY": "connectivity",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-091",
+   "TYPE": "app",
+   "PACKAGE": "org.y20k.transistor",
+   "CATEGORY": "multimedia",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-092",
+   "TYPE": "app",
+   "PACKAGE": "org.asafonov.weather",
+   "CATEGORY": "weather",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-093",
+   "TYPE": "app",
+   "PACKAGE": "com.agatamessina.webinspector",
+   "CATEGORY": "development",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-094",
+   "TYPE": "app",
+   "PACKAGE": "com.fpf.smartscan",
+   "CATEGORY": "gallery",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-095",
+   "TYPE": "app",
+   "PACKAGE": "org.billthefarmer.buses",
+   "CATEGORY": "navigation",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-096",
+   "TYPE": "app",
+   "PACKAGE": "dev.cipher.notes",
+   "CATEGORY": "security",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-097",
+   "TYPE": "app",
+   "PACKAGE": "io.github.x0b.rcx",
+   "CATEGORY": "file-manager",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-098",
+   "TYPE": "app",
+   "PACKAGE": "com.google.android.stardroid",
+   "CATEGORY": "navigation",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-099",
+   "TYPE": "app",
+   "PACKAGE": "duress.ultimate",
+   "CATEGORY": "security",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "APP-100",
+   "TYPE": "app",
+   "PACKAGE": "com.artifex.mupdf.viewer.app",
+   "CATEGORY": "reading",
+   "APK_ON_DISK": false
+  },
+  {
+   "TITLE_ID": "MAND-001",
+   "TYPE": "mandatory",
+   "PACKAGE": "se.tube42.p9.android",
+   "CATEGORY": "Puzzle/Game",
+   "APK": "se.tube42.p9.android_11.apk",
+   "APK_SHA256": "e69e40836e31337eb6d536b5637a3f6ba7b6484b54d172dd24238c0cb2dd5a76",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 19,
+    "RES_JPG": 0,
+    "RES_WEBP": 0,
+    "RES_XML": 0,
+    "RES_XML_DRAWABLE": 0,
+    "NINEPATCH": 0,
+    "PALETTE_PNG": 2,
+    "ALPHA_PNG": 17,
+    "TRNS_PNG": 2,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [
+     "libgdx-freetype.so",
+     "libgdx.so"
+    ],
+    "PNG_COLOR_TYPES": {
+     "6": 17,
+     "3": 2
+    },
+    "DEX_MARKERS": {
+     "LIBGDX": 1690,
+     "EGL": 7,
+     "OPENGL_ES1": 2,
+     "OPENGL_ES2PLUS": 1,
+     "GLSURFACEVIEW": 1,
+     "SURFACEVIEW": 1,
+     "SUPPORT_LIB": 2
+    },
+    "MAX_PNG_SIDE": 1024,
+    "ASSETS": 19,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-G",
+    "FAMILY-H",
+    "FAMILY-I",
+    "FAMILY-J"
+   ]
+  },
+  {
+   "TITLE_ID": "MAND-002",
+   "TYPE": "mandatory",
+   "PACKAGE": "io.timelimit.android.aosp.direct",
+   "CATEGORY": "Productivity/Parental",
+   "APK": "io.timelimit.android.aosp.direct_231.apk",
+   "APK_SHA256": "93dc5e3ca5077dcff896367d0396642c0a2ba2936bb29aa5255c49f51df26d86",
+   "APK_ON_DISK": true,
+   "FINGERPRINT": {
+    "RES_PNG": 199,
+    "RES_JPG": 0,
+    "RES_WEBP": 0,
+    "RES_XML": 868,
+    "RES_XML_DRAWABLE": 255,
+    "NINEPATCH": 110,
+    "PALETTE_PNG": 11,
+    "ALPHA_PNG": 169,
+    "TRNS_PNG": 9,
+    "DENSITY_QUALIFIERS": [],
+    "NATIVE_LIBS": [
+     "libandroidx.graphics.path.so"
+    ],
+    "PNG_COLOR_TYPES": {
+     "4": 137,
+     "6": 32,
+     "0": 10,
+     "2": 9,
+     "3": 11
+    },
+    "DEX_MARKERS": {
+     "COMPOSE": 148,
+     "BITMAP": 1,
+     "CANVAS": 1,
+     "CANVAS_PATH": 1,
+     "VECTOR": 1,
+     "GRADIENT_DRAWABLE": 1,
+     "STATELIST": 1,
+     "COLORSTATELIST": 1,
+     "IMAGEVIEW": 2,
+     "VIEW_ANIMATION": 11,
+     "SUPPORT_LIB": 2
+    },
+    "MAX_PNG_SIDE": 860,
+    "ASSETS": 4,
+    "DEX_FILES": 1
+   },
+   "FAMILIES": [
+    "FAMILY-B",
+    "FAMILY-C",
+    "FAMILY-D",
+    "FAMILY-E",
+    "FAMILY-I",
+    "FAMILY-L",
+    "FAMILY-N"
+   ]
+  }
+ ]
+}

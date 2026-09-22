@@ -808,7 +808,10 @@ ManifestInfo ManifestReader::parse_plain_xml(const std::vector<uint8_t>& data) {
             if (!state_stack.empty()) {
                 state_stack.pop_back();
             }
-            if (state_stack.back() == XmlState::ACTIVITY) {
+            // ASan-found pre-existing defect (S83): back() was called even
+            // when the pop left the stack empty — a past-the-end heap read
+            // on every manifest whose final </manifest> emptied the stack.
+            if (!state_stack.empty() && state_stack.back() == XmlState::ACTIVITY) {
                 in_activity_ = false;
             }
             continue;
