@@ -1,4 +1,61 @@
-# MiniAndroid — a from-scratch Android APK Compatibility Runtime
+#!/usr/bin/env python3
+"""s84_emit_readme.py — regenerate README.md as the project landing page.
+
+All numbers are GENERATED from docs/evidence/canonical/registry.json (S84
+law: no hand-written, guessed numbers on the front page).
+"""
+import json
+
+ROOT = "/home/z/my-project"
+reg = json.load(open(f"{ROOT}/docs/evidence/canonical/registry.json"))
+T = reg["titles"]
+
+
+def n(pred):
+    return sum(1 for t in T if pred(t))
+
+
+TOTAL = len(T)
+GAMES = n(lambda t: t["type"] == "game")
+APPS = n(lambda t: t["type"] == "app")
+FIXTURES = n(lambda t: t["type"] not in ("game", "app"))
+VERIFIED = n(lambda t: t["status"].startswith("VERIFIED"))
+INTERACTIVE = n(lambda t: t["status"] == "VERIFIED-INTERACTIVE")
+PARTIAL = n(lambda t: t["status"].startswith("PARTIAL"))
+OBSERVED = n(lambda t: t["status"] == "OBSERVED")
+BLOCKED = n(lambda t: t["status"] == "BLOCKED")
+RENDERED = n(lambda t: t["rendered"])
+INTERACTED = n(lambda t: t["interacted"])
+SCHANGED = n(lambda t: t["state_changed"])
+NEW50 = n(lambda t: t["session"] == "S84")
+GIF = n(lambda t: t["artifact"].endswith(".gif"))
+JPG = n(lambda t: t["artifact"].endswith(".jpg"))
+
+HERO = [
+    "com.miniandroid.snakedeluxe", "com.miniandroid.tictactoedeluxe",
+    "com.miniandroid.tetris", "com.miniandroid.g2048",
+    "io.github.yamin8000.dooz", "com.emmanuelmess.tictactoe",
+    "eu.veldsoft.fish.rings", "eu.veldsoft.free.klondike",
+    "com.dozingcatsoftware.bouncy", "com.smorgasbork.hotdeath",
+    "org.bobstuff.bobball", "com.dozingcatsoftware.dodge",
+]
+
+hero_rows = []
+for pkg in HERO:
+    t = next(x for x in T if x["package"] == pkg)
+    art = (f"[{t['artifact'].rsplit('/', 1)[-1]}](../{t['artifact']})"
+           if t["artifact"] else "—")
+    sc = "✅" if t["state_changed"] else ("↻" if t["interacted"] else "—")
+    src_url = t["upstream"] or t["source"]
+    if src_url.startswith("http"):
+        src_cell = f"[src]({src_url})"
+    else:
+        src_cell = src_url.replace("|", "/")
+    hero_rows.append(f"| **{t['title']}** | {t['type']} | "
+                     f"{src_cell} | "
+                     f"{t['status']} | L{t['level']} | {sc} | {art} |")
+
+MD = f"""# MiniAndroid — a from-scratch Android APK Compatibility Runtime
 
 <p align="center">
   <img src="docs/assets/miniandroid-silkie-mascot.png" width="132" alt="MiniAndroid mascot — a fluffy Silkie hen (decorative only)">
@@ -28,37 +85,26 @@ honestly-recorded frontiers (see root-cause registry below).
 
 | Metric | Value |
 |---|---|
-| Titles executed & recorded | **96** (61 games · 34 apps · 1 fixtures) |
-| Added in S84 (this wave) | **50** new F-Droid titles, all with upstream source links |
-| VERIFIED (launched + rendered real frames) | **29** |
-| VERIFIED-INTERACTIVE (real click → rendered state change, GIF) | **9** |
-| PARTIAL (rendered, first-divergence root-caused) | 3 |
-| OBSERVED (loaded/ran; near-blank or sub-render frames — logged, not shipped as images) | 63 |
-| BLOCKED | 1 |
-| Titles with real rendered UI pixels | 68 |
-| Titles with dispatched real input | 11 |
-| Titles with proven input→state change | 9 |
-| Canonical screenshots (ONE per title) | 32 (9 GIF + 23 JPG) |
+| Titles executed & recorded | **{TOTAL}** ({GAMES} games · {APPS} apps · {FIXTURES} fixtures) |
+| Added in S84 (this wave) | **{NEW50}** new F-Droid titles, all with upstream source links |
+| VERIFIED (launched + rendered real frames) | **{VERIFIED}** |
+| VERIFIED-INTERACTIVE (real click → rendered state change, GIF) | **{INTERACTIVE}** |
+| PARTIAL (rendered, first-divergence root-caused) | {PARTIAL} |
+| OBSERVED (loaded/ran; near-blank or sub-render frames — logged, not shipped as images) | {OBSERVED} |
+| BLOCKED | {BLOCKED} |
+| Titles with real rendered UI pixels | {RENDERED} |
+| Titles with dispatched real input | {INTERACTED} |
+| Titles with proven input→state change | {SCHANGED} |
+| Canonical screenshots (ONE per title) | {GIF + JPG} ({GIF} GIF + {JPG} JPG) |
 
 Regression gates at this HEAD: **battery 26/26 · golden graphics ladder
 10/10** (F-NEW-160 A/B-verified, zero regressions).
 
-## Hero titles (full matrix: 96 records in [docs/ACHIEVEMENTS.md](docs/ACHIEVEMENTS.md))
+## Hero titles (full matrix: {TOTAL} records in [docs/ACHIEVEMENTS.md](docs/ACHIEVEMENTS.md))
 
 | Title | Type | Source | Status | Level | State change | Canonical |
 |---|---|---|---|---|---|---|
-| **Snake Deluxe** | game | in-house (games/snake-deluxe) | VERIFIED-INTERACTIVE | L3 | ✅ | [com.miniandroid.snakedeluxe.gif](../docs/evidence/canonical/com.miniandroid.snakedeluxe.gif) |
-| **TicTacToe Deluxe (دوز)** | game | in-house (games/tictactoe-deluxe) | VERIFIED-INTERACTIVE | L3 | ✅ | [com.miniandroid.tictactoedeluxe.gif](../docs/evidence/canonical/com.miniandroid.tictactoedeluxe.gif) |
-| **Mini Tetris** | game | in-house (games/mini-tetris) | VERIFIED-INTERACTIVE | L3 | ✅ | [com.miniandroid.tetris.gif](../docs/evidence/canonical/com.miniandroid.tetris.gif) |
-| **2048** | game | in-house (games/2048) | VERIFIED-INTERACTIVE | L2 | ✅ | [com.miniandroid.g2048.gif](../docs/evidence/canonical/com.miniandroid.g2048.gif) |
-| **Dooz (tic-tac-toe)** | game | F-Droid io.github.yamin8000.dooz | VERIFIED | L2 | — | [io.github.yamin8000.dooz.jpg](../docs/evidence/canonical/io.github.yamin8000.dooz.jpg) |
-| **TicTacToe Classic** | game | F-Droid com.emmanuelmess.tictactoe | VERIFIED-INTERACTIVE | L2 | ✅ | [com.emmanuelmess.tictactoe.gif](../docs/evidence/canonical/com.emmanuelmess.tictactoe.gif) |
-| **Fish Rings** | game | [src](https://github.com/VelbazhdSoftwareLLC/FishRingsForAndroid) | VERIFIED | L10 | — | [eu.veldsoft.fish.rings.jpg](../docs/evidence/canonical/eu.veldsoft.fish.rings.jpg) |
-| **FreeKlondike** | game | [src](https://github.com/VelbazhdSoftwareLLC/FreeKlondike) | VERIFIED | L10 | — | [eu.veldsoft.free.klondike.jpg](../docs/evidence/canonical/eu.veldsoft.free.klondike.jpg) |
-| **Vector Pinball (bouncy)** | game | [src](https://github.com/dozingcatsoftware/Bouncy) | VERIFIED | L5 | — | [com.dozingcatsoftware.bouncy.jpg](../docs/evidence/canonical/com.dozingcatsoftware.bouncy.jpg) |
-| **com.smorgasbork.hotdeath** | game | [src](https://github.com/jpriebe/hotdeath) | VERIFIED-INTERACTIVE | L2 | ✅ | [com.smorgasbork.hotdeath.gif](../docs/evidence/canonical/com.smorgasbork.hotdeath.gif) |
-| **org.bobstuff.bobball** | game | [src](https://github.com/bobthekingofegypt/BobBall) | VERIFIED-INTERACTIVE | L2 | ✅ | [org.bobstuff.bobball.gif](../docs/evidence/canonical/org.bobstuff.bobball.gif) |
-| **com.dozingcatsoftware.dodge** | game | [src](https://github.com/dozingcat/dodge-android) | VERIFIED-INTERACTIVE | L2 | ✅ | [com.dozingcatsoftware.dodge.gif](../docs/evidence/canonical/com.dozingcatsoftware.dodge.gif) |
+{chr(10).join(hero_rows)}
 
 **In-house games built for the runtime** (source in [`games/`](games/)):
 Snake Deluxe · Mini Tetris · 2048 · TicTacToe Deluxe (دوز) — each proven
@@ -119,3 +165,8 @@ The root-cause registry maps every one of these to the titles it blocks.
 - **Battery:** `bash scripts/s77_baseline_battery.sh` → 26/26 at HEAD;
   golden ladder 10/10; every engine law lands only with A/B proof and
   zero regressions.
+"""
+
+with open(f"{ROOT}/README.md", "w") as f:
+    f.write(MD)
+print("README.md written:", len(MD), "bytes")

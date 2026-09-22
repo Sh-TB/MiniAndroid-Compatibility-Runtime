@@ -1,0 +1,1583 @@
+{
+ "ppm_deleted": [
+  "docs/evidence/foundation/determinism/f01_color_run1/screenshot.ppm",
+  "docs/evidence/foundation/determinism/f01_color_run2/screenshot.ppm",
+  "docs/evidence/foundation/determinism/f01_color_run3/screenshot.ppm",
+  "docs/evidence/foundation/determinism/f04_text_run1/screenshot.ppm",
+  "docs/evidence/foundation/determinism/f04_text_run2/screenshot.ppm",
+  "docs/evidence/foundation/determinism/f04_text_run3/screenshot.ppm",
+  "docs/evidence/foundation/determinism/f05_persian_run1/screenshot.ppm",
+  "docs/evidence/foundation/determinism/f05_persian_run2/screenshot.ppm",
+  "docs/evidence/foundation/determinism/f05_persian_run3/screenshot.ppm",
+  "docs/evidence/foundation/determinism/f14_relative_run1/screenshot.ppm",
+  "docs/evidence/foundation/determinism/f14_relative_run2/screenshot.ppm",
+  "docs/evidence/foundation/determinism/f14_relative_run3/screenshot.ppm",
+  "docs/evidence/foundation/determinism/f21_button_run1/screenshot.ppm",
+  "docs/evidence/foundation/determinism/f21_button_run2/screenshot.ppm",
+  "docs/evidence/foundation/determinism/f21_button_run3/screenshot.ppm",
+  "docs/evidence/foundation/determinism/f27_nav_run1/screenshot.ppm",
+  "docs/evidence/foundation/determinism/f27_nav_run2/screenshot.ppm",
+  "docs/evidence/foundation/determinism/f27_nav_run3/screenshot.ppm",
+  "docs/evidence/foundation/fixtures/f01_color/screenshot.ppm",
+  "docs/evidence/foundation/fixtures/f03_alpha/screenshot.ppm",
+  "docs/evidence/foundation/fixtures/f04_text/screenshot.ppm",
+  "docs/evidence/foundation/fixtures/f05_persian/screenshot.ppm",
+  "docs/evidence/foundation/fixtures/f05b_persian2/screenshot.ppm",
+  "docs/evidence/foundation/fixtures/f06_invisible/screenshot.ppm",
+  "docs/evidence/foundation/fixtures/f08_canvasops/screenshot.ppm",
+  "docs/evidence/foundation/fixtures/f11_linear/screenshot.ppm",
+  "docs/evidence/foundation/fixtures/f13_frame/screenshot.ppm",
+  "docs/evidence/foundation/fixtures/f14_relative/screenshot.ppm",
+  "docs/evidence/foundation/fixtures/f18_lltop/screenshot.ppm",
+  "docs/evidence/foundation/fixtures/f21_button/screenshot.ppm",
+  "docs/evidence/foundation/fixtures/f26_lifecycle/screenshot.ppm",
+  "docs/evidence/foundation/fixtures/f27_nav/screenshot.ppm",
+  "docs/evidence/foundation/fixtures/f31_resources/screenshot.ppm",
+  "docs/evidence/foundation/fixtures/f32_dimen/screenshot.ppm",
+  "docs/evidence/foundation/fixtures/f38_identity/screenshot.ppm",
+  "docs/evidence/foundation/fixtures/f39_44_runtime/screenshot.ppm",
+  "docs/evidence/foundation/fixtures/f45_exceptions/screenshot.ppm",
+  "docs/evidence/foundation/fixtures/f48_bitmap/screenshot.ppm",
+  "docs/evidence/foundation/fixtures/f49_canstext/screenshot.ppm",
+  "docs/evidence/foundation/fixtures/f50_imagefmt/screenshot.ppm",
+  "docs/evidence/foundation/fixtures/f51_themeattr/screenshot.ppm",
+  "docs/evidence/foundation/fixtures/f52_nanlaw/screenshot.ppm",
+  "docs/evidence/foundation/fixtures/f53_getstring/screenshot.ppm",
+  "docs/evidence/foundation/fixtures/f54_manifestlabel/screenshot.ppm",
+  "docs/evidence/s75/dooz_f146_probe/screenshot.ppm",
+  "docs/evidence/s75/gmdice_roll/screenshot.ppm",
+  "docs/evidence/s75/rnew388_f14/screenshot.ppm",
+  "docs/evidence/s75/rnew388_tripeaks/screenshot.ppm",
+  "docs/evidence/s75/snake_fidelity_probe/screenshot.ppm",
+  "docs/evidence/s75/snake_restart_probe/screenshot.ppm",
+  "docs/evidence/s76/dooz_f146_upstream/screenshot.ppm",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/screenshot.ppm",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/screenshot.ppm"
+ ],
+ "frames_deleted": [
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_000.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_001.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_002.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_003.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_004.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_005.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_006.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_007.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_008.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_009.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_010.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_011.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_012.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_013.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_014.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_015.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_016.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_017.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_018.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_019.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_020.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_021.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_022.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_023.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_024.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_025.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_026.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_027.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_028.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_029.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_030.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_031.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_032.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_033.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_034.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_035.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_036.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_037.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_038.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_039.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_040.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_041.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_042.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_043.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_044.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_045.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_046.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_047.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_048.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_049.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_050.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_051.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_052.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_053.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_054.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_055.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_056.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_057.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_058.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_059.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_060.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_061.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_062.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_063.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_064.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_065.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_066.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_067.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_068.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_069.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_070.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_071.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_072.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_073.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_074.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_075.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_076.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_077.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_078.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_079.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_080.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_081.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_082.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_083.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_084.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_085.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_086.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_087.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_088.png",
+  "docs/evidence/s73_snake_autoplay/run_01/frames/frame_089.png",
+  "docs/evidence/s73_snake_autoplay/run_01/screenshot.png",
+  "docs/evidence/s73_snake_autoplay/run_02/frames/frame_000.png",
+  "docs/evidence/s73_snake_autoplay/run_02/frames/frame_001.png",
+  "docs/evidence/s73_snake_autoplay/run_02/frames/frame_002.png",
+  "docs/evidence/s73_snake_autoplay/run_02/frames/frame_033.png",
+  "docs/evidence/s73_snake_autoplay/run_02/frames/frame_034.png",
+  "docs/evidence/s73_snake_autoplay/run_02/frames/frame_035.png",
+  "docs/evidence/s73_snake_autoplay/run_02/frames/frame_087.png",
+  "docs/evidence/s73_snake_autoplay/run_02/frames/frame_088.png",
+  "docs/evidence/s73_snake_autoplay/run_02/frames/frame_089.png",
+  "docs/evidence/s73_snake_autoplay/run_02/screenshot.png",
+  "docs/evidence/s73_snake_autoplay/run_03/frames/frame_000.png",
+  "docs/evidence/s73_snake_autoplay/run_03/frames/frame_001.png",
+  "docs/evidence/s73_snake_autoplay/run_03/frames/frame_002.png",
+  "docs/evidence/s73_snake_autoplay/run_03/frames/frame_033.png",
+  "docs/evidence/s73_snake_autoplay/run_03/frames/frame_034.png",
+  "docs/evidence/s73_snake_autoplay/run_03/frames/frame_035.png",
+  "docs/evidence/s73_snake_autoplay/run_03/frames/frame_087.png",
+  "docs/evidence/s73_snake_autoplay/run_03/frames/frame_088.png",
+  "docs/evidence/s73_snake_autoplay/run_03/frames/frame_089.png",
+  "docs/evidence/s73_snake_autoplay/run_03/screenshot.png",
+  "docs/evidence/s75/dooz_f146_probe/screenshot.png",
+  "docs/evidence/s75/gmdice_roll/frames/frame_000.png",
+  "docs/evidence/s75/gmdice_roll/frames/frame_001.png",
+  "docs/evidence/s75/gmdice_roll/frames/frame_002.png",
+  "docs/evidence/s75/gmdice_roll/screenshot.png",
+  "docs/evidence/s75/rnew388_f14/screenshot.png",
+  "docs/evidence/s75/rnew388_tripeaks/screenshot.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_000.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_001.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_002.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_003.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_004.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_005.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_006.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_007.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_008.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_009.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_010.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_011.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_012.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_013.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_014.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_015.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_016.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_017.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_018.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_019.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_020.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_021.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_022.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_023.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_024.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_025.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_026.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_027.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_028.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_029.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_030.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_031.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_032.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_033.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_034.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_035.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_036.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_037.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_038.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_039.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_040.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_041.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_042.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_043.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_044.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_045.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_046.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_047.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_048.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_049.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_050.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_051.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_052.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_053.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_054.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_055.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_056.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_057.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_058.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_059.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_060.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_061.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_062.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_063.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_064.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_065.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_066.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_067.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_068.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_069.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_070.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_071.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_072.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_073.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_074.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_075.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_076.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_077.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_078.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_079.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_080.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_081.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_082.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_083.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_084.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_085.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_086.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_087.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_088.png",
+  "docs/evidence/s75/snake_fidelity_probe/frames/frame_089.png",
+  "docs/evidence/s75/snake_fidelity_probe/screenshot.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_000.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_001.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_002.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_003.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_004.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_005.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_006.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_007.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_008.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_009.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_010.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_011.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_012.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_013.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_014.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_015.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_016.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_017.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_018.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_019.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_020.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_021.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_022.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_023.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_024.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_025.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_026.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_027.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_028.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_029.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_030.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_031.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_032.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_033.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_034.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_035.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_036.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_037.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_038.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_039.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_040.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_041.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_042.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_043.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_044.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_045.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_046.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_047.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_048.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_049.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_050.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_051.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_052.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_053.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_054.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_055.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_056.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_057.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_058.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_059.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_060.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_061.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_062.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_063.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_064.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_065.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_066.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_067.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_068.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_069.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_070.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_071.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_072.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_073.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_074.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_075.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_076.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_077.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_078.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_079.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_080.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_081.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_082.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_083.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_084.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_085.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_086.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_087.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_088.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_089.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_090.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_091.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_092.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_093.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_094.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_095.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_096.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_097.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_098.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_099.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_100.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_101.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_102.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_103.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_104.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_105.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_106.png",
+  "docs/evidence/s75/snake_restart_probe/frames/frame_107.png",
+  "docs/evidence/s75/snake_restart_probe/screenshot.png",
+  "docs/evidence/s76/dooz_f146_upstream/screenshot.png",
+  "docs/evidence/s76/gmdice_roll_visible/frames/frame_000.png",
+  "docs/evidence/s76/gmdice_roll_visible/frames/frame_001.png",
+  "docs/evidence/s76/gmdice_roll_visible/frames/frame_002.png",
+  "docs/evidence/s76/gmdice_roll_visible/frames/frame_003.png",
+  "docs/evidence/s76/gmdice_roll_visible/screenshot.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_000.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_001.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_002.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_003.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_004.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_005.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_006.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_007.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_008.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_009.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_010.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_011.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_012.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_013.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_014.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_015.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_016.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_017.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_018.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_019.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_020.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_021.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_022.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_023.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_024.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_025.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_026.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_027.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_028.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_029.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_030.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_031.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_032.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_033.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_034.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_035.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_036.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_037.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_038.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_039.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_040.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_041.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_042.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_043.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_044.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_045.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_046.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_047.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_048.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_049.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_050.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_051.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_052.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_053.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_054.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_055.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_056.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_057.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_058.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_059.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_060.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_061.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_062.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_063.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_064.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_065.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_066.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_067.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_068.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_069.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_070.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_071.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_072.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_073.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_074.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_075.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_076.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_077.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_078.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_079.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_080.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_081.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_082.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_083.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_084.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_085.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_086.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_087.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_088.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_089.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_090.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_091.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_092.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_093.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_094.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_095.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_096.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_097.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_098.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_099.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_100.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_101.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_102.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_103.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_104.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_105.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_106.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/frames/frame_107.png",
+  "docs/evidence/s76/snake_dialog_restart/run_a_dialog/screenshot.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_000.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_001.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_002.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_003.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_004.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_005.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_006.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_007.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_008.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_009.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_010.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_011.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_012.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_013.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_014.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_015.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_016.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_017.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_018.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_019.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_020.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_021.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_022.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_023.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_024.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_025.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_026.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_027.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_028.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_029.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_030.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_031.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_032.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_033.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_034.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_035.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_036.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_037.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_038.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_039.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_040.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_041.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_042.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_043.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_044.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_045.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_046.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_047.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_048.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_049.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_050.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_051.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_052.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_053.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_054.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_055.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_056.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_057.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_058.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_059.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_060.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_061.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_062.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_063.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_064.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_065.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_066.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_067.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_068.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_069.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_070.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_071.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_072.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_073.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_074.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_075.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_076.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_077.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_078.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_079.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_080.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_081.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_082.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_083.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_084.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_085.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_086.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_087.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_088.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_089.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_090.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_091.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_092.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_093.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_094.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_095.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_096.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_097.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_098.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_099.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_100.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_101.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_102.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_103.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_104.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_105.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_106.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_107.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_108.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_109.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_110.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_111.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_112.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_113.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_114.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_115.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_116.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_117.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_118.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_119.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_120.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_121.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_122.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_123.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_124.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_125.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_126.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/frames/frame_127.png",
+  "docs/evidence/s76/snake_dialog_restart/run_b_restart/screenshot.png",
+  "docs/evidence/visual_forensics/tictactoe/run1/diff.png",
+  "docs/evidence/visual_forensics/tictactoe/run1/engine/frames/frame_000.png",
+  "docs/evidence/visual_forensics/tictactoe/run1/engine/frames/frame_001.png",
+  "docs/evidence/visual_forensics/tictactoe/run1/engine/frames/frame_002.png",
+  "docs/evidence/visual_forensics/tictactoe/run1/engine/frames/frame_003.png",
+  "docs/evidence/visual_forensics/tictactoe/run1/engine/frames/frame_004.png",
+  "docs/evidence/visual_forensics/tictactoe/run1/engine/frames/frame_005.png",
+  "docs/evidence/visual_forensics/tictactoe/run1/engine/frames/frame_006.png",
+  "docs/evidence/visual_forensics/tictactoe/run1/engine/frames/frame_007.png",
+  "docs/evidence/visual_forensics/tictactoe/run1/engine/frames/frame_008.png",
+  "docs/evidence/visual_forensics/tictactoe/run1/engine/frames/frame_009.png",
+  "docs/evidence/visual_forensics/tictactoe/run1/final_full.png",
+  "docs/evidence/visual_forensics/tictactoe/run1/initial_full.png",
+  "docs/evidence/visual_forensics/tictactoe/run1/mid_full.png",
+  "docs/evidence/visual_forensics/tictactoe/run1/win_full.png",
+  "docs/evidence/visual_forensics/tictactoe/run2/diff.png",
+  "docs/evidence/visual_forensics/tictactoe/run2/engine/frames/frame_000.png",
+  "docs/evidence/visual_forensics/tictactoe/run2/engine/frames/frame_001.png",
+  "docs/evidence/visual_forensics/tictactoe/run2/engine/frames/frame_002.png",
+  "docs/evidence/visual_forensics/tictactoe/run2/engine/frames/frame_003.png",
+  "docs/evidence/visual_forensics/tictactoe/run2/engine/frames/frame_004.png",
+  "docs/evidence/visual_forensics/tictactoe/run2/engine/frames/frame_005.png",
+  "docs/evidence/visual_forensics/tictactoe/run2/engine/frames/frame_006.png",
+  "docs/evidence/visual_forensics/tictactoe/run2/engine/frames/frame_007.png",
+  "docs/evidence/visual_forensics/tictactoe/run2/engine/frames/frame_008.png",
+  "docs/evidence/visual_forensics/tictactoe/run2/engine/frames/frame_009.png",
+  "docs/evidence/visual_forensics/tictactoe/run2/final_full.png",
+  "docs/evidence/visual_forensics/tictactoe/run2/initial_full.png",
+  "docs/evidence/visual_forensics/tictactoe/run2/mid_full.png",
+  "docs/evidence/visual_forensics/tictactoe/run2/win_full.png",
+  "docs/evidence/visual_forensics/tictactoe/run3/diff.png",
+  "docs/evidence/visual_forensics/tictactoe/run3/engine/frames/frame_000.png",
+  "docs/evidence/visual_forensics/tictactoe/run3/engine/frames/frame_001.png",
+  "docs/evidence/visual_forensics/tictactoe/run3/engine/frames/frame_002.png",
+  "docs/evidence/visual_forensics/tictactoe/run3/engine/frames/frame_003.png",
+  "docs/evidence/visual_forensics/tictactoe/run3/engine/frames/frame_004.png",
+  "docs/evidence/visual_forensics/tictactoe/run3/engine/frames/frame_005.png",
+  "docs/evidence/visual_forensics/tictactoe/run3/engine/frames/frame_006.png",
+  "docs/evidence/visual_forensics/tictactoe/run3/engine/frames/frame_007.png",
+  "docs/evidence/visual_forensics/tictactoe/run3/engine/frames/frame_008.png",
+  "docs/evidence/visual_forensics/tictactoe/run3/engine/frames/frame_009.png",
+  "docs/evidence/visual_forensics/tictactoe/run3/final_full.png",
+  "docs/evidence/visual_forensics/tictactoe/run3/initial_full.png",
+  "docs/evidence/visual_forensics/tictactoe/run3/mid_full.png",
+  "docs/evidence/visual_forensics/tictactoe/run3/win_full.png"
+ ],
+ "dups_deleted": [
+  {
+   "deleted": "docs/evidence/visual_forensics/s65_reval/tripeaks/splash_full.png",
+   "kept": "docs/evidence/visual_forensics/s65_reval/fishrings/splash_full.png"
+  },
+  {
+   "deleted": "docs/evidence/s81/batch01_solitaire_blank.jpg",
+   "kept": "docs/evidence/s81/batch01_quinb.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/APP-002.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/APP-003.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/APP-004.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/APP-005.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/APP-006.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/APP-007.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/APP-008.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/APP-013.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/APP-014.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/APP-029.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/APP-046.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/APP-079.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/APP-089.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/GAME-001.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/GAME-002.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/GAME-003.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/GAME-005.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/GAME-006.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/GAME-007.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/GAME-008.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/GAME-009.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/GAME-012.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/GAME-014.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/GAME-016.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/GAME-017.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/GAME-018.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/GAME-019.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/GAME-020.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/GAME-023.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/GAME-025.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/GAME-034.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/GAME-046.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/GAME-047.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/GAME-048.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/GAME-050.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/INV-com.best.deskclock.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/INV-com.bnyro.clock.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/MAND-001.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/MAND-002.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/dialog_retest_mykanji.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/dialog_retest_solitaire.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/f156_solitaire.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/gap_android.jpg",
+   "kept": "docs/evidence/s82/f156_android.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/placeholder_retest_stopwatch.jpg",
+   "kept": "docs/evidence/s82/APP-001.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s82/placeholder_retest_unote.jpg",
+   "kept": "docs/evidence/s82/gap_unote.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83/apps__com.bnyro.clock_24__L2_GRAPHICALLY_INCOMPLETE.jpg",
+   "kept": "docs/evidence/s83/apps__com.best.deskclock_2036__L2_GRAPHICALLY_INCOMPLETE.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83/apps__se.tube42.p9.android_11__L2_GRAPHICALLY_INCOMPLETE.jpg",
+   "kept": "docs/evidence/s83/apps__com.best.deskclock_2036__L2_GRAPHICALLY_INCOMPLETE.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83/gameplay__tictactoe_deluxe__stage4_roundover_dialog.jpg",
+   "kept": "docs/evidence/s83/gameplay__tictactoe_deluxe__stage3_O_win_strike.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83/games__app.halma_15__L2_GRAPHICALLY_INCOMPLETE.jpg",
+   "kept": "docs/evidence/s83/apps__com.best.deskclock_2036__L2_GRAPHICALLY_INCOMPLETE.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83/games__com.astroloop.game_4__L2_GRAPHICALLY_INCOMPLETE.jpg",
+   "kept": "docs/evidence/s83/apps__com.best.deskclock_2036__L2_GRAPHICALLY_INCOMPLETE.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83/games__com.bupkis.tirailleur_13__L2_GRAPHICALLY_INCOMPLETE.jpg",
+   "kept": "docs/evidence/s83/apps__com.best.deskclock_2036__L2_GRAPHICALLY_INCOMPLETE.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83/games__com.eightsines.firestrike.opensource_2000__L2_GRAPHICALLY_INCOMPLETE.jpg",
+   "kept": "docs/evidence/s83/apps__com.best.deskclock_2036__L2_GRAPHICALLY_INCOMPLETE.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83/games__com.sidhant.queens_93__L2_GRAPHICALLY_INCOMPLETE.jpg",
+   "kept": "docs/evidence/s83/apps__com.best.deskclock_2036__L2_GRAPHICALLY_INCOMPLETE.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83/games__com.vayunmathur.games.solitaire_20260804__L2_GRAPHICALLY_INCOMPLETE.jpg",
+   "kept": "docs/evidence/s83/apps__com.best.deskclock_2036__L2_GRAPHICALLY_INCOMPLETE.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83/games__crypto.o0o0o0o0o.games.blackjack_4__L0_LOADED_ONLY.jpg",
+   "kept": "docs/evidence/s83/games__com.simondalvai.ball2box_69__L0_LOADED_ONLY.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83/games__de.tobiasbielefeld.solitaire_71__L2_GRAPHICALLY_INCOMPLETE.jpg",
+   "kept": "docs/evidence/s83/apps__com.best.deskclock_2036__L2_GRAPHICALLY_INCOMPLETE.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83/games__dooz__L2_GRAPHICALLY_INCOMPLETE.jpg",
+   "kept": "docs/evidence/s83/apps__com.best.deskclock_2036__L2_GRAPHICALLY_INCOMPLETE.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83/games__eu.veldsoft.no.thanks_1__L1_NONBLANK.jpg",
+   "kept": "docs/evidence/s83/games__com.rocket9labs.boxcars_104090__L1_NONBLANK.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83/games__org.secuso.privacyfriendlybattleship_101__L2_GRAPHICALLY_INCOMPLETE.jpg",
+   "kept": "docs/evidence/s83/apps__com.best.deskclock_2036__L2_GRAPHICALLY_INCOMPLETE.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83/games__page.codeberg.lanticy.guandan_7__L2_GRAPHICALLY_INCOMPLETE.jpg",
+   "kept": "docs/evidence/s83/apps__com.best.deskclock_2036__L2_GRAPHICALLY_INCOMPLETE.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83/games__si.palcka.tarok_203__L2_GRAPHICALLY_INCOMPLETE.jpg",
+   "kept": "docs/evidence/s83/apps__com.best.deskclock_2036__L2_GRAPHICALLY_INCOMPLETE.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83/games__snake_deluxe_v1.0_vc1__L3_STRUCT_CANDIDATE.jpg",
+   "kept": "docs/evidence/s83/gameplay__snake_deluxe__stage1_board_ready.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83/high__com.newsblur_289__L2_GRAPHICALLY_INCOMPLETE.jpg",
+   "kept": "docs/evidence/s83/apps__com.best.deskclock_2036__L2_GRAPHICALLY_INCOMPLETE.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83/high__io.timelimit.android.aosp.direct_231__L2_GRAPHICALLY_INCOMPLETE.jpg",
+   "kept": "docs/evidence/s83/apps__com.best.deskclock_2036__L2_GRAPHICALLY_INCOMPLETE.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83b/click_APP-UNOTE_CLICK_01.jpg",
+   "kept": "docs/evidence/s83b/click_APP-UNOTE_CLICK_00.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83b/snake_head_run_04.jpg",
+   "kept": "docs/evidence/s83b/snake_head_run_03.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83b/sweep_APP-FLASHLIGHT.jpg",
+   "kept": "docs/evidence/s83b/sweep_APP-BNYROCLK.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83b/sweep_APP-FOEHNIX.jpg",
+   "kept": "docs/evidence/s83b/sweep_APP-BNYROCLK.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83b/sweep_APP-GMDICE.jpg",
+   "kept": "docs/evidence/s83b/click_APP-GMDICE_CLICK_00.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83b/sweep_APP-GMDICE_CLICK.jpg",
+   "kept": "docs/evidence/s83b/click_APP-GMDICE_CLICK_01.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83b/sweep_APP-KEYBOARD.jpg",
+   "kept": "docs/evidence/s83b/sweep_APP-BNYROCLK.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83b/sweep_APP-STOPWATCH2.jpg",
+   "kept": "docs/evidence/s83b/sweep_APP-BNYROCLK.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83b/sweep_APP-TRANQUIL.jpg",
+   "kept": "docs/evidence/s83b/sweep_APP-BNYROCLK.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83b/sweep_APP-UNOTE.jpg",
+   "kept": "docs/evidence/s83b/click_APP-UNOTE_CLICK_00.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83b/sweep_APP-UNOTE_CLICK.jpg",
+   "kept": "docs/evidence/s83b/click_APP-UNOTE_CLICK_00.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83b/sweep_GAME-AS2048.jpg",
+   "kept": "docs/evidence/s83b/sweep_APP-BNYROCLK.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83b/sweep_GAME-BALL2BOX.jpg",
+   "kept": "docs/evidence/s83b/sweep_APP-BNYROCLK.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83b/sweep_GAME-BATTLE.jpg",
+   "kept": "docs/evidence/s83b/sweep_APP-BNYROCLK.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83b/sweep_GAME-BLACKJACK.jpg",
+   "kept": "docs/evidence/s83b/sweep_APP-BNYROCLK.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83b/sweep_GAME-DICER.jpg",
+   "kept": "docs/evidence/s83b/sweep_APP-BNYROCLK.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83b/sweep_GAME-EDGEROLL.jpg",
+   "kept": "docs/evidence/s83b/sweep_APP-BNYROCLK.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83b/sweep_GAME-MINES1.jpg",
+   "kept": "docs/evidence/s83b/sweep_APP-BNYROCLK.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83b/sweep_GAME-NOTHANKS.jpg",
+   "kept": "docs/evidence/s83b/sweep_APP-BNYROCLK.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83b/sweep_GAME-PF2048.jpg",
+   "kept": "docs/evidence/s83b/sweep_APP-BNYROCLK.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83b/sweep_GAME-QUEENS.jpg",
+   "kept": "docs/evidence/s83b/sweep_APP-BNYROCLK.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83b/sweep_GAME-QUINB.jpg",
+   "kept": "docs/evidence/s83b/sweep_APP-BNYROCLK.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83b/sweep_GAME-RTTT.jpg",
+   "kept": "docs/evidence/s83b/sweep_APP-BNYROCLK.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83b/sweep_GAME-SNAKEDX.jpg",
+   "kept": "docs/evidence/s83b/snake_head_run_00.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83b/sweep_GAME-SUDOKU.jpg",
+   "kept": "docs/evidence/s83b/sweep_APP-BNYROCLK.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83b/sweep_GAME-SUDOKU2.jpg",
+   "kept": "docs/evidence/s83b/sweep_APP-BNYROCLK.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83b/sweep_GAME-TRIPEAKS.jpg",
+   "kept": "docs/evidence/s83b/sweep_GAME-FISHRINGS.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83b/sweep_GAME-TTT-CLASSIC.jpg",
+   "kept": "docs/evidence/s83b/click_GAME-TTT-CLASSIC_CLICK_00.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83b/sweep_GAME-TTT-CLASSIC_CLICK.jpg",
+   "kept": "docs/evidence/s83b/click_GAME-TTT-CLASSIC_CLICK_02.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83b/sweep_GAME-TTT-FRZ.jpg",
+   "kept": "docs/evidence/s83b/sweep_APP-BNYROCLK.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83b/sweep_MAND-P9.jpg",
+   "kept": "docs/evidence/s83b/sweep_APP-BNYROCLK.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s83b/sweep_MAND-TIMELIMIT.jpg",
+   "kept": "docs/evidence/s83b/sweep_APP-BNYROCLK.jpg"
+  },
+  {
+   "deleted": "docs/evidence/external_hello_golden/miniandroid_typography.png",
+   "kept": "docs/evidence/external_hello_golden/interaction/frame_000.png"
+  },
+  {
+   "deleted": "docs/evidence/foundation/determinism/f01_color_run2/screenshot.png",
+   "kept": "docs/evidence/foundation/determinism/f01_color_run1/screenshot.png"
+  },
+  {
+   "deleted": "docs/evidence/foundation/determinism/f01_color_run3/screenshot.png",
+   "kept": "docs/evidence/foundation/determinism/f01_color_run1/screenshot.png"
+  },
+  {
+   "deleted": "docs/evidence/foundation/determinism/f04_text_run2/screenshot.png",
+   "kept": "docs/evidence/foundation/determinism/f04_text_run1/screenshot.png"
+  },
+  {
+   "deleted": "docs/evidence/foundation/determinism/f04_text_run3/screenshot.png",
+   "kept": "docs/evidence/foundation/determinism/f04_text_run1/screenshot.png"
+  },
+  {
+   "deleted": "docs/evidence/foundation/determinism/f05_persian_run2/screenshot.png",
+   "kept": "docs/evidence/foundation/determinism/f05_persian_run1/screenshot.png"
+  },
+  {
+   "deleted": "docs/evidence/foundation/determinism/f05_persian_run3/screenshot.png",
+   "kept": "docs/evidence/foundation/determinism/f05_persian_run1/screenshot.png"
+  },
+  {
+   "deleted": "docs/evidence/foundation/determinism/f14_relative_run2/screenshot.png",
+   "kept": "docs/evidence/foundation/determinism/f14_relative_run1/screenshot.png"
+  },
+  {
+   "deleted": "docs/evidence/foundation/determinism/f14_relative_run3/screenshot.png",
+   "kept": "docs/evidence/foundation/determinism/f14_relative_run1/screenshot.png"
+  },
+  {
+   "deleted": "docs/evidence/foundation/determinism/f21_button_run2/click_frame_0.png",
+   "kept": "docs/evidence/foundation/determinism/f21_button_run1/click_frame_0.png"
+  },
+  {
+   "deleted": "docs/evidence/foundation/determinism/f21_button_run2/screenshot.png",
+   "kept": "docs/evidence/foundation/determinism/f21_button_run1/screenshot.png"
+  },
+  {
+   "deleted": "docs/evidence/foundation/determinism/f21_button_run3/click_frame_0.png",
+   "kept": "docs/evidence/foundation/determinism/f21_button_run1/click_frame_0.png"
+  },
+  {
+   "deleted": "docs/evidence/foundation/determinism/f21_button_run3/screenshot.png",
+   "kept": "docs/evidence/foundation/determinism/f21_button_run1/screenshot.png"
+  },
+  {
+   "deleted": "docs/evidence/foundation/determinism/f27_nav_run2/click_frame_0.png",
+   "kept": "docs/evidence/foundation/determinism/f27_nav_run1/click_frame_0.png"
+  },
+  {
+   "deleted": "docs/evidence/foundation/determinism/f27_nav_run2/screenshot.png",
+   "kept": "docs/evidence/foundation/determinism/f27_nav_run1/screenshot.png"
+  },
+  {
+   "deleted": "docs/evidence/foundation/determinism/f27_nav_run3/click_frame_0.png",
+   "kept": "docs/evidence/foundation/determinism/f27_nav_run1/click_frame_0.png"
+  },
+  {
+   "deleted": "docs/evidence/foundation/determinism/f27_nav_run3/screenshot.png",
+   "kept": "docs/evidence/foundation/determinism/f27_nav_run1/screenshot.png"
+  },
+  {
+   "deleted": "docs/evidence/foundation/fixtures/f01_color/screenshot.png",
+   "kept": "docs/evidence/foundation/determinism/f01_color_run1/screenshot.png"
+  },
+  {
+   "deleted": "docs/evidence/foundation/fixtures/f04_text/screenshot.png",
+   "kept": "docs/evidence/foundation/determinism/f04_text_run1/screenshot.png"
+  },
+  {
+   "deleted": "docs/evidence/foundation/fixtures/f05_persian/screenshot.png",
+   "kept": "docs/evidence/foundation/determinism/f05_persian_run1/screenshot.png"
+  },
+  {
+   "deleted": "docs/evidence/foundation/fixtures/f06_invisible/screenshot.png",
+   "kept": "docs/evidence/visual_forensics/s65_reval/fishrings/splash_full.png"
+  },
+  {
+   "deleted": "docs/evidence/foundation/fixtures/f14_relative/screenshot.png",
+   "kept": "docs/evidence/foundation/determinism/f14_relative_run1/screenshot.png"
+  },
+  {
+   "deleted": "docs/evidence/foundation/fixtures/f21_button/click_frame_0.png",
+   "kept": "docs/evidence/foundation/determinism/f21_button_run1/click_frame_0.png"
+  },
+  {
+   "deleted": "docs/evidence/foundation/fixtures/f21_button/screenshot.png",
+   "kept": "docs/evidence/foundation/determinism/f21_button_run1/screenshot.png"
+  },
+  {
+   "deleted": "docs/evidence/foundation/fixtures/f27_nav/click_frame_0.png",
+   "kept": "docs/evidence/foundation/determinism/f27_nav_run1/click_frame_0.png"
+  },
+  {
+   "deleted": "docs/evidence/foundation/fixtures/f27_nav/screenshot.png",
+   "kept": "docs/evidence/foundation/determinism/f27_nav_run1/screenshot.png"
+  },
+  {
+   "deleted": "docs/evidence/golden03/golden03_screenshot.png",
+   "kept": "docs/evidence/external_hello_golden/interaction/frame_000.png"
+  },
+  {
+   "deleted": "docs/evidence/hello_color_golden/retest_run1_frame.png",
+   "kept": "docs/evidence/hello_color_golden/frame_1080x1920.png"
+  },
+  {
+   "deleted": "docs/evidence/hello_color_golden/retest_run2_frame.png",
+   "kept": "docs/evidence/hello_color_golden/frame_1080x1920.png"
+  },
+  {
+   "deleted": "docs/evidence/hello_color_golden/retest_run3_frame.png",
+   "kept": "docs/evidence/hello_color_golden/frame_1080x1920.png"
+  },
+  {
+   "deleted": "docs/evidence/helloworld_golden/screenshot.png",
+   "kept": "docs/evidence/helloworld_golden/golden_helloworld.png"
+  },
+  {
+   "deleted": "docs/evidence/s55_notes_v2/frame_000_initial.png",
+   "kept": "docs/evidence/s55_notes/frame_000_markdown_mode.png"
+  },
+  {
+   "deleted": "docs/evidence/s55_notes_v2/frame_001_after_fab_click.png",
+   "kept": "docs/evidence/s55_notes/frame_001_editor_mode.png"
+  },
+  {
+   "deleted": "docs/evidence/s59_r379/post2_screenshot.png",
+   "kept": "docs/evidence/visual_forensics/s65_reval/fishrings/splash_full.png"
+  },
+  {
+   "deleted": "docs/evidence/s60_r380/post_f106_screenshot.png",
+   "kept": "docs/evidence/visual_forensics/s65_reval/fishrings/splash_full.png"
+  },
+  {
+   "deleted": "docs/evidence/s60_r380/v18_regression_screenshot.png",
+   "kept": "docs/evidence/visual_forensics/s65_reval/fishrings/splash_full.png"
+  },
+  {
+   "deleted": "docs/evidence/s61_r381/deep560_frame.png",
+   "kept": "docs/evidence/visual_forensics/dooz/v23_full.png"
+  },
+  {
+   "deleted": "docs/evidence/s64_spotlight/fk_splash.png",
+   "kept": "docs/evidence/visual_forensics/s65_reval/fishrings/splash_full.png"
+  },
+  {
+   "deleted": "docs/evidence/s65_spotlight/fr_board.png",
+   "kept": "docs/evidence/visual_forensics/s65_reval/fishrings/board_full.png"
+  },
+  {
+   "deleted": "docs/evidence/s65_spotlight/fr_board_after_taps.png",
+   "kept": "docs/evidence/visual_forensics/s65_reval/fishrings/after_tap3_full.png"
+  },
+  {
+   "deleted": "docs/evidence/s65_spotlight/opmt_game_partial.png",
+   "kept": "docs/evidence/visual_forensics/s65_reval/opmt/game_partial_full.png"
+  },
+  {
+   "deleted": "docs/evidence/s65_spotlight/tp_game_board.png",
+   "kept": "docs/evidence/visual_forensics/s65_reval/tripeaks/board_full.png"
+  },
+  {
+   "deleted": "docs/evidence/s74_ops/androidgamesnake/01_launch.png",
+   "kept": "docs/evidence/s72_w4_snake/frame_000_launch.png"
+  },
+  {
+   "deleted": "docs/evidence/s74_ops/androidgamesnake/03_final.png",
+   "kept": "docs/evidence/s72_w4_snake/frame_000_launch.png"
+  },
+  {
+   "deleted": "docs/evidence/s74_ops/bouncy/03_final.png",
+   "kept": "docs/evidence/s74_ops/bouncy/01_launch.png"
+  },
+  {
+   "deleted": "docs/evidence/s74_ops/bouncy/04_frame_000.png",
+   "kept": "docs/evidence/s74_ops/bouncy/01_launch.png"
+  },
+  {
+   "deleted": "docs/evidence/s74_ops/bouncy/06_frame_004.png",
+   "kept": "docs/evidence/s74_ops/bouncy/05_frame_003.png"
+  },
+  {
+   "deleted": "docs/evidence/s74_ops/dooz/01_launch.png",
+   "kept": "docs/evidence/external_hello_golden/baseline_g08_broken.png"
+  },
+  {
+   "deleted": "docs/evidence/s74_ops/dooz/03_final.png",
+   "kept": "docs/evidence/external_hello_golden/baseline_g08_broken.png"
+  },
+  {
+   "deleted": "docs/evidence/s74_ops/fishrings/01_launch.png",
+   "kept": "docs/evidence/visual_forensics/s65_reval/fishrings/splash_full.png"
+  },
+  {
+   "deleted": "docs/evidence/s74_ops/fishrings/03_final.png",
+   "kept": "docs/evidence/s74_ops/fishrings/02_mid_maxdiff.png"
+  },
+  {
+   "deleted": "docs/evidence/s74_ops/gmdice/03_final.png",
+   "kept": "docs/evidence/s74_ops/gmdice/01_launch.png"
+  },
+  {
+   "deleted": "docs/evidence/s74_ops/helloworld/02_frame1.png",
+   "kept": "docs/evidence/external_hello_golden/miniandroid_frame1.png"
+  },
+  {
+   "deleted": "docs/evidence/s74_ops/microtimer/03_final.png",
+   "kept": "docs/evidence/s74_ops/microtimer/01_launch.png"
+  },
+  {
+   "deleted": "docs/evidence/s74_ops/microtimer/04_frame_000.png",
+   "kept": "docs/evidence/s74_ops/microtimer/01_launch.png"
+  },
+  {
+   "deleted": "docs/evidence/s74_ops/opmt/01_launch.png",
+   "kept": "docs/evidence/visual_forensics/s65_reval/opmt/menu_full.png"
+  },
+  {
+   "deleted": "docs/evidence/s74_ops/opmt/03_final.png",
+   "kept": "docs/evidence/visual_forensics/s65_reval/opmt/menu_full.png"
+  },
+  {
+   "deleted": "docs/evidence/s74_ops/opmt/04_frame_000.png",
+   "kept": "docs/evidence/visual_forensics/s65_reval/opmt/menu_full.png"
+  },
+  {
+   "deleted": "docs/evidence/s74_ops/opmt/06_frame_004.png",
+   "kept": "docs/evidence/s74_ops/opmt/05_frame_002.png"
+  },
+  {
+   "deleted": "docs/evidence/s74_ops/stopwatch/01_launch.png",
+   "kept": "docs/evidence/external_hello_golden/baseline_g08_broken.png"
+  },
+  {
+   "deleted": "docs/evidence/s74_ops/stopwatch/03_final.png",
+   "kept": "docs/evidence/external_hello_golden/baseline_g08_broken.png"
+  },
+  {
+   "deleted": "docs/evidence/s74_ops/telegram/01_launch_engine_default.png",
+   "kept": "docs/evidence/external_hello_golden/baseline_g08_broken.png"
+  },
+  {
+   "deleted": "docs/evidence/s74_ops/tictactoe/01_launch.png",
+   "kept": "docs/evidence/visual_forensics/s65_reval/fishrings/splash_full.png"
+  },
+  {
+   "deleted": "docs/evidence/s74_ops/tictactoe/03_final.png",
+   "kept": "docs/evidence/visual_forensics/s65_reval/fishrings/splash_full.png"
+  },
+  {
+   "deleted": "docs/evidence/s74_ops/tripeaks/01_splash_black.png",
+   "kept": "docs/evidence/visual_forensics/s65_reval/fishrings/splash_full.png"
+  },
+  {
+   "deleted": "docs/evidence/s74_ops/tripeaks/02_lobby.png",
+   "kept": "docs/evidence/visual_forensics/s65_reval/tripeaks/lobby_full.png"
+  },
+  {
+   "deleted": "docs/evidence/s74_ops/tripeaks/03_final_lobby.png",
+   "kept": "docs/evidence/visual_forensics/s65_reval/tripeaks/lobby_full.png"
+  },
+  {
+   "deleted": "docs/evidence/s74_ops/unote/03_final.png",
+   "kept": "docs/evidence/s74_ops/unote/01_launch.png"
+  },
+  {
+   "deleted": "docs/evidence/s74_ops/unote/04_frame_000.png",
+   "kept": "docs/evidence/s74_ops/unote/01_launch.png"
+  },
+  {
+   "deleted": "docs/evidence/s74_ops/unote/05_frame_006.png",
+   "kept": "docs/evidence/s74_ops/unote/01_launch.png"
+  },
+  {
+   "deleted": "docs/evidence/s51_audit/dooz23.jpg",
+   "kept": "docs/evidence/s51_audit/dooz18.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s51_audit/itsfrz.jpg",
+   "kept": "docs/evidence/s51_audit/flashlight.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s51_audit/openlauncher.jpg",
+   "kept": "docs/evidence/s51_audit/flashlight.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s51_audit/rttt.jpg",
+   "kept": "docs/evidence/s51_audit/flashlight.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s51_audit/secuso_dicer.jpg",
+   "kept": "docs/evidence/s51_audit/flashlight.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s51_audit/simplekeyboard.jpg",
+   "kept": "docs/evidence/s51_audit/flashlight.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s51_audit/stopwatchmuellerma.jpg",
+   "kept": "docs/evidence/s51_audit/flashlight.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s51_audit/tictactoe_corpus.jpg",
+   "kept": "docs/evidence/s51_audit/dooz18.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s54_frames/headingcalculator_after.jpg",
+   "kept": "docs/evidence/s53_frames/headingcalculator_after.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s54_frames/headingcalculator_base.jpg",
+   "kept": "docs/evidence/s53_frames/headingcalculator_base.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s54_frames/microtimer_after.jpg",
+   "kept": "docs/evidence/s53_frames/microtimer_after.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s54_frames/microtimer_base.jpg",
+   "kept": "docs/evidence/s53_frames/microtimer_base.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s54_frames/simplestopwatch_after.jpg",
+   "kept": "docs/evidence/s53_frames/simplestopwatch_after.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s54_frames/simplestopwatch_base.jpg",
+   "kept": "docs/evidence/s53_frames/simplestopwatch_base.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s54_frames/unote_base.jpg",
+   "kept": "docs/evidence/s53_frames/unote_base.jpg"
+  },
+  {
+   "deleted": "docs/evidence/s74_ops/helloworld/01_launch.jpg",
+   "kept": "docs/evidence/s54_frames/helloworld_ext01_base.jpg"
+  },
+  {
+   "deleted": "docs/runtime/evidence/u011_2/matrix/ssw_golden.png",
+   "kept": "docs/history/experiments/exp_graphics_image_e2e/ssw_frame_after_full.png"
+  },
+  {
+   "deleted": "docs/runtime/knowledge/campaign010/evidence/uc010_gles_cube_320.png",
+   "kept": "docs/runtime/knowledge/campaign010/evidence/uc010_gles_cube.png"
+  },
+  {
+   "deleted": "miniandroid/docs/evidence/apps_ledger/dooz_s34_placeholder.png",
+   "kept": "miniandroid/docs/evidence/apps_ledger/dooz_placeholder.png"
+  },
+  {
+   "deleted": "miniandroid/docs/evidence/apps_ledger/gmdice.png",
+   "kept": "docs/evidence/s43_r349_r350_r351/de.duenndns.gmdice_8.png"
+  },
+  {
+   "deleted": "miniandroid/docs/evidence/apps_ledger/hellocolor.png",
+   "kept": "docs/evidence/hello_color_golden/frame_1080x1920.png"
+  },
+  {
+   "deleted": "miniandroid/docs/evidence/apps_ledger/s37_dooz_variant.png",
+   "kept": "miniandroid/docs/evidence/apps_ledger/s37_dooz_gvariant.png"
+  },
+  {
+   "deleted": "miniandroid/docs/evidence/apps_ledger/s37_sidhant_puzzle.png",
+   "kept": "miniandroid/docs/evidence/apps_ledger/s37_secuso_yahtzee.png"
+  },
+  {
+   "deleted": "miniandroid/docs/evidence/apps_ledger/s37_solitaire.png",
+   "kept": "miniandroid/docs/evidence/apps_ledger/s37_secuso_yahtzee.png"
+  },
+  {
+   "deleted": "miniandroid/docs/evidence/apps_ledger/s37_thesuncat_sudoku.png",
+   "kept": "miniandroid/docs/evidence/apps_ledger/s37_secuso_yahtzee.png"
+  },
+  {
+   "deleted": "miniandroid/docs/evidence/apps_ledger/s37_tictactoe_legacy.png",
+   "kept": "miniandroid/docs/evidence/apps_ledger/s37_diceoverflow.png"
+  },
+  {
+   "deleted": "miniandroid/docs/evidence/apps_ledger/simplekeyboard.png",
+   "kept": "miniandroid/docs/evidence/apps_ledger/s35_placeholder_empty.png"
+  },
+  {
+   "deleted": "miniandroid/docs/evidence/apps_ledger/sttt_partial.png",
+   "kept": "miniandroid/docs/evidence/apps_ledger/s35_placeholder_empty.png"
+  },
+  {
+   "deleted": "upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/fastlane/metadata/android/en-US/images/phoneScreenshots/Screenshot_1593817855.png",
+   "kept": "upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/Screenshot_mainview.png"
+  },
+  {
+   "deleted": "upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/fastlane/metadata/android/en-US/images/phoneScreenshots/Screenshot_1593817860.png",
+   "kept": "upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/Screenshot_mainview1.png"
+  },
+  {
+   "deleted": "upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/fastlane/metadata/android/es/images/featureGraphic.png",
+   "kept": "upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/fastlane/metadata/android/en-US/images/featureGraphic.png"
+  },
+  {
+   "deleted": "upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/fastlane/metadata/android/es/images/icon.png",
+   "kept": "upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/fastlane/metadata/android/en-US/images/icon.png"
+  },
+  {
+   "deleted": "upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/fastlane/metadata/android/es/images/phoneScreenshots/Screenshot_1593817855.png",
+   "kept": "upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/Screenshot_mainview.png"
+  },
+  {
+   "deleted": "upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/fastlane/metadata/android/es/images/phoneScreenshots/Screenshot_1593817860.png",
+   "kept": "upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/Screenshot_mainview1.png"
+  },
+  {
+   "deleted": "upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/play/featureGraphic.png",
+   "kept": "upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/fastlane/metadata/android/en-US/images/featureGraphic.png"
+  },
+  {
+   "deleted": "upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/play/ic_launcher-playstore.png",
+   "kept": "upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/fastlane/metadata/android/en-US/images/icon.png"
+  },
+  {
+   "deleted": "upstream/corpus/dubrowgn.microtimer/src/micro-timer-825faf52fbcb886e8ef6637bcb0e8478b4b0162e/readme/main.png",
+   "kept": "upstream/corpus/dubrowgn.microtimer/src/micro-timer-825faf52fbcb886e8ef6637bcb0e8478b4b0162e/fastlane/metadata/android/en-US/images/phoneScreenshots/main.png"
+  },
+  {
+   "deleted": "upstream/corpus/io.github.yamin8000.dooz/src/Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/app/src/main/res/mipmap-hdpi/ic_launcher_round.png",
+   "kept": "upstream/corpus/io.github.yamin8000.dooz/src/Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/app/src/main/res/mipmap-hdpi/ic_launcher.png"
+  },
+  {
+   "deleted": "upstream/corpus/io.github.yamin8000.dooz/src/Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/app/src/main/res/mipmap-mdpi/ic_launcher_round.png",
+   "kept": "upstream/corpus/io.github.yamin8000.dooz/src/Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/app/src/main/res/mipmap-mdpi/ic_launcher.png"
+  },
+  {
+   "deleted": "upstream/corpus/io.github.yamin8000.dooz/src/Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png",
+   "kept": "upstream/corpus/io.github.yamin8000.dooz/src/Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/app/src/main/res/mipmap-xhdpi/ic_launcher.png"
+  },
+  {
+   "deleted": "upstream/corpus/io.github.yamin8000.dooz/src/Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png",
+   "kept": "upstream/corpus/io.github.yamin8000.dooz/src/Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/app/src/main/res/mipmap-xxhdpi/ic_launcher.png"
+  },
+  {
+   "deleted": "upstream/corpus/io.github.yamin8000.dooz/src/Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png",
+   "kept": "upstream/corpus/io.github.yamin8000.dooz/src/Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png"
+  },
+  {
+   "deleted": "upstream/corpus/io.github.yamin8000.dooz/src/Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/fastlane/metadata/android/en-US/images/icon.png",
+   "kept": "upstream/corpus/io.github.yamin8000.dooz/src/Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png"
+  },
+  {
+   "deleted": "upstream/corpus/one.scarecrow.games.OPMT/src/OPMT-3240c4cf/fastlane/metadata/android/en-US/images/icon.png",
+   "kept": "upstream/corpus/one.scarecrow.games.OPMT/src/OPMT-3240c4cf/app/src/main/res/mipmap-xxxhdpi/iconcircle.png"
+  },
+  {
+   "deleted": "upstream/corpus/one.scarecrow.games.OPMT/src/OPMT-3240c4cf/optmScreenshots/game.png",
+   "kept": "upstream/corpus/one.scarecrow.games.OPMT/src/OPMT-3240c4cf/fastlane/metadata/android/en-US/images/phoneScreenshots/2.png"
+  },
+  {
+   "deleted": "upstream/corpus/one.scarecrow.games.OPMT/src/OPMT-3240c4cf/optmScreenshots/mainMenu.png",
+   "kept": "upstream/corpus/one.scarecrow.games.OPMT/src/OPMT-3240c4cf/fastlane/metadata/android/en-US/images/phoneScreenshots/1.png"
+  },
+  {
+   "deleted": "miniandroid/docs/evidence/apps_ledger/chessclock.jpg",
+   "kept": "docs/evidence/s51_audit/chessclock.jpg"
+  },
+  {
+   "deleted": "miniandroid/docs/evidence/apps_ledger/dooz_s34_placeholder.jpg",
+   "kept": "miniandroid/docs/evidence/apps_ledger/dooz_placeholder.jpg"
+  },
+  {
+   "deleted": "miniandroid/docs/evidence/apps_ledger/microtimer.jpg",
+   "kept": "docs/evidence/s51_audit/microtimer.jpg"
+  },
+  {
+   "deleted": "miniandroid/docs/evidence/apps_ledger/s35_placeholder_empty.jpg",
+   "kept": "docs/evidence/s51_audit/flashlight.jpg"
+  },
+  {
+   "deleted": "miniandroid/docs/evidence/apps_ledger/s37_diceoverflow.jpg",
+   "kept": "docs/evidence/s51_audit/dooz18.jpg"
+  },
+  {
+   "deleted": "miniandroid/docs/evidence/apps_ledger/s37_dooz_variant.jpg",
+   "kept": "miniandroid/docs/evidence/apps_ledger/s37_dooz_gvariant.jpg"
+  },
+  {
+   "deleted": "miniandroid/docs/evidence/apps_ledger/s37_sidhant_puzzle.jpg",
+   "kept": "miniandroid/docs/evidence/apps_ledger/s37_secuso_yahtzee.jpg"
+  },
+  {
+   "deleted": "miniandroid/docs/evidence/apps_ledger/s37_solitaire.jpg",
+   "kept": "miniandroid/docs/evidence/apps_ledger/s37_secuso_yahtzee.jpg"
+  },
+  {
+   "deleted": "miniandroid/docs/evidence/apps_ledger/s37_thesuncat_sudoku.jpg",
+   "kept": "miniandroid/docs/evidence/apps_ledger/s37_secuso_yahtzee.jpg"
+  },
+  {
+   "deleted": "miniandroid/docs/evidence/apps_ledger/s37_tictactoe_legacy.jpg",
+   "kept": "docs/evidence/s51_audit/dooz18.jpg"
+  },
+  {
+   "deleted": "miniandroid/docs/evidence/apps_ledger/simplekeyboard.jpg",
+   "kept": "docs/evidence/s51_audit/flashlight.jpg"
+  },
+  {
+   "deleted": "miniandroid/docs/evidence/apps_ledger/sttt_partial.jpg",
+   "kept": "docs/evidence/s51_audit/flashlight.jpg"
+  }
+ ],
+ "kept_canonical": [],
+ "totals": {
+  "images_before": 1316,
+  "images_after": 430,
+  "bytes_before": 355832643,
+  "bytes_after": 11148616,
+  "bytes_saved": 344684027,
+  "ppm_deleted": 53,
+  "frames_deleted": 607,
+  "dups_deleted": 226
+ }
+}

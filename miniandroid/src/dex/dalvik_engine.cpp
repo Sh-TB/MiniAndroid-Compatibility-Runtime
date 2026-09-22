@@ -15766,6 +15766,38 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
                 ? class_info_index_.end()
                 : class_info_index_.find(want_desc);
         if (r350_cit == class_info_index_.end()) {
+            // S84 (F-NEW-160): framework-class bridge. On a real device
+            // Class.forName NEVER throws ClassNotFoundException for a
+            // framework/OpenJDK class the platform ships (AOSP
+            // Class.forName → BootClassLoader lookup). MiniAndroid's DEX
+            // class_info_index_ only covers APK classes, so framework
+            // names (android.os.Build$VERSION — hit by 9/50 S84 titles)
+            // fell through to CNFE although the engine models their
+            // statics (seed table). A/B law (S84, foehnix.widget):
+            // bridge ONLY pure-data holder classes — instantiable engine
+            // artifacts (dalvik.system.CloseGuard) returned as Class
+            // objects pushed apps into Class.getMethod/Method.invoke
+            // recursion storms (RECURSION-LIMIT frame-drop cascade,
+            // L2→L0 regression), so they STAY on the CNFE path that real
+            // app catches handle gracefully. Members later ride the
+            // normal shadow / unknown-API paths.
+            static const std::array<const char*, 3> r350_fw_classes = {
+                "Landroid/os/Build;",
+                "Landroid/os/Build$VERSION;",
+                "Landroid/os/Build$VERSION_CODES;",
+            };
+            bool r350_is_fw =
+                std::find_if(r350_fw_classes.begin(), r350_fw_classes.end(),
+                             [&](const char* c) { return want_desc == c; }) !=
+                r350_fw_classes.end();
+            if (r350_is_fw) {
+                return_val = DalvikValue::make_class(want_desc,
+                                                     instruction_sequence_);
+                last_invoke_return_ = return_val;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                pc_ = pc + 3;  // R-NEW-355 pc-advance contract
+                return true;
+            }
             // Real law: unknown class → ClassNotFoundException (deferred —
             // the DEX catch at the call site must observe it).
             std::cerr << "[R350-FORNAME] \"" << want_name
