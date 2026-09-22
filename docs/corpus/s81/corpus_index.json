@@ -1,0 +1,1721 @@
+{
+ "CORPUS_SEED": "S81-CORPUS-SEED-2026-09-22",
+ "GENERATED": "S81",
+ "STATUS_LADDER": [
+  "DISCOVERED",
+  "SOURCED",
+  "BUILT",
+  "PACKAGED",
+  "LOADED",
+  "EXECUTED",
+  "RENDERED",
+  "VISUALLY_AUDITED"
+ ],
+ "DISK_NOTE": "\u00a731 index-first: no APK download without \u00a732-34 disk guard",
+ "MANDATORY": [
+  {
+   "APP_ID": "se.tube42.p9.android",
+   "PACKAGE": "se.tube42.p9.android",
+   "CATEGORY": "Puzzle/Game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/se.tube42.p9.android/",
+   "NOTE": "P9 \u2014 mandatory \u00a77",
+   "LATEST_VERSION": "0.1.1",
+   "VERSION_CODE": 11,
+   "SOURCE_URL": "https://github.com/tube42/9p",
+   "LICENSE": "",
+   "ISSUE_TRACKER": "https://github.com/tube42/9p/issues",
+   "BUILD_METADATA_URL": "https://gitlab.com/fdroid/fdroiddata/tree/master/metadata/se.tube42.p9.android.yml",
+   "REFERENCE_SCREENSHOT_URL": "https://f-droid.org/repo/se.tube42.p9.android/en/phoneScreenshots/p1.png",
+   "DESCRIPTION": "9P is a word puzzle game",
+   "REFERENCE_SOURCE": "F-Droid package page",
+   "REFERENCE_URL": "https://f-droid.org/en/packages/se.tube42.p9.android/"
+  },
+  {
+   "APP_ID": "io.timelimit.android.aosp.direct",
+   "PACKAGE": "io.timelimit.android.aosp.direct",
+   "CATEGORY": "Productivity/Parental",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/io.timelimit.android.aosp.direct/",
+   "NOTE": "TimeLimit.io \u2014 mandatory \u00a77",
+   "LATEST_VERSION": "7.7.1",
+   "VERSION_CODE": 231,
+   "SOURCE_URL": "https://codeberg.org/timelimit/timelimit-android",
+   "LICENSE": "",
+   "ISSUE_TRACKER": "https://codeberg.org/timelimit/timelimit-android/issues",
+   "BUILD_METADATA_URL": "https://gitlab.com/fdroid/fdroiddata/tree/master/metadata/io.timelimit.android.aosp.direct.yml",
+   "REFERENCE_SCREENSHOT_URL": "https://f-droid.org/repo/io.timelimit.android.aosp.direct/en-US/phoneScreenshots/17366373453547418553.png",
+   "DESCRIPTION": "Flexibly limit the usage duration",
+   "REFERENCE_SOURCE": "F-Droid package page",
+   "REFERENCE_URL": "https://f-droid.org/en/packages/io.timelimit.android.aosp.direct/"
+  }
+ ],
+ "STOPWATCH_INVENTORY": [
+  {
+   "APP_ID": "me.timeto.app",
+   "PACKAGE": "me.timeto.app",
+   "SOURCE": "https://f-droid.org/en/categories/stopwatch/"
+  },
+  {
+   "APP_ID": "com.best.deskclock",
+   "PACKAGE": "com.best.deskclock",
+   "SOURCE": "https://f-droid.org/en/categories/stopwatch/"
+  },
+  {
+   "APP_ID": "com.bnyro.clock",
+   "PACKAGE": "com.bnyro.clock",
+   "SOURCE": "https://f-droid.org/en/categories/stopwatch/"
+  },
+  {
+   "APP_ID": "io.github.benji377.timety",
+   "PACKAGE": "io.github.benji377.timety",
+   "SOURCE": "https://f-droid.org/en/categories/stopwatch/"
+  },
+  {
+   "APP_ID": "com.github.muellerma.stopwatch",
+   "PACKAGE": "com.github.muellerma.stopwatch",
+   "SOURCE": "https://f-droid.org/en/categories/stopwatch/"
+  },
+  {
+   "APP_ID": "com.justdeax.composeStopwatch",
+   "PACKAGE": "com.justdeax.composeStopwatch",
+   "SOURCE": "https://f-droid.org/en/categories/stopwatch/"
+  },
+  {
+   "APP_ID": "tibarj.tranquilstopwatch",
+   "PACKAGE": "tibarj.tranquilstopwatch",
+   "SOURCE": "https://f-droid.org/en/categories/stopwatch/"
+  },
+  {
+   "APP_ID": "org.secuso.privacyfriendlyboardgameclock",
+   "PACKAGE": "org.secuso.privacyfriendlyboardgameclock",
+   "SOURCE": "https://f-droid.org/en/categories/stopwatch/"
+  },
+  {
+   "APP_ID": "org.fossify.clock",
+   "PACKAGE": "org.fossify.clock",
+   "SOURCE": "https://f-droid.org/en/categories/stopwatch/"
+  },
+  {
+   "APP_ID": "io.github.deweyreed.timer.other",
+   "PACKAGE": "io.github.deweyreed.timer.other",
+   "SOURCE": "https://f-droid.org/en/categories/stopwatch/"
+  },
+  {
+   "APP_ID": "org.secuso.privacyfriendlyintervaltimer",
+   "PACKAGE": "org.secuso.privacyfriendlyintervaltimer",
+   "SOURCE": "https://f-droid.org/en/categories/stopwatch/"
+  },
+  {
+   "APP_ID": "com.vicolo.chrono",
+   "PACKAGE": "com.vicolo.chrono",
+   "SOURCE": "https://f-droid.org/en/categories/stopwatch/"
+  },
+  {
+   "APP_ID": "com.leestarb.fourthtools",
+   "PACKAGE": "com.leestarb.fourthtools",
+   "SOURCE": "https://f-droid.org/en/categories/stopwatch/"
+  },
+  {
+   "APP_ID": "es.ideotec.workouttime",
+   "PACKAGE": "es.ideotec.workouttime",
+   "SOURCE": "https://f-droid.org/en/categories/stopwatch/"
+  },
+  {
+   "APP_ID": "omegacentauri.mobi.simplestopwatch",
+   "PACKAGE": "omegacentauri.mobi.simplestopwatch",
+   "SOURCE": "https://f-droid.org/en/categories/stopwatch/"
+  },
+  {
+   "APP_ID": "io.github.datastopwatch",
+   "PACKAGE": "io.github.datastopwatch",
+   "SOURCE": "https://f-droid.org/en/categories/stopwatch/"
+  }
+ ],
+ "PLATFORMER_INVENTORY": [
+  {
+   "APP_ID": "org.xolatgames.burgers",
+   "PACKAGE": "org.xolatgames.burgers",
+   "SOURCE": "https://f-droid.org/en/categories/platformer-game/"
+  },
+  {
+   "APP_ID": "ru.wohlsoft.thextech.fdroid",
+   "PACKAGE": "ru.wohlsoft.thextech.fdroid",
+   "SOURCE": "https://f-droid.org/en/categories/platformer-game/"
+  },
+  {
+   "APP_ID": "fdr.ioi.jslide2",
+   "PACKAGE": "fdr.ioi.jslide2",
+   "SOURCE": "https://f-droid.org/en/categories/platformer-game/"
+  },
+  {
+   "APP_ID": "de.informationsanarchistik.teapot.megamichi.duckrun",
+   "PACKAGE": "de.informationsanarchistik.teapot.megamichi.duckrun",
+   "SOURCE": "https://f-droid.org/en/categories/platformer-game/"
+  },
+  {
+   "APP_ID": "com.yepgoryo.EggReturnsHome",
+   "PACKAGE": "com.yepgoryo.EggReturnsHome",
+   "SOURCE": "https://f-droid.org/en/categories/platformer-game/"
+  },
+  {
+   "APP_ID": "org.codeberg.rozworld.finalrozgamenew",
+   "PACKAGE": "org.codeberg.rozworld.finalrozgamenew",
+   "SOURCE": "https://f-droid.org/en/categories/platformer-game/"
+  },
+  {
+   "APP_ID": "nodomain.playmaker",
+   "PACKAGE": "nodomain.playmaker",
+   "SOURCE": "https://f-droid.org/en/categories/platformer-game/"
+  },
+  {
+   "APP_ID": "org.opensurge2d.surgeengine",
+   "PACKAGE": "org.opensurge2d.surgeengine",
+   "SOURCE": "https://f-droid.org/en/categories/platformer-game/"
+  },
+  {
+   "APP_ID": "org.pgnapps.pk2",
+   "PACKAGE": "org.pgnapps.pk2",
+   "SOURCE": "https://f-droid.org/en/categories/platformer-game/"
+  },
+  {
+   "APP_ID": "org.pipoypipagames.cowsrevenge",
+   "PACKAGE": "org.pipoypipagames.cowsrevenge",
+   "SOURCE": "https://f-droid.org/en/categories/platformer-game/"
+  }
+ ],
+ "GAMES_100": [
+  {
+   "APP_ID": "com.qwde.ccm",
+   "PACKAGE": "com.qwde.ccm",
+   "CATEGORY": "board-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.qwde.ccm/"
+  },
+  {
+   "APP_ID": "com.astroloop.game",
+   "PACKAGE": "com.astroloop.game",
+   "CATEGORY": "action-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.astroloop.game/"
+  },
+  {
+   "APP_ID": "app.halma",
+   "PACKAGE": "app.halma",
+   "CATEGORY": "board-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/app.halma/"
+  },
+  {
+   "APP_ID": "com.jeffliu.balancetheball",
+   "PACKAGE": "com.jeffliu.balancetheball",
+   "CATEGORY": "action-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.jeffliu.balancetheball/"
+  },
+  {
+   "APP_ID": "crypto.o0o0o0o0o.games.blackjack",
+   "PACKAGE": "crypto.o0o0o0o0o.games.blackjack",
+   "CATEGORY": "card-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/crypto.o0o0o0o0o.games.blackjack/"
+  },
+  {
+   "APP_ID": "eu.veldsoft.no.thanks",
+   "PACKAGE": "eu.veldsoft.no.thanks",
+   "CATEGORY": "card-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/eu.veldsoft.no.thanks/"
+  },
+  {
+   "APP_ID": "com.simondalvai.ball2box",
+   "PACKAGE": "com.simondalvai.ball2box",
+   "CATEGORY": "shooter-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.simondalvai.ball2box/"
+  },
+  {
+   "APP_ID": "si.palcka.tarok",
+   "PACKAGE": "si.palcka.tarok",
+   "CATEGORY": "card-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/si.palcka.tarok/"
+  },
+  {
+   "APP_ID": "cos.premy.mines",
+   "PACKAGE": "cos.premy.mines",
+   "CATEGORY": "puzzle-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/cos.premy.mines/"
+  },
+  {
+   "APP_ID": "com.sidhant.puzzle",
+   "PACKAGE": "com.sidhant.puzzle",
+   "CATEGORY": "puzzle-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.sidhant.puzzle/"
+  },
+  {
+   "APP_ID": "com.ivylopez.authsrng",
+   "PACKAGE": "com.ivylopez.authsrng",
+   "CATEGORY": "casual-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.ivylopez.authsrng/"
+  },
+  {
+   "APP_ID": "io.github.hathibelagal.mykanji",
+   "PACKAGE": "io.github.hathibelagal.mykanji",
+   "CATEGORY": "educational-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/io.github.hathibelagal.mykanji/"
+  },
+  {
+   "APP_ID": "io.github.ebraminio.bouncy",
+   "PACKAGE": "io.github.ebraminio.bouncy",
+   "CATEGORY": "action-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/io.github.ebraminio.bouncy/"
+  },
+  {
+   "APP_ID": "de.tobiasbielefeld.solitaire",
+   "PACKAGE": "de.tobiasbielefeld.solitaire",
+   "CATEGORY": "card-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/de.tobiasbielefeld.solitaire/"
+  },
+  {
+   "APP_ID": "eu.quelltext.memory",
+   "PACKAGE": "eu.quelltext.memory",
+   "CATEGORY": "educational-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/eu.quelltext.memory/"
+  },
+  {
+   "APP_ID": "com.sidhant.queens",
+   "PACKAGE": "com.sidhant.queens",
+   "CATEGORY": "puzzle-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.sidhant.queens/"
+  },
+  {
+   "APP_ID": "page.codeberg.lanticy.guandan",
+   "PACKAGE": "page.codeberg.lanticy.guandan",
+   "CATEGORY": "card-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/page.codeberg.lanticy.guandan/"
+  },
+  {
+   "APP_ID": "xyz.deepdaikon.quinb",
+   "PACKAGE": "xyz.deepdaikon.quinb",
+   "CATEGORY": "action-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/xyz.deepdaikon.quinb/"
+  },
+  {
+   "APP_ID": "com.vayunmathur.games.solitaire",
+   "PACKAGE": "com.vayunmathur.games.solitaire",
+   "CATEGORY": "card-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.vayunmathur.games.solitaire/"
+  },
+  {
+   "APP_ID": "bim.app",
+   "PACKAGE": "bim.app",
+   "CATEGORY": "action-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/bim.app/"
+  },
+  {
+   "APP_ID": "de.schwarz.boardgamepal",
+   "PACKAGE": "de.schwarz.boardgamepal",
+   "CATEGORY": "board-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/de.schwarz.boardgamepal/"
+  },
+  {
+   "APP_ID": "com.dash1971.maia_chess",
+   "PACKAGE": "com.dash1971.maia_chess",
+   "CATEGORY": "board-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.dash1971.maia_chess/"
+  },
+  {
+   "APP_ID": "org.secuso.privacyfriendlybattleship",
+   "PACKAGE": "org.secuso.privacyfriendlybattleship",
+   "CATEGORY": "board-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/org.secuso.privacyfriendlybattleship/"
+  },
+  {
+   "APP_ID": "com.kingalex.kingpong",
+   "PACKAGE": "com.kingalex.kingpong",
+   "CATEGORY": "casual-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.kingalex.kingpong/"
+  },
+  {
+   "APP_ID": "com.vovagorodok.blichess",
+   "PACKAGE": "com.vovagorodok.blichess",
+   "CATEGORY": "board-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.vovagorodok.blichess/"
+  },
+  {
+   "APP_ID": "io.itch.pirate_solitaire",
+   "PACKAGE": "io.itch.pirate_solitaire",
+   "CATEGORY": "card-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/io.itch.pirate_solitaire/"
+  },
+  {
+   "APP_ID": "com.dozingcatsoftware.dodge",
+   "PACKAGE": "com.dozingcatsoftware.dodge",
+   "CATEGORY": "action-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.dozingcatsoftware.dodge/"
+  },
+  {
+   "APP_ID": "com.helddertierwelt.mentalmath",
+   "PACKAGE": "com.helddertierwelt.mentalmath",
+   "CATEGORY": "educational-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.helddertierwelt.mentalmath/"
+  },
+  {
+   "APP_ID": "com.sidhant.bubbleshooter",
+   "PACKAGE": "com.sidhant.bubbleshooter",
+   "CATEGORY": "puzzle-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.sidhant.bubbleshooter/"
+  },
+  {
+   "APP_ID": "net.tigr.navyfleetbattle",
+   "PACKAGE": "net.tigr.navyfleetbattle",
+   "CATEGORY": "board-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/net.tigr.navyfleetbattle/"
+  },
+  {
+   "APP_ID": "com.hazelhope.dubster.hamtest",
+   "PACKAGE": "com.hazelhope.dubster.hamtest",
+   "CATEGORY": "educational-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.hazelhope.dubster.hamtest/"
+  },
+  {
+   "APP_ID": "ca.rmen.nounours",
+   "PACKAGE": "ca.rmen.nounours",
+   "CATEGORY": "casual-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/ca.rmen.nounours/"
+  },
+  {
+   "APP_ID": "com.nima.triviaapp",
+   "PACKAGE": "com.nima.triviaapp",
+   "CATEGORY": "educational-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.nima.triviaapp/"
+  },
+  {
+   "APP_ID": "ru.wohlsoft.thextech.fdroid",
+   "PACKAGE": "ru.wohlsoft.thextech.fdroid",
+   "CATEGORY": "platformer-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/ru.wohlsoft.thextech.fdroid/"
+  },
+  {
+   "APP_ID": "com.willie.mancala",
+   "PACKAGE": "com.willie.mancala",
+   "CATEGORY": "board-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.willie.mancala/"
+  },
+  {
+   "APP_ID": "org.lichess.mobileV2",
+   "PACKAGE": "org.lichess.mobileV2",
+   "CATEGORY": "board-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/org.lichess.mobileV2/"
+  },
+  {
+   "APP_ID": "de.georgsieber.ballbreak",
+   "PACKAGE": "de.georgsieber.ballbreak",
+   "CATEGORY": "action-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/de.georgsieber.ballbreak/"
+  },
+  {
+   "APP_ID": "com.quietgrid.app",
+   "PACKAGE": "com.quietgrid.app",
+   "CATEGORY": "puzzle-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.quietgrid.app/"
+  },
+  {
+   "APP_ID": "com.octbit.rutmath",
+   "PACKAGE": "com.octbit.rutmath",
+   "CATEGORY": "educational-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.octbit.rutmath/"
+  },
+  {
+   "APP_ID": "com.galaxyrio.sudokusolver",
+   "PACKAGE": "com.galaxyrio.sudokusolver",
+   "CATEGORY": "puzzle-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.galaxyrio.sudokusolver/"
+  },
+  {
+   "APP_ID": "org.lufebe16.pysolfc",
+   "PACKAGE": "org.lufebe16.pysolfc",
+   "CATEGORY": "card-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/org.lufebe16.pysolfc/"
+  },
+  {
+   "APP_ID": "com.kaeruct.raumballer",
+   "PACKAGE": "com.kaeruct.raumballer",
+   "CATEGORY": "shooter-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.kaeruct.raumballer/"
+  },
+  {
+   "APP_ID": "com.sanskritbasics.memory",
+   "PACKAGE": "com.sanskritbasics.memory",
+   "CATEGORY": "educational-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.sanskritbasics.memory/"
+  },
+  {
+   "APP_ID": "com.smorgasbork.hotdeath",
+   "PACKAGE": "com.smorgasbork.hotdeath",
+   "CATEGORY": "card-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.smorgasbork.hotdeath/"
+  },
+  {
+   "APP_ID": "com.serwylo.retrowars",
+   "PACKAGE": "com.serwylo.retrowars",
+   "CATEGORY": "action-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.serwylo.retrowars/"
+  },
+  {
+   "APP_ID": "org.opensurge2d.surgeengine",
+   "PACKAGE": "org.opensurge2d.surgeengine",
+   "CATEGORY": "platformer-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/org.opensurge2d.surgeengine/"
+  },
+  {
+   "APP_ID": "com.eightsines.firestrike.opensource",
+   "PACKAGE": "com.eightsines.firestrike.opensource",
+   "CATEGORY": "shooter-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.eightsines.firestrike.opensource/"
+  },
+  {
+   "APP_ID": "com.clavierhaus.gnubg",
+   "PACKAGE": "com.clavierhaus.gnubg",
+   "CATEGORY": "board-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.clavierhaus.gnubg/"
+  },
+  {
+   "APP_ID": "com.sidhant.arrowescape",
+   "PACKAGE": "com.sidhant.arrowescape",
+   "CATEGORY": "puzzle-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.sidhant.arrowescape/"
+  },
+  {
+   "APP_ID": "com.vovagorodok.blidraughts",
+   "PACKAGE": "com.vovagorodok.blidraughts",
+   "CATEGORY": "board-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.vovagorodok.blidraughts/"
+  },
+  {
+   "APP_ID": "com.yepgoryo.EggReturnsHome",
+   "PACKAGE": "com.yepgoryo.EggReturnsHome",
+   "CATEGORY": "platformer-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.yepgoryo.EggReturnsHome/"
+  },
+  {
+   "APP_ID": "com.rocket9labs.boxcars",
+   "PACKAGE": "com.rocket9labs.boxcars",
+   "CATEGORY": "board-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.rocket9labs.boxcars/"
+  },
+  {
+   "APP_ID": "io.github.johnathan.minesweeper",
+   "PACKAGE": "io.github.johnathan.minesweeper",
+   "CATEGORY": "puzzle-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/io.github.johnathan.minesweeper/"
+  },
+  {
+   "APP_ID": "org.piepmeyer.gauguin",
+   "PACKAGE": "org.piepmeyer.gauguin",
+   "CATEGORY": "puzzle-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/org.piepmeyer.gauguin/"
+  },
+  {
+   "APP_ID": "jwtc.android.chess",
+   "PACKAGE": "jwtc.android.chess",
+   "CATEGORY": "board-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/jwtc.android.chess/"
+  },
+  {
+   "APP_ID": "org.pipoypipagames.cowsrevenge",
+   "PACKAGE": "org.pipoypipagames.cowsrevenge",
+   "CATEGORY": "platformer-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/org.pipoypipagames.cowsrevenge/"
+  },
+  {
+   "APP_ID": "org.bobstuff.bobball",
+   "PACKAGE": "org.bobstuff.bobball",
+   "CATEGORY": "action-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/org.bobstuff.bobball/"
+  },
+  {
+   "APP_ID": "com.vayunmathur.games.alchemist",
+   "PACKAGE": "com.vayunmathur.games.alchemist",
+   "CATEGORY": "casual-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.vayunmathur.games.alchemist/"
+  },
+  {
+   "APP_ID": "ru.hyst329.openfool",
+   "PACKAGE": "ru.hyst329.openfool",
+   "CATEGORY": "card-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/ru.hyst329.openfool/"
+  },
+  {
+   "APP_ID": "org.codeberg.scovillo.bubble",
+   "PACKAGE": "org.codeberg.scovillo.bubble",
+   "CATEGORY": "action-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/org.codeberg.scovillo.bubble/"
+  },
+  {
+   "APP_ID": "com.towerillusion.abdal",
+   "PACKAGE": "com.towerillusion.abdal",
+   "CATEGORY": "board-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.towerillusion.abdal/"
+  },
+  {
+   "APP_ID": "com.sidhant.blockblast",
+   "PACKAGE": "com.sidhant.blockblast",
+   "CATEGORY": "puzzle-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.sidhant.blockblast/"
+  },
+  {
+   "APP_ID": "org.quentin_bettoum.librememorygame",
+   "PACKAGE": "org.quentin_bettoum.librememorygame",
+   "CATEGORY": "educational-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/org.quentin_bettoum.librememorygame/"
+  },
+  {
+   "APP_ID": "com.fairytrick.fairymahjong",
+   "PACKAGE": "com.fairytrick.fairymahjong",
+   "CATEGORY": "puzzle-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.fairytrick.fairymahjong/"
+  },
+  {
+   "APP_ID": "com.tacticmaster",
+   "PACKAGE": "com.tacticmaster",
+   "CATEGORY": "board-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.tacticmaster/"
+  },
+  {
+   "APP_ID": "com.joeld.minesweeper",
+   "PACKAGE": "com.joeld.minesweeper",
+   "CATEGORY": "puzzle-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.joeld.minesweeper/"
+  },
+  {
+   "APP_ID": "com.adilhanney.ricochlime",
+   "PACKAGE": "com.adilhanney.ricochlime",
+   "CATEGORY": "shooter-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.adilhanney.ricochlime/"
+  },
+  {
+   "APP_ID": "com.dozingcatsoftware.cardswithcats",
+   "PACKAGE": "com.dozingcatsoftware.cardswithcats",
+   "CATEGORY": "card-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.dozingcatsoftware.cardswithcats/"
+  },
+  {
+   "APP_ID": "eu.veldsoft.scribe4",
+   "PACKAGE": "eu.veldsoft.scribe4",
+   "CATEGORY": "board-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/eu.veldsoft.scribe4/"
+  },
+  {
+   "APP_ID": "me.lecaro.breakout",
+   "PACKAGE": "me.lecaro.breakout",
+   "CATEGORY": "action-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/me.lecaro.breakout/"
+  },
+  {
+   "APP_ID": "cube.run",
+   "PACKAGE": "cube.run",
+   "CATEGORY": "action-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/cube.run/"
+  },
+  {
+   "APP_ID": "fr.arnaudguyon.spacevertex",
+   "PACKAGE": "fr.arnaudguyon.spacevertex",
+   "CATEGORY": "action-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/fr.arnaudguyon.spacevertex/"
+  },
+  {
+   "APP_ID": "de.saschahlusiak.freebloks",
+   "PACKAGE": "de.saschahlusiak.freebloks",
+   "CATEGORY": "board-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/de.saschahlusiak.freebloks/"
+  },
+  {
+   "APP_ID": "org.secuso.privacyfriendlymemory",
+   "PACKAGE": "org.secuso.privacyfriendlymemory",
+   "CATEGORY": "educational-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/org.secuso.privacyfriendlymemory/"
+  },
+  {
+   "APP_ID": "paper.loop",
+   "PACKAGE": "paper.loop",
+   "CATEGORY": "action-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/paper.loop/"
+  },
+  {
+   "APP_ID": "dev.serwin.AnarchRE",
+   "PACKAGE": "dev.serwin.AnarchRE",
+   "CATEGORY": "shooter-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/dev.serwin.AnarchRE/"
+  },
+  {
+   "APP_ID": "com.dozingcatsoftware.mouse_pounce",
+   "PACKAGE": "com.dozingcatsoftware.mouse_pounce",
+   "CATEGORY": "card-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.dozingcatsoftware.mouse_pounce/"
+  },
+  {
+   "APP_ID": "com.sidhant.shikaku",
+   "PACKAGE": "com.sidhant.shikaku",
+   "CATEGORY": "puzzle-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.sidhant.shikaku/"
+  },
+  {
+   "APP_ID": "eve.game.tracker",
+   "PACKAGE": "eve.game.tracker",
+   "CATEGORY": "card-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/eve.game.tracker/"
+  },
+  {
+   "APP_ID": "com.sanskritbasics",
+   "PACKAGE": "com.sanskritbasics",
+   "CATEGORY": "educational-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.sanskritbasics/"
+  },
+  {
+   "APP_ID": "eu.veldsoft.vitosha.blackjack",
+   "PACKAGE": "eu.veldsoft.vitosha.blackjack",
+   "CATEGORY": "card-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/eu.veldsoft.vitosha.blackjack/"
+  },
+  {
+   "APP_ID": "com.mostafa.brickblast",
+   "PACKAGE": "com.mostafa.brickblast",
+   "CATEGORY": "casual-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.mostafa.brickblast/"
+  },
+  {
+   "APP_ID": "com.fr.laboussole.track",
+   "PACKAGE": "com.fr.laboussole.track",
+   "CATEGORY": "educational-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.fr.laboussole.track/"
+  },
+  {
+   "APP_ID": "eu.mokrzycki.learndigits",
+   "PACKAGE": "eu.mokrzycki.learndigits",
+   "CATEGORY": "educational-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/eu.mokrzycki.learndigits/"
+  },
+  {
+   "APP_ID": "com.game.asteroids_revenge",
+   "PACKAGE": "com.game.asteroids_revenge",
+   "CATEGORY": "action-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.game.asteroids_revenge/"
+  },
+  {
+   "APP_ID": "paper.loop2",
+   "PACKAGE": "paper.loop2",
+   "CATEGORY": "action-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/paper.loop2/"
+  },
+  {
+   "APP_ID": "org.pgnapps.pk2",
+   "PACKAGE": "org.pgnapps.pk2",
+   "CATEGORY": "platformer-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/org.pgnapps.pk2/"
+  },
+  {
+   "APP_ID": "org.secuso.privacyfriendlydame",
+   "PACKAGE": "org.secuso.privacyfriendlydame",
+   "CATEGORY": "board-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/org.secuso.privacyfriendlydame/"
+  },
+  {
+   "APP_ID": "com.itsfrz.tictactoe",
+   "PACKAGE": "com.itsfrz.tictactoe",
+   "CATEGORY": "board-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.itsfrz.tictactoe/"
+  },
+  {
+   "APP_ID": "nodomain.playmaker",
+   "PACKAGE": "nodomain.playmaker",
+   "CATEGORY": "platformer-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/nodomain.playmaker/"
+  },
+  {
+   "APP_ID": "com.chenyifaer.fafarunner",
+   "PACKAGE": "com.chenyifaer.fafarunner",
+   "CATEGORY": "action-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.chenyifaer.fafarunner/"
+  },
+  {
+   "APP_ID": "org.secuso.privacyfriendlysolitaire",
+   "PACKAGE": "org.secuso.privacyfriendlysolitaire",
+   "CATEGORY": "card-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/org.secuso.privacyfriendlysolitaire/"
+  },
+  {
+   "APP_ID": "com.movietrivia.filmfacts",
+   "PACKAGE": "com.movietrivia.filmfacts",
+   "CATEGORY": "educational-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.movietrivia.filmfacts/"
+  },
+  {
+   "APP_ID": "com.attenomy.janken",
+   "PACKAGE": "com.attenomy.janken",
+   "CATEGORY": "casual-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.attenomy.janken/"
+  },
+  {
+   "APP_ID": "com.sidhant.nonogram",
+   "PACKAGE": "com.sidhant.nonogram",
+   "CATEGORY": "puzzle-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.sidhant.nonogram/"
+  },
+  {
+   "APP_ID": "garden.lina.oblique_strategies",
+   "PACKAGE": "garden.lina.oblique_strategies",
+   "CATEGORY": "card-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/garden.lina.oblique_strategies/"
+  },
+  {
+   "APP_ID": "com.dozingcatsoftware.bouncy",
+   "PACKAGE": "com.dozingcatsoftware.bouncy",
+   "CATEGORY": "casual-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.dozingcatsoftware.bouncy/"
+  },
+  {
+   "APP_ID": "com.sidhant.triplematch",
+   "PACKAGE": "com.sidhant.triplematch",
+   "CATEGORY": "puzzle-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.sidhant.triplematch/"
+  },
+  {
+   "APP_ID": "net.sourceforge.solitaire_cg",
+   "PACKAGE": "net.sourceforge.solitaire_cg",
+   "CATEGORY": "card-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/net.sourceforge.solitaire_cg/"
+  },
+  {
+   "APP_ID": "eu.veldsoft.tuty.fruty.slot",
+   "PACKAGE": "eu.veldsoft.tuty.fruty.slot",
+   "CATEGORY": "casual-game",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/eu.veldsoft.tuty.fruty.slot/"
+  }
+ ],
+ "APPS_100": [
+  {
+   "APP_ID": "com.hfut.schedule",
+   "PACKAGE": "com.hfut.schedule",
+   "CATEGORY": "internet",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.hfut.schedule/"
+  },
+  {
+   "APP_ID": "foehnix.widget",
+   "PACKAGE": "foehnix.widget",
+   "CATEGORY": "weather",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/foehnix.widget/"
+  },
+  {
+   "APP_ID": "de.seemoo.at_tracking_detection",
+   "PACKAGE": "de.seemoo.at_tracking_detection",
+   "CATEGORY": "connectivity",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/de.seemoo.at_tracking_detection/"
+  },
+  {
+   "APP_ID": "org.nitri.opentopo",
+   "PACKAGE": "org.nitri.opentopo",
+   "CATEGORY": "navigation",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/org.nitri.opentopo/"
+  },
+  {
+   "APP_ID": "com.newsblur",
+   "PACKAGE": "com.newsblur",
+   "CATEGORY": "reading",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.newsblur/"
+  },
+  {
+   "APP_ID": "de.taz.android.app.free",
+   "PACKAGE": "de.taz.android.app.free",
+   "CATEGORY": "multimedia",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/de.taz.android.app.free/"
+  },
+  {
+   "APP_ID": "com.bupkis.tirailleur",
+   "PACKAGE": "com.bupkis.tirailleur",
+   "CATEGORY": "calculator",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.bupkis.tirailleur/"
+  },
+  {
+   "APP_ID": "io.github.aoc_normal",
+   "PACKAGE": "io.github.aoc_normal",
+   "CATEGORY": "clock",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/io.github.aoc_normal/"
+  },
+  {
+   "APP_ID": "fr.shiningcat.binclockwidget",
+   "PACKAGE": "fr.shiningcat.binclockwidget",
+   "CATEGORY": "clock",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/fr.shiningcat.binclockwidget/"
+  },
+  {
+   "APP_ID": "net.diffengine.romandigitalclock",
+   "PACKAGE": "net.diffengine.romandigitalclock",
+   "CATEGORY": "clock",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/net.diffengine.romandigitalclock/"
+  },
+  {
+   "APP_ID": "eu.weblibre.gecko",
+   "PACKAGE": "eu.weblibre.gecko",
+   "CATEGORY": "internet",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/eu.weblibre.gecko/"
+  },
+  {
+   "APP_ID": "com.jherkenhoff.qalculate",
+   "PACKAGE": "com.jherkenhoff.qalculate",
+   "CATEGORY": "calculator",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.jherkenhoff.qalculate/"
+  },
+  {
+   "APP_ID": "site.leos.apps.lespas",
+   "PACKAGE": "site.leos.apps.lespas",
+   "CATEGORY": "gallery",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/site.leos.apps.lespas/"
+  },
+  {
+   "APP_ID": "me.river.nightbell",
+   "PACKAGE": "me.river.nightbell",
+   "CATEGORY": "development",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/me.river.nightbell/"
+  },
+  {
+   "APP_ID": "com.madlonkay.orgro",
+   "PACKAGE": "com.madlonkay.orgro",
+   "CATEGORY": "development",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.madlonkay.orgro/"
+  },
+  {
+   "APP_ID": "org.forkgram.classic",
+   "PACKAGE": "org.forkgram.classic",
+   "CATEGORY": "internet",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/org.forkgram.classic/"
+  },
+  {
+   "APP_ID": "com.kompact",
+   "PACKAGE": "com.kompact",
+   "CATEGORY": "multimedia",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.kompact/"
+  },
+  {
+   "APP_ID": "com.ma.tehro",
+   "PACKAGE": "com.ma.tehro",
+   "CATEGORY": "navigation",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.ma.tehro/"
+  },
+  {
+   "APP_ID": "net.bible.android.activity",
+   "PACKAGE": "net.bible.android.activity",
+   "CATEGORY": "reading",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/net.bible.android.activity/"
+  },
+  {
+   "APP_ID": "net.osmand.plus",
+   "PACKAGE": "net.osmand.plus",
+   "CATEGORY": "navigation",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/net.osmand.plus/"
+  },
+  {
+   "APP_ID": "com.tutpro.baresip.plus",
+   "PACKAGE": "com.tutpro.baresip.plus",
+   "CATEGORY": "internet",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.tutpro.baresip.plus/"
+  },
+  {
+   "APP_ID": "it.fast4x.riplay",
+   "PACKAGE": "it.fast4x.riplay",
+   "CATEGORY": "multimedia",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/it.fast4x.riplay/"
+  },
+  {
+   "APP_ID": "org.stingle.photos",
+   "PACKAGE": "org.stingle.photos",
+   "CATEGORY": "gallery",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/org.stingle.photos/"
+  },
+  {
+   "APP_ID": "com.forrestguice.suntimeswidget",
+   "PACKAGE": "com.forrestguice.suntimeswidget",
+   "CATEGORY": "clock",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.forrestguice.suntimeswidget/"
+  },
+  {
+   "APP_ID": "com.vayunmathur.clock",
+   "PACKAGE": "com.vayunmathur.clock",
+   "CATEGORY": "clock",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.vayunmathur.clock/"
+  },
+  {
+   "APP_ID": "com.luc4n3x.levyra",
+   "PACKAGE": "com.luc4n3x.levyra",
+   "CATEGORY": "multimedia",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.luc4n3x.levyra/"
+  },
+  {
+   "APP_ID": "com.firebirdberlin.nightdream.noGms",
+   "PACKAGE": "com.firebirdberlin.nightdream.noGms",
+   "CATEGORY": "clock",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.firebirdberlin.nightdream.noGms/"
+  },
+  {
+   "APP_ID": "com.vagujhelyigergely.calculatorm3",
+   "PACKAGE": "com.vagujhelyigergely.calculatorm3",
+   "CATEGORY": "calculator",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.vagujhelyigergely.calculatorm3/"
+  },
+  {
+   "APP_ID": "com.hegocre.nextcloudpasswords",
+   "PACKAGE": "com.hegocre.nextcloudpasswords",
+   "CATEGORY": "security",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.hegocre.nextcloudpasswords/"
+  },
+  {
+   "APP_ID": "com.chmouel.liseur",
+   "PACKAGE": "com.chmouel.liseur",
+   "CATEGORY": "reading",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.chmouel.liseur/"
+  },
+  {
+   "APP_ID": "protectedwp.safespace",
+   "PACKAGE": "protectedwp.safespace",
+   "CATEGORY": "security",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/protectedwp.safespace/"
+  },
+  {
+   "APP_ID": "dev.gpxit.app",
+   "PACKAGE": "dev.gpxit.app",
+   "CATEGORY": "navigation",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/dev.gpxit.app/"
+  },
+  {
+   "APP_ID": "com.srkovnar.legacyphotoframe",
+   "PACKAGE": "com.srkovnar.legacyphotoframe",
+   "CATEGORY": "gallery",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.srkovnar.legacyphotoframe/"
+  },
+  {
+   "APP_ID": "com.nfcarchiver.nfc_archiver",
+   "PACKAGE": "com.nfcarchiver.nfc_archiver",
+   "CATEGORY": "connectivity",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.nfcarchiver.nfc_archiver/"
+  },
+  {
+   "APP_ID": "org.ojrandom.paiesque",
+   "PACKAGE": "org.ojrandom.paiesque",
+   "CATEGORY": "connectivity",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/org.ojrandom.paiesque/"
+  },
+  {
+   "APP_ID": "com.greenart7c3.nostrsigner",
+   "PACKAGE": "com.greenart7c3.nostrsigner",
+   "CATEGORY": "security",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.greenart7c3.nostrsigner/"
+  },
+  {
+   "APP_ID": "com.divinelink.scenepeek",
+   "PACKAGE": "com.divinelink.scenepeek",
+   "CATEGORY": "multimedia",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.divinelink.scenepeek/"
+  },
+  {
+   "APP_ID": "app.fedilab.castlab",
+   "PACKAGE": "app.fedilab.castlab",
+   "CATEGORY": "gallery",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/app.fedilab.castlab/"
+  },
+  {
+   "APP_ID": "de.schliweb.makeacopy",
+   "PACKAGE": "de.schliweb.makeacopy",
+   "CATEGORY": "multimedia",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/de.schliweb.makeacopy/"
+  },
+  {
+   "APP_ID": "fr.corenting.convertisseureurofranc",
+   "PACKAGE": "fr.corenting.convertisseureurofranc",
+   "CATEGORY": "calculator",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/fr.corenting.convertisseureurofranc/"
+  },
+  {
+   "APP_ID": "io.paperterm.app",
+   "PACKAGE": "io.paperterm.app",
+   "CATEGORY": "development",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/io.paperterm.app/"
+  },
+  {
+   "APP_ID": "org.ucam.ssb22.pinyinfdroid",
+   "PACKAGE": "org.ucam.ssb22.pinyinfdroid",
+   "CATEGORY": "reading",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/org.ucam.ssb22.pinyinfdroid/"
+  },
+  {
+   "APP_ID": "com.kolakek.pimiwidget",
+   "PACKAGE": "com.kolakek.pimiwidget",
+   "CATEGORY": "weather",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.kolakek.pimiwidget/"
+  },
+  {
+   "APP_ID": "is.xyz.mpv",
+   "PACKAGE": "is.xyz.mpv",
+   "CATEGORY": "multimedia",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/is.xyz.mpv/"
+  },
+  {
+   "APP_ID": "orinasa.njarasoa.maripanatokana",
+   "PACKAGE": "orinasa.njarasoa.maripanatokana",
+   "CATEGORY": "weather",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/orinasa.njarasoa.maripanatokana/"
+  },
+  {
+   "APP_ID": "tibarj.tranquilstopwatch",
+   "PACKAGE": "tibarj.tranquilstopwatch",
+   "CATEGORY": "stopwatch",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/tibarj.tranquilstopwatch/"
+  },
+  {
+   "APP_ID": "com.davidtakac.bura",
+   "PACKAGE": "com.davidtakac.bura",
+   "CATEGORY": "weather",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.davidtakac.bura/"
+  },
+  {
+   "APP_ID": "m.co.rh.id.a_news_provider",
+   "PACKAGE": "m.co.rh.id.a_news_provider",
+   "CATEGORY": "reading",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/m.co.rh.id.a_news_provider/"
+  },
+  {
+   "APP_ID": "de.quaddyservices.dynamicnightlight",
+   "PACKAGE": "de.quaddyservices.dynamicnightlight",
+   "CATEGORY": "clock",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/de.quaddyservices.dynamicnightlight/"
+  },
+  {
+   "APP_ID": "com.ominous.quickweather",
+   "PACKAGE": "com.ominous.quickweather",
+   "CATEGORY": "weather",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.ominous.quickweather/"
+  },
+  {
+   "APP_ID": "cn.rbc.termuc",
+   "PACKAGE": "cn.rbc.termuc",
+   "CATEGORY": "development",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/cn.rbc.termuc/"
+  },
+  {
+   "APP_ID": "com.kaii.photos",
+   "PACKAGE": "com.kaii.photos",
+   "CATEGORY": "gallery",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.kaii.photos/"
+  },
+  {
+   "APP_ID": "com.co3",
+   "PACKAGE": "com.co3",
+   "CATEGORY": "reading",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.co3/"
+  },
+  {
+   "APP_ID": "com.crome.forecastpoint",
+   "PACKAGE": "com.crome.forecastpoint",
+   "CATEGORY": "weather",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.crome.forecastpoint/"
+  },
+  {
+   "APP_ID": "com.metromusic",
+   "PACKAGE": "com.metromusic",
+   "CATEGORY": "multimedia",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.metromusic/"
+  },
+  {
+   "APP_ID": "com.bbzone.isitprime",
+   "PACKAGE": "com.bbzone.isitprime",
+   "CATEGORY": "calculator",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.bbzone.isitprime/"
+  },
+  {
+   "APP_ID": "com.vsmartcard.acardemulator",
+   "PACKAGE": "com.vsmartcard.acardemulator",
+   "CATEGORY": "development",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.vsmartcard.acardemulator/"
+  },
+  {
+   "APP_ID": "com.iris.gallery",
+   "PACKAGE": "com.iris.gallery",
+   "CATEGORY": "gallery",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.iris.gallery/"
+  },
+  {
+   "APP_ID": "com.adeeteya.digital_calculator",
+   "PACKAGE": "com.adeeteya.digital_calculator",
+   "CATEGORY": "calculator",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.adeeteya.digital_calculator/"
+  },
+  {
+   "APP_ID": "lab.rreedd.oriens",
+   "PACKAGE": "lab.rreedd.oriens",
+   "CATEGORY": "clock",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/lab.rreedd.oriens/"
+  },
+  {
+   "APP_ID": "org.godotengine.editor.v4",
+   "PACKAGE": "org.godotengine.editor.v4",
+   "CATEGORY": "development",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/org.godotengine.editor.v4/"
+  },
+  {
+   "APP_ID": "foss.cnugteren.nlweer",
+   "PACKAGE": "foss.cnugteren.nlweer",
+   "CATEGORY": "weather",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/foss.cnugteren.nlweer/"
+  },
+  {
+   "APP_ID": "com.axiel7.anihyou",
+   "PACKAGE": "com.axiel7.anihyou",
+   "CATEGORY": "reading",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.axiel7.anihyou/"
+  },
+  {
+   "APP_ID": "joshuatee.wx",
+   "PACKAGE": "joshuatee.wx",
+   "CATEGORY": "weather",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/joshuatee.wx/"
+  },
+  {
+   "APP_ID": "net.aliasvault.app",
+   "PACKAGE": "net.aliasvault.app",
+   "CATEGORY": "security",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/net.aliasvault.app/"
+  },
+  {
+   "APP_ID": "uk.org.boddie.android.weatherforecast",
+   "PACKAGE": "uk.org.boddie.android.weatherforecast",
+   "CATEGORY": "weather",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/uk.org.boddie.android.weatherforecast/"
+  },
+  {
+   "APP_ID": "de.phasenrauscher.bicyweather",
+   "PACKAGE": "de.phasenrauscher.bicyweather",
+   "CATEGORY": "weather",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/de.phasenrauscher.bicyweather/"
+  },
+  {
+   "APP_ID": "com.fixupxer",
+   "PACKAGE": "com.fixupxer",
+   "CATEGORY": "internet",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.fixupxer/"
+  },
+  {
+   "APP_ID": "com.github.vauvenal5.yaga",
+   "PACKAGE": "com.github.vauvenal5.yaga",
+   "CATEGORY": "gallery",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.github.vauvenal5.yaga/"
+  },
+  {
+   "APP_ID": "fr.ign.geoportail",
+   "PACKAGE": "fr.ign.geoportail",
+   "CATEGORY": "navigation",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/fr.ign.geoportail/"
+  },
+  {
+   "APP_ID": "com.kylecorry.trail_sense",
+   "PACKAGE": "com.kylecorry.trail_sense",
+   "CATEGORY": "navigation",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.kylecorry.trail_sense/"
+  },
+  {
+   "APP_ID": "de.kaffeemitkoffein.tinyweatherforecastgermany",
+   "PACKAGE": "de.kaffeemitkoffein.tinyweatherforecastgermany",
+   "CATEGORY": "weather",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/de.kaffeemitkoffein.tinyweatherforecastgermany/"
+  },
+  {
+   "APP_ID": "dudeofx.eval",
+   "PACKAGE": "dudeofx.eval",
+   "CATEGORY": "calculator",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/dudeofx.eval/"
+  },
+  {
+   "APP_ID": "it.rignanese.leo.slimfacebook",
+   "PACKAGE": "it.rignanese.leo.slimfacebook",
+   "CATEGORY": "internet",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/it.rignanese.leo.slimfacebook/"
+  },
+  {
+   "APP_ID": "org.fossify.gallery",
+   "PACKAGE": "org.fossify.gallery",
+   "CATEGORY": "gallery",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/org.fossify.gallery/"
+  },
+  {
+   "APP_ID": "deckers.thibault.aves.libre",
+   "PACKAGE": "deckers.thibault.aves.libre",
+   "CATEGORY": "gallery",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/deckers.thibault.aves.libre/"
+  },
+  {
+   "APP_ID": "io.github.lordofpolls.shellwave",
+   "PACKAGE": "io.github.lordofpolls.shellwave",
+   "CATEGORY": "development",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/io.github.lordofpolls.shellwave/"
+  },
+  {
+   "APP_ID": "org.fossify.clock",
+   "PACKAGE": "org.fossify.clock",
+   "CATEGORY": "clock",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/org.fossify.clock/"
+  },
+  {
+   "APP_ID": "com.justdeax.composeStopwatch",
+   "PACKAGE": "com.justdeax.composeStopwatch",
+   "CATEGORY": "stopwatch",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.justdeax.composeStopwatch/"
+  },
+  {
+   "APP_ID": "yetzio.yetcalc",
+   "PACKAGE": "yetzio.yetcalc",
+   "CATEGORY": "calculator",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/yetzio.yetcalc/"
+  },
+  {
+   "APP_ID": "trailence.org",
+   "PACKAGE": "trailence.org",
+   "CATEGORY": "navigation",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/trailence.org/"
+  },
+  {
+   "APP_ID": "com.barghest.mesh",
+   "PACKAGE": "com.barghest.mesh",
+   "CATEGORY": "connectivity",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.barghest.mesh/"
+  },
+  {
+   "APP_ID": "dev.otaj.zelp",
+   "PACKAGE": "dev.otaj.zelp",
+   "CATEGORY": "connectivity",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/dev.otaj.zelp/"
+  },
+  {
+   "APP_ID": "takagi.ru.monica.fdroid",
+   "PACKAGE": "takagi.ru.monica.fdroid",
+   "CATEGORY": "security",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/takagi.ru.monica.fdroid/"
+  },
+  {
+   "APP_ID": "org.fossify.math",
+   "PACKAGE": "org.fossify.math",
+   "CATEGORY": "calculator",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/org.fossify.math/"
+  },
+  {
+   "APP_ID": "com.vicolo.chrono",
+   "PACKAGE": "com.vicolo.chrono",
+   "CATEGORY": "clock",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.vicolo.chrono/"
+  },
+  {
+   "APP_ID": "com.freetime.geoweather",
+   "PACKAGE": "com.freetime.geoweather",
+   "CATEGORY": "weather",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.freetime.geoweather/"
+  },
+  {
+   "APP_ID": "com.foxdebug.acode",
+   "PACKAGE": "com.foxdebug.acode",
+   "CATEGORY": "development",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.foxdebug.acode/"
+  },
+  {
+   "APP_ID": "me.timeto.app",
+   "PACKAGE": "me.timeto.app",
+   "CATEGORY": "stopwatch",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/me.timeto.app/"
+  },
+  {
+   "APP_ID": "org.sherpr.app",
+   "PACKAGE": "org.sherpr.app",
+   "CATEGORY": "connectivity",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/org.sherpr.app/"
+  },
+  {
+   "APP_ID": "org.y20k.transistor",
+   "PACKAGE": "org.y20k.transistor",
+   "CATEGORY": "multimedia",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/org.y20k.transistor/"
+  },
+  {
+   "APP_ID": "org.asafonov.weather",
+   "PACKAGE": "org.asafonov.weather",
+   "CATEGORY": "weather",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/org.asafonov.weather/"
+  },
+  {
+   "APP_ID": "com.agatamessina.webinspector",
+   "PACKAGE": "com.agatamessina.webinspector",
+   "CATEGORY": "development",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.agatamessina.webinspector/"
+  },
+  {
+   "APP_ID": "com.fpf.smartscan",
+   "PACKAGE": "com.fpf.smartscan",
+   "CATEGORY": "gallery",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.fpf.smartscan/"
+  },
+  {
+   "APP_ID": "org.billthefarmer.buses",
+   "PACKAGE": "org.billthefarmer.buses",
+   "CATEGORY": "navigation",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/org.billthefarmer.buses/"
+  },
+  {
+   "APP_ID": "dev.cipher.notes",
+   "PACKAGE": "dev.cipher.notes",
+   "CATEGORY": "security",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/dev.cipher.notes/"
+  },
+  {
+   "APP_ID": "io.github.x0b.rcx",
+   "PACKAGE": "io.github.x0b.rcx",
+   "CATEGORY": "file-manager",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/io.github.x0b.rcx/"
+  },
+  {
+   "APP_ID": "com.google.android.stardroid",
+   "PACKAGE": "com.google.android.stardroid",
+   "CATEGORY": "navigation",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.google.android.stardroid/"
+  },
+  {
+   "APP_ID": "duress.ultimate",
+   "PACKAGE": "duress.ultimate",
+   "CATEGORY": "security",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/duress.ultimate/"
+  },
+  {
+   "APP_ID": "com.artifex.mupdf.viewer.app",
+   "PACKAGE": "com.artifex.mupdf.viewer.app",
+   "CATEGORY": "reading",
+   "STATUS": "DISCOVERED",
+   "F_DROID_URL": "https://f-droid.org/en/packages/com.artifex.mupdf.viewer.app/"
+  }
+ ],
+ "BATCH_PLAN": [
+  {
+   "BATCH": "BATCH-01",
+   "SIZE": 25,
+   "MIX": true,
+   "ITEMS": [
+    "com.qwde.ccm",
+    "com.astroloop.game",
+    "app.halma",
+    "com.jeffliu.balancetheball",
+    "crypto.o0o0o0o0o.games.blackjack",
+    "eu.veldsoft.no.thanks",
+    "com.simondalvai.ball2box",
+    "si.palcka.tarok",
+    "cos.premy.mines",
+    "com.sidhant.puzzle",
+    "com.ivylopez.authsrng",
+    "io.github.hathibelagal.mykanji",
+    "io.github.ebraminio.bouncy",
+    "de.tobiasbielefeld.solitaire",
+    "eu.quelltext.memory",
+    "com.sidhant.queens",
+    "page.codeberg.lanticy.guandan",
+    "xyz.deepdaikon.quinb",
+    "com.vayunmathur.games.solitaire",
+    "bim.app",
+    "de.schwarz.boardgamepal",
+    "com.dash1971.maia_chess",
+    "org.secuso.privacyfriendlybattleship",
+    "com.kingalex.kingpong",
+    "com.vovagorodok.blichess"
+   ]
+  },
+  {
+   "BATCH": "BATCH-02",
+   "SIZE": 25,
+   "MIX": true,
+   "ITEMS": [
+    "io.itch.pirate_solitaire",
+    "com.dozingcatsoftware.dodge",
+    "com.helddertierwelt.mentalmath",
+    "com.sidhant.bubbleshooter",
+    "net.tigr.navyfleetbattle",
+    "com.hazelhope.dubster.hamtest",
+    "ca.rmen.nounours",
+    "com.nima.triviaapp",
+    "ru.wohlsoft.thextech.fdroid",
+    "com.willie.mancala",
+    "org.lichess.mobileV2",
+    "de.georgsieber.ballbreak",
+    "com.quietgrid.app",
+    "com.octbit.rutmath",
+    "com.galaxyrio.sudokusolver",
+    "org.lufebe16.pysolfc",
+    "com.kaeruct.raumballer",
+    "com.sanskritbasics.memory",
+    "com.smorgasbork.hotdeath",
+    "com.serwylo.retrowars",
+    "org.opensurge2d.surgeengine",
+    "com.eightsines.firestrike.opensource",
+    "com.clavierhaus.gnubg",
+    "com.sidhant.arrowescape",
+    "com.vovagorodok.blidraughts"
+   ]
+  },
+  {
+   "BATCH": "BATCH-03",
+   "SIZE": 25,
+   "MIX": true,
+   "ITEMS": [
+    "com.hfut.schedule",
+    "foehnix.widget",
+    "de.seemoo.at_tracking_detection",
+    "org.nitri.opentopo",
+    "com.newsblur",
+    "de.taz.android.app.free",
+    "com.bupkis.tirailleur",
+    "io.github.aoc_normal",
+    "fr.shiningcat.binclockwidget",
+    "net.diffengine.romandigitalclock",
+    "eu.weblibre.gecko",
+    "com.jherkenhoff.qalculate",
+    "site.leos.apps.lespas",
+    "me.river.nightbell",
+    "com.madlonkay.orgro",
+    "org.forkgram.classic",
+    "com.kompact",
+    "com.ma.tehro",
+    "net.bible.android.activity",
+    "net.osmand.plus",
+    "com.tutpro.baresip.plus",
+    "it.fast4x.riplay",
+    "org.stingle.photos",
+    "com.forrestguice.suntimeswidget",
+    "com.vayunmathur.clock"
+   ]
+  },
+  {
+   "BATCH": "BATCH-04",
+   "SIZE": 25,
+   "MIX": true,
+   "ITEMS": [
+    "com.luc4n3x.levyra",
+    "com.firebirdberlin.nightdream.noGms",
+    "com.vagujhelyigergely.calculatorm3",
+    "com.hegocre.nextcloudpasswords",
+    "com.chmouel.liseur",
+    "protectedwp.safespace",
+    "dev.gpxit.app",
+    "com.srkovnar.legacyphotoframe",
+    "com.nfcarchiver.nfc_archiver",
+    "org.ojrandom.paiesque",
+    "com.greenart7c3.nostrsigner",
+    "com.divinelink.scenepeek",
+    "app.fedilab.castlab",
+    "de.schliweb.makeacopy",
+    "fr.corenting.convertisseureurofranc",
+    "io.paperterm.app",
+    "org.ucam.ssb22.pinyinfdroid",
+    "com.kolakek.pimiwidget",
+    "is.xyz.mpv",
+    "orinasa.njarasoa.maripanatokana",
+    "tibarj.tranquilstopwatch",
+    "com.davidtakac.bura",
+    "m.co.rh.id.a_news_provider",
+    "de.quaddyservices.dynamicnightlight",
+    "com.ominous.quickweather"
+   ]
+  }
+ ]
+}

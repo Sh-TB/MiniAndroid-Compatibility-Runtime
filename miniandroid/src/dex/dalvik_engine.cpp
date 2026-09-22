@@ -17657,6 +17657,53 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
     if (shadow_registry_ == nullptr) return false;
 
     // ────────────────────────────────────────────────────────────────────
+    // S81 FIX-1 (VF-DIALOG-ITEMS) — dual-view of the bridge_to_api law:
+    // AlertDialog$Builder.setItems reaches the DialogShadow through THIS
+    // dispatch path when the receiver's runtime class is in the DEX index
+    // (the bridge_to_api copy only covers the class-miss fallthrough, the
+    // same two-view shape as R-NEW-339 getSystemService). Materialize the
+    // heap array into the builder window's items BEFORE the shadow runs so
+    // the dialog paints real item rows; the shadow still records the
+    // listener + choice state afterwards.
+    // ────────────────────────────────────────────────────────────────────
+    if (method == "setItems" &&
+        class_name.find("AlertDialog$Builder") != std::string::npos &&
+        args.size() >= 2 &&
+        args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0 &&
+        args[1].type == DalvikType::OBJECT_REF && args[1].object_id != 0) {
+        uint32_t arr_id = args[1].object_id;
+        auto len_f = heap_.get_object_field(arr_id, "__array_length__");
+        if (!len_f.has_value() || len_f->type != DalvikType::INT32)
+            len_f = heap_.get_object_field(arr_id, "__new_array_length__");
+        int32_t n_items = (len_f.has_value() && len_f->type == DalvikType::INT32)
+                              ? len_f->int_val : 0;
+        if (n_items > 0 && n_items < 512) {
+            auto* dsh = shadow_registry_->find_as<framework::DialogShadow>();
+            framework::DialogWindow* win =
+                dsh ? dsh->window_by_obj(args[0].object_id) : nullptr;
+            if (win) {
+                win->items.clear();
+                for (int32_t i = 0; i < n_items; ++i) {
+                    auto el = heap_.get_object_field(
+                        arr_id, "array[" + std::to_string(i) + "]");
+                    if (el.has_value() && el->type == DalvikType::STRING_REF)
+                        win->items.push_back(el->string_val);
+                    else if (el.has_value() && el->type == DalvikType::OBJECT_REF &&
+                             el->object_id != 0) {
+                        auto st = heap_.get_object_field(el->object_id, "s");
+                        if (st.has_value() && st->type == DalvikType::STRING_REF)
+                            win->items.push_back(st->string_val);
+                    }
+                }
+                std::cerr << "[S81-DIALOG-ITEMS] materialized "
+                          << win->items.size() << "/" << n_items
+                          << " items for builder obj=" << args[0].object_id
+                          << std::endl;
+            }
+        }
+    }
+
+    // ────────────────────────────────────────────────────────────────────
     // R-NEW-339 companion law: Context.getSystemService(Class) must resolve
     // in BOTH dispatch layers. The bridge_to_api copy is only reached via
     // the class-miss fallthrough; when the receiver's runtime class IS in
@@ -24522,6 +24569,60 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // ────────────────────────────────────────────────────────────────────────
+    // S81 FIX-1 (VF-DIALOG-ITEMS): AlertDialog.Builder.setItems law.
+    // AOSP AlertDialog.Builder.setItems(CharSequence[] items, listener)
+    // (frameworks/base/core/java/android/app/AlertDialog.java Builder):
+    // the array elements BECOME the dialog's item list. The probe fixture
+    // (s81_visual_probe) proved the previous contract dropped the array —
+    // only the listener survived → [DIALOG-LAYOUT] items=0 → every real
+    // item-dialog rendered with an empty list (§43 REPRODUCE→ROOT CAUSE).
+    // Fix: materialize heap array elements ("array[i]" fields, length at
+    // "__array_length__"/"__new_array_length__") into the builder window's
+    // item vector, then fall through so DialogShadow still records the
+    // listener + choice state (single source of truth preserved).
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "setItems" &&
+        class_name.find("AlertDialog$Builder") != std::string::npos &&
+        args.size() >= 2 &&
+        args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0 &&
+        args[1].type == DalvikType::OBJECT_REF && args[1].object_id != 0 &&
+        shadow_registry_ != nullptr) {
+        uint32_t arr_id = args[1].object_id;
+        auto len_f = heap_.get_object_field(arr_id, "__array_length__");
+        if (!len_f.has_value() || len_f->type != DalvikType::INT32)
+            len_f = heap_.get_object_field(arr_id, "__new_array_length__");
+        int32_t n_items = (len_f.has_value() && len_f->type == DalvikType::INT32)
+                              ? len_f->int_val : 0;
+        if (n_items > 0 && n_items < 512) {
+            auto* dsh = shadow_registry_->find_as<framework::DialogShadow>();
+            framework::DialogWindow* win =
+                dsh ? dsh->window_by_obj(args[0].object_id) : nullptr;
+            if (win) {
+                win->items.clear();
+                for (int32_t i = 0; i < n_items; ++i) {
+                    auto el = heap_.get_object_field(
+                        arr_id, "array[" + std::to_string(i) + "]");
+                    if (el.has_value() && el->type == DalvikType::STRING_REF)
+                        win->items.push_back(el->string_val);
+                    else if (el.has_value() && el->type == DalvikType::OBJECT_REF &&
+                             el->object_id != 0) {
+                        // CharSequence elements (StringBuilder/StringBuffer
+                        // boxed strings): read the standard heap string field
+                        // when present (AOSP CharSequence[] contract).
+                        auto st = heap_.get_object_field(el->object_id, "s");
+                        if (st.has_value() && st->type == DalvikType::STRING_REF)
+                            win->items.push_back(st->string_val);
+                    }
+                }
+                std::cerr << "[S81-DIALOG-ITEMS] materialized "
+                          << win->items.size() << "/" << n_items
+                          << " items for builder obj=" << args[0].object_id
+                          << std::endl;
+            }
+        }
+    }
+
     // EXP-048: SharedPreferences methods — getString, getBoolean, getInt,
     // getLong, contains, edit, Editor.put*, commit, apply
     // ────────────────────────────────────────────────────────────────────────

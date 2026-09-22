@@ -412,6 +412,13 @@ void ViewRenderer::draw_text_into(ViewShadow::ViewNode& n, FrameBuffer& fb,
                                   int left, int top, int w, int h) {
     std::string t = !n.text.empty() ? n.text : n.hint;
     if (t.empty()) return;
+    // S81: opt-in text-draw trace (visual root-cause workflow §43 LOCATE step)
+    static const bool s_text_trace = std::getenv("MINIANDROID_TEXT_TRACE") != nullptr;
+    if (s_text_trace) {
+        std::cerr << "[S81-TEXT] class=" << n.class_desc << " at(" << left << ","
+                  << top << ") wh(" << w << "," << h << ") text=\"" << t.substr(0, 60)
+                  << "\" vis=" << n.visibility << std::endl;
+    }
     float ts = n.text_size_px > 0 ? n.text_size_px : 28.f;
     RGBA col{0, 0, 0, 255};
     if (n.text_color) {

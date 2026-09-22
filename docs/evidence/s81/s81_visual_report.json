@@ -1,0 +1,2859 @@
+{
+ "generated": "S81 visual audit at HEAD",
+ "results": [
+  {
+   "apk": "snake_v1.0_vc1.apk",
+   "label": "Snake (AndroidGameSnake)",
+   "rc": 0,
+   "errors": "0",
+   "frames": 8,
+   "visual": {
+    "frame": "frame_007.png",
+    "SCREEN_WIDTH": 1080,
+    "SCREEN_HEIGHT": 1920,
+    "UNIQUE_COLORS_RAW": 24,
+    "UNIQUE_COLORS": 24,
+    "COLOR_ENTROPY": 0.333,
+    "DOMINANT_COLOR_RATIO": 0.9439,
+    "SECOND_DOMINANT_COLOR_RATIO": 0.0534,
+    "DOMINANT_COLOR_RGB": [
+     240,
+     240,
+     240
+    ],
+    "LUMINANCE_RANGE": 0.871,
+    "SATURATION_RANGE": 0.498,
+    "NON_BACKGROUND_PIXELS": 116348,
+    "NON_BACKGROUND_RATIO": 0.0561,
+    "TEXT_PIXELS": 0,
+    "WIDGET_PIXELS": 5504,
+    "IMAGE_PIXELS": 0,
+    "ICON_PIXELS": 2432,
+    "FLAT_CELL_RATIO": 0.9846,
+    "FLAGS": [
+     "MONOCHROME_LIKE",
+     "LOW_COLOR_VARIETY",
+     "FLAT_BACKGROUND",
+     "MISSING_IMAGES_SUSPECTED",
+     "IMAGE_DECODED_VS_RENDERED_GAP"
+    ],
+    "REGIONS": {
+     "textish": [],
+     "widgetish": [
+      [
+       608,
+       1392,
+       640,
+       1520,
+       9
+      ],
+      [
+       432,
+       800,
+       448,
+       928,
+       8
+      ],
+      [
+       624,
+       800,
+       640,
+       928,
+       8
+      ],
+      [
+       432,
+       1392,
+       448,
+       1520,
+       8
+      ],
+      [
+       192,
+       784,
+       208,
+       896,
+       7
+      ],
+      [
+       112,
+       944,
+       128,
+       1056,
+       7
+      ],
+      [
+       752,
+       944,
+       768,
+       1056,
+       7
+      ],
+      [
+       944,
+       944,
+       960,
+       1056,
+       7
+      ],
+      [
+       848,
+       976,
+       912,
+       1008,
+       6
+      ],
+      [
+       224,
+       976,
+       256,
+       1024,
+       4
+      ],
+      [
+       800,
+       976,
+       816,
+       1024,
+       3
+      ],
+      [
+       176,
+       992,
+       208,
+       1024,
+       3
+      ]
+     ],
+     "imageish": [],
+     "iconish": [
+      [
+       80,
+       816,
+       144,
+       864,
+       8
+      ],
+      [
+       528,
+       832,
+       576,
+       880,
+       7
+      ],
+      [
+       560,
+       1440,
+       624,
+       1472,
+       7
+      ],
+      [
+       480,
+       1440,
+       528,
+       1472,
+       6
+      ],
+      [
+       32,
+       816,
+       64,
+       864,
+       4
+      ],
+      [
+       816,
+       976,
+       864,
+       1008,
+       4
+      ]
+     ]
+    },
+    "LEVEL": 2,
+    "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+    "APK_RASTER_RESOURCES": 10,
+    "APK_RASTER_SAMPLE": [
+     "ic_launcher.png",
+     "ic_launcher.png",
+     "ic_launcher.png",
+     "ic_launcher.png",
+     "ic_launcher.png",
+     "ic_launcher_round.png",
+     "ic_launcher_round.png",
+     "ic_launcher_round.png",
+     "ic_launcher_round.png",
+     "ic_launcher_round.png"
+    ],
+    "APK_RES_DIRS": [
+     "drawable",
+     "drawable-v21",
+     "drawable-v24",
+     "layout",
+     "mipmap-anydpi-v26",
+     "mipmap-hdpi-v4",
+     "mipmap-mdpi-v4",
+     "mipmap-xhdpi-v4",
+     "mipmap-xxhdpi-v4",
+     "mipmap-xxxhdpi-v4"
+    ]
+   },
+   "frame_paths": [
+    "/home/z/my-project/run/s81_audit/snake_v1.0_vc1/frames/frame_006.png",
+    "/home/z/my-project/run/s81_audit/snake_v1.0_vc1/frames/frame_007.png"
+   ]
+  },
+  {
+   "apk": "snake_deluxe_v1.0_vc1.apk",
+   "label": "Snake Deluxe (S80)",
+   "rc": 0,
+   "errors": "0",
+   "frames": 8,
+   "visual": {
+    "frame": "frame_007.png",
+    "SCREEN_WIDTH": 1080,
+    "SCREEN_HEIGHT": 1920,
+    "UNIQUE_COLORS_RAW": 82,
+    "UNIQUE_COLORS": 82,
+    "COLOR_ENTROPY": 2.283,
+    "DOMINANT_COLOR_RATIO": 0.3267,
+    "SECOND_DOMINANT_COLOR_RATIO": 0.2661,
+    "DOMINANT_COLOR_RGB": [
+     0,
+     16,
+     32
+    ],
+    "LUMINANCE_RANGE": 0.888,
+    "SATURATION_RANGE": 0.855,
+    "NON_BACKGROUND_PIXELS": 1396060,
+    "NON_BACKGROUND_RATIO": 0.6733,
+    "TEXT_PIXELS": 0,
+    "WIDGET_PIXELS": 18176,
+    "IMAGE_PIXELS": 1792,
+    "ICON_PIXELS": 18176,
+    "FLAT_CELL_RATIO": 0.9259,
+    "FLAGS": [
+     "ICON_PRESENT",
+     "GRAPHICALLY_NONTRIVIAL"
+    ],
+    "REGIONS": {
+     "textish": [],
+     "widgetish": [
+      [
+       1040,
+       144,
+       1072,
+       1216,
+       95
+      ],
+      [
+       96,
+       48,
+       240,
+       96,
+       16
+      ],
+      [
+       736,
+       1712,
+       816,
+       1776,
+       14
+      ],
+      [
+       304,
+       1712,
+       368,
+       1776,
+       11
+      ],
+      [
+       880,
+       1712,
+       928,
+       1776,
+       9
+      ],
+      [
+       288,
+       608,
+       320,
+       672,
+       8
+      ],
+      [
+       400,
+       608,
+       448,
+       672,
+       8
+      ],
+      [
+       544,
+       1600,
+       608,
+       1648,
+       8
+      ],
+      [
+       352,
+       608,
+       384,
+       672,
+       7
+      ],
+      [
+       400,
+       1824,
+       464,
+       1872,
+       7
+      ],
+      [
+       608,
+       1472,
+       640,
+       1520,
+       6
+      ],
+      [
+       608,
+       1264,
+       656,
+       1296,
+       5
+      ]
+     ],
+     "imageish": [
+      [
+       944,
+       48,
+       976,
+       96,
+       6
+      ],
+      [
+       896,
+       64,
+       928,
+       96,
+       4
+      ],
+      [
+       1008,
+       64,
+       1040,
+       96,
+       3
+      ],
+      [
+       352,
+       1264,
+       368,
+       1296,
+       2
+      ],
+      [
+       384,
+       1264,
+       400,
+       1296,
+       2
+      ],
+      [
+       416,
+       1264,
+       432,
+       1296,
+       2
+      ]
+     ],
+     "iconish": [
+      [
+       16,
+       128,
+       32,
+       1216,
+       68
+      ],
+      [
+       32,
+       1152,
+       1056,
+       1232,
+       68
+      ],
+      [
+       16,
+       48,
+       160,
+       96,
+       13
+      ],
+      [
+       432,
+       1472,
+       480,
+       1536,
+       9
+      ],
+      [
+       464,
+       1264,
+       528,
+       1296,
+       7
+      ],
+      [
+       880,
+       48,
+       944,
+       96,
+       6
+      ],
+      [
+       576,
+       1472,
+       608,
+       1536,
+       6
+      ],
+      [
+       1040,
+       192,
+       1056,
+       272,
+       5
+      ],
+      [
+       1040,
+       336,
+       1056,
+       416,
+       5
+      ],
+      [
+       1040,
+       464,
+       1056,
+       544,
+       5
+      ],
+      [
+       1040,
+       608,
+       1056,
+       688,
+       5
+      ],
+      [
+       1040,
+       736,
+       1056,
+       816,
+       5
+      ]
+     ]
+    },
+    "LEVEL": 3,
+    "LEVEL_NAME": "STRUCT_CANDIDATE",
+    "APK_RASTER_RESOURCES": 0,
+    "APK_RASTER_SAMPLE": [],
+    "APK_RES_DIRS": [
+     "drawable",
+     "layout"
+    ]
+   },
+   "frame_paths": [
+    "/home/z/my-project/run/s81_audit/snake_deluxe_v1.0_vc1/frames/frame_006.png",
+    "/home/z/my-project/run/s81_audit/snake_deluxe_v1.0_vc1/frames/frame_007.png"
+   ]
+  },
+  {
+   "apk": "tetris_v1.0_vc1.apk",
+   "label": "Mini Tetris (S80)",
+   "rc": 0,
+   "errors": "0",
+   "frames": 8,
+   "visual": {
+    "frame": "frame_007.png",
+    "SCREEN_WIDTH": 1080,
+    "SCREEN_HEIGHT": 1920,
+    "UNIQUE_COLORS_RAW": 70,
+    "UNIQUE_COLORS": 70,
+    "COLOR_ENTROPY": 1.663,
+    "DOMINANT_COLOR_RATIO": 0.4765,
+    "SECOND_DOMINANT_COLOR_RATIO": 0.4126,
+    "DOMINANT_COLOR_RGB": [
+     0,
+     16,
+     32
+    ],
+    "LUMINANCE_RANGE": 0.916,
+    "SATURATION_RANGE": 0.976,
+    "NON_BACKGROUND_PIXELS": 1085000,
+    "NON_BACKGROUND_RATIO": 0.5232,
+    "TEXT_PIXELS": 0,
+    "WIDGET_PIXELS": 21632,
+    "IMAGE_PIXELS": 2624,
+    "ICON_PIXELS": 13056,
+    "FLAT_CELL_RATIO": 0.9275,
+    "FLAGS": [
+     "ICON_PRESENT",
+     "GRAPHICALLY_NONTRIVIAL"
+    ],
+    "REGIONS": {
+     "textish": [],
+     "widgetish": [
+      [
+       672,
+       128,
+       688,
+       1440,
+       82
+      ],
+      [
+       736,
+       112,
+       864,
+       160,
+       17
+      ],
+      [
+       208,
+       1696,
+       272,
+       1760,
+       12
+      ],
+      [
+       16,
+       976,
+       32,
+       1104,
+       8
+      ],
+      [
+       768,
+       1824,
+       832,
+       1888,
+       8
+      ],
+      [
+       256,
+       128,
+       304,
+       192,
+       7
+      ],
+      [
+       16,
+       208,
+       32,
+       320,
+       7
+      ],
+      [
+       16,
+       336,
+       32,
+       448,
+       7
+      ],
+      [
+       16,
+       464,
+       32,
+       576,
+       7
+      ],
+      [
+       16,
+       592,
+       32,
+       704,
+       7
+      ],
+      [
+       16,
+       720,
+       32,
+       832,
+       7
+      ],
+      [
+       16,
+       848,
+       32,
+       960,
+       7
+      ]
+     ],
+     "imageish": [
+      [
+       176,
+       1456,
+       256,
+       1504,
+       11
+      ],
+      [
+       384,
+       1472,
+       416,
+       1504,
+       4
+      ],
+      [
+       480,
+       1472,
+       528,
+       1504,
+       4
+      ],
+      [
+       736,
+       496,
+       768,
+       528,
+       3
+      ],
+      [
+       816,
+       496,
+       848,
+       528,
+       3
+      ],
+      [
+       816,
+       656,
+       848,
+       672,
+       2
+      ],
+      [
+       784,
+       816,
+       800,
+       848,
+       2
+      ],
+      [
+       128,
+       1472,
+       144,
+       1504,
+       2
+      ],
+      [
+       320,
+       1472,
+       336,
+       1504,
+       2
+      ]
+     ],
+     "iconish": [
+      [
+       752,
+       800,
+       848,
+       848,
+       15
+      ],
+      [
+       112,
+       1824,
+       208,
+       1888,
+       14
+      ],
+      [
+       432,
+       1696,
+       512,
+       1760,
+       13
+      ],
+      [
+       688,
+       1824,
+       736,
+       1888,
+       9
+      ],
+      [
+       784,
+       480,
+       864,
+       528,
+       8
+      ],
+      [
+       416,
+       1472,
+       480,
+       1504,
+       7
+      ],
+      [
+       752,
+       640,
+       800,
+       688,
+       6
+      ],
+      [
+       544,
+       1696,
+       592,
+       1744,
+       6
+      ],
+      [
+       832,
+       1696,
+       880,
+       1744,
+       6
+      ],
+      [
+       304,
+       1824,
+       352,
+       1872,
+       6
+      ],
+      [
+       336,
+       1472,
+       384,
+       1504,
+       5
+      ],
+      [
+       224,
+       128,
+       272,
+       160,
+       4
+      ]
+     ]
+    },
+    "LEVEL": 3,
+    "LEVEL_NAME": "STRUCT_CANDIDATE",
+    "APK_RASTER_RESOURCES": 0,
+    "APK_RASTER_SAMPLE": [],
+    "APK_RES_DIRS": [
+     "drawable",
+     "layout"
+    ]
+   },
+   "frame_paths": [
+    "/home/z/my-project/run/s81_audit/tetris_v1.0_vc1/frames/frame_006.png",
+    "/home/z/my-project/run/s81_audit/tetris_v1.0_vc1/frames/frame_007.png"
+   ]
+  },
+  {
+   "apk": "g2048_v1.0_vc1.apk",
+   "label": "2048 (S80)",
+   "rc": 0,
+   "errors": "0",
+   "frames": 8,
+   "visual": {
+    "frame": "frame_007.png",
+    "SCREEN_WIDTH": 1080,
+    "SCREEN_HEIGHT": 1920,
+    "UNIQUE_COLORS_RAW": 33,
+    "UNIQUE_COLORS": 33,
+    "COLOR_ENTROPY": 1.757,
+    "DOMINANT_COLOR_RATIO": 0.4445,
+    "SECOND_DOMINANT_COLOR_RATIO": 0.4009,
+    "DOMINANT_COLOR_RGB": [
+     240,
+     240,
+     224
+    ],
+    "LUMINANCE_RANGE": 0.569,
+    "SATURATION_RANGE": 0.287,
+    "NON_BACKGROUND_PIXELS": 1145004,
+    "NON_BACKGROUND_RATIO": 0.5522,
+    "TEXT_PIXELS": 320,
+    "WIDGET_PIXELS": 18368,
+    "IMAGE_PIXELS": 0,
+    "ICON_PIXELS": 1472,
+    "FLAT_CELL_RATIO": 0.9608,
+    "FLAGS": [],
+    "REGIONS": {
+     "textish": [],
+     "widgetish": [
+      [
+       16,
+       416,
+       32,
+       1456,
+       65
+      ],
+      [
+       1056,
+       432,
+       1072,
+       1456,
+       64
+      ],
+      [
+       544,
+       688,
+       560,
+       928,
+       15
+      ],
+      [
+       784,
+       688,
+       800,
+       928,
+       15
+      ],
+      [
+       272,
+       704,
+       288,
+       928,
+       14
+      ],
+      [
+       32,
+       64,
+       128,
+       112,
+       12
+      ],
+      [
+       96,
+       1808,
+       160,
+       1872,
+       12
+      ],
+      [
+       128,
+       64,
+       240,
+       96,
+       11
+      ],
+      [
+       128,
+       768,
+       192,
+       832,
+       9
+      ],
+      [
+       640,
+       768,
+       704,
+       832,
+       9
+      ],
+      [
+       256,
+       48,
+       304,
+       96,
+       7
+      ],
+      [
+       384,
+       1824,
+       464,
+       1856,
+       7
+      ]
+     ],
+     "imageish": [],
+     "iconish": [
+      [
+       880,
+       1808,
+       928,
+       1856,
+       6
+      ],
+      [
+       640,
+       1824,
+       688,
+       1856,
+       6
+      ],
+      [
+       704,
+       1808,
+       736,
+       1840,
+       3
+      ],
+      [
+       576,
+       1840,
+       608,
+       1856,
+       2
+      ]
+     ]
+    },
+    "LEVEL": 2,
+    "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+    "APK_RASTER_RESOURCES": 0,
+    "APK_RASTER_SAMPLE": [],
+    "APK_RES_DIRS": [
+     "drawable",
+     "layout"
+    ]
+   },
+   "frame_paths": [
+    "/home/z/my-project/run/s81_audit/g2048_v1.0_vc1/frames/frame_006.png",
+    "/home/z/my-project/run/s81_audit/g2048_v1.0_vc1/frames/frame_007.png"
+   ]
+  },
+  {
+   "apk": "app.varlorg.unote_30.apk",
+   "label": "uNote",
+   "rc": 1,
+   "errors": "1",
+   "frames": 8,
+   "visual": {
+    "frame": "frame_007.png",
+    "SCREEN_WIDTH": 1080,
+    "SCREEN_HEIGHT": 1920,
+    "UNIQUE_COLORS_RAW": 26,
+    "UNIQUE_COLORS": 26,
+    "COLOR_ENTROPY": 0.614,
+    "DOMINANT_COLOR_RATIO": 0.8885,
+    "SECOND_DOMINANT_COLOR_RATIO": 0.0864,
+    "DOMINANT_COLOR_RGB": [
+     240,
+     240,
+     240
+    ],
+    "LUMINANCE_RANGE": 0.871,
+    "SATURATION_RANGE": 0.498,
+    "NON_BACKGROUND_PIXELS": 231120,
+    "NON_BACKGROUND_RATIO": 0.1115,
+    "TEXT_PIXELS": 0,
+    "WIDGET_PIXELS": 1088,
+    "IMAGE_PIXELS": 0,
+    "ICON_PIXELS": 2624,
+    "FLAT_CELL_RATIO": 0.9928,
+    "FLAGS": [
+     "LOW_COLOR_VARIETY",
+     "MISSING_IMAGES_SUSPECTED",
+     "IMAGE_DECODED_VS_RENDERED_GAP"
+    ],
+    "REGIONS": {
+     "textish": [],
+     "widgetish": [
+      [
+       0,
+       0,
+       16,
+       112,
+       7
+      ],
+      [
+       896,
+       1888,
+       944,
+       1920,
+       4
+      ],
+      [
+       576,
+       1904,
+       608,
+       1920,
+       2
+      ]
+     ],
+     "imageish": [],
+     "iconish": [
+      [
+       96,
+       1888,
+       272,
+       1920,
+       19
+      ],
+      [
+       480,
+       1872,
+       608,
+       1920,
+       14
+      ],
+      [
+       864,
+       1872,
+       912,
+       1920,
+       7
+      ]
+     ]
+    },
+    "LEVEL": 2,
+    "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+    "APK_RASTER_RESOURCES": 18,
+    "APK_RASTER_SAMPLE": [
+     "-5.png",
+     "0J.png",
+     "4I.png",
+     "5_.png",
+     "GG.png",
+     "JB.png",
+     "JZ.png",
+     "UI.png",
+     "cT.png",
+     "ez.png",
+     "hV.png",
+     "i-.png"
+    ],
+    "APK_RES_DIRS": []
+   },
+   "frame_paths": [
+    "/home/z/my-project/run/s81_audit/app.varlorg.unote_30/frames/frame_006.png",
+    "/home/z/my-project/run/s81_audit/app.varlorg.unote_30/frames/frame_007.png"
+   ]
+  },
+  {
+   "apk": "com.chessclock.android_29.apk",
+   "label": "Chess Clock",
+   "rc": 1,
+   "errors": "1",
+   "frames": 8,
+   "visual": {
+    "frame": "frame_007.png",
+    "SCREEN_WIDTH": 1080,
+    "SCREEN_HEIGHT": 1920,
+    "UNIQUE_COLORS_RAW": 1,
+    "UNIQUE_COLORS": 1,
+    "COLOR_ENTROPY": -0.0,
+    "DOMINANT_COLOR_RATIO": 1.0,
+    "SECOND_DOMINANT_COLOR_RATIO": 0.0,
+    "DOMINANT_COLOR_RGB": [
+     64,
+     64,
+     64
+    ],
+    "LUMINANCE_RANGE": 0.043,
+    "SATURATION_RANGE": 0.0,
+    "NON_BACKGROUND_PIXELS": 0,
+    "NON_BACKGROUND_RATIO": 0.0,
+    "TEXT_PIXELS": 0,
+    "WIDGET_PIXELS": 0,
+    "IMAGE_PIXELS": 0,
+    "ICON_PIXELS": 0,
+    "FLAT_CELL_RATIO": 1.0,
+    "FLAGS": [
+     "MONOCHROME_LIKE",
+     "LOW_COLOR_VARIETY",
+     "FLAT_BACKGROUND",
+     "MISSING_IMAGES_SUSPECTED",
+     "IMAGE_DECODED_VS_RENDERED_GAP"
+    ],
+    "REGIONS": {
+     "textish": [],
+     "widgetish": [],
+     "imageish": [],
+     "iconish": []
+    },
+    "LEVEL": 0,
+    "LEVEL_NAME": "LOADED_ONLY",
+    "APK_RASTER_RESOURCES": 4,
+    "APK_RASTER_SAMPLE": [
+     "icon.png",
+     "icon.png",
+     "icon.png",
+     "icon.png"
+    ],
+    "APK_RES_DIRS": [
+     "drawable",
+     "drawable-hdpi-v4",
+     "drawable-ldpi-v4",
+     "drawable-mdpi-v4",
+     "layout",
+     "xml-port"
+    ]
+   },
+   "frame_paths": [
+    "/home/z/my-project/run/s81_audit/com.chessclock.android_29/frames/frame_006.png",
+    "/home/z/my-project/run/s81_audit/com.chessclock.android_29/frames/frame_007.png"
+   ]
+  },
+  {
+   "apk": "com.emmanuelmess.tictactoe_3.apk",
+   "label": "TicTacToe (emmanuelmess)",
+   "rc": 1,
+   "errors": "6",
+   "frames": 8,
+   "visual": {
+    "frame": "frame_007.png",
+    "SCREEN_WIDTH": 1080,
+    "SCREEN_HEIGHT": 1920,
+    "UNIQUE_COLORS_RAW": 1,
+    "UNIQUE_COLORS": 1,
+    "COLOR_ENTROPY": -0.0,
+    "DOMINANT_COLOR_RATIO": 1.0,
+    "SECOND_DOMINANT_COLOR_RATIO": 0.0,
+    "DOMINANT_COLOR_RGB": [
+     240,
+     240,
+     240
+    ],
+    "LUMINANCE_RANGE": 0.0,
+    "SATURATION_RANGE": 0.0,
+    "NON_BACKGROUND_PIXELS": 0,
+    "NON_BACKGROUND_RATIO": 0.0,
+    "TEXT_PIXELS": 0,
+    "WIDGET_PIXELS": 0,
+    "IMAGE_PIXELS": 0,
+    "ICON_PIXELS": 0,
+    "FLAT_CELL_RATIO": 1.0,
+    "FLAGS": [
+     "MONOCHROME_LIKE",
+     "LOW_COLOR_VARIETY",
+     "FLAT_BACKGROUND",
+     "MISSING_IMAGES_SUSPECTED",
+     "IMAGE_DECODED_VS_RENDERED_GAP"
+    ],
+    "REGIONS": {
+     "textish": [],
+     "widgetish": [],
+     "imageish": [],
+     "iconish": []
+    },
+    "LEVEL": 0,
+    "LEVEL_NAME": "LOADED_ONLY",
+    "APK_RASTER_RESOURCES": 17,
+    "APK_RASTER_SAMPLE": [
+     "arial-15.png",
+     "ic_launcher.png",
+     "ic_launcher.png",
+     "ic_launcher.png",
+     "ic_launcher.png",
+     "ic_launcher.png",
+     "ic_launcher_foreground.png",
+     "ic_launcher_foreground.png",
+     "ic_launcher_foreground.png",
+     "ic_launcher_foreground.png",
+     "ic_launcher_foreground.png",
+     "ic_launcher_round.png"
+    ],
+    "APK_RES_DIRS": [
+     "mipmap-anydpi-v26",
+     "mipmap-hdpi-v4",
+     "mipmap-mdpi-v4",
+     "mipmap-xhdpi-v4",
+     "mipmap-xxhdpi-v4",
+     "mipmap-xxxhdpi-v4"
+    ]
+   },
+   "frame_paths": [
+    "/home/z/my-project/run/s81_audit/com.emmanuelmess.tictactoe_3/frames/frame_006.png",
+    "/home/z/my-project/run/s81_audit/com.emmanuelmess.tictactoe_3/frames/frame_007.png"
+   ]
+  },
+  {
+   "apk": "de.duenndns.gmdice_8.apk",
+   "label": "gmdice",
+   "rc": 0,
+   "errors": "0",
+   "frames": 8,
+   "visual": {
+    "frame": "frame_007.png",
+    "SCREEN_WIDTH": 1080,
+    "SCREEN_HEIGHT": 1920,
+    "UNIQUE_COLORS_RAW": 51,
+    "UNIQUE_COLORS": 51,
+    "COLOR_ENTROPY": 0.529,
+    "DOMINANT_COLOR_RATIO": 0.9123,
+    "SECOND_DOMINANT_COLOR_RATIO": 0.073,
+    "DOMINANT_COLOR_RGB": [
+     240,
+     240,
+     240
+    ],
+    "LUMINANCE_RANGE": 0.953,
+    "SATURATION_RANGE": 0.529,
+    "NON_BACKGROUND_PIXELS": 181632,
+    "NON_BACKGROUND_RATIO": 0.0876,
+    "TEXT_PIXELS": 4800,
+    "WIDGET_PIXELS": 15808,
+    "IMAGE_PIXELS": 0,
+    "ICON_PIXELS": 0,
+    "FLAT_CELL_RATIO": 0.96,
+    "FLAGS": [
+     "MONOCHROME_LIKE",
+     "MISSING_IMAGES_SUSPECTED",
+     "IMAGE_DECODED_VS_RENDERED_GAP"
+    ],
+    "REGIONS": {
+     "textish": [
+      [
+       688,
+       1296,
+       816,
+       1328,
+       9
+      ],
+      [
+       704,
+       1168,
+       784,
+       1184,
+       5
+      ],
+      [
+       416,
+       1168,
+       464,
+       1200,
+       4
+      ],
+      [
+       512,
+       1168,
+       576,
+       1184,
+       4
+      ],
+      [
+       448,
+       1296,
+       512,
+       1312,
+       4
+      ],
+      [
+       640,
+       1168,
+       688,
+       1184,
+       3
+      ],
+      [
+       928,
+       1280,
+       960,
+       1312,
+       3
+      ],
+      [
+       160,
+       1296,
+       192,
+       1328,
+       3
+      ],
+      [
+       224,
+       1296,
+       272,
+       1312,
+       3
+      ],
+      [
+       576,
+       1296,
+       624,
+       1312,
+       3
+      ],
+      [
+       80,
+       1840,
+       128,
+       1856,
+       3
+      ],
+      [
+       336,
+       1168,
+       352,
+       1200,
+       2
+      ]
+     ],
+     "widgetish": [
+      [
+       192,
+       1280,
+       560,
+       1328,
+       37
+      ],
+      [
+       480,
+       1152,
+       688,
+       1200,
+       21
+      ],
+      [
+       592,
+       1680,
+       656,
+       1760,
+       16
+      ],
+      [
+       48,
+       1280,
+       160,
+       1328,
+       13
+      ],
+      [
+       896,
+       1280,
+       1024,
+       1328,
+       12
+      ],
+      [
+       480,
+       1664,
+       528,
+       1760,
+       12
+      ],
+      [
+       704,
+       1152,
+       800,
+       1200,
+       10
+      ],
+      [
+       640,
+       1296,
+       784,
+       1328,
+       10
+      ],
+      [
+       416,
+       1680,
+       464,
+       1760,
+       10
+      ],
+      [
+       272,
+       1152,
+       336,
+       1200,
+       9
+      ],
+      [
+       800,
+       1296,
+       896,
+       1328,
+       8
+      ],
+      [
+       544,
+       1664,
+       560,
+       1760,
+       6
+      ]
+     ],
+     "imageish": [],
+     "iconish": []
+    },
+    "LEVEL": 2,
+    "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+    "APK_RASTER_RESOURCES": 24,
+    "APK_RASTER_SAMPLE": [
+     "ic_action_brightness_high.png",
+     "ic_action_brightness_high.png",
+     "ic_action_brightness_high.png",
+     "ic_action_brightness_high.png",
+     "ic_action_brightness_low.png",
+     "ic_action_brightness_low.png",
+     "ic_action_brightness_low.png",
+     "ic_action_brightness_low.png",
+     "logo.png",
+     "logo.png",
+     "timepicker_down_disabled.9.png",
+     "timepicker_down_disabled_focused.9.png"
+    ],
+    "APK_RES_DIRS": [
+     "drawable",
+     "drawable-hdpi-v4",
+     "drawable-xhdpi-v4",
+     "drawable-xxhdpi-v4",
+     "layout",
+     "menu"
+    ]
+   },
+   "frame_paths": [
+    "/home/z/my-project/run/s81_audit/de.duenndns.gmdice_8/frames/frame_006.png",
+    "/home/z/my-project/run/s81_audit/de.duenndns.gmdice_8/frames/frame_007.png"
+   ]
+  },
+  {
+   "apk": "dooz_23_toplevel.apk",
+   "label": "Dooz",
+   "rc": 1,
+   "errors": "17",
+   "frames": 8,
+   "visual": {
+    "frame": "frame_007.png",
+    "SCREEN_WIDTH": 1080,
+    "SCREEN_HEIGHT": 1920,
+    "UNIQUE_COLORS_RAW": 2,
+    "UNIQUE_COLORS": 2,
+    "COLOR_ENTROPY": 0.09,
+    "DOMINANT_COLOR_RATIO": 0.9887,
+    "SECOND_DOMINANT_COLOR_RATIO": 0.0113,
+    "DOMINANT_COLOR_RGB": [
+     240,
+     240,
+     240
+    ],
+    "LUMINANCE_RANGE": 1.0,
+    "SATURATION_RANGE": 0.0,
+    "NON_BACKGROUND_PIXELS": 23520,
+    "NON_BACKGROUND_RATIO": 0.0113,
+    "TEXT_PIXELS": 0,
+    "WIDGET_PIXELS": 192,
+    "IMAGE_PIXELS": 0,
+    "ICON_PIXELS": 0,
+    "FLAT_CELL_RATIO": 0.9996,
+    "FLAGS": [
+     "MONOCHROME_LIKE",
+     "LOW_COLOR_VARIETY",
+     "FLAT_BACKGROUND",
+     "MISSING_IMAGES_SUSPECTED",
+     "IMAGE_DECODED_VS_RENDERED_GAP"
+    ],
+    "REGIONS": {
+     "textish": [],
+     "widgetish": [
+      [
+       480,
+       0,
+       496,
+       48,
+       3
+      ]
+     ],
+     "imageish": [],
+     "iconish": []
+    },
+    "LEVEL": 2,
+    "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+    "APK_RASTER_RESOURCES": 10,
+    "APK_RASTER_SAMPLE": [
+     "8c.png",
+     "9w.png",
+     "FS.png",
+     "Gc.png",
+     "RJ.png",
+     "fO.png",
+     "o-.png",
+     "wb.png",
+     "yn.png",
+     "zR.png"
+    ],
+    "APK_RES_DIRS": []
+   },
+   "frame_paths": [
+    "/home/z/my-project/run/s81_audit/dooz_23_toplevel/frames/frame_006.png",
+    "/home/z/my-project/run/s81_audit/dooz_23_toplevel/frames/frame_007.png"
+   ]
+  },
+  {
+   "apk": "dubrowgn.microtimer_8.apk",
+   "label": "MicroTimer",
+   "rc": 1,
+   "errors": "8",
+   "frames": 8,
+   "visual": {
+    "frame": "frame_007.png",
+    "SCREEN_WIDTH": 1080,
+    "SCREEN_HEIGHT": 1920,
+    "UNIQUE_COLORS_RAW": 21,
+    "UNIQUE_COLORS": 21,
+    "COLOR_ENTROPY": 1.365,
+    "DOMINANT_COLOR_RATIO": 0.498,
+    "SECOND_DOMINANT_COLOR_RATIO": 0.4343,
+    "DOMINANT_COLOR_RGB": [
+     240,
+     240,
+     240
+    ],
+    "LUMINANCE_RANGE": 0.871,
+    "SATURATION_RANGE": 0.495,
+    "NON_BACKGROUND_PIXELS": 1040660,
+    "NON_BACKGROUND_RATIO": 0.5019,
+    "TEXT_PIXELS": 192,
+    "WIDGET_PIXELS": 3968,
+    "IMAGE_PIXELS": 512,
+    "ICON_PIXELS": 4864,
+    "FLAT_CELL_RATIO": 0.9815,
+    "FLAGS": [],
+    "REGIONS": {
+     "textish": [
+      [
+       672,
+       960,
+       704,
+       976,
+       2
+      ]
+     ],
+     "widgetish": [
+      [
+       656,
+       944,
+       704,
+       1088,
+       11
+      ],
+      [
+       0,
+       944,
+       32,
+       1072,
+       9
+      ],
+      [
+       112,
+       944,
+       128,
+       1088,
+       9
+      ],
+      [
+       784,
+       944,
+       800,
+       1088,
+       9
+      ],
+      [
+       160,
+       1152,
+       192,
+       1216,
+       5
+      ],
+      [
+       128,
+       1808,
+       192,
+       1824,
+       4
+      ],
+      [
+       512,
+       1360,
+       544,
+       1392,
+       3
+      ],
+      [
+       512,
+       1808,
+       560,
+       1824,
+       3
+      ],
+      [
+       176,
+       1392,
+       192,
+       1424,
+       2
+      ]
+     ],
+     "imageish": [],
+     "iconish": [
+      [
+       128,
+       1776,
+       224,
+       1840,
+       18
+      ],
+      [
+       880,
+       1152,
+       928,
+       1216,
+       9
+      ],
+      [
+       880,
+       1568,
+       928,
+       1632,
+       9
+      ],
+      [
+       880,
+       1392,
+       928,
+       1424,
+       6
+      ],
+      [
+       512,
+       1776,
+       560,
+       1808,
+       5
+      ],
+      [
+       528,
+       1376,
+       560,
+       1424,
+       4
+      ],
+      [
+       512,
+       1568,
+       560,
+       1600,
+       4
+      ],
+      [
+       512,
+       1600,
+       560,
+       1632,
+       4
+      ],
+      [
+       160,
+       1376,
+       192,
+       1408,
+       3
+      ],
+      [
+       512,
+       1824,
+       560,
+       1840,
+       3
+      ],
+      [
+       176,
+       1584,
+       208,
+       1600,
+       2
+      ],
+      [
+       160,
+       1616,
+       192,
+       1632,
+       2
+      ]
+     ]
+    },
+    "LEVEL": 2,
+    "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+    "APK_RASTER_RESOURCES": 52,
+    "APK_RASTER_SAMPLE": [
+     "0Z.png",
+     "2K.9.png",
+     "5P.png",
+     "5c.png",
+     "5v.png",
+     "6P.png",
+     "6d.png",
+     "71.png",
+     "7V.png",
+     "7m.png",
+     "Ag.png",
+     "BT.png"
+    ],
+    "APK_RES_DIRS": []
+   },
+   "frame_paths": [
+    "/home/z/my-project/run/s81_audit/dubrowgn.microtimer_8/frames/frame_006.png",
+    "/home/z/my-project/run/s81_audit/dubrowgn.microtimer_8/frames/frame_007.png"
+   ]
+  },
+  {
+   "apk": "omegacentauri.mobi.simplestopwatch_26.apk",
+   "label": "Simple Stopwatch",
+   "rc": 1,
+   "errors": "5",
+   "frames": 8,
+   "visual": {
+    "frame": "frame_007.png",
+    "SCREEN_WIDTH": 1080,
+    "SCREEN_HEIGHT": 1920,
+    "UNIQUE_COLORS_RAW": 20,
+    "UNIQUE_COLORS": 20,
+    "COLOR_ENTROPY": 0.487,
+    "DOMINANT_COLOR_RATIO": 0.9229,
+    "SECOND_DOMINANT_COLOR_RATIO": 0.0619,
+    "DOMINANT_COLOR_RGB": [
+     144,
+     144,
+     144
+    ],
+    "LUMINANCE_RANGE": 0.925,
+    "SATURATION_RANGE": 0.5,
+    "NON_BACKGROUND_PIXELS": 159828,
+    "NON_BACKGROUND_RATIO": 0.0771,
+    "TEXT_PIXELS": 2688,
+    "WIDGET_PIXELS": 4160,
+    "IMAGE_PIXELS": 0,
+    "ICON_PIXELS": 1152,
+    "FLAT_CELL_RATIO": 0.9845,
+    "FLAGS": [
+     "MONOCHROME_LIKE",
+     "LOW_COLOR_VARIETY",
+     "FLAT_BACKGROUND",
+     "MISSING_IMAGES_SUSPECTED",
+     "IMAGE_DECODED_VS_RENDERED_GAP"
+    ],
+    "REGIONS": {
+     "textish": [
+      [
+       256,
+       944,
+       464,
+       960,
+       13
+      ],
+      [
+       992,
+       896,
+       1008,
+       1024,
+       8
+      ],
+      [
+       128,
+       944,
+       240,
+       960,
+       7
+      ],
+      [
+       112,
+       912,
+       208,
+       928,
+       6
+      ],
+      [
+       144,
+       1856,
+       192,
+       1888,
+       4
+      ]
+     ],
+     "widgetish": [
+      [
+       0,
+       1840,
+       192,
+       1904,
+       22
+      ],
+      [
+       64,
+       880,
+       80,
+       1040,
+       10
+      ],
+      [
+       848,
+       1808,
+       880,
+       1920,
+       9
+      ],
+      [
+       400,
+       1856,
+       496,
+       1888,
+       9
+      ],
+      [
+       976,
+       1824,
+       992,
+       1872,
+       3
+      ],
+      [
+       96,
+       944,
+       128,
+       960,
+       2
+      ]
+     ],
+     "imageish": [],
+     "iconish": [
+      [
+       912,
+       1856,
+       944,
+       1904,
+       4
+      ],
+      [
+       880,
+       1824,
+       912,
+       1856,
+       3
+      ],
+      [
+       928,
+       1824,
+       944,
+       1856,
+       2
+      ],
+      [
+       864,
+       1872,
+       880,
+       1904,
+       2
+      ],
+      [
+       880,
+       1904,
+       912,
+       1920,
+       2
+      ]
+     ]
+    },
+    "LEVEL": 2,
+    "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+    "APK_RASTER_RESOURCES": 32,
+    "APK_RASTER_SAMPLE": [
+     "ic_launcher.png",
+     "ic_launcher.png",
+     "ic_launcher.png",
+     "ic_launcher.png",
+     "ic_launcher.png",
+     "ic_launcher_foreground.png",
+     "ic_launcher_foreground.png",
+     "ic_launcher_foreground.png",
+     "ic_launcher_foreground.png",
+     "ic_launcher_foreground.png",
+     "ic_launcher_round.png",
+     "ic_launcher_round.png"
+    ],
+    "APK_RES_DIRS": [
+     "anim",
+     "drawable",
+     "drawable-hdpi-v4",
+     "drawable-mdpi-v4",
+     "drawable-xhdpi-v4",
+     "drawable-xxhdpi-v4",
+     "layout",
+     "layout-v5",
+     "menu",
+     "mipmap-anydpi-v26",
+     "mipmap-hdpi-v4",
+     "mipmap-mdpi-v4",
+     "mipmap-xhdpi-v4",
+     "mipmap-xxhdpi-v4",
+     "mipmap-xxxhdpi-v4",
+     "xml"
+    ]
+   },
+   "frame_paths": [
+    "/home/z/my-project/run/s81_audit/omegacentauri.mobi.simplestopwatch_26/frames/frame_006.png",
+    "/home/z/my-project/run/s81_audit/omegacentauri.mobi.simplestopwatch_26/frames/frame_007.png"
+   ]
+  },
+  {
+   "apk": "org.billthefarmer.notes_139.apk",
+   "label": "Notes (billthefarmer)",
+   "rc": 0,
+   "errors": "0",
+   "frames": 8,
+   "visual": {
+    "frame": "frame_007.png",
+    "SCREEN_WIDTH": 1080,
+    "SCREEN_HEIGHT": 1920,
+    "UNIQUE_COLORS_RAW": 6,
+    "UNIQUE_COLORS": 6,
+    "COLOR_ENTROPY": 0.104,
+    "DOMINANT_COLOR_RATIO": 0.989,
+    "SECOND_DOMINANT_COLOR_RATIO": 0.0064,
+    "DOMINANT_COLOR_RGB": [
+     240,
+     240,
+     240
+    ],
+    "LUMINANCE_RANGE": 0.812,
+    "SATURATION_RANGE": 0.495,
+    "NON_BACKGROUND_PIXELS": 22768,
+    "NON_BACKGROUND_RATIO": 0.011,
+    "TEXT_PIXELS": 0,
+    "WIDGET_PIXELS": 1536,
+    "IMAGE_PIXELS": 0,
+    "ICON_PIXELS": 0,
+    "FLAT_CELL_RATIO": 0.997,
+    "FLAGS": [
+     "MONOCHROME_LIKE",
+     "LOW_COLOR_VARIETY",
+     "FLAT_BACKGROUND",
+     "MISSING_IMAGES_SUSPECTED",
+     "IMAGE_DECODED_VS_RENDERED_GAP"
+    ],
+    "REGIONS": {
+     "textish": [],
+     "widgetish": [
+      [
+       944,
+       1792,
+       992,
+       1920,
+       12
+      ],
+      [
+       0,
+       1888,
+       192,
+       1904,
+       12
+      ]
+     ],
+     "imageish": [],
+     "iconish": []
+    },
+    "LEVEL": 2,
+    "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+    "APK_RASTER_RESOURCES": 5,
+    "APK_RASTER_SAMPLE": [
+     "5X.png",
+     "I8.png",
+     "WF.png",
+     "oO.png",
+     "xM.png"
+    ],
+    "APK_RES_DIRS": []
+   },
+   "frame_paths": [
+    "/home/z/my-project/run/s81_audit/org.billthefarmer.notes_139/frames/frame_006.png",
+    "/home/z/my-project/run/s81_audit/org.billthefarmer.notes_139/frames/frame_007.png"
+   ]
+  },
+  {
+   "apk": "org.debian.eugen.headingcalculator_1.apk",
+   "label": "Heading Calculator",
+   "rc": 1,
+   "errors": "3",
+   "frames": 8,
+   "visual": {
+    "frame": "frame_007.png",
+    "SCREEN_WIDTH": 1080,
+    "SCREEN_HEIGHT": 1920,
+    "UNIQUE_COLORS_RAW": 32,
+    "UNIQUE_COLORS": 32,
+    "COLOR_ENTROPY": 0.874,
+    "DOMINANT_COLOR_RATIO": 0.8018,
+    "SECOND_DOMINANT_COLOR_RATIO": 0.1756,
+    "DOMINANT_COLOR_RGB": [
+     96,
+     160,
+     208
+    ],
+    "LUMINANCE_RANGE": 1.0,
+    "SATURATION_RANGE": 0.495,
+    "NON_BACKGROUND_PIXELS": 409964,
+    "NON_BACKGROUND_RATIO": 0.1977,
+    "TEXT_PIXELS": 2624,
+    "WIDGET_PIXELS": 43328,
+    "IMAGE_PIXELS": 896,
+    "ICON_PIXELS": 11520,
+    "FLAT_CELL_RATIO": 0.8866,
+    "FLAGS": [
+     "LOW_COLOR_VARIETY",
+     "ICON_PRESENT"
+    ],
+    "REGIONS": {
+     "textish": [
+      [
+       128,
+       112,
+       208,
+       160,
+       9
+      ],
+      [
+       16,
+       112,
+       80,
+       144,
+       6
+      ],
+      [
+       128,
+       16,
+       144,
+       64,
+       3
+      ],
+      [
+       16,
+       224,
+       32,
+       272,
+       3
+      ],
+      [
+       80,
+       224,
+       96,
+       272,
+       3
+      ],
+      [
+       16,
+       32,
+       32,
+       64,
+       2
+      ],
+      [
+       160,
+       32,
+       192,
+       48,
+       2
+      ],
+      [
+       272,
+       112,
+       304,
+       128,
+       2
+      ],
+      [
+       128,
+       224,
+       144,
+       256,
+       2
+      ]
+     ],
+     "widgetish": [
+      [
+       256,
+       288,
+       288,
+       1920,
+       204
+      ],
+      [
+       0,
+       288,
+       16,
+       1920,
+       102
+      ],
+      [
+       528,
+       288,
+       544,
+       1920,
+       102
+      ],
+      [
+       800,
+       288,
+       816,
+       1920,
+       102
+      ],
+      [
+       144,
+       16,
+       240,
+       64,
+       12
+      ],
+      [
+       16,
+       112,
+       128,
+       160,
+       12
+      ],
+      [
+       128,
+       224,
+       224,
+       272,
+       11
+      ],
+      [
+       32,
+       16,
+       128,
+       64,
+       9
+      ],
+      [
+       128,
+       864,
+       160,
+       944,
+       8
+      ],
+      [
+       432,
+       1680,
+       464,
+       1744,
+       8
+      ],
+      [
+       928,
+       1280,
+       976,
+       1344,
+       7
+      ],
+      [
+       672,
+       1680,
+       704,
+       1744,
+       7
+      ]
+     ],
+     "imageish": [
+      [
+       416,
+       480,
+       432,
+       512,
+       2
+      ],
+      [
+       688,
+       1280,
+       704,
+       1312,
+       2
+      ]
+     ],
+     "iconish": [
+      [
+       912,
+       864,
+       1024,
+       944,
+       20
+      ],
+      [
+       880,
+       1680,
+       1008,
+       1760,
+       18
+      ],
+      [
+       640,
+       464,
+       704,
+       544,
+       13
+      ],
+      [
+       640,
+       848,
+       704,
+       944,
+       12
+      ],
+      [
+       336,
+       1680,
+       400,
+       1744,
+       12
+      ],
+      [
+       112,
+       1664,
+       176,
+       1760,
+       11
+      ],
+      [
+       976,
+       1264,
+       1024,
+       1344,
+       9
+      ],
+      [
+       880,
+       1280,
+       944,
+       1344,
+       9
+      ],
+      [
+       112,
+       448,
+       160,
+       528,
+       8
+      ],
+      [
+       384,
+       896,
+       432,
+       944,
+       6
+      ],
+      [
+       656,
+       1312,
+       704,
+       1360,
+       5
+      ],
+      [
+       960,
+       448,
+       992,
+       480,
+       4
+      ]
+     ]
+    },
+    "LEVEL": 2,
+    "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+    "APK_RASTER_RESOURCES": 4,
+    "APK_RASTER_SAMPLE": [
+     "ic_launcher.png",
+     "ic_launcher.png",
+     "ic_launcher.png",
+     "ic_launcher.png"
+    ],
+    "APK_RES_DIRS": [
+     "drawable",
+     "drawable-hdpi-v4",
+     "drawable-mdpi-v4",
+     "drawable-xhdpi-v4",
+     "drawable-xxhdpi-v4",
+     "layout",
+     "layout-land",
+     "layout-port"
+    ]
+   },
+   "frame_paths": [
+    "/home/z/my-project/run/s81_audit/org.debian.eugen.headingcalculator_1/frames/frame_006.png",
+    "/home/z/my-project/run/s81_audit/org.debian.eugen.headingcalculator_1/frames/frame_007.png"
+   ]
+  },
+  {
+   "apk": "rkr.simplekeyboard.inputmethod_145.apk",
+   "label": "Simple Keyboard",
+   "rc": 0,
+   "errors": "0",
+   "frames": 8,
+   "visual": {
+    "frame": "frame_007.png",
+    "SCREEN_WIDTH": 1080,
+    "SCREEN_HEIGHT": 1920,
+    "UNIQUE_COLORS_RAW": 2,
+    "UNIQUE_COLORS": 2,
+    "COLOR_ENTROPY": 0.09,
+    "DOMINANT_COLOR_RATIO": 0.9887,
+    "SECOND_DOMINANT_COLOR_RATIO": 0.0113,
+    "DOMINANT_COLOR_RGB": [
+     240,
+     240,
+     240
+    ],
+    "LUMINANCE_RANGE": 1.0,
+    "SATURATION_RANGE": 0.0,
+    "NON_BACKGROUND_PIXELS": 23520,
+    "NON_BACKGROUND_RATIO": 0.0113,
+    "TEXT_PIXELS": 0,
+    "WIDGET_PIXELS": 192,
+    "IMAGE_PIXELS": 0,
+    "ICON_PIXELS": 0,
+    "FLAT_CELL_RATIO": 0.9996,
+    "FLAGS": [
+     "MONOCHROME_LIKE",
+     "LOW_COLOR_VARIETY",
+     "FLAT_BACKGROUND"
+    ],
+    "REGIONS": {
+     "textish": [],
+     "widgetish": [
+      [
+       480,
+       0,
+       496,
+       48,
+       3
+      ]
+     ],
+     "imageish": [],
+     "iconish": []
+    },
+    "LEVEL": 2,
+    "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+    "APK_RASTER_RESOURCES": 0,
+    "APK_RASTER_SAMPLE": [],
+    "APK_RES_DIRS": []
+   },
+   "frame_paths": [
+    "/home/z/my-project/run/s81_audit/rkr.simplekeyboard.inputmethod_145/frames/frame_006.png",
+    "/home/z/my-project/run/s81_audit/rkr.simplekeyboard.inputmethod_145/frames/frame_007.png"
+   ]
+  },
+  {
+   "apk": "fishrings_v1.23_vc6.apk",
+   "label": "fishrings",
+   "rc": 0,
+   "errors": "0",
+   "frames": 8,
+   "visual": {
+    "frame": "frame_007.png",
+    "SCREEN_WIDTH": 1080,
+    "SCREEN_HEIGHT": 1920,
+    "UNIQUE_COLORS_RAW": 1,
+    "UNIQUE_COLORS": 1,
+    "COLOR_ENTROPY": -0.0,
+    "DOMINANT_COLOR_RATIO": 1.0,
+    "SECOND_DOMINANT_COLOR_RATIO": 0.0,
+    "DOMINANT_COLOR_RGB": [
+     240,
+     240,
+     240
+    ],
+    "LUMINANCE_RANGE": 0.0,
+    "SATURATION_RANGE": 0.0,
+    "NON_BACKGROUND_PIXELS": 0,
+    "NON_BACKGROUND_RATIO": 0.0,
+    "TEXT_PIXELS": 0,
+    "WIDGET_PIXELS": 0,
+    "IMAGE_PIXELS": 0,
+    "ICON_PIXELS": 0,
+    "FLAT_CELL_RATIO": 1.0,
+    "FLAGS": [
+     "MONOCHROME_LIKE",
+     "LOW_COLOR_VARIETY",
+     "FLAT_BACKGROUND",
+     "MISSING_IMAGES_SUSPECTED",
+     "IMAGE_DECODED_VS_RENDERED_GAP"
+    ],
+    "REGIONS": {
+     "textish": [],
+     "widgetish": [],
+     "imageish": [],
+     "iconish": []
+    },
+    "LEVEL": 0,
+    "LEVEL_NAME": "LOADED_ONLY",
+    "APK_RASTER_RESOURCES": 20,
+    "APK_RASTER_SAMPLE": [
+     "blue.png",
+     "bottomaanticlockwise.png",
+     "bottombclockwise.png",
+     "ebingo_logo.png",
+     "green.png",
+     "ic_launcher.png",
+     "ic_launcher.png",
+     "ic_launcher.png",
+     "ic_launcher.png",
+     "ic_launcher.png",
+     "logo_letter_1.png",
+     "logo_letter_2.png"
+    ],
+    "APK_RES_DIRS": [
+     "layout",
+     "layout-large-v4",
+     "layout-small-v4",
+     "layout-xlarge-v4",
+     "menu",
+     "mipmap-hdpi-v4",
+     "mipmap-mdpi-v4",
+     "mipmap-xhdpi-v4",
+     "mipmap-xxhdpi-v4",
+     "mipmap-xxxhdpi-v4",
+     "raw"
+    ]
+   },
+   "frame_paths": [
+    "/home/z/my-project/run/s81_audit/fishrings_v1.23_vc6/frames/frame_006.png",
+    "/home/z/my-project/run/s81_audit/fishrings_v1.23_vc6/frames/frame_007.png"
+   ]
+  },
+  {
+   "apk": "opmt_v0.1.2_vc1.apk",
+   "label": "OPMT",
+   "rc": 0,
+   "errors": "0",
+   "frames": 8,
+   "visual": {
+    "frame": "frame_007.png",
+    "SCREEN_WIDTH": 1080,
+    "SCREEN_HEIGHT": 1920,
+    "UNIQUE_COLORS_RAW": 21,
+    "UNIQUE_COLORS": 21,
+    "COLOR_ENTROPY": 0.536,
+    "DOMINANT_COLOR_RATIO": 0.898,
+    "SECOND_DOMINANT_COLOR_RATIO": 0.0937,
+    "DOMINANT_COLOR_RGB": [
+     240,
+     240,
+     240
+    ],
+    "LUMINANCE_RANGE": 0.871,
+    "SATURATION_RANGE": 0.776,
+    "NON_BACKGROUND_PIXELS": 211564,
+    "NON_BACKGROUND_RATIO": 0.102,
+    "TEXT_PIXELS": 0,
+    "WIDGET_PIXELS": 9408,
+    "IMAGE_PIXELS": 0,
+    "ICON_PIXELS": 0,
+    "FLAT_CELL_RATIO": 0.9817,
+    "FLAGS": [
+     "LOW_COLOR_VARIETY",
+     "MISSING_IMAGES_SUSPECTED",
+     "IMAGE_DECODED_VS_RENDERED_GAP"
+    ],
+    "REGIONS": {
+     "textish": [],
+     "widgetish": [
+      [
+       352,
+       1600,
+       720,
+       1632,
+       45
+      ],
+      [
+       400,
+       1424,
+       688,
+       1472,
+       28
+      ],
+      [
+       416,
+       1760,
+       656,
+       1808,
+       22
+      ],
+      [
+       272,
+       1552,
+       288,
+       1680,
+       8
+      ],
+      [
+       272,
+       1392,
+       288,
+       1504,
+       7
+      ],
+      [
+       272,
+       1728,
+       288,
+       1840,
+       7
+      ],
+      [
+       976,
+       32,
+       992,
+       128,
+       6
+      ],
+      [
+       800,
+       1392,
+       816,
+       1488,
+       6
+      ],
+      [
+       800,
+       1568,
+       816,
+       1664,
+       6
+      ],
+      [
+       800,
+       1728,
+       816,
+       1824,
+       6
+      ]
+     ],
+     "imageish": [],
+     "iconish": []
+    },
+    "LEVEL": 2,
+    "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+    "APK_RASTER_RESOURCES": 5,
+    "APK_RASTER_SAMPLE": [
+     "board.png",
+     "gear.png",
+     "homescreenwithtext.png",
+     "icon.png",
+     "iconcircle.png"
+    ],
+    "APK_RES_DIRS": [
+     "drawable",
+     "layout",
+     "mipmap-xxxhdpi-v4"
+    ]
+   },
+   "frame_paths": [
+    "/home/z/my-project/run/s81_audit/opmt_v0.1.2_vc1/frames/frame_006.png",
+    "/home/z/my-project/run/s81_audit/opmt_v0.1.2_vc1/frames/frame_007.png"
+   ]
+  },
+  {
+   "apk": "tripeaks_v1.2.1_vc4.apk",
+   "label": "tripeaks",
+   "rc": 0,
+   "errors": "0",
+   "frames": 8,
+   "visual": {
+    "frame": "frame_007.png",
+    "SCREEN_WIDTH": 1080,
+    "SCREEN_HEIGHT": 1920,
+    "UNIQUE_COLORS_RAW": 1,
+    "UNIQUE_COLORS": 1,
+    "COLOR_ENTROPY": -0.0,
+    "DOMINANT_COLOR_RATIO": 1.0,
+    "SECOND_DOMINANT_COLOR_RATIO": 0.0,
+    "DOMINANT_COLOR_RGB": [
+     240,
+     240,
+     240
+    ],
+    "LUMINANCE_RANGE": 0.0,
+    "SATURATION_RANGE": 0.0,
+    "NON_BACKGROUND_PIXELS": 0,
+    "NON_BACKGROUND_RATIO": 0.0,
+    "TEXT_PIXELS": 0,
+    "WIDGET_PIXELS": 0,
+    "IMAGE_PIXELS": 0,
+    "ICON_PIXELS": 0,
+    "FLAT_CELL_RATIO": 1.0,
+    "FLAGS": [
+     "MONOCHROME_LIKE",
+     "LOW_COLOR_VARIETY",
+     "FLAT_BACKGROUND",
+     "MISSING_IMAGES_SUSPECTED",
+     "IMAGE_DECODED_VS_RENDERED_GAP"
+    ],
+    "REGIONS": {
+     "textish": [],
+     "widgetish": [],
+     "imageish": [],
+     "iconish": []
+    },
+    "LEVEL": 0,
+    "LEVEL_NAME": "LOADED_ONLY",
+    "APK_RASTER_RESOURCES": 67,
+    "APK_RASTER_SAMPLE": [
+     "average.png",
+     "back.png",
+     "back01.png",
+     "back02.png",
+     "back03.png",
+     "back04.png",
+     "back05.png",
+     "cheat.png",
+     "clubs1.png",
+     "clubs10.png",
+     "clubs11.png",
+     "clubs12.png"
+    ],
+    "APK_RES_DIRS": [
+     "drawable-mdpi-v4",
+     "layout",
+     "layout-large-v4",
+     "layout-small-v4",
+     "layout-xlarge-v4"
+    ]
+   },
+   "frame_paths": [
+    "/home/z/my-project/run/s81_audit/tripeaks_v1.2.1_vc4/frames/frame_006.png",
+    "/home/z/my-project/run/s81_audit/tripeaks_v1.2.1_vc4/frames/frame_007.png"
+   ]
+  },
+  {
+   "apk": "bouncy.apk",
+   "label": "bouncy",
+   "rc": 1,
+   "errors": "14",
+   "frames": 8,
+   "visual": {
+    "frame": "frame_007.png",
+    "SCREEN_WIDTH": 1080,
+    "SCREEN_HEIGHT": 1920,
+    "UNIQUE_COLORS_RAW": 49,
+    "UNIQUE_COLORS": 49,
+    "COLOR_ENTROPY": 1.184,
+    "DOMINANT_COLOR_RATIO": 0.7224,
+    "SECOND_DOMINANT_COLOR_RATIO": 0.2254,
+    "DOMINANT_COLOR_RGB": [
+     240,
+     240,
+     240
+    ],
+    "LUMINANCE_RANGE": 0.812,
+    "SATURATION_RANGE": 0.764,
+    "NON_BACKGROUND_PIXELS": 575652,
+    "NON_BACKGROUND_RATIO": 0.2776,
+    "TEXT_PIXELS": 0,
+    "WIDGET_PIXELS": 11840,
+    "IMAGE_PIXELS": 320,
+    "ICON_PIXELS": 11072,
+    "FLAT_CELL_RATIO": 0.9549,
+    "FLAGS": [
+     "ICON_PRESENT"
+    ],
+    "REGIONS": {
+     "textish": [],
+     "widgetish": [
+      [
+       176,
+       624,
+       192,
+       1440,
+       51
+      ],
+      [
+       560,
+       688,
+       704,
+       736,
+       22
+      ],
+      [
+       384,
+       688,
+       544,
+       736,
+       20
+      ],
+      [
+       0,
+       112,
+       192,
+       128,
+       12
+      ],
+      [
+       0,
+       1888,
+       192,
+       1904,
+       12
+      ],
+      [
+       224,
+       656,
+       272,
+       784,
+       10
+      ],
+      [
+       336,
+       656,
+       368,
+       768,
+       8
+      ],
+      [
+       848,
+       656,
+       864,
+       784,
+       8
+      ],
+      [
+       400,
+       944,
+       432,
+       992,
+       5
+      ],
+      [
+       400,
+       1008,
+       432,
+       1056,
+       5
+      ],
+      [
+       432,
+       784,
+       480,
+       816,
+       4
+      ],
+      [
+       720,
+       656,
+       768,
+       672,
+       3
+      ]
+     ],
+     "imageish": [],
+     "iconish": [
+      [
+       416,
+       1072,
+       624,
+       1120,
+       30
+      ],
+      [
+       352,
+       672,
+       720,
+       768,
+       28
+      ],
+      [
+       432,
+       944,
+       624,
+       992,
+       23
+      ],
+      [
+       384,
+       656,
+       704,
+       672,
+       20
+      ],
+      [
+       400,
+       832,
+       528,
+       880,
+       14
+      ],
+      [
+       528,
+       848,
+       624,
+       880,
+       12
+      ],
+      [
+       480,
+       784,
+       576,
+       816,
+       10
+      ],
+      [
+       432,
+       1008,
+       496,
+       1056,
+       7
+      ],
+      [
+       400,
+       1184,
+       480,
+       1216,
+       7
+      ],
+      [
+       704,
+       672,
+       736,
+       752,
+       6
+      ],
+      [
+       592,
+       784,
+       640,
+       816,
+       6
+      ],
+      [
+       656,
+       784,
+       688,
+       816,
+       3
+      ]
+     ]
+    },
+    "LEVEL": 2,
+    "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+    "APK_RASTER_RESOURCES": 26,
+    "APK_RASTER_SAMPLE": [
+     "7Q.png",
+     "7j.png",
+     "9n.png",
+     "A8.png",
+     "Er.png",
+     "HS.png",
+     "Hk.png",
+     "IC.png",
+     "IN.png",
+     "OA.png",
+     "OJ.png",
+     "PO.png"
+    ],
+    "APK_RES_DIRS": []
+   },
+   "frame_paths": [
+    "/home/z/my-project/run/s81_audit/bouncy/frames/frame_006.png",
+    "/home/z/my-project/run/s81_audit/bouncy/frames/frame_007.png"
+   ]
+  }
+ ]
+}

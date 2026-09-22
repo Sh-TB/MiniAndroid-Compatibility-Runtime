@@ -1,0 +1,595 @@
+{
+ "BATCH": "BATCH-01",
+ "MIX_SUBSET": true,
+ "SIZE": 25,
+ "DISK_BEFORE_MB": null,
+ "results": [
+  {
+   "PACKAGE": "com.best.deskclock",
+   "KIND": "app",
+   "VERSION": "2.32",
+   "VERSION_CODE": 2036,
+   "STATUS": "RENDERED_RC1",
+   "APK_SHA256": "64d6152ff3a5c84ee45ca96b3c0003e058965371f6a6c5060e56a54300e69a01",
+   "APK_SIZE": 7181862,
+   "RUN_RC": 1,
+   "VISUAL": {
+    "UNIQUE_COLORS": 2,
+    "COLOR_ENTROPY": 0.09,
+    "DOMINANT_COLOR_RATIO": 0.9887,
+    "NON_BACKGROUND_RATIO": 0.0113,
+    "IMAGE_PIXELS": 0,
+    "ICON_PIXELS": 0,
+    "TEXT_PIXELS": 0,
+    "FLAGS": [
+     "MONOCHROME_LIKE",
+     "LOW_COLOR_VARIETY",
+     "FLAT_BACKGROUND"
+    ],
+    "LEVEL": 2,
+    "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE"
+   },
+   "MINIANDROID_FRAME": "run/s81_batch01/com.best.deskclock_2036/frames/frame_007.png"
+  },
+  {
+   "PACKAGE": "com.bnyro.clock",
+   "KIND": "app",
+   "VERSION": "12.0",
+   "VERSION_CODE": 24,
+   "STATUS": "RENDERED_RC1",
+   "APK_SHA256": "c7bb59c816c284dc25349c0e39b4f08808d9a94aaf9013d76ee41fdef387c527",
+   "APK_SIZE": 3964816,
+   "RUN_RC": 1,
+   "VISUAL": {
+    "UNIQUE_COLORS": 2,
+    "COLOR_ENTROPY": 0.09,
+    "DOMINANT_COLOR_RATIO": 0.9887,
+    "NON_BACKGROUND_RATIO": 0.0113,
+    "IMAGE_PIXELS": 0,
+    "ICON_PIXELS": 0,
+    "TEXT_PIXELS": 0,
+    "FLAGS": [
+     "MONOCHROME_LIKE",
+     "LOW_COLOR_VARIETY",
+     "FLAT_BACKGROUND"
+    ],
+    "LEVEL": 2,
+    "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE"
+   },
+   "MINIANDROID_FRAME": "run/s81_batch01/com.bnyro.clock_24/frames/frame_007.png"
+  },
+  {
+   "PACKAGE": "com.alaskalinuxuser.hourlyreminder",
+   "KIND": "app",
+   "VERSION": null,
+   "VERSION_CODE": null,
+   "STATUS": "LOADED_RC1",
+   "APK_SHA256": "71542740dabc0a83ea83710156e5ded5f47175275c563a428758973826c7e308",
+   "APK_SIZE": 12752,
+   "RUN_RC": 1
+  },
+  {
+   "PACKAGE": "com.droidquest",
+   "KIND": "app",
+   "VERSION": null,
+   "VERSION_CODE": null,
+   "STATUS": "LOADED_RC1",
+   "APK_SHA256": "71542740dabc0a83ea83710156e5ded5f47175275c563a428758973826c7e308",
+   "APK_SIZE": 12752,
+   "RUN_RC": 1
+  },
+  {
+   "PACKAGE": "fr.neamar.androidtimesbugger",
+   "KIND": "app",
+   "VERSION": null,
+   "VERSION_CODE": null,
+   "STATUS": "LOADED_RC1",
+   "APK_SHA256": "71542740dabc0a83ea83710156e5ded5f47175275c563a428758973826c7e308",
+   "APK_SIZE": 12752,
+   "RUN_RC": 1
+  },
+  {
+   "PACKAGE": "com.qwde.ccm",
+   "KIND": "app",
+   "VERSION": "first",
+   "VERSION_CODE": 5,
+   "STATUS": "RENDERED_RC1",
+   "APK_SHA256": "dd57ead2dc7671e4a658864ba48003e5bd434d2719703ebdd870a8c0b5217edb",
+   "APK_SIZE": 56290801,
+   "RUN_RC": 1,
+   "VISUAL": {
+    "UNIQUE_COLORS": 2,
+    "COLOR_ENTROPY": 0.09,
+    "DOMINANT_COLOR_RATIO": 0.9887,
+    "NON_BACKGROUND_RATIO": 0.0113,
+    "IMAGE_PIXELS": 0,
+    "ICON_PIXELS": 0,
+    "TEXT_PIXELS": 0,
+    "FLAGS": [
+     "MONOCHROME_LIKE",
+     "LOW_COLOR_VARIETY",
+     "FLAT_BACKGROUND"
+    ],
+    "LEVEL": 2,
+    "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE"
+   },
+   "MINIANDROID_FRAME": "run/s81_batch01/com.qwde.ccm_5/frames/frame_007.png"
+  },
+  {
+   "PACKAGE": "app.halma",
+   "KIND": "game",
+   "VERSION": "15.0",
+   "VERSION_CODE": 15,
+   "STATUS": "RENDERED_RC1",
+   "APK_SHA256": "b994337244e2136b54f96f75038fe70d9562635cce50af6387d906ee048d0ec0",
+   "APK_SIZE": 3849844,
+   "RUN_RC": 1,
+   "VISUAL": {
+    "UNIQUE_COLORS": 2,
+    "COLOR_ENTROPY": 0.09,
+    "DOMINANT_COLOR_RATIO": 0.9887,
+    "NON_BACKGROUND_RATIO": 0.0113,
+    "IMAGE_PIXELS": 0,
+    "ICON_PIXELS": 0,
+    "TEXT_PIXELS": 0,
+    "FLAGS": [
+     "MONOCHROME_LIKE",
+     "LOW_COLOR_VARIETY",
+     "FLAT_BACKGROUND"
+    ],
+    "LEVEL": 2,
+    "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE"
+   },
+   "MINIANDROID_FRAME": "run/s81_batch01/app.halma_15/frames/frame_007.png"
+  },
+  {
+   "PACKAGE": "eu.veldsoft.no.thanks",
+   "KIND": "game",
+   "VERSION": "1.00",
+   "VERSION_CODE": 1,
+   "STATUS": "RENDERED_RC1",
+   "APK_SHA256": "0de8e6e045b3d8f6635270d1ba0cef65e5fb6db8815452f02bca4350b85ee244",
+   "APK_SIZE": 19191974,
+   "RUN_RC": 1,
+   "VISUAL": {
+    "UNIQUE_COLORS": 2,
+    "COLOR_ENTROPY": 0.09,
+    "DOMINANT_COLOR_RATIO": 0.9887,
+    "NON_BACKGROUND_RATIO": 0.0113,
+    "IMAGE_PIXELS": 0,
+    "ICON_PIXELS": 0,
+    "TEXT_PIXELS": 0,
+    "FLAGS": [
+     "MONOCHROME_LIKE",
+     "LOW_COLOR_VARIETY",
+     "FLAT_BACKGROUND"
+    ],
+    "LEVEL": 2,
+    "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE"
+   },
+   "MINIANDROID_FRAME": "run/s81_batch01/eu.veldsoft.no.thanks_1/frames/frame_007.png"
+  },
+  {
+   "PACKAGE": "com.simondalvai.ball2box",
+   "KIND": "game",
+   "VERSION": "4.1.9",
+   "VERSION_CODE": 69,
+   "STATUS": "RENDERED_RC1",
+   "APK_SHA256": "aef33b17a0ae3c90cd3f73c19ab280b8ef34debe602066b55fa1aebab0de316a",
+   "APK_SIZE": 46623765,
+   "RUN_RC": 1,
+   "VISUAL": {
+    "UNIQUE_COLORS": 2,
+    "COLOR_ENTROPY": 0.09,
+    "DOMINANT_COLOR_RATIO": 0.9887,
+    "NON_BACKGROUND_RATIO": 0.0113,
+    "IMAGE_PIXELS": 0,
+    "ICON_PIXELS": 0,
+    "TEXT_PIXELS": 0,
+    "FLAGS": [
+     "MONOCHROME_LIKE",
+     "LOW_COLOR_VARIETY",
+     "FLAT_BACKGROUND"
+    ],
+    "LEVEL": 2,
+    "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE"
+   },
+   "MINIANDROID_FRAME": "run/s81_batch01/com.simondalvai.ball2box_69/frames/frame_007.png"
+  },
+  {
+   "PACKAGE": "cos.premy.mines",
+   "KIND": "game",
+   "VERSION": "1.7.1",
+   "VERSION_CODE": 16,
+   "STATUS": "RENDERED_RC1",
+   "APK_SHA256": "18faef7028457f4d123ac8d781f3ecdbf9e29b451468d5d6a348df28e8842aa7",
+   "APK_SIZE": 2040324,
+   "RUN_RC": 1,
+   "VISUAL": {
+    "UNIQUE_COLORS": 2,
+    "COLOR_ENTROPY": 0.09,
+    "DOMINANT_COLOR_RATIO": 0.9887,
+    "NON_BACKGROUND_RATIO": 0.0113,
+    "IMAGE_PIXELS": 0,
+    "ICON_PIXELS": 0,
+    "TEXT_PIXELS": 0,
+    "FLAGS": [
+     "MONOCHROME_LIKE",
+     "LOW_COLOR_VARIETY",
+     "FLAT_BACKGROUND"
+    ],
+    "LEVEL": 2,
+    "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE"
+   },
+   "MINIANDROID_FRAME": "run/s81_batch01/cos.premy.mines_16/frames/frame_007.png"
+  },
+  {
+   "PACKAGE": "com.astroloop.game",
+   "KIND": "game",
+   "VERSION": "1.3",
+   "VERSION_CODE": 4,
+   "STATUS": "LOADED_RC1",
+   "APK_SHA256": "6eba6fdd749448dc91ab25fba630497214c8c5360a854c8e42bdd19443b4928e",
+   "APK_SIZE": 20987886,
+   "RUN_RC": 1
+  },
+  {
+   "PACKAGE": "com.jeffliu.balancetheball",
+   "KIND": "game",
+   "VERSION": "1.1.0",
+   "VERSION_CODE": 4,
+   "STATUS": "RENDERED",
+   "APK_SHA256": "6180534b151e4d50365b21483f3719e32f207a42675dee20227de449c875c1e2",
+   "APK_SIZE": 42170,
+   "RUN_RC": 0,
+   "VISUAL": {
+    "UNIQUE_COLORS": 14,
+    "COLOR_ENTROPY": 0.061,
+    "DOMINANT_COLOR_RATIO": 0.9947,
+    "NON_BACKGROUND_RATIO": 0.0053,
+    "IMAGE_PIXELS": 0,
+    "ICON_PIXELS": 0,
+    "TEXT_PIXELS": 4032,
+    "FLAGS": [
+     "MONOCHROME_LIKE",
+     "LOW_COLOR_VARIETY",
+     "FLAT_BACKGROUND"
+    ],
+    "LEVEL": 2,
+    "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE"
+   },
+   "MINIANDROID_FRAME": "run/s81_batch01/com.jeffliu.balancetheball_4/frames/frame_007.png"
+  },
+  {
+   "PACKAGE": "crypto.o0o0o0o0o.games.blackjack",
+   "KIND": "game",
+   "VERSION": "0.29.1",
+   "VERSION_CODE": 4,
+   "STATUS": "RENDERED_RC1",
+   "APK_SHA256": "70e9979d2fd731cbb941f91f9308deb993f7cc8c839bbe94947aa92f2d371303",
+   "APK_SIZE": 3487026,
+   "RUN_RC": 1,
+   "VISUAL": {
+    "UNIQUE_COLORS": 2,
+    "COLOR_ENTROPY": 0.09,
+    "DOMINANT_COLOR_RATIO": 0.9887,
+    "NON_BACKGROUND_RATIO": 0.0113,
+    "IMAGE_PIXELS": 0,
+    "ICON_PIXELS": 0,
+    "TEXT_PIXELS": 0,
+    "FLAGS": [
+     "MONOCHROME_LIKE",
+     "LOW_COLOR_VARIETY",
+     "FLAT_BACKGROUND"
+    ],
+    "LEVEL": 2,
+    "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE"
+   },
+   "MINIANDROID_FRAME": "run/s81_batch01/crypto.o0o0o0o0o.games.blackjack_4/frames/frame_007.png"
+  },
+  {
+   "PACKAGE": "si.palcka.tarok",
+   "KIND": "game",
+   "VERSION": "1.0.7",
+   "VERSION_CODE": 203,
+   "STATUS": "RENDERED",
+   "APK_SHA256": "f956d84eb4801d3779adc5f5c36775c11bc2ac7d37d4f3264412f1e978f0aa15",
+   "APK_SIZE": 14618591,
+   "RUN_RC": 0,
+   "VISUAL": {
+    "UNIQUE_COLORS": 2,
+    "COLOR_ENTROPY": 0.09,
+    "DOMINANT_COLOR_RATIO": 0.9887,
+    "NON_BACKGROUND_RATIO": 0.0113,
+    "IMAGE_PIXELS": 0,
+    "ICON_PIXELS": 0,
+    "TEXT_PIXELS": 0,
+    "FLAGS": [
+     "MONOCHROME_LIKE",
+     "LOW_COLOR_VARIETY",
+     "FLAT_BACKGROUND"
+    ],
+    "LEVEL": 2,
+    "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE"
+   },
+   "MINIANDROID_FRAME": "run/s81_batch01/si.palcka.tarok_203/frames/frame_007.png"
+  },
+  {
+   "PACKAGE": "io.github.hathibelagal.mykanji",
+   "KIND": "app",
+   "VERSION": "1.6",
+   "VERSION_CODE": 7,
+   "STATUS": "RENDERED_RC1",
+   "APK_SHA256": "b20274a0885d03ba6947f82975c90e8415a4174dded8409e4798f92cb3a763a1",
+   "APK_SIZE": 14830416,
+   "RUN_RC": 1,
+   "VISUAL": {
+    "UNIQUE_COLORS": 2,
+    "COLOR_ENTROPY": 0.09,
+    "DOMINANT_COLOR_RATIO": 0.9887,
+    "NON_BACKGROUND_RATIO": 0.0113,
+    "IMAGE_PIXELS": 0,
+    "ICON_PIXELS": 0,
+    "TEXT_PIXELS": 0,
+    "FLAGS": [
+     "MONOCHROME_LIKE",
+     "LOW_COLOR_VARIETY",
+     "FLAT_BACKGROUND"
+    ],
+    "LEVEL": 2,
+    "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE"
+   },
+   "MINIANDROID_FRAME": "run/s81_batch01/io.github.hathibelagal.mykanji_7/frames/frame_007.png"
+  },
+  {
+   "PACKAGE": "de.tobiasbielefeld.solitaire",
+   "KIND": "game",
+   "VERSION": "3.13",
+   "VERSION_CODE": 71,
+   "STATUS": "RENDERED_RC1",
+   "APK_SHA256": "fdfaf7cad18e4416989b337b5c60b71158c54652384e564fe3e6386421504220",
+   "APK_SIZE": 16738109,
+   "RUN_RC": 1,
+   "VISUAL": {
+    "UNIQUE_COLORS": 2,
+    "COLOR_ENTROPY": 0.09,
+    "DOMINANT_COLOR_RATIO": 0.9887,
+    "NON_BACKGROUND_RATIO": 0.0113,
+    "IMAGE_PIXELS": 0,
+    "ICON_PIXELS": 0,
+    "TEXT_PIXELS": 0,
+    "FLAGS": [
+     "MONOCHROME_LIKE",
+     "LOW_COLOR_VARIETY",
+     "FLAT_BACKGROUND"
+    ],
+    "LEVEL": 2,
+    "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE"
+   },
+   "MINIANDROID_FRAME": "run/s81_batch01/de.tobiasbielefeld.solitaire_71/frames/frame_007.png"
+  },
+  {
+   "PACKAGE": "com.sidhant.queens",
+   "KIND": "game",
+   "VERSION": "1.0.8",
+   "VERSION_CODE": 93,
+   "STATUS": "RENDERED",
+   "APK_SHA256": "e4ba8df1594ac07fc32f5f3e40d770e5a2dba01d430214af2cfc8f9c66448935",
+   "APK_SIZE": 19799315,
+   "RUN_RC": 0,
+   "VISUAL": {
+    "UNIQUE_COLORS": 2,
+    "COLOR_ENTROPY": 0.09,
+    "DOMINANT_COLOR_RATIO": 0.9887,
+    "NON_BACKGROUND_RATIO": 0.0113,
+    "IMAGE_PIXELS": 0,
+    "ICON_PIXELS": 0,
+    "TEXT_PIXELS": 0,
+    "FLAGS": [
+     "MONOCHROME_LIKE",
+     "LOW_COLOR_VARIETY",
+     "FLAT_BACKGROUND"
+    ],
+    "LEVEL": 2,
+    "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE"
+   },
+   "MINIANDROID_FRAME": "run/s81_batch01/com.sidhant.queens_93/frames/frame_007.png"
+  },
+  {
+   "PACKAGE": "org.secuso.privacyfriendlybattleship",
+   "KIND": "game",
+   "VERSION": "2.0.0",
+   "VERSION_CODE": 101,
+   "STATUS": "RENDERED_RC1",
+   "APK_SHA256": "beeedcbbefc3b013242926f11f51194900d00f0578def44c8d2a3cf924d800e0",
+   "APK_SIZE": 5825971,
+   "RUN_RC": 1,
+   "VISUAL": {
+    "UNIQUE_COLORS": 2,
+    "COLOR_ENTROPY": 0.09,
+    "DOMINANT_COLOR_RATIO": 0.9887,
+    "NON_BACKGROUND_RATIO": 0.0113,
+    "IMAGE_PIXELS": 0,
+    "ICON_PIXELS": 0,
+    "TEXT_PIXELS": 0,
+    "FLAGS": [
+     "MONOCHROME_LIKE",
+     "LOW_COLOR_VARIETY",
+     "FLAT_BACKGROUND"
+    ],
+    "LEVEL": 2,
+    "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE"
+   },
+   "MINIANDROID_FRAME": "run/s81_batch01/org.secuso.privacyfriendlybattleship_101/frames/frame_007.png"
+  },
+  {
+   "PACKAGE": "com.dash1971.maia_chess",
+   "KIND": "game",
+   "VERSION": "2.1.2",
+   "VERSION_CODE": 75,
+   "STATUS": "SOURCED_FAIL"
+  },
+  {
+   "PACKAGE": "com.vovagorodok.blichess",
+   "KIND": "game",
+   "VERSION": "8.0.0+ble2.5.1",
+   "VERSION_CODE": 29,
+   "STATUS": "RENDERED_RC1",
+   "APK_SHA256": "3ae86223a70439511f32ffe7489de6050b430dd9692d7a45ae6506933dddc69d",
+   "APK_SIZE": 62074968,
+   "RUN_RC": 1,
+   "VISUAL": {
+    "UNIQUE_COLORS": 2,
+    "COLOR_ENTROPY": 0.09,
+    "DOMINANT_COLOR_RATIO": 0.9887,
+    "NON_BACKGROUND_RATIO": 0.0113,
+    "IMAGE_PIXELS": 0,
+    "ICON_PIXELS": 0,
+    "TEXT_PIXELS": 0,
+    "FLAGS": [
+     "MONOCHROME_LIKE",
+     "LOW_COLOR_VARIETY",
+     "FLAT_BACKGROUND"
+    ],
+    "LEVEL": 2,
+    "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE"
+   },
+   "MINIANDROID_FRAME": "run/s81_batch01/com.vovagorodok.blichess_29/frames/frame_007.png"
+  },
+  {
+   "PACKAGE": "page.codeberg.lanticy.guandan",
+   "KIND": "game",
+   "VERSION": "1.2.2",
+   "VERSION_CODE": 7,
+   "STATUS": "RENDERED_RC1",
+   "APK_SHA256": "ccc74b5948154e7f53b5c6eddaef1640afc229fb02f71778da7992a658be7021",
+   "APK_SIZE": 1584455,
+   "RUN_RC": 1,
+   "VISUAL": {
+    "UNIQUE_COLORS": 2,
+    "COLOR_ENTROPY": 0.09,
+    "DOMINANT_COLOR_RATIO": 0.9887,
+    "NON_BACKGROUND_RATIO": 0.0113,
+    "IMAGE_PIXELS": 0,
+    "ICON_PIXELS": 0,
+    "TEXT_PIXELS": 0,
+    "FLAGS": [
+     "MONOCHROME_LIKE",
+     "LOW_COLOR_VARIETY",
+     "FLAT_BACKGROUND"
+    ],
+    "LEVEL": 2,
+    "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE"
+   },
+   "MINIANDROID_FRAME": "run/s81_batch01/page.codeberg.lanticy.guandan_7/frames/frame_007.png"
+  },
+  {
+   "PACKAGE": "xyz.deepdaikon.quinb",
+   "KIND": "game",
+   "VERSION": "1.2.5",
+   "VERSION_CODE": 10,
+   "STATUS": "RENDERED",
+   "APK_SHA256": "bd720d019b85bac7aa08013bf2b50f331d76d736bfe681753a43c8215e002d69",
+   "APK_SIZE": 21585549,
+   "RUN_RC": 0,
+   "VISUAL": {
+    "UNIQUE_COLORS": 2,
+    "COLOR_ENTROPY": 0.09,
+    "DOMINANT_COLOR_RATIO": 0.9887,
+    "NON_BACKGROUND_RATIO": 0.0113,
+    "IMAGE_PIXELS": 0,
+    "ICON_PIXELS": 0,
+    "TEXT_PIXELS": 0,
+    "FLAGS": [
+     "MONOCHROME_LIKE",
+     "LOW_COLOR_VARIETY",
+     "FLAT_BACKGROUND"
+    ],
+    "LEVEL": 2,
+    "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE"
+   },
+   "MINIANDROID_FRAME": "run/s81_batch01/xyz.deepdaikon.quinb_10/frames/frame_007.png"
+  },
+  {
+   "PACKAGE": "eu.quelltext.memory",
+   "KIND": "game",
+   "VERSION": "1.7",
+   "VERSION_CODE": 7,
+   "STATUS": "RENDERED_PARTIAL",
+   "APK_SHA256": "4dd3957983e3c3f38c673f898d9659d5e0251f97137bab5254eafdcdbc9fa27c",
+   "APK_SIZE": 3028941,
+   "RUN_RC": 0,
+   "VISUAL": {
+    "UNIQUE_COLORS": 1,
+    "COLOR_ENTROPY": -0.0,
+    "DOMINANT_COLOR_RATIO": 1.0,
+    "NON_BACKGROUND_RATIO": 0.0,
+    "IMAGE_PIXELS": 0,
+    "ICON_PIXELS": 0,
+    "TEXT_PIXELS": 0,
+    "FLAGS": [
+     "MONOCHROME_LIKE",
+     "LOW_COLOR_VARIETY",
+     "FLAT_BACKGROUND"
+    ],
+    "LEVEL": 0,
+    "LEVEL_NAME": "LOADED_ONLY"
+   },
+   "MINIANDROID_FRAME": "run/s81_batch01/eu.quelltext.memory_7/frames/frame_007.png"
+  },
+  {
+   "PACKAGE": "com.vayunmathur.games.solitaire",
+   "KIND": "game",
+   "VERSION": "v2.6.5",
+   "VERSION_CODE": 20260804,
+   "STATUS": "RENDERED_RC1",
+   "APK_SHA256": "e87536851b7e9edcea2a5ee8e404bd88e6fea1cf32b15ad4f7b50952d1c0c2e6",
+   "APK_SIZE": 3202441,
+   "RUN_RC": 1,
+   "VISUAL": {
+    "UNIQUE_COLORS": 2,
+    "COLOR_ENTROPY": 0.09,
+    "DOMINANT_COLOR_RATIO": 0.9887,
+    "NON_BACKGROUND_RATIO": 0.0113,
+    "IMAGE_PIXELS": 0,
+    "ICON_PIXELS": 0,
+    "TEXT_PIXELS": 0,
+    "FLAGS": [
+     "MONOCHROME_LIKE",
+     "LOW_COLOR_VARIETY",
+     "FLAT_BACKGROUND"
+    ],
+    "LEVEL": 2,
+    "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE"
+   },
+   "MINIANDROID_FRAME": "run/s81_batch01/com.vayunmathur.games.solitaire_20260804/frames/frame_007.png"
+  },
+  {
+   "PACKAGE": "bim.app",
+   "KIND": "app",
+   "VERSION": "16",
+   "VERSION_CODE": 1600,
+   "STATUS": "RENDERED_RC1",
+   "APK_SHA256": "82b5ba2e96dc551903b4b818a96ca8e46dfd31427ae422708b2aaaeada84b5a6",
+   "APK_SIZE": 32379324,
+   "RUN_RC": 1,
+   "VISUAL": {
+    "UNIQUE_COLORS": 2,
+    "COLOR_ENTROPY": 0.09,
+    "DOMINANT_COLOR_RATIO": 0.9887,
+    "NON_BACKGROUND_RATIO": 0.0113,
+    "IMAGE_PIXELS": 0,
+    "ICON_PIXELS": 0,
+    "TEXT_PIXELS": 0,
+    "FLAGS": [
+     "MONOCHROME_LIKE",
+     "LOW_COLOR_VARIETY",
+     "FLAT_BACKGROUND"
+    ],
+    "LEVEL": 2,
+    "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE"
+   },
+   "MINIANDROID_FRAME": "run/s81_batch01/bim.app_1600/frames/frame_007.png"
+  }
+ ]
+}
