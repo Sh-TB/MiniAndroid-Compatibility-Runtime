@@ -1,6 +1,7 @@
 // CAMPAIGN 013 — Canvas/Paint shadow implementation. See canvas_shadow.h.
 #include "canvas_shadow.h"
 #include "bitmap_shadow.h"
+#include "../diagnostics/gfx_provenance.h"
 #include "../fonts/text_shaper.h"
 #include "../renderer/software_renderer.h"
 
@@ -222,12 +223,21 @@ void CanvasShadow::warn_noop(const std::string& cls, const std::string& op) {
 size_t CanvasShadow::replay(renderer::SoftwareCanvas& canvas,
                             renderer::BitmapFont& font,
                             float left, float top, float w, float h) {
-    // ── S68 §12: AOSP view clip law ───────────────────────────────────────
-    // View.onDraw's canvas is clipped to the view bounds; the app's
-    // clipRect stack further intersects it. Both are honored by funneling
-    // the effective clip into the SoftwareCanvas for this replay, then
-    // clearing it so other views are unaffected.
-    const float vl = left, vt = top, vr = left + w, vb = top + h;   // view bounds
+    // ── S83-GFX-BASE: real layer isolation (saveLayer) + path clips ──────
+    // S68 §12 view-clip law retained: View.onDraw's canvas is clipped to
+    // the view bounds; the app's clip stack further intersects it. S83 adds
+    // (a) SAVE_LAYER/END_LAYER markers replayed into offscreen alpha
+    // layers composited at end (Contract C6), and (b) per-op path-clip
+    // snapshots rasterized into scanline spans (Contract C1).
+
+    // Per-op replay body. (left, top) = op-space → target-space offset;
+    // (w, h) = the target's full-view dims; (vl..vb) = the target-space
+    // clamp baseline. Parameter names match the historical body so the
+    // switch below stays byte-identical on the base path (regression law).
+    auto replay_one =
+        [&](const DrawOp& op, renderer::SoftwareCanvas& canvas,
+            float left, float top, float w, float h,
+            float vl, float vt, float vr, float vb) {
     float cl_ = vl, ct_ = vt, cr_ = vr, cb_ = vb;   // effective device clip
     // Per-op clip snapshot (AOSP law — see DrawOp.has_clip): each op carries
     // the clip that was in effect when the app recorded it; ops recorded
@@ -243,9 +253,92 @@ size_t CanvasShadow::replay(renderer::SoftwareCanvas& canvas,
         }
         canvas.set_clip(cl, ct, cr, cb);
         cl_ = cl; ct_ = ct; cr_ = cr; cb_ = cb;
+        // ── S83: path-clip spans (Contract C1 clipPath) ──────────────────
+        if (op.has_path_clip && !op.path_clip_contours.empty()) {
+            // Memo: consecutive ops usually share one clip path — rasterize
+            // spans once per distinct signature (contour count + point
+            // count + first point).
+            size_t pts = 0;
+            for (const auto& ct2 : op.path_clip_contours) pts += ct2.size();
+            struct Sig { size_t n; size_t pts; float x, y; };
+            Sig sig{op.path_clip_contours.size(), pts,
+                    op.path_clip_contours[0][0].first,
+                    op.path_clip_contours[0][0].second};
+            static thread_local Sig last_sig{0, 0, 0.f, 0.f};
+            static thread_local int last_left = -2147483647, last_top = -2147483647;
+            static thread_local int last_y0 = 0, last_y1 = 0;
+            static thread_local std::vector<std::vector<std::pair<float, float>>> last_spans;
+            if (sig.n == last_sig.n && sig.pts == last_sig.pts &&
+                sig.x == last_sig.x && sig.y == last_sig.y &&
+                (int)left == last_left && (int)top == last_top &&
+                !last_spans.empty()) {
+                canvas.set_path_clip(last_y0, last_y1, last_spans);
+            } else {
+            struct Edge { float x1, y1, x2, y2; };
+            std::vector<Edge> pedges;
+            float pmin_y = 1e30f, pmax_y = -1e30f;
+            for (const auto& ct2 : op.path_clip_contours) {
+                for (size_t i = 0; i < ct2.size(); ++i) {
+                    const auto& a = ct2[i];
+                    const auto& b = ct2[(i + 1) % ct2.size()];
+                    if (a.second != b.second) {
+                        pedges.push_back({a.first + left, a.second + top,
+                                          b.first + left, b.second + top});
+                    }
+                    pmin_y = std::min(pmin_y, std::min(a.second, b.second) + top);
+                    pmax_y = std::max(pmax_y, std::max(a.second, b.second) + top);
+                }
+            }
+            int py0 = 0, py1 = 0;
+            std::vector<std::vector<std::pair<float, float>>> pspans;
+            if (!pedges.empty() && pmax_y >= pmin_y) {
+                py0 = std::max((int)std::floor(pmin_y), (int)std::floor(vt));
+                py1 = std::min((int)std::ceil(pmax_y), (int)std::ceil(vb));
+                const bool winding_rule = (op.path_clip_fill == 0);
+                pspans.reserve(std::max(0, py1 - py0));
+                for (int y = py0; y < py1; ++y) {
+                    const float sy = (float)y + 0.5f;
+                    std::vector<std::pair<float, int>> xs;
+                    for (const auto& e : pedges) {
+                        if ((sy >= e.y1 && sy < e.y2) || (sy >= e.y2 && sy < e.y1)) {
+                            float t = (sy - e.y1) / (e.y2 - e.y1);
+                            xs.push_back({e.x1 + t * (e.x2 - e.x1),
+                                          e.y2 > e.y1 ? 1 : -1});
+                        }
+                    }
+                    std::sort(xs.begin(), xs.end(),
+                              [](const auto& a, const auto& b) {
+                                  return a.first < b.first;
+                              });
+                    std::vector<std::pair<float, float>> row;
+                    if (winding_rule) {
+                        int winding = 0; float span_start = 0.f; bool inside = false;
+                        for (const auto& cr3 : xs) {
+                            if (!inside) { span_start = cr3.first; inside = true; winding = cr3.second; }
+                            else {
+                                winding += cr3.second;
+                                if (winding == 0) { row.push_back({span_start, cr3.first}); inside = false; }
+                            }
+                        }
+                        if (inside) row.push_back({span_start, xs.back().first});
+                    } else {
+                        for (size_t i = 0; i + 1 < xs.size(); i += 2)
+                            row.push_back({xs[i].first, xs[i + 1].first});
+                    }
+                    pspans.push_back(std::move(row));
+                }
+            }
+            canvas.set_path_clip(py0, py1, pspans);
+            last_sig = sig; last_left = (int)left; last_top = (int)top;
+            last_y0 = py0; last_y1 = py1;
+            last_spans = pspans;
+            }
+        } else if (!op.has_path_clip) {
+            // Op recorded with no path clip → drop any stale mask.
+            canvas.set_path_clip(0, 0, {});
+        }
     };
 
-    for (const auto& op : ops_) {
         apply_op_clip(op);
         renderer::RGBA c = to_rgba(op.color);
         switch (op.kind) {
@@ -482,7 +575,13 @@ size_t CanvasShadow::replay(renderer::SoftwareCanvas& canvas,
                 // S68 §12: drawBitmap replay — pixels from BitmapStore,
                 // src/dst rect law, nearest sampling (FilterBitmap=false).
                 const StoredBitmap* sb = BitmapStore::instance().get(op.bitmap_id);
-                if (!sb || sb->rgba.empty()) break;
+                if (!sb || sb->rgba.empty()) {
+                    // S82-GFX §6: CANVAS chain bit — bitmap unresolved at replay.
+                    if (diagnostics::GfxProvenance::instance().enabled())
+                        diagnostics::GfxProvenance::instance().record_canvas_bitmap(
+                            op.bitmap_id, false, 0, 0, false);
+                    break;
+                }
                 int sw = sb->width, sh = sb->height;
                 int sx = 0, sy = 0;
                 if (op.has_src) {
@@ -491,10 +590,13 @@ size_t CanvasShadow::replay(renderer::SoftwareCanvas& canvas,
                     sh = (int)(op.src_b - op.src_t);
                 }
                 int dx = (int)(left + op.x), dy = (int)(top + op.y);
-                int dw = op.has_dst ? (int)op.w : sw;
-                int dh = op.has_dst ? (int)op.h : sh;
+                // S83: op.w/h = -1 → natural-size law (Matrix overload where
+                // the dst space IS the bitmap pixel space).
+                int dw = op.has_dst ? (op.w > 0 ? (int)op.w : sw) : sw;
+                int dh = op.has_dst ? (op.h > 0 ? (int)op.h : sh) : sh;
                 if (sw <= 0 || sh <= 0 || dw <= 0 || dh <= 0) break;
-                if (op.has_affine && (op.affine.b != 0.f || op.affine.c != 0.f)) {
+                if (op.has_affine && (op.affine.b != 0.f || op.affine.c != 0.f ||
+                                      op.affine_exact)) {
                     // Rotated/skewed dst: inverse-map per-pixel sampling.
                     const Affine2D& m = op.affine;
                     const float det = m.a * m.d - m.b * m.c;
@@ -524,13 +626,173 @@ size_t CanvasShadow::replay(renderer::SoftwareCanvas& canvas,
                     canvas.draw_image_region(sb->rgba.data(), sb->width, sb->height,
                                              sx, sy, sw, sh, dx, dy, dw, dh);
                 }
+                // S82-GFX §6: bitmap resolved + CANVAS_WRITTEN evidence.
+                if (diagnostics::GfxProvenance::instance().enabled())
+                    diagnostics::GfxProvenance::instance().record_canvas_bitmap(
+                        op.bitmap_id, true, sb->width, sb->height, true);
                 break;
             }
             case DrawOp::Kind::DRAW_PAINT: {
                 canvas.draw_rect(left, top, left + w, top + h, c);
                 break;
             }
+            case DrawOp::Kind::DRAW_POINTS: {
+                // S83-GFX-BASE: each point = strokeWidth square centered on
+                // the mapped coordinate (same law as drawPoint).
+                if (op.contours.empty()) break;
+                const float side = std::max(op.stroke_w, 1.f);
+                for (const auto& p : op.contours[0]) {
+                    canvas.draw_rect(left + p.first - side / 2.f,
+                                     top + p.second - side / 2.f,
+                                     left + p.first + side / 2.f,
+                                     top + p.second + side / 2.f, c);
+                }
+                break;
+            }
+            case DrawOp::Kind::DRAW_LINES: {
+                // S83-GFX-BASE: consecutive point pairs → segments (the
+                // DRAW_LINE raster law: stepped rects along the segment).
+                if (op.contours.empty()) break;
+                const auto& pts = op.contours[0];
+                for (size_t i = 0; i + 1 < pts.size(); i += 2) {
+                    float x1 = left + pts[i].first, y1 = top + pts[i].second;
+                    float x2 = left + pts[i + 1].first, y2 = top + pts[i + 1].second;
+                    float dx = x2 - x1, dy = y2 - y1;
+                    int steps = int(std::max(std::fabs(dx), std::fabs(dy)));
+                    if (steps <= 0) steps = 1;
+                    // OOM guard: a garbage-coordinate segment (uninitialized
+                    // app state — e.g. the fill-array-data float[] law bug
+                    // fixed in the same wave) must not flood the command
+                    // trace with millions of CanvasCommand records.
+                    // 1<<20 >> any on-canvas diagonal; real pixels unaffected.
+                    if (steps > (1 << 20)) {
+                        warn_noop("Canvas", "drawLines(steps-capped)");
+                        steps = (1 << 20);
+                    }
+                    const float side = std::max(op.stroke_w, 1.f);
+                    for (int s = 0; s <= steps; s++) {
+                        float px = x1 + dx * s / steps;
+                        float py = y1 + dy * s / steps;
+                        canvas.draw_rect(px, py, px + side, py + side, c);
+                    }
+                }
+                break;
+            }
+            case DrawOp::Kind::DRAW_POS_TEXT: {
+                // S83-GFX-BASE: char i at pos[2i] (baseline origin law —
+                // identical to DRAW_TEXT's origin handling).
+                if (op.contours.empty()) break;
+                const auto& pos = op.contours[0];
+                for (size_t i = 0; i < pos.size() && i < op.text.size(); i++) {
+                    const std::string glyph(1, op.text[i]);
+                    renderer::RGBA tc = to_rgba(op.color);
+                    if (op.text_size_px > 0.f &&
+                        fonts::TextShaper::instance().available()) {
+                        fonts::TextShaper::instance().draw(
+                            canvas.fb(), glyph, left + pos[i].first,
+                            top + pos[i].second, op.text_size_px, tc,
+                            op.text_bold);
+                    } else {
+                        canvas.draw_text(glyph, left + pos[i].first,
+                                         top + pos[i].second, tc, &font);
+                    }
+                }
+                break;
+            }
         }
+    };
+
+    // ── S83: layer stack (Contract C6 render-target model) ───────────────
+    struct LayerFrame {
+        std::unique_ptr<renderer::FrameBuffer> fb;
+        std::unique_ptr<renderer::SoftwareCanvas> cnv;
+        int ox = 0, oy = 0;    // origin RELATIVE to the parent target
+        int vx = 0, vy = 0;    // origin in view space (op shift for children)
+        float alpha = 1.f;
+    };
+    std::vector<LayerFrame> layers;
+
+    for (const auto& op : ops_) {
+        if (op.kind == DrawOp::Kind::SAVE_LAYER) {
+            // Layer bounds in view space: op bounds ∩ op clip ∩ view bounds.
+            float L = left + op.x, T = top + op.y;
+            float R = L + op.w, B = T + op.h;
+            if (op.has_clip) {
+                L = std::max(L, left + op.clip_l);
+                T = std::max(T, top + op.clip_t);
+                R = std::min(R, left + op.clip_r);
+                B = std::min(B, top + op.clip_b);
+            }
+            L = std::max(L, left); T = std::max(T, top);
+            R = std::min(R, left + w); B = std::min(B, top + h);
+            LayerFrame lf;
+            lf.vx = (int)std::floor(L); lf.vy = (int)std::floor(T);
+            const int lw = std::max(0, (int)std::ceil(R) - lf.vx);
+            const int lh = std::max(0, (int)std::ceil(B) - lf.vy);
+            lf.ox = lf.vx - (layers.empty() ? 0 : layers.back().vx);
+            lf.oy = lf.vy - (layers.empty() ? 0 : layers.back().vy);
+            lf.alpha = ((op.color >> 24) & 0xFF) / 255.f;
+            if (lw > 0 && lh > 0) {
+                lf.fb = std::make_unique<renderer::FrameBuffer>(lw, lh);
+                lf.fb->set_alpha_preserve(true);
+                lf.fb->clear(renderer::Colors::TRANSPARENT);
+                lf.cnv = std::make_unique<renderer::SoftwareCanvas>(lf.fb.get());
+            }
+            layers.push_back(std::move(lf));
+            continue;
+        }
+        if (op.kind == DrawOp::Kind::END_LAYER) {
+            if (layers.empty()) continue;
+            LayerFrame lf = std::move(layers.back());
+            layers.pop_back();
+            if (!lf.fb) continue;
+            renderer::SoftwareCanvas& parent =
+                layers.empty() ? canvas : *layers.back().cnv;
+            // Composite: src_over(layer_px × layer_alpha, parent_px) —
+            // set_pixel picks the correct law per target (opaque base =
+            // legacy blend; nested layer = alpha accumulation).
+            for (int yy = 0; yy < lf.fb->get_height(); yy++) {
+                for (int xx = 0; xx < lf.fb->get_width(); xx++) {
+                    const renderer::RGBA sp = lf.fb->get_pixel(xx, yy);
+                    if (sp.a == 0) continue;
+                    const uint8_t la = (uint8_t)std::min(
+                        255.f, std::round(sp.a * lf.alpha));
+                    if (la == 0) continue;
+                    const renderer::RGBA src(sp.r, sp.g, sp.b, la);
+                    parent.target()->set_pixel(lf.ox + xx, lf.oy + yy, src);
+                }
+            }
+            continue;
+        }
+        // Normal op → the current target (base canvas or innermost layer).
+        if (layers.empty() || !layers.back().cnv) {
+            replay_one(op, canvas, left, top, w, h,
+                       left, top, left + w, top + h);
+        } else {
+            LayerFrame& lf = layers.back();
+            replay_one(op, *lf.cnv, left - lf.vx, top - lf.vy,
+                       (float)lf.fb->get_width(), (float)lf.fb->get_height(),
+                       0.f, 0.f, (float)lf.fb->get_width(),
+                       (float)lf.fb->get_height());
+        }
+    }
+    // Defensive: close any unclosed layers (record side pairs them; a
+    // malformed stream must still produce honest pixels).
+    while (!layers.empty()) {
+        LayerFrame lf = std::move(layers.back());
+        layers.pop_back();
+        if (!lf.fb) continue;
+        renderer::SoftwareCanvas& parent =
+            layers.empty() ? canvas : *layers.back().cnv;
+        for (int yy = 0; yy < lf.fb->get_height(); yy++)
+            for (int xx = 0; xx < lf.fb->get_width(); xx++) {
+                const renderer::RGBA sp = lf.fb->get_pixel(xx, yy);
+                if (sp.a == 0) continue;
+                const uint8_t la = (uint8_t)std::min(255.f, std::round(sp.a * lf.alpha));
+                if (la == 0) continue;
+                parent.target()->set_pixel(lf.ox + xx, lf.oy + yy,
+                                           renderer::RGBA(sp.r, sp.g, sp.b, la));
+            }
     }
     capturing_ = false;
     canvas.clear_clip();   // S68: the clip is per-view — never leak it
@@ -1297,21 +1559,22 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_void();
     }
     if (m == "concat") {
-        // android.graphics.Matrix values live in heap fields when a Matrix
-        // shadow recorded them; without a Matrix object we cannot honor the
-        // op — report it (no silent no-op).
+        // S83-GFX-BASE: android.graphics.Matrix values live in heap fields
+        // m0..m8 (MatrixShadow writes the AOSP layout). AOSP Matrix.java:
+        //   MSCALE_X=0, MSKEW_X=1, MTRANS_X=2, MSKEW_Y=3, MSCALE_Y=4,
+        //   MTRANS_Y=5, MPERSP_0..2=6..8 — x' = m0*x + m1*y + m2,
+        //   y' = m3*x + m4*y + m5. (The pre-S83 read used the transposed
+        //   layout; no Matrix producer existed so no fixture pinned it.)
         const uint32_t mid = ctx.arg_as_object(0, 0);
         Affine2D c;
         bool ok = false;
         float v = 0.f;
-        // AOSP Matrix stores 9 floats (3x3) named m[0..8] via setValues;
-        // the heap field names we accept: m0..m8 (setValues layout).
         auto try_read = [&](const char* name, float& out) {
             return heap_ && heap_->get_object_float_field(mid, name, out);
         };
-        if (mid != 0 && try_read("m0", c.a) && try_read("m3", c.c) &&
-            try_read("m6", c.e) && try_read("m1", c.b) &&
-            try_read("m4", c.d) && try_read("m7", c.f)) {
+        if (mid != 0 && try_read("m0", c.a) && try_read("m1", c.c) &&
+            try_read("m2", c.e) && try_read("m3", c.b) &&
+            try_read("m4", c.d) && try_read("m5", c.f)) {
             ok = true;   // affine rows of the 3x3 (perspective row ignored)
         }
         if (ok) {
@@ -1323,38 +1586,144 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
     }
     if (m == "save") {
         // AOSP: save() snapshots BOTH matrix and clip; flags accepted.
-        save_stack_.push_back({mat_, clip_});
+        SavedState st;
+        st.mat = mat_; st.clip = clip_;
+        st.path_clip = clip_path_active_; st.path_fill = clip_path_fill_;
+        st.path = clip_path_;
+        save_stack_.push_back(std::move(st));
         return CallResult::handled_int((int)save_stack_.size() + 1);  // AOSP saveCount starts at 1
     }
     if (m == "restore") {
         if (!save_stack_.empty()) {
-            mat_ = save_stack_.back().mat;
-            clip_ = save_stack_.back().clip;
+            SavedState st = save_stack_.back();
             save_stack_.pop_back();
+            mat_ = st.mat;
+            clip_ = st.clip;
+            clip_path_active_ = st.path_clip;
+            clip_path_fill_ = st.path_fill;
+            clip_path_ = st.path;
+            if (st.is_layer) {
+                // S83: close the layer this state opened (AOSP: restore pops
+                // the offscreen layer back onto its parent target).
+                DrawOp e; e.kind = DrawOp::Kind::END_LAYER;
+                push_op(std::move(e));
+            }
         }
         return CallResult::handled_void();
     }
     if (m == "restoreToCount") {
         // AOSP: restore to the state save() returned n → keep first n-1
-        // entries of the save stack (saveCount baseline 1).
+        // entries of the save stack (saveCount baseline 1). S83: every popped
+        // layer state closes its layer, in pop order (innermost first).
         const int n = ctx.arg_as_int(0, 1);
-        while ((int)save_stack_.size() >= n && n >= 1 && !save_stack_.empty() &&
-               (int)save_stack_.size() > n - 1) {
-            save_stack_.pop_back();
-        }
-        if (!save_stack_.empty()) { /* states restored lazily on next op? */ }
-        if (n >= 1 && (int)save_stack_.size() == n - 1) {
-            mat_ = save_stack_.empty() ? Affine2D{} : save_stack_.back().mat;
-            clip_ = save_stack_.empty() ? ClipRect{} : save_stack_.back().clip;
+        if (n >= 1) {
+            while ((int)save_stack_.size() >= n) {
+                SavedState st = save_stack_.back();
+                save_stack_.pop_back();
+                mat_ = st.mat; clip_ = st.clip;
+                clip_path_active_ = st.path_clip;
+                clip_path_fill_ = st.path_fill;
+                clip_path_ = st.path;
+                if (st.is_layer) {
+                    DrawOp e; e.kind = DrawOp::Kind::END_LAYER;
+                    push_op(std::move(e));
+                }
+            }
+        } else {
+            // AOSP restoreToCount(0) = pop everything incl. the base state.
+            while (!save_stack_.empty()) {
+                SavedState st = save_stack_.back();
+                save_stack_.pop_back();
+                if (st.is_layer) {
+                    DrawOp e; e.kind = DrawOp::Kind::END_LAYER;
+                    push_op(std::move(e));
+                }
+            }
+            mat_ = Affine2D{}; clip_ = ClipRect{};
+            clip_path_active_ = false; clip_path_.clear();
         }
         return CallResult::handled_void();
     }
     if (m == "saveLayer" || m == "saveLayerAlpha") {
-        // S68: LAYER ISOLATION is DEFERRED-BY-CONTRACT (offscreen buffer +
-        // alpha compositing). The STATE snapshot (matrix+clip) is honored —
-        // draws land on the shared framebuffer at restore time. Reported.
-        warn_noop(cls, "saveLayer(deferred-layer-isolation; state honored)");
-        save_stack_.push_back({mat_, clip_});
+        // S83-GFX-BASE (was DEFERRED-BY-CONTRACT): REAL layer isolation.
+        // AOSP law: saveLayer(bounds) allocates an offscreen layer, the
+        // current clip INTERSECTS with the bounds, and restore() composites
+        // the layer onto the parent target with the layer alpha (paint or
+        // explicit saveLayerAlpha int).
+        // Overloads:
+        //   saveLayer(l,t,r,b,paint) | (bounds RectF, paint)
+        //   saveLayer(l,t,r,b,paint,flags) | (bounds, paint, flags)
+        //   saveLayerAlpha(bounds, alpha) | (l,t,r,b, alpha)
+        float l = 0, t = 0, r = 0, b = 0;
+        bool have_bounds = false;
+        int alpha = 255;
+        if (m == "saveLayerAlpha") {
+            alpha = ctx.arg_as_int(ctx.args.size() - 1, 255);
+            if (ctx.args.size() >= 5) {
+                l = arg_as_float(ctx, 0); t = arg_as_float(ctx, 1);
+                r = arg_as_float(ctx, 2); b = arg_as_float(ctx, 3);
+                have_bounds = true;
+            } else if (read_rectf_fields(heap_, ctx.arg_as_object(0), l, t, r, b)) {
+                have_bounds = true;
+            }
+        } else {
+            const uint32_t paint_id =
+                (ctx.args.size() >= 2 &&
+                 ctx.args[0].kind == CallContext::Arg::Kind::OBJECT)
+                    ? ctx.arg_as_object(1, 0)   // (bounds, paint[, flags])
+                    : ctx.arg_as_object(ctx.args.size() - 1, 0);  // (l,t,r,b,paint)
+            alpha = (paint_color(paint_id) >> 24) & 0xFF;
+            if (ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
+                read_rectf_fields(heap_, ctx.arg_as_object(0), l, t, r, b);
+                have_bounds = true;
+            } else if (ctx.args.size() >= 4) {
+                l = arg_as_float(ctx, 0); t = arg_as_float(ctx, 1);
+                r = arg_as_float(ctx, 2); b = arg_as_float(ctx, 3);
+                have_bounds = true;
+            }
+        }
+        // No bounds = whole current clip region (AOSP: bounds=null → clip).
+        if (!have_bounds || r <= l || b <= t) {
+            if (clip_.active) {
+                l = clip_.l; t = clip_.t; r = clip_.r; b = clip_.b;
+            } else {
+                l = 0; t = 0; r = (float)canvas_w_; b = (float)canvas_h_;
+            }
+            have_bounds = true;
+        }
+        // Bake the bounds through the CURRENT matrix (op space, same law as
+        // rects) and record the SAVE_LAYER op with the alpha.
+        const float cx[4] = {l, r, l, r}, cy[4] = {t, t, b, b};
+        float bl = 1e30f, bt = 1e30f, br = -1e30f, bb = -1e30f;
+        for (int i = 0; i < 4; i++) {
+            float px, py; mat_.map(cx[i], cy[i], px, py);
+            bl = std::min(bl, px); br = std::max(br, px);
+            bt = std::min(bt, py); bb = std::max(bb, py);
+        }
+        DrawOp op; op.kind = DrawOp::Kind::SAVE_LAYER;
+        op.x = bl; op.y = bt; op.w = br - bl; op.h = bb - bt;
+        op.color = ((uint32_t)alpha & 0xFF) << 24;
+        stamp_clip(op);
+        push_op(std::move(op));
+        // S83 ORDER LAW (SkCanvas::saveLayer): the pushed save state holds
+        // the OUTER clip (what restore() returns to); the bounds
+        // intersection applies only WHILE the layer is active. Intersecting
+        // before the push made restore() return the layer-intersected clip
+        // and clipped every post-restore op to the layer box (l5b pixel
+        // evidence: green rect + all later ops invisible).
+        SavedState st;
+        st.mat = mat_; st.clip = clip_;
+        st.path_clip = clip_path_active_; st.path_fill = clip_path_fill_;
+        st.path = clip_path_;
+        st.is_layer = true;
+        save_stack_.push_back(std::move(st));
+        // The clip intersects with the layer bounds (AOSP SkCanvas law).
+        if (!clip_.active) {
+            clip_ = {bl, bt, br, bb, true};
+        } else {
+            clip_ = {std::max(clip_.l, bl), std::max(clip_.t, bt),
+                     std::min(clip_.r, br), std::min(clip_.b, bb), true};
+        }
         return CallResult::handled_int((int)save_stack_.size() + 1);
     }
     if (m == "getSaveCount") {
@@ -1387,10 +1756,22 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
     }
     if (m == "clipRect" || m == "clipPath") {
         if (m == "clipPath") {
-            // DEFERRED-BY-CONTRACT: region-op on a general path (antialias
-            // sampling). Rect clip is the dominant consumer in the corpus.
-            warn_noop(cls, "clipPath(deferred)");
-            return CallResult::handled_bool(true);
+            // S83-GFX-BASE (was DEFERRED-BY-CONTRACT): path clip via
+            // scanline-span masks. The path's contours are snapshotted in
+            // op space; stamp_clip bakes them to device space per op and
+            // replay rasterizes spans (fill rule honored). RegionOp variants
+            // beyond INTERSECT (DIFFERENCE/REPLACE/...) are rare; the
+            // default-intersect law applies (reported when present).
+            const uint32_t pid = ctx.arg_as_object(0, 0);
+            auto pit = paths_.find(pid);
+            if (pit != paths_.end() && !pit->second.contours.empty()) {
+                clip_path_ = pit->second.contours;
+                clip_path_fill_ = pit->second.fill_type == 1 ? 1 : 0;
+                clip_path_active_ = true;
+                return CallResult::handled_bool(true);
+            }
+            warn_noop(cls, "clipPath(path-unresolved)");
+            return CallResult::handled_bool(false);
         }
         // clipRect(l,t,r,b[,op]) | clipRect(l,t,w,h[,op]) | clipRect(RectF[,op])
         float l, t, r, b;
@@ -1443,6 +1824,7 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         const uint32_t paint_id = ctx.arg_as_object(ctx.args.size() - 1, 0);
         DrawOp op; op.kind = DrawOp::Kind::DRAW_BITMAP;
         op.color = paint_color(paint_id);
+        bool baked_matrix = false;   // S83: Matrix overload pre-bakes its affine
         auto fb = paint_filter_bitmap_.find(paint_id);
         op.filter_bitmap = fb != paint_filter_bitmap_.end() && fb->second;
         if (ctx.args.size() >= 9 && ctx.args[0].kind == CallContext::Arg::Kind::INT) {
@@ -1493,6 +1875,48 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
                 op.has_dst = true;
                 op.x = dl; op.y = dt; op.w = dr - dl; op.h = db - dt;
             }
+        } else if (ctx.args.size() == 3 &&
+                   ctx.args[1].kind == CallContext::Arg::Kind::OBJECT &&
+                   ctx.args[1].object_class.find("Matrix") != std::string::npos) {
+            // S83-GFX-BASE (Contract C1): drawBitmap(Bitmap, Matrix, Paint).
+            // AOSP law: device = canvas_matrix ∘ arg_matrix ∘ bitmap-pixel.
+            // The dst is the bitmap's own pixel space — record the composed
+            // affine; replay inverse-samples per pixel (existing has_affine
+            // path). Translate-only composed result folds into op.x/y so the
+            // byte-identical fast path stays intact.
+            op.bitmap_id = ctx.arg_as_object(0, 0);
+            Affine2D arg;
+            bool have_arg = false;
+            const uint32_t mid = ctx.args[1].object_id;
+            float v = 0.f;
+            auto try_read = [&](const char* name, float& out) {
+                return heap_ && heap_->get_object_float_field(mid, name, out);
+            };
+            if (mid != 0 && try_read("m0", arg.a) && try_read("m1", arg.c) &&
+                try_read("m2", arg.e) && try_read("m3", arg.b) &&
+                try_read("m4", arg.d) && try_read("m5", arg.f)) {
+                have_arg = true;
+            }
+            Affine2D eff = mat_;
+            if (have_arg) eff.pre_concat(arg);
+            baked_matrix = true;
+            op.has_dst = true;
+            op.x = 0; op.y = 0;
+            op.w = -1; op.h = -1;   // replay resolves natural size from store
+            if (eff.is_translate_only()) {
+                float px = 0, py = 0;
+                eff.map(0, 0, px, py);
+                op.x = px; op.y = py;
+                op.has_affine = false;
+                op.has_dst = false;   // natural size at (op.x, op.y)
+            } else {
+                float px = 0, py = 0;
+                eff.map(0, 0, px, py);
+                op.x = px; op.y = py;
+                op.affine = eff;
+                op.has_affine = true;
+                op.affine_exact = true;   // per-pixel law for scale/rotate/skew
+            }
         } else {
             // (Bitmap, float l, float t, Paint) — dst = natural size.
             op.bitmap_id = ctx.arg_as_object(0, 0);
@@ -1501,7 +1925,7 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
             op.x = l; op.y = t;
             op.has_dst = false;   // replay resolves natural size from the store
         }
-        if (op.has_dst) {
+        if (op.has_dst && !baked_matrix) {
             // Bake the dst rect with the CURRENT matrix (same law as rects).
             if (!op.has_src || true) { /* dst baking below */ }
             float dl = op.x, dt = op.y, dr = op.x + op.w, db = op.y + op.h;
@@ -1545,8 +1969,115 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         push_op(std::move(op));
         return CallResult::handled_void();
     }
-    if (m == "drawPosText" || m == "drawPoints" || m == "drawLines" ||
-        m == "drawBitmapMesh" || m == "drawVertices" || m == "drawPicture" ||
+    if (m == "drawPoints" || m == "drawLines") {
+        // S83-GFX-BASE (was accepted-then-NO-OP). AOSP law:
+        //   drawPoints(float[] pts, int offset, int count, Paint) — count is
+        //   the number of FLOATS consumed (2 per point). Each point renders
+        //   as a square of side strokeWidth (Paint.Cap law, same as drawPoint).
+        //   drawLines draws consecutive PAIRS as line segments.
+        //   Overloads: (pts, Paint) with implicit offset=0/count=length.
+        DrawOp op;
+        op.kind = m == "drawPoints" ? DrawOp::Kind::DRAW_POINTS
+                                    : DrawOp::Kind::DRAW_LINES;
+        const uint32_t paint_id = ctx.arg_as_object(ctx.args.size() - 1, 0);
+        op.color = paint_color(paint_id);
+        op.stroke = false;
+        auto sw = paint_stroke_w_.find(paint_id);
+        op.stroke_w = sw != paint_stroke_w_.end() && sw->second > 0.f ? sw->second : 1.f;
+        const uint32_t arr = ctx.arg_as_object(0, 0);
+        int32_t alen = 0;
+        if (heap_ && arr != 0 && heap_->get_object_array_length(arr, alen) && alen > 0) {
+            int offset = ctx.args.size() >= 3 ? ctx.arg_as_int(1, 0) : 0;
+            int count = ctx.args.size() >= 3 ? ctx.arg_as_int(2, alen) : alen;
+            if (count <= 0) count = alen - offset;
+            if (offset < 0) offset = 0;
+            if (offset + count > alen) count = alen - offset;
+            op.contours.emplace_back();
+            auto& pts = op.contours.back();
+            for (int i = 0; i + 1 < count; i += 2) {
+                // S83: array-element read reinterprets raw-bit INT32 stores
+                // (F-028 register law) — see get_object_array_float_element.
+                float x = 0.f, y = 0.f;
+                heap_->get_object_array_float_element(arr, (size_t)(offset + i), x);
+                heap_->get_object_array_float_element(arr, (size_t)(offset + i + 1), y);
+                float mx = 0.f, my = 0.f;
+                mat_.map(x, y, mx, my);
+                pts.push_back({mx, my});
+            }
+            if (!pts.empty()) { stamp_clip(op); push_op(std::move(op)); }
+        } else {
+            warn_noop(cls, m + "(pts-unresolved)");
+        }
+        return CallResult::handled_void();
+    }
+    if (m == "drawPosText") {
+        // S83-GFX-BASE: drawPosText(char[] text, int index, int count,
+        // float[] pos, Paint) | drawPosText(String text, float[] pos, Paint).
+        // Each char is drawn at pos[2i], pos[2i+1] (baseline origin).
+        DrawOp op;
+        op.kind = DrawOp::Kind::DRAW_POS_TEXT;
+        const uint32_t paint_id = ctx.arg_as_object(ctx.args.size() - 1, 0);
+        op.color = paint_color(paint_id);
+        auto ts = paint_text_size_.find(paint_id);
+        op.text_size_px = ts != paint_text_size_.end() ? ts->second : 0.f;
+        auto tbold = paint_fake_bold_.find(paint_id);
+        op.text_bold = tbold != paint_fake_bold_.end() && tbold->second;
+        std::string chars;
+        if (ctx.args[0].kind == CallContext::Arg::Kind::STRING) {
+            // (String, float[], Paint)
+            chars = ctx.args[0].string_val;
+            const uint32_t arr = ctx.arg_as_object(1, 0);
+            op.contours.emplace_back();
+            if (heap_ && arr != 0) {
+                int32_t alen = 0;
+                heap_->get_object_array_length(arr, alen);
+                for (int i = 0; i * 2 + 1 < alen; i++) {
+                    float x = 0.f, y = 0.f;
+                    heap_->get_object_array_float_element(arr, (size_t)(i * 2), x);
+                    heap_->get_object_array_float_element(arr, (size_t)(i * 2 + 1), y);
+                    float mx = 0.f, my = 0.f;
+                    mat_.map(x, y, mx, my);
+                    op.contours.back().push_back({mx, my});
+                }
+            }
+        } else {
+            // (char[], index, count, float[], Paint)
+            const uint32_t carr = ctx.arg_as_object(0, 0);
+            const int index = ctx.arg_as_int(1, 0);
+            const int count = ctx.arg_as_int(2, 0);
+            const uint32_t parr = ctx.arg_as_object(3, 0);
+            int32_t clen = 0;
+            if (heap_ && carr != 0 && heap_->get_object_array_length(carr, clen)) {
+                for (int i = 0; i < count && index + i < clen; i++) {
+                    int32_t ch = 0;
+                    if (heap_->get_object_int_field(carr, "array[" + std::to_string(index + i) + "]", ch))
+                        chars.push_back((char)ch);
+                }
+            }
+            op.contours.emplace_back();
+            if (heap_ && parr != 0) {
+                int32_t plen = 0;
+                heap_->get_object_array_length(parr, plen);
+                for (int i = 0; i < count && i * 2 + 1 < plen; i++) {
+                    float x = 0.f, y = 0.f;
+                    heap_->get_object_array_float_element(parr, (size_t)(i * 2), x);
+                    heap_->get_object_array_float_element(parr, (size_t)(i * 2 + 1), y);
+                    float mx = 0.f, my = 0.f;
+                    mat_.map(x, y, mx, my);
+                    op.contours.back().push_back({mx, my});
+                }
+            }
+        }
+        op.text = chars;
+        if (!chars.empty() && !op.contours.empty() && !op.contours[0].empty()) {
+            stamp_clip(op);
+            push_op(std::move(op));
+        } else {
+            warn_noop(cls, "drawPosText(unresolved)");
+        }
+        return CallResult::handled_void();
+    }
+    if (m == "drawBitmapMesh" || m == "drawVertices" || m == "drawPicture" ||
         m == "drawTextRun" || m == "drawTextOnPath") {
         // Accepted but geometry not reproduced (registered, honest).
         warn_noop(cls, m);

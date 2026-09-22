@@ -16,7 +16,7 @@ ifeq ($(MINIANDROID_HAVE_LOTTIE),1)
 INCLUDES += -I$(RLOTTIE_DIR)/inc
 CXXFLAGS += -DMINIANDROID_HAVE_LOTTIE
 endif
-INCLUDES = -Isrc -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include
+INCLUDES = -Isrc -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include
 # EXP-097 §5/§6: image codec libraries.
 # libwebp — Google reference WebP decoder (used by AOSP Skia / BitmapFactory)
 # libjpeg — IJG reference JPEG decoder (Android uses libjpeg-turbo, drop-in API)
@@ -42,15 +42,15 @@ APK_SOURCES = $(SRCDIR)/apk/apk_parser.cpp $(SRCDIR)/apk/manifest_reader.cpp
 DEX_SOURCES = $(SRCDIR)/dex/dex_parser.cpp $(SRCDIR)/dex/mutf8.cpp $(SRCDIR)/dex/class_resolver.cpp $(SRCDIR)/dex/dex_interpreter_batch.cpp $(SRCDIR)/dex/dalvik_engine.cpp $(SRCDIR)/dex/trace_exporter.cpp  # EXP-031.5: Trace exporter
 RUNTIME_SOURCES = $(SRCDIR)/runtime/execution_engine.cpp $(SRCDIR)/runtime/application_runtime.cpp
 DIAGNOSTICS_SOURCES = $(SRCDIR)/diagnostics/trace_engine.cpp
-RESOURCES_SOURCES = $(SRCDIR)/resources/res_id.cpp $(SRCDIR)/resources/res_config.cpp $(SRCDIR)/resources/resource_parser.cpp $(SRCDIR)/resources/string_pool.cpp $(SRCDIR)/resources/arsc_parser.cpp $(SRCDIR)/resources/axml_parser.cpp $(SRCDIR)/resources/layout_inflater.cpp $(SRCDIR)/resources/resource_runtime.cpp
-RENDERER_SOURCES = $(SRCDIR)/renderer/software_renderer.cpp
+RESOURCES_SOURCES = $(SRCDIR)/resources/res_id.cpp $(SRCDIR)/resources/res_config.cpp $(SRCDIR)/resources/resource_parser.cpp $(SRCDIR)/resources/string_pool.cpp $(SRCDIR)/resources/arsc_parser.cpp $(SRCDIR)/resources/axml_parser.cpp $(SRCDIR)/resources/layout_inflater.cpp $(SRCDIR)/resources/vector_inflater.cpp $(SRCDIR)/resources/resource_runtime.cpp
+RENDERER_SOURCES = $(SRCDIR)/renderer/software_renderer.cpp $(SRCDIR)/gles/pgl_backend.cpp $(SRCDIR)/gles/gles20_bridge.cpp
 # UNIFIED_007 text pipeline — REAL FriBidi/HarfBuzz/FreeType shaping now
 # feeds BOTH the layout measure pass and the view draw path (was: orphaned
 # out of the build; the 8x16 BitmapFont answered all text geometry).
 FONTS_SOURCES = $(SRCDIR)/fonts/text_shaper.cpp
 # EXP-084: framework and storage sources are required for linkage
 # G06: touch_dispatcher = canonical input pipeline; state_list = StateListDrawable law
-FRAMEWORK_SOURCES = $(SRCDIR)/framework/executor_shadow.cpp $(SRCDIR)/framework/android_shadows.cpp $(SRCDIR)/framework/shadow_registry.cpp $(SRCDIR)/framework/choreographer_shadow.cpp $(SRCDIR)/framework/dialog_shadow.cpp $(SRCDIR)/framework/clipboard_shadow.cpp $(SRCDIR)/framework/canvas_shadow.cpp $(SRCDIR)/framework/bitmap_shadow.cpp $(SRCDIR)/framework/touch_dispatcher.cpp $(SRCDIR)/framework/state_list.cpp $(SRCDIR)/framework/lifecycle_controller.cpp $(SRCDIR)/framework/locks_shadow.cpp $(SRCDIR)/framework/atomic_shadow.cpp $(SRCDIR)/framework/pending_intent_shadow.cpp
+FRAMEWORK_SOURCES = $(SRCDIR)/framework/executor_shadow.cpp $(SRCDIR)/framework/matrix_shadow.cpp $(SRCDIR)/framework/locale_insets_shadow.cpp $(SRCDIR)/framework/gl_surface_shadow.cpp $(SRCDIR)/framework/android_shadows.cpp $(SRCDIR)/framework/shadow_registry.cpp $(SRCDIR)/framework/choreographer_shadow.cpp $(SRCDIR)/framework/dialog_shadow.cpp $(SRCDIR)/framework/clipboard_shadow.cpp $(SRCDIR)/framework/canvas_shadow.cpp $(SRCDIR)/framework/bitmap_shadow.cpp $(SRCDIR)/framework/touch_dispatcher.cpp $(SRCDIR)/framework/state_list.cpp $(SRCDIR)/framework/lifecycle_controller.cpp $(SRCDIR)/framework/locks_shadow.cpp $(SRCDIR)/framework/atomic_shadow.cpp $(SRCDIR)/framework/pending_intent_shadow.cpp
 API_SOURCES = $(SRCDIR)/api/application_context.cpp $(SRCDIR)/api/shared_prefs.cpp
 STORAGE_SOURCES = $(wildcard $(SRCDIR)/storage/*.cpp)
 

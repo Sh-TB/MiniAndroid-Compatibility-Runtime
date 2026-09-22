@@ -1,0 +1,482 @@
+[
+ {
+  "TITLE_ID": "APP-BNYROCLK",
+  "apk": "com.bnyro.clock_24.apk",
+  "rc": 1,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 2
+  },
+  "LEVEL": 2,
+  "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+  "apk_sha256": "c7bb59c816c284dc25349c0e39b4f08808d9a94aaf9013d76ee41fdef387c527"
+ },
+ {
+  "TITLE_ID": "APP-CHESSCLK",
+  "apk": "com.chessclock.android_29.apk",
+  "rc": 1,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 1
+  },
+  "LEVEL": 0,
+  "LEVEL_NAME": "LOADED_ONLY",
+  "apk_sha256": "5ca6f2c54c05efe7df72b209988037b97e37be0faae133624ec352057445fafa"
+ },
+ {
+  "TITLE_ID": "APP-FLASHLIGHT",
+  "apk": "simple_flashlight_66.apk",
+  "rc": 1,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 2
+  },
+  "LEVEL": 2,
+  "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+  "apk_sha256": "b4cd07c40a3d5711461670a2f460a1447acf3836c0e90471b7ba5c8b4c2f9bb3"
+ },
+ {
+  "TITLE_ID": "APP-FOEHNIX",
+  "apk": "foehnix.widget_40.apk",
+  "rc": 1,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 2
+  },
+  "LEVEL": 2,
+  "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+  "apk_sha256": "960913f40cefe5f4542554ef603305586b87ca0b03b25f28f09abeec7a9cf857"
+ },
+ {
+  "TITLE_ID": "APP-GMDICE",
+  "apk": "de.duenndns.gmdice_8.apk",
+  "rc": 0,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 51
+  },
+  "LEVEL": 2,
+  "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+  "apk_sha256": "1621eda11b5dbc0c232b54c652d27aeab2f8a3c95be2c1f0632d6233b12d8a85"
+ },
+ {
+  "TITLE_ID": "APP-KEYBOARD",
+  "apk": "rkr.simplekeyboard.inputmethod_145.apk",
+  "rc": 0,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 2
+  },
+  "LEVEL": 2,
+  "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+  "apk_sha256": "d83060833dc2bc9705e140b310ba9dea3003b329ea12799a79bf5d7de6e786bd"
+ },
+ {
+  "TITLE_ID": "APP-MICROTIMER",
+  "apk": "dubrowgn.microtimer_8.apk",
+  "rc": 1,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 21
+  },
+  "LEVEL": 2,
+  "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+  "apk_sha256": "79c6f730f64886e7b6561c2eed1a4420201e6e44a53b635dbb14c0689fd19828"
+ },
+ {
+  "TITLE_ID": "APP-NOTES",
+  "apk": "org.billthefarmer.notes_139.apk",
+  "rc": 0,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 6
+  },
+  "LEVEL": 2,
+  "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+  "apk_sha256": "82cf8bc44c16374897665dabcd33e78715e801af48373b45b9c41e85e55e64ef"
+ },
+ {
+  "TITLE_ID": "APP-STOPWATCH",
+  "apk": "omegacentauri.mobi.simplestopwatch_26.apk",
+  "rc": 1,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 20
+  },
+  "LEVEL": 2,
+  "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+  "apk_sha256": "b3ec1a5ec24ce53bf5c2322eaf79b00c52f021ed7a0ada9d58fae31dcffc83d2"
+ },
+ {
+  "TITLE_ID": "APP-STOPWATCH2",
+  "apk": "com.github.muellerma.stopwatch_6.apk",
+  "rc": 1,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 2
+  },
+  "LEVEL": 2,
+  "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+  "apk_sha256": "3b6a10c8dc8ddc727de02cb543072efc43c2589c8ed9f6cf7d147ba0a2580355"
+ },
+ {
+  "TITLE_ID": "APP-TRANQUIL",
+  "apk": "tibarj.tranquilstopwatch_17.apk",
+  "rc": 1,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 2
+  },
+  "LEVEL": 2,
+  "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+  "apk_sha256": "7bc31fae5cd2e9d815414dafb437f9a9a2fd21f4dc16d9929adc5fec962c5cb7"
+ },
+ {
+  "TITLE_ID": "APP-UNOTE",
+  "apk": "app.varlorg.unote_30.apk",
+  "rc": 1,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 26
+  },
+  "LEVEL": 2,
+  "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+  "apk_sha256": "be91103f0e7db44361de5e918d9130dab4ac137bab5bd946a0fd8dab88bc2cc0"
+ },
+ {
+  "TITLE_ID": "GAME-2048",
+  "apk": "g2048_v1.0_vc1.apk",
+  "rc": 0,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 33
+  },
+  "LEVEL": 2,
+  "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+  "apk_sha256": "c933b5b82192087585b30a0bd1bdaf1ae6e8d80a3901ecdec12b75f0a3eac13d"
+ },
+ {
+  "TITLE_ID": "GAME-AS2048",
+  "apk": "org.andstatus.game2048_47.apk",
+  "rc": 1,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 2
+  },
+  "LEVEL": 2,
+  "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+  "apk_sha256": "2d6707624623fe8857da271dcc19511ab52472ce1fee6ac23bc7f2ecf2e7eea9"
+ },
+ {
+  "TITLE_ID": "GAME-BALANCE",
+  "apk": "com.jeffliu.balancetheball_4.apk",
+  "rc": 0,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 14
+  },
+  "LEVEL": 2,
+  "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+  "apk_sha256": "6180534b151e4d50365b21483f3719e32f207a42675dee20227de449c875c1e2"
+ },
+ {
+  "TITLE_ID": "GAME-BALL2BOX",
+  "apk": "com.simondalvai.ball2box_69.apk",
+  "rc": 1,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 2
+  },
+  "LEVEL": 2,
+  "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+  "apk_sha256": "aef33b17a0ae3c90cd3f73c19ab280b8ef34debe602066b55fa1aebab0de316a"
+ },
+ {
+  "TITLE_ID": "GAME-BATTLE",
+  "apk": "org.secuso.privacyfriendlybattleship_101.apk",
+  "rc": 1,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 2
+  },
+  "LEVEL": 2,
+  "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+  "apk_sha256": "beeedcbbefc3b013242926f11f51194900d00f0578def44c8d2a3cf924d800e0"
+ },
+ {
+  "TITLE_ID": "GAME-BLACKJACK",
+  "apk": "crypto.o0o0o0o0o.games.blackjack_4.apk",
+  "rc": 1,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 2
+  },
+  "LEVEL": 2,
+  "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+  "apk_sha256": "70e9979d2fd731cbb941f91f9308deb993f7cc8c839bbe94947aa92f2d371303"
+ },
+ {
+  "TITLE_ID": "GAME-DICER",
+  "apk": "org.secuso.privacyfriendlydicer_101.apk",
+  "rc": 1,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 2
+  },
+  "LEVEL": 2,
+  "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+  "apk_sha256": "f2b4d3f021c3a6207c3c9e75a75fa325b88847bd46b4f99e41e28dc3be8fae7f"
+ },
+ {
+  "TITLE_ID": "GAME-DOOZ18",
+  "apk": "dooz.apk",
+  "rc": 1,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 3
+  },
+  "LEVEL": 1,
+  "LEVEL_NAME": "NONBLANK",
+  "apk_sha256": "d81292cd346dcb23b04488bca400ca95af0f6eaa4aefefd31f847fe535cbdc17"
+ },
+ {
+  "TITLE_ID": "GAME-EDGEROLL",
+  "apk": "edge.roll_11.apk",
+  "rc": 1,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 2
+  },
+  "LEVEL": 2,
+  "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+  "apk_sha256": "799c651be1333741dae66c43bf97774b273b0b4e9439f5ff37f26e153159f640"
+ },
+ {
+  "TITLE_ID": "GAME-FISHRINGS",
+  "apk": "fishrings_v1.23_vc6.apk",
+  "rc": 0,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 1
+  },
+  "LEVEL": 0,
+  "LEVEL_NAME": "LOADED_ONLY",
+  "apk_sha256": "14d7dd80f7563c6a17c8d4b0fc2a5ca0ef468711fbdb1803306b090bd7c641ed"
+ },
+ {
+  "TITLE_ID": "GAME-MEMORY",
+  "apk": "eu.quelltext.memory_7.apk",
+  "rc": 0,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 1
+  },
+  "LEVEL": 0,
+  "LEVEL_NAME": "LOADED_ONLY",
+  "apk_sha256": "4dd3957983e3c3f38c673f898d9659d5e0251f97137bab5254eafdcdbc9fa27c"
+ },
+ {
+  "TITLE_ID": "GAME-MINES1",
+  "apk": "com.joeld.minesweeper_7.apk",
+  "rc": 1,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 2
+  },
+  "LEVEL": 2,
+  "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+  "apk_sha256": "46964d6438a76a990f10e1653401067aa4dc5927c3050f13c56d33096742ff24"
+ },
+ {
+  "TITLE_ID": "GAME-MINES2",
+  "apk": "io.github.johnathan.minesweeper_6.apk",
+  "rc": 1,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 3
+  },
+  "LEVEL": 1,
+  "LEVEL_NAME": "NONBLANK",
+  "apk_sha256": "3b52a2fd21c4b4184eed1a1d4a9944e89bb9e7f99bf37329f03bd5eca962942e"
+ },
+ {
+  "TITLE_ID": "GAME-NOTHANKS",
+  "apk": "eu.veldsoft.no.thanks_1.apk",
+  "rc": 1,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 2
+  },
+  "LEVEL": 2,
+  "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+  "apk_sha256": "0de8e6e045b3d8f6635270d1ba0cef65e5fb6db8815452f02bca4350b85ee244"
+ },
+ {
+  "TITLE_ID": "GAME-PF2048",
+  "apk": "org.secuso.privacyfriendly2048_100.apk",
+  "rc": 1,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 2
+  },
+  "LEVEL": 2,
+  "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+  "apk_sha256": "02c799d3d582669daf2acf920093c68d2933f60aa937bb72fa2a805557233fe8"
+ },
+ {
+  "TITLE_ID": "GAME-QUEENS",
+  "apk": "com.sidhant.queens_93.apk",
+  "rc": 0,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 2
+  },
+  "LEVEL": 2,
+  "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+  "apk_sha256": "e4ba8df1594ac07fc32f5f3e40d770e5a2dba01d430214af2cfc8f9c66448935"
+ },
+ {
+  "TITLE_ID": "GAME-QUINB",
+  "apk": "xyz.deepdaikon.quinb_10.apk",
+  "rc": 0,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 2
+  },
+  "LEVEL": 2,
+  "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+  "apk_sha256": "bd720d019b85bac7aa08013bf2b50f331d76d736bfe681753a43c8215e002d69"
+ },
+ {
+  "TITLE_ID": "GAME-RTTT",
+  "apk": "org.kirkezz.rttt_3.apk",
+  "rc": 0,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 2
+  },
+  "LEVEL": 2,
+  "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+  "apk_sha256": "704fa51869ad7ff441edb8831fad7044141d62c4ccce610cfe5117476770a8af"
+ },
+ {
+  "TITLE_ID": "GAME-SNAKE1",
+  "apk": "snake_v1.0_vc1.apk",
+  "rc": 0,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 24
+  },
+  "LEVEL": 2,
+  "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+  "apk_sha256": "54cf48a947f9b69061cfa792e1a6759e4093f709377786ec9c427b9495a954cd"
+ },
+ {
+  "TITLE_ID": "GAME-SNAKEDX",
+  "apk": "snake_deluxe_v1.0_vc1.apk",
+  "rc": 0,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 82
+  },
+  "LEVEL": 3,
+  "LEVEL_NAME": "STRUCT_CANDIDATE",
+  "apk_sha256": "e399395570c49c65bef5d033f59857e00af686a29d3e3bbf2bdd4e6161d77665"
+ },
+ {
+  "TITLE_ID": "GAME-SUDOKU",
+  "apk": "org.secuso.privacyfriendlysudoku_19.apk",
+  "rc": 1,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 2
+  },
+  "LEVEL": 2,
+  "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+  "apk_sha256": "c2a582760a33b1c84d9de7247293091aea74832ab2c804337af56e21b3f06ba0"
+ },
+ {
+  "TITLE_ID": "GAME-SUDOKU2",
+  "apk": "com.thesuncat.sudoku_4.apk",
+  "rc": 0,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 2
+  },
+  "LEVEL": 2,
+  "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+  "apk_sha256": "863927be2d6a4d2dbb61587e8a876bad73e523ed237281258a199401c116036a"
+ },
+ {
+  "TITLE_ID": "GAME-TETRIS",
+  "apk": "tetris_v1.0_vc1.apk",
+  "rc": 0,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 70
+  },
+  "LEVEL": 3,
+  "LEVEL_NAME": "STRUCT_CANDIDATE",
+  "apk_sha256": "700a3dcf9a98b26ef49ef8c36040011da325d926edb4c9a56853008924928bab"
+ },
+ {
+  "TITLE_ID": "GAME-TRIPEAKS",
+  "apk": "tripeaks_v1.2.1_vc4.apk",
+  "rc": 0,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 1
+  },
+  "LEVEL": 0,
+  "LEVEL_NAME": "LOADED_ONLY",
+  "apk_sha256": "52272ae619c0fec88dfd9b4a22be0c411edda8564edd7a11af107398799f894c"
+ },
+ {
+  "TITLE_ID": "GAME-TTT-CLASSIC",
+  "apk": "tictactoeclassic.apk",
+  "rc": 0,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 37
+  },
+  "LEVEL": 2,
+  "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+  "apk_sha256": "752852c94c9807883d38c0b74ab160809999897acda0cbc45f4f49f84e0a1b9a"
+ },
+ {
+  "TITLE_ID": "GAME-TTT-FRZ",
+  "apk": "com.itsfrz.tictactoe_5.apk",
+  "rc": 1,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 2
+  },
+  "LEVEL": 2,
+  "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+  "apk_sha256": "2a057a9a519acd81dc54af9b3c9f58e40ebd0ce92f949aca65f6c439e8f74d45"
+ },
+ {
+  "TITLE_ID": "MAND-P9",
+  "apk": "se.tube42.p9.android_11.apk",
+  "rc": 1,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 2
+  },
+  "LEVEL": 2,
+  "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+  "apk_sha256": "e69e40836e31337eb6d536b5637a3f6ba7b6484b54d172dd24238c0cb2dd5a76"
+ },
+ {
+  "TITLE_ID": "MAND-TIMELIMIT",
+  "apk": "io.timelimit.android.aosp.direct_231.apk",
+  "rc": 1,
+  "frames": 8,
+  "visual": {
+   "UNIQUE_COLORS": 2
+  },
+  "LEVEL": 2,
+  "LEVEL_NAME": "GRAPHICALLY_INCOMPLETE",
+  "apk_sha256": "93dc5e3ca5077dcff896367d0396642c0a2ba2936bb29aa5255c49f51df26d86"
+ }
+]
