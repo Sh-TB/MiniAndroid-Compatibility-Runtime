@@ -4181,8 +4181,19 @@
    "priority": "P1",
    "evidence": "scripts/s81_visual_audit.py + scripts/s81_run_and_audit.py (methodology constants in-file, \u00a736 no single fake score). Applied to the 18-APK curated ladder (run/s81_audit/s81_visual_report.json) and BATCH-01 (run/s81_batch01/batch01_report.json). Findings: zero curated third-party apps reach L3; only S80's own games do; 7 apps flagged IMAGE_DECODED_VS_RENDERED_GAP (A7b decode proven, ImageView path proven, but XML-src capture never fires for programmatic/complex resource chains).",
    "wave": "S81"
+  },
+  {
+   "id": "F-NEW-157",
+   "title": "libGDX AndroidGraphics.createGLSurfaceView NPE (EGL/GLSurfaceView frontier): app-boundary unwind at MainActivity.onCreate \u2014 libGDX AndroidBackend GL surface creation chain unimplemented",
+   "status": "OBSERVED-FAIL",
+   "priority": "P0",
+   "evidence": "S82 hard-gate P9 (MAND-001, se.tube42.p9.android v0.1.1 vc11, APK sha256 e69e40836e31337eb6d536b5637a3f6ba7b6484b54d172dd24238c0cb2dd5a76): run/s82/MAND-001/run1/crash.log 6 errors, EXC-UNWIND chain AndroidGraphics.createGLSurfaceView(pc=0x0,d6) -> AndroidGraphics.<init>(0x5a/0x1,d5/d4) -> AndroidApplication.init(0x25,d3) -> initialize(0x1,d2) -> EXC-UNCAUGHT-TOP at se.tube42.p9.android.MainActivity.onCreate(0x15,d1) [APP-BOUNDARY]. Screen: TWO_COLOR uniq=2 text_px=0 (\u00a716 blank face). S80 precedent: com.emmanuelmess.tictactoe libGDX GL/EGL frontier. Fanout: any libGDX AndroidApplication.initialize game (P9 + future corpus games).",
+   "producer": "com.badlogic.gdx.backends.android.AndroidGraphics.createGLSurfaceView",
+   "consumer": "libGDX games' MainActivity.onCreate",
+   "law_needed": "GLSurfaceView/EGL surface creation shadow: AndroidApplication.initialize contract -> AndroidGraphics -> GLSurfaceView(EGL14/EGLDisplay or stub GL surface) -> GL10 rendering hook, or an honest deterministic GL-unavailable surface placeholder with documented boundary."
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry\u2194docs single-source-of-truth restored); registry 372\u2192374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots. | S80: three real games (Snake Deluxe, Mini Tetris, 2048) built + played on the runtime; R-NEW-401 external-cache bridge.",
- "total": 413
+ "total": 413,
+ "count": null
 }
