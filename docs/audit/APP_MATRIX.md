@@ -4,23 +4,29 @@
 > Canonical per-app records: `docs/compatibility/apps/*.json` (dossiers) +
 > `docs/evidence/s74_ops/<app>/session.json`. No inflation: statuses are the
 > dossier/ops values verbatim; NOT_RECORDED where absent.
+> S81 §35 columns (COLOR_SCORE→VISUAL_STATUS): from
+> `run/s81_audit/s81_visual_report.json` — LEVEL per the S81 ladder
+> (L0 LOADED_ONLY … L3 STRUCT_CANDIDATE; L4/L5 need reference comparison /
+> human review, never self-granted per §17/§48). §39 law: an existing
+> HUMAN_VISIBLE status is NOT preserved retroactively — where the S81 audit
+> flags the app, VISUAL_STATUS records the downgrade.
 
-| APP | APK_SHA256_16 | SOURCE_IDENTITY | LAUNCH | VIEW/RENDER | INPUT | STATE_CHANGE | HUMAN_VISIBLE | PERSISTENCE | SECURITY | SANDBOX | OPEN_BLOCKER | SESSION | ISSUE |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| androidgamesnake | 54cf48a9 | NOT_RECORDED | per session | dossier:rendering | dossier:input | dossier:state | HUMAN_VISIBLE | NOT_OBSERVED | NOT_OBSERVED (runtime has no r | s74-ops probe | restart-after-game-over path unproven (possibly Dialog-based | s74_ops/androidgamesnake | 13 |
-| bouncy | NOT_RECORDED | NOT_RECORDED | rc0 | dossier:rendering | dossier:input | dossier:state | HUMAN_VISIBLE | NO_PERSISTENCE_OBSERVED | NOT_OBSERVED (runtime has no r | s74-ops probe | L7 game-loop interaction proof open (physics loop not autono | s74_ops/bouncy | 21 |
-| connectfour | NOT_RECORDED | NOT_RECORDED | per session | dossier:rendering | dossier:input | dossier:state | HUMAN_VISIBLE | NO_PERSISTENCE_OBSERVED | PROFILED (manifest) | s74-ops probe | NOT_RECORDED | s74_ops/connectfour | 12 |
-| dooz | NOT_RECORDED | NOT_RECORDED | rc0 | dossier:rendering | dossier:input | dossier:state | NOT_HUMAN_VISIBLE | NOT_OBSERVED | NOT_OBSERVED (runtime has no r | s74-ops probe | F-146 (g8.a@569 -> ur.e(J) null receiver) and F-147 (onCreat | s74_ops/dooz | 14 |
-| fishrings | NOT_RECORDED | NOT_RECORDED | per session | dossier:rendering | dossier:input | dossier:state | HUMAN_VISIBLE | NO_PERSISTENCE_OBSERVED | NOT_OBSERVED (runtime has no r | s74-ops probe | game-logic depth (real ring rotation rules) unexercised at H | s74_ops/fishrings | 19 |
-| gmdice | ee9f7396 | NOT_RECORDED | rc0 | dossier:rendering | dossier:input | dossier:state | HUMAN_VISIBLE | NO_PERSISTENCE_OBSERVED | NOT_OBSERVED (runtime has no r | s74-ops probe | ladder open: input/state legs proven at S63, not re-run at c | s74_ops/gmdice | 17 |
-| helloworld | 009b4671 | NOT_RECORDED | per session | dossier:rendering | dossier:input | dossier:state | HUMAN_VISIBLE | NO_PERSISTENCE_OBSERVED | PROFILED (manifest) | s74-ops probe | NOT_RECORDED | s74_ops/helloworld | 10 |
-| microtimer | NOT_RECORDED | NOT_RECORDED | rc0 | dossier:rendering | dossier:input | dossier:state | HUMAN_VISIBLE | NO_PERSISTENCE_OBSERVED | NOT_OBSERVED (runtime has no r | s74-ops probe | ladder open below render (input legs historical) | s74_ops/microtimer | 18 |
-| opmt | NOT_RECORDED | NOT_RECORDED | per session | dossier:rendering | dossier:input | dossier:state | HUMAN_VISIBLE | NO_PERSISTENCE_OBSERVED | NOT_OBSERVED (runtime has no r | s74-ops probe | app-own IOOBE (OBJECT-IDENTITY class) stops game progression | s74_ops/opmt | 23 |
-| stopwatch | NOT_RECORDED | NOT_RECORDED | rc0 | dossier:rendering | dossier:input | dossier:state | NOT_HUMAN_VISIBLE | NOT_APPLICABLE | NOT_OBSERVED (runtime has no r | s74-ops probe | no launchable Activity — service-only manifest (F-143 servic | s74_ops/stopwatch | 22 |
-| telegram | NOT_RECORDED | NOT_RECORDED | per session | dossier:rendering | dossier:input | dossier:state | NOT_HUMAN_VISIBLE | NOT_OBSERVED | NOT_OBSERVED (runtime has no r | s74-ops probe | v12 init budget: burns 540 s inside real init, no frame in b | s74_ops/telegram | 16 |
-| tictactoe | NOT_RECORDED | NOT_RECORDED | rc0 | dossier:rendering | dossier:input | dossier:state | NOT_HUMAN_VISIBLE | NO_PERSISTENCE_OBSERVED | NOT_OBSERVED (runtime has no r | s74-ops probe | real APK: F-144 GL surface family (libgdx createGLSurfaceVie | s74_ops/tictactoe | 11 |
-| tripeaks | NOT_RECORDED | NOT_RECORDED | per session | dossier:rendering | dossier:input | dossier:state | HUMAN_VISIBLE | NO_PERSISTENCE_OBSERVED | NOT_OBSERVED (runtime has no r | s74-ops probe | R-NEW-388 (remeasured S71: generic RL anchor laws PROVEN on  | s74_ops/tripeaks | 20 |
-| unote | NOT_RECORDED | NOT_RECORDED | rc0 | dossier:rendering | dossier:input | dossier:state | HUMAN_VISIBLE | OBSERVED: real SQLite DB created on launch | NOT_OBSERVED (runtime has no r | s74-ops probe | execution ladder open below render: input/state-change legs  | s74_ops/unote | 15 |
+| APP | APK_SHA256_16 | SOURCE_IDENTITY | LAUNCH | VIEW/RENDER | INPUT | STATE_CHANGE | HUMAN_VISIBLE | VISUAL_STATUS (S81) | COLOR_SCORE | IMAGE_SCORE | GRAPHICS_FLAGS | MISSING_APIS | PERSISTENCE | SECURITY | SANDBOX | OPEN_BLOCKER | SESSION | ISSUE |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| androidgamesnake | 54cf48a9 | NOT_RECORDED | per session | dossier:rendering | dossier:input | dossier:state | HUMAN_VISIBLE | STRUCT_CANDIDATE | uniq=82 dom=0.3267 | rasters_in_apk=0 | ICON_PRESENT,GRAPHICALLY_NONTRIVIAL | per registry F-NEW-156 (onCreate unwind family) | NOT_OBSERVED | NOT_OBSERVED (runtime has no r | s74-ops probe | restart-after-game-over path unproven (possibly Dialog-based | s74_ops/androidgamesnake | 13 |
+| bouncy | NOT_RECORDED | NOT_RECORDED | rc0 | dossier:rendering | dossier:input | dossier:state | HUMAN_VISIBLE | GRAPHICALLY_INCOMPLETE (DOWNGRADED per §39) | uniq=49 dom=0.7224 | rasters_in_apk=26 | ICON_PRESENT | per registry F-NEW-156 (onCreate unwind family) | NO_PERSISTENCE_OBSERVED | NOT_OBSERVED (runtime has no r | s74-ops probe | L7 game-loop interaction proof open (physics loop not autono | s74_ops/bouncy | 21 |
+| connectfour | NOT_RECORDED | NOT_RECORDED | per session | dossier:rendering | dossier:input | dossier:state | HUMAN_VISIBLE | NOT_RECORDED | NOT_RECORDED | NOT_RECORDED | NOT_RECORDED | per registry F-NEW-156 (onCreate unwind family) | NO_PERSISTENCE_OBSERVED | PROFILED (manifest) | s74-ops probe | NOT_RECORDED | s74_ops/connectfour | 12 |
+| dooz | NOT_RECORDED | NOT_RECORDED | rc0 | dossier:rendering | dossier:input | dossier:state | NOT_HUMAN_VISIBLE | GRAPHICALLY_INCOMPLETE | uniq=2 dom=0.9887 | rasters_in_apk=10 | MONOCHROME_LIKE,LOW_COLOR_VARIETY,FLAT_BACKGROUN | per registry F-NEW-156 (onCreate unwind family) | NOT_OBSERVED | NOT_OBSERVED (runtime has no r | s74-ops probe | F-146 (g8.a@569 -> ur.e(J) null receiver) and F-147 (onCreat | s74_ops/dooz | 14 |
+| fishrings | NOT_RECORDED | NOT_RECORDED | per session | dossier:rendering | dossier:input | dossier:state | HUMAN_VISIBLE | LOADED_ONLY (DOWNGRADED per §39) | uniq=1 dom=1.0 | rasters_in_apk=20 | MONOCHROME_LIKE,LOW_COLOR_VARIETY,FLAT_BACKGROUN | per registry F-NEW-156 (onCreate unwind family) | NO_PERSISTENCE_OBSERVED | NOT_OBSERVED (runtime has no r | s74-ops probe | game-logic depth (real ring rotation rules) unexercised at H | s74_ops/fishrings | 19 |
+| gmdice | ee9f7396 | NOT_RECORDED | rc0 | dossier:rendering | dossier:input | dossier:state | HUMAN_VISIBLE | GRAPHICALLY_INCOMPLETE (DOWNGRADED per §39) | uniq=51 dom=0.9123 | rasters_in_apk=24 | MONOCHROME_LIKE,MISSING_IMAGES_SUSPECTED,IMAGE_D | per registry F-NEW-156 (onCreate unwind family) | NO_PERSISTENCE_OBSERVED | NOT_OBSERVED (runtime has no r | s74-ops probe | ladder open: input/state legs proven at S63, not re-run at c | s74_ops/gmdice | 17 |
+| helloworld | 009b4671 | NOT_RECORDED | per session | dossier:rendering | dossier:input | dossier:state | HUMAN_VISIBLE | NOT_RECORDED | NOT_RECORDED | NOT_RECORDED | NOT_RECORDED | per registry F-NEW-156 (onCreate unwind family) | NO_PERSISTENCE_OBSERVED | PROFILED (manifest) | s74-ops probe | NOT_RECORDED | s74_ops/helloworld | 10 |
+| microtimer | NOT_RECORDED | NOT_RECORDED | rc0 | dossier:rendering | dossier:input | dossier:state | HUMAN_VISIBLE | GRAPHICALLY_INCOMPLETE (DOWNGRADED per §39) | uniq=21 dom=0.498 | rasters_in_apk=52 | NOT_RECORDED | per registry F-NEW-156 (onCreate unwind family) | NO_PERSISTENCE_OBSERVED | NOT_OBSERVED (runtime has no r | s74-ops probe | ladder open below render (input legs historical) | s74_ops/microtimer | 18 |
+| opmt | NOT_RECORDED | NOT_RECORDED | per session | dossier:rendering | dossier:input | dossier:state | HUMAN_VISIBLE | GRAPHICALLY_INCOMPLETE (DOWNGRADED per §39) | uniq=21 dom=0.898 | rasters_in_apk=5 | LOW_COLOR_VARIETY,MISSING_IMAGES_SUSPECTED,IMAGE | per registry F-NEW-156 (onCreate unwind family) | NO_PERSISTENCE_OBSERVED | NOT_OBSERVED (runtime has no r | s74-ops probe | app-own IOOBE (OBJECT-IDENTITY class) stops game progression | s74_ops/opmt | 23 |
+| stopwatch | NOT_RECORDED | NOT_RECORDED | rc0 | dossier:rendering | dossier:input | dossier:state | NOT_HUMAN_VISIBLE | GRAPHICALLY_INCOMPLETE | uniq=20 dom=0.9229 | rasters_in_apk=32 | MONOCHROME_LIKE,LOW_COLOR_VARIETY,FLAT_BACKGROUN | per registry F-NEW-156 (onCreate unwind family) | NOT_APPLICABLE | NOT_OBSERVED (runtime has no r | s74-ops probe | no launchable Activity — service-only manifest (F-143 servic | s74_ops/stopwatch | 22 |
+| telegram | NOT_RECORDED | NOT_RECORDED | per session | dossier:rendering | dossier:input | dossier:state | NOT_HUMAN_VISIBLE | NOT_RECORDED | NOT_RECORDED | NOT_RECORDED | NOT_RECORDED | per registry F-NEW-156 (onCreate unwind family) | NOT_OBSERVED | NOT_OBSERVED (runtime has no r | s74-ops probe | v12 init budget: burns 540 s inside real init, no frame in b | s74_ops/telegram | 16 |
+| tictactoe | NOT_RECORDED | NOT_RECORDED | rc0 | dossier:rendering | dossier:input | dossier:state | NOT_HUMAN_VISIBLE | LOADED_ONLY | uniq=1 dom=1.0 | rasters_in_apk=17 | MONOCHROME_LIKE,LOW_COLOR_VARIETY,FLAT_BACKGROUN | per registry F-NEW-156 (onCreate unwind family) | NO_PERSISTENCE_OBSERVED | NOT_OBSERVED (runtime has no r | s74-ops probe | real APK: F-144 GL surface family (libgdx createGLSurfaceVie | s74_ops/tictactoe | 11 |
+| tripeaks | NOT_RECORDED | NOT_RECORDED | per session | dossier:rendering | dossier:input | dossier:state | HUMAN_VISIBLE | LOADED_ONLY (DOWNGRADED per §39) | uniq=1 dom=1.0 | rasters_in_apk=67 | MONOCHROME_LIKE,LOW_COLOR_VARIETY,FLAT_BACKGROUN | per registry F-NEW-156 (onCreate unwind family) | NO_PERSISTENCE_OBSERVED | NOT_OBSERVED (runtime has no r | s74-ops probe | R-NEW-388 (remeasured S71: generic RL anchor laws PROVEN on  | s74_ops/tripeaks | 20 |
+| unote | NOT_RECORDED | NOT_RECORDED | rc0 | dossier:rendering | dossier:input | dossier:state | HUMAN_VISIBLE | GRAPHICALLY_INCOMPLETE (DOWNGRADED per §39) | uniq=26 dom=0.8885 | rasters_in_apk=18 | LOW_COLOR_VARIETY,MISSING_IMAGES_SUSPECTED,IMAGE | per registry F-NEW-156 (onCreate unwind family) | OBSERVED: real SQLite DB created on launch | NOT_OBSERVED (runtime has no r | s74-ops probe | execution ladder open below render: input/state-change legs  | s74_ops/unote | 15 |
 
 
 ## Column provenance
@@ -29,6 +35,12 @@
   the session json.
 - HUMAN_VISIBLE: dossier `visual_evidence.status` — validator-enforced
   (HUMAN_VISIBLE requires existing representative frame files).
+- VISUAL_STATUS (S81) / COLOR_SCORE / IMAGE_SCORE / GRAPHICS_FLAGS: S81
+  visual audit (scripts/s81_visual_audit.py) at the current binary. Flags
+  are detector outputs, NOT verdicts (§36); no single numeric score is
+  emitted.
+- MISSING_APIS: canonical pointer to the registry family covering the app's
+  known frontier (F-NEW-156 for the onCreate unwind family).
 - PERSISTENCE: dossier `persistence.verdict` (WRITE→CLOSE→EXIT→REOPEN→READ→
   SEMANTIC COMPARE chain only for unote; SHA-only where present = PARTIAL by
   §6 law; rest NOT_OBSERVED).
