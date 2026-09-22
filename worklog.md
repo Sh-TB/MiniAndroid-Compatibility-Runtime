@@ -2885,3 +2885,59 @@ Stage Summary:
 - Mission metric: 2 root causes advanced (F-NEW-159 ROOT-CAUSED-FIXED with 35-title fanout proof; F-NEW-157 ADVANCED to real GL lifecycle), 3 audit classes MISSING→IMPLEMENTED (Vector, NinePatch, Matrix), Canvas PARTIAL→IMPLEMENTED, l6 GL frontier real-pass.
 - Honest counters: 35 titles still BLOCKED (next roots named); no STATE-*) upgrade; foundation gaps queued (RasterSurface/alpha, Bitmap honesty, LayerDrawable-code, scale types, Paint shader family, Region, GLSL).
 - Next (S83 wave 2): RasterSurface object (C6) + framebuffer alpha preservation; Bitmap density/copy; then per-title next-root waves (Godot/libGDX families) toward first real-app non-blank unlocks.
+
+---
+Task ID: S83-B2
+Agent: Super Z (main)
+Task: User directive (2026-09-22): finish the graphics base completely, then
+run 10 apps + 20 games with REAL screenshots, complete dooz + snake, update
+GitHub per title, final progress table; L0/L1 titles in their best possible
+state; 1-2 random high-level apps.
+
+Work Log:
+- Engine rebuilt clean at 010afcab (build artifacts excluded from history);
+  battery 26/26 rc=0, pixel goldens 24/24, golden ladder 10/10 re-proven.
+- FOUNDATION CLOSURES (§14/C4): (1) <layer-list> LayerDrawable law — items
+  parse in document order, paint bottom→top, per-item insets, item forms =
+  @drawable ref (ARSC canonical) / inline <color> / inline <shape> (full
+  GradientState subset); (2) GradientDrawable RING/LINE + dash strokes —
+  ring annulus (px override or documented ratio law dim/ratio, default 9),
+  line = center horizontal stroke, dash = edge-direction mod pattern;
+  (3) code-level LayerDrawable/GradientDrawable — GradientState setters
+  captured on the drawable object, materialized into bg_layers at
+  setBackground (F-NEW-158 family extension).
+- TOOLCHAIN LAW PINNED: aapt2 compiles android:shape as INT_DEC enum,
+  data word = kind, order rectangle=0 oval=1 line=2 ring=3. The first
+  fixture run caught the swapped ring/line mapping (ring painted a full
+  disc, line nothing) — probes MINIANDROID_SHAPE_TRACE, root cause fixed in
+  both root-shape and layer-item parses + header comments.
+- R-NEW-403 ROOT-CAUSED-FIXED: CollectionShadow::handles_class had no
+  WeakHashMap entry → keySet() null → Set.iterator NPE killed dooz
+  (corpus dooz.apk, Glide RequestManager registry Lg/b;.d) pre-frame.
+  Fix routes WeakHashMap to the real map laws; dooz now renders a shell
+  (6 frames uniq=3); NEXT = WindowRecomposer context chain (R-NEW-344
+  family). Bridge-side keySet/values view law added for registry-less
+  modes. Registry 418→420 (R-NEW-403, R-NEW-404).
+- SWEEP (scripts/s83b_sweep.py + s83b_interact.py): 40 titles at HEAD
+  (26 games, 12 apps, P9/TimeLimit) — provenance-instrumented runs, S81
+  visual audit on final frames, interactive --click-test passes. Levels:
+  Snake Deluxe L3 (82 uniq), Tetris L3 (70), TTT-Classic 9 distinct
+  gameplay states under clicks, gmdice 4 states (dice roll intact),
+  snake autoplay re-proven at HEAD (3 captures, 100-frame continuous run,
+  prefix verified, GIF). Honest L2 = GRAPHICALLY_INCOMPLETE for the
+  onCreate-family faces (no upgrades without evidence).
+- GitHub: 15 title-issue comments + MAND-001/002 + #227 R-NEW-403 note +
+  #24 umbrella S83-B2 summary; PAT restored to .secrets/gh_token
+  (git-ignored; trailing-dot stripped; never echoed into any tracked file).
+- Evidence: docs/evidence/s83b/ (57 JPGs ≤100KB max 43KB + S83B_LADDER.json
+  + SHA256SUMS + snake_head_gameplay.gif 127KB); run/s83b/sweep/*.json.
+
+Stage Summary:
+- Graphics foundation audit closures complete for the render-blocking
+  classes; ladder now 12 fixtures (10 golden + 2 S83-B2), all green with
+  zero pixel drift.
+- Remaining honest frontier: Paint Shader/Xfermode raster, Region,
+  SurfaceView/TextureView, standalone Inset/Clip/Rotate, GLSL, libGDX
+  F-NEW-157, Compose recomposer chain (R-NEW-344 + dooz18).
+- Next: P2 paint effects + P3 GL surface maturation; per-title NEXT roots
+  for the 35-title onCreate family on the new binary.

@@ -1987,15 +1987,7 @@ bool f053_draw_vector_background(const framework::ViewShadow::ViewNode& n,
 bool f053_draw_shape_background(const framework::ViewShadow::ViewNode& n,
                                 renderer::FrameBuffer& fb,
                                 int left, int top, int w, int h) {
-    if (n.bg_shape_kind == 2 || n.bg_shape_kind == 3) return false;  // ring/line: honest boundary
     if (w <= 0 || h <= 0) return true;  // nothing to paint, but shape claimed
-    uint32_t rads[4] = {f053_corner_radius(n, 0), f053_corner_radius(n, 1),
-                        f053_corner_radius(n, 2), f053_corner_radius(n, 3)};
-    if (n.bg_shape_kind == 0) {
-        // AOSP law: a corner radius is clamped to min(w,h)/2.
-        uint32_t maxr = (uint32_t)(std::min(w, h) / 2);
-        for (auto& r : rads) r = std::min(r, maxr);
-    }
     auto to_rgba = [](uint32_t c) {
         return renderer::RGBA{(uint8_t)((c >> 16) & 0xFF), (uint8_t)((c >> 8) & 0xFF),
                               (uint8_t)(c & 0xFF), (uint8_t)((c >> 24) & 0xFF)};
@@ -2012,6 +2004,81 @@ bool f053_draw_shape_background(const framework::ViewShadow::ViewNode& n,
         c.a = 255;
         fb.set_pixel(px, py, c);
     };
+    // S83-B2 §14: dash modulator — a stroke pixel at edge coordinate `u`
+    // is VISIBLE when (u mod (dash+gap)) < dash (DashPathEffect law along
+    // straight edges; corner arcs stay solid — honest simplification).
+    auto dashed = [&](bool has_dash, float dw, float dg, long u) {
+        if (!has_dash || dw <= 0) return true;
+        long period = (long)std::lround(dw + std::max(0.f, dg));
+        if (period <= 0) return true;
+        long m = ((u % period) + period) % period;
+        return m < (long)std::lround(dw);
+    };
+
+    // ── S83-B2 §14: RING (kind 3, GradientDrawable.RING) — annulus law.
+    // innerRadius/thickness px
+    // override; otherwise the documented ratio law: bounds dim / ratio
+    // (developer.android.com GradientDrawable: "the inner radius equals the
+    // ring's width divided by innerRadiusRatio", default 9; same for
+    // thickness). Ring color = solid (or stroke color when no solid).
+    if (n.bg_shape_kind == 3) {
+        static thread_local const bool shape_trace =
+            std::getenv("MINIANDROID_SHAPE_TRACE") != nullptr;
+        double cx = left + (w - 1) / 2.0, cy = top + (h - 1) / 2.0;
+        float dim = (float)std::min(w, h);
+        // ratio form: dim / ratio (default 9); px form: direct value
+        double inner = n.bg_shape_inner_radius >= 0
+            ? (double)n.bg_shape_inner_radius
+            : dim / (n.bg_shape_inner_ratio > 0 ? n.bg_shape_inner_ratio : 9.0);
+        double thick = n.bg_shape_thickness >= 0
+            ? (double)n.bg_shape_thickness
+            : dim / (n.bg_shape_thick_ratio > 0 ? n.bg_shape_thick_ratio : 9.0);
+        if (shape_trace)
+            std::cerr << "[S83B2-RING] l=" << left << " t=" << top
+                      << " w=" << w << " h=" << h << " dim=" << dim
+                      << " inner=" << inner << " thick=" << thick
+                      << " ir=" << n.bg_shape_inner_radius
+                      << " ratio=" << n.bg_shape_inner_ratio
+                      << " tk_ratio=" << n.bg_shape_thick_ratio << std::endl;
+        uint32_t ring_color = n.bg_shape_has_solid ? n.bg_shape_solid
+                              : n.bg_shape_stroke_color;
+        if (ring_color == 0) return true;
+        for (int py = top; py < top + h; ++py)
+            for (int px = left; px < left + w; ++px) {
+                double dx = px - cx, dy = py - cy;
+                double d = std::sqrt(dx * dx + dy * dy);
+                if (d < inner || d > inner + thick) continue;
+                fill(px, py, ring_color);
+            }
+        return true;
+    }
+
+    // ── S83-B2 §14: LINE (kind 2, GradientDrawable.LINE) — AOSP draws ONE
+    // horizontal line across
+    // the bounds at vertical center with the stroke paint (width/color).
+    if (n.bg_shape_kind == 2) {
+        if (!n.bg_shape_has_stroke || n.bg_shape_stroke_width <= 0 ||
+            n.bg_shape_stroke_color == 0) return true;
+        uint32_t sw = std::max<uint32_t>(1, (uint32_t)std::lround(n.bg_shape_stroke_width));
+        double cy = top + (h - 1) / 2.0;
+        int half = (int)(sw / 2);
+        for (int py = top; py < top + h; ++py) {
+            if (std::llabs((long long)py - (long long)std::lround(cy)) > half) continue;
+            for (int px = left; px < left + w; ++px)
+                if (dashed(n.bg_shape_has_dash, n.bg_shape_dash_width,
+                           n.bg_shape_dash_gap, px))
+                    fill(px, py, n.bg_shape_stroke_color);
+        }
+        return true;
+    }
+
+    uint32_t rads[4] = {f053_corner_radius(n, 0), f053_corner_radius(n, 1),
+                        f053_corner_radius(n, 2), f053_corner_radius(n, 3)};
+    if (n.bg_shape_kind == 0) {
+        // AOSP law: a corner radius is clamped to min(w,h)/2.
+        uint32_t maxr = (uint32_t)(std::min(w, h) / 2);
+        for (auto& r : rads) r = std::min(r, maxr);
+    }
 
     // ---- fill: gradient over solid (AOSP: gradient wins when both declared)
     if (n.bg_shape_has_gradient && n.bg_shape_grad_start != 0 && n.bg_shape_grad_end != 0) {
@@ -2045,16 +2112,173 @@ bool f053_draw_shape_background(const framework::ViewShadow::ViewNode& n,
                     fill(px, py, n.bg_shape_solid);
     }
 
-    // ---- stroke ring (AOSP: drawn after fill, centered inset law)
+    // ---- stroke ring (AOSP: drawn after fill, centered inset law).
+    // S83-B2 §14: dash strokes — dash modulates along the edge direction
+    // (x on top/bottom edges, y on left/right edges); corner arcs stay
+    // solid (honest simplification, recorded in the fixture pins).
     if (n.bg_shape_has_stroke && n.bg_shape_stroke_width > 0 && n.bg_shape_stroke_color != 0) {
         uint32_t sw = (uint32_t)std::lround(n.bg_shape_stroke_width);
         sw = std::max<uint32_t>(1, sw);
+        const int right = left + (int)w - 1, bottom = top + (int)h - 1;
         for (int py = top; py < top + h; ++py)
-            for (int px = left; px < left + w; ++px)
-                if (f053_pixel_inside(n, px, py, left, top, w, h, true, sw, rads))
-                    fill(px, py, n.bg_shape_stroke_color);
+            for (int px = left; px < left + w; ++px) {
+                if (!f053_pixel_inside(n, px, py, left, top, w, h, true, sw, rads))
+                    continue;
+                if (n.bg_shape_has_dash && n.bg_shape_dash_width > 0) {
+                    bool horiz_edge = (py < top + (int)sw) || (py > bottom - (int)sw);
+                    long u = horiz_edge ? px : py;
+                    if (!dashed(true, n.bg_shape_dash_width, n.bg_shape_dash_gap, u))
+                        continue;
+                }
+                fill(px, py, n.bg_shape_stroke_color);
+            }
     }
     return true;
+}
+
+// ── S83-B2 §14: LayerDrawable paint law ─────────────────────────────────
+// AOSP LayerDrawable.draw: layers render index 0 (bottom) FIRST, later
+// items over them; each layer paints inside its inset rect (setLayerInset).
+// Per-layer kinds: color → fill; shape → the f053 shape law on a temp node;
+// bitmap/.9.png → decode + (ninepatch) draw; nested xml → apply_shape_
+// background dispatch (shape/vector/layer-list) on a temp node. Code-level
+// children (bg_code_layers) resolve through the SAME capture maps F-NEW-158
+// established (ColorDrawable color / GradientDrawable state).
+bool f053_draw_layer_background(const framework::ViewShadow::ViewNode& node,
+                                renderer::SoftwareCanvas& canvas,
+                                apk::ApkParser& apk,
+                                int left, int top, int w, int h) {
+    bool drew_any = false;
+    auto paint_xml_layer = [&](const std::string& path, int l, int t, int lw, int lh) {
+        if (lw <= 0 || lh <= 0 || path.empty()) return false;
+        resources::InflateStats st;
+        framework::ViewShadow::ViewNode tmp;
+        resources::ResourceRuntime::instance().inflater().apply_shape_background(
+            tmp, path, st);
+        bool drew = false;
+        if (tmp.bg_shape_valid)
+            drew = f053_draw_shape_background(tmp, *canvas.target(), l, t, lw, lh);
+        if (!drew && tmp.bg_vector_valid)
+            drew = f053_draw_vector_background(tmp, *canvas.target(), l, t, lw, lh);
+        if (!drew && tmp.bg_layers_valid)
+            drew = f053_draw_layer_background(tmp, canvas, apk, l, t, lw, lh);
+        if (!drew) {
+            // bitmap layer behind the xml root (or direct bitmap ref)
+            auto data = apk.extract_entry_cached(path);
+            if (!data.empty()) {
+                renderer::DecodedImage dec;
+                renderer::decode_image_bytes(data, &dec);
+                if (dec.ok && !dec.rgba.empty()) {
+                    canvas.draw_image(dec.rgba.data(), dec.width, dec.height,
+                                      l, t, lw, lh);
+                    drew = true;
+                }
+            }
+        }
+        return drew;
+    };
+
+    // XML layer-list items (document order, bottom→top)
+    if (node.bg_layers_valid) {
+        for (const auto& L : node.bg_layers) {
+            int l = left + L.left, t = top + L.top;
+            int r = L.right > 0 ? left + w - L.right : left + w;
+            int b = L.bottom > 0 ? top + h - L.bottom : top + h;
+            int lw = r - l, lh = b - t;
+            if (lw <= 0 || lh <= 0) continue;
+            static thread_local const bool shape_trace =
+                std::getenv("MINIANDROID_SHAPE_TRACE") != nullptr;
+            if (shape_trace)
+                std::cerr << "[S83B2-LOOP] layer kind=" << L.kind
+                          << " shape_kind=" << L.shape_kind
+                          << " l=" << l << " t=" << t << " lw=" << lw
+                          << " lh=" << lh << std::endl;
+            switch (L.kind) {
+                case 1: {  // color
+                    renderer::RGBA c{(uint8_t)((L.color >> 16) & 0xFF),
+                                     (uint8_t)((L.color >> 8) & 0xFF),
+                                     (uint8_t)(L.color & 0xFF),
+                                     (uint8_t)((L.color >> 24) & 0xFF)};
+                    if (c.a == 0) break;
+                    if (c.a == 255) {
+                        for (int py = t; py < t + lh; ++py)
+                            for (int px = l; px < l + lw; ++px)
+                                canvas.target()->set_pixel(px, py, c);
+                    } else {
+                        for (int py = t; py < t + lh; ++py)
+                            for (int px = l; px < l + lw; ++px) {
+                                renderer::RGBA dst = canvas.target()->get_pixel(px, py);
+                                uint32_t a = c.a, ia = 255 - a;
+                                renderer::RGBA o{(uint8_t)((c.r * a + dst.r * ia) / 255),
+                                                 (uint8_t)((c.g * a + dst.g * ia) / 255),
+                                                 (uint8_t)((c.b * a + dst.b * ia) / 255),
+                                                 255};
+                                canvas.target()->set_pixel(px, py, o);
+                            }
+                    }
+                    drew_any = true;
+                    break;
+                }
+                case 2: {  // inline shape
+                    framework::ViewShadow::ViewNode tmp;
+                    tmp.bg_shape_valid = true;
+                    tmp.bg_shape_kind = L.shape_kind;
+                    tmp.bg_shape_has_solid = L.shape_has_solid;
+                    tmp.bg_shape_solid = L.shape_solid;
+                    tmp.bg_shape_has_gradient = L.shape_has_gradient;
+                    tmp.bg_shape_grad_start = L.shape_gs;
+                    tmp.bg_shape_grad_end = L.shape_ge;
+                    tmp.bg_shape_grad_angle = L.shape_ga;
+                    tmp.bg_shape_corner_radius = L.shape_radius;
+                    tmp.bg_shape_has_stroke = L.shape_has_stroke;
+                    tmp.bg_shape_stroke_width = L.shape_sw;
+                    tmp.bg_shape_stroke_color = L.shape_sc;
+                    tmp.bg_shape_has_dash = L.shape_has_dash;
+                    tmp.bg_shape_dash_width = L.shape_dw;
+                    tmp.bg_shape_dash_gap = L.shape_dg;
+                    tmp.bg_shape_inner_radius = L.shape_inner_r;
+                    tmp.bg_shape_thickness = L.shape_thick;
+                    tmp.bg_shape_inner_ratio = L.shape_ir_ratio;
+                    tmp.bg_shape_thick_ratio = L.shape_tk_ratio;
+                    if (f053_draw_shape_background(tmp, *canvas.target(), l, t, lw, lh))
+                        drew_any = true;
+                    break;
+                }
+                case 3: {  // bitmap / .9.png
+                    auto data = apk.extract_entry_cached(L.path);
+                    if (data.empty()) break;
+                    renderer::DecodedImage dec;
+                    renderer::decode_image_bytes(data, &dec);
+                    if (!dec.ok || dec.rgba.empty()) break;
+                    const bool is_9png = L.path.size() > 6 &&
+                        L.path.compare(L.path.size() - 6, 6, ".9.png") == 0;
+                    bool drew = false;
+                    if (is_9png)
+                        drew = f053_draw_ninepatch_background(dec, canvas, data,
+                                                              l, t, lw, lh);
+                    if (!drew) {
+                        canvas.draw_image(dec.rgba.data(), dec.width, dec.height,
+                                          l, t, lw, lh);
+                        drew = true;
+                    }
+                    drew_any = drew_any || drew;
+                    break;
+                }
+                case 5:  // nested xml (shape/vector/layer-list dispatch)
+                    drew_any = paint_xml_layer(L.path, l, t, lw, lh) || drew_any;
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    // Code-level LayerDrawable children are MATERIALIZED into bg_layers at
+    // capture time (dalvik_engine S83-B2 law: LayerDrawable.<init>(Drawable[])
+    // children resolve ColorDrawable→kind1 / GradientDrawable→kind2, and
+    // setLayerInset writes the insets) — so the paint loop above serves both
+    // the XML and the programmatic paths with ONE law.
+    return drew_any;
 }
 
 }  // namespace
@@ -2578,7 +2802,17 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                 node->bg_vector_valid &&
                                 !(eff_bg_color != 0 && !node->bg_from_xml);
                             if (f053_vector_owns) eff_bg_color = 0;
-                            if (f053_vector_owns && !node_invisible) {
+                            // S83-B2 §14: LayerDrawable ownership law (same
+                            // last-writer semantics as shape/vector).
+                            bool f053_layer_owns =
+                                node->bg_layers_valid &&
+                                !(eff_bg_color != 0 && !node->bg_from_xml);
+                            if (f053_layer_owns) eff_bg_color = 0;
+                            if (f053_layer_owns && !node_invisible) {
+                                if (f053_draw_layer_background(
+                                        *node, canvas, apk_parser_, left, top, w, h))
+                                    drew_bg = true;
+                            } else if (f053_vector_owns && !node_invisible) {
                                 bool drew_vec = f053_draw_vector_background(
                                     *node, fb, left, top, w, h);
                                 if (drew_vec) drew_bg = true;
