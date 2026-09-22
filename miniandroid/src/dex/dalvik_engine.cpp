@@ -24153,14 +24153,47 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // One Resources singleton = the engine's single resource authority
     // (same object Activity.getResources() answers; the per-configuration
     // Resources overlay subset is not modeled).
+    // S85-FIX (F-NEW-163): the original guard was a class-NAME substring
+    // match (Context/Activity/View). App subclasses of the Context family
+    // (e.g. net.sourceforge.solitaire_cg.Solitaire extends Application;
+    // custom Application/Service subclasses) matched NONE of the
+    // substrings, so getResources() answered null →
+    // Resources.getDisplayMetrics NPE at SolitaireView.<init> (S85 fan-out:
+    // net.sourceforge.solitaire_cg, com.aurora.store, dev.lexip.hecate,
+    // com.nononsenseapps.notepad …). AOSP law: EVERY Context-family
+    // instance answers getResources(). The guard now falls back to a real
+    // hierarchy walk (is_subclass_of) over the Context roots before the
+    // singleton is denied.
     // ────────────────────────────────────────────────────────────────────────
-    if (method == "getResources" &&
-        (class_name.find("Context") != std::string::npos ||
-         class_name.find("Activity") != std::string::npos ||
-         class_name.find("View") != std::string::npos)) {
-        result = get_or_create_singleton("Landroid/content/res/Resources;");
-        status = ApiCallTrace::Status::IMPLEMENTED;
-        return true;
+    if (method == "getResources") {
+        bool ctx_receiver =
+            class_name.find("Context") != std::string::npos ||
+            class_name.find("Activity") != std::string::npos ||
+            class_name.find("View") != std::string::npos ||
+            class_name.find("Application") != std::string::npos ||
+            class_name.find("Service") != std::string::npos;
+        if (!ctx_receiver) {
+            static const char* kContextRoots[] = {
+                "Landroid/content/Context;",
+                "Landroid/app/Activity;",
+                "Landroid/app/Application;",
+                "Landroid/app/Service;",
+                "Landroid/content/ContentProvider;",
+                "Landroid/content/ContentProviderClient;",
+                "Landroid/view/ContextThemeWrapper;",
+            };
+            for (const char* root : kContextRoots) {
+                if (is_subclass_of(class_name, root)) {
+                    ctx_receiver = true;
+                    break;
+                }
+            }
+        }
+        if (ctx_receiver) {
+            result = get_or_create_singleton("Landroid/content/res/Resources;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
     }
 
     // ────────────────────────────────────────────────────────────────────────
@@ -24186,6 +24219,25 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     //      SAME switch for the inflater path — one semantic, two call
     //      surfaces.
     // ────────────────────────────────────────────────────────────────────────
+    // ────────────────────────────────────────────────────────────────────────
+    // S85 (F-NEW-163b) — Resources.getSystem() static → system Resources.
+    // AOSP Resources.java L1902: getSystem() returns "the system's shared
+    // Resources object … never null" (a static global updated by
+    // ResourcesManager). Evidence (S85, net.sourceforge.solitaire_cg):
+    // the app OVERRIDES SolitaireView.getResources() and its body calls
+    // Resources.getSystem(); the unimplemented static answered null →
+    // Resources.getDisplayMetrics NPE at SolitaireView.<init> pc=23 →
+    // APP-BOUNDARY unwind out of SolitaireCG.onCreate (rc=1, no UI).
+    // Identity: the same Resources singleton the Context-family
+    // getResources() law answers — one resource authority per runtime.
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/content/res/Resources;" &&
+        method == "getSystem") {
+        result = get_or_create_singleton("Landroid/content/res/Resources;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
     if (method == "getDisplayMetrics" &&
         class_name == "Landroid/content/res/Resources;") {
         DalvikValue dm = get_or_create_singleton("Landroid/util/DisplayMetrics;");

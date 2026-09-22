@@ -3014,3 +3014,27 @@ Stage Summary:
 - 96 canonical title records (61 games / 34 apps / 1 fixture): 29 VERIFIED, 4 VERIFIED-INTERACTIVE (S84) + 5 in-house interactive GIFs, 3 PARTIAL, 63 OBSERVED, 1 BLOCKED; 32 canonical artifacts (9 GIF + 23 JPG), zero duplicate content, zero orphan artifacts, validator ALL CHECKS PASS.
 - Battery 26/26, golden ladder 10/10, F-NEW-160 A/B-clean; the 50 NEW titles are executed with real frames + levels + interaction probes, all recorded with upstream source links and APK SHAs.
 - Honest frontier now explicit and single-sourced: compose internals (F-NEW-161), androidx adapter fallback (F-NEW-162), GLES/SDL family, WebView content, non-ASCII shaping.
+
+---
+Task ID: S85
+Agent: Super Z (main)
+Task: S85 — user attack order: verify Snake Deluxe + 2048 GIF authenticity; put them on README front page; general review of all other games; re-review Telegram + دوز; add 50 MORE new apps/games; complete incomplete titles; continue graphics improvements.
+
+Work Log:
+- GIF authenticity verified: com.miniandroid.snakedeluxe.gif (49 frames, distinct frame hashes, SHA f2dd621c…) + com.miniandroid.g2048.gif (65 frames, SHA d613d30f…) both match canonical SHA256SUMS and show real gameplay (snake chase/apple, 2048 merges to score 200). README front page: new "Flagship proof" hero section embeds both GIFs (user's exact request).
+- S85 NEW-50 corpus: 50 fresh F-Droid titles (25 games / 25 apps) via API-validated fetch (scripts/s85_fetch_corpus.py, resume-safe chunks; index-v1.jar category fan-out). Each with F-Droid page + upstream Source Code URL + SHA256 + version (run/s85/manifest_new.json). 2 corrupt downloads detected and re-fetched.
+- 50/50 executed (obs + click passes, scripts/s85_run_new.py): 48/50 real frames.
+- ENGINE LAW F-NEW-163 (FIXED, A/B-proven): Context-family getResources hierarchy walk (app subclasses of Context/Application/Service previously answered null Resources → SolitaireView.<init> NPE fan-out).
+- ENGINE LAW F-NEW-163b (FIXED, A/B-proven): Resources.getSystem() static → system Resources singleton (SolitaireCG override path). A/B: solitaire_cg rc 1→0, 0 exceptions, L2 UI. battery 26/26 + golden ladder 10/10 + S83-B2 2/2 unchanged.
+- General game sweep (scripts/s85_game_sweep.py): 52 registered games re-probed at HEAD (obs+click). bouncy (Vector Pinball) promoted VERIFIED-INTERACTIVE with GIF (12 views probed, 10 state changes). Sweep PNG frames for most titles turned out to be the engine-default shell class.
+- EVID-CLASS-S85: s81_visual_audit level_of hardened (near-blank gate: nonbg<0.035 or dom≥0.975 can never be L2+). Full re-judgement: 72 S85-era records demoted to OBSERVED per S54 law (the eb16ab5c engine-default shell class); 4 S-era canonicals wrongly demoted by the sweep were RESTORED (anuto/balancetheball/opensudoku/ballbreak); dooz F-Droid "shell" evidence honestly demoted (was 99.9% white loading shell); pysolfc BLOCKED→OBSERVED(PARTIAL note) — S84 "BLOCKED" was a TRUNCATED APK (74.6MB > 48MB cap), re-downloaded vc102130601.
+- Telegram re-review (user request): APK re-downloaded, SHA256 EXACTLY matches S74 pin (b6a13e87…, v12.10.3). At current HEAD: rc=1, 10 L1 frames, 29 deferred NPEs — divergence MOVED past S74's j$/stream + FragmentManager to ActionBarLayout.e0 List.isEmpty ×11 + ImageLoader cacheDirs File.isDirectory null ×9. Honest OBSERVED record added to registry; root-cause note updated.
+- دوز re-review: in-house TicTacToe Deluxe = VERIFIED-INTERACTIVE L3 (GIF, full loop) unchanged; F-Droid Dooz = compose recomposer frontier (R-NEW-344), shell-only, demoted to honest OBSERVED.
+- Canonical system: registry.json → 147 titles (86 games / 60 apps / 1 fixture); 35 canonical artifacts (11 GIF + 24 JPG); SHA256SUMS rebuilt; CANONICAL_SCREENSHOTS.md full 147-row index; ACHIEVEMENTS.md regenerated ONE-record-per-title; ROOT_CAUSE_REGISTRY.md + F-NEW-163/163b entries; README stats/hero/frontiers regenerated from registry.
+- Validator: tools/verify_canonical_evidence.py → ALL CHECKS PASS (3 acceptable WARNs = OBSERVED text records).
+
+Stage Summary:
+- Two user-named games verified real + featured on README front page.
+- 50 new titles really executed (not just collected); 1 new interactive promotion (URLChecker GIF + bouncy GIF); engine advanced by 2 A/B-proven laws.
+- Evidence honesty materially hardened: near-blank class can no longer masquerade as L2; 72 inflated claims demoted; every VERIFIED/INTERACTIVE number is content-verified.
+- Gates: battery 26/26, ladder 10/10 + 2/2, validator ALL PASS.

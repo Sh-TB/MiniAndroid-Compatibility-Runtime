@@ -5,9 +5,30 @@
 </p>
 <p align="center"><sub>Decorative project mascot — a Silkie hen. Not an Android/Google mark; carries no claim.</sub></p>
 
-**Repository:** https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime (original project, not a fork) · **License:** MIT · **Current wave:** S84 (canonical achievements + 50 new titles)
+**Repository:** https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime (original project, not a fork) · **License:** MIT · **Current wave:** S85 (Telegram/دوز re-review + 50 more titles + graphics push)
 
 ---
+
+## 🎮 Flagship proof — real APKs playing on MiniAndroid (user-requested showcase)
+
+Both GIFs below are **captured from real APK execution on the MiniAndroid
+runtime** — the engine parsed the DEX bytecode, drove the app's own Activity
+lifecycle and View tree, dispatched real click events, and rasterized every
+pixel you see. The snake chases the apple, dies, restarts; the 2048 tiles
+slide and merge on real `View.onDraw` output — no emulator, no video player,
+no faked frames (SHA256-pinned in
+[canonical/SHA256SUMS](docs/evidence/canonical/SHA256SUMS)).
+
+| Snake Deluxe — full gameplay loop (49 frames) | 2048 — tile merges to SCORE 200 (65 frames) |
+|---|---|
+| <img src="docs/evidence/canonical/com.miniandroid.snakedeluxe.gif" width="260" alt="Snake Deluxe gameplay GIF — real APK on MiniAndroid"> | <img src="docs/evidence/canonical/com.miniandroid.g2048.gif" width="260" alt="2048 gameplay GIF — real APK on MiniAndroid"> |
+| `LOADED → LAUNCHED → RENDERED → INTERACTED → STATE_CHANGED` · L3 | `LOADED → LAUNCHED → RENDERED → INTERACTED → STATE_CHANGED` · L2 |
+
+*These two titles anchor the in-house game family —
+[TicTacToe Deluxe (دوز)](docs/evidence/canonical/com.miniandroid.tictactoedeluxe.gif)
+and [Mini Tetris](docs/evidence/canonical/com.miniandroid.tetris.gif) are
+proven the same way (full matrix: 96 records in
+[docs/ACHIEVEMENTS.md](docs/ACHIEVEMENTS.md)).*
 
 ## What MiniAndroid is (and is not)
 
@@ -28,37 +49,41 @@ honestly-recorded frontiers (see root-cause registry below).
 
 | Metric | Value |
 |---|---|
-| Titles executed & recorded | **96** (61 games · 34 apps · 1 fixtures) |
-| Added in S84 (this wave) | **50** new F-Droid titles, all with upstream source links |
-| VERIFIED (launched + rendered real frames) | **29** |
-| VERIFIED-INTERACTIVE (real click → rendered state change, GIF) | **9** |
-| PARTIAL (rendered, first-divergence root-caused) | 3 |
-| OBSERVED (loaded/ran; near-blank or sub-render frames — logged, not shipped as images) | 63 |
-| BLOCKED | 1 |
-| Titles with real rendered UI pixels | 68 |
-| Titles with dispatched real input | 11 |
-| Titles with proven input→state change | 9 |
-| Canonical screenshots (ONE per title) | 32 (9 GIF + 23 JPG) |
+| Titles executed & recorded | **147** (86 games · 60 apps · 1 fixture) |
+| Added in S85 (this wave) | **50** new F-Droid titles (25 games / 25 apps), all executed with upstream source links + APK SHA256 |
+| VERIFIED (launched + rendered, content-verified UI) | **18** |
+| VERIFIED-INTERACTIVE (real click → state change, GIF) | **11** |
+| PARTIAL (rendered with root-caused divergences) | 2 |
+| OBSERVED (loaded/ran; near-blank shell class — text records, never shipped as images) | 116 |
+| BLOCKED | 0 |
+| Titles with real rendered UI pixels (L2+) | 46 |
+| Canonical screenshots (ONE per title) | 31 (11 GIF + 20 JPG) |
+
+**S85 evidence-integrity hardening (EVID-CLASS-S85):** the visual gate now
+rejects the engine-default shell class (white framebuffer + black status
+region, `eb16ab5c…`) that previously slipped through L2 via status-bar
+pixels. **72 records were honestly demoted to OBSERVED** this wave —
+the numbers above are the content-verified residue, not inflation.
 
 Regression gates at this HEAD: **battery 26/26 · golden graphics ladder
-10/10** (F-NEW-160 A/B-verified, zero regressions).
+10/10 · S83-B2 ladder 2/2** (F-NEW-163 A/B-verified, zero regressions).
 
-## Hero titles (full matrix: 96 records in [docs/ACHIEVEMENTS.md](docs/ACHIEVEMENTS.md))
+## Hero titles (full matrix: 147 records in [docs/ACHIEVEMENTS.md](docs/ACHIEVEMENTS.md))
 
 | Title | Type | Source | Status | Level | State change | Canonical |
 |---|---|---|---|---|---|---|
-| **Snake Deluxe** | game | in-house (games/snake-deluxe) | VERIFIED-INTERACTIVE | L3 | ✅ | [com.miniandroid.snakedeluxe.gif](../docs/evidence/canonical/com.miniandroid.snakedeluxe.gif) |
-| **TicTacToe Deluxe (دوز)** | game | in-house (games/tictactoe-deluxe) | VERIFIED-INTERACTIVE | L3 | ✅ | [com.miniandroid.tictactoedeluxe.gif](../docs/evidence/canonical/com.miniandroid.tictactoedeluxe.gif) |
-| **Mini Tetris** | game | in-house (games/mini-tetris) | VERIFIED-INTERACTIVE | L3 | ✅ | [com.miniandroid.tetris.gif](../docs/evidence/canonical/com.miniandroid.tetris.gif) |
-| **2048** | game | in-house (games/2048) | VERIFIED-INTERACTIVE | L2 | ✅ | [com.miniandroid.g2048.gif](../docs/evidence/canonical/com.miniandroid.g2048.gif) |
-| **Dooz (tic-tac-toe)** | game | F-Droid io.github.yamin8000.dooz | VERIFIED | L2 | — | [io.github.yamin8000.dooz.jpg](../docs/evidence/canonical/io.github.yamin8000.dooz.jpg) |
-| **TicTacToe Classic** | game | F-Droid com.emmanuelmess.tictactoe | VERIFIED-INTERACTIVE | L2 | ✅ | [com.emmanuelmess.tictactoe.gif](../docs/evidence/canonical/com.emmanuelmess.tictactoe.gif) |
-| **Fish Rings** | game | [src](https://github.com/VelbazhdSoftwareLLC/FishRingsForAndroid) | VERIFIED | L10 | — | [eu.veldsoft.fish.rings.jpg](../docs/evidence/canonical/eu.veldsoft.fish.rings.jpg) |
-| **FreeKlondike** | game | [src](https://github.com/VelbazhdSoftwareLLC/FreeKlondike) | VERIFIED | L10 | — | [eu.veldsoft.free.klondike.jpg](../docs/evidence/canonical/eu.veldsoft.free.klondike.jpg) |
-| **Vector Pinball (bouncy)** | game | [src](https://github.com/dozingcatsoftware/Bouncy) | VERIFIED | L5 | — | [com.dozingcatsoftware.bouncy.jpg](../docs/evidence/canonical/com.dozingcatsoftware.bouncy.jpg) |
-| **com.smorgasbork.hotdeath** | game | [src](https://github.com/jpriebe/hotdeath) | VERIFIED-INTERACTIVE | L2 | ✅ | [com.smorgasbork.hotdeath.gif](../docs/evidence/canonical/com.smorgasbork.hotdeath.gif) |
-| **org.bobstuff.bobball** | game | [src](https://github.com/bobthekingofegypt/BobBall) | VERIFIED-INTERACTIVE | L2 | ✅ | [org.bobstuff.bobball.gif](../docs/evidence/canonical/org.bobstuff.bobball.gif) |
-| **com.dozingcatsoftware.dodge** | game | [src](https://github.com/dozingcat/dodge-android) | VERIFIED-INTERACTIVE | L2 | ✅ | [com.dozingcatsoftware.dodge.gif](../docs/evidence/canonical/com.dozingcatsoftware.dodge.gif) |
+| **Snake Deluxe** | game | in-house (games/snake-deluxe) | VERIFIED-INTERACTIVE | L3 | ✅ | [com.miniandroid.snakedeluxe.gif](docs/evidence/canonical/com.miniandroid.snakedeluxe.gif) |
+| **2048** | game | in-house (games/2048) | VERIFIED-INTERACTIVE | L2 | ✅ | [com.miniandroid.g2048.gif](docs/evidence/canonical/com.miniandroid.g2048.gif) |
+| **TicTacToe Deluxe (دوز)** | game | in-house (games/tictactoe-deluxe) | VERIFIED-INTERACTIVE | L3 | ✅ | [com.miniandroid.tictactoedeluxe.gif](docs/evidence/canonical/com.miniandroid.tictactoedeluxe.gif) |
+| **Mini Tetris** | game | in-house (games/mini-tetris) | VERIFIED-INTERACTIVE | L3 | ✅ | [com.miniandroid.tetris.gif](docs/evidence/canonical/com.miniandroid.tetris.gif) |
+| **Vector Pinball (bouncy)** | game | [src](https://github.com/dozingcatsoftware/Bouncy) | VERIFIED-INTERACTIVE | L2 | ✅ S85 | [com.dozingcatsoftware.bouncy.gif](docs/evidence/canonical/com.dozingcatsoftware.bouncy.gif) |
+| **URLChecker** | app | [src](https://github.com/TrianguloY/URLChecker) | VERIFIED-INTERACTIVE | L2 | ✅ S85 | [com.trianguloy.urlchecker.gif](docs/evidence/canonical/com.trianguloy.urlchecker.gif) |
+| **TicTacToe Classic** | game | F-Droid com.emmanuelmess.tictactoe | VERIFIED-INTERACTIVE | L2 | ✅ | [com.emmanuelmess.tictactoe.gif](docs/evidence/canonical/com.emmanuelmess.tictactoe.gif) |
+| **Dodge** | game | [src](https://github.com/dozingcat/dodge-android) | VERIFIED-INTERACTIVE | L2 | ✅ | [com.dozingcatsoftware.dodge.gif](docs/evidence/canonical/com.dozingcatsoftware.dodge.gif) |
+| **SolitaireCG** | game | F-Droid net.sourceforge.solitaire_cg | VERIFIED | L2 | — | text record |
+| **Mines 3D** | game | F-Droid cos.premy.mines | VERIFIED | L2 | — | [cos.premy.mines.jpg](docs/evidence/canonical/cos.premy.mines.jpg) |
+| **Telegram** | app | [official APK](https://telegram.org/dl/android/apk) | OBSERVED (reviewed S85) | L1 | — | text record |
+| **Dooz (دوز, F-Droid)** | game | F-Droid io.github.yamin8000.dooz | OBSERVED (compose frontier) | L1 | — | text record |
 
 **In-house games built for the runtime** (source in [`games/`](games/)):
 Snake Deluxe · Mini Tetris · 2048 · TicTacToe Deluxe (دوز) — each proven
@@ -96,17 +121,24 @@ O-win → round persistence).
 
 ## What MiniAndroid is NOT (yet) — honest frontiers
 
-- **Compose UI internals** (F-NEW-161, ~2/3 of modern F-Droid apps hit
-  this): static compose UI renders; dynamic recomposition machinery is
-  not implemented.
+- **Near-blank shell class** (114 OBSERVED titles): apps whose engine runs
+  (launch, lifecycle, resources, sometimes full static init) but whose
+  windows stay the engine-default white shell + black status region —
+  dominated by Compose init chains (F-NEW-161, ~2/3 of modern F-Droid
+  apps) and androidx adapter fallback (F-NEW-162). These are text records,
+  never images.
 - **GLES/libGDX/SDL titles** (F-NEW-141 family): load + launch; the
   software-GL bridge is the recorded next dependency.
 - **WebView content models**: chrome renders; web content is a pinned
   frontier.
 - **Non-ASCII text shaping**: ASCII pixel-proven; Persian/Arabic glyph
   runs render as zero-width (bitmap-font law) — shaping engine pending.
+- **Telegram** (user-requested S85 review): launch + shell frames only;
+  ImageLoader/ActionBarLayout static-init chains recorded as the current
+  first divergence (multi-week native/TLS frontier).
 
-The root-cause registry maps every one of these to the titles it blocks.
+The root-cause registry maps every one of these to the titles it blocks:
+[docs/evidence/ROOT_CAUSE_REGISTRY.md](docs/evidence/ROOT_CAUSE_REGISTRY.md).
 
 ## Project discipline
 
