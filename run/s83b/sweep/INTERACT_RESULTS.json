@@ -1,0 +1,119 @@
+[
+ {
+  "tag": "APP-GMDICE",
+  "rc": 1,
+  "interactive_frames": 5,
+  "distinct_states": 4,
+  "last_frame_changed_vs_baseline": true,
+  "evidence_first_change": "run/s83b/sweep/APP-GMDICE_CLICK/APP-GMDICE_state1.jpg",
+  "evidence_last": "run/s83b/sweep/APP-GMDICE_CLICK/APP-GMDICE_stateN.jpg"
+ },
+ {
+  "tag": "APP-UNOTE",
+  "rc": 1,
+  "interactive_frames": 5,
+  "distinct_states": 1,
+  "last_frame_changed_vs_baseline": false,
+  "evidence_first_change": "run/s83b/sweep/APP-UNOTE_CLICK/APP-UNOTE_state1.jpg",
+  "evidence_last": "run/s83b/sweep/APP-UNOTE_CLICK/APP-UNOTE_stateN.jpg"
+ },
+ {
+  "tag": "GAME-BALL2BOX",
+  "rc": 1,
+  "interactive_frames": 0,
+  "distinct_states": 0,
+  "last_frame_changed_vs_baseline": false,
+  "evidence_first_change": null,
+  "evidence_last": null
+ },
+ {
+  "tag": "GAME-BLACKJACK",
+  "rc": 1,
+  "interactive_frames": 0,
+  "distinct_states": 0,
+  "last_frame_changed_vs_baseline": false,
+  "evidence_first_change": null,
+  "evidence_last": null
+ },
+ {
+  "tag": "GAME-DICER",
+  "rc": 1,
+  "interactive_frames": 0,
+  "distinct_states": 0,
+  "last_frame_changed_vs_baseline": false,
+  "evidence_first_change": null,
+  "evidence_last": null
+ },
+ {
+  "tag": "GAME-DOOZ18",
+  "rc": 1,
+  "interactive_frames": 0,
+  "distinct_states": 0,
+  "last_frame_changed_vs_baseline": false,
+  "evidence_first_change": null,
+  "evidence_last": null
+ },
+ {
+  "tag": "GAME-FISHRINGS",
+  "rc": 0,
+  "interactive_frames": 0,
+  "distinct_states": 0,
+  "last_frame_changed_vs_baseline": false,
+  "evidence_first_change": null,
+  "evidence_last": null
+ },
+ {
+  "tag": "GAME-MEMORY",
+  "rc": 0,
+  "interactive_frames": 0,
+  "distinct_states": 0,
+  "last_frame_changed_vs_baseline": false,
+  "evidence_first_change": null,
+  "evidence_last": null
+ },
+ {
+  "tag": "GAME-NOTHANKS",
+  "rc": 1,
+  "interactive_frames": 0,
+  "distinct_states": 0,
+  "last_frame_changed_vs_baseline": false,
+  "evidence_first_change": null,
+  "evidence_last": null
+ },
+ {
+  "tag": "GAME-QUINB",
+  "rc": 0,
+  "interactive_frames": 0,
+  "distinct_states": 0,
+  "last_frame_changed_vs_baseline": false,
+  "evidence_first_change": null,
+  "evidence_last": null
+ },
+ {
+  "tag": "GAME-RTTT",
+  "rc": 0,
+  "interactive_frames": 0,
+  "distinct_states": 0,
+  "last_frame_changed_vs_baseline": false,
+  "evidence_first_change": null,
+  "evidence_last": null
+ },
+ {
+  "tag": "GAME-TTT-CLASSIC",
+  "rc": 0,
+  "interactive_frames": 9,
+  "distinct_states": 9,
+  "last_frame_changed_vs_baseline": true,
+  "evidence_first_change": "run/s83b/sweep/GAME-TTT-CLASSIC_CLICK/GAME-TTT-CLASSIC_state1.jpg",
+  "evidence_last": "run/s83b/sweep/GAME-TTT-CLASSIC_CLICK/GAME-TTT-CLASSIC_stateN.jpg"
+ },
+ {
+  "tag": "GAME-TTT-FRZ",
+  "rc": 1,
+  "interactive_frames": 0,
+  "distinct_states": 0,
+  "last_frame_changed_vs_baseline": false,
+  "evidence_first_change": null,
+  "evidence_last": null
+ }
+]

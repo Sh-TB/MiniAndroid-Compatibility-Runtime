@@ -1,48 +1,224 @@
 {
-  "audit_id": "S83-GFX-BASE-FOUNDATION-AUDIT",
-  "head": "4df34d30",
-  "updated_at_wave": "S83-GFX-BASE wave1 (post-implementation refresh; initial statuses frozen at audit time)",
-  "date": "2026-09-22",
-  "law": "status without named evidence is forbidden (S83 §4/§38)",
-  "classes": {
-    "Bitmap": {"status": "PARTIAL", "tu": "framework/bitmap_shadow.cpp", "gaps": ["single real config ARGB_8888", "no per-bitmap density", "no copy()", "scaled-bilinear honestly-registered"]},
-    "BitmapFactory": {"status": "IMPLEMENTED", "tu": "framework/bitmap_shadow.cpp", "gaps": ["GIF explicit-unsupported (honest)"]},
-    "Drawable": {"status": "MISSING", "gaps": ["no base-class shadow; per-class ad hoc"]},
-    "ColorDrawable": {"status": "PARTIAL"},
-    "BitmapDrawable": {"status": "PARTIAL", "gaps": ["gravity/tile modes"]},
-    "ShapeDrawable_GradientDrawable": {"status": "PARTIAL", "gaps": ["ring/line shapes", "dash stroke"]},
-    "LayerDrawable": {"status": "PARTIAL", "gaps": ["XML layer-list only; code-level missing"]},
-    "StateListDrawable": {"status": "IMPLEMENTED"},
-    "NinePatchDrawable": {"status": "IMPLEMENTED", "evidence": "l4d_ninepatch ladder PASS: marker-driven stretch law (static regions 1:1 anchored, patch zone expands) pixel-verified; was MISSING at audit time", "gaps": ["padding/layout-bounds API surface limited"]},
-    "VectorDrawable": {"status": "IMPLEMENTED", "tu": "resources/vector_inflater.cpp", "evidence": "l4c_vector ladder PASS: viewport scaling, pathData, fillType even-odd hole, SVG arc endpoints pixel-verified; was MISSING at audit time", "gaps": ["tinting/theme attrs partial"]},
-    "InsetDrawable_ClipDrawable_RotateDrawable": {"status": "MISSING", "note": "discovered during audit; common in real UIs"},
-    "View_ViewGroup": {"status": "PARTIAL", "gaps": ["view alpha", "scaleType", "z-order=insertion only"]},
-    "View_lifecycle": {"status": "PARTIAL", "gaps": ["single re-render pass; layout_dirty law only"]},
-    "ImageView": {"status": "PARTIAL", "gaps": ["only FIT_CENTER scale type", "no setColorFilter/tint"]},
-    "TextView": {"status": "IMPLEMENTED"},
-    "Canvas": {"status": "IMPLEMENTED", "evidence": "S83 wave1 closed every audit gap: drawPoints/drawLines/drawPosText rasterized, clipPath scanline spans, saveLayer offscreen isolation (SAVE_LAYER/END_LAYER ops, l5b_canvas2 PASS), drawBitmap(Matrix,paint) via MatrixShadow; alpha composition pinned by l5b layer_alpha_blend_128", "gaps": ["FILL_AND_STROKE double-pass nuance", "drawPosText run-advance nuance"]},
-    "RecordingCanvas_RenderNode": {"status": "PARTIAL"},
-    "Paint": {"status": "PARTIAL", "gaps": ["Shader", "ColorFilter", "Xfermode", "textAlign/typeface accepted-ignored"]},
-    "Matrix": {"status": "IMPLEMENTED", "tu": "framework/matrix_shadow.cpp", "evidence": "real heap-object Matrix (set/reset/post/pre/rotate/scale/skew/concat, map-points); drawBitmap(bitmap,Matrix,paint) per-pixel exact-sampling path proven by l5b matrix_rotate_gray"},
-    "Path": {"status": "IMPLEMENTED"},
-    "Region": {"status": "MISSING"},
-    "Color": {"status": "IMPLEMENTED"},
-    "ColorStateList": {"status": "PARTIAL"},
-    "ColorFilter_Shader_Xfermode": {"status": "MISSING"},
-    "Typeface": {"status": "PARTIAL"},
-    "Surface": {"status": "MISSING"},
-    "SurfaceView_SurfaceHolder": {"status": "STUB"},
-    "TextureView": {"status": "STUB"},
-    "GLSurfaceView": {"status": "PARTIAL", "tu": "framework/gl_surface_shadow.cpp", "evidence": "S83: real renderer lifecycle (setRenderer→onSurfaceCreated→onSurfaceChanged→onDrawFrame) + GL10/GL11/GLES10/11 routing into PortableGL; l6_glsurface ladder PASS with app bytecode glClearColor/glClear presented pixel-exact; was WRONG_SEMANTICS at audit time (F-NEW-157 construction unwind fixed)", "gaps": ["GLSL shader parsing frontier (C-function only)", "continuous-render thread model simplified"]},
-    "EGL": {"status": "PARTIAL", "tu": "framework/gl_surface_shadow.cpp", "evidence": "EGLDisplay/Config/Context/Surface as real heap objects + state-honest egl* statics + eglSwapBuffers present law", "gaps": ["config selection semantics partial"]},
-    "GLES20": {"status": "PARTIAL", "note": "PortableGL real dispatch; GLSL not parsed (documented frontier)"},
-    "FrameBuffer": {"status": "PARTIAL", "gaps": ["alpha not preserved (blend out opaque)", "no stride/format/dirty/present model"]},
-    "Renderer": {"status": "PARTIAL", "gaps": ["composition inline in engine stage"]},
-    "Screenshot": {"status": "IMPLEMENTED", "note": "consumer-only"},
-    "Text_runtime": {"status": "IMPLEMENTED"},
-    "LocaleList_Locale": {"status": "IMPLEMENTED", "tu": "framework/locale_insets_shadow.cpp", "evidence": "S83 §32: F-NEW-159 NULL-FRAMEWORK-RECEIVER root-caused-fixed via semantic shadow (real LocaleList/Locale objects, toLanguageTags law); fanout 35/35 titles signature-eliminated, 35/35 advanced past old blocker", "note": "was MISSING at audit time (F-NEW-159)"},
-    "WindowInsetsController": {"status": "IMPLEMENTED", "tu": "framework/locale_insets_shadow.cpp", "evidence": "AOSP appearance bit law (cur&~mask)|(values&mask), behavior, visibleMask show/hide state"}
+ "audit_id": "S83-GFX-BASE-FOUNDATION-AUDIT",
+ "head": "4df34d30",
+ "updated_at_wave": "S83-B2 (layer-list/ring/line/dash/code-LayerDrawable closures; R-NEW-403/404)",
+ "date": "2026-09-22",
+ "law": "status without named evidence is forbidden (S83 §4/§38)",
+ "classes": {
+  "Bitmap": {
+   "status": "PARTIAL",
+   "tu": "framework/bitmap_shadow.cpp",
+   "gaps": [
+    "single real config ARGB_8888",
+    "no per-bitmap density",
+    "no copy()",
+    "scaled-bilinear honestly-registered"
+   ]
   },
-  "regression_gates": {"battery": "26/26 rc=0", "verifier": "24/24 PASS", "ladder": "10/10 PASS (l4c_vector+l4d_ninepatch+l5b_canvas2 added; l6 GL now real-pass)", "fanout_f_new_159": "35/35 signature eliminated"},
-  "derived_priority": ["P0 raster_surface_alpha_composition", "P0 canvas_gaps", "P0 bitmap_density_copy", "P1 vector_ninepatch_layer_scaletypes", "P1 view_alpha", "P2 paint_shader_family", "P3 surface_glsurfaceview_egl", "P4 libgdx_sdl"]
+  "BitmapFactory": {
+   "status": "IMPLEMENTED",
+   "tu": "framework/bitmap_shadow.cpp",
+   "gaps": [
+    "GIF explicit-unsupported (honest)"
+   ]
+  },
+  "Drawable": {
+   "status": "MISSING",
+   "gaps": [
+    "no base-class shadow; per-class ad hoc"
+   ]
+  },
+  "ColorDrawable": {
+   "status": "PARTIAL"
+  },
+  "BitmapDrawable": {
+   "status": "PARTIAL",
+   "gaps": [
+    "gravity/tile modes"
+   ]
+  },
+  "ShapeDrawable_GradientDrawable": {
+   "status": "IMPLEMENTED",
+   "gaps": [
+    "gradient three-stop/centerColor subset",
+    "useLevel sweep"
+   ],
+   "note": "S83-B2: RING(3)/LINE(2) kinds + dash strokes rendered (l4e pins); code-level GradientState capture (l4f)"
+  },
+  "LayerDrawable": {
+   "status": "IMPLEMENTED",
+   "gaps": [],
+   "note": "S83-B2: <layer-list> XML law (document order bottom->top + per-item insets) + code-level LayerDrawable children capture (materialized to the same paint law) — l4e/l4f pins"
+  },
+  "StateListDrawable": {
+   "status": "IMPLEMENTED"
+  },
+  "NinePatchDrawable": {
+   "status": "IMPLEMENTED",
+   "evidence": "l4d_ninepatch ladder PASS: marker-driven stretch law (static regions 1:1 anchored, patch zone expands) pixel-verified; was MISSING at audit time",
+   "gaps": [
+    "padding/layout-bounds API surface limited"
+   ]
+  },
+  "VectorDrawable": {
+   "status": "IMPLEMENTED",
+   "tu": "resources/vector_inflater.cpp",
+   "evidence": "l4c_vector ladder PASS: viewport scaling, pathData, fillType even-odd hole, SVG arc endpoints pixel-verified; was MISSING at audit time",
+   "gaps": [
+    "tinting/theme attrs partial"
+   ]
+  },
+  "InsetDrawable_ClipDrawable_RotateDrawable": {
+   "status": "PARTIAL",
+   "note": "S83-B2: per-item layer insets cover the InsetDrawable demand; standalone classes remain",
+   "gaps": [
+    "ClipDrawable level subset",
+    "RotateDrawable WRONG_SEMANTICS risk"
+   ]
+  },
+  "View_ViewGroup": {
+   "status": "PARTIAL",
+   "gaps": [
+    "view alpha",
+    "scaleType",
+    "z-order=insertion only"
+   ]
+  },
+  "View_lifecycle": {
+   "status": "PARTIAL",
+   "gaps": [
+    "single re-render pass; layout_dirty law only"
+   ]
+  },
+  "ImageView": {
+   "status": "PARTIAL",
+   "gaps": [
+    "only FIT_CENTER scale type",
+    "no setColorFilter/tint"
+   ]
+  },
+  "TextView": {
+   "status": "IMPLEMENTED"
+  },
+  "Canvas": {
+   "status": "IMPLEMENTED",
+   "evidence": "S83 wave1 closed every audit gap: drawPoints/drawLines/drawPosText rasterized, clipPath scanline spans, saveLayer offscreen isolation (SAVE_LAYER/END_LAYER ops, l5b_canvas2 PASS), drawBitmap(Matrix,paint) via MatrixShadow; alpha composition pinned by l5b layer_alpha_blend_128",
+   "gaps": [
+    "FILL_AND_STROKE double-pass nuance",
+    "drawPosText run-advance nuance"
+   ]
+  },
+  "RecordingCanvas_RenderNode": {
+   "status": "PARTIAL"
+  },
+  "Paint": {
+   "status": "PARTIAL",
+   "gaps": [
+    "Shader",
+    "ColorFilter",
+    "Xfermode",
+    "textAlign/typeface accepted-ignored"
+   ]
+  },
+  "Matrix": {
+   "status": "IMPLEMENTED",
+   "tu": "framework/matrix_shadow.cpp",
+   "evidence": "real heap-object Matrix (set/reset/post/pre/rotate/scale/skew/concat, map-points); drawBitmap(bitmap,Matrix,paint) per-pixel exact-sampling path proven by l5b matrix_rotate_gray"
+  },
+  "Path": {
+   "status": "IMPLEMENTED"
+  },
+  "Region": {
+   "status": "MISSING"
+  },
+  "Color": {
+   "status": "IMPLEMENTED"
+  },
+  "ColorStateList": {
+   "status": "PARTIAL"
+  },
+  "ColorFilter_Shader_Xfermode": {
+   "status": "MISSING"
+  },
+  "Typeface": {
+   "status": "PARTIAL"
+  },
+  "Surface": {
+   "status": "MISSING"
+  },
+  "SurfaceView_SurfaceHolder": {
+   "status": "STUB"
+  },
+  "TextureView": {
+   "status": "STUB"
+  },
+  "GLSurfaceView": {
+   "status": "PARTIAL",
+   "tu": "framework/gl_surface_shadow.cpp",
+   "evidence": "S83: real renderer lifecycle (setRenderer→onSurfaceCreated→onSurfaceChanged→onDrawFrame) + GL10/GL11/GLES10/11 routing into PortableGL; l6_glsurface ladder PASS with app bytecode glClearColor/glClear presented pixel-exact; was WRONG_SEMANTICS at audit time (F-NEW-157 construction unwind fixed)",
+   "gaps": [
+    "GLSL shader parsing frontier (C-function only)",
+    "continuous-render thread model simplified"
+   ]
+  },
+  "EGL": {
+   "status": "PARTIAL",
+   "tu": "framework/gl_surface_shadow.cpp",
+   "evidence": "EGLDisplay/Config/Context/Surface as real heap objects + state-honest egl* statics + eglSwapBuffers present law",
+   "gaps": [
+    "config selection semantics partial"
+   ]
+  },
+  "GLES20": {
+   "status": "PARTIAL",
+   "note": "PortableGL real dispatch; GLSL not parsed (documented frontier)"
+  },
+  "FrameBuffer": {
+   "status": "PARTIAL",
+   "gaps": [
+    "alpha not preserved (blend out opaque)",
+    "no stride/format/dirty/present model"
+   ]
+  },
+  "Renderer": {
+   "status": "PARTIAL",
+   "gaps": [
+    "composition inline in engine stage"
+   ]
+  },
+  "Screenshot": {
+   "status": "IMPLEMENTED",
+   "note": "consumer-only"
+  },
+  "Text_runtime": {
+   "status": "IMPLEMENTED"
+  },
+  "LocaleList_Locale": {
+   "status": "IMPLEMENTED",
+   "tu": "framework/locale_insets_shadow.cpp",
+   "evidence": "S83 §32: F-NEW-159 NULL-FRAMEWORK-RECEIVER root-caused-fixed via semantic shadow (real LocaleList/Locale objects, toLanguageTags law); fanout 35/35 titles signature-eliminated, 35/35 advanced past old blocker",
+   "note": "was MISSING at audit time (F-NEW-159)"
+  },
+  "WindowInsetsController": {
+   "status": "IMPLEMENTED",
+   "tu": "framework/locale_insets_shadow.cpp",
+   "evidence": "AOSP appearance bit law (cur&~mask)|(values&mask), behavior, visibleMask show/hide state"
+  }
+ },
+ "regression_gates": {
+  "battery": "26/26 rc=0",
+  "verifier": "24/24 PASS",
+  "ladder": "10/10 PASS (l4c_vector+l4d_ninepatch+l5b_canvas2 added; l6 GL now real-pass)",
+  "fanout_f_new_159": "35/35 signature eliminated"
+ },
+ "derived_priority": [
+  "P0 raster_surface_alpha_composition",
+  "P0 canvas_gaps",
+  "P0 bitmap_density_copy",
+  "P1 vector_ninepatch_layer_scaletypes",
+  "P1 view_alpha",
+  "P2 paint_shader_family",
+  "P3 surface_glsurfaceview_egl",
+  "P4 libgdx_sdl"
+ ]
 }

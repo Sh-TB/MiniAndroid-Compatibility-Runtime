@@ -142,3 +142,95 @@ The LocaleInsetsShadow fix was measured against the whole F-NEW-156
 - [x] Regression: 26/26 battery + 24/24 goldens + 10/10 ladder (§41)
 - [ ] RasterSurface object + framebuffer alpha (next wave, P0 remainder)
 - [ ] Real-app non-blank unlock (awaits next per-title root waves)
+
+---
+
+# S83-B2 — FOUNDATION COMPLETION + GRAPHICS SWEEP (2026-09-22)
+
+Base: `010afcab` (S83-GFX-BASE wave 1) · this wave's HEAD appended in the
+same commit · Binary rebuilt clean at every step; every gate re-run after
+each change.
+
+## 9. What this second wave closed (§39 proactive-completion directive)
+
+The audit's remaining render-blocking classes were closed with the same
+discipline (source law → fixture → pixel pin → regression):
+
+1. **LayerDrawable XML (`<layer-list>`)** — AOSP LayerDrawable.inflate law:
+   items parse in DOCUMENT ORDER and paint bottom→top; per-item
+   left/top/right/bottom insets; item forms = `@drawable` ref (ARSC
+   canonical resolution), `<color>` inline, inline `<shape>` (full
+   GradientState subset parse). Ownership follows the F-053 last-writer
+   law.
+2. **GradientDrawable RING/LINE kinds + dash strokes** — the f053 shape
+   draw law now renders: RING annulus (innerRadius/thickness px override;
+   ratio law = bounds-dim / ratio, default 9 — the documented
+   developer.android.com contract), LINE (single horizontal center line in
+   the stroke paint), and dashWidth/dashGap modulation on stroke bands
+   (edge-direction mod pattern; corner arcs stay solid — honest
+   simplification). **Toolchain law discovered and pinned**: aapt2 compiles
+   `android:shape` as the INT_DEC enum with data word = kind and the
+   enum order is rectangle=0, oval=1, **line=2, ring=3** (matches the
+   GradientDrawable Java constants; the earlier in-tree comment had the
+   ring/line pair swapped and the fixture pins caught it).
+3. **Code-level LayerDrawable/GradientDrawable** — the F-NEW-158 capture
+   family extended: `LayerDrawable.<init>(Drawable[])` children +
+   `setLayerInset` materialized into the SAME bg_layers paint law;
+   `GradientDrawable` GradientState setters (setShape/setColor/
+   setCornerRadius/setStroke/setInnerRadius/setThickness) captured on the
+   drawable object and applied at `setBackground` (AOSP mBackground swap).
+   Pins: pad+inset-ring and rounded-rect+stroke-follows-corner.
+4. **R-NEW-403 (doz family root cause)** — `CollectionShadow::handles_class`
+   had NO `Ljava/util/WeakHashMap;` entry: every WeakHashMap op REC-MISSed,
+   `keySet()` answered null, and `Set.iterator()` NPE killed dooz (Glide
+   RequestManager lifecycle registry, `Lg/b;.d`) before the first frame.
+   Fix routes the whole WeakHashMap family into the real CollectionShadow
+   map laws (plus a bridge-side keySet/values view law for registry-less
+   modes). Observed: dooz advances crash-before-frame → rendered shell;
+   the NEXT frontier is the shared WindowRecomposer context chain
+   (R-NEW-344 family). Fanout: every Glide/lifecycle WeakHashMap registry
+   in the corpus shares this family.
+
+New fixtures: `l4e_layerlist`, `l4f_codelayer` (source under
+`fixtures/s83gfx/`, pins in `scripts/s83b_ladder.py`, verdict
+`run/s83b/S83B_LADDER.json`, evidence `docs/evidence/s83b/`).
+
+## 10. Sweep: 10 apps + 20 games + 2 mandatory high-level (§41 real runs)
+
+Every title re-run at this HEAD with provenance instrumentation
+(`scripts/s83b_sweep.py` → `run/s83b/sweep/SWEEP_RESULTS.json`), the final
+frame measured by the S81 visual audit (levels L0–L5, honest, no score),
+plus an interactive `--click-test` pass (`scripts/s83b_interact.py`) that
+drives real clicks through the canonical TouchDispatcher:
+
+- **Games (26 run)**: own-built Snake Deluxe / Mini Tetris / 2048 / S72
+  snake remain the L3 leaders; Snake autoplay re-proven at HEAD (3 apples,
+  100-frame continuous run, prefix-verified, GIF evidence). TicTacToe
+  Classic reached 9 DISTINCT STATES under clicks (real X/O gameplay).
+  gmdice 4 distinct states (dice roll law intact). The F-NEW-156
+  onCreate-unwind family still caps the fresh-corpus faces (honest L2).
+- **Apps (12 run)**: Notes/gmdice/keyboard honest renders; uNote interactive
+  produced no new state (honest — recorded); chessclock/solitaire-family
+  still onCreate-boundary.
+- **Mandatory high-level**: P9 (libGDX) and TimeLimit still hit their
+  documented frontiers (F-NEW-157 / ServiceLoader family) — advanced past
+  the S83 LocaleList root, not passed. No fake upgrades.
+
+## 11. Regression gates (final binary)
+
+| Gate | Result |
+|------|--------|
+| Foundation battery | **26/26 rc=0** |
+| Pixel goldens | **24/24** (shas unchanged) |
+| Golden fixture ladder | **10/10** |
+| S83-B2 foundation ladder | **2/2** (new pins) |
+| Snake autoplay | **3 captures**, 100-frame run, prefix verified |
+
+## 12. Remaining honest frontier (P2–P4, updated)
+
+Paint Shader/Xfermode rasterization (record-only today), Bitmap
+density/copy/config breadth, Region, SurfaceView/TextureView surface
+lifecycle, standalone Inset/Clip/Rotate drawables beyond layer insets,
+GLSL shader parsing, libGDX AndroidGraphics chain (F-NEW-157), and the
+Compose recomposer context chain (R-NEW-344 family, now with dooz18 as
+its newest member). Each is named with evidence — none silently dropped.

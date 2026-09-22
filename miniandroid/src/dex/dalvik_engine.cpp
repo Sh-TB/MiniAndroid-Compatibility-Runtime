@@ -21097,6 +21097,13 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     std::cerr << "[S82GFX-BG158] view=" << args[0].object_id
                               << " ColorDrawable color=0x" << std::hex << color
                               << std::dec << " captured" << std::endl;
+                } else if (vs->apply_code_background(args[0].object_id,
+                                                     args[1].object_id)) {
+                    // S83-B2 §14: code-level LayerDrawable/GradientDrawable
+                    // materialized into the node's layer/shape state.
+                    std::cerr << "[S83B2-BG] view=" << args[0].object_id
+                              << " code drawable o" << args[1].object_id
+                              << " materialized" << std::endl;
                 } else {
                     if (diagnostics::GfxProvenance::instance().enabled())
                         diagnostics::GfxProvenance::instance().record_image(
@@ -21115,6 +21122,136 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                           << " resid=0x" << std::hex
                           << static_cast<uint32_t>(args[1].int_val) << std::dec
                           << " -> bg_resource_id" << std::endl;
+            }
+        }
+    }
+
+    // ────────────────────────────────────────────────────────────────────
+    // S83-B2 §14: code-level LayerDrawable / GradientDrawable capture law.
+    // AOSP: LayerDrawable.<init>(Drawable[]) stores the layer array;
+    // setLayerInset(i,l,t,r,b) mutates layer i; GradientDrawable setters
+    // mutate GradientState (shape/color/stroke/radius/ring metrics). The
+    // drawable OBJECT graph is mirrored in ViewShadow (same capture law
+    // F-NEW-158 established for ColorDrawable) and materialized into the
+    // view's paint state at setBackground (apply_code_background).
+    // ────────────────────────────────────────────────────────────────────
+    if (shadow_registry_ != nullptr && args.size() >= 1 &&
+        args[0].type == DalvikType::OBJECT_REF) {
+        auto* vs = shadow_registry_->find_as<framework::ViewShadow>();
+        if (vs != nullptr) {
+            // 4a. LayerDrawable.<init>(Drawable[] layers) / <init>(Drawable)
+            if (class_name.find("LayerDrawable;") != std::string::npos &&
+                method == "<init>" && args.size() >= 2 &&
+                args[1].type == DalvikType::OBJECT_REF) {
+                std::vector<uint32_t> kids;
+                uint32_t arg1 = args[1].object_id;
+                auto len_f = heap_.get_object_field(arg1, "__array_length__");
+                if (!len_f.has_value() || len_f->type != DalvikType::INT32)
+                    len_f = heap_.get_object_field(arg1, "__new_array_length__");
+                if (len_f.has_value() && len_f->type == DalvikType::INT32) {
+                    int32_t n = len_f->int_val;
+                    if (n > 0 && n < 128) {
+                        for (int32_t i = 0; i < n; ++i) {
+                            auto el = heap_.get_object_field(
+                                arg1, "array[" + std::to_string(i) + "]");
+                            if (el.has_value() &&
+                                el->type == DalvikType::OBJECT_REF &&
+                                el->object_id != 0)
+                                kids.push_back(el->object_id);
+                        }
+                    }
+                } else if (heap_.has_object(arg1)) {
+                    kids.push_back(arg1);   // LayerDrawable(Drawable single)
+                }
+                if (!kids.empty()) {
+                    vs->record_layer_children(args[0].object_id, kids);
+                    std::cerr << "[S83B2-LAYER] LayerDrawable o"
+                              << args[0].object_id << " layers=" << kids.size()
+                              << std::endl;
+                }
+            }
+            // 4b. LayerDrawable.setLayerInset(int i, int l, int t, int r, int b)
+            if (class_name.find("LayerDrawable;") != std::string::npos &&
+                method == "setLayerInset" && args.size() >= 6 &&
+                args[1].type == DalvikType::INT32 &&
+                args[2].type == DalvikType::INT32 &&
+                args[3].type == DalvikType::INT32 &&
+                args[4].type == DalvikType::INT32 &&
+                args[5].type == DalvikType::INT32) {
+                if (vs->record_layer_inset(
+                        args[0].object_id, args[1].int_val, args[2].int_val,
+                        args[3].int_val, args[4].int_val, args[5].int_val))
+                    std::cerr << "[S83B2-LAYER] setLayerInset o"
+                              << args[0].object_id << "[" << args[1].int_val
+                              << "]" << std::endl;
+            }
+            // 5. GradientDrawable state capture (AOSP GradientState setters).
+            if (class_name.find("GradientDrawable;") != std::string::npos) {
+                framework::ViewShadow::GradientState st;
+                bool known = vs->lookup_gradient_drawable(args[0].object_id, &st);
+                if (method == "<init>") {
+                    if (!known) { st = framework::ViewShadow::GradientState(); known = true; }
+                    // <init>(Orientation, int[]) gradient-constructor: first
+                    // color of the array becomes the solid (honest subset).
+                    if (args.size() >= 3 && args[2].type == DalvikType::OBJECT_REF) {
+                        auto c0 = heap_.get_object_field(args[2].object_id, "array[0]");
+                        if (c0.has_value() && c0->type == DalvikType::INT32) {
+                            st.has_color = true;
+                            st.color = (uint32_t)c0->int_val;
+                        }
+                    }
+                }
+                if (method == "setColor" && args.size() >= 2 &&
+                    args[1].type == DalvikType::INT32) {
+                    st.has_color = true;
+                    st.color = (uint32_t)args[1].int_val;
+                }
+                if (method == "setShape" && args.size() >= 2 &&
+                    args[1].type == DalvikType::INT32)
+                    st.shape = args[1].int_val;
+                if (method == "setCornerRadius" && args.size() >= 2) {
+                    float r = 0.f;
+                    if (args[1].type == DalvikType::FLOAT32) r = args[1].float_val;
+                    else if (args[1].type == DalvikType::INT32) {
+                        float f; std::memcpy(&f, &args[1].int_val, sizeof(float));
+                        r = f;
+                    }
+                    st.radius = r;
+                }
+                if (method == "setStroke" && args.size() >= 3) {
+                    float w = 0.f;
+                    if (args[1].type == DalvikType::FLOAT32) w = args[1].float_val;
+                    else if (args[1].type == DalvikType::INT32) {
+                        float f; std::memcpy(&f, &args[1].int_val, sizeof(float));
+                        // INT32 width arrives as the VALUE for (int,int) form;
+                        // distinguishing raw float-bits from int value is not
+                        // needed: small ints read as float denormals ≈ 0, so
+                        // treat tiny denormal as the int value.
+                        if (std::fabs(f) < 1e-30f)
+                            w = (float)args[1].int_val;
+                        else
+                            w = f;
+                    }
+                    st.has_stroke = true;
+                    st.stroke_w = w;
+                    if (args[2].type == DalvikType::INT32)
+                        st.stroke_color = (uint32_t)args[2].int_val;
+                }
+                if (method == "setInnerRadius" && args.size() >= 2 &&
+                    args[1].type == DalvikType::INT32)
+                    st.inner_radius = (float)args[1].int_val;
+                if (method == "setThickness" && args.size() >= 2 &&
+                    args[1].type == DalvikType::INT32)
+                    st.thickness = (float)args[1].int_val;
+                if (known) {
+                    vs->record_gradient_drawable(args[0].object_id, st);
+                    static thread_local uint64_t g_log = 0;
+                    if (g_log < 16) {
+                        ++g_log;
+                        std::cerr << "[S83B2-GRAD] o" << args[0].object_id
+                                  << " " << method << std::endl;
+                    }
+                }
             }
         }
     }
@@ -28418,6 +28555,108 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             status = ApiCallTrace::Status::IMPLEMENTED;
             result = DalvikValue::make_void();
             return true;
+        }
+
+        // ────────────────────────────────────────────────────────────────
+        // S83-B2 (R-NEW-403): HashMap-family keySet()/values() live views.
+        // OpenJDK: keySet() returns a non-null live Set view of the keys;
+        // values() a Collection view. The bridge stores entries as
+        // "key_<k>" heap fields (EXP-071 law above) but had NO view law —
+        // keySet() answered null → `Set.iterator()` NPE killed
+        // io.github.yamin8000.dooz (Glide RequestManager lifecycle registry
+        // Lg/b;.d: WeakHashMap.keySet().iterator() in onCreate —
+        // FIRST_DIVERGENCE trace GAME-DOOZ18 run 2026-09-22). Every
+        // Glide/lifecycle WeakHashMap observer registry shares the family.
+        // Fix: materialize a HashSet view whose elements live in
+        // "array[i]" fields (the canonical heap iterable contract), and
+        // drive iteration with the self-as-iterator house pattern
+        // (iterator()/hasNext()/next() below).
+        // ────────────────────────────────────────────────────────────────
+        if (method == "keySet" || method == "values") {
+            uint32_t this_id = args.empty() ? 0 : args[0].object_id;
+            auto* obj = heap_.get(this_id);
+            std::vector<std::pair<std::string, DalvikValue>> entries;
+            if (obj) {
+                for (auto& kv : obj->fields)
+                    if (kv.first.rfind("key_", 0) == 0 &&
+                        kv.first.find("__") == std::string::npos)
+                        entries.push_back({kv.first.substr(4), kv.second});
+            }
+            std::sort(entries.begin(), entries.end(),
+                      [](auto& a, auto& b) { return a.first < b.first; });
+            uint32_t view_id = heap_.allocate("Ljava/util/HashSet;", 0, 0);
+            heap_.set_object_field(view_id, "__bridge_view__",
+                                   DalvikValue::make_int(1));
+            heap_.set_object_field(view_id, "__array_length__",
+                                   DalvikValue::make_int(
+                                       (int32_t)entries.size()));
+            for (size_t i = 0; i < entries.size(); ++i) {
+                DalvikValue el = (method == "values")
+                                     ? entries[i].second
+                                     : DalvikValue::make_string(
+                                           entries[i].first, 1);
+                heap_.set_object_field(view_id,
+                                       "array[" + std::to_string(i) + "]",
+                                       el);
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_object(
+                view_id, method == "keySet" ? "Ljava/util/Set;"
+                                            : "Ljava/util/Collection;");
+            static thread_local uint64_t r403_log = 0;
+            if (r403_log < 12) {
+                ++r403_log;
+                std::cerr << "[S83B2-VIEW] " << class_name << "." << method
+                          << " obj=" << this_id << " -> view o" << view_id
+                          << " n=" << entries.size() << std::endl;
+            }
+            return true;
+        }
+        // Bridge view iteration: iterator()/hasNext()/next() on objects
+        // materialized by the keySet()/values() law above.
+        if (heap_.has_object(args.empty() ? 0 : args[0].object_id)) {
+            uint32_t this_id = args[0].object_id;
+            auto is_view = heap_.get_object_field(this_id, "__bridge_view__");
+            if (is_view.has_value() && is_view->type == DalvikType::INT32 &&
+                is_view->int_val == 1) {
+                if (method == "iterator") {
+                    heap_.set_object_field(this_id, "__iterator_pos__",
+                                           DalvikValue::make_int(0));
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_object(this_id,
+                                                      "Ljava/util/Iterator;");
+                    return true;
+                }
+                auto pos_f = heap_.get_object_field(this_id, "__iterator_pos__");
+                int32_t pos = (pos_f.has_value() &&
+                               pos_f->type == DalvikType::INT32)
+                                  ? pos_f->int_val : 0;
+                auto len_f = heap_.get_object_field(this_id, "__array_length__");
+                int32_t n = (len_f.has_value() &&
+                             len_f->type == DalvikType::INT32)
+                                ? len_f->int_val : 0;
+                if (method == "hasNext") {
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_bool(pos < n);
+                    return true;
+                }
+                if (method == "next") {
+                    if (pos >= n) {
+                        throw_deferred("Ljava/util/NoSuchElementException;",
+                                       "Bridge view iterator exhausted",
+                                       "S83B2-VIEW-ITER-END");
+                        result = DalvikValue::make_null();
+                        return true;
+                    }
+                    auto el = heap_.get_object_field(
+                        this_id, "array[" + std::to_string(pos) + "]");
+                    heap_.set_object_field(this_id, "__iterator_pos__",
+                                           DalvikValue::make_int(pos + 1));
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = el.has_value() ? *el : DalvikValue::make_null();
+                    return true;
+                }
+            }
         }
     }
 
