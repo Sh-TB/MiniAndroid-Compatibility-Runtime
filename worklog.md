@@ -2772,3 +2772,73 @@ Stage Summary:
 - Honest status: CORPUS_READY, EXECUTION_PARTIAL (not 200_APPS_VERIFIED).
 - Next: F-NEW-156 per-face disasm→law chain; P9/TimeLimit build+run with
   reference-vs-MiniAndroid comparison; BATCH-02..04; probe v2 ListView.
+
+---
+Task ID: S82
+Agent: Super Z (main)
+Task: S82 — PER-TITLE COMPATIBILITY TRACKER (user directive: 200 items = 200
+independent permanent compatibility records + independent GitHub issues;
+Issue #24 stays umbrella-only; emulator-tracker pattern; hard execution gates;
+never claim "200 tested" for "200 records").
+
+Work Log:
+- Registry freeze (§3/§4): docs/corpus/s82/title_registry.json from frozen
+  S81 corpus (CORPUS_SEED-pinned order): GAME-001..100, APP-001..100,
+  MAND-001 P9, MAND-002 TimeLimit = 202 records, zero duplicate packages;
+  stopwatch/platformer inventories cross-referenced, 15 inventory-only
+  packages recorded (never dropped); REGISTRY_FREEZE.md.
+- Labels (§21): 46 created idempotently (status ladder family, failure
+  family, workflow family — statuses and failures separated).
+- Issue template: .github/ISSUE_TEMPLATE/title-compatibility.yml (§6,
+  automation-populated).
+- Engine rebuilt (container reset had wiped build/): make -j4 OK; smoke test
+  gmdice PASS.
+- Execution (§12/§27/§49): P9 + TimeLimit full chains (2 runs each; APK SHA,
+  screenshot, official F-Droid references with SHA, structured palette
+  comparison); BATCH-01 21/25 + 4 BLOCKED honest (3 delisted from F-Droid
+  API, 1 persistent download-fail); stopwatch 3/3; platformer 6; 19/20
+  category families; cached gates: F-NEW-156 ×3 reproduced (crash traces),
+  IMAGE_GAP ×3 re-traced, DIALOG real-title retests (solitaire framework
+  AlertDialog$Builder.setItems ×3 DEX-proven callers + mykanji Material;
+  paths gated upstream — no fake pass), PLACEHOLDER zero-garble retest
+  (VF-NEW-002 AFTER-state holds on real titles).
+- NEW ROOT CAUSE F-NEW-157 registered (root_registry 417→418): libGDX
+  AndroidGraphics.createGLSurfaceView NPE → APP-BOUNDARY unwind at
+  MainActivity.onCreate (P9; S80 emmanuelmess precedent). GitHub #228.
+- Status law (§7/§16): two-color + text_px<500 = STATE-NONBLANK +
+  FAIL-PALETTE (blank-face failure), §29 interaction attempt recorded even
+  on dead UI (TAP_DISPATCHED_NO_RESPONSE), L5 never self-granted (§31).
+- Issues (§5/§24/§45): 202 title issues CREATED (idempotent REST
+  identity-index by TITLE_ID marker; registry backfilled ISSUE_NUMBER/URL;
+  zero FAILED); root-cause issues #227/#228/#229 with fanout lists; label
+  query verification 1:1 with registry (§46): compatibility 202, game 100,
+  app 100, mandatory 2, executed 41, not-tested 161, state-nonblank 39,
+  fail-oncreate 35.
+- Issue #24: appended "S82 — PER-TITLE COMPATIBILITY TRACKER" section (§35):
+  progress counters, hard-gate table, 202-row per-title index; original S81
+  body untouched.
+- Dashboard (§32/§33/§41): COMPATIBILITY_INDEX.md + compatibility_index.json
+  + root_cause_graph.md/.json (fanout = regression blast radius).
+- Validator (§44) PASS: no status without evidence; BLOCKED never
+  state-inflated; no auto-L5; 202/202 issues linked.
+- Hygiene (§38-40): disk 7.2G avail; APK cache SHA-dedup (23 removed);
+  hidden-state audit (stash 0, stale worktree pruned, 20 unreachable objects
+  recorded, none evidence-referenced); false-completion scan only pre-existing
+  doc flags; evidence docs/evidence/s82 = 53 JPGs ≤100KB + SHA256SUMS.
+- Commit 2b1dd0fd pushed (secret guard PASS; token never persisted in
+  config/URL; one-shot header/URL auth only).
+
+Stage Summary:
+- Honest counts (§54 respected): 202 records, 205 GitHub issues (202 title +
+  3 root-cause), EXECUTED 41 (25 games, 14 apps, 2 mandatory), BLOCKED 4,
+  NOT_TESTED 157; STATE-NONBLANK 39, STATE-RENDERED 1 (GAME-052 boxcars),
+  STATE-GRAPHICALLY-NONTRIVIAL 1 (GAME-004 balancetheball lvl-2 comparison),
+  INTERACTIVE 0, STATE_CHANGED 0, VISUAL_CORRELATED 0, HUMAN_VERIFIED 0;
+  VISUAL_FAIL vs official references 31, PARTIAL 4; ONCREATE 35; IMAGE_GAP
+  40/41; references 177 OK/25 NA.
+- S82 proved the tracker architecture end-to-end: one fix (#227) will
+  regress 35 title issues; every title has a permanent, human-workable
+  dossier (identity, session, evidence, failure, root-cause link, resolution).
+- Next (S83): F-NEW-156 law attack → 35-title regression wave; F-NEW-157 GL
+  surface law; BATCH-02..04; references already in place for L4/L5 when
+  renders become non-blank.
