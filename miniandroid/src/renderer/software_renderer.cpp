@@ -157,7 +157,17 @@ void SoftwareCanvas::set_clip(float left, float top, float right, float bottom) 
     clip_active_ = true;
     clip_l_ = left; clip_t_ = top; clip_r_ = right; clip_b_ = bottom;
 }
-void SoftwareCanvas::clear_clip() { clip_active_ = false; }
+void SoftwareCanvas::set_path_clip(
+    int y0, int y1, std::vector<std::vector<std::pair<float, float>>> spans) {
+    path_y0_ = y0;
+    path_y1_ = y1;
+    path_spans_ = std::move(spans);
+}
+void SoftwareCanvas::clear_clip() {
+    clip_active_ = false;
+    path_y0_ = path_y1_ = 0;
+    path_spans_.clear();
+}
 
 void SoftwareCanvas::draw_color(RGBA color) {
     framebuffer_->clear(color);
@@ -369,16 +379,66 @@ bool probe_image_size(const std::vector<uint8_t>& bytes, ImageSizeProbe* out) {
 // ── G04 §12: FIT_CENTER placement (ImageView.java default scaleType law) ───
 FitRect fit_center_rect(int src_w, int src_h, int box_x, int box_y,
                         int box_w, int box_h) {
+    return scale_image_rect(3, src_w, src_h, box_x, box_y, box_w, box_h);
+}
+
+// ── S83-GFX-BASE (§19): the full ImageView scale-type law, one function ─
+FitRect scale_image_rect(int scale_type, int src_w, int src_h,
+                         int box_x, int box_y, int box_w, int box_h) {
     FitRect r;
     if (src_w <= 0 || src_h <= 0 || box_w <= 0 || box_h <= 0) return r;
-    // scale = min(dW/srcW, dH/srcH) — the FIT_CENTER matrix law. Integer
-    // dims via float intermediate to avoid premature truncation, then round.
-    float scale = std::min(float(box_w) / float(src_w), float(box_h) / float(src_h));
-    r.w = std::max(1, int(std::lround(float(src_w) * scale)));
-    r.h = std::max(1, int(std::lround(float(src_h) * scale)));
-    r.x = box_x + (box_w - r.w) / 2;
-    r.y = box_y + (box_h - r.h) / 2;
-    return r;
+    const float fit_scale = std::min(float(box_w) / float(src_w),
+                                     float(box_h) / float(src_h));
+    switch (scale_type) {
+        case 0:  // MATRIX (identity) — natural size at box origin
+            r.w = src_w; r.h = src_h;
+            r.x = box_x; r.y = box_y;
+            return r;
+        case 1:  // FIT_XY — stretch to fill
+            r.w = box_w; r.h = box_h;
+            r.x = box_x; r.y = box_y;
+            return r;
+        case 2:  // FIT_START
+            r.w = std::max(1, int(std::lround(src_w * fit_scale)));
+            r.h = std::max(1, int(std::lround(src_h * fit_scale)));
+            r.x = box_x; r.y = box_y;
+            return r;
+        case 4:  // FIT_END
+            r.w = std::max(1, int(std::lround(src_w * fit_scale)));
+            r.h = std::max(1, int(std::lround(src_h * fit_scale)));
+            r.x = box_x + (box_w - r.w);
+            r.y = box_y + (box_h - r.h);
+            return r;
+        case 5:  // CENTER — natural size, centered
+            r.w = src_w; r.h = src_h;
+            r.x = box_x + (box_w - src_w) / 2;
+            r.y = box_y + (box_h - src_h) / 2;
+            return r;
+        case 6: {  // CENTER_CROP — crop-scale, centered
+            const float crop = std::max(float(box_w) / float(src_w),
+                                        float(box_h) / float(src_h));
+            r.w = std::max(1, int(std::lround(src_w * crop)));
+            r.h = std::max(1, int(std::lround(src_h * crop)));
+            r.x = box_x + (box_w - r.w) / 2;
+            r.y = box_y + (box_h - r.h) / 2;
+            return r;
+        }
+        case 7: {  // CENTER_INSIDE — never upscale, centered
+            const float s = std::min(1.0f, fit_scale);
+            r.w = std::max(1, int(std::lround(src_w * s)));
+            r.h = std::max(1, int(std::lround(src_h * s)));
+            r.x = box_x + (box_w - r.w) / 2;
+            r.y = box_y + (box_h - r.h) / 2;
+            return r;
+        }
+        case 3:    // FIT_CENTER — the AOSP default law
+        default:
+            r.w = std::max(1, int(std::lround(float(src_w) * fit_scale)));
+            r.h = std::max(1, int(std::lround(float(src_h) * fit_scale)));
+            r.x = box_x + (box_w - r.w) / 2;
+            r.y = box_y + (box_h - r.h) / 2;
+            return r;
+    }
 }
 
 // EXP-088 Phase A4: SoftwareCanvas::draw_image

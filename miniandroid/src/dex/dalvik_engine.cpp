@@ -8234,6 +8234,82 @@ bool DalvikExecutionEngine::dispatch_view_lifecycle_once(
     return dispatched_any;
 }
 
+bool DalvikExecutionEngine::dispatch_gl_surface_view_frame(uint32_t view_object_id, int w, int h, bool* first_frame_out) {
+    *first_frame_out = false;
+    if (shadow_registry_ == nullptr) return false;
+    auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+    if (!view_shadow) return false;
+    const auto* node = view_shadow->find_node(view_object_id);
+    if (!node) return false;
+    if (node->class_desc.find("GLSurfaceView") == std::string::npos) return false;
+    if (w <= 0 || h <= 0) return false;
+    // renderer object stored by GLSurfaceViewShadow::setRenderer
+    auto rend = heap_.get_object_field(view_object_id, "glRenderer");
+    if (!rend.has_value() || rend->type != DalvikType::OBJECT_REF ||
+        rend->object_id == 0 || !heap_.has_object(rend->object_id)) {
+        return false;   // no renderer installed → nothing to draw (honest)
+    }
+    const uint32_t renderer = rend->object_id;
+    std::string rcls;
+    if (const auto* robj = heap_.get(renderer)) rcls = robj->class_descriptor;
+    if (rcls.empty()) return false;
+    if (rcls[0] == 'L' && rcls.find('.') != std::string::npos) {
+        std::string norm = "L";
+        for (size_t i = 1; i < rcls.size(); ++i)
+            norm += (rcls[i] == '.') ? '/' : rcls[i];
+        rcls = norm;
+    }
+    // GL10 + EGLConfig receiver objects (singletons per run)
+    // GL10/EGLConfig receiver singletons (heap ids survive one run; the
+    // has_object guard re-allocates when the heap was rebuilt).
+    static uint32_t gl_obj = 0, cfg_obj = 0;
+    if (gl_obj == 0 || !heap_.has_object(gl_obj))
+        gl_obj = heap_.allocate(
+            "Ljavax/microedition/khronos/opengles/GL10;", 0, 0);
+    if (cfg_obj == 0 || !heap_.has_object(cfg_obj))
+        cfg_obj = heap_.allocate(
+            "Ljavax/microedition/khronos/egl/EGLConfig;", 0, 0);
+    DalvikValue self = DalvikValue::make_object(
+        view_object_id, node->class_desc);
+    auto invoke = [&](const char* method, std::vector<DalvikValue> args) {
+        DalvikValue ret = DalvikValue::make_void();
+        DalvikExecutionResult res;
+        return try_recursive_invoke(rcls, method, args, ret, res);
+    };
+    // once: onSurfaceCreated(GL10, EGLConfig)
+    int64_t created = 0;
+    auto cf = heap_.get_object_field(view_object_id, "glSurfaceCreated");
+    if (cf.has_value() && cf->type == DalvikType::INT32) created = cf->int_val;
+    if (!created) {
+        std::vector<DalvikValue> a{self,
+            DalvikValue::make_object(gl_obj, "Ljavax/microedition/khronos/opengles/GL10;"),
+            DalvikValue::make_object(cfg_obj, "Ljavax/microedition/khronos/egl/EGLConfig;")};
+        invoke("onSurfaceCreated", std::move(a));
+        heap_.set_object_field(view_object_id, "glSurfaceCreated",
+                               DalvikValue::make_int(1));
+        *first_frame_out = true;
+    }
+    // onSurfaceChanged(GL10, w, h) on size change
+    int64_t lw = -1, lh = -1;
+    auto wf = heap_.get_object_field(view_object_id, "glLastW");
+    auto hf = heap_.get_object_field(view_object_id, "glLastH");
+    if (wf.has_value() && wf->type == DalvikType::INT32) lw = wf->int_val;
+    if (hf.has_value() && hf->type == DalvikType::INT32) lh = hf->int_val;
+    if (lw != w || lh != h) {
+        std::vector<DalvikValue> a{self,
+            DalvikValue::make_object(gl_obj, "Ljavax/microedition/khronos/opengles/GL10;"),
+            DalvikValue::make_int(w), DalvikValue::make_int(h)};
+        invoke("onSurfaceChanged", std::move(a));
+        heap_.set_object_field(view_object_id, "glLastW", DalvikValue::make_int(w));
+        heap_.set_object_field(view_object_id, "glLastH", DalvikValue::make_int(h));
+    }
+    // every frame: onDrawFrame(GL10)
+    std::vector<DalvikValue> a{self,
+        DalvikValue::make_object(gl_obj, "Ljavax/microedition/khronos/opengles/GL10;")};
+    invoke("onDrawFrame", std::move(a));
+    return true;
+}
+
 bool DalvikExecutionEngine::chain_overrides_method(
     const std::string& class_desc, const char* method) {
     uint64_t f107_t0 = 0; phase_clock().enter(phase_clock().overrides, f107_t0);
@@ -11524,13 +11600,29 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                         for (uint32_t i = 0; i < count; ++i) {
                             // Read elem_width bytes from the payload
                             if (elem_width == 4) {
-                                // int or float (4 bytes = 2 code units)
+                                // int or float (4 bytes = 2 code units).
+                                // S83-GFX-BASE ROOT CAUSE FIX: the payload
+                                // bits are RAW — interpretation comes from
+                                // the ARRAY element type (AOSP FillArrayData
+                                // law: memcpy into the array, no reinterpre-
+                                // tation). float[] payloads ([F) were stored
+                                // as INT32 bit patterns → every float[] ta-
+                                // ble literal (game coordinates, vertices,
+                                // color matrices) read back garbage floats.
                                 if (data_start + i * 2 + 1 < bytecode_.size()) {
-                                    int32_t val = static_cast<int32_t>(bytecode_[data_start + i * 2]) |
+                                    uint32_t raw = static_cast<uint32_t>(bytecode_[data_start + i * 2]) |
                                         (static_cast<uint32_t>(bytecode_[data_start + i * 2 + 1]) << 16);
-                                    heap_.set_object_field(array_val.object_id,
-                                        "array[" + std::to_string(i) + "]",
-                                        DalvikValue::make_int(val));
+                                    if (array_val.class_desc == "[F") {
+                                        float fv;
+                                        std::memcpy(&fv, &raw, sizeof(fv));
+                                        heap_.set_object_field(array_val.object_id,
+                                            "array[" + std::to_string(i) + "]",
+                                            DalvikValue::make_float(fv));
+                                    } else {
+                                        heap_.set_object_field(array_val.object_id,
+                                            "array[" + std::to_string(i) + "]",
+                                            DalvikValue::make_int(static_cast<int32_t>(raw)));
+                                    }
                                 }
                             } else if (elem_width == 1) {
                                 // boolean or byte (1 byte, packed 2 per code unit)
@@ -17531,10 +17623,59 @@ static int framework_static_int(const std::string& class_desc,
     {"Landroid/view/MotionEvent;.ACTION_POINTER_DOWN", 5},
     {"Landroid/view/MotionEvent;.ACTION_POINTER_UP", 6},
     {"Landroid/view/MotionEvent;.ACTION_MASK", 255},
+    // S83-GFX-BASE §24/§25: GL constants (GL10 = ES1.0; GLES20 shares the
+    // buffer-bit values). l6 evidence: GL10.GL_COLOR_BUFFER_BIT sget
+    // resolved 0 → glClear(0) → GL_INVALID_VALUE → black frame.
+    {"Ljavax/microedition/khronos/opengles/GL10;.GL_COLOR_BUFFER_BIT", 0x4000},
+    {"Ljavax/microedition/khronos/opengles/GL10;.GL_DEPTH_BUFFER_BIT", 0x100},
+    {"Ljavax/microedition/khronos/opengles/GL10;.GL_STENCIL_BUFFER_BIT", 0x400},
+    {"Ljavax/microedition/khronos/opengles/GL10;.GL_ACCUM_BUFFER_BIT", 0x200},
+    {"Ljavax/microedition/khronos/opengles/GL10;.GL_TRUE", 1},
+    {"Ljavax/microedition/khronos/opengles/GL10;.GL_FALSE", 0},
+    {"Ljavax/microedition/khronos/opengles/GL10;.GL_BLEND", 0x0BE2},
+    {"Ljavax/microedition/khronos/opengles/GL10;.GL_TEXTURE_2D", 0x0DE1},
+    {"Ljavax/microedition/khronos/opengles/GL10;.GL_DEPTH_TEST", 0x0B71},
+    {"Ljavax/microedition/khronos/opengles/GL10;.GL_ALPHA_TEST", 0x0BC0},
+    {"Ljavax/microedition/khronos/opengles/GL10;.GL_SRC_ALPHA", 0x0302},
+    {"Ljavax/microedition/khronos/opengles/GL10;.GL_ONE_MINUS_SRC_ALPHA", 0x0303},
+    {"Ljavax/microedition/khronos/opengles/GL10;.GL_TRIANGLES", 0x0004},
+    {"Ljavax/microedition/khronos/opengles/GL10;.GL_TRIANGLE_STRIP", 0x0005},
+    {"Ljavax/microedition/khronos/opengles/GL10;.GL_TRIANGLE_FAN", 0x0006},
+    {"Ljavax/microedition/khronos/opengles/GL10;.GL_VERTEX_ARRAY", 0x8074},
+    {"Ljavax/microedition/khronos/opengles/GL10;.GL_COLOR_ARRAY", 0x8076},
+    {"Ljavax/microedition/khronos/opengles/GL10;.GL_TEXTURE_COORD_ARRAY", 0x8078},
+    {"Ljavax/microedition/khronos/opengles/GL10;.GL_MODELVIEW", 0x1700},
+    {"Ljavax/microedition/khronos/opengles/GL10;.GL_PROJECTION", 0x1701},
+    {"Ljavax/microedition/khronos/opengles/GL10;.GL_FLOAT", 0x1406},
+    {"Ljavax/microedition/khronos/opengles/GL10;.GL_UNSIGNED_SHORT", 0x1403},
+    {"Ljavax/microedition/khronos/opengles/GL10;.GL_UNSIGNED_BYTE", 0x1401},
+    {"Landroid/opengl/GLES20;.GL_COLOR_BUFFER_BIT", 0x4000},
+    {"Landroid/opengl/GLES20;.GL_DEPTH_BUFFER_BIT", 0x100},
+    {"Landroid/opengl/GLES20;.GL_STENCIL_BUFFER_BIT", 0x400},
+    {"Landroid/opengl/GLES20;.GL_TRUE", 1},
+    {"Landroid/opengl/GLES20;.GL_FALSE", 0},
+    {"Landroid/opengl/GLES20;.GL_FLOAT", 0x1406},
+    {"Landroid/opengl/GLES20;.GL_TRIANGLES", 0x0004},
+    {"Landroid/opengl/GLES20;.GL_TRIANGLE_STRIP", 0x0005},
+    {"Landroid/opengl/GLES20;.GL_TRIANGLE_FAN", 0x0006},
+    {"Landroid/opengl/GLES20;.GL_VERTEX_SHADER", 0x8B31},
+    {"Landroid/opengl/GLES20;.GL_FRAGMENT_SHADER", 0x8B30},
+    {"Landroid/opengl/GLES20;.GL_ARRAY_BUFFER", 0x8892},
+    {"Landroid/opengl/GLES20;.GL_STATIC_DRAW", 0x88E4},
+    {"Landroid/opengl/GLES20;.GL_TEXTURE_2D", 0x0DE1},
+    {"Landroid/opengl/GLES20;.GL_RGBA", 0x1908},
+    {"Landroid/opengl/GLES20;.GL_RGB", 0x1907},
+    {"Landroid/opengl/GLES20;.GL_UNSIGNED_BYTE", 0x1401},
+    {"Landroid/opengl/GLES20;.GL_SRC_ALPHA", 0x0302},
+    {"Landroid/opengl/GLES20;.GL_ONE_MINUS_SRC_ALPHA", 0x0303},
     };
     const std::string key = class_desc + "." + field_name;
     for (const auto& e : kStaticInts)
         if (key == e.k) return e.v;
+    if (std::getenv("MINIANDROID_S83_DEBUG") &&
+        key.find("GL") != std::string::npos)
+        std::cerr << "[S83-STATIC-MISS] " << class_desc << "." << field_name
+                  << std::endl;
     return -1;
 }
 
@@ -20749,7 +20890,13 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         args.size() >= 2) {
         size_t child_idx = (method == "setLayoutParams") ? 0 : 1;
         size_t lp_idx = child_idx + 1;
-        if (args[lp_idx].type == DalvikType::OBJECT_REF &&
+        // ASan-found pre-existing defect (S83): addView(View) without params
+        // has lp_idx == args.size() — the read below walked past the args
+        // vector (heap overflow) on every 2-arg addView. Guard the ENRICH
+        // block only; bridge_to_api continues to the normal dispatch path
+        // (ViewShadow addView supplies default layout params per AOSP).
+        if (args.size() > lp_idx &&
+            args[lp_idx].type == DalvikType::OBJECT_REF &&
             args[lp_idx].object_id != 0 &&
             args[child_idx].type == DalvikType::OBJECT_REF &&
             args[child_idx].object_id != 0 &&
@@ -24921,6 +25068,57 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     if (method == "getWindow" &&
         class_name.find("Activity") != std::string::npos) {
         result = get_or_create_singleton("Landroid/view/Window;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // S83-GFX-BASE §32 — F-NEW-159 root-cause fix (producers):
+    // Window.getInsetsController() must return a REAL controller object —
+    // androidx WindowInsetsControllerCompat wraps it and calls
+    // setSystemBarsAppearance on it; a null platform controller NPEs in app
+    // code (MAND-002/APP-001 exact trace: e4/t1.y pc=3 null receiver).
+    // Configuration.getLocales() must return a REAL LocaleList — apps call
+    // toLanguageTags on it (MAND-002 exact trace: j/u.b pc=4 null receiver).
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getInsetsController" &&
+        class_name.find("Window") != std::string::npos) {
+        result = get_or_create_singleton("Landroid/view/WindowInsetsController;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    // S83: Window.getCallback() — AOSP PhoneWindow law: the Activity
+    // attaches itself as the Window callback during attach(); WindowCompat/
+    // AppCompat wrappers call getCallback() and CHECK it ("Window callback
+    // may not be null" IAE in the TimeLimit chain when it resolved null).
+    if (method == "getCallback" && class_name.find("Window") != std::string::npos) {
+        if (shadow_registry_ != nullptr) {
+            auto* act = shadow_registry_->find_as<framework::ActivityShadow>();
+            if (act != nullptr && act->current_activity_id() != 0) {
+                DalvikValue cb;
+                cb.type = DalvikType::OBJECT_REF;
+                cb.object_id = act->current_activity_id();
+                result = cb;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+        return false;   // no live activity yet: fall through (honest null)
+    }
+    if (method == "getLocales" &&
+        class_name.find("Configuration") != std::string::npos) {
+        auto ll = get_or_create_singleton("Landroid/os/LocaleList;");
+        std::string tags;
+        auto cur = heap_.get_object_field(ll.object_id, "languageTags");
+        if (!cur.has_value() ||
+            cur->type != DalvikType::STRING_REF ||
+            cur->string_val.empty()) {
+            DalvikValue tag_v = DalvikValue::make_string("en-US", 0);
+            heap_.set_object_field(ll.object_id, "languageTags", tag_v);
+            heap_.set_object_field(ll.object_id, "size",
+                                   DalvikValue::make_int(1));
+        }
+        result = ll;
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }

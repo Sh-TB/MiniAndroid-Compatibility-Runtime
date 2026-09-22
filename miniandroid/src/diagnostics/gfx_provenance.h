@@ -88,6 +88,26 @@ public:
         });
     }
 
+    // ── S83-GFX-BASE §33: GL chain bits ─────────────────────────────────
+    // One record per GLSurfaceView frame: the GL provenance chain is
+    //   RENDERER_BOUND → (SURFACE_CREATED) → DRAW_SUBMITTED →
+    //   FRAMEBUFFER_UPDATED → SURFACE_PRESENTED
+    void record_gl_presented(uint32_t view_id, int w, int h, bool first) {
+        if (!enabled_) return;
+        events_.push_back({
+            {"origin", "glsurfaceview-frame"},
+            {"view_id", view_id},
+            {"RENDERER_BOUND", true},
+            {"SURFACE_CREATED", first},
+            {"DRAW_SUBMITTED", true},
+            {"FRAMEBUFFER_UPDATED", true},
+            {"SURFACE_WRITTEN", true},
+            {"BUFFER_PRESENTED", true},
+            {"DRAW_CALLED", true},
+            {"width", w}, {"height", h},
+        });
+    }
+
     // Per-frame census of the composed framebuffer (surface evidence).
     void record_frame_census(int frame_index, size_t total_px, size_t nonwhite,
                              size_t unique_colors,
@@ -105,20 +125,78 @@ public:
         frames_.push_back(std::move(j));
     }
 
+    // ── S83-GFX-BASE §34: FIRST_DIVERGENCE auto-derivation ───────────────
+    // Contract C7 law: FIRST_DIVERGENCE = the first chain bit that is 0
+    // while all earlier applicable bits are 1. Derived here at frame
+    // finalize from the recorded bits themselves — never hand-claimed.
+    static const std::vector<std::string>& chain_order() {
+        static const std::vector<std::string> kOrder = {
+            "ASSET_FOUND", "RESOURCE_RESOLVED", "RESOURCE_SELECTED", "DECODED",
+            "BITMAP_CREATED", "DRAWABLE_CREATED", "VIEW_RECEIVED", "VIEW_BOUND",
+            "MEASURED", "LAYOUT", "RENDERER_BOUND", "SURFACE_CREATED",
+            "DRAW_SUBMITTED", "FRAMEBUFFER_UPDATED", "DRAW_CALLED",
+            "CANVAS_MUTATED", "SURFACE_WRITTEN", "BUFFER_PRESENTED",
+            "COMPOSITED", "SCREENSHOT_CAPTURED",
+        };
+        return kOrder;
+    }
+
+    // Walks one event's applicable chain bits in canonical order. Returns
+    // nullptr when the whole applicable chain is 1 (no divergence). The
+    // first applicable bit that is 0 names the divergence; if no earlier
+    // bit was 1 the chain never started (still a divergence, noted).
+    static nlohmann::json derive_event_divergence(const nlohmann::json& ev) {
+        std::vector<std::string> passed;
+        for (const auto& bit : chain_order()) {
+            auto it = ev.find(bit);
+            if (it == ev.end() || !it->is_boolean()) continue;  // not applicable
+            if (it->get<bool>()) {
+                passed.push_back(bit);
+                continue;
+            }
+            nlohmann::json d = {{"bit", bit}, {"earlier_passed", passed}};
+            if (passed.empty()) d["note"] = "chain never started";
+            return d;
+        }
+        return nullptr;
+    }
+
     void finalize(const std::string& screenshot_path, bool captured,
                   size_t screenshot_nonwhite, size_t screenshot_unique) {
         if (!enabled_) return;
+        // §34: derive per-event + global first divergence before the write.
+        nlohmann::json global_div = nullptr;
+        std::string global_origin;
+        for (auto& ev : events_) {
+            nlohmann::json d = derive_event_divergence(ev);
+            if (!d.is_null()) {
+                ev["FIRST_DIVERGENCE"] = d;
+                if (global_div.is_null()) {
+                    global_div = d;
+                    global_origin = ev.value("origin", "");
+                }
+            }
+        }
+        nlohmann::json shot = {
+            {"path", screenshot_path},
+            {"SCREENSHOT_CAPTURED", captured},
+            {"nonwhite_px", screenshot_nonwhite},
+            {"unique_colors", screenshot_unique},
+        };
         nlohmann::json out = {
             {"instrument", "MINIANDROID_GFX_PROVENANCE"},
+            {"chain_law", "C7: FIRST_DIVERGENCE = first applicable bit=0 "
+                          "while all earlier applicable bits=1"},
             {"events", events_},
             {"frame_census", frames_},
-            {"screenshot", {
-                {"path", screenshot_path},
-                {"SCREENSHOT_CAPTURED", captured},
-                {"nonwhite_px", screenshot_nonwhite},
-                {"unique_colors", screenshot_unique},
-            }},
+            {"screenshot", shot},
         };
+        if (!global_div.is_null()) {
+            out["first_divergence"] = global_div;
+            out["first_divergence"]["origin"] = global_origin;
+        } else if (!events_.empty()) {
+            out["first_divergence"] = nullptr;   // every recorded chain complete
+        }
         std::ofstream f(out_path_, std::ios::binary);
         if (f) f << out.dump(1);
         enabled_ = false;  // one-shot: avoid double-write on re-capture

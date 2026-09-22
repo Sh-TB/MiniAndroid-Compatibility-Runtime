@@ -6,7 +6,7 @@
  "TITLE_ID_SCHEME": {
   "GAME": "GAME-001..GAME-100 (frozen GAMES_100 order)",
   "APP": "APP-001..APP-100 (frozen APPS_100 order)",
-  "MAND": "MAND-001 P9, MAND-002 TimeLimit (\u00a749 gates A/B)"
+  "MAND": "MAND-001 P9, MAND-002 TimeLimit (§49 gates A/B)"
  },
  "COUNTS": {
   "GAME": 100,
@@ -458,7 +458,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -467,7 +467,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "RENDERED_RC1",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN",
    "COMPARISON": {
     "STATUS": "VISUAL_FAIL",
@@ -650,7 +650,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -660,7 +660,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "LOADED_RC1",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN",
    "COMPARISON": {
     "STATUS": "VISUAL_FAIL",
@@ -843,7 +843,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -852,7 +852,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "RENDERED_RC1",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN",
    "COMPARISON": {
     "STATUS": "PARTIAL",
@@ -1224,7 +1224,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -1233,7 +1233,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "RENDERED_RC1",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN"
   },
   {
@@ -1304,7 +1304,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -1315,7 +1315,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "RENDERED_RC1",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN"
   },
   {
@@ -1386,7 +1386,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -1396,7 +1396,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "RENDERED_RC1",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN",
    "COMPARISON": {
     "STATUS": "VISUAL_FAIL",
@@ -1577,7 +1577,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -1586,7 +1586,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "RENDERED",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN"
   },
   {
@@ -1657,7 +1657,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -1666,7 +1666,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "RENDERED_RC1",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN",
    "COMPARISON": {
     "STATUS": "VISUAL_FAIL",
@@ -1919,7 +1919,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -1928,7 +1928,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "RENDERED_RC1",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN",
    "COMPARISON": {
     "STATUS": "VISUAL_FAIL",
@@ -2147,7 +2147,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -2156,7 +2156,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "RENDERED_RC1",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN",
    "DIALOG_RETEST": {
     "PIXEL_DIFF_TAP": 0,
@@ -2165,7 +2165,7 @@
      "Lde/tobiasbielefeld/solitaire/dialogs/d;",
      "Lde/tobiasbielefeld/solitaire/dialogs/h;"
     ],
-    "BUILDER": "Landroid/app/AlertDialog$Builder; (framework \u2014 VF-NEW-001 subsystem)",
+    "BUILDER": "Landroid/app/AlertDialog$Builder; (framework — VF-NEW-001 subsystem)",
     "APK_SHA256": "fdfaf7cad18e4416989b337b5c60b71158c54652384e564fe3e6386421504220",
     "SESSION": "S82-CACHED-dialog_retest_solitaire"
    }
@@ -2236,7 +2236,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -2245,7 +2245,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "RENDERED_PARTIAL",
-   "OBSERVED": "TWO_COLOR blank face (uniq=1, \u00a716 failure vs real reference UI). Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=1, §16 failure vs real reference UI). Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN",
    "COMPARISON": {
     "STATUS": "VISUAL_FAIL",
@@ -2394,7 +2394,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -2403,7 +2403,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "RENDERED",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN",
    "COMPARISON": {
     "STATUS": "VISUAL_FAIL",
@@ -2586,7 +2586,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -2595,7 +2595,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "RENDERED_RC1",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN",
    "COMPARISON": {
     "STATUS": "VISUAL_FAIL",
@@ -2776,7 +2776,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -2785,7 +2785,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "RENDERED",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN",
    "COMPARISON": {
     "STATUS": "VISUAL_FAIL",
@@ -2966,7 +2966,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)"
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)"
    ],
    "FAILURE_LABELS": [
     "FAIL-NPE",
@@ -2974,7 +2974,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "RENDERED_RC1",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN",
    "COMPARISON": {
     "STATUS": "VISUAL_FAIL",
@@ -3157,7 +3157,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -3166,7 +3166,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "RENDERED_RC1",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN",
    "COMPARISON": {
     "STATUS": "VISUAL_FAIL",
@@ -3363,7 +3363,7 @@
    "SCREENSHOT_SHA256": "",
    "APK_URL": "https://f-droid.org/repo/com.dash1971.maia_chess_75.apk",
    "TESTED_AT": "2026-09-22T05:41:11Z",
-   "OBSERVED": "BLOCKED: DOWNLOAD_FAIL \u2014 APK unobtainable this wave (record kept, never dropped \u00a756).",
+   "OBSERVED": "BLOCKED: DOWNLOAD_FAIL — APK unobtainable this wave (record kept, never dropped §56).",
    "RESOLUTION": "OPEN"
   },
   {
@@ -3434,7 +3434,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -3443,7 +3443,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "RENDERED_RC1",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN",
    "COMPARISON": {
     "STATUS": "VISUAL_FAIL",
@@ -3661,7 +3661,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -3670,7 +3670,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "RENDERED_RC1",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN",
    "COMPARISON": {
     "STATUS": "VISUAL_FAIL",
@@ -4133,7 +4133,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -4142,7 +4142,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN",
    "COMPARISON": {
     "STATUS": "VISUAL_FAIL",
@@ -4710,7 +4710,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -4719,7 +4719,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN",
    "COMPARISON": {
     "STATUS": "VISUAL_FAIL",
@@ -4902,7 +4902,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -4911,7 +4911,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN",
    "COMPARISON": {
     "STATUS": "VISUAL_FAIL",
@@ -5094,7 +5094,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -5105,7 +5105,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN",
    "COMPARISON": {
     "STATUS": "VISUAL_FAIL",
@@ -5256,7 +5256,7 @@
    "SCREENSHOT_SHA256": "",
    "APK_URL": "https://f-droid.org/repo/com.sidhant.arrowescape_103.apk",
    "TESTED_AT": "2026-09-22T05:41:11Z",
-   "OBSERVED": "BLOCKED: DOWNLOAD_FAIL \u2014 APK unobtainable this wave (record kept, never dropped \u00a756).",
+   "OBSERVED": "BLOCKED: DOWNLOAD_FAIL — APK unobtainable this wave (record kept, never dropped §56).",
    "RESOLUTION": "OPEN"
   },
   {
@@ -5327,7 +5327,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -5336,7 +5336,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN",
    "COMPARISON": {
     "STATUS": "VISUAL_FAIL",
@@ -5487,7 +5487,7 @@
    "SCREENSHOT_SHA256": "",
    "APK_URL": "https://f-droid.org/repo/com.yepgoryo.EggReturnsHome_1.apk",
    "TESTED_AT": "2026-09-22T05:41:11Z",
-   "OBSERVED": "BLOCKED: DOWNLOAD_FAIL \u2014 APK unobtainable this wave (record kept, never dropped \u00a756).",
+   "OBSERVED": "BLOCKED: DOWNLOAD_FAIL — APK unobtainable this wave (record kept, never dropped §56).",
    "RESOLUTION": "OPEN"
   },
   {
@@ -7398,7 +7398,7 @@
     "SOURCE": "F-Droid official package page",
     "PATH": ""
    },
-   "LAST_TESTED_COMMIT": "981e656ea45731cefeadf934262920e2b149ed18",
+   "LAST_TESTED_COMMIT": "6c7d2a22",
    "SESSION_ID": "S82-R-APP-001-RUN1,RUN2",
    "SCREENSHOT_SHA256": "6533d0643120db91cc00c93a354b1d2572d845da90dce4fb374471532a88bc9b",
    "APK_URL": "https://f-droid.org/repo/com.hfut.schedule_2724.apk",
@@ -7431,7 +7431,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -7442,8 +7442,9 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
-   "RESOLUTION": "OPEN"
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
+   "RESOLUTION": "OPEN",
+   "S83_OBSERVED": "F-NEW-159 signature eliminated at S83 binary (LocaleInsetsShadow); app advances past old blocker to next root: kotlin now(...) must not be null in MyApplication$onCreate$1.invokeSuspend. Still STATE-NONBLANK onCreate-boundary; no status inflation."
   },
   {
    "TITLE_ID": "APP-002",
@@ -7513,7 +7514,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -7524,7 +7525,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN"
   },
   {
@@ -7595,7 +7596,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -7606,7 +7607,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN",
    "COMPARISON": {
     "STATUS": "VISUAL_FAIL",
@@ -7789,7 +7790,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -7798,7 +7799,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN",
    "COMPARISON": {
     "STATUS": "VISUAL_FAIL",
@@ -7981,7 +7982,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -7992,7 +7993,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN",
    "COMPARISON": {
     "STATUS": "VISUAL_FAIL",
@@ -8175,7 +8176,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -8186,7 +8187,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN",
    "COMPARISON": {
     "STATUS": "VISUAL_FAIL",
@@ -8367,7 +8368,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -8376,7 +8377,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN",
    "COMPARISON": {
     "STATUS": "VISUAL_FAIL",
@@ -8559,7 +8560,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -8568,7 +8569,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN",
    "COMPARISON": {
     "STATUS": "VISUAL_FAIL",
@@ -8891,7 +8892,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -8902,7 +8903,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN",
    "COMPARISON": {
     "STATUS": "VISUAL_FAIL",
@@ -9085,7 +9086,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -9096,7 +9097,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN",
    "COMPARISON": {
     "STATUS": "VISUAL_FAIL",
@@ -9769,7 +9770,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -9780,7 +9781,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN",
    "COMPARISON": {
     "STATUS": "VISUAL_FAIL",
@@ -10523,7 +10524,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -10535,7 +10536,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN",
    "COMPARISON": {
     "STATUS": "VISUAL_FAIL",
@@ -11838,7 +11839,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -11849,7 +11850,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN",
    "COMPARISON": {
     "STATUS": "VISUAL_FAIL",
@@ -12347,7 +12348,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -12358,7 +12359,7 @@
    ],
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, \u00a716 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, §16 failure vs real reference UI). Failure family: F-NEW-156. Tap dispatched; no screen response proven (px_diff=0).",
    "RESOLUTION": "OPEN",
    "COMPARISON": {
     "STATUS": "PARTIAL",
@@ -12754,7 +12755,7 @@
    "SCREENSHOT_SHA256": "",
    "APK_URL": "https://f-droid.org/repo/io.github.x0b.rcx_220.apk",
    "TESTED_AT": "2026-09-22T05:41:11Z",
-   "OBSERVED": "BLOCKED: DOWNLOAD_FAIL \u2014 APK unobtainable this wave (record kept, never dropped \u00a756).",
+   "OBSERVED": "BLOCKED: DOWNLOAD_FAIL — APK unobtainable this wave (record kept, never dropped §56).",
    "RESOLUTION": "OPEN"
   },
   {
@@ -12901,7 +12902,7 @@
    "LAST_TESTED_COMMIT": "981e656ea45731cefeadf934262920e2b149ed18",
    "SESSION_ID": "S82-R-MAND-001-RUN1,RUN2",
    "SCREENSHOT_SHA256": "6533d0643120db91cc00c93a354b1d2572d845da90dce4fb374471532a88bc9b",
-   "NOTE": "P9 \u2014 mandatory \u00a77",
+   "NOTE": "P9 — mandatory §7",
    "REFERENCE_SCREENSHOT_URL": "https://f-droid.org/repo/se.tube42.p9.android/en/phoneScreenshots/p1.png",
    "ISSUE_TRACKER": "https://github.com/tube42/9p/issues",
    "BUILD_METADATA_URL": "https://gitlab.com/fdroid/fdroiddata/tree/master/metadata/se.tube42.p9.android.yml",
@@ -12936,7 +12937,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -12946,7 +12947,7 @@
    "FIRST_FAILING_METHOD": "com.badlogic.gdx.backends.android.AndroidGraphics.createGLSurfaceView NPE -> MainActivity.onCreate [APP-BOUNDARY]",
    "PRODUCER": "libGDX AndroidGraphics (EGL/GLSurfaceView chain)",
    "CONSUMER": "se.tube42.p9.android.MainActivity.onCreate",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2, text_px=0). onCreate NPE unwind: libGDX AndroidApplication.initialize -> AndroidGraphics.createGLSurfaceView NullPointerException escapes app boundary. 8 frames painted but no game UI inflated (\u00a716 blank-face law).",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2, text_px=0). onCreate NPE unwind: libGDX AndroidApplication.initialize -> AndroidGraphics.createGLSurfaceView NullPointerException escapes app boundary. 8 frames painted but no game UI inflated (§16 blank-face law).",
    "TESTED_AT": "2026-09-22T05:41:11Z",
    "PREV_STATUS": "",
    "RESOLUTION": "OPEN",
@@ -13098,10 +13099,10 @@
     "SOURCE": "F-Droid official package page",
     "PATH": "/home/z/my-project/run/s82/references/io.timelimit.android.aosp.direct__17366373453547418553.png"
    },
-   "LAST_TESTED_COMMIT": "981e656ea45731cefeadf934262920e2b149ed18",
+   "LAST_TESTED_COMMIT": "6c7d2a22",
    "SESSION_ID": "S82-R-MAND-002-RUN1,RUN2",
    "SCREENSHOT_SHA256": "6533d0643120db91cc00c93a354b1d2572d845da90dce4fb374471532a88bc9b",
-   "NOTE": "TimeLimit.io \u2014 mandatory \u00a77",
+   "NOTE": "TimeLimit.io — mandatory §7",
    "REFERENCE_SCREENSHOT_URL": "https://f-droid.org/repo/io.timelimit.android.aosp.direct/en-US/phoneScreenshots/17366373453547418553.png",
    "ISSUE_TRACKER": "https://codeberg.org/timelimit/timelimit-android/issues",
    "BUILD_METADATA_URL": "https://gitlab.com/fdroid/fdroiddata/tree/master/metadata/io.timelimit.android.aosp.direct.yml",
@@ -13136,7 +13137,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)",
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)",
     "IMAGE_DECODED_VS_RENDERED_GAP"
    ],
    "FAILURE_LABELS": [
@@ -13146,7 +13147,7 @@
     "FAIL-RESOURCE"
    ],
    "FIRST_FAILING_METHOD": "io.timelimit.android.ui.MainActivity.onCreate (NPE escapes at invoke_pc 0x0/0x2c; Lj/b0;.l chain)",
-   "OBSERVED": "TWO_COLOR blank face (uniq=2). Multiple NPE unwinds escape at io.timelimit.android.ui.MainActivity.onCreate. Multi-subsystem app (UI/permissions/services/overlays) \u2014 NOT passed on launch; honest onCreate-boundary failure per S82 \u00a749 Gate B.",
+   "OBSERVED": "TWO_COLOR blank face (uniq=2). Multiple NPE unwinds escape at io.timelimit.android.ui.MainActivity.onCreate. Multi-subsystem app (UI/permissions/services/overlays) — NOT passed on launch; honest onCreate-boundary failure per S82 §49 Gate B.",
    "PRODUCER": "app onCreate chain (Lj/b0;.l = obfuscated androidx/kotlinx boundary)",
    "CONSUMER": "io.timelimit.android.ui.MainActivity.onCreate",
    "TESTED_AT": "2026-09-22T05:41:11Z",
@@ -13263,7 +13264,8 @@
     },
     "DOMINANT_COLOR_OVERLAP": 0.67,
     "UNIQUE_COLOR_GAP": 0.99
-   }
+   },
+   "S83_OBSERVED": "F-NEW-159 signature eliminated at S83 binary (LocaleInsetsShadow); app advances past old blocker to next root: TypedArray.hasValue null receiver (Lj/b0;.m) + ServiceLoader null (Lqf/n;.<clinit>). Still STATE-NONBLANK onCreate-boundary; no status inflation."
   }
  ],
  "INVENTORY_RUNS": {
@@ -13340,7 +13342,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)"
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)"
    ],
    "F_IDS": [
     "F-NEW-156"
@@ -13396,7 +13398,7 @@
     "FLAT_BACKGROUND",
     "LOW_COLOR_VARIETY",
     "MONOCHROME_LIKE",
-    "TWO_COLOR_SCREEN (\u00a716: visual failure vs any real reference UI)"
+    "TWO_COLOR_SCREEN (§16: visual failure vs any real reference UI)"
    ],
    "F_IDS": [
     "F-NEW-156"
