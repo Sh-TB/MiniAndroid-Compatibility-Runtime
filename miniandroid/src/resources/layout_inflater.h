@@ -158,6 +158,13 @@ public:
     void apply_shape_background(framework::ViewShadow::ViewNode& node,
                                 const std::string& xml_path, InflateStats& stats);
 
+    // S83-GFX-BASE §14: VectorDrawable <vector> inflation — parses the XML
+    // (viewport, groups with transform composition, path pathData flattened
+    // through the composed matrix) into node.bg_vector. Called by
+    // apply_shape_background when the drawable root is <vector>.
+    void apply_vector_background(framework::ViewShadow::ViewNode& node,
+                                 const std::string& xml_path, InflateStats& stats);
+
 private:
     // G04 §8: drawable intrinsic-size probe cache (path → natural dims;
     // {-1,-1} = probe failed — never retried, honest 48dp fallback applies).
@@ -213,6 +220,8 @@ private:
         uint16_t src_drawable_density = 0;
         std::string onClick;      // handler method name
         int  visibility = 0;      // 0 visible, 4 invisible, 8 gone
+        // S83-GFX-BASE §19: android:scaleType ordinal (AOSP ScaleType order)
+        int  scale_type = 3;      // FIT_CENTER = AOSP default
         bool clickable = false;
         int  num_lines = -1;
         bool single_line = false;

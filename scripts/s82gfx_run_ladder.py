@@ -210,6 +210,130 @@ def main():
         results["l5_canvas"] = {"fixture": "l5_canvas", "PASS": False,
                                 "reason": "no frames", "rc": rc}
 
+    # ---------------- L5b S83 canvas foundation laws (S83-GFX-BASE §8-§10)
+    # saveLayerAlpha isolation / clipPath / drawLines+drawPoints / Matrix
+    # concat rotate / drawPosText — pixel laws pinned by l5b_canvas2.
+    rc, log = run_fixture("l5b_canvas2")
+    frames = sorted(glob.glob(f"{OUT}/l5b_canvas2/frames/frame_*.png"))
+    if frames:
+        im, px, size = png_pixels(frames[-1])
+        counts, _ = color_counts(frames[-1])
+
+        def near(c, rgb, tol=12):
+            return all(abs(c[i] - rgb[i]) <= tol for i in range(3))
+
+        pink = sum(1 for y in range(60, 220, 3) for x in range(60, 320, 3)
+                   if near(px[x, y], (252, 123, 121), 16))
+        red_opaque = sum(1 for y in range(0, size[1], 4)
+                         for x in range(0, size[0], 4)
+                         if near(px[x, y], (255, 0, 0), 6))
+        green = has_color(counts, (0, 170, 60), tol=10)
+        purple = has_color(counts, (150, 60, 200), tol=10)
+        blue = has_color(counts, (0, 120, 220), tol=10)
+        orange = has_color(counts, (230, 140, 0), tol=10)
+        gray = has_color(counts, (90, 90, 90), tol=8)
+        rot_left = sum(1 for y in range(0, size[1], 3)
+                       for x in range(0, 468, 3)
+                       if near(px[x, y], (90, 90, 90), 8))
+        outside_tri = near(px[70, 290], (250, 248, 243), 8)
+        inside_tri = near(px[220, 400], (150, 60, 200), 12)
+        dark_text = sum(1 for y in range(600, 690)
+                        for x in range(60, 260) if sum(px[x, y]) < 260)
+        checks = {
+            "layer_alpha_blend_128": pink >= 300,
+            "layer_isolation_no_opaque_red": red_opaque == 0,
+            "restore_after_layer_green": bool(green),
+            "clippath_inside_purple": bool(purple) and inside_tri,
+            "clippath_outside_bg": outside_tri,
+            "drawlines_blue": bool(blue),
+            "drawpoints_orange": bool(orange),
+            "matrix_rotate_gray": bool(gray) and rot_left > 0,
+            "drawpostext_abc": dark_text >= 30,
+        }
+        checks["PASS"] = all(checks.values())
+        results["l5b_canvas2"] = verdict(
+            "l5b_canvas2", checks["PASS"], {"checks": checks, "rc": rc},
+            f"{OUT}/l5b_canvas2/provenance.json")
+    else:
+        results["l5b_canvas2"] = {"fixture": "l5b_canvas2", "PASS": False,
+                                  "reason": "no frames", "rc": rc}
+
+    # ---------------- L4c VectorDrawable (S83-GFX-BASE §14)
+    # ic_vector.xml: viewport 24x24 → full-screen bounds.
+    #   path1 fill #FF00880F (green rect),
+    #   path2 fill #FFD50000 fillType=evenOdd (rect ring with a hole),
+    #   path3 white circle via SVG arc commands (endpoint param).
+    # Even-odd law: the inner rect hole (9..15) must show GREEN (path1
+    # underneath), not red.
+    rc, log = run_fixture("l4c_vector")
+    frames = sorted(glob.glob(f"{OUT}/l4c_vector/frames/frame_*.png"))
+    if frames:
+        im, px, size = png_pixels(frames[-1])
+        w, h = size
+        sx, sy = w / 24.0, h / 24.0
+        green = px[int(3 * sx), int(3 * sy)][:3]      # path1 body
+        hole = px[int(12 * sx), int(12 * sy)][:3]     # even-odd hole → green
+        white = px[int(8 * sx), int(22 * sy)][:3]     # arc circle body
+        red_seen = False
+        for y in range(0, h, 5):
+            p = px[int(12 * sx), y][:3]
+            if abs(p[0] - 213) <= 8 and p[1] <= 8 and p[2] <= 8:
+                red_seen = True
+                break
+        checks = {
+            "vector_green_rect": has_color({green: 1}, (0, 136, 15), tol=8, min_hits=1),
+            "vector_evenodd_hole_green": has_color({hole: 1}, (0, 136, 15), tol=8, min_hits=1),
+            "vector_red_ring": red_seen,
+            "vector_arc_circle_white": has_color({white: 1}, (255, 255, 255), tol=8, min_hits=1),
+        }
+        checks["PASS"] = all(checks.values())
+        results["l4c_vector"] = verdict(
+            "l4c_vector", checks["PASS"], {"checks": checks, "rc": rc},
+            f"{OUT}/l4c_vector/provenance.json")
+    else:
+        results["l4c_vector"] = {"fixture": "l4c_vector", "PASS": False,
+                                 "reason": "no frames", "rc": rc}
+
+    # ---------------- L4d NinePatchDrawable (S83-GFX-BASE §14)
+    # btn.9.png 24x12: teal content, red stripe src x=4..5, blue src x=18..19,
+    # top markers x=10..13, left markers y=5..7. AOSP law: static regions draw
+    # 1:1 anchored to their edge; only the marker patch zone stretches.
+    # → red stays in the LEFT 1:1 zone (< 100 px), blue in the RIGHT zone
+    #   (> 1000 px), teal fills the stretched middle.
+    rc, log = run_fixture("l4d_ninepatch")
+    frames = sorted(glob.glob(f"{OUT}/l4d_ninepatch/frames/frame_*.png"))
+    if frames:
+        counts, size = color_counts(frames[-1])
+        teal = has_color(counts, (0, 160, 160), tol=8, min_hits=20)
+        red = has_color(counts, (255, 0, 0), tol=8, min_hits=3)
+        blue = has_color(counts, (0, 0, 255), tol=8, min_hits=3)
+        red_cols, blue_cols = [], []
+        if red and blue:
+            im, px, sz = png_pixels(frames[-1])
+            for x in range(sz[0]):
+                for y in range(0, sz[1], 9):
+                    p = px[x, y]
+                    if p[:3] == (255, 0, 0):
+                        red_cols.append(x)
+                    elif p[:3] == (0, 0, 255):
+                        blue_cols.append(x)
+        red_left = bool(red_cols) and max(red_cols) < 100
+        blue_right = bool(blue_cols) and min(blue_cols) > 1000
+        checks = {
+            "ninepatch_teal_content": teal,
+            "ninepatch_red_present": red,
+            "ninepatch_blue_present": blue,
+            "ninepatch_red_left_1to1": red_left,
+            "ninepatch_blue_right_1to1": blue_right,
+        }
+        checks["PASS"] = all(checks.values())
+        results["l4d_ninepatch"] = verdict(
+            "l4d_ninepatch", checks["PASS"], {"checks": checks, "rc": rc},
+            f"{OUT}/l4d_ninepatch/provenance.json")
+    else:
+        results["l4d_ninepatch"] = {"fixture": "l4d_ninepatch", "PASS": False,
+                                    "reason": "no frames", "rc": rc}
+
     # ---------------- L6 GL surface (F-NEW-157 family)
     rc, log = run_fixture("l6_glsurface")
     frames = sorted(glob.glob(f"{OUT}/l6_glsurface/frames/frame_*.png"))

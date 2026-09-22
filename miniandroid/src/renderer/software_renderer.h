@@ -143,9 +143,32 @@ public:
         if (x < 0 || x >= width_ || y < 0 || y >= height_) return;
         
         size_t idx = y * width_ + x;
-        pixels_[idx] = blend(color, pixels_[idx]);
+        if (alpha_preserve_) {
+            // S83-GFX-BASE (Contract C6): offscreen LAYER targets composite
+            // SRC-OVER onto a transparent buffer — the pixel's own alpha is
+            // accumulated (out_a = sa + da·(1-sa), premultiplied math,
+            // straight-RGBA storage). Opaque targets keep the legacy law.
+            RGBA& dst = pixels_[idx];
+            const float sa = color.a / 255.f, da = dst.a / 255.f;
+            const float oa = sa + da * (1.f - sa);
+            if (oa <= 0.f) {
+                dst = Colors::TRANSPARENT;
+            } else {
+                const float k = da * (1.f - sa);
+                dst.r = (uint8_t)std::min(255.f, std::round((color.r * sa + dst.r * k) / oa));
+                dst.g = (uint8_t)std::min(255.f, std::round((color.g * sa + dst.g * k) / oa));
+                dst.b = (uint8_t)std::min(255.f, std::round((color.b * sa + dst.b * k) / oa));
+                dst.a = (uint8_t)std::min(255.f, std::round(oa * 255.f));
+            }
+        } else {
+            pixels_[idx] = blend(color, pixels_[idx]);
+        }
         draw_count_++;
     }
+    
+    // S83-GFX-BASE: layer mode — set_pixel accumulates alpha (see above).
+    void set_alpha_preserve(bool on) { alpha_preserve_ = on; }
+    bool alpha_preserve() const { return alpha_preserve_; }
     
     RGBA get_pixel(int x, int y) const {
         if (x < 0 || x >= width_ || y < 0 || y >= height_) {
@@ -177,6 +200,7 @@ private:
     int clear_count_;
     int draw_count_;
     std::vector<json> operations_;
+    bool alpha_preserve_ = false;
 };
 
 // ============================================================================
@@ -304,6 +328,18 @@ public:
     void clear_clip();
     bool has_clip() const { return clip_active_; }
 
+    // ── S83-GFX-BASE (Contract C1 clipPath law) ─────────────────────
+    // A path clip restricts drawing to the rasterized scanline spans of
+    // the path (device space). Spans are per-row [x_start, x_end) pairs,
+    // indexed relative to row y0. Every primitive consults them through
+    // clip_allows(); clear_clip() drops both rect and path clip.
+    void set_path_clip(int y0, int y1,
+                       std::vector<std::vector<std::pair<float, float>>> spans);
+    bool has_path_clip() const { return !path_spans_.empty(); }
+    // Public device-space clip query (rect ∧ path) — used by the per-pixel
+    // drawBitmap replay path which bypasses draw_rect.
+    bool device_clip_allows(int x, int y) const { return clip_allows(x, y); }
+
     // S68: framebuffer accessor — the Canvas text path draws shaped glyphs
     // directly onto the framebuffer (TextShaper.draw(FrameBuffer&,...)).
     FrameBuffer& fb() { return *framebuffer_; }
@@ -320,12 +356,33 @@ private:
     // S68 clip state (device space, inclusive-exclusive like draw spans):
     bool clip_active_ = false;
     float clip_l_ = 0, clip_t_ = 0, clip_r_ = 0, clip_b_ = 0;
-    // Returns false when (x, y) is clipped out.
+    // S83 path clip (device-space scanline spans):
+    int path_y0_ = 0, path_y1_ = 0;
+    std::vector<std::vector<std::pair<float, float>>> path_spans_;
+    // Returns false when (x, y) is clipped out (rect ∧ path).
     bool clip_allows(int x, int y) const {
-        if (!clip_active_) return true;
-        return x >= (int)clip_l_ && x < (int)clip_r_ &&
-               y >= (int)clip_t_ && y < (int)clip_b_;
+        if (clip_active_) {
+            if (!(x >= (int)clip_l_ && x < (int)clip_r_ &&
+                  y >= (int)clip_t_ && y < (int)clip_b_)) return false;
+        }
+        if (!path_spans_.empty()) {
+            if (y < path_y0_ || y >= path_y1_) return false;
+            const auto& row = path_spans_[(size_t)(y - path_y0_)];
+            for (const auto& sp : row)
+                if (x >= (int)sp.first && x < (int)sp.second) return true;
+            return false;
+        }
+        return true;
     }
+
+public:
+    // S83-GFX-BASE: retarget the canvas at a different framebuffer (layer
+    // replay). All primitives funnel through framebuffer_; switching the
+    // pointer redirects them without touching clip/command state.
+    void set_target(FrameBuffer* fb) { framebuffer_ = fb; }
+    FrameBuffer* target() const { return framebuffer_; }
+
+private:
 };
 
 // ============================================================================
@@ -461,6 +518,21 @@ struct FitRect {
 };
 FitRect fit_center_rect(int src_w, int src_h, int box_x, int box_y,
                         int box_w, int box_h);
+
+// ── S83-GFX-BASE (§19 ImageView scale-type law, one function) ───────────
+// AOSP ImageView.onDraw / configureBounds (ImageView.java): the scale type
+// picks the matrix that maps the source drawable into the view box.
+//   MATRIX 0        identity matrix → natural size at box origin
+//   FIT_XY 1        stretch independently to fill the box
+//   FIT_START 2     fit-scale, aligned to box top-left
+//   FIT_CENTER 3    fit-scale, centered (the historical fit_center_rect)
+//   FIT_END 4       fit-scale, aligned to box bottom-right
+//   CENTER 5        natural size, centered
+//   CENTER_CROP 6   crop-scale = max(boxW/srcW, boxH/srcH), centered
+//                   (destination overflows the box; clipped at draw)
+//   CENTER_INSIDE 7 scale = min(1, fit-scale), centered (never upscales)
+FitRect scale_image_rect(int scale_type, int src_w, int src_h,
+                         int box_x, int box_y, int box_w, int box_h);
 
 // ── S68 FOUNDATION (A3 image pipeline law, §13) ──────────────────────────
 // ONE format-detecting decode entry point for EVERY image consumer

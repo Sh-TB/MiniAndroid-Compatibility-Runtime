@@ -1007,6 +1007,10 @@ public:
         bool clickable = false;
         bool enabled = true;
         int visibility = 0;  // VISIBLE=0, INVISIBLE=4, GONE=8
+        // S83-GFX-BASE §19: ImageView scale type (AOSP ScaleType ordinals:
+        // matrix 0, fitXY 1, fitStart 2, fitCenter 3, fitEnd 4, center 5,
+        // centerCrop 6, centerInside 7). FIT_CENTER = AOSP default.
+        int scale_type = 3;
         // ── S55 F-082: ViewAnimator displayed-child model ────────────────
         // AOSP ViewAnimator.java mWhichChild: which child of a
         // ViewAnimator/ViewSwitcher/ViewFlipper is the displayed one.
@@ -1195,6 +1199,27 @@ public:
         bool bg_shape_has_stroke = false;
         float bg_shape_stroke_width = 0.0f;      // px
         uint32_t bg_shape_stroke_color = 0;
+        // ── S83-GFX-BASE §14: VectorDrawable (parsed at inflate, painted at
+        // draw by the F-053-adjacent vector law). One ViewNode carries the
+        // whole vector: viewport + flattened path contours (group transforms
+        // pre-applied), per-path fill/stroke state.
+        struct VectorPathData {
+            std::vector<std::vector<std::pair<float, float>>> contours;
+            uint32_t fill_color = 0;       // ARGB
+            bool has_fill = false;
+            float fill_alpha = 1.0f;
+            bool has_stroke = false;
+            uint32_t stroke_color = 0;     // ARGB
+            float stroke_width = 0.f;
+            float stroke_alpha = 1.0f;
+            int fill_type = 0;             // 0 winding, 1 even-odd
+        };
+        struct VectorDrawableData {
+            float viewport_w = 0.f, viewport_h = 0.f;
+            std::vector<VectorPathData> paths;
+        };
+        bool bg_vector_valid = false;
+        VectorDrawableData bg_vector;
         bool bg_shape_has_dash = false;          // recorded; NOT rendered (honest
         float bg_shape_dash_width = 0.0f;        //  DETECTED-NOT-EXERCISED until a
         float bg_shape_dash_gap = 0.0f;          //  real APK demands it)
@@ -1488,6 +1513,12 @@ public:
     // DFS search for a descendant with the given Android view_id.
     // Returns 0 if not found.
     uint32_t find_by_android_id(uint32_t root_id, int32_t android_id) const;
+    // S83-GFX-BASE: lazily materialized window content root
+    // (android.R.id.content law) — synthetic id space shared with dialogs.
+    uint32_t next_window_content_id_ = 800100;
+    // S83-GFX-BASE: window ViewTreeObserver object (getViewTreeObserver law).
+    uint32_t view_tree_observer_id_ = 800200;
+    uint64_t observer_listener_events_ = 0;
 
     // R-NEW-357 (S44): reverse lookup — the Android resource id VALUE for
     // the view whose android:id NAME matches (BFS from root). Answers 0

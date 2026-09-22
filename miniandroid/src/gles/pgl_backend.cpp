@@ -17,6 +17,19 @@ namespace gles {
 
 static glContext s_ctx;
 
+PGLBackend& PGLBackend::instance() {
+    static PGLBackend b;
+    return b;
+}
+
+bool PGLBackend::make_current() {
+    // init_glContext binds the global PGL context pointer (c = context);
+    // re-bind defensively so gl* calls always land on OUR context.
+    if (!inited_) return false;
+    c = &s_ctx;
+    return true;
+}
+
 bool PGLBackend::init(int width, int height, std::string& error) {
     if (inited_ && width == width_ && height == height_) return true;
     // Re-init at new size: PGL owns its buffers; a fresh context is the

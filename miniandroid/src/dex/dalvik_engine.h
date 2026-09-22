@@ -1355,6 +1355,15 @@ public:
     // CAMPAIGN 013: run a custom view's REAL onDraw(Canvas) bytecode.
     int dispatch_custom_view_draw(uint32_t view_object_id);
 
+    // S83-GFX-BASE §25: run one GLSurfaceView frame for the view at
+    // view_id — onSurfaceCreated (once, lazily) → onSurfaceChanged (on
+    // size change) → onDrawFrame — through REAL DEX bytecode on the
+    // renderer object (heap field "glRenderer" set by GLSurfaceViewShadow).
+    // Returns true when onDrawFrame executed (PGL now holds the frame);
+    // *surf_created_out receives whether this was the first frame.
+    bool dispatch_gl_surface_view_frame(uint32_t view_object_id, int w, int h,
+                                        bool* first_frame_out);
+
     // S26 diagnostic (env-gated, read-only): TRUE while a custom-view draw
     // dispatch window is open (dispatch_custom_view_draw entry→exit). The
     // method-entry log gates on this to attribute method entries to the

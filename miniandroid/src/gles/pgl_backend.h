@@ -22,8 +22,15 @@ namespace gles {
 
 class PGLBackend {
 public:
+    // Process-wide PGL context (one software GL — the GLES20 bridge and the
+    // S83 GLSurfaceView/GL10 routing drive the SAME context).
+    static PGLBackend& instance();
+
     // Initialize (or re-initialize) the PGL context at WxH.
     bool init(int width, int height, std::string& error);
+
+    // Bind the context as the current PGL target (no-op when inited).
+    bool make_current();
 
     // Finish the frame: PGL swaps its back buffer internally on
     // glFlush/glFinish equivalents; call this after drawing.

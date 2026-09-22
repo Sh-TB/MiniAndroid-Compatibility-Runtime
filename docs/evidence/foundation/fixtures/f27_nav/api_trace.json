@@ -4,9 +4,9 @@
       "category": "SYSTEM",
       "class": "TraceEngine",
       "level": "INFO",
-      "message": "Session started: EXP-001-20260921-154503-2428",
+      "message": "Session started: EXP-001-20260922-112149-5699",
       "method": "start_session",
-      "timestamp": 1790005503986
+      "timestamp": 1790076109605
     },
     {
       "category": "SYSTEM",
@@ -14,7 +14,7 @@
       "level": "INFO",
       "message": "Loading APK: /home/z/my-project/upload/foundation_apks/f27_nav.apk",
       "method": "stage_load_apk",
-      "timestamp": 1790005503986
+      "timestamp": 1790076109605
     },
     {
       "category": "SYSTEM",
@@ -22,7 +22,7 @@
       "level": "INFO",
       "message": "Package: com.miniandroid.f27nav, Main Activity: com.miniandroid.f27nav.MainActivity",
       "method": "stage_load_apk",
-      "timestamp": 1790005504012
+      "timestamp": 1790076109661
     },
     {
       "category": "SYSTEM",
@@ -30,7 +30,7 @@
       "level": "INFO",
       "message": "Parsing DEX files",
       "method": "stage_parse_dex",
-      "timestamp": 1790005504012
+      "timestamp": 1790076109661
     },
     {
       "category": "SYSTEM",
@@ -38,7 +38,7 @@
       "level": "INFO",
       "message": "Parsed 6 classes, 18 methods",
       "method": "stage_parse_dex",
-      "timestamp": 1790005504018
+      "timestamp": 1790076109667
     },
     {
       "category": "SYSTEM",
@@ -46,7 +46,7 @@
       "level": "INFO",
       "message": "Initializing runtime",
       "method": "stage_initialize_runtime",
-      "timestamp": 1790005504018
+      "timestamp": 1790076109667
     },
     {
       "category": "SYSTEM",
@@ -54,7 +54,7 @@
       "level": "INFO",
       "message": "Framebuffer allocated: 1080x1920",
       "method": "stage_initialize_runtime",
-      "timestamp": 1790005504038
+      "timestamp": 1790076109691
     },
     {
       "category": "SYSTEM",
@@ -62,7 +62,7 @@
       "level": "INFO",
       "message": "Loading class definitions",
       "method": "stage_load_classes",
-      "timestamp": 1790005504038
+      "timestamp": 1790076109691
     },
     {
       "category": "DEBUG",
@@ -70,7 +70,7 @@
       "level": "DEBUG",
       "message": "Found class: Lcom/miniandroid/f27nav/MainActivity$1; extends Ljava/lang/Object; (2 methods)",
       "method": "stage_load_classes",
-      "timestamp": 1790005504038
+      "timestamp": 1790076109691
     },
     {
       "category": "DEBUG",
@@ -78,7 +78,7 @@
       "level": "DEBUG",
       "message": "Found class: Lcom/miniandroid/f27nav/MainActivity; extends Landroid/app/Activity; (2 methods)",
       "method": "stage_load_classes",
-      "timestamp": 1790005504038
+      "timestamp": 1790076109691
     },
     {
       "category": "DEBUG",
@@ -86,7 +86,7 @@
       "level": "DEBUG",
       "message": "Found class: Lcom/miniandroid/f27nav/R$id; extends Ljava/lang/Object; (1 methods)",
       "method": "stage_load_classes",
-      "timestamp": 1790005504038
+      "timestamp": 1790076109691
     },
     {
       "category": "DEBUG",
@@ -94,7 +94,7 @@
       "level": "DEBUG",
       "message": "Found class: Lcom/miniandroid/f27nav/R$layout; extends Ljava/lang/Object; (1 methods)",
       "method": "stage_load_classes",
-      "timestamp": 1790005504038
+      "timestamp": 1790076109691
     },
     {
       "category": "DEBUG",
@@ -102,7 +102,7 @@
       "level": "DEBUG",
       "message": "Found class: Lcom/miniandroid/f27nav/R; extends Ljava/lang/Object; (1 methods)",
       "method": "stage_load_classes",
-      "timestamp": 1790005504038
+      "timestamp": 1790076109691
     },
     {
       "category": "DEBUG",
@@ -110,7 +110,7 @@
       "level": "DEBUG",
       "message": "Found class: Lcom/miniandroid/f27nav/SecondActivity; extends Landroid/app/Activity; (2 methods)",
       "method": "stage_load_classes",
-      "timestamp": 1790005504038
+      "timestamp": 1790076109691
     },
     {
       "category": "SYSTEM",
@@ -118,7 +118,7 @@
       "level": "INFO",
       "message": "Executing application lifecycle",
       "method": "stage_execute_application",
-      "timestamp": 1790005504038
+      "timestamp": 1790076109691
     },
     {
       "category": "SYSTEM",
@@ -126,7 +126,7 @@
       "level": "INFO",
       "message": "[REAL_DALVIK_INTERPRETER] Starting real bytecode execution",
       "method": "stage_execute_application_real_dalvik",
-      "timestamp": 1790005504038
+      "timestamp": 1790076109691
     },
     {
       "category": "SYSTEM",
@@ -134,7 +134,7 @@
       "level": "INFO",
       "message": "Instructions executed: 16",
       "method": "execute_apk",
-      "timestamp": 1790005504074
+      "timestamp": 1790076109734
     },
     {
       "category": "SYSTEM",
@@ -142,7 +142,7 @@
       "level": "INFO",
       "message": "API calls traced: 6",
       "method": "execute_apk",
-      "timestamp": 1790005504074
+      "timestamp": 1790076109734
     },
     {
       "category": "SYSTEM",
@@ -150,7 +150,7 @@
       "level": "INFO",
       "message": "Heap objects: 11",
       "method": "execute_apk",
-      "timestamp": 1790005504074
+      "timestamp": 1790076109734
     },
     {
       "category": "SYSTEM",
@@ -158,7 +158,7 @@
       "level": "INFO",
       "message": "✅ REAL EXECUTION CONFIRMED - 16 opcodes executed",
       "method": "validation",
-      "timestamp": 1790005504074
+      "timestamp": 1790076109734
     },
     {
       "category": "SYSTEM",
@@ -166,7 +166,7 @@
       "level": "INFO",
       "message": "ExecutionSource = REAL_DALVIK_INTERPRETER (verified)",
       "method": "execution_source",
-      "timestamp": 1790005504074
+      "timestamp": 1790076109734
     },
     {
       "category": "SYSTEM",
@@ -174,7 +174,7 @@
       "level": "INFO",
       "message": "[REAL_DALVIK_INTERPRETER] Creating view from execution evidence",
       "method": "create_view_from_dalvik_result",
-      "timestamp": 1790005504074
+      "timestamp": 1790076109734
     },
     {
       "category": "SYSTEM",
@@ -182,7 +182,7 @@
       "level": "INFO",
       "message": "Creating HelloWorld view",
       "method": "create_hello_world_view",
-      "timestamp": 1790005504074
+      "timestamp": 1790076109734
     },
     {
       "category": "SYSTEM",
@@ -190,7 +190,7 @@
       "level": "INFO",
       "message": "✅ Lifecycle onCreate/onStart/onResume executed as DEX bytecode (REAL_DALVIK_INTERPRETER, entry-time provenance)",
       "method": "lifecycle_source",
-      "timestamp": 1790005504074
+      "timestamp": 1790076109734
     },
     {
       "category": "SYSTEM",
@@ -198,7 +198,7 @@
       "level": "INFO",
       "message": "✅ All lifecycle events sourced from REAL_DALVIK_INTERPRETER",
       "method": "lifecycle_verified",
-      "timestamp": 1790005504074
+      "timestamp": 1790076109734
     },
     {
       "category": "SYSTEM",
@@ -206,7 +206,7 @@
       "level": "INFO",
       "message": "Generating mandatory trace files: /home/z/my-project/docs/evidence/foundation/fixtures/f27_nav/exp031_5/traces/com.miniandroid.f27nav",
       "method": "trace_export",
-      "timestamp": 1790005504074
+      "timestamp": 1790076109734
     },
     {
       "category": "SYSTEM",
@@ -214,7 +214,7 @@
       "level": "INFO",
       "message": "✅ Trace files generated successfully",
       "method": "trace_export",
-      "timestamp": 1790005504075
+      "timestamp": 1790076109735
     },
     {
       "category": "SYSTEM",
@@ -222,7 +222,7 @@
       "level": "INFO",
       "message": "  - opcode_trace.json",
       "method": "trace_files",
-      "timestamp": 1790005504075
+      "timestamp": 1790076109735
     },
     {
       "category": "SYSTEM",
@@ -230,7 +230,7 @@
       "level": "INFO",
       "message": "  - method_trace.json",
       "method": "trace_files",
-      "timestamp": 1790005504075
+      "timestamp": 1790076109735
     },
     {
       "category": "SYSTEM",
@@ -238,7 +238,7 @@
       "level": "INFO",
       "message": "  - register_trace.json",
       "method": "trace_files",
-      "timestamp": 1790005504075
+      "timestamp": 1790076109735
     },
     {
       "category": "SYSTEM",
@@ -246,7 +246,7 @@
       "level": "INFO",
       "message": "  - heap_trace.json",
       "method": "trace_files",
-      "timestamp": 1790005504075
+      "timestamp": 1790076109735
     },
     {
       "category": "SYSTEM",
@@ -254,7 +254,7 @@
       "level": "INFO",
       "message": "  - execution_summary.json (contains verdict)",
       "method": "trace_files",
-      "timestamp": 1790005504075
+      "timestamp": 1790076109735
     },
     {
       "category": "SYSTEM",
@@ -262,7 +262,7 @@
       "level": "INFO",
       "message": "Found 1 views with click listeners",
       "method": "phase_b_click",
-      "timestamp": 1790005504075
+      "timestamp": 1790076109735
     },
     {
       "category": "SYSTEM",
@@ -270,7 +270,7 @@
       "level": "INFO",
       "message": "dispatch_click(10) → OK",
       "method": "phase_b_click",
-      "timestamp": 1790005504075
+      "timestamp": 1790076109735
     },
     {
       "category": "SYSTEM",
@@ -278,7 +278,7 @@
       "level": "INFO",
       "message": "Real Dalvik execution complete",
       "method": "stage_execute_application_real_dalvik",
-      "timestamp": 1790005504075
+      "timestamp": 1790076109735
     },
     {
       "category": "SYSTEM",
@@ -286,7 +286,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790005504075
+      "timestamp": 1790076109735
     },
     {
       "category": "SYSTEM",
@@ -294,7 +294,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
       "method": "stage_render_frame",
-      "timestamp": 1790005504117
+      "timestamp": 1790076109803
     },
     {
       "category": "SYSTEM",
@@ -302,7 +302,7 @@
       "level": "INFO",
       "message": "Capturing output",
       "method": "stage_capture_output",
-      "timestamp": 1790005504117
+      "timestamp": 1790076109804
     },
     {
       "category": "SYSTEM",
@@ -310,7 +310,7 @@
       "level": "INFO",
       "message": "view_tree.json dumped (S67 provenance law)",
       "method": "stage_capture_output",
-      "timestamp": 1790005504117
+      "timestamp": 1790076109804
     },
     {
       "category": "SYSTEM",
@@ -318,7 +318,7 @@
       "level": "INFO",
       "message": "post-lifecycle frame pump done",
       "method": "stage_capture_output",
-      "timestamp": 1790005504117
+      "timestamp": 1790076109804
     },
     {
       "category": "SYSTEM",
@@ -326,7 +326,7 @@
       "level": "INFO",
       "message": "Screenshot captured: /home/z/my-project/docs/evidence/foundation/fixtures/f27_nav/screenshot.png (1080x1920, 8294400 bytes)",
       "method": "log_screenshot",
-      "timestamp": 1790005504186
+      "timestamp": 1790076109909
     },
     {
       "category": "SYSTEM",
@@ -334,7 +334,7 @@
       "level": "INFO",
       "message": "PNG screenshot saved to: /home/z/my-project/docs/evidence/foundation/fixtures/f27_nav/screenshot.png",
       "method": "stage_capture_output",
-      "timestamp": 1790005504186
+      "timestamp": 1790076109909
     },
     {
       "category": "SYSTEM",
@@ -342,7 +342,7 @@
       "level": "INFO",
       "message": "CLICK-TEST probe",
       "method": "stage_click_test",
-      "timestamp": 1790005504253
+      "timestamp": 1790076109962
     },
     {
       "category": "SYSTEM",
@@ -350,7 +350,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1790005504256
+      "timestamp": 1790076109966
     },
     {
       "category": "SYSTEM",
@@ -358,7 +358,7 @@
       "level": "INFO",
       "message": "Rendered ViewShadow tree with BitmapFont (root_id=16)",
       "method": "stage_render_frame",
-      "timestamp": 1790005504299
+      "timestamp": 1790076110016
     },
     {
       "category": "SYSTEM",
@@ -366,10 +366,10 @@
       "level": "INFO",
       "message": "Generating reports",
       "method": "stage_generate_reports",
-      "timestamp": 1790005504371
+      "timestamp": 1790076110124
     }
   ],
-  "generated_at": "2026-09-21 15:45:04 UTC",
-  "session_id": "EXP-001-20260921-154503-2428",
+  "generated_at": "2026-09-22 11:21:50 UTC",
+  "session_id": "EXP-001-20260922-112149-5699",
   "total_calls": 46
 }
