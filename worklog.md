@@ -2994,3 +2994,23 @@ Stage Summary:
   F-NEW-157, Compose recomposer chain (R-NEW-344 + dooz18).
 - Next: P2 paint effects + P3 GL surface maturation; per-title NEXT roots
   for the 35-title onCreate family on the new binary.
+
+---
+Task ID: S84
+Agent: Super Z (main)
+Task: S84 — Canonical App/Game Achievements + 50 NEW titles + README landing page (user wave: one title → one canonical screenshot/GIF, no screenshot explosion, real execution of 50 fresh APKs, README as true landing page)
+
+Work Log:
+- Corpus: 50 NEW titles assembled (21 never-run s82-cache APKs + 29 fresh F-Droid downloads: 31 games / 19 apps), each with F-Droid page + upstream source URL + SHA256 + version (run/s84/manifest_new.json). Size cap 48MB enforced; 2 corrupt downloads replaced; content validated with `file`.
+- Engine law F-NEW-160 (FIXED): Class.forName framework bridge — android.os.Build/Build$VERSION/Build$VERSION_CODES resolved to Class objects (9/50 titles hit the CNFE). A/B guard: bridging dalvik.system.CloseGuard regressed foehnix.widget L2→L0 (Class.getMethod/Method.invoke recursion storm), so the bridge is Build-family-only. Rebuild + battery 26/26 + golden ladder 10/10.
+- 50-title campaign executed twice (pre/post F-160): obs (8 frames, 300ms) + click-test passes per title; 49/50 produced real frames; 13/50 rc=0; 4 titles with engine-reported state change (nounours, dodge, hotdeath, bobball); compose internals = dominant honest PARTIAL family (~24 titles, F-NEW-161) + androidx adapter family (12, F-NEW-162).
+- 16-title S83 rescue re-run at current engine: results byte-consistent with S83 (no regression); near-blank final-frame class confirmed as engine-honest behavior, not packaging corruption.
+- EVIDENCE INTEGRITY CATCH: S84 validator R5 found 16 S83 evidence JPGs byte-identical (f817c243… ×16) + ×2 classes — the near-blank status-bar class shipped as per-title screenshots. All 20 demoted to OBSERVED (no artifact, log reference) per the S54 blank-gate law; dooz real-UI evidence restored from s83b sweep (content-verified distinct).
+- Canonical system built: docs/evidence/canonical/<pkg>.{jpg|gif} (ONE artifact per title; 9 GIFs for interactive: snake/2048/tetris/ttt-deluxe/ttt-classic in-house + hotdeath/bobball/dodge/nounours), registry.json (96 titles, machine source), CANONICAL_SCREENSHOTS.md index, SHA256SUMS, tools/verify_canonical_evidence.py (12 checks R1-R12), ACHIEVEMENTS.md rewritten ONE-record-per-title (96 records; wave history preserved in docs/history/ACHIEVEMENTS_WAVE_HISTORY.md), README.md regenerated as landing page with generated stats + hero matrix.
+- Cleanup (§15): surgical deletion of 53 raw PPM dumps (315MB) + 607 closed-investigation snake/tictactoe frame PNGs + 226 content-duplicate images = 345MB saved; 1316 → 430 tracked images; every deletion SHA-recorded in S84_CLEANUP_MANIFEST.json.
+- Root-cause registry: docs/evidence/ROOT_CAUSE_REGISTRY.md (F-NEW-160 FIXED + F-NEW-161/162 OPEN with fan-out lists + EVID-CLASS-S84 quarantine).
+
+Stage Summary:
+- 96 canonical title records (61 games / 34 apps / 1 fixture): 29 VERIFIED, 4 VERIFIED-INTERACTIVE (S84) + 5 in-house interactive GIFs, 3 PARTIAL, 63 OBSERVED, 1 BLOCKED; 32 canonical artifacts (9 GIF + 23 JPG), zero duplicate content, zero orphan artifacts, validator ALL CHECKS PASS.
+- Battery 26/26, golden ladder 10/10, F-NEW-160 A/B-clean; the 50 NEW titles are executed with real frames + levels + interaction probes, all recorded with upstream source links and APK SHAs.
+- Honest frontier now explicit and single-sourced: compose internals (F-NEW-161), androidx adapter fallback (F-NEW-162), GLES/SDL family, WebView content, non-ASCII shaping.
