@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg_dark">#0B1120</color>
+    <color name="panel">#17223B</color>
+    <color name="grid">#3B4C6B</color>
+    <color name="x_blue">#38BDF8</color>
+    <color name="o_pink">#F472B6</color>
+    <color name="win_yellow">#FACC15</color>
+    <color name="btn_slate">#334155</color>
+    <color name="btn_cell">#111B31</color>
+    <color name="btn_start">#2563EB</color>
+    <color name="white">#FFFFFF</color>
+</resources>
