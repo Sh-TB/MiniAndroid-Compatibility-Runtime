@@ -1,561 +1,1352 @@
-# ACHIEVEMENTS — Canonical Record of Real APK Executions
+# MiniAndroid — App & Game Achievements
 
-> **SINGLE SOURCE OF TRUTH.** Every real APK execution MiniAndroid has achieved,
-> verified, or honestly failed is recorded HERE — one entry per application.
-> Canonical by the S54 documentation law (README · ACHIEVEMENTS · ROADMAP_STATUS ·
-> KNOWLEDGE_INDEX). Supersedes `docs/EXECUTION_ACHIEVEMENTS.md` (S52/S53 era),
-> `SCREENSHOT_INDEX*.md`, and any per-app achievement files.
+> **CANONICAL, ONE RECORD PER TITLE** (S84 law, 2026-09-23).
+> This file is the single source of truth for what each app and
+> game has PROVEN on MiniAndroid. Historical per-wave narrative
+> moved to [ACHIEVEMENTS_WAVE_HISTORY.md](history/ACHIEVEMENTS_WAVE_HISTORY.md).
 >
-> Status vocabulary (canonical, unchanged): `VERIFIED / PARTIAL / BLOCKED /
-> NOT_TESTED` over the four evidence states `LOCAL / REMOTE / REMOTE HISTORY /
-> GITHUB ATTACHMENTS`. Nothing is upgraded without runtime evidence.
+> Chain (no broken links):
+> `Title → Source → APK+SHA → Execution session → Achievement →
+>  ONE canonical screenshot → root-cause issue → README summary`
+>
+> Validate: `python3 tools/verify_canonical_evidence.py` ·
+> machine source: `docs/evidence/canonical/registry.json`
 
-## 0. Reading this file
+## Status vocabulary
 
-| Field | Meaning |
+| Status | Meaning |
 |---|---|
-| App | application (corpus APK or in-repo fixture) |
-| Version | APK version (versionName / vc) |
-| APK SHA256 | full SHA256 of the exact artifact; `-16` = first 16 hex chars |
-| Source | F-Droid / telegram.org / GitHub release / in-repo fixture |
-| Runtime HEAD | commit the verdict was produced at |
-| Result | SUCCESS / PARTIAL / BLOCKED / FAIL (+ honest one-line reason) |
-| Ladder | L0 recognized → L1 manifest → L2 DEX → L3 lifecycle → L4 UI machinery → L5 meaningful frame → L6 real input → L7 input→state change → L8 multiple interactions → L9 app-specific behavior → L10 close/reopen persistence |
-| Persistence | PERSISTENCE VERIFIED / NOT VERIFIED / PARTIAL / NOT TESTED |
-| Screenshot | only real, recognizable UI; deterministic name, ≤100 KB JPG, SHA256 in `docs/evidence/s54_frames/SHA256SUMS` |
-| ASC | what the ASC (Droid ASC, MG1937/ASC) reconnaissance added |
-| Root cause | registry ID (R-NEW-xxx) or engine law ID (F-xxx) when known |
-| Next action | the concrete next step |
-
-Reproduce any run: `./build/miniandroid run <apk> -o <dir> [--click-test]` at the
-recorded HEAD (battery gate: `bash scripts/test/run_test_battery.sh` →
-"BATTERY GATE: ALL PASS (96 stages)").
-
-**Screenshot gate law (S54 refinement, binding).** A frame is BLANK when
-`(near-white ≥ 97% or near-black ≥ 97%) AND colors ≤ 8`, or when `colors ≤ 8`
-(renderer artifact class). A near-black frame with `colors > 8` is
-DARK-CONTENT — real dark-themed UI — and may be stored only with an
-independent content check (e.g. the battery EXT-01 typography golden).
-The refinement strictly narrows S53's false-reject class: every S53
-rejection (chessclock 2 colors, notes 5 colors) remains a rejection; the
-only rescued class is dark UI with rich palettes (helloworld_ext01, 256
-colors). Blank/white/black frames are NEVER stored as images — they are
-recorded as text, exactly as done in §3.2.
-
-## 0e2. S62 Games Spotlight — first real-APK L6 (input → state → render)
-
-| Achievement | Evidence | Class |
-|---|---|---|
-| **bouncy L6 PROVEN** (com.dozingcatsoftware.bouncy, source-backed F-Droid): --click-count 6 → 6/6 clicks dispatched into the app's REAL DEX XML-onClick handlers on BouncyActivity (scoreViewClicked, doPreviousTable, doQuit, hideHighScore); 7 frames recorded; render-state transition proven by frame SHA pair 4219c5116ea2 (frames 0-2) → 52e4ddacc8ac (frames 3-6) — two distinct UI states in one run. Honest: not claimed L7 (no multi-round game-loop interaction proof) | run/s62_bouncy_l6/; docs/evidence/s62_r381/bouncy_frame*.png + SHA256SUMS | EXECUTED+OBSERVED |
-| Games blocked family measured: minesweeper + memory + 2048 all die at the SAME generic gate (R-NEW-331 FragmentManager.ensureExecReady ISE) with full first-engine androidx chain evidence — one fix, 3+ game consumers + Telegram | run/s62_game_mines, run/s62_probe_*; run/s62_mines_trace.log | OBSERVED |
-| F-109a/c landed (register-write bitmap + strcmp arith dispatch; goldens 26/8, battery 96/96) with an HONEST marginal verdict (~9-10% rate) and the F-110 measured lever registered | docs/evidence/s62_r381/S62_REPORT.md | IMPLEMENTED+TESTED |
-
-## 0e2. S62+ Open-Source APK Spotlight — 2 NEW source-first apps executed (breadth mission)
-
-| Achievement | Evidence | Status |
-|---|---|---|
-| **anuto L5 PROVEN + input→state dispatched** (ch.logixisland.anuto, GPLv2, built FROM SOURCE aapt2/ECJ/D8, APK 8794573d…): real AnutoApplication bound (onCreate 14,751 insns), GameActivity.onCreate real chain, custom GameView constructed via G11 law, REAL GameView.onDraw dispatched (C013 dispatched=YES, app-driven 2,073,600 non-white px), --tap 540,960 → onTouch dispatched consumed=true (app's own DEX returns true) → screenToGame → TowerSelector.selectTowerAt. 3-run det 11a38a5aeeff45a6 ×3. Honest: sprites need the canvas bitmap family (recorded frontier) | docs/evidence/s62plus_spotlight/S62PLUS_REPORT.md §1a + anuto_frame0_after_onDraw.png | EXECUTED+OBSERVED (L5) |
-| **OpenSudoku L5 PROVEN + input dispatched** (cz.romario.opensudoku, GPLv3, built FROM SOURCE, APK 712b4a41…): FolderListActivity real onCreate, visible text "Get more puzzles online" rendered, 2,029,440 non-white px, 0 errors; --click-count 3 → 3/3 CLICK dispatched to real FolderListActivity$1 DEX listener (handler = external http intent, honest no-op). 3-run det 11671b9c439b2e10 ×3 | docs/evidence/s62plus_spotlight/S62PLUS_REPORT.md §1b + opensudoku_frame0_folderlist.png | EXECUTED+OBSERVED (L5) |
-| **F-110 lever IMPLEMENTED (a–e family)**: result-snapshot deferral (outermost-only; gprof root cause 387.6M pair<string,string> copies) → **57.8× instruction rate** A/B (128,076→7,400,000+ insns, same 25s anuto budget); thread-sleep yield law; ArrayList add(int,E)/remove(int)/remove(Object); currentThread drained-body identity; touch-target law + MotionEvent family + framework static-int table. Battery 96/96 + goldens + G06-G08 determinism ALL PASS after the changes | docs/evidence/s62plus_spotlight/S62PLUS_REPORT.md §2 | IMPLEMENTED+TESTED |
-| F-111 `<view class=...>` namespace law + F-112 manifest Application buildClassName law (both ROOT-CAUSED-FIXED with first-hit evidence and cross-consumer reach) | docs/evidence/s62plus_spotlight/S62PLUS_REPORT.md §3 | ROOT-CAUSED-FIXED |
-
-## 0e3. S63 Open-Source APK Spotlight 2 — first SOURCE-FIRST L6 (input→state→render), 2 NEW apps
-
-| Achievement | Evidence | Status |
-|---|---|---|
-| **gmdice S10/L6 PROVEN source-first** (de.duenndns.gmdice, GPLv2, ge0rg/gamemasterdice @ 6353926f, APK ee9f7396…): first run rc=0 0 errors — real GameMasterDice (ListActivity) onCreate, visible "1d6/1d20/1d6+4/Push buttons to roll!", 1,744,539 non-white px; "…" click built + PAINTED the app's own selectDice AlertDialog (items=3); 5/5 CLICKs dispatched to the real handler; the app's roll chain (onClick → StandardDiceSet.roll → SecureRandom.nextInt → setText) executed in real DEX. Post-F-113: dice 6/5/3/2 (was all 1), frame SHA 5312266e→fa1d8612, pixel diff 1,584 px 100% inside the rollresult band, 3-run det fa1d8612 ×3 — **repeatable input→real handler→real state mutation→changed rendered frame from a source-first build** | docs/evidence/s63_spotlight/S63_REPORT.md §1 + gmdice_frame*.png | EXECUTED+OBSERVED (S10/L6) |
-| **siggen S7** (org.billthefarmer.siggen, GPLv3, billthefarmer/sig-gen @ master, APK c83d21c6…): rc=0; plain-Activity Main onCreate; custom views Scale/Knob/Display INFLATED FROM FQCN TAGS (generic LayoutInflater path); 47,809 non-white px — byte-level match with the S61 prebuilt sweep count (source-vs-prebuilt cross-validation); 5/5 clicks dispatched, Main.onClick ran the R.id.sine case (View.getId switch + audio.waveform model mutation in real DEX). Honest: waveform = audio path (no pixel face), custom views measure 0x0 → S7 not S9; 3-run det 7e5e14a3 ×3 | docs/evidence/s63_spotlight/S63_REPORT.md §2 + siggen_frame0.png | EXECUTED+OBSERVED (S7/L5) |
-| **F-113 SecureRandom IS-A Random bridge law (R-NEW-382 ROOT-CAUSED-FIXED)**: bridge_to_api dispatch receives the STATIC receiver class, so SecureRandom instances never reached the F-086 Random law → typed-zero dice; OpenJDK law (SecureRandom.java:157 extends Random, :828 next(int) override); fix = one law-family entry; battery ALL PASS (94 stages executed incl. goldens + G06-G08 + corpus) on the fixed binary. Candidate forensics: Blockinger surveyed and DEFERRED (support-v4 FragmentActivity + SurfaceView = two known heavy families) | docs/evidence/s63_spotlight/S63_REPORT.md §1 (searchlight chain) + §0 (fact matrix) | ROOT-CAUSED-FIXED |
-| **zoekt large-file under-report ROOT CAUSE DIAGNOSED** (S61/S62 open question): default max_trigram_count silently excludes 1.2MB files; raised cap → complete results (F-113 lines found at 20878); csearch per-file limit reproduced 3rd time; zoekt/csearch rebuilt this session (Go 1.26.0, GOPROXY=direct) | docs/evidence/s63_spotlight/S63_REPORT.md §4 | OBSERVED (tool law) |
-
-## 0e4. S64 Open-Source APK Spotlight 3 — breadth: 3 NEW source-first apps (S6 + S10 + S9), 4 law families
-
-| Achievement | Evidence | Status |
-|---|---|---|
-| **pmk-android S6** (com.cax.pmk, GPLv3, xvadim/pmk-android @ 100eea1 v3.3.6, APK 0b3bfdc3…): МК-61 calculator emulator built FROM SOURCE; rc=0 SUCCESS 0 errors after F-114 — real MainActivity onCreate, 179 views inflated, 85 strings resolved; deterministic render c9a2a7035c75c9c8 ×3 — indicator "/ / / /" AutoScaleTextViews, "MK 61"/"ГРД" labels, E/F/K indicators (all real resources); clicks dispatched to real lambdas + xml_onClick onIndicatorTouched. Honest: interaction faces = table-measure-skin + seekbar-drag families (recorded, §6 of report) | docs/evidence/s64_spotlight/S64_REPORT.md §2 + pmk_frame0_indicator.png | EXECUTED+OBSERVED (S6) |
-| **FreeKlondike S10 PROVEN source-first** (eu.veldsoft.free.klondike, GPLv3+, VelbazhdSoftwareLLC/FreeKlondike @ 789dba5 v2.0.1, APK 985afeb0…): full repeatable chain — launch → SplashActivity (WebView banner) → F-115 Timer 5000ms → real DEX SplashActivity$1.run → Class.forName(redirect) → startActivity(MenuActivity) → tap New Game (target=23) → MenuActivity.onClick → startActivity(GameActivity) → card-board render (green felt, ace slots, real drawables) → deck tap → the app's own "Deal!" response. Frames: menu 64bf2071f501b3c9 → game f3c81cfb97f59754 (2,073,600 px) → post-tap f9639e683ca736f6 (8,120 px); 3-run det ×3 | docs/evidence/s64_spotlight/S64_REPORT.md §3 + fk_*.png | EXECUTED+OBSERVED (S10) |
-| **shopping-list-calc S9** (io.github.buildsbyben.shoppinglistcalc, MIT, buildsbyben/shopping-list-calc @ e1d3f74 v2.0, APK b51e6ecf…): rc=0 SUCCESS 0 errors FIRST RUN (no fixes needed); programmatic View tree (F-023 parent-link path), dark theme, totals row + blue EditText rows + tax-rate 1.00000; --click-test 7/7 real Buttons → real app lambdas (ExternalSyntheticLambda{23,16,15,24,25,9,8}), state_changed=TRUE per the app's own DEX; frame 2cd328b35622a2fa → 94e90357e4df2340 (8,348 px in tax-rate band); 3-run det ×3 | docs/evidence/s64_spotlight/S64_REPORT.md §4 + sc_*.png | EXECUTED+OBSERVED (S9) |
-| **F-114 prefs law family (R-NEW-383 ROOT-CAUSED-FIXED)**: (a) SharedPreferences.getString @Nullable default returns as NULL reference (AOSP SharedPreferencesImpl.java:307-313) — was coerced to ""; (b) PreferenceManager.setDefaultValues contract (AOSP PreferenceManager.java:661-673 + :67 one-shot flag; defaults XML persisted, CheckBoxPreference→boolean else string); (c) getDefaultSharedPreferences = <pkg>_preferences (was NULL receiver). First face: pmk activateSettings NFE; second consumer: simplestopwatch (24 defaults) | docs/evidence/s64_spotlight/S64_REPORT.md §2 | ROOT-CAUSED-FIXED |
-| **F-115 Timer + virtual-clock law family (R-NEW-384 part 1)**: java.util.Timer.schedule on the ONE MessageQueue (OpenJDK sched/mainLoop fixed-delay law; period re-enqueue via __timer_period__); F-115b revision: launch-frame quiescence does NOT advance the clock (GATE H/G07 goldens frozen) — timers fire under time-driven --frames capture. Faces: FreeKlondike splash-trap → S10; simplestopwatch 5.2s timer (second consumer) | docs/evidence/s64_spotlight/S64_REPORT.md §3,§6 | ROOT-CAUSED-FIXED |
-| **F-116 meta-data law family (R-NEW-384 part 2)**: manifest <meta-data> capture (activity+application) → PackageManager.getActivityInfo().metaData Bundle (numeric→INT32, else STRING) + Context.getComponentName. Face: FreeKlondike splash timeout/redirect meta-data | docs/evidence/s64_spotlight/S64_REPORT.md §3 | ROOT-CAUSED-FIXED |
-| **F-117 scheduled-tap law (R-NEW-384 part 3)**: when --frames drives the virtual clock, queued taps fire one per frame boundary (AOSP input timing = a touch lands at its Looper time). Face: FreeKlondike deferred-screen interaction | docs/evidence/s64_spotlight/S64_REPORT.md §3 | IMPLEMENTED+TESTED |
-| **EXT-01/02 environmental**: Appliberated/HelloWorldSelfAware upstream repo DELETED (404, verified via HTML+API+tags) + local cache wiped by container reset → battery reports 92/94 until a replacement external fixture is frozen (S45 precedent for documented fixture-missing FAILs) | docs/evidence/s64_spotlight/S64_REPORT.md §0,§7 | OBSERVED (environmental) |
-
-## 0e6. S66 Full Visual Proof + Renderer Forensics — capture chain proven, F-120 shipped, honest NO-VISUAL-PROOF where pixels are absent
-
-| Achievement | Evidence | Status |
-|---|---|---|
-| **Screenshot pipeline proven independently** (§1/§10): controlled canvas_probe fixture (APK 69553417…) draws 11 analytically-exact ops via REAL onDraw DEX bytecode; T2..T9 pixel-exact (#FF0000/#0000FF/#00FF00/#808080, circle center, line); alpha 0x80FF0000 over white → #FF7E7E (1-LSB truncation documented); raw PPM SHA == PNG decoded-pixel SHA (0 byte mismatches) → capture/encoder FAITHFUL; pure-python PNG decoder == PIL byte-identical | docs/evidence/visual_forensics/canvas_probe/ + S66_REPORT.md §1 | INFRASTRUCTURE_PROVEN |
-| **F-120/R-NEW-387 Button default-style gravity law shipped** (AOSP Button.java:221 buttonStyle → Widget.Material.Button gravity=center; engine never resolved the style default → Button text painted top-left). Fix: style-resolved default at node creation (create_view/get_or_create_node), CompoundButton/ImageButton excluded; XML/setGravity precedence preserved. BEFORE: TicTacToe marks at cell top-left; AFTER: glyph centers x=180/540/900 = exact column centers. Reruns: canvas probe byte-identical (no buttons), TicTacToe ×3 new deterministic frames, FishRings/OPMT boards byte-identical to S65 (only Button-label frames changed = targeted law change), battery 92/94 (EXT-01/02 environmental) — ZERO regressions | docs/evidence/visual_forensics/tictactoe/run1..3/ + S66_REPORT.md §7 | FIXED+REGRESSION-CLEAN |
-| **TicTacToe full visual proof ×3 deterministic runs**: initial 613cfccc… / mid c6670948… / win 2e80e8c0… byte-identical ×3; win frame INSPECTED (X WINS status; 4X+3O; anti-diagonal win); initial-vs-win diff 4,097 px bbox (1,8)-(748,1329); real 9-click chain frame0 "X to move" → frame1 "O to move" → frame7 "X WINS" → frozen | docs/evidence/visual_forensics/tictactoe/ (initial/mid/win/final_full.png + diff.png + metrics.json per run) | VISUALLY_PROVEN (det ×3) |
-| **Dooz honest downgrade — NO-VISUAL-PROOF**: v18+v23 re-fetched (SHA d81292cd…/299eab21… match corpus); fresh frames are placeholders (117/197 nonwhite px, bbox 27×36/34×105, 3 colors). Blocker traced: 7× IllegalStateException "layout state is not idle before measure starts" (compose LayoutNode measure-precondition, Log0;.b) — registered, NOT fixed (own campaign) | docs/evidence/visual_forensics/dooz/ + S66_REPORT.md §3 | RENDER_BLOCKED (honest) |
-| **S65 re-validation on the F-120 engine**: FishRings frame SHAs byte-match S65 exactly (598ddbfa×4 → 96668475 → 86990d43 → bd2bad7e → e027b021×2) — S10 re-proven, blue→pink ball state change VISIBLE; TriPeaks splash/board byte-match S65 (598ddbfa…/49e02f75…), lobby F-120 SHA change cfc2302e; OPMT board b7606908 byte-match, menu F-120 SHA 3d8a4d15, app-own rc=1 stopper unchanged | docs/evidence/visual_forensics/s65_reval/ + S66_REPORT.md §10 table | RE-VALIDATED |
-| **R-NEW-388 registered (TriPeaks board layout, NOT fixed today)**: visual inspection exposed all 31 card ImageViews painted at (0,0) (upstream positions via alignParent+margin idiom; engine's RL solver computes rl_cached_left but the live render reads measured_left → geometry wiring gap) + stat labels narrow-wrap (122px → 2-line → overlap). Painter proven FAITHFUL (frame == ViewTree). TriPeaks visual status honestly PARTIAL | docs/evidence/visual_forensics/S66_REPORT.md §7 + upstream/tripeaks_62f3609/activity_game.xml | REGISTERED (next campaign) |
-| **Font forensics**: ASCII text pixel-proven (T7 band 792 px; "X WINS"; TriPeaks labels); Persian "دور" renders ZERO pixels (BitmapFont ASCII 32..126 law) — non-ASCII gap registered; TextView-in-ViewTree explicitly NOT accepted as font proof anywhere | S66_REPORT.md §5 | ASCII_PROVEN / Unicode_GAP_REGISTERED |
-
-## 0e5. S65 Open-Source APK Spotlight 4 — breadth: 3 NEW source-first apps (S7 + S10 + S6), 2 law families, 1 new open family
-
-| Achievement | Evidence | Status |
-|---|---|---|
-| **FishRings S10 PROVEN source-first** (eu.veldsoft.fish.rings, GPLv3, VelbazhdSoftwareLLC/FishRingsForAndroid @ dc3807e v1.23/vc6, APK 14d7dd80…): full repeatable chain — launch → SplashActivity (F-116 metaData) → F-115 Timer 5000ms → SplashActivity$1.run → Class.forName → startActivity → GameActivity <init> (F-118) + onCreate → 44-view board (pink ball + red rotation arrows + ebinqo art = the app's OWN drawables) → 3× tap → REAL handlers GameActivity$5/$6 (rings.ccwa/cwa → updateInfo) → changed frames 2,072,211 → 483,395 → 478,169 → 7,347 px. 3-run det: 598ddbfa×4 → 96668475 → 86990d43 → bd2bad7e → e027b021×2 BYTE-IDENTICAL. Post-F-119: [R358-ANEW] newInstance(I, dims=[3,12]) → [[I | docs/evidence/s65_spotlight/S65_REPORT.md §4 + fr_*.png | EXECUTED+OBSERVED (S10) |
-| **TriPeaks S7 source-first** (eu.veldsoft.tri.peaks, GPLv3, VelbazhdSoftwareLLC/TriPeaksSolitaireForAndroid @ 62f3609 v1.2.1/vc4, APK 52272ae6…): splash → F-115 Timer → lobby (205,638 px, New Game/About Us/Help/Exit) → tap New Game (target=24) → GameActivity onCreate 7905 insns → board 2,073,600 px (green felt + ebinqo art + "Cards Remaining: 23" = app's own state); 52 cards bound listener_id=38 post-F-118; card tap CLICK → GameActivity$1 real handler. Honest stopper: the app's own guard IOOBE via OBJECT-IDENTITY family (recorded §7, deferred). det ×3 | docs/evidence/s65_spotlight/S65_REPORT.md §3 + tp_*.png | EXECUTED+OBSERVED (S7) |
-| **OPMT S6 + chain-to-GameActivity source-first** (one.scarecrow.games.OPMT, GPLv3, 20Nick/OPMT @ 3240c4cf v0.1.2/vc1, APK 4f91e380…; androidx compile-stub + staged themes/layouts per siggen law): menu 6 views, REAL strings "Play with Friend"/"Play with Computer"/"How to play?" (214,144 px); tap → MainMenu$$ExternalSyntheticLambda2 → startActivity → GameActivity <init> 26 insns (F-118) → onCreate 1756 insns → frame diff 461,211 px. Honest stopper: app-own nextInt(0) via empty move list (OBJECT-IDENTITY family); RC=1 deterministic every run. det ×3 | docs/evidence/s65_spotlight/S65_REPORT.md §5 + opmt_*.png | EXECUTED+OBSERVED (S6) |
-| **F-118 activity-constructor law (R-NEW-385 ROOT-CAUSED-FIXED)**: G08 startActivity path skipped <init> — field-initialized listeners stayed typed-zero (TriPeaks 52 dead taps; [EXP060] listener_id=0). AOSP Instrumentation.java:1448 newActivity → constructor contract. Fix in consume_pending_intent with [G08-LIFECYCLE] record; 3 consumers day one (TriPeaks, FishRings, OPMT) | docs/evidence/s65_spotlight/S65_REPORT.md §3 | ROOT-CAUSED-FIXED |
-| **F-119 X.TYPE + primitive-array descriptor law (R-NEW-386 ROOT-CAUSED-FIXED)**: [SGET-MISS] Integer.TYPE → null matrix → aput-null NPE (FishRings 3 uncaught, rc=1). OpenJDK Integer.java:106 TYPE = Class.getPrimitiveClass("int") + Array.java:74/110. Laws: X.TYPE for 9 box classes → I/Z/B/C/S/J/F/D/V; Array.newInstance primitive components → "[I"-style descriptors recursively. After: [[I matrix, rc=0, S10. TicTacToe R-NEW-358 Button[][] golden PASS on the changed path | docs/evidence/s65_spotlight/S65_REPORT.md §4 | ROOT-CAUSED-FIXED |
-| **OBJECT-IDENTITY family REGISTERED** (new open family): field/array-element object-ref identity churn (cardsViews[] element comparisons fail; listener field 38→273 churn evidence) blocks TriPeaks S8 + OPMT S7+; forensic trail in run logs; NEXT highest-leverage target — field-initialized listeners are an extremely common app pattern | docs/evidence/s65_spotlight/S65_REPORT.md §7 | OBSERVED (open family) |
-
-## 0f. S61 Runtime Spotlight Corpus (Phase A) — the capability-driven sweep
-
-> **S61 corpus law**: selection by Android-capability coverage (not
-> randomness); every APK F-Droid-sourced + SHA-verified; every L-level
-> recorded honestly from run artifacts (screenshots, render-walk traces,
-> lifecycle traces). Canonical data: `docs/corpus/spotlight_manifest.json`
-> + `docs/corpus/spotlight_results.json`; narrative:
-> `docs/corpus/SPOTLIGHT_COVERAGE.md`.
-
-| Bucket | Count | Notes |
-|--------|-------|-------|
-| F-Droid apps fetched (SHA-verified manifest) | **53** | api/v1-driven; idempotent pipeline `scripts/s61_spotlight_fetch.py` |
-| Apps executed in the S61 sweep (budget 60s, real-dalvik) | **52** | `scripts/s61_spotlight_run.py`; per-app run dir + classified.json |
-| Pre-existing corpus apps (earlier sessions) | **9** | dooz v18/v23, Notes, uNote, GM Dice, ChessClock, microtimer, simplestopwatch, headingcalculator |
-| **Total corpus (Phase A)** | **61** | Phase B (100) deferred — pipeline is idempotent |
-| L5 — drawing to framebuffer | **7** | diary (2,073,600 px), tuner (1,823,360), accordion (935,172), pckeyboard (208,440), shorty (44,684), siggen (47,809), schildbach.wallet (5,695) |
-| L4 — real measured geometry | **3** | giggity, ghostsq.commander, jens.automation2 |
-| L2 — Activity/lifecycle dispatched | **39** | modern androidx/recycler/compose-heavy apps |
-| L1 — DEX/class loading, lifecycle incomplete | **3** | bouncy (libGDX/SurfaceView), two solitaire suites — honest frontier faces |
-| Simple Games Spotlight subset | **8** (+3 pre-existing L7 games) | minesweeper, ludo, memory, sgtpuzzles, solitaire ×2, 2048, bouncy |
-
-**Sweep evidence**: `run/s61_spotlight/<package>/` (screenshot.png +
-SHA256, stderr trace, report.md, classified.json per app).
-
-## 0g. S72 WAVE 4 — NEW real game (AndroidGameSnake) → MEANINGFUL SCREENSHOT + 3 P0 law families
-
-| Achievement | Evidence | Status |
-|---|---|---|
-| **AndroidGameSnake S10/L6+ SCREENSHOT-PROVEN source-first** (zhangman.github.snake, Apache-2.0, zhangman523/AndroidGameSnake @ b4968c39 v1.0/vc1, APK 54cf48a9…): real-time game-loop family — launch → ConstraintLayout UI (F-148 geometry: snake_view 1080×780, biased button pad) → tap START → CLICK → reStartGame → GameMainThread (Thread subclass self-run law) → 2 ticks/frame EXACT (125ms sleep @ 250ms frame-delay, F-150 wake-time scheduler) → direction taps steer the snake cell-by-cell (BOTTOM/RIGHT/LEFT chains; app's reverse-guard honored) → food (0,0) blue + snake #FF4081 cells painted by the app's own onDraw (801 canvas ops/frame). Final frame: 122314 px non-white, luminance 248.87, entropy 0.3679, dominant #6fa8dc/#ff4081/#0000ff, snake [(7,10),(8,10),(9,10)] + food [(0,0)]; determinism ×3 BYTE-IDENTICAL (pixel sha 1a419545419deb3a, PNG sha 958031dc…) | docs/foundation/S72_WAVE4.md + docs/evidence/s72_w4_snake/ (frames + APK + SHA256SUMS) | **EXECUTED+OBSERVED (S10/L6, SCREENSHOT-PROVEN)** |
-| **F-148 ConstraintLayout anchor family ROOT-CAUSED-FIXED (P0)**: layout_constraint* attrs unparsed → children 0-wide/stacked; now parsed + per-axis topological solver subset (MATCH_CONSTRAINT spread, bias 0.5, one/no-anchor laws, replay contract). Regressions: corpus 10/10 + fixtures 25/25 pixel-SAME | S72_WAVE4.md §2 | ROOT-CAUSED-FIXED |
-| **F-149 Resources.getDisplayMetrics + TypedValue.applyDimension + device-density unity ROOT-CAUSED-FIXED (P0)**: three stacked silent-null/zero gaps (§038) — app dp2px computed 0px → onMeasure 0x0; now the ONE device law (2.625/420 @1080×1920) across getDisplayMetrics + applyDimension bridge + singleton | S72_WAVE4.md §2 | ROOT-CAUSED-FIXED |
-| **F-150 Thread game-loop family ROOT-CAUSED-FIXED (P0)**: 4 stacked roots (sleep no-op shadow; subclass-descriptor receivers — javac emits GameMainThread.sleep; starts drained only in parks; no yield-resume) → hierarchy-aware is_thread_receiver + frame-boundary start/yield drains + wake-time registry. The while(!done){tick;sleep;} family (bouncy wall, secuso walls) becomes reachable | S72_WAVE4.md §2 | ROOT-CAUSED-FIXED |
-| **Constitution-impact re-test (185 rules)**: fresh 10-APK corpus re-run on the unchanged W3 binary = 10/10 pixel-identical, dooz ×3 byte-identical (baselines reproduce, nothing rotted); dooz 197→23472 px / unote recovery / fishrings board stand as measured constitution-era deltas; F-146/F-147 re-probed UNCHANGED (still OPEN — honest) | run/s72_w4_corpus + run/s72_w4b_corpus | RE-VALIDATED |
-
-## 0h. S73 — GitHub Execution Ledger + Historical Evidence Audit + AUTONOMOUS Snake Gameplay
-
-| Achievement | Evidence | Status |
-|---|---|---|
-| **AndroidGameSnake AUTONOMOUS GAMEPLAY** (real APK, real input chain, no state injection / no renderer bypass / no screenshot fabrication): iterative closed-loop controller with pixel-only vision (#FF4081 snake / #0000ff food, 20×20 grid) + 23 scheduled real taps (x,y@frame) through the canonical TouchDispatcher DOWN/UP pipeline (F-117 scheduled-input extension; legacy form verified byte-identical to W4 evidence 1a419545419deb3a) → **88 moves, 22 accepted turns, 1 FOOD CAPTURE (frame 34: growth 3→4, snake-cell px 3042→6084, food respawn (0,0)→(9,0)), no game-over**; 3-run reproducibility **3/3 IDENTICAL** (90/90 frames, per-frame PNG sha equality) + gameplay_trace.json (C5 schema) + snake_autoplay.gif (39KB, real frames only) + B3 screenshot metrics | docs/evidence/s73_snake_autoplay/ (run_01..03, determinism_proof.json, screenshot_metrics.json, autoplay_summary.json); scripts/s73_snake_{controller,finalize,screenshot_gate}.py | **EXECUTED+OBSERVED (AUTONOMOUS, 3/3 BYTE-IDENTICAL)** |
-| **C4 game-law probes via real taps (app logic authoritative)**: reverse-direction guard REJECTED (LEFT while moving R → direction stayed R); **WRAP LAW discovered** — head (19,10)→(0,10), walls wrap, no wall death; self-collision game-over OBSERVED (engineered head re-entry into occupied (5,10); panel → game-over surface 1,868,783 px); restart via START after game-over NOT observed (honest open — possible Dialog path) | run/s73_snake_c4/c4_probe_report.json + run/s73_snake_c4b/c4b_report.json | OBSERVED (app-specific laws) |
-| **GitHub canonical execution ledger**: 14 [EXEC] issues (#10–#23), one per tracked application, duplicate-checked; 15 labels; dated evidence comments on #13–#23; #10/#11/#12 closed as documented completed states (HelloWorld golden, TicTacToe 9-click ×3, ConnectFour 24-step hash chain) | github.com/Sh-TB/MiniAndroid-Compatibility-Runtime issues #10–#23; scripts/s73_github_{issues,comments}.py | IMPLEMENTED (live ledger) |
-| **Historical evidence audit (B1–B4)**: 10 canonical APKs + snake re-executed on the rebuilt-from-HEAD binary (rebuild fidelity proven: dooz ×3 0e334abe1b10b592 + snake W4 recipe 1a419545419deb3a byte-identical to stored records); per-app pixel faces recorded (unote 231120 / bouncy 2073600 / gmdice 182628 / microtimer 1041437 / fishrings board 2073360 frames 4–8 / opmt 213286 / tripeaks lobby 205638 / tictactoe blank-class face consistent with S51 record) | run/s73_corpus/; docs/evidence/S73/S73_REPORT.md §2 | RE-EXECUTED+OBSERVED |
-| **DOOZ METRIC RECLASSIFICATION (honest)**: the "23472 px real content" surface = 23,472 PURE BLACK pixels forming a (0,0)–(489,47) rectangle, BYTE-IDENTICAL to Stopwatch's frame (an app with NO launchable Activity) → engine-default black region, NOT dooz content; dooz's own UI remains unrendered; F-146/F-147/F-145 unchanged and exact; F-141 stays CLOSED; dated correction in #14 (no history rewritten) | run/s73_corpus/{dooz_23_toplevel,com.github.muellerma.stopwatch_6}/ + issue #14 comment | RECLASSIFIED (honest) |
-| **Regression**: fixtures 25/25 rc=0 with zero f141-throws; corpus re-run; dooz det ×3; snake autonomous ×3 identical; zero regressions on the rebuilt binary + F-117 extension | run/s73_fixtures/; S73_REPORT §6 | REGRESSION-CLEAN |
-
-## 0k. S75 CLOSURE — ledger truth closure + A7 P0 fix + queued-lead probes (runtime wave: A7 only)
-
-| Achievement | Evidence | Status |
-|---|---|---|
-| **A7 FIXED (the last P0 "law known, no code" census gap)**: manifest label/icon REFERENCE resids captured at parse (literal "@0x…" degrade removed) + `ManifestReader::resolve_resid_string` ARSC resolve wired at the ResourceRuntime ensure_loaded site (AOSP PackageParser labelRes/loadLabel law; resolution failure reported, never invented) | miniandroid/src/apk/manifest_reader.{h,cpp}; src/runtime/execution_engine.cpp; docs/foundation/s75/S75_REPORT.md §2 | **IMPLEMENTED+TESTED (f54 fixture)** |
-| f54_manifestlabel fixture: `android:label="@string/app_name"` resolved through ARSC → "F54 LabelProof" in engine.log `[A7]` line + ViewTree; icon resid captured (decode honestly NOT claimed) | docs/evidence/foundation/fixtures/f54_manifestlabel/; upload/foundation_apks/f54_manifestlabel.apk (sha 0464ebf8…) | **PROVEN (6/6 asserts)** |
-| ITEM75 ledger closure audit: all 47 UNVERIFIED census rows reconciled against gap-matrix FULL rows + live code (file:line cited) + registry; ROOT CAUSE of the blanket UNVERIFIED found (ledger builder truncated matrix rows at column 2 — status columns never seen) and fixed | docs/audit/ITEM75_CLOSURE.md + item75_closure.json; scripts/audit/item75_closure.py | 19 TESTED / 11 PARTIAL / 17 PENDING, 0 conflicts |
-| Master ledger truth refresh: UNVERIFIED 59 → 4 (only source-not-recoverable rows remain); CRITICAL-001/005/006 → OBSERVED; CAM-S74OPS → OBSERVED; ledger 375 rows | docs/audit/MASTER_CHECKLIST.md; scripts/audit/build_master_audit.py (full-row fix) | RECONCILED |
-| Level C fidelity on the A7 binary: committed snake 23-tap schedule replayed fresh → **90/90 frames byte-identical** (A7 render-neutral, proven) | docs/evidence/s75/snake_fidelity_probe/; scripts/s75_fidelity_probe.py | **REPRODUCED (90/90 BYTE-IDENTICAL)** |
-| Regression: battery 26/26 rc=0 (25 + f54) + verifier 24/24 + graph validator PASS | docs/evidence/foundation/fixtures/VERIFICATION.json | REGRESSION-CLEAN |
-| dooz F-146/F-147 re-probed at HEAD: both escapes reproduced (same sites); NEW OBSERVATION — F-147's null receiver is p0 (frame this) itself, consistent with secondary-to-F-146 (recorded, not claimed as law); black region 23,472 px bbox (0,0)–(488,47) byte-consistent | docs/evidence/s75/dooz_f146_probe/ | OBSERVED (open lead advanced) |
-| gmdice roll-visibility lead reproduced with sharper detail: listener path fires (view 39 "3D20", click_kind=listener) but roll render byte-identical (0 changed px) | docs/evidence/s75/gmdice_roll/ | REPRODUCED (open) |
-| snake restart-after-game-over re-probed at HEAD (S73 C4B design verbatim, schedule recovered from committed trace): game-over OBSERVED at frame 94 (exact S73 match); restart via START@99 still NOT observed — honest open re-verified | docs/evidence/s75/snake_restart_probe/; scripts/s75_snake_restart_probe.py | REPRODUCED (open re-verified) |
-| R-NEW-388 re-verified at HEAD instead of unfounded implementation: f14 RL anchor laws hold exactly (x=780 / (340,760) / y=300); TriPeaks still splash-blocked (app-specific) | docs/foundation/s75/R-NEW-388_HEAD_REVERIFY.md; docs/evidence/s75/rnew388_{f14,tripeaks}/ | CONFIRMED (no code change warranted) |
-
-## 0j. S74 FOLLOW-UP — operational base completion (evidence wave; runtime untouched)
-
-| Achievement | Evidence | Status |
-|---|---|---|
-| All 14 canonical apps executed at HEAD `3505591b` with per-app sandbox data roots; 10 real-APK runs + 2 golden-fixture validator runs + 2 reused committed proofs (snake per §8, helloworld golden) | docs/evidence/s74_ops/*/session.json | **EXECUTED (14/14 dossiers audited)** |
-| Human-visible representative evidence per app, each frame individually opened and reviewed by the executing agent before status assignment | docs/evidence/s74_ops/<app>/0*.png | **11 HUMAN_VISIBLE / 3 truthful NOT_HUMAN_VISIBLE** |
-| Unote real SQLite persistence: notes.db created on launch, survives close/reopen in same data root (sha 2bccf9475fe3810d unchanged) | docs/evidence/s74_ops/unote/ | **OBSERVED (first corpus persistence proof)** |
-| MicroTimer real input->state->render at HEAD: keypad clicks populate display (00:09:87) | docs/evidence/s74_ops/microtimer/05_frame_006.png | **OBSERVED at HEAD** |
-| TriPeaks lobby newly proven at HEAD (splash->lobby at frame 7; 205,061 px) | docs/evidence/s74_ops/tripeaks/02_lobby.png | **NEW current-HEAD evidence** |
-| Telegram v12.10.3 (official URL, sha-pinned) re-executed at HEAD: engine-default visual, init NPE family recorded truthfully; historical EXP071 SmsView path preserved | docs/evidence/s74_ops/telegram/session.json | **HONEST BLOCKER EVIDENCE** |
-| Validator extended with §35 operational gates (visual-evidence claims, session/SHA presence, evidence links, persistence/security truthfulness, utilization consistency) — immediately caught 3 real inconsistencies (connectfour bundle path x2, tictactoe blocker field) which were then fixed | tools/validate_compatibility_graph.py | **PASS (extended)** |
-
-## 0i. S74 — Compatibility Platform (architecture wave; runtime untouched)
-
-| Achievement | Evidence | Status |
-|---|---|---|
-| **Level C fidelity probe (real APK, byte-identity)**: the exact S73 autonomous schedule (23 scheduled real taps) replayed fresh on the current binary → **90/90 frames byte-identical vs the committed `run_01` evidence** — the binary+evidence pair at S74 HEAD reproduces proven results with zero runtime drift (S74 made NO runtime code changes; architecture-only wave) | run/s74_fidelity_probe/; scripts/s74_fidelity_probe.py | **REPRODUCED (90/90 BYTE-IDENTICAL)** |
-| **Level A fixtures on the current binary**: 25/25 rc=0, f141-throws=0 (exact S73 record match) | run/s73_fixtures/ (S74 re-run) | REGRESSION-CLEAN |
-
-## 1. Master matrix — current-HEAD verdicts
-
-Verdicts at HEAD `8c575f71` + F-080/F-081 (S54) unless marked **[S53]**
-(HEAD ef569eda+). All 25 corpus rows re-audited at S54; five interactive
-apps re-RUN with fresh screenshot pairs (9/9 JPGs byte-identical to the
-S53 gallery before the F-080/F-081 engine fixes — deterministic replay
-across HEADs proven; gmdice/chessclock re-captured after the fixes as the
-fixes legitimately change their frames).
-
-| # | App | Version | APK SHA256-16 | Source | Result | Ladder | Persistence |
-|---|-----|---------|---------------|--------|--------|--------|-------------|
-| 1 | Chess Clock | 2.11.2 (vc29) | `5ca6f2c54c05efe7` | F-Droid | **SUCCESS — L7** **[S54 UPGRADE]**: real clock face restored by F-080+F-081; P1/P2 panels, active-player accent; click → active-player switch (80,289 px) | L4 → **L7** | PARTIAL (prefs round-trip [S52]) |
-| 2 | uNote | 30 | `be91103f0e7db443` | F-Droid | **SUCCESS [S56 UPGRADE]**: main-menu input chain PROVEN — R-NEW-368 premise REFUTED (old probe grid never covered the bottom-44px button band y=1876..1920); canonical tap (270,1898) → DOWN consumed (target=13 Add note) → UP click → app's own addNote → startActivity **NoteEdition** launched | L5; **L6 input→navigation PROVEN** (persistence ladder next) | PARTIAL (notes.db round-trip; editor input pending) |
-| 3 | Bouncy (ball) | 39 | (registry) | F-Droid | **SUCCESS** (S51 era; APK not re-fetched at S53 — corpus SHA mismatch) | L5 (frame `4219c511…`) | NOT TESTED |
-| 4 | Heading Calculator | 1 | `274ec873098eea51` | F-Droid | **SUCCESS — L7**: full keypad UI; digit click → display text changes | L5→**L7** | NOT TESTED |
-| 5 | Notes (billthefarmer) | 139 | `82cf8bc44c163748` | F-Droid | **SUCCESS — L7 [S55 UPGRADE]**: F-082 restores the ViewSwitcher read↔edit state machine — FAB click → face swap (2,057,718 px, 99.23%); note CONTENT stays blank-class (read face = MarkdownView **extends WebView** — R-NEW-377 next dep) | L4 → **L7** (content face blocked) | NOT TESTED |
-| 6 | MicroTimer | 8 | `79c6f730f64886e7` | F-Droid | **SUCCESS — L7**: keypad UI; click → `00:00:00` timer display appears | L5→**L7** | NOT TESTED |
-| 7 | Simple Stopwatch | 26 | `b3ec1a5ec24ce53b` | F-Droid | **SUCCESS — L7**: Start/Delay → **Stop/Lap** running-state transition | L5→**L7** | NOT TESTED |
-| 8 | GM Dice | 8 | `1621eda11b5dbc0c` | F-Droid | **SUCCESS — L7/L9-quality**: 8/8 clicks state-changed; dialog roll rendered (1.85 M px); post-F-081 base additionally renders the result label | L5→**L7 + app-specific semantic result** | NOT TESTED |
-| 9 | Simple Keyboard | 145 | `d83060833dc2bc97` | F-Droid | SUCCESS (entry screen — IME, no launch UI) | L5 (entry class `eb16ab5c…`) | NOT TESTED |
-| 10 | RTTT (kirkezz) | 1.3 (vc3) | `704fa51869ad7ff4` | F-Droid | SUCCESS (entry screen; Compose frontier) | L5 (entry class) | NOT TESTED |
-| 11 | Dooz v18 | 18 | `d81292cd346dcb23` | F-Droid | **PARTIAL [S55]** — R-NEW-361 **ROOT-CAUSED + FIXED (F-083)**: ScatterMap ghost-metadata probe spin eliminated (HALT-LOOP gone; MainActivity.onStart/onResume dispatched for the first time); new frontier **R-NEW-376** pinned (post-F-083 ctor-climb exceeds the 2048-frame budget) | L3 → L4-in-progress (composition runs, first frame not yet reached) | NOT TESTED |
-| 12 | Dooz v23 | 23 | `299eab21ac8b3c61` | F-Droid | **PARTIAL [S60]** — R-NEW-380 **ROOT-CAUSED + FIXED (F-106 reflection-surface law family: getDeclaredConstructor full upstream contract + getModifiers/Modifier bit laws + Class.toString token law; unmodifiableMap view law; Long.toString(J,I) radix law)**: the create chain resolves through the app's OWN Hilt factory (Lk2; case-1 SavedStateHandle machinery; Lqs;/Lxd0; attach OK) and the GameViewModel constructs with its real SettingsRepository dependency — ZERO exceptions in the post-fix run (was the throwing-factory RuntimeException at depth 81); the run reaches the healthy frame loop (MainActivity.onStart/onResume dispatched; Choreographer machinery alive). Successor frontier **R-NEW-381** (first frame dark — the Compose draw path; same face as the S59 post2 evidence). Prior: R-NEW-379 FIXED (F-105), R-NEW-376 FIXED (F-102), R-NEW-344 FIXED (F-086). Battery ALL PASS 96; semantic 32/32 | L5 → L5+ (creation chain closed; draw path open) | NOT TESTED |
-| 12 | Dooz v23 | 23 | `299eab21ac8b3c61` | F-Droid | **PARTIAL [S59]** — R-NEW-379 **ROOT-CAUSED + FIXED (F-105: ComponentActivity view-tree owner contract + declaration/heap reference reconciliation + CLASS_REF token instance-of)**: the lifecycle-owner walk now HITS the owner (installed on the activity-as-view node; the app dialog machinery propagates it onto the decor in its own DEX), ISE ×4 → 0; the Lwl0;.containsKey Class-key guard passes (F-105c); execution advanced depth 8 → 81; next frontier **R-NEW-380** (ViewModelProvider create chain — the throwing factory fallback, empty class-name render) pinned. Prior: R-NEW-376 FIXED (F-102), R-NEW-378 FIXED (F-103). Deterministic (S58 record sha16 ef47a2d3cdc6929e ×3; the S59 state advances deeper, honest new face) | L4 → L5- (past ViewTreeLifecycleOwner; dies inside ViewModelProvider create) | NOT TESTED |
-| 13 | TicTacToe (emmanuelmess) | 3 | `760fe5acf7b39435` | F-Droid | PARTIAL — blank first frame | L4 (blank class) | NOT TESTED |
-| 14 | Telegram v12 | 12.10.1 (vc70389) | `f5e1192725772960` | telegram.org | **PARTIAL** — 540 s inside real init, no frame yet | L3-attempt (init depth) | NOT TESTED |
-| 15 | WhatsApp | — | **NO APK** (0-byte placeholder) | — | **BLOCKED — APK unavailable** | — | — |
-| 16 | Stopwatch (muellerma) | 6 | `3b6a10c8dc8ddc72` | F-Droid | PARTIAL — manifest has NO launchable Activity (QuickSettings Tile app) | L2 (by design) | — |
-| 17 | BGClock | 2 | `72c140b0083ef273` | F-Droid | PARTIAL — WebView root (clock face is HTML/JS) | L4-minus (frame `2f85dd74…`) | NOT TESTED |
-| 18 | TicTacToe (itsfrz) | 1.0.5 (vc5) | `2a057a9a519acd81` | F-Droid | PARTIAL — NPE at app boundary | L3 | NOT TESTED |
-| 19 | Privacy Friendly Dicer | 2.0.0 (vc101) | `f2b4d3f021c3a620` | F-Droid | PARTIAL — ISE at app boundary | L3 | NOT TESTED |
-| 20 | OpenLauncher | 39 | `b3320463a7a1ed46` | F-Droid | PARTIAL — heavy launcher, default screen | L5 (entry class) | NOT TESTED |
-| 21 | Simple Flashlight | 66 | (corpus) | F-Droid | PARTIAL — app-boundary, default screen | L5 (entry class) | NOT TESTED |
-| 22 | Antimine | 17.6.3 F | `e7b635b6629bc5b0` | F-Droid | PARTIAL — killed at 300 s; reaches MainActivity.onCreate | L3-attempt | NOT TESTED |
-| 23 | Secuso Memory / Sudoku | 8 / 19 | (corpus) | F-Droid | PARTIAL — >300 s each, killed | L3-attempt | NOT TESTED |
-| 24 | Secuso 2048 / Lexica | 1.4.2 / 3.13.1 | `02c799d3d582669d` / `255d26352ab1247c` | F-Droid | NOT re-run — historical EXEC BUDGET TIMEOUT (540 s heavy) | L3-attempt | NOT TESTED |
-| 25 | s36/s37 game corpus (solitaire, braincup, minesweepers ×3, word game, puzzle, dice overflow, roll, game2048, yahtzee dicer, droidify) | various | (corpus) | F-Droid | NOT re-run this session — era records stand | era records | NOT TESTED |
-| 26 | Tiny Music Player | 1.0 | `d7bcb24d101b04be` | F-Droid | era record (campaign014) | era record | NOT TESTED |
-| 27 | TicTacToe Classic (palahsu) | ? | `752852c94c980788…` | legacy cache | **BLOCKED — APK unavailable** (cache lost; F-Droid `com.palahsu.ttt` NOT_FOUND at S54); historical S37 full-render + S44 playable record stands at its recorded HEADs | era: L9 | — |
-
-**Count summary (S57, HEAD 28b644b7+F-086):** SUCCESS with real recognizable
-GUI **6** (Chess Clock, GM Dice, MicroTimer, Simple Stopwatch, Heading
-Calculator, uNote) + **Notes upgraded to L7 mode-switch** (content face still
-blank-class — WebView end-to-end probe pinned) — **6 with proven input→state-change
-screenshot pairs** (GM Dice additionally renders the app-specific dice-roll
-result) · entry-class 2 · PARTIAL 13 · BLOCKED 2 (WhatsApp no APK; TicTacToe
-Classic no APK) · persistence storage-round-trip verified 2 · S57 corpus
-gate re-run at F-086 HEAD: chessclock 2,040,736 nb, notes 2,073,600 nb,
-unote 236,520 nb (run/s57_corpus).
-
-## 2. In-repo fixture achievements (strongest ladder proofs)
-
-| Fixture | What is proven | Ladder | Evidence |
-|---|---|---|---|
-| **tictactoe_golden** | 9 scripted taps, X→O→X chain, **win state detected**, pixel-deterministic replay | **L9** | battery §29 ("tictactoe_golden PASS, interaction 9/9") |
-| **helloworld_golden** | 18-check golden render (typography, density) | L5 | battery §28 |
-| **hello_widgets** | most advanced View-world render: ImageView drawable + EditText + Button + TableLayout 3 rows + RelativeLayout layout_below (2,059,104 non-white px golden) | L5 | S38/S39 records |
-| **hello_smoke** | click → setText state change under LinearLayout | L7 | S38 record |
-| **s38_shift_law** | androidx.collection ScatterMap long-arithmetic law probe (7 laws, 26 checks) | law probe | S38 record |
-| EXT-01/02 HelloWorldSelfAware | external APK re-fetched + SHA-verified (`009b4671…`), typography 9/9 + interaction 12/12 checks | L7 | battery G48 stages; §3.0 card |
-| density_matrix / G06-G08 / M3 chain | toolchain fixtures, 3-run determinism, ARSC/style chain | — | battery 94/94 |
-| F-0xx law chain | F-012/016/020/024/025/026/027/028/030/040/044/050/074/**080**/**081** | — | battery 94/94 |
-
-## 3. Per-app detail cards
-
-### 3.0 HelloWorld — canonical control target (S54)
-
-**HelloWorldSelfAware** `com.appliberated.helloworldselfaware` v1.1.0 · APK
-SHA256 `009b467109c4d48d…` (full-sha verified on fetch) · GitHub release
-(Appliberated, MIT) · Runtime HEAD `8c575f71` (S54)
-- Chain (all stages evidence-logged in the run): APK ZIP parse →
-  AndroidManifest.xml (AXML) → resources.arsc + res/ → resource resolution →
-  classes.dex load → real Dalvik execution → Activity creation → lifecycle
-  onCreate→onStart→onResume → setContentView → View construction → measure →
-  layout → draw (Canvas/text/background) → framebuffer screenshot.
-- Visual proof: **`docs/evidence/s54_frames/helloworld_ext01_base.jpg`** — the
-  app's real text UI rendered on its dark theme ("hello world" + the
-  app-computed device hash "i'm 6f1c3a9d2e5b4780" + version lines). The frame
-  is DARK-CONTENT (98.7% near-black, 256 colors) and passes the refined gate
-  with the battery EXT-01 typography golden (9/9 static checks vs the upstream
-  phone screenshot) as its independent content check.
-- Interaction: EXT-02 long-press → 12/12 interaction checks (real dispatch into
-  the app's DEX handlers, per-frame SHAs in manifest.json).
-- Reproducibility: battery re-run 3× this session — ALL PASS.
-- Known limitations: none recorded for this app at this HEAD.
-
-### 3.1 SUCCESS — full render + input→state-change
-
-**GM Dice** `de.duenndns.gmdice` v8 · APK SHA256 `1621eda11b5dbc0c…` · F-Droid ·
-Runtime HEAD `8c575f71`+F-080/F-081 (S54)
-- Lifecycle: launch→RESUMED, rc=0.
-- UI [gate PASS]: real dice UI — dialog, "Push buttons to roll!",
-  "Long-press buttons to configure dice.", dice bar `1d20 / 1d6 / 1d6+4`,
-  and (new at S54, post-F-081) the rendered result label at base.
-- Input→state change: `--click-test` 8/8 state_changed; most-changed frame
-  renders the dialog roll (1,853,871 px delta). Deterministic: identical
-  roll values `14 · 15 · 15` reproduced across S53→S54 HEADs.
-- Semantic result: dice values produced by app logic and rendered — the
-  strongest corpus-app record in this ledger (L7 chain + app-specific result).
-- Screenshots: `s54_frames/gmdice_base.jpg` + `gmdice_after.jpg` (SHA256 +
-  gate numbers in `s54_frames/SHA256SUMS`; the S53-era frames were
-  byte-identical JPGs before the fixes — cross-HEAD determinism proven).
-- Next: persistence (roll state across close/reopen) → L10.
-
-**Chess Clock** `com.chessclock.android` v2.11.2 (vc29) · APK SHA256
-`5ca6f2c54c05efe7…` · F-Droid · Runtime HEAD `8c575f71`+F-080/F-081 (S54)
-- **[S54 UPGRADE — RENDER_ONLY → SUCCESS/L7.]** The S53 downgrade stood on a
-  real defect, and S54 root-caused and fixed it with TWO generic shared-layer
-  laws (no app-specific code):
-  - **F-080 — Resources.getColor two-arg overload arg-mapping.** The app's
-    `color()` helper compiles to `invoke-virtual {recv, resid, theme}` with
-    `const/4 theme=0 (null)`; the shadow read a fixed slot and resolved the
-    NULL THEME as the resid (`getColor resid=0x0` → black) — black text +
-    black buttons on black panels = the "2-color dark blank". Fix: the resid
-    is the FIRST int-typed argument (receiver/Theme are references) —
-    robust under both receiver conventions. Evidence: `[RES] getColor
-    resid=0x7f050005 -> 0xff499ebd` (real ARSC color) after the fix; frame
-    went 99.3% near-black/2 colors → 187 colors.
-  - **F-081 — M3-19 active-cycle key overload-distinct.** The app's
-    `formatTime(J Z)` legally delegates to the `formatTime(J)` overload
-    inside its own active window; the name-only cycle key stubbed the
-    nested overload to null → the clock text was the literal "null".
-    Fix: include the method descriptor in the active-invoke key (JVM/ART
-    method identity is (name, descriptor)-exact). Evidence: `setText
-    text="10:00"` ×2 after the fix; 0 cycle stubs.
-- Visual proof: `s54_frames/chessclock_base.jpg` — the REAL clock face: P1
-  "10:00" dimmed (inactive), P2 "10:00" white with the blue active accent
-  (`0xff499ebd`), divider, dark theme.
-- Input→state change: `--click-test` probed=8 state_changed=3; the
-  most-changed frame (`chessclock_after.jpg`, 80,289 px) shows the
-  active-player SWITCH — P1 becomes active (white + accent), P2 dims.
-  The S52 "tap delta sub-perceptual" observation is superseded: the
-  sub-perceptual delta was the blank-class frame, not the app.
-- Persistence [S52]: `shared_prefs/default.xml` round-trips (storage-class
-  evidence; full L10 ladder now unblocked).
-- ASC [S52]: manifest decode 294 ms (`.ChessClock` launcher, minSdk 21/target
-  25) + `getclass` (BRONSTEIN/FISCHER delay modes, P1/P2 click handlers).
-- Next: L10 persistence ladder (start a clock → close → reopen → state kept).
-
-**MicroTimer** — L7 re-verified at S54 (fresh run): click → `00:00:00` display
-appears (31,863 px, frame byte-identical to S53). `s54_frames/microtimer_*.jpg`.
-
-**Simple Stopwatch** — L7 re-verified at S54: Start → Stop/Lap running-state
-transition (40,915 px, byte-identical to S53). `s54_frames/simplestopwatch_*.jpg`.
-
-**Heading Calculator** — L7 re-verified at S54: digit click → display value
-changes (1,389 px, byte-identical to S53). `s54_frames/headingcalculator_*.jpg`.
-
-**uNote** — [S56: R-NEW-368 premise refuted; L6 input→navigation PROVEN]
-
-S56 HEAD (F-084/F-085). The S52-era verdict "buttons unreachable for input"
-was a PROBE-GRID artifact: the 16 probes (y ∈ 300..1780) never covered the
-bottom-44px band where the main-menu buttons actually live (EXP092-RENDER:
-node 13 Add note at (0,1876) 360×44, node 14 Search (360,1876), node 15
-Quit (720,1876); the LinearLayout row is node 12 at (0,1876) 1080×44).
-Paint rect == touch rect — no geometry-law divergence existed.
-
-Proof (`--tap 270,1898`):
-- `[G06-TAP] DOWN (270,1898) target=13 consumed=1` — canonical hit-test
-  + consume on the Add note button.
-- `[G06-TAP] UP click_posted=1` — UP posted the click.
-- The app's own `NoteMain.addNote` ran → `startActivity →
-  Lapp/varlorg/unote/NoteEdition;` — the editor activity was launched and
-  its onCreate dispatched (its own calls logged).
-
-That is the L6 input→state→navigation chain for uNote's main menu. Next
-ladder rung: NoteEdition input + the notes.db persistence round-trip.
-
-Historical (S54): uNote L5 re-verified at S54 (byte-identical): real list UI (417 colors);
-2/4 small click changes (max 2,011 px); input BLOCKED by **R-NEW-368**
-(paint vs touch-hit geometry divergence; 16-probe grid found no target) —
-honestly not called interactive. Persistence [S52]: notes.db round-trips.
-`s54_frames/unote_base.jpg`.
-
-**Bouncy (ball)** v39 — SUCCESS rc=0 full render at HEAD `1b37afd1`
-(deterministic frame `4219c511…`, s51_audit era). The F-Droid re-fetch at S53
-does NOT match the original corpus SHA — no new verdict recorded. NOT stored
-in the S54 gallery (era evidence).
-
-### 3.2 RENDER_ONLY / downgraded — open roots
-
-**Notes (billthefarmer) — [S55 UPGRADE: RENDER_ONLY → L7 mode-switch; content
-face still blank-class.]** v139 · APK SHA256 `82cf8bc44c163748…` · F-Droid ·
-Runtime HEAD 646952b6 + F-082/F-083 (S55)
-- **S55 tree forensics REFUTE the S53 "ListView item paint" hypothesis:** the
-  v139 main layout has NO ListView. `U007-INFLATE` inflates 7 views, 0
-  unresolved: FrameLayout → ViewSwitcher [ScrollView+EditText (edit face) |
-  MarkdownView (read face)] + FAB ViewSwitcher [2× ImageButton].
-- **F-082 (generic AOSP ViewAnimator law)** — `setDisplayedChild/
-  getDisplayedChild/showNext/showPrevious` were REC-MISS silent no-ops;
-  now implemented on the ViewShadow node model (clamp + showOnly visibility
-  walk + requestLayout). Regression: `tests/view_animator_law_test.cpp`
-  18 checks ALL PASS (battery stage "F-082 ViewAnimator law").
-- Runtime proof: `--click-test` FAB → `animateAccept` → `setDisplayedChild`
-  → face swap = **2,057,718 px delta (99.23% of frame)**, probed=3
-  state_changed=1 (was 0/3 at S53). Frames byte-identical across two runs
-  (`docs/evidence/s55_notes_v2/SHA256SUMS`: cf521b16… / ae697935…;
-  census + deltas in census_delta.json).
-- **Content face root cause PROVEN (R-NEW-377):** the read face is
-  `Lorg.billthefarmer.markdown.MarkdownView;` which **extends
-  `Landroid/webkit/WebView;`** (verified by the runtime's own dex parser).
-  `getSettings/setWebViewClient` REC-MISS → the markdown load pipeline
-  never starts → honest inline placeholder (C013-CUSTOMVIEW). Editor face
-  (ScrollView+EditText) inflates, measures, renders; fresh data dir =
-  empty note is CORRECT behavior.
-- Next dependency (pinned, P1 shared framework): a generic WebView content
-  model. App-specific markdown rendering is forbidden by the campaign scope
-  laws (§25-family). Screenshot: NONE stored for the content face (blank
-  class, per policy); the mode-switch pair is recorded as SHA256 + census
-  text only (both frames blank-class).
-
-### 3.3 PARTIAL — open roots (the honest frontier)
-
-**Dooz v18** — **[S55: R-NEW-361 ROOT-CAUSED + FIXED by F-083; new frontier
-R-NEW-376 pinned.]** The v18 face (HALT-LOOP `Lh/r;.c` → aput-oob) was
-DOWNSTREAM of the real defect: the 56th `Ln/a;.r` (Kotlin LongArray-fill
-helper) invocation entered `try_recursive_invoke` at depth=80 ==
-MAX_RECURSION_DEPTH and was silently dropped (EXP-053 law: ~80KB C++ stack
-per DEX frame → 80-frame cap under the 8MB process stack). The dropped void
-initializer left map o5051's metadata at heap-zero; the subsequent sentinel
-write produced ghost bytes (`0xff007f6600000000`, zero EMPTY 0x80 —
-[R361-STORE] traces) → the findImpl probe never terminates. **F-083**
-(generic): cmd_run executes on a dedicated 1GB-virtual-stack thread;
-MAX_RECURSION_DEPTH 80 → 2048; the limit-drop is ALWAYS loud
-([RECURSION-LIMIT] stderr). Post-fix: no HALT-LOOP, no aput-oob, metadata
-init correct (`0xff80808080808080` on healthy maps),
-MainActivity.onStart/onResume dispatched for the FIRST time in campaign
-history. Key traces: `docs/evidence/s55_dooz/` (SHA256SUMS). New frontier
-**R-NEW-376**: Compose init ctor chains exceed the 2048-frame budget
-(9 cap-climbs; j0/t0/E0 hop evidence captured) — next steps ranked in the
-registry entry.
-
-**Dooz v23** — PARTIAL: deterministic pipeline completion; first frame = blank
-Compose class `31ddd4d5…` (×4+ runs). Root **R-NEW-344** (Recomposer suspends
-without re-posting frame callback). Blank frame is NOT an achievement.
-
-**Telegram v12** — PARTIAL: 540 s inside real init (989k log lines, SafeIterableMap
-cycle-stub, 400 REC-MISS), no frame. ASC startup card ranks: REC-MISS
-static-init surface → SafeIterableMap iterator law → NativeLoader boundary.
-
-**WhatsApp** — **BLOCKED — APK unavailable** (0-byte placeholder proven; no
-unauthorized acquisition per §30). Historical u011_3 probe stands at its HEAD.
-
-**TicTacToe (emmanuelmess)** — blank first frame (Compose/libGDX family).
-**BGClock** — WebView root boundary. **muellerma Stopwatch** — no launchable
-Activity (L2 by design). **itsfrz TicTacToe / Privacy Friendly Dicer** — app
-boundary. **Antimine / Secuso memory / sudoku** — >300 s kills. **TicTacToe
-Classic (palahsu)** — APK lost with legacy cache, F-Droid NOT_FOUND (S54);
-historical S37 full-render + S44 fully-playable records stand at their
-recorded HEADs; re-verification BLOCKED until the APK is re-obtained.
-
-## 4. Persistence testing (S52 experiment, section-14 protocol)
-
-Method: two runs with the SAME `--data-root`; compare data-root tree + frames.
-Both S52-tested apps were blank-class then, so these are storage-layer
-round-trip proofs only. With ChessClock now L7, the full state-delta ladder
-is unblocked and scheduled.
-
-| App | data-root artifact | Survives reopen? | State delta observable? | Verdict |
-|---|---|---|---|---|
-| Chess Clock | `com.chessclock.android/shared_prefs/default.xml` | YES | no (tap state in-memory by design) | **PARTIAL** — storage round-trip VERIFIED |
-| uNote | `app.varlorg.unote/databases/notes.db` | YES | no — input blocked (R-NEW-368) | **PARTIAL** — storage round-trip VERIFIED |
-
-## 5. ASC reconnaissance ledger (S52, unchanged)
-
-Tool: **Droid ASC (MG1937/ASC)** v0.1.1.post1 @ `3279d9dd…`, LOCAL venv
-(gitignored). Reconnaissance helper ONLY — never a substitute for runtime
-evidence; no ASC output committed; claims cross-checked at runtime.
-
-| Query | Target | Time | Outcome |
-|---|---|---|---|
-| `getmanifest` | chessclock vc29 | 0.29 s | launcher + Prefs + sdk levels |
-| `listclass`/`getclass` | chessclock | ms | fields/handlers recon |
-| `findrefs` | chessclock | ms | ref-search semantics validated |
-| `getmanifest` | Telegram v12 (73 MB) | 0.32 s | ApplicationLoaderImpl + LaunchActivity |
-| `getclass` ×2 | ApplicationLoader(+Impl) | s | full startup-path law list |
-| `findrefs type` | SafeIterableMap | s | LiveData/SavedStateRegistry consumers |
-| `getclass` | Dooz18 `Lh/r;` | s | ScatterMap.set loop → R-NEW-361 candidates |
-| `getmanifest` | WhatsApp placeholder | — | exposed 0-byte file → BLOCKED provable |
-
-S54 added: bytecode-level disassembly (androguard probe, saved as
-`scripts/forensic/s54_chessclock_disasm.py`) of `ChessClock.color` /
-`formatTime` — this is what pinned F-080/F-081 to exact DEX shapes.
-Compact cards: `docs/evidence/s52_asc/`. Raw decompiled files stay
-LOCAL-ONLY.
-
-## 6. Screenshot policy (binding)
-
-A screenshot may be committed only if: real recognizable UI · proves something
-text alone cannot · linked to an entry above · SHA256 recorded · deterministic
-name · ≤100 KB JPG · **passes the gate** (§0 refined law; checker
-`scripts/s54_image_audit.py`, gallery emit `scripts/s54_gallery_emit.py`).
-
-**Canonical gallery: `docs/evidence/s54_frames/`** (12 gate-passing JPGs +
-`SHA256SUMS` with per-file gate numbers; REJECTED section records the
-blank-class refusals). Era galleries: `s53_frames/` (9 JPGs, superseded by
-this file but kept for provenance — 9/9 byte-identical JPGs were re-produced
-at S54 pre-fix, proving cross-HEAD determinism), `s51_audit/` (6 meaningful
-era JPGs). No gallery is generated for its own sake.
-
-## 7. Historical records (superseded pointers)
-
-- `docs/EXECUTION_ACHIEVEMENTS.md` — S52/S53 canonical; absorbed HERE at S54.
-- `docs/evidence/SCREENSHOT_INDEX_S51.md`, `SCREENSHOT_INDEX*.md` — era records.
-- `docs/history/campaign-reports/`, `docs/evidence/{campaign014,MASTER4…}` —
-  era evidence. **Divergent-lineage caution (S54):** campaign reports dated
-  Sep 9–15 reference HEADs (`8de5382b`, `d202e43d`, `12cf043f`, `4931f8a4`,
-  `7dc70e9c`, `f60634e4`, `e2e91928`) that are NOT objects in this
-  repository — those sessions ran in divergent workspaces. Any claim sourced
-  ONLY from those reports is treated as unverified here unless independently
-  re-proven at a canonical HEAD. (The equivalent laws F-028/F-028h/F-029
-  exist in this lineage via `52e4a5c5`.)
-- `docs/achievements/*.png` (untracked residue): the gate rejected
-  `chessclock_rendered.png` (SHA-16 `e4a2d7c90cd2fd26` = the EXACT S53
-  blank-class frame — an old "achievement" image that was actually the
-  blank frame; refusal recorded). The remaining 7 PNGs have no provenance
-  chain in this repo and are not presented as achievements.
-
-## 0l. S76 — the queued leads EXECUTED: producer traces → root fixes, second interactive app, dialog restart (runtime wave)
-
-| Achievement | Evidence | Status |
-|---|---|---|
-| **F-146 ROOT-CAUSED+FIXED**: dooz producer trace (s76_g8_disasm.py full disasm of Lg8;.a) proved the pc=569 null receiver's def is `File.getAbsoluteFile()` at pc=565/568 — R-NEW-390 (never-null File-returning sibling of getAbsolutePath) + R-NEW-391 (getCanonicalFile/Path for the DataStore singleton guard) close the chain; dooz now runs through the guard into protobuf schema init; new first divergence F-152 (Llt0;.w pc=808) registered | src/dex/dalvik_engine.cpp (R-NEW-347 block); docs/evidence/s76/dooz_f146_upstream/; docs/foundation/s76/S76_REPORT.md §1 | **FIXED+PROVEN (escape gone, chain moved deeper)** |
-| **gmdice roll made VISIBLE (second interactive app)**: three stacked roots — R-NEW-392 (TextView SUBSUMPTION law: Button.getText dispatches via is_subclass_of ancestry walk), R-NEW-393 (View.getBackground() themed-widget non-null law + Drawable.setColorFilter tint record) — onCreate completes 5/5 buttons live; first click diff 1,511,441 px (S75: 0); roll results "6"→"5" render on the result view | src/dex/dalvik_engine.cpp; src/framework/android_shadows.cpp; docs/evidence/s76/gmdice_roll_visible/ (frames + manifest visible_texts) | **PROVEN (click→roll→render)** |
-| **snake Dialog-restart hypothesis CONFIRMED+EXERCISED**: static DEX proof (showMessageDialog → AlertDialog "Game Over!" → positive "重新开始" → reStartGame); R-NEW-394 dialog decor LAYOUT + topmost-window TOUCH law (decor node bounds mirroring painter geometry; decor_root_at routing); tap (758,1022)@99 after game-over@94 → RESTART OBSERVED (fresh game runs to frame 115+, wall wrap, 2 captures); CJK label paint residual honestly registered F-153 | src/framework/dialog_shadow.{h,cpp}; src/runtime/execution_engine.cpp (F117 tap site); docs/evidence/s76/snake_dialog_restart/; scripts/s76_snake_dialog_restart.py | **PROVEN (restart@frame-99)** |
-| **A7b icon decode capability PROVEN**: resid → arsc.select_file → APK entry → decode_image_bytes → dims/color/FNV-1a logged; f54 + gmdice both decode res/drawable-hdpi-v4/logo.png 72x72 rgba with IDENTICAL fnv1a 0x8a66dfd69a301225 (cross-app determinism); f54 verifier gate strengthened to the A7b DECODED line | src/runtime/execution_engine.cpp (A7b block); scripts/foundation/verify_foundation.py (gate strengthened) | **PROVEN (capability; object semantics future)** |
-| Regression: zero regressions across every code change — battery 26/26 rc=0, verifier 24/24 PASS (after the strengthened f54 gate), Level C fidelity replay BYTE-IDENTICAL 90/90; registry 397 → 404 roots (R-NEW-390..394, F-152, F-153; F-146 → ROOT-CAUSED-FIXED) | scripts/foundation/; root_registry.json; scripts/s76_registry_update.py | REGRESSION-CLEAN |
-
-## 0m. S77 — MASTER MISSING-WORK CLOSURE & OPERATIONALIZATION (audit wave)
-
-| Achievement | Evidence | Status |
-|---|---|---|
-| **Missing-artifact closure as derived views (no second audit universe)**: 9 operational artifacts built over the canonical sources — RUNTIME_FAILURE_REGISTRY.md (32 F-records, status rollup: 6 OPEN / 17 ROOT-CAUSED-FIXED / rest implemented-verified; F-146/148/152/153 expanded with full chains), CRASH_HANG_ANR_REGISTRY.md (crash/hang/ANR classification), SANDBOX_ERROR_REPORT.md + sandbox_errors.json (15 SBX records seeded from real dossiers/sessions + the dooz DataStore chain CLOSED record), SESSION_EVIDENCE_CHAIN.md (4 full session→…→evidence chains, all real paths), PROGRESS_REPORT.md (per-task table + S72–S76 reconciliation), EVIDENCE_LINEAGE.md (8 key claims walked CLAIM→SOURCE→CODE→TEST→EXECUTION→TRACE→SCREENSHOT→SHA→ISSUE), APP_MATRIX.md (14 apps, no inflation), BLAST_RADIUS.md (7 law consumer maps) | docs/audit/ (generated by scripts/s77_build_audit_views.py from root_registry.json + dossiers + s74_ops + knowledge records) | **BUILT+LINKED** |
-| **Ledger §18 orphan repair**: master-audit validator FAIL (20× "TESTED without test reference") → every flagged row linked to its EXECUTED S75 code-check in item75_closure.json (pattern + file:line + found flag) — 20/20 linked, 0 downgrades, validator now PASS (375 rows) | docs/audit/master_audit.json; tools/validate_master_audit.py EXIT=0 | **REPAIRED+PASS** |
-| **S76 canonicalization**: F numbering RESOLVED from the canonical registry — F-152/F-153 correct (F-145..F-150 pre-exist; F-151 = confirmed numbering gap, never registered); root count 397→404 enumerated EXACTLY (R-NEW-390..394, F-152, F-153); commit accounting 8 unpublished = 5 S75 carry-over (affc0d57..b326acfd) + 3 S76 (2f13abe2..a8704916), origin/main c67230be ls-remote-verified; stale `total` scalar 397→404 fixed with a canonicalization note | root_registry.json (S77 note); scripts/s77_registry_canonicalize.py | **CANONICAL** |
-| **False-completion scanner operational**: scripts/s77_false_completion_scan.py — 212 claim lines across 15 canonical reports, 158 with adjacent evidence, 54 flagged (adjudicated: mostly table-cell pointers outside the regex + honest historical lines; 0 evidence-free strong claims found in current canonical corpus; SECURITY_PROFILED-vs-OBSERVED vocabulary restated in EVIDENCE_LINEAGE) | scripts/s77_false_completion_scan.py output (S77_REPORT §scan) | **BUILT+RUN** |
-| **Baseline re-established after container reset**: disk 100% full recovered (stale Sep-2..11 backup bundles/logs purged, 1.9G freed — logged); run/ root-owned recreated; engine binary rebuilt (pre-S76 binary lacked R347-FILE/R393-BG/R394-TAP markers) → battery 26/26 rc=0; pixel verifier 26/26 SAME incl. f54 A7B_GATE_OK; Level C fidelity BYTE-IDENTICAL 90/90 at a8704916 | run/s77_baseline/; scripts/s77_baseline_battery.sh; scripts/s77_verifier.py; scripts/s75_fidelity_probe.py | **PROVEN (three gates green)** |
-| Honest gaps carried (not silently dropped): F-152 OPEN (Llt0;.w pc=808 producer trace — no speculative patch); F-153 OPEN (CJK dialog label paint); Lsr.run F084 spin; icon Bitmap/Drawable object law; gmdice prefs REC-MISS family (Integer.parseInt/Random); persistence NOT_OBSERVED for 13/14 apps; security PROFILED not OBSERVED corpus-wide; per-step sandbox lifecycle emitter seeded-not-automated; PUBLISH_BLOCKED (8+ commits await tokened push) | docs/foundation/s77/S77_REPORT.md; PROGRESS_REPORT.md | **RECORDED** |
-
-## 0n. S78 — DEEP RUNTIME CLOSURE & EVIDENCE-TO-IMPLEMENTATION (runtime wave)
-
-| Achievement | Evidence | Status |
-|---|---|---|
-| **PUBLISH DEBT RESOLVED**: 11 wave commits (5 S75 + 3 S76 + 3 S77) pushed to origin/main c6d14d2e with the user-provided PAT (secret scan clean; ls-remote verified); accidental 593MB UUID snapshot commit d51f1815 quarantined on backup/s78-accidental-snapshot (rollback preserved, nothing deleted) | git push output; worklog S78; git ls-remote | **PUBLISHED** |
-| **F-152 ROOT-CAUSED+FIXED**: producer trace pc=490 sget Llt0;->o (null) ← doPrivileged silent stub; laws R-NEW-395 (doPrivileged dispatches run(), libcore) + R-NEW-396 (synthetic getDeclaredFields theUnsafe subset); unsafeNPE 9→0; regression 6/6 (real APK) | run/s78_f152_repro; run/s78_regression; scripts/s78_lt0_disasm.py; scripts/s78_f152_regression.sh | **FIXED+TESTED** |
-| **F-154 REGISTERED+FIXED** (parent F-152): Collections.EMPTY_SET SGET-MISS → Set.iterator NPE at Lh3;.h pc=36; law R-NEW-397 (EMPTY singletons + Empty-family contract); setIterNPE 8→0; dooz depth chain F-146→F-152→F-154 in registry | run/s78_f152_postfix2/3; root_registry.json | **FIXED+TESTED** |
-| **F-153 ROOT-CAUSED+FIXED+OBSERVED**: draw_text ASCII-only byte iteration painted 0 CJK px; law R-NEW-398 (non-ASCII→TextShaper routing + kFaceCJK WenQuanYi fallback; ASCII path byte-identical); 重新开始 0→56 px, 退出 0→28 px; restart re-verified + second life 120 moves/25 turns/2 captures; regression 3/3 | docs/evidence/s76/snake_dialog_restart (S78 re-run); scripts/s78_f153_regression.py | **FIXED+OBSERVED** |
-| **gmdice §14 replay**: 5/5 real clicks dispatched into GameMasterDice listeners; first-click diff 1,506,884 px; result band renders; nextInt REC-MISS recorded (no distribution claim); multi-roll PARTIAL (tap hit-test target=0 = next probe) | run/s78_gmdice/clicktest | **REPLAYED** |
-| **Knowledge + registry operationalized**: registry 404→409 (F-154 + R-NEW-395..398); knowledge records 31→35 (verified laws 24); dossiers dooz/snake/gmdice updated per §21; derived views regenerated via fixed generator (§24) | root_registry.json; docs/knowledge/laws/LAW-R-NEW-39*.json; docs/audit/* | **CANONICAL** |
-| **Disk guard + retention**: scripts/s78_disk_guard.sh (STOP_BUILD threshold + safe-cleanup candidates + never-delete policy); retention policy in S78_REPORT §27-28 | scripts/s78_disk_guard.sh | **OPERATIONAL** |
-| **Final regression**: battery 26/26 + verifier 26/26 (A7B_GATE_OK) + fidelity BYTE-IDENTICAL 90/90 after ALL changes | run/s77_baseline/; s75_fidelity_probe output | **GREEN** |
-
-## 0o. S79 — BASE CLOSURE, PUBLISHED GAMEPLAY PROOF & EXECUTION-LADDER SWEEP
-
-| Achievement | Evidence | Status |
-|---|---|---|
-| **SNAKE GAMEPLAY GIF PUBLISHED**: real APK real-dalvik run, autonomous taps only; game1 (88 moves/22 turns/1 capture) → death → CJK Game-Over dialog (重新开始 28 blue px, R-NEW-398) → restart tap@99 → game2 (90 moves/24 turns/1 capture) — 70-frame GIF 0.25MB | download/s79/snake_gameplay.gif; docs/evidence/s79/; gh-pages index.html; run/s79_snake_gif/s79_gif_report.json | **PUBLISHED** |
-| **WEBSITE LIVE**: gh-pages branch (bilingual fa/en evidence page); Pages API 403 (PAT lacks pages:write — recorded); raw.githack serves the page (text/html, 200) + jsDelivr serves the GIF (image/gif, 200) | https://raw.githack.com/Sh-TB/MiniAndroid-Compatibility-Runtime/gh-pages/index.html | **LIVE** |
-| **F-155 ROOT-CAUSED+FIXED+OBSERVED**: fishrings onClick died in sound() NPE on null MediaPlayer (create REC-MISS stub); law R-NEW-400 (create → non-null PREPARED player + AOSP state table); 3 taps → 3 rotations → 3 distinct board states, det x2 | run/s79_reproofs/fishrings_r399b (repro) vs fishrings_r400{,_run2} (post); [R400-MEDIA] logs; docs/evidence/s79/fishrings/ | **FIXED+OBSERVED** |
-| **R-NEW-399 implemented**: AOSP per-child hit-test walk law + MINIANDROID_HITPROBE; S78 decor-offset hypothesis honestly REFUTED (stale coordinates); zero golden delta | miniandroid/src/framework/touch_dispatcher.cpp; probe logs; regression suite | **IMPLEMENTED+TESTED** |
-| **LADDER SWEEP**: #15 unote CLOSED (Add-note → editor 13,032 px + notes.db); #17 gmdice CLOSED (results rendered + multi-roll 6→'5'); #18 microtimer CLOSED (00:00:98 running); #19 fishrings S10 chain closed at HEAD (game-end loop honest open); #21 bouncy + #23 opmt re-proven; #14 dooz/#16 telegram/#20 tripeaks/#22 stopwatch honest frontiers restated | issue comments; run/s79_reproofs/*; docs/evidence/s79/reproofs/ | **3 CLOSED + 7 HONEST** |
-| **FINAL REGRESSION**: battery 26/26 rc=0; verifier 26/26 SAME; snake fidelity BYTE-IDENTICAL 90/90; f152 6/6; f153 3/3 | run/s77_baseline/battery.jsonl; scripts/s77_verifier.py; scripts/s75_fidelity_probe.py | **ALL PASS** |
-
-## 0p. S80 — REAL GAMES, GAMEPLAY PROOF & APP-LADDER SWEEP
-
-| Achievement | Evidence | Status |
-|---|---|---|
-| **SNAKE DELUXE BUILT+PLAYED**: full-graphics Snake (checkerboard board, striped snake with directional eyes, apple, score HUD, D-pad) — 9/9 autonomous captures (vision full-path bend planner, C1/C3/C4/C7), snake 3→11 segments, 214-frame continuous run | upload/s80_games/snakedeluxe/; download/s80/snake_gameplay.gif; docs/evidence/s80/ | **PUBLISHED** |
-| **MINI TETRIS BUILT+PLAYED**: 7-color classic Tetris (glossy blocks, NEXT preview, wall-kick rotation, line-clear scoring) — 7 pieces locked pixel-arbitrated via greedy placer + SOFT-DROP barrage; empirical tick law measured ({4,5,6}∪even≥8) | upload/s80_games/tetris/; download/s80/tetris_gameplay.gif; scripts/s80_tet_autoplay.py | **PUBLISHED** |
-| **2048 BUILT+PLAYED**: classic mechanics + per-value palette — 64 moves, score 684, max tile 64; 267-frame run, prefix-SHA verified 255 frames | upload/s80_games/g2048/; download/s80/g2048_gameplay.gif; scripts/s80_2048_autoplay.py | **PUBLISHED** |
-| **WEBSITE v2 + UPLOAD RULES**: three-game gallery (fa/en) with per-game stats and recorded upload rules — view: NO ACCOUNT (jsDelivr 200 verified; raw.githack 403 rate-limited), publish: PAT push only, Pages API still 403 (pages:write absent) | gh-pages d554f3e..4beacdf; https://cdn.jsdelivr.net/gh/Sh-TB/MiniAndroid-Compatibility-Runtime@gh-pages/index.html | **LIVE** |
-| **APP-LADDER SWEEP AT HEAD**: 20 inventory APKs re-run (12 frames each) — 8 LOAD_OK, 2 dark-by-design, 6 RC_1-with-honest-render (F-016 app-boundary unwind, frames painted), 3 documented boundaries (muellerma/BGClock/Dooz), 1 new boundary (emmanuelmess tictactoe = libGDX GL/EGL); zero regressions | run/s80_ladder/sweep_report.json; docs/evidence/s80/sweep_report.json | **20/20 RECORDED** |
-| **R-NEW-401 + GOLDEN RE-PROOF**: getExternalCacheDir → File bridge (Telegram-class storage chain); engine rebuilt; battery 26/26, verifier 26/26 SAME, fidelity BYTE-IDENTICAL 90/90; registry 412→413; Telegram depth honest-open (ImageLoader pc=289 + REC-MISS wave queued) | miniandroid/src/dex/dalvik_engine.cpp; scripts/s80_registry_update.py; root_registry.json; run/s80_telegram{,_post}.log | **IMPLEMENTED+TESTED** |
-| **S81 VISUAL AUDIT INSTRUMENT + HONEST DOWNGRADE**: EXECUTED ≠ VISUALLY COMPATIBLE law; metric suite (unique colors/entropy/dominance/region classes) + detector flags; 18-APK ladder re-audit — zero third-party apps reach L3, 7 IMAGE_DECODED_VS_RENDERED_GAP flags, 7 prior HUMAN_VISIBLE statuses DOWNGRADED per §39 via the generator | scripts/s81_visual_audit.py; run/s81_audit/s81_visual_report.json; docs/audit/APP_MATRIX.md | **IMPLEMENTED** |
-| **VF-DIALOG-ITEMS + VF-PLACEHOLDER-GARBLE ROOT-CAUSED-FIXED**: setItems array materialized in both dispatch layers (probe-proven items=0→3 with painted rows); custom-view placeholder garble (raw class descriptor as screen text) replaced with neutral marker; battery 26/26 + fidelity BYTE-IDENTICAL 90/90 + f152 6/6 + f153 3/3 + pixel-golden spot 4/4 | miniandroid/src/dex/dalvik_engine.cpp; miniandroid/src/runtime/execution_engine.cpp; fixtures/s81_visual_probe; docs/evidence/s81/ | **FIXED+REGRESSION-PROVEN** |
-| **200-ITEM F-DROID CORPUS + BATCH-01**: 100 games + 100 apps (seeded deterministic selection) + 16 stopwatch + 10 platformer inventories; P9 + TimeLimit mandatory provenance (source+version+reference-screenshot URLs); BATCH-01: 25 fresh APKs run — 20/25 RENDERED; F-NEW-156 onCreate-unwind family identified as dominant frontier | docs/corpus/s81/corpus_index.json; run/s81_batch01/batch01_report.json; GitHub issue #24 | **CORPUS_READY / EXECUTION_PARTIAL** |
+| VERIFIED | launched + rendered real frames at the recorded session |
+| VERIFIED-INTERACTIVE | + real click dispatched and rendered state change captured (GIF) |
+| PARTIAL | rendered frames but a first-divergence blocks deeper behavior (root cause recorded) |
+| OBSERVED | frames captured, level below render threshold |
+| BLOCKED | no usable frame; root cause recorded |
+
+## Rendering levels
+
+L0 recognized → L1 manifest → L2 DEX → L3 lifecycle → L4 UI machinery → L5 meaningful frame (non-blank real UI) → L6 real input → L7 input→state change → L8 multiple interactions → L9 app-specific behavior → L10 close/reopen persistence. The screenshot-gate law (S54) applies: blank/placeholder frames are NEVER evidence.
+
+## Totals (generated from registry.json — not hand-written)
+
+- Titles: **96** (61 games, 34 apps, 1 fixtures) — 50 added in S84
+- VERIFIED: **29** · VERIFIED-INTERACTIVE: **9** · PARTIAL: **3** · BLOCKED: **1**
+- Rendered: 68 · Interacted: 11 · State-change proven: 9
+- Canonical screenshots: **96** (9 GIF + 23 JPG) — one per title, zero duplicates
+
+---
+
+### Halma
+
+* **Package / identity:** `app.halma` · type: game · version: —
+* **Source:** F-Droid
+* **APK SHA256:** `—`
+* **Sessions:** S83 · status: **OBSERVED** · rendering: L2 (L2_GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=false · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** S83 near-blank final-frame class (eb16ab5c… ×16, uniq=2-3): app renders status-bar-only content at campaign parameters; real UI evidence exists only for titles with dedicated interaction runs (s83b sweep) · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED (frames not visual evidence)
+* **Remaining:** real-UI render under dedicated interaction protocol
+* **Last success / first divergence:** 8/8 frames captured; lifecycle ran → near-blank framebuffer (no meaningful UI pixels)
+* **Notes:** S83 campaign (games__app.halma_15__L2_GRAPHICALLY_INCOMPLETE.jpg) is the shared near-blank frame class — no canonical visual per S54 law; evidence = run logs
+
+### bim.app
+
+* **Package / identity:** `bim.app` · type: game · version: 16
+* **Source:** [https://github.com/j-jorge/bim/](https://github.com/j-jorge/bim/)
+* **APK SHA256:** `82b5ba2e96dc551903b4b818a96ca8e46dfd31427ae422708b2aaaeada84b5a6`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L2 (GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=false · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/bim.app/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=1 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=2 entropy=0.09 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### ca.rmen.nounours
+
+* **Package / identity:** `ca.rmen.nounours` · type: game · version: 3.5.8
+* **Source:** [https://github.com/caarmen/nounours-android](https://github.com/caarmen/nounours-android)
+* **APK SHA256:** `0e7da7b17b63d727fb2a3a75e0576e1a42e286ebc8fb73b368da5518a728c682`
+* **Sessions:** S84 · status: **VERIFIED-INTERACTIVE** · rendering: L2 (GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=false · rendered=true · interacted=true · state_changed=true
+* **Canonical screenshot:** [ca.rmen.nounours.gif](../docs/evidence/canonical/ca.rmen.nounours.gif) · SHA256 `24a19ed30eda6be3…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED/INTERACTED/STATE_CHANGED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Notes:** S84 NEW title. rc_obs=1 errors=1 frames=8/8 click: probed=1 state_changed=1. unique_colors=2 entropy=0.918 resources(dex/classes)=?
+
+### Anuto TD
+
+* **Package / identity:** `ch.logixisland.anuto` · type: game · version: —
+* **Source:** [https://github.com/jogishop/AnutoTD](https://github.com/jogishop/AnutoTD)
+* **APK SHA256:** `—`
+* **Sessions:** S62+ · status: **VERIFIED** · rendering: L5 (L5)
+* **Execution evidence:** launched=true · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** [ch.logixisland.anuto.jpg](../docs/evidence/canonical/ch.logixisland.anuto.jpg) · SHA256 `f876a103e2eae2f1…`
+* **Root cause:** see session report (S62-S65 spotlight reports) · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED
+* **Remaining:** session-specific (see report)
+* **Notes:** canonical harvested from docs/evidence/s62plus_spotlight/anuto_frame0_after_onDraw.png
+
+### Astroloop
+
+* **Package / identity:** `com.astroloop.game` · type: game · version: —
+* **Source:** F-Droid
+* **APK SHA256:** `—`
+* **Sessions:** S83 · status: **OBSERVED** · rendering: L2 (L2_GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=false · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** S83 near-blank final-frame class (eb16ab5c… ×16, uniq=2-3): app renders status-bar-only content at campaign parameters; real UI evidence exists only for titles with dedicated interaction runs (s83b sweep) · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED (frames not visual evidence)
+* **Remaining:** real-UI render under dedicated interaction protocol
+* **Last success / first divergence:** 8/8 frames captured; lifecycle ran → near-blank framebuffer (no meaningful UI pixels)
+* **Notes:** S83 campaign (games__com.astroloop.game_4__L2_GRAPHICALLY_INCOMPLETE.jpg) is the shared near-blank frame class — no canonical visual per S54 law; evidence = run logs
+
+### Tirailleur
+
+* **Package / identity:** `com.bupkis.tirailleur` · type: game · version: —
+* **Source:** F-Droid
+* **APK SHA256:** `—`
+* **Sessions:** S83 · status: **OBSERVED** · rendering: L2 (L2_GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=false · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** S83 near-blank final-frame class (eb16ab5c… ×16, uniq=2-3): app renders status-bar-only content at campaign parameters; real UI evidence exists only for titles with dedicated interaction runs (s83b sweep) · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED (frames not visual evidence)
+* **Remaining:** real-UI render under dedicated interaction protocol
+* **Last success / first divergence:** 8/8 frames captured; lifecycle ran → near-blank framebuffer (no meaningful UI pixels)
+* **Notes:** S83 campaign (games__com.bupkis.tirailleur_13__L2_GRAPHICALLY_INCOMPLETE.jpg) is the shared near-blank frame class — no canonical visual per S54 law; evidence = run logs
+
+### com.clavierhaus.gnubg
+
+* **Package / identity:** `com.clavierhaus.gnubg` · type: game · version: 1.0.2
+* **Source:** [https://github.com/clavierhaus/gnubg-android](https://github.com/clavierhaus/gnubg-android)
+* **APK SHA256:** `a951da343ca91f10512d888802123cb040c4be72dc3d3eb58ce8ddfab80d78ff`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L1 (NONBLANK)
+* **Execution evidence:** launched=false · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/com.clavierhaus.gnubg/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=32 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=3 entropy=0.034 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### Vector Pinball (bouncy)
+
+* **Package / identity:** `com.dozingcatsoftware.bouncy` · type: game · version: —
+* **Source:** [https://github.com/dozingcatsoftware/Bouncy](https://github.com/dozingcatsoftware/Bouncy)
+* **APK SHA256:** `—`
+* **Sessions:** S62/S74 · status: **VERIFIED** · rendering: L5 (L5)
+* **Execution evidence:** launched=true · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** [com.dozingcatsoftware.bouncy.jpg](../docs/evidence/canonical/com.dozingcatsoftware.bouncy.jpg) · SHA256 `5543ab86e0fb4e0f…`
+* **Root cause:** see session report (S62-S65 spotlight reports) · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED
+* **Remaining:** session-specific (see report)
+* **Notes:** canonical harvested from docs/evidence/s74_ops/bouncy
+
+### com.dozingcatsoftware.dodge
+
+* **Package / identity:** `com.dozingcatsoftware.dodge` · type: game · version: 1.5.1
+* **Source:** [https://github.com/dozingcat/dodge-android](https://github.com/dozingcat/dodge-android)
+* **APK SHA256:** `a5687d1bad7b2927740a55b7b1df11efc81edcad03f0633ab5c2e5c58b120541`
+* **Sessions:** S84 · status: **VERIFIED-INTERACTIVE** · rendering: L2 (GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=false · rendered=true · interacted=true · state_changed=true
+* **Canonical screenshot:** [com.dozingcatsoftware.dodge.gif](../docs/evidence/canonical/com.dozingcatsoftware.dodge.gif) · SHA256 `3ca88c8da8a90bc3…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED/INTERACTED/STATE_CHANGED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Notes:** S84 NEW title. rc_obs=1 errors=4 frames=8/8 click: probed=7 state_changed=6. unique_colors=52 entropy=1.685 resources(dex/classes)=?
+
+### Firestrike
+
+* **Package / identity:** `com.eightsines.firestrike.opensource` · type: game · version: —
+* **Source:** F-Droid
+* **APK SHA256:** `—`
+* **Sessions:** S83 · status: **OBSERVED** · rendering: L2 (L2_GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=false · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** S83 near-blank final-frame class (eb16ab5c… ×16, uniq=2-3): app renders status-bar-only content at campaign parameters; real UI evidence exists only for titles with dedicated interaction runs (s83b sweep) · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED (frames not visual evidence)
+* **Remaining:** real-UI render under dedicated interaction protocol
+* **Last success / first divergence:** 8/8 frames captured; lifecycle ran → near-blank framebuffer (no meaningful UI pixels)
+* **Notes:** S83 campaign (games__com.eightsines.firestrike.opensource_2000__L2_GRAPHICALLY_INCOMPLETE.jpg) is the shared near-blank frame class — no canonical visual per S54 law; evidence = run logs
+
+### TicTacToe Classic
+
+* **Package / identity:** `com.emmanuelmess.tictactoe` · type: game · version: —
+* **Source:** F-Droid com.emmanuelmess.tictactoe
+* **APK SHA256:** `16510d7cb5dbcf7db049762728bd3e38911c3117b1f090129caee11e2b098f6e`
+* **Sessions:** S83 · status: **VERIFIED-INTERACTIVE** · rendering: L2 (L2_GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=true · interacted=true · state_changed=true
+* **Canonical screenshot:** [com.emmanuelmess.tictactoe.gif](../docs/evidence/canonical/com.emmanuelmess.tictactoe.gif) · SHA256 `b6811a17d271d5dc…`
+* **Root cause:** S83 engine laws (APX-ACT, CANVAS-GEOMETRY, LOCALE-DEFAULT, INPUT-SERVICE, VTO, AUDIO) all fixed and regression-clean · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED/INTERACTED/STATE_CHANGED
+* **Remaining:** graphics completeness beyond L3
+* **Notes:** S83 real-screenshot campaign evidence (games__tictactoeclassic__L2_GRAPHICALLY_INCOMPLETE.jpg)
+
+### com.galaxyrio.sudokusolver
+
+* **Package / identity:** `com.galaxyrio.sudokusolver` · type: game · version: 2.1.0
+* **Source:** [https://github.com/Galaxy-rio/SudokuYou](https://github.com/Galaxy-rio/SudokuYou)
+* **APK SHA256:** `b211e022ce0c7001e42d8ae82fa0dcd671e071bc5f78103f0f8e0f3939158d3a`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L2 (GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=false · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/com.galaxyrio.sudokusolver/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=9 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=2 entropy=0.09 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### com.helddertierwelt.mentalmath
+
+* **Package / identity:** `com.helddertierwelt.mentalmath` · type: game · version: 27
+* **Source:** [https://codeberg.org/Mental-Math/MentalMath](https://codeberg.org/Mental-Math/MentalMath)
+* **APK SHA256:** `68af653d1dc0b1841374100462163c12a36fe5c9afe4b187bd1a0400fe546dc7`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L1 (NONBLANK)
+* **Execution evidence:** launched=false · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/com.helddertierwelt.mentalmath/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=32 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=3 entropy=0.034 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### Balance the Ball
+
+* **Package / identity:** `com.jeffliu.balancetheball` · type: game · version: —
+* **Source:** F-Droid
+* **APK SHA256:** `6180534b151e4d50365b21483f3719e32f207a42675dee20227de449c875c1e2`
+* **Sessions:** S83 · status: **VERIFIED** · rendering: L2 (L2_GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** [com.jeffliu.balancetheball.jpg](../docs/evidence/canonical/com.jeffliu.balancetheball.jpg) · SHA256 `bfb8f34224084ad4…`
+* **Root cause:** S83 engine laws (APX-ACT, CANVAS-GEOMETRY, LOCALE-DEFAULT, INPUT-SERVICE, VTO, AUDIO) all fixed and regression-clean · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED
+* **Remaining:** graphics completeness beyond L3
+* **Notes:** S83 real-screenshot campaign evidence (games__com.jeffliu.balancetheball_4__L2_GRAPHICALLY_INCOMPLETE.jpg)
+
+### com.kaeruct.raumballer
+
+* **Package / identity:** `com.kaeruct.raumballer` · type: game · version: 1.2
+* **Source:** [https://github.com/KaeruCT/RaumBaller](https://github.com/KaeruCT/RaumBaller)
+* **APK SHA256:** `e0eb9a7dfbd82162c44e25d0294b89f6f811396cce7691a969443bd271658bc1`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L0 (LOADED_ONLY)
+* **Execution evidence:** launched=false · rendered=false · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/com.kaeruct.raumballer/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=1 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=1 entropy=-0.0 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### com.kingalex.kingpong
+
+* **Package / identity:** `com.kingalex.kingpong` · type: game · version: 1.1.2
+* **Source:** [https://github.com/KingAlexGilbert/king-pong](https://github.com/KingAlexGilbert/king-pong)
+* **APK SHA256:** `9545a66697a83c25957767b7f9adb296d71fd57e30365dc742225104feb70b66`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L0 (LOADED_ONLY)
+* **Execution evidence:** launched=true · rendered=false · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** none (rc=0) · issue: —
+* **Proven exactly:** LOADED/LAUNCHED
+* **Remaining:** full app-specific behavior beyond click probe
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → none
+* **Notes:** S84 NEW title. rc_obs=0 errors=0 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=1 entropy=-0.0 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### 2048
+
+* **Package / identity:** `com.miniandroid.g2048` · type: game · version: —
+* **Source:** in-house (games/2048)
+* **APK SHA256:** `1b1c602a5f0a27231ebcdcfdc632a96c82f6fb74aaae7d80130ac63ab185d278`
+* **Sessions:** S80/S83 · status: **VERIFIED-INTERACTIVE** · rendering: L2 (L2_GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=true · interacted=true · state_changed=true
+* **Canonical screenshot:** [com.miniandroid.g2048.gif](../docs/evidence/canonical/com.miniandroid.g2048.gif) · SHA256 `d613d30fce792406…`
+* **Root cause:** S83 engine laws (APX-ACT, CANVAS-GEOMETRY, LOCALE-DEFAULT, INPUT-SERVICE, VTO, AUDIO) all fixed and regression-clean · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED/INTERACTED/STATE_CHANGED
+* **Remaining:** graphics completeness beyond L3
+* **Notes:** S83 real-screenshot campaign evidence (games__g2048_v1.0_vc1__L2_GRAPHICALLY_INCOMPLETE.jpg)
+
+### Snake Deluxe
+
+* **Package / identity:** `com.miniandroid.snakedeluxe` · type: game · version: —
+* **Source:** in-house (games/snake-deluxe)
+* **APK SHA256:** `—`
+* **Sessions:** S80/S83 · status: **VERIFIED-INTERACTIVE** · rendering: L3 (L3_STRUCT_CANDIDATE)
+* **Execution evidence:** launched=true · rendered=true · interacted=true · state_changed=true
+* **Canonical screenshot:** [com.miniandroid.snakedeluxe.gif](../docs/evidence/canonical/com.miniandroid.snakedeluxe.gif) · SHA256 `f2dd621c662526fa…`
+* **Root cause:** S83 engine laws (APX-ACT, CANVAS-GEOMETRY, LOCALE-DEFAULT, INPUT-SERVICE, VTO, AUDIO) all fixed and regression-clean · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED/INTERACTED/STATE_CHANGED
+* **Remaining:** graphics completeness beyond L3
+* **Notes:** S83 real-screenshot campaign evidence (games__snake_deluxe_v1.0_vc1__L3_STRUCT_CANDIDATE.jpg)
+
+### Mini Tetris
+
+* **Package / identity:** `com.miniandroid.tetris` · type: game · version: —
+* **Source:** in-house (games/mini-tetris)
+* **APK SHA256:** `cb2818dfe6c6cadb651348ddaf4c91c57bea5ecc134f215d25fb5ffdffdf8644`
+* **Sessions:** S80/S83 · status: **VERIFIED-INTERACTIVE** · rendering: L3 (L3_STRUCT_CANDIDATE)
+* **Execution evidence:** launched=true · rendered=true · interacted=true · state_changed=true
+* **Canonical screenshot:** [com.miniandroid.tetris.gif](../docs/evidence/canonical/com.miniandroid.tetris.gif) · SHA256 `927d966a5a7397a8…`
+* **Root cause:** S83 engine laws (APX-ACT, CANVAS-GEOMETRY, LOCALE-DEFAULT, INPUT-SERVICE, VTO, AUDIO) all fixed and regression-clean · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED/INTERACTED/STATE_CHANGED
+* **Remaining:** graphics completeness beyond L3
+* **Notes:** S83 real-screenshot campaign evidence (games__tetris_v1.0_vc1__L3_STRUCT_CANDIDATE.jpg)
+
+### TicTacToe Deluxe (دوز)
+
+* **Package / identity:** `com.miniandroid.tictactoedeluxe` · type: game · version: —
+* **Source:** in-house (games/tictactoe-deluxe)
+* **APK SHA256:** `—`
+* **Sessions:** S83 NEW · status: **VERIFIED-INTERACTIVE** · rendering: L3 (L3_STRUCT_CANDIDATE)
+* **Execution evidence:** launched=true · rendered=true · interacted=true · state_changed=true
+* **Canonical screenshot:** [com.miniandroid.tictactoedeluxe.gif](../docs/evidence/canonical/com.miniandroid.tictactoedeluxe.gif) · SHA256 `ade32b621e90fb27…`
+* **Root cause:** S83 engine laws (APX-ACT, CANVAS-GEOMETRY, LOCALE-DEFAULT, INPUT-SERVICE, VTO, AUDIO) all fixed and regression-clean · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED/INTERACTED/STATE_CHANGED
+* **Remaining:** graphics completeness beyond L3
+* **Notes:** S83 real-screenshot campaign evidence (games__tictactoe_deluxe_v1.0_vc1__L3_STRUCT_CANDIDATE.jpg)
+
+### com.octbit.rutmath
+
+* **Package / identity:** `com.octbit.rutmath` · type: game · version: 0.2.5
+* **Source:** [https://github.com/przemarbor/RUTMath](https://github.com/przemarbor/RUTMath)
+* **APK SHA256:** `43a05b440c782bf8d16f28bf6e41d726246ca74cae3670e6a1784ce81b982539`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L2 (GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=false · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/com.octbit.rutmath/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=13 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=2 entropy=0.09 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### com.qwde.ccm
+
+* **Package / identity:** `com.qwde.ccm` · type: game · version: first
+* **Source:** [https://gitlab.com/andsild/collective-club-maze](https://gitlab.com/andsild/collective-club-maze)
+* **APK SHA256:** `dd57ead2dc7671e4a658864ba48003e5bd434d2719703ebdd870a8c0b5217edb`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L2 (GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=false · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/com.qwde.ccm/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=2 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=2 entropy=0.09 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### Boxcars
+
+* **Package / identity:** `com.rocket9labs.boxcars` · type: game · version: —
+* **Source:** F-Droid
+* **APK SHA256:** `—`
+* **Sessions:** S83 · status: **OBSERVED** · rendering: L1 (L1_NONBLANK)
+* **Execution evidence:** launched=true · rendered=false · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** S83 near-blank final-frame class (eb16ab5c… ×16, uniq=2-3): app renders status-bar-only content at campaign parameters; real UI evidence exists only for titles with dedicated interaction runs (s83b sweep) · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED (frames not visual evidence)
+* **Remaining:** real-UI render under dedicated interaction protocol
+* **Last success / first divergence:** 8/8 frames captured; lifecycle ran → near-blank framebuffer (no meaningful UI pixels)
+* **Notes:** S83 campaign (games__com.rocket9labs.boxcars_104090__L1_NONBLANK.jpg) is the shared near-blank frame class — no canonical visual per S54 law; evidence = run logs
+
+### com.sanskritbasics.memory
+
+* **Package / identity:** `com.sanskritbasics.memory` · type: game · version: 3.4
+* **Source:** [https://github.com/sanskritbscs/memory](https://github.com/sanskritbscs/memory)
+* **APK SHA256:** `830798a6e70653d64fdf74a8f33beed448ffb2b22ca0736adf7cf6a07289e83c`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L2 (GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=false · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/com.sanskritbasics.memory/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=15 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=2 entropy=0.09 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### com.serwylo.retrowars
+
+* **Package / identity:** `com.serwylo.retrowars` · type: game · version: 0.32.5
+* **Source:** [https://github.com/retrowars/retrowars](https://github.com/retrowars/retrowars)
+* **APK SHA256:** `8886269ac43e8f2f7f884fa1db8e2e7c1694db6cbc26311fe2323cef845eb3ec`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L2 (GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=false · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/com.serwylo.retrowars/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=7 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=2 entropy=0.09 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### com.sidhant.bubbleshooter
+
+* **Package / identity:** `com.sidhant.bubbleshooter` · type: game · version: 1.0.1
+* **Source:** [https://github.com/sidhant947/BubbleShooter](https://github.com/sidhant947/BubbleShooter)
+* **APK SHA256:** `4f238534c4107070699ffc8c912ce54a0a6ba81aeb7a6666dad481746d468262`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L2 (GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** none (rc=0) · issue: —
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED
+* **Remaining:** full app-specific behavior beyond click probe
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → none
+* **Notes:** S84 NEW title. rc_obs=0 errors=0 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=2 entropy=0.09 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### com.sidhant.puzzle
+
+* **Package / identity:** `com.sidhant.puzzle` · type: game · version: 2.0.3
+* **Source:** [https://github.com/sidhant947/puzzle](https://github.com/sidhant947/puzzle)
+* **APK SHA256:** `950bc52c96a4c042fcefb7e6c2aa9851221346dc22d500a642ec1d770a7b0888`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L2 (GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** none (rc=0) · issue: —
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED
+* **Remaining:** full app-specific behavior beyond click probe
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → none
+* **Notes:** S84 NEW title. rc_obs=0 errors=0 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=2 entropy=0.09 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### Queens
+
+* **Package / identity:** `com.sidhant.queens` · type: game · version: —
+* **Source:** F-Droid
+* **APK SHA256:** `—`
+* **Sessions:** S83 · status: **OBSERVED** · rendering: L2 (L2_GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=false · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** S83 near-blank final-frame class (eb16ab5c… ×16, uniq=2-3): app renders status-bar-only content at campaign parameters; real UI evidence exists only for titles with dedicated interaction runs (s83b sweep) · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED (frames not visual evidence)
+* **Remaining:** real-UI render under dedicated interaction protocol
+* **Last success / first divergence:** 8/8 frames captured; lifecycle ran → near-blank framebuffer (no meaningful UI pixels)
+* **Notes:** S83 campaign (games__com.sidhant.queens_93__L2_GRAPHICALLY_INCOMPLETE.jpg) is the shared near-blank frame class — no canonical visual per S54 law; evidence = run logs
+
+### Ball2Box
+
+* **Package / identity:** `com.simondalvai.ball2box` · type: game · version: —
+* **Source:** F-Droid
+* **APK SHA256:** `—`
+* **Sessions:** S83 · status: **OBSERVED** · rendering: L0 (L0_LOADED_ONLY)
+* **Execution evidence:** launched=true · rendered=false · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** S83 near-blank final-frame class (eb16ab5c… ×16, uniq=2-3): app renders status-bar-only content at campaign parameters; real UI evidence exists only for titles with dedicated interaction runs (s83b sweep) · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED (frames not visual evidence)
+* **Remaining:** real-UI render under dedicated interaction protocol
+* **Last success / first divergence:** 8/8 frames captured; lifecycle ran → near-blank framebuffer (no meaningful UI pixels)
+* **Notes:** S83 campaign (games__com.simondalvai.ball2box_69__L0_LOADED_ONLY.jpg) is the shared near-blank frame class — no canonical visual per S54 law; evidence = run logs
+
+### com.smorgasbork.hotdeath
+
+* **Package / identity:** `com.smorgasbork.hotdeath` · type: game · version: 1.0.11
+* **Source:** [https://github.com/jpriebe/hotdeath](https://github.com/jpriebe/hotdeath)
+* **APK SHA256:** `8e6c19ead1795fa5b0f62090f3a56efa4be16e4b3e33f151af707f5eb5e5c620`
+* **Sessions:** S84 · status: **VERIFIED-INTERACTIVE** · rendering: L2 (GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=true · interacted=true · state_changed=true
+* **Canonical screenshot:** [com.smorgasbork.hotdeath.gif](../docs/evidence/canonical/com.smorgasbork.hotdeath.gif) · SHA256 `d6fdff53adfaa6fa…`
+* **Root cause:** none (rc=0) · issue: —
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED/INTERACTED/STATE_CHANGED
+* **Remaining:** full app-specific behavior beyond click probe
+* **Notes:** S84 NEW title. rc_obs=0 errors=0 frames=8/8 click: probed=6 state_changed=3. unique_colors=4 entropy=0.982 resources(dex/classes)=?
+
+### com.vayunmathur.games.alchemist
+
+* **Package / identity:** `com.vayunmathur.games.alchemist` · type: game · version: v2.6.5
+* **Source:** [https://github.com/vayun-mathur/Modern-Apps](https://github.com/vayun-mathur/Modern-Apps)
+* **APK SHA256:** `88a0ac6f06e9c57f25977ebcfd49081d2e909137619b5359246e5bd1411c74f1`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L1 (NONBLANK)
+* **Execution evidence:** launched=false · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/com.vayunmathur.games.alchemist/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=15 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=3 entropy=0.034 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### Solitaire (vayunmathur)
+
+* **Package / identity:** `com.vayunmathur.games.solitaire` · type: game · version: —
+* **Source:** F-Droid
+* **APK SHA256:** `—`
+* **Sessions:** S83 · status: **OBSERVED** · rendering: L2 (L2_GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=false · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** S83 near-blank final-frame class (eb16ab5c… ×16, uniq=2-3): app renders status-bar-only content at campaign parameters; real UI evidence exists only for titles with dedicated interaction runs (s83b sweep) · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED (frames not visual evidence)
+* **Remaining:** real-UI render under dedicated interaction protocol
+* **Last success / first divergence:** 8/8 frames captured; lifecycle ran → near-blank framebuffer (no meaningful UI pixels)
+* **Notes:** S83 campaign (games__com.vayunmathur.games.solitaire_20260804__L2_GRAPHICALLY_INCOMPLETE.jpg) is the shared near-blank frame class — no canonical visual per S54 law; evidence = run logs
+
+### com.vovagorodok.blichess
+
+* **Package / identity:** `com.vovagorodok.blichess` · type: game · version: 8.0.0+ble2.5.1
+* **Source:** [https://github.com/vovagorodok/blichess/](https://github.com/vovagorodok/blichess/)
+* **APK SHA256:** `3ae86223a70439511f32ffe7489de6050b430dd9692d7a45ae6506933dddc69d`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L1 (NONBLANK)
+* **Execution evidence:** launched=false · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/com.vovagorodok.blichess/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=2 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=3 entropy=0.034 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### com.vovagorodok.blidraughts
+
+* **Package / identity:** `com.vovagorodok.blidraughts` · type: game · version: 2.3.0+ble2.5.1
+* **Source:** [https://github.com/vovagorodok/blidraughts/](https://github.com/vovagorodok/blidraughts/)
+* **APK SHA256:** `f7f4582fa24607d87c304c3acaca0cc150fa311da22e469cd15150c73d20ba2d`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L1 (NONBLANK)
+* **Execution evidence:** launched=false · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/com.vovagorodok.blidraughts/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=2 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=3 entropy=0.034 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### com.willie.mancala
+
+* **Package / identity:** `com.willie.mancala` · type: game · version: 1.2
+* **Source:** [https://github.com/Willie169/mancala-android](https://github.com/Willie169/mancala-android)
+* **APK SHA256:** `827e9850e1eaf784e4b4dd4a3df7f11dfb323c61ada944cde96395bca56b4b41`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L2 (GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=false · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/com.willie.mancala/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=15 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=2 entropy=0.09 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### Mines (premy)
+
+* **Package / identity:** `cos.premy.mines` · type: game · version: —
+* **Source:** F-Droid
+* **APK SHA256:** `18faef7028457f4d123ac8d781f3ecdbf9e29b451468d5d6a348df28e8842aa7`
+* **Sessions:** S83 · status: **VERIFIED** · rendering: L2 (L2_GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** [cos.premy.mines.jpg](../docs/evidence/canonical/cos.premy.mines.jpg) · SHA256 `f73b3c57ca712dd2…`
+* **Root cause:** S83 engine laws (APX-ACT, CANVAS-GEOMETRY, LOCALE-DEFAULT, INPUT-SERVICE, VTO, AUDIO) all fixed and regression-clean · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED
+* **Remaining:** graphics completeness beyond L3
+* **Notes:** S83 real-screenshot campaign evidence (games__cos.premy.mines_16__L2_GRAPHICALLY_INCOMPLETE.jpg)
+
+### Blackjack
+
+* **Package / identity:** `crypto.o0o0o0o0o.games.blackjack` · type: game · version: —
+* **Source:** F-Droid
+* **APK SHA256:** `—`
+* **Sessions:** S83 · status: **OBSERVED** · rendering: L0 (L0_LOADED_ONLY)
+* **Execution evidence:** launched=true · rendered=false · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** S83 near-blank final-frame class (eb16ab5c… ×16, uniq=2-3): app renders status-bar-only content at campaign parameters; real UI evidence exists only for titles with dedicated interaction runs (s83b sweep) · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED (frames not visual evidence)
+* **Remaining:** real-UI render under dedicated interaction protocol
+* **Last success / first divergence:** 8/8 frames captured; lifecycle ran → near-blank framebuffer (no meaningful UI pixels)
+* **Notes:** S83 campaign (games__crypto.o0o0o0o0o.games.blackjack_4__L0_LOADED_ONLY.jpg) is the shared near-blank frame class — no canonical visual per S54 law; evidence = run logs
+
+### OpenSudoku
+
+* **Package / identity:** `cz.romario.opensudoku` · type: game · version: —
+* **Source:** [https://github.com/romario333/opensudoku](https://github.com/romario333/opensudoku)
+* **APK SHA256:** `—`
+* **Sessions:** S62+ · status: **VERIFIED** · rendering: L5 (L5)
+* **Execution evidence:** launched=true · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** [cz.romario.opensudoku.jpg](../docs/evidence/canonical/cz.romario.opensudoku.jpg) · SHA256 `1478e902a245a829…`
+* **Root cause:** see session report (S62-S65 spotlight reports) · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED
+* **Remaining:** session-specific (see report)
+* **Notes:** canonical harvested from docs/evidence/s62plus_spotlight/opensudoku_frame0_folderlist.png
+
+### de.georgsieber.ballbreak
+
+* **Package / identity:** `de.georgsieber.ballbreak` · type: game · version: 1.8.1
+* **Source:** [https://github.com/schorschii/ballBreak-Android](https://github.com/schorschii/ballBreak-Android)
+* **APK SHA256:** `e6e9f37293d3aaacda7163f997d17e538962acde7a991f6325f9dd72b45ffe02`
+* **Sessions:** S84 · status: **VERIFIED** · rendering: L2 (GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=true · interacted=true · state_changed=false
+* **Canonical screenshot:** [de.georgsieber.ballbreak.jpg](../docs/evidence/canonical/de.georgsieber.ballbreak.jpg) · SHA256 `b3c8930369dfe0b7…`
+* **Root cause:** none (rc=0) · issue: —
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED/INTERACTED
+* **Remaining:** full app-specific behavior beyond click probe
+* **Notes:** S84 NEW title. rc_obs=0 errors=0 frames=8/8 click: probed=2 state_changed=0. unique_colors=25 entropy=0.096 resources(dex/classes)=?
+
+### Solitaire (tobiasbielefeld)
+
+* **Package / identity:** `de.tobiasbielefeld.solitaire` · type: game · version: —
+* **Source:** F-Droid
+* **APK SHA256:** `—`
+* **Sessions:** S83 · status: **OBSERVED** · rendering: L2 (L2_GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=false · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** S83 near-blank final-frame class (eb16ab5c… ×16, uniq=2-3): app renders status-bar-only content at campaign parameters; real UI evidence exists only for titles with dedicated interaction runs (s83b sweep) · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED (frames not visual evidence)
+* **Remaining:** real-UI render under dedicated interaction protocol
+* **Last success / first divergence:** 8/8 frames captured; lifecycle ran → near-blank framebuffer (no meaningful UI pixels)
+* **Notes:** S83 campaign (games__de.tobiasbielefeld.solitaire_71__L2_GRAPHICALLY_INCOMPLETE.jpg) is the shared near-blank frame class — no canonical visual per S54 law; evidence = run logs
+
+### Memory
+
+* **Package / identity:** `eu.quelltext.memory` · type: game · version: —
+* **Source:** F-Droid
+* **APK SHA256:** `4dd3957983e3c3f38c673f898d9659d5e0251f97137bab5254eafdcdbc9fa27c`
+* **Sessions:** S83 · status: **VERIFIED** · rendering: L0 (L0_LOADED_ONLY)
+* **Execution evidence:** launched=true · rendered=false · interacted=false · state_changed=false
+* **Canonical screenshot:** [eu.quelltext.memory.jpg](../docs/evidence/canonical/eu.quelltext.memory.jpg) · SHA256 `1f36d707ec9f685c…`
+* **Root cause:** S83 engine laws (APX-ACT, CANVAS-GEOMETRY, LOCALE-DEFAULT, INPUT-SERVICE, VTO, AUDIO) all fixed and regression-clean · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED
+* **Remaining:** graphics completeness beyond L3
+* **Notes:** S83 real-screenshot campaign evidence (games__eu.quelltext.memory_7__L0_LOADED_ONLY.jpg)
+
+### Fish Rings
+
+* **Package / identity:** `eu.veldsoft.fish.rings` · type: game · version: —
+* **Source:** [https://github.com/VelbazhdSoftwareLLC/FishRingsForAndroid](https://github.com/VelbazhdSoftwareLLC/FishRingsForAndroid)
+* **APK SHA256:** `—`
+* **Sessions:** S65 · status: **VERIFIED** · rendering: L10 (L10)
+* **Execution evidence:** launched=true · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** [eu.veldsoft.fish.rings.jpg](../docs/evidence/canonical/eu.veldsoft.fish.rings.jpg) · SHA256 `28c952a6e1657b02…`
+* **Root cause:** see session report (S62-S65 spotlight reports) · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED
+* **Remaining:** session-specific (see report)
+* **Notes:** canonical harvested from docs/evidence/visual_forensics/s65_reval/fishrings/after_tap3_full.png
+
+### FreeKlondike
+
+* **Package / identity:** `eu.veldsoft.free.klondike` · type: game · version: —
+* **Source:** [https://github.com/VelbazhdSoftwareLLC/FreeKlondike](https://github.com/VelbazhdSoftwareLLC/FreeKlondike)
+* **APK SHA256:** `—`
+* **Sessions:** S64 · status: **VERIFIED** · rendering: L10 (L10)
+* **Execution evidence:** launched=true · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** [eu.veldsoft.free.klondike.jpg](../docs/evidence/canonical/eu.veldsoft.free.klondike.jpg) · SHA256 `7dd689bf2d692980…`
+* **Root cause:** see session report (S62-S65 spotlight reports) · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED
+* **Remaining:** session-specific (see report)
+* **Notes:** canonical harvested from docs/evidence/s64_spotlight/fk_game_deal_response.png
+
+### No Thanks!
+
+* **Package / identity:** `eu.veldsoft.no.thanks` · type: game · version: —
+* **Source:** F-Droid
+* **APK SHA256:** `—`
+* **Sessions:** S83 · status: **OBSERVED** · rendering: L1 (L1_NONBLANK)
+* **Execution evidence:** launched=true · rendered=false · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** S83 near-blank final-frame class (eb16ab5c… ×16, uniq=2-3): app renders status-bar-only content at campaign parameters; real UI evidence exists only for titles with dedicated interaction runs (s83b sweep) · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED (frames not visual evidence)
+* **Remaining:** real-UI render under dedicated interaction protocol
+* **Last success / first divergence:** 8/8 frames captured; lifecycle ran → near-blank framebuffer (no meaningful UI pixels)
+* **Notes:** S83 campaign (games__eu.veldsoft.no.thanks_1__L1_NONBLANK.jpg) is the shared near-blank frame class — no canonical visual per S54 law; evidence = run logs
+
+### TriPeaks
+
+* **Package / identity:** `eu.veldsoft.tri.peaks` · type: game · version: —
+* **Source:** [https://github.com/VelbazhdSoftwareLLC/TriPeaks](https://github.com/VelbazhdSoftwareLLC/TriPeaks)
+* **APK SHA256:** `—`
+* **Sessions:** S65 · status: **PARTIAL** · rendering: L10 (L10)
+* **Execution evidence:** launched=true · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** [eu.veldsoft.tri.peaks.jpg](../docs/evidence/canonical/eu.veldsoft.tri.peaks.jpg) · SHA256 `8e1d41a151898010…`
+* **Root cause:** see session report (S62-S65 spotlight reports) · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED
+* **Remaining:** session-specific (see report)
+* **Last success / first divergence:** see S65 report → see session report
+* **Notes:** canonical harvested from docs/evidence/visual_forensics/s65_reval/tripeaks/board_full.png
+
+### io.github.ebraminio.bouncy
+
+* **Package / identity:** `io.github.ebraminio.bouncy` · type: game · version: 0.0.1
+* **Source:** [https://github.com/ebraminio/bouncy](https://github.com/ebraminio/bouncy)
+* **APK SHA256:** `a509db2afda544f6da9620eb473319b0a034c6ffc8b6536e2a8a7bcc0f407f54`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L0 (LOADED_ONLY)
+* **Execution evidence:** launched=true · rendered=false · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** none (rc=0) · issue: —
+* **Proven exactly:** LOADED/LAUNCHED
+* **Remaining:** full app-specific behavior beyond click probe
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → none
+* **Notes:** S84 NEW title. rc_obs=0 errors=0 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=1 entropy=-0.0 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### io.github.hathibelagal.mykanji
+
+* **Package / identity:** `io.github.hathibelagal.mykanji` · type: game · version: 1.6
+* **Source:** [https://github.com/hathibelagal-dev/MyKanji](https://github.com/hathibelagal-dev/MyKanji)
+* **APK SHA256:** `b20274a0885d03ba6947f82975c90e8415a4174dded8409e4798f92cb3a763a1`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L0 (LOADED_ONLY)
+* **Execution evidence:** launched=true · rendered=false · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** none (rc=0) · issue: —
+* **Proven exactly:** LOADED/LAUNCHED
+* **Remaining:** full app-specific behavior beyond click probe
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → none
+* **Notes:** S84 NEW title. rc_obs=0 errors=0 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=1 entropy=-0.0 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### io.github.johnathan.minesweeper
+
+* **Package / identity:** `io.github.johnathan.minesweeper` · type: game · version: 1.5
+* **Source:** [https://github.com/john-athan/minesweeper](https://github.com/john-athan/minesweeper)
+* **APK SHA256:** `3b52a2fd21c4b4184eed1a1d4a9944e89bb9e7f99bf37329f03bd5eca962942e`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L1 (NONBLANK)
+* **Execution evidence:** launched=false · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/io.github.johnathan.minesweeper/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=32 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=3 entropy=0.034 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### Dooz (tic-tac-toe)
+
+* **Package / identity:** `io.github.yamin8000.dooz` · type: game · version: —
+* **Source:** F-Droid io.github.yamin8000.dooz
+* **APK SHA256:** `d81292cd346dcb23b04488bca400ca95af0f6eaa4aefefd31f847fe535cbdc17`
+* **Sessions:** S66/S83 · status: **VERIFIED** · rendering: L2 (L2_GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** [io.github.yamin8000.dooz.jpg](../docs/evidence/canonical/io.github.yamin8000.dooz.jpg) · SHA256 `cd1370525d4c2c4e…`
+* **Root cause:** S83 engine laws (APX-ACT, CANVAS-GEOMETRY, LOCALE-DEFAULT, INPUT-SERVICE, VTO, AUDIO) all fixed and regression-clean · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED
+* **Remaining:** graphics completeness beyond L3
+* **Notes:** S83 real-screenshot campaign evidence (games__dooz__L2_GRAPHICALLY_INCOMPLETE.jpg)
+
+### io.itch.pirate_solitaire
+
+* **Package / identity:** `io.itch.pirate_solitaire` · type: game · version: 1.3
+* **Source:** [https://github.com/Pheonyxior/Pirate-Solitaire-Git-Repo/tree/master](https://github.com/Pheonyxior/Pirate-Solitaire-Git-Repo/tree/master)
+* **APK SHA256:** `b9fbe6023d8696b62f334085378a3ae3bc8f979d4d12698ce6facaed36bb02f8`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L0 (LOADED_ONLY)
+* **Execution evidence:** launched=false · rendered=false · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/io.itch.pirate_solitaire/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=1 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=1 entropy=-0.0 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### jwtc.android.chess
+
+* **Package / identity:** `jwtc.android.chess` · type: game · version: 10.6.0
+* **Source:** [https://github.com/jcarolus/android-chess](https://github.com/jcarolus/android-chess)
+* **APK SHA256:** `3245b9ec35f6c1df771c418ac91ec792b5e056fb37e1d391e607b614f1a283b4`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L2 (GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=false · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/jwtc.android.chess/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=7 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=2 entropy=0.09 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### net.tigr.navyfleetbattle
+
+* **Package / identity:** `net.tigr.navyfleetbattle` · type: game · version: 1.3.4
+* **Source:** [https://github.com/tigrino/navy-fleet-battle](https://github.com/tigrino/navy-fleet-battle)
+* **APK SHA256:** `a2eed1a574bc01ed2b8b004b22832d8baa5f936a154f68e0737dcef9c2fe7ca5`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L2 (GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** none (rc=0) · issue: —
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED
+* **Remaining:** full app-specific behavior beyond click probe
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → none
+* **Notes:** S84 NEW title. rc_obs=0 errors=3 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=2 entropy=0.09 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### OPMT (One More Time…)
+
+* **Package / identity:** `one.scarecrow.games.OPMT` · type: game · version: —
+* **Source:** [https://github.com/scarecrowgames/OneMoreTimePuzzleGame](https://github.com/scarecrowgames/OneMoreTimePuzzleGame)
+* **APK SHA256:** `—`
+* **Sessions:** S65/S74 · status: **PARTIAL** · rendering: L5 (L5)
+* **Execution evidence:** launched=true · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** [one.scarecrow.games.OPMT.jpg](../docs/evidence/canonical/one.scarecrow.games.OPMT.jpg) · SHA256 `17aa411b313a5aa2…`
+* **Root cause:** see session report (S62-S65 spotlight reports) · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED
+* **Remaining:** session-specific (see report)
+* **Last success / first divergence:** see S65/S74 report → see session report
+* **Notes:** canonical harvested from docs/evidence/visual_forensics/s65_reval/opmt/game_partial_full.png
+
+### org.bobstuff.bobball
+
+* **Package / identity:** `org.bobstuff.bobball` · type: game · version: 1.17
+* **Source:** [https://github.com/bobthekingofegypt/BobBall](https://github.com/bobthekingofegypt/BobBall)
+* **APK SHA256:** `fd43009a7ffdfaf84963487e2b3502bef63775a4eedd60d7040da70e658b3241`
+* **Sessions:** S84 · status: **VERIFIED-INTERACTIVE** · rendering: L2 (GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=true · interacted=true · state_changed=true
+* **Canonical screenshot:** [org.bobstuff.bobball.gif](../docs/evidence/canonical/org.bobstuff.bobball.gif) · SHA256 `788ce033de1ae0c3…`
+* **Root cause:** none (rc=0) · issue: —
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED/INTERACTED/STATE_CHANGED
+* **Remaining:** full app-specific behavior beyond click probe
+* **Notes:** S84 NEW title. rc_obs=0 errors=0 frames=8/8 click: probed=6 state_changed=6. unique_colors=57 entropy=0.672 resources(dex/classes)=?
+
+### org.lufebe16.pysolfc
+
+* **Package / identity:** `org.lufebe16.pysolfc` · type: game · version: 3.6.1
+* **Source:** [https://github.com/shlomif/PySolFC](https://github.com/shlomif/PySolFC)
+* **APK SHA256:** `abe8a22ddab2029fd78489527dc60f201bf9be37a27283e41619b4b40d6158e2`
+* **Sessions:** S84 · status: **BLOCKED** · rendering: L-1 (NO-FRAME)
+* **Execution evidence:** launched=false · rendered=false · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** engine boot → first uncaught in-flight exception (see run/s84/org.lufebe16.pysolfc/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=1 frames=0/8 click: probed=-1 state_changed=-1. unique_colors=None entropy=None resources(dex/classes)=?
+
+### org.opensurge2d.surgeengine
+
+* **Package / identity:** `org.opensurge2d.surgeengine` · type: game · version: 6.1.3.0-fdroid
+* **Source:** [https://github.com/alemart/opensurge](https://github.com/alemart/opensurge)
+* **APK SHA256:** `c1020c5a1e594b2189816ac39f657e827b9a4d22d199d72228ed7e276d70be77`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L2 (GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=false · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/org.opensurge2d.surgeengine/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=1 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=2 entropy=0.09 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### Battleship (SECUSO)
+
+* **Package / identity:** `org.secuso.privacyfriendlybattleship` · type: game · version: —
+* **Source:** F-Droid
+* **APK SHA256:** `—`
+* **Sessions:** S83 · status: **OBSERVED** · rendering: L2 (L2_GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=false · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** S83 near-blank final-frame class (eb16ab5c… ×16, uniq=2-3): app renders status-bar-only content at campaign parameters; real UI evidence exists only for titles with dedicated interaction runs (s83b sweep) · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED (frames not visual evidence)
+* **Remaining:** real-UI render under dedicated interaction protocol
+* **Last success / first divergence:** 8/8 frames captured; lifecycle ran → near-blank framebuffer (no meaningful UI pixels)
+* **Notes:** S83 campaign (games__org.secuso.privacyfriendlybattleship_101__L2_GRAPHICALLY_INCOMPLETE.jpg) is the shared near-blank frame class — no canonical visual per S54 law; evidence = run logs
+
+### Guandan
+
+* **Package / identity:** `page.codeberg.lanticy.guandan` · type: game · version: —
+* **Source:** F-Droid
+* **APK SHA256:** `—`
+* **Sessions:** S83 · status: **OBSERVED** · rendering: L2 (L2_GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=false · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** S83 near-blank final-frame class (eb16ab5c… ×16, uniq=2-3): app renders status-bar-only content at campaign parameters; real UI evidence exists only for titles with dedicated interaction runs (s83b sweep) · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED (frames not visual evidence)
+* **Remaining:** real-UI render under dedicated interaction protocol
+* **Last success / first divergence:** 8/8 frames captured; lifecycle ran → near-blank framebuffer (no meaningful UI pixels)
+* **Notes:** S83 campaign (games__page.codeberg.lanticy.guandan_7__L2_GRAPHICALLY_INCOMPLETE.jpg) is the shared near-blank frame class — no canonical visual per S54 law; evidence = run logs
+
+### ru.wohlsoft.thextech.fdroid
+
+* **Package / identity:** `ru.wohlsoft.thextech.fdroid` · type: game · version: 1.3.7.3
+* **Source:** [https://github.com/Wohlstand/TheXTech](https://github.com/Wohlstand/TheXTech)
+* **APK SHA256:** `768aaa9ad0a08d8dc5640e70f298d688e593b9627b96e9f9cdbacdb487268edd`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L2 (GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=false · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. |  · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/ru.wohlsoft.thextech.fdroid/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=0 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=2 entropy=0.09 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### Tarok
+
+* **Package / identity:** `si.palcka.tarok` · type: game · version: —
+* **Source:** F-Droid
+* **APK SHA256:** `—`
+* **Sessions:** S83 · status: **OBSERVED** · rendering: L2 (L2_GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=false · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** S83 near-blank final-frame class (eb16ab5c… ×16, uniq=2-3): app renders status-bar-only content at campaign parameters; real UI evidence exists only for titles with dedicated interaction runs (s83b sweep) · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED (frames not visual evidence)
+* **Remaining:** real-UI render under dedicated interaction protocol
+* **Last success / first divergence:** 8/8 frames captured; lifecycle ran → near-blank framebuffer (no meaningful UI pixels)
+* **Notes:** S83 campaign (games__si.palcka.tarok_203__L2_GRAPHICALLY_INCOMPLETE.jpg) is the shared near-blank frame class — no canonical visual per S54 law; evidence = run logs
+
+### xyz.deepdaikon.quinb
+
+* **Package / identity:** `xyz.deepdaikon.quinb` · type: game · version: 1.2.5
+* **Source:** [https://gitlab.com/deepdaikon/Quinb/tree/HEAD](https://gitlab.com/deepdaikon/Quinb/tree/HEAD)
+* **APK SHA256:** `bd720d019b85bac7aa08013bf2b50f331d76d736bfe681753a43c8215e002d69`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L2 (GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** none (rc=0) · issue: —
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED
+* **Remaining:** full app-specific behavior beyond click probe
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → none
+* **Notes:** S84 NEW title. rc_obs=0 errors=0 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=2 entropy=0.09 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### uNote
+
+* **Package / identity:** `app.varlorg.unote` · type: app · version: —
+* **Source:** F-Droid
+* **APK SHA256:** `be91103f0e7db44361de5e918d9130dab4ac137bab5bd946a0fd8dab88bc2cc0`
+* **Sessions:** S83 · status: **VERIFIED** · rendering: L2 (L2_GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** [app.varlorg.unote.jpg](../docs/evidence/canonical/app.varlorg.unote.jpg) · SHA256 `0926d80c165221c8…`
+* **Root cause:** S83 engine laws (APX-ACT, CANVAS-GEOMETRY, LOCALE-DEFAULT, INPUT-SERVICE, VTO, AUDIO) all fixed and regression-clean · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED
+* **Remaining:** graphics completeness beyond L3
+* **Notes:** S83 real-screenshot campaign evidence (apps__app.varlorg.unote_30__L2_GRAPHICALLY_INCOMPLETE.jpg)
+
+### DeskClock
+
+* **Package / identity:** `com.best.deskclock` · type: app · version: —
+* **Source:** F-Droid
+* **APK SHA256:** `—`
+* **Sessions:** S83 · status: **OBSERVED** · rendering: L2 (L2_GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=false · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** S83 near-blank final-frame class (eb16ab5c… ×16, uniq=2-3): app renders status-bar-only content at campaign parameters; real UI evidence exists only for titles with dedicated interaction runs (s83b sweep) · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED (frames not visual evidence)
+* **Remaining:** real-UI render under dedicated interaction protocol
+* **Last success / first divergence:** 8/8 frames captured; lifecycle ran → near-blank framebuffer (no meaningful UI pixels)
+* **Notes:** S83 campaign (apps__com.best.deskclock_2036__L2_GRAPHICALLY_INCOMPLETE.jpg) is the shared near-blank frame class — no canonical visual per S54 law; evidence = run logs
+
+### Bnyro Clock
+
+* **Package / identity:** `com.bnyro.clock` · type: app · version: —
+* **Source:** F-Droid
+* **APK SHA256:** `—`
+* **Sessions:** S83 · status: **OBSERVED** · rendering: L2 (L2_GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=false · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** S83 near-blank final-frame class (eb16ab5c… ×16, uniq=2-3): app renders status-bar-only content at campaign parameters; real UI evidence exists only for titles with dedicated interaction runs (s83b sweep) · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED (frames not visual evidence)
+* **Remaining:** real-UI render under dedicated interaction protocol
+* **Last success / first divergence:** 8/8 frames captured; lifecycle ran → near-blank framebuffer (no meaningful UI pixels)
+* **Notes:** S83 campaign (apps__com.bnyro.clock_24__L2_GRAPHICALLY_INCOMPLETE.jpg) is the shared near-blank frame class — no canonical visual per S54 law; evidence = run logs
+
+### PMK-61 Calculator
+
+* **Package / identity:** `com.cax.pmk` · type: app · version: —
+* **Source:** [https://github.com/xvadim/pmk-android](https://github.com/xvadim/pmk-android)
+* **APK SHA256:** `—`
+* **Sessions:** S64 · status: **VERIFIED** · rendering: L6 (L6)
+* **Execution evidence:** launched=true · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** [com.cax.pmk.jpg](../docs/evidence/canonical/com.cax.pmk.jpg) · SHA256 `245ae472e4b390d1…`
+* **Root cause:** see session report (S62-S65 spotlight reports) · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED
+* **Remaining:** session-specific (see report)
+* **Notes:** canonical harvested from docs/evidence/s64_spotlight/pmk_frame0_indicator.png
+
+### Chess Clock
+
+* **Package / identity:** `com.chessclock.android` · type: app · version: —
+* **Source:** F-Droid
+* **APK SHA256:** `5ca6f2c54c05efe7df72b209988037b97e37be0faae133624ec352057445fafa`
+* **Sessions:** S83 · status: **VERIFIED** · rendering: L0 (L0_LOADED_ONLY)
+* **Execution evidence:** launched=true · rendered=false · interacted=false · state_changed=false
+* **Canonical screenshot:** [com.chessclock.android.jpg](../docs/evidence/canonical/com.chessclock.android.jpg) · SHA256 `c3209486dd0ab332…`
+* **Root cause:** S83 engine laws (APX-ACT, CANVAS-GEOMETRY, LOCALE-DEFAULT, INPUT-SERVICE, VTO, AUDIO) all fixed and regression-clean · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED
+* **Remaining:** graphics completeness beyond L3
+* **Notes:** S83 real-screenshot campaign evidence (apps__com.chessclock.android_29__L0_LOADED_ONLY.jpg)
+
+### com.forrestguice.suntimeswidget
+
+* **Package / identity:** `com.forrestguice.suntimeswidget` · type: app · version: 0.17.5
+* **Source:** [https://github.com/forrestguice/SuntimesWidget](https://github.com/forrestguice/SuntimesWidget)
+* **APK SHA256:** `bd0fbe51f684895d8e1778203875cd0850af5387ec036811c540b13ce3ec0a11`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L2 (GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** none (rc=0) · issue: —
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED
+* **Remaining:** full app-specific behavior beyond click probe
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → none
+* **Notes:** S84 NEW title. rc_obs=0 errors=0 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=2 entropy=0.09 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### com.hegocre.nextcloudpasswords
+
+* **Package / identity:** `com.hegocre.nextcloudpasswords` · type: app · version: 1.2.1
+* **Source:** [https://github.com/hegocre/NextcloudPasswords](https://github.com/hegocre/NextcloudPasswords)
+* **APK SHA256:** `b8ee43950d3fd8473a78e85494af0800f9f0ba50be49a1d55aff8362ab2d4b9c`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L2 (GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=false · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/com.hegocre.nextcloudpasswords/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=5 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=2 entropy=0.09 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### com.hfut.schedule
+
+* **Package / identity:** `com.hfut.schedule` · type: app · version: 4.21.1
+* **Source:** [https://github.com/Chiu-xaH/HFUT-Schedule](https://github.com/Chiu-xaH/HFUT-Schedule)
+* **APK SHA256:** `bc2b586a58bd6eba4641c5509e9d2f1c55b32f952b5820295ecc08838a3534db`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L1 (NONBLANK)
+* **Execution evidence:** launched=false · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/com.hfut.schedule/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=32 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=3 entropy=0.034 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### com.jherkenhoff.qalculate
+
+* **Package / identity:** `com.jherkenhoff.qalculate` · type: app · version: 0.2.1
+* **Source:** [https://github.com/jherkenhoff/qalculate-android](https://github.com/jherkenhoff/qalculate-android)
+* **APK SHA256:** `31366f4dd3e750e56f6667af195d1a9d8b16e11fff4b967df759082f65d9b1dd`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L1 (NONBLANK)
+* **Execution evidence:** launched=false · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/com.jherkenhoff.qalculate/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=32 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=3 entropy=0.007 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### com.justdeax.composeStopwatch
+
+* **Package / identity:** `com.justdeax.composeStopwatch` · type: app · version: 1.9.1
+* **Source:** [https://github.com/JustDeax/ComposeStopwatch](https://github.com/JustDeax/ComposeStopwatch)
+* **APK SHA256:** `dbf937ebbe7c0b3d24c07fa0ede7cb53ea117f7071db3b61f1c96b7d257cda55`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L1 (NONBLANK)
+* **Execution evidence:** launched=false · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/com.justdeax.composeStopwatch/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=5 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=3 entropy=0.034 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### com.kompact
+
+* **Package / identity:** `com.kompact` · type: app · version: 2.0.0
+* **Source:** [https://git.naxod.com/luca/Kompact](https://git.naxod.com/luca/Kompact)
+* **APK SHA256:** `9aacd0015ccd9aadab99b986f3c6e94da608aca692d01f43a6ebff9e612bb236`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L2 (GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=false · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/com.kompact/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=11 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=2 entropy=0.09 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### com.ma.tehro
+
+* **Package / identity:** `com.ma.tehro` · type: app · version: 1.5.0
+* **Source:** [https://github.com/mosayeb-a/tehran-metro](https://github.com/mosayeb-a/tehran-metro)
+* **APK SHA256:** `f5dbd2a88dfe9e64f813728b62701e19974cf0acf1d85b8b17f7da47df9317dd`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L1 (NONBLANK)
+* **Execution evidence:** launched=false · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/com.ma.tehro/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=3 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=3 entropy=0.007 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### NewsBlur
+
+* **Package / identity:** `com.newsblur` · type: app · version: —
+* **Source:** F-Droid
+* **APK SHA256:** `—`
+* **Sessions:** S83 HIGH · status: **OBSERVED** · rendering: L2 (L2_GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=false · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** S83 near-blank final-frame class (eb16ab5c… ×16, uniq=2-3): app renders status-bar-only content at campaign parameters; real UI evidence exists only for titles with dedicated interaction runs (s83b sweep) · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED (frames not visual evidence)
+* **Remaining:** real-UI render under dedicated interaction protocol
+* **Last success / first divergence:** 8/8 frames captured; lifecycle ran → near-blank framebuffer (no meaningful UI pixels)
+* **Notes:** S83 campaign (high__com.newsblur_289__L2_GRAPHICALLY_INCOMPLETE.jpg) is the shared near-blank frame class — no canonical visual per S54 law; evidence = run logs
+
+### com.vagujhelyigergely.calculatorm3
+
+* **Package / identity:** `com.vagujhelyigergely.calculatorm3` · type: app · version: 1.5.2
+* **Source:** [https://github.com/gergelyvagujhelyi/CalculatorM3](https://github.com/gergelyvagujhelyi/CalculatorM3)
+* **APK SHA256:** `b224f071f7d34f7682ff048ce469f1fc196a4a005143e763875e27690bd9d955`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L1 (NONBLANK)
+* **Execution evidence:** launched=false · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. |  · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/com.vagujhelyigergely.calculatorm3/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=0 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=3 entropy=0.007 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### com.vayunmathur.clock
+
+* **Package / identity:** `com.vayunmathur.clock` · type: app · version: v2.6.4
+* **Source:** [https://github.com/vayun-mathur/Modern-Apps](https://github.com/vayun-mathur/Modern-Apps)
+* **APK SHA256:** `143f8f74374864347a8f4ebcbc063d37b5a6ffb29c8f58b2c5d6ee302d7cf335`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L2 (GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=false · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/com.vayunmathur.clock/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=11 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=2 entropy=0.09 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### GameMasterDice
+
+* **Package / identity:** `de.duenndns.gmdice` · type: app · version: —
+* **Source:** F-Droid
+* **APK SHA256:** `1621eda11b5dbc0c232b54c652d27aeab2f8a3c95be2c1f0632d6233b12d8a85`
+* **Sessions:** S63/S83 · status: **VERIFIED** · rendering: L2 (L2_GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** [de.duenndns.gmdice.jpg](../docs/evidence/canonical/de.duenndns.gmdice.jpg) · SHA256 `1f38135926fa07e4…`
+* **Root cause:** S83 engine laws (APX-ACT, CANVAS-GEOMETRY, LOCALE-DEFAULT, INPUT-SERVICE, VTO, AUDIO) all fixed and regression-clean · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED
+* **Remaining:** graphics completeness beyond L3
+* **Notes:** S83 real-screenshot campaign evidence (apps__de.duenndns.gmdice_8__L2_GRAPHICALLY_INCOMPLETE.jpg)
+
+### de.seemoo.at_tracking_detection
+
+* **Package / identity:** `de.seemoo.at_tracking_detection` · type: app · version: 3.1.2
+* **Source:** [https://github.com/seemoo-lab/AirGuard](https://github.com/seemoo-lab/AirGuard)
+* **APK SHA256:** `583fc839caff840e7735dfeb28dd5a586e1fec101661e38db7eebb5b120907d4`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L2 (GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=false · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/de.seemoo.at_tracking_detection/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=20 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=2 entropy=0.09 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### de.taz.android.app.free
+
+* **Package / identity:** `de.taz.android.app.free` · type: app · version: 2.1.2
+* **Source:** [https://github.com/die-tageszeitung/taz-neo](https://github.com/die-tageszeitung/taz-neo)
+* **APK SHA256:** `86f14e1101e7f98952bc402234a7223e99a9defa100a4e12918ee3d88192e448`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L2 (GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=false · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/de.taz.android.app.free/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=32 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=2 entropy=0.09 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### MicroTimer
+
+* **Package / identity:** `dubrowgn.microtimer` · type: app · version: —
+* **Source:** F-Droid
+* **APK SHA256:** `79c6f730f64886e7b6561c2eed1a4420201e6e44a53b635dbb14c0689fd19828`
+* **Sessions:** S83 · status: **VERIFIED** · rendering: L2 (L2_GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** [dubrowgn.microtimer.jpg](../docs/evidence/canonical/dubrowgn.microtimer.jpg) · SHA256 `060e42e488c0f17e…`
+* **Root cause:** S83 engine laws (APX-ACT, CANVAS-GEOMETRY, LOCALE-DEFAULT, INPUT-SERVICE, VTO, AUDIO) all fixed and regression-clean · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED
+* **Remaining:** graphics completeness beyond L3
+* **Notes:** S83 real-screenshot campaign evidence (apps__dubrowgn.microtimer_8__L2_GRAPHICALLY_INCOMPLETE.jpg)
+
+### foehnix.widget
+
+* **Package / identity:** `foehnix.widget` · type: app · version: 4.0
+* **Source:** [https://github.com/dzmanto/foehnix](https://github.com/dzmanto/foehnix)
+* **APK SHA256:** `960913f40cefe5f4542554ef603305586b87ca0b03b25f28f09abeec7a9cf857`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L2 (GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** none (rc=0) · issue: —
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED
+* **Remaining:** full app-specific behavior beyond click probe
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → none
+* **Notes:** S84 NEW title. rc_obs=0 errors=0 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=2 entropy=0.09 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### fr.corenting.convertisseureurofranc
+
+* **Package / identity:** `fr.corenting.convertisseureurofranc` · type: app · version: 2.19
+* **Source:** [https://github.com/corenting/InflationCalculator](https://github.com/corenting/InflationCalculator)
+* **APK SHA256:** `257295104823c97039995d60af839d5c4681a0d6840b00486fe674d78b0d1cfe`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L2 (GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=false · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/fr.corenting.convertisseureurofranc/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=32 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=2 entropy=0.09 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### io.github.aoc_normal
+
+* **Package / identity:** `io.github.aoc_normal` · type: app · version: 1.0
+* **Source:** [https://archive.softwareheritage.org/browse/origin/https://github.com/Raidenxd2/always_on_clock_normal/directory/](https://archive.softwareheritage.org/browse/origin/https://github.com/Raidenxd2/always_on_clock_normal/directory/)
+* **APK SHA256:** `7d049e2276f0c1ae46775e1d8cc897fb57e700c64e071cf843198e9532d9a0dc`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L0 (LOADED_ONLY)
+* **Execution evidence:** launched=true · rendered=false · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** none (rc=0) · issue: —
+* **Proven exactly:** LOADED/LAUNCHED
+* **Remaining:** full app-specific behavior beyond click probe
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → none
+* **Notes:** S84 NEW title. rc_obs=0 errors=0 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=1 entropy=-0.0 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### Shopping List Calc
+
+* **Package / identity:** `io.github.buildsbyben.shoppinglistcalc` · type: app · version: —
+* **Source:** [https://github.com/buildsbyben/shopping-list-calc](https://github.com/buildsbyben/shopping-list-calc)
+* **APK SHA256:** `—`
+* **Sessions:** S64 · status: **VERIFIED** · rendering: L9 (L9)
+* **Execution evidence:** launched=true · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** [io.github.buildsbyben.shoppinglistcalc.jpg](../docs/evidence/canonical/io.github.buildsbyben.shoppinglistcalc.jpg) · SHA256 `57b3ca45c8ff83c6…`
+* **Root cause:** see session report (S62-S65 spotlight reports) · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED
+* **Remaining:** session-specific (see report)
+* **Notes:** canonical harvested from docs/evidence/s64_spotlight/sc_after_click.png
+
+### TimeLimit
+
+* **Package / identity:** `io.timelimit.android.aosp.direct` · type: app · version: —
+* **Source:** F-Droid
+* **APK SHA256:** `—`
+* **Sessions:** S83 HIGH · status: **OBSERVED** · rendering: L2 (L2_GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=false · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** S83 near-blank final-frame class (eb16ab5c… ×16, uniq=2-3): app renders status-bar-only content at campaign parameters; real UI evidence exists only for titles with dedicated interaction runs (s83b sweep) · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED (frames not visual evidence)
+* **Remaining:** real-UI render under dedicated interaction protocol
+* **Last success / first divergence:** 8/8 frames captured; lifecycle ran → near-blank framebuffer (no meaningful UI pixels)
+* **Notes:** S83 campaign (high__io.timelimit.android.aosp.direct_231__L2_GRAPHICALLY_INCOMPLETE.jpg) is the shared near-blank frame class — no canonical visual per S54 law; evidence = run logs
+
+### me.river.nightbell
+
+* **Package / identity:** `me.river.nightbell` · type: app · version: 3.13.0
+* **Source:** [https://github.com/riveerxd/nightbell](https://github.com/riveerxd/nightbell)
+* **APK SHA256:** `e4972ad68a1550339edb71bab866bd32d045057c85349ee857954b107eed8fe1`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L1 (NONBLANK)
+* **Execution evidence:** launched=false · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/me.river.nightbell/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=23 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=3 entropy=0.007 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### me.timeto.app
+
+* **Package / identity:** `me.timeto.app` · type: app · version: 2026.09.19
+* **Source:** [https://github.com/Medvedev91/timeto.me](https://github.com/Medvedev91/timeto.me)
+* **APK SHA256:** `cff24d4b5043e2683c5de425662ad6723cce99aee55af35b142d496f4b762191`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L1 (NONBLANK)
+* **Execution evidence:** launched=false · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/me.timeto.app/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=32 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=3 entropy=0.007 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### Simple Stopwatch
+
+* **Package / identity:** `omegacentauri.mobi.simplestopwatch` · type: app · version: —
+* **Source:** F-Droid
+* **APK SHA256:** `b3ec1a5ec24ce53bf5c2322eaf79b00c52f021ed7a0ada9d58fae31dcffc83d2`
+* **Sessions:** S64/S83 · status: **VERIFIED** · rendering: L2 (L2_GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** [omegacentauri.mobi.simplestopwatch.jpg](../docs/evidence/canonical/omegacentauri.mobi.simplestopwatch.jpg) · SHA256 `60c1f2f03ca5d9c6…`
+* **Root cause:** S83 engine laws (APX-ACT, CANVAS-GEOMETRY, LOCALE-DEFAULT, INPUT-SERVICE, VTO, AUDIO) all fixed and regression-clean · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED
+* **Remaining:** graphics completeness beyond L3
+* **Notes:** S83 real-screenshot campaign evidence (apps__omegacentauri.mobi.simplestopwatch_26__L2_GRAPHICALLY_INCOMPLETE.jpg)
+
+### Notes (billthefarmer)
+
+* **Package / identity:** `org.billthefarmer.notes` · type: app · version: —
+* **Source:** F-Droid
+* **APK SHA256:** `82cf8bc44c16374897665dabcd33e78715e801af48373b45b9c41e85e55e64ef`
+* **Sessions:** S83 · status: **VERIFIED** · rendering: L2 (L2_GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** [org.billthefarmer.notes.jpg](../docs/evidence/canonical/org.billthefarmer.notes.jpg) · SHA256 `c67b0f528032b839…`
+* **Root cause:** S83 engine laws (APX-ACT, CANVAS-GEOMETRY, LOCALE-DEFAULT, INPUT-SERVICE, VTO, AUDIO) all fixed and regression-clean · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED
+* **Remaining:** graphics completeness beyond L3
+* **Notes:** S83 real-screenshot campaign evidence (apps__org.billthefarmer.notes_139__L2_GRAPHICALLY_INCOMPLETE.jpg)
+
+### SigGen
+
+* **Package / identity:** `org.billthefarmer.siggen` · type: app · version: —
+* **Source:** [https://github.com/billthefarmer/sig-gen](https://github.com/billthefarmer/sig-gen)
+* **APK SHA256:** `—`
+* **Sessions:** S63 · status: **PARTIAL** · rendering: L5 (L5)
+* **Execution evidence:** launched=true · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** [org.billthefarmer.siggen.jpg](../docs/evidence/canonical/org.billthefarmer.siggen.jpg) · SHA256 `338c5a8687d371c2…`
+* **Root cause:** see session report (S62-S65 spotlight reports) · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED
+* **Remaining:** session-specific (see report)
+* **Last success / first divergence:** see S63 report → see session report
+* **Notes:** canonical harvested from docs/evidence/s63_spotlight/siggen_frame0.png
+
+### Heading Calculator
+
+* **Package / identity:** `org.debian.eugen.headingcalculator` · type: app · version: —
+* **Source:** F-Droid
+* **APK SHA256:** `274ec873098eea512e10aa6915d2a832a5a178a65ee7931bc101fe4832983f93`
+* **Sessions:** S83 · status: **VERIFIED** · rendering: L2 (L2_GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** [org.debian.eugen.headingcalculator.jpg](../docs/evidence/canonical/org.debian.eugen.headingcalculator.jpg) · SHA256 `4de2a3f8f8b8c429…`
+* **Root cause:** S83 engine laws (APX-ACT, CANVAS-GEOMETRY, LOCALE-DEFAULT, INPUT-SERVICE, VTO, AUDIO) all fixed and regression-clean · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED
+* **Remaining:** graphics completeness beyond L3
+* **Notes:** S83 real-screenshot campaign evidence (apps__org.debian.eugen.headingcalculator_1__L2_GRAPHICALLY_INCOMPLETE.jpg)
+
+### org.nitri.opentopo
+
+* **Package / identity:** `org.nitri.opentopo` · type: app · version: 1.38
+* **Source:** [https://github.com/Pygmalion69/OpenTopoMapViewer](https://github.com/Pygmalion69/OpenTopoMapViewer)
+* **APK SHA256:** `0fa0362afc6f8f0c95a43e9aa6dfa3e6891dca0755d043cbac08d63557c22da3`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L2 (GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=false · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/org.nitri.opentopo/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=19 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=2 entropy=0.09 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### P9 (tube42)
+
+* **Package / identity:** `se.tube42.p9.android` · type: app · version: —
+* **Source:** F-Droid
+* **APK SHA256:** `—`
+* **Sessions:** S81/S83 · status: **OBSERVED** · rendering: L2 (L2_GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=true · rendered=false · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** S83 near-blank final-frame class (eb16ab5c… ×16, uniq=2-3): app renders status-bar-only content at campaign parameters; real UI evidence exists only for titles with dedicated interaction runs (s83b sweep) · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED (frames not visual evidence)
+* **Remaining:** real-UI render under dedicated interaction protocol
+* **Last success / first divergence:** 8/8 frames captured; lifecycle ran → near-blank framebuffer (no meaningful UI pixels)
+* **Notes:** S83 campaign (apps__se.tube42.p9.android_11__L2_GRAPHICALLY_INCOMPLETE.jpg) is the shared near-blank frame class — no canonical visual per S54 law; evidence = run logs
+
+### site.leos.apps.lespas
+
+* **Package / identity:** `site.leos.apps.lespas` · type: app · version: 2.11.5
+* **Source:** [https://github.com/scubajeff/lespas](https://github.com/scubajeff/lespas)
+* **APK SHA256:** `be129b43f84752e4af2ea2475b68134fbf0bdab17ba5d65fe742e6621fffb640`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L1 (NONBLANK)
+* **Execution evidence:** launched=false · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/site.leos.apps.lespas/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=14 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=3 entropy=0.034 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### tibarj.tranquilstopwatch
+
+* **Package / identity:** `tibarj.tranquilstopwatch` · type: app · version: 1.12.1
+* **Source:** [https://github.com/tibarj/tranquilstopwatch](https://github.com/tibarj/tranquilstopwatch)
+* **APK SHA256:** `7bc31fae5cd2e9d815414dafb437f9a9a2fd21f4dc16d9929adc5fec962c5cb7`
+* **Sessions:** S84 · status: **OBSERVED** · rendering: L2 (GRAPHICALLY_INCOMPLETE)
+* **Execution evidence:** launched=false · rendered=true · interacted=true · state_changed=false
+* **Canonical screenshot:** — (no visual — see divergence) · SHA256 `…`
+* **Root cause:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope). · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/RENDERED/INTERACTED
+* **Remaining:** compose/animation dynamics; deeper interaction
+* **Last success / first divergence:** 8/8 frames captured, click pass executed → first uncaught in-flight exception (see run/s84/tibarj.tranquilstopwatch/obs_obs.log EXC-PROPAGATE)
+* **Notes:** S84 NEW title. rc_obs=1 errors=20 frames=8/8 click: probed=2 state_changed=0. unique_colors=2 entropy=0.09 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]
+
+### TicTacToe3D self-aware fixture
+
+* **Package / identity:** `org.miniandroid.helloworld` · type: fixture · version: —
+* **Source:** [https://github.com/Applibered/HelloWorldSelfAware](https://github.com/Applibered/HelloWorldSelfAware)
+* **APK SHA256:** `—`
+* **Sessions:** S45 · status: **VERIFIED** · rendering: L6 (L6)
+* **Execution evidence:** launched=true · rendered=true · interacted=false · state_changed=false
+* **Canonical screenshot:** [org.miniandroid.helloworld.jpg](../docs/evidence/canonical/org.miniandroid.helloworld.jpg) · SHA256 `83720c1028f832d0…`
+* **Root cause:** see session report (S62-S65 spotlight reports) · issue: [root-cause registry](../docs/evidence/ROOT_CAUSE_REGISTRY.md)
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED
+* **Remaining:** session-specific (see report)
+* **Notes:** canonical harvested from docs/evidence/external_hello_golden
+
