@@ -1,0 +1,176 @@
+name: Per-title compatibility report (S82)
+description: One APK / one app / one game — the permanent compatibility record for a single title (MiniAndroid Android Compatibility Runtime).
+title: "[TITLE-ID] <Title name> — compatibility report"
+labels: ["compatibility"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Per-title record law (S82 §5):** every title owns exactly one issue —
+        regardless of outcome (NOT_LOADED … VISUALLY_VERIFIED). The issue is a
+        *compatibility report*, not only a bug report. When the automation
+        (scripts/s82_create_title_issues.py) files this record, all fields are
+        populated from `docs/corpus/s82/title_registry.json`; hand-fill only
+        what automation cannot know.
+
+        Statuses are evidence-gated (§44): `STATE_CHANGED` needs before/after,
+        `RENDERED` needs a screenshot, `EXECUTED` needs a session, `APK_READY`
+        needs a SHA256, `VISUAL_CORRELATED` needs a reference,
+        `VISUALLY_VERIFIED` needs human review. `EXECUTED` is never merged
+        with `VISUALLY_VERIFIED` (§8).
+
+  - type: input
+    id: title_id
+    attributes:
+      label: Title ID
+      description: Stable identity (GAME-001…GAME-100, APP-001…APP-100, MAND-001/002). Never the issue number.
+      placeholder: GAME-037
+    validations:
+      required: true
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type
+      options: ["game", "app", "mandatory"]
+    validations:
+      required: true
+
+  - type: input
+    id: package
+    attributes:
+      label: Package
+      placeholder: com.example.app
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version / Version code
+      placeholder: 1.2.3 / 7
+
+  - type: input
+    id: apk_sha256
+    attributes:
+      label: APK SHA256
+      description: Required for any status above SOURCE_READY (§44).
+
+  - type: input
+    id: source_url
+    attributes:
+      label: Source URL
+      description: F-Droid → upstream source repo. Never guessed.
+
+  - type: input
+    id: source_revision
+    attributes:
+      label: Source revision (tag/commit) — if pinned
+
+  - type: input
+    id: fdroid_url
+    attributes:
+      label: F-Droid URL
+
+  - type: input
+    id: miniandroid_commit
+    attributes:
+      label: MiniAndroid commit under test
+
+  - type: input
+    id: session
+    attributes:
+      label: Execution session ID
+      description: e.g. S82-R-GAME-037-RUN1 (§37)
+
+  - type: dropdown
+    id: status
+    attributes:
+      label: Current status (evidence-gated ladder §7)
+      options:
+        - "STATE-NOT-LOADED"
+        - "STATE-LOADED"
+        - "STATE-LAUNCHING"
+        - "STATE-ONCREATE"
+        - "STATE-NONBLANK"
+        - "STATE-RENDERED"
+        - "STATE-GRAPHICALLY-NONTRIVIAL"
+        - "STATE-INTERACTIVE"
+        - "STATE-STATE-CHANGED"
+        - "STATE-SEMANTICALLY-CORRELATED"
+        - "STATE-VISUALLY-VERIFIED"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: graphics_status
+    attributes:
+      label: Graphics status
+      options: ["NONE", "TEXT_ONLY", "NONTRIVIAL", "IMAGE_GAP"]
+    validations:
+      required: true
+
+  - type: dropdown
+    id: input_status
+    attributes:
+      label: Input status
+      options: ["NONE", "TAP_DISPATCHED", "INPUT_RESPONSE_PX"]
+    validations:
+      required: true
+
+  - type: dropdown
+    id: state_status
+    attributes:
+      label: State-change status
+      options: ["NONE", "PIXEL_DIFF_PROVEN", "STATE_TRACE_PROVEN"]
+    validations:
+      required: true
+
+  - type: textarea
+    id: known_failure
+    attributes:
+      label: Known failure / F-IDs / VF-IDs
+      description: Link the runtime root-cause issue(s) this title is a fanout member of (§17/§18).
+      placeholder: |
+        F-NEW-156 (onCreate APP-BOUNDARY-UNWIND) — common runtime
+        VF-NEW-003 IMAGE_DECODED_VS_RENDERED_GAP — app-specific chain
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence pointers
+      description: Session dir, screenshot SHA256, trace excerpt, reference URL+SHA, comparison result (§37).
+      placeholder: |
+        screenshot: docs/evidence/s82/GAME-037.jpg sha256:…
+        reference: https://f-droid.org/repo/…/phoneScreenshots/… sha256:…
+        comparison: LEVEL 2 PARTIAL (palettes attached)
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior (reference)
+      description: What the real F-Droid/upstream app does at the same screen.
+
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed behavior (MiniAndroid)
+      description: Honest description of what actually happened, incl. blank/two-color (§16).
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction (RUN-1/2/3 when applicable §13)
+      placeholder: |
+        1. miniandroid run --execution-mode real-dalvik --frames 8 --frame-delay 300 <apk>
+        2. --tap 540,960@4
+        3. observe frames 4..8
+
+  - type: textarea
+    id: resolution
+    attributes:
+      label: Resolution
+      description: OPEN / PARTIAL / FIXED / VERIFIED — closing requires title-level verification (§20).
+      placeholder: OPEN
+    validations:
+      required: true
