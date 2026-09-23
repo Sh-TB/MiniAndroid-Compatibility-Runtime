@@ -4024,14 +4024,27 @@ uint32_t DalvikExecutionEngine::bind_manifest_application(
         std::cerr << "[R341-APP] <init> threw (recorded, bind continues): "
                   << e.what() << std::endl;
     }
-    // attachBaseContext(Context) — AOSP binds the app context here. App
-    // classes rarely override it; a REC-MISS is the honest no-op.
+    // attachBaseContext(Context) — AOSP binds the app context here.
+    // S89 F-NEW-184: the base context is NEVER null — AOSP LoadedApk calls
+    //   app.attachBaseContext(context) (Instrumentation.newApplication's
+    // context) BEFORE any app code runs, and ContextWrapper stores it as
+    // mBase. The previous behavior pushed DalvikValue::make_null() —
+    // fine when apps never override attachBaseContext (REC-MISS no-op),
+    // but Kotlin apps that DO override it run their compiler-inserted
+    // `context.checkNotNullParameter("context")` FIRST (R8 inlines
+    // Intrinsics into androidx.multidex.ZipUtil) → immediate
+    //   NPE "Parameter specified as non-null is null: ... attachBaseContext,
+    // parameter context"
+    // at APP BOUNDARY (secuso pfacore torchlight: whole app died before
+    // onCreate). LAW: bind the engine's application context object (the
+    // R341-APP instance doubles as the engine's Context — the same object
+    // getApplicationContext() serves), preserving AOSP ordering.
     try {
         DalvikValue this_val = DalvikValue::make_object(app_obj_id, app_class);
         DalvikValue ret;
         std::vector<DalvikValue> attach_args;
         attach_args.push_back(this_val);
-        attach_args.push_back(DalvikValue::make_null());  // base context
+        attach_args.push_back(this_val);  // F-NEW-184: the REAL base context
         try_recursive_invoke(app_class, "attachBaseContext", attach_args, ret,
                              result);
     } catch (const std::exception&) {
@@ -4742,6 +4755,33 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // that problematic methods never recurse into the broken bytecode paths.
     // Each intercept returns true (handled) or false (fall through to DEX).
     // ───────────────────────────────────────────────────────────────────
+
+    // ── S89 F-NEW-183b — AndroidUtilities.getCacheDir intercept (Telegram
+    // family) ────────────────────────────────────────────────────────────
+    // SOURCE GROUND TRUTH (DrKLO/Telegram 12.10.3, classes.dex disasm):
+    // AndroidUtilities.getCacheDir()Ljava/io/File; reads
+    // Environment.getExternalStorageState, then (MOUNTED branch)
+    // ApplicationLoader.applicationContext.getExternalCacheDirs()[0],
+    // checks SharedConfig.storageCacheDir, and DELEGATES the unmounted
+    // fallback to applicationContext.getCacheDir()/getFilesDir(). Under
+    // the engine the interpreter's static dispatch silently answered
+    // null for this app-class method (zero framework traces from its
+    // body, no TRY-ENTRY) → ImageLoader.<init> `!cachePath.isDirectory()`
+    // NPE (pc=310) ×9 → ImageLoader/MessagesController getInstance died
+    // → ActionBarLayout fragment chain starved → List.isEmpty ×12.
+    // LAW (identity with the Context cache-dir law): the engine's
+    // emulated device has storage MOUNTED and a single volume, so
+    // AndroidUtilities.getCacheDir() MUST answer the SAME pathed File
+    // object the Context.getCacheDir law answers (F-NEW-179 identity).
+    if (declaring_class.find("AndroidUtilities") != std::string::npos &&
+        method_name == "getCacheDir") {
+        return_val = get_or_create_dir_file(
+            (std::filesystem::path(Storage::app_data_root()) / "cache")
+                .string());
+        last_invoke_return_ = return_val;
+        recursion_depth_--;
+        return true;
+    }
 
     // EXP-071: getParentActivity → return LaunchActivity singleton.
     // The DEX bytecode for getParentActivity calls getView().getContext()
@@ -26978,6 +27018,58 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         result = get_or_create_dir_file(
             (std::filesystem::path(Storage::app_data_root()) / "external_cache")
                 .string());
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // S89 F-NEW-183 — Context.getExternalStorageDirs family (PLURAL File[]):
+    // getExternalCacheDirs / getExternalFilesDirs / getExternalMediaDirs /
+    // getObbDirs. AOSP ContextImpl: each returns a NON-EMPTY File[] (one
+    // entry per mounted storage volume; entry 0 = the primary external
+    // volume) — never null on a live context.
+    // SOURCE GROUND TRUTH (Telegram, DrKLO upstream,
+    // AndroidUtilities.getCacheDir — read before implementation):
+    //   File[] dirs = ApplicationLoader.applicationContext
+    //                     .getExternalCacheDirs();
+    //   file = dirs[0];
+    // The engine had ONLY the singular laws (R-NEW-401 / P1.7 /
+    // F-NEW-179). The plural form REC-MISS'd → null → `dirs[0]` NPE
+    // INSIDE AndroidUtilities.getCacheDir's try/catch (silently swallowed
+    // by FileLog.e) → getCacheDir() answered null → ImageLoader.<init>
+    // pc=310 `!cachePath.isDirectory()` NPE ×9 → ImageLoader.getInstance /
+    // MessagesController.getInstance died at APP BOUNDARY →
+    // ActionBarLayout fragments chain starved → List.isEmpty ×12 in
+    // e0/onMeasure (the S74/S85/S88 Telegram frontier signature).
+    // LAW: single-volume device emulation — 1-entry File[] whose element 0
+    // is the SAME PATHED File the singular law answers (F-NEW-179
+    // identity: singular and plural agree on the same directory object).
+    // ────────────────────────────────────────────────────────────────────────
+    if ((method == "getExternalCacheDirs" ||
+         method == "getExternalFilesDirs" ||
+         method == "getExternalMediaDirs" ||
+         method == "getObbDirs") &&
+        (class_name.find("Context") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos ||
+         class_name.find("Application") != std::string::npos ||
+         class_name.find("Service") != std::string::npos)) {
+        const std::string leaf =
+            method == "getExternalCacheDirs" ? "external_cache"
+            : method == "getExternalFilesDirs" ? "external_files"
+            : method == "getExternalMediaDirs" ? "external_media"
+                                               : "obb";
+        DalvikValue filev = get_or_create_dir_file(
+            (std::filesystem::path(Storage::app_data_root()) / leaf).string());
+        uint32_t arr_id = heap_.allocate("[Ljava/io/File;", pc_, 0);
+        heap_.set_object_field(arr_id, "__array_length__",
+                               DalvikValue::make_int(1));
+        heap_.set_object_field(arr_id, "array[0]", filev);
+        DalvikValue av;
+        av.type = DalvikType::OBJECT_REF;
+        av.object_id = arr_id;
+        av.class_desc = "[Ljava/io/File;";
+        av.int_val = 1;
+        result = av;
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
