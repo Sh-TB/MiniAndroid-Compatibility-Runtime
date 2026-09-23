@@ -20190,6 +20190,115 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
+    if (class_name == "Ljava/lang/reflect/Method;" &&
+        (method == "getAnnotation" || method == "isAnnotationPresent")) {
+        // ────────────────────────────────────────────────────────────────
+        // F-NEW-191 (S90): Method annotation reflection (OpenJDK law).
+        // Receiver args[0] = Method heap record (F-NEW-190: carries
+        // declaring_class / method_name / method_descriptor / method_idx).
+        // args[1] = the annotation TYPE (CLASS_REF). The answer resolves
+        // through the parsed annotations_directory_item method_annotations
+        // table (dex_parser F-NEW-191): a runtime-visible annotation whose
+        // type descriptor matches the request → heap PROXY whose class is
+        // the annotation type with "element:<name>" fields (same shape as
+        // the F-087 class law). Absent → null (getAnnotation) / false
+        // (isAnnotationPresent) — the AOSP-nullable contract.
+        // Root-gap evidence (F-NEW-162 family): ClassesInfoCache/
+        // Lifecycling walk klass.getDeclaredMethods() then
+        // m.getAnnotation(OnLifecycleEvent.class) — with every annotation
+        // invisible, hasLifecycleMethods(Recreator)=false drove the
+        // upstream-typed resolution into the generated-adapter invariant
+        // branch (classToAdapters[k]!!) that real Android never reaches.
+        // ────────────────────────────────────────────────────────────────
+        std::string decl_cls, meth_name;
+        int32_t meth_idx = -1;
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+            auto d = heap_.get_object_field(args[0].object_id,
+                                            "declaring_class");
+            auto n = heap_.get_object_field(args[0].object_id,
+                                            "method_name");
+            auto ix = heap_.get_object_field(args[0].object_id,
+                                             "method_idx");
+            if (d.has_value() && d->type == DalvikType::STRING_REF)
+                decl_cls = d->string_val;
+            if (n.has_value() && n->type == DalvikType::STRING_REF)
+                meth_name = n->string_val;
+            if (ix.has_value() && ix->type == DalvikType::INT32)
+                meth_idx = ix->int_val;
+        }
+        std::string want_ann;
+        if (args.size() > 1) {
+            if (args[1].type == DalvikType::CLASS_REF)
+                want_ann = args[1].class_desc;
+            else if (args[1].type == DalvikType::OBJECT_REF &&
+                     args[1].object_id != 0 &&
+                     heap_.has_object(args[1].object_id)) {
+                auto ref = heap_.get_object_field(args[1].object_id,
+                                                  "__referent_desc");
+                if (ref.has_value() &&
+                    ref->type == DalvikType::STRING_REF)
+                    want_ann = ref->string_val;
+                else if (args[1].class_desc == "Ljava/lang/Class;")
+                    want_ann = "";
+            }
+        }
+        bool present = false;
+        if (!decl_cls.empty() && !want_ann.empty()) {
+            for (const auto& cd : dex_report_->classes) {
+                if (cd.name != decl_cls) continue;
+                for (const auto& md : cd.direct_methods) {
+                    if (md.name != meth_name) continue;
+                    for (const auto& pa : md.method_annotations) {
+                        if (pa.first != want_ann) continue;
+                        present = true;
+                        if (method == "isAnnotationPresent") break;
+                        uint32_t proxy = heap_.allocate(
+                            want_ann, pc_, 0);
+                        for (const auto& el : pa.second) {
+                            heap_.set_object_field(
+                                proxy, "element:" + el.first,
+                                DalvikValue::make_string(el.second, 0));
+                        }
+                        result = DalvikValue::make_object(proxy, want_ann);
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                        return true;
+                    }
+                    if (present) break;
+                }
+                if (!present) {
+                    for (const auto& md : cd.virtual_methods) {
+                        if (md.name != meth_name) continue;
+                        for (const auto& pa : md.method_annotations) {
+                            if (pa.first != want_ann) continue;
+                            present = true;
+                            if (method == "isAnnotationPresent") break;
+                            uint32_t proxy = heap_.allocate(
+                                want_ann, pc_, 0);
+                            for (const auto& el : pa.second) {
+                                heap_.set_object_field(
+                                    proxy, "element:" + el.first,
+                                    DalvikValue::make_string(el.second, 0));
+                            }
+                            result = DalvikValue::make_object(proxy,
+                                                              want_ann);
+                            status = ApiCallTrace::Status::IMPLEMENTED;
+                            return true;
+                        }
+                        if (present) break;
+                    }
+                }
+                break;
+            }
+        }
+        if (method == "isAnnotationPresent") {
+            result = DalvikValue::make_bool(present);
+        } else {
+            result = DalvikValue::make_null();
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
     if (class_name == "Ljava/lang/reflect/Method;" && method == "invoke") {
         // args: [0]=Method receiver, [1]=target receiver (null for static),
         // [2]=Object[] params (may be absent for no-arg).
@@ -20268,6 +20377,10 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
         std::string token_desc =
             args.empty() ? std::string() : args[0].class_desc;
+        // S90 DIAG (F-NEW-162): log the ANSWER for the lifecycle walk —
+        // the interface branch depends on LEO→LO being true.
+        static thread_local const bool cls_ans_trace =
+            std::getenv("MINIANDROID_CLASS_LAW_TRACE") != nullptr;
         // F-103 heap-backed tokens: after a shadow round-trip (e.g.
         // ArrayList.add/get) the token arrives as an OBJECT_REF whose heap
         // object is the Ljava/lang/Class; record minted by const-class —
@@ -20300,6 +20413,12 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             } else if (probe.type == DalvikType::NULL_REF) {
                 answer = false;  // OpenJDK: isInstance(null) → false
             }
+        }
+        if (cls_ans_trace) {
+            std::cerr << "[CLASS-LAW-ANS] " << method
+                      << " token=" << token_desc
+                      << " -> " << (answer ? "TRUE" : "FALSE")
+                      << std::endl;
         }
         result = DalvikValue::make_bool(answer);
         return true;
@@ -27896,6 +28015,154 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             status = ApiCallTrace::Status::IMPLEMENTED;
             result = DalvikValue::make_object(arr_id,
                                               "[Ljava/lang/reflect/Field;");
+            return true;
+        }
+        // ────────────────────────────────────────────────────────────────
+        // F-NEW-190 (S90, F-NEW-162 family root): Class.getDeclaredMethods
+        // / Class.getInterfaces — libcore law: NEVER return null.
+        //   * OpenJDK Class.getDeclaredMethods(): returns a fresh Method[]
+        //     — an EMPTY array when the class declares none. Null is
+        //     impossible by contract.
+        //   * OpenJDK Class.getInterfaces(): the interface list — empty
+        //     (never null) when the class implements none.
+        // Root-gap evidence (no.thanks 1.23.0 SplashActivity.<init> chain,
+        // reproduced at S90 HEAD): ComponentActivity.<init> →
+        // SavedStateRegistryController.performAttach →
+        // LifecycleRegistry.addObserver → Lifecycling.lifecycleEventObserver
+        // → getObserverConstructorType → (the Recreator_LifecycleAdapter
+        // CNFE is caught by the R350 deferred handler exactly as upstream
+        // designs) → resolveObserverCallbackType → Kotlin
+        // Lifecycling 2.7 property access `klass.declaredMethods` /
+        // `klass.interfaces` → the unknown-API path answered NULL → the
+        // R8-inlined Intrinsics.checkNotNullExpressionValue fired
+        // NullPointerException ("klass.interfaces must not be null") →
+        // RuntimeException unwound 11 frames → APP BOUNDARY (PARTIAL).
+        // The 12+-title androidx-lifecycle F-NEW-162 family hangs on this
+        // contract (no.thanks + Signal 8.26.4 + S87 family).
+        // Smallest reusable law: real Method/Class arrays built from the
+        // parsed dex tables (name + descriptor + declaring_class). Method
+        // ANNOTATION queries are AOSP-nullable (getAnnotation may return
+        // null) and ride the unknown-method path for now — recorded
+        // frontier. Consumers scanning for @OnLifecycleEvent see no
+        // annotation → REFLECTED_CALLBACK → reflective observer with an
+        // empty handler set → lifecycle events flow without restored-
+        // component dispatch (the only behavior R8 already stripped from
+        // such APKs).
+        // ────────────────────────────────────────────────────────────────
+        if (method == "getDeclaredMethods" && !dotted.empty()) {
+            std::vector<uint32_t> mids;
+            for (const auto& cd : dex_report_->classes) {
+                if (cd.name != referent_desc) continue;
+                auto add190 = [&](const dex::MethodInfo& md) {
+                    uint32_t mid = heap_.allocate(
+                        "Ljava/lang/reflect/Method;", pc_, 0);
+                    heap_.set_object_field(
+                        mid, "declaring_class",
+                        DalvikValue::make_string(referent_desc, 0));
+                    heap_.set_object_field(
+                        mid, "method_name",
+                        DalvikValue::make_string(md.name, 0));
+                    heap_.set_object_field(
+                        mid, "method_descriptor",
+                        DalvikValue::make_string(md.descriptor, 0));
+                    heap_.set_object_field(
+                        mid, "method_idx",
+                        DalvikValue::make_int((int32_t)md.method_idx));
+                    mids.push_back(mid);
+                };
+                for (const auto& md : cd.direct_methods) add190(md);
+                for (const auto& md : cd.virtual_methods) add190(md);
+                break;
+            }
+            uint32_t arr_id = heap_.allocate(
+                "[Ljava/lang/reflect/Method;", pc_, 0);
+            heap_.set_object_field(
+                arr_id, "__array_length__",
+                DalvikValue::make_int((int32_t)mids.size()));
+            for (size_t i = 0; i < mids.size(); ++i) {
+                heap_.set_object_field(
+                    arr_id, "array[" + std::to_string(i) + "]",
+                    DalvikValue::make_object(mids[i],
+                                             "Ljava/lang/reflect/Method;"));
+            }
+            {
+                static thread_local uint64_t f190_n = 0;
+                if (f190_n < 16) {
+                    ++f190_n;
+                    std::cerr << "[F-NEW-190] getDeclaredMethods("
+                              << referent_desc << ") -> " << mids.size()
+                              << " methods" << std::endl;
+                }
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_object(
+                arr_id, "[Ljava/lang/reflect/Method;");
+            return true;
+        }
+        if (method == "getInterfaces" && !dotted.empty()) {
+            std::vector<std::string> ifaces;
+            for (const auto& cd : dex_report_->classes) {
+                if (cd.name == referent_desc) {
+                    ifaces = cd.interfaces;
+                    break;
+                }
+            }
+            // Engine-synthetic classes: known framework interface subsets
+            // stay empty ([] — the honest libcore answer for a synthetic
+            // Class with no parsed dex def).
+            uint32_t arr_id = heap_.allocate(
+                "[Ljava/lang/Class;", pc_, 0);
+            heap_.set_object_field(
+                arr_id, "__array_length__",
+                DalvikValue::make_int((int32_t)ifaces.size()));
+            for (size_t i = 0; i < ifaces.size(); ++i) {
+                heap_.set_object_field(
+                    arr_id, "array[" + std::to_string(i) + "]",
+                    DalvikValue::make_class(ifaces[i],
+                                            instruction_sequence_));
+            }
+            {
+                static thread_local uint64_t f190i_n = 0;
+                if (f190i_n < 16) {
+                    ++f190i_n;
+                    std::cerr << "[F-NEW-190] getInterfaces("
+                              << referent_desc << ") -> " << ifaces.size()
+                              << " interfaces" << std::endl;
+                }
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_object(arr_id, "[Ljava/lang/Class;");
+            return true;
+        }
+        // F-NEW-190b (S90, same root chain): Class.getSuperclass — OpenJDK
+        // law: returns the direct superclass (fresh Class object), NULL
+        // for Object and for interfaces (documented contract). The parsed
+        // dex superclass_name is the authoritative hierarchy source for
+        // APK classes; engine-synthetic classes answer null (no parsed
+        // def) exactly like a synthetic token with no hierarchy.
+        // Root-gap evidence: the same Lifecycling.resolveObserverCallbackType
+        // walk calls klass.superclass before the interfaces scan — with the
+        // unknown-API path answering typed-zero/null indiscriminately the
+        // lifecycle-parent probe branched on garbage.
+        if (method == "getSuperclass" && !dotted.empty()) {
+            std::string super_desc;
+            if (!dotted.empty() && dotted != "java.lang.Object") {
+                for (const auto& cd : dex_report_->classes) {
+                    if (cd.name == referent_desc) {
+                        super_desc = cd.superclass_name;
+                        break;
+                    }
+                }
+            }
+            // Interfaces have no superclass (dex reports none in
+            // superclass_name) — empty string → null, AOSP-correct.
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            if (super_desc.empty()) {
+                result = DalvikValue::make_null();
+            } else {
+                result = DalvikValue::make_class(super_desc,
+                                                 instruction_sequence_);
+            }
             return true;
         }
         // F-087 (R-NEW-313): runtime annotation reflection law (OpenJDK
