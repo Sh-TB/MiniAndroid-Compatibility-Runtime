@@ -10,6 +10,7 @@ Improvements over s88_corpus.py (container-reset hardening):
 Usage: s88_corpus2.py [n_target]
 """
 import hashlib
+import io
 import json
 import os
 import subprocess
@@ -73,14 +74,22 @@ def sha256(p):
             h.update(b)
     return h.hexdigest()
 
-def scan_dex(path):
-    cnt = Counter()
+def scan_dex(path, own_pkg=""):
+    """S90 fixed dex scanner (S89 bug: missing `import io` -> NameError
+    swallowed by bare except -> every dex silently skipped, top_classes
+    always []).  Returns framework type refs, exact class.method(sig)
+    method refs, app-own class refs, lib flags, dex count, parse failures."""
+    cnt = Counter()      # framework type descriptors
+    methods = Counter()  # framework "class.method(return<params)"
+    own = Counter()      # app's own classes (heuristic pkg prefix)
     libs = Counter()
+    parse_fail = 0
     try:
         z = zipfile.ZipFile(path)
     except Exception:
-        return cnt, libs, 0
+        return cnt, methods, own, libs, 0, 1
     dexes = [n for n in z.namelist() if n.endswith(".dex")]
+    own_pre = f"L{own_pkg}/" if own_pkg else "\x00"
     for name in dexes:
         d = z.read(name)
         for fam, sigs in LIB_SIGS.items():
@@ -90,6 +99,8 @@ def scan_dex(path):
         try:
             ssz, sof = struct.unpack_from("<II", d, 0x38)
             tsz, tof = struct.unpack_from("<II", d, 0x40)
+            psz, pof = struct.unpack_from("<II", d, 0x48)
+            msz, mof = struct.unpack_from("<II", d, 0x58)
 
             def uleb(f):
                 r = 0; s = 0
@@ -101,20 +112,60 @@ def scan_dex(path):
                         break
                 return r
 
+            strings = {}
+
             def string(i):
+                v = strings.get(i)
+                if v is not None:
+                    return v
                 off = struct.unpack_from("<I", d, sof + i * 4)[0]
                 f = io.BytesIO(d); f.seek(off)
                 n = uleb(f)
-                return f.read(n).decode("utf-8", "replace")
+                v = f.read(n).decode("utf-8", "replace")
+                if len(strings) < 200000:  # bounded cache
+                    strings[i] = v
+                return v
 
+            types = []
+
+            def type_desc(i):
+                if i < len(types):
+                    return types[i]
+                sidx = struct.unpack_from("<I", d, tof + i * 4)[0]
+                return string(sidx)
+
+            # pass 1: all type descriptors
             for ti in range(tsz):
                 sidx = struct.unpack_from("<I", d, tof + ti * 4)[0]
                 desc = string(sidx)
+                types.append(desc)
                 if desc.startswith(FRAMEWORK_PREFIXES):
                     cnt[desc] += 1
+            # proto signatures: shorty skipped, return+params decoded lazily
+            protos = {}
+            for pi in range(psz):
+                _shorty, ret, poff = struct.unpack_from("<III", d, pof + pi * 12)
+                try:
+                    nparams = struct.unpack_from("<I", d, poff)[0] if poff else 0
+                    params = [type_desc(struct.unpack_from("<H", d, poff + 4 + k * 2)[0])
+                              for k in range(nparams)] if poff else []
+                    protos[pi] = "(" + "".join(params) + ")" + type_desc(ret)
+                except Exception:
+                    protos[pi] = "?"
+            # pass 2: exact method refs (class + name + proto)
+            for mi in range(msz):
+                cls_idx, proto_idx, name_idx = struct.unpack_from(
+                    "<HHI", d, mof + mi * 8)
+                cls = type_desc(cls_idx)
+                mname = string(name_idx)
+                if cls.startswith(own_pre):
+                    own[cls] += 1
+                elif cls.startswith(FRAMEWORK_PREFIXES):
+                    methods[f"{cls[:-1]}.{mname}{protos.get(proto_idx, '?')}"] += 1
         except Exception:
+            parse_fail += 1
             continue
-    return cnt, libs, len(dexes)
+    return cnt, methods, own, libs, len(dexes), parse_fail
 
 def main():
     n_target = int(sys.argv[1]) if len(sys.argv) > 1 else 220
@@ -139,11 +190,13 @@ def main():
     print(f"queue: {len(pool)} | already scanned: {len(profiles)}", flush=True)
 
     corpus_class = Counter()
+    corpus_methods = Counter()
     corpus_libs = Counter()
     # rebuild corpus aggregates from prior profiles (resume-safe)
     for p, prof in profiles.items():
         if "top_classes" in prof:
             corpus_class.update(dict(prof["top_classes"]))
+            corpus_methods.update(dict(prof.get("top_methods", [])))
             corpus_libs.update(prof.get("libs", {}))
 
     ordered = [p for p in pool if p not in profiles]
@@ -174,19 +227,23 @@ def main():
             print(f"  [{len(profiles)}] {pkg}: BLOCKED", flush=True)
         else:
             size = os.path.getsize(dst)
-            cnt, libs, ndex = scan_dex(dst)
+            cnt, meths, own, libs, ndex, pfail = scan_dex(dst, pkg)
             libflags = {k: 1 for k, v in libs.items() if v > 0}
             profiles[pkg] = {
                 "kind": meta.get("kind", "app"), "why": meta.get("why", ""),
                 "version": meta.get("version"), "vc": vc,
                 "sha256": sha256(dst), "size": size, "url": apk_url,
                 "upstream": meta.get("source", ""), "dexes": ndex,
+                "parse_fail": pfail,
                 "libs": libflags,
                 "top_classes": cnt.most_common(25),
+                "top_methods": meths.most_common(40),
+                "own_class_count": len(own),
                 "android_type_count": sum(v for k, v in cnt.items()
                                           if k.startswith("Landroid/")),
             }
             corpus_class.update(cnt)
+            corpus_methods.update(meths)
             corpus_libs.update(libflags)
             print(f"  [{len(profiles)}] {pkg}: {size//1024}KB "
                   f"libs={sorted(libflags)[:5]}", flush=True)
@@ -209,6 +266,7 @@ def main():
         fam["/".join(desc.rstrip(";").split("/")[:4]) + ";"] += c
     json.dump({"scanned": len(profiles),
                "top_classes_corpus": corpus_class.most_common(80),
+               "top_methods_corpus": corpus_methods.most_common(200),
                "lib_families": dict(corpus_libs.most_common()),
                "class_family_counts": dict(fam.most_common(60))},
               open(freq_path, "w"), indent=1)
