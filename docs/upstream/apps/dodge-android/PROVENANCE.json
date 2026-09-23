@@ -1,0 +1,27 @@
+{
+ "upstream": "https://github.com/dozingcat/dodge-android",
+ "license": "GPL-3.0",
+ "fetched": "2026-09-22 S86",
+ "head_pinned_files": {
+  "README": {
+   "path": "README",
+   "sha256": "06c7aaf50296c3faff39bcf3c936adfd68c637687d9e95a91d69286271960cad"
+  },
+  "COPYING": {
+   "path": "COPYING",
+   "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903"
+  },
+  "FieldView.java": {
+   "path": "app/src/main/java/com/dozingcatsoftware/dodge/FieldView.java",
+   "sha256": "8299b311140c81e9e0fdca3feb72eb8ad85190fb119a69a1a7b8c79a5bfcedbc"
+  },
+  "DodgeMain.java": {
+   "path": "app/src/main/java/com/dozingcatsoftware/dodge/DodgeMain.java",
+   "sha256": "d1a98d75325e2073d84aa268992a2eadfc74f282449ff95064c260c044b9488b"
+  },
+  "FrameRateManager.java": {
+   "path": "app/src/main/java/com/dozingcatsoftware/dodge/FrameRateManager.java",
+   "sha256": "de1b6145ac0a01cef3bbd1243f116fb5a14268d3494b19d17f647932ddc15fa6"
+  }
+ }
+}

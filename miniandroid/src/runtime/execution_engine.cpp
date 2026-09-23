@@ -3081,6 +3081,46 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                     if (task.view_id != 0 && shadow_registry_) {
                                         if (auto* canvas_shadow =
                                                 shadow_registry_->find_as<framework::CanvasShadow>()) {
+                                            // ── S86 §F-NEW-164: SurfaceView
+                                            // real-surface law — BEFORE the
+                                            // onDraw path. SurfaceView games
+                                            // draw through their holder's
+                                            // buffer from a game thread; the
+                                            // compositor blits the LAST
+                                            // POSTED buffer at the view
+                                            // bounds. Lifecycle (created/
+                                            // changed) dispatches lazily on
+                                            // the first visit.
+                                            const std::string& sv_cls =
+                                                node->class_desc;
+                                            const bool is_surface_view =
+                                                dalvik_engine_.is_subclass_of(
+                                                    sv_cls,
+                                                    "Landroid/view/SurfaceView;") &&
+                                                !dalvik_engine_.is_subclass_of(
+                                                    sv_cls,
+                                                    "Landroid/opengl/GLSurfaceView;");
+                                            if (is_surface_view) {
+                                                bool sv_created = false;
+                                                dalvik_engine_.dispatch_surface_view_lifecycle(
+                                                    task.view_id, (int)w, (int)h,
+                                                    &sv_created);
+                                                size_t sv_ops =
+                                                    canvas_shadow->replay_surface(
+                                                        task.view_id, canvas,
+                                                        font, (float)left,
+                                                        (float)top, (float)w,
+                                                        (float)h);
+                                                if (sv_ops > 0) {
+                                                    drew_real = true;
+                                                    std::cerr
+                                                        << "[F-NEW-164] surface replayed "
+                                                        << sv_ops << " ops for "
+                                                        << sv_cls << " at (" << left
+                                                        << "," << top << " " << w
+                                                        << "x" << h << ")" << std::endl;
+                                                }
+                                            }
                                             int ondraw_ops =
                                                 dalvik_engine_.dispatch_custom_view_draw(task.view_id);
                                             if (ondraw_ops > 0) {
@@ -3536,7 +3576,23 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                 std::vector<RenderTask> m_tasks;
                                 for (uint32_t cid : node->children) {
                                     const auto* cn = view_shadow->find_node(cid);
-                                    if (!cn || cn->visibility == 8) continue;
+                                    // S86 §F-NEW-168 (AOSP draw-subtree law):
+                                    // View.draw(Canvas, ViewGroup, long) gates
+                                    // the ENTIRE body — background, onDraw AND
+                                    // dispatchDraw — on
+                                    //   (mViewFlags & VISIBILITY_MASK) == VISIBLE.
+                                    // An INVISIBLE (4) view draws NOTHING, its
+                                    // subtree included (INVISIBLE = "hidden but
+                                    // occupying space"); only GONE (8) frees the
+                                    // space. Ground truth: dozingcat Dodge
+                                    // startGameAtLevelWithLives hides its menu
+                                    // with menuView.setVisibility(INVISIBLE) —
+                                    // under the old GONE-only pruning the menu's
+                                    // VISIBLE button children kept painting over
+                                    // the live game surface.
+                                    if (!cn || cn->visibility == 8 ||
+                                        cn->visibility == 4)
+                                        continue;
                                     m_tasks.push_back({cid, cn->measured_left, cn->measured_top,
                                                        cn->measured_width, cn->measured_height,
                                                        task.depth + 1});
@@ -3575,7 +3631,11 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                 if (!cnode) continue;
                                 // S67 A4 parity: GONE children render nothing in
                                 // the legacy EXP-095 fallback path either.
-                                if (cnode->visibility == 8) continue;
+                                // S86 §F-NEW-168: INVISIBLE subtrees too (AOSP
+                                // View.draw(Canvas, ViewGroup, long) law — see
+                                // the measured-path comment above).
+                                if (cnode->visibility == 8 ||
+                                    cnode->visibility == 4) continue;
                                 auto measured = measure_node(cnode, w);
                                 int tw = measured.first, th = measured.second;
                                 int cw, ch;
@@ -3709,6 +3769,34 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                     if (cv.view_id != 0 && shadow_registry_) {
                                         if (auto* canvas_shadow =
                                                 shadow_registry_->find_as<framework::CanvasShadow>()) {
+                                            // S86 §F-NEW-164: posted SurfaceView
+                                            // buffers replay here too — a blank
+                                            // view tree with a live game surface
+                                            // must show the surface, not the
+                                            // placeholder.
+                                            const bool is_sv =
+                                                dalvik_engine_.is_subclass_of(
+                                                    cv.cls,
+                                                    "Landroid/view/SurfaceView;") &&
+                                                !dalvik_engine_.is_subclass_of(
+                                                    cv.cls,
+                                                    "Landroid/opengl/GLSurfaceView;");
+                                            if (is_sv) {
+                                                bool sv_created = false;
+                                                dalvik_engine_.dispatch_surface_view_lifecycle(
+                                                    cv.view_id, (int)cv.w,
+                                                    (int)cv.h, &sv_created);
+                                                if (canvas_shadow->replay_surface(
+                                                        cv.view_id, canvas, font,
+                                                        (float)cv.l, (float)cv.t,
+                                                        (float)cv.w,
+                                                        (float)cv.h) > 0) {
+                                                    std::cerr
+                                                        << "[F-NEW-164] deferred surface replayed for "
+                                                        << cv.cls << std::endl;
+                                                    continue;
+                                                }
+                                            }
                                             ondraw_ops = dalvik_engine_.dispatch_custom_view_draw(cv.view_id);
                                             if (ondraw_ops > 0) {
                                                 // S83 CANVAS-GEOMETRY LAW (P0):

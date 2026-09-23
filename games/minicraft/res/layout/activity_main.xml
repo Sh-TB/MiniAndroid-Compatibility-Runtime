@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_sky">
+
+    <com.miniandroid.minicraft.CraftWorldView
+        android:id="@+id/game"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="10dp">
+
+        <Button
+            android:id="@+id/btn_left"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/btn_green"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:text="LEFT" />
+
+        <Button
+            android:id="@+id/btn_up"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/btn_green"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:text="UP" />
+
+        <Button
+            android:id="@+id/btn_down"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/btn_green"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:text="DOWN" />
+
+        <Button
+            android:id="@+id/btn_right"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/btn_green"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:text="RIGHT" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="10dp">
+
+        <Button
+            android:id="@+id/btn_block"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/btn_green"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:text="BRICK" />
+
+        <Button
+            android:id="@+id/btn_place"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/btn_green"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:text="PLACE" />
+
+        <Button
+            android:id="@+id/btn_dig"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/btn_green"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:text="DIG" />
+
+        <Button
+            android:id="@+id/btn_demo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/btn_green"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:text="DEMO" />
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="GameTheme" parent="@android:style/Theme.Material.Light">
+        <item name="android:windowBackground">@color/bg_sky</item>
+        <item name="android:statusBarColor">@color/bg_sky</item>
+        <item name="android:navigationBarColor">@color/bg_sky</item>
+        <item name="android:colorAccent">@color/orange</item>
+    </style>
+</resources>

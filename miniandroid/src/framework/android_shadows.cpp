@@ -590,6 +590,81 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_bool(state->elements.empty());
     }
 
+    // ── F-NEW-165 (S86): java.util.Deque/LinkedList end-access family ────
+    // AOSP java.util.LinkedList implements Deque: getFirst/getLast/peek*/
+    // poll*/removeFirst/removeLast/offer*/push/pop/addFirst/addLast are
+    // real element accessors, NOT unknown methods. Ground truth (upstream
+    // source read this wave): dozingcat Dodge FrameRateManager keeps its
+    // frame-timestamp history in a LinkedList<Long> — frameStarted() add()s
+    // Long boxes, nanosToWaitUntilNextFrame() getLast()s them. With no
+    // Deque law, getLast() fell through to null → Long.longValue unbox NPE
+    // killed the game thread at APP BOUNDARY (rc=1) before a single frame
+    // was drawn. Elements are heap object ids (boxed via the Long/Integer
+    // valueOf law); unboxing resolves through the box "value" field law.
+    // Divergence note (documented): AOSP throws NoSuchElementException on
+    // getFirst/getLast/removeFirst/removeLast/pop of an EMPTY deque; the
+    // engine has no shadow-side exception channel, so the empty case
+    // answers null (the caller-side isEmpty guard covers honest apps).
+    if (m == "getFirst" || m == "element" || m == "peek" || m == "peekFirst") {
+        auto* state = get_or_create(obj_id);
+        if (state->is_map) return CallResult::not_handled();
+        if (state->elements.empty()) return CallResult::handled_null();
+        return CallResult::handled_object(state->elements.front(),
+                                          "Ljava/lang/Object;");
+    }
+    if (m == "getLast" || m == "peekLast") {
+        auto* state = get_or_create(obj_id);
+        if (state->is_map) return CallResult::not_handled();
+        if (state->elements.empty()) return CallResult::handled_null();
+        return CallResult::handled_object(state->elements.back(),
+                                          "Ljava/lang/Object;");
+    }
+    if (m == "removeFirst" || m == "remove" || m == "pop" || m == "poll" ||
+        m == "pollFirst") {
+        auto* state = get_or_create(obj_id);
+        if (state->is_map) return CallResult::not_handled();
+        if (m == "remove" && !ctx.args.empty()) {
+            // remove(Object) — remove first occurrence of the arg element.
+            uint32_t item = ctx.arg_as_object(0, 0);
+            for (auto it = state->elements.begin();
+                 it != state->elements.end(); ++it) {
+                if (*it == item) {
+                    state->elements.erase(it);
+                    return CallResult::handled_bool(true);
+                }
+            }
+            return CallResult::handled_bool(false);
+        }
+        if (state->elements.empty()) return CallResult::handled_null();
+        uint32_t front = state->elements.front();
+        state->elements.erase(state->elements.begin());
+        return CallResult::handled_object(front, "Ljava/lang/Object;");
+    }
+    if (m == "removeLast" || m == "pollLast") {
+        auto* state = get_or_create(obj_id);
+        if (state->is_map) return CallResult::not_handled();
+        if (state->elements.empty()) return CallResult::handled_null();
+        uint32_t back = state->elements.back();
+        state->elements.pop_back();
+        return CallResult::handled_object(back, "Ljava/lang/Object;");
+    }
+    if (m == "addFirst" || m == "push" || m == "offerFirst") {
+        auto* state = get_or_create(obj_id);
+        if (state->is_map) return CallResult::not_handled();
+        state->elements.insert(state->elements.begin(),
+                               ctx.arg_as_object(0, 0));
+        return m == "offerFirst" ? CallResult::handled_bool(true)
+                                 : CallResult::handled_void();
+    }
+    if (m == "addLast" || m == "offer" || m == "offerLast") {
+        auto* state = get_or_create(obj_id);
+        if (state->is_map) return CallResult::not_handled();
+        state->elements.push_back(ctx.arg_as_object(0, 0));
+        return (m == "offer" || m == "offerLast")
+                   ? CallResult::handled_bool(true)
+                   : CallResult::handled_void();
+    }
+
     if (m == "clear") {
         auto* state = get_or_create(obj_id);
         state->elements.clear();
@@ -2965,6 +3040,26 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     if (m == "getVisibility") {
         const auto* n = find_node(ctx.receiver_id);
         return CallResult::handled_int(n ? n->visibility : 0);
+    }
+    // ── S86 §F-NEW-170: View dimension query laws ─────────────────────────
+    // AOSP View.getWidth(): "Returns the width of your view" — the LAYOUT
+    // width (mRight - mLeft), set after the first layout pass;
+    // getMeasuredWidth() returns the measure-pass width. Both live on the
+    // ViewNode after the render stage's real measure/layout (UNIFIED_007).
+    // Ground truth: dozingcat Dodge FieldView.drawField sizes EVERYTHING
+    // from getWidth() — bullet positions = position.x * getWidth(), goal
+    // height = field.goalHeight() * getWidth(), bounds =
+    // RectF(0, 0, getWidth(), getHeight()). With no law the bridge
+    // answered 0 → every drawCircle/drawRect recorded zero geometry
+    // (op-trace evidence: correct colors, all-zero coords) → the game
+    // surface painted white even after the surface path went live.
+    if (m == "getWidth" || m == "getMeasuredWidth") {
+        const auto* n = find_node(ctx.receiver_id);
+        return CallResult::handled_int(n ? n->measured_width : 0);
+    }
+    if (m == "getHeight" || m == "getMeasuredHeight") {
+        const auto* n = find_node(ctx.receiver_id);
+        return CallResult::handled_int(n ? n->measured_height : 0);
     }
     // ── S83-GFX-BASE §19: ImageView.setScaleType law ─────────────────────
     // AOSP ImageView.setScaleType(ScaleType) stores the enum; the ordinal

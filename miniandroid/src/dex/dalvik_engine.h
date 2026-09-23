@@ -1364,6 +1364,15 @@ public:
     bool dispatch_gl_surface_view_frame(uint32_t view_object_id, int w, int h,
                                         bool* first_frame_out);
 
+    // S86 §F-NEW-164: SurfaceView surface lifecycle — dispatch
+    // surfaceCreated (once, lazily) + surfaceChanged (on size change) on
+    // the holder's registered Callback object (heap fields svHolder/
+    // svCallback set by SurfaceViewShadow; falls back to the view object
+    // itself — AOSP apps that addCallback(this) stay covered). Returns
+    // true when any callback executed; *created_out = first creation.
+    bool dispatch_surface_view_lifecycle(uint32_t view_object_id, int w,
+                                         int h, bool* created_out);
+
     // S26 diagnostic (env-gated, read-only): TRUE while a custom-view draw
     // dispatch window is open (dispatch_custom_view_draw entry→exit). The
     // method-entry log gates on this to attribute method entries to the
