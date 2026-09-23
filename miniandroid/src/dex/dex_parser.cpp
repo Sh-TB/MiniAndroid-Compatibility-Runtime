@@ -488,6 +488,13 @@ bool DexParser::parse_class_defs(const uint8_t* data, DexReport& report) {
         // TYPE 0x18 (→ descriptor); everything else (arrays, nested
         // annotations, enums, fields, methods) is skipped for that element.
         // ====================================================================
+        // F-NEW-191: deferred {method_idx → annotation} joins collected by
+        // the method-annotation walk below, applied after parse_class_data.
+        std::vector<std::pair<uint32_t,
+                              std::pair<std::string,
+                                        std::vector<std::pair<std::string,
+                                                              std::string>>>>>
+            pending_method_anns;
         if (class_def.annotations_off != 0 &&
             class_def.annotations_off + 4 <= current_size_) {
             uint32_t class_ann_off = 0;
@@ -661,6 +668,184 @@ bool DexParser::parse_class_defs(const uint8_t* data, DexReport& report) {
             }
         }
 
+        // ====================================================================
+        // F-NEW-191 (S90): RUNTIME METHOD-annotation parsing.
+        // annotations_directory_item (offset class_def.annotations_off):
+        //   u4 class_annotations_off; u4 fields_size;
+        //   u4 annotated_method_size; u4 annotated_params_size;
+        //   field_annotation fields[fields_size];          ← 8 bytes each
+        //   method_annotation methods[annotated_method_size];  ← THEN this
+        // method_annotation { u4 method_idx_diff; u4 annotations_off; }
+        // The annotation set at annotations_off decodes exactly like the
+        // class set above (annotation_set_item → annotation_item list,
+        // RUNTIME visibility only, same element-decode subset).
+        // Consumer: Method.getAnnotation / isAnnotationPresent — the
+        // androidx Lifecycling/ClassesInfoCache @OnLifecycleEvent walk
+        // (the F-NEW-162 family root). Method-level reflection without
+        // this table answers null for every annotation, which drives the
+        // upstream lifecycle-observer resolution down paths the real
+        // contract never reaches.
+        // ====================================================================
+        if (class_def.annotations_off != 0 &&
+            class_def.annotations_off + 16 <= current_size_) {
+            uint32_t fields_size = 0, ann_method_size = 0;
+            std::memcpy(&fields_size,
+                        data + class_def.annotations_off + 4,
+                        sizeof(fields_size));
+            std::memcpy(&ann_method_size,
+                        data + class_def.annotations_off + 8,
+                        sizeof(ann_method_size));
+            // Bounds: method table lives after the field table.
+            uint64_t methods_base = class_def.annotations_off + 16u +
+                                    (uint64_t)fields_size * 8u;
+            if (ann_method_size > 0 && ann_method_size < 0x1000u &&
+                methods_base + (uint64_t)ann_method_size * 8u <=
+                    current_size_) {
+                uint32_t method_ann_idx = 0;  // diff-encoded
+                for (uint32_t k = 0; k < ann_method_size; ++k) {
+                    uint32_t diff = 0, set_off = 0;
+                    std::memcpy(&diff,
+                                data + methods_base + (size_t)k * 8,
+                                sizeof(diff));
+                    std::memcpy(&set_off,
+                                data + methods_base + (size_t)k * 8 + 4,
+                                sizeof(set_off));
+                    method_ann_idx += diff;
+                    if (set_off == 0 || set_off + 4 > current_size_)
+                        continue;
+                    // ── decode annotation_set_item at set_off ──
+                    uint32_t ann_set_size = 0;
+                    std::memcpy(&ann_set_size, data + set_off,
+                                sizeof(ann_set_size));
+                    if (ann_set_size == 0 || ann_set_size >= 0x1000u ||
+                        set_off + 4 + (uint64_t)ann_set_size * 4 >
+                            current_size_)
+                        continue;
+                    for (uint32_t a = 0; a < ann_set_size; ++a) {
+                        uint32_t item_off = 0;
+                        std::memcpy(&item_off,
+                                    data + set_off + 4 + (size_t)a * 4,
+                                    sizeof(item_off));
+                        if (item_off == 0 || item_off + 2 > current_size_)
+                            continue;
+                        uint8_t visibility = data[item_off];
+                        if (visibility != 1) continue;  // RUNTIME only
+                        size_t p = item_off + 1;
+                        uint32_t type_idx = 0, elem_count = 0;
+                        bool ok = true;
+                        type_idx = miniandroid::dex::mutf8::read_uleb128(
+                            data, current_size_, p, ok);
+                        if (!ok) continue;
+                        elem_count = miniandroid::dex::mutf8::read_uleb128(
+                            data, current_size_, p, ok);
+                        if (!ok || elem_count > 32) continue;
+                        std::string ann_type =
+                            (type_idx < report.header.type_ids_size)
+                                ? get_type(type_idx)
+                                : std::string();
+                        if (ann_type.empty()) continue;
+                        std::vector<std::pair<std::string, std::string>>
+                            elements;
+                        bool decode_ok = true;
+                        for (uint32_t e = 0;
+                             e < elem_count && decode_ok; ++e) {
+                            uint32_t name_idx = miniandroid::dex::mutf8::
+                                read_uleb128(data, current_size_, p, ok);
+                            if (!ok) { decode_ok = false; break; }
+                            if (p >= current_size_) { decode_ok = false; break; }
+                            uint8_t hdr_byte = data[p++];
+                            uint8_t value_type = hdr_byte & 0x1F;
+                            uint8_t value_arg = (hdr_byte >> 5) & 0x07;
+                            std::string decoded;
+                            switch (value_type) {
+                                case 0x00:  // BYTE
+                                case 0x02:  // SHORT
+                                case 0x03:  // CHAR
+                                case 0x04:  // INT
+                                case 0x06:  // LONG
+                                case 0x10:  // FLOAT
+                                case 0x11:  // DOUBLE
+                                case 0x17:  // STRING
+                                case 0x18:  // TYPE
+                                case 0x1B: {  // ENUM (raw index)
+                                    uint64_t idx = 0;
+                                    for (uint8_t b = 0;
+                                         b <= value_arg && p < current_size_;
+                                         ++b) {
+                                        idx |= static_cast<uint64_t>(data[p++])
+                                               << (8 * b);
+                                    }
+                                    if (value_type == 0x17) {
+                                        decoded = get_string(
+                                            static_cast<uint32_t>(idx));
+                                    } else if (value_type == 0x18) {
+                                        decoded =
+                                            (idx < report.header.type_ids_size)
+                                                ? get_type(static_cast<
+                                                               uint32_t>(idx))
+                                                : std::string();
+                                    } else if (value_type == 0x04 ||
+                                               value_type == 0x06 ||
+                                               value_type == 0x02 ||
+                                               value_type == 0x00) {
+                                        uint8_t nbytes = value_arg + 1;
+                                        int64_t sv =
+                                            static_cast<int64_t>(idx);
+                                        if (nbytes < 8) {
+                                            int shift = 64 - nbytes * 8;
+                                            sv = static_cast<int64_t>(
+                                                static_cast<uint64_t>(idx)
+                                                << shift) >>
+                                                 shift;
+                                        }
+                                        decoded = std::to_string(sv);
+                                    } else if (value_type == 0x03) {
+                                        decoded = std::to_string(idx);
+                                    } else {
+                                        decoded = std::to_string(idx);
+                                    }
+                                    break;
+                                }
+                                case 0x1E:  // NULL
+                                    decoded = "";
+                                    break;
+                                case 0x1F:  // BOOLEAN: bit in value_arg
+                                    decoded = value_arg ? "true" : "false";
+                                    break;
+                                case 0x1C: {  // ARRAY: skip payload
+                                    uint32_t arr_size =
+                                        miniandroid::dex::mutf8::read_uleb128(
+                                            data, current_size_, p, ok);
+                                    if (!ok) { decode_ok = false; break; }
+                                    decode_ok = arr_size == 0;
+                                    break;
+                                }
+                                case 0x1D:  // NESTED ANNOTATION: unsupported
+                                    decode_ok = false;
+                                    break;
+                                default:
+                                    decode_ok = false;
+                                    break;
+                            }
+                            if (!decode_ok) break;
+                            elements.emplace_back(
+                                get_string(name_idx), decoded);
+                        }
+                        if (decode_ok) {
+                            // Defer the join: class_data (method list) is
+                            // parsed AFTER this directory walk — collect
+                            // {method_idx → annotation} and join below.
+                            std::string ann_type_keep = ann_type;
+                            pending_method_anns.emplace_back(
+                                method_ann_idx,
+                                std::make_pair(std::move(ann_type_keep),
+                                               std::move(elements)));
+                        }
+                    }
+                }
+            }
+        }
+
         // Parse class data (fields and methods)
         if (class_def.class_data_off != 0 && class_def.class_data_off < current_size_) {
             log("  → Parsing class_data at 0x" + std::to_string(class_def.class_data_off));
@@ -668,6 +853,27 @@ bool DexParser::parse_class_defs(const uint8_t* data, DexReport& report) {
         } else {
             log("  → NO class_data (off=0x" + std::to_string(class_def.class_data_off) + 
                 ", size=0x" + std::to_string(current_size_) + ")");
+        }
+
+        // F-NEW-191: apply deferred method-annotation joins (method list
+        // now exists).
+        for (const auto& pending : pending_method_anns) {
+            bool joined = false;
+            auto join = [&](dex::MethodInfo& mi) {
+                if (mi.method_idx != pending.first) return;
+                mi.method_annotations.emplace_back(pending.second.first,
+                                                   pending.second.second);
+                joined = true;
+            };
+            for (auto& mi : info.direct_methods) join(mi);
+            if (!joined)
+                for (auto& mi : info.virtual_methods) join(mi);
+            static thread_local uint64_t f191_log = 0;
+            if (joined && f191_log < 8) {
+                ++f191_log;
+                log("  → F-NEW-191 method annotation " +
+                    pending.second.first + " joined to " + info.name);
+            }
         }
 
         // EXP-062: Parse static field default values from encoded_array_item.
@@ -924,6 +1130,7 @@ bool DexParser::parse_class_data(const uint8_t* data, const DexClassDef& class_d
         method_idx += encoded_method.method_idx_diff;
         
         MethodInfo mi;
+        mi.method_idx = method_idx;  // F-NEW-191 join key
         if (method_idx < methods_.size()) {
             mi.name = get_string(methods_[method_idx].name_idx);
             
@@ -986,6 +1193,7 @@ bool DexParser::parse_class_data(const uint8_t* data, const DexClassDef& class_d
         method_idx += encoded_method.method_idx_diff;
         
         MethodInfo mi;
+        mi.method_idx = method_idx;  // F-NEW-191 join key
         if (method_idx < methods_.size()) {
             mi.name = get_string(methods_[method_idx].name_idx);
             
