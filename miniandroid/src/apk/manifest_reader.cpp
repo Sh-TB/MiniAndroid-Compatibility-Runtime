@@ -918,10 +918,23 @@ ManifestInfo ManifestReader::parse_plain_xml(const std::vector<uint8_t>& data) {
         if (tag_name == "category" && activity_has_main_action_ && activity_has_launcher_category_) {
             if (!current_activity_name_.empty()) {
                 result_.main_activity = current_activity_name_;
-                
-                // Build fully qualified name
+
+                // F-NEW-194 (S91): normalize the launcher activity name with the
+                // SAME three-form law as process_end_element (AOSP PackageManager
+                // law: a bare relative android:name="MainActivity" is resolved
+                // against the manifest package, exactly like ".MainActivity" and
+                // the fully-qualified form). This path fires EARLIER than
+                // process_end_element, and because it already assigned
+                // main_activity, the end-element first-match guard never runs —
+                // so a bare name survived here unprefixed and the DEX entry-point
+                // search failed to match any class (face: s91_resume_probe
+                // fixture — the interpreter fell back to the first scanned class
+                // and ran MainActivity$ProbeView.<init> instead of
+                // MainActivity.onCreate).
                 if (!current_activity_name_.empty() && current_activity_name_[0] == '.') {
                     result_.main_activity_full = result_.package_name + current_activity_name_;
+                } else if (current_activity_name_.find('.') == std::string::npos) {
+                    result_.main_activity_full = result_.package_name + "." + current_activity_name_;
                 } else {
                     result_.main_activity_full = current_activity_name_;
                 }

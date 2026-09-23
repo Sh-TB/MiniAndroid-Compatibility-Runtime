@@ -26228,6 +26228,22 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             (class_name.find("Editor") != std::string::npos ||
              class_name.find("SharedPreferences") != std::string::npos)) {
             std::string key = (args.size() > 1 && args[1].type == DalvikType::STRING_REF) ? args[1].string_val : "";
+            // §24 env-gated probe (F-114 forensics): put* argument identity.
+            static thread_local const bool f114_put_diag =
+                std::getenv("MINIANDROID_F114_DIAG") != nullptr;
+            if (f114_put_diag) {
+                std::cerr << "[F114-DIAG] prefs put" << (method.size() > 3 ? method.substr(3) : method)
+                          << " class=" << class_name
+                          << " argc=" << args.size()
+                          << " prefs_obj_id=" << prefs_obj_id
+                          << " key=\"" << key << "\"";
+                for (size_t di = 0; di < args.size(); ++di)
+                    std::cerr << " a" << di << "(t=" << static_cast<int>(args[di].type)
+                              << ",i=" << args[di].int_val
+                              << ",s=\"" << (args[di].type == DalvikType::STRING_REF ? args[di].string_val : std::string(""))
+                              << "\")";
+                std::cerr << std::endl;
+            }
             if (prefs_obj_id && heap_.has_object(prefs_obj_id) && !key.empty()) {
                 if (args.size() > 2) {
                     heap_.set_object_field(prefs_obj_id, key, args[2]);
