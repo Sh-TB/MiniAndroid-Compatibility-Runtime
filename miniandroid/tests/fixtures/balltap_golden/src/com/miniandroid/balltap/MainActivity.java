@@ -1,6 +1,5 @@
 /*
- * MiniAndroid BALLTAP-GOLDEN fixture — S51 finalization "بازی دو بعدی
- * خیلی ساده که توپ دارد" (very simple 2D game with a ball): a
+ * MiniAndroid BALLTAP-GOLDEN fixture — S51 finalization (very simple 2D game with a ball): a
  * tap-driven Pong/Breakout hybrid.
  *
  * A 7x5 ball field (TextView grid) with a 2-cell paddle on the bottom

@@ -152,7 +152,7 @@ integrated this pass has discriminating runtime evidence at the final HEAD.
 
 ## 11. HELPER SOURCE INTELLIGENCE (GAME CHANGER pass, 2026-09-03)
 
-The FINAL GAME CHANGER mission required the `لیست کمکی` (helper list) to become a
+The FINAL GAME CHANGER mission required the helper list to become a
 permanent, registered project artifact. It now lives at repo root as
 **HELPER_SOURCE_LIST.md**: 66 curated entries (H-001..H-066) covering all 60 mission
 categories — Android runtime/DEX/ART oracles (AOSP art/libcore-Harmony), bytecode tooling

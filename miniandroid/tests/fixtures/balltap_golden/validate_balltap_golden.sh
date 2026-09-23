@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# validate_balltap_golden.sh — S51 finalization "بازی توپ دو بعدی ساده" gate.
+# validate_balltap_golden.sh — S51 finalization simple-2D-ball-game gate.
 #
 # Proves, from runtime-produced frames only:
 #   1. fixture build (ECJ + D8; integer physics + paddle collision through

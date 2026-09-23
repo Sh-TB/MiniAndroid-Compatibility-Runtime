@@ -51,8 +51,8 @@ for x in sorted(R, key=lambda x: (x["old_level"] if x["old_level"] is not None
 
 out = []
 out.append("# LEVEL_IMPACT_S86 — stratified re-execution, L0 → L10\n")
-out.append("User directive: *\"از لول ۰ تا آخرین لول ۵ تا از هر کدام رو انتخاب "
-           "بکن و نشون بده اینقدر پیشرفت چقدر تاثیر داشته\"* — sample up to 5 "
+out.append("User directive: *\"From each level 0 to the latest level, pick up to 5 of each "
+           "and show how much impact the progress has had\"* — sample up to 5 "
            "titles per registered level, re-execute at the S86 HEAD, and show "
            "the impact. Every row: same evidence protocol (real-dalvik obs + "
            "click passes, S85-hardened near-blank visual gate). The gate is "
@@ -92,14 +92,14 @@ out.append("- Version-drift rows are labeled honestly: F-Droid's *latest* "
 out.append("## Graphics-type investigation — the user-named games\n")
 out.append("| Game | Renderer | Engine path | S86 status |")
 out.append("|---|---|---|---|")
-out.append("| Snake Deluxe (بازی مار) | in-house, custom `View.onDraw` + "
+out.append("| Snake Deluxe | in-house, custom `View.onDraw` + "
            "Canvas 2D, static state, main-looper ticker | real DEX onDraw "
            "dispatch → CanvasShadow op capture → software raster | **L3 "
            "held** (1089 colors, GIF canonical) |")
-out.append("| 2048 (بازی جمع ۲ عدد) | in-house, custom `View.onDraw` + "
+out.append("| 2048 (number-merge) | in-house, custom `View.onDraw` + "
            "Canvas 2D, button-driven (no timer) | same as above | **L2/L3 "
            "family**, GIF canonical |")
-out.append("| MiniCraft (خانه سازی) | in-house, custom `View.onDraw`, "
+out.append("| MiniCraft (House Builder) | in-house, custom `View.onDraw`, "
            "procedural per-block textures (brick courses, plank grain, "
            "grass blades), static world matrix | same as above — built this "
            "wave per user request | **L3, 16-frame build-loop GIF** |")

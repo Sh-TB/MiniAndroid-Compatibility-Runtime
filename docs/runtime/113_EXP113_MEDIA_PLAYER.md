@@ -1,7 +1,7 @@
 # DOC 113 — EXP-113: Real MP3/OGG Playback (MediaPlayer Bridge)
 
 Campaign: UNIFIED_005 · Date: 2026-08-28 · Commit: d6b4020
-Owner priority: «حداقل بتونه یک mp3 ogg پخش کنی خیلی مهمه»
+Owner priority: "at least make it able to play one mp3/ogg — very important"
 
 ## 1. Claim (evidence-grade)
 

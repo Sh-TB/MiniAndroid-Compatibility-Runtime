@@ -52,9 +52,9 @@ Vocabulary: PROVEN / PARTIAL / FAILED / NOT_PROVEN / BLOCKED.
 ## fonts
 
 - **pipeline**: FriBidi → HarfBuzz → FreeType → alpha-blit (src/fonts/text_shaper.cpp, used by runtime render loop)
-- **fa_string**: [PROVEN] PROVEN — سلام دنیا shaped (joined forms, RTL right-aligned)
-- **mixed_bidi**: [PROVEN] PROVEN — Hello دنیا correct visual order
-- **fa_digits**: [PROVEN] PROVEN — ۱۲۳۴۵ rendered
+- **fa_string**: [PROVEN] PROVEN — Persian "Hello World" sample shaped (joined forms, RTL right-aligned)
+- **mixed_bidi**: [PROVEN] PROVEN — "Hello world" mixed-script sample correct visual order
+- **fa_digits**: [PROVEN] PROVEN — 12345 (Persian digits) rendered
 - **emoji_fallback**: [PROVEN] PROVEN — .notdef → NotoColorEmoji CBDT color bitmaps (Android font-chain semantics)
 - **in_runtime**: [PROVEN] PROVEN — all corpus UI text + Telegram screens render via the same TextShaper
 - **proof_sha256**: fad39aa17eb7ad55

@@ -51,7 +51,7 @@ Pixel verdicts (independent PIL re-read; all values exact or 1-LSB):
 | T8 alpha 0x80FF0000 over white (200,1000) | #FF7F7F (SkMulDiv255Round) | #FF7E7E | 1-LSB rounding truncation — documented, visually nil |
 | T7 ASCII text band | glyph ink | 792 black px at y=688..704 | PRESENT (earlier single-point miss was BETWEEN glyphs — §18 lesson: regional census, not one probe) |
 | T10 clipRect | ink only inside clip | ink inside AND outside | RENDERER GAP (pre-registered: engine prints `UNSUPPORTED_CANVAS_OPERATION op=clipRect effect=accepted_not_reproduced`) |
-| T11 Persian "دور" | glyphs | 0 pixels | FONT GAP: BitmapFont covers ASCII 32..126 only; non-ASCII renders nothing (silent) |
+| T11 Persian "round" | glyphs | 0 pixels | FONT GAP: BitmapFont covers ASCII 32..126 only; non-ASCII renders nothing (silent) |
 
 §10 raw-vs-PNG (the encoder test):
 ```text
@@ -157,7 +157,7 @@ clicks, per-frame SHAs, visible_texts provenance) + engine stdout logs.
   TriPeaks labels (below).
 - TextShaper (HarfBuzz+FreeType) path: exercised by G32/G36/G47 battery stages
   (PASS in this stage's battery run).
-- **Non-ASCII is NOT proven**: "دور" renders ZERO pixels (silent gap). Registered;
+- **Non-ASCII is NOT proven**: the Persian "round" sample renders ZERO pixels (silent gap). Registered;
   Persian glyph coverage requires a shaped-font pipeline with Arabic presentation
   forms — open law, registered honestly.
 - TextView presence in a ViewTree is NOT treated as font proof anywhere in this

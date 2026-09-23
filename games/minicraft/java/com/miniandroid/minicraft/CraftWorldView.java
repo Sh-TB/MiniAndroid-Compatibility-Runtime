@@ -7,7 +7,7 @@ import android.view.View;
 
 /**
  * MiniCraft world — a 2D house-building sandbox (S86 in-house game, the
- * خانه سازی companion to Snake Deluxe / Tetris / 2048 / TicTacToe Deluxe).
+ * house-building companion to Snake Deluxe / Tetris / 2048 / TicTacToe Deluxe).
  *
  * World model: static block grid (runtime static-state law, same pattern
  * as the other in-house games). Terrain is generated once from a fixed

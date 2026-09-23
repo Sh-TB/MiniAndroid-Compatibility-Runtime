@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """s83b_github_update.py — S83-B2: update GitHub title issues with the
-graphics-sweep evidence (user: "گیت هاب هر بازی و برنامه رو هم به روز رسانی
-بکن"). Comments on each swept title's issue with the measured L-level,
+graphics-sweep evidence (user: "update GitHub for every game and app"). Comments on each swept title's issue with the measured L-level,
 provenance, and evidence pointer. Honest classifications only — no status
 inflation (§16: no pass without evidence).
 

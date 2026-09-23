@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """s79_snake_gif.py — S79: Snake gameplay GIF built from REAL APK frames.
 
-User directive: "یک گیف از گیم پلی اسنک برای من ... ببینم تونستی بازی بکنی"
+User directive: "make me a GIF of snake gameplay ... so I can see you can actually play"
 (make a GIF of Snake gameplay so the user can see the game was played).
 
 Chain compliance (S78 §0): every frame is rendered by the real engine

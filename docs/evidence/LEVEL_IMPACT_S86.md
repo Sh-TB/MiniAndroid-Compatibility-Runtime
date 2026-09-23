@@ -1,6 +1,6 @@
 # LEVEL_IMPACT_S86 — stratified re-execution, L0 → L10
 
-User directive: *"از لول ۰ تا آخرین لول ۵ تا از هر کدام رو انتخاب بکن و نشون بده اینقدر پیشرفت چقدر تاثیر داشته"* — sample up to 5 titles per registered level, re-execute at the S86 HEAD, and show the impact. Every row: same evidence protocol (real-dalvik obs + click passes, S85-hardened near-blank visual gate). The gate is STRICTER than the era that assigned the old levels — holding a level under it is itself a proof.
+User directive: *"From level 0 to the last level, pick 5 from each and show how much impact this progress has had"* — sample up to 5 titles per registered level, re-execute at the S86 HEAD, and show the impact. Every row: same evidence protocol (real-dalvik obs + click passes, S85-hardened near-blank visual gate). The gate is STRICTER than the era that assigned the old levels — holding a level under it is itself a proof.
 
 ## Per-title results
 
@@ -47,9 +47,9 @@ User directive: *"از لول ۰ تا آخرین لول ۵ تا از هر کدا
 
 | Game | Renderer | Engine path | S86 status |
 |---|---|---|---|
-| Snake Deluxe (بازی مار) | in-house, custom `View.onDraw` + Canvas 2D, static state, main-looper ticker | real DEX onDraw dispatch → CanvasShadow op capture → software raster | **L3 held** (1089 colors, GIF canonical) |
-| 2048 (بازی جمع ۲ عدد) | in-house, custom `View.onDraw` + Canvas 2D, button-driven (no timer) | same as above | **L2/L3 family**, GIF canonical |
-| MiniCraft (خانه سازی) | in-house, custom `View.onDraw`, procedural per-block textures (brick courses, plank grain, grass blades), static world matrix | same as above — built this wave per user request | **L3, 16-frame build-loop GIF** |
+| Snake Deluxe (snake game) | in-house, custom `View.onDraw` + Canvas 2D, static state, main-looper ticker | real DEX onDraw dispatch → CanvasShadow op capture → software raster | **L3 held** (1089 colors, GIF canonical) |
+| 2048 (sum-of-two-numbers game) | in-house, custom `View.onDraw` + Canvas 2D, button-driven (no timer) | same as above | **L2/L3 family**, GIF canonical |
+| MiniCraft (house building) | in-house, custom `View.onDraw`, procedural per-block textures (brick courses, plank grain, grass blades), static world matrix | same as above — built this wave per user request | **L3, 16-frame build-loop GIF** |
 | Dodge (bonus root-cause) | **real APK** — `SurfaceView` + `SurfaceHolder.lockCanvas` + game thread (upstream dodge-android read) | F-NEW-164 surface law + F-NEW-165..170 support laws (this wave) | **L3, 14-frame gameplay GIF** |
 
 The reason these run while others don't: all four keep their state in plain fields and paint through the app's own `Canvas` draw calls — exactly the pipeline MiniAndroid implements in full. Titles that stall at L0/L1 hand drawing to subsystems the engine honestly records as frontiers (Compose recomposer F-NEW-161, androidx adapters F-NEW-162, GLSL/libGDX F-NEW-157).

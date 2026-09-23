@@ -5,7 +5,7 @@ origin/main c67230be — the S75 publish debt, still tokenless this session).
 
 ## 0. Mandate
 
-User directive: "ادامه" (continue) — execute every queued item. The S75
+User directive: "continue" — execute every queued item. The S75
 report §"Next" listed five leads; this wave executed the four actionable
 ones (the fifth — GH_TOKEN issue comments — stays publish-debt, §6):
 

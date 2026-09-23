@@ -1,6 +1,5 @@
 /*
- * MiniAndroid MINESWEEP-GOLDEN fixture — S51 finalization "بازی بمب‌یاب
- * شبیه ویندوز XP" (mine-finding game in the Windows XP style).
+ * MiniAndroid MINESWEEP-GOLDEN fixture — S51 finalization (mine-finding game in the Windows XP style).
  *
  * Classic 9x9 beginner board with 10 fixed mines (no randomness — the
  * mine layout is a design constant). Tapping a hidden safe cell reveals

@@ -22,7 +22,7 @@
  *       as a documented NO-OP (canvas_shadow.cpp "Accepted (flat state
  *       model); geometry NOT reproduced" + warn_noop), so ink outside the
  *       clip = expected-by-current-engine, flagged RENDERER GAP.
- *   T11 Persian text "دور" at (100,1500): the runtime bitmap font covers
+ *   T11 Persian word (dour, "round") at (100,1500): the runtime bitmap font covers
  *       printable ASCII 32..126 only (BitmapFont law) — non-ASCII glyph
  *       coverage gap is expected and documented.
  *

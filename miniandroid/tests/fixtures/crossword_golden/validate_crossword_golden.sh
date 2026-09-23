@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# validate_crossword_golden.sh — S51 finalization "بازی جدول" golden gate.
+# validate_crossword_golden.sh — S51 finalization "board game" golden gate.
 #
 # Proves, from runtime-produced frames only:
 #   1. fixture build (ECJ + D8, real 5x5 interlocked crossword through DEX)

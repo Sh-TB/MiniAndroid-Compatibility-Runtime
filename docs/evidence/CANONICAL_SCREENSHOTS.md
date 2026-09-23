@@ -91,10 +91,10 @@
 | com.kaeruct.raumballer | game | `com.kaeruct.raumballer` | [source](https://github.com/KaeruCT/RaumBaller) | e0eb9a7dfbd82162… | — | — | L0 | — | S84 |
 | com.kingalex.kingpong | game | `com.kingalex.kingpong` | [source](https://github.com/KingAlexGilbert/king-pong) | 9545a66697a83c25… | — | — | L0 | — | S84 |
 | 2048 | game | `com.miniandroid.g2048` | in-house (games/2048) | 1b1c602a5f0a2723… | [com.miniandroid.g2048.gif](docs/evidence/canonical/com.miniandroid.g2048.gif) | d613d30fce792406… | L2 | YES | S80/S83 |
-| MiniCraft (خانه سازی) | game | `com.miniandroid.minicraft` | in-house (games/minicraft) — companion to Snake Deluxe / … | 77b9629ee111b968… | [com.miniandroid.minicraft.gif](docs/evidence/canonical/com.miniandroid.minicraft.gif) | 3fbca3e4b1a1662b… | L3 | YES | S86 |
+| MiniCraft (house building) | game | `com.miniandroid.minicraft` | in-house (games/minicraft) — companion to Snake Deluxe / … | 77b9629ee111b968… | [com.miniandroid.minicraft.gif](docs/evidence/canonical/com.miniandroid.minicraft.gif) | 3fbca3e4b1a1662b… | L3 | YES | S86 |
 | Snake Deluxe | game | `com.miniandroid.snakedeluxe` | in-house (games/snake-deluxe) | — | [com.miniandroid.snakedeluxe.gif](docs/evidence/canonical/com.miniandroid.snakedeluxe.gif) | f2dd621c662526fa… | L3 | YES | S80/S83 |
 | Mini Tetris | game | `com.miniandroid.tetris` | in-house (games/mini-tetris) | cb2818dfe6c6cadb… | [com.miniandroid.tetris.gif](docs/evidence/canonical/com.miniandroid.tetris.gif) | 927d966a5a7397a8… | L3 | YES | S80/S83 |
-| TicTacToe Deluxe (دوز) | game | `com.miniandroid.tictactoedeluxe` | in-house (games/tictactoe-deluxe) | — | [com.miniandroid.tictactoedeluxe.gif](docs/evidence/canonical/com.miniandroid.tictactoedeluxe.gif) | ade32b621e90fb27… | L3 | YES | S83 NEW |
+| TicTacToe Deluxe (Dooz) | game | `com.miniandroid.tictactoedeluxe` | in-house (games/tictactoe-deluxe) | — | [com.miniandroid.tictactoedeluxe.gif](docs/evidence/canonical/com.miniandroid.tictactoedeluxe.gif) | ade32b621e90fb27… | L3 | YES | S83 NEW |
 | com.mufradat.africaquiz | game | `com.mufradat.africaquiz` | [source](https://codeberg.org/Mufradat/africa-quiz) | 649282d36bd5c237… | — | — | L1 | — | S85 |
 | com.octbit.rutmath | game | `com.octbit.rutmath` |  | — | — | — | L1 | — | S85-sweep |
 | com.qwde.ccm | game | `com.qwde.ccm` |  | — | — | — | L1 | — | S85-sweep |

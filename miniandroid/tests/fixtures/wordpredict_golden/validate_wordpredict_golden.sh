@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# validate_wordpredict_golden.sh — S51 finalization "پیش‌بینی کلمات" gate.
+# validate_wordpredict_golden.sh — S51 finalization "word prediction" gate.
 #
 # Proves, from runtime-produced frames only:
 #   1. fixture build (ECJ + D8; String[] question table + per-button

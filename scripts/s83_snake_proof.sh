@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# s83_snake_proof.sh — Snake Deluxe (مار) completion proof at S83 HEAD.
+# s83_snake_proof.sh — Snake Deluxe completion proof at S83 HEAD.
 # START tap → snake runs (real ticks) → wall death → GAME OVER dialog →
 # Restart tap → second life. Frame-captured end to end.
 set -uo pipefail

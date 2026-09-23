@@ -1,6 +1,6 @@
 # S51 — History Purge Plan (PHASE 9)
 
-Authorization: explicit owner directive "remove all old pushes" (تمامی پوش‌های قدیمی حذف شود),
+Authorization: explicit owner directive "remove all old pushes" (all old pushes must be removed),
 2026-09-17. Companion forensics: `docs/forensics/HISTORICAL_BLOAT_REPORT.md`.
 
 ## Objective

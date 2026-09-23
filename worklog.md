@@ -83,7 +83,7 @@ Stage Summary:
 ---
 Task ID: S40
 Agent: Super Z (main)
-Task: Multi-front attack on full execution of Dooz v23 + games (user: "نه یک حمله چندین حمله متفاوت" — not one attack, several different attacks). FRONT-A (dooz23 composition chain) carried it: 3 roots root-caused+FIXED, first clean SUCCESS run ever.
+Task: Multi-front attack on full execution of Dooz v23 + games (user: "multiple different attacks, not just one" — not one attack, several different attacks). FRONT-A (dooz23 composition chain) carried it: 3 roots root-caused+FIXED, first clean SUCCESS run ever.
 
 Work Log:
 - FRONT-A evidence chain (androguard disasm + FIELD-TRACE probes, runs r341..r354):
@@ -1531,7 +1531,7 @@ Task: S66 — FULL VISUAL PROOF + RENDERER FORENSICS (per user brief: no visual 
   vs layout bugs; Dooz/TicTacToe hard visual proof; S65 re-validation; push debt)
 
 Work Log:
-- PUSH FIRST (user PAT, "تمامیپوش"): ls-remote auth ✓ → pushed 64d830b4..45f26590
+- PUSH FIRST (user PAT, "publish all pushes"): ls-remote auth ✓ → pushed 64d830b4..45f26590
   (4 commits incl. S64 b34b74a2 debt) → post-push ls-remote == local HEAD, ahead=0;
   secret guard PASS (PAT never entered repo/config).
 - §1/§10 pipeline probe: new fixture s66_canvas_probe (real onDraw DEX, 11 ops,
@@ -1607,7 +1607,7 @@ Work Log:
   A4 INVISIBLE own-content gate (children still render per dispatchDraw law);
   C3 horizontal-LL cross-axis TOP(0x30) was centered (LinearLayout L1445-1470 switch).
 - REGISTERED with pixel proof (not guesses): clipRect NO-OP (245 leak px), scale/rotate NO-OP (unscaled coords), Canvas text ASCII-only (A6), plus A1/A3/A7/A9/A10/B/C/D families in FOUNDATION_GAP_MATRIX.md.
-- Persian shaping PROVEN on TextView path: joined سلام vs spaced س ل ا م = 47% narrower ink bbox (HarfBuzz joining), 24,297 ink px.
+- Persian shaping PROVEN on TextView path: joined-form Persian word vs the same word's spaced letters = 47% narrower ink bbox (HarfBuzz joining), 24,297 ink px.
 - Verification: fixtures 17/17 PASS post-fix; determinism 6/6 ×3 (frame+ViewTree SHA); goldens byte-match: TicTacToe initial 613cfccc… + win 2e80e8c0…, FishRings 5/5 frames, OPMT menu+game, TriPeaks splash+lobby; miniandroid_test 4/4; hello_color byte-stable across fix epochs. ZERO regressions.
 - Matrices: FOUNDATION_{GAP,TEST,RENDER,RESOURCE,LAYOUT,RUNTIME}_MATRIX.md + S67_REPORT.md with the user's exact counters.
 
@@ -2414,7 +2414,7 @@ Stage Summary:
 ---
 Task ID: S76-MAIN
 Agent: Super Z (main)
-Task: "ادامه" — execute the S75 report §Next queued leads: dooz F-146
+Task: "continue" — execute the S75 report §Next queued leads: dooz F-146
 upstream producer trace, gmdice roll render path, snake Dialog-restart
 hypothesis, icon bitmap decode capability.
 
@@ -2778,13 +2778,13 @@ Task ID: S83-MAIN
 Agent: Super Z (main)
 Task: "S83-GFX-BASE completion + validation campaign" (user: execute all
 remaining items until the graphics BASE is done; validate 10 apps + 20
-games with REAL screenshots; complete دوز (TicTacToe) + مار (Snake);
+games with REAL screenshots; complete TicTacToe + Snake;
 progress table; update GitHub per title).
 
 Work Log:
 - Runtime rebuilt from scratch (build/ was empty): 41 TUs, link clean.
   Battery re-established 26/26 rc=0 BEFORE changes.
-- TicTacToe Deluxe (دوز) CREATED as games/tictactoe-deluxe (pure
+- TicTacToe Deluxe CREATED as games/tictactoe-deluxe (pure
   android.jar: GameView.onDraw board + 9 cell buttons + AI on
   main-looper Handler + deterministic LCG). Built with canonical
   aapt2/ECJ/D8 toolchain; Tetris + 2048 APKs rebuilt from sources.
@@ -2810,10 +2810,10 @@ Work Log:
   * S83 VIEW-TREE-OBSERVER: non-null VTO + listener family (ball2box).
   * S83 AUDIO-OBJECTS: AudioAttributes$Builder + SoundPool$Builder
     fluent laws (astroloop).
-- دوز COMPLETE (real captures): X center → AI replies → O wins middle
+- TicTacToe COMPLETE (real captures): X center → AI replies → O wins middle
   column w/ yellow strike → PHONE WINS! 0:1 → round-over AlertDialog →
   NEXT ROUND → round-2 fresh board, score preserved (5 stage JPGs).
-- مار re-proven at new HEAD: board → chase → death → GAME OVER dialog
+- Snake re-proven at new HEAD: board → chase → death → GAME OVER dialog
   → restart (4 stage JPGs).
 - REGRESSION: battery 26/26 after EVERY law (4 rebuild cycles);
   frame_px spots identical (f53 64042, f54 2073600).
@@ -2822,7 +2822,7 @@ Work Log:
 
 Stage Summary:
 - 35/35 titles produce real screenshots; 13 games/apps render real
-  content (L2/L3); 6 engine laws landed; دوز/مار complete.
+  content (L2/L3); 6 engine laws landed; TicTacToe/Snake complete.
 - New frontiers: FlutterEngine surface chain, GL viewport family
   (F-NEW-157), Lifecycling CNFE escape, WebView-only layouts.
 - Next: EGL10 object law (single-fix fanout for 4 GL titles),
@@ -3018,7 +3018,7 @@ Stage Summary:
 ---
 Task ID: S85
 Agent: Super Z (main)
-Task: S85 — user attack order: verify Snake Deluxe + 2048 GIF authenticity; put them on README front page; general review of all other games; re-review Telegram + دوز; add 50 MORE new apps/games; complete incomplete titles; continue graphics improvements.
+Task: S85 — user attack order: verify Snake Deluxe + 2048 GIF authenticity; put them on README front page; general review of all other games; re-review Telegram + TicTacToe; add 50 MORE new apps/games; complete incomplete titles; continue graphics improvements.
 
 Work Log:
 - GIF authenticity verified: com.miniandroid.snakedeluxe.gif (49 frames, distinct frame hashes, SHA f2dd621c…) + com.miniandroid.g2048.gif (65 frames, SHA d613d30f…) both match canonical SHA256SUMS and show real gameplay (snake chase/apple, 2048 merges to score 200). README front page: new "Flagship proof" hero section embeds both GIFs (user's exact request).
@@ -3029,7 +3029,7 @@ Work Log:
 - General game sweep (scripts/s85_game_sweep.py): 52 registered games re-probed at HEAD (obs+click). bouncy (Vector Pinball) promoted VERIFIED-INTERACTIVE with GIF (12 views probed, 10 state changes). Sweep PNG frames for most titles turned out to be the engine-default shell class.
 - EVID-CLASS-S85: s81_visual_audit level_of hardened (near-blank gate: nonbg<0.035 or dom≥0.975 can never be L2+). Full re-judgement: 72 S85-era records demoted to OBSERVED per S54 law (the eb16ab5c engine-default shell class); 4 S-era canonicals wrongly demoted by the sweep were RESTORED (anuto/balancetheball/opensudoku/ballbreak); dooz F-Droid "shell" evidence honestly demoted (was 99.9% white loading shell); pysolfc BLOCKED→OBSERVED(PARTIAL note) — S84 "BLOCKED" was a TRUNCATED APK (74.6MB > 48MB cap), re-downloaded vc102130601.
 - Telegram re-review (user request): APK re-downloaded, SHA256 EXACTLY matches S74 pin (b6a13e87…, v12.10.3). At current HEAD: rc=1, 10 L1 frames, 29 deferred NPEs — divergence MOVED past S74's j$/stream + FragmentManager to ActionBarLayout.e0 List.isEmpty ×11 + ImageLoader cacheDirs File.isDirectory null ×9. Honest OBSERVED record added to registry; root-cause note updated.
-- دوز re-review: in-house TicTacToe Deluxe = VERIFIED-INTERACTIVE L3 (GIF, full loop) unchanged; F-Droid Dooz = compose recomposer frontier (R-NEW-344), shell-only, demoted to honest OBSERVED.
+- TicTacToe re-review: in-house TicTacToe Deluxe = VERIFIED-INTERACTIVE L3 (GIF, full loop) unchanged; F-Droid Dooz = compose recomposer frontier (R-NEW-344), shell-only, demoted to honest OBSERVED.
 - Canonical system: registry.json → 147 titles (86 games / 60 apps / 1 fixture); 35 canonical artifacts (11 GIF + 24 JPG); SHA256SUMS rebuilt; CANONICAL_SCREENSHOTS.md full 147-row index; ACHIEVEMENTS.md regenerated ONE-record-per-title; ROOT_CAUSE_REGISTRY.md + F-NEW-163/163b entries; README stats/hero/frontiers regenerated from registry.
 - Validator: tools/verify_canonical_evidence.py → ALL CHECKS PASS (3 acceptable WARNs = OBSERVED text records).
 
@@ -3042,13 +3042,13 @@ Stage Summary:
 ---
 Task ID: S86
 Agent: Super Z (main)
-Task: User wave — Dodge two-color question root-caused via upstream source; graphics-type investigation of Snake/2048/خانه سازی; attack why titles still don't fully run; L0→L10 stratified 5-per-level impact proof; add a house-building game; continue graphics improvements.
+Task: User wave — Dodge two-color question root-caused via upstream source; graphics-type investigation of Snake/2048/MiniCraft; attack why titles still don't fully run; L0→L10 stratified 5-per-level impact proof; add a house-building game; continue graphics improvements.
 
 Work Log:
-- Dodge forensics (user: "فقط از دو رنگ دارن نمایش داده میشن"): cloned upstream dozingcat/dodge-android, read FieldView.java — the game is NOT two-color by design (black field, semi-transparent red/green goal zones, blue dodger, per-bullet random bright colors); FieldView is a SurfaceView painting via SurfaceHolder.lockCanvas from a game thread. The S84 GIF only captured menu+about because the entire surface path was unimplemented.
+- Dodge forensics (user: "they only show two colors"): cloned upstream dozingcat/dodge-android, read FieldView.java — the game is NOT two-color by design (black field, semi-transparent red/green goal zones, blue dodger, per-bullet random bright colors); FieldView is a SurfaceView painting via SurfaceHolder.lockCanvas from a game thread. The S84 GIF only captured menu+about because the entire surface path was unimplemented.
 - SEVEN engine laws implemented and A/B-proven (F-NEW-164..170, all documented in ROOT_CAUSE_REGISTRY.md): SurfaceView/SurfaceHolder real-surface law (holder heap-field pairing, lockCanvas→op capture→unlockCanvasAndPost→posted buffer, lazy surfaceCreated/Changed dispatch, render-stage compositor replay_surface); java.util.LinkedList Deque end-access family (getLast NPE killed the game thread at APP BOUNDARY); WindowManager.getDefaultDisplay/Display.getMetrics/getRotation/getSize; Activity.getPreferences==getSharedPreferences(getLocalClassName()); AOSP draw-subtree visibility law (INVISIBLE(4) prunes subtree — f06 golden pixel-identical); Canvas.drawRect(RectF,Paint) object overload + RectF ctor field law (op-trace showed correct colors with all-zero geometry); View.getWidth/getHeight/getMeasured* laws (drawField sizes everything from getWidth()).
 - Dodge evolution evidence: rc 1→0, 2-frame GIF → 14 distinct frames with the real Dodge design; canonical GIF replaced (SHA 5a648a24…), registry L3 VERIFIED-INTERACTIVE; APK re-download SHA matches S84 pin a5687d1b….
-- MiniCraft (خانه سازی) CREATED as 5th in-house game (games/minicraft, package com.miniandroid.minicraft): 14x20 LCG terrain, build cursor, BRICK/PLACE/DIG/DEMO actions, procedural block textures; canonical 16-frame GIF (terrain → real placements → material cycle → DEMO cottage → digs), registry L3 VERIFIED-INTERACTIVE, SHA 3fbca3e4….
+- MiniCraft (House Builder) CREATED as 5th in-house game (games/minicraft, package com.miniandroid.minicraft): 14x20 LCG terrain, build cursor, BRICK/PLACE/DIG/DEMO actions, procedural block textures; canonical 16-frame GIF (terrain → real placements → material cycle → DEMO cottage → digs), registry L3 VERIFIED-INTERACTIVE, SHA 3fbca3e4….
 - Graphics-type investigation table added to LEVEL_IMPACT_S86.md (Snake/2048/MiniCraft = in-house View.onDraw Canvas 2D; Dodge = SurfaceView+lockCanvas+game thread).
 - L0→L10 stratified impact campaign (scripts/s86_level_impact.py): 29 titles sampled deterministically (5 per level, levels 0..10 present), re-executed at HEAD with obs+click + S85-hardened visual gate; report docs/evidence/LEVEL_IMPACT_S86.md with per-title old→new levels, rc, unique colors, honest version-drift labels (anuto/klondike/deskclock/bnyro latest-upstream retests; their pinned-era canonical evidence remains authoritative).
 - Docs regenerated from registry: ACHIEVEMENTS.md (148 records), CANONICAL_SCREENSHOTS.md (148 rows), README stats + hero (MiniCraft + Dodge rows, S86 wave header), ROOT_CAUSE_REGISTRY F-NEW-164..170 block.
@@ -3056,7 +3056,7 @@ Work Log:
 
 Stage Summary:
 - The "two-color" mystery = SurfaceView surface path; now fully implemented and pixel-proven with the actual upstream game design.
-- New in-house game MiniCraft (خانه سازی) joins the flagship family; README + registry + validator consistent at 148 titles / 36 canonical artifacts / 12 GIFs.
+- New in-house game MiniCraft (House Builder) joins the flagship family; README + registry + validator consistent at 148 titles / 36 canonical artifacts / 12 GIFs.
 - Honest frontier unchanged where it belongs: compose F-NEW-161, androidx F-NEW-162, GLSL/libGDX F-NEW-157; everything else moved by 7 A/B-proven laws.
 ---
 Task ID: S87
@@ -3094,7 +3094,7 @@ Work Log:
 - F-NEW-183b: AndroidUtilities.getCacheDir app-class static dispatch silently answered null (zero framework traces, no TRY-ENTRY — deep interpreter issue, registered as separate R-NEW frontier); intercept returns the SAME pathed cache File (identity with Context.getCacheDir law).
 - Signal (user): downloaded 8.26.4 vc174801 from updates.signal.org, SHA256 EXACT match with official manifest (46cd670d…, 122MB). rc=1, 9 frames, 14 exceptions. First divergences: DynamicLanguageContextWrapper.updateContext (Context.getResources on null base), Tracer.toByteArray UUID null, R350-FORNAME androidx.savedstate.Recreator_LifecycleAdapter CNFE (SAME family as no.thanks — androidx lifecycle/savedstate generated-adapter family confirmed multi-title), Lifecycling.resolveObserverCallbackType getClass null. Honest OBSERVED L1.
 - WhatsApp (user + open-source rule): NOT open source, NOT on F-Droid, no legitimate upstream source provenance → recorded OUT_OF_SCOPE_NON_OPEN_SOURCE per constitution; used only as documented gap, no fake provenance.
-- Flashlight (نورافکن, user): source-first read Simple-Flashlight upstream = COMPOSE app (ComponentActivity + collectAsState) → F-NEW-161 frontier family, recorded; SECUSO privacy-friendly-torchlight = classic View/XML (RelativeLayout+ImageButton+TextView+CheckBox) → executed.
+- Flashlight (user request): source-first read Simple-Flashlight upstream = COMPOSE app (ComponentActivity + collectAsState) → F-NEW-161 frontier family, recorded; SECUSO privacy-friendly-torchlight = classic View/XML (RelativeLayout+ImageButton+TextView+CheckBox) → executed.
 - F-NEW-184 (attachBaseContext REAL context): engine passed DalvikValue::make_null() as base context — Kotlin apps overriding attachBaseContext die at their compiler-inserted Intrinsics.checkNotNullParameter (R8-inlined into androidx.multidex.ZipUtil) with "Parameter specified as non-null is null: attachBaseContext, parameter context" at APP BOUNDARY. Law: bind the R341-APP application object as the base context (AOSP LoadedApk ordering). A/B: secuso torchlight rc=1 → rc=0, 0 exceptions.
 - secuso torchlight residual: rc=0 but Splash.onCreate never executed (onStart/onResume dispatched with 0 instructions, no navigation to MainActivity) — secuso pfacore family next divergence (registered; needs privacy-friendly-core upstream session).
 - 200-corpus: F-Droid index-v1.jar harvested via lysator mirror (f-droid.org direct = 12KB/s crawling; lysator = 1.5MB/s). Queue: 110 smallest games + 110 smallest apps + flashlight/torch/snake specials. s88_corpus2.py resilient streaming scanner (resume-safe, incremental dump every 10, per-APK 75s timeout, APK deleted after scan — disk bounded). lib-family scanner: 37 families incl compose/glide/libgdx/flutter/webkit/coroutines/desugar-j$.
@@ -3169,3 +3169,36 @@ Work Log:
 Stage Summary:
 - S90 foundation: parser fixed+validated, canonical API inventory live, achievements centralized, F-NEW-162 family root CLEARED with 3 reusable laws, zero regression.
 - Open frontiers: ConstraintLayout.onLayout f141 (no.thanks next), Notification family (0 runtime support, ~52 titles), Telegram j$/desugar+MessagesController, Method-annotation E2E for full reflective-observer dispatch.
+
+---
+Task ID: S91-T1
+Agent: general-purpose (translation)
+Task: Translate CONSTITUTION_V2.md Persian text to English (repo must be English-only)
+
+Work Log:
+- Read worklog tail for project context; scanned CONSTITUTION_V2.md (3736 lines) and located 619 Persian/Arabic-script lines (U+0600-06FF ranges), spread across sections 0-169 (densest in mission/laws/evidence-chain sections).
+- Translated all Persian text IN PLACE with the Edit tool, region by region (section-scale old_str/new_str blocks), preserving: markdown headings, all ```text code blocks (incl. the DOWN-ARROW pipeline diagrams), file paths, class/method names, SHAs, law IDs, session IDs (S71/S72...), and every already-English sentence.
+- Persian question marks (U+061F) inside code blocks (e.g. "Activity?") converted to ASCII "?"; ZWNJ characters fully removed as a side effect of translation.
+- Mid-session self-audit after each batch: three MultiEdit batches were non-atomic (applied prefix edits then stopped on a failed match); the affected regions (S14 class-hierarchy chain, S30 Window/decor chain, S34 heading, S53 goal block, S90 FAST/DEEP subsections, S147 pipeline head) were immediately detected and restored byte-exact before proceeding.
+- Grammar consolidation: Persian sentence fragments that wrapped around code blocks (standalone Persian verb fragments) were folded into natural English sentences spanning the blocks; word-for-word line order intentionally adjusted where Persian/English syntax differs, meaning preserved.
+- Structural verification: 170 sections (#0-#169) all present, 452 code fences balanced (even), no 3+ blank-line runs, no remaining ZWNJ, no orphan verb lines. File is 3668 lines (was 3736) — delta is purely the consolidation of translated fragment lines; no content deleted or skipped.
+
+Stage Summary:
+- CONSTITUTION_V2.md is now 100% English: verification loop reports PERSIAN_LINES_REMAINING= 0 (blocks U+0600-06FF, U+0750-077F, U+FB50-FDFF, U+FE70-FEFF all clear).
+- ~619 Persian-containing lines translated across all 170 sections; markdown structure, code blocks, IDs, SHAs and English text untouched.
+- Next actions for owner: eyeball-read sections 0-9 (heaviest rewrite density), then commit/push per normal push protocol (no git commands were run by this task).
+---
+Task ID: S91-T2
+Agent: general-purpose (translation)
+Task: Translate docs/ knowledge+history+evidence Persian text to English
+
+Work Log:
+- Read worklog tail for context; enumerated all 40 target files, counted 749 Persian (Arabic-script) lines total.
+- Translated IN PLACE, meaning-faithful, preserving markdown structure/tables/code blocks/file paths/SHAs/numbers/law IDs/session IDs: full rewrites for the 15 knowledge docs (WS-C2/C3 knowledge+transfers+evidence, WS-C4 tool matrix + transfers, WS-C5 transfer, UNIFIED_CODER_MASTER_TRANSFER, MINIANDROID_EXTERNAL_RUNTIME_KNOWLEDGE, SOURCE_REFERENCE_INDEX_UPDATE, WS-C3_CORPUS) and history/SOURCE_CHANGES.md; targeted edits for the remaining 24 files (campaign005/008 notes, history single-line records, KNOWLEDGE_INDEX title rows, S76/S83 reports, runtime 113/114/115 reports, LEVEL_IMPACT_S86, CANONICAL_SCREENSHOTS, S66_REPORT, MASTER_CHECKLIST, development/START_HERE, forensics/HISTORY_PURGE_PLAN).
+- master_audit.json: only the Persian VALUE substring translated (user quote → "not one attack, several different attacks"); keys/structure untouched; validated with python3 -m json.tool.
+- Extended Arabic-Indic digits converted to ASCII; Arabic question mark rendered as "the Arabic question mark"; Persian test strings (the salaam-donya and round vectors) translated to their English meanings ("Hello World" / "round") with native-script noted in English where relevant.
+- No files outside the list touched; no git commands run.
+
+Stage Summary:
+- 40/40 files edited in place; final verification: PERSIAN_LINES_REMAINING=0 across all 40 targets; master_audit.json JSON_VALID.
+- Zero content deleted: every Persian sentence has an English counterpart; layout, tables, code fences, SHAs (f5e11927…, 06fb40da…, 43075538…), F-NEW-*/CM-*/F0xx IDs and session IDs preserved verbatim.

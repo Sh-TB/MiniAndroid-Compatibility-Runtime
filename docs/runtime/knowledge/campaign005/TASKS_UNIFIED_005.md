@@ -7,7 +7,7 @@
 > archives 000/001/002 only. Campaign 005 rebuilds from that state. Nothing is
 > claimed from the lost sessions unless re-proven here.
 
-## A. MEDIA — MP3/OGG real playback (owner priority: "خیلی مهمه")
+## A. MEDIA — MP3/OGG real playback (owner priority: "very important")
 - [x] 113  minimp3 (public-domain) vendored + real MP3 decode path        [PASS 33/33 exp113]
 - [x] 114  stb_vorbis (public-domain) vendored + real OGG decode path     [PASS]
 - [x] 115  android.media.MediaPlayer lifecycle state machine (IDLE→…→STOPPED) [PASS]

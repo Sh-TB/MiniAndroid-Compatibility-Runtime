@@ -15,14 +15,14 @@ sessions is claimed unless re-proven below.
 
 ## 2. Owner's asks this turn → status
 
-| Owner request («درخواست») | Status | Evidence |
+| Owner request | Status | Evidence |
 |---|---|---|
-| «حداقل یک mp3/ogg پخش کنی خیلی مهمه» | **PROVEN** | EXP-113: 33/33 checks, real decoders, WAV artifacts, 2 UI frames |
-| «بازی دوز … حداقل 3D کمی داشته باشه» | **PROVEN** | EXP-114: 16/16 checks, 6-distinct-hash rotation strip, win state rendered |
-| «۲-۳ برنامه کم‌حجم رو واقعا لود کن» | **EXECUTED (exit 0)** | 8 corpus APKs ran; screenshots captured; UI content = known default-screen limit |
-| «تلگرام رو ببر جلو» | CARRIED | Telegram runs remain from 002 baseline; forward push needs EngineClock/ARSC (tasks 139-144) |
-| «ابزارها را واقعاً لود کن» | **PROVEN** | minimp3 + stb_vorbis vendored and EXECUTED inside the runtime; ffmpeg used for inputs; ffprobe used as oracle |
-| «بدون خروج زودهنگام / کلی کار ناتموم داری» | honored | buffer rule applied: 5 new bugs found & fixed mid-turn (see §4) |
+| "play at least one mp3/ogg — very important" | **PROVEN** | EXP-113: 33/33 checks, real decoders, WAV artifacts, 2 UI frames |
+| "a TicTacToe game … with at least a bit of 3D" | **PROVEN** | EXP-114: 16/16 checks, 6-distinct-hash rotation strip, win state rendered |
+| "really load 2-3 lightweight apps" | **EXECUTED (exit 0)** | 8 corpus APKs ran; screenshots captured; UI content = known default-screen limit |
+| "push Telegram forward" | CARRIED | Telegram runs remain from 002 baseline; forward push needs EngineClock/ARSC (tasks 139-144) |
+| "really load the tools" | **PROVEN** | minimp3 + stb_vorbis vendored and EXECUTED inside the runtime; ffmpeg used for inputs; ffprobe used as oracle |
+| "no early exit / you have plenty of unfinished work" | honored | buffer rule applied: 5 new bugs found & fixed mid-turn (see §4) |
 
 ## 3. New capabilities vs 002 (byte-verified delta)
 

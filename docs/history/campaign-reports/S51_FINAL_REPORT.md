@@ -12,7 +12,7 @@ IMPLEMENTED/TESTED/OBSERVED/REPRODUCED/RESEARCHED/BLOCKED/PENDING/UNVERIFIED.
 | `.git` | 623 MB (packs 492 MB) — historical blobs only (78 × >8 MB ≈ 1.65 GB uncompressed: llvm-mingw 83.9MB, Telegram.apk 82.7MB, call_graph 65.5MB) | PARTIALLY-VERIFIED (weight = history; rewrite = PROPOSAL-ONLY, authorization required) |
 | Remote refs | main + 4 archive branches; 7 tags/releases; LFS not used | VERIFIED |
 | Issue/PR attachment sweep | GitHub API rate-limited unauth → not fully swept | PARTIALLY-VERIFIED (commands recorded for credentialed re-run) |
-| Full backup (user demand: "بکاپ فول گیت‌هاب را هم بررسی کن") | `git clone --mirror` = 506 MB all-refs at `/home/z/archive/s51_full_mirror`; contents = history above, nothing extra | VERIFIED |
+| Full backup (user demand: "check the full GitHub backup too") | `git clone --mirror` = 506 MB all-refs at `/home/z/archive/s51_full_mirror`; contents = history above, nothing extra | VERIFIED |
 
 ## B. Cleanup executed this session
 

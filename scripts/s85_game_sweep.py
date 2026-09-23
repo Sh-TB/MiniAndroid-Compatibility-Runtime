@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """s85_game_sweep.py — S85 general review of all registered games
-(user mandate: "بررسی کلی سایر بازی ها").
+(user mandate: "general review of the other games").
 
 Re-probes every registered game with a cached APK at the CURRENT engine
 (S83 laws + F-NEW-160 + F-NEW-163/163b): obs pass + click pass.
