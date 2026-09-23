@@ -6,7 +6,7 @@ All numbers from canonical artifacts. Nothing hand-computed.
 
 - Scanned: 5,049 tracked files (names + contents, Arabic-script blocks U+0600-06FF / 0750-077F / 08A0-08FF / FB50-FDFF / FE70-FEFF).
 - Translated to English: **1,368 authored lines** across 70 files — CONSTITUTION_V2.md (619), docs/runtime/knowledge (19 files, 441), docs/history + reports + evidence + audit (749 incl. history), README/Achievements/worklog/scripts/fixtures.
-- Canonical registry renames: "TicTacToe Deluxe (دوز)" → "TicTacToe Deluxe", "MiniCraft (دوز-family annotation)" → "MiniCraft (House Builder)".
+- Canonical registry renames: "TicTacToe Deluxe" and "MiniCraft (House Builder)" — the native-script title suffixes and family annotations were removed (original suffixes recorded in commit b032262f, now purged from HEAD to keep the repo fully English).
 - Documented allowlist (still counted, auditable): upstream third-party app localizations (values-fa/ar — never modified), RTL text-shaping test vectors (f05_persian, f49_canstext, f08_canvasops, exp101/u007/exp099/exp116/uc010 — the Persian strings ARE the test data), captured evidence JSON (view_tree.json).
 - Canonical check: `scripts/s91_english_audit.py` → **CLEAN, 0 hits** outside allowlist.
 
