@@ -10,112 +10,370 @@
  "executed_fail_corpus": 36,
  "families": [
   {
-   "family": "webkit",
-   "titles_with_family": 83,
-   "exact_methods_in_top400": 3,
-   "titles_diverged_family": 0,
-   "diverged_titles": []
-  },
-  {
    "family": "app",
-   "titles_with_family": 0,
+   "titles_with_family": 168,
+   "titles": [
+    "ademar.textlauncher",
+    "app.subster",
+    "at.or.at.plugoffairplane",
+    "bluepie.ad_silence",
+    "br.com.wasystems.audiooutputswitcher",
+    "ch.blinkenlights.android.vanillaplug",
+    "co.xplat.husk",
+    "com.alaskalinuxuser.justchess",
+    "com.aragaer.jtt",
+    "com.ath0.rpn",
+    "com.attenomy.janken",
+    "com.biotstoiq.hayago",
+    "com.bytehamster.flowitgame",
+    "com.cocode.battleship",
+    "com.craftxbox.yubiclip.xor"
+   ],
    "exact_methods_in_top400": 186,
-   "titles_diverged_family": 0,
+   "titles_diverged": 0,
    "diverged_titles": []
   },
   {
    "family": "content",
-   "titles_with_family": 0,
+   "titles_with_family": 134,
+   "titles": [
+    "ademar.textlauncher",
+    "at.or.at.plugoffairplane",
+    "bluepie.ad_silence",
+    "br.com.wasystems.audiooutputswitcher",
+    "ch.blinkenlights.android.vanillaplug",
+    "co.xplat.husk",
+    "com.android.adbkeyboard",
+    "com.ath0.rpn",
+    "com.attenomy.janken",
+    "com.biotstoiq.hayago",
+    "com.bytehamster.flowitgame",
+    "com.cocode.battleship",
+    "com.craftxbox.yubiclip.xor",
+    "com.dasp.worldcup2026",
+    "com.documentsui.shortcut"
+   ],
    "exact_methods_in_top400": 100,
-   "titles_diverged_family": 1,
+   "titles_diverged": 1,
    "diverged_titles": [
     "ru.henridellal.patolli"
    ]
   },
   {
-   "family": "java",
-   "titles_with_family": 0,
-   "exact_methods_in_top400": 56,
-   "titles_diverged_family": 22,
-   "diverged_titles": [
-    "ademar.textlauncher",
-    "ademar.textlauncher",
-    "com.simonramstedt.yoke",
-    "com.simonramstedt.yoke",
-    "com.dasp.worldcup2026",
-    "com.dasp.worldcup2026",
-    "org.droidtr.termbin",
-    "net.basov.lws.qr.fdroid",
-    "net.basov.lws.qr.fdroid",
+   "family": "webkit",
+   "titles_with_family": 83,
+   "titles": [
+    "app.subster",
+    "com.alaskalinuxuser.justchess",
+    "com.autismprime.krassesSpiel",
+    "com.freetime.ssmpc",
+    "com.goltzkiste.guessaday",
+    "com.kaajjo.libresudoku",
+    "com.kaeruct.gotosleep",
+    "com.marceljurtz.lifecounter",
+    "com.martinmimigames.littlemusicplayer",
     "com.martinmimigames.simplefileexplorer",
-    "com.martinmimigames.simplefileexplorer",
-    "ru.henridellal.patolli",
-    "com.trianguloy.numericriddlegenerator",
-    "com.trianguloy.numericriddlegenerator",
-    "com.dosse.dozeoff",
-    "com.dosse.dozeoff",
-    "net.tlfoxhuman.fakeblankscreen",
-    "net.tlfoxhuman.fakeblankscreen",
+    "com.mobile.bummerzaehler",
+    "com.mostafa.brickblast",
+    "com.numguesser.tonio_rpchp.numberguesser",
+    "com.oF2pks.applicationsinfo",
+    "com.phikal.regex"
+   ],
+   "exact_methods_in_top400": 3,
+   "titles_diverged": 0,
+   "diverged_titles": []
+  },
+  {
+   "family": "database",
+   "titles_with_family": 61,
+   "titles": [
+    "app.subster",
+    "br.com.wasystems.audiooutputswitcher",
+    "com.autismprime.krassesSpiel",
+    "com.dosse.clock31",
+    "com.feko.generictabletoprpg",
+    "com.freetime.ssmpc",
     "com.github.yeriomin.smsscheduler",
-    "io.github.yoshi1123.adbio",
-    "io.github.yoshi1123.adbio",
+    "com.hobbyone.HashDroid",
+    "com.kaajjo.libresudoku",
+    "com.kaeruct.gotosleep",
+    "com.marceljurtz.lifecounter",
+    "com.martinmimigames.littlemusicplayer",
+    "com.martinmimigames.simplefileexplorer",
+    "com.mobile.bummerzaehler",
+    "com.mostafa.brickblast"
+   ],
+   "exact_methods_in_top400": 4,
+   "titles_diverged": 1,
+   "diverged_titles": [
     "krasilnikov.alexey.cryptopass"
    ]
   },
   {
-   "family": "widget",
-   "titles_with_family": 0,
+   "family": "os",
+   "titles_with_family": 61,
+   "titles": [
+    "ademar.textlauncher",
+    "app.subster",
+    "at.or.at.plugoffairplane",
+    "ch.blinkenlights.android.vanillaplug",
+    "com.biotstoiq.hayago",
+    "com.craftxbox.yubiclip.xor",
+    "com.dosse.dozeoff",
+    "com.fr3ts0n.androbd.plugin.gpsprovider",
+    "com.fr3ts0n.androbd.plugin.mqtt",
+    "com.fr3ts0n.androbd.plugin.sensorprovider",
+    "com.github.mrrar.gps_locker",
+    "com.github.yeriomin.smsscheduler",
+    "com.hobbyone.HashDroid",
+    "com.martinmimigames.littlemusicplayer",
+    "com.martinmimigames.simplefileexplorer"
+   ],
    "exact_methods_in_top400": 11,
-   "titles_diverged_family": 1,
+   "titles_diverged": 0,
+   "diverged_titles": []
+  },
+  {
+   "family": "java",
+   "titles_with_family": 47,
+   "titles": [
+    "app.subster",
+    "ch.blinkenlights.android.vanillaplug",
+    "com.android.adbkeyboard",
+    "com.gitlab.giwiniswut.rwremount",
+    "com.oF2pks.neolinker",
+    "com.page.bizzle",
+    "com.picross.nonocross",
+    "com.quaap.phonefonefun",
+    "com.supershopaholic",
+    "com.termux.boot",
+    "com.thermatk.android.xf.fakegapps",
+    "com.tmendes.dadosd",
+    "com.trianguloy.numericriddlegenerator",
+    "com.xmission.trevin.android.tangram",
+    "cz.antecky.netswitch"
+   ],
+   "exact_methods_in_top400": 56,
+   "titles_diverged": 9,
+   "diverged_titles": [
+    "ademar.textlauncher",
+    "com.dasp.worldcup2026",
+    "com.dosse.dozeoff",
+    "com.martinmimigames.simplefileexplorer",
+    "com.simonramstedt.yoke",
+    "com.trianguloy.numericriddlegenerator",
+    "io.github.yoshi1123.adbio",
+    "net.basov.lws.qr.fdroid",
+    "net.tlfoxhuman.fakeblankscreen"
+   ]
+  },
+  {
+   "family": "graphics",
+   "titles_with_family": 42,
+   "titles": [
+    "app.subster",
+    "br.com.wasystems.audiooutputswitcher",
+    "com.ath0.rpn",
+    "com.dasp.worldcup2026",
+    "com.github.rsteube.t4",
+    "com.hobbyone.HashDroid",
+    "com.kaeruct.glxy",
+    "com.mshdabiola.ludo.foss",
+    "com.page.bizzle",
+    "com.quaap.dodatheexploda",
+    "com.quaap.fishberserker",
+    "com.simonramstedt.yoke",
+    "com.trianguloy.continuousDataUsage",
+    "com.trianguloy.numericriddlegenerator",
+    "com.xmission.trevin.android.tangram"
+   ],
+   "exact_methods_in_top400": 13,
+   "titles_diverged": 0,
+   "diverged_titles": []
+  },
+  {
+   "family": "view",
+   "titles_with_family": 41,
+   "titles": [
+    "ademar.textlauncher",
+    "app.subster",
+    "com.android.adbkeyboard",
+    "com.ath0.rpn",
+    "com.biotstoiq.hayago",
+    "com.dasp.worldcup2026",
+    "com.dosse.dozeoff",
+    "com.github.rsteube.t4",
+    "com.hobbyone.HashDroid",
+    "com.page.bizzle",
+    "com.quaap.phonefonefun",
+    "com.supershopaholic",
+    "com.trianguloy.isUserAMonkey",
+    "com.trianguloy.numericriddlegenerator",
+    "com.xmission.trevin.android.tangram"
+   ],
+   "exact_methods_in_top400": 12,
+   "titles_diverged": 0,
+   "diverged_titles": []
+  },
+  {
+   "family": "widget",
+   "titles_with_family": 31,
+   "titles": [
+    "ademar.textlauncher",
+    "ch.blinkenlights.android.vanillaplug",
+    "com.biotstoiq.hayago",
+    "com.documentsui.shortcut",
+    "com.dosse.dozeoff",
+    "com.github.rsteube.t4",
+    "com.gitlab.giwiniswut.rwremount",
+    "com.oF2pks.neolinker",
+    "com.page.bizzle",
+    "com.quaap.phonefonefun",
+    "com.tmendes.dadosd",
+    "com.trianguloy.isUserAMonkey",
+    "com.trianguloy.numericriddlegenerator",
+    "cz.antecky.netswitch",
+    "de.cweiske.headphoneindicator"
+   ],
+   "exact_methods_in_top400": 11,
+   "titles_diverged": 1,
    "diverged_titles": [
     "com.github.yeriomin.smsscheduler"
    ]
   },
   {
-   "family": "net",
-   "titles_with_family": 0,
-   "exact_methods_in_top400": 1,
-   "titles_diverged_family": 0,
-   "diverged_titles": []
-  },
-  {
    "family": "util",
-   "titles_with_family": 0,
+   "titles_with_family": 23,
+   "titles": [
+    "com.ath0.rpn",
+    "com.dasp.worldcup2026",
+    "com.dosse.dozeoff",
+    "com.gitlab.giwiniswut.rwremount",
+    "com.page.bizzle",
+    "com.quaap.phonefonefun",
+    "com.simonramstedt.yoke",
+    "com.termux.boot",
+    "com.trianguloy.isUserAMonkey",
+    "com.trianguloy.numericriddlegenerator",
+    "cz.antecky.netswitch",
+    "de.storchp.opentracks.osmplugin",
+    "de.storchp.opentracks.osmplugin.offline",
+    "info.spotcomms.wlanbackend",
+    "io.github.yoshi1123.adbio"
+   ],
    "exact_methods_in_top400": 3,
-   "titles_diverged_family": 0,
+   "titles_diverged": 0,
    "diverged_titles": []
   },
   {
-   "family": "view",
-   "titles_with_family": 0,
-   "exact_methods_in_top400": 12,
-   "titles_diverged_family": 0,
+   "family": "compose",
+   "titles_with_family": 21,
+   "titles": [
+    "com.attenomy.janken",
+    "com.cocode.battleship",
+    "com.feko.generictabletoprpg",
+    "com.freetime.ssmpc",
+    "com.kaajjo.libresudoku",
+    "com.mostafa.brickblast",
+    "com.movietrivia.filmfacts",
+    "com.mshdabiola.ludo.foss",
+    "com.rechnen.app",
+    "com.vayunmathur.games.pipes",
+    "com.vayunmathur.games.unblockjam",
+    "de.storchp.opentracks.osmplugin",
+    "de.storchp.opentracks.osmplugin.offline",
+    "dev.arnv.bluke",
+    "dev.develsinthedetails.eatpoopyoucat"
+   ],
+   "exact_methods_in_top400": 0,
+   "titles_diverged": 0,
    "diverged_titles": []
   },
   {
-   "family": "graphics",
-   "titles_with_family": 0,
-   "exact_methods_in_top400": 13,
-   "titles_diverged_family": 0,
+   "family": "net",
+   "titles_with_family": 20,
+   "titles": [
+    "ademar.textlauncher",
+    "com.biotstoiq.hayago",
+    "com.craftxbox.yubiclip.xor",
+    "com.dasp.worldcup2026",
+    "com.dosse.dozeoff",
+    "com.github.mrrar.gps_locker",
+    "com.github.rsteube.t4",
+    "com.hobbyone.HashDroid",
+    "com.martinmimigames.littlemusicplayer",
+    "com.martinmimigames.tinymusicplayer",
+    "com.oF2pks.neolinker",
+    "com.page.bizzle",
+    "com.termux.boot",
+    "com.trianguloy.isUserAMonkey",
+    "eu.veldsoft.scribe4"
+   ],
+   "exact_methods_in_top400": 1,
+   "titles_diverged": 0,
    "diverged_titles": []
   },
   {
-   "family": "os",
+   "family": "other",
    "titles_with_family": 0,
-   "exact_methods_in_top400": 11,
-   "titles_diverged_family": 0,
-   "diverged_titles": []
-  },
-  {
-   "family": "database",
-   "titles_with_family": 0,
-   "exact_methods_in_top400": 4,
-   "titles_diverged_family": 1,
+   "titles": [],
+   "exact_methods_in_top400": 0,
+   "titles_diverged": 1,
    "diverged_titles": [
-    "krasilnikov.alexey.cryptopass"
+    "at.or.at.plugoffairplane"
+   ]
+  },
+  {
+   "family": "exceptions",
+   "titles_with_family": 0,
+   "titles": [],
+   "exact_methods_in_top400": 0,
+   "titles_diverged": 2,
+   "diverged_titles": [
+    "org.droidtr.termbin",
+    "org.vi_server.red_screen"
    ]
   }
  ],
+ "divergence_methods": {
+  "Ljava.lang.Object;.getClass": [
+   "com.martinmimigames.simplefileexplorer",
+   "net.tlfoxhuman.fakeblankscreen"
+  ],
+  "Ljava.util.List;.iterator": [
+   "ademar.textlauncher"
+  ],
+  "Ljava.lang.String;.isEmpty": [
+   "com.simonramstedt.yoke"
+  ],
+  "Leu.chainfire.libsuperuser.Application;.onCreate": [
+   "at.or.at.plugoffairplane"
+  ],
+  "Ljava.text.DateFormat;.format": [
+   "com.dasp.worldcup2026"
+  ],
+  "Ljava.lang.String;.equals": [
+   "net.basov.lws.qr.fdroid"
+  ],
+  "Landroid.content.res.TypedArray;.getColor": [
+   "ru.henridellal.patolli"
+  ],
+  "Ljava.io.File;.getPath": [
+   "com.trianguloy.numericriddlegenerator"
+  ],
+  "Ljava.lang.String;.split": [
+   "com.dosse.dozeoff"
+  ],
+  "Landroid.widget.ListView;.addHeaderView": [
+   "com.github.yeriomin.smsscheduler"
+  ],
+  "Ljava.lang.Process;.getOutputStream": [
+   "io.github.yoshi1123.adbio"
+  ],
+  "Landroid.database.Cursor;.getCount": [
+   "krasilnikov.alexey.cryptopass"
+  ]
+ },
  "top_methods": [
   {
    "family": "app",
