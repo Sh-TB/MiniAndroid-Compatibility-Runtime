@@ -24,3 +24,29 @@ Non-game GIFs (apps): **1**
 | App | Frames | State change | GIF SHA (short) | Status |
 |---|---|---|---|---|
 | com.trianguloy.urlchecker | 2 | PROVEN | `ba1ae97c8e92` | VERIFIED-INTERACTIVE |
+
+## Direct GitHub links (every GIF-verified title)
+
+Repo: `Sh-TB/MiniAndroid-Compatibility-Runtime`, canonical path `docs/evidence/canonical/`. Generated from the canonical registry — same set as the table above.
+
+| # | Type | Title | GIF link |
+|---|---|---|---|
+
+## Direct GitHub links (every GIF-verified title, generated from the canonical registry)
+
+Repo: `Sh-TB/MiniAndroid-Compatibility-Runtime`, canonical path `docs/evidence/canonical/`.
+
+| # | Type | Title | GIF link |
+|---|---|---|---|
+| 1 | App | com.trianguloy.urlchecker | [com.trianguloy.urlchecker.gif](https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/blob/main/docs/evidence/canonical/com.trianguloy.urlchecker.gif) |
+| 2 | Game | 2048 | [com.miniandroid.g2048.gif](https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/blob/main/docs/evidence/canonical/com.miniandroid.g2048.gif) |
+| 3 | Game | Mini Tetris | [com.miniandroid.tetris.gif](https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/blob/main/docs/evidence/canonical/com.miniandroid.tetris.gif) |
+| 4 | Game | MiniCraft (House Builder) | [com.miniandroid.minicraft.gif](https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/blob/main/docs/evidence/canonical/com.miniandroid.minicraft.gif) |
+| 5 | Game | Snake Deluxe | [com.miniandroid.snakedeluxe.gif](https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/blob/main/docs/evidence/canonical/com.miniandroid.snakedeluxe.gif) |
+| 6 | Game | TicTacToe Classic | [com.emmanuelmess.tictactoe.gif](https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/blob/main/docs/evidence/canonical/com.emmanuelmess.tictactoe.gif) |
+| 7 | Game | TicTacToe Deluxe | [com.miniandroid.tictactoedeluxe.gif](https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/blob/main/docs/evidence/canonical/com.miniandroid.tictactoedeluxe.gif) |
+| 8 | Game | Vector Pinball (bouncy) | [com.dozingcatsoftware.bouncy.gif](https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/blob/main/docs/evidence/canonical/com.dozingcatsoftware.bouncy.gif) |
+| 9 | Game | ca.rmen.nounours | [ca.rmen.nounours.gif](https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/blob/main/docs/evidence/canonical/ca.rmen.nounours.gif) |
+| 10 | Game | com.dozingcatsoftware.dodge | [com.dozingcatsoftware.dodge.gif](https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/blob/main/docs/evidence/canonical/com.dozingcatsoftware.dodge.gif) |
+| 11 | Game | com.smorgasbork.hotdeath | [com.smorgasbork.hotdeath.gif](https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/blob/main/docs/evidence/canonical/com.smorgasbork.hotdeath.gif) |
+| 12 | Game | org.bobstuff.bobball | [org.bobstuff.bobball.gif](https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/blob/main/docs/evidence/canonical/org.bobstuff.bobball.gif) |
