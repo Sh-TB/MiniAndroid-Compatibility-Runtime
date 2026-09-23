@@ -12907,9 +12907,19 @@ int DalvikExecutionEngine::populate_drawable_paths_from_arsc(
         if (resource_drawable_paths_.count(field_name)) continue;
         // Only file-backed types make sense as drawable targets.
         auto r = arsc.resolve(resid);
-        if (!r) continue;
+        if (!r) {
+            if (getenv("MINIANDROID_DEBUG_DRAWABLES"))
+                std::cerr << "[ARSC-VALUES] FAIL resid=" << std::hex << resid
+                          << std::dec << " field=" << field_name
+                          << " resolve()=null" << std::endl;
+            continue;
+        }
         if (r->type_name != "drawable" && r->type_name != "mipmap" &&
             r->type_name != "raw") {
+            if (getenv("MINIANDROID_DEBUG_DRAWABLES"))
+                std::cerr << "[ARSC-VALUES] SKIP resid=" << std::hex << resid
+                          << std::dec << " field=" << field_name
+                          << " type=" << r->type_name << std::endl;
             continue;
         }
         // G04 §4: select_file (canonical resolve_full law) replaces
@@ -25746,8 +25756,14 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                     : cls.substr(last_slash + 1);
             if (!local.empty() && local.back() == ';') local.pop_back();
             if (!local.empty()) prefs_name = local;
-        } else if (!args.empty() && args[0].type == DalvikType::STRING_REF) {
-            prefs_name = args[0].string_val;
+        } else if (!args.empty() && args[1].type == DalvikType::STRING_REF) {
+            // F-NEW-193a (S91): the prefs NAME is the first PARAMETER.
+            // For an instance method args[0] is the RECEIVER and args[1]
+            // is the name String — the old args[0] test could never match,
+            // so every name silently degraded to "default" (observed:
+            // s50 probe asked for "s50prefs", the engine loaded/saved
+            // default.xml instead).
+            prefs_name = args[1].string_val;
         }
         // Create SharedPreferences object on heap
         std::string prefs_desc = "Landroid/content/SharedPreferences;";
@@ -26129,6 +26145,28 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             return true;
         }
         if (method == "getInt") {
+            // §24 env-gated probe (F-114 family): surface the arg shapes +
+            // heap lookup result so a silent default-return becomes visible.
+            static thread_local const bool f114_diag_int =
+                std::getenv("MINIANDROID_F114_DIAG") != nullptr;
+            if (f114_diag_int) {
+                std::cerr << "[F114-DIAG] prefs getInt"
+                          << " class=" << class_name
+                          << " argc=" << args.size()
+                          << " prefs_obj_id=" << prefs_obj_id;
+                for (size_t di = 0; di < args.size() && di < 3; ++di)
+                    std::cerr << " a" << di << "(t="
+                              << static_cast<int>(args[di].type) << ")";
+                if (prefs_obj_id && heap_.has_object(prefs_obj_id)) {
+                    auto dv = heap_.get_object_field(
+                        prefs_obj_id,
+                        (args.size() > 1 && args[1].type == DalvikType::STRING_REF)
+                            ? args[1].string_val : "");
+                    std::cerr << " field_hit="
+                              << (dv.has_value() ? "yes" : "no");
+                }
+                std::cerr << std::endl;
+            }
             std::string key = (args.size() > 1 && args[1].type == DalvikType::STRING_REF) ? args[1].string_val : "";
             int32_t def = (args.size() > 2 && args[2].type == DalvikType::INT32) ? args[2].int_val : 0;
             if (prefs_obj_id && heap_.has_object(prefs_obj_id)) {
