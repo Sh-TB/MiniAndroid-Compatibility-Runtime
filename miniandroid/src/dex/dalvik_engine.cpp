@@ -19748,6 +19748,32 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             return true;
         }
     }
+    // ────────────────────────────────────────────────────────────────────
+    // S89 F-NEW-188 — androidx FragmentManager singleton identity law.
+    // AOSP androidx.fragment.app.FragmentActivity.onCreate builds
+    //   mFragments = FragmentController.createController(new HostCallbacks())
+    // and getSupportFragmentManager() delegates to mFragments. The engine
+    // constructs FragmentActivity via the shadow without the HostCallbacks
+    // chain → FragmentController's DEX body reads a null host →
+    //   NPE "FragmentHostCallback.getSupportFragmentManager on a null
+    //   object reference" at FragmentController.getSupportFragmentManager
+    // (S89 evidence: red.drugi.snakes 0.2.0 APP BOUNDARY; the fragment
+    // family spans 47/225 corpus titles per the S89 frequency table).
+    // LAW (identity with the framework F-141c FragmentManager singleton):
+    // getSupportFragmentManager / FragmentController.getSupport* answer
+    // ONE androidx FragmentManager singleton per runtime — the same object
+    // on every access path, never null for a live activity.
+    // ────────────────────────────────────────────────────────────────────
+    if ((class_name == "Landroidx/fragment/app/FragmentController;" &&
+         method == "getSupportFragmentManager") ||
+        (class_name.find("FragmentActivity") != std::string::npos &&
+         method == "getSupportFragmentManager")) {
+        DalvikValue sfm = get_or_create_singleton(
+            "Landroidx/fragment/app/FragmentManager;");
+        result = sfm;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
     if (class_name == "Landroid/content/res/Resources;" &&
         method == "getIdentifier" && args.size() >= 3 &&
         args[1].type == DalvikType::STRING_REF) {
