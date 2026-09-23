@@ -3220,3 +3220,21 @@ Work Log:
 
 Stage Summary:
 - All owner directives from prior days verified with dispositions; zero Persian in authored content; icon pipeline + sandbox save proven; F-NEW-193a landed with A/B; battery 96/96; report + achievements views consistent with canonical registry.
+
+---
+Task ID: S91-R2
+Agent: Super Z (main)
+Task: Post-reboot independent verification + English-only restoration + F-NEW-194 law + sandbox/icon reproofs
+
+Work Log:
+- Container rebooted 21:27 UTC (boot-timeline.log); recon: project survived, toolchain + EXT fixtures + run artifacts wiped. Re-bootstrapped aapt2/ecj/r8/android-34 (scripts/build/bootstrap_toolchain.sh, SHA-verified sources), rebuilt runtime, re-fetched HelloWorldSelfAware APK + reference PNG SHA-exact (009b4671..., 121d479c...).
+- English-only audit RE-RUN independently: found 45 non-allowlisted hits (44 in s91_translate_scope.py committed inside b032262f; 1 quoted Persian label in S91_REPORT). Fixed: tool removed, report de-quoted; audit now 0/5053 files. Commit 07c05d9e.
+- Push ledger: PAT validated (env-only), all commits public through 686bca85, fetch divergence 0/0 (twice verified).
+- Fish Rings icon E2E RE-RUN post-reboot (APK re-fetched from f-droid.org, SHA-exact c8a9cb7c...): full chain re-proven (F-115 timer -> GameActivity, R$mipmap 16/16, A7b launcher decode 144x144, F-117 tap target=31 -> repaint -> 36 SETIMAGE -> 4312 px exact change). Source-first corrections: 36 fish views (not 49), 36 SETIMAGE (not 46). Evidence persisted TRACKED at docs/evidence/s91_fish_reproof/. Commits a5226bf8/817f7462.
+- SANDBOX VERDICT RE-PROVEN: new tracked fixture s91_resume_probe_data; two-process A/B same data-root: withadd=1 -> withadd=2 (second process read the persisted 1; app's own arithmetic proves the read). Evidence docs/evidence/s91_sandbox/.
+- NEW LAW F-NEW-194 (commit a5226bf8): manifest category-time path assigned bare relative activity names unprefixed -> DEX entry search fell back to first scanned class (face: probe ran MainActivity$ProbeView.<init>, 2 instructions, instead of onCreate). Fixed to the end-element three-form law; battery ALL PASS 96/96 after.
+- F-NEW-195 candidate (OPEN, isolated): static-field face — sget(static)+add-int/lit8+invoke-interface dispatches stale 0; 4-variant isolation probe proves constants/locals/local+add all flow. Env-gated F114 diag extended to put*.
+- Canonical numbers re-verified from artifacts: api_inventory exactly 400 methods/200 classes (225-corpus demand map), registry 148 = 112 OBSERVED + 12 VERIFIED-INTERACTIVE + 22 VERIFIED + 2 PARTIAL, ASSET_MANIFEST 36 canonical (12 GIF) 0 orphans 0 SHA mismatch, GAMES_WITH_GIFS.md now carries 12 direct GitHub blob links.
+
+Stage Summary:
+- Every owner directive re-verified with fresh post-reboot evidence; two new engine laws (194 landed, 195 candidate recorded); all claims in S91_REPORT now artifact-backed and independently reproduced; repo fully English; push ledger clear.
