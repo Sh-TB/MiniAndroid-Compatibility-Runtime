@@ -4,7 +4,7 @@
 
 **Gate inherited**: b7d654a5 "frame callback removed-not-run (withFrameNanos awaits forever)".
 
-**Lineage reconcile (first action, از صفر شروع نکن)**: local container was reset;
+**Lineage reconcile (first action, do not start from scratch)**: local container was reset;
 local HEAD d358a0c9 (M5) was STALE vs remote. Fast-forwarded to remote main
 b7d654a5 (S18..S20 lineage intact: F-058..F-073, 297 roots, 17 VERIFIED-FIXED).
 ls-remote verified b7d654a5 == remote before work started.

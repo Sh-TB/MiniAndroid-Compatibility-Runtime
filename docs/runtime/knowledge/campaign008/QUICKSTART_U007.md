@@ -39,7 +39,7 @@ Mock is ONLY at the network boundary; all logic is real interpreted DEX.
 
 ```bash
 ./build/u007_font_proof run/fontproof
-open run/fontproof/proof.png     # «سلام دنیا» «Hello دنیا» «۱۲۳۴۵» Hello World
+open run/fontproof/proof.png     # Persian "Hello World" / "Hello world" mixed / "12345" Persian digits / Hello World
 ```
 
 ## 4. Audio state machine (PLAYBACK_COMPLETED fix)

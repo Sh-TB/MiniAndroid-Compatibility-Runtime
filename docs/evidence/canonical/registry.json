@@ -1382,7 +1382,7 @@
    "first_divergence": "none recorded in S83 session"
   },
   {
-   "title": "TicTacToe Deluxe (\u062f\u0648\u0632)",
+   "title": "TicTacToe Deluxe",
    "package": "com.miniandroid.tictactoedeluxe",
    "type": "game",
    "status": "VERIFIED-INTERACTIVE",
@@ -3826,7 +3826,7 @@
    "first_divergence": "ImageLoader.<init> pc=310 File.isDirectory null"
   },
   {
-   "title": "MiniCraft (\u062e\u0627\u0646\u0647 \u0633\u0627\u0632\u06cc)",
+   "title": "MiniCraft (House Builder)",
    "package": "com.miniandroid.minicraft",
    "type": "game",
    "status": "VERIFIED-INTERACTIVE",
@@ -3845,7 +3845,7 @@
    "source": "in-house (games/minicraft)",
    "upstream": "in-house (games/minicraft) \u2014 companion to Snake Deluxe / Mini Tetris / 2048 / TicTacToe Deluxe",
    "root_cause": "none \u2014 built on the proven in-house pattern (static state law + real Canvas.onDraw + button clicks); renders first try at current HEAD with the S86 engine laws",
-   "notes": "S86 user-requested house-building game (\u062e\u0627\u0646\u0647 \u0633\u0627\u0632\u06cc). 2D block sandbox: LCG terrain (grass/dirt/stone), build cursor walked with the direction pad, BRICK cycles material (brick/plank/roof/glass/door), PLACE/DIG edit the world, DEMO auto-builds a brick cottage (gabled roof + timber ring + glass window + door). Canonical GIF: 16 frames \u2014 terrain, 5 real placements, material cycle, DEMO house build, 2 digs; stats strip mutates (Blocks/Dug).",
+   "notes": "S86 user-requested house-building game . 2D block sandbox: LCG terrain (grass/dirt/stone), build cursor walked with the direction pad, BRICK cycles material (brick/plank/roof/glass/door), PLACE/DIG edit the world, DEMO auto-builds a brick cottage (gabled roof + timber ring + glass window + door). Canonical GIF: 16 frames \u2014 terrain, 5 real placements, material cycle, DEMO house build, 2 digs; stats strip mutates (Blocks/Dug).",
    "proven": "LOADED/LAUNCHED/RENDERED/INTERACTED/STATE_CHANGED/SCREENSHOT_CAPTURED",
    "remaining": "freeform multi-story building + world save/restore",
    "last_success_stage": "canonical GIF @S86",

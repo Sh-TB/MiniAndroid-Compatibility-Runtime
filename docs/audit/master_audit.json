@@ -4630,7 +4630,7 @@
   {
    "id": "REQ-HIST-003",
    "source": "worklog.md:L84",
-   "requirement": "[S40] Multi-front attack on full execution of Dooz v23 + games (user: \"نه یک حمله چندین حمله متفاوت\" — not one attack, several different attacks). FRONT-A (dooz23 composition chain) carried it: 3 roots root-caused+FIXED, first clean SUCCESS run ever.",
+   "requirement": "[S40] Multi-front attack on full execution of Dooz v23 + games (user: \"not one attack, several different attacks\"). FRONT-A (dooz23 composition chain) carried it: 3 roots root-caused+FIXED, first clean SUCCESS run ever.",
    "category": "HISTORICAL-REQUEST",
    "status": "OBSERVED",
    "implementation": [],

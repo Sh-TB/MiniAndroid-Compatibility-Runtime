@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """s85_rescue.py — S85: complete the incomplete titles (user mandate:
-"اونای هم که ناقص موندن رو کامل بکن").
+"complete the ones that remained incomplete").
 
 Re-runs at CURRENT engine (S83 engine laws + F-NEW-160 fixed):
   * org.lufebe16.pysolfc   — BLOCKED pre-F-NEW-160 (CNFE Build bridge);

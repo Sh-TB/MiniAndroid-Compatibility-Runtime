@@ -313,7 +313,7 @@ L0 recognized → L1 manifest → L2 DEX → L3 lifecycle → L4 UI machinery �
 * **Remaining:** graphics completeness beyond L3
 * **Notes:** S83 real-screenshot campaign evidence (games__g2048_v1.0_vc1__L2_GRAPHICALLY_INCOMPLETE.jpg)
 
-### MiniCraft (خانه سازی)
+### MiniCraft (House Builder)
 
 * **Package / identity:** `com.miniandroid.minicraft` · type: game · version: 1.0
 * **Source:** in-house (games/minicraft) — companion to Snake Deluxe / Mini Tetris / 2048 / TicTacToe Deluxe
@@ -324,7 +324,7 @@ L0 recognized → L1 manifest → L2 DEX → L3 lifecycle → L4 UI machinery �
 * **Root cause:** none — built on the proven in-house pattern (static state law + real Canvas.onDraw + button clicks); renders first try at current HEAD with the S86 engine laws · issue: —
 * **Proven exactly:** LOADED/LAUNCHED/RENDERED/INTERACTED/STATE_CHANGED/SCREENSHOT_CAPTURED
 * **Remaining:** freeform multi-story building + world save/restore
-* **Notes:** S86 user-requested house-building game (خانه سازی). 2D block sandbox: LCG terrain (grass/dirt/stone), build cursor walked with the direction pad, BRICK cycles material (brick/plank/roof/glass/door), PLACE/DIG edit the world, DEMO auto-builds a brick cottage (gabled roof + timber ring + glass window + door). Canonical GIF: 16 frames — terrain, 5 real placements, material cycle, DEMO house build, 2 digs; stats strip mutates (Blocks/Dug).
+* **Notes:** S86 user-requested house-building game. 2D block sandbox: LCG terrain (grass/dirt/stone), build cursor walked with the direction pad, BRICK cycles material (brick/plank/roof/glass/door), PLACE/DIG edit the world, DEMO auto-builds a brick cottage (gabled roof + timber ring + glass window + door). Canonical GIF: 16 frames — terrain, 5 real placements, material cycle, DEMO house build, 2 digs; stats strip mutates (Blocks/Dug).
 
 ### Snake Deluxe
 
@@ -352,7 +352,7 @@ L0 recognized → L1 manifest → L2 DEX → L3 lifecycle → L4 UI machinery �
 * **Remaining:** graphics completeness beyond L3
 * **Notes:** S83 real-screenshot campaign evidence (games__tetris_v1.0_vc1__L3_STRUCT_CANDIDATE.jpg)
 
-### TicTacToe Deluxe (دوز)
+### TicTacToe Deluxe
 
 * **Package / identity:** `com.miniandroid.tictactoedeluxe` · type: game · version: —
 * **Source:** in-house (games/tictactoe-deluxe)

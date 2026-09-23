@@ -1,7 +1,7 @@
 # DOC 114 — EXP-114: Tic-Tac-Toe with REAL 3D Software Rendering
 
 Campaign: UNIFIED_005 · Date: 2026-08-28 · Commit: d6b4020
-Owner priority: «یدونه بازی که حداقل 3D کمی داشته باشه لود کنی»
+Owner priority: "load a game that has at least a bit of 3D"
 
 ## 1. Claim (evidence-grade)
 
@@ -56,6 +56,6 @@ detected winning triple, and the win cells are rendered RAISED and brighter.
 
 - 3x3 board, no textures, no GPU — software rasterizer only (that is the point:
   the runtime's own renderer does the 3D).
-- "3D کمی" satisfied by true perspective geometry, NOT by skew/scale tricks.
+- "a bit of 3D" satisfied by true perspective geometry, NOT by skew/scale tricks.
 - The O imperfection is a deliberate, disclosed seed choice for decisive
   graphics; the minimax itself is standard and X's play is perfect.

@@ -1,38 +1,38 @@
 # WS-C3 PRIMARY TRANSFER
 
-**به:** Primary Coder · **از:** WS-C3 (Unified Coder) · **تاریخ:** 2026-08-27
+**To:** Primary Coder · **From:** WS-C3 (Unified Coder) · **Date:** 2026-08-27
 
-## T1. UC-CM-001 را merge کنید (آماده است)
-- commit `86bd646` / patch فایل ضمیمه. صفر رگرسیون روی تلگرام 12.10.1 (3/3 SHA).
-- F012 را می‌بندد؛ مقادیر STUBBED type-aware می‌شوند.
+## T1. Merge UC-CM-001 (ready)
+- commit `86bd646` / attached patch file. Zero regression on Telegram 12.10.1 (3/3 SHA).
+- Closes F012; STUBBED values become type-aware.
 - CONFIDENCE: HIGH · RISK: LOW · EVIDENCE: `SOURCE_CHANGES.md`
 
-## T2. Uri را پیاده‌سازی کنید (بزرگ‌ترین شکاف اندازه‌گیری‌شده)
-- `Landroid/net/Uri` **هیچ handler ای ندارد** (grep کل src = 0) در حالی که
-  charter آن را 24/24 اثبات‌شده فرض می‌کرد (احتمالاً تست‌های Python بوده).
-- ACTION: bridge handler برای parse/Builder/scheme/authority/path/
-  queryParameter/getQueryParameter/normalizeScheme + object model ساده.
-- منبع مرجع: AOSP `Uri.java` / libcore. EVIDENCE: WS-C3_KNOWLEDGE §UC3-001
-- CONFIDENCE: HIGH (gap قطعی) · BENEFIT: deep-link/content URI ها در corpus
+## T2. Implement Uri (the biggest measured gap)
+- `Landroid/net/Uri` **has no handler at all** (grep over the whole src = 0) while the
+  charter assumed it 24/24 proven (probably it was the Python tests).
+- ACTION: bridge handler for parse/Builder/scheme/authority/path/
+  queryParameter/getQueryParameter/normalizeScheme + a simple object model.
+- Reference source: AOSP `Uri.java` / libcore. EVIDENCE: WS-C3_KNOWLEDGE §UC3-001
+- CONFIDENCE: HIGH (a definite gap) · BENEFIT: deep-link/content URIs in the corpus
 
-## T3. SystemClock را اضافه کنید (F004 — راحت و پرتکرار)
-- `uptimeMillis/elapsedRealtime*` → از `clock_gettime(CLOCK_MONOTONIC/BOOTTIME)`.
-  deterministic-clock switch را هم اضافه کنید (برای reproducibility).
+## T3. Add SystemClock (F004 — easy and frequent)
+- `uptimeMillis/elapsedRealtime*` → from `clock_gettime(CLOCK_MONOTONIC/BOOTTIME)`.
+  Also add a deterministic-clock switch (for reproducibility).
 - CONFIDENCE: HIGH · LOC: ~40
 
-## T4. Components حداقلی (F010): BroadcastReceiver فقط dispatch داخلی
-- هدف اول: manifest-declared receivers با intent filter های explicit.
-  census Google را جدا نگه دارید (§31 census-only).
+## T4. Minimal components (F010): BroadcastReceiver with internal dispatch only
+- First goal: manifest-declared receivers with explicit intent filters.
+  Keep the Google census separate (§31 census-only).
 
 ## T5. F015 (superclass-bridge retry)
-- بعد از UC-CM-001: در fail مسیر `try_recursive_invoke`، قبل از bridge،
-  زنجیره superclass را امتحان کنید. کوچک و generic.
+- After UC-CM-001: on `try_recursive_invoke` path failure, before the bridge,
+  try the superclass chain. Small and generic.
 
-## T6. Corpus registry واقعی را در repo بریزید
-- ادعای 100+ قابل راستی‌آزمایی از clone نیست (فقط چند manifest entry).
-  `WS-C3_CORPUS.md` الگوی فیلدها را دارد.
+## T6. Put the real corpus registry in the repo
+- The 100+ claim is not verifiable from the clone (only a few manifest entries).
+  `WS-C3_CORPUS.md` has the field template.
 
 ## DO NOT
-- F012-AMPLIFIER (commit ab48fbc از branch ادغام‌نشده) را blindly نیاورید —
-  UC-CM-001 هدفش را با ریسک کمتر برآورده کرد.
-- SQLite/Google support وسیع را «فقط چون هست» پیاده نکنید (§31).
+- Do not blindly take F012-AMPLIFIER (commit ab48fbc from an unmerged branch) —
+  UC-CM-001 fulfilled its goal with less risk.
+- Do not implement wide SQLite/Google support "just because it's there" (§31).

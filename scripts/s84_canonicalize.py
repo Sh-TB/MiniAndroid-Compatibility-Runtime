@@ -227,7 +227,7 @@ S83_MAP = {
         "2048", "com.miniandroid.g2048", "game",
         "in-house (games/2048)", "S80/S83"),
     "games__tictactoe_deluxe_v1.0_vc1__L3_STRUCT_CANDIDATE.jpg": (
-        "TicTacToe Deluxe (دوز)", "com.miniandroid.tictactoedeluxe",
+        "TicTacToe Deluxe", "com.miniandroid.tictactoedeluxe",
         "game", "in-house (games/tictactoe-deluxe)", "S83 NEW"),
     "games__dooz__L2_GRAPHICALLY_INCOMPLETE.jpg": (
         "Dooz (tic-tac-toe)", "io.github.yamin8000.dooz", "game",

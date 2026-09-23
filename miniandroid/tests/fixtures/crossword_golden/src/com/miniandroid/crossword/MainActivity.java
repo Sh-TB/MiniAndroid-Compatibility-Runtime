@@ -1,5 +1,5 @@
 /*
- * MiniAndroid CROSSWORD-GOLDEN fixture — S51 finalization "بازی جدول".
+ * MiniAndroid CROSSWORD-GOLDEN fixture — S51 finalization "board game".
  *
  * A real fill-in crossword: 5x5 grid, three interlocked words sharing
  * letters — ACROSS BEAM (row 2), DOWN MAP (col 4, rows 2-4, shares the M),
