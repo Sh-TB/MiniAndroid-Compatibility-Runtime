@@ -1,0 +1,33 @@
+{
+ "scanned": 225,
+ "top_classes_corpus": [],
+ "lib_families": {
+  "webkit": 83,
+  "lifecycle": 73,
+  "appcompat": 52,
+  "kotlin": 51,
+  "sqlite": 50,
+  "fragment": 47,
+  "coroutines": 37,
+  "kotlin-reflection": 32,
+  "recyclerview": 29,
+  "material": 29,
+  "constraint": 29,
+  "viewpager": 27,
+  "compose": 21,
+  "room": 15,
+  "glsl-gles": 12,
+  "surfaceview": 10,
+  "okhttp": 10,
+  "desugar-j$": 7,
+  "gson": 7,
+  "datastore": 6,
+  "libgdx": 5,
+  "workmanager": 5,
+  "multidex": 3,
+  "coil": 2,
+  "jsoup": 2,
+  "glide": 1
+ },
+ "class_family_counts": {}
+}
