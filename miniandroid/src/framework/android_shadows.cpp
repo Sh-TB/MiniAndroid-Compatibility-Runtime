@@ -546,6 +546,15 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                           << " obj_entries=" << state->map_entries.size()
                           << " caller=" << ctx.class_name << std::endl;
             }
+            // S90 DIAG (F-NEW-162): trace lifecycle-walk map gets
+            if (!key.empty() && key[0] == 'L' &&
+                key.find("lifecycle") != std::string::npos) {
+                std::cerr << "[S90-LIFECYCLE-GET] map=" << obj_id
+                          << " key=\"" << key << "\""
+                          << " obj_entries=" << state->map_entries.size()
+                          << " caller=" << ctx.class_name << "."
+                          << ctx.method << std::endl;
+            }
             // Check string entries first.
             auto sit = state->map_string_entries.find(key);
             if (sit != state->map_string_entries.end()) {
