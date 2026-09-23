@@ -151,7 +151,23 @@ struct MethodInfo {
     std::string return_type;
     std::vector<std::string> parameters;
     std::string defining_class;   // Class that defines this method
-    
+
+    // F-NEW-191 (S90): global dex method index (from class_data
+    // method_idx_diff accumulation) — the join key for the
+    // annotations_directory_item method_annotations table.
+    uint32_t method_idx = 0;
+
+    // F-NEW-191 (S90): runtime-visible METHOD annotations, parsed from
+    // the annotations_directory_item method_annotations[] table (the
+    // companion of the F-087 class_annotations law). Shape identical to
+    // ClassInfo::class_annotations: annotation type descriptor → ordered
+    // (element name, decoded element value) pairs. Consumers:
+    // Method.getAnnotation / isAnnotationPresent — the androidx
+    // Lifecycling/ClassesInfoCache @OnLifecycleEvent walk.
+    std::vector<std::pair<std::string,
+                          std::vector<std::pair<std::string, std::string>>>>
+        method_annotations;
+
     bool is_constructor = false;
     bool is_static = false;
     bool is_native = false;
