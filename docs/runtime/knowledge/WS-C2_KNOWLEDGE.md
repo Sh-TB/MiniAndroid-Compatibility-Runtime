@@ -4,131 +4,131 @@
 **Tested HEAD:** `bbe0ce3` (baseline) → `86bd646` (UC-CM-001, no graphics impact)
 **Real APK:** Telegram 12.10.1 (SHA256 `f5e11927…`, versionCode 70389, 5 DEX)
 
-این سند یافته‌های WS-C2 در این کمپین است. یافته‌های قبلی Coder 2/Primary در
-`CODER2_KNOWLEDGE.md` و `CODER_MAIN_KNOWLEDGE.md` (CM-018..CM-027) باقی می‌مانند؛
-اینجا فقط reconciliation و یافته‌های جدید.
+This document records the WS-C2 findings of this campaign. The previous Coder 2/Primary findings in
+`CODER2_KNOWLEDGE.md` and `CODER_MAIN_KNOWLEDGE.md` (CM-018..CM-027) remain valid;
+this file covers only reconciliation and new findings.
 
 ---
 
 ## UC2-001: Forward-version render — Telegram 12.10.1 SMS-family screen (REAL APX EVIDENCE)
 
-### کلاسیفیکاسیون: PROVEN (new evidence)
+### Classification: PROVEN (new evidence)
 
-- Runtime بدون هیچ تغییری، نسخه‌ی جدید تلگرام (12.10.1) را اجرا کرد:
-  - 12,544 کلاس از 5 DEX بارگذاری شد
-  - زنجیره click واقعی (`phase_b_click` ×4) اجرا شد
-  - SMS-family screen رندر شد: **41,233 non-white pixel** (1080×1920)
-  - **3/3 اجرای مجدد → SHA یکسان** `06fb40da16b1f473…` (deterministic)
-  - 0 crash، 0 خطا در crash.log
-- شواهد: `run/uc_v12_run{1,2,3}/screenshot.png` + `run/uc_v12_first/*`
-- **اهمیت:** تمام پایگاه دانش (resource mapping ها، D8-shrunk names مثل `res/cs3.json`)
-  روی 10.14.5 ساخته شده بود؛ صفحه خانواده-SMS در نسخه جدید هم ساختار مشابه
-  پیدا کرد و رندر شد → معماری runtime به نسخه APK وابسته نیست.
+- With no changes whatsoever, the runtime executed the new Telegram version (12.10.1):
+  - 12,544 classes loaded from the 5 DEX files
+  - Real click chain (`phase_b_click` ×4) executed
+  - SMS-family screen rendered: **41,233 non-white pixels** (1080×1920)
+  - **3/3 re-runs → identical SHA** `06fb40da16b1f473…` (deterministic)
+  - 0 crashes, 0 errors in crash.log
+- Evidence: `run/uc_v12_run{1,2,3}/screenshot.png` + `run/uc_v12_first/*`
+- **Significance:** the entire knowledge base (resource mappings, D8-shrunk names such as `res/cs3.json`)
+  had been built against 10.14.5; the SMS-family screen in the new version also matched a similar
+  structure and rendered → the runtime architecture is not dependent on the APK version.
 
-### یافته فرعی UC2-001a: resource VALUES در نسخه جدید resolve نمی‌شوند (OPEN)
-- متن‌های صفحه به‌جای مقدار رشته واقعی، **نام فیلد R** هستند:
+### Sub-finding UC2-001a: resource VALUES do not resolve in the new version (OPEN)
+- The on-screen texts show the **R field names** instead of the actual string values:
   `SMSWordTitle`, `SMSWordError`, `SMSPhraseTitle`, `WrongCode`, …
-- علت: mapping `resource_values.json` فقط برای 10.14.5 تولید شده؛ در 12.10.1
-  مقادیر `R$string` عوض شده‌اند (D8 ordinals جدید: 987201…, resid=3 برای بعضی).
-- رگرسیون مرتبط: SFS — متن «موجود» است ولی «مقدار واقعی کاربر-نمایان» نیست.
-  **این را باید به `ANDROID_SILENT_FALSE_SUCCESS_MAP.md` اضافه کرد**
-  (و اضافه شد — SFS-010 در این کمپین).
-- رفع پیشنهادی generic: تولید خودکار resource map از خود APK
-  (ARSC → string pool per config) به‌جای JSON دستی per-version. مسیر موجود
-  `resource_parser.cpp` (modern ARSC، C3-F022a/b/c) همین را می‌تواند.
-- Confidence: HIGH (trace مستقیم RES-INTERCEPT + متن رندرشده)
+- Cause: the `resource_values.json` mapping was generated only for 10.14.5; in 12.10.1
+  the `R$string` values have changed (new D8 ordinals: 987201…, resid=3 for some).
+- Related regression: SFS — the text "exists" but is not the "actual user-visible value".
+  **This must be added to `ANDROID_SILENT_FALSE_SUCCESS_MAP.md`**
+  (and it was added — SFS-010 in this campaign).
+- Generic proposed fix: generate the resource map automatically from the APK itself
+  (ARSC → string pool per config) instead of a hand-made per-version JSON. The existing
+  `resource_parser.cpp` path (modern ARSC, C3-F022a/b/c) can already do this.
+- Confidence: HIGH (direct RES-INTERCEPT trace + rendered text)
 
-### یافته فرعی UC2-001b: 7 عدد RLottie pending view در v12 شناسایی شد
-- trace: `[EXP098-RLOTTIE-PENDING] view=2393 … resid=917654 target=28x28` (و ۶ مورد دیگر)
-- یعنی wiring عمومی CM-027 روی نسخه جدید هم hook می‌شود (بدون hardcode).
-- رندر خود Lottie برای v12 هنوز verify نشد (نیاز به R$raw mapping جدید) — OPEN.
+### Sub-finding UC2-001b: 7 RLottie pending views identified in v12
+- trace: `[EXP098-RLOTTIE-PENDING] view=2393 … resid=917654 target=28x28` (and 6 more)
+- This means the general CM-027 wiring also hooks on the new version (no hardcoding).
+- The Lottie render itself for v12 is not yet verified (needs a new R$raw mapping) — OPEN.
 
 ---
 
-## UC2-002: تایپوگرافی — پایپ‌لاین کامل متن اثبات شد (NEW PROOF)
+## UC2-002: Typography — full text pipeline proven (NEW PROOF)
 
-### کلاسیفیکاسیون: PROVEN (POC خارج از runtime، کتابخانه‌های مرجع)
+### Classification: PROVEN (POC outside the runtime, reference libraries)
 
-پایپ‌لاین الزامی §6: `Unicode → bidi → shaping → glyph selection → metrics →
-rasterization → layout → framebuffer` — به‌صورت real implementation اجرا و
-اثبات شد (کد: `scripts/wsc2_text_pipeline.cpp` در پک تحویلی):
+The mandatory §6 pipeline: `Unicode → bidi → shaping → glyph selection → metrics →
+rasterization → layout → framebuffer` — executed and proven as a real implementation
+(code: `scripts/wsc2_text_pipeline.cpp` in the delivery pack):
 
-| مرحله | کتابخانه مرجع | نسخه sandbox | نتیجه |
-|-------|----------------|---------------|--------|
+| Stage | Reference library | Sandbox version | Result |
+|-------|-------------------|-----------------|--------|
 | bidi | FriBidi | 1.0.16 | ✅ visual reorder + first-strong |
-| shaping | HarfBuzz | 10.2.0 | ✅ اتصال حروف عربی/فارسی صحیح |
-| glyph/metrics | FreeType | 2.13.3 | ✅ advance/bbox واقعی |
+| shaping | HarfBuzz | 10.2.0 | ✅ correct Arabic/Persian letter joining |
+| glyph/metrics | FreeType | 2.13.3 | ✅ real advance/bbox |
 | raster | FreeType AA | — | ✅ anti-aliased |
 | layout | — | — | ✅ RTL right-align / LTR left-align |
 | framebuffer | PPM→PNG | — | ✅ 27,875 non-white px |
 
-### نمونه‌های تست (4/4 OK)
-1. `کد تأیید تلگرام ۱۲۳۴۵ — Telegram code 67890` → RTL، اعداد فارسی درست، Latin embed درست
-2. `ما یک کد به شماره شما فرستادیم +98 912 345 6789` → RTL صحیح
-3. `Enter code` → LTR صحیح
-4. `کد را دریافت نکردید؟ Didn't get the code?` → RTL صحیح با یک artifact مرزی
+### Test samples (4/4 OK)
+1. `Telegram verification code 12345 — Telegram code 67890` → RTL, Persian digits correct, Latin embed correct
+2. `We sent a code to your number +98 912 345 6789` → correct RTL
+3. `Enter code` → correct LTR
+4. `Didn't get the code? Didn't get the code?` → correct RTL with one boundary artifact
 
-### یافته کلیدی UC2-002a: تشخیص جهت پایه (base direction) باید first-strong باشد
-- اجرای اول با base=LTR اجباری → **خرابی کامل ترتیب** در خطوط فارسی‌محور
-  (Latin معکوس شد: `?edoc eht teg t'ndiD`)
-- با heuristic **first-strong** (مطابق `TextDirectionHeuristics.FIRSTSTRONG`
-  اندروید: اولین کاراکتر قوی R/AL → RTL، L → LTR) → همه ۴ نمونه درست.
-- **نسخه فعلی runtime هیچ bidi/shape ای ندارد** → هر متن فارسی/عربی در
-  MiniAndroid الان جدا-حرف و چپ‌به‌راست رندر می‌شود.
-- Confidence: HIGH (هر دو حالت با تصویر اثبات شده)
+### Key finding UC2-002a: base direction detection must be first-strong
+- First run with forced base=LTR → **complete ordering failure** in Persian-centric lines
+  (the Latin got reversed: `?edoc eht teg t'ndiD`)
+- With the **first-strong** heuristic (matching Android's `TextDirectionHeuristics.FIRSTSTRONG`:
+  first strong character R/AL → RTL, L → LTR) → all 4 samples correct.
+- **The current runtime version has no bidi/shaping at all** → any Persian/Arabic text in
+  MiniAndroid currently renders letter-separated and left-to-right.
+- Confidence: HIGH (both cases proven with images)
 
-### محدودیت ثبت‌شده (نه پنهان)
-- روش «reorder-then-shape» (FriBidi بعد HarfBuzz روی کل خط visual) برای
-  scripts اتصال‌پذیر ساده جواب می‌دهد ولی neutral های مرزی (مثل `؟` بین
-  RTL و Latin) ممکن است به run اشتباه بچسبند (در نمونه ۴ دیده شد).
-- راه درست production: shape per bidi-run در ترتیب منطقی
-  (AOSP minikin: `Layout::splitByBidi` → hb_shape هر run → reorder فقط placement).
-- فونت DejaVu فقط پوشش پایه عربی دارد؛ برای فارسی واقعی Vazirmatn/Noto
-  Naskh لازم است (font fallback chain → FontBackend).
+### Recorded limitation (not hidden)
+- The "reorder-then-shape" method (FriBidi then HarfBuzz on the whole visual line) works for
+  simple joining scripts, but boundary neutrals (such as the Arabic question mark between
+  RTL and Latin) may attach to the wrong run (seen in sample 4).
+- The correct production approach: shape per bidi-run in logical order
+  (AOSP minikin: `Layout::splitByBidi` → hb_shape per run → reorder placement only).
+- The DejaVu font has only basic Arabic coverage; for real Persian, Vazirmatn/Noto
+  Naskh is required (font fallback chain → FontBackend).
 
-### پیوند به ابزار (WS-C4)
-- هر سه کتابخانه (FriBidi/HarfBuzz/FreeType) در sandbox حاضرند و لایسنس‌ها
-  سازگار (LGPL/Old-MIT/FTL) — ماتریس در `WS-C4_TOOL_MATRIX.md`.
-
----
-
-## UC2-003: وضعیت فونت فعلی runtime (RECONCILIATION)
-
-- BitmapFont (8px advance یکنواخت، 95 ASCII) همچنان تنها backend داخل runtime است.
-- یافته FREETYPE_VS_BITMAPFONT.md قبلی تایید شد: زیربرآورد advance حدود 36٪
-  → مشکل wrap/clip واقعی؛ IoU با FreeType فقط 13.1٪.
-- **دو مسیر ارتقا (اولویت‌بندی WS-C2):**
-  1. حداقلی: `measure_text_accurate()` با FreeType فقط برای measure
-     (رندر BitmapFont بماند) — ریسک کم، بصری بهتر برای wrap.
-  2. کامل: FontBackend interface + backend فری‌تایپ با shaping HarfBuzz
-     و bidi FriBidi (UC2-002 اثباتش کرده) → فارسی/عربی واقعی.
-- از بازنویسی decoder های اثبات‌شده پرهیز شد (قانون §6).
+### Link to tooling (WS-C4)
+- All three libraries (FriBidi/HarfBuzz/FreeType) are present in the sandbox and the licenses
+  are compatible (LGPL/Old-MIT/FTL) — matrix in `WS-C4_TOOL_MATRIX.md`.
 
 ---
 
-## UC2-004: شواهد بصری v12 (VISUAL EVIDENCE per §14)
+## UC2-003: Current runtime font status (RECONCILIATION)
 
-- text overlap در بالای صفحه v12 دیده شد (عنوان‌ها روی هم) — احتمالاً
-  custom view (LoginActivityPhraseView) بدون measure/layout واقعی.
-  classified: OPEN (نیاز به trace EXP095-LAYOUT برای v12)
-- code-field row (۵ کادر) درست رندر شد؛ toolbar band درست.
-- screenshot SHA هر سه اجرا یکسان → پایدار.
-- فایل‌ها: `run/uc_v12_run1/screenshot.png` (1080×1920) + crop تحویلی.
+- BitmapFont (8px uniform advance, 95 ASCII) remains the only backend inside the runtime.
+- The earlier FREETYPE_VS_BITMAPFONT.md finding was confirmed: advance underestimation of about 36%
+  → real wrap/clip problem; IoU against FreeType only 13.1%.
+- **Two upgrade paths (WS-C2 prioritization):**
+  1. Minimal: `measure_text_accurate()` with FreeType for measuring only
+     (keep BitmapFont rendering) — low risk, better visuals for wrapping.
+  2. Full: FontBackend interface + FreeType backend with HarfBuzz shaping
+     and FriBidi bidi (UC2-002 has proven it) → real Persian/Arabic.
+- Rewriting proven decoders was avoided (§6 rule).
 
 ---
 
-## وضعیت STOP GATE (§22) — WS-C2
+## UC2-004: v12 visual evidence (VISUAL EVIDENCE per §14)
 
-| آیتم | وضعیت |
+- text overlap seen at the top of the v12 screen (titles stacked on each other) — probably a
+  custom view (LoginActivityPhraseView) without real measure/layout.
+  classified: OPEN (needs the EXP095-LAYOUT trace for v12)
+- code-field row (5 boxes) rendered correctly; toolbar band correct.
+- screenshot SHA identical across all three runs → stable.
+- Files: `run/uc_v12_run1/screenshot.png` (1080×1920) + delivered crop.
+
+---
+
+## STOP GATE status (§22) — WS-C2
+
+| Item | Status |
 |------|--------|
-| graphics backend analysis | PARTIAL (CM-024/027 قبلی + این کمپین) |
-| font pipeline | POC PROVEN (UC2-002)؛ داخل runtime هنوز BitmapFont |
-| FreeType | PROVEN (POC + مقایسه قبلی) |
-| HarfBuzz | PROVEN (POC اتصال فارسی) |
-| image pipeline | PROVEN قبلی (63/64) — دست‌نخورده، بدون رگرسیون |
-| animation pipeline | PROVEN قبلی (CM-026)؛ v12 pending شناسایی (UC2-001b) |
-| RLottie actual-screen proof | PROVEN قبلی (CM-027)؛ v12 render OPEN |
-| Telegram typography | PARTIAL (v12 field-names به‌جای strings — UC2-001a) |
-| non-Telegram graphics regressions | NOT RUN در این کمپین (APKهای corpus خارجی دانلود نشدند — ثبت طبق §18) |
-| malformed inputs | قبلاً 14/14 (CM-025) — تغییر مرتبطی نبود |
-| ASAN native | NOT RUN (تغییر فقط در مسیر value-return؛ ریسک overflow ندارد — کد بازبینی شد) |
+| graphics backend analysis | PARTIAL (previous CM-024/027 + this campaign) |
+| font pipeline | POC PROVEN (UC2-002); inside the runtime still BitmapFont |
+| FreeType | PROVEN (POC + previous comparison) |
+| HarfBuzz | PROVEN (POC Persian joining) |
+| image pipeline | previously PROVEN (63/64) — untouched, no regression |
+| animation pipeline | previously PROVEN (CM-026); v12 pending identified (UC2-001b) |
+| RLottie actual-screen proof | previously PROVEN (CM-027); v12 render OPEN |
+| Telegram typography | PARTIAL (v12 field-names instead of strings — UC2-001a) |
+| non-Telegram graphics regressions | NOT RUN in this campaign (external corpus APKs not downloaded — recorded per §18) |
+| malformed inputs | previously 14/14 (CM-025) — no related change |
+| ASAN native | NOT RUN (change only in the value-return path; no overflow risk — code reviewed) |

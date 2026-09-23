@@ -104,7 +104,7 @@ Registration of HELPER_SOURCE_LIST.md (mission rules 8–10, 19): five points �
   5) START_HERE.md — read-order pointer
 ```
 
-## 5. Helper List (لیست کمکی)
+## 5. Helper List
 
 ```text
 Total projects/entries: 66 (H-001..H-066) across all 60 mission categories

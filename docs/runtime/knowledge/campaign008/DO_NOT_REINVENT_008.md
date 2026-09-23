@@ -14,7 +14,7 @@ it, whether WE actually tested it (not just read about it), and the decision.
 | Compose runtime | **JetBrains Compose Multiplatform** | declarative UI on Skiko/Skia | source-reviewed | **REFERENCE ONLY (BLOCKED)** | Compose executes as compiled @Composable state machines + SlotTable; porting needs Composer+recomposer+Material3 draw — multi-month; precise blocker recorded |
 | GLES 3.x on CPU | **SwiftShader 694585a** | CPU Vulkan/GLES | **YES** — cloned + cmake configure SUCCESS; compile blocked (3GB RAM) | **ADOPT ON BIGGER HOST** | exact blocker: Reactor/LLVM TUs >3GB; build recipe recorded in GLES_INVESTIGATION_008.md |
 | GLES bridge alternative | **ANGLE** | GLES-on-Vulkan/desktop GL | source-reviewed | **REFERENCE** | pairs with SwiftShader (ANGLE+SwiftShader documented combo) |
-| bidi | **FriBidi 1.0.16** | UAX#9 embedding levels | already ACTIVE | **KEEP** | proven (سلام دنیا, mixed bidi) |
+| bidi | **FriBidi 1.0.16** | UAX#9 embedding levels | already ACTIVE | **KEEP** | proven (Persian "Hello World" sample, mixed bidi) |
 | shaping | **HarfBuzz 10.2.0** | OpenType shaping | already ACTIVE | **KEEP** | proven |
 | rasterization | **FreeType 2.13.3** | glyph outline rasterizer | already ACTIVE | **KEEP** | proven |
 | Lottie | **Samsung rlottie 43075538** | Lottie player | already ACTIVE | **KEEP** | proven on Telegram SMS screen |

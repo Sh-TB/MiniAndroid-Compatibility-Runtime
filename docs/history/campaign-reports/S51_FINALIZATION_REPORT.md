@@ -2,7 +2,7 @@
 
 **Date:** 2026-09-17 · **Final HEAD:** `25cb11bb` (main, 27 commits ahead of `origin/main` @ `7967c037`)
 **Mission anchor:** user brief "S51 FINALIZATION" + follow-up request to add simple
-programs/games (crossword «بازی جدول», word-prediction «پیش‌بینی کلمات», a very simple 2D
+programs/games (crossword, word-prediction, a very simple 2D
 ball game, an XP-style mine-finder). Status vocabulary: honest states only.
 
 ---

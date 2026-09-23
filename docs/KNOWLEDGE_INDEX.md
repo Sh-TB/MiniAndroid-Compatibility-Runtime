@@ -165,14 +165,14 @@ Snapshot: 745 tracked `.md` files — 441 KEEP (knowledge/process), 185 HISTORY 
 | `docs/research/FIND_REUSE_DEX_ART_AUDIT.md` | P2/P3 — DexFile + dexHunter RESEARCH AUDIT (FIND-REUSE-DEX / FIND-REUSE-ART) | DEX/Dalvik | KEEP |
 | `docs/research/aosp-runtime-study.md` | AOSP Runtime Study — framework/base, ART, dalvik, frameworks/native | DEX/Dalvik | KEEP |
 | `docs/research/dex-runtime-study.md` | DEX Runtime Study — Dalvik semantics across ART, DaliVM, dexterpreter, DroidSaw, WineDroid | DEX/Dalvik | KEEP |
-| `docs/runtime/knowledge/SOURCE_REFERENCE_INDEX_UPDATE.md` | SOURCE_REFERENCE_INDEX — به‌روزرسانی کمپین Unified (append-only) | DEX/Dalvik | KEEP (knowledge core) |
+| `docs/runtime/knowledge/SOURCE_REFERENCE_INDEX_UPDATE.md` | SOURCE_REFERENCE_INDEX — Unified campaign update (append-only) | DEX/Dalvik | KEEP (knowledge core) |
 | `docs/runtime/knowledge/campaign005/EXP-111_baksmali_auth_chain.md` | EXP-111 — Independent baksmali/dexlib2 verification of the SMS auth chain (Campaign 004) | DEX/Dalvik | KEEP (knowledge core) |
 | `docs/runtime/knowledge/campaign005/EXP-115_opcode_crosscheck.md` | EXP-115 — Opcode census cross-check: androguard vs dexlib2/baksmali (T15) | DEX/Dalvik | KEEP (knowledge core) |
 | `docs/runtime/upstream_reference_aput_aosp.md` | Upstream reference — AOSP ART aput semantics (UNIFIED_014 / DEX-APUT-BOUNDS) | DEX/Dalvik | KEEP |
 | `docs/runtime/knowledge/campaign008/DOOZ_PATH_008.md` | DOOZ PATH — UNIFIED_008 (charter §6/§7, Target B) | Dooz | KEEP (knowledge core) |
 | `docs/runtime/knowledge/campaign009/DOOZ_CONFIG_MATCHING_EVIDENCE_009.md` | DOOZ_CONFIG_MATCHING_EVIDENCE_009 — §6 + §10 evidence walkthrough | Dooz | KEEP (knowledge core) |
 | `docs/runtime/knowledge/campaign010/COMPOSE_DOOD_ANALYSIS_010.md` | COMPOSE_DOOD_ANALYSIS_010 — Dooz progression record (R14/R30) | Dooz | KEEP (knowledge core) |
-| `docs/runtime/knowledge/CROSS_WORKSTREAM_TRANSFERS.md` | CROSS-WORKSTREAM TRANSFERS — رکوردهای انتقال بین جریان‌ها (§10) | OpenJDK/desugar | KEEP (knowledge core) |
+| `docs/runtime/knowledge/CROSS_WORKSTREAM_TRANSFERS.md` | CROSS-WORKSTREAM TRANSFERS — cross-stream transfer records (§10) | OpenJDK/desugar | KEEP (knowledge core) |
 | `docs/upstream/INDEX.md` | UPSTREAM LAW INDEX — MiniAndroid | OpenJDK/desugar | KEEP |
 | `docs/runtime/knowledge/PAPARAZZI_STATUS.md` | PAPARAZZI / ROBORAZZI VISUAL ORACLE — STATUS (§23) | Paparazzi | KEEP (knowledge core) |
 | `docs/compatibility/RESOURCE_MATRIX.md` | RESOURCE MATRIX — parsed → resolved → consumed → rendered → pixel-verified | Resources/ARSC/AXML | KEEP |
@@ -279,14 +279,14 @@ Snapshot: 745 tracked `.md` files — 441 KEEP (knowledge/process), 185 HISTORY 
 | `docs/runtime/knowledge/OA_API_MAP.md` | Open-Source App API Map | runtime general / project infra | KEEP (knowledge core) |
 | `docs/runtime/knowledge/SOURCE_REFERENCE_INDEX.md` | Source Reference Index | runtime general / project infra | KEEP (knowledge core) |
 | `docs/runtime/knowledge/UNIFIED_CODER_MASTER_TRANSFER.md` | UNIFIED_CODER_MASTER_TRANSFER | runtime general / project infra | KEEP (knowledge core) |
-| `docs/runtime/knowledge/WS-C2_EVIDENCE.md` | WS-C2 EVIDENCE — فهرست شواهد کمپین (per §14) | runtime general / project infra | KEEP (knowledge core) |
+| `docs/runtime/knowledge/WS-C2_EVIDENCE.md` | WS-C2 EVIDENCE — campaign evidence list (per §14) | runtime general / project infra | KEEP (knowledge core) |
 | `docs/runtime/knowledge/WS-C2_KNOWLEDGE.md` | WS-C2 KNOWLEDGE — Graphics / Text / Image / Animation / Audio-Visual | runtime general / project infra | KEEP (knowledge core) |
 | `docs/runtime/knowledge/WS-C2_PRIMARY_TRANSFER.md` | WS-C2 PRIMARY TRANSFER | runtime general / project infra | KEEP (knowledge core) |
-| `docs/runtime/knowledge/WS-C3_CORPUS.md` | WS-C3 CORPUS — وضعیت Corpus در کمپین Unified | runtime general / project infra | KEEP (knowledge core) |
+| `docs/runtime/knowledge/WS-C3_CORPUS.md` | WS-C3 CORPUS — Corpus status in the Unified campaign | runtime general / project infra | KEEP (knowledge core) |
 | `docs/runtime/knowledge/WS-C3_PRIMARY_TRANSFER.md` | WS-C3 PRIMARY TRANSFER | runtime general / project infra | KEEP (knowledge core) |
 | `docs/runtime/knowledge/WS-C4_PRIMARY_TRANSFER.md` | WS-C4 PRIMARY TRANSFER | runtime general / project infra | KEEP (knowledge core) |
-| `docs/runtime/knowledge/WS-C4_TOOL_MATRIX.md` | WS-C4 TOOL MATRIX — ماتریس ابزارهای متن‌باز (ادغام تحقیق WS-C4-RESEARCH) | runtime general / project infra | KEEP (knowledge core) |
-| `docs/runtime/knowledge/WS-C4_TO_C2_C3.md` | WS-C4 → WS-C2 TRANSFER (یافته‌های ابزاری مرتبط با گرافیک/متن/انیمیشن) | runtime general / project infra | KEEP (knowledge core) |
+| `docs/runtime/knowledge/WS-C4_TOOL_MATRIX.md` | WS-C4 TOOL MATRIX — open-source tooling matrix (WS-C4-RESEARCH merged) | runtime general / project infra | KEEP (knowledge core) |
+| `docs/runtime/knowledge/WS-C4_TO_C2_C3.md` | WS-C4 → WS-C2 TRANSFER (tooling findings relevant to graphics/text/animation) | runtime general / project infra | KEEP (knowledge core) |
 | `docs/runtime/knowledge/WS-C5_PRIMARY_TRANSFER.md` | MINIANDROID EXTERNAL RUNTIME INDEX (WS-C5) | runtime general / project infra | KEEP (knowledge core) |
 | `docs/runtime/knowledge/campaign005/TASKS_UNIFIED_005.md` | TASKS_UNIFIED_005.md — MiniAndroid Unified Campaign 005 | runtime general / project infra | KEEP (knowledge core) |
 | `docs/runtime/knowledge/campaign005/UNIFIED_005_INDEX.md` | UNIFIED_005_INDEX.md | runtime general / project infra | KEEP (knowledge core) |

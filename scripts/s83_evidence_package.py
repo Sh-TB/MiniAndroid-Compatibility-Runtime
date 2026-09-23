@@ -3,7 +3,7 @@
 
 Law: JPG ≤100KB (S38 image law), SHA256SUMS manifest, honest naming
 (<apk>__L<level>_<levelname>.jpg). Gameplay stage captures included for
-TicTacToe Deluxe + Snake Deluxe (the user-mandated دوز/مار completion).
+TicTacToe Deluxe + Snake Deluxe (the user-mandated TicTacToe/Snake completion).
 """
 import glob
 import hashlib
@@ -50,7 +50,7 @@ for group in ("games", "apps", "high"):
         except Exception as e:
             print("SKIP", tag, e)
 
-# gameplay stage captures — TicTacToe Deluxe (دوز)
+# gameplay stage captures — TicTacToe Deluxe
 tt_stages = [
     ("run/s83_ttt_autoplay/leg00/frames/frame_007.png",
      "gameplay__tictactoe_deluxe__stage1_X_center.jpg"),
@@ -63,7 +63,7 @@ tt_stages = [
     ("run/s83_ttt_autoplay/final/frames/frame_027.png",
      "gameplay__tictactoe_deluxe__stage5_round2_fresh_board.jpg"),
 ]
-# snake (مار) lifecycle
+# snake lifecycle
 sn_stages = [
     ("run/s83_snake_proof/frames/frame_003.png",
      "gameplay__snake_deluxe__stage1_board_ready.jpg"),

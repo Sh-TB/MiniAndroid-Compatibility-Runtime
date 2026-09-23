@@ -5,10 +5,10 @@ Binary: rebuilt at S83 (83 MB, warnings unchanged)
 
 ## 0. Mission (user directive)
 
-"همشون رو اجرا بکن تا بیس اصلی تموم بشه" — execute every remaining item so
+"Run all of them so the main BASE is finished" — execute every remaining item so
 the graphics BASE is complete; validate 10 simple apps + 20 simple games with
 REAL screenshots; run L0/L1 apps at their best; test 1–2 random high-level
-apps; COMPLETE the previous دوز (TicTacToe) and مار (Snake) games; deliver a
+apps; COMPLETE the previous Dooz (TicTacToe) and Mar (Snake) games; deliver a
 progress table; update GitHub per title.
 
 ## 1. What was done (executive summary)
@@ -16,7 +16,7 @@ progress table; update GitHub per title.
 1. **Runtime rebuilt from scratch** (build/ was empty post-reset) — 41
    translation units, link clean. Regression battery re-established: **26/26
    rc=0** before any change.
-2. **TicTacToe Deluxe (دوز) built** — NEW 4th in-house game
+2. **TicTacToe Deluxe (Dooz) built** — NEW 4th in-house game
    (`games/tictactoe-deluxe/`, 2 Java files + 4 resource files, pure
    android.jar): custom `GameView.onDraw` board (3x3 grid, hand-drawn X/O,
    win-strike, HUD, status), 9 cell buttons + NEW GAME + MODE toggle,
@@ -50,12 +50,12 @@ progress table; update GitHub per title.
      listener family (ball2box/Godot ReportFullyDrawnExecutor NPE).
    - **S83 AUDIO-OBJECTS** — AudioAttributes$Builder / SoundPool$Builder
      fluent-this + build() object laws (astroloop SoundManager NPE).
-5. **دوز completed end-to-end (real captures)**: X center opening → AI
+5. **TicTacToe (Dooz) completed end-to-end (real captures)**: X center opening → AI
    replies → mid-game → **O wins middle column with yellow strike** →
    "PHONE WINS!" + score 0:1 → round-over AlertDialog ("Round over /
    Phone wins! Score X 0 : 1 O (D 0) / NEXT ROUND") → round 2 fresh board
    with preserved score. 5 stage JPGs in evidence.
-6. **مار re-proven at the new HEAD**: board ready → snake chasing apple →
+6. **Snake re-proven at the new HEAD**: board ready → snake chasing apple →
    death → GAME OVER dialog → restart. 4 stage JPGs in evidence.
 7. **Regression gates**: battery 26/26 rc=0 after EVERY law (4 rebuilds);
    frame_px spot values unchanged (f53 64042, f54 2073600 identical).
@@ -66,9 +66,9 @@ Games (23) — LEVEL = S81 visual audit of the final real frame:
 
 | # | Title | Kind | rc | L | uniq | Note |
 |---|-------|------|----|---|------|------|
-| 1 | Snake Deluxe (مار) | in-house | 0 | L3 | 82 | full lifecycle re-proven |
+| 1 | Snake Deluxe (Mar) | in-house | 0 | L3 | 82 | full lifecycle re-proven |
 | 2 | Mini Tetris | in-house | 0 | L3 | 70 | |
-| 3 | TicTacToe Deluxe (دوز) | in-house NEW | 0 | L3 | 118 | complete loop captured |
+| 3 | TicTacToe Deluxe (Dooz) | in-house NEW | 0 | L3 | 118 | complete loop captured |
 | 4 | 2048 | in-house | 0 | L2 | 33 | static-state law (no taps in sweep) |
 | 5 | TicTacToe Classic | real | 0 | L2 | 37 | |
 | 6 | Mines (premy) | real | 0 | L2 | 37 | FIXED by S83 APX-ACT (was blank) |

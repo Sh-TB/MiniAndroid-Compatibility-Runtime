@@ -6,31 +6,27 @@
 
 ---
 
-# 0. MISSION — مأموریت اصلی
+# 0. MISSION — Primary Mission
 
-تو روی:
+You are working on:
 
 `Sh-TB/MiniAndroid-Compatibility-Runtime`
 
-کار می‌کنی.
-
-این پروژه:
+This project is:
 
 **Android Compatibility Runtime**
 
-است.
+This project:
 
-این پروژه:
+* Not an Android Agent.
+* Not a Computer-Use Agent.
+* Not a pure Static Analyzer.
+* Not a pure Game Emulator.
+* Not a pure APK Parser.
+* Not a Screenshot Generator.
+* Not a collection of API stubs.
 
-* Android Agent نیست.
-* Computer-Use Agent نیست.
-* Static Analyzer صرف نیست.
-* Game Emulator صرف نیست.
-* APK Parser صرف نیست.
-* Screenshot Generator نیست.
-* مجموعه‌ای از Stubهای API نیست.
-
-هدف:
+Goal:
 
 ```text
 APK
@@ -70,13 +66,13 @@ State
 Storage / Background / Concurrency
 ```
 
-باید به رفتار واقعی Android نزدیک شود.
+It must approach real Android behavior.
 
 ---
 
 # 1. CORE PRINCIPLE
 
-قانون مادر:
+Mother law:
 
 > Root Cause > Symptom
 > Semantic Contract > Stub Count
@@ -86,7 +82,7 @@ Storage / Background / Concurrency
 > Real App > Synthetic Fixture Alone
 > Reproducible Proof > Successful Exit Code
 
-هیچ موفقیتی فقط با:
+No success is proven by merely:
 
 ```text
 build success
@@ -97,15 +93,15 @@ API implemented
 stub count reduced
 ```
 
-اثبات نمی‌شود.
+alone.
 
 ---
 
 # 2. SOURCE-FIRST / OPEN-SOURCE-FIRST
 
-ما اکنون عمداً روی Open-Source Apps کار می‌کنیم.
+We now deliberately work on Open-Source Apps.
 
-بنابراین اگر Source Code موجود است:
+Therefore, if Source Code is available:
 
 ```text
 SOURCE
@@ -117,27 +113,27 @@ APK / DEX
 RUNTIME
 ```
 
-مسیر اصلی investigation همین است.
+This is the primary investigation path.
 
-Source Code باید اولین searchlight باشد.
+Source Code must be the first searchlight.
 
-اگر source موجود است:
+If source is available:
 
-**قبل از JADX/decompiler سراغ source برو.**
+**Go to the source before JADX/decompiler.**
 
-Decompiler فقط وقتی مجاز است که:
+A decompiler is permitted only when:
 
-* source موجود نیست؛
-* source و artifact با هم mismatch دارند؛
-* generated/desugared/R8 code باید بررسی شود؛
-* dependency بسته/closed-source است؛
-* برای verification لازم است.
+* source is not available;
+* source and artifact mismatch each other;
+* generated/desugared/R8 code must be inspected;
+* a dependency is closed/closed-source;
+* it is needed for verification.
 
 ---
 
 # 3. SOURCE IS SEARCHLIGHT
 
-هر failure مهم باید تا حد ممکن این زنجیره را داشته باشد:
+Every significant failure must, as far as possible, carry this chain:
 
 ```text
 SOURCE
@@ -163,15 +159,15 @@ STATE CHANGE
 VISIBLE BEHAVIOR
 ```
 
-اگر این زنجیره ناقص است:
+If this chain is incomplete:
 
-ادعای root cause نکن.
+Do not claim root cause.
 
 ---
 
 # 4. SOURCE / APK / RUNTIME MUST STAY CONNECTED
 
-برای هر Open-Source App مهم:
+For every significant Open-Source App:
 
 ```text
 Source revision
@@ -182,17 +178,17 @@ Runtime run
 Screenshot SHA
 ```
 
-تا حد امکان باید به هم متصل باشند.
+These must stay connected as far as possible.
 
-نباید source مربوط به یک revision و APK مربوط به revision دیگری را بدون اعلام mismatch تحلیل کنی.
+You must not analyze source from one revision and an APK from another revision without declaring the mismatch.
 
 ---
 
 # 5. GLOBAL UPSTREAM IMPLEMENTATION HUNT
 
-برای هر generic semantic failure ابتدا upstream را جستجو کن.
+For every generic semantic failure, hunt upstream first.
 
-اولویت:
+Priority:
 
 1. AOSP
 2. ART
@@ -214,7 +210,7 @@ Screenshot SHA
 18. historical PRs
 19. analogous open-source runtimes/tools
 
-هر investigation باید تا حد امکان تبدیل شود به:
+Every investigation must, as far as possible, be turned into:
 
 ```text
 SOURCE
@@ -232,32 +228,32 @@ MiniAndroid TARGET
 
 # 6. NEVER INVENT SEMANTICS
 
-اگر Android/OpenJDK/Kotlin/ART contract مشخص است:
+If the Android/OpenJDK/Kotlin/ART contract is known:
 
-حدس نزن.
+Do not guess.
 
-اگر upstream implementation وجود دارد:
+If an upstream implementation exists:
 
-دوباره از صفر implementation نساز.
+Do not re-implement it from scratch.
 
-اگر contract هنوز مشخص نیست:
+If the contract is not yet known:
 
-آن را UNKNOWN نگه دار.
+Keep it UNKNOWN.
 
 ---
 
 # 7. UNKNOWN MUST REMAIN UNKNOWN
 
-این قانون بسیار مهم است.
+This law is extremely important.
 
-هرگز برای کم کردن تعداد UNKNOWNها:
+Never, in order to reduce the number of UNKNOWNs:
 
-* حدس نزن؛
-* classification جعلی نساز؛
-* `<unknown>` را به کلاس تصادفی map نکن؛
-* failure را app-specific اعلام نکن مگر evidence داشته باشی.
+* guess;
+* fabricate a classification;
+* map `<unknown>` to a random class;
+* declare a failure app-specific unless you have evidence.
 
-Classification معتبر:
+Valid classification:
 
 ```text
 CONFIRMED ROOT
@@ -271,9 +267,9 @@ UNKNOWN
 
 # 8. HYPOTHESIS ≠ ROOT CAUSE
 
-هیچ‌وقت این دو را یکی نکن.
+Never conflate the two.
 
-فرآیند اجباری:
+Mandatory process:
 
 ```text
 HYPOTHESIS
@@ -289,17 +285,17 @@ UPSTREAM CONTRACT
 CONFIRMED ROOT
 ```
 
-تا مرحله آخر:
+Until the last step:
 
-**Root Cause Confirmed نیست.**
+**Root Cause is NOT Confirmed.**
 
 ---
 
 # 9. FRESH-LIVE EVIDENCE LAW
 
-این قانون بعد از S72 حیاتی است.
+This law has been critical since S72.
 
-اگر evidence قدیمی با اجرای جدید اختلاف دارد:
+If stale evidence disagrees with a fresh run:
 
 ```text
 CURRENT BINARY
@@ -308,41 +304,41 @@ CURRENT TRACE
 CURRENT SCREENSHOT
 ```
 
-بر evidence قدیمی اولویت دارد.
+takes priority over stale evidence.
 
-Evidence قدیمی باید:
+Stale evidence must be:
 
 ```text
 STALE
 ```
 
-علامت بخورد.
+marked.
 
-نباید forensic result قدیمی را روی binary جدید به‌عنوان حقیقت اجرا کنی.
+You must not carry an old forensic result onto a new binary as truth.
 
 ---
 
 # 10. FRESHNESS CHECK BEFORE ROOT CLAIM
 
-قبل از هر root-cause conclusion مهم:
+Before every significant root-cause conclusion:
 
-1. HEAD فعلی را مشخص کن.
-2. binary فعلی را مشخص کن.
-3. APK/DEX SHA را ثبت کن.
-4. test/run را دوباره روی current binary اجرا کن.
-5. trace جدید بگیر.
-6. screenshot جدید بگیر.
-7. سپس نتیجه‌گیری کن.
+1. Identify the current HEAD.
+2. Identify the current binary.
+3. Record the APK/DEX SHA.
+4. Re-run the test/run on the current binary.
+5. Take a fresh trace.
+6. Take a fresh screenshot.
+7. Only then conclude.
 
-اگر binary عوض شده:
+If the binary has changed:
 
-evidence قبلی باید دوباره اعتبارسنجی شود.
+prior evidence must be re-validated.
 
 ---
 
 # 11. FAST RECON FIRST
 
-قبل از deep dive طولانی:
+Before a long deep dive:
 
 ```text
 SOURCE RECON
@@ -360,9 +356,9 @@ RUNTIME TRACE
 FAILURE CORRELATION
 ```
 
-هدف:
+Goal:
 
-پیدا کردن سریع:
+find quickly:
 
 ```text
 where
@@ -376,27 +372,27 @@ first divergence
 
 # 12. STATIC GRAPH ≠ RUNTIME GRAPH
 
-Static graph فقط می‌گوید:
+A static graph only says:
 
 ```text
 possible relation
 ```
 
-Runtime trace می‌گوید:
+A runtime trace says:
 
 ```text
 actual execution
 ```
 
-هیچ static edge را بدون runtime evidence به‌عنوان execution path قطعی اعلام نکن.
+Never declare any static edge a definite execution path without runtime evidence.
 
 ---
 
 # 13. TRACE IDENTITY ≠ DISPATCH IDENTITY
 
-نامی که در trace دیده می‌شود الزاماً target واقعی dispatch نیست.
+A name seen in a trace is not necessarily the actual dispatch target.
 
-همیشه بررسی کن:
+Always check:
 
 ```text
 declared type
@@ -413,13 +409,13 @@ virtual dispatch
 
 # 14. CLASS HIERARCHY FIRST
 
-قبل از اینکه بگویی:
+Before you say:
 
 ```text
 API missing
 ```
 
-بررسی کن:
+Check:
 
 ```text
 receiver
@@ -437,15 +433,15 @@ bridge/fallback
 implementation
 ```
 
-S71 نشان داد generic superclass fallback می‌تواند چندین consumer را بدون اضافه کردن body جدید حل کند.
+S71 showed that a generic superclass fallback can resolve several consumers without adding a new body.
 
 ---
 
 # 15. DISPATCH MUST BE OBSERVABLE
 
-برای failureهای API:
+For API failures:
 
-ثبت کن:
+Record:
 
 ```text
 caller
@@ -459,17 +455,17 @@ return
 state mutation
 ```
 
-اگر dispatch مشخص نیست:
+If dispatch is not known:
 
-root cause مشخص نیست.
+root cause is not known.
 
 ---
 
 # 16. FIRST DIVERGENCE
 
-Root Cause باید نزدیک‌ترین نقطه‌ای باشد که رفتار MiniAndroid از contract مورد انتظار جدا شده.
+Root Cause must be the closest point where MiniAndroid behavior diverged from the expected contract.
 
-مثال:
+Example:
 
 ```text
 SOURCE expected
@@ -489,17 +485,17 @@ STATE WRONG   ← FIRST DIVERGENCE
 VIEW WRONG
 ```
 
-در این مثال:
+In this example:
 
-View root نیست.
+View is not the root.
 
-State semantic root است.
+State semantics is the root.
 
 ---
 
 # 17. SILENT WRONG IS MORE DANGEROUS THAN CRASH
 
-این موارد بسیار مهم‌اند:
+These are extremely important:
 
 ```text
 silent null
@@ -512,21 +508,21 @@ silent wrong return
 silent ignored lifecycle
 ```
 
-ممکن است crash تولید نکنند اما هزاران رفتار بعدی را خراب کنند.
+They may not produce a crash but can corrupt thousands of subsequent behaviors.
 
-بنابراین:
+Therefore:
 
-> Silent semantic violation می‌تواند از یک crash محلی مهم‌تر باشد.
+> A silent semantic violation can matter more than a local crash.
 
 ---
 
 # 18. NULL SEMANTICS ARE FIRST-CLASS
 
-این قانون از S72 اضافه شده.
+This law was added after S72.
 
-در هر failure مرتبط با null:
+In every null-related failure:
 
-تشخیص بده:
+Classify:
 
 ```text
 NULL_REF
@@ -536,48 +532,46 @@ MISSING
 DEFAULT
 ```
 
-این‌ها یکی نیستند.
+These are not the same.
 
-به‌خصوص:
+In particular:
 
 ```text
 null receiver
 ```
 
-را با:
+must not be confused with:
 
 ```text
 uninitialized register
 ```
 
-اشتباه نگیر.
-
-اگر upstream semantics اجازه می‌دهد null behavior چگونه باید باشد، همان contract ملاک است.
+If upstream semantics define how null behavior must be, that contract is the standard.
 
 ---
 
 # 19. NO SILENT EXECUTION WITHOUT CONTRACT
 
-اگر instruction یا method با receiver null اجرا شده:
+If an instruction or method executed with a null receiver:
 
-بررسی کن:
+Check:
 
 ```text
-آیا upstream باید exception بدهد؟
-آیا implementation باید fail کند؟
-آیا dispatch باید متوقف شود؟
-آیا current MiniAndroid silently continues?
+Should upstream have thrown an exception?
+Should the implementation have failed?
+Should dispatch have stopped?
+Does current MiniAndroid silently continue?
 ```
 
-اگر MiniAndroid به‌صورت silent ادامه می‌دهد ولی Android contract چنین نیست:
+If MiniAndroid silently continues but the Android contract does not:
 
-این یک generic semantic bug بالقوه است.
+this is a potential generic semantic bug.
 
 ---
 
 # 20. INSTRUCTION SEMANTICS ARE FOUNDATION
 
-برای DEX:
+For DEX:
 
 ```text
 move
@@ -604,19 +598,19 @@ monitor
 throw
 ```
 
-و تمام opcodeهای دیگر باید بر اساس Dalvik/ART semantics بررسی شوند.
+and all other opcodes must be verified against Dalvik/ART semantics.
 
-نه بر اساس:
+Not against:
 
 ```text
-"برای این app جواب داد"
+"it worked for this app"
 ```
 
 ---
 
 # 21. REGISTER TYPE / WIDTH LAW
 
-هر register باید semantic type مناسب داشته باشد:
+Every register must carry the proper semantic type:
 
 ```text
 int
@@ -628,7 +622,7 @@ null
 uninitialized
 ```
 
-و width:
+and width:
 
 ```text
 32-bit
@@ -636,9 +630,9 @@ uninitialized
 pair
 ```
 
-باید حفظ شود.
+must be preserved.
 
-هیچ فرضی مثل:
+No assumption such as:
 
 ```text
 everything is int
@@ -646,13 +640,13 @@ everything is object
 everything is Python value
 ```
 
-مجاز نیست.
+is allowed.
 
 ---
 
 # 22. GENERATED / DESUGARED / R8 CODE IS A SEPARATE LAYER
 
-مسیر:
+Path:
 
 ```text
 SOURCE
@@ -666,27 +660,27 @@ R8/D8
 DEX
 ```
 
-ممکن است semantic structure source را تغییر دهد.
+may change the semantic structure of the source.
 
-پس:
+So:
 
 ```text
 source method
 ```
 
-الزاماً برابر نیست با:
+is not necessarily equal to:
 
 ```text
 DEX method
 ```
 
-هر دو باید در investigation دیده شوند.
+Both must be seen in the investigation.
 
 ---
 
 # 23. ENUM / DESUGAR / BRIDGE / SYNTHETIC CODE
 
-مواردی مانند:
+Items such as:
 
 ```text
 Enum.valueOf
@@ -698,19 +692,19 @@ synthetic accessors
 R8-generated subclasses
 ```
 
-را app-specific حساب نکن.
+must not be treated as app-specific.
 
-اگر چند app به آن‌ها وابسته‌اند:
+If several apps depend on them:
 
-generic runtime semantics محسوب می‌شوند.
+they count as generic runtime semantics.
 
 ---
 
 # 24. RESOURCE NAMES ARE FIRST-CLASS EVIDENCE
 
-Resource ID به‌تنهایی کافی نیست.
+A Resource ID alone is not enough.
 
-تا حد امکان:
+As far as possible:
 
 ```text
 resource ID
@@ -730,13 +724,13 @@ caller
 runtime use
 ```
 
-را حفظ کن.
+must be preserved.
 
 ---
 
 # 25. ARSC / AXML / RESOURCE SEMANTICS
 
-برای resource subsystem:
+For the resource subsystem:
 
 ```text
 AXML
@@ -752,21 +746,21 @@ formatted strings
 @drawable
 ```
 
-را از upstream contract بررسی کن.
+must be verified against the upstream contract.
 
-اگر source resource name دارد:
+If source has the resource name:
 
-resource name را تا runtime trace دنبال کن.
+follow the resource name all the way to the runtime trace.
 
 ---
 
 # 26. END-TO-END SEMANTICS
 
-برای هر generic subsystem:
+For every generic subsystem:
 
-فقط implementation محلی کافی نیست.
+a local implementation alone is not enough.
 
-مثلاً Text:
+For example Text:
 
 ```text
 resource
@@ -786,21 +780,19 @@ draw
 pixels
 ```
 
-باید end-to-end بررسی شود.
+must be verified end-to-end.
 
 ---
 
 # 27. BLANK SCREEN IS A SYMPTOM
 
-هرگز:
+Never assume:
 
 ```text
 blank screenshot
 =
 rendering bug
 ```
-
-فرض نکن.
 
 Pipeline:
 
@@ -822,37 +814,37 @@ Renderer
 Pixels
 ```
 
-هر مرحله باید جداگانه verify شود.
+Every stage must be verified separately.
 
 ---
 
 # 28. LAUNCH TARGET MUST BE VERIFIED
 
-قبل از اینکه بگویی app blank است:
+Before you say the app is blank:
 
-مشخص کن:
+Identify:
 
 ```text
-Activity؟
-Service؟
-BroadcastReceiver؟
-ContentProvider؟
-Tile؟
-Application-only startup؟
-GameActivity؟
+Activity?
+Service?
+BroadcastReceiver?
+ContentProvider?
+Tile?
+Application-only startup?
+GameActivity?
 ```
 
-اگر app Activity ندارد:
+If the app has no Activity:
 
-نباید Activity lifecycle را فرض کنی.
+You must not assume an Activity lifecycle.
 
 ---
 
 # 29. LIFECYCLE IS A RUNTIME SUBSYSTEM
 
-Lifecycle باید generic باشد.
+Lifecycle must be generic.
 
-حداقل:
+At minimum:
 
 ```text
 Application
@@ -862,13 +854,13 @@ BroadcastReceiver
 ContentProvider
 ```
 
-و launch/start semantics باید بر اساس Android contract بررسی شوند.
+and launch/start semantics must be verified against the Android contract.
 
 ---
 
 # 30. WINDOW / CONTENT VIEW
 
-برای Activity:
+For an Activity:
 
 ```text
 Window
@@ -880,23 +872,23 @@ content view
 ViewTree
 ```
 
-باید trace شود.
+must be traced.
 
-`setContentView(int)` و `setContentView(View)` باید semantic equivalence مورد انتظار framework را حفظ کنند، نه اینکه فقط یک branch محلی را satisfy کنند.
+`setContentView(int)` and `setContentView(View)` must preserve the framework-expected semantic equivalence, not merely satisfy one local branch.
 
 ---
 
 # 31. VIEWTREE IS NOT VISUAL PROOF
 
-داشتن:
+Having:
 
 ```text
 39 Compose nodes
 ```
 
-به معنی painted بودن نیست.
+does not mean painted.
 
-باید مشخص شود:
+It must be established:
 
 ```text
 ViewTree
@@ -918,9 +910,9 @@ Pixels
 
 # 32. DRAW-OP PROOF
 
-برای visual claims:
+For visual claims:
 
-ثبت کن:
+Record:
 
 ```text
 draw op count
@@ -932,19 +924,19 @@ paint/state
 order
 ```
 
-اگر DrawOps درست‌اند ولی pixels غلط:
+If DrawOps are correct but pixels are wrong:
 
-root در renderer/pixel path است.
+the root is in the renderer/pixel path.
 
-اگر DrawOps نداریم:
+If there are no DrawOps:
 
-renderer را متهم نکن.
+do not blame the renderer.
 
 ---
 
 # 33. PIXEL PROOF
 
-Screenshot فقط وقتی proof است که:
+A screenshot is proof only when:
 
 ```text
 full screenshot
@@ -955,13 +947,13 @@ dimensions
 non-background pixel metrics
 ```
 
-بررسی شوند.
+are verified.
 
 ---
 
 # 34. NO FAKE VISUAL SUCCESS
 
-این‌ها proof نیستند:
+These are not proof:
 
 ```text
 PNG exists
@@ -971,48 +963,48 @@ image opens
 some pixels differ
 ```
 
-باید معلوم باشد:
+It must be made clear:
 
 ```text
-چه چیزی باید دیده می‌شد؟
-چه چیزی دیده شد؟
-کجا divergence رخ داد؟
+What should have been seen?
+What was seen?
+Where did the divergence happen?
 ```
 
 ---
 
 # 35. PIXEL DELTA MUST HAVE SEMANTIC EXPLANATION
 
-اگر:
+If:
 
 ```text
 pixel delta
 ```
 
-وجود دارد:
+exists:
 
-اول بفهم:
+first understand:
 
 ```text
-کدام DrawOp
-کدام View
-کدام resource
-کدام state
+which DrawOp
+which View
+which resource
+which state
 ```
 
-آن را ایجاد کرده.
+produced it.
 
-Pixel diff بدون semantic explanation کافی نیست.
+A pixel diff without a semantic explanation is not enough.
 
 ---
 
 # 36. CANVAS / DRAW STATE ISOLATION
 
-اگر Canvas trace دارید:
+If you have a Canvas trace:
 
-state باید isolate شود.
+state must be isolated.
 
-مثلاً:
+For example:
 
 ```text
 Canvas.concat
@@ -1024,13 +1016,13 @@ Transform
 Alpha
 ```
 
-نباید trace instrumentation خودش semantic pollution ایجاد کند.
+The trace instrumentation itself must not create semantic pollution.
 
 ---
 
 # 37. INSTRUMENTATION MUST BE BEHAVIOR-NEUTRAL
 
-Probe باید:
+A probe must be:
 
 ```text
 ENV-GATED
@@ -1039,9 +1031,7 @@ BEHAVIOR-NEUTRAL
 REVERSIBLE
 ```
 
-باشد.
-
-نباید instrumentation خودش behavior را تغییر دهد.
+The instrumentation itself must not change behavior.
 
 ---
 
@@ -1061,27 +1051,27 @@ MINIMIZE
 REMOVE OR DOCUMENT
 ```
 
-Probe دائمی فقط اگر واقعاً لازم است.
+A permanent probe only if truly necessary.
 
 ---
 
 # 39. RUNTIME TRACE IS GROUND TRUTH
 
-برای execution behavior:
+For execution behavior:
 
 ```text
 runtime trace
 ```
 
-بر static inference اولویت دارد.
+takes priority over static inference.
 
-ولی trace باید با source و upstream contract correlate شود.
+But the trace must be correlated with source and the upstream contract.
 
 ---
 
 # 40. STATIC ANALYSIS IS SEARCHLIGHT, NOT TRUTH
 
-Static tools برای:
+Static tools are for:
 
 ```text
 candidate
@@ -1093,43 +1083,39 @@ resources
 API inventory
 ```
 
-هستند.
-
-نه برای اثبات runtime execution.
+not for proving runtime execution.
 
 ---
 
 # 41. API MATRIX IS NOT COMPATIBILITY
 
-مثلاً:
+For example:
 
 ```text
 3674 APIs
 ```
 
-به معنی:
+does not mean:
 
 ```text
 3674 compatible APIs
 ```
 
-نیست.
-
-API باید در semantic context سنجیده شود.
+An API must be judged in its semantic context.
 
 ---
 
 # 42. STUB COUNT IS NOT PROGRESS
 
-کم شدن:
+A decrease in:
 
 ```text
 LIVE-STUB
 ```
 
-به‌تنهایی success نیست.
+alone is not success.
 
-ممکن است:
+There may be:
 
 ```text
 wrong implementation
@@ -1138,13 +1124,11 @@ bad dispatch
 wrong return
 ```
 
-وجود داشته باشد.
-
 ---
 
 # 43. IMPLEMENTED ≠ CORRECT
 
-هر API باید بتواند وضعیت داشته باشد:
+Every API must be able to hold one of these states:
 
 ```text
 IMPLEMENTED
@@ -1161,33 +1145,29 @@ UNKNOWN
 
 # 44. TESTED ≠ PROVEN
 
-تست passing فقط نشان می‌دهد:
+A passing test only shows:
 
 ```text
 that test passed
 ```
 
-نه اینکه:
+not that:
 
 ```text
 semantic contract globally correct
 ```
 
-است.
-
 ---
 
 # 45. FIXTURE + REAL APP
 
-هر generic fix تا حد امکان:
+Every generic fix must, as far as possible, have:
 
 ```text
 minimal fixture
 +
 real open-source app
 ```
-
-داشته باشد.
 
 Fixture:
 
@@ -1201,13 +1181,13 @@ integration/fan-out proof
 
 # 46. REAL APP IS EXECUTION TRUTH
 
-برای runtime behavior:
+For runtime behavior:
 
 ```text
 real APK/DEX
 ```
 
-ملاک execution است.
+is the standard for execution.
 
 Source:
 
@@ -1225,46 +1205,46 @@ behavioral truth
 
 # 47. BUILD YOUR OWN ARTIFACT WHEN POSSIBLE
 
-برای Open-Source Apps:
+For Open-Source Apps:
 
-اگر build reproducible است:
+If the build is reproducible:
 
 ```text
 source → build → APK
 ```
 
-را ترجیح بده.
+is preferred.
 
-اگر artifact آماده وجود دارد:
+If a prebuilt artifact exists:
 
-artifact را نیز نگه دار.
+keep the artifact as well.
 
-در هر دو حالت version/SHA ثبت شود.
+In both cases, record the version/SHA.
 
 ---
 
 # 48. REAL APP CORPUS
 
-Corpus فقط یک app نیست.
+The corpus is not just one app.
 
-تمرکز:
+Focus:
 
 ```text
 ~80% general Android compatibility
 ~20% Telegram
 ```
 
-Dooz target مهم است.
+The Dooz target is important.
 
-حداقل یک app باید end-to-end واقعاً runnable باشد.
+At least one app must be truly runnable end-to-end.
 
 ---
 
 # 49. OPEN-SOURCE APP PRIORITY
 
-برای Open-Source App:
+For an Open-Source App:
 
-ابتدا:
+First:
 
 ```text
 source structure
@@ -1276,13 +1256,13 @@ resource graph
 build graph
 ```
 
-بعد:
+then:
 
 ```text
 APK/DEX
 ```
 
-بعد:
+then:
 
 ```text
 runtime
@@ -1292,7 +1272,7 @@ runtime
 
 # 50. DO NOT OVERFIT TO ONE APP
 
-اگر یک fix فقط:
+If a fix only fixes:
 
 ```text
 Dooz
@@ -1301,15 +1281,15 @@ FishRings
 TicTacToe
 ```
 
-را درست می‌کند ولی contract عمومی ندارد:
+but carries no general contract:
 
-آن fix generic نیست.
+that fix is not generic.
 
 ---
 
 # 51. NO APP-SPECIFIC HACKS
 
-ممنوع:
+Forbidden:
 
 ```text
 package-name special case
@@ -1320,36 +1300,36 @@ game-specific shortcut
 screenshot-specific patch
 ```
 
-مگر اینکه upstream Android contract دقیقاً چنین semanticsی را تعریف کند.
+unless the upstream Android contract defines exactly those semantics.
 
 ---
 
 # 52. GENERIC FIX FAN-OUT
 
-هر fix باید بلافاصله بررسی شود:
+Every fix must be immediately checked:
 
 ```text
-چه callerهایی؟
-چه classهایی؟
-چه appهایی؟
-چه APIs؟
-چه semantic family؟
+Which callers?
+Which classes?
+Which apps?
+Which APIs?
+Which semantic family?
 ```
 
-و fan-out واقعی اندازه‌گیری شود.
+and its real fan-out measured.
 
 ---
 
 # 53. FIX ONCE, MEASURE IMPACT
 
-هدف:
+Goal:
 
 ```text
 one generic fix
 → many consumers
 ```
 
-نه:
+not:
 
 ```text
 one failure
@@ -1360,7 +1340,7 @@ one failure
 
 # 54. PRIORITY = REAL IMPACT
 
-Priority باید بر اساس:
+Priority must be based on:
 
 ```text
 fan-out
@@ -1371,45 +1351,43 @@ severity
 dependency depth
 ```
 
-باشد.
-
-نه:
+not:
 
 ```text
-اسم API
-ساده بودن fix
-تعداد lines changed
+the API name
+how simple the fix is
+lines changed count
 ```
 
 ---
 
 # 55. GENERIC BUG CAN OUTRANK APP-SPECIFIC BUG
 
-اگر:
+If:
 
 ```text
 generic null semantics
 ```
 
-باعث failure چند subsystem شود،
+causes failures in several subsystems,
 
-و:
+and:
 
 ```text
 one app renderer issue
 ```
 
-فقط یک app را خراب کند،
+breaks only one app,
 
-generic semantic bug priority بالاتری دارد.
+the generic semantic bug has higher priority.
 
 ---
 
 # 56. MULTIPLE ROOTS ARE POSSIBLE
 
-یک failure ممکن است چند root مستقل داشته باشد.
+A failure can have several independent roots.
 
-مثلاً:
+For example:
 
 ```text
 Root A: lifecycle
@@ -1417,9 +1395,9 @@ Root B: null semantics
 Root C: rendering
 ```
 
-آن‌ها را merge نکن.
+Do not merge them.
 
-برای هر chain:
+For each chain:
 
 ```text
 root
@@ -1428,13 +1406,13 @@ status
 fan-out
 ```
 
-جدا ثبت کن.
+record separately.
 
 ---
 
 # 57. FAILURE QUESTIONS
 
-هر failure باید حداقل این پنج سؤال را جواب دهد:
+Every failure must answer at least these five questions:
 
 ```text
 1. Where did it start?
@@ -1448,7 +1426,7 @@ fan-out
 
 # 58. FIX QUESTIONS
 
-هر fix باید جواب دهد:
+Every fix must answer:
 
 ```text
 1. What was the root?
@@ -1462,7 +1440,7 @@ fan-out
 
 # 59. CAMPAIGN QUESTIONS
 
-هر campaign باید در پایان جواب دهد:
+Every campaign must answer at the end:
 
 ```text
 BEFORE
@@ -1477,7 +1455,7 @@ EVIDENCE
 
 # 60. ROOT STATUS MUST BE EXPLICIT
 
-هر finding یکی از این‌ها:
+Every finding is one of these:
 
 ```text
 CONFIRMED
@@ -1487,7 +1465,7 @@ DISPROVEN
 UNKNOWN
 ```
 
-و implementation status جدا:
+and the implementation status is separate:
 
 ```text
 NOT IMPLEMENTED
@@ -1498,13 +1476,13 @@ NOT TESTED
 PROVEN
 ```
 
-این دو status را با هم قاطی نکن.
+Do not mix these two statuses.
 
 ---
 
 # 61. ENVIRONMENTAL FAILURE ≠ REGRESSION
 
-مثلاً:
+For example:
 
 ```text
 network unavailable
@@ -1515,31 +1493,31 @@ permission
 resource exhaustion
 ```
 
-را با semantic runtime failure یکی نکن.
+do not conflate with a semantic runtime failure.
 
 ---
 
 # 62. NO rc=0 AS PROOF
 
-`exit 0` فقط یک signal است.
+`exit 0` is only a signal.
 
-Proof باید behavior-based باشد.
+Proof must be behavior-based.
 
 ---
 
 # 63. DETERMINISM
 
-برای deterministic behavior:
+For deterministic behavior:
 
-حداقل:
+at minimum:
 
 ```text
 3 runs
 ```
 
-در صورت امکان.
+when possible.
 
-مقایسه:
+Compare:
 
 ```text
 APK SHA
@@ -1549,17 +1527,17 @@ screenshot SHA
 pixel metrics
 ```
 
-اگر nondeterminism وجود دارد:
+If nondeterminism exists:
 
-root آن را پیدا کن یا صریحاً ثبت کن.
+find its root or record it explicitly.
 
 ---
 
 # 64. FRESH BINARY BEFORE FINAL CLAIM
 
-این قانون مطلق است:
+This law is absolute:
 
-قبل از گزارش نهایی:
+Before the final report:
 
 ```text
 clean/current build
@@ -1571,19 +1549,19 @@ fresh run
 fresh evidence
 ```
 
-مگر اینکه محدودیت محیطی مستند شده باشد.
+unless an environmental limitation is documented.
 
 ---
 
 # 65. STALE FORENSICS MUST BE LABELED
 
-اگر evidence از binary قبلی است:
+If evidence is from a previous binary:
 
 ```text
 STALE FORENSIC
 ```
 
-و نه:
+and not:
 
 ```text
 CURRENT ROOT
@@ -1593,73 +1571,71 @@ CURRENT ROOT
 
 # 66. EXAMPLE: FISHRINGS LESSON
 
-اگر قبلاً تصور شد:
+If it was previously assumed:
 
 ```text
 setContentView(int)
 ```
 
-مشکل است،
+was the problem,
 
-ولی اجرای current binary نشان داد:
+but running the current binary showed:
 
 ```text
-ViewTree موجود است
+ViewTree exists
 ```
 
-نتیجه قبلی باید downgrade شود.
+the previous conclusion must be downgraded.
 
-نباید برای اثبات hypothesis قدیمی evidence جدید را نادیده گرفت.
+You must not ignore fresh evidence to rescue an old hypothesis.
 
 ---
 
 # 67. EXAMPLE: DOOZ LESSON
 
-اگر:
+If:
 
 ```text
-ViewTree موجود
+ViewTree present
 ```
 
-اما:
+but:
 
 ```text
 AndroidComposeView.onDraw = 0
 ```
 
-و سپس:
+and then:
 
 ```text
 NPE
 ```
 
-در مسیر Compose رخ می‌دهد،
+happens in the Compose path,
 
-اول باید:
+first:
 
 ```text
 exception path
 ```
 
-بررسی شود.
+must be investigated.
 
-نه اینکه فوراً renderer مقصر اعلام شود.
+Not an immediate verdict that the renderer is guilty.
 
 ---
 
 # 68. ARRAYCOPY / OPENJDK SEMANTICS
 
-اگر failure در:
+If the failure is in:
 
 ```text
 arraycopy
 ```
 
-است:
+first check upstream Java/OpenJDK semantics.
 
-اول upstream Java/OpenJDK semantics را بررسی کن.
-
-مثلاً:
+For example:
 
 ```text
 null source
@@ -1669,15 +1645,15 @@ type
 length
 ```
 
-باید contract واقعی داشته باشد.
+must have the real contract.
 
 ---
 
 # 69. NULL PRODUCER TRACE
 
-اگر null وارد subsystem می‌شود:
+If null enters a subsystem:
 
-trace را به عقب برگردان:
+walk the trace backwards:
 
 ```text
 consumer
@@ -1691,9 +1667,9 @@ state mutation
 first divergence
 ```
 
-هدف:
+Goal:
 
-پیدا کردن:
+find:
 
 ```text
 where NULL was first created or incorrectly preserved
@@ -1703,7 +1679,7 @@ where NULL was first created or incorrectly preserved
 
 # 70. IPUT/IGET DROPS ARE HIGH PRIORITY
 
-هر:
+Every:
 
 ```text
 dropped iput
@@ -1713,21 +1689,21 @@ wrong object field
 wrong receiver
 ```
 
-می‌تواند state corruption گسترده ایجاد کند.
+can cause widespread state corruption.
 
-اگر evidence نشان دهد:
+If evidence shows:
 
 ```text
 field write silently disappeared
 ```
 
-آن را generic semantic candidate بدان.
+treat it as a generic semantic candidate.
 
 ---
 
 # 71. OBJECT STATE MUST BE TRACEABLE
 
-برای object-state failures:
+For object-state failures:
 
 ```text
 allocation
@@ -1741,13 +1717,13 @@ field read
 method
 ```
 
-را بررسی کن.
+must be examined.
 
 ---
 
 # 72. CONCURRENCY IS NOT OPTIONAL
 
-برای Compose/coroutines و Android apps:
+For Compose/coroutines and Android apps:
 
 ```text
 threads
@@ -1760,13 +1736,13 @@ scheduling
 continuations
 ```
 
-را generic runtime subsystem بدان.
+treat as a generic runtime subsystem.
 
 ---
 
 # 73. ATOMIC FAMILY
 
-مواردی مانند:
+Items such as:
 
 ```text
 AtomicReference
@@ -1777,25 +1753,25 @@ AtomicBoolean
 field updaters
 ```
 
-را به‌صورت یک semantic family بررسی کن.
+must be examined as one semantic family.
 
-اگر یک path:
+If one path consumes:
 
 ```text
 AtomicReferenceArray.get
 ```
 
-را زیاد مصرف می‌کند،
+heavily,
 
-صرفاً همان API را patch نکن.
+do not just patch that API.
 
-family contract را بررسی کن.
+Examine the family contract.
 
 ---
 
 # 74. PARK / YIELD / THREAD SEMANTICS
 
-اگر Compose/coroutine path متوقف می‌شود:
+If a Compose/coroutine path blocks:
 
 ```text
 park
@@ -1807,15 +1783,15 @@ queue
 state
 ```
 
-را به‌عنوان یک chain بررسی کن.
+must be examined as one chain.
 
 ---
 
 # 75. COMPOSE IS A STRESS TEST, NOT A SPECIAL CASE
 
-Compose را app-specific subsystem فرض نکن.
+Do not assume Compose is an app-specific subsystem.
 
-Compose می‌تواند ضعف‌های:
+Compose can expose weaknesses in:
 
 ```text
 object state
@@ -1830,13 +1806,11 @@ measure/layout
 draw
 ```
 
-را آشکار کند.
-
 ---
 
 # 76. GL / WEBVIEW / SPECIAL RENDERERS
 
-اگر app از:
+If the app uses:
 
 ```text
 libGDX
@@ -1845,23 +1819,21 @@ WebView
 GameActivity
 ```
 
-استفاده می‌کند:
+do not confuse it with the View-based renderer.
 
-آن را با View-based renderer اشتباه نکن.
-
-مثلاً:
+For example:
 
 ```text
 GL app blank
 ```
 
-لزوماً View bug نیست.
+is not necessarily a View bug.
 
 ---
 
 # 77. SPECIAL RENDERER PIPELINES
 
-برای:
+For:
 
 ```text
 GL
@@ -1871,7 +1843,7 @@ Texture
 GameActivity
 ```
 
-pipeline جدا بساز:
+build a separate pipeline:
 
 ```text
 launch
@@ -1887,13 +1859,13 @@ launch
 
 # 78. STOPWATCH LESSON
 
-اگر app:
+If the app:
 
 ```text
-Activity ندارد
+has no Activity
 ```
 
-ولی:
+but has:
 
 ```text
 Service
@@ -1901,17 +1873,15 @@ Tile
 Provider
 ```
 
-دارد،
+do not assume an Activity launch.
 
-نباید Activity launch را فرض کرد.
-
-این می‌تواند یک generic lifecycle capability gap باشد.
+This can be a generic lifecycle capability gap.
 
 ---
 
 # 79. SOURCE-LEVEL EVIDENCE MUST LINK TO RUNTIME EVIDENCE
 
-مثلاً:
+For example:
 
 ```text
 Source line 226
@@ -1927,13 +1897,13 @@ DrawOp
 pixel delta
 ```
 
-این زنجیره ارزشمندتر از یک log بزرگ است.
+This chain is worth more than one big log.
 
 ---
 
 # 80. EVERY PIXEL FAILURE MUST HAVE A PATH
 
-برای visual regression:
+For visual regression:
 
 ```text
 pixel
@@ -1949,23 +1919,21 @@ API
 source
 ```
 
-تا حد امکان trace کن.
+trace as far as possible.
 
 ---
 
 # 81. RESOURCE COLLATERAL DAMAGE
 
-اگر یک generic resource fix باعث pixel change در app دیگر شد:
+If a generic resource fix caused a pixel change in another app:
 
-آن را فوراً:
+do not immediately assume:
 
 ```text
 regression
 ```
 
-فرض نکن.
-
-اول بررسی:
+First examine:
 
 ```text
 previous behavior
@@ -1976,31 +1944,29 @@ draw-op change
 pixel change
 ```
 
-ممکن است behavior قبلی اشتباه بوده باشد.
+The previous behavior may have been wrong.
 
 ---
 
 # 82. OBSERVED ≠ IMPLEMENTED
 
-اگر trace نشان می‌دهد method اجرا شده:
+If the trace shows a method executed:
 
-فقط:
+record only:
 
 ```text
 OBSERVED
 ```
 
-ثبت کن.
-
-این به معنی correctness نیست.
+This does not mean correctness.
 
 ---
 
 # 83. IMPLEMENTED ≠ PROVEN
 
-Implementation فقط implementation است.
+An implementation is only an implementation.
 
-Proof نیاز دارد به:
+Proof requires:
 
 ```text
 test
@@ -2012,39 +1978,37 @@ expected semantics
 
 # 84. REAL APP ≠ FULL COMPATIBILITY
 
-یک app runnable:
+One runnable app:
 
-پیشرفت مهم است،
+is important progress,
 
-اما foundation complete نیست.
+but the foundation is not complete.
 
 ---
 
 # 85. FOUNDATION ZERO-GAP
 
-Foundation زمانی complete اعلام شود که:
+The foundation may be declared complete when:
 
-* P0 generic blockers مشخص شده باشند؛
-* P1 generic blockers یا حل شده باشند یا evidence-backed boundary داشته باشند؛
-* known generic blocker بدون classification باقی نمانده باشد؛
-* silent semantic violations مهم بررسی شده باشند؛
-* runtime evidence current باشد؛
-* real-app validation وجود داشته باشد؛
-* regressions بررسی شده باشند.
+* P0 generic blockers are identified;
+* P1 generic blockers are either resolved or have an evidence-backed boundary;
+* no known generic blocker remains unclassified;
+* significant silent semantic violations have been examined;
+* runtime evidence is current;
+* real-app validation exists;
+* regressions have been examined.
 
 ---
 
 # 86. DO NOT OPTIMIZE FOR STUB COUNT
 
-هدف:
+Goal:
 
 ```text
 semantic coverage
 ```
 
-است.
-
-نه:
+not:
 
 ```text
 stub count = 0
@@ -2054,14 +2018,14 @@ stub count = 0
 
 # 87. DO NOT OPTIMIZE FOR LOC
 
-این‌ها proof نیستند:
+These are not proof:
 
 ```text
 -300 LOC
 +500 LOC
 ```
 
-سؤال اصلی:
+The main question:
 
 ```text
 What behavior changed?
@@ -2071,7 +2035,7 @@ What behavior changed?
 
 # 88. TOOLS MUST PAY RENT
 
-هر ابزار باید حداقل یکی از این‌ها را بهتر کند:
+Every tool must improve at least one of these:
 
 ```text
 failure diagnosis
@@ -2085,31 +2049,31 @@ upstream lookup
 impact measurement
 ```
 
-اگر ابزار فقط report تولید می‌کند ولی investigation را جلو نمی‌برد:
+If a tool only produces a report and does not advance the investigation:
 
-priority پایین.
+low priority.
 
 ---
 
 # 89. DO NOT BUILD SECOND TOOL UNNECESSARILY
 
-اگر tool موجود می‌تواند کار را انجام دهد:
+If an existing tool can do the job:
 
-دوباره tool مشابه نساز.
+do not build a similar tool again.
 
-اول:
+First:
 
 ```text
 existing tool
 ```
 
-را integrate/extend کن.
+integrate/extend it.
 
 ---
 
 # 90. FAST + DEEP TOOL STRATEGY
 
-دو مسیر:
+Two paths:
 
 ### FAST
 
@@ -2135,57 +2099,57 @@ DrawOps
 pixels
 ```
 
-اول fast reconnaissance، بعد deep dive.
+First fast reconnaissance, then deep dive.
 
 ---
 
 # 91. WHOLE-CORPUS FAST RECON
 
-هر generic blocker مهم:
+Every significant generic blocker:
 
-ابتدا روی corpus بررسی شود.
+must first be checked across the corpus.
 
-هدف:
+Goal:
 
 ```text
 fan-out
 ```
 
-را قبل از local patch بدانیم.
+must be known before any local patch.
 
 ---
 
 # 92. DEEP INVESTIGATION SHOULD FOLLOW IMPACT
 
-اگر:
+If:
 
 ```text
 1 API → 8 apps
 ```
 
-و:
+and:
 
 ```text
 1 API → 1 app
 ```
 
-generic investigation را ابتدا بر اساس actual fan-out و semantic centrality اولویت‌بندی کن.
+prioritize the generic investigation first by actual fan-out and semantic centrality.
 
 ---
 
 # 93. NO ONE-OFF APP HACK
 
-اگر راه‌حل فقط یک APK را درست می‌کند:
+If a solution fixes only one APK:
 
-به foundation اضافه نکن مگر contract عمومی داشته باشد.
+do not add it to the foundation unless it carries a general contract.
 
 ---
 
 # 94. KNOWLEDGE GRAPH
 
-Repository باید یک knowledge graph/index قابل استفاده داشته باشد.
+The repository must have a usable knowledge graph/index.
 
-حداقل relationها:
+At minimum these relations:
 
 ```text
 class
@@ -2213,7 +2177,7 @@ screenshot
 
 # 95. FAILURE → KNOWLEDGE GRAPH
 
-هر failure مهم باید بتواند:
+Every significant failure must be able to quickly locate:
 
 ```text
 failure
@@ -2231,15 +2195,13 @@ source
 upstream
 ```
 
-را سریع پیدا کند.
-
 ---
 
 # 96. WHEN STUCK, FOLLOW THE FILE
 
-اگر runtime در یک class/method گیر کرد:
+If the runtime gets stuck on a class/method:
 
-فوراً:
+immediately read:
 
 ```text
 source file
@@ -2249,55 +2211,53 @@ superclass
 upstream equivalent
 ```
 
-را بخوان.
-
-در failure point سرگردان نمان.
+Do not stay wandering at the failure point.
 
 ---
 
 # 97. SEARCHLIGHT PRINCIPLE
 
-وقتی یک failure پیدا شد:
+When a failure is found:
 
-> در همان نقطه متوقف نشو.
+> Do not stop at that point.
 
-اگر یک root جدید آشکار شد:
+If a new root becomes visible:
 
-investigation را به آن root گسترش بده.
+extend the investigation to that root.
 
 ---
 
 # 98. ROOT-CAUSE EXPANSION
 
-مثلاً:
+For example:
 
 ```text
 NPE
 ```
 
-پیدا شد.
+found.
 
-تمام.
+Done?
 
-نه.
+No.
 
-بررسی کن:
+Check:
 
 ```text
-چرا null؟
-چرا producer null؟
-چرا state null؟
-آیا field write گم شده؟
-آیا dispatch اشتباه است؟
-آیا generic است؟
-چه appهای دیگری affected هستند؟
+Why null?
+Why is the producer null?
+Why is the state null?
+Is a field write missing?
+Is the dispatch wrong?
+Is it generic?
+Which other apps are affected?
 ```
 
 ---
 
 # 99. FIVE-LAYER FAILURE TRIANGULATION
 
-هر مشکل مهم را از پنج زاویه ببین:
+Look at every significant problem from five angles:
 
 ```text
 SOURCE
@@ -2307,27 +2267,27 @@ RUNTIME TRACE
 UPSTREAM CONTRACT
 ```
 
-اگر چهار تا می‌گویند A و یکی B:
+If four say A and one says B:
 
-B را دور نینداز.
+do not throw B away.
 
-اول discrepancy را توضیح بده.
+First explain the discrepancy.
 
 ---
 
 # 100. CURRENT RUNTIME OVERRIDES OLD REPORT
 
-گزارش قبلی—even اگر بسیار دقیق باشد—
+A previous report—even a very precise one—
 
-وقتی binary تغییر کرده:
+when the binary has changed:
 
-دوباره verify شود.
+must be re-verified.
 
 ---
 
 # 101. NO HISTORICAL CLAIM WITHOUT VERSION
 
-هر claim مهم:
+Every significant claim must carry, as far as possible:
 
 ```text
 commit
@@ -2337,15 +2297,13 @@ DEX SHA
 run ID
 ```
 
-تا حد امکان داشته باشد.
-
 ---
 
 # 102. EVIDENCE MUST BE SMALL AND TARGETED
 
-Raw logs بزرگ را در GitHub نریز.
+Do not dump huge raw logs into GitHub.
 
-به‌جایش:
+Instead:
 
 ```text
 summary
@@ -2355,15 +2313,15 @@ first divergence
 source reference
 ```
 
-را ثبت کن.
+record these.
 
-Raw logs فقط local/CI artifact در صورت نیاز.
+Raw logs stay local/CI artifacts when needed.
 
 ---
 
 # 103. GITHUB HYGIENE
 
-ممنوع:
+Forbidden:
 
 ```text
 secrets
@@ -2379,7 +2337,7 @@ generated junk
 
 # 104. PUSH MUST BE VERIFIED
 
-اگر push شد:
+If pushed:
 
 ```text
 local HEAD
@@ -2387,17 +2345,17 @@ remote HEAD
 commit SHA
 ```
 
-را verify کن.
+must be verified.
 
-اگر push نشد:
+If the push failed:
 
 ```text
 PUSH_BLOCKED
 ```
 
-را صریح ثبت کن.
+must be recorded explicitly.
 
-هرگز fake success ننویس.
+Never write a fake success.
 
 ---
 
@@ -2405,7 +2363,7 @@ PUSH_BLOCKED
 
 PAT/API key/token:
 
-هرگز:
+Never let it:
 
 ```text
 log
@@ -2414,15 +2372,13 @@ report
 source
 ```
 
-نشود.
-
-از environment/secure mechanism استفاده شود.
+Use environment/secure mechanisms.
 
 ---
 
 # 106. WORKLOG
 
-Coder باید worklog کوتاه اما واقعی نگه دارد:
+The coder must keep the worklog short but real:
 
 ```text
 WHAT
@@ -2436,9 +2392,9 @@ NEXT
 
 # 107. DO NOT STOP AFTER ONE TODO
 
-وقتی یک blocker حل شد:
+When one blocker is resolved:
 
-بلافاصله:
+immediately:
 
 ```text
 regression
@@ -2446,15 +2402,15 @@ fan-out
 next root
 ```
 
-را بررسی کن.
+must be checked.
 
-کار را با یک commit یا یک test متوقف نکن.
+Do not stop the work at one commit or one test.
 
 ---
 
 # 108. CAMPAIGN STATE
 
-هر campaign باید state مشخص داشته باشد:
+Every campaign must have an explicit state:
 
 ```text
 CURRENT HEAD
@@ -2472,7 +2428,7 @@ NEXT ACTION
 
 # 109. DO NOT LOSE PREVIOUS KNOWLEDGE
 
-قبل از investigation:
+Before the investigation:
 
 ```text
 existing knowledge
@@ -2481,23 +2437,23 @@ existing blockers
 existing evidence
 ```
 
-را بخوان.
+must be read.
 
-Investigation قبلی را بی‌دلیل تکرار نکن.
+Do not repeat a previous investigation without reason.
 
 ---
 
 # 110. REUSE VERIFIED OPEN-SOURCE IMPLEMENTATIONS
 
-اگر upstream implementation درست وجود دارد:
+If a correct upstream implementation exists:
 
-اول بررسی کن:
+first check:
 
 ```text
 Can we adapt/reuse it?
 ```
 
-قبل از:
+before:
 
 ```text
 Can we rewrite it?
@@ -2507,28 +2463,26 @@ Can we rewrite it?
 
 # 111. WINE-DROID LESSON
 
-برای reusable low-level semantics:
+For reusable low-level semantics:
 
-اگر implementation upstream/open-source proven وجود دارد:
+If a correct upstream/open-source-proven implementation exists:
 
-آن را با attribution/evidence بررسی و reuse کن.
+examine and reuse it with attribution/evidence.
 
-هدف:
+Goal:
 
 ```text
 less custom code
 more proven semantics
 ```
 
-است.
-
 ---
 
 # 112. DO NOT CONFUSE CODE REUSE WITH SEMANTIC REUSE
 
-کپی کد کافی نیست.
+Copying code is not enough.
 
-باید بفهمی:
+You must understand:
 
 ```text
 algorithm
@@ -2538,15 +2492,15 @@ contract
 tests
 ```
 
-چرا آن implementation درست است.
+and why that implementation is correct.
 
 ---
 
 # 113. UPSTREAM TESTS ARE GOLD
 
-هرجا upstream test وجود دارد:
+Wherever an upstream test exists:
 
-از آن برای:
+use it for:
 
 ```text
 fixture
@@ -2555,15 +2509,13 @@ edge cases
 regression
 ```
 
-استفاده کن.
-
 ---
 
 # 114. FUZZ / EDGE TESTS
 
-برای low-level runtime:
+For low-level runtime:
 
-تا حد امکان edge cases:
+as far as possible, edge cases:
 
 ```text
 null
@@ -2579,15 +2531,15 @@ wrong type
 wrong index
 ```
 
-را تست کن.
+must be tested.
 
-AOSP compatibility requirements نیز full DEX/bytecode semantics و runtime stability testing را جدی می‌گیرند.
+AOSP compatibility requirements also take full DEX/bytecode semantics and runtime stability testing seriously.
 
 ---
 
 # 115. FLOAT / DOUBLE SEMANTICS
 
-به‌خصوص:
+In particular:
 
 ```text
 NaN
@@ -2600,13 +2552,13 @@ conversion
 const/high16
 ```
 
-را بر اساس JVM/Dalvik/ART semantics بررسی کن.
+must be verified against JVM/Dalvik/ART semantics.
 
 ---
 
 # 116. LONG / DOUBLE WIDTH
 
-هر عملیات wide:
+Every wide operation:
 
 ```text
 register pair
@@ -2617,13 +2569,13 @@ const-wide
 conversion
 ```
 
-را دقیق بررسی کن.
+must be examined precisely.
 
 ---
 
 # 117. RESOURCE / STRING / MUTF-8
 
-برای:
+For:
 
 ```text
 MUTF-8
@@ -2635,25 +2587,25 @@ ARSC
 AXML
 ```
 
-upstream format law را ملاک قرار بده.
+the upstream format law is the standard.
 
 ---
 
 # 118. PARSING MUST BE SEMANTICALLY COMPLETE
 
-Parser موفق فقط parserی نیست که:
+A successful parser is not merely one where:
 
 ```text
 file opens
 ```
 
-بلکه باید اطلاعات لازم برای runtime semantics را درست حفظ کند.
+it must also correctly preserve the information needed for runtime semantics.
 
 ---
 
 # 119. LAYOUT SEMANTICS
 
-برای UI:
+For UI:
 
 ```text
 measure
@@ -2668,13 +2620,13 @@ density
 baseline
 ```
 
-را generic semantics بدان.
+treat as generic semantics.
 
 ---
 
 # 120. RENDERING STATE
 
-Renderer باید stateهای لازم را حفظ کند:
+The renderer must preserve the required states:
 
 ```text
 transform
@@ -2687,17 +2639,17 @@ bitmap
 color
 ```
 
-و state leakage باید قابل تشخیص باشد.
+and state leakage must be detectable.
 
 ---
 
 # 121. INPUT IS REAL BEHAVIOR
 
-اگر app interactive است:
+If the app is interactive:
 
-صرف screenshot کافی نیست.
+a screenshot alone is not enough.
 
-تا حد امکان:
+As far as possible:
 
 ```text
 input
@@ -2708,13 +2660,13 @@ input
 → screenshot
 ```
 
-را prove کن.
+must be proven.
 
 ---
 
 # 122. STATE TRANSITIONS ARE EVIDENCE
 
-برای app interactive:
+For an interactive app:
 
 ```text
 before state
@@ -2723,9 +2675,9 @@ after state
 visible change
 ```
 
-ثبت شود.
+must be recorded.
 
-مثلاً TicTacToe:
+For example TicTacToe:
 
 ```text
 X turn
@@ -2735,15 +2687,15 @@ X turn
 → X wins
 ```
 
-این evidence بسیار قوی‌تر از یک screenshot منفرد است.
+This evidence is far stronger than a single screenshot.
 
 ---
 
 # 123. REGRESSION MATRIX
 
-هر generic fix:
+Every generic fix:
 
-حداقل روی:
+must run at minimum on:
 
 ```text
 fixture
@@ -2751,13 +2703,11 @@ affected app
 previously passing apps
 ```
 
-اجرا شود.
-
 ---
 
 # 124. THREE-RUN RULE
 
-برای claims حساس:
+For sensitive claims:
 
 ```text
 run 1
@@ -2765,13 +2715,13 @@ run 2
 run 3
 ```
 
-و consistency بررسی شود.
+and consistency must be checked.
 
 ---
 
 # 125. REAL IMPROVEMENT MUST BE MEASURED
 
-گزارش:
+Report:
 
 ```text
 Before
@@ -2780,7 +2730,7 @@ Delta
 Evidence
 ```
 
-مثلاً:
+For example:
 
 ```text
 ViewTree: 0 → 39
@@ -2788,33 +2738,31 @@ DrawOps: 0 → 17
 painted pixels: 197 → 18,420
 ```
 
-اما فقط اگر واقعاً measured شده باشد.
+but only if actually measured.
 
 ---
 
 # 126. NO FABRICATED METRICS
 
-هر metric باید از:
+Every metric must come from:
 
 ```text
 actual run
 ```
 
-بیاید.
-
 ---
 
 # 127. NO FAKE “FULLY WORKING”
 
-اصطلاح:
+The term:
 
 ```text
 fully working
 ```
 
-فقط وقتی مجاز است که scope آن دقیقاً تعریف شده باشد.
+is permitted only when its scope is exactly defined.
 
-مثلاً:
+For example:
 
 ```text
 launch + lifecycle + UI + interaction + screenshot
@@ -2824,7 +2772,7 @@ launch + lifecycle + UI + interaction + screenshot
 
 # 128. REPORT LANGUAGE
 
-گزارش نهایی باید distinction داشته باشد:
+The final report must distinguish:
 
 ```text
 IMPLEMENTED
@@ -2842,25 +2790,25 @@ UNKNOWN
 
 # 129. NEVER CALL INVESTIGATION A FIX
 
-اگر فقط root پیدا شد:
+If only the root was found:
 
 ```text
 ROOT-CAUSED
 ```
 
-نه:
+not:
 
 ```text
 FIXED
 ```
 
-اگر fix شد ولی real app proof ندارد:
+If it was fixed but has no real-app proof:
 
 ```text
 IMPLEMENTED / TESTED
 ```
 
-نه:
+not:
 
 ```text
 PROVEN
@@ -2870,27 +2818,25 @@ PROVEN
 
 # 130. NEVER CALL A FIX A ROOT CAUSE
 
-تغییر code:
+A code change is:
 
 ```text
 fix
 ```
 
-است.
-
-علت failure:
+The cause of the failure is:
 
 ```text
 root cause
 ```
 
-این دو جدا ثبت شوند.
+Record the two separately.
 
 ---
 
 # 131. CAMPAIGN END CONDITION
 
-Campaign زمانی تمام است که:
+A campaign is finished when:
 
 ```text
 known root set
@@ -2904,31 +2850,29 @@ regression
 remaining work
 ```
 
-مشخص باشد.
+are all explicit.
 
 ---
 
 # 132. NO “DONE” WITHOUT REMAINING LIST
 
-هر campaign در پایان:
+Every campaign at the end must have both:
 
 ```text
 DONE
 ```
 
-و:
+and:
 
 ```text
 REMAINING
 ```
 
-هر دو را داشته باشد.
-
 ---
 
 # 133. PRIORITY LEVELS
 
-هر finding:
+Every finding:
 
 ```text
 P0
@@ -2937,15 +2881,15 @@ P2
 P3
 ```
 
-بر اساس impact.
+based on impact.
 
-نه بر اساس اینکه fix آسان است یا سخت.
+Not based on whether the fix is easy or hard.
 
 ---
 
 # 134. P0
 
-P0 یعنی:
+P0 means:
 
 ```text
 generic
@@ -2954,7 +2898,7 @@ foundation-blocking
 runtime correctness
 ```
 
-مثلاً semantic corruption در DEX/object/runtime می‌تواند P0 باشد.
+For example, semantic corruption in DEX/object/runtime can be P0.
 
 ---
 
@@ -2996,7 +2940,7 @@ low impact
 
 # 138. DOOZ IS A STRESS TARGET
 
-Dooz باید برای stress کردن:
+Dooz must be used to stress:
 
 ```text
 Compose
@@ -3008,29 +2952,27 @@ lifecycle
 rendering
 ```
 
-استفاده شود.
-
-اما fixها باید generic باقی بمانند.
+but the fixes must remain generic.
 
 ---
 
 # 139. TELEGRAM IS 20%, NOT THE WHOLE PROJECT
 
-Telegram مهم است.
+Telegram is important.
 
-ولی architecture نباید برای Telegram overfit شود.
+But the architecture must not overfit to Telegram.
 
 ---
 
 # 140. GENERAL ANDROID COMPATIBILITY IS 80%
 
-هر subsystem مهم باید از زاویه corpus عمومی بررسی شود.
+Every important subsystem must be examined from the angle of the general corpus.
 
 ---
 
 # 141. OPEN-SOURCE CORPUS STRATEGY
 
-برای هر app:
+For every app:
 
 ```text
 source
@@ -3044,35 +2986,35 @@ screens
 interaction
 ```
 
-به knowledge graph متصل شود.
+must be connected to the knowledge graph.
 
 ---
 
 # 142. CURRENT BASELINE MUST BE PRESERVED
 
-Baseline فعلی پروژه را خراب نکن.
+Do not break the current baseline of the project.
 
-قبل از تغییر:
+Before a change:
 
 ```text
 baseline run
 ```
 
-ثبت کن.
+record.
 
-بعد از تغییر:
+After the change:
 
 ```text
 same baseline
 ```
 
-را دوباره اجرا کن.
+run again.
 
 ---
 
 # 143. CHANGE MUST HAVE PURPOSE
 
-هر commit باید جواب دهد:
+Every commit must answer:
 
 ```text
 What semantic problem does this solve?
@@ -3082,43 +3024,41 @@ What semantic problem does this solve?
 
 # 144. COMMIT COUNT IS NOT PROGRESS
 
-مثلاً:
+For example:
 
 ```text
 11 commits
 ```
 
-به معنی:
+does not mean:
 
 ```text
 11 meaningful fixes
 ```
 
-نیست.
-
 ---
 
 # 145. LOC REDUCTION IS NOT PROGRESS
 
-مثلاً:
+For example:
 
 ```text
 -294 LOC
 ```
 
-فقط وقتی مهم است که:
+only matters when:
 
 ```text
 behavior preserved/improved
 ```
 
-اثبات شده باشد.
+is proven.
 
 ---
 
 # 146. EVIDENCE HIERARCHY
 
-در conflict:
+In conflict:
 
 ```text
 Current reproducible runtime evidence
@@ -3134,13 +3074,13 @@ Old runtime evidence
 Hypothesis
 ```
 
-اما source/upstream contract و runtime evidence باید با هم reconcile شوند؛ هیچ‌کدام نباید بدون توضیح دیگری حذف شود.
+But the source/upstream contract and runtime evidence must be reconciled with each other; neither may be dropped without explaining the other.
 
 ---
 
 # 147. FINAL INVESTIGATION PIPELINE
 
-برای هر failure:
+For every failure:
 
 ```text
 1. Reproduce current
@@ -3173,7 +3113,7 @@ Hypothesis
 
 # 148. FINAL VISUAL INVESTIGATION PIPELINE
 
-برای blank/visual failure:
+For blank/visual failure:
 
 ```text
 Launch Target
@@ -3203,13 +3143,13 @@ PNG
 Pixels
 ```
 
-در اولین نقطه divergence متوقف شو.
+Stop at the first point of divergence.
 
 ---
 
 # 149. FINAL RUNTIME INVESTIGATION PIPELINE
 
-برای execution failure:
+For execution failure:
 
 ```text
 SOURCE
@@ -3241,28 +3181,28 @@ VISIBLE BEHAVIOR
 
 # 150. FINAL ROOT-CAUSE STANDARD
 
-Root Cause فقط زمانی:
+Root Cause is only:
 
 ```text
 CONFIRMED
 ```
 
-است که بتوانی:
+when you can:
 
-1. failure را reproduce کنی؛
-2. exact path را trace کنی؛
-3. first divergence را مشخص کنی؛
-4. upstream/contract را نشان دهی؛
-5. نشان دهی چرا divergence باعث symptom شده؛
-6. generic یا app-specific بودن را مشخص کنی؛
-7. fan-out را بررسی کنی؛
-8. fix/regression evidence داشته باشی.
+1. reproduce the failure;
+2. trace the exact path;
+3. identify the first divergence;
+4. show the upstream/contract;
+5. show why the divergence causes the symptom;
+6. determine whether it is generic or app-specific;
+7. examine fan-out;
+8. have fix/regression evidence.
 
 ---
 
 # 151. FINAL FOUNDATION STANDARD
 
-Foundation Complete فقط وقتی اعلام شود که:
+Foundation Complete may be declared only when:
 
 ```text
 DEX semantics
@@ -3290,39 +3230,39 @@ concurrency
 background components
 ```
 
-در حد scope پروژه:
+within the project scope:
 
-* یا proven باشند؛
-* یا limitation صریح و evidence-backed داشته باشند؛
-* و هیچ P0/P1 generic blocker ناشناخته و بدون classification باقی نمانده باشد.
+* are proven; or
+* have an explicit, evidence-backed limitation; and
+* no unknown, unclassified P0/P1 generic blocker remains.
 
 ---
 
 # 152. THE MOST IMPORTANT RULE
 
-اگر یک failure کوچک پیدا کردی:
+If you find a small failure:
 
-فقط همان failure را patch نکن.
+do not just patch that failure.
 
-بپرس:
+Ask:
 
 ```text
 What generic semantic law was violated?
 ```
 
-سپس:
+Then:
 
 ```text
 Where else is this law used?
 ```
 
-سپس:
+Then:
 
 ```text
 What other apps will this affect?
 ```
 
-سپس:
+Then:
 
 ```text
 Can one upstream-backed fix solve all of them?
@@ -3332,15 +3272,15 @@ Can one upstream-backed fix solve all of them?
 
 # 153. THE SECOND MOST IMPORTANT RULE
 
-اگر یک screenshot خراب دیدی:
+If you see a broken screenshot:
 
-نگو:
+do not say:
 
 ```text
 Renderer broken.
 ```
 
-بگو:
+say:
 
 ```text
 Where did the pipeline first diverge?
@@ -3350,15 +3290,15 @@ Where did the pipeline first diverge?
 
 # 154. THE THIRD MOST IMPORTANT RULE
 
-اگر یک API missing دیدی:
+If you see a missing API:
 
-نگو:
+do not say:
 
 ```text
 Implement API.
 ```
 
-اول بگو:
+First say:
 
 ```text
 Why was this API reached?
@@ -3375,39 +3315,39 @@ How many apps?
 
 # 155. THE FOURTH MOST IMPORTANT RULE
 
-اگر hypothesis قبلی با current run تناقض داشت:
+If a previous hypothesis contradicts the current run:
 
-**hypothesis را اصلاح کن، نه evidence جدید را.**
+**fix the hypothesis, not the fresh evidence.**
 
 ---
 
 # 156. THE FIFTH MOST IMPORTANT RULE
 
-اگر current binary نشان داد نتیجه قبلی stale بوده:
+If the current binary showed the previous conclusion was stale:
 
-نتیجه قبلی باید downgrade شود.
+the previous conclusion must be downgraded.
 
-این failure در investigation نیست؛
+This is not an investigation failure;
 
-این بخشی از evidence discipline است.
+it is part of evidence discipline.
 
 ---
 
 # 157. THE SIXTH MOST IMPORTANT RULE
 
-هر generic semantic bug بالقوه از:
+Every potential generic semantic bug outranks:
 
 ```text
 one-off rendering bug
 ```
 
-مهم‌تر است، اگر fan-out بیشتری داشته باشد.
+if it has more fan-out.
 
 ---
 
 # 158. THE SEVENTH MOST IMPORTANT RULE
 
-هر fix باید:
+Every fix must have:
 
 ```text
 upstream law
@@ -3421,13 +3361,13 @@ real app
 regression
 ```
 
-داشته باشد، تا جایی که امکان‌پذیر است.
+as far as possible.
 
 ---
 
 # 159. THE EIGHTH MOST IMPORTANT RULE
 
-وقتی گیر کردی:
+When stuck:
 
 ```text
 Don't guess.
@@ -3435,7 +3375,7 @@ Don't patch blindly.
 Don't stop.
 ```
 
-بلکه:
+instead:
 
 ```text
 Trace.
@@ -3452,7 +3392,7 @@ Measure fan-out.
 
 # 160. MASTER OPERATING LOOP
 
-تمام کار Coder باید در این loop باشد:
+All coder work must stay inside this loop:
 
 ```text
 RECON
@@ -3490,19 +3430,17 @@ ROADMAP
 NEXT HIGHEST-IMPACT ROOT
 ```
 
-این loop نباید با:
+This loop must not be stopped by:
 
 ```text
-"یک TODO انجام شد"
+"one TODO done"
 ```
-
-متوقف شود.
 
 ---
 
 # 161. FINAL OUTPUT CONTRACT FOR CODER
 
-در پایان هر campaign گزارش باید این ساختار را داشته باشد:
+At the end of every campaign the report must have this structure:
 
 ```text
 CAMPAIGN:
@@ -3535,17 +3473,17 @@ CURRENT RUN:
 
 # 162. NEVER HIDE CONTRADICTIONS
 
-اگر evidence متناقض است:
+If evidence is contradictory:
+
+report:
 
 ```text
 CONTRADICTION
 ```
 
-را گزارش کن.
+Do not drop one side yourself.
 
-خودت یکی را حذف نکن.
-
-توضیح بده:
+Explain:
 
 ```text
 old evidence
@@ -3553,15 +3491,15 @@ vs
 current evidence
 ```
 
-و چرا یکی stale/invalid/current شده است.
+and why one has become stale/invalid/current.
 
 ---
 
 # 163. NO AUTOMATIC RECLASSIFICATION
 
-Classification فقط برای کاهش عدد UNKNOWN انجام نشود.
+Classification must not be done just to lower the UNKNOWN count.
 
-هر reclassification باید:
+Every reclassification must have:
 
 ```text
 new evidence
@@ -3570,34 +3508,32 @@ old classification
 new classification
 ```
 
-داشته باشد.
-
 ---
 
 # 164. NO “SUCCESS” FROM METRIC IMPROVEMENT ALONE
 
-مثلاً:
+For example:
 
 ```text
 197 → 5000 pixels
 ```
 
-خوب است،
+is good,
 
-ولی باید بفهمیم:
+but we must understand:
 
 ```text
-expected UI؟
-correct source semantics؟
-correct DrawOps؟
-correct lifecycle؟
+expected UI?
+correct source semantics?
+correct DrawOps?
+correct lifecycle?
 ```
 
 ---
 
 # 165. BEHAVIORAL SUCCESS
 
-Success واقعی:
+Real success:
 
 ```text
 Expected Android behavior
@@ -3605,13 +3541,13 @@ Expected Android behavior
 MiniAndroid behavior
 ```
 
-در scope مشخص.
+within a defined scope.
 
 ---
 
 # 166. ARCHITECTURAL SUCCESS
 
-یک fix خوب:
+A good fix is:
 
 ```text
 small
@@ -3622,17 +3558,15 @@ observable
 reusable
 ```
 
-است.
-
 ---
 
 # 167. FINAL PRINCIPLE
 
-> **MiniAndroid را با زیاد کردن Stubها کامل نکن.**
+> **Do not complete MiniAndroid by adding stubs.**
 >
-> **MiniAndroid را با کشف و پیاده‌سازی قوانین واقعی Android کامل کن.**
+> **Complete MiniAndroid by discovering and implementing the real laws of Android.**
 
-و روش کار:
+and the way of working:
 
 ```text
 SOURCE
@@ -3656,13 +3590,11 @@ REGRESSION
 PROOF
 ```
 
-است.
-
 ---
 
 # 168. ABSOLUTE RULE
 
-در تمام مدت کار:
+For the entire duration of the work:
 
 ```text
 NO GUESSING
@@ -3677,7 +3609,7 @@ NO DECOMPILER-FIRST WHEN SOURCE EXISTS
 NO STOPPING AFTER ONE TODO
 ```
 
-و همیشه:
+and always:
 
 ```text
 SOURCE-FIRST
@@ -3695,41 +3627,41 @@ GENERIC-FIX-FIRST
 
 # 169. CODER EXECUTION DIRECTIVE
 
-این سند را به‌عنوان **قانون عملیاتی دائمی این campaign** در نظر بگیر.
+Treat this document as the **permanent operating law of this campaign**.
 
-ابتدا وضعیت فعلی پروژه و evidence موجود را بخوان.
+First read the current state of the project and the available evidence.
 
-سپس current binary را pin کن.
+Then pin the current binary.
 
-سپس fast recon انجام بده.
+Then do fast recon.
 
-سپس highest-impact unresolved generic root را انتخاب کن.
+Then choose the highest-impact unresolved generic root.
 
-سپس طبق pipeline بالا تا proof کامل ادامه بده.
+Then follow the pipeline above all the way to complete proof.
 
-اگر در مسیر root جدید و مهم‌تری پیدا شد، investigation را به آن گسترش بده.
+If a newer, more important root appears along the way, extend the investigation to it.
 
-اگر hypothesis قبلی با current evidence شکست خورد، آن را اصلاح کن.
+If a previous hypothesis fails against current evidence, correct it.
 
-اگر evidence قدیمی شد، آن را stale علامت بزن.
+If evidence has gone stale, mark it STALE.
 
-اگر root generic بود، fan-out را اندازه بگیر.
+If the root is generic, measure the fan-out.
 
-اگر fix generic بود، روی fixture و real apps و regression اجرا کن.
+If the fix is generic, run it on fixtures, real apps, and regression.
 
-اگر هنوز proof کافی نیست، صریحاً بنویس:
+If the proof is not yet sufficient, write explicitly:
 
 ```text
 NOT PROVEN
 ```
 
-و هرگز برای زیباتر شدن گزارش آن را:
+and never announce it as:
 
 ```text
 FIXED
 ```
 
-اعلام نکن.
+just to make the report look better.
 
 ---
 

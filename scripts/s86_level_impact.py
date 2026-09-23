@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """s86_level_impact.py — stratified re-execution campaign (user directive:
-"از لول ۰ تا آخرین لول ۵ تا از هر کدام رو انتخاب بکن و نشون بده اینقدر
-پیشرفت چقدر تاثیر داشته").
+"From each, level 0 to the latest level, pick up to 5 and show how much impact the progress has had").
 
 Deterministic sample: up to 5 titles per registered level (L0..L10),
 sorted by package. Every sampled title re-executes at the current HEAD

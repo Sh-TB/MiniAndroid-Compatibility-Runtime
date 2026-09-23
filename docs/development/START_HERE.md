@@ -11,7 +11,7 @@ Restore:
 
 Read (in order):
     docs/history/runtime-project/START_HERE.md
-    docs/build/HELPER_SOURCE_LIST.md                     <- official open-source source & tool intelligence (لیست کمکی, K-43)
+    docs/build/HELPER_SOURCE_LIST.md                     <- official open-source source & tool intelligence (helper list, K-43)
     miniandroid/CODER_HANDOFF_011_1.md        <- entry point after UNIFIED_011.1
     miniandroid/MASTER_RECONCILIATION_011_1.md (what was recovered from where)
     docs/runtime/CROSS_CAMPAIGN_RECOVERY_011_1.md (12-campaign map)

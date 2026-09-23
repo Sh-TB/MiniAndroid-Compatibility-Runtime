@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""s86_minicraft_canonical.py — build the MiniCraft (خانه سازی) canonical GIF
+"""s86_minicraft_canonical.py — build the MiniCraft (House Builder) canonical GIF
 from the S86 build-loop run (terrain -> taps -> DEMO house -> dig) and add the
 registry entry + SHA256SUMS row."""
 import glob
@@ -31,7 +31,7 @@ print("GIF:", OUT, "sha256:", sha, "frames:", len(frames))
 reg_path = f"{ROOT}/docs/evidence/canonical/registry.json"
 reg = json.load(open(reg_path))
 entry = {
-    "title": "MiniCraft (خانه سازی)",
+    "title": "MiniCraft (House Builder)",
     "package": "com.miniandroid.minicraft",
     "type": "game",
     "status": "VERIFIED-INTERACTIVE",
@@ -53,7 +53,7 @@ entry = {
     "root_cause": "none — built on the proven in-house pattern (static "
                   "state law + real Canvas.onDraw + button clicks); renders "
                   "first try at current HEAD with the S86 engine laws",
-    "notes": "S86 user-requested house-building game (خانه سازی). 2D block "
+    "notes": "S86 user-requested house-building game. 2D block "
              "sandbox: LCG terrain (grass/dirt/stone), build cursor walked "
              "with the direction pad, BRICK cycles material (brick/plank/"
              "roof/glass/door), PLACE/DIG edit the world, DEMO auto-builds "

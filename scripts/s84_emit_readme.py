@@ -107,7 +107,7 @@ Regression gates at this HEAD: **battery 26/26 · golden graphics ladder
 {chr(10).join(hero_rows)}
 
 **In-house games built for the runtime** (source in [`games/`](games/)):
-Snake Deluxe · Mini Tetris · 2048 · TicTacToe Deluxe (دوز) — each proven
+Snake Deluxe · Mini Tetris · 2048 · TicTacToe Deluxe — each proven
 with full autoplay interaction loops (chase → death → restart; X → AI →
 O-win → round persistence).
 

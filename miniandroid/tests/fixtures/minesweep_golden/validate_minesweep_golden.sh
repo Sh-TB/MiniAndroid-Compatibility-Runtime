@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# validate_minesweep_golden.sh — S51 finalization "بازی بمب‌یاب XP-style" gate.
+# validate_minesweep_golden.sh — S51 finalization XP-style mine-finder gate.
 #
 # Proves, from runtime-produced frames only:
 #   1. fixture build (ECJ + D8; 9x9 grid, fixed mines, iterative DFS flood

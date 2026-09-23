@@ -1,151 +1,151 @@
-# SOURCE_CHANGES.md — تغییرات سورس‌کد کمپین UNIFIED CODER
+# SOURCE_CHANGES.md — UNIFIED CODER campaign source-code changes
 
 **Task ID:** UNIFIED-CAMPAIGN-2026-08-27
-**Base commit (قبل از تغییرات):** `bbe0ce3` — EXP-098/CM-027: RLottieImageView → RLottieDecoder runtime wiring
-**Commit تغییر (بعد از تغییرات):** `86bd646` — UC-CM-001
-**توضیح:** این سند دقیقاً طبق خواسته شما نوشته شده: هر تغییر سورس + دلیل + شواهد، تا در آینده بتوانید سورس اصلی را بر اساس آن به‌روزرسانی کنید.
+**Base commit (before changes):** `bbe0ce3` — EXP-098/CM-027: RLottieImageView → RLottieDecoder runtime wiring
+**Change commit (after changes):** `86bd646` — UC-CM-001
+**Note:** this document was written exactly per your request: every source change + reason + evidence, so that in the future you can update the main source based on it.
 
 ---
 
-## فهرست تغییرات
+## Change list
 
-| ID | فایل(ها) | نوع | وضعیت رگرسیون |
-|----|----------|-----|----------------|
-| UC-CM-001 | `src/dex/dalvik_engine.cpp`, `src/dex/dalvik_engine.h` | اصلاحیه generic (بستن F012) | ✅ 3/3 SHA یکسان با baseline |
+| ID | File(s) | Type | Regression status |
+|----|---------|------|-------------------|
+| UC-CM-001 | `src/dex/dalvik_engine.cpp`, `src/dex/dalvik_engine.h` | generic fix (closing F012) | ✅ 3/3 SHA identical to baseline |
 
 ---
 
-## UC-CM-001: بازگشت مقدار Type-Aware در catch-all پل API (بستن یافته باز F012)
+## UC-CM-001: Type-Aware return value in the API-bridge catch-all (closing open finding F012)
 
-### شرح مشکل (منشأ یافته)
-این مشکل اول‌بار توسط **Coder 3** به‌عنوان یک الگوی سیستمی «false-success خاموش» ثبت شده بود:
+### Problem description (finding origin)
+This problem was first recorded by **Coder 3** as a systemic "silent false-success" pattern:
 
 ```
-متد ناشناخته → STUBBED + VOID → متعاقباً move-result / move-result-wide → صفرِ خاموش
+unknown method → STUBBED + VOID → subsequently move-result / move-result-wide → silent zero
 ```
 
-یعنی هر متدی که به پل (`bridge_to_api`) می‌رسید و هندلر اختصاصی نداشت، همیشه
-`DalvikValue::make_void()` برمی‌گرداند — حتی اگر امضای واقعی متد در DEX
-`Z` (boolean)، `I` (int)، `J` (long) یا یک reference باشد. نتیجه:
+That is, every method that reached the bridge (`bridge_to_api`) without a dedicated handler always
+returned `DalvikValue::make_void()` — even if the method's real signature in the DEX was
+`Z` (boolean), `I` (int), `J` (long), or a reference. Result:
 
-1. اگر بایت‌کد بعد از فراخوانی `move-result` بزند، یک مقدار VOID به ثبات
-   نشت می‌کند (نوع نامعتبر در ثبات).
-2. `if-nez` / `if-eqz` روی چنین مقداری تصمیم نادرست می‌گیرند.
-3. وضعیت «شکست خاموش» ایجاد می‌شود که در trace دیده نمی‌شود چون
-   status درست (`STUBBED`) ثبت شده ولی مقدار غلط است.
+1. If the bytecode issues `move-result` after the call, a VOID value leaks into the
+   register (an invalid type in the register).
+2. `if-nez` / `if-eqz` make wrong decisions on such a value.
+3. A "silent failure" state is created that is invisible in the trace because
+   the status is correctly recorded (`STUBBED`) but the value is wrong.
 
-توصیهٔ ثبت‌شده در `CODER3_KNOWLEDGE.md` (بخش F012):
+The recommendation recorded in `CODER3_KNOWLEDGE.md` (F012 section):
 > "The real fix: for unknown methods, check return type from proto
 > descriptor and return appropriate default (0 for int, null for objects,
 > false for boolean) instead of always returning void."
 
-### فایل‌ها و محل دقیق تغییر
+### Files and exact change location
 
-#### 1) `miniandroid/src/dex/dalvik_engine.h` — امضای `bridge_to_api`
-پارامتر اختیاری `method_idx_hint` اضافه شد (default = `0xFFFFFFFF` یعنی «بدون hint»):
+#### 1) `miniandroid/src/dex/dalvik_engine.h` — the `bridge_to_api` signature
+An optional `method_idx_hint` parameter was added (default = `0xFFFFFFFF`, meaning "no hint"):
 
 ```cpp
-// قبل:
+// before:
 bool bridge_to_api(const std::string& class_name, const std::string& method,
                    const std::vector<DalvikValue>& args, DalvikValue& result,
                    ApiCallTrace::Status& status);
 
-// بعد:
+// after:
 bool bridge_to_api(const std::string& class_name, const std::string& method,
                    const std::vector<DalvikValue>& args, DalvikValue& result,
                    ApiCallTrace::Status& status,
                    uint32_t method_idx_hint = 0xFFFFFFFFu);
 ```
 
-**سازگاری:** چون پارامتر default دارد، هیچ caller قدیمی نمی‌شکند.
+**Compatibility:** because the parameter has a default, no old caller breaks.
 
-#### 2) `miniandroid/src/dex/dalvik_engine.cpp` — catch-all انتهای `bridge_to_api`
-بلوک پایانی (`// Default: stubbed but not crashing`) جایگزین شد:
+#### 2) `miniandroid/src/dex/dalvik_engine.cpp` — the catch-all at the end of `bridge_to_api`
+The final block (`// Default: stubbed but not crashing`) was replaced:
 
 ```cpp
-// جدید (خلاصه):
-status = ApiCallTrace::Status::STUBBED;          // مثل قبل — صادقانه
+// new (summary):
+status = ApiCallTrace::Status::STUBBED;          // as before — honest
 if (method_idx_hint != 0xFFFFFFFFu) {
     const std::string proto = resolve_method_proto_for_dex(method_idx_hint, current_dex_index_);
     const size_t rparen = proto.rfind(')');
     if (rparen != std::string::npos && rparen + 1 < proto.size()) {
         const std::string ret = proto.substr(rparen + 1);   // return descriptor
-        // V→void(قدیم) | Z→false | B/S/C/I→0 | J→0L | F/D→0.0 | L…/[…→null
-        ... // map به DalvikValue::make_bool/make_int/make_long/make_null/...
+        // V→void(old) | Z→false | B/S/C/I→0 | J→0L | F/D→0.0 | L…/[…→null
+        ... // map to DalvikValue::make_bool/make_int/make_long/make_null/...
         return true;
     }
 }
-result = DalvikValue::make_void();   // fallback: رفتار قدیمی
+result = DalvikValue::make_void();   // fallback: old behavior
 return true;
 ```
 
-**نکات کلیدی:**
-- Status همچنان `STUBBED` می‌ماند → صادق‌بودن bookkeeping حفظ شده
-  (ما success جعلی نمی‌سازیم؛ فقط «مقدار پیش‌فرض درست‌نوع» برمی‌گردانیم).
-- `resolve_method_proto_for_dex` (موجود از EXP-088/F016) پروتوی واقعی callee
-  را از `proto_ids` همان DEX درمی‌آورد؛ fallback خودِ آن تابع `()V` است که
-  همان رفتار قدیمی را می‌دهد → بدون ریسک اضافه.
-- Reference types (`L...;` و آرایه‌ها) → `make_null()` (معادل «بدون نتیجه»
-  در ART برای متد ناموجود، بدون crash).
+**Key points:**
+- Status remains `STUBBED` → the honesty of the bookkeeping is preserved
+  (we do not fabricate success; we only return a "correctly-typed default value").
+- `resolve_method_proto_for_dex` (present since EXP-088/F016) fetches the callee's real
+  proto from the `proto_ids` of the same DEX; that function's own fallback is `()V`, which
+  gives the same old behavior → no added risk.
+- Reference types (`L...;` and arrays) → `make_null()` (equivalent to "no result"
+  in ART for a missing method, without crashing).
 
-#### 3) `miniandroid/src/dex/dalvik_engine.cpp` — ۶ call-site به‌روزرسانی شد
-همه جاهایی که `bridge_to_api` صدا زده می‌شود حالا `method_idx` را هم پاس می‌دهند:
+#### 3) `miniandroid/src/dex/dalvik_engine.cpp` — 6 call sites updated
+Every place that calls `bridge_to_api` now also passes `method_idx`:
 
-| خط (تقریبی) | تابع دربرگیرنده | تغییر |
-|--------------|------------------|-------|
+| Line (approx) | Enclosing function | Change |
+|---------------|--------------------|--------|
 | 4817 | `execute_method_internal` | `..., status, method_idx)` |
-| 7230 | `execute_invoke` (مسیر اصلی virtual/interface/static) | `..., api_status, method_idx)` |
+| 7230 | `execute_invoke` (the main virtual/interface/static path) | `..., api_status, method_idx)` |
 | 7398 | super-call path (`<super>`) | `..., api_status, method_idx)` |
 | 7561 | `execute_invoke_direct` | `..., status, method_idx)` |
 | 7875 | `execute_invoke_static` | `..., status, method_idx)` |
 | 7969 | `execute_invoke_interface` | `..., status, method_idx)` |
 
-### چرا این تغییر امن است (تحلیل ریسک)
-1. **بدون hint** → دقیقاً رفتار قبلی (void). فقط invoke-site هایی که method_idx
-   دارند (و همه دارند) مسیر جدید را می‌روند.
-2. مسیر جدید فقط روی متدهایی اجرا می‌شود که **قبلاً هم fail می‌شدند**
-   (هیچ هندلر موفقی عوض نمی‌شود).
-3. اگر پروتو resolve نشود → fallback تابع resolver خودش `"()V"` می‌دهد →
-   همان void قدیمی.
-4. مقادیر جدید (0/false/null) همان مقادیری هستند که در واقع ART برای
-   «متد مفقود» در سطح register semantic نزدیک‌تر است؛ CM-008 قبلاً
-   zero-truthiness برای BOOLEAN/BYTE/SHORT/CHAR را درست کرده و با آن هم‌خوان است.
+### Why this change is safe (risk analysis)
+1. **Without a hint** → exactly the previous behavior (void). Only invoke sites that have a
+   method_idx (and all of them do) take the new path.
+2. The new path only executes on methods that **were already failing**
+   (no successful handler changes).
+3. If the proto does not resolve → the resolver function's fallback returns `"()V"` →
+   the same old void.
+4. The new values (0/false/null) are what ART actually gets closest to at the register-semantic
+   level for a "missing method"; CM-008 already fixed zero-truthiness for BOOLEAN/BYTE/SHORT/CHAR
+   and this is consistent with it.
 
-### شواهد (EVIDENCE)
+### EVIDENCE
 
-#### APK واقعی — Telegram **12.10.1** (versionCode 70389، 5 DEX، 73MB)
-- این نسخه **هرگز قبلاً تست نشده بود** (پایگاه دانش روی 10.14.5 ساخته شده بود)
-  → اولین شواهد forward-compatibility.
-- SHA256 APK: `f5e1192725772960cc94b83e54ffd8939f876b2b6e5f21d4a8537eb6fcba50e6`
-- **قبل از تغییر:** ۳ اجرا → هر سه `06fb40da16b1f473980cfea9...`، exit=0،
-  41233 non-white pixel، 12582 trace event، 0 خطا
-- **بعد از تغییر:** ۳ اجرا → هر سه `06fb40da16b1f473980cfea9...` (یکسان با قبل)،
-  exit=0، همان pixel count، همان 12582 event، 0 خطا
-- نتیجه: **صفر رگرسیون** روی full-chain اجرای واقعی (launch→login→SMS screen→render).
+#### Real APK — Telegram **12.10.1** (versionCode 70389, 5 DEX, 73MB)
+- This version had **never been tested before** (the knowledge base had been built against 10.14.5)
+  → the first forward-compatibility evidence.
+- APK SHA256: `f5e1192725772960cc94b83e54ffd8939f876b2b6e5f21d4a8537eb6fcba50e6`
+- **Before the change:** 3 runs → all three `06fb40da16b1f473980cfea9...`, exit=0,
+  41233 non-white pixels, 12582 trace events, 0 errors
+- **After the change:** 3 runs → all three `06fb40da16b1f473980cfea9...` (identical to before),
+  exit=0, same pixel count, same 12582 events, 0 errors
+- Result: **zero regression** on the full-chain real execution (launch→login→SMS screen→render).
 
-#### محیط ساخت
-- g++ 14.2.0 (Debian)، `make -j4` → BUILD SUCCESS بدون error جدید
-- rlottie بازسازی شد از منبع Samsung/rlottie (SHA `43075538`) به روش static manual build
-  (meson در sandbox نبود) — اسکریپت: `scripts/build_rlottie.sh` (بیرون repo)
+#### Build environment
+- g++ 14.2.0 (Debian), `make -j4` → BUILD SUCCESS with no new errors
+- rlottie was rebuilt from the Samsung/rlottie source (SHA `43075538`) via a static manual build
+  (meson was not in the sandbox) — script: `scripts/build_rlottie.sh` (outside the repo)
 
-### نحوه اعمال روی سورس اصلی (برای آینده)
-دو راه:
+### How to apply to the main source (for the future)
+Two ways:
 1. **patch file:** `0001-UC-CM-001-Type-aware-STUBBED-defaults-in-bridge_to_a.patch`
-   → `git apply` یا `git am` روی commit `bbe0ce3` یا هر HEAD بعدی (تا وقتی
-   تابع `bridge_to_api` و catch-all انتهایی بازنویسی نشده باشند).
-2. **دستی:** سه بخش بالا (header، catch-all، ۶ call-site) — کل diff حدود ۷۰ خط.
+   → `git apply` or `git am` onto commit `bbe0ce3` or any later HEAD (as long as
+   the `bridge_to_api` function and the final catch-all have not been rewritten).
+2. **Manually:** the three sections above (header, catch-all, 6 call sites) — the whole diff is about 70 lines.
 
 ---
 
-## تغییرات non-source (تجهیزات/محیط) — برای بازتولید
+## Non-source changes (equipment/environment) — for reproduction
 
-| مورد | شرح |
-|------|-----|
-| rlottie rebuild | clone عمیق-1 از Samsung/rlottie + `config.h` دستی (`LOTTIE_THREAD_SUPPORT=1`, `LOTTIE_CACHE_SUPPORT=0`) + کامپایل ۳۵ TU به `librlottie.a` |
-| Telegram APK | دانلود از `telegram.org/dl/android/apk` → نسخه 12.10.1؛ **HASH MISMATCH** با manifest (10.14.5) — version drift، واقعی و قابل‌استفاده |
-| فونت تست فارسی | DejaVuSans.ttf (پشتیبانی عربی پایه) — برای تولید واقعی: Vazirmatn/Noto Naskh پیشنهاد می‌شود |
+| Item | Description |
+|------|-------------|
+| rlottie rebuild | depth-1 clone of Samsung/rlottie + a hand-made `config.h` (`LOTTIE_THREAD_SUPPORT=1`, `LOTTIE_CACHE_SUPPORT=0`) + compiling 35 TU into `librlottie.a` |
+| Telegram APK | downloaded from `telegram.org/dl/android/apk` → version 12.10.1; **HASH MISMATCH** vs the manifest (10.14.5) — version drift, real and usable |
+| Persian test font | DejaVuSans.ttf (basic Arabic support) — for real production: Vazirmatn/Noto Naskh recommended |
 
-## یافته‌های جعبه‌ابزار (برای شفافیت)
-- خروجی grep در برخی فایل‌ها به‌خاطر الگوی `ids[method_idx]` دچار artifact
-  ترمینال شد (`ESC[m`) — فایل سالم بود؛ با خواندن بایت-به-بایت python تأیید شد.
-  عبرت: قبل از هر تغییر مبتنی بر grep، raw bytes را تأیید کنید (همان درس C2-F11).
+## Toolchain findings (for transparency)
+- The grep output for some files suffered a terminal artifact (`ESC[m`) because of the
+  `ids[method_idx]` pattern — the file was healthy; verified by reading byte-by-byte in python.
+  Lesson: before any grep-based change, verify the raw bytes (the same C2-F11 lesson).

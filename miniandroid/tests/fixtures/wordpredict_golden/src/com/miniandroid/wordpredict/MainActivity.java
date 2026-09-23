@@ -1,6 +1,6 @@
 /*
  * MiniAndroid WORDPREDICT-GOLDEN fixture — S51 finalization
- * "پیش‌بینی کلمات" (word prediction): a simple quiz app class.
+ * "word prediction": a simple quiz app class.
  *
  * Five questions; each shows a sentence with a blank and four candidate
  * word buttons (candidates re-labeled per question). A correct tap scores
