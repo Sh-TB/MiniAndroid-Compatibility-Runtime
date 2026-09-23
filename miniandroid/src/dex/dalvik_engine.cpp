@@ -19237,7 +19237,30 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             };
             bool ok = false;
             int32_t c = 0;
-            if (s.size() == 7 && s[0] == '#') {
+            // ── S89 F-NEW-187: AOSP named-color table ────────────────────
+            // AOSP Color.java parses the 12 named colors BEFORE the #hex
+            // grammar (sColorNameMap static block — the EXACT table; adding
+            // HTML extras like "aqua" would DIVERGE from AOSP, which throws
+            // for them). Evidence (S89 batch): apps pass literal "red" and
+            // the engine threw IllegalArgumentException "Unknown color:
+            // red", killing the theme chain.
+            static const struct { const char* name; int32_t argb; } kNamed[] = {
+                {"black", (int32_t)0xFF000000},
+                {"darkgray", (int32_t)0xFF444444},
+                {"gray", (int32_t)0xFF888888},
+                {"lightgray", (int32_t)0xFFCCCCCC},
+                {"white", (int32_t)0xFFFFFFFF},
+                {"red", (int32_t)0xFFFF0000},
+                {"green", (int32_t)0xFF00FF00},
+                {"blue", (int32_t)0xFF0000FF},
+                {"yellow", (int32_t)0xFFFFFF00},
+                {"cyan", (int32_t)0xFF00FFFF},
+                {"magenta", (int32_t)0xFFFF00FF},
+            };
+            for (const auto& nc : kNamed) {
+                if (s == nc.name) { c = nc.argb; ok = true; break; }
+            }
+            if (!ok && s.size() == 7 && s[0] == '#') {
                 int32_t rgb = hexv(s.substr(1));
                 if (rgb >= 0) { c = 0xFF000000 | rgb; ok = true; }
             } else if (s.size() == 9 && s[0] == '#') {
@@ -19651,6 +19674,80 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // "has no OnClickListener"). Engine mapping: the per-run id table IS
     // the inflated tree's android:id names → ViewShadow reverse lookup.
     // ────────────────────────────────────────────────────────────────────
+    // ────────────────────────────────────────────────────────────────────
+    // S89 F-NEW-186 — Resources.obtainTypedArray(int resid) → TypedArray.
+    // AOSP Resources.obtainTypedArray returns a TypedArray for an array
+    // resource — NEVER null. The engine covered Context.obtainStyled-
+    // Attributes (F-093/F-NEW-175) but NOT this Resources entry point —
+    // evidence (S89 batch, patolli): ThemeManager.setGameTheme called
+    // Resources.obtainTypedArray → REC-MISS null → TypedArray.getColor
+    // null-receiver NPE at APP BOUNDARY. LAW: materialize the same F-036
+    // heap-array TypedArray convention; theme/attr resolution for a resId
+    // array is answered positionally (data 0 = unresolved) — the reader
+    // law then serves getColor/getInt/hasValue deterministically.
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/content/res/Resources;" &&
+        method == "obtainTypedArray" && !args.empty()) {
+        int32_t n = 1;  // AOSP array resources resolve to >=1 entry
+        uint32_t ta_id = heap_.allocate("Landroid/content/res/TypedArray;",
+                                        pc_, 0);
+        heap_.set_object_field(ta_id, "__array_length__",
+                               DalvikValue::make_int(n));
+        for (int32_t i = 0; i < n; ++i) {
+            heap_.set_object_field(ta_id, "array[" + std::to_string(i) + "]",
+                                   DalvikValue::make_int(0));
+        }
+        DalvikValue av;
+        av.type = DalvikType::OBJECT_REF;
+        av.object_id = ta_id;
+        av.class_desc = "Landroid/content/res/TypedArray;";
+        result = av;
+        std::cerr << "[F-NEW-186] Resources.obtainTypedArray -> TypedArray(len="
+                  << n << ")" << std::endl;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────
+    // S89 F-NEW-185 — android.os.StrictMode builder family. AOSP
+    // StrictMode$ThreadPolicy$Builder: <init>() stores a policy, every
+    // modifier (permitAll/permitNetworkOperations/penaltyLog/...) returns
+    // THIS builder, build() materializes an immutable ThreadPolicy object.
+    // Apps call StrictMode.setThreadPolicy(new Builder().permitAll()
+    // .build()) in onCreate — the engine had NO law: <init> REC-MISS →
+    // null receiver → permitAll NPE at APP BOUNDARY (S89 batch: termbin).
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/os/StrictMode$ThreadPolicy$Builder;" ||
+        class_name == "Landroid/os/StrictMode$VmPolicy$Builder;") {
+        if (method == "<init>") {
+            // constructor — the bridge keeps the heap receiver; void return
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "build") {
+            uint32_t pol_id = heap_.allocate(
+                class_name == "Landroid/os/StrictMode$ThreadPolicy$Builder;"
+                    ? "Landroid/os/StrictMode$ThreadPolicy;"
+                    : "Landroid/os/StrictMode$VmPolicy;",
+                pc_, 0);
+            DalvikValue av;
+            av.type = DalvikType::OBJECT_REF;
+            av.object_id = pol_id;
+            av.class_desc = class_name ==
+                "Landroid/os/StrictMode$ThreadPolicy$Builder;"
+                    ? "Landroid/os/StrictMode$ThreadPolicy;"
+                    : "Landroid/os/StrictMode$VmPolicy;";
+            result = av;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // every modifier answers THIS (the receiver) — chainable builder
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+            result = args[0];
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
     if (class_name == "Landroid/content/res/Resources;" &&
         method == "getIdentifier" && args.size() >= 3 &&
         args[1].type == DalvikType::STRING_REF) {
