@@ -5,6 +5,11 @@
 > game has PROVEN on MiniAndroid. Historical per-wave narrative
 > moved to [ACHIEVEMENTS_WAVE_HISTORY.md](history/ACHIEVEMENTS_WAVE_HISTORY.md).
 >
+> **Navigation hub (S90):** [docs/achievements/INDEX.md](achievements/INDEX.md)
+> → [GAMES_WITH_GIFS.md](achievements/GAMES_WITH_GIFS.md) ·
+> [APPS_EXECUTED.md](achievements/APPS_EXECUTED.md) ·
+> [ASSET_MANIFEST.json](achievements/ASSET_MANIFEST.json)
+>
 > Chain (no broken links):
 > `Title → Source → APK+SHA → Execution session → Achievement →
 >  ONE canonical screenshot → root-cause issue → README summary`
