@@ -165,3 +165,82 @@
 | F-NEW-161 compose internals | OPEN (P4 scope) | ~24-title fan-out with first-divergence signatures |
 | F-NEW-162 androidx adapter fallback | OPEN | 12-title fan-out, verified packaging state |
 | EVID-CLASS-S84 evidence quarantine | ENFORCED | validator R5 + 20-title demotion |
+
+## F-NEW-171..174 — the near-blank family root-cause cluster — **FIXED (S87)**
+
+- **Method (user directive):** source-first — every probe title's upstream
+  repository was fetched and read BEFORE attacking the engine, then the
+  fresh HEAD execution logs were traced to the first divergence (no more
+  guessing from stale S84/S85 logs).
+- **F-NEW-171 APXACT intercept depth underflow** — the S83
+  `[S83-APXACT]` semantic-shadow intercepts (onCreate/setContentView/
+  findViewById) sit BEFORE the `try_recursive_invoke` `recursion_depth_++`
+  yet each decremented `recursion_depth_` unconditionally. One depth unit
+  leaked per hit; when the activity was dispatched at depth 0 (U0113
+  handler path) the uint32 wrapped to 0xFFFFFFFF and the recursion guard
+  then dropped EVERY subsequent frame (setContentView, `<init>`,
+  onStart/onResume, startActivity) — the engine-default near-blank shell
+  class. S83 winners masked the leak (depth ≥ 1). Fix: intercepts no
+  longer decrement (they answer without consuming a frame).
+- **F-NEW-172 FragmentActivity super-chain shadow** — with onCreate
+  intercepted, the FragmentController field initializers never ran; the
+  REAL `FragmentActivity.onStart` bytecode NPE'd at
+  `FragmentController.noteStateNotSaved` pc=4 (receiver null). Fix: the
+  sanctioned framework-boundary contract now covers the whole void
+  super-chain (onStart/onResume/onPause/onStop/onDestroy/
+  onSaveInstanceState/onBackPressed); app-level overrides still execute.
+- **F-NEW-173 ViewConfiguration object law** — `ViewConfiguration.get(
+  Context)` returned null; androidx ViewPager.<init> NPE'd at
+  `getScaledPagingTouchSlop` during the inflate path. Fix:
+  get-or-create-singleton + AOSP-scaled getter laws (density 2.625
+  device profile: touchSlop 21, pagingSlop 42, doubleTap 263, edge 32,
+  window 66, minFling 131, maxFling 21000, …) + static timeout laws
+  (longPress 500 / tap 100 / doubleTap 300).
+- **F-NEW-174 beneath-finisher law** — `Activity.finish()` captured no
+  identity, so `SplashActivity.finish()` after `startActivity(Main)`
+  destroyed the freshly-resumed TOP (Main) and then "restored" the dead
+  Splash (G08 restore re-dispatching onRestart/onStart/onResume to a
+  destroyed record). Fix: the finish shadow records the finisher's heap
+  id/class; a non-current finisher gets onDestroy directly, its stack
+  record is erased, the top stays RESUMED, no restore.
+- **A/B proof (10-title S87 source-first probe corpus, obs+click):**
+  `org.secuso.privacyfriendlydame` uniq 2 → **213** (real
+  TutorialActivity + Skip/Next buttons painted, real navigation);
+  `org.secuso.privacyfriendly2048` uniq 2 → **160** (tutorial screen
+  painted); `io.github.hathibelagal.mykanji` + `eu.veldsoft.no.thanks`
+  now inflate real view trees (WebView/ConstraintLayout nodes) instead
+  of silent depth-cascade blanks. Gates unchanged: battery 26/26,
+  golden ladder 10/10 (incl. l6 GL clear-color pixel check), S83-B2 2/2.
+- **Fan-out:** explains the depth=4294967295 RECURSION-LIMIT signature
+  (19–43 drops per title) across the secuso pfacore family (×8),
+  mykanji, no.thanks and every other splash-navigating near-blank record;
+  the remaining OBSERVED records carry per-title next-divergence notes in
+  the registry (Glide loop, WebView asset content, TypedArray null,
+  kotlin-reflect CNFE, SQLite cursor, libGDX frontier).
+
+## F-NEW-175 — obtainStyledAttributes → null TypedArray — **OPEN (S87)**
+
+- **Signature:** `[SYNTH-EXC] TypedArray.hasValue / .getIndexCount on a
+  null object reference` — `obtainStyledAttributes` variants answer null
+  under the engine.
+- **Observed fan-out (S87 probe):** `jwtc.android.chess` (vc298),
+  `eu.veldsoft.no.thanks` (vc1). Classic View apps commonly style their
+  custom views through this path.
+- **Next step:** implement the TypedArray object law (real heap object,
+  index/count/attr resolution against the ARSC theme) — then re-probe the
+  two titles and any View-styled near-blank records.
+
+## S87 probe next-divergence ledger (honest OPEN items)
+
+| Title | Next divergence (first, at S87 HEAD) | Family |
+|---|---|---|
+| org.secuso.privacyfriendly2048 | F084 infinite-loop halt in `com.bumptech.glide.load.engine…` + GeneratedAppGlideModuleImpl CNFE | Glide |
+| org.secuso.privacyfriendlydame | ViewPager adapter page text/icon not painted (TEXT_PIXELS=0) | ViewPager content |
+| io.github.hathibelagal.mykanji | WebView local-asset HTML not rendered | WebView content |
+| eu.veldsoft.no.thanks | F-NEW-175 + savedstate Recreator_LifecycleAdapter CNFE | F-NEW-175 |
+| de.tobiasbielefeld.solitaire | Context.getResources on null in support chain | f141 |
+| jwtc.android.chess | F-NEW-175 + Field.get null (obfuscated clinit) | F-NEW-175 |
+| com.galaxyrio.sudokusolver | kotlin.reflect ReflectionFactoryImpl CNFE | R350-FORNAME |
+| com.newsblur | Cursor.moveToNext on null (SQLite query) | SQLite |
+| app.halma | libGDX AndroidInput.onResume null | F-NEW-157 GL frontier |
+| com.sidhant.bubbleshooter | silent blank, zero exceptions, zero nodes | unlocalized |

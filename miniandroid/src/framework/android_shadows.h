@@ -822,12 +822,40 @@ public:
     // REQUESTS destruction; the runtime performs the PAUSED → STOPPED →
     // DESTROYED cascade at the next frame boundary. The shadow records the
     // request; the ExecutionEngine consumes it (take_pending_finish).
+    // F-NEW-174 (S87): the FINISHER's identity is captured — the shadow is
+    // a process-wide singleton, so a finish() from a NON-current activity
+    // (the classic SplashActivity.finish() after startActivity(Main)) must
+    // not be applied to the CURRENT top. AOSP: an already-STOPPED finisher
+    // gets onDestroy directly; the resumed top is untouched.
     void request_finish() { pending_finish_ = true; }
+    void request_finish(uint32_t oid, const std::string& cls) {
+        pending_finish_ = true;
+        pending_finish_obj_id_ = oid;
+        pending_finish_cls_ = cls;
+    }
     bool pending_finish() const { return pending_finish_; }
     bool take_pending_finish() {
         bool p = pending_finish_;
         pending_finish_ = false;
+        if (!p) {
+            pending_finish_obj_id_ = 0;
+            pending_finish_cls_.clear();
+        }
         return p;
+    }
+    uint32_t pending_finisher_obj_id() const { return pending_finish_obj_id_; }
+    const std::string& pending_finisher_cls() const { return pending_finish_cls_; }
+    // G08: erase a specific (beneath, already dead) record from the task
+    // stack by heap id — the finisher-beneath law removes its record
+    // WITHOUT restoring anything (the resumed top stays on top).
+    bool erase_record_by_obj_id(uint32_t oid) {
+        for (auto it = stack_.begin(); it != stack_.end(); ++it) {
+            if (it->obj_id == oid) {
+                stack_.erase(it);
+                return true;
+            }
+        }
+        return false;
     }
 
     // EXP-087 Phase 3 (B2 FIX): Set the APK path so setContentView(int)
@@ -852,6 +880,10 @@ private:
     int32_t layout_resource_id_ = 0;
     LifecycleState state_ = LifecycleState::NONE;
     bool pending_finish_ = false;   // G07: finish() requested, not yet applied
+    // F-NEW-174 (S87): identity of the activity that called finish() —
+    // 0/empty when the legacy path (unknown receiver) requested it.
+    uint32_t pending_finish_obj_id_ = 0;
+    std::string pending_finish_cls_;
     // G08: task stack (bottom..top; the ROOT activity is stack_[0] once a
     // second activity pushes — the current activity is NOT in the stack).
     std::vector<ActivityRecord> stack_;

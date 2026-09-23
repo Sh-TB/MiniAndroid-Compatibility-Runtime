@@ -4569,9 +4569,39 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                       << " (appcompat delegate state machine bypassed at the"
                          " framework boundary; app onCreate continues)"
                       << std::endl;
+            // F-NEW-171 (S87): this intercept sits BEFORE the
+            // try_recursive_invoke recursion_depth_++ — the shadow answers
+            // at the framework boundary without consuming a frame, so it
+            // must NOT decrement. The unconditional decrement leaked one
+            // depth unit per hit; when the activity was dispatched at
+            // depth 0 (U0113 handler path) the uint32 wrapped to
+            // 0xFFFFFFFF and the recursion guard then dropped EVERY
+            // subsequent frame (setContentView, <init>, onStart/onResume,
+            // startActivity) — the engine-default near-blank shell class.
+            // A/B: secuso dame/2048, mykanji, no.thanks blank→rendered.
             return_val = DalvikValue::make_void();
             last_invoke_return_ = return_val;
-            recursion_depth_--;
+            return true;
+        }
+        // F-NEW-172 (S87): the FragmentActivity super-chain beyond onCreate.
+        // onCreate was intercepted, so the FragmentController/
+        // mFragmentLifecycleRegistry field initializers never ran; the
+        // REAL FragmentActivity.onStart/onResume/onPause/onStop/onDestroy
+        // bytecode then NPEs on the host's null FragmentController
+        // (FragmentController.noteStateNotSaved pc=4 receiver=null) and
+        // the app dies at the same boundary onCreate was fixed for.
+        // AOSP-observable contract: the androidx super-chain lifecycle
+        // methods are void framework calls; the shadow host has no
+        // fragment transactions, so the delegate's observable work is
+        // no-op at the framework boundary while the APP-level override
+        // continues (same sanctioned contract as the onCreate shadow).
+        if (method_name == "onStart" || method_name == "onResume" ||
+            method_name == "onPause" || method_name == "onStop" ||
+            method_name == "onDestroy" ||
+            method_name == "onSaveInstanceState" ||
+            method_name == "onBackPressed") {
+            return_val = DalvikValue::make_void();
+            last_invoke_return_ = return_val;
             return true;
         }
         if (method_name == "setContentView" && args.size() >= 2) {
@@ -4592,7 +4622,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                           << " → ActivityShadow U007 inflate path" << std::endl;
                 return_val = call_result_to_dalvik(cr);
                 last_invoke_return_ = return_val;
-                recursion_depth_--;
+                // F-NEW-171: no decrement here — see onCreate note above.
                 return true;
             }
             // shadow miss → honest fall-through to the real bytecode
@@ -4612,7 +4642,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             if (cr.handled) {
                 return_val = call_result_to_dalvik(cr);
                 last_invoke_return_ = return_val;
-                recursion_depth_--;
+                // F-NEW-171: no decrement here — see onCreate note above.
                 return true;
             }
         }
@@ -24396,6 +24426,94 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             heap_.set_object_field(pt, "y", DalvikValue::make_int(1920));
         }
         result = DalvikValue::make_void();
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ── S87 §F-NEW-173: android.view.ViewConfiguration object law ────────
+    // AOSP android.view.ViewConfiguration.get(Context) returns the per-
+    // display singleton — NEVER null (ViewConfiguration.java: instances
+    // are cached in sConfigurations). Ground truth (S87 probes): androidx
+    // ViewPager.<init> runs
+    //   ViewConfiguration.get(context) → configuration.getScaledPagingTouchSlop()
+    // with a null receiver the ViewPager constructor NPE'd
+    // (ViewConfiguration.getScaledPagingTouchSlop on null) at the
+    // setContentView inflate path — the secuso near-blank family's third
+    // divergence. RecyclerView/ScrollView/GestureDetector read the same
+    // object (fan-out).
+    // Scaled values follow the AOSP ViewConfiguration.java constants
+    // multiplied by the engine device-profile density 2.625 (420dpi),
+    // rounded half-up — the same law Resources.getDisplayMetrics /
+    // Display.getMetrics use.
+    if (method == "get" && class_name == "Landroid/view/ViewConfiguration;") {
+        DalvikValue vc = get_or_create_singleton("Landroid/view/ViewConfiguration;");
+        auto set_i = [&](const char* f, int32_t v) {
+            heap_.set_object_field(vc.object_id, f, DalvikValue::make_int(v));
+        };
+        // AOSP dp constants × density 2.625, (int)(x + 0.5f)
+        set_i("mScaledTouchSlop", 21);            // 8dp
+        set_i("mScaledPagingTouchSlop", 42);      // 16dp
+        set_i("mScaledDoubleTapTouchSlop", 263);  // 100dp
+        set_i("mScaledEdgeSlop", 32);             // 12dp
+        set_i("mScaledWindowTouchSlop", 66);      // 25dp
+        set_i("mMinimumFlingVelocity", 131);      // 50dp
+        set_i("mMaximumFlingVelocity", 21000);    // 8000dp
+        set_i("mScaledFadingEdgeLength", 32);     // 12dp (FADE_EDGE_LENGTH)
+        set_i("mScrollbarSize", 10);              // 4dp
+        result = vc;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (class_name == "Landroid/view/ViewConfiguration;" &&
+        method.rfind("getScaled", 0) == 0) {
+        // AOSP instance getters — return the scaled law values directly.
+        int32_t v = 0;
+        if (method == "getScaledTouchSlop") v = 21;
+        else if (method == "getScaledPagingTouchSlop") v = 42;
+        else if (method == "getScaledDoubleTapSlop" ||
+                 method == "getScaledDoubleTapTouchSlop") v = 263;
+        else if (method == "getScaledEdgeSlop") v = 32;
+        else if (method == "getScaledWindowTouchSlop") v = 66;
+        else if (method == "getScaledMinimumFlingVelocity") v = 131;
+        else if (method == "getScaledMaximumFlingVelocity") v = 21000;
+        else if (method == "getScaledFadingEdgeLength") v = 32;
+        else if (method == "getScaledScrollBarSize") v = 10;
+        else if (method == "getScaledHoverSlop") v = 21;
+        else if (method == "getScaledMinimumScalingSpan") v = 71;
+        else if (method == "getScaledMaxScrollDuration") v = 250;
+        else if (method == "getScaledOverflingDistance") v = 6;
+        else if (method == "getScaledOverscrollDistance") v = 2;
+        else if (method == "getScaledMaximumDrawingCacheSize") v = 1536000;
+        else if (method == "getScaledTouchSlopSquare" ||
+                 method == "getScaledDoubleTapSlopSquare") return false;
+        else return false;  // unknown getter → honest fall-through
+        result = DalvikValue::make_int(v);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (class_name == "Landroid/view/ViewConfiguration;" &&
+        method == "hasPermanentMenuKey") {
+        // Modern device profile: no permanent menu key.
+        result = DalvikValue::make_int(0);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (class_name == "Landroid/view/ViewConfiguration;" && method == "getLongPressTimeout") {
+        result = DalvikValue::make_int(500);  // AOSP DEFAULT_LONG_PRESS_TIMEOUT
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (class_name == "Landroid/view/ViewConfiguration;" &&
+        (method == "getTapTimeout" || method == "getDoubleTapTimeout" ||
+         method == "getJumpTapTimeout" || method == "getPressedStateDuration" ||
+         method == "getDoubleTapMinTime" || method == "getGlobalActionKeyTimeout")) {
+        int32_t v = method == "getTapTimeout"            ? 100
+                    : method == "getDoubleTapTimeout"    ? 300
+                    : method == "getJumpTapTimeout"      ? 500
+                    : method == "getPressedStateDuration" ? 50
+                    : method == "getDoubleTapMinTime"    ? 40
+                                                         : 1000;
+        result = DalvikValue::make_int(v);
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }

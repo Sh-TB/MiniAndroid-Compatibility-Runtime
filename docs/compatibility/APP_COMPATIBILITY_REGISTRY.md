@@ -1,3 +1,5 @@
+> **[S87 SUPERSEDED]** Era record — do not update. The current canonical per-title achievement record is [`docs/ACHIEVEMENTS.md`](../ACHIEVEMENTS.md), generated from [`docs/evidence/canonical/registry.json`](canonical/registry.json) (SSoT). This matrix predates the S84 canonical system and is kept for history only.
+
 # MiniAndroid App Compatibility Registry
 
 **Last updated:** 2026-08-22 (EXP-076)

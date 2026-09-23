@@ -2183,7 +2183,11 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
         // runtime applies the lifecycle cascade at the next frame boundary.
         // The old behavior (state_ = DESTROYED immediately) skipped the
         // onPause/onStop/onDestroy callbacks entirely.
-        request_finish();
+        // F-NEW-174 (S87): capture WHO finished — the shadow is a
+        // process-wide singleton, and the cascade must destroy the
+        // FINISHER, not blindly the current top (SplashActivity.finish()
+        // after startActivity() must not kill the freshly-resumed Main).
+        request_finish(ctx.receiver_id, ctx.receiver_class);
         return CallResult::handled_void();
     }
     if (m == "isFinishing") {

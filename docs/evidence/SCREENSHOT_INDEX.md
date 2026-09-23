@@ -1,4 +1,4 @@
-> **[S52 SUPERSEDED]** Current canonical record: [`docs/EXECUTION_ACHIEVEMENTS.md`](../../EXECUTION_ACHIEVEMENTS.md). This file is an era record — verdicts are absorbed there; do not update it.
+> **[S87 SUPERSEDED]** Era record — do not update. Current canonical achievement record: [`docs/ACHIEVEMENTS.md`](../ACHIEVEMENTS.md) (generated from [`docs/evidence/canonical/registry.json`](canonical/registry.json), the Single Source of Truth; see also [canonical/](canonical/)). Earlier supersession pointer to EXECUTION_ACHIEVEMENTS.md is itself superseded since S54.
 
 # SCREENSHOT_INDEX — UNIFIED_011.3 (§39)
 

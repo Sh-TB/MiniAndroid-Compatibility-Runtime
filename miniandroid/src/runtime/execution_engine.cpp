@@ -5603,6 +5603,58 @@ nlohmann::json ExecutionEngine::consume_finish_cascade() {
     nlohmann::json rec;
     rec["finish_requested"] = true;
     rec["callbacks"] = nlohmann::json::array();
+    // ── F-NEW-174 (S87): WHO called finish()? The ActivityShadow is a
+    // process-wide singleton: the classic SplashActivity pattern
+    // (startActivity(Main); finish()) leaves the FINISHER beneath the
+    // freshly-resumed top. AOSP ActivityThread.handleDestroyActivity
+    // destroys the FINISHER — an already-STOPPED finisher skips
+    // onPause/onStop (r.stopActivity handled by the switch) and goes
+    // straight to onDestroy; the RESUMED top is untouched and NOTHING is
+    // restored. The legacy behavior destroyed the CURRENT top (killing
+    // the just-launched Main) and then "restored" the dead Splash — the
+    // engine-default near-blank class for every splash-navigating app.
+    uint32_t fin_id = as->pending_finisher_obj_id();
+    std::string fin_cls = as->pending_finisher_cls();
+    bool finisher_is_current =
+        fin_id == 0 || fin_cls.empty() ||
+        (fin_cls == as->current_activity_class() &&
+         (fin_id == 0 || fin_id == as->current_activity_id()));
+    if (!finisher_is_current) {
+        rec["finisher_beneath"] = true;
+        rec["finisher"] = fin_cls;
+        try {
+            auto& heapF = dalvik_engine_.get_heap_public();
+            if (heapF.has_object(fin_id)) {
+                miniandroid::dalvik::DalvikValue ret;
+                miniandroid::dalvik::DalvikExecutionResult res;
+                std::vector<miniandroid::dalvik::DalvikValue> args;
+                args.push_back(miniandroid::dalvik::DalvikValue::make_object(
+                    fin_id, fin_cls));
+                bool ok = dalvik_engine_.try_recursive_invoke(
+                    fin_cls, "onDestroy", args, ret, res);
+                nlohmann::json r;
+                r["method"] = "onDestroy";
+                r["class"] = fin_cls;
+                r["dispatched"] = ok;
+                r["instructions"] = res.total_instructions_executed;
+                rec["callbacks"].push_back(r);
+                std::cerr << "[G07-FINISH] beneath-finisher onDestroy: "
+                          << fin_cls << " (ok=" << ok << ")" << std::endl;
+            } else {
+                std::cerr << "[G07-FINISH] beneath-finisher heap object gone: "
+                          << fin_cls << std::endl;
+            }
+        } catch (const std::exception& e) {
+            std::cerr << "[G07-FINISH] beneath-finisher dispatch failed: "
+                      << e.what() << std::endl;
+        }
+        rec["record_erased"] = as->erase_record_by_obj_id(fin_id);
+        rec["final_state"] = "RESUMED (top untouched — beneath finisher law)";
+        std::cerr << "[G07-FINISH] beneath-finisher cascade complete — top "
+                  << as->current_activity_class()
+                  << " stays RESUMED, no restore" << std::endl;
+        return rec;
+    }
     auto dispatch = [&](const char* m) {
         nlohmann::json r;
         dispatch_app_lifecycle(m, &r);
