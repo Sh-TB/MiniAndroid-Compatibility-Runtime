@@ -14,7 +14,7 @@ All numbers from canonical artifacts. Nothing hand-computed.
 
 User complaint: "some apps executed but internal icons don't fully load. Find a sample source with in-app icons; prove 100% loaded, openable, resumable."
 
-Sample chosen: **eu.veldsoft.fish.rings v1.23 (vc6)** — upstream source cloned at `upstream/corpus/eu.veldsoft.fish.rings/`, APK SHA-256 `c8a9cb7cadaaced37a1b13ba32ad9bdc1fbe6d38c9d5348aa56a78b4767c1c70` (F-Droid). Source law: `GameActivity.java:110-119` calls `views[i].setImageResource(R.mipmap.red/green/blue/violet)` on 49 fish ImageViews; `activity_game.xml` sets `android:src="@mipmap/..."` on 6 arrow ImageViews.
+Sample chosen: **eu.veldsoft.fish.rings v1.23 (vc6)** — upstream source cloned at `upstream/corpus/eu.veldsoft.fish.rings/`, APK SHA-256 `c8a9cb7cadaaced37a1b13ba32ad9bdc1fbe6d38c9d5348aa56a78b4767c1c70` (F-Droid). Source law: `GameActivity.java:100-121` (`repaint()`) calls `views[i].setImageResource(R.mipmap.red/green/blue/violet)` on the 36 fish ImageViews (12 per ring x 3 rings) when the 6 arrow onClick handlers fire `updateInfo()`; the board starts empty (no `android:src` on fish views), so every fish icon on screen is proven to have flowed through `setImageResource`. `activity_game.xml` sets `android:src="@mipmap/..."` on 6 arrow ImageViews.
 
 Provenance chain, every link verified at HEAD:
 
@@ -25,23 +25,28 @@ Provenance chain, every link verified at HEAD:
 | RESOURCE RESOLVED | `[ARSC-VALUES] 16/77` — all 16 R$mipmap fields resolved via canonical select_file (the earlier 0/56 was 56 R$id fields being correctly skipped; debug instrumentation added, env-gated) |
 | DECODED | `[A7b] icon 0x7f0e0005 -> res/RJ.png DECODED 144x144` (launcher); per-piece PNGs decoded through the same chain |
 | VIEW BOUND + DRAWN | fish icons (red/green/blue/violet) + arrows + ebinqo logo letters visible in rendered frames |
-| STATE CHANGE | tap on clickable piece (F-117 `--tap x,y@frame`) → `PerformClick` → `GameActivity$1.onClick` → ring rotation → `repaint()` → 46 `setImageResource` calls → **4,257 px changed per rotation, 8,501 px after two taps** |
-| SCREENSHOT CAPTURED | `run/s91/fish_tap5/frames/` (28 frames) — board visibly rearranged between taps |
+| STATE CHANGE | tap on clickable piece (F-117 `--tap x,y@frame`) → `PerformClick` → arrow `onClick` → `updateInfo()` → `repaint()` → **36 `setImageResource` calls** (one per fish view, measured) → **4,312 px changed (exact full-res count, post-reboot reproof)** |
+| SCREENSHOT CAPTURED | `docs/evidence/s91_fish_reproof/frames/` (tracked, survives resets): frame_039 pre-tap vs frame_041 post-tap — fish board appears at the tap |
+
+Post-reboot reproof (2026-09-23, after the 21:27 UTC container reset wiped the untracked first-wave run artifacts): the full chain was re-run at HEAD (`--frames 60 --tap 184,184@40`, RC=0, 61 frames, 0 crash-log errors) and the evidence persisted to tracked paths in `docs/evidence/s91_fish_reproof/`. First-wave counts corrected to source-measured values (36 views / 36 SETIMAGE; first wave wrote 49/46 — see the reproof README).
 
 Verdict: **the icon pipeline is 100% operational end-to-end** — resource identity (resid) → R-field name → ARSC file selection → APK entry extraction → PNG decode → density-scaled fit-center draw → interaction-driven re-draw. Open/close lifecycle (onCreate → onStart → onResume → startActivity) fully dispatched.
 
 ## 3. Sandbox state save/resume verdict (owner question: "does the sandbox keep the save?")
 
-**Storage layer: YES, PROVEN.**
+**Storage layer: YES, PROVEN — re-proven post-reboot (2026-09-23) with a tracked fixture + evidence.**
 - `--data-root <dir>` is the app-data sandbox (`/data/data` analog). Under it: `shared_prefs/*.xml` (Android-compatible format), `databases/*.db` (real SQLite), `files/`.
-- A/B across two process runs (same data-root): the s50 probe's counter went **1 → 2** in `s50prefs.xml`; the app's own arithmetic (`putInt("opens", readValue + 1)`) proves the second process READ the persisted value. SharedPreferences XML survives restarts; F-114 engine diag confirmed `getInt` field hit from the loaded XML.
+- Two-process A/B (same `--data-root`, fixture `s91_resume_probe_data`): run 1 wrote `withadd=1`; run 2's own arithmetic (`putInt("withadd", readInt("withadd",0)+1)`) produced **`withadd=2`** — it can only exist if the second process READ the persisted 1 from the XML written by the first process. Evidence: `docs/evidence/s91_sandbox/` (run1/run2 XML snapshots + README). SharedPreferences XML survives restarts; `[PREFS] Loaded/Saved` engine diags confirm the file identity both ways.
 
 **Engine law fixed this wave (F-NEW-193a):** `getSharedPreferences`/`getPreferences` resolved the prefs file name from **args[0] (the receiver)** instead of **args[1] (the name parameter)** — every named prefs file silently degraded to `default.xml`. Fixed; A/B: sandbox now contains `s50prefs.xml` (the app's requested name) with the round-trip counter.
+
+**Engine law fixed this wave (F-NEW-194):** the launcher-activity name in the manifest's category-time identification path assigned BARE relative names (`android:name="MainActivity"`, no leading dot) unprefixed — the end-element path resolves all three forms but never ran because the category path had already filled the field. The DEX entry-point search then matched no class and fell back to the first scanned class (face: the s91_resume_probe fixture ran `MainActivity$ProbeView.<init>` — 2 instructions — instead of `MainActivity.onCreate`). Fixed to the same three-form law; A/B: fixture now dispatches onCreate (RC=0, full lifecycle, view rendered).
 
 **Honest remaining gaps (recorded, not hidden):**
 - F-NEW-193b (OPEN): `Cursor.getInt` via invoke-interface has no bridge handler → s50 SQLite band reads 0 rows despite real query execution.
 - F-NEW-193c (OPEN): static-boolean visibility across onCreate → render-dispatch onDraw (s50 band colors stay amber even when the underlying value round-trips).
 - F-NEW-193d (OPEN): `getFilesDir` returns `<root>/files` instead of `<root>/<package>/files` in this path (S50-R1 law violated in the observed run).
+- F-NEW-195 (OPEN, candidate — isolated this wave): STATIC-FIELD face — `sget(static)` + `add-int/lit8` immediately followed by `invoke-interface` dispatches with a stale 0 in the value register (isolated with a 4-variant probe: constants, locals and local+add all flow correctly — `const=42`, `withadd=1` on first run, `pureadd=8`; only the static-then-add chain reads 0). Data layer unaffected; the s91_resume_probe (static variant) face is recorded in the fixture. Env-gated `MINIANDROID_F114_DIAG` extended to put* argument identity for the follow-up.
 
 ## 4. GIF inventory — every app/game with a validated GIF (12)
 
