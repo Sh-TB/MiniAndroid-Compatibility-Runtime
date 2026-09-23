@@ -13642,13 +13642,39 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
         trace.status = InstructionTrace::Status::CRASH_ERROR;
         // EXP-042 Phase 2: advance pc_ and continue rather than spin.
         set_register(dest_reg, DalvikValue::make_null());
+        // S88 DIAG: unresolved-field silent-null route — count and name it.
+        {
+            static thread_local uint64_t s88_uf_n = 0;
+            if (s88_uf_n < 40) {
+                ++s88_uf_n;
+                std::cerr << "[S88-UNRESOLVED-FIELD] idx=" << field_idx
+                          << " caller=" << current_class_ << "." << current_method_
+                          << " pc=" << pc << std::endl;
+            }
+        }
         pc_ = pc + 2;
         return true;
     }
     
     // Get object reference from register
     DalvikValue obj_ref = get_register(obj_reg);
-    
+
+    // S88 DIAG (bounded, env-gated): MiniFont$Glyph field reads — tweakWidth
+    // NPE "Path.transform on null" while iput traces show the path field
+    // stored. This probe exposes resolved/has_object/result for every
+    // Glyph iget-object.
+    if (std::getenv("MINIANDROID_S88_GLYPH") != nullptr &&
+        field_res.class_descriptor.find("MiniFont$Glyph") != std::string::npos) {
+        std::cerr << "[S88-IGET] " << current_class_ << "." << current_method_
+                  << " pc=" << pc
+                  << " resolved=" << field_res.resolved
+                  << " field=" << field_res.field_name
+                  << " recv_type=" << static_cast<int>(obj_ref.type)
+                  << " recv_id=" << obj_ref.object_id
+                  << " in_heap=" << (heap_.has_object(obj_ref.object_id) ? "Y" : "N")
+                  << std::endl;
+    }
+
     DalvikValue result_value;
     result_value.type = DalvikType::NULL_REF;
     result_value.object_id = 0;
@@ -18882,6 +18908,21 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // the BRIDGE — log the arg KINDS so the arg-shape mismatch that skips
     // the Class.forName branch (STRING_REF requirement) becomes visible.
     // ────────────────────────────────────────────────────────────────────
+    {
+        static thread_local const bool s88br =
+            std::getenv("MINIANDROID_S88_BRIDGE") != nullptr;
+        static thread_local uint64_t s88br_n = 0;
+        if (s88br && s88br_n < 40 && method == "valueOf") {
+            ++s88br_n;
+            std::cerr << "[S88-BRIDGE] valueOf class=" << class_name
+                      << " argc=" << args.size();
+            if (!args.empty())
+                std::cerr << " a0k" << (int)args[0].type
+                          << " v=" << args[0].int_val;
+            std::cerr << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+        }
+    }
     {
         static thread_local const bool r350br =
             std::getenv("MINIANDROID_R350_TRACE") != nullptr;
@@ -25839,7 +25880,9 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     if (method == "getFilesDir" &&
         (class_name.find("Context") != std::string::npos ||
          class_name.find("Activity") != std::string::npos)) {
-        result = get_or_create_singleton("Ljava/io/File;");
+        // S88 F-NEW-179: PATHED stable File (was pathless class singleton).
+        result = get_or_create_dir_file(
+            (std::filesystem::path(Storage::app_data_root()) / "files").string());
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
@@ -26841,7 +26884,10 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     if (method == "getExternalFilesDir" &&
         (class_name.find("Context") != std::string::npos ||
          class_name.find("Activity") != std::string::npos)) {
-        result = get_or_create_singleton("Ljava/io/File;");
+        // S88 F-NEW-179: PATHED stable File (was pathless class singleton).
+        result = get_or_create_dir_file(
+            (std::filesystem::path(Storage::app_data_root()) / "external_files")
+                .string());
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
@@ -26861,7 +26907,10 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
          class_name.find("Activity") != std::string::npos ||
          class_name.find("Application") != std::string::npos ||
          class_name.find("Service") != std::string::npos)) {
-        result = get_or_create_singleton("Ljava/io/File;");
+        // S88 F-NEW-179: PATHED stable File (was pathless class singleton).
+        result = get_or_create_dir_file(
+            (std::filesystem::path(Storage::app_data_root()) / "external_cache")
+                .string());
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
@@ -26935,9 +26984,40 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     if (method == "getCacheDir" &&
         (class_name.find("Context") != std::string::npos ||
          class_name.find("Activity") != std::string::npos)) {
-        result = get_or_create_singleton("Ljava/io/File;");
+        // S88 F-NEW-179: PATHED stable File (was pathless class singleton).
+        result = get_or_create_dir_file(
+            (std::filesystem::path(Storage::app_data_root()) / "cache").string());
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
+    }
+
+    // ── S88 F-NEW-182 — Context.getDatabasePath family law ──────────────
+    // AOSP ContextImpl.getDatabasePath(name): returns a File under
+    // <databases>/ — NEVER null for a non-null name, whether or not the
+    // file exists. Ground truth: microtimer's Room/SQLite support layer
+    // (obfuscated h/f.v) does
+    //   f = ctx.getDatabasePath(helper.getDatabaseName()); f.getParentFile()
+    // and the engine had NO law → getDatabasePath answered null →
+    // File.getParentFile NPE → APP BOUNDARY unwind in onCreate.
+    // Companion: SQLiteOpenHelper.getDatabaseName returns the configured
+    // name (the helper stores it at construction via the bridge).
+    if (method == "getDatabasePath" &&
+        (class_name.find("Context") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos ||
+         class_name.find("Application") != std::string::npos)) {
+        // invoke-virtual convention: args[0] = receiver, args[1] = name.
+        std::string db_name;
+        if (args.size() >= 2 && args[1].type == DalvikType::STRING_REF)
+            db_name = args[1].string_val;
+        else if (!args.empty() && args[0].type == DalvikType::STRING_REF)
+            db_name = args[0].string_val;   // static-form safety
+        if (!db_name.empty()) {
+            result = get_or_create_dir_file(
+                (std::filesystem::path(Storage::app_data_root()) / "databases" /
+                 db_name).string());
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
     }
 
     // ────────────────────────────────────────────────────────────────────────
@@ -28569,6 +28649,34 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                         : (int32_t)((uint32_t)a + (uint32_t)b);
             status = ApiCallTrace::Status::IMPLEMENTED;
             result = DalvikValue::make_int(r);
+            return true;
+        }
+        // S88 F-NEW-178 — Integer unsigned division family (OpenJDK
+        // Integer.java): divideUnsigned(x,y) = (int)(toUnsignedLong(x) /
+        // toUnsignedLong(y)), remainderUnsigned = (int)(toUnsignedLong(x) %
+        // toUnsignedLong(y)). Ground truth: microtimer v8's timer-tick
+        // display chain (MainActivity.d → remainderUnsigned, k/a/b.e formatter
+        // → divideUnsigned) REC-MISS'd → the label computed "200null:…"
+        // (M3 FIX-M3-010 listed the family but only the shift/compare half
+        // was served; the division half was still missing).
+        if ((method == "divideUnsigned" || method == "remainderUnsigned") &&
+            args.size() >= 2) {
+            uint32_t a = as_u32(args[0]);
+            uint32_t b = as_u32(args[1]);
+            if (b == 0) {
+                // OpenJDK: throws ArithmeticException("/ by zero"); the
+                // bridge throw path is modeled — surface a visible zero so
+                // the divergence shows in evidence, never a silent value.
+                std::cerr << "[F-NEW-178] Integer." << method
+                          << " divisor 0 — ArithmeticException path "
+                          "(bridge deviation §25)" << std::endl;
+                result = DalvikValue::make_int(0);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            uint32_t r = method == "divideUnsigned" ? a / b : a % b;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int((int32_t)r);
             return true;
         }
     }
@@ -31714,6 +31822,47 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
          class_name == "Ljava/lang/Boolean;" || class_name == "Ljava/lang/Character;" ||
          class_name == "Ljava/lang/Short;" || class_name == "Ljava/lang/Byte;" ||
          class_name == "Ljava/lang/Float;" || class_name == "Ljava/lang/Double;")) {
+        // ── S88 F-NEW-181 — Character.valueOf canonical-instance law ─────
+        // OpenJDK Character.java CharacterCache: valueOf returns the SAME
+        // Character object for code points 0..127. Ground truth:
+        // simplestopwatch MiniFont's `Map<Character, Glyph>` puts under
+        // valueOf(c) and gets under valueOf(c) — fresh boxes each call made
+        // the identity-keyed map miss → map.get → null → g.path.transform
+        // NPE at APP BOUNDARY. This generic boxed law previously ran BEFORE
+        // (lower address than) the dedicated Character law and kept
+        // allocating, so the cache never engaged.
+        if (class_name == "Ljava/lang/Character;" &&
+            (args[0].type == DalvikType::INT32 ||
+             args[0].type == DalvikType::CHAR)) {
+            const uint32_t cp = (uint32_t)(args[0].int_val & 0xFFFF);
+            if (cp <= 127) {
+                auto cit = char_box_cache_.find(cp);
+                if (cit != char_box_cache_.end() && heap_.has_object(cit->second)) {
+                    {
+                        static thread_local const bool s88c_env =
+                            std::getenv("MINIANDROID_S88_BRIDGE") != nullptr;
+                        static thread_local uint64_t s88c_n = 0;
+                        if (s88c_env && s88c_n < 24) {
+                            ++s88c_n;
+                            std::cerr << "[S88-CHAR] valueOf cp=" << cp
+                                      << " CACHE-HIT box=" << cit->second
+                                      << " caller=" << current_class_ << "."
+                                      << current_method_ << std::endl;
+                        }
+                    }
+                    result = DalvikValue::make_object(cit->second,
+                                                      "Ljava/lang/Character;");
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+            }
+            uint32_t box_id = heap_.allocate(class_name, pc_ /*approx*/, 0);
+            heap_.set_object_field(box_id, "value", args[0]);
+            if (cp <= 127) char_box_cache_[cp] = box_id;
+            result = DalvikValue::make_object(box_id, class_name);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
         uint32_t box_id = heap_.allocate(class_name, pc_ /*approx*/, 0);
         heap_.set_object_field(box_id, "value", args[0]);
         result = DalvikValue::make_object(box_id, class_name);
@@ -32652,10 +32801,145 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         return true;
     }
 
+    // ── S88 F-NEW-176 — Context.getAssets family law ─────────────────────
+    // AOSP ground truth (ContextImpl.java): getAssets() returns the
+    // per-context AssetManager and is never null on a live context —
+    // every Activity/Service/Application inherits it through
+    // ContextWrapper. Ground-truth failure: the f024 EOF-law fixture
+    // NPE'd "AssetManager.open on a null object reference" because
+    // Activity.getAssets fell through BOTH the shadow registry and this
+    // bridge (no law) and answered null. Law: any Context-family receiver
+    // answers getAssets with the same AssetManager singleton that
+    // Resources.getAssets returns.
+    if (method == "getAssets" &&
+        (class_name.find("Activity") != std::string::npos ||
+         class_name.find("Service") != std::string::npos ||
+         class_name.find("Application") != std::string::npos ||
+         class_name.find("ContextWrapper") != std::string::npos ||
+         class_name.find("ContextThemeWrapper") != std::string::npos ||
+         class_name.find("Context;") != std::string::npos ||
+         class_name.find("ContextImpl") != std::string::npos)) {
+        result = get_or_create_singleton("Landroid/content/res/AssetManager;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
     // Resources.getAssets → AssetManager singleton.
     if (class_name.find("Resources") != std::string::npos &&
         method == "getAssets") {
         result = get_or_create_singleton("Landroid/content/res/AssetManager;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ── S88 F-NEW-181 — Character.valueOf canonical-instance cache law ──
+    // OpenJDK Character.java: valueOf(char) returns the cached Character
+    // for code points 0..127 (CharacterCache) — valueOf('x') is the SAME
+    // object every call. Ground truth: simplestopwatch's MiniFont glyph
+    // table is `Map<Character, Glyph>`; addCharacter puts under
+    // valueOf(c), tweakWidth gets under valueOf(c) — with fresh box
+    // objects each call the identity-keyed map missed, map.get returned
+    // null, and g.path.transform NPE'd at APP BOUNDARY (onCreate died →
+    // chrono/button fields never assigned → downstream NULLFIELD family).
+    if (class_name == "Ljava/lang/Character;" && method == "valueOf" &&
+        args.size() >= 1) {
+        const uint32_t cp = (uint32_t)(args[0].int_val & 0xFFFF);
+        if (cp <= 127) {
+            auto it = char_box_cache_.find(cp);
+            if (it != char_box_cache_.end() && heap_.has_object(it->second)) {
+                result = DalvikValue::make_object(it->second,
+                                                  "Ljava/lang/Character;");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            const uint32_t box_id = heap_.allocate(
+                "Ljava/lang/Character;", pc_,
+                call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+            heap_.set_object_field(box_id, "value", args[0]);
+            char_box_cache_[cp] = box_id;
+            result = DalvikValue::make_object(box_id, "Ljava/lang/Character;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // Above 127: OpenJDK allocates a fresh box — same here.
+        const uint32_t box_id = heap_.allocate(
+            "Ljava/lang/Character;", pc_,
+            call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+        heap_.set_object_field(box_id, "value", args[0]);
+        result = DalvikValue::make_object(box_id, "Ljava/lang/Character;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ── S88 F-NEW-181 — Character.valueOf canonical-instance cache law ──
+    // OpenJDK Character.java: valueOf(char) returns the cached Character
+    // for code points 0..127 (CharacterCache) — valueOf('x') is the SAME
+    // object every call. Ground truth: simplestopwatch's MiniFont glyph
+    // table is `Map<Character, Glyph>`; addCharacter puts under
+    // valueOf(c), tweakWidth gets under valueOf(c) — with fresh box
+    // objects each call the identity-keyed map missed, map.get returned
+    // null, and g.path.transform NPE'd at APP BOUNDARY (onCreate died →
+    // chrono/button fields never assigned → downstream NULLFIELD family).
+    if (class_name == "Ljava/lang/Character;" && method == "valueOf" &&
+        args.size() >= 1) {
+        const uint32_t cp = (uint32_t)(args[0].int_val & 0xFFFF);
+        if (cp <= 127) {
+            auto it = char_box_cache_.find(cp);
+            if (it != char_box_cache_.end() && heap_.has_object(it->second)) {
+                result = DalvikValue::make_object(it->second,
+                                                  "Ljava/lang/Character;");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            const uint32_t box_id = heap_.allocate(
+                "Ljava/lang/Character;", pc_,
+                call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+            heap_.set_object_field(box_id, "value", args[0]);
+            char_box_cache_[cp] = box_id;
+            result = DalvikValue::make_object(box_id, "Ljava/lang/Character;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // Above 127: OpenJDK allocates a fresh box — same here.
+        const uint32_t box_id = heap_.allocate(
+            "Ljava/lang/Character;", pc_,
+            call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+        heap_.set_object_field(box_id, "value", args[0]);
+        result = DalvikValue::make_object(box_id, "Ljava/lang/Character;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ── S88 F-NEW-177 — FileChannel family law ───────────────────────
+    // AOSP ground truth (libcore/ojluni): FileInputStream.getChannel() /
+    // FileOutputStream.getChannel() / RandomAccessFile.getChannel() return
+    // THE channel of that open stream — never null while the stream is
+    // open; FileChannel.lock()/tryLock() return a held FileLock (never
+    // null on success). Ground-truth failure: dubrowgn.microtimer's
+    // single-instance guard (obfuscated li/a wrapper) does
+    // getChannel().lock() and NPE'd "FileChannel.lock on a null object
+    // reference" because the engine had NO getChannel law at all.
+    // Law: getChannel on the stream family answers the FileChannel
+    // singleton; lock/tryLock answer a held FileLock; release/close void.
+    // (Process-wide singleton is an honest simplification — apps in this
+    // corpus never compare two channels' identity; documented, not silent.)
+    if (method == "getChannel" &&
+        (class_name.find("FileInputStream") != std::string::npos ||
+         class_name.find("FileOutputStream") != std::string::npos ||
+         class_name.find("RandomAccessFile") != std::string::npos)) {
+        result = get_or_create_singleton("Ljava/nio/channels/FileChannel;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (class_name.find("FileChannel") != std::string::npos &&
+        (method == "lock" || method == "tryLock")) {
+        result = get_or_create_singleton("Ljava/nio/channels/FileLock;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (class_name.find("FileLock") != std::string::npos &&
+        (method == "release" || method == "close")) {
+        result = DalvikValue::make_void();
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
@@ -33139,6 +33423,34 @@ bool DalvikExecutionEngine::is_thread_receiver(const std::string& cls) {
 // Returns an existing heap object for the given class descriptor, or allocates
 // a fresh one. Cached in api_singletons_ so that getResources() always returns
 // the same Resources object across the entire APK execution.
+// ── S88 F-NEW-179 — keyed-by-path directory File law ────────────────
+// AOSP ContextImpl.getFilesDir/getCacheDir/getExternalFilesDir(“none”)/
+// getExternalCacheDir each return a STABLE File for that directory,
+// carrying its own path. The previous class-keyed singleton answered the
+// SAME pathless File for all four — File.getParentFile then computed no
+// parent and answered null (microtimer single-instance guard NPE at
+// h/f.v getParentFile).
+DalvikValue DalvikExecutionEngine::get_or_create_dir_file(const std::string& path) {
+    static const std::string kFileDesc = "Ljava/io/File;";
+    auto it = dir_files_.find(path);
+    if (it != dir_files_.end() && heap_.has_object(it->second)) {
+        DalvikValue v;
+        v.type = DalvikType::OBJECT_REF;
+        v.object_id = it->second;
+        v.class_desc = kFileDesc;
+        return v;
+    }
+    const uint32_t obj_id = heap_.allocate(
+        kFileDesc, pc_, call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+    heap_.set_object_field(obj_id, "path", DalvikValue::make_string(path, 0));
+    dir_files_[path] = obj_id;
+    DalvikValue v;
+    v.type = DalvikType::OBJECT_REF;
+    v.object_id = obj_id;
+    v.class_desc = kFileDesc;
+    return v;
+}
+
 DalvikValue DalvikExecutionEngine::get_or_create_singleton(const std::string& class_desc) {
     auto it = api_singletons_.find(class_desc);
     if (it != api_singletons_.end()) {
