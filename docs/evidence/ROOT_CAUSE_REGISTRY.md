@@ -24,6 +24,58 @@
   cascade) — so instantiable classes STAY on the caught-CNFE path that
   real apps handle gracefully. The bridge is deliberately minimal.
 
+
+## F-NEW-164..170 — SurfaceView real-surface chain + draw-law closures — **FIXED (S86)**
+
+- **Ground truth (upstream source read, user directive):** `github.com/dozingcat/dodge-android`
+  (GPLv3) — `FieldView extends SurfaceView implements SurfaceHolder.Callback`,
+  `drawField()` = `surfaceHolder.lockCanvas(null)` → black field rect + goal
+  zones + per-bullet colored circles → `unlockCanvasAndPost`, driven by a
+  game thread (`while(running){field.tick(); drawField(); sleepUntilNextFrame();}`).
+  The S84 Dodge GIF showed menu+about only — the FIELD never painted.
+- **F-NEW-164 SurfaceView/SurfaceHolder real-surface law** — `getHolder()`
+  returns a per-view holder object (`svHolder`/`svOwner` heap-field pairing);
+  `lockCanvas` allocates a REAL Canvas bound to the view (`svTarget`) and
+  opens a surface op capture; `unlockCanvasAndPost` POSTS the op list
+  (`CanvasShadow::surface_ops_`); `addCallback` records the Callback; the
+  render stage dispatches `surfaceCreated`/`surfaceChanged` lazily
+  (`dispatch_surface_view_lifecycle`, GLSurfaceView-law mirror) and composites
+  the last posted buffer at the view bounds (`CanvasShadow::replay_surface`).
+- **F-NEW-165 Deque family** — `java.util.LinkedList` end-access
+  (`getLast/getFirst/peek*/poll*/removeFirst/removeLast/push/pop/offer*/addFirst/addLast`)
+  was unimplemented → `FrameRateManager.nanosToWaitUntilNextFrame` NPE'd on a
+  null `Long` unbox and the GAME THREAD died at APP BOUNDARY before frame 1.
+- **F-NEW-166 Display family** — `WindowManager.getDefaultDisplay` (AOSP:
+  never null), `Display.getMetrics(out)` (device-profile fill 2.625/420dpi/
+  1080x1920), `Display.getRotation` (ROTATION_0), `Display.getSize(out)`.
+  Ground truth: FieldView ctor `getDefaultDisplay().getMetrics(...)` NPE +
+  `AndroidUtils.getDeviceRotation` `Integer.intValue` NPE.
+- **F-NEW-167 Activity.getPreferences** — AOSP law
+  `getPreferences(mode) == getSharedPreferences(getLocalClassName(), mode)`;
+  ground truth `DodgeMain.bestLevel()` SP null NPE.
+- **F-NEW-168 draw-subtree visibility law** — AOSP `View.draw(Canvas,
+  ViewGroup, long)` gates the ENTIRE body (background, onDraw AND
+  dispatchDraw) on `(mViewFlags & VISIBILITY_MASK) == VISIBLE`;
+  INVISIBLE(4) now prunes the subtree (GONE-only pruning kept Dodge's
+  VISIBLE menu buttons painting over the live field). f06 leaf golden
+  unchanged (all-white, pixel-identical).
+- **F-NEW-169 RectF/Rect object draw + ctor law** — `Canvas.drawRect(RectF,
+  Paint)` recorded (0,0,0,0) (only the 4-float overload was modeled) and the
+  `RectF.<init>` never stored left/top/right/bottom heap fields; both laws
+  added (op-trace evidence: correct colors, all-zero geometry → real
+  geometry after).
+- **F-NEW-170 View dimension queries** — `getWidth/getHeight/
+  getMeasuredWidth/getMeasuredHeight` answered 0 (unbridged); now answer the
+  ViewNode's measured geometry (UNIFIED_007 measure/layout). Dodge sizes
+  EVERYTHING from `getWidth()`.
+- **A/B proof (Dodge 1.5.1, SHA `a5687d1b…` = S84 pin):** pre: rc=1, 2-frame
+  GIF (menu+about), field white; post: rc=0, 14 distinct frames — black
+  field, semi-transparent red start zone (128,0,0) / green end zone
+  (0,128,0), blue dodger, colored bullet swarm moving. Canonical GIF
+  replaced (SHA `5a648a24…`), registry L3 VERIFIED-INTERACTIVE.
+- **Regression:** battery 26/26 rc=0 + golden graphics ladder 10/10 +
+  S83-B2 2/2, zero pixel drift on goldens.
+
 ## F-NEW-163 / F-NEW-163b — Context-family Resources + Resources.getSystem — **FIXED (S85)**
 
 - **Signature:** `[SYNTH-EXC] f141-null-recv: NullPointerException (Attempt to invoke

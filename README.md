@@ -5,7 +5,7 @@
 </p>
 <p align="center"><sub>Decorative project mascot — a Silkie hen. Not an Android/Google mark; carries no claim.</sub></p>
 
-**Repository:** https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime (original project, not a fork) · **License:** MIT · **Current wave:** S85 (Telegram/دوز re-review + 50 more titles + graphics push)
+**Repository:** https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime (original project, not a fork) · **License:** MIT · **Current wave:** S86 (SurfaceView graphics strike — Dodge fully playable + MiniCraft خانه سازی + L0→L10 impact audit)
 
 ---
 
@@ -49,15 +49,15 @@ honestly-recorded frontiers (see root-cause registry below).
 
 | Metric | Value |
 |---|---|
-| Titles executed & recorded | **147** (86 games · 60 apps · 1 fixture) |
-| Added in S85 (this wave) | **50** new F-Droid titles (25 games / 25 apps), all executed with upstream source links + APK SHA256 |
-| VERIFIED (launched + rendered, content-verified UI) | **18** |
-| VERIFIED-INTERACTIVE (real click → state change, GIF) | **11** |
+| Titles executed & recorded | **148** (87 games · 60 apps · 1 fixture) |
+| Added in S86 (this wave) | **MiniCraft (خانه سازی)** — 5th in-house game — + Dodge promoted to full gameplay; 7 engine laws F-NEW-164..170 (SurfaceView surface chain) all A/B-proven |
+| VERIFIED (launched + rendered, content-verified UI) | **22** |
+| VERIFIED-INTERACTIVE (real click → state change, GIF) | **12** |
 | PARTIAL (rendered with root-caused divergences) | 2 |
-| OBSERVED (loaded/ran; near-blank shell class — text records, never shipped as images) | 116 |
+| OBSERVED (loaded/ran; near-blank shell class — text records, never shipped as images) | 112 |
 | BLOCKED | 0 |
-| Titles with real rendered UI pixels (L2+) | 46 |
-| Canonical screenshots (ONE per title) | 31 (11 GIF + 20 JPG) |
+| Titles with real rendered UI pixels (L2+) | 51 |
+| Canonical screenshots (ONE per title) | 36 (12 GIF + 24 JPG) |
 
 **S85 evidence-integrity hardening (EVID-CLASS-S85):** the visual gate now
 rejects the engine-default shell class (white framebuffer + black status
@@ -75,20 +75,33 @@ Regression gates at this HEAD: **battery 26/26 · golden graphics ladder
 | **Snake Deluxe** | game | in-house (games/snake-deluxe) | VERIFIED-INTERACTIVE | L3 | ✅ | [com.miniandroid.snakedeluxe.gif](docs/evidence/canonical/com.miniandroid.snakedeluxe.gif) |
 | **2048** | game | in-house (games/2048) | VERIFIED-INTERACTIVE | L2 | ✅ | [com.miniandroid.g2048.gif](docs/evidence/canonical/com.miniandroid.g2048.gif) |
 | **TicTacToe Deluxe (دوز)** | game | in-house (games/tictactoe-deluxe) | VERIFIED-INTERACTIVE | L3 | ✅ | [com.miniandroid.tictactoedeluxe.gif](docs/evidence/canonical/com.miniandroid.tictactoedeluxe.gif) |
+| **MiniCraft (خانه سازی)** | game | in-house (games/minicraft) | VERIFIED-INTERACTIVE | L3 | ✅ | [com.miniandroid.minicraft.gif](docs/evidence/canonical/com.miniandroid.minicraft.gif) |
 | **Mini Tetris** | game | in-house (games/mini-tetris) | VERIFIED-INTERACTIVE | L3 | ✅ | [com.miniandroid.tetris.gif](docs/evidence/canonical/com.miniandroid.tetris.gif) |
 | **Vector Pinball (bouncy)** | game | [src](https://github.com/dozingcatsoftware/Bouncy) | VERIFIED-INTERACTIVE | L2 | ✅ S85 | [com.dozingcatsoftware.bouncy.gif](docs/evidence/canonical/com.dozingcatsoftware.bouncy.gif) |
 | **URLChecker** | app | [src](https://github.com/TrianguloY/URLChecker) | VERIFIED-INTERACTIVE | L2 | ✅ S85 | [com.trianguloy.urlchecker.gif](docs/evidence/canonical/com.trianguloy.urlchecker.gif) |
 | **TicTacToe Classic** | game | F-Droid com.emmanuelmess.tictactoe | VERIFIED-INTERACTIVE | L2 | ✅ | [com.emmanuelmess.tictactoe.gif](docs/evidence/canonical/com.emmanuelmess.tictactoe.gif) |
-| **Dodge** | game | [src](https://github.com/dozingcat/dodge-android) | VERIFIED-INTERACTIVE | L2 | ✅ | [com.dozingcatsoftware.dodge.gif](docs/evidence/canonical/com.dozingcatsoftware.dodge.gif) |
+| **Dodge** (SurfaceView, fully playable) | game | [src](https://github.com/dozingcat/dodge-android) | VERIFIED-INTERACTIVE | L3 | ✅ | [com.dozingcatsoftware.dodge.gif](docs/evidence/canonical/com.dozingcatsoftware.dodge.gif) |
 | **SolitaireCG** | game | F-Droid net.sourceforge.solitaire_cg | VERIFIED | L2 | — | text record |
 | **Mines 3D** | game | F-Droid cos.premy.mines | VERIFIED | L2 | — | [cos.premy.mines.jpg](docs/evidence/canonical/cos.premy.mines.jpg) |
 | **Telegram** | app | [official APK](https://telegram.org/dl/android/apk) | OBSERVED (reviewed S85) | L1 | — | text record |
 | **Dooz (دوز, F-Droid)** | game | F-Droid io.github.yamin8000.dooz | OBSERVED (compose frontier) | L1 | — | text record |
 
 **In-house games built for the runtime** (source in [`games/`](games/)):
-Snake Deluxe · Mini Tetris · 2048 · TicTacToe Deluxe (دوز) — each proven
-with full autoplay interaction loops (chase → death → restart; X → AI →
-O-win → round persistence).
+Snake Deluxe · Mini Tetris · 2048 · TicTacToe Deluxe (دوز) · MiniCraft
+(خانه سازی) — each proven with full interaction loops (chase → death →
+restart; X → AI → O-win → round persistence; terrain → build → house).
+
+**S86 graphics strike (upstream-source-driven):** the Dodge question —
+"why does the GIF only show two colors?" — was root-caused by reading the
+actual upstream code: `FieldView extends SurfaceView` and paints through
+`SurfaceHolder.lockCanvas` from a game thread. Seven engine laws
+(F-NEW-164 SurfaceView surface chain, F-NEW-165 Deque family, F-NEW-166
+Display family, F-NEW-167 getPreferences, F-NEW-168 INVISIBLE-subtree
+draw law, F-NEW-169 RectF-object drawRect, F-NEW-170 getWidth/getHeight)
+now make the real game render: black field, red/green goal zones, blue
+dodger, moving bullet swarm — all A/B-proven with battery 26/26 + golden
+ladder 10/10. Impact audit across all levels:
+[LEVEL_IMPACT_S86.md](docs/evidence/LEVEL_IMPACT_S86.md).
 
 ## Where everything lives
 

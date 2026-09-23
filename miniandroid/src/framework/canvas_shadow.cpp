@@ -209,6 +209,48 @@ void CanvasShadow::begin_frame() {
     recording_node_ = 0;
 }
 
+// ── F-NEW-164 (S86): SurfaceView surface capture ─────────────────────────
+// lockCanvas() hands the app a Canvas whose ops must land on the VIEW's
+// own surface buffer (not the onDraw op list). We reuse the shared op
+// recorder — between lock and unlock the single-threaded engine records
+// ONLY the app's draw calls — and stamp the surface owner so end_surface_
+// frame() can move the snapshot to the posted buffer.
+void CanvasShadow::begin_surface_frame(uint32_t view_id) {
+    begin_frame();
+    surface_target_ = view_id;
+}
+
+bool CanvasShadow::end_surface_frame() {
+    if (surface_target_ == 0) return false;   // no lockCanvas active
+    surface_ops_[surface_target_] = ops_;     // POST the buffer
+    ops_.clear();
+    capturing_ = false;
+    surface_target_ = 0;
+    return true;
+}
+
+size_t CanvasShadow::replay_surface(uint32_t view_id,
+                                    renderer::SoftwareCanvas& canvas,
+                                    renderer::BitmapFont& font,
+                                    float left, float top, float w, float h) {
+    auto it = surface_ops_.find(view_id);
+    if (it == surface_ops_.end() || it->second.empty()) return 0;
+    // AOSP law: the surface canvas reports the SURFACE dims = view bounds
+    // (same CANVAS-GEOMETRY clause as onDraw).
+    set_canvas_size((int)w, (int)h);
+    // Replay the posted op list through the same replay body as onDraw
+    // (identical law: view-space ops offset by (left,top)).
+    const std::vector<DrawOp> posted = it->second;  // stable snapshot
+    // Delegate to replay() against the snapshot: replay() reads ops_, so
+    // temporarily swap it in (replay is const w.r.t. ops_ contents).
+    std::vector<DrawOp> saved;
+    saved.swap(ops_);
+    ops_ = posted;
+    size_t n = replay(canvas, font, left, top, w, h);
+    ops_.swap(saved);
+    return n;
+}
+
 // CYCLE-E §34: no silent fallbacks — accepted-but-ignored operations are
 // reported once per (class, op) so compat gaps are observable in every run.
 void CanvasShadow::warn_noop(const std::string& cls, const std::string& op) {
@@ -1221,6 +1263,37 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
     }
     if (m == "drawRect") {
         DrawOp op; op.kind = DrawOp::Kind::DRAW_RECT;
+        // ── S86 §F-NEW-169: RectF/Rect-object overloads ──────────────────
+        // AOSP Canvas.drawRect has two entry points:
+        //   drawRect(float l, float t, float r, float b, Paint)
+        //   drawRect(RectF r, Paint) / drawRect(Rect r, Paint)
+        // Ground truth: dozingcat Dodge FieldView.drawField calls
+        //   c.drawRect(bounds, blackPaint)           (RectF field)
+        //   c.drawRect(new RectF(0,0,w,goal), zone)  (fresh RectF)
+        // With only the float overload modeled, the object form recorded
+        // (0,0,0,0) — the game field painted nothing (white surface).
+        // RectF/Rect heap fields: left/top/right/bottom (AOSP AndroidRect).
+        if (!ctx.args.empty() &&
+            ctx.args[0].kind == CallContext::Arg::Kind::OBJECT &&
+            heap_) {
+            auto rf = [&](const char* f, uint32_t obj) -> float {
+                float v = 0.f; heap_->get_object_float_field(obj, f, v);
+                return v;
+            };
+            const uint32_t robj = ctx.args[0].object_id;
+            float l = rf("left", robj), t = rf("top", robj);
+            float r = rf("right", robj), b = rf("bottom", robj);
+            // Paint is the 2nd arg in the object overload.
+            uint32_t paint_id = ctx.arg_as_object(1);
+            op.color = paint_color(paint_id);
+            op.stroke = paint_style_.count(paint_id) && paint_style_[paint_id] >= 1;
+            auto sw0 = paint_stroke_w_.find(paint_id);
+            op.stroke_w = sw0 != paint_stroke_w_.end() ? sw0->second : 1.f;
+            op.x = l; op.w = r; op.y = t; op.h = b;
+            stamp_clip(op);
+            push_op(std::move(op));
+            return CallResult::handled_void();
+        }
         // (l,t,r,b,paint) — floats
         float l = arg_as_float(ctx, 0), t = arg_as_float(ctx, 1);
         float r = arg_as_float(ctx, 2), b = arg_as_float(ctx, 3);

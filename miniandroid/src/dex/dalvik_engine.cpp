@@ -8413,6 +8413,102 @@ bool DalvikExecutionEngine::dispatch_gl_surface_view_frame(uint32_t view_object_
     return true;
 }
 
+// ── S86 §F-NEW-164: SurfaceView surface lifecycle ────────────────────────
+// AOSP ViewRootImpl law: the surface is created/changed BEFORE any app
+// draw reaches the SurfaceView's buffer; SurfaceHolder.Callback receivers
+// observe the transitions. MiniAndroid model (mirrors the GLSurfaceView
+// frame law above): the render stage calls this per SurfaceView node with
+// the view's measured bounds; the FIRST call dispatches surfaceCreated,
+// size changes dispatch surfaceChanged. The app's game thread (Thread
+// self-run law, R-NEW-345) then paints through lockCanvas/unlockCanvas
+// AndPost (SurfaceViewShadow + CanvasShadow surface capture).
+bool DalvikExecutionEngine::dispatch_surface_view_lifecycle(
+    uint32_t view_object_id, int w, int h, bool* created_out) {
+    *created_out = false;
+    if (shadow_registry_ == nullptr) return false;
+    auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+    if (!view_shadow) return false;
+    const auto* node = view_shadow->find_node(view_object_id);
+    if (!node) return false;
+    std::string cls = node->class_desc;
+    if (heap_.has_object(view_object_id)) {
+        const auto* obj = heap_.get(view_object_id);
+        if (obj && !obj->class_descriptor.empty()) cls = obj->class_descriptor;
+    }
+    if (!is_subclass_of(cls, "Landroid/view/SurfaceView;") ||
+        is_subclass_of(cls, "Landroid/opengl/GLSurfaceView;"))
+        return false;
+    if (w <= 0 || h <= 0) return false;
+
+    // Resolve the Callback receiver: holder's svCallback (set by
+    // SurfaceViewShadow.addCallback), falling back to the view object
+    // itself (addCallback(this) covers the common game pattern).
+    uint32_t holder = 0, callback = 0;
+    auto hf = heap_.get_object_field(view_object_id, "svHolder");
+    if (hf.has_value() && hf->type == DalvikType::OBJECT_REF)
+        holder = hf->object_id;
+    if (holder != 0) {
+        auto cf = heap_.get_object_field(holder, "svCallback");
+        if (cf.has_value() && cf->type == DalvikType::OBJECT_REF)
+            callback = cf->object_id;
+    }
+    if (callback == 0) callback = view_object_id;
+    if (!heap_.has_object(callback)) return false;
+
+    std::string ccls;
+    if (const auto* cobj = heap_.get(callback))
+        ccls = cobj->class_descriptor;
+    if (ccls.empty()) return false;
+    if (ccls[0] == 'L' && ccls.find('.') != std::string::npos) {
+        std::string norm = "L";
+        for (size_t i = 1; i < ccls.size(); ++i)
+            norm += (ccls[i] == '.') ? '/' : ccls[i];
+        ccls = norm;
+    }
+
+    DalvikValue self = DalvikValue::make_object(callback, ccls);
+    DalvikValue hold_arg =
+        holder != 0
+            ? DalvikValue::make_object(holder,
+                                       "Landroid/view/SurfaceHolder;")
+            : DalvikValue::make_object(view_object_id, cls);
+    auto invoke = [&](const char* method, std::vector<DalvikValue> args) {
+        DalvikValue ret = DalvikValue::make_void();
+        DalvikExecutionResult res;
+        return try_recursive_invoke(ccls, method, args, ret, res);
+    };
+
+    bool dispatched = false;
+    int64_t created = 0;
+    auto cf2 = heap_.get_object_field(view_object_id, "svSurfaceCreated");
+    if (cf2.has_value() && cf2->type == DalvikType::INT32) created = cf2->int_val;
+    if (!created) {
+        std::vector<DalvikValue> a{self, hold_arg};
+        dispatched = invoke("surfaceCreated", std::move(a)) || dispatched;
+        heap_.set_object_field(view_object_id, "svSurfaceCreated",
+                               DalvikValue::make_int(1));
+        *created_out = true;
+        std::cerr << "[F-NEW-164] surfaceCreated dispatched view="
+                  << view_object_id << " callback=" << ccls << std::endl;
+    }
+    int64_t lw = -1, lh = -1;
+    auto wf = heap_.get_object_field(view_object_id, "svLastW");
+    auto hf2 = heap_.get_object_field(view_object_id, "svLastH");
+    if (wf.has_value() && wf->type == DalvikType::INT32) lw = wf->int_val;
+    if (hf2.has_value() && hf2->type == DalvikType::INT32) lh = hf2->int_val;
+    if (lw != w || lh != h) {
+        std::vector<DalvikValue> a{self, hold_arg, DalvikValue::make_int(0),
+                                   DalvikValue::make_int(w),
+                                   DalvikValue::make_int(h)};
+        dispatched = invoke("surfaceChanged", std::move(a)) || dispatched;
+        heap_.set_object_field(view_object_id, "svLastW",
+                               DalvikValue::make_int(w));
+        heap_.set_object_field(view_object_id, "svLastH",
+                               DalvikValue::make_int(h));
+    }
+    return dispatched;
+}
+
 bool DalvikExecutionEngine::chain_overrides_method(
     const std::string& class_desc, const char* method) {
     uint64_t f107_t0 = 0; phase_clock().enter(phase_clock().overrides, f107_t0);
@@ -24238,6 +24334,105 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         return true;
     }
 
+    // ── S86 §F-NEW-166: WindowManager.getDefaultDisplay / Display laws ────
+    // AOSP android.view.WindowManagerImpl.getDefaultDisplay returns the
+    // Display instance owned by the WindowManager — NEVER null (the field
+    // is final, assigned at the WindowManagerImpl constructor). Ground
+    // truth: dozingcat Dodge FieldView.<init> runs
+    //   ((WindowManager)getSystemService(WINDOW_SERVICE)).getDefaultDisplay()
+    //   .getMetrics(metrics)
+    // and reads metrics.density for every text size — with a null Display
+    // the constructor NPE'd (APP BOUNDARY unwind) before ANY frame.
+    // Display.getMetrics(DisplayMetrics) fills the SAME device-profile law
+    // as Resources.getDisplayMetrics (density 2.625 / 420dpi / 1080x1920).
+    if (method == "getDefaultDisplay" &&
+        class_name.find("WindowManager") != std::string::npos) {
+        result = get_or_create_singleton("Landroid/view/Display;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (method == "getMetrics" && class_name == "Landroid/view/Display;" &&
+        args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF) {
+        // Engine-bridge framing: args[0] = receiver (Display), args[1] = the
+        // DisplayMetrics OUT object (same convention as getSystemService's
+        // args[1] string). Fill the SAME device-profile law as
+        // Resources.getDisplayMetrics (density 2.625 / 420dpi / 1080x1920).
+        uint32_t dm_id = args[1].object_id;
+        if (dm_id != 0) {
+            auto set_f = [&](const char* f, float v) {
+                heap_.set_object_field(dm_id, f, DalvikValue::make_float(v));
+            };
+            auto set_i = [&](const char* f, int32_t v) {
+                heap_.set_object_field(dm_id, f, DalvikValue::make_int(v));
+            };
+            set_f("density", 2.625f);        // device-density law (420/160)
+            set_i("densityDpi", 420);        // DENSITY_420
+            set_f("scaledDensity", 2.625f);  // fontScale 1.0
+            set_i("widthPixels", 1080);      // device profile law
+            set_i("heightPixels", 1920);
+            set_f("xdpi", 420.0f);
+            set_f("ydpi", 420.0f);
+        }
+        result = DalvikValue::make_void();
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (method == "getRotation" && class_name == "Landroid/view/Display;") {
+        // AOSP Display.getRotation(): Surface.ROTATION_0 = 0 — the device
+        // profile is portrait-locked (1080x1920). Ground truth: Dodge
+        // AndroidUtils.getDeviceRotation unboxes getRotation() — null
+        // killed the value with an Integer.intValue NPE.
+        result = DalvikValue::make_int(0);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (method == "getSize" && class_name == "Landroid/view/Display;" &&
+        args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF) {
+        // AOSP Display.getSize(Point out): out.x = width, out.y = height.
+        // Engine-bridge framing: args[1] = the Point out-param.
+        uint32_t pt = args[1].object_id;
+        if (pt != 0) {
+            heap_.set_object_field(pt, "x", DalvikValue::make_int(1080));
+            heap_.set_object_field(pt, "y", DalvikValue::make_int(1920));
+        }
+        result = DalvikValue::make_void();
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ── S86 §F-NEW-169b: android.graphics.RectF / Rect constructor law ───
+    // AOSP android.graphics.RectF(int/float ctor) stores left/top/right/
+    // bottom as FIELDS on the object. The engine allocated RectF objects
+    // but never stored the geometry (the ctor call swallowed) — every
+    // Canvas.drawRect(RectF, Paint) recorded a (0,0,0,0) rect. Same law
+    // for android.graphics.Rect (int fields).
+    if (method == "<init>" &&
+        (class_name == "Landroid/graphics/RectF;" ||
+         class_name == "Landroid/graphics/Rect;") && args.size() >= 5) {
+        const uint32_t self = args[0].object_id;
+        if (self != 0) {
+            auto store = [&](const char* f, const DalvikValue& v) {
+                if (class_name == "Landroid/graphics/Rect;")
+                    heap_.set_object_field(
+                        self, f, DalvikValue::make_int(v.int_val));
+                else
+                    heap_.set_object_field(
+                        self, f,
+                        DalvikValue::make_float(
+                            v.type == DalvikType::FLOAT32
+                                ? v.float_val
+                                : (float)v.int_val));
+            };
+            store("left", args[1]);
+            store("top", args[2]);
+            store("right", args[3]);
+            store("bottom", args[4]);
+        }
+        result = DalvikValue::make_void();
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
     if (method == "getDisplayMetrics" &&
         class_name == "Landroid/content/res/Resources;") {
         DalvikValue dm = get_or_create_singleton("Landroid/util/DisplayMetrics;");
@@ -24975,13 +25170,32 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // P0.12 — Context.getSharedPreferences → SharedPreferences
     // EXP-048: Returns a heap-allocated SharedPreferences object with the
     // preference name stored as a field, enabling per-name persistence.
+    // S86 §F-NEW-167: Activity.getPreferences(mode) joins the same law —
+    // AOSP Activity.java: "getPreferences(int mode) ==
+    //   getSharedPreferences(getLocalClassName(), mode)".
+    // Ground truth: dozingcat Dodge DodgeMain.bestLevel() reads
+    // getPreferences(MODE_PRIVATE).getInt("bestLevel", 1) — with a null
+    // SharedPreferences the unboxing-style interface call NPE'd and the
+    // onCreate hit APP BOUNDARY before setContentView finished.
     // ────────────────────────────────────────────────────────────────────────
-    if (method == "getSharedPreferences" &&
+    if ((method == "getSharedPreferences" || method == "getPreferences") &&
         (class_name.find("Context") != std::string::npos ||
          class_name.find("Activity") != std::string::npos)) {
         // Extract preference name from first argument (String)
         std::string prefs_name = "default";
-        if (!args.empty() && args[0].type == DalvikType::STRING_REF) {
+        if (method == "getPreferences") {
+            // AOSP law: prefs file named after the LOCAL activity class
+            // (current_class_ e.g. Lcom/dozingcatsoftware/dodge/DodgeMain;
+            // → "DodgeMain"; inner classes keep their $ form like AOSP
+            // getLocalClassName).
+            std::string cls = current_class_;
+            size_t last_slash = cls.rfind('/');
+            std::string local = (last_slash == std::string::npos)
+                                    ? cls
+                                    : cls.substr(last_slash + 1);
+            if (!local.empty() && local.back() == ';') local.pop_back();
+            if (!local.empty()) prefs_name = local;
+        } else if (!args.empty() && args[0].type == DalvikType::STRING_REF) {
             prefs_name = args[0].string_val;
         }
         // Create SharedPreferences object on heap

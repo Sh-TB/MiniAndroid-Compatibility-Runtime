@@ -200,6 +200,30 @@ public:
                   class miniandroid::renderer::BitmapFont& font,
                   float left, float top, float w, float h);
 
+    // ── F-NEW-164 (S86): SurfaceView/SurfaceHolder real-surface law ──────
+    // AOSP android.view.SurfaceView model: a SurfaceView owns an OFF-SCREEN
+    // surface; an app draws through SurfaceHolder.lockCanvas() → draw ops →
+    // SurfaceHolder.unlockCanvasAndPost() (typically from a game thread),
+    // and the compositor blits the posted buffer INTO the view hierarchy at
+    // the SurfaceView's bounds. Law chain (AOSP ViewRootImpl/Surface):
+    //   lockCanvas(null)  → fresh Canvas bound to the view's surface buffer
+    //   unlockCanvasAndPost(c) → buffer posted; compositor shows it next frame
+    // Capture side (called from SurfaceViewShadow):
+    void begin_surface_frame(uint32_t view_id);
+    // Snapshot ops_ → surface_ops_[view_id]; returns false when no surface
+    // target was active (honest no-post).
+    bool end_surface_frame();
+    // Compositor side: replay the LAST POSTED op list for this SurfaceView
+    // into (left,top,w,h) view-space bounds. Returns 0 when nothing was
+    // ever posted (honest blank — the render stage then falls back).
+    size_t replay_surface(uint32_t view_id,
+                          class miniandroid::renderer::SoftwareCanvas& canvas,
+                          class miniandroid::renderer::BitmapFont& font,
+                          float left, float top, float w, float h);
+    bool has_surface(uint32_t view_id) const {
+        return surface_ops_.count(view_id) != 0;
+    }
+
     bool capturing() const { return capturing_; }
     // S68 §12: real canvas dimensions (engine framebuffer law — getWidth/
     // getHeight answer these; was hardcoded 1080x1920).
@@ -212,6 +236,12 @@ public:
     const std::vector<DrawOp>& ops() const { return ops_; }
 
 private:
+    // ── F-NEW-164: surface capture state ─────────────────────────────────
+    // view id whose surface buffer currently holds the recording (0 = none).
+    uint32_t surface_target_ = 0;
+    // Last posted op list per SurfaceView view id (posted = visible buffer).
+    std::map<uint32_t, std::vector<DrawOp>> surface_ops_;
+
     bool capturing_ = false;
     std::vector<DrawOp> ops_;
     // UC009 H-072: AOSP RenderNode recording model. Compose (1.7+) records
