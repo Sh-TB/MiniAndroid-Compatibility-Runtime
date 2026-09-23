@@ -2264,41 +2264,69 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
     // "array[N]") so the ENGINE-side TypedArray reader law can answer the
     // getBoolean/getInt family positionally (AOSP TypedArray contract).
     if (m == "obtainStyledAttributes") {
-        if (heap_ && !ctx.args.empty() &&
-            ctx.args[0].kind == CallContext::Arg::Kind::OBJECT &&
-            ctx.args[0].object_id != 0) {
-            uint32_t styleable_id = ctx.args[0].object_id;
+        // ── F-NEW-175 (S88): TypedArray-null family — the AOSP law ────────
+        // Context.obtainStyledAttributes NEVER answers null: every overload
+        // ((int[] attrs), (int resid, int[] attrs), (AttributeSet, int[],
+        // int, int)) resolves against the theme chain and materializes a
+        // TypedArray (AOSP ContextImpl.obtainStyledAttributes /
+        // Resources.ThemeImpl). The F-093 producer only accepted the shape
+        // args[0] = styleable int[]; every other shape fell through →
+        // null TypedArray → TypedArray.hasValue/.getIndexCount NPE at APP
+        // BOUNDARY (chess: androidx g/c0.p pc=34 hasValue; no.thanks:
+        // savedstate chain getIndexCount).
+        // LAW: locate the styleable int[] among the OBJECT args (F-036
+        // heap-array convention, descriptor "[I"); theme-resolve every
+        // entry exactly as F-093; when no int[] exists answer a NON-NULL
+        // empty TypedArray (__array_length__ = 0) — the reader law then
+        // answers hasValue=false / getIndexCount=0, which is AOSP truth
+        // for an attribute-free lookup and lets appcompat tint paths fall
+        // back gracefully instead of dying on a null receiver.
+        if (heap_) {
+            uint32_t styleable_id = 0;
             int32_t n = 0;
-            heap_->get_object_array_length(styleable_id, n);
-            if (n > 0 && n <= 256) {
-                uint32_t ta_id = heap_->get_or_create(
-                    "Landroid/content/res/TypedArray;");
-                heap_->set_object_int_field(ta_id, "__array_length__", n);
-                auto& rt = resources::ResourceRuntime::instance();
-                for (int32_t i = 0; i < n; ++i) {
-                    int32_t attr_id = 0;
-                    heap_->get_object_int_field(
-                        styleable_id, "array[" + std::to_string(i) + "]",
-                        attr_id);
-                    int32_t decoded = 0;
-                    if (attr_id != 0) {
-                        auto v = rt.resolve_theme_attr_value(apk_path_,
-                                                             (uint32_t)attr_id);
-                        if (v) {
-                            // AOSP TypedValue law: booleans decode as
-                            // data!=0; ints/colors pass data through.
-                            decoded = (int32_t)v->data;
-                        }
-                    }
-                    heap_->set_object_int_field(
-                        ta_id, "array[" + std::to_string(i) + "]", decoded);
+            for (const auto& a : ctx.args) {
+                if (a.kind != CallContext::Arg::Kind::OBJECT ||
+                    a.object_id == 0)
+                    continue;
+                // Prefer an arg with array descriptor; the length probe is
+                // the safe fallback (set to 0 for non-array objects).
+                int32_t len = 0;
+                heap_->get_object_array_length(a.object_id, len);
+                if (a.object_class == "[I" || (len > 0 && len <= 256)) {
+                    styleable_id = a.object_id;
+                    n = len;
+                    break;
                 }
-                std::cerr << "[F093-TA] obtainStyledAttributes attrs=" << n
-                          << " theme-backed (apk=" << apk_path_ << ")"
-                          << std::endl;
-                return CallResult::handled_object(
-                    ta_id, "Landroid/content/res/TypedArray;");
             }
+            if (n > 256) n = 256;
+            uint32_t ta_id = heap_->get_or_create(
+                "Landroid/content/res/TypedArray;");
+            heap_->set_object_int_field(ta_id, "__array_length__", n);
+            auto& rt = resources::ResourceRuntime::instance();
+            for (int32_t i = 0; i < n; ++i) {
+                int32_t attr_id = 0;
+                heap_->get_object_int_field(
+                    styleable_id, "array[" + std::to_string(i) + "]",
+                    attr_id);
+                int32_t decoded = 0;
+                if (attr_id != 0) {
+                    auto v = rt.resolve_theme_attr_value(apk_path_,
+                                                         (uint32_t)attr_id);
+                    if (v) {
+                        // AOSP TypedValue law: booleans decode as
+                        // data!=0; ints/colors pass data through.
+                        decoded = (int32_t)v->data;
+                    }
+                }
+                heap_->set_object_int_field(
+                    ta_id, "array[" + std::to_string(i) + "]", decoded);
+            }
+            std::cerr << "[F-NEW-175] obtainStyledAttributes attrs=" << n
+                      << (styleable_id != 0 ? " theme-backed"
+                                            : " EMPTY(no styleable int[] arg)")
+                      << " (apk=" << apk_path_ << ")" << std::endl;
+            return CallResult::handled_object(
+                ta_id, "Landroid/content/res/TypedArray;");
         }
         return CallResult::not_handled();
     }
