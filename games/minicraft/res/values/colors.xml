@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg_sky">#B8E2F2</color>
+    <color name="btn_slate">#5B7A5E</color>
+    <color name="btn_dark">#4A664D</color>
+    <color name="orange">#E8A33D</color>
+    <color name="white">#FFFFFF</color>
+</resources>

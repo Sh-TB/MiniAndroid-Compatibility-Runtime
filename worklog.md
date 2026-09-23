@@ -3038,3 +3038,23 @@ Stage Summary:
 - 50 new titles really executed (not just collected); 1 new interactive promotion (URLChecker GIF + bouncy GIF); engine advanced by 2 A/B-proven laws.
 - Evidence honesty materially hardened: near-blank class can no longer masquerade as L2; 72 inflated claims demoted; every VERIFIED/INTERACTIVE number is content-verified.
 - Gates: battery 26/26, ladder 10/10 + 2/2, validator ALL PASS.
+
+---
+Task ID: S86
+Agent: Super Z (main)
+Task: User wave — Dodge two-color question root-caused via upstream source; graphics-type investigation of Snake/2048/خانه سازی; attack why titles still don't fully run; L0→L10 stratified 5-per-level impact proof; add a house-building game; continue graphics improvements.
+
+Work Log:
+- Dodge forensics (user: "فقط از دو رنگ دارن نمایش داده میشن"): cloned upstream dozingcat/dodge-android, read FieldView.java — the game is NOT two-color by design (black field, semi-transparent red/green goal zones, blue dodger, per-bullet random bright colors); FieldView is a SurfaceView painting via SurfaceHolder.lockCanvas from a game thread. The S84 GIF only captured menu+about because the entire surface path was unimplemented.
+- SEVEN engine laws implemented and A/B-proven (F-NEW-164..170, all documented in ROOT_CAUSE_REGISTRY.md): SurfaceView/SurfaceHolder real-surface law (holder heap-field pairing, lockCanvas→op capture→unlockCanvasAndPost→posted buffer, lazy surfaceCreated/Changed dispatch, render-stage compositor replay_surface); java.util.LinkedList Deque end-access family (getLast NPE killed the game thread at APP BOUNDARY); WindowManager.getDefaultDisplay/Display.getMetrics/getRotation/getSize; Activity.getPreferences==getSharedPreferences(getLocalClassName()); AOSP draw-subtree visibility law (INVISIBLE(4) prunes subtree — f06 golden pixel-identical); Canvas.drawRect(RectF,Paint) object overload + RectF ctor field law (op-trace showed correct colors with all-zero geometry); View.getWidth/getHeight/getMeasured* laws (drawField sizes everything from getWidth()).
+- Dodge evolution evidence: rc 1→0, 2-frame GIF → 14 distinct frames with the real Dodge design; canonical GIF replaced (SHA 5a648a24…), registry L3 VERIFIED-INTERACTIVE; APK re-download SHA matches S84 pin a5687d1b….
+- MiniCraft (خانه سازی) CREATED as 5th in-house game (games/minicraft, package com.miniandroid.minicraft): 14x20 LCG terrain, build cursor, BRICK/PLACE/DIG/DEMO actions, procedural block textures; canonical 16-frame GIF (terrain → real placements → material cycle → DEMO cottage → digs), registry L3 VERIFIED-INTERACTIVE, SHA 3fbca3e4….
+- Graphics-type investigation table added to LEVEL_IMPACT_S86.md (Snake/2048/MiniCraft = in-house View.onDraw Canvas 2D; Dodge = SurfaceView+lockCanvas+game thread).
+- L0→L10 stratified impact campaign (scripts/s86_level_impact.py): 29 titles sampled deterministically (5 per level, levels 0..10 present), re-executed at HEAD with obs+click + S85-hardened visual gate; report docs/evidence/LEVEL_IMPACT_S86.md with per-title old→new levels, rc, unique colors, honest version-drift labels (anuto/klondike/deskclock/bnyro latest-upstream retests; their pinned-era canonical evidence remains authoritative).
+- Docs regenerated from registry: ACHIEVEMENTS.md (148 records), CANONICAL_SCREENSHOTS.md (148 rows), README stats + hero (MiniCraft + Dodge rows, S86 wave header), ROOT_CAUSE_REGISTRY F-NEW-164..170 block.
+- Gates: battery 26/26 rc=0, golden ladder 10/10, canonical validator ALL CHECKS PASS; secret scan clean (PAT env-only).
+
+Stage Summary:
+- The "two-color" mystery = SurfaceView surface path; now fully implemented and pixel-proven with the actual upstream game design.
+- New in-house game MiniCraft (خانه سازی) joins the flagship family; README + registry + validator consistent at 148 titles / 36 canonical artifacts / 12 GIFs.
+- Honest frontier unchanged where it belongs: compose F-NEW-161, androidx F-NEW-162, GLSL/libGDX F-NEW-157; everything else moved by 7 A/B-proven laws.

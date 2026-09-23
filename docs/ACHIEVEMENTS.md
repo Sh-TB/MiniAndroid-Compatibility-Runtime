@@ -7,7 +7,7 @@
 > are never copied across documents — other files link here and to
 > the canonical artifact.
 
-> **147 titles** (86 games · 60 apps · 1 fixtures). Wave history (pre-S84 narrative) is preserved in [docs/history/ACHIEVEMENTS_WAVE_HISTORY.md](history/ACHIEVEMENTS_WAVE_HISTORY.md).
+> **148 titles** (87 games · 60 apps · 1 fixtures). Wave history (pre-S84 narrative) is preserved in [docs/history/ACHIEVEMENTS_WAVE_HISTORY.md](history/ACHIEVEMENTS_WAVE_HISTORY.md).
 
 > Chain per title: `Title → Source → APK+SHA → Execution session → Achievement → ONE canonical screenshot → root cause/issue`.
 
@@ -1047,14 +1047,14 @@
 * **Package / identity:** `com.dozingcatsoftware.dodge` · type: game · version: 1.5.1
 * **Source:** [F-Droid page](https://f-droid.org/en/packages/com.dozingcatsoftware.dodge/) · [upstream source](https://github.com/dozingcat/dodge-android)
 * **APK SHA256:** `a5687d1bad7b2927…`
-* **Sessions:** S84 · status: **VERIFIED-INTERACTIVE** · rendering: GRAPHICALLY_INCOMPLETE
-* **Execution evidence:** launched=False · rendered=True · interacted=True · state_changed=True
-* **Canonical screenshot:** [com.dozingcatsoftware.dodge.gif](evidence/canonical/com.dozingcatsoftware.dodge.gif) · SHA256 `3ca88c8da8a90bc3…`
-* **Root cause / law:** F-NEW-160 (FIXED this wave, S84 A/B-proven): Class.forName framework bridge — android.os.Build/Build$VERSION CNFE eliminated (9/50 titles hit); bridge restricted to pure-data Build family after foehnix.widget A/B regression proved instantiable artifacts (CloseGuard) must stay on the caught-CNFE path. | F-NEW-161 (OPEN, fan-out family): Compose UI runtime internals — kotlin-reflect forName CNFE (caught, faithful) followed by compose-runtime NPE/ISE (null Iterator in compose runtime setState chain, null View.getWidth in compose layout, IllegalStateException in setContent/onCreate) → ART process-death law PARTIAL. Static UI renders; dynamic compose machinery not implemented (S83-GFX-BASE P4 scope).
-* **Proven exactly:** LOADED/RENDERED/INTERACTED/STATE_CHANGED
-* **Remaining:** compose/animation dynamics; deeper interaction
+* **Sessions:** S84/S86 · status: **VERIFIED-INTERACTIVE** · rendering: L3_STRUCT_CANDIDATE
+* **Execution evidence:** launched=True · rendered=True · interacted=True · state_changed=True
+* **Canonical screenshot:** [com.dozingcatsoftware.dodge.gif](evidence/canonical/com.dozingcatsoftware.dodge.gif) · SHA256 `5a648a244bec1bb1…`
+* **Root cause / law:** S86 root-cause chain (upstream source-read driven): the game field NEVER rendered in the S84 GIF (frame0=menu, frame1=about white). Root causes fixed this wave, all A/B-proven: F-NEW-164 SurfaceView/SurfaceHolder.lockCanvas real-surface law (FieldView extends SurfaceView, drawField() = lockCanvas->drawRect(black)+zones+bullets->unlockCanvasAndPost); F-NEW-165 java.util.LinkedList Deque end-access family (FrameRateManager.previousFrameTimestamps.getLast() NPE killed the game thread at APP BOUNDARY); F-NEW-166 WindowManager.getDefaultDisplay/Display.getMetrics/getRotation (FieldView ctor Display.getMetrics NPE); F-NEW-167 Activity.getPreferences == getSharedPreferences(getLocalClassName(), mode) (bestLevel() SP NPE); F-NEW-168 AOSP draw-subtree law: View.draw(Canvas,ViewGroup,long) gates dispatchDraw on VISIBLE — INVISIBLE(4) prunes the subtree (menuView INVISIBLE kept button children painting); F-NEW-169 Canvas.drawRect(RectF,Paint) object overload + RectF ctor field law (rect recorded (0,0,0,0)); F-NEW-170 View.getWidth/getHeight dimension query laws (drawField sizes all geometry from getWidth(); was 0 -> all-zero draw ops). Game now renders the real Dodge design from upstream source: black field, semi-transparent red start zone, green end zone, blue dodger circle, per-bullet random bright colors.
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED/INTERACTED/STATE_CHANGED/SCREENSHOT_CAPTURED
+* **Remaining:** dodger steering (touch/tilt navigation) + collision/death animation proof
 * **Last success / first divergence:** 8/8 frames captured, click pass executed / first uncaught in-flight exception (see run/s84/com.dozingcatsoftware.dodge/obs_obs.log EXC-PROPAGATE)
-* **Notes:** S84 NEW title. rc_obs=1 errors=4 frames=8/8 click: probed=7 state_changed=6. unique_colors=52 entropy=1.685 resources(dex/classes)=?
+* **Notes:** S86 canonical GIF: 14 frames (menu + 13 live gameplay), tap New Game at (537,935), bullets move/dodger visible, L3 struct-candidate. Upstream ground truth: github.com/dozingcat/dodge-android (GPLv3) FieldView.java read this wave; APK re-downloaded SHA256 a5687d1bad7b2927740a55b7b1df11efc81edcad03f0633ab5c2e5c58b120541 = S84 pin (v1.5.1, vc10).
 
 ### com.galaxyrio.sudokusolver
 
@@ -1601,6 +1601,20 @@
 * **Remaining:** graphics completeness beyond L3
 * **Last success / first divergence:** full lifecycle + real frames (S83) / none recorded in S83 session
 * **Notes:** S83 real-screenshot campaign evidence (games__tetris_v1.0_vc1__L3_STRUCT_CANDIDATE.jpg)
+
+### MiniCraft (خانه سازی)
+
+* **Package / identity:** `com.miniandroid.minicraft` · type: game · version: 1.0
+* **Source:** in-house (games/minicraft)
+* **APK SHA256:** `77b9629ee111b968…`
+* **Sessions:** S86 · status: **VERIFIED-INTERACTIVE** · rendering: L3_STRUCT_CANDIDATE
+* **Execution evidence:** launched=True · rendered=True · interacted=True · state_changed=True
+* **Canonical screenshot:** [com.miniandroid.minicraft.gif](evidence/canonical/com.miniandroid.minicraft.gif) · SHA256 `3fbca3e4b1a1662b…`
+* **Root cause / law:** none — built on the proven in-house pattern (static state law + real Canvas.onDraw + button clicks); renders first try at current HEAD with the S86 engine laws
+* **Proven exactly:** LOADED/LAUNCHED/RENDERED/INTERACTED/STATE_CHANGED/SCREENSHOT_CAPTURED
+* **Remaining:** freeform multi-story building + world save/restore
+* **Last success / first divergence:** canonical GIF @S86 / none recorded
+* **Notes:** S86 user-requested house-building game (خانه سازی). 2D block sandbox: LCG terrain (grass/dirt/stone), build cursor walked with the direction pad, BRICK cycles material (brick/plank/roof/glass/door), PLACE/DIG edit the world, DEMO auto-builds a brick cottage (gabled roof + timber ring + glass window + door). Canonical GIF: 16 frames — terrain, 5 real placements, material cycle, DEMO house build, 2 digs; stats strip mutates (Blocks/Dug).
 
 ### name.boyle.chris.sgtpuzzles
 
