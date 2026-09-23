@@ -965,6 +965,23 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
                 pd.contours.back().push_back({0.f, 0.f});
             }
         };
+        // ── S88 F-NEW-180: Path constructor law ──────────────────────────
+        // AOSP Path.java: Path() starts empty; Path(Path src) copies the
+        // geometry. Ground truth: simplestopwatch's MiniFont glyph table is
+        // built as `map.put(c, new Glyph(width, lsb, pm.makePath()))` where
+        // makePath() returns `new Path()` — with no <init> law the shadow
+        // chain fell through and the Glyph.path field stayed null, and
+        // tweakWidth's g.path.transform(m) NPE'd at APP BOUNDARY (the whole
+        // onCreate family died → button/time fields never assigned).
+        if (m == "<init>") {
+            const uint32_t src = ctx.arg_as_object(0, 0);
+            auto sit = paths_.find(src);
+            if (src != 0 && src != recv && sit != paths_.end())
+                pd = sit->second;   // Path(Path src) copy law
+            else
+                pd = PathData{};    // Path() — empty
+            return CallResult::handled_void();
+        }
         if (m == "reset" || m == "rewind") {
             pd = PathData{};
             return CallResult::handled_void();
@@ -1231,9 +1248,69 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
             }
             return CallResult::handled_void();
         }
-        // Accepted-but-geometry-free Path calls (state-only semantics).
-        if (m == "transform" || m == "computeBounds") {
-            warn_noop(cls, m);
+        // ── S88 F-NEW-180: real transform + computeBounds ────────────────
+        // AOSP Path.java: transform(Matrix) maps THIS path's geometry;
+        // transform(Matrix, Path dst) leaves this path untouched and writes
+        // the mapped copy into dst. computeBounds(RectF, boolean) fills the
+        // rect with the path's bounding box (the boolean is "prefer speed
+        // over accuracy" — irrelevant for the deterministic rasterizer).
+        if (m == "transform") {
+            const uint32_t mid = ctx.arg_as_object(0, 0);
+            Affine2D c;
+            bool ok = false;
+            float v = 0.f;
+            auto try_read = [&](const char* name, float& out) {
+                return heap_ && heap_->get_object_float_field(mid, name, out);
+            };
+            if (mid != 0 && try_read("m0", c.a) && try_read("m1", c.c) &&
+                try_read("m2", c.e) && try_read("m3", c.b) &&
+                try_read("m4", c.d) && try_read("m5", c.f)) {
+                ok = true;
+            }
+            if (!ok) {
+                warn_noop(cls, "transform(Matrix-unresolved)");
+                return CallResult::handled_void();
+            }
+            PathData* target = &pd;
+            uint32_t dst_id = 0;
+            if (ctx.args.size() >= 2) {
+                dst_id = ctx.arg_as_object(1, 0);
+                if (dst_id != 0 && dst_id != recv)
+                    target = &paths_[dst_id];
+            }
+            PathData mapped = pd;   // map every recorded point
+            for (auto& cont : mapped.contours)
+                for (auto& p : cont) {
+                    float px, py;
+                    c.map(p.first, p.second, px, py);
+                    p = {px, py};
+                }
+            c.map(mapped.cx, mapped.cy, mapped.cx, mapped.cy);
+            c.map(mapped.sx, mapped.sy, mapped.sx, mapped.sy);
+            if (dst_id != 0) mapped.open = pd.open;
+            *target = std::move(mapped);
+            return CallResult::handled_void();
+        }
+        if (m == "computeBounds") {
+            // computeBounds(RectF bounds, boolean unused) — fill the RectF
+            // heap fields with the recorded contour bounding box.
+            const uint32_t rid = ctx.arg_as_object(0, 0);
+            float l = 0.f, t = 0.f, r = 0.f, b = 0.f;
+            bool first = true;
+            for (const auto& cont : pd.contours)
+                for (const auto& p : cont) {
+                    if (first) { l = r = p.first; t = b = p.second; first = false; }
+                    else {
+                        l = l < p.first ? l : p.first;  r = r > p.first ? r : p.first;
+                        t = t < p.second ? t : p.second; b = b > p.second ? b : p.second;
+                    }
+                }
+            if (heap_ && rid != 0) {
+                heap_->set_object_float_field(rid, "left", l);
+                heap_->set_object_float_field(rid, "top", t);
+                heap_->set_object_float_field(rid, "right", r);
+                heap_->set_object_float_field(rid, "bottom", b);
+            }
             return CallResult::handled_void();
         }
         return CallResult::not_handled();

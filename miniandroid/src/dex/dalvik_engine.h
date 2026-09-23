@@ -2111,6 +2111,13 @@ public:
     void run_thread_start_body(uint32_t thread_oid, uint32_t target_oid);
     // EXP-042 Phase 4: Singleton cache helper for Android framework objects.
     DalvikValue get_or_create_singleton(const std::string& class_desc);
+    // S88 F-NEW-179: keyed-by-path directory File law — getFilesDir/
+    // getCacheDir/getExternalFilesDir/getExternalCacheDir answer STABLE,
+    // DISTINCT, PATHED java.io.File objects (AOSP ContextImpl contract;
+    // the class-keyed singleton collapsed all four into one pathless File,
+    // so File.getParentFile/getParent computed no parent and answered null
+    // — microtimer's single-instance guard died on getParentFile null).
+    DalvikValue get_or_create_dir_file(const std::string& path);
     
     // Utility
     void log(const std::string& msg);
@@ -2160,6 +2167,10 @@ public:
     // matching real Android behavior where getResources() always returns the
     // same Resources instance for a given Context.
     std::map<std::string, uint32_t> api_singletons_;
+    // S88 F-NEW-179: path → File object id (distinct dir File per path).
+    std::map<std::string, uint32_t> dir_files_;
+    // S88 F-NEW-181: code point → boxed Character id (valueOf cache 0..127).
+    std::map<uint32_t, uint32_t> char_box_cache_;
     // F-067: the attached Application instance (heap object id + class)
     // recorded by the runtime layer before any activity runs.
     uint32_t application_object_id_ = 0;

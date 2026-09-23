@@ -118,7 +118,7 @@ else
 for t in semantic_long_cmp_conv_test semantic_switch_parse_neg_test semantic_pass3_bridge_test; do
     g++ -std=c++17 -w -g -O2 -Isrc -Ithird_party/nlohmann_json/include -o "build/$t" \
         "tests/$t.cpp" build/apk/*.o build/dex/*.o build/runtime/*.o \
-        build/diagnostics/*.o build/resources/*.o build/renderer/*.o \
+        build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
         build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
         -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 \
         > "/tmp/battery_$t.log" 2>&1
@@ -140,7 +140,7 @@ if cached "mutf8 string-pool battery (expect 14)"; then
 else
 g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/mutf8_test \
     tests/mutf8_string_pool_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
-    build/diagnostics/*.o build/resources/*.o build/renderer/*.o \
+    build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
     -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 \
     > /tmp/battery_mutf8.log 2>&1
@@ -156,7 +156,7 @@ if cached "resource-config selection law (expect 48)"; then
 else
 g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/resource_config_selection_test \
     tests/resource_config_selection_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
-    build/diagnostics/*.o build/resources/*.o build/renderer/*.o \
+    build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
     -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 \
     > /tmp/battery_rescfg.log 2>&1
@@ -172,7 +172,7 @@ if cached "resource core law (expect 42)"; then
 else
 g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/resource_core_law_test \
     tests/resource_core_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
-    build/diagnostics/*.o build/resources/*.o build/renderer/*.o \
+    build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
     -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 \
     > /tmp/battery_reslaw.log 2>&1
@@ -188,7 +188,7 @@ if cached "resource hostile safety (expect 18)"; then
 else
 g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/resource_hostile_test \
     tests/resource_hostile_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
-    build/diagnostics/*.o build/resources/*.o build/renderer/*.o \
+    build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
     -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 \
     > /tmp/battery_hostile.log 2>&1
@@ -204,7 +204,7 @@ if cached "LinearLayout/MeasureSpec law (expect 24)"; then
 else
 g++ -std=c++17 -w -g -O1 -Isrc -o build/linear_layout_law_test \
     tests/linear_layout_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
-    build/diagnostics/*.o build/resources/*.o build/renderer/*.o \
+    build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
     -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 \
     > /tmp/battery_lllaw.log 2>&1
@@ -221,7 +221,7 @@ if cached "link g10_layout_law_test"; then
 else
 g++ -std=c++17 -w -g -O1 -Isrc -o build/g10_layout_law_test \
     tests/g10_layout_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
-    build/diagnostics/*.o build/resources/*.o build/renderer/*.o \
+    build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
     -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 \
     > /tmp/battery_g10law.log 2>&1
@@ -239,7 +239,7 @@ if cached "link g11_ctor_law_test"; then
 else
 g++ -std=c++17 -w -g -O1 -Isrc -o build/g11_ctor_law_test \
     tests/g11_ctor_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
-    build/diagnostics/*.o build/resources/*.o build/renderer/*.o \
+    build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
     -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 \
     > /tmp/battery_g11law.log 2>&1
@@ -258,7 +258,7 @@ if cached "link view_animator_law_test"; then
 else
 g++ -std=c++17 -w -g -O1 -Isrc -o build/view_animator_law_test \
     tests/view_animator_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
-    build/diagnostics/*.o build/resources/*.o build/renderer/*.o \
+    build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
     -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 \
     > /tmp/battery_f082law.log 2>&1
@@ -274,7 +274,7 @@ if cached "G04 hostile safety (expect 24)"; then
 else
 g++ -std=c++17 -w -g -O1 -Isrc -Itests -o build/g04_hostile_test \
     tests/g04_hostile_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
-    build/diagnostics/*.o build/resources/*.o build/renderer/*.o \
+    build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
     -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 \
     > /tmp/battery_g04h.log 2>&1
@@ -291,7 +291,7 @@ if cached "G06 input pipeline law (expect 45)"; then
 else
 g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/input_pipeline_law_test \
     tests/input_pipeline_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
-    build/diagnostics/*.o build/resources/*.o build/renderer/*.o \
+    build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
     -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 \
     > /tmp/battery_g06law.log 2>&1
@@ -307,7 +307,7 @@ if cached "G07 lifecycle law (expect 25)"; then
 else
 g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/lifecycle_law_test \
     tests/lifecycle_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
-    build/diagnostics/*.o build/resources/*.o build/renderer/*.o \
+    build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
     -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 \
     > /tmp/battery_g07law.log 2>&1
@@ -323,7 +323,7 @@ if cached "G06-G08 hostile safety (expect 16)"; then
 else
 g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/g06g08_hostile_test \
     tests/g06g08_hostile_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
-    build/diagnostics/*.o build/resources/*.o build/renderer/*.o \
+    build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
     -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 \
     > /tmp/battery_h18.log 2>&1
@@ -355,7 +355,7 @@ else
 g++ -std=c++17 -w -g -O1 -Isrc -o build/shadow_registry_invariant_test \
     tests/shadow_registry_invariant_test.cpp build/apk/*.o build/dex/*.o \
     build/runtime/*.o build/diagnostics/*.o build/resources/*.o \
-    build/renderer/*.o build/fonts/*.o build/framework/*.o build/api/*.o \
+    build/renderer/*.o build/gles/*.o build/fonts/*.o build/framework/*.o build/api/*.o \
     build/storage/*.o -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz \
     -lfribidi -lpng -lpthread -lsqlite3 > /tmp/battery_sri.log 2>&1
 gate "link shadow_registry_invariant_test" $?
@@ -559,7 +559,7 @@ elif [ -d "$M3_FIX_SRC" ]; then
         && g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include \
             -o build/m3_arsc_style_law_test tests/m3_arsc_style_law_test.cpp \
             build/apk/*.o build/dex/*.o build/runtime/*.o build/diagnostics/*.o \
-            build/resources/*.o build/renderer/*.o build/fonts/*.o \
+            build/resources/*.o build/renderer/*.o build/gles/*.o build/fonts/*.o \
             build/framework/*.o build/api/*.o build/storage/*.o \
             -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lsqlite3 \
             -lpng -lpthread > /tmp/battery_m3sw/link.log 2>&1

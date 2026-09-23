@@ -59,7 +59,15 @@ static renderer::FitRect g04_image_draw_rect(
     int src_w = decoded_w, src_h = decoded_h;
     uint16_t src_density = g04_selected_source_density(selected_density);
     uint16_t target = resources::device_config().density;   // single device law
-    if (target > 0 && src_density != target) {
+    // S88 FIX: src_density == 0 is the DENSITY_NONE sentinel ("never
+    // scale", g04_selected_source_density maps 0xFFFF → 0) — it must SKIP
+    // the scale branch, not divide by it. The old guard (target > 0 &&
+    // src_density != target) treated 0 as a real density: scale =
+    // 420/0 = +inf, lround(40 * inf) = UB garbage, and the painted rect
+    // collapsed (density-matrix nodpi check: expected 40,73 40x20, painted
+    // 50,73 20x20). The measure side (layout_inflater BitmapFactory law)
+    // already guarded with src_d > 0 — this copy lost it.
+    if (target > 0 && src_density > 0 && src_density != target) {
         float scale = float(target) / float(src_density);
         // BitmapFactory scales the BITMAP ITSELF: intrinsic size =
         // natural × target/source (rounded). Guard the int ceiling.
@@ -3402,6 +3410,24 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                             std::max(1, w - pl - pr),
                                             std::max(1, h - pt - pb),
                                             node->scale_type);
+                                        {
+                                            static thread_local const bool s88img =
+                                                std::getenv("MINIANDROID_S88_IMG") != nullptr;
+                                            static thread_local uint64_t s88img_n = 0;
+                                            if (s88img && s88img_n < 12) {
+                                                ++s88img_n;
+                                                std::cerr << "[S88-IMG] path=" << resolved_img_path
+                                                          << " dec=" << decoded.width << "x" << decoded.height
+                                                          << " sel_d=" << sel_d
+                                                          << " box=(" << left + pl << "," << top + pt
+                                                          << " " << std::max(1, w - pl - pr) << "x"
+                                                          << std::max(1, h - pt - pb) << ")"
+                                                          << " st=" << node->scale_type
+                                                          << " pad=(" << pl << "," << pt << "," << pr << "," << pb << ")"
+                                                          << " fr=(" << fr.x << "," << fr.y << " " << fr.w << "x" << fr.h << ")"
+                                                          << std::endl;
+                                            }
+                                        }
                                         canvas.draw_image(decoded.rgba.data(),
                                                           decoded.width, decoded.height,
                                                           fr.x, fr.y, fr.w, fr.h);
