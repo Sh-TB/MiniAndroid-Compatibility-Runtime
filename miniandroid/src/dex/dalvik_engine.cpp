@@ -23736,6 +23736,73 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             result = DalvikValue::make_int(f93_len);
             return true;
         }
+        // ── F-NEW-175 (S88): reader-family completion ────────────────────
+        // AOSP TypedArray.java: hasValue(index) answers whether the
+        // attribute at index carried a value in the theme/style resolution
+        // (data != 0 under our F-093/F-NEW-175 materialization);
+        // getIndexCount() = number of resolved attributes; getIndex(pos) =
+        // the styleable slot at that position (identity under the
+        // positional F-036 convention); getResourceId(idx, def) mirrors
+        // getInt. The pre-law reader answered NONE of these — chess's
+        // appcompat tint path (g/c0.p) called hasValue on the (previously
+        // null) array and no.thanks' savedstate chain called
+        // getIndexCount; both NPE'd at APP BOUNDARY.
+        if ((method == "hasValue" || method == "getIndexCount" ||
+             method == "getIndex") &&
+            args.size() >= 2 && args[1].type == DalvikType::INT32) {
+            int32_t f175_len = 0;
+            if (auto lf = heap_.get_object_field(args[0].object_id,
+                                                 "__array_length__");
+                lf && lf->type == DalvikType::INT32) {
+                f175_len = lf->int_val;
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            if (method == "getIndexCount") {
+                int32_t resolved = 0;
+                for (int32_t i = 0; i < f175_len; ++i) {
+                    if (auto vf = heap_.get_object_field(
+                            args[0].object_id,
+                            "array[" + std::to_string(i) + "]");
+                        vf && vf->type == DalvikType::INT32 && vf->int_val != 0) {
+                        ++resolved;
+                    }
+                }
+                result = DalvikValue::make_int(resolved);
+            } else if (method == "hasValue") {
+                int32_t idx = args[1].int_val;
+                int32_t val = 0;
+                if (idx >= 0 && idx < f175_len) {
+                    if (auto vf = heap_.get_object_field(
+                            args[0].object_id,
+                            "array[" + std::to_string(idx) + "]");
+                        vf && vf->type == DalvikType::INT32) {
+                        val = vf->int_val;
+                    }
+                }
+                result = DalvikValue::make_bool(val != 0);
+            } else {  // getIndex(pos) — positional identity, bounds-gated
+                int32_t pos = args[1].int_val;
+                result = DalvikValue::make_int(
+                    (pos >= 0 && pos < f175_len) ? pos : 0);
+            }
+            return true;
+        }
+        if (method == "getResourceId" && args.size() >= 2 &&
+            args[1].type == DalvikType::INT32) {
+            int32_t f175_idx = args[1].int_val;
+            int32_t f175_val = args.size() >= 3 && args[2].type == DalvikType::INT32
+                                   ? args[2].int_val
+                                   : 0;
+            if (auto vf = heap_.get_object_field(
+                    args[0].object_id,
+                    "array[" + std::to_string(f175_idx) + "]");
+                vf && vf->type == DalvikType::INT32 && vf->int_val != 0) {
+                f175_val = vf->int_val;
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int(f175_val);
+            return true;
+        }
         if ((method == "getBoolean" || method == "getInt" ||
              method == "getInteger" || method == "getColor" ||
              method == "getDimensionPixelSize" ||
