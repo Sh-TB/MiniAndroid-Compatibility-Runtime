@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <int name="const" value="42" />
+    <int name="nostatic" value="1" />
+    <int name="pureadd" value="8" />
+    <int name="withadd" value="2" />
+</map>
