@@ -3202,3 +3202,21 @@ Work Log:
 Stage Summary:
 - 40/40 files edited in place; final verification: PERSIAN_LINES_REMAINING=0 across all 40 targets; master_audit.json JSON_VALID.
 - Zero content deleted: every Persian sentence has an English counterpart; layout, tables, code fences, SHAs (f5e11927…, 06fb40da…, 43075538…), F-NEW-*/CM-*/F0xx IDs and session IDs preserved verbatim.
+
+---
+Task ID: S91
+Agent: Super Z (main)
+Task: Owner directive — graphics/icon 100% attack, sandbox save verdict, English-only GitHub, GIF inventory, 400/200 audit, full statistics, request-completeness check
+
+Work Log:
+- Pushed 2 queued S90 commits (fresh PAT env-only, scrubbed; divergence 0/0).
+- English-only mandate: 2 parallel translation agents (CONSTITUTION_V2 619 lines; knowledge/history/evidence 749 lines) + main-agent sweep (README, worklog, scripts, fixtures, registry titles) = 1,368 lines translated across 70 files. Canonical audit script with documented allowlist; result CLEAN. 69-file commit b032262f.
+- Icon attack (source-first): Fish Rings v1.23 vc6 (SHA c8a9cb7c) — source law GameActivity.java:110-119 setImageResource(R.mipmap.*). Ran 4/24-frame windows; found 4-frame window ended before 5s splash Timer (F-115 fired correctly at 24 frames) -> GameActivity -> XML+programmatic icons decode+draw; tap@frame (F-117) -> onClick -> rotate -> repaint -> 46 SETIMAGE -> 4257px/8501px state changes. Icon pipeline 100% proven.
+- ARSC resolver diagnosis: 0/56 = R$id fields correctly skipped (silent continues instrumented, env-gated); 16/16 mipmap fields resolve post-init.
+- Sandbox verdict: storage round-trip PROVEN (s50prefs.xml counter 1->2 across processes, app arithmetic proves read). F-NEW-193a FIXED+A/B: prefs name from args[1] not args[0] (default.xml bug). Gaps recorded: 193b Cursor.getInt bridge, 193c static-boolean render visibility, 193d getFilesDir package dir.
+- Toolchain re-bootstrapped after container reset (aapt2/ecj/r8/android-34; EXT-01 APK re-fetched SHA-exact) -> battery ALL PASS 96/96.
+- Audit: 400 methods/200 classes = measured demand map (not hand-built); open frontiers listed with title counts (Notification 52, WebView 83, Compose 21, f141, Telegram desugar, +193b/c/d).
+- docs/S91_REPORT.md emitted; GIF links enumerated (12 canonical).
+
+Stage Summary:
+- All owner directives from prior days verified with dispositions; zero Persian in authored content; icon pipeline + sandbox save proven; F-NEW-193a landed with A/B; battery 96/96; report + achievements views consistent with canonical registry.
