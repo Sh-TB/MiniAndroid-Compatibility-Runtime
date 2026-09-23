@@ -1,0 +1,1457 @@
+{
+ "generated_by": "scripts/s87_inventory.py",
+ "phase": "S87 PHASE0+1",
+ "image_census": {
+  "total_images": 511,
+  "total_bytes": 20651908,
+  "by_format": {
+   "PNG": {
+    "count": 266,
+    "bytes": 5363708
+   },
+   "JPG": {
+    "count": 215,
+    "bytes": 8002442
+   },
+   "GIF": {
+    "count": 20,
+    "bytes": 5464110
+   },
+   "WebP": {
+    "count": 10,
+    "bytes": 1821648
+   }
+  },
+  "duplicates_by_sha256": [
+   {
+    "sha256_16": "3d7bc2899fc6b94d",
+    "copies": 2,
+    "wasted_bytes": 187214,
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-10-urban.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-10-urban.jpg"
+    ]
+   },
+   {
+    "sha256_16": "46170ad51793c111",
+    "copies": 2,
+    "wasted_bytes": 30693,
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-15-light-motion.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-15-light-motion.jpg"
+    ]
+   },
+   {
+    "sha256_16": "6b038092180c61cf",
+    "copies": 2,
+    "wasted_bytes": 41250,
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-09-ceramic.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-09-ceramic.jpg"
+    ]
+   },
+   {
+    "sha256_16": "1c526c509dd172f0",
+    "copies": 2,
+    "wasted_bytes": 72101,
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-06-studio-portrait.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-06-studio-portrait.jpg"
+    ]
+   },
+   {
+    "sha256_16": "c220761febbf52e1",
+    "copies": 2,
+    "wasted_bytes": 45743,
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-11-ink-paper.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-11-ink-paper.jpg"
+    ]
+   },
+   {
+    "sha256_16": "1c4dae6dca233b8b",
+    "copies": 2,
+    "wasted_bytes": 45089,
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-13-risograph.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-13-risograph.jpg"
+    ]
+   },
+   {
+    "sha256_16": "17a4b88b6726c77b",
+    "copies": 2,
+    "wasted_bytes": 158788,
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-05-brand-flatlay.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-05-brand-flatlay.jpg"
+    ]
+   },
+   {
+    "sha256_16": "69a6de711aead0b4",
+    "copies": 2,
+    "wasted_bytes": 114254,
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-02-typography.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-02-typography.jpg"
+    ]
+   },
+   {
+    "sha256_16": "2fa945fd7a0f136a",
+    "copies": 2,
+    "wasted_bytes": 152063,
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-03-packaging.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-03-packaging.jpg"
+    ]
+   },
+   {
+    "sha256_16": "7be7f7abe90e31ca",
+    "copies": 2,
+    "wasted_bytes": 55594,
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-16-interior.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-16-interior.jpg"
+    ]
+   },
+   {
+    "sha256_16": "ce26154e901c8b5f",
+    "copies": 2,
+    "wasted_bytes": 135183,
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-04-paint-stroke.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-04-paint-stroke.jpg"
+    ]
+   },
+   {
+    "sha256_16": "7d2513fe5fd05797",
+    "copies": 2,
+    "wasted_bytes": 174431,
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-17-color-block.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-17-color-block.jpg"
+    ]
+   },
+   {
+    "sha256_16": "042cd576afbce37a",
+    "copies": 2,
+    "wasted_bytes": 31769,
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-07-gradient.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-07-gradient.jpg"
+    ]
+   },
+   {
+    "sha256_16": "65739c75cd1bdd13",
+    "copies": 2,
+    "wasted_bytes": 255772,
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-18-magazine.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-18-magazine.jpg"
+    ]
+   },
+   {
+    "sha256_16": "00f63ab446115ef8",
+    "copies": 2,
+    "wasted_bytes": 172145,
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-01-color-macro.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-01-color-macro.jpg"
+    ]
+   },
+   {
+    "sha256_16": "818f086b1842d85a",
+    "copies": 2,
+    "wasted_bytes": 188493,
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-08-editorial.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-08-editorial.jpg"
+    ]
+   },
+   {
+    "sha256_16": "ca588ddd81823a8b",
+    "copies": 2,
+    "wasted_bytes": 288598,
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-12-botanical.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-12-botanical.jpg"
+    ]
+   },
+   {
+    "sha256_16": "b2e774afbe9a348c",
+    "copies": 2,
+    "wasted_bytes": 129059,
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-14-gallery-wall.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-14-gallery-wall.jpg"
+    ]
+   },
+   {
+    "sha256_16": "927d966a5a7397a8",
+    "copies": 2,
+    "wasted_bytes": 770771,
+    "paths": [
+     "docs/evidence/canonical/com.miniandroid.tetris.gif",
+     "docs/evidence/s80/tetris_gameplay.gif"
+    ]
+   },
+   {
+    "sha256_16": "d613d30fce792406",
+    "copies": 2,
+    "wasted_bytes": 979913,
+    "paths": [
+     "docs/evidence/canonical/com.miniandroid.g2048.gif",
+     "docs/evidence/s80/g2048_gameplay.gif"
+    ]
+   },
+   {
+    "sha256_16": "f2dd621c662526fa",
+    "copies": 2,
+    "wasted_bytes": 493247,
+    "paths": [
+     "docs/evidence/canonical/com.miniandroid.snakedeluxe.gif",
+     "docs/evidence/s80/snake_gameplay.gif"
+    ]
+   }
+  ],
+  "dup_bytes_wasted": 4522170,
+  "dup_groups": 21
+ },
+ "near_duplicates": {
+  "method": "16x16 ahash, hamming<=8",
+  "groups": 88,
+  "examples": [
+   {
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-10-urban.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-10-urban.jpg"
+    ]
+   },
+   {
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-15-light-motion.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-15-light-motion.jpg"
+    ]
+   },
+   {
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-09-ceramic.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-09-ceramic.jpg"
+    ]
+   },
+   {
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-06-studio-portrait.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-06-studio-portrait.jpg"
+    ]
+   },
+   {
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-11-ink-paper.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-11-ink-paper.jpg"
+    ]
+   },
+   {
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-13-risograph.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-13-risograph.jpg"
+    ]
+   },
+   {
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-05-brand-flatlay.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-05-brand-flatlay.jpg"
+    ]
+   },
+   {
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-02-typography.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-02-typography.jpg"
+    ]
+   },
+   {
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-03-packaging.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-03-packaging.jpg"
+    ]
+   },
+   {
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-16-interior.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-16-interior.jpg"
+    ]
+   },
+   {
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-04-paint-stroke.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-04-paint-stroke.jpg"
+    ]
+   },
+   {
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-17-color-block.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-17-color-block.jpg"
+    ]
+   },
+   {
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-07-gradient.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-07-gradient.jpg"
+    ]
+   },
+   {
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-18-magazine.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-18-magazine.jpg"
+    ]
+   },
+   {
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-01-color-macro.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-01-color-macro.jpg"
+    ]
+   },
+   {
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-08-editorial.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-08-editorial.jpg"
+    ]
+   },
+   {
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-12-botanical.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-12-botanical.jpg"
+    ]
+   },
+   {
+    "paths": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-14-gallery-wall.jpg",
+     "skills/design/design-templates/vr-canvas/images/p-14-gallery-wall.jpg"
+    ]
+   },
+   {
+    "paths": [
+     "docs/evidence/s83b/sweep_GAME-MEMORY.jpg",
+     "docs/evidence/s83b/sweep_GAME-FISHRINGS.jpg",
+     "docs/evidence/s51_audit/bgclock.jpg",
+     "docs/evidence/s51_audit/dooz18.jpg",
+     "docs/evidence/visual_forensics/s65_reval/fishrings/splash_full.png",
+     "docs/evidence/canonical/ch.logixisland.anuto.jpg",
+     "docs/evidence/canonical/eu.quelltext.memory.jpg",
+     "docs/evidence/s83/games__com.simondalvai.ball2box_69__L0_LOADED_ONLY.jpg",
+     "docs/evidence/s83/games__eu.quelltext.memory_7__L0_LOADED_ONLY.jpg",
+     "docs/evidence/s83gfx/l6_glsurface.jpg",
+     "docs/evidence/s83gfx/l0_solid.jpg",
+     "docs/evidence/s62plus_spotlight/anuto_frame0_after_onDraw.png",
+     "docs/evidence/s82/GAME-015.jpg",
+     "docs/evidence/s82gfx/l6_glsurface.jpg",
+     "docs/evidence/s82gfx/l0_solid.jpg",
+     "upstream/corpus/one.scarecrow.games.OPMT/src/OPMT-3240c4cf/app/src/main/res/drawable/board.png",
+     "upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/android/assets/images/restart_game.png",
+     "miniandroid/docs/evidence/apps_ledger/s37_diceoverflow.png",
+     "miniandroid/tests/fixtures_foundation/f50_imagefmt/res/drawable/img_odd.png",
+     "miniandroid/tests/fixtures_foundation/f50_imagefmt/res/drawable/gif_test.gif",
+     "miniandroid/tests/fixtures_foundation/f50_imagefmt/res/drawable/img_gray.png",
+     "miniandroid/tests/fixtures_foundation/f50_imagefmt/res/drawable/one.png",
+     "miniandroid/tests/fixtures_foundation/f50_imagefmt/res/drawable/img_palette.png",
+     "miniandroid/tests/fixtures_foundation/f50_imagefmt/res/drawable/img_jpg.jpg",
+     "miniandroid/tests/fixtures_foundation/f54_manifestlabel/res/drawable/app_icon.png",
+     "miniandroid/tests/fixtures_foundation/f48_bitmap/res/drawable/ic_red.png",
+     "fixtures/s82gfx/l2_colortypes/res/drawable/ga.png"
+    ]
+   },
+   {
+    "paths": [
+     "docs/evidence/s83b/sweep_APP-CHESSCLK.jpg",
+     "docs/evidence/s83b/sweep_APP-STOPWATCH.jpg",
+     "docs/evidence/s51_audit/chessclock.jpg",
+     "docs/evidence/canonical/com.chessclock.android.jpg",
+     "docs/evidence/s83/apps__com.chessclock.android_29__L0_LOADED_ONLY.jpg",
+     "docs/evidence/m3_campaign/phase0/screenshots/base/diary.png",
+     "docs/evidence/s81/probe_dialog_items_BEFORE_fix.jpg",
+     "docs/evidence/s81/stopwatch_AFTER_fix.jpg",
+     "docs/evidence/s53_frames/simplestopwatch_after.jpg",
+     "docs/evidence/s53_frames/simplestopwatch_base.jpg",
+     "docs/evidence/s82/f156_android.jpg",
+     "miniandroid/docs/evidence/apps_ledger/stopwatch.jpg",
+     "miniandroid/docs/evidence/apps_ledger/stopwatch.png",
+     "miniandroid/docs/evidence/apps_ledger/chessclock.png"
+    ]
+   },
+   {
+    "paths": [
+     "docs/evidence/s83b/click_APP-GMDICE_CLICK_00.jpg",
+     "docs/evidence/canonical/de.duenndns.gmdice.jpg",
+     "docs/evidence/s83/apps__de.duenndns.gmdice_8__L2_GRAPHICALLY_INCOMPLETE.jpg",
+     "docs/evidence/s74_ops/gmdice/01_launch.png",
+     "docs/evidence/s81/gmdice_visual_audit.jpg",
+     "docs/evidence/s82/gap_gmdice.jpg"
+    ]
+   },
+   {
+    "paths": [
+     "docs/evidence/s83b/click_GAME-TTT-CLASSIC_CLICK_02.jpg",
+     "docs/evidence/s83b/click_GAME-TTT-CLASSIC_CLICK_01.jpg",
+     "docs/evidence/s83b/click_GAME-TTT-CLASSIC_CLICK_00.jpg",
+     "docs/evidence/canonical/com.emmanuelmess.tictactoe.gif",
+     "docs/evidence/s83/games__tictactoeclassic__L2_GRAPHICALLY_INCOMPLETE.jpg",
+     "miniandroid/docs/evidence/apps_ledger/s37_tictactoe_classic.png",
+     "miniandroid/docs/evidence/apps_ledger/s37_tictactoe_classic.jpg"
+    ]
+   },
+   {
+    "paths": [
+     "docs/evidence/s83b/sweep_GAME-MINES2.jpg",
+     "docs/evidence/s83b/sweep_APP-NOTES.jpg",
+     "docs/evidence/s83b/sweep_GAME-DOOZ18.jpg",
+     "docs/evidence/foundation/fixtures/f26_lifecycle/screenshot.png",
+     "docs/evidence/visual_forensics/dooz/v23_full.png",
+     "docs/evidence/visual_forensics/dooz/v18_full.png",
+     "docs/evidence/s83gfx/f159_APP-001.jpg",
+     "docs/evidence/s83gfx/l3_density.jpg",
+     "docs/evidence/s83gfx/l1_quadrant.jpg",
+     "docs/evidence/s81/notes_AFTER_fix.jpg",
+     "docs/evidence/s82/GAME-052.jpg",
+     "docs/evidence/s82gfx/l3_density.jpg",
+     "docs/evidence/s82gfx/l1_quadrant.jpg",
+     "miniandroid/docs/evidence/apps_ledger/s37_minesweep_johnathan.png",
+     "miniandroid/docs/evidence/apps_ledger/s37_game2048.png",
+     "miniandroid/docs/evidence/apps_ledger/dooz_placeholder.jpg",
+     "miniandroid/docs/evidence/apps_ledger/dooz_placeholder.png",
+     "miniandroid/docs/evidence/apps_ledger/s37_bouncycastle.png",
+     "miniandroid/docs/evidence/apps_ledger/s37_dooz_gvariant.jpg",
+     "miniandroid/docs/evidence/apps_ledger/s37_minesweep_johnathan.jpg",
+     "miniandroid/docs/evidence/apps_ledger/s37_dooz_vc23.jpg",
+     "miniandroid/docs/evidence/apps_ledger/s37_dooz_gvariant.png",
+     "miniandroid/docs/evidence/apps_ledger/s37_game2048.jpg",
+     "miniandroid/docs/evidence/apps_ledger/s37_bouncycastle.jpg",
+     "miniandroid/docs/evidence/apps_ledger/s37_dooz_vc23.png"
+    ]
+   },
+   {
+    "paths": [
+     "docs/evidence/s83b/sweep_APP-BNYROCLK.jpg",
+     "docs/evidence/foundation/fixtures/f39_44_runtime/screenshot.png",
+     "docs/evidence/foundation/fixtures/f38_identity/screenshot.png",
+     "docs/evidence/foundation/fixtures/f45_exceptions/screenshot.png",
+     "docs/evidence/s55_notes/frame_000_markdown_mode.png",
+     "docs/evidence/s51_audit/flashlight.jpg",
+     "docs/evidence/canonical/org.billthefarmer.siggen.jpg",
+     "docs/evidence/canonical/de.georgsieber.ballbreak.jpg",
+     "docs/evidence/canonical/x653.all_in_gold.jpg",
+     "docs/evidence/s83/apps__com.best.deskclock_2036__L2_GRAPHICALLY_INCOMPLETE.jpg",
+     "docs/evidence/s83gfx/l4_xmldrawables.jpg",
+     "docs/evidence/s83gfx/f159_MAND-002.jpg",
+     "docs/evidence/s81/batch01_quinb.jpg",
+     "docs/evidence/s63_spotlight/siggen_frame0.png",
+     "docs/evidence/external_hello_golden/baseline_g08_broken.png",
+     "docs/evidence/s82/APP-001.jpg",
+     "docs/evidence/s82gfx/l4_xmldrawables.jpg",
+     "miniandroid/docs/evidence/apps_ledger/s37_secuso_yahtzee.jpg",
+     "miniandroid/docs/evidence/apps_ledger/headingcalculator.jpg",
+     "miniandroid/docs/evidence/apps_ledger/s35_placeholder_empty.png",
+     "miniandroid/docs/evidence/apps_ledger/s37_secuso_yahtzee.png",
+     "miniandroid/docs/evidence/apps_ledger/headingcalculator.png"
+    ]
+   },
+   {
+    "paths": [
+     "docs/evidence/s83b/sweep_GAME-BALANCE.jpg",
+     "docs/evidence/canonical/com.jeffliu.balancetheball.jpg",
+     "docs/evidence/s83/games__com.jeffliu.balancetheball_4__L2_GRAPHICALLY_INCOMPLETE.jpg",
+     "docs/evidence/s81/batch01_balancetheball.jpg",
+     "docs/evidence/s82/GAME-004.jpg"
+    ]
+   }
+  ]
+ },
+ "directory_census": [
+  {
+   "path": "docs/evidence",
+   "files": 1251,
+   "bytes": 19941602,
+   "images": 278,
+   "image_bytes": 10918243
+  },
+  {
+   "path": "docs/audit",
+   "files": 17,
+   "bytes": 653623,
+   "images": 0,
+   "image_bytes": 0
+  },
+  {
+   "path": "docs/knowledge",
+   "files": 45,
+   "bytes": 81349,
+   "images": 0,
+   "image_bytes": 0
+  },
+  {
+   "path": "docs/history",
+   "files": 93,
+   "bytes": 593885,
+   "images": 4,
+   "image_bytes": 40408
+  },
+  {
+   "path": "docs/corpus",
+   "files": 14,
+   "bytes": 926359,
+   "images": 0,
+   "image_bytes": 0
+  },
+  {
+   "path": "docs/compatibility",
+   "files": 55,
+   "bytes": 210482,
+   "images": 0,
+   "image_bytes": 0
+  },
+  {
+   "path": "docs/upstream",
+   "files": 100,
+   "bytes": 1324153,
+   "images": 0,
+   "image_bytes": 0
+  },
+  {
+   "path": "docs/assets",
+   "files": 3,
+   "bytes": 63599,
+   "images": 2,
+   "image_bytes": 62849
+  },
+  {
+   "path": "docs/demos",
+   "files": 5,
+   "bytes": 177573,
+   "images": 2,
+   "image_bytes": 151318
+  },
+  {
+   "path": "docs/releases",
+   "files": 8,
+   "bytes": 38724,
+   "images": 0,
+   "image_bytes": 0
+  },
+  {
+   "path": "docs/agent-index",
+   "files": 7,
+   "bytes": 525708,
+   "images": 0,
+   "image_bytes": 0
+  },
+  {
+   "path": "docs/root-searchlight",
+   "files": 6,
+   "bytes": 99336,
+   "images": 0,
+   "image_bytes": 0
+  },
+  {
+   "path": "evidence",
+   "files": 7,
+   "bytes": 27472,
+   "images": 0,
+   "image_bytes": 0
+  },
+  {
+   "path": "run",
+   "files": 3,
+   "bytes": 17016,
+   "images": 0,
+   "image_bytes": 0
+  },
+  {
+   "path": "upload",
+   "files": 549,
+   "bytes": 18555862,
+   "images": 0,
+   "image_bytes": 0
+  },
+  {
+   "path": "fixtures",
+   "files": 51,
+   "bytes": 31521,
+   "images": 13,
+   "image_bytes": 2974
+  },
+  {
+   "path": "games",
+   "files": 39,
+   "bytes": 94404,
+   "images": 0,
+   "image_bytes": 0
+  },
+  {
+   "path": "upstream",
+   "files": 1642,
+   "bytes": 16081606,
+   "images": 97,
+   "image_bytes": 2458712
+  },
+  {
+   "path": "examples",
+   "files": 5,
+   "bytes": 14293,
+   "images": 0,
+   "image_bytes": 0
+  },
+  {
+   "path": "docs/evidence/canonical",
+   "files": 38,
+   "bytes": 3319163,
+   "images": 36,
+   "image_bytes": 3125166
+  }
+ ],
+ "evidence_session_dirs": [
+  {
+   "path": "docs/evidence/S73",
+   "files": 1,
+   "bytes": 11014,
+   "images": 0,
+   "image_bytes": 0,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/S74",
+   "files": 1,
+   "bytes": 7094,
+   "images": 0,
+   "image_bytes": 0,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/apps",
+   "files": 1,
+   "bytes": 4440,
+   "images": 0,
+   "image_bytes": 0,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/campaign014",
+   "files": 45,
+   "bytes": 81491,
+   "images": 2,
+   "image_bytes": 31320,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/campaign3_chessclock_real_screenshot",
+   "files": 8,
+   "bytes": 234870,
+   "images": 0,
+   "image_bytes": 0,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/canonical",
+   "files": 38,
+   "bytes": 3319163,
+   "images": 36,
+   "image_bytes": 3125166,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/external_hello_golden",
+   "files": 11,
+   "bytes": 142019,
+   "images": 5,
+   "image_bytes": 126369,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/foundation",
+   "files": 435,
+   "bytes": 1514851,
+   "images": 27,
+   "image_bytes": 505306,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/g09_corpus",
+   "files": 44,
+   "bytes": 266252,
+   "images": 5,
+   "image_bytes": 108298,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/g10_evidence",
+   "files": 7,
+   "bytes": 211616,
+   "images": 1,
+   "image_bytes": 17761,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/g11g12_evidence",
+   "files": 7,
+   "bytes": 273792,
+   "images": 1,
+   "image_bytes": 17433,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/golden03",
+   "files": 5,
+   "bytes": 4542,
+   "images": 0,
+   "image_bytes": 0,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/hello_color_golden",
+   "files": 3,
+   "bytes": 47779,
+   "images": 1,
+   "image_bytes": 42401,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/helloworld_golden",
+   "files": 5,
+   "bytes": 47440,
+   "images": 1,
+   "image_bytes": 25582,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/m3_campaign",
+   "files": 11,
+   "bytes": 323831,
+   "images": 7,
+   "image_bytes": 205889,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/master_campaign",
+   "files": 21,
+   "bytes": 113965,
+   "images": 2,
+   "image_bytes": 73442,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/mc4_telegram",
+   "files": 4,
+   "bytes": 42281,
+   "images": 0,
+   "image_bytes": 0,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s19_smoke",
+   "files": 12,
+   "bytes": 1566,
+   "images": 0,
+   "image_bytes": 0,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s20_f071_f072_f073",
+   "files": 10,
+   "bytes": 7258,
+   "images": 0,
+   "image_bytes": 0,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s21_f074_f075",
+   "files": 3,
+   "bytes": 4440,
+   "images": 0,
+   "image_bytes": 0,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s22_f076_f077",
+   "files": 4,
+   "bytes": 10281,
+   "images": 0,
+   "image_bytes": 0,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s26_f095_drawchild",
+   "files": 4,
+   "bytes": 6804,
+   "images": 0,
+   "image_bytes": 0,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s43_r349_r350_r351",
+   "files": 4,
+   "bytes": 43289,
+   "images": 2,
+   "image_bytes": 41441,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s51_audit",
+   "files": 10,
+   "bytes": 81954,
+   "images": 9,
+   "image_bytes": 80570,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s52_asc",
+   "files": 1,
+   "bytes": 3900,
+   "images": 0,
+   "image_bytes": 0,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s53_frames",
+   "files": 10,
+   "bytes": 450144,
+   "images": 9,
+   "image_bytes": 448466,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s54_frames",
+   "files": 6,
+   "bytes": 216187,
+   "images": 5,
+   "image_bytes": 213308,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s55_dooz",
+   "files": 3,
+   "bytes": 15401,
+   "images": 0,
+   "image_bytes": 0,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s55_notes",
+   "files": 4,
+   "bytes": 23220,
+   "images": 2,
+   "image_bytes": 21953,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s55_notes_v2",
+   "files": 3,
+   "bytes": 2245,
+   "images": 0,
+   "image_bytes": 0,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s56_dooz23",
+   "files": 2,
+   "bytes": 5597,
+   "images": 0,
+   "image_bytes": 0,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s56_unote",
+   "files": 3,
+   "bytes": 2571,
+   "images": 0,
+   "image_bytes": 0,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s57_dooz23",
+   "files": 3,
+   "bytes": 5420,
+   "images": 0,
+   "image_bytes": 0,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s58_r376",
+   "files": 2,
+   "bytes": 6903,
+   "images": 0,
+   "image_bytes": 0,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s59_r379",
+   "files": 2,
+   "bytes": 7791,
+   "images": 0,
+   "image_bytes": 0,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s60_r380",
+   "files": 4,
+   "bytes": 10944,
+   "images": 0,
+   "image_bytes": 0,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s61_r381",
+   "files": 3,
+   "bytes": 3655,
+   "images": 0,
+   "image_bytes": 0,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s62_r381",
+   "files": 4,
+   "bytes": 59850,
+   "images": 2,
+   "image_bytes": 52892,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s62plus_spotlight",
+   "files": 5,
+   "bytes": 50034,
+   "images": 3,
+   "image_bytes": 37800,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s63_spotlight",
+   "files": 5,
+   "bytes": 70641,
+   "images": 3,
+   "image_bytes": 55844,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s64_spotlight",
+   "files": 8,
+   "bytes": 182662,
+   "images": 6,
+   "image_bytes": 161273,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s65_spotlight",
+   "files": 4,
+   "bytes": 79716,
+   "images": 2,
+   "image_bytes": 60547,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s72_w4_snake",
+   "files": 5,
+   "bytes": 76159,
+   "images": 4,
+   "image_bytes": 75708,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s73_snake_autoplay",
+   "files": 40,
+   "bytes": 1122771,
+   "images": 1,
+   "image_bytes": 39073,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s74_ops",
+   "files": 48,
+   "bytes": 479078,
+   "images": 15,
+   "image_bytes": 410099,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s75",
+   "files": 59,
+   "bytes": 2337414,
+   "images": 0,
+   "image_bytes": 0,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s76",
+   "files": 29,
+   "bytes": 1562821,
+   "images": 0,
+   "image_bytes": 0,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s78",
+   "files": 3,
+   "bytes": 35159,
+   "images": 0,
+   "image_bytes": 0,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s79",
+   "files": 11,
+   "bytes": 363906,
+   "images": 8,
+   "image_bytes": 359221,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s80",
+   "files": 16,
+   "bytes": 2492914,
+   "images": 12,
+   "image_bytes": 2483143,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s81",
+   "files": 16,
+   "bytes": 301538,
+   "images": 11,
+   "image_bytes": 173429,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s82",
+   "files": 9,
+   "bytes": 41035,
+   "images": 8,
+   "image_bytes": 36745,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s82gfx",
+   "files": 8,
+   "bytes": 75201,
+   "images": 7,
+   "image_bytes": 73834,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s83",
+   "files": 26,
+   "bytes": 233185,
+   "images": 25,
+   "image_bytes": 227702,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s83b",
+   "files": 28,
+   "bytes": 659560,
+   "images": 26,
+   "image_bytes": 651358,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/s83gfx",
+   "files": 13,
+   "bytes": 152930,
+   "images": 12,
+   "image_bytes": 151941,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/solved",
+   "files": 69,
+   "bytes": 111498,
+   "images": 0,
+   "image_bytes": 0,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/tictactoe_golden",
+   "files": 4,
+   "bytes": 57073,
+   "images": 3,
+   "image_bytes": 46285,
+   "purpose": "session evidence"
+  },
+  {
+   "path": "docs/evidence/visual_forensics",
+   "files": 67,
+   "bytes": 1111626,
+   "images": 15,
+   "image_bytes": 736644,
+   "purpose": "session evidence"
+  }
+ ],
+ "registry_systems": [
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "records": 148,
+   "unique_titles": 148,
+   "purpose": "per-title canonical achievement registry (generated+validated)",
+   "canonical": "YES \u2014 SSoT per S84 law"
+  },
+  {
+   "file": "docs/ACHIEVEMENTS.md",
+   "records": 148,
+   "unique_titles": 148,
+   "purpose": "human-readable achievement page (generated from canonical registry.json)",
+   "canonical": "derived-canonical"
+  },
+  {
+   "file": "docs/evidence/CANONICAL_SCREENSHOTS.md",
+   "records": 148,
+   "unique_titles": 148,
+   "purpose": "machine-checkable canonical screenshot index (generated)",
+   "canonical": "derived-canonical"
+  },
+  {
+   "file": "docs/EXECUTION_ACHIEVEMENTS.md",
+   "records": 0,
+   "unique_titles": 0,
+   "purpose": "SUPERSEDED S54 pointer (no records)",
+   "canonical": "NO \u2014 superseded"
+  },
+  {
+   "file": "root_registry.json",
+   "records": 420,
+   "unique_titles": "n/a (R-NEW-* ids)",
+   "purpose": "runtime root-cause registry (not a title registry)",
+   "canonical": "different axis"
+  },
+  {
+   "file": "docs/evidence/CURRENT_COMPATIBILITY_MATRIX.md",
+   "records": 32,
+   "unique_titles": "?",
+   "purpose": "older compatibility matrix",
+   "canonical": "NO \u2014 legacy/parallel"
+  },
+  {
+   "file": "docs/evidence/SCREENSHOT_INDEX.md",
+   "records": 19,
+   "unique_titles": "?",
+   "purpose": "old screenshot index S-era",
+   "canonical": "NO \u2014 legacy/parallel"
+  },
+  {
+   "file": "docs/evidence/SCREENSHOT_INDEX_013.md",
+   "records": 14,
+   "unique_titles": "?",
+   "purpose": "old screenshot index 013",
+   "canonical": "NO \u2014 legacy/parallel"
+  },
+  {
+   "file": "docs/evidence/SCREENSHOT_INDEX_S51.md",
+   "records": 33,
+   "unique_titles": "?",
+   "purpose": "old screenshot index S51",
+   "canonical": "NO \u2014 legacy/parallel"
+  },
+  {
+   "file": "docs/compatibility/APP_COMPATIBILITY_REGISTRY.md",
+   "records": 43,
+   "unique_titles": "?",
+   "purpose": "compat registry",
+   "canonical": "NO \u2014 legacy/parallel"
+  },
+  {
+   "file": "docs/compatibility/EXECUTION_MATRIX.md",
+   "records": 17,
+   "unique_titles": "?",
+   "purpose": "execution matrix",
+   "canonical": "NO \u2014 legacy/parallel"
+  },
+  {
+   "file": "docs/compatibility/COMPATIBILITY_CLOSURE_MATRIX.md",
+   "records": 20,
+   "unique_titles": "?",
+   "purpose": "closure matrix",
+   "canonical": "NO \u2014 legacy/parallel"
+  }
+ ],
+ "titles": {
+  "total_records": 148,
+  "unique_packages": 148,
+  "duplicate_packages": [],
+  "by_type": {
+   "game": 87,
+   "app": 60,
+   "fixture": 1
+  },
+  "by_level": {
+   "L0": 15,
+   "L1": 82,
+   "L2": 37,
+   "L3": 5,
+   "L5": 3,
+   "L6": 2,
+   "L9": 1,
+   "L10": 3
+  },
+  "by_status": {
+   "OBSERVED": 112,
+   "VERIFIED-INTERACTIVE": 12,
+   "VERIFIED": 22,
+   "PARTIAL": 2
+  },
+  "flags": {
+   "launched": 123,
+   "rendered": 129,
+   "interacted": 13,
+   "state_changed": 12
+  },
+  "with_canonical_artifact": 36,
+  "artifact_formats": {
+   "(none)": 112,
+   ".gif": 12,
+   ".jpg": 24
+  },
+  "with_apk_sha256": 102,
+  "with_source_link": 126,
+  "without_achievement_text": 0,
+  "artifact_kinds": {
+   "(none)": 112,
+   ".gif": 12,
+   ".jpg": 24
+  }
+ },
+ "artifact_consistency": {
+  "on_disk": 36,
+  "in_registry": 36,
+  "on_disk_not_in_registry": [],
+  "in_registry_missing_on_disk": []
+ },
+ "canonical_sha_verification": {
+  "pinned": 36,
+  "ok": 36,
+  "bad": [],
+  "missing_on_disk": []
+ },
+ "registry_sha_mismatches": [],
+ "executed_vs_recorded": {
+  "executed_pkgs_seen_in_evidence_filenames": 13,
+  "executed_not_in_registry": [],
+  "count_executed_not_in_registry": 0
+ },
+ "orphan_images": {
+  "count": 39,
+  "under_docs_evidence": 22,
+  "examples": [
+   "docs/evidence/m3_campaign/phase0/screenshots/base/bouncy.png",
+   "docs/evidence/s81/stopwatch_garble_BEFORE_fix_crop.jpg",
+   "docs/evidence/s63_spotlight/gmdice_frame1_postF113_roll2.png",
+   "docs/evidence/s80/snake_frame_a.jpg",
+   "docs/evidence/s80/tetris_frame_b.jpg",
+   "docs/evidence/s80/tetris_frame_a.jpg",
+   "docs/evidence/s80/snake_frame_c.jpg",
+   "docs/evidence/s80/g2048_frame_a.jpg",
+   "docs/evidence/s80/g2048_frame_b.jpg",
+   "docs/evidence/s80/snake_frame_b.jpg",
+   "docs/evidence/s80/tetris_frame_c.jpg",
+   "docs/evidence/s80/g2048_frame_c.jpg",
+   "docs/evidence/s64_spotlight/fk_menu.png",
+   "docs/evidence/s64_spotlight/fk_game_board.png",
+   "docs/evidence/s64_spotlight/sc_frame0_launch.png",
+   "docs/evidence/s72_w4_snake/frame_004_turn_bottom.png",
+   "docs/evidence/s72_w4_snake/frame_013_final_left.png",
+   "docs/evidence/s72_w4_snake/frame_001_after_start_tap.png",
+   "docs/evidence/s65_spotlight/tp_lobby.png",
+   "docs/evidence/s65_spotlight/opmt_menu.png",
+   "docs/evidence/s82/f156_simplestopwatch.jpg",
+   "docs/evidence/s43_r349_r350_r351/app.varlorg.unote_30.png",
+   "docs/runtime/knowledge/run-assets/uc_v12_preview.png",
+   "upstream/corpus/eu.veldsoft.fish.rings/src/Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/fastlane/metadata/android/en-US/phoneScreenshots/screenshot2.png",
+   "upstream/corpus/eu.veldsoft.fish.rings/src/Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/FishRingsForAndroid/src/main/res/mipmap-mdpi/logo_letter_5.png",
+   "upstream/corpus/eu.veldsoft.fish.rings/src/Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/FishRingsForAndroid/src/main/res/mipmap-mdpi/topaclockwise.png",
+   "upstream/corpus/eu.veldsoft.fish.rings/src/Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/FishRingsForAndroid/src/main/res/mipmap-mdpi/violet.png",
+   "upstream/corpus/eu.veldsoft.fish.rings/src/Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/FishRingsForAndroid/src/main/res/mipmap-mdpi/logo_letter_4.png",
+   "upstream/corpus/eu.veldsoft.fish.rings/src/Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/FishRingsForAndroid/src/main/res/mipmap-mdpi/topbanticlockwise.png",
+   "upstream/corpus/eu.veldsoft.fish.rings/src/Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/FishRingsForAndroid/src/main/res/mipmap-mdpi/logo_letter_6.png",
+   "upstream/corpus/eu.veldsoft.fish.rings/src/Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/FishRingsForAndroid/src/main/res/mipmap-mdpi/logo_letter_3.png",
+   "upstream/corpus/io.github.yamin8000.dooz/src/Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/screenshot/alpha/photo_2022-09-21_04-19-55.jpg",
+   "upstream/corpus/io.github.yamin8000.dooz/src/Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/screenshot/1.0.0/Screenshot_2022-11-19-19-48-49-220_io.github.yamin8000.dooz.jpg",
+   "miniandroid/docs/evidence/apps_ledger/s37_bouncy.png",
+   "miniandroid/docs/evidence/apps_ledger/s37_edgeroll.png",
+   "miniandroid/tests/fixtures/density_matrix/res/drawable-nodpi/icon_nodpi.png",
+   "miniandroid/tests/fixtures/hello_widgets/res/drawable/w_banner.png",
+   "fixtures/s81_visual_probe/res/drawable/picon.png",
+   "fixtures/s81_visual_probe/res/drawable/picon2.png"
+  ]
+ },
+ "multi_referenced_images": {
+  "count": 334,
+  "examples": [
+   {
+    "path": "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-10-urban.jpg",
+    "refs": 4,
+    "where": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/index.html",
+     "skills/design/design-templates/vr-canvas/template.html",
+     "skills/design/design-templates/vr-canvas/reference.html",
+     "docs/audit/S87_INVENTORY.json"
+    ]
+   },
+   {
+    "path": "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-15-light-motion.jpg",
+    "refs": 4,
+    "where": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/index.html",
+     "skills/design/design-templates/vr-canvas/template.html",
+     "skills/design/design-templates/vr-canvas/reference.html",
+     "docs/audit/S87_INVENTORY.json"
+    ]
+   },
+   {
+    "path": "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-09-ceramic.jpg",
+    "refs": 4,
+    "where": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/index.html",
+     "skills/design/design-templates/vr-canvas/template.html",
+     "skills/design/design-templates/vr-canvas/reference.html",
+     "docs/audit/S87_INVENTORY.json"
+    ]
+   },
+   {
+    "path": "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-06-studio-portrait.jpg",
+    "refs": 4,
+    "where": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/index.html",
+     "skills/design/design-templates/vr-canvas/template.html",
+     "skills/design/design-templates/vr-canvas/reference.html",
+     "docs/audit/S87_INVENTORY.json"
+    ]
+   },
+   {
+    "path": "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-11-ink-paper.jpg",
+    "refs": 4,
+    "where": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/index.html",
+     "skills/design/design-templates/vr-canvas/template.html",
+     "skills/design/design-templates/vr-canvas/reference.html",
+     "docs/audit/S87_INVENTORY.json"
+    ]
+   },
+   {
+    "path": "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-13-risograph.jpg",
+    "refs": 4,
+    "where": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/index.html",
+     "skills/design/design-templates/vr-canvas/template.html",
+     "skills/design/design-templates/vr-canvas/reference.html",
+     "docs/audit/S87_INVENTORY.json"
+    ]
+   },
+   {
+    "path": "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-05-brand-flatlay.jpg",
+    "refs": 4,
+    "where": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/index.html",
+     "skills/design/design-templates/vr-canvas/template.html",
+     "skills/design/design-templates/vr-canvas/reference.html",
+     "docs/audit/S87_INVENTORY.json"
+    ]
+   },
+   {
+    "path": "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-02-typography.jpg",
+    "refs": 4,
+    "where": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/index.html",
+     "skills/design/design-templates/vr-canvas/template.html",
+     "skills/design/design-templates/vr-canvas/reference.html",
+     "docs/audit/S87_INVENTORY.json"
+    ]
+   },
+   {
+    "path": "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-03-packaging.jpg",
+    "refs": 4,
+    "where": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/index.html",
+     "skills/design/design-templates/vr-canvas/template.html",
+     "skills/design/design-templates/vr-canvas/reference.html",
+     "docs/audit/S87_INVENTORY.json"
+    ]
+   },
+   {
+    "path": "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-16-interior.jpg",
+    "refs": 4,
+    "where": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/index.html",
+     "skills/design/design-templates/vr-canvas/template.html",
+     "skills/design/design-templates/vr-canvas/reference.html",
+     "docs/audit/S87_INVENTORY.json"
+    ]
+   },
+   {
+    "path": "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-04-paint-stroke.jpg",
+    "refs": 4,
+    "where": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/index.html",
+     "skills/design/design-templates/vr-canvas/template.html",
+     "skills/design/design-templates/vr-canvas/reference.html",
+     "docs/audit/S87_INVENTORY.json"
+    ]
+   },
+   {
+    "path": "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-17-color-block.jpg",
+    "refs": 4,
+    "where": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/index.html",
+     "skills/design/design-templates/vr-canvas/template.html",
+     "skills/design/design-templates/vr-canvas/reference.html",
+     "docs/audit/S87_INVENTORY.json"
+    ]
+   },
+   {
+    "path": "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-07-gradient.jpg",
+    "refs": 4,
+    "where": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/index.html",
+     "skills/design/design-templates/vr-canvas/template.html",
+     "skills/design/design-templates/vr-canvas/reference.html",
+     "docs/audit/S87_INVENTORY.json"
+    ]
+   },
+   {
+    "path": "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-18-magazine.jpg",
+    "refs": 5,
+    "where": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/index.html",
+     "skills/design/design-templates/vr-canvas/SKILL.md",
+     "skills/design/design-templates/vr-canvas/template.html",
+     "skills/design/design-templates/vr-canvas/reference.html",
+     "docs/audit/S87_INVENTORY.json"
+    ]
+   },
+   {
+    "path": "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/images/p-01-color-macro.jpg",
+    "refs": 5,
+    "where": [
+     "skills/design/design-templates/digital-eguide/case\uff08\u65e0\u9650\u753b\u5e03\uff1a\u4f5c\u54c1\u96c6\uff09/case/index.html",
+     "skills/design/design-templates/vr-canvas/SKILL.md",
+     "skills/design/design-templates/vr-canvas/template.html",
+     "skills/design/design-templates/vr-canvas/reference.html",
+     "docs/audit/S87_INVENTORY.json"
+    ]
+   }
+  ]
+ },
+ "gif_frames": {
+  "docs/evidence/s83b/snake_head_gameplay.gif": 13,
+  "docs/evidence/s73_snake_autoplay/snake_autoplay.gif": 90,
+  "docs/evidence/canonical/com.trianguloy.urlchecker.gif": 2,
+  "docs/evidence/canonical/org.bobstuff.bobball.gif": 2,
+  "docs/evidence/canonical/com.emmanuelmess.tictactoe.gif": 3,
+  "docs/evidence/canonical/com.miniandroid.tictactoedeluxe.gif": 4,
+  "docs/evidence/canonical/com.dozingcatsoftware.dodge.gif": 14,
+  "docs/evidence/canonical/com.miniandroid.tetris.gif": 75,
+  "docs/evidence/canonical/com.dozingcatsoftware.bouncy.gif": 2,
+  "docs/evidence/canonical/com.miniandroid.g2048.gif": 65,
+  "docs/evidence/canonical/com.miniandroid.snakedeluxe.gif": 49,
+  "docs/evidence/canonical/ca.rmen.nounours.gif": 2,
+  "docs/evidence/canonical/com.miniandroid.minicraft.gif": 15,
+  "docs/evidence/canonical/com.smorgasbork.hotdeath.gif": 2,
+  "docs/evidence/s79/snake_gameplay.gif": 58,
+  "docs/evidence/s80/snake_gameplay.gif": 49,
+  "docs/evidence/s80/tetris_gameplay.gif": 75,
+  "docs/evidence/s80/g2048_gameplay.gif": 65,
+  "docs/demos/demo_proof.gif": 9,
+  "miniandroid/tests/fixtures_foundation/f50_imagefmt/res/drawable/gif_test.gif": 1
+ }
+}
