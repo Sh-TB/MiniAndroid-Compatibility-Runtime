@@ -3104,3 +3104,21 @@ Stage Summary:
 - 3 new engine laws (F-NEW-183, 183b, 184) + F-NEW-175 regression proof; Telegram frontier CLEARED past ImageLoader/ActionBarLayout for the first time since S74; Signal + torchlight source-first records; 220-title corpus scanner live.
 - Open families ranked for next attack: androidx lifecycle/savedstate generated-adapter (no.thanks + Signal + F-NEW-162 12-title), secuso pfacore Splash.onCreate dispatch (torchlight + 8 S87 titles), j$/desugar requireNonNull (Telegram), F084 lambda loops, vector-drawable resource family (chess).
 - Gates: torchlight rc=0/0-exc, chess F-NEW-175 hold, battery launched after laws.
+
+---
+Task ID: S89-FINAL
+Agent: Super Z (main)
+Task: S89 close-out — corpus census, batch execution, final laws, report
+
+Work Log:
+- Corpus: 225 profiles (110 games + 110 apps + specials; index-v1 via lysator mirror at 1.5MB/s after f-droid.org direct proved 12KB/s). Frequency microscope: webkit 83 · lifecycle 73 · appcompat 52 · kotlin 51 · sqlite 50 · fragment 47 · coroutines 37 · kotlin-reflection 32 · constraint 29 · compose 21 · libgdx 5 · glide 1.
+- Batch execution: 66 titles (NONTRIVIAL 6 · PARTIAL 15 · SHELL 16 · LOAD_FAILED 29 incl. 14 MAXS service-only plugin modules = NO_LAUNCHABLE_ACTIVITY family). Divergence long-tail: no ≥3 shared root in-batch = previous fanout roots actually cleared.
+- Named titles: Telegram re-verify at restored binary (SHA b6a13e87 exact; chain reaches MessagesController; ImageLoader/ActionBarLayout signatures GONE; rc=124 = deep-run budget). Signal 8.26.4 SHA-exact from official manifest; L1 9 frames; Lifecycling family. torchlight rc=0/0-exc (F-NEW-184). snakes 0.2.0 = GODOT-ENGINE family discovery; F-NEW-188/188b advanced from FragmentController NPE to GodotActivity.onCreate executing; remaining = Godot native runtime.
+- Laws total this wave: F-NEW-183, 183b, 184, 185, 186, 187, 188, 188b — each A/B-proven with source-first justification; commit-after-every-law discipline institutionalized after 2 container resets.
+- Container reset recovery: toolchain re-bootstrapped from pinned provenance (scripts/build/bootstrap_toolchain.sh + EXT-01 reference image from v1.1.0 tag); battery restored to ALL PASS 94/94.
+- S89_REPORT.md emitted with §17-A..G exact numbers.
+
+Stage Summary:
+- MiniAndroid foundation advanced by 8 laws targeting the 3 highest-frequency corpus families measured this wave (fragment 47, storage/attach family, theme/color chain).
+- Telegram frontier cleared past S74's ActionBarLayout/ImageLoader for the first time; Godot family discovered and its fragment layer unblocked.
+- Honest gaps: WebView content (83 titles), androidx lifecycle adapters, ConstraintLayout solver, Compose, SQLite cursors, native runtimes (libGDX/Godot/Kivy), deep-interpreter silent-null.
