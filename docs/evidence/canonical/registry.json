@@ -1,5 +1,5 @@
 {
- "wave": "S84",
+ "wave": "S87",
  "law": "ONE title -> ONE canonical screenshot; interactive titles get ONE gif",
  "count": 148,
  "titles": [
@@ -143,7 +143,7 @@
    "artifact": "",
    "artifact_sha256": "",
    "artifact_kind": "",
-   "session": "S85-sweep",
+   "session": "S87-source-probe",
    "launched": true,
    "rendered": true,
    "interacted": false,
@@ -153,11 +153,11 @@
    "source": "",
    "upstream": "",
    "root_cause": "no prior root cause \u2014 rendered at current HEAD",
-   "notes": "S85 sweep promotion: prior OBSERVED \u2192 L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law).",
+   "notes": "S87 re-probe at HEAD; upstream Galaxy-rio/SudokuYou (Kotlin app; kotlin-reflect stdlib init needs the FORNAME bridge extended beyond the Build family)",
    "proven": "LOADED/LAUNCHED",
    "remaining": "real UI render (near-blank engine-default shell class at HEAD)",
-   "last_success_stage": "obs frames @L2 (S85)",
-   "first_divergence": "none recorded"
+   "last_success_stage": "S87 re-probe vc6: 8 frames, near-blank class",
+   "first_divergence": "kotlin.reflect.jvm.internal.ReflectionFactoryImpl CNFE (R350-FORNAME family) + Field.get null in Ld31; (open)"
   },
   {
    "title": "com.hegocre.nextcloudpasswords",
@@ -507,7 +507,7 @@
    "artifact": "",
    "artifact_sha256": "",
    "artifact_kind": "",
-   "session": "S85-sweep",
+   "session": "S87-source-probe",
    "launched": true,
    "rendered": true,
    "interacted": false,
@@ -517,11 +517,11 @@
    "source": "",
    "upstream": "",
    "root_cause": "no prior root cause \u2014 rendered at current HEAD",
-   "notes": "S85 sweep promotion: prior OBSERVED \u2192 L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law).",
+   "notes": "S87 re-probe at HEAD; upstream sidhant947/BubbleShooter (SurfaceView-family game; lifecycle completes but nothing inflates \u2014 honest open)",
    "proven": "LOADED/LAUNCHED",
    "remaining": "real UI render (near-blank engine-default shell class at HEAD)",
-   "last_success_stage": "obs frames @L2 (S85)",
-   "first_divergence": "none recorded"
+   "last_success_stage": "S87 re-probe vc23: 8 frames, rc=0, no exceptions",
+   "first_divergence": "silent near-blank: zero exceptions, zero render nodes, Enum.ordinal REC-MISS \u00d718 (unlocalized \u2014 needs deeper trace)"
   },
   {
    "title": "com.sidhant.puzzle",
@@ -932,12 +932,12 @@
    "version": "1.6",
    "source": "https://f-droid.org/en/packages/io.github.hathibelagal.mykanji/",
    "upstream": "https://github.com/hathibelagal-dev/MyKanji",
-   "root_cause": "none (rc=0)",
-   "notes": "S84 NEW title. rc_obs=0 errors=0 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=1 entropy=-0.0 resources(dex/classes)=? [frame belongs to the shared/near-blank content class \u2014 not canonical visual evidence per S54 law]",
+   "root_cause": "F-NEW-171 (APXACT depth underflow) + F-NEW-172 (FragmentActivity super-chain) + F-NEW-173 (ViewConfiguration object) + F-NEW-174 (beneath finisher) \u2014 all A/B-proven at S87 HEAD; remaining: WebView asset content",
+   "notes": "S87 source-first probe (vc7, APK SHA matches pin b20274a0885d03ba\u2026); upstream hathibelagal-dev/MyKanji \u2014 main UI is a WebView over local HTML (upstream source read)",
    "proven": "LOADED/LAUNCHED",
    "remaining": "full app-specific behavior beyond click probe",
-   "last_success_stage": "8/8 frames captured, click pass executed",
-   "first_divergence": "none"
+   "last_success_stage": "S87: root view tree inflates (LinearLayout \u2192 full-screen WebView); was silent depth-underflow blank",
+   "first_divergence": "WebView content blank \u2014 local asset HTML not rendered (F085 WebView path exercised; content pipeline open)"
   },
   {
    "title": "io.github.johnathan.minesweeper",
@@ -1001,7 +1001,7 @@
    "artifact": "",
    "artifact_sha256": "",
    "artifact_kind": "",
-   "session": "S85-sweep",
+   "session": "S87-source-probe",
    "launched": true,
    "rendered": true,
    "interacted": false,
@@ -1011,11 +1011,11 @@
    "source": "",
    "upstream": "",
    "root_cause": "no prior root cause \u2014 rendered at current HEAD",
-   "notes": "S85 sweep promotion: prior OBSERVED \u2192 L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law).",
+   "notes": "S87 re-probe at HEAD; upstream jcarolus/android-chess read (classic View board game; ChessBoardView is a plain onDraw Canvas \u2014 renders once TypedArray/obtainStyledAttributes law lands)",
    "proven": "LOADED/LAUNCHED",
    "remaining": "real UI render (near-blank engine-default shell class at HEAD)",
-   "last_success_stage": "obs frames @L2 (S85)",
-   "first_divergence": "none recorded"
+   "last_success_stage": "S87 re-probe vc298: 8 frames, near-blank class",
+   "first_divergence": "TypedArray.hasValue on null obtainStyledAttributes result + Field.get null in obfuscated Lk3/a;.<clinit> (open)"
   },
   {
    "title": "me.river.nightbell",
@@ -1530,12 +1530,12 @@
    "version": "",
    "source": "F-Droid",
    "upstream": "",
-   "root_cause": "S83 near-blank final-frame class (eb16ab5c\u2026 \u00d716, uniq=2-3): app renders status-bar-only content at campaign parameters; real UI evidence exists only for titles with dedicated interaction runs (s83b sweep)",
-   "notes": "S83 campaign (games__eu.veldsoft.no.thanks_1__L1_NONBLANK.jpg) is the shared near-blank frame class \u2014 no canonical visual per S54 law; evidence = run logs",
+   "root_cause": "F-NEW-171 (APXACT depth underflow) + F-NEW-172 (FragmentActivity super-chain) + F-NEW-173 (ViewConfiguration object) + F-NEW-174 (beneath finisher) \u2014 all A/B-proven at S87 HEAD; remaining: savedstate adapter + TypedArray null",
+   "notes": "S87 source-first probe (vc1); upstream VelbazhdSoftwareLLC/No-Thanks-for-Android (veldsoft control: 3 sibling titles already render)",
    "proven": "LOADED/LAUNCHED (frames not visual evidence)",
    "remaining": "real-UI render under dedicated interaction protocol",
-   "last_success_stage": "8/8 frames captured; lifecycle ran",
-   "first_divergence": "near-blank framebuffer (no meaningful UI pixels)"
+   "last_success_stage": "S87: SplashActivity inflates ConstraintLayout\u2192WebView tree (was silent depth-underflow blank)",
+   "first_divergence": "androidx.savedstate.Recreator_LifecycleAdapter CNFE (Lifecycling.generatedConstructor) + TypedArray.getIndexCount on null obtainStyledAttributes result (open)"
   },
   {
    "title": "Memory",
@@ -1625,7 +1625,7 @@
    "artifact": "",
    "artifact_sha256": "",
    "artifact_kind": "",
-   "session": "S85-sweep",
+   "session": "S87-source-probe",
    "launched": true,
    "rendered": true,
    "interacted": false,
@@ -1635,11 +1635,11 @@
    "source": "",
    "upstream": "",
    "root_cause": "no prior root cause \u2014 rendered at current HEAD",
-   "notes": "S85 sweep promotion: prior OBSERVED \u2192 L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law).",
+   "notes": "S87 re-probe at HEAD; upstream TobiasBielefeld/Simple-Solitaire read (GameActivity statics need a live Context before the support shadow answers)",
    "proven": "LOADED/LAUNCHED",
    "remaining": "real UI render (near-blank engine-default shell class at HEAD)",
-   "last_success_stage": "obs frames @L2 (S85)",
-   "first_divergence": "none recorded"
+   "last_success_stage": "S87 re-probe vc71: 8 frames, near-blank class",
+   "first_divergence": "Context.getResources on null receiver + Window.getCallback NPE inside android/support v7 chain (f141 family, open)"
   },
   {
    "title": "PFBattleship",
@@ -1729,7 +1729,7 @@
    "artifact": "",
    "artifact_sha256": "",
    "artifact_kind": "",
-   "session": "S85-sweep",
+   "session": "S87-source-probe",
    "launched": true,
    "rendered": true,
    "interacted": false,
@@ -1739,11 +1739,11 @@
    "source": "",
    "upstream": "",
    "root_cause": "no prior root cause \u2014 rendered at current HEAD",
-   "notes": "S85 sweep promotion: prior OBSERVED \u2192 L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law).",
+   "notes": "S87 re-probe at HEAD; upstream Crazy-Marvin/Halma (libGDX game \u2014 gated by the documented GL frontier)",
    "proven": "LOADED/LAUNCHED",
    "remaining": "real UI render (near-blank engine-default shell class at HEAD)",
-   "last_success_stage": "obs frames @L2 (S85)",
-   "first_divergence": "none recorded"
+   "last_success_stage": "S87 re-probe vc15: 8 frames, near-blank class",
+   "first_divergence": "com.badlogic.gdx.backends.android.AndroidInput.onResume on null receiver (F-NEW-157 libGDX/EGL frontier family)"
   },
   {
    "title": "Astroloop",
@@ -2171,7 +2171,7 @@
    "artifact": "",
    "artifact_sha256": "",
    "artifact_kind": "",
-   "session": "S83 HIGH",
+   "session": "S87-source-probe",
    "launched": true,
    "rendered": false,
    "interacted": false,
@@ -2181,11 +2181,11 @@
    "source": "F-Droid",
    "upstream": "",
    "root_cause": "S83 near-blank final-frame class (eb16ab5c\u2026 \u00d716, uniq=2-3): app renders status-bar-only content at campaign parameters; real UI evidence exists only for titles with dedicated interaction runs (s83b sweep)",
-   "notes": "S83 campaign (high__com.newsblur_289__L2_GRAPHICALLY_INCOMPLETE.jpg) is the shared near-blank frame class \u2014 no canonical visual per S54 law; evidence = run logs",
+   "notes": "S87 re-probe at HEAD (text-heavy heavy app control); upstream samuelclay/NewsBlur; SQLite cursor law is the first divergence",
    "proven": "LOADED/LAUNCHED (frames not visual evidence)",
    "remaining": "real-UI render under dedicated interaction protocol",
-   "last_success_stage": "8/8 frames captured; lifecycle ran",
-   "first_divergence": "near-blank framebuffer (no meaningful UI pixels)"
+   "last_success_stage": "S87 re-probe vc289: 8 frames, near-blank class",
+   "first_divergence": "Cursor.moveToNext on null (SQLiteDatabase query path) \u00d7deferred + AtomicReferenceFieldUpdater REC-MISS storm (open)"
   },
   {
    "title": "TimeLimit",
@@ -2544,12 +2544,12 @@
    "version": "1.3.4",
    "source": "https://f-droid.org/en/packages/org.secuso.privacyfriendlydame/",
    "upstream": "https://github.com/SecUSo/privacy-friendly-dame",
-   "root_cause": "none \u2014 clean run at current HEAD",
-   "notes": "S85 NEW-50 (game); rc_obs=0; frames=8; rc_click=0 | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law).",
+   "root_cause": "F-NEW-171 (APXACT depth underflow) + F-NEW-172 (FragmentActivity super-chain) + F-NEW-173 (ViewConfiguration object) + F-NEW-174 (beneath finisher) \u2014 all A/B-proven at S87 HEAD; remaining: pager page text render",
+   "notes": "S87 source-first probe (vc101, APK SHA matches S85 pin 41727c0121fef8ab\u2026); upstream SecUSo/privacy-friendly-dame read (BaseActivity\u2192pfacore DrawerActivity; SplashActivity routes then finish()); S54 gate: no artifact until L2+",
    "proven": "LOADED/LAUNCHED",
    "remaining": "real UI render (near-blank engine-default shell class at HEAD)",
-   "last_success_stage": "obs 8 frames @L2",
-   "first_divergence": "none recorded"
+   "last_success_stage": "S87: Splash\u2192TutorialActivity real navigation + U007 inflate (6 views) + Skip/Next buttons painted (uniq 213; was engine-default blank)",
+   "first_divergence": "ViewPager adapter page content (TextView text, page icon) not painted \u2014 TEXT_PIXELS=0 at frame_007 (open)"
   },
   {
    "title": "org.secuso.privacyfriendlysudoku",
@@ -3688,12 +3688,12 @@
    "version": "1.4.2",
    "source": "https://f-droid.org/en/packages/org.secuso.privacyfriendly2048/",
    "upstream": "https://github.com/SecUSo/privacy-friendly-2048",
-   "root_cause": "none \u2014 clean run at current HEAD",
-   "notes": "S85 NEW-50 (game); rc_obs=0; frames=8; rc_click=0 | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law).",
+   "root_cause": "F-NEW-171 (APXACT depth underflow) + F-NEW-172 (FragmentActivity super-chain) + F-NEW-173 (ViewConfiguration object) + F-NEW-174 (beneath finisher) \u2014 all A/B-proven at S87 HEAD; remaining: Glide engine loop (open)",
+   "notes": "S87 source-first probe (vc100, APK SHA matches pin 02c799d3d582669d\u2026); upstream SecUSo/privacy-friendly-2048 (same pfacore scaffold as dame)",
    "proven": "LOADED/LAUNCHED",
    "remaining": "real UI render (near-blank engine-default shell class at HEAD)",
-   "last_success_stage": "obs 8 frames @L2",
-   "first_divergence": "none recorded"
+   "last_success_stage": "S87: secuso tutorial screen painted (uniq 160, Skip button; was engine-default blank)",
+   "first_divergence": "F084 interpreter halt: infinite loop PC=0x2 in com.bumptech.glide.load.engine\u2026 + com.bumptech.glide.GeneratedAppGlideModuleImpl CNFE (deferred)"
   },
   {
    "title": "com.nononsenseapps.notepad",

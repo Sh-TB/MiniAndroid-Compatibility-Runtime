@@ -1,3 +1,5 @@
+> **[S87 SUPERSEDED]** Era record — do not update. The current canonical per-title achievement record is [`docs/ACHIEVEMENTS.md`](../ACHIEVEMENTS.md), generated from [`docs/evidence/canonical/registry.json`](canonical/registry.json) (SSoT). This matrix predates the S84 canonical system and is kept for history only.
+
 # CURRENT_COMPATIBILITY_MATRIX — §14 app-by-app, evidence-linked
 
 Campaign: REUSE-FIRST FULL COMPATIBILITY + RESEARCH-TO-CODE

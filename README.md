@@ -5,7 +5,7 @@
 </p>
 <p align="center"><sub>Decorative project mascot — a Silkie hen. Not an Android/Google mark; carries no claim.</sub></p>
 
-**Repository:** https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime (original project, not a fork) · **License:** MIT · **Current wave:** S86 (SurfaceView graphics strike — Dodge fully playable + MiniCraft خانه سازی + L0→L10 impact audit)
+**Repository:** https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime (original project, not a fork) · **License:** MIT · **Current wave:** S87 (source-first near-blank strike — F-NEW-171..174 fixed: secuso dame/2048 + mykanji/no.thanks now inflate real UI; full achievement audit + evidence census)
 
 ---
 
@@ -51,6 +51,7 @@ honestly-recorded frontiers (see root-cause registry below).
 |---|---|
 | Titles executed & recorded | **148** (87 games · 60 apps · 1 fixture) |
 | Added in S86 (this wave) | **MiniCraft (خانه سازی)** — 5th in-house game — + Dodge promoted to full gameplay; 7 engine laws F-NEW-164..170 (SurfaceView surface chain) all A/B-proven |
+| Added in S87 (this wave) | **4 A/B-proven engine laws F-NEW-171..174** (APXACT depth underflow, FragmentActivity super-chain, ViewConfiguration object, beneath finisher) — the near-blank family root-cause cluster; 10-title source-first probe corpus (upstream repos fetched and read before execution); full evidence audit (511 images, 36 canonical artifacts SHA-verified 36/36, zero executed-but-unrecorded) |
 | VERIFIED (launched + rendered, content-verified UI) | **22** |
 | VERIFIED-INTERACTIVE (real click → state change, GIF) | **12** |
 | PARTIAL (rendered with root-caused divergences) | 2 |
