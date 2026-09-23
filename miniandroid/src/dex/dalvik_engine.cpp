@@ -4783,6 +4783,49 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         return true;
     }
 
+    // ────────────────────────────────────────────────────────────────────
+    // S89 F-NEW-188 — androidx FragmentManager singleton identity law.
+    // AOSP androidx.fragment.app.FragmentActivity.onCreate builds
+    //   mFragments = FragmentController.createController(new HostCallbacks())
+    // and getSupportFragmentManager() delegates to mFragments. The engine
+    // constructs FragmentActivity via the shadow without the HostCallbacks
+    // chain → FragmentController's DEX body reads a null host →
+    //   NPE "FragmentHostCallback.getSupportFragmentManager on a null
+    //   object reference" at FragmentController.getSupportFragmentManager
+    // (S89 evidence: red.drugi.snakes 0.2.0 APP BOUNDARY; the fragment
+    // family spans 47/225 corpus titles per the S89 frequency table).
+    // LAW (identity with the framework F-141c FragmentManager singleton):
+    // getSupportFragmentManager answers ONE androidx FragmentManager
+    // singleton per runtime — the same object on every access path, never
+    // null for a live activity. Intercepted at the CRITICAL-INTERCEPT
+    // level because the DEX body exists and NPEs INSIDE it.
+    // ────────────────────────────────────────────────────────────────────
+    if (method_name == "getSupportFragmentManager" &&
+        (declaring_class == "Landroidx/fragment/app/FragmentController;" ||
+         declaring_class == "Landroidx/fragment/app/FragmentActivity;")) {
+        return_val = get_or_create_singleton(
+            "Landroidx/fragment/app/FragmentManager;");
+        last_invoke_return_ = return_val;
+        recursion_depth_--;
+        return true;
+    }
+    // F-NEW-188b — AOSP FragmentManager.findFragmentById(@IdRes) is
+    // @Nullable: on a manager with no matching fragment it answers NULL
+    // and the caller null-checks (androidx contract). The engine's
+    // FragmentManager singleton carries no FragmentStore (constructed
+    // without the real <init>), so the DEX body NPE'd on the internal
+    // store — replacing the store with a legal null answer preserves the
+    // androidx contract for an empty fragment manager.
+    if (declaring_class == "Landroidx/fragment/app/FragmentManager;" &&
+        (method_name == "findFragmentById" ||
+         method_name == "findFragmentByTag" ||
+         method_name == "findFragmentByIdWho")) {
+        return_val = DalvikValue::make_null();
+        last_invoke_return_ = return_val;
+        recursion_depth_--;
+        return true;
+    }
+
     // EXP-071: getParentActivity → return LaunchActivity singleton.
     // The DEX bytecode for getParentActivity calls getView().getContext()
     // which fails (no real View/Context chain). Return LaunchActivity
