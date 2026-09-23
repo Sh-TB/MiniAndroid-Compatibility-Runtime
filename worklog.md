@@ -3135,3 +3135,37 @@ Work Log:
 
 Stage Summary:
 - All S89 work committed locally and safe; push requires a fresh PAT (the S83-era token is dead).
+
+---
+Task ID: S90-PUSH
+Agent: Super Z (main)
+Task: Push 12 queued commits (S88+S89) to origin/main with fresh PAT
+
+Work Log:
+- Fresh PAT validated via API /user -> 200 (env-only, never written to file).
+- git push succeeded: 09adae1e..2027b969 main -> main, RC=0.
+- fetch verified origin/main == HEAD (0/0 divergence). URL scrubbed after push; token never persisted.
+
+Stage Summary:
+- PUSH ledger cleared: S88 + S89 waves (12 commits incl. F-NEW-175..188b + scripts + reports) are now PUBLIC on origin/main.
+
+---
+Task ID: S90-CORE
+Agent: Super Z (main)
+Task: S90 FOUNDATION RESET — push ledger, parser fix, API inventory, achievements architecture, P0 root attack
+
+Work Log:
+- PUSH ledger CLEARED: fresh PAT validated (env-only), 12 S88+S89 commits pushed (09adae1e..2027b969), fetch verified 0/0. S90 laws pushed through 4be815c1.
+- §4 parser root cause FOUND: s88_corpus2.scan_dex used io.BytesIO with NO `import io` — NameError swallowed by bare except → every dex silently skipped → top_classes [] for all 225 titles (S89's class-extraction never worked). Fixed + extended: method_ids + proto_ids exact signature decode (dex-raw format `(params)ret`). Cross-validated vs androguard: chess type_recall 1.0 / method_recall 1.0 (2537/2537), no.thanks 0.9998/1.0 (83038/83038). 225-title rescan: 0 parse failures.
+- §3 registry/api_inventory.json built: 400 exact methods / 200 classes / 14 families, exact overloads separated (Intent.<init> two signatures), merged execution columns (30 ok / 36 fail of 66 batch), measurement basis recorded. Honest corrections logged: AlertDialog$Builder + Intent extras were grep FALSE NEGATIVES (implementations live in dialog_shadow.cpp/android_shadows.cpp IntentShadow).
+- §11-16 achievements architecture: docs/achievements/{INDEX,GAMES_WITH_GIFS,APPS_EXECUTED}.md + ASSET_MANIFEST.json, all generated from canonical registry. Audit: 937 images repo-wide, 36 canonical (11 game GIFs + 1 app GIF), 0 orphans, 0 SHA mismatches, 0 referenced-but-missing, 48 duplicate groups recorded (historical wave copies, not deleted).
+- §22 P0 attack (F-NEW-162 ≥3-title family): source-first via bytecode disasm of Lifecycling/ClassesInfoCache from nothanks.apk + classesInfoCache trace. THREE new laws committed 4be815c1:
+  - F-NEW-190 Class.getDeclaredMethods/getInterfaces → real dex arrays, never null (libcore)
+  - F-NEW-190b Class.getSuperclass → real dex superclass, null for Object/interfaces (libcore)
+  - F-NEW-191 method-annotation reflection: dex_parser parses annotations_directory_item method_annotations[] (deferred join after class_data) + Method.getAnnotation/isAnnotationPresent law
+- A/B no.thanks: ComponentActivity.<init> 11-frame RuntimeException APP-BOUNDARY escape (klass.interfaces null NPE) GONE — init completes, execution reaches ConstraintLayout.onLayout (separate deeper f141 root, pre-existing).
+- REGRESSION: battery ALL PASS 96/96; chess holds (TypedArray intact); torchlight holds (rc=0 SUCCESS).
+
+Stage Summary:
+- S90 foundation: parser fixed+validated, canonical API inventory live, achievements centralized, F-NEW-162 family root CLEARED with 3 reusable laws, zero regression.
+- Open frontiers: ConstraintLayout.onLayout f141 (no.thanks next), Notification family (0 runtime support, ~52 titles), Telegram j$/desugar+MessagesController, Method-annotation E2E for full reflective-observer dispatch.
