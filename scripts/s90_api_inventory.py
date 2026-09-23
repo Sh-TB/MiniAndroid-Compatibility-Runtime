@@ -26,42 +26,43 @@ ENGINE = f"{ROOT}/miniandroid/src/dex/dalvik_engine.cpp"
 OUT = f"{ROOT}/registry/api_inventory.json"
 
 FAMILY_RULES = [
-    ("material", "Lcom/google/android/material"),
-    ("appcompat", "Landroidx/appcompat"),
-    ("support-v4", "Landroid/support/v4"),
-    ("support-v7", "Landroid/support/v7"),
-    ("support-design", "Landroid/support/design"),
-    ("compose", "Landroidx/compose"),
-    ("core", "Landroidx/core"),
-    ("fragment", "Landroidx/fragment"),
-    ("lifecycle", "Landroidx/lifecycle"),
-    ("recyclerview", "Landroidx/recyclerview"),
-    ("constraint", "Landroidx/constraintlayout"),
-    ("vectordrawable", "Landroidx/vectordrawable"),
-    ("emoji2", "Landroidx/emoji2"),
-    ("activity", "Landroidx/activity"),
-    ("webkit", "Landroid/webkit"),
-    ("graphics", "Landroid/graphics"),
-    ("view", "Landroid/view"),
-    ("widget", "Landroid/widget"),
-    ("content", "Landroid/content"),
-    ("app", "Landroid/app"),
-    ("os", "Landroid/os"),
-    ("net", "Landroid/net"),
-    ("util", "Landroid/util"),
-    ("database", "Landroid/database"),
-    ("opengl", "Landroid/opengl"),
+    ("material", "Lcom.google.android.material"),
+    ("appcompat", "Landroidx.appcompat"),
+    ("support-v4", "Landroid.support.v4"),
+    ("support-v7", "Landroid.support.v7"),
+    ("support-design", "Landroid.support.design"),
+    ("compose", "Landroidx.compose"),
+    ("core", "Landroidx.core"),
+    ("fragment", "Landroidx.fragment"),
+    ("lifecycle", "Landroidx.lifecycle"),
+    ("recyclerview", "Landroidx.recyclerview"),
+    ("constraint", "Landroidx.constraintlayout"),
+    ("vectordrawable", "Landroidx.vectordrawable"),
+    ("emoji2", "Landroidx.emoji2"),
+    ("activity", "Landroidx.activity"),
+    ("webkit", "Landroid.webkit"),
+    ("graphics", "Landroid.graphics"),
+    ("view", "Landroid.view"),
+    ("widget", "Landroid.widget"),
+    ("content", "Landroid.content"),
+    ("app", "Landroid.app"),
+    ("os", "Landroid.os"),
+    ("net", "Landroid.net"),
+    ("util", "Landroid.util"),
+    ("database", "Landroid.database"),
+    ("opengl", "Landroid.opengl"),
     ("kotlin", "Lkotlin"),
-    ("coroutines", "Lkotlinx/coroutines"),
-    ("java", "Ljava/"),
-    ("javax", "Ljavax/"),
-    ("j$", "Lj$/"),
+    ("coroutines", "Lkotlinx.coroutines"),
+    ("java", "Ljava."),
+    ("javax", "Ljavax."),
+    ("j$", "Lj$."),
 ]
 
 
 def family_of(cls):
+    c = cls.replace("/", ".")
     for fam, pre in FAMILY_RULES:
-        if cls.startswith(pre):
+        if c.startswith(pre):
             return fam
     return "other"
 
@@ -111,29 +112,38 @@ def main():
     exec_ok = sum(1 for v in exec_status.values() if v["rc"] == 0)
     exec_fail = sum(1 for v in exec_status.values() if v["rc"] != 0)
 
-    # divergence -> method extraction: prefer explicit method=L…; form
+    # divergence -> extraction, two real formats:
+    #   A) method=Lorg/x/Y;.onCreate  (explicit)
+    #   B) 'Ljava/util/List;.iterator' on a null obje... (NPE receiver)
+    def norm_cls(t):
+        return t.replace("/", ".")  # dotted for display/family
+
     div_methods = defaultdict(list)
-    div_fams = defaultdict(list)
+    div_fams = defaultdict(set)
     for pkg, v in exec_status.items():
         fd = v["first_divergence"]
         if not fd:
             continue
-        m = re.search(r"method=(L[^ ;]+)\.([^ ;(]+)", fd)
+        hit = False
+        m = re.search(r"method=(L[\w/$]+;)[. ]*([\w$<>]+)?", fd)
         if m:
-            key = f"{m.group(1)}.{m.group(2)}"
-            div_methods[key].append(pkg)
-        else:
-            mm = re.search(r"L([a-z][\w/$]*\.)*([\w$]+)\.([\w$<>]+)\(", fd)
-            if mm:
-                div_fams[family_of("L" + fd.split("L")[1].split(".")[0] if "L" in fd else "?")].append(pkg)
-    # also family-level from raw strings (deferred family markers)
-    for pkg, v in exec_status.items():
-        fd = v["first_divergence"]
-        if not fd or re.search(r"method=", fd):
-            continue
-        mt = re.findall(r"L[\w/$]+;", fd)
-        for t in mt[:2]:
-            div_fams[family_of(t)].append(pkg)
+            cls = norm_cls(m.group(1))
+            name = m.group(2) or "?"
+            div_methods[f"{cls}.{name}"].append(pkg)
+            div_fams[family_of(cls)].add(pkg)
+            hit = True
+        if not hit:
+            m2 = re.search(r"'(L[\w/$]+;)\.([\w$<>]+)'", fd)
+            if m2:
+                cls = norm_cls(m2.group(1))
+                div_methods[f"{cls}.{m2.group(2)}"].append(pkg)
+                div_fams[family_of(cls)].add(pkg)
+                hit = True
+        if not hit:
+            # exception type only
+            m3 = re.search(r"L([\w/$]+)(?:Exception|Error);", fd)
+            if m3:
+                div_fams["exceptions"].add(pkg)
 
     # ---- assemble method inventory (top 400 by title fan-out) ----
     methods = []
@@ -171,27 +181,6 @@ def main():
             "basis": "per-title top-40 methods (S90 fixed parser)",
         })
 
-    # ---- family rollup (§19) ----
-    fams = defaultdict(lambda: {"titles": set(), "methods": 0})
-    for m in methods:
-        fams[m["family"]]["titles"].update(
-            m["titles"]) if False else None
-        fams[m["family"]]["methods"] += 1
-    for pkg, prof in profiles.items():
-        for k, v in prof.get("libs", {}).items():
-            if k in fams:
-                fams[k]["titles"].add(pkg)
-    fam_table = []
-    for fam, d in sorted(fams.items(),
-                         key=lambda x: -len(x[1]["titles"])):
-        fam_table.append({
-            "family": fam,
-            "titles_with_family": len(d["titles"]),
-            "exact_methods_in_top400": d["methods"],
-            "titles_diverged_family": len(div_fams.get(fam, [])),
-            "diverged_titles": div_fams.get(fam, []),
-        })
-
     # ---- classes (top 200) ----
     classes = []
     for k, titles in sorted(c_titles.items(), key=lambda x: -len(x[1])):
@@ -212,6 +201,33 @@ def main():
             "basis": "per-title top-25 classes (S90 fixed parser)",
         })
 
+    # ---- family rollup (§19) — after methods AND classes are built ----
+    fam_titles = defaultdict(set)
+    for m in methods:
+        fam_titles[m["family"]].update(m["titles"])
+    for c in classes:
+        fam_titles[c["family"]].update(c["titles"])
+    # libs-flag families not covered by top-N lists (e.g. webkit)
+    LIBFAM = {"webkit": "Landroid.webkit", "compose": "Landroidx.compose",
+              "sqlite": "Landroid.database", "opengl": "Landroid.opengl"}
+    for pkg, prof in profiles.items():
+        for lib in prof.get("libs", {}):
+            if lib in LIBFAM:
+                fam_titles[family_of(LIBFAM[lib])].add(pkg)
+    fams = {}
+    for fam in set(list(fam_titles) + list(div_fams)):
+        fams[fam] = {
+            "family": fam,
+            "titles_with_family": len(fam_titles.get(fam, set())),
+            "titles": sorted(fam_titles.get(fam, set()))[:15],
+            "exact_methods_in_top400": sum(
+                1 for m in methods if m["family"] == fam),
+            "titles_diverged": len(div_fams.get(fam, set())),
+            "diverged_titles": sorted(div_fams.get(fam, set())),
+        }
+    fam_table = sorted(fams.values(),
+                       key=lambda f: -f["titles_with_family"])
+
     inv = {
         "law": "S90 §3 — ONE canonical API inventory; built ONLY from real "
                "evidence; components stored separately, no synthetic score",
@@ -229,6 +245,9 @@ def main():
         "executed_ok_corpus": exec_ok,
         "executed_fail_corpus": exec_fail,
         "families": fam_table,
+        "divergence_methods": {k: v for k, v in
+                               sorted(div_methods.items(),
+                                      key=lambda x: -len(x[1]))},
         "top_methods": methods,
         "top_classes": classes,
     }
