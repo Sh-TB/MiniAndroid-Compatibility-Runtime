@@ -10,7 +10,7 @@ HEAD:            a3c3aded (main)
 Branch:          main (worktree clean after commit)
 Origin:          https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime.git
 Remote main:     ad95d92876a355a719d2a8959053f8a47c2b1e79 (UNRELATED rebuilt history; 28 local commits ahead)
-Push status:     PUSH_BLOCKED — "fatal: could not read Username for 'https://github.com'":
+Push status:     PUSH_BLOCKED — S89 wave (7 commits: S88 F-NEW-175 + S89 F-NEW-183..188b); S83-era PAT revoked (API 401); awaiting fresh PAT (env-only protocol)
                  no gh CLI, no ~/.ssh, no ~/.netrc, no token env vars (probed this session)
 Build:           PASS — make clean + make -j (binary 60,183,232 B)
 Semantic tests:  PASS — long/cmp/conv 14 · switch parse-neg 25 · pass3 bridge 57 (= 96/96)
