@@ -3,6 +3,7 @@
 #include "bitmap_shadow.h"
 #include "../diagnostics/gfx_provenance.h"
 #include "../renderer/software_renderer.h"
+#include "../resources/res_config.h"
 
 #include <algorithm>
 #include <cmath>
@@ -66,7 +67,7 @@ uint32_t BitmapShadow::decode_and_register(const std::vector<uint8_t>& bytes,
                                            HeapAllocator* heap) {
     if (!heap) return 0;
     renderer::DecodedImage decoded;
-    if (!renderer::decode_image_bytes(bytes, &decoded) || decoded.width <= 0 ||
+    if (!renderer::decode_image_bytes(bytes, &decoded, resources::device_config().density) || decoded.width <= 0 ||
         decoded.height <= 0 || decoded.rgba.empty()) {
         // AOSP: failed decode → null. The failure is ALREADY reported by
         // decode_image_bytes (format named) — never silent.
