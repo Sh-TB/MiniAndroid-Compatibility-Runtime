@@ -177,6 +177,16 @@ TextShaper::TextShaper() {
         }
     }
     if (available_) {
+        // R-NEW-398/MG-051 (S98) REAL-BUG FIX: the CJK fallback ROUTING was
+        // wired (shape(): remaining .notdef clusters → kFaceCJK lookup) but
+        // the FACE WAS NEVER LOADED — cjk_available_ could never become
+        // true, so every CJK ideograph stayed .notdef (silent draw-skip
+        // class, the exact F-153 symptom R-NEW-398 was filed for). Load it
+        // with the other base faces; missing file = loud diagnostic below.
+        if (!faces_[kFaceCJK].ft_face &&
+            load_face(kFaceCJK, font_paths_[kFaceCJK].c_str())) {
+            cjk_available_ = true;
+        }
         std::fprintf(stderr,
             "[TEXTSHAPER] READY primary=%s bold=%s fallback=%s emoji=%s(strike=%d) monospace=%s cjk=%s\n",
             faces_[kFaceRegular].path.c_str(),
@@ -313,8 +323,15 @@ const ShapedText& TextShaper::shape(const std::string& utf8, float size_px,
     }
 
     // HarfBuzz shaping of the VISUAL sequence.
+    // MG-085 (S98) REAL-BUG FIX: the buffer was fed vis.size() = N+1 —
+    // the vector is sized src.size()+1 but log2vis fills only src.size()
+    // entries, so a PHANTOM U+0000 cluster rode at the end of EVERY
+    // shaped string (extra .notdef glyph + garbage advance in every
+    // TextView width, and emoji fallback occasionally attaching to the
+    // NUL cluster instead of the emoji cluster). Law: shape EXACTLY the
+    // visual sequence — hb_buffer_add_utf32 takes src.size().
     hb_buffer_t* buf = hb_buffer_create();
-    hb_buffer_add_utf32(buf, vis.data(), (int)vis.size(), 0, -1);
+    hb_buffer_add_utf32(buf, vis.data(), (int)src.size(), 0, -1);
     hb_buffer_guess_segment_properties(buf);
     hb_shape(hb_font, buf, nullptr, 0);
 
@@ -340,8 +357,13 @@ const ShapedText& TextShaper::shape(const std::string& utf8, float size_px,
     // Emoji fallback (Android font-chain behavior): for every primary
     // .notdef, try NotoColorEmoji at the same cluster. Advances come from
     // the emoji shaping scaled to the requested size.
+    // MG-083 (S98): the guard was `notdef_count > 0` — but DejaVu maps
+    // U+1F600 to a bogus non-notdef glyph (gid 5857), so a string with
+    // ONLY emoji-presentation chars never entered this block and rendered
+    // the stray glyph. The emoji-presentation claim (below) is
+    // independent of .notdef: run whenever the emoji face is available.
     // ------------------------------------------------------------------
-    if (result.notdef_count > 0 && emoji_available_ && emoji_strike_px_ > 0) {
+    if (emoji_available_ && emoji_strike_px_ > 0) {
         FT_Face eface = reinterpret_cast<FT_Face>(faces_[kFaceEmoji].ft_face);
         uint32_t esz26 = (uint32_t)emoji_strike_px_ * 64;
         uint64_t ehkey = ((uint64_t)kFaceEmoji << 48) ^ esz26;
@@ -351,7 +373,9 @@ const ShapedText& TextShaper::shape(const std::string& utf8, float size_px,
         else { ehb = hb_ft_font_create(eface, nullptr); hb_fonts_[ehkey] = ehb; }
         if (ehb) {
             hb_buffer_t* ebuf = hb_buffer_create();
-            hb_buffer_add_utf32(ebuf, vis.data(), (int)vis.size(), 0, -1);
+            // MG-085 (S98): same phantom-NUL law as the primary buffer —
+            // shape exactly src.size() visual units.
+            hb_buffer_add_utf32(ebuf, vis.data(), (int)src.size(), 0, -1);
             hb_buffer_guess_segment_properties(ebuf);
             hb_shape(ehb, ebuf, nullptr, 0);
             unsigned en = 0;
@@ -367,8 +391,24 @@ const ShapedText& TextShaper::shape(const std::string& utf8, float size_px,
                 }
             }
             hb_buffer_destroy(ebuf);
+            // MG-083 (S98) AOSP emoji-presentation law: a codepoint with
+            // Default_Emoji_Presentation renders from the emoji face EVEN
+            // when the primary face maps it to a (bogus/blank) glyph —
+            // fonts.xml puts NotoColorEmoji in the chain ahead of the
+            // sans fallback for these. Without this arm DejaVu's stray
+            // U+1F600 mapping swallowed the emoji slot (regression caught
+            // by the s98 battery T11/T12).
+            auto is_emoji_presentation = [](uint32_t cp) -> bool {
+                return (cp >= 0x1F000 && cp <= 0x1FAFF) ||
+                       (cp >= 0x2600 && cp <= 0x27BF) ||
+                       (cp >= 0x1F1E6 && cp <= 0x1F1FF) ||
+                       cp == 0xFE0F || cp == 0x200D;
+            };
             for (auto& g : result.glyphs) {
-                if (g.glyph_id == 0) {
+                bool claim = g.glyph_id == 0 ||
+                    (g.cluster < vis.size() &&
+                     is_emoji_presentation(vis[g.cluster]));
+                if (claim) {
                     auto fit = cluster_to_emoji_gid.find(g.cluster);
                     if (fit != cluster_to_emoji_gid.end()) {
                         g.use_emoji = true;
@@ -376,10 +416,14 @@ const ShapedText& TextShaper::shape(const std::string& utf8, float size_px,
                         g.emoji_scale = scale;
                         auto ait = cluster_to_emoji_adv.find(g.cluster);
                         if (ait != cluster_to_emoji_adv.end()) {
-                            result.width += ait->second - g.x_advance;
+                            if (g.glyph_id == 0) {
+                                result.width += ait->second - g.x_advance;
+                            } else {
+                                result.width += ait->second - g.x_advance;
+                            }
                             g.x_advance = ait->second;
                         }
-                        result.notdef_count--;
+                        if (g.glyph_id == 0) result.notdef_count--;
                     }
                 }
             }
@@ -888,7 +932,8 @@ namespace fonts {
 TextLayout layout_text(const std::string& utf8, float size_px, bool bold,
                        float max_width_px, int max_lines, int face_idx,
                        float spacing_mult, float spacing_add_px,
-                       bool include_pad, bool elegant_height) {
+                       bool include_pad, bool elegant_height,
+                       int ellipsize) {
     TextLayout out;
     auto& sh = TextShaper::instance();
     // G36/G47: Android Paint.FontMetrics + StaticLayout line-box law.
@@ -918,7 +963,24 @@ TextLayout layout_text(const std::string& utf8, float size_px, bool bold,
 
     size_t i = 0;
     bool capped = false;
-    while (i <= utf8.size() && !capped) {
+    bool dropped = false;  // MG-073: text exists beyond the drawn block
+    // MG-073 (S98): AOSP singleLine / maxLines=1 law (TextView.java
+    // setSingleLine → mSingleLine, Layout: NO word wrap on a single-line
+    // TextView — the text stays ONE line; overflow is handled by the
+    // ellipsize policy (or clipped). Word-wrapping a max_lines==1 block
+    // silently DROPPED every word past the first overflow — the T6
+    // regression this fixes.
+    if (max_lines == 1) {
+        size_t j = utf8.find('\n', i);
+        std::string seg = (j == std::string::npos) ? utf8.substr(i)
+                                                   : utf8.substr(i, j - i);
+        // Trailing spaces trimmed for measurement (same wrap law).
+        while (!seg.empty() && seg.back() == ' ') seg.pop_back();
+        out.lines.push_back({seg, line_width(seg)});
+        if (j != std::string::npos) dropped = true;
+        capped = j != std::string::npos;
+    }
+    while (i <= utf8.size() && !capped && max_lines != 1) {
         // Find next explicit break.
         size_t j = utf8.find('\n', i);
         std::string seg = (j == std::string::npos) ? utf8.substr(i)
@@ -932,7 +994,8 @@ TextLayout layout_text(const std::string& utf8, float size_px, bool bold,
                 line_width(probe) > max_width_px) {
                 out.lines.push_back({line, line_width(line)});
                 if (max_lines > 0 && (int)out.lines.size() >= max_lines) {
-                    line.clear(); word.clear(); capped = true; return;
+                    line.clear(); word.clear(); capped = true; dropped = true;
+                    return;
                 }
                 line = word;
             } else {
@@ -948,9 +1011,84 @@ TextLayout layout_text(const std::string& utf8, float size_px, bool bold,
         if (capped) break;
         flush_word();
         out.lines.push_back({line, line_width(line)});
-        if (max_lines > 0 && (int)out.lines.size() >= max_lines) break;
+        if (max_lines > 0 && (int)out.lines.size() >= max_lines) {
+            // MG-073: max_lines hit at a segment boundary. Text is dropped
+            // only when more segments (explicit '\n' parts) remain.
+            if (j != std::string::npos) dropped = true;
+            break;
+        }
         if (j == std::string::npos) break;
         i = j + 1;
+    }
+    // ------------------------------------------------------------------
+    // MG-073 (S98): AOSP TextView ellipsize law — TextUtils.ellipsize
+    // (TextUtils.java L1600+, TextView L1400+ draw path). When the layout
+    // DROPS text (max_lines cap or remaining segments) or the LAST drawn
+    // line is wider than the content box, the over-wide last line is
+    // truncated with the U+2026 ellipsis so the drawn string fits INSIDE
+    // the available width:
+    //   END    (3): [prefix…]   — keep the head (the TextView default UI)
+    //   START  (1): […suffix]   — keep the tail
+    //   MIDDLE (2): [pre…post]  — keep both halves
+    // The kept span shrinks one UTF-8 code point at a time until
+    // measure(kept + ellipsis) fits (AOSP binary-searches the same
+    // invariant against mLayout). MARQUEE (4) is NOT a static truncation —
+    // it needs the animator; recorded as the honest future family.
+    // ------------------------------------------------------------------
+    if (ellipsize >= 1 && ellipsize <= 3 && max_width_px > 0 &&
+        !out.lines.empty()) {
+        const std::string ELL = "\xE2\x80\xA6";  // U+2026 UTF-8
+        float ell_w = line_width(ELL);
+        std::string last = out.lines.back().text;
+        float last_w = out.lines.back().width;
+        bool over = dropped || last_w > max_width_px;
+        if (over && ell_w <= max_width_px) {
+            auto drop_head_cp = [](std::string& s) {
+                size_t k = 1;
+                while (k < s.size() && (s[k] & 0xC0) == 0x80) ++k;
+                s.erase(0, k);
+            };
+            auto drop_tail_cp = [](std::string& s) {
+                while (!s.empty() && (s.back() & 0xC0) == 0x80) s.pop_back();
+                if (!s.empty()) s.pop_back();
+            };
+            if (ellipsize == 3) {          // END: keep head
+                while (!last.empty() &&
+                       line_width(last + ELL) > max_width_px)
+                    drop_tail_cp(last);
+                out.lines.back().text = last + ELL;
+            } else if (ellipsize == 1) {   // START: keep tail
+                while (!last.empty() &&
+                       line_width(ELL + last) > max_width_px)
+                    drop_head_cp(last);
+                out.lines.back().text = ELL + last;
+            } else {                       // MIDDLE: keep both halves
+                // AOSP TextUtils.ellipsize MIDDLE law: the result keeps a
+                // head AND a tail slice around the ellipsis. Start from a
+                // codepoint-mid split (NOT head=whole), then shrink the
+                // WIDER side until the composite fits.
+                std::string head = last, tail;
+                size_t mid = 0;
+                while (mid < head.size()) {
+                    size_t k = 1;
+                    while (mid + k < head.size() && (head[mid + k] & 0xC0) == 0x80) ++k;
+                    mid += k;
+                    if (mid >= head.size() / 2) { ++mid; break; }
+                }
+                if (mid < head.size()) {
+                    tail = head.substr(mid);
+                    head.resize(mid);
+                    while (!tail.empty() && (tail.back() & 0xC0) == 0x80) tail.pop_back();
+                }
+                while (line_width(head + ELL + tail) > max_width_px &&
+                       (!head.empty() || !tail.empty())) {
+                    if (head.size() >= tail.size()) drop_tail_cp(head);
+                    else drop_head_cp(tail);
+                }
+                out.lines.back().text = head + ELL + tail;
+            }
+            out.lines.back().width = line_width(out.lines.back().text);
+        }
     }
     for (const auto& l : out.lines)
         out.max_line_width = std::max(out.max_line_width, l.width);

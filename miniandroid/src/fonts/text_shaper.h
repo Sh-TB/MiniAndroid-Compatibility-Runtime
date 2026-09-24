@@ -279,12 +279,17 @@ private:
 // geometry and painted pixels always agree. face_idx as in shape().
 // spacing_mult/add/include_pad follow the AOSP TextView/StaticLayout law
 // (defaults = the TextView defaults: multiplier 1, extra 0, font padding ON).
+// ellipsize: AOSP TextUtils.TruncateAt ordinal (0 NONE, 1 START, 2 MIDDLE,
+// 3 END, 4 MARQUEE). NONE keeps the legacy over-wrap behavior; START/
+// MIDDLE/END truncate the over-wide LAST drawn line with the U+2026
+// ellipsis glyph per TextUtils.ellipsize (MG-073, S98).
 // ---------------------------------------------------------------------------
 TextLayout layout_text(const std::string& utf8, float size_px, bool bold,
                        float max_width_px, int max_lines = 0,
                        int face_idx = FACE_SYSTEM,
                        float spacing_mult = 1.0f, float spacing_add_px = 0.0f,
-                       bool include_pad = true, bool elegant_height = false);
+                       bool include_pad = true, bool elegant_height = false,
+                       int ellipsize = 0);
 
 }  // namespace fonts
 }  // namespace miniandroid
