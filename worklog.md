@@ -3456,3 +3456,22 @@ Stage Summary:
 - The 22-VERIFIED/S95F+S96 wave (83b2bf42) remains intact and now rides on a fully green validator set.
 - Two real verifier laws fixed with real-APK evidence (NEAREST sampler mirror, §10 id-resolution) — s92 false-positive battery restored to OK after fixture loss; both fixes feed S97 as closed micro-gaps.
 - Highest-value next wave per measured queue: S97 micro-gap sweep registry (all MG tickets triaged vs 99-stage battery + capability matrix), then NET-001.
+
+---
+Task ID: S97-BATCH1
+Agent: Super Z (main)
+Task: S97 — micro-gap sweep, batch 1: full triage of MG-001..MG-310 + first evidence-backed closures
+
+Work Log:
+- REGISTRY: scripts/s97_build_micro_registry.py -> docs/MICRO_GAP_REGISTRY.json (311 tickets: 310 briefed + MG-311 discovered in-session) + docs/MICRO_GAP_SWEEP.md. Every ticket: DOMAIN, API, authoritative AOSP UPSTREAM_SOURCE, STATUS from the strict vocab, TEST (named battery stage where one exists), FANOUT ("not_measured" unless measured), NOTES. Honesty rules embedded in the schema: BEFORE/AFTER/EVIDENCE/COMMIT only where actually measured this session.
+- TRIAGE RESULT: 131 TESTED (fenced by named 99-stage battery stages: resource-config 48, input 45, G11 37, core 42, lifecycle 25, LinearLayout 24, G10 23, G08 17, hostile 24+18, M3 style 17, encoded 18, mutf8 14, density matrix, Paint&Canvas, F-020..F-074 pixel goldens, GATE H), 99 PARTIAL (implemented, unfenced — text/layout tails), 60 PENDING (network NET-001, web WEB-001+litehtml decision doc, video reuse matrix, audio APK-level AUDIO-001 — reuse-first law respected, no speculative implementation), 18 OBSERVED (real-APK GIF/game evidence: GIF disposal classes, state-list interactions, E5 titles), 3 CLOSED (root-caused + fixed + tested this session).
+- CLOSED THIS SESSION (all with real aapt2-APK reproduction, before/after recorded):
+  * MG-203 scaling filter: runtime law = nearest-neighbour sampling (software_renderer.cpp:450, S68); verifier template scaling mirrored it (visual_probe.py BILINEAR->NEAREST, 4 sites). Control case good: FRAME_CAPTURED -> INTERACTION_VERIFIED; 7/7 oracle cases PASS. Fan-out = all bitmap-rendering titles (verification domain).
+  * MG-139/MG-311 §10 id-resolution: frames-manifest interactions record OBJECT ids (target_view_id=12) while the gate resolved only android_view_id -> target proof silently skipped for every F-NEW-199 interaction; fixed: dual-namespace resolution + unresolved dispatch = INPUT_TARGET_UNVERIFIED (interaction_probe.py). Doctored blind_tap_no_target: NOT REJECTED -> REJECTED. Fan-out = all scheduled-tap verification runs.
+  * casea fixture source repaired (referenced nonexistent R.id.counter/increment after container-reset loss; semantics preserved: covered-button tap must NOT count).
+- BATTERY: canonical 99-stage battery re-run ALL PASS; s92 §25/§40 false-positive battery restored BROKEN -> OK (7/7 oracle + 3/3 selftest rejects incl. good accepted). Both batteries green on the same tree.
+- Gates at close: hygiene PASS, control system 160/160, canonical evidence ALL PASS, s96 audit PASS, secret guard PASS.
+
+Stage Summary:
+- S97 batch 1 delivers the complete honest problem state for 311 micro-gaps with machine-checkable statuses + named tests, unblocking fan-out batches; the two verifier-law closures eliminate scale-domain and §10 blind-tap false positives corpus-wide.
+- The measured queue for batch 2 (fan-out first): MG-051 font fallback, MG-080..085 Unicode/RTL/emoji, MG-073 ellipsize, MG-115 requestLayout propagation, MG-123 scroll offset, MG-124..129 transform hit-testing, MG-171..183 SharedPreferences machine proof, MG-248 real HTTP GET (NET-001), MG-214..216 GIF disposal machine fence, MG-047/048 adaptive icon verification.
