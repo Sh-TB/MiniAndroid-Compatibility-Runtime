@@ -1,0 +1,43 @@
+{
+ "suites": {
+  "image_truth_proof": {
+   "exit": 0
+  },
+  "animation_truth_proof": {
+   "exit": 0
+  },
+  "font_truth_proof": {
+   "exit": 0
+  }
+ },
+ "tamper": [
+  {
+   "name": "tamper_wipe_region",
+   "rejected": true
+  },
+  {
+   "name": "tamper_move_asset",
+   "rejected": true
+  },
+  {
+   "name": "tamper_recolor_asset",
+   "rejected": true
+  },
+  {
+   "name": "tamper_freeze_animation",
+   "rejected": true
+  },
+  {
+   "name": "tamper_shrink_asset",
+   "rejected": true
+  }
+ ],
+ "recovery": {
+  "write_phase": true,
+  "resume_phase": true
+ },
+ "blur": {
+  "ok": true,
+  "verdict": "OPAQUE_REPLACEMENT"
+ }
+}
