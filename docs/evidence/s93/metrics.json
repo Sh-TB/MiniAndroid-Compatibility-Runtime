@@ -1,0 +1,36 @@
+{
+ "schema": "s93.metrics.v1",
+ "titles": 21,
+ "title_verdicts": {
+  "SEMANTIC_FAIL": 8,
+  "SEMANTIC_PASS": 10,
+  "SEMANTIC_PARTIAL": 3
+ },
+ "images": {
+  "discovered": 29,
+  "geometrically_verified": 11,
+  "partial": 6,
+  "decoded": 10,
+  "failed": 9,
+  "content_verified": 4,
+  "visually_verified": 4
+ },
+ "s92_pilot_crosscheck": {
+  "bobball": "VISUALLY_VERIFIED",
+  "bouncy": "VISUALLY_PARTIAL",
+  "chessclock": "FAILED",
+  "dodge": "VISUALLY_PARTIAL",
+  "fishrings": "INTERACTION_VERIFIED",
+  "g2048": "INTERACTION_VERIFIED",
+  "gmdice": "VISUALLY_PARTIAL",
+  "hotdeath": "FRAME_CAPTURED",
+  "mini-tetris": "VISUALLY_PARTIAL",
+  "minicraft": "VISUALLY_PARTIAL",
+  "nounours": "VISUALLY_PARTIAL",
+  "snake-deluxe": "INTERACTION_VERIFIED",
+  "tictactoe": "FAILED",
+  "tictactoedeluxe": "INTERACTION_VERIFIED",
+  "unote": "VISUALLY_VERIFIED",
+  "urlchecker": "VISUALLY_PARTIAL"
+ }
+}

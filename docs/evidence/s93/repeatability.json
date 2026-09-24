@@ -1,0 +1,18 @@
+{
+ "fishrings": {
+  "levels": [
+   "SEMANTIC_PARTIAL",
+   "SEMANTIC_PARTIAL",
+   "SEMANTIC_PARTIAL"
+  ],
+  "repeatable": true
+ },
+ "unote": {
+  "levels": [
+   "SEMANTIC_PASS",
+   "SEMANTIC_PASS",
+   "SEMANTIC_PASS"
+  ],
+  "repeatable": true
+ }
+}

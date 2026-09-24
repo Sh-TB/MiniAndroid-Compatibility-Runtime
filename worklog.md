@@ -3297,3 +3297,25 @@ Work Log:
 
 Stage Summary:
 - S92 state preserved (nothing restarted, nothing weakened). Push protocol satisfied. S93 implementation beginning from the deployed S92 verifier.
+
+---
+Task ID: S93-CORE
+Agent: Super Z (main)
+Task: S93 GRAPHICS TRUTH CAMPAIGN — semantic truth layer, adversarial battery, real-corpus execution, dashboard
+
+Work Log:
+- Implemented semantic truth modules on top of the S92 verifier (no restart, no weakening):
+  * semantic_image.py (L-S93-IMG-1..6): multi-metric vector, solid/two-color placeholder rejection, shape truth (connected components), ink-window spatial layout, alpha-leak law, ink-bbox geometry with semantic tolerance classes, edge-aligned clipping law with visible-part NCC gate, MISSING vs WRONG_POSITION disambiguation, region partition. 11/11 fixtures.
+  * semantic_animation.py (L-S93-ANI-1..5): dHash+color-hash frame identity, structural-continuity noise law (two signals), object persistence + centroid tracking, STATIC_OBJECT_MOVING_BG / OBJECT_LOST, teleport + monotonic-direction contracts, placeholder/noise/flash/frozen/repeated detections, REPEATED_FRAME caps ladder. 8/8 fixtures.
+  * semantic_font.py (L-S93-FNT-1..5): adaptive ink threshold, projection segmentation + frame-like filter, ink-height-matched per-glyph reference NCC, tofu law, touching-glyph path via ink-width invariant + ink IoU + column-profile correlation, BROKEN_FONT, text MISSING/CLIPPED laws. 10/10 fixtures.
+  * semantic_verdict.py: 15-state loaded chain (deepest honest state), 28-category failure taxonomy with evidence citations, 3-level aggregate + S92 crosscheck.
+- Adversarial battery (tools/verify/adversarial_s93.py): 29 fixtures + blur + 6-way weak-metric coverage + 5 tamper rejections + two-process recovery round-trip = ALL PASS.
+- Source research (live fetches): libGDX AssetManager ref-counted dependency map; Roborazzi record/verify separation; AOSP BitmapFactory null/inJustDecodeBounds contract; ViewRootImpl/SurfaceView/Choreographer/WebView postVisualStateCallback boundaries documented in docs/S93_GRAPHICS_TRUTH.md §2.
+- Real corpus: pilot 16 titles re-executed fresh through the runtime + semantic layer; seeded random sample (seed 20260924, registry SHA recorded) 5/6 executed; honest NOT_FETCHABLE for 1 f-droid 404. Aggregates: images discovered 29 / geometrically_verified 11 / content_verified 4 / visually_verified 4 / partial 6 / failed 9 / decoded-only 10; animation no_contract 3 / decoded_or_rendered 6 / failed 2; SEMANTIC_PASS 10 / PARTIAL 3 / FAIL 6 (all with named root causes).
+- Honesty tuning with measured thresholds: page-level background (region borders lie when content fills region), record-quality-class provenance selection, frame-like segment filter, adaptive ink floor (0.004; digit-in-cell 0.0076 measured), splash-tolerant rendered law, no-tap STATIC_WINDOW => NOT_APPLICABLE, weak whole-frame centroid => UNKNOWN, clean cases emit no failure categories.
+- Regression: run_test_battery.sh ALL PASS (94 stages). 3-run repeatability: fishrings PARTIAL x3, unote PASS x3 = REPEATABLE.
+- Docs: docs/S93_GRAPHICS_TRUTH.md (dashboard + TABLE OF TRUTH + research + limits). run/s93 artifacts copied to docs/evidence/s93/ for tracking.
+
+Stage Summary:
+- S93 goal met: the verifier now distinguishes loaded / decoded / drawn / visible / correct-content / correct-place / interactable and deliberately rejects unreadable fonts, wrong images, placeholders, two-color fakes, wrongly positioned/scaled/clipped assets, invisible-button analogues, frozen/wrong/noisy animations — while accepting genuine correct renders.
+- No S92 verdict was weakened; every title carries both machine verdicts. FULLY_VERIFIED remains unclaimed (hard contract).

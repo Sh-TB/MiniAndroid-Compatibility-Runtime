@@ -1,0 +1,41 @@
+{
+ "bobball": [
+  "WRONG_CLIP",
+  "WRONG_CLIP",
+  "WRONG_CLIP",
+  "WRONG_CLIP"
+ ],
+ "bouncy": [
+  "WRONG_COLOR",
+  "WRONG_COLOR",
+  "WRONG_COLOR",
+  "WRONG_CLIP",
+  "WRONG_CLIP",
+  "WRONG_CLIP"
+ ],
+ "dodge": [
+  "WRONG_CLIP",
+  "WRONG_CLIP",
+  "WRONG_CLIP"
+ ],
+ "hotdeath": [
+  "WRONG_COLOR"
+ ],
+ "mini-tetris": [
+  "ANIMATION_FROZEN"
+ ],
+ "minicraft": [
+  "ANIMATION_FROZEN"
+ ],
+ "random_simplestopwatch": [
+  "WRONG_COLOR",
+  "WRONG_COLOR",
+  "UNREADABLE_TEXT"
+ ],
+ "urlchecker": [
+  "WRONG_COLOR",
+  "WRONG_COLOR",
+  "WRONG_COLOR",
+  "WRONG_CLIP"
+ ]
+}
