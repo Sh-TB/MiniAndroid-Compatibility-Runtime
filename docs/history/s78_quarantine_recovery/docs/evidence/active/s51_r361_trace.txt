@@ -1,0 +1,30 @@
+[R361-MW] caller=Lh/r;.d arr=obj#908 len=2 idx=0 val=0x80808080808080ff
+[R361-MW] caller=Lh/r;.d arr=obj#1073 len=2 idx=0 val=0xff80808080808080
+[R361-HC] caller=Lh/r;.c recv=Landroidx/compose/runtime/ParcelableSnapshotMutableState; obj=893 type=7
+[R361-MW] caller=Lh/r;.c arr=obj#1073 len=2 idx=0 val=0xff80806380808080
+[R361-MW] caller=Lh/r;.c arr=obj#1073 len=2 idx=1 val=0x8080806380808080
+[R361-MW] caller=Lh/r;.d arr=obj#1095 len=2 idx=0 val=0xff80808080808080
+[R361-HC] caller=Lh/r;.c recv=Landroidx/compose/runtime/ParcelableSnapshotMutableState; obj=893 type=7
+[R361-MW] caller=Lh/r;.c arr=obj#1095 len=2 idx=0 val=0xff80806380808080
+[R361-MW] caller=Lh/r;.c arr=obj#1095 len=2 idx=1 val=0x8080806380808080
+[R361-MW] caller=Lh/r;.d arr=obj#1745 len=2 idx=0 val=0xff80808080808080
+[R361-HC] caller=Lh/r;.c recv=LF/F; obj=903 type=7
+[R361-MW] caller=Lh/r;.c arr=obj#1745 len=2 idx=0 val=0xff80808080802580
+[R361-MW] caller=Lh/r;.c arr=obj#1745 len=2 idx=1 val=0x8080808080802580
+[R361-HC] caller=Lh/r;.c recv=Landroidx/compose/runtime/ParcelableSnapshotMutableState; obj=1739 type=7
+[R361-MW] caller=Lh/r;.c arr=obj#1745 len=2 idx=0 val=0xff03808080802580
+[R361-MW] caller=Lh/r;.c arr=obj#1745 len=2 idx=1 val=0x8003808080802580
+[R361-HC] caller=Lh/r;.c recv=Landroidx/compose/runtime/ParcelableSnapshotMutableState; obj=1739 type=7
+[R361-MW] caller=Lh/r;.d arr=obj#1926 len=2 idx=0 val=0xff80808080808080
+[R361-HC] caller=Lh/r;.c recv=Landroidx/compose/runtime/ParcelableSnapshotMutableState; obj=994 type=7
+[R361-MW] caller=Lh/r;.c arr=obj#1926 len=2 idx=0 val=0xff80808080428080
+[R361-MW] caller=Lh/r;.c arr=obj#1926 len=2 idx=1 val=0x8080808080428080
+[R361-HC] caller=Lh/r;.c recv=Landroidx/compose/runtime/ParcelableSnapshotMutableState; obj=997 type=7
+[R361-MW] caller=Lh/r;.c arr=obj#1926 len=2 idx=0 val=0xff80808080428076
+[R361-MW] caller=Lh/r;.c arr=obj#1926 len=2 idx=1 val=0x8080808080428076
+[R361-MW] caller=Lh/r;.d arr=obj#2010 len=2 idx=0 val=0xff80808080808080
+[R361-HC] caller=Lh/r;.c recv=Landroidx/compose/runtime/ParcelableSnapshotMutableState; obj=110 type=7
+[R361-MW] caller=Lh/r;.c arr=obj#2010 len=2 idx=0 val=0xff80808080558080
+[R361-MW] caller=Lh/r;.c arr=obj#2010 len=2 idx=1 val=0x8080808080558080
+[R361-MW] caller=Lh/r;.d arr=obj#2247 len=2 idx=0 val=0xff80808080808080
+[R361-HC] caller=Lh/r;.c recv=Landroidx/compose/runtime/ParcelableSnapshotMutableState; obj=2026 type=7

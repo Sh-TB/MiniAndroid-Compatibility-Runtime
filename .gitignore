@@ -182,3 +182,6 @@ upstream/corpus/eu.veldsoft.tri.peaks/src/
 miniandroid/build-asan/
 upstream/dodge-src/
 run/s94/source_mining/clones/
+
+# S-HYGIENE: on-disk-only rescue area (never committed)
+external_backup/

@@ -1,0 +1,17 @@
+=== S-HYGIENE BACKUP SAFETY RECORD (pre-cleanup) ===
+2026-09-24T21:08:34Z
+HEAD: b75ee39aac15267e080ac168c7dfda84c0038d0b
+branch: main
+tree: 81b033a0b43c470e8078ac3f8f319c8eb7a2900a
+origin/main: 394f5037fa8b1d229ab7292a9c0e76b8148e5750
+registry: HEAD:registry/registry.json
+HEAD:registry/canonical/registry.json
+root_registry: b881f81c1ec32cec1d2fc626cb617540411675b3
+ticket_registry: 829e935b571061622d4a396cffc9a8cdc12ef47c
+sha256sums: HEAD:registry/SHA256SUMS
+n/a
+.git before: 621M
+canonical corpus registry: 
+  docs/evidence/canonical/registry.json = f158547b319ae9f6bca6bd4a4b02540a9d554fea
+canonical SHA256SUMS: 5498af0bc0dd9c81020c764f14634c54c65f1961
+achievements: 48e8d6375e546110c3efb8b7d2477cb281baf7a2

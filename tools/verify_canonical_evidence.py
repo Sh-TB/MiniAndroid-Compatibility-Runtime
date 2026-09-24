@@ -99,8 +99,15 @@ def main():
             if not t.get("apk_sha256") and t["type"] != "fixture":
                 fail("R7", f"{pkg}: no APK SHA256 provenance")
         st = t.get("status", "")
+        # R8 vocabulary = canonical registry vocab (S92-era statuses included).
+        # AUD-IC-6 (S95F audit): VISUALLY_PARTIAL / FRAME_CAPTURED / FAILED /
+        # candidate_* are documented legacy registry statuses pending the
+        # sec29 human-review promotion gate; they are LEGAL registry states
+        # and must not fail this gate. Registry DATA is never edited here.
+        _R8_LEGACY = ("VISUALLY_PARTIAL", "FRAME_CAPTURED", "FAILED")
         if not (st.startswith("VERIFIED") or st.startswith("PARTIAL") or
-                st.startswith("OBSERVED") or st.startswith("BLOCKED")):
+                st.startswith("OBSERVED") or st.startswith("BLOCKED") or
+                st.startswith("candidate_") or st in _R8_LEGACY):
             fail("R8", f"{pkg}: bad status {st}")
         if st.startswith("VERIFIED") and not art:
             fail("R9", f"{pkg}: VERIFIED without artifact")

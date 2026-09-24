@@ -1,0 +1,1342 @@
+{
+ "classes": {
+  "CANONICAL_DOC": {
+   "bytes": 4351010,
+   "count": 173,
+   "sample_paths": [
+    ".agent/backlog.md",
+    ".agent/decisions.md",
+    ".agent/experiments.md",
+    ".agent/hypotheses.md",
+    ".agent/master_campaign_state.md",
+    ".agent/mission.md",
+    ".agent/state.md",
+    ".github/ISSUE_TEMPLATE/title-compatibility.yml",
+    "docs/ACHIEVEMENTS.md",
+    "docs/CAMPAIGN_FINAL_REPORT.md",
+    "docs/CAMPAIGN_FINAL_REPORT_REUSE_FIRST_PROGRESS.md",
+    "docs/EXECUTED_GIFS.md",
+    "docs/EXECUTION_ACHIEVEMENTS.md",
+    "docs/EXP071_CORE_EXECUTION_BASELINE.md",
+    "docs/EXP071_FINAL_REPORT.md",
+    "docs/EXP071_GIT_HISTORY.md",
+    "docs/EXP072_REPORT.md",
+    "docs/EXP073_REPORT.md",
+    "docs/EXP074_PHASE0_RECONCILIATION.md",
+    "docs/EXP074_REPORT.md",
+    "docs/EXP075_REPORT.md",
+    "docs/EXP077_REPORT.md",
+    "docs/EXP077_RESULTS.json",
+    "docs/FOUNDATION_RUNTIME_MAP.md",
+    "docs/GRAPHICS_DO_NOT_REINVENT.md",
+    "docs/GRAPHICS_SOURCE_LIBRARY_VALIDATION.md",
+    "docs/GRAPHICS_SOURCE_REGISTRY.json",
+    "docs/GRAPHICS_SOURCE_REGISTRY.md",
+    "docs/GRAPHICS_SOURCE_ROADMAP.md",
+    "docs/INDEX.json",
+    "docs/INDEX.md",
+    "docs/KNOWLEDGE_INDEX.md",
+    "docs/MASTER_CAMPAIGN4_FINAL_REPORT.md",
+    "docs/MINIANDROID_0_TO_100.md",
+    "docs/MINIANDROID_CAPABILITY_MATRIX.md",
+    "docs/MINIANDROID_CONTRIBUTING.md",
+    "docs/MINIANDROID_MASTER_QUEUE.md",
+    "docs/MINIANDROID_RISK_REGISTER.md",
+    "docs/MINIANDROID_TICKET_GUIDE.md",
+    "docs/ROADMAP.md"
+   ]
+  },
+  "CANONICAL_EVIDENCE": {
+   "bytes": 57147441,
+   "count": 2009,
+   "sample_paths": [
+    "docs/achievements/APPS_EXECUTED.md",
+    "docs/achievements/ASSET_MANIFEST.json",
+    "docs/achievements/GAMES_WITH_GIFS.md",
+    "docs/achievements/INDEX.md",
+    "docs/agent-index/API_COVERAGE.json",
+    "docs/agent-index/BUILD_GRAPH.json",
+    "docs/agent-index/HOTSPOTS.json",
+    "docs/agent-index/REPO_MAP.md",
+    "docs/agent-index/ROOT_GRAPH.json",
+    "docs/agent-index/SYMBOL_INDEX.json",
+    "docs/agent-index/TEST_GRAPH.json",
+    "docs/architecture/dalvik_architecture_notes.md",
+    "docs/architecture/miniandroid_vs_dalvik.md",
+    "docs/audit/APP_MATRIX.md",
+    "docs/audit/BLAST_RADIUS.md",
+    "docs/audit/CRASH_HANG_ANR_REGISTRY.md",
+    "docs/audit/EVIDENCE_LINEAGE.md",
+    "docs/audit/GRAPHICS_FOUNDATION_AUDIT.json",
+    "docs/audit/GRAPHICS_GAP_MATRIX.json",
+    "docs/audit/ITEM75_CLOSURE.md",
+    "docs/audit/MASTER_CHECKLIST.md",
+    "docs/audit/PROGRESS_REPORT.md",
+    "docs/audit/RUNTIME_FAILURE_REGISTRY.md",
+    "docs/audit/S87_AUDIT_REPORT.md",
+    "docs/audit/S87_INVENTORY.json",
+    "docs/audit/SANDBOX_ERROR_REPORT.md",
+    "docs/audit/SESSION_EVIDENCE_CHAIN.md",
+    "docs/audit/github_evidence_check.json",
+    "docs/audit/item75_closure.json",
+    "docs/audit/master_audit.json",
+    "docs/audit/sandbox_errors.json",
+    "docs/corpus/SEARCH_LEDGER.md",
+    "docs/corpus/SPOTLIGHT_COVERAGE.md",
+    "docs/corpus/UPSTREAM_INVENTORY.md",
+    "docs/corpus/s81/corpus_index.json",
+    "docs/corpus/s81/corpus_summary.csv",
+    "docs/corpus/s82/COMPATIBILITY_INDEX.md",
+    "docs/corpus/s82/REGISTRY_FREEZE.md",
+    "docs/corpus/s82/compatibility_index.json",
+    "docs/corpus/s82/graphics_families.json"
+   ]
+  },
+  "CANONICAL_FIXTURE": {
+   "bytes": 609263,
+   "count": 166,
+   "sample_paths": [
+    "docs/assets/DERIVED_IMAGE_PROVENANCE.json",
+    "docs/assets/hello_color_readme_540.png",
+    "docs/assets/miniandroid-silkie-mascot.png",
+    "docs/evidence/GOLDEN01_EXTERNAL_HELLO_GATE_RECORD.md",
+    "docs/evidence/GOLDEN02_EXTERNAL_INTERACTION_RECORD.md",
+    "docs/evidence/GOLDEN03_RESOURCE_INFRASTRUCTURE_RECORD.md",
+    "docs/evidence/GOLDEN_HELLOWORLD.md",
+    "docs/evidence/golden03/chain_a_theme.txt",
+    "docs/evidence/golden03/chain_b_string.txt",
+    "docs/evidence/golden03/chain_c_style.txt",
+    "docs/evidence/golden03/chain_pixel_checks.json",
+    "docs/evidence/golden03/chains_summary.json",
+    "docs/evidence/helloworld_golden/golden_helloworld.png",
+    "docs/history/golden-exp004/expected_object_model.json",
+    "docs/history/golden-exp004/expected_screenshot_info.json",
+    "docs/history/golden-exp004/expected_view_tree.json",
+    "fixtures/s81_visual_probe/AndroidManifest.xml",
+    "fixtures/s81_visual_probe/res/drawable/pbg.xml",
+    "fixtures/s81_visual_probe/res/drawable/picon.png",
+    "fixtures/s81_visual_probe/res/drawable/picon2.png",
+    "fixtures/s81_visual_probe/res/layout/probe.xml",
+    "fixtures/s81_visual_probe/res/values/colors.xml",
+    "fixtures/s81_visual_probe/src/com/s81probe/MainActivity.java",
+    "fixtures/s82gfx/l0_solid/AndroidManifest.xml",
+    "fixtures/s82gfx/l0_solid/src/org/miniandroid/gfx/l0_solid/MainActivity.java",
+    "fixtures/s82gfx/l1_quadrant/AndroidManifest.xml",
+    "fixtures/s82gfx/l1_quadrant/res/drawable/quadrant.png",
+    "fixtures/s82gfx/l1_quadrant/src/org/miniandroid/gfx/l1_quadrant/MainActivity.java",
+    "fixtures/s82gfx/l2_colortypes/AndroidManifest.xml",
+    "fixtures/s82gfx/l2_colortypes/res/drawable/ga.png",
+    "fixtures/s82gfx/l2_colortypes/res/drawable/gray.png",
+    "fixtures/s82gfx/l2_colortypes/res/drawable/pal.png",
+    "fixtures/s82gfx/l2_colortypes/res/drawable/rgb.png",
+    "fixtures/s82gfx/l2_colortypes/src/org/miniandroid/gfx/l2_colortypes/MainActivity.java",
+    "fixtures/s82gfx/l3_density/AndroidManifest.xml",
+    "fixtures/s82gfx/l3_density/res/drawable-hdpi/marker.png",
+    "fixtures/s82gfx/l3_density/res/drawable-mdpi/marker.png",
+    "fixtures/s82gfx/l3_density/res/drawable-xhdpi/marker.png",
+    "fixtures/s82gfx/l3_density/res/drawable-xxhdpi/marker.png",
+    "fixtures/s82gfx/l3_density/res/drawable-xxxhdpi/marker.png"
+   ]
+  },
+  "CANONICAL_SOURCE": {
+   "bytes": 12707576,
+   "count": 1070,
+   "sample_paths": [
+    ".gitignore",
+    "CONSTITUTION_V2.md",
+    "LICENSE",
+    "README.md",
+    "docs/README.md",
+    "docs/compatibility/README.md",
+    "docs/decisions/README.md",
+    "docs/evidence/s52_asc/README.md",
+    "docs/evidence/s91_fish_reproof/README.md",
+    "docs/evidence/s91_sandbox/README.md",
+    "docs/history/experiments/EXP-002/README.md",
+    "docs/history/experiments/EXP-014/README.md",
+    "docs/history/experiments/EXP-017/README.md",
+    "docs/history/experiments/EXP-018/README.md",
+    "docs/history/experiments/EXP-019/README.md",
+    "docs/history/experiments/EXP-020/README.md",
+    "docs/history/experiments/EXP-021/README.md",
+    "docs/history/experiments/EXP-022/README.md",
+    "docs/history/experiments/EXP-023/README.md",
+    "docs/history/experiments/EXP-024/README.md",
+    "docs/history/experiments/EXP-025/README.md",
+    "docs/history/experiments/EXP-026/README.md",
+    "docs/history/experiments/EXP-030/README.md",
+    "docs/history/experiments/exp_graphics_image_e2e/README.md",
+    "examples/demo-app/AndroidManifest.xml",
+    "examples/demo-app/README.md",
+    "examples/demo-app/build_demo_apk.sh",
+    "examples/demo-app/src/com/miniandroid/demo/MainActivity.java",
+    "examples/demo-app/validate_demo_proof.sh",
+    "games/2048/AndroidManifest.xml",
+    "games/2048/java/com/miniandroid/g2048/Board2048View.java",
+    "games/2048/java/com/miniandroid/g2048/MainActivity.java",
+    "games/2048/res/drawable/btn_brown.xml",
+    "games/2048/res/layout/activity_main.xml",
+    "games/2048/res/values/colors.xml",
+    "games/2048/res/values/styles.xml",
+    "games/README.md",
+    "games/mini-tetris/AndroidManifest.xml",
+    "games/mini-tetris/java/com/miniandroid/tetris/MainActivity.java",
+    "games/mini-tetris/java/com/miniandroid/tetris/TetrisView.java"
+   ]
+  },
+  "REFERENCE_SOURCE_PINNED": {
+   "bytes": 16811429,
+   "count": 1705,
+   "sample_paths": [
+    "docs/upstream/INDEX.md",
+    "docs/upstream/aosp/CONTEXT_STRING_LAW.md",
+    "docs/upstream/aosp/FRAMEWORK_ATTR_PROVENANCE.md",
+    "docs/upstream/aosp/bools.xml",
+    "docs/upstream/aosp/colors.xml",
+    "docs/upstream/aosp/colors_holo.xml",
+    "docs/upstream/aosp/colors_legacy.xml",
+    "docs/upstream/aosp/colors_material.xml",
+    "docs/upstream/aosp/dimens_material.xml",
+    "docs/upstream/aosp/public.xml",
+    "docs/upstream/aosp/res_color/hint_foreground_material_dark.xml",
+    "docs/upstream/aosp/res_color/hint_foreground_material_light.xml",
+    "docs/upstream/aosp/res_color/primary_text_material_dark.xml",
+    "docs/upstream/aosp/res_color/primary_text_material_light.xml",
+    "docs/upstream/aosp/res_color/ripple_material_dark.xml",
+    "docs/upstream/aosp/res_color/ripple_material_light.xml",
+    "docs/upstream/aosp/res_color/secondary_text_material_dark.xml",
+    "docs/upstream/aosp/res_color/secondary_text_material_light.xml",
+    "docs/upstream/aosp/res_color/text_color_hint.xml",
+    "docs/upstream/aosp/res_color/text_color_hint_inverse.xml",
+    "docs/upstream/aosp/res_color/text_color_primary.xml",
+    "docs/upstream/aosp/res_color/text_color_primary_inverse.xml",
+    "docs/upstream/aosp/res_color/text_color_secondary.xml",
+    "docs/upstream/aosp/res_color/text_color_secondary_inverse.xml",
+    "docs/upstream/aosp/res_color/text_color_tertiary.xml",
+    "docs/upstream/aosp/res_color/text_color_tertiary_inverse.xml",
+    "docs/upstream/aosp/themes_colors.xml",
+    "docs/upstream/aosp/themes_material.xml",
+    "docs/upstream/apps/bouncy/java/com/dozingcatsoftware/bouncy/AboutActivity.java",
+    "docs/upstream/apps/bouncy/java/com/dozingcatsoftware/bouncy/BouncyActivity.java",
+    "docs/upstream/apps/bouncy/java/com/dozingcatsoftware/bouncy/BouncyPreferences.java",
+    "docs/upstream/apps/bouncy/java/com/dozingcatsoftware/bouncy/CanvasFieldView.java",
+    "docs/upstream/apps/bouncy/java/com/dozingcatsoftware/bouncy/FieldLayoutReader.java",
+    "docs/upstream/apps/bouncy/java/com/dozingcatsoftware/bouncy/FieldViewManager.java",
+    "docs/upstream/apps/bouncy/java/com/dozingcatsoftware/bouncy/GL10Renderer.java",
+    "docs/upstream/apps/bouncy/java/com/dozingcatsoftware/bouncy/GL20Renderer.java",
+    "docs/upstream/apps/bouncy/java/com/dozingcatsoftware/bouncy/GLFieldView.java",
+    "docs/upstream/apps/bouncy/java/com/dozingcatsoftware/bouncy/OrientationListener.java",
+    "docs/upstream/apps/bouncy/java/com/dozingcatsoftware/bouncy/ScoreView.java",
+    "docs/upstream/apps/bouncy/java/com/dozingcatsoftware/bouncy/TableThumbnailRenderer.java"
+   ]
+  },
+  "UNKNOWN": {
+   "bytes": 2186474,
+   "count": 126,
+   "sample_paths": [
+    "miniandroid/tools/apk_corpus_miner.py",
+    "miniandroid/tools/campaign010/uc010_a4_fixtures.py",
+    "miniandroid/tools/campaign010/uc010_baseline.sh",
+    "miniandroid/tools/campaign010/uc010_corpus_expand.py",
+    "miniandroid/tools/campaign010/uc010_corpus_run.sh",
+    "miniandroid/tools/campaign010/uc010_os_batch.sh",
+    "miniandroid/tools/campaign010/uc010_png_corpus.py",
+    "miniandroid/tools/campaign010/uc010_png_join.py",
+    "miniandroid/tools/campaign010/uc010_sbidiff.c",
+    "miniandroid/tools/campaign010/uc010_source_audit.py",
+    "miniandroid/tools/check_source_tree.py",
+    "miniandroid/tools/dex_call_graph.py",
+    "miniandroid/tools/dump_method_bytecode.py",
+    "miniandroid/tools/dump_method_v2.py",
+    "miniandroid/tools/exp024_analyzer_clean.py",
+    "miniandroid/tools/exp024_complete_analyzer.py",
+    "miniandroid/tools/exp024_execution_runner.py",
+    "miniandroid/tools/exp025_apk_downloader.py",
+    "miniandroid/tools/exp025_apk_downloader_v2.py",
+    "miniandroid/tools/exp025_execution_runner.py",
+    "miniandroid/tools/exp025_multi_source_downloader.py",
+    "miniandroid/tools/exp026_real_execution_runner.py",
+    "miniandroid/tools/exp027_data_mining.py",
+    "miniandroid/tools/exp027_failure_intelligence.py",
+    "miniandroid/tools/exp027_finalizer.py",
+    "miniandroid/tools/exp027_real_apk_collector.py",
+    "miniandroid/tools/exp027_real_dex_generator.py",
+    "miniandroid/tools/exp027_real_execution_campaign.py",
+    "miniandroid/tools/exp028_baseline_collector.py",
+    "miniandroid/tools/exp028_dex_validator.py",
+    "miniandroid/tools/exp028_finalizer.py",
+    "miniandroid/tools/exp028_forensic_analysis.py",
+    "miniandroid/tools/exp029_state_machine.py",
+    "miniandroid/tools/exp030_real_dalvik_validator.py",
+    "miniandroid/tools/exp031_5_test_generator.py",
+    "miniandroid/tools/exp031_6_dex_pipeline_debugger.py",
+    "miniandroid/tools/exp031_6_valid_dex_generator.py",
+    "miniandroid/tools/exp031_ci_protection.py",
+    "miniandroid/tools/exp031_comparison_tool.py",
+    "miniandroid/tools/exp031_real_execution_validator.py"
+   ]
+  }
+ },
+ "duplicate_groups": [
+  {
+   "copies": 2,
+   "locations": [
+    "docs/evidence/canonical/com.miniandroid.g2048.gif",
+    "docs/evidence/s80/g2048_gameplay.gif"
+   ],
+   "reclaimable_bytes": 979913,
+   "sha256": "d613d30fce792406752285444b78c604e1ae2ab46a93e0fb110e849cebb8d5b8",
+   "size": 979913
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "docs/evidence/canonical/com.miniandroid.tetris.gif",
+    "docs/evidence/s80/tetris_gameplay.gif"
+   ],
+   "reclaimable_bytes": 770771,
+   "sha256": "927d966a5a7397a858f0766528e4bd8809af82e2376393239f131fcc02369b1d",
+   "size": 770771
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "docs/evidence/canonical/com.miniandroid.snakedeluxe.gif",
+    "docs/evidence/s80/snake_gameplay.gif"
+   ],
+   "reclaimable_bytes": 493247,
+   "sha256": "f2dd621c662526fa0d2032cd3b3a445707e4cac7954cefc6cc978416c9e3e016",
+   "size": 493247
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "docs/evidence/s73_snake_autoplay/run_01/frames/manifest.json",
+    "docs/evidence/s73_snake_autoplay/run_02/frames/manifest.json",
+    "docs/evidence/s73_snake_autoplay/run_03/frames/manifest.json",
+    "docs/evidence/s75/snake_fidelity_probe/frames/manifest.json"
+   ],
+   "reclaimable_bytes": 272835,
+   "sha256": "c390c977d1e89c462051ad5fc6bd1dfa1079c94d31605f940395b560416cf317",
+   "size": 90945
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "docs/evidence/s94/clones_harvest.json",
+    "run/s94/source_mining/clones_harvest.json"
+   ],
+   "reclaimable_bytes": 162986,
+   "sha256": "8687afcdce30e00fd5e35643c8b75468e4002b373450bbe518ad2f2b0482181a",
+   "size": 162986
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "docs/evidence/s94/repositories.json",
+    "run/s94/source_mining/repositories.json"
+   ],
+   "reclaimable_bytes": 105610,
+   "sha256": "83f62ef2e083f79155efb3e850cd6452324c6167f6a71ec7021f4aa3ee4556cc",
+   "size": 105610
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "docs/evidence/s74_ops/fishrings/02_mid_maxdiff.png",
+    "docs/evidence/s91_fish_reproof/frames/frame_039.png"
+   ],
+   "reclaimable_bytes": 90093,
+   "sha256": "a341e3ad9092f6402cead56998c142d4511f170b81dcb8bb59de86094b75f6db",
+   "size": 90093
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "docs/evidence/s94/rawfetch_results.json",
+    "run/s94/source_mining/rawfetch_results.json"
+   ],
+   "reclaimable_bytes": 71721,
+   "sha256": "9a1971e977285264c1f33930470271b4b1bb7b45c9c54c5c9d6a98664a1a07b8",
+   "size": 71721
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/node/NodeCoordinator.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/NodeCoordinator.kt"
+   ],
+   "reclaimable_bytes": 68939,
+   "sha256": "681d0ffed87676dc82d0eef4ab68f066c4856af1063dcfb98141c26f25a6f6dc",
+   "size": 68939
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/layout/SubcomposeLayout.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/layout/SubcomposeLayout.kt"
+   ],
+   "reclaimable_bytes": 68686,
+   "sha256": "194594e1d4a1e26d547e6c51fcb28abd70ebbf02992daa9ec241f2ffe2390b9e",
+   "size": 68686
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/semantics/SemanticsProperties.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/semantics/SemanticsProperties.kt"
+   ],
+   "reclaimable_bytes": 66527,
+   "sha256": "cbbf5daf85022c7bdd276057ea21d82305311e139e8e2813e6bb2f8a7cac1d8f",
+   "size": 66527
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/node/LayoutNode.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/LayoutNode.kt"
+   ],
+   "reclaimable_bytes": 64574,
+   "sha256": "05ba5cadbae3dcb759a029e9fc6e5b6e14f2d3bee65d7bddd88a6da21fafb8d2",
+   "size": 64574
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "docs/evidence/g10_evidence/phase0_traces.json",
+    "docs/evidence/g10_evidence/phase0_traces_AFTER.json"
+   ],
+   "reclaimable_bytes": 59969,
+   "sha256": "b42816dfc39496d2dd591fe631f80924b5b9edff520eaa262fd026650a263140",
+   "size": 59969
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "docs/evidence/s94/findings.jsonl",
+    "run/s94/source_mining/findings.jsonl"
+   ],
+   "reclaimable_bytes": 58016,
+   "sha256": "fd99052bbf0b7a0bce2fed1464e8a9e71da4dc3d90562f555f88fae39f58f2ee",
+   "size": 58016
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "docs/corpus/s81/corpus_index.json",
+    "docs/evidence/s81/corpus_index.json"
+   ],
+   "reclaimable_bytes": 53871,
+   "sha256": "dff9665f309c8c62ea7ee3dd3cb90e172c8c2a5d9c02bb5f6b723b7d2770b1f9",
+   "size": 53871
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "docs/evidence/s94/source_to_law.json",
+    "run/s94/source_mining/source_to_law.json"
+   ],
+   "reclaimable_bytes": 52243,
+   "sha256": "81ab0bf610777020b2642d1664b4cee7813880133e246b684cdcc8751afdb7c5",
+   "size": 52243
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/input/pointer/PointerEvent.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/input/pointer/PointerEvent.kt"
+   ],
+   "reclaimable_bytes": 50925,
+   "sha256": "95efc0c788e2923c48b02d57083758cdc47576f3e6a9cfea6f8f67c25a8b144a",
+   "size": 50925
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/spatial/RectList.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/spatial/RectList.kt"
+   ],
+   "reclaimable_bytes": 48820,
+   "sha256": "a4d43a04343ebe5e96b153f3ffc6ff3b87c3b13b7a3cb218ca4b1ec35b5f4f30",
+   "size": 48820
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "docs/evidence/s94/license_map.json",
+    "run/s94/source_mining/license_map.json"
+   ],
+   "reclaimable_bytes": 42061,
+   "sha256": "0b2f30e7a14026c842118e18117d433d1459103683c45400aa30e044a7cb9a5e",
+   "size": 42061
+  },
+  {
+   "copies": 5,
+   "locations": [
+    "upstream/s43/datastore/META-INF/androidx/datastore/datastore-core/LICENSE.txt",
+    "upstream/s43/datastore/prefs/META-INF/androidx/datastore/datastore-preferences-core/LICENSE.txt",
+    "upstream/s43/runtime/META-INF/androidx/compose/runtime/runtime/LICENSE.txt",
+    "upstream/s43/ui/META-INF/androidx/compose/ui/ui/LICENSE.txt",
+    "upstream/s43/ui_android/META-INF/androidx/compose/ui/ui/LICENSE.txt"
+   ],
+   "reclaimable_bytes": 40700,
+   "sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
+   "size": 10175
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/node/MeasurePassDelegate.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/MeasurePassDelegate.kt"
+   ],
+   "reclaimable_bytes": 40463,
+   "sha256": "52161b9794e50c194697f51de75f73fba85de090f82604027295753e4fc1e19a",
+   "size": 40463
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/input/pointer/SuspendingPointerInputFilter.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/input/pointer/SuspendingPointerInputFilter.kt"
+   ],
+   "reclaimable_bytes": 39990,
+   "sha256": "0c83320e1378c2be2323c102b073d7bef7f47c4bf0299d9d434ab3003606a7c3",
+   "size": 39990
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/node/MeasureAndLayoutDelegate.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/MeasureAndLayoutDelegate.kt"
+   ],
+   "reclaimable_bytes": 39549,
+   "sha256": "45aa166bca99d4b812074008e37cf29489076e6a7fe4da41a7d9198617f64198",
+   "size": 39549
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/node/LookaheadPassDelegate.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/LookaheadPassDelegate.kt"
+   ],
+   "reclaimable_bytes": 39056,
+   "sha256": "1f691d394c400db5b6fd293634a493374545af0f2079a24756aab709b32ecb6d",
+   "size": 39056
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/graphics/GraphicsLayerModifier.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/graphics/GraphicsLayerModifier.kt"
+   ],
+   "reclaimable_bytes": 38491,
+   "sha256": "5391748efd3e73c2d2a2b14064d86d9011b086647366cb7624c549479174c9f2",
+   "size": 38491
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/corpus/io.github.yamin8000.dooz/src/Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/LICENSE",
+    "upstream/corpus/one.scarecrow.games.OPMT/src/OPMT-3240c4cf/LICENSE"
+   ],
+   "reclaimable_bytes": 35149,
+   "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+   "size": 35149
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/input/key/Key.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/input/key/Key.kt"
+   ],
+   "reclaimable_bytes": 33700,
+   "sha256": "3869ac4c88b7d8e207bff6c4cbff91225df681a07b7c4d8af63ca37bb4d74286",
+   "size": 33700
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/node/NodeChain.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/NodeChain.kt"
+   ],
+   "reclaimable_bytes": 31479,
+   "sha256": "cdb684269f2b2d31be4dc89eb9c1c46644852bb13104fedd71245b6bda69026b",
+   "size": 31479
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/draw/Shadow.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/draw/Shadow.kt"
+   ],
+   "reclaimable_bytes": 30655,
+   "sha256": "d692a1db1d599c65831d54f798856e6f549d91b430ad00a7d117d38897eef0dc",
+   "size": 30655
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/spatial/RectManager.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/spatial/RectManager.kt"
+   ],
+   "reclaimable_bytes": 29918,
+   "sha256": "7c650c15f079e228660864250138dbea2463c79ce95152490f535c3309760251",
+   "size": 29918
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "docs/EXP071_FINAL_REPORT.md",
+    "docs/history/campaign-reports/EXP071_FINAL_REPORT.md"
+   ],
+   "reclaimable_bytes": 29678,
+   "sha256": "fe5c1d9db67e27380aa874c398469dd1f025501864afb17232aa504604899020",
+   "size": 29678
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/layout/Placeable.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/layout/Placeable.kt"
+   ],
+   "reclaimable_bytes": 29394,
+   "sha256": "16ce931bc2db81aeabe5358ac8ebdba0c2eb9962a1c4031892c3a0672433863c",
+   "size": 29394
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/input/pointer/HitPathTracker.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/input/pointer/HitPathTracker.kt"
+   ],
+   "reclaimable_bytes": 27958,
+   "sha256": "7f892ab886ebd309298031d3a456f06b7a75908db04b85041a4c1ca014907c3d",
+   "size": 27958
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/graphics/vector/ImageVector.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/graphics/vector/ImageVector.kt"
+   ],
+   "reclaimable_bytes": 26429,
+   "sha256": "a4d0798b5aebe4743bbfb4d830cad7d76ad69528f6735259351f053ef71c295d",
+   "size": 26429
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/input/pointer/util/VelocityTracker.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/input/pointer/util/VelocityTracker.kt"
+   ],
+   "reclaimable_bytes": 26222,
+   "sha256": "e8db0497644380b35d595289f3fafcf15c531fb770023e6e8a100af4266ee846",
+   "size": 26222
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/focus/FocusOwnerImpl.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/focus/FocusOwnerImpl.kt"
+   ],
+   "reclaimable_bytes": 25964,
+   "sha256": "09c919b8a5f7036160312512ee30f600b380ba14ce6e1f5deb46257eb5434907",
+   "size": 25964
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/node/LookaheadDelegate.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/LookaheadDelegate.kt"
+   ],
+   "reclaimable_bytes": 25362,
+   "sha256": "93f81924031822c2d52e2a6a4e2c759a6904ff4ccc10bcd51d57a6a139e80c61",
+   "size": 25362
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/node/DelegatableNode.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/DelegatableNode.kt"
+   ],
+   "reclaimable_bytes": 25054,
+   "sha256": "7d64baa9770e12d266a24d848247ca78bc7e846a6b96e065dd52a83878210ce5",
+   "size": 25054
+  },
+  {
+   "copies": 7,
+   "locations": [
+    "docs/evidence/s73_snake_autoplay/run_01/view_tree.json",
+    "docs/evidence/s73_snake_autoplay/run_02/view_tree.json",
+    "docs/evidence/s73_snake_autoplay/run_03/view_tree.json",
+    "docs/evidence/s75/snake_fidelity_probe/view_tree.json",
+    "docs/evidence/s75/snake_restart_probe/view_tree.json",
+    "docs/evidence/s76/snake_dialog_restart/run_a_dialog/view_tree.json",
+    "docs/evidence/s76/snake_dialog_restart/run_b_restart/view_tree.json"
+   ],
+   "reclaimable_bytes": 23538,
+   "sha256": "5571e544aa4480bc56052ab7fe0089678c5a91d20ebfd2c3de715f1c43aa2c72",
+   "size": 3923
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/semantics/SemanticsNode.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/semantics/SemanticsNode.kt"
+   ],
+   "reclaimable_bytes": 22715,
+   "sha256": "a67f468ba80afe0e6dc4c0c1b126f9445822b368e0be4d0088b7ee75c2ba9e6b",
+   "size": 22715
+  },
+  {
+   "copies": 3,
+   "locations": [
+    "docs/evidence/visual_forensics/tictactoe/run1/engine/frames/manifest.json",
+    "docs/evidence/visual_forensics/tictactoe/run2/engine/frames/manifest.json",
+    "docs/evidence/visual_forensics/tictactoe/run3/engine/frames/manifest.json"
+   ],
+   "reclaimable_bytes": 21596,
+   "sha256": "a61e74f8a51b541eeac94b38f076687b2f263457e1ca02ddf7b97976ed5a0725",
+   "size": 10798
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/node/LayoutNodeLayoutDelegate.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/LayoutNodeLayoutDelegate.kt"
+   ],
+   "reclaimable_bytes": 21592,
+   "sha256": "0eab00ee0dfe67814bdd06de0de9577b68904af071a41870c7090afa09655ae1",
+   "size": 21592
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/graphics/vector/Vector.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/graphics/vector/Vector.kt"
+   ],
+   "reclaimable_bytes": 19645,
+   "sha256": "f5113bb15a61ea9b38195d90c56aaae9257d55668eb0dc030a6c0d6330dfba1f",
+   "size": 19645
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/draganddrop/DragAndDropNode.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/draganddrop/DragAndDropNode.kt"
+   ],
+   "reclaimable_bytes": 19604,
+   "sha256": "effe3d15c5454c64a4882d55bb712242b762cd08689bb3747a279b8c83cad52b",
+   "size": 19604
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/Modifier.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/Modifier.kt"
+   ],
+   "reclaimable_bytes": 19260,
+   "sha256": "158b3152ad1e7a19e7b70d6a7f2edff4b0f5d709b72b0c596a1dea9aeabd57d5",
+   "size": 19260
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/spatial/ThrottledCallbacks.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/spatial/ThrottledCallbacks.kt"
+   ],
+   "reclaimable_bytes": 19077,
+   "sha256": "c1f90343d36cd93c86837cdb5d39c712918dfc485c87d9258b4632622f6b5035",
+   "size": 19077
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/input/nestedscroll/NestedScrollModifier.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/input/nestedscroll/NestedScrollModifier.kt"
+   ],
+   "reclaimable_bytes": 18854,
+   "sha256": "c252e3cfacc8859b4ff72fa9c9b298a5d3c2ee6cba9ced5734ecd05d8ee0dec0",
+   "size": 18854
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/focus/TwoDimensionalFocusSearch.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/focus/TwoDimensionalFocusSearch.kt"
+   ],
+   "reclaimable_bytes": 18802,
+   "sha256": "797f5ef790531fe937fa799136cc35f5794bd55e5ed7bfc24cd1236d39601be2",
+   "size": 18802
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/graphics/vector/VectorPainter.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/graphics/vector/VectorPainter.kt"
+   ],
+   "reclaimable_bytes": 18557,
+   "sha256": "3b25a2978589f3a6f14cb3069f8ca50a314b7b2d5ea0e2fa6067e372287a6592",
+   "size": 18557
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/graphics/GraphicsLayerScope.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/graphics/GraphicsLayerScope.kt"
+   ],
+   "reclaimable_bytes": 17988,
+   "sha256": "48ac38c00a6ea1070741950e668e08de1a128b5d0d4997ea3cf34c60413a6806",
+   "size": 17988
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "docs/EXP072_REPORT.md",
+    "docs/history/campaign-reports/EXP072_REPORT.md"
+   ],
+   "reclaimable_bytes": 17113,
+   "sha256": "1cfc8625ddb3da9b85cbd6c1cbac39809fbf862ffcdab82090e8b6280bcbee17",
+   "size": 17113
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/node/Owner.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/Owner.kt"
+   ],
+   "reclaimable_bytes": 16838,
+   "sha256": "d2cf64345c5a56c18e820fb55973c865d87b882cef87bc70a1015d8b5b367428",
+   "size": 16838
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/draw/DrawModifier.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/draw/DrawModifier.kt"
+   ],
+   "reclaimable_bytes": 16473,
+   "sha256": "d6e50834bc1ac788a1c990217df732c1dcbb3ca46e75f284b2ededbb3b6a5a33",
+   "size": 16473
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/focus/FocusTargetNode.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/focus/FocusTargetNode.kt"
+   ],
+   "reclaimable_bytes": 16392,
+   "sha256": "1fd398c20bfa9d8acbb5bb4f621a52f8895f22575d7247f6c41f6d451c797887",
+   "size": 16392
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/node/BackwardsCompatNode.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/BackwardsCompatNode.kt"
+   ],
+   "reclaimable_bytes": 16388,
+   "sha256": "b94c90741063aeeaace3b2153ade939771fba609ca7cd11f83c5bf14e8b73545",
+   "size": 16388
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/layout/Layout.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/layout/Layout.kt"
+   ],
+   "reclaimable_bytes": 16037,
+   "sha256": "8885221063cab7a3a9af7e0b0c6b9cc8e4d71b644393c7665b0df8e297aa6b68",
+   "size": 16037
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/input/pointer/PointerIcon.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/input/pointer/PointerIcon.kt"
+   ],
+   "reclaimable_bytes": 16009,
+   "sha256": "fd04456c1e201aa364ee7d7c2574b52ef7151d8236558906c62a69db1c3af0a4",
+   "size": 16009
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/node/LayoutModifierNode.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/LayoutModifierNode.kt"
+   ],
+   "reclaimable_bytes": 15999,
+   "sha256": "eb0765ee7d4bc6fbf57e342ca20ca0df7ae72fca575a9ddb40834bc44cafb123",
+   "size": 15999
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/node/NodeKind.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/NodeKind.kt"
+   ],
+   "reclaimable_bytes": 15959,
+   "sha256": "e2ec0ad9fd5a72dba4c363559340c5d7774546b2d79bcf385c214f395edde785",
+   "size": 15959
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/semantics/SemanticsOwner.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/semantics/SemanticsOwner.kt"
+   ],
+   "reclaimable_bytes": 15685,
+   "sha256": "04ece4a92933540f54359540cff5d973de94d327ec9a745f655332d3c8ae6633",
+   "size": 15685
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/ComposedModifier.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/ComposedModifier.kt"
+   ],
+   "reclaimable_bytes": 15318,
+   "sha256": "ae7d804ab594992f8f05c38bb003494cb388874bec6b8fdeee3105cf7be28cc6",
+   "size": 15318
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/node/HitTestResult.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/HitTestResult.kt"
+   ],
+   "reclaimable_bytes": 15117,
+   "sha256": "8e1b8114f236654904c692b4905f2d5b68bce1964fec9857fff5b96284bc18f4",
+   "size": 15117
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/node/MyersDiff.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/MyersDiff.kt"
+   ],
+   "reclaimable_bytes": 15042,
+   "sha256": "1a821e9353847acf541f18ade0e916dcaa482939311f2db328a78ef8e85db8b3",
+   "size": 15042
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/focus/FocusTransactions.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/focus/FocusTransactions.kt"
+   ],
+   "reclaimable_bytes": 14640,
+   "sha256": "2efb3332e3fa3412efaf475c38fd87a98adc15486b8e1feab5a607286a65b8e1",
+   "size": 14640
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/layout/WindowInsetsRulers.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/layout/WindowInsetsRulers.kt"
+   ],
+   "reclaimable_bytes": 14468,
+   "sha256": "dd19c18e2bfd17cbaf84c69a00e282767e018bda14e3196444dfde713b0bc22f",
+   "size": 14468
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "docs/evidence/s94/phase_a_log.txt",
+    "run/s94/source_mining/phase_a_log.txt"
+   ],
+   "reclaimable_bytes": 14135,
+   "sha256": "4e67fed0597801381f7de5bb8dac8bd1510bac63b508a8c9300d0bdc92076826",
+   "size": 14135
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/draw/PainterModifier.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/draw/PainterModifier.kt"
+   ],
+   "reclaimable_bytes": 14133,
+   "sha256": "8b71bbb89aefd5ba0bca205758875d7829984fef9e6814f069a5a556ee318d12",
+   "size": 14133
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/layout/LookaheadScope.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/layout/LookaheadScope.kt"
+   ],
+   "reclaimable_bytes": 13965,
+   "sha256": "a6c3661e5ddab1e64b63295685083497d4992c23b43db0ac9b2191dec0200b3a",
+   "size": 13965
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "docs/evidence/visual_forensics/upstream/tripeaks_62f3609/CardBoard.java",
+    "docs/upstream/apps/tripeaks/CardBoard.java"
+   ],
+   "reclaimable_bytes": 13795,
+   "sha256": "2885bb816602f681fef6bb075c8146d5ada918e51ed18d9096baf72587292d4c",
+   "size": 13795
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/node/LayoutModifierNodeCoordinator.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/LayoutModifierNodeCoordinator.kt"
+   ],
+   "reclaimable_bytes": 13650,
+   "sha256": "6d74c61c1baa6d38ea37b4cccac2a478c4e530d489e7a96718740adc0e09eeb6",
+   "size": 13650
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "docs/EXP071_GIT_HISTORY.md",
+    "docs/history/campaign-reports/EXP071_GIT_HISTORY.md"
+   ],
+   "reclaimable_bytes": 13522,
+   "sha256": "3f79290269bf129147793143d068ef99f1efd51319835bcc5bd523986683ea1b",
+   "size": 13522
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/Alignment.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/Alignment.kt"
+   ],
+   "reclaimable_bytes": 12806,
+   "sha256": "19e9e3354010d3aa3cfbfeefeab169a5ef397413733b9c6a81d1973f8e6a9a8c",
+   "size": 12806
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/layout/OnVisibilityChangedModifier.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/layout/OnVisibilityChangedModifier.kt"
+   ],
+   "reclaimable_bytes": 12683,
+   "sha256": "124e6b62cb0ed3ffffb816578ba61a2a44f69f8e645fa8d4fb5b877679949c6d",
+   "size": 12683
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/layout/MultiContentMeasurePolicy.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/layout/MultiContentMeasurePolicy.kt"
+   ],
+   "reclaimable_bytes": 12346,
+   "sha256": "ad63eda0f5765148ab4fed9014b6c81a7dc09e47543d8f61b14cd02201a874b7",
+   "size": 12346
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/layout/LayoutCoordinates.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/layout/LayoutCoordinates.kt"
+   ],
+   "reclaimable_bytes": 12310,
+   "sha256": "e3c758c900c4129591fafff4b839062423f19cf6f8abf2e9219a2f3122c00270",
+   "size": 12310
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "docs/EXP073_REPORT.md",
+    "docs/history/campaign-reports/EXP073_REPORT.md"
+   ],
+   "reclaimable_bytes": 12141,
+   "sha256": "de534b78f43a06e87388b724c4a76d4e695d02f01555103c2ee9246f53866648",
+   "size": 12141
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/MediaQuery.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/MediaQuery.kt"
+   ],
+   "reclaimable_bytes": 11951,
+   "sha256": "cd4b87fa1e89245d14009e6be7c8911acf9524f039c2e31ceb7da2956e9922b1",
+   "size": 11951
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/platform/PlatformTextInputModifierNode.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/platform/PlatformTextInputModifierNode.kt"
+   ],
+   "reclaimable_bytes": 11730,
+   "sha256": "187d65b82d338a161c16482aa267c579cbacd8443082c198f60163e035121f05",
+   "size": 11730
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/focus/FocusProperties.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/focus/FocusProperties.kt"
+   ],
+   "reclaimable_bytes": 11710,
+   "sha256": "e0a641173e4c708d06a41456469af756809d0223d00accb299b17358f1b80f33",
+   "size": 11710
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/platform/CompositionLocals.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/platform/CompositionLocals.kt"
+   ],
+   "reclaimable_bytes": 11656,
+   "sha256": "63bd2e58a6a0e82f7a7e455bb6151fe44a320d40ec9686741e8db75ae8348d4f",
+   "size": 11656
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "docs/corpus/s81/corpus_summary.csv",
+    "docs/evidence/s81/corpus_summary.csv"
+   ],
+   "reclaimable_bytes": 11631,
+   "sha256": "73fff248dde1051bb6e44d45f56064d262f963e530421c7692748e8a01d05ead",
+   "size": 11631
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/spatial/RelativeLayoutBounds.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/spatial/RelativeLayoutBounds.kt"
+   ],
+   "reclaimable_bytes": 11572,
+   "sha256": "818a0898656190a3d50b29902e86419b9e486d8172be91430bda4325148a36ae",
+   "size": 11572
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/layout/ApproachLayoutModifierNode.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/layout/ApproachLayoutModifierNode.kt"
+   ],
+   "reclaimable_bytes": 11560,
+   "sha256": "0f04229f1ede59cccaf829d54293025499b8e2fb3dfb6fde0ebef29a9e4d3113",
+   "size": 11560
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/semantics/SemanticsSort.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/semantics/SemanticsSort.kt"
+   ],
+   "reclaimable_bytes": 11535,
+   "sha256": "a966693f936e6e46ba055dcf62e5fda1720b790d772e0985a57a39353a279f98",
+   "size": 11535
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/node/DelegatingNode.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/DelegatingNode.kt"
+   ],
+   "reclaimable_bytes": 11454,
+   "sha256": "07394dd279b886ee285d3eb014c76d83abfde8fcbb65fe15a3570eb538dfd5d6",
+   "size": 11454
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/focus/OneDimensionalFocusSearch.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/focus/OneDimensionalFocusSearch.kt"
+   ],
+   "reclaimable_bytes": 11386,
+   "sha256": "65717bbf7d14a5ded426b0a23f2a755bfecd9e4d7f1d84dd8074362ae4671055",
+   "size": 11386
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/input/pointer/PointerInputEventProcessor.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/input/pointer/PointerInputEventProcessor.kt"
+   ],
+   "reclaimable_bytes": 11139,
+   "sha256": "77315902359f00a90b35d1cc6965730536a9775d14d0cf121714002e380694fd",
+   "size": 11139
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/layout/LayoutModifier.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/layout/LayoutModifier.kt"
+   ],
+   "reclaimable_bytes": 10933,
+   "sha256": "81680f7e771de9428963be4b78ae159e43a66f43d7222ff472b65e6f481dc961",
+   "size": 10933
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/focus/FocusRequester.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/focus/FocusRequester.kt"
+   ],
+   "reclaimable_bytes": 10894,
+   "sha256": "ef5af3844bc8d76f9320794caef5c3879feac83a9b8d23fb0358d070b507cd50",
+   "size": 10894
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "docs/evidence/external_hello_golden/baseline_g08_broken.png",
+    "docs/evidence/s91_sandbox/run2_screenshot.png"
+   ],
+   "reclaimable_bytes": 10362,
+   "sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "size": 10362
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/node/DepthSortedSet.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/DepthSortedSet.kt"
+   ],
+   "reclaimable_bytes": 10297,
+   "sha256": "da60b22dc094510b2619a97791850277d2a5b5296e233e5dc7057c8bc34d6934",
+   "size": 10297
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "docs/EXP074_REPORT.md",
+    "docs/history/campaign-reports/EXP074_REPORT.md"
+   ],
+   "reclaimable_bytes": 10066,
+   "sha256": "c7686d25389ef4cbdf61c7884a97a5e4e214528f3b565d270d4cfc37ac6d30d0",
+   "size": 10066
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/node/InnerNodeCoordinator.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/InnerNodeCoordinator.kt"
+   ],
+   "reclaimable_bytes": 9884,
+   "sha256": "73bd82ac22dd92be81fb25bbf319c2afd6c8c2d37d95f90f3be3ed546cedd8be",
+   "size": 9884
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/layout/OnFirstVisibleModifier.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/layout/OnFirstVisibleModifier.kt"
+   ],
+   "reclaimable_bytes": 9485,
+   "sha256": "47271084166c085499746ebcd983765a863b3d646f044eb90f59db92ae4b8c3d",
+   "size": 9485
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/node/LayoutNodeAlignmentLines.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/LayoutNodeAlignmentLines.kt"
+   ],
+   "reclaimable_bytes": 9293,
+   "sha256": "7ce0eeec0de3ecab61fe8c32335adbe6fff645e1f82893a62a17a9b6bd298bfd",
+   "size": 9293
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/semantics/SemanticsModifier.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/semantics/SemanticsModifier.kt"
+   ],
+   "reclaimable_bytes": 9263,
+   "sha256": "8930cfe84e345fedbe898e84340a159b37aa53af3963fbffee367e83a71601e9",
+   "size": 9263
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/node/TouchBoundsExpansion.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/TouchBoundsExpansion.kt"
+   ],
+   "reclaimable_bytes": 9141,
+   "sha256": "2259302d89d9ffa84625d550634b1052e29132da5987bab31db808bc058c6429",
+   "size": 9141
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/modifier/ModifierLocalModifierNode.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/modifier/ModifierLocalModifierNode.kt"
+   ],
+   "reclaimable_bytes": 8846,
+   "sha256": "2e9aff22094a1c1226d350e8465accaee7311d7c9f5ee336b4d7f285fc3ec785",
+   "size": 8846
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/focus/FocusOwner.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/focus/FocusOwner.kt"
+   ],
+   "reclaimable_bytes": 8762,
+   "sha256": "8afa4a0228cc1b9681dbc57ed4129178c41d3bd4aefe193653198c7f4f562abc",
+   "size": 8762
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/layout/MeasurePolicy.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/layout/MeasurePolicy.kt"
+   ],
+   "reclaimable_bytes": 8672,
+   "sha256": "66a534b18816e93c36fe1c317ed69a38136bba1b80bfc59cf088736789e7bedd",
+   "size": 8672
+  }
+ ],
+ "duplicate_groups_total": 374,
+ "duplicate_reclaimable_bytes": 5826059,
+ "generated_by": "tools/artifact_classifier.py",
+ "oversize_files_gt_1mb": [
+  {
+   "bytes": 5618707,
+   "path": "docs/foundation/dex_census/bouncy.json"
+  },
+  {
+   "bytes": 4293137,
+   "path": "docs/foundation/dex_census/com.emmanuelmess.tictactoe_3.json"
+  },
+  {
+   "bytes": 3865834,
+   "path": "docs/foundation/knowledge_graph.json"
+  },
+  {
+   "bytes": 3417223,
+   "path": "docs/foundation/dex_census/io.github.yamin8000.dooz_23.json"
+  },
+  {
+   "bytes": 3417212,
+   "path": "docs/foundation/dex_census/dooz_23_toplevel.json"
+  },
+  {
+   "bytes": 1875848,
+   "path": "miniandroid/src/dex/dalvik_engine.cpp"
+  },
+  {
+   "bytes": 1226425,
+   "path": "run/s88/corpus/profiles.json"
+  },
+  {
+   "bytes": 1119316,
+   "path": "docs/foundation/api_matrix.json"
+  },
+  {
+   "bytes": 1050687,
+   "path": "upstream/s44/protobuf.jar"
+  },
+  {
+   "bytes": 1005330,
+   "path": "upstream/s43/ui-android-1.11.4-sources.jar"
+  }
+ ],
+ "policy_violations": [],
+ "schema": "miniandroid.artifact_registry.v1",
+ "tracked_bytes": 93813193,
+ "tracked_files": 5250
+}

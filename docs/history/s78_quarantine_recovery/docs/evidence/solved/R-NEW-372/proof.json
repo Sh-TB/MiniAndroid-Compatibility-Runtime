@@ -1,0 +1,24 @@
+{
+ "schema": "solved_card_proof/v1",
+ "id": "R-NEW-372",
+ "status": "VERIFIED-FIXED",
+ "fix_commit": "09de4641",
+ "session": "S51 canonical GitHub purge + runtime/game/agent certification",
+ "evidence": {
+  "isolating_fixture": "miniandroid/tests/fixtures/s51_2dprobe",
+  "fixture_apk_sha256": "87fe9ef5d77da87fb3cd09b3c12a4b364d0ce5cfc885556004cc7d1903163e11",
+  "probe_design": "3 render bands from real DEX state: band1 outer-null, band2 inner-null (board[1]==null after multianewarray), band3 board[1][2] store+readback ('X')",
+  "pre_fix_signature": "field board == null; first aput NullPointerException at onCreate (Connect Four probe pc=86); no REC-MISS diagnostic on the silent null path",
+  "post_fix_run": {
+   "status": "SUCCESS (real-dalvik, 1 frame, 0 errors)",
+   "engine_line": "[R372-TYPE] Ljava/lang/Character;.TYPE -> Class C (token 1)",
+   "bands": ["outer-null=false", "inner-null=false", "v=X"]
+  },
+  "root_cause": "d8 lowers `new char[R][C]` to sget-object Character.TYPE; ...; Array.newInstance(TYPE, dims). Wrapper-class TYPE statics were unseeded -> sget-object answered null -> R-NEW-358 Array.newInstance handler silently skipped its empty-desc gate -> EVERY d8-compiled primitive multidimensional array materialized null.",
+  "fix": "execute_sget_object TYPE law: wrapper descriptor -> primitive descriptor map (Z/C/F/D/B/S/I/J/V) answered as STABLE identity Class token (same F-069 token law as const-class: X.TYPE == X.class reference-equal), cached in static_field_storage_. Env-gated [S51-ANEW] diagnostic on Array.newInstance bridge entry (cap 8).",
+  "upstream_law": "OpenJDK/AOSP ojluni wrappers: public static final Class<T> TYPE = <primitive Class token>; JVMS multianewarray semantics (outer + all inner arrays allocated eagerly)",
+  "battery_gate": "run at fix head (see BATTERY_INDEX.json); no regression",
+  "registry": "root_registry.json entry R-NEW-372 (353 total)"
+ },
+ "note": "discovered via Connect Four bring-up (third board game), isolated by 2D probe before the fix — no broad logging added; fix is a semantic law, not a patch on a call site"
+}

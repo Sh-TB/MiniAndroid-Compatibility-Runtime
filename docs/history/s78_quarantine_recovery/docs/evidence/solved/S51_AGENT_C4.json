@@ -1,0 +1,430 @@
+{
+ "schema": "agent_playable_card/v1",
+ "id": "S51-AGENT-C4",
+ "game": "Connect Four (connectfour_golden fixture)",
+ "apk_sha256": "fc0401cc66eab2b696df4d5bdbf84c809cb0cfd7f8bee3159139504cbdbcd6ec",
+ "runtime_head": "a43c44ed",
+ "driver": "runtime CLICK-SEQ (--click-count 24) \u2014 real TouchDispatcher DOWN/UP law pipeline, no synthetic shortcuts",
+ "levels": {
+  "L1_loadable": "PROVEN (launch renders initial frame)",
+  "L2_runtime_playable": "PROVEN (input \u2192 state change \u2192 new screen)",
+  "L3_agent_playable": "PROVEN (observe \u2192 select \u2192 input \u2192 state change \u2192 observe \u2192 repeat)"
+ },
+ "multi_step_law": {
+  "steps_total": 24,
+  "steps_with_state_change": 22,
+  "multi_step_play_proven": true,
+  "win_detection": "Y WINS at step 22 (diagonal (0,3),(1,4),(2,5),(3,6))",
+  "frozen_tail": "steps 23,24 state_changed=false (gameOver law)"
+ },
+ "steps": [
+  {
+   "step": 1,
+   "observation": {
+    "frame_index": 0,
+    "status_text_before": "R to move",
+    "visible_marks_before": 0
+   },
+   "detected_state": "TURN_Y",
+   "chosen_action": "TAP_COLUMN_6",
+   "input_coordinates": {
+    "driver": "CLICK-SEQ view-id dispatch (real DOWN/UP law)",
+    "view_id": 55
+   },
+   "previous_state_hash": "3ea188450f6be7505fcf39699f5d6414f1ca638cba27b4f2fdf60291b0c3788a",
+   "new_state_hash": "a40225b883cf73bdf9f01c050c9c820be60d5ff3e340da2e7b10aefb9432f8d0",
+   "state_changed": true
+  },
+  {
+   "step": 2,
+   "observation": {
+    "frame_index": 1,
+    "status_text_before": "Y to move",
+    "visible_marks_before": 1
+   },
+   "detected_state": "TURN_R",
+   "chosen_action": "TAP_COLUMN_5",
+   "input_coordinates": {
+    "driver": "CLICK-SEQ view-id dispatch (real DOWN/UP law)",
+    "view_id": 51
+   },
+   "previous_state_hash": "a40225b883cf73bdf9f01c050c9c820be60d5ff3e340da2e7b10aefb9432f8d0",
+   "new_state_hash": "f3a4aa9b7b558a147d112892a97f30712126591358ab6c28fc4fb5f05b6d4bd3",
+   "state_changed": true
+  },
+  {
+   "step": 3,
+   "observation": {
+    "frame_index": 2,
+    "status_text_before": "R to move",
+    "visible_marks_before": 2
+   },
+   "detected_state": "TURN_Y",
+   "chosen_action": "TAP_COLUMN_4",
+   "input_coordinates": {
+    "driver": "CLICK-SEQ view-id dispatch (real DOWN/UP law)",
+    "view_id": 47
+   },
+   "previous_state_hash": "f3a4aa9b7b558a147d112892a97f30712126591358ab6c28fc4fb5f05b6d4bd3",
+   "new_state_hash": "5aa6346f47705d0aa65201fbaa68a13a14192b414dce303139f8fdd08dfa4072",
+   "state_changed": true
+  },
+  {
+   "step": 4,
+   "observation": {
+    "frame_index": 3,
+    "status_text_before": "Y to move",
+    "visible_marks_before": 3
+   },
+   "detected_state": "TURN_R",
+   "chosen_action": "TAP_COLUMN_3",
+   "input_coordinates": {
+    "driver": "CLICK-SEQ view-id dispatch (real DOWN/UP law)",
+    "view_id": 43
+   },
+   "previous_state_hash": "5aa6346f47705d0aa65201fbaa68a13a14192b414dce303139f8fdd08dfa4072",
+   "new_state_hash": "677266748b2b7bf907fdf364159c72f00537e488c236c1baacac6d0bfc636793",
+   "state_changed": true
+  },
+  {
+   "step": 5,
+   "observation": {
+    "frame_index": 4,
+    "status_text_before": "R to move",
+    "visible_marks_before": 4
+   },
+   "detected_state": "TURN_Y",
+   "chosen_action": "TAP_COLUMN_2",
+   "input_coordinates": {
+    "driver": "CLICK-SEQ view-id dispatch (real DOWN/UP law)",
+    "view_id": 39
+   },
+   "previous_state_hash": "677266748b2b7bf907fdf364159c72f00537e488c236c1baacac6d0bfc636793",
+   "new_state_hash": "966c87d50b835899e3fc24f5db2ae1da6f2b248e5fe66cb3a6ead15894e32241",
+   "state_changed": true
+  },
+  {
+   "step": 6,
+   "observation": {
+    "frame_index": 5,
+    "status_text_before": "Y to move",
+    "visible_marks_before": 5
+   },
+   "detected_state": "TURN_R",
+   "chosen_action": "TAP_COLUMN_1",
+   "input_coordinates": {
+    "driver": "CLICK-SEQ view-id dispatch (real DOWN/UP law)",
+    "view_id": 35
+   },
+   "previous_state_hash": "966c87d50b835899e3fc24f5db2ae1da6f2b248e5fe66cb3a6ead15894e32241",
+   "new_state_hash": "a67baa796c94556e25071815d561621cb3215e40f8e01d602baca6b272e93a2c",
+   "state_changed": true
+  },
+  {
+   "step": 7,
+   "observation": {
+    "frame_index": 6,
+    "status_text_before": "R to move",
+    "visible_marks_before": 6
+   },
+   "detected_state": "TURN_Y",
+   "chosen_action": "TAP_COLUMN_0",
+   "input_coordinates": {
+    "driver": "CLICK-SEQ view-id dispatch (real DOWN/UP law)",
+    "view_id": 31
+   },
+   "previous_state_hash": "a67baa796c94556e25071815d561621cb3215e40f8e01d602baca6b272e93a2c",
+   "new_state_hash": "35932ad1557880c4a596aa1760b7bc6fc697defb523e1bb6e3777a990c2f8aa5",
+   "state_changed": true
+  },
+  {
+   "step": 8,
+   "observation": {
+    "frame_index": 7,
+    "status_text_before": "Y to move",
+    "visible_marks_before": 7
+   },
+   "detected_state": "TURN_R",
+   "chosen_action": "TAP_COLUMN_6",
+   "input_coordinates": {
+    "driver": "CLICK-SEQ view-id dispatch (real DOWN/UP law)",
+    "view_id": 55
+   },
+   "previous_state_hash": "35932ad1557880c4a596aa1760b7bc6fc697defb523e1bb6e3777a990c2f8aa5",
+   "new_state_hash": "797340d5d194d6903d19455128359afd10af195fa86f1328d669e857327f953c",
+   "state_changed": true
+  },
+  {
+   "step": 9,
+   "observation": {
+    "frame_index": 8,
+    "status_text_before": "R to move",
+    "visible_marks_before": 8
+   },
+   "detected_state": "TURN_Y",
+   "chosen_action": "TAP_COLUMN_5",
+   "input_coordinates": {
+    "driver": "CLICK-SEQ view-id dispatch (real DOWN/UP law)",
+    "view_id": 51
+   },
+   "previous_state_hash": "797340d5d194d6903d19455128359afd10af195fa86f1328d669e857327f953c",
+   "new_state_hash": "4e591b1a83c19fe5abaea442420394385ae59d1f5704e7e48190297e240af2c0",
+   "state_changed": true
+  },
+  {
+   "step": 10,
+   "observation": {
+    "frame_index": 9,
+    "status_text_before": "Y to move",
+    "visible_marks_before": 9
+   },
+   "detected_state": "TURN_R",
+   "chosen_action": "TAP_COLUMN_4",
+   "input_coordinates": {
+    "driver": "CLICK-SEQ view-id dispatch (real DOWN/UP law)",
+    "view_id": 47
+   },
+   "previous_state_hash": "4e591b1a83c19fe5abaea442420394385ae59d1f5704e7e48190297e240af2c0",
+   "new_state_hash": "4c25e804ee020dda57f069abdee1c35e3dc5f6f9689b086d40c5289eee66bdb9",
+   "state_changed": true
+  },
+  {
+   "step": 11,
+   "observation": {
+    "frame_index": 10,
+    "status_text_before": "R to move",
+    "visible_marks_before": 10
+   },
+   "detected_state": "TURN_Y",
+   "chosen_action": "TAP_COLUMN_3",
+   "input_coordinates": {
+    "driver": "CLICK-SEQ view-id dispatch (real DOWN/UP law)",
+    "view_id": 43
+   },
+   "previous_state_hash": "4c25e804ee020dda57f069abdee1c35e3dc5f6f9689b086d40c5289eee66bdb9",
+   "new_state_hash": "b4b2d6b07f7eab2849272a7b1b120d6ba191ae1de77dac9a9d67e2fed6abf49e",
+   "state_changed": true
+  },
+  {
+   "step": 12,
+   "observation": {
+    "frame_index": 11,
+    "status_text_before": "Y to move",
+    "visible_marks_before": 11
+   },
+   "detected_state": "TURN_R",
+   "chosen_action": "TAP_COLUMN_2",
+   "input_coordinates": {
+    "driver": "CLICK-SEQ view-id dispatch (real DOWN/UP law)",
+    "view_id": 39
+   },
+   "previous_state_hash": "b4b2d6b07f7eab2849272a7b1b120d6ba191ae1de77dac9a9d67e2fed6abf49e",
+   "new_state_hash": "521771429ebaea5b502cfad7c5adedd80f250712fbbc514b18adecd3dd2a4de8",
+   "state_changed": true
+  },
+  {
+   "step": 13,
+   "observation": {
+    "frame_index": 12,
+    "status_text_before": "R to move",
+    "visible_marks_before": 12
+   },
+   "detected_state": "TURN_Y",
+   "chosen_action": "TAP_COLUMN_1",
+   "input_coordinates": {
+    "driver": "CLICK-SEQ view-id dispatch (real DOWN/UP law)",
+    "view_id": 35
+   },
+   "previous_state_hash": "521771429ebaea5b502cfad7c5adedd80f250712fbbc514b18adecd3dd2a4de8",
+   "new_state_hash": "79e46201cc600bc58a9706e4fb785958a8f1b9840e50fb194c044f579cd536e5",
+   "state_changed": true
+  },
+  {
+   "step": 14,
+   "observation": {
+    "frame_index": 13,
+    "status_text_before": "Y to move",
+    "visible_marks_before": 13
+   },
+   "detected_state": "TURN_R",
+   "chosen_action": "TAP_COLUMN_0",
+   "input_coordinates": {
+    "driver": "CLICK-SEQ view-id dispatch (real DOWN/UP law)",
+    "view_id": 31
+   },
+   "previous_state_hash": "79e46201cc600bc58a9706e4fb785958a8f1b9840e50fb194c044f579cd536e5",
+   "new_state_hash": "68a2a9230ee44cc294ab4112d7ec4c75a5f261c1fb97a0c20d047d55b3ec5c5a",
+   "state_changed": true
+  },
+  {
+   "step": 15,
+   "observation": {
+    "frame_index": 14,
+    "status_text_before": "R to move",
+    "visible_marks_before": 14
+   },
+   "detected_state": "TURN_Y",
+   "chosen_action": "TAP_COLUMN_6",
+   "input_coordinates": {
+    "driver": "CLICK-SEQ view-id dispatch (real DOWN/UP law)",
+    "view_id": 55
+   },
+   "previous_state_hash": "68a2a9230ee44cc294ab4112d7ec4c75a5f261c1fb97a0c20d047d55b3ec5c5a",
+   "new_state_hash": "ed5129afd0c8ce1e00cf9138ff38d250c78f374534211c1be4e70a1d071b5b0a",
+   "state_changed": true
+  },
+  {
+   "step": 16,
+   "observation": {
+    "frame_index": 15,
+    "status_text_before": "Y to move",
+    "visible_marks_before": 15
+   },
+   "detected_state": "TURN_R",
+   "chosen_action": "TAP_COLUMN_5",
+   "input_coordinates": {
+    "driver": "CLICK-SEQ view-id dispatch (real DOWN/UP law)",
+    "view_id": 51
+   },
+   "previous_state_hash": "ed5129afd0c8ce1e00cf9138ff38d250c78f374534211c1be4e70a1d071b5b0a",
+   "new_state_hash": "d574476023b15bc2562b00f854d7de8e16142cd599aecf4795096cf2c0737765",
+   "state_changed": true
+  },
+  {
+   "step": 17,
+   "observation": {
+    "frame_index": 16,
+    "status_text_before": "R to move",
+    "visible_marks_before": 16
+   },
+   "detected_state": "TURN_Y",
+   "chosen_action": "TAP_COLUMN_4",
+   "input_coordinates": {
+    "driver": "CLICK-SEQ view-id dispatch (real DOWN/UP law)",
+    "view_id": 47
+   },
+   "previous_state_hash": "d574476023b15bc2562b00f854d7de8e16142cd599aecf4795096cf2c0737765",
+   "new_state_hash": "4b1303f50d9659698df91d20a81abc0956a9f6ada61c8458675d127ffe9399d3",
+   "state_changed": true
+  },
+  {
+   "step": 18,
+   "observation": {
+    "frame_index": 17,
+    "status_text_before": "Y to move",
+    "visible_marks_before": 17
+   },
+   "detected_state": "TURN_R",
+   "chosen_action": "TAP_COLUMN_3",
+   "input_coordinates": {
+    "driver": "CLICK-SEQ view-id dispatch (real DOWN/UP law)",
+    "view_id": 43
+   },
+   "previous_state_hash": "4b1303f50d9659698df91d20a81abc0956a9f6ada61c8458675d127ffe9399d3",
+   "new_state_hash": "1af2c9dbb239fef9c2b24d0411af0e45d50d87cae89d5e35471cfcead40e7c70",
+   "state_changed": true
+  },
+  {
+   "step": 19,
+   "observation": {
+    "frame_index": 18,
+    "status_text_before": "R to move",
+    "visible_marks_before": 18
+   },
+   "detected_state": "TURN_Y",
+   "chosen_action": "TAP_COLUMN_2",
+   "input_coordinates": {
+    "driver": "CLICK-SEQ view-id dispatch (real DOWN/UP law)",
+    "view_id": 39
+   },
+   "previous_state_hash": "1af2c9dbb239fef9c2b24d0411af0e45d50d87cae89d5e35471cfcead40e7c70",
+   "new_state_hash": "b7437a3316c5ed9a3d444c9a2d99528145ba6cc4858e3c99ebad385c2f788e62",
+   "state_changed": true
+  },
+  {
+   "step": 20,
+   "observation": {
+    "frame_index": 19,
+    "status_text_before": "Y to move",
+    "visible_marks_before": 19
+   },
+   "detected_state": "TURN_R",
+   "chosen_action": "TAP_COLUMN_1",
+   "input_coordinates": {
+    "driver": "CLICK-SEQ view-id dispatch (real DOWN/UP law)",
+    "view_id": 35
+   },
+   "previous_state_hash": "b7437a3316c5ed9a3d444c9a2d99528145ba6cc4858e3c99ebad385c2f788e62",
+   "new_state_hash": "57bd0eead9f4c3af351ef31f0e6844bdd76cb2ce4e5d6ee6a0316729fb18710c",
+   "state_changed": true
+  },
+  {
+   "step": 21,
+   "observation": {
+    "frame_index": 20,
+    "status_text_before": "R to move",
+    "visible_marks_before": 20
+   },
+   "detected_state": "TURN_Y",
+   "chosen_action": "TAP_COLUMN_0",
+   "input_coordinates": {
+    "driver": "CLICK-SEQ view-id dispatch (real DOWN/UP law)",
+    "view_id": 31
+   },
+   "previous_state_hash": "57bd0eead9f4c3af351ef31f0e6844bdd76cb2ce4e5d6ee6a0316729fb18710c",
+   "new_state_hash": "355461d4c46f2e259c45b2944a18eb6167c0f5269def4fa5d64439ce26240574",
+   "state_changed": true
+  },
+  {
+   "step": 22,
+   "observation": {
+    "frame_index": 21,
+    "status_text_before": "Y to move",
+    "visible_marks_before": 21
+   },
+   "detected_state": "TERMINAL",
+   "chosen_action": "TAP_COLUMN_6",
+   "input_coordinates": {
+    "driver": "CLICK-SEQ view-id dispatch (real DOWN/UP law)",
+    "view_id": 55
+   },
+   "previous_state_hash": "355461d4c46f2e259c45b2944a18eb6167c0f5269def4fa5d64439ce26240574",
+   "new_state_hash": "89d9bcafed65ef0a1571d23b9273795e83f6465a2dec04efdf8c876b8e12a8d4",
+   "state_changed": true
+  },
+  {
+   "step": 23,
+   "observation": {
+    "frame_index": 22,
+    "status_text_before": "Y WINS",
+    "visible_marks_before": 22
+   },
+   "detected_state": "TERMINAL",
+   "chosen_action": "TAP_COLUMN_5",
+   "input_coordinates": {
+    "driver": "CLICK-SEQ view-id dispatch (real DOWN/UP law)",
+    "view_id": 51
+   },
+   "previous_state_hash": "89d9bcafed65ef0a1571d23b9273795e83f6465a2dec04efdf8c876b8e12a8d4",
+   "new_state_hash": "89d9bcafed65ef0a1571d23b9273795e83f6465a2dec04efdf8c876b8e12a8d4",
+   "state_changed": false
+  },
+  {
+   "step": 24,
+   "observation": {
+    "frame_index": 23,
+    "status_text_before": "Y WINS",
+    "visible_marks_before": 22
+   },
+   "detected_state": "TERMINAL",
+   "chosen_action": "TAP_COLUMN_4",
+   "input_coordinates": {
+    "driver": "CLICK-SEQ view-id dispatch (real DOWN/UP law)",
+    "view_id": 47
+   },
+   "previous_state_hash": "89d9bcafed65ef0a1571d23b9273795e83f6465a2dec04efdf8c876b8e12a8d4",
+   "new_state_hash": "89d9bcafed65ef0a1571d23b9273795e83f6465a2dec04efdf8c876b8e12a8d4",
+   "state_changed": false
+  }
+ ]
+}
