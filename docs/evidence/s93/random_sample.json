@@ -1,0 +1,50 @@
+{
+ "schema": "s93.random_sample.v1",
+ "seed": 20260924,
+ "registry_sha256": "f38c9af5f83896bda42e68967c3c7bcbdf4a335d1c9ca06725d41965795cefe3",
+ "pool_size": 13,
+ "selection": [
+  {
+   "case": "bgclock",
+   "apk": "nl.hansdezwart.bgclock_2.apk",
+   "package": "nl.hansdezwart.bgclock",
+   "title": "BGClock",
+   "stratum": "app"
+  },
+  {
+   "case": "simplestopwatch",
+   "apk": "omegacentauri.mobi.simplestopwatch_26.apk",
+   "package": "omegacentauri.mobi.simplestopwatch",
+   "title": "Simple Stopwatch",
+   "stratum": "app"
+  },
+  {
+   "case": "openlauncher",
+   "apk": "com.benny.openlauncher_39.apk",
+   "package": "com.benny.openlauncher",
+   "title": "OpenLauncher",
+   "stratum": "app"
+  },
+  {
+   "case": "dooz",
+   "apk": "io.github.yamin8000.dooz_18.apk",
+   "package": "io.github.yamin8000.dooz",
+   "title": "Dooz",
+   "stratum": "game"
+  },
+  {
+   "case": "stopwatchg",
+   "apk": "com.github.muellerma.stopwatch_6.apk",
+   "package": "com.github.muellerma.stopwatch",
+   "title": "Stopwatch",
+   "stratum": "app"
+  },
+  {
+   "case": "tinymusic",
+   "apk": "com.martinmimigames.tinymusicplayer_1.apk",
+   "package": "com.martinmimigames.tinymusicplayer",
+   "title": "Tiny Music Player",
+   "stratum": "app"
+  }
+ ]
+}

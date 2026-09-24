@@ -1,0 +1,20 @@
+{
+ "per_title": {
+  "bobball": "NOT_APPLICABLE",
+  "bouncy": "NOT_APPLICABLE",
+  "dodge": "ANIMATION_RENDERED",
+  "fishrings": "ANIMATION_RENDERED",
+  "g2048": "SINGLE_FRAME",
+  "mini-tetris": "FROZEN",
+  "minicraft": "FROZEN",
+  "random_dooz": "SINGLE_FRAME",
+  "snake-deluxe": "ANIMATION_RENDERED",
+  "tictactoe": "NOT_APPLICABLE",
+  "tictactoedeluxe": "ANIMATION_RENDERED"
+ },
+ "totals": {
+  "no_contract": 3,
+  "decoded_or_rendered": 6,
+  "failed": 2
+ }
+}
