@@ -128,7 +128,6 @@ def classify_failures(image_truths=None, animation_truth=None,
     Every returned category cites the vector that produced it."""
     cats = []
     prov = [e.get("event", "") for e in (provenance_events or [])]
-    decoded = "DECODED" in prov or "BITMAP_CREATED" in prov
 
     for name, it in (image_truths or {}).items():
         v = it.get("verdict")
@@ -180,7 +179,8 @@ def classify_failures(image_truths=None, animation_truth=None,
         elif v in ("PLACEHOLDER_ANIMATION", "NOISE", "LARGE_AREA_FLASH"):
             cats.append({"asset": "animation", "category":
                          "PLACEHOLDER_CONTENT", "evidence": dets})
-        elif animation_truth.get("ANIMATION_GEOMETRY_VERIFIED") == "FAIL":
+        elif animation_truth.get("verdict") != "NOT_APPLICABLE" and \
+                animation_truth.get("ANIMATION_GEOMETRY_VERIFIED") == "FAIL":
             cats.append({"asset": "animation",
                          "category": "ANIMATION_WRONG_GEOMETRY",
                          "evidence": dets})
@@ -220,8 +220,6 @@ def classify_failures(image_truths=None, animation_truth=None,
                          "category": "INTERACTION_TARGET_MISMATCH",
                          "evidence": [ip.get("note", "")]})
 
-    if not cats:
-        cats = [{"asset": None, "category": "UNKNOWN", "evidence": []}]
     return cats
 
 
@@ -234,19 +232,28 @@ HIERARCHY = [
 ]
 
 
-def derive_s93_level(stages, image_truths=None, animation_truth=None,
-                     font_truths=None, text_truths=None):
+def derive_s93_level(image_truths=None, animation_truth=None,
+                     font_truths=None, text_truths=None, stages=None):
     """S93 aggregate level for a title under the §25 non-implication rules.
     Combines with (never replaces) the S92 12-state machine verdict."""
     sem_fail = []
+    sem_partial = False
+    FAIL_VERDICTS = {"PLACEHOLDER", "OPAQUE_REPLACEMENT", "MISSING",
+                     "WRONG_POSITION", "WRONG_GEOMETRY", "WRONG_CONTENT",
+                     "REGION_INVALID"}
     for name, it in (image_truths or {}).items():
-        if it.get("verdict") not in ("VISUALLY_VERIFIED", "UNANCHORED",
-                                     None):
-            sem_fail.append(("image", name, it.get("verdict")))
-    if animation_truth and animation_truth.get("verdict") in (
-            "FROZEN", "NOISE", "LARGE_AREA_FLASH", "PLACEHOLDER_ANIMATION"):
-        sem_fail.append(("animation", "animation",
-                         animation_truth.get("verdict")))
+        v = it.get("verdict")
+        if v in FAIL_VERDICTS:
+            sem_fail.append(("image", name, v))
+        elif v == "VISUALLY_PARTIAL":
+            sem_partial = True
+    av = (animation_truth or {}).get("verdict")
+    if av in ("FROZEN", "NOISE", "LARGE_AREA_FLASH",
+              "PLACEHOLDER_ANIMATION"):
+        sem_fail.append(("animation", "animation", av))
+    elif av in ("ANIMATION_DECODED", "ANIMATION_RENDERED",
+                "ANIMATION_CONTENT_VERIFIED"):
+        sem_partial = True
     for name, ft in (font_truths or {}).items():
         if ft.get("verdict") in ("BROKEN_FONT", "UNREADABLE", "WRONG_FONT"):
             sem_fail.append(("font", name, ft.get("verdict")))
@@ -254,7 +261,9 @@ def derive_s93_level(stages, image_truths=None, animation_truth=None,
         if tt.get("verdict") in ("MISSING_TEXT", "CLIPPED_TEXT",
                                  "UNREADABLE"):
             sem_fail.append(("text", name, tt.get("verdict")))
-    return {"s93_level": "SEMANTIC_FAIL" if sem_fail else "SEMANTIC_PASS",
+    level = "SEMANTIC_FAIL" if sem_fail else (
+        "SEMANTIC_PARTIAL" if sem_partial else "SEMANTIC_PASS")
+    return {"s93_level": level,
             "semantic_failures": sem_fail}
 
 
