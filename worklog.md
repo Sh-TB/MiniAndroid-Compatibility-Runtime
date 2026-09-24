@@ -3238,3 +3238,25 @@ Work Log:
 
 Stage Summary:
 - Every owner directive re-verified with fresh post-reboot evidence; two new engine laws (194 landed, 195 candidate recorded); all claims in S91_REPORT now artifact-backed and independently reproduced; repo fully English; push ledger clear.
+
+---
+Task ID: S92-RECON
+Agent: Super Z (main)
+Task: S92 graphics-truth recon — audit existing graphics harness before building the verifier
+
+Work Log:
+- Git: HEAD 535b091f (S91-R2 worklog), clean tree, main. No S92 artifacts exist (no verify_graphics, no visual_contracts, no verdicts) — S92 verifier does NOT exist yet; addendum "continue" = continue from S91 state.
+- Existing evidence producers found (REUSE, not duplicate):
+  * runtime CLI: miniandroid run <apk> -o dir [--frames N | --click-count N] [--tap x,y@frame] [--max-seconds s] [--data-root dir] -> screenshot.png + frames/frame_NNN.png + frames/manifest.json + view_tree.json (bounds/visibility/clickable/image_resource_id/text per node)
+  * GfxProvenance (env MINIANDROID_GFX_PROVENANCE=): per-image chain ASSET_FOUND->RESOURCE_RESOLVED->DECODED->BITMAP_CREATED->VIEW_RECEIVED->DRAW_CALLED (+GL chain RENDERER_BOUND->SURFACE_CREATED->DRAW_SUBMITTED->FRAMEBUFFER_UPDATED->BUFFER_PRESENTED), per-frame census, FIRST_DIVERGENCE auto-derivation
+  * ClickAudit (env MINIANDROID_CLICK_AUDIT=): JSONL per-click target/dispatch records
+  * touch_dispatcher: hit-test = deepest VISIBLE view under point (invisible target -> target=0, no dispatch)
+  * tools/verify/verify.py + probes/screenshot_metrics.py: existing root-verification fast path; screenshot metrics are DIAGNOSTIC-only
+  * scripts/s73_screenshot_gate.py: old pixel-stats gate (historical, has a syntax bug, superseded)
+- Canonical registry: docs/evidence/canonical/registry.json (148 titles: 112 OBSERVED / 22 VERIFIED / 12 VERIFIED-INTERACTIVE / 2 PARTIAL); views in docs/achievements/; assets docs/evidence/canonical/ (12 GIF + 24 JPG).
+- S91 claims to audit (S92 §32): 12 GIF VERIFIED-INTERACTIVE titles (nounours, dodge, hotdeath, bobball, snake-deluxe, mini-tetris, 2048, tictactoedeluxe, emmanuelmess.tictactoe, bouncy, urlchecker, minicraft).
+- Environment post-reset: runtime binary NOT built, APK cache empty. bootstrap_toolchain.sh + make build STARTED in background (log /tmp/s92_bootstrap.log).
+- Missing layers (S92 to build): visual contracts, asset-provenance-to-pixels cross-check, geometry delta, input-target visibility gate, pre/post interaction proof, readiness/stability model, verdict state machine, false-positive battery.
+
+Stage Summary:
+- Recon recorded. Verifier will EXTEND tools/verify/probes/ + consume existing runtime evidence; no runtime mechanism duplication. Corpus fetch via scripts/test/fetch_corpus.py (18 SHA-pinned APKs); fixture APKs via scripts/build/build_fixture_apk.sh (aapt2 real-resource path).
