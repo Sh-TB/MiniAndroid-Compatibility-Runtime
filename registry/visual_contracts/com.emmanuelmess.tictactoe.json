@@ -1,0 +1,221 @@
+{
+ "apk_asset_inventory": [
+  {
+   "bucket": "",
+   "dims": [
+    72,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ic_launcher.png",
+   "path": "res/mipmap-hdpi-v4/ic_launcher.png",
+   "sha256": "142c4459a889e65dd3d097bc15c059792e65d86b567dd7260d69e78150f69f90"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    162,
+    162
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ic_launcher_foreground.png",
+   "path": "res/mipmap-hdpi-v4/ic_launcher_foreground.png",
+   "sha256": "4db9da910ee435a1b6db9707cdc7fc80d6f3ca5436f3d1ed819449fd14537f18"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    72,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ic_launcher_round.png",
+   "path": "res/mipmap-hdpi-v4/ic_launcher_round.png",
+   "sha256": "f967532f8d60974ff257deac48f8cc3fac57c84cad8367881f3c0356ded9cbb9"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ic_launcher.png",
+   "path": "res/mipmap-mdpi-v4/ic_launcher.png",
+   "sha256": "66a331d9b59fd6f3d756135fccfcee62e435be2f91ecd36ebf1dbf8020119729"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    108,
+    108
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ic_launcher_foreground.png",
+   "path": "res/mipmap-mdpi-v4/ic_launcher_foreground.png",
+   "sha256": "15230a24f85288f6f4c01ce4fb9589f00144ddc353acf5f6e822df2ea379fc96"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ic_launcher_round.png",
+   "path": "res/mipmap-mdpi-v4/ic_launcher_round.png",
+   "sha256": "3bc1d0e2a84264f3939b0c9c734a8ba98a9c47bd1e25d828c8fafd38ba7ba262"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ic_launcher.png",
+   "path": "res/mipmap-xhdpi-v4/ic_launcher.png",
+   "sha256": "d607884e4933994d1f325b4bfaa175e960df1d0ef57b10fb1e0e9a6e212d450e"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    216,
+    216
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ic_launcher_foreground.png",
+   "path": "res/mipmap-xhdpi-v4/ic_launcher_foreground.png",
+   "sha256": "2fc97123d2ceda12c945f8b6d85bfaf0308ef87011331393bbc1ee4155fa0e8d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ic_launcher_round.png",
+   "path": "res/mipmap-xhdpi-v4/ic_launcher_round.png",
+   "sha256": "6bbf45b6f7860b27f13c5f474d48d6b6593c7192c942929919e4bbf58a5cb50e"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    144,
+    144
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ic_launcher.png",
+   "path": "res/mipmap-xxhdpi-v4/ic_launcher.png",
+   "sha256": "469c58b5bda6704f259e74664ac5e28c70672549b5b383d10cf4b9d02f1b4724"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    324,
+    324
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ic_launcher_foreground.png",
+   "path": "res/mipmap-xxhdpi-v4/ic_launcher_foreground.png",
+   "sha256": "18a616fae826a7a6be6565e11d362194ace2727d3a73691e5effc07c25ab11a1"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    144,
+    144
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ic_launcher_round.png",
+   "path": "res/mipmap-xxhdpi-v4/ic_launcher_round.png",
+   "sha256": "f5ff7dbdf5eaffcba9a6ea32af037c8979084f3e173241337363f238a63309ac"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    192,
+    192
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ic_launcher.png",
+   "path": "res/mipmap-xxxhdpi-v4/ic_launcher.png",
+   "sha256": "a212e736608adf80420d609703d07a13b590aef42da437428942da0792398e88"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    432,
+    432
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ic_launcher_foreground.png",
+   "path": "res/mipmap-xxxhdpi-v4/ic_launcher_foreground.png",
+   "sha256": "b3fafd17a0c5765eb1311b9d1a0b786d55964896ab9164f47c8f5fb3c5612b98"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    192,
+    192
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ic_launcher_round.png",
+   "path": "res/mipmap-xxxhdpi-v4/ic_launcher_round.png",
+   "sha256": "cbfc775476f91c040a58d3e541ea8d93fffc262af37284d2f1093062d1d37fba"
+  }
+ ],
+ "apk_sha256": "760fe5acf7b394354bf02b7b3484c3eb442b491c1fa4325603ad3250f0dfa394",
+ "confidence": "apk_verified",
+ "dynamic_regions": [],
+ "expected_state_changes": [],
+ "interaction_targets": [],
+ "package": "com.emmanuelmess.tictactoe",
+ "renderer_family": "view-xml",
+ "renderer_signals": [],
+ "required_assets": [],
+ "required_elements": [
+  {
+   "class": "Landroid/widget/RelativeLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "name": "android/widget/RelativeLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  }
+ ],
+ "required_regions": [],
+ "schema": "s92.visual_contract.v1",
+ "screen": [
+  1080,
+  1920
+ ],
+ "source_provenance": {
+  "source_laws": [],
+  "source_root": null,
+  "source_url": null
+ },
+ "title": "TicTacToe Classic"
+}

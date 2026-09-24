@@ -1,0 +1,243 @@
+{
+ "apk_asset_inventory": [],
+ "apk_sha256": "e399395570c49c65bef5d033f59857e00af686a29d3e3bbf2bdd4e6161d77665",
+ "confidence": "observed_only",
+ "dynamic_regions": [],
+ "expected_state_changes": [],
+ "interaction_targets": [
+  {
+   "bounds": [
+    47,
+    1459,
+    986,
+    81
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "START",
+   "view_id": 2130903043
+  },
+  {
+   "bounds": [
+    277,
+    1595,
+    525,
+    74
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "TOP",
+   "view_id": 2130903044
+  },
+  {
+   "bounds": [
+    47,
+    1706,
+    525,
+    74
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "LEFT",
+   "view_id": 2130903041
+  },
+  {
+   "bounds": [
+    572,
+    1706,
+    525,
+    74
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "RIGHT",
+   "view_id": 2130903042
+  },
+  {
+   "bounds": [
+    277,
+    1817,
+    525,
+    74
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "BOTTOM",
+   "view_id": 2130903040
+  }
+ ],
+ "package": "com.miniandroid.snakedeluxe",
+ "renderer_family": "canvas-custom-view",
+ "renderer_signals": [
+  "app-custom-View-subclass"
+ ],
+ "required_assets": [],
+ "required_elements": [
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Lcom.miniandroid.snakedeluxe.GameView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1412
+   ],
+   "name": "GameView",
+   "resource_id": 2130903045,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    1412,
+    1080,
+    508
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    47,
+    1459,
+    986,
+    81
+   ],
+   "name": "android/widget/Button[START]",
+   "resource_id": 2130903043,
+   "text": "START",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    47,
+    1540,
+    986,
+    111
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    47,
+    1651,
+    986,
+    111
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    47,
+    1762,
+    986,
+    111
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    277,
+    1595,
+    525,
+    74
+   ],
+   "name": "android/widget/Button[TOP]",
+   "resource_id": 2130903044,
+   "text": "TOP",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    47,
+    1706,
+    525,
+    74
+   ],
+   "name": "android/widget/Button[LEFT]",
+   "resource_id": 2130903041,
+   "text": "LEFT",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    572,
+    1706,
+    525,
+    74
+   ],
+   "name": "android/widget/Button[RIGHT]",
+   "resource_id": 2130903042,
+   "text": "RIGHT",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    277,
+    1817,
+    525,
+    74
+   ],
+   "name": "android/widget/Button[BOTTOM]",
+   "resource_id": 2130903040,
+   "text": "BOTTOM",
+   "visibility": "VISIBLE"
+  }
+ ],
+ "required_regions": [],
+ "schema": "s92.visual_contract.v1",
+ "screen": [
+  1080,
+  1920
+ ],
+ "source_provenance": {
+  "source_laws": [],
+  "source_root": null,
+  "source_url": null
+ },
+ "title": "Snake Deluxe"
+}

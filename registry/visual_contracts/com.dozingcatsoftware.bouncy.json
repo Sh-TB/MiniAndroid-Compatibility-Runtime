@@ -1,0 +1,784 @@
+{
+ "apk_asset_inventory": [
+  {
+   "bucket": "",
+   "dims": [
+    36,
+    36
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "7Q.png",
+   "path": "res/7Q.png",
+   "sha256": "aa88b5a34c9cc62ab87078f4515f981ceee0a9892c3783f4a0c7c57306e26961"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "7j.png",
+   "path": "res/7j.png",
+   "sha256": "51a11d3770a3f834917876fa9d1c5cabea167a653708ddb08970b86a29a7cbe5"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    320,
+    180
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "9n.png",
+   "path": "res/9n.png",
+   "sha256": "9923d7161e7b153e2d35770f365ef37bb01556a5e15b7d2822880b5db4c71c34"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    240,
+    240
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "A8.png",
+   "path": "res/A8.png",
+   "sha256": "4bfb515379871deef46f5f3d32be0d904e162c5c0c7d0ac33b11e717f08e6b6f"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    120,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Er.png",
+   "path": "res/Er.png",
+   "sha256": "f69874aded351ff77b59f81fdf60689156c8405232a678d9fe88f54809fff4e0"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "HS.png",
+   "path": "res/HS.png",
+   "sha256": "4f601a0aada3fffb3d631e19bc0a06b9395605127b8c3f46e0dcdc1fd5654b63"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    120,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Hk.png",
+   "path": "res/Hk.png",
+   "sha256": "d3310c9748958feb42fed628da31b0b451e4028d942d69356b5baeefd82af790"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    72,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "IC.png",
+   "path": "res/IC.png",
+   "sha256": "0e87c196a34c5a00f21e3e128b2113bf7eea314e3336950fb8acd6aa316ce254"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "IN.png",
+   "path": "res/IN.png",
+   "sha256": "35d154cd5a2f53aab6319cd3527eb58f7cc346b01553e00cdea94bc3c8f60cb4"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    180,
+    180
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "OA.png",
+   "path": "res/OA.png",
+   "sha256": "7cec4b81bff1396988fd965c0e49d71cc4afc6af70147bebfa88b7414893a4ae"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    90,
+    90
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "OJ.png",
+   "path": "res/OJ.png",
+   "sha256": "fe95793ac0ccfc2fbf31fee79fd6e76962fd8c6b70ff5c4ab57eb66daa03d929"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    60,
+    60
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "PO.png",
+   "path": "res/PO.png",
+   "sha256": "24b879fce2860ada8737e8d279e5d3424c00c53662fbf640e4c9dc79ac5ca3a0"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    60,
+    60
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Rt.png",
+   "path": "res/Rt.png",
+   "sha256": "36f4a21be74399867fe68e05d5f3a2e8c2b6d2a2e08c0e52363482f8a41847ec"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    240,
+    240
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "S6.png",
+   "path": "res/S6.png",
+   "sha256": "b7857fd55f90e39ff3f9bf62c2d1549dc62c4312903cab0b4c6fa77ca3dcee77"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    45,
+    45
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "U_.png",
+   "path": "res/U_.png",
+   "sha256": "5c4fbb5f3c3d4765e649a480dbe09d6691858f7861436936b09ce60a7b143692"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    90,
+    90
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "XC.png",
+   "path": "res/XC.png",
+   "sha256": "308f25d823e04be002920e2e91d52c02062aae2b014d24e0cd996e26fadb41af"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    72,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "_J.png",
+   "path": "res/_J.png",
+   "sha256": "397741f6ec2b2db0e8c14dd90dc2310e1f36af036e31e5045250365f6e6809ee"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    24,
+    24
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "_p.png",
+   "path": "res/_p.png",
+   "sha256": "1954bcdf5dbbcb45cad76e9f457525d934fa80249ba1f243213df4fe1270bfa5"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    768,
+    768
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "fK.png",
+   "path": "res/fK.png",
+   "sha256": "a3c3fcfaba2734804b6b197d48c666f2a3d40542fbb74b59e4e016675cf8c2c0"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    192,
+    192
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "hW.png",
+   "path": "res/hW.png",
+   "sha256": "16b6ae76ecc1e38d135d2295706de79c9c8c344b2bb2e9f02acab016247a1601"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    144,
+    144
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ly.png",
+   "path": "res/ly.png",
+   "sha256": "4f041b358e63387e76fd3bc650482875228f32c4698a58ecd75f39836d1dfb30"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "mS.png",
+   "path": "res/mS.png",
+   "sha256": "154c871d4cc76fc6ecf0e90276a10e7ba5fc5da3bcfd0ab0eb5f641822289a9d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    18,
+    18
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "sW.png",
+   "path": "res/sW.png",
+   "sha256": "68d35dd9969e18a10d47af0e070ad6f04c2bbd30b0fdfb69196f9b7527401af0"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    45,
+    45
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "v1.png",
+   "path": "res/v1.png",
+   "sha256": "3dd9476b539bf0f987b2c380fde6132ae9d5f9f8f9108c9bee2cb8e189809c24"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    180,
+    180
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "zg.png",
+   "path": "res/zg.png",
+   "sha256": "f99f2e4b6f0b59600b2aad5e58c4b992b32f34be4b1deb1eba78e5741b331be9"
+  }
+ ],
+ "apk_sha256": "ffda0d9cb0b1b2aa58be9559dda891c4fa24391bc481d297a8e3d96c31f62721",
+ "confidence": "apk_verified",
+ "dynamic_regions": [],
+ "expected_state_changes": [],
+ "interaction_targets": [
+  {
+   "bounds": [
+    0,
+    0,
+    1080,
+    147
+   ],
+   "class": "Lcom.dozingcatsoftware.bouncy.ScoreView;",
+   "confidence": "observed_only",
+   "text": null,
+   "view_id": 2130968594
+  },
+  {
+   "bounds": [
+    0,
+    0,
+    -2,
+    -2
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "OK",
+   "view_id": 2130968583
+  },
+  {
+   "bounds": [
+    227,
+    652,
+    126,
+    126
+   ],
+   "class": "Landroid/widget/ImageButton;",
+   "confidence": "observed_only",
+   "text": null,
+   "view_id": 2130968591
+  },
+  {
+   "bounds": [
+    353,
+    667,
+    374,
+    95
+   ],
+   "class": "Landroid/widget/TextView;",
+   "confidence": "observed_only",
+   "text": "Select Table",
+   "view_id": 2130968595
+  },
+  {
+   "bounds": [
+    727,
+    652,
+    126,
+    126
+   ],
+   "class": "Landroid/widget/ImageButton;",
+   "confidence": "observed_only",
+   "text": null,
+   "view_id": 2130968587
+  },
+  {
+   "bounds": [
+    404,
+    778,
+    272,
+    44
+   ],
+   "class": "Landroid/widget/CheckBox;",
+   "confidence": "observed_only",
+   "text": "Unlimited Balls",
+   "view_id": 2130968601
+  },
+  {
+   "bounds": [
+    404,
+    833,
+    207,
+    44
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "Start Game",
+   "view_id": 2130968597
+  },
+  {
+   "bounds": [
+    404,
+    940,
+    210,
+    44
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "High scores",
+   "view_id": 2130968584
+  },
+  {
+   "bounds": [
+    404,
+    1005,
+    82,
+    44
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "Help",
+   "view_id": 2130968576
+  },
+  {
+   "bounds": [
+    404,
+    1070,
+    212,
+    44
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "Preferences",
+   "view_id": 2130968590
+  },
+  {
+   "bounds": [
+    404,
+    1177,
+    76,
+    44
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "Quit",
+   "view_id": 2130968592
+  }
+ ],
+ "package": "com.dozingcatsoftware.bouncy",
+ "renderer_family": "view-xml",
+ "renderer_signals": [
+  "app-custom-View-subclass"
+ ],
+ "required_assets": [],
+ "required_elements": [
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/FrameLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    147
+   ],
+   "name": "android/widget/FrameLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/FrameLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    147,
+    1080,
+    1773
+   ],
+   "name": "android/widget/FrameLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Lcom.dozingcatsoftware.bouncy.ScoreView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    147
+   ],
+   "name": "ScoreView",
+   "resource_id": 2130968594,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Lcom.dozingcatsoftware.bouncy.GLFieldView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    147,
+    1080,
+    1773
+   ],
+   "name": "GLFieldView",
+   "resource_id": 2130968582,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    185,
+    631,
+    710,
+    804
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 2130968579,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    227,
+    652,
+    626,
+    126
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 2130968596,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TableLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    404,
+    778,
+    272,
+    657
+   ],
+   "name": "android/widget/TableLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TextView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -2,
+    -2
+   ],
+   "name": "android/widget/TextView[High scores]",
+   "resource_id": 0,
+   "text": "High scores",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -2,
+    -2
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 2130968585,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TextView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -2,
+    -2
+   ],
+   "name": "android/widget/TextView[No scores for this table]",
+   "resource_id": 2130968588,
+   "text": "No scores for this table",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -2,
+    -2
+   ],
+   "name": "android/widget/Button[OK]",
+   "resource_id": 2130968583,
+   "text": "OK",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TextView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -2,
+    -2
+   ],
+   "name": "android/widget/TextView[Select Table]",
+   "resource_id": 0,
+   "text": "Select Table",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/GridView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -1,
+    0
+   ],
+   "name": "android/widget/GridView",
+   "resource_id": 2130968598,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/ImageButton;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    227,
+    652,
+    126,
+    126
+   ],
+   "name": "android/widget/ImageButton",
+   "resource_id": 2130968591,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TextView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    353,
+    667,
+    374,
+    95
+   ],
+   "name": "android/widget/TextView[Select Table]",
+   "resource_id": 2130968595,
+   "text": "Select Table",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/ImageButton;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    727,
+    652,
+    126,
+    126
+   ],
+   "name": "android/widget/ImageButton",
+   "resource_id": 2130968587,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/CheckBox;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    404,
+    778,
+    272,
+    44
+   ],
+   "name": "android/widget/CheckBox[Unlimited Balls]",
+   "resource_id": 2130968601,
+   "text": "Unlimited Balls",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    404,
+    833,
+    207,
+    44
+   ],
+   "name": "android/widget/Button[Start Game]",
+   "resource_id": 2130968597,
+   "text": "Start Game",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    404,
+    940,
+    210,
+    44
+   ],
+   "name": "android/widget/Button[High scores]",
+   "resource_id": 2130968584,
+   "text": "High scores",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    404,
+    1005,
+    82,
+    44
+   ],
+   "name": "android/widget/Button[Help]",
+   "resource_id": 2130968576,
+   "text": "Help",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    404,
+    1070,
+    212,
+    44
+   ],
+   "name": "android/widget/Button[Preferences]",
+   "resource_id": 2130968590,
+   "text": "Preferences",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    404,
+    1177,
+    76,
+    44
+   ],
+   "name": "android/widget/Button[Quit]",
+   "resource_id": 2130968592,
+   "text": "Quit",
+   "visibility": "VISIBLE"
+  }
+ ],
+ "required_regions": [],
+ "schema": "s92.visual_contract.v1",
+ "screen": [
+  1080,
+  1920
+ ],
+ "source_provenance": {
+  "source_laws": [],
+  "source_root": null,
+  "source_url": null
+ },
+ "title": "Vector Pinball"
+}

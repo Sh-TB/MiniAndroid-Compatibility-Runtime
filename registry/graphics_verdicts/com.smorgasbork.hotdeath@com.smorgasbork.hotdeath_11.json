@@ -1,0 +1,756 @@
+{
+ "apk_sha256": "8e6c19ead1795fa5b0f62090f3a56efa4be16e4b3e33f151af707f5eb5e5c620",
+ "asset_chains": [
+  {
+   "APK": "PASS",
+   "BOUND_TO_VIEW": "PASS",
+   "DECODED": "PASS",
+   "DRAW_CALLED": "FAIL",
+   "FAILURE": "BOUND_BUT_NEVER_DRAWN",
+   "PIXELS_FOUND": "FAIL",
+   "apk_sha256": "c4a4dab9bc5ab73d21acef4b168e1d15596cd4704d7c78b66739e072df28c614",
+   "asset": "splash.png",
+   "confidence": "apk_verified",
+   "decode": {
+    "decoded": true,
+    "dims": [
+     480,
+     800
+    ],
+    "fully_transparent": false,
+    "mode": "RGB"
+   },
+   "pixel_presence": {
+    "region": [
+     0,
+     0,
+     1080,
+     1920
+    ],
+    "techniques": {
+     "T1_template_ncc": {
+      "offset": [
+       11,
+       29
+      ],
+      "score": 0.3059,
+      "thresholds": {
+       "moderate": 0.72,
+       "strong": 0.9
+      }
+     },
+     "T2_color_signature": {
+      "distinctive_colors": 3,
+      "region_colors": 4,
+      "score": 0.0,
+      "thresholds": {
+       "moderate": 0.45,
+       "strong": 0.7
+      }
+     },
+     "T3_edge_signature": {
+      "score": 0.3636,
+      "threshold": 0.55
+     },
+     "T4_nonblank": {
+      "floor": 6.0,
+      "region_stddev": 25.92
+     }
+    },
+    "verdict": "ABSENT"
+   },
+   "provenance_event": {
+    "ASSET_FOUND": true,
+    "BITMAP_CREATED": false,
+    "DECODED": false,
+    "DRAW_CALLED": false,
+    "FAILURE": "BG_BITMAP_NOT_DRAWN_BY_ENGINE",
+    "FIRST_DIVERGENCE": {
+     "bit": "DECODED",
+     "earlier_passed": [
+      "ASSET_FOUND",
+      "RESOURCE_RESOLVED"
+     ]
+    },
+    "RESOURCE_RESOLVED": true,
+    "VIEW_RECEIVED": true,
+    "color_type": "png",
+    "dst": {
+     "h": 1920.0,
+     "w": 1080.0,
+     "x": 0.0,
+     "y": 0.0
+    },
+    "dst_region": [
+     0.0,
+     0.0,
+     1080.0,
+     1920.0
+    ],
+    "height": 0,
+    "matched_from": 11,
+    "origin": "background-bitmap",
+    "path": "res/drawable-xhdpi-v4/splash.png",
+    "resid": 0,
+    "src_density": 0,
+    "width": 0
+   },
+   "resource_path": "res/drawable-hdpi-v4/splash.png"
+  },
+  {
+   "APK": "PASS",
+   "BOUND_TO_VIEW": "PASS",
+   "DECODED": "PASS",
+   "DRAW_CALLED": "FAIL",
+   "FAILURE": "BOUND_BUT_NEVER_DRAWN",
+   "PIXELS_FOUND": "FAIL",
+   "apk_sha256": "1a799e2073e63a5552661700eba510990d4d8b3227b3f1ca374be6181c640af4",
+   "asset": "splash.png",
+   "confidence": "apk_verified",
+   "decode": {
+    "decoded": true,
+    "dims": [
+     322,
+     536
+    ],
+    "fully_transparent": false,
+    "mode": "RGB"
+   },
+   "pixel_presence": {
+    "region": [
+     0,
+     0,
+     1080,
+     1920
+    ],
+    "techniques": {
+     "T1_template_ncc": {
+      "offset": [
+       11,
+       13
+      ],
+      "score": 0.3063,
+      "thresholds": {
+       "moderate": 0.72,
+       "strong": 0.9
+      }
+     },
+     "T2_color_signature": {
+      "distinctive_colors": 3,
+      "region_colors": 4,
+      "score": 0.0,
+      "thresholds": {
+       "moderate": 0.45,
+       "strong": 0.7
+      }
+     },
+     "T3_edge_signature": {
+      "score": 0.3651,
+      "threshold": 0.55
+     },
+     "T4_nonblank": {
+      "floor": 6.0,
+      "region_stddev": 25.92
+     }
+    },
+    "verdict": "ABSENT"
+   },
+   "provenance_event": {
+    "ASSET_FOUND": true,
+    "BITMAP_CREATED": false,
+    "DECODED": false,
+    "DRAW_CALLED": false,
+    "FAILURE": "BG_BITMAP_NOT_DRAWN_BY_ENGINE",
+    "FIRST_DIVERGENCE": {
+     "bit": "DECODED",
+     "earlier_passed": [
+      "ASSET_FOUND",
+      "RESOURCE_RESOLVED"
+     ]
+    },
+    "RESOURCE_RESOLVED": true,
+    "VIEW_RECEIVED": true,
+    "color_type": "png",
+    "dst": {
+     "h": 1920.0,
+     "w": 1080.0,
+     "x": 0.0,
+     "y": 0.0
+    },
+    "dst_region": [
+     0.0,
+     0.0,
+     1080.0,
+     1920.0
+    ],
+    "height": 0,
+    "matched_from": 11,
+    "origin": "background-bitmap",
+    "path": "res/drawable-xhdpi-v4/splash.png",
+    "resid": 0,
+    "src_density": 0,
+    "width": 0
+   },
+   "resource_path": "res/drawable-mdpi-v4/splash.png"
+  },
+  {
+   "APK": "PASS",
+   "BOUND_TO_VIEW": "PASS",
+   "DECODED": "PASS",
+   "DRAW_CALLED": "FAIL",
+   "FAILURE": "BOUND_BUT_NEVER_DRAWN",
+   "PIXELS_FOUND": "FAIL",
+   "apk_sha256": "c4a4dab9bc5ab73d21acef4b168e1d15596cd4704d7c78b66739e072df28c614",
+   "asset": "splash.png",
+   "confidence": "apk_verified",
+   "decode": {
+    "decoded": true,
+    "dims": [
+     480,
+     800
+    ],
+    "fully_transparent": false,
+    "mode": "RGB"
+   },
+   "pixel_presence": {
+    "region": [
+     0,
+     0,
+     1080,
+     1920
+    ],
+    "techniques": {
+     "T1_template_ncc": {
+      "offset": [
+       11,
+       29
+      ],
+      "score": 0.3059,
+      "thresholds": {
+       "moderate": 0.72,
+       "strong": 0.9
+      }
+     },
+     "T2_color_signature": {
+      "distinctive_colors": 3,
+      "region_colors": 4,
+      "score": 0.0,
+      "thresholds": {
+       "moderate": 0.45,
+       "strong": 0.7
+      }
+     },
+     "T3_edge_signature": {
+      "score": 0.3636,
+      "threshold": 0.55
+     },
+     "T4_nonblank": {
+      "floor": 6.0,
+      "region_stddev": 25.92
+     }
+    },
+    "verdict": "ABSENT"
+   },
+   "provenance_event": {
+    "ASSET_FOUND": true,
+    "BITMAP_CREATED": false,
+    "DECODED": false,
+    "DRAW_CALLED": false,
+    "FAILURE": "BG_BITMAP_NOT_DRAWN_BY_ENGINE",
+    "FIRST_DIVERGENCE": {
+     "bit": "DECODED",
+     "earlier_passed": [
+      "ASSET_FOUND",
+      "RESOURCE_RESOLVED"
+     ]
+    },
+    "RESOURCE_RESOLVED": true,
+    "VIEW_RECEIVED": true,
+    "color_type": "png",
+    "dst": {
+     "h": 1920.0,
+     "w": 1080.0,
+     "x": 0.0,
+     "y": 0.0
+    },
+    "dst_region": [
+     0.0,
+     0.0,
+     1080.0,
+     1920.0
+    ],
+    "height": 0,
+    "matched_from": 11,
+    "origin": "background-bitmap",
+    "path": "res/drawable-xhdpi-v4/splash.png",
+    "resid": 0,
+    "src_density": 0,
+    "width": 0
+   },
+   "resource_path": "res/drawable-xhdpi-v4/splash.png"
+  },
+  {
+   "APK": "PASS",
+   "BOUND_TO_VIEW": "PASS",
+   "DECODED": "PASS",
+   "DRAW_CALLED": "FAIL",
+   "FAILURE": "BOUND_BUT_NEVER_DRAWN",
+   "PIXELS_FOUND": "FAIL",
+   "apk_sha256": "c4a4dab9bc5ab73d21acef4b168e1d15596cd4704d7c78b66739e072df28c614",
+   "asset": "splash.png",
+   "confidence": "apk_verified",
+   "decode": {
+    "decoded": true,
+    "dims": [
+     480,
+     800
+    ],
+    "fully_transparent": false,
+    "mode": "RGB"
+   },
+   "pixel_presence": {
+    "region": [
+     0,
+     0,
+     1080,
+     1920
+    ],
+    "techniques": {
+     "T1_template_ncc": {
+      "offset": [
+       11,
+       29
+      ],
+      "score": 0.3059,
+      "thresholds": {
+       "moderate": 0.72,
+       "strong": 0.9
+      }
+     },
+     "T2_color_signature": {
+      "distinctive_colors": 3,
+      "region_colors": 4,
+      "score": 0.0,
+      "thresholds": {
+       "moderate": 0.45,
+       "strong": 0.7
+      }
+     },
+     "T3_edge_signature": {
+      "score": 0.3636,
+      "threshold": 0.55
+     },
+     "T4_nonblank": {
+      "floor": 6.0,
+      "region_stddev": 25.92
+     }
+    },
+    "verdict": "ABSENT"
+   },
+   "provenance_event": {
+    "ASSET_FOUND": true,
+    "BITMAP_CREATED": false,
+    "DECODED": false,
+    "DRAW_CALLED": false,
+    "FAILURE": "BG_BITMAP_NOT_DRAWN_BY_ENGINE",
+    "FIRST_DIVERGENCE": {
+     "bit": "DECODED",
+     "earlier_passed": [
+      "ASSET_FOUND",
+      "RESOURCE_RESOLVED"
+     ]
+    },
+    "RESOURCE_RESOLVED": true,
+    "VIEW_RECEIVED": true,
+    "color_type": "png",
+    "dst": {
+     "h": 1920.0,
+     "w": 1080.0,
+     "x": 0.0,
+     "y": 0.0
+    },
+    "dst_region": [
+     0.0,
+     0.0,
+     1080.0,
+     1920.0
+    ],
+    "height": 0,
+    "matched_from": 11,
+    "origin": "background-bitmap",
+    "path": "res/drawable-xhdpi-v4/splash.png",
+    "resid": 0,
+    "src_density": 0,
+    "width": 0
+   },
+   "resource_path": "res/drawable-xlarge-hdpi-v4/splash.png"
+  },
+  {
+   "APK": "PASS",
+   "BOUND_TO_VIEW": "PASS",
+   "DECODED": "PASS",
+   "DRAW_CALLED": "FAIL",
+   "FAILURE": "BOUND_BUT_NEVER_DRAWN",
+   "PIXELS_FOUND": "FAIL",
+   "apk_sha256": "c4a4dab9bc5ab73d21acef4b168e1d15596cd4704d7c78b66739e072df28c614",
+   "asset": "splash.png",
+   "confidence": "apk_verified",
+   "decode": {
+    "decoded": true,
+    "dims": [
+     480,
+     800
+    ],
+    "fully_transparent": false,
+    "mode": "RGB"
+   },
+   "pixel_presence": {
+    "region": [
+     0,
+     0,
+     1080,
+     1920
+    ],
+    "techniques": {
+     "T1_template_ncc": {
+      "offset": [
+       11,
+       29
+      ],
+      "score": 0.3059,
+      "thresholds": {
+       "moderate": 0.72,
+       "strong": 0.9
+      }
+     },
+     "T2_color_signature": {
+      "distinctive_colors": 3,
+      "region_colors": 4,
+      "score": 0.0,
+      "thresholds": {
+       "moderate": 0.45,
+       "strong": 0.7
+      }
+     },
+     "T3_edge_signature": {
+      "score": 0.3636,
+      "threshold": 0.55
+     },
+     "T4_nonblank": {
+      "floor": 6.0,
+      "region_stddev": 25.92
+     }
+    },
+    "verdict": "ABSENT"
+   },
+   "provenance_event": {
+    "ASSET_FOUND": true,
+    "BITMAP_CREATED": false,
+    "DECODED": false,
+    "DRAW_CALLED": false,
+    "FAILURE": "BG_BITMAP_NOT_DRAWN_BY_ENGINE",
+    "FIRST_DIVERGENCE": {
+     "bit": "DECODED",
+     "earlier_passed": [
+      "ASSET_FOUND",
+      "RESOURCE_RESOLVED"
+     ]
+    },
+    "RESOURCE_RESOLVED": true,
+    "VIEW_RECEIVED": true,
+    "color_type": "png",
+    "dst": {
+     "h": 1920.0,
+     "w": 1080.0,
+     "x": 0.0,
+     "y": 0.0
+    },
+    "dst_region": [
+     0.0,
+     0.0,
+     1080.0,
+     1920.0
+    ],
+    "height": 0,
+    "matched_from": 11,
+    "origin": "background-bitmap",
+    "path": "res/drawable-xhdpi-v4/splash.png",
+    "resid": 0,
+    "src_density": 0,
+    "width": 0
+   },
+   "resource_path": "res/drawable-xlarge-mdpi-v4/splash.png"
+  }
+ ],
+ "confidence": "apk_verified",
+ "evidence_inventory": {
+  "click_audit_records": 0,
+  "frame_count": 10,
+  "frames_manifest": true,
+  "gfx_provenance": true,
+  "report_json": false,
+  "screenshot": true,
+  "view_tree": true
+ },
+ "failing_stages": [
+  "assets_rendered",
+  "visual"
+ ],
+ "generated_utc": "2026-09-24T05:38:22Z",
+ "geometry_checks": [
+  {
+   "actual_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/LinearLayout",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "tolerance_px": 230,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    79,
+    647,
+    922,
+    756
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/LinearLayout",
+   "expected_bounds": [
+    79,
+    647,
+    922,
+    756
+   ],
+   "tolerance_px": 110,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    79,
+    647,
+    922,
+    126
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageButton",
+   "expected_bounds": [
+    79,
+    647,
+    922,
+    126
+   ],
+   "tolerance_px": 110,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    79,
+    773,
+    922,
+    126
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageButton",
+   "expected_bounds": [
+    79,
+    773,
+    922,
+    126
+   ],
+   "tolerance_px": 110,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    79,
+    899,
+    922,
+    126
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageButton",
+   "expected_bounds": [
+    79,
+    899,
+    922,
+    126
+   ],
+   "tolerance_px": 110,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    79,
+    1025,
+    922,
+    126
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageButton",
+   "expected_bounds": [
+    79,
+    1025,
+    922,
+    126
+   ],
+   "tolerance_px": 110,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    79,
+    1151,
+    922,
+    126
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageButton",
+   "expected_bounds": [
+    79,
+    1151,
+    922,
+    126
+   ],
+   "tolerance_px": 110,
+   "value": "PASS"
+  }
+ ],
+ "interaction_proofs": [],
+ "not_applicable_stages": [],
+ "notes": [
+  {
+   "frame_quality": {
+    "class": "CONTENT_PRESENT",
+    "content_bounds": [
+     79,
+     647,
+     1000,
+     1276
+    ],
+    "dims": [
+     1080,
+     1920
+    ],
+    "luminance_stddev": 25.92,
+    "non_background_frac": 0.280122,
+    "non_background_px": 580860,
+    "nonbg_unique_colors": 3,
+    "unique_colors_est": 4
+   },
+   "renderer_signals": [],
+   "triangulation": "RENDER_OUTPUT_FAIL"
+  }
+ ],
+ "overall": "FRAME_CAPTURED",
+ "overall_rank": 4,
+ "package": "com.smorgasbork.hotdeath",
+ "renderer_family": "view-xml",
+ "repeatability_runs": [],
+ "run_dir": "/home/z/my-project/run/s92pilot/hotdeath",
+ "runtime_sha": "",
+ "schema": "s92.graphics_verdict.v1",
+ "stages": {
+  "apk_load": {
+   "value": "PASS"
+  },
+  "assets_decoded": {
+   "value": "PASS"
+  },
+  "assets_rendered": {
+   "value": "FAIL"
+  },
+  "assets_resolved": {
+   "value": "PASS"
+  },
+  "evidence_complete": {
+   "value": "PASS"
+  },
+  "frame_output": {
+   "value": "PASS"
+  },
+  "geometry": {
+   "value": "PASS"
+  },
+  "input": {
+   "note": "run drove no interaction; interactive targets exist",
+   "value": "UNKNOWN"
+  },
+  "input_target_visibility": {
+   "note": "run drove no interaction; interactive targets exist",
+   "value": "UNKNOWN"
+  },
+  "lifecycle": {
+   "note": "framework-view-only UI (no app-owned view classes); lifecycle from inflation + frames",
+   "value": "PASS"
+  },
+  "renderer_initialized": {
+   "note": "family=view-xml; signals=[]",
+   "value": "PASS"
+  },
+  "repeatability": {
+   "note": "single run; 3-run law not yet applied",
+   "value": "UNKNOWN"
+  },
+  "scene": {
+   "note": "screenshot class=CONTENT_PRESENT",
+   "value": "PASS"
+  },
+  "state_change": {
+   "note": "run drove no interaction; interactive targets exist",
+   "value": "UNKNOWN"
+  },
+  "visual": {
+   "value": "FAIL"
+  },
+  "visual_change": {
+   "note": "run drove no interaction; interactive targets exist",
+   "value": "UNKNOWN"
+  }
+ },
+ "title": "Hot Death Uno"
+}

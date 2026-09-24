@@ -1,0 +1,516 @@
+{
+ "apk_asset_inventory": [
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ic_action_brightness_high.png",
+   "path": "res/drawable-hdpi-v4/ic_action_brightness_high.png",
+   "sha256": "71e85cf0a80b606f6896d116aab585fae5412f8fd92d2e3e7b1001187454a482"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ic_action_brightness_low.png",
+   "path": "res/drawable-hdpi-v4/ic_action_brightness_low.png",
+   "sha256": "7d58a8be1d28899cbbd4779cd0cba37f50eaf76763150df2fe52c56dd22c1e13"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    72,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "logo.png",
+   "path": "res/drawable-hdpi-v4/logo.png",
+   "sha256": "40113adce0a2cc65b51ba956d3e58966d8b191188597d239d15d2bcf8ac908dc"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    64,
+    64
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ic_action_brightness_high.png",
+   "path": "res/drawable-xhdpi-v4/ic_action_brightness_high.png",
+   "sha256": "76d04218a4bbac6fe3f78c606e895ca6c1a9de82a2c013f8931ff66e31a362d5"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    64,
+    64
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ic_action_brightness_low.png",
+   "path": "res/drawable-xhdpi-v4/ic_action_brightness_low.png",
+   "sha256": "dbf9668d7a08ac687cc458b2734e37ddcdbd098eb66276b8abf970a5fd4210bc"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ic_action_brightness_high.png",
+   "path": "res/drawable-xxhdpi-v4/ic_action_brightness_high.png",
+   "sha256": "d0a4c24d1af33a5c0b6360f37c998181666fca383d64ec5cdd65b167928caa1e"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ic_action_brightness_low.png",
+   "path": "res/drawable-xxhdpi-v4/ic_action_brightness_low.png",
+   "sha256": "4aade42d6d3bf4661db5ff86b6b58ed27a2119b13d3f205100bc0498497c94f0"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    32,
+    32
+   ],
+   "dir": "drawable",
+   "kind": "png",
+   "name": "ic_action_brightness_high.png",
+   "path": "res/drawable/ic_action_brightness_high.png",
+   "sha256": "1c07aa4ff8d901da51a012232ef037a8ec6f4b8e0373e42fbeeffd7e954ac0ff"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    32,
+    32
+   ],
+   "dir": "drawable",
+   "kind": "png",
+   "name": "ic_action_brightness_low.png",
+   "path": "res/drawable/ic_action_brightness_low.png",
+   "sha256": "70ed9dc8990f73ad5f332e5c20611a2f1e52f6c8315ecbed6d1ef533d0f72663"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": "drawable",
+   "kind": "png",
+   "name": "logo.png",
+   "path": "res/drawable/logo.png",
+   "sha256": "246bbf0862b3617823b4fba17713ae69ad49b9ca9372d0e07078cdae36d6803f"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    78,
+    43
+   ],
+   "dir": "drawable",
+   "kind": "png",
+   "name": "timepicker_down_disabled.9.png",
+   "path": "res/drawable/timepicker_down_disabled.9.png",
+   "sha256": "6d0b69d29441441221ffa1c84e4c72177145d0b4159a9e8e1f432159a532f735"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    78,
+    43
+   ],
+   "dir": "drawable",
+   "kind": "png",
+   "name": "timepicker_down_disabled_focused.9.png",
+   "path": "res/drawable/timepicker_down_disabled_focused.9.png",
+   "sha256": "2c76e0eea906f37069cbe2b18f409fefc365b0020d3dd4481d03f143525cef5b"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    78,
+    43
+   ],
+   "dir": "drawable",
+   "kind": "png",
+   "name": "timepicker_down_normal.9.png",
+   "path": "res/drawable/timepicker_down_normal.9.png",
+   "sha256": "4024ca57d9cf37648a40793a82860130ef43d2d6e1b45bbfb2bd422832812c58"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    78,
+    43
+   ],
+   "dir": "drawable",
+   "kind": "png",
+   "name": "timepicker_down_pressed.9.png",
+   "path": "res/drawable/timepicker_down_pressed.9.png",
+   "sha256": "b9055f241cb8f2341a6244381e6340b6aa913a88af880b6a52981dd5952b6a03"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    78,
+    43
+   ],
+   "dir": "drawable",
+   "kind": "png",
+   "name": "timepicker_down_selected.9.png",
+   "path": "res/drawable/timepicker_down_selected.9.png",
+   "sha256": "30e1a81c5e6586f4eb4e2eb23b8b076cc6153fe86dd740e75375d00942ffd0bc"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    78,
+    39
+   ],
+   "dir": "drawable",
+   "kind": "png",
+   "name": "timepicker_input_disabled.9.png",
+   "path": "res/drawable/timepicker_input_disabled.9.png",
+   "sha256": "cf8ed95eda5fb661757d7d44c24b6a88f35e35b9f74b479d222ee307314f0e54"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    78,
+    39
+   ],
+   "dir": "drawable",
+   "kind": "png",
+   "name": "timepicker_input_normal.9.png",
+   "path": "res/drawable/timepicker_input_normal.9.png",
+   "sha256": "b063eddd95056e8875164f4406dd52bf77f499ac634117d3be3ac99e79b8a670"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    78,
+    39
+   ],
+   "dir": "drawable",
+   "kind": "png",
+   "name": "timepicker_input_pressed.9.png",
+   "path": "res/drawable/timepicker_input_pressed.9.png",
+   "sha256": "f259dee75874e68c79090ca805f6d6c6d50699765b5500448f44c0b365b8fd55"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    78,
+    39
+   ],
+   "dir": "drawable",
+   "kind": "png",
+   "name": "timepicker_input_selected.9.png",
+   "path": "res/drawable/timepicker_input_selected.9.png",
+   "sha256": "e0f54e294ce01c459e1ff9788292a1734760e584e978ae420787fa4a78a1ac90"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    78,
+    40
+   ],
+   "dir": "drawable",
+   "kind": "png",
+   "name": "timepicker_up_disabled.9.png",
+   "path": "res/drawable/timepicker_up_disabled.9.png",
+   "sha256": "c69224b1ff627d70441e2a1a818bcd4f6e7b5475b995c882f7d7b4cc9e3473d0"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    78,
+    40
+   ],
+   "dir": "drawable",
+   "kind": "png",
+   "name": "timepicker_up_disabled_focused.9.png",
+   "path": "res/drawable/timepicker_up_disabled_focused.9.png",
+   "sha256": "c3bcb28244e43e48de36018ac52d882af93fbcbdef6b6fffcd8aa37a248b0063"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    78,
+    40
+   ],
+   "dir": "drawable",
+   "kind": "png",
+   "name": "timepicker_up_normal.9.png",
+   "path": "res/drawable/timepicker_up_normal.9.png",
+   "sha256": "f965c10afbda9cbf06a3808c15d97fa76206f3473146de893b6efce641530951"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    78,
+    40
+   ],
+   "dir": "drawable",
+   "kind": "png",
+   "name": "timepicker_up_pressed.9.png",
+   "path": "res/drawable/timepicker_up_pressed.9.png",
+   "sha256": "dcf02aa0e09faba4a2ae86169511362ec59b30a62061fa5f90dc1be7a19e61b5"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    78,
+    40
+   ],
+   "dir": "drawable",
+   "kind": "png",
+   "name": "timepicker_up_selected.9.png",
+   "path": "res/drawable/timepicker_up_selected.9.png",
+   "sha256": "a86e76457251e2c2bee25a2fd2ef0dd8b7a0abc1902614037144d8c0fd71b49d"
+  }
+ ],
+ "apk_sha256": "1621eda11b5dbc0c232b54c652d27aeab2f8a3c95be2c1f0632d6233b12d8a85",
+ "confidence": "apk_verified",
+ "dynamic_regions": [],
+ "expected_state_changes": [],
+ "interaction_targets": [
+  {
+   "bounds": [
+    0,
+    1776,
+    232,
+    144
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "3D20",
+   "view_id": 2131230721
+  },
+  {
+   "bounds": [
+    232,
+    1776,
+    232,
+    144
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "1d20",
+   "view_id": 2131230722
+  },
+  {
+   "bounds": [
+    464,
+    1776,
+    232,
+    144
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "1d6",
+   "view_id": 2131230723
+  },
+  {
+   "bounds": [
+    696,
+    1776,
+    232,
+    144
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "1d6+4",
+   "view_id": 2131230724
+  },
+  {
+   "bounds": [
+    928,
+    1776,
+    152,
+    144
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "...",
+   "view_id": 2131230725
+  }
+ ],
+ "package": "de.duenndns.gmdice",
+ "renderer_family": "view-xml",
+ "renderer_signals": [],
+ "required_assets": [],
+ "required_elements": [
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/ListView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    826
+   ],
+   "name": "android/widget/ListView",
+   "resource_id": 16908298,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TextView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    826,
+    1080,
+    827
+   ],
+   "name": "android/widget/TextView[Push buttons to roll!\n\nLong-press buttons to configure dice.]",
+   "resource_id": 16908292,
+   "text": "Push buttons to roll!\n\nLong-press buttons to configure dice.",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TextView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    1653,
+    1080,
+    123
+   ],
+   "name": "android/widget/TextView[Roll it!]",
+   "resource_id": 2131230720,
+   "text": "Roll it!",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    1776,
+    1080,
+    144
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    1776,
+    232,
+    144
+   ],
+   "name": "android/widget/Button[3D20]",
+   "resource_id": 2131230721,
+   "text": "3D20",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    232,
+    1776,
+    232,
+    144
+   ],
+   "name": "android/widget/Button[1d20]",
+   "resource_id": 2131230722,
+   "text": "1d20",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    464,
+    1776,
+    232,
+    144
+   ],
+   "name": "android/widget/Button[1d6]",
+   "resource_id": 2131230723,
+   "text": "1d6",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    696,
+    1776,
+    232,
+    144
+   ],
+   "name": "android/widget/Button[1d6+4]",
+   "resource_id": 2131230724,
+   "text": "1d6+4",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    928,
+    1776,
+    152,
+    144
+   ],
+   "name": "android/widget/Button[...]",
+   "resource_id": 2131230725,
+   "text": "...",
+   "visibility": "VISIBLE"
+  }
+ ],
+ "required_regions": [],
+ "schema": "s92.visual_contract.v1",
+ "screen": [
+  1080,
+  1920
+ ],
+ "source_provenance": {
+  "source_laws": [],
+  "source_root": null,
+  "source_url": null
+ },
+ "title": "GM Dice"
+}

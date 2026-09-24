@@ -1,0 +1,488 @@
+{
+ "apk_asset_inventory": [
+  {
+   "bucket": "",
+   "dims": [
+    768,
+    768
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Qw.png",
+   "path": "res/Qw.png",
+   "sha256": "8258a8351705f305dd458512b69d7fcce77054980254beb3c9473b74da78b291"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    512,
+    512
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "eQ.png",
+   "path": "res/eQ.png",
+   "sha256": "fed5268a58e7a333d942a016fca13ad6f33107be4f76428e4d1e100c2821f56b"
+  }
+ ],
+ "apk_sha256": "a5687d1bad7b2927740a55b7b1df11efc81edcad03f0633ab5c2e5c58b120541",
+ "confidence": "apk_verified",
+ "dynamic_regions": [],
+ "expected_state_changes": [],
+ "interaction_targets": [
+  {
+   "bounds": [
+    0,
+    0,
+    -1,
+    -1
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "Continue",
+   "view_id": 2130837511
+  },
+  {
+   "bounds": [
+    0,
+    0,
+    -1,
+    -1
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "End Game",
+   "view_id": 2130837512
+  },
+  {
+   "bounds": [
+    432,
+    109,
+    214,
+    1645
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "New Game",
+   "view_id": 2130837518
+  },
+  {
+   "bounds": [
+    450,
+    1770,
+    178,
+    1645
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "Free Play",
+   "view_id": 2130837514
+  },
+  {
+   "bounds": [
+    431,
+    3431,
+    217,
+    1645
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "Help/About",
+   "view_id": 2130837504
+  },
+  {
+   "bounds": [
+    425,
+    5092,
+    228,
+    1645
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "Preferences",
+   "view_id": 2130837520
+  },
+  {
+   "bounds": [
+    372,
+    6833,
+    335,
+    44
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "Continue Free Play",
+   "view_id": 2130837510
+  }
+ ],
+ "package": "com.dozingcatsoftware.dodge",
+ "renderer_family": "canvas-custom-view",
+ "renderer_signals": [
+  "app-custom-View-subclass"
+ ],
+ "required_assets": [],
+ "required_elements": [
+  {
+   "class": "Landroid/widget/FrameLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "name": "android/widget/FrameLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 2130837517,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    60
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Lcom.dozingcatsoftware.dodge.FieldView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    60,
+    1080,
+    1860
+   ],
+   "name": "FieldView",
+   "resource_id": 2130837513,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -2,
+    -2
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    298,
+    0,
+    483,
+    1920
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TextView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    541,
+    60
+   ],
+   "name": "android/widget/TextView[Level: 1]",
+   "resource_id": 2130837515,
+   "text": "Level: 1",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TextView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    541,
+    0,
+    539,
+    60
+   ],
+   "name": "android/widget/TextView[Lives: 9]",
+   "resource_id": 2130837516,
+   "text": "Lives: 9",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TextView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -2,
+    -2
+   ],
+   "name": "android/widget/TextView[Game paused]",
+   "resource_id": 0,
+   "text": "Game paused",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -1,
+    -1
+   ],
+   "name": "android/widget/Button[Continue]",
+   "resource_id": 2130837511,
+   "text": "Continue",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -1,
+    -1
+   ],
+   "name": "android/widget/Button[End Game]",
+   "resource_id": 2130837512,
+   "text": "End Game",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TextView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    324,
+    26,
+    431,
+    75
+   ],
+   "name": "android/widget/TextView[Welcome to Dodge!]",
+   "resource_id": 2130837522,
+   "text": "Welcome to Dodge!",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    432,
+    109,
+    214,
+    1645
+   ],
+   "name": "android/widget/Button[New Game]",
+   "resource_id": 2130837518,
+   "text": "New Game",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    450,
+    1770,
+    178,
+    1645
+   ],
+   "name": "android/widget/Button[Free Play]",
+   "resource_id": 2130837514,
+   "text": "Free Play",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    431,
+    3431,
+    217,
+    1645
+   ],
+   "name": "android/widget/Button[Help/About]",
+   "resource_id": 2130837504,
+   "text": "Help/About",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    425,
+    5092,
+    228,
+    1645
+   ],
+   "name": "android/widget/Button[Preferences]",
+   "resource_id": 2130837520,
+   "text": "Preferences",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TableLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    353,
+    6745,
+    373,
+    88
+   ],
+   "name": "android/widget/TableLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    372,
+    6833,
+    335,
+    44
+   ],
+   "name": "android/widget/Button[Continue Free Play]",
+   "resource_id": 2130837510,
+   "text": "Continue Free Play",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TableRow;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    353,
+    6745,
+    291,
+    44
+   ],
+   "name": "android/widget/TableRow",
+   "resource_id": 2130837509,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TableRow;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    353,
+    6789,
+    373,
+    44
+   ],
+   "name": "android/widget/TableRow",
+   "resource_id": 2130837507,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TextView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    353,
+    6745,
+    197,
+    44
+   ],
+   "name": "android/widget/TextView[Best Level:]",
+   "resource_id": 0,
+   "text": "Best Level:",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TextView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    550,
+    6745,
+    94,
+    44
+   ],
+   "name": "android/widget/TextView[None]",
+   "resource_id": 2130837508,
+   "text": "None",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TextView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    353,
+    6789,
+    279,
+    44
+   ],
+   "name": "android/widget/TextView[Free Play Level:]",
+   "resource_id": 0,
+   "text": "Free Play Level:",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TextView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    632,
+    6789,
+    94,
+    44
+   ],
+   "name": "android/widget/TextView[None]",
+   "resource_id": 2130837506,
+   "text": "None",
+   "visibility": "VISIBLE"
+  }
+ ],
+ "required_regions": [],
+ "schema": "s92.visual_contract.v1",
+ "screen": [
+  1080,
+  1920
+ ],
+ "source_provenance": {
+  "source_laws": [],
+  "source_root": null,
+  "source_url": null
+ },
+ "title": "Dodge"
+}

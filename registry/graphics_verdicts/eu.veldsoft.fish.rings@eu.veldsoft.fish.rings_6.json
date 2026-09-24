@@ -1,0 +1,2047 @@
+{
+ "apk_sha256": "c8a9cb7cadaaced37a1b13ba32ad9bdc1fbe6d38c9d5348aa56a78b4767c1c70",
+ "asset_chains": [
+  {
+   "APK": "PASS",
+   "BOUND_TO_VIEW": "PASS",
+   "DECODED": "PASS",
+   "DENSITY_CHECK": "FAIL",
+   "DRAW_CALLED": "PASS",
+   "FAILURE": "DENSITY_MISMATCH",
+   "PIXELS_FOUND": "PASS",
+   "apk_sha256": "4e22af407d78a75f1f2cd296e3169fb92cc48b471f462bd7a85e3e27b9bc382f",
+   "asset": "C5.png",
+   "confidence": "apk_verified",
+   "decode": {
+    "decoded": true,
+    "dims": [
+     600,
+     424
+    ],
+    "fully_transparent": false,
+    "mode": "RGBA"
+   },
+   "density_law": {
+    "note": "expected_px = decoded_px * runtime/src",
+    "runtime_density": 420,
+    "src_density": 160
+   },
+   "expected_display_box": [
+    1575,
+    1113
+   ],
+   "pixel_presence": {
+    "region": [
+     709,
+     735,
+     110,
+     78
+    ],
+    "techniques": {
+     "T1_template_ncc": {
+      "offset": [
+       5,
+       11
+      ],
+      "score": 0.3909,
+      "thresholds": {
+       "moderate": 0.72,
+       "strong": 0.9
+      }
+     },
+     "T2_color_signature": {
+      "distinctive_colors": 5,
+      "region_colors": 26,
+      "score": 0.8,
+      "thresholds": {
+       "moderate": 0.45,
+       "strong": 0.7
+      }
+     },
+     "T3_edge_signature": {
+      "score": 0.8766,
+      "threshold": 0.55
+     },
+     "T4_nonblank": {
+      "floor": 6.0,
+      "region_stddev": 44.18
+     }
+    },
+    "verdict": "PRESENT"
+   },
+   "provenance_event": {
+    "ASSET_FOUND": true,
+    "BITMAP_CREATED": true,
+    "DECODED": true,
+    "DRAW_CALLED": true,
+    "RESOURCE_RESOLVED": true,
+    "VIEW_RECEIVED": true,
+    "color_type": "rgba",
+    "dst": {
+     "h": 78.0,
+     "w": 110.0,
+     "x": 709.0,
+     "y": 735.0
+    },
+    "dst_region": [
+     709.0,
+     735.0,
+     110.0,
+     78.0
+    ],
+    "height": 424,
+    "matched_from": 90,
+    "origin": "imageview-resid",
+    "path": "res/C5.png",
+    "resid": 0,
+    "src_density": 160,
+    "width": 600
+   },
+   "resource_path": "res/C5.png"
+  },
+  {
+   "APK": "PASS",
+   "BOUND_TO_VIEW": "PASS",
+   "DECODED": "PASS",
+   "DENSITY_CHECK": "FAIL",
+   "DRAW_CALLED": "PASS",
+   "FAILURE": "DENSITY_MISMATCH",
+   "PIXELS_FOUND": "PASS",
+   "apk_sha256": "8dffd4a8fd19ef931ebf1b3e75f8d6b35a62145c03536406ba93a6a8eaa7c256",
+   "asset": "CT.png",
+   "confidence": "apk_verified",
+   "decode": {
+    "decoded": true,
+    "dims": [
+     300,
+     300
+    ],
+    "fully_transparent": false,
+    "mode": "RGBA"
+   },
+   "density_law": {
+    "note": "expected_px = decoded_px * runtime/src",
+    "runtime_density": 420,
+    "src_density": 160
+   },
+   "expected_display_box": [
+    788,
+    788
+   ],
+   "pixel_presence": {
+    "region": [
+     299,
+     753,
+     53,
+     53
+    ],
+    "techniques": {
+     "T1_template_ncc": {
+      "offset": [
+       0,
+       0
+      ],
+      "score": 0.9663,
+      "thresholds": {
+       "moderate": 0.72,
+       "strong": 0.9
+      }
+     },
+     "T2_color_signature": {
+      "distinctive_colors": 10,
+      "region_colors": 22,
+      "score": 0.9,
+      "thresholds": {
+       "moderate": 0.45,
+       "strong": 0.7
+      }
+     },
+     "T3_edge_signature": {
+      "score": 0.989,
+      "threshold": 0.55
+     },
+     "T4_nonblank": {
+      "floor": 6.0,
+      "region_stddev": 74.13
+     }
+    },
+    "verdict": "PRESENT"
+   },
+   "provenance_event": {
+    "ASSET_FOUND": true,
+    "BITMAP_CREATED": true,
+    "DECODED": true,
+    "DRAW_CALLED": true,
+    "RESOURCE_RESOLVED": true,
+    "VIEW_RECEIVED": true,
+    "color_type": "rgba",
+    "dst": {
+     "h": 53.0,
+     "w": 53.0,
+     "x": 299.0,
+     "y": 753.0
+    },
+    "dst_region": [
+     299.0,
+     753.0,
+     53.0,
+     53.0
+    ],
+    "height": 300,
+    "matched_from": 540,
+    "origin": "imageview-resid",
+    "path": "res/CT.png",
+    "resid": 0,
+    "src_density": 160,
+    "width": 300
+   },
+   "resource_path": "res/CT.png"
+  },
+  {
+   "APK": "PASS",
+   "BOUND_TO_VIEW": "PASS",
+   "DECODED": "PASS",
+   "DENSITY_CHECK": "FAIL",
+   "DRAW_CALLED": "PASS",
+   "FAILURE": "DENSITY_MISMATCH",
+   "PIXELS_FOUND": "PASS",
+   "apk_sha256": "ff9feb4b54a62496396e618f447fc2ddd136f62d0ad9186ce91de1ba7974f1b0",
+   "asset": "Dg.png",
+   "confidence": "apk_verified",
+   "decode": {
+    "decoded": true,
+    "dims": [
+     300,
+     300
+    ],
+    "fully_transparent": false,
+    "mode": "RGBA"
+   },
+   "density_law": {
+    "note": "expected_px = decoded_px * runtime/src",
+    "runtime_density": 420,
+    "src_density": 160
+   },
+   "expected_display_box": [
+    788,
+    788
+   ],
+   "pixel_presence": {
+    "region": [
+     244,
+     551,
+     53,
+     53
+    ],
+    "techniques": {
+     "T1_template_ncc": {
+      "offset": [
+       0,
+       0
+      ],
+      "score": 0.9737,
+      "thresholds": {
+       "moderate": 0.72,
+       "strong": 0.9
+      }
+     },
+     "T2_color_signature": {
+      "distinctive_colors": 10,
+      "region_colors": 30,
+      "score": 0.0,
+      "thresholds": {
+       "moderate": 0.45,
+       "strong": 0.7
+      }
+     },
+     "T3_edge_signature": {
+      "score": 0.9693,
+      "threshold": 0.55
+     },
+     "T4_nonblank": {
+      "floor": 6.0,
+      "region_stddev": 78.04
+     }
+    },
+    "verdict": "PRESENT"
+   },
+   "provenance_event": {
+    "ASSET_FOUND": true,
+    "BITMAP_CREATED": true,
+    "DECODED": true,
+    "DRAW_CALLED": true,
+    "RESOURCE_RESOLVED": true,
+    "VIEW_RECEIVED": true,
+    "color_type": "rgba",
+    "dst": {
+     "h": 53.0,
+     "w": 53.0,
+     "x": 244.0,
+     "y": 551.0
+    },
+    "dst_region": [
+     244.0,
+     551.0,
+     53.0,
+     53.0
+    ],
+    "height": 300,
+    "matched_from": 1122,
+    "origin": "imageview-resid",
+    "path": "res/Dg.png",
+    "resid": 0,
+    "src_density": 160,
+    "width": 300
+   },
+   "resource_path": "res/Dg.png"
+  },
+  {
+   "APK": "PASS",
+   "BOUND_TO_VIEW": "PASS",
+   "DECODED": "PASS",
+   "DENSITY_CHECK": "FAIL",
+   "DRAW_CALLED": "PASS",
+   "FAILURE": "DENSITY_MISMATCH",
+   "PIXELS_FOUND": "PASS",
+   "apk_sha256": "0ca77f759c4f83165440d211a88c093f6b79bf803d58626b106ba02f573f69bc",
+   "asset": "Hp.png",
+   "confidence": "apk_verified",
+   "decode": {
+    "decoded": true,
+    "dims": [
+     600,
+     424
+    ],
+    "fully_transparent": false,
+    "mode": "RGBA"
+   },
+   "density_law": {
+    "note": "expected_px = decoded_px * runtime/src",
+    "runtime_density": 420,
+    "src_density": 160
+   },
+   "expected_display_box": [
+    1575,
+    1113
+   ],
+   "pixel_presence": {
+    "region": [
+     184,
+     184,
+     110,
+     78
+    ],
+    "techniques": {
+     "T1_template_ncc": {
+      "offset": [
+       10,
+       2
+      ],
+      "score": 0.8307,
+      "thresholds": {
+       "moderate": 0.72,
+       "strong": 0.9
+      }
+     },
+     "T2_color_signature": {
+      "distinctive_colors": 5,
+      "region_colors": 19,
+      "score": 0.8,
+      "thresholds": {
+       "moderate": 0.45,
+       "strong": 0.7
+      }
+     },
+     "T3_edge_signature": {
+      "score": 0.8551,
+      "threshold": 0.55
+     },
+     "T4_nonblank": {
+      "floor": 6.0,
+      "region_stddev": 34.61
+     }
+    },
+    "verdict": "PRESENT"
+   },
+   "provenance_event": {
+    "ASSET_FOUND": true,
+    "BITMAP_CREATED": true,
+    "DECODED": true,
+    "DRAW_CALLED": true,
+    "RESOURCE_RESOLVED": true,
+    "VIEW_RECEIVED": true,
+    "color_type": "rgba",
+    "dst": {
+     "h": 78.0,
+     "w": 110.0,
+     "x": 184.0,
+     "y": 184.0
+    },
+    "dst_region": [
+     184.0,
+     184.0,
+     110.0,
+     78.0
+    ],
+    "height": 424,
+    "matched_from": 180,
+    "origin": "imageview-resid",
+    "path": "res/Hp.png",
+    "resid": 0,
+    "src_density": 160,
+    "width": 600
+   },
+   "resource_path": "res/Hp.png"
+  },
+  {
+   "APK": "PASS",
+   "BOUND_TO_VIEW": "PASS",
+   "DECODED": "PASS",
+   "DENSITY_CHECK": "FAIL",
+   "DRAW_CALLED": "PASS",
+   "FAILURE": "DENSITY_MISMATCH",
+   "PIXELS_FOUND": "PASS",
+   "apk_sha256": "b25062064d55afa62d1affb56c319b88b871b85246a8d89272dbb2f521b0a9b1",
+   "asset": "Y-.png",
+   "confidence": "apk_verified",
+   "decode": {
+    "decoded": true,
+    "dims": [
+     300,
+     300
+    ],
+    "fully_transparent": false,
+    "mode": "RGBA"
+   },
+   "density_law": {
+    "note": "expected_px = decoded_px * runtime/src",
+    "runtime_density": 420,
+    "src_density": 160
+   },
+   "expected_display_box": [
+    788,
+    788
+   ],
+   "pixel_presence": {
+    "region": [
+     486,
+     753,
+     53,
+     53
+    ],
+    "techniques": {
+     "T1_template_ncc": {
+      "offset": [
+       0,
+       0
+      ],
+      "score": 0.9736,
+      "thresholds": {
+       "moderate": 0.72,
+       "strong": 0.9
+      }
+     },
+     "T2_color_signature": {
+      "distinctive_colors": 17,
+      "region_colors": 25,
+      "score": 0.8824,
+      "thresholds": {
+       "moderate": 0.45,
+       "strong": 0.7
+      }
+     },
+     "T3_edge_signature": {
+      "score": 0.969,
+      "threshold": 0.55
+     },
+     "T4_nonblank": {
+      "floor": 6.0,
+      "region_stddev": 86.46
+     }
+    },
+    "verdict": "PRESENT"
+   },
+   "provenance_event": {
+    "ASSET_FOUND": true,
+    "BITMAP_CREATED": true,
+    "DECODED": true,
+    "DRAW_CALLED": true,
+    "RESOURCE_RESOLVED": true,
+    "VIEW_RECEIVED": true,
+    "color_type": "rgba",
+    "dst": {
+     "h": 53.0,
+     "w": 53.0,
+     "x": 486.0,
+     "y": 753.0
+    },
+    "dst_region": [
+     486.0,
+     753.0,
+     53.0,
+     53.0
+    ],
+    "height": 300,
+    "matched_from": 540,
+    "origin": "imageview-resid",
+    "path": "res/Y-.png",
+    "resid": 0,
+    "src_density": 160,
+    "width": 300
+   },
+   "resource_path": "res/Y-.png"
+  },
+  {
+   "APK": "PASS",
+   "BOUND_TO_VIEW": "PASS",
+   "DECODED": "PASS",
+   "DENSITY_CHECK": "FAIL",
+   "DRAW_CALLED": "PASS",
+   "FAILURE": "DENSITY_MISMATCH",
+   "PIXELS_FOUND": "PASS",
+   "apk_sha256": "b6eeb8c078db73d12ff8b5802e58d33293d9d576f6b51afa580be78538946874",
+   "asset": "_H.png",
+   "confidence": "apk_verified",
+   "decode": {
+    "decoded": true,
+    "dims": [
+     300,
+     300
+    ],
+    "fully_transparent": false,
+    "mode": "RGBA"
+   },
+   "density_law": {
+    "note": "expected_px = decoded_px * runtime/src",
+    "runtime_density": 420,
+    "src_density": 160
+   },
+   "expected_display_box": [
+    788,
+    788
+   ],
+   "pixel_presence": {
+    "region": [
+     339,
+     604,
+     53,
+     53
+    ],
+    "techniques": {
+     "T1_template_ncc": {
+      "offset": [
+       0,
+       0
+      ],
+      "score": 0.9743,
+      "thresholds": {
+       "moderate": 0.72,
+       "strong": 0.9
+      }
+     },
+     "T2_color_signature": {
+      "distinctive_colors": 12,
+      "region_colors": 29,
+      "score": 0.9167,
+      "thresholds": {
+       "moderate": 0.45,
+       "strong": 0.7
+      }
+     },
+     "T3_edge_signature": {
+      "score": 0.9503,
+      "threshold": 0.55
+     },
+     "T4_nonblank": {
+      "floor": 6.0,
+      "region_stddev": 77.94
+     }
+    },
+    "verdict": "PRESENT"
+   },
+   "provenance_event": {
+    "ASSET_FOUND": true,
+    "BITMAP_CREATED": true,
+    "DECODED": true,
+    "DRAW_CALLED": true,
+    "RESOURCE_RESOLVED": true,
+    "VIEW_RECEIVED": true,
+    "color_type": "rgba",
+    "dst": {
+     "h": 53.0,
+     "w": 53.0,
+     "x": 339.0,
+     "y": 604.0
+    },
+    "dst_region": [
+     339.0,
+     604.0,
+     53.0,
+     53.0
+    ],
+    "height": 300,
+    "matched_from": 1038,
+    "origin": "imageview-resid",
+    "path": "res/_H.png",
+    "resid": 0,
+    "src_density": 160,
+    "width": 300
+   },
+   "resource_path": "res/_H.png"
+  },
+  {
+   "APK": "PASS",
+   "BOUND_TO_VIEW": "PASS",
+   "DECODED": "PASS",
+   "DENSITY_CHECK": "FAIL",
+   "DRAW_CALLED": "PASS",
+   "FAILURE": "DENSITY_MISMATCH",
+   "PIXELS_FOUND": "PASS",
+   "apk_sha256": "c97299a89d83fcb6c6d02874276f0a177f559a9832938fce784b497becb996a6",
+   "asset": "hS.png",
+   "confidence": "apk_verified",
+   "decode": {
+    "decoded": true,
+    "dims": [
+     600,
+     424
+    ],
+    "fully_transparent": false,
+    "mode": "RGBA"
+   },
+   "density_law": {
+    "note": "expected_px = decoded_px * runtime/src",
+    "runtime_density": 420,
+    "src_density": 160
+   },
+   "expected_display_box": [
+    1575,
+    1113
+   ],
+   "pixel_presence": {
+    "region": [
+     551,
+     184,
+     110,
+     78
+    ],
+    "techniques": {
+     "T1_template_ncc": {
+      "offset": [
+       5,
+       2
+      ],
+      "score": 0.8301,
+      "thresholds": {
+       "moderate": 0.72,
+       "strong": 0.9
+      }
+     },
+     "T2_color_signature": {
+      "distinctive_colors": 5,
+      "region_colors": 19,
+      "score": 0.8,
+      "thresholds": {
+       "moderate": 0.45,
+       "strong": 0.7
+      }
+     },
+     "T3_edge_signature": {
+      "score": 0.8123,
+      "threshold": 0.55
+     },
+     "T4_nonblank": {
+      "floor": 6.0,
+      "region_stddev": 34.6
+     }
+    },
+    "verdict": "PRESENT"
+   },
+   "provenance_event": {
+    "ASSET_FOUND": true,
+    "BITMAP_CREATED": true,
+    "DECODED": true,
+    "DRAW_CALLED": true,
+    "RESOURCE_RESOLVED": true,
+    "VIEW_RECEIVED": true,
+    "color_type": "rgba",
+    "dst": {
+     "h": 78.0,
+     "w": 110.0,
+     "x": 551.0,
+     "y": 184.0
+    },
+    "dst_region": [
+     551.0,
+     184.0,
+     110.0,
+     78.0
+    ],
+    "height": 424,
+    "matched_from": 180,
+    "origin": "imageview-resid",
+    "path": "res/hS.png",
+    "resid": 0,
+    "src_density": 160,
+    "width": 600
+   },
+   "resource_path": "res/hS.png"
+  },
+  {
+   "APK": "PASS",
+   "BOUND_TO_VIEW": "PASS",
+   "DECODED": "PASS",
+   "DENSITY_CHECK": "PASS",
+   "DRAW_CALLED": "PASS",
+   "FAILURE": "PIXEL_PRESENCE_FAIL",
+   "PIXELS_FOUND": "FAIL",
+   "apk_sha256": "47a386bd06bba428acf1f9a34e5ce942120c9bb63a98892b08286f028b5ab482",
+   "asset": "nH.png",
+   "confidence": "apk_verified",
+   "decode": {
+    "decoded": true,
+    "dims": [
+     250,
+     66
+    ],
+    "fully_transparent": false,
+    "mode": "RGBA"
+   },
+   "density_law": {
+    "note": "expected_px = decoded_px * runtime/src",
+    "runtime_density": 420,
+    "src_density": 160
+   },
+   "expected_display_box": [
+    656,
+    173
+   ],
+   "pixel_presence": {
+    "region": [
+     212,
+     1747,
+     656,
+     173
+    ],
+    "techniques": {
+     "T1_template_ncc": {
+      "offset": [
+       12,
+       5
+      ],
+      "score": 0.2552,
+      "thresholds": {
+       "moderate": 0.72,
+       "strong": 0.9
+      }
+     },
+     "T2_color_signature": {
+      "distinctive_colors": 1,
+      "region_colors": 353,
+      "score": 0.0,
+      "thresholds": {
+       "moderate": 0.45,
+       "strong": 0.7
+      }
+     },
+     "T3_edge_signature": {
+      "score": 0.9533,
+      "threshold": 0.55
+     },
+     "T4_nonblank": {
+      "floor": 6.0,
+      "region_stddev": 65.8
+     }
+    },
+    "verdict": "ABSENT"
+   },
+   "provenance_event": {
+    "ASSET_FOUND": true,
+    "BITMAP_CREATED": true,
+    "DECODED": true,
+    "DRAW_CALLED": true,
+    "RESOURCE_RESOLVED": true,
+    "VIEW_RECEIVED": true,
+    "color_type": "rgba",
+    "dst": {
+     "h": 173.0,
+     "w": 656.0,
+     "x": 212.0,
+     "y": 1747.0
+    },
+    "dst_region": [
+     212.0,
+     1747.0,
+     656.0,
+     173.0
+    ],
+    "height": 66,
+    "matched_from": 90,
+    "origin": "imageview-resid",
+    "path": "res/nH.png",
+    "resid": 0,
+    "src_density": 160,
+    "width": 250
+   },
+   "resource_path": "res/nH.png"
+  },
+  {
+   "APK": "PASS",
+   "BOUND_TO_VIEW": "PASS",
+   "DECODED": "PASS",
+   "DENSITY_CHECK": "FAIL",
+   "DRAW_CALLED": "PASS",
+   "FAILURE": "DENSITY_MISMATCH",
+   "PIXELS_FOUND": "PASS",
+   "apk_sha256": "91b4e37c9bf218a7020f6353d5bd3f7d5a1bc68ac330f0630a7863268ed0f620",
+   "asset": "v7.png",
+   "confidence": "apk_verified",
+   "decode": {
+    "decoded": true,
+    "dims": [
+     600,
+     424
+    ],
+    "fully_transparent": false,
+    "mode": "RGBA"
+   },
+   "density_law": {
+    "note": "expected_px = decoded_px * runtime/src",
+    "runtime_density": 420,
+    "src_density": 160
+   },
+   "expected_display_box": [
+    1575,
+    1113
+   ],
+   "pixel_presence": {
+    "region": [
+     26,
+     735,
+     110,
+     78
+    ],
+    "techniques": {
+     "T1_template_ncc": {
+      "offset": [
+       11,
+       11
+      ],
+      "score": 0.4109,
+      "thresholds": {
+       "moderate": 0.72,
+       "strong": 0.9
+      }
+     },
+     "T2_color_signature": {
+      "distinctive_colors": 5,
+      "region_colors": 23,
+      "score": 0.8,
+      "thresholds": {
+       "moderate": 0.45,
+       "strong": 0.7
+      }
+     },
+     "T3_edge_signature": {
+      "score": 0.7744,
+      "threshold": 0.55
+     },
+     "T4_nonblank": {
+      "floor": 6.0,
+      "region_stddev": 36.74
+     }
+    },
+    "verdict": "PRESENT"
+   },
+   "provenance_event": {
+    "ASSET_FOUND": true,
+    "BITMAP_CREATED": true,
+    "DECODED": true,
+    "DRAW_CALLED": true,
+    "RESOURCE_RESOLVED": true,
+    "VIEW_RECEIVED": true,
+    "color_type": "rgba",
+    "dst": {
+     "h": 78.0,
+     "w": 110.0,
+     "x": 26.0,
+     "y": 735.0
+    },
+    "dst_region": [
+     26.0,
+     735.0,
+     110.0,
+     78.0
+    ],
+    "height": 424,
+    "matched_from": 90,
+    "origin": "imageview-resid",
+    "path": "res/v7.png",
+    "resid": 0,
+    "src_density": 160,
+    "width": 600
+   },
+   "resource_path": "res/v7.png"
+  }
+ ],
+ "confidence": "apk_verified",
+ "evidence_inventory": {
+  "click_audit_records": 6,
+  "frame_count": 60,
+  "frames_manifest": true,
+  "gfx_provenance": true,
+  "report_json": false,
+  "screenshot": true,
+  "view_tree": true
+ },
+ "failing_stages": [],
+ "generated_utc": "2026-09-24T05:39:05Z",
+ "geometry_checks": [
+  {
+   "actual_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/RelativeLayout",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "tolerance_px": 230,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    184,
+    184,
+    110,
+    78
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    184,
+    184,
+    110,
+    78
+   ],
+   "tolerance_px": 13,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    551,
+    184,
+    110,
+    78
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    551,
+    184,
+    110,
+    78
+   ],
+   "tolerance_px": 13,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    709,
+    341,
+    110,
+    78
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    709,
+    341,
+    110,
+    78
+   ],
+   "tolerance_px": 13,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    709,
+    735,
+    110,
+    78
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    709,
+    735,
+    110,
+    78
+   ],
+   "tolerance_px": 13,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    26,
+    341,
+    110,
+    78
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    26,
+    341,
+    110,
+    78
+   ],
+   "tolerance_px": 13,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    26,
+    735,
+    110,
+    78
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    26,
+    735,
+    110,
+    78
+   ],
+   "tolerance_px": 13,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    339,
+    604,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    339,
+    604,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    244,
+    551,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    244,
+    551,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    189,
+    457,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    189,
+    457,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    189,
+    347,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    189,
+    347,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    244,
+    252,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    244,
+    252,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    339,
+    200,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    339,
+    200,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    446,
+    200,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    446,
+    200,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    541,
+    252,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    541,
+    252,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    596,
+    347,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    596,
+    347,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    596,
+    457,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    596,
+    457,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    541,
+    551,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    541,
+    551,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    446,
+    604,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    446,
+    604,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    486,
+    347,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    486,
+    347,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    394,
+    402,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    394,
+    402,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    339,
+    496,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    339,
+    496,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    339,
+    604,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    339,
+    604,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    391,
+    698,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    391,
+    698,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    486,
+    753,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    486,
+    753,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    596,
+    753,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    596,
+    753,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    690,
+    698,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    690,
+    698,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    743,
+    604,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    743,
+    604,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    743,
+    496,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    743,
+    496,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    690,
+    402,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    690,
+    402,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    596,
+    347,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    596,
+    347,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    299,
+    347,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    299,
+    347,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    394,
+    402,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    394,
+    402,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    446,
+    496,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    446,
+    496,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    446,
+    604,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    446,
+    604,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    394,
+    698,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    394,
+    698,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    299,
+    753,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    299,
+    753,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    189,
+    753,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    189,
+    753,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    95,
+    698,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    95,
+    698,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    42,
+    604,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    42,
+    604,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    42,
+    496,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    42,
+    496,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    95,
+    402,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    95,
+    402,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    189,
+    347,
+    53,
+    53
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    189,
+    347,
+    53,
+    53
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    0,
+    1747,
+    1080,
+    173
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ImageView",
+   "expected_bounds": [
+    0,
+    1747,
+    1080,
+    173
+   ],
+   "tolerance_px": 129,
+   "value": "PASS"
+  }
+ ],
+ "interaction_proofs": [
+  {
+   "after_frame": "frame_040.png",
+   "before_frame": "frame_039.png",
+   "clicked": {
+    "view_id": 31
+   },
+   "index": 40,
+   "input_event": {
+    "dispatched": true,
+    "down_record": {
+     "action": "ACTION_DOWN",
+     "consumed": true,
+     "long_press_armed_ms": 500,
+     "root_id": 30,
+     "state_changes": [
+      "setPressed(true)"
+     ],
+     "target_class": "Landroid/widget/ImageView;",
+     "target_view_id": 31,
+     "virtual_ms": 12000,
+     "x": 184,
+     "y": 184
+    },
+    "type": "tap (scheduled F-117)",
+    "x": 184,
+    "y": 184
+   },
+   "pixel_delta": {
+    "after_sha256": "b8e05df910f3df688b1a056e4561ca12ac7e8a458e6d6c2658ac6f76ab4429d6",
+    "bbox": [
+     245,
+     552,
+     498,
+     656
+    ],
+    "before_sha256": "a341e3ad9092f6402cead56998c142d4511f170b81dcb8bb59de86094b75f6db",
+    "changed_px": 4265,
+    "changed_ratio": 0.002057
+   },
+   "source": "F-NEW-199 interactions[]",
+   "verdict": "INTERACTION_VISUALLY_PROVEN"
+  }
+ ],
+ "not_applicable_stages": [],
+ "notes": [
+  {
+   "frame_quality": {
+    "class": "CONTENT_PRESENT",
+    "content_bounds": [
+     0,
+     0,
+     1079,
+     1919
+    ],
+    "dims": [
+     1080,
+     1920
+    ],
+    "luminance_stddev": 33.49,
+    "non_background_frac": 0.999683,
+    "non_background_px": 2072942,
+    "nonbg_unique_colors": 2124,
+    "unique_colors_est": 2125
+   },
+   "renderer_signals": [],
+   "triangulation": "STRONG_EVIDENCE"
+  }
+ ],
+ "overall": "INTERACTION_VERIFIED",
+ "overall_rank": 7,
+ "package": "eu.veldsoft.fish.rings",
+ "renderer_family": "view-xml",
+ "repeatability_runs": [],
+ "run_dir": "/home/z/my-project/run/s92pilot/fishrings",
+ "runtime_sha": "",
+ "schema": "s92.graphics_verdict.v1",
+ "stages": {
+  "apk_load": {
+   "value": "PASS"
+  },
+  "assets_decoded": {
+   "value": "PASS"
+  },
+  "assets_rendered": {
+   "note": "8/9 assets",
+   "value": "PARTIAL"
+  },
+  "assets_resolved": {
+   "value": "PASS"
+  },
+  "evidence_complete": {
+   "value": "PASS"
+  },
+  "frame_output": {
+   "value": "PASS"
+  },
+  "geometry": {
+   "value": "PASS"
+  },
+  "input": {
+   "value": "PASS"
+  },
+  "input_target_visibility": {
+   "value": "PASS"
+  },
+  "lifecycle": {
+   "note": "framework-view-only UI (no app-owned view classes); lifecycle from inflation + frames",
+   "value": "PASS"
+  },
+  "renderer_initialized": {
+   "note": "family=view-xml; signals=[]",
+   "value": "PASS"
+  },
+  "repeatability": {
+   "note": "single run; 3-run law not yet applied",
+   "value": "UNKNOWN"
+  },
+  "scene": {
+   "note": "screenshot class=CONTENT_PRESENT",
+   "value": "PASS"
+  },
+  "state_change": {
+   "note": "runtime frames manifest records dispatch+state",
+   "value": "PASS"
+  },
+  "visual": {
+   "value": "PARTIAL"
+  },
+  "visual_change": {
+   "value": "PASS"
+  }
+ },
+ "title": "Fish Rings"
+}

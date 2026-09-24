@@ -1,0 +1,175 @@
+{
+ "apk_asset_inventory": [],
+ "apk_sha256": "c933b5b82192087585b30a0bd1bdaf1ae6e8d80a3901ecdec12b75f0a3eac13d",
+ "confidence": "observed_only",
+ "dynamic_regions": [],
+ "expected_state_changes": [],
+ "interaction_targets": [
+  {
+   "bounds": [
+    47,
+    1805,
+    246,
+    68
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "LEFT",
+   "view_id": 2130903041
+  },
+  {
+   "bounds": [
+    293,
+    1805,
+    246,
+    68
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "UP",
+   "view_id": 2130903043
+  },
+  {
+   "bounds": [
+    539,
+    1805,
+    247,
+    68
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "DOWN",
+   "view_id": 2130903040
+  },
+  {
+   "bounds": [
+    786,
+    1805,
+    247,
+    68
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "RIGHT",
+   "view_id": 2130903042
+  }
+ ],
+ "package": "com.miniandroid.g2048",
+ "renderer_family": "canvas-custom-view",
+ "renderer_signals": [
+  "app-custom-View-subclass"
+ ],
+ "required_assets": [],
+ "required_elements": [
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Lcom.miniandroid.g2048.Board2048View;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1758
+   ],
+   "name": "Board2048View",
+   "resource_id": 2130903044,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    1758,
+    1080,
+    162
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    47,
+    1805,
+    246,
+    68
+   ],
+   "name": "android/widget/Button[LEFT]",
+   "resource_id": 2130903041,
+   "text": "LEFT",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    293,
+    1805,
+    246,
+    68
+   ],
+   "name": "android/widget/Button[UP]",
+   "resource_id": 2130903043,
+   "text": "UP",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    539,
+    1805,
+    247,
+    68
+   ],
+   "name": "android/widget/Button[DOWN]",
+   "resource_id": 2130903040,
+   "text": "DOWN",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    786,
+    1805,
+    247,
+    68
+   ],
+   "name": "android/widget/Button[RIGHT]",
+   "resource_id": 2130903042,
+   "text": "RIGHT",
+   "visibility": "VISIBLE"
+  }
+ ],
+ "required_regions": [],
+ "schema": "s92.visual_contract.v1",
+ "screen": [
+  1080,
+  1920
+ ],
+ "source_provenance": {
+  "source_laws": [],
+  "source_root": null,
+  "source_url": null
+ },
+ "title": "2048"
+}
