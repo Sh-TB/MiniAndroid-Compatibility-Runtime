@@ -38,7 +38,9 @@ GLOBAL_NCC_PARTIAL = 0.70   # touching-glyph path: below this = wrong font
 SEGMENT_COUNT_TOL = 0       # exact glyph count (column projection on clean
                             # renders is reliable; merged/split handled by
                             # the per-glyph reference NCC path)
-INK_MIN_RATIO = 0.01        # min non-bg ink fraction in a text region
+INK_MIN_RATIO = 0.004       # min non-bg ink fraction in a text region
+                            # (measured: a single digit in a 303x226 cell is
+                            # 0.0076; truly blank regions are < 0.001)
 GLYPH_MIN_H = 4             # minimum glyph pixel height to judge
 BASELINE_ROW_TOL = 0.25     # baseline drift as fraction of glyph height
 
@@ -190,6 +192,12 @@ def glyph_truth(text_image, expected_text, reference_font_path=None,
         else Image.open(text_image)
     ink, g = _bin_ink(im)
     boxes = segment_glyphs(ink)
+    # frame-like segment filter: boxes spanning >80% of the region in either
+    # dimension are container borders/grid lines, not glyphs (measured false
+    # positive: board-cell borders matched the tofu template)
+    W, H = im.size
+    boxes = [b for b in boxes
+             if not (b[2] > 0.8 * W or b[3] > 0.8 * H)]
     out["segments"] = len(boxes)
     exp_chars = [c for c in expected_text if not c.isspace()]
     out["expected_glyphs"] = len(exp_chars)

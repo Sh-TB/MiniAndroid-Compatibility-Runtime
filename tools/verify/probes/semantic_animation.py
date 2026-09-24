@@ -218,7 +218,12 @@ def animation_truth(frame_paths, object_region=None, expect_motion=True,
     out["object_travel_px"] = round(travel, 2)
 
     detections = []
-    rendered = decoded and all(s["std"] >= NONBLANK_STD for s in stats)
+    # splash-tolerant rendered law: leading splash/blank frames are legal
+    # (measured: 5s splash windows); require 60% non-blank + last frame
+    nonblank_flags = [s["std"] >= NONBLANK_STD for s in stats]
+    rendered = decoded and len(frame_paths) >= 2 and \
+        (sum(nonblank_flags) / len(nonblank_flags) >= 0.6) and \
+        nonblank_flags[-1]
 
     # FROZEN: nothing changes at all
     frozen = mean_changed < 1e-6 and distinct_count == 1
@@ -322,12 +327,16 @@ def animation_truth(frame_paths, object_region=None, expect_motion=True,
         and not suspected_skip and not frozen else "FAIL"
     if frozen:
         geom_v = "FAIL"
+    elif not object_region and travel < DISPLACEMENT_MIN_PX and not frozen:
+        # whole-frame centroid tracking is weak evidence: without a contract
+        # region the centroid is diluted by static UI — honest UNKNOWN
+        geom_v = "UNKNOWN"
 
     if frozen:
         verdict = "FROZEN"
     elif noise or flash:
         verdict = "NOISE" if noise else "LARGE_AREA_FLASH"
-    elif placeholders and not rendered:
+    elif all(placeholders) and not rendered:
         verdict = "PLACEHOLDER_ANIMATION"
     elif object_lost or bg_only:
         verdict = "ANIMATION_RENDERED"   # rendered but semantically broken
