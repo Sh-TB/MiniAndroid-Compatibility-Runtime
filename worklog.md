@@ -3372,3 +3372,29 @@ Work Log:
 
 Stage Summary:
 - S95 commit EXISTS locally with full audit trail; NOT published. Owner-supplied PAT required (env-only, scrubbed, per S93 protocol). backup/s78-accidental-snapshot remains unpushed (pre-receive 100MB limit — unchanged from S93 record).
+---
+Task ID: S95-CTRL
+Agent: Super Z (main)
+Task: S95 — MINIANDROID ENGINEERING CONTROL SYSTEM (0→100 roadmap + architecture map + risk/gap register + deep source reuse + contributor system) + publish all pending pushes with owner-supplied PAT
+
+Work Log:
+- RECON (verified, not assumed): HEAD d5946533 clean on main; origin = Sh-TB/MiniAndroid-Compatibility-Runtime; baseline battery re-earned — container-reset recovery: make -j (binary 92,296,064 B), bootstrap_toolchain.sh (aapt2/ECJ/D8/android-34), EXT-01/02 re-fetched with SHA match (APK 009b4671…, ref PNG 121d479c…); BATTERY GATE ALL PASS (99 stages) BEFORE any change.
+- PUBLISH (owner request): secret-scanned pending diff (clean), pushed main with owner PAT (inline URL, token never persisted to config/files/paths; scrubbed from logs): 4ecc28e4..d5946533, now 0/0 ahead/behind, LOCAL=REMOTE=d5946533. backup/s78-accidental-snapshot REJECTED by pre-receive (150.98MB zip > 100MB hard limit) — recorded honestly, needs owner decision (LFS or rewrite); no destructive action taken.
+- Canonical control system built (merge-not-duplicate law respected; existing canonicals kept: root_registry.json, canonical/registry.json, ACHIEVEMENTS, ROADMAP_STATUS, GRAPHICS_SOURCE_REGISTRY):
+  - docs/TICKET_REGISTRY.json (machine, schema miniandroid.tickets.v1): 33 tickets — 1 P0 (NET-001 real HTTP(S)), 10 P1, 16 P2, 6 P3; statuses 3 ROOT_CAUSE_FOUND / 7 PARTIAL / 4 OBSERVED / 10 UNTESTED / 2 UNKNOWN / 1 BLOCKED / 2 PENDING / 4 CLOSED; APP-0001/0002 + GAME-0001..0006 master records wired to real S93–S95 evidence; full §8 field set per ticket (semantic contract, first divergence, upstream pinned sources, reuse strategy, plans, fan-out, DoD, contributor help). Builder: scripts/s95ctrl_build_ticket_registry.py (JSON is generated — edit script, not JSON).
+  - docs/MINIANDROID_0_TO_100.md: 10-layer actionable roadmap, every milestone with status + evidence level + tests + source authority + tickets; position ~52/100.
+  - docs/MINIANDROID_CAPABILITY_MATRIX.md: per-capability status/evidence/tests/APK count/source authority/fan-out; verified from src tree (audio engine exists with real codecs; network = shadow-only; jni bridge header present).
+  - docs/MINIANDROID_RISK_REGISTER.md: predictive risks per subsystem (KF/LF/HR/DR/SR/PR/CR), every row carries a ticket ID (full tickets or asterisked pre-registrations).
+  - docs/MINIANDROID_MASTER_QUEUE.md: §25-ranked (NET-001 → GFX-001 → GFX-002 → WEB-001 → GFX-003 → TEXT-001 …) with measured justification + execution law.
+  - docs/MINIANDROID_TICKET_GUIDE.md + docs/MINIANDROID_CONTRIBUTING.md: status/evidence vocabulary, 9-step §170 chain, single-source-of-truth ownership table, contributor routing (20min→advanced), good-first-issues from real tickets, bootstrap recipe (incl. toolchain + EXT fixture recovery).
+  - README.md rewritten as CONTROL PANEL: MISSION / IS-ISN'T / 0→100 status table / architecture map with per-subsystem status markers / corpus / open problems / high-risk areas / source-first / contributor quick start / evidence standard / roadmap / recent achievements / blockers / how-to-help — all numbers derived from canonical data.
+  - tools/validate_control_system.py: §20/§31 consistency gate — 147 checks (ticket IDs unique + vocab + counts; README numbers vs canonical registry/tickets/source registry/battery index; all README links exist; cross-doc ticket refs resolve; root registry count) → CONTROL SYSTEM CONSISTENT (0 failures).
+  - docs/testing/BATTERY_INDEX.json refreshed: head d5946533, total 99, S95-CTRL recovery notes appended.
+  - docs/KNOWLEDGE_INDEX.md: 0f section added (9 S95-CTRL artifacts classified KEEP).
+- Operational proof (§26): real tickets with real evidence ✓; source_lookup exercised (WRONG_CLIP → 6 sources, exit 0) ✓; upstream impls/tests identified per ticket ✓; fixture plans connected ✓; APK connections via master records ✓; contributor tasks generated ✓; roadmap/homepage validated ✓.
+- Final audit: battery 99/99 re-certified on unchanged binary; secret scan clean; upload/ + run logs gitignored (zero-bloat law); new artifacts small (48.6KB JSON, 7.6KB validator); binary measured unstripped 88.0MB / stripped 4.4MB / gzip 2.0MB; time-saved metrics remain NOT_MEASURED (honest).
+
+Stage Summary:
+- MiniAndroid now HAS an auditable control system: homepage = live dashboard validated against machine data; problem state canonical in TICKET_REGISTRY.json (33 tickets); predictive risk map with per-risk tickets; §25 master queue; contributor routing; 147-check consistency gate green.
+- All 9 previously-blocked S94/S95 commits PUBLISHED to GitHub (main 0/0 ahead/behind at d5946533); backup branch publication honestly blocked (150.98MB > 100MB pre-receive) pending owner decision.
+- Highest-value next wave per measured queue: NET-001 (P0 real HTTP(S) through existing shadow API) → NET-002 diagnostic instrument; then GFX-001/GFX-002 (root-caused, fixture-ready).
