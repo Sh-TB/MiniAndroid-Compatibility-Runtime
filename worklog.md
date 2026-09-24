@@ -3283,3 +3283,17 @@ Work Log:
 Stage Summary:
 - The verifier is DEPLOYED: it demonstrably rejects deliberate false-completes (7/7 battery + 3/3 selftest), holds the 96-stage regression, and produces strict machine verdicts for 16 real titles with named root causes. S91's blanket "graphics complete" claim is now quantified: 4 of 12 GIF titles survive as interaction-verified candidates, 1 visually verified, 7 downgraded/failed with evidence.
 - Honest frontier: FULLY_VERIFIED never emitted (§24 hard contract); family classifier observational; no source_verified contracts yet; hotdeath asset-gap root-cause wave pending; push pending PAT.
+
+---
+Task ID: S93-START
+Agent: Super Z (main)
+Task: Owner directive — push all old commits with supplied PAT; then S93 GRAPHICS TRUTH CAMPAIGN (semantic loaded/rendered/correct layer on top of S92)
+
+Work Log:
+- PUSH LEDGER CLEARED: 4 queued commits (f35ff2e9, 22c1ffd9, a4a41eff, 4d0cf042) pushed to origin/main (535b091f..4d0cf042) using owner-supplied PAT, env-only, scrubbed, never written to disk or config. Divergence now 0/0.
+- backup/s78-accidental-snapshot NOT pushed: GitHub pre-receive declined (150.98 MB zip + 75.66 MB binary exceed 100 MB hard limit); rewriting history would change SHAs — left local, reported to owner.
+- Recon: runtime binary miniandroid/build/miniandroid present and runs; S92 verifier at tools/verify/probes (verdict.py strict machine, visual_probe.py T1-T4 pixel probe, graphics_common.py evidence bundle); run/s92pilot/ holds 16-title evidence + 3-run repeats + APK_PINS.json (5 SHA pins); registry/graphics_verdicts + registry/visual_contracts live; battery fixtures fixtures/s92battery (7 APKs).
+- S93 plan: semantic truth layer (image/animation/font/text vectors), 15-state loaded chain, failure taxonomy, adversarial fixture battery (20 fixtures), tamper + recovery tests, seeded random sample, real corpus runs, run/s93 artifacts, docs/S93_GRAPHICS_TRUTH.md + TABLE OF TRUTH.
+
+Stage Summary:
+- S92 state preserved (nothing restarted, nothing weakened). Push protocol satisfied. S93 implementation beginning from the deployed S92 verifier.
