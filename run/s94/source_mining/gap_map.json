@@ -1,0 +1,208 @@
+{
+ "campaign": "S94",
+ "generated_at": "2026-09-24T09:32:27Z",
+ "s93_failures_traced": {
+  "bobball": {
+   "categories": [
+    "WRONG_CLIP",
+    "WRONG_CLIP",
+    "WRONG_CLIP",
+    "WRONG_CLIP"
+   ],
+   "apk_sha256": "fd43009a7ffdfaf84963487e2b3502bef63775a4eedd60d7040da70e658b3241"
+  },
+  "bouncy": {
+   "categories": [
+    "WRONG_COLOR",
+    "WRONG_COLOR",
+    "WRONG_COLOR",
+    "WRONG_CLIP",
+    "WRONG_CLIP",
+    "WRONG_CLIP"
+   ],
+   "apk_sha256": "a509db2afda544f6da9620eb473319b0a034c6ffc8b6536e2a8a7bcc0f407f54"
+  },
+  "dodge": {
+   "categories": [
+    "WRONG_CLIP",
+    "WRONG_CLIP",
+    "WRONG_CLIP"
+   ],
+   "apk_sha256": "dodge_10 (S92 pin a5687d1b)"
+  },
+  "hotdeath": {
+   "categories": [
+    "WRONG_COLOR"
+   ],
+   "apk_sha256": "hotdeath_11 (S92 pin 8e6c19ea)"
+  },
+  "mini-tetris": {
+   "categories": [
+    "ANIMATION_FROZEN"
+   ],
+   "apk_sha256": "S92 corpus pin"
+  },
+  "minicraft": {
+   "categories": [
+    "ANIMATION_FROZEN"
+   ],
+   "apk_sha256": "77b9629ee111b968ccc9dbd4507eab3564a0a7a6e26dcacbe28f99de189c3a90"
+  },
+  "random_simplestopwatch": {
+   "categories": [
+    "WRONG_COLOR",
+    "WRONG_COLOR",
+    "UNREADABLE_TEXT"
+   ],
+   "apk_sha256": "S93 random-sample pin"
+  },
+  "urlchecker": {
+   "categories": [
+    "WRONG_COLOR",
+    "WRONG_COLOR",
+    "WRONG_COLOR",
+    "WRONG_CLIP"
+   ],
+   "apk_sha256": "urlchecker_28 (S92 pin 50872227)"
+  }
+ },
+ "gaps": {
+  "resource": {
+   "s93_evidence": "29 images discovered / 11 geometrically_verified / 4 content_verified (S93 metrics)",
+   "sources": [
+    "aosp-mirror/platform_frameworks_base",
+    "bumptech/glide",
+    "reandroid/ARSCLib"
+   ],
+   "laws": [
+    "L-S94-DENSITY-1",
+    "L-S94-DENSITY-2"
+   ],
+   "next": "port density-selection fixture; verify with bouncy/urlchecker WRONG_COLOR frames"
+  },
+  "decode": {
+   "s93_evidence": "10 images decoded-only (S93)",
+   "sources": [
+    "google/wuffs",
+    "google/skia",
+    "python-pillow/Pillow",
+    "golang/go"
+   ],
+   "laws": [
+    "L-S94-GIF-4",
+    "L-S94-PNG-1",
+    "L-S94-DECODE-1"
+   ],
+   "next": "wire wuffs GIF decoder or port disposal semantics; test with 12 GIF titles"
+  },
+  "geometry": {
+   "s93_evidence": "MISSING vs WRONG_POSITION disambiguation live (S93 L-S93-IMG-4/5)",
+   "sources": [
+    "aosp-mirror/platform_frameworks_base",
+    "google/skia",
+    "houstudio/cdroid"
+   ],
+   "laws": [
+    "L-S94-CLIP-1",
+    "L-S94-CLIP-2",
+    "L-S94-NINEPATCH-1"
+   ],
+   "next": "implement Canvas clip-stack law in engine; verify bobball/dodge frames"
+  },
+  "rendering": {
+   "s93_evidence": "draw CALLED provenance stage exists (S92)",
+   "sources": [
+    "aosp-mirror/platform_frameworks_base",
+    "houstudio/cdroid"
+   ],
+   "laws": [
+    "L-S94-DRAW-1",
+    "L-S94-TREE-1"
+   ],
+   "next": "draw-order orchestration port"
+  },
+  "text": {
+   "s93_evidence": "random_simplestopwatch UNREADABLE_TEXT (S93 fresh random finding)",
+   "sources": [
+    "harfbuzz/harfbuzz",
+    "google/minikin",
+    "freetype/freetype",
+    "tesseract-ocr/tesseract"
+   ],
+   "laws": [
+    "L-S94-SHAPE-1",
+    "L-S94-TEXT-4",
+    "L-S94-GLYPH-2",
+    "L-S94-OCR-1"
+   ],
+   "next": "wire FriBidi+HarfBuzz+FreeType R4 path; add OCR cross-check probe"
+  },
+  "animation": {
+   "s93_evidence": "mini-tetris/minicraft ANIMATION_FROZEN; REPEATED_FRAME caps ladder",
+   "sources": [
+    "aosp-mirror/platform_frameworks_base",
+    "libgdx/libgdx",
+    "google/wuffs",
+    "airbnb/lottie-android"
+   ],
+   "laws": [
+    "L-S94-ANIM-1",
+    "L-S94-SURFACE-2",
+    "L-S94-GIF-1"
+   ],
+   "next": "AnimationDrawable scheduleSelf timing in engine; GIF disposal semantics"
+  },
+  "interaction": {
+   "s93_evidence": "invisible-clickable rejected by S92/S93 battery",
+   "sources": [
+    "aosp-mirror/platform_frameworks_base",
+    "houstudio/cdroid"
+   ],
+   "laws": [
+    "L-S94-DRAW-1"
+   ],
+   "next": "hit-rect semantics port"
+  },
+  "web": {
+   "s93_evidence": "WebView titles: 83 in corpus demand map (S91)",
+   "sources": [
+    "chromium/chromium",
+    "WebKit/WebKit",
+    "electron/electron",
+    "web-platform-tests/wpt"
+   ],
+   "laws": [
+    "L-S94-WEB-2",
+    "L-S94-WEB-3",
+    "L-S94-WEB-4"
+   ],
+   "next": "visual-state-callback readiness model"
+  },
+  "compose": {
+   "s93_evidence": "21 Compose titles in corpus demand map (S91)",
+   "sources": [
+    "androidx/androidx",
+    "JetBrains/skiko",
+    "JetBrains/compose-multiplatform"
+   ],
+   "laws": [
+    "L-S94-COMPOSE-1",
+    "L-S94-COMPOSE-2"
+   ],
+   "next": "LayoutNode pipeline evidence"
+  },
+  "surface": {
+   "s93_evidence": "GL chain RENDERER_BOUND->FRAMEBUFFER_UPDATED (S92 provenance)",
+   "sources": [
+    "libgdx/libgdx",
+    "aosp-mirror/platform_frameworks_base",
+    "libsdl-org/SDL"
+   ],
+   "laws": [
+    "L-S94-SURFACE-1",
+    "L-S94-SURFACE-2"
+   ],
+   "next": "surface-aware evidence chains for game titles"
+  }
+ }
+}

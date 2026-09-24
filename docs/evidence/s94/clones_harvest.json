@@ -1,0 +1,6934 @@
+{
+ "generated_at": "2026-09-24T09:16:41.134179+00:00",
+ "clones": [
+  {
+   "repository": "houstudio/cdroid",
+   "clone_head_sha": "da89e06bc0c7d04e3586f7dfb3f83fe4e658f0fc",
+   "clone_note": "cloned 9s",
+   "top_level": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "CMakeLists.txt",
+    "CMakeSettings.json",
+    "CONTRIBUTING.cn.md",
+    "CONTRIBUTING.md",
+    "ChangeLog.md",
+    "Doxyfile.in",
+    "LICENSE",
+    "README.cn.md",
+    "README.md",
+    "android.txt",
+    "apps",
+    "build.sh",
+    "cmake",
+    "docs",
+    "scripts",
+    "src",
+    "tests"
+   ],
+   "dir_tree_d2": [
+    ".github",
+    "apps",
+    "cmake",
+    "docs",
+    "scripts",
+    "src",
+    "tests",
+    ".github/workflows",
+    "apps/curldownload",
+    "apps/deskclock",
+    "apps/hidtest",
+    "apps/music",
+    "apps/preferencedemo",
+    "apps/printerdemo",
+    "apps/remusic",
+    "apps/samples",
+    "apps/weardemos",
+    "apps/widgetsDemo",
+    "cmake/modules",
+    "docs/contributing",
+    "docs/images",
+    "docs/videos",
+    "src/3rdparty",
+    "src/bluetooth",
+    "src/cmds",
+    "src/gui",
+    "src/net",
+    "src/porting",
+    "tests/androidfw",
+    "tests/gui",
+    "tests/porting",
+    "apps/deskclock/assets",
+    "apps/deskclock/src",
+    "apps/music/assets",
+    "apps/music/src",
+    "apps/preferencedemo/assets",
+    "apps/preferencedemo/bluetooth",
+    "apps/printerdemo/assets",
+    "apps/remusic/assets",
+    "apps/remusic/src",
+    "apps/remusic/tools",
+    "apps/samples/assets",
+    "apps/weardemos/assets",
+    "apps/widgetsDemo/assets",
+    "docs/images/screenshots",
+    "src/3rdparty/pinyin",
+    "src/bluetooth/internal",
+    "src/cmds/am",
+    "src/cmds/include",
+    "src/cmds/pm",
+    "src/gui/accessibilityservice",
+    "src/gui/animation",
+    "src/gui/app",
+    "src/gui/cairomm",
+    "src/gui/content",
+    "src/gui/core",
+    "src/gui/drawable",
+    "src/gui/fragment",
+    "src/gui/gesture",
+    "src/gui/image-decoders",
+    "src/gui/lifecycle",
+    "src/gui/media",
+    "src/gui/menu",
+    "src/gui/navigation",
+    "src/gui/preference",
+    "src/gui/private",
+    "src/gui/res",
+    "src/gui/savedstate",
+    "src/gui/text",
+    "src/gui/transition",
+    "src/gui/utils",
+    "src/gui/view",
+    "src/gui/widget",
+    "src/gui/widgetEx",
+    "src/net/ethernet",
+    "src/net/wifi",
+    "src/porting/ad102",
+    "src/porting/ali3528",
+    "src/porting/allwinner",
+    "src/porting/android",
+    "src/porting/common",
+    "src/porting/d211",
+    "src/porting/hi3536",
+    "src/porting/include",
+    "src/porting/ingenic",
+    "src/porting/r818",
+    "src/porting/rk1126",
+    "src/porting/rk3506",
+    "src/porting/sigma",
+    "src/porting/ssd2351",
+    "src/porting/tinat113",
+    "src/porting/win32",
+    "src/porting/x64",
+    "tests/gui/assets",
+    "tests/gui/constraintlayout",
+    "tests/gui/drawable",
+    "tests/gui/keynav",
+    "tests/gui/text"
+   ],
+   "files": [
+    {
+     "path": "src/gui/view/view.h",
+     "bytes": 86969,
+     "sha256": "be2c22316d26a21c5b41557e1cec53553668c4181d26a9e8062103353be2df09",
+     "classes_structs": [
+      "AccessibilityDelegate",
+      "AttachInfo",
+      "BaseSavedState",
+      "CheckForLongPress",
+      "CheckForTap",
+      "DragEvent",
+      "DragShadowBuilder",
+      "FocusFinder",
+      "ForegroundInfo",
+      "GhostView",
+      "Handler",
+      "HandlerActionQueue",
+      "HapticScrollFeedbackProvider",
+      "InvalidateInfo",
+      "KeyedTagEntry",
+      "LayoutInflater",
+      "ListenerInfo",
+      "MeasureSpec",
+      "RoundScrollbarRenderer",
+      "ScrollBarDrawable",
+      "ScrollabilityCache",
+      "SendViewScrolledAccessibilityEvent",
+      "TextSegmentIterator",
+      "TintInfo",
+      "TooltipInfo",
+      "TransformationInfo",
+      "TypedArray",
+      "View",
+      "ViewGroup",
+      "ViewOverlay",
+      "ViewRunnable",
+      "Window"
+     ],
+     "on_callbacks": [
+      "onActivityResult",
+      "onAnimationEnd",
+      "onAnimationStart",
+      "onAttachedToWindow",
+      "onCancelPendingInputEvents",
+      "onCapturedPointerEvent",
+      "onCheckIsTextEditor",
+      "onConfigurationChanged",
+      "onCreateContextMenu",
+      "onDetachedFromWindow",
+      "onDetachedFromWindowInternal",
+      "onDisplayHint",
+      "onDragEvent",
+      "onDraw",
+      "onDrawForeground",
+      "onDrawHorizontalScrollBar",
+      "onDrawScrollBars",
+      "onDrawScrollIndicators",
+      "onDrawShadow",
+      "onFilterTouchEventForSecurity",
+      "onFinishInflate",
+      "onFinishTemporaryDetach",
+      "onFocusChanged",
+      "onFocusLost",
+      "onGenericMotionEvent",
+      "onHoverChanged",
+      "onHoverEvent",
+      "onInitializeAccessibilityEvent",
+      "onInitializeAccessibilityEventInternal",
+      "onInitializeAccessibilityNodeInfo",
+      "onInitializeAccessibilityNodeInfoInternal",
+      "onInterceptTouchEvent",
+      "onKeyDown",
+      "onKeyLongPress",
+      "onKeyMultiple",
+      "onKeyPreIme",
+      "onKeyShortcut",
+      "onKeyUp",
+      "onLayout",
+      "onMeasure"
+     ],
+     "symbol_line_hits": {
+      "onDraw": [
+       873,
+       874,
+       950,
+       951,
+       952,
+       953,
+       1979
+      ],
+      "onMeasure": [
+       845
+      ],
+      "onLayout": [
+       872
+      ],
+      "onTouchEvent": [
+       1532
+      ],
+      "invalidate": [
+       670,
+       804,
+       805,
+       857,
+       973,
+       974,
+       975,
+       976,
+       977,
+       978
+      ],
+      "draw(Canvas": [
+       970,
+       971
+      ],
+      "requestLayout": [
+       1658
+      ],
+      "setAlpha": [
+       619,
+       1599,
+       1600
+      ]
+     }
+    },
+    {
+     "path": "apps/samples/textview.cc",
+     "bytes": 8349,
+     "sha256": "6234a57f66d2afd6a79191c2e88ce286b2bd41d15901f5afca01a205ccd87115",
+     "classes_structs": [
+      "TestString"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "stretch": [
+       162
+      ],
+      "setTextSize": [
+       196,
+       218
+      ],
+      "requestLayout": [
+       248
+      ]
+     }
+    },
+    {
+     "path": "src/gui/widget/textview.h",
+     "bytes": 33684,
+     "sha256": "e3f86f612312f54418685069a7be9db3d88f2928ab5f738f767ffc6e0e5b2105",
+     "classes_structs": [
+      "ChangeWatcher",
+      "CharWrapper",
+      "CompletionInfo",
+      "Drawables",
+      "Editable",
+      "Editor",
+      "InputConnection",
+      "InputFilter",
+      "InputMethodManager",
+      "Layout",
+      "Marquee",
+      "MovementMethod",
+      "PrecomputesText",
+      "TextAppearanceAttributes",
+      "TextView"
+     ],
+     "on_callbacks": [
+      "onAttachedToWindow",
+      "onBeginBatchEdit",
+      "onCheckIsTextEditor",
+      "onCommitCompletion",
+      "onConfigurationChanged",
+      "onDetachedFromWindowInternal",
+      "onDraw",
+      "onEditorAction",
+      "onEndBatchEdit",
+      "onFocusChanged",
+      "onInitializeAccessibilityEventInternal",
+      "onInitializeAccessibilityNodeInfoInternal",
+      "onKeyDown",
+      "onKeyUp",
+      "onLayout",
+      "onMeasure",
+      "onPreDraw",
+      "onPrivateIMECommand",
+      "onResolveDrawables",
+      "onSelectionChanged",
+      "onSpanAdded",
+      "onSpanChanged",
+      "onSpanRemoved",
+      "onTextChanged",
+      "onTextContextMenuItem",
+      "onTouchEvent",
+      "onTrackballEvent",
+      "onVisibilityChanged",
+      "onWindowFocusChanged"
+     ],
+     "symbol_line_hits": {
+      "onDraw": [
+       305
+      ],
+      "onMeasure": [
+       284
+      ],
+      "onLayout": [
+       312
+      ],
+      "onTouchEvent": [
+       611
+      ],
+      "invalidate": [
+       253,
+       278,
+       279,
+       280,
+       599
+      ],
+      "setTextSize": [
+       255,
+       475,
+       476
+      ],
+      "measureText": [
+       736
+      ]
+     }
+    },
+    {
+     "path": "src/gui/widget/textview.cc",
+     "bytes": 274267,
+     "sha256": "05448eb2040c784cef1dbb7eb15fb9050258b30a03bc484dc908d361654ed0f5",
+     "classes_structs": [
+      "AND",
+      "ChangeWatcher",
+      "CharWrapper",
+      "KeyListener",
+      "Marquee",
+      "SpellCheckSpan",
+      "SuggestionSpan",
+      "TextAppearanceAttributes"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "onDraw": [
+       4487,
+       6347,
+       6349,
+       6473,
+       6487
+      ],
+      "onMeasure": [
+       3406,
+       3572,
+       3609
+      ],
+      "onLayout": [
+       2816,
+       2817
+      ],
+      "onTouchEvent": [
+       2837,
+       4301,
+       4308,
+       4318,
+       4338
+      ],
+      "invalidate": [
+       779,
+       892,
+       914,
+       946,
+       1034,
+       1203,
+       1215,
+       1495,
+       1507,
+       1538
+      ],
+      "setTextSize": [
+       1560,
+       1664,
+       1668,
+       1669,
+       1672,
+       1673,
+       3074,
+       3115
+      ],
+      "measureText": [
+       7147,
+       7148
+      ],
+      "requestLayout": [
+       778,
+       1565,
+       1576,
+       1587,
+       1696,
+       1707,
+       1722,
+       1742,
+       1757,
+       1771
+      ],
+      "setAlpha": [
+       1015
+      ]
+     }
+    },
+    {
+     "path": "src/gui/widget/button.cc",
+     "bytes": 1824,
+     "sha256": "6d6a57ba8ac80a9e8d895e31b1866bf064735a3522b569ac6c5fa47081c85334",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "src/gui/widget/button.h",
+     "bytes": 1409,
+     "sha256": "2d5e1442c7b110454edaaa6314b647cad00d5512aca19545920eb8c11f296efa",
+     "classes_structs": [
+      "Button"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "apps/samples/imageview.cc",
+     "bytes": 2190,
+     "sha256": "03a7f38a8d777eac45b6493b867c8692471131f035cf5f6855f33622d065a4b8",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "requestLayout": [
+       57
+      ]
+     }
+    },
+    {
+     "path": "src/gui/widget/imageview.cc",
+     "bytes": 39618,
+     "sha256": "90111bf96ed8f52d804be3c34a7daaa819bf3a5a221438f5bf16412e530d0254",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "onDraw": [
+       1036
+      ],
+      "onMeasure": [
+       235
+      ],
+      "invalidate": [
+       347,
+       366,
+       371,
+       377,
+       394,
+       593,
+       602,
+       614,
+       621,
+       623
+      ],
+      "stretch": [
+       1042
+      ],
+      "requestLayout": [
+       346,
+       393,
+       444,
+       451,
+       639,
+       667,
+       685,
+       729,
+       921,
+       996
+      ],
+      "setAlpha": [
+       908,
+       1062,
+       1063,
+       1066
+      ],
+      "setColorFilter": [
+       778,
+       779,
+       782,
+       783,
+       786,
+       797,
+       905
+      ]
+     }
+    },
+    {
+     "path": "src/gui/widget/imageview.h",
+     "bytes": 6340,
+     "sha256": "31739bca418195aa5eb20d4efbcb5236b47f4a90f4ab8f18591d85b96f398f15",
+     "classes_structs": [
+      "ImageView",
+      "Uri"
+     ],
+     "on_callbacks": [
+      "onAttachedToWindow",
+      "onDetachedFromWindow",
+      "onDraw",
+      "onMeasure",
+      "onPopulateAccessibilityEventInternal",
+      "onRtlPropertiesChanged",
+      "onVisibilityAggregated"
+     ],
+     "symbol_line_hits": {
+      "onDraw": [
+       89
+      ],
+      "onMeasure": [
+       87
+      ],
+      "invalidate": [
+       100
+      ],
+      "setColorFilter": [
+       142,
+       143,
+       144
+      ]
+     }
+    },
+    {
+     "path": "src/gui/view/viewgroup.h",
+     "bytes": 26959,
+     "sha256": "a5598fb2ae506384f57c364ca264ec84d41862052871cf3d86a91466effd7c7b",
+     "classes_structs": [
+      "ChildListForAccessibility",
+      "HoverTarget",
+      "LayoutAnimationController",
+      "LayoutTransition",
+      "TouchTarget",
+      "UIEventSource",
+      "View",
+      "ViewGroup",
+      "ViewLocationHolder"
+     ],
+     "on_callbacks": [
+      "onAttachedToWindow",
+      "onChildVisibilityChanged",
+      "onDebugDraw",
+      "onDebugDrawMargins",
+      "onDescendantInvalidated",
+      "onDetachedFromWindow",
+      "onInitializeAccessibilityNodeInfoInternal",
+      "onInterceptHoverEvent",
+      "onInterceptTouchEvent",
+      "onNestedFling",
+      "onNestedPreFling",
+      "onNestedPrePerformAccessibilityAction",
+      "onNestedPreScroll",
+      "onNestedScroll",
+      "onNestedScrollAccepted",
+      "onRequestFocusInDescendants",
+      "onRequestSendAccessibilityEvent",
+      "onRequestSendAccessibilityEventInternal",
+      "onSetLayoutParams",
+      "onStartNestedScroll",
+      "onStopNestedScroll",
+      "onViewAdded",
+      "onViewRemoved"
+     ],
+     "symbol_line_hits": {
+      "invalidate": [
+       255,
+       419,
+       420
+      ],
+      "requestLayout": [
+       367
+      ]
+     }
+    },
+    {
+     "path": "src/gui/view/viewgroup.cc",
+     "bytes": 168603,
+     "sha256": "2340469a79a294495ff0b3942ccd061998a6e74957d81e10e8f90c726c513329",
+     "classes_structs": [
+      "HoverTarget",
+      "SentinelActionMode",
+      "TouchTarget"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "onTouchEvent": [
+       3882
+      ],
+      "invalidate": [
+       914,
+       925,
+       963,
+       993,
+       1404,
+       1411,
+       1569,
+       1586,
+       1807,
+       1815
+      ],
+      "requestLayout": [
+       197,
+       1806,
+       1814,
+       1941,
+       2024,
+       2030,
+       2044,
+       3208,
+       3269,
+       3611
+      ]
+     }
+    },
+    {
+     "path": "src/gui/drawable/drawable.h",
+     "bytes": 10463,
+     "sha256": "b5ba3230d38df3d346de6066d0c3dc520bd1723033dd40149e69c737ed573980",
+     "classes_structs": [
+      "Animatable",
+      "Animatable2",
+      "AnimationCallback",
+      "Callback",
+      "ColorStateList",
+      "ConstantState",
+      "Context",
+      "Drawable",
+      "Resources"
+     ],
+     "on_callbacks": [
+      "onBoundsChange",
+      "onLayoutDirectionChanged",
+      "onLevelChange",
+      "onStateChange"
+     ],
+     "symbol_line_hits": {
+      "onLayout": [
+       120
+      ],
+      "invalidate": [
+       73,
+       220
+      ],
+      "draw(Canvas": [
+       222
+      ],
+      "setAlpha": [
+       183
+      ],
+      "setColorFilter": [
+       112,
+       113,
+       151,
+       153
+      ],
+      "onStateChange": [
+       118
+      ]
+     }
+    },
+    {
+     "path": "src/gui/drawable/ninepatchrenderer.cc",
+     "bytes": 37396,
+     "sha256": "99d875dd80bfeb85f2673cbd4f7f5c186f9a481830e82cd231f0601c6cbfcb81",
+     "classes_structs": [
+      "TickState",
+      "TickType"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "NinePatch": [
+       25,
+       271,
+       282,
+       284,
+       375,
+       387,
+       408,
+       409,
+       412,
+       415
+      ],
+      "stretch": [
+       288,
+       291,
+       656,
+       658,
+       660,
+       662,
+       666,
+       669,
+       671,
+       677
+      ],
+      "draw(Canvas": [
+       415,
+       436
+      ]
+     }
+    },
+    {
+     "path": "src/gui/drawable/ninepatch.cc",
+     "bytes": 36314,
+     "sha256": "3b16b9bdcd1ecf0b6bc5ab0be78b4aaaf1881e01d6c41baabe32baf23507035c",
+     "classes_structs": [
+      "ColorValidator",
+      "DiagonalImageLine",
+      "HorizontalImageLine",
+      "TransparentNeutralColorValidator",
+      "VerticalImageLine",
+      "WhiteNeutralColorValidator"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "NinePatch": [
+       96,
+       117,
+       140,
+       247,
+       251,
+       398,
+       403,
+       412,
+       428,
+       432
+      ],
+      "stretch": [
+       170,
+       186,
+       188,
+       189,
+       190,
+       229,
+       230,
+       234,
+       235,
+       242
+      ]
+     }
+    },
+    {
+     "path": "src/gui/drawable/ninepatch.h",
+     "bytes": 6611,
+     "sha256": "b150dc9e49746ea3c12f0a5ee55fc4e2a4f7397350396e50423718e3a1f2eec0",
+     "classes_structs": [
+      "Bounds",
+      "NinePatch",
+      "Range"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "NinePatch": [
+       117,
+       119,
+       129,
+       156,
+       157,
+       162
+      ],
+      "stretch": [
+       125,
+       127,
+       149,
+       150
+      ]
+     }
+    },
+    {
+     "path": "src/gui/drawable/ninepatchrenderer.h",
+     "bytes": 3894,
+     "sha256": "ec43dd5cfd00662cf44fb8c2323183f30ea779648f35c07222fe6fb9be23df9e",
+     "classes_structs": [
+      "Context",
+      "NinePatchRenderer"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "NinePatch": [
+       24,
+       56,
+       58,
+       59
+      ],
+      "stretch": [
+       66
+      ],
+      "draw(Canvas": [
+       60,
+       61
+      ]
+     }
+    },
+    {
+     "path": "src/gui/drawable/ninepatchdrawable.cc",
+     "bytes": 20495,
+     "sha256": "10a28bc188a0462ca6564f42986eeb14972d54af7c77c986114c7df6c85a4910",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "invalidate": [
+       118,
+       148,
+       236,
+       243
+      ],
+      "NinePatch": [
+       31,
+       33,
+       36,
+       37,
+       46,
+       56,
+       57,
+       61,
+       64,
+       66
+      ],
+      "draw(Canvas": [
+       302,
+       475
+      ],
+      "setAlpha": [
+       145,
+       189,
+       205,
+       222
+      ],
+      "onStateChange": [
+       282
+      ]
+     }
+    },
+    {
+     "path": "src/gui/drawable/ninepatchdrawable.h",
+     "bytes": 4654,
+     "sha256": "afd823d4e53b2a900657d746811a154637fb66ccc8436c563390565a89891ee2",
+     "classes_structs": [
+      "NinePatchDrawable",
+      "NinePatchRenderer",
+      "NinePatchState"
+     ],
+     "on_callbacks": [
+      "onStateChange"
+     ],
+     "symbol_line_hits": {
+      "NinePatch": [
+       24,
+       25,
+       27,
+       41,
+       45,
+       46,
+       47,
+       50,
+       66,
+       68
+      ],
+      "draw(Canvas": [
+       52,
+       98
+      ],
+      "setAlpha": [
+       82
+      ],
+      "onStateChange": [
+       71
+      ]
+     }
+    },
+    {
+     "path": "tests/gui/drawable/cts_ninepatchdrawable_test.cc",
+     "bytes": 10161,
+     "sha256": "bd6256e337b97773782006e8fdf9489517830e12582cef6fc19cbfa9716005d4",
+     "classes_structs": [
+      "CtsNinePatchDrawableTest"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "NinePatch": [
+       1,
+       3,
+       5,
+       21,
+       22,
+       27,
+       28,
+       31,
+       35,
+       46
+      ],
+      "stretch": [
+       69
+      ],
+      "setAlpha": [
+       202,
+       207,
+       210
+      ]
+     }
+    },
+    {
+     "path": "tests/gui/assets/drawable/ninepatch_1.9.png",
+     "bytes": 202,
+     "sha256": "ff350a5ae4dace1f8abdc3504a60e29e5b9e5090a65802ac85731900c85cf7fb",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "tests/gui/assets/drawable/ninepatch_0.9.png",
+     "bytes": 100,
+     "sha256": "495da3dbd051f0bff212ab4823e4d9e108a4573b72bacda39719011adb1d3606",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "apps/printerdemo/assets/drawable/ripple_card_dark.xml",
+     "bytes": 197,
+     "sha256": "12a15896e5181e7f8681a06477e4c5186152b4af5d35d8f32f7f2c8ae6b78084",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "apps/printerdemo/assets/drawable/ripple_row.xml",
+     "bytes": 316,
+     "sha256": "ef516ac5f3acb0e9eaa4cb0f89e4d20c004179d1cc53c2b882bba76a44d9ec41",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "apps/printerdemo/assets/drawable/ripple_card.xml",
+     "bytes": 192,
+     "sha256": "3e0f7bd5121887ea08f8f5f416e43e43f75746c2be4dae42d4cb7a4350540326",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "apps/widgetsDemo/assets/drawable/ripple_demo.xml",
+     "bytes": 340,
+     "sha256": "1f39870e32bc023bef6e0b53e2bb8c32cd5ae76040902bc7c142ea5d7e2b86cc",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "src/gui/drawable/ripplebackground.h",
+     "bytes": 2428,
+     "sha256": "8a81ca2aa61f62796ea14e23d820058c7fd43e0da2e367e6c62f3ba988e9bf3b",
+     "classes_structs": [
+      "COPACITY",
+      "RippleBackground",
+      "RippleComponent",
+      "RippleDrawable"
+     ],
+     "on_callbacks": [
+      "onBoundsChange",
+      "onHotspotBoundsChanged",
+      "onStateChanged",
+      "onTargetRadiusChanged"
+     ],
+     "symbol_line_hits": {
+      "invalidate": [
+       35
+      ],
+      "draw(Canvas": [
+       62
+      ],
+      "onStateChange": [
+       57
+      ]
+     }
+    },
+    {
+     "path": "src/gui/drawable/rippleforeground.cc",
+     "bytes": 10234,
+     "sha256": "504baf8c14fd6d0ef5f757e1079da1b50a93563652c7655bc52d649dc6c86023",
+     "classes_structs": [
+      "RippleForeground"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "invalidate": [
+       62,
+       251
+      ],
+      "draw(Canvas": [
+       255
+      ]
+     }
+    },
+    {
+     "path": "src/gui/drawable/rippledrawable.cc",
+     "bytes": 22121,
+     "sha256": "3be139bcc10f583a459e3b0f8fe702f9bb8ff9c16be7ad2ee831c94002f6e797",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "invalidate": [
+       151,
+       227,
+       286,
+       292,
+       305,
+       443,
+       444,
+       447,
+       448,
+       449
+      ],
+      "draw(Canvas": [
+       426
+      ],
+      "onStateChange": [
+       165,
+       166
+      ]
+     }
+    },
+    {
+     "path": "src/gui/drawable/rippleforeground.h",
+     "bytes": 3310,
+     "sha256": "a43095dc37036d02f14d517b508160dc06a1f096b3b1fe1ae608bb3003d66bc5",
+     "classes_structs": [
+      "COPACITY",
+      "CTWEEN_ORIGIN",
+      "CTWEEN_RADIUS",
+      "RippleForeground"
+     ],
+     "on_callbacks": [
+      "onAnimationPropertyChanged",
+      "onTargetRadiusChanged"
+     ],
+     "symbol_line_hits": {
+      "draw(Canvas": [
+       90
+      ]
+     }
+    },
+    {
+     "path": "src/gui/drawable/ripplebackground.cc",
+     "bytes": 4540,
+     "sha256": "e313626765d58313a96371d65efd2dc1333d5e4d4752f38e398b0aa86425ad24",
+     "classes_structs": [
+      "RippleBackground"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "invalidate": [
+       60,
+       61,
+       110,
+       131
+      ],
+      "draw(Canvas": [
+       85
+      ],
+      "onStateChange": [
+       101,
+       118
+      ]
+     }
+    },
+    {
+     "path": "src/gui/drawable/rippledrawable.h",
+     "bytes": 6130,
+     "sha256": "89774ca840216294cdefa76eb03b3f5a246e33bd291f89d5309a96c645ba6a25",
+     "classes_structs": [
+      "RippleDrawable",
+      "RippleState"
+     ],
+     "on_callbacks": [
+      "onBoundsChange",
+      "onDensityChanged",
+      "onHotspotBoundsChanged",
+      "onStateChange"
+     ],
+     "symbol_line_hits": {
+      "invalidate": [
+       137,
+       138
+      ],
+      "draw(Canvas": [
+       136
+      ],
+      "onStateChange": [
+       103
+      ]
+     }
+    },
+    {
+     "path": "src/gui/res/color/ripple_material_dark.xml",
+     "bytes": 877,
+     "sha256": "623057f9c6ade2e34712240d00560a4b159261ce44126fa7d1c17c0d46a9a200",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "src/gui/res/color/ripple_material_light.xml",
+     "bytes": 879,
+     "sha256": "dd119b6c5398649ff2fb8401b8aae919b735506b3ef2929944703911c1f29f7d",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "src/gui/res/color/resolver_accent_ripple.xml",
+     "bytes": 820,
+     "sha256": "accfbc92b6758cd7a8efe4a7e52f076344b7aa16bfb72d9c598bbcfabdd0e8c7",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "src/gui/res/drawable/slice_ripple_drawable.xml",
+     "bytes": 801,
+     "sha256": "b78aeccf9f144dacb31aeccdcc649cbe98aebcbba285bbb82294434298518a05",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "src/gui/res/drawable/resolver_turn_on_work_button_ripple_background.xml",
+     "bytes": 398,
+     "sha256": "c4b6ae2f02f8457ba51a09384ec3e89cc3e01c0deb28648bdd10432f3242a5d5",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "tests/gui/drawable/cts_rippledrawable_test.cc",
+     "bytes": 7977,
+     "sha256": "ac51cfb0b1f3923d33f0007874e98af7b77ce8d62ea8f105a3d2a80b017b1101",
+     "classes_structs": [
+      "CountingCallback",
+      "CtsRippleDrawableTest"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "invalidate": [
+       4,
+       10,
+       39,
+       43,
+       44,
+       81
+      ],
+      "setAlpha": [
+       142
+      ]
+     }
+    },
+    {
+     "path": "tests/gui/assets/drawable/cts_ripple_effect.xml",
+     "bytes": 539,
+     "sha256": "0b2b288fef2ada6c625976f850d443d72a6667e8ff4737493b2275199e208520",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "tests/gui/assets/drawable/cts_ripple_radius.xml",
+     "bytes": 433,
+     "sha256": "7becdf552350feddd6de539a4f65ff2b62b094d9ca78d0313e88e5c769624683",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "apps/samples/animationdrawable.cc",
+     "bytes": 2244,
+     "sha256": "97be911b319946d298bf399b2c9fd5dc94394bf5e609dd21703f191c10667588",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "onDraw": [
+       30
+      ],
+      "requestLayout": [
+       50
+      ]
+     }
+    },
+    {
+     "path": "src/gui/drawable/animationdrawable.cc",
+     "bytes": 9893,
+     "sha256": "a6f944fd18bd8d2d4e6366e55b02571e07cdbb68845aaec7d8de906b26e58ceb",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "onDraw": [
+       29,
+       32,
+       40,
+       43,
+       47,
+       52,
+       66,
+       72,
+       80,
+       84
+      ]
+     }
+    },
+    {
+     "path": "src/gui/drawable/animationdrawable.h",
+     "bytes": 3110,
+     "sha256": "aae4db15848e6f2ee8b16971953b4e0bb1f7625b082a6c380ee444cb79f93625",
+     "classes_structs": [
+      "AnimationDrawable",
+      "AnimationState"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "onDraw": [
+       22,
+       28,
+       30,
+       43,
+       51,
+       52,
+       66
+      ]
+     }
+    },
+    {
+     "path": "tests/gui/drawable/cts_animationdrawable_test.cc",
+     "bytes": 7969,
+     "sha256": "bca33a67ec4c60cab313fc419602c1fe8c7c2182500f4cc6258e56cc459214f7",
+     "classes_structs": [
+      "CtsAnimationDrawableTest"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "onDraw": [
+       1,
+       22,
+       35,
+       38,
+       45,
+       48,
+       49,
+       59,
+       60,
+       74
+      ]
+     }
+    },
+    {
+     "path": "src/gui/core/canvas.cc",
+     "bytes": 4762,
+     "sha256": "a49ee1d37277adddcce7d7f792e041b440c5a9f3fdeb82a03b8f94d20b845c85",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "src/gui/core/canvas.h",
+     "bytes": 2122,
+     "sha256": "a01c8fe698e7a4674381ae55866186a6b134ece2127c0a980b4922424c181f27",
+     "classes_structs": [
+      "Canvas",
+      "GraphDevice",
+      "Window",
+      "WindowManager"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "src/gui/text/staticlayout.h",
+     "bytes": 8851,
+     "sha256": "4b07e56b0c3c41eb34422d81963d049f2b927a05f044caceed9ec58228ab5378",
+     "classes_structs": [
+      "Builder",
+      "DynamicLayout",
+      "LineBreaks",
+      "StaticLayout"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "src/gui/text/staticlayout.cc",
+     "bytes": 35388,
+     "sha256": "dc21ef948752abf30575fff49e71fa5da22577ef8e0a3aec0890a3c6fc801a69",
+     "classes_structs": [
+      "LineWidth"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "measureText": [
+       733
+      ]
+     }
+    },
+    {
+     "path": "src/gui/text/dynamiclayout.h",
+     "bytes": 10193,
+     "sha256": "7b902fbc5bd31a61571419730ce758e62b342cc3aadc88bbd8a52f3939e3aef8",
+     "classes_structs": [
+      "Builder",
+      "ChangeWatcher",
+      "DynamicLayout",
+      "Editable"
+     ],
+     "on_callbacks": [
+      "onSpanAdded",
+      "onSpanChanged",
+      "onSpanRemoved",
+      "onTextChanged"
+     ],
+     "symbol_line_hits": {
+      "invalidate": [
+       176
+      ]
+     }
+    },
+    {
+     "path": "src/gui/text/dynamiclayout.cc",
+     "bytes": 35562,
+     "sha256": "4a250057e7455775a8131d12e09f8489b3a45308cfecbd98573a1cb4be611c9e",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "apps/samples/vectordrawable.cc",
+     "bytes": 2067,
+     "sha256": "deecbb352e664b794d973bbddc7aaf83e3d0c49571556b872249467c25591781",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "src/gui/drawable/vectordrawable.h",
+     "bytes": 17214,
+     "sha256": "55fc314ab17f68ffbd3f0245b3585d96fabd372fc0a234c35aece5a5c9950499",
+     "classes_structs": [
+      "AnimatedVectorDrawable",
+      "ClipPath",
+      "FullPath",
+      "Group",
+      "Path",
+      "Tree",
+      "VClipPath",
+      "VFullPath",
+      "VGTarget",
+      "VGroup",
+      "VObject",
+      "VPath",
+      "VectorDrawable",
+      "VectorDrawableState"
+     ],
+     "on_callbacks": [
+      "onStateChange",
+      "onTreeConstructionFinished"
+     ],
+     "symbol_line_hits": {
+      "draw(Canvas": [
+       78
+      ],
+      "setAlpha": [
+       80,
+       218
+      ],
+      "setColorFilter": [
+       81
+      ],
+      "onStateChange": [
+       69,
+       130,
+       217,
+       277,
+       338,
+       395
+      ]
+     }
+    },
+    {
+     "path": "src/gui/drawable/vectordrawable.cc",
+     "bytes": 64941,
+     "sha256": "3f900c97d85cc69253aa605b33f85e334783908bfb5953ee8f455410f4d23a93",
+     "classes_structs": [
+      "PROP_ALPHA",
+      "PROP_PATH_DATA",
+      "VClipPath",
+      "VFullPath",
+      "VGroup",
+      "VPath",
+      "VectorDrawableState"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "invalidate": [
+       129,
+       135,
+       147,
+       156,
+       476
+      ],
+      "NinePatch": [
+       529
+      ],
+      "draw(Canvas": [
+       84
+      ],
+      "setAlpha": [
+       127,
+       128,
+       388,
+       501,
+       683,
+       686
+      ],
+      "setColorFilter": [
+       133
+      ],
+      "onStateChange": [
+       168,
+       177,
+       532,
+       672,
+       673,
+       892,
+       899,
+       1138,
+       1258
+      ]
+     }
+    },
+    {
+     "path": "src/gui/res/drawable/vector_drawable_progress_bar_large.xml",
+     "bytes": 1479,
+     "sha256": "01c7c58fcb1f4527d88f67f77f1ab17102b3b23fd4c7fc621441fb810c89ccd8",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "src/gui/res/drawable/vector_drawable_progress_indeterminate_horizontal.xml",
+     "bytes": 1942,
+     "sha256": "2f8d4f1ac3eec3fbe7a43d0913c5e10e12f7a9328f991d5d506df911030abd7d",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "src/gui/res/drawable/vector_drawable_progress_bar_medium.xml",
+     "bytes": 1479,
+     "sha256": "d176db4e93e9ed5e0f6d0403eefa3a07a240725bd8fe697d30e172dcd219e479",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "src/gui/res/drawable/vector_drawable_progress_bar_small.xml",
+     "bytes": 1509,
+     "sha256": "40164c1b2a0020471b0c3b3f34b88460ca50f620ba831cc872326111cc7fb836",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "src/gui/res/drawable/vector_notification_progress_indeterminate_horizontal.xml",
+     "bytes": 2267,
+     "sha256": "f462bec6a4c78de2b77ac60543ff01008e22bdf223feac92025788c57fd6cb1d",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "src/porting/r818/directfb/include/fusion/vector.h",
+     "bytes": 5325,
+     "sha256": "27896c1b71680cbf4f6be41bdb2a61cfb34ae3845159d832be79b8658c37c8af",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    }
+   ],
+   "test_dirs": {
+    "tests": 266
+   }
+  },
+  {
+   "repository": "mapbox/pixelmatch",
+   "clone_head_sha": "b2800051f2b79d18cf27e51cd240cafd38cfb0ba",
+   "clone_note": "cloned 1s",
+   "top_level": [
+    "CODEOWNERS",
+    "LICENSE",
+    "README.md",
+    "bench.js",
+    "bin",
+    "eslint.config.js",
+    "index.js",
+    "package-lock.json",
+    "package.json",
+    "test",
+    "tsconfig.json"
+   ],
+   "dir_tree_d2": [
+    ".github",
+    "bin",
+    "test",
+    ".github/workflows",
+    "test/fixtures"
+   ],
+   "files": [
+    {
+     "path": "index.js",
+     "bytes": 24077,
+     "sha256": "5155727c714c8ba71cd5c2f7a54014541b62baabfda6d63f4e2fc86fd6865a52",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "antialias": [
+       85,
+       197
+      ],
+      "maxDelta": [
+       60,
+       78,
+       369,
+       370,
+       378,
+       381,
+       392,
+       395,
+       405,
+       407
+      ],
+      "threshold": [
+       11,
+       25,
+       60,
+       77,
+       80,
+       369,
+       371,
+       379,
+       507
+      ],
+      "colorDelta": [
+       78,
+       381,
+       392,
+       395,
+       407,
+       468,
+       531,
+       537
+      ],
+      "includeAA": [
+       12,
+       31,
+       85
+      ]
+     }
+    }
+   ],
+   "test_dirs": {
+    "test": 28
+   }
+  },
+  {
+   "repository": "JohannesBuchner/imagehash",
+   "clone_head_sha": "7a405c9a27571ee8c998b661ce751639c34b7355",
+   "clone_note": "cloned 1s",
+   "top_level": [
+    ".bumpversion.cfg",
+    ".coveragerc",
+    ".editorconfig",
+    "LICENSE",
+    "MANIFEST.in",
+    "Makefile",
+    "README.rst",
+    "examples",
+    "find_similar_images.py",
+    "imagehash",
+    "output.html",
+    "requirements-conda.txt",
+    "requirements-linting-anaconda.txt",
+    "requirements-linting-old.txt",
+    "requirements-linting.txt",
+    "setup.cfg",
+    "setup.py",
+    "tests"
+   ],
+   "dir_tree_d2": [
+    ".github",
+    "examples",
+    "imagehash",
+    "tests",
+    ".github/workflows",
+    "tests/data"
+   ],
+   "files": [
+    {
+     "path": "imagehash/__init__.py",
+     "bytes": 25328,
+     "sha256": "f2cb2af56080dfb1b2a8b707d208ccace8d99d995c1530ceb998ac04c88e212d",
+     "symbol_line_hits": {
+      "average_hash": [
+       8,
+       11,
+       19,
+       233
+      ],
+      "phash": [
+       261,
+       284
+      ],
+      "dhash": [
+       304,
+       326,
+       639
+      ],
+      "whash": [
+       345
+      ],
+      "hex_to_hash": [
+       166,
+       200,
+       208,
+       212,
+       218
+      ]
+     },
+     "classes_structs": [],
+     "on_callbacks": []
+    },
+    {
+     "path": "tests/test_hex_conversions.py",
+     "bytes": 3482,
+     "sha256": "3f0c968613f5efce391f3120b03c5579a2fef544eea06ffcf8eb1af450a57d72",
+     "classes_structs": [
+      "TestHexConversions"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "hex_to_hash": [
+       77,
+       83
+      ]
+     }
+    },
+    {
+     "path": "tests/test_whash.py",
+     "bytes": 2387,
+     "sha256": "5c559af2cc298ed4f3144eba774f95b763dcac3b5824a905339fd1d6940f7ba2",
+     "classes_structs": [
+      "Test",
+      "TestBasic"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "whash": [
+       17,
+       19,
+       22,
+       25,
+       40,
+       47,
+       54,
+       61,
+       65,
+       71
+      ]
+     }
+    },
+    {
+     "path": "tests/test_hex_conversions_multihash.py",
+     "bytes": 1127,
+     "sha256": "7711060c756eab0a72fa6d24e05fc873072d3fe40a7bcb818242d523fbde4c3d",
+     "classes_structs": [
+      "Test"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "tests/test_crop_resistant_hash.py",
+     "bytes": 4452,
+     "sha256": "10f3cdd5e79b20a9dd0269ed231a64cc6309a9319333ecdcbe3953f29775437d",
+     "classes_structs": [
+      "Test"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "average_hash": [
+       35
+      ],
+      "dhash": [
+       36,
+       38
+      ]
+     }
+    },
+    {
+     "path": "tests/test_readme.py",
+     "bytes": 440,
+     "sha256": "eb436a8cd03a77f5a161bc42867cfec606039ac595a494e76824517e67206e26",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "tests/test_old_hex_conversions.py",
+     "bytes": 1012,
+     "sha256": "c55b9622019f7fd0e2b0efad15540ef1b18954644806e7d769980d17bd106b71",
+     "classes_structs": [
+      "TestOldHexConversions"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "hex_to_hash": [
+       25,
+       27
+      ]
+     }
+    },
+    {
+     "path": "tests/test_dhash.py",
+     "bytes": 602,
+     "sha256": "91ee1c580d1716e62bceb1d642ff54b3f8e56720acede8d8ed2aa0e697aea32d",
+     "classes_structs": [
+      "Test"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "dhash": [
+       13,
+       15,
+       18,
+       21,
+       24
+      ]
+     }
+    },
+    {
+     "path": "tests/utils.py",
+     "bytes": 2318,
+     "sha256": "5ea1a8b8ea2e8fa02d06a41f583632dd8e2c1b584622bcbda9d649d40c52724a",
+     "classes_structs": [
+      "TestImageHash"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "hex_to_hash": [
+       51
+      ]
+     }
+    },
+    {
+     "path": "tests/test_hash_is_constant.py",
+     "bytes": 4480,
+     "sha256": "8e10f390d51fa1b63c004a9efa89a7f12e94edfc5e34a0b5afc938fa7566a9d0",
+     "classes_structs": [
+      "Test"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "average_hash": [
+       41,
+       42
+      ],
+      "phash": [
+       46,
+       47
+      ],
+      "dhash": [
+       51,
+       52
+      ],
+      "whash": [
+       56,
+       57
+      ]
+     }
+    },
+    {
+     "path": "tests/test_average_hash.py",
+     "bytes": 637,
+     "sha256": "361b5c43ecc0f348521df00b9378509f3c779c4ee33286287abcb5f91edca69e",
+     "classes_structs": [
+      "Test"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "average_hash": [
+       13,
+       15,
+       18,
+       21,
+       24
+      ]
+     }
+    },
+    {
+     "path": "tests/test_colorhash.py",
+     "bytes": 3373,
+     "sha256": "ccf67297504f3027fa832b9167ad4b39ca40eebb4c7ba67171d598a873a30c4b",
+     "classes_structs": [
+      "Test"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "tests/__init__.py",
+     "bytes": 132,
+     "sha256": "3b1c32e2eb48aabf33357a952be0132527b105b01da1bb9be34c5c7d81762e0c",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "tests/test_phash.py",
+     "bytes": 602,
+     "sha256": "6f1d9b5dcbf3704d13edd3e52a5f2291f8ece4c369965970ae1c761db0d58819",
+     "classes_structs": [
+      "Test"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "phash": [
+       13,
+       15,
+       18,
+       21,
+       24
+      ]
+     }
+    }
+   ],
+   "test_dirs": {
+    "tests": 15
+   }
+  },
+  {
+   "repository": "americanexpress/jest-image-snapshot",
+   "clone_head_sha": "c7e3056b034f8cb60c3016ef18963b0ad8bb127a",
+   "clone_note": "cloned 2s",
+   "top_level": [
+    ".editorconfig",
+    ".eslintrc.json",
+    ".npmignore",
+    ".nvmrc",
+    "CHANGELOG.md",
+    "CODEOWNERS",
+    "CODE_OF_CONDUCT.md",
+    "CONTRIBUTING.md",
+    "LICENSE.txt",
+    "README.md",
+    "__tests__",
+    "commitlint.config.js",
+    "examples",
+    "images",
+    "package-lock.json",
+    "package.json",
+    "src"
+   ],
+   "dir_tree_d2": [
+    ".github",
+    "__tests__",
+    "examples",
+    "images",
+    "src",
+    ".github/workflows",
+    "__tests__/__image_snapshots__",
+    "__tests__/__snapshots__",
+    "__tests__/stubs",
+    "examples/__tests__",
+    "examples/__tests__/__image_snapshots__",
+    "examples/__tests__/stubs"
+   ],
+   "files": [
+    {
+     "path": "src/diff-snapshot.js",
+     "bytes": 14719,
+     "sha256": "eb09978d8bc7a1d160a0e2b1588bc243433e504cdfa10e66d5fb0f08848a2918",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "pixelmatch": [
+       18,
+       55,
+       56,
+       60,
+       102,
+       252,
+       258
+      ]
+     }
+    },
+    {
+     "path": "src/diff-process.js",
+     "bytes": 1173,
+     "sha256": "96c2c6fa5b43fe9d0e0e0c1f141418ad5484426870e012ae6126bf81e76a7522",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "src/index.js",
+     "bytes": 10280,
+     "sha256": "f3345fde51d97b8aaea81ff0f660c87316833bcca08608fe4ba7954e457fbf58",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "toMatchImageSnapshot": [
+       171,
+       206,
+       275
+      ],
+      "pixelmatch": [
+       169
+      ]
+     }
+    },
+    {
+     "path": "src/image-composer.js",
+     "bytes": 1965,
+     "sha256": "da7b66f78ad95cc27c944cc12ad5d1f07d73b87e909160142186c8abe625fe31",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "src/outdated-snapshot-reporter.js",
+     "bytes": 2751,
+     "sha256": "009b3eda5d35183e48c162b62ce00f086b0dcd2804168752b2885fef7414eec5",
+     "classes_structs": [
+      "OutdatedSnapshotReporter"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    }
+   ],
+   "test_dirs": {
+    "__tests__": 27
+   }
+  },
+  {
+   "repository": "pedrovgs/Shot",
+   "clone_head_sha": "e102d797d87fe212c52b235f71954f08ca502cb2",
+   "clone_note": "cloned 3s",
+   "top_level": [
+    ".editorconfig",
+    ".git",
+    ".github",
+    ".gitignore",
+    ".scalafmt.conf",
+    "LICENSE.txt",
+    "README.md",
+    "_config.yml",
+    "art",
+    "build.gradle",
+    "core",
+    "gradle",
+    "gradle.properties",
+    "gradlew",
+    "gradlew.bat",
+    "settings.gradle",
+    "shot",
+    "shot-android",
+    "shot-consumer",
+    "shot-consumer-compose",
+    "shot-consumer-flavors",
+    "shot-consumer-library-no-tests"
+   ],
+   "dir_tree_d2": [
+    ".github",
+    "art",
+    "core",
+    "gradle",
+    "shot",
+    "shot-android",
+    "shot-consumer",
+    "shot-consumer-compose",
+    "shot-consumer-flavors",
+    "shot-consumer-library-no-tests",
+    ".github/workflows",
+    "core/src",
+    "gradle/wrapper",
+    "shot/src",
+    "shot-android/src",
+    "shot-consumer/app",
+    "shot-consumer/app2",
+    "shot-consumer/gradle",
+    "shot-consumer/samplelibrary",
+    "shot-consumer/scripts",
+    "shot-consumer-compose/app",
+    "shot-consumer-compose/gradle",
+    "shot-consumer-flavors/app",
+    "shot-consumer-flavors/gradle",
+    "shot-consumer-flavors/scripts",
+    "shot-consumer-library-no-tests/app",
+    "shot-consumer-library-no-tests/gradle",
+    "shot-consumer-library-no-tests/library",
+    "core/src/main",
+    "core/src/test",
+    "shot/src/main",
+    "shot-android/src/androidTest",
+    "shot-android/src/main",
+    "shot-android/src/test",
+    "shot-consumer/app/screenshots",
+    "shot-consumer/app/src",
+    "shot-consumer/app2/screenshots",
+    "shot-consumer/app2/src",
+    "shot-consumer/gradle/wrapper",
+    "shot-consumer/samplelibrary/screenshots",
+    "shot-consumer/samplelibrary/src",
+    "shot-consumer-compose/app/screenshots",
+    "shot-consumer-compose/app/src",
+    "shot-consumer-compose/gradle/wrapper",
+    "shot-consumer-flavors/app/screenshots",
+    "shot-consumer-flavors/app/src",
+    "shot-consumer-flavors/gradle/wrapper",
+    "shot-consumer-library-no-tests/app/src",
+    "shot-consumer-library-no-tests/gradle/wrapper",
+    "shot-consumer-library-no-tests/library/src"
+   ],
+   "files": [
+    {
+     "path": "shot/src/main/scala/com/karumi/shot/ShotExtension.scala",
+     "bytes": 481,
+     "sha256": "a081907e7b8b908f89e199283711a408e4f86e301774cbd11e0df1226d9fb13e"
+    },
+    {
+     "path": "shot/src/main/scala/com/karumi/shot/ShotPlugin.scala",
+     "bytes": 11887,
+     "sha256": "808442ce17635ff646a601302c271d3faed822da154c587e26cf4b15c7f3c71f"
+    },
+    {
+     "path": "shot/src/main/scala/com/karumi/shot/tasks/Tasks.scala",
+     "bytes": 4789,
+     "sha256": "c588e5b62d2e82683e6e9e3f342fe293dc5649f3a8937d3e758af972a0e372fd"
+    },
+    {
+     "path": "shot/src/main/scala/com/karumi/shot/exceptions/ShotException.scala",
+     "bytes": 179,
+     "sha256": "65ed845eb86a661fce00178697b543411bdbddc43eadc5ec473478389f1162cf"
+    },
+    {
+     "path": "core/src/main/scala/com/karumi/shot/Files.scala",
+     "bytes": 709,
+     "sha256": "29d62fe8c8d5cfa48f34e58028cb416b5fa9cbcf0c0a280ad3737990b5081f97"
+    },
+    {
+     "path": "core/src/main/scala/com/karumi/shot/Shot.scala",
+     "bytes": 12479,
+     "sha256": "38bd48968a781fec397c9083d34ddf94717c506d41e84618ddea7ea5bd179b5c"
+    },
+    {
+     "path": "core/src/main/scala/com/karumi/shot/ui/Console.scala",
+     "bytes": 578,
+     "sha256": "f0092d7b24f9c447c5a92738f2bb7f4e9d8ee7788d9845ec60525bf072334ba2"
+    },
+    {
+     "path": "core/src/main/scala/com/karumi/shot/domain/model.scala",
+     "bytes": 3232,
+     "sha256": "d013865d25c74d0b3ff667cad4f98959ce877bafe959a330eefded1685e876e2"
+    },
+    {
+     "path": "core/src/main/scala/com/karumi/shot/domain/ShotFolder.scala",
+     "bytes": 1984,
+     "sha256": "0c3c2a86b436caa0adb711b7e700646c907456ffe84ed62caf71e25cac9677de"
+    },
+    {
+     "path": "core/src/main/scala/com/karumi/shot/reports/HtmlExecutionReporter.scala",
+     "bytes": 8334,
+     "sha256": "d0a4d887ef28be9cc7fcb37b5db560333fd814e6096f7a31517aca3c731b115e"
+    },
+    {
+     "path": "core/src/main/scala/com/karumi/shot/reports/JunitExecutionReporter.scala",
+     "bytes": 4194,
+     "sha256": "4d1c824b872512349bc19883e7203535ffc36bce7c180faff393a21c63ae5cfe"
+    },
+    {
+     "path": "core/src/main/scala/com/karumi/shot/reports/ExecutionReporter.scala",
+     "bytes": 518,
+     "sha256": "4ef427b40a2a8070509e55aa0dbd6dfee3832ef2f8d8da89842c1fd878cf14f5"
+    },
+    {
+     "path": "core/src/main/scala/com/karumi/shot/reports/ConsoleReporter.scala",
+     "bytes": 2510,
+     "sha256": "ba3b974075ac3f0f1018b979201762a14bf16f01f8749fe9af8d15d2c0b6ce71"
+    },
+    {
+     "path": "core/src/main/scala/com/karumi/shot/system/EnvVars.scala",
+     "bytes": 209,
+     "sha256": "0072ad5030302d09dc9887966d3328f7e24dd9793df84efccf68c8209b5508a2"
+    },
+    {
+     "path": "core/src/main/scala/com/karumi/shot/screenshots/ScreenshotsDiffGenerator.scala",
+     "bytes": 1980,
+     "sha256": "ea69d5e4c99645f3d9bebe313db66d8fdfba57b51021e973ea06b44b9ac77c9f"
+    },
+    {
+     "path": "core/src/main/scala/com/karumi/shot/screenshots/ScreenshotsComparator.scala",
+     "bytes": 3001,
+     "sha256": "78b2d50f7d89773f96bc8d5649981b7d58f5541f8bcf229e4bdbd0a8ff7dd8e5"
+    },
+    {
+     "path": "core/src/main/scala/com/karumi/shot/screenshots/ScreenshotsSaver.scala",
+     "bytes": 3077,
+     "sha256": "aaebf0dd0aefd7324d65552bc68485ac7d30d7cd52cfda8a316714b57d6b64d3"
+    },
+    {
+     "path": "core/src/main/scala/com/karumi/shot/screenshots/ScreenshotComposer.scala",
+     "bytes": 1225,
+     "sha256": "121c932f1c86d96747d8d157d5a7038c3cd92c9ca037a178fb8bd4a56dc2069b"
+    },
+    {
+     "path": "core/src/main/scala/com/karumi/shot/templates/RecordIndexTemplate.scala",
+     "bytes": 3220,
+     "sha256": "dcdd65880e8da52141ea9479954c34969150c8098b8a64e35911292acde911c3"
+    },
+    {
+     "path": "core/src/main/scala/com/karumi/shot/templates/VerificationIndexTemplate.scala",
+     "bytes": 3844,
+     "sha256": "05c223491b9695944720c68949f7e3c5ed8be52ce379680a852d9f6edee81d52"
+    },
+    {
+     "path": "core/src/main/scala/com/karumi/shot/android/Adb.scala",
+     "bytes": 3203,
+     "sha256": "21990464f24d08fc3d9d8e9b9cf36c599a5b5e21da7dfc2ef202f53cb81e45ac"
+    },
+    {
+     "path": "core/src/main/scala/com/karumi/shot/base64/Base64Encoder.scala",
+     "bytes": 876,
+     "sha256": "4a6795040b166cf0f709dc9b44ec6a2dd82c40e28b29c90b67abc0df2a9e3803"
+    },
+    {
+     "path": "core/src/main/scala/com/karumi/shot/xml/ScreenshotsSuiteJsonParser.scala",
+     "bytes": 3158,
+     "sha256": "1be915ca765b8b31469d4798e2d5f6f0ee1d4fc6231187b1d120d73b23b4f81f"
+    },
+    {
+     "path": "core/src/main/scala/com/karumi/shot/json/ScreenshotsComposeSuiteJsonParser.scala",
+     "bytes": 2413,
+     "sha256": "0dd6a8fe0260fa9d84a62026aad57fd77678852baafd6fe8ce89564555c842e6"
+    }
+   ],
+   "test_dirs": {
+    "shot-consumer-library-no-tests": 38
+   }
+  },
+  {
+   "repository": "ndtp/android-testify",
+   "clone_head_sha": "b36c378f4a136fe77f83f3f75ed4733f34f18b29",
+   "clone_note": "cloned 3s",
+   "top_level": [
+    ".editorconfig",
+    ".git",
+    ".gitattributes",
+    ".github",
+    ".gitignore",
+    "CHANGELOG.md",
+    "CODE_OF_CONDUCT.md",
+    "CONTRIBUTING.md",
+    "Ext",
+    "GEMINI.md",
+    "LICENSE",
+    "Library",
+    "MIGRATION.md",
+    "PUBLISHING.md",
+    "Plugins",
+    "README.md",
+    "RECIPES.md",
+    "Samples",
+    "bitrise.yml",
+    "build.gradle.kts",
+    "docs",
+    "github_action_emulator_command.sh",
+    "gradle",
+    "gradle.properties",
+    "gradlew",
+    "gradlew.bat",
+    "ktlint.gradle",
+    "local.defaults.properties",
+    "publish.build.gradle",
+    "settings.gradle",
+    "test_and_archive.sh",
+    "update_version.sh"
+   ],
+   "dir_tree_d2": [
+    ".github",
+    "Ext",
+    "Library",
+    "Plugins",
+    "Samples",
+    "docs",
+    "gradle",
+    ".github/ISSUE_TEMPLATE",
+    ".github/workflows",
+    "Ext/Accessibility",
+    "Ext/Compose",
+    "Ext/Fullscreen",
+    "Ext/Ktx",
+    "Library/src",
+    "Plugins/Gradle",
+    "Plugins/IntelliJ",
+    "Samples/Flix",
+    "Samples/Gmd",
+    "Samples/Legacy",
+    "Samples/Paparazzi",
+    "docs/blog",
+    "docs/docs",
+    "docs/src",
+    "docs/static",
+    "docs/versioned_docs",
+    "docs/versioned_sidebars",
+    "gradle/wrapper",
+    "Ext/Accessibility/src",
+    "Ext/Compose/src",
+    "Ext/Fullscreen/src",
+    "Ext/Ktx/src",
+    "Library/src/androidTest",
+    "Library/src/debug",
+    "Library/src/main",
+    "Library/src/test",
+    "Plugins/Gradle/gradle",
+    "Plugins/Gradle/src",
+    "Plugins/IntelliJ/gradle",
+    "Plugins/IntelliJ/marketplace",
+    "Plugins/IntelliJ/src",
+    "Samples/Flix/FlixLibrary",
+    "Samples/Flix/src",
+    "Samples/Gmd/src",
+    "Samples/Legacy/src",
+    "Samples/Paparazzi/PaparazziSampleLibrary",
+    "Samples/Paparazzi/src",
+    "docs/docs/extensions",
+    "docs/docs/get-started",
+    "docs/docs/recipes",
+    "docs/src/components",
+    "docs/src/css",
+    "docs/src/pages",
+    "docs/static/img",
+    "docs/versioned_docs/version-1.2.0-alpha01",
+    "docs/versioned_docs/version-2.0.0",
+    "docs/versioned_docs/version-2.0.0-alpha01",
+    "docs/versioned_docs/version-3.2.3",
+    "docs/versioned_docs/version-4.0.0",
+    "docs/versioned_docs/version-5.0.2"
+   ],
+   "files": [
+    {
+     "path": "Samples/Gmd/src/main/java/dev/testify/sample/clients/MockClientData.kt",
+     "bytes": 3230,
+     "sha256": "00ad43858ecdc9c36c8d66b03b0fc1ddd99d555e6e96e37894305a6177550a6e"
+    },
+    {
+     "path": "Samples/Gmd/src/main/java/dev/testify/sample/clients/index/ClientListFragment.kt",
+     "bytes": 2020,
+     "sha256": "d080885706cc09ec2be6d85dbad3ad1abde7df508d6df5c87cfab8e7c86bd91f"
+    },
+    {
+     "path": "Samples/Gmd/src/main/java/dev/testify/sample/clients/index/ClientListActivity.kt",
+     "bytes": 1957,
+     "sha256": "9a4cd92fdf67982686bcc3e0e4554e15656c972bdb53bb8993c4b33fcfbda0c2"
+    },
+    {
+     "path": "Samples/Gmd/src/main/java/dev/testify/sample/clients/index/ClientListRecyclerViewAdapter.kt",
+     "bytes": 2866,
+     "sha256": "ecc999d40f64db87ea65a06bfa5b1f6bd7774a8b9538341354da065595b80446"
+    },
+    {
+     "path": "Samples/Legacy/src/main/java/dev/testify/sample/MainActivity.kt",
+     "bytes": 2559,
+     "sha256": "29b88fc2e87e01eb2684db68536207f6b764d410dd3c6376e2b3339c2e0da576"
+    },
+    {
+     "path": "Samples/Legacy/src/main/java/dev/testify/sample/ComposeActivity.kt",
+     "bytes": 7770,
+     "sha256": "065d01c7072ca67368caac2c21fe72a3613719dbb3b90085e3a789a3cc1ad1aa"
+    },
+    {
+     "path": "Samples/Legacy/src/main/java/dev/testify/sample/clients/MockClientData.kt",
+     "bytes": 3230,
+     "sha256": "00ad43858ecdc9c36c8d66b03b0fc1ddd99d555e6e96e37894305a6177550a6e"
+    },
+    {
+     "path": "Samples/Legacy/src/main/java/dev/testify/sample/a11y/CounterActivity.kt",
+     "bytes": 1018,
+     "sha256": "b7165ff8fddb416413f779c2e8a078784402d3dae0e4bfb477a54fc91c9a57c5"
+    },
+    {
+     "path": "Samples/Legacy/src/main/java/dev/testify/sample/ui/theme/Color.kt",
+     "bytes": 1414,
+     "sha256": "abf3414ceeae395e57d943c18a382afa778965f2b0846774a9571b8e5ecd6df9"
+    },
+    {
+     "path": "Samples/Legacy/src/main/java/dev/testify/sample/ui/theme/Type.kt",
+     "bytes": 1996,
+     "sha256": "b81ea1b90a17fdd50f4123f76d2b62048afe314552991eb16102fec768d859f1"
+    },
+    {
+     "path": "Samples/Legacy/src/main/java/dev/testify/sample/ui/theme/Theme.kt",
+     "bytes": 2305,
+     "sha256": "8c890c601c221579aa3b811aa50117db4d27e2e5126e9f506778983e8a580a16"
+    },
+    {
+     "path": "Samples/Legacy/src/main/java/dev/testify/sample/ui/theme/Shape.kt",
+     "bytes": 1510,
+     "sha256": "d44d4b54cf1e96cdf6b9745d586bea2d7fda9979fea6ef2d47c54033f67fa7f5"
+    },
+    {
+     "path": "Samples/Legacy/src/main/java/dev/testify/sample/clients/details/ClientDetailsActivity.kt",
+     "bytes": 3641,
+     "sha256": "4611d4b502819f81adbab6e457e16110821a69620b193367b3dffedeb1460098"
+    },
+    {
+     "path": "Samples/Legacy/src/main/java/dev/testify/sample/clients/details/ClientDetailsContract.kt",
+     "bytes": 1546,
+     "sha256": "779406e23a3ef30f42fd223f5b3f8d333edae3db2ff86e52973f23074f163bc5"
+    },
+    {
+     "path": "Samples/Legacy/src/main/java/dev/testify/sample/clients/details/ClientDetailsView.kt",
+     "bytes": 2293,
+     "sha256": "0c2d455500470bcc3cd67c4439970e2811aa68f1cdd9627ebff5bc9a943213f4"
+    },
+    {
+     "path": "Samples/Legacy/src/main/java/dev/testify/sample/clients/index/ClientListFragment.kt",
+     "bytes": 2643,
+     "sha256": "cdd94b15f691405ff49a479eb680b8477baaf3780dea1fb5e1ec1b5dff21f8f0"
+    },
+    {
+     "path": "Samples/Legacy/src/main/java/dev/testify/sample/clients/index/ClientListActivity.kt",
+     "bytes": 2280,
+     "sha256": "907b5b8a4d10a205f764d752fc20e24568a86562da079044f3ca4c6ae089f064"
+    },
+    {
+     "path": "Samples/Legacy/src/main/java/dev/testify/sample/clients/index/ClientListRecyclerViewAdapter.kt",
+     "bytes": 3276,
+     "sha256": "1a2019ece0968623a926596f1b41e8ec9e5d840dc9dc1d92217c88536f2a5150"
+    },
+    {
+     "path": "Samples/Legacy/src/main/java/dev/testify/sample/clients/details/edit/ClientDetailsEditViewState.kt",
+     "bytes": 1409,
+     "sha256": "5a44654ca2864b1c53791cc23920bdaf6953c38beccdb61486c8ffcb6116780b"
+    },
+    {
+     "path": "Samples/Legacy/src/main/java/dev/testify/sample/clients/details/edit/ClientDetailsEditView.kt",
+     "bytes": 2223,
+     "sha256": "eb23512bab8b6ef77258b29ded7e0c7c64807e1786b364d871c94b62afde3651"
+    },
+    {
+     "path": "Samples/Legacy/src/main/java/dev/testify/sample/clients/details/edit/ClientDetailsEditActivity.kt",
+     "bytes": 3492,
+     "sha256": "361d9f98fdf54c69684e94c6f3f590aa01d111fa1288e414dbf9334d6a9a2615"
+    },
+    {
+     "path": "Samples/Flix/FlixLibrary/src/main/java/dev/testify/samples/flix/repository/CastMemberRepository.kt",
+     "bytes": 3688,
+     "sha256": "65f35ababcb45b56dc97d39e2a13eb8645b6d9e64300e9f44ad984ef8bc19d2f"
+    },
+    {
+     "path": "Samples/Flix/FlixLibrary/src/main/java/dev/testify/samples/flix/ui/common/AsynchronousImage.kt",
+     "bytes": 2986,
+     "sha256": "aeaac03682ee18a453e52cdfcb16a208544c3f6c7d31d35a1810406f31a01e32"
+    },
+    {
+     "path": "Samples/Flix/FlixLibrary/src/main/java/dev/testify/samples/flix/ui/theme/Spacing.kt",
+     "bytes": 1301,
+     "sha256": "bc4aa82059f96729d50e0a188d0aee3ece941a83906faf21912011695799b4fb"
+    },
+    {
+     "path": "Samples/Flix/FlixLibrary/src/main/java/dev/testify/samples/flix/ui/base/BaseViewModel.kt",
+     "bytes": 2497,
+     "sha256": "1f5028d6fcb67adc672745c01a661ef0e90f6f5eb15e660c93fd4636fd74104c"
+    },
+    {
+     "path": "Samples/Flix/FlixLibrary/src/main/java/dev/testify/samples/flix/ui/base/BaseContract.kt",
+     "bytes": 1242,
+     "sha256": "5c5b34a0f6cb380b6ae49595726f39144aa3f6cd41d3009df058452e3d0de573"
+    },
+    {
+     "path": "Samples/Flix/FlixLibrary/src/main/java/dev/testify/samples/flix/ui/base/BaseViewExtensions.kt",
+     "bytes": 1734,
+     "sha256": "3881d9219a74b8c65845b1402e0efb86c3c687a2e607776b593c64772b55a636"
+    },
+    {
+     "path": "Samples/Flix/FlixLibrary/src/main/java/dev/testify/samples/flix/ui/cast/CastDetailView.kt",
+     "bytes": 8606,
+     "sha256": "e865b0426d53d7bb9760674b1a5fb9c4fb9c6e6a74c0f1d4f312f4cfc8913c99"
+    },
+    {
+     "path": "Samples/Flix/FlixLibrary/src/main/java/dev/testify/samples/flix/ui/cast/CastDetailContract.kt",
+     "bytes": 1947,
+     "sha256": "cc36dc3e316d7ef59ded3cb0567ce5491bd33751f0d1375868bb6cf6db2088d2"
+    },
+    {
+     "path": "Samples/Flix/FlixLibrary/src/main/java/dev/testify/samples/flix/ui/cast/CastDetailViewModel.kt",
+     "bytes": 3299,
+     "sha256": "249e31ee5fd5145bf5bea6b7fbbbcb02bfc9dd05e0ae46838752e42181878949"
+    },
+    {
+     "path": "Samples/Flix/FlixLibrary/src/main/java/dev/testify/samples/flix/ui/common/util/ImagePromise.kt",
+     "bytes": 1565,
+     "sha256": "bc2a5c2e6416f80d6566368b18d405ed796c72277c1390767281f217dc299349"
+    },
+    {
+     "path": "Samples/Flix/FlixLibrary/src/main/java/dev/testify/samples/flix/data/model/FlixPerson.kt",
+     "bytes": 1505,
+     "sha256": "f4adc9a8aefa75ddf96edca7c2d41bd29f3c3113ff069a5a12116719e478a956"
+    },
+    {
+     "path": "Samples/Flix/FlixLibrary/src/main/java/dev/testify/samples/flix/data/translator/PersonToFlixPerson.kt",
+     "bytes": 1871,
+     "sha256": "edb2a05cf662996ea91a55fede9a75fa990936b0a7f987bdbf586d5ef91a143a"
+    },
+    {
+     "path": "Samples/Flix/FlixLibrary/src/main/java/dev/testify/samples/flix/data/remote/tmdb/TheMovieDbApiConfiguration.kt",
+     "bytes": 1380,
+     "sha256": "a7242e00c5558e3eb90bf16fadc949248166a3ed645b4ee15cce3d47a1e01e30"
+    },
+    {
+     "path": "Samples/Flix/FlixLibrary/src/main/java/dev/testify/samples/flix/data/remote/tmdb/RestApiSpec.kt",
+     "bytes": 1704,
+     "sha256": "1eb239332232ae93a724293464c2c54e1d7bfbf0efa10878ce831c8c1907e83b"
+    },
+    {
+     "path": "Samples/Flix/FlixLibrary/src/main/java/dev/testify/samples/flix/data/remote/tmdb/TheMovieDbConfigurationApi.kt",
+     "bytes": 1295,
+     "sha256": "25e25c0ef53f69308b33f9a4fcff3e9e34c73817206eedb0a0aae5a7b01e1d7d"
+    },
+    {
+     "path": "Samples/Flix/FlixLibrary/src/main/java/dev/testify/samples/flix/data/remote/tmdb/TheMovieDbUrlResolver.kt",
+     "bytes": 1635,
+     "sha256": "413c1bfa844938f5d6d1b14a34635fc52a468fb1cd97d4c57c6151be4926f6a6"
+    },
+    {
+     "path": "Samples/Flix/FlixLibrary/src/main/java/dev/testify/samples/flix/data/remote/tmdb/entity/Person.kt",
+     "bytes": 2213,
+     "sha256": "a1690c028729c9ef81296a31a8b0c259c87995f99784708ebc657030a42dbc2d"
+    },
+    {
+     "path": "Samples/Flix/src/main/java/dev/testify/samples/flix/application/FlixApplication.kt",
+     "bytes": 1603,
+     "sha256": "42e71200546d301fdec779ef9df23139ce93ee40d2013171d0306592e7f876b2"
+    },
+    {
+     "path": "Samples/Flix/src/main/java/dev/testify/samples/flix/main/MainActivity.kt",
+     "bytes": 4741,
+     "sha256": "9deb4070e9810957df59a34eb9af7f2b525a15abf120aef61f2a809eac745b7f"
+    },
+    {
+     "path": "Library/src/main/java/dev/testify/ScreenshotRule.kt",
+     "bytes": 25494,
+     "sha256": "0e701acfb0cfc558236422e01a88b3d95cb922e0639178fb3ff78a25ddce7b54",
+     "symbol_line_hits": {
+      "assertSame": [
+       59,
+       84,
+       98,
+       166,
+       167,
+       169,
+       184,
+       238,
+       262,
+       270
+      ],
+      "capture": [
+       84
+      ],
+      "ScreenshotRule": [
+       46,
+       75,
+       78,
+       84,
+       93,
+       110,
+       123,
+       127,
+       134,
+       224
+      ],
+      "exclude": [],
+      "baseline": [
+       598,
+       603,
+       604
+      ]
+     },
+     "classes_structs": [],
+     "on_callbacks": []
+    }
+   ],
+   "test_dirs": {}
+  },
+  {
+   "repository": "takahirom/roborazzi",
+   "clone_head_sha": "c97214ed093feef6e6549f1bb35c16f5153c6f12",
+   "clone_note": "cloned 1s",
+   "top_level": [
+    ".coderabbit.yaml",
+    ".editorconfig",
+    ".idea",
+    "CONTRIBUTING.md",
+    "LICENSE",
+    "README.md",
+    "README.template.md",
+    "benchmark-scenario.conf",
+    "build.gradle",
+    "docs",
+    "gradle",
+    "gradle.properties",
+    "gradlew",
+    "gradlew.bat",
+    "include-build",
+    "proposals",
+    "renovate.json",
+    "roborazzi",
+    "roborazzi-accessibility-check",
+    "roborazzi-ai-gemini",
+    "roborazzi-ai-openai",
+    "roborazzi-annotations",
+    "roborazzi-compose",
+    "roborazzi-compose-desktop",
+    "roborazzi-compose-desktop-preview-scanner-support",
+    "roborazzi-compose-ios",
+    "roborazzi-compose-preview-scanner-support",
+    "roborazzi-idea-plugin",
+    "roborazzi-junit-rule",
+    "roborazzi-painter",
+    "sample-android",
+    "sample-android-multiplatform",
+    "sample-android-without-compose",
+    "sample-compose-desktop-jvm",
+    "sample-compose-desktop-multiplatform",
+    "sample-compose-v2",
+    "sample-generate-preview-tests",
+    "sample-generate-preview-tests-multiplatform",
+    "scripts",
+    "settings.gradle",
+    "shared-sources",
+    "skills"
+   ],
+   "dir_tree_d2": [
+    ".github",
+    ".idea",
+    "docs",
+    "gradle",
+    "include-build",
+    "proposals",
+    "roborazzi",
+    "roborazzi-accessibility-check",
+    "roborazzi-ai-gemini",
+    "roborazzi-ai-openai",
+    "roborazzi-annotations",
+    "roborazzi-compose",
+    "roborazzi-compose-desktop",
+    "roborazzi-compose-desktop-preview-scanner-support",
+    "roborazzi-compose-ios",
+    "roborazzi-compose-preview-scanner-support",
+    "roborazzi-idea-plugin",
+    "roborazzi-junit-rule",
+    "roborazzi-painter",
+    "sample-android",
+    "sample-android-multiplatform",
+    "sample-android-without-compose",
+    "sample-compose-desktop-jvm",
+    "sample-compose-desktop-multiplatform",
+    "sample-compose-v2",
+    "sample-generate-preview-tests",
+    "sample-generate-preview-tests-multiplatform",
+    "scripts",
+    "shared-sources",
+    "skills",
+    ".github/workflows",
+    ".idea/artifacts",
+    ".idea/codeStyles",
+    "docs/cfg",
+    "docs/images",
+    "docs/topics",
+    "gradle/wrapper",
+    "include-build/gradle",
+    "include-build/roborazzi-core",
+    "include-build/roborazzi-gradle-plugin",
+    "roborazzi/api",
+    "roborazzi/src",
+    "roborazzi-accessibility-check/api",
+    "roborazzi-accessibility-check/src",
+    "roborazzi-ai-gemini/api",
+    "roborazzi-ai-gemini/src",
+    "roborazzi-ai-openai/api",
+    "roborazzi-ai-openai/src",
+    "roborazzi-annotations/api",
+    "roborazzi-annotations/src",
+    "roborazzi-compose/api",
+    "roborazzi-compose/src",
+    "roborazzi-compose-desktop/api",
+    "roborazzi-compose-desktop/src",
+    "roborazzi-compose-desktop-preview-scanner-support/api",
+    "roborazzi-compose-desktop-preview-scanner-support/src",
+    "roborazzi-compose-ios/src",
+    "roborazzi-compose-preview-scanner-support/api",
+    "roborazzi-compose-preview-scanner-support/src",
+    "roborazzi-idea-plugin/src",
+    "roborazzi-junit-rule/api",
+    "roborazzi-junit-rule/src",
+    "roborazzi-painter/api",
+    "roborazzi-painter/src",
+    "sample-android/src",
+    "sample-android-multiplatform/src",
+    "sample-android-without-compose/src",
+    "sample-compose-desktop-jvm/src",
+    "sample-compose-desktop-multiplatform/src",
+    "sample-compose-v2/src",
+    "sample-generate-preview-tests/src",
+    "sample-generate-preview-tests-multiplatform/src",
+    "shared-sources/compose-multiplatform",
+    "skills/roborazzi",
+    "include-build/gradle/wrapper",
+    "include-build/roborazzi-core/api",
+    "include-build/roborazzi-core/src",
+    "include-build/roborazzi-gradle-plugin/api",
+    "include-build/roborazzi-gradle-plugin/src",
+    "roborazzi/src/main",
+    "roborazzi/src/test",
+    "roborazzi-accessibility-check/src/androidTest",
+    "roborazzi-accessibility-check/src/main",
+    "roborazzi-accessibility-check/src/test",
+    "roborazzi-ai-gemini/api/android",
+    "roborazzi-ai-gemini/api/jvm",
+    "roborazzi-ai-gemini/src/androidMain",
+    "roborazzi-ai-gemini/src/commonMain",
+    "roborazzi-ai-gemini/src/jvmMain",
+    "roborazzi-ai-gemini/src/nativeMain",
+    "roborazzi-ai-openai/api/android",
+    "roborazzi-ai-openai/api/jvm",
+    "roborazzi-ai-openai/src/commonMain",
+    "roborazzi-annotations/api/jvm",
+    "roborazzi-annotations/src/commonMain",
+    "roborazzi-annotations/src/main",
+    "roborazzi-compose/src/main",
+    "roborazzi-compose-desktop/src/commonMain",
+    "roborazzi-compose-desktop-preview-scanner-support/src/main",
+    "roborazzi-compose-ios/src/iosMain",
+    "roborazzi-compose-ios/src/iosTest",
+    "roborazzi-compose-preview-scanner-support/src/main",
+    "roborazzi-compose-preview-scanner-support/src/test",
+    "roborazzi-idea-plugin/src/main",
+    "roborazzi-junit-rule/src/androidTest",
+    "roborazzi-junit-rule/src/main",
+    "roborazzi-junit-rule/src/test",
+    "roborazzi-painter/src/commonJvmMain",
+    "roborazzi-painter/src/iosMain",
+    "roborazzi-painter/src/iosTest",
+    "roborazzi-painter/src/jvmTest",
+    "sample-android/src/androidTest",
+    "sample-android/src/debug",
+    "sample-android/src/main",
+    "sample-android/src/test",
+    "sample-android-multiplatform/src/androidHostTest",
+    "sample-android-multiplatform/src/commonMain",
+    "sample-android-without-compose/src/androidTest",
+    "sample-android-without-compose/src/main",
+    "sample-android-without-compose/src/test"
+   ],
+   "files": [
+    {
+     "path": "roborazzi/src/main/java/com/github/takahirom/roborazzi/RoboVideoRecording.kt",
+     "bytes": 18015,
+     "sha256": "e3e99077efa44352ebe222fb4d616a07e4a71935c258c3e5799f86282ff340b3",
+     "classes_structs": [
+      "RoboVideoOptions",
+      "RoboVideoRecorderScope"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "captureRoboImage": [
+       190
+      ],
+      "record": [
+       11,
+       13,
+       14,
+       15,
+       20,
+       24,
+       43,
+       62,
+       75,
+       81
+      ],
+      "verify": [
+       139,
+       224
+      ],
+      "compare": [
+       139,
+       150,
+       169,
+       224,
+       235,
+       254,
+       363,
+       364
+      ]
+     }
+    },
+    {
+     "path": "roborazzi/src/main/java/com/github/takahirom/roborazzi/UiTreeSidecar.kt",
+     "bytes": 7357,
+     "sha256": "e05e8cee8624bcf24cfe598e480f7c856fb1d7a7ce41496da99ca5e65f31767a",
+     "classes_structs": [
+      "UiTreeDumpWriteResult"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "record": [
+       9,
+       61,
+       113,
+       123,
+       143,
+       162
+      ],
+      "verify": [
+       25,
+       87,
+       124,
+       144,
+       162,
+       163
+      ],
+      "compare": [
+       113,
+       114,
+       124,
+       133,
+       144,
+       152,
+       162,
+       170
+      ]
+     }
+    },
+    {
+     "path": "roborazzi/src/main/java/com/github/takahirom/roborazzi/AnnotatedImage.kt",
+     "bytes": 4486,
+     "sha256": "70d7c39a26f15c754329674517f05dd1b340b845bc2002bb5fea88e495901520",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "record": [
+       44,
+       45,
+       49,
+       60
+      ],
+      "verify": [
+       15
+      ]
+     }
+    },
+    {
+     "path": "roborazzi/src/main/java/com/github/takahirom/roborazzi/captureDump.kt",
+     "bytes": 7273,
+     "sha256": "488ac5d9110ee3082f6d9ccc90dd9a96ca2a1f6927bf2237abe685579b574126",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "record": [
+       25,
+       39
+      ]
+     }
+    },
+    {
+     "path": "roborazzi/src/main/java/com/github/takahirom/roborazzi/Roborazzi.kt",
+     "bytes": 25696,
+     "sha256": "8c4f8f25b6ab8e4167c16dd95328f3877268dae4089c03a2448b3723dae942b7",
+     "classes_structs": [
+      "CaptureInternalResult",
+      "ImageCaptureViewAction"
+     ],
+     "on_callbacks": [
+      "onActivityCreated",
+      "onActivityDestroyed",
+      "onActivityPaused",
+      "onActivityResumed",
+      "onActivitySaveInstanceState",
+      "onActivityStarted",
+      "onActivityStopped"
+     ],
+     "symbol_line_hits": {
+      "captureRoboImage": [
+       41,
+       46,
+       52,
+       78,
+       83,
+       89,
+       95,
+       97,
+       124,
+       261
+      ],
+      "record": [
+       285,
+       672,
+       744,
+       756,
+       800
+      ],
+      "verify": [
+       198,
+       401
+      ],
+      "compare": [
+       302,
+       312,
+       417,
+       436,
+       568,
+       569,
+       819
+      ]
+     }
+    },
+    {
+     "path": "roborazzi/src/main/java/com/github/takahirom/roborazzi/RobolectricDeviceQualifiers.kt",
+     "bytes": 5384,
+     "sha256": "f38e9c1e191f972f357956dfdbc13a7debbf2afb47a0085cb4da570892468265",
+     "classes_structs": [
+      "RobolectricDeviceQualifiers"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "roborazzi/src/main/java/com/github/takahirom/roborazzi/RoborazziTransparentActivity.kt",
+     "bytes": 897,
+     "sha256": "40fda272f145173e3e23f345137bbb438d1d25b90e2be7969eb201a71701a93a",
+     "classes_structs": [
+      "RoborazziActivity",
+      "RoborazziTransparentActivity"
+     ],
+     "on_callbacks": [
+      "onCreate"
+     ],
+     "symbol_line_hits": {}
+    }
+   ],
+   "test_dirs": {
+    "sample-generate-preview-tests-multiplatform": 8,
+    "sample-generate-preview-tests": 7
+   }
+  },
+  {
+   "repository": "cashapp/paparazzi",
+   "clone_head_sha": "42514978f1cb58217550581b7ed9f54b9bde1bd8",
+   "clone_note": "cloned 5s",
+   "top_level": [
+    ".editorconfig",
+    ".java-version",
+    "AGENTS.md",
+    "CHANGELOG.md",
+    "CLAUDE.md",
+    "LICENSE.txt",
+    "README.md",
+    "RELEASING.md",
+    "build-logic",
+    "build.gradle",
+    "docs",
+    "gradle",
+    "gradle.properties",
+    "gradlew",
+    "gradlew.bat",
+    "mkdocs.yml",
+    "paparazzi",
+    "paparazzi-annotations",
+    "paparazzi-gradle-plugin",
+    "paparazzi-junit-jupiter",
+    "paparazzi-junit-platform",
+    "paparazzi-junit-vintage",
+    "paparazzi-preview-lints",
+    "paparazzi-preview-processor",
+    "paparazzi-preview-runtime",
+    "renovate.json5",
+    "sample",
+    "settings.gradle"
+   ],
+   "dir_tree_d2": [
+    ".github",
+    "build-logic",
+    "docs",
+    "gradle",
+    "paparazzi",
+    "paparazzi-annotations",
+    "paparazzi-gradle-plugin",
+    "paparazzi-junit-jupiter",
+    "paparazzi-junit-platform",
+    "paparazzi-junit-vintage",
+    "paparazzi-preview-lints",
+    "paparazzi-preview-processor",
+    "paparazzi-preview-runtime",
+    "sample",
+    ".github/ISSUE_TEMPLATE",
+    ".github/workflows",
+    "build-logic/aar2jar",
+    "docs/css",
+    "docs/images",
+    "gradle/wrapper",
+    "paparazzi/api",
+    "paparazzi/src",
+    "paparazzi-annotations/api",
+    "paparazzi-annotations/src",
+    "paparazzi-gradle-plugin/api",
+    "paparazzi-gradle-plugin/src",
+    "paparazzi-junit-jupiter/api",
+    "paparazzi-junit-jupiter/src",
+    "paparazzi-junit-platform/api",
+    "paparazzi-junit-platform/src",
+    "paparazzi-junit-vintage/api",
+    "paparazzi-junit-vintage/src",
+    "paparazzi-preview-lints/api",
+    "paparazzi-preview-lints/src",
+    "paparazzi-preview-processor/api",
+    "paparazzi-preview-processor/src",
+    "paparazzi-preview-runtime/api",
+    "paparazzi-preview-runtime/src",
+    "sample/src",
+    "build-logic/aar2jar/src",
+    "paparazzi/src/main",
+    "paparazzi/src/test",
+    "paparazzi-annotations/src/main",
+    "paparazzi-gradle-plugin/src/main",
+    "paparazzi-gradle-plugin/src/test",
+    "paparazzi-junit-jupiter/src/main",
+    "paparazzi-junit-platform/src/main",
+    "paparazzi-junit-vintage/src/main",
+    "paparazzi-preview-lints/src/main",
+    "paparazzi-preview-lints/src/test",
+    "paparazzi-preview-processor/src/main",
+    "paparazzi-preview-processor/src/test",
+    "paparazzi-preview-runtime/src/main",
+    "sample/src/main",
+    "sample/src/test"
+   ],
+   "files": [
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/Paparazzi.kt",
+     "bytes": 7341,
+     "sha256": "4930410b60a74ef0f1def4455d56695c76c826cc88b793f517493e47cff0a504",
+     "classes_structs": [
+      "Paparazzi"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "SnapshotHandler": [
+       39,
+       58,
+       80,
+       201,
+       217
+      ],
+      "verify": [
+       215
+      ]
+     }
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/PaparazziSdk.kt",
+     "bytes": 26880,
+     "sha256": "6c412704b4dba244721609690daf33c4030aa0de77e6277128c4c275095ed857",
+     "classes_structs": [
+      "PaparazziSdk"
+     ],
+     "on_callbacks": [
+      "onCreateView"
+     ],
+     "symbol_line_hits": {
+      "takeSnapshots": [
+       210,
+       221,
+       266
+      ]
+     }
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/Reflections.kt",
+     "bytes": 2362,
+     "sha256": "ac8389b516e5ad0d913027d74fd32d9ec7e585a79bda18191b3ca765aa639989",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/TestName.kt",
+     "bytes": 997,
+     "sha256": "62cbef3dd18b22842a8df192f429ee2f8fc72da1bdab8cca0fb6d93d03e0043e",
+     "classes_structs": [
+      "TestName"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/SnapshotHandler.kt",
+     "bytes": 1075,
+     "sha256": "e30b38ee98a65d0e6a8b132f77b5e2b9d5b7196b964a211eb0b4e3d0da741d32",
+     "classes_structs": [
+      "FrameHandler",
+      "SnapshotHandler"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "SnapshotHandler": [
+       21
+      ]
+     }
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/HtmlReportWriter.kt",
+     "bytes": 8326,
+     "sha256": "125d658613a26f1061efeaa3ceeb9917663d4a810fc2358a01b9c0c192dea6d6",
+     "classes_structs": [
+      "HtmlReportWriter"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "SnapshotHandler": [
+       18,
+       69
+      ]
+     }
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/Flags.kt",
+     "bytes": 144,
+     "sha256": "a004213be4f408703ee43e1530363195f7e6eb99a5fcfb2215555954c27e8acb",
+     "classes_structs": [
+      "Flags"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/Environment.kt",
+     "bytes": 4163,
+     "sha256": "05de2f5076d46ed20e153501f585f03dd04a4e589462eda0dbf40f23f061eff1",
+     "classes_structs": [
+      "Config",
+      "Environment"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/InstantAnimationsRule.kt",
+     "bytes": 2006,
+     "sha256": "b4efe78b6db0cd5dbecff085f0781af9b3a4c86aecf29b8b0dfaa62548e64e1a",
+     "classes_structs": [
+      "InstantAnimationsRule"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/Differ.kt",
+     "bytes": 600,
+     "sha256": "91bb0f10715b218b0a012003fd399a883229e1ca612cc72a2861a08945fb3df7",
+     "classes_structs": [
+      "DiffResult",
+      "Differ",
+      "Different",
+      "Identical",
+      "Similar"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/SnapshotVerifier.kt",
+     "bytes": 4332,
+     "sha256": "dc9028aec2450823c9cd0298c55ab163b998349616012ea956e5878e10f4e0eb",
+     "classes_structs": [
+      "SnapshotVerifier"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "SnapshotHandler": [
+       19,
+       38
+      ],
+      "verify": [
+       60
+      ]
+     }
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/Snapshot.kt",
+     "bytes": 2127,
+     "sha256": "2ac3bff4e4519ee1c316a59c031ff4e79baee042296e0bcb8638d5894d9ecdaa",
+     "classes_structs": [
+      "Snapshot"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/RenderExtension.kt",
+     "bytes": 986,
+     "sha256": "7498c6ca962cd14382980e831f4aba29b1812382c5b924d964214a903138d54b",
+     "classes_structs": [
+      "RenderExtension"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/DeviceConfig.kt",
+     "bytes": 30408,
+     "sha256": "a0ac891ce26d55697e0a848955aa5991c86cc28d278edb8540ae3acd18d7eaf5",
+     "classes_structs": [
+      "DeviceConfig"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/agent/InterceptorRegistrar.kt",
+     "bytes": 1649,
+     "sha256": "99ae60b813ef834b1e35a1320bb71affeb74e2cc7b758dfe0c21c7666c479264",
+     "classes_structs": [
+      "InterceptorRegistrar"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/accessibility/AccessibilityElementCollector.kt",
+     "bytes": 19992,
+     "sha256": "9ef523600990dd2cfd33c21e9d30a6958ed87f8c19b9cfec47978cc5e115dd6e",
+     "classes_structs": [
+      "AccessibilityElementCollector",
+      "SemanticsNodeTraversalEntry",
+      "TraversalConstraints"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/accessibility/RenderSettings.kt",
+     "bytes": 1815,
+     "sha256": "44ffdb13713988c24f874cfa7ad6455046ea5867a49f6e4e99da0bbbddfd7ae3",
+     "classes_structs": [
+      "RenderSettings"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/accessibility/AccessibilityOverlayDrawable.kt",
+     "bytes": 1331,
+     "sha256": "0e8e4d868658d7c5e85be69225d37efe90c40850561ff24ce27d712b569dc2c6",
+     "classes_structs": [
+      "AccessibilityOverlayDrawable"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/accessibility/AccessibilityElement.kt",
+     "bytes": 836,
+     "sha256": "d17da73957bfd6ba337ad2a27059d25c9c01bc09438bd334cdce46ee81fc46e6",
+     "classes_structs": [
+      "AccessibilityElement"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/accessibility/AccessibilityRenderExtension.kt",
+     "bytes": 3423,
+     "sha256": "0a5d7c4915d9af7c2c2c1859ec356b83827aa7efee90b3e56e9cfa052732d943",
+     "classes_structs": [
+      "AccessibilityRenderExtension"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/accessibility/AccessibilityOverlayDetailsView.kt",
+     "bytes": 3181,
+     "sha256": "c937e1c8a42fa95f573f08299d7cb956216b8fced0e3ccb6f81aba98aa834354",
+     "classes_structs": [
+      "AccessibilityOverlayDetailsView"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/internal/ComposeViewAdapter.kt",
+     "bytes": 971,
+     "sha256": "f4f9732ec2fa376f359445c05aaee68384b56113664ca2a555b9f0b4bef75337",
+     "classes_structs": [
+      "ComposeViewAdapter"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/internal/PaparazziJson.kt",
+     "bytes": 2012,
+     "sha256": "5438648469f2e0bb33a5b11b6d672c95f3b4f141df453dc4139c417ce7f75eae",
+     "classes_structs": [
+      "PaparazziJson"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/internal/Gc.kt",
+     "bytes": 1122,
+     "sha256": "a96612c097ee1c38d72a2ed07fb93cae4a47c699a8aff281dd392725462fbc00",
+     "classes_structs": [
+      "Gc"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/internal/PaparazziLogger.kt",
+     "bytes": 3628,
+     "sha256": "559eb0a6be063a306a914580b2e399cd2fd3263b7c91a86f97cebda50f5361fb",
+     "classes_structs": [
+      "MultipleFailuresException",
+      "PaparazziLogger"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/internal/RenderResult.kt",
+     "bytes": 1150,
+     "sha256": "a85ca2d45551b22deeb9ea312251e3db67ffe5c70e2d01a378d0d0ca09d7e6c1",
+     "classes_structs": [
+      "RenderResult"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/internal/Renderer.kt",
+     "bytes": 7067,
+     "sha256": "7f45ede0ae2eb617e0a6cc10946d4d9c79c1b884c685b7e31ab63e6c031d3e06",
+     "classes_structs": [
+      "Renderer"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/internal/PaparazziCallback.kt",
+     "bytes": 9249,
+     "sha256": "5c94e31705e1ede92ba88d74e5057387d9061094d47a91b91cf836892ae9cc2c",
+     "classes_structs": [
+      "PaparazziCallback"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/internal/ImageUtils.kt",
+     "bytes": 12211,
+     "sha256": "ee1a665cedead8700e3b5023c2dc2d1839fa80fa8614cf5067caa431ea9e8ae9",
+     "classes_structs": [
+      "ImageUtils"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/internal/PaparazziAssetRepository.kt",
+     "bytes": 1625,
+     "sha256": "ca3418312027b216ebae695b6be05eab519c8d5063c6f145016a4575e818fd46",
+     "classes_structs": [
+      "PaparazziAssetRepository"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/internal/DynamicResourceIdManager.kt",
+     "bytes": 2245,
+     "sha256": "f22422794db14c76311996c6b5c50bb6e1b2bc796c4a1617b74ec39cdf2f7b8e",
+     "classes_structs": [
+      "DynamicResourceIdManager",
+      "IdProvider"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/internal/SessionParamsBuilder.kt",
+     "bytes": 4914,
+     "sha256": "5b3de2f65c417cb975184f505fcdddf56bb0de4ac9533d60da2ff9a24dad20b6",
+     "classes_structs": [
+      "SessionParamsBuilder"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/internal/PaparazziViewOwners.kt",
+     "bytes": 1227,
+     "sha256": "bfbda9543068caaac95905267b5808cd96575f6fa9c4199f0899273fb6278308",
+     "classes_structs": [
+      "PaparazziLifecycleOwner",
+      "PaparazziOnBackPressedDispatcherOwner",
+      "PaparazziSavedStateRegistryOwner"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/internal/apng/PngConstants.kt",
+     "bytes": 1162,
+     "sha256": "4f5da2cebc4f38bf3761481a7b000d1297da0bc99e18f2abfcdee42f739f7d1f",
+     "classes_structs": [
+      "Header",
+      "PngConstants"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/internal/apng/ApngVerifier.kt",
+     "bytes": 7770,
+     "sha256": "0c801f00049f683b7fe5d8e0f1a69280c254fb57008fe05fb393f14881c91148",
+     "classes_structs": [
+      "ApngVerifier"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "verify": [
+       68,
+       147
+      ]
+     }
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/internal/apng/ApngReader.kt",
+     "bytes": 7501,
+     "sha256": "f79af5b4bb59dd78a5ed01b6e0bcdeb936548a32905d4a40a5f3239b2e6064db",
+     "classes_structs": [
+      "ApngReader",
+      "FrameInfo"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/internal/apng/ApngWriter.kt",
+     "bytes": 7729,
+     "sha256": "f6b1adb40ba136c7d427bcd2e586a34cc6baf276af201046a4cedd3156849036",
+     "classes_structs": [
+      "ApngWriter"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/internal/differs/PixelPerfect.kt",
+     "bytes": 3420,
+     "sha256": "d8572ed7d4472caef00fe47a853d455ba457c6dde235ca36caef88e263b1ca0e",
+     "classes_structs": [
+      "PixelPerfect"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/internal/differs/Sift.kt",
+     "bytes": 6875,
+     "sha256": "960ea01f9f2a83a074d4308bea51d255f6ed62719d219ad2c99ba788360a322d",
+     "classes_structs": [
+      "Sift",
+      "SiftKeypoint"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "paparazzi/src/main/java/app/cash/paparazzi/internal/differs/Flip.kt",
+     "bytes": 3291,
+     "sha256": "e2cc659b60698e7ab831ba218fc5b0e3cbc065ce505fdb30c3f87b38d1467282",
+     "classes_structs": [
+      "Flip",
+      "LinearRGB"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    }
+   ],
+   "test_dirs": {}
+  },
+  {
+   "repository": "airbnb/lottie-android",
+   "clone_head_sha": "05ea92e90381eb8a8ae06855ea2b74f322bebbec",
+   "clone_note": "cloned 4s",
+   "top_level": [
+    ".editorconfig",
+    ".idea",
+    "After Effects Samples",
+    "CHANGELOG.md",
+    "CHANGELOG_COMPOSE.md",
+    "CODE_OF_CONDUCT.md",
+    "DESIGNER_NOTES.md",
+    "LICENSE",
+    "README.md",
+    "RELEASE.md",
+    "app-benchmark",
+    "baselineprofile",
+    "benchmark",
+    "build.gradle",
+    "deploy_snapshot.sh",
+    "gifs",
+    "gradle",
+    "gradle.properties",
+    "gradlew",
+    "gradlew.bat",
+    "images",
+    "issue-repro",
+    "issue-repro-compose",
+    "lint.xml",
+    "lottie",
+    "lottie-compose",
+    "post_pr_comment.js",
+    "sample",
+    "sample-compose",
+    "settings.gradle",
+    "sign.sh",
+    "snapshot-tests",
+    "update-baseline-profiles.sh",
+    "upload_release.sh",
+    "version.sh",
+    "versions.properties"
+   ],
+   "dir_tree_d2": [
+    ".github",
+    ".idea",
+    "After Effects Samples",
+    "app-benchmark",
+    "baselineprofile",
+    "benchmark",
+    "gifs",
+    "gradle",
+    "images",
+    "issue-repro",
+    "issue-repro-compose",
+    "lottie",
+    "lottie-compose",
+    "sample",
+    "sample-compose",
+    "snapshot-tests",
+    ".github/ISSUE_TEMPLATE",
+    ".github/workflows",
+    ".idea/codeStyles",
+    ".idea/inspectionProfiles",
+    "After Effects Samples/Test",
+    "app-benchmark/src",
+    "baselineprofile/src",
+    "benchmark/src",
+    "gradle/wrapper",
+    "issue-repro/src",
+    "issue-repro-compose/src",
+    "lottie/src",
+    "lottie-compose/api",
+    "lottie-compose/src",
+    "sample/screenshots",
+    "sample/src",
+    "sample-compose/src",
+    "snapshot-tests/src",
+    "After Effects Samples/Test/_Gif",
+    "app-benchmark/src/main",
+    "baselineprofile/src/main",
+    "benchmark/src/main",
+    "issue-repro/src/main",
+    "issue-repro-compose/src/main",
+    "lottie/src/main",
+    "lottie/src/test",
+    "lottie-compose/src/main",
+    "lottie-compose/src/test",
+    "sample/src/androidTest",
+    "sample/src/main",
+    "sample/src/release",
+    "sample-compose/src/androidTest",
+    "sample-compose/src/main",
+    "snapshot-tests/src/androidTest",
+    "snapshot-tests/src/main"
+   ],
+   "files": [
+    {
+     "path": "lottie/src/main/java/com/airbnb/lottie/LottieDrawable.java",
+     "bytes": 67801,
+     "sha256": "312ba3f8431a897c7e3202a8fda05733be6891b1fb3e4800121c695b6be492c7",
+     "classes_structs": [
+      "LazyCompositionTask",
+      "LottieDrawable",
+      "RepeatMode"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "setProgress": [
+       200,
+       204,
+       209,
+       213,
+       227,
+       238,
+       239,
+       256,
+       433,
+       707
+      ],
+      "getFrame": [
+       1199,
+       1200,
+       1211
+      ],
+      "setMinFrame": [
+       954,
+       956,
+       959,
+       963,
+       977,
+       1017,
+       1019,
+       1026,
+       1094
+      ],
+      "invalidateSelf": [
+       97,
+       186,
+       202,
+       230,
+       240,
+       241,
+       244,
+       251,
+       361,
+       624
+      ]
+     }
+    },
+    {
+     "path": "lottie/src/main/java/com/airbnb/lottie/LottieComposition.java",
+     "bytes": 12525,
+     "sha256": "760130ad7503430f814ead17e313570db97a0597738345f0dac903f146d170ce",
+     "classes_structs": [
+      "Factory",
+      "ListenerAdapter",
+      "LottieComposition"
+     ],
+     "on_callbacks": [
+      "onResult"
+     ],
+     "symbol_line_hits": {
+      "getFrame": [
+       164,
+       174
+      ]
+     }
+    },
+    {
+     "path": "lottie/src/main/java/com/airbnb/lottie/animation/keyframe/BaseKeyframeAnimation.java",
+     "bytes": 10811,
+     "sha256": "d5f85cce4e075ca77a64b35644c487b6f9fcab34601db2f179c72a85af30ee28",
+     "classes_structs": [
+      "AnimationListener",
+      "BaseKeyframeAnimation",
+      "EmptyKeyframeWrapper",
+      "KeyframesWrapper",
+      "KeyframesWrapperImpl",
+      "SingleKeyframeWrapper"
+     ],
+     "on_callbacks": [
+      "onValueChanged"
+     ],
+     "symbol_line_hits": {
+      "setProgress": [
+       26,
+       51,
+       53,
+       57,
+       69,
+       78
+      ]
+     }
+    },
+    {
+     "path": "lottie/src/main/java/com/airbnb/lottie/LottieAnimationView.java",
+     "bytes": 52514,
+     "sha256": "6e0c1d657a4984b3f9e29531c2b4a0c224d60843c3c640495bda75f951b08fff",
+     "classes_structs": [
+      "LottieAnimationView",
+      "SavedState",
+      "WeakFailureListener",
+      "WeakSuccessListener"
+     ],
+     "on_callbacks": [
+      "onAttachedToWindow",
+      "onRestoreInstanceState",
+      "onResult"
+     ],
+     "symbol_line_hits": {
+      "setProgress": [
+       60,
+       222,
+       354,
+       1137,
+       1138,
+       1141,
+       1147
+      ],
+      "getFrame": [
+       1133,
+       1134
+      ],
+      "setMinFrame": [
+       735,
+       736,
+       740,
+       782,
+       783,
+       818
+      ],
+      "invalidateSelf": [
+       309
+      ]
+     }
+    }
+   ],
+   "test_dirs": {
+    "snapshot-tests": 516
+   }
+  },
+  {
+   "repository": "google/flexbox-layout",
+   "clone_head_sha": "366b461fd0425bfaa9872b1d9af9da3055d3bc74",
+   "clone_note": "cloned 6s",
+   "top_level": [
+    ".circleci",
+    "CONTRIBUTING.md",
+    "LICENSE",
+    "README.md",
+    "assets",
+    "build.gradle",
+    "demo-cat-gallery",
+    "demo-playground",
+    "flexbox",
+    "gradle",
+    "gradle.properties",
+    "gradlew",
+    "gradlew.bat",
+    "settings.gradle",
+    "tool"
+   ],
+   "dir_tree_d2": [
+    ".circleci",
+    ".github",
+    "assets",
+    "demo-cat-gallery",
+    "demo-playground",
+    "flexbox",
+    "gradle",
+    "tool",
+    ".github/workflows",
+    "assets/fluid-grid",
+    "assets/pngs",
+    "demo-cat-gallery/src",
+    "demo-playground/src",
+    "flexbox/src",
+    "gradle/wrapper",
+    "demo-cat-gallery/src/main",
+    "demo-playground/src/androidTest",
+    "demo-playground/src/main",
+    "flexbox/src/androidTest",
+    "flexbox/src/main"
+   ],
+   "files": [
+    {
+     "path": "flexbox/src/main/java/com/google/android/flexbox/FlexItem.java",
+     "bytes": 8910,
+     "sha256": "a4934a1e5431cef34097ca8b4d517c67d7bb5cf58c99d42f4ab710d7a7618431",
+     "classes_structs": [
+      "FlexItem"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "FlexboxLayout": [
+       24,
+       25
+      ]
+     }
+    },
+    {
+     "path": "flexbox/src/main/java/com/google/android/flexbox/JustifyContent.java",
+     "bytes": 2136,
+     "sha256": "27bc9efaa92f6e5d9e5703cd2f7100aab885218080986ac4c062554178765d93",
+     "classes_structs": [
+      "JustifyContent"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "flexbox/src/main/java/com/google/android/flexbox/FlexboxLayoutManager.java",
+     "bytes": 127399,
+     "sha256": "ac8d60a3fbef429eeabc43895bb6fa0ab29925ab6803ec5aaf312ceb6b87cb9d",
+     "classes_structs": [
+      "AnchorInfo",
+      "FlexboxLayoutManager",
+      "LayoutParams",
+      "LayoutState",
+      "SavedState"
+     ],
+     "on_callbacks": [
+      "onAdapterChanged",
+      "onAttachedToWindow",
+      "onDetachedFromWindow",
+      "onItemsAdded",
+      "onItemsMoved",
+      "onItemsRemoved",
+      "onItemsUpdated",
+      "onLayoutChildren",
+      "onLayoutCompleted",
+      "onNewFlexItemAdded",
+      "onNewFlexLineAdded",
+      "onRestoreInstanceState"
+     ],
+     "symbol_line_hits": {
+      "onLayout": [
+       113,
+       121,
+       157,
+       162,
+       174,
+       430,
+       446,
+       677,
+       686,
+       733
+      ],
+      "FlexboxLayout": [
+       46,
+       48,
+       51,
+       200,
+       202,
+       207,
+       211,
+       216,
+       221,
+       243
+      ]
+     }
+    },
+    {
+     "path": "flexbox/src/main/java/com/google/android/flexbox/AlignSelf.java",
+     "bytes": 1978,
+     "sha256": "b4948af8a079319d58b5afe862e141256b0f98076d49bd6d0c4c7ce21a684c66",
+     "classes_structs": [
+      "AlignSelf"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "flexbox/src/main/java/com/google/android/flexbox/AlignItems.java",
+     "bytes": 1472,
+     "sha256": "fa39949334036da99aa9051f3acc91938e069c1d7001f11cf993a02f6300936b",
+     "classes_structs": [
+      "AlignItems"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "flexbox/src/main/java/com/google/android/flexbox/FlexContainer.java",
+     "bytes": 9173,
+     "sha256": "a3fee173640de9c00ec3da5b7434c4ac3da8f37dd0411c3c997bbcddaa0a382c",
+     "classes_structs": [
+      "FlexContainer"
+     ],
+     "on_callbacks": [
+      "onNewFlexItemAdded",
+      "onNewFlexLineAdded"
+     ],
+     "symbol_line_hits": {
+      "FlexboxLayout": [
+       24,
+       25
+      ]
+     }
+    },
+    {
+     "path": "flexbox/src/main/java/com/google/android/flexbox/FlexboxLayout.java",
+     "bytes": 73115,
+     "sha256": "b471413b23a7a0b7365d4f60fba6006d52ca844790bc74cf5dbb83a6224c8619",
+     "classes_structs": [
+      "DividerMode",
+      "FlexboxLayout",
+      "LayoutParams"
+     ],
+     "on_callbacks": [
+      "onDraw",
+      "onLayout",
+      "onMeasure",
+      "onNewFlexItemAdded",
+      "onNewFlexLineAdded"
+     ],
+     "symbol_line_hits": {
+      "onMeasure": [
+       263,
+       326,
+       334,
+       339,
+       395,
+       400
+      ],
+      "onLayout": [
+       564,
+       596,
+       747
+      ],
+      "FlexboxLayout": [
+       62,
+       64,
+       78,
+       208,
+       212,
+       216,
+       220,
+       222,
+       223,
+       225
+      ],
+      "measureHorizontal": [
+       276,
+       345
+      ],
+      "measureVertical": [
+       280,
+       406
+      ]
+     }
+    },
+    {
+     "path": "flexbox/src/main/java/com/google/android/flexbox/FlexLine.java",
+     "bytes": 5784,
+     "sha256": "25d93e60bceba670fe451f56034bfb497bea298180194246927c4e559f7eebac",
+     "classes_structs": [
+      "FlexLine"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "FlexboxLayout": [
+       26,
+       27
+      ]
+     }
+    },
+    {
+     "path": "flexbox/src/main/java/com/google/android/flexbox/AlignContent.java",
+     "bytes": 1898,
+     "sha256": "d41868db5406bcc558661487872f5bfb273d2ba1134cd23444042ec02de875de",
+     "classes_structs": [
+      "AlignContent"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "flexbox/src/main/java/com/google/android/flexbox/FlexDirection.java",
+     "bytes": 1931,
+     "sha256": "5f35e456d69c49c2c005d1d1c9110ef06bc8fa2726b51062c1184eaaf686ea72",
+     "classes_structs": [
+      "FlexDirection"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "flexbox/src/main/java/com/google/android/flexbox/FlexboxItemDecoration.java",
+     "bytes": 11439,
+     "sha256": "42b862dee4e9fe5667d9a2448eae665778b9f839fc4710a90ef53d217457f83d",
+     "classes_structs": [
+      "FlexboxItemDecoration"
+     ],
+     "on_callbacks": [
+      "onDraw"
+     ],
+     "symbol_line_hits": {
+      "FlexboxLayout": [
+       35,
+       113,
+       121,
+       154,
+       193,
+       237,
+       287
+      ]
+     }
+    },
+    {
+     "path": "flexbox/src/main/java/com/google/android/flexbox/FlexWrap.java",
+     "bytes": 1342,
+     "sha256": "9f0eb2fa96cede0a0cbbec739b7d71357cf860c5ac5a3024eeda536dcc54a13a",
+     "classes_structs": [
+      "FlexWrap"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "flexbox/src/main/java/com/google/android/flexbox/FlexboxHelper.java",
+     "bytes": 103502,
+     "sha256": "9060946e04f0dd02e2705ede6d948d9342a22bd49898b60746bb5afa7c95bd45",
+     "classes_structs": [
+      "FlexLinesResult",
+      "FlexboxHelper",
+      "Order"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "FlexboxLayout": [
+       45,
+       240,
+       269,
+       314,
+       343,
+       377,
+       1081,
+       1143,
+       1264,
+       1327
+      ],
+      "measureHorizontal": [
+       1053,
+       1057,
+       1237,
+       1241
+      ],
+      "measureVertical": [
+       1053,
+       1237
+      ]
+     }
+    }
+   ],
+   "test_dirs": {}
+  },
+  {
+   "repository": "RazrFalcon/resvg",
+   "clone_head_sha": "75b6bbadd7999d0516dcd7153b4a321bfdf8670a",
+   "clone_note": "cloned 2s",
+   "top_level": [
+    ".typos.toml",
+    "AUTHORS",
+    "CHANGELOG.md",
+    "Cargo.lock",
+    "Cargo.toml",
+    "LICENSE-APACHE",
+    "LICENSE-MIT",
+    "README.md",
+    "crates",
+    "docs",
+    "tools",
+    "version-bump.md"
+   ],
+   "dir_tree_d2": [
+    ".github",
+    "crates",
+    "docs",
+    "tools",
+    ".github/workflows",
+    "crates/c-api",
+    "crates/resvg",
+    "crates/usvg",
+    "tools/explorer-thumbnailer",
+    "tools/viewsvg",
+    "crates/c-api/examples",
+    "crates/resvg/examples",
+    "crates/resvg/src",
+    "crates/resvg/tests",
+    "crates/usvg/codegen",
+    "crates/usvg/docs",
+    "crates/usvg/src",
+    "crates/usvg/tests",
+    "tools/explorer-thumbnailer/install",
+    "tools/explorer-thumbnailer/src"
+   ],
+   "files": [
+    {
+     "path": "crates/resvg/src/image.rs",
+     "bytes": 6702,
+     "sha256": "41b548fc8627822cda2357c653eb86092f91eabd45ff8ed5d3f9b16fee89734e",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "render": [
+       4,
+       13,
+       16,
+       19,
+       24,
+       28,
+       37,
+       43,
+       173,
+       176
+      ],
+      "size": [
+       104,
+       105,
+       114,
+       119,
+       127
+      ]
+     }
+    },
+    {
+     "path": "crates/resvg/src/geom.rs",
+     "bytes": 707,
+     "sha256": "2231dd54f9444399f2a2c528b8c163b0a930f4861e9e32927f62fa2289fa10e3",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "fit_to": [
+       5
+      ]
+     }
+    },
+    {
+     "path": "crates/resvg/src/clip.rs",
+     "bytes": 2892,
+     "sha256": "bbfece2b312ea419c8c8844d01051946b66797aeab2675c71574414ecb95a067",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "render": [
+       4,
+       58
+      ]
+     }
+    },
+    {
+     "path": "crates/resvg/src/path.rs",
+     "bytes": 6426,
+     "sha256": "cf49f94eba8a16cc3f730f544b49fbf1928b053dc4620c485677d1500dd897c7",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "render": [
+       4,
+       6,
+       58,
+       70,
+       98,
+       110,
+       179,
+       197
+      ],
+      "size": [
+       190,
+       194
+      ]
+     }
+    },
+    {
+     "path": "crates/resvg/src/render.rs",
+     "bytes": 6140,
+     "sha256": "9a91c2d4272b500dd4e0aeab32d00e7b465d00aeb3b575f571a6e23845dfac18",
+     "classes_structs": [
+      "Context"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "render": [
+       10,
+       17,
+       21,
+       29,
+       32,
+       41,
+       44,
+       49,
+       58,
+       111
+      ],
+      "fit_to": [
+       85,
+       91
+      ],
+      "size": [
+       82,
+       88
+      ]
+     }
+    },
+    {
+     "path": "crates/resvg/src/mask.rs",
+     "bytes": 1364,
+     "sha256": "dc9e0d6dd22d2dd9981ff68e27f2ac45d303f574c4ca293877dfdd5af2a3c37d",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "render": [
+       4,
+       30
+      ]
+     }
+    },
+    {
+     "path": "crates/resvg/src/main.rs",
+     "bytes": 27551,
+     "sha256": "6227dc655cd7ecbdaa68271fcd3f4f2ce007a3435e08dee152dc8e750ab5c299",
+     "classes_structs": [
+      "Args",
+      "CliArgs",
+      "SimpleLogger"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "render": [
+       103,
+       122,
+       154,
+       158,
+       162,
+       207,
+       226,
+       227,
+       228,
+       280
+      ],
+      "fit_to": [
+       402,
+       412,
+       414,
+       467,
+       525,
+       529,
+       532,
+       535,
+       537,
+       593
+      ],
+      "size": [
+       174,
+       175,
+       204,
+       206,
+       232,
+       294,
+       295,
+       352,
+       358,
+       389
+      ]
+     }
+    },
+    {
+     "path": "crates/resvg/src/lib.rs",
+     "bytes": 2909,
+     "sha256": "d90f2f77488c28ff6e79ce334dcffdb05eefc5fcfd718ba1d0316c023c8f19f3",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "render": [
+       5,
+       26,
+       34,
+       41,
+       42,
+       55,
+       66,
+       67
+      ],
+      "size": [
+       50,
+       52
+      ]
+     }
+    },
+    {
+     "path": "crates/resvg/src/filter/mod.rs",
+     "bytes": 35948,
+     "sha256": "b24535fa0686ebcde56bbefa42924bc90f36e0302ccba561355b6ae56dd442d2",
+     "classes_structs": [
+      "FilterResult",
+      "Image",
+      "ImageRef",
+      "ImageRefMut"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "render": [
+       368,
+       370,
+       721,
+       879,
+       883
+      ],
+      "fit_to": [
+       373
+      ],
+      "crop": [
+       472
+      ],
+      "size": [
+       51,
+       77,
+       82,
+       221,
+       222,
+       223,
+       234,
+       235,
+       236,
+       260
+      ]
+     }
+    },
+    {
+     "path": "crates/resvg/src/filter/turbulence.rs",
+     "bytes": 8299,
+     "sha256": "2b4c288e174664836d17f829831809bee0fc55f02e6eab8425447f2ab778d974",
+     "classes_structs": [
+      "StitchInfo"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "size": [
+       13,
+       15,
+       93,
+       125,
+       143,
+       155,
+       225,
+       228,
+       266,
+       267
+      ]
+     }
+    },
+    {
+     "path": "crates/resvg/src/filter/morphology.rs",
+     "bytes": 2453,
+     "sha256": "f31ad2ea03659309f544c003aeec4e0c09f0c71630e0fe9218994418e174057e",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "crates/resvg/src/filter/iir_blur.rs",
+     "bytes": 4191,
+     "sha256": "b489b4d6c905ca246b72a9d9cddb2ffd40cbef7ca2b51c15d63d13902e9cc5a4",
+     "classes_structs": [
+      "BlurData"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "size": [
+       31,
+       32,
+       35,
+       48,
+       49,
+       53,
+       54,
+       67,
+       142
+      ]
+     }
+    },
+    {
+     "path": "crates/resvg/src/filter/component_transfer.rs",
+     "bytes": 2251,
+     "sha256": "78c6961374d9d0829cb37dca470dee1e4a868f8597c91a2735646ab76edf562d",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "size": [
+       46,
+       60
+      ]
+     }
+    },
+    {
+     "path": "crates/resvg/src/filter/box_blur.rs",
+     "bytes": 10915,
+     "sha256": "a25c600532f7a7b3df9022f10c17243a24ba718d64958c566f26feade3d9c5a2",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "size": [
+       12,
+       29,
+       30,
+       31,
+       56,
+       58,
+       61,
+       63,
+       67,
+       75
+      ]
+     }
+    },
+    {
+     "path": "crates/resvg/src/filter/lighting.rs",
+     "bytes": 13983,
+     "sha256": "55c68c61f27b831d81f30c62e3adf56f131d40664ce34ece4acfacfe0ddcdf71",
+     "classes_structs": [
+      "Normal",
+      "Vector2",
+      "Vector3"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "crates/resvg/src/filter/displacement_map.rs",
+     "bytes": 1823,
+     "sha256": "e54274bb502bd7d262c6daa98b447ef2c90ee49a084e32f6892782bd9d678687",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "size": [
+       51,
+       52
+      ]
+     }
+    },
+    {
+     "path": "crates/resvg/src/filter/convolve_matrix.rs",
+     "bytes": 3598,
+     "sha256": "d4e8b2e7604b93866a8d02ac1524e16c914e5803f0a05285f40cef6785631a09",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "crates/resvg/src/filter/color_matrix.rs",
+     "bytes": 3736,
+     "sha256": "5f721bd5b56bd6ceeba3e0dfce8cf788d49943dd808ea6beca2b045345f8f616",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "crates/resvg/src/filter/composite.rs",
+     "bytes": 1381,
+     "sha256": "391394fceb347771bb6c930882635f99e022a7b6108df66cf7616aa83d13a1af",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "Cargo.toml",
+     "bytes": 381,
+     "sha256": "94687790073b43d3a3b3339a6f0a7b668643a412e032600162375f952002056f",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "crates/resvg/Cargo.toml",
+     "bytes": 1439,
+     "sha256": "a57ff43f304e9dd7284ac36b7c058675e510f7268321c52d2b5238da31e5d496",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "render": [
+       4,
+       8,
+       44,
+       45
+      ]
+     }
+    },
+    {
+     "path": "crates/c-api/Cargo.toml",
+     "bytes": 925,
+     "sha256": "329d8aa779475270820a8b5754c44019784968f6c52963ecf4d9674b7a70eaf6",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "render": [
+       4
+      ]
+     }
+    },
+    {
+     "path": "crates/usvg/Cargo.toml",
+     "bytes": 2040,
+     "sha256": "6b1d809d43e770be2e56f3940a8834a285979f3f636d6de2105d8802277ca32c",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "size": [
+       32
+      ]
+     }
+    },
+    {
+     "path": "crates/usvg/codegen/Cargo.toml",
+     "bytes": 204,
+     "sha256": "aa6a82e931f39b25153d6229e9c57a49144ee86267d8076e79d63d9bd004d7b4",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "tools/explorer-thumbnailer/Cargo.toml",
+     "bytes": 593,
+     "sha256": "c138fe0a64d50bafe90023d3cb36639025b4fd25df1974cda0896483ece83bd9",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    }
+   ],
+   "test_dirs": {}
+  },
+  {
+   "repository": "memononen/nanosvg",
+   "clone_head_sha": "239e102ec2c691f2902e20ace2ed36ee4a35cfe6",
+   "clone_note": "cloned 1s",
+   "top_level": [
+    "AI_POLICY.md",
+    "CMakeLists.txt",
+    "Config.cmake.in",
+    "LICENSE.txt",
+    "README.md",
+    "example",
+    "premake4.lua",
+    "src"
+   ],
+   "dir_tree_d2": [
+    "example",
+    "src"
+   ],
+   "files": [
+    {
+     "path": "src/nanosvg.h",
+     "bytes": 88980,
+     "sha256": "e34fd5d084be106cea972d19ce5d27fd96d17ba89f8d06bdceee058420c8b2b0",
+     "classes_structs": [
+      "NSVGNamedColor",
+      "NSVGattrib",
+      "NSVGcoordinate",
+      "NSVGgradient",
+      "NSVGgradientData",
+      "NSVGgradientStop",
+      "NSVGimage",
+      "NSVGlinearData",
+      "NSVGpaint",
+      "NSVGparser",
+      "NSVGpath",
+      "NSVGradialData",
+      "NSVGshape",
+      "NSVGstyleDeclaration"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "nsvgParseFromFile": [
+       59,
+       177,
+       3200
+      ],
+      "scale": [
+       151,
+       152,
+       153,
+       981,
+       997,
+       998,
+       999,
+       1002,
+       1699,
+       3042
+      ]
+     }
+    },
+    {
+     "path": "src/nanosvgrast.h",
+     "bytes": 39398,
+     "sha256": "79a9c5f4db19debf9f3a648a1589e96d92854f245a5cb4f3d823f263785234d8",
+     "classes_structs": [
+      "NSVGactiveEdge",
+      "NSVGcachedPaint",
+      "NSVGedge",
+      "NSVGmemPage",
+      "NSVGpoint",
+      "NSVGrasterizer"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "nsvgParseFromFile": [
+       41
+      ],
+      "nsvgRasterize": [
+       48,
+       63,
+       1375
+      ],
+      "nsvg__rasterize": [
+       1124,
+       1430,
+       1457
+      ],
+      "scale": [
+       58,
+       62,
+       64,
+       374,
+       382,
+       385,
+       388,
+       738,
+       746,
+       751
+      ]
+     }
+    }
+   ],
+   "test_dirs": {}
+  },
+  {
+   "repository": "memononen/nanovg",
+   "clone_head_sha": "ce3bf745eb2d2dbc14a50bf2446783f691ac4353",
+   "clone_note": "cloned 1s",
+   "top_level": [
+    "LICENSE.txt",
+    "README.md",
+    "example",
+    "obsolete",
+    "premake4.lua",
+    "src"
+   ],
+   "dir_tree_d2": [
+    ".github",
+    "example",
+    "obsolete",
+    "src",
+    ".github/workflows",
+    "example/images"
+   ],
+   "files": [
+    {
+     "path": "src/nanovg.c",
+     "bytes": 77637,
+     "sha256": "d70f33b6decfa0f7606a30c36957a5e7e4e3c8053416649c0686d2a694b855b6",
+     "classes_structs": [
+      "FONScontext",
+      "NVGcontext",
+      "NVGpathCache",
+      "NVGpoint",
+      "NVGstate"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "nvgBeginFrame": [
+       372
+      ],
+      "nvgEndFrame": [
+       397
+      ],
+      "nvgFill": [
+       784,
+       790,
+       2229
+      ],
+      "nvgScissor": [
+       967,
+       1006,
+       1023
+      ],
+      "nvgText": [
+       2361,
+       2367,
+       2373,
+       2468,
+       2542,
+       2554,
+       2558,
+       2562,
+       2564,
+       2566
+      ]
+     }
+    },
+    {
+     "path": "src/nanovg.h",
+     "bytes": 28603,
+     "sha256": "736401d6a8b9cb52eb1e2a43f3103a47c7c5c12558d159ae8740f6f4d4475e22",
+     "classes_structs": [
+      "NVGcolor",
+      "NVGcompositeOperationState",
+      "NVGcontext",
+      "NVGglyphPosition",
+      "NVGpaint",
+      "NVGparams",
+      "NVGpath",
+      "NVGscissor",
+      "NVGtextRow",
+      "NVGvertex"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "nvgBeginFrame": [
+       148,
+       149,
+       155
+      ],
+      "nvgEndFrame": [
+       148,
+       161
+      ],
+      "nvgFill": [
+       241,
+       251,
+       254,
+       399,
+       407,
+       413,
+       419,
+       456,
+       506,
+       541
+      ],
+      "nvgScissor": [
+       431
+      ],
+      "nvgText": [
+       538,
+       581,
+       584,
+       587,
+       596,
+       601,
+       607,
+       612,
+       616,
+       620
+      ]
+     }
+    }
+   ],
+   "test_dirs": {}
+  },
+  {
+   "repository": "fribidi/fribidi",
+   "clone_head_sha": "4c914a92e94a9fe4f30ae83a1130099841566448",
+   "clone_note": "cloned 2s",
+   "top_level": [
+    ".ci",
+    ".indent.pro",
+    "AUTHORS",
+    "COPYING",
+    "ChangeLog.old",
+    "HISTORY",
+    "Makefile.am",
+    "NEWS",
+    "README",
+    "README.md",
+    "THANKS",
+    "TODO",
+    "USERS",
+    "autogen.sh",
+    "bin",
+    "configure.ac",
+    "doc",
+    "fribidi.pc.in",
+    "gen.tab",
+    "git.mk",
+    "lib",
+    "m4",
+    "meson.build",
+    "meson_options.txt",
+    "test"
+   ],
+   "dir_tree_d2": [
+    ".ci",
+    ".github",
+    "bin",
+    "doc",
+    "gen.tab",
+    "lib",
+    "m4",
+    "test",
+    ".github/workflows",
+    "gen.tab/unidata",
+    "test/fuzzing",
+    "test/unicode-conformance"
+   ],
+   "files": [
+    {
+     "path": "lib/fribidi.c",
+     "bytes": 9126,
+     "sha256": "52284f7e4b49f275dd50af23e3dc1632aea886ff2d12acd40ae0a77105546957",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "fribidi_get_par_embedding_levels": [
+       213
+      ],
+      "fribidi_log2vis": [
+       137,
+       138,
+       143,
+       177
+      ]
+     }
+    },
+    {
+     "path": "lib/fribidi-bidi.c",
+     "bytes": 58748,
+     "sha256": "ef2336676ec1f93f7f1f756acee6168ef86a917e619107f1252d20b490a13621",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "fribidi_get_par_embedding_levels": [
+       492,
+       518,
+       1503
+      ],
+      "FRIBIDI_FLAG": [
+       1718
+      ]
+     }
+    },
+    {
+     "path": "test/test-reorder-nsm.c",
+     "bytes": 2652,
+     "sha256": "2bb3769bdd93e0aad035687509ca37952ab30f7ade1af5ff76acf8c0993d386a",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "fribidi_log2vis": [
+       26,
+       28,
+       30,
+       56,
+       58,
+       64
+      ]
+     }
+    }
+   ],
+   "test_dirs": {
+    "test": 26
+   }
+  },
+  {
+   "repository": "facebook/yoga",
+   "clone_head_sha": "a8b4817143940e2717f60148ec418cf95b789628",
+   "clone_note": "cloned 2s",
+   "top_level": [
+    ".clang-format",
+    ".clang-tidy",
+    ".editorconfig",
+    ".eslintrc.cjs",
+    ".prettierignore",
+    ".prettierrc.js",
+    ".vscode",
+    "CMakeLists.txt",
+    "CODE_OF_CONDUCT.md",
+    "CONTRIBUTING.md",
+    "LICENSE",
+    "LICENSE-examples",
+    "Package.swift",
+    "README.md",
+    "benchmark",
+    "build.gradle",
+    "build_fuzz_tests",
+    "capture",
+    "cmake",
+    "enums.py",
+    "fuzz",
+    "gentest",
+    "gradle",
+    "gradle.properties",
+    "gradlew",
+    "gradlew.bat",
+    "java",
+    "javascript",
+    "lib",
+    "package.json",
+    "scripts",
+    "set-version.py",
+    "settings.gradle.kts",
+    "test",
+    "tests",
+    "unit_tests",
+    "unit_tests.bat",
+    "website",
+    "yarn.lock",
+    "yoga"
+   ],
+   "dir_tree_d2": [
+    ".github",
+    ".vscode",
+    "benchmark",
+    "capture",
+    "cmake",
+    "fuzz",
+    "gentest",
+    "gradle",
+    "java",
+    "javascript",
+    "lib",
+    "scripts",
+    "test",
+    "tests",
+    "website",
+    "yoga",
+    ".github/actions",
+    ".github/workflows",
+    "benchmark/captures",
+    "gentest/fixtures",
+    "gentest/fonts",
+    "gentest/scripts",
+    "gentest/src",
+    "gradle/wrapper",
+    "java/com",
+    "java/gen",
+    "java/jni",
+    "java/res",
+    "java/tests",
+    "javascript/src",
+    "javascript/tests",
+    "lib/jni",
+    "lib/jsr-305",
+    "lib/nlohmann",
+    "lib/soloader",
+    "tests/generated",
+    "tests/util",
+    "website/blog",
+    "website/docs",
+    "website/src",
+    "website/static",
+    "yoga/algorithm",
+    "yoga/config",
+    "yoga/debug",
+    "yoga/enums",
+    "yoga/event",
+    "yoga/node",
+    "yoga/numeric",
+    "yoga/style",
+    ".github/actions/black",
+    ".github/actions/cache-emsdk",
+    ".github/actions/install-ninja",
+    ".github/actions/setup-android",
+    ".github/actions/setup-apple",
+    ".github/actions/setup-cpp",
+    ".github/actions/setup-js",
+    "gentest/src/emitters",
+    "java/com/facebook",
+    "java/gen/com",
+    "java/jni/tests",
+    "java/res/values",
+    "java/tests/com",
+    "java/tests/generated",
+    "javascript/src/generated",
+    "javascript/tests/Benchmarks",
+    "javascript/tests/bin",
+    "javascript/tests/generated",
+    "javascript/tests/tools",
+    "lib/jni/real",
+    "website/blog/yoga-3-release",
+    "website/docs/advanced",
+    "website/docs/getting-started",
+    "website/docs/img",
+    "website/docs/styling",
+    "website/src/components",
+    "website/src/css",
+    "website/src/pages",
+    "website/static/img"
+   ],
+   "files": [
+    {
+     "path": "yoga/YGValue.cpp",
+     "bytes": 563,
+     "sha256": "966afe5fcc70abff0201efc66140dcbe4a2d1548ea98be645a434dffb0247fda",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/YGNodeStyle.cpp",
+     "bytes": 25599,
+     "sha256": "2782b4b383346c31466abf49865d1f4939b9879139cdced0b796a7eddf2c3203",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/YGNode.cpp",
+     "bytes": 11892,
+     "sha256": "66c63f4176092f352aa383e0a236ef4c0323c5d26e154148b9bad31251236971",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "CalculateLayout": [
+       11,
+       88
+      ],
+      "YGNodeCalculateLayout": [
+       88
+      ]
+     }
+    },
+    {
+     "path": "yoga/YGEnums.cpp",
+     "bytes": 7080,
+     "sha256": "a37b8ff78ab84f9ee9cb91f897fee050492423485682955cd9a548aea4d62346",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/YGConfig.cpp",
+     "bytes": 2496,
+     "sha256": "0b53b646b9da2c65a6e21018bd4c3ad6a89e098662c3e11333982bb29badea6d",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/YGNodeLayout.cpp",
+     "bytes": 3006,
+     "sha256": "c4645e1ebbaa4c607ba92dd53bf8bb18ec1ed289e7dfdc7c5de9968d8b981487",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/YGPixelGrid.cpp",
+     "bytes": 553,
+     "sha256": "45770680e6033742b1555083e7a84fa98ac0dc763a19aed00a8ca3500f500084",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/event/event.cpp",
+     "bytes": 2225,
+     "sha256": "0f6b1bdfe2206a0eade289ff28edfb1fd051e68a6a70ec8eae0f378aa28de96e",
+     "classes_structs": [
+      "Node"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/debug/AssertFatal.cpp",
+     "bytes": 1245,
+     "sha256": "8c4081b28a072d663da76fbd772843307a9978b047107909cb2cd8d3514ba959",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/debug/Log.cpp",
+     "bytes": 2480,
+     "sha256": "b30a17f84ee7ba618048e155c29f3aef7f079434789c2d031602d855134badc6",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/node/Node.cpp",
+     "bytes": 15223,
+     "sha256": "23519ca9a9461145463df7429d36ac9e7bea655a61e98ec55a054c2261e01291",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/node/LayoutResults.cpp",
+     "bytes": 1677,
+     "sha256": "3033971527740b06ec90c2367fb775c3025da1feb258a961167f0f9775e28060",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/algorithm/AbsoluteLayout.cpp",
+     "bytes": 23600,
+     "sha256": "afa7732beb7a13d3e1b159ccd0ea121eeb949f5cead9db4f6b29e0edd615e20e",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "CalculateLayout": [
+       11
+      ]
+     }
+    },
+    {
+     "path": "yoga/algorithm/FlexLine.cpp",
+     "bytes": 4193,
+     "sha256": "db047046ddd1f0cd772b1fcbe34575a2bf3f648bee4aa688444392ca1b88d942",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/algorithm/PixelGrid.cpp",
+     "bytes": 5260,
+     "sha256": "7c0451e35fe9b8b138a9fdfde5bc6fb2eadd04d100d49c33a4ed40364ce7d1cc",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/algorithm/CalculateLayout.cpp",
+     "bytes": 112209,
+     "sha256": "a345b973533cf82c0ce505dd24dccbe7dcc1e288eefef6df9905105368cadd1a",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "CalculateLayout": [
+       23
+      ],
+      "performLayout": [
+       745,
+       784,
+       791,
+       1077,
+       1241,
+       1415,
+       1469,
+       1490,
+       1595,
+       1612
+      ]
+     }
+    },
+    {
+     "path": "yoga/algorithm/Cache.cpp",
+     "bytes": 4470,
+     "sha256": "175ae2dc551b72f720852d809b8b0bb64792f146f8a55c9f18a530e145583795",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/algorithm/Baseline.cpp",
+     "bytes": 2058,
+     "sha256": "2a6bc7ebd65c4d05c0e48d9c301dec86dc16d01ef3ea78f2d824a4c223d2ebdb",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/config/Config.cpp",
+     "bytes": 3084,
+     "sha256": "9c194291e1b93ed59c6e221a2e2f2d2cef3382c0a3ee2d8d2e3553f4516e8653",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/YGNodeLayout.h",
+     "bytes": 1595,
+     "sha256": "4ac26f94d45b7e5143cf170f1a6c0c876dba5c2e15b74ef41d33d7c92bb4b06c",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/YGValue.h",
+     "bytes": 1669,
+     "sha256": "909ba6f527d3d7a878ccbc9508b1d206bd981fdbf6578c9b088f29730d12ff15",
+     "classes_structs": [
+      "YGValue"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/YGNode.h",
+     "bytes": 10877,
+     "sha256": "2937b4ea6dab58f3e7989f7c26af6548d64ee0ed90f982c852b10f5c12d11781",
+     "classes_structs": [
+      "YGNode",
+      "YGSize"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "CalculateLayout": [
+       71,
+       77
+      ],
+      "YGNodeCalculateLayout": [
+       71,
+       77
+      ]
+     }
+    },
+    {
+     "path": "yoga/YGEnums.h",
+     "bytes": 3105,
+     "sha256": "e201ccdac8e10e3adc82a48848eb64152b4efc6624d0e1385753037ce5250354",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/Yoga.h",
+     "bytes": 687,
+     "sha256": "25de158823dab078a6a1e2e2b43e97a9a33e27cf3621b396ce1abe83fd605892",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/YGNodeStyle.h",
+     "bytes": 9993,
+     "sha256": "06bfb99b52c8044356d02297420a06c91d6eac7ba2a5779a4cfcb822a0c3cc0b",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/YGPixelGrid.h",
+     "bytes": 628,
+     "sha256": "7269d6b5a680676467c7a16c1e364e61bc80d547cae93848e3ce6e9873ae5e44",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/YGConfig.h",
+     "bytes": 4297,
+     "sha256": "677af8e4f68ce75801cf04dafbd3697c095a1881dbe37dc4d9c055ea520eeb64",
+     "classes_structs": [
+      "YGConfig",
+      "YGNode"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/YGMacros.h",
+     "bytes": 4105,
+     "sha256": "408ff13baecaa03364ac88c36dbe33b9a369abc624f2b01ee4578d4a4d3d49d3",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/event/event.h",
+     "bytes": 2684,
+     "sha256": "fa5942dc4fbe2e7955c7ede31324a9ac5176939245cb3c521034022d8ecbcedb",
+     "classes_structs": [
+      "Data",
+      "Event",
+      "LayoutData",
+      "LayoutPassReason",
+      "LayoutType",
+      "TypedData",
+      "YG_EXPORT"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/numeric/Comparison.h",
+     "bytes": 2030,
+     "sha256": "aa51e5991d476c77d1e1cdbabcf2e36a7c60ca2955aeec7454157aa4ef1d25f0",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/numeric/FloatOptional.h",
+     "bytes": 2171,
+     "sha256": "67fd01fdb26f07205551485965354c3b8283789e17f9f10d3c39a6f564e0dc72",
+     "classes_structs": [
+      "FloatOptional"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/style/StyleLength.h",
+     "bytes": 3076,
+     "sha256": "66024c4515836c7254a6bd301e021583114d9bb6a2769caa4cec84eee05b7445",
+     "classes_structs": [
+      "StyleLength"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/style/StyleValueHandle.h",
+     "bytes": 2616,
+     "sha256": "59320f50c2c8383d6d560f684157b85bb63917ea558495f7e8e34b3b1291078f",
+     "classes_structs": [
+      "Keyword",
+      "StyleValueHandle",
+      "StyleValuePool",
+      "Type"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/style/StyleSizeLength.h",
+     "bytes": 3993,
+     "sha256": "4c47cc8c854f7304c28abdbcfcde11c1e29afdae311a2d43e7b665520f6d39f6",
+     "classes_structs": [
+      "StyleSizeLength"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/style/Style.h",
+     "bytes": 29726,
+     "sha256": "d6800ae12c4bf903c0ffad1cadfd4878dbc0305a961bb91579e1ae5af4a920f8",
+     "classes_structs": [
+      "YG_EXPORT"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/style/StyleValuePool.h",
+     "bytes": 6770,
+     "sha256": "b3bb9edeb1fc286908b7f922ea8852dc956f4a00d53c5837f054bc2eb80fd2bc",
+     "classes_structs": [
+      "StyleValuePool"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/style/GridStyle.h",
+     "bytes": 1834,
+     "sha256": "2f258832f53199ee8c6e567e7545bc1775b7a733840f8735529e754d3b2c9cf6",
+     "classes_structs": [
+      "GridStyle",
+      "GridStyleStorage"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/style/GridTrack.h",
+     "bytes": 1999,
+     "sha256": "55a8de8f44626c1963898cda25f976c5c7e264a1865ec17fdda5bef57a9487d0",
+     "classes_structs": [
+      "GridTrackSize"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/style/SmallValueBuffer.h",
+     "bytes": 3846,
+     "sha256": "bf9080df6a566919147b9794baf0ee209c38a91c5061d8e9acb4ae6742317ab9",
+     "classes_structs": [
+      "Overflow",
+      "SmallValueBuffer"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/style/GridLine.h",
+     "bytes": 1184,
+     "sha256": "cc4342cbd2c33a828bbb82aefb63c92e1fb67e7167a925d10b210ebff2fd31ec",
+     "classes_structs": [
+      "GridLine",
+      "GridLineType"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/debug/AssertFatal.h",
+     "bytes": 634,
+     "sha256": "30c16b6c7e712e23038b8458f88f0aad78649889a9731830d9743d599d21085c",
+     "classes_structs": [
+      "Config",
+      "Node"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/debug/Log.h",
+     "bytes": 680,
+     "sha256": "8528035fbf0f6d31d641399a9986754a892a7e8c29a4f519e006fd8c85b84597",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/node/Node.h",
+     "bytes": 9896,
+     "sha256": "4dc58e15abd091b8aa625c57c8ed8f5c496dfd0e65b12772257d8f9b3d2901ca",
+     "classes_structs": [
+      "YGNode",
+      "YG_EXPORT"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/node/LayoutResults.h",
+     "bytes": 4128,
+     "sha256": "d8368d589868129d85070b3d2b486bcb1c1e27189947ae8771147e54c27a9309",
+     "classes_structs": [
+      "LayoutResults"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/node/LayoutableChildren.h",
+     "bytes": 4098,
+     "sha256": "92dd0f86ecb467e78ce61286e5f614a31ff8d12a030e46e4e27011c03e0b8d80",
+     "classes_structs": [
+      "Iterator",
+      "LayoutableChildren",
+      "Node"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/node/CachedMeasurement.h",
+     "bytes": 1578,
+     "sha256": "7b8c81e6c7ee7bd7d6a916fdc452346135b5ee2d2e72a8e8509d142800b3a0b7",
+     "classes_structs": [
+      "CachedMeasurement"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/algorithm/TrailingPosition.h",
+     "bytes": 1330,
+     "sha256": "a060f517d4f396a3a1d96cfb335114c47ae708964ccec0b46186e41dc87875b2",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/algorithm/FlexLine.h",
+     "bytes": 2642,
+     "sha256": "5371e05872a4c62bfd11caf077596573fe74c5bd7929204efebaee9cf481754c",
+     "classes_structs": [
+      "FlexLine",
+      "FlexLineRunningLayout"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/algorithm/Baseline.h",
+     "bytes": 569,
+     "sha256": "3cfb60c71170ed125d93705d8bb7be0d19d0a8e6b786d9534fca0746657b7e42",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/algorithm/BoundAxis.h",
+     "bytes": 2290,
+     "sha256": "fda8dad098fda150e75ffa066e7f0ecf57457e74fc01af04007647da13c3a30a",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/algorithm/FlexDirection.h",
+     "bytes": 3270,
+     "sha256": "5e4777d388d1d24a9a2eacdf885d7a752979e8eedf1f980a150cc265cd2e61a0",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/algorithm/SizingMode.h",
+     "bytes": 2204,
+     "sha256": "b7c458d7c8040dbc4f846c217cf90ceb9e5d6f2e304179e962d291128637a3c3",
+     "classes_structs": [
+      "SizingMode"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/algorithm/Align.h",
+     "bytes": 2200,
+     "sha256": "5459f8861c7098425e84d2ed5790b67a1f3402600d7c2d6de2e97c9f890d1215",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/algorithm/AbsoluteLayout.h",
+     "bytes": 1143,
+     "sha256": "9f9637dce062ba6c24c02cb8e22ae0a963d8a65262fb26e887467e3214d85f86",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/algorithm/Cache.h",
+     "bytes": 731,
+     "sha256": "ad2d15b710045f855530faf422954728f2b4b1dcd0d93e00571c5d534fbda861",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/algorithm/PixelGrid.h",
+     "bytes": 704,
+     "sha256": "3e6ec112d3bbb1ac5a2812bf6d71e1e9fb84c0880ffa675ce74a8976d4c81d1e",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/algorithm/CalculateLayout.h",
+     "bytes": 1495,
+     "sha256": "d9d50f9c4d9505def3c9e4758bfc0f04f8e8ccf5b663dfd8bf06fc8a73b31795",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "performLayout": [
+       32
+      ]
+     }
+    },
+    {
+     "path": "yoga/config/Config.h",
+     "bytes": 2484,
+     "sha256": "d9cb59401d082225a32330e7c879cb5ba6ee29361cc5cba82717d942f2b6007c",
+     "classes_structs": [
+      "Config",
+      "Node",
+      "YGConfig",
+      "YG_EXPORT"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "yoga/enums/Errata.h",
+     "bytes": 1182,
+     "sha256": "f67f6640f6da8751b54cfe3b443d0520cf70e2c7f79e561dc73a6e1d2560713c",
+     "classes_structs": [
+      "Errata"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    }
+   ],
+   "test_dirs": {
+    "test": 1,
+    "gentest": 43,
+    "tests": 73
+   }
+  },
+  {
+   "repository": "pnggroup/libpng",
+   "clone_head_sha": "964b4135949703b705fc760fc3fb546b86e5ab47",
+   "clone_note": "cloned 2s",
+   "top_level": [
+    ".appveyor.yml",
+    ".cmake-format.yaml",
+    ".editorconfig",
+    ".editorconfig-checker.json",
+    ".markdownlint.yml",
+    ".yamllint.yml",
+    "ANNOUNCE.md",
+    "AUTHORS.md",
+    "CHANGES",
+    "CMakeLists.txt",
+    "LICENSE.md",
+    "LICENSES",
+    "Makefile.am",
+    "README.md",
+    "REUSE.toml",
+    "TODO.md",
+    "TRADEMARK.md",
+    "arm",
+    "autogen.sh",
+    "ci",
+    "configure.ac",
+    "contrib",
+    "example.c",
+    "intel",
+    "libpng-config.in",
+    "libpng.pc.in",
+    "loongarch",
+    "manuals",
+    "mips",
+    "png.c",
+    "png.h",
+    "pngbar.jpg",
+    "pngbar.png",
+    "pngconf.h",
+    "pngdebug.h",
+    "pngerror.c",
+    "pngget.c",
+    "pnginfo.h",
+    "pnglibconf.h.prebuilt",
+    "pngmem.c",
+    "pngnow.png",
+    "pngpread.c",
+    "pngpriv.h",
+    "pngread.c",
+    "pngrio.c",
+    "pngrtran.c",
+    "pngrutil.c",
+    "pngset.c",
+    "pngsimd.c",
+    "pngstruct.h",
+    "pngtarget.h",
+    "pngtest.c",
+    "pngtest.png",
+    "pngtrans.c",
+    "pngusr.dfa",
+    "pngwio.c",
+    "pngwrite.c",
+    "pngwtran.c",
+    "pngwutil.c",
+    "powerpc",
+    "projects",
+    "riscv",
+    "scripts",
+    "tests"
+   ],
+   "dir_tree_d2": [
+    ".github",
+    "LICENSES",
+    "arm",
+    "ci",
+    "contrib",
+    "intel",
+    "loongarch",
+    "manuals",
+    "mips",
+    "powerpc",
+    "projects",
+    "riscv",
+    "scripts",
+    "tests",
+    ".github/workflows",
+    "ci/lib",
+    "ci/libexec",
+    "ci/targets",
+    "contrib/arm-neon",
+    "contrib/conftest",
+    "contrib/examples",
+    "contrib/gregbook",
+    "contrib/libtests",
+    "contrib/mips-mmi",
+    "contrib/mips-msa",
+    "contrib/pngexif",
+    "contrib/pngminim",
+    "contrib/pngminus",
+    "contrib/pngsuite",
+    "contrib/powerpc-vsx",
+    "contrib/testpngs",
+    "contrib/tools",
+    "contrib/visupng",
+    "projects/owatcom",
+    "projects/vstudio",
+    "scripts/autoconf",
+    "scripts/cmake",
+    "scripts/pnglibconf",
+    "ci/targets/android",
+    "ci/targets/cygwin",
+    "ci/targets/darwin",
+    "ci/targets/freebsd",
+    "ci/targets/linux",
+    "ci/targets/msdos",
+    "ci/targets/windows",
+    "contrib/pngminim/decoder",
+    "contrib/pngminim/encoder",
+    "contrib/pngminim/preader",
+    "contrib/pngsuite/interlaced",
+    "contrib/testpngs/badpal",
+    "contrib/testpngs/crashers",
+    "contrib/testpngs/png-3",
+    "projects/vstudio/libpng",
+    "projects/vstudio/pnglibconf",
+    "projects/vstudio/pngstest",
+    "projects/vstudio/pngtest",
+    "projects/vstudio/pngunknown",
+    "projects/vstudio/pngvalid",
+    "projects/vstudio/zlib"
+   ],
+   "files": [
+    {
+     "path": "pngrutil.c",
+     "bytes": 159533,
+     "sha256": "4a2d42b1f446d97af41d13e7cee044ff3e1316fdf3b6884927bf66956ab56fa6",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "png_handle_tRNS": [
+       1673,
+       1677,
+       1753
+      ]
+     }
+    },
+    {
+     "path": "png.c",
+     "bytes": 134044,
+     "sha256": "77ef0244d56389a223e336b43b84ebd2568c33f294fe8738add4ffc5f28edf41",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "pngtest.c",
+     "bytes": 68448,
+     "sha256": "390b96bf9d5232941c67af684e2e34d927860a4615e9708c67af7b14dd85d56f",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "png_read_row": [
+       1593,
+       1657
+      ]
+     }
+    },
+    {
+     "path": "pngread.c",
+     "bytes": 145705,
+     "sha256": "3b97503efea0e89f5b6e733ea6dce060cabcb57ac9e13b5b64b809d67663ca66",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "png_read_row": [
+       376,
+       383,
+       641,
+       648,
+       661,
+       668,
+       676,
+       691,
+       749,
+       2965
+      ],
+      "png_set_strip_alpha": [
+       1005,
+       3883
+      ],
+      "png_do_read_transformations": [
+       569
+      ],
+      "png_handle_tRNS": [
+       1274
+      ]
+     }
+    }
+   ],
+   "test_dirs": {
+    "tests": 37
+   }
+  },
+  {
+   "repository": "libjpeg-turbo/libjpeg-turbo",
+   "clone_head_sha": "2a8bd381b42664e72cfc0f652db6caf4c9e98117",
+   "clone_note": "cloned 2s",
+   "top_level": [
+    "BUILDING.md",
+    "CMakeLists.txt",
+    "ChangeLog.md",
+    "LICENSE.md",
+    "README.ijg",
+    "README.md",
+    "cmakescripts",
+    "doc",
+    "fuzz",
+    "jna",
+    "release",
+    "sharedlib",
+    "simd",
+    "src",
+    "test",
+    "testimages",
+    "win"
+   ],
+   "dir_tree_d2": [
+    ".github",
+    "cmakescripts",
+    "doc",
+    "fuzz",
+    "jna",
+    "release",
+    "sharedlib",
+    "simd",
+    "src",
+    "test",
+    "testimages",
+    "win",
+    ".github/ISSUE_TEMPLATE",
+    ".github/workflows",
+    "doc/turbojpeg",
+    "sharedlib/spng",
+    "simd/arm",
+    "simd/common",
+    "simd/i386",
+    "simd/mips64",
+    "simd/nasm",
+    "simd/powerpc",
+    "simd/riscv64",
+    "simd/x86_64",
+    "src/md5",
+    "src/spng",
+    "src/wrapper",
+    "win/gcc",
+    "win/vc",
+    "doc/turbojpeg/search",
+    "simd/arm/aarch32",
+    "simd/arm/aarch64",
+    "src/spng/zlib"
+   ],
+   "files": [
+    {
+     "path": "src/jdmarker.c",
+     "bytes": 42678,
+     "sha256": "f1ea7316e9f05c99929bfc70afebecc505b76fa14836c425d60ad33179771033",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "read_markers": [
+       969,
+       1299
+      ]
+     }
+    },
+    {
+     "path": "src/jdatasrc.c",
+     "bytes": 10087,
+     "sha256": "25b8689e08ec083106e13a9c5a599b7d79dcf1f182d4565b1600eac014b874d1",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "jpeg_read_header": [
+       43
+      ]
+     }
+    },
+    {
+     "path": "src/jdapimin.c",
+     "bytes": 13875,
+     "sha256": "fac63f4ad58a35e6f4e169b40aaafd4757f018abc83cdf6376b616b713d5185f",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "jpeg_read_header": [
+       82,
+       266,
+       276,
+       386
+      ],
+      "jpeg_start_decompress": [
+       256
+      ]
+     }
+    },
+    {
+     "path": "src/turbojpeg.c",
+     "bytes": 104891,
+     "sha256": "99ce86dec12e870d3cacc4855e804a099170a13f962f333bdeb20333cb2b0419",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "jpeg_read_header": [
+       1912,
+       1916,
+       2151,
+       2237,
+       2386,
+       2434,
+       2491,
+       2629,
+       3014,
+       3149
+      ],
+      "jpeg_start_decompress": [
+       2310
+      ],
+      "read_markers": [
+       2568,
+       2591,
+       2624,
+       2625,
+       2630,
+       2704,
+       2705
+      ]
+     }
+    }
+   ],
+   "test_dirs": {
+    "test": 6,
+    "testimages": 16
+   }
+  },
+  {
+   "repository": "webmproject/libwebp",
+   "clone_head_sha": "f4c34a1d45e6d4bfb9529bcbcaba1b5376bc3bff",
+   "clone_note": "cloned 2s",
+   "top_level": [
+    ".clang-format",
+    ".cmake-format.py",
+    ".mailmap",
+    ".pylintrc",
+    ".style.yapf",
+    "AUTHORS",
+    "Android.mk",
+    "CMakeLists.txt",
+    "CONTRIBUTING.md",
+    "COPYING",
+    "ChangeLog",
+    "Makefile.am",
+    "Makefile.vc",
+    "NEWS",
+    "PATENTS",
+    "PRESUBMIT.py",
+    "README.md",
+    "autogen.sh",
+    "build.gradle",
+    "cmake",
+    "codereview.settings",
+    "configure.ac",
+    "doc",
+    "examples",
+    "extras",
+    "fuzzer",
+    "gradle",
+    "gradle.properties",
+    "gradlew",
+    "gradlew.bat",
+    "imageio",
+    "infra",
+    "iosbuild.sh",
+    "m4",
+    "makefile.unix",
+    "man",
+    "sharpyuv",
+    "src",
+    "swig",
+    "tests",
+    "webp_js",
+    "xcframeworkbuild.sh"
+   ],
+   "dir_tree_d2": [
+    "cmake",
+    "doc",
+    "examples",
+    "extras",
+    "fuzzer",
+    "gradle",
+    "imageio",
+    "infra",
+    "m4",
+    "man",
+    "sharpyuv",
+    "src",
+    "swig",
+    "tests",
+    "webp_js",
+    "gradle/wrapper",
+    "src/dec",
+    "src/demux",
+    "src/dsp",
+    "src/enc",
+    "src/mux",
+    "src/utils",
+    "src/webp",
+    "tests/fuzzer",
+    "tests/fuzzer/oss-fuzz"
+   ],
+   "files": [
+    {
+     "path": "src/dec/quant_dec.c",
+     "bytes": 4417,
+     "sha256": "4a5bab8cfb301ac3aa924ae89f014c47dbcdc3d8d3f020bbc2d25f643f434cb3",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "VP8Decode": [
+       50
+      ]
+     }
+    },
+    {
+     "path": "src/dec/vp8_dec.c",
+     "bytes": 23304,
+     "sha256": "6e75a051667c776158a2d41c36fea48c01b57c17afb0c94c4fef6408f1961bd0",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "VP8Decode": [
+       54,
+       56,
+       71,
+       72,
+       83,
+       88,
+       94,
+       101,
+       222,
+       257
+      ]
+     }
+    },
+    {
+     "path": "src/dec/frame_dec.c",
+     "bytes": 29243,
+     "sha256": "56c3206c95639bf57c25dec6eaf4ac013ca6892e1874e34d555ecab85b117e99",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "WebPDecode": [
+       343,
+       685
+      ],
+      "VP8Decode": [
+       84,
+       219,
+       269,
+       281,
+       344,
+       391,
+       423,
+       524,
+       572,
+       625
+      ]
+     }
+    },
+    {
+     "path": "src/dec/io_dec.c",
+     "bytes": 24971,
+     "sha256": "a54a25124f3e571f53d3f4b0f23524f0fa111ff9c52af1be2576c48c9cfad7cc",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "src/dec/alpha_dec.c",
+     "bytes": 9405,
+     "sha256": "5fce7bac303d7f9965ce56331fb685f20c35b51b945fbe2e8cf9d2bc399ab116",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "VP8Decode": [
+       132,
+       170,
+       187,
+       199
+      ]
+     }
+    },
+    {
+     "path": "src/dec/tree_dec.c",
+     "bytes": 23341,
+     "sha256": "c567d2a455f43048a81d1bed411f246ff8eca9a352a27bd669a408b9da4b7009",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "VP8Decode": [
+       256,
+       333,
+       450
+      ]
+     }
+    },
+    {
+     "path": "src/dec/buffer_dec.c",
+     "bytes": 10901,
+     "sha256": "05d0b73886f72611f128cfdbea53f84d470f7560bb4548eff38c1eb1f3959217",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "WebPDecode": [
+       183
+      ]
+     }
+    },
+    {
+     "path": "src/dec/webp_dec.c",
+     "bytes": 34972,
+     "sha256": "7abeaa414c9c2d61eac158e9ee899b4ea80b456c69fa545ed0416a934b7ff123",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "WebPDecode": [
+       578,
+       585,
+       592,
+       599,
+       606,
+       613,
+       678,
+       683,
+       688,
+       693
+      ],
+      "VP8Decode": [
+       497,
+       512,
+       516
+      ],
+      "ParseHeadersInternal": [
+       295,
+       446,
+       743
+      ]
+     }
+    },
+    {
+     "path": "src/dec/idec_dec.c",
+     "bytes": 33429,
+     "sha256": "03ad23ecbd8204ba1b40be81f944786ab75c0eb3ebf2efee3e1fdda680205379",
+     "classes_structs": [
+      "WebPIDecoder"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "WebPDecode": [
+       279,
+       685
+      ],
+      "VP8Decode": [
+       74,
+       86,
+       111,
+       127,
+       191,
+       301,
+       308,
+       320,
+       358,
+       408
+      ]
+     }
+    },
+    {
+     "path": "src/dec/vp8l_dec.c",
+     "bytes": 76767,
+     "sha256": "5ce2c76a0b26bd9e0d72ff682b4bc8855046f19a1e7afc3eb0bd4a63ea11b516",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "DecodeAlphaData": [
+       1268,
+       1914,
+       1954
+      ]
+     }
+    },
+    {
+     "path": "src/dec/webpi_dec.h",
+     "bytes": 6595,
+     "sha256": "bfc6952bbfa6186e7c91e74be86a2102fecd06ef7acc2fe0afc8893307154e74",
+     "classes_structs": [
+      "WebPDecParams"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "WebPDecode": [
+       46,
+       101,
+       118
+      ]
+     }
+    },
+    {
+     "path": "src/dec/alphai_dec.h",
+     "bytes": 1764,
+     "sha256": "e359b05540fc9455f8e551ccad864ba03c9ee30a47ec6551f295bfcef3df0d34",
+     "classes_structs": [
+      "ALPHDecoder",
+      "VP8LDecoder"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "VP8Decode": [
+       51
+      ]
+     }
+    },
+    {
+     "path": "src/dec/common_dec.h",
+     "bytes": 1817,
+     "sha256": "acc14deb480eed8978959fbf818a50d3f4b352acdcc845e80217146eb2b4f922",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "src/dec/vp8li_dec.h",
+     "bytes": 6324,
+     "sha256": "db86d367cda469062606a204dc8a74b9515410d9cb0cc051f07c782a5c974786",
+     "classes_structs": [
+      "ALPHDecoder",
+      "VP8LDecoder",
+      "VP8LTransform"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "src/dec/vp8_dec.h",
+     "bytes": 7350,
+     "sha256": "7a1e3c0a15e489b19ef9fc721906c238de658859d88ff6950574d14583ea6e52",
+     "classes_structs": [
+      "VP8Decoder",
+      "VP8Io"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "VP8Decode": [
+       40,
+       41,
+       126,
+       129,
+       133,
+       140,
+       144,
+       147,
+       150,
+       153
+      ]
+     }
+    },
+    {
+     "path": "src/dec/vp8i_dec.h",
+     "bytes": 11757,
+     "sha256": "c0928bb5bb0843f8f83da81d8348e46fed7861e59ac480d3ad210dde524aae07",
+     "classes_structs": [
+      "ALPHDecoder",
+      "VP8Decoder"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "WebPDecode": [
+       304,
+       308
+      ],
+      "VP8Decode": [
+       187,
+       189,
+       191,
+       280,
+       285,
+       287,
+       290,
+       293,
+       298,
+       301
+      ]
+     }
+    }
+   ],
+   "test_dirs": {
+    "tests": 25
+   }
+  },
+  {
+   "repository": "harfbuzz/harfbuzz",
+   "clone_head_sha": "873dbc1e32483cffa1f5d92cfcc4fcbf7104e0d3",
+   "clone_note": "cloned 5s",
+   "top_level": [
+    ".ci",
+    ".clang-format",
+    ".codecov.yml",
+    ".editorconfig",
+    "AGENTS.md",
+    "AUTHORS",
+    "AVAR2-INSTANCING.md",
+    "BUILD.md",
+    "CLAUDE.md",
+    "CMakeLists.txt",
+    "CODE_OF_AI_CONDUCT.md",
+    "CONFIG.md",
+    "COPYING",
+    "HarfBuzz.png",
+    "NEWS",
+    "README.md",
+    "README.mingw.md",
+    "README.python.md",
+    "RELEASING.md",
+    "SECURITY.md",
+    "TESTING.md",
+    "THANKS",
+    "docs",
+    "harfbuzz.doap",
+    "meson.build",
+    "meson_options.txt",
+    "perf",
+    "replace-enum-strings.cmake",
+    "src",
+    "subprojects",
+    "test",
+    "util",
+    "xkcd.png"
+   ],
+   "dir_tree_d2": [
+    ".ci",
+    ".github",
+    "docs",
+    "perf",
+    "src",
+    "subprojects",
+    "test",
+    "util",
+    ".github/workflows",
+    "perf/fonts",
+    "perf/texts",
+    "src/OT",
+    "src/graph",
+    "src/ms-use",
+    "src/rust",
+    "src/wasm",
+    "subprojects/packagefiles",
+    "test/api",
+    "test/fuzzing",
+    "test/shape",
+    "test/subset",
+    "test/threads",
+    "test/vector",
+    "util/gpu",
+    "src/OT/Color",
+    "src/OT/Layout",
+    "src/OT/Var",
+    "src/OT/glyf",
+    "src/OT/name",
+    "src/wasm/graphite",
+    "src/wasm/rust",
+    "src/wasm/sample",
+    "subprojects/packagefiles/kbts",
+    "subprojects/packagefiles/ragel",
+    "test/api/data-paint",
+    "test/api/fonts",
+    "test/api/results-paint",
+    "test/fuzzing/fonts",
+    "test/fuzzing/graphs",
+    "test/shape/data",
+    "test/subset/data",
+    "test/vector/data",
+    "util/gpu/web"
+   ],
+   "files": [
+    {
+     "path": "src/hb-ot-shape.cc",
+     "bytes": 39900,
+     "sha256": "c50cabe89c03daf95c3b9e9b0994d92e44aa0dc3b1b57d30413c90a0a8429ef2",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "hb_ot_shape_internal": [
+       1171,
+       1212
+      ],
+      "hb_buffer_t": [
+       265,
+       272,
+       455,
+       471,
+       552,
+       581,
+       591,
+       657,
+       698,
+       753
+      ]
+     }
+    },
+    {
+     "path": "src/hb-buffer.cc",
+     "bytes": 61952,
+     "sha256": "58bd6aa7a3e93d21fe02041c53d9de7dea9e9cbc6d1826583ebff42952539245",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "hb_buffer_t": [
+       159,
+       207,
+       225,
+       254,
+       255,
+       273,
+       286,
+       301,
+       326,
+       342
+      ]
+     }
+    },
+    {
+     "path": "src/hb-ft.cc",
+     "bytes": 52348,
+     "sha256": "556523d761436241623e1dacae731884390180c2f073d97731a79c355fddaa7a",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "hb_ft_get_glyph_h_advances": [
+       489,
+       1063
+      ]
+     }
+    },
+    {
+     "path": "test/shape/data/in-house/tests/use-syllable.tests",
+     "bytes": 3651,
+     "sha256": "b28041ecbebe42cfa7e481dfb839594be89c66da6114cae940073093f7ea7d31",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/arabic-mark-order.tests",
+     "bytes": 1296,
+     "sha256": "af55a4e776aacf15491017b2b3a844385cfdf3d8e394f2f8fdd7f07695caab5e",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/collections.tests",
+     "bytes": 337,
+     "sha256": "ab3d44311e3a27e16337ba4b3f5eb56e90b8298757341c34ce21c2d518c41a85",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/tibetan-vowels.tests",
+     "bytes": 996,
+     "sha256": "85be115906b9d45c909ca7432dd0043fa58ffca6050bccde5de7a738205c520b",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/indic-init.tests",
+     "bytes": 133,
+     "sha256": "24db52915f32505f6f2b4a95e53b7e9662a5bde4c150f67c1acd1a5657c54c47",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/reverse-sub.tests",
+     "bytes": 962,
+     "sha256": "928f7082e617cc1f70b57dd7c82e07c241ef2a0d0f9b54e439c93921fb0b8e58",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/mark-filtering-sets.tests",
+     "bytes": 1205,
+     "sha256": "662783c82a857eefa30fbf566eed88226a0d1fef87dff0edd7f2b4201fe7eeac",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/indic-joiner-candrabindu.tests",
+     "bytes": 213,
+     "sha256": "83d4f0ccd9098e465f74963e6fc24677fdee32b780658af6ee5c4be7e9709e71",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/color-fonts.tests",
+     "bytes": 235,
+     "sha256": "91d18732b159aac52267584aa3581b3e02b716d683887efdcb8d002008ed874d",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/context-matching.tests",
+     "bytes": 1085,
+     "sha256": "3f60e1e08ee14c615346af67a82fff8fb87813daca5163a3dce8fcb54a73cdca",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/vertical.tests",
+     "bytes": 1797,
+     "sha256": "57ec319f9a5771b36f2334fa56e2cd9d7e00b39e91e180b68154c237d14c2a10",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/myanmar-zawgyi.tests",
+     "bytes": 203,
+     "sha256": "94413bbd3996b7597bb5ef40dd3caf984fa002acede7cc98739f93be50ed189e",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/indic-syllable.tests",
+     "bytes": 1724,
+     "sha256": "9f79b11af8fe23774f7da9cc1ca2dd0689d9229cb89febf7ee142aea7f149159",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/unsafe-to-concat.tests",
+     "bytes": 657,
+     "sha256": "ad22fb9398d838b0ace6e03f64b845cc42e9eba09e1651e40856445b40dcf56c",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/indic-feature-order.tests",
+     "bytes": 118,
+     "sha256": "f11960cd8d0fba0a9f60a78a62be131cf945529db1bbd1dc28a4cc72a2a097e7",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/emoji.tests",
+     "bytes": 726,
+     "sha256": "6776ca37a354d1c8a7eaa97767a8d4aa7e144f20c89fe3db613cb33678a66948",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/hangul-jamo.tests",
+     "bytes": 166,
+     "sha256": "ef346603fbe7b865c39af5c92b3ff53fb1a3f16abf71e882eb747186a0269233",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/kern-format2.tests",
+     "bytes": 556,
+     "sha256": "87fddb5c74c7958b4d23cd87d2e5aaf609f398326790778e0daae81caf7e44f8",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/positioning-features.tests",
+     "bytes": 287,
+     "sha256": "dea5dcdb1b63aba14c8065b095e9278ce3718cddfd575547c23e54615442e368",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/coretext.tests",
+     "bytes": 166,
+     "sha256": "a001cf83fe4d985da73293b927006124b8ba8644a50d061b93d36eecc45636b1",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/use.tests",
+     "bytes": 2598,
+     "sha256": "06d61bb18da2b29380e749882ec73d1795066533419eafbc849176a5194f1fba",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/khmer-mark-order.tests",
+     "bytes": 5656,
+     "sha256": "4232171b91c46b61a4f0bdc2306fcd9240a479fe76f39bd3aa4b044e7f6a74bd",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/default-ignorables.tests",
+     "bytes": 807,
+     "sha256": "9af4d75dcddc9d6feaf8abbfb6ad9f9266e332ff6dcb75f39a64eb221646d58d",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/indic-decompose.tests",
+     "bytes": 254,
+     "sha256": "90d82db8faaec73a7158a302a66f5cbdd38486f67d5451bc6caca9f7e1753601",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/nested-mark-filtering-sets.tests",
+     "bytes": 1439,
+     "sha256": "1ca0e6d67e1004e9330101f16dde1f4063fc8567c8cd060c6f3b1ec0c6e47ca3",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/use-javanese.tests",
+     "bytes": 38755,
+     "sha256": "f47429cc2d715b4c6126e066e1089517626594bf1d5ecea5e5bad8bfaa0f4f2b",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/language-tags.tests",
+     "bytes": 1211,
+     "sha256": "7d5c6d50504a2e566719d80859d8d6691d721908452ae90fdb42c62925ff31ff",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/aat-morx.tests",
+     "bytes": 402,
+     "sha256": "e47fb1a8f0269054c02df4c54d8a8322a1b0a5b5d311a77183d0c21503a3a833",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/sara-am.tests",
+     "bytes": 6942,
+     "sha256": "4aa6a9cac9c6aa4a333ea4e9343002ca703b669a474e0e3c2ffceb3e31a8e3ff",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/variation-selectors.tests",
+     "bytes": 346,
+     "sha256": "06f5d576513a087320dbfb6bacb77739067c26ffba0910be59d79c47858e43ed",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/rand.tests",
+     "bytes": 531,
+     "sha256": "b39e7a9c938f5a732f77936ebbe70b867a5d3c580fcaf10f7fabf528b98ca03d",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/fallback-positioning.tests",
+     "bytes": 273,
+     "sha256": "991d42fc5e0eb4d20b459a0cc145860efdc76b8e531a6ce3f541ad0bd22a30e7",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/variations-rvrn.tests",
+     "bytes": 10240,
+     "sha256": "73eda57712a234db795c789336702a5e576d5211aba2eb2d9bacd709c5b6dca6",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/indic-vowel-letter-spoofing.tests",
+     "bytes": 8862,
+     "sha256": "9951948c30db0ca9727dee1d9e575e1e4d836f7bf0fded71daa86f9b0093ed5b",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/variations.tests",
+     "bytes": 534,
+     "sha256": "5a52a3791b3e5c78ca748f448dcef242e4a6cbf51d894e269003a18de660c1e2",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/digits.tests",
+     "bytes": 1047,
+     "sha256": "724f33cd4ab10aa171200a96b4cd144b94ab7dd19acad599f1c093efbd33c969",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/hyphens.tests",
+     "bytes": 150,
+     "sha256": "7b28abcbb9147777a1c44e6ca4b6ac6b5065e408a9ca76a1d930f7250de27851",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/uniscribe.tests",
+     "bytes": 167,
+     "sha256": "3bde7ebbdb95d4e4df2529d514b2eb6d725e98601e538b9b4756f8c8235432ab",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/automatic-fractions.tests",
+     "bytes": 1300,
+     "sha256": "0868eefef89ac502dc7c7ff9509a1c08ff4558046482955b69dd549db2f075b2",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    },
+    {
+     "path": "test/shape/data/in-house/tests/harfbust.tests",
+     "bytes": 599,
+     "sha256": "b04014c5b2a94dd08c28a3694b21c05543b5eca7491d6bb9a5c0b19876dbd929",
+     "classes_structs": [],
+     "on_callbacks": [],
+     "symbol_line_hits": {}
+    }
+   ],
+   "test_dirs": {
+    "test": 3058
+   }
+  },
+  {
+   "repository": "google/wuffs",
+   "clone_head_sha": "f31d952b62fcd8abcc8d42908284f50097313bc8",
+   "clone_note": "cloned 3s",
+   "top_level": [
+    ".allstar",
+    ".clang-format",
+    "AUTHORS",
+    "BUILD.md",
+    "CONTRIBUTING.md",
+    "CONTRIBUTORS",
+    "LICENSE",
+    "LICENSE-APACHE",
+    "LICENSE-MIT",
+    "README.md",
+    "build-all.sh",
+    "build-example.sh",
+    "build-fuzz.sh",
+    "cmd",
+    "doc",
+    "example",
+    "fuzz",
+    "go.mod",
+    "go.sum",
+    "hello-wuffs-c",
+    "internal",
+    "lang",
+    "lib",
+    "release",
+    "script",
+    "snippet",
+    "std",
+    "test",
+    "wuffs-root-directory.txt"
+   ],
+   "dir_tree_d2": [
+    ".allstar",
+    ".github",
+    "cmd",
+    "doc",
+    "example",
+    "fuzz",
+    "hello-wuffs-c",
+    "internal",
+    "lang",
+    "lib",
+    "release",
+    "script",
+    "snippet",
+    "std",
+    "test",
+    ".github/workflows",
+    "cmd/commonflags",
+    "cmd/dumbindent",
+    "cmd/handsum",
+    "cmd/ractool",
+    "cmd/wuffs",
+    "cmd/wuffs-c",
+    "cmd/wuffsfmt",
+    "doc/logo",
+    "doc/note",
+    "doc/spec",
+    "doc/std",
+    "example/cbor-to-json",
+    "example/convert-to-nia",
+    "example/crc32",
+    "example/gifplayer",
+    "example/imageviewer",
+    "example/json-to-cbor",
+    "example/jsonfindptrs",
+    "example/jsonptr",
+    "example/mzcat",
+    "example/sdl-imageviewer",
+    "example/stb-imagedumper",
+    "example/toy-aux-image",
+    "example/toy-genlib",
+    "example/zcat",
+    "fuzz/c",
+    "internal/cgen",
+    "internal/testcut",
+    "lang/ast",
+    "lang/builtin",
+    "lang/check",
+    "lang/generate",
+    "lang/parse",
+    "lang/render",
+    "lang/token",
+    "lang/wuffsroot",
+    "lib/armneonintrinsics",
+    "lib/base38",
+    "lib/cgolz4",
+    "lib/cgozlib",
+    "lib/cgozstd",
+    "lib/compression",
+    "lib/dumbindent",
+    "lib/flatecut",
+    "lib/handsum",
+    "lib/internal",
+    "lib/interval",
+    "lib/litonlylzma",
+    "lib/lowleveldct2x2",
+    "lib/lowleveldct4x4",
+    "lib/lowleveljpeg",
+    "lib/nie",
+    "lib/parsecolor",
+    "lib/rac",
+    "lib/raclz4",
+    "lib/raczlib",
+    "lib/raczstd",
+    "lib/readerat",
+    "lib/suitar",
+    "lib/uncompng",
+    "lib/zlibcut",
+    "release/c",
+    "script/bench-go-deflate",
+    "script/bench-go-gif",
+    "script/bench-go-jpeg",
+    "script/bench-go-png",
+    "script/bench-rust-deflate",
+    "script/bench-rust-gif",
+    "script/bench-rust-gif-dot-rs",
+    "script/bench-rust-jpeg",
+    "script/bench-rust-png",
+    "std/adler32",
+    "std/bmp",
+    "std/bzip2",
+    "std/cbor",
+    "std/crc32",
+    "std/crc64",
+    "std/deflate",
+    "std/etc2",
+    "std/gif",
+    "std/gzip",
+    "std/handsum",
+    "std/jpeg",
+    "std/json",
+    "std/lzip",
+    "std/lzma",
+    "std/lzw",
+    "std/netpbm",
+    "std/nie",
+    "std/png",
+    "std/qoi",
+    "std/sha256",
+    "std/targa",
+    "std/thumbhash",
+    "std/vp8",
+    "std/wbmp",
+    "std/webp",
+    "std/xxhash32",
+    "std/xxhash64",
+    "std/xz",
+    "std/zlib",
+    "test/3pdata",
+    "test/c",
+    "test/data"
+   ],
+   "files": [
+    {
+     "path": "release/c/wuffs-v0.4.c",
+     "bytes": 3625906,
+     "sha256": "1f8039ef82911604c063f6ac2ed57254bdb17d742aebdeae06356530d4a0fde7",
+     "classes_structs": [
+      "AllocPixbufResult",
+      "AllocWorkbufResult",
+      "DecodeCborArgQuirks",
+      "DecodeCborCallbacks",
+      "DecodeCborResult",
+      "DecodeImageArgBackgroundColor",
+      "DecodeImageArgFlags",
+      "DecodeImageArgMaxInclDimension",
+      "DecodeImageArgMaxInclMetadataLength",
+      "DecodeImageArgPixelBlend",
+      "DecodeImageArgQuirks",
+      "DecodeImageCallbacks",
+      "DecodeImageResult",
+      "DecodeJsonArgJsonPointer",
+      "DecodeJsonArgQuirks",
+      "DecodeJsonCallbacks",
+      "DecodeJsonResult",
+      "DynIOBuffer",
+      "ErrorMessages",
+      "FileInput",
+      "Input",
+      "MemoryInput"
+     ],
+     "on_callbacks": [],
+     "symbol_line_hits": {
+      "wuffs_gif__decoder": [
+       9951,
+       9966,
+       9967,
+       9973,
+       9983,
+       9984,
+       9987,
+       9988,
+       9994,
+       9995
+      ],
+      "disposal": [
+       5569,
+       5577,
+       5579,
+       5581,
+       5583,
+       5595,
+       5606,
+       5616,
+       5631,
+       5644
+      ],
+      "wuffs_png__decoder": [
+       13627,
+       13642,
+       13643,
+       13649,
+       13659,
+       13660,
+       13663,
+       13664,
+       13670,
+       13671
+      ]
+     }
+    }
+   ],
+   "test_dirs": {
+    "test": 437
+   }
+  }
+ ]
+}
