@@ -81,11 +81,19 @@ def _find_node(nodes, el):
     rid = el.get("resource_id")
     cls = el.get("class")
     text = el.get("text")
+    # elements WITH text must match by text (a splash TextView must not
+    # satisfy a 'counter: 0' TextView contract — S92 splash-only rejection)
+    if text:
+        for n in nodes:
+            if n.get("text") == text:
+                return n
+        if rid:
+            for n in nodes:
+                if n.get("android_view_id") == rid:
+                    return n
+        return None
     for n in nodes:
         if rid and n.get("android_view_id") == rid:
-            return n
-    for n in nodes:
-        if text and n.get("text") == text:
             return n
     for n in nodes:
         if cls and cls in (n.get("class") or ""):
@@ -95,21 +103,35 @@ def _find_node(nodes, el):
 
 def frame_quality(screenshot_path, background=(255, 255, 255)):
     """§13 full/partial-screen detection: blank, nearly-blank, single-color,
-    content bounds. Diagnostic layer — never sufficient alone (§13 law)."""
+    content bounds. Diagnostic layer — never sufficient alone (§13 law).
+
+    Blank gate = uniform frame (low stddev) OR <=2 distinct quantized
+    colors OR <64 non-background pixels. A small rendered icon on a white
+    canvas (e.g. 8630 px) is CONTENT — the gate counts pixels and colors,
+    not just the area fraction (S92 battery calibration)."""
     im = Image.open(screenshot_path).convert("RGB")
     A = np.asarray(im, dtype=np.int16)
     gray = 0.2126 * A[:, :, 0] + 0.7152 * A[:, :, 1] + 0.0722 * A[:, :, 2]
     std = float(gray.std())
     nonbg = (np.abs(A - np.array(background)).max(axis=2) > 8)
     frac = float(nonbg.mean())
+    npx = int(nonbg.sum())
     out = {
         "dims": [im.width, im.height],
         "luminance_stddev": round(std, 2),
         "non_background_frac": round(frac, 6),
+        "non_background_px": npx,
         "unique_colors_est": int(len(np.unique(
             (A // 8).reshape(-1, 3), axis=0))),
     }
-    if std < BLANK_STDDEV_FLOOR or frac < NEARLY_BLANK_CONTENT_FRAC:
+    colors = int(len(np.unique((A[nonbg] // 8).reshape(-1, 3), axis=0))) \
+        if npx else 0
+    out["nonbg_unique_colors"] = colors
+    # blank = uniform frame (low stddev) or negligible pixel count. A
+    # single-color but spatially structured content (solid circle icon) has
+    # HIGH stddev — never classified blank (S92 battery calibration:
+    # caseg icon = 8630 px, std 10.5, one color = real content).
+    if std < BLANK_STDDEV_FLOOR or npx < 64:
         out["class"] = "BLANK_OR_NEARLY_BLANK"
     elif frac < 0.02:
         out["class"] = "SPARSE_CONTENT"

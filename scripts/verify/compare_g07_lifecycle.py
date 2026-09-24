@@ -65,9 +65,16 @@ def main():
     check("CSR" in t0,
           "boot lifecycle visible: onCreate+onStart+onResume executed via "
           "real DEX (app's own mark() output)")
-    check("Ticks: 1" in t0,
-          "postDelayed runnable fired at the idle-settle boundary "
-          "(main-thread dispatch)")
+    # F-NEW-197 (S92): the launch frame predates ANY deferred timer.
+    # AOSP MessageQueue law: postDelayed(tick, 250) in onCreate is NOT due
+    # at t=0 — an idle Looper blocks in nativePollOnce until the message's
+    # `when`. The old expectation ("Ticks: 1" at frame 0) encoded the
+    # historical settle() +1e9 ms clock jump, which made the runtime show
+    # the POST-timer state in the launch frame — a screenshot-truth
+    # violation of exactly the class S92 exists to reject.
+    check("Ticks: 0" in t0,
+          "launch frame shows Ticks: 0 (F-NEW-197: deferred timer NOT "
+          "fired at idle-settle — honest t=0 screen)")
     check("CSRPHD" in tfin,
           "post-finish state: onPause+onStop+onDestroy executed via real "
           "DEX — the app's own text records the full machine (final frame)")
@@ -88,8 +95,10 @@ def main():
                 if n not in seen:
                     seen.add(n)
                     tick_seq.append(n)
-    check(tick_seq == ["1", "2", "3"],
-          f"tick chain finite: Ticks advanced exactly 1→2→3 in order "
+    # F-NEW-197: the stream now honestly includes the t=0 state ("0") —
+    # the launch frame predates the timer — then the finite chain 1→2→3.
+    check(tick_seq == ["0", "1", "2", "3"],
+          f"tick chain finite: Ticks advanced exactly 0→1→2→3 in order "
           f"(observed {tick_seq})")
     check(not overflow,
           "tick chain correctly stopped at 3 (no Ticks: 4+ anywhere in "
@@ -129,10 +138,15 @@ def main():
         for t in texts_of(fr):
             if t.startswith("Ticks: "):
                 ticks_seen.append(int(t.split(": ")[1]))
-    check(ticks_seen and ticks_seen[0] == 1,
-          "frame 0 shows Ticks: 1 (settle-drain fired the first tick)")
-    check(3 in ticks_seen,
-          "self-reposted runnable advanced across frame boundaries")
+    check(ticks_seen and ticks_seen[0] == 0,
+          "frame 0 shows Ticks: 0 (F-NEW-197: launch frame predates the "
+          "250ms timer — no settle-jump)")
+    check(ticks_seen == [0, 1, 2, 3],
+          "tick chain fires one per 250ms frame gate: 0,1,2,3 "
+          "(deterministic virtual-clock law)")
+    vms1 = mb["frames"][1].get("looper_virtual_ms")
+    check(vms1 == 250,
+          f"tick 1 dispatched exactly at the 250ms gate (observed {vms1})")
     check(max(ticks_seen) == 3 if ticks_seen else False,
           "repost chain self-limited at 3 (finite chain law)")
     shas = [fr["sha256"] for fr in mb["frames"]]

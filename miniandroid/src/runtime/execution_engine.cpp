@@ -126,6 +126,26 @@ ExecutionResult ExecutionEngine::execute(const std::string& path, const Executio
     if (success && config.tap_enabled && config.frame_count <= 0) stage_tap(result, config);
     if (success && config.frame_count > 0) stage_frame_sequence(result, config);
 
+    // ── F-NEW-198 (S92): END-OF-WINDOW EVIDENCE LAW ─────────────────────
+    // AOSP test-harness law (UiAutomator/screencap semantics): the
+    // screenshot and the view hierarchy attached to a run's evidence
+    // represent the state of the screen WHEN OBSERVATION ENDS — never a
+    // stale launch-time snapshot. Under F-NEW-197 honest clock semantics,
+    // timer-driven apps legally change scenes DURING the observed window
+    // (e.g. a 5s splash -> main scene at frame 18 of 30); the early
+    // stage_capture_output pass (kept above: it is the untouched frame-1
+    // baseline the click-test law depends on) then describes a scene that
+    // no longer exists by the end of the run. Re-capture NOW, after every
+    // interaction/frame stage, so screenshot.png + view_tree.json always
+    // correspond to the last rendered state — the same state the tail of
+    // frames/manifest.json records. Non-interactive single-frame runs are
+    // unaffected (state identical; the re-write is idempotent).
+    if (success) {
+        stage_render_frame(result, config);   // framebuffer = current state
+        stage_capture_output(result, config, /*final_pass=*/true);
+    }
+
+
     // G07 §10: final frame boundary — apply any still-pending finish() and
     // persist the lifecycle state-machine trace as runtime evidence.
     {
@@ -877,18 +897,36 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
         // queued during onCreate are never dispatched — timer-based apps,
         // animation callbacks, and Lambda runnables never fire.
         // This is the GENERIC drain (not Telegram-specific).
+        //
+        // ── F-NEW-197 (S92): IDLE-SETTLE NEVER FAST-FORWARDS THE CLOCK ────
+        // AOSP law (frameworks/base/core/java/android/os/MessageQueue.java
+        // + native MessageQueue): an idle Looper BLOCKS in nativePollOnce
+        // with a poll timeout of (next message when - now). It waits in
+        // real time; it can never observe its own future. The historical
+        // settle() jump (+1e9 ms virtual) violated that law: a 5000 ms
+        // splash Timer scheduled in onCreate became due the instant
+        // onCreate returned, so the runtime's "launch frame" actually
+        // showed the POST-timer scene (S92 battery case-d: the 6-frame
+        // window captured the main scene while a real device would still
+        // display the splash — exactly the "screenshot exists ≠ graphics
+        // truth" class of lie S92 exists to reject).
+        // New law: the post-onCreate drain dispatches ONLY entries due at
+        // the CURRENT virtual instant (delay-0 Handler.post family — the
+        // EXP-088 A/B semantics). Future-dated entries (postDelayed,
+        // Timer.schedule with delay>0) remain queued and fire when the
+        // deterministic clock advances through explicit time gates
+        // (--frames advance_virtual(frame_delay_ms), tap-state advances,
+        // drain_quiescent's poll-timeout fast-forward). The run manifest
+        // records queue state so verifiers can distinguish "pending"
+        // from "fired".
         if (auto* registry = dalvik_engine_.get_shadow_registry()) {
             if (auto* hs = registry->find_as<framework::HandlerShadow>()) {
-                // Idle-settle: the app finished onCreate and the main Looper
-                // would dispatch everything posted so far. settle() jumps the
-                // virtual clock far forward so every entry posted so far is
-                // due — the documented EXP-088 drain-all law, now expressed
-                // through the deterministic virtual clock. Entries RE-posted
-                // during this drain (self-reposting animation tickers) become
-                // due at a future Looper time and wait for --frames gates.
-                hs->settle();
+                // F-NEW-197: due-only drain — NO clock jump. Entries due at
+                // the current virtual instant dispatch here; future-dated
+                // entries wait for the --frames clock gates.
                 std::vector<uint32_t> drained;
                 size_t n = hs->drain_ready(&drained);
+                size_t pending = hs->queue_size() - n;
                 if (n > 0) {
                     trace_engine_.info("ExecutionEngine", "drain_handler_queue",
                                        "Drained " + std::to_string(n) + " Runnables after onCreate");
@@ -896,6 +934,14 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                     for (uint32_t rid : drained) {
                         invoke_handler_runnable(rid);
                     }
+                }
+                if (pending > 0) {
+                    // F-NEW-197 observability: future-dated posts exist —
+                    // they fire only when the deterministic clock reaches
+                    // their due time (frame gates), never at idle-settle.
+                    trace_engine_.info("ExecutionEngine", "deferred_runnables",
+                                       std::to_string(pending) +
+                                       " future-dated Runnables pending (F-NEW-197: fire at clock gates)");
                 }
             }
         }
@@ -4037,14 +4083,21 @@ bool ExecutionEngine::stage_gl_surfaces(ExecutionResult& result,
     return true;
 }
 
-bool ExecutionEngine::stage_capture_output( ExecutionResult& result, const ExecutionConfig& config) {
-    trace_engine_.info("ExecutionEngine", "stage_capture_output", "Capturing output");
+bool ExecutionEngine::stage_capture_output( ExecutionResult& result, const ExecutionConfig& config, bool final_pass) {
+    trace_engine_.info("ExecutionEngine", "stage_capture_output",
+                       final_pass ? "Capturing output (F-NEW-198 end-of-window pass)"
+                                  : "Capturing output");
     // ────────────────────────────────────────────────────────────────────
     // S67 FOUNDATION (§1 evidence pipeline): ViewTree provenance dump.
     // Written BEFORE the screenshot-disabled early-return so the tree is
     // captured even for screenshot-less runs. Uses the same
     // DalvikExecutionEngine::dump_view_tree the legacy EXP-061 flow used;
     // now reachable from the standard `run` command via --dump-view-tree.
+    // F-NEW-198: this stage runs TWICE by law — an early pass (launch
+    // baseline, click-test dependency) and the F-NEW-198 end-of-window
+    // pass after every interaction/frame stage. The second pass overwrites
+    // screenshot.png + view_tree.json with the state the run ENDED in, so
+    // the evidence artifacts correspond to the observed window's tail.
     // ────────────────────────────────────────────────────────────────────
     if (config.dump_view_tree) {
         fs::create_directories(config.output_directory);
@@ -4067,9 +4120,16 @@ bool ExecutionEngine::stage_capture_output( ExecutionResult& result, const Execu
     // zero content nodes (white frame). AOSP: vsync keeps firing while the
     // app lives — the pump before capture mirrors that final tick so every
     // posted-but-undispatched callback resumes before the screenshot.
+    // F-NEW-198: skipped on the end-of-window pass — that pass must
+    // RECORD the final state, not advance it.
     // ────────────────────────────────────────────────────────────────────
-    pump_compose_frames(/*max_frames=*/16);
-    trace_engine_.info("ExecutionEngine", "stage_capture_output", "post-lifecycle frame pump done");
+    if (final_pass) {
+        trace_engine_.info("ExecutionEngine", "stage_capture_output",
+                           "final pass: no compose pump (F-NEW-198 record-only)");
+    } else {
+        pump_compose_frames(/*max_frames=*/16);
+        trace_engine_.info("ExecutionEngine", "stage_capture_output", "post-lifecycle frame pump done");
+    }
     
     if (!config.generate_screenshot) {
         trace_engine_.info("ExecutionEngine", "stage_capture_output", "Screenshot generation disabled");
@@ -4730,8 +4790,35 @@ bool ExecutionEngine::stage_frame_sequence( ExecutionResult& result, const Execu
 
     auto collect_texts = [&]() {
         nlohmann::json arr = nlohmann::json::array();
+        // F-NEW-196 (S92) current-window law: report only texts of views
+        // reachable from the LIVE content root — dead views detached by a
+        // later setContentView must not pose as visible state (the
+        // splash-only capture listed 'counter: 0' as visible_text while
+        // the screen held only the splash).
+        std::set<uint64_t> live;
+        if (shadow_registry_) {
+            if (auto* as_ =
+                    shadow_registry_->find_as<framework::ActivityShadow>()) {
+                if (as_->content_view_id() != 0 &&
+                    view_shadow->find_node(as_->content_view_id())) {
+                    std::vector<uint32_t> queue{as_->content_view_id()};
+                    live.insert(queue.front());
+                    while (!queue.empty()) {
+                        uint32_t oid = queue.front();
+                        queue.erase(queue.begin());
+                        const auto* n_ = view_shadow->find_node(oid);
+                        if (n_ == nullptr) continue;
+                        for (uint32_t child : n_->children) {
+                            if (live.insert(child).second)
+                                queue.push_back(child);
+                        }
+                    }
+                }
+            }
+        }
         for (const auto& [id, node_ptr] : view_shadow->all_nodes()) {
-            if (node_ptr && !node_ptr->text.empty()) {
+            if (node_ptr && !node_ptr->text.empty() &&
+                (live.empty() || live.count(id))) {
                 arr.push_back({{"view_id", id},
                                {"class", node_ptr->class_desc},
                                {"text", node_ptr->text}});
@@ -5025,8 +5112,35 @@ bool ExecutionEngine::stage_click_sequence( ExecutionResult& result, const Execu
     // Helper: the app's own visible state — every node's text in the tree.
     auto collect_texts = [&]() {
         nlohmann::json arr = nlohmann::json::array();
+        // F-NEW-196 (S92) current-window law: report only texts of views
+        // reachable from the LIVE content root — dead views detached by a
+        // later setContentView must not pose as visible state (the
+        // splash-only capture listed 'counter: 0' as visible_text while
+        // the screen held only the splash).
+        std::set<uint64_t> live;
+        if (shadow_registry_) {
+            if (auto* as_ =
+                    shadow_registry_->find_as<framework::ActivityShadow>()) {
+                if (as_->content_view_id() != 0 &&
+                    view_shadow->find_node(as_->content_view_id())) {
+                    std::vector<uint32_t> queue{as_->content_view_id()};
+                    live.insert(queue.front());
+                    while (!queue.empty()) {
+                        uint32_t oid = queue.front();
+                        queue.erase(queue.begin());
+                        const auto* n_ = view_shadow->find_node(oid);
+                        if (n_ == nullptr) continue;
+                        for (uint32_t child : n_->children) {
+                            if (live.insert(child).second)
+                                queue.push_back(child);
+                        }
+                    }
+                }
+            }
+        }
         for (const auto& [id, node_ptr] : view_shadow->all_nodes()) {
-            if (node_ptr && !node_ptr->text.empty()) {
+            if (node_ptr && !node_ptr->text.empty() &&
+                (live.empty() || live.count(id))) {
                 arr.push_back({{"view_id", id},
                                {"class", node_ptr->class_desc},
                                {"text", node_ptr->text}});
@@ -5230,8 +5344,35 @@ bool ExecutionEngine::stage_long_press(ExecutionResult& result, const ExecutionC
     // The app's own visible state — every node's text in the tree.
     auto collect_texts = [&]() {
         nlohmann::json arr = nlohmann::json::array();
+        // F-NEW-196 (S92) current-window law: report only texts of views
+        // reachable from the LIVE content root — dead views detached by a
+        // later setContentView must not pose as visible state (the
+        // splash-only capture listed 'counter: 0' as visible_text while
+        // the screen held only the splash).
+        std::set<uint64_t> live;
+        if (shadow_registry_) {
+            if (auto* as_ =
+                    shadow_registry_->find_as<framework::ActivityShadow>()) {
+                if (as_->content_view_id() != 0 &&
+                    view_shadow->find_node(as_->content_view_id())) {
+                    std::vector<uint32_t> queue{as_->content_view_id()};
+                    live.insert(queue.front());
+                    while (!queue.empty()) {
+                        uint32_t oid = queue.front();
+                        queue.erase(queue.begin());
+                        const auto* n_ = view_shadow->find_node(oid);
+                        if (n_ == nullptr) continue;
+                        for (uint32_t child : n_->children) {
+                            if (live.insert(child).second)
+                                queue.push_back(child);
+                        }
+                    }
+                }
+            }
+        }
         for (const auto& [id, node_ptr] : view_shadow->all_nodes()) {
-            if (node_ptr && !node_ptr->text.empty()) {
+            if (node_ptr && !node_ptr->text.empty() &&
+                (live.empty() || live.count(id))) {
                 arr.push_back({{"view_id", id},
                                {"class", node_ptr->class_desc},
                                {"text", node_ptr->text}});
@@ -5873,8 +6014,35 @@ bool ExecutionEngine::stage_tap(ExecutionResult& result,
 
     auto collect_texts = [&]() {
         nlohmann::json arr = nlohmann::json::array();
+        // F-NEW-196 (S92) current-window law: report only texts of views
+        // reachable from the LIVE content root — dead views detached by a
+        // later setContentView must not pose as visible state (the
+        // splash-only capture listed 'counter: 0' as visible_text while
+        // the screen held only the splash).
+        std::set<uint64_t> live;
+        if (shadow_registry_) {
+            if (auto* as_ =
+                    shadow_registry_->find_as<framework::ActivityShadow>()) {
+                if (as_->content_view_id() != 0 &&
+                    view_shadow->find_node(as_->content_view_id())) {
+                    std::vector<uint32_t> queue{as_->content_view_id()};
+                    live.insert(queue.front());
+                    while (!queue.empty()) {
+                        uint32_t oid = queue.front();
+                        queue.erase(queue.begin());
+                        const auto* n_ = view_shadow->find_node(oid);
+                        if (n_ == nullptr) continue;
+                        for (uint32_t child : n_->children) {
+                            if (live.insert(child).second)
+                                queue.push_back(child);
+                        }
+                    }
+                }
+            }
+        }
         for (const auto& [id, node_ptr] : view_shadow->all_nodes()) {
-            if (node_ptr && !node_ptr->text.empty()) {
+            if (node_ptr && !node_ptr->text.empty() &&
+                (live.empty() || live.count(id))) {
                 arr.push_back({{"view_id", id},
                                {"class", node_ptr->class_desc},
                                {"text", node_ptr->text}});

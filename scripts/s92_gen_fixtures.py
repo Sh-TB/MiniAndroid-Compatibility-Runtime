@@ -54,6 +54,15 @@ def icon_main(x, y):
     return (0, 0, 0, 0)
 
 
+def icon_dense(x, y):
+    # 144x144 xxhdpi encoding of icon_main: circle radius 60 centered (72,72)
+    # (3x of the 48px mdpi drawing — a real density-scaled asset)
+    cx = cy = 72
+    if (x - cx) ** 2 + (y - cy) ** 2 <= 3600:
+        return (30, 90, 220, 255)
+    return (0, 0, 0, 0)
+
+
 def icon_rect(x, y):
     # 48x48 orange rect with dark border
     if x in (0, 47) or y in (0, 47):
@@ -109,7 +118,7 @@ def main():
     cases = {}
     icon48 = png_bytes(48, 48, icon_main)
     icon48x = png_bytes(48, 48, icon_rect)
-    icon144 = png_bytes(144, 144, icon_main)  # xxhdpi-density 48dp asset
+    icon144 = png_bytes(144, 144, icon_dense)  # xxhdpi-density 48dp asset
 
     layout_good = """<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
