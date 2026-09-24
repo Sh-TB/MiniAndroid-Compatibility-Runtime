@@ -2583,6 +2583,14 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                             uint32_t view_id;
                             int left, top, width, height;
                             int depth;
+                            // MG-123/MG-124/125 (S98): cumulative content
+                            // offsets inherited from ANCESTORS — off_tx/ty
+                            // sum ancestor translations (shift self+subtree),
+                            // off_sx/sy sum ancestor scroll offsets (shift
+                            // CONTENT only, drawn at -scroll). Applied to
+                            // the subtree at push time.
+                            int off_tx = 0, off_ty = 0;
+                            int off_sx = 0, off_sy = 0;
                         };
                         std::vector<RenderTask> queue;
                         std::set<uint32_t> visited;
@@ -2663,7 +2671,7 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                             return {tw, th};
                         };
 
-                        queue.push_back({root_id, 0, 0, config.screen_width, config.screen_height, 0});
+                        queue.push_back({root_id, 0, 0, config.screen_width, config.screen_height, 0, 0, 0, 0, 0});
 
                         while (!queue.empty() && node_count < MAX_NODES) {
                             RenderTask task = queue.back();
@@ -2692,8 +2700,17 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                             // (task.left/top/width/height) — use it directly.
                             int w = task.width;
                             int h = task.height;
-                            int left = task.left;
-                            int top = task.top;
+                            // MG-124/125 (S98): AOSP View translation law —
+                            // translationX/Y shift the rendered subtree (self
+                            // content + children) AFTER layout (View.java
+                            // mTransformationInfo.mTranslationX/Y). The task
+                            // frame ALREADY carries ancestor translation+scroll
+                            // deltas (baked in at push time); THIS node's own
+                            // translation applies here (self draw origin).
+                            int left = task.left
+                                     + (int)std::lround(node->translation_x);
+                            int top = task.top
+                                    + (int)std::lround(node->translation_y);
                             // UNIFIED_007: when the real inflater measured this
                             // tree (ARSC→AXML inflation), use its exact geometry.
                             bool use_measured = node->laid_out;
@@ -3063,7 +3080,8 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                     node->line_spacing_mult,
                                     node->line_spacing_add_px,
                                     node->include_font_pad,
-                                    node->elegant_text_height);
+                                    node->elegant_text_height,
+                                    node->ellipsize);  // MG-073
                                 // Honour the captured text colour; fall back
                                 // to the theme's textColorPrimary (S95
                                 // L-S95-TXTCLR-1), then the legacy grey.
@@ -3809,9 +3827,27 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                     if (!cn || cn->visibility == 8 ||
                                         cn->visibility == 4)
                                         continue;
-                                    m_tasks.push_back({cid, cn->measured_left, cn->measured_top,
+                                    // MG-123/124/125 (S98): child content
+                                    // delta = Σ ancestor translations
+                                    // (off_tx + self translation) − Σ ancestor
+                                    // scrolls (off_sx + self scroll) — AOSP
+                                    // View.java: translation shifts self+subtree,
+                                    // scroll shifts CONTENT by −scroll.
+                                    int cdx = task.off_tx - task.off_sx
+                                            + (int)std::lround(node->translation_x)
+                                            - node->scroll_x;
+                                    int cdy = task.off_ty - task.off_sy
+                                            + (int)std::lround(node->translation_y)
+                                            - node->scroll_y;
+                                    m_tasks.push_back({cid,
+                                                       cn->measured_left + cdx,
+                                                       cn->measured_top + cdy,
                                                        cn->measured_width, cn->measured_height,
-                                                       task.depth + 1});
+                                                       task.depth + 1,
+                                                       task.off_tx + (int)std::lround(node->translation_x),
+                                                       task.off_ty + (int)std::lround(node->translation_y),
+                                                       task.off_sx + node->scroll_x,
+                                                       task.off_sy + node->scroll_y});
                                 }
                                 for (auto it = m_tasks.rbegin(); it != m_tasks.rend(); ++it)
                                     queue.push_back(*it);
