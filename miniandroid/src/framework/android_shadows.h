@@ -487,15 +487,22 @@ public:
 
     // ── Deterministic virtual clock (Handler/Looper time model) ──────────
     // The runtime has no wall-clock rendering, so Looper time is virtual.
-    //  * idle-settle points (post-onCreate) call settle(): the clock jumps
-    //    far into the future and one drain dispatches everything posted so
-    //    far — the documented EXP-088 law (post(A), post(B), postDelayed(C)
-    //    → drain → A, B, C) is preserved.
+    //  * F-NEW-197 (S92): idle-settle points do NOT fast-forward the clock.
+    //    AOSP law (os/MessageQueue.java): an idle Looper blocks in
+    //    nativePollOnce until the next message's `when` in real time — it
+    //    can never observe its own future. The post-onCreate drain is
+    //    DUE-ONLY: delay-0 Handler.post entries dispatch (EXP-088 A/B
+    //    semantics preserved); postDelayed/Timer.schedule entries with
+    //    delay > 0 stay queued. (The historical settle() +1e9 ms jump made
+    //    a 5000 ms splash Timer fire before the first frame — the runtime
+    //    lied about what was on screen. Deprecated by this law.)
     //  * time-driven frame capture (--frames N) advances the clock by
     //    --frame-delay per frame and drains only what became due, so a
     //    self-reposting postDelayed animation steps once per frame,
-    //    deterministically.
-    void settle();                       // jump far into the future
+    //    deterministically — and a splash Timer fires only at the frame
+    //    whose virtual time actually crosses its delay.
+    [[deprecated("F-NEW-197: idle-settle must not fast-forward the Looper clock; drain due-only instead")]]
+    void settle();                       // legacy +1e9 ms jump — DO NOT USE
     void advance_virtual(int64_t delta_ms);  // step the clock forward
     int64_t virtual_now_ms() const { return virtual_now_ms_; }
 

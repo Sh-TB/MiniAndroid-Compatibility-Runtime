@@ -9467,14 +9467,57 @@ bool DalvikExecutionEngine::dump_view_tree(const std::string& path) {
         return false;
     }
 
-    // The ViewShadow doesn't expose its internal nodes_ map directly.
-    // We'll iterate using find_node over all known heap object IDs.
-    // A more efficient approach would be to add an iterator to ViewShadow,
-    // but for now we scan all heap objects.
+    // ── F-NEW-196 (S92): CURRENT-WINDOW VIEW-TREE LAW ────────────────────
+    // AOSP View debugging (HierarchyViewer / dumpViewHierarchy) walks the
+    // LIVE window's view tree from the attached root — it never lists
+    // views that were detached by a later setContentView. The previous
+    // dump iterated ALL heap objects and emitted every node ever inflated,
+    // so after setContentView(B) the dump still contained scene A's views
+    // (observed: splash fixture showed SPLASH + main-scene nodes while the
+    // screen held only the splash — the ViewTree alone then lied about the
+    // displayed scene and a splash-only capture could pass geometry
+    // checks against dead nodes).
+    // Law: dump = descendants of the CURRENT window content root
+    // (ActivityShadow::content_view_id, updated by every setContentView).
+    // Fallback: when no content root is tracked, keep the legacy full scan
+    // and record the degradation in the dump header.
+    std::vector<const framework::ViewShadow::ViewNode*> ordered_nodes;
+    uint32_t content_root = 0;
+    std::string node_source;
+    if (auto* activity_shadow =
+            shadow_registry_->find_as<framework::ActivityShadow>()) {
+        content_root = activity_shadow->content_view_id();
+    }
+    if (content_root != 0 && view_shadow->find_node(content_root) != nullptr) {
+        // BFS from the live content root through children links only.
+        std::vector<uint32_t> queue{content_root};
+        std::set<uint32_t> seen{content_root};
+        node_source = "content-root-walk";
+        while (!queue.empty()) {
+            uint32_t oid = queue.front();
+            queue.erase(queue.begin());
+            const auto* node = view_shadow->find_node(oid);
+            if (node == nullptr) continue;
+            ordered_nodes.push_back(node);
+            for (uint32_t child : node->children) {
+                if (seen.insert(child).second) queue.push_back(child);
+            }
+        }
+    } else {
+        // The ViewShadow doesn't expose its internal nodes_ map directly.
+        // We'll iterate using find_node over all known heap object IDs.
+        // A more efficient approach would be to add an iterator to ViewShadow,
+        // but for now we scan all heap objects.
+        node_source = "full-heap-scan (no tracked content root)";
+        for (const auto& [oid, obj] : heap_.all_objects()) {
+            const auto* node = view_shadow->find_node(oid);
+            if (node == nullptr) continue;
+            ordered_nodes.push_back(node);
+        }
+    }
     json nodes = json::array();
     size_t count = 0;
-    for (const auto& [oid, obj] : heap_.all_objects()) {
-        const auto* node = view_shadow->find_node(oid);
+    for (const auto* node : ordered_nodes) {
         if (node == nullptr) continue;
         count++;
         json n;
@@ -9539,6 +9582,10 @@ bool DalvikExecutionEngine::dump_view_tree(const std::string& path) {
     json root;
     root["experiment"] = "EXP-061";
     root["view_count"] = count;
+    // F-NEW-196 (S92): record the node-source law so downstream verifiers
+    // can distinguish a live-window walk from the legacy full-heap scan.
+    root["node_source"] = node_source;
+    root["content_root_id"] = content_root;
     root["nodes"] = nodes;
 
     // Write to file

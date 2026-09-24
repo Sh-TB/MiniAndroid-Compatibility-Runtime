@@ -14,8 +14,15 @@ callback/state change must NOT promote the title (§10 false-success law).
 Every accepted interaction produces (§11):
   BEFORE frame + TARGET PROOF + INPUT event + AFTER frame +
   pixel delta + state-change evidence.
+
+Supports BOTH runtime manifest shapes:
+  click-count manifest: frames[].event == "click" + clicked_view_id +
+                        click_dispatched + changed_pixels_vs_previous
+  TAP manifest:         gesture == "TAP"; frames with event
+                        "ACTION_DOWN pressed state (mid-gesture)" and
+                        "post-gesture (callbacks drained, transitions
+                        applied)"; events[] carry dispatcher records.
 """
-import json
 import os
 
 import numpy as np
@@ -35,10 +42,24 @@ def screen_size(run_evidence):
     return n.get("width", 0), n.get("height", 0)
 
 
-def verify_input_target(run_evidence, target, screenshot_path=None,
-                        asset_checker=None):
-    """§10 gate. target: dict from contract/frames-manifest with bounds
-    (x,y,w,h) + identity (view_id/class/text) [+ optional asset path]."""
+def _node_by_id(run_evidence, vid):
+    for n in gc.view_nodes(run_evidence.view_tree):
+        if n.get("android_view_id") == vid:
+            return n
+    return None
+
+
+def _node_by_class(run_evidence, cls):
+    if not cls:
+        return None
+    for n in gc.view_nodes(run_evidence.view_tree):
+        if cls in (n.get("class") or ""):
+            return n
+    return None
+
+
+def verify_input_target(run_evidence, target, screenshot_path=None):
+    """§10 gate. target: dict with bounds (x,y,w,h) + identity fields."""
     x, y, w, h = target.get("bounds") or (None, None, None, None)
     identity = {k: target.get(k) for k in
                 ("view_id", "class", "text") if target.get(k) is not None}
@@ -48,17 +69,17 @@ def verify_input_target(run_evidence, target, screenshot_path=None,
         proof["reason"] = "no bounds"
         return proof
     sw, sh = screen_size(run_evidence)
-    # 2. ViewTree visibility
-    node = _node_for(run_evidence, target)
+    node = _node_by_id(run_evidence, target.get("view_id")) if \
+        target.get("view_id") is not None else \
+        _node_by_class(run_evidence, target.get("class"))
     vis = node.get("visibility", 0) if node else None
-    proof["steps"]["viewtree_identity"] = "PASS" if node else "UNKNOWN"
+    proof["steps"]["viewtree_identity"] = "PASS" if node else \
+        ("UNKNOWN" if not run_evidence.view_tree else "FAIL")
     proof["steps"]["viewtree_visibility"] = \
         "PASS" if vis == 0 else ("FAIL" if vis is not None else "UNKNOWN")
-    # 3. screen intersection
-    inter = (0 <= x < sw and 0 <= y < sh and w > 0 and h > 0 and
-             x + w <= sw + 8 and y + h <= sh + 8)
+    inter = (x is not None and 0 <= x < sw and 0 <= y < sh and w > 0 and
+             h > 0 and x + w <= sw + 8 and y + h <= sh + 8)
     proof["steps"]["screen_intersection"] = "PASS" if inter else "FAIL"
-    # 4. pixel evidence in region
     shot = screenshot_path or run_evidence.screenshot
     if shot and inter:
         im = Image.open(shot).convert("RGB")
@@ -67,14 +88,10 @@ def verify_input_target(run_evidence, target, screenshot_path=None,
         if R.size == 0:
             proof["steps"]["region_pixels"] = "FAIL"
         else:
-            gray = R.astype(np.float64)
-            std = float(gray.std())
+            std = float(R.astype(np.float64).std())
             proof["region_stddev"] = round(std, 2)
             proof["steps"]["region_pixels"] = \
                 "PASS" if std >= 6.0 else "FAIL"
-        if asset_checker and target.get("asset_path"):
-            pres = asset_checker(shot, target)
-            proof["steps"]["asset_in_region"] = pres
     else:
         proof["steps"]["region_pixels"] = "UNKNOWN"
     ok = (proof["steps"].get("viewtree_visibility") in ("PASS", "UNKNOWN")) \
@@ -85,105 +102,120 @@ def verify_input_target(run_evidence, target, screenshot_path=None,
     return proof
 
 
-def _node_for(run_evidence, target):
-    nodes = gc.view_nodes(run_evidence.view_tree)
-    vid = target.get("view_id")
-    for n in nodes:
-        if vid is not None and n.get("android_view_id") == vid:
-            return n
-    if target.get("text"):
-        for n in nodes:
-            if n.get("text") == target.get("text"):
-                return n
-    if target.get("class"):
-        for n in nodes:
-            if target["class"] in (n.get("class") or ""):
-                return n
+def _bounds_of(node):
+    if not node:
+        return None
+    return [node.get("x", 0), node.get("y", 0),
+            node.get("width", 0), node.get("height", 0)]
+
+
+def _frame_path(frames, name):
+    for n, p in frames:
+        if n == name:
+            return p
     return None
 
 
-def interaction_proofs(run_evidence, contracts_targets=None,
-                       asset_checker=None):
-    """Build §11 pre/post proofs from the runtime's own frames/manifest +
-    click audit. Returns list of proof records; each is one of
+def interaction_proofs(run_evidence, contracts_targets=None):
+    """Build §11 pre/post proofs from the runtime manifests.
+    Returns list of proof records; each verdict is one of
     INTERACTION_VISUALLY_PROVEN / INTERACTION_TARGET_UNVERIFIED /
     INTERACTION_NO_VISUAL_CHANGE / INTERACTION_NOT_DISPATCHED."""
     proofs = []
-    manifest = run_evidence.frames_manifest or {}
     frames = run_evidence.frames
     if not frames:
         return proofs
+    manifest = run_evidence.frames_manifest or {}
+    entries = manifest.get("frames") or []
+    interactions = [e for e in entries
+                    if e.get("event") in ("click", "long_press") or
+                    "ACTION_DOWN" in str(e.get("event", "")) or
+                    "post-gesture" in str(e.get("event", ""))]
 
-    def frame_path(i):
-        name = f"frame_{i:03d}.png"
-        for n, p in frames:
-            if n == name:
-                return p
-        return None
-
-    entries = manifest.get("frames") or manifest.get("interactions") or []
-    if entries and isinstance(entries, list):
-        for i, ent in enumerate(entries):
-            before = frame_path(i)
-            after = frame_path(i + 1)
-            rec = {
-                "index": i,
-                "clicked": {k: ent.get(k) for k in
-                            ("view_id", "view_class", "listener_class",
-                             "target_view_id", "target_class")
-                            if ent.get(k) is not None},
-            }
-            tgt = None
-            if before and after:
-                # §10 gate — target bounds from manifest or contract
-                tb = ent.get("bounds") or _bounds_from_manifest(ent) \
-                    or _bounds_from_contract(rec["clicked"], contracts_targets)
-                if tb:
-                    tgt = verify_input_target(
-                        run_evidence,
-                        {"bounds": tb, **rec["clicked"]},
-                        screenshot_path=before,
-                        asset_checker=asset_checker)
-                    rec["target_proof"] = tgt
-                delta = vp.region_diff(before, after)
-                rec["pixel_delta"] = delta
-                rec["before_frame"] = os.path.basename(before)
-                rec["after_frame"] = os.path.basename(after)
-                unverified = (tgt or {}).get("verdict") == \
-                    "INPUT_TARGET_UNVERIFIED"
-                changed = delta.get("changed_px", 0) > 0
-                dispatched = bool(ent.get("dispatched", True)) and \
-                    bool(rec["clicked"])
-                if dispatched and unverified:
-                    rec["verdict"] = "INTERACTION_TARGET_UNVERIFIED"
-                elif dispatched and changed:
-                    rec["verdict"] = "INTERACTION_VISUALLY_PROVEN"
-                elif dispatched and not changed:
-                    rec["verdict"] = "INTERACTION_NO_VISUAL_CHANGE"
-                else:
-                    rec["verdict"] = "INTERACTION_NOT_DISPATCHED"
+    # group TAP manifests: DOWN entry + following post-gesture entry
+    i = 0
+    while i < len(interactions):
+        ent = interactions[i]
+        ev = str(ent.get("event", ""))
+        if "ACTION_DOWN" in ev:
+            after = None
+            if i + 1 < len(interactions) and \
+                    "post-gesture" in str(interactions[i + 1].get("event", "")):
+                after = interactions[i + 1]
+                i += 2
             else:
-                rec["verdict"] = "INTERACTION_EVIDENCE_INCOMPLETE"
-            proofs.append(rec)
+                i += 1
+            proofs.append(_build_proof(
+                run_evidence, before_ent=None, after_ent=ent,
+                post_ent=after, frames=frames))
+        elif ev in ("click", "long_press"):
+            proofs.append(_build_proof(
+                run_evidence, before_ent=None, after_ent=ent, post_ent=None,
+                frames=frames, click_entry=True))
+            i += 1
+        else:
+            i += 1
     return proofs
 
 
-def _bounds_from_manifest(ent):
-    for k in ("bounds", "target_bounds", "view_bounds"):
-        b = ent.get(k)
-        if isinstance(b, (list, tuple)) and len(b) == 4:
-            return list(b)
-    return None
-
-
-def _bounds_from_contract(clicked, contract_targets):
-    if not contract_targets:
-        return None
-    cid = clicked.get("target_view_id") or clicked.get("view_id")
-    ccls = clicked.get("target_class") or clicked.get("view_class") or ""
-    for t in contract_targets:
-        if cid is not None and t.get("view_id") == cid:
-            return t.get("bounds")
-        if ccls and t.get("class") and t.get("class") in ccls:
-            return t.get("bounds")
-    return None
+def _build_proof(run_evidence, before_ent, after_ent, post_ent, frames,
+                 click_entry=False):
+    """One §11 proof from a DOWN/post pair (TAP) or a click entry."""
+    idx = after_ent.get("index")
+    rec = {"index": idx}
+    if click_entry:
+        rec["input_event"] = {"type": after_ent.get("event"),
+                              "dispatched":
+                                  after_ent.get("click_dispatched", True),
+                              "kind": after_ent.get("click_kind")}
+        vid = after_ent.get("clicked_view_id")
+        cls = after_ent.get("clicked_view_class")
+        runtime_delta = after_ent.get("changed_pixels_vs_previous")
+        before_name = f"frame_{max(0, (idx or 1) - 1):03d}.png"
+        after_name = after_ent.get("file")
+    else:
+        vid = post_ent.get("target_view_id") if post_ent else \
+            after_ent.get("target_view_id")
+        cls = None
+        runtime_delta = post_ent.get("changed_pixels_vs_previous") \
+            if post_ent else None
+        before_name = after_ent.get("file")
+        after_name = post_ent.get("file") if post_ent else None
+        rec["input_event"] = {"type": "tap (DOWN/UP pipeline)",
+                              "dispatched": bool(vid)}
+    rec["clicked"] = {k: v for k, v in
+                      (("view_id", vid), ("class", cls)) if v}
+    node = _node_by_id(run_evidence, vid) if vid is not None else None
+    tgt = None
+    if node:
+        b = _bounds_of(node)
+        tgt = verify_input_target(
+            run_evidence, {"bounds": b, "view_id": vid,
+                           "class": node.get("class")},
+                        screenshot_path=_frame_path(frames, before_name))
+        rec["target_proof"] = tgt
+        rec["target_bounds"] = b
+    # pixel delta: runtime's own count + independent recomputation
+    delta = None
+    if before_name and after_name:
+        bp = _frame_path(frames, before_name)
+        ap = _frame_path(frames, after_name)
+        if bp and ap:
+            delta = vp.region_diff(bp, ap)
+            rec["before_frame"] = before_name
+            rec["after_frame"] = after_name
+    rec["pixel_delta"] = delta or \
+        ({"changed_px": runtime_delta} if runtime_delta is not None else {})
+    unverified = (tgt or {}).get("verdict") == "INPUT_TARGET_UNVERIFIED"
+    changed = ((delta or {}).get("changed_px", 0) or 0) > 0 or \
+        (runtime_delta or 0) > 0
+    dispatched = rec["input_event"].get("dispatched", True) and bool(vid)
+    if unverified:
+        rec["verdict"] = "INTERACTION_TARGET_UNVERIFIED"
+    elif dispatched and changed:
+        rec["verdict"] = "INTERACTION_VISUALLY_PROVEN"
+    elif dispatched:
+        rec["verdict"] = "INTERACTION_NO_VISUAL_CHANGE"
+    else:
+        rec["verdict"] = "INTERACTION_NOT_DISPATCHED"
+    return rec

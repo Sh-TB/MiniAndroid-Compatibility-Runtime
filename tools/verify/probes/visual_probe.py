@@ -121,18 +121,17 @@ def _color_signature(asset_rgb, region_rgb, n_levels=24):
     akeys, acounts = np.unique(aq, axis=0, return_counts=True)
     rkeys, rcounts = np.unique(rq, axis=0, return_counts=True)
     acov = acounts / aq.shape[0]
-    distinctive = akeys[(acov >= 0.01)]
-    if distinctive.shape[0] == 0:
-        return 0.0, 0, int(rkeys.shape[0])
     rset = {tuple(k): c for k, c in zip(rkeys, rcounts)}
-    region_bg = rkeys[np.argmax(rcounts)]
+    region_bg = tuple(rkeys[np.argmax(rcounts)])
+    # transparent asset pixels flatten to the background — their quantized
+    # RGB equals the flattened bg and must not count as distinctive
     hits = 0
     total = 0
     for k, cov in zip(akeys, acov):
         if cov < 0.01:
             continue
         total += 1
-        if tuple(k) in rset and not np.array_equal(k, region_bg):
+        if tuple(k) in rset and tuple(k) != region_bg:
             hits += 1
     return (hits / total if total else 0.0), total, int(rkeys.shape[0])
 
@@ -207,12 +206,19 @@ def asset_presence(screenshot_path, asset_bytes, region=None, asset_hint=None):
     flat = _flatten_alpha(asset, bg)
     flat = np.clip(flat, 0, 255)
 
-    # template scaling: fit asset into region preserving aspect
+    # template scaling: the region IS the expected on-screen box when it
+    # comes from the contract/provenance (dst) — scale the template to fit
+    # it BOTH ways (density law upscales mdpi assets at 420dpi, and shrinks
+    # oversized assets). Without a region (whole-screen search) never
+    # upscale — keep the natural size.
     rx, ry, rw, rh = out["region_effective"]
     tw, th = aw, ah
     if asset_hint:
         tw, th = asset_hint
-    scale = min(rw / tw, rh / th, 1.0) if (rw and rh) else 1.0
+    if region:
+        scale = min(rw / tw, rh / th) if (rw and rh) else 1.0
+    else:
+        scale = min(1.0, (rw / tw if tw else 1.0))
     if scale < 1.0:
         nw, nh = max(2, int(tw * scale)), max(2, int(th * scale))
         flat = np.asarray(
@@ -221,9 +227,20 @@ def asset_presence(screenshot_path, asset_bytes, region=None, asset_hint=None):
             dtype=np.float64)
         out["template_scaled_to"] = [nw, nh]
         tw, th = nw, nh
+    elif region and (tw < rw or th < rh):
+        # density upscale: template smaller than its expected box
+        nw, nh = max(2, min(rw, int(tw * (rw / tw) if tw else rw))), \
+            max(2, min(rh, int(th * (rh / th) if th else rh)))
+        nw, nh = min(nw, rw), min(nh, rh)
+        flat = np.asarray(
+            Image.fromarray(flat.astype(np.uint8)).resize(
+                (min(nw, rw), min(nh, rh)), Image.BILINEAR),
+            dtype=np.float64)
+        out["template_scaled_to"] = [min(nw, rw), min(nh, rh)]
+        tw, th = min(nw, rw), min(nh, rh)
     if tw > rw or th > rh:
-        # template larger than region: scale down to region (geometry may
-        # then be judged by geometry probe, not here)
+        # template still larger than region: scale down to region (geometry
+        # may then be judged by geometry probe, not here)
         nw, nh = max(2, int(rw)), max(2, int(rh))
         flat = np.asarray(
             Image.fromarray(flat.astype(np.uint8)).resize((nw, nh),
@@ -244,7 +261,7 @@ def asset_presence(screenshot_path, asset_bytes, region=None, asset_hint=None):
         "score": round(ncc, 4), "offset": [dx, dy],
         "thresholds": {"strong": NCC_STRONG, "moderate": NCC_MODERATE}}
 
-    csig, distinct, rcolors = _color_signature(np.asarray(asset)[:, :, :3], R)
+    csig, distinct, rcolors = _color_signature(flat, R)
     out["techniques"]["T2_color_signature"] = {
         "score": round(csig, 4), "distinctive_colors": distinct,
         "region_colors": rcolors,
