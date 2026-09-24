@@ -3421,3 +3421,17 @@ Stage Summary:
 - The project now answers "which games really executed, what was proven, where is the evidence" with zero guessing: 23 games with real execution evidence, 20 VERIFIED (11 with state-change proof incl. Fish Rings E5), 2 PARTIAL, 1 honest downgrade, 64 trace-only; the 22-VERIFIED claim is decomposed (11g+10a+1f + separate 12 GIF family) and its 2 weak entries downgraded.
 - Homepage exposes 4 real demos (Snake, 2048, Mini Tetris, Fish Rings) with an unbroken click chain README -> GIF -> run record -> source; EXECUTED_GIFS.md is the single GIF index; SOURCE_REUSE_ROI.md turns the source library into a measured acceleration ledger; Constitution #171 makes source-first/tool-first permanent law.
 - Next wave per the measured queue: NET-001 (only P0) with urlchecker as first real-APK target, then GFX-002 weights fix (root-caused) + sec29 registry promotion (documentation-only).
+
+---
+Task ID: S95-FOLLOWUP+S96-PUSH-LEDGER
+Agent: Super Z (main)
+Task: push status record (honest, no publication claim)
+
+Work Log:
+- push attempt: `git push origin main` -> FAILED ("could not read Username for 'https://github.com'") — no PAT in this session's environment.
+- LOCAL HEAD: 83b2bf42 (S95-FOLLOWUP+S96 commit; secret guard PASS; tree clean)
+- REMOTE HEAD (origin/main): 394f5037 (S95-CTRL)
+- AHEAD/BEHIND: 1 ahead / 0 behind
+
+Stage Summary:
+- S95-FOLLOWUP+S96 commit EXISTS locally with full audit trail; NOT published. Owner-supplied PAT required (env-only, scrubbed, per S93 protocol).
