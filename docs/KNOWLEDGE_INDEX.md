@@ -10,6 +10,21 @@
 
 Snapshot: 745 tracked `.md` files — 441 KEEP (knowledge/process), 185 HISTORY (era records), 111 EVIDENCE (compact, cited), plus 290 tracked `.json` (indexes/fixtures/oracles — classified below).
 
+## 0f. S95-CTRL additions — engineering control system (canonical)
+
+| Artifact | Class | Role |
+|---|---|---|
+| `docs/MINIANDROID_0_TO_100.md` | KEEP | Master 0→100 layer roadmap (10 layers, actionable milestones, evidence levels, ticket links) |
+| `docs/MINIANDROID_CAPABILITY_MATRIX.md` | KEEP | Per-capability status + evidence + tests + APK counts + source authority |
+| `docs/TICKET_REGISTRY.json` | KEEP | Canonical machine-readable problem state (33 tickets; APP/GAME master records; single source for ticket status) |
+| `docs/MINIANDROID_RISK_REGISTER.md` | KEEP | Predictive risk register (KF/LF/HR/DR/SR/PR/CR classes; every risk → ticket) |
+| `docs/MINIANDROID_MASTER_QUEUE.md` | KEEP | §25-ranked execution queue (fan-out × reuse × failure count) |
+| `docs/MINIANDROID_TICKET_GUIDE.md` | KEEP | Ticket semantics, status/evidence vocabulary, 9-step §170 chain |
+| `docs/MINIANDROID_CONTRIBUTING.md` | KEEP | Contributor routing by time budget + skill; bootstrap recipe |
+| `tools/validate_control_system.py` | KEEP | §20/§31 consistency gate: README↔registry↔matrix↔queue↔register number/link checks (147 checks) |
+| `scripts/s95ctrl_build_ticket_registry.py` | KEEP | Regenerates TICKET_REGISTRY.json (edit data there, never hand-edit the JSON) |
+
+
 ## 0e. S74 additions
 
 | Artifact | Class | Role |

@@ -1,0 +1,1233 @@
+{
+ "schema": "miniandroid.tickets.v1",
+ "generated_utc": "2026-09-24T17:04:30Z",
+ "head": "d5946533",
+ "canonical_ownership": {
+  "title_level_evidence": "docs/evidence/canonical/registry.json + docs/ACHIEVEMENTS.md",
+  "engine_root_history": "root_registry.json (append-only)",
+  "problem_state": "docs/TICKET_REGISTRY.json (this file)",
+  "strategic_layers": "docs/MINIANDROID_0_TO_100.md",
+  "source_reuse": "docs/GRAPHICS_SOURCE_REGISTRY.json",
+  "achievement_narrative": "docs/ACHIEVEMENTS.md",
+  "wave_status": "docs/ROADMAP_STATUS.md"
+ },
+ "status_vocabulary": [
+  "UNKNOWN",
+  "UNTESTED",
+  "OBSERVED",
+  "PARTIAL",
+  "FAILED",
+  "ROOT_CAUSE_FOUND",
+  "IMPLEMENTED",
+  "TESTED",
+  "VERIFIED",
+  "BLOCKED",
+  "PENDING",
+  "CLOSED",
+  "SUPERSEDED"
+ ],
+ "evidence_levels": {
+  "E0": "hypothesis",
+  "E1": "source evidence",
+  "E2": "unit test",
+  "E3": "runtime trace",
+  "E4": "real APK execution",
+  "E5": "deterministic repeated APK execution",
+  "E6": "corpus fan-out / cross-APK verification"
+ },
+ "reuse_vocabulary": [
+  "DIRECT_REUSE",
+  "ADAPT",
+  "PORT_ALGORITHM",
+  "PORT_TEST",
+  "PORT_FIXTURE",
+  "REFERENCE_ONLY"
+ ],
+ "count": 33,
+ "tickets": [
+  {
+   "id": "GFX-001",
+   "subsystem": "graphics",
+   "capability": "programmatic UI color-scheme execution (custom-view onDraw dispatch + runtime setTextColor/setBackgroundColor)",
+   "priority": "P1",
+   "status": "ROOT_CAUSE_FOUND",
+   "evidence_level": "E4",
+   "created": "2026-09-25",
+   "last_verified_commit": "d5946533",
+   "why_it_matters": "Any app that paints through its own View.onDraw or re-themes itself programmatically renders as a placeholder; visual-verdict chain stops at PLACEHOLDER_CONTENT.",
+   "semantic_contract": "AOSP View.draw() dispatches onDraw(Canvas) on the derived class; TextView.setTextColor applies to subsequent draws.",
+   "current_miniland_behavior": "BigTextView.onDraw never dispatched: run log [C013-ONDRAW] dispatched=NO ops=0; runtime setTextColor calls never reach the paint; full-screen #f0f0f0 placeholder dominates.",
+   "first_divergence": "View.draw dispatch: subclass onDraw hook not invoked for app-defined custom views.",
+   "root_cause": "Custom-view onDraw dispatch + programmatic paint mutation unimplemented (single named gap, S95 wave D layer 4).",
+   "upstream_sources": [
+    {
+     "repo": "aosp-mirror/platform_frameworks_base",
+     "file": "core/java/android/view/View.java",
+     "symbol": "View.draw(Canvas) / onDraw dispatch",
+     "head_sha": "1cdfff555f4a21f71ccc978290e2e212e2f8b168",
+     "note": "pinned-SHA raw fetch (S94)"
+    }
+   ],
+   "reuse_strategy": "PORT_ALGORITHM",
+   "implementation_plan": "Wire onDraw dispatch for app-defined View subclasses; apply programmatic setTextColor/setBackgroundColor to the live paint.",
+   "test_plan": "Unit: onDraw dispatch shadow test. Fixture: custom-view draws a colored bar. APK: simplestopwatch must flip PLACEHOLDER_CONTENT x2 to readable text.",
+   "corpus_fan_out": {
+    "potential": "every custom-view app (NOT_MEASURED)",
+    "executed": 1,
+    "improved": 0
+   },
+   "definition_of_done": "simplestopwatch verdict leaves FAILED; PLACEHOLDER_CONTENT count 0; battery 99/99 stays green; control APKs stable.",
+   "contributor_help": "Needs runtime knowledge (View draw pipeline)",
+   "evidence_artifacts": [
+    "simplestopwatch: before/after captures, run/s95/before_after_summary.json"
+   ],
+   "source_docs": [
+    "docs/GRAPHICS_SOURCE_LIBRARY_VALIDATION.md"
+   ]
+  },
+  {
+   "id": "GFX-002",
+   "subsystem": "graphics/layout",
+   "capability": "LinearLayout weight-distribution measure",
+   "priority": "P1",
+   "status": "ROOT_CAUSE_FOUND",
+   "evidence_level": "E4",
+   "created": "2026-09-25",
+   "last_verified_commit": "d5946533",
+   "why_it_matters": "Weighted LinearLayouts are ubiquitous (menus, button rows, form layouts); wrong measure lays children off-screen or stacked.",
+   "semantic_contract": "AOSP LinearLayout: weight distribution gives each weighted child leftover/sum-of-weights, not the full leftover.",
+   "current_miniland_behavior": "dodge menu panel: each weighted button measured ~1645 px and laid out to y=6737 (off-screen), drawn over the play field.",
+   "first_divergence": "measureHorizontal/Vertical weight pass.",
+   "root_cause": "Weighted child measured at full leftover instead of leftover/sum-weights (S95 \u00a73 dodge cause (b)).",
+   "upstream_sources": [
+    {
+     "repo": "aosp-mirror/platform_frameworks_base",
+     "file": "core/java/android/widget/LinearLayout.java",
+     "symbol": "measureHorizontal/measureVertical weight law",
+     "head_sha": "1cdfff555f4a21f71ccc978290e2e212e2f8b168"
+    }
+   ],
+   "reuse_strategy": "PORT_ALGORITHM",
+   "implementation_plan": "Implement leftover/sum-weights distribution + measureWithLargestChild semantics.",
+   "test_plan": "Fixture APK with 3 weighted buttons in a row: assert equal thirds via view-tree bounds; APK: dodge menu panel.",
+   "corpus_fan_out": {
+    "potential": "all weighted-layout apps (NOT_MEASURED)",
+    "executed": 1,
+    "improved": 0
+   },
+   "definition_of_done": "dodge menu panel laid out on-screen; WRONG_CLIP residual 0; battery green.",
+   "contributor_help": "Needs runtime knowledge (measure pass)",
+   "evidence_artifacts": [],
+   "source_docs": [
+    "docs/GRAPHICS_SOURCE_LIBRARY_VALIDATION.md"
+   ]
+  },
+  {
+   "id": "GFX-003",
+   "subsystem": "graphics",
+   "capability": "GIF frame disposal semantics (dispose 0-3)",
+   "priority": "P1",
+   "status": "OBSERVED",
+   "evidence_level": "E4",
+   "created": "2026-09-25",
+   "last_verified_commit": "d5946533",
+   "why_it_matters": "12 VERIFIED-INTERACTIVE titles are animated GIF-driven; compositor currently minimal \u2014 subtle disposal bugs corrupt frames silently.",
+   "semantic_contract": "GIF disposal methods 0-3 with restore-to-background / previous semantics per frame, as Wuffs/Pillow implement.",
+   "current_miniland_behavior": "Compositor handles the common cases; disposal-2/3 edge semantics not proven by test.",
+   "first_divergence": "NOT_PROVEN",
+   "root_cause": "NOT_PROVEN",
+   "upstream_sources": [
+    {
+     "repo": "google/wuffs",
+     "file": "internal/cgen/base...",
+     "symbol": "wuffs_gif__decoder",
+     "note": "437-file test corpus"
+    },
+    {
+     "repo": "python-pillow/Pillow",
+     "file": "src/PIL/GifImagePlugin.py",
+     "symbol": "_seek disposal handling"
+    },
+    {
+     "repo": "golang/go",
+     "file": "src/image/gif/reader.go"
+    }
+   ],
+   "reuse_strategy": "PORT_ALGORITHM",
+   "implementation_plan": "Port Wuffs disposal table into the GIF compositor; keep deterministic frame hashing.",
+   "test_plan": "Port Pillow test_file_gif.py fixtures as golden frames; re-run 12 GIF titles (fan-out E6).",
+   "corpus_fan_out": {
+    "potential": "12 GIF titles (S93 measured)",
+    "executed": 0,
+    "improved": 0
+   },
+   "definition_of_done": "Disposal fixtures byte-deterministic; 12 GIF titles no-regression; at least one title with disposal-2 content verified.",
+   "contributor_help": "Needs graphics + testing",
+   "evidence_artifacts": [],
+   "source_docs": [
+    "docs/GRAPHICS_SOURCE_ROADMAP.md",
+    "docs/GRAPHICS_SOURCE_REGISTRY.md"
+   ]
+  },
+  {
+   "id": "GFX-004",
+   "subsystem": "graphics",
+   "capability": "NinePatch chunk parse + stretch fidelity",
+   "priority": "P2",
+   "status": "UNTESTED",
+   "evidence_level": "E0",
+   "created": "2026-09-25",
+   "last_verified_commit": "d5946533",
+   "why_it_matters": "NinePatch is the standard button/background asset family; no real-APK failure recorded YET \u2014 this ticket demands the smallest test, it does not claim breakage.",
+   "semantic_contract": "NPng chunk parses patch ranges; draw stretches only patch regions, 1:1 elsewhere.",
+   "current_miniland_behavior": "Law L-S94-NINEPATCH-1 registered (S94); implementation depth not verified by a dedicated fixture.",
+   "first_divergence": "NOT_PROVEN",
+   "root_cause": "NOT_PROVEN",
+   "upstream_sources": [
+    {
+     "repo": "houstudio/cdroid",
+     "symbol": "NinePatch view/ninepatch",
+     "note": "58-file deep clone, C++ reference (LGPL-2.1)"
+    },
+    {
+     "repo": "aosp-mirror/platform_frameworks_base",
+     "file": "graphics/java/android/graphics/NinePatch.java"
+    }
+   ],
+   "reuse_strategy": "ADAPT",
+   "implementation_plan": "Build a NinePatch fixture APK via the aapt2 toolchain; compare rendered bands against cdroid reference behavior.",
+   "test_plan": "Fixture with stretched button background; pixel-band golden.",
+   "corpus_fan_out": {
+    "potential": "every stock-widget app (NOT_MEASURED)",
+    "executed": 0,
+    "improved": 0
+   },
+   "definition_of_done": "Dedicated fixture green + one real NinePatch-using APK verified.",
+   "contributor_help": "Good first task (fixture + comparison)",
+   "evidence_artifacts": [],
+   "source_docs": []
+  },
+  {
+   "id": "GFX-005",
+   "subsystem": "graphics-verify",
+   "capability": "adaptive ink floor vs readable chevron glyphs (urlchecker <, /, >)",
+   "priority": "P2",
+   "status": "OBSERVED",
+   "evidence_level": "E4",
+   "created": "2026-09-25",
+   "last_verified_commit": "d5946533",
+   "why_it_matters": "The S93 verifier flags glyphs a human reads fine \u2014 false positives erode trust in verdicts; must be fixed at truth level, not by threshold gaming.",
+   "semantic_contract": "A glyph is readable iff a glyph-truth oracle (OCR-grade) matches, independent of ink-coverage heuristics.",
+   "current_miniland_behavior": "Chevron ink ratios 0.0033/0.0016 < 0.004 floor -> UNREADABLE_TEXT flags although visually readable (white-on-dark).",
+   "first_divergence": "S93 adaptive ink floor vs true glyph identity.",
+   "root_cause": "NOT_PROVEN",
+   "upstream_sources": [
+    {
+     "repo": "tesseract-ocr/tesseract",
+     "symbol": "TessBaseAPI::Recognize",
+     "note": "OCR cross-check law (S94 registry)"
+    }
+   ],
+   "reuse_strategy": "ADAPT",
+   "implementation_plan": "Add glyph-truth check (small OCR pass or reference-glyph NCC at glyph scale) that can override the ink floor.",
+   "test_plan": "urlchecker chevron case must flip to readable WITHOUT lowering the global floor; adversarial tamper tests stay red.",
+   "corpus_fan_out": {
+    "potential": "thin-glyph UIs (NOT_MEASURED)",
+    "executed": 1,
+    "improved": 0
+   },
+   "definition_of_done": "urlchecker false flags 0; S93 adversarial battery still 100%.",
+   "contributor_help": "Needs graphics/testing knowledge",
+   "evidence_artifacts": [],
+   "source_docs": [
+    "docs/GRAPHICS_SOURCE_LIBRARY_VALIDATION.md \u00a77.3"
+   ]
+  },
+  {
+   "id": "GFX-006",
+   "subsystem": "graphics",
+   "capability": "shader / color-filter family (LinearGradient, RadialGradient, BitmapShader, ColorMatrix)",
+   "priority": "P2",
+   "status": "UNTESTED",
+   "evidence_level": "E0",
+   "created": "2026-09-25",
+   "last_verified_commit": "d5946533",
+   "why_it_matters": "Buttons with gradient draws and image effects are common in mid-tier apps; predictive ticket, not a recorded failure.",
+   "semantic_contract": "Shader local matrix + tile modes drive Paint fill; ColorMatrix maps RGBA per pixel.",
+   "current_miniland_behavior": "Paint shader objects accepted but likely ignored at raster.",
+   "first_divergence": "NOT_PROVEN",
+   "root_cause": "NOT_PROVEN",
+   "upstream_sources": [
+    {
+     "repo": "google/skia",
+     "symbol": "SkGradientShader"
+    },
+    {
+     "repo": "houstudio/cdroid",
+     "note": "C++ shader refs"
+    }
+   ],
+   "reuse_strategy": "PORT_ALGORITHM",
+   "implementation_plan": "Fixture-first: one gradient fixture, measure divergence, then port minimal Skia gradient law.",
+   "test_plan": "Gradient fixture band-golden; control APK no-regression.",
+   "corpus_fan_out": {
+    "potential": "NOT_MEASURED",
+    "executed": 0,
+    "improved": 0
+   },
+   "definition_of_done": "Fixture green + one real shader-using APK if corpus contains one.",
+   "contributor_help": "Good first task (reproduce) + graphics",
+   "evidence_artifacts": [],
+   "source_docs": []
+  },
+  {
+   "id": "TEXT-001",
+   "subsystem": "text",
+   "capability": "HarfBuzz/Minikin shaping wire-up (complex scripts)",
+   "priority": "P1",
+   "status": "PARTIAL",
+   "evidence_level": "E2",
+   "created": "2026-09-25",
+   "last_verified_commit": "d5946533",
+   "why_it_matters": "Arabic/Indic scripts shape contextually; MiniAndroid has FriBidi+HarfBuzz+FreeType linked (R4 POC proven) but the runtime text path does not shape \u2014 any RTL/Indic app will render isolated forms.",
+   "semantic_contract": "hb_ot_shape_internal maps a codepoint run to positioned glyph IDs per font rules; minikin Layout.cpp does the same for Android (pinned fetch, S94).",
+   "current_miniland_behavior": "text_shaper.cpp uses FreeType directly per codepoint; shaping POC exists but is not wired into the TextView draw path.",
+   "first_divergence": "No shaping stage between text run and glyph raster.",
+   "root_cause": "NOT_PROVEN",
+   "upstream_sources": [
+    {
+     "repo": "harfbuzz/harfbuzz",
+     "symbol": "hb_ot_shape_internal",
+     "note": "in-house 3058 test files (S94)"
+    },
+    {
+     "repo": "google/minikin",
+     "file": "libs/minikin/Layout.cpp",
+     "note": "AOSP googlesource pinned fetch (S94)"
+    }
+   ],
+   "reuse_strategy": "DIRECT_REUSE",
+   "implementation_plan": "Wire the R4 shaping POC into text_shaper behind a script-detection gate; fall back to per-codepoint for Latin.",
+   "test_plan": "HarfBuzz in-house tests for the shaping gate; Persian/Arabic fixture APK; screenshot band golden.",
+   "corpus_fan_out": {
+    "potential": "RTL/Indic apps (NOT_MEASURED)",
+    "executed": 0,
+    "improved": 0
+   },
+   "definition_of_done": "Shaped fixture verified; Latin corpus no-regression.",
+   "contributor_help": "Advanced (text engine) \u00b7 Needs source research",
+   "evidence_artifacts": [],
+   "source_docs": [
+    "docs/GRAPHICS_SOURCE_REGISTRY.md"
+   ]
+  },
+  {
+   "id": "TEXT-002",
+   "subsystem": "text",
+   "capability": "bidi/RTL paragraph direction + alignment",
+   "priority": "P2",
+   "status": "UNTESTED",
+   "evidence_level": "E0",
+   "created": "2026-09-25",
+   "last_verified_commit": "d5946533",
+   "why_it_matters": "RTL layout direction flips paddings, text alignment and view order; predictive ticket.",
+   "semantic_contract": "FriBidi paragraph direction law; layout mirroring per Android supports-rtl.",
+   "current_miniland_behavior": "FriBidi linked; layout mirroring unverified.",
+   "first_divergence": "NOT_PROVEN",
+   "root_cause": "NOT_PROVEN",
+   "upstream_sources": [
+    {
+     "repo": "fribidi/fribidi"
+    }
+   ],
+   "reuse_strategy": "PORT_ALGORITHM",
+   "implementation_plan": "Fixture-first RTL layout test.",
+   "test_plan": "RTL fixture APK; view-tree mirrored bounds.",
+   "corpus_fan_out": {
+    "potential": "NOT_MEASURED",
+    "executed": 0,
+    "improved": 0
+   },
+   "definition_of_done": "RTL fixture green.",
+   "contributor_help": "Good first task (reproduce)",
+   "evidence_artifacts": [],
+   "source_docs": []
+  },
+  {
+   "id": "AUDIO-001",
+   "subsystem": "audio",
+   "capability": "real-APK audio validation of the S-era audio engine (MediaPlayer/SoundPool/AudioTrack state machines)",
+   "priority": "P2",
+   "status": "UNTESTED",
+   "evidence_level": "E2",
+   "created": "2026-09-25",
+   "last_verified_commit": "d5946533",
+   "why_it_matters": "The audio engine implements AOSP-faithful state machines with real codecs (mpg123/libsndfile) and unit tests, but NO real-APK audio title has been executed to prove it at E4+.",
+   "semantic_contract": "MediaPlayer IDLE->INITIALIZED->PREPARED->STARTED<->PAUSED->PLAYBACK_COMPLETED legal-transition table.",
+   "current_miniland_behavior": "State machine level IMPLEMENTED+TESTED (unit); APK level NOT_MEASURED.",
+   "first_divergence": "NOT_PROVEN",
+   "root_cause": "NOT_PROVEN",
+   "upstream_sources": [
+    {
+     "repo": "aosp-mirror/platform_frameworks_base",
+     "file": "media/java/android/media/MediaPlayer.java",
+     "head_sha": "1cdfff555f4a21f71ccc978290e2e212e2f8b168"
+    }
+   ],
+   "reuse_strategy": "PORT_TEST",
+   "implementation_plan": "Pick 1-2 corpus titles with SoundPool/MP audio; capture audio state traces during real runs.",
+   "test_plan": "State-trace golden per title; PLAYBACK_COMPLETED crossing.",
+   "corpus_fan_out": {
+    "potential": "games with sfx (NOT_MEASURED)",
+    "executed": 0,
+    "improved": 0
+   },
+   "definition_of_done": "At least one real APK audio state trace recorded at E4.",
+   "contributor_help": "Needs testing + audio",
+   "evidence_artifacts": [],
+   "source_docs": [
+    "miniandroid/src/audio/audio_engine.h"
+   ]
+  },
+  {
+   "id": "AUDIO-002",
+   "subsystem": "audio",
+   "capability": "SoundPool stream concurrency + rate limits",
+   "priority": "P3",
+   "status": "UNTESTED",
+   "evidence_level": "E0",
+   "created": "2026-09-25",
+   "last_verified_commit": "d5946533",
+   "why_it_matters": "Games fire overlapping streams; predictive ticket.",
+   "semantic_contract": "Max concurrent streams per SoundPool; oldest-stream eviction.",
+   "current_miniland_behavior": "Unit-level only.",
+   "first_divergence": "NOT_PROVEN",
+   "root_cause": "NOT_PROVEN",
+   "upstream_sources": [
+    {
+     "repo": "aosp-mirror/platform_frameworks_base",
+     "file": "media/java/android/media/SoundPool.java"
+    }
+   ],
+   "reuse_strategy": "PORT_TEST",
+   "implementation_plan": "Concurrency fixture.",
+   "test_plan": "Overlap trace golden.",
+   "corpus_fan_out": {
+    "potential": "NOT_MEASURED",
+    "executed": 0,
+    "improved": 0
+   },
+   "definition_of_done": "Fixture green.",
+   "contributor_help": "Needs testing",
+   "evidence_artifacts": [],
+   "source_docs": []
+  },
+  {
+   "id": "VIDEO-001",
+   "subsystem": "video",
+   "capability": "video decode + frame presentation (MediaPlayer video surface)",
+   "priority": "P2",
+   "status": "UNKNOWN",
+   "evidence_level": "E0",
+   "created": "2026-09-25",
+   "last_verified_commit": "d5946533",
+   "why_it_matters": "Video apps exist in the target corpus family; MiniAndroid has no video pipeline today \u2014 registered as a known frontier, not a bug.",
+   "semantic_contract": "Container demux -> decode -> frame scheduling vs audio clock -> surface presentation timestamps.",
+   "current_miniland_behavior": "No video subsystem; audio state machine exists.",
+   "first_divergence": "NOT_PROVEN",
+   "root_cause": "NOT_PROVEN",
+   "upstream_sources": [
+    {
+     "repo": "androidx/media3",
+     "symbol": "ExoPlayer pipeline",
+     "note": "reuse matrix: ADAPT"
+    },
+    {
+     "repo": "FFmpeg/FFmpeg",
+     "symbol": "avcodec decode loop",
+     "note": "REFERENCE_ONLY license check required (LGPL/GPL)"
+    },
+    {
+     "repo": "libsdl-org/SDL",
+     "symbol": "SDL_QueueAudio clock",
+     "note": "REFERENCE_ONLY"
+    }
+   ],
+   "reuse_strategy": "ADAPT",
+   "implementation_plan": "Reuse matrix FIRST (task \u00a712): Media3 timestamp logic, ffmpeg decode, SDL clock; decide minimal pipeline; license gate before any code.",
+   "test_plan": "Big Buck Bunny 5s clip fixture; frame PTS golden.",
+   "corpus_fan_out": {
+    "potential": "NOT_MEASURED",
+    "executed": 0,
+    "improved": 0
+   },
+   "definition_of_done": "Reuse matrix committed; 5s clip plays with monotonic PTS.",
+   "contributor_help": "Advanced (media)",
+   "evidence_artifacts": [],
+   "source_docs": []
+  },
+  {
+   "id": "NET-001",
+   "subsystem": "network",
+   "capability": "real HTTP(S) client stack (DNS, TCP, TLS, redirects, timeouts, headers, chunked)",
+   "priority": "P0",
+   "status": "OBSERVED",
+   "evidence_level": "E4",
+   "created": "2026-09-25",
+   "last_verified_commit": "d5946533",
+   "why_it_matters": "urlchecker's CORE function is real URL checking; Telegram and any modern app assumes networking. Today network APIs are shadow-recorded (URL strings captured) with no real I/O.",
+   "semantic_contract": "HttpURLConnection semantics: connect, headers, redirects, error streams, timeouts per AOSP/libcore behavior.",
+   "current_miniland_behavior": "Shadow layer stores loadUrl/postUrl/openConnection targets (android_shadows web_url/web_data); no socket is opened; apps observe success=false paths.",
+   "first_divergence": "No real connect at the socket boundary.",
+   "root_cause": "NOT_PROVEN",
+   "upstream_sources": [
+    {
+     "repo": "curl/curl",
+     "note": "license clean (curl), ADAPT candidate; conformance test corpus"
+    },
+    {
+     "repo": "openssl/openssl",
+     "note": "TLS; Apache-2.0"
+    },
+    {
+     "repo": "boostorg/asio",
+     "note": "async TCP; Boost-1.0"
+    }
+   ],
+   "reuse_strategy": "ADAPT",
+   "implementation_plan": "Minimal real stack: blocking HTTP/1.1 + TLS via openssl (or mbedtls) + system DNS; expose through the existing shadow API surface; record every exchange as evidence.",
+   "test_plan": "curl-conformance subset against httpbin fixtures; urlchecker real-URL execution; offline error paths.",
+   "corpus_fan_out": {
+    "potential": "urlchecker + Telegram + diagnostic target",
+    "executed": 0,
+    "improved": 0
+   },
+   "definition_of_done": "urlchecker performs a REAL HEAD request and renders the verdict; no regression in offline corpus.",
+   "contributor_help": "Advanced (network/TLS) \u00b7 Needs source research",
+   "evidence_artifacts": [],
+   "source_docs": [
+    "docs/audit/RUNTIME_FAILURE_REGISTRY.md"
+   ]
+  },
+  {
+   "id": "NET-002",
+   "subsystem": "network",
+   "capability": "INTERNET DIAGNOSTIC APK target (planned diagnostic instrument)",
+   "priority": "P1",
+   "status": "PENDING",
+   "evidence_level": "E0",
+   "created": "2026-09-25",
+   "last_verified_commit": "d5946533",
+   "why_it_matters": "A purpose-built diagnostic app measures DNS/TCP/HTTP/TLS/redirect/timeout/IPv4-IPv6 behavior as an instrument, exactly like the in-house games instrument the engine.",
+   "semantic_contract": "Each screen exercises one network semantic and REPORTS the observed result on-screen (self-describing evidence).",
+   "current_miniland_behavior": "Target registered this wave; app not yet built.",
+   "first_divergence": "NOT_PROVEN",
+   "root_cause": "NOT_PROVEN",
+   "upstream_sources": [
+    {
+     "repo": "curl/curl",
+     "note": "reference semantics"
+    }
+   ],
+   "reuse_strategy": "PORT_FIXTURE",
+   "implementation_plan": "Build in-house diagnostic APK (games/ pipeline) against the shadow API now, re-run against NET-001 when real.",
+   "test_plan": "Per-screen state assertions; screenshot evidence chain.",
+   "corpus_fan_out": {
+    "potential": "instrument for all network tickets",
+    "executed": 0,
+    "improved": 0
+   },
+   "definition_of_done": "Diagnostic APK executes; each network stage reports a verdict on-screen.",
+   "contributor_help": "Good first task (build fixture app)",
+   "evidence_artifacts": [],
+   "source_docs": []
+  },
+  {
+   "id": "WEB-001",
+   "subsystem": "web",
+   "capability": "SIMPLE BROWSER APK target (URL entry, HTML, basic CSS, text, fonts, images, links, scroll, page lifecycle)",
+   "priority": "P1",
+   "status": "PENDING",
+   "evidence_level": "E0",
+   "created": "2026-09-25",
+   "last_verified_commit": "d5946533",
+   "why_it_matters": "A simple browser is the highest-signal real-APK target for text, layout, images and networking at once; task \u00a713 directive.",
+   "semantic_contract": "HTML5 parsing (utf-8, tree construction) + minimal CSS box layout + navigation history + page lifecycle callbacks.",
+   "current_miniland_behavior": "Target registered this wave; no browser engine implemented (directive: do NOT write one from scratch).",
+   "first_divergence": "NOT_PROVEN",
+   "root_cause": "NOT_PROVEN",
+   "upstream_sources": [
+    {
+     "repo": "litehtml/litehtml",
+     "note": "C++ html+css renderer, BSD \u2014 strongest DIRECT_REUSE candidate"
+    },
+    {
+     "repo": "lexbor/lexbor",
+     "note": "C html parser, Apache-2.0"
+    },
+    {
+     "repo": "servo/html5ever",
+     "note": "spec-compliant parser; Rust \u2014 ADAPT/REFERENCE"
+    },
+    {
+     "repo": "chromium/chromium",
+     "note": "AwContents reference only \u2014 too large to embed"
+    }
+   ],
+   "reuse_strategy": "ADAPT",
+   "implementation_plan": "Commit a reuse matrix (task \u00a713): evaluate litehtml vs lexbor+custom-lite-css; license check pinned; then wire to Canvas/TextView stack.",
+   "test_plan": "wpt subset for the parser (E6); local-page fixture APK; screenshot band goldens.",
+   "corpus_fan_out": {
+    "potential": "instrument for text/layout/image tickets",
+    "executed": 0,
+    "improved": 0
+   },
+   "definition_of_done": "Reuse matrix committed; browser APK loads a LOCAL page and renders text+image+link navigation.",
+   "contributor_help": "Advanced (browser/layout) \u00b7 Needs source research",
+   "evidence_artifacts": [],
+   "source_docs": []
+  },
+  {
+   "id": "WEB-002",
+   "subsystem": "web",
+   "capability": "WebView client callback family (shouldOverrideUrlLoading, onPageFinished, progress)",
+   "priority": "P2",
+   "status": "UNTESTED",
+   "evidence_level": "E3",
+   "created": "2026-09-25",
+   "last_verified_commit": "d5946533",
+   "why_it_matters": "Apps embedding WebView depend on callback ordering; shadow layer already tracks loadUrl targets.",
+   "semantic_contract": "Callback order: shouldOverrideUrlLoading -> onPageStarted -> onProgressChanged -> onPageFinished.",
+   "current_miniland_behavior": "loadUrl/loadData tracked (S-era shadow work); callbacks synthesized but order fidelity unverified.",
+   "first_divergence": "NOT_PROVEN",
+   "root_cause": "NOT_PROVEN",
+   "upstream_sources": [
+    {
+     "repo": "aosp-mirror/platform_frameworks_base",
+     "file": "core/java/android/webkit/WebView.java",
+     "head_sha": "1cdfff555f4a21f71ccc978290e2e212e2f8b168",
+     "note": "reference"
+    },
+    {
+     "repo": "chromium/chromium",
+     "symbol": "AwContents",
+     "note": "REFERENCE_ONLY"
+    }
+   ],
+   "reuse_strategy": "PORT_TEST",
+   "implementation_plan": "Fixture page with known callback order; assert trace order.",
+   "test_plan": "Callback-order golden.",
+   "corpus_fan_out": {
+    "potential": "NOT_MEASURED",
+    "executed": 0,
+    "improved": 0
+   },
+   "definition_of_done": "Callback-order fixture green.",
+   "contributor_help": "Needs testing",
+   "evidence_artifacts": [],
+   "source_docs": []
+  },
+  {
+   "id": "DEX-002",
+   "subsystem": "dex/runtime",
+   "capability": "reflection edge signatures (generic signatures, array classes, varargs mirror)",
+   "priority": "P2",
+   "status": "PARTIAL",
+   "evidence_level": "E2",
+   "created": "2026-09-25",
+   "last_verified_commit": "d5946533",
+   "why_it_matters": "F-103 closed the Class type-question family; generic/array/varargs edges remain unproven and apps lean on them.",
+   "semantic_contract": "Class<?> laws over the real hierarchy: getGenericSuperclass, array component naming, Method.invoke varargs boxing.",
+   "current_miniland_behavior": "f103_* regressions green; edge families untested.",
+   "first_divergence": "NOT_PROVEN (predictive)",
+   "root_cause": "NOT_PROVEN",
+   "upstream_sources": [
+    {
+     "repo": "openjdk/jdk",
+     "file": "java.lang.Class",
+     "note": "REFERENCE_ONLY"
+    }
+   ],
+   "reuse_strategy": "PORT_TEST",
+   "implementation_plan": "Extend f103 fixture battery with edge signatures.",
+   "test_plan": "Reflection edge battery (deterministic).",
+   "corpus_fan_out": {
+    "potential": "serialization/DI-heavy apps",
+    "executed": 0,
+    "improved": 0
+   },
+   "definition_of_done": "Edge battery green; battery stays 99/99.",
+   "contributor_help": "Good first task (write tests)",
+   "evidence_artifacts": [],
+   "source_docs": []
+  },
+  {
+   "id": "NET-003",
+   "subsystem": "network",
+   "capability": "DNS failure propagation + timeout semantics",
+   "priority": "P2",
+   "status": "UNTESTED",
+   "evidence_level": "E0",
+   "created": "2026-09-25",
+   "last_verified_commit": "d5946533",
+   "why_it_matters": "Apps must observe deterministic failure paths (UnknownHostException, SocketTimeoutException) or they hang; currently shadow layer returns synthetic failure only.",
+   "semantic_contract": "libcore DNS resolution error mapping; connect/read timeouts per HttpURLConnection contract.",
+   "current_miniland_behavior": "No real resolver; error mapping untested.",
+   "first_divergence": "NOT_PROVEN (predictive)",
+   "root_cause": "NOT_PROVEN",
+   "upstream_sources": [
+    {
+     "repo": "curl/curl",
+     "note": "timeout semantics reference"
+    },
+    {
+     "repo": "openjdk/jdk",
+     "file": "networking libs",
+     "note": "error mapping law"
+    }
+   ],
+   "reuse_strategy": "PORT_TEST",
+   "implementation_plan": "Implement together with NET-001 stack; offline fixtures first.",
+   "test_plan": "Offline + slow-DNS fixtures.",
+   "corpus_fan_out": {
+    "potential": "NOT_MEASURED",
+    "executed": 0,
+    "improved": 0
+   },
+   "definition_of_done": "Offline fixture produces the correct typed failure at E4.",
+   "contributor_help": "Advanced (network)",
+   "evidence_artifacts": [],
+   "source_docs": []
+  },
+  {
+   "id": "TEXT-003",
+   "subsystem": "text",
+   "capability": "ellipsize / maxLines / lineSpacing laws",
+   "priority": "P3",
+   "status": "UNTESTED",
+   "evidence_level": "E0",
+   "created": "2026-09-25",
+   "last_verified_commit": "d5946533",
+   "why_it_matters": "Corpus apps use multi-line trimmed text everywhere; predictive ticket before a text-dense app join fails.",
+   "semantic_contract": "AOSP Layout ellipsize END/START/MIDDLE + maxLines clamp + lineSpacingExtra/Multiplier.",
+   "current_miniland_behavior": "TextView renders lines; ellipsize behavior unverified.",
+   "first_divergence": "NOT_PROVEN (predictive)",
+   "root_cause": "NOT_PROVEN",
+   "upstream_sources": [
+    {
+     "repo": "aosp-mirror/platform_frameworks_base",
+     "file": "core/java/android/text/Layout.java",
+     "head_sha": "1cdfff555f4a21f71ccc978290e2e212e2f8b168"
+    }
+   ],
+   "reuse_strategy": "PORT_TEST",
+   "implementation_plan": "Ellipsize fixture with known truncation points.",
+   "test_plan": "Band-golden fixture; view-tree line count.",
+   "corpus_fan_out": {
+    "potential": "NOT_MEASURED",
+    "executed": 0,
+    "improved": 0
+   },
+   "definition_of_done": "Fixture green.",
+   "contributor_help": "Good first task (reproduce)",
+   "evidence_artifacts": [],
+   "source_docs": []
+  },
+  {
+   "id": "DEX-001",
+   "subsystem": "dex/runtime",
+   "capability": "Compose / ART-idiom execution frontier (dooz, Telegram OBSERVED at L1)",
+   "priority": "P1",
+   "status": "OBSERVED",
+   "evidence_level": "E4",
+   "created": "2026-09-25",
+   "last_verified_commit": "d5946533",
+   "why_it_matters": "Modern app share is Compose-heavy; the frontier blocks whole app families, not single bugs.",
+   "semantic_contract": "Compose slots its composition into the view hierarchy via ART idioms (default interface methods, varhandle-like access, lambda linkage) \u2014 MiniAndroid must execute them or record the frontier honestly.",
+   "current_miniland_behavior": "dooz + Telegram load and launch (L1 OBSERVED) then stop at unimplemented idioms; root registry tracks per-idiom roots.",
+   "first_divergence": "Per-idiom; tracked as root_registry R-NEW-* entries.",
+   "root_cause": "NOT_PROVEN",
+   "upstream_sources": [
+    {
+     "repo": "JetBrains/kotlin",
+     "symbol": "lambda/default-method codegen",
+     "note": "ADAPT"
+    },
+    {
+     "repo": "aosp-mirror/platform_art",
+     "note": "REFERENCE_ONLY"
+    }
+   ],
+   "reuse_strategy": "PORT_ALGORITHM",
+   "implementation_plan": "Frontier triage: rank missing idioms by dooz/telegram call-graph frequency; implement top-N as semantic laws.",
+   "test_plan": "Per-idiom semantic tests (existing 96-stage family).",
+   "corpus_fan_out": {
+    "potential": "dooz, Telegram + modern corpus (NOT_MEASURED)",
+    "executed": 2,
+    "improved": 0
+   },
+   "definition_of_done": "dooz or Telegram advances one verified state level.",
+   "contributor_help": "Advanced (DEX/ART semantics)",
+   "evidence_artifacts": [],
+   "source_docs": [
+    "docs/ACHIEVEMENTS.md"
+   ]
+  },
+  {
+   "id": "CONC-001",
+   "subsystem": "concurrency",
+   "capability": "coroutine/Continuation scheduling semantics",
+   "priority": "P2",
+   "status": "UNTESTED",
+   "evidence_level": "E0",
+   "created": "2026-09-25",
+   "last_verified_commit": "d5946533",
+   "why_it_matters": "Kotlin apps are coroutine-first; predictive ticket before a coroutine app is added to the corpus.",
+   "semantic_contract": "Coroutine suspension resumes on the dispatcher; cancellation is cooperative; Sequential flow ordering.",
+   "current_miniland_behavior": "Locks/atomics shadows exist (locks_shadow, atomic_shadow); coroutine state machines unverified.",
+   "first_divergence": "NOT_PROVEN",
+   "root_cause": "NOT_PROVEN",
+   "upstream_sources": [
+    {
+     "repo": "Kotlin/kotlinx.coroutines",
+     "symbol": "Dispatchers, CancellableContinuation",
+     "note": "Apache-2.0; PORT_TEST"
+    }
+   ],
+   "reuse_strategy": "PORT_TEST",
+   "implementation_plan": "Fixture app launching a coroutine that mutates UI state.",
+   "test_plan": "Resume-order + cancellation fixtures.",
+   "corpus_fan_out": {
+    "potential": "NOT_MEASURED",
+    "executed": 0,
+    "improved": 0
+   },
+   "definition_of_done": "Coroutine fixture reaches STATE_CHANGED evidence level.",
+   "contributor_help": "Advanced (concurrency)",
+   "evidence_artifacts": [],
+   "source_docs": []
+  },
+  {
+   "id": "CONC-002",
+   "subsystem": "concurrency",
+   "capability": "volatile/JMM visibility ordering",
+   "priority": "P2",
+   "status": "UNTESTED",
+   "evidence_level": "E0",
+   "created": "2026-09-25",
+   "last_verified_commit": "d5946533",
+   "why_it_matters": "Single-threaded interpreter hides visibility bugs until real multi-threaded apps run; predictive ticket.",
+   "semantic_contract": "JMM happens-before edges for volatile/synchronized/final.",
+   "current_miniland_behavior": "atomic_shadow provides CAS primitives; visibility ordering untested.",
+   "first_divergence": "NOT_PROVEN",
+   "root_cause": "NOT_PROVEN",
+   "upstream_sources": [
+    {
+     "repo": "openjdk/jdk",
+     "file": "src/hotspot share orderAccess",
+     "note": "REFERENCE_ONLY"
+    }
+   ],
+   "reuse_strategy": "REFERENCE_ONLY",
+   "implementation_plan": "Stress fixture with two interpreter threads + volatile flag.",
+   "test_plan": "Visibility assertion harness (deterministic interleaving).",
+   "corpus_fan_out": {
+    "potential": "NOT_MEASURED",
+    "executed": 0,
+    "improved": 0
+   },
+   "definition_of_done": "Stress fixture deterministic across 3 runs.",
+   "contributor_help": "Advanced (runtime)",
+   "evidence_artifacts": [],
+   "source_docs": []
+  },
+  {
+   "id": "STORE-001",
+   "subsystem": "storage",
+   "capability": "SQLite transaction/locking semantics beyond the Room fixture",
+   "priority": "P2",
+   "status": "PARTIAL",
+   "evidence_level": "E2",
+   "created": "2026-09-25",
+   "last_verified_commit": "d5946533",
+   "why_it_matters": "Room/SQLite law fixture is green in the battery (F-026+F-027); transactions/locking/concurrency remain unproven.",
+   "semantic_contract": "ACID transaction semantics; WAL/journal locking; ON CONFLICT clauses.",
+   "current_miniland_behavior": "sqlite_shadow covers the executed fixture paths.",
+   "first_divergence": "NOT_PROVEN",
+   "root_cause": "NOT_PROVEN",
+   "upstream_sources": [
+    {
+     "repo": "sqlite/sqlite",
+     "note": "public domain; test corpus"
+    }
+   ],
+   "reuse_strategy": "PORT_TEST",
+   "implementation_plan": "Port sqlite test transactions subset as fixtures.",
+   "test_plan": "Transaction rollback fixture; concurrency smoke.",
+   "corpus_fan_out": {
+    "potential": "NOT_MEASURED",
+    "executed": 0,
+    "improved": 0
+   },
+   "definition_of_done": "Transaction fixture green; battery stays 99/99.",
+   "contributor_help": "Good first task (write tests)",
+   "evidence_artifacts": [],
+   "source_docs": []
+  },
+  {
+   "id": "JNI-001",
+   "subsystem": "jni",
+   "capability": "native library loading (System.loadLibrary) + JNI bridge",
+   "priority": "P2",
+   "status": "PARTIAL",
+   "evidence_level": "E2",
+   "created": "2026-09-25",
+   "last_verified_commit": "d5946533",
+   "why_it_matters": "Games ship native engines; without JNI they are blocked at load. jni_bridge.h exists; no real native APK executed.",
+   "semantic_contract": "System.loadLibrary resolves SONAME, dlopens, binds exported JNI symbols; JNIEnv table semantics.",
+   "current_miniland_behavior": "Bridge header present; dlopen path unverified against a real lib.",
+   "first_divergence": "NOT_PROVEN",
+   "root_cause": "NOT_PROVEN",
+   "upstream_sources": [
+    {
+     "repo": "aosp-mirror/platform_frameworks_base",
+     "file": "core/jni/",
+     "note": "REFERENCE_ONLY"
+    },
+    {
+     "repo": "libgdx/libgdx",
+     "note": "real-world JNI usage map"
+    }
+   ],
+   "reuse_strategy": "ADAPT",
+   "implementation_plan": "Hello-JNI fixture APK with a tiny .so; execute through the bridge.",
+   "test_plan": "JNI fixture call/return golden.",
+   "corpus_fan_out": {
+    "potential": "native-game corpus family",
+    "executed": 0,
+    "improved": 0
+   },
+   "definition_of_done": "Fixture JNI call round-trips at E4.",
+   "contributor_help": "Advanced (native)",
+   "evidence_artifacts": [],
+   "source_docs": []
+  },
+  {
+   "id": "COMPOSE-001",
+   "subsystem": "compose",
+   "capability": "Compose composition frontier (dooz, Telegram OBSERVED at L1)",
+   "priority": "P1",
+   "status": "BLOCKED",
+   "evidence_level": "E4",
+   "created": "2026-09-25",
+   "last_verified_commit": "d5946533",
+   "why_it_matters": "Compose-family apps cannot advance past launch until the ART-idiom frontier shrinks; blocks a whole app family rather than single bugs.",
+   "semantic_contract": "Compose runtime slots composition into the view hierarchy through standard runtime facilities (lambdas, default methods, signature-polymorphic calls).",
+   "current_miniland_behavior": "dooz + Telegram load and launch (L1 OBSERVED) then stop at unimplemented idioms.",
+   "first_divergence": "Per-idiom; tracked via root_registry R-NEW-* entries.",
+   "root_cause": "Subsumes DEX-001 idiom triage; not independently root-caused.",
+   "upstream_sources": [
+    {
+     "repo": "JetBrains/compose-multiplatform-core",
+     "note": "FORK_OF androidx compose core (S94 verified)"
+    },
+    {
+     "repo": "aosp-mirror/platform_art",
+     "note": "REFERENCE_ONLY"
+    }
+   ],
+   "reuse_strategy": "PORT_ALGORITHM",
+   "implementation_plan": "Blocked on DEX-001 triage: rank missing idioms by call-graph frequency, implement top-N as laws.",
+   "test_plan": "Per-idiom semantic tests; dooz/telegram advance markers.",
+   "corpus_fan_out": {
+    "potential": "Compose-family corpus (NOT_MEASURED)",
+    "executed": 2,
+    "improved": 0
+   },
+   "definition_of_done": "One Compose-family title advances one verified state level.",
+   "contributor_help": "Advanced (DEX/ART semantics)",
+   "evidence_artifacts": [],
+   "source_docs": [
+    "docs/ACHIEVEMENTS.md"
+   ]
+  },
+  {
+   "id": "MEDIA-001",
+   "subsystem": "media",
+   "capability": "container/metadata probing (MediaMetadataRetriever semantics)",
+   "priority": "P3",
+   "status": "UNKNOWN",
+   "evidence_level": "E0",
+   "created": "2026-09-25",
+   "last_verified_commit": "d5946533",
+   "why_it_matters": "Video/music apps query metadata before playback; predictive ticket registered with VIDEO-001.",
+   "semantic_contract": "Retriever returns duration/title/cover-frame for supported containers; error behavior on unsupported input.",
+   "current_miniland_behavior": "No metadata subsystem.",
+   "first_divergence": "NOT_PROVEN (predictive)",
+   "root_cause": "NOT_PROVEN",
+   "upstream_sources": [
+    {
+     "repo": "FFmpeg/FFmpeg",
+     "symbol": "avformat probing",
+     "note": "REFERENCE_ONLY, license gate"
+    },
+    {
+     "repo": "androidx/media3",
+     "note": "Extractor family; ADAPT"
+    }
+   ],
+   "reuse_strategy": "ADAPT",
+   "implementation_plan": "Decide with VIDEO-001 reuse matrix; metadata-only first.",
+   "test_plan": "MP4/MP3 header fixture probing.",
+   "corpus_fan_out": {
+    "potential": "NOT_MEASURED",
+    "executed": 0,
+    "improved": 0
+   },
+   "definition_of_done": "Metadata fixture returns duration+title for an MP3 and MP4.",
+   "contributor_help": "Advanced (media)",
+   "evidence_artifacts": [],
+   "source_docs": []
+  },
+  {
+   "id": "APP-0001",
+   "subsystem": "app-master",
+   "capability": "simplestopwatch \u2014 parent failure record",
+   "priority": "P1",
+   "status": "ROOT_CAUSE_FOUND",
+   "evidence_level": "E4",
+   "created": "2026-09-25",
+   "last_verified_commit": "d5946533",
+   "why_it_matters": "Parent record for the simplestopwatch failure family (S93-S95).",
+   "semantic_contract": "n/a (parent record)",
+   "current_miniland_behavior": "Layers 1-3 fixed (theme default, textColorPrimary, ImageButton fill); layer 4 = GFX-001.",
+   "first_divergence": "NOT_PROVEN",
+   "root_cause": "See GFX-001 (single named gap).",
+   "upstream_sources": [],
+   "reuse_strategy": "REFERENCE_ONLY",
+   "implementation_plan": "NOT_RECORDED",
+   "test_plan": "NOT_RECORDED",
+   "corpus_fan_out": {
+    "potential": "1 title",
+    "executed": 1,
+    "improved": 1
+   },
+   "definition_of_done": "All sub-tickets CLOSED.",
+   "contributor_help": "See GFX-001",
+   "evidence_artifacts": [],
+   "source_docs": [
+    "docs/GRAPHICS_SOURCE_LIBRARY_VALIDATION.md \u00a73"
+   ]
+  },
+  {
+   "id": "APP-0002",
+   "subsystem": "app-master",
+   "capability": "urlchecker \u2014 parent failure record",
+   "priority": "P2",
+   "status": "PARTIAL",
+   "evidence_level": "E4",
+   "created": "2026-09-25",
+   "last_verified_commit": "d5946533",
+   "why_it_matters": "Parent record for urlchecker; its core function needs real networking (NET-001) and its verifier flags need GFX-005.",
+   "semantic_contract": "n/a (parent record)",
+   "current_miniland_behavior": "WRONG_COLOR family eliminated (S95); residual UNREADABLE_TEXT false positives + WRONG_CLIP 1 node.",
+   "first_divergence": "NOT_PROVEN",
+   "root_cause": "NOT_PROVEN",
+   "upstream_sources": [],
+   "reuse_strategy": "REFERENCE_ONLY",
+   "implementation_plan": "NOT_RECORDED",
+   "test_plan": "NOT_RECORDED",
+   "corpus_fan_out": {
+    "potential": "1 title",
+    "executed": 1,
+    "improved": 1
+   },
+   "definition_of_done": "urlchecker SEMANTIC_PASS with REAL url checks (needs NET-001).",
+   "contributor_help": "See NET-001, GFX-005",
+   "evidence_artifacts": [],
+   "source_docs": [
+    "docs/GRAPHICS_SOURCE_LIBRARY_VALIDATION.md \u00a73"
+   ]
+  },
+  {
+   "id": "GAME-0001",
+   "subsystem": "game-master",
+   "capability": "dodge \u2014 parent failure record",
+   "priority": "P1",
+   "status": "PARTIAL",
+   "evidence_level": "E4",
+   "created": "2026-09-25",
+   "last_verified_commit": "d5946533",
+   "why_it_matters": "Parent record for dodge; two stacked root causes, one fixed.",
+   "semantic_contract": "n/a (parent record)",
+   "current_miniland_behavior": "Button-minHeight fixed (44->126 px measured); menu-panel weight bug = GFX-002 (open).",
+   "first_divergence": "NOT_PROVEN",
+   "root_cause": "NOT_PROVEN",
+   "upstream_sources": [],
+   "reuse_strategy": "REFERENCE_ONLY",
+   "implementation_plan": "NOT_RECORDED",
+   "test_plan": "NOT_RECORDED",
+   "corpus_fan_out": {
+    "potential": "1 title",
+    "executed": 1,
+    "improved": 1
+   },
+   "definition_of_done": "dodge SEMANTIC_PASS.",
+   "contributor_help": "See GFX-002",
+   "evidence_artifacts": [],
+   "source_docs": [
+    "docs/GRAPHICS_SOURCE_LIBRARY_VALIDATION.md \u00a73"
+   ]
+  },
+  {
+   "id": "GAME-0002",
+   "subsystem": "game-master",
+   "capability": "bouncy \u2014 parent failure record",
+   "priority": "P2",
+   "status": "PARTIAL",
+   "evidence_level": "E4",
+   "created": "2026-09-25",
+   "last_verified_commit": "d5946533",
+   "why_it_matters": "Parent record for bouncy (S93-S95).",
+   "semantic_contract": "n/a (parent record)",
+   "current_miniland_behavior": "3x WRONG_COLOR eliminated (S95); residual WRONG_CLIP 1 node (possibly GFX-002-adjacent measure semantics).",
+   "first_divergence": "NOT_PROVEN",
+   "root_cause": "NOT_PROVEN",
+   "upstream_sources": [],
+   "reuse_strategy": "REFERENCE_ONLY",
+   "implementation_plan": "NOT_RECORDED",
+   "test_plan": "NOT_RECORDED",
+   "corpus_fan_out": {
+    "potential": "1 title",
+    "executed": 1,
+    "improved": 1
+   },
+   "definition_of_done": "bouncy SEMANTIC_PASS.",
+   "contributor_help": "Needs graphics",
+   "evidence_artifacts": [],
+   "source_docs": [
+    "docs/GRAPHICS_SOURCE_LIBRARY_VALIDATION.md \u00a74"
+   ]
+  },
+  {
+   "id": "GAME-0003",
+   "subsystem": "game-master",
+   "capability": "bobball \u2014 parent failure record",
+   "priority": "P2",
+   "status": "CLOSED",
+   "evidence_level": "E5",
+   "created": "2026-09-25",
+   "last_verified_commit": "d5946533",
+   "why_it_matters": "Parent record; all 4 WRONG_CLIP flags eliminated via L-S95-BTNMIN-1 (48dip law).",
+   "semantic_contract": "n/a (parent record)",
+   "current_miniland_behavior": "6/6 text nodes TEXT_VISUALLY_VERIFIED; verdict PARTIAL(0).",
+   "first_divergence": "NOT_PROVEN",
+   "root_cause": "NOT_PROVEN",
+   "upstream_sources": [],
+   "reuse_strategy": "REFERENCE_ONLY",
+   "implementation_plan": "NOT_RECORDED",
+   "test_plan": "NOT_RECORDED",
+   "corpus_fan_out": {
+    "potential": "1 title",
+    "executed": 1,
+    "improved": 1
+   },
+   "definition_of_done": "CLOSED with S95 evidence chain.",
+   "contributor_help": "No help needed (closed)",
+   "evidence_artifacts": [],
+   "source_docs": [
+    "docs/GRAPHICS_SOURCE_LIBRARY_VALIDATION.md \u00a73"
+   ]
+  },
+  {
+   "id": "GAME-0004",
+   "subsystem": "game-master",
+   "capability": "mini-tetris \u2014 parent failure record",
+   "priority": "P3",
+   "status": "CLOSED",
+   "evidence_level": "E5",
+   "created": "2026-09-25",
+   "last_verified_commit": "d5946533",
+   "why_it_matters": "ANIMATION_FROZEN classification REFUTED: original S92/S93 tap hit no touch target; with corrected taps the game animates (6 unique frames/24, x3 deterministic).",
+   "semantic_contract": "n/a (parent record)",
+   "current_miniland_behavior": "Harness law fixed in s95_capture.py; verdict PARTIAL(0).",
+   "first_divergence": "NOT_PROVEN",
+   "root_cause": "NOT_PROVEN",
+   "upstream_sources": [],
+   "reuse_strategy": "REFERENCE_ONLY",
+   "implementation_plan": "NOT_RECORDED",
+   "test_plan": "NOT_RECORDED",
+   "corpus_fan_out": {
+    "potential": "1 title",
+    "executed": 1,
+    "improved": 1
+   },
+   "definition_of_done": "CLOSED (refutation evidence recorded).",
+   "contributor_help": "No help needed (closed)",
+   "evidence_artifacts": [],
+   "source_docs": [
+    "docs/GRAPHICS_SOURCE_LIBRARY_VALIDATION.md \u00a73.5"
+   ]
+  },
+  {
+   "id": "GAME-0005",
+   "subsystem": "game-master",
+   "capability": "minicraft \u2014 parent failure record",
+   "priority": "P3",
+   "status": "CLOSED",
+   "evidence_level": "E5",
+   "created": "2026-09-25",
+   "last_verified_commit": "d5946533",
+   "why_it_matters": "Same refutation as GAME-0004: world state advances (Blocks 0->2, house built) x3 deterministic runs.",
+   "semantic_contract": "n/a (parent record)",
+   "current_miniland_behavior": "Verdict PARTIAL(0).",
+   "first_divergence": "NOT_PROVEN",
+   "root_cause": "NOT_PROVEN",
+   "upstream_sources": [],
+   "reuse_strategy": "REFERENCE_ONLY",
+   "implementation_plan": "NOT_RECORDED",
+   "test_plan": "NOT_RECORDED",
+   "corpus_fan_out": {
+    "potential": "1 title",
+    "executed": 1,
+    "improved": 1
+   },
+   "definition_of_done": "CLOSED.",
+   "contributor_help": "No help needed (closed)",
+   "evidence_artifacts": [],
+   "source_docs": [
+    "docs/GRAPHICS_SOURCE_LIBRARY_VALIDATION.md \u00a73.5"
+   ]
+  },
+  {
+   "id": "GAME-0006",
+   "subsystem": "game-master",
+   "capability": "hotdeath \u2014 parent failure record",
+   "priority": "P3",
+   "status": "CLOSED",
+   "evidence_level": "E5",
+   "created": "2026-09-25",
+   "last_verified_commit": "d5946533",
+   "why_it_matters": "WRONG_COLOR root cause (vector/adaptive decode gap) fixed S95; verdict FAIL->PASS with measured luminance delta 239.5->55.5.",
+   "semantic_contract": "n/a (parent record)",
+   "current_miniland_behavior": "SEMANTIC_PASS.",
+   "first_divergence": "NOT_PROVEN",
+   "root_cause": "NOT_PROVEN",
+   "upstream_sources": [],
+   "reuse_strategy": "REFERENCE_ONLY",
+   "implementation_plan": "NOT_RECORDED",
+   "test_plan": "NOT_RECORDED",
+   "corpus_fan_out": {
+    "potential": "1 title",
+    "executed": 1,
+    "improved": 1
+   },
+   "definition_of_done": "CLOSED.",
+   "contributor_help": "No help needed (closed)",
+   "evidence_artifacts": [],
+   "source_docs": [
+    "docs/GRAPHICS_SOURCE_LIBRARY_VALIDATION.md \u00a73"
+   ]
+  }
+ ]
+}
