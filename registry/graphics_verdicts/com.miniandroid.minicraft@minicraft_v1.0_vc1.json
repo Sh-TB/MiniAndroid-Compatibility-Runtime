@@ -1,9 +1,9 @@
 {
- "apk_sha256": "e399395570c49c65bef5d033f59857e00af686a29d3e3bbf2bdd4e6161d77665",
+ "apk_sha256": "77b9629ee111b968ccc9dbd4507eab3564a0a7a6e26dcacbe28f99de189c3a90",
  "asset_chains": [],
  "confidence": "observed_only",
  "evidence_inventory": {
-  "click_audit_records": 4,
+  "click_audit_records": 2,
   "frame_count": 24,
   "frames_manifest": true,
   "gfx_provenance": true,
@@ -11,8 +11,10 @@
   "screenshot": true,
   "view_tree": true
  },
- "failing_stages": [],
- "generated_utc": "2026-09-24T07:00:00Z",
+ "failing_stages": [
+  "input"
+ ],
+ "generated_utc": "2026-09-24T07:00:39Z",
  "geometry_checks": [
   {
    "actual_bounds": [
@@ -42,7 +44,7 @@
     0,
     0,
     1080,
-    1412
+    1690
    ],
    "delta_dxywh": [
     0,
@@ -50,14 +52,14 @@
     0,
     0
    ],
-   "element": "GameView",
+   "element": "CraftWorldView",
    "expected_bounds": [
     0,
     0,
     1080,
-    1412
+    1690
    ],
-   "tolerance_px": 169,
+   "tolerance_px": 202,
    "value": "PASS"
   },
   {
@@ -69,16 +71,16 @@
    ],
    "delta_dxywh": [
     0,
-    -1412,
+    -1690,
     0,
-    1412
+    1805
    ],
    "element": "android/widget/LinearLayout",
    "expected_bounds": [
     0,
-    1412,
+    1690,
     1080,
-    508
+    115
    ],
    "failure": "GEOMETRY_DELTA_EXCEEDED",
    "tolerance_px": 129,
@@ -86,128 +88,34 @@
   },
   {
    "actual_bounds": [
-    47,
-    1459,
-    986,
-    81
-   ],
-   "delta_dxywh": [
-    0,
-    0,
-    0,
-    0
-   ],
-   "element": "android/widget/Button[START]",
-   "expected_bounds": [
-    47,
-    1459,
-    986,
-    81
-   ],
-   "tolerance_px": 118,
-   "value": "PASS"
-  },
-  {
-   "actual_bounds": [
     0,
     0,
     1080,
     1920
    ],
    "delta_dxywh": [
-    -47,
-    -1540,
-    94,
-    1809
+    0,
+    -1805,
+    0,
+    1805
    ],
    "element": "android/widget/LinearLayout",
    "expected_bounds": [
-    47,
-    1540,
-    986,
-    111
-   ],
-   "failure": "GEOMETRY_DELTA_EXCEEDED",
-   "tolerance_px": 118,
-   "value": "FAIL"
-  },
-  {
-   "actual_bounds": [
     0,
-    0,
+    1805,
     1080,
-    1920
-   ],
-   "delta_dxywh": [
-    -47,
-    -1651,
-    94,
-    1809
-   ],
-   "element": "android/widget/LinearLayout",
-   "expected_bounds": [
-    47,
-    1651,
-    986,
-    111
+    115
    ],
    "failure": "GEOMETRY_DELTA_EXCEEDED",
-   "tolerance_px": 118,
+   "tolerance_px": 129,
    "value": "FAIL"
   },
   {
    "actual_bounds": [
-    0,
-    0,
-    1080,
-    1920
-   ],
-   "delta_dxywh": [
-    -47,
-    -1762,
-    94,
-    1809
-   ],
-   "element": "android/widget/LinearLayout",
-   "expected_bounds": [
-    47,
-    1762,
-    986,
-    111
-   ],
-   "failure": "GEOMETRY_DELTA_EXCEEDED",
-   "tolerance_px": 118,
-   "value": "FAIL"
-  },
-  {
-   "actual_bounds": [
-    277,
-    1595,
-    525,
-    74
-   ],
-   "delta_dxywh": [
-    0,
-    0,
-    0,
-    0
-   ],
-   "element": "android/widget/Button[TOP]",
-   "expected_bounds": [
-    277,
-    1595,
-    525,
-    74
-   ],
-   "tolerance_px": 63,
-   "value": "PASS"
-  },
-  {
-   "actual_bounds": [
-    47,
-    1706,
-    525,
-    74
+    26,
+    1716,
+    257,
+    63
    ],
    "delta_dxywh": [
     0,
@@ -217,20 +125,66 @@
    ],
    "element": "android/widget/Button[LEFT]",
    "expected_bounds": [
-    47,
-    1706,
-    525,
-    74
+    26,
+    1716,
+    257,
+    63
    ],
-   "tolerance_px": 63,
+   "tolerance_px": 30,
    "value": "PASS"
   },
   {
    "actual_bounds": [
-    572,
-    1706,
-    525,
-    74
+    283,
+    1716,
+    257,
+    63
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/Button[UP]",
+   "expected_bounds": [
+    283,
+    1716,
+    257,
+    63
+   ],
+   "tolerance_px": 30,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    540,
+    1716,
+    257,
+    63
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/Button[DOWN]",
+   "expected_bounds": [
+    540,
+    1716,
+    257,
+    63
+   ],
+   "tolerance_px": 30,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    797,
+    1716,
+    257,
+    63
    ],
    "delta_dxywh": [
     0,
@@ -240,20 +194,20 @@
    ],
    "element": "android/widget/Button[RIGHT]",
    "expected_bounds": [
-    572,
-    1706,
-    525,
-    74
+    797,
+    1716,
+    257,
+    63
    ],
-   "tolerance_px": 63,
+   "tolerance_px": 30,
    "value": "PASS"
   },
   {
    "actual_bounds": [
-    277,
-    1817,
-    525,
-    74
+    26,
+    1831,
+    257,
+    63
    ],
    "delta_dxywh": [
     0,
@@ -261,14 +215,83 @@
     0,
     0
    ],
-   "element": "android/widget/Button[BOTTOM]",
+   "element": "android/widget/Button[BRICK]",
    "expected_bounds": [
-    277,
-    1817,
-    525,
-    74
+    26,
+    1831,
+    257,
+    63
    ],
-   "tolerance_px": 63,
+   "tolerance_px": 30,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    283,
+    1831,
+    257,
+    63
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/Button[PLACE]",
+   "expected_bounds": [
+    283,
+    1831,
+    257,
+    63
+   ],
+   "tolerance_px": 30,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    540,
+    1831,
+    257,
+    63
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/Button[DIG]",
+   "expected_bounds": [
+    540,
+    1831,
+    257,
+    63
+   ],
+   "tolerance_px": 30,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    797,
+    1831,
+    257,
+    63
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/Button[DEMO]",
+   "expected_bounds": [
+    797,
+    1831,
+    257,
+    63
+   ],
+   "tolerance_px": 30,
    "value": "PASS"
   }
  ],
@@ -276,22 +299,17 @@
   {
    "after_frame": "frame_016.png",
    "before_frame": "frame_015.png",
-   "clicked": {
-    "view_id": 20
-   },
+   "clicked": {},
    "index": 16,
    "input_event": {
-    "dispatched": true,
+    "dispatched": false,
     "down_record": {
      "action": "ACTION_DOWN",
-     "consumed": true,
-     "long_press_armed_ms": 500,
+     "consumed": false,
+     "law": "no touch target \u2014 dispatchTouchEvent returns false, no listener dispatch",
      "root_id": 9,
-     "state_changes": [
-      "setPressed(true)"
-     ],
-     "target_class": "Landroid/widget/Button;",
-     "target_view_id": 20,
+     "state_changes": [],
+     "target_view_id": 0,
      "virtual_ms": 4800,
      "x": 540,
      "y": 1500
@@ -301,19 +319,13 @@
     "y": 1500
    },
    "pixel_delta": {
-    "after_sha256": "e8afd071af9cd0492c64e355616eac444dffb004c60552b65db0a2910dd5225d",
-    "bbox": [
-     283,
-     1264,
-     713,
-     1293
-    ],
-    "before_sha256": "475721ca2d7d42527024e24fb20391ce7bd7f7a2933b551e02c3688e98be5264",
-    "changed_px": 4427,
-    "changed_ratio": 0.002135
+    "after_sha256": "c0f37a6b2134978f7264286943e3cd56ead801a497b547ef47caf0154ce02dd1",
+    "before_sha256": "c0f37a6b2134978f7264286943e3cd56ead801a497b547ef47caf0154ce02dd1",
+    "changed_px": 0,
+    "changed_ratio": 0.0
    },
    "source": "F-NEW-199 interactions[]",
-   "verdict": "INTERACTION_VISUALLY_PROVEN"
+   "verdict": "INTERACTION_NOT_DISPATCHED"
   }
  ],
  "not_applicable_stages": [
@@ -335,11 +347,11 @@
      1080,
      1920
     ],
-    "luminance_stddev": 30.37,
-    "non_background_frac": 0.991545,
-    "non_background_px": 2056068,
-    "nonbg_unique_colors": 180,
-    "unique_colors_est": 181
+    "luminance_stddev": 44.54,
+    "non_background_frac": 0.994419,
+    "non_background_px": 2062027,
+    "nonbg_unique_colors": 108,
+    "unique_colors_est": 109
    },
    "renderer_signals": [
     "app-custom-View-subclass"
@@ -347,12 +359,12 @@
    "triangulation": "VISUAL_FAIL"
   }
  ],
- "overall": "INTERACTION_VERIFIED",
- "overall_rank": 7,
- "package": "com.miniandroid.snakedeluxe",
+ "overall": "VISUALLY_PARTIAL",
+ "overall_rank": 5,
+ "package": "com.miniandroid.minicraft",
  "renderer_family": "canvas-custom-view",
  "repeatability_runs": [],
- "run_dir": "/home/z/my-project/run/s92pilot/snake-deluxe",
+ "run_dir": "/home/z/my-project/run/s92pilot/minicraft",
  "runtime_sha": "",
  "schema": "s92.graphics_verdict.v1",
  "stages": {
@@ -381,7 +393,7 @@
    "value": "PARTIAL"
   },
   "input": {
-   "value": "PASS"
+   "value": "FAIL"
   },
   "input_target_visibility": {
    "value": "PASS"
@@ -402,15 +414,14 @@
    "value": "PASS"
   },
   "state_change": {
-   "note": "runtime frames manifest records dispatch+state",
-   "value": "PASS"
+   "value": "UNKNOWN"
   },
   "visual": {
    "value": "PARTIAL"
   },
   "visual_change": {
-   "value": "PASS"
+   "value": "UNKNOWN"
   }
  },
- "title": "Snake Deluxe"
+ "title": "Minicraft"
 }

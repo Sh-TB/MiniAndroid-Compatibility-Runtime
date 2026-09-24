@@ -3,7 +3,7 @@
  "asset_chains": [],
  "confidence": "observed_only",
  "evidence_inventory": {
-  "click_audit_records": 2,
+  "click_audit_records": 4,
   "frame_count": 24,
   "frames_manifest": true,
   "gfx_provenance": true,
@@ -12,7 +12,7 @@
   "view_tree": true
  },
  "failing_stages": [],
- "generated_utc": "2026-09-24T05:40:03Z",
+ "generated_utc": "2026-09-24T07:00:29Z",
  "geometry_checks": [
   {
    "actual_bounds": [
