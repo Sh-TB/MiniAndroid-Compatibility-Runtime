@@ -3665,4 +3665,49 @@ just to make the report look better.
 
 ---
 
+# 170. GRAPHICS SOURCE-FIRST LAW (S94)
+
+The Graphics Source Registry (`docs/GRAPHICS_SOURCE_REGISTRY.md` + `.json`,
+mined and verified in S94 from 122 distinct GitHub repositories) is part of
+this project's permanent engineering infrastructure.
+
+For EVERY graphics-related problem — decode, density, clip, drawing, text,
+font, animation, GIF, vector, NinePatch, ripple, layout, Canvas, Surface,
+GLSurfaceView, frame submission, WebView readiness, Compose, screenshot
+comparison — the workflow is mandatory and ordered:
+
+1. classify the problem with the S94 failure taxonomy;
+2. run `python3 tools/source_lookup.py <CATEGORY>` against the registry;
+3. identify the relevant upstream repositories (P0 before P1);
+4. inspect source, not only README;
+5. inspect tests where available — a ported upstream test outranks a new one;
+6. identify the algorithm/semantic contract (laws are pre-mapped in
+   `run/s94/source_mining/source_to_law.json`);
+7. determine whether reusable code exists (registry `reuse_class`);
+8. determine license compatibility BEFORE copying (registry `license_class`;
+   `REFERENCE_ONLY` sources are behavioral references only);
+9. implement the smallest MiniAndroid semantic law;
+10. add a fixture;
+11. verify against the real APK through the S92/S93 verifier;
+12. record source provenance (repository, pinned commit SHA, file SHA256);
+13. update the registry (identity verification + license evidence required).
+
+Additional binding rules:
+
+- Never blindly reproduce graphics behavior from memory.
+- Never invent a replacement when a strong upstream implementation exists.
+- Never treat GitHub stars as correctness.
+- Never implement a new graphics behavior from scratch before checking the
+  registry; if nothing suitable exists, record that fact in the registry work
+  notes before implementing.
+- Preference order: AOSP/upstream > official project source > official tests >
+  well-maintained implementation > specialized open-source implementation >
+  research/reference implementation.
+- Before writing more than ~50 LOC for a graphics subsystem: STOP, search the
+  registry and upstream tests, then continue.
+- Consultation order is recorded per problem in the worklog: `category ->
+  families -> sources -> law -> port/implementation -> fixture -> APK`.
+
+---
+
 # END OF MASTER CODER CONSTITUTION V2
