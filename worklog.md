@@ -3260,3 +3260,26 @@ Work Log:
 
 Stage Summary:
 - Recon recorded. Verifier will EXTEND tools/verify/probes/ + consume existing runtime evidence; no runtime mechanism duplication. Corpus fetch via scripts/test/fetch_corpus.py (18 SHA-pinned APKs); fixture APKs via scripts/build/build_fixture_apk.sh (aapt2 real-resource path).
+
+---
+Task ID: S92-EXEC
+Agent: Super Z (main)
+Task: S92 graphics-truth execution — finish verifier, false-positive battery, real-corpus pilot, 3-run repeatability, S91 claims audit, docs
+
+Work Log:
+- Resumed from recon state: verifier core + battery fixtures committed (f35ff2e9), battery 6/7 with cased_splash false-ACCEPT, selftest output mangled.
+- Root cause chain (case-d): post-onCreate HandlerShadow::settle() jumped the virtual clock +1e9 ms -> 5000ms splash Timer fired before frame 0 -> launch evidence showed the post-timer scene. Implemented F-NEW-197 (AOSP MessageQueue law: idle Looper blocks in nativePollOnce, never fast-forwards; post-onCreate drain is DUE-ONLY; future-dated posts fire only at deterministic clock gates). Deprecated settle().
+- Implemented F-NEW-196 previously (current-window ViewTree BFS from content_view_id) — verified live: 6-frame splash run now shows LinearLayout+SPLASH only.
+- Implemented F-NEW-198 (end-of-window evidence): screenshot.png + view_tree.json re-captured after frame/interaction stages (final_pass skips R-NEW-340 compose pump). Measured: 30-frame splash run screenshot mean 253.4 == frames/frame_029 mean 253.4.
+- G07 lifecycle golden re-derived from the new clock law with documented rationale (Ticks: 0 at launch, chain 0->1->2->3, tick 1 at exact 250ms gate) — 18/18.
+- Battery runner selftest parse fixed (whole-doc JSON). EXT-01 fixtures re-fetched SHA-exact (009b4671..., 121d479c...) post-reset. Regression battery ALL PASS 96/96. S92 battery 7/7 + doctored-evidence selftest 3/3 rejected. Commit 22c1ffd9.
+- F-NEW-199: scheduled taps now append runtime-authored manifest["interactions"] records (frame/x/y/target_view_id/DOWN record/after-frame). interaction_probe consumes them -> §10/§11 proofs mechanical.
+- Pilot (§26/§27, REAL execution): 16 titles. 11 external APKs re-fetched SHA-exact vs canonical pins (dodge_10 a5687d1b, hotdeath_11 8e6c19ea, bobball_26 fd43009a, bouncy_43 ffda0d9c, tictactoe_3 760fe5ac, nounours_358 0e7da7b1, urlchecker_28 50872227, chessclock_29 5ca6f2c5, fishrings_6 c8a9cb7c + manifest uNote/gmdice). Results: 5 INTERACTION_VERIFIED, 2 VISUALLY_VERIFIED, 6 VISUALLY_PARTIAL, 1 FRAME_CAPTURED, 2 FAILED (tictactoe: GdxRuntimeException AndroidGraphics.<init> white screen; chessclock: NPE APP-BOUNDARY + §14 VISUAL_FAIL). Fish Rings: INTERACTION_VERIFIED with machine-checked 4312px §11 proof + C5.png DENSITY_MISMATCH (§16) measured.
+- §28: 7/7 strong titles 3RUN_REPEATABLE (bobball, unote, fishrings, snake-deluxe, tictactoedeluxe, g2048, minicraft).
+- §32: 12/12 S91 GIF claims reclassified (5 candidate promotions pending §29 human review, 6 VISUALLY_PARTIAL downgrades, 1 FRAME_CAPTURED, 1 FAILED); canonical registry carries s92_reclassification trail; s82_validator PASS after edit.
+- §37 docs: docs/S92_GRAPHICS_VERIFICATION.md. Commits f35ff2e9 (prior session), 22c1ffd9, a4a41eff.
+- PUSH ledger: 3 commits queued (origin/main..HEAD) — push attempted, no PAT in env (non-interactive); PENDING user-supplied token per protocol.
+
+Stage Summary:
+- The verifier is DEPLOYED: it demonstrably rejects deliberate false-completes (7/7 battery + 3/3 selftest), holds the 96-stage regression, and produces strict machine verdicts for 16 real titles with named root causes. S91's blanket "graphics complete" claim is now quantified: 4 of 12 GIF titles survive as interaction-verified candidates, 1 visually verified, 7 downgraded/failed with evidence.
+- Honest frontier: FULLY_VERIFIED never emitted (§24 hard contract); family classifier observational; no source_verified contracts yet; hotdeath asset-gap root-cause wave pending; push pending PAT.
