@@ -2811,6 +2811,44 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                 content_w = std::max(content_w, (int)std::lround(48 * metrics_.density));
                 content_h = std::max(content_h, (int)std::lround(48 * metrics_.density));
             }
+            // L-S95-BTNMIN-1 (S95 Wave-B, AOSP Widget.Material.Button style
+            // law): core/res/res/values/styles_material.xml @ aosp-mirror
+            // HEAD 1cdfff555f4a21f71ccc978290e2e212e2f8b168 (file sha256
+            // 10eca71aaa2b3e49f63a6aa8a8fbb1a533a1e925fe428999d023f6cf81bd0
+            // b07) — <style name="Widget.Material.Button"> carries
+            // minHeight 48dip / minWidth 88dip; Widget.Material.Button
+            // .Toggle inherits them via implicit name-chain parent, while
+            // CheckBox/RadioButton (control_background_40dp style) and
+            // ImageButton (Widget.ImageButton chain) do NOT. AOSP
+            // TextView.onMeasure clamps
+            // want = Math.max(want, getSuggestedMinimumHeight()) BEFORE
+            // getDefaultSize, so a wrap_content Button measures
+            // >= 48dip x 88dip density-scaled regardless of text size.
+            // Evidence: bobball menu_main Buttons (layout_height=-2,
+            // no min honored) measured 44px tall on a 3x-density device
+            // where AOSP measures >= 144px — text ink then touched the
+            // node bounds (semantic CLIPPED_TEXT on every descender
+            // button) and the menu row pitch collapsed.
+            {
+                static const char* kMinSizeByDefault[] = {
+                    "Button", "ToggleButton",
+                };
+                const std::string cls = n->class_desc;
+                const size_t dot = cls.rfind('/');
+                const std::string simple =
+                    (dot == std::string::npos)
+                        ? cls
+                        : cls.substr(dot + 1, cls.size() - dot - 2);
+                for (const char* k : kMinSizeByDefault) {
+                    if (simple == k) {
+                        content_w = std::max(content_w,
+                            (int)std::lround(88 * metrics_.density));
+                        content_h = std::max(content_h,
+                            (int)std::lround(48 * metrics_.density));
+                        break;
+                    }
+                }
+            }
             // MASTER CAMPAIGN FIX (F8 default-onMeasure law — AOSP
             // View.java getDefaultSize): a custom leaf View whose chain
             // defines NO onMeasure override measures itself with

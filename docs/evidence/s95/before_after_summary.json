@@ -1,0 +1,662 @@
+{
+ "schema": "s95.evidence.v1",
+ "generated_utc": "2026-09-24T18:50:00Z",
+ "titles": {
+  "bouncy": {
+   "before": {
+    "verdict": "SEMANTIC_FAIL",
+    "failure_categories": [
+     {
+      "asset": "res/fK.png",
+      "category": "WRONG_COLOR",
+      "evidence": [
+       "aspect asset=1.00 observed=0.61",
+       "spatial_layout=0.00<0.6"
+      ]
+     },
+     {
+      "asset": "res/9n.png",
+      "category": "WRONG_COLOR",
+      "evidence": [
+       "aspect asset=1.78 observed=0.61",
+       "spatial_layout=0.00<0.6"
+      ]
+     },
+     {
+      "asset": "res/hW.png",
+      "category": "WRONG_COLOR",
+      "evidence": [
+       "aspect asset=1.00 observed=0.61",
+       "spatial_layout=0.00<0.6"
+      ]
+     },
+     {
+      "asset": "node:0",
+      "category": "WRONG_CLIP",
+      "evidence": [
+       "ink touches node bounds vertically"
+      ]
+     },
+     {
+      "asset": "node:3",
+      "category": "WRONG_CLIP",
+      "evidence": [
+       "ink touches node bounds vertically"
+      ]
+     },
+     {
+      "asset": "node:4",
+      "category": "WRONG_CLIP",
+      "evidence": [
+       "ink touches node bounds vertically"
+      ]
+     }
+    ],
+    "apk_sha256": "ffda0d9cb0b1b2aa58be9559dda891c4fa24391bc481d297a8e3d96c31f62721",
+    "screenshot_sha256": "362b191e9b0848ea68a4e3fa27e6102b094c2146ae00f68f4902838bbc028174",
+    "luminance_mean": 208.342,
+    "runtime_rc": 1,
+    "protocol": {
+     "frames": 10,
+     "tap": null,
+     "width": 1080,
+     "height": 1920,
+     "execution_mode": "real-dalvik",
+     "dump_view_tree": true
+    }
+   },
+   "after": {
+    "verdict": "SEMANTIC_FAIL",
+    "failure_categories": [
+     {
+      "asset": "node:0",
+      "category": "WRONG_CLIP",
+      "evidence": [
+       "ink touches node bounds vertically"
+      ]
+     }
+    ],
+    "apk_sha256": "ffda0d9cb0b1b2aa58be9559dda891c4fa24391bc481d297a8e3d96c31f62721",
+    "screenshot_sha256": "cf76282e5c2a6925d02c7c9a29190ab71bb6b315d69474414685d806a0e55423",
+    "luminance_mean": 186.367,
+    "runtime_rc": 1,
+    "protocol": {
+     "frames": 10,
+     "tap": null,
+     "width": 1080,
+     "height": 1920,
+     "execution_mode": "real-dalvik",
+     "dump_view_tree": true
+    }
+   }
+  },
+  "hotdeath": {
+   "before": {
+    "verdict": "SEMANTIC_FAIL",
+    "failure_categories": [
+     {
+      "asset": "res/drawable-xhdpi-v4/splash.png",
+      "category": "WRONG_COLOR",
+      "evidence": [
+       "aspect asset=0.60 observed=1.46",
+       "spatial_layout=0.00<0.6"
+      ]
+     }
+    ],
+    "apk_sha256": "8e6c19ead1795fa5b0f62090f3a56efa4be16e4b3e33f151af707f5eb5e5c620",
+    "screenshot_sha256": "197d5df46c6931b939cdf8b80b5694e26b4a49f66360e67c944c8986b0f01e01",
+    "luminance_mean": 239.461,
+    "runtime_rc": 0,
+    "protocol": {
+     "frames": 10,
+     "tap": null,
+     "width": 1080,
+     "height": 1920,
+     "execution_mode": "real-dalvik",
+     "dump_view_tree": true
+    }
+   },
+   "after": {
+    "verdict": "SEMANTIC_PASS",
+    "failure_categories": [],
+    "apk_sha256": "8e6c19ead1795fa5b0f62090f3a56efa4be16e4b3e33f151af707f5eb5e5c620",
+    "screenshot_sha256": "7c811bffb9a7c59097e0c66024251087dfaf313d362c8427db70290b1c381956",
+    "luminance_mean": 15.442,
+    "runtime_rc": 0,
+    "protocol": {
+     "frames": 10,
+     "tap": null,
+     "width": 1080,
+     "height": 1920,
+     "execution_mode": "real-dalvik",
+     "dump_view_tree": true
+    }
+   }
+  },
+  "urlchecker": {
+   "before": {
+    "verdict": "SEMANTIC_FAIL",
+    "failure_categories": [
+     {
+      "asset": "res/Ms.png",
+      "category": "WRONG_COLOR",
+      "evidence": [
+       "fill_ratio asset=0.7968 observed=1.0",
+       "aspect asset=1.00 observed=2.50"
+      ]
+     },
+     {
+      "asset": "res/9p.png",
+      "category": "WRONG_COLOR",
+      "evidence": [
+       "fill_ratio asset=0.7825 observed=1.0",
+       "aspect asset=0.98 observed=2.50"
+      ]
+     },
+     {
+      "asset": "res/o-.png",
+      "category": "WRONG_COLOR",
+      "evidence": [
+       "fill_ratio asset=0.7825 observed=1.0",
+       "aspect asset=0.98 observed=2.50"
+      ]
+     },
+     {
+      "asset": "node:4",
+      "category": "WRONG_CLIP",
+      "evidence": [
+       "ink touches node bounds vertically"
+      ]
+     }
+    ],
+    "apk_sha256": "50872227bc9d5f7af6193df3374d7bd32fe7706426c94f7d7e3a4fb0078acb01",
+    "screenshot_sha256": "765757de80b8e59fad4c6fdf5a2f6634809e0878f69a1c5ba004e87855170829",
+    "luminance_mean": 242.545,
+    "runtime_rc": 1,
+    "protocol": {
+     "frames": 10,
+     "tap": null,
+     "width": 1080,
+     "height": 1920,
+     "execution_mode": "real-dalvik",
+     "dump_view_tree": true
+    }
+   },
+   "after": {
+    "verdict": "SEMANTIC_FAIL",
+    "failure_categories": [
+     {
+      "asset": "node:0",
+      "category": "UNREADABLE_TEXT",
+      "evidence": [
+       "ink_ratio 0.0033 < 0.004"
+      ]
+     },
+     {
+      "asset": "node:1",
+      "category": "UNREADABLE_TEXT",
+      "evidence": [
+       "ink_ratio 0.0016 < 0.004"
+      ]
+     },
+     {
+      "asset": "node:2",
+      "category": "UNREADABLE_TEXT",
+      "evidence": [
+       "ink_ratio 0.0033 < 0.004"
+      ]
+     },
+     {
+      "asset": "node:4",
+      "category": "WRONG_CLIP",
+      "evidence": [
+       "ink touches node bounds vertically"
+      ]
+     }
+    ],
+    "apk_sha256": "50872227bc9d5f7af6193df3374d7bd32fe7706426c94f7d7e3a4fb0078acb01",
+    "screenshot_sha256": "9a27ca257d89343770a5cd2e62859a22fdf33f4ee9ea2d1e4b50808dba91ea21",
+    "luminance_mean": 96.798,
+    "runtime_rc": 1,
+    "protocol": {
+     "frames": 10,
+     "tap": null,
+     "width": 1080,
+     "height": 1920,
+     "execution_mode": "real-dalvik",
+     "dump_view_tree": true
+    }
+   }
+  },
+  "simplestopwatch": {
+   "before": {
+    "verdict": "SEMANTIC_FAIL",
+    "failure_categories": [
+     {
+      "asset": "res/drawable-xxhdpi-v4/settings.png",
+      "category": "WRONG_COLOR",
+      "evidence": [
+       "fill_ratio asset=0.5888 observed=0.9848",
+       "spatial_layout=0.00<0.6"
+      ]
+     },
+     {
+      "asset": "res/drawable-xxhdpi-v4/menu.png",
+      "category": "WRONG_COLOR",
+      "evidence": [
+       "component_count asset=3 observed=1",
+       "aspect asset=5.00 observed=1.00"
+      ]
+     },
+     {
+      "asset": "node:2",
+      "category": "UNREADABLE_TEXT",
+      "evidence": [
+       "ink_ratio 0.0000 < 0.004"
+      ]
+     }
+    ],
+    "apk_sha256": "b3ec1a5ec24ce53bf5c2322eaf79b00c52f021ed7a0ada9d58fae31dcffc83d2",
+    "screenshot_sha256": "3ceb294f36cbe55a17712604ce2d00bdfc692f2e0de61037318d2beb473078a6",
+    "luminance_mean": 150.435,
+    "runtime_rc": 0,
+    "protocol": {
+     "frames": 6,
+     "tap": null,
+     "width": 1080,
+     "height": 1920,
+     "execution_mode": "real-dalvik",
+     "dump_view_tree": true
+    }
+   },
+   "after": {
+    "verdict": "SEMANTIC_FAIL",
+    "failure_categories": [
+     {
+      "asset": "res/drawable-xxhdpi-v4/settings.png",
+      "category": "PLACEHOLDER_CONTENT",
+      "evidence": [
+       "solid/two-color region colors=1 edge_density=0.00000 nonbg=1.00"
+      ]
+     },
+     {
+      "asset": "res/drawable-xxhdpi-v4/menu.png",
+      "category": "PLACEHOLDER_CONTENT",
+      "evidence": [
+       "solid/two-color region colors=1 edge_density=0.00000 nonbg=1.00"
+      ]
+     },
+     {
+      "asset": "node:1",
+      "category": "UNREADABLE_TEXT",
+      "evidence": [
+       "ink_ratio 0.0000 < 0.004"
+      ]
+     },
+     {
+      "asset": "node:2",
+      "category": "UNREADABLE_TEXT",
+      "evidence": [
+       "ink_ratio 0.0000 < 0.004"
+      ]
+     }
+    ],
+    "apk_sha256": "b3ec1a5ec24ce53bf5c2322eaf79b00c52f021ed7a0ada9d58fae31dcffc83d2",
+    "screenshot_sha256": "1797c760da800142dbd6edd5417018611c40738e7b8ac458892dc61e2dece79b",
+    "luminance_mean": 240.025,
+    "runtime_rc": 0,
+    "protocol": {
+     "frames": 6,
+     "tap": null,
+     "width": 1080,
+     "height": 1920,
+     "execution_mode": "real-dalvik",
+     "dump_view_tree": true
+    }
+   }
+  },
+  "bobball": {
+   "before": {
+    "verdict": "SEMANTIC_FAIL",
+    "failure_categories": [
+     {
+      "asset": "node:1",
+      "category": "WRONG_CLIP",
+      "evidence": [
+       "ink touches node bounds vertically"
+      ]
+     },
+     {
+      "asset": "node:2",
+      "category": "WRONG_CLIP",
+      "evidence": [
+       "ink touches node bounds vertically"
+      ]
+     },
+     {
+      "asset": "node:3",
+      "category": "WRONG_CLIP",
+      "evidence": [
+       "ink touches node bounds vertically"
+      ]
+     },
+     {
+      "asset": "node:5",
+      "category": "WRONG_CLIP",
+      "evidence": [
+       "ink touches node bounds vertically"
+      ]
+     }
+    ],
+    "apk_sha256": "fd43009a7ffdfaf84963487e2b3502bef63775a4eedd60d7040da70e658b3241",
+    "screenshot_sha256": "b1744308c32c5047e15ddd6d785ea4245a73df01363938b5608faad80a0b1e55",
+    "luminance_mean": 21.359,
+    "runtime_rc": 0,
+    "protocol": {
+     "frames": 10,
+     "tap": null,
+     "width": 1080,
+     "height": 1920,
+     "execution_mode": "real-dalvik",
+     "dump_view_tree": true
+    }
+   },
+   "after": {
+    "verdict": "SEMANTIC_PARTIAL",
+    "failure_categories": [],
+    "apk_sha256": "fd43009a7ffdfaf84963487e2b3502bef63775a4eedd60d7040da70e658b3241",
+    "screenshot_sha256": "efaced30f29f0d45aa7826af29563ffb8b1408bf9d5225e2815e387fd92d093d",
+    "luminance_mean": 59.222,
+    "runtime_rc": 0,
+    "protocol": {
+     "frames": 10,
+     "tap": null,
+     "width": 1080,
+     "height": 1920,
+     "execution_mode": "real-dalvik",
+     "dump_view_tree": true
+    }
+   }
+  },
+  "dodge": {
+   "before": {
+    "verdict": "SEMANTIC_FAIL",
+    "failure_categories": [
+     {
+      "asset": "node:0",
+      "category": "WRONG_CLIP",
+      "evidence": [
+       "ink touches node bounds vertically"
+      ]
+     },
+     {
+      "asset": "node:1",
+      "category": "WRONG_CLIP",
+      "evidence": [
+       "ink touches node bounds vertically"
+      ]
+     },
+     {
+      "asset": "node:2",
+      "category": "WRONG_CLIP",
+      "evidence": [
+       "ink touches node bounds vertically"
+      ]
+     }
+    ],
+    "apk_sha256": "a5687d1bad7b2927740a55b7b1df11efc81edcad03f0633ab5c2e5c58b120541",
+    "screenshot_sha256": "ec3cde67817c0c04acd7932da456beedcab37bfeb9dc45f793d190d4c17aef76",
+    "luminance_mean": 50.064,
+    "runtime_rc": 0,
+    "protocol": {
+     "frames": 10,
+     "tap": null,
+     "width": 1080,
+     "height": 1920,
+     "execution_mode": "real-dalvik",
+     "dump_view_tree": true
+    }
+   },
+   "after": {
+    "verdict": "SEMANTIC_FAIL",
+    "failure_categories": [
+     {
+      "asset": "node:0",
+      "category": "WRONG_CLIP",
+      "evidence": [
+       "ink touches node bounds vertically"
+      ]
+     },
+     {
+      "asset": "node:1",
+      "category": "WRONG_CLIP",
+      "evidence": [
+       "ink touches node bounds vertically"
+      ]
+     },
+     {
+      "asset": "node:2",
+      "category": "WRONG_CLIP",
+      "evidence": [
+       "ink touches node bounds vertically"
+      ]
+     }
+    ],
+    "apk_sha256": "a5687d1bad7b2927740a55b7b1df11efc81edcad03f0633ab5c2e5c58b120541",
+    "screenshot_sha256": "5a261d3bb7aa149a43489ca9bf4af2cc0e2debd7b72410333797edbf073d5603",
+    "luminance_mean": 54.244,
+    "runtime_rc": 0,
+    "protocol": {
+     "frames": 10,
+     "tap": null,
+     "width": 1080,
+     "height": 1920,
+     "execution_mode": "real-dalvik",
+     "dump_view_tree": true
+    }
+   }
+  },
+  "mini-tetris": {
+   "before": {
+    "verdict": "SEMANTIC_FAIL",
+    "failure_categories": [
+     {
+      "asset": "animation",
+      "category": "ANIMATION_FROZEN",
+      "evidence": [
+       "FROZEN"
+      ]
+     }
+    ],
+    "apk_sha256": "700a3dcf9a98b26ef49ef8c36040011da325d926edb4c9a56853008924928bab",
+    "screenshot_sha256": "fc72fdf7a9eb986da3a54d185f5241280b796419cd04e8a9087e576e364a31b6",
+    "luminance_mean": 27.659,
+    "runtime_rc": 0,
+    "protocol": {
+     "frames": 24,
+     "tap": [
+      540,
+      1500,
+      16
+     ],
+     "width": 1080,
+     "height": 1920,
+     "execution_mode": "real-dalvik",
+     "dump_view_tree": true
+    }
+   },
+   "after": {
+    "verdict": "SEMANTIC_PARTIAL",
+    "failure_categories": [],
+    "apk_sha256": "700a3dcf9a98b26ef49ef8c36040011da325d926edb4c9a56853008924928bab",
+    "screenshot_sha256": "0a8645fd0ef20ff9e7957f3307119e7d1fae7eb54192f7c0442d2ce0b0302365",
+    "luminance_mean": 29.18,
+    "runtime_rc": 0,
+    "protocol": {
+     "frames": 24,
+     "tap": [
+      786,
+      1854,
+      16
+     ],
+     "width": 1080,
+     "height": 1920,
+     "execution_mode": "real-dalvik",
+     "dump_view_tree": true
+    }
+   }
+  },
+  "minicraft": {
+   "before": {
+    "verdict": "SEMANTIC_FAIL",
+    "failure_categories": [
+     {
+      "asset": "animation",
+      "category": "ANIMATION_FROZEN",
+      "evidence": [
+       "FROZEN"
+      ]
+     }
+    ],
+    "apk_sha256": "77b9629ee111b968ccc9dbd4507eab3564a0a7a6e26dcacbe28f99de189c3a90",
+    "screenshot_sha256": "c0f37a6b2134978f7264286943e3cd56ead801a497b547ef47caf0154ce02dd1",
+    "luminance_mean": 183.17,
+    "runtime_rc": 0,
+    "protocol": {
+     "frames": 24,
+     "tap": [
+      540,
+      1500,
+      16
+     ],
+     "width": 1080,
+     "height": 1920,
+     "execution_mode": "real-dalvik",
+     "dump_view_tree": true
+    }
+   },
+   "after": {
+    "verdict": "SEMANTIC_PARTIAL",
+    "failure_categories": [],
+    "apk_sha256": "77b9629ee111b968ccc9dbd4507eab3564a0a7a6e26dcacbe28f99de189c3a90",
+    "screenshot_sha256": "35c91d8c549dd7abf9bb9eba8528c86ac0eee60bee3901b405448ca505d403d8",
+    "luminance_mean": 165.453,
+    "runtime_rc": 0,
+    "protocol": {
+     "frames": 24,
+     "tap": [
+      925,
+      1862,
+      16
+     ],
+     "width": 1080,
+     "height": 1920,
+     "execution_mode": "real-dalvik",
+     "dump_view_tree": true
+    }
+   }
+  },
+  "nounours": {
+   "before": {
+    "verdict": "SEMANTIC_PASS",
+    "failure_categories": [],
+    "apk_sha256": "0e7da7b17b63d727fb2a3a75e0576e1a42e286ebc8fb73b368da5518a728c682",
+    "screenshot_sha256": "3b91ced43a4e8da9bab646192003027a4ecab8e330d885cec4f8556012dffc28",
+    "luminance_mean": 235.0,
+    "runtime_rc": 1,
+    "protocol": {
+     "frames": 8,
+     "tap": null,
+     "width": 1080,
+     "height": 1920,
+     "execution_mode": "real-dalvik",
+     "dump_view_tree": true
+    }
+   },
+   "after": {
+    "verdict": "SEMANTIC_PASS",
+    "failure_categories": [],
+    "apk_sha256": "0e7da7b17b63d727fb2a3a75e0576e1a42e286ebc8fb73b368da5518a728c682",
+    "screenshot_sha256": "8de36a072b606fe7e6e86e5b06af898322071bba49cab3a15826ac5f6c384b97",
+    "luminance_mean": 166.0,
+    "runtime_rc": 1,
+    "protocol": {
+     "frames": 8,
+     "tap": null,
+     "width": 1080,
+     "height": 1920,
+     "execution_mode": "real-dalvik",
+     "dump_view_tree": true
+    }
+   }
+  },
+  "unote": {
+   "before": {
+    "verdict": "SEMANTIC_PASS",
+    "failure_categories": [],
+    "apk_sha256": "be91103f0e7db44361de5e918d9130dab4ac137bab5bd946a0fd8dab88bc2cc0",
+    "screenshot_sha256": "6269ba028ebef3e156c650c1a2257cd331c4e33e5a5c1d0e1ff7e2ecacd7d6de",
+    "luminance_mean": 249.839,
+    "runtime_rc": 1,
+    "protocol": {
+     "frames": 10,
+     "tap": null,
+     "width": 1080,
+     "height": 1920,
+     "execution_mode": "real-dalvik",
+     "dump_view_tree": true
+    }
+   },
+   "after": {
+    "verdict": "SEMANTIC_PASS",
+    "failure_categories": [],
+    "apk_sha256": "be91103f0e7db44361de5e918d9130dab4ac137bab5bd946a0fd8dab88bc2cc0",
+    "screenshot_sha256": "64cf6eadefe07a7b5a6b89382d2f01f97a1e834b7c279f8a8557e0d480a97d30",
+    "luminance_mean": 70.873,
+    "runtime_rc": 1,
+    "protocol": {
+     "frames": 10,
+     "tap": null,
+     "width": 1080,
+     "height": 1920,
+     "execution_mode": "real-dalvik",
+     "dump_view_tree": true
+    }
+   }
+  },
+  "gmdice": {
+   "before": {
+    "verdict": "SEMANTIC_PASS",
+    "failure_categories": [],
+    "apk_sha256": "1621eda11b5dbc0c232b54c652d27aeab2f8a3c95be2c1f0632d6233b12d8a85",
+    "screenshot_sha256": "de98358c68f0f884ca6a1e0c69ff0147c1927411ebec95032ba5210ece159a6b",
+    "luminance_mean": 245.506,
+    "runtime_rc": 0,
+    "protocol": {
+     "frames": 10,
+     "tap": null,
+     "width": 1080,
+     "height": 1920,
+     "execution_mode": "real-dalvik",
+     "dump_view_tree": true
+    }
+   },
+   "after": {
+    "verdict": "SEMANTIC_PASS",
+    "failure_categories": [],
+    "apk_sha256": "1621eda11b5dbc0c232b54c652d27aeab2f8a3c95be2c1f0632d6233b12d8a85",
+    "screenshot_sha256": "3891679dff4493313674272066cf8eeb8b4ba953a1e7d6593399c456fccb861c",
+    "luminance_mean": 33.03,
+    "runtime_rc": 0,
+    "protocol": {
+     "frames": 10,
+     "tap": null,
+     "width": 1080,
+     "height": 1920,
+     "execution_mode": "real-dalvik",
+     "dump_view_tree": true
+    }
+   }
+  }
+ }
+}

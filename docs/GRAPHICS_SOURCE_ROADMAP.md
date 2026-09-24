@@ -7,13 +7,27 @@
 
 ## P0 — directly blocking current graphics
 
+> **S95 UPDATE (2026-09-24)** — the P0 wave EXECUTED against real APKs; the
+> canonical result table is `docs/GRAPHICS_SOURCE_LIBRARY_VALIDATION.md` §3.
+> Status deltas: Density/vector WRONG_COLOR — hotdeath FAIL→PASS, bouncy +
+> urlchecker WRONG_COLOR eliminated (L-S95-VECTOR-1/ADAPTIVE-1);
+> WRONG_CLIP — root cause was MEASURE (Button 48dip law, L-S95-BTNMIN-1),
+> bobball 4×→0, dodge partial; ANIMATION_FROZEN — REFUTED as a harness tap
+> miss (both games animate, 3 deterministic runs); UNREADABLE_TEXT — theme
+> layers fixed (L-S95-DEFTHEME-1/TXTCLR-1/ICONBTN-1), simplestopwatch
+> remaining flags reduce to ONE named gap: app-level programmatic UI
+> (custom-view onDraw + setTextColor scheme application) — promoted to P1.
+> New P1 entries: (1) programmatic UI color-scheme execution
+> (simplestopwatch, [C013-ONDRAW] dispatched=NO evidence); (2) LinearLayout
+> weight-distribution measure bug (dodge menu panel ~1645px children).
+
 | Gap | Source(s) | Algorithm/contract | Implementation availability | Test availability | MiniAndroid status | Measured fan-out |
 |---|---|---|---|---|---|---|
-| Density selection at decode (WRONG_COLOR wave) | aosp-mirror/platform_frameworks_base `BitmapFactory.java`; bumptech/glide `Downsampler.java` | inDensity × inTargetDensity pairs; power-of-2 inSampleSize | upstream proven; port = decoder options + resolver wiring | glide test suite; build density fixture table | OPEN — Fish Rings C5 DENSITY_MISMATCH measured; WRONG_COLOR on 4 titles | 4 titles in S93 failure map (bouncy 3×, hotdeath 1×, simplestopwatch 2×, urlchecker 3×); every density-split APK in corpus |
+| Density selection at decode (WRONG_COLOR wave) | aosp-mirror/platform_frameworks_base `BitmapFactory.java`; bumptech/glide `Downsampler.java` | inDensity × inTargetDensity pairs; power-of-2 inSampleSize | upstream proven; port = decoder options + resolver wiring | glide test suite; build density fixture table | **PARTIAL (S95)** — density law wired into decode_image_bytes; vector/adaptive gap closed; s95_vector battery stage green | WRONG_COLOR eliminated on 3/4 mapped titles (hotdeath PASS; bouncy, urlchecker color-fail 3×→0); simplestopwatch moved to placeholder/scheme taxonomy |
 | GIF disposal semantics (12 GIF titles) | google/wuffs `wuffs_gif__decoder`; python-pillow/Pillow `_seek`; golang/go `image/gif/reader.go`; FFmpeg `gifdec.c` | disposal 0–3 restore semantics per frame | wuffs = drop-in candidate; port = compositor rework | wuffs test corpus 437 files; Pillow test_file_gif.py; golang reader_test.go | OPEN — compositor minimal | 12 GIF VERIFIED-INTERACTIVE titles + all animated-drawable APKs |
-| Canvas clip stack correctness (WRONG_CLIP wave) | aosp-mirror/platform_frameworks_base `Canvas.java`; google/skia `SkCanvas.cpp`; houstudio/cdroid view/canvas | clip stack intersect semantics; quickReject | AOSP/Skia behavior spec; CDroid = C++ reference | Skia ClipStackTest; CDroid cts tests | OPEN — engine clip obedience | bobball 4×, dodge 3×, bouncy 3×, urlchecker 1× WRONG_CLIP frames |
-| UNREADABLE_TEXT law | harfbuzz/harfbuzz (`hb_ot_shape_internal`); google/minikin `Layout.cpp`; freetype/freetype `ftobjs.c`; tesseract-ocr/tesseract | shaping→glyph IDs→positions→raster; .notdef = tofu; OCR cross-check | R4 POC proven (FriBidi+HarfBuzz+FreeType) not wired | harfbuzz in-house 3058 test files; tesseract Recognize | OPEN — verdict currently heuristic | simplestopwatch UNREADABLE_TEXT; all text-heavy titles (uNote, MicroTimer, notes/readers in 148-corpus) |
-| AnimationDrawable timing (ANIMATION_FROZEN) | aosp-mirror/platform_frameworks_base `AnimationDrawable.java`; libgdx/libgdx `AndroidGraphics.java` | scheduleSelf per-frame durations; onDrawFrame submission | behavior spec + C++ port | CDroid cts_animationdrawable_test.cc; lottie-android tests | OPEN | mini-tetris, minicraft frozen; all AnimatedImageView titles |
+| Canvas clip stack correctness (WRONG_CLIP wave) | aosp-mirror/platform_frameworks_base `Canvas.java`; google/skia `SkCanvas.cpp`; houstudio/cdroid view/canvas | clip stack intersect semantics; quickReject | AOSP/Skia behavior spec; CDroid = C++ reference | Skia ClipStackTest; CDroid cts tests | **OBSERVED (S95)** — S93 clip flags on bobball/dodge/bouncy traced to MEASURE gaps (Button minHeight), not clip semantics; clip-stack obedience remains covered by battery law tests | bobball 4×→0, dodge partial (1 of 2 causes fixed), urlchecker residual 1 node |
+| UNREADABLE_TEXT law | harfbuzz/harfbuzz (`hb_ot_shape_internal`); google/minikin `Layout.cpp`; freetype/freetype `ftobjs.c`; tesseract-ocr/tesseract | shaping→glyph IDs→positions→raster; .notdef = tofu; OCR cross-check | R4 POC proven (FriBidi+HarfBuzz+FreeType) not wired | harfbuzz in-house 3058 test files; tesseract Recognize | **PARTIAL (S95)** — theme default-color laws fixed (dark default theme, textColorPrimary, ImageBtn fill); remaining = programmatic scheme execution (P1) | simplestopwatch residual flags single-root-caused; urlchecker 3 floor-artifact flags documented (visual evidence readable) |
+| AnimationDrawable timing (ANIMATION_FROZEN) | aosp-mirror/platform_frameworks_base `AnimationDrawable.java`; libgdx/libgdx `AndroidGraphics.java` | scheduleSelf per-frame durations; onDrawFrame submission | behavior spec + C++ port | CDroid cts_animationdrawable_test.cc; lottie-android tests | **REFUTED (S95)** — frozen evidence was a harness tap miss; engine postDelayed/invalidation/frame machinery proven correct (6/2 unique frames ×3 runs) | 0 real engine cases remain from the S93 map |
 
 ## P1 — high fan-out future graphics
 

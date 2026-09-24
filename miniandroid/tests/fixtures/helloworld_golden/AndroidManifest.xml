@@ -3,7 +3,15 @@
     package="com.miniandroid.helloworldgolden"
     android:versionCode="1"
     android:versionName="1.0">
-    <application android:label="HelloWorld Golden">
+    <!-- S95 (L-S95-DEFTHEME-1): the fixture's design is LIGHT (dark text
+         on a light window) — on real Android that intent is expressed by
+         declaring an explicit LIGHT theme; a theme-less app inherits the
+         framework DARK default (Theme → colorBackground #ff303030) and
+         dark-on-dark would be the TRUE (unreadable) result. Declaring
+         the theme also pins the window background through the same
+         resolution chain the golden's pixel-law checks assume. -->
+    <application android:label="HelloWorld Golden"
+                 android:theme="@android:style/Theme.Material.Light">
         <activity android:name="com.miniandroid.helloworldgolden.MainActivity"
             android:label="HelloWorld Golden">
             <intent-filter>
