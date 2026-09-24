@@ -1,0 +1,120 @@
+#!/usr/bin/env python3
+"""Emit docs/GRAPHICS_SOURCE_REGISTRY.md from docs/GRAPHICS_SOURCE_REGISTRY.json."""
+import json
+from pathlib import Path
+
+ROOT = Path("/home/z/my-project")
+reg = json.loads((ROOT / "docs/GRAPHICS_SOURCE_REGISTRY.json").read_text())
+s2l = json.loads((ROOT / "run/s94/source_mining/source_to_law.json").read_text())
+
+L = []
+L.append("# GRAPHICS SOURCE REGISTRY — MiniAndroid permanent asset (S94)")
+L.append("")
+L.append("> **This registry is permanent engineering infrastructure.**")
+L.append("> For EVERY future graphics problem: classify → look up here → inspect the")
+L.append("> upstream source AND tests → only then implement. Never reproduce behavior")
+L.append("> from memory. Never invent a replacement when a strong upstream")
+L.append("> implementation exists. Never treat GitHub stars as correctness.")
+L.append("")
+L.append(f"- generated: {reg['generated_at']}")
+L.append(f"- registry entries: **{reg['counts']['registry_entries']}**")
+L.append(f"- distinct GitHub-verified repositories: **{reg['counts']['distinct_github_verified_repositories']}**")
+L.append(f"- deep-inspected (clone or pinned-SHA fetch): **{reg['counts']['deep_inspected']}**")
+L.append(f"- identity-only verified: {reg['counts']['identity_only']}")
+L.append(f"- off-GitHub canonical references: {reg['counts']['off_github_canonical_references']}")
+L.append(f"- unverified directive identities (recorded honestly, never substituted): {reg['counts']['unverified_directive_identities']}")
+L.append(f"- semantic laws with fetched evidence: **{len(s2l['laws'])}/48**")
+L.append("")
+L.append("## Verification methods (no invented identities)")
+L.append("")
+L.append("| Evidence | Method |")
+L.append("|---|---|")
+L.append("| repository identity + HEAD commit | `git ls-remote --symref https://github.com/<owner>/<repo>.git HEAD` |")
+L.append("| license | `raw.githubusercontent.com` fetch **at the pinned HEAD SHA** (sha256 recorded) |")
+L.append("| deep source mining | shallow clone + file harvest (sha256, symbol line hits) |")
+L.append("| large-repo source mining | pinned-SHA raw fetch with symbol line hits |")
+L.append("| AOSP-only repos | `android.googlesource.com ...?format=TEXT` (minikin, View.java) |")
+L.append("")
+L.append("## Mirror / canonical policy")
+L.append("")
+L.append("- One record per canonical repository identity. Seed entries listed in several")
+L.append("  families keep ONE record with multiple `families` (no double counting).")
+L.append("- `MIRROR_OF:` marks repos whose canonical upstream is off GitHub (AOSP")
+L.append("  googlesource, freedesktop, gnome). These are distinct codebases, not")
+L.append("  duplicates of anything else in this registry.")
+L.append("- `FORK_OF:` marks forks carrying downstream patches (JetBrains compose core,")
+L.append("  LineageOS native frameworks).")
+L.append("- Identity migrations are recorded in `identity_history` — never silently")
+L.append("  substituted (notofonts/noto-emoji→googlefonts/noto-emoji;")
+L.append("  facebookarchive/screenshot-tests-for-android→facebook/...; renderdoc→baldurk).")
+L.append("- `android/graphics`, `google/android-codelabs`, `android/platform_frameworks_support`")
+L.append("  could not be verified and are recorded UNVERIFIED, per directive.")
+L.append("")
+L.append("## Inspection status legend")
+L.append("")
+L.append("- **DEEP_CLONE** — repository shallow-cloned; key files hashed + symbol line hits recorded")
+L.append("- **DEEP_FETCH** — provenance-pinned source files fetched with symbol line hits")
+L.append("- **IDENTITY_ONLY** — identity + license verified; not yet deep-read (future work)")
+L.append("")
+L.append("## Priority families (lookup table)")
+L.append("")
+L.append("| Failure family | First sources to consult |")
+L.append("|---|---|")
+L.append("| WRONG_COLOR | google/skia, aosp-mirror/platform_frameworks_base (BitmapFactory), bumptech/glide (Downsampler), pnggroup/libpng, webmproject/libwebp, mapbox/pixelmatch |")
+L.append("| WRONG_CLIP | aosp-mirror/platform_frameworks_base (Canvas), google/skia (SkCanvas), houstudio/cdroid (view/ninepatch), androidx/constraintlayout, facebook/yoga |")
+L.append("| ANIMATION_FROZEN | aosp-mirror/platform_frameworks_base (AnimationDrawable), libgdx/libgdx (AndroidGraphics), google/wuffs (GIF disposal), airbnb/lottie-android, godotengine/godot, python-pillow/Pillow |")
+L.append("| UNREADABLE_TEXT | harfbuzz/harfbuzz, google/minikin, freetype/freetype, unicode-org/icu, fribidi/fribidi, tesseract-ocr/tesseract, houstudio/cdroid (StaticLayout) |")
+L.append("| Surface / frame submission | aosp-mirror/platform_frameworks_base (SurfaceView), libgdx/libgdx, libsdl-org/SDL, LineageOS/android_frameworks_native (SurfaceFlinger), floooh/sokol, bkaradzic/bgfx |")
+L.append("| WebView visual readiness | chromium/chromium (AwContents), WebKit/WebKit (ImageLoader), web-platform-tests/wpt, electron/electron |")
+L.append("| Screenshot false-positive | mapbox/pixelmatch, JohannesBuchner/imagehash, takahirom/roborazzi, cashapp/paparazzi, ndtp/android-testify, pedrovgs/Shot |")
+L.append("| Vector / NinePatch | houstudio/cdroid, aosp-mirror/platform_frameworks_base, RazrFalcon/resvg, memononen/nanovg |")
+L.append("| Compose pipeline | androidx/androidx, JetBrains/skiko, JetBrains/compose-multiplatform-core |")
+L.append("")
+L.append("## Law map (48 laws, all with fetched evidence)")
+L.append("")
+L.append("| Law | Family | Source | File | Reuse |")
+L.append("|---|---|---|---|---|")
+for law in s2l["laws"]:
+    src = law["source"]
+    L.append(f"| {law['law_id']} | {law['family']} | {src['repository']} | `{src['path']}` | {law['reuse']} |")
+L.append("")
+L.append("Full law statements, symbol line hits and file hashes: `run/s94/source_mining/source_to_law.json`, `findings.jsonl`.")
+L.append("")
+
+by_status = {}
+for e in reg["entries"]:
+    key = {"VERIFIED": "VERIFIED (GitHub)", "OFF_GITHUB": "OFF-GITHUB canonical"}.get(e["status"], "UNVERIFIED directive identity")
+    by_status.setdefault(key, []).append(e)
+
+for section, note in [("VERIFIED (GitHub)", None),
+                      ("OFF-GITHUB canonical", "Canonical upstream NOT on GitHub — links preserved, not counted in the GitHub distinct count."),
+                      ("UNVERIFIED directive identity", "Seed directive listed these; GitHub has no such repo at that identity. Recorded honestly; never substituted.")]:
+    ents = by_status.get(section, [])
+    if not ents:
+        continue
+    L.append(f"## {section} ({len(ents)})")
+    if note:
+        L.append("")
+        L.append(note)
+    L.append("")
+    L.append("| ID | Repository | Families | P | License | Inspection | Files | HEAD SHA |")
+    L.append("|---|---|---|---|---|---|---|---|")
+    for e in sorted(ents, key=lambda x: x["id"]):
+        fam = ", ".join(e["families"][:3]) + ("…" if len(e["families"]) > 3 else "")
+        lic = (e.get("license") or "?")[:24]
+        sha = (e.get("head_sha") or "")[:10]
+        rel = e.get("relationship", "")
+        repo_disp = e["repository"] + (f" ({rel.split(':')[0]})" if rel.startswith(("MIRROR", "FORK", "ARCH")) else "")
+        L.append(f"| {e['id']} | [{repo_disp}]({e['url']}) | {fam} | {e['priority']} | {lic} | {e['inspection_status']} | {e['inspected_files']} | {sha} |")
+    L.append("")
+
+L.append("## Maintenance law")
+L.append("")
+L.append("1. Every new graphics source must be added here (and to `GRAPHICS_SOURCE_REGISTRY.json`) with identity verification, license evidence, and inspection status.")
+L.append("2. If a repository moves: update the entry, keep the old reference in `identity_history`, record the migration date.")
+L.append("3. `IDENTITY_ONLY` entries are queued future deep-mining work — they count as verified identities but NOT as inspected sources.")
+L.append("4. License gates reuse: `SAFE_PORT_WITH_ATTRIBUTION` < `COPY_REQUIRES_NOTICE` < `REFERENCE_ONLY`. Never copy from `REFERENCE_ONLY` sources.")
+L.append("5. The registry feeds `tools/source_lookup.py` — keep families in sync with the failure taxonomy.")
+L.append("")
+(ROOT / "docs/GRAPHICS_SOURCE_REGISTRY.md").write_text("\n".join(L) + "\n")
+print("wrote docs/GRAPHICS_SOURCE_REGISTRY.md", len(L), "lines")
