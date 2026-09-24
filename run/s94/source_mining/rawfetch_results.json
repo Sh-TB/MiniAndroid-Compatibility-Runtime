@@ -1,0 +1,2572 @@
+{
+ "generated_at": "2026-09-24T09:17:11.953130+00:00",
+ "fetch_method": "raw.githubusercontent.com at Phase-A pinned HEAD SHA; googlesource ?format=TEXT for minikin",
+ "results": [
+  {
+   "repository": "FFmpeg/FFmpeg",
+   "family_note": "GIF/APNG demux+decode reference",
+   "files": [
+    {
+     "path": "libavcodec/gifdec.c",
+     "law": "L-S94-GIF-3: frame rect + disposal parsed per frame; transparency index handled explicitly",
+     "symbols": [
+      "gif_read_image",
+      "disposal_method"
+     ],
+     "status": "OK",
+     "fetch_source": "FFmpeg/FFmpeg@5253641e62e4:libavcodec/gifdec.c",
+     "bytes": 17933,
+     "sha256": "bbd15eaaebc9fc5d85c5d096e414eea83fd50311442ad626cce263e6b88e693a",
+     "symbol_line_hits": {
+      "gif_read_image": [
+       133,
+       439
+      ]
+     },
+     "head_excerpt": "/* |  * GIF decoder |  * Copyright (c) 2003 Fabrice Bellard |  * Copyright (c) 2006 Baptiste Coudurier |  * Copyright (c) 2012 Vitaliy E Sugrobov |  * |  * This file is part of FFmpeg. |  * |  * FFmpeg is free software; you can redistribute"
+    }
+   ]
+  },
+  {
+   "repository": "ImageMagick/ImageMagick",
+   "family_note": "Toolkit text/image ops",
+   "files": [
+    {
+     "path": "MagickCore/annotate.c",
+     "law": "L-S94-TEXT-2: text annotation resolves font metrics then renders per-type; missing font falls through explicit path",
+     "symbols": [
+      "AnnotateImage",
+      "RenderType"
+     ],
+     "status": "OK",
+     "fetch_source": "ImageMagick/ImageMagick@06a455777529:MagickCore/annotate.c",
+     "bytes": 82420,
+     "sha256": "0228571dbe18bdd681809c6ffb32d2f63606ab1a03e6c5de4915acbe059bd648",
+     "symbol_line_hits": {
+      "AnnotateImage": [
+       220,
+       222,
+       224,
+       236
+      ],
+      "RenderType": [
+       147,
+       551,
+       953,
+       980,
+       983,
+       985,
+       1001
+      ]
+     },
+     "head_excerpt": "/* | %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% | %                                                                             % | %"
+    }
+   ]
+  },
+  {
+   "repository": "JetBrains/compose-multiplatform-core",
+   "family_note": "JB fork of androidx compose (delta evidence)",
+   "files": [
+    {
+     "path": "compose/ui/ui/src/androidMain/kotlin/androidx/compose/ui/platform/AndroidComposeView.android.kt",
+     "law": "FORK evidence: JB carries androidx pipeline with patches; canonical remains androidx/androidx",
+     "symbols": [
+      "dispatchDraw"
+     ],
+     "status": "OK",
+     "fetch_source": "JetBrains/compose-multiplatform-core@7284d0b5dfc5:compose/ui/ui/src/androidMain/kotlin/androidx/compose/ui/platform/AndroidComposeView.android.kt",
+     "bytes": 197131,
+     "sha256": "3fa2f97de6501b50b5b25ce36c20789cdb35093a50cb885e4de4a684819a842c",
+     "symbol_line_hits": {
+      "dispatchDraw": [
+       765,
+       2056,
+       2449,
+       2477,
+       2480,
+       2493
+      ]
+     },
+     "head_excerpt": "/* |  * Copyright 2019 The Android Open Source Project |  * |  * Licensed under the Apache License, Version 2.0 (the \"License\"); |  * you may not use this file except in compliance with the License. |  * You may obtain a copy of the License"
+    }
+   ]
+  },
+  {
+   "repository": "JetBrains/skiko",
+   "family_note": "Skia bindings frame/redraw",
+   "files": [
+    {
+     "path": "skiko/src/commonMain/kotlin/org/jetbrains/skiko/SkiaLayer.kt",
+     "law": "L-S94-COMPOSE-3: skia layer redraw is explicitly scheduled (needRedraw); frame submission tied to onRender callback",
+     "symbols": [
+      "drawScene",
+      "needRedraw",
+      "onRender"
+     ],
+     "status": "OK",
+     "fetch_source": "JetBrains/skiko@12d12006ca56:skiko/src/commonMain/kotlin/org/jetbrains/skiko/SkiaLayer.kt",
+     "bytes": 2615,
+     "sha256": "b9e0446799f5ed6f45dae4962e73ef6244008856676a10b9805d50f5573bb13d",
+     "symbol_line_hits": {
+      "needRedraw": [
+       65
+      ],
+      "onRender": [
+       56
+      ]
+     },
+     "head_excerpt": "package org.jetbrains.skiko |  | import org.jetbrains.skia.Canvas | import org.jetbrains.skia.Picture | import org.jetbrains.skia.PixelGeometry |  | /** |  * Generic layer for Skiko rendering. |  */ | expect open class SkiaLayer { |     /**"
+    }
+   ]
+  },
+  {
+   "repository": "KhronosGroup/WebGL",
+   "family_note": "WebGL conformance suite",
+   "files": [
+    {
+     "path": "README.md",
+     "law": "READY_TEST: conformance suites as GLES behavior contract",
+     "symbols": [
+      "conformance"
+     ],
+     "status": "OK",
+     "fetch_source": "KhronosGroup/WebGL@714857a28445:README.md",
+     "bytes": 2269,
+     "sha256": "b64ff5888ce5d2ab346fd9bd38c73f1539e782b0aa27177f6a8c8b3cc84b5f71",
+     "symbol_line_hits": {
+      "conformance": [
+       5,
+       13,
+       15,
+       17,
+       18
+      ]
+     },
+     "head_excerpt": "# The Official Khronos WebGL Repository |  | This is the official home of the Khronos | WebGL repository for the WebGL specifications | and the WebGL conformance test suite. |  | Before adding a new test or editing an existing test | [pleas"
+    }
+   ]
+  },
+  {
+   "repository": "LineageOS/android_frameworks_native",
+   "family_note": "SurfaceFlinger frame composition (AOSP native stand-in)",
+   "files": [
+    {
+     "path": "services/surfaceflinger/SurfaceFlinger.cpp",
+     "law": "L-S94-SURFACE-5: committed layers are composited into a presented frame; buffer availability gates frame submission",
+     "symbols": [
+      "commit",
+      "composite",
+      "onMessageReceived"
+     ],
+     "status": "OK",
+     "fetch_source": "LineageOS/android_frameworks_native@9568531f9be7:services/surfaceflinger/SurfaceFlinger.cpp",
+     "bytes": 475825,
+     "sha256": "66e8384e262d2803adf14cdad1c71e02bd760e2b70adfe79da880b74d4b64b8b",
+     "symbol_line_hits": {
+      "commit": [
+       1019,
+       1565,
+       1728,
+       2671,
+       2691,
+       2693,
+       2701,
+       2716,
+       2766,
+       2837
+      ],
+      "composite": [
+       2916,
+       3128,
+       3247,
+       3250,
+       3253,
+       3273,
+       3301,
+       3316,
+       3317,
+       3326
+      ]
+     },
+     "head_excerpt": "/* |  * Copyright (C) 2007 The Android Open Source Project |  * |  * Licensed under the Apache License, Version 2.0 (the \"License\"); |  * you may not use this file except in compliance with the License. |  * You may obtain a copy of the Lic"
+    }
+   ]
+  },
+  {
+   "repository": "OpenImageIO/oiio",
+   "family_note": "retry round",
+   "files": [
+    {
+     "path": "src/libOpenImageIO/imagebufalgo_compare.cpp",
+     "symbols": [
+      "compare",
+      "isnan"
+     ],
+     "law": "",
+     "status": "OK",
+     "fetch_source": "OpenImageIO/oiio@3722a2d4dad7:src/libOpenImageIO/imagebufalgo_compare.cpp",
+     "bytes": 32948,
+     "sha256": "681b028a1b5d4c821802672258dadb6f266b6e46ef4a7b1ab713087a08186de2",
+     "symbol_line_hits": {
+      "compare": [
+       6,
+       214,
+       267,
+       288,
+       306,
+       317,
+       336,
+       339,
+       340,
+       346
+      ],
+      "isnan": [
+       83,
+       221
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "repository": "WebKit/WebKit",
+   "family_note": "ImageLoader + test runner",
+   "files": [
+    {
+     "path": "Source/WebCore/loader/ImageLoader.cpp",
+     "law": "L-S94-WEB-3: DOM image element existence is decoupled from decoded image availability; load events drive repaint",
+     "symbols": [
+      "updateFromElement",
+      "notifyFinished"
+     ],
+     "status": "OK",
+     "fetch_source": "WebKit/WebKit@d9fb479bd09e:Source/WebCore/loader/ImageLoader.cpp",
+     "bytes": 30391,
+     "sha256": "0690fa8bfdc521297bf22f10732dbb5de0dac24bfe0c8a06867bfc067c981041",
+     "symbol_line_hits": {
+      "updateFromElement": [
+       207,
+       220,
+       309,
+       409,
+       412,
+       415,
+       418,
+       756
+      ],
+      "notifyFinished": [
+       425,
+       454,
+       456,
+       466
+      ]
+     },
+     "head_excerpt": "/* |  * Copyright (C) 1999 Lars Knoll (knoll@kde.org) |  *           (C) 1999 Antti Koivisto (koivisto@kde.org) |  * Copyright (C) 2004-2026 Apple Inc. All rights reserved. |  * |  * This library is free software; you can redistribute it an"
+    },
+    {
+     "path": "Tools/Scripts/run-webkit-tests",
+     "law": "READY_TEST: layout-test runner with expected/actual/diff semantics",
+     "symbols": [
+      "expected",
+      "diff"
+     ],
+     "status": "OK",
+     "fetch_source": "WebKit/WebKit@d9fb479bd09e:Tools/Scripts/run-webkit-tests",
+     "bytes": 2012,
+     "sha256": "9af8d10f1cf05a41443144cfb826ad9fb6020ba6588213d8ff6ba71dba4ebfb8",
+     "symbol_line_hits": {},
+     "head_excerpt": "#!/usr/bin/env python3 |  | # Copyright (C) 2011 Google Inc. All rights reserved. | # Copyright (C) 2020 Apple Inc. All rights reserved. | # | # Redistribution and use in source and binary forms, with or without | # modification, are permit"
+    }
+   ]
+  },
+  {
+   "repository": "androguard/androguard",
+   "family_note": "AXML/ARSC oracle (named in DO_NOT_REINVENT)",
+   "files": [
+    {
+     "path": "README.md",
+     "law": "READY_TEST oracle for AXML/ARSC diffs",
+     "symbols": [
+      "AXML"
+     ],
+     "status": "OK",
+     "fetch_source": "androguard/androguard@a06d033c0d3e:README.md",
+     "bytes": 16217,
+     "sha256": "582226f5b66b1e9eebf99aa5204d40a176c14c59755d722eae9cbf7e1957e6d6",
+     "symbol_line_hits": {
+      "AXML": [
+       188,
+       194,
+       212
+      ]
+     },
+     "head_excerpt": "<p align=\"center\"><img width=\"200\" src=\"./.github/logo.png\" alt=\"Androguard\"></p> | <h2 align=\"center\">Androguard</h2> |  | # Androguard: Reverse engineering and pentesting for Android applications |  | <div align=\"center\"> |  | ![Powered B"
+    }
+   ]
+  },
+  {
+   "repository": "android/graphics",
+   "family_note": "UNVERIFIED identity from directive - no fetch",
+   "files": []
+  },
+  {
+   "repository": "android/platform_frameworks_support",
+   "family_note": "UNVERIFIED identity from directive - no fetch",
+   "files": []
+  },
+  {
+   "repository": "androidx/androidx",
+   "family_note": "Compose rendering pipeline (LayoutNode measure/layout/draw)",
+   "files": [
+    {
+     "path": "compose/ui/ui/src/androidMain/kotlin/androidx/compose/ui/platform/AndroidComposeView.android.kt",
+     "law": "L-S94-COMPOSE-1: Compose draws through AndroidComposeView.dispatchDraw into a CanvasOwner; composition existing does not imply a submitted frame",
+     "symbols": [
+      "dispatchDraw",
+      "CanvasHolder",
+      "onMeasure"
+     ],
+     "status": "OK",
+     "fetch_source": "androidx/androidx@60b8e3cca825:compose/ui/ui/src/androidMain/kotlin/androidx/compose/ui/platform/AndroidComposeView.android.kt",
+     "bytes": 197713,
+     "sha256": "388f18d0ac6b70b300d144ad1e34f05a64f9805e06c5e45c7c912b16ac3ef03d",
+     "symbol_line_hits": {
+      "dispatchDraw": [
+       764,
+       2039,
+       2433,
+       2461,
+       2464,
+       2477
+      ],
+      "CanvasHolder": [
+       145,
+       678
+      ],
+      "onMeasure": [
+       866,
+       869,
+       1209,
+       1217,
+       2183,
+       2184,
+       2201,
+       2202,
+       2203,
+       2205
+      ]
+     },
+     "head_excerpt": "/* |  * Copyright 2019 The Android Open Source Project |  * |  * Licensed under the Apache License, Version 2.0 (the \"License\"); |  * you may not use this file except in compliance with the License. |  * You may obtain a copy of the License"
+    },
+    {
+     "path": "compose/ui/ui/src/commonMain/kotlin/androidx/compose/ui/node/LayoutNode.kt",
+     "law": "L-S94-COMPOSE-2: LayoutNode separates measure/layout/draw passes; nodes exist in composition before any pixel is drawn",
+     "symbols": [
+      "measure",
+      "layout",
+      "draw",
+      "zIndex"
+     ],
+     "status": "OK",
+     "fetch_source": "androidx/androidx@60b8e3cca825:compose/ui/ui/src/commonMain/kotlin/androidx/compose/ui/node/LayoutNode.kt",
+     "bytes": 64358,
+     "sha256": "929cffbce97c4d59239e469396f2c73e7ead7c392bebc1685e6cbba0f89db929",
+     "symbol_line_hits": {
+      "measure": [
+       46,
+       85,
+       171,
+       273,
+       274,
+       275,
+       281,
+       282,
+       284,
+       285
+      ],
+      "layout": [
+       35,
+       36,
+       37,
+       38,
+       39,
+       40,
+       41,
+       42,
+       43,
+       44
+      ],
+      "draw": [
+       795,
+       797,
+       872,
+       1039,
+       1040
+      ],
+      "zIndex": [
+       615,
+       872,
+       873,
+       874,
+       877,
+       878,
+       1543,
+       1546,
+       1547,
+       1550
+      ]
+     },
+     "head_excerpt": "/* |  * Copyright 2019 The Android Open Source Project |  * |  * Licensed under the Apache License, Version 2.0 (the \"License\"); |  * you may not use this file except in compliance with the License. |  * You may obtain a copy of the License"
+    }
+   ]
+  },
+  {
+   "repository": "androidx/constraintlayout",
+   "family_note": "Constraint solving layout",
+   "files": [
+    {
+     "path": "constraintlayout/constraintlayout/src/main/java/androidx/constraintlayout/widget/ConstraintLayout.java",
+     "law": "L-S94-LAYOUT-1: constraint solver produces measure results then layout pass; solver output must match placed bounds",
+     "symbols": [
+      "onMeasure",
+      "onLayout",
+      "measureChildren"
+     ],
+     "status": "OK",
+     "fetch_source": "androidx/constraintlayout@9cd4b5a4079a:constraintlayout/constraintlayout/src/main/java/androidx/constraintlayout/widget/ConstraintLayout.java",
+     "bytes": 177451,
+     "sha256": "ee065521e8c3fd0c2034a029d13d3b57d3f9b7c62c1d4455edf07c62cb7e8810",
+     "symbol_line_hits": {
+      "onMeasure": [
+       908,
+       1769,
+       1789,
+       1848,
+       1873
+      ],
+      "onLayout": [
+       1789,
+       2002,
+       2007,
+       2794,
+       3927
+      ]
+     },
+     "head_excerpt": "/* |  * Copyright (C) 2015 The Android Open Source Project |  * |  * Licensed under the Apache License, Version 2.0 (the \"License\"); |  * you may not use this file except in compliance with the License. |  * You may obtain a copy of the Lic"
+    }
+   ]
+  },
+  {
+   "repository": "aosp-mirror/platform_frameworks_base",
+   "family_note": "Android view/canvas/bitmap/drawable/animation semantic laws",
+   "files": [
+    {
+     "path": "graphics/java/android/graphics/BitmapFactory.java",
+     "law": "L-S94-DENSITY-1: bitmap density scaling is decided at decode time via inDensity/inTargetDensity; decodeResourceStream resolves density from Resources, not at draw time",
+     "symbols": [
+      "decodeResourceStream",
+      "inScaled",
+      "inDensity",
+      "inSampleSize"
+     ],
+     "status": "OK",
+     "fetch_source": "aosp-mirror/platform_frameworks_base@1cdfff555f4a:graphics/java/android/graphics/BitmapFactory.java",
+     "bytes": 41125,
+     "sha256": "aa428d71f6d5a5426d0f38fbac61b73e98913d4af989db7576370da8ba976a0e",
+     "symbol_line_hits": {
+      "decodeResourceStream": [
+       228,
+       249,
+       571,
+       596,
+       620
+      ],
+      "inScaled": [
+       53,
+       199,
+       204,
+       221,
+       234,
+       243,
+       257,
+       284,
+       306,
+       725
+      ],
+      "inDensity": [
+       238,
+       242,
+       255,
+       271,
+       282,
+       290,
+       578,
+       581,
+       583,
+       715
+      ],
+      "inSampleSize": [
+       89,
+       132,
+       138,
+       297
+      ]
+     },
+     "head_excerpt": "/* |  * Copyright (C) 2007 The Android Open Source Project |  * |  * Licensed under the Apache License, Version 2.0 (the \"License\"); |  * you may not use this file except in compliance with the License. |  * You may obtain a copy of the Lic"
+    },
+    {
+     "path": "graphics/java/android/graphics/Canvas.java",
+     "law": "L-S94-CLIP-1: Canvas clip is a saved stack state; clipRect intersects with current clip; draws outside clip are discarded at raster time",
+     "symbols": [
+      "clipRect",
+      "saveLayer",
+      "quickReject",
+      "getSaveCount"
+     ],
+     "status": "OK",
+     "fetch_source": "aosp-mirror/platform_frameworks_base@1cdfff555f4a:graphics/java/android/graphics/Canvas.java",
+     "bytes": 104670,
+     "sha256": "4ebcecac18797c85e7b312eae7153a2a3fe17350fd9bc3a2879c38b4f47ea88f",
+     "symbol_line_hits": {
+      "clipRect": [
+       436,
+       454,
+       866,
+       872,
+       890,
+       896,
+       908,
+       920,
+       944,
+       980
+      ],
+      "saveLayer": [
+       361,
+       362,
+       373,
+       374,
+       385,
+       386,
+       394,
+       395,
+       402,
+       403
+      ],
+      "quickReject": [
+       1179,
+       1183,
+       1184,
+       1185,
+       1186,
+       1213,
+       1216,
+       1231,
+       1250,
+       1253
+      ],
+      "getSaveCount": [
+       671
+      ]
+     },
+     "head_excerpt": "/* |  * Copyright (C) 2006 The Android Open Source Project |  * |  * Licensed under the Apache License, Version 2.0 (the \"License\"); |  * you may not use this file except in compliance with the License. |  * You may obtain a copy of the Lic"
+    },
+    {
+     "path": "core/java/android/view/View.java",
+     "law": "L-S94-DRAW-1: View.draw() orchestrates background->content->children->fade->scrollbars; invisible views never reach onDraw and never receive touch dispatch",
+     "symbols": [
+      "draw(Canvas",
+      "onDraw(",
+      "dispatchTouchEvent",
+      "getHitRect",
+      "setVisibility"
+     ],
+     "status": "OK",
+     "attempts": [
+      "graphics/java/android/view/View.java"
+     ],
+     "fetch_source": "googlesource:platform/frameworks/base@main:core/java/android/view/View.java",
+     "bytes": 1415591,
+     "sha256": "2b87b3fb2cd2700bba460a2a9b15a8422e220392a97de4366cb3ab506f5e426d",
+     "symbol_line_hits": {
+      "draw(Canvas": [
+       1794,
+       1813,
+       1832,
+       9839,
+       12307,
+       12344,
+       14205,
+       14228,
+       23748,
+       23775
+      ],
+      "onDraw(": [
+       318,
+       361,
+       610,
+       1655,
+       12863,
+       14170,
+       20968,
+       20995,
+       21020,
+       22474
+      ],
+      "dispatchTouchEvent": [
+       16551,
+       16594,
+       16904,
+       17655
+      ],
+      "getHitRect": [
+       20459
+      ],
+      "setVisibility": [
+       301,
+       1149,
+       1156,
+       1163,
+       9579,
+       9759,
+       11139,
+       13717,
+       15995,
+       15999
+      ]
+     }
+    },
+    {
+     "path": "core/java/android/view/SurfaceView.java",
+     "law": "L-S94-SURFACE-1: SurfaceView content lives on a separate window layer behind/above; view drawing and surface frames are independent submission paths",
+     "symbols": [
+      "updateSurface",
+      "setZOrderMediaOverlay",
+      "surfaceCreated",
+      "mHaveSurface"
+     ],
+     "status": "OK",
+     "fetch_source": "aosp-mirror/platform_frameworks_base@1cdfff555f4a:core/java/android/view/SurfaceView.java",
+     "bytes": 100692,
+     "sha256": "378f51d71088813bdaf06b2155fd278c3a9cfc27fd9f2478921a94728e621609",
+     "symbol_line_hits": {
+      "updateSurface": [
+       229,
+       237,
+       477,
+       518,
+       536,
+       565,
+       601,
+       624,
+       789,
+       893
+      ],
+      "setZOrderMediaOverlay": [
+       816,
+       834,
+       862
+      ],
+      "surfaceCreated": [
+       99,
+       115,
+       1349,
+       1351,
+       1354,
+       2101,
+       2288
+      ]
+     },
+     "head_excerpt": "/* |  * Copyright (C) 2006 The Android Open Source Project |  * |  * Licensed under the Apache License, Version 2.0 (the \"License\"); |  * you may not use this file except in compliance with the License. |  * You may obtain a copy of the Lic"
+    },
+    {
+     "path": "core/java/android/view/ViewRootImpl.java",
+     "law": "L-S94-TREE-1: measure/layout/draw traversals are rooted in ViewRootImpl; a frame is only scheduled when dirty flags demand it",
+     "symbols": [
+      "performTraversals",
+      "performMeasure",
+      "performLayout",
+      "performDraw"
+     ],
+     "status": "OK",
+     "fetch_source": "aosp-mirror/platform_frameworks_base@1cdfff555f4a:core/java/android/view/ViewRootImpl.java",
+     "bytes": 581263,
+     "sha256": "aaec2000f2e24a0ad03ff4477d48970666ce683be9dc0d691697a72699f6c360",
+     "symbol_line_hits": {
+      "performTraversals": [
+       726,
+       742,
+       1159,
+       3009,
+       3338,
+       3454,
+       3461,
+       3473,
+       4189,
+       4449
+      ],
+      "performMeasure": [
+       3293,
+       3306,
+       3324,
+       4067,
+       4093,
+       4110,
+       4917
+      ],
+      "performLayout": [
+       4148,
+       4983
+      ],
+      "performDraw": [
+       740,
+       4412,
+       5383
+      ]
+     },
+     "head_excerpt": "/* |  * Copyright (C) 2006 The Android Open Source Project |  * |  * Licensed under the Apache License, Version 2.0 (the \"License\"); |  * you may not use this file except in compliance with the License. |  * You may obtain a copy of the Lic"
+    },
+    {
+     "path": "graphics/java/android/graphics/drawable/NinePatchDrawable.java",
+     "law": "L-S94-NINEPATCH-1: NinePatchDrawable delegates patch scaling to NinePatch.draw with padding derived from patch guide pixels",
+     "symbols": [
+      "draw(",
+      "ninePatch",
+      "getPadding",
+      "onStateChange"
+     ],
+     "status": "OK",
+     "fetch_source": "aosp-mirror/platform_frameworks_base@1cdfff555f4a:graphics/java/android/graphics/drawable/NinePatchDrawable.java",
+     "bytes": 26017,
+     "sha256": "69660de167a635166c1ea1145c54c4eb4c824bb84b92b697b029c269c110258c",
+     "symbol_line_hits": {
+      "draw(": [
+       193,
+       249
+      ],
+      "ninePatch": [
+       610,
+       611,
+       614,
+       616,
+       619,
+       621,
+       666,
+       667,
+       672,
+       673
+      ],
+      "getPadding": [
+       270,
+       275
+      ],
+      "onStateChange": [
+       568
+      ]
+     },
+     "head_excerpt": "/* |  * Copyright (C) 2006 The Android Open Source Project |  * |  * Licensed under the Apache License, Version 2.0 (the \"License\"); |  * you may not use this file except in compliance with the License. |  * You may obtain a copy of the Lic"
+    },
+    {
+     "path": "graphics/java/android/graphics/drawable/AnimationDrawable.java",
+     "law": "L-S94-ANIM-1: AnimationDrawable advances frames via scheduled self-messages with per-frame durations; frame index->drawable selection is selectDrawable",
+     "symbols": [
+      "selectDrawable",
+      "setFrame",
+      "run(",
+      "scheduleSelf"
+     ],
+     "status": "OK",
+     "fetch_source": "aosp-mirror/platform_frameworks_base@1cdfff555f4a:graphics/java/android/graphics/drawable/AnimationDrawable.java",
+     "bytes": 15806,
+     "sha256": "d5f8c0aab6d0f65241d546facea806fd93dd1e0961d53714e008ba900efb2286",
+     "symbol_line_hits": {
+      "selectDrawable": [
+       278
+      ],
+      "setFrame": [
+       129,
+       159,
+       255,
+       269,
+       272,
+       301,
+       461
+      ],
+      "run(": [
+       198
+      ],
+      "scheduleSelf": [
+       132,
+       177,
+       203,
+       205,
+       280,
+       286
+      ]
+     },
+     "head_excerpt": "/* |  * Copyright (C) 2006 The Android Open Source Project |  * |  * Licensed under the Apache License, Version 2.0 (the \"License\"); |  * you may not use this file except in compliance with the License. |  * You may obtain a copy of the Lic"
+    },
+    {
+     "path": "core/java/android/webkit/WebView.java",
+     "law": "L-S94-WEB-1: WebView visual readiness is a first-class callback (postVisualStateCallback), not implied by loadUrl or page finish",
+     "symbols": [
+      "postVisualStateCallback",
+      "onDraw",
+      "setWebContentsDebuggingEnabled"
+     ],
+     "status": "OK",
+     "fetch_source": "aosp-mirror/platform_frameworks_base@1cdfff555f4a:core/java/android/webkit/WebView.java",
+     "bytes": 124724,
+     "sha256": "129cf17afa3df4a4336407a2e51a64e652e01b99f0cfb73a9994a2070983c793",
+     "symbol_line_hits": {
+      "postVisualStateCallback": [
+       186,
+       193,
+       1084
+      ],
+      "onDraw": [
+       191,
+       1038,
+       1090,
+       1117,
+       1689,
+       2527,
+       2529,
+       2931,
+       2933,
+       2948
+      ],
+      "setWebContentsDebuggingEnabled": [
+       2027,
+       2028
+      ]
+     },
+     "head_excerpt": "/* |  * Copyright (C) 2006 The Android Open Source Project |  * |  * Licensed under the Apache License, Version 2.0 (the \"License\"); |  * you may not use this file except in compliance with the License. |  * You may obtain a copy of the Lic"
+    }
+   ]
+  },
+  {
+   "repository": "axmolengine/axmol",
+   "family_note": "Cocos fork active engine",
+   "files": [
+    {
+     "path": "cocos/CCDirector.cpp",
+     "symbols": [
+      "drawScene",
+      "mainLoop"
+     ],
+     "law": "",
+     "status": "README_ONLY",
+     "fetch_source": "axmolengine/axmol@0c1b62c62bcf:README.md",
+     "bytes": 10396,
+     "sha256": "b065afa1396b95235f15ec0467d2ad2fb9c25332d233867eaa15005398493541"
+    }
+   ]
+  },
+  {
+   "repository": "bkaradzic/bgfx",
+   "family_note": "Multi-backend frame API",
+   "files": [
+    {
+     "path": "src/bgfx.cpp",
+     "law": "L-S94-FRAME-4: frame() pumps the renderer; view submits accumulate until frame boundary",
+     "symbols": [
+      "bgfx::frame",
+      "submit"
+     ],
+     "status": "OK",
+     "fetch_source": "bkaradzic/bgfx@ae6bc904d58e:src/bgfx.cpp",
+     "bytes": 218510,
+     "sha256": "a3cd16b161b222f85719963401feba3c94d352aff682725d12a376d6a396d266",
+     "symbol_line_hits": {
+      "submit": [
+       1530,
+       2395,
+       2459,
+       2475,
+       2515,
+       2516,
+       2521,
+       2522,
+       2536,
+       2537
+      ]
+     },
+     "head_excerpt": "/* |  * Copyright 2011-2026 Branimir Karadzic. All rights reserved. |  * License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE |  */ |  | #include <bx/platform.h> |  | #include \"bgfx_p.h\" | #include <bgfx/embedded_shader.h> | #incl"
+    }
+   ]
+  },
+  {
+   "repository": "bumptech/glide",
+   "family_note": "Density/sample-size decode laws + tests",
+   "files": [
+    {
+     "path": "library/src/main/java/com/bumptech/glide/load/resource/bitmap/Downsampler.java",
+     "law": "L-S94-DENSITY-2: target density scaling happens through BitmapFactory.Options inDensity/inTargetDensity pairs, sample size is power-of-2 rounding",
+     "symbols": [
+      "inSampleSize",
+      "getRoundedSampleSize",
+      "decodeStream",
+      "inTargetDensity",
+      "inScaled"
+     ],
+     "status": "OK",
+     "fetch_source": "bumptech/glide@166f0a20fb9f:library/src/main/java/com/bumptech/glide/load/resource/bitmap/Downsampler.java",
+     "bytes": 40943,
+     "sha256": "a896aaed35b011845bcd0aa2a6ad6803d48062cecfbaef697d624943c11fb1f0",
+     "symbol_line_hits": {
+      "inSampleSize": [
+       406,
+       418,
+       613,
+       618,
+       647,
+       899,
+       1022
+      ],
+      "decodeStream": [
+       467,
+       799,
+       810,
+       815,
+       831,
+       853
+      ],
+      "inTargetDensity": [
+       417,
+       440,
+       490,
+       667,
+       673,
+       704,
+       712,
+       867,
+       869,
+       903
+      ],
+      "inScaled": [
+       671,
+       1021
+      ]
+     },
+     "head_excerpt": "package com.bumptech.glide.load.resource.bitmap; |  | import android.annotation.TargetApi; | import android.graphics.Bitmap; | import android.graphics.Bitmap.Config; | import android.graphics.BitmapFactory; | import android.graphics.ColorSp"
+    },
+    {
+     "path": "library/src/test/java/com/bumptech/glide/load/resource/bitmap/DownsamplerTest.java",
+     "law": "READY_TEST: density selection expectations exist upstream and can be ported as fixtures",
+     "symbols": [
+      "downsample",
+      "inSampleSize"
+     ],
+     "status": "NOT_FOUND",
+     "attempts": [
+      "library/src/test/java/com/bumptech/glide/load/resource/bitmap/DownsamplerTest.java"
+     ]
+    }
+   ]
+  },
+  {
+   "repository": "cairo/cairo",
+   "family_note": "OFF_GITHUB compositing model reference",
+   "files": [],
+   "readme": {
+    "status": "NOT_FOUND"
+   }
+  },
+  {
+   "repository": "canvg/canvg",
+   "family_note": "retry round",
+   "files": [
+    {
+     "path": "src/index.ts",
+     "symbols": [
+      "Canvas",
+      "render"
+     ],
+     "law": "",
+     "status": "OK",
+     "fetch_source": "canvg/canvg@d63883331e97:src/index.ts",
+     "bytes": 450,
+     "sha256": "1ee43e98e33ec33d469a6d1389060cbfa5143869fa13ad7eaf74bdec3422eabf",
+     "symbol_line_hits": {}
+    }
+   ]
+  },
+  {
+   "repository": "chrisbanes/PhotoView",
+   "family_note": "retry round",
+   "files": [
+    {
+     "path": "photoview/src/main/java/uk/co/chrisbanes/photoview/PhotoView.kt",
+     "symbols": [
+      "attacher"
+     ],
+     "law": "",
+     "status": "README_ONLY",
+     "fetch_source": "chrisbanes/PhotoView@565505d5cb84:README.md",
+     "bytes": 4324,
+     "sha256": "30d5698f5d6f522b691ff3cc720203e76aceb022b5d5444c561ca32312851604"
+    }
+   ]
+  },
+  {
+   "repository": "chromium/chromium",
+   "family_note": "WebView draw/readiness implementation",
+   "files": [
+    {
+     "path": "android_webview/java/src/org/chromium/android_webview/AwContents.java",
+     "law": "L-S94-WEB-2: AwContents.onDraw only paints when compositor has content; readiness callbacks separate from page load finished",
+     "symbols": [
+      "onDraw",
+      "isReadyToDraw",
+      "requestDraw",
+      "didDraw"
+     ],
+     "status": "OK",
+     "fetch_source": "chromium/chromium@078db04964d4:android_webview/java/src/org/chromium/android_webview/AwContents.java",
+     "bytes": 226140,
+     "sha256": "cea67ea39310d5ce4d1bada3f0aeb8d1e7ab54ec53a867922466318e5b49e38c",
+     "symbol_line_hits": {
+      "onDraw": [
+       646,
+       661,
+       2897,
+       4658,
+       4661,
+       4678,
+       4680,
+       4681,
+       4683,
+       4688
+      ],
+      "requestDraw": [
+       4762
+      ],
+      "didDraw": [
+       4740,
+       4759,
+       4762,
+       4764
+      ]
+     },
+     "head_excerpt": "// Copyright 2012 The Chromium Authors | // Use of this source code is governed by a BSD-style license that can be | // found in the LICENSE file. |  | package org.chromium.android_webview; |  | import static org.chromium.build.NullUtil.ass"
+    }
+   ]
+  },
+  {
+   "repository": "cocos2d/cocos2d-x",
+   "family_note": "Engine main loop drawScene",
+   "files": [
+    {
+     "path": "cocos2d/CCDirector.cpp",
+     "law": "L-S94-FRAME-2: drawScene per frame: clear -> visit(scene) -> swap buffers; animation advance tied to delta",
+     "symbols": [
+      "drawScene",
+      "mainLoop"
+     ],
+     "status": "NOT_FOUND",
+     "attempts": [
+      "cocos2d/CCDirector.cpp"
+     ]
+    }
+   ]
+  },
+  {
+   "repository": "coil-kt/coil",
+   "family_note": "Kotlin image loader decode boundary",
+   "files": [
+    {
+     "path": "coil-base/src/main/java/coil/decode/BitmapFactoryDecoder.kt",
+     "law": "L-S94-PIPE-2: decode returns ImageSource->Drawable result or throws DecodeException; size resolution is a separate DecodeUtils step",
+     "symbols": [
+      "decode",
+      "BitmapFactory",
+      "inSampleSize"
+     ],
+     "status": "NOT_FOUND",
+     "attempts": [
+      "coil-base/src/main/java/coil/decode/BitmapFactoryDecoder.kt",
+      "coil-core/src/commonMain/kotlin/coil3/decode/BitmapFactoryDecoder.kt",
+      "coil-core/src/androidMain/kotlin/coil3/decode/BitmapFactoryDecoder.android.kt"
+     ]
+    }
+   ]
+  },
+  {
+   "repository": "defold/defold",
+   "family_note": "Engine render script frame",
+   "files": [
+    {
+     "path": "engine/render/src/render.cpp",
+     "symbols": [
+      "RenderListDispatch"
+     ],
+     "law": "",
+     "status": "OK",
+     "fetch_source": "defold/defold@a4ae60f9cd56:engine/render/src/render/render.cpp",
+     "bytes": 56272,
+     "sha256": "75b223212f38524eb7c5c9376a8221d031182b9248a32edb870b3f91c0fa4736",
+     "symbol_line_hits": {
+      "RenderListDispatch": [
+       193,
+       238,
+       260,
+       262,
+       269,
+       273,
+       276,
+       279,
+       442,
+       802
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "repository": "electron/electron",
+   "family_note": "WebView embedding readiness",
+   "files": [
+    {
+     "path": "docs/api/browser-window.md",
+     "law": "L-S94-WEB-4: 'ready-to-show' is the explicit first-paint readiness event for embedded web contents",
+     "symbols": [
+      "ready-to-show"
+     ],
+     "status": "OK",
+     "fetch_source": "electron/electron@db6cb2d99d9f:docs/api/browser-window.md",
+     "bytes": 63625,
+     "sha256": "6a9d8cb315021dda77bb10ff1675cc9864deb4d90dd95d78f0faa2962c782097",
+     "symbol_line_hits": {
+      "ready-to-show": [
+       35,
+       37,
+       45,
+       59,
+       70,
+       111,
+       267
+      ]
+     },
+     "head_excerpt": "# BrowserWindow |  | > Create and control browser windows. |  | Process: [Main](../glossary.md#main-process) |  | This module cannot be used until the `ready` event of the `app` | module is emitted. |  | ```js | // In the main process. | co"
+    },
+    {
+     "path": "docs/api/web-contents.md",
+     "law": "L-S94-WEB-4b: did-finish-load != painted (separate paint events)",
+     "symbols": [
+      "did-finish-load",
+      "paint"
+     ],
+     "status": "OK",
+     "fetch_source": "electron/electron@db6cb2d99d9f:docs/api/web-contents.md",
+     "bytes": 96073,
+     "sha256": "85d7e08d0ed32254c38afc3a942687c4b64fc6d19e09dc78fdaa7bb155e06f66",
+     "symbol_line_hits": {
+      "did-finish-load": [
+       115,
+       132,
+       1109,
+       1132,
+       1409,
+       1426,
+       1941,
+       2266
+      ],
+      "paint": [
+       927,
+       953,
+       971,
+       2229,
+       2230,
+       2288,
+       2292,
+       2296,
+       2311,
+       2314
+      ]
+     },
+     "head_excerpt": "# webContents |  | > Render and control web pages. |  | Process: [Main](../glossary.md#main-process) |  | `webContents` is an [EventEmitter][event-emitter]. | It is responsible for rendering and controlling a web page and is a property of |"
+    }
+   ]
+  },
+  {
+   "repository": "facebook/fresco",
+   "family_note": "Decode producer pipeline",
+   "files": [
+    {
+     "path": "imagepipeline/src/main/java/com/facebook/imagepipeline/producers/DecodeProducer.java",
+     "law": "L-S94-PIPE-1: decode is a producer stage with progressive intermediate results; decode-only state is explicitly distinguishable from render",
+     "symbols": [
+      "DecodeProducer",
+      "onNewResult",
+      "bitmapDecoder"
+     ],
+     "status": "NOT_FOUND",
+     "attempts": [
+      "imagepipeline/src/main/java/com/facebook/imagepipeline/producers/DecodeProducer.java"
+     ]
+    }
+   ]
+  },
+  {
+   "repository": "facebook/litho",
+   "family_note": "retry round",
+   "files": [
+    {
+     "path": "litho-core/src/main/java/com/facebook/litho/ComponentTree.java",
+     "symbols": [
+      "layout",
+      "draw"
+     ],
+     "law": "",
+     "status": "OK",
+     "fetch_source": "facebook/litho@55e28e58930a:litho-core/src/main/java/com/facebook/litho/ComponentTree.java",
+     "bytes": 105701,
+     "sha256": "3c10a36e64ac0d617aa9cc6f801a1adfa3282c272a31edf95e2a88d48052c271",
+     "symbol_line_hits": {
+      "layout": [
+       21,
+       225,
+       226,
+       227,
+       347,
+       402,
+       405,
+       407,
+       410,
+       411
+      ],
+      "draw": [
+       50,
+       51,
+       2713
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "repository": "facebook/shimmer-android",
+   "family_note": "Shimmer drawable (verify live identity of archived seed entry)",
+   "files": [
+    {
+     "path": "shimmer/src/main/java/com/facebook/shimmer/ShimmerFrameLayout.java",
+     "symbols": [
+      "ShimmerDrawable",
+      "onDraw"
+     ],
+     "law": "",
+     "status": "NOT_FOUND",
+     "attempts": [
+      "shimmer/src/main/java/com/facebook/shimmer/ShimmerFrameLayout.java"
+     ]
+    }
+   ]
+  },
+  {
+   "repository": "floooh/sokol",
+   "family_note": "Minimal gfx frame contract",
+   "files": [
+    {
+     "path": "sokol_gfx.h",
+     "law": "L-S94-FRAME-3: begin_pass/end_pass/commit frame contract; pass without commit never presents",
+     "symbols": [
+      "sg_begin_pass",
+      "sg_end_pass",
+      "sg_commit"
+     ],
+     "status": "OK",
+     "fetch_source": "floooh/sokol@2e75443dbd49:sokol_gfx.h",
+     "bytes": 1315496,
+     "sha256": "858bc9ceb62185cde87c2308c2695482a5cf304dc622c9c1ec0fae7188d5b9c2",
+     "symbol_line_hits": {
+      "sg_begin_pass": [
+       159,
+       165,
+       178,
+       189,
+       290,
+       479,
+       515,
+       550,
+       558,
+       560
+      ],
+      "sg_end_pass": [
+       252,
+       695,
+       707,
+       838,
+       1662,
+       3444,
+       5526,
+       23607,
+       27491,
+       27499
+      ],
+      "sg_commit": [
+       256,
+       1774,
+       1783,
+       1792,
+       1801,
+       1806,
+       5397,
+       5400,
+       5405,
+       5408
+      ]
+     },
+     "head_excerpt": "#if defined(SOKOL_IMPL) && !defined(SOKOL_GFX_IMPL) | #define SOKOL_GFX_IMPL | #endif | #ifndef SOKOL_GFX_INCLUDED | /* |     sokol_gfx.h -- simple 3D API wrapper |  |     Project URL: https://github.com/floooh/sokol |  |     Example code: "
+    }
+   ]
+  },
+  {
+   "repository": "flutter/flutter",
+   "family_note": "Engine frame/text pipeline (post-merge location)",
+   "files": [
+    {
+     "path": "engine/src/lib/ui/text/paragraph.cc",
+     "law": "L-S94-TEXT-1: text layout is multi-stage (shaping, breaking, painting); line metrics are first-class outputs",
+     "symbols": [
+      "Layout",
+      "GetLineMetrics",
+      "BreakText"
+     ],
+     "status": "NOT_FOUND",
+     "attempts": [
+      "engine/src/lib/ui/text/paragraph.cc"
+     ]
+    },
+    {
+     "path": "engine/src/shell/platform/android/io/flutter/embedding/android/FlutterView.java",
+     "law": "L-S94-SURFACE-2: FlutterView forwards frames from a RenderSurface; view invalidation and frame arrival are distinct",
+     "symbols": [
+      "dispatchDraw",
+      "FlutterRenderer",
+      "onSizeChanged"
+     ],
+     "status": "NOT_FOUND",
+     "attempts": [
+      "engine/src/shell/platform/android/io/flutter/embedding/android/FlutterView.java"
+     ]
+    }
+   ]
+  },
+  {
+   "repository": "freetype/freetype",
+   "family_note": "Glyph rasterization laws",
+   "files": [
+    {
+     "path": "src/base/ftobjs.c",
+     "law": "L-S94-GLYPH-2: glyph loading and rasterization are separate steps (FT_Load_Glyph -> FT_Render_Glyph); missing glyph yields .notdef",
+     "symbols": [
+      "FT_Load_Glyph",
+      "FT_Render_Glyph"
+     ],
+     "status": "OK",
+     "fetch_source": "freetype/freetype@d33343963303:src/base/ftobjs.c",
+     "bytes": 162129,
+     "sha256": "d324b4eca98b6543a3fbd474c97319e01a437a39b338cecf65d5ec31bf7a70e9",
+     "symbol_line_hits": {
+      "FT_Load_Glyph": [
+       911,
+       1077,
+       1202,
+       1269,
+       4803
+      ],
+      "FT_Render_Glyph": [
+       1196,
+       4753,
+       4904,
+       4996,
+       5007
+      ]
+     },
+     "head_excerpt": "/**************************************************************************** |  * |  * ftobjs.c |  * |  *   The FreeType private base classes (body). |  * |  * Copyright (C) 1996-2026 by |  * David Turner, Robert Wilhelm, and Werner Lember"
+    },
+    {
+     "path": "src/smooth/ftgrays.c",
+     "law": "L-S94-GLYPH-3: anti-aliased rasterization is coverage-based (aa scanline cells), not binary",
+     "symbols": [
+      "gray_hline",
+      "gray_convert_glyph"
+     ],
+     "status": "OK",
+     "fetch_source": "freetype/freetype@d33343963303:src/smooth/ftgrays.c",
+     "bytes": 60670,
+     "sha256": "404be11bb3d3eb0086bb38bda04388639d991b538e2b452b56ee51e29b2b5845",
+     "symbol_line_hits": {
+      "gray_convert_glyph": [
+       1705,
+       1863,
+       1898,
+       1924,
+       2036,
+       2048
+      ]
+     },
+     "head_excerpt": "/**************************************************************************** |  * |  * ftgrays.c |  * |  *   A new `perfect' anti-aliasing renderer (body). |  * |  * Copyright (C) 2000-2026 by |  * David Turner, Robert Wilhelm, and Werner "
+    }
+   ]
+  },
+  {
+   "repository": "godotengine/godot",
+   "family_note": "Deterministic frame loop",
+   "files": [
+    {
+     "path": "main/main.cpp",
+     "law": "L-S94-FRAME-1: fixed-step iteration loop separates physics/render ticks; frame advance is explicit",
+     "symbols": [
+      "iteration",
+      "Main::setup",
+      "display"
+     ],
+     "status": "OK",
+     "fetch_source": "godotengine/godot@ca871ccc9cd8:main/main.cpp",
+     "bytes": 213308,
+     "sha256": "7f0054033f7a8df431a49ecf7f246a3f765d1b25034d208513da39b24df62641",
+     "symbol_line_hits": {
+      "iteration": [
+       511,
+       512,
+       1739,
+       1744,
+       1749,
+       4888,
+       4890,
+       4917,
+       4918,
+       4981
+      ],
+      "Main::setup": [
+       686,
+       687,
+       742,
+       974,
+       3041,
+       3919
+      ],
+      "display": [
+       76,
+       77,
+       186,
+       198,
+       252,
+       253,
+       352,
+       356,
+       496,
+       541
+      ]
+     },
+     "head_excerpt": "/**************************************************************************/ | /*  main.cpp                                                              */ | /**************************************************************************/ | /*"
+    }
+   ]
+  },
+  {
+   "repository": "godotengine/godot-demo-projects",
+   "family_note": "retry round",
+   "files": [
+    {
+     "path": "README.md",
+     "symbols": [
+      "demo"
+     ],
+     "law": "",
+     "status": "OK",
+     "fetch_source": "godotengine/godot-demo-projects@a3b5c113112f:README.md",
+     "bytes": 2263,
+     "sha256": "4c121fc88a1412b8e381263146ac67937c485386e79641569117a6516dd64ba3",
+     "symbol_line_hits": {
+      "demo": [
+       1,
+       3,
+       9,
+       10,
+       12,
+       13,
+       14,
+       16,
+       18,
+       20
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "repository": "golang/go",
+   "family_note": "image/gif reference decoder + tests",
+   "files": [
+    {
+     "path": "src/image/gif/reader.go",
+     "law": "L-S94-GIF-2: block-based GIF decode with disposal field propagation per frame",
+     "symbols": [
+      "disposal",
+      "readFrame",
+      "decode"
+     ],
+     "status": "OK",
+     "fetch_source": "golang/go@41fd3e5b1beb:src/image/gif/reader.go",
+     "bytes": 18792,
+     "sha256": "165e4f8dcdeafe1362ca0469bf56bcf59faaf29e59593a92cb30679f80ac69cd",
+     "symbol_line_hits": {
+      "disposal": [
+       97,
+       111,
+       371,
+       480,
+       592,
+       594,
+       608,
+       628
+      ],
+      "decode": [
+       5,
+       30,
+       86,
+       87,
+       118,
+       123,
+       125,
+       222,
+       223,
+       273
+      ]
+     },
+     "head_excerpt": "// Copyright 2011 The Go Authors. All rights reserved. | // Use of this source code is governed by a BSD-style | // license that can be found in the LICENSE file. |  | // Package gif implements a GIF image decoder and encoder. | // | // The"
+    },
+    {
+     "path": "src/image/gif/reader_test.go",
+     "law": "READY_TEST: gif golden tests incl. disposal",
+     "symbols": [
+      "disposal",
+      "delay"
+     ],
+     "status": "OK",
+     "fetch_source": "golang/go@41fd3e5b1beb:src/image/gif/reader_test.go",
+     "bytes": 13667,
+     "sha256": "6c396343c82a25716445c577f6259cb290e5700a8747d59ab0584f9f3a14e763",
+     "symbol_line_hits": {},
+     "head_excerpt": "// Copyright 2013 The Go Authors. All rights reserved. | // Use of this source code is governed by a BSD-style | // license that can be found in the LICENSE file. |  | package gif |  | import ( | \t\"bytes\" | \t\"compress/lzw\" | \t\"encoding/hex\""
+    }
+   ]
+  },
+  {
+   "repository": "google/android-codelabs",
+   "family_note": "UNVERIFIED identity from directive - no fetch",
+   "files": []
+  },
+  {
+   "repository": "google/brotli",
+   "family_note": "Compression decoder (asset path)",
+   "files": [
+    {
+     "path": "c/dec/decode.c",
+     "law": "L-S94-CMP-1: streaming decode with explicit state machine; partial input is legal but not complete output",
+     "symbols": [
+      "BrotliDecoderDecompressStream",
+      "DecodeMetaBlockLength"
+     ],
+     "status": "OK",
+     "fetch_source": "google/brotli@11017d7812b0:c/dec/decode.c",
+     "bytes": 110923,
+     "sha256": "6b2cc010fa4aed5a65a8a0de5f3651d3e0cd9cd78c349793dce93844909c33d5",
+     "symbol_line_hits": {
+      "BrotliDecoderDecompressStream": [
+       2426,
+       2447,
+       2958
+      ],
+      "DecodeMetaBlockLength": [
+       237,
+       2608
+      ]
+     },
+     "head_excerpt": "/* Copyright 2013 Google Inc. All Rights Reserved. |  |    Distributed under MIT license. |    See file LICENSE for detail or copy at https://opensource.org/licenses/MIT | */ |  | #include <brotli/decode.h> |  | #include \"../common/constant"
+    }
+   ]
+  },
+  {
+   "repository": "google/filament",
+   "family_note": "PBR engine frame lifecycle",
+   "files": [
+    {
+     "path": "filament/src/Renderer.cpp",
+     "law": "L-S94-FRAME-5: beginFrame/render/endFrame triple defines submission; swapchain is explicit",
+     "symbols": [
+      "beginFrame",
+      "render",
+      "endFrame"
+     ],
+     "status": "OK",
+     "fetch_source": "google/filament@a5e4a836aa0c:filament/src/Renderer.cpp",
+     "bytes": 5356,
+     "sha256": "daf8811b620ddebf03ad8b615e327ba79e669e951992e4264beda6dd3d40ed18",
+     "symbol_line_hits": {
+      "beginFrame": [
+       82,
+       83
+      ],
+      "render": [
+       42,
+       43,
+       96,
+       99,
+       151,
+       152
+      ],
+      "endFrame": [
+       103,
+       104
+      ]
+     },
+     "head_excerpt": "/* |  * Copyright (C) 2015 The Android Open Source Project |  * |  * Licensed under the Apache License, Version 2.0 (the \"License\"); |  * you may not use this file except in compliance with the License. |  * You may obtain a copy of the Lic"
+    }
+   ]
+  },
+  {
+   "repository": "google/minikin",
+   "family_note": "OFF_GITHUB (googlesource) Android text layout",
+   "files": [
+    {
+     "path": "libs/minikin/Layout.cpp",
+     "law": "L-S94-TEXT-4: Minikin layout: font collection fallback per codepoint; shaping via HarfBuzz; measured advances drive layout",
+     "symbols": [
+      "doLayout",
+      "layoutLine",
+      "MinikinPaint"
+     ],
+     "status": "OK",
+     "fetch_source": "googlesource:platform/frameworks/minikin@main:libs/minikin/Layout.cpp",
+     "bytes": 16177,
+     "sha256": "d51d6aba0dfcbb990d2ee66b5847c7a771883fcdc5970015d70093be6c9f4e23",
+     "symbol_line_hits": {
+      "doLayout": [
+       209,
+       217,
+       248,
+       265,
+       284,
+       343
+      ],
+      "MinikinPaint": [
+       49,
+       107,
+       180,
+       210,
+       227,
+       266,
+       311,
+       344
+      ]
+     },
+     "head_excerpt": "/* |  * Copyright (C) 2013 The Android Open Source Project |  * |  * Licensed under the Apache License, Version 2.0 (the \"License\"); |  * you may not use this file except in compliance with the License. |  * You may obtain a copy of the Lic"
+    }
+   ]
+  },
+  {
+   "repository": "google/skia",
+   "family_note": "2D rasterizer: clip stack, premul, codecs",
+   "files": [
+    {
+     "path": "src/core/SkCanvas.cpp",
+     "law": "L-S94-CLIP-2: SkCanvas holds an MCRec clip stack; clipRect intersects; saveLayer bounds the layer effect region",
+     "symbols": [
+      "clipRect",
+      "saveLayer",
+      "onDrawRect"
+     ],
+     "status": "OK",
+     "fetch_source": "google/skia@53eae7263aac:src/core/SkCanvas.cpp",
+     "bytes": 120258,
+     "sha256": "3135f496c790c2ea5bf1c95b77d65e452559a2e9069a4f2fe1411b7d75e775b2",
+     "symbol_line_hits": {
+      "clipRect": [
+       505,
+       955,
+       1051,
+       1379,
+       1393,
+       1431,
+       1514,
+       2100,
+       2102
+      ],
+      "saveLayer": [
+       111,
+       496,
+       497,
+       500,
+       953,
+       1092,
+       1094,
+       1098,
+       2085
+      ],
+      "onDrawRect": [
+       1700,
+       2036
+      ]
+     },
+     "head_excerpt": "/* |  * Copyright 2008 The Android Open Source Project |  * |  * Use of this source code is governed by a BSD-style license that can be |  * found in the LICENSE file. |  */ |  | #include \"include/core/SkCanvas.h\" |  | #include \"include/cor"
+    },
+    {
+     "path": "src/codec/SkPngCodec.cpp",
+     "law": "L-S94-PNG-1: PNG decode applies premultiplication during swizzle; partial scanline decode states explicit",
+     "symbols": [
+      "onGetPixels",
+      "premultiply",
+      "readRows"
+     ],
+     "status": "OK",
+     "fetch_source": "google/skia@53eae7263aac:src/codec/SkPngCodec.cpp",
+     "bytes": 40727,
+     "sha256": "aef1a98bc6aff82898f7debf69dd4e1aec6fa9a0a3d86bb7c4b2389a9a053979",
+     "symbol_line_hits": {
+      "onGetPixels": [
+       1002
+      ]
+     },
+     "head_excerpt": "/* |  * Copyright 2015 Google Inc. |  * |  * Use of this source code is governed by a BSD-style license that can be |  * found in the LICENSE file. |  */ |  | #include \"src/codec/SkPngCodec.h\" |  | #include \"include/codec/SkEncodedOrigin.h\""
+    },
+    {
+     "path": "src/codec/SkGifCodec.cpp",
+     "law": "L-S94-GIF-4: GIF codec frame decode with disposal-aware accumulation",
+     "symbols": [
+      "onGetPixels",
+      "disposal"
+     ],
+     "status": "NOT_FOUND",
+     "attempts": [
+      "src/codec/SkGifCodec.cpp",
+      "third_party/libgifcodec/SkGifCodec.cpp"
+     ]
+    }
+   ]
+  },
+  {
+   "repository": "googlefonts/fonttools",
+   "family_note": "Font introspection oracle",
+   "files": [
+    {
+     "path": "Lib/fontTools/ttLib/ttFont.py",
+     "law": "READY_TEST oracle: glyph coverage/metrics checks for font-resolution laws",
+     "symbols": [
+      "TTFont",
+      "getGlyphSet"
+     ],
+     "status": "OK",
+     "fetch_source": "googlefonts/fonttools@03a3c8ed9e7a:Lib/fontTools/ttLib/ttFont.py",
+     "bytes": 40669,
+     "sha256": "f08efd92c21db5f31ff0657f9e16b01219733af40c4f207df25ad6ce82400e1d",
+     "symbol_line_hits": {
+      "TTFont": [
+       22,
+       35,
+       66,
+       71,
+       74,
+       218,
+       438
+      ],
+      "getGlyphSet": [
+       742
+      ]
+     },
+     "head_excerpt": "from fontTools.config import Config | from fontTools.misc import xmlWriter | from fontTools.misc.configTools import AbstractConfig | from fontTools.misc.textTools import Tag, byteord, tostr | from fontTools.misc.loggingTools import deprecat"
+    }
+   ]
+  },
+  {
+   "repository": "googlefonts/noto-emoji",
+   "family_note": "Emoji font + build/flag reference images",
+   "files": [
+    {
+     "path": "png/emoji_u1f600.png",
+     "law": "READY_REFERENCE_IMAGE: canonical emoji raster for glyph-rendering fixtures",
+     "symbols": [],
+     "status": "NOT_FOUND",
+     "attempts": [
+      "png/emoji_u1f600.png"
+     ]
+    }
+   ]
+  },
+  {
+   "repository": "googleprojectzero/SkCodecFuzzer",
+   "family_note": "Codec fuzz harness",
+   "files": [
+    {
+     "path": "README.md",
+     "law": "READY_FUZZER: fuzz entry for codec robustness porting",
+     "symbols": [
+      "SkCodec"
+     ],
+     "status": "OK",
+     "fetch_source": "googleprojectzero/SkCodecFuzzer@1ffd5b20121c:README.md",
+     "bytes": 19440,
+     "sha256": "32e108bfd7bb19b0913f5f41c8cb706266eecd7c409220044c700bed4a78763f",
+     "symbol_line_hits": {
+      "SkCodec": [
+       3,
+       5,
+       27,
+       30,
+       41,
+       47,
+       48,
+       49,
+       50,
+       51
+      ]
+     },
+     "head_excerpt": "# Android Skia Image Fuzzing Harness |  | SkCodecFuzzer is a small utility for testing the security and reliability of C/C++ image codecs supported by the [Skia](https://skia.org/) graphics library. In Android, these parsers are reachable t"
+    }
+   ]
+  },
+  {
+   "repository": "hajimehoshi/ebiten",
+   "family_note": "retry round",
+   "files": [
+    {
+     "path": "game.go",
+     "symbols": [
+      "Update",
+      "Draw"
+     ],
+     "law": "",
+     "status": "README_ONLY",
+     "fetch_source": "hajimehoshi/ebiten@dd525072941c:README.md",
+     "bytes": 3965,
+     "sha256": "8aad2152be31be1c95451bc4b321abd2f6a8156885f05559679b023f80343928"
+    }
+   ]
+  },
+  {
+   "repository": "korlibs/korge",
+   "family_note": "Kotlin multiplatform engine",
+   "files": [
+    {
+     "path": "korge/src/korlibs/korge/view/Views.kt",
+     "symbols": [
+      "render"
+     ],
+     "law": "",
+     "status": "README_ONLY",
+     "fetch_source": "korlibs/korge@bd2bbaad6e2a:README.md",
+     "bytes": 4270,
+     "sha256": "550cf8bc670f938c4edba39541ce6ce920122383d5bda679550d16503af42ce2"
+    }
+   ]
+  },
+  {
+   "repository": "kornelski/dssim",
+   "family_note": "retry round",
+   "files": [
+    {
+     "path": "src/lib.rs",
+     "symbols": [
+      "dssim"
+     ],
+     "law": "",
+     "status": "OK",
+     "fetch_source": "kornelski/dssim@0e44c9b7fe91:src/lib.rs",
+     "bytes": 1627,
+     "sha256": "0fb4077ef499d97f3ae9d5044eb9bce645b4d6413473ec719a4b223a9a807485",
+     "symbol_line_hits": {
+      "dssim": [
+       1,
+       2,
+       5
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "repository": "libass/libass",
+   "family_note": "HarfBuzz+FreeType text rendering consumer",
+   "files": [
+    {
+     "path": "libass/ass_render.c",
+     "law": "L-S94-TEXT-3: shaping then glyph render pipeline with explicit font fallback chain",
+     "symbols": [
+      "render_event",
+      "glyph",
+      "ass_shaper"
+     ],
+     "status": "OK",
+     "fetch_source": "libass/libass@f61db567e659:libass/ass_render.c",
+     "bytes": 123764,
+     "sha256": "20705ef4101c09080f4d27798bf6e04cce0fa40dbebd073c9c7480ca8ab36440",
+     "symbol_line_hits": {
+      "render_event": [
+       2799,
+       3392
+      ],
+      "glyph": [
+       54,
+       58,
+       63,
+       72,
+       143,
+       149,
+       307,
+       319,
+       413,
+       414
+      ],
+      "ass_shaper": [
+       36,
+       86,
+       97,
+       161,
+       2236,
+       2239,
+       2275,
+       2828,
+       2830,
+       2832
+      ]
+     },
+     "head_excerpt": "/* |  * Copyright (C) 2006 Evgeniy Stepanov <eugeni.stepanov@gmail.com> |  * |  * This file is part of libass. |  * |  * Permission to use, copy, modify, and distribute this software for any |  * purpose with or without fee is hereby grante"
+    }
+   ]
+  },
+  {
+   "repository": "libgdx/libgdx",
+   "family_note": "Android backend frame lifecycle (S94 directive emphasis)",
+   "files": [
+    {
+     "path": "backends/gdx-backend-android/src/com/badlogic/gdx/backends/android/AndroidGraphics.java",
+     "law": "L-S94-SURFACE-3: GLSurfaceView.Renderer.onDrawFrame is the frame submission point; surface lifecycle callbacks gate render loop start/stop",
+     "symbols": [
+      "onDrawFrame",
+      "surfaceChanged",
+      "resume(",
+      "pause(",
+      "render("
+     ],
+     "status": "OK",
+     "fetch_source": "libgdx/libgdx@84c2497ac88c:backends/gdx-backend-android/src/com/badlogic/gdx/backends/android/AndroidGraphics.java",
+     "bytes": 22282,
+     "sha256": "0fdd34a644a987240665b665c3fe4eed9746a2829f34caa70a11177080921ebe",
+     "symbol_line_hits": {
+      "onDrawFrame": [
+       61,
+       399,
+       404,
+       405,
+       415,
+       436,
+       441,
+       442,
+       457
+      ],
+      "resume(": [
+       499,
+       503
+      ],
+      "pause(": [
+       61,
+       62,
+       63,
+       527,
+       530
+      ],
+      "render(": [
+       519
+      ]
+     },
+     "head_excerpt": "/******************************************************************************* |  * Copyright 2011 See AUTHORS file. |  * |  * Licensed under the Apache License, Version 2.0 (the \"License\"); |  * you may not use this file except in compli"
+    }
+   ]
+  },
+  {
+   "repository": "libsdl-org/SDL",
+   "family_note": "Surface/window framebuffer abstraction",
+   "files": [
+    {
+     "path": "src/video/SDL_video.c",
+     "law": "L-S94-SURFACE-4: window framebuffer create/update/present are explicit distinct calls",
+     "symbols": [
+      "SDL_CreateWindowFramebuffer",
+      "SDL_UpdateWindowSurface"
+     ],
+     "status": "OK",
+     "fetch_source": "libsdl-org/SDL@34d66a4d3965:src/video/SDL_video.c",
+     "bytes": 199680,
+     "sha256": "e4575652b1edf9292684c7083e776f522e8240180a3e1261d3c102b3e9b26deb",
+     "symbol_line_hits": {
+      "SDL_CreateWindowFramebuffer": [
+       3652,
+       3726
+      ],
+      "SDL_UpdateWindowSurface": [
+       3755,
+       3765,
+       3768
+      ]
+     },
+     "head_excerpt": "/* |   Simple DirectMedia Layer |   Copyright (C) 1997-2026 Sam Lantinga <slouken@libsdl.org> |  |   This software is provided 'as-is', without any express or implied |   warranty.  In no event will the authors be held liable for any damage"
+    }
+   ]
+  },
+  {
+   "repository": "maplibre/maplibre-gl-native",
+   "family_note": "Glyph atlas + texture pipeline",
+   "files": [
+    {
+     "path": "src/mbgl/text/glyph_atlas.cpp",
+     "symbols": [
+      "addGlyphs",
+      "texture"
+     ],
+     "law": "",
+     "status": "README_ONLY",
+     "fetch_source": "maplibre/maplibre-gl-native@d695deef12fc:README.md",
+     "bytes": 10691,
+     "sha256": "bf8c8938fb29b95eaa38e1e3e9f7b69c60d7dd283a3e61a8e17475135cd1ddcc"
+    }
+   ]
+  },
+  {
+   "repository": "material-components/material-components-android",
+   "family_note": "Ripple/material drawable laws",
+   "files": [
+    {
+     "path": "lib/java/com/google/android/material/ripple/RippleUtils.java",
+     "law": "L-S94-RIPPLE-1: ripple color sanitization and state sets defined centrally; ripple is a state-driven drawable",
+     "symbols": [
+      "sanitizeRippleDrawableColor",
+      "RippleDrawable"
+     ],
+     "status": "OK",
+     "fetch_source": "material-components/material-components-android@60ff09436d5d:lib/java/com/google/android/material/ripple/RippleUtils.java",
+     "bytes": 8699,
+     "sha256": "a3b08707ef8c9b618915e5e03a96e8d2a04501ebe16858a5db4a59f5695c64d2",
+     "symbol_line_hits": {
+      "sanitizeRippleDrawableColor": [
+       150
+      ],
+      "RippleDrawable": [
+       25,
+       83,
+       107,
+       138,
+       141,
+       150,
+       188,
+       189,
+       228
+      ]
+     },
+     "head_excerpt": "/* |  * Copyright 2017 The Android Open Source Project |  * |  * Licensed under the Apache License, Version 2.0 (the \"License\"); |  * you may not use this file except in compliance with the License. |  * You may obtain a copy of the License"
+    }
+   ]
+  },
+  {
+   "repository": "mesa3d/mesa",
+   "family_note": "OFF_GITHUB (gitlab.freedesktop.org) CPU raster reference",
+   "files": [],
+   "readme": {
+    "status": "NOT_FOUND"
+   }
+  },
+  {
+   "repository": "mozilla/mozjpeg",
+   "family_note": "JPEG decode scanline contract",
+   "files": [
+    {
+     "path": "jdapistd.c",
+     "law": "L-S94-DECODE-2: scanline-oriented decode; partial decode states observable",
+     "symbols": [
+      "jpeg_read_scanlines"
+     ],
+     "status": "OK",
+     "fetch_source": "mozilla/mozjpeg@08265790774c:jdapistd.c",
+     "bytes": 28094,
+     "sha256": "e5e59af7df271f273a55515e57df864f70a8da86c613a9511fef63e2d351a398",
+     "symbol_line_hits": {
+      "jpeg_read_scanlines": [
+       165,
+       180,
+       313,
+       319,
+       375,
+       420
+      ]
+     },
+     "head_excerpt": "/* |  * jdapistd.c |  * |  * This file was part of the Independent JPEG Group's software: |  * Copyright (C) 1994-1996, Thomas G. Lane. |  * libjpeg-turbo Modifications: |  * Copyright (C) 2010, 2015-2020, 2022-2024, D. R. Commander. |  * C"
+    }
+   ]
+  },
+  {
+   "repository": "nothings/stb",
+   "family_note": "stb_image decode contract",
+   "files": [
+    {
+     "path": "stb_image.h",
+     "law": "L-S94-DECODE-1: decode returns component-forced outputs; info() separates metadata from full decode",
+     "symbols": [
+      "stbi_load",
+      "stbi_info",
+      "stbi__convert_format"
+     ],
+     "status": "OK",
+     "fetch_source": "nothings/stb@2c980bb59875:stb_image.h",
+     "bytes": 283010,
+     "sha256": "594c2fe35d49488b4382dbfaec8f98366defca819d916ac95becf3e75f4200b3",
+     "symbol_line_hits": {
+      "stbi_load": [
+       141,
+       296,
+       423,
+       424,
+       427,
+       428,
+       429,
+       433,
+       445,
+       446
+      ],
+      "stbi_info": [
+       54,
+       83,
+       84,
+       186,
+       189,
+       494,
+       495,
+       500,
+       501,
+       7691
+      ],
+      "stbi__convert_format": [
+       1276,
+       1302,
+       1755,
+       1812,
+       5278,
+       5280,
+       5724,
+       5725,
+       6065,
+       6314
+      ]
+     },
+     "head_excerpt": "/* stb_image - v2.30 - public domain image loader - http://nothings.org/stb |                                   no warranty implied; use at your own risk |  |    Do this: |       #define STB_IMAGE_IMPLEMENTATION |    before you include this"
+    }
+   ]
+  },
+  {
+   "repository": "ocornut/imgui",
+   "family_note": "Font atlas baking",
+   "files": [
+    {
+     "path": "imgui.cpp",
+     "law": "L-S94-GLYPH-1: glyphs rasterized into atlas; text measurement from atlas metrics; missing glyphs replaced explicitly",
+     "symbols": [
+      "CalcTextSize",
+      "ImFontAtlas",
+      "AddGlyph"
+     ],
+     "status": "OK",
+     "fetch_source": "ocornut/imgui@623ba461202d:imgui.cpp",
+     "bytes": 984839,
+     "sha256": "6919cef19e496919a23236ac5f5f19c5e40c617e2fb387401c9694127682cace",
+     "symbol_line_hits": {
+      "CalcTextSize": [
+       545,
+       3979,
+       4027,
+       4049,
+       6297,
+       6298,
+       6312,
+       7463,
+       13523,
+       13539
+      ],
+      "ImFontAtlas": [
+       550,
+       553,
+       554,
+       557,
+       559,
+       560,
+       564,
+       566,
+       572,
+       574
+      ]
+     },
+     "head_excerpt": "// dear imgui, v1.93.0 WIP | // (main code and documentation) |  | // Help: | // - Call and read ImGui::ShowDemoWindow() in imgui_demo.cpp. All applications in examples/ are doing that. | // - Read top of imgui.cpp for more details, links a"
+    }
+   ]
+  },
+  {
+   "repository": "puppeteer/puppeteer",
+   "family_note": "Headless screenshot readiness",
+   "files": [
+    {
+     "path": "README.md",
+     "law": "READY_TEST harness: networkidle/waitFor semantics for web visual readiness",
+     "symbols": [
+      "screenshot"
+     ],
+     "status": "OK",
+     "fetch_source": "puppeteer/puppeteer@15684eb7f1ad:README.md",
+     "bytes": 3013,
+     "sha256": "b2564c37c112336cc191da0890bdc4a8a3e5e039830b17613c69ac7914a7b4bc",
+     "symbol_line_hits": {},
+     "head_excerpt": "# Puppeteer |  | [![build](https://github.com/puppeteer/puppeteer/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/puppeteer/puppeteer/actions/workflows/ci.yml) | [![npm puppeteer package](https://img.shields.io/npm/v/pup"
+    }
+   ]
+  },
+  {
+   "repository": "python-pillow/Pillow",
+   "family_note": "GIF disposal semantics + tests",
+   "files": [
+    {
+     "path": "src/PIL/GifImagePlugin.py",
+     "law": "L-S94-GIF-1: disposal methods (0/1/2/3) defined with explicit restore-to-background semantics in _seek",
+     "symbols": [
+      "disposal",
+      "_seek",
+      "frame"
+     ],
+     "status": "OK",
+     "fetch_source": "python-pillow/Pillow@8960fe0b299f:src/PIL/GifImagePlugin.py",
+     "bytes": 40486,
+     "sha256": "8c9f709a9823e8004246abf600278e0cd9d223b65fe0825c22d362ebe85b2358",
+     "symbol_line_hits": {
+      "disposal": [
+       190,
+       242,
+       250,
+       372,
+       374,
+       673,
+       698,
+       699,
+       711,
+       845
+      ],
+      "_seek": [
+       133,
+       141,
+       157,
+       166,
+       170,
+       175,
+       181
+      ],
+      "frame": [
+       16,
+       132,
+       133,
+       136,
+       137,
+       143,
+       145,
+       149,
+       150,
+       165
+      ]
+     },
+     "head_excerpt": "# | # The Python Imaging Library. | # $Id$ | # | # GIF file handling | # | # History: | # 1995-09-01 fl   Created | # 1996-12-14 fl   Added interlace support | # 1996-12-30 fl   Added animation support | # 1997-01-05 fl   Added write suppor"
+    },
+    {
+     "path": "Tests/test_file_gif.py",
+     "law": "READY_TEST: GIF disposal/offset test expectations",
+     "symbols": [
+      "disposal"
+     ],
+     "status": "OK",
+     "fetch_source": "python-pillow/Pillow@8960fe0b299f:Tests/test_file_gif.py",
+     "bytes": 46226,
+     "sha256": "5f9e15ff4841077ebe65e89911c06e0345bbbe424e53ac0d5f8deb9e3b05fcc5",
+     "symbol_line_hits": {
+      "disposal": [
+       504,
+       515,
+       528,
+       584,
+       616,
+       621,
+       623,
+       628,
+       635,
+       655
+      ]
+     },
+     "head_excerpt": "from __future__ import annotations |  | import warnings | from io import BytesIO | from typing import Any |  | import pytest |  | from PIL import GifImagePlugin, Image, ImageDraw, ImagePalette, ImageSequence, features |  | from .helper impo"
+    }
+   ]
+  },
+  {
+   "repository": "reandroid/ARSCLib",
+   "family_note": "ARSC parse/build oracle",
+   "files": [
+    {
+     "path": "README.md",
+     "law": "READY_TEST oracle for resource-table resolution laws",
+     "symbols": [
+      "ARSC"
+     ],
+     "status": "OK",
+     "fetch_source": "reandroid/ARSCLib@b9c2266bd070:README.md",
+     "bytes": 5087,
+     "sha256": "40efa15a8428fd990cb59d6157a6808204b8b9e4b890e083610ebd277762dfa4",
+     "symbol_line_hits": {
+      "ARSC": [
+       1,
+       41,
+       48,
+       54,
+       55,
+       57,
+       80
+      ]
+     },
+     "head_excerpt": "# ARSCLib | ## Android binary resources read/write java library | This library is developed based on AOSP structure of androidfw/ResourceTypes.h , to totally replace aapt/aapt2 | #### Read, write, modify and create | * Resource table (resou"
+    }
+   ]
+  },
+  {
+   "repository": "reg-viz/reg-suit",
+   "family_note": "retry round",
+   "files": [
+    {
+     "path": "packages/reg-suit-core/src/core/screenshot_diff_reporter.ts",
+     "symbols": [
+      "diff"
+     ],
+     "law": "",
+     "status": "OK",
+     "fetch_source": "reg-viz/reg-suit@5c09c8eb1e35:packages/reg-suit-core/src/index.ts",
+     "bytes": 38,
+     "sha256": "088e2d577e008a2e1eef8117d8c0a102e5bb47bef82024b6964fc55d628aaaba",
+     "symbol_line_hits": {}
+    }
+   ]
+  },
+  {
+   "repository": "servo/servo",
+   "family_note": "Compositor frame output",
+   "files": [
+    {
+     "path": "components/compositing/compositor.rs",
+     "symbols": [
+      "composite"
+     ],
+     "law": "",
+     "status": "README_ONLY",
+     "fetch_source": "servo/servo@5f3f3ebdd442:README.md",
+     "bytes": 4571,
+     "sha256": "e5f8868937112b71af8abe1e56ff7cf0eaa4ee2c8eae2e07067250999c8fd9c9"
+    },
+    {
+     "path": "components/layout_thread.rs",
+     "symbols": [
+      "layout"
+     ],
+     "law": "",
+     "status": "README_ONLY",
+     "fetch_source": "servo/servo@5f3f3ebdd442:README.md",
+     "bytes": 4571,
+     "sha256": "e5f8868937112b71af8abe1e56ff7cf0eaa4ee2c8eae2e07067250999c8fd9c9"
+    }
+   ]
+  },
+  {
+   "repository": "square/picasso",
+   "family_note": "Bitmap hunter fit/center-crop semantics",
+   "files": [
+    {
+     "path": "src/main/java/com/squareup/picasso/BitmapHunter.java",
+     "law": "L-S94-FIT-1: fit()/centerCrop() transform applied AFTER decode with measured target dims; decode-only results are re-scaled to fit",
+     "symbols": [
+      "hunt",
+      "calculateInSampleSize",
+      "transform"
+     ],
+     "status": "NOT_FOUND",
+     "attempts": [
+      "src/main/java/com/squareup/picasso/BitmapHunter.java"
+     ]
+    }
+   ]
+  },
+  {
+   "repository": "tesseract-ocr/tesseract",
+   "family_note": "OCR as text-readability oracle",
+   "files": [
+    {
+     "path": "src/api/baseapi.cpp",
+     "law": "READY_TEST oracle: independent OCR pass can verify rendered text readability (UNREADABLE_TEXT cross-check)",
+     "symbols": [
+      "Recognize",
+      "GetUTF8Text"
+     ],
+     "status": "OK",
+     "fetch_source": "tesseract-ocr/tesseract@8ae68101439b:src/api/baseapi.cpp",
+     "bytes": 81170,
+     "sha256": "3c6b7b8dddb2311afaabb00889e88f17898012660a802e68e1a62cf39c6dbf8a",
+     "symbol_line_hits": {
+      "Recognize": [
+       455,
+       523,
+       572,
+       580,
+       595,
+       606,
+       616,
+       625,
+       727,
+       737
+      ],
+      "GetUTF8Text": [
+       480,
+       501,
+       1308,
+       1334,
+       1457,
+       1512,
+       1785
+      ]
+     },
+     "head_excerpt": "/********************************************************************** |  * File:        baseapi.cpp |  * Description: Simple API for calling tesseract. |  * Author:      Ray Smith |  * |  * (C) Copyright 2006, Google Inc. |  ** Licensed u"
+    }
+   ]
+  },
+  {
+   "repository": "unicode-org/icu",
+   "family_note": "Bidi reference algorithms",
+   "files": [
+    {
+     "path": "icu4c/source/common/ubidi.cpp",
+     "law": "L-S94-BIDI-1: paragraph level resolution precedes reordering; visual order is produced from logical via level maps",
+     "symbols": [
+      "ubidi_setPara",
+      "getLevels"
+     ],
+     "status": "OK",
+     "fetch_source": "unicode-org/icu@e86daaca4032:icu4c/source/common/ubidi.cpp",
+     "bytes": 128226,
+     "sha256": "d6bfdaedb6cc9b3fafcb3c0fb0c13c58075b62eb9ff278dfb979bae245f32ebd",
+     "symbol_line_hits": {
+      "ubidi_setPara": [
+       2393,
+       2411,
+       2426,
+       2435,
+       2456,
+       2568,
+       2571
+      ],
+      "getLevels": [
+       2418,
+       2662,
+       2704,
+       2708
+      ]
+     },
+     "head_excerpt": "// \u00a9 2016 and later: Unicode, Inc. and others. | // License & terms of use: http://www.unicode.org/copyright.html | /* | ****************************************************************************** | * | *   Copyright (C) 1999-2015, Inter"
+    },
+    {
+     "path": "icu4j/main/classes/core/src/com/ibm/icu/text/Bidi.java",
+     "law": "L-S94-BIDI-1b: Java-side identical contract (cross-language consistency evidence)",
+     "symbols": [
+      "setPara",
+      "getVisualRun"
+     ],
+     "status": "NOT_FOUND",
+     "attempts": [
+      "icu4j/main/classes/core/src/com/ibm/icu/text/Bidi.java"
+     ]
+    }
+   ]
+  },
+  {
+   "repository": "urho3d/urho3d",
+   "family_note": "Engine renderer",
+   "files": [
+    {
+     "path": "Source/Urho3D/Graphics/Renderer.cpp",
+     "law": "L-S94-FRAME-6: view update vs render separation",
+     "symbols": [
+      "Render",
+      "Update"
+     ],
+     "status": "OK",
+     "fetch_source": "urho3d/urho3d@e0ce107356b2:Source/Urho3D/Graphics/Renderer.cpp",
+     "bytes": 62027,
+     "sha256": "00476b1f6c1eaec679691ac159724c89934edc99385b4eaf9329db79e54d689a",
+     "symbol_line_hits": {
+      "Render": [
+       9,
+       16,
+       17,
+       245,
+       249,
+       255,
+       257,
+       263,
+       273,
+       276
+      ],
+      "Update": [
+       630,
+       632,
+       659,
+       662,
+       667,
+       669,
+       1469,
+       1499,
+       1507,
+       1517
+      ]
+     },
+     "head_excerpt": "// Copyright (c) 2008-2023 the Urho3D project | // License: MIT |  | #include \"../Precompiled.h\" |  | #include \"../Core/CoreEvents.h\" | #include \"../Core/Profiler.h\" | #include \"../Graphics/Camera.h\" | #include \"../Graphics/DebugRenderer.h\""
+    }
+   ]
+  },
+  {
+   "repository": "web-platform-tests/wpt",
+   "family_note": "Web conformance corpus (PORT_TEST)",
+   "files": [
+    {
+     "path": "README.md",
+     "law": "READY_TEST corpus: rendering-adjacent suites (css, html/canvas) provide expected/actual semantics",
+     "symbols": [
+      "web-platform-tests"
+     ],
+     "status": "OK",
+     "fetch_source": "web-platform-tests/wpt@e35344a20f92:README.md",
+     "bytes": 6437,
+     "sha256": "6aede29a967190fc2e504efa454db574d5f7cf6be014cef440344e33b6b48269",
+     "symbol_line_hits": {
+      "web-platform-tests": [
+       1,
+       4,
+       6,
+       18,
+       21,
+       34,
+       44,
+       53,
+       55,
+       61
+      ]
+     },
+     "head_excerpt": "The web-platform-tests Project | ============================== |  | [![Taskcluster CI Status](https://community-tc.services.mozilla.com/api/github/v1/repository/web-platform-tests/wpt/master/badge.svg)](https://community-tc.services.mozill"
+    }
+   ]
+  }
+ ]
+}
