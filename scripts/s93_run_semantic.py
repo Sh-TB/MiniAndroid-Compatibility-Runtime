@@ -219,7 +219,15 @@ def analyze_case(case, run_dir, apk_path, package, title, stratum,
                       max(2, int(dst.get("w", 8))),
                       max(2, int(dst.get("h", 8)))]
             try:
-                it = image_truth(ev.screenshot, asset, region=region)
+                # L-S95-BGSTRETCH-1: evidence-gated draw-law hint — records
+                # with provenance origin "background-bitmap" and DRAW_CALLED
+                # were rendered STRETCHED to the region (AOSP BitmapDrawable
+                # FILL law); the fit-center S93 path is used everywhere else
+                # (default unchanged).
+                bg_law = "fill_stretch" if rec.get("origin") == \
+                    "background-bitmap" else None
+                it = image_truth(ev.screenshot, asset, region=region,
+                                 draw_law=bg_law)
             except Exception as ex:
                 it = {"verdict": "UNKNOWN", "error": str(ex)[:100]}
         else:

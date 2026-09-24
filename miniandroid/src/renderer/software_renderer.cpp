@@ -6,6 +6,7 @@
 #include "software_renderer.h"
 #include "../fonts/text_shaper.h"
 #include "runtime/object_model.h"
+#include "vector_decode.h"
 #include <fstream>
 #include <chrono>
 #include <cstring>
@@ -1254,11 +1255,16 @@ std::string image_format_name(const std::vector<uint8_t>& bytes) {
     if (n >= 6 && bytes[0] == 'G' && bytes[1] == 'I' && bytes[2] == 'F' &&
         bytes[3] == '8' && (bytes[4] == '7' || bytes[4] == '9') &&
         bytes[5] == 'a') return "gif";
+    // S95 L-S95-VECTOR-1: compiled binary XML (RES_XML_TYPE 0x0003 LE) —
+    // VectorDrawable containers live here in real APKs (anydpi-v21/26
+    // resource variants). Text XML ('<') stays "xml".
+    if (n >= 4 && bytes[0] == 0x03 && bytes[1] == 0x00) return "axml";
     if (n >= 1 && bytes[0] == '<') return "xml";
     return "unknown";
 }
 
-bool decode_image_bytes(const std::vector<uint8_t>& bytes, DecodedImage* out) {
+bool decode_image_bytes(const std::vector<uint8_t>& bytes, DecodedImage* out,
+                        int density_dpi, const VectorRefResolver* resolver) {
     if (!out) return false;
     *out = DecodedImage{};
     if (bytes.empty()) {
@@ -1286,6 +1292,12 @@ bool decode_image_bytes(const std::vector<uint8_t>& bytes, DecodedImage* out) {
         std::cerr << "[IMAGE-DECODE] EXPLICIT-UNSUPPORTED format=gif ("
                   << bytes.size() << " bytes)" << std::endl;
         return false;
+    }
+    if (fmt == "axml") {
+        // S95 L-S95-VECTOR-1 / L-S95-ADAPTIVE-1: binary-AXML VectorDrawable
+        // + adaptive-icon rasterization. Unsupported vector features are
+        // NAMED errors (see vector_decode.cpp).
+        return decode_vector_drawable(bytes, density_dpi, out, resolver);
     }
     out->error = "not a bitmap format (" + fmt + ")";
     return false;

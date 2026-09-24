@@ -492,6 +492,20 @@ struct DecodedImage {
     std::string error;
 };
 
+// S95 L-S95-ADAPTIVE-1: app-resource resolver handed DOWN to the vector /
+// adaptive-icon decoder. The renderer has no ResTable; the engine (which
+// owns ARSC + APK zip access) resolves references on demand. A color ref
+// fills argb; a drawable ref fills bytes/path/density.
+struct VectorImageRef {
+    bool resolved = false;
+    bool is_color = false;
+    uint32_t argb = 0;
+    std::vector<uint8_t> bytes;
+    std::string path;
+    uint16_t density = 0;
+};
+using VectorRefResolver = std::function<bool(uint32_t resid, VectorImageRef* out)>;
+
 // ── G04 §4/§8: header-only image dimension probe ───────────────────────────
 // AOSP law: Drawable.getIntrinsicWidth/Height must be answerable BEFORE a
 // full decode (ImageView.onMeasure runs pre-draw; decoding every bitmap
@@ -549,10 +563,19 @@ FitRect scale_image_rect(int scale_type, int src_w, int src_h,
 //     "GIF format not supported (no decoder wired)" — Android apps get a
 //     failed decode + Drawable failure, NEVER a silently-dropped view.
 //   XML  '<'                → not a bitmap: ok=false "not a bitmap format".
-//       (vector/state-list XML drawables are the inflater's domain.)
+//       (state-list XML drawables are the inflater's domain.)
+//   AXML 0x03 0x00          → S95 L-S95-VECTOR-1: binary-AXML VectorDrawable
+//       is RASTERIZED (see vector_decode.{h,cpp}); unsupported vector
+//       features (gradient/clip-path/app color refs) are named errors.
+// density_dpi: AOSP getIntrinsicWidth law raster scale (declared dp ×
+//       dpi/160); 0 = viewport × clamped 4× fallback.
+// resolver: optional app-resource resolver (L-S95-ADAPTIVE-1) — required
+//       for <adaptive-icon> layers and app-color fillColor references.
 // Returns true iff out->ok (decoded pixels available).
-bool decode_image_bytes(const std::vector<uint8_t>& bytes, DecodedImage* out);
-// Format label for traces: "png" | "jpeg" | "webp" | "gif" | "xml" | "unknown".
+bool decode_image_bytes(const std::vector<uint8_t>& bytes, DecodedImage* out,
+                        int density_dpi = 0,
+                        const VectorRefResolver* resolver = nullptr);
+// Format label for traces: "png" | "jpeg" | "webp" | "gif" | "axml" | "xml" | "unknown".
 std::string image_format_name(const std::vector<uint8_t>& bytes);
 
 class PNGDecoder {

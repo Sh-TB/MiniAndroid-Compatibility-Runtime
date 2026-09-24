@@ -430,6 +430,37 @@ gate "density-matrix oracle (G04 §4)" $?
 grep -h "DENSITY MATRIX" /tmp/battery_density.log | head -1
 fi
 
+# S95 Wave-A: L-S95-VECTOR-1 law golden — real-toolchain fixture (aapt2
+# compiles the anydpi-v21 VectorDrawable + mdpi/hdpi PNG differential),
+# REAL DEX activity. Proves: anydpi-v21 selection beats density buckets,
+# binary-AXML vector rasterization (fill/curve/group-rotation), and the
+# 0xCCCCCC "IMG?" placeholder never fires.
+S95_VEC_SRC="$MA/tests/fixtures/s95_vector"
+rm -rf /tmp/battery_s95vec; mkdir -p /tmp/battery_s95vec
+if cached "S95 vector fixture build (aapt2+ECJ+D8)"; then
+    skip "S95 vector fixture build (aapt2+ECJ+D8)"; skip "S95 vector run (real APK)"
+    skip "S95 vector golden (9 law checks)"
+elif [ -d "$S95_VEC_SRC" ]; then
+    bash "$REPOSCRIPTS/build/build_fixture_apk.sh" \
+        "$S95_VEC_SRC" /tmp/battery_s95vec/s95_vector.apk \
+        > /tmp/battery_s95vec/build.log 2>&1
+    gate "S95 vector fixture build (aapt2+ECJ+D8)" $?
+    ./build/miniandroid run /tmp/battery_s95vec/s95_vector.apk \
+        -o /tmp/battery_s95vec/run --execution-mode real-dalvik \
+        --frames 2 --width 1080 --height 1920 --dump-view-tree \
+        --data-root /tmp/battery_s95vec/run/data \
+        > /tmp/battery_s95vec/run.log 2>&1
+    gate "S95 vector run (real APK)" $?
+    python3 "$TOOLS/compare_s95_vector.py" --run-dir /tmp/battery_s95vec/run \
+        --json /tmp/battery_s95vec/golden.json \
+        > /tmp/battery_s95vec/compare.log 2>&1
+    gate "S95 vector golden (9 law checks)" $?
+    grep -h "S95-VECTOR GOLDEN" /tmp/battery_s95vec/compare.log
+else
+    gate "S95 vector fixture build (aapt2+ECJ+D8)" 1
+    echo "  (fixture missing: $S95_VEC_SRC)"
+fi
+
 # G06 §6: interaction golden — real-toolchain fixture (aapt2+ECJ+D8), real
 # DEX listeners. Tap law (pressed visible + queued PerformClick + counter
 # mutation) + disabled law (consumes, zero visual response) + 3-run SHA.

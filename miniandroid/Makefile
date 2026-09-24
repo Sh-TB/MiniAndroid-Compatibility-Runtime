@@ -43,7 +43,7 @@ DEX_SOURCES = $(SRCDIR)/dex/dex_parser.cpp $(SRCDIR)/dex/mutf8.cpp $(SRCDIR)/dex
 RUNTIME_SOURCES = $(SRCDIR)/runtime/execution_engine.cpp $(SRCDIR)/runtime/application_runtime.cpp
 DIAGNOSTICS_SOURCES = $(SRCDIR)/diagnostics/trace_engine.cpp
 RESOURCES_SOURCES = $(SRCDIR)/resources/res_id.cpp $(SRCDIR)/resources/res_config.cpp $(SRCDIR)/resources/resource_parser.cpp $(SRCDIR)/resources/string_pool.cpp $(SRCDIR)/resources/arsc_parser.cpp $(SRCDIR)/resources/axml_parser.cpp $(SRCDIR)/resources/layout_inflater.cpp $(SRCDIR)/resources/vector_inflater.cpp $(SRCDIR)/resources/resource_runtime.cpp
-RENDERER_SOURCES = $(SRCDIR)/renderer/software_renderer.cpp $(SRCDIR)/gles/pgl_backend.cpp $(SRCDIR)/gles/gles20_bridge.cpp
+RENDERER_SOURCES = $(SRCDIR)/renderer/software_renderer.cpp $(SRCDIR)/renderer/vector_decode.cpp $(SRCDIR)/gles/pgl_backend.cpp $(SRCDIR)/gles/gles20_bridge.cpp
 # UNIFIED_007 text pipeline — REAL FriBidi/HarfBuzz/FreeType shaping now
 # feeds BOTH the layout measure pass and the view draw path (was: orphaned
 # out of the build; the 8x16 BitmapFont answered all text geometry).

@@ -20,6 +20,7 @@
 #include "dex/dalvik_engine.h"  // EXP-031: Real Dalvik engine
 #include "api/android_stubs.h"
 #include "diagnostics/trace_engine.h"
+#include "renderer/software_renderer.h"  // S95: VectorRefResolver for image_ref_resolver()
 // EXP-086 Phase 7 (B4 FIX): ShadowRegistry for Handler/Looper dispatch
 #include "framework/shadow_registry.h"
 // EXP-087 Phase 3 (B2 FIX): DalvikHeapAdapter for shadow heap access
@@ -221,6 +222,12 @@ public:
     // EXP-086 Phase 7 (B4 FIX): Allow caller to set ShadowRegistry
     // so Handler/Looper dispatch is wired up during execute_apk.
     void set_shadow_registry(framework::ShadowRegistry* reg) { shadow_registry_ = reg; }
+
+    // S95 L-S95-ADAPTIVE-1: app-resource resolver handed to the renderer's
+    // vector/adaptive-icon decoder. The renderer has no ResTable; the engine
+    // resolves references through the ARSC (colors) and the APK zip
+    // (drawable/mipmap files at the canonical density selection).
+    renderer::VectorRefResolver image_ref_resolver();
 
 private:
     // Pipeline stages

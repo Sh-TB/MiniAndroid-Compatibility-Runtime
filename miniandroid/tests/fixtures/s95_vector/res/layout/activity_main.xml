@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <!-- Case 1 (differential oracle): src resolves to ONE config. The
+         anydpi-v21 vector (green triangle) MUST win over the mdpi red /
+         hdpi blue PNGs per the AOSP version-then-density selection law.
+         Green ink = selection + vector rasterization both correct;
+         red/blue/gray-placeholder = named divergence. -->
+    <ImageView
+        android:id="@+id/iv_tri"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:src="@drawable/ic_tri"/>
+
+    <!-- Case 2: cubic-bezier pathData flattening (C command + Z close). -->
+    <ImageView
+        android:id="@+id/iv_curve"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:src="@drawable/ic_curve"/>
+
+    <!-- Case 3: group transform law (rotation 45 about the pivot). -->
+    <ImageView
+        android:id="@+id/iv_rot"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:src="@drawable/ic_rot"/>
+
+    <TextView
+        android:id="@+id/tv_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="vectors"/>
+</LinearLayout>
