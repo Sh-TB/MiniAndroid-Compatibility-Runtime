@@ -1,0 +1,48 @@
+{
+ "cases": {
+  "casea_covered_button": {
+   "case": "button covered by opaque overlay; blind tap must NOT count",
+   "pkg": "org.miniandroid.s92.casea",
+   "required_verdict": "REJECT",
+   "s92_case": "A"
+  },
+  "casec_corrupt_png": {
+   "case": "control layout; corrupt asset lives in res/raw and is DECODED-BUT-NEVER-SHOWN (decode taxonomy probe fixture; verifier must list DECODE_FAILURE if it is ever required)",
+   "pkg": "org.miniandroid.s92.casec",
+   "required_verdict": "ACCEPT",
+   "s92_case": "C-asset"
+  },
+  "cased_splash": {
+   "case": "5s splash then main scene; short capture window must produce splash-only -> NOT fully verified (readiness law)",
+   "pkg": "org.miniandroid.s92.cased",
+   "required_verdict": "REJECT_SHORT_WINDOW",
+   "s92_case": "D"
+  },
+  "casee_not_clickable": {
+   "case": "icon visible but no click listener; interaction stages must not pass",
+   "pkg": "org.miniandroid.s92.casee",
+   "required_verdict": "REJECT_INTERACTION",
+   "s92_case": "E"
+  },
+  "casef_silent_callback": {
+   "case": "callback fires but NO visual change (S92 addendum 30: computation/state pass must NOT promote to FULL)",
+   "pkg": "org.miniandroid.s92.casef",
+   "required_verdict": "REJECT_VISUAL_CHANGE",
+   "s92_case": "F"
+  },
+  "caseg_density": {
+   "case": "48dp slot fed ONLY by a 144px xxhdpi asset; measured displayed size must equal 48px at 160dpi runtime (density law); wrong size = DENSITY_MISMATCH",
+   "pkg": "org.miniandroid.s92.caseg",
+   "required_verdict": "MEASURE",
+   "s92_case": "G"
+  },
+  "good": {
+   "case": "control: real icon + working button + visible state change",
+   "pkg": "org.miniandroid.s92.good",
+   "required_verdict": "ACCEPT",
+   "s92_case": "G(control)"
+  }
+ },
+ "note": "required_verdict: ACCEPT = verifier must not fail the title on its visual contract; REJECT* = verifier MUST fail the named stage; MEASURE = record real behavior, judge by density law 48px @160dpi",
+ "schema": "s92.battery_oracle.v1"
+}
