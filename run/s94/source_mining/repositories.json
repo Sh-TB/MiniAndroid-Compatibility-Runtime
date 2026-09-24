@@ -1,0 +1,3375 @@
+{
+ "campaign": "S94 GRAPHICS SOURCE LIBRARY",
+ "generated_at": "2026-09-24T09:02:53Z",
+ "verification_method": "git ls-remote --symref https://github.com/<owner>/<repo>.git HEAD (no GitHub API used)",
+ "candidates": 127,
+ "verified": 122,
+ "not_verified": 1,
+ "distinct_verified_repositories": 122,
+ "repositories": [
+  {
+   "id": "GFX-SRC-001",
+   "repository": "google/skia",
+   "url": "https://github.com/google/skia",
+   "families": [
+    "2d-rendering",
+    "text-raster",
+    "image-codec",
+    "canvas"
+   ],
+   "priority": "P0",
+   "relationship": "MIRROR_OF:skia.googlesource.com/skia",
+   "seed_entry": true,
+   "directive_note": "Flutter/Android use it; clip/premul/codec laws",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "53eae7263aaceacbae0e795757e52fd1903e098c",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:37Z",
+   "license": "BSD-style(1-clause-candidate)",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 1507,
+    "sha256": "5f787c1dee3c56547f09ccc2906ab5f5293c4d8dd6c8654e573216c38e908dbd",
+    "spdx": "BSD-style(1-clause-candidate)"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-002",
+   "repository": "google/angle",
+   "url": "https://github.com/google/angle",
+   "families": [
+    "gles-translation",
+    "vulkan"
+   ],
+   "priority": "P0",
+   "relationship": "MIRROR_OF:chromium.googlesource.com/angle/angle",
+   "seed_entry": true,
+   "directive_note": "GLES->backend translation; ES contract tests",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "25621abe9b3b5c2dcea34c1761609bdab9e47ec4",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:37Z",
+   "license": "BSD-style(1-clause-candidate)",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 1643,
+    "sha256": "bf4da21bd20bcfb5b60b7ecc67fa864a79be049e21d6178076887f178dd6c71a",
+    "spdx": "BSD-style(1-clause-candidate)"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-003",
+   "repository": "google/swiftshader",
+   "url": "https://github.com/google/swiftshader",
+   "families": [
+    "cpu-gpu",
+    "rasterizer"
+   ],
+   "priority": "P0",
+   "relationship": "MIRROR_OF:swiftshader.googlesource.com (dev moved to chromium)",
+   "seed_entry": true,
+   "directive_note": "CPU GL/Vulkan; software renderer reference",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "1e80438d2b93ef36a7c05f8d2b81233bac0e3d16",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:37Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE.txt",
+    "bytes": 11560,
+    "sha256": "3ddf9be5c28fe27dad143a5dc76eea25222ad1dd68934a047064e56ed2fa40c5",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-004",
+   "repository": "google/gfxstream",
+   "url": "https://github.com/google/gfxstream",
+   "families": [
+    "virtualized-gfx",
+    "gles"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Android emulator guest->host graphics streaming",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "ebe5b424e15c0816f64b97c9691060333bb43c7e",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:37Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 11357,
+    "sha256": "58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-005",
+   "repository": "aosp-mirror/platform_frameworks_base",
+   "url": "https://github.com/aosp-mirror/platform_frameworks_base",
+   "families": [
+    "android-framework",
+    "view",
+    "drawable",
+    "text",
+    "animation"
+   ],
+   "priority": "P0",
+   "relationship": "MIRROR_OF:android.googlesource.com/platform/frameworks/base",
+   "seed_entry": true,
+   "directive_note": "View/Canvas/BitmapFactory/NinePatch/AnimationDrawable laws",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "1cdfff555f4a21f71ccc978290e2e212e2f8b168",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:37Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "NOTICE",
+    "bytes": 18182,
+    "sha256": "cf4dd7cea5b6bcd2622ddd3529b3c74d16ba2b4db444575bc6f5c33f8a960530",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-006",
+   "repository": "androidx/androidx",
+   "url": "https://github.com/androidx/androidx",
+   "families": [
+    "jetpack-compose",
+    "android-framework"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Compose LayoutNode draw pipeline; Appears in 2 seed families",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/androidx-main",
+   "head_sha": "60b8e3cca825890b794487df865368b86e02a2d8",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:37Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE.txt",
+    "bytes": 10175,
+    "sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-007",
+   "repository": "google/minikin",
+   "url": "https://github.com/google/minikin",
+   "families": [
+    "text-layout",
+    "shaping"
+   ],
+   "priority": "P0",
+   "relationship": "MIRROR_OF:android.googlesource.com/platform/frameworks/minikin",
+   "seed_entry": true,
+   "directive_note": "Android text layout engine; hyphenation, font fallback",
+   "status": "OFF_GITHUB",
+   "error": "no GitHub repository at this identity; upstream hosted off-GitHub",
+   "last_verified": "2026-09-24T09:04:21Z",
+   "upstream_url": "https://android.googlesource.com/platform/frameworks/minikin",
+   "license": "UNKNOWN",
+   "license_source": "NOT_FETCHED_OFF_GITHUB"
+  },
+  {
+   "id": "GFX-SRC-008",
+   "repository": "unicode-org/icu",
+   "url": "https://github.com/unicode-org/icu",
+   "families": [
+    "unicode-i18n",
+    "bidi"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Unicode/bidi/break iteration",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "e86daaca4032de0d8d8358b11efd1980d5ad6d86",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:37Z",
+   "license": "MIT",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 27718,
+    "sha256": "e09827667e0bb3c808b2a463548ba814a5e6249b67353234d70c8dfc2bcc417d",
+    "spdx": "MIT"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-009",
+   "repository": "harfbuzz/harfbuzz",
+   "url": "https://github.com/harfbuzz/harfbuzz",
+   "families": [
+    "text-shaping"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Shaping contract + in-house shaping tests; behdad/harfbuzz redirects here",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "873dbc1e32483cffa1f5d92cfcc4fcbf7104e0d3",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:37Z",
+   "license": "UNCLASSIFIED",
+   "license_evidence": {
+    "file": "COPYING",
+    "bytes": 1971,
+    "sha256": "ba8f810f2455c2f08e2d56bb49b72f37fcf68f1f4fade38977cfd7372050ad64",
+    "spdx": "UNCLASSIFIED"
+   },
+   "license_class": "UNCLASSIFIED",
+   "reuse_class": "REFERENCE_ONLY"
+  },
+  {
+   "id": "GFX-SRC-010",
+   "repository": "freetype/freetype",
+   "url": "https://github.com/freetype/freetype",
+   "families": [
+    "font-raster"
+   ],
+   "priority": "P0",
+   "relationship": "MIRROR_OF:gitlab.freedesktop.org/freetype/freetype",
+   "seed_entry": true,
+   "directive_note": "Glyph rasterization, hinting",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "d333439633039de426f943f28a2926c7f97b5ae5",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:37Z",
+   "license": "FOUND:docs/FTL.TXT",
+   "license_source": "checked=LICENSE,LICENSE.md,LICENSE.txt,COPYING,COPYING.txt,COPYING.LESSER,LICENSE-MIT,NOTICE,LICENSES/BSD-3-Clause",
+   "reuse_class": "REFERENCE_ONLY_UNTIL_LICENSE_CLARIFIED",
+   "license_evidence": {
+    "file": "docs/FTL.TXT",
+    "bytes": 6743,
+    "sha256": "5a5ee54c5001bbad1cdc1a57cc3dd4c42199b2da09d39c7ee41fab002d02967f",
+    "spdx": "SEE_FILE"
+   }
+  },
+  {
+   "id": "GFX-SRC-011",
+   "repository": "cashapp/paparazzi",
+   "url": "https://github.com/cashapp/paparazzi",
+   "families": [
+    "screenshot-testing",
+    "layoutlib"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "JVM screenshot tests via layoutlib",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "42514978f1cb58217550581b7ed9f54b9bde1bd8",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:37Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE.txt",
+    "bytes": 11358,
+    "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-012",
+   "repository": "takahirom/roborazzi",
+   "url": "https://github.com/takahirom/roborazzi",
+   "families": [
+    "screenshot-testing",
+    "robolectric"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Robolectric screenshot capture; record/verify mode",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "c97214ed093feef6e6549f1bb35c16f5153c6f12",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:38Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 11357,
+    "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-013",
+   "repository": "pedrovgs/Shot",
+   "url": "https://github.com/pedrovgs/Shot",
+   "families": [
+    "screenshot-testing"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Screenshot + comparison Android lib",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "e102d797d87fe212c52b235f71954f08ca502cb2",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:37Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE.txt",
+    "bytes": 11357,
+    "sha256": "58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-014",
+   "repository": "facebook/screenshot-tests-for-android",
+   "url": "https://github.com/facebook/screenshot-tests-for-android",
+   "families": [
+    "screenshot-testing"
+   ],
+   "priority": "P0",
+   "relationship": "ARCHIVED",
+   "seed_entry": true,
+   "directive_note": "FB screenshot tests; verify archived state | S94 directive listed 'facebookarchive/screenshot-tests-for-android'; live canonical location verified as 'facebook/screenshot-tests-for-android'",
+   "status": "VERIFIED",
+   "error": "fatal: could not read Username for 'https://github.com': No such device or address",
+   "last_verified": "2026-09-24T09:04:21Z",
+   "identity_history": [
+    {
+     "identity": "facebookarchive/screenshot-tests-for-android",
+     "finding": "git ls-remote 404 (GitHub prompts for credentials => repo absent/renamed)",
+     "date": "2026-09-24T09:04:21Z"
+    }
+   ],
+   "default_branch": "refs/heads/main",
+   "head_sha": "e098fd7fdbbf077e5172af5c04d7c04cf5ccb0f0",
+   "verified_via": "git ls-remote --symref",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 10779,
+    "sha256": "049b28998caf2a2c1d588fb05b2de2b09584f5d70e6c3ab5612636dff22b86dd",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-015",
+   "repository": "ndtp/android-testify",
+   "url": "https://github.com/ndtp/android-testify",
+   "families": [
+    "screenshot-testing"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Screenshot testing with region exclusion/baselines",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "b36c378f4a136fe77f83f3f75ed4733f34f18b29",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:38Z",
+   "license": "MIT",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 1116,
+    "sha256": "f9ce697ec78500a37a1580fdace82aecc9604cd59c0a12adb2db022046b5e939",
+    "spdx": "MIT"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-016",
+   "repository": "mapbox/pixelmatch",
+   "url": "https://github.com/mapbox/pixelmatch",
+   "families": [
+    "visual-diff"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Perceptual pixel diff with anti-aliasing detection",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "b2800051f2b79d18cf27e51cd240cafd38cfb0ba",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:38Z",
+   "license": "UNCLASSIFIED",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 738,
+    "sha256": "cfec0482fb785fe27e3b368a2d9e84bf7a61b275e83ec582bf288e98cd530bb0",
+    "spdx": "UNCLASSIFIED"
+   },
+   "license_class": "UNCLASSIFIED",
+   "reuse_class": "REFERENCE_ONLY"
+  },
+  {
+   "id": "GFX-SRC-017",
+   "repository": "opencv/opencv",
+   "url": "https://github.com/opencv/opencv",
+   "families": [
+    "image-processing",
+    "visual-diff"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "matchTemplate/SSIM/absdiff primitives",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/5.x",
+   "head_sha": "aa5546b3e45087fd270eac95755f97b3b8828523",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:38Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 11358,
+    "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-018",
+   "repository": "garris/BackstopJS",
+   "url": "https://github.com/garris/BackstopJS",
+   "families": [
+    "visual-regression",
+    "web"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Scenario-based visual regression for web",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "a11d3657788bbffebd7a2b2eb5212006696afbff",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:38Z",
+   "license": "MIT",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 1081,
+    "sha256": "fe1e39f312ba707fe865d2efc111726377be3894c13ccb90a470c880ce5f0153",
+    "spdx": "MIT"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-019",
+   "repository": "americanexpress/jest-image-snapshot",
+   "url": "https://github.com/americanexpress/jest-image-snapshot",
+   "families": [
+    "visual-diff",
+    "screenshot-testing"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "jest toMatchImageSnapshot (pixelmatch wrapper)",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "c7e3056b034f8cb60c3016ef18963b0ad8bb127a",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:38Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE.txt",
+    "bytes": 10283,
+    "sha256": "8418c0189f244872c8a0f9d7e42ca808311d4bb15a6b599cfc1ec0467f247be3",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-020",
+   "repository": "JohannesBuchner/imagehash",
+   "url": "https://github.com/JohannesBuchner/imagehash",
+   "families": [
+    "perceptual-hash"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "aHash/dHash/pHash/wHash reference",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "7a405c9a27571ee8c998b661ce751639c34b7355",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:38Z",
+   "license": "BSD-style(1-clause-candidate)",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 1302,
+    "sha256": "9d0b037853dae7bcf6b19b728559a833993cd8710fc18a261e6026e56bf704be",
+    "spdx": "BSD-style(1-clause-candidate)"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-021",
+   "repository": "pnggroup/libpng",
+   "url": "https://github.com/pnggroup/libpng",
+   "families": [
+    "image-codec",
+    "png"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Reference PNG implementation + pngtest",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/libpng18",
+   "head_sha": "964b4135949703b705fc760fc3fb546b86e5ab47",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:39Z",
+   "license": "UNCLASSIFIED",
+   "license_evidence": {
+    "file": "LICENSE.md",
+    "bytes": 5345,
+    "sha256": "bdb0a645ea18c60507d0368379b1ac5474b92255fcc2d115e07486a7672ba526",
+    "spdx": "UNCLASSIFIED"
+   },
+   "license_class": "UNCLASSIFIED",
+   "reuse_class": "REFERENCE_ONLY"
+  },
+  {
+   "id": "GFX-SRC-022",
+   "repository": "libjpeg-turbo/libjpeg-turbo",
+   "url": "https://github.com/libjpeg-turbo/libjpeg-turbo",
+   "families": [
+    "image-codec",
+    "jpeg"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "SIMD JPEG; already linked in MiniAndroid",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "2a8bd381b42664e72cfc0f652db6caf4c9e98117",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:39Z",
+   "license": "Zlib",
+   "license_evidence": {
+    "file": "LICENSE.md",
+    "bytes": 6077,
+    "sha256": "ba6bceebcba0fdd35488477c2cca8c4632ce82c74dbfbc87d886ce6fc4433579",
+    "spdx": "Zlib"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-023",
+   "repository": "webmproject/libwebp",
+   "url": "https://github.com/webmproject/libwebp",
+   "families": [
+    "image-codec",
+    "webp"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "WebP decode; lossy/lossless/alpha",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "f4c34a1d45e6d4bfb9529bcbcaba1b5376bc3bff",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:39Z",
+   "license": "BSD-style(1-clause-candidate)",
+   "license_evidence": {
+    "file": "COPYING",
+    "bytes": 1496,
+    "sha256": "5aec868f669e384a22372a4e8a1a6cd7d44c64cd451f960ca69cc170d1e13acf",
+    "spdx": "BSD-style(1-clause-candidate)"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-024",
+   "repository": "AOMediaCodec/libavif",
+   "url": "https://github.com/AOMediaCodec/libavif",
+   "families": [
+    "image-codec",
+    "avif"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "AV1 Image File Format reference",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "58020e054c0ff9985e6be32d2f4c98143527552c",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:39Z",
+   "license": "BSD-style(2-clause-candidate)",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 20415,
+    "sha256": "165abf92cc04b39e80d29cadea7a6a7e8fddf59407d4ad2616507a7ebe8216f9",
+    "spdx": "BSD-style(2-clause-candidate)"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-025",
+   "repository": "strukturag/libheif",
+   "url": "https://github.com/strukturag/libheif",
+   "families": [
+    "image-codec",
+    "heif"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "HEIF/AVIF container",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "5c7b41f3cc097447dd3c700cc9ec7d94fbb59eec",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:39Z",
+   "license": "LGPL",
+   "license_evidence": {
+    "file": "COPYING",
+    "bytes": 44366,
+    "sha256": "fa81ce652315b013359d6e8e4744335f31a50c7c192907176d3632f78a3b4596",
+    "spdx": "LGPL"
+   },
+   "license_class": "WEAK_COPYLEFT",
+   "reuse_class": "COPY_REQUIRES_NOTICE"
+  },
+  {
+   "id": "GFX-SRC-026",
+   "repository": "google/wuffs",
+   "url": "https://github.com/google/wuffs",
+   "families": [
+    "image-codec",
+    "verify"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Verifiable decoders: GIF/BMP/WEBP/NIE; disposal semantics in source",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "f31d952b62fcd8abcc8d42908284f50097313bc8",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:39Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 11372,
+    "sha256": "f8ac2c75e7f629a87565c80d61ff9fe5aa15cdea0bda997d52a4dc13fdbd19cb",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-027",
+   "repository": "ImageMagick/ImageMagick",
+   "url": "https://github.com/ImageMagick/ImageMagick",
+   "families": [
+    "image-processing"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "General image toolkit",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "06a45577752921a51cec27e1aa6b50be3d918b1e",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:39Z",
+   "license": "UNCLASSIFIED",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 12557,
+    "sha256": "131447ad0099069beaa32acf1700716eea294a5bdf936d8211d7026b1849e5d4",
+    "spdx": "UNCLASSIFIED"
+   },
+   "license_class": "UNCLASSIFIED",
+   "reuse_class": "REFERENCE_ONLY"
+  },
+  {
+   "id": "GFX-SRC-028",
+   "repository": "libvips/libvips",
+   "url": "https://github.com/libvips/libvips",
+   "families": [
+    "image-processing"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Streaming image processing",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "2f397a4a31f7f11986eecbd2b7c5afc248892b2f",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:40Z",
+   "license": "LGPL-2.1-or-later",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 26530,
+    "sha256": "dc626520dcd53a22f727af3ee42c770e56c97a64fe3adb063799d8ab032fe551",
+    "spdx": "LGPL-2.1-or-later"
+   },
+   "license_class": "WEAK_COPYLEFT",
+   "reuse_class": "COPY_REQUIRES_NOTICE"
+  },
+  {
+   "id": "GFX-SRC-029",
+   "repository": "mozilla/mozjpeg",
+   "url": "https://github.com/mozilla/mozjpeg",
+   "families": [
+    "image-codec",
+    "jpeg"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "JPEG encoder/decoder fork",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "08265790774cd0714832c9e675522acbe5581437",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:40Z",
+   "license": "Zlib",
+   "license_evidence": {
+    "file": "LICENSE.md",
+    "bytes": 5620,
+    "sha256": "96f5b328adbb78eeaaec6980d73fd558cb1e4d62560ed615646bc3cf5e532430",
+    "spdx": "Zlib"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-030",
+   "repository": "googleprojectzero/SkCodecFuzzer",
+   "url": "https://github.com/googleprojectzero/SkCodecFuzzer",
+   "families": [
+    "fuzzing",
+    "image-codec"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Fuzz harness for Skia codecs",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "1ffd5b20121c0d6ae842de0da04d5e4d3df64f5c",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:40Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 11358,
+    "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-031",
+   "repository": "bumptech/glide",
+   "url": "https://github.com/bumptech/glide",
+   "families": [
+    "image-loading",
+    "android"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Downsampler density/inSampleSize laws + huge test suite",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "166f0a20fb9f470f5c7078a8e3370af45e7fc205",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:40Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 4899,
+    "sha256": "52973598be02761fb153f9c237f6c6706841d666611bc1c5fd18edfdcb3d47fa",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-032",
+   "repository": "coil-kt/coil",
+   "url": "https://github.com/coil-kt/coil",
+   "families": [
+    "image-loading",
+    "android"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Kotlin-first image loading",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "1277b063c97b655fe514ce29af0b191486888098",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:41Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE.txt",
+    "bytes": 11347,
+    "sha256": "d44a18f12b0f5a494ddc3ba0e980ae8b0936d938c611a518e80f2f1405098893",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-033",
+   "repository": "facebook/fresco",
+   "url": "https://github.com/facebook/fresco",
+   "families": [
+    "image-loading",
+    "android"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Pipelines, decode regions, purgeable bitmaps",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "53dc796565b8ad3902c8e2e304cadc0c47a175ba",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:40Z",
+   "license": "MIT",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 1088,
+    "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+    "spdx": "MIT"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-034",
+   "repository": "square/picasso",
+   "url": "https://github.com/square/picasso",
+   "families": [
+    "image-loading",
+    "android"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Classic loader; fit/center-crop semantics",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "e94d6116e3fff99b3932103e0ab22ff5b44a1273",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:40Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE.txt",
+    "bytes": 11358,
+    "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-035",
+   "repository": "skydoves/landscapist",
+   "url": "https://github.com/skydoves/landscapist",
+   "families": [
+    "image-loading",
+    "compose"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Compose image loading",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "fc89c8093e359f3f0903b3d983e660c2875aca4c",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:40Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 11357,
+    "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-036",
+   "repository": "wasabeef/glide-transformations",
+   "url": "https://github.com/wasabeef/glide-transformations",
+   "families": [
+    "image-loading",
+    "transform"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "GPU/Bitmap transformation catalog",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "d950f0c33f27f864e4ab4b26fce66c27079911c1",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:40Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 11325,
+    "sha256": "cb5e8e7e5f4a3988e1063c142c60dc2df75605f4c46515e776e3aca6df976e14",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-037",
+   "repository": "google/brotli",
+   "url": "https://github.com/google/brotli",
+   "families": [
+    "compression"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Brotli (asset/compression)",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "11017d7812b0502005603cf0f3cce0054e885d72",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:40Z",
+   "license": "MIT",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 1084,
+    "sha256": "3d180008e36922a4e8daec11c34c7af264fed5962d07924aea928c38e8663c94",
+    "spdx": "MIT"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-038",
+   "repository": "android/graphics",
+   "url": "https://github.com/android/graphics",
+   "families": [
+    "android-graphics"
+   ],
+   "priority": "P0",
+   "relationship": "UNKNOWN_IDENTITY",
+   "seed_entry": true,
+   "directive_note": "S94 directive: verify identity before recording",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "01240b77599c7b0eef0d2bf10648728f05d80c11",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:41Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 10773,
+    "sha256": "b493568bcbcaf50e888f66642878374ede50f7f12adb4e3f64d6f9c093de9ca4",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-039",
+   "repository": "google/android-codelabs",
+   "url": "https://github.com/google/android-codelabs",
+   "families": [
+    "android-samples"
+   ],
+   "priority": "P0",
+   "relationship": "UNKNOWN_IDENTITY",
+   "seed_entry": true,
+   "directive_note": "S94 directive: verify identity before recording",
+   "status": "NOT_VERIFIED",
+   "error": "fatal: could not read Username for 'https://github.com': No such device or address",
+   "last_verified": "2026-09-24T09:02:42Z",
+   "license": "UNKNOWN",
+   "license_source": "REPO_UNVERIFIED"
+  },
+  {
+   "id": "GFX-SRC-040",
+   "repository": "android/platform_frameworks_support",
+   "url": "https://github.com/android/platform_frameworks_support",
+   "families": [
+    "android-framework",
+    "support-lib"
+   ],
+   "priority": "P0",
+   "relationship": "UNKNOWN_IDENTITY",
+   "seed_entry": true,
+   "directive_note": "Historic support-library mirror; verify",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "a9ac247af2afd4115c3eb6d16c05bc92737d6305",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:41Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE.txt",
+    "bytes": 10174,
+    "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-041",
+   "repository": "googlefonts/fonttools",
+   "url": "https://github.com/googlefonts/fonttools",
+   "families": [
+    "font-tooling"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "TTFont introspection; glyph metrics",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "03a3c8ed9e7ab35b5f219a6d25ee8081107ff2bb",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:41Z",
+   "license": "MIT",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 1072,
+    "sha256": "6787208f83f659ccbc2223b2fde952ffa6f7e8aca62f1a8a2bf5bc51bb1b2383",
+    "spdx": "MIT"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-042",
+   "repository": "notofonts/noto-fonts",
+   "url": "https://github.com/notofonts/noto-fonts",
+   "families": [
+    "fonts"
+   ],
+   "priority": "P0",
+   "relationship": "ARCHIVED",
+   "seed_entry": true,
+   "directive_note": "Noto umbrella (split into per-family repos)",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "ffebf8c1ee449e544955a7e813c54f9b73848eac",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:41Z",
+   "license": "UNCLASSIFIED",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 4377,
+    "sha256": "0dab92d0544f7b233403f14b84a663bdbfa746982eda629e7f4f9ffe1b036feb",
+    "spdx": "UNCLASSIFIED"
+   },
+   "license_class": "UNCLASSIFIED",
+   "reuse_class": "REFERENCE_ONLY"
+  },
+  {
+   "id": "GFX-SRC-043",
+   "repository": "googlefonts/noto-emoji",
+   "url": "https://github.com/googlefonts/noto-emoji",
+   "families": [
+    "fonts",
+    "emoji"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Emoji font + build/flag tests | S94 directive listed 'notofonts/noto-emoji'; live canonical location verified as 'googlefonts/noto-emoji'",
+   "status": "VERIFIED",
+   "error": "fatal: could not read Username for 'https://github.com': No such device or address",
+   "last_verified": "2026-09-24T09:04:21Z",
+   "identity_history": [
+    {
+     "identity": "notofonts/noto-emoji",
+     "finding": "git ls-remote 404 (GitHub prompts for credentials => repo absent/renamed)",
+     "date": "2026-09-24T09:04:21Z"
+    }
+   ],
+   "default_branch": "refs/heads/main",
+   "head_sha": "06121655d0e82f9cae6e7ba6feed4fa6fdbfc2a4",
+   "verified_via": "git ls-remote --symref",
+   "license": "UNCLASSIFIED",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 4330,
+    "sha256": "500bb1ccf43df7bbb522112f9133a52b16e1c35e809632f5d8609b179152de5b",
+    "spdx": "UNCLASSIFIED"
+   },
+   "license_class": "UNCLASSIFIED",
+   "reuse_class": "REFERENCE_ONLY"
+  },
+  {
+   "id": "GFX-SRC-044",
+   "repository": "liberationfonts/liberation-fonts",
+   "url": "https://github.com/liberationfonts/liberation-fonts",
+   "families": [
+    "fonts"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Metric-compatible Liberation fonts",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "49e1358e4017577429c9f8c39a3e6e879093264e",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:41Z",
+   "license": "UNCLASSIFIED",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 4414,
+    "sha256": "93fed46019c38bbe566b479d22148e2e8a1e85ada614accb0211c37b2c61c19b",
+    "spdx": "UNCLASSIFIED"
+   },
+   "license_class": "UNCLASSIFIED",
+   "reuse_class": "REFERENCE_ONLY"
+  },
+  {
+   "id": "GFX-SRC-045",
+   "repository": "googlefonts/noto-cjk",
+   "url": "https://github.com/googlefonts/noto-cjk",
+   "families": [
+    "fonts",
+    "cjk"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "CJK font + build checks",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "f8d157532fbfaeda587e826d4cd5b21a49186f7c",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:41Z",
+   "license": "NO_LICENSE_FILE_IN_STANDARD_PATHS",
+   "license_source": "checked=LICENSE,LICENSE.md,LICENSE.txt,COPYING,COPYING.txt,COPYING.LESSER,LICENSE-MIT,NOTICE,LICENSES/BSD-3-Clause",
+   "reuse_class": "REFERENCE_ONLY_UNTIL_LICENSE_CLARIFIED"
+  },
+  {
+   "id": "GFX-SRC-046",
+   "repository": "google/flexbox-layout",
+   "url": "https://github.com/google/flexbox-layout",
+   "families": [
+    "layout",
+    "android"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Flexbox measure/layout on Android",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "366b461fd0425bfaa9872b1d9af9da3055d3bc74",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:41Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 11341,
+    "sha256": "a4d5a89b1282be589ca452bc1e53d396f190dcb845c4e9bb81a8b07a1406b634",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-047",
+   "repository": "androidx/constraintlayout",
+   "url": "https://github.com/androidx/constraintlayout",
+   "families": [
+    "layout",
+    "android"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "ConstraintLayout solver + widgets",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "9cd4b5a4079a14175f91dc897abd83270799364a",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:41Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 11357,
+    "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-048",
+   "repository": "airbnb/epoxy",
+   "url": "https://github.com/airbnb/epoxy",
+   "families": [
+    "recyclerview",
+    "android"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "RecyclerView composition",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "e45bd3a61fe3a1f130e184f5b8dcf172ab99025a",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:41Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 11342,
+    "sha256": "032df1c0718382f670330f68760365c418d6af3cd1de77b72db4da1c2131706a",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-049",
+   "repository": "airbnb/lottie-android",
+   "url": "https://github.com/airbnb/lottie-android",
+   "families": [
+    "animation",
+    "android"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Vector animation; composition/progress->frame law",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "05ea92e90381eb8a8ae06855ea2b74f322bebbec",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:42Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 11356,
+    "sha256": "c5accbbd8546e94c34aed24afe689a617627d18eed5a6c48277e48db57c23851",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-050",
+   "repository": "facebookarchive/shimmer-android",
+   "url": "https://github.com/facebookarchive/shimmer-android",
+   "families": [
+    "animation",
+    "android"
+   ],
+   "priority": "P0",
+   "relationship": "ARCHIVED",
+   "seed_entry": true,
+   "directive_note": "Shimmer drawable; verify archived",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "32b784bd9811588b4e18c4a613fdfa8ce384cd84",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:42Z",
+   "license": "BSD-style(1-clause-candidate)",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 1540,
+    "sha256": "b03a1cb4f33c487a437523ea2ad0fa97a80c676221b4db93cd4dd900fe5259fc",
+    "spdx": "BSD-style(1-clause-candidate)"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-051",
+   "repository": "houstudio/cdroid",
+   "url": "https://github.com/houstudio/cdroid",
+   "families": [
+    "android-ui",
+    "rendering"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "S94 MANDATORY DEEP DIVE: View/TextView/Drawable/NinePatch",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "da89e06bc0c7d04e3586f7dfb3f83fe4e658f0fc",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:42Z",
+   "license": "LGPL-2.1-or-later",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 26527,
+    "sha256": "6da7ddf40cfea6f568961825b14478e879875f6ad033fad57889ae5bd52103f4",
+    "spdx": "LGPL-2.1-or-later"
+   },
+   "license_class": "WEAK_COPYLEFT",
+   "reuse_class": "COPY_REQUIRES_NOTICE"
+  },
+  {
+   "id": "GFX-SRC-052",
+   "repository": "material-components/material-components-android",
+   "url": "https://github.com/material-components/material-components-android",
+   "families": [
+    "android-ui",
+    "material"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Material drawables/ripples/buttons",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "60ff09436d5d477a4b9d02940f31eb01e1250620",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:42Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 11358,
+    "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-053",
+   "repository": "google/accompanist",
+   "url": "https://github.com/google/accompanist",
+   "families": [
+    "compose",
+    "android"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Compose utilities (permissions/pager/drawable painter)",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "12ec3408fc101e0006e38dc62f7acff7a822e20b",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:42Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 11357,
+    "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-054",
+   "repository": "android/compose-samples",
+   "url": "https://github.com/android/compose-samples",
+   "families": [
+    "compose",
+    "samples"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Official compose samples",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "0bbd72d69834ec86a9a72bd3513118755fb286c5",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:42Z",
+   "license": "UNCLASSIFIED",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 11308,
+    "sha256": "0a3428546fa34277a64d60b372f74f880a1aa9a30b6c96ac76d30740b6ad9326",
+    "spdx": "UNCLASSIFIED"
+   },
+   "license_class": "UNCLASSIFIED",
+   "reuse_class": "REFERENCE_ONLY"
+  },
+  {
+   "id": "GFX-SRC-055",
+   "repository": "android/nowinandroid",
+   "url": "https://github.com/android/nowinandroid",
+   "families": [
+    "compose",
+    "samples"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Official app sample",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "a49ed253d75e61a2b6ab80a8da677b57437b08eb",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:43Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 11358,
+    "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-056",
+   "repository": "JetBrains/compose-multiplatform",
+   "url": "https://github.com/JetBrains/compose-multiplatform",
+   "families": [
+    "compose-multiplatform"
+   ],
+   "priority": "P1",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "CMP top repo",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "62ab13f07c3f1b18ede878013781d4a4c72dc0e6",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:43Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE.txt",
+    "bytes": 11394,
+    "sha256": "f9a85c61ba4fe8bacc300053b3384b5fc7d9f585a08dc7b9a465b7c0716c4f50",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-057",
+   "repository": "JetBrains/compose-multiplatform-core",
+   "url": "https://github.com/JetBrains/compose-multiplatform-core",
+   "families": [
+    "compose-multiplatform"
+   ],
+   "priority": "P1",
+   "relationship": "FORK_OF:androidx/androidx (JB patches)",
+   "seed_entry": true,
+   "directive_note": "JetBrains patched compose core",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/jb-main",
+   "head_sha": "7284d0b5dfc57f175605ff3215791680782267a1",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:43Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE.txt",
+    "bytes": 10175,
+    "sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-058",
+   "repository": "JetBrains/skiko",
+   "url": "https://github.com/JetBrains/skiko",
+   "families": [
+    "skia",
+    "kotlin"
+   ],
+   "priority": "P1",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Skia bindings for Compose MP",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "12d12006ca5661e834faa6b9553926410065fd6f",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:43Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 11357,
+    "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-059",
+   "repository": "chrisbanes/tivi",
+   "url": "https://github.com/chrisbanes/tivi",
+   "families": [
+    "compose",
+    "sample-app"
+   ],
+   "priority": "P1",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Real compose app",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "a0c62c2c763c83e3a0ecf79b283224374bb06c4a",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:43Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 11357,
+    "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-060",
+   "repository": "libgdx/libgdx",
+   "url": "https://github.com/libgdx/libgdx",
+   "families": [
+    "game-engine",
+    "android-backend"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "AndroidGraphics: SurfaceView+GLSurfaceView frame lifecycle",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "84c2497ac88c3f7008f86796da085c6e9ee6c2de",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:44Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 10174,
+    "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-061",
+   "repository": "godotengine/godot",
+   "url": "https://github.com/godotengine/godot",
+   "families": [
+    "game-engine",
+    "rendering"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Frame loop + RenderingServer",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "ca871ccc9cd8e5c2ce829ec5c0fae1ac32c6269f",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:43Z",
+   "license": "MIT",
+   "license_evidence": {
+    "file": "LICENSE.txt",
+    "bytes": 1149,
+    "sha256": "b0435e3b3e4e55238f05f4b306f30524a1b2e20147810d436eaa554fa6855c80",
+    "spdx": "MIT"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-062",
+   "repository": "libsdl-org/SDL",
+   "url": "https://github.com/libsdl-org/SDL",
+   "families": [
+    "platform-layer",
+    "surface"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Surface/swapchain abstraction",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "34d66a4d3965e756a2e83711f2986310e933cab4",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:43Z",
+   "license": "UNCLASSIFIED",
+   "license_evidence": {
+    "file": "LICENSE.txt",
+    "bytes": 884,
+    "sha256": "1c040b8271b37e5076359f8fd54240e371114112924d2df81ef87c7d6a1dfdfd",
+    "spdx": "UNCLASSIFIED"
+   },
+   "license_class": "UNCLASSIFIED",
+   "reuse_class": "REFERENCE_ONLY"
+  },
+  {
+   "id": "GFX-SRC-063",
+   "repository": "cocos2d/cocos2d-x",
+   "url": "https://github.com/cocos2d/cocos2d-x",
+   "families": [
+    "game-engine"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "2D engine, GL frame loop",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/v4",
+   "head_sha": "7a5282a301a13e467bdcc3466d3cd3883862aadf",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:44Z",
+   "license": "NO_LICENSE_FILE_IN_STANDARD_PATHS",
+   "license_source": "checked=LICENSE,LICENSE.md,LICENSE.txt,COPYING,COPYING.txt,COPYING.LESSER,LICENSE-MIT,NOTICE,LICENSES/BSD-3-Clause",
+   "reuse_class": "REFERENCE_ONLY_UNTIL_LICENSE_CLARIFIED"
+  },
+  {
+   "id": "GFX-SRC-064",
+   "repository": "korlibs/korge",
+   "url": "https://github.com/korlibs/korge",
+   "families": [
+    "game-engine",
+    "kotlin"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Kotlin multiplatform game engine",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "bd2bbaad6e2abc865c87f3a5fdd10fc9100e3746",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:43Z",
+   "license": "MIT",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 14750,
+    "sha256": "23b16db25e0d977505e0083a6ee19392ebce22c94d89c9c2642ce15b5c2f2433",
+    "spdx": "MIT"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-065",
+   "repository": "defold/defold",
+   "url": "https://github.com/defold/defold",
+   "families": [
+    "game-engine"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Lua engine; render script",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/dev",
+   "head_sha": "a4ae60f9cd5631c286d70e47cd8ff63d2ab87b2e",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:44Z",
+   "license": "UNCLASSIFIED",
+   "license_evidence": {
+    "file": "LICENSE.txt",
+    "bytes": 9977,
+    "sha256": "be6e9921ba01445d200ba3dc09b5cab149a58d57a76ca98376b52af87d817a7a",
+    "spdx": "UNCLASSIFIED"
+   },
+   "license_class": "UNCLASSIFIED",
+   "reuse_class": "REFERENCE_ONLY"
+  },
+  {
+   "id": "GFX-SRC-066",
+   "repository": "urho3d/urho3d",
+   "url": "https://github.com/urho3d/urho3d",
+   "families": [
+    "game-engine"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "C++ engine",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "e0ce107356b255bf2e24d94a41d00b512b9ce633",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:44Z",
+   "license": "NO_LICENSE_FILE_IN_STANDARD_PATHS",
+   "license_source": "checked=LICENSE,LICENSE.md,LICENSE.txt,COPYING,COPYING.txt,COPYING.LESSER,LICENSE-MIT,NOTICE,LICENSES/BSD-3-Clause",
+   "reuse_class": "REFERENCE_ONLY_UNTIL_LICENSE_CLARIFIED"
+  },
+  {
+   "id": "GFX-SRC-067",
+   "repository": "axmolengine/axmol",
+   "url": "https://github.com/axmolengine/axmol",
+   "families": [
+    "game-engine"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Cocos2d-x fork, active",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/dev",
+   "head_sha": "0c1b62c62bcfb6cb213c1dbd022df9342c3b3538",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:44Z",
+   "license": "MIT",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 1256,
+    "sha256": "9796e9ebe8331d0317d5e5f52642d15e98da5add0aeabafab8582c4622ab0230",
+    "spdx": "MIT"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-068",
+   "repository": "floooh/sokol",
+   "url": "https://github.com/floooh/sokol",
+   "families": [
+    "graphics-backend"
+   ],
+   "priority": "P1",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Minimal GL header backends; frame contract",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "2e75443dbd4940b5aa8d76a8e479f8e4b270b9a3",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:44Z",
+   "license": "Zlib",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 897,
+    "sha256": "72f9367756dba68918b8955092c14503934681862eee33cc16495a02f40025ef",
+    "spdx": "Zlib"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-069",
+   "repository": "bkaradzic/bgfx",
+   "url": "https://github.com/bkaradzic/bgfx",
+   "families": [
+    "graphics-backend"
+   ],
+   "priority": "P1",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Abstraction over GL/Vulkan/D3D",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "ae6bc904d58ef42f1538510372b62222dcf9eccb",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:44Z",
+   "license": "BSD-style(1-clause-candidate)",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 1299,
+    "sha256": "ac2e0d253b1584316a36a0fae1d4407fa3ebcb15f27021ab479b23d27f0c9c08",
+    "spdx": "BSD-style(1-clause-candidate)"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-070",
+   "repository": "google/filament",
+   "url": "https://github.com/google/filament",
+   "families": [
+    "pbr-rendering",
+    "android"
+   ],
+   "priority": "P1",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Real-time PBR on Android; SwapChain/Engine/Renderer",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "a5e4a836aa0cfd25bc65ad2a6d64a212236cb271",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:44Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 11362,
+    "sha256": "02d70b593dd8e9355dd8e1ca8d13c303bee5bcaf3065b66ff6e4f534e1e6a2c1",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-071",
+   "repository": "flutter/engine",
+   "url": "https://github.com/flutter/engine",
+   "families": [
+    "declarative-ui",
+    "skia"
+   ],
+   "priority": "P1",
+   "relationship": "ARCHIVED",
+   "seed_entry": true,
+   "directive_note": "Merged into flutter/flutter; historical pipeline source",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "ae5c3603d013477d37ae301993fc0967d4ad7ed2",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:45Z",
+   "license": "BSD-style(1-clause-candidate)",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 1519,
+    "sha256": "89519eca6f7b9529b35bdddd623a58c3af06a88c458dbd6531ddb4675acf75a9",
+    "spdx": "BSD-style(1-clause-candidate)"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-072",
+   "repository": "chromium/chromium",
+   "url": "https://github.com/chromium/chromium",
+   "families": [
+    "web-rendering"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Blink/compositor/WebView readiness laws",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "078db04964d4107fbcd2ef8d39e526f53849fb40",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:45Z",
+   "license": "BSD-style(1-clause-candidate)",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 1536,
+    "sha256": "368cca1106be99d39ecd32a38d8305585d802a475effb66380b91ffc9bcf709b",
+    "spdx": "BSD-style(1-clause-candidate)"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-073",
+   "repository": "WebKit/WebKit",
+   "url": "https://github.com/WebKit/WebKit",
+   "families": [
+    "web-rendering"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "WebCore + MAC port; visual readiness",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "d9fb479bd09e63bd0659cacf0ad8df4431e592db",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:46Z",
+   "license": "FOUND:Source/WebCore/LICENSE-LGPL-2.1",
+   "license_source": "checked=LICENSE,LICENSE.md,LICENSE.txt,COPYING,COPYING.txt,COPYING.LESSER,LICENSE-MIT,NOTICE,LICENSES/BSD-3-Clause",
+   "reuse_class": "REFERENCE_ONLY_UNTIL_LICENSE_CLARIFIED",
+   "license_evidence": {
+    "file": "Source/WebCore/LICENSE-LGPL-2.1",
+    "bytes": 26536,
+    "sha256": "f2b3bd09663381deb99721109d22b47af1213bb43007a8b56a06c6375c8050ce",
+    "spdx": "SEE_FILE"
+   }
+  },
+  {
+   "id": "GFX-SRC-074",
+   "repository": "servo/servo",
+   "url": "https://github.com/servo/servo",
+   "families": [
+    "web-rendering",
+    "rust"
+   ],
+   "priority": "P1",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Modular layout/paint/compositor",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "5f3f3ebdd442fa9fce8b8f3f15b226222017a0f1",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:45Z",
+   "license": "MPL-2.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 15649,
+    "sha256": "1af2d2b02d9c86030d29ed77117ca7a1b0e4b6ff35bcf8eeb124867d0f5cb59e",
+    "spdx": "MPL-2.0"
+   },
+   "license_class": "COPYLEFT_LIKE",
+   "reuse_class": "REFERENCE_ONLY"
+  },
+  {
+   "id": "GFX-SRC-075",
+   "repository": "web-platform-tests/wpt",
+   "url": "https://github.com/web-platform-tests/wpt",
+   "families": [
+    "web-tests"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Web conformance tests (PORT_TEST)",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "e35344a20f922751f5ea8cc678cfd79d65056d5c",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:46Z",
+   "license": "BSD-style(1-clause-candidate)",
+   "license_evidence": {
+    "file": "LICENSE.md",
+    "bytes": 1500,
+    "sha256": "5fac07febb0e2a97fb0d7b0def149ec08b642e1ba4b9c345283ab1cbd2af6570",
+    "spdx": "BSD-style(1-clause-candidate)"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-076",
+   "repository": "mozilla/gecko-dev",
+   "url": "https://github.com/mozilla/gecko-dev",
+   "families": [
+    "web-rendering"
+   ],
+   "priority": "P2",
+   "relationship": "MIRROR_OF:hg.mozilla.org/mozilla-central",
+   "seed_entry": true,
+   "directive_note": "Read-only git mirror of Gecko",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "5836a062726f715fda621338a17b51aff30d0a8c",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:45Z",
+   "license": "UNCLASSIFIED",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 389,
+    "sha256": "a799adf18bfb1911f16086dc0e2a6d1cd0e31272f47e7ee6841b465b74d249de",
+    "spdx": "UNCLASSIFIED"
+   },
+   "license_class": "UNCLASSIFIED",
+   "reuse_class": "REFERENCE_ONLY"
+  },
+  {
+   "id": "GFX-SRC-077",
+   "repository": "electron/electron",
+   "url": "https://github.com/electron/electron",
+   "families": [
+    "web-embedding"
+   ],
+   "priority": "P1",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Chromium embedding; ready-to-show semantics",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "db6cb2d99d9f34a97f8f1d2c2d2fd7d5ab980d78",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:45Z",
+   "license": "MIT",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 1096,
+    "sha256": "5154e165bd6c2cc0cfbcd8916498c7abab0497923bafcd5cb07673fe8480087d",
+    "spdx": "MIT"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-078",
+   "repository": "tauri-apps/tauri",
+   "url": "https://github.com/tauri-apps/tauri",
+   "families": [
+    "web-embedding"
+   ],
+   "priority": "P2",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "System webview embedding",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/dev",
+   "head_sha": "023fe7f59650c50b624021460064ee074bda56d9",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:45Z",
+   "license": "MIT",
+   "license_evidence": {
+    "file": "LICENSE-MIT",
+    "bytes": 1090,
+    "sha256": "9dd42ea92cff2ede5cd477cbfcce051b2d0115c0ac7f368ee88cb545055dff1d",
+    "spdx": "MIT"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-079",
+   "repository": "flutter/flutter",
+   "url": "https://github.com/flutter/flutter",
+   "families": [
+    "declarative-ui",
+    "skia"
+   ],
+   "priority": "P0",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Framework; engine merged here",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "911600f57d4e0cec8ecac5cd50826778ab5cc8c6",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:46Z",
+   "license": "BSD-style(1-clause-candidate)",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 1519,
+    "sha256": "a598db94b6290ffbe10b5ecf911057b6a943351c727fdda9e5f2891d68700a20",
+    "spdx": "BSD-style(1-clause-candidate)"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-080",
+   "repository": "ionic-team/capacitor",
+   "url": "https://github.com/ionic-team/capacitor",
+   "families": [
+    "web-embedding",
+    "android"
+   ],
+   "priority": "P2",
+   "relationship": "CANONICAL",
+   "seed_entry": true,
+   "directive_note": "Android WebView embedding",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "145560ee590d86637dc9dd2e2c9f4c08b0f631c0",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:46Z",
+   "license": "MIT",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 1075,
+    "sha256": "9c6ebf3e5ab832ba4d5af38f340978e1fedbfee6e3d23662dfdb8917a9d864dd",
+    "spdx": "MIT"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-081",
+   "repository": "nothings/stb",
+   "url": "https://github.com/nothings/stb",
+   "families": [
+    "image-codec",
+    "single-header"
+   ],
+   "priority": "P1",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "stb_image: decode semantics w/ test images",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "2c980bb59875b0d32144a71867fbdebb2f77cd20",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:46Z",
+   "license": "MIT",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 2510,
+    "sha256": "bebfe904b14301657e4e5d655c811d51fd31b97c455b9cc2d8600d6bac6cff63",
+    "spdx": "MIT"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-082",
+   "repository": "FFmpeg/FFmpeg",
+   "url": "https://github.com/FFmpeg/FFmpeg",
+   "families": [
+    "image-video-codec"
+   ],
+   "priority": "P2",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "GIF/APNG/VP8 demux+decode; fate tests",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "5253641e62e4d24b5efa3c11953c472661f28bda",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:46Z",
+   "license": "LGPL-2.1-or-later",
+   "license_evidence": {
+    "file": "LICENSE.md",
+    "bytes": 4358,
+    "sha256": "8c880fa51b7e1d8dbc09a92685da98c129532f3b0a766a9a58a2321ad67bab6c",
+    "spdx": "LGPL-2.1-or-later"
+   },
+   "license_class": "WEAK_COPYLEFT",
+   "reuse_class": "COPY_REQUIRES_NOTICE"
+  },
+  {
+   "id": "GFX-SRC-083",
+   "repository": "uclouvain/openjpeg",
+   "url": "https://github.com/uclouvain/openjpeg",
+   "families": [
+    "image-codec",
+    "jpeg2000"
+   ],
+   "priority": "P3",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "JP2 codec",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "8314119b067c0fc77834731168daaebd379fdb12",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:46Z",
+   "license": "BSD-style(1-clause-candidate)",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 2112,
+    "sha256": "a6af136f3e15038a666b61f376612a07d9a4e48cb7c01adbf3e33b3f14ab49b6",
+    "spdx": "BSD-style(1-clause-candidate)"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-084",
+   "repository": "python-pillow/Pillow",
+   "url": "https://github.com/python-pillow/Pillow",
+   "families": [
+    "image-codec",
+    "tests"
+   ],
+   "priority": "P1",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "GifImagePlugin disposal semantics + Tests/",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "8960fe0b299f6fa9ed17fa66b50ad50f440d29f2",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:46Z",
+   "license": "UNCLASSIFIED",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 1457,
+    "sha256": "15181e7363dca9aed78b79bebebc7fde7f1814b8bd311ea3b87ae8ccadfc185b",
+    "spdx": "UNCLASSIFIED"
+   },
+   "license_class": "UNCLASSIFIED",
+   "reuse_class": "REFERENCE_ONLY"
+  },
+  {
+   "id": "GFX-SRC-085",
+   "repository": "golang/go",
+   "url": "https://github.com/golang/go",
+   "families": [
+    "image-codec",
+    "stdlib-tests"
+   ],
+   "priority": "P1",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "image/gif reader/writer + disposal tests",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "41fd3e5b1beb89d949bb26b5cc6842174861f5b8",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:46Z",
+   "license": "BSD-style(1-clause-candidate)",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 1453,
+    "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+    "spdx": "BSD-style(1-clause-candidate)"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-086",
+   "repository": "image-rs/image",
+   "url": "https://github.com/image-rs/image",
+   "families": [
+    "image-codec",
+    "rust"
+   ],
+   "priority": "P3",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "Rust image codecs + tests",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "075e65d618a323e5cb48c1d8710a2eca25d690c6",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:47Z",
+   "license": "MIT",
+   "license_evidence": {
+    "file": "LICENSE-MIT",
+    "bytes": 1036,
+    "sha256": "c77a4cf9da729987d0fe7ccd811e3bd27393914ddf3d23467c18cc22954513b3",
+    "spdx": "MIT"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-087",
+   "repository": "libgd/libgd",
+   "url": "https://github.com/libgd/libgd",
+   "families": [
+    "image-codec",
+    "gif"
+   ],
+   "priority": "P3",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "GD GIF suite",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "b8ccbeedd80dc6c23290863a28ba4e16fab22e73",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:46Z",
+   "license": "UNCLASSIFIED",
+   "license_evidence": {
+    "file": "COPYING",
+    "bytes": 2991,
+    "sha256": "005f4b6b0141d1bd11d371bbf7d4f67947f85a4906b7f5465f942204cf918ba3",
+    "spdx": "UNCLASSIFIED"
+   },
+   "license_class": "UNCLASSIFIED",
+   "reuse_class": "REFERENCE_ONLY"
+  },
+  {
+   "id": "GFX-SRC-088",
+   "repository": "reg-viz/reg-suit",
+   "url": "https://github.com/reg-viz/reg-suit",
+   "families": [
+    "visual-regression"
+   ],
+   "priority": "P2",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "Visual regression workflow bot",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "5c09c8eb1e356d7e8145e5850e6de17b2b25a5a0",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:47Z",
+   "license": "MIT",
+   "license_evidence": {
+    "file": "LICENSE.txt",
+    "bytes": 1069,
+    "sha256": "faa4f5cf1515dcb78ea03c36068284f104994457d7ca3a050ef41b1d58a307af",
+    "spdx": "MIT"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-089",
+   "repository": "kornelski/dssim",
+   "url": "https://github.com/kornelski/dssim",
+   "families": [
+    "visual-diff",
+    "ssim"
+   ],
+   "priority": "P2",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "DSSIM perceptual metric (Rust)",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "0e44c9b7fe91a5265c8e463436c28512186fe9cd",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:47Z",
+   "license": "GPL-3.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 34523,
+    "sha256": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef",
+    "spdx": "GPL-3.0"
+   },
+   "license_class": "COPYLEFT_LIKE",
+   "reuse_class": "REFERENCE_ONLY"
+  },
+  {
+   "id": "GFX-SRC-090",
+   "repository": "OpenImageIO/oiio",
+   "url": "https://github.com/OpenImageIO/oiio",
+   "families": [
+    "image-processing"
+   ],
+   "priority": "P2",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "oiiotool image compare",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "3722a2d4dad7aee1aad8c8571b2e38383bed7a94",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:47Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE.md",
+    "bytes": 11357,
+    "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-091",
+   "repository": "RazrFalcon/resvg",
+   "url": "https://github.com/RazrFalcon/resvg",
+   "families": [
+    "svg",
+    "rasterizer"
+   ],
+   "priority": "P1",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "SVG rasterizer + HUGE golden-PNG test suite",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "75b6bbadd7999d0516dcd7153b4a321bfdf8670a",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:47Z",
+   "license": "MIT",
+   "license_evidence": {
+    "file": "LICENSE-MIT",
+    "bytes": 1057,
+    "sha256": "f5d934dc281b44e0003ee461ac740b18b6629a454decd872c774d34e4ee0b21d",
+    "spdx": "MIT"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-092",
+   "repository": "memononen/nanosvg",
+   "url": "https://github.com/memononen/nanosvg",
+   "families": [
+    "svg",
+    "rasterizer"
+   ],
+   "priority": "P2",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "Single-header SVG parser/rasterizer",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "239e102ec2c691f2902e20ace2ed36ee4a35cfe6",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:47Z",
+   "license": "UNCLASSIFIED",
+   "license_evidence": {
+    "file": "LICENSE.txt",
+    "bytes": 880,
+    "sha256": "e82bc3dd03400aecabe12201219ba14750dbc4b36faab58663a7a6068548d372",
+    "spdx": "UNCLASSIFIED"
+   },
+   "license_class": "UNCLASSIFIED",
+   "reuse_class": "REFERENCE_ONLY"
+  },
+  {
+   "id": "GFX-SRC-093",
+   "repository": "memononen/nanovg",
+   "url": "https://github.com/memononen/nanovg",
+   "families": [
+    "canvas",
+    "gl"
+   ],
+   "priority": "P2",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "Canvas-like vector GL renderer",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "ce3bf745eb2d2dbc14a50bf2446783f691ac4353",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:47Z",
+   "license": "UNCLASSIFIED",
+   "license_evidence": {
+    "file": "LICENSE.txt",
+    "bytes": 877,
+    "sha256": "45185a6680ed83863bef33e1055f9fd76374df4b81c957802c19a286c982dfd2",
+    "spdx": "UNCLASSIFIED"
+   },
+   "license_class": "UNCLASSIFIED",
+   "reuse_class": "REFERENCE_ONLY"
+  },
+  {
+   "id": "GFX-SRC-094",
+   "repository": "Tencent/tgfx",
+   "url": "https://github.com/Tencent/tgfx",
+   "families": [
+    "2d-rendering",
+    "vector"
+   ],
+   "priority": "P2",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "Production 2D engine (WeChat)",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "c2a71716194997703acd85537aa0671d88ab5885",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:47Z",
+   "license": "BSD-style(1-clause-candidate)",
+   "license_evidence": {
+    "file": "LICENSE.txt",
+    "bytes": 47640,
+    "sha256": "6d9ebfa873207317b597a4c78cdbb0cf37c5e4b4b25511eb940cd3e6b86cf82d",
+    "spdx": "BSD-style(1-clause-candidate)"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-095",
+   "repository": "Samsung/rlottie",
+   "url": "https://github.com/Samsung/rlottie",
+   "families": [
+    "animation",
+    "vector"
+   ],
+   "priority": "P1",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "Already linked in MiniAndroid for Lottie",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "683bbaa39dd0d366cf6b4bc300b4dfbee677ea6b",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:47Z",
+   "license": "UNCLASSIFIED",
+   "license_evidence": {
+    "file": "COPYING",
+    "bytes": 690,
+    "sha256": "d2a6dcab001eaf521440b78b7230be1481107a3b33d05e7c38ed94342b4d9a60",
+    "spdx": "UNCLASSIFIED"
+   },
+   "license_class": "UNCLASSIFIED",
+   "reuse_class": "REFERENCE_ONLY"
+  },
+  {
+   "id": "GFX-SRC-096",
+   "repository": "servo/webrender",
+   "url": "https://github.com/servo/webrender",
+   "families": [
+    "gpu-rasterizer"
+   ],
+   "priority": "P2",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "WR: batched GPU rasterization",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "e1c924ebad9ffdfe8c8c606aba77eb3f888c396a",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:48Z",
+   "license": "MPL-2.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 15648,
+    "sha256": "b946744aeda89b467929585fe8eeb5461847695220c1b168fb375d8abd4ea3d0",
+    "spdx": "MPL-2.0"
+   },
+   "license_class": "COPYLEFT_LIKE",
+   "reuse_class": "REFERENCE_ONLY"
+  },
+  {
+   "id": "GFX-SRC-097",
+   "repository": "mesa3d/mesa",
+   "url": "https://github.com/mesa3d/mesa",
+   "families": [
+    "gl",
+    "cpu-rasterizer"
+   ],
+   "priority": "P3",
+   "relationship": "MIRROR_OF:gitlab.freedesktop.org/mesa/mesa",
+   "seed_entry": false,
+   "directive_note": "llvmpipe/swrast software GL",
+   "status": "OFF_GITHUB",
+   "error": "no GitHub repository at this identity; upstream hosted off-GitHub",
+   "last_verified": "2026-09-24T09:04:21Z",
+   "upstream_url": "https://gitlab.freedesktop.org/mesa/mesa",
+   "license": "UNKNOWN",
+   "license_source": "NOT_FETCHED_OFF_GITHUB"
+  },
+  {
+   "id": "GFX-SRC-098",
+   "repository": "cairo/cairo",
+   "url": "https://github.com/cairo/cairo",
+   "families": [
+    "2d-rendering"
+   ],
+   "priority": "P2",
+   "relationship": "MIRROR_OF:gitlab.freedesktop.org/cairo/cairo",
+   "seed_entry": false,
+   "directive_note": "Compositing model reference",
+   "status": "OFF_GITHUB",
+   "error": "no GitHub repository at this identity; upstream hosted off-GitHub",
+   "last_verified": "2026-09-24T09:04:21Z",
+   "upstream_url": "https://gitlab.freedesktop.org/cairo/cairo",
+   "license": "UNKNOWN",
+   "license_source": "NOT_FETCHED_OFF_GITHUB"
+  },
+  {
+   "id": "GFX-SRC-099",
+   "repository": "raysan5/raylib",
+   "url": "https://github.com/raysan5/raylib",
+   "families": [
+    "game-2d",
+    "textures",
+    "text"
+   ],
+   "priority": "P3",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "Simple 2D + font texture rendering",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "cb95b8fba7d47d6436127bf4a9ab2d905c102657",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:48Z",
+   "license": "UNCLASSIFIED",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 877,
+    "sha256": "882a5a819cf562aa3583aae3af3f2211dda15c63de9fc8cc4b399a2f9e78d799",
+    "spdx": "UNCLASSIFIED"
+   },
+   "license_class": "UNCLASSIFIED",
+   "reuse_class": "REFERENCE_ONLY"
+  },
+  {
+   "id": "GFX-SRC-100",
+   "repository": "fribidi/fribidi",
+   "url": "https://github.com/fribidi/fribidi",
+   "families": [
+    "bidi"
+   ],
+   "priority": "P1",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "FriBidi: project-proven bidi stage",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "4c914a92e94a9fe4f30ae83a1130099841566448",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:48Z",
+   "license": "LGPL-2.1-or-later",
+   "license_evidence": {
+    "file": "COPYING",
+    "bytes": 26419,
+    "sha256": "20e50fe7aae3e56378ebf0417d9de904f55a0e61e4df315333e632a4d3555d95",
+    "spdx": "LGPL-2.1-or-later"
+   },
+   "license_class": "WEAK_COPYLEFT",
+   "reuse_class": "COPY_REQUIRES_NOTICE"
+  },
+  {
+   "id": "GFX-SRC-101",
+   "repository": "silnrsi/graphite",
+   "url": "https://github.com/silnrsi/graphite",
+   "families": [
+    "text-shaping"
+   ],
+   "priority": "P3",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "Graphite shaping engine",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "ca8d821e60a15b6c24e404c9086992c975d8e1cf",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:48Z",
+   "license": "LGPL-2.1-or-later",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 29228,
+    "sha256": "cab46cd45adbfea4b1d0f14b033c70062c73074fa0b56532c2f351576ddf455e",
+    "spdx": "LGPL-2.1-or-later"
+   },
+   "license_class": "WEAK_COPYLEFT",
+   "reuse_class": "COPY_REQUIRES_NOTICE"
+  },
+  {
+   "id": "GFX-SRC-102",
+   "repository": "libass/libass",
+   "url": "https://github.com/libass/libass",
+   "families": [
+    "text-render",
+    "subtitle"
+   ],
+   "priority": "P3",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "HarfBuzz+FreeType consumer; glyph events",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "f61db567e6593df3470e91594bcd4ad2d0473aff",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:48Z",
+   "license": "UNCLASSIFIED",
+   "license_evidence": {
+    "file": "COPYING",
+    "bytes": 755,
+    "sha256": "f7e30699d02798351e7f839e3d3bfeb29ce65e44efa7735c225464c4fd7dfe9c",
+    "spdx": "UNCLASSIFIED"
+   },
+   "license_class": "UNCLASSIFIED",
+   "reuse_class": "REFERENCE_ONLY"
+  },
+  {
+   "id": "GFX-SRC-103",
+   "repository": "GNOME/pango",
+   "url": "https://github.com/GNOME/pango",
+   "families": [
+    "text-layout"
+   ],
+   "priority": "P2",
+   "relationship": "MIRROR_OF:gitlab.gnome.org/GNOME/pango",
+   "seed_entry": false,
+   "directive_note": "Text layout/line breaking reference",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "8e74c27c113c98664b77272d16b14bbce542c184",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:48Z",
+   "license": "UNCLASSIFIED",
+   "license_evidence": {
+    "file": "COPYING",
+    "bytes": 25292,
+    "sha256": "d245807f90032872d1438d741ed21e2490e1175dc8aa3afa5ddb6c8e529b58e5",
+    "spdx": "UNCLASSIFIED"
+   },
+   "license_class": "UNCLASSIFIED",
+   "reuse_class": "REFERENCE_ONLY"
+  },
+  {
+   "id": "GFX-SRC-104",
+   "repository": "fontforge/fontforge",
+   "url": "https://github.com/fontforge/fontforge",
+   "families": [
+    "font-tooling"
+   ],
+   "priority": "P3",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "Font inspection tooling",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "606b33dcdd2655b9cbef6d5dc3b2d7bb34927b97",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:48Z",
+   "license": "BSD-style(1-clause-candidate)",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 10015,
+    "sha256": "cd2401c1c2e1994a575ad8a0bf91237ca5e554b4d1eca2a15d4dd7fe7553be83",
+    "spdx": "BSD-style(1-clause-candidate)"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-105",
+   "repository": "facebook/yoga",
+   "url": "https://github.com/facebook/yoga",
+   "families": [
+    "layout-engine"
+   ],
+   "priority": "P1",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "Flexbox engine; adapter already differential-tested in project",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "a8b4817143940e2717f60148ec418cf95b789628",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:49Z",
+   "license": "MIT",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 1086,
+    "sha256": "52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85",
+    "spdx": "MIT"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-106",
+   "repository": "ocornut/imgui",
+   "url": "https://github.com/ocornut/imgui",
+   "families": [
+    "ui",
+    "font-atlas"
+   ],
+   "priority": "P2",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "Immediate mode + baked font atlas",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "623ba461202d73471d65a1c2b608eecc3959a6d6",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:49Z",
+   "license": "MIT",
+   "license_evidence": {
+    "file": "LICENSE.txt",
+    "bytes": 1083,
+    "sha256": "173506a2d6f7fb67990d257fb2507f188690eca39060c39469ae7bef43aae2a3",
+    "spdx": "MIT"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-107",
+   "repository": "avaloniaui/avalonia",
+   "url": "https://github.com/avaloniaui/avalonia",
+   "families": [
+    "ui",
+    "skia"
+   ],
+   "priority": "P3",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "Skia-based cross-platform UI; hit testing",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "c423071d3382b9aefb8ea57ed07f83c595f8d2ce",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:49Z",
+   "license": "NO_LICENSE_FILE_IN_STANDARD_PATHS",
+   "license_source": "checked=LICENSE,LICENSE.md,LICENSE.txt,COPYING,COPYING.txt,COPYING.LESSER,LICENSE-MIT,NOTICE,LICENSES/BSD-3-Clause",
+   "reuse_class": "REFERENCE_ONLY_UNTIL_LICENSE_CLARIFIED"
+  },
+  {
+   "id": "GFX-SRC-108",
+   "repository": "androguard/androguard",
+   "url": "https://github.com/androguard/androguard",
+   "families": [
+    "apk-analysis"
+   ],
+   "priority": "P1",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "AXML/ARSC/dex oracle (named in DO_NOT_REINVENT)",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "a06d033c0d3ea5bfe92ebd46409146dcf116f2fe",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:49Z",
+   "license": "FOUND:LICENCE",
+   "license_source": "checked=LICENSE,LICENSE.md,LICENSE.txt,COPYING,COPYING.txt,COPYING.LESSER,LICENSE-MIT,NOTICE,LICENSES/BSD-3-Clause",
+   "reuse_class": "REFERENCE_ONLY_UNTIL_LICENSE_CLARIFIED",
+   "license_evidence": {
+    "file": "LICENCE",
+    "bytes": 10174,
+    "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594",
+    "spdx": "SEE_FILE"
+   }
+  },
+  {
+   "id": "GFX-SRC-109",
+   "repository": "reandroid/ARSCLib",
+   "url": "https://github.com/reandroid/ARSCLib",
+   "families": [
+    "arsc",
+    "android-resources"
+   ],
+   "priority": "P1",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "ARSC parse/build library",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "b9c2266bd070f7f0b216c86623170fbafc0404f5",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:49Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 11354,
+    "sha256": "449e6720b1d610e781712ebcb4a188e0212127327d97e63dc0534ef2e895a3d1",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-110",
+   "repository": "iBotPeaches/Apktool",
+   "url": "https://github.com/iBotPeaches/Apktool",
+   "families": [
+    "apk-analysis"
+   ],
+   "priority": "P2",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "Resource decode/rebuild",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "57690eee61e394e1987c09981bd36ff171e73d8d",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:49Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE.md",
+    "bytes": 10766,
+    "sha256": "c49c53fdc79e1143a1892eb7333b595eecdbe40623e72be325267db28cb72114",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-111",
+   "repository": "skylot/jadx",
+   "url": "https://github.com/skylot/jadx",
+   "families": [
+    "apk-analysis"
+   ],
+   "priority": "P2",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "dex->java; resource decode",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "2fb1b16386941660fda07e9017285aec40fcb37f",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:49Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 11357,
+    "sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-112",
+   "repository": "KhronosGroup/Vulkan-Samples",
+   "url": "https://github.com/KhronosGroup/Vulkan-Samples",
+   "families": [
+    "vulkan",
+    "samples"
+   ],
+   "priority": "P3",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "Frame lifecycle samples",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "177edebf0cd7d4f669667e49f052cfb56b17e004",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:49Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 11355,
+    "sha256": "9c18288ad9997b4b8d62a544e01d960d3effa28e45e8cfcea6e0cacb9db33f6b",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-113",
+   "repository": "KhronosGroup/WebGL",
+   "url": "https://github.com/KhronosGroup/WebGL",
+   "families": [
+    "webgl",
+    "conformance"
+   ],
+   "priority": "P2",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "WebGL conformance suite (PORT_TEST)",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "714857a28445e8f5d8d6ae1c78498578009534d8",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:50Z",
+   "license": "MIT",
+   "license_evidence": {
+    "file": "LICENSE.txt",
+    "bytes": 1069,
+    "sha256": "de17422334747f3e629938e33d0cf40322f9e3c42774d085d95b9dd8aea8d88e",
+    "spdx": "MIT"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-114",
+   "repository": "apitrace/apitrace",
+   "url": "https://github.com/apitrace/apitrace",
+   "families": [
+    "frame-tracing"
+   ],
+   "priority": "P3",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "GL frame tracing/replay",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "9b3f2d1ceda6292f77210c7de1563bc17dcde4d6",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:50Z",
+   "license": "MIT",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 1200,
+    "sha256": "7066bb1b787519c42f8278b77757c21de522cd97755cb30a22759ac401c62260",
+    "spdx": "MIT"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-115",
+   "repository": "baldurk/renderdoc",
+   "url": "https://github.com/baldurk/renderdoc",
+   "families": [
+    "graphics-debugger"
+   ],
+   "priority": "P3",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "Frame capture/dissection | S94 directive listed 'renderdoc/renderdoc'; live canonical location verified as 'baldurk/renderdoc'",
+   "status": "VERIFIED",
+   "error": "fatal: could not read Username for 'https://github.com': No such device or address",
+   "last_verified": "2026-09-24T09:04:21Z",
+   "identity_history": [
+    {
+     "identity": "renderdoc/renderdoc",
+     "finding": "git ls-remote 404 (GitHub prompts for credentials => repo absent/renamed)",
+     "date": "2026-09-24T09:04:21Z"
+    }
+   ],
+   "default_branch": "refs/heads/v1.x",
+   "head_sha": "54f92c222ad460e86e5f5a1fa8f5b6d3ee501b53",
+   "verified_via": "git ls-remote --symref",
+   "license": "MIT",
+   "license_evidence": {
+    "file": "LICENSE.md",
+    "bytes": 1205,
+    "sha256": "ba3b05b7f5bfdb4b4917bf8ea3aa9c4ea4c20ff6522de9109a6cc982c5c35730",
+    "spdx": "MIT"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-116",
+   "repository": "google/agi",
+   "url": "https://github.com/google/agi",
+   "families": [
+    "android-gpu-profiler"
+   ],
+   "priority": "P3",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "Android GPU Inspector; frame capture",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "d08ae4f58566327881a8faf51758b8a2cc9ebfbe",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:50Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 11358,
+    "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-117",
+   "repository": "Genymobile/scrcpy",
+   "url": "https://github.com/Genymobile/scrcpy",
+   "families": [
+    "screen-capture",
+    "android"
+   ],
+   "priority": "P3",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "Device display capture pipeline",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "19c1261d2e2cbf2b5e6a71a8b64cc1dd3ede06ac",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:50Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 11387,
+    "sha256": "01c12035bf35af37241298dc7ad538eb2a07e5c940437bc6876feeaa9d1951d0",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-118",
+   "repository": "puppeteer/puppeteer",
+   "url": "https://github.com/puppeteer/puppeteer",
+   "families": [
+    "browser-automation"
+   ],
+   "priority": "P2",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "Headless screenshot + readiness events",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "15684eb7f1adf98c1c0c4a5d23a154b7995e947e",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:50Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 11344,
+    "sha256": "a27ca07269b3518550b2e83aed13eadd7d14d924b5864e14889b40cf227530ca",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-119",
+   "repository": "maplibre/maplibre-gl-native",
+   "url": "https://github.com/maplibre/maplibre-gl-native",
+   "families": [
+    "map-rendering",
+    "glyph-atlas"
+   ],
+   "priority": "P3",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "SDF glyph atlas + texture rendering",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "d695deef12fc64ee075a892c2d913c45fe8c7b42",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:50Z",
+   "license": "BSD-style(1-clause-candidate)",
+   "license_evidence": {
+    "file": "LICENSE.md",
+    "bytes": 1374,
+    "sha256": "554cff8b6f6d2e77629e8c6eab769844ab86adc610ca2d60401ba2e0dce3c229",
+    "spdx": "BSD-style(1-clause-candidate)"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-120",
+   "repository": "tesseract-ocr/tesseract",
+   "url": "https://github.com/tesseract-ocr/tesseract",
+   "families": [
+    "ocr",
+    "text-verify"
+   ],
+   "priority": "P2",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "Independent text-readability oracle",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "8ae68101439b3f7df123499a784e8896c805179d",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:50Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 11358,
+    "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-121",
+   "repository": "canvg/canvg",
+   "url": "https://github.com/canvg/canvg",
+   "families": [
+    "canvas",
+    "web"
+   ],
+   "priority": "P3",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "JS canvas 2D semantics implementation",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "d63883331e97879b3d0695f3ed982f6c42aeadba",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:50Z",
+   "license": "MIT",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 1144,
+    "sha256": "86622ffc909487e6029235d31503263b796895679b0926f4a4d6f02d2623fde0",
+    "spdx": "MIT"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-122",
+   "repository": "godotengine/godot-demo-projects",
+   "url": "https://github.com/godotengine/godot-demo-projects",
+   "families": [
+    "fixtures",
+    "game-engine"
+   ],
+   "priority": "P3",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "READY_FIXTURE goldens",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "a3b5c113112f77291d5f3d1360f33a882fdc52f7",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:50Z",
+   "license": "MIT",
+   "license_evidence": {
+    "file": "LICENSE.md",
+    "bytes": 1134,
+    "sha256": "0339177149b474f7ff676d32218ecb3a8f2538955610023c3769763720d09e4c",
+    "spdx": "MIT"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-123",
+   "repository": "facebook/litho",
+   "url": "https://github.com/facebook/litho",
+   "families": [
+    "android-ui"
+   ],
+   "priority": "P3",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "Async layout+draw yoga consumer",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "55e28e58930a53133620fd32406ec8c3a9116c0c",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:51Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 10773,
+    "sha256": "f62d190c08e2b300b45780f0b3cabcacc78d0e373f7a0de79d31f82b084d35ea",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-124",
+   "repository": "chrisbanes/PhotoView",
+   "url": "https://github.com/chrisbanes/PhotoView",
+   "families": [
+    "android-ui",
+    "imageview"
+   ],
+   "priority": "P2",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "Matrix zoom/hit semantics on ImageView",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/master",
+   "head_sha": "565505d5cb84f5977771b5d2ccb7726338e77224",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:51Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 11358,
+    "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-125",
+   "repository": "hajimehoshi/ebiten",
+   "url": "https://github.com/hajimehoshi/ebiten",
+   "families": [
+    "game-engine",
+    "go"
+   ],
+   "priority": "P3",
+   "relationship": "CANONICAL",
+   "seed_entry": false,
+   "directive_note": "Deterministic 2D game loop",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/main",
+   "head_sha": "dd525072941ce761a1a44d40d92913b74f4fc883",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:02:51Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "LICENSE",
+    "bytes": 11357,
+    "sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  },
+  {
+   "id": "GFX-SRC-126",
+   "repository": "aosp-mirror/platform_frameworks_native",
+   "url": "https://github.com/aosp-mirror/platform_frameworks_native",
+   "families": [
+    "android-framework",
+    "surfaceflinger"
+   ],
+   "priority": "P1",
+   "relationship": "MIRROR_OF:android.googlesource.com/platform/frameworks/native",
+   "seed_entry": false,
+   "directive_note": "libgui/Surface/EGL frame submission laws",
+   "status": "OFF_GITHUB",
+   "error": "aosp-mirror does not carry platform_frameworks_native; upstream is googlesource",
+   "last_verified": "2026-09-24T09:04:21Z",
+   "upstream_url": "https://android.googlesource.com/platform/frameworks/native",
+   "license": "UNKNOWN",
+   "license_source": "NOT_FETCHED_OFF_GITHUB"
+  },
+  {
+   "id": "GFX-SRC-900",
+   "repository": "LineageOS/android_frameworks_native",
+   "url": "https://github.com/LineageOS/android_frameworks_native",
+   "families": [
+    "android-framework",
+    "surfaceflinger",
+    "surface"
+   ],
+   "priority": "P2",
+   "relationship": "FORK_OF:AOSP platform_frameworks_native (LineageOS distro patches)",
+   "seed_entry": false,
+   "directive_note": "Verified stand-in evidence source for AOSP native surface/libgui laws; upstream canonical is googlesource",
+   "status": "VERIFIED",
+   "default_branch": "refs/heads/lineage-23.2",
+   "head_sha": "9568531f9be7ae65f260699811f32ec4e461de6e",
+   "verified_via": "git ls-remote --symref",
+   "last_verified": "2026-09-24T09:04:21Z",
+   "license": "Apache-2.0",
+   "license_evidence": {
+    "file": "NOTICE",
+    "bytes": 17680,
+    "sha256": "5f28c11f8b1b3f97b9d42c74b85371ebf4127f241b799279bcecd69f7ee542dc",
+    "spdx": "Apache-2.0"
+   },
+   "license_class": "PERMISSIVE",
+   "reuse_class": "SAFE_PORT_WITH_ATTRIBUTION"
+  }
+ ],
+ "off_github": 4,
+ "license_mined_at": "2026-09-24T09:05:28Z",
+ "license_distribution": {
+  "BSD-style(1-clause-candidate)": 15,
+  "Apache-2.0": 45,
+  "UNKNOWN": 5,
+  "MIT": 23,
+  "UNCLASSIFIED": 19,
+  "NO_LICENSE_FILE_IN_STANDARD_PATHS": 7,
+  "Zlib": 3,
+  "BSD-style(2-clause-candidate)": 1,
+  "LGPL": 1,
+  "LGPL-2.1-or-later": 5,
+  "MPL-2.0": 2,
+  "GPL-3.0": 1
+ }
+}
