@@ -1,0 +1,108 @@
+{
+ "campaign": "S94 GRAPHICS SOURCE LIBRARY (\u00a720)",
+ "generated_at": "2026-09-24T09:27:47Z",
+ "seed": 20260924,
+ "rng": "python3 random.Random(seed).sample(sorted_pool)",
+ "registry_path": "docs/evidence/canonical/registry.json",
+ "registry_sha256": "f38c9af5f83896bda42e68967c3c7bcbdf4a335d1c9ca06725d41965795cefe3",
+ "pool_definition": "canonical titles carrying a canonical visual artifact (.gif/.jpg) = graphics-heavy by construction",
+ "pool_sha256": "8b0be9be8dab260ca594a8ea45b8f0f9c82019846f3569a06961f501312cb2e7",
+ "pool_size": 36,
+ "pool": [
+  "2048",
+  "Anuto TD",
+  "Balance the Ball",
+  "Chess Clock",
+  "Fish Rings",
+  "FreeKlondike",
+  "GameMasterDice",
+  "Heading Calculator",
+  "Memory",
+  "MicroTimer",
+  "Mines (premy)",
+  "Mini Tetris",
+  "MiniCraft (House Builder)",
+  "Notes (billthefarmer)",
+  "OPMT (One More Time\u2026)",
+  "OpenSudoku",
+  "PMK-61 Calculator",
+  "Shopping List Calc",
+  "SigGen",
+  "Simple Stopwatch",
+  "Snake Deluxe",
+  "TicTacToe Classic",
+  "TicTacToe Deluxe",
+  "TicTacToe3D self-aware fixture",
+  "TriPeaks",
+  "Vector Pinball (bouncy)",
+  "ca.rmen.nounours",
+  "com.dozingcatsoftware.dodge",
+  "com.gh4a",
+  "com.smorgasbork.hotdeath",
+  "com.trianguloy.adnihilation",
+  "com.trianguloy.urlchecker",
+  "de.georgsieber.ballbreak",
+  "org.bobstuff.bobball",
+  "uNote",
+  "x653.all_in_gold"
+ ],
+ "sample_size": 8,
+ "selected": [
+  {
+   "title": "2048",
+   "category": "ui-interactive",
+   "apk_sha256": "1b1c602a5f0a2723...",
+   "result": "registry_status=candidate_INTERACTION_VERIFIED; SELECTED_NOT_YET_EXECUTED_IN_S94 (S92/S93 verdicts reused where present)"
+  },
+  {
+   "title": "Chess Clock",
+   "category": "ui-interactive",
+   "apk_sha256": "5ca6f2c54c05efe7...",
+   "result": "registry_status=VERIFIED; SELECTED_NOT_YET_EXECUTED_IN_S94 (S92/S93 verdicts reused where present)"
+  },
+  {
+   "title": "Memory",
+   "category": "normal-app",
+   "apk_sha256": "4dd3957983e3c3f3...",
+   "result": "registry_status=VERIFIED; SELECTED_NOT_YET_EXECUTED_IN_S94 (S92/S93 verdicts reused where present)"
+  },
+  {
+   "title": "MicroTimer",
+   "category": "text-heavy",
+   "apk_sha256": "79c6f730f64886e7...",
+   "result": "registry_status=VERIFIED; SELECTED_NOT_YET_EXECUTED_IN_S94 (S92/S93 verdicts reused where present)"
+  },
+  {
+   "title": "Mini Tetris",
+   "category": "game-animation",
+   "apk_sha256": "cb2818dfe6c6cadb...",
+   "result": "S93_FAILURE_CATEGORIES=['ANIMATION_FROZEN']; evidence=docs/evidence/s93/failure_map.json#mini-tetris"
+  },
+  {
+   "title": "TriPeaks",
+   "category": "normal-app",
+   "apk_sha256": "",
+   "result": "registry_status=PARTIAL; SELECTED_NOT_YET_EXECUTED_IN_S94 (S92/S93 verdicts reused where present)"
+  },
+  {
+   "title": "com.dozingcatsoftware.dodge",
+   "category": "canvas-game",
+   "apk_sha256": "a5687d1bad7b2927...",
+   "result": "S93_FAILURE_CATEGORIES=['WRONG_CLIP']; evidence=docs/evidence/s93/failure_map.json#dodge"
+  },
+  {
+   "title": "uNote",
+   "category": "text-heavy",
+   "apk_sha256": "be91103f0e7db443...",
+   "result": "registry_status=VERIFIED; SELECTED_NOT_YET_EXECUTED_IN_S94 (S92/S93 verdicts reused where present)"
+  }
+ ],
+ "graphics_category_coverage": [
+  "canvas-game",
+  "game-animation",
+  "normal-app",
+  "text-heavy",
+  "ui-interactive"
+ ],
+ "note": "Results reuse S92/S93 machine-verdict evidence with explicit pointers; no new unexecuted claims."
+}
