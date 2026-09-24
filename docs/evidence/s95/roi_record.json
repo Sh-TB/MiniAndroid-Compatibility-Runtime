@@ -1,0 +1,47 @@
+{
+  "schema": "s95.roi.v1",
+  "campaign": "S95",
+  "generated_utc": "2026-09-24T18:40:00Z",
+  "source_lookup_calls": [
+    {"category": "WRONG_COLOR", "wave": "A", "call": 1, "sources_returned": "vector/adaptive family", "laws_returned": ["L-S94-DENSITY-1", "L-S94-DENSITY-2"]},
+    {"category": "WRONG_COLOR", "wave": "A", "call": 2, "sources_returned": "vector/adaptive family", "laws_returned": ["L-S94-DENSITY-1", "L-S94-DENSITY-2"]},
+    {"category": "WRONG_CLIP", "wave": "B", "call": 1, "sources_returned": 6, "laws_returned": ["L-S94-CLIP-1", "L-S94-CLIP-2", "L-S94-NINEPATCH-1", "L-S94-LAYOUT-1", "L-S94-LAYOUT-2", "L-S94-CDROID-1"]},
+    {"category": "WRONG_CLIP", "wave": "B", "call": 2, "sources_returned": 6, "laws_returned": ["L-S94-CLIP-1", "L-S94-CLIP-2", "L-S94-NINEPATCH-1", "L-S94-LAYOUT-1", "L-S94-LAYOUT-2", "L-S94-CDROID-1"]},
+    {"category": "ANIMATION_FROZEN", "wave": "C", "call": 1, "sources_returned": "animation/frame-submission family", "laws_returned": ["L-S94-GIF-4"]},
+    {"category": "UNREADABLE_TEXT", "wave": "D", "call": 1, "sources_returned": "text/shaping family", "laws_returned": ["L-S94-PNG-1", "L-S94-DECODE-1"]}
+  ],
+  "upstream_files_fetched": [
+    {"file": "core/res/res/values/styles_material.xml", "repo": "aosp-mirror/platform_frameworks_base", "head_sha": "1cdfff555f4a21f71ccc978290e2e212e2f8b168", "file_sha256": "10eca71aaa2b3e49f63a6aa8a8fbb1a533a1e925fe428999d023f6cf81bd0b07", "law_used": "Widget.Material.Button minHeight 48dip / minWidth 88dip"},
+    {"file": "core/res/res/values/themes_device_defaults.xml", "repo": "aosp-mirror/platform_frameworks_base", "head_sha": "1cdfff555f4a21f71ccc978290e2e212e2f8b168", "file_sha256": "33d335f2cc83e317", "law_used": "Theme.DeviceDefault parent chain"},
+    {"file": "core/res/res/values/themes_material.xml", "repo": "aosp-mirror/platform_frameworks_base", "head_sha": "1cdfff555f4a21f71ccc978290e2e212e2f8b168", "file_sha256": "8433052c06661861", "law_used": "Theme.Material colorBackground = @color/background_material_dark"},
+    {"file": "core/res/res/values/colors_material.xml", "repo": "aosp-mirror/platform_frameworks_base", "head_sha": "1cdfff555f4a21f71ccc978290e2e212e2f8b168", "file_sha256": "bc9097f35b45c79c", "law_used": "background_material_dark = @color/material_grey_850 = #ff303030"},
+    {"file": "core/res/res/values/public.xml", "repo": "aosp-mirror/platform_frameworks_base", "head_sha": "1cdfff555f4a21f71ccc978290e2e212e2f8b168", "file_sha256": null, "law_used": "style id decode 0x0103006b = Theme.Holo (dark) — gmdice GMTheme parent"}
+  ],
+  "laws_implemented": {
+    "this_session": ["L-S95-BTNMIN-1", "L-S95-DEFTHEME-1", "L-S95-TXTCLR-1", "L-S95-ICONBTN-1"],
+    "pre_session_wave_a": ["L-S95-VECTOR-1", "L-S95-ADAPTIVE-1", "L-S95-BGSTRETCH-1", "L-S95-STATELIST-1"]
+  },
+  "loc_delta": {
+    "vector_decode.cpp": 933,
+    "engine_inflater_resolver_wiring": 270,
+    "battery_golden_redirections": 90
+  },
+  "apk_improved": ["hotdeath", "bobball", "mini-tetris", "minicraft", "bouncy", "dodge", "urlchecker"],
+  "apk_regressed": [],
+  "before_after_failures": {
+    "bouncy": {"before": ["WRONG_COLOR", "WRONG_CLIP"], "after": ["WRONG_CLIP"]},
+    "hotdeath": {"before": ["WRONG_COLOR"], "after": []},
+    "urlchecker": {"before": ["WRONG_COLOR", "WRONG_CLIP"], "after": ["UNREADABLE_TEXT", "WRONG_CLIP"]},
+    "simplestopwatch": {"before": ["WRONG_COLOR", "UNREADABLE_TEXT"], "after": ["PLACEHOLDER_CONTENT", "UNREADABLE_TEXT"]},
+    "bobball": {"before": ["WRONG_CLIP"], "after": []},
+    "dodge": {"before": ["WRONG_CLIP"], "after": ["WRONG_CLIP"]},
+    "mini-tetris": {"before": ["ANIMATION_FROZEN"], "after": []},
+    "minicraft": {"before": ["ANIMATION_FROZEN"], "after": []},
+    "nounours": {"before": [], "after": []},
+    "unote": {"before": [], "after": []},
+    "gmdice": {"before": [], "after": []}
+  },
+  "controls_stable": true,
+  "battery": {"stages": 99, "status": "ALL PASS", "goldens_re_derived": ["helloworld_golden (fixture theme declaration)", "GATE H (ImageBtn blue-fill removal, threshold 140->148)"]},
+  "time_saved": "NOT_MEASURED"
+}

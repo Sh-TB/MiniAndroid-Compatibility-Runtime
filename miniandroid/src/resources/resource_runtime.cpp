@@ -85,30 +85,64 @@ std::optional<uint32_t> ResourceRuntime::resolve_window_background_argb(
         const std::string& apk_path) {
     if (!ensure_loaded(apk_path)) return std::nullopt;
 
-    // 1. Application-level theme from the binary manifest.
+    // 1. Theme from the binary manifest — AOSP law (PhoneWindow.generateLayout /
+    //    ActivityInfo.theme): the LAUNCHER activity's android:theme overrides
+    //    the application-level theme for the launch window. S68 W2 already
+    //    captures the launcher theme (mi.activity_theme_resid); it was never
+    //    consulted here, so apps declaring their theme per-activity (gmdice)
+    //    fell through to the no-theme fallback.
     std::vector<uint8_t> mf = apk_.extract_entry_cached("AndroidManifest.xml");
     if (mf.empty()) return std::nullopt;
     apk::ManifestReader mr;
     apk::ManifestInfo mi = mr.parse(mf);
-    if (mi.application_theme_resid == 0) return std::nullopt;
+    uint32_t theme_resid = mi.activity_theme_resid != 0
+                               ? mi.activity_theme_resid
+                               : mi.application_theme_resid;
+    if (theme_resid == 0) return std::nullopt;
 
     // 2. GOLDEN-03 §8: attribute-KEY bag query through the canonical
     //    resolver — ResTable_map key 0x01010054 (android:windowBackground)
     //    with ResTable_map_entry parent-chain inheritance (cycle-safe,
     //    hop-bounded). Replaces the hand-rolled positional scan.
-    auto wb = arsc_.bag_value(mi.application_theme_resid, 0x01010054,
-                              device_config());
-    if (!wb) return std::nullopt;
-
-    // 3. GOLDEN-03 §7: follow reference hops through the canonical bounded/
-    //    cycle-safe path, then decode the color via the ONE color law.
-    ResValue v = *wb;
-    if (v.is_reference()) {
-        ResolutionResult r = arsc_.resolve_full(v.ref_id, device_config());
-        if (!r.ok) return std::nullopt;
-        v = *r.value();
+    //    S95: a FRAMEWORK style root (package 0x01, e.g. Theme.Material.Light
+    //    = 0x01030237) never appears in the app ARSC — skip the bag query
+    //    for it (a false bag hit with an unresolvable ref would nullopt the
+    //    whole chain) and let the framework table answer below.
+    std::optional<ResValue> wb;
+    if ((theme_resid >> 24) != 0x01) {
+        wb = arsc_.bag_value(theme_resid, 0x01010054, device_config());
     }
-    return color_data_to_argb((uint8_t)v.type, v.data);
+    static const bool s95_dbg = std::getenv("MINIANDROID_S95_DBG") != nullptr;
+    if (s95_dbg) std::cerr << "[S95-THEME] resid=0x" << std::hex << theme_resid
+                           << " bag=" << (wb.has_value() ? "hit" : "miss")
+                           << std::dec << std::endl;
+    if (wb) {
+        // 3. GOLDEN-03 §7: follow reference hops through the canonical
+        //    bounded/cycle-safe path, then decode the color via the ONE
+        //    color law.
+        ResValue v = *wb;
+        if (v.is_reference()) {
+            ResolutionResult r = arsc_.resolve_full(v.ref_id, device_config());
+            if (!r.ok) return std::nullopt;
+            v = *r.value();
+        }
+        return color_data_to_argb((uint8_t)v.type, v.data);
+    }
+    // 2b. S95 (L-S95-DEFTHEME-1): a theme whose bag lacks
+    //     android:windowBackground (e.g. a FRAMEWORK root style like
+    //     Theme.Material.Light — aapt2 does not embed framework-res in
+    //     the app ARSC) inherits the framework default through the same
+    //     S68 chain (flavor law: *.Light naming / framework style id).
+    auto fb = resolve_theme_attr_typed(apk_path, 0x01010054, -1);
+    if (s95_dbg) std::cerr << "[S95-THEME] typed fb=" << (fb.has_value() ? "hit" : "miss") << std::endl;
+    if (fb.has_value()) {
+        // The framework table emits INT_HEX (data IS the #AARRGGBB
+        // constant — the same law everywhere an INT_HEX color resolves);
+        // only literal COLOR_* types go through the named decoder.
+        if (fb->is_int()) return (uint32_t)fb->data;
+        return color_data_to_argb((uint8_t)fb->type, fb->data);
+    }
+    return std::nullopt;
 }
 
 // F-093 (R-NEW-326, S25): theme attribute resolution — see resource_runtime.h.

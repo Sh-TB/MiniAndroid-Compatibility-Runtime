@@ -2522,7 +2522,22 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                     // EXT-01 fixture this resolves to #000000 — without it
                     // the white text on the white default surface was
                     // invisible (352 anti-alias pixels at 254,254,254).
-                    renderer::RGBA win_bg{255, 255, 255, 255};
+                    //
+                    // L-S95-DEFTHEME-1 (S95 Wave-D, AOSP default-theme law):
+                    // an application that declares NO android:theme runs
+                    // under the framework default Theme.DeviceDefault —
+                    // themes_device_defaults.xml (sha256 33d335f2cc83e317)
+                    // Theme.DeviceDefault → parent Theme.DeviceDefaultBase
+                    // → parent Theme.Material (themes_material.xml sha256
+                    // 8433052c06661861) → colorBackground =
+                    // @color/background_material_dark (colors_material.xml
+                    // sha256 bc9097f35b45c79c) = @color/material_grey_850 =
+                    // #ff303030. The white fallback below painted a LIGHT
+                    // window under every theme-less app; simplestopwatch
+                    // (no manifest theme, WHITE timer text per its XML)
+                    // rendered white-on-white and the semantic layer read
+                    // UNREADABLE_TEXT on the timer node.
+                    renderer::RGBA win_bg{0x30, 0x30, 0x30, 0xff};
                     {
                         auto wb = resources::ResourceRuntime::instance()
                                       .resolve_window_background_argb(result.apk_info.apk_path);
@@ -2971,7 +2986,22 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                     // paint here; the ancestor's background
                                     // already covers these pixels.
                                     drew_bg = false;
-                                } else if (node->class_desc.find("Button") != std::string::npos) {
+                                } else if (node->class_desc.find("Button") != std::string::npos &&
+                                           node->class_desc.find("ImageButton;") ==
+                                               std::string::npos) {
+                                    // L-S95-ICONBTN-1 (S95 Wave-D): the
+                                    // engine's Button default-fill fallback
+                                    // matched ImageButton too (substring
+                                    // "Button"), painting a solid BLUE rect
+                                    // under icon images. view_renderer.cpp's
+                                    // button-fallback law (UNIFIED_007)
+                                    // already excludes ImageButton; the
+                                    // engine path now agrees. Evidence:
+                                    // simplestopwatch settings.png/menu.png
+                                    // icons rendered as white glyphs on a
+                                    // solid blue block (semantic fill_ratio
+                                    // asset=0.59 observed=1.0) where the
+                                    // ImageButton carries background=@null.
                                     canvas.draw_rect(left, top, right, bottom,
                                                    renderer::RGBA{0x6F, 0xA8, 0xDC, 0xFF});
                                     drew_bg = true;
@@ -3035,14 +3065,57 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                     node->include_font_pad,
                                     node->elegant_text_height);
                                 // Honour the captured text colour; fall back
-                                // to the AOSP-ish dark grey used before.
+                                // to the theme's textColorPrimary (S95
+                                // L-S95-TXTCLR-1), then the legacy grey.
                                 uint32_t tc = node->text_color;
-                                renderer::RGBA tcol = tc != 0
-                                    ? renderer::RGBA{uint8_t((tc >> 16) & 0xFF),
-                                                     uint8_t((tc >> 8) & 0xFF),
-                                                     uint8_t(tc & 0xFF),
-                                                     uint8_t((tc >> 24) & 0xFF)}
-                                    : renderer::Colors::GREY_800;
+                                renderer::RGBA tcol;
+                                if (tc != 0) {
+                                    tcol = renderer::RGBA{
+                                        uint8_t((tc >> 16) & 0xFF),
+                                        uint8_t((tc >> 8) & 0xFF),
+                                        uint8_t(tc & 0xFF),
+                                        uint8_t((tc >> 24) & 0xFF)};
+                                } else {
+                                    // L-S95-TXTCLR-1 (S95 Wave-D, AOSP
+                                    // TextView default-textColor law):
+                                    // TextView's constructor pulls
+                                    // mTextColor from the theme's
+                                    // textAppearance → ?attr/textColorPrimary
+                                    // when the view sets no android:textColor
+                                    // (View.java TextView 4-arg ctor +
+                                    // TextAppearance). The legacy GREY_800
+                                    // fallback painted dark text for every
+                                    // theme-less node; under a dark theme
+                                    // (gmdice GMTheme→Theme.Holo; the
+                                    // no-theme default) that is dark-on-dark.
+                                    // Resolved through the S68 chain
+                                    // (activity theme ≻ application theme ≻
+                                    // framework table; flavor law). Cached
+                                    // per process — one APK per invocation.
+                                    static std::optional<resources::ResValue>
+                                        tcp_cached;
+                                    static bool tcp_probed = false;
+                                    if (!tcp_probed) {
+                                        tcp_cached = resources::ResourceRuntime::
+                                            instance()
+                                            .resolve_theme_attr_typed(
+                                                result.apk_info.apk_path,
+                                                0x01010036u /*textColorPrimary*/,
+                                                -1);
+                                        tcp_probed = true;
+                                    }
+                                    if (tcp_cached.has_value()) {
+                                        uint32_t c =
+                                            (uint32_t)tcp_cached->data;
+                                        tcol = renderer::RGBA{
+                                            uint8_t((c >> 16) & 0xFF),
+                                            uint8_t((c >> 8) & 0xFF),
+                                            uint8_t(c & 0xFF),
+                                            uint8_t((c >> 24) & 0xFF)};
+                                    } else {
+                                        tcol = renderer::Colors::GREY_800;
+                                    }
+                                }
                                 // G36/G47: per-line StaticLayout law —
                                 // baseline_k = v_k + line_above[k];
                                 // v_{k+1} = v_k + line_boxes[k]. Vertical

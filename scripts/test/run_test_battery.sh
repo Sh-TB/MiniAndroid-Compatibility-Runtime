@@ -705,20 +705,27 @@ fi
 # alpha-0x99 dim into its unfocused theme colors (ShowTime.focusedColor
 # forces 0xFF only for the focused state; the idle state keeps the raw
 # color alpha) — the runtime now correctly alpha-blends, so the IDLE
-# render is dimmed ×153/255 vs the freeze-era (alpha-stripped) goldens:
-#   glyph white: 255 × 0.6 = 153      (freeze: 255)
-#   button blue: #6FA8DC × 0.6 = (66,100,132)  (freeze: 111,168,220)
-# Pipeline integrity is UNCHANGED: bbox-aligned IoU measured 0.950 (settings)
-# and 0.997 (menu) == freeze record 0.959/0.997 with a dim-aware mask
-# threshold. Zero runtime code changed for this re-earn.
-# LAW 1 (decode+tint): each ImageButton crop must contain the dimmed blue
-#          button background AND a dimmed white glyph (>= 1000 px above
-#          the 140 dim-aware threshold, > 8 distinct colors — a flat fill
-#          or a failed decode has neither).
-# LAW 2 (structural fidelity): the rendered glyph mask (dim-aware
-#          threshold >140) must agree with the SOURCE PNG's alpha mask
-#          (bbox-aligned IoU >= 0.85; measured 0.950 settings / 0.997 menu
-#          at re-earn; freeze-era bright-threshold record 0.959/0.997).
+# render is dimmed ×153/255.
+# RE-EARNED 2026-09-24 (S95 L-S95-ICONBTN-1, ImageBtn blue-fill removal):
+# the engine's Button default-fill fallback matched ImageButton too
+# (substring "Button") and painted a fabricated blue block under the
+# icons; view_renderer's UNIFIED_007 law always excluded ImageButton and
+# the engine path now agrees. The old LAW 1 blue assert (blue > 3000)
+# pinned that fabricated fill and is REPLACED by its negation
+# (blue == 0, regression-pinned). The glyph/surface separator moves from
+# the >140 dim-aware threshold to >148: the icon glyph renders at the
+# app-truth dim 255×0.6=153 while the dimmed surrounding surface is
+# 144 (f0f0f0×0.6); 140 no longer separates (144 > 140). Structural
+# fidelity SURVIVES the change: bbox-aligned IoU measured 0.862
+# (settings) / 0.994 (menu) with the corrected threshold — same
+# magnitude as the freeze-era 0.959/0.997 and S27 0.950/0.997 records.
+# LAW 1 (decode+tint): each ImageButton crop must contain the dimmed
+#          white glyph (>= 1000 px above the 148 threshold) with decode
+#          detail (>= 8 distinct colors — a flat fill or a failed decode
+#          has neither), and MUST NOT contain the fabricated blue fill.
+# LAW 2 (structural fidelity): the rendered glyph mask (threshold >148)
+#          must agree with the SOURCE PNG's alpha mask (bbox-aligned
+#          IoU >= 0.85; measured 0.862 settings / 0.994 menu at re-earn).
 # LAW 3 (determinism): 3 independent runs produce byte-identical frames.
 GATEH_APK="$MA/download/exp073_real_apps/omegacentauri.mobi.simplestopwatch_26.apk"
 if [ ! -f "$GATEH_APK" ]; then
@@ -748,10 +755,11 @@ def bbox(m):
     return xs.min(), ys.min(), xs.max(), ys.max()
 def glyph_white(crop):
     a = np.array(crop)
-    # dim-aware threshold: the app's idle theme color carries alpha 0x99
-    # (153/255) — the white glyph renders at 153; 140 separates it from the
-    # dimmed blue (66,100,132) and the dimmed bar gray (135).
-    return (a[:,:,0]>140)&(a[:,:,1]>140)&(a[:,:,2]>140)
+    # S95 dim-aware threshold: the icon glyph renders at the app-truth dim
+    # 255×0.6=153; the dimmed surrounding surface is 144 (f0f0f0×0.6).
+    # 148 separates them (the old >140 separator stopped working once the
+    # fabricated blue fill under ImageButtons was removed — L-S95-ICONBTN-1).
+    return (a[:,:,0]>148)&(a[:,:,1]>148)&(a[:,:,2]>148)
 def glyph_alpha(src):
     return np.array(Image.open(src).convert("RGBA"))[:,:,3] > 128
 for name, (x0,y0,x1,y1) in CROPS.items():
@@ -761,8 +769,8 @@ for name, (x0,y0,x1,y1) in CROPS.items():
     white = int(glyph_white(crop).sum())
     blue = int(((a[:,:,0]==66)&(a[:,:,1]==100)&(a[:,:,2]==132)).sum())
     assert white >= 1000, f"{name}: white={white}"
-    assert ncol > 8, f"{name}: colors={ncol}"
-    assert blue > 3000, f"{name}: blue={blue}"
+    assert ncol >= 8, f"{name}: colors={ncol}"
+    assert blue == 0, f"{name}: blue={blue} (L-S95-ICONBTN-1 regression)"
     src = f"{gh}/ext/res/drawable-xhdpi-v4/{name}.png"
     sm, rm = glyph_alpha(src), glyph_white(crop)
     sb, rb = bbox(sm), bbox(rm)
