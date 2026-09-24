@@ -3710,4 +3710,41 @@ Additional binding rules:
 
 ---
 
+# 171. OPEN-SOURCE ADVANTAGE LAW (S96)
+
+When an APK is open source, its source code is primary behavioral evidence.
+APK/DEX analysis remains necessary for verifying the built artifact, but
+reverse engineering must NOT be the first path when authoritative source is
+available.
+
+Binding rules:
+
+1. For every open-source corpus title, correlate before coding:
+   `APK → package/class → open-source repository → exact source class →
+   Android API call → MiniAndroid implementation → runtime trace →
+   screen/state change`.
+2. SOURCE-FIRST does not mean "read everything manually": identify the
+   framework/engine/dependency, the exact API/class, the existing
+   implementation, the existing tests/fixtures, compare the semantic law,
+   then reuse/adapt/port, then test, then real APK, then corpus fan-out.
+3. TOOL-FIRST: before writing substantial custom code, prove the chain
+   `SEARCHED → SOURCE FOUND/NOT FOUND → LICENSE CHECKED → REUSE DECISION →
+   TEST/fixture identified → implementation justified` and record the reason
+   when the answer is "no existing implementation is usable".
+4. Reuse classifications: `SAFE_PORT / ADAPT / ALGORITHM_PORT / REFERENCE_ONLY /
+   TEST_ONLY / FIXTURE_ONLY / LICENSE_BLOCKED / NOT_RELEVANT`. Never copy code
+   when the license prevents it.
+5. ONE semantic law is investigated across ALL affected titles before any
+   title-specific fix; after every reusable semantic fix, re-run ≥5 corpus
+   titles (10–25 for wide laws) and record before/after/pass/fail/regressions.
+6. Do not decode/reverse-engineer an open-source application when the
+   corresponding source is available; do not import giant dependencies without
+   first identifying the smallest reusable component, its license, build cost,
+   and corpus fan-out.
+7. Reuse outcomes are recorded in `docs/SOURCE_REUSE_ROI.md` with conservative
+   time ranges only (`<1h / 1–4h / 4–8h / 1–3d / 3–7d / >1w`); "NOT_MEASURED"
+   is the honest default where no controlled baseline exists.
+
+---
+
 # END OF MASTER CODER CONSTITUTION V2

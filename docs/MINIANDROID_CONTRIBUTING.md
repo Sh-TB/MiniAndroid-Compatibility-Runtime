@@ -82,7 +82,14 @@ External fixture note: EXT-01/02 fetch per
 1. **Evidence or it didn't happen.** E-levels per the ticket guide; no
    visual claim without semantic evidence; no threshold tuning to pass.
 2. **Source-first.** Registry lookup before any implementation; justify any
-   custom code in the ticket (§18 of the control-system directive).
+   custom code in the ticket (§18 of the control-system directive). For
+   open-source APKs the upstream source is PRIMARY behavioral evidence — do
+   not reverse-engineer when authoritative source exists (CONSTITUTION §171).
+   Before substantial custom code, prove:
+   `SEARCHED → SOURCE FOUND/NOT FOUND → LICENSE CHECKED → REUSE DECISION →
+   TEST/fixture identified → implementation justified`. Reuse outcomes and
+   conservative time-saved ranges go to
+   [SOURCE_REUSE_ROI.md](SOURCE_REUSE_ROI.md).
 3. **One problem state.** Tickets live in TICKET_REGISTRY.json only; update
    them in the same commit as the change.
 4. **Zero repo bloat.** No APKs/AABs/logs/toolchains in git (pre-receive

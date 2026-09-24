@@ -45,12 +45,30 @@ Dalvik-class interpreter over a deterministic software raster pipeline.
 | Open problem state | **33 canonical tickets** (1 P0 · 10 P1 · 16 P2 · 6 P3; 29 open / 4 CLOSED) — [TICKET_REGISTRY.json](docs/TICKET_REGISTRY.json) |
 | Position on 0→100 scale | **~52/100** (chain proven E4–E6; deep semantics open in text shaping, real networking, media-at-APK, web, native, modern runtimes) |
 
-Flagship proof — real APKs executing on the runtime (SHA256-pinned in
-[canonical/SHA256SUMS](docs/evidence/canonical/SHA256SUMS)):
+## Real Executed Apps & Games
 
-| Snake Deluxe — full gameplay loop | 2048 — tile merges to SCORE 200 |
+Four real demos — actual APKs that executed on MiniAndroid with SHA-pinned,
+click-to-inspect evidence (GIF + run protocol + state-change record). Status
+vocabulary is the strict audit set — nothing is claimed VERIFIED beyond its
+recorded evidence ([audit](docs/VERIFIED_EXECUTED_GAMES.md)):
+
+| Demo | Capability demonstrated | Status | Source | Evidence |
+|---|---|---|---|---|
+| **Snake Deluxe** — full gameplay loop: 2 lives, game over, CJK dialog, restart | game loop · input · state machine · dialog | VERIFIED (E5, x2 full runs + 4-run sweep) | [in-house source](games/snake-deluxe/) | [GIF](docs/evidence/canonical/com.miniandroid.snakedeluxe.gif) · [S79 run matrix](docs/evidence/s79/reproofs/S79_REPROOF_MATRIX.json) |
+| **2048** — tile merges advance SCORE to 200 | grid UI · merge state · score | VERIFIED (E4) | [in-house source](games/2048/) | [GIF](docs/evidence/canonical/com.miniandroid.g2048.gif) · [autoplay log](docs/evidence/s80/g2048_autoplay_log.txt) |
+| **Mini Tetris** — falling pieces, NEXT queue, deterministic animation | timer-driven animation · game physics | VERIFIED (E5, x3 deterministic runs) | [in-house source](games/mini-tetris/) | [GIF](docs/evidence/canonical/com.miniandroid.tetris.gif) · [determinism record](docs/evidence/s95/wave_c_determinism.json) |
+| **Fish Rings** — external F-Droid APK; tap repaints the 36-icon board (4,312 px measured state change) | real external APK · resources · setImageResource · persistence (L10) | VERIFIED (E5, x3 repeats + RC=0 reproof) | [upstream source](https://github.com/VelbazhdSoftwareLLC/FishRingsForAndroid) · [F-Droid](https://f-droid.org/en/packages/eu.veldsoft.fish.rings/) | [GIF/JPG](docs/evidence/canonical/eu.veldsoft.fish.rings.jpg) · [S91 reproof](docs/evidence/s91_fish_reproof/README.md) |
+
+| | |
 |---|---|
 | <img src="docs/evidence/canonical/com.miniandroid.snakedeluxe.gif" width="260" alt="Snake Deluxe gameplay GIF — real APK on MiniAndroid"> | <img src="docs/evidence/canonical/com.miniandroid.g2048.gif" width="260" alt="2048 gameplay GIF — real APK on MiniAndroid"> |
+| <img src="docs/evidence/canonical/com.miniandroid.tetris.gif" width="260" alt="Mini Tetris gameplay GIF — real APK on MiniAndroid"> | <img src="docs/evidence/canonical/eu.veldsoft.fish.rings.jpg" width="260" alt="Fish Rings board — real F-Droid APK on MiniAndroid"> |
+
+> See the complete execution GIF/evidence index:
+> **[docs/EXECUTED_GIFS.md](docs/EXECUTED_GIFS.md)** — every real-execution GIF in
+> the repository, with SHA, run protocol, and state-change records. The full
+> per-game audit (23 games with real execution evidence; 20 VERIFIED) lives in
+> **[docs/VERIFIED_EXECUTED_GAMES.md](docs/VERIFIED_EXECUTED_GAMES.md)**.
 
 ---
 
