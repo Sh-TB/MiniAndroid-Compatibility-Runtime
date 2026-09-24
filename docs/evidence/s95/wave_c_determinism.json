@@ -1,0 +1,56 @@
+{
+ "schema": "s95.wave_c_determinism.v1",
+ "protocol_correction": {
+  "mini-tetris": {
+   "old_tap": [
+    540,
+    1500
+   ],
+   "new_tap": [
+    786,
+    1854
+   ],
+   "reason": "START button center; old tap hit no touch target (dispatchTouchEvent returned false)"
+  },
+  "minicraft": {
+   "old_tap": [
+    540,
+    1500
+   ],
+   "new_tap": [
+    925,
+    1862
+   ],
+   "reason": "DEMO button center; old tap hit no touch target"
+  }
+ },
+ "runs": {
+  "mini-tetris": {
+   "run1": {
+    "unique_frames": 6
+   },
+   "run2": {
+    "unique_frames": 6
+   },
+   "run3": {
+    "unique_frames": 6
+   }
+  },
+  "minicraft": {
+   "run1": {
+    "unique_frames": 2
+   },
+   "run2": {
+    "unique_frames": 2
+   },
+   "run3": {
+    "unique_frames": 2
+   }
+  }
+ },
+ "state_changes": {
+  "mini-tetris": "active piece falls, NEXT piece changes (6 distinct boards over 24 frames)",
+  "minicraft": "Blocks 0->2, house built (frame 0 vs 16+)"
+ },
+ "binary": "final S95 binary incl. L-S95-BTNMIN-1/DEFTHEME-1/TXTCLR-1/ICONBTN-1"
+}

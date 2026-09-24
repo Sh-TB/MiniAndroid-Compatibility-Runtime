@@ -498,6 +498,14 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
         // REFERENCE to a style resource — capture the raw resid so the
         // renderer can resolve the window background.
         for (const auto& a : attrs) {
+            if (std::getenv("MINIANDROID_MF_TRACE")) {
+                std::cerr << "[MF-TRACE] application attr name_idx=" << a.name_index
+                          << " str='" << get_string(a.name_index)
+                          << "' type=0x" << std::hex << (int)a.value_data_type
+                          << " data=0x" << a.value_data << std::dec << std::endl;
+            }
+        }
+        for (const auto& a : attrs) {
             if (get_string(a.name_index) == "theme" &&
                 (a.value_data_type == 0x01 /*REFERENCE*/ ||
                  a.value_data_type == 0x02 /*ATTRIBUTE*/)) {

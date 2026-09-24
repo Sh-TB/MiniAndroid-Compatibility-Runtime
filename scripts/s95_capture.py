@@ -60,15 +60,20 @@ CASES = {
     "dodge": ("miniandroid/download/com.dozingcatsoftware.dodge_10.apk",
               "com.dozingcatsoftware.dodge", "Dodge", "game-canvas",
               10, None, "target", ["WRONG_CLIP"]),
-    # ---- P0 ANIMATION_FROZEN targets (S92 tap protocol) ----
+    # ---- P0 ANIMATION_FROZEN targets ----
+    # S95 Wave-C root cause (proven): the S92/S93 tap (540,1500) hit NO touch
+    # target — the games never started, so every frame was identical. Correct
+    # input: mini-tetris START button center (786,1854); minicraft DEMO button
+    # center (925,1862). 3-run deterministic proof: mini-tetris 6 unique/24
+    # frames x3; minicraft world state advances (Blocks 0->2, house built) x3.
     "mini-tetris": (
         "upload/s80_games/build_tetris/tetris_v1.0_vc1.apk",
         "com.miniandroid.tetris", "Mini Tetris", "game-canvas",
-        24, (540, 1500, 16), "target", ["ANIMATION_FROZEN"]),
+        24, (786, 1854, 16), "target", ["ANIMATION_FROZEN"]),
     "minicraft": (
         "upload/s86_games/build_minicraft/minicraft_v1.0_vc1.apk",
         "com.miniandroid.minicraft", "Minicraft", "game-canvas",
-        24, (540, 1500, 16), "target", ["ANIMATION_FROZEN"]),
+        24, (925, 1862, 16), "target", ["ANIMATION_FROZEN"]),
     # ---- CONTROLS (S93 SEMANTIC_PASS) ----
     "nounours": ("miniandroid/download/ca.rmen.nounours_358.apk",
                  "ca.rmen.nounours", "ca.rmen.nounours", "image-heavy",
