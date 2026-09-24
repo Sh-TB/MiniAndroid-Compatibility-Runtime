@@ -217,7 +217,7 @@ def _geometry_verdict(expected_box, measured_box, clipped):
 
 
 def image_truth(screenshot_path, asset_bytes, region=None, hint=None,
-                contract=None):
+                contract=None, draw_law=None):
     """Full image-truth vector for one expected visual asset.
 
     region: expected on-screen box (x,y,w,h) — from contract/ViewTree.
@@ -230,6 +230,15 @@ def image_truth(screenshot_path, asset_bytes, region=None, hint=None,
     NOT_APPLICABLE/UNKNOWN (+note); verdict in
     {VISUALLY_VERIFIED, DECODED_ONLY, WRONG_CONTENT, WRONG_GEOMETRY,
      PLACEHOLDER, OPAQUE_REPLACEMENT, MISSING, REGION_INVALID, UNANCHORED}.
+
+    draw_law: None (default, fit-center image law — S93 baseline) or
+    "fill_stretch" (L-S95-BGSTRETCH-1): the asset is bound as a VIEW
+    BACKGROUND (provenance origin background-bitmap) and rendered STRETCHED
+    to the region (AOSP View.draw → BitmapDrawable FILL law). Fit-center
+    geometry/shape/layout components do not apply to that draw law; truth
+    is judged by color dominance + template presence, with the verdict
+    CEILING at VISUALLY_PARTIAL (a background is legitimately overdrawn by
+    content — it can never claim VISUALLY_VERIFIED).
     """
     from probes.visual_probe import (_ncc, _downscale_gray, _gray,
                                      _flatten_alpha)
@@ -264,6 +273,76 @@ def image_truth(screenshot_path, asset_bytes, region=None, hint=None,
     bg = _bg_median(R)
     page_bg = _bg_median(shot)   # screenshot-level background: region borders
                                  # lie when the content fills the region
+
+    # ── L-S95-BGSTRETCH-1: fill-stretch background draw law ──────────────
+    # Evidence-gated additive branch (S95): the record's provenance origin
+    # is background-bitmap with DRAW_CALLED — the runtime drew the asset
+    # STRETCHED to the region. Fit-center expectations (aspect, component
+    # layout, ink geometry) are meaningless for that law and the region is
+    # legitimately overdrawn by sibling content, so truth = color dominance
+    # + template presence, ceiling VISUALLY_PARTIAL. The S93 default path
+    # below is untouched when draw_law is None.
+    if draw_law == "fill_stretch":
+        from probes.visual_probe import _ncc as _ncc_fn, _downscale_gray as _ds
+        Rg_bg = _gray(R)
+        flat_bg = np.clip(_flatten_alpha(asset, _bg_median(shot)), 0, 255)
+        # asset ink crop (content, not canvas)
+        am = A[:, :, 3] > 32
+        ac = _components(am)
+        ai = _union_bbox(ac)
+        Tc = flat_bg[ai[1]:ai[1] + ai[3], ai[0]:ai[0] + ai[2]] \
+            if ai else flat_bg
+        # 1) template presence: ink-crop NCC-searched inside the region
+        Tg, _ = _ds(_gray(Tc))
+        Rg2, _ = _ds(Rg_bg, max_side=max(96, Tg.shape[0] + 64,
+                                         Tg.shape[1] + 64))
+        ncc_bg, _, _ = _ncc_fn(Rg2, Tg) if (Rg2.shape[0] >= Tg.shape[0] and
+                                            Rg2.shape[1] >= Tg.shape[1]) \
+            else (-1.0, 0, 0)
+        # 2) color dominance: asset's top quantized colors present in region
+        q_a = _quant(np.asarray(asset.convert("RGB"), dtype=np.float64))
+        q_r = _quant(R)
+        pa, ca = np.unique(q_a.reshape(-1, 3), axis=0, return_counts=True)
+        top = pa[np.argsort(-ca)][:4]
+        present = 0
+        for t in top:
+            d = np.abs(q_r.reshape(-1, 3).astype(np.int32) -
+                       t.astype(np.int32)).max(axis=1)
+            if float((d < 24).mean()) >= 0.004:
+                present += 1
+        color_pres = present / max(1, len(top))
+        out["draw_law"] = "fill_stretch"
+        out["geometry"] = {
+            "value": "NOT_APPLICABLE",
+            "note": "fill-stretch background: fit-center geometry does not "
+                    "apply (AOSP BitmapDrawable FILL law)"}
+        out["color"] = {"value": "PASS" if color_pres >= 0.75 else "FAIL",
+                        "dominant_colors_present": f"{present}/{len(top)}"}
+        out["edges"] = {"value": "NOT_APPLICABLE",
+                        "note": "overdrawn background"}
+        out["texture"] = {"value": "NOT_APPLICABLE",
+                          "note": "overdrawn background"}
+        presence = ncc_bg >= 0.60 or color_pres >= 0.75
+        out["content"] = {
+            "value": "PARTIAL" if presence else "FAIL",
+            "reasons": [] if presence else
+            [f"template_presence ncc={ncc_bg:.3f}<0.60 and "
+             f"colors={color_pres:.2f}<0.75"],
+            "ncc_region_search": round(float(ncc_bg), 4),
+            "dominant_color_presence": round(color_pres, 3)}
+        out["alpha"] = {"value": "NOT_APPLICABLE",
+                        "note": "background stretched opaquely by law"}
+        out["position"] = out["geometry"]
+        out["text"] = {"value": "NOT_APPLICABLE", "note": "use semantic_text"}
+        out["temporal"] = {"value": "NOT_APPLICABLE", "note": "static bg"}
+        out["interaction"] = {"value": "NOT_APPLICABLE",
+                              "note": "use interaction probe"}
+        out["provenance"] = {"value": "PROVENANCE_LINKED",
+                             "note": "background-bitmap record with "
+                                     "DRAW_CALLED (engine bg law)"}
+        # ceiling: PARTIAL — a background is overdrawn by design
+        out["verdict"] = "VISUALLY_PARTIAL" if presence else "WRONG_CONTENT"
+        return out
 
     # --- observed structure --------------------------------------------------
     Rg = _gray(R)
@@ -506,6 +585,68 @@ def image_truth(screenshot_path, asset_bytes, region=None, hint=None,
             content_v, verdict = "PARTIAL", None
         else:
             content_v, verdict = "FAIL", "WRONG_CONTENT"
+
+    # L-S95-ICONFILTER-1 (evidence-gated refinement, applied AFTER the S93
+    # combine — never weakens it): apps legitimately draw a colored button
+    # background behind a glyph-on-transparent icon asset (their own DEX
+    # color law — e.g. ImageButton accent fill + tint). The asset's SHAPE
+    # still appears in the region even though its colors were transformed:
+    # extract the region's glyph pixels (everything outside the dominant
+    # solid backdrop cluster) and compare the binary shape against the
+    # asset's alpha mask (IoU). Gate: anchored + WRONG_CONTENT + the asset
+    # is glyph-on-transparent (trans_frac >= 0.05) + backdrop color foreign
+    # to the asset + shape IoU >= 0.60. Verdict ceiling VISUALLY_PARTIAL
+    # (honest: never claims pixel-exact colors).
+    import os as _os
+    if _os.environ.get("S95_DEBUG"):
+        print("[DBG refinement gates]", "verdict=", verdict, "anchored=", anchored,
+              "trans_frac=", round(trans_frac,3), "Rshape=", R.shape)
+    if verdict == "WRONG_CONTENT" and anchored and trans_frac >= 0.05 and \
+            R.shape[0] >= 8 and R.shape[1] >= 8:
+        try:
+            q_all = _quant(R).reshape(-1, 3)
+            _uc, cc = np.unique(q_all, axis=0, return_counts=True)
+            _o = np.argsort(-cc)
+            backdrop_c = _uc[_o[0]].astype(np.int32)
+            backdrop_frac = float(cc[_o[0]]) / q_all.shape[0]
+            # backdrop must be foreign to the asset's flattened colors
+            flat_q = _quant(flat).reshape(-1, 3).astype(np.int32)
+            foreign = float((np.abs(flat_q - backdrop_c).max(axis=1)
+                             > 24).mean()) >= 0.98
+            import os as _os2
+            if _os2.environ.get("S95_DEBUG"):
+                print("[DBG inner]", "backdrop_frac=", round(backdrop_frac,3),
+                      "foreign=", foreign)
+            if backdrop_frac >= 0.40 and foreign:
+                is_glyph = (np.abs(
+                    _quant(R).astype(np.int32) -
+                    backdrop_c.reshape(1, 1, 3)).max(axis=2) > 8)
+                # asset alpha mask cropped to its ink bbox, resized to region
+                if asset_ink:
+                    ax_, ay_, aw_, ah_ = asset_ink
+                    amask = alpha_mask[ay_:ay_ + ah_, ax_:ax_ + aw_]
+                else:
+                    amask = alpha_mask
+                am_img = Image.fromarray(
+                    (amask * 255).astype(np.uint8)).resize(
+                        (R.shape[1], R.shape[0]), Image.NEAREST)
+                am_r = np.asarray(am_img) > 128
+                inter = float((is_glyph & am_r).sum())
+                union = float((is_glyph | am_r).sum())
+                iou = inter / union if union else 0.0
+                if _os2.environ.get("S95_DEBUG"):
+                    print("[DBG iou]", round(iou,3))
+                if iou >= 0.60:
+                    reasons.append(
+                        f"L-S95-ICONFILTER-1: glyph shape IoU={iou:.3f} over "
+                        f"foreign solid backdrop {backdrop_frac:.2f} — app "
+                        f"color filter applied")
+                    verdict = "VISUALLY_PARTIAL"
+                    out["iconfilter"] = {
+                        "shape_iou": round(iou, 3),
+                        "backdrop_frac": round(backdrop_frac, 3)}
+        except Exception as ex:  # noqa: BLE001 — refinement is best-effort
+            out["iconfilter_error"] = f"{type(ex).__name__}: {ex}"[:120]
 
     # --- fill the vector -----------------------------------------------------
     out["color"] = {"value": "PASS" if n_obs_colors > SOLID_MAX_COLORS

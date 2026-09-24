@@ -82,6 +82,52 @@ static renderer::FitRect g04_image_draw_rect(
                                       box_x, box_y, box_w, box_h);
 }
 
+// S95 L-S95-ADAPTIVE-1: engine-owned app-resource resolver for the
+// renderer's vector / adaptive-icon decoder. Colors resolve through the
+// ARSC ResTable; drawable/mipmap references resolve through the canonical
+// density-selection law (select_file) and the shared extract cache.
+renderer::VectorRefResolver ExecutionEngine::image_ref_resolver() {
+    auto& rt = resources::ResourceRuntime::instance();
+    auto entries = apk_parser_.list_entries_cached();
+    std::vector<std::string> names;
+    names.reserve(entries.size());
+    for (const auto& e : entries) names.push_back(e.name);
+    auto cache = std::make_shared<
+        std::unordered_map<uint32_t, std::pair<std::string, uint16_t>>>();
+    return [this, &rt, names, cache](uint32_t resid,
+                                     renderer::VectorImageRef* out) -> bool {
+        if (!out) return false;
+        // Colors first (ARSC typed value; framework package handled in the
+        // decoder's own table).
+        auto val = rt.arsc().resolve_value(resid);
+        if (val && (val->is_color() || val->is_int())) {
+            out->resolved = true;
+            out->is_color = true;
+            out->argb = val->data;
+            return true;
+        }
+        auto hit = cache->find(resid);
+        if (hit != cache->end()) {
+            out->resolved = true;
+            out->is_color = false;
+            out->path = hit->second.first;
+            out->density = hit->second.second;
+            out->bytes = apk_parser_.extract_entry_cached(out->path);
+            return !out->bytes.empty();
+        }
+        auto sel =
+            rt.arsc().select_file(resid, names, resources::device_config());
+        if (!sel) return false;
+        (*cache)[resid] = {sel->path, sel->selected_density()};
+        out->resolved = true;
+        out->is_color = false;
+        out->path = sel->path;
+        out->density = sel->selected_density();
+        out->bytes = apk_parser_.extract_entry_cached(out->path);
+        return !out->bytes.empty();
+    };
+}
+
 ExecutionEngine::ExecutionEngine() {
 }
 
@@ -710,7 +756,7 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                         auto bytes =
                             rt.apk().extract_entry_cached(sel->path);
                         renderer::DecodedImage img;
-                        if (renderer::decode_image_bytes(bytes, &img) &&
+                        if (renderer::decode_image_bytes(bytes, &img, resources::device_config().density) &&
                             img.ok) {
                             uint64_t fnv = 1469598103934665603ULL;
                             for (uint8_t b : img.rgba) {
@@ -2221,7 +2267,7 @@ bool f053_draw_layer_background(const framework::ViewShadow::ViewNode& node,
             auto data = apk.extract_entry_cached(path);
             if (!data.empty()) {
                 renderer::DecodedImage dec;
-                renderer::decode_image_bytes(data, &dec);
+                renderer::decode_image_bytes(data, &dec, resources::device_config().density);
                 if (dec.ok && !dec.rgba.empty()) {
                     canvas.draw_image(dec.rgba.data(), dec.width, dec.height,
                                       l, t, lw, lh);
@@ -2302,7 +2348,7 @@ bool f053_draw_layer_background(const framework::ViewShadow::ViewNode& node,
                     auto data = apk.extract_entry_cached(L.path);
                     if (data.empty()) break;
                     renderer::DecodedImage dec;
-                    renderer::decode_image_bytes(data, &dec);
+                    renderer::decode_image_bytes(data, &dec, resources::device_config().density);
                     if (!dec.ok || dec.rgba.empty()) break;
                     const bool is_9png = L.path.size() > 6 &&
                         L.path.compare(L.path.size() - 6, 6, ".9.png") == 0;
@@ -2348,6 +2394,9 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
 
 bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const ExecutionConfig& config) {
     trace_engine_.info("ExecutionEngine", "stage_render_frame", "Rendering frame");
+    // S95 L-S95-ADAPTIVE-1: app-resource resolver for vector/adaptive-icon
+    // decoding (one resolver per frame pass; resid lookups cached inside).
+    renderer::VectorRefResolver img_resolver = image_ref_resolver();
     // S82-GFX §6: provenance instrument — env MINIANDROID_GFX_PROVENANCE=<json>
     diagnostics::GfxProvenance::instance().begin();
 
@@ -2745,7 +2794,7 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                     auto bdata =
                                         apk_parser_.extract_entry_cached(bp);
                                     renderer::DecodedImage bdec;
-                                    renderer::decode_image_bytes(bdata, &bdec);
+                                    renderer::decode_image_bytes(bdata, &bdec, resources::device_config().density);
                                     bool bg_painted =
                                         bdec.ok && !bdec.rgba.empty();
                                     // S83-GFX-BASE §14: .9.png → the
@@ -3299,23 +3348,45 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                             };
                             bool is_image_view = node->class_desc.find("ImageView") != std::string::npos ||
                                                  node->class_desc.find("ImageButton") != std::string::npos;
-                            // S82-GFX §6 divergence probe: a BITMAP background
-                            // (android:background=@drawable/x.png) is recorded —
-                            // the engine tree-walk paints bg color/shape/state-list
-                            // only; if this fires with ASSET_FOUND=1 the gap is
-                            // proven at the DRAW_CALLED=0 stage.
-                            if (diagnostics::GfxProvenance::instance().enabled() &&
-                                !node_invisible && node->bg_drawable_path.size() > 4 &&
+                            // S82-GFX §6 divergence probe → S95 L-S95-BGBITMAP-1:
+                            // the gap the probe proved (bg bitmap recorded with
+                            // DRAW_CALLED=0 on real APKs — hotdeath's menu
+                            // splash) is now CLOSED: a raw bitmap background is
+                            // decoded and STRETCHED to the view bounds (AOSP
+                            // View.draw → Drawable.draw; BitmapDrawable default
+                            // gravity FILL = stretch law). XML backgrounds
+                            // (shape/state-list/vector) keep their existing
+                            // paint laws below.
+                            if (!node_invisible && node->bg_drawable_path.size() > 4 &&
                                 node->bg_drawable_path.compare(node->bg_drawable_path.size() - 4, 4,
                                     ".xml") != 0) {
                                 auto bg_probe = apk_parser_.extract_entry_cached(node->bg_drawable_path);
                                 std::string bfmt = renderer::image_format_name(bg_probe);
-                                if (bfmt != "xml") {
+                                renderer::DecodedImage bg_dec;
+                                const bool bg_attempted = renderer::decode_image_bytes(
+                                    bg_probe, &bg_dec, resources::device_config().density,
+                                    &img_resolver);
+                                const bool bg_drew = bg_attempted && bg_dec.ok &&
+                                                     !bg_dec.rgba.empty();
+                                if (bg_drew) {
+                                    // BitmapDrawable FILL law: stretch to the
+                                    // full view bounds (padding INCLUDED —
+                                    // AOSP background covers the padding box).
+                                    canvas.draw_image(bg_dec.rgba.data(),
+                                                      bg_dec.width, bg_dec.height,
+                                                      left, top, w, h);
+                                }
+                                if (diagnostics::GfxProvenance::instance().enabled()) {
                                     diagnostics::GfxProvenance::instance().record_image(
                                         "background-bitmap", 0, node->bg_drawable_path,
-                                        !bg_probe.empty(), false, 0, 0, bfmt, 0,
+                                        !bg_probe.empty(),
+                                        bg_dec.ok && !bg_dec.rgba.empty(),
+                                        bg_dec.width, bg_dec.height,
+                                        bg_dec.color_type_name, 0,
                                         (float)left, (float)top, (float)w, (float)h,
-                                        false, "BG_BITMAP_NOT_DRAWN_BY_ENGINE");
+                                        bg_drew,
+                                        !bg_attempted ? "DECODE_FAILED"
+                                            : (bg_drew ? "" : "BG_BITMAP_DECODE_UNSUPPORTED"));
                                 }
                             }
                             if (is_image_view && !node->image_drawable_path.empty() && !node_invisible) {
@@ -3328,7 +3399,7 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                 auto png_data = apk_parser_.extract_entry_cached(node->image_drawable_path);
                                 renderer::DecodedImage decoded;
                                 {
-                                    renderer::decode_image_bytes(png_data, &decoded);
+                                    renderer::decode_image_bytes(png_data, &decoded, resources::device_config().density, &img_resolver);
                                     std::string fmt = renderer::image_format_name(png_data);
                                     if (!decoded.ok && fmt != "unknown" && fmt != "xml")
                                         std::cerr << "[IMG-RES-RENDER] decode FAILED '" 
@@ -3431,7 +3502,7 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                     // format named on failure, never silent.
                                     renderer::DecodedImage decoded;
                                     const bool attempted =
-                                        renderer::decode_image_bytes(img_data, &decoded);
+                                        renderer::decode_image_bytes(img_data, &decoded, resources::device_config().density, &img_resolver);
                                     // S82-GFX §6: resid-resolution chain bit
                                     if (diagnostics::GfxProvenance::instance().enabled())
                                         diagnostics::GfxProvenance::instance().record_image(
@@ -3535,7 +3606,7 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                     // third copy of the magic-number switch).
                                     renderer::DecodedImage fgd;
                                     const bool fg_attempted =
-                                        renderer::decode_image_bytes(fg_data, &fgd);
+                                        renderer::decode_image_bytes(fg_data, &fgd, resources::device_config().density, &img_resolver);
                                     if (fg_attempted && fgd.ok && !fgd.rgba.empty()) {
                                         // density-scaled intrinsic, centered.
                                         const float dscale =

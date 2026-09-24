@@ -75,6 +75,7 @@ add_library(miniandroid_core STATIC
     
     # Renderer (EXP-005)
     src/renderer/software_renderer.cpp
+    src/renderer/vector_decode.cpp
     
     # API Stubs
     # (header-only, no separate .cpp needed for now)
@@ -167,6 +168,7 @@ target_link_libraries(miniandroid_exp004 PRIVATE miniandroid_core)
 add_executable(miniandroid_exp005
     src/exp005_main.cpp
     src/renderer/software_renderer.cpp
+    src/renderer/vector_decode.cpp
 )
 
 target_link_libraries(miniandroid_exp005 PRIVATE miniandroid_core)
