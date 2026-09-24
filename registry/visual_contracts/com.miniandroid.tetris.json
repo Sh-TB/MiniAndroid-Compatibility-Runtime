@@ -1,0 +1,229 @@
+{
+ "apk_asset_inventory": [],
+ "apk_sha256": "700a3dcf9a98b26ef49ef8c36040011da325d926edb4c9a56853008924928bab",
+ "confidence": "observed_only",
+ "dynamic_regions": [],
+ "expected_state_changes": [],
+ "interaction_targets": [
+  {
+   "bounds": [
+    47,
+    1688,
+    328,
+    74
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "LEFT",
+   "view_id": 2130903041
+  },
+  {
+   "bounds": [
+    375,
+    1688,
+    329,
+    74
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "ROTATE",
+   "view_id": 2130903043
+  },
+  {
+   "bounds": [
+    704,
+    1688,
+    329,
+    74
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "RIGHT",
+   "view_id": 2130903042
+  },
+  {
+   "bounds": [
+    47,
+    1817,
+    493,
+    74
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "SOFT DROP",
+   "view_id": 2130903040
+  },
+  {
+   "bounds": [
+    540,
+    1817,
+    493,
+    74
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "START",
+   "view_id": 2130903044
+  }
+ ],
+ "package": "com.miniandroid.tetris",
+ "renderer_family": "canvas-custom-view",
+ "renderer_signals": [
+  "app-custom-View-subclass"
+ ],
+ "required_assets": [],
+ "required_elements": [
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Lcom.miniandroid.tetris.TetrisView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1641
+   ],
+   "name": "TetrisView",
+   "resource_id": 2130903045,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    1641,
+    1080,
+    279
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    47,
+    1688,
+    986,
+    74
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    47,
+    1762,
+    986,
+    111
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    47,
+    1688,
+    328,
+    74
+   ],
+   "name": "android/widget/Button[LEFT]",
+   "resource_id": 2130903041,
+   "text": "LEFT",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    375,
+    1688,
+    329,
+    74
+   ],
+   "name": "android/widget/Button[ROTATE]",
+   "resource_id": 2130903043,
+   "text": "ROTATE",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    704,
+    1688,
+    329,
+    74
+   ],
+   "name": "android/widget/Button[RIGHT]",
+   "resource_id": 2130903042,
+   "text": "RIGHT",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    47,
+    1817,
+    493,
+    74
+   ],
+   "name": "android/widget/Button[SOFT DROP]",
+   "resource_id": 2130903040,
+   "text": "SOFT DROP",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    540,
+    1817,
+    493,
+    74
+   ],
+   "name": "android/widget/Button[START]",
+   "resource_id": 2130903044,
+   "text": "START",
+   "visibility": "VISIBLE"
+  }
+ ],
+ "required_regions": [],
+ "schema": "s92.visual_contract.v1",
+ "screen": [
+  1080,
+  1920
+ ],
+ "source_provenance": {
+  "source_laws": [],
+  "source_root": null,
+  "source_url": null
+ },
+ "title": "Mini Tetris"
+}

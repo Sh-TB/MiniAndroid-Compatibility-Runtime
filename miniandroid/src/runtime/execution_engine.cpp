@@ -4992,6 +4992,34 @@ bool ExecutionEngine::stage_frame_sequence( ExecutionResult& result, const Execu
             if (!tap_launch.is_null()) manifest["activity_launch"] = tap_launch;
             nlohmann::json tap_fin = consume_finish_cascade();
             if (!tap_fin.is_null()) manifest["finish_cascade"] = tap_fin;
+            // ── F-NEW-199 (S92): INTERACTION MANIFEST RECORD ─────────────
+            // Evidence law: a frames manifest that records "a tap was
+            // scripted and dispatched" only on stderr is not machine-
+            // verifiable evidence — downstream verifiers (S92 §11) need
+            // the WHO/WHAT/WHERE of every synthetic input next to the
+            // frames it claims to affect. The historical entry kept the
+            // generic "timer (virtual +Nms)" event label for the tap
+            // boundary, so the gesture was invisible in the artifact the
+            // verifier reads (observed: fishrings 4312-px tap change
+            // present in frames but interaction_proofs UNKNOWN).
+            // Record per scheduled tap: boundary frame, tap point, target
+            // view (0 = hit-test miss), the dispatcher's DOWN record, and
+            // the after-frame index the proof pairs against.
+            {
+                nlohmann::json ir;
+                ir["event"] = "tap (scheduled F-117)";
+                ir["frame"] = k;
+                ir["x"] = tpx;
+                ir["y"] = tpy;
+                ir["target_view_id"] = tap_target;
+                ir["down_record"] = down_rec;
+                ir["after_frame_index"] = k;
+                if (!manifest.contains("interactions") ||
+                    !manifest["interactions"].is_array()) {
+                    manifest["interactions"] = nlohmann::json::array();
+                }
+                manifest["interactions"].push_back(ir);
+            }
             }  // S73 per-due-tap loop close
             }  // F-117 else-branch close
         }

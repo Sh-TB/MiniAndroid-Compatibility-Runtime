@@ -1,0 +1,8601 @@
+{
+ "apk_asset_inventory": [
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    75
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_about.png",
+   "path": "res/drawable-hdpi-v4/btn_about.png",
+   "sha256": "a7ee9f2d711ec76fcd5fbccb4b105201020b6b20fbaa5733470ab2ffb3599fd7"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    75
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_about_outline.png",
+   "path": "res/drawable-hdpi-v4/btn_about_outline.png",
+   "sha256": "590319a7ae96d0a43099d6846ca6e2ae186af2ba2539bdd9a4c0932e12f17789"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    75
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_continue.png",
+   "path": "res/drawable-hdpi-v4/btn_continue.png",
+   "sha256": "71476ccac7677a07da8b7c352e15abd4d319eace87fadbd888768ffc5cca673e"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    75
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_continue_outline.png",
+   "path": "res/drawable-hdpi-v4/btn_continue_outline.png",
+   "sha256": "1908ed8f5e92528be8470357097275fdd581d95f393d6988afaa43edc83bb3ba"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    75
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_exit.png",
+   "path": "res/drawable-hdpi-v4/btn_exit.png",
+   "sha256": "710758bd92292c4c59ef898f05f9d6c4fbd1ee0c2945e4b898b9a784052836d6"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    75
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_exit_outline.png",
+   "path": "res/drawable-hdpi-v4/btn_exit_outline.png",
+   "sha256": "0bdc358c3485a90da800991b0b04550dbf843f1ea1175b4b99742577c0b93deb"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    75
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_help.png",
+   "path": "res/drawable-hdpi-v4/btn_help.png",
+   "sha256": "d3b5ab0c57f9651a879e1a99da854f648e449efd629e7121ba0230293dc7503d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    75
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_help_outline.png",
+   "path": "res/drawable-hdpi-v4/btn_help_outline.png",
+   "sha256": "52aaa68e5ae2079da5597a2431df77e65cad4325dcfd0b9d1a5961f2b6b7b686"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    75
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_new_game.png",
+   "path": "res/drawable-hdpi-v4/btn_new_game.png",
+   "sha256": "4ad4e2ffd3b4ba12b9c6ffca91a09a17355c58664ddce499aec31ddf54c70b7c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    75
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_new_game_outline.png",
+   "path": "res/drawable-hdpi-v4/btn_new_game_outline.png",
+   "sha256": "27320a24cab1b6d6cc62e0b98093e47f62808ebac918de37e250a05d759eddd2"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    75
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_settings.png",
+   "path": "res/drawable-hdpi-v4/btn_settings.png",
+   "sha256": "fb0614114270bdb976793b2fe93f23081aa30c59e8dad01d73329e398901f809"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    75
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_settings_outline.png",
+   "path": "res/drawable-hdpi-v4/btn_settings_outline.png",
+   "sha256": "5fd9bd060afe95152e1927169a42665e56ee73d00c8a826f6160c25aba77f1d9"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_back.png",
+   "path": "res/drawable-hdpi-v4/card_back.png",
+   "sha256": "2aec3e2e783a94346acd96f685d2e9e40fcebf6100a8a60f25fdad54dd0a2b22"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    40,
+    40
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_badge.png",
+   "path": "res/drawable-hdpi-v4/card_badge.png",
+   "sha256": "57dc951725fa65a5b99dbe6ea303c180bccff2694961e314640922eabceb452b"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_0.png",
+   "path": "res/drawable-hdpi-v4/card_blue_0.png",
+   "sha256": "59a1a022be5619049ff8ad33e5a6a39712ae3dee4090229130304e9f499b368d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_0_fuckyou.png",
+   "path": "res/drawable-hdpi-v4/card_blue_0_fuckyou.png",
+   "sha256": "3d7f79e2e05b8c8413a7cbf16f9bcfb0ad8c509330ffd20149bd3acb27700f59"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_0_fuckyou_ff.png",
+   "path": "res/drawable-hdpi-v4/card_blue_0_fuckyou_ff.png",
+   "sha256": "00120f04594886b458aa5903ab64deda3bb3c15c4b7fbded551815f42aedeec5"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_1.png",
+   "path": "res/drawable-hdpi-v4/card_blue_1.png",
+   "sha256": "f91c9ceb747fdfec5ba15d49037d811dcc1814005f7c6160695807b4f874f4a9"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_2.png",
+   "path": "res/drawable-hdpi-v4/card_blue_2.png",
+   "sha256": "223b4c6782a5d6c680c2b3ec747eba9e82d6090e8d4eb9e46c3da91b288dc95c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_2_shield.png",
+   "path": "res/drawable-hdpi-v4/card_blue_2_shield.png",
+   "sha256": "df252f12c2e4f54e8164fb8ac658149a6efd1fd8a8cd049ee6135fa9e1ecf1bc"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_3.png",
+   "path": "res/drawable-hdpi-v4/card_blue_3.png",
+   "sha256": "dec8076b08a5bbc35a5fe4536f9a6000aa6ff5a30ff7fdf7b22f5eaa1a0d98e0"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_4.png",
+   "path": "res/drawable-hdpi-v4/card_blue_4.png",
+   "sha256": "5840cb440645de1d8952902b1d00e0d93e11493a0fb40a1782ecfb0881462749"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_5.png",
+   "path": "res/drawable-hdpi-v4/card_blue_5.png",
+   "sha256": "044516e6ed8e290e80b8e3dd510e2784e8c716df5925dd95629b27b97ecbd947"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_6.png",
+   "path": "res/drawable-hdpi-v4/card_blue_6.png",
+   "sha256": "75087633d4e39e614b6a3fc4e4aa2a13d6d4c2d24a5d5d303d6489275b3e99b0"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_7.png",
+   "path": "res/drawable-hdpi-v4/card_blue_7.png",
+   "sha256": "d820544b13865004aef58ab1c6a6085825d24282f756f5461b24168bba97f2dc"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_8.png",
+   "path": "res/drawable-hdpi-v4/card_blue_8.png",
+   "sha256": "2e8d748306c32dc7507183edc6e33af4a3cb68f9d1b6696e5af9f21868e0b113"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_9.png",
+   "path": "res/drawable-hdpi-v4/card_blue_9.png",
+   "sha256": "3b9bd4e970872de79ac79eb5f2955bffe9bd3860927a5ce7eff138d06de9e29c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_d.png",
+   "path": "res/drawable-hdpi-v4/card_blue_d.png",
+   "sha256": "f45951e7f11f4cb95aed1870a7e579c7294f7541377731e82a5a1b1776038326"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_d_spreader.png",
+   "path": "res/drawable-hdpi-v4/card_blue_d_spreader.png",
+   "sha256": "670f8159b717348588e7b49445532a2a80bba7fe34e865bc5aa3efef41ec905d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_r.png",
+   "path": "res/drawable-hdpi-v4/card_blue_r.png",
+   "sha256": "d26eff6ad7ce7514d4e75b37b17a386d01cc06610158ca55352ef2cfd27f756c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_r_skip.png",
+   "path": "res/drawable-hdpi-v4/card_blue_r_skip.png",
+   "sha256": "07844a16c525ef2e787e97dc9f790c4ef48f189d75b0ff3b458b193e3ef9ef88"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_s.png",
+   "path": "res/drawable-hdpi-v4/card_blue_s.png",
+   "sha256": "0e69ad6ebc4cc748299dec143512fd9970d728b6abc6052018db263c44c3b807"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_s_double.png",
+   "path": "res/drawable-hdpi-v4/card_blue_s_double.png",
+   "sha256": "4b5b77dbac3c4d1dd0dd4b1b7dce1a1ca7e26400158a781c085da7b09157b20c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_0.png",
+   "path": "res/drawable-hdpi-v4/card_green_0.png",
+   "sha256": "061d2202931466c1f72e941b37465a9b09dfcb755b31c1558ebe62bfc09e8cbe"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_0_quitter.png",
+   "path": "res/drawable-hdpi-v4/card_green_0_quitter.png",
+   "sha256": "641902b13cc52cef4400ff3c7a612be4a9264bafe471bab374f751721d59b13f"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_1.png",
+   "path": "res/drawable-hdpi-v4/card_green_1.png",
+   "sha256": "c69653e68d92d98879ff2b01a543f6e2e5b8f40af3da634b956f1b1cae477d53"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_2.png",
+   "path": "res/drawable-hdpi-v4/card_green_2.png",
+   "sha256": "02578b6c71a703f7f96dd902cca45d717d9609648a7bd0844ab9f1d1868e9d09"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_3.png",
+   "path": "res/drawable-hdpi-v4/card_green_3.png",
+   "sha256": "3d10e36f4be84abe6a97582c1ff57c150edc52d8643e7961267c340fd1dd12d3"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_3_aids.png",
+   "path": "res/drawable-hdpi-v4/card_green_3_aids.png",
+   "sha256": "0fdf3309ef85cc132c770e7098aa5058d9ae2221d53178d992767b6ef3c9aa99"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_3_aids_ff.png",
+   "path": "res/drawable-hdpi-v4/card_green_3_aids_ff.png",
+   "sha256": "6957a51fe1e8f00feddb6887cc3207783e154beafac831609a860e9a9a15ea3e"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_4.png",
+   "path": "res/drawable-hdpi-v4/card_green_4.png",
+   "sha256": "605ae4b275fdee3bca0f30764021adb9280952be41fde6069b410d4d792879b8"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_4_irish.png",
+   "path": "res/drawable-hdpi-v4/card_green_4_irish.png",
+   "sha256": "0fffe89d34109a845ebaa0e8f3f151f41e38fa00a99035caeec6231af3a8e75a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_5.png",
+   "path": "res/drawable-hdpi-v4/card_green_5.png",
+   "sha256": "74dc17a94ce455ffc2fe83ddfd6540e433612b314b7c04628b74d5ac099fbd50"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_6.png",
+   "path": "res/drawable-hdpi-v4/card_green_6.png",
+   "sha256": "c91439211fb676b2c86809c6ec49e269963a1798513783070b8fb608b83a5645"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_7.png",
+   "path": "res/drawable-hdpi-v4/card_green_7.png",
+   "sha256": "77965bdf89aa7210f47fca012eb5aff8c9d2f79a9ccf46cb740209cc30a71a26"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_8.png",
+   "path": "res/drawable-hdpi-v4/card_green_8.png",
+   "sha256": "85efebf040938275ddce8058a777d5e85d364dc953bc54d297f1dcc4d3f76f0d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_9.png",
+   "path": "res/drawable-hdpi-v4/card_green_9.png",
+   "sha256": "931fa9c445ccf2f42c23b6159f8a1ebbab293be8756d628a96834c2769f2ff26"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_d.png",
+   "path": "res/drawable-hdpi-v4/card_green_d.png",
+   "sha256": "b164581bfa98e4f85d7aa3b0092862e2f511df79b53d5114587b11346c876e42"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_d_spreader.png",
+   "path": "res/drawable-hdpi-v4/card_green_d_spreader.png",
+   "sha256": "5cb1fec59859438a3d63868d81bf91d8305b4fab341eee3097d6cdfb5edd72f6"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_r.png",
+   "path": "res/drawable-hdpi-v4/card_green_r.png",
+   "sha256": "beb02f4ea932910f2b9e56ec7bf5e3ef78e2e5b5135246d71135b1d88cf585e5"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_r_skip.png",
+   "path": "res/drawable-hdpi-v4/card_green_r_skip.png",
+   "sha256": "4f65b4d0a93b320aec92bac22b921d5da354a18a3cc0e62ddc4ab526b4e048f1"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_s.png",
+   "path": "res/drawable-hdpi-v4/card_green_s.png",
+   "sha256": "ad3c3a8a4c53996eee7d665ef26e6958ed2ce738bf97220a8fb5d3cf208d340c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_s_double.png",
+   "path": "res/drawable-hdpi-v4/card_green_s_double.png",
+   "sha256": "6940526f8e314a570c994f261f044821a48f0d7e574f63d1102ffdabcc950af4"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_0.png",
+   "path": "res/drawable-hdpi-v4/card_red_0.png",
+   "sha256": "3c062cb0b4fa32f8d98f7d04280b66c0a92a13a640bda47bc9c006a77d83d662"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_0_hd.png",
+   "path": "res/drawable-hdpi-v4/card_red_0_hd.png",
+   "sha256": "23f3b05dc06c0b26488e436e32e92c7e153aaccfb1ccd5b96cdd739281420d5e"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_1.png",
+   "path": "res/drawable-hdpi-v4/card_red_1.png",
+   "sha256": "92d6e64632eb4aa888b551de4295d794f78a870a2e30c6a64f1a884573ae8685"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_2.png",
+   "path": "res/drawable-hdpi-v4/card_red_2.png",
+   "sha256": "37e53908641a33b683565104d26bb361c349d3b141dbd52274298de70f2ba511"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_2_glasnost.png",
+   "path": "res/drawable-hdpi-v4/card_red_2_glasnost.png",
+   "sha256": "e3d37e3a82b21b2c092236180997abc49474aeca2a8f9f6cb2f03c10b3e23ee3"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_3.png",
+   "path": "res/drawable-hdpi-v4/card_red_3.png",
+   "sha256": "de8ae243d13741b8f6eef64573b6a9f3beecc13198ea6f7d396107d1cde8b764"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_4.png",
+   "path": "res/drawable-hdpi-v4/card_red_4.png",
+   "sha256": "51bd0a6dae78bf8a3a514ef7236bb93c2cf6b78a02639288b48f146100bc85c9"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_5.png",
+   "path": "res/drawable-hdpi-v4/card_red_5.png",
+   "sha256": "c993a29de0621e4673ab731c3c7bdb705b5b40f28165b984eea518365e84edef"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_5_magic.png",
+   "path": "res/drawable-hdpi-v4/card_red_5_magic.png",
+   "sha256": "b34ab6ee11a646c31d6502279e0ecc4ff9213e3c4faed9ae06da500bd83a26fe"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_6.png",
+   "path": "res/drawable-hdpi-v4/card_red_6.png",
+   "sha256": "ccc9c86283f02dcc59ef687c3cd4226601f5a19a75d9acdf23a522436b6b0f46"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_7.png",
+   "path": "res/drawable-hdpi-v4/card_red_7.png",
+   "sha256": "fae946279f2ae44218c5830f3c7a23cc5f260b5e196ba40ba0290c7cc919e7b3"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_8.png",
+   "path": "res/drawable-hdpi-v4/card_red_8.png",
+   "sha256": "7fb9103b9af568b9311d3a8917ae07a95afee1e76fbf967032fc6691ffee8a69"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_9.png",
+   "path": "res/drawable-hdpi-v4/card_red_9.png",
+   "sha256": "f9d39dcf284aa7fd61293293fe974b8a52b2ea1ac8b72d91d2b31ea61c3515d4"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_d.png",
+   "path": "res/drawable-hdpi-v4/card_red_d.png",
+   "sha256": "fb2dd218a8185f900a54431b9b52c2ef1442a604743d8e81f61d77b54d0a5bd5"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_d_spreader.png",
+   "path": "res/drawable-hdpi-v4/card_red_d_spreader.png",
+   "sha256": "67d9dd4d1365ba6e7d84dcb4a791ffb9de40480cbf40c979b215f5fa0c91fb58"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_r.png",
+   "path": "res/drawable-hdpi-v4/card_red_r.png",
+   "sha256": "0f9c8bfd0ec97cf58b05263139644614f6fb53e0de07614c4220be5b5e87ba3d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_r_skip.png",
+   "path": "res/drawable-hdpi-v4/card_red_r_skip.png",
+   "sha256": "c7ec857396394ab56aa30dbf0f1d7bbd5464bd2bbef9b9b3c792d2533d891ac4"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_s.png",
+   "path": "res/drawable-hdpi-v4/card_red_s.png",
+   "sha256": "551c713f56482ea0dcb12ca95464adf317de10a7167a62b74036a6e273576b8b"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_s_double.png",
+   "path": "res/drawable-hdpi-v4/card_red_s_double.png",
+   "sha256": "ca132973abed0139a684d34e4348f00d90eb361106305b33a917b04cddf06fe2"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_wild.png",
+   "path": "res/drawable-hdpi-v4/card_wild.png",
+   "sha256": "40e3856ea94f62562b7daa35a19df66370190f77a8c4ad992feb2496756cc0f0"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_wild_db.png",
+   "path": "res/drawable-hdpi-v4/card_wild_db.png",
+   "sha256": "f0f41b03de873d4b3cb5912f66c331ba504e1f935c856c6343dc46a31907fc96"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_wild_drawfour.png",
+   "path": "res/drawable-hdpi-v4/card_wild_drawfour.png",
+   "sha256": "0fee5a2a0e144d054497b93a08e9bbfbf7406852a018a4ca82b502f9fb7392f7"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_wild_hd.png",
+   "path": "res/drawable-hdpi-v4/card_wild_hd.png",
+   "sha256": "2d5d121ac4dfe377e85d92fe7618ba152e58f0eaf1e657c48c05a26a0a177647"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_wild_hos.png",
+   "path": "res/drawable-hdpi-v4/card_wild_hos.png",
+   "sha256": "7cdf9945e248c8e37366955cb38b13603f62ca1b0d76e3383e0d175fb20e33d1"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_wild_mystery.png",
+   "path": "res/drawable-hdpi-v4/card_wild_mystery.png",
+   "sha256": "81d2f1dab7003c8716e9a4f55b9efa8312198c87c7db666863ceb649c12a8289"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_0.png",
+   "path": "res/drawable-hdpi-v4/card_yellow_0.png",
+   "sha256": "c99609b5e4af3a6628ca8a34de7cf319f9f32998ad02587527b35d1d4ac7e96f"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_0_shitter.png",
+   "path": "res/drawable-hdpi-v4/card_yellow_0_shitter.png",
+   "sha256": "bc32c8cc19b3d44ec9963af1d9d11ed133109a99d41c02c9bf6ae5ba14a9e51a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_0_shitter_ff.png",
+   "path": "res/drawable-hdpi-v4/card_yellow_0_shitter_ff.png",
+   "sha256": "462c3300ae4479e3226631a9edc7ed950fef01cdea3e66441d155380062c3f1d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_1.png",
+   "path": "res/drawable-hdpi-v4/card_yellow_1.png",
+   "sha256": "e5e0c511de7aa7ff7ab219ed16d38fdd5ca8f9fa751ebfe45df3bd4100d986d8"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_1_mad.png",
+   "path": "res/drawable-hdpi-v4/card_yellow_1_mad.png",
+   "sha256": "51f5ddb5bd637e3f5777e0b3aa6be98d33ae05908745a09fff10c0e9fb99164c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_2.png",
+   "path": "res/drawable-hdpi-v4/card_yellow_2.png",
+   "sha256": "6208f9ab791cb88dff2774775ea12d37e5280208f27ba326030d302b2cd976b3"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_3.png",
+   "path": "res/drawable-hdpi-v4/card_yellow_3.png",
+   "sha256": "26531aa7c2c6d50c82f11699fc14ca096f323ab3bdcb09029c8a48f20b47fe8a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_4.png",
+   "path": "res/drawable-hdpi-v4/card_yellow_4.png",
+   "sha256": "ccf418796c59a1009d0bdf16ee528e82f727dd1cff3a3a4211f7d31e69fe4b4a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_5.png",
+   "path": "res/drawable-hdpi-v4/card_yellow_5.png",
+   "sha256": "d261879dd6bc8236025adc6d4eaed60b79347037638fb1c6edfe4726b9dae4ce"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_6.png",
+   "path": "res/drawable-hdpi-v4/card_yellow_6.png",
+   "sha256": "de266f6ed4fcde4c96d9a814e9c61b8e69d0e42608d98987a3b01da046ccb543"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_69.png",
+   "path": "res/drawable-hdpi-v4/card_yellow_69.png",
+   "sha256": "1640f54461db69de7f08013c739cc3216b568be6b954c12ad35164ceb70ec438"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_7.png",
+   "path": "res/drawable-hdpi-v4/card_yellow_7.png",
+   "sha256": "b54a37d0440a4fed0208122f9c68915f5a792d0eb42c821e92c24d3d4da753a8"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_8.png",
+   "path": "res/drawable-hdpi-v4/card_yellow_8.png",
+   "sha256": "8a346ad385e1a04c1c2b0bb44d3a7dad8850426d81bb3d6fe89ef96fcb8f2f21"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_9.png",
+   "path": "res/drawable-hdpi-v4/card_yellow_9.png",
+   "sha256": "7c7f54252fbfc3dafb4c6971426df631b61eb67751798b386a9b0d328b94e58e"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_d.png",
+   "path": "res/drawable-hdpi-v4/card_yellow_d.png",
+   "sha256": "0ab6f0de01adbb0961f322684f52e78861209e02cc0dcfe068f1911e8657bce2"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_d_spreader.png",
+   "path": "res/drawable-hdpi-v4/card_yellow_d_spreader.png",
+   "sha256": "8312597d9e42b99aed399dc2f0a058e466bff31cf7506bf00938a54c2a61686d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_r.png",
+   "path": "res/drawable-hdpi-v4/card_yellow_r.png",
+   "sha256": "b0481db1416af4625772163bc076fb565e5105bbbc484de7c8d9c2a10a42ee25"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_r_skip.png",
+   "path": "res/drawable-hdpi-v4/card_yellow_r_skip.png",
+   "sha256": "52bc63a924aa803a8403895543ec96bb2716f90427301e8ab5c525c7a9643cf2"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_s.png",
+   "path": "res/drawable-hdpi-v4/card_yellow_s.png",
+   "sha256": "7e03a1c64519e23ab2ff6da8ce6b06a3b181fc0a781b5b918f6e3599ab7afd40"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_s_double.png",
+   "path": "res/drawable-hdpi-v4/card_yellow_s_double.png",
+   "sha256": "b28afb007a71640c3a4940ec949ade16e6e6a9ab3e73c3bdaac83c2e124d4dba"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    80,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ccw.png",
+   "path": "res/drawable-hdpi-v4/ccw.png",
+   "sha256": "3bc7de05a01f1ec0f25a0f5a79ff742b8a83a1c6a181c9eb34f568f171e702d3"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    80,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ccw_blue.png",
+   "path": "res/drawable-hdpi-v4/ccw_blue.png",
+   "sha256": "ab5b6b6da188f9fec86ce105f7132fb6541003fd31f0a60c22fd4d7a7785de0c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    80,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ccw_green.png",
+   "path": "res/drawable-hdpi-v4/ccw_green.png",
+   "sha256": "7238bf5cd7fd32a2ab3d3c7428ffce304f19f555ff1aceef3eaf7f23876353b7"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    80,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ccw_red.png",
+   "path": "res/drawable-hdpi-v4/ccw_red.png",
+   "sha256": "308654aaa3f984844321f5e6fafde42e8a88fffc81723fa2e8caf2889cbc756b"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    80,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ccw_yellow.png",
+   "path": "res/drawable-hdpi-v4/ccw_yellow.png",
+   "sha256": "a53f431c812bcf8d832a12df1e3e1f6dd04acaddbdab4b88dcfa770f340a1253"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    80,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "cw.png",
+   "path": "res/drawable-hdpi-v4/cw.png",
+   "sha256": "c761bc977883dc45cb8b0b3139a3db37091d6f76aa92d3943d59f66e7aa5be62"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    80,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "cw_blue.png",
+   "path": "res/drawable-hdpi-v4/cw_blue.png",
+   "sha256": "6ccf9139889ddf7c72f703a1f026a28329d94bdd3d31c37745a07d69568f6e04"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    80,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "cw_green.png",
+   "path": "res/drawable-hdpi-v4/cw_green.png",
+   "sha256": "2c547ba483b3d65ab09e1b516adb29896e66ed081a461b92b905431c703ff666"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    80,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "cw_red.png",
+   "path": "res/drawable-hdpi-v4/cw_red.png",
+   "sha256": "4b0ff08b0fa2d8e7d0e8abfe2aa019d966026ccfedab8fc013fca69c27c7db05"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    80,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "cw_yellow.png",
+   "path": "res/drawable-hdpi-v4/cw_yellow.png",
+   "sha256": "348c7903d92349f8219cdaffdcc0314a1c66e3025fda02120a38faf2611b46f3"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    40,
+    30
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "emoticon_aggressor.png",
+   "path": "res/drawable-hdpi-v4/emoticon_aggressor.png",
+   "sha256": "b6b465cc0e869e95ad277c829d1412b306c270baaa00e690bb37c5fb41ad1a36"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    40,
+    30
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "emoticon_victim.png",
+   "path": "res/drawable-hdpi-v4/emoticon_victim.png",
+   "sha256": "84fb61362bed18fc95c64a3636043cf437c812d23fbb6b2f9ccabeac15b5c7e7"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    72,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "icon.png",
+   "path": "res/drawable-hdpi-v4/icon.png",
+   "sha256": "6eb7e991e05f023c1c762a8403cdf8f655562aaf63354076df8919c7a2737545"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_blue_east.png",
+   "path": "res/drawable-hdpi-v4/player_blue_east.png",
+   "sha256": "aa224acef8a2f43f8aa9e18ecccb873eed7f5cee94741d2ceacbca5b851a5aa5"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_blue_north.png",
+   "path": "res/drawable-hdpi-v4/player_blue_north.png",
+   "sha256": "c6298c8072bcf74ffe922f32b8a2094fbe39dc9ba741c7c4d2f8d12a2f4bd82c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_blue_south.png",
+   "path": "res/drawable-hdpi-v4/player_blue_south.png",
+   "sha256": "1b3687e0e89833e83e10629e8aac5f160ae6b0e0719d5382eea82c3cf5e1d981"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_blue_west.png",
+   "path": "res/drawable-hdpi-v4/player_blue_west.png",
+   "sha256": "1490d388b07e885b14e403ee246781f3ffa32518faf36fef47b15a28a8d36816"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_east.png",
+   "path": "res/drawable-hdpi-v4/player_east.png",
+   "sha256": "a13b14a61ec611c92bf02582b3aaf357e8ab0d99f817e3ffa0d74eccee946f27"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_green_east.png",
+   "path": "res/drawable-hdpi-v4/player_green_east.png",
+   "sha256": "64875c24d0870a926a012d1d25d4d6e4272a0becaae2a585fb0daec4293ee375"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_green_north.png",
+   "path": "res/drawable-hdpi-v4/player_green_north.png",
+   "sha256": "0f704429d98c60b897a25937d240419e2d68ffacd970beeca576ca3fb0c8fa93"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_green_south.png",
+   "path": "res/drawable-hdpi-v4/player_green_south.png",
+   "sha256": "1fcb82a814640e602d5d86028206f89ffeb1fde178bf2b4fbf0776b75052257c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_green_west.png",
+   "path": "res/drawable-hdpi-v4/player_green_west.png",
+   "sha256": "9f29a18228a9e12e56c640c14a0e5921fa206ef98e811bba39cd012bf6af54e5"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_north.png",
+   "path": "res/drawable-hdpi-v4/player_north.png",
+   "sha256": "a7c2003541e8c6991ab788f46bed978e94e8756d57600f3954ffea87cacccdc4"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_red_east.png",
+   "path": "res/drawable-hdpi-v4/player_red_east.png",
+   "sha256": "a1cbc757b3723f53986b11371bb4ca631fe9cfb08dd54d0f3680baa5ed27781a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_red_north.png",
+   "path": "res/drawable-hdpi-v4/player_red_north.png",
+   "sha256": "5d8107f1e887063c84443ecbbad0310c3bb9ef87796c68a34ed80d7561f83e7a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_red_south.png",
+   "path": "res/drawable-hdpi-v4/player_red_south.png",
+   "sha256": "08862926337d4be30b17ea6f0658b9eece9ae1487ce7c68fb58a7bcca18c8600"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_red_west.png",
+   "path": "res/drawable-hdpi-v4/player_red_west.png",
+   "sha256": "805c3ce02cf64af7235487807a25225b28f050756904bfd0fccf37d29220be99"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_south.png",
+   "path": "res/drawable-hdpi-v4/player_south.png",
+   "sha256": "e6d94f986781257ddce6c06d33354b7508e2b765e95c695a971867baaa5b160c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_west.png",
+   "path": "res/drawable-hdpi-v4/player_west.png",
+   "sha256": "1bbaa372be139a29552f714df999e6238bf127d6bab305bf32c97a57ff9725fc"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_yellow_east.png",
+   "path": "res/drawable-hdpi-v4/player_yellow_east.png",
+   "sha256": "eea14f562bef80b55de8a16aa63714fad0af91df863fbd9ef4106220cceda15d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_yellow_north.png",
+   "path": "res/drawable-hdpi-v4/player_yellow_north.png",
+   "sha256": "53c2841bc901e559c16c0bf206bf741e0d98dc07531fa17cbecbb7a1ea671baf"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_yellow_south.png",
+   "path": "res/drawable-hdpi-v4/player_yellow_south.png",
+   "sha256": "91b0543c4e98e58b14e6f4c21b0bcb9a0450624e9a8dc66d52a1cb53be8fa497"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_yellow_west.png",
+   "path": "res/drawable-hdpi-v4/player_yellow_west.png",
+   "sha256": "bad64f4fd2b89485e7e6aaf77989cb185f436456f3a94cdd5eeaba2b9374c86c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    480,
+    800
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "splash.png",
+   "path": "res/drawable-hdpi-v4/splash.png",
+   "sha256": "c4a4dab9bc5ab73d21acef4b168e1d15596cd4704d7c78b66739e072df28c614"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    800,
+    480
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "splash_land.png",
+   "path": "res/drawable-hdpi-v4/splash_land.png",
+   "sha256": "69a6d09013c3f3e010ce7830829d543d0fe628838bda2b7ab81427a708e27c7c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    480,
+    800
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "table_background.png",
+   "path": "res/drawable-hdpi-v4/table_background.png",
+   "sha256": "c610a4bcd31c136da62f9b78e02625867086ea9a6739fa5df5ea980a8cac4f6a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "winner_east.png",
+   "path": "res/drawable-hdpi-v4/winner_east.png",
+   "sha256": "96cf2f04dec8a58922df59eee2b8f844d2a86ca84ce20c46c9d36d7e0ee9f822"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "winner_north.png",
+   "path": "res/drawable-hdpi-v4/winner_north.png",
+   "sha256": "9dd3c821def97a3504e0e6defbd050a78318f30c5bc9aed908015e2875ff45cc"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "winner_south.png",
+   "path": "res/drawable-hdpi-v4/winner_south.png",
+   "sha256": "6fdfffa7d087b602bb3d9e09aa9f9a1b266d53c32fdff723e3323cf43b37b40d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "winner_west.png",
+   "path": "res/drawable-hdpi-v4/winner_west.png",
+   "sha256": "04e1985ef237a63fe9a9a5aa143bb5505e2d81bfcc298fac4945da2058cce17c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    8,
+    8
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "currplayer.png",
+   "path": "res/drawable-ldpi-v4/currplayer.png",
+   "sha256": "5dc86c3e8e116622c4afc02482258b0593e0807219c07b9f392ab7ab0024c461"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    36,
+    36
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "icon.png",
+   "path": "res/drawable-ldpi-v4/icon.png",
+   "sha256": "63e3855449ebfdbc472f7f89f7ccc722b11e432bf2be3832afd04167c759da2e"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    200,
+    50
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_about.png",
+   "path": "res/drawable-mdpi-v4/btn_about.png",
+   "sha256": "ca2cc5c5bfcc52397845410883a6c737cff7153915bcbdb09f277ec1bc97f09d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    200,
+    50
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_about_outline.png",
+   "path": "res/drawable-mdpi-v4/btn_about_outline.png",
+   "sha256": "6fffe2f9a14c0b050b685addd90d966be96a70afbc1e490f16010eb993b2173f"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    200,
+    50
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_continue.png",
+   "path": "res/drawable-mdpi-v4/btn_continue.png",
+   "sha256": "2dca437064926b77ab6acfebf32d99256d7f4d1b6deffef8ca2600efc0cf7b58"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    200,
+    50
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_continue_outline.png",
+   "path": "res/drawable-mdpi-v4/btn_continue_outline.png",
+   "sha256": "1abb55aad3e2dd229af65a04ce113d78979025eaaf817aa229c12284e26c4f9c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    200,
+    50
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_exit.png",
+   "path": "res/drawable-mdpi-v4/btn_exit.png",
+   "sha256": "0e45b9ccb55459453c3ed34e1f09a72d85217a760f23b8fc82a68a3e243df00c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    200,
+    50
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_exit_outline.png",
+   "path": "res/drawable-mdpi-v4/btn_exit_outline.png",
+   "sha256": "dcee477157230f1c01941646f4192151cfc98f6bd6002aba25ab0149ec9a6e49"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    200,
+    50
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_help.png",
+   "path": "res/drawable-mdpi-v4/btn_help.png",
+   "sha256": "64b242bd91bdacbccd0fe72eb71c936a9c2b5c6b0327a87c5079dac252e8c50d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    200,
+    50
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_help_outline.png",
+   "path": "res/drawable-mdpi-v4/btn_help_outline.png",
+   "sha256": "590155cce2657721c86eac2375d6cd0a4872fd8a546b8973095ebe8409c1c0e7"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    200,
+    50
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_new_game.png",
+   "path": "res/drawable-mdpi-v4/btn_new_game.png",
+   "sha256": "6aece120b5b811ed7a7e945a200189dc506fa969de5aadc9526332e3e6834e29"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    200,
+    50
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_new_game_outline.png",
+   "path": "res/drawable-mdpi-v4/btn_new_game_outline.png",
+   "sha256": "453827bfd22ca4408bf5df744eb0cd8ae1a37bd4a24ccbac0e6db80f43396e01"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    200,
+    50
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_settings.png",
+   "path": "res/drawable-mdpi-v4/btn_settings.png",
+   "sha256": "53c025373cb71993be123e75ca1edc181ab99b9ed38822a64275699f124d5431"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    200,
+    50
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_settings_outline.png",
+   "path": "res/drawable-mdpi-v4/btn_settings_outline.png",
+   "sha256": "7547937e97a9a7c5ef2473a4ae27c780b138c2c82e4f95002b448adb3fccc6a7"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_back.png",
+   "path": "res/drawable-mdpi-v4/card_back.png",
+   "sha256": "9457f10a0a8ee189898394c8249bdff12278dddf84463b2cd90a2c120e91d367"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    27,
+    27
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_badge.png",
+   "path": "res/drawable-mdpi-v4/card_badge.png",
+   "sha256": "02602e3414ed40b65557611767f7e8e398d49e4b4d54ff0f0593a899cf7d6f38"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_0.png",
+   "path": "res/drawable-mdpi-v4/card_blue_0.png",
+   "sha256": "18b20ff39c23793ddb4094be82d9acc7314c0fa7ff0a4e507045f3310ccf6e15"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_0_fuckyou.png",
+   "path": "res/drawable-mdpi-v4/card_blue_0_fuckyou.png",
+   "sha256": "4c5e24113529e771b2d829ee2f1deac6f19a7fb56a4a45c2b43fb28aefef3748"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_0_fuckyou_ff.png",
+   "path": "res/drawable-mdpi-v4/card_blue_0_fuckyou_ff.png",
+   "sha256": "04ac282aa614c33eb9f54bd9a1ccaed3cd22913e5308093671efa60aad6daecf"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_1.png",
+   "path": "res/drawable-mdpi-v4/card_blue_1.png",
+   "sha256": "10a89e009417c853edbd96c96c22d25f604be7bf88f19fdb49e25141c6686e05"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_2.png",
+   "path": "res/drawable-mdpi-v4/card_blue_2.png",
+   "sha256": "1cf1b7dcc9963432c5d97f96a3b3826231fc5411375f371740bb36dac12b3c29"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_2_shield.png",
+   "path": "res/drawable-mdpi-v4/card_blue_2_shield.png",
+   "sha256": "18e282b830b4b7431d63cd3a82e896f75e234bac179685969e46f43d011f58fe"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_3.png",
+   "path": "res/drawable-mdpi-v4/card_blue_3.png",
+   "sha256": "2fc6053eab0a70e9c05e129c91bcca8043c6cb73fc7c5bc145d98eaff1c06038"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_4.png",
+   "path": "res/drawable-mdpi-v4/card_blue_4.png",
+   "sha256": "c6f323c410327499e2f65529b65925f95af734e25776d695f56a87922ca056f0"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_5.png",
+   "path": "res/drawable-mdpi-v4/card_blue_5.png",
+   "sha256": "060d1bd374bbbb169a5b58b0ed04fc919bd6cf3015386a3f00d00415d8671a66"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_6.png",
+   "path": "res/drawable-mdpi-v4/card_blue_6.png",
+   "sha256": "180238ec55ea0891f0f930284fc4f3f2ed0db21eb07adaed8ae2fb66f6032eec"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_7.png",
+   "path": "res/drawable-mdpi-v4/card_blue_7.png",
+   "sha256": "41d795b5e25631f3e7051ce27ed3e8ed9598d707823e7dad692ec73d06338e1a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_8.png",
+   "path": "res/drawable-mdpi-v4/card_blue_8.png",
+   "sha256": "c869df150e16449449135cdb29f4a9c884872923f9a8ddd46661e196408955c6"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_9.png",
+   "path": "res/drawable-mdpi-v4/card_blue_9.png",
+   "sha256": "e7b76eade9eb8613092096299f81f03bdeea6c5de050096736a786afcf3a128e"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_d.png",
+   "path": "res/drawable-mdpi-v4/card_blue_d.png",
+   "sha256": "057ea7487daa11ec885fb8c17a078fcd9d9682f10ac628988077857664fb5d78"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_d_spreader.png",
+   "path": "res/drawable-mdpi-v4/card_blue_d_spreader.png",
+   "sha256": "4ec8a7fa11e81cfefa27ba3f2403cab1a18ec9aad3babf2125821bbc12b1f073"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_r.png",
+   "path": "res/drawable-mdpi-v4/card_blue_r.png",
+   "sha256": "7baef47c8c2378cdb49f9e47b13db4d14b3f7055b78834ac4db0056dda9699a1"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_r_skip.png",
+   "path": "res/drawable-mdpi-v4/card_blue_r_skip.png",
+   "sha256": "483d60c14f06310cc22c018affbde364ff1f806124b2045d3e6839a5b47cc572"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_s.png",
+   "path": "res/drawable-mdpi-v4/card_blue_s.png",
+   "sha256": "6419ebf970d938aab48eab439152ec2dfd971d4d0c75a270327aa9c24cf3ec0e"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_s_double.png",
+   "path": "res/drawable-mdpi-v4/card_blue_s_double.png",
+   "sha256": "484be81b2e99efb6205892eee47cd93fd17c4eaf3920eb4ca96f130dd978b971"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_0.png",
+   "path": "res/drawable-mdpi-v4/card_green_0.png",
+   "sha256": "89b66474fd38bd6a70b6ab2422a7a568e65a26bb742612e4fad2198d68f13c1a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_0_quitter.png",
+   "path": "res/drawable-mdpi-v4/card_green_0_quitter.png",
+   "sha256": "7e01bb5fe4d5a0514a0e1b347c1aa95710a46eb91ea89885e3955d9a54506d0f"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_1.png",
+   "path": "res/drawable-mdpi-v4/card_green_1.png",
+   "sha256": "1e9b5591a6554164dd8f27629ae71c750b7242e2aa0c75f23b84655494bc72a5"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_2.png",
+   "path": "res/drawable-mdpi-v4/card_green_2.png",
+   "sha256": "54596b3e03b07d4e0d1aa5558907c9c9772d3e2cbcead36d5af747d2cbb637c4"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_3.png",
+   "path": "res/drawable-mdpi-v4/card_green_3.png",
+   "sha256": "28c7965d97ceb6f499ae4ab4ffcd0b06aea84444a92d83e81ad11cc05c52be14"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_3_aids.png",
+   "path": "res/drawable-mdpi-v4/card_green_3_aids.png",
+   "sha256": "fc13e845c62c701f6257016aecf08389bad2facc81b7b858a2153527f24282ed"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_3_aids_ff.png",
+   "path": "res/drawable-mdpi-v4/card_green_3_aids_ff.png",
+   "sha256": "feedd5dfa9219f0ef7276befaa818698d813cc899a5dded31ddc3576d78af5c8"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_4.png",
+   "path": "res/drawable-mdpi-v4/card_green_4.png",
+   "sha256": "0be15516248fea34244fc4910f5fd5885e34d3e2c28c1f5ac548245a19b7acc5"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_4_irish.png",
+   "path": "res/drawable-mdpi-v4/card_green_4_irish.png",
+   "sha256": "969083df58e24501ecd1e43d84cacd890b6ecd38c38c0a129423b2b66b24822a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_5.png",
+   "path": "res/drawable-mdpi-v4/card_green_5.png",
+   "sha256": "7d882dc6392fb903da0f4294c47345b8e5a20583e5ceced10e0791a931f748a8"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_6.png",
+   "path": "res/drawable-mdpi-v4/card_green_6.png",
+   "sha256": "38481377e7b8595f6ff8f763a27165203fb03939bc4f58ed6675846d87929573"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_7.png",
+   "path": "res/drawable-mdpi-v4/card_green_7.png",
+   "sha256": "1e0da0761b43933a3716f9cd98be48106123229dcbf4c15ac5e49de6a4c8f338"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_8.png",
+   "path": "res/drawable-mdpi-v4/card_green_8.png",
+   "sha256": "5244f03d56ee3e83d3e2b5b14f3c9236b7819b8f1df116ad30a98ef504f000ce"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_9.png",
+   "path": "res/drawable-mdpi-v4/card_green_9.png",
+   "sha256": "29dc01b1934731700dd22077ff626ce7ccea609dd09130bcda680b26e33c9f48"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_d.png",
+   "path": "res/drawable-mdpi-v4/card_green_d.png",
+   "sha256": "f8d710ab5d0cede16c99efb5bf1ada2b19d4d29d542ab0fa28ba76fe54805858"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_d_spreader.png",
+   "path": "res/drawable-mdpi-v4/card_green_d_spreader.png",
+   "sha256": "790dae763c1fda86cdd4a1bf949d505f8a856874bd54beb8e45091ded0d41d5d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_r.png",
+   "path": "res/drawable-mdpi-v4/card_green_r.png",
+   "sha256": "c4e05dadbdb5bdbdddcb07505107989fef1cfa01b7d6e170749a77452208fdc5"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_r_skip.png",
+   "path": "res/drawable-mdpi-v4/card_green_r_skip.png",
+   "sha256": "537cdbb45c74f33231cecca48ac7fd8edc8c7770595d640599ae742e2094f64c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_s.png",
+   "path": "res/drawable-mdpi-v4/card_green_s.png",
+   "sha256": "ab8de21f7b70d44d02a1f396263dfcbebf7c85a2d485fd95fd8c18fa054d046c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_s_double.png",
+   "path": "res/drawable-mdpi-v4/card_green_s_double.png",
+   "sha256": "7c5e2624ae140ac14d27c94abbc2800d4639d935baf18b44ed43d64ab2c30618"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_0.png",
+   "path": "res/drawable-mdpi-v4/card_red_0.png",
+   "sha256": "f7d62f56e681ee272115518349570cd38114db920c1bc52d6e3877c3f0717b29"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_0_hd.png",
+   "path": "res/drawable-mdpi-v4/card_red_0_hd.png",
+   "sha256": "1e32331a7cc57a0c40564ad73fb06cb636e3e06c5f747eb9ea83ecd8431dc495"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_1.png",
+   "path": "res/drawable-mdpi-v4/card_red_1.png",
+   "sha256": "c1a1b29f0b90560f984d947b44cca583780626b520d004af259d1611fabd20b9"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_2.png",
+   "path": "res/drawable-mdpi-v4/card_red_2.png",
+   "sha256": "d652a893f01c6d447cdc322aa913601b70415b7042c8badda6361da1c7d5b122"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_2_glasnost.png",
+   "path": "res/drawable-mdpi-v4/card_red_2_glasnost.png",
+   "sha256": "274723f991c20241ad77574b421dff6791179a8cb7f3a777d53de7de84f37b24"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_3.png",
+   "path": "res/drawable-mdpi-v4/card_red_3.png",
+   "sha256": "ea5ec5537a1662ad72ccd50fbfa01856b6008a480ebfdae347dd763a0dfbf80f"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_4.png",
+   "path": "res/drawable-mdpi-v4/card_red_4.png",
+   "sha256": "829bf07f8b9c4c6cb990fb8db77daeb52a4f1de17fab4f5ba4ff97fc1555e42f"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_5.png",
+   "path": "res/drawable-mdpi-v4/card_red_5.png",
+   "sha256": "526178cbd91bf73a2240d370574eb19d407b1c13bcda276872006ce12657f292"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_5_magic.png",
+   "path": "res/drawable-mdpi-v4/card_red_5_magic.png",
+   "sha256": "6b4a35ccd868f329a666330cded02cb114357964e418360a984cd12fb3fa5bc1"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_6.png",
+   "path": "res/drawable-mdpi-v4/card_red_6.png",
+   "sha256": "049e54bc47c0dca947af7d1e41ec35a67e6f3dee37481ea2c8086226f6d6aef4"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_7.png",
+   "path": "res/drawable-mdpi-v4/card_red_7.png",
+   "sha256": "02b4d230a8222e25f2e2921b984806a0461cf7a5b56741f66945db2476a54f1c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_8.png",
+   "path": "res/drawable-mdpi-v4/card_red_8.png",
+   "sha256": "500ca7881e1be5ee57da1b85251da92cc0fce9f63141edf23c8695cf8cef3fe1"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_9.png",
+   "path": "res/drawable-mdpi-v4/card_red_9.png",
+   "sha256": "85b3f6e8b11b715f43326008d1019ffbb38aaa0a9fbccf8fa89f4dd5237823f2"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_d.png",
+   "path": "res/drawable-mdpi-v4/card_red_d.png",
+   "sha256": "1f34d0b86121c1246956ccef9e727cd1210a10186802de3dd325787fbf4b8e46"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_d_spreader.png",
+   "path": "res/drawable-mdpi-v4/card_red_d_spreader.png",
+   "sha256": "2cf644b3dd944374750da3289254c5abcb3ae470dff805716b67852fcd16a093"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_r.png",
+   "path": "res/drawable-mdpi-v4/card_red_r.png",
+   "sha256": "aebca83ebfc1e8b2c78291c1abe5b441c8dc498fb24e8ac6ff89d9a3132c1daf"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_r_skip.png",
+   "path": "res/drawable-mdpi-v4/card_red_r_skip.png",
+   "sha256": "67241ade02b2c8a71f6d292f8bec3a2b500eb305729d23b3d6e68573016542cc"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_s.png",
+   "path": "res/drawable-mdpi-v4/card_red_s.png",
+   "sha256": "8e4fb1c928fd4ecc2872bc02f57655e80e406102241dc331714b0b5472f515b4"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_s_double.png",
+   "path": "res/drawable-mdpi-v4/card_red_s_double.png",
+   "sha256": "64a4c7e303d4b73795584c835591ef338f4c70af7eeb48846bfb8ab5002ee708"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_wild.png",
+   "path": "res/drawable-mdpi-v4/card_wild.png",
+   "sha256": "da619cca95c55e98917960f64292f95caa2310e4c250ccdf8c3631e6559b0865"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_wild_db.png",
+   "path": "res/drawable-mdpi-v4/card_wild_db.png",
+   "sha256": "7dfa3b27b9a245e279e9133ef9145709878a624f0795adf00e975582916cdc1c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_wild_drawfour.png",
+   "path": "res/drawable-mdpi-v4/card_wild_drawfour.png",
+   "sha256": "eb2ad5488d0ce3661f8b696640fece3eb6ca533dff11e2f85646dcc8ec2ab7d8"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_wild_hd.png",
+   "path": "res/drawable-mdpi-v4/card_wild_hd.png",
+   "sha256": "44c631380d27d5781e170bb522c225e361175583802fec979ca1c1080d2eb315"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_wild_hos.png",
+   "path": "res/drawable-mdpi-v4/card_wild_hos.png",
+   "sha256": "841680aa1f070bb7540919583278eed20a261fa096935176b959c807b851df62"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_wild_mystery.png",
+   "path": "res/drawable-mdpi-v4/card_wild_mystery.png",
+   "sha256": "0411ed2d14b355cdc8d151077b5114627e7151ebf60044bfd51f0d4c8e3bc817"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_0.png",
+   "path": "res/drawable-mdpi-v4/card_yellow_0.png",
+   "sha256": "2cdf92d151397bc69ce4b258716a5c0fe847fb2491bd994dab0e4482b0acd6d9"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_0_shitter.png",
+   "path": "res/drawable-mdpi-v4/card_yellow_0_shitter.png",
+   "sha256": "2e0d194c24a112f67c762aa14c6c10d26306901f818df79f5e77396672feb48f"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_0_shitter_ff.png",
+   "path": "res/drawable-mdpi-v4/card_yellow_0_shitter_ff.png",
+   "sha256": "445788e89a695b4b941149844b8607ef00ffb959ae19f7f7661d2feb58161fba"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_1.png",
+   "path": "res/drawable-mdpi-v4/card_yellow_1.png",
+   "sha256": "e0f24b7c6a8550c5523f062cb54f7db0f7320b28c3f2d33133773e71e145b05a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_1_mad.png",
+   "path": "res/drawable-mdpi-v4/card_yellow_1_mad.png",
+   "sha256": "e8e27158bf2d7a2f2c78eb33d032fc52251774660d5b139b16c6baed5083971d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_2.png",
+   "path": "res/drawable-mdpi-v4/card_yellow_2.png",
+   "sha256": "08fd78a177d1e5f2da62cbbd47d40e2d55caa7b9921631ba4edd44076974bdd6"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_3.png",
+   "path": "res/drawable-mdpi-v4/card_yellow_3.png",
+   "sha256": "0b55f3ffed584ba0d398fcc6ed3bf990a2a273c9f1004458168c83961c212aee"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_4.png",
+   "path": "res/drawable-mdpi-v4/card_yellow_4.png",
+   "sha256": "53aefcf779e98da3b487595881596906acc47d05fa752fce2fa3ad6689001b0e"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_5.png",
+   "path": "res/drawable-mdpi-v4/card_yellow_5.png",
+   "sha256": "edfa0be44383ac357bf3a9ccfbdcd74ba3bf6975e8b5345d93af5971924c198e"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_6.png",
+   "path": "res/drawable-mdpi-v4/card_yellow_6.png",
+   "sha256": "8b0a2624cdf3f4af4bc5e46dc57ea8b1a85138dd58eaa4b6508b8edf907d8d1f"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_69.png",
+   "path": "res/drawable-mdpi-v4/card_yellow_69.png",
+   "sha256": "55db16b51a0e89fdf64c53dedd84934d9a3e800a6a428ce767a7b1056ba2ca29"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_7.png",
+   "path": "res/drawable-mdpi-v4/card_yellow_7.png",
+   "sha256": "ea79dd6528c56cebea549d8461bdbb7004d9606e3bda604c4acba7972dd6ea1d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_8.png",
+   "path": "res/drawable-mdpi-v4/card_yellow_8.png",
+   "sha256": "03297308eed45c11c1d1c67f912039447e7c74eaf02499cdc94445acf90713e8"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_9.png",
+   "path": "res/drawable-mdpi-v4/card_yellow_9.png",
+   "sha256": "7a5786b727b6cce74143b175ff43a50b26b8555d0f3566653f4317f15910732f"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_d.png",
+   "path": "res/drawable-mdpi-v4/card_yellow_d.png",
+   "sha256": "7d8a1aa9a169b98918d9cb5f8d517b95823b48804527d9aa5b39de7c91cb842a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_d_spreader.png",
+   "path": "res/drawable-mdpi-v4/card_yellow_d_spreader.png",
+   "sha256": "b4d6201ab24b4907fa99c9be2733df30a12cb034fbf8b9a0c3ebba408534caf7"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_r.png",
+   "path": "res/drawable-mdpi-v4/card_yellow_r.png",
+   "sha256": "9ce85181557c6a2a29a7bf03d58eb4c441b44189e88ac70cc130ed468aa51aba"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_r_skip.png",
+   "path": "res/drawable-mdpi-v4/card_yellow_r_skip.png",
+   "sha256": "d5c6051eeab2817cc969d55bbeb9132bc45c1a81de07c23de39c51492cf1cc9d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_s.png",
+   "path": "res/drawable-mdpi-v4/card_yellow_s.png",
+   "sha256": "bf7e0b358814b28e2414361a3e5a415e8091b862959268c87a73e43d656cf059"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    52,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_s_double.png",
+   "path": "res/drawable-mdpi-v4/card_yellow_s_double.png",
+   "sha256": "68e4668c91172526df9928e3218574d35996b4a6d7fb3806326b970b9baef1fe"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    53,
+    53
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ccw.png",
+   "path": "res/drawable-mdpi-v4/ccw.png",
+   "sha256": "dbe052666154ab6c22de800e70b2ed5d661fc8bc64dfeae51726586c7f0bcd53"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    53,
+    53
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ccw_blue.png",
+   "path": "res/drawable-mdpi-v4/ccw_blue.png",
+   "sha256": "a25c0e7e662a996c56a120295d52347fac1b2039f4f6fce18752f2b7813e41cb"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    53,
+    53
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ccw_green.png",
+   "path": "res/drawable-mdpi-v4/ccw_green.png",
+   "sha256": "471b07b32f40bd362a53572e0f21d1d8837014e8b61ab9978a78489b23438c1c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    53,
+    53
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ccw_red.png",
+   "path": "res/drawable-mdpi-v4/ccw_red.png",
+   "sha256": "40dd50d6ebecceab5146a91d0eb4935448c20e8e3b2330bcf1334fbb5e20e258"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    53,
+    53
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ccw_yellow.png",
+   "path": "res/drawable-mdpi-v4/ccw_yellow.png",
+   "sha256": "8adbabadc66395f8c10bd2ae601e6028b411a683564ea387d42bad88107cb6c6"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    53,
+    53
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "cw.png",
+   "path": "res/drawable-mdpi-v4/cw.png",
+   "sha256": "6c2dfaaaaef8a1809c4c54d2383886ff50581ad97798df798a3a3b96b0d57349"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    53,
+    53
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "cw_blue.png",
+   "path": "res/drawable-mdpi-v4/cw_blue.png",
+   "sha256": "f7da3dc2f7c424eae37fd7797e51e332997e2a121b8cdf4b1d25db0785af7927"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    53,
+    53
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "cw_green.png",
+   "path": "res/drawable-mdpi-v4/cw_green.png",
+   "sha256": "b5ecad1206a2df04e41bd7a7b1793ee9165515a6e1c60be1a8567b2a09d779d9"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    53,
+    53
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "cw_red.png",
+   "path": "res/drawable-mdpi-v4/cw_red.png",
+   "sha256": "1b2aba1b994e39031551b42532defcdbb57ea86269d89f6ebd0c6beee065d9a2"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    53,
+    53
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "cw_yellow.png",
+   "path": "res/drawable-mdpi-v4/cw_yellow.png",
+   "sha256": "ec1311c294a150926de0c01d98ec5b4f0689a029c4a8715f8ef90d953c9520c7"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    27,
+    20
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "emoticon_aggressor.png",
+   "path": "res/drawable-mdpi-v4/emoticon_aggressor.png",
+   "sha256": "9983eda132673d8cd0c7c92657b0b87d6c58fb6dcaef4df556c415f5bbace823"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    27,
+    20
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "emoticon_victim.png",
+   "path": "res/drawable-mdpi-v4/emoticon_victim.png",
+   "sha256": "254b439e6c39505d41f0544e5d1037471d95a872e6050f9dffb525bf6b87e639"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "icon.png",
+   "path": "res/drawable-mdpi-v4/icon.png",
+   "sha256": "c1d1e2d766bd624854e8c3ad9db19dde53e4f1558747d204573b797168accc55"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    19,
+    19
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_blue_east.png",
+   "path": "res/drawable-mdpi-v4/player_blue_east.png",
+   "sha256": "47148c00e1de891814a2a17ab1a4e98ae41b3506b3dedc2c441a76d3cf6ee3b0"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    19,
+    19
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_blue_north.png",
+   "path": "res/drawable-mdpi-v4/player_blue_north.png",
+   "sha256": "001e0a0e302e4b3e616eadd2608409bc689bf581c721dfe363d60a48f4d80dde"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    19,
+    19
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_blue_south.png",
+   "path": "res/drawable-mdpi-v4/player_blue_south.png",
+   "sha256": "116b9ab28f3a8064a7bd50171de7cec2952b20b0fbcfd22988d003a26b92f35c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    19,
+    19
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_blue_west.png",
+   "path": "res/drawable-mdpi-v4/player_blue_west.png",
+   "sha256": "e3d6af1acc21971722683f0c5107a926ba041122ec444fbe423e71180d5b2a9c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    19,
+    19
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_east.png",
+   "path": "res/drawable-mdpi-v4/player_east.png",
+   "sha256": "72c7a745bf7f733491ea51a4bd0afcc2477afb7379a2dffe69c4ea2c04bb32ea"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    19,
+    19
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_green_east.png",
+   "path": "res/drawable-mdpi-v4/player_green_east.png",
+   "sha256": "dd0ef3536b65a40b8794ac5e673ebdccc5c4fa140ef75df703ea7fe82bcc9e96"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    19,
+    19
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_green_north.png",
+   "path": "res/drawable-mdpi-v4/player_green_north.png",
+   "sha256": "4a2e1752a6f52f2be09e095bf7930cb51b3c710a18d7a1ffd87f7f7f02fc971f"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    19,
+    19
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_green_south.png",
+   "path": "res/drawable-mdpi-v4/player_green_south.png",
+   "sha256": "003b070441be35addeeb12dcdc4c411b897432ceb7f33bf306778a87aa32ab2d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    19,
+    19
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_green_west.png",
+   "path": "res/drawable-mdpi-v4/player_green_west.png",
+   "sha256": "e4123aea858a4eb807c7d0889a340ea058cd83fc6b90ca04e42df6e2c4b5be4e"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    19,
+    19
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_north.png",
+   "path": "res/drawable-mdpi-v4/player_north.png",
+   "sha256": "e5f54e50de8a853130f643aa44b65b272f2c71c4a41dc98587c7f06cf68e0daf"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    19,
+    19
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_red_east.png",
+   "path": "res/drawable-mdpi-v4/player_red_east.png",
+   "sha256": "fc72a48989071d0b9f205538d5e095dd94985ff7325c6c289a15e8b40af12232"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    19,
+    19
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_red_north.png",
+   "path": "res/drawable-mdpi-v4/player_red_north.png",
+   "sha256": "d65d5e4bd9ea1b80daa64ab69cb1465ea4e73deb1970d75bce833fc7e67677b3"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    19,
+    19
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_red_south.png",
+   "path": "res/drawable-mdpi-v4/player_red_south.png",
+   "sha256": "8d06c0c7fee8563e09535522488c7c2fbb99cc4a38dd853d6e06074af8357ccf"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    19,
+    19
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_red_west.png",
+   "path": "res/drawable-mdpi-v4/player_red_west.png",
+   "sha256": "bf49bc16fabef7524a9be2f1e048bfe64f0af7ddf72c97b3d022b89e31cccd9b"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    19,
+    19
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_south.png",
+   "path": "res/drawable-mdpi-v4/player_south.png",
+   "sha256": "39b362d686394041761ca2d68f4dae7672065c4c84bff82998e1cf7267dbe4d8"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    19,
+    19
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_west.png",
+   "path": "res/drawable-mdpi-v4/player_west.png",
+   "sha256": "a22103fd62b7add0b26c83e01ac86ed9d4317079f1bcdc81d2b47df652432165"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    19,
+    19
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_yellow_east.png",
+   "path": "res/drawable-mdpi-v4/player_yellow_east.png",
+   "sha256": "5138312e99596eb442289b48ef4ea3d26d961988c2faf0796b4d386f54c3fa11"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    19,
+    19
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_yellow_north.png",
+   "path": "res/drawable-mdpi-v4/player_yellow_north.png",
+   "sha256": "66eff26e73054dafbc143ea2c05d33f70e87e3bec134339543ef3cbc4d842498"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    19,
+    19
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_yellow_south.png",
+   "path": "res/drawable-mdpi-v4/player_yellow_south.png",
+   "sha256": "060f26b847b1361525878cad3a63a7a67773bf95f9f427fcb04f0268df981036"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    19,
+    19
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_yellow_west.png",
+   "path": "res/drawable-mdpi-v4/player_yellow_west.png",
+   "sha256": "530b89af27d22590a60b7dfda285b79e1fb50d972138801f6fd88d020c3fabb0"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    322,
+    536
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "splash.png",
+   "path": "res/drawable-mdpi-v4/splash.png",
+   "sha256": "1a799e2073e63a5552661700eba510990d4d8b3227b3f1ca374be6181c640af4"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    536,
+    322
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "splash_land.png",
+   "path": "res/drawable-mdpi-v4/splash_land.png",
+   "sha256": "a46019ac53b80d9d118b0bfbf63ed63ebfa2996046d3e56184123168fc8ce03c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    322,
+    536
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "table_background.png",
+   "path": "res/drawable-mdpi-v4/table_background.png",
+   "sha256": "b83d4b6532355e5cdb510dc418b6be89fad8506bef7aeeb41328bc46d6ebf685"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    201,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "winner_east.png",
+   "path": "res/drawable-mdpi-v4/winner_east.png",
+   "sha256": "9cb078432f65435bc13caa907bf17bf708b13401276ba0e862404d145feb3c0d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    201,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "winner_north.png",
+   "path": "res/drawable-mdpi-v4/winner_north.png",
+   "sha256": "f6b0e9141ae77aa01be24db22883ccf69d2dc41a6ca7b75be5c59d3c3d4314b8"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    201,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "winner_south.png",
+   "path": "res/drawable-mdpi-v4/winner_south.png",
+   "sha256": "06ca8f5a729b6553afb9d5684ec016f2746c78703049495de666e88b5736da74"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    201,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "winner_west.png",
+   "path": "res/drawable-mdpi-v4/winner_west.png",
+   "sha256": "810ba57a6e5b24e63bf1f9cc2b5b23f12f400b046914920bc16bfba6440ae981"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    400,
+    100
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_about.png",
+   "path": "res/drawable-xhdpi-v4/btn_about.png",
+   "sha256": "65c1af77eb588649ed723d8b034ae43c10403427d16143af855b644c3082b5a6"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    400,
+    100
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_about_outline.png",
+   "path": "res/drawable-xhdpi-v4/btn_about_outline.png",
+   "sha256": "d3767ea38fcf346dbc0a4f32873e5bf7ab5ffe2767644005aa5b874652fd2e53"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    400,
+    100
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_continue.png",
+   "path": "res/drawable-xhdpi-v4/btn_continue.png",
+   "sha256": "66c130b72d4b8221753882839af3b19cd51915890c9c4d24bf01c628c6e15f9a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    400,
+    100
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_continue_outline.png",
+   "path": "res/drawable-xhdpi-v4/btn_continue_outline.png",
+   "sha256": "03839cc10bf6187cb78b9144c2e390914fcdf450bc98990a442ffa646537d946"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    400,
+    100
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_exit.png",
+   "path": "res/drawable-xhdpi-v4/btn_exit.png",
+   "sha256": "5446bef0bff110d714013adf22a563fd595f696254ccb793bf4be031c3290e4a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    400,
+    100
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_exit_outline.png",
+   "path": "res/drawable-xhdpi-v4/btn_exit_outline.png",
+   "sha256": "a4cbd819e85f083ff1ac8e7888311eb16ac15a3af6c6e18f0eb00648dcf59c32"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    400,
+    100
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_help.png",
+   "path": "res/drawable-xhdpi-v4/btn_help.png",
+   "sha256": "53b785efdbf37e1d06e5f31704827f8962e5b778f2997c2abdc780181158bc1b"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    400,
+    100
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_help_outline.png",
+   "path": "res/drawable-xhdpi-v4/btn_help_outline.png",
+   "sha256": "72309b932f36d0053aaecff5fa7dfca4fb22f80564518b4753a3deab63246c47"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    400,
+    100
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_new_game.png",
+   "path": "res/drawable-xhdpi-v4/btn_new_game.png",
+   "sha256": "cc4e8cb8dca6faf1e41b259e37909e76a6c299908be1e5b29ddfe98ac9f8918c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    400,
+    100
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_new_game_outline.png",
+   "path": "res/drawable-xhdpi-v4/btn_new_game_outline.png",
+   "sha256": "cf4c0945a9db79652b59491ad5c36a9728a6f0691fc02018faf4f887fecec86c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    400,
+    100
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_settings.png",
+   "path": "res/drawable-xhdpi-v4/btn_settings.png",
+   "sha256": "bb8a27ae4e6385d504aff16702dbdb095ba7bae6c969b6af8fd5d57a51f44dd7"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    400,
+    100
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_settings_outline.png",
+   "path": "res/drawable-xhdpi-v4/btn_settings_outline.png",
+   "sha256": "d1ff396858b4b59335fb3e5f1f279e484e956c2cb28468e8e831a3d331ff19c5"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_back.png",
+   "path": "res/drawable-xhdpi-v4/card_back.png",
+   "sha256": "a9445d5f2f6d96e57289ea76115ee355305c70363d98b21ebaf5e4c8efcdbbc1"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    53,
+    53
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_badge.png",
+   "path": "res/drawable-xhdpi-v4/card_badge.png",
+   "sha256": "a0770cba9299de4259aa28c6b685319b48a964ac07622624aeeff645a71062cd"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_0.png",
+   "path": "res/drawable-xhdpi-v4/card_blue_0.png",
+   "sha256": "ea7a5e59ab637d0d007686ea5a7c2dd3b59caa5b499d4f1992161df07f326568"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_0_fuckyou.png",
+   "path": "res/drawable-xhdpi-v4/card_blue_0_fuckyou.png",
+   "sha256": "15ddd79e55871543481c03769cb18d351642008e94d45468dbc2f70d79b6f58c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_0_fuckyou_ff.png",
+   "path": "res/drawable-xhdpi-v4/card_blue_0_fuckyou_ff.png",
+   "sha256": "94349261d032470df5a821e59862441688008abab10ec03d32c2d45f7a690154"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_1.png",
+   "path": "res/drawable-xhdpi-v4/card_blue_1.png",
+   "sha256": "ccb289961c0c134d05237d04a7d82c9ec608fd7455ce5625877518a2b90a70e2"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_2.png",
+   "path": "res/drawable-xhdpi-v4/card_blue_2.png",
+   "sha256": "8086f028b2f839c9c74f5118269c9235a2b72817c82b0dc36dc07f3c2f854731"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_2_shield.png",
+   "path": "res/drawable-xhdpi-v4/card_blue_2_shield.png",
+   "sha256": "e3da0f28a31a9752bb94b14c6525b33675dd3499976b9eed7da117f27789e890"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_3.png",
+   "path": "res/drawable-xhdpi-v4/card_blue_3.png",
+   "sha256": "a584f78e49499475c9b740cf1cfbc7a5ac92c4ca5c6bdd39825574312a5b3a18"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_4.png",
+   "path": "res/drawable-xhdpi-v4/card_blue_4.png",
+   "sha256": "8e137f3ad59ac02f32d5b496fcdceef1da7c502a482582a6a33b2106f8b755a5"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_5.png",
+   "path": "res/drawable-xhdpi-v4/card_blue_5.png",
+   "sha256": "bab11649bdcb49ed61ec2ebd172fc8bf6c083ed325fc412105204bb59178d482"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_6.png",
+   "path": "res/drawable-xhdpi-v4/card_blue_6.png",
+   "sha256": "17b1cfd42cbb912042bfffbcfdb6dd021406bad4b407a506223ecbd5cebeb32c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_7.png",
+   "path": "res/drawable-xhdpi-v4/card_blue_7.png",
+   "sha256": "b6a84597c94783c439cd1a642011e49cfbe7e4b5ca6631a91495d872cf3215bb"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_8.png",
+   "path": "res/drawable-xhdpi-v4/card_blue_8.png",
+   "sha256": "d8c1366d4f0979ee5c329238877b8bffc4ed69911f171c38527943e0eaec2b72"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_9.png",
+   "path": "res/drawable-xhdpi-v4/card_blue_9.png",
+   "sha256": "9d72b9d209b11c94d01ceb6239eb4d8dedb51eb654c3e8641055dadf3828314c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_d.png",
+   "path": "res/drawable-xhdpi-v4/card_blue_d.png",
+   "sha256": "e4dc94710a8fabc9a549175912ca60c4b86681909f16a271252181079547c69a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_d_spreader.png",
+   "path": "res/drawable-xhdpi-v4/card_blue_d_spreader.png",
+   "sha256": "43ce584d78ea864fa0168f9ed198eeb5286dfec2db3b528f447234ceec6450f9"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_r.png",
+   "path": "res/drawable-xhdpi-v4/card_blue_r.png",
+   "sha256": "538a92fac4cdccfdb500a66d4090e3602c5f20ee878bf97aa87711b846a48278"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_r_skip.png",
+   "path": "res/drawable-xhdpi-v4/card_blue_r_skip.png",
+   "sha256": "ccaf5595b631c66cc1bd032129e3bcc666714daea485e73a1c7bc138bec3f156"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_s.png",
+   "path": "res/drawable-xhdpi-v4/card_blue_s.png",
+   "sha256": "23d562a5751ba47e1f06c07456fbbda749f9dc8721f400d4dc70f30e8d46dcfe"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_s_double.png",
+   "path": "res/drawable-xhdpi-v4/card_blue_s_double.png",
+   "sha256": "25feb9d346a7efdbd04e3ed310faf099e27de48e68e660392df9c6ad1de841d7"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_0.png",
+   "path": "res/drawable-xhdpi-v4/card_green_0.png",
+   "sha256": "3447d49299090fe84863dd3d9e222a8c82bc33f7e4a8facbf67945091f2ffab0"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_0_quitter.png",
+   "path": "res/drawable-xhdpi-v4/card_green_0_quitter.png",
+   "sha256": "b1c24a6a87cdeb4e64cacd1af8c205b1b2c7065d53473c851553f1b3029a98fc"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_1.png",
+   "path": "res/drawable-xhdpi-v4/card_green_1.png",
+   "sha256": "ae61ca4cbc88a4385b768315d97cd86bbc4794153d516a9db77d8118bcb65270"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_2.png",
+   "path": "res/drawable-xhdpi-v4/card_green_2.png",
+   "sha256": "83d4a7cf45e255c3e258e9317dd3d69e7eb6cb527ed808c10543eb928bc113d8"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_3.png",
+   "path": "res/drawable-xhdpi-v4/card_green_3.png",
+   "sha256": "f32fc2101b6c3144b6733468a5dd80b8105ddd58f96ed8d64bab74289de29abd"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_3_aids.png",
+   "path": "res/drawable-xhdpi-v4/card_green_3_aids.png",
+   "sha256": "469e685e8f268d4ecd00d8b5e61eef4e5600fd218675b25e23e797b011d8a883"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_3_aids_ff.png",
+   "path": "res/drawable-xhdpi-v4/card_green_3_aids_ff.png",
+   "sha256": "59cc0cb7ebb745ad31e89b311df3e645e6feff6657fa9612fbd132520cc96557"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_4.png",
+   "path": "res/drawable-xhdpi-v4/card_green_4.png",
+   "sha256": "7ef7e66fe60195ec3abef59665d2cb868eb5973bc9cac04f3f265f3c07bb32e2"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_4_irish.png",
+   "path": "res/drawable-xhdpi-v4/card_green_4_irish.png",
+   "sha256": "978f7c4bd3069c0cf5299ca40075fedf8049a72b51bbc0397079de56ad032145"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_5.png",
+   "path": "res/drawable-xhdpi-v4/card_green_5.png",
+   "sha256": "9d68672db18abf411ccc2ef638f7fcf0c18463acf9cd1d9a447aa20c12f8408f"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_6.png",
+   "path": "res/drawable-xhdpi-v4/card_green_6.png",
+   "sha256": "ea6a25e4d4326cc4a6068e6ae7682a653c00f9358abea8ba3bfe19c67a8c8e55"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_7.png",
+   "path": "res/drawable-xhdpi-v4/card_green_7.png",
+   "sha256": "d50234f2c91fd19ed41294d6012033874950ef71d9767209715cddac5274d2fa"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_8.png",
+   "path": "res/drawable-xhdpi-v4/card_green_8.png",
+   "sha256": "76ec86c68fdcaf5e2cea90080d9def98b9ecd586e2a4d1a1be9ebe455920609c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_9.png",
+   "path": "res/drawable-xhdpi-v4/card_green_9.png",
+   "sha256": "ecfe1e40d2262954934fb5b30a2eb9704c89d127fe27fe4c259fe25ff1df2b90"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_d.png",
+   "path": "res/drawable-xhdpi-v4/card_green_d.png",
+   "sha256": "207bff1e0336f0741fcee0edf1b1a29bafe02ddb1c5a7fa38c3bfdf74a1f0d0e"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_d_spreader.png",
+   "path": "res/drawable-xhdpi-v4/card_green_d_spreader.png",
+   "sha256": "ec12e0c681d3001cd3ece0ec09f4104934f966d5232c873ea482fa9f6efe827d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_r.png",
+   "path": "res/drawable-xhdpi-v4/card_green_r.png",
+   "sha256": "2fda915586d54c1a4423e25ca09cdf1b11625e5996c8df0c2bd162e42cefd9d1"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_r_skip.png",
+   "path": "res/drawable-xhdpi-v4/card_green_r_skip.png",
+   "sha256": "b69cff8cbe6587b7386a5292e4b494f937154b13813e7f8b31d6cb061529be7b"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_s.png",
+   "path": "res/drawable-xhdpi-v4/card_green_s.png",
+   "sha256": "a7715315d1c706244691d34a815dbdc63687adddd85a1a53ad0af4a2af74478d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_s_double.png",
+   "path": "res/drawable-xhdpi-v4/card_green_s_double.png",
+   "sha256": "895ddb5c6ad5c37e53356c7dbd6ab3dc62a486e8851a7f36e7ab10e03ffe2565"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_0.png",
+   "path": "res/drawable-xhdpi-v4/card_red_0.png",
+   "sha256": "87a2a8dde9c768e2921df8cc8206e140ff183d52ef743e68b994166a5da53d42"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_0_hd.png",
+   "path": "res/drawable-xhdpi-v4/card_red_0_hd.png",
+   "sha256": "0b41b8f58ab10cfc06609115a87d95484d742df22174567644d7cfcb697c6f23"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_1.png",
+   "path": "res/drawable-xhdpi-v4/card_red_1.png",
+   "sha256": "259208ffc721df5a8abc7cd535af08cb7e1210620eabcacc7ecf1ac70d898c47"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_2.png",
+   "path": "res/drawable-xhdpi-v4/card_red_2.png",
+   "sha256": "d3e768917422805b8fbfa8efb5c943488a5b79ae6ef7e92208367e377fcc51ef"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_2_glasnost.png",
+   "path": "res/drawable-xhdpi-v4/card_red_2_glasnost.png",
+   "sha256": "14cbfbfda75766cdae87258bb69ac5ce795f352c485ff717575b26339e3dc2c7"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_3.png",
+   "path": "res/drawable-xhdpi-v4/card_red_3.png",
+   "sha256": "3020a4fdedc4756ec4c0600fab37c529059932487cd448673355440d4429b67c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_4.png",
+   "path": "res/drawable-xhdpi-v4/card_red_4.png",
+   "sha256": "86192cd04067caa27b7555e16b5ec7b43f0c610b65ce2e15ddd81ad6f7de4e44"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_5.png",
+   "path": "res/drawable-xhdpi-v4/card_red_5.png",
+   "sha256": "ef356d62a3a1df2a973dd76c99abd61ed54c1025bae37ae40203bbbcfcdca211"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_5_magic.png",
+   "path": "res/drawable-xhdpi-v4/card_red_5_magic.png",
+   "sha256": "1706bb9f296f9b737c67a32eca4e7e2a928ca5b8465ca13dd1d4ad87bd9cc0f7"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_6.png",
+   "path": "res/drawable-xhdpi-v4/card_red_6.png",
+   "sha256": "ef995a1f59583222d79b261b7cea0eab787d92757afe0d6158bc6f13322320fe"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_7.png",
+   "path": "res/drawable-xhdpi-v4/card_red_7.png",
+   "sha256": "91db8dc5006771ed1bc76f1efd6db92d259ac1452a2f7b8da3bada4a885c741c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_8.png",
+   "path": "res/drawable-xhdpi-v4/card_red_8.png",
+   "sha256": "d0e3bd15ca8dc82eae417400bb24b2384ca5a64026b4abca40522ea80004b43d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_9.png",
+   "path": "res/drawable-xhdpi-v4/card_red_9.png",
+   "sha256": "fa96e8080e7bf40fd2dfec048fe4696b3f318c7c9c1b6397d58ab3ee19b8575f"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_d.png",
+   "path": "res/drawable-xhdpi-v4/card_red_d.png",
+   "sha256": "ea8e3ea94a6728fce4c447e631c25549f637ee4f6e1ab7b2ed418a0a48f5cd4f"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_d_spreader.png",
+   "path": "res/drawable-xhdpi-v4/card_red_d_spreader.png",
+   "sha256": "d8b9d30e82671be7c4232d02a255f0633b1cecc887a2f3d0c17c84abbbb80470"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_r.png",
+   "path": "res/drawable-xhdpi-v4/card_red_r.png",
+   "sha256": "b57cbeede9fd9e36b07a7872edc1e76db5a73edf0dde90114fa8192f8d526032"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_r_skip.png",
+   "path": "res/drawable-xhdpi-v4/card_red_r_skip.png",
+   "sha256": "e5a3c70ae7f5da8126ad74df745f7fc8ef096023b41143531a970e14ed229b5d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_s.png",
+   "path": "res/drawable-xhdpi-v4/card_red_s.png",
+   "sha256": "f0f8045aad37d70bc1df4bfa2b724e76bcb36b7b08dafaf1197b50029287bf22"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_s_double.png",
+   "path": "res/drawable-xhdpi-v4/card_red_s_double.png",
+   "sha256": "b84b44c6ffb5db99ec6a569279987c636438b093bc97cd2d22e190f63ea7501a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_wild.png",
+   "path": "res/drawable-xhdpi-v4/card_wild.png",
+   "sha256": "1219ebd5b865c2cafbdba269299ebd0ddd317684a547841af50b5467fc59347f"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_wild_db.png",
+   "path": "res/drawable-xhdpi-v4/card_wild_db.png",
+   "sha256": "8fd28932c604a78f6712573bd90bbb1072b8c026584f126995da830691cb869e"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_wild_drawfour.png",
+   "path": "res/drawable-xhdpi-v4/card_wild_drawfour.png",
+   "sha256": "7a0bfa6133dcb608e649ffbf9fa8504bc0718bca14c5e10f47e9bc659be97725"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_wild_hd.png",
+   "path": "res/drawable-xhdpi-v4/card_wild_hd.png",
+   "sha256": "e583281f69bb747652b2fe1198783e619f45ce11e6ff8899d1f2717f0853417b"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_wild_hos.png",
+   "path": "res/drawable-xhdpi-v4/card_wild_hos.png",
+   "sha256": "e05baca6c88cc9a66799d5bbfe1aa5357adbcc4a2181b6a1184adf56b523cc07"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_wild_mystery.png",
+   "path": "res/drawable-xhdpi-v4/card_wild_mystery.png",
+   "sha256": "7a3b4b19fef82c07d5508188f4cac8f1269d3f5260d46c185f7c90054c5e069a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_0.png",
+   "path": "res/drawable-xhdpi-v4/card_yellow_0.png",
+   "sha256": "e040bb6f89225fc1538f94de52874f4fb60ca8f96e3d3b460cc5fea0a0ad0543"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_0_shitter.png",
+   "path": "res/drawable-xhdpi-v4/card_yellow_0_shitter.png",
+   "sha256": "54e4a385204c91c24b3789794d2128705275faa7982ffff97ee7e52511fc9ed8"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_0_shitter_ff.png",
+   "path": "res/drawable-xhdpi-v4/card_yellow_0_shitter_ff.png",
+   "sha256": "3763d9838248f3679da1ba22ec7a730e84b23e6f1c58fda312cef3a10bfb630d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_1.png",
+   "path": "res/drawable-xhdpi-v4/card_yellow_1.png",
+   "sha256": "5f91843ece5e07ab8582d539b4f202aa05c511c560aff6bb34007fe8e543601b"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_1_mad.png",
+   "path": "res/drawable-xhdpi-v4/card_yellow_1_mad.png",
+   "sha256": "68f5baf011cc4318b2b4fa5e643fa2f3a669540d6025e86b4b9db609b1799282"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_2.png",
+   "path": "res/drawable-xhdpi-v4/card_yellow_2.png",
+   "sha256": "84f999e6667e9a1a008b0198cca49f1ce33e777bda5cbbf1c070e6c38bf56830"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_3.png",
+   "path": "res/drawable-xhdpi-v4/card_yellow_3.png",
+   "sha256": "1ed98cfb1b5947611889d0f262113842e872f02617630e60bd1de0edf1511460"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_4.png",
+   "path": "res/drawable-xhdpi-v4/card_yellow_4.png",
+   "sha256": "e5064ba50fca7743242734e4a3de608f273879c51e541936c818208fcbc708d8"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_5.png",
+   "path": "res/drawable-xhdpi-v4/card_yellow_5.png",
+   "sha256": "3066ef2b326c62228ac99283e2465a02f63abb7a90dbf34992a8028261b0e036"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_6.png",
+   "path": "res/drawable-xhdpi-v4/card_yellow_6.png",
+   "sha256": "aa0d35bed7ac2a416a35839d5a1b5a5f234cf9025f923a99fbfdad67a7c49400"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_69.png",
+   "path": "res/drawable-xhdpi-v4/card_yellow_69.png",
+   "sha256": "81c996d5694a5b87410f1b6f34290c14e23756d1fb68d39bef5c05687e7a1ff2"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_7.png",
+   "path": "res/drawable-xhdpi-v4/card_yellow_7.png",
+   "sha256": "7939fff806de5337c2f46cd73c7bd44a9d74cffacd916f647369de6cb00c3b30"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_8.png",
+   "path": "res/drawable-xhdpi-v4/card_yellow_8.png",
+   "sha256": "aa30783edaebea9b5562a0e37137f589bf2b9954c712cf3fdd240fd11cf5a016"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_9.png",
+   "path": "res/drawable-xhdpi-v4/card_yellow_9.png",
+   "sha256": "81162054374be409654f43a198ba7191208d8cd196932d0ac75a2803fa30f0bf"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_d.png",
+   "path": "res/drawable-xhdpi-v4/card_yellow_d.png",
+   "sha256": "562e529f387bbfdd8018a459a6b5005a55298d211d70a7df9ca26df4e61065e4"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_d_spreader.png",
+   "path": "res/drawable-xhdpi-v4/card_yellow_d_spreader.png",
+   "sha256": "c311595499aaab4c9a30232d537c445abe0c51b1518865012f7ae7d39cae27fd"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_r.png",
+   "path": "res/drawable-xhdpi-v4/card_yellow_r.png",
+   "sha256": "5429aec0e6375fd8983d406a2b62b4a0f4e4175220b01a1f0ea88c38fc3736c4"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_r_skip.png",
+   "path": "res/drawable-xhdpi-v4/card_yellow_r_skip.png",
+   "sha256": "2d15b79bb35a27e8f94cab454a7e8d2a139d00621d728d8519731675f7c42a96"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_s.png",
+   "path": "res/drawable-xhdpi-v4/card_yellow_s.png",
+   "sha256": "c88a9c85349ce51dbe4f48427e19b71deae43b8709e9208d16959f0cf3d667fa"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_s_double.png",
+   "path": "res/drawable-xhdpi-v4/card_yellow_s_double.png",
+   "sha256": "6d5a823fb951a2662969e5e188c3233dec279e022e181ae3a884ff59da0f75a3"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    106,
+    106
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ccw.png",
+   "path": "res/drawable-xhdpi-v4/ccw.png",
+   "sha256": "db1c196b4db445fc070bebe7e7517feeb592ec67340c77a4a4089b8ed551618c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    106,
+    106
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ccw_blue.png",
+   "path": "res/drawable-xhdpi-v4/ccw_blue.png",
+   "sha256": "f2e183d6849ba024c26ebc9887888e5ff6e9dc9169f7a17e22f6216f7ebe0f84"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    106,
+    106
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ccw_green.png",
+   "path": "res/drawable-xhdpi-v4/ccw_green.png",
+   "sha256": "013e85a360620445efb566a6f77fccdf2ab6f7567c5625cf0d70d0ee9b34e018"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    106,
+    106
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ccw_red.png",
+   "path": "res/drawable-xhdpi-v4/ccw_red.png",
+   "sha256": "65ccc95c3f502831be5a4877a497d15e30141b3f6714ce93ec3dfedd306e5fda"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    106,
+    106
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ccw_yellow.png",
+   "path": "res/drawable-xhdpi-v4/ccw_yellow.png",
+   "sha256": "63e8be3d9889fcafb7814dc13359670096417735d7140e91f9c0c5570bd2bd3a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    106,
+    106
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "cw.png",
+   "path": "res/drawable-xhdpi-v4/cw.png",
+   "sha256": "e5d9ee13c68f2d7c6b5ef89c5078f1b9d2c578914e0d982bae06fd1982e51f0c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    106,
+    106
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "cw_blue.png",
+   "path": "res/drawable-xhdpi-v4/cw_blue.png",
+   "sha256": "8b45512dcba1554864ac04fb1b0e8b074e96dc6451cd831ecae3059380d3aec1"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    106,
+    106
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "cw_green.png",
+   "path": "res/drawable-xhdpi-v4/cw_green.png",
+   "sha256": "b474ef41405a50bb4e0db9dbb90488d1b30c55d85884a12d53a04dfe0157d1b9"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    106,
+    106
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "cw_red.png",
+   "path": "res/drawable-xhdpi-v4/cw_red.png",
+   "sha256": "ac4b75183c08d5af9197432e1242b8fe7df21c825b993d74dd5dd6f992de2cd5"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    106,
+    106
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "cw_yellow.png",
+   "path": "res/drawable-xhdpi-v4/cw_yellow.png",
+   "sha256": "89c66d58cdebb86d3d3f84cafd364dd021e7f626ce5b7ca251273530e6b1c021"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    53,
+    40
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "emoticon_aggressor.png",
+   "path": "res/drawable-xhdpi-v4/emoticon_aggressor.png",
+   "sha256": "c21a6085e0268252bd9897749d1ab805c2ade18db80f0197212fc5c9a0f16074"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    53,
+    40
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "emoticon_victim.png",
+   "path": "res/drawable-xhdpi-v4/emoticon_victim.png",
+   "sha256": "735b77de308166bb2fd9fd0933b15bddf015273f80c7d6cd3445903677ddc538"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "icon.png",
+   "path": "res/drawable-xhdpi-v4/icon.png",
+   "sha256": "5c25139fa397221dda937ce1f9018aebbc200d75c956de0ed6a0346871458887"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_blue_east.png",
+   "path": "res/drawable-xhdpi-v4/player_blue_east.png",
+   "sha256": "faf9a2fc04947db793687df91c44622f815580a07c578fcbf42d868e4b00228e"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_blue_north.png",
+   "path": "res/drawable-xhdpi-v4/player_blue_north.png",
+   "sha256": "9bf703e88ac1087b89f3de2393fcf72e3fc86dedbd4a99a1bba7cf825e9d518d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_blue_south.png",
+   "path": "res/drawable-xhdpi-v4/player_blue_south.png",
+   "sha256": "028c07958d824ed25b2b6ac9fe458d20f4972469670f4e3d7f9b958bd68257d8"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_blue_west.png",
+   "path": "res/drawable-xhdpi-v4/player_blue_west.png",
+   "sha256": "324d29fd26508988714745af10a8e629e08d32516c9c960600d3d8ff127fefe0"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_east.png",
+   "path": "res/drawable-xhdpi-v4/player_east.png",
+   "sha256": "009825b8d6d2e6924597dcb814d9377b560364de08c3e6051251ac97093bd6bb"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_green_east.png",
+   "path": "res/drawable-xhdpi-v4/player_green_east.png",
+   "sha256": "a0777438e2f4cb5c91c7a0dffdb91e7e56b77592e6d173dbf24592184bbc17fb"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_green_north.png",
+   "path": "res/drawable-xhdpi-v4/player_green_north.png",
+   "sha256": "b52e4760de75e1f1cf4db4b26e6c51746e178ef86b4d43ddad0f3c2c6e8e975c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_green_south.png",
+   "path": "res/drawable-xhdpi-v4/player_green_south.png",
+   "sha256": "aed2ae8955a6510822436dec7908c9a2859ecd7907d63b30439999cec9f727d3"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_green_west.png",
+   "path": "res/drawable-xhdpi-v4/player_green_west.png",
+   "sha256": "7fb5a5c6993aae1d3ff99c872d241fc2b5ac22c747998dc7283b35dcc20c9612"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_north.png",
+   "path": "res/drawable-xhdpi-v4/player_north.png",
+   "sha256": "58ffb6b0cb18d939b19bb5d5165b135b7c70e02b0607b1b783b26e0138219fc1"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_red_east.png",
+   "path": "res/drawable-xhdpi-v4/player_red_east.png",
+   "sha256": "ebc0af348f04000ce6e4a4bac65adb476255fb809a1a5894642436862e61d1c3"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_red_north.png",
+   "path": "res/drawable-xhdpi-v4/player_red_north.png",
+   "sha256": "a066fe4de2871776177acea299bb9af2880d870a6bb79b344c7353340c0a21c6"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_red_south.png",
+   "path": "res/drawable-xhdpi-v4/player_red_south.png",
+   "sha256": "05565e5cc1ce24b781894d174b8d5227cb45409f610e0e65ba3a61ce21a6365a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_red_west.png",
+   "path": "res/drawable-xhdpi-v4/player_red_west.png",
+   "sha256": "a8880f4db389c52263a16a9278935d36882a440c90738a2b2131d196eb0e68aa"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_south.png",
+   "path": "res/drawable-xhdpi-v4/player_south.png",
+   "sha256": "80cc2b4db6f4176bc36df6ae940286012e0714d907c99892642e2a4c75e6d709"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_west.png",
+   "path": "res/drawable-xhdpi-v4/player_west.png",
+   "sha256": "b7aa0a079b1f61668e45b1b55ac0a5ecccc0018f91ea178f034358627841ae86"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_yellow_east.png",
+   "path": "res/drawable-xhdpi-v4/player_yellow_east.png",
+   "sha256": "4b32f0e9b55128c3e4f77da3964342ca47b3638ab11160370d8931a6d001bc93"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_yellow_north.png",
+   "path": "res/drawable-xhdpi-v4/player_yellow_north.png",
+   "sha256": "f7e407c2da5db97b1a7e6ddc9b058c4fa595c126da699084f8c00ff5552c54b8"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_yellow_south.png",
+   "path": "res/drawable-xhdpi-v4/player_yellow_south.png",
+   "sha256": "719e186e8b432698f2a4cbbb545a962d36df2d4fb6220fd9a8af979a0cadc01c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_yellow_west.png",
+   "path": "res/drawable-xhdpi-v4/player_yellow_west.png",
+   "sha256": "1854569174591f92085cd2c6a9f619b105e0cc315b3921d0d80e7d37186b83bd"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    480,
+    800
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "splash.png",
+   "path": "res/drawable-xhdpi-v4/splash.png",
+   "sha256": "c4a4dab9bc5ab73d21acef4b168e1d15596cd4704d7c78b66739e072df28c614"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    800,
+    480
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "splash_land.png",
+   "path": "res/drawable-xhdpi-v4/splash_land.png",
+   "sha256": "69a6d09013c3f3e010ce7830829d543d0fe628838bda2b7ab81427a708e27c7c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    480,
+    800
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "table_background.png",
+   "path": "res/drawable-xhdpi-v4/table_background.png",
+   "sha256": "c610a4bcd31c136da62f9b78e02625867086ea9a6739fa5df5ea980a8cac4f6a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "winner_east.png",
+   "path": "res/drawable-xhdpi-v4/winner_east.png",
+   "sha256": "96cf2f04dec8a58922df59eee2b8f844d2a86ca84ce20c46c9d36d7e0ee9f822"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "winner_north.png",
+   "path": "res/drawable-xhdpi-v4/winner_north.png",
+   "sha256": "9dd3c821def97a3504e0e6defbd050a78318f30c5bc9aed908015e2875ff45cc"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "winner_south.png",
+   "path": "res/drawable-xhdpi-v4/winner_south.png",
+   "sha256": "6fdfffa7d087b602bb3d9e09aa9f9a1b266d53c32fdff723e3323cf43b37b40d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "winner_west.png",
+   "path": "res/drawable-xhdpi-v4/winner_west.png",
+   "sha256": "04e1985ef237a63fe9a9a5aa143bb5505e2d81bfcc298fac4945da2058cce17c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    400,
+    100
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_about.png",
+   "path": "res/drawable-xlarge-hdpi-v4/btn_about.png",
+   "sha256": "65c1af77eb588649ed723d8b034ae43c10403427d16143af855b644c3082b5a6"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    400,
+    100
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_about_outline.png",
+   "path": "res/drawable-xlarge-hdpi-v4/btn_about_outline.png",
+   "sha256": "d3767ea38fcf346dbc0a4f32873e5bf7ab5ffe2767644005aa5b874652fd2e53"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    400,
+    100
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_continue.png",
+   "path": "res/drawable-xlarge-hdpi-v4/btn_continue.png",
+   "sha256": "66c130b72d4b8221753882839af3b19cd51915890c9c4d24bf01c628c6e15f9a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    400,
+    100
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_continue_outline.png",
+   "path": "res/drawable-xlarge-hdpi-v4/btn_continue_outline.png",
+   "sha256": "03839cc10bf6187cb78b9144c2e390914fcdf450bc98990a442ffa646537d946"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    400,
+    100
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_exit.png",
+   "path": "res/drawable-xlarge-hdpi-v4/btn_exit.png",
+   "sha256": "5446bef0bff110d714013adf22a563fd595f696254ccb793bf4be031c3290e4a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    400,
+    100
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_exit_outline.png",
+   "path": "res/drawable-xlarge-hdpi-v4/btn_exit_outline.png",
+   "sha256": "a4cbd819e85f083ff1ac8e7888311eb16ac15a3af6c6e18f0eb00648dcf59c32"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    400,
+    100
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_help.png",
+   "path": "res/drawable-xlarge-hdpi-v4/btn_help.png",
+   "sha256": "53b785efdbf37e1d06e5f31704827f8962e5b778f2997c2abdc780181158bc1b"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    400,
+    100
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_help_outline.png",
+   "path": "res/drawable-xlarge-hdpi-v4/btn_help_outline.png",
+   "sha256": "72309b932f36d0053aaecff5fa7dfca4fb22f80564518b4753a3deab63246c47"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    400,
+    100
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_new_game.png",
+   "path": "res/drawable-xlarge-hdpi-v4/btn_new_game.png",
+   "sha256": "cc4e8cb8dca6faf1e41b259e37909e76a6c299908be1e5b29ddfe98ac9f8918c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    400,
+    100
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_new_game_outline.png",
+   "path": "res/drawable-xlarge-hdpi-v4/btn_new_game_outline.png",
+   "sha256": "cf4c0945a9db79652b59491ad5c36a9728a6f0691fc02018faf4f887fecec86c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    400,
+    100
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_settings.png",
+   "path": "res/drawable-xlarge-hdpi-v4/btn_settings.png",
+   "sha256": "bb8a27ae4e6385d504aff16702dbdb095ba7bae6c969b6af8fd5d57a51f44dd7"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    400,
+    100
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_settings_outline.png",
+   "path": "res/drawable-xlarge-hdpi-v4/btn_settings_outline.png",
+   "sha256": "d1ff396858b4b59335fb3e5f1f279e484e956c2cb28468e8e831a3d331ff19c5"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_back.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_back.png",
+   "sha256": "a9445d5f2f6d96e57289ea76115ee355305c70363d98b21ebaf5e4c8efcdbbc1"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    40,
+    40
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_badge.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_badge.png",
+   "sha256": "57dc951725fa65a5b99dbe6ea303c180bccff2694961e314640922eabceb452b"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_0.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_blue_0.png",
+   "sha256": "ea7a5e59ab637d0d007686ea5a7c2dd3b59caa5b499d4f1992161df07f326568"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_0_fuckyou.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_blue_0_fuckyou.png",
+   "sha256": "15ddd79e55871543481c03769cb18d351642008e94d45468dbc2f70d79b6f58c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_0_fuckyou_ff.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_blue_0_fuckyou_ff.png",
+   "sha256": "94349261d032470df5a821e59862441688008abab10ec03d32c2d45f7a690154"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_1.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_blue_1.png",
+   "sha256": "ccb289961c0c134d05237d04a7d82c9ec608fd7455ce5625877518a2b90a70e2"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_2.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_blue_2.png",
+   "sha256": "8086f028b2f839c9c74f5118269c9235a2b72817c82b0dc36dc07f3c2f854731"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_2_shield.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_blue_2_shield.png",
+   "sha256": "e3da0f28a31a9752bb94b14c6525b33675dd3499976b9eed7da117f27789e890"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_3.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_blue_3.png",
+   "sha256": "a584f78e49499475c9b740cf1cfbc7a5ac92c4ca5c6bdd39825574312a5b3a18"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_4.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_blue_4.png",
+   "sha256": "8e137f3ad59ac02f32d5b496fcdceef1da7c502a482582a6a33b2106f8b755a5"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_5.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_blue_5.png",
+   "sha256": "bab11649bdcb49ed61ec2ebd172fc8bf6c083ed325fc412105204bb59178d482"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_6.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_blue_6.png",
+   "sha256": "17b1cfd42cbb912042bfffbcfdb6dd021406bad4b407a506223ecbd5cebeb32c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_7.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_blue_7.png",
+   "sha256": "b6a84597c94783c439cd1a642011e49cfbe7e4b5ca6631a91495d872cf3215bb"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_8.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_blue_8.png",
+   "sha256": "d8c1366d4f0979ee5c329238877b8bffc4ed69911f171c38527943e0eaec2b72"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_9.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_blue_9.png",
+   "sha256": "9d72b9d209b11c94d01ceb6239eb4d8dedb51eb654c3e8641055dadf3828314c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_d.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_blue_d.png",
+   "sha256": "e4dc94710a8fabc9a549175912ca60c4b86681909f16a271252181079547c69a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_d_spreader.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_blue_d_spreader.png",
+   "sha256": "43ce584d78ea864fa0168f9ed198eeb5286dfec2db3b528f447234ceec6450f9"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_r.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_blue_r.png",
+   "sha256": "538a92fac4cdccfdb500a66d4090e3602c5f20ee878bf97aa87711b846a48278"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_r_skip.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_blue_r_skip.png",
+   "sha256": "ccaf5595b631c66cc1bd032129e3bcc666714daea485e73a1c7bc138bec3f156"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_s.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_blue_s.png",
+   "sha256": "23d562a5751ba47e1f06c07456fbbda749f9dc8721f400d4dc70f30e8d46dcfe"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_s_double.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_blue_s_double.png",
+   "sha256": "25feb9d346a7efdbd04e3ed310faf099e27de48e68e660392df9c6ad1de841d7"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_0.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_green_0.png",
+   "sha256": "3447d49299090fe84863dd3d9e222a8c82bc33f7e4a8facbf67945091f2ffab0"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_0_quitter.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_green_0_quitter.png",
+   "sha256": "b1c24a6a87cdeb4e64cacd1af8c205b1b2c7065d53473c851553f1b3029a98fc"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_1.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_green_1.png",
+   "sha256": "ae61ca4cbc88a4385b768315d97cd86bbc4794153d516a9db77d8118bcb65270"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_2.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_green_2.png",
+   "sha256": "83d4a7cf45e255c3e258e9317dd3d69e7eb6cb527ed808c10543eb928bc113d8"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_3.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_green_3.png",
+   "sha256": "f32fc2101b6c3144b6733468a5dd80b8105ddd58f96ed8d64bab74289de29abd"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_3_aids.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_green_3_aids.png",
+   "sha256": "469e685e8f268d4ecd00d8b5e61eef4e5600fd218675b25e23e797b011d8a883"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_3_aids_ff.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_green_3_aids_ff.png",
+   "sha256": "59cc0cb7ebb745ad31e89b311df3e645e6feff6657fa9612fbd132520cc96557"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_4.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_green_4.png",
+   "sha256": "7ef7e66fe60195ec3abef59665d2cb868eb5973bc9cac04f3f265f3c07bb32e2"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_4_irish.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_green_4_irish.png",
+   "sha256": "978f7c4bd3069c0cf5299ca40075fedf8049a72b51bbc0397079de56ad032145"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_5.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_green_5.png",
+   "sha256": "9d68672db18abf411ccc2ef638f7fcf0c18463acf9cd1d9a447aa20c12f8408f"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_6.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_green_6.png",
+   "sha256": "ea6a25e4d4326cc4a6068e6ae7682a653c00f9358abea8ba3bfe19c67a8c8e55"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_7.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_green_7.png",
+   "sha256": "d50234f2c91fd19ed41294d6012033874950ef71d9767209715cddac5274d2fa"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_8.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_green_8.png",
+   "sha256": "76ec86c68fdcaf5e2cea90080d9def98b9ecd586e2a4d1a1be9ebe455920609c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_9.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_green_9.png",
+   "sha256": "ecfe1e40d2262954934fb5b30a2eb9704c89d127fe27fe4c259fe25ff1df2b90"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_d.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_green_d.png",
+   "sha256": "207bff1e0336f0741fcee0edf1b1a29bafe02ddb1c5a7fa38c3bfdf74a1f0d0e"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_d_spreader.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_green_d_spreader.png",
+   "sha256": "ec12e0c681d3001cd3ece0ec09f4104934f966d5232c873ea482fa9f6efe827d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_r.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_green_r.png",
+   "sha256": "2fda915586d54c1a4423e25ca09cdf1b11625e5996c8df0c2bd162e42cefd9d1"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_r_skip.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_green_r_skip.png",
+   "sha256": "b69cff8cbe6587b7386a5292e4b494f937154b13813e7f8b31d6cb061529be7b"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_s.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_green_s.png",
+   "sha256": "a7715315d1c706244691d34a815dbdc63687adddd85a1a53ad0af4a2af74478d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_s_double.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_green_s_double.png",
+   "sha256": "895ddb5c6ad5c37e53356c7dbd6ab3dc62a486e8851a7f36e7ab10e03ffe2565"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_0.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_red_0.png",
+   "sha256": "87a2a8dde9c768e2921df8cc8206e140ff183d52ef743e68b994166a5da53d42"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_0_hd.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_red_0_hd.png",
+   "sha256": "0b41b8f58ab10cfc06609115a87d95484d742df22174567644d7cfcb697c6f23"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_1.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_red_1.png",
+   "sha256": "259208ffc721df5a8abc7cd535af08cb7e1210620eabcacc7ecf1ac70d898c47"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_2.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_red_2.png",
+   "sha256": "d3e768917422805b8fbfa8efb5c943488a5b79ae6ef7e92208367e377fcc51ef"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_2_glasnost.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_red_2_glasnost.png",
+   "sha256": "14cbfbfda75766cdae87258bb69ac5ce795f352c485ff717575b26339e3dc2c7"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_3.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_red_3.png",
+   "sha256": "3020a4fdedc4756ec4c0600fab37c529059932487cd448673355440d4429b67c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_4.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_red_4.png",
+   "sha256": "86192cd04067caa27b7555e16b5ec7b43f0c610b65ce2e15ddd81ad6f7de4e44"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_5.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_red_5.png",
+   "sha256": "ef356d62a3a1df2a973dd76c99abd61ed54c1025bae37ae40203bbbcfcdca211"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_5_magic.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_red_5_magic.png",
+   "sha256": "1706bb9f296f9b737c67a32eca4e7e2a928ca5b8465ca13dd1d4ad87bd9cc0f7"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_6.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_red_6.png",
+   "sha256": "ef995a1f59583222d79b261b7cea0eab787d92757afe0d6158bc6f13322320fe"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_7.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_red_7.png",
+   "sha256": "91db8dc5006771ed1bc76f1efd6db92d259ac1452a2f7b8da3bada4a885c741c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_8.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_red_8.png",
+   "sha256": "d0e3bd15ca8dc82eae417400bb24b2384ca5a64026b4abca40522ea80004b43d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_9.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_red_9.png",
+   "sha256": "fa96e8080e7bf40fd2dfec048fe4696b3f318c7c9c1b6397d58ab3ee19b8575f"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_d.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_red_d.png",
+   "sha256": "ea8e3ea94a6728fce4c447e631c25549f637ee4f6e1ab7b2ed418a0a48f5cd4f"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_d_spreader.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_red_d_spreader.png",
+   "sha256": "d8b9d30e82671be7c4232d02a255f0633b1cecc887a2f3d0c17c84abbbb80470"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_r.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_red_r.png",
+   "sha256": "b57cbeede9fd9e36b07a7872edc1e76db5a73edf0dde90114fa8192f8d526032"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_r_skip.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_red_r_skip.png",
+   "sha256": "e5a3c70ae7f5da8126ad74df745f7fc8ef096023b41143531a970e14ed229b5d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_s.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_red_s.png",
+   "sha256": "f0f8045aad37d70bc1df4bfa2b724e76bcb36b7b08dafaf1197b50029287bf22"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_s_double.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_red_s_double.png",
+   "sha256": "b84b44c6ffb5db99ec6a569279987c636438b093bc97cd2d22e190f63ea7501a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_wild.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_wild.png",
+   "sha256": "1219ebd5b865c2cafbdba269299ebd0ddd317684a547841af50b5467fc59347f"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_wild_db.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_wild_db.png",
+   "sha256": "8fd28932c604a78f6712573bd90bbb1072b8c026584f126995da830691cb869e"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_wild_drawfour.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_wild_drawfour.png",
+   "sha256": "7a0bfa6133dcb608e649ffbf9fa8504bc0718bca14c5e10f47e9bc659be97725"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_wild_hd.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_wild_hd.png",
+   "sha256": "e583281f69bb747652b2fe1198783e619f45ce11e6ff8899d1f2717f0853417b"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_wild_hos.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_wild_hos.png",
+   "sha256": "e05baca6c88cc9a66799d5bbfe1aa5357adbcc4a2181b6a1184adf56b523cc07"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_wild_mystery.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_wild_mystery.png",
+   "sha256": "7a3b4b19fef82c07d5508188f4cac8f1269d3f5260d46c185f7c90054c5e069a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_0.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_yellow_0.png",
+   "sha256": "e040bb6f89225fc1538f94de52874f4fb60ca8f96e3d3b460cc5fea0a0ad0543"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_0_shitter.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_yellow_0_shitter.png",
+   "sha256": "54e4a385204c91c24b3789794d2128705275faa7982ffff97ee7e52511fc9ed8"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_0_shitter_ff.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_yellow_0_shitter_ff.png",
+   "sha256": "3763d9838248f3679da1ba22ec7a730e84b23e6f1c58fda312cef3a10bfb630d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_1.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_yellow_1.png",
+   "sha256": "5f91843ece5e07ab8582d539b4f202aa05c511c560aff6bb34007fe8e543601b"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_1_mad.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_yellow_1_mad.png",
+   "sha256": "68f5baf011cc4318b2b4fa5e643fa2f3a669540d6025e86b4b9db609b1799282"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_2.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_yellow_2.png",
+   "sha256": "84f999e6667e9a1a008b0198cca49f1ce33e777bda5cbbf1c070e6c38bf56830"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_3.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_yellow_3.png",
+   "sha256": "1ed98cfb1b5947611889d0f262113842e872f02617630e60bd1de0edf1511460"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_4.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_yellow_4.png",
+   "sha256": "e5064ba50fca7743242734e4a3de608f273879c51e541936c818208fcbc708d8"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_5.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_yellow_5.png",
+   "sha256": "3066ef2b326c62228ac99283e2465a02f63abb7a90dbf34992a8028261b0e036"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_6.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_yellow_6.png",
+   "sha256": "aa0d35bed7ac2a416a35839d5a1b5a5f234cf9025f923a99fbfdad67a7c49400"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_69.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_yellow_69.png",
+   "sha256": "81c996d5694a5b87410f1b6f34290c14e23756d1fb68d39bef5c05687e7a1ff2"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_7.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_yellow_7.png",
+   "sha256": "7939fff806de5337c2f46cd73c7bd44a9d74cffacd916f647369de6cb00c3b30"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_8.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_yellow_8.png",
+   "sha256": "aa30783edaebea9b5562a0e37137f589bf2b9954c712cf3fdd240fd11cf5a016"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_9.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_yellow_9.png",
+   "sha256": "81162054374be409654f43a198ba7191208d8cd196932d0ac75a2803fa30f0bf"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_d.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_yellow_d.png",
+   "sha256": "562e529f387bbfdd8018a459a6b5005a55298d211d70a7df9ca26df4e61065e4"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_d_spreader.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_yellow_d_spreader.png",
+   "sha256": "c311595499aaab4c9a30232d537c445abe0c51b1518865012f7ae7d39cae27fd"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_r.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_yellow_r.png",
+   "sha256": "5429aec0e6375fd8983d406a2b62b4a0f4e4175220b01a1f0ea88c38fc3736c4"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_r_skip.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_yellow_r_skip.png",
+   "sha256": "2d15b79bb35a27e8f94cab454a7e8d2a139d00621d728d8519731675f7c42a96"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_s.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_yellow_s.png",
+   "sha256": "c88a9c85349ce51dbe4f48427e19b71deae43b8709e9208d16959f0cf3d667fa"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    103,
+    160
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_s_double.png",
+   "path": "res/drawable-xlarge-hdpi-v4/card_yellow_s_double.png",
+   "sha256": "6d5a823fb951a2662969e5e188c3233dec279e022e181ae3a884ff59da0f75a3"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    106,
+    106
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ccw.png",
+   "path": "res/drawable-xlarge-hdpi-v4/ccw.png",
+   "sha256": "db1c196b4db445fc070bebe7e7517feeb592ec67340c77a4a4089b8ed551618c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    106,
+    106
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ccw_blue.png",
+   "path": "res/drawable-xlarge-hdpi-v4/ccw_blue.png",
+   "sha256": "f2e183d6849ba024c26ebc9887888e5ff6e9dc9169f7a17e22f6216f7ebe0f84"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    106,
+    106
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ccw_green.png",
+   "path": "res/drawable-xlarge-hdpi-v4/ccw_green.png",
+   "sha256": "013e85a360620445efb566a6f77fccdf2ab6f7567c5625cf0d70d0ee9b34e018"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    106,
+    106
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ccw_red.png",
+   "path": "res/drawable-xlarge-hdpi-v4/ccw_red.png",
+   "sha256": "65ccc95c3f502831be5a4877a497d15e30141b3f6714ce93ec3dfedd306e5fda"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    106,
+    106
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ccw_yellow.png",
+   "path": "res/drawable-xlarge-hdpi-v4/ccw_yellow.png",
+   "sha256": "63e8be3d9889fcafb7814dc13359670096417735d7140e91f9c0c5570bd2bd3a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    106,
+    106
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "cw.png",
+   "path": "res/drawable-xlarge-hdpi-v4/cw.png",
+   "sha256": "e5d9ee13c68f2d7c6b5ef89c5078f1b9d2c578914e0d982bae06fd1982e51f0c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    106,
+    106
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "cw_blue.png",
+   "path": "res/drawable-xlarge-hdpi-v4/cw_blue.png",
+   "sha256": "8b45512dcba1554864ac04fb1b0e8b074e96dc6451cd831ecae3059380d3aec1"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    106,
+    106
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "cw_green.png",
+   "path": "res/drawable-xlarge-hdpi-v4/cw_green.png",
+   "sha256": "b474ef41405a50bb4e0db9dbb90488d1b30c55d85884a12d53a04dfe0157d1b9"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    106,
+    106
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "cw_red.png",
+   "path": "res/drawable-xlarge-hdpi-v4/cw_red.png",
+   "sha256": "ac4b75183c08d5af9197432e1242b8fe7df21c825b993d74dd5dd6f992de2cd5"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    106,
+    106
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "cw_yellow.png",
+   "path": "res/drawable-xlarge-hdpi-v4/cw_yellow.png",
+   "sha256": "89c66d58cdebb86d3d3f84cafd364dd021e7f626ce5b7ca251273530e6b1c021"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    53,
+    40
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "emoticon_aggressor.png",
+   "path": "res/drawable-xlarge-hdpi-v4/emoticon_aggressor.png",
+   "sha256": "c21a6085e0268252bd9897749d1ab805c2ade18db80f0197212fc5c9a0f16074"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    53,
+    40
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "emoticon_victim.png",
+   "path": "res/drawable-xlarge-hdpi-v4/emoticon_victim.png",
+   "sha256": "735b77de308166bb2fd9fd0933b15bddf015273f80c7d6cd3445903677ddc538"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "icon.png",
+   "path": "res/drawable-xlarge-hdpi-v4/icon.png",
+   "sha256": "5c25139fa397221dda937ce1f9018aebbc200d75c956de0ed6a0346871458887"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_blue_east.png",
+   "path": "res/drawable-xlarge-hdpi-v4/player_blue_east.png",
+   "sha256": "faf9a2fc04947db793687df91c44622f815580a07c578fcbf42d868e4b00228e"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_blue_north.png",
+   "path": "res/drawable-xlarge-hdpi-v4/player_blue_north.png",
+   "sha256": "9bf703e88ac1087b89f3de2393fcf72e3fc86dedbd4a99a1bba7cf825e9d518d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_blue_south.png",
+   "path": "res/drawable-xlarge-hdpi-v4/player_blue_south.png",
+   "sha256": "028c07958d824ed25b2b6ac9fe458d20f4972469670f4e3d7f9b958bd68257d8"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_blue_west.png",
+   "path": "res/drawable-xlarge-hdpi-v4/player_blue_west.png",
+   "sha256": "324d29fd26508988714745af10a8e629e08d32516c9c960600d3d8ff127fefe0"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_east.png",
+   "path": "res/drawable-xlarge-hdpi-v4/player_east.png",
+   "sha256": "009825b8d6d2e6924597dcb814d9377b560364de08c3e6051251ac97093bd6bb"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_green_east.png",
+   "path": "res/drawable-xlarge-hdpi-v4/player_green_east.png",
+   "sha256": "a0777438e2f4cb5c91c7a0dffdb91e7e56b77592e6d173dbf24592184bbc17fb"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_green_north.png",
+   "path": "res/drawable-xlarge-hdpi-v4/player_green_north.png",
+   "sha256": "b52e4760de75e1f1cf4db4b26e6c51746e178ef86b4d43ddad0f3c2c6e8e975c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_green_south.png",
+   "path": "res/drawable-xlarge-hdpi-v4/player_green_south.png",
+   "sha256": "aed2ae8955a6510822436dec7908c9a2859ecd7907d63b30439999cec9f727d3"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_green_west.png",
+   "path": "res/drawable-xlarge-hdpi-v4/player_green_west.png",
+   "sha256": "7fb5a5c6993aae1d3ff99c872d241fc2b5ac22c747998dc7283b35dcc20c9612"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_north.png",
+   "path": "res/drawable-xlarge-hdpi-v4/player_north.png",
+   "sha256": "58ffb6b0cb18d939b19bb5d5165b135b7c70e02b0607b1b783b26e0138219fc1"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_red_east.png",
+   "path": "res/drawable-xlarge-hdpi-v4/player_red_east.png",
+   "sha256": "ebc0af348f04000ce6e4a4bac65adb476255fb809a1a5894642436862e61d1c3"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_red_north.png",
+   "path": "res/drawable-xlarge-hdpi-v4/player_red_north.png",
+   "sha256": "a066fe4de2871776177acea299bb9af2880d870a6bb79b344c7353340c0a21c6"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_red_south.png",
+   "path": "res/drawable-xlarge-hdpi-v4/player_red_south.png",
+   "sha256": "05565e5cc1ce24b781894d174b8d5227cb45409f610e0e65ba3a61ce21a6365a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_red_west.png",
+   "path": "res/drawable-xlarge-hdpi-v4/player_red_west.png",
+   "sha256": "a8880f4db389c52263a16a9278935d36882a440c90738a2b2131d196eb0e68aa"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_south.png",
+   "path": "res/drawable-xlarge-hdpi-v4/player_south.png",
+   "sha256": "80cc2b4db6f4176bc36df6ae940286012e0714d907c99892642e2a4c75e6d709"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_west.png",
+   "path": "res/drawable-xlarge-hdpi-v4/player_west.png",
+   "sha256": "b7aa0a079b1f61668e45b1b55ac0a5ecccc0018f91ea178f034358627841ae86"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_yellow_east.png",
+   "path": "res/drawable-xlarge-hdpi-v4/player_yellow_east.png",
+   "sha256": "4b32f0e9b55128c3e4f77da3964342ca47b3638ab11160370d8931a6d001bc93"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_yellow_north.png",
+   "path": "res/drawable-xlarge-hdpi-v4/player_yellow_north.png",
+   "sha256": "f7e407c2da5db97b1a7e6ddc9b058c4fa595c126da699084f8c00ff5552c54b8"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_yellow_south.png",
+   "path": "res/drawable-xlarge-hdpi-v4/player_yellow_south.png",
+   "sha256": "719e186e8b432698f2a4cbbb545a962d36df2d4fb6220fd9a8af979a0cadc01c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    39,
+    39
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_yellow_west.png",
+   "path": "res/drawable-xlarge-hdpi-v4/player_yellow_west.png",
+   "sha256": "1854569174591f92085cd2c6a9f619b105e0cc315b3921d0d80e7d37186b83bd"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    480,
+    800
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "splash.png",
+   "path": "res/drawable-xlarge-hdpi-v4/splash.png",
+   "sha256": "c4a4dab9bc5ab73d21acef4b168e1d15596cd4704d7c78b66739e072df28c614"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    800,
+    480
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "splash_land.png",
+   "path": "res/drawable-xlarge-hdpi-v4/splash_land.png",
+   "sha256": "69a6d09013c3f3e010ce7830829d543d0fe628838bda2b7ab81427a708e27c7c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    480,
+    800
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "table_background.png",
+   "path": "res/drawable-xlarge-hdpi-v4/table_background.png",
+   "sha256": "c610a4bcd31c136da62f9b78e02625867086ea9a6739fa5df5ea980a8cac4f6a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "winner_east.png",
+   "path": "res/drawable-xlarge-hdpi-v4/winner_east.png",
+   "sha256": "96cf2f04dec8a58922df59eee2b8f844d2a86ca84ce20c46c9d36d7e0ee9f822"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "winner_north.png",
+   "path": "res/drawable-xlarge-hdpi-v4/winner_north.png",
+   "sha256": "9dd3c821def97a3504e0e6defbd050a78318f30c5bc9aed908015e2875ff45cc"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "winner_south.png",
+   "path": "res/drawable-xlarge-hdpi-v4/winner_south.png",
+   "sha256": "6fdfffa7d087b602bb3d9e09aa9f9a1b266d53c32fdff723e3323cf43b37b40d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "winner_west.png",
+   "path": "res/drawable-xlarge-hdpi-v4/winner_west.png",
+   "sha256": "04e1985ef237a63fe9a9a5aa143bb5505e2d81bfcc298fac4945da2058cce17c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    75
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_about.png",
+   "path": "res/drawable-xlarge-mdpi-v4/btn_about.png",
+   "sha256": "a7ee9f2d711ec76fcd5fbccb4b105201020b6b20fbaa5733470ab2ffb3599fd7"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    75
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_about_outline.png",
+   "path": "res/drawable-xlarge-mdpi-v4/btn_about_outline.png",
+   "sha256": "590319a7ae96d0a43099d6846ca6e2ae186af2ba2539bdd9a4c0932e12f17789"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    75
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_continue.png",
+   "path": "res/drawable-xlarge-mdpi-v4/btn_continue.png",
+   "sha256": "71476ccac7677a07da8b7c352e15abd4d319eace87fadbd888768ffc5cca673e"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    75
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_continue_outline.png",
+   "path": "res/drawable-xlarge-mdpi-v4/btn_continue_outline.png",
+   "sha256": "1908ed8f5e92528be8470357097275fdd581d95f393d6988afaa43edc83bb3ba"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    75
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_exit.png",
+   "path": "res/drawable-xlarge-mdpi-v4/btn_exit.png",
+   "sha256": "710758bd92292c4c59ef898f05f9d6c4fbd1ee0c2945e4b898b9a784052836d6"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    75
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_exit_outline.png",
+   "path": "res/drawable-xlarge-mdpi-v4/btn_exit_outline.png",
+   "sha256": "0bdc358c3485a90da800991b0b04550dbf843f1ea1175b4b99742577c0b93deb"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    75
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_help.png",
+   "path": "res/drawable-xlarge-mdpi-v4/btn_help.png",
+   "sha256": "d3b5ab0c57f9651a879e1a99da854f648e449efd629e7121ba0230293dc7503d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    75
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_help_outline.png",
+   "path": "res/drawable-xlarge-mdpi-v4/btn_help_outline.png",
+   "sha256": "52aaa68e5ae2079da5597a2431df77e65cad4325dcfd0b9d1a5961f2b6b7b686"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    75
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_new_game.png",
+   "path": "res/drawable-xlarge-mdpi-v4/btn_new_game.png",
+   "sha256": "4ad4e2ffd3b4ba12b9c6ffca91a09a17355c58664ddce499aec31ddf54c70b7c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    75
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_new_game_outline.png",
+   "path": "res/drawable-xlarge-mdpi-v4/btn_new_game_outline.png",
+   "sha256": "27320a24cab1b6d6cc62e0b98093e47f62808ebac918de37e250a05d759eddd2"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    75
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_settings.png",
+   "path": "res/drawable-xlarge-mdpi-v4/btn_settings.png",
+   "sha256": "fb0614114270bdb976793b2fe93f23081aa30c59e8dad01d73329e398901f809"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    75
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "btn_settings_outline.png",
+   "path": "res/drawable-xlarge-mdpi-v4/btn_settings_outline.png",
+   "sha256": "5fd9bd060afe95152e1927169a42665e56ee73d00c8a826f6160c25aba77f1d9"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_back.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_back.png",
+   "sha256": "2aec3e2e783a94346acd96f685d2e9e40fcebf6100a8a60f25fdad54dd0a2b22"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    27,
+    27
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_badge.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_badge.png",
+   "sha256": "02602e3414ed40b65557611767f7e8e398d49e4b4d54ff0f0593a899cf7d6f38"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_0.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_blue_0.png",
+   "sha256": "59a1a022be5619049ff8ad33e5a6a39712ae3dee4090229130304e9f499b368d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_0_fuckyou.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_blue_0_fuckyou.png",
+   "sha256": "3d7f79e2e05b8c8413a7cbf16f9bcfb0ad8c509330ffd20149bd3acb27700f59"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_0_fuckyou_ff.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_blue_0_fuckyou_ff.png",
+   "sha256": "00120f04594886b458aa5903ab64deda3bb3c15c4b7fbded551815f42aedeec5"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_1.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_blue_1.png",
+   "sha256": "f91c9ceb747fdfec5ba15d49037d811dcc1814005f7c6160695807b4f874f4a9"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_2.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_blue_2.png",
+   "sha256": "223b4c6782a5d6c680c2b3ec747eba9e82d6090e8d4eb9e46c3da91b288dc95c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_2_shield.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_blue_2_shield.png",
+   "sha256": "df252f12c2e4f54e8164fb8ac658149a6efd1fd8a8cd049ee6135fa9e1ecf1bc"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_3.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_blue_3.png",
+   "sha256": "dec8076b08a5bbc35a5fe4536f9a6000aa6ff5a30ff7fdf7b22f5eaa1a0d98e0"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_4.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_blue_4.png",
+   "sha256": "5840cb440645de1d8952902b1d00e0d93e11493a0fb40a1782ecfb0881462749"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_5.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_blue_5.png",
+   "sha256": "044516e6ed8e290e80b8e3dd510e2784e8c716df5925dd95629b27b97ecbd947"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_6.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_blue_6.png",
+   "sha256": "75087633d4e39e614b6a3fc4e4aa2a13d6d4c2d24a5d5d303d6489275b3e99b0"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_7.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_blue_7.png",
+   "sha256": "d820544b13865004aef58ab1c6a6085825d24282f756f5461b24168bba97f2dc"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_8.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_blue_8.png",
+   "sha256": "2e8d748306c32dc7507183edc6e33af4a3cb68f9d1b6696e5af9f21868e0b113"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_9.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_blue_9.png",
+   "sha256": "3b9bd4e970872de79ac79eb5f2955bffe9bd3860927a5ce7eff138d06de9e29c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_d.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_blue_d.png",
+   "sha256": "f45951e7f11f4cb95aed1870a7e579c7294f7541377731e82a5a1b1776038326"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_d_spreader.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_blue_d_spreader.png",
+   "sha256": "670f8159b717348588e7b49445532a2a80bba7fe34e865bc5aa3efef41ec905d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_r.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_blue_r.png",
+   "sha256": "d26eff6ad7ce7514d4e75b37b17a386d01cc06610158ca55352ef2cfd27f756c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_r_skip.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_blue_r_skip.png",
+   "sha256": "07844a16c525ef2e787e97dc9f790c4ef48f189d75b0ff3b458b193e3ef9ef88"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_s.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_blue_s.png",
+   "sha256": "0e69ad6ebc4cc748299dec143512fd9970d728b6abc6052018db263c44c3b807"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_blue_s_double.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_blue_s_double.png",
+   "sha256": "4b5b77dbac3c4d1dd0dd4b1b7dce1a1ca7e26400158a781c085da7b09157b20c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_0.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_green_0.png",
+   "sha256": "061d2202931466c1f72e941b37465a9b09dfcb755b31c1558ebe62bfc09e8cbe"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_0_quitter.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_green_0_quitter.png",
+   "sha256": "641902b13cc52cef4400ff3c7a612be4a9264bafe471bab374f751721d59b13f"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_1.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_green_1.png",
+   "sha256": "c69653e68d92d98879ff2b01a543f6e2e5b8f40af3da634b956f1b1cae477d53"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_2.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_green_2.png",
+   "sha256": "02578b6c71a703f7f96dd902cca45d717d9609648a7bd0844ab9f1d1868e9d09"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_3.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_green_3.png",
+   "sha256": "3d10e36f4be84abe6a97582c1ff57c150edc52d8643e7961267c340fd1dd12d3"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_3_aids.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_green_3_aids.png",
+   "sha256": "0fdf3309ef85cc132c770e7098aa5058d9ae2221d53178d992767b6ef3c9aa99"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_3_aids_ff.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_green_3_aids_ff.png",
+   "sha256": "6957a51fe1e8f00feddb6887cc3207783e154beafac831609a860e9a9a15ea3e"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_4.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_green_4.png",
+   "sha256": "605ae4b275fdee3bca0f30764021adb9280952be41fde6069b410d4d792879b8"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_4_irish.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_green_4_irish.png",
+   "sha256": "0fffe89d34109a845ebaa0e8f3f151f41e38fa00a99035caeec6231af3a8e75a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_5.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_green_5.png",
+   "sha256": "74dc17a94ce455ffc2fe83ddfd6540e433612b314b7c04628b74d5ac099fbd50"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_6.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_green_6.png",
+   "sha256": "c91439211fb676b2c86809c6ec49e269963a1798513783070b8fb608b83a5645"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_7.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_green_7.png",
+   "sha256": "77965bdf89aa7210f47fca012eb5aff8c9d2f79a9ccf46cb740209cc30a71a26"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_8.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_green_8.png",
+   "sha256": "85efebf040938275ddce8058a777d5e85d364dc953bc54d297f1dcc4d3f76f0d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_9.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_green_9.png",
+   "sha256": "931fa9c445ccf2f42c23b6159f8a1ebbab293be8756d628a96834c2769f2ff26"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_d.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_green_d.png",
+   "sha256": "b164581bfa98e4f85d7aa3b0092862e2f511df79b53d5114587b11346c876e42"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_d_spreader.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_green_d_spreader.png",
+   "sha256": "5cb1fec59859438a3d63868d81bf91d8305b4fab341eee3097d6cdfb5edd72f6"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_r.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_green_r.png",
+   "sha256": "beb02f4ea932910f2b9e56ec7bf5e3ef78e2e5b5135246d71135b1d88cf585e5"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_r_skip.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_green_r_skip.png",
+   "sha256": "4f65b4d0a93b320aec92bac22b921d5da354a18a3cc0e62ddc4ab526b4e048f1"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_s.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_green_s.png",
+   "sha256": "ad3c3a8a4c53996eee7d665ef26e6958ed2ce738bf97220a8fb5d3cf208d340c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_green_s_double.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_green_s_double.png",
+   "sha256": "6940526f8e314a570c994f261f044821a48f0d7e574f63d1102ffdabcc950af4"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_0.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_red_0.png",
+   "sha256": "3c062cb0b4fa32f8d98f7d04280b66c0a92a13a640bda47bc9c006a77d83d662"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_0_hd.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_red_0_hd.png",
+   "sha256": "23f3b05dc06c0b26488e436e32e92c7e153aaccfb1ccd5b96cdd739281420d5e"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_1.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_red_1.png",
+   "sha256": "92d6e64632eb4aa888b551de4295d794f78a870a2e30c6a64f1a884573ae8685"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_2.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_red_2.png",
+   "sha256": "37e53908641a33b683565104d26bb361c349d3b141dbd52274298de70f2ba511"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_2_glasnost.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_red_2_glasnost.png",
+   "sha256": "e3d37e3a82b21b2c092236180997abc49474aeca2a8f9f6cb2f03c10b3e23ee3"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_3.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_red_3.png",
+   "sha256": "de8ae243d13741b8f6eef64573b6a9f3beecc13198ea6f7d396107d1cde8b764"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_4.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_red_4.png",
+   "sha256": "51bd0a6dae78bf8a3a514ef7236bb93c2cf6b78a02639288b48f146100bc85c9"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_5.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_red_5.png",
+   "sha256": "c993a29de0621e4673ab731c3c7bdb705b5b40f28165b984eea518365e84edef"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_5_magic.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_red_5_magic.png",
+   "sha256": "b34ab6ee11a646c31d6502279e0ecc4ff9213e3c4faed9ae06da500bd83a26fe"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_6.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_red_6.png",
+   "sha256": "ccc9c86283f02dcc59ef687c3cd4226601f5a19a75d9acdf23a522436b6b0f46"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_7.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_red_7.png",
+   "sha256": "fae946279f2ae44218c5830f3c7a23cc5f260b5e196ba40ba0290c7cc919e7b3"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_8.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_red_8.png",
+   "sha256": "7fb9103b9af568b9311d3a8917ae07a95afee1e76fbf967032fc6691ffee8a69"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_9.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_red_9.png",
+   "sha256": "f9d39dcf284aa7fd61293293fe974b8a52b2ea1ac8b72d91d2b31ea61c3515d4"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_d.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_red_d.png",
+   "sha256": "fb2dd218a8185f900a54431b9b52c2ef1442a604743d8e81f61d77b54d0a5bd5"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_d_spreader.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_red_d_spreader.png",
+   "sha256": "67d9dd4d1365ba6e7d84dcb4a791ffb9de40480cbf40c979b215f5fa0c91fb58"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_r.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_red_r.png",
+   "sha256": "0f9c8bfd0ec97cf58b05263139644614f6fb53e0de07614c4220be5b5e87ba3d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_r_skip.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_red_r_skip.png",
+   "sha256": "c7ec857396394ab56aa30dbf0f1d7bbd5464bd2bbef9b9b3c792d2533d891ac4"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_s.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_red_s.png",
+   "sha256": "551c713f56482ea0dcb12ca95464adf317de10a7167a62b74036a6e273576b8b"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_red_s_double.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_red_s_double.png",
+   "sha256": "ca132973abed0139a684d34e4348f00d90eb361106305b33a917b04cddf06fe2"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_wild.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_wild.png",
+   "sha256": "40e3856ea94f62562b7daa35a19df66370190f77a8c4ad992feb2496756cc0f0"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_wild_db.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_wild_db.png",
+   "sha256": "f0f41b03de873d4b3cb5912f66c331ba504e1f935c856c6343dc46a31907fc96"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_wild_drawfour.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_wild_drawfour.png",
+   "sha256": "0fee5a2a0e144d054497b93a08e9bbfbf7406852a018a4ca82b502f9fb7392f7"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_wild_hd.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_wild_hd.png",
+   "sha256": "2d5d121ac4dfe377e85d92fe7618ba152e58f0eaf1e657c48c05a26a0a177647"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_wild_hos.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_wild_hos.png",
+   "sha256": "7cdf9945e248c8e37366955cb38b13603f62ca1b0d76e3383e0d175fb20e33d1"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_wild_mystery.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_wild_mystery.png",
+   "sha256": "81d2f1dab7003c8716e9a4f55b9efa8312198c87c7db666863ceb649c12a8289"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_0.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_yellow_0.png",
+   "sha256": "c99609b5e4af3a6628ca8a34de7cf319f9f32998ad02587527b35d1d4ac7e96f"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_0_shitter.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_yellow_0_shitter.png",
+   "sha256": "bc32c8cc19b3d44ec9963af1d9d11ed133109a99d41c02c9bf6ae5ba14a9e51a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_0_shitter_ff.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_yellow_0_shitter_ff.png",
+   "sha256": "462c3300ae4479e3226631a9edc7ed950fef01cdea3e66441d155380062c3f1d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_1.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_yellow_1.png",
+   "sha256": "e5e0c511de7aa7ff7ab219ed16d38fdd5ca8f9fa751ebfe45df3bd4100d986d8"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_1_mad.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_yellow_1_mad.png",
+   "sha256": "51f5ddb5bd637e3f5777e0b3aa6be98d33ae05908745a09fff10c0e9fb99164c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_2.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_yellow_2.png",
+   "sha256": "6208f9ab791cb88dff2774775ea12d37e5280208f27ba326030d302b2cd976b3"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_3.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_yellow_3.png",
+   "sha256": "26531aa7c2c6d50c82f11699fc14ca096f323ab3bdcb09029c8a48f20b47fe8a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_4.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_yellow_4.png",
+   "sha256": "ccf418796c59a1009d0bdf16ee528e82f727dd1cff3a3a4211f7d31e69fe4b4a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_5.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_yellow_5.png",
+   "sha256": "d261879dd6bc8236025adc6d4eaed60b79347037638fb1c6edfe4726b9dae4ce"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_6.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_yellow_6.png",
+   "sha256": "de266f6ed4fcde4c96d9a814e9c61b8e69d0e42608d98987a3b01da046ccb543"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_69.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_yellow_69.png",
+   "sha256": "1640f54461db69de7f08013c739cc3216b568be6b954c12ad35164ceb70ec438"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_7.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_yellow_7.png",
+   "sha256": "b54a37d0440a4fed0208122f9c68915f5a792d0eb42c821e92c24d3d4da753a8"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_8.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_yellow_8.png",
+   "sha256": "8a346ad385e1a04c1c2b0bb44d3a7dad8850426d81bb3d6fe89ef96fcb8f2f21"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_9.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_yellow_9.png",
+   "sha256": "7c7f54252fbfc3dafb4c6971426df631b61eb67751798b386a9b0d328b94e58e"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_d.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_yellow_d.png",
+   "sha256": "0ab6f0de01adbb0961f322684f52e78861209e02cc0dcfe068f1911e8657bce2"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_d_spreader.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_yellow_d_spreader.png",
+   "sha256": "8312597d9e42b99aed399dc2f0a058e466bff31cf7506bf00938a54c2a61686d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_r.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_yellow_r.png",
+   "sha256": "b0481db1416af4625772163bc076fb565e5105bbbc484de7c8d9c2a10a42ee25"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_r_skip.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_yellow_r_skip.png",
+   "sha256": "52bc63a924aa803a8403895543ec96bb2716f90427301e8ab5c525c7a9643cf2"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_s.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_yellow_s.png",
+   "sha256": "7e03a1c64519e23ab2ff6da8ce6b06a3b181fc0a781b5b918f6e3599ab7afd40"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    77,
+    120
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "card_yellow_s_double.png",
+   "path": "res/drawable-xlarge-mdpi-v4/card_yellow_s_double.png",
+   "sha256": "b28afb007a71640c3a4940ec949ade16e6e6a9ab3e73c3bdaac83c2e124d4dba"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    80,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ccw.png",
+   "path": "res/drawable-xlarge-mdpi-v4/ccw.png",
+   "sha256": "3bc7de05a01f1ec0f25a0f5a79ff742b8a83a1c6a181c9eb34f568f171e702d3"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    80,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ccw_blue.png",
+   "path": "res/drawable-xlarge-mdpi-v4/ccw_blue.png",
+   "sha256": "ab5b6b6da188f9fec86ce105f7132fb6541003fd31f0a60c22fd4d7a7785de0c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    80,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ccw_green.png",
+   "path": "res/drawable-xlarge-mdpi-v4/ccw_green.png",
+   "sha256": "7238bf5cd7fd32a2ab3d3c7428ffce304f19f555ff1aceef3eaf7f23876353b7"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    80,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ccw_red.png",
+   "path": "res/drawable-xlarge-mdpi-v4/ccw_red.png",
+   "sha256": "308654aaa3f984844321f5e6fafde42e8a88fffc81723fa2e8caf2889cbc756b"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    80,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ccw_yellow.png",
+   "path": "res/drawable-xlarge-mdpi-v4/ccw_yellow.png",
+   "sha256": "a53f431c812bcf8d832a12df1e3e1f6dd04acaddbdab4b88dcfa770f340a1253"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    80,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "cw.png",
+   "path": "res/drawable-xlarge-mdpi-v4/cw.png",
+   "sha256": "c761bc977883dc45cb8b0b3139a3db37091d6f76aa92d3943d59f66e7aa5be62"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    80,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "cw_blue.png",
+   "path": "res/drawable-xlarge-mdpi-v4/cw_blue.png",
+   "sha256": "6ccf9139889ddf7c72f703a1f026a28329d94bdd3d31c37745a07d69568f6e04"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    80,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "cw_green.png",
+   "path": "res/drawable-xlarge-mdpi-v4/cw_green.png",
+   "sha256": "2c547ba483b3d65ab09e1b516adb29896e66ed081a461b92b905431c703ff666"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    80,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "cw_red.png",
+   "path": "res/drawable-xlarge-mdpi-v4/cw_red.png",
+   "sha256": "4b0ff08b0fa2d8e7d0e8abfe2aa019d966026ccfedab8fc013fca69c27c7db05"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    80,
+    80
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "cw_yellow.png",
+   "path": "res/drawable-xlarge-mdpi-v4/cw_yellow.png",
+   "sha256": "348c7903d92349f8219cdaffdcc0314a1c66e3025fda02120a38faf2611b46f3"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    40,
+    30
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "emoticon_aggressor.png",
+   "path": "res/drawable-xlarge-mdpi-v4/emoticon_aggressor.png",
+   "sha256": "b6b465cc0e869e95ad277c829d1412b306c270baaa00e690bb37c5fb41ad1a36"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    40,
+    30
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "emoticon_victim.png",
+   "path": "res/drawable-xlarge-mdpi-v4/emoticon_victim.png",
+   "sha256": "84fb61362bed18fc95c64a3636043cf437c812d23fbb6b2f9ccabeac15b5c7e7"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    72,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "icon.png",
+   "path": "res/drawable-xlarge-mdpi-v4/icon.png",
+   "sha256": "6eb7e991e05f023c1c762a8403cdf8f655562aaf63354076df8919c7a2737545"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_blue_east.png",
+   "path": "res/drawable-xlarge-mdpi-v4/player_blue_east.png",
+   "sha256": "aa224acef8a2f43f8aa9e18ecccb873eed7f5cee94741d2ceacbca5b851a5aa5"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_blue_north.png",
+   "path": "res/drawable-xlarge-mdpi-v4/player_blue_north.png",
+   "sha256": "c6298c8072bcf74ffe922f32b8a2094fbe39dc9ba741c7c4d2f8d12a2f4bd82c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_blue_south.png",
+   "path": "res/drawable-xlarge-mdpi-v4/player_blue_south.png",
+   "sha256": "1b3687e0e89833e83e10629e8aac5f160ae6b0e0719d5382eea82c3cf5e1d981"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_blue_west.png",
+   "path": "res/drawable-xlarge-mdpi-v4/player_blue_west.png",
+   "sha256": "1490d388b07e885b14e403ee246781f3ffa32518faf36fef47b15a28a8d36816"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_east.png",
+   "path": "res/drawable-xlarge-mdpi-v4/player_east.png",
+   "sha256": "a13b14a61ec611c92bf02582b3aaf357e8ab0d99f817e3ffa0d74eccee946f27"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_green_east.png",
+   "path": "res/drawable-xlarge-mdpi-v4/player_green_east.png",
+   "sha256": "64875c24d0870a926a012d1d25d4d6e4272a0becaae2a585fb0daec4293ee375"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_green_north.png",
+   "path": "res/drawable-xlarge-mdpi-v4/player_green_north.png",
+   "sha256": "0f704429d98c60b897a25937d240419e2d68ffacd970beeca576ca3fb0c8fa93"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_green_south.png",
+   "path": "res/drawable-xlarge-mdpi-v4/player_green_south.png",
+   "sha256": "1fcb82a814640e602d5d86028206f89ffeb1fde178bf2b4fbf0776b75052257c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_green_west.png",
+   "path": "res/drawable-xlarge-mdpi-v4/player_green_west.png",
+   "sha256": "9f29a18228a9e12e56c640c14a0e5921fa206ef98e811bba39cd012bf6af54e5"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_north.png",
+   "path": "res/drawable-xlarge-mdpi-v4/player_north.png",
+   "sha256": "a7c2003541e8c6991ab788f46bed978e94e8756d57600f3954ffea87cacccdc4"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_red_east.png",
+   "path": "res/drawable-xlarge-mdpi-v4/player_red_east.png",
+   "sha256": "a1cbc757b3723f53986b11371bb4ca631fe9cfb08dd54d0f3680baa5ed27781a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_red_north.png",
+   "path": "res/drawable-xlarge-mdpi-v4/player_red_north.png",
+   "sha256": "5d8107f1e887063c84443ecbbad0310c3bb9ef87796c68a34ed80d7561f83e7a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_red_south.png",
+   "path": "res/drawable-xlarge-mdpi-v4/player_red_south.png",
+   "sha256": "08862926337d4be30b17ea6f0658b9eece9ae1487ce7c68fb58a7bcca18c8600"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_red_west.png",
+   "path": "res/drawable-xlarge-mdpi-v4/player_red_west.png",
+   "sha256": "805c3ce02cf64af7235487807a25225b28f050756904bfd0fccf37d29220be99"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_south.png",
+   "path": "res/drawable-xlarge-mdpi-v4/player_south.png",
+   "sha256": "e6d94f986781257ddce6c06d33354b7508e2b765e95c695a971867baaa5b160c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_west.png",
+   "path": "res/drawable-xlarge-mdpi-v4/player_west.png",
+   "sha256": "1bbaa372be139a29552f714df999e6238bf127d6bab305bf32c97a57ff9725fc"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_yellow_east.png",
+   "path": "res/drawable-xlarge-mdpi-v4/player_yellow_east.png",
+   "sha256": "eea14f562bef80b55de8a16aa63714fad0af91df863fbd9ef4106220cceda15d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_yellow_north.png",
+   "path": "res/drawable-xlarge-mdpi-v4/player_yellow_north.png",
+   "sha256": "53c2841bc901e559c16c0bf206bf741e0d98dc07531fa17cbecbb7a1ea671baf"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_yellow_south.png",
+   "path": "res/drawable-xlarge-mdpi-v4/player_yellow_south.png",
+   "sha256": "91b0543c4e98e58b14e6f4c21b0bcb9a0450624e9a8dc66d52a1cb53be8fa497"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    29,
+    29
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "player_yellow_west.png",
+   "path": "res/drawable-xlarge-mdpi-v4/player_yellow_west.png",
+   "sha256": "bad64f4fd2b89485e7e6aaf77989cb185f436456f3a94cdd5eeaba2b9374c86c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    480,
+    800
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "splash.png",
+   "path": "res/drawable-xlarge-mdpi-v4/splash.png",
+   "sha256": "c4a4dab9bc5ab73d21acef4b168e1d15596cd4704d7c78b66739e072df28c614"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    800,
+    480
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "splash_land.png",
+   "path": "res/drawable-xlarge-mdpi-v4/splash_land.png",
+   "sha256": "69a6d09013c3f3e010ce7830829d543d0fe628838bda2b7ab81427a708e27c7c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    480,
+    800
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "table_background.png",
+   "path": "res/drawable-xlarge-mdpi-v4/table_background.png",
+   "sha256": "c610a4bcd31c136da62f9b78e02625867086ea9a6739fa5df5ea980a8cac4f6a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "winner_east.png",
+   "path": "res/drawable-xlarge-mdpi-v4/winner_east.png",
+   "sha256": "96cf2f04dec8a58922df59eee2b8f844d2a86ca84ce20c46c9d36d7e0ee9f822"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "winner_north.png",
+   "path": "res/drawable-xlarge-mdpi-v4/winner_north.png",
+   "sha256": "9dd3c821def97a3504e0e6defbd050a78318f30c5bc9aed908015e2875ff45cc"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "winner_south.png",
+   "path": "res/drawable-xlarge-mdpi-v4/winner_south.png",
+   "sha256": "6fdfffa7d087b602bb3d9e09aa9f9a1b266d53c32fdff723e3323cf43b37b40d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    300,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "winner_west.png",
+   "path": "res/drawable-xlarge-mdpi-v4/winner_west.png",
+   "sha256": "04e1985ef237a63fe9a9a5aa143bb5505e2d81bfcc298fac4945da2058cce17c"
+  }
+ ],
+ "apk_sha256": "8e6c19ead1795fa5b0f62090f3a56efa4be16e4b3e33f151af707f5eb5e5c620",
+ "confidence": "apk_verified",
+ "dynamic_regions": [],
+ "expected_state_changes": [],
+ "interaction_targets": [
+  {
+   "bounds": [
+    79,
+    647,
+    922,
+    126
+   ],
+   "class": "Landroid/widget/ImageButton;",
+   "confidence": "observed_only",
+   "text": null,
+   "view_id": 2130968583
+  },
+  {
+   "bounds": [
+    79,
+    773,
+    922,
+    126
+   ],
+   "class": "Landroid/widget/ImageButton;",
+   "confidence": "observed_only",
+   "text": null,
+   "view_id": 2130968584
+  },
+  {
+   "bounds": [
+    79,
+    899,
+    922,
+    126
+   ],
+   "class": "Landroid/widget/ImageButton;",
+   "confidence": "observed_only",
+   "text": null,
+   "view_id": 2130968579
+  },
+  {
+   "bounds": [
+    79,
+    1025,
+    922,
+    126
+   ],
+   "class": "Landroid/widget/ImageButton;",
+   "confidence": "observed_only",
+   "text": null,
+   "view_id": 2130968576
+  },
+  {
+   "bounds": [
+    79,
+    1151,
+    922,
+    126
+   ],
+   "class": "Landroid/widget/ImageButton;",
+   "confidence": "observed_only",
+   "text": null,
+   "view_id": 2130968578
+  }
+ ],
+ "package": "com.smorgasbork.hotdeath",
+ "renderer_family": "view-xml",
+ "renderer_signals": [],
+ "required_assets": [
+  {
+   "binding_evidence": "gfx_provenance_event",
+   "bucket": "",
+   "confidence": "apk_verified",
+   "dims": [
+    480,
+    800
+   ],
+   "dir": null,
+   "expected_bounds": [
+    0.0,
+    0.0,
+    1080.0,
+    1920.0
+   ],
+   "kind": "png",
+   "name": "splash.png",
+   "path": "res/drawable-hdpi-v4/splash.png",
+   "required": true,
+   "sha256": "c4a4dab9bc5ab73d21acef4b168e1d15596cd4704d7c78b66739e072df28c614",
+   "src_density": 0
+  },
+  {
+   "binding_evidence": "gfx_provenance_event",
+   "bucket": "",
+   "confidence": "apk_verified",
+   "dims": [
+    322,
+    536
+   ],
+   "dir": null,
+   "expected_bounds": [
+    0.0,
+    0.0,
+    1080.0,
+    1920.0
+   ],
+   "kind": "png",
+   "name": "splash.png",
+   "path": "res/drawable-mdpi-v4/splash.png",
+   "required": true,
+   "sha256": "1a799e2073e63a5552661700eba510990d4d8b3227b3f1ca374be6181c640af4",
+   "src_density": 0
+  },
+  {
+   "binding_evidence": "gfx_provenance_event",
+   "bucket": "",
+   "confidence": "apk_verified",
+   "dims": [
+    480,
+    800
+   ],
+   "dir": null,
+   "expected_bounds": [
+    0.0,
+    0.0,
+    1080.0,
+    1920.0
+   ],
+   "kind": "png",
+   "name": "splash.png",
+   "path": "res/drawable-xhdpi-v4/splash.png",
+   "required": true,
+   "sha256": "c4a4dab9bc5ab73d21acef4b168e1d15596cd4704d7c78b66739e072df28c614",
+   "src_density": 0
+  },
+  {
+   "binding_evidence": "gfx_provenance_event",
+   "bucket": "",
+   "confidence": "apk_verified",
+   "dims": [
+    480,
+    800
+   ],
+   "dir": null,
+   "expected_bounds": [
+    0.0,
+    0.0,
+    1080.0,
+    1920.0
+   ],
+   "kind": "png",
+   "name": "splash.png",
+   "path": "res/drawable-xlarge-hdpi-v4/splash.png",
+   "required": true,
+   "sha256": "c4a4dab9bc5ab73d21acef4b168e1d15596cd4704d7c78b66739e072df28c614",
+   "src_density": 0
+  },
+  {
+   "binding_evidence": "gfx_provenance_event",
+   "bucket": "",
+   "confidence": "apk_verified",
+   "dims": [
+    480,
+    800
+   ],
+   "dir": null,
+   "expected_bounds": [
+    0.0,
+    0.0,
+    1080.0,
+    1920.0
+   ],
+   "kind": "png",
+   "name": "splash.png",
+   "path": "res/drawable-xlarge-mdpi-v4/splash.png",
+   "required": true,
+   "sha256": "c4a4dab9bc5ab73d21acef4b168e1d15596cd4704d7c78b66739e072df28c614",
+   "src_density": 0
+  }
+ ],
+ "required_elements": [
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    79,
+    647,
+    922,
+    756
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 2130968588,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/ImageButton;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    79,
+    647,
+    922,
+    126
+   ],
+   "name": "android/widget/ImageButton",
+   "resource_id": 2130968583,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/ImageButton;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    79,
+    773,
+    922,
+    126
+   ],
+   "name": "android/widget/ImageButton",
+   "resource_id": 2130968584,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/ImageButton;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    79,
+    899,
+    922,
+    126
+   ],
+   "name": "android/widget/ImageButton",
+   "resource_id": 2130968579,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/ImageButton;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    79,
+    1025,
+    922,
+    126
+   ],
+   "name": "android/widget/ImageButton",
+   "resource_id": 2130968576,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/ImageButton;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    79,
+    1151,
+    922,
+    126
+   ],
+   "name": "android/widget/ImageButton",
+   "resource_id": 2130968578,
+   "text": null,
+   "visibility": "VISIBLE"
+  }
+ ],
+ "required_regions": [],
+ "schema": "s92.visual_contract.v1",
+ "screen": [
+  1080,
+  1920
+ ],
+ "source_provenance": {
+  "source_laws": [],
+  "source_root": null,
+  "source_url": null
+ },
+ "title": "Hot Death Uno"
+}

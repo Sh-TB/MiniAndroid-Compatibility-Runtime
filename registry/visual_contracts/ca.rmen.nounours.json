@@ -1,0 +1,1313 @@
+{
+ "apk_asset_inventory": [
+  {
+   "bucket": "",
+   "dims": [
+    32,
+    32
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "0B.png",
+   "path": "res/0B.png",
+   "sha256": "1562464c767d9871004aee754956cd953262a3e7311a6d3c6c599109cf26bf3a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "0G.png",
+   "path": "res/0G.png",
+   "sha256": "a1758e7c6a0e1ec186ba9c2c59b0c6a0aa4fc19742f9414cee13fbc5b2da3751"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "0I.png",
+   "path": "res/0I.png",
+   "sha256": "255836c2984deaa247926e1dee4701919ae99d3da949780a144ef39309707d44"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    32,
+    32
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "0J.png",
+   "path": "res/0J.png",
+   "sha256": "78a10551e209bce8c7dc7a1bcb3c36b74ebc9f4f0c3ab447a9cf69277a7539ca"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "30.png",
+   "path": "res/30.png",
+   "sha256": "b79042166c6f419c88ba60f5e41500175fa49f92cd7019ab3a42d5b37264c958"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "3w.png",
+   "path": "res/3w.png",
+   "sha256": "9a4309452e982543e97357a8832621a1eadc4c9084762920e3b70dd1ff7c0171"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    432,
+    432
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "5p.png",
+   "path": "res/5p.png",
+   "sha256": "82e13b950199dfc70397f914d5c851e2c1ed4623bef684a85186495aa4af9e55"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    128,
+    128
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "6P.png",
+   "path": "res/6P.png",
+   "sha256": "0651fb981ad471a2a574a8e29aa69643f72b01ed6dfdf18900591d8305fe6697"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    128,
+    128
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "6k.png",
+   "path": "res/6k.png",
+   "sha256": "a2ca4d4d413f075b8dd5715f22073425f66dd5e8f6a7cb53a10cefd0231b88dd"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    72,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "7R.png",
+   "path": "res/7R.png",
+   "sha256": "c76b038613f3f387e507f68847b67ee93a0d9756eda191ed7ae85c8f21167c8d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    64,
+    64
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "7m.png",
+   "path": "res/7m.png",
+   "sha256": "15142725c6764c1b0833343d732dd69819853fbe87cb8241163d74e3ca64492a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    32,
+    32
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "81.png",
+   "path": "res/81.png",
+   "sha256": "57047f36bc410ffdd897b7ef2e0a2f050245264fc45adc17e2110cf6508aa0b5"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    32,
+    32
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "811.png",
+   "path": "res/811.png",
+   "sha256": "8a8b35fc8e4901913640fc6679ebd39f87ebde8a4c327c2f6af2ad6b42dce3a1"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    108,
+    108
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "8X.png",
+   "path": "res/8X.png",
+   "sha256": "1725fff009de927533d35f62314d0bb4afbf5a4cfd83537847bd2463b5e0cb7e"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    32,
+    32
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "90.png",
+   "path": "res/90.png",
+   "sha256": "e31ea8c4b485d17fd68d6c88a691cac938845dfbda4f9efb8882f011b194a02f"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    32,
+    32
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "97.png",
+   "path": "res/97.png",
+   "sha256": "a928af72bd00f2756462178b415fbaa86112c3020eda52400f619849ad54fc98"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    128,
+    128
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "9I.png",
+   "path": "res/9I.png",
+   "sha256": "61af4b61e9ea66e20aa3956d9cdf9162c93610fcdaf6e95fa01a76f7597957db"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "9u.png",
+   "path": "res/9u.png",
+   "sha256": "ac56b0460a985eb41239a34e28807cb425d0524e0a6297763f7a3399f83a6946"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "A5.png",
+   "path": "res/A5.png",
+   "sha256": "53e52cbb92963445c4c6fc8cf0759015a33fa17d023e9630f47baf4daabca6bf"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    324,
+    324
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "BM.png",
+   "path": "res/BM.png",
+   "sha256": "29f948940dc8f3f1e59cfbcddaef2ce8f293b2052fd86848cc6734434849d40f"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    32,
+    32
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "C-.png",
+   "path": "res/C-.png",
+   "sha256": "0581706b1031b4fb0f16cdbe5a963924431b79a074ad909d74d472e07a2dac56"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    432,
+    432
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "CH.png",
+   "path": "res/CH.png",
+   "sha256": "82e13b950199dfc70397f914d5c851e2c1ed4623bef684a85186495aa4af9e55"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "CY.png",
+   "path": "res/CY.png",
+   "sha256": "5392e39da8627c601583bbeb905d55156f7fdccf49114a521d4c7684dc1a1c14"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    64,
+    64
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "D0.png",
+   "path": "res/D0.png",
+   "sha256": "3bb740b9784f397d2a081ed0f74befb9e63bc2fa677f33db6d94f60326f97768"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    32,
+    32
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "DL.png",
+   "path": "res/DL.png",
+   "sha256": "7b695aa64e13bd8477ca63d1531e9c52266b0d6b98e2eca762fb14e6e61095b5"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Dt.png",
+   "path": "res/Dt.png",
+   "sha256": "fb03dfeba71193299a0c0b03d79da39f73b5f7a856a4a74f57007f76982f59e8"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    162,
+    162
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Dw.png",
+   "path": "res/Dw.png",
+   "sha256": "8e3be3cfd0b768b6103ebb030864a8ac786b8c5dbdf24a50405e8911bf733aa7"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    64,
+    64
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "FS.png",
+   "path": "res/FS.png",
+   "sha256": "7c98b1e49685693ca83e9c90ff18480cbf4f3f454081874f4bb5e9f0cdddb602"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    324,
+    324
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Gd.png",
+   "path": "res/Gd.png",
+   "sha256": "29f948940dc8f3f1e59cfbcddaef2ce8f293b2052fd86848cc6734434849d40f"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Gj.png",
+   "path": "res/Gj.png",
+   "sha256": "cd40469e0ed9b215dc54f7e668fa3a6187674acf4ea1254929f8416f6b46f299"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    64,
+    64
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "H0.png",
+   "path": "res/H0.png",
+   "sha256": "862606b8795362f88122baf94fc1b44bac194bf2da96e5295415ab24b194e02f"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    128,
+    128
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "IW.png",
+   "path": "res/IW.png",
+   "sha256": "aca251f86f8d1f36c4780d559c8acb1c62f42735a539706255a205ab9d138c54"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Is.png",
+   "path": "res/Is.png",
+   "sha256": "fcf118cb3a1ead20ee10f4b5fe290f62d78aa6cce07e6bf250663a610f7164ab"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    36,
+    36
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "It.png",
+   "path": "res/It.png",
+   "sha256": "57fc4ee04fe38f242feda9558c63e6f284f0decc7c7f7af193a84bf549847942"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    128,
+    128
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Jo.png",
+   "path": "res/Jo.png",
+   "sha256": "8c7ea41a36e356e552cfc7060f796df9959332ab4d4ad4546fd109fe2fd209cd"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    128,
+    128
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Kj.png",
+   "path": "res/Kj.png",
+   "sha256": "9c2b2d9b373e3b950a4c3c08bcfd95c5810fbf62da2f63e23025ee3f2c489f82"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    216,
+    216
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "M2.png",
+   "path": "res/M2.png",
+   "sha256": "86b42eb5c5302380781219c47a02a5fee3f9dc45730e5ec8038438b32863983c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    32,
+    32
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "MH.png",
+   "path": "res/MH.png",
+   "sha256": "91f00f09c0ed4e027ad32a45ef882bce9abb519ffc783de3561ae4eca4c4e7e5"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    128,
+    128
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Oa.png",
+   "path": "res/Oa.png",
+   "sha256": "bcb831b13a6296e077649baafb163e14aae176419919a8259b0892707883bc24"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Od.png",
+   "path": "res/Od.png",
+   "sha256": "9cb8463c767882ff0fc0958ce899e70756a06f34908738e3b9d1e67c6f073dfd"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "PF.png",
+   "path": "res/PF.png",
+   "sha256": "5d6c85353fcbab819d0998eb7fb9c2ba6c8876ef87648e8723efb99a42e8c948"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "RU.png",
+   "path": "res/RU.png",
+   "sha256": "603d429d389e2c16c30a04f6a60620f5dce589d141f5ebf0611ad522545595a9"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Rn.png",
+   "path": "res/Rn.png",
+   "sha256": "446057525eee22ccbcb228f538c8c5e2daec960448029a6140645f50cf700983"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    108,
+    108
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "S5.png",
+   "path": "res/S5.png",
+   "sha256": "7ff66149068bcc94a0d09ce0e6a6e845b2c42e5c1faaea96f90cd13c0158499d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    32,
+    32
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "S9.png",
+   "path": "res/S9.png",
+   "sha256": "0039814248f1c1234263e976714ad510c606f5db5a14e5db30f7c9c0cb832c95"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    64,
+    64
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "T6.png",
+   "path": "res/T6.png",
+   "sha256": "d01c89d377f593e7c7b9a886a4b726aeed4cf779e7edc22f0eb5a9fb99d08d64"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "T7.png",
+   "path": "res/T7.png",
+   "sha256": "5178518b3edce0e0a2fbeb35886295f3e0efddc935f1531548c64dac1f170c9a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "TK.png",
+   "path": "res/TK.png",
+   "sha256": "deda40cd7dc51142dcc2ad10763c75a3dca86b6c84ba5d66f19f1793a3a2ed5d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    64,
+    64
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "TL.png",
+   "path": "res/TL.png",
+   "sha256": "a14f0c734c512494b0c2a349c26491e69c3b8a2b2881db9a3f4a19e3229f2c12"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    64,
+    64
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Tw.png",
+   "path": "res/Tw.png",
+   "sha256": "50c30dad57d629b9424ab5543b6ae9378b82a06e44aead4b5bdcaad9f09b9693"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "U9.png",
+   "path": "res/U9.png",
+   "sha256": "1f3d9050b85e312154cb5ab51a8069b8da7c91387f8239af384fcbb7d3810175"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "UO.png",
+   "path": "res/UO.png",
+   "sha256": "cc1e68e64eda31f57e11aa753eaf5d3e535d4367ad05f9804d0c39b6d0a303af"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "UR.png",
+   "path": "res/UR.png",
+   "sha256": "d1768a82324b8552f4c7abba7c28fb8653e1f0f3ed3349f2962be597bb58b572"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    64,
+    64
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Ut.png",
+   "path": "res/Ut.png",
+   "sha256": "1e83ea6f821563981e7067ccba2f59aa637f5859ddffbb82818959ca51c75389"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "VQ.png",
+   "path": "res/VQ.png",
+   "sha256": "24e6985d601948817b424bc7dee313b8677481da0b3458eb188ecdd828b68d26"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    64,
+    64
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "W0.png",
+   "path": "res/W0.png",
+   "sha256": "4ab43d7c2240c3f8d0517107f34e937a39ebe91afb0a77138f756862340ba4cd"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    32,
+    32
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Wl.png",
+   "path": "res/Wl.png",
+   "sha256": "591dc691e6bbe05dcff51d59125729a4c113e537a566c31ac8a4fc788d0e4429"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    128,
+    128
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Wn.png",
+   "path": "res/Wn.png",
+   "sha256": "f790690e2e180857c57e8f0bd12a5c56dbc1e830eb9efcce4e1c07d01a0a714c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "X9.png",
+   "path": "res/X9.png",
+   "sha256": "a62dada14bf80ddfe6bbe37afad4394696f3140f160f71e606208b11dc91ce5d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Xe.png",
+   "path": "res/Xe.png",
+   "sha256": "dd8f62181f3181da8c71a8dc6954dc9ddeb87a0a5a18915c69b8007600a309b9"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Z9.png",
+   "path": "res/Z9.png",
+   "sha256": "3ad4b5ef1c75a687b550e4ab6753fb6d7f9518907aff501efd2dd3fff9a3a0e3"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    128,
+    128
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Z_.png",
+   "path": "res/Z_.png",
+   "sha256": "6c98e3d3a764d6fc64e002d36cef2043b11328d41057dad3281ee5fc3d18f5d6"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Zc.png",
+   "path": "res/Zc.png",
+   "sha256": "225f0ef29c45694bce33aa51d84af04b03f9dacff3fc1fc0fae6f04d6fc376bf"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    108,
+    108
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "bB.png",
+   "path": "res/bB.png",
+   "sha256": "1725fff009de927533d35f62314d0bb4afbf5a4cfd83537847bd2463b5e0cb7e"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    16,
+    25
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "by.png",
+   "path": "res/by.png",
+   "sha256": "26ebbe0741f72ae72ad00c36d9f2737976f1f26fcdc27615e317f4dcdf90f02e"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    32,
+    32
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "dS.png",
+   "path": "res/dS.png",
+   "sha256": "130a3fdde285505c941b60d26f152ba1c7ed2c89d8eda73535fef10265e8792e"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "fo.png",
+   "path": "res/fo.png",
+   "sha256": "d6af37e4ba60688cd4b4d7ba7b2da6fcb9ad87e7253fbe658bf492b2c7a489ba"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    64,
+    64
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "hz.png",
+   "path": "res/hz.png",
+   "sha256": "ce1c48c94822c9cf9faeff8095a761183f2012ee8f8c7b3e89aba64aa9f8e817"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "jP.png",
+   "path": "res/jP.png",
+   "sha256": "b6ffb3e1d9c516058253b769a28c19f96d0e289739dea45927f9e0c9b73d10c7"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    32,
+    32
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "jg.png",
+   "path": "res/jg.png",
+   "sha256": "88bd9dbfaba7a97d10447d2ee1c44f583afd791715634f954e26cfce4749afb3"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    64,
+    64
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ld.png",
+   "path": "res/ld.png",
+   "sha256": "7f1a2bc7544c90d936c7e0e025bfdf9fe1a61724c5f48802ef69d5ef00bc4eb4"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    32,
+    32
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "lx.png",
+   "path": "res/lx.png",
+   "sha256": "cabb60fa653ac2faad1c9b0bdf8fef755b75bf5beadaa7d51da6f2e109f8ef71"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    128,
+    128
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "mL.png",
+   "path": "res/mL.png",
+   "sha256": "b7d1fff202c4bf730237143d6479a62496bdf4ac8ad04ba13b82258203bbaafe"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    32,
+    32
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "mT.png",
+   "path": "res/mT.png",
+   "sha256": "b028825e1982c9530c7f1035c5f219476083dd03dc9c5d82de5001c31c120a77"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    128,
+    128
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "mx.png",
+   "path": "res/mx.png",
+   "sha256": "ade0df46f2fe1f3c5c202107ff0307e7adfbd9890946069a3c2e8f229917ff80"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    32,
+    32
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "nB.png",
+   "path": "res/nB.png",
+   "sha256": "7f65b50d17fbcda87dd5e350b3b33785d35a108d3823748913e312524b25f329"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    24,
+    24
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "nI.png",
+   "path": "res/nI.png",
+   "sha256": "712da0b055209ffb6522195245e53e55c6ab1ed2fa5a945d2c9cb460007dfeb6"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    64,
+    64
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "nn.png",
+   "path": "res/nn.png",
+   "sha256": "693c40d7e10e1b7ee02ee1a676fc9ee78dc620a565a748b4f2bf8a9abb9fdafe"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    128,
+    128
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ok.png",
+   "path": "res/ok.png",
+   "sha256": "705f0309e9144225c1427a71566c712764182f72bba685b898e475bfd91c4f7b"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    128,
+    128
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "pD.png",
+   "path": "res/pD.png",
+   "sha256": "33995bb6e660287004758d96acf150b74d6e66977894c3936c6040d3f107a228"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "qr.png",
+   "path": "res/qr.png",
+   "sha256": "97161b7ad0d387ebbf29f63d8ab967a263483a5a79f65ad08091aee965dccb08"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    32,
+    32
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "sd.png",
+   "path": "res/sd.png",
+   "sha256": "6aced7a6beb65ddddf57df83d91b5439dc5bf9cd61012543ee280e85071626e0"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    128,
+    128
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "se.png",
+   "path": "res/se.png",
+   "sha256": "fbd5c29a60d1a81170425f34b5974fee26df3148a4d0508c0d518d839206d529"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    32,
+    32
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "tG.png",
+   "path": "res/tG.png",
+   "sha256": "5ac2d82be8c87d777d9d855c9b38fa46cacd97859c51b4b59aa9b2c69d4b0d61"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    216,
+    216
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "tP.png",
+   "path": "res/tP.png",
+   "sha256": "86b42eb5c5302380781219c47a02a5fee3f9dc45730e5ec8038438b32863983c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    64,
+    64
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "u7.png",
+   "path": "res/u7.png",
+   "sha256": "ee4f09501713f17af3e814c7021fd3adcd8910c91f90a79069059e52cce36e8b"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    32,
+    32
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "uo.png",
+   "path": "res/uo.png",
+   "sha256": "86822b2497670da14ecaba3ab919331bb9cc4728fecab898de79162ce185f43c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "v_.png",
+   "path": "res/v_.png",
+   "sha256": "23ad16f46f4044fb7ef81482a05c61dded530e5d65c81be8425205f250612897"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "xR.png",
+   "path": "res/xR.png",
+   "sha256": "9c758be3f4399d2b7ff36ef945b8da22d3a036d9ad164845cf1adcbe59562977"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    64,
+    64
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "xU.png",
+   "path": "res/xU.png",
+   "sha256": "c027f5eeba0c98e69f3c815e3c35184ac1a3f9838d4ba5fd368c707ce8dc824e"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "xo.png",
+   "path": "res/xo.png",
+   "sha256": "09dff43053dd30a293dd633b5d491d8604a54c3dcf487435dc9678166527edfb"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    162,
+    162
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "yi.png",
+   "path": "res/yi.png",
+   "sha256": "8e3be3cfd0b768b6103ebb030864a8ac786b8c5dbdf24a50405e8911bf733aa7"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    32,
+    32
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "zT.png",
+   "path": "res/zT.png",
+   "sha256": "9d5d1e5a92939cf9c30091107838c320bd4d0c3b06e9b7935ef3783cf9e1e14e"
+  }
+ ],
+ "apk_sha256": "0e7da7b17b63d727fb2a3a75e0576e1a42e286ebc8fb73b368da5518a728c682",
+ "confidence": "apk_verified",
+ "dynamic_regions": [],
+ "expected_state_changes": [],
+ "interaction_targets": [],
+ "package": "ca.rmen.nounours",
+ "renderer_family": "surfaceview",
+ "renderer_signals": [
+  "SurfaceView-class"
+ ],
+ "required_assets": [],
+ "required_elements": [
+  {
+   "class": "Landroid/widget/FrameLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "name": "android/widget/FrameLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/view/SurfaceView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "name": "android/view/SurfaceView",
+   "resource_id": 2130968593,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    640
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/view/View;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    640,
+    0,
+    640
+   ],
+   "name": "android/view/View",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    1280,
+    1080,
+    640
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/view/View;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    360,
+    640
+   ],
+   "name": "android/view/View",
+   "resource_id": 2130968578,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/view/View;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    360,
+    0,
+    360,
+    640
+   ],
+   "name": "android/view/View",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/view/View;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    720,
+    0,
+    360,
+    640
+   ],
+   "name": "android/view/View",
+   "resource_id": 2130968579,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/view/View;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    1280,
+    360,
+    640
+   ],
+   "name": "android/view/View",
+   "resource_id": 2130968580,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/view/View;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    360,
+    1280,
+    360,
+    640
+   ],
+   "name": "android/view/View",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/view/View;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    720,
+    1280,
+    360,
+    640
+   ],
+   "name": "android/view/View",
+   "resource_id": 2130968581,
+   "text": null,
+   "visibility": "VISIBLE"
+  }
+ ],
+ "required_regions": [],
+ "schema": "s92.visual_contract.v1",
+ "screen": [
+  1080,
+  1920
+ ],
+ "source_provenance": {
+  "source_laws": [],
+  "source_root": null,
+  "source_url": null
+ },
+ "title": "ca.rmen.nounours"
+}

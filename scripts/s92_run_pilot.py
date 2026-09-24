@@ -37,16 +37,16 @@ PILOT = [
     ("nounours", "ca.rmen.nounours_358.apk", "ca.rmen.nounours",
      "ca.rmen.nounours", 8, None,
      None, "raster-heavy tactile app, GIF-claimed S91"),
-    ("dodge", "com.dozingcatsoftware.dodge_15.apk",
+    ("dodge", "com.dozingcatsoftware.dodge_10.apk",
      "com.dozingcatsoftware.dodge", "Dodge", 10,
      None, None, "canvas game, GIF-claimed S84/S86"),
-    ("bouncy", "com.dozingcatsoftware.bouncy_63.apk",
+    ("bouncy", "com.dozingcatsoftware.bouncy_43.apk",
      "com.dozingcatsoftware.bouncy", "Vector Pinball", 10,
      None, None, "GLSurface game, GIF-claimed, 2-frame evidence"),
-    ("hotdeath", "com.smorgasbork.hotdeath_1011.apk",
+    ("hotdeath", "com.smorgasbork.hotdeath_11.apk",
      "com.smorgasbork.hotdeath", "Hot Death Uno", 10,
      None, None, "card game, raster assets"),
-    ("bobball", "org.bobstuff.bobball_117.apk", "org.bobstuff.bobball",
+    ("bobball", "org.bobstuff.bobball_26.apk", "org.bobstuff.bobball",
      "Bobball", 10, None, None, "surfaceview game"),
     ("urlchecker", "com.trianguloy.urlchecker_28.apk",
      "com.trianguloy.urlchecker", "URL Checker", 10, None, None,
@@ -59,8 +59,26 @@ PILOT = [
     ("gmdice", "de.duenndns.gmdice_8.apk", "de.duenndns.gmdice", "GM Dice",
      10, None, None, "dice app, raster icons"),
     ("fishrings", "eu.veldsoft.fish.rings_6.apk", "eu.veldsoft.fish.rings",
-     "Fish Rings", 40, (540, 1300, 20), None,
-     "canvas game, 5s splash, S91 icon-E2E proof — independent rerun"),
+     "Fish Rings", 60, (184, 184, 40), None,
+     "canvas game, 5s splash, S91 icon-E2E proof — independent rerun "
+     "(tap 184,184@40 per docs/evidence/s91_fish_reproof protocol)"),
+    # ---- S91 GIF-claim audit remainder (S92 §32) — in-house fixtures ----
+    ("snake-deluxe", "upload/s80_games/build_sd/snake_deluxe_v1.0_vc1.apk",
+     "com.miniandroid.snakedeluxe", "Snake Deluxe", 24,
+     (540, 1500, 16), None, "in-house snake, GIF-claimed S85"),
+    ("mini-tetris", "upload/s80_games/build_tetris/tetris_v1.0_vc1.apk",
+     "com.miniandroid.tetris", "Mini Tetris", 24,
+     (540, 1500, 16), None, "in-house tetris, GIF-claimed S85"),
+    ("g2048", "upload/s80_games/build_2048/g2048_v1.0_vc1.apk",
+     "com.miniandroid.g2048", "2048", 24,
+     (540, 1500, 16), None, "in-house 2048, GIF-claimed S85"),
+    ("tictactoedeluxe",
+     "upload/s83_games/build_ttt/tictactoe_deluxe_v1.0_vc1.apk",
+     "com.miniandroid.tictactoedeluxe", "TicTacToe Deluxe", 24,
+     (540, 1500, 16), None, "in-house TTT deluxe, GIF-claimed S85"),
+    ("minicraft", "upload/s86_games/build_minicraft/minicraft_v1.0_vc1.apk",
+     "com.miniandroid.minicraft", "Minicraft", 24,
+     (540, 1500, 16), None, "in-house minicraft, GIF-claimed S85"),
 ]
 
 
@@ -70,8 +88,12 @@ def sh(cmd, **kw):
 
 
 def find_apk(fname):
+    if "/" in fname:
+        # repo-relative path (in-house fixture builds)
+        p = os.path.join(REPO, fname)
+        return p if os.path.isfile(p) else None
     for base in (DL, os.path.join(DL, "exp076_corpus"),
-                 os.path.join(REPO, "miniandroid", "download")):
+                 os.path.join(DL, "exp073_real_apps")):
         p = os.path.join(base, fname)
         if os.path.isfile(p):
             return p
@@ -88,6 +110,7 @@ def run_title(case, apk, package, frames, taps):
     tap = f" --tap {taps[0]},{taps[1]}@{taps[2]}" if taps else ""
     cmd = (f"{MA_BIN} run -o {rundir} --execution-mode real-dalvik "
            f"--frames {frames} --width 1080 --height 1920 "
+           f"--dump-view-tree "
            f"--data-root {rundir}/data{tap} --apk {apk}")
     r = sh(cmd, env=env, timeout=600)
     return rundir, r.returncode, (r.stdout or "")[-3000:], \

@@ -120,42 +120,115 @@ def interaction_proofs(run_evidence, contracts_targets=None):
     """Build §11 pre/post proofs from the runtime manifests.
     Returns list of proof records; each verdict is one of
     INTERACTION_VISUALLY_PROVEN / INTERACTION_TARGET_UNVERIFIED /
-    INTERACTION_NO_VISUAL_CHANGE / INTERACTION_NOT_DISPATCHED."""
+    INTERACTION_NO_VISUAL_CHANGE / INTERACTION_NOT_DISPATCHED.
+
+    Three manifest shapes are supported:
+      - F-NEW-199 interactions[]: runtime-authored per-scheduled-tap
+        records (frame, x, y, target_view_id, down_record) — the
+        authoritative shape for --frames + --tap runs.
+      - TAP manifests: frame events with "ACTION_DOWN"/"post-gesture".
+      - click-count manifests: frames[].event == "click".
+    """
     proofs = []
     frames = run_evidence.frames
     if not frames:
         return proofs
     manifest = run_evidence.frames_manifest or {}
+
+    # ── F-NEW-199 interactions[] (authoritative scheduled-tap records) ──
+    frame_by_index = {}
+    for e in manifest.get("frames") or []:
+        if e.get("file"):
+            frame_by_index[e.get("index")] = e
+    for ir in manifest.get("interactions") or []:
+        k = ir.get("frame", ir.get("after_frame_index"))
+        after_e = frame_by_index.get(k) or {}
+        before_e = frame_by_index.get((k or 0) - 1) or \
+            frame_by_index.get(0) or {}
+        proofs.append(_build_f199_proof(
+            run_evidence, ir, before_e, after_e, frames))
+
+    # ── legacy shapes: TAP gesture stream / click-count entries ─────────
     entries = manifest.get("frames") or []
     interactions = [e for e in entries
                     if e.get("event") in ("click", "long_press") or
                     "ACTION_DOWN" in str(e.get("event", "")) or
                     "post-gesture" in str(e.get("event", ""))]
-
-    # group TAP manifests: DOWN entry + following post-gesture entry
-    i = 0
-    while i < len(interactions):
-        ent = interactions[i]
-        ev = str(ent.get("event", ""))
-        if "ACTION_DOWN" in ev:
-            after = None
-            if i + 1 < len(interactions) and \
-                    "post-gesture" in str(interactions[i + 1].get("event", "")):
-                after = interactions[i + 1]
-                i += 2
+    if interactions and not manifest.get("interactions"):
+        i = 0
+        while i < len(interactions):
+            ent = interactions[i]
+            ev = str(ent.get("event", ""))
+            if "ACTION_DOWN" in ev:
+                after = None
+                if i + 1 < len(interactions) and \
+                        "post-gesture" in str(interactions[i + 1].get(
+                            "event", "")):
+                    after = interactions[i + 1]
+                    i += 2
+                else:
+                    i += 1
+                proofs.append(_build_proof(
+                    run_evidence, before_ent=None, after_ent=ent,
+                    post_ent=after, frames=frames))
+            elif ev in ("click", "long_press"):
+                proofs.append(_build_proof(
+                    run_evidence, before_ent=None, after_ent=ent,
+                    post_ent=None, frames=frames, click_entry=True))
+                i += 1
             else:
                 i += 1
-            proofs.append(_build_proof(
-                run_evidence, before_ent=None, after_ent=ent,
-                post_ent=after, frames=frames))
-        elif ev in ("click", "long_press"):
-            proofs.append(_build_proof(
-                run_evidence, before_ent=None, after_ent=ent, post_ent=None,
-                frames=frames, click_entry=True))
-            i += 1
-        else:
-            i += 1
     return proofs
+
+
+def _build_f199_proof(run_evidence, ir, before_e, after_e, frames):
+    """§10/§11 proof from one F-NEW-199 manifest interaction record."""
+    idx = ir.get("frame")
+    rec = {"index": idx, "source": "F-NEW-199 interactions[]"}
+    vid = ir.get("target_view_id")
+    rec["input_event"] = {
+        "type": "tap (scheduled F-117)",
+        "dispatched": bool(vid),
+        "x": ir.get("x"), "y": ir.get("y"),
+        "down_record": ir.get("down_record"),
+    }
+    rec["clicked"] = {"view_id": vid} if vid else {}
+    node = _node_by_id(run_evidence, vid) if vid else None
+    tgt = None
+    if node:
+        b = _bounds_of(node)
+        tgt = verify_input_target(
+            run_evidence, {"bounds": b, "view_id": vid,
+                           "class": node.get("class")},
+            screenshot_path=_frame_path(frames, before_e.get("file", "")))
+        rec["target_proof"] = tgt
+        rec["target_bounds"] = b
+    delta = None
+    before_name = before_e.get("file")
+    after_name = after_e.get("file")
+    if before_name and after_name:
+        bp = _frame_path(frames, before_name)
+        ap = _frame_path(frames, after_name)
+        if bp and ap:
+            delta = vp.region_diff(bp, ap)
+            rec["before_frame"] = before_name
+            rec["after_frame"] = after_name
+    runtime_delta = after_e.get("changed_pixels_vs_previous")
+    rec["pixel_delta"] = delta or \
+        ({"changed_px": runtime_delta} if runtime_delta is not None else {})
+    unverified = (tgt or {}).get("verdict") == "INPUT_TARGET_UNVERIFIED"
+    changed = ((delta or {}).get("changed_px", 0) or 0) > 0 or \
+        (runtime_delta or 0) > 0
+    dispatched = rec["input_event"].get("dispatched", False) and bool(vid)
+    if unverified:
+        rec["verdict"] = "INTERACTION_TARGET_UNVERIFIED"
+    elif dispatched and changed:
+        rec["verdict"] = "INTERACTION_VISUALLY_PROVEN"
+    elif dispatched:
+        rec["verdict"] = "INTERACTION_NO_VISUAL_CHANGE"
+    else:
+        rec["verdict"] = "INTERACTION_NOT_DISPATCHED"
+    return rec
 
 
 def _build_proof(run_evidence, before_ent, after_ent, post_ent, frames,

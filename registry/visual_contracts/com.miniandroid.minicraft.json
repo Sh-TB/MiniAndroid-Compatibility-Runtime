@@ -1,0 +1,293 @@
+{
+ "apk_asset_inventory": [],
+ "apk_sha256": "77b9629ee111b968ccc9dbd4507eab3564a0a7a6e26dcacbe28f99de189c3a90",
+ "confidence": "observed_only",
+ "dynamic_regions": [],
+ "expected_state_changes": [],
+ "interaction_targets": [
+  {
+   "bounds": [
+    26,
+    1716,
+    257,
+    63
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "LEFT",
+   "view_id": 2130903044
+  },
+  {
+   "bounds": [
+    283,
+    1716,
+    257,
+    63
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "UP",
+   "view_id": 2130903047
+  },
+  {
+   "bounds": [
+    540,
+    1716,
+    257,
+    63
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "DOWN",
+   "view_id": 2130903043
+  },
+  {
+   "bounds": [
+    797,
+    1716,
+    257,
+    63
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "RIGHT",
+   "view_id": 2130903046
+  },
+  {
+   "bounds": [
+    26,
+    1831,
+    257,
+    63
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "BRICK",
+   "view_id": 2130903040
+  },
+  {
+   "bounds": [
+    283,
+    1831,
+    257,
+    63
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "PLACE",
+   "view_id": 2130903045
+  },
+  {
+   "bounds": [
+    540,
+    1831,
+    257,
+    63
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "DIG",
+   "view_id": 2130903042
+  },
+  {
+   "bounds": [
+    797,
+    1831,
+    257,
+    63
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "DEMO",
+   "view_id": 2130903041
+  }
+ ],
+ "package": "com.miniandroid.minicraft",
+ "renderer_family": "canvas-custom-view",
+ "renderer_signals": [
+  "app-custom-View-subclass"
+ ],
+ "required_assets": [],
+ "required_elements": [
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Lcom.miniandroid.minicraft.CraftWorldView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1690
+   ],
+   "name": "CraftWorldView",
+   "resource_id": 2130903048,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    1690,
+    1080,
+    115
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    1805,
+    1080,
+    115
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    26,
+    1716,
+    257,
+    63
+   ],
+   "name": "android/widget/Button[LEFT]",
+   "resource_id": 2130903044,
+   "text": "LEFT",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    283,
+    1716,
+    257,
+    63
+   ],
+   "name": "android/widget/Button[UP]",
+   "resource_id": 2130903047,
+   "text": "UP",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    540,
+    1716,
+    257,
+    63
+   ],
+   "name": "android/widget/Button[DOWN]",
+   "resource_id": 2130903043,
+   "text": "DOWN",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    797,
+    1716,
+    257,
+    63
+   ],
+   "name": "android/widget/Button[RIGHT]",
+   "resource_id": 2130903046,
+   "text": "RIGHT",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    26,
+    1831,
+    257,
+    63
+   ],
+   "name": "android/widget/Button[BRICK]",
+   "resource_id": 2130903040,
+   "text": "BRICK",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    283,
+    1831,
+    257,
+    63
+   ],
+   "name": "android/widget/Button[PLACE]",
+   "resource_id": 2130903045,
+   "text": "PLACE",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    540,
+    1831,
+    257,
+    63
+   ],
+   "name": "android/widget/Button[DIG]",
+   "resource_id": 2130903042,
+   "text": "DIG",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    797,
+    1831,
+    257,
+    63
+   ],
+   "name": "android/widget/Button[DEMO]",
+   "resource_id": 2130903041,
+   "text": "DEMO",
+   "visibility": "VISIBLE"
+  }
+ ],
+ "required_regions": [],
+ "schema": "s92.visual_contract.v1",
+ "screen": [
+  1080,
+  1920
+ ],
+ "source_provenance": {
+  "source_laws": [],
+  "source_root": null,
+  "source_url": null
+ },
+ "title": "Minicraft"
+}

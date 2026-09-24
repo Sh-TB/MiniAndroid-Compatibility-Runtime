@@ -1,0 +1,578 @@
+{
+ "apk_sha256": "16510d7cb5dbcf7db049762728bd3e38911c3117b1f090129caee11e2b098f6e",
+ "asset_chains": [],
+ "confidence": "observed_only",
+ "evidence_inventory": {
+  "click_audit_records": 2,
+  "frame_count": 24,
+  "frames_manifest": true,
+  "gfx_provenance": true,
+  "report_json": false,
+  "screenshot": true,
+  "view_tree": true
+ },
+ "failing_stages": [],
+ "generated_utc": "2026-09-24T05:40:03Z",
+ "geometry_checks": [
+  {
+   "actual_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/LinearLayout",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "tolerance_px": 230,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    0,
+    0,
+    1080,
+    904
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "GameView",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    904
+   ],
+   "tolerance_px": 129,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "delta_dxywh": [
+    0,
+    -904,
+    0,
+    904
+   ],
+   "element": "android/widget/LinearLayout",
+   "expected_bounds": [
+    0,
+    904,
+    1080,
+    1016
+   ],
+   "failure": "GEOMETRY_DELTA_EXCEEDED",
+   "tolerance_px": 129,
+   "value": "FAIL"
+  },
+  {
+   "actual_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "delta_dxywh": [
+    -37,
+    -941,
+    74,
+    1662
+   ],
+   "element": "android/widget/LinearLayout",
+   "expected_bounds": [
+    37,
+    941,
+    1006,
+    258
+   ],
+   "failure": "GEOMETRY_DELTA_EXCEEDED",
+   "tolerance_px": 120,
+   "value": "FAIL"
+  },
+  {
+   "actual_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "delta_dxywh": [
+    -37,
+    -1199,
+    74,
+    1662
+   ],
+   "element": "android/widget/LinearLayout",
+   "expected_bounds": [
+    37,
+    1199,
+    1006,
+    258
+   ],
+   "failure": "GEOMETRY_DELTA_EXCEEDED",
+   "tolerance_px": 120,
+   "value": "FAIL"
+  },
+  {
+   "actual_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "delta_dxywh": [
+    -37,
+    -1457,
+    74,
+    1662
+   ],
+   "element": "android/widget/LinearLayout",
+   "expected_bounds": [
+    37,
+    1457,
+    1006,
+    258
+   ],
+   "failure": "GEOMETRY_DELTA_EXCEEDED",
+   "tolerance_px": 120,
+   "value": "FAIL"
+  },
+  {
+   "actual_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "delta_dxywh": [
+    -37,
+    -1715,
+    74,
+    1752
+   ],
+   "element": "android/widget/LinearLayout",
+   "expected_bounds": [
+    37,
+    1715,
+    1006,
+    168
+   ],
+   "failure": "GEOMETRY_DELTA_EXCEEDED",
+   "tolerance_px": 120,
+   "value": "FAIL"
+  },
+  {
+   "actual_bounds": [
+    53,
+    957,
+    303,
+    226
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/Button[1]",
+   "expected_bounds": [
+    53,
+    957,
+    303,
+    226
+   ],
+   "tolerance_px": 36,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    388,
+    957,
+    303,
+    226
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/Button[2]",
+   "expected_bounds": [
+    388,
+    957,
+    303,
+    226
+   ],
+   "tolerance_px": 36,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    723,
+    957,
+    304,
+    226
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/Button[3]",
+   "expected_bounds": [
+    723,
+    957,
+    304,
+    226
+   ],
+   "tolerance_px": 36,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    53,
+    1215,
+    303,
+    226
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/Button[4]",
+   "expected_bounds": [
+    53,
+    1215,
+    303,
+    226
+   ],
+   "tolerance_px": 36,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    388,
+    1215,
+    303,
+    226
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/Button[5]",
+   "expected_bounds": [
+    388,
+    1215,
+    303,
+    226
+   ],
+   "tolerance_px": 36,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    723,
+    1215,
+    304,
+    226
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/Button[6]",
+   "expected_bounds": [
+    723,
+    1215,
+    304,
+    226
+   ],
+   "tolerance_px": 36,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    53,
+    1473,
+    303,
+    226
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/Button[7]",
+   "expected_bounds": [
+    53,
+    1473,
+    303,
+    226
+   ],
+   "tolerance_px": 36,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    388,
+    1473,
+    303,
+    226
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/Button[8]",
+   "expected_bounds": [
+    388,
+    1473,
+    303,
+    226
+   ],
+   "tolerance_px": 36,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    723,
+    1473,
+    304,
+    226
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/Button[9]",
+   "expected_bounds": [
+    723,
+    1473,
+    304,
+    226
+   ],
+   "tolerance_px": 36,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    53,
+    1731,
+    471,
+    68
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/Button[NEW GAME]",
+   "expected_bounds": [
+    53,
+    1731,
+    471,
+    68
+   ],
+   "tolerance_px": 56,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    556,
+    1731,
+    471,
+    136
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/Button[MODE: VS PHONE]",
+   "expected_bounds": [
+    556,
+    1731,
+    471,
+    136
+   ],
+   "tolerance_px": 56,
+   "value": "PASS"
+  }
+ ],
+ "interaction_proofs": [
+  {
+   "after_frame": "frame_016.png",
+   "before_frame": "frame_015.png",
+   "clicked": {
+    "view_id": 25
+   },
+   "index": 16,
+   "input_event": {
+    "dispatched": true,
+    "down_record": {
+     "action": "ACTION_DOWN",
+     "consumed": true,
+     "long_press_armed_ms": 500,
+     "root_id": 9,
+     "state_changes": [
+      "setPressed(true)"
+     ],
+     "target_class": "Landroid/widget/Button;",
+     "target_view_id": 25,
+     "virtual_ms": 4800,
+     "x": 540,
+     "y": 1500
+    },
+    "type": "tap (scheduled F-117)",
+    "x": 540,
+    "y": 1500
+   },
+   "pixel_delta": {
+    "after_sha256": "a7e022ed020967e101ade5a260992978086c89aed8f70578ac0c508448c71534",
+    "bbox": [
+     403,
+     633,
+     729,
+     874
+    ],
+    "before_sha256": "d670483557aa5ef2793c86db6fd3f7b6790851a0c5ed0c7be4983670176328c6",
+    "changed_px": 19367,
+    "changed_ratio": 0.00934
+   },
+   "source": "F-NEW-199 interactions[]",
+   "verdict": "INTERACTION_VISUALLY_PROVEN"
+  }
+ ],
+ "not_applicable_stages": [
+  "assets_resolved",
+  "assets_decoded",
+  "assets_rendered"
+ ],
+ "notes": [
+  {
+   "frame_quality": {
+    "class": "CONTENT_PRESENT",
+    "content_bounds": [
+     0,
+     0,
+     1079,
+     1919
+    ],
+    "dims": [
+     1080,
+     1920
+    ],
+    "luminance_stddev": 35.86,
+    "non_background_frac": 0.992564,
+    "non_background_px": 2058180,
+    "nonbg_unique_colors": 280,
+    "unique_colors_est": 281
+   },
+   "renderer_signals": [
+    "app-custom-View-subclass"
+   ],
+   "triangulation": "VISUAL_FAIL"
+  }
+ ],
+ "overall": "INTERACTION_VERIFIED",
+ "overall_rank": 7,
+ "package": "com.miniandroid.tictactoedeluxe",
+ "renderer_family": "canvas-custom-view",
+ "repeatability_runs": [],
+ "run_dir": "/home/z/my-project/run/s92pilot/tictactoedeluxe",
+ "runtime_sha": "",
+ "schema": "s92.graphics_verdict.v1",
+ "stages": {
+  "apk_load": {
+   "value": "PASS"
+  },
+  "assets_decoded": {
+   "note": "contract lists no required assets",
+   "value": "NOT_APPLICABLE"
+  },
+  "assets_rendered": {
+   "note": "contract lists no required assets",
+   "value": "NOT_APPLICABLE"
+  },
+  "assets_resolved": {
+   "note": "contract lists no required assets",
+   "value": "NOT_APPLICABLE"
+  },
+  "evidence_complete": {
+   "value": "PASS"
+  },
+  "frame_output": {
+   "value": "PASS"
+  },
+  "geometry": {
+   "value": "PARTIAL"
+  },
+  "input": {
+   "value": "PASS"
+  },
+  "input_target_visibility": {
+   "value": "PASS"
+  },
+  "lifecycle": {
+   "value": "PASS"
+  },
+  "renderer_initialized": {
+   "note": "family=canvas-custom-view; signals=['app-custom-View-subclass']",
+   "value": "PASS"
+  },
+  "repeatability": {
+   "note": "single run; 3-run law not yet applied",
+   "value": "UNKNOWN"
+  },
+  "scene": {
+   "note": "screenshot class=CONTENT_PRESENT",
+   "value": "PASS"
+  },
+  "state_change": {
+   "note": "runtime frames manifest records dispatch+state",
+   "value": "PASS"
+  },
+  "visual": {
+   "value": "PARTIAL"
+  },
+  "visual_change": {
+   "value": "PASS"
+  }
+ },
+ "title": "TicTacToe Deluxe"
+}

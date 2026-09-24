@@ -1,0 +1,306 @@
+{
+ "apk_asset_inventory": [
+  {
+   "bucket": "",
+   "dims": [
+    72,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "icon.png",
+   "path": "res/drawable-hdpi-v4/icon.png",
+   "sha256": "2ded242fad5090f8b6685059ee87ba58ebccc491deed1ac73b1ad2eb33528f78"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    36,
+    36
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "icon.png",
+   "path": "res/drawable-ldpi-v4/icon.png",
+   "sha256": "9c430939971c7a9c7410ee9f152c0cfb9561960a9c40a5ea07760af026b77cd1"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "icon.png",
+   "path": "res/drawable-mdpi-v4/icon.png",
+   "sha256": "48fc424409f6207dba520744f6caf5bfc93f6ced9a73825c0798d810de30770b"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    512,
+    512
+   ],
+   "dir": "drawable",
+   "kind": "png",
+   "name": "icon.png",
+   "path": "res/drawable/icon.png",
+   "sha256": "d1fae7e51ad1ea54a130cb3118f42992dc7e6377e7144d9707e29728d6833317"
+  }
+ ],
+ "apk_sha256": "5ca6f2c54c05efe7df72b209988037b97e37be0faae133624ec352057445fafa",
+ "confidence": "apk_verified",
+ "dynamic_regions": [],
+ "expected_state_changes": [],
+ "interaction_targets": [
+  {
+   "bounds": [
+    0,
+    960,
+    0,
+    0
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": null,
+   "view_id": 2131230728
+  },
+  {
+   "bounds": [
+    1080,
+    960,
+    0,
+    0
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": null,
+   "view_id": 2131230729
+  },
+  {
+   "bounds": [
+    0,
+    0,
+    1080,
+    954
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": null,
+   "view_id": 2131230722
+  },
+  {
+   "bounds": [
+    0,
+    967,
+    1080,
+    953
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": null,
+   "view_id": 2131230725
+  }
+ ],
+ "package": "com.chessclock.android",
+ "renderer_family": "view-xml",
+ "renderer_signals": [],
+ "required_assets": [],
+ "required_elements": [
+  {
+   "class": "Landroid/widget/RelativeLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "name": "android/widget/RelativeLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    960,
+    0,
+    0
+   ],
+   "name": "android/widget/Button",
+   "resource_id": 2131230728,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    1080,
+    960,
+    0,
+    0
+   ],
+   "name": "android/widget/Button",
+   "resource_id": 2131230729,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/RelativeLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    954
+   ],
+   "name": "android/widget/RelativeLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/RelativeLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    954,
+    1080,
+    13
+   ],
+   "name": "android/widget/RelativeLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/RelativeLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    967,
+    1080,
+    953
+   ],
+   "name": "android/widget/RelativeLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    954
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TextView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    540,
+    477,
+    0,
+    0
+   ],
+   "name": "android/widget/TextView",
+   "resource_id": 2131230723,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    967,
+    1080,
+    953
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TextView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    540,
+    1443,
+    0,
+    0
+   ],
+   "name": "android/widget/TextView",
+   "resource_id": 2131230726,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    954
+   ],
+   "name": "android/widget/Button",
+   "resource_id": 2131230722,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    967,
+    1080,
+    953
+   ],
+   "name": "android/widget/Button",
+   "resource_id": 2131230725,
+   "text": null,
+   "visibility": "VISIBLE"
+  }
+ ],
+ "required_regions": [],
+ "schema": "s92.visual_contract.v1",
+ "screen": [
+  1080,
+  1920
+ ],
+ "source_provenance": {
+  "source_laws": [],
+  "source_root": null,
+  "source_url": null
+ },
+ "title": "Chess Clock"
+}

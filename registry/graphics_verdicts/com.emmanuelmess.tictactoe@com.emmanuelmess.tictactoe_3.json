@@ -1,0 +1,139 @@
+{
+ "apk_sha256": "760fe5acf7b394354bf02b7b3484c3eb442b491c1fa4325603ad3250f0dfa394",
+ "asset_chains": [],
+ "confidence": "apk_verified",
+ "evidence_inventory": {
+  "click_audit_records": 0,
+  "frame_count": 12,
+  "frames_manifest": true,
+  "gfx_provenance": true,
+  "report_json": false,
+  "screenshot": true,
+  "view_tree": true
+ },
+ "failing_stages": [
+  "scene",
+  "frame_output",
+  "visual"
+ ],
+ "generated_utc": "2026-09-24T05:37:42Z",
+ "geometry_checks": [
+  {
+   "actual_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/RelativeLayout",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "tolerance_px": 230,
+   "value": "PASS"
+  }
+ ],
+ "interaction_proofs": [],
+ "not_applicable_stages": [
+  "assets_resolved",
+  "assets_decoded",
+  "assets_rendered",
+  "input_target_visibility",
+  "input",
+  "state_change",
+  "visual_change"
+ ],
+ "notes": [
+  {
+   "frame_quality": {
+    "class": "BLANK_OR_NEARLY_BLANK",
+    "dims": [
+     1080,
+     1920
+    ],
+    "luminance_stddev": 0.0,
+    "non_background_frac": 0.0,
+    "non_background_px": 0,
+    "nonbg_unique_colors": 0,
+    "unique_colors_est": 1
+   },
+   "renderer_signals": [],
+   "triangulation": "VISUAL_FAIL"
+  }
+ ],
+ "overall": "FAILED",
+ "overall_rank": -1,
+ "package": "com.emmanuelmess.tictactoe",
+ "renderer_family": "view-xml",
+ "repeatability_runs": [],
+ "run_dir": "/home/z/my-project/run/s92pilot/tictactoe",
+ "runtime_sha": "",
+ "schema": "s92.graphics_verdict.v1",
+ "stages": {
+  "apk_load": {
+   "value": "PASS"
+  },
+  "assets_decoded": {
+   "note": "contract lists no required assets",
+   "value": "NOT_APPLICABLE"
+  },
+  "assets_rendered": {
+   "note": "contract lists no required assets",
+   "value": "NOT_APPLICABLE"
+  },
+  "assets_resolved": {
+   "note": "contract lists no required assets",
+   "value": "NOT_APPLICABLE"
+  },
+  "evidence_complete": {
+   "value": "PASS"
+  },
+  "frame_output": {
+   "value": "FAIL"
+  },
+  "geometry": {
+   "value": "PASS"
+  },
+  "input": {
+   "value": "NOT_APPLICABLE"
+  },
+  "input_target_visibility": {
+   "value": "NOT_APPLICABLE"
+  },
+  "lifecycle": {
+   "note": "framework-view-only UI (no app-owned view classes); lifecycle from inflation + frames",
+   "value": "PASS"
+  },
+  "renderer_initialized": {
+   "note": "no provenance events; family=view-xml",
+   "value": "UNKNOWN"
+  },
+  "repeatability": {
+   "note": "single run; 3-run law not yet applied",
+   "value": "UNKNOWN"
+  },
+  "scene": {
+   "note": "screenshot class=BLANK_OR_NEARLY_BLANK",
+   "value": "FAIL"
+  },
+  "state_change": {
+   "value": "NOT_APPLICABLE"
+  },
+  "visual": {
+   "value": "FAIL"
+  },
+  "visual_change": {
+   "value": "NOT_APPLICABLE"
+  }
+ },
+ "title": "TicTacToe Classic"
+}

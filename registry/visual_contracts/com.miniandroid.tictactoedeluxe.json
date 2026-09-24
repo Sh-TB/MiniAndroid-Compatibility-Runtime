@@ -1,0 +1,413 @@
+{
+ "apk_asset_inventory": [],
+ "apk_sha256": "16510d7cb5dbcf7db049762728bd3e38911c3117b1f090129caee11e2b098f6e",
+ "confidence": "observed_only",
+ "dynamic_regions": [],
+ "expected_state_changes": [],
+ "interaction_targets": [
+  {
+   "bounds": [
+    53,
+    957,
+    303,
+    226
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "1",
+   "view_id": 2130903042
+  },
+  {
+   "bounds": [
+    388,
+    957,
+    303,
+    226
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "2",
+   "view_id": 2130903043
+  },
+  {
+   "bounds": [
+    723,
+    957,
+    304,
+    226
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "3",
+   "view_id": 2130903044
+  },
+  {
+   "bounds": [
+    53,
+    1215,
+    303,
+    226
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "4",
+   "view_id": 2130903045
+  },
+  {
+   "bounds": [
+    388,
+    1215,
+    303,
+    226
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "5",
+   "view_id": 2130903046
+  },
+  {
+   "bounds": [
+    723,
+    1215,
+    304,
+    226
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "6",
+   "view_id": 2130903047
+  },
+  {
+   "bounds": [
+    53,
+    1473,
+    303,
+    226
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "7",
+   "view_id": 2130903048
+  },
+  {
+   "bounds": [
+    388,
+    1473,
+    303,
+    226
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "8",
+   "view_id": 2130903049
+  },
+  {
+   "bounds": [
+    723,
+    1473,
+    304,
+    226
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "9",
+   "view_id": 2130903050
+  },
+  {
+   "bounds": [
+    53,
+    1731,
+    471,
+    68
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "NEW GAME",
+   "view_id": 2130903041
+  },
+  {
+   "bounds": [
+    556,
+    1731,
+    471,
+    136
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "MODE: VS PHONE",
+   "view_id": 2130903040
+  }
+ ],
+ "package": "com.miniandroid.tictactoedeluxe",
+ "renderer_family": "canvas-custom-view",
+ "renderer_signals": [
+  "app-custom-View-subclass"
+ ],
+ "required_assets": [],
+ "required_elements": [
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Lcom.miniandroid.tictactoedeluxe.GameView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    904
+   ],
+   "name": "GameView",
+   "resource_id": 2130903051,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    904,
+    1080,
+    1016
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    37,
+    941,
+    1006,
+    258
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    37,
+    1199,
+    1006,
+    258
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    37,
+    1457,
+    1006,
+    258
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    37,
+    1715,
+    1006,
+    168
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    53,
+    957,
+    303,
+    226
+   ],
+   "name": "android/widget/Button[1]",
+   "resource_id": 2130903042,
+   "text": "1",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    388,
+    957,
+    303,
+    226
+   ],
+   "name": "android/widget/Button[2]",
+   "resource_id": 2130903043,
+   "text": "2",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    723,
+    957,
+    304,
+    226
+   ],
+   "name": "android/widget/Button[3]",
+   "resource_id": 2130903044,
+   "text": "3",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    53,
+    1215,
+    303,
+    226
+   ],
+   "name": "android/widget/Button[4]",
+   "resource_id": 2130903045,
+   "text": "4",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    388,
+    1215,
+    303,
+    226
+   ],
+   "name": "android/widget/Button[5]",
+   "resource_id": 2130903046,
+   "text": "5",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    723,
+    1215,
+    304,
+    226
+   ],
+   "name": "android/widget/Button[6]",
+   "resource_id": 2130903047,
+   "text": "6",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    53,
+    1473,
+    303,
+    226
+   ],
+   "name": "android/widget/Button[7]",
+   "resource_id": 2130903048,
+   "text": "7",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    388,
+    1473,
+    303,
+    226
+   ],
+   "name": "android/widget/Button[8]",
+   "resource_id": 2130903049,
+   "text": "8",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    723,
+    1473,
+    304,
+    226
+   ],
+   "name": "android/widget/Button[9]",
+   "resource_id": 2130903050,
+   "text": "9",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    53,
+    1731,
+    471,
+    68
+   ],
+   "name": "android/widget/Button[NEW GAME]",
+   "resource_id": 2130903041,
+   "text": "NEW GAME",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    556,
+    1731,
+    471,
+    136
+   ],
+   "name": "android/widget/Button[MODE: VS PHONE]",
+   "resource_id": 2130903040,
+   "text": "MODE: VS PHONE",
+   "visibility": "VISIBLE"
+  }
+ ],
+ "required_regions": [],
+ "schema": "s92.visual_contract.v1",
+ "screen": [
+  1080,
+  1920
+ ],
+ "source_provenance": {
+  "source_laws": [],
+  "source_root": null,
+  "source_url": null
+ },
+ "title": "TicTacToe Deluxe"
+}

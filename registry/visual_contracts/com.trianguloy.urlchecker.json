@@ -1,0 +1,2096 @@
+{
+ "apk_asset_inventory": [
+  {
+   "bucket": "",
+   "dims": [
+    24,
+    24
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "-3.png",
+   "path": "res/-3.png",
+   "sha256": "578f5e729f58d7e0a71baa42bf337ac639fa867496e5b951eaf4367c1b9a4034"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    24,
+    24
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "-d.png",
+   "path": "res/-d.png",
+   "sha256": "e45631a21bcc2d619bb01120c266985d9d532ed94b4da13bc1d04780eab8a9c4"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    18,
+    18
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "04.png",
+   "path": "res/04.png",
+   "sha256": "783eee8f877d4336fc6d0c0d612f4449015c7f391a338c5de7114518ba31fc5a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    24,
+    24
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "0V.png",
+   "path": "res/0V.png",
+   "sha256": "724bf15f36e9630cddca9bbf118f5737c110b4d33a2b8ea211654118f2fa4d97"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    24,
+    24
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "1F.png",
+   "path": "res/1F.png",
+   "sha256": "d0b55ce9310e2b293b2808e71f6e4a69f904dd34620f9f0992625926ad3763dd"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "1K.png",
+   "path": "res/1K.png",
+   "sha256": "49be3f6413ad6fcbebd17681ceff200f74f4e24db872b740b505fdbbc1348967"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "21.png",
+   "path": "res/21.png",
+   "sha256": "fcb9c13a47f536d7b470a77e9395e725acc277593c06de2b62cb3acfc70667f3"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "2A.png",
+   "path": "res/2A.png",
+   "sha256": "d4e9520d7e73779538a326eadae100edae0b86d89e76f7f79164cd6fa51ed639"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    72,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "2L.png",
+   "path": "res/2L.png",
+   "sha256": "1ff429a7adecb756b8c3a0fe3fbac9e429f463da877e19aa36c288cd06c0bc33"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    18,
+    18
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "3A.png",
+   "path": "res/3A.png",
+   "sha256": "35859704e6e15a9c02ba936221875cb1909a741281892f76c7ac59f9b0224136"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    72,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "3_.png",
+   "path": "res/3_.png",
+   "sha256": "07819585e12b79f23f0caa714d74bd28caedf4e73e413580e29ce07227fcb59e"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "4X.png",
+   "path": "res/4X.png",
+   "sha256": "cea0c8f186664c12cd2d1e872ac3d68d2e5a26f2af08a5201ff0e1545b88bee5"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    324,
+    324
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "4Z.png",
+   "path": "res/4Z.png",
+   "sha256": "c003bc6d7c772c9d7ec9fa5af14905341436ca7fc505313431b93fb24d5f6b9c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "4y.png",
+   "path": "res/4y.png",
+   "sha256": "22c427f78ca03024501e94e8fa91928db4c7808230830e49f3cc78722daef71a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    18,
+    18
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "5T.png",
+   "path": "res/5T.png",
+   "sha256": "e709af77e57cd10d01c94989a16eba1afa03ecf71bf68b3a1eda59c8d5a4ab9d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    72,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "6a.png",
+   "path": "res/6a.png",
+   "sha256": "5ba8a2312fb6eb4018651649ed8dfe674e89bd359096ace82638abc2a0b658c6"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    36,
+    36
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "7T.png",
+   "path": "res/7T.png",
+   "sha256": "d0b4f45bf04f321662da070af00fcae012bf55dbb0105a757ad8e2aad457b588"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "7d.png",
+   "path": "res/7d.png",
+   "sha256": "6c29ffede394cc122711bf8d580b729463a99037b3898333dc6d6773b47e11b7"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    72,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "8O.png",
+   "path": "res/8O.png",
+   "sha256": "8395a17d47a159c043244ddfa67a3de546c15b84d707cd8535a2c2dde0c79762"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    24,
+    24
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "8T.png",
+   "path": "res/8T.png",
+   "sha256": "33ea8b4a26c4e6d6dd86520ffc878d5c64f4a58d0c14eb63236dbad29cd57395"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "8m.png",
+   "path": "res/8m.png",
+   "sha256": "01b17963c6dcf8d79b4045ab859b6dbf58d12f4f56ebb6a3fa5616b4dbafb7ee"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    108,
+    108
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "8w.png",
+   "path": "res/8w.png",
+   "sha256": "1f66e80888ea39ce9b5221fce4ecd83bc6ea55fd805b1108f2c488527a801994"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "9J.png",
+   "path": "res/9J.png",
+   "sha256": "f39ea202162c0befae21bbfa80b30eb5886e7972503f3c88493bd5e70d94443f"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    81,
+    81
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "9N.png",
+   "path": "res/9N.png",
+   "sha256": "b58d9075b5941b2a568c6147c68eeee738e0752ff89b91a1d835856d39767549"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    36,
+    36
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "9k.png",
+   "path": "res/9k.png",
+   "sha256": "a5cf03b66390ae63f8091f0b558e009d8d5f5119cc6386db425fb7822aa7a3a4"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    192,
+    192
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "9p.png",
+   "path": "res/9p.png",
+   "sha256": "82caf39ffd7fc29e0733a648fd7555e360dc0c7df99ae1e37707333b074c4bef"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "9w.png",
+   "path": "res/9w.png",
+   "sha256": "fbea6810c3d5bc9e27d54088af829b56395afc87af9cf07b3ea284a29cfba678"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    24,
+    24
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "BK.png",
+   "path": "res/BK.png",
+   "sha256": "2b5b4baf78e29c26371201abf753001f91e6e88060f19b1db0d0424de903440a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    324,
+    324
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "BM.png",
+   "path": "res/BM.png",
+   "sha256": "f6cd14afeeef5a2a96616fd7e998ff34896ef102ce94bd8c3c6cb01e4e1f97b9"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    36,
+    36
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Bj.png",
+   "path": "res/Bj.png",
+   "sha256": "640f0e376135cf0ce8de61295e345dcb4e9fa58ea9dc710160b5ee05f9d6cebf"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    432,
+    432
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "CH.png",
+   "path": "res/CH.png",
+   "sha256": "305b1c85a4208c75c0ddd58cb51ef101101bbd07d080aa3ef3c2c39dc0c14346"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    18,
+    18
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Ct.png",
+   "path": "res/Ct.png",
+   "sha256": "16c5e31dbbf70e8602171f43b30ceda3eac85459a908a7f07f327413c1780491"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    36,
+    36
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Dq.png",
+   "path": "res/Dq.png",
+   "sha256": "516fa33c907fa2ccfbcac42e5996488f09df33d5d58b79b6fef1383f957ad502"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    72,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Eb.png",
+   "path": "res/Eb.png",
+   "sha256": "cbfb294356f75df84fa05065536ccd951e67b60b387363523b8dd229f3dc58e2"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    18,
+    18
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Ez.png",
+   "path": "res/Ez.png",
+   "sha256": "20f2399abdfeb80d91d847aeac256b8d4d60ffb0447cf957cf393a0126b9a79b"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    432,
+    432
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "FE.png",
+   "path": "res/FE.png",
+   "sha256": "10a98cb0cdb90ffdbae0c61ff19c44d6602a0ddeb28d0027759785a7eeb77562"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "FS.png",
+   "path": "res/FS.png",
+   "sha256": "547752c975fcc46bad9d5df8fffd2ac95a64daaf972564bc93e5d4e3372b43a5"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Fq.png",
+   "path": "res/Fq.png",
+   "sha256": "ce56029046f31eb5bbb00822d1e0b4a9501e0f762830019a796d98c5f80de415"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    36,
+    36
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Ft.png",
+   "path": "res/Ft.png",
+   "sha256": "24bf3070d21691157198866bbf396fc99b789880b8a41a2c705d3c02cc97cd9c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    36,
+    36
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "G4.png",
+   "path": "res/G4.png",
+   "sha256": "6c820b0dc09312e81a9219b4757e2d04eeb59c542ee6a961c90fb80187de04bb"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Gj.png",
+   "path": "res/Gj.png",
+   "sha256": "04d9759c0843ea890573240636d24642b0a556a0d4a189c279d658948f51cd67"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    24,
+    24
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "H5.png",
+   "path": "res/H5.png",
+   "sha256": "d83fd1d017bb08de0eabe6ca7d661d536e2691353ee2856830f5ce8585142fb6"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    72,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "HI.png",
+   "path": "res/HI.png",
+   "sha256": "af5c1a8b24249ef1e4f8e3e2789b04a0836f433d899e6cb70ed25414f1282e9e"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    36,
+    36
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "HY.png",
+   "path": "res/HY.png",
+   "sha256": "26afbb25c17c25741796556f40d9920d05221eee1177fe7583354c233e9bdf6b"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Kq.png",
+   "path": "res/Kq.png",
+   "sha256": "32f06856644db29157c8be6d921f3f0e8e90d2ea61ef5f932378d5df4e122afe"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    36,
+    36
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "LM.png",
+   "path": "res/LM.png",
+   "sha256": "4d72ac08e149623f0168692c97b7c6ee23e6a0c4a350b8da712e4c9496125dc8"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    24,
+    24
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "M3.png",
+   "path": "res/M3.png",
+   "sha256": "e721e6854261c905b573a124212cf738128ac7d234c512a2cf5e401f4e7cca9a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Mf.png",
+   "path": "res/Mf.png",
+   "sha256": "38889e6182a50d66ae8160feb35cf6a827db2da7f3c747c89f7f868fc8c1ef65"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    216,
+    216
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Mi.png",
+   "path": "res/Mi.png",
+   "sha256": "d7e6b82dc217049c6862b51f8bed8645d49499a4f049c9e7ee1240f60aa145a7"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    100,
+    100
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Ms.png",
+   "path": "res/Ms.png",
+   "sha256": "49a6cd66e298c8612b62c93a52b012a4c65093527eff8fa3977443b8380c6f7a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "N3.png",
+   "path": "res/N3.png",
+   "sha256": "2411396e8843e74d1eb4c0bc8ffd3f3cea45d11cd412f5dc4dcbb49a8b6a495d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    72,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Nz.png",
+   "path": "res/Nz.png",
+   "sha256": "6e45a37c3c0d580e87e1255a2663badca78c089af8ef44200606c009dd044f1c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "OY.png",
+   "path": "res/OY.png",
+   "sha256": "db8d9268c36d0fbc9e7afc51094e2c95d80c37029988eaac603a100fc0748eab"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    24,
+    24
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Ok.png",
+   "path": "res/Ok.png",
+   "sha256": "a6da9b8c7990c32b5a0bd8c2b5001266ab8490093e7d98b0afc435ee5658d82f"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    36,
+    36
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Oq.png",
+   "path": "res/Oq.png",
+   "sha256": "13305a037b1217ef94cd9d708e7eafc9cf6bbb605a708d7ef6efa9ea5c2f7056"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    18,
+    18
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Qg.png",
+   "path": "res/Qg.png",
+   "sha256": "e94091afe7e6c6b79343d67043cd0c559a39e8f5c7aacd772d81acaece2a03c7"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    144,
+    144
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "RJ.png",
+   "path": "res/RJ.png",
+   "sha256": "a05a7d55a72b44dd7baac2120df20ecdf2f77d32ff7faf36f07a57a24f8efaa9"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "RT.png",
+   "path": "res/RT.png",
+   "sha256": "01442b622fbe08c638761121630171834e9e61f0061869631bbe598678d5cd91"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "SK.png",
+   "path": "res/SK.png",
+   "sha256": "f89725e9f34b1164f3a21d71bbea83b557c16bbe63e5057a1ad4478a154d7c33"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "S_.png",
+   "path": "res/S_.png",
+   "sha256": "cd2c9e04cd84ae5ecf81b0332c42292906bd91075893020cd5db00bef4a58352"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    24,
+    24
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "TK.png",
+   "path": "res/TK.png",
+   "sha256": "f023c921e05bf84691f091884b06518983148c6181753a51c078d67f664aae5f"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    18,
+    18
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "TR.png",
+   "path": "res/TR.png",
+   "sha256": "52d3f498abd5256570c148d82059cf5d91a18a22360251eb40c87bc1a52b9d87"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    72,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Tp.png",
+   "path": "res/Tp.png",
+   "sha256": "f6a49c6823d043ba28e5903535036714ce512bfa69e6b339ac61c7e7960e8796"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "U8.png",
+   "path": "res/U8.png",
+   "sha256": "ed3bfa66ec382cd45916dca0acc2e4fb05afe8c36502d5eb00973cc0e73e2e53"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    24,
+    24
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "UA.png",
+   "path": "res/UA.png",
+   "sha256": "48e16cdbd2eb813d19ef9541aa11a4b1af216de72a2df95d0effc1910ccf0dff"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "UV.png",
+   "path": "res/UV.png",
+   "sha256": "aad01771752a9666fa533708d23266e90fd305e6ffd89cfdd3542046eb82290d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    144,
+    144
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "W0.png",
+   "path": "res/W0.png",
+   "sha256": "69c5d1168e3164f8c647b74db458c1d8e5db139dbcfd9116cb9b56ac171f5a93"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    18,
+    18
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "X9.png",
+   "path": "res/X9.png",
+   "sha256": "00ebe2f54985f793a303d5117c037c589f21472f53d7ac4dcfde4fde4100477c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    24,
+    24
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "YG.png",
+   "path": "res/YG.png",
+   "sha256": "54b89061eba373d47dd1bc2ccd4554ef020e159df287a6ea2f2530dbdb25a2d5"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    36,
+    36
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "YW.png",
+   "path": "res/YW.png",
+   "sha256": "c8f3214cd0f1ba3095bb3683254e729d5caf273c072bacaa40680caaa5acf3a1"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    18,
+    18
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "Yy.png",
+   "path": "res/Yy.png",
+   "sha256": "b7d8c61903ae4410d59d06692e767804e375e345607d495df53454c81d5c1737"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    18,
+    18
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ZJ.png",
+   "path": "res/ZJ.png",
+   "sha256": "c79b6e9b512f88ca3ba7ee0162888352c82b15a9e30d5c1b2b48b2605627d75f"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    24,
+    24
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ZJ1.png",
+   "path": "res/ZJ1.png",
+   "sha256": "93d16a888d84c08faa740e8c92731f561dff5e04a4c5da0a96a695d339c9c06c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    18,
+    18
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ZM.png",
+   "path": "res/ZM.png",
+   "sha256": "7c61c481f50d493bab4cc0c5d4eddfb5bd53668921528370261590e42ed15953"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "_1.png",
+   "path": "res/_1.png",
+   "sha256": "cda1fc8540325cc539efeefd2e6a0749149e88f0c23bc658bf38efbdc3b6ebf9"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    72,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "_p.png",
+   "path": "res/_p.png",
+   "sha256": "4ae2a6810cbf5fb54cce4df39e90fe821ac37443f3b93a6660d06a45f806abb6"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "aE.png",
+   "path": "res/aE.png",
+   "sha256": "b850983abe6ce136860c24df526103b693345b4dafb9359627985ccd68d4bb72"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    36,
+    36
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "aF.png",
+   "path": "res/aF.png",
+   "sha256": "98becb3f23cc1a4e04b749b18bbafc914f9c883513db28f718de2f5e9792fc30"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    108,
+    108
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "bB.png",
+   "path": "res/bB.png",
+   "sha256": "ea7ced2337faddfdfd808039f1e2f0e3c78e9a7e74e6d5dadd76d99299d647a0"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    72,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "bx.png",
+   "path": "res/bx.png",
+   "sha256": "758cee36f1c144fce36b4d24f0e09ad75a9a283bbf57a5c3bd45013efa874dc8"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    18,
+    18
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "c9.png",
+   "path": "res/c9.png",
+   "sha256": "b1365da18227c02bb418c0a2bbdc9c7b6b165fa77fa410a50ffff499304fb714"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    72,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "cx.png",
+   "path": "res/cx.png",
+   "sha256": "ee3d4c4df0eb2e2abaa6a40459ea8e7f27e923830193e27797028148895965ce"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "dA.png",
+   "path": "res/dA.png",
+   "sha256": "bf580e85d6e4bb02eb86050f1514bc5d2ffad52df9ccd6376f874cecf12ff05a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    72,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "dS.png",
+   "path": "res/dS.png",
+   "sha256": "d5a83e1dead2f21b25ff42a08207e98a12ceb9219bdb6a27283d9e9e9d499585"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "eF.png",
+   "path": "res/eF.png",
+   "sha256": "7bc824e45888e7678507d66600d2a6489a1a17aa9418c86db6677f436833d31e"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ee.png",
+   "path": "res/ee.png",
+   "sha256": "4472c8d349ec5aeb248f0f7d69574208c1ada2e33a90aadd063a70146bcd812e"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ff.png",
+   "path": "res/ff.png",
+   "sha256": "0700ed98ee0d40a38fdaf9b762f7c711659378cff5ef40dc6e188a1e491e3190"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    36,
+    36
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "fv.png",
+   "path": "res/fv.png",
+   "sha256": "8acb3b7db0542a573e6b0eb580fd06d56df1f25b46ff20703cae1ef0adf23404"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    72,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "fv1.png",
+   "path": "res/fv1.png",
+   "sha256": "44e7fd6082f0f4520d14b4508d5bcb497105c7a7308c8e28aa82365a33a52698"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    18,
+    18
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "gf.png",
+   "path": "res/gf.png",
+   "sha256": "3e7cd8bac25c162ed29679ed2fc4cc2f5b3113290dc52345ae18bd97ff964d86"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    18,
+    18
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "hA.png",
+   "path": "res/hA.png",
+   "sha256": "6e52fb00f437a9d852b29dae84c20d2057e59b5f911329cf8dea9652715c70c4"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    24,
+    24
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ha.png",
+   "path": "res/ha.png",
+   "sha256": "f356f08b6bd9640888b56f4f64dfe91ff9b7b91f380b9913a64e3e297b651547"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "hs.png",
+   "path": "res/hs.png",
+   "sha256": "83c2ae94f94e0e7daca66ade5f6a6c2ddf358e79ee392f37bb0cea01c98ae226"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    36,
+    36
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "iQ.png",
+   "path": "res/iQ.png",
+   "sha256": "5575344a440db339c93cdce2d305b92df6b92e605c6bd16ad3a889bcd42bb728"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ia.png",
+   "path": "res/ia.png",
+   "sha256": "2d2d901897d8f06221861dec9672988f7735ad0688b34e91e43c49e76192274b"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "jI.png",
+   "path": "res/jI.png",
+   "sha256": "497ab2566ad340b02ce0a4b14a1130979aa44d1168b88f6c70ac2e42d648ecf7"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ji.png",
+   "path": "res/ji.png",
+   "sha256": "dc601df219baa44b174c55c9036b7b05b865f7cbe56205781e9d43a1428ac4e8"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "jw.png",
+   "path": "res/jw.png",
+   "sha256": "86cba5428c6eeb8259683359177a21f3ea8bc0d9eecdc0aaa55117f33c2bb5eb"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    18,
+    18
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "kk.png",
+   "path": "res/kk.png",
+   "sha256": "c9896a2be4cc091fc64556dcba3e8154ec6983c6c189dd06cf1dc13bcac02cca"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    18,
+    18
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "lY.png",
+   "path": "res/lY.png",
+   "sha256": "077dc70e3484679692f892971cffff8409014c3ef85a6b074c3c6efd6ad10a2b"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    72,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "mM.png",
+   "path": "res/mM.png",
+   "sha256": "2bd25561c5b8522ca535bb3d3ddd00ffdcee3c954cbdb6856dc91319231ce1c4"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "nD.png",
+   "path": "res/nD.png",
+   "sha256": "9ec549c5a77b030dee091980b4264191f6d34238344b51954c2cec83e53f59dd"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    24,
+    24
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ni.png",
+   "path": "res/ni.png",
+   "sha256": "90cae4345ced30a42ebb521cb63b22eac296c2845360244bde0d53eff9edf60a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    192,
+    192
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "o-.png",
+   "path": "res/o-.png",
+   "sha256": "720bbdd2835dbb1521ad3836610b709ee78e443c06b91b069fd035e77d6cf54d"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    162,
+    162
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "oX.png",
+   "path": "res/oX.png",
+   "sha256": "2788585a4411b9345dfefb69e8ce07a70209439ebc38544ebfe05acf5dd3694a"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    24,
+    24
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "pQ.png",
+   "path": "res/pQ.png",
+   "sha256": "4942ee5405a3445b33531e55726fff711b3c1f06fffd5ee78d93f5a8e4753c69"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "pQ1.png",
+   "path": "res/pQ1.png",
+   "sha256": "04ddff12d22edc8056ac75779f14b9141b5d5427d6dc73db98f1485f0874f858"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    72,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "px.png",
+   "path": "res/px.png",
+   "sha256": "5738be95e47e8bf540dd54ca3405e089388b3037b87adc56bcd47125d607df23"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "qQ.png",
+   "path": "res/qQ.png",
+   "sha256": "c13ca808083682b2756f2c21dda617675ff187174926209d9a028d5920dc47da"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    36,
+    36
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ql.png",
+   "path": "res/ql.png",
+   "sha256": "e06497f5e6423142ee3f38f9a8380583189d59483206e3bbee043c748ed89fe1"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    36,
+    36
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "sr.png",
+   "path": "res/sr.png",
+   "sha256": "3bbbf216101e68c6b626df087f2a4dee28884280e2f180f66bab5be251652e9b"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    216,
+    216
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "tP.png",
+   "path": "res/tP.png",
+   "sha256": "97a98223033fc3f8b2dc70ec0451444ed7759c9b7d96c45f6016728b02887c30"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    72,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "tm.png",
+   "path": "res/tm.png",
+   "sha256": "8657e7c73e27b28f7d8e7c9e717efe26722cbf0d14957503e19e1e421bd1b9f0"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    18,
+    18
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "tv.png",
+   "path": "res/tv.png",
+   "sha256": "2777559519e9b85bc8c2277cbdc3e283e1f385fc9a68b86939b44bc4acc0ffea"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    36,
+    36
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "u8.png",
+   "path": "res/u8.png",
+   "sha256": "084b95bfd430c226ddfa1bbfaa0dd9935185e99ccc86e3fef14ce633da582487"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "uu.png",
+   "path": "res/uu.png",
+   "sha256": "b3320eff9add5fa42ded1ab9f2d93882f5116bef87d71d7b274f19cc0e45ed13"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    96,
+    96
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "v0.png",
+   "path": "res/v0.png",
+   "sha256": "e3c9363d8933019b0d6c344850256f1bd2fdaef8600a75fd3b3b40bb10955753"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    24,
+    24
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "vI.png",
+   "path": "res/vI.png",
+   "sha256": "23ddf6f5269ac1c009dcd9dea756e97b1663f91846570f949616749bd4db6f23"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    72,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "w0.png",
+   "path": "res/w0.png",
+   "sha256": "dde2557fc6b52f589da6d594bebd35766e8e3a4ee790f2707da28fffd54a3c51"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    48,
+    48
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "wP.png",
+   "path": "res/wP.png",
+   "sha256": "b6a5a0c307bad4e90aab636a5ea99232b12ea0b3481d5e23d7dbbec93c6e17ab"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    81,
+    81
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ww.png",
+   "path": "res/ww.png",
+   "sha256": "6e4a722da32194cda26e7fedb586823cea2bf777af76a2b5571e9dbf9e43dadf"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    36,
+    36
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "xQ.png",
+   "path": "res/xQ.png",
+   "sha256": "82a1ccc01f2c1b7f2ed06fd2c69281379ad3b70de25b929b8a4bf1e49c2435c9"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    162,
+    162
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "yi.png",
+   "path": "res/yi.png",
+   "sha256": "ea10cc4246cd2299d7b1d86e00ea3c498d935c36ef76ff43ed223017adcb59fb"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    72,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "yn.png",
+   "path": "res/yn.png",
+   "sha256": "49c0e3c88e0080d950761229b7d32f3aa14faaa74de6b6fea415d2948da720ea"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    72,
+    72
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "zr.png",
+   "path": "res/zr.png",
+   "sha256": "7f3f142227ef57514d18acb676b7550c9ebef1d26ef9289c41b82605ccca8007"
+  }
+ ],
+ "apk_sha256": "50872227bc9d5f7af6193df3374d7bd32fe7706426c94f7d7e3a4fb0078acb01",
+ "confidence": "apk_verified",
+ "dynamic_regions": [],
+ "expected_state_changes": [],
+ "interaction_targets": [
+  {
+   "bounds": [
+    0,
+    1876,
+    360,
+    44
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "<",
+   "view_id": 2131099657
+  },
+  {
+   "bounds": [
+    720,
+    1876,
+    360,
+    44
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": ">",
+   "view_id": 2131099658
+  },
+  {
+   "bounds": [
+    0,
+    0,
+    -2,
+    -2
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "Modules",
+   "view_id": 0
+  }
+ ],
+ "package": "com.trianguloy.urlchecker",
+ "renderer_family": "view-xml",
+ "renderer_signals": [],
+ "required_assets": [],
+ "required_elements": [
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/ViewFlipper;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1876
+   ],
+   "name": "android/widget/ViewFlipper",
+   "resource_id": 2131099687,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    1876,
+    1080,
+    44
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/ScrollView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    722,
+    1080,
+    432
+   ],
+   "name": "android/widget/ScrollView",
+   "resource_id": 2131099717,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    1876,
+    360,
+    44
+   ],
+   "name": "android/widget/Button[<]",
+   "resource_id": 2131099657,
+   "text": "<",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TextView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    360,
+    1876,
+    360,
+    44
+   ],
+   "name": "android/widget/TextView[/]",
+   "resource_id": 2131099722,
+   "text": "/",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    720,
+    1876,
+    360,
+    44
+   ],
+   "name": "android/widget/Button[>]",
+   "resource_id": 2131099658,
+   "text": ">",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    722,
+    1080,
+    432
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -1,
+    -2
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -1,
+    -2
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -1,
+    -2
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -1,
+    -2
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/ImageView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    722,
+    1080,
+    168
+   ],
+   "name": "android/widget/ImageView",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TextView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    890,
+    1080,
+    44
+   ],
+   "name": "android/widget/TextView[URLCheck]",
+   "resource_id": 0,
+   "text": "URLCheck",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TextView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    934,
+    1080,
+    220
+   ],
+   "name": "android/widget/TextView[Thanks for downloading the app!\n\nThis is the tutorial, if you want to skip it you can do so with the button below. You can always come back to this tutorial from the settings menu.]",
+   "resource_id": 0,
+   "text": "Thanks for downloading the app!\n\nThis is the tutorial, if you want to skip it you can do so with the button below. You can always come back to this tutorial from the settings menu.",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TextView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -1,
+    -2
+   ],
+   "name": "android/widget/TextView[The app acts as an intermediary when opening or sharing url links. Once an url is sent to the app you can interact with it via the modules. After that you can open the link (in the app you want), share it or copy it to the clipboard.]",
+   "resource_id": 0,
+   "text": "The app acts as an intermediary when opening or sharing url links. Once an url is sent to the app you can interact with it via the modules. After that you can open the link (in the app you want), share it or copy it to the clipboard.",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/view/View;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -1,
+    -2
+   ],
+   "name": "android/view/View",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -2,
+    -2
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TextView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -1,
+    -2
+   ],
+   "name": "android/widget/TextView[Set the app as the default web browser to intercept URLs when opening them. \n(Not needed if URLs are redirected using the \u201cShare\u201d functionality.)]",
+   "resource_id": 0,
+   "text": "Set the app as the default web browser to intercept URLs when opening them. \n(Not needed if URLs are redirected using the \u201cShare\u201d functionality.)",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TextView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -1,
+    -2
+   ],
+   "name": "android/widget/TextView[Open links on this app: Over the years Android has changed the way to configure it, and differs between versions. Find below all available settings for your device, if links are not being opened on this app try them all.]",
+   "resource_id": 0,
+   "text": "Open links on this app: Over the years Android has changed the way to configure it, and differs between versions. Find below all available settings for your device, if links are not being opened on this app try them all.",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TextView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -1,
+    -2
+   ],
+   "name": "android/widget/TextView[Press the link below to test it:]",
+   "resource_id": 0,
+   "text": "Press the link below to test it:",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TextView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -1,
+    -2
+   ],
+   "name": "android/widget/TextView[http://www.google.com/?ref=referrer&foo=bar#tag]",
+   "resource_id": 0,
+   "text": "http://www.google.com/?ref=referrer&foo=bar#tag",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TextView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -1,
+    -2
+   ],
+   "name": "android/widget/TextView[Modules is how the app interacts with the URLs. \nEach of the modules has a specific function. Usually to present info about the URL, or allowing it to be modified. \nRead about them and set them up as needed. \n \nImportant: All the actions are manual by default. The app won't modify anything nor connect to the Internet unless you specifically allow it, but some actions can be auto-applied if desired. \n \nOpen the list of modules from the main screen, or by tapping the button below.]",
+   "resource_id": 0,
+   "text": "Modules is how the app interacts with the URLs. \nEach of the modules has a specific function. Usually to present info about the URL, or allowing it to be modified. \nRead about them and set them up as needed. \n \nImportant: All the actions are manual by default. The app won't modify anything nor connect to the Internet unless you specifically allow it, but some actions can be auto-applied if desired. \n \nOpen the list of modules from the main screen, or by tapping the button below.",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -2,
+    -2
+   ],
+   "name": "android/widget/Button[Modules]",
+   "resource_id": 0,
+   "text": "Modules",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TextView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -1,
+    -2
+   ],
+   "name": "android/widget/TextView[That's all. Here are some tips that can be useful:\n\nWhen an app doesn't give you a way to open or share a url, but it gives you a way to do the other you can solve the issue using this app. You can also copy the url to the clipboard by long pressing the share button.\n\nThere are some urls which its only purpose is redirecting you to another url. If the final url can be opened in an app, then you can avoid opening it in a browser.\n\nHope you find the app useful! And don't hesitate to suggest features, report bugs or even propose changes. Find all relevant links on the about screen.]",
+   "resource_id": 0,
+   "text": "That's all. Here are some tips that can be useful:\n\nWhen an app doesn't give you a way to open or share a url, but it gives you a way to do the other you can solve the issue using this app. You can also copy the url to the clipboard by long pressing the share button.\n\nThere are some urls which its only purpose is redirecting you to another url. If the final url can be opened in an app, then you can avoid opening it in a browser.\n\nHope you find the app useful! And don't hesitate to suggest features, report bugs or even propose changes. Find all relevant links on the about screen.",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/ImageView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -2,
+    -1
+   ],
+   "name": "android/widget/ImageView",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -2,
+    -2
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/ImageView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -2,
+    -1
+   ],
+   "name": "android/widget/ImageView",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -2,
+    -2
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/ImageView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -2,
+    -1
+   ],
+   "name": "android/widget/ImageView",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/ImageView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -1,
+    -2
+   ],
+   "name": "android/widget/ImageView",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TextView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -1,
+    -2
+   ],
+   "name": "android/widget/TextView[Open]",
+   "resource_id": 0,
+   "text": "Open",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/ImageView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -1,
+    -2
+   ],
+   "name": "android/widget/ImageView",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TextView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -1,
+    -2
+   ],
+   "name": "android/widget/TextView[Share]",
+   "resource_id": 0,
+   "text": "Share",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/ImageView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -1,
+    -2
+   ],
+   "name": "android/widget/ImageView",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TextView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -1,
+    -2
+   ],
+   "name": "android/widget/TextView[Open]",
+   "resource_id": 0,
+   "text": "Open",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/ImageView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -1,
+    -2
+   ],
+   "name": "android/widget/ImageView",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TextView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    -1,
+    -2
+   ],
+   "name": "android/widget/TextView[Share]",
+   "resource_id": 0,
+   "text": "Share",
+   "visibility": "VISIBLE"
+  }
+ ],
+ "required_regions": [],
+ "schema": "s92.visual_contract.v1",
+ "screen": [
+  1080,
+  1920
+ ],
+ "source_provenance": {
+  "source_laws": [],
+  "source_root": null,
+  "source_url": null
+ },
+ "title": "URL Checker"
+}
