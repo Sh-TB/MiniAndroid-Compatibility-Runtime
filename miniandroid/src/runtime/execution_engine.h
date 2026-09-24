@@ -230,7 +230,10 @@ private:
     bool stage_load_classes(ExecutionResult& result);
     bool stage_execute_application(ExecutionResult& result, const ExecutionConfig& config);
     bool stage_render_frame(ExecutionResult& result, const ExecutionConfig& config);
-    bool stage_capture_output(ExecutionResult& result, const ExecutionConfig& config);
+    // F-NEW-198: final_pass=true skips the R-NEW-340 compose pump (the
+    // end-of-window re-capture must not advance app state; it records it).
+    bool stage_capture_output(ExecutionResult& result, const ExecutionConfig& config,
+                              bool final_pass = false);
     // UNIFIED_011.2 CLICK-TEST: generic post-first-frame interaction probe.
     bool stage_click_test(ExecutionResult& result, const ExecutionConfig& config);
     bool stage_click_sequence(ExecutionResult& result, const ExecutionConfig& config);

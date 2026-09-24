@@ -56,14 +56,11 @@ def build_contract(apk_path, package, title, run_dir=None,
         },
         "confidence": "observed_only",
     }
-    # ---- assets from APK (ground truth) -----------------------------------
+    # ---- assets from APK (ground truth inventory) --------------------------
     assets = gc.apk_assets(apk_path)
-    launcher_like = [a for a in assets if "mipmap" in a.get("dir", "") or
-                     ("drawable" in a.get("dir", "") and
-                      ("icon" in a["path"].lower() or
-                       "logo" in a["path"].lower()))]
+    inventory = []
     for a in assets:
-        contract["required_assets"].append({
+        inventory.append({
             "name": a["path"].rsplit("/", 1)[-1],
             "path": a["path"],
             "sha256": a["sha256"],
@@ -71,9 +68,57 @@ def build_contract(apk_path, package, title, run_dir=None,
             "kind": a["kind"],
             "dir": a.get("dir"),
             "bucket": a.get("bucket", ""),
-            "confidence": "apk_verified",
-            "required": bool(launcher_like and a in launcher_like),
         })
+    contract["apk_asset_inventory"] = inventory
+
+    # ---- required assets: what the app itself ATTEMPTED to show -------------
+    # S92 law: an asset is 'required' only when the app binds it on this
+    # screen (provenance event or ViewTree image binding) — never because
+    # it merely exists in the zip (S92 §6 case 24 is the inverse finding).
+    if run_dir:
+        re_ = gc.RunEvidence(run_dir)
+        events = (re_.provenance or {}).get("events", [])
+        bound_paths = {}
+        for ev in events:
+            p = ev.get("path")
+            if not p:
+                continue
+            cur = bound_paths.get(p)
+            # keep the most complete record (drawn + non-zero dst)
+            def score(e):
+                d = e.get("dst") or {}
+                return (1 if e.get("DRAW_CALLED") else 0,
+                        1 if (d.get("w", 0) and d.get("h", 0)) else 0)
+            if cur is None or score(ev) > score(cur):
+                bound_paths[p] = ev
+        for a in assets:
+            ev = bound_paths.get(a["path"])
+            if not ev:
+                # also match by basename (resolver may record variant paths)
+                base = a["path"].rsplit("/", 1)[-1]
+                for p, e2 in bound_paths.items():
+                    if p.rsplit("/", 1)[-1] == base:
+                        ev = e2
+                        break
+            if ev:
+                dst = ev.get("dst") or {}
+                req = {
+                    "name": a["path"].rsplit("/", 1)[-1],
+                    "path": a["path"],
+                    "sha256": a["sha256"],
+                    "dims": a["dims"],
+                    "kind": a["kind"],
+                    "dir": a.get("dir"),
+                    "bucket": a.get("bucket", ""),
+                    "confidence": "apk_verified",
+                    "required": True,
+                    "expected_bounds": ([dst.get("x", 0), dst.get("y", 0),
+                                         dst.get("w", 0), dst.get("h", 0)]
+                                        if dst else None),
+                    "src_density": ev.get("src_density"),
+                    "binding_evidence": "gfx_provenance_event",
+                }
+                contract["required_assets"].append(req)
     if assets:
         contract["confidence"] = "apk_verified"
 

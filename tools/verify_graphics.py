@@ -69,22 +69,33 @@ def verify_run(run_dir, apk_path, contract=None, package=None, title=None,
                    if n.get("class") and not
                    n.get("class", "").startswith(("Landroid/", "Ljava/",
                                                   "Landroidx/", "Lkotlin"))]
-    lifecycle_ok = bool(nodes) and bool(app_classes)
+    # lifecycle evidence: the app inflated a UI (ViewTree non-empty) and at
+    # least one frame rendered. Apps built purely on framework views have no
+    # app-owned view classes — that is NOT a lifecycle failure.
+    lifecycle_ok = bool(nodes) and (
+        bool(re_.screenshot) or bool(re_.frames))
+    lifecycle_note = None
+    if not lifecycle_ok:
+        lifecycle_note = ("no ViewTree / no frames — activity never "
+                          "inflated a UI")
+    elif not app_classes:
+        lifecycle_note = ("framework-view-only UI (no app-owned view "
+                          "classes); lifecycle from inflation + frames")
     stages["apk_load"] = vd.stage("PASS" if apk_sha or re_.screenshot
                                   else "FAIL")
     stages["lifecycle"] = vd.stage(
-        "PASS" if lifecycle_ok else ("UNKNOWN" if not nodes else "FAIL"),
-        None if lifecycle_ok else
-        "no app-owned view classes observed in ViewTree")
+        "PASS" if lifecycle_ok else "FAIL", lifecycle_note)
 
     # --- scene (§13) --------------------------------------------------------
     fq = None
     if re_.screenshot:
         fq = gp.frame_quality(re_.screenshot)
-        scene_val = "PASS" if fq.get("class") == "CONTENT_PRESENT" else \
-            ("PARTIAL" if fq.get("class") == "SPARSE_CONTENT" else "FAIL")
-        stages["scene"] = vd.stage(
-            scene_val, f"screenshot class={fq.get('class')}")
+        # S92 §13 law: BLANK/splash-only/nearly-blank FAILS the scene gate;
+        # SPARSE content is legitimate for minimal apps (recorded as note,
+        # the deeper truth lives in the asset/geometry/interaction stages).
+        cls = fq.get("class")
+        scene_val = "FAIL" if cls == "BLANK_OR_NEARLY_BLANK" else "PASS"
+        stages["scene"] = vd.stage(scene_val, f"screenshot class={cls}")
     else:
         stages["scene"] = vd.stage("FAIL", "no screenshot captured")
 
@@ -117,7 +128,7 @@ def verify_run(run_dir, apk_path, contract=None, package=None, title=None,
         stages["renderer_initialized"] = vd.stage(
             "UNKNOWN", f"no provenance events; family={family}")
         stages["frame_output"] = vd.stage(
-            "PASS" if (fq and fq.get("class") == "CONTENT_PRESENT")
+            "PASS" if (fq and fq.get("class") != "BLANK_OR_NEARLY_BLANK")
             else "FAIL")
 
     # --- asset chains (§4/§6) ------------------------------------------------
@@ -144,27 +155,23 @@ def verify_run(run_dir, apk_path, contract=None, package=None, title=None,
     # --- overall visual (asset + geometry + frame triangulated) --------------
     asset_vals = [stages[k]["value"] for k in
                   ("assets_resolved", "assets_decoded", "assets_rendered")]
+    has_asset_contract = any(v != "NOT_APPLICABLE" for v in asset_vals)
     if "FAIL" in asset_vals or geom_rollup == "FAIL":
         visual_val = "FAIL"
     elif "PARTIAL" in asset_vals or geom_rollup == "PARTIAL":
         visual_val = "PARTIAL"
-    elif all(v == "NOT_APPLICABLE" for v in asset_vals) and \
-            geom_rollup == "NOT_APPLICABLE":
-        visual_val = "PARTIAL" if tri == "PIXELS_WITHOUT_VIEWTREE_" \
-            "INVESTIGATE_FAMILY" else ("PASS" if stages["frame_output"]
-                                       ["value"] == "PASS" else "FAIL")
-        visual_val = visual_val if stages["scene"]["value"] == "PASS" \
-            else "FAIL"
+    elif not has_asset_contract and geom_rollup == "NOT_APPLICABLE":
+        # no asset/geometry contract: lean on frame output + triangulation,
+        # never on "screenshot exists" alone (S92 0.2 law)
+        visual_val = "PASS" if stages["frame_output"]["value"] == "PASS" \
+            and tri != "RENDER_OUTPUT_FAIL" else "FAIL"
     else:
-        visual_val = "PASS" if stages["scene"]["value"] in ("PASS",
-                                                            "PARTIAL") \
-            else "FAIL"
+        visual_val = "PASS" if stages["scene"]["value"] == "PASS" else "FAIL"
     stages["visual"] = vd.stage(visual_val)
 
     # --- interaction (§10/§11) ----------------------------------------------
     targets = (contract or {}).get("interaction_targets", [])
-    proofs = ip.interaction_proofs(re_, contracts_targets=targets,
-                                   asset_checker=None)
+    proofs = ip.interaction_proofs(re_, contracts_targets=targets)
     if proofs:
         unverified = [p for p in proofs
                       if p["verdict"] == "INTERACTION_TARGET_UNVERIFIED"]
@@ -195,12 +202,11 @@ def verify_run(run_dir, apk_path, contract=None, package=None, title=None,
     else:
         for k in ("input_target_visibility", "input", "state_change",
                   "visual_change"):
+            interactive = _has_interactive_target(targets, nodes)
             stages[k] = vd.stage(
-                "NOT_APPLICABLE" if not _has_interactive_target(targets, nodes)
-                else "UNKNOWN",
-                "no interaction evidence in this run" if
-                _has_interactive_target(targets, nodes) else
-                "no clickable targets in contract/ViewTree")
+                "NOT_APPLICABLE" if not interactive else "UNKNOWN",
+                None if not interactive else
+                "run drove no interaction; interactive targets exist")
 
     # --- repeatability (§28) --------------------------------------------------
     stages["repeatability"] = vd.stage(

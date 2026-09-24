@@ -23,6 +23,21 @@ from PIL import Image
 
 from . import graphics_common as gc
 from . import visual_probe as vp
+from .visual_probe import GEOMETRY_TOLERANCE_PX as GEOM_TOL_PX
+
+# S92 §18 density law inputs. MiniAndroid device densityDpi = 420
+# (miniandroid/src/runtime/execution_engine.cpp:416, MINIANDROID_DENSITY
+# override). Expected on-screen box for a density-bucketed asset:
+#   expected_px = decoded_px * (RUNTIME_DENSITY_DPI / src_bucket_density)
+# A mismatch here is the user-reported "icon present but wrong size" class.
+RUNTIME_DENSITY_DPI = 420
+
+
+def expected_display_box(decoded_w, decoded_h, src_density):
+    if not src_density:
+        return decoded_w, decoded_h   # DENSITY_NONE / unknown: no law
+    s = RUNTIME_DENSITY_DPI / float(src_density)
+    return (round(decoded_w * s), round(decoded_h * s))
 
 
 def decode_asset(data):
@@ -97,10 +112,40 @@ def asset_chains(apk_path, contract, run_evidence, run_dir):
             ("FAIL" if prov_events else "UNKNOWN")
         rec["DRAW_CALLED"] = "PASS" if drawn else \
             ("FAIL" if bound else "UNKNOWN")
-        # pixel presence (L3)
+        # density law: expected on-screen box from src bucket density (§18)
+        dims = dec.get("dims") or [0, 0]
+        src_d = (ev_match or {}).get("src_density") or 0
+        exp_box = expected_display_box(dims[0], dims[1], src_d)
+        if src_d:
+            rec["expected_display_box"] = list(exp_box)
+            rec["density_law"] = {
+                "src_density": src_d,
+                "runtime_density": RUNTIME_DENSITY_DPI,
+                "note": "expected_px = decoded_px * runtime/src"}
+            dst = (ev_match or {}).get("dst") or {}
+            if isinstance(dst, dict) and dst.get("w") and dst.get("h"):
+                tol = max(GEOM_TOL_PX,
+                          int(0.12 * max(exp_box[0], exp_box[1], 1)))
+                dd = [dst.get("w") - exp_box[0], dst.get("h") - exp_box[1]]
+                rec["DENSITY_CHECK"] = "PASS" if all(abs(d) <= tol
+                                                     for d in dd) \
+                    else "FAIL"
+                if rec["DENSITY_CHECK"] == "FAIL":
+                    rec["FAILURE"] = "DENSITY_MISMATCH"
+        # pixel presence (L3) in the expected region; priority:
+        #   contract expected_bounds (non-zero) -> this run's provenance
+        #   dst_region (non-zero) -> density-law box at provenance x,y
+        region = req.get("expected_bounds") or []
+        if len(region) == 4 and not region[2] and not region[3]:
+            region = []
+        if not region and ev_match:
+            dr = ev_match.get("dst_region") or []
+            if len(dr) == 4 and dr[2] and dr[3]:
+                region = dr
+        if not region and src_d and ev_match:
+            d = ev_match.get("dst") or {}
+            region = [d.get("x", 0), d.get("y", 0), exp_box[0], exp_box[1]]
         if shot:
-            region = req.get("expected_bounds") or \
-                (ev_match or {}).get("dst_region")
             pres = vp.asset_presence(
                 shot, data, region=region,
                 asset_hint=req.get("expected_size"))
@@ -154,10 +199,21 @@ def _stage(any_required, n_pass, required):
     return {"value": "PASS"}
 
 
+def _pick_best_event(events):
+    """Prefer the most complete provenance record for one asset path:
+    DRAW_CALLED=true with non-zero dst beats pre-layout 0x0 records."""
+    def score(ev):
+        dst = ev.get("dst") or {}
+        nonzero = 1 if (dst.get("w", 0) and dst.get("h", 0)) else 0
+        return (1 if ev.get("DRAW_CALLED") else 0, nonzero,
+                dst.get("w", 0) or 0)
+    return max(events, key=score) if events else None
+
+
 def _match_event(rec, req, prov_events):
-    """Match an asset to a provenance event by resource path / name /
-    dims. Conservative: ambiguous matches are returned as None with an
-    ambiguity note."""
+    """Match an asset to its most complete provenance event by resource
+    path / name / resid. Multiple render passes produce several records;
+    the best (drawn, non-zero dst) one is the binding evidence."""
     cands = []
     name = (req.get("name") or "").lower()
     for ev in prov_events:
@@ -165,12 +221,13 @@ def _match_event(rec, req, prov_events):
         if name and (name in p or
                      (ev.get("resid") and ev.get("resid") == req.get("resid"))):
             cands.append(ev)
-    if len(cands) == 1:
-        ev = cands[0]
-        dst = ev.get("dst") or {}
-        if dst:
-            ev = dict(ev)
-            ev["dst_region"] = [dst.get("x", 0), dst.get("y", 0),
-                                dst.get("w", 0), dst.get("h", 0)]
-        return ev
-    return None
+    if not cands:
+        return None
+    ev = _pick_best_event(cands)
+    ev = dict(ev)
+    dst = ev.get("dst") or {}
+    if dst:
+        ev["dst_region"] = [dst.get("x", 0), dst.get("y", 0),
+                            dst.get("w", 0), dst.get("h", 0)]
+    ev["matched_from"] = len(cands)
+    return ev
