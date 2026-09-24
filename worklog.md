@@ -3435,3 +3435,24 @@ Work Log:
 
 Stage Summary:
 - S95-FOLLOWUP+S96 commit EXISTS locally with full audit trail; NOT published. Owner-supplied PAT required (env-only, scrubbed, per S93 protocol).
+
+---
+Task ID: S-HYGIENE
+Agent: Super Z (main)
+Task: NEXT WAVE — repository hygiene + artifact lifecycle + git bloat forensics + development acceleration (+ S96 carryover gates + s92 battery restoration)
+
+Work Log:
+- FORENSICS: .git 621MB root cause = 525MB loose objects from the S78-quarantined accidental snapshot d51f1815 (593MB unique objects: 151.0MB workspace zip 4d29b3da = audited archive A-03 SHA 2e93d27d11a9 FULLY_REPRESENTED; 75.7MB compiled binary 9fa80a47; 11.7MB gc_work zips; PPMs; apk_build inflated open-source APK tree; caches). Published history was always only ~92MB packed. Per-blob audit of all 8,334 snapshot files: 7,382 already in main.
+- DISPOSITION (Outcome A, zero information loss): every unique blob ledgered in docs/history/s78_quarantine_recovery/MANIFEST.json (34 rescued in-repo 295KB incl. R-NEW-368..371 law proofs + S46/S47/S51 evidence; 158 rescued disk-only 64.5MB to gitignored external_backup/; 760 disposed 521.1MB with class reasons; platform-34.zip recorded-not-rescued). Branch deleted, reflog expired, gc --prune=now --aggressive: .git 621MB -> 98MB (0 loose), fsck clean, HEAD tree SHA unchanged 81b033a0. NO history rewrite (documented decision matrix).
+- BACKUP SAFETY: docs/history/s78_quarantine_recovery/BACKUP_SAFETY.txt (HEAD/branch/tree/origin/registry/evidence SHAs recorded pre-cleanup).
+- CLASSIFICATION: tools/artifact_classifier.py (NEW) -> docs/ARTIFACT_REGISTRY.json: 5,251 files classified (CANONICAL_EVIDENCE 2009/54.5MB, REFERENCE_SOURCE_PINNED 1705/16MB, CANONICAL_SOURCE 1070/12.1MB, DOC 173, FIXTURE 166, UNKNOWN residual 126/2.1MB); 374 duplicate groups (5.7MB) documented (canonical GIF mirrors, determinism frame manifests, s94 working+evidence mirrors, upstream jar-vs-tree); 2 real duplicates deleted (root MessageSchema.java dup of docs/upstream/, empty phase_c_clones.log). ZERO tracked APK/AAB/so/build-dirs — zero-APK law HOLDS.
+- NEW LAWS/TOOLS: docs/ARTIFACT_LIFECYCLE.md (GENERATED->CLASSIFIED->USED->CANONICALIZED-or-DISCARDED; per-media retention: APK identity = source+version+SHA, never committed; raw logs deleted after fact promotion); tools/check_repo_hygiene.py (NEW preflight gate: APK/so, build dirs, raw logs outside 4-file curated whitelist, archive blobs, >5MB without documented allowlist (10 canonical entries), secret patterns) = PASS.
+- VALIDATOR DEBT C2 (AUD-IC-6): verify_canonical_evidence.py R8 vocabulary extended with documented S92-era statuses (VISUALLY_PARTIAL/FRAME_CAPTURED/FAILED/candidate_*) — 12 pre-existing FAILs -> ALL CHECKS PASS; canonical registry DATA untouched.
+- S92 BATTERY RESTORATION (exposed by container-reset fixture APK loss): rebuilt 7 battery APKs via canonical builder (byte-deterministic: good.apk a8c11afc x2); repaired casea fixture source (referenced nonexistent R.id.counter/increment; semantics preserved: covered-button tap must NOT count). ROOT-CAUSED control-case false FRAME_CAPTURED -> runtime scales bitmaps NEAREST-NEIGHBOUR (software_renderer.cpp:450 S68 law) but probe scaled templates BILINEAR -> tools/verify/probes/visual_probe.py now mirrors the runtime sampler law (4 sites). ROOT-CAUSED §10 silent-skip hole (MG-311): frames manifest records OBJECT ids (target_view_id=12) while the gate matched only android_view_id -> target proof never ran -> tools/verify/probes/interaction_probe.py resolves BOTH id namespaces + unresolved dispatch = INPUT_TARGET_UNVERIFIED (never silent skip). RESULT: s92 §25/§40 battery BATTERY: OK (7/7 oracle incl. casea REJECT, selftest 3/3 rejects + good accepted); canonical battery re-run: ALL PASS (99 stages).
+- Gates at close: control system 160/160, canonical evidence ALL PASS, s96 audit gate PASS, hygiene gate PASS, secret scan clean. No canonical evidence modified (registry.json/ACHIEVEMENTS/SHA256SUMS untouched). Push ledger: local ahead (owner PAT required; env-only protocol unchanged).
+
+Stage Summary:
+- 523MB of git bloat removed with a complete zero-information-loss ledger; permanent lifecycle law + deterministic hygiene gate installed; recurrence of backup-zip/toolchain/log bloat is now machine-blocked.
+- The 22-VERIFIED/S95F+S96 wave (83b2bf42) remains intact and now rides on a fully green validator set.
+- Two real verifier laws fixed with real-APK evidence (NEAREST sampler mirror, §10 id-resolution) — s92 false-positive battery restored to OK after fixture loss; both fixes feed S97 as closed micro-gaps.
+- Highest-value next wave per measured queue: S97 micro-gap sweep registry (all MG tickets triaged vs 99-stage battery + capability matrix), then NET-001.
