@@ -234,6 +234,8 @@ private:
         bool clickable = false;
         int  num_lines = -1;
         bool single_line = false;
+        // MG-073 (S98): android:ellipsize — TextUtils.TruncateAt ordinal.
+        int  ellipsize = 0;
         int  padding_all = 0;
         int  elevation_px = 0;
         bool weight_sum_valid = false;
