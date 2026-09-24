@@ -43,8 +43,13 @@ def screen_size(run_evidence):
 
 
 def _node_by_id(run_evidence, vid):
+    # §10 id-resolution law (S97 MG-311 fix): the runtime manifests record
+    # OBJECT ids (ViewTree object_id) while resource-backed views also carry
+    # android_view_id. Resolve BOTH namespaces; a dispatch record that
+    # resolves to NO viewtree node must never silently skip the §10 gate —
+    # it is INPUT_TARGET_UNVERIFIED by definition (blind-tap class).
     for n in gc.view_nodes(run_evidence.view_tree):
-        if n.get("android_view_id") == vid:
+        if n.get("android_view_id") == vid or n.get("object_id") == vid:
             return n
     return None
 
@@ -201,8 +206,12 @@ def _build_f199_proof(run_evidence, ir, before_e, after_e, frames):
             run_evidence, {"bounds": b, "view_id": vid,
                            "class": node.get("class")},
             screenshot_path=_frame_path(frames, before_e.get("file", "")))
-        rec["target_proof"] = tgt
-        rec["target_bounds"] = b
+    elif vid is not None:
+        # §10 law: a claimed dispatch whose target cannot be resolved in the
+        # ViewTree is UNVERIFIED — never silently skip the gate (MG-311)
+        tgt = {"verdict": "INPUT_TARGET_UNVERIFIED",
+               "reason": "target id not resolvable in view_tree",
+               "steps": {"viewtree_identity": "FAIL"}}
     delta = None
     before_name = before_e.get("file")
     after_name = after_e.get("file")

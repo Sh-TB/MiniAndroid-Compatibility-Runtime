@@ -101,7 +101,7 @@ def _downscale_gray(arr, max_side=96):
     if scale < 1.0:
         im = Image.fromarray(arr.astype(np.uint8))
         im = im.resize((max(1, int(w * scale)), max(1, int(h * scale))),
-                       Image.BILINEAR)
+                       Image.NEAREST)
         return np.asarray(im, dtype=np.float64), scale
     return arr, 1.0
 
@@ -223,7 +223,7 @@ def asset_presence(screenshot_path, asset_bytes, region=None, asset_hint=None):
         nw, nh = max(2, int(tw * scale)), max(2, int(th * scale))
         flat = np.asarray(
             Image.fromarray(flat.astype(np.uint8)).resize((nw, nh),
-                                                          Image.BILINEAR),
+                                                          Image.NEAREST),
             dtype=np.float64)
         out["template_scaled_to"] = [nw, nh]
         tw, th = nw, nh
@@ -234,7 +234,7 @@ def asset_presence(screenshot_path, asset_bytes, region=None, asset_hint=None):
         nw, nh = min(nw, rw), min(nh, rh)
         flat = np.asarray(
             Image.fromarray(flat.astype(np.uint8)).resize(
-                (min(nw, rw), min(nh, rh)), Image.BILINEAR),
+                (min(nw, rw), min(nh, rh)), Image.NEAREST),
             dtype=np.float64)
         out["template_scaled_to"] = [min(nw, rw), min(nh, rh)]
         tw, th = min(nw, rw), min(nh, rh)
@@ -244,7 +244,7 @@ def asset_presence(screenshot_path, asset_bytes, region=None, asset_hint=None):
         nw, nh = max(2, int(rw)), max(2, int(rh))
         flat = np.asarray(
             Image.fromarray(flat.astype(np.uint8)).resize((nw, nh),
-                                                          Image.BILINEAR),
+                                                          Image.NEAREST),
             dtype=np.float64)
         out["template_scaled_to"] = [nw, nh]
         tw, th = nw, nh
