@@ -1173,6 +1173,19 @@ public:
         // EXP-095: ScrollView scrolling container marker (content laid out
         // inside, potentially taller than screen).
         bool is_scroll_container = false;
+        // MG-123 (S98): View scroll offsets — View.java mScrollX/mScrollY.
+        // scrollTo/scrollBy mutate them; CONTENT (children + onDraw) draws
+        // offset by −scroll (applied in the draw walk's child pushes).
+        int scroll_x = 0, scroll_y = 0;
+        // MG-124..129 (S98): View transformation properties (View.java
+        // mTransformationInfo). translationX/Y shift the rendered subtree
+        // (live in the draw walk); scaleX/Y/rotation compose about
+        // (pivotX,pivotY) — the property STATE + getter/setter law is
+        // live here; the axis-aligned walk applies translation, while the
+        // scale/rotation MATRIX application is the recorded frontier.
+        float translation_x = 0, translation_y = 0;
+        float scale_x = 1.0f, scale_y = 1.0f;
+        float rotation_deg = 0.0f, pivot_x = 0.0f, pivot_y = 0.0f;
         // EXP-098 (CM-027): RLottie animation frame RGBA buffer (rendered
         // by RLottieDecoder when setAnimation(R.raw.X, w, h) is called on
         // an RLottieImageView subclass). Stored as anim_w*anim_h*4 bytes
@@ -1326,6 +1339,11 @@ public:
         int rl_cached_right = 0, rl_cached_bottom = 0;
         bool rl_edges_valid = false;
         int num_lines = -1;
+        // MG-073 (S98): android:ellipsize — AOSP TextUtils.TruncateAt
+        // ordinal (0 NONE, 1 START, 2 MIDDLE, 3 END, 4 MARQUEE). Consumed
+        // by fonts::layout_text (single source of truth with the measure
+        // pass) to truncate the over-wide last line with U+2026.
+        int ellipsize = 0;
         float text_size_sp = 0;          // original sp (evidence)
         std::string android_id_name;     // resolved id name ("btn_roll") for evidence
         // FIX-2c: RelativeLayout dependency rules (names resolved against the
