@@ -3082,6 +3082,100 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         const auto* n = find_node(ctx.receiver_id);
         return CallResult::handled_int(n ? n->visibility : 0);
     }
+    // ── MG-123 (S98): View scroll-offset laws (View.java L14600+) ──────
+    // scrollTo(x,y): mScrollX=x; mScrollY=y; onScrollChanged; invalidate.
+    // scrollBy(x,y): scrollTo(mScrollX+x, mScrollY+y).
+    // getScrollX/Y(): the offsets the CONTENT draws at (−scroll).
+    if (m == "scrollTo") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        n->scroll_x = ctx.arg_as_int(0, 0);
+        n->scroll_y = ctx.arg_as_int(1, 0);
+        return CallResult::handled_void();
+    }
+    if (m == "scrollBy") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        n->scroll_x += ctx.arg_as_int(0, 0);
+        n->scroll_y += ctx.arg_as_int(1, 0);
+        return CallResult::handled_void();
+    }
+    if (m == "getScrollX") {
+        const auto* n = find_node(ctx.receiver_id);
+        return CallResult::handled_int(n ? n->scroll_x : 0);
+    }
+    if (m == "getScrollY") {
+        const auto* n = find_node(ctx.receiver_id);
+        return CallResult::handled_int(n ? n->scroll_y : 0);
+    }
+    // ── MG-124..129 (S98): View transformation property laws (View.java
+    // setTranslationX/getTranslationX, setScaleX/getScaleX, setRotation/
+    // getRotation, setPivotX/getPivotX — defaults 0/1/0 per View.java:
+    // mTranslationX=0, mScaleX=1, mRotation=0, pivot = view center at
+    // first draw). Property STATE + getters live here; translation ALSO
+    // applies in the draw walk; scale/rotation matrix application is the
+    // recorded frontier (axis-aligned software walk).
+    if (m == "setTranslationX") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        n->translation_x = ctx.arg_as_float(0, 0.0f);
+        return CallResult::handled_void();
+    }
+    if (m == "setTranslationY") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        n->translation_y = ctx.arg_as_float(0, 0.0f);
+        return CallResult::handled_void();
+    }
+    if (m == "getTranslationX") {
+        const auto* n = find_node(ctx.receiver_id);
+        return CallResult::handled_float(n ? n->translation_x : 0.0f);
+    }
+    if (m == "getTranslationY") {
+        const auto* n = find_node(ctx.receiver_id);
+        return CallResult::handled_float(n ? n->translation_y : 0.0f);
+    }
+    if (m == "setScaleX") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        n->scale_x = ctx.arg_as_float(0, 1.0f);
+        return CallResult::handled_void();
+    }
+    if (m == "setScaleY") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        n->scale_y = ctx.arg_as_float(0, 1.0f);
+        return CallResult::handled_void();
+    }
+    if (m == "getScaleX") {
+        const auto* n = find_node(ctx.receiver_id);
+        return CallResult::handled_float(n ? n->scale_x : 1.0f);
+    }
+    if (m == "getScaleY") {
+        const auto* n = find_node(ctx.receiver_id);
+        return CallResult::handled_float(n ? n->scale_y : 1.0f);
+    }
+    if (m == "setRotation") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        n->rotation_deg = ctx.arg_as_float(0, 0.0f);
+        return CallResult::handled_void();
+    }
+    if (m == "getRotation") {
+        const auto* n = find_node(ctx.receiver_id);
+        return CallResult::handled_float(n ? n->rotation_deg : 0.0f);
+    }
+    if (m == "setPivotX") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        n->pivot_x = ctx.arg_as_float(0, 0.0f);
+        return CallResult::handled_void();
+    }
+    if (m == "setPivotY") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        n->pivot_y = ctx.arg_as_float(0, 0.0f);
+        return CallResult::handled_void();
+    }
+    if (m == "getPivotX") {
+        const auto* n = find_node(ctx.receiver_id);
+        return CallResult::handled_float(n ? n->pivot_x : 0.0f);
+    }
+    if (m == "getPivotY") {
+        const auto* n = find_node(ctx.receiver_id);
+        return CallResult::handled_float(n ? n->pivot_y : 0.0f);
+    }
     // ── S86 §F-NEW-170: View dimension query laws ─────────────────────────
     // AOSP View.getWidth(): "Returns the width of your view" — the LAYOUT
     // width (mRight - mLeft), set after the first layout pass;

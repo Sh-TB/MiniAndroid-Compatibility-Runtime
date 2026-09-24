@@ -53,6 +53,22 @@ bool CallContext::arg_as_bool(size_t i, bool default_val) const {
     }
 }
 
+// MG-124..129 (S98): float arg law — setTranslationX/setScaleX/setRotation/
+// setPivotX all take float (View.java mTransformationInfo mutators). Dalvik
+// float args arrive as Kind::FLOAT; int/long/double coerce per the standard
+// DEX value-bag widening rules.
+float CallContext::arg_as_float(size_t i, float default_val) const {
+    if (i >= args.size()) return default_val;
+    const auto& a = args[i];
+    switch (a.kind) {
+        case CallContext::Arg::Kind::FLOAT:  return a.float_val;
+        case CallContext::Arg::Kind::DOUBLE: return static_cast<float>(a.double_val);
+        case CallContext::Arg::Kind::INT:    return static_cast<float>(a.int_val);
+        case CallContext::Arg::Kind::LONG:   return static_cast<float>(a.long_val);
+        default: return default_val;
+    }
+}
+
 std::string CallContext::arg_as_string(size_t i, const std::string& default_val) const {
     if (i >= args.size()) return default_val;
     const auto& a = args[i];

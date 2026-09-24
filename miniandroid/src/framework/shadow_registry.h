@@ -85,6 +85,7 @@ struct CallContext {
 
     // Helper: get the i-th argument as int (with default if missing/wrong type).
     int32_t arg_as_int(size_t i, int32_t default_val = 0) const;
+    float  arg_as_float(size_t i, float default_val = 0.0f) const;
     bool   arg_as_bool(size_t i, bool default_val = false) const;
     std::string arg_as_string(size_t i, const std::string& default_val = "") const;
     uint32_t arg_as_object(size_t i, uint32_t default_val = 0) const;
