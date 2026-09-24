@@ -1,0 +1,1593 @@
+{
+ "GFX-SRC-001": {
+  "repository": "google/skia",
+  "status": "VERIFIED",
+  "license": "BSD-style(1-clause-candidate)",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 1507,
+   "sha256": "5f787c1dee3c56547f09ccc2906ab5f5293c4d8dd6c8654e573216c38e908dbd",
+   "spdx": "BSD-style(1-clause-candidate)"
+  }
+ },
+ "GFX-SRC-002": {
+  "repository": "google/angle",
+  "status": "VERIFIED",
+  "license": "BSD-style(1-clause-candidate)",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 1643,
+   "sha256": "bf4da21bd20bcfb5b60b7ecc67fa864a79be049e21d6178076887f178dd6c71a",
+   "spdx": "BSD-style(1-clause-candidate)"
+  }
+ },
+ "GFX-SRC-003": {
+  "repository": "google/swiftshader",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE.txt",
+   "bytes": 11560,
+   "sha256": "3ddf9be5c28fe27dad143a5dc76eea25222ad1dd68934a047064e56ed2fa40c5",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-004": {
+  "repository": "google/gfxstream",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 11357,
+   "sha256": "58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-005": {
+  "repository": "aosp-mirror/platform_frameworks_base",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "NOTICE",
+   "bytes": 18182,
+   "sha256": "cf4dd7cea5b6bcd2622ddd3529b3c74d16ba2b4db444575bc6f5c33f8a960530",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-006": {
+  "repository": "androidx/androidx",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE.txt",
+   "bytes": 10175,
+   "sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-007": {
+  "repository": "google/minikin",
+  "status": "OFF_GITHUB",
+  "license": "UNKNOWN",
+  "class": null,
+  "reuse": null,
+  "evidence": null
+ },
+ "GFX-SRC-008": {
+  "repository": "unicode-org/icu",
+  "status": "VERIFIED",
+  "license": "MIT",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 27718,
+   "sha256": "e09827667e0bb3c808b2a463548ba814a5e6249b67353234d70c8dfc2bcc417d",
+   "spdx": "MIT"
+  }
+ },
+ "GFX-SRC-009": {
+  "repository": "harfbuzz/harfbuzz",
+  "status": "VERIFIED",
+  "license": "UNCLASSIFIED",
+  "class": "UNCLASSIFIED",
+  "reuse": "REFERENCE_ONLY",
+  "evidence": {
+   "file": "COPYING",
+   "bytes": 1971,
+   "sha256": "ba8f810f2455c2f08e2d56bb49b72f37fcf68f1f4fade38977cfd7372050ad64",
+   "spdx": "UNCLASSIFIED"
+  }
+ },
+ "GFX-SRC-010": {
+  "repository": "freetype/freetype",
+  "status": "VERIFIED",
+  "license": "NO_LICENSE_FILE_IN_STANDARD_PATHS",
+  "class": null,
+  "reuse": "REFERENCE_ONLY_UNTIL_LICENSE_CLARIFIED",
+  "evidence": null
+ },
+ "GFX-SRC-011": {
+  "repository": "cashapp/paparazzi",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE.txt",
+   "bytes": 11358,
+   "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-012": {
+  "repository": "takahirom/roborazzi",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 11357,
+   "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-013": {
+  "repository": "pedrovgs/Shot",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE.txt",
+   "bytes": 11357,
+   "sha256": "58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-014": {
+  "repository": "facebook/screenshot-tests-for-android",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 10779,
+   "sha256": "049b28998caf2a2c1d588fb05b2de2b09584f5d70e6c3ab5612636dff22b86dd",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-015": {
+  "repository": "ndtp/android-testify",
+  "status": "VERIFIED",
+  "license": "MIT",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 1116,
+   "sha256": "f9ce697ec78500a37a1580fdace82aecc9604cd59c0a12adb2db022046b5e939",
+   "spdx": "MIT"
+  }
+ },
+ "GFX-SRC-016": {
+  "repository": "mapbox/pixelmatch",
+  "status": "VERIFIED",
+  "license": "UNCLASSIFIED",
+  "class": "UNCLASSIFIED",
+  "reuse": "REFERENCE_ONLY",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 738,
+   "sha256": "cfec0482fb785fe27e3b368a2d9e84bf7a61b275e83ec582bf288e98cd530bb0",
+   "spdx": "UNCLASSIFIED"
+  }
+ },
+ "GFX-SRC-017": {
+  "repository": "opencv/opencv",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 11358,
+   "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-018": {
+  "repository": "garris/BackstopJS",
+  "status": "VERIFIED",
+  "license": "MIT",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 1081,
+   "sha256": "fe1e39f312ba707fe865d2efc111726377be3894c13ccb90a470c880ce5f0153",
+   "spdx": "MIT"
+  }
+ },
+ "GFX-SRC-019": {
+  "repository": "americanexpress/jest-image-snapshot",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE.txt",
+   "bytes": 10283,
+   "sha256": "8418c0189f244872c8a0f9d7e42ca808311d4bb15a6b599cfc1ec0467f247be3",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-020": {
+  "repository": "JohannesBuchner/imagehash",
+  "status": "VERIFIED",
+  "license": "BSD-style(1-clause-candidate)",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 1302,
+   "sha256": "9d0b037853dae7bcf6b19b728559a833993cd8710fc18a261e6026e56bf704be",
+   "spdx": "BSD-style(1-clause-candidate)"
+  }
+ },
+ "GFX-SRC-021": {
+  "repository": "pnggroup/libpng",
+  "status": "VERIFIED",
+  "license": "UNCLASSIFIED",
+  "class": "UNCLASSIFIED",
+  "reuse": "REFERENCE_ONLY",
+  "evidence": {
+   "file": "LICENSE.md",
+   "bytes": 5345,
+   "sha256": "bdb0a645ea18c60507d0368379b1ac5474b92255fcc2d115e07486a7672ba526",
+   "spdx": "UNCLASSIFIED"
+  }
+ },
+ "GFX-SRC-022": {
+  "repository": "libjpeg-turbo/libjpeg-turbo",
+  "status": "VERIFIED",
+  "license": "Zlib",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE.md",
+   "bytes": 6077,
+   "sha256": "ba6bceebcba0fdd35488477c2cca8c4632ce82c74dbfbc87d886ce6fc4433579",
+   "spdx": "Zlib"
+  }
+ },
+ "GFX-SRC-023": {
+  "repository": "webmproject/libwebp",
+  "status": "VERIFIED",
+  "license": "BSD-style(1-clause-candidate)",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "COPYING",
+   "bytes": 1496,
+   "sha256": "5aec868f669e384a22372a4e8a1a6cd7d44c64cd451f960ca69cc170d1e13acf",
+   "spdx": "BSD-style(1-clause-candidate)"
+  }
+ },
+ "GFX-SRC-024": {
+  "repository": "AOMediaCodec/libavif",
+  "status": "VERIFIED",
+  "license": "BSD-style(2-clause-candidate)",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 20415,
+   "sha256": "165abf92cc04b39e80d29cadea7a6a7e8fddf59407d4ad2616507a7ebe8216f9",
+   "spdx": "BSD-style(2-clause-candidate)"
+  }
+ },
+ "GFX-SRC-025": {
+  "repository": "strukturag/libheif",
+  "status": "VERIFIED",
+  "license": "LGPL",
+  "class": "WEAK_COPYLEFT",
+  "reuse": "COPY_REQUIRES_NOTICE",
+  "evidence": {
+   "file": "COPYING",
+   "bytes": 44366,
+   "sha256": "fa81ce652315b013359d6e8e4744335f31a50c7c192907176d3632f78a3b4596",
+   "spdx": "LGPL"
+  }
+ },
+ "GFX-SRC-026": {
+  "repository": "google/wuffs",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 11372,
+   "sha256": "f8ac2c75e7f629a87565c80d61ff9fe5aa15cdea0bda997d52a4dc13fdbd19cb",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-027": {
+  "repository": "ImageMagick/ImageMagick",
+  "status": "VERIFIED",
+  "license": "UNCLASSIFIED",
+  "class": "UNCLASSIFIED",
+  "reuse": "REFERENCE_ONLY",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 12557,
+   "sha256": "131447ad0099069beaa32acf1700716eea294a5bdf936d8211d7026b1849e5d4",
+   "spdx": "UNCLASSIFIED"
+  }
+ },
+ "GFX-SRC-028": {
+  "repository": "libvips/libvips",
+  "status": "VERIFIED",
+  "license": "LGPL-2.1-or-later",
+  "class": "WEAK_COPYLEFT",
+  "reuse": "COPY_REQUIRES_NOTICE",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 26530,
+   "sha256": "dc626520dcd53a22f727af3ee42c770e56c97a64fe3adb063799d8ab032fe551",
+   "spdx": "LGPL-2.1-or-later"
+  }
+ },
+ "GFX-SRC-029": {
+  "repository": "mozilla/mozjpeg",
+  "status": "VERIFIED",
+  "license": "Zlib",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE.md",
+   "bytes": 5620,
+   "sha256": "96f5b328adbb78eeaaec6980d73fd558cb1e4d62560ed615646bc3cf5e532430",
+   "spdx": "Zlib"
+  }
+ },
+ "GFX-SRC-030": {
+  "repository": "googleprojectzero/SkCodecFuzzer",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 11358,
+   "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-031": {
+  "repository": "bumptech/glide",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 4899,
+   "sha256": "52973598be02761fb153f9c237f6c6706841d666611bc1c5fd18edfdcb3d47fa",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-032": {
+  "repository": "coil-kt/coil",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE.txt",
+   "bytes": 11347,
+   "sha256": "d44a18f12b0f5a494ddc3ba0e980ae8b0936d938c611a518e80f2f1405098893",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-033": {
+  "repository": "facebook/fresco",
+  "status": "VERIFIED",
+  "license": "MIT",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 1088,
+   "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+   "spdx": "MIT"
+  }
+ },
+ "GFX-SRC-034": {
+  "repository": "square/picasso",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE.txt",
+   "bytes": 11358,
+   "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-035": {
+  "repository": "skydoves/landscapist",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 11357,
+   "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-036": {
+  "repository": "wasabeef/glide-transformations",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 11325,
+   "sha256": "cb5e8e7e5f4a3988e1063c142c60dc2df75605f4c46515e776e3aca6df976e14",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-037": {
+  "repository": "google/brotli",
+  "status": "VERIFIED",
+  "license": "MIT",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 1084,
+   "sha256": "3d180008e36922a4e8daec11c34c7af264fed5962d07924aea928c38e8663c94",
+   "spdx": "MIT"
+  }
+ },
+ "GFX-SRC-038": {
+  "repository": "android/graphics",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 10773,
+   "sha256": "b493568bcbcaf50e888f66642878374ede50f7f12adb4e3f64d6f9c093de9ca4",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-039": {
+  "repository": "google/android-codelabs",
+  "status": "NOT_VERIFIED",
+  "license": "UNKNOWN",
+  "class": null,
+  "reuse": null,
+  "evidence": null
+ },
+ "GFX-SRC-040": {
+  "repository": "android/platform_frameworks_support",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE.txt",
+   "bytes": 10174,
+   "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-041": {
+  "repository": "googlefonts/fonttools",
+  "status": "VERIFIED",
+  "license": "MIT",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 1072,
+   "sha256": "6787208f83f659ccbc2223b2fde952ffa6f7e8aca62f1a8a2bf5bc51bb1b2383",
+   "spdx": "MIT"
+  }
+ },
+ "GFX-SRC-042": {
+  "repository": "notofonts/noto-fonts",
+  "status": "VERIFIED",
+  "license": "UNCLASSIFIED",
+  "class": "UNCLASSIFIED",
+  "reuse": "REFERENCE_ONLY",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 4377,
+   "sha256": "0dab92d0544f7b233403f14b84a663bdbfa746982eda629e7f4f9ffe1b036feb",
+   "spdx": "UNCLASSIFIED"
+  }
+ },
+ "GFX-SRC-043": {
+  "repository": "googlefonts/noto-emoji",
+  "status": "VERIFIED",
+  "license": "UNCLASSIFIED",
+  "class": "UNCLASSIFIED",
+  "reuse": "REFERENCE_ONLY",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 4330,
+   "sha256": "500bb1ccf43df7bbb522112f9133a52b16e1c35e809632f5d8609b179152de5b",
+   "spdx": "UNCLASSIFIED"
+  }
+ },
+ "GFX-SRC-044": {
+  "repository": "liberationfonts/liberation-fonts",
+  "status": "VERIFIED",
+  "license": "UNCLASSIFIED",
+  "class": "UNCLASSIFIED",
+  "reuse": "REFERENCE_ONLY",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 4414,
+   "sha256": "93fed46019c38bbe566b479d22148e2e8a1e85ada614accb0211c37b2c61c19b",
+   "spdx": "UNCLASSIFIED"
+  }
+ },
+ "GFX-SRC-045": {
+  "repository": "googlefonts/noto-cjk",
+  "status": "VERIFIED",
+  "license": "NO_LICENSE_FILE_IN_STANDARD_PATHS",
+  "class": null,
+  "reuse": "REFERENCE_ONLY_UNTIL_LICENSE_CLARIFIED",
+  "evidence": null
+ },
+ "GFX-SRC-046": {
+  "repository": "google/flexbox-layout",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 11341,
+   "sha256": "a4d5a89b1282be589ca452bc1e53d396f190dcb845c4e9bb81a8b07a1406b634",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-047": {
+  "repository": "androidx/constraintlayout",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 11357,
+   "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-048": {
+  "repository": "airbnb/epoxy",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 11342,
+   "sha256": "032df1c0718382f670330f68760365c418d6af3cd1de77b72db4da1c2131706a",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-049": {
+  "repository": "airbnb/lottie-android",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 11356,
+   "sha256": "c5accbbd8546e94c34aed24afe689a617627d18eed5a6c48277e48db57c23851",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-050": {
+  "repository": "facebookarchive/shimmer-android",
+  "status": "VERIFIED",
+  "license": "BSD-style(1-clause-candidate)",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 1540,
+   "sha256": "b03a1cb4f33c487a437523ea2ad0fa97a80c676221b4db93cd4dd900fe5259fc",
+   "spdx": "BSD-style(1-clause-candidate)"
+  }
+ },
+ "GFX-SRC-051": {
+  "repository": "houstudio/cdroid",
+  "status": "VERIFIED",
+  "license": "LGPL-2.1-or-later",
+  "class": "WEAK_COPYLEFT",
+  "reuse": "COPY_REQUIRES_NOTICE",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 26527,
+   "sha256": "6da7ddf40cfea6f568961825b14478e879875f6ad033fad57889ae5bd52103f4",
+   "spdx": "LGPL-2.1-or-later"
+  }
+ },
+ "GFX-SRC-052": {
+  "repository": "material-components/material-components-android",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 11358,
+   "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-053": {
+  "repository": "google/accompanist",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 11357,
+   "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-054": {
+  "repository": "android/compose-samples",
+  "status": "VERIFIED",
+  "license": "UNCLASSIFIED",
+  "class": "UNCLASSIFIED",
+  "reuse": "REFERENCE_ONLY",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 11308,
+   "sha256": "0a3428546fa34277a64d60b372f74f880a1aa9a30b6c96ac76d30740b6ad9326",
+   "spdx": "UNCLASSIFIED"
+  }
+ },
+ "GFX-SRC-055": {
+  "repository": "android/nowinandroid",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 11358,
+   "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-056": {
+  "repository": "JetBrains/compose-multiplatform",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE.txt",
+   "bytes": 11394,
+   "sha256": "f9a85c61ba4fe8bacc300053b3384b5fc7d9f585a08dc7b9a465b7c0716c4f50",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-057": {
+  "repository": "JetBrains/compose-multiplatform-core",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE.txt",
+   "bytes": 10175,
+   "sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-058": {
+  "repository": "JetBrains/skiko",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 11357,
+   "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-059": {
+  "repository": "chrisbanes/tivi",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 11357,
+   "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-060": {
+  "repository": "libgdx/libgdx",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 10174,
+   "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-061": {
+  "repository": "godotengine/godot",
+  "status": "VERIFIED",
+  "license": "MIT",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE.txt",
+   "bytes": 1149,
+   "sha256": "b0435e3b3e4e55238f05f4b306f30524a1b2e20147810d436eaa554fa6855c80",
+   "spdx": "MIT"
+  }
+ },
+ "GFX-SRC-062": {
+  "repository": "libsdl-org/SDL",
+  "status": "VERIFIED",
+  "license": "UNCLASSIFIED",
+  "class": "UNCLASSIFIED",
+  "reuse": "REFERENCE_ONLY",
+  "evidence": {
+   "file": "LICENSE.txt",
+   "bytes": 884,
+   "sha256": "1c040b8271b37e5076359f8fd54240e371114112924d2df81ef87c7d6a1dfdfd",
+   "spdx": "UNCLASSIFIED"
+  }
+ },
+ "GFX-SRC-063": {
+  "repository": "cocos2d/cocos2d-x",
+  "status": "VERIFIED",
+  "license": "NO_LICENSE_FILE_IN_STANDARD_PATHS",
+  "class": null,
+  "reuse": "REFERENCE_ONLY_UNTIL_LICENSE_CLARIFIED",
+  "evidence": null
+ },
+ "GFX-SRC-064": {
+  "repository": "korlibs/korge",
+  "status": "VERIFIED",
+  "license": "MIT",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 14750,
+   "sha256": "23b16db25e0d977505e0083a6ee19392ebce22c94d89c9c2642ce15b5c2f2433",
+   "spdx": "MIT"
+  }
+ },
+ "GFX-SRC-065": {
+  "repository": "defold/defold",
+  "status": "VERIFIED",
+  "license": "UNCLASSIFIED",
+  "class": "UNCLASSIFIED",
+  "reuse": "REFERENCE_ONLY",
+  "evidence": {
+   "file": "LICENSE.txt",
+   "bytes": 9977,
+   "sha256": "be6e9921ba01445d200ba3dc09b5cab149a58d57a76ca98376b52af87d817a7a",
+   "spdx": "UNCLASSIFIED"
+  }
+ },
+ "GFX-SRC-066": {
+  "repository": "urho3d/urho3d",
+  "status": "VERIFIED",
+  "license": "NO_LICENSE_FILE_IN_STANDARD_PATHS",
+  "class": null,
+  "reuse": "REFERENCE_ONLY_UNTIL_LICENSE_CLARIFIED",
+  "evidence": null
+ },
+ "GFX-SRC-067": {
+  "repository": "axmolengine/axmol",
+  "status": "VERIFIED",
+  "license": "MIT",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 1256,
+   "sha256": "9796e9ebe8331d0317d5e5f52642d15e98da5add0aeabafab8582c4622ab0230",
+   "spdx": "MIT"
+  }
+ },
+ "GFX-SRC-068": {
+  "repository": "floooh/sokol",
+  "status": "VERIFIED",
+  "license": "Zlib",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 897,
+   "sha256": "72f9367756dba68918b8955092c14503934681862eee33cc16495a02f40025ef",
+   "spdx": "Zlib"
+  }
+ },
+ "GFX-SRC-069": {
+  "repository": "bkaradzic/bgfx",
+  "status": "VERIFIED",
+  "license": "BSD-style(1-clause-candidate)",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 1299,
+   "sha256": "ac2e0d253b1584316a36a0fae1d4407fa3ebcb15f27021ab479b23d27f0c9c08",
+   "spdx": "BSD-style(1-clause-candidate)"
+  }
+ },
+ "GFX-SRC-070": {
+  "repository": "google/filament",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 11362,
+   "sha256": "02d70b593dd8e9355dd8e1ca8d13c303bee5bcaf3065b66ff6e4f534e1e6a2c1",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-071": {
+  "repository": "flutter/engine",
+  "status": "VERIFIED",
+  "license": "BSD-style(1-clause-candidate)",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 1519,
+   "sha256": "89519eca6f7b9529b35bdddd623a58c3af06a88c458dbd6531ddb4675acf75a9",
+   "spdx": "BSD-style(1-clause-candidate)"
+  }
+ },
+ "GFX-SRC-072": {
+  "repository": "chromium/chromium",
+  "status": "VERIFIED",
+  "license": "BSD-style(1-clause-candidate)",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 1536,
+   "sha256": "368cca1106be99d39ecd32a38d8305585d802a475effb66380b91ffc9bcf709b",
+   "spdx": "BSD-style(1-clause-candidate)"
+  }
+ },
+ "GFX-SRC-073": {
+  "repository": "WebKit/WebKit",
+  "status": "VERIFIED",
+  "license": "NO_LICENSE_FILE_IN_STANDARD_PATHS",
+  "class": null,
+  "reuse": "REFERENCE_ONLY_UNTIL_LICENSE_CLARIFIED",
+  "evidence": null
+ },
+ "GFX-SRC-074": {
+  "repository": "servo/servo",
+  "status": "VERIFIED",
+  "license": "MPL-2.0",
+  "class": "COPYLEFT_LIKE",
+  "reuse": "REFERENCE_ONLY",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 15649,
+   "sha256": "1af2d2b02d9c86030d29ed77117ca7a1b0e4b6ff35bcf8eeb124867d0f5cb59e",
+   "spdx": "MPL-2.0"
+  }
+ },
+ "GFX-SRC-075": {
+  "repository": "web-platform-tests/wpt",
+  "status": "VERIFIED",
+  "license": "BSD-style(1-clause-candidate)",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE.md",
+   "bytes": 1500,
+   "sha256": "5fac07febb0e2a97fb0d7b0def149ec08b642e1ba4b9c345283ab1cbd2af6570",
+   "spdx": "BSD-style(1-clause-candidate)"
+  }
+ },
+ "GFX-SRC-076": {
+  "repository": "mozilla/gecko-dev",
+  "status": "VERIFIED",
+  "license": "UNCLASSIFIED",
+  "class": "UNCLASSIFIED",
+  "reuse": "REFERENCE_ONLY",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 389,
+   "sha256": "a799adf18bfb1911f16086dc0e2a6d1cd0e31272f47e7ee6841b465b74d249de",
+   "spdx": "UNCLASSIFIED"
+  }
+ },
+ "GFX-SRC-077": {
+  "repository": "electron/electron",
+  "status": "VERIFIED",
+  "license": "MIT",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 1096,
+   "sha256": "5154e165bd6c2cc0cfbcd8916498c7abab0497923bafcd5cb07673fe8480087d",
+   "spdx": "MIT"
+  }
+ },
+ "GFX-SRC-078": {
+  "repository": "tauri-apps/tauri",
+  "status": "VERIFIED",
+  "license": "MIT",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE-MIT",
+   "bytes": 1090,
+   "sha256": "9dd42ea92cff2ede5cd477cbfcce051b2d0115c0ac7f368ee88cb545055dff1d",
+   "spdx": "MIT"
+  }
+ },
+ "GFX-SRC-079": {
+  "repository": "flutter/flutter",
+  "status": "VERIFIED",
+  "license": "BSD-style(1-clause-candidate)",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 1519,
+   "sha256": "a598db94b6290ffbe10b5ecf911057b6a943351c727fdda9e5f2891d68700a20",
+   "spdx": "BSD-style(1-clause-candidate)"
+  }
+ },
+ "GFX-SRC-080": {
+  "repository": "ionic-team/capacitor",
+  "status": "VERIFIED",
+  "license": "MIT",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 1075,
+   "sha256": "9c6ebf3e5ab832ba4d5af38f340978e1fedbfee6e3d23662dfdb8917a9d864dd",
+   "spdx": "MIT"
+  }
+ },
+ "GFX-SRC-081": {
+  "repository": "nothings/stb",
+  "status": "VERIFIED",
+  "license": "MIT",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 2510,
+   "sha256": "bebfe904b14301657e4e5d655c811d51fd31b97c455b9cc2d8600d6bac6cff63",
+   "spdx": "MIT"
+  }
+ },
+ "GFX-SRC-082": {
+  "repository": "FFmpeg/FFmpeg",
+  "status": "VERIFIED",
+  "license": "LGPL-2.1-or-later",
+  "class": "WEAK_COPYLEFT",
+  "reuse": "COPY_REQUIRES_NOTICE",
+  "evidence": {
+   "file": "LICENSE.md",
+   "bytes": 4358,
+   "sha256": "8c880fa51b7e1d8dbc09a92685da98c129532f3b0a766a9a58a2321ad67bab6c",
+   "spdx": "LGPL-2.1-or-later"
+  }
+ },
+ "GFX-SRC-083": {
+  "repository": "uclouvain/openjpeg",
+  "status": "VERIFIED",
+  "license": "BSD-style(1-clause-candidate)",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 2112,
+   "sha256": "a6af136f3e15038a666b61f376612a07d9a4e48cb7c01adbf3e33b3f14ab49b6",
+   "spdx": "BSD-style(1-clause-candidate)"
+  }
+ },
+ "GFX-SRC-084": {
+  "repository": "python-pillow/Pillow",
+  "status": "VERIFIED",
+  "license": "UNCLASSIFIED",
+  "class": "UNCLASSIFIED",
+  "reuse": "REFERENCE_ONLY",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 1457,
+   "sha256": "15181e7363dca9aed78b79bebebc7fde7f1814b8bd311ea3b87ae8ccadfc185b",
+   "spdx": "UNCLASSIFIED"
+  }
+ },
+ "GFX-SRC-085": {
+  "repository": "golang/go",
+  "status": "VERIFIED",
+  "license": "BSD-style(1-clause-candidate)",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 1453,
+   "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+   "spdx": "BSD-style(1-clause-candidate)"
+  }
+ },
+ "GFX-SRC-086": {
+  "repository": "image-rs/image",
+  "status": "VERIFIED",
+  "license": "MIT",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE-MIT",
+   "bytes": 1036,
+   "sha256": "c77a4cf9da729987d0fe7ccd811e3bd27393914ddf3d23467c18cc22954513b3",
+   "spdx": "MIT"
+  }
+ },
+ "GFX-SRC-087": {
+  "repository": "libgd/libgd",
+  "status": "VERIFIED",
+  "license": "UNCLASSIFIED",
+  "class": "UNCLASSIFIED",
+  "reuse": "REFERENCE_ONLY",
+  "evidence": {
+   "file": "COPYING",
+   "bytes": 2991,
+   "sha256": "005f4b6b0141d1bd11d371bbf7d4f67947f85a4906b7f5465f942204cf918ba3",
+   "spdx": "UNCLASSIFIED"
+  }
+ },
+ "GFX-SRC-088": {
+  "repository": "reg-viz/reg-suit",
+  "status": "VERIFIED",
+  "license": "MIT",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE.txt",
+   "bytes": 1069,
+   "sha256": "faa4f5cf1515dcb78ea03c36068284f104994457d7ca3a050ef41b1d58a307af",
+   "spdx": "MIT"
+  }
+ },
+ "GFX-SRC-089": {
+  "repository": "kornelski/dssim",
+  "status": "VERIFIED",
+  "license": "GPL-3.0",
+  "class": "COPYLEFT_LIKE",
+  "reuse": "REFERENCE_ONLY",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 34523,
+   "sha256": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef",
+   "spdx": "GPL-3.0"
+  }
+ },
+ "GFX-SRC-090": {
+  "repository": "OpenImageIO/oiio",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE.md",
+   "bytes": 11357,
+   "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-091": {
+  "repository": "RazrFalcon/resvg",
+  "status": "VERIFIED",
+  "license": "MIT",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE-MIT",
+   "bytes": 1057,
+   "sha256": "f5d934dc281b44e0003ee461ac740b18b6629a454decd872c774d34e4ee0b21d",
+   "spdx": "MIT"
+  }
+ },
+ "GFX-SRC-092": {
+  "repository": "memononen/nanosvg",
+  "status": "VERIFIED",
+  "license": "UNCLASSIFIED",
+  "class": "UNCLASSIFIED",
+  "reuse": "REFERENCE_ONLY",
+  "evidence": {
+   "file": "LICENSE.txt",
+   "bytes": 880,
+   "sha256": "e82bc3dd03400aecabe12201219ba14750dbc4b36faab58663a7a6068548d372",
+   "spdx": "UNCLASSIFIED"
+  }
+ },
+ "GFX-SRC-093": {
+  "repository": "memononen/nanovg",
+  "status": "VERIFIED",
+  "license": "UNCLASSIFIED",
+  "class": "UNCLASSIFIED",
+  "reuse": "REFERENCE_ONLY",
+  "evidence": {
+   "file": "LICENSE.txt",
+   "bytes": 877,
+   "sha256": "45185a6680ed83863bef33e1055f9fd76374df4b81c957802c19a286c982dfd2",
+   "spdx": "UNCLASSIFIED"
+  }
+ },
+ "GFX-SRC-094": {
+  "repository": "Tencent/tgfx",
+  "status": "VERIFIED",
+  "license": "BSD-style(1-clause-candidate)",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE.txt",
+   "bytes": 47640,
+   "sha256": "6d9ebfa873207317b597a4c78cdbb0cf37c5e4b4b25511eb940cd3e6b86cf82d",
+   "spdx": "BSD-style(1-clause-candidate)"
+  }
+ },
+ "GFX-SRC-095": {
+  "repository": "Samsung/rlottie",
+  "status": "VERIFIED",
+  "license": "UNCLASSIFIED",
+  "class": "UNCLASSIFIED",
+  "reuse": "REFERENCE_ONLY",
+  "evidence": {
+   "file": "COPYING",
+   "bytes": 690,
+   "sha256": "d2a6dcab001eaf521440b78b7230be1481107a3b33d05e7c38ed94342b4d9a60",
+   "spdx": "UNCLASSIFIED"
+  }
+ },
+ "GFX-SRC-096": {
+  "repository": "servo/webrender",
+  "status": "VERIFIED",
+  "license": "MPL-2.0",
+  "class": "COPYLEFT_LIKE",
+  "reuse": "REFERENCE_ONLY",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 15648,
+   "sha256": "b946744aeda89b467929585fe8eeb5461847695220c1b168fb375d8abd4ea3d0",
+   "spdx": "MPL-2.0"
+  }
+ },
+ "GFX-SRC-097": {
+  "repository": "mesa3d/mesa",
+  "status": "OFF_GITHUB",
+  "license": "UNKNOWN",
+  "class": null,
+  "reuse": null,
+  "evidence": null
+ },
+ "GFX-SRC-098": {
+  "repository": "cairo/cairo",
+  "status": "OFF_GITHUB",
+  "license": "UNKNOWN",
+  "class": null,
+  "reuse": null,
+  "evidence": null
+ },
+ "GFX-SRC-099": {
+  "repository": "raysan5/raylib",
+  "status": "VERIFIED",
+  "license": "UNCLASSIFIED",
+  "class": "UNCLASSIFIED",
+  "reuse": "REFERENCE_ONLY",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 877,
+   "sha256": "882a5a819cf562aa3583aae3af3f2211dda15c63de9fc8cc4b399a2f9e78d799",
+   "spdx": "UNCLASSIFIED"
+  }
+ },
+ "GFX-SRC-100": {
+  "repository": "fribidi/fribidi",
+  "status": "VERIFIED",
+  "license": "LGPL-2.1-or-later",
+  "class": "WEAK_COPYLEFT",
+  "reuse": "COPY_REQUIRES_NOTICE",
+  "evidence": {
+   "file": "COPYING",
+   "bytes": 26419,
+   "sha256": "20e50fe7aae3e56378ebf0417d9de904f55a0e61e4df315333e632a4d3555d95",
+   "spdx": "LGPL-2.1-or-later"
+  }
+ },
+ "GFX-SRC-101": {
+  "repository": "silnrsi/graphite",
+  "status": "VERIFIED",
+  "license": "LGPL-2.1-or-later",
+  "class": "WEAK_COPYLEFT",
+  "reuse": "COPY_REQUIRES_NOTICE",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 29228,
+   "sha256": "cab46cd45adbfea4b1d0f14b033c70062c73074fa0b56532c2f351576ddf455e",
+   "spdx": "LGPL-2.1-or-later"
+  }
+ },
+ "GFX-SRC-102": {
+  "repository": "libass/libass",
+  "status": "VERIFIED",
+  "license": "UNCLASSIFIED",
+  "class": "UNCLASSIFIED",
+  "reuse": "REFERENCE_ONLY",
+  "evidence": {
+   "file": "COPYING",
+   "bytes": 755,
+   "sha256": "f7e30699d02798351e7f839e3d3bfeb29ce65e44efa7735c225464c4fd7dfe9c",
+   "spdx": "UNCLASSIFIED"
+  }
+ },
+ "GFX-SRC-103": {
+  "repository": "GNOME/pango",
+  "status": "VERIFIED",
+  "license": "UNCLASSIFIED",
+  "class": "UNCLASSIFIED",
+  "reuse": "REFERENCE_ONLY",
+  "evidence": {
+   "file": "COPYING",
+   "bytes": 25292,
+   "sha256": "d245807f90032872d1438d741ed21e2490e1175dc8aa3afa5ddb6c8e529b58e5",
+   "spdx": "UNCLASSIFIED"
+  }
+ },
+ "GFX-SRC-104": {
+  "repository": "fontforge/fontforge",
+  "status": "VERIFIED",
+  "license": "BSD-style(1-clause-candidate)",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 10015,
+   "sha256": "cd2401c1c2e1994a575ad8a0bf91237ca5e554b4d1eca2a15d4dd7fe7553be83",
+   "spdx": "BSD-style(1-clause-candidate)"
+  }
+ },
+ "GFX-SRC-105": {
+  "repository": "facebook/yoga",
+  "status": "VERIFIED",
+  "license": "MIT",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 1086,
+   "sha256": "52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85",
+   "spdx": "MIT"
+  }
+ },
+ "GFX-SRC-106": {
+  "repository": "ocornut/imgui",
+  "status": "VERIFIED",
+  "license": "MIT",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE.txt",
+   "bytes": 1083,
+   "sha256": "173506a2d6f7fb67990d257fb2507f188690eca39060c39469ae7bef43aae2a3",
+   "spdx": "MIT"
+  }
+ },
+ "GFX-SRC-107": {
+  "repository": "avaloniaui/avalonia",
+  "status": "VERIFIED",
+  "license": "NO_LICENSE_FILE_IN_STANDARD_PATHS",
+  "class": null,
+  "reuse": "REFERENCE_ONLY_UNTIL_LICENSE_CLARIFIED",
+  "evidence": null
+ },
+ "GFX-SRC-108": {
+  "repository": "androguard/androguard",
+  "status": "VERIFIED",
+  "license": "NO_LICENSE_FILE_IN_STANDARD_PATHS",
+  "class": null,
+  "reuse": "REFERENCE_ONLY_UNTIL_LICENSE_CLARIFIED",
+  "evidence": null
+ },
+ "GFX-SRC-109": {
+  "repository": "reandroid/ARSCLib",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 11354,
+   "sha256": "449e6720b1d610e781712ebcb4a188e0212127327d97e63dc0534ef2e895a3d1",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-110": {
+  "repository": "iBotPeaches/Apktool",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE.md",
+   "bytes": 10766,
+   "sha256": "c49c53fdc79e1143a1892eb7333b595eecdbe40623e72be325267db28cb72114",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-111": {
+  "repository": "skylot/jadx",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 11357,
+   "sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-112": {
+  "repository": "KhronosGroup/Vulkan-Samples",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 11355,
+   "sha256": "9c18288ad9997b4b8d62a544e01d960d3effa28e45e8cfcea6e0cacb9db33f6b",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-113": {
+  "repository": "KhronosGroup/WebGL",
+  "status": "VERIFIED",
+  "license": "MIT",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE.txt",
+   "bytes": 1069,
+   "sha256": "de17422334747f3e629938e33d0cf40322f9e3c42774d085d95b9dd8aea8d88e",
+   "spdx": "MIT"
+  }
+ },
+ "GFX-SRC-114": {
+  "repository": "apitrace/apitrace",
+  "status": "VERIFIED",
+  "license": "MIT",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 1200,
+   "sha256": "7066bb1b787519c42f8278b77757c21de522cd97755cb30a22759ac401c62260",
+   "spdx": "MIT"
+  }
+ },
+ "GFX-SRC-115": {
+  "repository": "baldurk/renderdoc",
+  "status": "VERIFIED",
+  "license": "MIT",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE.md",
+   "bytes": 1205,
+   "sha256": "ba3b05b7f5bfdb4b4917bf8ea3aa9c4ea4c20ff6522de9109a6cc982c5c35730",
+   "spdx": "MIT"
+  }
+ },
+ "GFX-SRC-116": {
+  "repository": "google/agi",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 11358,
+   "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-117": {
+  "repository": "Genymobile/scrcpy",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 11387,
+   "sha256": "01c12035bf35af37241298dc7ad538eb2a07e5c940437bc6876feeaa9d1951d0",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-118": {
+  "repository": "puppeteer/puppeteer",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 11344,
+   "sha256": "a27ca07269b3518550b2e83aed13eadd7d14d924b5864e14889b40cf227530ca",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-119": {
+  "repository": "maplibre/maplibre-gl-native",
+  "status": "VERIFIED",
+  "license": "BSD-style(1-clause-candidate)",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE.md",
+   "bytes": 1374,
+   "sha256": "554cff8b6f6d2e77629e8c6eab769844ab86adc610ca2d60401ba2e0dce3c229",
+   "spdx": "BSD-style(1-clause-candidate)"
+  }
+ },
+ "GFX-SRC-120": {
+  "repository": "tesseract-ocr/tesseract",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 11358,
+   "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-121": {
+  "repository": "canvg/canvg",
+  "status": "VERIFIED",
+  "license": "MIT",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 1144,
+   "sha256": "86622ffc909487e6029235d31503263b796895679b0926f4a4d6f02d2623fde0",
+   "spdx": "MIT"
+  }
+ },
+ "GFX-SRC-122": {
+  "repository": "godotengine/godot-demo-projects",
+  "status": "VERIFIED",
+  "license": "MIT",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE.md",
+   "bytes": 1134,
+   "sha256": "0339177149b474f7ff676d32218ecb3a8f2538955610023c3769763720d09e4c",
+   "spdx": "MIT"
+  }
+ },
+ "GFX-SRC-123": {
+  "repository": "facebook/litho",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 10773,
+   "sha256": "f62d190c08e2b300b45780f0b3cabcacc78d0e373f7a0de79d31f82b084d35ea",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-124": {
+  "repository": "chrisbanes/PhotoView",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 11358,
+   "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-125": {
+  "repository": "hajimehoshi/ebiten",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "LICENSE",
+   "bytes": 11357,
+   "sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1",
+   "spdx": "Apache-2.0"
+  }
+ },
+ "GFX-SRC-126": {
+  "repository": "aosp-mirror/platform_frameworks_native",
+  "status": "OFF_GITHUB",
+  "license": "UNKNOWN",
+  "class": null,
+  "reuse": null,
+  "evidence": null
+ },
+ "GFX-SRC-900": {
+  "repository": "LineageOS/android_frameworks_native",
+  "status": "VERIFIED",
+  "license": "Apache-2.0",
+  "class": "PERMISSIVE",
+  "reuse": "SAFE_PORT_WITH_ATTRIBUTION",
+  "evidence": {
+   "file": "NOTICE",
+   "bytes": 17680,
+   "sha256": "5f28c11f8b1b3f97b9d42c74b85371ebf4127f241b799279bcecd69f7ee542dc",
+   "spdx": "Apache-2.0"
+  }
+ }
+}
