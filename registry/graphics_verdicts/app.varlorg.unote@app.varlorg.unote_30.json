@@ -1,0 +1,371 @@
+{
+ "apk_sha256": "be91103f0e7db44361de5e918d9130dab4ac137bab5bd946a0fd8dab88bc2cc0",
+ "asset_chains": [],
+ "confidence": "apk_verified",
+ "evidence_inventory": {
+  "click_audit_records": 0,
+  "frame_count": 10,
+  "frames_manifest": true,
+  "gfx_provenance": true,
+  "report_json": false,
+  "screenshot": true,
+  "view_tree": true
+ },
+ "failing_stages": [],
+ "generated_utc": "2026-09-24T05:38:43Z",
+ "geometry_checks": [
+  {
+   "actual_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/RelativeLayout",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "tolerance_px": 230,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    0,
+    1876,
+    1080,
+    44
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/LinearLayout",
+   "expected_bounds": [
+    0,
+    1876,
+    1080,
+    44
+   ],
+   "tolerance_px": 129,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    0,
+    0,
+    1080,
+    170
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/LinearLayout",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    170
+   ],
+   "tolerance_px": 129,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    0,
+    170,
+    1080,
+    1706
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/ListView",
+   "expected_bounds": [
+    0,
+    170,
+    1080,
+    1706
+   ],
+   "tolerance_px": 204,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    0,
+    1876,
+    360,
+    44
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/Button[Add note]",
+   "expected_bounds": [
+    0,
+    1876,
+    360,
+    44
+   ],
+   "tolerance_px": 43,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    360,
+    1876,
+    360,
+    44
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/Button[Search]",
+   "expected_bounds": [
+    360,
+    1876,
+    360,
+    44
+   ],
+   "tolerance_px": 43,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    720,
+    1876,
+    360,
+    44
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/Button[Quit]",
+   "expected_bounds": [
+    720,
+    1876,
+    360,
+    44
+   ],
+   "tolerance_px": 43,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    0,
+    0,
+    1080,
+    126
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/FrameLayout",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    126
+   ],
+   "tolerance_px": 129,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    0,
+    126,
+    1080,
+    44
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/LinearLayout",
+   "expected_bounds": [
+    0,
+    126,
+    1080,
+    44
+   ],
+   "tolerance_px": 129,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    0,
+    0,
+    1080,
+    105
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/EditText",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    105
+   ],
+   "tolerance_px": 129,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    1080,
+    63,
+    0,
+    0
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/TextView",
+   "expected_bounds": [
+    1080,
+    63,
+    0,
+    0
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  }
+ ],
+ "interaction_proofs": [],
+ "not_applicable_stages": [
+  "assets_resolved",
+  "assets_decoded",
+  "assets_rendered"
+ ],
+ "notes": [
+  {
+   "frame_quality": {
+    "class": "CONTENT_PRESENT",
+    "content_bounds": [
+     0,
+     0,
+     1079,
+     1919
+    ],
+    "dims": [
+     1080,
+     1920
+    ],
+    "luminance_stddev": 18.1,
+    "non_background_frac": 0.111458,
+    "non_background_px": 231120,
+    "nonbg_unique_colors": 49,
+    "unique_colors_est": 50
+   },
+   "renderer_signals": [],
+   "triangulation": "VISUAL_FAIL"
+  }
+ ],
+ "overall": "VISUALLY_VERIFIED",
+ "overall_rank": 6,
+ "package": "app.varlorg.unote",
+ "renderer_family": "view-xml",
+ "repeatability_runs": [],
+ "run_dir": "/home/z/my-project/run/s92pilot/unote",
+ "runtime_sha": "",
+ "schema": "s92.graphics_verdict.v1",
+ "stages": {
+  "apk_load": {
+   "value": "PASS"
+  },
+  "assets_decoded": {
+   "note": "contract lists no required assets",
+   "value": "NOT_APPLICABLE"
+  },
+  "assets_rendered": {
+   "note": "contract lists no required assets",
+   "value": "NOT_APPLICABLE"
+  },
+  "assets_resolved": {
+   "note": "contract lists no required assets",
+   "value": "NOT_APPLICABLE"
+  },
+  "evidence_complete": {
+   "value": "PASS"
+  },
+  "frame_output": {
+   "value": "PASS"
+  },
+  "geometry": {
+   "value": "PASS"
+  },
+  "input": {
+   "note": "run drove no interaction; interactive targets exist",
+   "value": "UNKNOWN"
+  },
+  "input_target_visibility": {
+   "note": "run drove no interaction; interactive targets exist",
+   "value": "UNKNOWN"
+  },
+  "lifecycle": {
+   "note": "framework-view-only UI (no app-owned view classes); lifecycle from inflation + frames",
+   "value": "PASS"
+  },
+  "renderer_initialized": {
+   "note": "family=view-xml; signals=[]",
+   "value": "PASS"
+  },
+  "repeatability": {
+   "note": "single run; 3-run law not yet applied",
+   "value": "UNKNOWN"
+  },
+  "scene": {
+   "note": "screenshot class=CONTENT_PRESENT",
+   "value": "PASS"
+  },
+  "state_change": {
+   "note": "run drove no interaction; interactive targets exist",
+   "value": "UNKNOWN"
+  },
+  "visual": {
+   "value": "PASS"
+  },
+  "visual_change": {
+   "note": "run drove no interaction; interactive targets exist",
+   "value": "UNKNOWN"
+  }
+ },
+ "title": "uNote"
+}

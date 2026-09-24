@@ -1,0 +1,698 @@
+{
+ "apk_sha256": "a5687d1bad7b2927740a55b7b1df11efc81edcad03f0633ab5c2e5c58b120541",
+ "asset_chains": [],
+ "confidence": "apk_verified",
+ "evidence_inventory": {
+  "click_audit_records": 0,
+  "frame_count": 10,
+  "frames_manifest": true,
+  "gfx_provenance": true,
+  "report_json": false,
+  "screenshot": true,
+  "view_tree": true
+ },
+ "failing_stages": [],
+ "generated_utc": "2026-09-24T05:37:53Z",
+ "geometry_checks": [
+  {
+   "actual_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/FrameLayout",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "tolerance_px": 230,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/LinearLayout",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "tolerance_px": 230,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/LinearLayout",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "tolerance_px": 230,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    1860
+   ],
+   "element": "android/widget/LinearLayout",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    60
+   ],
+   "failure": "GEOMETRY_DELTA_EXCEEDED",
+   "tolerance_px": 129,
+   "value": "FAIL"
+  },
+  {
+   "actual_bounds": [
+    0,
+    60,
+    1080,
+    1860
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "FieldView",
+   "expected_bounds": [
+    0,
+    60,
+    1080,
+    1860
+   ],
+   "tolerance_px": 223,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    1082,
+    1922
+   ],
+   "element": "android/widget/LinearLayout",
+   "expected_bounds": [
+    0,
+    0,
+    -2,
+    -2
+   ],
+   "failure": "GEOMETRY_DELTA_EXCEEDED",
+   "tolerance_px": 8,
+   "value": "FAIL"
+  },
+  {
+   "actual_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "delta_dxywh": [
+    -298,
+    0,
+    597,
+    0
+   ],
+   "element": "android/widget/LinearLayout",
+   "expected_bounds": [
+    298,
+    0,
+    483,
+    1920
+   ],
+   "failure": "GEOMETRY_DELTA_EXCEEDED",
+   "tolerance_px": 230,
+   "value": "FAIL"
+  },
+  {
+   "actual_bounds": [
+    0,
+    0,
+    541,
+    60
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/TextView[Level: 1]",
+   "expected_bounds": [
+    0,
+    0,
+    541,
+    60
+   ],
+   "tolerance_px": 64,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    541,
+    0,
+    539,
+    60
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/TextView[Lives: 9]",
+   "expected_bounds": [
+    541,
+    0,
+    539,
+    60
+   ],
+   "tolerance_px": 64,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    0,
+    0,
+    -2,
+    -2
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/TextView[Game paused]",
+   "expected_bounds": [
+    0,
+    0,
+    -2,
+    -2
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    0,
+    0,
+    -1,
+    -1
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/Button[Continue]",
+   "expected_bounds": [
+    0,
+    0,
+    -1,
+    -1
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    0,
+    0,
+    -1,
+    -1
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/Button[End Game]",
+   "expected_bounds": [
+    0,
+    0,
+    -1,
+    -1
+   ],
+   "tolerance_px": 8,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    324,
+    26,
+    431,
+    75
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/TextView[Welcome to Dodge!]",
+   "expected_bounds": [
+    324,
+    26,
+    431,
+    75
+   ],
+   "tolerance_px": 51,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    432,
+    109,
+    214,
+    1645
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/Button[New Game]",
+   "expected_bounds": [
+    432,
+    109,
+    214,
+    1645
+   ],
+   "tolerance_px": 197,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    450,
+    1770,
+    178,
+    1645
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/Button[Free Play]",
+   "expected_bounds": [
+    450,
+    1770,
+    178,
+    1645
+   ],
+   "tolerance_px": 197,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    431,
+    3431,
+    217,
+    1645
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/Button[Help/About]",
+   "expected_bounds": [
+    431,
+    3431,
+    217,
+    1645
+   ],
+   "tolerance_px": 197,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    425,
+    5092,
+    228,
+    1645
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/Button[Preferences]",
+   "expected_bounds": [
+    425,
+    5092,
+    228,
+    1645
+   ],
+   "tolerance_px": 197,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    353,
+    6745,
+    373,
+    88
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/TableLayout",
+   "expected_bounds": [
+    353,
+    6745,
+    373,
+    88
+   ],
+   "tolerance_px": 44,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    372,
+    6833,
+    335,
+    44
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/Button[Continue Free Play]",
+   "expected_bounds": [
+    372,
+    6833,
+    335,
+    44
+   ],
+   "tolerance_px": 40,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    353,
+    6745,
+    291,
+    44
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/TableRow",
+   "expected_bounds": [
+    353,
+    6745,
+    291,
+    44
+   ],
+   "tolerance_px": 34,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    353,
+    6789,
+    373,
+    44
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/TableRow",
+   "expected_bounds": [
+    353,
+    6789,
+    373,
+    44
+   ],
+   "tolerance_px": 44,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    353,
+    6745,
+    197,
+    44
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/TextView[Best Level:]",
+   "expected_bounds": [
+    353,
+    6745,
+    197,
+    44
+   ],
+   "tolerance_px": 23,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    550,
+    6745,
+    94,
+    44
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/TextView[None]",
+   "expected_bounds": [
+    550,
+    6745,
+    94,
+    44
+   ],
+   "tolerance_px": 11,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    353,
+    6789,
+    279,
+    44
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/TextView[Free Play Level:]",
+   "expected_bounds": [
+    353,
+    6789,
+    279,
+    44
+   ],
+   "tolerance_px": 33,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    550,
+    6745,
+    94,
+    44
+   ],
+   "delta_dxywh": [
+    -82,
+    -44,
+    0,
+    0
+   ],
+   "element": "android/widget/TextView[None]",
+   "expected_bounds": [
+    632,
+    6789,
+    94,
+    44
+   ],
+   "failure": "GEOMETRY_DELTA_EXCEEDED",
+   "tolerance_px": 11,
+   "value": "FAIL"
+  }
+ ],
+ "interaction_proofs": [],
+ "not_applicable_stages": [
+  "assets_resolved",
+  "assets_decoded",
+  "assets_rendered"
+ ],
+ "notes": [
+  {
+   "frame_quality": {
+    "class": "CONTENT_PRESENT",
+    "content_bounds": [
+     0,
+     0,
+     1079,
+     1919
+    ],
+    "dims": [
+     1080,
+     1920
+    ],
+    "luminance_stddev": 63.97,
+    "non_background_frac": 1.0,
+    "non_background_px": 2073600,
+    "nonbg_unique_colors": 131,
+    "unique_colors_est": 131
+   },
+   "renderer_signals": [
+    "app-custom-View-subclass"
+   ],
+   "triangulation": "VISUAL_FAIL"
+  }
+ ],
+ "overall": "VISUALLY_PARTIAL",
+ "overall_rank": 5,
+ "package": "com.dozingcatsoftware.dodge",
+ "renderer_family": "canvas-custom-view",
+ "repeatability_runs": [],
+ "run_dir": "/home/z/my-project/run/s92pilot/dodge",
+ "runtime_sha": "",
+ "schema": "s92.graphics_verdict.v1",
+ "stages": {
+  "apk_load": {
+   "value": "PASS"
+  },
+  "assets_decoded": {
+   "note": "contract lists no required assets",
+   "value": "NOT_APPLICABLE"
+  },
+  "assets_rendered": {
+   "note": "contract lists no required assets",
+   "value": "NOT_APPLICABLE"
+  },
+  "assets_resolved": {
+   "note": "contract lists no required assets",
+   "value": "NOT_APPLICABLE"
+  },
+  "evidence_complete": {
+   "value": "PASS"
+  },
+  "frame_output": {
+   "value": "PASS"
+  },
+  "geometry": {
+   "value": "PARTIAL"
+  },
+  "input": {
+   "note": "run drove no interaction; interactive targets exist",
+   "value": "UNKNOWN"
+  },
+  "input_target_visibility": {
+   "note": "run drove no interaction; interactive targets exist",
+   "value": "UNKNOWN"
+  },
+  "lifecycle": {
+   "value": "PASS"
+  },
+  "renderer_initialized": {
+   "note": "family=canvas-custom-view; signals=['app-custom-View-subclass']",
+   "value": "PASS"
+  },
+  "repeatability": {
+   "note": "single run; 3-run law not yet applied",
+   "value": "UNKNOWN"
+  },
+  "scene": {
+   "note": "screenshot class=CONTENT_PRESENT",
+   "value": "PASS"
+  },
+  "state_change": {
+   "note": "run drove no interaction; interactive targets exist",
+   "value": "UNKNOWN"
+  },
+  "visual": {
+   "value": "PARTIAL"
+  },
+  "visual_change": {
+   "note": "run drove no interaction; interactive targets exist",
+   "value": "UNKNOWN"
+  }
+ },
+ "title": "Dodge"
+}

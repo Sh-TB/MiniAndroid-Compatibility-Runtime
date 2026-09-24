@@ -1,0 +1,321 @@
+{
+ "apk_sha256": "c933b5b82192087585b30a0bd1bdaf1ae6e8d80a3901ecdec12b75f0a3eac13d",
+ "asset_chains": [],
+ "confidence": "observed_only",
+ "evidence_inventory": {
+  "click_audit_records": 2,
+  "frame_count": 24,
+  "frames_manifest": true,
+  "gfx_provenance": true,
+  "report_json": false,
+  "screenshot": true,
+  "view_tree": true
+ },
+ "failing_stages": [],
+ "generated_utc": "2026-09-24T05:41:55Z",
+ "geometry_checks": [
+  {
+   "actual_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/LinearLayout",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "tolerance_px": 230,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    0,
+    0,
+    1080,
+    1758
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "Board2048View",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1758
+   ],
+   "tolerance_px": 210,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "delta_dxywh": [
+    0,
+    -1758,
+    0,
+    1758
+   ],
+   "element": "android/widget/LinearLayout",
+   "expected_bounds": [
+    0,
+    1758,
+    1080,
+    162
+   ],
+   "failure": "GEOMETRY_DELTA_EXCEEDED",
+   "tolerance_px": 129,
+   "value": "FAIL"
+  },
+  {
+   "actual_bounds": [
+    47,
+    1805,
+    246,
+    68
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/Button[LEFT]",
+   "expected_bounds": [
+    47,
+    1805,
+    246,
+    68
+   ],
+   "tolerance_px": 29,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    293,
+    1805,
+    246,
+    68
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/Button[UP]",
+   "expected_bounds": [
+    293,
+    1805,
+    246,
+    68
+   ],
+   "tolerance_px": 29,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    539,
+    1805,
+    247,
+    68
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/Button[DOWN]",
+   "expected_bounds": [
+    539,
+    1805,
+    247,
+    68
+   ],
+   "tolerance_px": 29,
+   "value": "PASS"
+  },
+  {
+   "actual_bounds": [
+    786,
+    1805,
+    247,
+    68
+   ],
+   "delta_dxywh": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "element": "android/widget/Button[RIGHT]",
+   "expected_bounds": [
+    786,
+    1805,
+    247,
+    68
+   ],
+   "tolerance_px": 29,
+   "value": "PASS"
+  }
+ ],
+ "interaction_proofs": [
+  {
+   "after_frame": "frame_016.png",
+   "before_frame": "frame_015.png",
+   "clicked": {
+    "view_id": 23
+   },
+   "index": 16,
+   "input_event": {
+    "dispatched": true,
+    "down_record": {
+     "action": "ACTION_DOWN",
+     "consumed": true,
+     "long_press_armed_ms": 500,
+     "root_id": 9,
+     "state_changes": [
+      "setPressed(true)"
+     ],
+     "target_class": "Landroid/widget/Button;",
+     "target_view_id": 23,
+     "virtual_ms": 4800,
+     "x": 170,
+     "y": 1839
+    },
+    "type": "tap (scheduled F-117)",
+    "x": 170,
+    "y": 1839
+   },
+   "pixel_delta": {
+    "after_sha256": "b91e8f623c7a181f5c652ba65abc4e0aee2510fcb46f5b534310def4f54a15ee",
+    "bbox": [
+     30,
+     350,
+     789,
+     851
+    ],
+    "before_sha256": "7bc3ca57396e6ba0565a96cc03d1c2a7c7620ccf74e333f8628549c4fc83af68",
+    "changed_px": 177990,
+    "changed_ratio": 0.085836
+   },
+   "source": "F-NEW-199 interactions[]",
+   "verdict": "INTERACTION_VISUALLY_PROVEN"
+  }
+ ],
+ "not_applicable_stages": [
+  "assets_resolved",
+  "assets_decoded",
+  "assets_rendered"
+ ],
+ "notes": [
+  {
+   "frame_quality": {
+    "class": "CONTENT_PRESENT",
+    "content_bounds": [
+     0,
+     0,
+     1079,
+     1919
+    ],
+    "dims": [
+     1080,
+     1920
+    ],
+    "luminance_stddev": 32.33,
+    "non_background_frac": 0.996813,
+    "non_background_px": 2066991,
+    "nonbg_unique_colors": 93,
+    "unique_colors_est": 95
+   },
+   "renderer_signals": [
+    "app-custom-View-subclass"
+   ],
+   "triangulation": "VISUAL_FAIL"
+  }
+ ],
+ "overall": "INTERACTION_VERIFIED",
+ "overall_rank": 7,
+ "package": "com.miniandroid.g2048",
+ "renderer_family": "canvas-custom-view",
+ "repeatability_runs": [],
+ "run_dir": "/home/z/my-project/run/s92pilot/g2048",
+ "runtime_sha": "",
+ "schema": "s92.graphics_verdict.v1",
+ "stages": {
+  "apk_load": {
+   "value": "PASS"
+  },
+  "assets_decoded": {
+   "note": "contract lists no required assets",
+   "value": "NOT_APPLICABLE"
+  },
+  "assets_rendered": {
+   "note": "contract lists no required assets",
+   "value": "NOT_APPLICABLE"
+  },
+  "assets_resolved": {
+   "note": "contract lists no required assets",
+   "value": "NOT_APPLICABLE"
+  },
+  "evidence_complete": {
+   "value": "PASS"
+  },
+  "frame_output": {
+   "value": "PASS"
+  },
+  "geometry": {
+   "value": "PARTIAL"
+  },
+  "input": {
+   "value": "PASS"
+  },
+  "input_target_visibility": {
+   "value": "PASS"
+  },
+  "lifecycle": {
+   "value": "PASS"
+  },
+  "renderer_initialized": {
+   "note": "family=canvas-custom-view; signals=['app-custom-View-subclass']",
+   "value": "PASS"
+  },
+  "repeatability": {
+   "note": "single run; 3-run law not yet applied",
+   "value": "UNKNOWN"
+  },
+  "scene": {
+   "note": "screenshot class=CONTENT_PRESENT",
+   "value": "PASS"
+  },
+  "state_change": {
+   "note": "runtime frames manifest records dispatch+state",
+   "value": "PASS"
+  },
+  "visual": {
+   "value": "PARTIAL"
+  },
+  "visual_change": {
+   "value": "PASS"
+  }
+ },
+ "title": "2048"
+}

@@ -1,0 +1,434 @@
+{
+ "apk_asset_inventory": [
+  {
+   "bucket": "",
+   "dims": [
+    30,
+    30
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "-5.png",
+   "path": "res/-5.png",
+   "sha256": "e97a6335320bc409665502f6235c6d4df1d9ac1d5e22eb94d34f9f147fbc1b4e"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    40,
+    40
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "0J.png",
+   "path": "res/0J.png",
+   "sha256": "630a9f0df1652867090916e155da9448eff41bd4fe194d4f398e9e0431e7bf81"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    15,
+    15
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "4I.png",
+   "path": "res/4I.png",
+   "sha256": "ae085021ff2b4f51876d68e3291b749747dd19393d32d6eb6dd8d117c003a62c"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    40,
+    40
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "5_.png",
+   "path": "res/5_.png",
+   "sha256": "4acb4b7344e29429b46d097a6a77e960847b0bbf208272c6b4b6b89007ce5c05"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    20,
+    20
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "GG.png",
+   "path": "res/GG.png",
+   "sha256": "45a3cc46fbc4be297830933c1b5a9400673fb6bd1afb63bc37a2eaa38de7ebc3"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    30,
+    30
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "JB.png",
+   "path": "res/JB.png",
+   "sha256": "be7b63207591e5bb5576e663a8f945e998b9d9a951a29e3af509a0da0a2b8205"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    15,
+    15
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "JZ.png",
+   "path": "res/JZ.png",
+   "sha256": "b891a1e5113be85687aef1b54779b16de02cd6cc009848c94fc80018c7e360ae"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    10,
+    10
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "UI.png",
+   "path": "res/UI.png",
+   "sha256": "8153c24aeb005b14022b8de62b77fd1593e023568baab0fd11968da2346efb85"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    9,
+    9
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "cT.png",
+   "path": "res/cT.png",
+   "sha256": "5a89c9ccc89e42f2353f413887ba90705c9d33fa3ff1920287c5077828dcd993"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    1,
+    256
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "ez.png",
+   "path": "res/ez.png",
+   "sha256": "066dd793b7b55773659e30bececb98b24e9b0db30bead2757d1ddf22a6e32662"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    15,
+    15
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "hV.png",
+   "path": "res/hV.png",
+   "sha256": "f70223db778668154301aaf980fe9fd6c04d0a835271b4d991680c8e6a2f92f9"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    6,
+    6
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "i-.png",
+   "path": "res/i-.png",
+   "sha256": "93abf70fc281a327a20f7c7bf11b4dec39a7b49c58e771eaa68ad09ac093bade"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    20,
+    20
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "n9.png",
+   "path": "res/n9.png",
+   "sha256": "0e072ffa22395be60d55f29c02fe2fa921e9d87c96f794e9ab69bf811a99ee89"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    18,
+    18
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "o9.png",
+   "path": "res/o9.png",
+   "sha256": "3979b683f5fb0cce4634fa1b8fac26d0c04e6517a50885819231d03c2361596f"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    10,
+    10
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "oU.png",
+   "path": "res/oU.png",
+   "sha256": "140fc3eccac152ba0b6b49257c2d9965db626a8a48bbad35f77c4dfeb0248ef0"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    20,
+    20
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "qV.png",
+   "path": "res/qV.png",
+   "sha256": "26a4e2a0c0311c679646ff3616ecf9f60b5899bcccfad58ab939e07dd5c38068"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    12,
+    12
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "xo.png",
+   "path": "res/xo.png",
+   "sha256": "ae15fef8631f9dd835738ed6c40f82effa0aa7a87a010fe244ca26b87d42fc38"
+  },
+  {
+   "bucket": "",
+   "dims": [
+    30,
+    30
+   ],
+   "dir": null,
+   "kind": "png",
+   "name": "yH.png",
+   "path": "res/yH.png",
+   "sha256": "4c6f5564100ae5fc6c99be7b91a45f8370200b215bce22f2eb5643701c0b5f32"
+  }
+ ],
+ "apk_sha256": "be91103f0e7db44361de5e918d9130dab4ac137bab5bd946a0fd8dab88bc2cc0",
+ "confidence": "apk_verified",
+ "dynamic_regions": [],
+ "expected_state_changes": [],
+ "interaction_targets": [
+  {
+   "bounds": [
+    0,
+    1876,
+    360,
+    44
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "Add note",
+   "view_id": 2131099673
+  },
+  {
+   "bounds": [
+    360,
+    1876,
+    360,
+    44
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "Search",
+   "view_id": 2131099707
+  },
+  {
+   "bounds": [
+    720,
+    1876,
+    360,
+    44
+   ],
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "text": "Quit",
+   "view_id": 2131099706
+  }
+ ],
+ "package": "app.varlorg.unote",
+ "renderer_family": "view-xml",
+ "renderer_signals": [],
+ "required_assets": [],
+ "required_elements": [
+  {
+   "class": "Landroid/widget/RelativeLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    1920
+   ],
+   "name": "android/widget/RelativeLayout",
+   "resource_id": 2131099703,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    1876,
+    1080,
+    44
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 2131099695,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    170
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 2131099702,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/ListView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    170,
+    1080,
+    1706
+   ],
+   "name": "android/widget/ListView",
+   "resource_id": 2131099698,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    1876,
+    360,
+    44
+   ],
+   "name": "android/widget/Button[Add note]",
+   "resource_id": 2131099673,
+   "text": "Add note",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    360,
+    1876,
+    360,
+    44
+   ],
+   "name": "android/widget/Button[Search]",
+   "resource_id": 2131099707,
+   "text": "Search",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/Button;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    720,
+    1876,
+    360,
+    44
+   ],
+   "name": "android/widget/Button[Quit]",
+   "resource_id": 2131099706,
+   "text": "Quit",
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/FrameLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    126
+   ],
+   "name": "android/widget/FrameLayout",
+   "resource_id": 0,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/LinearLayout;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    126,
+    1080,
+    44
+   ],
+   "name": "android/widget/LinearLayout",
+   "resource_id": 2131099715,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/EditText;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    0,
+    0,
+    1080,
+    105
+   ],
+   "name": "android/widget/EditText",
+   "resource_id": 2131099708,
+   "text": null,
+   "visibility": "VISIBLE"
+  },
+  {
+   "class": "Landroid/widget/TextView;",
+   "confidence": "observed_only",
+   "expected_bounds": [
+    1080,
+    63,
+    0,
+    0
+   ],
+   "name": "android/widget/TextView",
+   "resource_id": 2131099712,
+   "text": null,
+   "visibility": "VISIBLE"
+  }
+ ],
+ "required_regions": [],
+ "schema": "s92.visual_contract.v1",
+ "screen": [
+  1080,
+  1920
+ ],
+ "source_provenance": {
+  "source_laws": [],
+  "source_root": null,
+  "source_url": null
+ },
+ "title": "uNote"
+}
