@@ -10,6 +10,19 @@
 
 Snapshot: 745 tracked `.md` files — 441 KEEP (knowledge/process), 185 HISTORY (era records), 111 EVIDENCE (compact, cited), plus 290 tracked `.json` (indexes/fixtures/oracles — classified below).
 
+## 0g. S95-FOLLOWUP + S96 additions — executed-games audit + acceleration surface (canonical)
+
+| Artifact | Class | Role |
+|---|---|---|
+| `docs/VERIFIED_EXECUTED_GAMES.md` | KEEP | Authoritative executed-games audit: 23 games with real execution evidence (20 VERIFIED / 2 PARTIAL / 1 downgraded), 22-VERIFIED claim verification, E-levels, gaps + evidence-driven queue |
+| `docs/verified_executed_games.json` | KEEP | Machine index referencing canonical registry identity (miniandroid.executed_games.v1); built + SHA-cross-checked by scripts/s96_games_audit.py |
+| `docs/EXECUTED_GIFS.md` | KEEP | Single human-facing index of every REAL-execution GIF (12 canonical + 7 historical wave GIFs; exclusion rules stated) |
+| `docs/SOURCE_REUSE_ROI.md` | KEEP | Reuse ROI ledger: measured fan-outs, TIME SAVED records (conservative ranges), tool acceleration map, media/network/browser reuse matrices, next-wave queue |
+| `scripts/s96_games_audit.py` + `s96_games_audit_md.py` | KEEP | Regenerate the audit JSON/MD from canonical sources (edit the script, not the JSON) |
+| `scripts/s96_gif_index.py` | KEEP | Regenerates docs/EXECUTED_GIFS.md from the audit JSON + repo GIF inventory |
+| `CONSTITUTION_V2.md` §171 | KEEP-law | Open-Source Advantage law: source = primary behavioral evidence; SEARCHED→LICENSE→DECISION chain before custom code |
+| README "Real Executed Apps & Games" | KEEP | 4-demo surface (Snake Deluxe, 2048, + Mini Tetris, Fish Rings) → EXECUTED_GIFS.md chain |
+
 ## 0f. S95-CTRL additions — engineering control system (canonical)
 
 | Artifact | Class | Role |
