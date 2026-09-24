@@ -150,6 +150,28 @@ gate "mutf8 string-pool battery (expect 14)" $?
 tail -1 /tmp/battery_mutf8.out
 fi
 
+# S98 text-domain micro-gap fence (MG-051/073/080-085): links the REAL
+# fonts::TextShaper + fonts::layout_text objects and asserts the AOSP text
+# laws — fallback chain notdef==0 (incl. the R-NEW-398 CJK face load fix),
+# ellipsize END/START/MIDDLE + maxLines=1 no-wrap (MG-073 new law),
+# combining marks, RTL first-strong, Arabic joining advance law,
+# emoji-presentation claim (MG-083), surrogate-pair single cluster
+# (MG-084), UTF-8/UTF-16 boundary arithmetic (MG-085 phantom-NUL fix).
+if cached "s98 text laws (expect 21)"; then
+    skip "link s98_text_law_test"; skip "s98 text laws (expect 21)"
+else
+g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/s98_text_law_test \
+    tests/s98_text_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
+    build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
+    build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
+    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 \
+    > /tmp/battery_s98text.log 2>&1
+gate "link s98_text_law_test" $?
+./build/s98_text_law_test > /tmp/battery_s98text.out 2>&1
+gate "s98 text laws (expect 21)" $?
+tail -1 /tmp/battery_s98text.out
+fi
+
 # P1 resource-configuration regression (generic default/v16/v21 law)
 if cached "resource-config selection law (expect 48)"; then
     skip "link resource_config_selection_test"; skip "resource-config selection law (expect 48)"

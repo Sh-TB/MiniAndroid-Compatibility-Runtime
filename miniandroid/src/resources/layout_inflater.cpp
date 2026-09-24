@@ -1072,6 +1072,15 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
         else if (n == "enabled") node.enabled = raw != "false";
         else if (n == "lines") a.num_lines = atoi(raw.c_str());
         else if (n == "singleLine") a.single_line = at.value.is_bool() ? at.value.data != 0 : raw == "true";
+        // MG-073 (S98): android:ellipsize — AOSP TextUtils.TruncateAt value
+        // names, mapped to the AOSP ordinals (none/start/middle/end/marquee).
+        else if (n == "ellipsize") {
+            if (raw == "start") a.ellipsize = 1;
+            else if (raw == "middle") a.ellipsize = 2;
+            else if (raw == "end") a.ellipsize = 3;
+            else if (raw == "marquee") a.ellipsize = 4;
+            else a.ellipsize = 0;  // "none" + unknown = NONE (loud future fam)
+        }
         else if (n == "elevation") a.elevation_px = parse_dim_attr(&at, stats);
         // F-142b (AOSP ImageView.java L1141+ measure contract, XML path):
         // android:maxWidth / android:maxHeight compile to TYPED DIMENSION
@@ -1277,6 +1286,7 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
     }
     node.clickable = node.clickable || a.clickable || !a.onClick.empty();
     node.num_lines = a.num_lines;
+    node.ellipsize = a.ellipsize;  // MG-073 (S98)
     if (!a.onClick.empty()) node.onClick_handler = a.onClick;
     // FIX-2c: relative-layout sibling rules onto the node
     node.rel_below_name = a.rel_below;
@@ -2721,7 +2731,8 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                                               n->line_spacing_mult,
                                               n->line_spacing_add_px,
                                               n->include_font_pad,
-                                              n->elegant_text_height);
+                                              n->elegant_text_height,
+                                              n->ellipsize);  // MG-073
                 content_w = std::max(content_w, (int)std::ceil(
                     avail_w > 0 ? std::min(lay.max_line_width, avail_w)
                                 : lay.max_line_width));
