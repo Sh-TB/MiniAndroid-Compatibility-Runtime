@@ -886,7 +886,7 @@
  ],
  "confidence": "apk_verified",
  "evidence_inventory": {
-  "click_audit_records": 6,
+  "click_audit_records": 8,
   "frame_count": 60,
   "frames_manifest": true,
   "gfx_provenance": true,
@@ -895,7 +895,7 @@
   "view_tree": true
  },
  "failing_stages": [],
- "generated_utc": "2026-09-24T05:39:05Z",
+ "generated_utc": "2026-09-24T06:59:50Z",
  "geometry_checks": [
   {
    "actual_bounds": [
