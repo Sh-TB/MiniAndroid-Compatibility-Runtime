@@ -1,0 +1,17 @@
+{
+ "per_object": {
+  "random_dooz:res/UJ.ttf": null,
+  "random_openlauncher:assets/RobotoCondensed-Bold.ttf": null,
+  "random_openlauncher:assets/RobotoCondensed-BoldItalic.ttf": null,
+  "tictactoe:assets/fonts/Roboto-Medium.ttf": null
+ },
+ "text_verdicts": {
+  "TEXT_VISUALLY_VERIFIED": 46,
+  "CLIPPED_TEXT": 11,
+  "MISSING_TEXT": 1
+ },
+ "totals": {
+  "resolved": 4,
+  "glyph_object_ok": 4
+ }
+}
