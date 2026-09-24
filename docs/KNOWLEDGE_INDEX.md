@@ -24,6 +24,8 @@ Snapshot: 745 tracked `.md` files — 441 KEEP (knowledge/process), 185 HISTORY 
 | `tools/verify/probes/visual_probe.py` (NEAREST law) | KEEP-fix | Template scaling mirrors runtime nearest-neighbour sampler law (software_renderer.cpp:450) — fixes scale-domain false ABSENT |
 | `tools/verify/probes/interaction_probe.py` (§10 id law) | KEEP-fix | §10 gate resolves object_id+android_view_id; unresolved dispatch = INPUT_TARGET_UNVERIFIED (never silent skip) |
 
+| `docs/MICRO_GAP_SWEEP.md` + `docs/MICRO_GAP_REGISTRY.json` | KEEP | S97 micro-gap sweep: 311 tickets triaged (131 TESTED / 99 PARTIAL / 60 PENDING / 18 OBSERVED / 3 CLOSED) with AOSP upstream pointers + named battery tests; built by scripts/s97_build_micro_registry.py |
+
 ## 0g. S95-FOLLOWUP + S96 additions — executed-games audit + acceleration surface (canonical)
 
 | Artifact | Class | Role |
