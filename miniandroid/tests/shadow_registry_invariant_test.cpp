@@ -87,8 +87,8 @@ int main() {
     {
         ShadowRegistry reg;
         register_platform_shadows(reg);
-        check(reg.stats().shadow_count == 27,
-              "register_platform_shadows registers exactly 27 shadows (S68 21 + S83 LocaleInsets/GLSurfaceView + S86 SurfaceView + S87 executor split)");
+        check(reg.stats().shadow_count == 28,
+              "register_platform_shadows registers exactly 28 shadows (S68 21 + S83 LocaleInsets/GLSurfaceView + S86 SurfaceView + S87 executor split + S99 AnimatorShadow)");
     }
 
     printf("== §6 INV-3: deterministic ownership (register → find identity) ==\n");
@@ -149,8 +149,8 @@ int main() {
         check(reduced.find_as<ThreadShadow>() != nullptr &&
                   reduced.find_as<LooperShadow>() != nullptr,
               "canonical registration completes a reduced registry");
-        check(reduced.stats().shadow_count == 29,
-              "count law: 27 canonical + 2 pre-registered = 29 visible (S68 21 + S83 LocaleInsetsShadow/GLSurfaceViewShadow + S86 SurfaceViewShadow + S87 executor-split drift, plus M3 F-020 AtomicShadow + §4 ExecutorShadow + F-050 ChoreographerShadow + S56 F-085 WebSettingsShadow + S68 BitmapShadow lineage)");
+        check(reduced.stats().shadow_count == 30,
+              "count law: 28 canonical + 2 pre-registered = 30 visible (S68 21 + S83 LocaleInsetsShadow/GLSurfaceViewShadow + S86 SurfaceViewShadow + S87 executor-split drift, plus M3 F-020 AtomicShadow + §4 ExecutorShadow + F-050 ChoreographerShadow + S56 F-085 WebSettingsShadow + S68 BitmapShadow lineage + S99 AnimatorShadow)");
     }
 
     printf("§6 shadow registry invariant battery: %d checks, %d failures\n",

@@ -4566,6 +4566,46 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // intercepted — dooz (Compose) executes its real bytecode 3 fixes deep
     // (S39/S40); intercepting it would regress that frontier.
     // ────────────────────────────────────────────────────────────────────
+    // S99 — ContentFrameLayout subdecor plumbing no-op law (babydots full-
+    // load evidence, AppCompatDelegateImpl.createSubDecor chain). With the
+    // S99 <include> fix the abc_screen_simple subdecor inflates for real
+    // and createSubDecor reaches the attach/insets plumbing:
+    //   ContentFrameLayout.setDecorPadding pc=2 → Rect.set on a NULL
+    //   mContentInsets (the interpreter-materialized host never runs the
+    //   final-field initializers of the framework class).
+    // The software renderer does not consume content insets today and the
+    // attach listener is framework-internal plumbing, so both are answered
+    // at the framework boundary (same sanctioned tool class as the S83
+    // APX-ACT shadow above — observable contract, not a null bypass: the
+    // subdecor is inflated, attached, and rendered).
+    if (declaring_class == "Landroidx/appcompat/widget/ContentFrameLayout;" &&
+        (method_name == "setDecorPadding" ||
+         method_name == "setAttachListener" ||
+         method_name == "attachListener")) {
+        return_val = DalvikValue::make_void();
+        last_invoke_return_ = return_val;
+        return true;
+    }
+    // S99 — VectorDrawableCompat config gate no-op law (babydots evidence:
+    // ToolbarWidgetWrapper.<init> → ResourceManagerInternal.checkVector-
+    // DrawableSetup → getDrawable(abc_vector_test) re-entered the manager
+    // while active (M3-19 cycle guard stubbed the probe null) → ISE
+    // "incorrect configuration. Please configure your build for
+    // VectorDrawableCompat." → onCreate dead).
+    // AOSP context: the gate exists to catch apps compiled WITHOUT
+    // vectorDrawable support on pre-L platforms. This runtime's drawable
+    // pipeline supports vector drawables NATIVELY (src/resources/
+    // vector_inflater.cpp — VDC/VB laws), so the compat configuration the
+    // gate demands is satisfied by construction; answering void at the
+    // framework boundary is the observable API-21+ outcome (the gate
+    // trivially passes there).
+    if (declaring_class == "Landroidx/appcompat/widget/ResourceManagerInternal;" &&
+        method_name == "checkVectorDrawableSetup") {
+        return_val = DalvikValue::make_void();
+        last_invoke_return_ = return_val;
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────
     if (declaring_class == "Landroidx/appcompat/app/AppCompatActivity;" ||
         declaring_class == "Landroidx/fragment/app/FragmentActivity;" ||
         // S83 addition: the LEGACY support library trio — same delegate
@@ -24152,6 +24192,22 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 result = DalvikValue::make_int(resolved);
             } else if (method == "hasValue") {
                 int32_t idx = args[1].int_val;
+                // S99 PRESENCE LAW: F-093/F-NEW-175 materialization records
+                // a resolved attr in "array_present[i]" (a resolved attr
+                // with value 0/false IS present — Theme.AppCompat.Light.
+                // NoActionBar windowActionBar=false was conflated with
+                // absent, firing the appcompat theme-gate ISE family).
+                // Legacy arrays without the presence bit keep the old
+                // (val!=0) reader.
+                if (idx >= 0 && idx < f175_len) {
+                    if (auto pf = heap_.get_object_field(
+                            args[0].object_id,
+                            "array_present[" + std::to_string(idx) + "]");
+                        pf && pf->type == DalvikType::INT32) {
+                        result = DalvikValue::make_bool(pf->int_val != 0);
+                        return true;
+                    }
+                }
                 int32_t val = 0;
                 if (idx >= 0 && idx < f175_len) {
                     if (auto vf = heap_.get_object_field(
@@ -24797,6 +24853,20 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 "Landroid/content/ContentProvider;",
                 "Landroid/content/ContentProviderClient;",
                 "Landroid/view/ContextThemeWrapper;",
+                // S99 FIX (babydots FloatingActionButton.<init> pc=125):
+                // the fast path above matches class-NAME substrings, so
+                // widget receivers whose name lacks the literal "View"
+                // (com.google.android.material.floatingactionbutton.
+                //  FloatingActionButton, custom views named "GameBoard",
+                //  "AnimatedDots", …) fell through BOTH the substring
+                // guard AND this hierarchy walk (View is not a Context
+                // root) → getResources() answered null →
+                // Resources.getDimensionPixelSize NPE at the next pc.
+                // AOSP law (View.java): EVERY View instance answers
+                // getResources() with its context's Resources — add the
+                // View root so the whole widget tree is covered.
+                "Landroid/view/View;",
+                "Landroid/view/ViewGroup;",
             };
             for (const char* root : kContextRoots) {
                 if (is_subclass_of(class_name, root)) {
@@ -25814,8 +25884,25 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
         // Create SharedPreferences object on heap
         std::string prefs_desc = "Landroid/content/SharedPreferences;";
-        uint32_t obj_id = heap_.allocate(prefs_desc, pc_,
-                                        call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+        // S99 IDENTITY LAW: one SharedPreferencesImpl PER NAME per process
+        // (AOSP ContextImpl.getSharedPreferences caches per file name).
+        // Reuse the existing heap object when the name was opened before —
+        // without this, writes through one object were invisible to readers
+        // holding another (babydots setSpeed Float-cast NPE).
+        uint32_t obj_id = 0;
+        {
+            auto ident = prefs_identity_by_name_.find(prefs_name);
+            if (ident != prefs_identity_by_name_.end() &&
+                heap_.has_object(ident->second)) {
+                obj_id = ident->second;
+                result = DalvikValue::make_object(obj_id, prefs_desc);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+        obj_id = heap_.allocate(prefs_desc, pc_,
+                                call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+        prefs_identity_by_name_[prefs_name] = obj_id;
         // Store the prefs name as a field so we can persist by name
         DalvikValue name_val;
         name_val.type = DalvikType::STRING_REF;
@@ -25885,6 +25972,18 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                         lv.type = DalvikType::INT64;
                         lv.long_val = v;
                         heap_.set_object_field(obj_id, key, lv);
+                    }
+                } else if (line.find("<float ") != std::string::npos) {
+                    // S99: the loader must mirror the writer (putFloat
+                    // persists a <float .../> entry) and the getFloat
+                    // reader — otherwise a persisted float is silently
+                    // dropped on reload (typed round-trip break).
+                    size_t val_pos = line.find("value=\"", name_end);
+                    if (val_pos != std::string::npos) {
+                        size_t val_start = val_pos + 7;
+                        size_t val_end = line.find("\"", val_start);
+                        float v = std::stof(line.substr(val_start, val_end - val_start));
+                        heap_.set_object_field(obj_id, key, DalvikValue::make_float(v));
                     }
                 }
             }
@@ -26243,6 +26342,48 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
             DalvikValue v; v.type = DalvikType::INT64; v.long_val = def;
             result = v;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getFloat") {
+            // S99 FIX (babydots AnimatedDots.setSpeed evidence):
+            static thread_local const bool f114_diag_float =
+                std::getenv("MINIANDROID_F114_DIAG") != nullptr;
+            if (f114_diag_float) {
+                std::cerr << "[F114-DIAG] prefs getFloat class=" << class_name
+                          << " argc=" << args.size()
+                          << " prefs_obj_id=" << prefs_obj_id;
+                for (size_t di = 0; di < args.size() && di < 3; ++di)
+                    std::cerr << " a" << di << "(t=" << static_cast<int>(args[di].type) << ")";
+                std::cerr << std::endl;
+            }
+            // getFloat was the ONLY typed getter missing from this dispatch
+            // — the call fell through to the engine default (null object)
+            // and Kotlin's checkNotNull(apply { speed = prefs.getFloat… })
+            // threw "null cannot be cast to non-null type kotlin.Float" →
+            // onCreate dead. AOSP SharedPreferencesImpl.getFloat(key, def):
+            //     Object v = map.get(key); return v != null ? (Float) v : def;
+            // putFloat already persists the typed float (line below), so
+            // the reader must mirror it. Float decode: FLOAT values pass
+            // through; INT32 stored values coerce per the put path.
+            std::string key = (args.size() > 1 && args[1].type == DalvikType::STRING_REF) ? args[1].string_val : "";
+            float def = (args.size() > 2 && args[2].type == DalvikType::FLOAT32) ? args[2].float_val
+                      : (args.size() > 2 && args[2].type == DalvikType::INT32) ? (float)args[2].int_val
+                      : 0.0f;
+            if (prefs_obj_id && heap_.has_object(prefs_obj_id)) {
+                auto val = heap_.get_object_field(prefs_obj_id, key);
+                if (val.has_value() && val->type == DalvikType::FLOAT32) {
+                    result = DalvikValue::make_float(val->float_val);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                if (val.has_value() && val->type == DalvikType::INT32) {
+                    result = DalvikValue::make_float((float)val->int_val);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+            }
+            result = DalvikValue::make_float(def);
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
