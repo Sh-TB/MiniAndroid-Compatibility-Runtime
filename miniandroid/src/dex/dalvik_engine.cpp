@@ -3806,6 +3806,27 @@ const std::string& DalvikExecutionEngine::cached_asset_bytes(const std::string& 
             }
         }
     } else if (!apk_path_.empty()) {
+        // S102 LAW 2 (SERVICELOADER-APK-ENTRY): paths with the "apk-entry:"
+        // prefix are ROOT ZIP entries (META-INF/services/…), NOT assets —
+        // ServiceLoader/ClassLoader.getResources read the classpath, and
+        // the classpath root of an APK is its own entry table (libcore:
+        // ClassLoader.getResource walks the class path; for an APK that is
+        // the APK's own entries). Without this prefix every META-INF
+        // lookup wrongly hit "assets/META-INF/…" and answered empty.
+        if (path.rfind("apk-entry:", 0) == 0) {
+            const std::string entry = path.substr(strlen("apk-entry:"));
+            if (resources::ResourceRuntime::instance().ensure_loaded(apk_path_)) {
+                auto bytes = resources::ResourceRuntime::instance()
+                                 .apk()
+                                 .extract_entry_cached(entry);
+                content.assign(bytes.begin(), bytes.end());
+                if (content.empty()) {
+                    std::cerr << "[S102-APK-ENTRY] MISS " << entry
+                              << " (honest empty — no fabrication)"
+                              << std::endl;
+                }
+            }
+        } else {
         std::string cmd = "unzip -p '" + apk_path_ + "' 'assets/" + path + "' 2>/dev/null";
         FILE* pipe = popen(cmd.c_str(), "r");
         if (pipe) {
@@ -3813,6 +3834,7 @@ const std::string& DalvikExecutionEngine::cached_asset_bytes(const std::string& 
             size_t n;
             while ((n = fread(buf, 1, sizeof(buf), pipe)) > 0) content.append(buf, n);
             pclose(pipe);
+        }
         }
     }
     return asset_bytes_cache_.emplace(path, std::move(content)).first->second;
@@ -28520,6 +28542,32 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
+
+        // ────────────────────────────────────────────────────────────────
+        // S102 LAW 2 — SERVICELOADER-APK-ENTRY (META-INF/services).
+        //   Upstream: OpenJDK java.util.ServiceLoader (LazyIterator) +
+        //   libcore ClassLoader.getResources — the provider list for a
+        //   service S is parsed from META-INF/services/<S.class.name>
+        //   entries of the class path; one provider instance per non-empty,
+        //   non-comment line via Class.forName(name).getDeclaredConstructor()
+        //   .newInstance(). For an APK, the class path root IS the APK's
+        //   own entry table.
+        //   Evidence (mentalmath, fresh S102 run): the app dex carries
+        //   META-INF/services/kotlinx.coroutines.CoroutineExceptionHandler
+        //   → AndroidExceptionPreHandler and
+        //   META-INF/services/kotlinx.coroutines.internal.MainDispatcherFactory
+        //   → AndroidDispatcherFactory (verified by zip walk), but the
+        //   engine had no ClassLoader.getResources / URL.openStream /
+        //   ServiceLoader — ServiceLoader.load answered null →
+        //   "ServiceLoader.iterator on a null object reference" NPE in
+        //   CoroutineExceptionHandlerImplKt.<clinit>; the FastServiceLoader
+        //   loadProviders fallback answered null → "list(...) must not be
+        //   null" NPE. Dispatchers.Main + the uncaught-exception handler
+        //   chain stayed dead for every kotlinx.coroutines app.
+        //   Subset (documented per RULE 5): single class-path (the APK);
+        //   provider classes must have a no-arg dex <init>; missing
+        //   provider class → ServiceConfigurationError (the real law),
+        //   never a silent skip.
         // ────────────────────────────────────────────────────────────────
         // R-NEW-337: Class.getDeclaredField(String) — return a heap Field
         // object carrying (declaring-class, field-name). atomicfu's
@@ -28960,6 +29008,353 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             return true;
         }
     }
+    // ────────────────────────────────────────────────────────────────────
+    // S102 LAW 2 (Class side): Class.getClassLoader — OpenJDK: every
+    // Class reports its defining loader (never null for APK classes).
+    // Single-APK subset: one process-wide loader object (identity stable
+    // per run) so FastServiceLoader/ServiceLoader chains that pass
+    // `service.classLoader` back keep working. Receiver gate: the method
+    // only exists on Class objects, whose receiver travels as a CLASS_REF
+    // (execute_const_class law) — non-Class receivers fall through.
+    // Evidence: kotlinx.coroutines CoroutineExceptionHandlerImplKt
+    // .<clinit> reads CoroutineExceptionHandler::class.java.classLoader
+    // before ServiceLoader.load; the REC-MISS answered null and the load
+    // path degraded before the S102 ServiceLoader law could run.
+    // ────────────────────────────────────────────────────────────────────
+    if (method == "getClassLoader" && !args.empty() &&
+        args[0].type == DalvikType::CLASS_REF) {
+        if (classloader_singleton_id_ == 0 ||
+            !heap_.has_object(classloader_singleton_id_)) {
+            classloader_singleton_id_ =
+                heap_.allocate("Ljava/lang/ClassLoader;", pc_, 0);
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_object(classloader_singleton_id_,
+                                          "Ljava/lang/ClassLoader;");
+        return true;
+    }
+
+    if (class_name == "Ljava/lang/ClassLoader;") {
+            // instance getResources: args[0]=receiver, args[1]=name;
+            // static getSystemResources: args[0]=name.
+            const bool inst_get = (method == "getResources" || method == "getResources0") &&
+                                  args.size() >= 2;
+            const bool stat_get = method == "getSystemResources" && args.size() >= 1;
+            if (inst_get || stat_get) {
+                const DalvikValue& name_v = inst_get ? args[1] : args[0];
+                std::string res_name = name_v.type == DalvikType::STRING_REF
+                                           ? name_v.string_val
+                                           : std::string();
+                std::vector<uint32_t> url_ids;
+                if (!res_name.empty() && !apk_path_.empty()) {
+                    std::string key = "apk-entry:" + res_name;
+                    const std::string& bytes = cached_asset_bytes(key);
+                    if (!bytes.empty()) {
+                        uint32_t url_id = heap_.allocate("Ljava/net/URL;", pc_, 0);
+                        heap_.set_object_field(
+                            url_id, "url", DalvikValue::make_string(res_name, 0));
+                        url_ids.push_back(url_id);
+                    }
+                }
+                // Enumeration over the URL list (real law: EMPTY enumeration
+                // when the resource is absent — getResources never null).
+                uint32_t enum_id = heap_.allocate("Ljava/util/Enumeration;", pc_, 0);
+                heap_.set_object_field(enum_id, "__array_length__",
+                                       DalvikValue::make_int((int32_t)url_ids.size()));
+                for (size_t ui = 0; ui < url_ids.size(); ++ui) {
+                    heap_.set_object_field(
+                        enum_id, "array[" + std::to_string(ui) + "]",
+                        DalvikValue::make_object(url_ids[ui], "Ljava/net/URL;"));
+                }
+                heap_.set_object_field(enum_id, "__enum_pos__",
+                                       DalvikValue::make_int(0));
+                std::cerr << "[S102-CLASSLOADER] " << method << " \"" << res_name
+                          << "\" -> " << url_ids.size() << " URL(s)"
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_object(enum_id, "Ljava/util/Enumeration;");
+                return true;
+            }
+            if (method == "getResource") {  // singular: URL or null (real law)
+                const DalvikValue& name_v = args.size() >= 2 ? args[1] : args[0];
+                std::string res_name = name_v.type == DalvikType::STRING_REF
+                                           ? name_v.string_val
+                                           : std::string();
+                std::string key = "apk-entry:" + res_name;
+                bool present = !res_name.empty() && !apk_path_.empty() &&
+                               !cached_asset_bytes(key).empty();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                if (present) {
+                    uint32_t url_id = heap_.allocate("Ljava/net/URL;", pc_, 0);
+                    heap_.set_object_field(
+                        url_id, "url", DalvikValue::make_string(res_name, 0));
+                    result = DalvikValue::make_object(url_id, "Ljava/net/URL;");
+                } else {
+                    result = DalvikValue::make_null();
+                }
+                return true;
+            }
+            if (method == "loadClass" && args.size() >= 2 &&
+                args[1].type == DalvikType::STRING_REF) {
+                // OpenJDK law: loadClass resolves through the parent chain;
+                // single-APK subset: resolve from the dex class table.
+                std::string bin = args[1].string_val;
+                std::string ldesc = framework::normalize_class_desc(
+                    bin[0] == 'L' ? bin : "L" + bin + ";");
+                auto it = class_info_index_.find(ldesc);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                if (it != class_info_index_.end()) {
+                    result = DalvikValue::make_class(
+                        ldesc, (uint32_t)(it->second + 1));  // token = dex idx+1 (never 0)
+                } else {
+                    throw_deferred("Ljava/lang/ClassNotFoundException;",
+                                   bin, "S102-CLASSLOADER");
+                    result = DalvikValue::make_null();
+                }
+                return true;
+            }
+        }
+
+        if (class_name == "Ljava/util/Enumeration;") {
+            if (method == "hasMoreElements" && !args.empty()) {
+                uint32_t id = args[0].object_id;
+                int32_t pos = 0, sz = 0;
+                auto pf = heap_.get_object_field(id, "__enum_pos__");
+                if (pf.has_value() && pf->type == DalvikType::INT32) pos = pf->int_val;
+                auto lf = heap_.get_object_field(id, "__array_length__");
+                if (lf.has_value() && lf->type == DalvikType::INT32) sz = lf->int_val;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_bool(pos < sz);
+                return true;
+            }
+            if (method == "nextElement" && !args.empty()) {
+                uint32_t id = args[0].object_id;
+                int32_t pos = 0, sz = 0;
+                auto pf = heap_.get_object_field(id, "__enum_pos__");
+                if (pf.has_value() && pf->type == DalvikType::INT32) pos = pf->int_val;
+                auto lf = heap_.get_object_field(id, "__array_length__");
+                if (lf.has_value() && lf->type == DalvikType::INT32) sz = lf->int_val;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                if (pos < sz) {
+                    auto elem = heap_.get_object_field(
+                        id, "array[" + std::to_string(pos) + "]");
+                    heap_.set_object_field(id, "__enum_pos__",
+                                           DalvikValue::make_int(pos + 1));
+                    result = elem.has_value() ? *elem : DalvikValue::make_null();
+                } else {
+                    throw_deferred("Ljava/util/NoSuchElementException;",
+                                   "Enumeration.nextElement at end",
+                                   "S102-CLASSLOADER");
+                    result = DalvikValue::make_null();
+                }
+                return true;
+            }
+        }
+
+        if (class_name == "Ljava/net/URL;") {
+            if (method == "openStream" && !args.empty()) {
+                uint32_t id = args[0].object_id;
+                auto uf = heap_.get_object_field(id, "url");
+                std::string url_s = uf.has_value() && uf->type == DalvikType::STRING_REF
+                                        ? uf->string_val
+                                        : std::string();
+                uint32_t is_id = heap_.allocate("Ljava/io/InputStream;", pc_, 0);
+                if (!url_s.empty()) {
+                    // Registered under the apk-entry key so the K-34
+                    // InputStream/BufferedReader laws read the REAL bytes.
+                    open_assets_[is_id] = {"apk-entry:" + url_s, 0};
+                }
+                std::cerr << "[S102-URL] openStream \"" << url_s
+                          << "\" -> stream obj#" << is_id << std::endl;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_object(is_id, "Ljava/io/InputStream;");
+                return true;
+            }
+            if ((method == "getPath" || method == "getFile") && !args.empty()) {
+                auto uf = heap_.get_object_field(args[0].object_id, "url");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = uf.has_value() ? *uf : DalvikValue::make_null();
+                return true;
+            }
+            if (method == "toString" && !args.empty()) {
+                auto uf = heap_.get_object_field(args[0].object_id, "url");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = uf.has_value() ? *uf : DalvikValue::make_null();
+                return true;
+            }
+            if (method == "getProtocol" && !args.empty()) {
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_string("jar", 0);  // honest subset
+                return true;
+            }
+        }
+
+        if (class_name == "Ljava/util/ServiceLoader;") {
+            if (method == "load" || method == "loadInstalled") {
+                // load(Class<S> service, ClassLoader loader) → ServiceLoader
+                // (lazy — real law: no work until iterator()).
+                std::string svc_desc;
+                if (args.size() >= 1 && args[0].type == DalvikType::CLASS_REF)
+                    svc_desc = args[0].class_desc;
+                else if (args.size() >= 1 && args[0].type == DalvikType::OBJECT_REF)
+                    svc_desc = args[0].class_desc;
+                std::string dotted;
+                for (size_t ci = 1; ci + 1 < svc_desc.size(); ++ci)
+                    dotted += svc_desc[ci] == '/' ? '.' : svc_desc[ci];
+                uint32_t sl_id = heap_.allocate("Ljava/util/ServiceLoader;", pc_, 0);
+                heap_.set_object_field(sl_id, "service",
+                                       DalvikValue::make_string(dotted, 0));
+                heap_.set_object_field(sl_id, "resource",
+                                       DalvikValue::make_string(
+                                           "META-INF/services/" + dotted, 0));
+                heap_.set_object_field(sl_id, "__sld_pos__",
+                                       DalvikValue::make_int(0));
+                heap_.set_object_field(sl_id, "__sld_providers__",
+                                       DalvikValue::make_string(std::string(), 0));
+                std::cerr << "[S102-SERVICELOADER] load " << dotted
+                          << " (lazy ServiceLoader obj#" << sl_id << ")"
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_object(sl_id, "Ljava/util/ServiceLoader;");
+                return true;
+            }
+            if (method == "iterator" && !args.empty()) {
+                // iterator() → java.util.Iterator over provider instances;
+                // marker field "__sld_service__" routes hasNext/next here.
+                uint32_t sl_id = args[0].object_id;
+                heap_.set_object_field(sl_id, "__iterator_pos__",
+                                       DalvikValue::make_int(0));
+                auto svc = heap_.get_object_field(sl_id, "service");
+                heap_.set_object_field(
+                    sl_id, "__sld_service__",
+                    svc.has_value() ? *svc : DalvikValue::make_string("", 0));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                // Self-as-iterator (house pattern): the runtime type stays
+                // the ServiceLoader; the hasNext/next dispatch below
+                // answers the following invokes on the same object.
+                result = DalvikValue::make_object(sl_id, "Ljava/util/Iterator;");
+                return true;
+            }
+        }
+
+        // S102 LAW 2 (iterator side): hasNext/next on a ServiceLoader
+        // self-iterator materializes provider instances lazily, exactly as
+        // OpenJDK's LazyIterator (parse one provider name per step,
+        // Class.forName → no-arg ctor → newInstance).
+        if (class_name == "Ljava/util/Iterator;" && !args.empty() &&
+            args[0].type == DalvikType::OBJECT_REF) {
+            uint32_t recv_id = args[0].object_id;
+            auto svcf = heap_.get_object_field(recv_id, "__sld_service__");
+            if (svcf.has_value() && svcf->type == DalvikType::STRING_REF) {
+                const std::string& dotted = svcf->string_val;
+                auto posf = heap_.get_object_field(recv_id, "__sld_pos__");
+                int32_t pos = posf.has_value() && posf->type == DalvikType::INT32
+                                  ? posf->int_val
+                                  : 0;
+                if (method == "hasNext") {
+                    // Does a provider line exist at/after pos?
+                    bool more = false;
+                    if (!dotted.empty()) {
+                        const std::string& content = cached_asset_bytes(
+                            "apk-entry:META-INF/services/" + dotted);
+                        size_t p = static_cast<size_t>(pos);
+                        while (p < content.size()) {
+                            size_t nl = content.find('\n', p);
+                            std::string line = content.substr(
+                                p, nl == std::string::npos ? std::string::npos
+                                                           : nl - p);
+                            while (!line.empty() &&
+                                   (line.back() == '\r' || line.back() == ' '))
+                                line.pop_back();
+                            size_t b = line.find_first_not_of(" \t");
+                            if (b != std::string::npos) line.erase(0, b);
+                            if (!line.empty() && line[0] != '#' &&
+                                line[0] != '\0') {
+                                more = true;
+                                break;
+                            }
+                            p = (nl == std::string::npos) ? content.size()
+                                                          : nl + 1;
+                        }
+                    }
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_bool(more);
+                    return true;
+                }
+                if (method == "next") {
+                    const std::string& content =
+                        dotted.empty()
+                            ? std::string()
+                            : cached_asset_bytes("apk-entry:META-INF/services/" +
+                                                 dotted);
+                    size_t p = static_cast<size_t>(pos);
+                    std::string line;
+                    while (p < content.size()) {
+                        size_t nl = content.find('\n', p);
+                        line = content.substr(p, nl == std::string::npos
+                                                     ? std::string::npos
+                                                     : nl - p);
+                        while (!line.empty() &&
+                               (line.back() == '\r' || line.back() == ' '))
+                            line.pop_back();
+                        size_t b = line.find_first_not_of(" \t");
+                        if (b != std::string::npos) line.erase(0, b);
+                        p = (nl == std::string::npos) ? content.size() : nl + 1;
+                        if (!line.empty() && line[0] != '#' && line[0] != '\0')
+                            break;
+                        line.clear();
+                    }
+                    if (line.empty()) {
+                        throw_deferred("Ljava/util/NoSuchElementException;",
+                                       "ServiceLoader.next at end",
+                                       "S102-SERVICELOADER");
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                        result = DalvikValue::make_null();
+                        return true;
+                    }
+                    // Materialize: dotted name → L-form → heap instance
+                    // running the REAL no-arg <init> (F-106/NewInstance law
+                    // pattern). Missing provider → the REAL
+                    // ServiceConfigurationError, never a silent skip.
+                    std::string ldesc = "L" + line + ";";
+                    for (auto& ch : ldesc)
+                        if (ch == '.') ch = '/';
+                    auto cit = class_info_index_.find(ldesc);
+                    if (cit == class_info_index_.end()) {
+                        std::cerr << "[S102-SERVICELOADER] provider CNFE "
+                                  << line << std::endl;
+                        throw_deferred(
+                            "Ljava/util/ServiceConfigurationError;",
+                            "Provider " + line + " not found for service " +
+                                dotted,
+                            "S102-SERVICELOADER");
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                        result = DalvikValue::make_null();
+                        return true;
+                    }
+                    uint32_t obj_id = heap_.allocate(
+                        ldesc, pc_,
+                        call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+                    std::vector<DalvikValue> ctor_args{
+                        DalvikValue::make_object(obj_id, ldesc)};
+                    DalvikValue ctor_result;
+                    DalvikExecutionResult ctor_exec;
+                    try_recursive_invoke(ldesc, "<init>", ctor_args,
+                                         ctor_result, ctor_exec);
+                    heap_.set_object_field(recv_id, "__sld_pos__",
+                                           DalvikValue::make_int(
+                                               (int32_t)p));
+                    std::cerr << "[S102-SERVICELOADER] next -> " << line
+                              << " obj#" << obj_id << std::endl;
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_object(obj_id, ldesc);
+                    return true;
+                }
+            }
+        }
+
 
     // ────────────────────────────────────────────────────────────────────
     // R-NEW-337 FIX LAW: java.lang.reflect.Field + sun.misc.Unsafe.
