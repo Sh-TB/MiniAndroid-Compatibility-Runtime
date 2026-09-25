@@ -1,0 +1,25 @@
+{
+  "measured": {
+    "unstripped_bytes": 93756736,
+    "text": 4670265,
+    "data": 30648,
+    "bss": 28304,
+    "dec": 4729217,
+    "rodata": 203368,
+    "symbol_count_nm": 6577,
+    "stripped_bytes": 4713640,
+    "compressed_gzip_bytes": 2079290
+  },
+  "delta": {
+    "stripped_bytes": 0,
+    "text_bytes": 0,
+    "stripped_percent": 0.0,
+    "flags": []
+  },
+  "status": "PASS",
+  "rules": {
+    "core_growth_warn_bytes": 150000,
+    "core_growth_fail_bytes": 500000,
+    "amplification_ratio": 100
+  }
+}

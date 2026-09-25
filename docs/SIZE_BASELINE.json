@@ -1,0 +1,33 @@
+{
+  "schema": "miniandroid.size.baseline/1.0",
+  "wave": "S100 (established; binary includes NET-001 + crash forensics + dooz child-snapshot law)",
+  "binary": "miniandroid/build/miniandroid",
+  "build": "make -j (g++ 14.2, -std=c++17 -Wall -Wextra -g -O2), unstripped with debug_info",
+  "measured": {
+    "unstripped_bytes": 93757552,
+    "stripped_bytes": 4713640,
+    "compressed_gzip_bytes": 2091708,
+    "text": 4670265,
+    "data": 30648,
+    "bss": 28304,
+    "dec": 4729217,
+    "symbol_count_nm": 6577
+  },
+  "attribution_notes": {
+    "method": "size(1)/nm/readelf on the canonical binary; per-capability attribution is an HONEST APPROXIMATE split by source file/section ownership until linker-map attribution lands (never claimed exact without evidence — S98 §11 law).",
+    "largest_components": {
+      "dalvik_engine.cpp": "interpreter + API bridge (single largest translation unit)",
+      "software_renderer.cpp": "rasterizer",
+      "linked libs (zlib/jpeg/webp/freetype/harfbuzz/fribidi/sqlite/openssl)": "external, not in text above; openssl client adds ~100-200KB loaded"
+    },
+    "s100_delta": "NET-001 (http_client + openssl link + bridge) + crash forensics + child-snapshot law; size gate measures next-wave deltas against THIS baseline."
+  },
+  "gates": {
+    "tool": "tools/s100_size_gate.py",
+    "rules": {
+      "core_growth_warn_bytes": 150000,
+      "core_growth_fail_bytes": 500000,
+      "amplification": "text growth > 100x added-source-bytes on a wave flags DEPENDENCY_AMPLIFICATION for root-cause (S98 §12)"
+    }
+  }
+}
