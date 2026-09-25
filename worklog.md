@@ -3475,3 +3475,24 @@ Work Log:
 Stage Summary:
 - S97 batch 1 delivers the complete honest problem state for 311 micro-gaps with machine-checkable statuses + named tests, unblocking fan-out batches; the two verifier-law closures eliminate scale-domain and §10 blind-tap false positives corpus-wide.
 - The measured queue for batch 2 (fan-out first): MG-051 font fallback, MG-080..085 Unicode/RTL/emoji, MG-073 ellipsize, MG-115 requestLayout propagation, MG-123 scroll offset, MG-124..129 transform hit-testing, MG-171..183 SharedPreferences machine proof, MG-248 real HTTP GET (NET-001), MG-214..216 GIF disposal machine fence, MG-047/048 adaptive icon verification.
+
+---
+Task ID: S98
+Agent: Super Z (main)
+Task: S98 — issue-per-problem ticket system + 100 probable-bug fixes (3 batches) + 10-game full-load wave + autonomous play (snake/house-building/NEW snake variant) + old-push publication
+
+Work Log:
+- PUSH: 4 pending commits published to origin/main (394f5037..23db30ac) via PAT (env-token law after the fail-closed secret guard caught the first token-in-script mistake; token moved to env).
+- TICKETS: master wave issue #233 + 100 probable-bug issues #234-333 (from MICRO_GAP_REGISTRY, fan-out-first) + GAMES wave #334-341. Every body embeds the open->fix->verify->close protocol.
+- TEXT BATCH (commit 4ac6c542): MG-073 ellipsize IMPLEMENTED (TextUtils.TruncateAt END/START/MIDDLE in fonts::layout_text + android:ellipsize parse + maxLines=1 no-wrap law); 3 REAL BUGS found+fixed by the new battery: MG-085 phantom-NUL (hb buffer fed N+1 units — garbage advance on EVERY shaped string), MG-051 CJK fallback face NEVER loaded (cjk_available_ unreachable since R-NEW-398), MG-083 emoji-presentation claim (DejaVu's bogus U+1F600 glyph swallowed the emoji slot). 8 issues closed.
+- LAYOUT BATCH (62ef579f+3ac93d34): MG-123 scroll offsets IMPLEMENTED (ViewShadow scrollTo/scrollBy/getScrollX/Y + draw-walk content delta with cumulative RenderTask off_tx/ty/off_sx/sy); MG-124..129 transformation property laws (translation live in walk; scale/rotation/pivot state+getters; matrix render = recorded frontier); CallContext.arg_as_float. 7 issues closed.
+- STORAGE BATCH: MG-171..183 machine-proven on the REAL AndroidAPI::SharedPreferences layer (typed round-trips incl. >int32 long + UTF-8 strings, commit/apply/remove/clear/contains, namespace isolation, fresh-instance process persistence). 13 issues closed.
+- BATTERY: 3 new named stages (s98 text laws 21/21, scroll/transform 13/13, prefs 15/15); canonical battery ALL PASS checkpointed. Toolchain restored via scripts/build/bootstrap_toolchain.sh (aapt2/ecj/r8/stubs) after hygiene loss broke fixture builds; HelloWorldSelfAware external fixture re-fetched from the Appliberated release (APK + reference screenshot).
+- GAMES: full-load roster 9/10 PASS (snake-deluxe, snake-neon, 2048, tetris, ttt, minicraft, fishrings, tripeaks, gmdice; bouncy honest LOAD_ISSUE = multidex family #227). Autonomous plays: Snake Deluxe 7 captures; 2048 25+ moves score~208; TicTacToe 9 legs; Minicraft house-building PASS (cottage roof 113190px, digs, GIF); NEW GAME snake-neon (wrap-around + obstacles) built via canonical toolchain and autonomously played by wrap-aware BFS with reverse-guard ban + 1-move=2-frames tick law (snake ate + grew). Tetris autoplay tick-anchor drift = honest OPEN finding (#339).
+- WAVE REPORT comment posted on master #233 with the full table: https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/233#issuecomment-5824912553
+
+Stage Summary:
+- 28 issues closed with evidence comments this wave (8 text + 7 layout + 13 storage + 7 GAMES); 100 probable-bug queue + GAMES tickets live under the issue-per-problem law; 1 honest open finding filed (GAMES-6).
+- Registry: 31 CLOSED / 131 TESTED / 71 PARTIAL / 60 PENDING / 18 OBSERVED (311).
+- New game Snake Neon added to games/ with deterministic tick law; 3 new permanent battery stages guard the text/layout/storage laws.
+- Next queue: resource/asset PARTIAL tails, GIF disposal fences (MG-214-216), NET-001/WEB-001/AUDIO-001 reuse-first families, GAMES-6 tick model, then per-title corpus tickets toward the 50-game bar.
