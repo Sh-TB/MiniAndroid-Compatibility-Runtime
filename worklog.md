@@ -3712,3 +3712,32 @@ Stage Summary:
   re-measurement, GL frontier quantified.
 - NEXT ACTION: Lr;.onAttachedToWindow Handler-null root (compose host
   wiring), then R-005 DECOR-LINKAGE.
+
+---
+Task ID: S104-r2
+Agent: Super Z (main)
+Task: Continue-until-goal — execute the committed NEXT ACTION root
+(Lr;.onAttachedToWindow Handler-null) immediately after the wave push.
+
+Work Log:
+- DEX ground truth: Lr; in dooz classes.dex = R8-obfuscated
+  AndroidComposeView (compose ui platform); onAttachedToWindow =
+  super -> getParent walk -> View.getHandler -> new Lp; ->
+  postAtFrontOfQueue — the null receiver was the HANDLER from
+  getHandler, not a compose field.
+- Root: the F-029b getHandler law matched class_name.find("View") —
+  the receiver's runtime class is Lr; (no "View" substring) → law
+  missed → null → NPE at postAtFrontOfQueue.
+- FIX (commit 7f3b1314): getHandler dispatches via
+  is_subclass_of(class_name, Landroid/view/View;) — the shared
+  ancestry walk; AOSP law "every attached View answers getHandler".
+- Measured: dooz 18 -> 17 errors, attach-PFQ NPE gone, chain advances
+  to the recomposition/thread frontier (Lsr;.run worker spin + Lt4;.L
+  getWidth-on-null — queued); solitaire holds 0 errors; battery
+  105/105 ALL PASS (3rd green gate this wave).
+
+Stage Summary:
+- 3 roots executed this session (SWITCH-KEY-WIDENING L5, CLASS-IDENTITY
+  implemented+tested, GETHANDLER-ANCESTRY fixed); NEXT ACTION =
+  compose recomposition frontier (Lt4;.L getWidth-on-null /
+  Lsr;.run worker spin), then R-005 DECOR-LINKAGE.
