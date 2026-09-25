@@ -3939,10 +3939,62 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         n->web_url = ctx.arg_as_string(0, std::string());
         n->web_data.clear();
         n->web_mime.clear();
-        // Generic render law: an http(s)/file URL has no local document
-        // body in this engine (no network stack); the node renders its
-        // honest placeholder via the standard path (no text). data:/file:
-        // bodies are not fetched either — the URL alone is recorded.
+        // ── S101 WEBVIEW-ASSET-RENDER LAW ─────────────────────────────────
+        // file:///android_asset/<path> and file:///android_res/<path> URLs
+        // ARE local documents: the APK asset tree is the local document
+        // store (AOSP AssetManager law). The legacy law recorded the URL
+        // alone ("bodies are not fetched") and every WebView-UI corpus app
+        // rendered its honest empty placeholder → the L0 blank family
+        // (klondike/tri.peaks/blackjack/kingpong/accelerace/counting/memory,
+        // fresh S101 census: 7 titles whose ENTIRE UI is a WebView).
+        // Read the entry through the canonical ResourceRuntime parser and
+        // run the SAME F-085 HTML→visible-text extraction as loadData —
+        // one document pipeline, one contract. No content fabrication:
+        // a missing asset is recorded, never invented. Network URLs keep
+        // the placeholder law (a WebView fetch stack is WEB-001 DESIGNED).
+        {
+            static const char* kAssetPrefix = "file:///android_asset/";
+            static const char* kResPrefix = "file:///android_res/";
+            std::string entry;
+            if (n->web_url.rfind(kAssetPrefix, 0) == 0)
+                entry = "assets/" + n->web_url.substr(strlen(kAssetPrefix));
+            else if (n->web_url.rfind(kResPrefix, 0) == 0)
+                entry = n->web_url.substr(strlen(kResPrefix));
+            if (!entry.empty()) {
+                size_t q = entry.find_first_of("?#");
+                if (q != std::string::npos) entry.erase(q);
+                std::string apk_path_wv;
+                if (auto* act = registry_ ? registry_->find_as<ActivityShadow>()
+                                          : nullptr)
+                    apk_path_wv = act->apk_path();
+                if (!apk_path_wv.empty() &&
+                    resources::ResourceRuntime::instance().ensure_loaded(apk_path_wv)) {
+                    auto bytes = resources::ResourceRuntime::instance()
+                                     .apk()
+                                     .extract_entry_cached(entry);
+                    if (!bytes.empty()) {
+                        std::string html(bytes.begin(), bytes.end());
+                        n->web_data = html;
+                        n->web_mime = "text/html";
+                        n->text = webview_html_to_text(html);
+                        n->num_lines = 0;  // let the layout pass recount
+                        std::cerr << "[F085-WV] loadUrl asset render: webview=o"
+                                  << ctx.receiver_id << " entry=" << entry
+                                  << " bytes=" << html.size()
+                                  << " text_chars=" << n->text.size()
+                                  << std::endl;
+                    } else {
+                        std::cerr << "[F085-WV] loadUrl asset MISSING (honest"
+                                     " placeholder): webview=o"
+                                  << ctx.receiver_id << " entry=" << entry
+                                  << std::endl;
+                    }
+                }
+            }
+        }
+        // Generic render law: an http(s) URL has no local document body in
+        // this engine (no WebView network stack); the node renders its
+        // honest placeholder via the standard path (no text).
         layout_dirty = true;
         std::cerr << "[F085-WV] loadUrl/postUrl: webview=o" << ctx.receiver_id
                   << " url=\"" << n->web_url.substr(0, 80) << "\"" << std::endl;
