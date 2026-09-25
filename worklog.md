@@ -3581,3 +3581,18 @@ Stage Summary:
 - The compose attack produced its smallest-source-backed-law yield: 4 laws, +789 LOC, all CORE/ANDROIDX-COMMON classified, no fake recomposition, no fabricated rendering.
 - The activity-construction frontier moved a full layer deep on the only real compose title (ctor died on BigInteger; now survives into compose host wiring).
 - S103 entry: shared R8 field-identity law (#349+#351), then compose host wiring (#350), then LockSupport (#352).
+
+---
+Task ID: S102-bonus
+Agent: Super Z (main)
+Task: Owner bonus — Mini Browser loads z.ai end-to-end + canonical GIF on the homepage next to the 4 games
+
+Work Log:
+- LAW 5 HEADER-OWS-TRIM (RFC 7230 §3.2) found by attacking z.ai: the untrimmed 'location' header value (leading OWS) broke the redirect hop URL — direct http_get harness captured 'bad url:  https://chat.z.ai/' (double space). After the trim: 200, redirect_count=1, 15,727 bytes of real chat.z.ai page bytes.
+- Browser default URL -> z.ai (layout rebuild via canonical aapt2/ECJ/D8); evidence run tap Go (CLICK-TEST probed=1 state_changed=1): Loading https://z.ai ... -> HTTP 200 (15727 bytes) with the honest JS-SPA shell text (WEB-001 boundary respected).
+- Canonical GIF docs/evidence/canonical/com.miniandroid.browser.zai.gif (SHA ed20fd62...) placed on the README homepage next to the 4 games (owner mandate); EXECUTED_GIFS.md 14/14 -> 15/15.
+- Battery 105/105 ALL PASS on the final tree (c6a2921e); pushed.
+
+Stage Summary:
+- The browser now loads a real production website (z.ai) end-to-end over TLS with redirect following — the strongest NET-001 evidence to date.
+- S102 closed with 5 permanent laws, tickets #349-352, refreshed ledger, SavedState map, and the owner's homepage request fulfilled.
