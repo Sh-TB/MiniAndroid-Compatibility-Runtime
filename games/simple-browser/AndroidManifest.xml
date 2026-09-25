@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- S100: MiniAndroid simple browser (com.miniandroid.browser).
+     Pure android.jar APIs, no support libraries, no WebView — the
+     architecture point of this app is that a working networked browser
+     reader needs ONLY: framework.activity + view + text + network.http
+     (small APK -> small capability closure, S98-FUTURE law). -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.miniandroid.browser"
+    android:versionCode="1"
+    android:versionName="1.0">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-sdk android:minSdkVersion="19" android:targetSdkVersion="26" />
+    <application android:label="Mini Browser">
+        <activity android:name=".BrowserActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
