@@ -1,0 +1,2255 @@
+{
+ "generated_at": "",
+ "engine_head": "3a2825db",
+ "engine_sha256": "44128705723dac0ac098db51da5c5eaf7a43afb6280c376518e3f636c5985033",
+ "protocol": "S99 full-load protocol re-run on S101 tree (identical obs+click+visual audit)",
+ "census": {
+  "INTERACTIVE-EVIDENCE": 13,
+  "RENDERED-L2+": 1,
+  "PARTIAL": 34,
+  "FAIL": 13
+ },
+ "families_ranked_by_fanout": [
+  {
+   "family": "compose-runtime",
+   "fanout": 47,
+   "titles": [
+    "app.halma",
+    "ch.logixisland.anuto",
+    "com.ahorcado",
+    "com.eightsines.firestrike.opensource",
+    "com.emmanuelmess.tictactoe",
+    "com.helddertierwelt.mentalmath",
+    "com.jeffliu.balancetheball",
+    "com.kaeruct.raumballer",
+    "com.kingalex.kingpong",
+    "com.rocket9labs.boxcars",
+    "com.sanskritbasics.memory",
+    "com.serwylo.babydots",
+    "com.sidhant.bubbleshooter",
+    "com.sidhant.puzzle",
+    "com.sidhant.queens",
+    "com.trianguloy.adnihilation",
+    "com.vayunmathur.games.solitaire",
+    "com.vovagorodok.blidraughts",
+    "com.willie.mancala",
+    "crypto.o0o0o0o0o.games.blackjack",
+    "de.georgsieber.ballbreak",
+    "de.tobiasbielefeld.solitaire",
+    "dev.lonami.klooni",
+    "eu.quelltext.counting",
+    "eu.quelltext.memory",
+    "eu.veldsoft.free.klondike",
+    "eu.veldsoft.no.thanks",
+    "eu.veldsoft.tri.peaks",
+    "io.github.ebraminio.bouncy",
+    "io.github.hathibelagal.mykanji",
+    "io.github.johnathan.minesweeper",
+    "io.github.yamin8000.dooz",
+    "jwtc.android.chess",
+    "name.boyle.chris.sgtpuzzles",
+    "net.sourceforge.solitaire_cg",
+    "org.andstatus.game2048",
+    "org.asafonov.accelerace",
+    "org.mattvchandler.a2050",
+    "org.secuso.privacyfriendly2048",
+    "org.secuso.privacyfriendlybattleship",
+    "org.secuso.privacyfriendlydame",
+    "org.secuso.privacyfriendlymemory",
+    "org.secuso.privacyfriendlysolitaire",
+    "org.secuso.privacyfriendlysudoku",
+    "si.palcka.tarok",
+    "x653.all_in_gold",
+    "xyz.deepdaikon.quinb"
+   ]
+  },
+  {
+   "family": "unclassified",
+   "fanout": 23,
+   "titles": [
+    "app.halma",
+    "ch.logixisland.anuto",
+    "com.ahorcado",
+    "com.eightsines.firestrike.opensource",
+    "com.emmanuelmess.tictactoe",
+    "com.helddertierwelt.mentalmath",
+    "com.kaeruct.raumballer",
+    "com.sanskritbasics.memory",
+    "com.serwylo.babydots",
+    "com.trianguloy.adnihilation",
+    "com.vayunmathur.games.solitaire",
+    "com.willie.mancala",
+    "de.tobiasbielefeld.solitaire",
+    "dev.lonami.klooni",
+    "eu.veldsoft.no.thanks",
+    "io.github.hathibelagal.mykanji",
+    "io.github.johnathan.minesweeper",
+    "io.github.yamin8000.dooz",
+    "jwtc.android.chess",
+    "org.andstatus.game2048",
+    "org.mattvchandler.a2050",
+    "org.secuso.privacyfriendly2048",
+    "x653.all_in_gold"
+   ]
+  },
+  {
+   "family": "savedstate-registry",
+   "fanout": 19,
+   "titles": [
+    "com.eightsines.firestrike.opensource",
+    "com.helddertierwelt.mentalmath",
+    "com.serwylo.babydots",
+    "com.vayunmathur.games.solitaire",
+    "com.vovagorodok.blidraughts",
+    "com.willie.mancala",
+    "crypto.o0o0o0o0o.games.blackjack",
+    "de.georgsieber.ballbreak",
+    "eu.veldsoft.free.klondike",
+    "eu.veldsoft.no.thanks",
+    "io.github.hathibelagal.mykanji",
+    "jwtc.android.chess",
+    "org.mattvchandler.a2050",
+    "org.secuso.privacyfriendly2048",
+    "org.secuso.privacyfriendlybattleship",
+    "org.secuso.privacyfriendlydame",
+    "org.secuso.privacyfriendlymemory",
+    "org.secuso.privacyfriendlysolitaire",
+    "org.secuso.privacyfriendlysudoku"
+   ]
+  },
+  {
+   "family": "lifecycle-adapter",
+   "fanout": 15,
+   "titles": [
+    "com.helddertierwelt.mentalmath",
+    "com.serwylo.babydots",
+    "com.vayunmathur.games.solitaire",
+    "com.vovagorodok.blidraughts",
+    "crypto.o0o0o0o0o.games.blackjack",
+    "de.georgsieber.ballbreak",
+    "eu.veldsoft.no.thanks",
+    "io.github.hathibelagal.mykanji",
+    "org.secuso.privacyfriendly2048",
+    "org.secuso.privacyfriendlybattleship",
+    "org.secuso.privacyfriendlydame",
+    "org.secuso.privacyfriendlymemory",
+    "org.secuso.privacyfriendlysolitaire",
+    "org.secuso.privacyfriendlysudoku",
+    "x653.all_in_gold"
+   ]
+  },
+  {
+   "family": "coordinatorlayout",
+   "fanout": 14,
+   "titles": [
+    "com.kaeruct.raumballer",
+    "com.serwylo.babydots",
+    "com.vovagorodok.blidraughts",
+    "crypto.o0o0o0o0o.games.blackjack",
+    "de.georgsieber.ballbreak",
+    "eu.veldsoft.no.thanks",
+    "io.github.hathibelagal.mykanji",
+    "org.secuso.privacyfriendly2048",
+    "org.secuso.privacyfriendlybattleship",
+    "org.secuso.privacyfriendlydame",
+    "org.secuso.privacyfriendlymemory",
+    "org.secuso.privacyfriendlysolitaire",
+    "org.secuso.privacyfriendlysudoku",
+    "x653.all_in_gold"
+   ]
+  },
+  {
+   "family": "constraint-layout",
+   "fanout": 10,
+   "titles": [
+    "com.serwylo.babydots",
+    "crypto.o0o0o0o0o.games.blackjack",
+    "eu.veldsoft.no.thanks",
+    "io.github.hathibelagal.mykanji",
+    "org.secuso.privacyfriendly2048",
+    "org.secuso.privacyfriendlybattleship",
+    "org.secuso.privacyfriendlydame",
+    "org.secuso.privacyfriendlymemory",
+    "org.secuso.privacyfriendlysolitaire",
+    "org.secuso.privacyfriendlysudoku"
+   ]
+  },
+  {
+   "family": "appcompat-decor-toolbar",
+   "fanout": 6,
+   "titles": [
+    "com.sanskritbasics.memory",
+    "com.willie.mancala",
+    "de.georgsieber.ballbreak",
+    "io.github.hathibelagal.mykanji",
+    "org.secuso.privacyfriendlymemory",
+    "x653.all_in_gold"
+   ]
+  },
+  {
+   "family": "typedarray-null",
+   "fanout": 4,
+   "titles": [
+    "ch.logixisland.anuto",
+    "com.willie.mancala",
+    "de.georgsieber.ballbreak",
+    "org.secuso.privacyfriendlymemory"
+   ]
+  },
+  {
+   "family": "gl-native",
+   "fanout": 3,
+   "titles": [
+    "com.emmanuelmess.tictactoe",
+    "com.rocket9labs.boxcars",
+    "dev.lonami.klooni"
+   ]
+  },
+  {
+   "family": "libgdx-glsurfaceview",
+   "fanout": 3,
+   "titles": [
+    "app.halma",
+    "com.emmanuelmess.tictactoe",
+    "dev.lonami.klooni"
+   ]
+  },
+  {
+   "family": "theme-gate",
+   "fanout": 3,
+   "titles": [
+    "com.eightsines.firestrike.opensource",
+    "com.serwylo.babydots",
+    "x653.all_in_gold"
+   ]
+  },
+  {
+   "family": "capacitor-bridge",
+   "fanout": 1,
+   "titles": [
+    "com.vovagorodok.blidraughts"
+   ]
+  },
+  {
+   "family": "material-speeddial",
+   "fanout": 1,
+   "titles": [
+    "com.serwylo.babydots"
+   ]
+  },
+  {
+   "family": "multidex-family",
+   "fanout": 1,
+   "titles": [
+    "org.secuso.privacyfriendlysudoku"
+   ]
+  }
+ ],
+ "titles": [
+  {
+   "package": "com.emmanuelmess.tictactoe",
+   "s101_status": "FAIL",
+   "visual_level": 0,
+   "missing_classes": [],
+   "exceptions": [
+    {
+     "sig": "RuntimeException|",
+     "evidence": "RuntimeException; unwound Lcom/badlogic/gdx/backends/android/AndroidGraphics;.<init> invoke_pc=0x5a depth=5",
+     "count": 4
+    },
+    {
+     "sig": "RuntimeException|unwound Lcom/badlogic/gdx/backends/android/AndroidApplication;.init",
+     "evidence": "RuntimeException; unwound Lcom/badlogic/gdx/backends/android/AndroidApplication;.init invoke_pc=0x1e depth=3",
+     "count": 2
+    },
+    {
+     "sig": "RuntimeException|unwound Lcom/badlogic/gdx/backends/android/AndroidApplication;.initializeForView",
+     "evidence": "RuntimeException; unwound Lcom/badlogic/gdx/backends/android/AndroidApplication;.initializeForView invoke_pc=0x1 depth=2",
+     "count": 2
+    },
+    {
+     "sig": "RuntimeException|at Lcom/emmanuelmess/tictactoe/AndroidLauncher;.onCreate",
+     "evidence": "RuntimeException; escaped the app boundary at Lcom/emmanuelmess/tictactoe/AndroidLauncher;.onCreate invoke_pc=0x1a depth=1 [APP-BOUNDARY]",
+     "count": 2
+    }
+   ],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime",
+    "gl-native",
+    "libgdx-glsurfaceview",
+    "unclassified"
+   ]
+  },
+  {
+   "package": "com.kaeruct.raumballer",
+   "s101_status": "FAIL",
+   "visual_level": 0,
+   "missing_classes": [],
+   "exceptions": [
+    {
+     "sig": "NullPointerException|at Ljgame/platform/JGActivity;.onCreate",
+     "evidence": "NullPointerException; escaped the app boundary at Ljgame/platform/JGActivity;.onCreate invoke_pc=0x7 depth=1 [APP-BOUNDARY]",
+     "count": 2
+    }
+   ],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime",
+    "coordinatorlayout",
+    "unclassified"
+   ]
+  },
+  {
+   "package": "com.kingalex.kingpong",
+   "s101_status": "FAIL",
+   "visual_level": 0,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime"
+   ]
+  },
+  {
+   "package": "com.serwylo.babydots",
+   "s101_status": "FAIL",
+   "visual_level": 0,
+   "missing_classes": [
+    {
+     "class": "ClassNotFoundException",
+     "evidence": "ClassNotFoundException",
+     "count": 1
+    },
+    {
+     "class": "Lkotlin/jvm/internal/Reflection;",
+     "evidence": "ClassNotFoundException; (kotlin.reflect.jvm.internal.ReflectionFactoryImpl) method=Lkotlin/jvm/internal/Reflection;.<clinit> pc=3 \u2192 deferred handler @0x0xf type=Ljava/lang/ClassNotFo",
+     "count": 1
+    }
+   ],
+   "exceptions": [
+    {
+     "sig": "RuntimeException|unwound Lkotlin/jvm/internal/Intrinsics;.checkNotNull",
+     "evidence": "RuntimeException; unwound Lkotlin/jvm/internal/Intrinsics;.checkNotNull invoke_pc=0x2 depth=3",
+     "count": 2
+    },
+    {
+     "sig": "RuntimeException|unwound Lcom/serwylo/babydots/AnimatedDots;.setSpeed",
+     "evidence": "RuntimeException; unwound Lcom/serwylo/babydots/AnimatedDots;.setSpeed invoke_pc=0xd depth=2",
+     "count": 2
+    },
+    {
+     "sig": "RuntimeException|at Lcom/serwylo/babydots/MainActivity;.onCreate",
+     "evidence": "RuntimeException; escaped the app boundary at Lcom/serwylo/babydots/MainActivity;.onCreate invoke_pc=0x70 depth=1 [APP-BOUNDARY]",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|",
+     "evidence": "NullPointerException; unwound Lcom/leinardi/android/speeddial/FabWithLabelView;.<init> invoke_pc=0x4 depth=6",
+     "count": 10
+    },
+    {
+     "sig": "NullPointerException|unwound Lcom/leinardi/android/speeddial/SpeedDialActionItem;.createFabWithLabelView",
+     "evidence": "NullPointerException; unwound Lcom/leinardi/android/speeddial/SpeedDialActionItem;.createFabWithLabelView invoke_pc=0xa depth=5",
+     "count": 10
+    },
+    {
+     "sig": "NullPointerException|unwound Lcom/leinardi/android/speeddial/SpeedDialView;.addActionItem",
+     "evidence": "NullPointerException; unwound Lcom/leinardi/android/speeddial/SpeedDialView;.addActionItem invoke_pc=0x17 depth=4",
+     "count": 30
+    },
+    {
+     "sig": "NullPointerException|at Lcom/serwylo/babydots/MainActivity;.onCreate",
+     "evidence": "NullPointerException; escaped the app boundary at Lcom/serwylo/babydots/MainActivity;.onCreate invoke_pc=0xf4 depth=1 [APP-BOUNDARY]",
+     "count": 8
+    }
+   ],
+   "inflate_unresolved_max": 3,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime",
+    "constraint-layout",
+    "coordinatorlayout",
+    "lifecycle-adapter",
+    "material-speeddial",
+    "savedstate-registry",
+    "theme-gate",
+    "unclassified"
+   ]
+  },
+  {
+   "package": "crypto.o0o0o0o0o.games.blackjack",
+   "s101_status": "FAIL",
+   "visual_level": 0,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime",
+    "constraint-layout",
+    "coordinatorlayout",
+    "lifecycle-adapter",
+    "savedstate-registry"
+   ]
+  },
+  {
+   "package": "eu.quelltext.counting",
+   "s101_status": "FAIL",
+   "visual_level": 0,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime"
+   ]
+  },
+  {
+   "package": "eu.quelltext.memory",
+   "s101_status": "FAIL",
+   "visual_level": 0,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime"
+   ]
+  },
+  {
+   "package": "eu.veldsoft.free.klondike",
+   "s101_status": "FAIL",
+   "visual_level": 0,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime",
+    "savedstate-registry"
+   ]
+  },
+  {
+   "package": "eu.veldsoft.no.thanks",
+   "s101_status": "FAIL",
+   "visual_level": 0,
+   "missing_classes": [
+    {
+     "class": "ClassNotFoundException",
+     "evidence": "ClassNotFoundException",
+     "count": 1
+    },
+    {
+     "class": "Landroidx/lifecycle/Lifecycling;",
+     "evidence": "ClassNotFoundException; (androidx.savedstate.Recreator_LifecycleAdapter) method=Landroidx/lifecycle/Lifecycling;.generatedConstructor pc=106 \u2192 deferred handler @0x0x8e type=Ljava/lan",
+     "count": 1
+    },
+    {
+     "class": "ClassNotFoundException?",
+     "evidence": "ClassNotFoundException;",
+     "count": 1
+    }
+   ],
+   "exceptions": [
+    {
+     "sig": "RuntimeException|unwound Lkotlin/jvm/internal/Intrinsics;.checkNotNull",
+     "evidence": "RuntimeException; unwound Lkotlin/jvm/internal/Intrinsics;.checkNotNull invoke_pc=0x2 depth=12",
+     "count": 2
+    },
+    {
+     "sig": "RuntimeException|unwound Landroidx/lifecycle/Lifecycling;.resolveObserverCallbackType",
+     "evidence": "RuntimeException; unwound Landroidx/lifecycle/Lifecycling;.resolveObserverCallbackType invoke_pc=0x7e depth=11",
+     "count": 2
+    },
+    {
+     "sig": "RuntimeException|unwound Landroidx/lifecycle/Lifecycling;.getObserverConstructorType",
+     "evidence": "RuntimeException; unwound Landroidx/lifecycle/Lifecycling;.getObserverConstructorType invoke_pc=0xf depth=10",
+     "count": 2
+    },
+    {
+     "sig": "RuntimeException|unwound Landroidx/lifecycle/Lifecycling;.lifecycleEventObserver",
+     "evidence": "RuntimeException; unwound Landroidx/lifecycle/Lifecycling;.lifecycleEventObserver invoke_pc=0x32 depth=9",
+     "count": 2
+    },
+    {
+     "sig": "RuntimeException|",
+     "evidence": "RuntimeException; unwound Landroidx/lifecycle/LifecycleRegistry$ObserverWithState;.<init> invoke_pc=0xb depth=8",
+     "count": 12
+    },
+    {
+     "sig": "RuntimeException|unwound Landroidx/lifecycle/LifecycleRegistry;.addObserver",
+     "evidence": "RuntimeException; unwound Landroidx/lifecycle/LifecycleRegistry;.addObserver invoke_pc=0x17 depth=7",
+     "count": 2
+    },
+    {
+     "sig": "RuntimeException|unwound Landroidx/savedstate/SavedStateRegistryController;.performAttach",
+     "evidence": "RuntimeException; unwound Landroidx/savedstate/SavedStateRegistryController;.performAttach invoke_pc=0x1d depth=6",
+     "count": 2
+    }
+   ],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime",
+    "constraint-layout",
+    "coordinatorlayout",
+    "lifecycle-adapter",
+    "savedstate-registry",
+    "unclassified"
+   ]
+  },
+  {
+   "package": "eu.veldsoft.tri.peaks",
+   "s101_status": "FAIL",
+   "visual_level": 0,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime"
+   ]
+  },
+  {
+   "package": "io.github.ebraminio.bouncy",
+   "s101_status": "FAIL",
+   "visual_level": 0,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime"
+   ]
+  },
+  {
+   "package": "io.github.hathibelagal.mykanji",
+   "s101_status": "FAIL",
+   "visual_level": 0,
+   "missing_classes": [],
+   "exceptions": [
+    {
+     "sig": "NullPointerException|unwound Landroidx/core/view/WindowInsetsCompat$Impl28;.consumeDisplayCutout",
+     "evidence": "NullPointerException; unwound Landroidx/core/view/WindowInsetsCompat$Impl28;.consumeDisplayCutout invoke_pc=0x2 depth=17",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/core/view/WindowInsetsCompat;.consumeDisplayCutout",
+     "evidence": "NullPointerException; unwound Landroidx/core/view/WindowInsetsCompat;.consumeDisplayCutout invoke_pc=0x2 depth=16",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|",
+     "evidence": "NullPointerException; unwound Landroidx/core/view/WindowInsetsCompat$Impl;.<clinit> invoke_pc=0x9 depth=15",
+     "count": 16
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/appcompat/widget/ActionBarOverlayLayout;.init",
+     "evidence": "NullPointerException; unwound Landroidx/appcompat/widget/ActionBarOverlayLayout;.init invoke_pc=0x8 depth=8",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/appcompat/app/AppCompatDelegateImpl;.createSubDecor",
+     "evidence": "NullPointerException; unwound Landroidx/appcompat/app/AppCompatDelegateImpl;.createSubDecor invoke_pc=0x9f depth=6",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroidx/appcompat/widget/ActionBarOverlayLayout;.pullChildren",
+     "evidence": "IllegalStateException; unwound Landroidx/appcompat/widget/ActionBarOverlayLayout;.pullChildren invoke_pc=0x1e depth=8",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroidx/appcompat/widget/ActionBarOverlayLayout;.onMeasure",
+     "evidence": "IllegalStateException; unwound Landroidx/appcompat/widget/ActionBarOverlayLayout;.onMeasure invoke_pc=0x0 depth=7",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroidx/appcompat/app/AppCompatDelegateImpl;.createSubDecor",
+     "evidence": "IllegalStateException; unwound Landroidx/appcompat/app/AppCompatDelegateImpl;.createSubDecor invoke_pc=0x9f depth=6",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroidx/appcompat/app/WindowDecorActionBar;.init",
+     "evidence": "IllegalStateException; unwound Landroidx/appcompat/app/WindowDecorActionBar;.init invoke_pc=0x15 depth=6",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|",
+     "evidence": "IllegalStateException; unwound Landroidx/appcompat/app/WindowDecorActionBar;.<init> invoke_pc=0x3b depth=5",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroidx/appcompat/app/AppCompatDelegateImpl;.initWindowDecorActionBar",
+     "evidence": "IllegalStateException; unwound Landroidx/appcompat/app/AppCompatDelegateImpl;.initWindowDecorActionBar invoke_pc=0x1a depth=4",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroidx/appcompat/app/AppCompatDelegateImpl;.getSupportActionBar",
+     "evidence": "IllegalStateException; unwound Landroidx/appcompat/app/AppCompatDelegateImpl;.getSupportActionBar invoke_pc=0x0 depth=3",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroidx/appcompat/app/AppCompatActivity;.getSupportActionBar",
+     "evidence": "IllegalStateException; unwound Landroidx/appcompat/app/AppCompatActivity;.getSupportActionBar invoke_pc=0x4 depth=2",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|at Lio/github/hathibelagal/mykanji/MainActivity;.onCreate",
+     "evidence": "IllegalStateException; escaped the app boundary at Lio/github/hathibelagal/mykanji/MainActivity;.onCreate invoke_pc=0x5f depth=1 [APP-BOUNDARY]",
+     "count": 2
+    }
+   ],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "appcompat-decor-toolbar",
+    "compose-runtime",
+    "constraint-layout",
+    "coordinatorlayout",
+    "lifecycle-adapter",
+    "savedstate-registry",
+    "unclassified"
+   ]
+  },
+  {
+   "package": "org.asafonov.accelerace",
+   "s101_status": "FAIL",
+   "visual_level": 0,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime"
+   ]
+  },
+  {
+   "package": "app.halma",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [
+    {
+     "sig": "RuntimeException|unwound Lcom/badlogic/gdx/utils/SharedLibraryLoader;.loadFile",
+     "evidence": "RuntimeException; unwound Lcom/badlogic/gdx/utils/SharedLibraryLoader;.loadFile invoke_pc=0x0 depth=7",
+     "count": 2
+    },
+    {
+     "sig": "RuntimeException|unwound Lcom/badlogic/gdx/backends/android/AndroidApplicationConfiguration$1;.load",
+     "evidence": "RuntimeException; unwound Lcom/badlogic/gdx/backends/android/AndroidApplicationConfiguration$1;.load invoke_pc=0x0 depth=4",
+     "count": 2
+    },
+    {
+     "sig": "RuntimeException|unwound Lcom/badlogic/gdx/backends/android/AndroidApplication;.init",
+     "evidence": "RuntimeException; unwound Lcom/badlogic/gdx/backends/android/AndroidApplication;.init invoke_pc=0xa depth=3",
+     "count": 2
+    },
+    {
+     "sig": "RuntimeException|unwound Lcom/badlogic/gdx/backends/android/AndroidApplication;.initialize",
+     "evidence": "RuntimeException; unwound Lcom/badlogic/gdx/backends/android/AndroidApplication;.initialize invoke_pc=0x1 depth=2",
+     "count": 2
+    },
+    {
+     "sig": "RuntimeException|at Lapp/halma/AndroidLauncher;.onCreate",
+     "evidence": "RuntimeException; escaped the app boundary at Lapp/halma/AndroidLauncher;.onCreate invoke_pc=0x17 depth=1 [APP-BOUNDARY]",
+     "count": 2
+    }
+   ],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime",
+    "libgdx-glsurfaceview",
+    "unclassified"
+   ]
+  },
+  {
+   "package": "ch.logixisland.anuto",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [
+    {
+     "sig": "NullPointerException|unwound Lch/logixisland/anuto/engine/theme/ThemeManager;.setTheme",
+     "evidence": "NullPointerException; unwound Lch/logixisland/anuto/engine/theme/ThemeManager;.setTheme invoke_pc=0xa depth=7",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Lch/logixisland/anuto/engine/theme/ThemeManager;.updateTheme",
+     "evidence": "NullPointerException; unwound Lch/logixisland/anuto/engine/theme/ThemeManager;.updateTheme invoke_pc=0x16 depth=6",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|",
+     "evidence": "NullPointerException; unwound Lch/logixisland/anuto/engine/theme/ThemeManager;.<init> invoke_pc=0x1f depth=5",
+     "count": 10
+    },
+    {
+     "sig": "NullPointerException|unwound Lch/logixisland/anuto/GameFactory;.initializeEngine",
+     "evidence": "NullPointerException; unwound Lch/logixisland/anuto/GameFactory;.initializeEngine invoke_pc=0x41 depth=4",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Lch/logixisland/anuto/AnutoApplication;.onCreate",
+     "evidence": "NullPointerException; unwound Lch/logixisland/anuto/AnutoApplication;.onCreate invoke_pc=0xb depth=2",
+     "count": 2
+    }
+   ],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime",
+    "typedarray-null",
+    "unclassified"
+   ]
+  },
+  {
+   "package": "com.ahorcado",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [
+    {
+     "sig": "NullPointerException|unwound Lio/flutter/embedding/engine/g/c;.a",
+     "evidence": "NullPointerException; unwound Lio/flutter/embedding/engine/g/c;.a invoke_pc=0x1b depth=4",
+     "count": 4
+    },
+    {
+     "sig": "NullPointerException|unwound Lio/flutter/app/FlutterApplication;.onCreate",
+     "evidence": "NullPointerException; unwound Lio/flutter/app/FlutterApplication;.onCreate invoke_pc=0xb depth=2",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|",
+     "evidence": "NullPointerException; escaped the app boundary at <unknown>.<unknown> invoke_pc=0x0 depth=1 [APP-BOUNDARY]",
+     "count": 2
+    }
+   ],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime",
+    "unclassified"
+   ]
+  },
+  {
+   "package": "com.eightsines.firestrike.opensource",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [
+    {
+     "sig": "NullPointerException|unwound Landroidx/preference/j;.m",
+     "evidence": "NullPointerException; unwound Landroidx/preference/j;.m invoke_pc=0x9 depth=5",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/preference/j;.o",
+     "evidence": "NullPointerException; unwound Landroidx/preference/j;.o invoke_pc=0x1b depth=4",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/preference/j;.n",
+     "evidence": "NullPointerException; unwound Landroidx/preference/j;.n invoke_pc=0x8 depth=3",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Lzame/game/App;.onCreate",
+     "evidence": "NullPointerException; unwound Lzame/game/App;.onCreate invoke_pc=0x57 depth=2",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|",
+     "evidence": "NullPointerException; escaped the app boundary at <unknown>.<unknown> invoke_pc=0x0 depth=1 [APP-BOUNDARY]",
+     "count": 2
+    }
+   ],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime",
+    "savedstate-registry",
+    "theme-gate",
+    "unclassified"
+   ]
+  },
+  {
+   "package": "com.helddertierwelt.mentalmath",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [
+    {
+     "class": "ClassNotFoundException",
+     "evidence": "ClassNotFoundException",
+     "count": 2
+    },
+    {
+     "class": "Landroidx/lifecycle/Lifecycling;",
+     "evidence": "ClassNotFoundException; (androidx.activity.ComponentActivity$$ExternalSyntheticLambda6_LifecycleAdapter) method=Landroidx/lifecycle/Lifecycling;.generatedConstructor pc=88 \u2192 deferred",
+     "count": 2
+    },
+    {
+     "class": "ClassNotFoundException?",
+     "evidence": "ClassNotFoundException;",
+     "count": 2
+    }
+   ],
+   "exceptions": [
+    {
+     "sig": "IllegalStateException|unwound Lcom/helddertierwelt/mentalmath/DaggerMentalMath_HiltComponents_SingletonC$Builder;.build",
+     "evidence": "IllegalStateException; unwound Lcom/helddertierwelt/mentalmath/DaggerMentalMath_HiltComponents_SingletonC$Builder;.build invoke_pc=0x4 depth=7",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Lcom/helddertierwelt/mentalmath/Hilt_MentalMath$1;.get",
+     "evidence": "IllegalStateException; unwound Lcom/helddertierwelt/mentalmath/Hilt_MentalMath$1;.get invoke_pc=0xf depth=6",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Lcom/helddertierwelt/mentalmath/Hilt_MentalMath;.generatedComponent",
+     "evidence": "IllegalStateException; unwound Lcom/helddertierwelt/mentalmath/Hilt_MentalMath;.generatedComponent invoke_pc=0x4 depth=4",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Lcom/helddertierwelt/mentalmath/Hilt_MentalMath;.hiltInternalInject",
+     "evidence": "IllegalStateException; unwound Lcom/helddertierwelt/mentalmath/Hilt_MentalMath;.hiltInternalInject invoke_pc=0x7 depth=3",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Lcom/helddertierwelt/mentalmath/Hilt_MentalMath;.onCreate",
+     "evidence": "IllegalStateException; unwound Lcom/helddertierwelt/mentalmath/Hilt_MentalMath;.onCreate invoke_pc=0x0 depth=2",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|",
+     "evidence": "IllegalStateException; escaped the app boundary at <unknown>.<unknown> invoke_pc=0x0 depth=1 [APP-BOUNDARY]",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/lifecycle/ClassesInfoCache;.getInfo",
+     "evidence": "NullPointerException; unwound Landroidx/lifecycle/ClassesInfoCache;.getInfo invoke_pc=0xc depth=9",
+     "count": 4
+    },
+    {
+     "sig": "NullPointerException|",
+     "evidence": "NullPointerException; unwound Landroidx/lifecycle/ReflectiveGenericLifecycleObserver;.<init> invoke_pc=0xb depth=8",
+     "count": 16
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/lifecycle/Lifecycling;.lifecycleEventObserver",
+     "evidence": "NullPointerException; unwound Landroidx/lifecycle/Lifecycling;.lifecycleEventObserver invoke_pc=0x81 depth=7",
+     "count": 4
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/lifecycle/LifecycleRegistry;.addObserver",
+     "evidence": "NullPointerException; unwound Landroidx/lifecycle/LifecycleRegistry;.addObserver invoke_pc=0x17 depth=5",
+     "count": 4
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/core/splashscreen/SplashScreen;.setKeepOnScreenCondition",
+     "evidence": "NullPointerException; unwound Landroidx/core/splashscreen/SplashScreen;.setKeepOnScreenCondition invoke_pc=0x7 depth=2",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|at Lcom/helddertierwelt/mentalmath/MainActivity;.onCreate",
+     "evidence": "NullPointerException; escaped the app boundary at Lcom/helddertierwelt/mentalmath/MainActivity;.onCreate invoke_pc=0xe depth=1 [APP-BOUNDARY]",
+     "count": 4
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/savedstate/SavedStateRegistryController$Companion;.create",
+     "evidence": "NullPointerException; unwound Landroidx/savedstate/SavedStateRegistryController$Companion;.create$lambda$0 invoke_pc=0xb depth=8",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/savedstate/SavedStateRegistryController$Companion$$ExternalSyntheticLambda0;.invo",
+     "evidence": "NullPointerException; unwound Landroidx/savedstate/SavedStateRegistryController$Companion$$ExternalSyntheticLambda0;.invoke invoke_pc=0x2 depth=7",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/savedstate/internal/SavedStateRegistryImpl;.performAttach",
+     "evidence": "NullPointerException; unwound Landroidx/savedstate/internal/SavedStateRegistryImpl;.performAttach invoke_pc=0x14 depth=6",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/savedstate/internal/SavedStateRegistryImpl;.performRestore",
+     "evidence": "NullPointerException; unwound Landroidx/savedstate/internal/SavedStateRegistryImpl;.performRestore$savedstate invoke_pc=0x4 depth=5",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/savedstate/SavedStateRegistryController;.performRestore",
+     "evidence": "NullPointerException; unwound Landroidx/savedstate/SavedStateRegistryController;.performRestore invoke_pc=0x2 depth=4",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/activity/ComponentActivity;.onCreate",
+     "evidence": "NullPointerException; unwound Landroidx/activity/ComponentActivity;.onCreate invoke_pc=0x2 depth=3",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Lcom/helddertierwelt/mentalmath/Hilt_MainActivity;.onCreate",
+     "evidence": "NullPointerException; unwound Lcom/helddertierwelt/mentalmath/Hilt_MainActivity;.onCreate invoke_pc=0x0 depth=2",
+     "count": 2
+    },
+    {
+     "sig": "RuntimeException|unwound Lkotlinx/coroutines/internal/FastServiceLoader;.loadProviders",
+     "evidence": "RuntimeException; unwound Lkotlinx/coroutines/internal/FastServiceLoader;.loadProviders$kotlinx_coroutines_core invoke_pc=0x1d depth=9",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Lkotlin/collections/CollectionsKt___CollectionsKt;.toMutableList",
+     "evidence": "NullPointerException; unwound Lkotlin/collections/CollectionsKt___CollectionsKt;.toMutableList invoke_pc=0x17 depth=10",
+     "count": 2
+    }
+   ],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime",
+    "lifecycle-adapter",
+    "savedstate-registry",
+    "unclassified"
+   ]
+  },
+  {
+   "package": "com.jeffliu.balancetheball",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime"
+   ]
+  },
+  {
+   "package": "com.rocket9labs.boxcars",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime",
+    "gl-native"
+   ]
+  },
+  {
+   "package": "com.sanskritbasics.memory",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [
+    {
+     "class": "ClassNotFoundException",
+     "evidence": "ClassNotFoundException",
+     "count": 1
+    },
+    {
+     "class": "Lw0/l;",
+     "evidence": "ClassNotFoundException; (kotlin.reflect.jvm.internal.ReflectionFactoryImpl) method=Lw0/l;.<clinit> pc=3 \u2192 deferred handler @0x0xf type=Ljava/lang/ClassNotFoundException;",
+     "count": 1
+    }
+   ],
+   "exceptions": [
+    {
+     "sig": "NullPointerException|unwound Landroidx/core/view/s0;.v",
+     "evidence": "NullPointerException; unwound Landroidx/core/view/s0;.v invoke_pc=0x2 depth=11",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/core/view/s0;.u",
+     "evidence": "NullPointerException; unwound Landroidx/core/view/s0;.u invoke_pc=0x1 depth=10",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|",
+     "evidence": "NullPointerException; unwound Landroidx/core/view/s0$k;.<clinit> invoke_pc=0x4 depth=9",
+     "count": 6
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/appcompat/app/h;.c0",
+     "evidence": "NullPointerException; unwound Landroidx/appcompat/app/h;.c0 invoke_pc=0x9d depth=6",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroidx/appcompat/widget/ActionBarOverlayLayout;.A",
+     "evidence": "IllegalStateException; unwound Landroidx/appcompat/widget/ActionBarOverlayLayout;.A invoke_pc=0x1e depth=8",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroidx/appcompat/widget/ActionBarOverlayLayout;.onMeasure",
+     "evidence": "IllegalStateException; unwound Landroidx/appcompat/widget/ActionBarOverlayLayout;.onMeasure invoke_pc=0x0 depth=7",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroidx/appcompat/app/h;.c0",
+     "evidence": "IllegalStateException; unwound Landroidx/appcompat/app/h;.c0 invoke_pc=0x9d depth=6",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/appcompat/app/h;.S",
+     "evidence": "NullPointerException; unwound Landroidx/appcompat/app/h;.S invoke_pc=0x21 depth=6",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/appcompat/app/h;.i0",
+     "evidence": "NullPointerException; unwound Landroidx/appcompat/app/h;.i0 invoke_pc=0x31 depth=5",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/appcompat/app/h;.u0",
+     "evidence": "NullPointerException; unwound Landroidx/appcompat/app/h;.u0 invoke_pc=0x0 depth=4",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/appcompat/app/h;.r",
+     "evidence": "NullPointerException; unwound Landroidx/appcompat/app/h;.r invoke_pc=0x0 depth=3",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/appcompat/app/c;.c0",
+     "evidence": "NullPointerException; unwound Landroidx/appcompat/app/c;.c0 invoke_pc=0x4 depth=2",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|at Lcom/sanskritbasics/memory/MainActivity;.onCreate",
+     "evidence": "NullPointerException; escaped the app boundary at Lcom/sanskritbasics/memory/MainActivity;.onCreate invoke_pc=0x3 depth=1 [APP-BOUNDARY]",
+     "count": 4
+    },
+    {
+     "sig": "NullPointerException|unwound Lw0/i;.b",
+     "evidence": "NullPointerException; unwound Lw0/i;.b invoke_pc=0x2 depth=2",
+     "count": 2
+    }
+   ],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "appcompat-decor-toolbar",
+    "compose-runtime",
+    "unclassified"
+   ]
+  },
+  {
+   "package": "com.sidhant.bubbleshooter",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime"
+   ]
+  },
+  {
+   "package": "com.sidhant.puzzle",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime"
+   ]
+  },
+  {
+   "package": "com.sidhant.queens",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime"
+   ]
+  },
+  {
+   "package": "com.trianguloy.adnihilation",
+   "s101_status": "PARTIAL",
+   "visual_level": 2,
+   "missing_classes": [],
+   "exceptions": [
+    {
+     "sig": "NullPointerException|at Lcom/trianguloy/adnihilation/MainActivity;.onCreate",
+     "evidence": "NullPointerException; escaped the app boundary at Lcom/trianguloy/adnihilation/MainActivity;.onCreate invoke_pc=0x14 depth=1 [APP-BOUNDARY]",
+     "count": 4
+    }
+   ],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime",
+    "unclassified"
+   ]
+  },
+  {
+   "package": "com.vayunmathur.games.solitaire",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [
+    {
+     "sig": "NullPointerException|unwound Landroidx/savedstate/internal/SavedStateRegistryImpl;.performAttach",
+     "evidence": "NullPointerException; unwound Landroidx/savedstate/internal/SavedStateRegistryImpl;.performAttach invoke_pc=0x12 depth=4",
+     "count": 4
+    },
+    {
+     "sig": "NullPointerException|",
+     "evidence": "NullPointerException; unwound Landroidx/activity/ComponentActivity;.<init> invoke_pc=0xa7 depth=3",
+     "count": 6
+    },
+    {
+     "sig": "NullPointerException|unwound Lkotlin/text/MatcherMatchResult;.performRestore",
+     "evidence": "NullPointerException; unwound Lkotlin/text/MatcherMatchResult;.performRestore invoke_pc=0xa depth=3",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/activity/ComponentActivity;.onCreate",
+     "evidence": "NullPointerException; unwound Landroidx/activity/ComponentActivity;.onCreate invoke_pc=0x2 depth=2",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|at Lcom/vayunmathur/games/solitaire/MainActivity;.onCreate",
+     "evidence": "NullPointerException; escaped the app boundary at Lcom/vayunmathur/games/solitaire/MainActivity;.onCreate invoke_pc=0x0 depth=1 [APP-BOUNDARY]",
+     "count": 4
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/compose/foundation/BorderKt$$ExternalSyntheticLambda1;.invoke",
+     "evidence": "NullPointerException; unwound Landroidx/compose/foundation/BorderKt$$ExternalSyntheticLambda1;.invoke invoke_pc=0x23b depth=3",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/activity/EdgeToEdge$$ExternalSyntheticLambda0;.run",
+     "evidence": "NullPointerException; unwound Landroidx/activity/EdgeToEdge$$ExternalSyntheticLambda0;.run invoke_pc=0x97 depth=2",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroidx/compose/ui/platform/CompositionLocalsKt$LocalDensity$1;.invoke",
+     "evidence": "IllegalStateException; unwound Landroidx/compose/ui/platform/CompositionLocalsKt$LocalDensity$1;.invoke invoke_pc=0x167 depth=9",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroidx/compose/ui/platform/WindowRecomposer_androidKt;.getWindowRecomposer",
+     "evidence": "IllegalStateException; unwound Landroidx/compose/ui/platform/WindowRecomposer_androidKt;.getWindowRecomposer invoke_pc=0x5a depth=7",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroidx/compose/ui/platform/AbstractComposeView;.resolveParentCompositionContext",
+     "evidence": "IllegalStateException; unwound Landroidx/compose/ui/platform/AbstractComposeView;.resolveParentCompositionContext invoke_pc=0x70 depth=6",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroidx/compose/ui/platform/AbstractComposeView;.resolveComposeViewContext",
+     "evidence": "IllegalStateException; unwound Landroidx/compose/ui/platform/AbstractComposeView;.resolveComposeViewContext invoke_pc=0x26 depth=5",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroidx/compose/ui/platform/AbstractComposeView;.onMeasure",
+     "evidence": "IllegalStateException; unwound Landroidx/compose/ui/platform/AbstractComposeView;.onMeasure invoke_pc=0x0 depth=3",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroidx/activity/ComponentActivity;.setContentView",
+     "evidence": "IllegalStateException; unwound Landroidx/activity/ComponentActivity;.setContentView invoke_pc=0x13 depth=2",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|at Lcom/vayunmathur/games/solitaire/MainActivity;.onCreate",
+     "evidence": "IllegalStateException; escaped the app boundary at Lcom/vayunmathur/games/solitaire/MainActivity;.onCreate invoke_pc=0xf0 depth=1 [APP-BOUNDARY]",
+     "count": 2
+    }
+   ],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime",
+    "lifecycle-adapter",
+    "savedstate-registry",
+    "unclassified"
+   ]
+  },
+  {
+   "package": "com.vovagorodok.blidraughts",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [
+    {
+     "sig": "NullPointerException|unwound Landroidx/coordinatorlayout/widget/CoordinatorLayout;.onMeasure",
+     "evidence": "NullPointerException; unwound Landroidx/coordinatorlayout/widget/CoordinatorLayout;.onMeasure invoke_pc=0x2 depth=3",
+     "count": 2
+    }
+   ],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "capacitor-bridge",
+    "compose-runtime",
+    "coordinatorlayout",
+    "lifecycle-adapter",
+    "savedstate-registry"
+   ]
+  },
+  {
+   "package": "com.willie.mancala",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [
+    {
+     "sig": "NullPointerException|",
+     "evidence": "NullPointerException; unwound Lj0/u1;.<clinit> invoke_pc=0x5 depth=7",
+     "count": 10
+    },
+    {
+     "sig": "NullPointerException|unwound Le/b0;.w",
+     "evidence": "NullPointerException; unwound Le/b0;.w invoke_pc=0x9b depth=4",
+     "count": 6
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroidx/appcompat/widget/ActionBarOverlayLayout;.onMeasure",
+     "evidence": "IllegalStateException; unwound Landroidx/appcompat/widget/ActionBarOverlayLayout;.onMeasure invoke_pc=0x0 depth=5",
+     "count": 6
+    },
+    {
+     "sig": "IllegalStateException|unwound Le/b0;.w",
+     "evidence": "IllegalStateException; unwound Le/b0;.w invoke_pc=0x9b depth=4",
+     "count": 6
+    },
+    {
+     "sig": "NullPointerException|unwound Le/b0;.h",
+     "evidence": "NullPointerException; unwound Le/b0;.h invoke_pc=0x0 depth=3",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Le/j;.setContentView",
+     "evidence": "NullPointerException; unwound Le/j;.setContentView invoke_pc=0x7 depth=2",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|at Lcom/willie/mancala/MainActivity;.onCreate",
+     "evidence": "NullPointerException; escaped the app boundary at Lcom/willie/mancala/MainActivity;.onCreate invoke_pc=0x6 depth=1 [APP-BOUNDARY]",
+     "count": 10
+    },
+    {
+     "sig": "NullPointerException|unwound Le/j;.findViewById",
+     "evidence": "NullPointerException; unwound Le/j;.findViewById invoke_pc=0x6 depth=2",
+     "count": 4
+    }
+   ],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "appcompat-decor-toolbar",
+    "compose-runtime",
+    "savedstate-registry",
+    "typedarray-null",
+    "unclassified"
+   ]
+  },
+  {
+   "package": "de.georgsieber.ballbreak",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "appcompat-decor-toolbar",
+    "compose-runtime",
+    "coordinatorlayout",
+    "lifecycle-adapter",
+    "savedstate-registry",
+    "typedarray-null"
+   ]
+  },
+  {
+   "package": "de.tobiasbielefeld.solitaire",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [
+    {
+     "sig": "NullPointerException|",
+     "evidence": "NullPointerException; unwound Landroid/support/v7/app/m;.<init> invoke_pc=0x0 depth=10",
+     "count": 20
+    },
+    {
+     "sig": "NullPointerException|unwound Landroid/support/v7/app/g;.a",
+     "evidence": "NullPointerException; unwound Landroid/support/v7/app/g;.a invoke_pc=0xa depth=5",
+     "count": 8
+    },
+    {
+     "sig": "NullPointerException|unwound Landroid/support/v7/app/e;.onCreate",
+     "evidence": "NullPointerException; unwound Landroid/support/v7/app/e;.onCreate invoke_pc=0x7 depth=3",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Lde/tobiasbielefeld/solitaire/classes/c;.onCreate",
+     "evidence": "NullPointerException; unwound Lde/tobiasbielefeld/solitaire/classes/c;.onCreate invoke_pc=0x0 depth=2",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|at Lde/tobiasbielefeld/solitaire/ui/GameSelector;.onCreate",
+     "evidence": "NullPointerException; escaped the app boundary at Lde/tobiasbielefeld/solitaire/ui/GameSelector;.onCreate invoke_pc=0x3 depth=1 [APP-BOUNDARY]",
+     "count": 4
+    },
+    {
+     "sig": "NullPointerException|unwound Landroid/support/v7/app/e;.findViewById",
+     "evidence": "NullPointerException; unwound Landroid/support/v7/app/e;.findViewById invoke_pc=0x4 depth=2",
+     "count": 2
+    }
+   ],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime",
+    "unclassified"
+   ]
+  },
+  {
+   "package": "dev.lonami.klooni",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [
+    {
+     "sig": "RuntimeException|",
+     "evidence": "RuntimeException; unwound Lcom/badlogic/gdx/backends/android/AndroidGraphics;.<init> invoke_pc=0x5a depth=5",
+     "count": 4
+    },
+    {
+     "sig": "RuntimeException|unwound Lcom/badlogic/gdx/backends/android/AndroidApplication;.init",
+     "evidence": "RuntimeException; unwound Lcom/badlogic/gdx/backends/android/AndroidApplication;.init invoke_pc=0x1e depth=3",
+     "count": 2
+    },
+    {
+     "sig": "RuntimeException|unwound Lcom/badlogic/gdx/backends/android/AndroidApplication;.initialize",
+     "evidence": "RuntimeException; unwound Lcom/badlogic/gdx/backends/android/AndroidApplication;.initialize invoke_pc=0x1 depth=2",
+     "count": 2
+    },
+    {
+     "sig": "RuntimeException|at Ldev/lonami/klooni/AndroidLauncher;.onCreate",
+     "evidence": "RuntimeException; escaped the app boundary at Ldev/lonami/klooni/AndroidLauncher;.onCreate invoke_pc=0x2e depth=1 [APP-BOUNDARY]",
+     "count": 2
+    }
+   ],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime",
+    "gl-native",
+    "libgdx-glsurfaceview",
+    "unclassified"
+   ]
+  },
+  {
+   "package": "io.github.johnathan.minesweeper",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [
+    {
+     "sig": "IllegalStateException|unwound Lyp0;.f",
+     "evidence": "IllegalStateException; unwound Lyp0;.f invoke_pc=0x29 depth=4",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Lqd0;.setValue",
+     "evidence": "IllegalStateException; unwound Lqd0;.setValue invoke_pc=0x2 depth=3",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Lbg;.setContent",
+     "evidence": "IllegalStateException; unwound Lbg;.setContent invoke_pc=0x5 depth=2",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|at Lcom/minesweeper/MainActivity;.onCreate",
+     "evidence": "IllegalStateException; escaped the app boundary at Lcom/minesweeper/MainActivity;.onCreate invoke_pc=0x3b depth=1 [APP-BOUNDARY]",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|",
+     "evidence": "NullPointerException; unwound Lnp;.<init> invoke_pc=0xb depth=7",
+     "count": 18
+    },
+    {
+     "sig": "NullPointerException|unwound Lop;.iterator",
+     "evidence": "NullPointerException; unwound Lop;.iterator invoke_pc=0x13 depth=6",
+     "count": 6
+    },
+    {
+     "sig": "NullPointerException|unwound Ltn0;.F",
+     "evidence": "NullPointerException; unwound Ltn0;.F invoke_pc=0x2 depth=3",
+     "count": 6
+    },
+    {
+     "sig": "NullPointerException|unwound Ldh0;.e",
+     "evidence": "NullPointerException; unwound Ldh0;.e invoke_pc=0xf depth=2",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|at Lcom/minesweeper/MainActivity;.onCreate",
+     "evidence": "NullPointerException; escaped the app boundary at Lcom/minesweeper/MainActivity;.onCreate invoke_pc=0x46 depth=1 [APP-BOUNDARY]",
+     "count": 6
+    },
+    {
+     "sig": "NullPointerException|unwound Lgh0;.n",
+     "evidence": "NullPointerException; unwound Lgh0;.n invoke_pc=0xf depth=2",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Lr4;.b",
+     "evidence": "IllegalStateException; unwound Lr4;.b invoke_pc=0x1a9 depth=7",
+     "count": 4
+    },
+    {
+     "sig": "IllegalStateException|unwound Lm;.g",
+     "evidence": "IllegalStateException; unwound Lm;.g invoke_pc=0xcc depth=5",
+     "count": 4
+    },
+    {
+     "sig": "IllegalStateException|unwound Lm;.onAttachedToWindow",
+     "evidence": "IllegalStateException; unwound Lm;.onAttachedToWindow invoke_pc=0x10 depth=3",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Ljf;.setContentView",
+     "evidence": "IllegalStateException; unwound Ljf;.setContentView invoke_pc=0x15 depth=2",
+     "count": 4
+    },
+    {
+     "sig": "IllegalStateException|unwound Lm;.onMeasure",
+     "evidence": "IllegalStateException; unwound Lm;.onMeasure invoke_pc=0x0 depth=3",
+     "count": 2
+    }
+   ],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime",
+    "unclassified"
+   ]
+  },
+  {
+   "package": "io.github.yamin8000.dooz",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [
+    {
+     "class": "ClassNotFoundException",
+     "evidence": "ClassNotFoundException",
+     "count": 11
+    },
+    {
+     "class": "Lub1;",
+     "evidence": "ClassNotFoundException; (kotlin.reflect.jvm.internal.ReflectionFactoryImpl) method=Lub1;.<clinit> pc=3 \u2192 deferred handler @0x0xe type=Ljava/lang/ClassNotFoundException;",
+     "count": 1
+    },
+    {
+     "class": "Las0;",
+     "evidence": "ClassNotFoundException; (androidx.datastore.preferences.protobuf.DescriptorMessageInfoFactory) method=Las0;.<init> pc=13 \u2192 deferred handler @0x0x1f type=Ljava/lang/Exception;",
+     "count": 1
+    },
+    {
+     "class": "Ls30;",
+     "evidence": "ClassNotFoundException; (androidx.datastore.preferences.protobuf.ExtensionRegistry) method=Ls30;.<clinit> pc=2 \u2192 deferred handler @0x0x7 type=Ljava/lang/ClassNotFoundException;",
+     "count": 1
+    },
+    {
+     "class": "Lqg1;",
+     "evidence": "ClassNotFoundException; (androidx.datastore.preferences.protobuf.GeneratedMessage) method=Lqg1;.<clinit> pc=5 \u2192 deferred handler @0x0xa type=<catch-all>",
+     "count": 2
+    },
+    {
+     "class": "Lq3;",
+     "evidence": "ClassNotFoundException; (libcore.io.Memory) method=Lq3;.<clinit> pc=3 \u2192 deferred handler @0x0x8 type=<catch-all>",
+     "count": 2
+    },
+    {
+     "class": "Lez0;",
+     "evidence": "ClassNotFoundException; (androidx.datastore.preferences.protobuf.NewInstanceSchemaFull) method=Lez0;.<clinit> pc=5 \u2192 deferred handler @0x0x14 type=Ljava/lang/Exception;",
+     "count": 1
+    },
+    {
+     "class": "Lxp0;",
+     "evidence": "ClassNotFoundException; (androidx.datastore.preferences.protobuf.ListFieldSchemaFull) method=Lxp0;.<clinit> pc=5 \u2192 deferred handler @0x0x14 type=Ljava/lang/Exception;",
+     "count": 1
+    },
+    {
+     "class": "Lv30;",
+     "evidence": "ClassNotFoundException; (androidx.datastore.preferences.protobuf.ExtensionSchemaFull) method=Lv30;.<clinit> pc=12 \u2192 deferred handler @0x0x1b type=Ljava/lang/Exception;",
+     "count": 1
+    },
+    {
+     "class": "Lls0;",
+     "evidence": "ClassNotFoundException; (androidx.datastore.preferences.protobuf.MapFieldSchemaFull) method=Lls0;.<clinit> pc=5 \u2192 deferred handler @0x0x14 type=Ljava/lang/Exception;",
+     "count": 1
+    }
+   ],
+   "exceptions": [
+    {
+     "sig": "IllegalStateException|unwound Ls;.g",
+     "evidence": "IllegalStateException; unwound Ls;.g invoke_pc=0xd depth=15",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Lxz1;.Y",
+     "evidence": "IllegalStateException; unwound Lxz1;.Y invoke_pc=0xa6 depth=14",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Lg;.q",
+     "evidence": "IllegalStateException; unwound Lg;.q invoke_pc=0x72f depth=13",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Lg;.h",
+     "evidence": "IllegalStateException; unwound Lg;.h invoke_pc=0x14c depth=12",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Lat;.a",
+     "evidence": "IllegalStateException; unwound Lat;.a invoke_pc=0x93 depth=10",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Llo;.B",
+     "evidence": "IllegalStateException; unwound Llo;.B invoke_pc=0x46 depth=9",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Lnt;.a",
+     "evidence": "IllegalStateException; unwound Lnt;.a invoke_pc=0x10 depth=8",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Lql1;.j",
+     "evidence": "IllegalStateException; unwound Lql1;.j invoke_pc=0x35 depth=7",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Le;.q",
+     "evidence": "IllegalStateException; unwound Le;.q invoke_pc=0x1c4 depth=6",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|at Lio/github/yamin8000/dooz/ui/MainActivity;.onCreate",
+     "evidence": "IllegalStateException; escaped the app boundary at Lio/github/yamin8000/dooz/ui/MainActivity;.onCreate invoke_pc=0xc1 depth=1 [APP-BOUNDARY]",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Ljm;.setContentView",
+     "evidence": "NullPointerException; unwound Ljm;.setContentView invoke_pc=0x13 depth=2",
+     "count": 2
+    }
+   ],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime",
+    "unclassified"
+   ]
+  },
+  {
+   "package": "jwtc.android.chess",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [
+    {
+     "sig": "IllegalStateException|unwound Lg/c0;.z",
+     "evidence": "IllegalStateException; unwound Lg/c0;.z invoke_pc=0x10 depth=7",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Lg/c0;.d",
+     "evidence": "IllegalStateException; unwound Lg/c0;.d invoke_pc=0x7 depth=6",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Lg/j;.a",
+     "evidence": "IllegalStateException; unwound Lg/j;.a invoke_pc=0x12 depth=5",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroidx/activity/ComponentActivity;.onCreate",
+     "evidence": "IllegalStateException; unwound Landroidx/activity/ComponentActivity;.onCreate invoke_pc=0x1e depth=4",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroidx/fragment/app/j;.onCreate",
+     "evidence": "IllegalStateException; unwound Landroidx/fragment/app/j;.onCreate invoke_pc=0x0 depth=3",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Ljwtc/android/chess/start;.Z",
+     "evidence": "IllegalStateException; unwound Ljwtc/android/chess/start;.Z invoke_pc=0x19 depth=2",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|at Ljwtc/android/chess/start;.onCreate",
+     "evidence": "IllegalStateException; escaped the app boundary at Ljwtc/android/chess/start;.onCreate invoke_pc=0x5 depth=1 [APP-BOUNDARY]",
+     "count": 2
+    }
+   ],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime",
+    "savedstate-registry",
+    "unclassified"
+   ]
+  },
+  {
+   "package": "name.boyle.chris.sgtpuzzles",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime"
+   ]
+  },
+  {
+   "package": "net.sourceforge.solitaire_cg",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime"
+   ]
+  },
+  {
+   "package": "org.andstatus.game2048",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [
+    {
+     "sig": "NullPointerException|unwound Lr3;.a",
+     "evidence": "NullPointerException; unwound Lr3;.a invoke_pc=0x80 depth=13",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Lr30;.o",
+     "evidence": "NullPointerException; unwound Lr30;.o invoke_pc=0xb depth=11",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|",
+     "evidence": "NullPointerException; unwound Ld0;.<init> invoke_pc=0x7 depth=9",
+     "count": 18
+    },
+    {
+     "sig": "NullPointerException|unwound Lgc;.L",
+     "evidence": "NullPointerException; unwound Lgc;.L invoke_pc=0x2 depth=4",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Lz40;.a",
+     "evidence": "NullPointerException; unwound Lz40;.a invoke_pc=0x18 depth=3",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Ldu;.a",
+     "evidence": "NullPointerException; unwound Ldu;.a invoke_pc=0x2 depth=2",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|at Lorg/andstatus/game2048/MyMainActivity;.onCreate",
+     "evidence": "NullPointerException; escaped the app boundary at Lorg/andstatus/game2048/MyMainActivity;.onCreate invoke_pc=0x2 depth=1 [APP-BOUNDARY]",
+     "count": 4
+    }
+   ],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime",
+    "unclassified"
+   ]
+  },
+  {
+   "package": "org.mattvchandler.a2050",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [
+    {
+     "sig": "NullPointerException|unwound Landroidx/activity/q;.a",
+     "evidence": "NullPointerException; unwound Landroidx/activity/q;.a invoke_pc=0x1b depth=7",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/fragment/app/l0;.b",
+     "evidence": "NullPointerException; unwound Landroidx/fragment/app/l0;.b invoke_pc=0x36 depth=6",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/fragment/app/t;.a",
+     "evidence": "NullPointerException; unwound Landroidx/fragment/app/t;.a invoke_pc=0xb depth=5",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/activity/j;.onCreate",
+     "evidence": "NullPointerException; unwound Landroidx/activity/j;.onCreate invoke_pc=0x1b depth=4",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/fragment/app/v;.onCreate",
+     "evidence": "NullPointerException; unwound Landroidx/fragment/app/v;.onCreate invoke_pc=0x0 depth=3",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Lq2/i;.onCreate",
+     "evidence": "NullPointerException; unwound Lq2/i;.onCreate invoke_pc=0xbe depth=2",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|at Lorg/mattvchandler/a2050/MainActivity;.onCreate",
+     "evidence": "NullPointerException; escaped the app boundary at Lorg/mattvchandler/a2050/MainActivity;.onCreate invoke_pc=0x0 depth=1 [APP-BOUNDARY]",
+     "count": 4
+    },
+    {
+     "sig": "NullPointerException|unwound Ld/l0;.j",
+     "evidence": "NullPointerException; unwound Ld/l0;.j invoke_pc=0x0 depth=3",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Ld/o;.setContentView",
+     "evidence": "NullPointerException; unwound Ld/o;.setContentView invoke_pc=0x7 depth=2",
+     "count": 2
+    }
+   ],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime",
+    "savedstate-registry",
+    "unclassified"
+   ]
+  },
+  {
+   "package": "org.secuso.privacyfriendly2048",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [
+    {
+     "class": "ClassNotFoundException",
+     "evidence": "ClassNotFoundException",
+     "count": 1
+    },
+    {
+     "class": "Lcom/bumptech/glide/Glide;",
+     "evidence": "ClassNotFoundException; (com.bumptech.glide.GeneratedAppGlideModuleImpl) method=Lcom/bumptech/glide/Glide;.getAnnotationGeneratedGlideModules pc=2 \u2192 deferred handler @0x0x35 type=Lja",
+     "count": 1
+    },
+    {
+     "class": "ClassNotFoundException?",
+     "evidence": "ClassNotFoundException;",
+     "count": 1
+    }
+   ],
+   "exceptions": [],
+   "inflate_unresolved_max": 2,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime",
+    "constraint-layout",
+    "coordinatorlayout",
+    "lifecycle-adapter",
+    "savedstate-registry",
+    "unclassified"
+   ]
+  },
+  {
+   "package": "org.secuso.privacyfriendlybattleship",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime",
+    "constraint-layout",
+    "coordinatorlayout",
+    "lifecycle-adapter",
+    "savedstate-registry"
+   ]
+  },
+  {
+   "package": "org.secuso.privacyfriendlydame",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 2,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime",
+    "constraint-layout",
+    "coordinatorlayout",
+    "lifecycle-adapter",
+    "savedstate-registry"
+   ]
+  },
+  {
+   "package": "org.secuso.privacyfriendlymemory",
+   "s101_status": "PARTIAL",
+   "visual_level": 2,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "appcompat-decor-toolbar",
+    "compose-runtime",
+    "constraint-layout",
+    "coordinatorlayout",
+    "lifecycle-adapter",
+    "savedstate-registry",
+    "typedarray-null"
+   ]
+  },
+  {
+   "package": "org.secuso.privacyfriendlysolitaire",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 2,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime",
+    "constraint-layout",
+    "coordinatorlayout",
+    "lifecycle-adapter",
+    "savedstate-registry"
+   ]
+  },
+  {
+   "package": "org.secuso.privacyfriendlysudoku",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime",
+    "constraint-layout",
+    "coordinatorlayout",
+    "lifecycle-adapter",
+    "multidex-family",
+    "savedstate-registry"
+   ]
+  },
+  {
+   "package": "si.palcka.tarok",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime"
+   ]
+  },
+  {
+   "package": "x653.all_in_gold",
+   "s101_status": "PARTIAL",
+   "visual_level": 2,
+   "missing_classes": [],
+   "exceptions": [
+    {
+     "sig": "Exception|unwound Landroid/support/design/internal/ThemeEnforcement;.checkAppCompatTheme",
+     "evidence": "Exception; unwound Landroid/support/design/internal/ThemeEnforcement;.checkAppCompatTheme invoke_pc=0x4 depth=6",
+     "count": 4
+    },
+    {
+     "sig": "Exception|unwound Landroid/support/design/internal/ThemeEnforcement;.checkCompatibleTheme",
+     "evidence": "Exception; unwound Landroid/support/design/internal/ThemeEnforcement;.checkCompatibleTheme invoke_pc=0x15 depth=5",
+     "count": 4
+    },
+    {
+     "sig": "Exception|unwound Landroid/support/design/internal/ThemeEnforcement;.obtainStyledAttributes",
+     "evidence": "Exception; unwound Landroid/support/design/internal/ThemeEnforcement;.obtainStyledAttributes invoke_pc=0x0 depth=4",
+     "count": 4
+    },
+    {
+     "sig": "Exception|unwound Landroid/support/design/widget/ViewUtilsLollipop;.setStateListAnimatorFromAttrs",
+     "evidence": "Exception; unwound Landroid/support/design/widget/ViewUtilsLollipop;.setStateListAnimatorFromAttrs invoke_pc=0xd depth=3",
+     "count": 2
+    },
+    {
+     "sig": "Exception|",
+     "evidence": "Exception; unwound Landroid/support/design/widget/AppBarLayout;.<init> invoke_pc=0x1c depth=2",
+     "count": 4
+    },
+    {
+     "sig": "Exception|at Lx653/all_in_gold/MainActivity;.onCreate",
+     "evidence": "Exception; escaped the app boundary at Lx653/all_in_gold/MainActivity;.onCreate invoke_pc=0x1e depth=1 [APP-BOUNDARY]",
+     "count": 4
+    },
+    {
+     "sig": "NullPointerException|unwound Lme/relex/circleindicator/CircleIndicator;.init",
+     "evidence": "NullPointerException; unwound Lme/relex/circleindicator/CircleIndicator;.init invoke_pc=0x3 depth=3",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|",
+     "evidence": "NullPointerException; unwound Lme/relex/circleindicator/CircleIndicator;.<init> invoke_pc=0x29 depth=2",
+     "count": 4
+    },
+    {
+     "sig": "NullPointerException|at Lx653/all_in_gold/MainActivity;.onCreate",
+     "evidence": "NullPointerException; escaped the app boundary at Lx653/all_in_gold/MainActivity;.onCreate invoke_pc=0x1e depth=1 [APP-BOUNDARY]",
+     "count": 6
+    },
+    {
+     "sig": "NullPointerException|unwound Landroid/support/design/widget/CoordinatorLayout;.onMeasure",
+     "evidence": "NullPointerException; unwound Landroid/support/design/widget/CoordinatorLayout;.onMeasure invoke_pc=0x2 depth=2",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroid/support/v7/app/AppCompatDelegateImpl;.ensureSubDecor",
+     "evidence": "IllegalStateException; unwound Landroid/support/v7/app/AppCompatDelegateImpl;.ensureSubDecor invoke_pc=0x4 depth=6",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroid/support/v7/app/AppCompatDelegateImpl;.initWindowDecorActionBar",
+     "evidence": "IllegalStateException; unwound Landroid/support/v7/app/AppCompatDelegateImpl;.initWindowDecorActionBar invoke_pc=0x0 depth=5",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroid/support/v7/app/AppCompatDelegateImpl;.getSupportActionBar",
+     "evidence": "IllegalStateException; unwound Landroid/support/v7/app/AppCompatDelegateImpl;.getSupportActionBar invoke_pc=0x0 depth=4",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroid/support/v7/app/AppCompatDelegateImpl;.setSupportActionBar",
+     "evidence": "IllegalStateException; unwound Landroid/support/v7/app/AppCompatDelegateImpl;.setSupportActionBar invoke_pc=0x7 depth=3",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroid/support/v7/app/AppCompatActivity;.setSupportActionBar",
+     "evidence": "IllegalStateException; unwound Landroid/support/v7/app/AppCompatActivity;.setSupportActionBar invoke_pc=0x4 depth=2",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|at Lx653/all_in_gold/MainActivity;.onCreate",
+     "evidence": "IllegalStateException; escaped the app boundary at Lx653/all_in_gold/MainActivity;.onCreate invoke_pc=0x2a depth=1 [APP-BOUNDARY]",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Lx653/all_in_gold/Controller;.load",
+     "evidence": "NullPointerException; unwound Lx653/all_in_gold/Controller;.load invoke_pc=0x2 depth=3",
+     "count": 2
+    }
+   ],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "appcompat-decor-toolbar",
+    "compose-runtime",
+    "coordinatorlayout",
+    "lifecycle-adapter",
+    "theme-gate",
+    "unclassified"
+   ]
+  },
+  {
+   "package": "xyz.deepdaikon.quinb",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime"
+   ]
+  },
+  {
+   "package": "com.smorgasbork.hotdeath",
+   "s101_status": "RENDERED-L2+",
+   "visual_level": 2,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime"
+   ]
+  },
+  {
+   "package": "ca.rmen.nounours",
+   "s101_status": "INTERACTIVE-EVIDENCE",
+   "visual_level": 2,
+   "missing_classes": [],
+   "exceptions": [
+    {
+     "sig": "Exception|unwound Lca/rmen/nounours/Nounours;.init",
+     "evidence": "Exception; unwound Lca/rmen/nounours/Nounours;.init invoke_pc=0x18 depth=3",
+     "count": 2
+    },
+    {
+     "sig": "Exception|",
+     "evidence": "Exception; unwound Lca/rmen/nounours/android/common/nounours/AndroidNounours;.<init> invoke_pc=0x65 depth=2",
+     "count": 2
+    },
+    {
+     "sig": "Exception|at Lca/rmen/nounours/android/handheld/MainActivity;.onCreate",
+     "evidence": "Exception; escaped the app boundary at Lca/rmen/nounours/android/handheld/MainActivity;.onCreate invoke_pc=0xaf depth=1 [APP-BOUNDARY]",
+     "count": 2
+    }
+   ],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime",
+    "unclassified"
+   ]
+  },
+  {
+   "package": "com.dozingcatsoftware.bouncy",
+   "s101_status": "INTERACTIVE-EVIDENCE",
+   "visual_level": 2,
+   "missing_classes": [],
+   "exceptions": [
+    {
+     "sig": "RuntimeException|unwound Landroid/support/multidex/MultiDexApplication;.attachBaseContext",
+     "evidence": "RuntimeException; unwound Landroid/support/multidex/MultiDexApplication;.attachBaseContext invoke_pc=0x3 depth=2",
+     "count": 2
+    },
+    {
+     "sig": "RuntimeException|",
+     "evidence": "RuntimeException; escaped the app boundary at <unknown>.<unknown> invoke_pc=0x0 depth=1 [APP-BOUNDARY]",
+     "count": 4
+    },
+    {
+     "sig": "NullPointerException|at Lcom/dozingcatsoftware/bouncy/BouncyActivity;.onCreate",
+     "evidence": "NullPointerException; escaped the app boundary at Lcom/dozingcatsoftware/bouncy/BouncyActivity;.onCreate invoke_pc=0x5d depth=1 [APP-BOUNDARY]",
+     "count": 6
+    },
+    {
+     "sig": "RuntimeException|unwound Lcom/badlogic/gdx/utils/SharedLibraryLoader;.loadFile",
+     "evidence": "RuntimeException; unwound Lcom/badlogic/gdx/utils/SharedLibraryLoader;.loadFile invoke_pc=0x0 depth=6",
+     "count": 2
+    },
+    {
+     "sig": "RuntimeException|unwound Lcom/badlogic/gdx/physics/box2d/Box2D;.init",
+     "evidence": "RuntimeException; unwound Lcom/badlogic/gdx/physics/box2d/Box2D;.init invoke_pc=0x7 depth=4",
+     "count": 2
+    },
+    {
+     "sig": "RuntimeException|unwound Lcom/dozingcatsoftware/bouncy/BouncyActivity;.getInitialLevel",
+     "evidence": "RuntimeException; unwound Lcom/dozingcatsoftware/bouncy/BouncyActivity;.getInitialLevel invoke_pc=0x8 depth=2",
+     "count": 2
+    },
+    {
+     "sig": "RuntimeException|at Lcom/dozingcatsoftware/bouncy/BouncyActivity;.onCreate",
+     "evidence": "RuntimeException; escaped the app boundary at Lcom/dozingcatsoftware/bouncy/BouncyActivity;.onCreate invoke_pc=0x63 depth=1 [APP-BOUNDARY]",
+     "count": 4
+    },
+    {
+     "sig": "NullPointerException|unwound Lcom/dozingcatsoftware/bouncy/util/JSONUtils;.mapFromJSONString",
+     "evidence": "NullPointerException; unwound Lcom/dozingcatsoftware/bouncy/util/JSONUtils;.mapFromJSONString invoke_pc=0x5 depth=5",
+     "count": 2
+    },
+    {
+     "sig": "RuntimeException|unwound Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.layoutMapForLevel",
+     "evidence": "RuntimeException; unwound Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.layoutMapForLevel invoke_pc=0xe depth=3",
+     "count": 2
+    },
+    {
+     "sig": "RuntimeException|unwound Lcom/dozingcatsoftware/bouncy/BouncyActivity;.resetFieldForCurrentLevel",
+     "evidence": "RuntimeException; unwound Lcom/dozingcatsoftware/bouncy/BouncyActivity;.resetFieldForCurrentLevel invoke_pc=0x4 depth=2",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Lcom/dozingcatsoftware/bouncy/GL20Renderer;.makeIntBuffer",
+     "evidence": "NullPointerException; unwound Lcom/dozingcatsoftware/bouncy/GL20Renderer;.makeIntBuffer invoke_pc=0x2 depth=3",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|",
+     "evidence": "NullPointerException; unwound Lcom/dozingcatsoftware/bouncy/GL20Renderer;.<init> invoke_pc=0x30 depth=2",
+     "count": 2
+    }
+   ],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime",
+    "libgdx-glsurfaceview",
+    "multidex-family",
+    "unclassified"
+   ]
+  },
+  {
+   "package": "com.dozingcatsoftware.dodge",
+   "s101_status": "INTERACTIVE-EVIDENCE",
+   "visual_level": 3,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime"
+   ]
+  },
+  {
+   "package": "com.miniandroid.g2048",
+   "s101_status": "INTERACTIVE-EVIDENCE",
+   "visual_level": 2,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime"
+   ]
+  },
+  {
+   "package": "com.miniandroid.minicraft",
+   "s101_status": "INTERACTIVE-EVIDENCE",
+   "visual_level": 2,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime"
+   ]
+  },
+  {
+   "package": "com.miniandroid.snake",
+   "s101_status": "INTERACTIVE-EVIDENCE",
+   "visual_level": 2,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 5,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime"
+   ]
+  },
+  {
+   "package": "com.miniandroid.snakedeluxe",
+   "s101_status": "INTERACTIVE-EVIDENCE",
+   "visual_level": 3,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime"
+   ]
+  },
+  {
+   "package": "com.miniandroid.snakeneon",
+   "s101_status": "INTERACTIVE-EVIDENCE",
+   "visual_level": 2,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime"
+   ]
+  },
+  {
+   "package": "com.miniandroid.tetris",
+   "s101_status": "INTERACTIVE-EVIDENCE",
+   "visual_level": 3,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime"
+   ]
+  },
+  {
+   "package": "com.miniandroid.tictactoedeluxe",
+   "s101_status": "INTERACTIVE-EVIDENCE",
+   "visual_level": 3,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime"
+   ]
+  },
+  {
+   "package": "cos.premy.mines",
+   "s101_status": "INTERACTIVE-EVIDENCE",
+   "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [
+    {
+     "sig": "NullPointerException|at Lcos/premy/mines/MainActivity;.onCreate",
+     "evidence": "NullPointerException; escaped the app boundary at Lcos/premy/mines/MainActivity;.onCreate invoke_pc=0x8 depth=1 [APP-BOUNDARY]",
+     "count": 2
+    }
+   ],
+   "inflate_unresolved_max": 2,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime",
+    "constraint-layout",
+    "coordinatorlayout",
+    "lifecycle-adapter",
+    "unclassified"
+   ]
+  },
+  {
+   "package": "one.scarecrow.games.OPMT",
+   "s101_status": "INTERACTIVE-EVIDENCE",
+   "visual_level": 3,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime",
+    "constraint-layout",
+    "coordinatorlayout",
+    "lifecycle-adapter",
+    "savedstate-registry"
+   ]
+  },
+  {
+   "package": "org.bobstuff.bobball",
+   "s101_status": "INTERACTIVE-EVIDENCE",
+   "visual_level": 2,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime",
+    "coordinatorlayout"
+   ]
+  }
+ ]
+}
