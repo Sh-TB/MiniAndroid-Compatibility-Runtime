@@ -649,15 +649,33 @@ std::optional<ResValue> ArscParser::bag_value(uint32_t style_resid, uint32_t att
     uint32_t cur = style_resid;
     uint32_t hops = 0;
     std::unordered_map<uint32_t, uint8_t> visited;
+    // S100 #342 (bounded): parent-chain walk evidence — which hop ends the
+    // walk and why (empty bag, missing parent, unresolved id).
+    static const bool bag_diag = std::getenv("MINIANDROID_BAG_DIAG") != nullptr;
     while (true) {
-        if (visited.count(cur)) return std::nullopt;              // parent cycle
-        if (hops > max_parent_hops) return std::nullopt;          // bounded
+        if (visited.count(cur)) {
+            if (bag_diag) fprintf(stderr, "[BAG-DIAG] hop=%u cur=0x%x CYCLE\n", hops, cur);
+            return std::nullopt;              // parent cycle
+        }
+        if (hops > max_parent_hops) {
+            if (bag_diag) fprintf(stderr, "[BAG-DIAG] hop=%u cur=0x%x MAX-HOPS\n", hops, cur);
+            return std::nullopt;          // bounded
+        }
         visited.emplace(cur, 0);
 
         auto r = resolve(cur);
-        if (!r) return std::nullopt;
+        if (!r) {
+            if (bag_diag) fprintf(stderr, "[BAG-DIAG] hop=%u cur=0x%x UNRESOLVED\n", hops, cur);
+            return std::nullopt;
+        }
         const ArscEntry* e = r->best_for(device);
-        if (!e || !e->is_complex) return std::nullopt;
+        if (!e || !e->is_complex) {
+            if (bag_diag) fprintf(stderr, "[BAG-DIAG] hop=%u cur=0x%x (%s) NOT-COMPLEX(%s) parent=0x%x attr=0x%x\n",
+                                  hops, cur, r->name.c_str(),
+                                  e ? (e->is_complex ? "c" : "simple") : "no-entry",
+                                  e ? e->bag_parent : 0, attr_key);
+            return std::nullopt;
+        }
 
         for (size_t i = 0; i < e->complex_keys.size() && i < e->complex_items.size(); ++i) {
             if (e->complex_keys[i] == attr_key) return e->complex_items[i];

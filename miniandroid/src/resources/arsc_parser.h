@@ -260,7 +260,17 @@ public:
     // absent (style inheritance), with hop bound + cycle detection.
     std::optional<ResValue> bag_value(uint32_t style_resid, uint32_t attr_key,
                                       const ResTableConfig& device,
-                                      uint32_t max_parent_hops = 8) const;
+                                      // S100 #342 (mykanji theme-gate): MaterialComponents
+                                      // themes chain through ~12-14 style bridges
+                                      // (Theme.MyKanji -> MC.DayNight.DarkActionBar ->
+                                      // ... -> Base.V14.Theme.AppCompat.Light); hop=9
+                                      // (Theme.AppCompat.Light) hit the old =8 bound
+                                      // BEFORE windowActionBar was reached and the
+                                      // walk answered absent -> appcompat ISE. AOSP
+                                      // ResourceTypes bounds the walk only by cycle
+                                      // detection; 32 keeps a defensive bound with
+                                      // headroom over every observed aapt2-merged chain.
+                                      uint32_t max_parent_hops = 32) const;
 
     // --- Stats / evidence ----------------------------------------------------
     struct Stats {
