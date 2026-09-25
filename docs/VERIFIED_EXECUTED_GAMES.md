@@ -123,7 +123,7 @@ Execution protocol, state-change proof, screenshot SHA, run counts — all as re
 | MiniAndroid status | **VERIFIED** (registry: `candidate_INTERACTION_VERIFIED`) |
 | Evidence level | **E5** · L3 L3_STRUCT_CANDIDATE |
 | Sessions | S79 / S80 / S83 / S91 |
-| Execution protocol | real-dalvik run, TouchDispatcher tap schedule (23 autonomous taps + death extension + restart tap @ (758,1022)); autoplay driver scripts/s80_sd_autoplay.py |
+| Execution protocol | real-dalvik run, TouchDispatcher tap schedule (23 autonomous taps + death extension + restart tap @ (758,1022)); autoplay driver scripts/autoplay/s80_sd_autoplay.py |
 | State-change proof | full gameplay loop: 2 lives (moves 88/90, turns 22/24, food captures), game over @frame 94 and 192, CJK dialog painted, restart tap observed (S79_REPROOF_MATRIX run_a/run_b) |
 | Screenshot | [com.miniandroid.snakedeluxe.gif](evidence/canonical/com.miniandroid.snakedeluxe.gif) · SHA256 `f2dd621c662526fa…` · 49 frames |
 | Recorded runs | 4 — S79 run_a+run_b (det x2 protocol) + docs/evidence/s83b/snake_head_run_00..03.jpg (4 runs) |
@@ -144,7 +144,7 @@ Execution protocol, state-change proof, screenshot SHA, run counts — all as re
 | MiniAndroid status | **VERIFIED** (registry: `VISUALLY_PARTIAL`) |
 | Evidence level | **E5** · L3 L3_STRUCT_CANDIDATE |
 | Sessions | S80 / S83 / S95 |
-| Execution protocol | real-dalvik run; START tap at (786,1854) (S95 protocol correction — old (540,1500) hit no touch target); autoplay driver scripts/s80_tet_autoplay.py |
+| Execution protocol | real-dalvik run; START tap at (786,1854) (S95 protocol correction — old (540,1500) hit no touch target); autoplay driver scripts/autoplay/s80_tet_autoplay.py |
 | State-change proof | piece falls + NEXT queue changes: 6 unique frames per 24-frame run, identical across 3 deterministic runs (wave_c_determinism.json) |
 | Screenshot | [com.miniandroid.tetris.gif](evidence/canonical/com.miniandroid.tetris.gif) · SHA256 `927d966a5a7397a8…` · 75 frames |
 | Recorded runs | 5 — S95 x3 deterministic runs + S80 autoplay + S83 sweep |
@@ -186,7 +186,7 @@ Execution protocol, state-change proof, screenshot SHA, run counts — all as re
 | MiniAndroid status | **VERIFIED** (registry: `candidate_INTERACTION_VERIFIED`) |
 | Evidence level | **E4** · L2 L2_GRAPHICALLY_INCOMPLETE |
 | Sessions | S80 / S83 |
-| Execution protocol | real-dalvik run + autoplay driver scripts/s80_2048_autoplay.py (swipe-equivalent tap schedule) |
+| Execution protocol | real-dalvik run + autoplay driver scripts/autoplay/s80_2048_autoplay.py (swipe-equivalent tap schedule) |
 | State-change proof | tile merges advance SCORE to 200 in canonical GIF (65 frames); S92 fresh verify: no failing stages |
 | Screenshot | [com.miniandroid.g2048.gif](evidence/canonical/com.miniandroid.g2048.gif) · SHA256 `d613d30fce792406…` · 65 frames |
 | Recorded runs | 2 — S80 autoplay session + S83 sweep (sweep_GAME-2048.jpg) |
