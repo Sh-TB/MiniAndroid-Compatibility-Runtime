@@ -230,6 +230,17 @@ static const miniandroid::dalvik::KvPair kFrameworkViews[] = {
     {"Landroidx/appcompat/widget/AppCompatButton;", "Landroid/widget/Button;"},
     {"Landroidx/appcompat/widget/AppCompatImageView;", "Landroid/widget/ImageView;"},
     {"Landroidx/appcompat/widget/AppCompatCheckBox;", "Landroid/widget/CheckBox;"},
+    // S104 R-004 CLASS-IDENTITY: real-descriptor inflation (S101 law
+    // corpus-wide) needs the FULL extends chain for the family the inflater
+    // now creates under real androidx/material descriptors. Chains land in
+    // the existing platform edges below (RadioButton->Button,
+    // AutoCompleteTextView->EditText, AppCompat*->platform).
+    {"Landroidx/appcompat/widget/AppCompatRadioButton;", "Landroid/widget/RadioButton;"},
+    {"Landroidx/appcompat/widget/AppCompatSpinner;", "Landroid/widget/Spinner;"},
+    {"Lcom/google/android/material/button/MaterialButton;", "Landroidx/appcompat/widget/AppCompatButton;"},
+    {"Lcom/google/android/material/textfield/MaterialAutoCompleteTextView;", "Landroid/widget/AutoCompleteTextView;"},
+    {"Lcom/google/android/material/textfield/TextInputEditText;", "Landroidx/appcompat/widget/AppCompatEditText;"},
+    {"Lcom/google/android/material/floatingactionbutton/FloatingActionButton;", "Landroidx/appcompat/widget/AppCompatImageView;"},
     {"Landroid/widget/ViewAnimator;", "Landroid/widget/FrameLayout;"},
     {"Landroid/widget/ViewSwitcher;", "Landroid/widget/ViewAnimator;"},
     {"Landroid/widget/ViewFlipper;", "Landroid/widget/ViewAnimator;"},

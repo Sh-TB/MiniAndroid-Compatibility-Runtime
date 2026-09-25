@@ -161,14 +161,30 @@ std::string LayoutInflater::class_to_descriptor(const std::string& xml_name) {
         {"GestureOverlayView", "Landroid/gesture/GestureOverlayView;"},
         {"PagerTitleStrip", "Landroid/support/v4/view/PagerTitleStrip;"},
         {"ViewPager", "Landroid/support/v4/view/ViewPager;"},
-        // appcompat / material-common (map to closest real widget)
-        {"androidx.appcompat.widget.AppCompatTextView", "Landroid/widget/TextView;"},
-        {"androidx.appcompat.widget.AppCompatButton", "Landroid/widget/Button;"},
-        {"androidx.appcompat.widget.AppCompatEditText", "Landroid/widget/EditText;"},
-        {"androidx.appcompat.widget.AppCompatImageView", "Landroid/widget/ImageView;"},
-        {"androidx.appcompat.widget.AppCompatCheckBox", "Landroid/widget/CheckBox;"},
-        {"androidx.appcompat.widget.AppCompatRadioButton", "Landroid/widget/RadioButton;"},
-        {"androidx.appcompat.widget.AppCompatSpinner", "Landroid/widget/Spinner;"},
+        // appcompat / material-common. S104 R-004 CLASS-IDENTITY LAW
+        // (extends the S101 Toolbar law corpus-wide): these classes are
+        // compiled INTO the app's own dex (60/201 measured APKs bundle them;
+        // the same 60 statically type-test them — instance-of/check-cast —
+        // run/s104/r004_typescan.json), and app code does
+        // `view instanceof AppCompatButton` / `as MaterialButton` after
+        // findViewById. Real Android's AppCompatViewInflater creates the
+        // AppCompat class; a REAL ART object IS that class. Inflating under
+        // the platform mapping produced a type whose identity diverges from
+        // the object the app type-tests. Rendering is unchanged: the view
+        // renderer classifies by descriptor substring ("Button;",
+        // "TextView;", "EditText;", "ImageView;" — all preserved), and the
+        // engine's kFrameworkViews seed carries the extends chain
+        // (AppCompatButton -> Button -> TextView -> ...) for
+        // is_subclass_of consumers. APKs whose dex lacks the class keep the
+        // same rendering through the seed (no instanceof against a class
+        // absent from the dex can exist).
+        {"androidx.appcompat.widget.AppCompatTextView", "Landroidx/appcompat/widget/AppCompatTextView;"},
+        {"androidx.appcompat.widget.AppCompatButton", "Landroidx/appcompat/widget/AppCompatButton;"},
+        {"androidx.appcompat.widget.AppCompatEditText", "Landroidx/appcompat/widget/AppCompatEditText;"},
+        {"androidx.appcompat.widget.AppCompatImageView", "Landroidx/appcompat/widget/AppCompatImageView;"},
+        {"androidx.appcompat.widget.AppCompatCheckBox", "Landroidx/appcompat/widget/AppCompatCheckBox;"},
+        {"androidx.appcompat.widget.AppCompatRadioButton", "Landroidx/appcompat/widget/AppCompatRadioButton;"},
+        {"androidx.appcompat.widget.AppCompatSpinner", "Landroidx/appcompat/widget/AppCompatSpinner;"},
         // S101 REAL-CLASS-IDENTITY LAW (ballbreak/mykanji decor-toolbar #348):
         // androidx Toolbar must inflate under its REAL class descriptor —
         // the class is compiled INTO every appcompat APK's dex, and app
@@ -182,10 +198,10 @@ std::string LayoutInflater::class_to_descriptor(const std::string& xml_name) {
         // through the dex superclass chain (and the kFrameworkViews seed
         // covers APKs whose dex lacks the class).
         {"androidx.appcompat.widget.Toolbar", "Landroidx/appcompat/widget/Toolbar;"},
-        {"com.google.android.material.button.MaterialButton", "Landroid/widget/Button;"},
-        {"com.google.android.material.textfield.MaterialAutoCompleteTextView", "Landroid/widget/EditText;"},
-        {"com.google.android.material.textfield.TextInputEditText", "Landroid/widget/EditText;"},
-        {"com.google.android.material.floatingactionbutton.FloatingActionButton", "Landroid/widget/ImageView;"},
+        {"com.google.android.material.button.MaterialButton", "Lcom/google/android/material/button/MaterialButton;"},
+        {"com.google.android.material.textfield.MaterialAutoCompleteTextView", "Lcom/google/android/material/textfield/MaterialAutoCompleteTextView;"},
+        {"com.google.android.material.textfield.TextInputEditText", "Lcom/google/android/material/textfield/TextInputEditText;"},
+        {"com.google.android.material.floatingactionbutton.FloatingActionButton", "Lcom/google/android/material/floatingactionbutton/FloatingActionButton;"},
     };
     auto it = KNOWN.find(xml_name);
     if (it != KNOWN.end()) return it->second;
