@@ -3539,3 +3539,24 @@ Stage Summary:
 - The runtime died silently at dooz; it now cannot: crash forensics is permanent law, and every signal death leaves signal+fault+DEX-trail+native-frames evidence.
 - A real website loads over TLS on MiniAndroid with a 9-capability closure — the first end-to-end proof of the modular small-APK law.
 - Battery green throughout; hygiene/secret/controls green.
+
+---
+Task ID: S101
+Agent: Super Z (main)
+Task: S101 RECALL SWEEP — forgotten-item review + per-title API-need ledger + small-big-impact runtime laws + full-load re-run (owner mandate: review what was left behind, register which classes/APIs each app needs, make more games load)
+
+Work Log:
+- STALE-REPORT FIX: the S99 full-load census predates the S100 fixes — re-ran the identical 61-title obs+click+visual protocol on the current tree (scripts/s101/s101_rerun_full_load.py, resume-safe, 4 workers). Fresh census: 13 INTERACTIVE / 2 RENDERED-L2+ / 39 PARTIAL / 7 FAIL; flip table vs S99: 7 UP, 0 DOWN (kingpong FAIL→L2+, counting/memory/accelerace FAIL→PARTIAL, mykanji/dooz/no.thanks FAIL→PARTIAL).
+- API-NEED LEDGER (permanent registry, owner mandate): scripts/s101/s101_api_need_ledger.py -> docs/API_NEED_LEDGER.{json,md}. For every PARTIAL/FAIL title: missing classes (CNFE/NDF) with counts, exception signatures with sites, inflate-unresolved counts, family classification; 14 families ranked by distinct-title fan-out. Evidence-first: every need carries its log line.
+- FORGOTTEN ITEM 1 (environment debt): runtime/data/fonts/DroidSansMono.ttf (G32 monospace law font, gitignored system-image binary) missing since container reset — 24/61 titles logged the loud MISSING diagnostic. Restored from AOSP data/fonts (Apache-2.0, SHA db19a1fd... verified); fetch+verify added to scripts/build/bootstrap_toolchain.sh (idempotent); docs/SYSTEM_FONTS.md (tracked) documents source/license/SHA.
+- FORGOTTEN ITEM 2 (S100 link debt): battery m3_arsc_style_law_test link missing -lssl -lcrypto after NET-001 — first battery pass FAILed stages 63/64; fixed in scripts/test/run_test_battery.sh. Battery re-run: ALL PASS (105 stages) on the final tree.
+- LAW 1 — REAL-CLASS-IDENTITY (layout_inflater): androidx.appcompat.widget.Toolbar inflated under the PLATFORM descriptor (a class that does not exist in appcompat APKs' dex — verified ballbreak dex has the androidx class only) → app dex `instanceof androidx Toolbar` FALSE → ISE "Can't make a decor toolbar out of Toolbar" (#348 stage 1). Fixed + hierarchy seed; Toolbar dex ctor now executes real styleable walk.
+- LAW 2 — Resources$Theme.obtainStyledAttributes PRODUCER (dalvik_engine): Theme-typed receivers answered NULL TypedArray (producer only existed on Activity/Context shadows) → TypedArray.getDimensionPixelSize NPE in ActionBarOverlayLayout.init pc=15 (ballbreak fresh trace). Engine-side producer materializes the F-036 array + presence-bit convention; existing F-093b/F-NEW-175 reader answers reads.
+- LAW 3 — WEBVIEW-ASSET-RENDER (ViewShadow): file:///android_asset/ + android_res URLs recorded the URL alone → 7 corpus titles (WebView-UI family: klondike/tri.peaks/blackjack/kingpong/accelerace/counting/memory) rendered honest empty placeholders → L0. Now: entry extracted via canonical ResourceRuntime parser, same F-085 HTML→visible-text pipeline as loadData; missing asset = recorded, never fabricated; network URLs keep the placeholder (WEB-001 DESIGNED). Evidence: kingpong "King Pong HD" painted (FAIL→L2+); blackjack 4,226B index.html → 430 chars extracted = whitespace-only (JS-built UI — honest WEB-001 boundary, not a bug).
+- TICKETS: #348 + #344 evidence comments (chains advanced, family splits, remaining frontiers); master wave report on #233.
+- GATES AT CLOSE: battery ALL PASS (105 stages, re-certified on final tree), hygiene PASS (5353 files), secret guard PASS, engine smoke rc=0.
+
+Stage Summary:
+- FAIL census 14 (S99) → 7 (S101) with zero regressions; +1 RENDERED-L2+; the two decor-chain laws advance #348 two stages deep with the next blocker precisely located (sub-decor attach model + menu XmlPullParser + WindowInsets nulls).
+- The API-need ledger turns "which classes/APIs does each app need" into a permanent, evidence-first registry ranked by fan-out — the next wave attacks the top of that table (compose-runtime 46, savedstate 19, coordinatorlayout 14, constraint-layout 10, decor-toolbar 6, libgdx 3, speeddial 1).
+- Remaining FAILs are all ticketed frontiers: raumballer (jgame), tictactoe-emmanuelmess (libGDX), bouncy (multidex #227), klondike/tri.peaks (nav-chain), babydots (SpeedDialView #346), blackjack (JS engine — WEB-001 DESIGNED).
