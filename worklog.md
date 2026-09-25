@@ -3596,3 +3596,29 @@ Work Log:
 Stage Summary:
 - The browser now loads a real production website (z.ai) end-to-end over TLS with redirect following — the strongest NET-001 evidence to date.
 - S102 closed with 5 permanent laws, tickets #349-352, refreshed ledger, SavedState map, and the owner's homepage request fulfilled.
+
+---
+Task ID: S103
+Agent: Super Z (main)
+Task: MAXIMUM EXTRACTION / TEST EVERYTHING — turn the research report's U-001..U-008 / N-001..N-005 / FL-001..FL-005 items into MiniAndroid EXECUTION evidence. ZERO production changes (owner hard rule).
+
+Work Log:
+- ORIENT: push debt 0 (S102+c31873bf already on origin/main); engine binary + corpus + toolchain intact; S102 not repeated per owner mandate.
+- TOOLING: scripts/s103/dex_typescan.py (full-corpus instance-of/check-cast/const-class scanner; caught + fixed my own high-byte opcode misread via ground-truth disassembly of getDecorToolbar — dalvik opcode = LOW byte); scripts/s103/arsc_flagscan.py (RES_TABLE walk; fixed chunk-type constants against fetched AOSP header); scripts/s103/dexfamilyscan.py; null-producer log sweep.
+- U-001 VERIFIED (3/3): S101 Toolbar law holds — real descriptor + instanceof TRUE + check-cast + ToolbarWidgetWrapper constructed off view 232 (pullChildren path); NEW first divergence: WindowDecorActionBar.init findViewById(0x7f080054/0x7f080028, search_root=70) NOT FOUND while receiver=cf subtree HAS the Toolbar → ISE "out of null" = window-decor<->sub-decor LINKAGE root. N-001 corpus: 22/59 APKs type-test mapped-away AppCompat*/Material*/FAB classes (sites recorded); engine instanceof FALSE vs real TRUE divergence + optimistic check-cast inconsistency (code-level).
+- U-002 VERIFIED: obtainStyledAttributes non-null law holds in fresh ballbreak (F-NEW-175 theme-backed values consumed, chain 2 stages past S101 NPE); null-producer family = 30/61 titles; Field.get x5 / MarginLayoutParams.getMarginStart x5 / Object.getClass x4 top receivers; getDeclaredField always-succeeds + getField MISSING (code-level + fixture proof).
+- U-003 VERIFIED (3/3): main Looper + Handler materialize; posted AND front-posted runnables EXECUTE (source comment "no-op" is stale); H6 order-final="-PF" deterministic = postAtFrontOfQueue treated as tail enqueue (ART law FP). FL-004 root-cause claim DISPROVEN.
+- U-004 DISPROVEN report hypothesis: W3 layout(10,20,210,120) -> w=0 h=0 = setFrame never materializes the frame for direct-layout views; W1 pre-layout 0 is CORRECT; W2 measuredWidth not stored. FL-005 "NPE" diagnosis DISPROVEN.
+- U-005 8 LIVE DIVERGENCES (probe fixture maxext_probe, 3/3 deterministic): R1-R4 null gets, R5 no NPE on null receiver, R6 no NSFE, R7 getField null -> NPE (the exact census crash), R8 set silent no-op, R9 mods=9, R11 boxed static reads pre-init default. ROOT LAW: FIELD IDENTITY FRAGMENTATION (reflection keys != interpreter sput/iput keys).
+- U-006 first divergence pinned: solitaire reaches AbstractComposeView.onMeasure -> getWindowRecomposer -> AndroidUiDispatcher.Main$delegate (SynchronizedLazyImpl) -> R8-MERGED LocalDensity$1.invoke (30 static INSTANCE fields, 1 selector field, packed-switch 29 branches) executes the WRONG BRANCH -> noLocalProvidedFor("LocalDensity") ISE. NOT a missing provider — same field-identity root. APK-dex disassembly = primary evidence; downstream list: ViewModelProvider/LifecycleOwner/View.getHandler/BroadcastFrameClock/Recomposer.
+- U-007 UNSUPPORTED + MISPARSE-RISK, 0 exposure: AOSP constants pinned from live ResourceTypes.h fetch (FLAG_SPARSE=0x01 supported, FLAG_OFFSET16=0x02 unhandled -> u16 table misread as u32, FLAG_COMPACT=0x0008 unhandled); corpus scan (scanner validated on ballbreak 152 types) = 0/54 APKs use any.
+- U-008 UNSUPPORTED (clean) + NOT-REQUIRED: synthetic cdex001 fixture -> PARSE_ERROR Invalid DEX magic 6364657830303100; corpus 119/119 dexes standard magic; jumbo 0x1b x3,617 walked clean; invoke-polymorphic/custom = 0 (R8-desugared); 10 multidex APKs; max method ids 64,422 (u32-safe).
+- 3-RUN RULE: ballbreak 3/3 byte-identical screenshots + ISE x2 each; probe v2 2/2 identical; queue order 2/2 PF. Zero nondeterminism (the one SHA spread was v1-vs-v2 APK, not behavior).
+- EVIDENCE: docs/s103/S103_MAXEXT_EVIDENCE.md (full record), run/s103/* (logs, screenshots, JSON corpora, upstream header pin, fixture APKs incl. cdex). Fixture fixtures/maxext_probe committed.
+- GATES: no production file touched (git diff --stat at close: campaign files only); battery NOT rerun (no runtime change to protect — zero-modification campaign).
+
+Stage Summary:
+- 6 U-items verified with execution evidence, 2 with code+fixture evidence; 2 report claims disproven (FL-004, FL-005); 1 stale source comment corrected (Handler post no-op).
+- 4 NEW roots for the next implementation wave, ranked by measured fan-out: (1) FIELD IDENTITY FRAGMENTATION (30/61 titles' family + all compose/R8 apps; one law: canonical field key declaring-class+name across interpreter/heap/reflection + missing getField/NSFE/NPE laws), (2) window-decor<->sub-decor linkage (decor-toolbar family + all decor.findViewById), (3) postAtFrontOfQueue front-ordering, (4) setFrame direct-layout materialization (+measuredWidth storage).
+- Latent-only: ARSC OFFSET16/COMPACT (0 corpus exposure), CDEX (clean rejection, 0 exposure).
+- Next wave entry: implement the field-identity law + getField family, rerun solitaire/memory/mancala/chess; then sub-decor linkage; then compose recomposer frontier (ViewModelProvider/LifecycleOwner/View.getHandler/BroadcastFrameClock).
