@@ -15,6 +15,7 @@
 # Usage: bash scripts/build/bootstrap_toolchain.sh
 set -euo pipefail
 TOOLS="${TOOLS:-/home/z/my-project/tools}"
+ROOT="${ROOT:-/home/z/my-project}"
 mkdir -p "$TOOLS/aapt2" "$TOOLS/d8" "$TOOLS/ecj"
 
 AAPT2="$TOOLS/aapt2/aapt2"
@@ -60,5 +61,26 @@ fi
 for f in "$TOOLS/ecj/ecj.jar" "$TOOLS/d8/r8.jar" "$TOOLS/android-34.jar"; do
     if [ -f "$f" ]; then echo "ok: $f"; else echo "MISSING: $f (vendored asset — restore from backup)" >&2; fi
 done
+
+# ── S101: virtual system-image fonts (G32 monospace law) ──────────────────
+# text_shaper resolves family 'monospace' -> runtime/data/fonts/DroidSansMono.ttf
+# (AOSP fonts.xml law). The dir is gitignored by design (binary system image),
+# so a container reset loses it — the READY banner then reports monospace=MISSING
+# on EVERY run. Fetch + SHA-verify idempotently here.
+FONT_DIR="$ROOT/runtime/data/fonts"
+FONT_FILE="$FONT_DIR/DroidSansMono.ttf"
+FONT_SHA="db19a1fdaba41cc4a2fec0330e5c15e71c6dd68a3ef074f4f28268828b45c862"
+if [ -f "$FONT_FILE" ] && [ "$(sha256sum "$FONT_FILE" | cut -d' ' -f1)" = "$FONT_SHA" ]; then
+    echo "ok: $FONT_FILE"
+else
+    echo "fonts: restoring DroidSansMono.ttf (AOSP platform/frameworks/base data/fonts)"
+    mkdir -p "$FONT_DIR"
+    curl -sfSL "https://android.googlesource.com/platform/frameworks/base/+/refs/heads/main/data/fonts/DroidSansMono.ttf?format=TEXT" | base64 -d > "$FONT_FILE"
+    if [ "$(sha256sum "$FONT_FILE" | cut -d' ' -f1)" = "$FONT_SHA" ]; then
+        echo "ok: $FONT_FILE (sha verified)"
+    else
+        echo "MISSING: DroidSansMono.ttf sha mismatch — monospace family will report MISSING" >&2
+    fi
+fi
 
 echo "TOOLCHAIN BOOTSTRAP COMPLETE"

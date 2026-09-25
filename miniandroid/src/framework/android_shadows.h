@@ -868,6 +868,8 @@ public:
     // EXP-087 Phase 3 (B2 FIX): Set the APK path so setContentView(int)
     // can find the layout_cache.json next to the APK.
     void set_apk_path(const std::string& path) { apk_path_ = path; }
+    // S101: read access for sibling shadows (WebView asset-render law).
+    const std::string& apk_path() const { return apk_path_; }
 
     // UNIFIED_007: real inflation evidence
     const std::string& last_inflate_stats() const { return last_inflate_stats_; }
