@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include "diagnostics/crash_forensics.h"
 #include <filesystem>
 #include <cstdlib>
 // ─── S61 PERF: poor-man's sampling profiler (env MINIANDROID_SAMPLE=1) ───
@@ -417,6 +418,10 @@ int cmd_run(const std::string& apk_path, const runtime::ExecutionConfig& config)
 }
 
 int main(int argc, char* argv[]) {
+    // S100 §3/§7 (issue #345): every signal death must leave an evidence
+    // block (signal, fault addr, last DEX ops, native frames) — never a
+    // silent mystery. Installed before any runtime work.
+    CrashForensics::install();
     if (argc < 2) {
         print_usage(argv[0]);
         return 1;
