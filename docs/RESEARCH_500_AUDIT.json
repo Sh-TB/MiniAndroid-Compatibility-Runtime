@@ -29,14 +29,15 @@
   "TRUNCATED_INPUT"
  ],
  "counts_by_status": {
-  "OBSERVED": 19,
-  "OUT_OF_SCOPE": 20,
-  "REGRESSION_TESTED": 30,
+  "REPRODUCED": 28,
+  "REGRESSION_TESTED": 31,
   "REJECTED": 4,
   "REPO_SUPPORTED": 12,
-  "REPRODUCED": 30,
+  "OUT_OF_SCOPE": 20,
   "RESEARCHED": 20,
-  "SOURCE_SUPPORTED": 1
+  "OBSERVED": 19,
+  "SOURCE_SUPPORTED": 1,
+  "PARTIAL": 1
  },
  "counts_by_domain": {
   "DEX": 19,
@@ -2251,8 +2252,8 @@
    "regression_test": "",
    "measured_impact": "",
    "next_step": "None",
-   "root_cluster": null,
-   "evidence_level": "L0"
+   "root_cluster": "ROOT-SWITCH-KEY-WIDENING",
+   "evidence_level": "L2"
   },
   {
    "id": "R500-082",
@@ -2270,15 +2271,15 @@
    "reproducible": "UNVERIFIED",
    "runtime_tested": "UNVERIFIED",
    "root_cause": "",
-   "status": "REPRODUCED",
-   "evidence": "Implemented; the WRONG-BRANCH divergence in solitaire is the SELECTOR FIELD read (field identity), not the opcode \u2014 docs/s103#u-006; FIXED via ROOT-REFLECTION-FIELD-IDENTITY (selector reads now hit canonical keys)",
+   "status": "REGRESSION_TESTED",
+   "evidence": "Implemented; the WRONG-BRANCH divergence in solitaire is the SELECTOR FIELD read (field identity), not the opcode \u2014 docs/s103#u-006; FIXED via ROOT-REFLECTION-FIELD-IDENTITY (selector reads now hit canonical keys) | S104: root re-attributed to SWITCH-KEY-WIDENING (packed-switch key must widen BYTE; was collapsing to 0 -> wrong branch). Commit 4feaaeda. solitaire errors 12->0 (3/3 SHA 59fdbfcd60b86a23), battery 105/105. Probe [S104-SW]: pre key=0/dest=5, post key=5/dest=11.",
    "affected_titles": [],
    "production_fix": "",
    "regression_test": "",
    "measured_impact": "",
    "next_step": "Field-identity law fixes the root",
-   "root_cluster": "ROOT-REFLECTION-FIELD-IDENTITY",
-   "evidence_level": "L3"
+   "root_cluster": "ROOT-SWITCH-KEY-WIDENING",
+   "evidence_level": "L5"
   },
   {
    "id": "R500-083",
@@ -2303,8 +2304,8 @@
    "regression_test": "",
    "measured_impact": "",
    "next_step": "None",
-   "root_cluster": null,
-   "evidence_level": "L0"
+   "root_cluster": "ROOT-SWITCH-KEY-WIDENING",
+   "evidence_level": "L2"
   },
   {
    "id": "R500-084",
@@ -2322,15 +2323,15 @@
    "reproducible": "UNVERIFIED",
    "runtime_tested": "UNVERIFIED",
    "root_cause": "",
-   "status": "REPRODUCED",
-   "evidence": "solitaire: LocalDensity$1 with 30 static INSTANCE fields, 1 selector field executes WRONG BRANCH; FIXED via ROOT-REFLECTION-FIELD-IDENTITY",
+   "status": "PARTIAL",
+   "evidence": "solitaire: LocalDensity$1 with 30 static INSTANCE fields, 1 selector field executes WRONG BRANCH; FIXED via ROOT-REFLECTION-FIELD-IDENTITY | S104: shared root fixed by SWITCH-KEY-WIDENING (commit 4feaaeda); lambda-specific corpus rerun pending -> PARTIAL.",
    "affected_titles": [],
    "production_fix": "",
    "regression_test": "",
    "measured_impact": "",
    "next_step": "Field-identity law; ticket #349/#351 family",
-   "root_cluster": "ROOT-REFLECTION-FIELD-IDENTITY",
-   "evidence_level": "L3"
+   "root_cluster": "ROOT-SWITCH-KEY-WIDENING",
+   "evidence_level": "L4"
   },
   {
    "id": "R500-085",
