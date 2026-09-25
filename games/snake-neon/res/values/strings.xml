@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Snake Neon</string>
+    <color name="bg">#FF14141E</color>
+    <color name="btn">#FF2A2A3A</color>
+</resources>
