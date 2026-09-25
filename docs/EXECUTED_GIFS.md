@@ -41,8 +41,9 @@ validate: `python3 tools/verify_canonical_evidence.py`
 | com.trianguloy.urlchecker (app) | app | VERIFIED-INTERACTIVE | E4 · state change: YES · SHA `ba1ae97c8e92…` | [GIF](evidence/canonical/com.trianguloy.urlchecker.gif) |
 | Fish Rings | game | VERIFIED | E5 · state change: YES · SHA `f225a04b9187…` | [GIF](evidence/canonical/eu.veldsoft.fish.rings.gif) |
 | Mini Browser | app | VERIFIED | E5 · state change: 12,087 px (real HTTPS fetch) · 3/3 byte-identical · SHA `454c1c5bd820…` | [GIF](evidence/canonical/com.miniandroid.browser.gif) · [record](evidence/s100_browser/README.md) |
+| Mini Browser → z.ai | app | VERIFIED | E5 · tap Go → real TLS fetch of https://z.ai → 307 → chat.z.ai 200 (15,727 bytes, redirect followed via the S102 HEADER-OWS-TRIM law) · state change measured · SHA `ed20fd6219f2…` | [GIF](evidence/canonical/com.miniandroid.browser.zai.gif) · [S102 report](S102_REPORT.md) |
 
-Interactive/state-change proven: **14/14** (every canonical GIF records click→state change).
+Interactive/state-change proven: **15/15** (every canonical GIF records click→state change).
 
 ## INTERACTIVE / STATE-CHANGE GIFS (detail)
 

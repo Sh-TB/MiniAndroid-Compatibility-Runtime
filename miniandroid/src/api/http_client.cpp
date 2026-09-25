@@ -202,8 +202,25 @@ HttpResponse fetch_once(const std::string& scheme, const std::string& host,
         if (!read_line_ssl(ssl, fd, h)) break;
         if (h.empty()) break;
         size_t colon = h.find(':');
-        if (colon != std::string::npos)
-            r.headers[lower(h.substr(0, colon))] = h.substr(colon + 1);
+        if (colon != std::string::npos) {
+            // S102 LAW 5 — HEADER-OWS-TRIM (RFC 7230 §3.2): "A field value
+            // does not include leading or trailing whitespace" — OWS is
+            // trimmed when composing the field line, NOT part of the value.
+            // Real-APK evidence (Mini Browser → https://z.ai, fresh S102
+            // run): z.ai answers `location: https://chat.z.ai/` with a
+            // single leading space; the untrimmed value flowed into the
+            // redirect hop as " https://chat.z.ai/" → parse_url failed →
+            // http_get returned the 307 as its final answer and the page
+            // never loaded. Curl/openSSL trim; so must we.
+            std::string v = h.substr(colon + 1);
+            size_t b = v.find_first_not_of(" \t");
+            if (b == std::string::npos) v.clear();
+            else {
+                size_t e = v.find_last_not_of(" \t");
+                v = v.substr(b, e - b + 1);
+            }
+            r.headers[lower(h.substr(0, colon))] = v;
+        }
     }
 
     std::string te, cl;
