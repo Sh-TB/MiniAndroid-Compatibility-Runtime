@@ -169,7 +169,19 @@ std::string LayoutInflater::class_to_descriptor(const std::string& xml_name) {
         {"androidx.appcompat.widget.AppCompatCheckBox", "Landroid/widget/CheckBox;"},
         {"androidx.appcompat.widget.AppCompatRadioButton", "Landroid/widget/RadioButton;"},
         {"androidx.appcompat.widget.AppCompatSpinner", "Landroid/widget/Spinner;"},
-        {"androidx.appcompat.widget.Toolbar", "Landroid/widget/Toolbar;"},
+        // S101 REAL-CLASS-IDENTITY LAW (ballbreak/mykanji decor-toolbar #348):
+        // androidx Toolbar must inflate under its REAL class descriptor —
+        // the class is compiled INTO every appcompat APK's dex, and app
+        // code (AppCompatDelegateImpl/WindowDecorActionBar →
+        // ActionBarOverlayLayout.getDecorToolbar) type-checks
+        // `view instanceof androidx.appcompat.widget.Toolbar`. The legacy
+        // platform-Toolbar mapping produced a type that does not exist in
+        // the APK dex at all → instanceof FALSE → ISE "Can't make a decor
+        // toolbar out of Toolbar" → APP BOUNDARY unwind. Rendering is
+        // unaffected: the widget still classifies as a ViewGroup container
+        // through the dex superclass chain (and the kFrameworkViews seed
+        // covers APKs whose dex lacks the class).
+        {"androidx.appcompat.widget.Toolbar", "Landroidx/appcompat/widget/Toolbar;"},
         {"com.google.android.material.button.MaterialButton", "Landroid/widget/Button;"},
         {"com.google.android.material.textfield.MaterialAutoCompleteTextView", "Landroid/widget/EditText;"},
         {"com.google.android.material.textfield.TextInputEditText", "Landroid/widget/EditText;"},
