@@ -1,0 +1,203 @@
+{
+ "schema": "GL_NEED_LEDGER/1.0",
+ "generated": "S104",
+ "method": "raw method_ids[] scan of every classes*.dex across the 54-APK census (a referenced API appears in method_ids)",
+ "corpus_apks": 54,
+ "apks_using_gles": 6,
+ "verdict": "Census GLES demand is EGL10 setup only (Khronos JSR-239: eglChooseConfig/eglCreateContext/eglSwapBuffers \u2014 6/54 APKs: tictactoe, klooni, secuso solitaire, firestrike, halma, 2048). ZERO GLES20/30 method references corpus-wide: the libGDX-family titles render through their bundled NATIVE libgdx.so (JNI), not through Java GLES calls \u2014 the Java GLES bridge is not the blocking layer for them. Therefore: (1) GLES bridge dispatch stays demand-gated with measured demand = 0 (S103 decision holds); (2) the real frontier for the 6 GL titles is native-library loading (out of the Java-runtime scope this campaign targets); (3) EGL10 API surface is a shadow-surface concern already classified in S103 (ROOT-EGL-SHADOW).",
+ "api_demand": {
+  "Ljavax/microedition/khronos/egl/EGL10;->eglChooseConfig": {
+   "apk_count": 6,
+   "apks": [
+    "app.halma.apk",
+    "com.eightsines.firestrike.opensource.apk",
+    "com.emmanuelmess.tictactoe.apk",
+    "dev.lonami.klooni.apk",
+    "org.andstatus.game2048.apk",
+    "org.secuso.privacyfriendlysolitaire.apk"
+   ]
+  },
+  "Ljavax/microedition/khronos/egl/EGL10;->eglGetConfigAttrib": {
+   "apk_count": 6,
+   "apks": [
+    "app.halma.apk",
+    "com.eightsines.firestrike.opensource.apk",
+    "com.emmanuelmess.tictactoe.apk",
+    "dev.lonami.klooni.apk",
+    "org.andstatus.game2048.apk",
+    "org.secuso.privacyfriendlysolitaire.apk"
+   ]
+  },
+  "Ljavax/microedition/khronos/egl/EGL10;->eglGetError": {
+   "apk_count": 5,
+   "apks": [
+    "app.halma.apk",
+    "com.eightsines.firestrike.opensource.apk",
+    "com.emmanuelmess.tictactoe.apk",
+    "dev.lonami.klooni.apk",
+    "org.secuso.privacyfriendlysolitaire.apk"
+   ]
+  },
+  "Ljavax/microedition/khronos/egl/EGL10;->eglTerminate": {
+   "apk_count": 5,
+   "apks": [
+    "app.halma.apk",
+    "com.eightsines.firestrike.opensource.apk",
+    "com.emmanuelmess.tictactoe.apk",
+    "dev.lonami.klooni.apk",
+    "org.secuso.privacyfriendlysolitaire.apk"
+   ]
+  },
+  "Ljavax/microedition/khronos/egl/EGL10;->eglDestroyContext": {
+   "apk_count": 5,
+   "apks": [
+    "app.halma.apk",
+    "com.eightsines.firestrike.opensource.apk",
+    "com.emmanuelmess.tictactoe.apk",
+    "dev.lonami.klooni.apk",
+    "org.secuso.privacyfriendlysolitaire.apk"
+   ]
+  },
+  "Ljavax/microedition/khronos/egl/EGL10;->eglGetDisplay": {
+   "apk_count": 5,
+   "apks": [
+    "app.halma.apk",
+    "com.eightsines.firestrike.opensource.apk",
+    "com.emmanuelmess.tictactoe.apk",
+    "dev.lonami.klooni.apk",
+    "org.secuso.privacyfriendlysolitaire.apk"
+   ]
+  },
+  "Ljavax/microedition/khronos/egl/EGLContext;->getEGL": {
+   "apk_count": 5,
+   "apks": [
+    "app.halma.apk",
+    "com.eightsines.firestrike.opensource.apk",
+    "com.emmanuelmess.tictactoe.apk",
+    "dev.lonami.klooni.apk",
+    "org.secuso.privacyfriendlysolitaire.apk"
+   ]
+  },
+  "Ljavax/microedition/khronos/egl/EGL10;->eglInitialize": {
+   "apk_count": 5,
+   "apks": [
+    "app.halma.apk",
+    "com.eightsines.firestrike.opensource.apk",
+    "com.emmanuelmess.tictactoe.apk",
+    "dev.lonami.klooni.apk",
+    "org.secuso.privacyfriendlysolitaire.apk"
+   ]
+  },
+  "Ljavax/microedition/khronos/egl/EGL10;->eglCreateContext": {
+   "apk_count": 5,
+   "apks": [
+    "app.halma.apk",
+    "com.eightsines.firestrike.opensource.apk",
+    "com.emmanuelmess.tictactoe.apk",
+    "dev.lonami.klooni.apk",
+    "org.secuso.privacyfriendlysolitaire.apk"
+   ]
+  },
+  "Ljavax/microedition/khronos/egl/EGL10;->eglGetCurrentContext": {
+   "apk_count": 4,
+   "apks": [
+    "app.halma.apk",
+    "com.emmanuelmess.tictactoe.apk",
+    "dev.lonami.klooni.apk",
+    "org.secuso.privacyfriendlysolitaire.apk"
+   ]
+  },
+  "Ljavax/microedition/khronos/egl/EGLContext;->getGL": {
+   "apk_count": 4,
+   "apks": [
+    "com.eightsines.firestrike.opensource.apk",
+    "com.emmanuelmess.tictactoe.apk",
+    "dev.lonami.klooni.apk",
+    "org.secuso.privacyfriendlysolitaire.apk"
+   ]
+  },
+  "Ljavax/microedition/khronos/egl/EGL10;->eglMakeCurrent": {
+   "apk_count": 4,
+   "apks": [
+    "com.eightsines.firestrike.opensource.apk",
+    "com.emmanuelmess.tictactoe.apk",
+    "dev.lonami.klooni.apk",
+    "org.secuso.privacyfriendlysolitaire.apk"
+   ]
+  },
+  "Ljavax/microedition/khronos/egl/EGL10;->eglDestroySurface": {
+   "apk_count": 4,
+   "apks": [
+    "com.eightsines.firestrike.opensource.apk",
+    "com.emmanuelmess.tictactoe.apk",
+    "dev.lonami.klooni.apk",
+    "org.secuso.privacyfriendlysolitaire.apk"
+   ]
+  },
+  "Ljavax/microedition/khronos/egl/EGL10;->eglSwapBuffers": {
+   "apk_count": 4,
+   "apks": [
+    "com.eightsines.firestrike.opensource.apk",
+    "com.emmanuelmess.tictactoe.apk",
+    "dev.lonami.klooni.apk",
+    "org.secuso.privacyfriendlysolitaire.apk"
+   ]
+  },
+  "Ljavax/microedition/khronos/egl/EGL10;->eglCreateWindowSurface": {
+   "apk_count": 4,
+   "apks": [
+    "com.eightsines.firestrike.opensource.apk",
+    "com.emmanuelmess.tictactoe.apk",
+    "dev.lonami.klooni.apk",
+    "org.secuso.privacyfriendlysolitaire.apk"
+   ]
+  }
+ },
+ "family_summary": {
+  "other:eglChooseConfig": {
+   "apk_count": 6
+  },
+  "other:eglGetConfigAttrib": {
+   "apk_count": 6
+  },
+  "other:eglGetError": {
+   "apk_count": 5
+  },
+  "other:eglTerminate": {
+   "apk_count": 5
+  },
+  "other:eglDestroyContext": {
+   "apk_count": 5
+  },
+  "other:eglGetDisplay": {
+   "apk_count": 5
+  },
+  "other:getEGL": {
+   "apk_count": 5
+  },
+  "other:eglInitialize": {
+   "apk_count": 5
+  },
+  "other:eglCreateContext": {
+   "apk_count": 5
+  },
+  "other:eglGetCurrentContext": {
+   "apk_count": 4
+  },
+  "other:getGL": {
+   "apk_count": 4
+  },
+  "other:eglMakeCurrent": {
+   "apk_count": 4
+  },
+  "other:eglDestroySurface": {
+   "apk_count": 4
+  },
+  "other:eglSwapBuffers": {
+   "apk_count": 4
+  },
+  "other:eglCreateWindowSurface": {
+   "apk_count": 4
+  }
+ }
+}

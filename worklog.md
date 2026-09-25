@@ -3645,3 +3645,70 @@ Stage Summary:
 - The supplied research input is now fully dispositioned: 136/136 audited, nothing silently dropped, nothing invented for the 364 truncated slots.
 - 3 shared roots implemented to L5 (34 findings REGRESSION_TESTED), each with source law, minimal reproduction, 3-run determinism and battery evidence; 2 more runtime-proven roots queued (decor-linkage, class-identity) with measured fan-out.
 - The audit converted the research document from claims into: 30 verified-fixed, 30 reproduced-with-evidence, 20 verified host-only, 12 code-level gaps awaiting corpus demand, 4 rejected claims.
+
+---
+Task ID: S104
+Agent: Super Z (main)
+Task: Turn the research list into a living 500-item problem backlog
+(P001..P500) + CONTINUE-UNTIL-GOAL root execution (solitaire rerun ->
+compose chain -> next roots) with REAL APK impact measurement.
+
+Work Log:
+- P-REGISTRY: docs/RESEARCH_500_PROBLEM_REGISTRY.{json,md} built from the
+  R500 audit ledger: P001..P136 real tickets + P137..P500 = 364 explicit
+  TRUNCATED_INPUT rows (INPUT_TRUNCATED at 500 — nothing invented);
+  directive status vocabulary with audit-vocab mapping; ROOT R-001..R-009
+  crosswalk; FIX-001..005 crosswalk (one fix -> every ticket, checked
+  individually); docs/RESEARCH_PROGRESS.md mechanical roll-up.
+- S104-A SOLITAIRE RERUN on S103 HEAD binary: 12 errors, first divergence
+  unchanged (MatcherMatchResult.getSavedStateProvider null-recv at
+  ComponentActivity.<init>) — the S103 field-identity fix did NOT change
+  solitaire (honest BEFORE).
+- S104-B ROOT-CAUSE (raw DEX parse, scripts/s104_*): the APK's
+  Lkotlin/text/MatcherMatchResult; is an R8 HORIZONTAL-CLASS-MERGING
+  super-class ($r8$classId:B field, packed-switch ctor dispatch,
+  classId=5 -> controller branch). Engine [S104-SW] probe: switch key
+  read 0 (BYTE-typed register collapsed — the key extraction only
+  handled INT32/INT64) -> wrong branch -> controller field 'input'
+  never set -> NPE. THE shared root behind the S103 "R8 merged-lambda
+  wrong branch" observation.
+- FIX-005 SWITCH-KEY-WIDENING (commit 4feaaeda): switch key extraction
+  now uses the existing shared dalvik_int_value widening (one line, one
+  law; no special-casing). [S104-SW] post-fix: key=5->dest=11,
+  key=4->dest=5 (both branches correct); [NULLFIELD] input-UNSET line
+  gone.
+- REAL APK IMPACT: solitaire 12 -> 0 errors (3/3 runs, screenshot SHA
+  59fdbfcd60b86a23 identical x3); compose chain advanced past the whole
+  saved-state wiring (LocalSavedStateRegistryOwnerKt clinit executes;
+  reaches AndroidComposeView.updatePositionCacheAndDispatch); visual
+  still blank (no visual claim made). sgtpuzzles (2nd $r8$classId APK)
+  unchanged 0 errors. dooz 18->18 errors with mix changed: old PFQ
+  crash gone; 12 caught CNFE probes + NEW uncaught Lr;.onAttachedToWindow
+  pc=50 PFQ null-recv = NEXT ROOT (compose host wiring #350).
+- R-004 CLASS-IDENTITY implemented (S103 ROOT-005): regenerated the
+  type-scan BYTECODE-ACCURATELY (prior "0 hits" was an androguard operand
+  decode bug — operand tuple carries the type string; S103's "22/59
+  type-test" file had conflated presence with type-testing): 60/201 APKs
+  bundle AND type-test the mapped-away family; 12-class coverage. Fix:
+  layout_inflater maps the family to REAL descriptors (S101 Toolbar law
+  corpus-wide) + 6 missing kFrameworkViews extends edges. Battery
+  105/105; 6 affected titles pixel-identical before/after; errors
+  unchanged (preventive identity law — no error delta claimed).
+- GL_NEED_LEDGER (docs/GL_NEED_LEDGER.{json,md}) via raw method_ids[]
+  scan: 6/54 APKs reference GLES APIs — EGL10 SETUP ONLY; ZERO GLES20+
+  method refs corpus-wide (libGDX family renders via bundled libgdx.so
+  natives, not Java GLES). GLES bridge stays demand-gated with measured
+  demand = 0; true GL frontier = native-library loading (out of
+  Java-runtime scope). S103 non-implementation decision now has a number.
+- DOCS: docs/S104_REPORT.md, docs/REAL_APK_IMPACT.md (before/after rows),
+  RESEARCH_500_ROOT_CLUSTERS.md (+ROOT-009), RESEARCH_500_AUDIT.json
+  synced (082 REGRESSION_TESTED L5, 084 PARTIAL, 081/083 re-homed).
+- GATES: battery 105/105 ALL PASS twice (after FIX-005, after R-004).
+
+Stage Summary:
+- Living P001..P500 backlog established; 2 roots executed this wave
+  (R-009 FIXED L5 with measured solitaire impact; R-004 implemented
+  TESTED with corrected fan-out), 1 S103 claim corrected by
+  re-measurement, GL frontier quantified.
+- NEXT ACTION: Lr;.onAttachedToWindow Handler-null root (compose host
+  wiring), then R-005 DECOR-LINKAGE.
