@@ -738,6 +738,43 @@ size_t DalvikExecutionEngine::inject_secondary_dex_classes() {
                   << class_to_superclass_.size() << ")" << std::endl;
     }
 
+    // ────────────────────────────────────────────────────────────────────
+    // S102 LAW 1 — MULTIDEX-INTERFACE-CLOSURE (F-103 extension).
+    //   Upstream: art::Class::IsAssignable walks the interface closure of
+    //   the class regardless of WHICH classes.dex file defines it — a
+    //   check-cast / instanceof against an interface must see the
+    //   implements-set of every DEX in the APK.
+    //   Root-gap evidence (mentalmath v?, fresh S102 run): the multidex
+    //   injection patched the superclass map (EXP-095) but left the F-103
+    //   declared-interfaces index DEX-0-only, so every class defined in
+    //   classes2.dex+ answered FALSE for castability to its own declared
+    //   interfaces. First hit: kotlinx.coroutines FastServiceLoader
+    //   .loadMainDispatcherFactory — the dex declares
+    //   Lkotlinx/coroutines/android/AndroidDispatcherFactory; implements
+    //   Lkotlinx/coroutines/internal/MainDispatcherFactory; (verified by
+    //   direct class_def walk) but Class.cast(Object) threw CCE
+    //   "AndroidDispatcherFactory cannot be cast to MainDispatcherFactory"
+    //   → the catch-all fell into the ServiceLoader fallback →
+    //   "list(...) must not be null" NPE → Dispatchers.Main dead →
+    //   lifecycleScope dead → MainActivity.onCreate dead [APP-BOUNDARY].
+    //   Affected classes in this APK alone: 10,002 secondary-DEX classes
+    //   (4,708 declaring interfaces). Every multidex APK with
+    //   LifecycleOwner/Comparable/Runnable casts shares the family.
+    // ────────────────────────────────────────────────────────────────────
+    {
+        size_t ifaces_added = 0;
+        for (const auto& cls : mutable_classes) {
+            if (!cls.interfaces.empty() &&
+                class_to_interfaces_.find(cls.name) == class_to_interfaces_.end()) {
+                class_to_interfaces_[cls.name] = cls.interfaces;
+                ifaces_added++;
+            }
+        }
+        std::cerr << "[S102-IFACE-CLOSURE] declared-interfaces index extended by "
+                  << ifaces_added << " secondary-DEX classes (total "
+                  << class_to_interfaces_.size() << ")" << std::endl;
+    }
+
     return injected_count;
 }
 
