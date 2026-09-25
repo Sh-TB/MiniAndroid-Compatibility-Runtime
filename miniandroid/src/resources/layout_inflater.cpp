@@ -659,25 +659,52 @@ uint32_t LayoutInflater::inflate_element(framework::ViewShadow* views, const Axm
 
     // <include layout="@layout/other"/>
     if (el.name == "include") {
-        const AxmlAttribute* lay = el.attr("layout");
+        // Namespace law (same trap as the <view class> form documented
+        // below): the include `layout` attribute carries NO namespace —
+        // attr(n, "") matches any ns; the android-ns default lookup always
+        // missed it and every include silently degraded to "unresolved".
+        const AxmlAttribute* lay = el.attr("layout", "");
+        // S99 FIX (babydots AppCompatDelegateImpl.createSubDecor pc=326
+        // evidence chain): aapt2 compiles layout="@layout/x" as a typed
+        // REFERENCE whose raw string is frequently STRIPPED (resource
+        // shrinker/shorten-paths builds — e.g. appcompat's
+        // abc_screen_content_include riding res/rY.xml). The old handler
+        // stringified the attr and read an empty name → the include
+        // silently resolved to NOTHING → the ContentFrameLayout child of
+        // abc_screen_content_include never existed →
+        // subDecor.findViewById(action_bar_activity_content) = null →
+        // ContentFrameLayout.setAttachListener NPE → onCreate dead.
+        // AOSP law (LayoutInflater.parseInclude): the layout attr is a
+        // resource ID — read the compiled reference value directly.
+        uint32_t included_resid = 0;
+        std::string ref_name;
         if (lay) {
-            auto ref = parse_ref(!lay->raw_value.empty() ? lay->raw_value : lay->value.string_value);
-            if (ref.kind == RefKind::LAYOUT) {
-                auto id = arsc_.find_id("", "layout", ref.name);
-                if (id) {
-                    auto path = arsc_.apk_path_for(*id, apk_entries_);
-                    if (!path) path = find_apk_file("layout", ref.name);
-                    if (path) {
-                        std::vector<uint8_t> xml = apk_.extract_entry_cached(*path);
-                        if (xml.empty()) xml = apk_.extract_entry(apk_path_, *path);
-                        AxmlParser sub;
-                        if (sub.parse(xml)) {
-                            stats.includes_expanded++;
-                            uint32_t created = 0;
-                            for (const auto& child : sub.root().children)
-                                created = inflate_element(views, child, parent_view_id, stats);
-                            return created;
-                        }
+            if (lay->value.is_reference()) {
+                included_resid = lay->value.ref_id;
+            } else {
+                auto ref = parse_ref(!lay->raw_value.empty()
+                                         ? lay->raw_value
+                                         : lay->value.string_value);
+                if (ref.kind == RefKind::LAYOUT) ref_name = ref.name;
+            }
+        }
+        uint32_t created = 0;
+        if (included_resid != 0 || !ref_name.empty()) {
+            auto id = included_resid != 0
+                          ? std::optional<uint32_t>(included_resid)
+                          : arsc_.find_id("", "layout", ref_name);
+            if (id) {
+                auto path = arsc_.apk_path_for(*id, apk_entries_);
+                if (!path) path = find_apk_file("layout", ref_name);
+                if (path) {
+                    std::vector<uint8_t> xml = apk_.extract_entry_cached(*path);
+                    if (xml.empty()) xml = apk_.extract_entry(apk_path_, *path);
+                    AxmlParser sub;
+                    if (!xml.empty() && sub.parse(xml)) {
+                        stats.includes_expanded++;
+                        for (const auto& child : sub.root().children)
+                            created = inflate_element(views, child, parent_view_id, stats);
+                        return created;
                     }
                 }
             }
@@ -742,6 +769,15 @@ uint32_t LayoutInflater::inflate_element(framework::ViewShadow* views, const Axm
     if (ida) {
         uint32_t aid = resolve_id_attr(ida, stats);
         if (aid) node->android_view_id = (int32_t)aid;
+        static const bool inflate_diag = std::getenv("MINIANDROID_INFLATE_DIAG") != nullptr;
+        if (inflate_diag) {
+            std::cerr << "[INFLATE-DIAG] el=" << el.name
+                      << " ida=" << (ida ? "YES" : "NO")
+                      << " aid=0x" << std::hex << aid << std::dec
+                      << " raw=\"" << (!ida->raw_value.empty() ? ida->raw_value
+                                                               : ida->value.string_value)
+                      << "\" view=" << view_id << std::endl;
+        }
         if (!ida->raw_value.empty()) {
             auto ref = parse_ref(ida->raw_value);
             node->android_id_name = ref.name;

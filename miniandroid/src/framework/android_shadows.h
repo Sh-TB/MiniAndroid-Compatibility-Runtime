@@ -1616,6 +1616,10 @@ public:
     uint32_t view_tree_observer_id_ = 800200;
     uint64_t observer_listener_events_ = 0;
 
+    // S99: View.animate() per-view cached ViewPropertyAnimator (AOSP
+    // View.java law: lazily created, ONE per view, identity preserved).
+    std::unordered_map<uint32_t, uint32_t> view_animators_;
+
     // R-NEW-357 (S44): reverse lookup — the Android resource id VALUE for
     // the view whose android:id NAME matches (BFS from root). Answers 0
     // when no node carries that name. Backs
