@@ -1,70 +1,18 @@
 {
  "generated_at": "",
- "engine_head": "9c640c0a",
- "engine_sha256": "ccd673fc55c2d1d51506843ee12bfdecb01c3464c574d759e87ea465f28abb7c",
+ "engine_head": "6c0d8f5f",
+ "engine_sha256": "cb54e22b0ff210149576c3a4f2b4d1620d9038af382379171245ebe80a89637d",
  "protocol": "S99 full-load protocol re-run on S101 tree (identical obs+click+visual audit)",
  "census": {
-  "INTERACTIVE-EVIDENCE": 13,
+  "INTERACTIVE-EVIDENCE": 14,
   "RENDERED-L2+": 2,
-  "PARTIAL": 39,
+  "PARTIAL": 38,
   "FAIL": 7
  },
  "families_ranked_by_fanout": [
   {
-   "family": "compose-runtime",
-   "fanout": 46,
-   "titles": [
-    "app.halma",
-    "ch.logixisland.anuto",
-    "com.ahorcado",
-    "com.eightsines.firestrike.opensource",
-    "com.emmanuelmess.tictactoe",
-    "com.helddertierwelt.mentalmath",
-    "com.jeffliu.balancetheball",
-    "com.kaeruct.raumballer",
-    "com.rocket9labs.boxcars",
-    "com.sanskritbasics.memory",
-    "com.serwylo.babydots",
-    "com.sidhant.bubbleshooter",
-    "com.sidhant.puzzle",
-    "com.sidhant.queens",
-    "com.trianguloy.adnihilation",
-    "com.vayunmathur.games.solitaire",
-    "com.vovagorodok.blidraughts",
-    "com.willie.mancala",
-    "crypto.o0o0o0o0o.games.blackjack",
-    "de.georgsieber.ballbreak",
-    "de.tobiasbielefeld.solitaire",
-    "dev.lonami.klooni",
-    "eu.quelltext.counting",
-    "eu.quelltext.memory",
-    "eu.veldsoft.free.klondike",
-    "eu.veldsoft.no.thanks",
-    "eu.veldsoft.tri.peaks",
-    "io.github.ebraminio.bouncy",
-    "io.github.hathibelagal.mykanji",
-    "io.github.johnathan.minesweeper",
-    "io.github.yamin8000.dooz",
-    "jwtc.android.chess",
-    "name.boyle.chris.sgtpuzzles",
-    "net.sourceforge.solitaire_cg",
-    "org.andstatus.game2048",
-    "org.asafonov.accelerace",
-    "org.mattvchandler.a2050",
-    "org.secuso.privacyfriendly2048",
-    "org.secuso.privacyfriendlybattleship",
-    "org.secuso.privacyfriendlydame",
-    "org.secuso.privacyfriendlymemory",
-    "org.secuso.privacyfriendlysolitaire",
-    "org.secuso.privacyfriendlysudoku",
-    "si.palcka.tarok",
-    "x653.all_in_gold",
-    "xyz.deepdaikon.quinb"
-   ]
-  },
-  {
    "family": "unclassified",
-   "fanout": 23,
+   "fanout": 22,
    "titles": [
     "app.halma",
     "ch.logixisland.anuto",
@@ -80,7 +28,6 @@
     "com.willie.mancala",
     "de.tobiasbielefeld.solitaire",
     "dev.lonami.klooni",
-    "eu.veldsoft.no.thanks",
     "io.github.hathibelagal.mykanji",
     "io.github.johnathan.minesweeper",
     "io.github.yamin8000.dooz",
@@ -93,7 +40,7 @@
   },
   {
    "family": "savedstate-registry",
-   "fanout": 19,
+   "fanout": 18,
    "titles": [
     "com.eightsines.firestrike.opensource",
     "com.helddertierwelt.mentalmath",
@@ -111,14 +58,13 @@
     "org.secuso.privacyfriendly2048",
     "org.secuso.privacyfriendlybattleship",
     "org.secuso.privacyfriendlydame",
-    "org.secuso.privacyfriendlymemory",
     "org.secuso.privacyfriendlysolitaire",
     "org.secuso.privacyfriendlysudoku"
    ]
   },
   {
    "family": "lifecycle-adapter",
-   "fanout": 15,
+   "fanout": 14,
    "titles": [
     "com.helddertierwelt.mentalmath",
     "com.serwylo.babydots",
@@ -131,7 +77,6 @@
     "org.secuso.privacyfriendly2048",
     "org.secuso.privacyfriendlybattleship",
     "org.secuso.privacyfriendlydame",
-    "org.secuso.privacyfriendlymemory",
     "org.secuso.privacyfriendlysolitaire",
     "org.secuso.privacyfriendlysudoku",
     "x653.all_in_gold"
@@ -139,7 +84,7 @@
   },
   {
    "family": "coordinatorlayout",
-   "fanout": 14,
+   "fanout": 13,
    "titles": [
     "com.kaeruct.raumballer",
     "com.serwylo.babydots",
@@ -151,7 +96,6 @@
     "org.secuso.privacyfriendly2048",
     "org.secuso.privacyfriendlybattleship",
     "org.secuso.privacyfriendlydame",
-    "org.secuso.privacyfriendlymemory",
     "org.secuso.privacyfriendlysolitaire",
     "org.secuso.privacyfriendlysudoku",
     "x653.all_in_gold"
@@ -159,7 +103,7 @@
   },
   {
    "family": "constraint-layout",
-   "fanout": 10,
+   "fanout": 9,
    "titles": [
     "com.serwylo.babydots",
     "crypto.o0o0o0o0o.games.blackjack",
@@ -168,32 +112,41 @@
     "org.secuso.privacyfriendly2048",
     "org.secuso.privacyfriendlybattleship",
     "org.secuso.privacyfriendlydame",
-    "org.secuso.privacyfriendlymemory",
     "org.secuso.privacyfriendlysolitaire",
     "org.secuso.privacyfriendlysudoku"
    ]
   },
   {
-   "family": "appcompat-decor-toolbar",
+   "family": "compose-runtime",
    "fanout": 6,
+   "titles": [
+    "com.helddertierwelt.mentalmath",
+    "com.vayunmathur.games.solitaire",
+    "eu.veldsoft.no.thanks",
+    "io.github.johnathan.minesweeper",
+    "io.github.yamin8000.dooz",
+    "name.boyle.chris.sgtpuzzles"
+   ]
+  },
+  {
+   "family": "appcompat-decor-toolbar",
+   "fanout": 5,
    "titles": [
     "com.sanskritbasics.memory",
     "com.willie.mancala",
     "de.georgsieber.ballbreak",
     "io.github.hathibelagal.mykanji",
-    "org.secuso.privacyfriendlymemory",
     "x653.all_in_gold"
    ]
   },
   {
    "family": "theme-gate",
-   "fanout": 6,
+   "fanout": 5,
    "titles": [
     "com.eightsines.firestrike.opensource",
     "com.serwylo.babydots",
     "de.georgsieber.ballbreak",
     "io.github.hathibelagal.mykanji",
-    "org.secuso.privacyfriendlymemory",
     "x653.all_in_gold"
    ]
   },
@@ -275,7 +228,6 @@
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
    "families": [
-    "compose-runtime",
     "gl-native",
     "libgdx-glsurfaceview",
     "unclassified"
@@ -296,7 +248,6 @@
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
    "families": [
-    "compose-runtime",
     "coordinatorlayout",
     "unclassified"
    ]
@@ -357,7 +308,6 @@
    "inflate_unresolved_max": 3,
    "textshaper_missing": [],
    "families": [
-    "compose-runtime",
     "constraint-layout",
     "coordinatorlayout",
     "lifecycle-adapter",
@@ -376,7 +326,6 @@
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
    "families": [
-    "compose-runtime",
     "constraint-layout",
     "coordinatorlayout",
     "lifecycle-adapter",
@@ -392,7 +341,6 @@
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
    "families": [
-    "compose-runtime",
     "savedstate-registry"
    ]
   },
@@ -404,9 +352,7 @@
    "exceptions": [],
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
-   "families": [
-    "compose-runtime"
-   ]
+   "families": []
   },
   {
    "package": "io.github.ebraminio.bouncy",
@@ -416,9 +362,7 @@
    "exceptions": [],
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
-   "families": [
-    "compose-runtime"
-   ]
+   "families": []
   },
   {
    "package": "app.halma",
@@ -455,7 +399,6 @@
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
    "families": [
-    "compose-runtime",
     "libgdx-glsurfaceview",
     "unclassified"
    ]
@@ -495,7 +438,6 @@
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
    "families": [
-    "compose-runtime",
     "typedarray-null",
     "unclassified"
    ]
@@ -525,7 +467,6 @@
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
    "families": [
-    "compose-runtime",
     "unclassified"
    ]
   },
@@ -564,7 +505,6 @@
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
    "families": [
-    "compose-runtime",
     "savedstate-registry",
     "theme-gate",
     "unclassified"
@@ -715,9 +655,7 @@
    "exceptions": [],
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
-   "families": [
-    "compose-runtime"
-   ]
+   "families": []
   },
   {
    "package": "com.rocket9labs.boxcars",
@@ -728,7 +666,6 @@
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
    "families": [
-    "compose-runtime",
     "gl-native"
    ]
   },
@@ -859,7 +796,6 @@
    "textshaper_missing": [],
    "families": [
     "appcompat-decor-toolbar",
-    "compose-runtime",
     "unclassified"
    ]
   },
@@ -871,9 +807,7 @@
    "exceptions": [],
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
-   "families": [
-    "compose-runtime"
-   ]
+   "families": []
   },
   {
    "package": "com.sidhant.puzzle",
@@ -883,9 +817,7 @@
    "exceptions": [],
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
-   "families": [
-    "compose-runtime"
-   ]
+   "families": []
   },
   {
    "package": "com.sidhant.queens",
@@ -895,9 +827,7 @@
    "exceptions": [],
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
-   "families": [
-    "compose-runtime"
-   ]
+   "families": []
   },
   {
    "package": "com.trianguloy.adnihilation",
@@ -914,7 +844,6 @@
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
    "families": [
-    "compose-runtime",
     "unclassified"
    ]
   },
@@ -1020,7 +949,6 @@
    "textshaper_missing": [],
    "families": [
     "capacitor-bridge",
-    "compose-runtime",
     "coordinatorlayout",
     "lifecycle-adapter",
     "savedstate-registry"
@@ -1112,7 +1040,6 @@
    "textshaper_missing": [],
    "families": [
     "appcompat-decor-toolbar",
-    "compose-runtime",
     "savedstate-registry",
     "unclassified"
    ]
@@ -1127,7 +1054,6 @@
    "textshaper_missing": [],
    "families": [
     "appcompat-decor-toolbar",
-    "compose-runtime",
     "coordinatorlayout",
     "lifecycle-adapter",
     "savedstate-registry",
@@ -1174,7 +1100,6 @@
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
    "families": [
-    "compose-runtime",
     "unclassified"
    ]
   },
@@ -1208,7 +1133,6 @@
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
    "families": [
-    "compose-runtime",
     "gl-native",
     "libgdx-glsurfaceview",
     "unclassified"
@@ -1222,9 +1146,7 @@
    "exceptions": [],
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
-   "families": [
-    "compose-runtime"
-   ]
+   "families": []
   },
   {
    "package": "eu.quelltext.memory",
@@ -1234,68 +1156,14 @@
    "exceptions": [],
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
-   "families": [
-    "compose-runtime"
-   ]
+   "families": []
   },
   {
    "package": "eu.veldsoft.no.thanks",
    "s101_status": "PARTIAL",
    "visual_level": 1,
-   "missing_classes": [
-    {
-     "class": "ClassNotFoundException",
-     "evidence": "ClassNotFoundException",
-     "count": 1
-    },
-    {
-     "class": "Landroidx/lifecycle/Lifecycling;",
-     "evidence": "ClassNotFoundException; (androidx.savedstate.Recreator_LifecycleAdapter) method=Landroidx/lifecycle/Lifecycling;.generatedConstructor pc=106 \u2192 deferred handler @0x0x8e type=Ljava/lan",
-     "count": 1
-    },
-    {
-     "class": "ClassNotFoundException?",
-     "evidence": "ClassNotFoundException;",
-     "count": 1
-    }
-   ],
-   "exceptions": [
-    {
-     "sig": "RuntimeException|unwound Lkotlin/jvm/internal/Intrinsics;.checkNotNull",
-     "evidence": "RuntimeException; unwound Lkotlin/jvm/internal/Intrinsics;.checkNotNull invoke_pc=0x2 depth=12",
-     "count": 2
-    },
-    {
-     "sig": "RuntimeException|unwound Landroidx/lifecycle/Lifecycling;.resolveObserverCallbackType",
-     "evidence": "RuntimeException; unwound Landroidx/lifecycle/Lifecycling;.resolveObserverCallbackType invoke_pc=0x7e depth=11",
-     "count": 2
-    },
-    {
-     "sig": "RuntimeException|unwound Landroidx/lifecycle/Lifecycling;.getObserverConstructorType",
-     "evidence": "RuntimeException; unwound Landroidx/lifecycle/Lifecycling;.getObserverConstructorType invoke_pc=0xf depth=10",
-     "count": 2
-    },
-    {
-     "sig": "RuntimeException|unwound Landroidx/lifecycle/Lifecycling;.lifecycleEventObserver",
-     "evidence": "RuntimeException; unwound Landroidx/lifecycle/Lifecycling;.lifecycleEventObserver invoke_pc=0x32 depth=9",
-     "count": 2
-    },
-    {
-     "sig": "RuntimeException|",
-     "evidence": "RuntimeException; unwound Landroidx/lifecycle/LifecycleRegistry$ObserverWithState;.<init> invoke_pc=0xb depth=8",
-     "count": 12
-    },
-    {
-     "sig": "RuntimeException|unwound Landroidx/lifecycle/LifecycleRegistry;.addObserver",
-     "evidence": "RuntimeException; unwound Landroidx/lifecycle/LifecycleRegistry;.addObserver invoke_pc=0x17 depth=7",
-     "count": 2
-    },
-    {
-     "sig": "RuntimeException|unwound Landroidx/savedstate/SavedStateRegistryController;.performAttach",
-     "evidence": "RuntimeException; unwound Landroidx/savedstate/SavedStateRegistryController;.performAttach invoke_pc=0x1d depth=6",
-     "count": 2
-    }
-   ],
+   "missing_classes": [],
+   "exceptions": [],
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
    "families": [
@@ -1303,8 +1171,7 @@
     "constraint-layout",
     "coordinatorlayout",
     "lifecycle-adapter",
-    "savedstate-registry",
-    "unclassified"
+    "savedstate-registry"
    ]
   },
   {
@@ -1398,7 +1265,6 @@
    "textshaper_missing": [],
    "families": [
     "appcompat-decor-toolbar",
-    "compose-runtime",
     "constraint-layout",
     "coordinatorlayout",
     "lifecycle-adapter",
@@ -1550,6 +1416,11 @@
      "class": "Lls0;",
      "evidence": "ClassNotFoundException; (androidx.datastore.preferences.protobuf.MapFieldSchemaFull) method=Lls0;.<clinit> pc=5 \u2192 deferred handler @0x0x14 type=Ljava/lang/Exception;",
      "count": 1
+    },
+    {
+     "class": "Lgq0;",
+     "evidence": "ClassNotFoundException; (androidx.compose.ui.platform.AndroidCompositionLocals_androidKt) method=Lgq0;.<clinit> pc=14 \u2192 deferred handler @0x0x2c type=<catch-all>",
+     "count": 1
     }
    ],
    "exceptions": [
@@ -1661,7 +1532,6 @@
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
    "families": [
-    "compose-runtime",
     "savedstate-registry",
     "unclassified"
    ]
@@ -1686,9 +1556,7 @@
    "exceptions": [],
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
-   "families": [
-    "compose-runtime"
-   ]
+   "families": []
   },
   {
    "package": "org.andstatus.game2048",
@@ -1735,7 +1603,6 @@
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
    "families": [
-    "compose-runtime",
     "unclassified"
    ]
   },
@@ -1747,9 +1614,7 @@
    "exceptions": [],
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
-   "families": [
-    "compose-runtime"
-   ]
+   "families": []
   },
   {
    "package": "org.mattvchandler.a2050",
@@ -1806,7 +1671,6 @@
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
    "families": [
-    "compose-runtime",
     "savedstate-registry",
     "unclassified"
    ]
@@ -1836,7 +1700,6 @@
    "inflate_unresolved_max": 2,
    "textshaper_missing": [],
    "families": [
-    "compose-runtime",
     "constraint-layout",
     "coordinatorlayout",
     "lifecycle-adapter",
@@ -1853,7 +1716,6 @@
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
    "families": [
-    "compose-runtime",
     "constraint-layout",
     "coordinatorlayout",
     "lifecycle-adapter",
@@ -1869,29 +1731,10 @@
    "inflate_unresolved_max": 2,
    "textshaper_missing": [],
    "families": [
-    "compose-runtime",
     "constraint-layout",
     "coordinatorlayout",
     "lifecycle-adapter",
     "savedstate-registry"
-   ]
-  },
-  {
-   "package": "org.secuso.privacyfriendlymemory",
-   "s101_status": "PARTIAL",
-   "visual_level": 2,
-   "missing_classes": [],
-   "exceptions": [],
-   "inflate_unresolved_max": 0,
-   "textshaper_missing": [],
-   "families": [
-    "appcompat-decor-toolbar",
-    "compose-runtime",
-    "constraint-layout",
-    "coordinatorlayout",
-    "lifecycle-adapter",
-    "savedstate-registry",
-    "theme-gate"
    ]
   },
   {
@@ -1903,7 +1746,6 @@
    "inflate_unresolved_max": 2,
    "textshaper_missing": [],
    "families": [
-    "compose-runtime",
     "constraint-layout",
     "coordinatorlayout",
     "lifecycle-adapter",
@@ -1919,7 +1761,6 @@
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
    "families": [
-    "compose-runtime",
     "constraint-layout",
     "coordinatorlayout",
     "lifecycle-adapter",
@@ -1935,9 +1776,7 @@
    "exceptions": [],
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
-   "families": [
-    "compose-runtime"
-   ]
+   "families": []
   },
   {
    "package": "x653.all_in_gold",
@@ -2035,7 +1874,6 @@
    "textshaper_missing": [],
    "families": [
     "appcompat-decor-toolbar",
-    "compose-runtime",
     "coordinatorlayout",
     "lifecycle-adapter",
     "theme-gate",
@@ -2050,9 +1888,7 @@
    "exceptions": [],
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
-   "families": [
-    "compose-runtime"
-   ]
+   "families": []
   },
   {
    "package": "com.kingalex.kingpong",
@@ -2062,9 +1898,7 @@
    "exceptions": [],
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
-   "families": [
-    "compose-runtime"
-   ]
+   "families": []
   },
   {
    "package": "com.smorgasbork.hotdeath",
@@ -2074,9 +1908,7 @@
    "exceptions": [],
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
-   "families": [
-    "compose-runtime"
-   ]
+   "families": []
   },
   {
    "package": "ca.rmen.nounours",
@@ -2103,7 +1935,6 @@
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
    "families": [
-    "compose-runtime",
     "unclassified"
    ]
   },
@@ -2177,7 +2008,6 @@
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
    "families": [
-    "compose-runtime",
     "libgdx-glsurfaceview",
     "multidex-family",
     "unclassified"
@@ -2191,9 +2021,7 @@
    "exceptions": [],
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
-   "families": [
-    "compose-runtime"
-   ]
+   "families": []
   },
   {
    "package": "com.miniandroid.g2048",
@@ -2203,9 +2031,7 @@
    "exceptions": [],
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
-   "families": [
-    "compose-runtime"
-   ]
+   "families": []
   },
   {
    "package": "com.miniandroid.minicraft",
@@ -2215,9 +2041,7 @@
    "exceptions": [],
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
-   "families": [
-    "compose-runtime"
-   ]
+   "families": []
   },
   {
    "package": "com.miniandroid.snake",
@@ -2227,9 +2051,7 @@
    "exceptions": [],
    "inflate_unresolved_max": 5,
    "textshaper_missing": [],
-   "families": [
-    "compose-runtime"
-   ]
+   "families": []
   },
   {
    "package": "com.miniandroid.snakedeluxe",
@@ -2239,9 +2061,7 @@
    "exceptions": [],
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
-   "families": [
-    "compose-runtime"
-   ]
+   "families": []
   },
   {
    "package": "com.miniandroid.snakeneon",
@@ -2251,9 +2071,7 @@
    "exceptions": [],
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
-   "families": [
-    "compose-runtime"
-   ]
+   "families": []
   },
   {
    "package": "com.miniandroid.tetris",
@@ -2263,9 +2081,7 @@
    "exceptions": [],
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
-   "families": [
-    "compose-runtime"
-   ]
+   "families": []
   },
   {
    "package": "com.miniandroid.tictactoedeluxe",
@@ -2275,9 +2091,7 @@
    "exceptions": [],
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
-   "families": [
-    "compose-runtime"
-   ]
+   "families": []
   },
   {
    "package": "cos.premy.mines",
@@ -2294,7 +2108,6 @@
    "inflate_unresolved_max": 2,
    "textshaper_missing": [],
    "families": [
-    "compose-runtime",
     "constraint-layout",
     "coordinatorlayout",
     "lifecycle-adapter",
@@ -2310,7 +2123,6 @@
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
    "families": [
-    "compose-runtime",
     "constraint-layout",
     "coordinatorlayout",
     "lifecycle-adapter",
@@ -2326,8 +2138,22 @@
    "inflate_unresolved_max": 0,
    "textshaper_missing": [],
    "families": [
-    "compose-runtime",
     "coordinatorlayout"
+   ]
+  },
+  {
+   "package": "org.secuso.privacyfriendlymemory",
+   "s101_status": "INTERACTIVE-EVIDENCE",
+   "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "constraint-layout",
+    "coordinatorlayout",
+    "lifecycle-adapter",
+    "savedstate-registry"
    ]
   }
  ]
