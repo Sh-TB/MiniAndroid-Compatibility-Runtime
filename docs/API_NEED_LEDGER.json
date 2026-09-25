@@ -1,18 +1,18 @@
 {
  "generated_at": "",
- "engine_head": "3a2825db",
- "engine_sha256": "44128705723dac0ac098db51da5c5eaf7a43afb6280c376518e3f636c5985033",
+ "engine_head": "9c640c0a",
+ "engine_sha256": "ccd673fc55c2d1d51506843ee12bfdecb01c3464c574d759e87ea465f28abb7c",
  "protocol": "S99 full-load protocol re-run on S101 tree (identical obs+click+visual audit)",
  "census": {
   "INTERACTIVE-EVIDENCE": 13,
-  "RENDERED-L2+": 1,
-  "PARTIAL": 34,
-  "FAIL": 13
+  "RENDERED-L2+": 2,
+  "PARTIAL": 39,
+  "FAIL": 7
  },
  "families_ranked_by_fanout": [
   {
    "family": "compose-runtime",
-   "fanout": 47,
+   "fanout": 46,
    "titles": [
     "app.halma",
     "ch.logixisland.anuto",
@@ -22,7 +22,6 @@
     "com.helddertierwelt.mentalmath",
     "com.jeffliu.balancetheball",
     "com.kaeruct.raumballer",
-    "com.kingalex.kingpong",
     "com.rocket9labs.boxcars",
     "com.sanskritbasics.memory",
     "com.serwylo.babydots",
@@ -187,13 +186,15 @@
    ]
   },
   {
-   "family": "typedarray-null",
-   "fanout": 4,
+   "family": "theme-gate",
+   "fanout": 6,
    "titles": [
-    "ch.logixisland.anuto",
-    "com.willie.mancala",
+    "com.eightsines.firestrike.opensource",
+    "com.serwylo.babydots",
     "de.georgsieber.ballbreak",
-    "org.secuso.privacyfriendlymemory"
+    "io.github.hathibelagal.mykanji",
+    "org.secuso.privacyfriendlymemory",
+    "x653.all_in_gold"
    ]
   },
   {
@@ -215,15 +216,6 @@
    ]
   },
   {
-   "family": "theme-gate",
-   "fanout": 3,
-   "titles": [
-    "com.eightsines.firestrike.opensource",
-    "com.serwylo.babydots",
-    "x653.all_in_gold"
-   ]
-  },
-  {
    "family": "capacitor-bridge",
    "fanout": 1,
    "titles": [
@@ -242,6 +234,13 @@
    "fanout": 1,
    "titles": [
     "org.secuso.privacyfriendlysudoku"
+   ]
+  },
+  {
+   "family": "typedarray-null",
+   "fanout": 1,
+   "titles": [
+    "ch.logixisland.anuto"
    ]
   }
  ],
@@ -300,18 +299,6 @@
     "compose-runtime",
     "coordinatorlayout",
     "unclassified"
-   ]
-  },
-  {
-   "package": "com.kingalex.kingpong",
-   "s101_status": "FAIL",
-   "visual_level": 0,
-   "missing_classes": [],
-   "exceptions": [],
-   "inflate_unresolved_max": 0,
-   "textshaper_missing": [],
-   "families": [
-    "compose-runtime"
    ]
   },
   {
@@ -397,30 +384,6 @@
    ]
   },
   {
-   "package": "eu.quelltext.counting",
-   "s101_status": "FAIL",
-   "visual_level": 0,
-   "missing_classes": [],
-   "exceptions": [],
-   "inflate_unresolved_max": 0,
-   "textshaper_missing": [],
-   "families": [
-    "compose-runtime"
-   ]
-  },
-  {
-   "package": "eu.quelltext.memory",
-   "s101_status": "FAIL",
-   "visual_level": 0,
-   "missing_classes": [],
-   "exceptions": [],
-   "inflate_unresolved_max": 0,
-   "textshaper_missing": [],
-   "families": [
-    "compose-runtime"
-   ]
-  },
-  {
    "package": "eu.veldsoft.free.klondike",
    "s101_status": "FAIL",
    "visual_level": 0,
@@ -431,75 +394,6 @@
    "families": [
     "compose-runtime",
     "savedstate-registry"
-   ]
-  },
-  {
-   "package": "eu.veldsoft.no.thanks",
-   "s101_status": "FAIL",
-   "visual_level": 0,
-   "missing_classes": [
-    {
-     "class": "ClassNotFoundException",
-     "evidence": "ClassNotFoundException",
-     "count": 1
-    },
-    {
-     "class": "Landroidx/lifecycle/Lifecycling;",
-     "evidence": "ClassNotFoundException; (androidx.savedstate.Recreator_LifecycleAdapter) method=Landroidx/lifecycle/Lifecycling;.generatedConstructor pc=106 \u2192 deferred handler @0x0x8e type=Ljava/lan",
-     "count": 1
-    },
-    {
-     "class": "ClassNotFoundException?",
-     "evidence": "ClassNotFoundException;",
-     "count": 1
-    }
-   ],
-   "exceptions": [
-    {
-     "sig": "RuntimeException|unwound Lkotlin/jvm/internal/Intrinsics;.checkNotNull",
-     "evidence": "RuntimeException; unwound Lkotlin/jvm/internal/Intrinsics;.checkNotNull invoke_pc=0x2 depth=12",
-     "count": 2
-    },
-    {
-     "sig": "RuntimeException|unwound Landroidx/lifecycle/Lifecycling;.resolveObserverCallbackType",
-     "evidence": "RuntimeException; unwound Landroidx/lifecycle/Lifecycling;.resolveObserverCallbackType invoke_pc=0x7e depth=11",
-     "count": 2
-    },
-    {
-     "sig": "RuntimeException|unwound Landroidx/lifecycle/Lifecycling;.getObserverConstructorType",
-     "evidence": "RuntimeException; unwound Landroidx/lifecycle/Lifecycling;.getObserverConstructorType invoke_pc=0xf depth=10",
-     "count": 2
-    },
-    {
-     "sig": "RuntimeException|unwound Landroidx/lifecycle/Lifecycling;.lifecycleEventObserver",
-     "evidence": "RuntimeException; unwound Landroidx/lifecycle/Lifecycling;.lifecycleEventObserver invoke_pc=0x32 depth=9",
-     "count": 2
-    },
-    {
-     "sig": "RuntimeException|",
-     "evidence": "RuntimeException; unwound Landroidx/lifecycle/LifecycleRegistry$ObserverWithState;.<init> invoke_pc=0xb depth=8",
-     "count": 12
-    },
-    {
-     "sig": "RuntimeException|unwound Landroidx/lifecycle/LifecycleRegistry;.addObserver",
-     "evidence": "RuntimeException; unwound Landroidx/lifecycle/LifecycleRegistry;.addObserver invoke_pc=0x17 depth=7",
-     "count": 2
-    },
-    {
-     "sig": "RuntimeException|unwound Landroidx/savedstate/SavedStateRegistryController;.performAttach",
-     "evidence": "RuntimeException; unwound Landroidx/savedstate/SavedStateRegistryController;.performAttach invoke_pc=0x1d depth=6",
-     "count": 2
-    }
-   ],
-   "inflate_unresolved_max": 0,
-   "textshaper_missing": [],
-   "families": [
-    "compose-runtime",
-    "constraint-layout",
-    "coordinatorlayout",
-    "lifecycle-adapter",
-    "savedstate-registry",
-    "unclassified"
    ]
   },
   {
@@ -516,107 +410,6 @@
   },
   {
    "package": "io.github.ebraminio.bouncy",
-   "s101_status": "FAIL",
-   "visual_level": 0,
-   "missing_classes": [],
-   "exceptions": [],
-   "inflate_unresolved_max": 0,
-   "textshaper_missing": [],
-   "families": [
-    "compose-runtime"
-   ]
-  },
-  {
-   "package": "io.github.hathibelagal.mykanji",
-   "s101_status": "FAIL",
-   "visual_level": 0,
-   "missing_classes": [],
-   "exceptions": [
-    {
-     "sig": "NullPointerException|unwound Landroidx/core/view/WindowInsetsCompat$Impl28;.consumeDisplayCutout",
-     "evidence": "NullPointerException; unwound Landroidx/core/view/WindowInsetsCompat$Impl28;.consumeDisplayCutout invoke_pc=0x2 depth=17",
-     "count": 2
-    },
-    {
-     "sig": "NullPointerException|unwound Landroidx/core/view/WindowInsetsCompat;.consumeDisplayCutout",
-     "evidence": "NullPointerException; unwound Landroidx/core/view/WindowInsetsCompat;.consumeDisplayCutout invoke_pc=0x2 depth=16",
-     "count": 2
-    },
-    {
-     "sig": "NullPointerException|",
-     "evidence": "NullPointerException; unwound Landroidx/core/view/WindowInsetsCompat$Impl;.<clinit> invoke_pc=0x9 depth=15",
-     "count": 16
-    },
-    {
-     "sig": "NullPointerException|unwound Landroidx/appcompat/widget/ActionBarOverlayLayout;.init",
-     "evidence": "NullPointerException; unwound Landroidx/appcompat/widget/ActionBarOverlayLayout;.init invoke_pc=0x8 depth=8",
-     "count": 2
-    },
-    {
-     "sig": "NullPointerException|unwound Landroidx/appcompat/app/AppCompatDelegateImpl;.createSubDecor",
-     "evidence": "NullPointerException; unwound Landroidx/appcompat/app/AppCompatDelegateImpl;.createSubDecor invoke_pc=0x9f depth=6",
-     "count": 2
-    },
-    {
-     "sig": "IllegalStateException|unwound Landroidx/appcompat/widget/ActionBarOverlayLayout;.pullChildren",
-     "evidence": "IllegalStateException; unwound Landroidx/appcompat/widget/ActionBarOverlayLayout;.pullChildren invoke_pc=0x1e depth=8",
-     "count": 2
-    },
-    {
-     "sig": "IllegalStateException|unwound Landroidx/appcompat/widget/ActionBarOverlayLayout;.onMeasure",
-     "evidence": "IllegalStateException; unwound Landroidx/appcompat/widget/ActionBarOverlayLayout;.onMeasure invoke_pc=0x0 depth=7",
-     "count": 2
-    },
-    {
-     "sig": "IllegalStateException|unwound Landroidx/appcompat/app/AppCompatDelegateImpl;.createSubDecor",
-     "evidence": "IllegalStateException; unwound Landroidx/appcompat/app/AppCompatDelegateImpl;.createSubDecor invoke_pc=0x9f depth=6",
-     "count": 2
-    },
-    {
-     "sig": "IllegalStateException|unwound Landroidx/appcompat/app/WindowDecorActionBar;.init",
-     "evidence": "IllegalStateException; unwound Landroidx/appcompat/app/WindowDecorActionBar;.init invoke_pc=0x15 depth=6",
-     "count": 2
-    },
-    {
-     "sig": "IllegalStateException|",
-     "evidence": "IllegalStateException; unwound Landroidx/appcompat/app/WindowDecorActionBar;.<init> invoke_pc=0x3b depth=5",
-     "count": 2
-    },
-    {
-     "sig": "IllegalStateException|unwound Landroidx/appcompat/app/AppCompatDelegateImpl;.initWindowDecorActionBar",
-     "evidence": "IllegalStateException; unwound Landroidx/appcompat/app/AppCompatDelegateImpl;.initWindowDecorActionBar invoke_pc=0x1a depth=4",
-     "count": 2
-    },
-    {
-     "sig": "IllegalStateException|unwound Landroidx/appcompat/app/AppCompatDelegateImpl;.getSupportActionBar",
-     "evidence": "IllegalStateException; unwound Landroidx/appcompat/app/AppCompatDelegateImpl;.getSupportActionBar invoke_pc=0x0 depth=3",
-     "count": 2
-    },
-    {
-     "sig": "IllegalStateException|unwound Landroidx/appcompat/app/AppCompatActivity;.getSupportActionBar",
-     "evidence": "IllegalStateException; unwound Landroidx/appcompat/app/AppCompatActivity;.getSupportActionBar invoke_pc=0x4 depth=2",
-     "count": 2
-    },
-    {
-     "sig": "IllegalStateException|at Lio/github/hathibelagal/mykanji/MainActivity;.onCreate",
-     "evidence": "IllegalStateException; escaped the app boundary at Lio/github/hathibelagal/mykanji/MainActivity;.onCreate invoke_pc=0x5f depth=1 [APP-BOUNDARY]",
-     "count": 2
-    }
-   ],
-   "inflate_unresolved_max": 0,
-   "textshaper_missing": [],
-   "families": [
-    "appcompat-decor-toolbar",
-    "compose-runtime",
-    "constraint-layout",
-    "coordinatorlayout",
-    "lifecycle-adapter",
-    "savedstate-registry",
-    "unclassified"
-   ]
-  },
-  {
-   "package": "org.asafonov.accelerace",
    "s101_status": "FAIL",
    "visual_level": 0,
    "missing_classes": [],
@@ -969,11 +762,41 @@
     {
      "sig": "NullPointerException|",
      "evidence": "NullPointerException; unwound Landroidx/core/view/s0$k;.<clinit> invoke_pc=0x4 depth=9",
-     "count": 6
+     "count": 8
     },
     {
      "sig": "NullPointerException|unwound Landroidx/appcompat/app/h;.c0",
      "evidence": "NullPointerException; unwound Landroidx/appcompat/app/h;.c0 invoke_pc=0x9d depth=6",
+     "count": 6
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/appcompat/widget/Toolbar;.z",
+     "evidence": "NullPointerException; unwound Landroidx/appcompat/widget/Toolbar;.z invoke_pc=0x8 depth=8",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Lf/a;.b",
+     "evidence": "IllegalStateException; unwound Lf/a;.b invoke_pc=0x4 depth=14",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroidx/appcompat/widget/e0;.g",
+     "evidence": "IllegalStateException; unwound Landroidx/appcompat/widget/e0;.g invoke_pc=0x13 depth=13",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|",
+     "evidence": "IllegalStateException; unwound Landroidx/appcompat/widget/i0;.<init> invoke_pc=0x34 depth=12",
+     "count": 4
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroidx/appcompat/widget/Toolbar;.getWrapper",
+     "evidence": "IllegalStateException; unwound Landroidx/appcompat/widget/Toolbar;.getWrapper invoke_pc=0x7 depth=10",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroidx/appcompat/widget/ActionBarOverlayLayout;.u",
+     "evidence": "IllegalStateException; unwound Landroidx/appcompat/widget/ActionBarOverlayLayout;.u invoke_pc=0xd depth=9",
      "count": 2
     },
     {
@@ -989,6 +812,11 @@
     {
      "sig": "IllegalStateException|unwound Landroidx/appcompat/app/h;.c0",
      "evidence": "IllegalStateException; unwound Landroidx/appcompat/app/h;.c0 invoke_pc=0x9d depth=6",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/appcompat/widget/Toolbar;.onMeasure",
+     "evidence": "NullPointerException; unwound Landroidx/appcompat/widget/Toolbar;.onMeasure invoke_pc=0xbe depth=7",
      "count": 2
     },
     {
@@ -1212,17 +1040,52 @@
     {
      "sig": "NullPointerException|unwound Le/b0;.w",
      "evidence": "NullPointerException; unwound Le/b0;.w invoke_pc=0x9b depth=4",
-     "count": 6
+     "count": 10
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/appcompat/widget/Toolbar;.m",
+     "evidence": "NullPointerException; unwound Landroidx/appcompat/widget/Toolbar;.m invoke_pc=0x8 depth=6",
+     "count": 4
+    },
+    {
+     "sig": "IllegalStateException|unwound La2/d;.H",
+     "evidence": "IllegalStateException; unwound La2/d;.H invoke_pc=0x4 depth=9",
+     "count": 4
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroidx/fragment/app/f;.p",
+     "evidence": "IllegalStateException; unwound Landroidx/fragment/app/f;.p invoke_pc=0x15 depth=8",
+     "count": 4
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroidx/appcompat/widget/Toolbar;.getWrapper",
+     "evidence": "IllegalStateException; unwound Landroidx/appcompat/widget/Toolbar;.getWrapper invoke_pc=0x3e depth=7",
+     "count": 4
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroidx/appcompat/widget/ActionBarOverlayLayout;.k",
+     "evidence": "IllegalStateException; unwound Landroidx/appcompat/widget/ActionBarOverlayLayout;.k invoke_pc=0x2e depth=6",
+     "count": 4
     },
     {
      "sig": "IllegalStateException|unwound Landroidx/appcompat/widget/ActionBarOverlayLayout;.onMeasure",
      "evidence": "IllegalStateException; unwound Landroidx/appcompat/widget/ActionBarOverlayLayout;.onMeasure invoke_pc=0x0 depth=5",
-     "count": 6
+     "count": 4
     },
     {
      "sig": "IllegalStateException|unwound Le/b0;.w",
      "evidence": "IllegalStateException; unwound Le/b0;.w invoke_pc=0x9b depth=4",
-     "count": 6
+     "count": 4
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/appcompat/widget/Toolbar;.k",
+     "evidence": "NullPointerException; unwound Landroidx/appcompat/widget/Toolbar;.k invoke_pc=0x6 depth=6",
+     "count": 4
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/appcompat/widget/Toolbar;.onMeasure",
+     "evidence": "NullPointerException; unwound Landroidx/appcompat/widget/Toolbar;.onMeasure invoke_pc=0xb1 depth=5",
+     "count": 4
     },
     {
      "sig": "NullPointerException|unwound Le/b0;.h",
@@ -1237,12 +1100,12 @@
     {
      "sig": "NullPointerException|at Lcom/willie/mancala/MainActivity;.onCreate",
      "evidence": "NullPointerException; escaped the app boundary at Lcom/willie/mancala/MainActivity;.onCreate invoke_pc=0x6 depth=1 [APP-BOUNDARY]",
-     "count": 10
+     "count": 2
     },
     {
      "sig": "NullPointerException|unwound Le/j;.findViewById",
      "evidence": "NullPointerException; unwound Le/j;.findViewById invoke_pc=0x6 depth=2",
-     "count": 4
+     "count": 2
     }
    ],
    "inflate_unresolved_max": 0,
@@ -1251,7 +1114,6 @@
     "appcompat-decor-toolbar",
     "compose-runtime",
     "savedstate-registry",
-    "typedarray-null",
     "unclassified"
    ]
   },
@@ -1269,7 +1131,7 @@
     "coordinatorlayout",
     "lifecycle-adapter",
     "savedstate-registry",
-    "typedarray-null"
+    "theme-gate"
    ]
   },
   {
@@ -1349,6 +1211,199 @@
     "compose-runtime",
     "gl-native",
     "libgdx-glsurfaceview",
+    "unclassified"
+   ]
+  },
+  {
+   "package": "eu.quelltext.counting",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime"
+   ]
+  },
+  {
+   "package": "eu.quelltext.memory",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime"
+   ]
+  },
+  {
+   "package": "eu.veldsoft.no.thanks",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [
+    {
+     "class": "ClassNotFoundException",
+     "evidence": "ClassNotFoundException",
+     "count": 1
+    },
+    {
+     "class": "Landroidx/lifecycle/Lifecycling;",
+     "evidence": "ClassNotFoundException; (androidx.savedstate.Recreator_LifecycleAdapter) method=Landroidx/lifecycle/Lifecycling;.generatedConstructor pc=106 \u2192 deferred handler @0x0x8e type=Ljava/lan",
+     "count": 1
+    },
+    {
+     "class": "ClassNotFoundException?",
+     "evidence": "ClassNotFoundException;",
+     "count": 1
+    }
+   ],
+   "exceptions": [
+    {
+     "sig": "RuntimeException|unwound Lkotlin/jvm/internal/Intrinsics;.checkNotNull",
+     "evidence": "RuntimeException; unwound Lkotlin/jvm/internal/Intrinsics;.checkNotNull invoke_pc=0x2 depth=12",
+     "count": 2
+    },
+    {
+     "sig": "RuntimeException|unwound Landroidx/lifecycle/Lifecycling;.resolveObserverCallbackType",
+     "evidence": "RuntimeException; unwound Landroidx/lifecycle/Lifecycling;.resolveObserverCallbackType invoke_pc=0x7e depth=11",
+     "count": 2
+    },
+    {
+     "sig": "RuntimeException|unwound Landroidx/lifecycle/Lifecycling;.getObserverConstructorType",
+     "evidence": "RuntimeException; unwound Landroidx/lifecycle/Lifecycling;.getObserverConstructorType invoke_pc=0xf depth=10",
+     "count": 2
+    },
+    {
+     "sig": "RuntimeException|unwound Landroidx/lifecycle/Lifecycling;.lifecycleEventObserver",
+     "evidence": "RuntimeException; unwound Landroidx/lifecycle/Lifecycling;.lifecycleEventObserver invoke_pc=0x32 depth=9",
+     "count": 2
+    },
+    {
+     "sig": "RuntimeException|",
+     "evidence": "RuntimeException; unwound Landroidx/lifecycle/LifecycleRegistry$ObserverWithState;.<init> invoke_pc=0xb depth=8",
+     "count": 12
+    },
+    {
+     "sig": "RuntimeException|unwound Landroidx/lifecycle/LifecycleRegistry;.addObserver",
+     "evidence": "RuntimeException; unwound Landroidx/lifecycle/LifecycleRegistry;.addObserver invoke_pc=0x17 depth=7",
+     "count": 2
+    },
+    {
+     "sig": "RuntimeException|unwound Landroidx/savedstate/SavedStateRegistryController;.performAttach",
+     "evidence": "RuntimeException; unwound Landroidx/savedstate/SavedStateRegistryController;.performAttach invoke_pc=0x1d depth=6",
+     "count": 2
+    }
+   ],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime",
+    "constraint-layout",
+    "coordinatorlayout",
+    "lifecycle-adapter",
+    "savedstate-registry",
+    "unclassified"
+   ]
+  },
+  {
+   "package": "io.github.hathibelagal.mykanji",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [
+    {
+     "sig": "NullPointerException|unwound Landroidx/core/view/WindowInsetsCompat$Impl28;.consumeDisplayCutout",
+     "evidence": "NullPointerException; unwound Landroidx/core/view/WindowInsetsCompat$Impl28;.consumeDisplayCutout invoke_pc=0x2 depth=17",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/core/view/WindowInsetsCompat;.consumeDisplayCutout",
+     "evidence": "NullPointerException; unwound Landroidx/core/view/WindowInsetsCompat;.consumeDisplayCutout invoke_pc=0x2 depth=16",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|",
+     "evidence": "NullPointerException; unwound Landroidx/core/view/WindowInsetsCompat$Impl;.<clinit> invoke_pc=0x9 depth=15",
+     "count": 18
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/appcompat/widget/ActionBarOverlayLayout;.init",
+     "evidence": "NullPointerException; unwound Landroidx/appcompat/widget/ActionBarOverlayLayout;.init invoke_pc=0x8 depth=8",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/appcompat/app/AppCompatDelegateImpl;.createSubDecor",
+     "evidence": "NullPointerException; unwound Landroidx/appcompat/app/AppCompatDelegateImpl;.createSubDecor invoke_pc=0x9f depth=6",
+     "count": 8
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/appcompat/widget/Toolbar;.inflateMenu",
+     "evidence": "NullPointerException; unwound Landroidx/appcompat/widget/Toolbar;.inflateMenu invoke_pc=0x8 depth=8",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/core/view/WindowInsetsCompat$Impl29;.inset",
+     "evidence": "NullPointerException; unwound Landroidx/core/view/WindowInsetsCompat$Impl29;.inset invoke_pc=0x2 depth=9",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/core/view/WindowInsetsCompat;.inset",
+     "evidence": "NullPointerException; unwound Landroidx/core/view/WindowInsetsCompat;.inset invoke_pc=0x2 depth=8",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/appcompat/widget/ActionBarOverlayLayout;.onMeasure",
+     "evidence": "NullPointerException; unwound Landroidx/appcompat/widget/ActionBarOverlayLayout;.onMeasure invoke_pc=0x97 depth=7",
+     "count": 2
+    },
+    {
+     "sig": "NullPointerException|unwound Landroidx/appcompat/widget/Toolbar;.onMeasure",
+     "evidence": "NullPointerException; unwound Landroidx/appcompat/widget/Toolbar;.onMeasure invoke_pc=0xbe depth=7",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroidx/appcompat/app/WindowDecorActionBar;.init",
+     "evidence": "IllegalStateException; unwound Landroidx/appcompat/app/WindowDecorActionBar;.init invoke_pc=0x15 depth=6",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|",
+     "evidence": "IllegalStateException; unwound Landroidx/appcompat/app/WindowDecorActionBar;.<init> invoke_pc=0x3b depth=5",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroidx/appcompat/app/AppCompatDelegateImpl;.initWindowDecorActionBar",
+     "evidence": "IllegalStateException; unwound Landroidx/appcompat/app/AppCompatDelegateImpl;.initWindowDecorActionBar invoke_pc=0x1a depth=4",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroidx/appcompat/app/AppCompatDelegateImpl;.getSupportActionBar",
+     "evidence": "IllegalStateException; unwound Landroidx/appcompat/app/AppCompatDelegateImpl;.getSupportActionBar invoke_pc=0x0 depth=3",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|unwound Landroidx/appcompat/app/AppCompatActivity;.getSupportActionBar",
+     "evidence": "IllegalStateException; unwound Landroidx/appcompat/app/AppCompatActivity;.getSupportActionBar invoke_pc=0x4 depth=2",
+     "count": 2
+    },
+    {
+     "sig": "IllegalStateException|at Lio/github/hathibelagal/mykanji/MainActivity;.onCreate",
+     "evidence": "IllegalStateException; escaped the app boundary at Lio/github/hathibelagal/mykanji/MainActivity;.onCreate invoke_pc=0x5f depth=1 [APP-BOUNDARY]",
+     "count": 2
+    }
+   ],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "appcompat-decor-toolbar",
+    "compose-runtime",
+    "constraint-layout",
+    "coordinatorlayout",
+    "lifecycle-adapter",
+    "savedstate-registry",
+    "theme-gate",
     "unclassified"
    ]
   },
@@ -1685,6 +1740,18 @@
    ]
   },
   {
+   "package": "org.asafonov.accelerace",
+   "s101_status": "PARTIAL",
+   "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime"
+   ]
+  },
+  {
    "package": "org.mattvchandler.a2050",
    "s101_status": "PARTIAL",
    "visual_level": 1,
@@ -1824,7 +1891,7 @@
     "coordinatorlayout",
     "lifecycle-adapter",
     "savedstate-registry",
-    "typedarray-null"
+    "theme-gate"
    ]
   },
   {
@@ -1979,6 +2046,18 @@
    "package": "xyz.deepdaikon.quinb",
    "s101_status": "PARTIAL",
    "visual_level": 1,
+   "missing_classes": [],
+   "exceptions": [],
+   "inflate_unresolved_max": 0,
+   "textshaper_missing": [],
+   "families": [
+    "compose-runtime"
+   ]
+  },
+  {
+   "package": "com.kingalex.kingpong",
+   "s101_status": "RENDERED-L2+",
+   "visual_level": 2,
    "missing_classes": [],
    "exceptions": [],
    "inflate_unresolved_max": 0,
