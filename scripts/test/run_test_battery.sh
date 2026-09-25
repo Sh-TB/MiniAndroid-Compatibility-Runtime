@@ -120,7 +120,7 @@ for t in semantic_long_cmp_conv_test semantic_switch_parse_neg_test semantic_pas
         "tests/$t.cpp" build/apk/*.o build/dex/*.o build/runtime/*.o \
         build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
         build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
-        -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 \
+        -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 -lssl -lcrypto \
         > "/tmp/battery_$t.log" 2>&1
     gate "link $t" $?
 done
@@ -142,7 +142,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/mutf
     tests/mutf8_string_pool_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
     build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
-    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 \
+    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 -lssl -lcrypto \
     > /tmp/battery_mutf8.log 2>&1
 gate "link mutf8_test" $?
 ./build/mutf8_test > /tmp/battery_mutf8.out 2>&1
@@ -164,7 +164,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/s98_
     tests/s98_text_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
     build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
-    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 \
+    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 -lssl -lcrypto \
     > /tmp/battery_s98text.log 2>&1
 gate "link s98_text_law_test" $?
 ./build/s98_text_law_test > /tmp/battery_s98text.out 2>&1
@@ -184,7 +184,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/s98_
     tests/s98_scroll_transform_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
     build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
-    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 \
+    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 -lssl -lcrypto \
     > /tmp/battery_s98scroll.log 2>&1
 gate "link s98_scroll_transform_law_test" $?
 ./build/s98_scroll_transform_law_test > /tmp/battery_s98scroll.out 2>&1
@@ -204,7 +204,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/s98_
     tests/s98_prefs_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
     build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
-    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 \
+    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 -lssl -lcrypto \
     > /tmp/battery_s98prefs.log 2>&1
 gate "link s98_prefs_law_test" $?
 ./build/s98_prefs_law_test > /tmp/battery_s98prefs.out 2>&1
@@ -220,7 +220,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/reso
     tests/resource_config_selection_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
     build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
-    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 \
+    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 -lssl -lcrypto \
     > /tmp/battery_rescfg.log 2>&1
 gate "link resource_config_selection_test" $?
 ./build/resource_config_selection_test > /tmp/battery_rescfg.out 2>&1
@@ -236,7 +236,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/reso
     tests/resource_core_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
     build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
-    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 \
+    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 -lssl -lcrypto \
     > /tmp/battery_reslaw.log 2>&1
 gate "link resource_core_law_test" $?
 ./build/resource_core_law_test > /tmp/battery_reslaw.out 2>&1
@@ -252,7 +252,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/reso
     tests/resource_hostile_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
     build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
-    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 \
+    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 -lssl -lcrypto \
     > /tmp/battery_hostile.log 2>&1
 gate "link resource_hostile_test" $?
 timeout 120 ./build/resource_hostile_test > /tmp/battery_hostile.out 2>&1
@@ -268,7 +268,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -o build/linear_layout_law_test \
     tests/linear_layout_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
     build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
-    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 \
+    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 -lssl -lcrypto \
     > /tmp/battery_lllaw.log 2>&1
 gate "link linear_layout_law_test" $?
 ./build/linear_layout_law_test > /tmp/battery_lllaw.out 2>&1
@@ -285,7 +285,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -o build/g10_layout_law_test \
     tests/g10_layout_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
     build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
-    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 \
+    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 -lssl -lcrypto \
     > /tmp/battery_g10law.log 2>&1
 gate "link g10_layout_law_test" $?
 ./build/g10_layout_law_test > /tmp/battery_g10law.out 2>&1
@@ -303,7 +303,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -o build/g11_ctor_law_test \
     tests/g11_ctor_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
     build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
-    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 \
+    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 -lssl -lcrypto \
     > /tmp/battery_g11law.log 2>&1
 gate "link g11_ctor_law_test" $?
 ./build/g11_ctor_law_test > /tmp/battery_g11law.out 2>&1
@@ -322,7 +322,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -o build/view_animator_law_test \
     tests/view_animator_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
     build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
-    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 \
+    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 -lssl -lcrypto \
     > /tmp/battery_f082law.log 2>&1
 gate "link view_animator_law_test" $?
 ./build/view_animator_law_test > /tmp/battery_f082law.out 2>&1
@@ -338,7 +338,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -Itests -o build/g04_hostile_test \
     tests/g04_hostile_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
     build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
-    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 \
+    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 -lssl -lcrypto \
     > /tmp/battery_g04h.log 2>&1
 gate "link g04_hostile_test" $?
 timeout 60 ./build/g04_hostile_test > /tmp/battery_g04h.out 2>&1
@@ -355,7 +355,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/inpu
     tests/input_pipeline_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
     build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
-    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 \
+    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 -lssl -lcrypto \
     > /tmp/battery_g06law.log 2>&1
 gate "link input_pipeline_law_test" $?
 timeout 120 ./build/input_pipeline_law_test > /tmp/battery_g06law.out 2>&1
@@ -371,7 +371,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/life
     tests/lifecycle_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
     build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
-    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 \
+    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 -lssl -lcrypto \
     > /tmp/battery_g07law.log 2>&1
 gate "link lifecycle_law_test" $?
 timeout 120 ./build/lifecycle_law_test > /tmp/battery_g07law.out 2>&1
@@ -387,7 +387,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/g06g
     tests/g06g08_hostile_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
     build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
-    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 \
+    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 -lssl -lcrypto \
     > /tmp/battery_h18.log 2>&1
 gate "link g06g08_hostile_test" $?
 timeout 120 ./build/g06g08_hostile_test > /tmp/battery_h18.out 2>&1
@@ -419,7 +419,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -o build/shadow_registry_invariant_test \
     build/runtime/*.o build/diagnostics/*.o build/resources/*.o \
     build/renderer/*.o build/gles/*.o build/fonts/*.o build/framework/*.o build/api/*.o \
     build/storage/*.o -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz \
-    -lfribidi -lpng -lpthread -lsqlite3 > /tmp/battery_sri.log 2>&1
+    -lfribidi -lpng -lpthread -lsqlite3 -lssl -lcrypto > /tmp/battery_sri.log 2>&1
 gate "link shadow_registry_invariant_test" $?
 ./build/shadow_registry_invariant_test > /tmp/battery_sri.out 2>&1
 gate "§6 shadow registry invariant (expect 21)" $?
