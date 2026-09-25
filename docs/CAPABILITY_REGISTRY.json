@@ -1,0 +1,589 @@
+{
+  "schema": "miniandroid.capability.registry/1.0",
+  "wave": "S98-FUTURE (foundation, implemented S100)",
+  "law": "CORE != ALL ANDROID. Capability existence != capability usage. Every capability carries source authority, dependency edges, and evidence status; heavy capabilities must never become mandatory dependencies of small APKs.",
+  "status_vocabulary": {
+    "canonical_for_status": "docs/MINIANDROID_CAPABILITY_MATRIX.md",
+    "note": "This registry is canonical for STRUCTURE (dependencies, API mapping, hot/cold, size class). Status is mirrored from the canonical matrix vocabulary (docs/MINIANDROID_CAPABILITY_MATRIX.md) unioned with the capability quality ladder (S98 \u00a726/\u00a745); cross-checked by the foundation tests.",
+    "quality_levels": [
+      "DECLARED",
+      "RESOLVABLE",
+      "IMPLEMENTED",
+      "SEMANTICALLY_TESTED",
+      "APK_OBSERVED",
+      "APK_VERIFIED",
+      "STABLE",
+      "PARTIAL",
+      "TESTED",
+      "DONE",
+      "VERIFIED",
+      "OBSERVED",
+      "BLOCKED",
+      "PENDING",
+      "UNTESTED"
+    ]
+  },
+  "capabilities": [
+    {
+      "id": "core.dex",
+      "name": "DEX parse/resolve/execute",
+      "layer": "core",
+      "status": "APK_VERIFIED",
+      "source_authority": "AOSP ART",
+      "requires": [],
+      "provides": [
+        "core.object",
+        "core.exceptions",
+        "core.threads"
+      ],
+      "api_prefixes": [
+        "Ldalvik/"
+      ],
+      "hot": true,
+      "size_class": "core",
+      "tests": [
+        "battery semantic stages"
+      ]
+    },
+    {
+      "id": "core.object",
+      "name": "Object model + heap",
+      "layer": "core",
+      "status": "APK_VERIFIED",
+      "source_authority": "AOSP ART",
+      "requires": [],
+      "provides": [],
+      "api_prefixes": [
+        "Ljava/lang/Object;"
+      ],
+      "hot": true,
+      "size_class": "core",
+      "tests": [
+        "battery"
+      ]
+    },
+    {
+      "id": "core.exceptions",
+      "name": "Exceptions + unwind",
+      "layer": "core",
+      "status": "APK_VERIFIED",
+      "source_authority": "AOSP ART",
+      "requires": [
+        "core.object"
+      ],
+      "provides": [],
+      "api_prefixes": [
+        "Ljava/lang/Throwable;",
+        "Ljava/lang/Exception;"
+      ],
+      "hot": true,
+      "size_class": "core",
+      "tests": [
+        "battery exception stages"
+      ]
+    },
+    {
+      "id": "core.strings",
+      "name": "String family (java.lang.String)",
+      "layer": "core",
+      "status": "APK_VERIFIED",
+      "source_authority": "OpenJDK/libcore",
+      "requires": [
+        "core.object"
+      ],
+      "provides": [],
+      "api_prefixes": [
+        "Ljava/lang/String;",
+        "Ljava/lang/StringBuilder;"
+      ],
+      "hot": true,
+      "size_class": "core",
+      "tests": [
+        "battery mutf8; S100 browser run"
+      ]
+    },
+    {
+      "id": "core.reflection",
+      "name": "Reflection foundation",
+      "layer": "core",
+      "status": "IMPLEMENTED",
+      "source_authority": "libcore",
+      "requires": [
+        "core.object"
+      ],
+      "provides": [],
+      "api_prefixes": [
+        "Ljava/lang/Class;",
+        "Ljava/lang/reflect/Method;",
+        "Ljava/lang/reflect/Field;"
+      ],
+      "hot": true,
+      "size_class": "core",
+      "tests": [
+        "f103_*"
+      ],
+      "notes": "Field.get still answers null (dooz #347 root 2) \u2014 frontier recorded, not faked."
+    },
+    {
+      "id": "core.lifecycle",
+      "name": "Activity/Application lifecycle",
+      "layer": "core",
+      "status": "APK_OBSERVED",
+      "source_authority": "AOSP ActivityThread",
+      "requires": [
+        "core.object"
+      ],
+      "provides": [],
+      "api_prefixes": [
+        "Landroid/app/Activity;",
+        "Landroid/app/Application;"
+      ],
+      "hot": true,
+      "size_class": "core",
+      "tests": [
+        "lifecycle_controller",
+        "G07 lifecycle golden"
+      ]
+    },
+    {
+      "id": "framework.view",
+      "name": "View/ViewGroup measure/layout/draw",
+      "layer": "framework",
+      "status": "APK_VERIFIED",
+      "source_authority": "AOSP View root",
+      "requires": [
+        "core.object",
+        "core.lifecycle"
+      ],
+      "provides": [],
+      "api_prefixes": [
+        "Landroid/view/View;",
+        "Landroid/view/ViewGroup;"
+      ],
+      "hot": true,
+      "size_class": "core",
+      "tests": [
+        "goldens",
+        "F-096/F-148 laws"
+      ]
+    },
+    {
+      "id": "framework.input",
+      "name": "Touch dispatch/click/long-press",
+      "layer": "framework",
+      "status": "APK_VERIFIED",
+      "source_authority": "AOSP ViewRootImpl/TouchDispatcher",
+      "requires": [
+        "framework.view"
+      ],
+      "provides": [],
+      "api_prefixes": [
+        "Landroid/view/MotionEvent;"
+      ],
+      "hot": true,
+      "size_class": "core",
+      "tests": [
+        "tictactoe_golden",
+        "EXT-02 12/12",
+        "HITPROBE"
+      ]
+    },
+    {
+      "id": "framework.resources",
+      "name": "ARSC resources + qualifiers",
+      "layer": "framework",
+      "status": "IMPLEMENTED",
+      "source_authority": "AOSP AssetManager2",
+      "requires": [
+        "core.object"
+      ],
+      "provides": [],
+      "api_prefixes": [
+        "Landroid/content/res/Resources;",
+        "Landroid/content/res/AssetManager;"
+      ],
+      "hot": true,
+      "size_class": "core",
+      "tests": [
+        "battery resource-config 48",
+        "density matrix"
+      ],
+      "notes": "NinePatch + some qualifier tails open (GFX-004)."
+    },
+    {
+      "id": "framework.text",
+      "name": "TextView/EditText text rendering",
+      "layer": "framework",
+      "status": "APK_VERIFIED",
+      "source_authority": "AOSP + Skia",
+      "requires": [
+        "framework.view",
+        "graphics.basic"
+      ],
+      "provides": [],
+      "api_prefixes": [
+        "Landroid/widget/TextView;",
+        "Landroid/widget/EditText;",
+        "Landroid/widget/Button;"
+      ],
+      "hot": true,
+      "size_class": "core",
+      "tests": [
+        "S98 text laws 21/21"
+      ]
+    },
+    {
+      "id": "framework.storage.prefs",
+      "name": "SharedPreferences",
+      "layer": "framework",
+      "status": "APK_VERIFIED",
+      "source_authority": "AOSP",
+      "requires": [
+        "core.object"
+      ],
+      "provides": [],
+      "api_prefixes": [
+        "Landroid/content/SharedPreferences;"
+      ],
+      "hot": true,
+      "size_class": "core",
+      "tests": [
+        "S98 prefs 15/15"
+      ]
+    },
+    {
+      "id": "framework.intent",
+      "name": "Intent/PackageManager shadows",
+      "layer": "framework",
+      "status": "IMPLEMENTED",
+      "source_authority": "AOSP",
+      "requires": [
+        "core.object"
+      ],
+      "provides": [],
+      "api_prefixes": [
+        "Landroid/content/Intent;",
+        "Landroid/content/pm/PackageManager;"
+      ],
+      "hot": true,
+      "size_class": "core",
+      "tests": [
+        "battery"
+      ]
+    },
+    {
+      "id": "graphics.basic",
+      "name": "Canvas/Paint software raster",
+      "layer": "graphics",
+      "status": "APK_VERIFIED",
+      "source_authority": "Skia",
+      "requires": [
+        "framework.view"
+      ],
+      "provides": [],
+      "api_prefixes": [
+        "Landroid/graphics/Canvas;",
+        "Landroid/graphics/Paint;"
+      ],
+      "hot": true,
+      "size_class": "core",
+      "tests": [
+        "battery goldens"
+      ]
+    },
+    {
+      "id": "graphics.bitmap",
+      "name": "Bitmap decode/draw (PNG/JPEG/WebP/GIF)",
+      "layer": "graphics",
+      "status": "APK_VERIFIED",
+      "source_authority": "AOSP BitmapFactory; libpng/libjpeg/libwebp",
+      "requires": [
+        "graphics.basic"
+      ],
+      "provides": [],
+      "api_prefixes": [
+        "Landroid/graphics/Bitmap;",
+        "Landroid/graphics/BitmapFactory;"
+      ],
+      "hot": true,
+      "size_class": "core",
+      "tests": [
+        "density matrix",
+        "s95_vector"
+      ]
+    },
+    {
+      "id": "graphics.drawable",
+      "name": "Vector/adaptive/state-list drawables",
+      "layer": "graphics",
+      "status": "APK_OBSERVED",
+      "source_authority": "AOSP VectorDrawable",
+      "requires": [
+        "graphics.bitmap",
+        "framework.resources"
+      ],
+      "provides": [],
+      "api_prefixes": [
+        "Landroid/graphics/drawable/"
+      ],
+      "hot": true,
+      "size_class": "core",
+      "tests": [
+        "s95_vector 9 checks"
+      ]
+    },
+    {
+      "id": "graphics.animation",
+      "name": "ValueAnimator/ViewPropertyAnimator",
+      "layer": "graphics",
+      "status": "APK_OBSERVED",
+      "source_authority": "AOSP",
+      "requires": [
+        "framework.view"
+      ],
+      "provides": [],
+      "api_prefixes": [
+        "Landroid/animation/",
+        "Landroid/view/ViewPropertyAnimator;"
+      ],
+      "hot": true,
+      "size_class": "core",
+      "tests": [
+        "MG-223 battery"
+      ]
+    },
+    {
+      "id": "graphics.font",
+      "name": "FreeType/HarfBuzz/FriBidi text shaping",
+      "layer": "graphics",
+      "status": "APK_VERIFIED",
+      "source_authority": "AOSP minikpi (upstream: FreeType/HarfBuzz/FriBidi)",
+      "requires": [
+        "framework.text"
+      ],
+      "provides": [
+        "text.shaping",
+        "text.rtl"
+      ],
+      "api_prefixes": [
+        "Landroid/text/",
+        "Landroid/graphics/Typeface;"
+      ],
+      "hot": true,
+      "size_class": "core",
+      "tests": [
+        "S98 text laws",
+        "CJK fallback law"
+      ]
+    },
+    {
+      "id": "graphics.opengl",
+      "name": "GLSurfaceView/OpenGL bridge",
+      "layer": "graphics",
+      "status": "IMPLEMENTED",
+      "source_authority": "OpenGL ES / PortableGL",
+      "requires": [
+        "graphics.basic"
+      ],
+      "provides": [],
+      "api_prefixes": [
+        "Landroid/opengl/",
+        "Landroid/opengl/GLES20;"
+      ],
+      "hot": false,
+      "size_class": "capability",
+      "tests": [
+        "gles20_bridge"
+      ],
+      "notes": "COLD candidate: small share of corpus needs it."
+    },
+    {
+      "id": "storage.files",
+      "name": "File sandbox + SQLite",
+      "layer": "storage",
+      "status": "APK_VERIFIED",
+      "source_authority": "AOSP + sqlite",
+      "requires": [
+        "core.object"
+      ],
+      "provides": [],
+      "api_prefixes": [
+        "Ljava/io/File;",
+        "Landroid/database/sqlite/"
+      ],
+      "hot": true,
+      "size_class": "core",
+      "tests": [
+        "M3 F-ROOM-CHAIN"
+      ]
+    },
+    {
+      "id": "network.http",
+      "name": "java.net URL + HttpURLConnection + TLS",
+      "layer": "network",
+      "status": "APK_OBSERVED",
+      "source_authority": "libcore luni + OpenSSL (BoringSSL lineage)",
+      "requires": [
+        "core.strings"
+      ],
+      "provides": [
+        "network.socket",
+        "network.tls"
+      ],
+      "api_prefixes": [
+        "Ljava/net/URL;",
+        "Ljava/net/HttpURLConnection;",
+        "Ljava/net/URLConnection;"
+      ],
+      "hot": true,
+      "size_class": "capability",
+      "tests": [
+        "S100 browser: HTTP 200 559B, 3/3 byte-identical, 12087 px"
+      ],
+      "evidence": "docs/evidence/s100_browser/README.md"
+    },
+    {
+      "id": "network.dns",
+      "name": "Hostname resolution",
+      "layer": "network",
+      "status": "IMPLEMENTED",
+      "source_authority": "libc getaddrinfo",
+      "requires": [
+        "network.http"
+      ],
+      "provides": [],
+      "api_prefixes": [
+        "Ljava/net/InetAddress;"
+      ],
+      "hot": true,
+      "size_class": "capability",
+      "tests": [
+        "S100 browser (host resolution in every fetch)"
+      ]
+    },
+    {
+      "id": "media.audio",
+      "name": "SoundPool/MediaPlayer audio",
+      "layer": "media",
+      "status": "PARTIAL",
+      "source_authority": "AOSP AudioFlinger",
+      "requires": [
+        "core.object"
+      ],
+      "provides": [],
+      "api_prefixes": [
+        "Landroid/media/SoundPool;",
+        "Landroid/media/MediaPlayer;"
+      ],
+      "hot": false,
+      "size_class": "capability",
+      "tests": [],
+      "notes": "COLD: AUDIO-001 ticket family pending."
+    },
+    {
+      "id": "media.video",
+      "name": "Video playback",
+      "layer": "media",
+      "status": "DECLARED",
+      "source_authority": "AOSP NuPlayer",
+      "requires": [
+        "media.audio"
+      ],
+      "provides": [],
+      "api_prefixes": [
+        "Landroid/media/VideoView;"
+      ],
+      "hot": false,
+      "size_class": "capability",
+      "tests": [],
+      "notes": "COLD: not implemented; must never silently enter Core."
+    },
+    {
+      "id": "webview",
+      "name": "android.webkit WebView",
+      "layer": "web",
+      "status": "DECLARED",
+      "source_authority": "chromium/WebView",
+      "requires": [
+        "framework.view",
+        "graphics.basic",
+        "framework.text",
+        "network.http",
+        "network.tls",
+        "network.socket",
+        "native.jni"
+      ],
+      "provides": [],
+      "api_prefixes": [
+        "Landroid/webkit/WebView;"
+      ],
+      "hot": false,
+      "size_class": "capability",
+      "tests": [],
+      "notes": "COLD, EXTREMELY EXPENSIVE: deliberately NOT pulled in by networked apps (S100 Mini Browser proves the small path). loadUrl shadow records only."
+    },
+    {
+      "id": "native.jni",
+      "name": "JNI/native library boundary",
+      "layer": "native",
+      "status": "DECLARED",
+      "source_authority": "ART JNI",
+      "requires": [
+        "core.object"
+      ],
+      "provides": [],
+      "api_prefixes": [
+        "Ljava/lang/System;.loadLibrary"
+      ],
+      "hot": false,
+      "size_class": "capability",
+      "tests": [],
+      "notes": "Metadata only; do not pretend native compatibility exists."
+    },
+    {
+      "id": "compose.runtime",
+      "name": "Jetpack Compose compatibility face",
+      "layer": "androidx",
+      "status": "APK_OBSERVED",
+      "source_authority": "androidx compose 1.6.7",
+      "requires": [
+        "framework.view",
+        "framework.text",
+        "graphics.animation"
+      ],
+      "provides": [],
+      "api_prefixes": [
+        "Landroidx/compose/"
+      ],
+      "hot": false,
+      "size_class": "capability",
+      "tests": [
+        "F-108 R8-rename identity law",
+        "dooz evidence"
+      ],
+      "notes": "R8-renamed chains identified by dispatchDraw override, not package names."
+    }
+  ],
+  "diagnostic_categories": [
+    "CAPABILITY_MISSING",
+    "CAPABILITY_VERSION_MISMATCH",
+    "DEPENDENCY_MISSING",
+    "ABI_MISMATCH",
+    "RESOURCE_MISSING",
+    "DATA_MISSING",
+    "PROVIDER_CONFLICT",
+    "CORRUPT_MODULE",
+    "UNSUPPORTED_API"
+  ],
+  "future_readiness": {
+    "dynamic_loading": "DESIGNED",
+    "local_capability_cache": "DESIGNED",
+    "remote_download": "NOT STARTED (deliberately out of scope, \u00a747/\u00a777)",
+    "package_verification": "DESIGNED (content-addressed SHA256 identity in pack contract)",
+    "lazy_loading": "DESIGNED (interface contract only, \u00a732)",
+    "shared_module_store": "PLANNED",
+    "per_apk_runtime_minimization": "FOUNDATION (tools/s100_apk_profile.py + profiles)",
+    "abi_specific_modules": "DESIGNED (platform/abi constraints in registry schema)",
+    "memory_aware_selection": "NOT STARTED"
+  }
+}

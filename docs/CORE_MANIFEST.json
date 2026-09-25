@@ -1,0 +1,24 @@
+{
+  "schema": "miniandroid.core.manifest/1.0",
+  "wave": "S98-FUTURE (S100 implementation)",
+  "law": "Every future component must answer: is this truly Core? If not, which capability owns it? Candidate migrations are MARKED, never silently moved (do-not-break-the-monolith law, §76).",
+  "core_components": [
+    {"component": "DEX parser + class resolver + interpreter", "path": "miniandroid/src/dex/", "runtime_role": "bytecode execution", "candidate_capability": "core.dex (stays Core)", "confidence": "HIGH"},
+    {"component": "Dalvik engine + bridge dispatch", "path": "miniandroid/src/dex/dalvik_engine.cpp", "runtime_role": "API dispatch / shadow routing", "candidate_capability": "core (dispatch); bridge handlers themselves map to owning capabilities", "confidence": "HIGH"},
+    {"component": "APK/ARSC/AXML resource parsers", "path": "miniandroid/src/apk/, miniandroid/src/resources/", "runtime_role": "package + resource foundation", "candidate_capability": "framework.resources (stays Core: every APK needs it)", "confidence": "HIGH"},
+    {"component": "Software renderer", "path": "miniandroid/src/renderer/", "runtime_role": "framebuffer raster", "candidate_capability": "graphics.basic (Core: universal)", "confidence": "HIGH"},
+    {"component": "Framework shadows (View/Activity/Dialog/...)", "path": "miniandroid/src/framework/", "runtime_role": "framework semantics", "candidate_capability": "framework.* families; GL/surface shadows are graphics.opengl candidates", "confidence": "MEDIUM", "notes": "gl_surface_shadow + surface_view_shadow are the first marked CANDIDATE extractions (only GL apps need them)."},
+    {"component": "Text shaping pipeline", "path": "miniandroid/src/fonts/text_shaper.cpp", "runtime_role": "FriBidi/HarfBuzz/FreeType shaping", "candidate_capability": "graphics.font (Core by corpus: nearly all APKs draw text)", "confidence": "HIGH"},
+    {"component": "Storage (prefs/file/sqlite)", "path": "miniandroid/src/storage/", "runtime_role": "persistence", "candidate_capability": "framework.storage.prefs + storage.files (Core by corpus)", "confidence": "HIGH"},
+    {"component": "HTTP(S) client", "path": "miniandroid/src/api/http_client.cpp", "runtime_role": "network transport (S100 NET-001)", "candidate_capability": "network.http (capability, NOT Core — the Mini Browser keeps its closure small)", "confidence": "HIGH", "notes": "Already physically isolated at birth; extraction is trivial when physical modularity lands."},
+    {"component": "Crash forensics", "path": "miniandroid/src/diagnostics/crash_forensics.cpp", "runtime_role": "signal diagnostics (S100 §3/§7)", "candidate_capability": "core (diagnostic foundation)", "confidence": "HIGH"},
+    {"component": "GL/GLES bridges", "path": "miniandroid/src/gles/", "runtime_role": "GL surface backend", "candidate_capability": "graphics.opengl (CANDIDATE EXTRACTION — cold)", "confidence": "HIGH"},
+    {"component": "Runtime exec engine", "path": "miniandroid/src/runtime/", "runtime_role": "execution stages", "candidate_capability": "core", "confidence": "HIGH"}
+  ],
+  "contamination_check": "Any new API implementation MUST record which capability owns it and answer: which dependencies does it add, which APKs need it, can it reuse an existing implementation, what does it cost? (S100 §22 law). Recent examples: http_client.cpp born inside network.http capability, physically separate file; crash_forensics born in core/diagnostics.",
+  "size_budget": {
+    "baseline_file": "docs/SIZE_BASELINE.json",
+    "gate": "tools/s100_size_gate.py",
+    "law": "A capability implementation must NOT silently inflate Core; every wave reports core_delta/capability_delta/total_runtime_delta."
+  }
+}
