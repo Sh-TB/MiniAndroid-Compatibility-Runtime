@@ -191,13 +191,48 @@ S103 held the law two stages deeper.
   real JNI/AudioTrack producer): R500-014–016, 020/021/025/027/028/030/032/
   034/036/037/041–044/053 + 132/135 → OUT_OF_SCOPE per rule 7.
 
+## ROOT-009 — SWITCH-KEY-WIDENING (2 findings, FIXED S104 — commit 4feaaeda)
+
+**Law**: packed-switch/sparse-switch consume an INT register; a
+BYTE/CHAR/SHORT/BOOLEAN register value must widen to int (AOSP semantics —
+dalvik_int_value). The engine's switch key extraction collapsed every
+non-INT32/INT64 value to 0.
+
+**Findings**: R500-082 (packed-switch), R500-084 (R8 merged lambdas — the
+"wrong branch" observation), R500-083/081 (sparse-switch/payload family —
+shared site, research-level).
+
+**Divergence reproduced (S104, solitaire)**: R8 horizontal class merging
+gives every merged class a `$r8$classId:B` field + packed-switch constructor
+dispatch. The merged SavedStateRegistryController (classId=5) ran the
+classId=0 fall-through branch (key collapsed to 0), leaving field `input`
+unset → NPE `MatcherMatchResult.getSavedStateProvider on a null object
+reference` at `ComponentActivity.<init>` → process death, 12 census errors.
+
+**Fix (L5)**: `dalvik_engine.cpp` switch key extraction now uses the shared
+`dalvik_int_value` widening (one shared law — not per-class patches).
+Probe `[S104-SW]`: pre-fix key=0 → dest=5 (wrong branch); post-fix
+key=5 → dest=11 + key=4 → dest=5 (both branches correct).
+
+**Corpus**: com.vayunmathur.games.solitaire errors 12 → 0 (3/3 runs,
+byte-identical screenshots SHA `59fdbfcd60b86a23`); compose chain advanced
+past saved-state wiring to the AndroidComposeView layout path. Second
+merged-class APK (sgtpuzzles): unchanged, 0 errors. Battery 105/105.
+Fan-out: 2/54 census APKs carry `$r8$classId`; the widening law covers
+every packed/sparse-switch on a narrow-typed register corpus-wide.
+
+**Ticket crosswalk**: P082 [x] SOLVED, P084 PARTIAL (lambda-specific rerun
+pending) — see `docs/RESEARCH_500_PROBLEM_REGISTRY.md` + FIX-005 in
+`docs/RESEARCH_FIX_CROSSWALK.md`.
+
 ## Counts
 
 ```text
-clustered findings            = 60 (12 named clusters)
-single-item dispositions      = 76
-verified-fixed this wave      = 3 roots (REFLECTION-FIELD-IDENTITY,
-                                VIEW-FRAME, PFQ-ORDER) — 34 findings L5
+clustered findings            = 64 (13 named clusters incl. ROOT-009)
+single-item dispositions      = 72
+verified-fixed this wave      = 4 roots (REFLECTION-FIELD-IDENTITY,
+                                VIEW-FRAME, PFQ-ORDER, SWITCH-KEY-WIDENING)
+                                — 34 findings L5 (S103) + packed-switch L5 (S104)
 reproduced-not-fixed (next)   = 2 roots (DECOR-LINKAGE, CLASS-IDENTITY)
 latent / corpus-unconfirmed   = 1 root (ARSC-ENCODING)
 classified host-only/absent   = 1 root family (GL/EGL/TEX)
