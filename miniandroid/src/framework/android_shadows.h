@@ -409,6 +409,7 @@ public:
     struct QueuedRunnable {
         uint32_t runnable_id = 0;        // heap object_id of the Runnable
         uint32_t enqueue_seq = 0;        // FIFO tiebreaker
+        bool from_front = false;         // R500: postAtFrontOfQueue insertion
         int64_t  ready_at_ms = 0;        // logical "ready" timestamp
         std::string runnable_class;     // for diagnostics
         // FINDING-004 (M3 F-ROOM-CHAIN): AOSP postDelayed(Runnable, Object
@@ -456,6 +457,14 @@ public:
     // and Message.obtain(r, token)). token_id 0 = no token (msg.obj null).
     void enqueue_tokened(uint32_t runnable_id, int64_t delay_ms,
                          const std::string& cls, uint32_t token_id);
+
+    // R500 ROOT-PFQ-ORDER — AOSP sendMessageAtFrontOfQueue law:
+    // enqueueMessage(queue, msg, 0) — the message rides when=0, which is
+    // ALWAYS due and sorts before every real (when>0) message. Used by
+    // Handler.postAtFrontOfQueue. Subset (documented): multiple
+    // front-posts within one pump drain FIFO among themselves; the corpus
+    // pattern (a single front-post jumping already-posted work) is exact.
+    void enqueue_front(uint32_t runnable_id, const std::string& cls);
 
     // AOSP removeCallbacksAndMessages(Object token): a NULL token removes
     // every pending post; a non-null token removes only the posts riding
