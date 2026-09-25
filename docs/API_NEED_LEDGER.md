@@ -1,6 +1,6 @@
-# API-NEED LEDGER (S101 RECALL SWEEP)
+# API-NEED LEDGER (S102 COMPOSE SWEEP REFRESH)
 
-Engine head: `9c640c0a` — census: {'INTERACTIVE-EVIDENCE': 13, 'RENDERED-L2+': 2, 'PARTIAL': 39, 'FAIL': 7}
+Engine head: `6c0d8f5f` — census: {'INTERACTIVE-EVIDENCE': 14, 'RENDERED-L2+': 2, 'PARTIAL': 38, 'FAIL': 7}
 
 Every PARTIAL/FAIL title with the classes/APIs it needs, extracted from
 crash forensics logs (evidence-first: each need carries its log line).
@@ -11,14 +11,14 @@ the top of this table first.
 
 | # | family | titles needing it | example titles |
 |---|--------|------------------:|----------------|
-| 1 | `compose-runtime` | 46 | app.halma, ch.logixisland.anuto, com.ahorcado |
-| 2 | `unclassified` | 23 | app.halma, ch.logixisland.anuto, com.ahorcado |
-| 3 | `savedstate-registry` | 19 | com.eightsines.firestrike.opensource, com.helddertierwelt.mentalmath, com.serwylo.babydots |
-| 4 | `lifecycle-adapter` | 15 | com.helddertierwelt.mentalmath, com.serwylo.babydots, com.vayunmathur.games.solitaire |
-| 5 | `coordinatorlayout` | 14 | com.kaeruct.raumballer, com.serwylo.babydots, com.vovagorodok.blidraughts |
-| 6 | `constraint-layout` | 10 | com.serwylo.babydots, crypto.o0o0o0o0o.games.blackjack, eu.veldsoft.no.thanks |
-| 7 | `appcompat-decor-toolbar` | 6 | com.sanskritbasics.memory, com.willie.mancala, de.georgsieber.ballbreak |
-| 8 | `theme-gate` | 6 | com.eightsines.firestrike.opensource, com.serwylo.babydots, de.georgsieber.ballbreak |
+| 1 | `unclassified` | 22 | app.halma, ch.logixisland.anuto, com.ahorcado |
+| 2 | `savedstate-registry` | 18 | com.eightsines.firestrike.opensource, com.helddertierwelt.mentalmath, com.serwylo.babydots |
+| 3 | `lifecycle-adapter` | 14 | com.helddertierwelt.mentalmath, com.serwylo.babydots, com.vayunmathur.games.solitaire |
+| 4 | `coordinatorlayout` | 13 | com.kaeruct.raumballer, com.serwylo.babydots, com.vovagorodok.blidraughts |
+| 5 | `constraint-layout` | 9 | com.serwylo.babydots, crypto.o0o0o0o0o.games.blackjack, eu.veldsoft.no.thanks |
+| 6 | `compose-runtime` | 6 | com.helddertierwelt.mentalmath, com.vayunmathur.games.solitaire, eu.veldsoft.no.thanks |
+| 7 | `appcompat-decor-toolbar` | 5 | com.sanskritbasics.memory, com.willie.mancala, de.georgsieber.ballbreak |
+| 8 | `theme-gate` | 5 | com.eightsines.firestrike.opensource, com.serwylo.babydots, de.georgsieber.ballbreak |
 | 9 | `gl-native` | 3 | com.emmanuelmess.tictactoe, com.rocket9labs.boxcars, dev.lonami.klooni |
 | 10 | `libgdx-glsurfaceview` | 3 | app.halma, com.emmanuelmess.tictactoe, dev.lonami.klooni |
 | 11 | `capacitor-bridge` | 1 | com.vovagorodok.blidraughts |
@@ -34,12 +34,12 @@ the top of this table first.
   - `RuntimeException|unwound Lcom/badlogic/gdx/backends/android/AndroidApplication;.init` x2
   - `RuntimeException|unwound Lcom/badlogic/gdx/backends/android/AndroidApplication;.initializeForView` x2
   - `RuntimeException|at Lcom/emmanuelmess/tictactoe/AndroidLauncher;.onCreate` x2
-- families: compose-runtime, gl-native, libgdx-glsurfaceview, unclassified
+- families: gl-native, libgdx-glsurfaceview, unclassified
 
 ### com.kaeruct.raumballer — FAIL (L0)
 - exceptions:
   - `NullPointerException|at Ljgame/platform/JGActivity;.onCreate` x2
-- families: compose-runtime, coordinatorlayout, unclassified
+- families: coordinatorlayout, unclassified
 
 ### com.serwylo.babydots — FAIL (L0)
 - missing classes:
@@ -52,19 +52,17 @@ the top of this table first.
   - `NullPointerException|` x10
   - `NullPointerException|unwound Lcom/leinardi/android/speeddial/SpeedDialActionItem;.createFabWithLabelView` x10
   - `NullPointerException|unwound Lcom/leinardi/android/speeddial/SpeedDialView;.addActionItem` x30
-- families: compose-runtime, constraint-layout, coordinatorlayout, lifecycle-adapter, material-speeddial, savedstate-registry, theme-gate, unclassified
+- families: constraint-layout, coordinatorlayout, lifecycle-adapter, material-speeddial, savedstate-registry, theme-gate, unclassified
 
 ### crypto.o0o0o0o0o.games.blackjack — FAIL (L0)
-- families: compose-runtime, constraint-layout, coordinatorlayout, lifecycle-adapter, savedstate-registry
+- families: constraint-layout, coordinatorlayout, lifecycle-adapter, savedstate-registry
 
 ### eu.veldsoft.free.klondike — FAIL (L0)
-- families: compose-runtime, savedstate-registry
+- families: savedstate-registry
 
 ### eu.veldsoft.tri.peaks — FAIL (L0)
-- families: compose-runtime
 
 ### io.github.ebraminio.bouncy — FAIL (L0)
-- families: compose-runtime
 
 ### app.halma — PARTIAL (L1)
 - exceptions:
@@ -73,7 +71,7 @@ the top of this table first.
   - `RuntimeException|unwound Lcom/badlogic/gdx/backends/android/AndroidApplication;.init` x2
   - `RuntimeException|unwound Lcom/badlogic/gdx/backends/android/AndroidApplication;.initialize` x2
   - `RuntimeException|at Lapp/halma/AndroidLauncher;.onCreate` x2
-- families: compose-runtime, libgdx-glsurfaceview, unclassified
+- families: libgdx-glsurfaceview, unclassified
 
 ### ch.logixisland.anuto — PARTIAL (L1)
 - exceptions:
@@ -82,14 +80,14 @@ the top of this table first.
   - `NullPointerException|` x10
   - `NullPointerException|unwound Lch/logixisland/anuto/GameFactory;.initializeEngine` x2
   - `NullPointerException|unwound Lch/logixisland/anuto/AnutoApplication;.onCreate` x2
-- families: compose-runtime, typedarray-null, unclassified
+- families: typedarray-null, unclassified
 
 ### com.ahorcado — PARTIAL (L1)
 - exceptions:
   - `NullPointerException|unwound Lio/flutter/embedding/engine/g/c;.a` x4
   - `NullPointerException|unwound Lio/flutter/app/FlutterApplication;.onCreate` x2
   - `NullPointerException|` x2
-- families: compose-runtime, unclassified
+- families: unclassified
 
 ### com.eightsines.firestrike.opensource — PARTIAL (L1)
 - exceptions:
@@ -98,7 +96,7 @@ the top of this table first.
   - `NullPointerException|unwound Landroidx/preference/j;.n` x2
   - `NullPointerException|unwound Lzame/game/App;.onCreate` x2
   - `NullPointerException|` x2
-- families: compose-runtime, savedstate-registry, theme-gate, unclassified
+- families: savedstate-registry, theme-gate, unclassified
 
 ### com.helddertierwelt.mentalmath — PARTIAL (L1)
 - missing classes:
@@ -115,10 +113,9 @@ the top of this table first.
 - families: compose-runtime, lifecycle-adapter, savedstate-registry, unclassified
 
 ### com.jeffliu.balancetheball — PARTIAL (L1)
-- families: compose-runtime
 
 ### com.rocket9labs.boxcars — PARTIAL (L1)
-- families: compose-runtime, gl-native
+- families: gl-native
 
 ### com.sanskritbasics.memory — PARTIAL (L1)
 - missing classes:
@@ -131,21 +128,18 @@ the top of this table first.
   - `NullPointerException|unwound Landroidx/appcompat/app/h;.c0` x6
   - `NullPointerException|unwound Landroidx/appcompat/widget/Toolbar;.z` x2
   - `IllegalStateException|unwound Lf/a;.b` x2
-- families: appcompat-decor-toolbar, compose-runtime, unclassified
+- families: appcompat-decor-toolbar, unclassified
 
 ### com.sidhant.bubbleshooter — PARTIAL (L1)
-- families: compose-runtime
 
 ### com.sidhant.puzzle — PARTIAL (L1)
-- families: compose-runtime
 
 ### com.sidhant.queens — PARTIAL (L1)
-- families: compose-runtime
 
 ### com.trianguloy.adnihilation — PARTIAL (L2)
 - exceptions:
   - `NullPointerException|at Lcom/trianguloy/adnihilation/MainActivity;.onCreate` x4
-- families: compose-runtime, unclassified
+- families: unclassified
 
 ### com.vayunmathur.games.solitaire — PARTIAL (L1)
 - exceptions:
@@ -160,7 +154,7 @@ the top of this table first.
 ### com.vovagorodok.blidraughts — PARTIAL (L1)
 - exceptions:
   - `NullPointerException|unwound Landroidx/coordinatorlayout/widget/CoordinatorLayout;.onMeasure` x2
-- families: capacitor-bridge, compose-runtime, coordinatorlayout, lifecycle-adapter, savedstate-registry
+- families: capacitor-bridge, coordinatorlayout, lifecycle-adapter, savedstate-registry
 
 ### com.willie.mancala — PARTIAL (L1)
 - exceptions:
@@ -170,10 +164,10 @@ the top of this table first.
   - `IllegalStateException|unwound La2/d;.H` x4
   - `IllegalStateException|unwound Landroidx/fragment/app/f;.p` x4
   - `IllegalStateException|unwound Landroidx/appcompat/widget/Toolbar;.getWrapper` x4
-- families: appcompat-decor-toolbar, compose-runtime, savedstate-registry, unclassified
+- families: appcompat-decor-toolbar, savedstate-registry, unclassified
 
 ### de.georgsieber.ballbreak — PARTIAL (L1)
-- families: appcompat-decor-toolbar, compose-runtime, coordinatorlayout, lifecycle-adapter, savedstate-registry, theme-gate
+- families: appcompat-decor-toolbar, coordinatorlayout, lifecycle-adapter, savedstate-registry, theme-gate
 
 ### de.tobiasbielefeld.solitaire — PARTIAL (L1)
 - exceptions:
@@ -183,7 +177,7 @@ the top of this table first.
   - `NullPointerException|unwound Lde/tobiasbielefeld/solitaire/classes/c;.onCreate` x2
   - `NullPointerException|at Lde/tobiasbielefeld/solitaire/ui/GameSelector;.onCreate` x4
   - `NullPointerException|unwound Landroid/support/v7/app/e;.findViewById` x2
-- families: compose-runtime, unclassified
+- families: unclassified
 
 ### dev.lonami.klooni — PARTIAL (L1)
 - exceptions:
@@ -191,27 +185,14 @@ the top of this table first.
   - `RuntimeException|unwound Lcom/badlogic/gdx/backends/android/AndroidApplication;.init` x2
   - `RuntimeException|unwound Lcom/badlogic/gdx/backends/android/AndroidApplication;.initialize` x2
   - `RuntimeException|at Ldev/lonami/klooni/AndroidLauncher;.onCreate` x2
-- families: compose-runtime, gl-native, libgdx-glsurfaceview, unclassified
+- families: gl-native, libgdx-glsurfaceview, unclassified
 
 ### eu.quelltext.counting — PARTIAL (L1)
-- families: compose-runtime
 
 ### eu.quelltext.memory — PARTIAL (L1)
-- families: compose-runtime
 
 ### eu.veldsoft.no.thanks — PARTIAL (L1)
-- missing classes:
-  - `ClassNotFoundException` x1: `ClassNotFoundException`
-  - `Landroidx/lifecycle/Lifecycling;` x1: `ClassNotFoundException; (androidx.savedstate.Recreator_LifecycleAdapter) method=Landroidx/lifecycle/Lifecycling;.generat`
-  - `ClassNotFoundException?` x1: `ClassNotFoundException;`
-- exceptions:
-  - `RuntimeException|unwound Lkotlin/jvm/internal/Intrinsics;.checkNotNull` x2
-  - `RuntimeException|unwound Landroidx/lifecycle/Lifecycling;.resolveObserverCallbackType` x2
-  - `RuntimeException|unwound Landroidx/lifecycle/Lifecycling;.getObserverConstructorType` x2
-  - `RuntimeException|unwound Landroidx/lifecycle/Lifecycling;.lifecycleEventObserver` x2
-  - `RuntimeException|` x12
-  - `RuntimeException|unwound Landroidx/lifecycle/LifecycleRegistry;.addObserver` x2
-- families: compose-runtime, constraint-layout, coordinatorlayout, lifecycle-adapter, savedstate-registry, unclassified
+- families: compose-runtime, constraint-layout, coordinatorlayout, lifecycle-adapter, savedstate-registry
 
 ### io.github.hathibelagal.mykanji — PARTIAL (L1)
 - exceptions:
@@ -221,7 +202,7 @@ the top of this table first.
   - `NullPointerException|unwound Landroidx/appcompat/widget/ActionBarOverlayLayout;.init` x2
   - `NullPointerException|unwound Landroidx/appcompat/app/AppCompatDelegateImpl;.createSubDecor` x8
   - `NullPointerException|unwound Landroidx/appcompat/widget/Toolbar;.inflateMenu` x2
-- families: appcompat-decor-toolbar, compose-runtime, constraint-layout, coordinatorlayout, lifecycle-adapter, savedstate-registry, theme-gate, unclassified
+- families: appcompat-decor-toolbar, constraint-layout, coordinatorlayout, lifecycle-adapter, savedstate-registry, theme-gate, unclassified
 
 ### io.github.johnathan.minesweeper — PARTIAL (L1)
 - exceptions:
@@ -260,13 +241,12 @@ the top of this table first.
   - `IllegalStateException|unwound Landroidx/activity/ComponentActivity;.onCreate` x2
   - `IllegalStateException|unwound Landroidx/fragment/app/j;.onCreate` x2
   - `IllegalStateException|unwound Ljwtc/android/chess/start;.Z` x2
-- families: compose-runtime, savedstate-registry, unclassified
+- families: savedstate-registry, unclassified
 
 ### name.boyle.chris.sgtpuzzles — PARTIAL (L1)
 - families: compose-runtime
 
 ### net.sourceforge.solitaire_cg — PARTIAL (L1)
-- families: compose-runtime
 
 ### org.andstatus.game2048 — PARTIAL (L1)
 - exceptions:
@@ -276,10 +256,9 @@ the top of this table first.
   - `NullPointerException|unwound Lgc;.L` x2
   - `NullPointerException|unwound Lz40;.a` x2
   - `NullPointerException|unwound Ldu;.a` x2
-- families: compose-runtime, unclassified
+- families: unclassified
 
 ### org.asafonov.accelerace — PARTIAL (L1)
-- families: compose-runtime
 
 ### org.mattvchandler.a2050 — PARTIAL (L1)
 - exceptions:
@@ -289,32 +268,28 @@ the top of this table first.
   - `NullPointerException|unwound Landroidx/activity/j;.onCreate` x2
   - `NullPointerException|unwound Landroidx/fragment/app/v;.onCreate` x2
   - `NullPointerException|unwound Lq2/i;.onCreate` x2
-- families: compose-runtime, savedstate-registry, unclassified
+- families: savedstate-registry, unclassified
 
 ### org.secuso.privacyfriendly2048 — PARTIAL (L1)
 - missing classes:
   - `ClassNotFoundException` x1: `ClassNotFoundException`
   - `Lcom/bumptech/glide/Glide;` x1: `ClassNotFoundException; (com.bumptech.glide.GeneratedAppGlideModuleImpl) method=Lcom/bumptech/glide/Glide;.getAnnotation`
   - `ClassNotFoundException?` x1: `ClassNotFoundException;`
-- families: compose-runtime, constraint-layout, coordinatorlayout, lifecycle-adapter, savedstate-registry, unclassified
+- families: constraint-layout, coordinatorlayout, lifecycle-adapter, savedstate-registry, unclassified
 
 ### org.secuso.privacyfriendlybattleship — PARTIAL (L1)
-- families: compose-runtime, constraint-layout, coordinatorlayout, lifecycle-adapter, savedstate-registry
+- families: constraint-layout, coordinatorlayout, lifecycle-adapter, savedstate-registry
 
 ### org.secuso.privacyfriendlydame — PARTIAL (L1)
-- families: compose-runtime, constraint-layout, coordinatorlayout, lifecycle-adapter, savedstate-registry
-
-### org.secuso.privacyfriendlymemory — PARTIAL (L2)
-- families: appcompat-decor-toolbar, compose-runtime, constraint-layout, coordinatorlayout, lifecycle-adapter, savedstate-registry, theme-gate
+- families: constraint-layout, coordinatorlayout, lifecycle-adapter, savedstate-registry
 
 ### org.secuso.privacyfriendlysolitaire — PARTIAL (L1)
-- families: compose-runtime, constraint-layout, coordinatorlayout, lifecycle-adapter, savedstate-registry
+- families: constraint-layout, coordinatorlayout, lifecycle-adapter, savedstate-registry
 
 ### org.secuso.privacyfriendlysudoku — PARTIAL (L1)
-- families: compose-runtime, constraint-layout, coordinatorlayout, lifecycle-adapter, multidex-family, savedstate-registry
+- families: constraint-layout, coordinatorlayout, lifecycle-adapter, multidex-family, savedstate-registry
 
 ### si.palcka.tarok — PARTIAL (L1)
-- families: compose-runtime
 
 ### x653.all_in_gold — PARTIAL (L2)
 - exceptions:
@@ -324,7 +299,6 @@ the top of this table first.
   - `Exception|unwound Landroid/support/design/widget/ViewUtilsLollipop;.setStateListAnimatorFromAttrs` x2
   - `Exception|` x4
   - `Exception|at Lx653/all_in_gold/MainActivity;.onCreate` x4
-- families: appcompat-decor-toolbar, compose-runtime, coordinatorlayout, lifecycle-adapter, theme-gate, unclassified
+- families: appcompat-decor-toolbar, coordinatorlayout, lifecycle-adapter, theme-gate, unclassified
 
 ### xyz.deepdaikon.quinb — PARTIAL (L1)
-- families: compose-runtime
