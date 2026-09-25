@@ -8,9 +8,9 @@ site and in `docs/evidence/s80/`.
 
 | Game | Package | Sources | Build script | Autoplay driver |
 |---|---|---|---|---|
-| Snake Deluxe | `com.miniandroid.snakedeluxe` | `snake-deluxe/` | `scripts/s80_build_snakedeluxe.sh` | `scripts/s80_sd_autoplay.py` |
-| Mini Tetris | `com.miniandroid.tetris` | `mini-tetris/` | `scripts/s80_build_tetris.sh` | `scripts/s80_tet_autoplay.py` |
-| 2048 | `com.miniandroid.g2048` | `2048/` | `scripts/s80_build_2048.sh` | `scripts/s80_2048_autoplay.py` |
+| Snake Deluxe | `com.miniandroid.snakedeluxe` | `snake-deluxe/` | `scripts/s80_build_snakedeluxe.sh` | `scripts/autoplay/s80_sd_autoplay.py` |
+| Mini Tetris | `com.miniandroid.tetris` | `mini-tetris/` | `scripts/s80_build_tetris.sh` | `scripts/autoplay/s80_tet_autoplay.py` |
+| 2048 | `com.miniandroid.g2048` | `2048/` | `scripts/s80_build_2048.sh` | `scripts/autoplay/s80_2048_autoplay.py` |
 
 RUNTIME LAWS these games are written against (documented in
 `docs/foundation/s80/S80_REPORT.md`):
