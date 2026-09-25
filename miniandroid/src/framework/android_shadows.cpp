@@ -1459,6 +1459,32 @@ void HandlerShadow::enqueue_tokened(uint32_t runnable_id, int64_t delay_ms,
               << ")" << std::endl;
 }
 
+// R500 ROOT-PFQ-ORDER — AOSP Handler.sendMessageAtFrontOfQueue:
+//   public final boolean sendMessageAtFrontOfQueue(Message msg) {
+//       return enqueueMessage(queue, msg, 0);   // when = 0
+//   }
+// The message is enqueued with when=0: always due, and the queue's
+// (ready_at, seq) ordering places it BEFORE every message with a real
+// deadline — the front-post jumps already-posted work. Deterministic:
+// no wall clock, and FIFO among multiple front-posts (documented subset).
+void HandlerShadow::enqueue_front(uint32_t runnable_id,
+                                  const std::string& cls) {
+    if (runnable_id == 0) return;
+    QueuedRunnable q;
+    q.runnable_id = runnable_id;
+    q.enqueue_seq = next_seq_++;
+    q.from_front = true;
+    q.ready_at_ms = 0;
+    q.runnable_class = cls;
+    q.token_id = 0;
+    queue_.push_back(std::move(q));
+    std::cerr << "[QUEUE] Runnable id=" << runnable_id
+              << " enqueued FRONT-OF-QUEUE (when=0, ready_at=0ms virtual"
+              << ", queue_depth=" << queue_.size()
+              << (cls.empty() ? "" : (", source=" + cls))
+              << ")" << std::endl;
+}
+
 // AOSP removeCallbacksAndMessages(token) for a non-null token: identity
 // match against Message.obj. Token 0 (no token) is handled by remove_all.
 size_t HandlerShadow::remove_by_token(uint32_t token_id) {
@@ -1530,10 +1556,14 @@ size_t HandlerShadow::drain_ready(std::vector<uint32_t>* out_drained) {
     for (size_t i = 0; i < queue_.size(); ++i)
         if (queue_[i].ready_at_ms <= virtual_now_ms_) due_idx.push_back(i);
     if (due_idx.empty()) return 0;
+    // R500 ROOT-PFQ-ORDER: within the same ready time, a front-of-queue
+    // message (AOSP when=0 law) precedes normally-posted work.
     std::stable_sort(due_idx.begin(), due_idx.end(),
                      [&](size_t a, size_t b) {
                          if (queue_[a].ready_at_ms != queue_[b].ready_at_ms)
                              return queue_[a].ready_at_ms < queue_[b].ready_at_ms;
+                         if (queue_[a].from_front != queue_[b].from_front)
+                             return queue_[a].from_front;  // front first
                          return queue_[a].enqueue_seq < queue_[b].enqueue_seq;
                      });
     std::vector<QueuedRunnable> taken;
@@ -1608,10 +1638,18 @@ CallResult HandlerShadow::dispatch(const CallContext& ctx) {
             // the heap object already exists (allocated by new-instance).
             return CallResult::handled_void();
         }
-        if (m == "post" || m == "postAtFrontOfQueue") {
+        if (m == "post") {
             uint32_t r = extract_runnable(ctx, 0);
             if (r == 0) return CallResult::handled_bool(false);
             enqueue(r, 0, /*cls=*/"");
+            return CallResult::handled_bool(true);
+        }
+        if (m == "postAtFrontOfQueue") {
+            // R500 ROOT-PFQ-ORDER: front-of-queue insertion (AOSP when=0
+            // law) — the runnable drains BEFORE already-posted work.
+            uint32_t r = extract_runnable(ctx, 0);
+            if (r == 0) return CallResult::handled_bool(false);
+            enqueue_front(r, /*cls=*/"");
             return CallResult::handled_bool(true);
         }
         if (m == "postDelayed") {
@@ -3276,13 +3314,32 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     // answered 0 → every drawCircle/drawRect recorded zero geometry
     // (op-trace evidence: correct colors, all-zero coords) → the game
     // surface painted white even after the surface path went live.
+    // ── S86 §F-NEW-170 + R500 ROOT-VIEW-FRAME: View dimension laws ──────
+    // AOSP View.java:
+    //   getWidth()  = mRight - mLeft   (LAYOUT frame — set by layout/setFrame)
+    //   getHeight() = mBottom - mTop
+    //   getMeasuredWidth/Height() = mMeasuredWidth/Height (MEASURE pass)
+    // One store: the engine layout stage AND direct layout/setFrame writes
+    // both land in measured_left/top/right/bottom, so a frame-based getWidth
+    // serves engine-laid-out trees (Dodge FieldView draw geometry — the
+    // F-NEW-170 evidence) and programmatic direct layouts identically.
+    // A measure alone (setMeasuredDimension / default onMeasure) writes
+    // measured_width/height ONLY — getWidth() must keep answering 0 until
+    // layout materializes the frame (S103 W1/W2 probes: pre-layout 0 is
+    // the CORRECT semantic).
     if (m == "getWidth" || m == "getMeasuredWidth") {
         const auto* n = find_node(ctx.receiver_id);
-        return CallResult::handled_int(n ? n->measured_width : 0);
+        if (!n) return CallResult::handled_int(0);
+        if (m == "getMeasuredWidth")
+            return CallResult::handled_int(n->measured_width);
+        return CallResult::handled_int(n->measured_right - n->measured_left);
     }
     if (m == "getHeight" || m == "getMeasuredHeight") {
         const auto* n = find_node(ctx.receiver_id);
-        return CallResult::handled_int(n ? n->measured_height : 0);
+        if (!n) return CallResult::handled_int(0);
+        if (m == "getMeasuredHeight")
+            return CallResult::handled_int(n->measured_height);
+        return CallResult::handled_int(n->measured_bottom - n->measured_top);
     }
     // ── S83-GFX-BASE §19: ImageView.setScaleType law ─────────────────────
     // AOSP ImageView.setScaleType(ScaleType) stores the enum; the ordinal
@@ -3797,10 +3854,74 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         // No runnable arg or no HandlerShadow — keep the legacy no-op.
         return CallResult::handled_void();
     }
+    // ── R500 ROOT-VIEW-FRAME: layout materialization laws ────────────────
+    // AOSP View.java laws (S103 U-004 probes W2/W3 proved the divergence;
+    // the prior handlers were silent no-ops):
+    //   * View.layout(l,t,r,b) → setFrame(l,t,r,b): stores
+    //     mLeft/mTop/mRight/mBottom. getWidth() = mRight - mLeft,
+    //     getHeight() = mBottom - mTop — pre-layout 0 is CORRECT, but a
+    //     completed layout MUST materialize the frame.
+    //   * View.measure(spec,spec) → default onMeasure →
+    //     setMeasuredDimension(getDefaultSize(...)): mode EXACTLY or
+    //     AT_MOST → specSize (the getDefaultSize law — AOSP keeps both);
+    //     UNSPECIFIED → the suggested minimum (0 for a plain view).
+    // The frame is written through the SAME ViewNode geometry store the
+    // engine layout stage uses (measured_* + x/y/width/height + laid_out),
+    // so reflection, DEX getters and the render stage all observe ONE
+    // identity (field-identity law applied to view geometry).
+    if (m == "layout" || m == "setFrame") {
+        if (ctx.args.size() >= 4) {
+            auto* n = get_or_create_node(
+                ctx.receiver_id,
+                ctx.receiver_class.empty() ? ctx.class_name
+                                           : ctx.receiver_class);
+            const int l = ctx.arg_as_int(0), t = ctx.arg_as_int(1);
+            const int r = ctx.arg_as_int(2), b = ctx.arg_as_int(3);
+            n->measured_left = l;
+            n->measured_top = t;
+            n->measured_right = r;
+            n->measured_bottom = b;
+            n->measured_width = r - l;
+            n->measured_height = b - t;
+            n->x = l;
+            n->y = t;
+            n->width = r - l;
+            n->height = b - t;
+            n->laid_out = true;
+            // AOSP: layout() is void; setFrame() returns "changed".
+            return m == "setFrame" ? CallResult::handled_bool(true)
+                                   : CallResult::handled_void();
+        }
+        return CallResult::handled_void();
+    }
+    if (m == "measure" && ctx.args.size() >= 2) {
+        // Default onMeasure for framework/plain views (real DEX onMeasure
+        // bodies are executed by the interpreter BEFORE this shadow is
+        // reached — the F10 hook chain). AOSP View.getDefaultSize: mode
+        // EXACTLY or AT_MOST answers specSize; UNSPECIFIED answers the
+        // suggested minimum (0 for a plain view without background).
+        auto* n = get_or_create_node(
+            ctx.receiver_id,
+            ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        auto spec_size = [](int32_t spec) -> int {
+            return spec & 0x3FFFFFFF;
+        };
+        auto spec_mode = [](int32_t spec) -> int {
+            return (spec >> 30) & 0x3;
+        };
+        auto default_size = [&](int32_t spec) -> int {
+            const int mode = spec_mode(spec);
+            if (mode == 1 || mode == 2) return spec_size(spec);  // EXACTLY/AT_MOST
+            return 0;                                            // UNSPECIFIED
+        };
+        n->measured_width = default_size(ctx.arg_as_int(0));
+        n->measured_height = default_size(ctx.arg_as_int(1));
+        return CallResult::handled_void();
+    }
     if (m == "setBackgroundColor" || m == "setBackground" ||
         m == "setBackgroundResource" || m == "setBackgroundDrawable" ||
         m == "setLayoutParams" || m == "getLayoutParams" ||
-        m == "measure" || m == "layout" || m == "draw" ||
+        m == "draw" ||
         m == "requestLayout" || m == "invalidate") {
         return CallResult::handled_void();
     }

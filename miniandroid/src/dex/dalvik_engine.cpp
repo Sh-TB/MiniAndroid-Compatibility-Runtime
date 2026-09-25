@@ -14343,6 +14343,26 @@ bool DalvikExecutionEngine::execute_sget(uint32_t pc, InstructionTrace& trace) {
         auto it = static_field_storage_.find(static_key);
         if (it != static_field_storage_.end()) {
             result_value = it->second;
+        } else if (field_res.class_descriptor ==
+                       "Landroid/view/View$MeasureSpec;" &&
+                   (field_res.field_name == "EXACTLY" ||
+                    field_res.field_name == "AT_MOST" ||
+                    field_res.field_name == "UNSPECIFIED")) {
+            // R500 (ROOT-VIEW-FRAME family): AOSP View$MeasureSpec mode
+            // constants (EXACTLY = 0x40000000, AT_MOST = 0x80000000,
+            // UNSPECIFIED = 0) are JVM-stable compile-time ints consumed
+            // by every programmatic measure chain. The int sget path has
+            // no constant synthesis — seed them BEFORE the typed-default
+            // law answers 0 (probe evidence: makeMeasureSpec(200, EXACTLY)
+            // returned the mode-less 0xc8 → default onMeasure -> 0x0).
+            if (field_res.field_name == "EXACTLY") {
+                result_value = DalvikValue::make_int(0x40000000);
+            } else if (field_res.field_name == "AT_MOST") {
+                result_value = DalvikValue::make_int((int32_t)0x80000000u);
+            } else {
+                result_value = DalvikValue::make_int(0);
+            }
+            static_field_storage_[static_key] = result_value;
         } else {
             static_field_storage_[static_key] = result_value;
         }
@@ -14589,6 +14609,29 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
                 std::cerr << "[R-NEW-397] synthesized Collections."
                           << field_res.field_name << " obj#" << e_id
                           << std::endl;
+            } else if (field_res.class_descriptor ==
+                           "Landroid/view/View$MeasureSpec;" &&
+                       (field_res.field_name == "EXACTLY" ||
+                        field_res.field_name == "AT_MOST" ||
+                        field_res.field_name == "UNSPECIFIED")) {
+                // R500 (ROOT-VIEW-FRAME family): AOSP View.java MeasureSpec
+                // mode constants are JVM-stable compile-time ints —
+                //   UNSPECIFIED = 0, EXACTLY = 1 << 30 (0x40000000),
+                //   AT_MOST = 2 << 30 (0x80000000)
+                // — and the DEX measure chains (F-096b in-place getMode
+                // law) compare them DIRECTLY. With no seed the sget
+                // answered typed-default 0 for EXACTLY/AT_MOST, so every
+                // programmatic makeMeasureSpec(size, EXACTLY) produced a
+                // mode-less spec (probe evidence: makeMeasureSpec(200,
+                // EXACTLY) -> 0xc8; default onMeasure then answered 0x0).
+                if (field_res.field_name == "EXACTLY") {
+                    result_value = DalvikValue::make_int(0x40000000);
+                } else if (field_res.field_name == "AT_MOST") {
+                    result_value = DalvikValue::make_int((int32_t)0x80000000u);
+                } else {
+                    result_value = DalvikValue::make_int(0);
+                }
+                static_field_storage_[static_key] = result_value;
             } else if (field_res.class_descriptor == "Ljava/io/File;" &&
                        (field_res.field_name == "separator" ||
                         field_res.field_name == "separatorChar" ||
@@ -21619,6 +21662,52 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                             }
                         }
                     }
+                    // R500 FIELD-IDENTITY display law: String.valueOf on a
+                    // boxed primitive renders the boxed VALUE (OpenJDK
+                    // Integer.toString), not the identity form. The box's
+                    // value slot carries the raw primitive.
+                    {
+                        auto* tok500b = heap_.get(a.object_id);
+                        if (tok500b) {
+                            static const std::map<std::string, int>
+                                k_box_rank500 = {{"Ljava/lang/Integer;", 0},
+                                                 {"Ljava/lang/Long;", 1},
+                                                 {"Ljava/lang/Boolean;", 2},
+                                                 {"Ljava/lang/Byte;", 3},
+                                                 {"Ljava/lang/Character;", 4},
+                                                 {"Ljava/lang/Short;", 5},
+                                                 {"Ljava/lang/Float;", 6},
+                                                 {"Ljava/lang/Double;", 7}};
+                            auto bit500 =
+                                k_box_rank500.find(tok500b->class_descriptor);
+                            if (bit500 != k_box_rank500.end()) {
+                                auto bv = heap_.get_object_field(
+                                    a.object_id, "value");
+                                if (bv.has_value()) {
+                                    switch (bv->type) {
+                                        case DalvikType::INT32:
+                                            return std::to_string(bv->int_val);
+                                        case DalvikType::INT64:
+                                            return std::to_string(bv->long_val);
+                                        case DalvikType::BOOLEAN:
+                                            return std::string(bv->bool_val
+                                                                   ? "true"
+                                                                   : "false");
+                                        case DalvikType::FLOAT32:
+                                            return std::to_string(bv->float_val);
+                                        case DalvikType::FLOAT64:
+                                            return std::to_string(bv->double_val);
+                                        case DalvikType::CHAR:
+                                            return std::string(
+                                                1, static_cast<char>(
+                                                       bv->int_val));
+                                        default:
+                                            break;
+                                    }
+                                }
+                            }
+                        }
+                    }
                     // Per OpenJDK Object.toString: ClassName@hexIdentityHash
                     std::string cn = a.class_desc;
                     return cn + "@" + std::to_string(a.object_id);
@@ -24523,6 +24612,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     std::cerr << "[R347-MEASURE] view=" << recv
                               << " class=" << n->class_desc
                               << " dex_onmeasure=" << (ok ? "YES" : "NO")
+                              << " wspec=0x" << std::hex << args[1].int_val
+                              << " hspec=0x" << args[2].int_val << std::dec
                               << " -> " << n->measured_width << "x"
                               << n->measured_height << std::endl;
                 }
@@ -28231,10 +28322,16 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     default: return 0;
                 }
             };
-            // AOSP signature: makeMeasureSpec(int size, int mode).
+            // AOSP signature: makeMeasureSpec(int size, int mode). API 17+
+            // View.java: `return size & ~MODE_MASK | mode & MODE_MASK;` —
+            // the mode constant arrives ALREADY SHIFTED in place
+            // (EXACTLY = 0x40000000; same in-place law as F-096b getMode).
+            // The prior (mode << 30) re-shift destroyed the real constant
+            // (probe: makeMeasureSpec(200, EXACTLY) -> 0xc8, mode-less).
             int32_t sz = val_of(args[0]), mode = val_of(args[1]);
             status = ApiCallTrace::Status::IMPLEMENTED;
-            result = DalvikValue::make_int((mode << 30) | (sz & 0x3FFFFFFF));
+            result = DalvikValue::make_int(
+                (sz & 0x3FFFFFFF) | (mode & (int32_t)0xC0000000u));
             return true;
         }
         if (method == "toString") {
@@ -28579,37 +28676,166 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // field names are compile-time constant and genuinely declared, so
         // an auto-registered Field object satisfies them deterministically.
         // ────────────────────────────────────────────────────────────────
+        // ────────────────────────────────────────────────────────────────
+        // R500 FIELD-IDENTITY LAW (shared root ROOT-REFLECTION-FIELD-
+        // IDENTITY): the canonical field key is (declaring-class, name)
+        // across interpreter sget/sput, heap iget/iput and reflection.
+        // Every reflection Field object now carries its dex-derived kind
+        // (static/instance), raw access flags, declared type and an
+        // accessible bit, so Field.get/set answer with the SAME identity
+        // the interpreter uses. Upstream laws (libcore/OJ):
+        //   * Class.getDeclaredField: NoSuchFieldException when the class
+        //     is dex-known and does not declare the name. Auto-registration
+        //     stays ONLY for synthetic/engine-bridge classes (R-NEW-396
+        //     subset — classes with no dex class_def).
+        //   * Class.getField: public-field lookup walking the superclass
+        //     chain; NoSuchFieldException when absent. The prior stub
+        //     answered null → Field.get NPE killed 5 census titles.
+        //   * Field.get on a static field ignores the receiver (reads class
+        //     storage); on an instance field a null receiver → NPE and a
+        //     non-instance receiver → IllegalArgumentException.
+        //   * Field.get returns boxed values for primitive fields;
+        //     Field.set accepts boxed or raw and unboxes into the same
+        //     storage representation the interpreter uses.
+        //   * Field.set on a final field → IllegalAccessException unless
+        //     setAccessible(true) was called on THIS Field object.
+        // ────────────────────────────────────────────────────────────────
+        auto find_declared_field500 =
+            [&](const std::string& cls, const std::string& fname,
+                bool& class_known, bool& class_has_fields)
+                -> const dex::FieldInfo* {
+            class_known = false;
+            class_has_fields = false;
+            for (const auto& cd : dex_report_->classes) {
+                if (cd.name != cls) continue;
+                class_known = true;
+                class_has_fields =
+                    !cd.static_fields.empty() || !cd.instance_fields.empty();
+                for (const auto& fd : cd.static_fields)
+                    if (fd.name == fname) return &fd;
+                for (const auto& fd : cd.instance_fields)
+                    if (fd.name == fname) return &fd;
+                return nullptr;  // class known, name not declared
+            }
+            return nullptr;      // class not in dex tables (synthetic)
+        };
+        auto make_field500 = [&](const std::string& decl,
+                                 const std::string& fname,
+                                 const std::string& ftype, bool fstatic,
+                                 uint32_t flags) -> uint32_t {
+            uint32_t fid = heap_.allocate("Ljava/lang/reflect/Field;", pc_, 0);
+            heap_.set_object_field(fid, "declaring_class",
+                                   DalvikValue::make_string(decl, 0));
+            heap_.set_object_field(fid, "field_name",
+                                   DalvikValue::make_string(fname, 0));
+            heap_.set_object_field(fid, "field_type",
+                                   DalvikValue::make_string(ftype, 0));
+            heap_.set_object_field(fid, "field_kind",
+                                   DalvikValue::make_string(
+                                       fstatic ? "static" : "instance", 0));
+            heap_.set_object_field(fid, "field_mods",
+                                   DalvikValue::make_int((int32_t)flags));
+            heap_.set_object_field(fid, "accessible",
+                                   DalvikValue::make_bool(false));
+            return fid;
+        };
         if (method == "getDeclaredField" && args.size() >= 2 &&
             args[1].type == DalvikType::STRING_REF && !dotted.empty()) {
             const std::string& fname = args[1].string_val;
-            uint32_t fid = heap_.allocate("Ljava/lang/reflect/Field;", pc_, 0);
-            heap_.set_object_field(fid, "declaring_class",
-                                   DalvikValue::make_string(referent_desc, 0));
-            heap_.set_object_field(fid, "field_name",
-                                   DalvikValue::make_string(fname, 0));
-            // declared type (best-effort): consult dex_report_ field table
-            std::string ftype = "Ljava/lang/Object;";
-            for (const auto& cd : dex_report_->classes) {
-                if (cd.name != referent_desc) continue;
-                bool hit337 = false;
-                for (const auto& fd : cd.instance_fields) {
-                    if (fd.name == fname) { ftype = fd.type; hit337 = true; break; }
-                }
-                if (!hit337) {
-                    for (const auto& fd : cd.static_fields) {
-                        if (fd.name == fname) { ftype = fd.type; break; }
-                    }
-                }
-                break;
+            bool known500 = false, has_fields500 = false;
+            const dex::FieldInfo* fi500 = find_declared_field500(
+                referent_desc, fname, known500, has_fields500);
+            // NSFE only when the class is dex-known WITH parsed field
+            // tables — a class whose tables never parsed keeps the
+            // legacy auto-registration (R-NEW-396 synthetic subset).
+            if (known500 && has_fields500 && !fi500) {
+                std::string msg = "no field \"" + fname + "\" declared on " +
+                                  referent_desc;
+                std::cerr << "[R500-REFLECT] getDeclaredField(" << referent_desc
+                          << ".\"" << fname << "\") -> NoSuchFieldException"
+                          << std::endl;
+                throw_deferred("Ljava/lang/NoSuchFieldException;", msg,
+                               "R500-REFLECT");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_null();
+                return true;
             }
-            heap_.set_object_field(fid, "field_type",
-                                   DalvikValue::make_string(ftype, 0));
+            std::string ftype = fi500 ? fi500->type : "Ljava/lang/Object;";
+            bool fstatic = fi500 ? fi500->is_static : false;
+            uint32_t fflags = fi500 ? fi500->access_flags : (0x1 | 0x8);
+            uint32_t fid = make_field500(referent_desc, fname, ftype, fstatic,
+                                         fflags);
             std::cerr << "[R337-REFLECT] Class(" << referent_desc
                       << ").getDeclaredField(\"" << fname
-                      << "\") type=" << ftype << " -> Field obj#" << fid
-                      << std::endl;
+                      << "\") type=" << ftype
+                      << (fstatic ? " static" : " instance")
+                      << (fi500 ? "" : " [synthetic-auto]")
+                      << " -> Field obj#" << fid << std::endl;
             status = ApiCallTrace::Status::IMPLEMENTED;
             result = DalvikValue::make_object(fid, "Ljava/lang/reflect/Field;");
+            return true;
+        }
+        // R500: Class.getField(String) — public field lookup incl. the
+        // superclass chain (libcore law: first declaring class wins;
+        // non-public at the declaring class → NoSuchFieldException; absent
+        // → NoSuchFieldException, never a silent null).
+        if (method == "getField" && args.size() >= 2 &&
+            args[1].type == DalvikType::STRING_REF && !dotted.empty()) {
+            const std::string& fname = args[1].string_val;
+            std::string cur500 = referent_desc;
+            bool found500 = false, nonpublic500 = false;
+            std::string fdecl500, ftype500;
+            bool fstatic500 = false;
+            uint32_t fflags500 = 0;
+            for (int hop500 = 0; hop500 < 32 && !found500; ++hop500) {
+                bool known500 = false, has_fields500 = false;
+                const dex::FieldInfo* fi500 = find_declared_field500(
+                    cur500, fname, known500, has_fields500);
+                if (fi500) {
+                    if (!(fi500->access_flags & 0x1)) {
+                        nonpublic500 = true;
+                        break;
+                    }
+                    found500 = true;
+                    fdecl500 = cur500;
+                    ftype500 = fi500->type;
+                    fstatic500 = fi500->is_static;
+                    fflags500 = fi500->access_flags;
+                    break;
+                }
+                auto sup500 = class_to_superclass_.find(cur500);
+                if (sup500 == class_to_superclass_.end()) break;
+                if (sup500->second.empty() ||
+                    sup500->second == "Ljava/lang/Object;")
+                    break;
+                cur500 = sup500->second;
+            }
+            if (!found500) {
+                std::string why500 = nonpublic500
+                    ? ("field \"" + fname + "\" on " + fdecl500 +
+                       " is not public")
+                    : ("no public field \"" + fname + "\" on " +
+                       referent_desc);
+                std::cerr << "[R500-REFLECT] getField(" << referent_desc
+                          << ".\"" << fname << "\") -> NoSuchFieldException ("
+                          << why500 << ")" << std::endl;
+                throw_deferred("Ljava/lang/NoSuchFieldException;", why500,
+                               "R500-REFLECT");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_null();
+                return true;
+            }
+            uint32_t fid500 = make_field500(fdecl500, fname, ftype500,
+                                            fstatic500, fflags500);
+            std::cerr << "[R500-REFLECT] Class(" << referent_desc
+                      << ").getField(\"" << fname
+                      << "\") declared=" << fdecl500
+                      << " type=" << ftype500
+                      << (fstatic500 ? " static" : " instance")
+                      << " -> Field obj#" << fid500 << std::endl;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_object(fid500,
+                                              "Ljava/lang/reflect/Field;");
             return true;
         }
         // R-NEW-337: getDeclaredFields — array of Field objects (used by the
@@ -28620,17 +28846,9 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             for (const auto& cd : dex_report_->classes) {
                 if (cd.name != referent_desc) continue;
                 auto add337 = [&](const dex::FieldInfo& fd) {
-                    uint32_t fid = heap_.allocate(
-                        "Ljava/lang/reflect/Field;", pc_, 0);
-                    heap_.set_object_field(
-                        fid, "declaring_class",
-                        DalvikValue::make_string(referent_desc, 0));
-                    heap_.set_object_field(
-                        fid, "field_name",
-                        DalvikValue::make_string(fd.name, 0));
-                    heap_.set_object_field(
-                        fid, "field_type",
-                        DalvikValue::make_string(fd.type, 0));
+                    uint32_t fid = make_field500(referent_desc, fd.name,
+                                                 fd.type, fd.is_static,
+                                                 fd.access_flags);
                     fids.push_back(fid);
                 };
                 for (const auto& fd : cd.instance_fields) add337(fd);
@@ -29691,6 +29909,105 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 name337 = field_meta337(args[0], "field_name");
                 type337 = field_meta337(args[0], "field_type");
             }
+            // ── R500 FIELD-IDENTITY: kind/mods/accessible come from the
+            // Field object's dex-derived metadata (make_field500). Legacy
+            // 3-field Field objects fall back to a dex scan; fields on
+            // synthetic/engine-bridge classes stay UNKNOWN (auto subset).
+            std::string kind500;
+            int mods500 = -1;
+            bool accessible500 = false;
+            bool receiver_field500 =
+                !args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+                args[0].object_id != 0;
+            if (receiver_field500) {
+                kind500 = field_meta337(args[0], "field_kind");
+                auto mv500 = heap_.get_object_field(args[0].object_id,
+                                                    "field_mods");
+                if (mv500.has_value() && mv500->type == DalvikType::INT32)
+                    mods500 = mv500->int_val;
+                auto av500 = heap_.get_object_field(args[0].object_id,
+                                                    "accessible");
+                if (av500.has_value() && av500->type == DalvikType::BOOLEAN)
+                    accessible500 = av500->bool_val;
+            }
+            if (kind500.empty() && !decl337.empty() && !name337.empty()) {
+                for (const auto& cd : dex_report_->classes) {
+                    if (cd.name != decl337) continue;
+                    for (const auto& fd : cd.static_fields)
+                        if (fd.name == name337) {
+                            kind500 = "static";
+                            mods500 = (int)fd.access_flags;
+                            type337 = fd.type;
+                            break;
+                        }
+                    if (kind500.empty())
+                        for (const auto& fd : cd.instance_fields)
+                            if (fd.name == name337) {
+                                kind500 = "instance";
+                                mods500 = (int)fd.access_flags;
+                                type337 = fd.type;
+                                break;
+                            }
+                    break;
+                }
+            }
+            // libcore Field laws: typed defaults, boxed get, unboxed set.
+            auto typed_default500 = [](const std::string& ft) -> DalvikValue {
+                if (ft == "J") return DalvikValue::make_long(0);
+                if (ft == "Z") return DalvikValue::make_bool(false);
+                if (ft == "F") return DalvikValue::make_float(0.f);
+                if (ft == "D") return DalvikValue::make_double(0.);
+                if (ft == "B") return DalvikValue::make_byte(0);
+                if (ft == "S") return DalvikValue::make_short(0);
+                if (ft == "C") return DalvikValue::make_char(0);
+                if (ft.size() == 1) return DalvikValue::make_int(0);
+                return DalvikValue::make_null();
+            };
+            auto box_class500 = [](const std::string& ft) -> std::string {
+                if (ft == "I") return "Ljava/lang/Integer;";
+                if (ft == "J") return "Ljava/lang/Long;";
+                if (ft == "Z") return "Ljava/lang/Boolean;";
+                if (ft == "B") return "Ljava/lang/Byte;";
+                if (ft == "C") return "Ljava/lang/Character;";
+                if (ft == "S") return "Ljava/lang/Short;";
+                if (ft == "F") return "Ljava/lang/Float;";
+                if (ft == "D") return "Ljava/lang/Double;";
+                return "";
+            };
+            auto box500 = [&](const DalvikValue& v,
+                              const std::string& ft) -> DalvikValue {
+                std::string bc = box_class500(ft);
+                if (bc.empty()) return v;      // reference field: verbatim
+                if (v.is_reference()) return v;  // already boxed / null
+                uint32_t bid = heap_.allocate(bc, pc_, 0);
+                heap_.set_object_field(bid, "value", v);
+                return DalvikValue::make_object(bid, bc);
+            };
+            auto unbox500 = [&](const DalvikValue& v,
+                                const std::string& ft) -> DalvikValue {
+                std::string bc = box_class500(ft);
+                if (bc.empty()) return v;
+                if (v.type == DalvikType::OBJECT_REF && v.object_id != 0) {
+                    if (v.class_desc == bc) {
+                        auto inner = heap_.get_object_field(v.object_id,
+                                                            "value");
+                        if (inner.has_value() && !inner->is_reference())
+                            return inner.value();
+                        return typed_default500(ft);
+                    }
+                    return v;  // mismatched carrier: store verbatim
+                }
+                if (v.is_null || v.type == DalvikType::NULL_REF) {
+                    std::cerr << "[R500-REFLECT] Field.set null into primitive "
+                              << decl337 << "." << name337 << " -> NPE"
+                              << std::endl;
+                    throw_deferred("Ljava/lang/NullPointerException;",
+                                   "null cannot be stored in a primitive field",
+                                   "R500-REFLECT");
+                    return typed_default500(ft);
+                }
+                return v;
+            };
             if (method == "getName") {
                 status = ApiCallTrace::Status::IMPLEMENTED;
                 result = DalvikValue::make_string(name337, 0);
@@ -29711,13 +30028,26 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 return true;
             }
             if (method == "getModifiers") {
-                // PUBLIC (1) | STATIC (8): the atomicfu subset only asks
-                // isStatic/isPublic on known-public statics (theUnsafe).
+                // R500: real access flags from the dex field table;
+                // synthetic/legacy Fields keep the historical PUBLIC|STATIC
+                // answer (the atomicfu theUnsafe probe).
                 status = ApiCallTrace::Status::IMPLEMENTED;
-                result = DalvikValue::make_int(9);
+                result = DalvikValue::make_int(mods500 >= 0 ? mods500 : 9);
+                return true;
+            }
+            if (method == "isAccessible") {
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_bool(accessible500);
                 return true;
             }
             if (method == "setAccessible" || method == "setAccessible0") {
+                if (receiver_field500 && args.size() >= 2)
+                    heap_.set_object_field(
+                        args[0].object_id, "accessible",
+                        DalvikValue::make_bool(
+                            args[1].type == DalvikType::BOOLEAN
+                                ? args[1].bool_val
+                                : true));
                 status = ApiCallTrace::Status::IMPLEMENTED;
                 result = DalvikValue::make_void();
                 return true;
@@ -29733,33 +30063,145 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     result = u;
                     return true;
                 }
-                if (!args.empty() && args.size() >= 2 &&
-                    args[1].type == DalvikType::OBJECT_REF &&
-                    args[1].object_id != 0 && !name337.empty()) {
-                    auto v = heap_.get_object_field(args[1].object_id,
-                                                    name337);
-                    status = ApiCallTrace::Status::IMPLEMENTED;
-                    result = v.has_value() ? v.value() : DalvikValue::make_null();
-                    return true;
-                }
-                // static field fetch
-                if (!decl337.empty() && !name337.empty()) {
+                bool want_static500 = (kind500 == "static");
+                if (kind500.empty())
+                    want_static500 = !(args.size() >= 2 &&
+                                       args[1].type == DalvikType::OBJECT_REF &&
+                                       args[1].object_id != 0);
+                if (want_static500) {
+                    // libcore law: a static-field read IGNORES the receiver
+                    // (null or not) and reads the class store — the SAME
+                    // static_field_storage_ that interpreter sget/sput use
+                    // (the field-identity law). ensure_class_initialized
+                    // gives <clinit> the same chance sget gives it.
                     std::string skey = decl337 + "." + name337;
+                    if (!decl337.empty()) ensure_class_initialized(decl337);
                     auto it = static_field_storage_.find(skey);
+                    DalvikValue sv;
+                    if (it != static_field_storage_.end()) {
+                        sv = it->second;
+                    } else {
+                        sv = typed_default500(type337);
+                        if (!decl337.empty() && !name337.empty())
+                            static_field_storage_[skey] = sv;
+                    }
                     status = ApiCallTrace::Status::IMPLEMENTED;
-                    result = it != static_field_storage_.end()
-                                 ? it->second
-                                 : DalvikValue::make_null();
+                    result = box500(sv, type337);
+                    std::cerr << "[R500-REFLECT] Field.get static " << skey
+                              << " kind=" << (kind500.empty() ? "UNKNOWN" : kind500)
+                              << " -> "
+                              << (result.is_reference() ? "ref" : "prim")
+                              << std::endl;
                     return true;
                 }
+                // instance read: null receiver → NPE (libcore law)
+                if (!(args.size() >= 2 &&
+                      args[1].type == DalvikType::OBJECT_REF &&
+                      args[1].object_id != 0)) {
+                    std::cerr << "[R500-REFLECT] Field.get null receiver on "
+                              << decl337 << "." << name337 << " -> NPE"
+                              << std::endl;
+                    throw_deferred("Ljava/lang/NullPointerException;",
+                                   "Field.get on a null object reference (" +
+                                       decl337 + "." + name337 + ")",
+                                   "R500-REFLECT");
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_null();
+                    return true;
+                }
+                // receiver-class law: receiver must be an instance of the
+                // declaring class (IllegalArgumentException otherwise)
+                if (kind500 == "instance" && !decl337.empty() &&
+                    !args[1].class_desc.empty() &&
+                    args[1].class_desc != decl337 &&
+                    !is_subclass_of(args[1].class_desc, decl337)) {
+                    std::cerr << "[R500-REFLECT] Field.get receiver "
+                              << args[1].class_desc << " not instance of "
+                              << decl337 << " -> IAE" << std::endl;
+                    throw_deferred("Ljava/lang/IllegalArgumentException;",
+                                   "receiver not an instance of " + decl337,
+                                   "R500-REFLECT");
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_null();
+                    return true;
+                }
+                auto v = heap_.get_object_field(args[1].object_id, name337);
+                DalvikValue sv =
+                    v.has_value() ? v.value() : typed_default500(type337);
                 status = ApiCallTrace::Status::IMPLEMENTED;
-                result = DalvikValue::make_null();
+                result = box500(sv, type337);
                 return true;
             }
-            if (method == "set" && args.size() >= 3 &&
-                args[1].type == DalvikType::OBJECT_REF &&
-                args[1].object_id != 0 && !name337.empty()) {
-                heap_.set_object_field(args[1].object_id, name337, args[2]);
+            if (method == "set") {
+                // libcore final-field law: reflection writes to a final
+                // field need setAccessible(true) on THIS Field object.
+                if (mods500 >= 0 && (mods500 & 0x10) != 0 && !accessible500) {
+                    std::cerr << "[R500-REFLECT] Field.set final " << decl337
+                              << "." << name337
+                              << " without setAccessible -> IAE" << std::endl;
+                    throw_deferred("Ljava/lang/IllegalAccessException;",
+                                   "Cannot write final field " + decl337 +
+                                       "." + name337,
+                                   "R500-REFLECT");
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_void();
+                    return true;
+                }
+                bool want_static500 = (kind500 == "static");
+                if (kind500.empty())
+                    want_static500 = !(args.size() >= 3 &&
+                                       args[1].type == DalvikType::OBJECT_REF &&
+                                       args[1].object_id != 0);
+                if (want_static500) {
+                    if (args.size() < 3 || name337.empty() ||
+                        decl337.empty()) {
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                        result = DalvikValue::make_void();
+                        return true;
+                    }
+                    // static-field writes land in the class store (same
+                    // key the interpreter sput uses) — field identity.
+                    static_field_storage_[decl337 + "." + name337] =
+                        unbox500(args[2], type337);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_void();
+                    std::cerr << "[R500-REFLECT] Field.set static " << decl337
+                              << "." << name337
+                              << " kind="
+                              << (kind500.empty() ? "UNKNOWN" : kind500)
+                              << std::endl;
+                    return true;
+                }
+                if (!(args.size() >= 3 &&
+                      args[1].type == DalvikType::OBJECT_REF &&
+                      args[1].object_id != 0)) {
+                    std::cerr << "[R500-REFLECT] Field.set null receiver on "
+                              << decl337 << "." << name337 << " -> NPE"
+                              << std::endl;
+                    throw_deferred("Ljava/lang/NullPointerException;",
+                                   "Field.set on a null object reference (" +
+                                       decl337 + "." + name337 + ")",
+                                   "R500-REFLECT");
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_void();
+                    return true;
+                }
+                if (kind500 == "instance" && !decl337.empty() &&
+                    !args[1].class_desc.empty() &&
+                    args[1].class_desc != decl337 &&
+                    !is_subclass_of(args[1].class_desc, decl337)) {
+                    std::cerr << "[R500-REFLECT] Field.set receiver "
+                              << args[1].class_desc << " not instance of "
+                              << decl337 << " -> IAE" << std::endl;
+                    throw_deferred("Ljava/lang/IllegalArgumentException;",
+                                   "receiver not an instance of " + decl337,
+                                   "R500-REFLECT");
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_void();
+                    return true;
+                }
+                heap_.set_object_field(args[1].object_id, name337,
+                                       unbox500(args[2], type337));
                 status = ApiCallTrace::Status::IMPLEMENTED;
                 result = DalvikValue::make_void();
                 return true;
@@ -30422,7 +30864,13 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // 1-arg signed decimal only — the 2-arg toString(v, radix) law
         // (f106, rememberSaveable key shape) answers further down; a
         // greedy match here would shadow it with base-10 output.
-        if (method == "toString" && args.size() == 1) {
+        // R500: this is the STATIC Integer.toString(int) form. A VIRTUAL
+        // 0-arg toString() on a boxed Integer ALSO arrives with
+        // args.size()==1 (args[0] = the receiver object) — matching it
+        // here stringified the receiver's union garbage ("0"). Route
+        // OBJECT_REF receivers to the boxed-toString law further down.
+        if (method == "toString" && args.size() == 1 &&
+            args[0].type != DalvikType::OBJECT_REF) {
             int64_t v = (int64_t)as_u64(args[0]);
             status = ApiCallTrace::Status::IMPLEMENTED;
             result = DalvikValue::make_string(std::to_string(v), 0);
@@ -30647,7 +31095,14 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             return true;
         }
     }
-    if (class_name == "Ljava/lang/Integer;" && args.size() >= 1) {
+    if (class_name == "Ljava/lang/Integer;" && args.size() >= 1 &&
+        args[0].type != DalvikType::OBJECT_REF) {
+        // R500: static-only block (toString(i[,radix]) / toHexString /
+        // toBinaryString / toOctalString / toUnsignedString). A VIRTUAL
+        // 0-arg toString() on a boxed Integer arrives with args[0] = the
+        // receiver OBJECT_REF — it must NOT be read as the int parameter
+        // (union garbage -> "0"); it falls through to the boxed-toString
+        // law further down.
         auto as_uint = [](const DalvikValue& v) -> uint32_t {
             return v.type == DalvikType::INT32 ? (uint32_t)v.int_val : 0u;
         };
@@ -33109,9 +33564,66 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             // String receiver: returns `this` — the string itself.
             result = args[0];
         } else if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
-            // Object receiver without a DEX body: OpenJDK identity form.
-            result = DalvikValue::make_string(
-                args[0].class_desc + "@" + std::to_string(args[0].object_id), 0);
+            // R500: box classes have no dex body, so a virtual toString()
+            // on a boxed primitive RESOLVES HERE (Object.toString) — but
+            // OpenJDK law still demands the boxed VALUE, not the identity
+            // form. Render the value slot when the receiver is a box.
+            std::string box_str500;
+            if (args[0].object_id != 0) {
+                auto* tok500 = heap_.get(args[0].object_id);
+                if (tok500) {
+                    static const std::map<std::string, int>
+                        k_box_rank500b = {{"Ljava/lang/Integer;", 0},
+                                          {"Ljava/lang/Long;", 1},
+                                          {"Ljava/lang/Boolean;", 2},
+                                          {"Ljava/lang/Byte;", 3},
+                                          {"Ljava/lang/Character;", 4},
+                                          {"Ljava/lang/Short;", 5},
+                                          {"Ljava/lang/Float;", 6},
+                                          {"Ljava/lang/Double;", 7}};
+                    auto bit500 = k_box_rank500b.find(
+                        tok500->class_descriptor);
+                    if (bit500 != k_box_rank500b.end()) {
+                        auto bv = heap_.get_object_field(args[0].object_id,
+                                                         "value");
+                        if (bv.has_value()) {
+                            switch (bv->type) {
+                                case DalvikType::INT32:
+                                    box_str500 = std::to_string(bv->int_val);
+                                    break;
+                                case DalvikType::INT64:
+                                    box_str500 = std::to_string(bv->long_val);
+                                    break;
+                                case DalvikType::BOOLEAN:
+                                    box_str500 = bv->bool_val ? "true"
+                                                              : "false";
+                                    break;
+                                case DalvikType::FLOAT32:
+                                    box_str500 = std::to_string(bv->float_val);
+                                    break;
+                                case DalvikType::FLOAT64:
+                                    box_str500 = std::to_string(bv->double_val);
+                                    break;
+                                case DalvikType::CHAR:
+                                    box_str500 = std::string(
+                                        1, static_cast<char>(bv->int_val));
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+            if (!box_str500.empty()) {
+                result = DalvikValue::make_string(box_str500, 0);
+            } else {
+                // Object receiver without a DEX body: OpenJDK identity form.
+                result = DalvikValue::make_string(
+                    args[0].class_desc + "@" +
+                        std::to_string(args[0].object_id),
+                    0);
+            }
         } else {
             result = DalvikValue::make_string("null", 0);
         }

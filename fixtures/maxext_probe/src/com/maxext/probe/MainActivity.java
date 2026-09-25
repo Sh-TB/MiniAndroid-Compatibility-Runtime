@@ -103,6 +103,7 @@ public class MainActivity extends Activity {
             Object o = f.get(null);
             line("R11 boxed=" + (o == null ? "NULL" : o.toString()));
         } catch (Throwable t) { line("R11 threw=" + t.getClass().getSimpleName()); }
+        line("R12 direct=" + Host.boxedStatic + " prim=" + Host.primStatic);
     }
 
     // U-003: Handler / Looper materialization
