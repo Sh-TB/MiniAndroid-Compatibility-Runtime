@@ -18,7 +18,7 @@
             android:layout_weight="1"
             android:textSize="14sp"
             android:textColor="#222222"
-            android:text="example.com" />
+            android:text="z.ai" />
 
         <Button
             android:id="@+id/go_button"
