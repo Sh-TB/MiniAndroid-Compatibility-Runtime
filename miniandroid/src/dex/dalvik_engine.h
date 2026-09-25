@@ -2160,6 +2160,9 @@ public:
     std::map<int64_t, std::pair<std::string, std::string>> unsafe_offset_to_field_;
     int64_t unsafe_next_offset_ = 16;   // real Unsafe offsets are 8-aligned, non-zero
     uint32_t unsafe_singleton_id_ = 0;  // heap id of the "theUnsafe" singleton
+    // S102 LAW 2: process-wide ClassLoader object (OpenJDK Class.getClassLoader
+    // never returns null for APK classes; single-APK subset = one loader).
+    uint32_t classloader_singleton_id_ = 0;
 
     // EXP-042 Phase 4: Singleton cache for Android framework objects.
     // Key: class descriptor (e.g. "Landroid/content/res/Resources;").
