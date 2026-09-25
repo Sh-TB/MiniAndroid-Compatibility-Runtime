@@ -18735,6 +18735,11 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
 void DalvikExecutionEngine::seed_framework_device_statics() {
     auto seed = [this](const std::string& key, const DalvikValue& v) {
         static_field_storage_.emplace(key, v);  // insert-if-absent
+        // R500 ROOT-REFLECTION-FIELD-IDENTITY: a framework-seeded static IS
+        // a declared public field for the reflection surface (getField/
+        // getDeclaredField consumers — real Android answers them from the
+        // framework metadata the engine models with this seed registry).
+        framework_declared_fields_.insert(key);
     };
     seed("Landroid/os/Build$VERSION;.SDK_INT", DalvikValue::make_int(34));
     seed("Landroid/os/Build$VERSION;.RELEASE", DalvikValue::make_string("14", 0));
@@ -28719,6 +28724,27 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
             return nullptr;      // class not in dex tables (synthetic)
         };
+        // R500: framework declared-field surface — a static the engine
+        // seeds (Build.VERSION.SDK_INT, ...) is a real public field for
+        // reflection consumers; its type is derived from the seeded value.
+        auto framework_field500 = [&](const std::string& cls,
+                                      const std::string& fname,
+                                      std::string& ftype) -> bool {
+            std::string key = cls + "." + fname;
+            if (!framework_declared_fields_.count(key)) return false;
+            auto it = static_field_storage_.find(key);
+            if (it == static_field_storage_.end()) return false;
+            switch (it->second.type) {
+                case DalvikType::INT32: ftype = "I"; break;
+                case DalvikType::INT64: ftype = "J"; break;
+                case DalvikType::BOOLEAN: ftype = "Z"; break;
+                case DalvikType::FLOAT32: ftype = "F"; break;
+                case DalvikType::FLOAT64: ftype = "D"; break;
+                case DalvikType::STRING_REF: ftype = "Ljava/lang/String;"; break;
+                default: ftype = "Ljava/lang/Object;"; break;
+            }
+            return true;
+        };
         auto make_field500 = [&](const std::string& decl,
                                  const std::string& fname,
                                  const std::string& ftype, bool fstatic,
@@ -28760,9 +28786,21 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 result = DalvikValue::make_null();
                 return true;
             }
-            std::string ftype = fi500 ? fi500->type : "Ljava/lang/Object;";
-            bool fstatic = fi500 ? fi500->is_static : false;
-            uint32_t fflags = fi500 ? fi500->access_flags : (0x1 | 0x8);
+            std::string fw_type500;
+            bool is_fw500 = false;
+            if (known500 && !fi500) {
+                // dex-known but absent stays NSFE (handled above)
+            } else if (!known500 &&
+                       framework_field500(referent_desc, fname, fw_type500)) {
+                is_fw500 = true;
+            }
+            std::string ftype = fi500 ? fi500->type
+                                : (is_fw500 ? fw_type500
+                                            : "Ljava/lang/Object;");
+            bool fstatic = fi500 ? fi500->is_static : is_fw500;
+            uint32_t fflags = fi500 ? fi500->access_flags
+                            : (is_fw500 ? (0x1 | 0x8 | 0x10)
+                                        : (0x1 | 0x8));
             uint32_t fid = make_field500(referent_desc, fname, ftype, fstatic,
                                          fflags);
             std::cerr << "[R337-REFLECT] Class(" << referent_desc
@@ -28791,6 +28829,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 bool known500 = false, has_fields500 = false;
                 const dex::FieldInfo* fi500 = find_declared_field500(
                     cur500, fname, known500, has_fields500);
+                std::string fw_type500;
                 if (fi500) {
                     if (!(fi500->access_flags & 0x1)) {
                         nonpublic500 = true;
@@ -28801,6 +28840,14 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     ftype500 = fi500->type;
                     fstatic500 = fi500->is_static;
                     fflags500 = fi500->access_flags;
+                    break;
+                }
+                if (framework_field500(cur500, fname, fw_type500)) {
+                    found500 = true;
+                    fdecl500 = cur500;
+                    ftype500 = fw_type500;
+                    fstatic500 = true;
+                    fflags500 = 0x1 | 0x8 | 0x10;  // public static final
                     break;
                 }
                 auto sup500 = class_to_superclass_.find(cur500);

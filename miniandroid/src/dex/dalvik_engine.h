@@ -1705,6 +1705,12 @@ public:
     // Built from dex_report_->classes[i].superclass_name.
     // Used by is_subclass_of() for semantic View inheritance resolution.
     std::map<std::string, std::string> class_to_superclass_;
+    // R500 ROOT-REFLECTION-FIELD-IDENTITY: framework statics the engine
+    // seeds (Build.*, Settings.Secure.*, MeasureSpec mode constants, ...)
+    // are declared public fields for the reflection surface. Keyed
+    // "Lclass;.name". Consulted by Class.getField/getDeclaredField when
+    // the app DEX has no class_def for the declaring class.
+    std::set<std::string> framework_declared_fields_;
     // F-087 (R-NEW-313): class descriptor → runtime-visible class annotations
     // (parsed from the DEX annotations_directory_item by the parser). Backs
     // Class.getAnnotation / isAnnotationPresent and the annotation-proxy
