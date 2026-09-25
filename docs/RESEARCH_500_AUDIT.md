@@ -69,7 +69,7 @@ Counts by status: OBSERVED=19, OUT_OF_SCOPE=20, REGRESSION_TESTED=30, REJECTED=4
 | R500-061 | directive-§9 | reflection | final fields | RESEARCHED | L0 | - | UNVERIFIED at runtime; libcore law: final instance writes blocked without access override |
 | R500-062 | directive-§9 | reflection | private fields | REGRESSION_TESTED | L5 | ROOT-REFLECTION-FIELD-IDENTITY | getDeclaredField always succeeds today (allocates Field for nonexistent names) — code-level |
 | R500-063 | directive-§9 | reflection | inherited fields | REGRESSION_TESTED | L5 | ROOT-REFLECTION-FIELD-IDENTITY | S103: getField NOT implemented -> default stub null -> Field.get NPE killing 5 real titles |
-| R500-064 | directive-§9 | reflection | getField | REGRESSION_TESTED | L5 | ROOT-REFLECTION-FIELD-IDENTITY | Same as R500-063; top fan-out slice of the 30/61 null-producer family; FIXED: Class.getField superclass walk (probe R7 inherited=99) |
+| R500-064 | directive-§9 | reflection | getField | REGRESSION_TESTED | L5 | ROOT-REFLECTION-FIELD-IDENTITY | Same as R500-063; top fan-out slice of the 30/61 null-producer family; FIXED: Class.getField superclass walk (probe R7 inherited=99); framework declared-field surface added: Build.VERSION.SDK_INT getField->Field->get=34 on chess/dooz/mancala/memory/mentalmath (fresh census logs) |
 | R500-065 | directive-§9 | reflection | getDeclaredField | REGRESSION_TESTED | L5 | ROOT-REFLECTION-FIELD-IDENTITY | S103 probe R6: no NSFE — getDeclaredField ALWAYS succeeds; FIXED: getDeclaredField NSFE for dex-known classes (probe R6) |
 | R500-066 | directive-§9 | reflection | missing fields | REGRESSION_TESTED | L5 | ROOT-REFLECTION-FIELD-IDENTITY | S103 probe R7: getField null -> NPE at .get (the exact census crash) |
 | R500-067 | directive-§9 | reflection | wrong receiver | REGRESSION_TESTED | L5 | ROOT-REFLECTION-FIELD-IDENTITY | S103 probe R5: no NPE/IAE on null receiver for instance field get; FIXED: receiver-class IAE law (probe R4 = correct IAE) |
@@ -77,7 +77,7 @@ Counts by status: OBSERVED=19, OUT_OF_SCOPE=20, REGRESSION_TESTED=30, REJECTED=4
 | R500-069 | directive-§9 | reflection | boxing | OBSERVED | L0 | - | R11 involves boxed reads; boxing machinery exists engine-wide |
 | R500-070 | directive-§9 | reflection | unboxing | OBSERVED | L0 | - | UNVERIFIED |
 | R500-071 | directive-§9 | reflection | static initialization | REGRESSION_TESTED | L5 | ROOT-REFLECTION-FIELD-IDENTITY | S103 probe R11: reads pre-init default |
-| R500-072 | directive-§9 | reflection | field identity | REGRESSION_TESTED | L5 | ROOT-REFLECTION-FIELD-IDENTITY | S103 ROOT LAW statement + 8 probe divergences; FIXED: canonical field key; R8 identity proof: reflection set -> sget sees 43; battery 105/105 |
+| R500-072 | directive-§9 | reflection | field identity | REGRESSION_TESTED | L5 | ROOT-REFLECTION-FIELD-IDENTITY | S103 ROOT LAW statement + 8 probe divergences; FIXED: canonical field key; R8 identity proof: reflection set -> sget sees 43; battery 105/105; framework declared-field surface added: Build.VERSION.SDK_INT getField->Field->get=34 on chess/dooz/mancala/memory/mentalmath (fresh census logs) |
 | R500-073 | directive-§10 | DEX | invoke-polymorphic | REPRODUCED | L3 | - | Interpreter lacks it; corpus 0 sites (R8-desugared) — docs/s103/S103_MAXEXT_EVIDENCE.md#u-008 |
 | R500-074 | directive-§10 | DEX | invoke-custom | REPRODUCED | L3 | - | Same evidence as R500-073 |
 | R500-075 | directive-§10 | DEX | jumbo strings | REPRODUCED | L3 | - | S103: 3,617 jumbo sites walked clean across corpus |
