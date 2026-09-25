@@ -19,6 +19,7 @@
 #include <cstring>  // F-109c: strcmp arith dispatch (S62)
 #include "../diagnostics/mem_probe.h"
 #include "../diagnostics/click_audit.h"  // UNIFIED_002 EXP-100: env-gated click audit (DIAGNOSTIC)
+#include "../diagnostics/crash_forensics.h"  // S100 §3: last-op ring (issue #345)
 #include "../diagnostics/gfx_provenance.h"  // S82-GFX §6: evidence-bit pixel chain
 #include "../jni/jni_bridge.h"
 // EXP-051: Shadow registry integration.
@@ -3347,6 +3348,10 @@ bool DalvikExecutionEngine::execute_method_internal(
     // pc_ still holds the invoke site in the CALLER frame here.
     call_stack_.set_last_invoke_pc(pc_);
     phase_clock().em_setup.ns.fetch_add(__rdtsc() - f107_su0);  // S61 setup ends
+    // S100 §3 (issue #345): last-semantic-op ring for crash forensics.
+    CrashForensics::note("DEX", "%s.%s recv=obj%s", class_name.c_str(),
+                         method_name.c_str(),
+                         (args.empty() ? "0" : std::to_string(args[0].object_id).c_str()));
     call_stack_.push_frame(std::move(frame));
     current_registers_ = &call_stack_.top().registers;
     pc_ = 0;
@@ -8397,6 +8402,8 @@ bool DalvikExecutionEngine::dispatch_custom_view_measure(
                     out_w, out_h,
                     node->dex_measure_valid ? "" : "FAILED(no write-back)");
         }
+        CrashForensics::note("MEASURE", "%s.onMeasure spec_w=%d spec_h=%d -> %dx%d",
+                             cls.c_str(), wspec, hspec, out_w, out_h);
         return node->dex_measure_valid;
     }
     return false;
@@ -12847,6 +12854,13 @@ bool DalvikExecutionEngine::throw_deferred(
                                    + " type=" + catch_type
                                  : "uncaught (deferred frame unwind + propagate)")
               << std::endl;
+
+    // S100 §7 (issue #345): every synthesized exception lands in the crash
+    // forensics last-op ring — a later signal death then carries the full
+    // exception trail (which NPE preceded the crash, at which method).
+    CrashForensics::note("EXC", "%s %s.%s pc=%u %s", exc_class_desc.c_str(),
+                         current_class_.c_str(), current_method_.c_str(), pc_,
+                         message.c_str());
 
     pending_exception_ = exc;
     deferred_exception_ = exc;
@@ -20879,19 +20893,57 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
+    if (class_name == "Ljava/util/regex/Pattern;" && method == "matcher") {
+        // S100 #345 diag (one-shot per method): matcher-bridge condition
+        // mismatch evidence — the dooz Matcher.find-on-null family.
+        static thread_local uint64_t rx_diag = 0;
+        if (rx_diag < 8) {
+            rx_diag++;
+            fprintf(stderr,
+                    "[RX-DIAG] Pattern.matcher cond=%s argc=%zu"
+                    " a0=t%d a1=t%d caller=%s.%s pc=%u\n",
+                    (args.size() >= 2 &&
+                     args[0].type == DalvikType::OBJECT_REF &&
+                     args[1].type == DalvikType::STRING_REF)
+                        ? "MATCH" : "MISS",
+                    args.size(),
+                    args.empty() ? -1 : (int)args[0].type,
+                    args.size() >= 2 ? (int)args[1].type : -1,
+                    current_class_.c_str(), current_method_.c_str(), pc_);
+        }
+    }
     if (class_name == "Ljava/util/regex/Pattern;" && method == "matcher" &&
         args.size() >= 2 && args[0].type == DalvikType::OBJECT_REF &&
-        args[1].type == DalvikType::STRING_REF) {
+        (args[1].type == DalvikType::STRING_REF ||
+         args[1].type == DalvikType::OBJECT_REF)) {
+        // S100 #345 (dooz Lix0;.a pc=186 evidence, RX-DIAG a1=t7): the
+        // matcher input is a CharSequence — libcore Pattern.matcher accepts
+        // BOTH an immediate string AND a heap String object. The bridge
+        // previously required STRING_REF and silently answered null for
+        // materialized String objects → Matcher.find on a null receiver.
+        // Heap-string text convention: field "value" (String) / "sb_value"
+        // (StringBuilder) — the same law String.valueOf's OBJECT branch uses.
         std::string rx;
         {
             auto rv = heap_.get_object_field(args[0].object_id, "regex");
             if (rv.has_value() && rv->type == DalvikType::STRING_REF)
                 rx = rv->string_val;
         }
+        std::string matcher_input = args[1].string_val;  // STRING_REF path
+        if (args[1].type == DalvikType::OBJECT_REF) {
+            matcher_input = "";
+            if (heap_.has_object(args[1].object_id)) {
+                auto sv = heap_.get_object_field(args[1].object_id, "value");
+                if (!sv.has_value() || sv->type != DalvikType::STRING_REF)
+                    sv = heap_.get_object_field(args[1].object_id, "sb_value");
+                if (sv.has_value() && sv->type == DalvikType::STRING_REF)
+                    matcher_input = sv->string_val;
+            }
+        }
         uint32_t mid = heap_.allocate("Ljava/util/regex/Matcher;", pc_, 0);
         heap_.set_object_field(mid, "regex", DalvikValue::make_string(rx, 0));
         heap_.set_object_field(mid, "input",
-                               DalvikValue::make_string(args[1].string_val, 0));
+                               DalvikValue::make_string(matcher_input, 0));
         heap_.set_object_field(mid, "search_pos", DalvikValue::make_int(0));
         heap_.set_object_field(mid, "append_pos", DalvikValue::make_int(0));
         heap_.set_object_field(mid, "match_start", DalvikValue::make_int(-1));
@@ -27749,6 +27801,51 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
          method == "removeCallbacks" || method == "sendMessage")) {
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_void();
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // S100 #345: Handler.postAtFrontOfQueue(Boolean) — dooz Lr;
+    // .onAttachedToWindow pc=50 demand. libcore: returns true when the
+    // message was enqueued at the front. This runtime has one live thread
+    // and no message queue yet — the post is ACCEPTED (true) and recorded
+    // as a no-op, the same contract post()/postDelayed() above already use.
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name.find("Handler") != std::string::npos &&
+        method == "postAtFrontOfQueue") {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_bool(true);
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // S100 #345 (dooz rc=-11→rc=1 NPE family root 2): Handler.getLooper.
+    // AOSP Handler.java: getLooper() returns the handler's mLooper — the
+    // Handler was built against the main Looper (this runtime has exactly
+    // one live thread), so it returns the SAME Looper singleton the
+    // Looper.getMainLooper()/myLooper() laws above answer. Real demand:
+    // dooz Ls7;.i pc=45 handler.getLooper() — with a null answer the app
+    // dies in a deferred-unwind chain at MainActivity.onCreate invoke_pc=317
+    // (same family as raumballer/tictactoe-classic rc=1 NPE chains).
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name.find("Handler") != std::string::npos &&
+        method == "getLooper") {
+        result = get_or_create_singleton("Landroid/os/Looper;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // S100 #345: Activity.getHandler — AOSP Activity.attach() creates
+    // mHandler unconditionally; it is NEVER null on a live activity. The
+    // previous fall-through answered null → the app's stored handler NPEd
+    // on its first use (the dooz Ls7;.i chain). Companion law to F-029b
+    // (View.getHandler) — both must answer the SAME main Handler singleton.
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getHandler" &&
+        class_name.find("Activity") != std::string::npos) {
+        result = get_or_create_singleton("Landroid/os/Handler;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
 
