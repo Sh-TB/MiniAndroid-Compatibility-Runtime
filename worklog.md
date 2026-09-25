@@ -3517,3 +3517,25 @@ Stage Summary:
 - The runtime gained 9 certified bug laws — the biggest single-wave runtime fix batch; battery green on the same tree.
 - The issue-per-problem law is live end-to-end: new families filed per-root-cause (#342-346), fixed ticket closed with evidence (#323), wave report on #233.
 - Next queue: #345 robustness law (dooz segv, ASAN pending), #342 theme-attr library-chain walk, #344 custom-View onDraw renderer path, #343 ConstraintLayout solve, PARTIAL-tail per-title sweep.
+
+---
+Task ID: S100
+Agent: Super Z (main)
+Task: S100 robustness + crash root-cause + rendering recovery + S98-FUTURE modular foundation + NET-001 browser + autoplay consolidation
+
+Work Log:
+- BASELINE: hygiene PASS, controls 160/160, secret clean, binary 92.87MB unstripped (text 4.61MB), battery certified green at S99 HEAD; issues #342-346 open.
+- DOOZ rc=-11 (#345 CLOSED): permanent crash forensics installed (async-signal-safe handler, PIE load-base, addr2line-resolvable frame offsets, 64-slot last-op ring; throw_deferred records every exception). ROOT: measure_raw built child_sizes BEFORE the F-096 DEX onMeasure hook; hook legally added children (compose attach); walk used LIVE children size -> child_sizes[0] wrote NULL data pointer -> pair move-assign at fault_addr=0x0. FIX: child-SNAPSHOT law (kids snapshot after hook, 35 walk sites rewired; growth measured next traversal = AOSP requestLayout scheduling). dooz now rc=1 graceful, 41/41 frames, 2,073,600 non-white px.
+- NULL-LAW FAMILY (#345 family): Activity.getHandler, Handler.getLooper, Handler.postAtFrontOfQueue, Pattern.matcher heap-String input (RX-DIAG evidence) — 4 laws; String core-family completion (trim/indexOf+fromIndex/startsWith/endsWith/contains/isEmpty/equalsIgnoreCase/hashCode, OpenJDK). Remaining dooz NPE chain -> #347.
+- NET-001 (MG-246/247/248, only P0): src/api/http_client.cpp — real GET, POSIX http + OpenSSL https, redirects, chunked, 8MiB cap. Bridge laws: URL parse, openConnection/openStream, HttpURLConnection fetch-once, body = InputStream over K-34 asset-stream law. MINI BROWSER (games/simple-browser, no WebView = small-closure law): tap Go -> TLS -> HTTP 200 559B example.com -> page text rendered; 12,087 px state change; 3/3 byte-identical; canonical GIF (14/14 index).
+- S98-FUTURE foundation: CAPABILITY_REGISTRY.json (26 capabilities, DAG, API mapping, hot/cold), CORE_MANIFEST.json (contamination law; GL shadows marked extraction candidates), SIZE_BASELINE + size gate (PASS, amplification detector), APK profiler (browser closure 9/0-cold vs dooz 19, mykanji 22) + MODULAR_FOUNDATION.md + 21 foundation tests ALL PASS.
+- THEME-GATE (#342 CLOSED): BAG-DIAG root — bag_value parent walk hit max_parent_hops=8 at hop 9 (Theme.AppCompat.Light) before windowActionBar; MaterialComponents chains are ~12-14 bridges. Bound 8->32 (AOSP: cycle-detection-only). ISE family gone; MyKanji advances to decor-toolbar machinery -> #348.
+- AUTOPLAY CONSOLIDATION: scripts/autoplay/ = all 8 drivers + common.py standard structure + run_all.py batch runner + README (owner mandate).
+- Battery ALL PASS twice mid-wave (mixed -O0/-O2 artifact re-certified clean; battery test links gained -lssl -lcrypto after NET-001).
+- PUSHED: 5 commits (crash fix, NET-001+browser, foundation, theme-gate, autoplay).
+
+Stage Summary:
+- 2 tickets closed with disassembly/forensics-grade evidence (#345, #342), 2 new frontier tickets filed (#347 dooz NPE chain, #348 decor-toolbar).
+- The runtime died silently at dooz; it now cannot: crash forensics is permanent law, and every signal death leaves signal+fault+DEX-trail+native-frames evidence.
+- A real website loads over TLS on MiniAndroid with a 9-capability closure — the first end-to-end proof of the modular small-APK law.
+- Battery green throughout; hygiene/secret/controls green.
