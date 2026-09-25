@@ -190,9 +190,15 @@ with zipfile.ZipFile(apk) as z:
             type_str_idx = struct.unpack_from('<I', data, type_desc_off)[0]
             sid_off = dex['string_ids_off'] + type_str_idx * 4
             data_off = struct.unpack_from('<I', data, sid_off)[0]
-            end = data_off
+            # S102 FIX: skip the uleb length prefix of the MUTF-8 string data
+            # item — decoding from data_off included the length byte and made
+            # every class_desc match fail ("5Landroidx/...").
+            lstart = data_off
+            while data[lstart] & 0x80: lstart += 1
+            lstart += 1
+            end = lstart
             while data[end] != 0: end += 1
-            class_desc = data[data_off:end].decode('utf-8', errors='replace')
+            class_desc = data[lstart:end].decode('utf-8', errors='replace')
             if class_desc != target_class: continue
             # Parse class_data_item
             def uleb(off):
@@ -229,6 +235,7 @@ with zipfile.ZipFile(apk) as z:
                     name_idx = struct.unpack_from('<I', data, m_off + 4)[0]
                     sid_off = dex['string_ids_off'] + name_idx * 4
                     data_off = struct.unpack_from('<I', data, sid_off)[0]
+                    # S102 FIX: same uleb length-prefix skip as class_desc.
                     lstart = data_off
                     while data[lstart] & 0x80: lstart += 1
                     lstart += 1
