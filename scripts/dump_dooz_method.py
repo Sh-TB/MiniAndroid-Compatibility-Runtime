@@ -4,7 +4,7 @@ Usage: dump_dooz_method.py <class-Ldesc> <method> [descriptor-prefix]
 """
 import sys, zipfile, struct
 
-apk = '/home/z/my-project/apk_cache/io.github.yamin8000.dooz_18.apk'
+apk = '/home/z/my-project/run/s100/apks/io.github.yamin8000.dooz.apk'
 target_class = sys.argv[1] if len(sys.argv) > 1 else 'Landroidx/compose/ui/node/e;'
 target_method = sys.argv[2] if len(sys.argv) > 2 else 'G'
 desc_prefix = sys.argv[3] if len(sys.argv) > 3 else ''

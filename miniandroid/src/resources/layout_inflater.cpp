@@ -1972,7 +1972,11 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
         const int vpad = n->padding_top + n->padding_bottom;
 
         // 1) measure children with AOSP-derived specs.
-        std::vector<std::pair<int,int>> child_sizes(n->children.size());
+        // S100 #345 (fault=0x0 evidence, dooz_23): child_sizes is built AFTER the
+        // DEX onMeasure hook below — a hook may legally addView onto this node
+        // (compose materializes View-backed children), so a pre-hook build with
+        // size 0 left a NULL data pointer while the walk loops read the LIVE
+        // children size -> child_sizes[0] wrote at 0x0 (SIGSEGV).
         const bool parent_ll = is_a(n->class_desc, "Landroid/widget/LinearLayout;");
         // MASTER CAMPAIGN FIX (F10 real-DEX onMeasure): custom leaf Views
         // whose DEX chain overrides onMeasure execute the REAL override
@@ -2014,6 +2018,13 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                 return {ow, oh};
             }
         }
+        // ── S100 #345 CHILD-SNAPSHOT LAW ─────────────────────────────────────
+        // The measure pass iterates a SNAPSHOT of the child list taken after
+        // the DEX onMeasure hook. Children added during the pass are measured
+        // on the NEXT traversal (AOSP ViewRootImpl requestLayout scheduling
+        // semantics) — never a live-size walk over a mid-pass mutated list.
+        const std::vector<uint32_t> kids(n->children.begin(), n->children.end());
+        std::vector<std::pair<int,int>> child_sizes(kids.size());
         // G10 FIX-G10-001 (AOSP LinearLayout.java): the orientation field is
         // `mOrientation = a.getInt(..., HORIZONTAL)` with the field itself
         // initialized to HORIZONTAL — an orientation that was never set
@@ -2083,14 +2094,14 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
             // DependencyGraph.getSortedViews). Self-dependency ignored
             // (AOSP da3003 law); cycle → declaration order + diagnostic.
             auto topo = [&](auto&& deps_of) -> std::vector<size_t> {
-                const size_t N = n->children.size();
+                const size_t N = kids.size();
                 std::vector<size_t> indeg(N, 0), order;
                 std::vector<std::vector<size_t>> adj(N);
                 for (size_t i = 0; i < N; i++)
                     for (uint32_t dep : deps_of(i)) {
                         if (!dep) continue;
                         for (size_t j = 0; j < N; j++)
-                            if (j != i && n->children[j] == dep) {
+                            if (j != i && kids[j] == dep) {
                                 adj[j].push_back(i);
                                 indeg[i]++;
                             }
@@ -2114,7 +2125,7 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                 return order;
             };
             auto horiz_deps = [&](size_t i) -> std::vector<uint32_t> {
-                auto* cn = views->find_node(n->children[i]);
+                auto* cn = views->find_node(kids[i]);
                 if (!cn) return {};
                 return {name_to_id(cn->rel_right_of_name),
                         name_to_id(cn->rel_left_of_name),
@@ -2122,7 +2133,7 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                         name_to_id(cn->rel_align_right_name)};
             };
             auto vert_deps = [&](size_t i) -> std::vector<uint32_t> {
-                auto* cn = views->find_node(n->children[i]);
+                auto* cn = views->find_node(kids[i]);
                 if (!cn) return {};
                 return {name_to_id(cn->rel_below_name),
                         name_to_id(cn->rel_above_name),
@@ -2163,9 +2174,9 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
 
             // ---- horizontal pass (sorted) ----
             for (size_t i : topo(horiz_deps)) {
-                auto* cn = views->find_node(n->children[i]);
+                auto* cn = views->find_node(kids[i]);
                 if (!cn || cn->visibility == 8) { child_sizes[i] = {0, 0}; continue; }
-                Edge& e = edges[n->children[i]];
+                Edge& e = edges[kids[i]];
                 // applyHorizontalSizeRules (anchor margins included, AOSP).
                 if (uint32_t a = name_to_id(cn->rel_left_of_name)) {
                     auto* an = views->find_node(a);
@@ -2205,7 +2216,7 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                 } else {
                     hspec = {std::max(0, myHeight), M_AT_MOST};
                 }
-                auto sz = measure(n->children[i], wspec, hspec, depth + 1);
+                auto sz = measure(kids[i], wspec, hspec, depth + 1);
                 child_sizes[i] = sz;
                 // positionChildHorizontal — cache edges from measured width.
                 if (e.l == NOT_SET && e.r != NOT_SET) {
@@ -2231,9 +2242,9 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
 
             // ---- vertical pass (sorted) ----
             for (size_t i : topo(vert_deps)) {
-                auto* cn = views->find_node(n->children[i]);
+                auto* cn = views->find_node(kids[i]);
                 if (!cn || cn->visibility == 8) { child_sizes[i] = {0, 0}; continue; }
-                Edge& e = edges[n->children[i]];
+                Edge& e = edges[kids[i]];
                 // applyVerticalSizeRules.
                 if (uint32_t a = name_to_id(cn->rel_above_name)) {
                     auto* an = views->find_node(a);
@@ -2269,7 +2280,7 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                                                  cn->lp_margin_bottom,
                                                  n->padding_top,
                                                  n->padding_bottom, myHeight);
-                auto sz = measure(n->children[i], wspec, hspec, depth + 1);
+                auto sz = measure(kids[i], wspec, hspec, depth + 1);
                 child_sizes[i] = sz;
                 // positionChildVertical — cache edges from measured height.
                 if (e.t == NOT_SET && e.b != NOT_SET) {
@@ -2294,10 +2305,10 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
             // AOSP wrap-RL content: max extents over resolved EDGES (not
             // child content sizes), margins included.
             content_w = 0; content_h = 0;
-            for (size_t i = 0; i < n->children.size(); i++) {
-                auto* cn = views->find_node(n->children[i]);
+            for (size_t i = 0; i < kids.size(); i++) {
+                auto* cn = views->find_node(kids[i]);
                 if (!cn || cn->visibility == 8) continue;
-                const Edge& e = edges[n->children[i]];
+                const Edge& e = edges[kids[i]];
                 if (e.r != INT_MIN) content_w = std::max(content_w, e.r + cn->lp_margin_right);
                 if (e.b != INT_MIN) content_h = std::max(content_h, e.b + cn->lp_margin_bottom);
             }
@@ -2352,14 +2363,14 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
         };
         // Same Kahn law as the RL pass above (AOSP DependencyGraph).
         auto cl_topo = [&](auto&& deps_of) -> std::vector<size_t> {
-            const size_t N = n->children.size();
+            const size_t N = kids.size();
             std::vector<size_t> indeg(N, 0), order;
             std::vector<std::vector<size_t>> adj(N);
             for (size_t i = 0; i < N; i++)
                 for (uint32_t dep : deps_of(i)) {
                     if (!dep) continue;
                     for (size_t j = 0; j < N; j++)
-                        if (j != i && n->children[j] == dep) {
+                        if (j != i && kids[j] == dep) {
                             adj[j].push_back(i);
                             indeg[i]++;
                         }
@@ -2388,14 +2399,14 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
 
         // ---- horizontal pass (sorted) ----
         for (size_t i : cl_topo([&](size_t i) -> std::vector<uint32_t> {
-                 auto* cn = views->find_node(n->children[i]);
+                 auto* cn = views->find_node(kids[i]);
                  if (!cn) return {};
                  return {cl_name_to_id(cn->cl_left_to),
                          cl_name_to_id(cn->cl_right_to)};
              })) {
-            auto* cn = views->find_node(n->children[i]);
+            auto* cn = views->find_node(kids[i]);
             if (!cn || cn->visibility == 8) { child_sizes[i] = {0, 0}; continue; }
-            CEdge& e = cedges[n->children[i]];
+            CEdge& e = cedges[kids[i]];
             if (cn->cl_left_edge) {
                 if (cn->cl_left_to == "parent")
                     e.l = n->padding_left + cn->lp_margin_left;
@@ -2432,7 +2443,7 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
             Spec hspec = cn->lp_height >= 0 ? Spec{cn->lp_height, M_EXACTLY}
                                             : child_spec(sh, vpad + cn->lp_margin_top + cn->lp_margin_bottom,
                                                          cn->lp_height);
-            auto sz = measure(n->children[i], wspec, hspec, depth + 1);
+            auto sz = measure(kids[i], wspec, hspec, depth + 1);
             child_sizes[i] = sz;
             if (h_both) {
                 if (cn->lp_width != 0) {
@@ -2455,14 +2466,14 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
 
         // ---- vertical pass (sorted) ----
         for (size_t i : cl_topo([&](size_t i) -> std::vector<uint32_t> {
-                 auto* cn = views->find_node(n->children[i]);
+                 auto* cn = views->find_node(kids[i]);
                  if (!cn) return {};
                  return {cl_name_to_id(cn->cl_top_to),
                          cl_name_to_id(cn->cl_bottom_to)};
              })) {
-            auto* cn = views->find_node(n->children[i]);
+            auto* cn = views->find_node(kids[i]);
             if (!cn || cn->visibility == 8) { child_sizes[i] = {0, 0}; continue; }
-            CEdge& e = cedges[n->children[i]];
+            CEdge& e = cedges[kids[i]];
             if (cn->cl_top_edge) {
                 if (cn->cl_top_to == "parent")
                     e.t = n->padding_top + cn->lp_margin_top;
@@ -2508,7 +2519,7 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                 hspec = child_spec(sh, vpad + cn->lp_margin_top + cn->lp_margin_bottom,
                                    cn->lp_height);
             }
-            auto sz = measure(n->children[i], wspec, hspec, depth + 1);
+            auto sz = measure(kids[i], wspec, hspec, depth + 1);
             child_sizes[i] = sz;
             if (v_both) {
                 if (cn->lp_height != 0) {
@@ -2536,15 +2547,15 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
         // AOSP wrap-CL content: max extents over resolved EDGES, margins
         // included (same law as the RL aggregation above).
         content_w = 0; content_h = 0;
-        for (size_t i = 0; i < n->children.size(); i++) {
-            auto* cn = views->find_node(n->children[i]);
+        for (size_t i = 0; i < kids.size(); i++) {
+            auto* cn = views->find_node(kids[i]);
             if (!cn || cn->visibility == 8) continue;
-            const CEdge& e = cedges[n->children[i]];
+            const CEdge& e = cedges[kids[i]];
             if (e.r != INT_MIN) content_w = std::max(content_w, e.r + cn->lp_margin_right);
             if (e.b != INT_MIN) content_h = std::max(content_h, e.b + cn->lp_margin_bottom);
         }
-        } else for (size_t i = 0; i < n->children.size(); i++) {
-            auto* cn = views->find_node(n->children[i]);
+        } else for (size_t i = 0; i < kids.size(); i++) {
+            auto* cn = views->find_node(kids[i]);
             if (!cn) { child_sizes[i] = {0, 0}; continue; }
             int cw_ = cn->lp_width  == INT_MIN ? -2 : cn->lp_width;
             int ch_ = cn->lp_height == INT_MIN ? -2 : cn->lp_height;
@@ -2565,7 +2576,7 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
             if (n->class_desc.find("ScrollView;") != std::string::npos &&
                 n->class_desc.find("Horizontal") == std::string::npos)
                 csh = {std::max(0, sh.size - vpad), M_UNSPEC};
-            child_sizes[i] = measure(n->children[i], csw, csh, depth + 1);
+            child_sizes[i] = measure(kids[i], csw, csh, depth + 1);
         }
 
         // ===================================================================
@@ -2592,15 +2603,15 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                 const int mpad = main_horiz ? hpad : vpad;
                 const int cpad = main_horiz ? vpad : hpad;
                 std::vector<size_t> vis;
-                for (size_t i = 0; i < n->children.size(); i++) {
-                    auto* cn = views->find_node(n->children[i]);
+                for (size_t i = 0; i < kids.size(); i++) {
+                    auto* cn = views->find_node(kids[i]);
                     if (cn && cn->visibility != 8) vis.push_back(i);
                 }
                 int total_length = 0;
                 float weight_total = 0.0f;
                 bool has_weight = false;
                 for (size_t i : vis) {
-                    auto* cn = views->find_node(n->children[i]);
+                    auto* cn = views->find_node(kids[i]);
                     const int m = main_horiz
                                       ? cn->lp_margin_left + cn->lp_margin_right
                                       : cn->lp_margin_top + cn->lp_margin_bottom;
@@ -2624,7 +2635,7 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                     float rws = (n->weight_sum_valid && n->weight_sum > 0.0f)
                                     ? n->weight_sum : weight_total;
                     for (size_t i : vis) {
-                        auto* cn = views->find_node(n->children[i]);
+                        auto* cn = views->find_node(kids[i]);
                         if (cn->layout_weight <= 0) continue;
                         const float wgt = cn->layout_weight / 1000.0f;
                         int share = 0;
@@ -2658,9 +2669,9 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                         const Spec main_s{std::max(0, final_main), M_EXACTLY};
                         const Spec cross_s = child_spec(cspec, cm, lp_cross);
                         child_sizes[i] = main_horiz
-                                             ? measure(n->children[i], main_s,
+                                             ? measure(kids[i], main_s,
                                                        cross_s, depth + 1)
-                                             : measure(n->children[i], cross_s,
+                                             : measure(kids[i], cross_s,
                                                        main_s, depth + 1);
                     }
                 }
@@ -2696,8 +2707,8 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                 int used = 0;
                 bool has_match = false;
                 std::vector<size_t> match_idx;
-                for (size_t i = 0; i < n->children.size(); i++) {
-                    auto* cn = views->find_node(n->children[i]);
+                for (size_t i = 0; i < kids.size(); i++) {
+                    auto* cn = views->find_node(kids[i]);
                     if (!cn || cn->visibility == 8) continue;
                     const int lp_main = main_horiz2 ? cn->lp_width : cn->lp_height;
                     const int m = main_horiz2
@@ -2718,7 +2729,7 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                     const Spec& cspec2 = main_horiz2 ? sh : sw;
                     const int cpad2 = main_horiz2 ? vpad : hpad;
                     for (size_t i : match_idx) {
-                        auto* cn = views->find_node(n->children[i]);
+                        auto* cn = views->find_node(kids[i]);
                         // AOSP getChildMeasureSpec for a MATCH_PARENT child:
                         // the spec excludes the PARENT padding AND the
                         // child's own margins on BOTH axes.
@@ -2735,9 +2746,9 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                         const Spec cross_s = child_spec(cspec2, cpad2 + m_cross,
                                                         lp_cross);
                         child_sizes[i] = main_horiz2
-                                             ? measure(n->children[i], main_s,
+                                             ? measure(kids[i], main_s,
                                                        cross_s, depth + 1)
-                                             : measure(n->children[i], cross_s,
+                                             : measure(kids[i], cross_s,
                                                        main_s, depth + 1);
                     }
                 }
@@ -2941,16 +2952,16 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                     content_h = std::max(content_h, cs.second);
                 }
             } else if (horizontal) {
-                for (size_t i = 0; i < n->children.size(); i++) {
-                    auto* cn = views->find_node(n->children[i]);
+                for (size_t i = 0; i < kids.size(); i++) {
+                    auto* cn = views->find_node(kids[i]);
                     int m = cn ? cn->lp_margin_left + cn->lp_margin_right : 0;
                     content_w += child_sizes[i].first + m;
                     content_h = std::max(content_h, child_sizes[i].second +
                                     (cn ? cn->lp_margin_top + cn->lp_margin_bottom : 0));
                 }
             } else {
-                for (size_t i = 0; i < n->children.size(); i++) {
-                    auto* cn = views->find_node(n->children[i]);
+                for (size_t i = 0; i < kids.size(); i++) {
+                    auto* cn = views->find_node(kids[i]);
                     int m = cn ? cn->lp_margin_top + cn->lp_margin_bottom : 0;
                     content_h += child_sizes[i].second + m;
                     content_w = std::max(content_w, child_sizes[i].first +
