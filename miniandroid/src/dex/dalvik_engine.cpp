@@ -238,6 +238,10 @@ static const miniandroid::dalvik::KvPair kFrameworkViews[] = {
     {"Landroid/widget/RadioGroup;", "Landroid/widget/LinearLayout;"},
     {"Landroid/widget/GridLayout;", "Landroid/view/ViewGroup;"},
     {"Landroid/widget/Toolbar;", "Landroid/view/ViewGroup;"},
+    // S101 REAL-CLASS-IDENTITY LAW: appcompat Toolbar inflates under its
+    // real descriptor (in the APK dex). Seed keeps non-appcompat APKs and
+    // synthetic views classifying it as a ViewGroup container.
+    {"Landroidx/appcompat/widget/Toolbar;", "Landroid/view/ViewGroup;"},
 };
 static const size_t kNumFrameworkViews = sizeof(kFrameworkViews) / sizeof(kFrameworkViews[0]);
 
@@ -25246,6 +25250,72 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         result = get_or_create_singleton(
             "Landroid/content/res/Resources$Theme;");
         status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    // ── S101: Resources$Theme.obtainStyledAttributes PRODUCER LAW ──────────
+    // AOSP law (Resources.java / ResourcesImpl.ThemeImpl): Theme.
+    // obtainStyledAttributes(int[] attrs) is the SAME theme-backed
+    // TypedArray materialization as Context.obtainStyledAttributes — the
+    // F-093/F-NEW-175 law only existed on the Activity/Context shadow side,
+    // so a Theme-typed receiver answered NULL → TypedArray reader NPE.
+    // Evidence (S101 recall sweep): ballbreak ActionBarOverlayLayout.init
+    // (APK dex) runs getTheme().obtainStyledAttributes(ATTRS) → null →
+    // TypedArray.getDimensionPixelSize NPE at init pc=15 → the whole
+    // appcompat sub-decor chain died (the "Can't make a decor toolbar out
+    // of null" family: ballbreak/privacyfriendlymemory/mancala). The
+    // materialization convention is byte-identical to the ActivityShadow
+    // F-NEW-175 producer (F-036 array fields + presence bits) so the
+    // engine-side F-093b/F-NEW-175 TypedArray reader law answers reads.
+    if (method == "obtainStyledAttributes" &&
+        class_name == "Landroid/content/res/Resources$Theme;") {
+        uint32_t styleable_id = 0;
+        int32_t n = 0;
+        for (const auto& a : args) {
+            if (a.type != DalvikType::OBJECT_REF || a.object_id == 0)
+                continue;
+            if (auto lf = heap_.get_object_field(a.object_id,
+                                                 "__array_length__");
+                lf && lf->type == DalvikType::INT32 && lf->int_val > 0 &&
+                lf->int_val <= 256) {
+                styleable_id = a.object_id;
+                n = lf->int_val;
+                break;
+            }
+        }
+        uint32_t ta_id = heap_.allocate(
+            "Landroid/content/res/TypedArray;", pc_, 0);
+        heap_.set_object_field(ta_id, "__array_length__",
+                               DalvikValue::make_int(n));
+        auto& rt175 = resources::ResourceRuntime::instance();
+        for (int32_t i = 0; i < n; ++i) {
+            int32_t attr_id = 0;
+            if (styleable_id != 0) {
+                if (auto af = heap_.get_object_field(
+                        styleable_id,
+                        "array[" + std::to_string(i) + "]");
+                    af && af->type == DalvikType::INT32)
+                    attr_id = af->int_val;
+            }
+            int32_t decoded = 0;
+            if (attr_id != 0) {
+                auto v = rt175.resolve_theme_attr_typed(
+                    apk_path_, (uint32_t)attr_id);
+                if (v) {
+                    // AOSP TypedValue law: booleans decode as data!=0;
+                    // ints/colors pass data through. Presence recorded
+                    // separately (S99 law: value 0/false is PRESENT).
+                    decoded = (int32_t)v->data;
+                    heap_.set_object_field(
+                        ta_id, "array_present[" + std::to_string(i) + "]",
+                        DalvikValue::make_int(1));
+                }
+            }
+            heap_.set_object_field(ta_id, "array[" + std::to_string(i) + "]",
+                                   DalvikValue::make_int(decoded));
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_object(
+            ta_id, "Landroid/content/res/TypedArray;");
         return true;
     }
     if (method == "resolveAttribute" &&
