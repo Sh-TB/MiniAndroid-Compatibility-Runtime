@@ -14,6 +14,7 @@
 #include "dex_parser.h"
 #include "mutf8.h"
 #include "../api/android_stubs.h"
+#include "../api/http_client.h"  // S100 NET-001 (MG-247/248): real HTTP(S)
 #include "../storage/data_root.h"
 #include <filesystem>
 #include <cstring>  // F-109c: strcmp arith dispatch (S62)
@@ -27819,6 +27820,185 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // S100 / NET-001 (MG-246/247/248) — REAL HTTP(S) via the host network
+    // stack (libcore java.net semantics; TLS through OpenSSL/BoringSSL
+    // lineage). Fetch-once per connection object, GET only, ≤5 redirects,
+    // 8 MiB body cap. The response body registers as an InputStream over a
+    // synthetic httpbody:N key — the EXISTING read()/readLine()/available()
+    // machinery (K-34 asset-stream law) serves it unchanged.
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/net/URL;" && method == "<init>" &&
+        args.size() >= 2 && args[1].type == DalvikType::STRING_REF) {
+        mininet::UrlParts p = mininet::parse_url(args[1].string_val);
+        heap_.set_object_field(args[0].object_id, "url",
+                               DalvikValue::make_string(args[1].string_val, 0));
+        heap_.set_object_field(args[0].object_id, "scheme",
+                               DalvikValue::make_string(p.scheme, 0));
+        heap_.set_object_field(args[0].object_id, "host",
+                               DalvikValue::make_string(p.host, 0));
+        heap_.set_object_field(args[0].object_id, "port",
+                               DalvikValue::make_string(p.port, 0));
+        heap_.set_object_field(args[0].object_id, "path",
+                               DalvikValue::make_string(p.path, 0));
+        heap_.set_object_field(args[0].object_id, "valid",
+                               DalvikValue::make_int(p.valid ? 1 : 0));
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_void();
+        return true;
+    }
+    if (class_name == "Ljava/net/URL;" &&
+        (method == "openConnection" || method == "openConnectionProxy" ||
+         method == "openConnection(Proxy)") && args.size() >= 1 &&
+        args[0].type == DalvikType::OBJECT_REF) {
+        auto uv = heap_.get_object_field(args[0].object_id, "url");
+        uint32_t conn_id = heap_.allocate("Ljava/net/HttpURLConnection;", pc_, 0);
+        if (uv.has_value() && uv->type == DalvikType::STRING_REF) {
+            heap_.set_object_field(conn_id, "url",
+                                   DalvikValue::make_string(uv->string_val, 0));
+        }
+        heap_.set_object_field(conn_id, "method",
+                               DalvikValue::make_string("GET", 0));
+        heap_.set_object_field(conn_id, "done", DalvikValue::make_int(0));
+        result = DalvikValue::make_object(conn_id, "Ljava/net/HttpURLConnection;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    // URL.openStream() — fetch now, return the body stream directly.
+    if (class_name == "Ljava/net/URL;" && method == "openStream" &&
+        args.size() >= 1 && args[0].type == DalvikType::OBJECT_REF) {
+        auto uv = heap_.get_object_field(args[0].object_id, "url");
+        if (!uv.has_value() || uv->type != DalvikType::STRING_REF) {
+            throw_deferred("Ljava/net/MalformedURLException;",
+                           "no url content", "NET-001");
+            return true;
+        }
+        mininet::HttpResponse r = mininet::http_get(uv->string_val);
+        if (!r.error.empty()) {
+            throw_deferred("Ljava/io/IOException;", r.error, "NET-001");
+            return true;
+        }
+        static uint64_t http_body_seq = 0;
+        std::string key = "httpbody:" + std::to_string(http_body_seq++);
+        asset_bytes_cache_[key] = r.body;
+        uint32_t sid = heap_.allocate("Ljava/io/InputStream;", pc_, 0);
+        open_assets_[sid] = {key, 0};
+        result = DalvikValue::make_object(sid, "Ljava/io/InputStream;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        CrashForensics::note("HTTP", "openStream %s -> %zu bytes status=%d",
+                             uv->string_val.c_str(), r.body.size(), r.status);
+        return true;
+    }
+    // HttpURLConnection methods — fetch-once state machine.
+    if (class_name == "Ljava/net/HttpURLConnection;" && args.size() >= 1 &&
+        args[0].type == DalvikType::OBJECT_REF) {
+        auto get_str = [&](const char* f) -> std::string {
+            auto v = heap_.get_object_field(args[0].object_id, f);
+            return (v.has_value() && v->type == DalvikType::STRING_REF)
+                       ? v->string_val : std::string();
+        };
+        auto get_int = [&](const char* f) -> int {
+            auto v = heap_.get_object_field(args[0].object_id, f);
+            return (v.has_value() && v->type == DalvikType::INT32) ? v->int_val : 0;
+        };
+        // fetch-once: connect()/getInputStream()/getResponseCode() trigger it.
+        if (method == "connect" || method == "getInputStream" ||
+            method == "getResponseCode" || method == "getHeaderFields" ||
+            method == "getContentType" || method == "getContentLength" ||
+            method == "getHeaderField") {
+            if (get_int("done") == 0) {
+                std::string url_s = get_str("url");
+                if (url_s.empty()) {
+                    throw_deferred("Ljava/net/MalformedURLException;",
+                                   "connection has no url", "NET-001");
+                    return true;
+                }
+                mininet::HttpResponse r = mininet::http_get(url_s);
+                heap_.set_object_field(args[0].object_id, "status",
+                                       DalvikValue::make_int(r.status));
+                heap_.set_object_field(args[0].object_id, "error",
+                                       DalvikValue::make_string(r.error, 0));
+                heap_.set_object_field(args[0].object_id, "content_type",
+                                       DalvikValue::make_string(
+                                           [&]{ std::string ct; r.header("content-type", ct); return ct; }(), 0));
+                heap_.set_object_field(args[0].object_id, "content_length",
+                                       DalvikValue::make_int((int)r.body.size()));
+                // headers: store individually hdr_<lower-name> for getHeaderField
+                for (const auto& kv : r.headers) {
+                    if (kv.first.size() < 64)
+                        heap_.set_object_field(args[0].object_id,
+                                               "hdr_" + kv.first,
+                                               DalvikValue::make_string(kv.second, 0));
+                }
+                static uint64_t http_body_seq2 = 0;
+                std::string key = "httpbody:" + std::to_string(http_body_seq2++);
+                asset_bytes_cache_[key] = r.body;
+                heap_.set_object_field(args[0].object_id, "body_path",
+                                       DalvikValue::make_string(key, 0));
+                heap_.set_object_field(args[0].object_id, "done",
+                                       DalvikValue::make_int(1));
+                CrashForensics::note("HTTP", "GET %s -> %d %zu bytes",
+                                     url_s.c_str(), r.status, r.body.size());
+            }
+        }
+        if (method == "setRequestMethod" || method == "setRequestProperty" ||
+            method == "setConnectTimeout" || method == "setReadTimeout" ||
+            method == "setInstanceFollowRedirects" || method == "disconnect" ||
+            method == "setDoInput" || method == "setDoOutput" ||
+            method == "setUseCaches") {
+            if (method == "setRequestMethod" && args.size() >= 2 &&
+                args[1].type == DalvikType::STRING_REF)
+                heap_.set_object_field(args[0].object_id, "method",
+                                       DalvikValue::make_string(args[1].string_val, 0));
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+        if (method == "getResponseCode") {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int(get_int("status"));
+            return true;
+        }
+        if (method == "getContentLength") {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int(get_int("content_length"));
+            return true;
+        }
+        if (method == "getContentType") {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_string(get_str("content_type"), 0);
+            return true;
+        }
+        if (method == "getHeaderField" && args.size() >= 2 &&
+            args[1].type == DalvikType::STRING_REF) {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            auto v = heap_.get_object_field(args[0].object_id,
+                                            "hdr_" + args[1].string_val);
+            result = DalvikValue::make_string(
+                (v.has_value() && v->type == DalvikType::STRING_REF)
+                    ? v->string_val : std::string(), 0);
+            return true;
+        }
+        if (method == "getInputStream") {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            if (get_int("status") == 0 && get_int("done") != 0) {
+                throw_deferred("Ljava/io/IOException;", "transport error",
+                               "NET-001");
+                return true;
+            }
+            std::string key = get_str("body_path");
+            if (key.empty()) {
+                throw_deferred("Ljava/io/IOException;", "no response body",
+                               "NET-001");
+                return true;
+            }
+            uint32_t sid = heap_.allocate("Ljava/io/InputStream;", pc_, 0);
+            open_assets_[sid] = {key, 0};
+            result = DalvikValue::make_object(sid, "Ljava/io/InputStream;");
+            return true;
+        }
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // S100 #345 (dooz rc=-11→rc=1 NPE family root 2): Handler.getLooper.
     // AOSP Handler.java: getLooper() returns the handler's mLooper — the
     // Handler was built against the main Looper (this runtime has exactly
@@ -32056,6 +32236,18 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     //     Integer.toHexString(hashCode()).
     if ((class_name == "Ljava/lang/String;" || class_name == "Ljava/lang/Object;") &&
         method == "toString") {
+        // S100 #345-family diag: toString bridge reach + receiver shape.
+        static thread_local uint64_t ts_diag = 0;
+        if (ts_diag < 6) {
+            ts_diag++;
+            fprintf(stderr, "[TS-DIAG] toString cls=%s a0=t%d recv_oid=%u"
+                    " caller=%s.%s pc=%u\n",
+                    class_name.c_str(),
+                    args.empty() ? -1 : (int)args[0].type,
+                    args.empty() || args[0].type != DalvikType::OBJECT_REF
+                        ? 0 : args[0].object_id,
+                    current_class_.c_str(), current_method_.c_str(), pc_);
+        }
         status = ApiCallTrace::Status::IMPLEMENTED;
         if (!args.empty() && args[0].type == DalvikType::STRING_REF) {
             // String receiver: returns `this` — the string itself.
@@ -32134,6 +32326,129 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // composition unwind). OpenJDK-exact bounds make the idiom degrade the
     // way the JVM degrades it.
     // ────────────────────────────────────────────────────────────────────────
+    // ────────────────────────────────────────────────────────────────────────
+    // S100 (browser wave) — String core-family completion (libcore
+    // String.java laws). The K-20 block covered substring/concat/equals/
+    // toUpper/toLower/... but trim/indexOf/startsWith/endsWith/contains/
+    // isEmpty/equalsIgnoreCase/hashCode were missing → silent null /
+    // typed-zero answers (browser onClick died on trim()→null→length NPE).
+    // OpenJDK String.java semantics:
+    //   * trim(): strips chars <= '\u0020' from both ends; `this` if none.
+    //   * indexOf(String/int fromIndex): first index or -1.
+    //   * startsWith/endsWith/contains: prefix/suffix/substring presence.
+    //   * isEmpty(): length()==0.
+    //   * equalsIgnoreCase(): locale-insensitive char-wise compare.
+    //   * hashCode(): s[0]*31^(n-1)+... (the Java string hash law).
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/lang/String;" && args.size() >= 1) {
+        const DalvikValue& recv = args[0];
+        if (recv.type == DalvikType::STRING_REF) {
+            const std::string& sv = recv.string_val;
+            if (method == "trim") {
+                size_t b = 0, e = sv.size();
+                while (b < e && (unsigned char)sv[b] <= 0x20) ++b;
+                while (e > b && (unsigned char)sv[e - 1] <= 0x20) --e;
+                result = DalvikValue::make_string(sv.substr(b, e - b), 0);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "isEmpty") {
+                result = DalvikValue::make_bool(sv.empty());
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "startsWith" && args.size() >= 2 &&
+                args[1].type == DalvikType::STRING_REF) {
+                bool pre = sv.size() >= args[1].string_val.size() &&
+                           sv.compare(0, args[1].string_val.size(),
+                                      args[1].string_val) == 0;
+                result = DalvikValue::make_bool(pre);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "endsWith" && args.size() >= 2 &&
+                args[1].type == DalvikType::STRING_REF) {
+                bool suf = sv.size() >= args[1].string_val.size() &&
+                           sv.compare(sv.size() - args[1].string_val.size(),
+                                      args[1].string_val.size(),
+                                      args[1].string_val) == 0;
+                result = DalvikValue::make_bool(suf);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "contains" && args.size() >= 2 &&
+                args[1].type == DalvikType::STRING_REF) {
+                result = DalvikValue::make_bool(
+                    sv.find(args[1].string_val) != std::string::npos);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "equalsIgnoreCase" && args.size() >= 2) {
+                bool eq = false;
+                if (args[1].type == DalvikType::STRING_REF &&
+                    args[1].string_val.size() == sv.size()) {
+                    eq = true;
+                    for (size_t i = 0; i < sv.size(); ++i) {
+                        char a = sv[i], b2 = args[1].string_val[i];
+                        if (std::tolower((unsigned char)a) !=
+                            std::tolower((unsigned char)b2)) { eq = false; break; }
+                    }
+                }
+                result = DalvikValue::make_bool(eq);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "hashCode") {
+                // Java String.hashCode law: h = 31*h + c(i).
+                int32_t h = 0;
+                for (unsigned char c : sv) h = h * 31 + (int32_t)c;
+                result = DalvikValue::make_int(h);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "indexOf" && args.size() >= 2) {
+                int32_t found = -1;
+                if (args[1].type == DalvikType::STRING_REF) {
+                    size_t p = sv.find(args[1].string_val);
+                    found = p == std::string::npos
+                                ? -1 : (int32_t)p;
+                    if (args.size() >= 3 && args[2].type == DalvikType::INT32 &&
+                        args[2].int_val > 0) {
+                        size_t p2 = sv.find(args[1].string_val,
+                                            (size_t)args[2].int_val);
+                        found = p2 == std::string::npos ? -1 : (int32_t)p2;
+                    }
+                } else if (args[1].type == DalvikType::INT32) {
+                    // indexOf(int ch) / indexOf(int ch, int fromIndex) — the
+                    // fromIndex law applies to the CHAR form too (OpenJDK
+                    // String.java: search starts at max(0, fromIndex)).
+                    int32_t from = 0;
+                    if (args.size() >= 3 && args[2].type == DalvikType::INT32)
+                        from = args[2].int_val;
+                    if (from < 0) from = 0;
+                    for (size_t i = (size_t)from; i < sv.size(); ++i) {
+                        if ((int32_t)(unsigned char)sv[i] == args[1].int_val) {
+                            found = (int32_t)i;
+                            break;
+                        }
+                    }
+                }
+                result = DalvikValue::make_int(found);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        } else if (recv.type == DalvikType::NULL_REF &&
+                   (method == "trim" || method == "isEmpty" ||
+                    method == "startsWith" || method == "endsWith" ||
+                    method == "contains" || method == "equalsIgnoreCase" ||
+                    method == "hashCode" || method == "indexOf")) {
+            throw_deferred("Ljava/lang/NullPointerException;",
+                           "invoking " + method + " on null String",
+                           "STR-BRIDGE");
+            return true;
+        }
+    }
+
     if (class_name == "Ljava/lang/String;" && method == "lastIndexOf" &&
         args.size() >= 2) {
         status = ApiCallTrace::Status::IMPLEMENTED;

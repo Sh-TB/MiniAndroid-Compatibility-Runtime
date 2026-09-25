@@ -40,8 +40,9 @@ validate: `python3 tools/verify_canonical_evidence.py`
 | org.bobstuff.bobball | game | VERIFIED | E4 · state change: YES · SHA `788ce033de1a…` | [GIF](evidence/canonical/org.bobstuff.bobball.gif) |
 | com.trianguloy.urlchecker (app) | app | VERIFIED-INTERACTIVE | E4 · state change: YES · SHA `ba1ae97c8e92…` | [GIF](evidence/canonical/com.trianguloy.urlchecker.gif) |
 | Fish Rings | game | VERIFIED | E5 · state change: YES · SHA `f225a04b9187…` | [GIF](evidence/canonical/eu.veldsoft.fish.rings.gif) |
+| Mini Browser | app | VERIFIED | E5 · state change: 12,087 px (real HTTPS fetch) · 3/3 byte-identical · SHA `454c1c5bd820…` | [GIF](evidence/canonical/com.miniandroid.browser.gif) · [record](evidence/s100_browser/README.md) |
 
-Interactive/state-change proven: **13/13** (every canonical GIF records click→state change).
+Interactive/state-change proven: **14/14** (every canonical GIF records click→state change).
 
 ## INTERACTIVE / STATE-CHANGE GIFS (detail)
 

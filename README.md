@@ -58,11 +58,13 @@ recorded evidence ([audit](docs/VERIFIED_EXECUTED_GAMES.md)):
 | **2048** — tile merges advance SCORE to 200 | grid UI · merge state · score | VERIFIED (E4) | [in-house source](games/2048/) | [GIF](docs/evidence/canonical/com.miniandroid.g2048.gif) · [autoplay log](docs/evidence/s80/g2048_autoplay_log.txt) |
 | **Mini Tetris** — falling pieces, NEXT queue, deterministic animation | timer-driven animation · game physics | VERIFIED (E5, x3 deterministic runs) | [in-house source](games/mini-tetris/) | [GIF](docs/evidence/canonical/com.miniandroid.tetris.gif) · [determinism record](docs/evidence/s95/wave_c_determinism.json) |
 | **Fish Rings** — external F-Droid APK; 3 real taps: board paints, then fish rings rotate (5-state interactive GIF) | real external APK · resources · setImageResource · persistence (L10) | VERIFIED (E5, x3 repeats + RC=0 reproof + S99 tap-sequence GIF) | [upstream source](https://github.com/VelbazhdSoftwareLLC/FishRingsForAndroid) · [F-Droid](https://f-droid.org/en/packages/eu.veldsoft.fish.rings/) | [GIF](docs/evidence/canonical/eu.veldsoft.fish.rings.gif) · [S91 reproof](docs/evidence/s91_fish_reproof/README.md) |
+| **Mini Browser** — loads a REAL website over HTTPS on tap (HTTP 200, 559 bytes from example.com; 12,087 px measured state change; 3/3 byte-identical runs) | java.net.URL · HttpURLConnection · real TLS (OpenSSL) · BufferedReader streams · TextView render (NO WebView — small-APK law) | VERIFIED (E5, x3 deterministic + canonical GIF) | [in-house source](games/simple-browser/) | [GIF](docs/evidence/canonical/com.miniandroid.browser.gif) · [evidence record](docs/evidence/s100_browser/README.md) |
 
 | | |
 |---|---|
 | <img src="docs/evidence/canonical/com.miniandroid.snakedeluxe.gif" width="260" alt="Snake Deluxe gameplay GIF — real APK on MiniAndroid"> | <img src="docs/evidence/canonical/com.miniandroid.g2048.gif" width="260" alt="2048 gameplay GIF — real APK on MiniAndroid"> |
 | <img src="docs/evidence/canonical/com.miniandroid.tetris.gif" width="260" alt="Mini Tetris gameplay GIF — real APK on MiniAndroid"> | <img src="docs/evidence/canonical/eu.veldsoft.fish.rings.gif" width="260" alt="Fish Rings interactive gameplay GIF — real F-Droid APK on MiniAndroid, tap-driven ring rotations"> |
+| <img src="docs/evidence/canonical/com.miniandroid.browser.gif" width="260" alt="Mini Browser — real HTTPS website load on MiniAndroid, tap Go to fetch example.com over TLS"> | <img src="docs/evidence/canonical/com.miniandroid.browser.gif" width="260" alt="Mini Browser evidence — real HTTP 200 page text rendered"> |
 
 > See the complete execution GIF/evidence index:
 > **[docs/EXECUTED_GIFS.md](docs/EXECUTED_GIFS.md)** — every real-execution GIF in
