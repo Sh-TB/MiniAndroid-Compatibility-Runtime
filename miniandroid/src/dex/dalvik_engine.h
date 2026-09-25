@@ -2404,6 +2404,16 @@ public:
     std::string apk_path_;  // path to the APK file
     // EXP-093/F011: Manifest-derived package identity (replaces hardcoded Telegram values)
     std::string package_name_;
+    // S99 IDENTITY LAW (AOSP ContextImpl.getSharedPreferences): ONE
+    // SharedPreferencesImpl instance PER FILE NAME per process — a second
+    // getSharedPreferences(name, mode) returns THE SAME object so
+    // in-session writes (edit().putString().apply()) are visible to every
+    // later reader. Without this map each call allocated a FRESH heap
+    // object: writes went to object A, readers got empty object B, and
+    // first-run defaults never materialized (babydots
+    // "null cannot be cast to non-null type kotlin.Float" at
+    // AnimatedDots.setSpeed — full-load wave S99).
+    std::map<std::string, uint32_t> prefs_identity_by_name_;
     int version_code_ = 0;
     std::string version_name_;
     // F-116 (R-NEW-384 family): manifest meta-data tables

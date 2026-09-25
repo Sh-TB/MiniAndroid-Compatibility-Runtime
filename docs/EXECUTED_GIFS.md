@@ -39,8 +39,9 @@ validate: `python3 tools/verify_canonical_evidence.py`
 | com.smorgasbork.hotdeath | game | VERIFIED | E4 · state change: YES · SHA `d6fdff53adfa…` | [GIF](evidence/canonical/com.smorgasbork.hotdeath.gif) |
 | org.bobstuff.bobball | game | VERIFIED | E4 · state change: YES · SHA `788ce033de1a…` | [GIF](evidence/canonical/org.bobstuff.bobball.gif) |
 | com.trianguloy.urlchecker (app) | app | VERIFIED-INTERACTIVE | E4 · state change: YES · SHA `ba1ae97c8e92…` | [GIF](evidence/canonical/com.trianguloy.urlchecker.gif) |
+| Fish Rings | game | VERIFIED | E5 · state change: YES · SHA `f225a04b9187…` | [GIF](evidence/canonical/eu.veldsoft.fish.rings.gif) |
 
-Interactive/state-change proven: **12/12** (every canonical GIF records click→state change).
+Interactive/state-change proven: **13/13** (every canonical GIF records click→state change).
 
 ## INTERACTIVE / STATE-CHANGE GIFS (detail)
 
@@ -58,6 +59,7 @@ Interactive/state-change proven: **12/12** (every canonical GIF records click→
 | com.smorgasbork.hotdeath | Card-menu interaction, 3 state changes (S84); S95 vector/adaptive fix -> SEMANTIC_PASS | real-dalvik run + click probe (probed=6 state_changed=3); S95 capture 10 frames + verifier | 2 | https://github.com/jpriebe/hotdeath |
 | org.bobstuff.bobball | Game-field interaction, 6/6 click state changes (S84); S95 PARTIAL(0) | real-dalvik run + click probe (probed=6 state_changed=6); S95 capture | 2 | https://github.com/bobthekingofegypt/BobBall |
 | com.trianguloy.urlchecker (app) | Menu interaction captured (S85); core URL checks need NET-001 real networking | real-dalvik run + click probe (S85) | 2 | https://github.com/TrianguloY/UrlChecker |
+| Fish Rings | 3 real taps on the external F-Droid APK: splash → timer transition (2,073,600 px) → empty board → TAP board paints (4,304 px) → TAP ring rotation (4,320 px) → TAP ring rotation (4,308 px); 5-state canonical GIF (S99) | real-dalvik run, tap schedule 184,184@30/40/50 (S91 protocol); frames run/s99/fish_gif/fish_tapseq; reproof docs/evidence/s91_fish_reproof/README.md | 5 | https://github.com/VelbazhdSoftwareLLC/FishRingsForAndroid |
 
 ## HISTORICAL / WAVE GIFS (real execution; superseded by or supplemental to canonical)
 

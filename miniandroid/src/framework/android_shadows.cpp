@@ -2325,6 +2325,18 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                         // AOSP TypedValue law: booleans decode as
                         // data!=0; ints/colors pass data through.
                         decoded = (int32_t)v->data;
+                        // S99 PRESENCE LAW (babydots AppCompatDelegateImpl.
+                        // createSubDecor ISE evidence): a resolved attribute
+                        // with a ZERO value (e.g. windowActionBar=false in
+                        // Theme.AppCompat.Light.NoActionBar — the babydots
+                        // AppTheme parent) is PRESENT with value false; the
+                        // old materialization stored only data → hasValue
+                        // answered (val!=0)=false → appcompat threw
+                        // "You need to use a Theme.AppCompat theme".
+                        // Record presence separately from the value.
+                        heap_->set_object_int_field(
+                            ta_id, "array_present[" + std::to_string(i) + "]",
+                            1);
                     }
                 }
                 heap_->set_object_int_field(
@@ -3008,17 +3020,50 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     }
     if (m == "findViewById") {
         int32_t target_id = ctx.arg_as_int(0, 0);
-        // EXP-088 Phase B FIX: Search from the Activity's content_view_id
+        // S99 AOSP LAW FIX (babydots AppCompatDelegateImpl.createSubDecor
+        // pc=326 evidence): View.findViewById(id) searches THE RECEIVER'S
+        // SUBTREE (View.java) — the old path force-overrode the receiver
+        // with the Activity window content root, so a NOT-YET-ATTACHED
+        // subdecor root (abc_screen_simple FitWindowsLinearLayout,
+        // receiver=1104) searched the WRONG tree and answered null →
+        // ContentFrameLayout.setAttachListener NPE at the next pc.
+        // Order: (1) receiver subtree (AOSP truth), (2) window content
+        // root (legacy compat for receivers that are unattached nodes or
+        // views inflated outside the content tree), (3) the S83 lazy
+        // android.R.id.content materialization below.
+        uint32_t found = 0;
         uint32_t search_root = ctx.receiver_id;
         if (registry_) {
             auto* act_shadow = registry_->find_as<ActivityShadow>();
             if (act_shadow && act_shadow->content_view_id() != 0) {
-                search_root = act_shadow->content_view_id();
+                // Legacy compat root (window content).
+                uint32_t legacy_root = act_shadow->content_view_id();
+                // (1) AOSP receiver-subtree search first.
+                if (ctx.receiver_id != 0) {
+                    if (std::getenv("MINIANDROID_FINDVIEW_DIAG")) {
+                        std::cerr << "[FINDVIEW-DIAG] receiver=" << ctx.receiver_id
+                                  << " cls=" << ctx.receiver_class
+                                  << " node=" << (find_node(ctx.receiver_id) ? "YES" : "NO")
+                                  << " target=0x" << std::hex << target_id << std::dec
+                                  << std::endl;
+                    }
+                    found = find_by_android_id(ctx.receiver_id, target_id);
+                    if (found != 0) {
+                        std::cerr << "[EXP088-B-VS] findViewById: target=0x"
+                                  << std::hex << target_id << " receiver="
+                                  << ctx.receiver_id << std::dec
+                                  << " → FOUND view_id=" << found
+                                  << " (receiver subtree)" << std::endl;
+                        return CallResult::handled_object(
+                            found, "Landroid/view/View;");
+                    }
+                }
+                search_root = legacy_root;
             }
         }
         std::cerr << "[EXP088-B-VS] findViewById: target=0x" << std::hex << target_id
                   << " search_root=" << search_root << std::dec << std::endl;
-        uint32_t found = find_by_android_id(search_root, target_id);
+        if (found == 0) found = find_by_android_id(search_root, target_id);
         if (found != 0) {
             std::cerr << "[EXP088-B-VS] FOUND view_id=" << found << std::endl;
             return CallResult::handled_object(found, "Landroid/view/View;");
@@ -3077,6 +3122,49 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         n->visibility = ctx.arg_as_int(0, 0);
         return CallResult::handled_void();
+    }
+    // ── S99 (babydots SpeedDialView.init pc→ViewPropertyAnimatorCompat.
+    //     rotation): View.animate() AOSP law (View.java): NEVER null —
+    //     lazily creates and CACHES one ViewPropertyAnimator per view
+    //     (mAnimationInfo.getOrCreateAnimatorsView). The old default answer
+    //     was null → ViewPropertyAnimatorCompat.rotation NPE'd on the null
+    //     receiver and SpeedDialView.init unwound out of onCreate.
+    if (m == "animate") {
+        auto it = view_animators_.find(ctx.receiver_id);
+        if (it != view_animators_.end()) {
+            return CallResult::handled_object(it->second,
+                                              "Landroid/view/ViewPropertyAnimator;");
+        }
+        uint32_t obj = heap_ ? heap_->allocate("Landroid/view/ViewPropertyAnimator;") : 0;
+        if (obj == 0) return CallResult::handled_null();
+        view_animators_[ctx.receiver_id] = obj;
+        return CallResult::handled_object(obj, "Landroid/view/ViewPropertyAnimator;");
+    }
+    // ViewPropertyAnimator methods — AOSP: fluent property setters return
+    // the animator itself; start()/cancel() void; setListener void.
+    if (ctx.class_name.find("ViewPropertyAnimator") != std::string::npos ||
+        ctx.receiver_class.find("ViewPropertyAnimator") != std::string::npos) {
+        static const char* kFluentProps[] = {
+            "alpha", "rotation", "rotationX", "rotationY", "scaleX", "scaleY",
+            "translationX", "translationY", "translationZ", "translationXBy",
+            "translationYBy", "translationZBy", "alphaBy", "scaleXBy", "scaleYBy",
+            "rotationBy", "rotationXBy", "rotationYBy", "x", "y", "z",
+            "xBy", "yBy", "zBy", "setDuration", "setStartDelay",
+            "setInterpolator", "setListener", "setUpdateListener",
+            "withLayer", "withEndAction", "setGetter", NULL};
+        for (int i = 0; kFluentProps[i]; ++i) {
+            if (m == kFluentProps[i]) {
+                if (ctx.has_receiver && ctx.receiver_id != 0) {
+                    return CallResult::handled_object(
+                        ctx.receiver_id, "Landroid/view/ViewPropertyAnimator;");
+                }
+                return CallResult::handled_void();
+            }
+        }
+        if (m == "start" || m == "cancel" || m == "end" || m == "startDelay") {
+            return CallResult::handled_void();
+        }
+        if (m == "isRunning" || m == "isStarted") return CallResult::handled_bool(false);
     }
     if (m == "getVisibility") {
         const auto* n = find_node(ctx.receiver_id);
@@ -3479,6 +3567,23 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         }
         if (n && n->context_object_id != 0) {
             return CallResult::handled_object(n->context_object_id, "Landroid/content/Context;");
+        }
+        // S99 NEVER-NULL FALLBACK (babydots ToolbarWidgetWrapper.<init> →
+        // TintTypedArray.obtainStyledAttributes(null,…) NPE evidence):
+        // View.getContext() is NEVER null for a constructed view (AOSP
+        // View.java). When the <init> capture missed (framework subclass
+        // ctor chains dispatched before the capture law — Toolbar,
+        // ViewStubCompat, …), answer the ACTIVITY context instead of
+        // violating the never-null contract: the runtime models a single
+        // activity context authority, and every framework widget captured
+        // its context from that authority at attach time on ART.
+        if (registry_) {
+            if (auto* act = registry_->find_as<ActivityShadow>()) {
+                uint32_t act_ctx = act->current_activity_id();
+                if (act_ctx != 0) {
+                    return CallResult::handled_object(act_ctx, "Landroid/content/Context;");
+                }
+            }
         }
         // Fall back to returning null — no context stored
         return CallResult::handled_null();

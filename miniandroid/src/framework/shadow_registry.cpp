@@ -12,6 +12,7 @@
 #include "gl_surface_shadow.h"
 #include "surface_view_shadow.h"
 #include "clipboard_shadow.h"
+#include "animator_shadow.h"
 #include "locks_shadow.h"
 #include "atomic_shadow.h"
 #include "executor_shadow.h"
@@ -329,6 +330,13 @@ void register_platform_shadows(ShadowRegistry& reg) {
     reg.register_shadow<CanvasShadow>();
     reg.register_shadow<LayoutInflaterShadow>();
     reg.register_shadow<ClipboardShadow>();
+    // S99-MG-223: android.animation animator family — static factories
+    // (ofInt/ofFloat/ofArgb/ofObject) MUST return a non-null animator.
+    // Exact-family claim; registered last: no earlier shadow claims these
+    // descriptors, the engine default (null object) is what broke babydots
+    // (ValueAnimator.setRepeatCount on a null object reference → APP
+    // BOUNDARY unwind).
+    reg.register_shadow<AnimatorShadow>();
 }
 
 }} // namespace miniandroid::framework
