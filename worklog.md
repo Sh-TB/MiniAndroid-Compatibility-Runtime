@@ -3560,3 +3560,24 @@ Stage Summary:
 - FAIL census 14 (S99) → 7 (S101) with zero regressions; +1 RENDERED-L2+; the two decor-chain laws advance #348 two stages deep with the next blocker precisely located (sub-decor attach model + menu XmlPullParser + WindowInsets nulls).
 - The API-need ledger turns "which classes/APIs does each app need" into a permanent, evidence-first registry ranked by fan-out — the next wave attacks the top of that table (compose-runtime 46, savedstate 19, coordinatorlayout 14, constraint-layout 10, decor-toolbar 6, libgdx 3, speeddial 1).
 - Remaining FAILs are all ticketed frontiers: raumballer (jgame), tictactoe-emmanuelmess (libGDX), bouncy (multidex #227), klondike/tri.peaks (nav-chain), babydots (SpeedDialView #346), blackjack (JS engine — WEB-001 DESIGNED).
+
+---
+Task ID: S102
+Agent: Super Z (main)
+Task: S102 COMPOSE FAMILY ROOT-CAUSE SWEEP + SAVEDSTATE PREPARATION — evidence-first compose attack (owner: attack freely, must-search), fresh census, one-law-per-commit discipline
+
+Work Log:
+- SCOPE CORRECTION: the S101 "compose-runtime: 46 titles" family was a REGEX FALSE-POSITIVE (rule matched "snapshot was taken" in unrelated engine diagnostics). Real androidx/compose stack evidence: 1 title (com.vayunmathur.games.solitaire); kotlinx/coroutines: mentalmath. Ledger rule tightened to androidx/compose frames; honest compose family = 6 titles (docs/API_NEED_LEDGER refreshed).
+- ENVIRONMENT RECOVERY: runtime rebuilt (94.05MB), toolchain bootstrapped (aapt2/ecj/r8/stubs/DroidSansMono sha-verified), EXT-01/EXT-02 fixtures re-fetched (SHA 009b4671... + reference screenshot), 54 F-Droid APKs re-sourced.
+- EVIDENCE: fresh full-load re-runs of the 2 priority titles + full 61-title census on the final tree (scripts/s102/s102_full_load.py, resume-safe, compose-first queue). Root-cause chain per law with dex method_ids walks + engine trace forensics + upstream citations (art::Class::IsAssignable, OpenJDK ServiceLoader/LazyIterator, libcore BigInteger, OpenJDK Long).
+- 4 SEMANTIC LAWS (one commit per law): d963ff1e MULTIDEX-INTERFACE-CLOSURE (F-103 interface index covered secondary dex files — 10,002 classes invisible in mentalmath; check-cast to own interface threw CCE, killing Dispatchers.Main); ab003d6e SERVICELOADER-APK-ENTRY (ClassLoader.getResources + URL.openStream + real ServiceLoader provider materialization via dex <init>; missing provider = honest ServiceConfigurationError); 6c0d8f5f BIGINT-VERSION-PARSE (BigInteger valueOf/shiftLeft/or/compareTo subset, sign+uint128-magnitude heap law; null valueOf NPE killed ComponentActivity.<init> at SavedStateRegistryImpl.performAttach) + LONG-BITMATH-64 (Long 64-bit static family for MutableScatterMap probe math; toString gated 1-arg so F-106c radix law keeps answering 2-arg — f106 battery guards the shadowing).
+- TOOL FIX: dump_method_v2 uleb length-prefix bug (every string match failed with the length byte included) — fixed + verified.
+- CENSUS: 14 INTERACTIVE / 2 RENDERED-L2+ / 38 PARTIAL / 7 FAIL; flip: privacyfriendlymemory PARTIAL -> INTERACTIVE-EVIDENCE; zero regressions. Solitaire 4 chains -> 2 distinct remaining roots.
+- TICKETS: #349 (R8 field-promotion identity, savedstate controller), #350 (compose frontier: CompositionLocal + ViewTree owner host wiring), #351 (Hilt builder field identity — same family as #349), #352 (LockSupport park subset for CoroutineScheduler.tryPark); wave report posted on #233.
+- GATES: battery 105/105 ALL PASS (re-run per law commit; 32/32 long/cmp/conv relinked green after discovering the stale-test-binary cache path), secrets/hygiene green, ledger refreshed at head 198c922f.
+- DOC: docs/S102_REPORT.md (SavedState map: COMPOSE_REQUIRED/BOTH/SAVEDSTATE_REQUIRED; next queue ordered by measured impact).
+
+Stage Summary:
+- The compose attack produced its smallest-source-backed-law yield: 4 laws, +789 LOC, all CORE/ANDROIDX-COMMON classified, no fake recomposition, no fabricated rendering.
+- The activity-construction frontier moved a full layer deep on the only real compose title (ctor died on BigInteger; now survives into compose host wiring).
+- S103 entry: shared R8 field-identity law (#349+#351), then compose host wiring (#350), then LockSupport (#352).
