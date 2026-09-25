@@ -21455,8 +21455,16 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // demand: AbstractComposeView (WindowRecomposer attach chain) calls
     // getHandler() while resolving the window recomposer; null here NPEs
     // the composition attach.
+    // S104 (dooz/solitaire compose chain): the receiver's RUNTIME class is
+    // the R8-obfuscated AndroidComposeView (Lr;) — the old substring test
+    // (`class_name.find("View")`) missed it and getHandler returned null →
+    // NPE "Handler.postAtFrontOfQueue on a null object reference" in
+    // AndroidComposeView.onAttachedToWindow (postAtFrontOfQueue of the
+    // composition-attach runnable). AOSP law: EVERY attached View answers
+    // getHandler — dispatch by the VIEW ANCESTRY (is_subclass_of), not by
+    // the descriptor string.
     // ────────────────────────────────────────────────────────────────────────
-    if (method == "getHandler" && class_name.find("View") != std::string::npos) {
+    if (method == "getHandler" && is_subclass_of(class_name, "Landroid/view/View;")) {
         result = get_or_create_singleton("Landroid/os/Handler;");
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
