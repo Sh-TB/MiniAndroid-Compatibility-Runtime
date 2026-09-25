@@ -10949,9 +10949,17 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     (static_cast<uint32_t>(bytecode_[pc_ + 2]) << 16));
                 const int64_t payload_addr = static_cast<int64_t>(pc_) + off_sw;
                 DalvikValue vv_sw = get_register(vAA_sw);
-                int32_t key_sw = (vv_sw.type == DalvikType::INT64)
-                                     ? static_cast<int32_t>(vv_sw.long_val)
-                                 : (vv_sw.type == DalvikType::INT32 ? vv_sw.int_val : 0);
+                // S104 SWITCH-KEY-WIDENING law: packed/sparse-switch consumes
+                // an INT register — a byte/char/short/boolean value (typed by
+                // signature-aware invoke arg copying) must widen, not collapse
+                // to 0. R8 horizontal class merging gives every merged class a
+                // `$r8$classId:B` + packed-switch ctor dispatch: with key=0 the
+                // merged constructor ran the WRONG branch (solitaire
+                // ComponentActivity.<init>: SavedStateRegistryController stored
+                // with `input` unset → NPE at getSavedStateProvider; the same
+                // law is the "R8 merged-lambda wrong branch" divergence).
+                // dalvik_int_value (CHAR-PROBE law) is the shared widening.
+                int32_t key_sw = dalvik_int_value(vv_sw);
                 int32_t target_sw = 3;  // default: fall through the 3-unit instr
                 auto in_range_sw = [&](int64_t addr, int64_t units) {
                     return addr >= 0 && addr + units <= static_cast<int64_t>(bytecode_.size());
@@ -11003,6 +11011,21 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                               << " off=" << off_sw << ") → default" << std::endl;
                 }
                 trace.opcode_name = is_packed ? "packed-switch" : "sparse-switch";
+                // [S104-SW-PROBE] R8 merged-ctor classId dispatch forensic
+                // (solitaire MatcherMatchResult/$r8$classId): print the exact
+                // switch resolution when env-gated. Env-gated (OFF by default,
+                // one-time init — no per-instruction getenv cost).
+                static const bool s104_sw_probe =
+                    std::getenv("MINIANDROID_SW_PROBE") != nullptr;
+                if (s104_sw_probe &&
+                    current_class_.find("MatcherMatchResult") != std::string::npos) {
+                    std::cerr << "[S104-SW] " << current_class_ << "." << current_method_
+                              << " pc=" << pc_ << " key=" << key_sw
+                              << " payload@" << payload_addr
+                              << " ident=0x" << to_hex16(bytecode_.size() > static_cast<size_t>(payload_addr) && payload_addr >= 0 ? bytecode_[static_cast<size_t>(payload_addr)] : 0)
+                              << " target=" << target_sw << " dest=" << (pc_ + target_sw)
+                              << std::endl;
+                }
                 pc_ = pc_ + target_sw;  // targets are relative to the SWITCH pc
                 break;
             }
