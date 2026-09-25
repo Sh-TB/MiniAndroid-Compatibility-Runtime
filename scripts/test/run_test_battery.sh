@@ -654,7 +654,8 @@ elif [ -d "$M3_FIX_SRC" ]; then
             build/apk/*.o build/dex/*.o build/runtime/*.o build/diagnostics/*.o \
             build/resources/*.o build/renderer/*.o build/gles/*.o build/fonts/*.o \
             build/framework/*.o build/api/*.o build/storage/*.o \
-            -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lsqlite3 \
+            -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi \
+            -lsqlite3 -lssl -lcrypto \
             -lpng -lpthread > /tmp/battery_m3sw/link.log 2>&1
     gate "link m3_arsc_style_law_test" $?
     ./build/m3_arsc_style_law_test /tmp/battery_m3sw/resources.arsc \
