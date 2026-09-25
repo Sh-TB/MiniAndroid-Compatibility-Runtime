@@ -1,9 +1,9 @@
 {
  "counts": {
-  "PARTIAL": 71,
+  "PARTIAL": 70,
   "OBSERVED": 18,
   "TESTED": 131,
-  "CLOSED": 31,
+  "CLOSED": 32,
   "PENDING": 60
  },
  "generated_by": "scripts/s97_build_micro_registry.py",
@@ -3363,16 +3363,16 @@
   },
   "MG-223": {
    "AFFECTED_TITLES": "",
-   "AFTER": "",
+   "AFTER": "AnimatorShadow: factories allocate Landroid/animation/ValueAnimator; object, setDuration fluent, start/cancel/end lifecycle + isRunning/isStarted, setter family, getAnimatedValue null-before-start law (AOSP ValueAnimator.java)",
    "API": "ValueAnimator basic timing",
-   "BEFORE": "",
-   "COMMIT": "",
+   "BEFORE": "ValueAnimator.ofInt/ofFloat factories returned NULL object -> next instance invoke hit F-141 null-receiver law (babydots setRepeatCount NPE, onCreate dead)",
+   "COMMIT": "d0f03cb7 (S99)",
    "DOMAIN": "animation",
-   "EVIDENCE": "",
-   "FANOUT": "not_measured",
-   "NOTE": "animator scaffold exists; dedicated fixtures pending",
+   "EVIDENCE": "S99 run/s99/full_load/com.serwylo.babydots/obs_obs.log [ANIM] ValueAnimator.ofFloat -> animator obj=560; battery 105/105 ALL PASS after landing",
+   "FANOUT": "corpus-wide: every app with property-animation entry points (material FABs, progress animators)",
+   "NOTE": "S99: shadow lands; animator-driving choreographer integration remains future work (getAnimatedValue pre-start null is the AOSP contract, animators do not yet tick the render clock)",
    "ROOT_CAUSE": "",
-   "STATUS": "PARTIAL",
+   "STATUS": "CLOSED",
    "TEST": "",
    "UPSTREAM_SOURCE": "frameworks/base/core/java/android/animation/ValueAnimator.java"
   },
