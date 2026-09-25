@@ -192,6 +192,26 @@ gate "s98 scroll/transform laws (expect 13)" $?
 tail -1 /tmp/battery_s98scroll.out
 fi
 
+# S98 storage-domain micro-gap fence (MG-171..183 SharedPreferences
+# machine proof): drives the REAL AndroidAPI::SharedPreferences XML
+# persistence layer — typed round-trips, commit/apply, remove/clear,
+# contains, namespace isolation, and the fresh-instance process
+# persistence law.
+if cached "s98 prefs laws (expect 15)"; then
+    skip "link s98_prefs_law_test"; skip "s98 prefs laws (expect 15)"
+else
+g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/s98_prefs_law_test \
+    tests/s98_prefs_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
+    build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
+    build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
+    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 \
+    > /tmp/battery_s98prefs.log 2>&1
+gate "link s98_prefs_law_test" $?
+./build/s98_prefs_law_test > /tmp/battery_s98prefs.out 2>&1
+gate "s98 prefs laws (expect 15)" $?
+tail -1 /tmp/battery_s98prefs.out
+fi
+
 # P1 resource-configuration regression (generic default/v16/v21 law)
 if cached "resource-config selection law (expect 48)"; then
     skip "link resource_config_selection_test"; skip "resource-config selection law (expect 48)"
