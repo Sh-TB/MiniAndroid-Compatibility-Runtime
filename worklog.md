@@ -3496,3 +3496,24 @@ Stage Summary:
 - Registry: 31 CLOSED / 131 TESTED / 71 PARTIAL / 60 PENDING / 18 OBSERVED (311).
 - New game Snake Neon added to games/ with deterministic tick law; 3 new permanent battery stages guard the text/layout/storage laws.
 - Next queue: resource/asset PARTIAL tails, GIF disposal fences (MG-214-216), NET-001/WEB-001/AUDIO-001 reuse-first families, GAMES-6 tick model, then per-title corpus tickets toward the 50-game bar.
+
+---
+Task ID: S99
+Agent: Super Z (main)
+Task: Fish Rings homepage GIF fix (owner's direct finding) + open-bug sweep + full-load wave (61 titles) + 9 runtime bug laws + issue-per-problem ticket lifecycle
+
+Work Log:
+- CONTAINER-RESET RECOVERY: toolchain bootstrap (aapt2/ecj/r8/stubs), runtime rebuilt (92MB), EXT-01/EXT-02 fixtures re-fetched with SHA verification (009b4671... per zero-APK law).
+- FISH RINGS (owner: "this is not a GIF and never fully loaded — attack"): real multi-tap run 184,184@30/40/50 (RC=0, 61 frames, 0 errors); measured state changes splash->board 2,073,600px, taps 4,304/4,320/4,308px; canonical 5-state GIF (SHA f225a04b9187...) replaces the static JPG in the README demo table + grid; EXECUTED_GIFS.md 12/12 -> 13/13 interactive; SHA256SUMS appended; run record docs/evidence/s99_fish_gif/README.md.
+- FULL-LOAD WAVE: scripts/s99_fetch_apks.py sourced 54 F-Droid APKs (SHA-pinned manifest; 4 truncated downloads detected by EOCD check and re-fetched via scripts/s99_refetch_broken.py); scripts/s99_full_load.py ran 61 titles (54 external + 7 in-house) obs+click protocol with exact state-change pixel measurement: 14 INTERACTIVE-EVIDENCE / 1 RENDERED-L2+ / 33 PARTIAL / 14 FAIL.
+- 9 RUNTIME BUG LAWS (all real-APK evidenced, AOSP-cited): (1) AnimatorShadow — ValueAnimator.ofInt/ofFloat returned NULL (MG-223 #323 CLOSED); (2) getResources View-root law (FloatingActionButton-class receivers); (3) View.animate() never-null + ViewPropertyAnimator fluent family; (4) TypedArray.hasValue PRESENCE law (resolved false/0 attr was conflated with ABSENT — the appcompat theme-gate ISE family); (5) <include> namespace + compiled-reference law (includes silently produced NOTHING corpus-wide); (6) View.getContext() never-null fallback; (7) SharedPreferences.getFloat reader; (8) prefs XML <float> loader symmetry; (9) SharedPreferences per-name IDENTITY law (writes invisible across call sites). Plus ContentFrameLayout.setDecorPadding/setAttachListener + checkVectorDrawableSetup framework-boundary no-ops.
+- TICKETS: 5 new frontier tickets filed (#342 theme-gate mykanji family, #343 ConstraintLayout core solve, #344 blank-render L0 family x8 titles, #345 crash-on-launch + dooz rc=-11 process-death robustness, #346 SpeedDialView library cascade); MG-223 #323 closed with evidence comment; master wave report posted on #233.
+- GATES AT CLOSE: battery 105/105 ALL PASS (re-certified after binary restore; ASAN-tainted apk_parser.o detected by symbol scan and recompiled); control system 160/160; hygiene PASS; shadow invariant count law 27->28 (+reduced-reg 30); MICRO_GAP_REGISTRY MG-223 -> CLOSED (counts: 32 CLOSED / 70 PARTIAL / 131 TESTED / 60 PENDING / 18 OBSERVED); MICRO_GAP_SWEEP.md table refreshed.
+- dooz rc=-11: reproduced (segv in t4.onMeasure DEX dispatch), stack-raise test did NOT clear it; ASAN root-cause build started but the container kills background jobs — documented in #345 with reproduction command for the next wave.
+- PUSHED: d69f405c..d0f03cb7 (+ registry/doc follow-up commit).
+
+Stage Summary:
+- The homepage now shows a REAL interactive Fish Rings GIF (the owner's exact complaint fixed with measured evidence).
+- The runtime gained 9 certified bug laws — the biggest single-wave runtime fix batch; battery green on the same tree.
+- The issue-per-problem law is live end-to-end: new families filed per-root-cause (#342-346), fixed ticket closed with evidence (#323), wave report on #233.
+- Next queue: #345 robustness law (dooz segv, ASAN pending), #342 theme-attr library-chain walk, #344 custom-View onDraw renderer path, #343 ConstraintLayout solve, PARTIAL-tail per-title sweep.

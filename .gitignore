@@ -185,3 +185,4 @@ run/s94/source_mining/clones/
 
 # S-HYGIENE: on-disk-only rescue area (never committed)
 external_backup/
+core

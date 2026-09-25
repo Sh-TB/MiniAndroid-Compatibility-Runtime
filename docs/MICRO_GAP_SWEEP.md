@@ -57,10 +57,10 @@ end-to-end: the fixed probe verified the 48dp@420dpi -> 126px box on a real run.
 | Status | Meaning | Count |
 |---|---|---:|
 | TESTED | fenced by a named 99-stage battery stage / s92 battery | 131 |
-| PARTIAL | implemented, not individually fenced | 99 |
+| PARTIAL | implemented, not individually fenced | 70 |
 | PENDING | not implemented; registered ticket/queue first (reuse-first) | 60 |
 | OBSERVED | real-APK execution evidence without dedicated machine fence | 18 |
-| CLOSED | root-caused + fixed + tested this session | 3 |
+| CLOSED | root-caused + fixed + tested this session | 32 |
 
 ## Per-ticket registry
 
@@ -291,7 +291,7 @@ summarizes every ticket (ID, API, status, machine test or evidence).
 | MG-220 | loop count | OBSERVED | 12 canonical interactive GIFs prove frame progression/order/ |
 | MG-221 | animation invalidation | OBSERVED | Mini Tetris/Fish Rings E5 determinism + tap state-change pro |
 | MG-222 | Handler-driven animation | OBSERVED | Mini Tetris/Fish Rings E5 determinism + tap state-change pro |
-| MG-223 | ValueAnimator basic timing | PARTIAL | animator scaffold exists; dedicated fixtures pending |
+| MG-223 | ValueAnimator basic timing | CLOSED | S99: AnimatorShadow (factories non-null, fluent setDuration, lifecycle); babydots evidence; battery 105/105 |
 | MG-224 | object movement | OBSERVED | Mini Tetris/Fish Rings E5 determinism + tap state-change pro |
 | MG-225 | sprite movement | OBSERVED | Mini Tetris/Fish Rings E5 determinism + tap state-change pro |
 | MG-226 | animation state transition | OBSERVED | Mini Tetris/Fish Rings E5 determinism + tap state-change pro |
