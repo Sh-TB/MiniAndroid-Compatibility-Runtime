@@ -172,6 +172,26 @@ gate "s98 text laws (expect 21)" $?
 tail -1 /tmp/battery_s98text.out
 fi
 
+# S98 layout/geometry micro-gap fence (MG-123 scroll offsets +
+# MG-124..129 transformation properties): drives the REAL ViewShadow
+# dispatch bridge — scrollTo/scrollBy/getScrollX/Y state + accumulate +
+# defaults, translation/scale/rotation/pivot value laws with the
+# View.java defaults, and the walk-delta input state round-trip.
+if cached "s98 scroll/transform laws (expect 13)"; then
+    skip "link s98_scroll_transform_law_test"; skip "s98 scroll/transform laws (expect 13)"
+else
+g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/s98_scroll_transform_law_test \
+    tests/s98_scroll_transform_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
+    build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
+    build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
+    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 \
+    > /tmp/battery_s98scroll.log 2>&1
+gate "link s98_scroll_transform_law_test" $?
+./build/s98_scroll_transform_law_test > /tmp/battery_s98scroll.out 2>&1
+gate "s98 scroll/transform laws (expect 13)" $?
+tail -1 /tmp/battery_s98scroll.out
+fi
+
 # P1 resource-configuration regression (generic default/v16/v21 law)
 if cached "resource-config selection law (expect 48)"; then
     skip "link resource_config_selection_test"; skip "resource-config selection law (expect 48)"
