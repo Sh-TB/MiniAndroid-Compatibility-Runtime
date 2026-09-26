@@ -590,6 +590,10 @@ public:
         std::string action;            // Intent.getAction()
         std::string component_class;   // setComponent(...).getClassName()
         std::string package_name;      // setPackage(...)
+        // S107 ROOT-015: Intent(String, Uri) data law — the parsed Uri is
+        // intent DATA (AOSP Intent.setData), never the activity component.
+        uint32_t data_uri_object = 0;
+        std::string data_uri_class;
         std::map<std::string, std::string> extras_string;
         std::map<std::string, int32_t>  extras_int;
         std::map<std::string, bool>     extras_bool;
@@ -2038,6 +2042,14 @@ public:
                class_name == "Ljava/util/Map$Entry;" ||  // F-064: entrySet() elements (getKey/getValue)
                class_name == "Ljava/util/HashSet;" ||
                class_name == "Ljava/util/Set;" ||
+               // S107 ROOT-014 LINKEDHASHSET-CLAIM: LinkedHashSet is Kotlin's
+               // default toSet()/setOf() materialization (dooz nav-graph
+               // route iteration: Lcx0;.o pc=50 — LinkedHashSet.iterator
+               // answered null → Iterator.hasNext NPE → composition unwind).
+               // A missing handles_class entry is the same failure shape the
+               // WeakHashMap entry fixed for Glide (S83-B2).
+               class_name == "Ljava/util/LinkedHashSet;" ||
+               class_name == "Ljava/util/TreeSet;" ||
                // [R342-COWSET] java.util.concurrent CopyOnWrite family —
                // dooz23 evidence: MainActivity.<init> registers the Hilt
                // members-injector (Lae0; = LifecycleEventObserver) into the
