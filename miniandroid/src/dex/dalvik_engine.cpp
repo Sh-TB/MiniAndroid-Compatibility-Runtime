@@ -19608,7 +19608,6 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // take, FutureTask.get) shares the law.
     if (class_name == "Ljava/util/concurrent/locks/LockSupport;") {
         if (method == "park" || method == "parkNanos" || method == "parkUntil") {
-            uint64_t park_work = drain_park_queues_bounded("park");
             // R-NEW-345 PARKED-WORKER YIELD LAW. A park reached at drain
             // depth >= 1 is a BACKGROUND WORKER's park (kotlinx scheduler
             // Worker.run loops park when their queue is empty). With zero
@@ -19620,8 +19619,48 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             // any progress). Depth 0 = the MAIN-thread park (joinBlocking)
             // — never yields: its loop must re-check isCompleted after the
             // drain ran the pending work.
+            //
+            // ROOT-010 WORKER-PARK-DEPTH (S105): the depth check must read
+            // the ENCLOSING drained-body depth. run_thread_start_body sets
+            // park_drain_last_depth_ >= 1 for the WHOLE worker body — but
+            // the drain_park_queues_bounded() call above restores its own
+            // depth (0 at outermost) on exit, destroying the enclosing
+            // value BEFORE this check reads it. Every top-level worker park
+            // therefore saw depth 0, never yielded, and spun park→scan→park
+            // until the F084 loop-visit cap destroyed the frame chain
+            // (dooz v23 ground truth: Lsr;.run PC=0xb2 iget-object
+            // nextParkedWorker, 50001 visits, 24× [PARK-DRAIN]
+            // depth=0 work_units=0, 0× [PARK-YIELD]). Fix = the same
+            // save/restore discipline run_thread_start_body applies to this
+            // identical variable: the drain is re-entrant machinery; the
+            // caller's depth is the caller's identity as a background
+            // worker and must survive it.
+            int enclosing_drain_depth = park_drain_last_depth_;
+            uint64_t park_work = drain_park_queues_bounded("park");
+            if (enclosing_drain_depth >= 1)
+                park_drain_last_depth_ = enclosing_drain_depth;
             if (park_drain_last_depth_ >= 1 && park_work == 0) {
                 park_yield_pending_ = true;
+                // AOSP LockSupport.park law: the thread stays suspended
+                // until UNPARKED (task arrival) or the timeout elapses.
+                // Engine counterpart: the parked body registers in the
+                // F-150 yielded-thread registry and re-drains at the NEXT
+                // scheduler boundary, where it re-checks its queue — one
+                // bounded scan per clock tick instead of an unbounded
+                // in-body spin. ROOT-010 wake refinement: due at
+                // (now + 1ms), NOT 0 — the F-150 pop loop fires wake <=
+                // now, so a 0 wake would let the SAME boundary re-drain
+                // the freshly-parked worker up to the 8-slice cap every
+                // time (observed: probe/doosz resumed=8 per boundary,
+                // parks=9). now+1 = exactly one park/rescan per boundary.
+                // No clock (hs null) → 0, preserving wakeability.
+                if (auto* hs_py = shadow_registry_
+                                      ? shadow_registry_->find_as<
+                                            framework::HandlerShadow>()
+                                      : nullptr)
+                    park_yield_wake_at_ = hs_py->virtual_now_ms() + 1;
+                else
+                    park_yield_wake_at_ = 0;
                 static thread_local uint64_t yield_log = 0;
                 if (yield_log < 24) {
                     ++yield_log;

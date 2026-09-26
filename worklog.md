@@ -3792,3 +3792,55 @@ Stage Summary:
   expected to kill the F084 halt + 9 unwind rows), (2) Job
   double-completion ISE law, (3) navigation null-route trace, then R-005
   DECOR-LINKAGE implementation wave.
+
+---
+Task ID: S105
+Agent: Super Z (main)
+Task: Continue-until-goal — execute the S104-r3 NEXT ROOT (Lsr;.run worker
+park/idle semantics) to the full completion standard; then auto-continue
+(DECOR-LINKAGE next). All output English.
+
+Work Log:
+- BEFORE re-measured on S104-r3 HEAD 2063a255 (honest, not trusted from
+  the report): dooz v23 17 errors — [HALT-LOOP] PC=0xb2 Lsr;.run (50001
+  visits, iget-object nextParkedWorker) -> F084 VirtualMachineError -> 9
+  unwind rows -> APP BOUNDARY; Job ISE (Loj0;.T) + nav NPE (Lox0;.a) ->
+  2nd APP BOUNDARY; 24x PARK-DRAIN depth=0 work_units=0; 0x PARK-YIELD;
+  2.2M+ instructions burned.
+- DEX ground truth: Lsr;.run run loop + Lsr;.a (findNextTaskAndExecute)
+  disassembled; park path reaches LockSupport.parkNanos via the
+  putIntVolatile/getIntVolatile state dance; engine PC mapping confirmed
+  (code units; PC 178cu = bytecode 0x164, op 0x54).
+- ROOT: park bridge drained queues BEFORE the depth check; the drain
+  restores park_drain_last_depth_ to 0 on exit, destroying the enclosing
+  drained body's depth -> parked worker never yields -> spin -> F084.
+  The S104-r3 sub-frontiers (b) Job double-completion ISE and (c) nav
+  null-route NPE are downstream cascades of the same frame destruction.
+- FIX (law-level): enclosing-depth save/restore across the park drain +
+  parked-body wake registration at now+1ms (ONE park/rescan per scheduler
+  boundary; 0-wake artifact observed as resumed=8/parks=9 and refined).
+- PROBE: fixtures/s105_park_probe (kotlinx Worker.runLoop shape) + gate
+  scripts/s105_park_probe_check.sh; post-fix 8/8 PASS x3; pre-fix binary
+  rc=1 + HALT-LOOP + frozen screen (probe DETECTS the spin).
+- REAL APK IMPACT: dooz 17 -> 6 errors 3/3 (6 rows = handled
+  CancellationException unwind bookkeeping, Fatal: NO; 0 uncaught, 0
+  halts, 0 APP BOUNDARY; Job ISE + nav NPE gone); dooz_23_toplevel 17 ->
+  6 3/3 independent; stopwatch/bouncy controls unchanged (pre-fix run
+  matrix from a 2063a255 worktree binary); screenshot SHA 59fdbfcd…
+  x3 (no visual claim made).
+- FAN-OUT: 4/42 on-disk APKs carry LockSupport (3 timed park);
+  execution-proven affected = dooz x2; controls unchanged.
+- GATES: battery ALL PASS (105 stages rc=0) on the final tree;
+  toolchain re-bootstrapped (ecj/r8/d8/aapt2 from container remnants,
+  hash-verified; EXT-01 fixture re-fetched, SHA 009b4671 matches).
+- DOCS: docs/S105_REPORT.md; ROOT-010 appended to
+  docs/RESEARCH_500_ROOT_CLUSTERS.md; scripts/s105_park_fanout.py.
+
+Stage Summary:
+- ROOT-010 WORKER-PARK-DEPTH SOLVED to L5 (root cause + upstream law +
+  minimal probe + production fix + real-APK proof + 3-run + battery +
+  fan-out + registry). Two S104-r3 sub-frontiers closed as cascades.
+- NEXT ACTION: R-005 DECOR-LINKAGE (GR-08/#348) — trace Window→DecorView→
+  content parent→sub-decor on the failing APK ViewTree, fix the shared
+  framework law (AOSP PhoneWindow + AppCompat sub-decor semantics), then
+  compose host/recomposition frontier.
