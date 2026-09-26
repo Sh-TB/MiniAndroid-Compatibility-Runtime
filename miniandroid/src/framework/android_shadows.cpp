@@ -1809,13 +1809,39 @@ CallResult IntentShadow::dispatch(const CallContext& ctx) {
         // Intent(Context, Class) = setClass(ctx, cls)). Without this the
         // constructor left the component unset and the G08 launch drained
         // to ACTIVITY_NOT_FOUND (unote addNote → NoteEdit).
+        //
+        // S107 ROOT-015 INTENT-URI-DATA-LAW: `Intent(String action, Uri)` —
+        // AOSP stores the Uri as DATA, never as the component. The old
+        // shape-only claim grabbed the Uri heap object as component_class
+        // once Uri.parse answered a real object (S107 ROOT-013) → G08
+        // launched a synthetic "Landroid/net/Uri; activity" (microtimer
+        // onCreate flow: 93→5 frames, taps target=0). Law now:
+        //   * arg is a java.lang.Class token → component = __referent_desc
+        //   * arg is a framework DATA type (Uri…) → intent data, NOT
+        //     component (an activity component is an app class by
+        //     construction — PackageParser would reject android.*)
+        //   * other app-shaped L…; classes keep the MASTER-2 claim.
         if (ctx.args.size() >= 2) {
             const auto& c = ctx.args[1];
             if (c.kind == CallContext::Arg::Kind::OBJECT &&
                 c.object_class.size() > 1 && c.object_class.front() == 'L' &&
-                c.object_class.back() == ';' &&
-                c.object_class.rfind("Ljava/lang/Class;", 0) != 0) {
-                pi->component_class = c.object_class;
+                c.object_class.back() == ';') {
+                if (c.object_class == "Ljava/lang/Class;" ||
+                    c.object_class.rfind("Landroid/", 0) == 0 ||
+                    c.object_class.rfind("Ljava/", 0) == 0) {
+                    // Framework type (Class token, Uri data, ...) — never an
+                    // activity component (PackageParser rejects android.*
+                    // components; a Class token carries its referent only in
+                    // the engine's own field, not in object_class).
+                } else if (c.object_class == "Landroid/net/Uri;") {
+                    // Intent(String, Uri) / setData data law.
+                    pi->data_uri_object = c.object_id;
+                    pi->data_uri_class = c.object_class;
+                } else if (c.object_class.rfind("Landroid/", 0) != 0 &&
+                           c.object_class.rfind("Ljava/", 0) != 0 &&
+                           c.object_class.rfind("Landroidx/", 0) != 0) {
+                    pi->component_class = c.object_class;
+                }
             }
         }
         return CallResult::handled_void();

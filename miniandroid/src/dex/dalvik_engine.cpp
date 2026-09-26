@@ -20826,6 +20826,104 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
+    // ────────────────────────────────────────────────────────────────────
+    // S107 ROOT-013 URI-PARSE-REAL: static Uri.parse(String) — AOSP law:
+    // returns an OPAQUE/HIERARCHIC Uri object; NEVER answers null for a
+    // non-null input (parsing is total — malformed input yields a Uri whose
+    // accessors answer what the string structurally contains). The old
+    // engine had no parse bridge: navigation-compose's deep-link chain
+    // (Lox0;.a — "android-app://androidx.navigation/" URI) got null back,
+    // the very next getClass() NPE'd, Recomposer.composeInitial's catch-all
+    // unwound the whole composition → empty node tree → blank screen.
+    // Law, not special case: every Uri.parse in every app shares this path.
+    // Splitting laws (AOSP Uri/StringUri semantics, delimiter-true):
+    //   fragment = after first '#';  scheme = leading RFC-3986 scheme before
+    //   ':' when it precedes any '/'; ssp = between scheme end and '#';
+    //   query = in ssp after first '?'; path = in ssp from first '/'.
+    // Getters over these fields already exist below (getScheme/getPath/
+    // getLastPathSegment) — extended here with getQuery/getFragment/
+    // getSchemeSpecificPart/toString so the navigation chain reads real
+    // values instead of nulls.
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/net/Uri;" && method == "parse" &&
+        args.size() >= 1 && args[0].type == DalvikType::STRING_REF) {
+        const std::string& raw = args[0].string_val;
+        uint32_t uri_id = heap_.allocate("Landroid/net/Uri;", pc_, 0);
+        auto put = [&](const char* k, const std::string& v) {
+            heap_.set_object_field(uri_id, k, DalvikValue::make_string(v, 0));
+        };
+        put("uri_raw", raw);
+        std::string body = raw;
+        // fragment: everything after the first '#'
+        auto hash = body.find('#');
+        if (hash != std::string::npos) {
+            put("fragment", body.substr(hash + 1));
+            body = body.substr(0, hash);
+        }
+        // scheme: leading letter then [A-Za-z0-9+-.]* then ':', before any '/'
+        std::string scheme;
+        {
+            size_t i = 0;
+            if (!body.empty() && std::isalpha(static_cast<unsigned char>(body[0]))) {
+                i = 1;
+                while (i < body.size() && body[i] != ':' && body[i] != '/' &&
+                       (std::isalnum(static_cast<unsigned char>(body[i])) ||
+                        body[i] == '+' || body[i] == '-' || body[i] == '.'))
+                    ++i;
+                if (i < body.size() && body[i] == ':') {
+                    scheme = body.substr(0, i);
+                    body = body.substr(i + 1);
+                }
+            }
+        }
+        if (!scheme.empty()) put("scheme", scheme);
+        // ssp: what remains after scheme, before fragment
+        put("ssp", body);
+        // query: in ssp after the first '?'
+        auto qm = body.find('?');
+        if (qm != std::string::npos) put("query", body.substr(qm + 1));
+        // path: in ssp from the first '/' (hierarchical form)
+        auto slash = body.find('/');
+        if (slash != std::string::npos) put("path", body.substr(slash));
+        static thread_local uint64_t uri_parse_log = 0;
+        if (uri_parse_log < 6) {
+            ++uri_parse_log;
+            std::cerr << "[S107-URI] parse \"" << raw.substr(0, 80)
+                      << "\" scheme=" << (scheme.empty() ? "<none>" : scheme)
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+        }
+        result = DalvikValue::make_object(uri_id, "Landroid/net/Uri;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (class_name == "Landroid/net/Uri;" &&
+        (method == "getQuery" || method == "getFragment" ||
+         method == "getSchemeSpecificPart") &&
+        !args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+        args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+        const std::string field = (method == "getQuery")
+                                      ? "query"
+                                      : (method == "getFragment" ? "fragment" : "ssp");
+        auto v = heap_.get_object_field(args[0].object_id, field);
+        if (v.has_value() && v->type == DalvikType::STRING_REF) {
+            result = DalvikValue::make_string(v->string_val, 0);
+        } else {
+            result = DalvikValue::make_null();
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (class_name == "Landroid/net/Uri;" && method == "toString" &&
+        !args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+        args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+        auto v = heap_.get_object_field(args[0].object_id, "uri_raw");
+        if (v.has_value() && v->type == DalvikType::STRING_REF) {
+            result = DalvikValue::make_string(v->string_val, 0);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
     if (class_name == "Landroid/net/Uri;" &&
         (method == "getPath" || method == "getScheme" ||
          method == "getLastPathSegment") &&
@@ -34260,6 +34358,81 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
             status = ApiCallTrace::Status::STUBBED;
         }
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // S107 ROOT-012 ENUM-VALUEOF-STATIC: static Enum.valueOf(Class, String).
+    // AOSP libcore law (java.lang.Enum.valueOf): returns the class's constant
+    // whose name() equals the argument; throws IllegalArgumentException when
+    // no constant matches; NEVER answers null. The old engine had no static
+    // valueOf bridge at all — the dispatch fell through to the silent
+    // null-answer stub (§12 silent-failure chain) and every app that parsed
+    // a persisted enum string (dooz ThemeMode.valueOf on the DataStore
+    // settings flow) stored null into its Compose state; the first
+    // composition then read null and died on enum.ordinal() — NPE caught by
+    // Recomposer.composeInitial's catch-all → processCompositionError →
+    // EMPTY node tree → blank screen. Law, not special case: every
+    // Enum.valueOf in every app shares this path.
+    // Dispatch forms handled here:
+    //   * invoke-static Enum.valueOf(Class, String): args[0] is a CLASS_REF
+    //     whose class_desc is the referent descriptor (F-069/F-103 const-class
+    //     law) — heap fallback reads __referent_desc off the Class token.
+    //   * same signature reaching the bridge with the enum class as
+    //     declaring context: identical arg layout.
+    // Constants are discovered from the class's static storage (the <clinit>
+    // sput-object law put every constant there), matched through the
+    // enum_name field written by the DEX Enum.<init> law above and by the
+    // CYCLE-E framework-enum synthesis — synthesized and DEX-created
+    // constants are indistinguishable by construction.
+    // Fixture: tests/semantic_s107_enum_valueof_test.cpp (ENUM-VALUEOF-1..6).
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/lang/Enum;" && method == "valueOf" &&
+        args.size() >= 2) {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        if (args[1].type != DalvikType::STRING_REF) {
+            // AOSP: Enum.valueOf with a null name → NullPointerException.
+            throw_deferred("Ljava/lang/NullPointerException;",
+                           "Name is null", "ENUM-VALUEOF");
+            return true;
+        }
+        std::string enum_desc = args[0].class_desc;
+        if ((args[0].type == DalvikType::OBJECT_REF || args[0].type == DalvikType::CLASS_REF) &&
+            args[0].object_id != 0) {
+            auto rd = heap_.get_object_field(args[0].object_id, "__referent_desc");
+            if (rd.has_value() && rd->type == DalvikType::STRING_REF &&
+                !rd->string_val.empty() && rd->string_val.rfind("L", 0) == 0) {
+                enum_desc = rd->string_val;
+            }
+        }
+        if (!enum_desc.empty() && enum_desc.rfind("L", 0) == 0) {
+            ensure_class_initialized(enum_desc);
+            const std::string prefix = enum_desc + ".";
+            const std::string& want = args[1].string_val;
+            const DalvikValue* hit = nullptr;
+            for (const auto& entry : static_field_storage_) {
+                if (entry.first.compare(0, prefix.size(), prefix) != 0) continue;
+                const DalvikValue& val = entry.second;
+                if (val.type != DalvikType::OBJECT_REF || val.object_id == 0) continue;
+                auto nm = heap_.get_object_field(val.object_id, "enum_name");
+                if (nm.has_value() && nm->type == DalvikType::STRING_REF &&
+                    nm->string_val == want) {
+                    hit = &val;
+                    break;
+                }
+            }
+            if (hit != nullptr) {
+                result = *hit;
+                return true;
+            }
+            // AOSP contract: a miss is IllegalArgumentException, not null.
+            throw_deferred("Ljava/lang/IllegalArgumentException;",
+                           "No enum constant " + enum_desc + "." + want,
+                           "ENUM-VALUEOF");
+            return true;
+        }
+        // Unresolvable class token: leave result null and report STUBBED so
+        // the trace keeps the failure honest (§18 — no silent fake success).
+        status = ApiCallTrace::Status::STUBBED;
     }
 
     // ────────────────────────────────────────────────────────────────────────

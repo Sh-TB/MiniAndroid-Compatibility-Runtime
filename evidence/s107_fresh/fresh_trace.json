@@ -1,0 +1,163 @@
+{
+  "dooz": [
+    {
+      "rc": 1,
+      "status": "B",
+      "errors": 6,
+      "exc_hash": "2d188948b3a28b62",
+      "shot_sha": "59fdbfcd60b86a23"
+    },
+    {
+      "rc": 1,
+      "status": "B",
+      "errors": 6,
+      "exc_hash": "2d188948b3a28b62",
+      "shot_sha": "59fdbfcd60b86a23"
+    },
+    {
+      "rc": 1,
+      "status": "B",
+      "errors": 6,
+      "exc_hash": "2d188948b3a28b62",
+      "shot_sha": "59fdbfcd60b86a23"
+    }
+  ],
+  "dooz_toplevel": [
+    {
+      "rc": 1,
+      "status": "B",
+      "errors": 6,
+      "exc_hash": "2d188948b3a28b62",
+      "shot_sha": "59fdbfcd60b86a23"
+    },
+    {
+      "rc": 1,
+      "status": "B",
+      "errors": 6,
+      "exc_hash": "2d188948b3a28b62",
+      "shot_sha": "59fdbfcd60b86a23"
+    },
+    {
+      "rc": 1,
+      "status": "B",
+      "errors": 6,
+      "exc_hash": "2d188948b3a28b62",
+      "shot_sha": "59fdbfcd60b86a23"
+    }
+  ],
+  "ballbreak": [
+    {
+      "rc": 0,
+      "status": "SUCCESS",
+      "errors": 0,
+      "exc_hash": "none",
+      "shot_sha": "fe797c19ba1920ed"
+    },
+    {
+      "rc": 0,
+      "status": "SUCCESS",
+      "errors": 0,
+      "exc_hash": "none",
+      "shot_sha": "fe797c19ba1920ed"
+    },
+    {
+      "rc": 0,
+      "status": "SUCCESS",
+      "errors": 0,
+      "exc_hash": "none",
+      "shot_sha": "fe797c19ba1920ed"
+    }
+  ],
+  "solitaire": [
+    {
+      "rc": 1,
+      "status": "B",
+      "errors": 0,
+      "exc_hash": "8c51f33a29451a4a",
+      "shot_sha": "59fdbfcd60b86a23"
+    },
+    {
+      "rc": 1,
+      "status": "B",
+      "errors": 0,
+      "exc_hash": "8c51f33a29451a4a",
+      "shot_sha": "59fdbfcd60b86a23"
+    },
+    {
+      "rc": 1,
+      "status": "B",
+      "errors": 0,
+      "exc_hash": "8c51f33a29451a4a",
+      "shot_sha": "59fdbfcd60b86a23"
+    }
+  ],
+  "mykanji": [
+    {
+      "rc": 0,
+      "status": "SUCCESS",
+      "errors": 21,
+      "exc_hash": "87443596e9828f80",
+      "shot_sha": "fa179d60c4266c62"
+    },
+    {
+      "rc": 0,
+      "status": "SUCCESS",
+      "errors": 21,
+      "exc_hash": "87443596e9828f80",
+      "shot_sha": "fa179d60c4266c62"
+    },
+    {
+      "rc": 0,
+      "status": "SUCCESS",
+      "errors": 21,
+      "exc_hash": "87443596e9828f80",
+      "shot_sha": "fa179d60c4266c62"
+    }
+  ],
+  "unote": [
+    {
+      "rc": 1,
+      "status": "B",
+      "errors": 0,
+      "exc_hash": "dbbd439aecf225a2",
+      "shot_sha": "64cf6eadefe07a7b"
+    },
+    {
+      "rc": 1,
+      "status": "B",
+      "errors": 0,
+      "exc_hash": "dbbd439aecf225a2",
+      "shot_sha": "64cf6eadefe07a7b"
+    },
+    {
+      "rc": 1,
+      "status": "B",
+      "errors": 0,
+      "exc_hash": "dbbd439aecf225a2",
+      "shot_sha": "64cf6eadefe07a7b"
+    }
+  ],
+  "bouncy": [
+    {
+      "rc": 1,
+      "status": "PARTIAL SUCCESS",
+      "errors": 16,
+      "exc_hash": "1b81b049ece90f8c",
+      "shot_sha": "cf76282e5c2a6925"
+    },
+    {
+      "rc": 1,
+      "status": "PARTIAL SUCCESS",
+      "errors": 16,
+      "exc_hash": "1b81b049ece90f8c",
+      "shot_sha": "cf76282e5c2a6925"
+    },
+    {
+      "rc": 1,
+      "status": "PARTIAL SUCCESS",
+      "errors": 16,
+      "exc_hash": "1b81b049ece90f8c",
+      "shot_sha": "cf76282e5c2a6925"
+    }
+  ]
+}
