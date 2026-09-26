@@ -1,0 +1,424 @@
+{
+  "apk_name": "app.varlorg.unote_30.apk",
+  "main_class": "Lapp/varlorg/unote/NoteMain;",
+  "main_method": "onCreate",
+  "methods": [
+    {
+      "class": "Lapp/varlorg/unote/NoteMain;",
+      "entry_point": true,
+      "method": "onCreate",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/app/Activity;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/app/Activity;",
+      "invocation_type": "virtual",
+      "method": "onCreate",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/Context;",
+      "invocation_type": "virtual",
+      "method": "getApplicationContext",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/preference/PreferenceManager;",
+      "invocation_type": "virtual",
+      "method": "getDefaultSharedPreferences",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/Context;",
+      "invocation_type": "virtual",
+      "method": "getApplicationContext",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/app/Activity;",
+      "invocation_type": "virtual",
+      "method": "getWindow",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences;",
+      "invocation_type": "virtual",
+      "method": "getBoolean",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences;",
+      "invocation_type": "virtual",
+      "method": "getBoolean",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v5",
+        "v4"
+      ],
+      "class": "Lapp/varlorg/unote/NoteMain;",
+      "invocation_type": "virtual",
+      "method": "setTheme",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8"
+      ],
+      "class": "Landroid/view/Window;",
+      "invocation_type": "virtual",
+      "method": "getDecorView",
+      "return_value": "Landroid/view/View;#11",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "getSystemUiVisibility",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "v7"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "setSystemUiVisibility",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v5"
+      ],
+      "class": "Lapp/varlorg/unote/NoteMain;",
+      "invocation_type": "virtual",
+      "method": "getWindow",
+      "return_value": "Landroid/view/Window;#10",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v5",
+        "v6"
+      ],
+      "class": "Landroid/view/Window;",
+      "invocation_type": "virtual",
+      "method": "setStatusBarColor",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lapp/varlorg/unote/NoteMain;",
+      "invocation_type": "virtual",
+      "method": "g",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/util/TypedValue;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/Context;",
+      "invocation_type": "virtual",
+      "method": "getApplicationContext",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967281"
+      ],
+      "class": "Landroid/app/Application;",
+      "invocation_type": "virtual",
+      "method": "getTheme",
+      "return_value": "Landroid/content/res/Resources$Theme;#13",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967281",
+        "v2",
+        "p4294967280",
+        "v7"
+      ],
+      "class": "Landroid/content/res/Resources$Theme;",
+      "invocation_type": "virtual",
+      "method": "resolveAttribute",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "p4294967280"
+      ],
+      "class": "Lapp/varlorg/unote/NoteMain;",
+      "invocation_type": "virtual",
+      "method": "setContentView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/database/sqlite/SQLiteOpenHelper;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967280"
+      ],
+      "class": "Lc/r0;",
+      "invocation_type": "virtual",
+      "method": "getWritableDatabase",
+      "return_value": "Landroid/database/sqlite/SQLiteDatabase;#29",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences;",
+      "invocation_type": "virtual",
+      "method": "getString",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Integer;",
+      "invocation_type": "virtual",
+      "method": "parseInt",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences;",
+      "invocation_type": "virtual",
+      "method": "getBoolean",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "v3"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "concat",
+      "return_value": "\"SELECT  * FROM table_notes ORDER BY Date_creation  DESC\"",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967280"
+      ],
+      "class": "Lc/r0;",
+      "invocation_type": "virtual",
+      "method": "getWritableDatabase",
+      "return_value": "Landroid/database/sqlite/SQLiteDatabase;#29",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294",
+        "p1"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "append",
+      "return_value": "Ljava/lang/StringBuilder;#31",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "toString",
+      "return_value": "\"fillListNote  selectQuery SELECT  * FROM table_notes ORDER BY Date_creation  DESC\"",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/util/Log;",
+      "invocation_type": "virtual",
+      "method": "d",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1",
+        "p3"
+      ],
+      "class": "Landroid/database/sqlite/SQLiteDatabase;",
+      "invocation_type": "virtual",
+      "method": "rawQuery",
+      "return_value": "Landroid/database/sqlite/SQLiteCursor;#32",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/database/Cursor;",
+      "invocation_type": "virtual",
+      "method": "moveToFirst",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/database/Cursor;",
+      "invocation_type": "virtual",
+      "method": "close",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lc/x;",
+      "invocation_type": "virtual",
+      "method": "c",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967281"
+      ],
+      "class": "Landroid/database/sqlite/SQLiteDatabase;",
+      "invocation_type": "virtual",
+      "method": "close",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "p4294967280"
+      ],
+      "class": "Lapp/varlorg/unote/NoteMain;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#27",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/widget/ArrayAdapter;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lc/s;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/graphics/drawable/ShapeDrawable;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/graphics/drawable/shapes/RectShape;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967280",
+        "p4294967281"
+      ],
+      "class": "Landroid/graphics/drawable/ShapeDrawable;",
+      "invocation_type": "virtual",
+      "method": "setShape",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences;",
+      "invocation_type": "virtual",
+      "method": "getInt",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/Context;",
+      "invocation_type": "virtual",
+      "method": "getResources",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967281"
+      ],
+      "class": "Landroid/content/res/Resources;",
+      "invocation_type": "virtual",
+      "method": "getDisplayMetrics",
+      "return_value": "Landroid/util/DisplayMetrics;#37",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/util/TypedValue;",
+      "invocation_type": "virtual",
+      "method": "applyDimension",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/graphics/Paint;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "v3"
+      ],
+      "class": "Landroid/graphics/Paint;",
+      "invocation_type": "virtual",
+      "method": "setColor",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "v3"
+      ],
+      "class": "Landroid/graphics/Paint;",
+      "invocation_type": "virtual",
+      "method": "setStrokeWidth",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967280"
+      ],
+      "class": "Landroid/graphics/drawable/ShapeDrawable;",
+      "invocation_type": "virtual",
+      "method": "getPaint",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    }
+  ],
+  "timestamp": "2026-09-26T14:34:07Z",
+  "total_api_calls": 51
+}
