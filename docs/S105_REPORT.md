@@ -94,13 +94,41 @@ toolchain:      ecj/r8/d8/aapt2 restored from container remnants
                 re-fetched, APK SHA 009b4671 matches the record)
 ```
 
-## 9. NEXT EXACT ACTION
+## 9. SECOND ROOT THIS WAVE — R-005 DECOR-LINKAGE (auto-continue per §9)
 
-**R-005 DECOR-LINKAGE** (GR-08, ticket #348 — REPRODUCED 3/3:
-`decor_content_parent` NOT FOUND while toolbar subtree exists): trace
-Activity → Window → DecorView → content parent → sub-decor → attached
-hierarchy on the failing APK's ViewTree, find the shared framework law in
-AOSP PhoneWindow.generateDecor/generateLayout + AppCompat
-AppCompatDelegateImpl.createSubDecor, fix the linkage, prove before/after
-with ViewTree provenance. Then: compose host/recomposition frontier
-(remaining dooz CancellationException unwind family is the entry point).
+Executed immediately after ROOT-010 per the continuation contract.
+
+```text
+ROOT:    Window.setContentView(View) silent no-op + global decor singleton
+         cross-activity leak (ballbreak v1.8.1, AppCompat sub-decor family)
+LAW:     PhoneWindow.setContentView installs INSIDE the decor hierarchy;
+         createSubDecor's mWindow.setContentView(subDecor) must make the
+         sub-decor reachable from getDecorView() (WindowDecorActionBar.init
+         walks decor_content_parent/action_bar from the DecorView root);
+         ONE DecorView per Window per Activity (PhoneWindow.mDecor)
+FIX:     Window.setContentView engine law (attach under the current
+         activity's decor, [R005-DECOR] row) + per-activity decor map
+BEFORE:  ISE "Can't make a decor toolbar out of null" -> GameActivity
+         onCreate APP BOUNDARY; Status: PARTIAL SUCCESS
+AFTER:   Status: SUCCESS, Errors: 0, 3/3 runs; decor-root walk answers
+         FOUND (decor_content_parent, action_bar); 0 APP BOUNDARY rows
+3-RUN:   SUCCESS x3 deterministic
+REGRESS: battery 105/105 ALL PASS (rc=0); dooz 6 / bouncy 16 / unote 0
+         controls unchanged
+APK:     de.georgsieber.ballbreak v1.8.1 vc10 (SHA e6e9f372… matches the
+         S84 registry record; re-fetched after corpus cleanup)
+TICKET:  #348 CLOSED; GR-08 REPRODUCED -> SOLVED-L5
+```
+
+## 10. NEXT EXACT ACTION
+
+**Compose host/recomposition frontier** (S104-r3 GR-07 continuation;
+now the first unresolved item in the S105 chain): the dooz post-fix trace
+shows the composition machinery running (setContentView + deferred
+attach+measure executes; remaining 6 error rows are the EXC-UNWIND
+bookkeeping of ONE handled kotlinx CancellationException caught at
+Llo;.B). First divergence to trace: the handled-cancellation unwind
+accounting (caught exceptions recorded as EXC-UNCAUGHT-TOP rows) and the
+first non-bookkeeping compose divergence past it — walk the chain APK
+bytecode → receiver identity → framework API → state producer → scheduler
+→ View/layout → rendering until the first incorrect engine semantic.

@@ -2176,6 +2176,15 @@ public:
     // matching real Android behavior where getResources() always returns the
     // same Resources instance for a given Context.
     std::map<std::string, uint32_t> api_singletons_;
+    // R-005 DECOR-LINKAGE (S105): per-activity window decor oid. AOSP law:
+    // ONE DecorView per Window per Activity (PhoneWindow.mDecor created
+    // once and stable for the window lifetime). The global singleton key
+    // ("Landroid/view/View;") leaked one activity's decor object into the
+    // next (ballbreak ground truth: two live decor oids 70/203 in one
+    // run) — a getDecorView captured by an earlier activity could not see
+    // the later activity's F-023 links. Keyed by the ActivityShadow
+    // current-activity view id.
+    std::map<uint32_t, uint32_t> window_decor_for_activity_;
     // S88 F-NEW-179: path → File object id (distinct dir File per path).
     std::map<std::string, uint32_t> dir_files_;
     // S88 F-NEW-181: code point → boxed Character id (valueOf cache 0..127).

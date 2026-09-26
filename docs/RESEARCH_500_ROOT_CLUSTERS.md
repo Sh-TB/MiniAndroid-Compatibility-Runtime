@@ -318,3 +318,59 @@ path parks are affected.
 **Ticket crosswalk**: P084 companion rows (F084 unwind family) SOLVED;
 S104-r3 sub-frontiers (b) Job ISE and (c) nav NPE closed as downstream
 cascades. Next queued root: R-005 DECOR-LINKAGE (GR-08, ticket #348).
+
+## ROOT-005 / GR-08 — DECOR-LINKAGE (REPRODUCED → SOLVED S105)
+
+**Law**: AOSP `PhoneWindow.setContentView` installs every view INSIDE the
+window's decor hierarchy (DecorView → mContentParent → view); androidx
+`AppCompatDelegateImpl.createSubDecor` ends with
+`mWindow.setContentView(subDecor)`, making the sub-decor
+(ActionBarOverlayLayout id=`decor_content_parent` → `action_bar` toolbar →
+`action_bar_activity_content`) REACHABLE from `window.getDecorView()` —
+which `WindowDecorActionBar.init` walks (`mOverlayLayout = decor.findViewById(
+R.id.decor_content_parent)`, `mDecorToolbar = getDecorToolbar(decor.findViewById(
+R.id.action_bar))`). Decor identity: ONE DecorView per Window per Activity
+(PhoneWindow.mDecor created once, stable).
+
+**Root cause (ballbreak v1.8.1 ground truth, S105 BEFORE)**: the engine
+answered `Landroid/view/Window;->setContentView(View)` as a silent
+unknown-method void — the sub-decor was never linked into the window decor
+hierarchy (§12 silent-failure chain). Additionally the getDecorView law used
+ONE global View singleton, leaking one activity's decor object into the
+next (two live decor oids 70/203 in a single run). Result:
+`WindowDecorActionBar.init → findViewById(decor_content_parent=0x7f080054,
+search_root=<decor>) → NOT FOUND → getDecorToolbar(null) → ISE
+"Can't make a decor toolbar out of null" → GameActivity.onCreate
+APP BOUNDARY unwind` — Status: PARTIAL SUCCESS, composition dead
+(S103's REPRODUCED #348, now root-caused and fixed).
+
+**Fix (L5, two shared laws)**:
+1. `Window.setContentView(View)` engine law (dalvik_engine.cpp): attaches
+   the view under the CURRENT activity's window decor node —
+   `[R005-DECOR]` evidence row; loud, never silent.
+2. Per-activity decor map (`window_decor_for_activity_`): getDecorView
+   allocates/reuses ONE decor per activity (AOSP identity law) instead of
+   one global singleton.
+
+**Real APK impact (de.georgsieber.ballbreak v1.8.1 vc10, SHA
+e6e9f37293d3aaac… hash-verified against the S84 registry record)**:
+```text
+before (S104-r3 HEAD binary): ISE "Can't make a decor toolbar out of
+                               null" 2/2 runs → GameActivity.onCreate
+                               APP BOUNDARY → Status: PARTIAL SUCCESS
+after:  Status: SUCCESS, Errors: 0, 3/3 runs; WindowDecorActionBar.init
+        decor-walk answers FOUND (decor_content_parent=207, action_bar=232)
+        from the decor root (receiver 0xcb=203) — ONE live scene; zero
+        APP BOUNDARY rows
+```
+Controls (post-fix binary): dooz 6 (holds after ROOT-010), bouncy 16
+(pre-existing, unchanged), unote 0. Battery 105/105 ALL PASS (rc=0) on the
+final tree. Corpus fan-out (bytecode scan): 0/42 on-disk APKs carry the
+WindowDecorActionBar+decor_content_parent family (the reproducer APK had
+been cleaned from the corpus; re-fetched from the registry URL,
+SHA-verified). The law also covers every multi-activity app via the
+decor-identity fix.
+
+**Ticket crosswalk**: #348 CLOSED (REPRODUCED → SOLVED); GR-08 status
+REPRODUCED → SOLVED-L5. Next queued root: compose host/recomposition
+frontier (S104-r3 GR-07 continuation).

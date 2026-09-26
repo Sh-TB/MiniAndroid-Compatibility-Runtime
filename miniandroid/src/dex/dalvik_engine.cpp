@@ -26996,7 +26996,37 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // ────────────────────────────────────────────────────────────────────────
     if (method == "getDecorView" &&
         class_name.find("Window") != std::string::npos) {
-        result = get_or_create_singleton("Landroid/view/View;");
+        // R-005 DECOR-LINKAGE (S105): ONE DecorView per Window per
+        // Activity (AOSP PhoneWindow.mDecor law). The global View
+        // singleton leaked across activities (ballbreak: two live decor
+        // oids 70/203 in one run); the decor is now keyed by the
+        // current activity (same key the F-023 link below uses).
+        uint32_t r005_act_view = 0;
+        if (shadow_registry_) {
+            if (auto* act = shadow_registry_->find_as<framework::ActivityShadow>())
+                r005_act_view = act->current_activity_id();
+        }
+        uint32_t r005_decor = 0;
+        if (r005_act_view != 0) {
+            auto it = window_decor_for_activity_.find(r005_act_view);
+            if (it != window_decor_for_activity_.end() &&
+                heap_.has_object(it->second))
+                r005_decor = it->second;
+            if (r005_decor == 0) {
+                r005_decor = heap_.allocate(
+                    "Landroid/view/View;", pc_,
+                    call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+                window_decor_for_activity_[r005_act_view] = r005_decor;
+            }
+            result = DalvikValue::make_object(r005_decor,
+                                              "Landroid/view/View;");
+        } else {
+            // No live activity context (dialog/system windows): legacy
+            // global singleton behavior.
+            result = get_or_create_singleton("Landroid/view/View;");
+            if (result.type == DalvikType::OBJECT_REF)
+                r005_decor = result.object_id;
+        }
         status = ApiCallTrace::Status::IMPLEMENTED;
         // ────────────────────────────────────────────────────────────────────
         // F-023 (AOSP window view-tree law): the DecorView is the ROOT of the
@@ -27034,6 +27064,70 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 }
             }
         }
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // R-005 DECOR-LINKAGE (S105) — Window.setContentView(View) law.
+    // AOSP PhoneWindow.setContentView installs the view INSIDE the window's
+    // decor hierarchy (DecorView → mContentParent → view). AppCompat
+    // AppCompatDelegateImpl.createSubDecor ENDS with
+    //   invoke-virtual v2, v0, Landroid/view/Window;->setContentView(View)V
+    // (ballbreak dex pc=0x2a8) — on real Android this makes the sub-decor
+    // (ActionBarOverlayLayout → decor_content_parent / action_bar /
+    // action_context_bar) REACHABLE from window.getDecorView(), which
+    // WindowDecorActionBar.init walks (mContentView = decor.findViewById(
+    // R.id.decor_content_parent)). The engine answered this invoke as a
+    // silent unknown-method void — no linkage (the §12 silent-failure
+    // chain): ballbreak ground truth = WindowDecorActionBar.init
+    // findViewById(decor_content_parent=0x7f080054, search_root=<decor>)
+    // NOT FOUND while the SAME run answers it from the overlay-layout
+    // receiver subtree → getDecorToolbar(null) → ISE
+    // "Can't make a decor toolbar out of null" → GameActivity.onCreate
+    // APP BOUNDARY. Fix: attach the view under the CURRENT activity's
+    // window decor node (the R-005 per-activity decor) — one live scene:
+    // DecorView → subDecor → content.
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "setContentView" &&
+        (class_name == "Landroid/view/Window;" ||
+         class_name == "Landroid/view/PhoneWindow;") &&
+        args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF &&
+        args[1].object_id != 0 && shadow_registry_ != nullptr) {
+        // bridge_to_api arg convention: args[0] = RECEIVER (the Window),
+        // args[1] = the view to install (subDecor).
+        uint32_t r005_sub = args[1].object_id;
+        uint32_t r005_act_view = 0;
+        uint32_t r005_decor = 0;
+        if (auto* act = shadow_registry_->find_as<framework::ActivityShadow>())
+            r005_act_view = act->current_activity_id();
+        if (r005_act_view != 0) {
+            auto it = window_decor_for_activity_.find(r005_act_view);
+            if (it != window_decor_for_activity_.end() &&
+                heap_.has_object(it->second))
+                r005_decor = it->second;
+            if (r005_decor == 0) {
+                r005_decor = heap_.allocate(
+                    "Landroid/view/View;", pc_,
+                    call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+                window_decor_for_activity_[r005_act_view] = r005_decor;
+            }
+        }
+        if (r005_decor != 0 && r005_decor != r005_sub) {
+            if (auto* vs = shadow_registry_->find_as<framework::ViewShadow>()) {
+                if (!vs->find_node(r005_decor))
+                    vs->get_or_create_node(r005_decor, "Landroid/view/View;");
+                if (!vs->find_node(r005_sub))
+                    vs->get_or_create_node(r005_sub, "Landroid/view/View;");
+                if (vs->add_child(r005_decor, r005_sub)) {
+                    std::cerr << "[R005-DECOR] Window.setContentView: view="
+                              << r005_sub << " linked under decor="
+                              << r005_decor << " (activity=" << r005_act_view
+                              << ")" << std::endl;
+                }
+            }
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_void();
         return true;
     }
 
