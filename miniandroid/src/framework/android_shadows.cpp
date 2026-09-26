@@ -3921,8 +3921,23 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     if (m == "setBackgroundColor" || m == "setBackground" ||
         m == "setBackgroundResource" || m == "setBackgroundDrawable" ||
         m == "setLayoutParams" || m == "getLayoutParams" ||
-        m == "draw" ||
-        m == "requestLayout" || m == "invalidate") {
+        m == "draw") {
+        return CallResult::handled_void();
+    }
+    if (m == "requestLayout") {
+        // S106 (MG-115) FIX — AOSP View.requestLayout() law (View.java
+        // L20000+: requestLayout -> mPrivateFlags |= PFLAG_FORCE_LAYOUT ->
+        // propagates up to ViewRootImpl -> performTraversals re-measure).
+        // The bridge previously swallowed the call as a no-op, so DEX-driven
+        // requestLayout() never re-measured (the R-NEW-302 traversal flag
+        // existed but this path never raised it).
+        layout_dirty = true;
+        return CallResult::handled_void();
+    }
+    if (m == "invalidate") {
+        // AOSP invalidate = redraw-only; the per-frame renderer redraws the
+        // whole tree, so accepting the call without forcing a re-LAYOUT is
+        // the correct law (invalidate must NOT schedule measure/layout).
         return CallResult::handled_void();
     }
     if (m == "getLayoutParams") {

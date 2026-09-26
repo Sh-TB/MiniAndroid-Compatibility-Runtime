@@ -61,11 +61,14 @@ struct Affine2D {
     void pre_rotate(float degrees) {
         const float rad = degrees * 3.14159265358979323846f / 180.0f;
         const float cs = std::cos(rad), sn = std::sin(rad);
-        // R = [cs -sn ; sn cs] (y-down clockwise). M = M ∘ R:
-        const float na = a * cs - c * sn;
-        const float nb = b * cs - d * sn;
-        const float nc = a * sn + c * cs;
-        const float nd = b * sn + d * cs;
+        // R (y-down clockwise) = [[cs, -sn], [sn, cs]]: (1,0) -> (0,1) at 90°.
+        // S106 FIX: the old composition computed M·Rᵀ (counter-clockwise) —
+        // canvas.rotate(90) turned the WRONG WAY vs AOSP/Skia. Correct
+        // M·R product (x'=a·x+c·y, y'=b·x+d·y convention):
+        const float na = a * cs + c * sn;
+        const float nb = b * cs + d * sn;
+        const float nc = c * cs - a * sn;
+        const float nd = d * cs - b * sn;
         a = na; b = nb; c = nc; d = nd;
     }
     // M = M ∘ skew(kx,ky): x' = x + kx*y ; y' = ky*x + y

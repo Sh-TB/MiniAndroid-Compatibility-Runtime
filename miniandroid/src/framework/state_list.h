@@ -41,7 +41,8 @@ bool parse_state_list(const std::vector<uint8_t>& axml,
 // winner's color (when has_color) or drawable path.
 bool pick_state_list(
     const std::vector<ViewShadow::ViewNode::BgStateItem>& items, bool pressed,
-    bool enabled, bool selected, uint32_t* color_out, std::string* path_out);
+    bool enabled, bool selected, uint32_t* color_out, std::string* path_out,
+    bool checked = false);  // S106 MG-022: android:state_checked law
 
 }  // namespace framework
 }  // namespace miniandroid

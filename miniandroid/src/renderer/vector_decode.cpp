@@ -408,14 +408,20 @@ struct VPath {
     float stroke_width = 0.f;
     bool has_stroke = false;
     bool even_odd = false;
+    // S106 (MG-014): product of all <group android:alpha> ancestors — AOSP
+    // VGroup.getAlpha inheritance law (child paths inherit the group alpha
+    // multiplicatively; VectorDrawable.canApplyTheme/applyTheme chain).
+    float inherited_alpha = 1.f;
 };
 
 // Group walk with matrix composition (AOSP VGroup law, nested groups).
-void walk(const resources::AxmlElement& el, const VMat& pm,
+// alpha = accumulated group alpha from ancestors (S106 MG-014 law).
+void walk(const resources::AxmlElement& el, const VMat& pm, float alpha,
           std::vector<VPath>* paths, std::string* err,
           const VectorRefResolver* resolver) {
     if (el.name == "group") {
         float tx = 0, ty = 0, px = 0, py = 0, rot = 0, sx = 1, sy = 1;
+        float ga = 1.f;
         attr_float(el.attr("translateX"), 0.f, &tx);
         attr_float(el.attr("translateY"), 0.f, &ty);
         attr_float(el.attr("pivotX"), 0.f, &px);
@@ -423,6 +429,8 @@ void walk(const resources::AxmlElement& el, const VMat& pm,
         attr_float(el.attr("rotation"), 0.f, &rot);
         attr_float(el.attr("scaleX"), 1.f, &sx);
         attr_float(el.attr("scaleY"), 1.f, &sy);
+        attr_float(el.attr("alpha"), 1.f, &ga);  // S106 MG-014
+        const float child_alpha = alpha * ga;      // multiplicative law
         const float rad = rot * kPi / 180.0f;
         VMat t1; t1.e = tx; t1.f = ty;
         VMat tp; tp.e = px; tp.f = py;
@@ -435,12 +443,13 @@ void walk(const resources::AxmlElement& el, const VMat& pm,
         local.pre_concat(sc); local.pre_concat(tm);
         VMat m = pm;
         m.pre_concat(local);
-        for (const auto& ch : el.children) walk(ch, m, paths, err, resolver);
+        for (const auto& ch : el.children) walk(ch, m, child_alpha, paths, err, resolver);
         return;
     }
     if (el.name == "path") {
         VPath pd;
         pd.matrix = pm;  // compose at map time (viewport scale applied there)
+        pd.inherited_alpha = alpha;  // S106 MG-014: group alpha inheritance
         const auto* d = el.attr("pathData");
         const auto* fc = el.attr("fillColor");
         const auto* sc = el.attr("strokeColor");
@@ -487,7 +496,7 @@ void walk(const resources::AxmlElement& el, const VMat& pm,
         el.name == "set") {
         if (err->empty()) *err = "animated-vector unsupported";
     }
-    for (const auto& ch : el.children) walk(ch, pm, paths, err, resolver);
+    for (const auto& ch : el.children) walk(ch, pm, 1.f, paths, err, resolver);
 }
 
 }  // namespace
@@ -768,7 +777,7 @@ bool decode_vector_drawable(const std::vector<uint8_t>& axml_bytes,
     // Inflate paths (viewport space) with group matrices.
     std::vector<VPath> paths;
     std::string err;
-    walk(root, VMat{}, &paths, &err, resolver);
+    walk(root, VMat{}, 1.f, &paths, &err, resolver);
 
     // Tint law (AOSP VectorDrawable tint): the tint color composes SRC_IN
     // over the rendered result — for solid fills the visible color becomes
@@ -805,7 +814,8 @@ bool decode_vector_drawable(const std::vector<uint8_t>& axml_bytes,
         if (pd.contours.empty()) continue;
         if (!pd.has_fill && !pd.has_stroke) continue;
         Rgba fill = argb_to_rgba(pd.fill_color);
-        fill.a = (uint8_t)std::lround(fill.a * pd.fill_alpha);
+        fill.a = (uint8_t)std::lround(fill.a * pd.fill_alpha *
+                                     pd.inherited_alpha);  // S106 MG-014
         if (has_tint) {  // SRC_IN: output color = tint.rgb, alpha multiplied
             Rgba t = argb_to_rgba(tint);
             fill.r = t.r; fill.g = t.g; fill.b = t.b;
@@ -829,7 +839,11 @@ bool decode_vector_drawable(const std::vector<uint8_t>& axml_bytes,
             }
             mapped.push_back(std::move(m2));
         }
-        if (!pd.has_fill) continue;
+        // S106 MG-005 FIX (AOSP VectorDrawable.draw law): fill and stroke are
+        // INDEPENDENT draw commands — a stroke-only path (no fillColor) must
+        // still render. The old `if (!pd.has_fill) continue;` skipped the
+        // stroke block entirely, silencing every stroke-only vector icon.
+        if (pd.has_fill) {
         std::vector<Edge> edges;
         for (const Contour& ct : mapped) {
             for (size_t i = 0; i < ct.size(); ++i) {
@@ -890,11 +904,13 @@ bool decode_vector_drawable(const std::vector<uint8_t>& axml_bytes,
                 }
             }
         }
+        }  // end has_fill (S106: stroke below runs regardless)
         // Minimal stroke law: segment thickening (matches the engine's
         // bg_vector stroke treatment; AA strokes are a named future law).
         if (pd.has_stroke) {
             Rgba s = argb_to_rgba(pd.stroke_color);
-            s.a = (uint8_t)std::lround(s.a * pd.stroke_alpha);
+            s.a = (uint8_t)std::lround(s.a * pd.stroke_alpha *
+                                       pd.inherited_alpha);  // S106 MG-014
             if (has_tint) {
                 Rgba t = argb_to_rgba(tint);
                 s.r = t.r; s.g = t.g; s.b = t.b;

@@ -7,6 +7,7 @@
 #include "../fonts/text_shaper.h"
 #include "runtime/object_model.h"
 #include "vector_decode.h"
+#include "gif_decoder.h"
 #include <fstream>
 #include <chrono>
 #include <cstring>
@@ -1285,12 +1286,12 @@ bool decode_image_bytes(const std::vector<uint8_t>& bytes, DecodedImage* out,
         return out->ok;
     }
     if (fmt == "gif") {
-        // EXPLICIT UNSUPPORTED (§0/§13): never a silent drop. No animated-GIF
-        // decoder is wired; the container is NAMED so every log/trace shows
-        // exactly which format failed.
-        out->error = "GIF format not supported (no decoder wired)";
-        std::cerr << "[IMAGE-DECODE] EXPLICIT-UNSUPPORTED format=gif ("
-                  << bytes.size() << " bytes)" << std::endl;
+        // S106 GIF-ANIM-1 (MG-214..216): REAL GIF89a decode via the vendored
+        // stb_image (full LZW + disposal semantics). First composited frame
+        // for static consumers; animated consumers use GifDecoder::decode_anim.
+        // Corrupt/truncated containers remain NAMED errors (§0/§13 — never a
+        // silent drop).
+        if (GifDecoder::decode_first_frame(bytes, out)) return true;
         return false;
     }
     if (fmt == "axml") {

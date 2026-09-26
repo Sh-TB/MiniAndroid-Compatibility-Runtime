@@ -3888,3 +3888,69 @@ Stage Summary:
 - NEXT ACTION: compose host/recomposition frontier — the dooz post-fix
   chain (handled-CancellationException unwind accounting, then the first
   non-bookkeeping compose divergence).
+
+---
+Task ID: S106
+Agent: Super Z (main)
+Task: Continue-until-goal + user directive (Persian): push all pending work;
+close >=50 open GitHub issues WITH evidence ("not superficially"); report
+real game-execution impact of every change.
+
+Work Log:
+- BATCH A (root tickets, fresh HEAD evidence): re-ran dooz v23 +
+  dooz_23_toplevel + ballbreak 3x each at 176710b1 — dooz 6 errors x3
+  (exception-set hash d5c33116c62eff1d, F084 gone, screenshot SHA
+  59fdbfcd60b86a23 = S105 record), ballbreak SUCCESS 0 errors x3. Re-fetched
+  solitaire (vc 20260804, SHA e8753685...), mentalmath (vc 27), mykanji
+  (vc 7) from F-Droid: solitaire 0 errors x3 (FIX-005 holds), mykanji
+  SUCCESS rc=0 x3 with the decor-toolbar ISE gone (0 occurrences),
+  mentalmath 32 errors x3 with the Hilt ISE STILL PRESENT -> ticket #351
+  stays open honestly. CLOSED #347, #349, #350, #352 with per-root commit
+  SHAs + fresh 3-run evidence.
+- BATCH B (GIF-ANIM-1): wired REAL animated-GIF decode (GifDecoder over
+  the vendored stb_image) replacing the S68-era "GIF not supported" branch;
+  law test G1-G6 proves disposal NONE/BACKGROUND/PREVIOUS from decoded
+  pixels. TWO UPSTREAM STB BUGS FIXED (documented in the vendored copy):
+  (1) dispose-2 restored the pre-frame canvas instead of the background —
+  now spec-true transparent black (GIF89a + Skia law); (2) two_back cached
+  a pointer across realloc (OOB heap read on EVERY disposal-3 GIF) —
+  replaced with a per-GIF prev_canvas snapshot. Also handled stb's
+  unguarded *z write. MG-214/215/216 CLOSED.
+- BATCH C (5 law-test battery stages, 102 checkpoints, ALL PASS):
+  s106_gif (17), s106_drawables (39, aapt2-built fixture project
+  tests/fixtures/s106_drawables), s106_text2 (14), s106_canvas/input/audio
+  (21), s106_layout/net (11, live local HTTP server for REAL GET laws).
+  47 micro-gaps CLOSED with named stages.
+- 5 REAL ENGINE FIXES found by the new fences:
+  1. stroke-only vector paths drew NOTHING (fill/stroke independence law);
+  2. Affine2D::pre_rotate rotated the WRONG DIRECTION (M*R^t vs M*R —
+     canvas.rotate(90) was counter-clockwise vs AOSP/Skia clockwise law);
+  3. layout_text maxLines off-by-one emitted an extra empty line;
+  4. View.requestLayout() bridge was a silent no-op (never raised the
+     R-NEW-302 layout_dirty traversal flag);
+  5. implemented group android:alpha inheritance + state_checked
+     (BgStateItem + pick_state_list API extension) + audio module wired
+     into the build (audio_engine.cpp was source-only).
+- GATES: battery ALL PASS (rc=0, 105 canonical + 5 new s106 stages);
+  EXT-01/02 fixtures re-fetched SHA-pinned (APK 009b4671... matches record,
+  reference screenshot 121d479c... matches record) after container reset.
+- REGRESSION: post-fix re-runs x3 (dooz/ballbreak/solitaire/mykanji):
+  ballbreak SUCCESS 0 (SHA fe797c19...), solitaire 0 errors (59fdbfcd...),
+  mykanji SUCCESS (fa179d60...), dooz 6 errors with identical
+  exception-set hash — ZERO REGRESSIONS; the 5 fixes changed only
+  law-violating behavior no corpus title exercised visibly.
+- REGISTRY: MICRO_GAP_REGISTRY CLOSED 32->79 (PARTIAL 70->27); battery
+  stages registered in run_test_battery.sh; registry session note set.
+- GITHUB: 4 root tickets + 47 MG tickets closed with evidence comments
+  (commit SHA + law + before/after + stage name each) = 51 total.
+
+Stage Summary:
+- 51 issue closures with evidence (>=50 demanded); 5 real engine bugs
+  fixed; 2 upstream stb bugs fixed; GIF animation is a new engine
+  capability; audio module wired; zero corpus regressions; registry
+  CLOSED count 2.5x.
+- NEXT ACTION: continue the S105 chain section 10 (compose
+  recomposition frontier — Recomposer.composeInitial$runtime ->
+  processCompositionError in fresh solitaire traces), then the remaining
+  PARTIAL micro-gaps (MG-060/077/078/079 spans + letterSpacing,
+  MG-060/076 render-side fences) and NinePatch (MG-024/025) family.

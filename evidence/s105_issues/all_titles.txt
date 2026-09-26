@@ -1,0 +1,299 @@
+#352	[S102-D] coroutines: CoroutineScheduler$Worker.tryPark interpreter spin (LockSupport.park has no blocking semantics)
+#351	[S102-C] mentalmath: Hilt DI 'ApplicationContextModule must be set' ISE in DaggerMentalMath_HiltComponents_SingletonC$Builder.buil
+#350	[S102-B] compose frontier: 'CompositionLocal LocalDensity not present' — WindowRecomposer host wiring (solitaire, the real compose
+#349	[S102-A] solitaire: R8-merged SavedStateRegistryController — getSavedStateProvider invoked on null registry receiver inside Compon
+#348	[F-NEW-170] appcompat decor-toolbar construction family (mykanji, post theme-gate fix)
+#347	[F-NEW-169] dooz compose-navigation NPE chain — 3 roots after rc=-11 fix
+#346	[F-NEW-169] SpeedDialView (leinardi) library frontier — babydots cascade: FAB inflate + FabWithLabelView.init setFocusable NPE
+#344	[F-NEW-167] blank-render L0 family — rc=0 games that never draw (klondike/tripeaks/memory/blackjack/counting/accelerace/kingpong/b
+#343	[F-NEW-166] androidx ConstraintLayout core interpreter frontier — ConstraintWidgetContainer solve never populates core widgets (no
+#339	[GAMES-6] Autonomous Mini Tetris play
+#333	[MG-233] resource audio loading — audio (PARTIAL)
+#332	[MG-232] MediaPlayer initialization — audio (PARTIAL)
+#331	[MG-231] SoundPool initialization — audio (PARTIAL)
+#330	[MG-170] Bundle persistence — lifecycle (PARTIAL)
+#329	[MG-169] saved instance state — lifecycle (PARTIAL)
+#328	[MG-310] class initialization ordering — system/edge (PARTIAL)
+#327	[MG-299] locale — system/edge (PARTIAL)
+#326	[MG-298] timezone — system/edge (PARTIAL)
+#325	[MG-229] disappearing-object detection — animation (PARTIAL)
+#324	[MG-228] wrong-order frame detection — animation (PARTIAL)
+#322	[MG-150] translated view hit testing — input (PARTIAL)
+#321	[MG-149] touch outside bounds — input (PARTIAL)
+#320	[MG-147] multiple pointer IDs — input (PARTIAL)
+#319	[MG-146] event cancellation — input (PARTIAL)
+#318	[MG-210] nested transforms — graphics/render (PARTIAL)
+#317	[MG-209] canvas rotation — graphics/render (PARTIAL)
+#316	[MG-208] canvas scale — graphics/render (PARTIAL)
+#315	[MG-207] canvas translation — graphics/render (PARTIAL)
+#314	[MG-204] scaling filter quality classes — graphics/render (PARTIAL)
+#313	[MG-046] mipmap XML indirection — resource/asset (PARTIAL)
+#312	[MG-025] NinePatch stretch region — resource/asset (PARTIAL)
+#311	[MG-024] NinePatch basic padding — resource/asset (PARTIAL)
+#310	[MG-023] State-list state fallback — resource/asset (PARTIAL)
+#309	[MG-022] State-list checked state — resource/asset (PARTIAL)
+#308	[MG-021] State-list disabled state — resource/asset (PARTIAL)
+#307	[MG-020] State-list selected state — resource/asset (PARTIAL)
+#306	[MG-017] Layer-list inset — resource/asset (PARTIAL)
+#305	[MG-016] Layer-list ordering — resource/asset (PARTIAL)
+#304	[MG-015] Drawable alpha inheritance — resource/asset (PARTIAL)
+#303	[MG-014] Vector alpha inheritance — resource/asset (PARTIAL)
+#302	[MG-013] Vector nested group transforms — resource/asset (PARTIAL)
+#301	[MG-012] Vector group translation — resource/asset (PARTIAL)
+#300	[MG-011] Vector group scale — resource/asset (PARTIAL)
+#299	[MG-010] Vector group rotation — resource/asset (PARTIAL)
+#298	[MG-009] Vector group pivotX/pivotY — resource/asset (PARTIAL)
+#297	[MG-008] Vector path trimPath — resource/asset (PARTIAL)
+#296	[MG-007] Vector path strokeLineJoin — resource/asset (PARTIAL)
+#295	[MG-006] Vector path strokeLineCap — resource/asset (PARTIAL)
+#294	[MG-005] Vector path strokeWidth — resource/asset (PARTIAL)
+#293	[MG-004] Vector path winding — resource/asset (PARTIAL)
+#292	[MG-003] Vector path fillType — resource/asset (PARTIAL)
+#291	[MG-002] Vector viewportWidth/viewportHeight — resource/asset (PARTIAL)
+#290	[MG-001] Drawable XML parsing edge cases — resource/asset (PARTIAL)
+#289	[MG-130] ViewGroup child ordering — layout/geometry (PARTIAL)
+#288	[MG-116] invalidate propagation — layout/geometry (PARTIAL)
+#287	[MG-088] downloadable-font failure fallback — text/font (PARTIAL)
+#286	[MG-087] Android resource font family — text/font (PARTIAL)
+#285	[MG-086] font file loading failure semantics — text/font (PARTIAL)
+#284	[MG-079] style span — text/font (PARTIAL)
+#283	[MG-078] foreground color span — text/font (PARTIAL)
+#282	[MG-077] Spannable basic spans — text/font (PARTIAL)
+#281	[MG-076] textColor alpha — text/font (PARTIAL)
+#280	[MG-075] singleLine — text/font (PARTIAL)
+#279	[MG-074] maxLines — text/font (PARTIAL)
+#278	[MG-072] tab handling — text/font (PARTIAL)
+#277	[MG-071] whitespace handling — text/font (PARTIAL)
+#276	[MG-068] font descent — text/font (PARTIAL)
+#275	[MG-067] font ascent — text/font (PARTIAL)
+#274	[MG-062] includeFontPadding — text/font (PARTIAL)
+#273	[MG-061] lineSpacing — text/font (PARTIAL)
+#272	[MG-060] letterSpacing — text/font (PARTIAL)
+#271	[MG-058] Typeface inheritance — text/font (PARTIAL)
+#270	[MG-053] tofu detection — text/font (PARTIAL)
+#269	[MG-052] Missing glyph detection — text/font (PARTIAL)
+#268	[MG-048] adaptive icon background — resource/asset (PARTIAL)
+#267	[MG-047] adaptive icon foreground — resource/asset (PARTIAL)
+#266	[MG-248] HTTP GET — network (PENDING)
+#265	[MG-216] GIF disposal PREVIOUS — animation (OBSERVED)
+#264	[MG-215] GIF disposal BACKGROUND — animation (OBSERVED)
+#263	[MG-214] GIF disposal NONE — animation (OBSERVED)
+#242	[MG-115] requestLayout propagation — layout/geometry (PARTIAL)
+#233	[S97/S98] MICRO-GAP SWEEP master wave — 100 probable-bug tickets + games/demo wave (issue-per-problem law)
+#232	[S84] Canonical achievements + 50 NEW titles + README landing page — wave report
+#231	[F-NEW-162] androidx savedstate generated-adapter family — deferred CNFE unwind (S84, 12-title fan-out)
+#230	[F-NEW-161] Compose UI runtime internals — deferred-exception family (S84 NEW-50 fan-out, ~24 titles)
+#229	[VF-NEW-003] IMAGE_DECODED_VS_RENDERED_GAP chain — root cause (common runtime, visual)
+#228	[F-NEW-157] libGDX AndroidGraphics.createGLSurfaceView NPE (EGL/GLSurfaceView frontier) — root cause (common runtime)
+#227	[F-NEW-156] onCreate APP-BOUNDARY-UNWIND family — root cause (common runtime)
+#226	[MAND-002] io.timelimit.android.aosp.direct — compatibility report
+#225	[MAND-001] se.tube42.p9.android — compatibility report
+#224	[APP-100] com.artifex.mupdf.viewer.app — compatibility report
+#223	[APP-099] duress.ultimate — compatibility report
+#222	[APP-098] com.google.android.stardroid — compatibility report
+#221	[APP-097] io.github.x0b.rcx — compatibility report
+#220	[APP-096] dev.cipher.notes — compatibility report
+#219	[APP-095] org.billthefarmer.buses — compatibility report
+#218	[APP-094] com.fpf.smartscan — compatibility report
+#217	[APP-093] com.agatamessina.webinspector — compatibility report
+#216	[APP-092] org.asafonov.weather — compatibility report
+#215	[APP-091] org.y20k.transistor — compatibility report
+#214	[APP-090] org.sherpr.app — compatibility report
+#213	[APP-089] me.timeto.app — compatibility report
+#212	[APP-088] com.foxdebug.acode — compatibility report
+#211	[APP-087] com.freetime.geoweather — compatibility report
+#210	[APP-086] com.vicolo.chrono — compatibility report
+#209	[APP-085] org.fossify.math — compatibility report
+#208	[APP-084] takagi.ru.monica.fdroid — compatibility report
+#207	[APP-083] dev.otaj.zelp — compatibility report
+#206	[APP-082] com.barghest.mesh — compatibility report
+#205	[APP-081] trailence.org — compatibility report
+#204	[APP-080] yetzio.yetcalc — compatibility report
+#203	[APP-079] com.justdeax.composeStopwatch — compatibility report
+#202	[APP-078] org.fossify.clock — compatibility report
+#201	[APP-077] io.github.lordofpolls.shellwave — compatibility report
+#200	[APP-076] deckers.thibault.aves.libre — compatibility report
+#199	[APP-075] org.fossify.gallery — compatibility report
+#198	[APP-074] it.rignanese.leo.slimfacebook — compatibility report
+#197	[APP-073] dudeofx.eval — compatibility report
+#196	[APP-072] de.kaffeemitkoffein.tinyweatherforecastgermany — compatibility report
+#195	[APP-071] com.kylecorry.trail_sense — compatibility report
+#194	[APP-070] fr.ign.geoportail — compatibility report
+#193	[APP-069] com.github.vauvenal5.yaga — compatibility report
+#192	[APP-068] com.fixupxer — compatibility report
+#191	[APP-067] de.phasenrauscher.bicyweather — compatibility report
+#190	[APP-066] uk.org.boddie.android.weatherforecast — compatibility report
+#189	[APP-065] net.aliasvault.app — compatibility report
+#188	[APP-064] joshuatee.wx — compatibility report
+#187	[APP-063] com.axiel7.anihyou — compatibility report
+#186	[APP-062] foss.cnugteren.nlweer — compatibility report
+#185	[APP-061] org.godotengine.editor.v4 — compatibility report
+#184	[APP-060] lab.rreedd.oriens — compatibility report
+#183	[APP-059] com.adeeteya.digital_calculator — compatibility report
+#182	[APP-058] com.iris.gallery — compatibility report
+#181	[APP-057] com.vsmartcard.acardemulator — compatibility report
+#180	[APP-056] com.bbzone.isitprime — compatibility report
+#179	[APP-055] com.metromusic — compatibility report
+#178	[APP-054] com.crome.forecastpoint — compatibility report
+#177	[APP-053] com.co3 — compatibility report
+#176	[APP-052] com.kaii.photos — compatibility report
+#175	[APP-051] cn.rbc.termuc — compatibility report
+#174	[APP-050] com.ominous.quickweather — compatibility report
+#173	[APP-049] de.quaddyservices.dynamicnightlight — compatibility report
+#172	[APP-048] m.co.rh.id.a_news_provider — compatibility report
+#171	[APP-047] com.davidtakac.bura — compatibility report
+#170	[APP-046] tibarj.tranquilstopwatch — compatibility report
+#169	[APP-045] orinasa.njarasoa.maripanatokana — compatibility report
+#168	[APP-044] is.xyz.mpv — compatibility report
+#167	[APP-043] com.kolakek.pimiwidget — compatibility report
+#166	[APP-042] org.ucam.ssb22.pinyinfdroid — compatibility report
+#165	[APP-041] io.paperterm.app — compatibility report
+#164	[APP-040] fr.corenting.convertisseureurofranc — compatibility report
+#163	[APP-039] de.schliweb.makeacopy — compatibility report
+#162	[APP-038] app.fedilab.castlab — compatibility report
+#161	[APP-037] com.divinelink.scenepeek — compatibility report
+#160	[APP-036] com.greenart7c3.nostrsigner — compatibility report
+#159	[APP-035] org.ojrandom.paiesque — compatibility report
+#158	[APP-034] com.nfcarchiver.nfc_archiver — compatibility report
+#157	[APP-033] com.srkovnar.legacyphotoframe — compatibility report
+#156	[APP-032] dev.gpxit.app — compatibility report
+#155	[APP-031] protectedwp.safespace — compatibility report
+#154	[APP-030] com.chmouel.liseur — compatibility report
+#153	[APP-029] com.hegocre.nextcloudpasswords — compatibility report
+#152	[APP-028] com.vagujhelyigergely.calculatorm3 — compatibility report
+#151	[APP-027] com.firebirdberlin.nightdream.noGms — compatibility report
+#150	[APP-026] com.luc4n3x.levyra — compatibility report
+#149	[APP-025] com.vayunmathur.clock — compatibility report
+#148	[APP-024] com.forrestguice.suntimeswidget — compatibility report
+#147	[APP-023] org.stingle.photos — compatibility report
+#146	[APP-022] it.fast4x.riplay — compatibility report
+#145	[APP-021] com.tutpro.baresip.plus — compatibility report
+#144	[APP-020] net.osmand.plus — compatibility report
+#143	[APP-019] net.bible.android.activity — compatibility report
+#142	[APP-018] com.ma.tehro — compatibility report
+#141	[APP-017] com.kompact — compatibility report
+#140	[APP-016] org.forkgram.classic — compatibility report
+#139	[APP-015] com.madlonkay.orgro — compatibility report
+#138	[APP-014] me.river.nightbell — compatibility report
+#137	[APP-013] site.leos.apps.lespas — compatibility report
+#136	[APP-012] com.jherkenhoff.qalculate — compatibility report
+#135	[APP-011] eu.weblibre.gecko — compatibility report
+#134	[APP-010] net.diffengine.romandigitalclock — compatibility report
+#133	[APP-009] fr.shiningcat.binclockwidget — compatibility report
+#132	[APP-008] io.github.aoc_normal — compatibility report
+#131	[APP-007] com.bupkis.tirailleur — compatibility report
+#130	[APP-006] de.taz.android.app.free — compatibility report
+#129	[APP-005] com.newsblur — compatibility report
+#128	[APP-004] org.nitri.opentopo — compatibility report
+#127	[APP-003] de.seemoo.at_tracking_detection — compatibility report
+#126	[APP-002] foehnix.widget — compatibility report
+#125	[APP-001] com.hfut.schedule — compatibility report
+#124	[GAME-100] eu.veldsoft.tuty.fruty.slot — compatibility report
+#123	[GAME-099] net.sourceforge.solitaire_cg — compatibility report
+#122	[GAME-098] com.sidhant.triplematch — compatibility report
+#121	[GAME-097] com.dozingcatsoftware.bouncy — compatibility report
+#120	[GAME-096] garden.lina.oblique_strategies — compatibility report
+#119	[GAME-095] com.sidhant.nonogram — compatibility report
+#118	[GAME-094] com.attenomy.janken — compatibility report
+#117	[GAME-093] com.movietrivia.filmfacts — compatibility report
+#116	[GAME-092] org.secuso.privacyfriendlysolitaire — compatibility report
+#115	[GAME-091] com.chenyifaer.fafarunner — compatibility report
+#114	[GAME-090] nodomain.playmaker — compatibility report
+#113	[GAME-089] com.itsfrz.tictactoe — compatibility report
+#112	[GAME-088] org.secuso.privacyfriendlydame — compatibility report
+#111	[GAME-087] org.pgnapps.pk2 — compatibility report
+#110	[GAME-086] paper.loop2 — compatibility report
+#109	[GAME-085] com.game.asteroids_revenge — compatibility report
+#108	[GAME-084] eu.mokrzycki.learndigits — compatibility report
+#107	[GAME-083] com.fr.laboussole.track — compatibility report
+#106	[GAME-082] com.mostafa.brickblast — compatibility report
+#105	[GAME-081] eu.veldsoft.vitosha.blackjack — compatibility report
+#104	[GAME-080] com.sanskritbasics — compatibility report
+#103	[GAME-079] eve.game.tracker — compatibility report
+#102	[GAME-078] com.sidhant.shikaku — compatibility report
+#101	[GAME-077] com.dozingcatsoftware.mouse_pounce — compatibility report
+#100	[GAME-076] dev.serwin.AnarchRE — compatibility report
+#99	[GAME-075] paper.loop — compatibility report
+#98	[GAME-074] org.secuso.privacyfriendlymemory — compatibility report
+#97	[GAME-073] de.saschahlusiak.freebloks — compatibility report
+#96	[GAME-072] fr.arnaudguyon.spacevertex — compatibility report
+#95	[GAME-071] cube.run — compatibility report
+#94	[GAME-070] me.lecaro.breakout — compatibility report
+#93	[GAME-069] eu.veldsoft.scribe4 — compatibility report
+#92	[GAME-068] com.dozingcatsoftware.cardswithcats — compatibility report
+#91	[GAME-067] com.adilhanney.ricochlime — compatibility report
+#90	[GAME-066] com.joeld.minesweeper — compatibility report
+#89	[GAME-065] com.tacticmaster — compatibility report
+#88	[GAME-064] com.fairytrick.fairymahjong — compatibility report
+#87	[GAME-063] org.quentin_bettoum.librememorygame — compatibility report
+#86	[GAME-062] com.sidhant.blockblast — compatibility report
+#85	[GAME-061] com.towerillusion.abdal — compatibility report
+#84	[GAME-060] org.codeberg.scovillo.bubble — compatibility report
+#83	[GAME-059] ru.hyst329.openfool — compatibility report
+#82	[GAME-058] com.vayunmathur.games.alchemist — compatibility report
+#81	[GAME-057] org.bobstuff.bobball — compatibility report
+#80	[GAME-056] org.pipoypipagames.cowsrevenge — compatibility report
+#79	[GAME-055] jwtc.android.chess — compatibility report
+#78	[GAME-054] org.piepmeyer.gauguin — compatibility report
+#77	[GAME-053] io.github.johnathan.minesweeper — compatibility report
+#76	[GAME-052] com.rocket9labs.boxcars — compatibility report
+#75	[GAME-051] com.yepgoryo.EggReturnsHome — compatibility report
+#74	[GAME-050] com.vovagorodok.blidraughts — compatibility report
+#73	[GAME-049] com.sidhant.arrowescape — compatibility report
+#72	[GAME-048] com.clavierhaus.gnubg — compatibility report
+#71	[GAME-047] com.eightsines.firestrike.opensource — compatibility report
+#70	[GAME-046] org.opensurge2d.surgeengine — compatibility report
+#69	[GAME-045] com.serwylo.retrowars — compatibility report
+#68	[GAME-044] com.smorgasbork.hotdeath — compatibility report
+#67	[GAME-043] com.sanskritbasics.memory — compatibility report
+#66	[GAME-042] com.kaeruct.raumballer — compatibility report
+#65	[GAME-041] org.lufebe16.pysolfc — compatibility report
+#64	[GAME-040] com.galaxyrio.sudokusolver — compatibility report
+#63	[GAME-039] com.octbit.rutmath — compatibility report
+#62	[GAME-038] com.quietgrid.app — compatibility report
+#61	[GAME-037] de.georgsieber.ballbreak — compatibility report
+#60	[GAME-036] org.lichess.mobileV2 — compatibility report
+#59	[GAME-035] com.willie.mancala — compatibility report
+#58	[GAME-034] ru.wohlsoft.thextech.fdroid — compatibility report
+#57	[GAME-033] com.nima.triviaapp — compatibility report
+#56	[GAME-032] ca.rmen.nounours — compatibility report
+#55	[GAME-031] com.hazelhope.dubster.hamtest — compatibility report
+#54	[GAME-030] net.tigr.navyfleetbattle — compatibility report
+#53	[GAME-029] com.sidhant.bubbleshooter — compatibility report
+#52	[GAME-028] com.helddertierwelt.mentalmath — compatibility report
+#51	[GAME-027] com.dozingcatsoftware.dodge — compatibility report
+#50	[GAME-026] io.itch.pirate_solitaire — compatibility report
+#49	[GAME-025] com.vovagorodok.blichess — compatibility report
+#48	[GAME-024] com.kingalex.kingpong — compatibility report
+#47	[GAME-023] org.secuso.privacyfriendlybattleship — compatibility report
+#46	[GAME-022] com.dash1971.maia_chess — compatibility report
+#45	[GAME-021] de.schwarz.boardgamepal — compatibility report
+#44	[GAME-020] bim.app — compatibility report
+#43	[GAME-019] com.vayunmathur.games.solitaire — compatibility report
+#42	[GAME-018] xyz.deepdaikon.quinb — compatibility report
+#41	[GAME-017] page.codeberg.lanticy.guandan — compatibility report
+#40	[GAME-016] com.sidhant.queens — compatibility report
+#39	[GAME-015] eu.quelltext.memory — compatibility report
+#38	[GAME-014] de.tobiasbielefeld.solitaire — compatibility report
+#37	[GAME-013] io.github.ebraminio.bouncy — compatibility report
+#36	[GAME-012] io.github.hathibelagal.mykanji — compatibility report
+#35	[GAME-011] com.ivylopez.authsrng — compatibility report
+#34	[GAME-010] com.sidhant.puzzle — compatibility report
+#33	[GAME-009] cos.premy.mines — compatibility report
+#32	[GAME-008] si.palcka.tarok — compatibility report
+#31	[GAME-007] com.simondalvai.ball2box — compatibility report
+#30	[GAME-006] eu.veldsoft.no.thanks — compatibility report
+#29	[GAME-005] crypto.o0o0o0o0o.games.blackjack — compatibility report
+#28	[GAME-004] com.jeffliu.balancetheball — compatibility report
+#27	[GAME-003] app.halma — compatibility report
+#26	[GAME-002] com.astroloop.game — compatibility report
+#25	[GAME-001] com.qwde.ccm — compatibility report
+#24	S81 — REAL APP VISUAL COMPATIBILITY: audit ladder, VF fixes, 200-item F-Droid corpus + BATCH-01
+#23	[EXEC] OPMT — APK Execution & Visual Proof
+#22	[EXEC] Stopwatch — Service-Launch Family
+#21	[EXEC] Bouncy — APK Execution & Visual Proof
+#20	[EXEC] TriPeaks — APK Execution & Visual Proof
+#19	[EXEC] FishRings — APK Execution & Gameplay Proof
+#16	[EXEC] Telegram — Runtime Compatibility
+#14	[EXEC] Dooz — Runtime/UI Completion
+#9	MASTER-ROADMAP v3 — MiniAndroid Compatibility Runtime — 100% Base Execution Closure System (living document)

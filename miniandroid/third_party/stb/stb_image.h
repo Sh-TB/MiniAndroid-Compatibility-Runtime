@@ -1330,7 +1330,7 @@ STBI_EXTERN __declspec(dllimport) int __stdcall WideCharToMultiByte(unsigned int
 #if defined(_WIN32) && defined(STBI_WINDOWS_UTF8)
 STBIDEF int stbi_convert_wchar_to_utf8(char *buffer, size_t bufferlen, const wchar_t* input)
 {
-	return WideCharToMultiByte(65001 /* UTF8 */, 0, input, -1, buffer, (int) bufferlen, NULL, NULL);
+        return WideCharToMultiByte(65001 /* UTF8 */, 0, input, -1, buffer, (int) bufferlen, NULL, NULL);
 }
 #endif
 
@@ -1340,15 +1340,15 @@ static FILE *stbi__fopen(char const *filename, char const *mode)
 #if defined(_WIN32) && defined(STBI_WINDOWS_UTF8)
    wchar_t wMode[64];
    wchar_t wFilename[1024];
-	if (0 == MultiByteToWideChar(65001 /* UTF8 */, 0, filename, -1, wFilename, sizeof(wFilename)/sizeof(*wFilename)))
+        if (0 == MultiByteToWideChar(65001 /* UTF8 */, 0, filename, -1, wFilename, sizeof(wFilename)/sizeof(*wFilename)))
       return 0;
 
-	if (0 == MultiByteToWideChar(65001 /* UTF8 */, 0, mode, -1, wMode, sizeof(wMode)/sizeof(*wMode)))
+        if (0 == MultiByteToWideChar(65001 /* UTF8 */, 0, mode, -1, wMode, sizeof(wMode)/sizeof(*wMode)))
       return 0;
 
 #if defined(_MSC_VER) && _MSC_VER >= 1400
-	if (0 != _wfopen_s(&f, wFilename, wMode))
-		f = 0;
+        if (0 != _wfopen_s(&f, wFilename, wMode))
+                f = 0;
 #else
    f = _wfopen(wFilename, wMode);
 #endif
@@ -5331,7 +5331,7 @@ static int stbi__png_is16(stbi__context *s)
    stbi__png p;
    p.s = s;
    if (!stbi__png_info_raw(&p, NULL, NULL, NULL))
-	   return 0;
+           return 0;
    if (p.depth != 16) {
       stbi__rewind(p.s);
       return 0;
@@ -6567,6 +6567,12 @@ typedef struct
    stbi_uc  pal[256][4];
    stbi_uc lpal[256][4];
    stbi__gif_lzw codes[8192];
+   stbi_uc *prev_canvas;         // S106 (MiniAndroid): snapshot of the canvas
+                                 // state BEFORE the last drawn frame — the
+                                 // disposal-3 "restore to previous" source.
+                                 // Replaces the dangling two_back pointer
+                                 // (upstream caches a pointer into a buffer
+                                 // that realloc() may move = OOB/UAF).
    stbi_uc *color_table;
    int parse, step;
    int lflags;
@@ -6793,7 +6799,8 @@ static stbi_uc *stbi__gif_load_next(stbi__context *s, stbi__gif *g, int *comp, i
       g->out = (stbi_uc *) stbi__malloc(4 * pcount);
       g->background = (stbi_uc *) stbi__malloc(4 * pcount);
       g->history = (stbi_uc *) stbi__malloc(pcount);
-      if (!g->out || !g->background || !g->history)
+      g->prev_canvas = (stbi_uc *) stbi__malloc(4 * pcount);  // S106
+      if (!g->out || !g->background || !g->history || !g->prev_canvas)  // S106
          return stbi__errpuc("outofmem", "Out of memory");
 
       // image is treated as "transparent" at the start - ie, nothing overwrites the current background;
@@ -6802,27 +6809,31 @@ static stbi_uc *stbi__gif_load_next(stbi__context *s, stbi__gif *g, int *comp, i
       memset(g->out, 0x00, 4 * pcount);
       memset(g->background, 0x00, 4 * pcount); // state of the background (starts transparent)
       memset(g->history, 0x00, pcount);        // pixels that were affected previous frame
+      // S106: snapshot the (blank) state before frame 1 — disposal-3 source.
+      memcpy(g->prev_canvas, g->out, 4 * pcount);
       first_frame = 1;
    } else {
       // second frame - how do we dispose of the previous one?
       dispose = (g->eflags & 0x1C) >> 2;
       pcount = g->w * g->h;
 
-      if ((dispose == 3) && (two_back == 0)) {
-         dispose = 2; // if I don't have an image to revert back to, default to the old background
+      if ((dispose == 3) && (g->prev_canvas == 0)) {
+         dispose = 2; // no snapshot to revert to -> background fallback
       }
 
       if (dispose == 3) { // use previous graphic
-         for (pi = 0; pi < pcount; ++pi) {
-            if (g->history[pi]) {
-               memcpy( &g->out[pi * 4], &two_back[pi * 4], 4 );
-            }
-         }
+         // S106: restore the FULL canvas to the state before the previous
+         // frame was drawn (spec "restore to previous"). Full-canvas restore
+         // is history-independent and provably safe.
+         memcpy( g->out, g->prev_canvas, 4 * pcount );
       } else if (dispose == 2) {
-         // restore what was changed last frame to background before that frame;
+         // S106 GIF-LAW FIX (MG-215, MiniAndroid): restore the changed region
+         // to the BACKGROUND as GIF89a + Android/Skia SkGifCodec define it —
+         // transparent black — NOT the pre-frame canvas (stb's historical
+         // deviation; browsers/Skia render disposal 2 as transparency).
          for (pi = 0; pi < pcount; ++pi) {
             if (g->history[pi]) {
-               memcpy( &g->out[pi * 4], &g->background[pi * 4], 4 );
+               memset( &g->out[pi * 4], 0, 4 );
             }
          }
       } else {
@@ -6835,6 +6846,11 @@ static stbi_uc *stbi__gif_load_next(stbi__context *s, stbi__gif *g, int *comp, i
       // background is what out is after the undoing of the previou frame;
       memcpy( g->background, g->out, 4 * g->w * g->h );
    }
+
+   // S106: snapshot the canvas state BEFORE this frame is drawn — this is
+   // exactly the "previous" state that THIS frame's own disposal-3 must
+   // restore when the next frame is decoded.
+   memcpy( g->prev_canvas, g->out, 4 * g->w * g->h );
 
    // clear my history;
    memset( g->history, 0x00, g->w * g->h );        // pixels that were affected previous frame
@@ -7020,7 +7036,12 @@ static void *stbi__load_gif_main(stbi__context *s, int **delays, int *x, int *y,
             }
             memcpy( out + ((layers - 1) * stride), u, stride );
             if (layers >= 2) {
-               two_back = out - 2 * stride;
+               // S106 GIF-LAW FIX (MG-216, MiniAndroid): two_back must point
+               // at the STACKED frame two layers back (the composited canvas
+               // state before the previous frame was drawn). Upstream's
+               // `out - 2 * stride` reads BEFORE the buffer start — an OOB
+               // heap read on every disposal-3 GIF (and garbage pixels).
+               two_back = out + (layers - 2) * stride;
             }
 
             if (delays) {
@@ -7033,6 +7054,7 @@ static void *stbi__load_gif_main(stbi__context *s, int **delays, int *x, int *y,
       STBI_FREE(g.out);
       STBI_FREE(g.history);
       STBI_FREE(g.background);
+      if (g.prev_canvas) STBI_FREE(g.prev_canvas);  // S106
 
       // do the final conversion after loading everything;
       if (req_comp && req_comp != 4)
@@ -7070,6 +7092,7 @@ static void *stbi__gif_load(stbi__context *s, int *x, int *y, int *comp, int req
    // free buffers needed for multiple frame loading;
    STBI_FREE(g.history);
    STBI_FREE(g.background);
+   if (g.prev_canvas) STBI_FREE(g.prev_canvas);  // S106
 
    return u;
 }
@@ -7624,7 +7647,7 @@ static int      stbi__pnm_info(stbi__context *s, int *x, int *y, int *comp)
 static int stbi__pnm_is16(stbi__context *s)
 {
    if (stbi__pnm_info(s, NULL, NULL, NULL) == 16)
-	   return 1;
+           return 1;
    return 0;
 }
 #endif
