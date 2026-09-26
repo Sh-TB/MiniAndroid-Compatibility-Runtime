@@ -3741,3 +3741,54 @@ Stage Summary:
   implemented+tested, GETHANDLER-ANCESTRY fixed); NEXT ACTION =
   compose recomposition frontier (Lt4;.L getWidth-on-null /
   Lsr;.run worker spin), then R-005 DECOR-LINKAGE.
+
+---
+Task ID: S104-r3
+Agent: Super Z (main)
+Task: Scale the S103 extraction pattern to 500 completed pattern lists and
+extract >=10 general roots; continue-until-goal (Lt4;.L getWidth-on-null).
+
+Work Log:
+- PATTERN-500: docs/PATTERN_500_LISTS.{json,md} built by
+  scripts/s104r3_pattern500.py (+ pattern500_{a..f}.py data tables):
+  500/500 lists COMPLETED (pattern, AOSP/ART law, probe, status, evidence,
+  root link) across 13 domains; 0 truncated rows. Roll-up: 126 PROVEN-L5,
+  237 VERIFIED-CORRECT, 24 IMPLEMENTED-TESTED, 46 UNTESTED-LAW-DOCUMENTED,
+  22 LATENT-NO-DEMAND, 14 HOST-ONLY, 11 REPRODUCED-DIVERGENT, 13 GAP-OPEN,
+  7 RESEARCHED-NOT-IMPLEMENTED.
+- 12 GENERAL ROOTS extracted (>=10 asked), ranked by measured impact:
+  GR-01 field-identity (FIXED-L5), GR-02 switch-key-widening/R8-classId
+  (FIXED-L5, solitaire 12->0), GR-03 getHandler-ancestry (FIXED-L5),
+  GR-04 class-identity (60/201 fan-out, IMPLEMENTED+TESTED), GR-05
+  view-frame (FIXED-L5), GR-06 PFQ-order (FIXED-L5), GR-07 compose
+  frontier (NEW law this session), GR-08 decor-linkage (REPRODUCED #348),
+  GR-09 theme-producer (FIXED-L5), GR-10 null-producer/ART-NPE law
+  (FIXED-L5), GR-11 arsc OFFSET16/COMPACT (measured 0/54 demand),
+  GR-12 GL/native frontier (0 GLES20+ refs, host-only).
+- GR-07 EXECUTED (commit f5849b87): DEX ground truth (s104r3_disasm.py)
+  showed Lt4;.L (R8-obfuscated compose owner) caches View.getRootView()
+  into O0 then getWidth()/getHeight() on it; engine had NO getRootView ->
+  null -> NPE (the S104-r2 queued root). Law: getRootView NEVER returns
+  null on real Android (walk parent chain; unattached view returns
+  ITSELF); dispatch by View ancestry (is_subclass_of, same policy as
+  getHandler 7f3b1314), bounded 64-hop ViewShadow parent walk.
+- Measured: dooz getWidth NPE GONE 3/3 (deterministic, screenshot SHA
+  59fdbfcd60b86a23 x3, errors 17 with frontier advanced); next
+  sub-frontier named from the same trace: (a) Lsr;.run coroutine worker
+  spin (F084 halt, 9 unwind rows; workers must PARK when idle -
+  R-NEW-345 extension), (b) Job double-completion ISE (Loj0;.T), (c)
+  navigation null-route NPE (Lox0;.a). solitaire holds 0 errors 3/3.
+- GATES: battery ALL PASS (95 stages; toolchain re-bootstrapped after
+  container reset: ecj/r8/aapt2/stubs hash-verified, EXT-01/02 fixtures
+  re-fetched SHA 009b4671 matches, resource_trace helper rebuilt).
+- Deliverables copied to /home/z/my-project/download/ (English output
+  per user directive): PATTERN_500_LISTS.{md,json}, S104R3_REPORT.md.
+
+Stage Summary:
+- 500 completed pattern lists + 12 general roots with measured impact;
+  the queued getWidth-on-null root FIXED (getRootView never-null law,
+  commit f5849b87); frontier advanced into the coroutine-scheduler layer.
+- NEXT ACTION: (1) Lsr;.run worker idle/park law (extends R-NEW-345;
+  expected to kill the F084 halt + 9 unwind rows), (2) Job
+  double-completion ISE law, (3) navigation null-route trace, then R-005
+  DECOR-LINKAGE implementation wave.
