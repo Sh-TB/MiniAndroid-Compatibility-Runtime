@@ -109,6 +109,7 @@ bool parse_state_list(const std::vector<uint8_t>& axml,
         it.state_pressed = tri_state(item, "state_pressed");
         it.state_enabled = tri_state(item, "state_enabled");
         it.state_selected = tri_state(item, "state_selected");
+        it.state_checked = tri_state(item, "state_checked");  // S106 MG-022
         uint32_t c = 0;
         if (item_color(item, &c)) {
             it.color = c;
@@ -127,7 +128,8 @@ bool parse_state_list(const std::vector<uint8_t>& axml,
 
 bool pick_state_list(
     const std::vector<ViewShadow::ViewNode::BgStateItem>& items, bool pressed,
-    bool enabled, bool selected, uint32_t* color_out, std::string* path_out) {
+    bool enabled, bool selected, uint32_t* color_out, std::string* path_out,
+    bool checked) {
     // StateListDrawable.getStateDrawableIndex law: FIRST item in document
     // order whose state spec is satisfied wins; a declared state must match
     // exactly (state_pressed="true" requires pressed), undeclared = wildcard.
@@ -139,6 +141,10 @@ bool pick_state_list(
             continue;
         if (it.state_selected >= 0 &&
             it.state_selected != (selected ? 1 : 0))
+            continue;
+        // S106 (MG-022): checked participates in the same first-match law.
+        if (it.state_checked >= 0 &&
+            it.state_checked != (checked ? 1 : 0))
             continue;
         if (it.has_color && color_out) *color_out = it.color;
         if (path_out) *path_out = it.drawable_path;

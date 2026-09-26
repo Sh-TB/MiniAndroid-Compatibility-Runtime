@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.miniandroid.s106drawables"
+    android:versionCode="1"
+    android:versionName="1.0">
+    <application android:label="S106 Drawable Laws">
+        <activity android:name="com.miniandroid.s106drawables.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

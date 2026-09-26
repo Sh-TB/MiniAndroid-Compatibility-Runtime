@@ -21,7 +21,7 @@ INCLUDES = -Isrc -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isr
 # libwebp — Google reference WebP decoder (used by AOSP Skia / BitmapFactory)
 # libjpeg — IJG reference JPEG decoder (Android uses libjpeg-turbo, drop-in API)
 # rlottie  — Samsung reference Lottie renderer (Telegram uses it directly)
-LIBS = -lz -ljpeg -lstdc++ -lm -lpthread -lsqlite3 -lssl -lcrypto  # S100 NET-001: TLS through OpenSSL (BoringSSL lineage)  # M3 F-ROOM-CHAIN: real SQLite backend
+LIBS = -lz -ljpeg -lstdc++ -lm -lpthread -lsqlite3 -lssl -lcrypto -lmpg123 -lsndfile  # S100 NET-001: TLS through OpenSSL (BoringSSL lineage)  # M3 F-ROOM-CHAIN: real SQLite backend
 ifeq ($(MINIANDROID_HAVE_WEBP),1)
 LIBS += -lwebp -lwebpdemux
 endif
@@ -43,14 +43,14 @@ DEX_SOURCES = $(SRCDIR)/dex/dex_parser.cpp $(SRCDIR)/dex/mutf8.cpp $(SRCDIR)/dex
 RUNTIME_SOURCES = $(SRCDIR)/runtime/execution_engine.cpp $(SRCDIR)/runtime/application_runtime.cpp
 DIAGNOSTICS_SOURCES = $(SRCDIR)/diagnostics/trace_engine.cpp $(SRCDIR)/diagnostics/crash_forensics.cpp
 RESOURCES_SOURCES = $(SRCDIR)/resources/res_id.cpp $(SRCDIR)/resources/res_config.cpp $(SRCDIR)/resources/resource_parser.cpp $(SRCDIR)/resources/string_pool.cpp $(SRCDIR)/resources/arsc_parser.cpp $(SRCDIR)/resources/axml_parser.cpp $(SRCDIR)/resources/layout_inflater.cpp $(SRCDIR)/resources/vector_inflater.cpp $(SRCDIR)/resources/resource_runtime.cpp
-RENDERER_SOURCES = $(SRCDIR)/renderer/software_renderer.cpp $(SRCDIR)/renderer/vector_decode.cpp $(SRCDIR)/gles/pgl_backend.cpp $(SRCDIR)/gles/gles20_bridge.cpp
+RENDERER_SOURCES = $(SRCDIR)/renderer/software_renderer.cpp $(SRCDIR)/renderer/vector_decode.cpp $(SRCDIR)/renderer/gif_decoder.cpp $(SRCDIR)/gles/pgl_backend.cpp $(SRCDIR)/gles/gles20_bridge.cpp
 # UNIFIED_007 text pipeline — REAL FriBidi/HarfBuzz/FreeType shaping now
 # feeds BOTH the layout measure pass and the view draw path (was: orphaned
 # out of the build; the 8x16 BitmapFont answered all text geometry).
 FONTS_SOURCES = $(SRCDIR)/fonts/text_shaper.cpp
 # EXP-084: framework and storage sources are required for linkage
 # G06: touch_dispatcher = canonical input pipeline; state_list = StateListDrawable law
-FRAMEWORK_SOURCES = $(SRCDIR)/framework/executor_shadow.cpp $(SRCDIR)/framework/matrix_shadow.cpp $(SRCDIR)/framework/locale_insets_shadow.cpp $(SRCDIR)/framework/gl_surface_shadow.cpp $(SRCDIR)/framework/surface_view_shadow.cpp $(SRCDIR)/framework/android_shadows.cpp $(SRCDIR)/framework/shadow_registry.cpp $(SRCDIR)/framework/choreographer_shadow.cpp $(SRCDIR)/framework/dialog_shadow.cpp $(SRCDIR)/framework/clipboard_shadow.cpp $(SRCDIR)/framework/canvas_shadow.cpp $(SRCDIR)/framework/bitmap_shadow.cpp $(SRCDIR)/framework/touch_dispatcher.cpp $(SRCDIR)/framework/state_list.cpp $(SRCDIR)/framework/lifecycle_controller.cpp $(SRCDIR)/framework/locks_shadow.cpp $(SRCDIR)/framework/atomic_shadow.cpp $(SRCDIR)/framework/pending_intent_shadow.cpp $(SRCDIR)/framework/animator_shadow.cpp
+FRAMEWORK_SOURCES = $(SRCDIR)/framework/executor_shadow.cpp $(SRCDIR)/framework/matrix_shadow.cpp $(SRCDIR)/framework/locale_insets_shadow.cpp $(SRCDIR)/framework/gl_surface_shadow.cpp $(SRCDIR)/framework/surface_view_shadow.cpp $(SRCDIR)/framework/android_shadows.cpp $(SRCDIR)/framework/shadow_registry.cpp $(SRCDIR)/framework/choreographer_shadow.cpp $(SRCDIR)/framework/dialog_shadow.cpp $(SRCDIR)/framework/clipboard_shadow.cpp $(SRCDIR)/framework/canvas_shadow.cpp $(SRCDIR)/framework/bitmap_shadow.cpp $(SRCDIR)/framework/touch_dispatcher.cpp $(SRCDIR)/framework/state_list.cpp $(SRCDIR)/framework/lifecycle_controller.cpp $(SRCDIR)/framework/locks_shadow.cpp $(SRCDIR)/framework/atomic_shadow.cpp $(SRCDIR)/framework/pending_intent_shadow.cpp $(SRCDIR)/framework/animator_shadow.cpp $(SRCDIR)/audio/audio_engine.cpp
 API_SOURCES = $(SRCDIR)/api/application_context.cpp $(SRCDIR)/api/shared_prefs.cpp $(SRCDIR)/api/http_client.cpp
 STORAGE_SOURCES = $(wildcard $(SRCDIR)/storage/*.cpp)
 
