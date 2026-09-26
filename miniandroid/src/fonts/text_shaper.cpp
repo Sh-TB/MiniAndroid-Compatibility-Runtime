@@ -1010,7 +1010,12 @@ TextLayout layout_text(const std::string& utf8, float size_px, bool bold,
         }
         if (capped) break;
         flush_word();
-        out.lines.push_back({line, line_width(line)});
+        // S106 (MG-074) FIX: when flush_word() hit the max_lines cap it
+        // clears `line` and sets capped — the unconditional trailing push
+        // then emitted an EXTRA EMPTY line (lines.size() == max_lines + 1),
+        // violating the AOSP StaticLayout law lines.size() <= maxLines.
+        // Push only when the cap was NOT reached in this segment.
+        if (!capped) out.lines.push_back({line, line_width(line)});
         if (max_lines > 0 && (int)out.lines.size() >= max_lines) {
             // MG-073: max_lines hit at a segment boundary. Text is dropped
             // only when more segments (explicit '\n' parts) remain.

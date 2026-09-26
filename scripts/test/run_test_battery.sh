@@ -212,6 +212,95 @@ gate "s98 prefs laws (expect 15)" $?
 tail -1 /tmp/battery_s98prefs.out
 fi
 
+# ── S106 micro-gap fence wave: GIF disposal + drawable/state-list/vector +
+# text2 + canvas/input/audio + layout/net families. Each stage drives the
+# REAL engine objects against AOSP/Skia/GIF89a upstream laws; the fixtures
+# are aapt2-built (s106_drawables) or test-local deterministic encoders.
+S106_OBJS='build/apk/*.o build/dex/*.o build/runtime/*.o build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o build/fonts/*.o build/framework/*.o build/audio/*.o build/api/*.o build/storage/*.o'
+S106_LIBS='-lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 -lssl -lcrypto -lmpg123 -lsndfile'
+
+if cached "s106 gif laws (expect 17)"; then
+    skip "link s106_gif_law_test"; skip "s106 gif laws (expect 17)"
+else
+g++ -std=c++17 -w -g -O2 -Isrc -Ithird_party/nlohmann_json/include -o build/s106_gif_law_test \
+    tests/s106_gif_law_test.cpp $S106_OBJS $S106_LIBS \
+    > /tmp/battery_s106gif.log 2>&1
+gate "link s106_gif_law_test" $?
+./build/s106_gif_law_test > /tmp/battery_s106gif.out 2>&1
+gate "s106 gif laws (expect 17)" $?
+tail -1 /tmp/battery_s106gif.out
+fi
+
+if cached "s106 text2 laws (expect 14)"; then
+    skip "link s106_text2_law_test"; skip "s106 text2 laws (expect 14)"
+else
+g++ -std=c++17 -w -g -O2 -Isrc -Ithird_party/nlohmann_json/include -o build/s106_text2_law_test \
+    tests/s106_text2_law_test.cpp $S106_OBJS $S106_LIBS \
+    > /tmp/battery_s106text2.log 2>&1
+gate "link s106_text2_law_test" $?
+./build/s106_text2_law_test > /tmp/battery_s106text2.out 2>&1
+gate "s106 text2 laws (expect 14)" $?
+tail -1 /tmp/battery_s106text2.out
+fi
+
+if cached "s106 canvas/input/audio laws (expect 21)"; then
+    skip "link s106_cia_law_test"; skip "s106 canvas/input/audio laws (expect 21)"
+else
+g++ -std=c++17 -w -g -O2 -Isrc -Ithird_party/nlohmann_json/include -o build/s106_cia_law_test \
+    tests/s106_cia_law_test.cpp $S106_OBJS $S106_LIBS \
+    > /tmp/battery_s106cia.log 2>&1
+gate "link s106_cia_law_test" $?
+./build/s106_cia_law_test > /tmp/battery_s106cia.out 2>&1
+gate "s106 canvas/input/audio laws (expect 21)" $?
+tail -1 /tmp/battery_s106cia.out
+fi
+
+# S106 drawables: aapt2-built fixture APK (vector/selector/layer-list/
+# adaptive/mipmap sources in tests/fixtures/s106_drawables), laws asserted
+# by the C++ test against the compiled binary AXML.
+S106_DRW_SRC="$MA/tests/fixtures/s106_drawables"
+rm -rf /tmp/battery_s106drw; mkdir -p /tmp/battery_s106drw
+if cached "s106 drawables fixture build (aapt2)"; then
+    skip "s106 drawables fixture build (aapt2)"
+    skip "link s106_drawables_law_test"
+    skip "s106 drawables laws (expect 39)"
+elif [ -d "$S106_DRW_SRC" ]; then
+    bash "$REPOSCRIPTS/build/build_fixture_apk.sh" \
+        "$S106_DRW_SRC" /tmp/battery_s106drw/s106_drawables.apk \
+        > /tmp/battery_s106drw/build.log 2>&1
+    gate "s106 drawables fixture build (aapt2)" $?
+g++ -std=c++17 -w -g -O2 -Isrc -Ithird_party/nlohmann_json/include -o build/s106_drawables_law_test \
+    tests/s106_drawables_law_test.cpp $S106_OBJS $S106_LIBS \
+    > /tmp/battery_s106drw.log 2>&1
+gate "link s106_drawables_law_test" $?
+./build/s106_drawables_law_test /tmp/battery_s106drw/s106_drawables.apk \
+    > /tmp/battery_s106drw.out 2>&1
+gate "s106 drawables laws (expect 39)" $?
+tail -1 /tmp/battery_s106drw.out
+else
+    gate "s106 drawables fixture build (aapt2)" 1
+    echo "  (fixture missing: $S106_DRW_SRC)"
+fi
+
+# S106 layout/net: local HTTP server for the REAL NET-001 GET laws.
+if cached "s106 layout/net laws (expect 11)"; then
+    skip "link s106_layout_net_law_test"; skip "s106 layout/net laws (expect 11)"
+else
+g++ -std=c++17 -w -g -O2 -Isrc -Ithird_party/nlohmann_json/include -o build/s106_layout_net_law_test \
+    tests/s106_layout_net_law_test.cpp $S106_OBJS $S106_LIBS \
+    > /tmp/battery_s106net.log 2>&1
+gate "link s106_layout_net_law_test" $?
+mkdir -p /tmp/battery_s106net/www
+printf 'S106-NET-OK\n' > /tmp/battery_s106net/www/s106_net_fixture.txt
+(cd /tmp/battery_s106net/www && python3 -m http.server 18099 > /dev/null 2>&1 &)
+sleep 1
+./build/s106_layout_net_law_test http://127.0.0.1:18099 > /tmp/battery_s106net.out 2>&1
+RC=$?
+pkill -f "http.server 18099" 2>/dev/null
+gate "s106 layout/net laws (expect 11)" $RC
+tail -1 /tmp/battery_s106net.out
+fi
+
 # P1 resource-configuration regression (generic default/v16/v21 law)
 if cached "resource-config selection law (expect 48)"; then
     skip "link resource_config_selection_test"; skip "resource-config selection law (expect 48)"

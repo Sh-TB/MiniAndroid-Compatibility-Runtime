@@ -1,0 +1,2099 @@
+{
+  "apk_name": "de.georgsieber.ballbreak_10.apk",
+  "main_class": "Lde/georgsieber/ballbreak/GameActivity;",
+  "main_method": "onCreate",
+  "methods": [
+    {
+      "class": "Lde/georgsieber/ballbreak/GameActivity;",
+      "entry_point": true,
+      "method": "onCreate",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/app/Activity;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/collection/SimpleArrayMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/concurrent/atomic/AtomicReference;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/Lifecycle;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/WeakHashMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/arch/core/internal/SafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/arch/core/internal/FastSafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/ref/WeakReference;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Enum;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/Lifecycle$State;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Enum;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/Lifecycle$State;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Enum;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/Lifecycle$State;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Enum;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/Lifecycle$State;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Enum;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/Lifecycle$State;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/LifecycleRegistry;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/LifecycleRegistry;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/core/app/ComponentActivity;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/concurrent/CopyOnWriteArraySet;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/activity/contextaware/ContextAwareHelper;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/concurrent/atomic/AtomicReference;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/Lifecycle;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/WeakHashMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/arch/core/internal/SafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/arch/core/internal/FastSafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/ref/WeakReference;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/LifecycleRegistry;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/LifecycleRegistry;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/WeakHashMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/arch/core/internal/SafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/savedstate/SavedStateRegistry;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/savedstate/SavedStateRegistryController;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/savedstate/SavedStateRegistryController;",
+      "invocation_type": "virtual",
+      "method": "create",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/activity/ComponentActivity$1;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/ArrayDeque;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/activity/OnBackPressedDispatcher;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/concurrent/atomic/AtomicInteger;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Random;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/os/Bundle;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/activity/result/ActivityResultRegistry;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/activity/ComponentActivity$2;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Lde/georgsieber/ballbreak/GameActivity;",
+      "invocation_type": "virtual",
+      "method": "getLifecycle",
+      "return_value": "Landroidx/lifecycle/LifecycleRegistry;#28",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Lde/georgsieber/ballbreak/GameActivity;",
+      "invocation_type": "virtual",
+      "method": "getLifecycle",
+      "return_value": "Landroidx/lifecycle/LifecycleRegistry;#28",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/activity/ComponentActivity$3;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/arch/core/executor/ArchTaskExecutor$1;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/arch/core/executor/ArchTaskExecutor$2;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/arch/core/executor/TaskExecutor;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/arch/core/executor/TaskExecutor;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/concurrent/atomic/AtomicInteger;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/arch/core/executor/DefaultTaskExecutor$1;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/concurrent/Executors;",
+      "invocation_type": "virtual",
+      "method": "newFixedThreadPool",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/arch/core/executor/DefaultTaskExecutor;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/arch/core/executor/ArchTaskExecutor;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/arch/core/executor/ArchTaskExecutor;",
+      "invocation_type": "virtual",
+      "method": "getInstance",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getMainLooper",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getThread",
+      "return_value": "Ljava/lang/Thread;#2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Thread;",
+      "invocation_type": "virtual",
+      "method": "currentThread",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295"
+      ],
+      "class": "Landroidx/arch/core/executor/DefaultTaskExecutor;",
+      "invocation_type": "virtual",
+      "method": "isMainThread",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293"
+      ],
+      "class": "Landroidx/arch/core/executor/ArchTaskExecutor;",
+      "invocation_type": "virtual",
+      "method": "isMainThread",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/LifecycleRegistry;",
+      "invocation_type": "virtual",
+      "method": "enforceMainThreadIfNeeded",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/Lifecycling;",
+      "invocation_type": "virtual",
+      "method": "lifecycleEventObserver",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/LifecycleRegistry$ObserverWithState;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295",
+        "v2"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Landroidx/arch/core/internal/FastSafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/arch/core/internal/SafeIterableMap$Entry;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1",
+        "v3"
+      ],
+      "class": "Landroidx/arch/core/internal/FastSafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "put",
+      "return_value": "Landroidx/arch/core/internal/SafeIterableMap$Entry;#63",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295",
+        "p1",
+        "v3"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "put",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967290",
+        "v7",
+        "p4294967291"
+      ],
+      "class": "Landroidx/arch/core/internal/FastSafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "putIfAbsent",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967290"
+      ],
+      "class": "Ljava/lang/ref/WeakReference;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Lde/georgsieber/ballbreak/GameActivity;#8",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295",
+        "v2"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "containsKey",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "v2"
+      ],
+      "class": "Landroidx/arch/core/internal/FastSafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "contains",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295",
+        "v2"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Ljava/lang/Object;#63",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294",
+        "v3"
+      ],
+      "class": "Landroidx/arch/core/internal/FastSafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "ceil",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295"
+      ],
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "isEmpty",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/LifecycleRegistry;",
+      "invocation_type": "virtual",
+      "method": "min",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/LifecycleRegistry;",
+      "invocation_type": "virtual",
+      "method": "min",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/LifecycleRegistry;",
+      "invocation_type": "virtual",
+      "method": "calculateTargetState",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v5",
+        "v4"
+      ],
+      "class": "Landroidx/lifecycle/Lifecycle$State;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293"
+      ],
+      "class": "Ljava/lang/ref/WeakReference;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Lde/georgsieber/ballbreak/GameActivity;#8",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293"
+      ],
+      "class": "Landroidx/arch/core/internal/FastSafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "size",
+      "return_value": "1",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293"
+      ],
+      "class": "Landroidx/arch/core/internal/FastSafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "eldest",
+      "return_value": "Landroidx/arch/core/internal/SafeIterableMap$Entry;#63",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Landroidx/arch/core/internal/FastSafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "newest",
+      "return_value": "Landroidx/arch/core/internal/SafeIterableMap$Entry;#63",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/LifecycleRegistry;",
+      "invocation_type": "virtual",
+      "method": "isSynced",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/LifecycleRegistry;",
+      "invocation_type": "virtual",
+      "method": "sync",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "v2"
+      ],
+      "class": "Landroidx/lifecycle/LifecycleRegistry;",
+      "invocation_type": "virtual",
+      "method": "addObserver",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Lde/georgsieber/ballbreak/GameActivity;",
+      "invocation_type": "virtual",
+      "method": "getLifecycle",
+      "return_value": "Landroidx/lifecycle/LifecycleRegistry;#28",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/activity/ComponentActivity$4;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/arch/core/executor/ArchTaskExecutor;",
+      "invocation_type": "virtual",
+      "method": "getInstance",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getMainLooper",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getThread",
+      "return_value": "Ljava/lang/Thread;#2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Thread;",
+      "invocation_type": "virtual",
+      "method": "currentThread",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295"
+      ],
+      "class": "Landroidx/arch/core/executor/DefaultTaskExecutor;",
+      "invocation_type": "virtual",
+      "method": "isMainThread",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293"
+      ],
+      "class": "Landroidx/arch/core/executor/ArchTaskExecutor;",
+      "invocation_type": "virtual",
+      "method": "isMainThread",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/LifecycleRegistry;",
+      "invocation_type": "virtual",
+      "method": "enforceMainThreadIfNeeded",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/Lifecycling;",
+      "invocation_type": "virtual",
+      "method": "lifecycleEventObserver",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/LifecycleRegistry$ObserverWithState;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295",
+        "v2"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Landroidx/arch/core/internal/FastSafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/arch/core/internal/SafeIterableMap$Entry;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1",
+        "v3"
+      ],
+      "class": "Landroidx/arch/core/internal/FastSafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "put",
+      "return_value": "Landroidx/arch/core/internal/SafeIterableMap$Entry;#66",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295",
+        "p1",
+        "v3"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "put",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967290",
+        "v7",
+        "p4294967291"
+      ],
+      "class": "Landroidx/arch/core/internal/FastSafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "putIfAbsent",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967290"
+      ],
+      "class": "Ljava/lang/ref/WeakReference;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Lde/georgsieber/ballbreak/GameActivity;#8",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295",
+        "v2"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "containsKey",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "v2"
+      ],
+      "class": "Landroidx/arch/core/internal/FastSafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "contains",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295",
+        "v2"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Ljava/lang/Object;#66",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294",
+        "v3"
+      ],
+      "class": "Landroidx/arch/core/internal/FastSafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "ceil",
+      "return_value": "Landroidx/arch/core/internal/SafeIterableMap$Entry;#63",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295"
+      ],
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "isEmpty",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "p0"
+      ],
+      "class": "Landroidx/lifecycle/Lifecycle$State;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/LifecycleRegistry;",
+      "invocation_type": "virtual",
+      "method": "min",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/LifecycleRegistry;",
+      "invocation_type": "virtual",
+      "method": "min",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/LifecycleRegistry;",
+      "invocation_type": "virtual",
+      "method": "calculateTargetState",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v5",
+        "v4"
+      ],
+      "class": "Landroidx/lifecycle/Lifecycle$State;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293"
+      ],
+      "class": "Ljava/lang/ref/WeakReference;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Lde/georgsieber/ballbreak/GameActivity;#8",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293"
+      ],
+      "class": "Landroidx/arch/core/internal/FastSafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "size",
+      "return_value": "2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293"
+      ],
+      "class": "Landroidx/arch/core/internal/FastSafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "eldest",
+      "return_value": "Landroidx/arch/core/internal/SafeIterableMap$Entry;#63",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Landroidx/arch/core/internal/FastSafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "newest",
+      "return_value": "Landroidx/arch/core/internal/SafeIterableMap$Entry;#66",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/LifecycleRegistry;",
+      "invocation_type": "virtual",
+      "method": "isSynced",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/LifecycleRegistry;",
+      "invocation_type": "virtual",
+      "method": "sync",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "v2"
+      ],
+      "class": "Landroidx/lifecycle/LifecycleRegistry;",
+      "invocation_type": "virtual",
+      "method": "addObserver",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Lde/georgsieber/ballbreak/GameActivity;",
+      "invocation_type": "virtual",
+      "method": "getLifecycle",
+      "return_value": "Landroidx/lifecycle/LifecycleRegistry;#28",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/activity/ComponentActivity$5;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/arch/core/executor/ArchTaskExecutor;",
+      "invocation_type": "virtual",
+      "method": "getInstance",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getMainLooper",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getThread",
+      "return_value": "Ljava/lang/Thread;#2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Thread;",
+      "invocation_type": "virtual",
+      "method": "currentThread",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295"
+      ],
+      "class": "Landroidx/arch/core/executor/DefaultTaskExecutor;",
+      "invocation_type": "virtual",
+      "method": "isMainThread",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293"
+      ],
+      "class": "Landroidx/arch/core/executor/ArchTaskExecutor;",
+      "invocation_type": "virtual",
+      "method": "isMainThread",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/LifecycleRegistry;",
+      "invocation_type": "virtual",
+      "method": "enforceMainThreadIfNeeded",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/Lifecycling;",
+      "invocation_type": "virtual",
+      "method": "lifecycleEventObserver",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/LifecycleRegistry$ObserverWithState;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295",
+        "v2"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Landroidx/arch/core/internal/FastSafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/arch/core/internal/SafeIterableMap$Entry;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1",
+        "v3"
+      ],
+      "class": "Landroidx/arch/core/internal/FastSafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "put",
+      "return_value": "Landroidx/arch/core/internal/SafeIterableMap$Entry;#69",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295",
+        "p1",
+        "v3"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "put",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967290",
+        "v7",
+        "p4294967291"
+      ],
+      "class": "Landroidx/arch/core/internal/FastSafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "putIfAbsent",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967290"
+      ],
+      "class": "Ljava/lang/ref/WeakReference;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Lde/georgsieber/ballbreak/GameActivity;#8",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295",
+        "v2"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "containsKey",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "v2"
+      ],
+      "class": "Landroidx/arch/core/internal/FastSafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "contains",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295",
+        "v2"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Ljava/lang/Object;#69",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294",
+        "v3"
+      ],
+      "class": "Landroidx/arch/core/internal/FastSafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "ceil",
+      "return_value": "Landroidx/arch/core/internal/SafeIterableMap$Entry;#66",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295"
+      ],
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "isEmpty",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "p0"
+      ],
+      "class": "Landroidx/lifecycle/Lifecycle$State;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/LifecycleRegistry;",
+      "invocation_type": "virtual",
+      "method": "min",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/LifecycleRegistry;",
+      "invocation_type": "virtual",
+      "method": "min",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/LifecycleRegistry;",
+      "invocation_type": "virtual",
+      "method": "calculateTargetState",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v5",
+        "v4"
+      ],
+      "class": "Landroidx/lifecycle/Lifecycle$State;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293"
+      ],
+      "class": "Ljava/lang/ref/WeakReference;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Lde/georgsieber/ballbreak/GameActivity;#8",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293"
+      ],
+      "class": "Landroidx/arch/core/internal/FastSafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "size",
+      "return_value": "3",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293"
+      ],
+      "class": "Landroidx/arch/core/internal/FastSafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "eldest",
+      "return_value": "Landroidx/arch/core/internal/SafeIterableMap$Entry;#63",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Landroidx/arch/core/internal/FastSafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "newest",
+      "return_value": "Landroidx/arch/core/internal/SafeIterableMap$Entry;#69",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/LifecycleRegistry;",
+      "invocation_type": "virtual",
+      "method": "isSynced",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/LifecycleRegistry;",
+      "invocation_type": "virtual",
+      "method": "sync",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "v2"
+      ],
+      "class": "Landroidx/lifecycle/LifecycleRegistry;",
+      "invocation_type": "virtual",
+      "method": "addObserver",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295"
+      ],
+      "class": "Landroidx/savedstate/SavedStateRegistryController;",
+      "invocation_type": "virtual",
+      "method": "getSavedStateRegistry",
+      "return_value": "Landroidx/savedstate/SavedStateRegistry;#36",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Lde/georgsieber/ballbreak/GameActivity;",
+      "invocation_type": "virtual",
+      "method": "getSavedStateRegistry",
+      "return_value": "Landroidx/savedstate/SavedStateRegistry;#36",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/activity/ComponentActivity$6;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Landroidx/arch/core/internal/SafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/arch/core/internal/SafeIterableMap$Entry;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1",
+        "v3"
+      ],
+      "class": "Landroidx/arch/core/internal/SafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "put",
+      "return_value": "Landroidx/arch/core/internal/SafeIterableMap$Entry;#71",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295",
+        "p1",
+        "v3"
+      ],
+      "class": "Landroidx/arch/core/internal/SafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "putIfAbsent",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "v2",
+        "v1"
+      ],
+      "class": "Landroidx/savedstate/SavedStateRegistry;",
+      "invocation_type": "virtual",
+      "method": "registerSavedStateProvider",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/activity/ComponentActivity$7;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Set;",
+      "invocation_type": "virtual",
+      "method": "add",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295",
+        "v2"
+      ],
+      "class": "Landroidx/activity/contextaware/ContextAwareHelper;",
+      "invocation_type": "virtual",
+      "method": "addOnContextAvailableListener",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "p4294967293"
+      ],
+      "class": "Lde/georgsieber/ballbreak/GameActivity;",
+      "invocation_type": "virtual",
+      "method": "addOnContextAvailableListener",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/activity/ComponentActivity;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/os/Handler;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/fragment/app/FragmentContainer;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/fragment/app/FragmentStore;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/fragment/app/FragmentLayoutInflaterFactory;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/concurrent/CopyOnWriteArrayList;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/activity/OnBackPressedCallback;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/fragment/app/FragmentManager$1;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/concurrent/atomic/AtomicInteger;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Collections;",
+      "invocation_type": "virtual",
+      "method": "synchronizedMap",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Collections;",
+      "invocation_type": "virtual",
+      "method": "synchronizedMap",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Collections;",
+      "invocation_type": "virtual",
+      "method": "synchronizedMap",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/fragment/app/FragmentManager$2;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/concurrent/CopyOnWriteArrayList;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/fragment/app/FragmentLifecycleCallbacksDispatcher;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/concurrent/CopyOnWriteArrayList;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/fragment/app/FragmentFactory;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/fragment/app/FragmentManager$3;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/fragment/app/FragmentManager$4;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/ArrayDeque;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/fragment/app/FragmentManager$5;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/fragment/app/FragmentManager;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/fragment/app/FragmentManagerImpl;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/core/util/Preconditions;",
+      "invocation_type": "virtual",
+      "method": "checkNotNull",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/core/util/Preconditions;",
+      "invocation_type": "virtual",
+      "method": "checkNotNull",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/fragment/app/FragmentHostCallback;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/fragment/app/FragmentHostCallback;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/fragment/app/FragmentActivity$HostCallbacks;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/core/util/Preconditions;",
+      "invocation_type": "virtual",
+      "method": "checkNotNull",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/fragment/app/FragmentController;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/fragment/app/FragmentController;",
+      "invocation_type": "virtual",
+      "method": "createController",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/concurrent/atomic/AtomicReference;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/Lifecycle;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/WeakHashMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/arch/core/internal/SafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/arch/core/internal/FastSafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/ref/WeakReference;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/LifecycleRegistry;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/LifecycleRegistry;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295"
+      ],
+      "class": "Landroidx/savedstate/SavedStateRegistryController;",
+      "invocation_type": "virtual",
+      "method": "getSavedStateRegistry",
+      "return_value": "Landroidx/savedstate/SavedStateRegistry;#36",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Lde/georgsieber/ballbreak/GameActivity;",
+      "invocation_type": "virtual",
+      "method": "getSavedStateRegistry",
+      "return_value": "Landroidx/savedstate/SavedStateRegistry;#36",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/fragment/app/FragmentActivity$1;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295",
+        "v3"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "equals",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Landroidx/arch/core/internal/SafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/arch/core/internal/SafeIterableMap$Entry;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1",
+        "v3"
+      ],
+      "class": "Landroidx/arch/core/internal/SafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "put",
+      "return_value": "Landroidx/arch/core/internal/SafeIterableMap$Entry;#104",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295",
+        "p1",
+        "v3"
+      ],
+      "class": "Landroidx/arch/core/internal/SafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "putIfAbsent",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "v2",
+        "v1"
+      ],
+      "class": "Landroidx/savedstate/SavedStateRegistry;",
+      "invocation_type": "virtual",
+      "method": "registerSavedStateProvider",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/fragment/app/FragmentActivity$2;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Set;",
+      "invocation_type": "virtual",
+      "method": "add",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295",
+        "v2"
+      ],
+      "class": "Landroidx/activity/contextaware/ContextAwareHelper;",
+      "invocation_type": "virtual",
+      "method": "addOnContextAvailableListener",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "p4294967293"
+      ],
+      "class": "Lde/georgsieber/ballbreak/GameActivity;",
+      "invocation_type": "virtual",
+      "method": "addOnContextAvailableListener",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/fragment/app/FragmentActivity;",
+      "invocation_type": "virtual",
+      "method": "init",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/fragment/app/FragmentActivity;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295"
+      ],
+      "class": "Landroidx/savedstate/SavedStateRegistryController;",
+      "invocation_type": "virtual",
+      "method": "getSavedStateRegistry",
+      "return_value": "Landroidx/savedstate/SavedStateRegistry;#36",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Lde/georgsieber/ballbreak/GameActivity;",
+      "invocation_type": "virtual",
+      "method": "getSavedStateRegistry",
+      "return_value": "Landroidx/savedstate/SavedStateRegistry;#36",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/appcompat/app/AppCompatActivity$1;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295",
+        "v3"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "equals",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295",
+        "v3"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "equals",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Landroidx/arch/core/internal/SafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/arch/core/internal/SafeIterableMap$Entry;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1",
+        "v3"
+      ],
+      "class": "Landroidx/arch/core/internal/SafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "put",
+      "return_value": "Landroidx/arch/core/internal/SafeIterableMap$Entry;#107",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295",
+        "p1",
+        "v3"
+      ],
+      "class": "Landroidx/arch/core/internal/SafeIterableMap;",
+      "invocation_type": "virtual",
+      "method": "putIfAbsent",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "v2",
+        "v1"
+      ],
+      "class": "Landroidx/savedstate/SavedStateRegistry;",
+      "invocation_type": "virtual",
+      "method": "registerSavedStateProvider",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/appcompat/app/AppCompatActivity$2;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Set;",
+      "invocation_type": "virtual",
+      "method": "add",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295",
+        "v2"
+      ],
+      "class": "Landroidx/activity/contextaware/ContextAwareHelper;",
+      "invocation_type": "virtual",
+      "method": "addOnContextAvailableListener",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "p4294967293"
+      ],
+      "class": "Lde/georgsieber/ballbreak/GameActivity;",
+      "invocation_type": "virtual",
+      "method": "addOnContextAvailableListener",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/appcompat/app/AppCompatActivity;",
+      "invocation_type": "virtual",
+      "method": "initDelegate",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/appcompat/app/AppCompatActivity;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/os/Handler;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lde/georgsieber/ballbreak/GameActivity$1;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lde/georgsieber/ballbreak/GameActivity$2;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "v2"
+      ],
+      "class": "Landroidx/appcompat/app/AppCompatActivity;<super>",
+      "invocation_type": "virtual",
+      "method": "onCreate",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "v2"
+      ],
+      "class": "Lde/georgsieber/ballbreak/GameActivity;",
+      "invocation_type": "virtual",
+      "method": "setContentView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "v2"
+      ],
+      "class": "Lde/georgsieber/ballbreak/GameActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#112",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "v2"
+      ],
+      "class": "Lde/georgsieber/ballbreak/GameActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#126",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "v2"
+      ],
+      "class": "Lde/georgsieber/ballbreak/GameActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#113",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lde/georgsieber/ballbreak/GameActivity$3;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "p4294967295"
+      ],
+      "class": "Lde.georgsieber.ballbreak.GameView;",
+      "invocation_type": "virtual",
+      "method": "setGameStateListener",
+      "return_value": "Landroid/view/View;#113",
+      "source": "REAL_DALVIK_INTERPRETER"
+    }
+  ],
+  "timestamp": "2026-09-26T12:27:31Z",
+  "total_api_calls": 268
+}

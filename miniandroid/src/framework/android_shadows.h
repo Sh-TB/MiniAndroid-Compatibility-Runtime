@@ -1105,6 +1105,9 @@ public:
             int state_pressed = -1;
             int state_enabled = -1;
             int state_selected = -1;
+            // S106 (MG-022): android:state_checked — AOSP StateListDrawable
+            // standard state (Checkable families: CheckBox/Switch/MenuItem).
+            int state_checked = -1;
             uint32_t color = 0;           // android:color or shape solid
             bool has_color = false;
             std::string drawable_path;    // android:drawable file (may be empty)
