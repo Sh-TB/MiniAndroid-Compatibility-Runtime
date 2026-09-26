@@ -237,3 +237,84 @@ reproduced-not-fixed (next)   = 2 roots (DECOR-LINKAGE, CLASS-IDENTITY)
 latent / corpus-unconfirmed   = 1 root (ARSC-ENCODING)
 classified host-only/absent   = 1 root family (GL/EGL/TEX)
 ```
+
+## ROOT-010 — WORKER-PARK-DEPTH (9 findings, FIXED S105)
+
+**Law**: kotlinx.coroutines `CoroutineScheduler.Worker.runLoop` — when
+`findNextTaskAndExecute` returns null the worker transitions PARKING and
+calls `LockSupport.parkNanos` (upstream: kotlinx-coroutines
+`CoroutineScheduler.kt` + AOSP libcore `LockSupport.park` contract: the
+thread stays suspended until unparked or the timeout elapses; a parked
+worker consumes no CPU). The serialized engine's counterpart (R-NEW-345
+extension): park inside a drained worker body (drain depth >= 1) with zero
+work drained = deterministic suspension of the body at the drain boundary;
+the body re-registers in the F-150 yielded-thread registry and re-drains at
+the NEXT scheduler boundary (one bounded rescan per clock tick).
+
+**Root cause (dooz v23 ground truth, S105 BEFORE run)**: the
+`LockSupport.park` bridge drained the queues synchronously and THEN checked
+`park_drain_last_depth_ >= 1` — but `drain_park_queues_bounded` restores
+its own depth (0 at outermost) on exit, destroying the enclosing drained
+body's depth before the check read it. Every top-level worker park saw
+depth 0, never yielded, and spun park→scan→park until the F084 loop-visit
+cap destroyed the frame chain: `[HALT-LOOP] Infinite loop at PC=0xb2 in
+Lsr;.run` (engine PC 178 cu = bytecode 0x164, `iget-object
+nextParkedWorker`, op 0x54), 50001 visits, 24x `[PARK-DRAIN] depth=0
+work_units=0`, 0x `[PARK-YIELD]` → `VirtualMachineError` → 9 unwind rows →
+onCreate APP BOUNDARY. The Job double-completion ISE (`Loj0;.T`) and the
+navigation null-route NPE (`Lox0;.a`) recorded by S104-r3 as separate
+sub-frontiers were downstream casualties of the same frame destruction and
+died with the fix.
+
+**Fix (L5)**: the park bridge now saves the enclosing drained-body depth
+and restores it after the drain (the same save/restore discipline
+`run_thread_start_body` applies to the identical variable), and registers
+the parked body due at `now + 1ms` (exactly ONE park/rescan per scheduler
+boundary — a 0 wake re-pops the worker up to the 8-slice cap within the
+same boundary, observed as `resumed=8`/`parks=9` before the refinement).
+
+**Probe**: `fixtures/s105_park_probe/` (models the Worker.runLoop shape:
+poll→execute→park-when-empty), gate `scripts/s105_park_probe_check.sh`.
+Pre-fix binary: rc=1, HALT-LOOP, PARK-YIELD=0, screen frozen at
+"park-probe-start". Post-fix: rc=0 3/3, 8/8 checks PASS — worker active →
+task1 exactly once → idle park (PARK-YIELD depth=1) → one rescan per
+boundary → task2 (posted at 2.5s virtual while parked) executes exactly
+once → worker terminates.
+
+**Corpus (real APK impact)**:
+```text
+io.github.yamin8000.dooz v23   before = 17 errors (F084 halt family + Job
+                                 ISE + nav NPE + unwinds, 2 APP BOUNDARY rows,
+                                 2.2M+ instructions burned in the spin)
+                               after  =  6 errors 3/3 — all six are the
+                                 EXC-UNWIND bookkeeping of ONE handled
+                                 kotlinx CancellationException (La; extends
+                                 j.u.concurrent.CancellationException; its
+                                 typed handler at Llo;.B catches it — real
+                                 cancellation control flow, Fatal: NO);
+                                 ZERO uncaught exceptions, ZERO halts,
+                                 ZERO APP BOUNDARY rows; setContentView +
+                                 deferred attach+measure path executes
+                               screenshot SHA 59fdbfcd60b86a23 x3 (recorded
+                                 blank-canvas SHA — NO visual claim made)
+dooz_23_toplevel (same root)   before = 17 errors + HALT-LOOP (pre-fix
+                                 binary)
+                               after  =  6 errors 3/3, halt=0, PARK-YIELD x12
+stopwatch_6 (timed-park ref)   0 errors before AND after (park path not on
+                                 its active run path) — control unchanged
+bouncy (LockSupport ref)       16 errors before AND after (pre-existing,
+                                 park path not on its active run path) —
+                                 control unchanged
+```
+
+**Regression**: BATTERY GATE ALL PASS (105 stages, rc=0) on the final tree.
+
+**Fan-out (bytecode scan + execution)**: 42 on-disk corpus APKs scanned —
+4 carry `LockSupport` refs (dooz x2, stopwatch, bouncy), 3 use timed park.
+Execution-proven affected: dooz x2 (same root, both fixed). Controls:
+stopwatch/bouncy unchanged. Presence != fan-out: only APKs whose active
+path parks are affected.
+
+**Ticket crosswalk**: P084 companion rows (F084 unwind family) SOLVED;
+S104-r3 sub-frontiers (b) Job ISE and (c) nav NPE closed as downstream
+cascades. Next queued root: R-005 DECOR-LINKAGE (GR-08, ticket #348).
