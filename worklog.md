@@ -3844,3 +3844,47 @@ Stage Summary:
   content parent→sub-decor on the failing APK ViewTree, fix the shared
   framework law (AOSP PhoneWindow + AppCompat sub-decor semantics), then
   compose host/recomposition frontier.
+
+---
+Task ID: S105-r2
+Agent: Super Z (main)
+Task: Auto-continue per the S105 contract — R-005 DECOR-LINKAGE (GR-08,
+ticket #348) immediately after ROOT-010.
+
+Work Log:
+- Reproducer re-acquired: de.georgsieber.ballbreak v1.8.1 vc10 re-fetched
+  from the registry URL, SHA e6e9f372… matches the S84 record (the on-disk
+  corpus had been cleaned; 0/42 APKs carry the WindowDecorActionBar family
+  per scripts/s105_decor_fanout.py).
+- BEFORE on HEAD: the S103 divergence reproduces exactly —
+  WindowDecorActionBar.init -> findViewById(decor_content_parent=0x7f080054,
+  search_root=<decor>) NOT FOUND -> getDecorToolbar(null) -> ISE "Can't
+  make a decor toolbar out of null" -> GameActivity.onCreate APP BOUNDARY;
+  Status: PARTIAL SUCCESS (2 runs).
+- DEX ground truth (androguard, ballbreak classes.dex): createSubDecor ends
+  with Landroid/view/Window;->setContentView(subDecor) at pc=0x2a8; the
+  engine answered it as a SILENT NO-OP (no dispatch row, no linkage) — the
+  §12 silent-failure chain. Second divergence: getDecorView used ONE global
+  View singleton — two live decor oids (70/203) across one activity's
+  lifetime window.
+- FIX (law-level): (1) Window.setContentView(View) engine law — attach the
+  view under the CURRENT activity's window decor node ([R005-DECOR] row;
+  bridge arg convention honored: args[0]=receiver Window, args[1]=view —
+  the first draft linked args[0] and was caught by the before/after walk);
+  (2) per-activity decor map (window_decor_for_activity_) replacing the
+  global singleton for getDecorView.
+- AFTER: [R005-DECOR] view=207(subdecor) linked under decor=203; the
+  WindowDecorActionBar.init decor-walk ANSWERS FOUND (decor_content_parent,
+  action_bar) from the decor root; ISE 0 rows; Status: SUCCESS, Errors: 0,
+  APP BOUNDARY 0; 3/3 deterministic (det1..3).
+- CONTROLS: dooz 6 (holds), bouncy 16 (pre-existing), unote 0 — unchanged;
+  zero decor ISE anywhere.
+- GATES: battery 105/105 ALL PASS (rc=0) on the final tree (both fixes in).
+
+Stage Summary:
+- R-005 DECOR-LINKAGE SOLVED to L5 (#348 CLOSED; GR-08 REPRODUCED →
+  SOLVED). Two roots executed this wave (ROOT-010 park-depth L5 + R-005
+  decor-linkage L5), both with real-APK before/after + 3-run + battery.
+- NEXT ACTION: compose host/recomposition frontier — the dooz post-fix
+  chain (handled-CancellationException unwind accounting, then the first
+  non-bookkeeping compose divergence).
