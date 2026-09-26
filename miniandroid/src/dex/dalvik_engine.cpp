@@ -21471,6 +21471,46 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // S104-r3 GR-07 — View.getRootView() law (AOSP View.java getRootView):
+    // walk the parent chain to the topmost View; an UNATTACHED view (no
+    // parent, no shadow node) returns ITSELF — getRootView NEVER returns
+    // null on real Android.
+    // Real demand: compose-ui position-cache dispatch (Lt4;.L in
+    // io.github.yamin8000.dooz v23 — the R8-obfuscated compose owner,
+    // method `L`) caches getRootView() into field O0 and immediately calls
+    // View.getWidth()/getHeight() on it. Engine had NO getRootView → the
+    // generic unknown-method path answered null → NPE at getWidth()
+    // (the S104-r2 "Lt4;.L getWidth-on-null" compose-frontier divergence).
+    // Dispatch by VIEW ANCESTRY (is_subclass_of), same policy as getHandler
+    // (S104 commit 7f3b1314) — runtime class names are R8-obfuscated.
+    // The parent walk mirrors the bounded click-audit hierarchy walk
+    // (view_shadow->find_node(...)->parent_id), cycle-guarded at 64 hops.
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getRootView" && is_subclass_of(class_name, "Landroid/view/View;") &&
+        !args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+        args[0].object_id != 0) {
+        uint32_t root_id = args[0].object_id;
+        std::string root_cls = args[0].class_desc.empty() ? "Landroid/view/View;"
+                                                          : args[0].class_desc;
+        if (shadow_registry_ != nullptr) {
+            auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+            if (view_shadow != nullptr) {
+                const auto* node = view_shadow->find_node(root_id);
+                int guard = 0;
+                while (node != nullptr && node->parent_id != 0 && guard++ < 64) {
+                    root_id = node->parent_id;
+                    node = view_shadow->find_node(root_id);
+                    if (node != nullptr && !node->class_desc.empty())
+                        root_cls = node->class_desc;
+                }
+            }
+        }
+        result = DalvikValue::make_object(root_id, root_cls);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // GENERIC COMPATIBILITY (campaign §"complete runnable APK"): programmatic
     // LayoutParams constructors.
     //
