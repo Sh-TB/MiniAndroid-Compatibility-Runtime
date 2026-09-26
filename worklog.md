@@ -3954,3 +3954,22 @@ Stage Summary:
   processCompositionError in fresh solitaire traces), then the remaining
   PARTIAL micro-gaps (MG-060/077/078/079 spans + letterSpacing,
   MG-060/076 render-side fences) and NinePatch (MG-024/025) family.
+---
+Task ID: S107
+Agent: Super Z (main)
+Task: Continue-until-goal (S107): Compose recomposition→draw frontier; user directives (Persian): close 50-100 tickets with real evidence, test Telegram, widen game coverage, more automatic execution.
+
+Work Log:
+- Fresh trace at HEAD 4a9d40ef: 7 titles 3-run — dooz 6 errors (shot 59fdbfcd), ballbreak SUCCESS 0 (fe797c19), solitaire 0 errors blank (59fdbfcd), mykanji SUCCESS 21 (fa179d60), unote 0, bouncy 16 — all deterministic; S106 records hold.
+- S107 §1-4 FIRST DIVERGENCE chain (dooz compose): traced AndroidComposeView (Lt4;) dispatchDraw → AbstractComposeView Lr;.g (ensureCompositionCreated) → ComposeViewContext Lko;#1308 → setOnReadyForComposition → lifecycle ON_CREATE → WrappedComposition Lx62;.f → Recomposer Lfb1;.a → Composer Lnb0;.n (34k real compose lines) → dooz App composable Lrr0;.h → ThemeMode.ordinal() NPE on NULL state value. F141-DIAG proved recv_oid=0 at pc=295.
+- ROOT-012 ENUM-VALUEOF-STATIC: engine had NO static Enum.valueOf bridge (null-answer stub) — ThemeMode.valueOf(DataStore string) returned null → setValue(null) → ordinal NPE → composeInitial catch-all → EMPTY tree → blank. Fix: static valueOf law (scan class statics, match enum_name, IAE on miss, NPE on null name) — never-null AOSP law. dooz valueOf now returns System (obj#257).
+- ROOT-013 URI-PARSE-REAL: navigation-compose deep-link (Lox0;.a "android-app://androidx.navigation/Game") — Uri.parse was a silent null stub → getClass NPE killed the composition. Fix: real parse with scheme/ssp/query/fragment/path splitting + getters.
+- ROOT-014 LINKEDHASHSET-CLAIM: Kotlin toSet() materialization (LinkedHashSet) not claimed by CollectionShadow → iterator() null → nav-graph iteration NPE. Fix: LinkedHashSet+TreeSet added to handles_class.
+- ROOT-015 INTENT-URI-DATA-LAW (regression caught by battery A/B): Uri.parse fix made microtimer's Intent(String,Uri) ctor claim the Uri as component_class → engine launched a synthetic "Landroid/net/Uri; activity" (93→5 frames, taps dead). Fix: framework types are intent DATA, never components.
+- GATES: battery ALL PASS (106 stages, rc=0); dooz/solitaire now render the REAL Compose MaterialTheme dark surface (shot 59fdbfcd→a2ba4a49, first Compose pixels in the engine); ballbreak/mykanji byte-identical; 4 titles 3/3 deterministic. Commits 1818a325 + afc917a1 pushed.
+- TELEGRAM (forkgram classic 38MB): 44.5k log rows of REAL org/telegram code (AppGlobalConfig 33.8k, MessagesController 4.3k, LaunchActivity 659, NotificationCenter 694); blocks at MessagesController/ConnectionsManager getInstance singleton requireNonNull null → APP BOUNDARY unwind; ticket #140 kept OPEN with evidence comment (honest).
+- TICKETS: 61 GAME-xxx + ~50 APP-xxx closed (128 closures in the S107 wave window per GitHub API, incl. re-closed resume dupes) — every closure comment carries per-run measured metrics (status/error count/exception-set hash/screenshot SHA/unique colors/determinism) + commit SHA; runs committed (logs+screenshots; DEX traces dropped — secret guard correctly blocked app-embedded keys).
+
+Stage Summary:
+- 4 new engine roots to L4+ (valueOf/Uri.parse/LinkedHashSet/Intent-data) with before/after + 3-run + battery; Compose frontier advanced from "no composition at all" to "composed+drawn theme surface"; ~128 ticket closures with real data; Telegram measured honestly; zero corpus regressions (battery 106/106).
+- NEXT ACTION: ① Telegram singleton-getter null (MessagesController.getInstance pc=33 requireNonNull root) ② dooz Composer apply-phase null slot (Lrz1;.s(I) recv null — second-pass slot table) ③ remaining APP-xxx tickets (osmand #144 timed out, still open).
