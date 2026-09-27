@@ -1,0 +1,956 @@
+{
+  "apk_name": "org.ucam.ssb22.pinyinfdroid.apk",
+  "main_class": "Lorg/ucam/ssb22/pinyinfdroid/MainActivity;",
+  "main_method": "onCreate",
+  "methods": [
+    {
+      "class": "Lorg/ucam/ssb22/pinyinfdroid/MainActivity;",
+      "entry_point": true,
+      "method": "onCreate",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/app/Activity;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1",
+        "v2"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "startsWith",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "v9"
+      ],
+      "class": "Landroid/app/Activity;<super>",
+      "invocation_type": "virtual",
+      "method": "onCreate",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "p4294967288"
+      ],
+      "class": "Lorg/ucam/ssb22/pinyinfdroid/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "requestWindowFeature",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8"
+      ],
+      "class": "Lorg/ucam/ssb22/pinyinfdroid/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getWindow",
+      "return_value": "Landroid/view/Window;#12",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967289",
+        "v2"
+      ],
+      "class": "Landroid/view/Window;",
+      "invocation_type": "virtual",
+      "method": "addFlags",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "p4294967289"
+      ],
+      "class": "Lorg/ucam/ssb22/pinyinfdroid/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "setContentView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "p4294967289"
+      ],
+      "class": "Lorg/ucam/ssb22/pinyinfdroid/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#14",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/webkit/WebView;",
+      "invocation_type": "virtual",
+      "method": "setWebContentsDebuggingEnabled",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8"
+      ],
+      "class": "Lorg/ucam/ssb22/pinyinfdroid/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getApplicationContext",
+      "return_value": "Landroid/content/Context;#7",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Landroid/app/Application;",
+      "invocation_type": "virtual",
+      "method": "getPackageManager",
+      "return_value": "Landroid/content/pm/PackageManager;#15",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "v4",
+        "p4294967289"
+      ],
+      "class": "Landroid/content/pm/PackageManager;",
+      "invocation_type": "virtual",
+      "method": "getPackageInfo",
+      "return_value": "Landroid/content/pm/PackageInfo;#16",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8"
+      ],
+      "class": "Lorg/ucam/ssb22/pinyinfdroid/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getApplicationContext",
+      "return_value": "Landroid/content/Context;#7",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6"
+      ],
+      "class": "Landroid/app/Application;",
+      "invocation_type": "virtual",
+      "method": "getPackageManager",
+      "return_value": "Landroid/content/pm/PackageManager;#15",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "v7",
+        "p4294967289"
+      ],
+      "class": "Landroid/content/pm/PackageManager;",
+      "invocation_type": "virtual",
+      "method": "getPackageInfo",
+      "return_value": "Landroid/content/pm/PackageInfo;#17",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8"
+      ],
+      "class": "Lorg/ucam/ssb22/pinyinfdroid/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getApplicationContext",
+      "return_value": "Landroid/content/Context;#7",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6"
+      ],
+      "class": "Landroid/app/Application;",
+      "invocation_type": "virtual",
+      "method": "getPackageManager",
+      "return_value": "Landroid/content/pm/PackageManager;#15",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "v7",
+        "p4294967289"
+      ],
+      "class": "Landroid/content/pm/PackageManager;",
+      "invocation_type": "virtual",
+      "method": "getPackageInfo",
+      "return_value": "Landroid/content/pm/PackageInfo;#18",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lorg/ucam/ssb22/pinyinfdroid/MainActivity$OAWIL;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "v4"
+      ],
+      "class": "Landroid/webkit/WebView;",
+      "invocation_type": "virtual",
+      "method": "setOnApplyWindowInsetsListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Landroid/webkit/WebView;",
+      "invocation_type": "virtual",
+      "method": "getSettings",
+      "return_value": "Landroid/webkit/WebSettings;#20",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "p4294967288"
+      ],
+      "class": "Landroid/webkit/WebSettings;",
+      "invocation_type": "virtual",
+      "method": "setJavaScriptEnabled",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Landroid/webkit/WebView;",
+      "invocation_type": "virtual",
+      "method": "getSettings",
+      "return_value": "Landroid/webkit/WebSettings;#20",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "p4294967288"
+      ],
+      "class": "Landroid/webkit/WebSettings;",
+      "invocation_type": "virtual",
+      "method": "setDomStorageEnabled",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Landroid/webkit/WebView;",
+      "invocation_type": "virtual",
+      "method": "getSettings",
+      "return_value": "Landroid/webkit/WebSettings;#20",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "p4294967288"
+      ],
+      "class": "Landroid/webkit/WebSettings;",
+      "invocation_type": "virtual",
+      "method": "setDatabaseEnabled",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/webkit/WebChromeClient;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "v4"
+      ],
+      "class": "Landroid/webkit/WebView;",
+      "invocation_type": "virtual",
+      "method": "setWebChromeClient",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8"
+      ],
+      "class": "Lorg/ucam/ssb22/pinyinfdroid/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getResources",
+      "return_value": "Landroid/content/res/Resources;#22",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Landroid/content/res/Resources;",
+      "invocation_type": "virtual",
+      "method": "getConfiguration",
+      "return_value": "Landroid/content/res/Configuration;#23",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/regex/Pattern;",
+      "invocation_type": "virtual",
+      "method": "compile",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "p4294967294",
+        "p4294967293"
+      ],
+      "class": "Lorg/ucam/ssb22/pinyinfdroid/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getSharedPreferences",
+      "return_value": "Landroid/content/SharedPreferences;#26",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences;",
+      "invocation_type": "virtual",
+      "method": "getString",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Integer;",
+      "invocation_type": "virtual",
+      "method": "valueOf",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Ljava/lang/Integer;",
+      "invocation_type": "virtual",
+      "method": "intValue",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967292",
+        "v1"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "append",
+      "return_value": "Ljava/lang/StringBuilder;#28",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/String;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1",
+        "v2",
+        "v3"
+      ],
+      "class": "Ljava/lang/String;",
+      "invocation_type": "virtual",
+      "method": "replace",
+      "return_value": "\"\"",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967292",
+        "v1"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "append",
+      "return_value": "Ljava/lang/StringBuilder;#28",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967292",
+        "v1"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "append",
+      "return_value": "Ljava/lang/StringBuilder;#28",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967292"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "toString",
+      "return_value": "\"<rt>([^#]*?)(#.*?)?</rt>\"",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/regex/Pattern;",
+      "invocation_type": "virtual",
+      "method": "compile",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Lorg/ucam/ssb22/pinyinfdroid/MainActivity$AnnotatorBridge;",
+      "invocation_type": "virtual",
+      "method": "setSharpMultiPattern",
+      "return_value": "Ljava/util/regex/Pattern;#31",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences;",
+      "invocation_type": "virtual",
+      "method": "getString",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "isEmpty",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Lorg/ucam/ssb22/pinyinfdroid/MainActivity$AnnotatorBridge;",
+      "invocation_type": "virtual",
+      "method": "setKnownCharsPattern",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Lorg/ucam/ssb22/pinyinfdroid/MainActivity$AnnotatorBridge;",
+      "invocation_type": "virtual",
+      "method": "canCustomZoom",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences;",
+      "invocation_type": "virtual",
+      "method": "getString",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Integer;",
+      "invocation_type": "virtual",
+      "method": "valueOf",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4"
+      ],
+      "class": "Ljava/lang/Integer;",
+      "invocation_type": "virtual",
+      "method": "intValue",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lorg/ucam/ssb22/pinyinfdroid/MainActivity$ZoomSetter;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "p4294967294"
+      ],
+      "class": "Lorg/ucam/ssb22/pinyinfdroid/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "runOnUiThread",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "p4294967294",
+        "v2"
+      ],
+      "class": "Lorg/ucam/ssb22/pinyinfdroid/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getSharedPreferences",
+      "return_value": "Landroid/content/SharedPreferences;#26",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences;",
+      "invocation_type": "virtual",
+      "method": "edit",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/String;",
+      "invocation_type": "virtual",
+      "method": "valueOf",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences$Editor;",
+      "invocation_type": "virtual",
+      "method": "putString",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences$Editor;",
+      "invocation_type": "virtual",
+      "method": "commit",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "v4"
+      ],
+      "class": "Lorg/ucam/ssb22/pinyinfdroid/MainActivity$AnnotatorBridge;",
+      "invocation_type": "virtual",
+      "method": "setZoomLevel",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences;",
+      "invocation_type": "virtual",
+      "method": "getString",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "p4294967293"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "equals",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "p4294967294",
+        "v2"
+      ],
+      "class": "Lorg/ucam/ssb22/pinyinfdroid/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getSharedPreferences",
+      "return_value": "Landroid/content/SharedPreferences;#26",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences;",
+      "invocation_type": "virtual",
+      "method": "edit",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences$Editor;",
+      "invocation_type": "virtual",
+      "method": "putString",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences$Editor;",
+      "invocation_type": "virtual",
+      "method": "commit",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "v4"
+      ],
+      "class": "Lorg/ucam/ssb22/pinyinfdroid/MainActivity$AnnotatorBridge;",
+      "invocation_type": "virtual",
+      "method": "setIncludeAll",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lorg/ucam/ssb22/pinyinfdroid/MainActivity$AnnotatorBridge;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "v6",
+        "v7"
+      ],
+      "class": "Landroid/webkit/WebView;",
+      "invocation_type": "virtual",
+      "method": "addJavascriptInterface",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8"
+      ],
+      "class": "Lorg/ucam/ssb22/pinyinfdroid/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getApplicationContext",
+      "return_value": "Landroid/content/Context;#7",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8"
+      ],
+      "class": "Landroid/app/Application;",
+      "invocation_type": "virtual",
+      "method": "getAssets",
+      "return_value": "Landroid/content/res/AssetManager;#36",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "p4294967290"
+      ],
+      "class": "Landroid/content/res/AssetManager;",
+      "invocation_type": "virtual",
+      "method": "open",
+      "return_value": "Ljava/io/InputStream;#37",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "p4294967290"
+      ],
+      "class": "Ljava/io/InputStream;",
+      "invocation_type": "virtual",
+      "method": "read",
+      "return_value": "120",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/zip/Inflater;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "p4294967290"
+      ],
+      "class": "Ljava/util/zip/Inflater;",
+      "invocation_type": "virtual",
+      "method": "setInput",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "p4294967290"
+      ],
+      "class": "Ljava/util/zip/Inflater;",
+      "invocation_type": "virtual",
+      "method": "inflate",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8"
+      ],
+      "class": "Ljava/util/zip/Inflater;",
+      "invocation_type": "virtual",
+      "method": "end",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v7"
+      ],
+      "class": "Lorg/ucam/ssb22/pinyinfdroid/Annotator;",
+      "invocation_type": "virtual",
+      "method": "readAddr",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Arrays;",
+      "invocation_type": "virtual",
+      "method": "copyOfRange",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/String;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8"
+      ],
+      "class": "Ljava/lang/String;",
+      "invocation_type": "virtual",
+      "method": "toCharArray",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lorg/ucam/ssb22/pinyinfdroid/Annotator;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/webkit/WebViewClient;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lorg/ucam/ssb22/pinyinfdroid/MainActivity$CustomWebViewClient;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "v6"
+      ],
+      "class": "Landroid/webkit/WebView;",
+      "invocation_type": "virtual",
+      "method": "setWebViewClient",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4"
+      ],
+      "class": "Landroid/webkit/WebView;",
+      "invocation_type": "virtual",
+      "method": "getSettings",
+      "return_value": "Landroid/webkit/WebSettings;#20",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "p4294967288"
+      ],
+      "class": "Landroid/webkit/WebSettings;",
+      "invocation_type": "virtual",
+      "method": "setBuiltInZoomControls",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967288"
+      ],
+      "class": "Landroid/webkit/WebView;",
+      "invocation_type": "virtual",
+      "method": "getSettings",
+      "return_value": "Landroid/webkit/WebSettings;#20",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967288",
+        "p4294967289"
+      ],
+      "class": "Landroid/webkit/WebSettings;",
+      "invocation_type": "virtual",
+      "method": "setDisplayZoomControls",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967288"
+      ],
+      "class": "Landroid/webkit/WebView;",
+      "invocation_type": "virtual",
+      "method": "getSettings",
+      "return_value": "Landroid/webkit/WebSettings;#20",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967288",
+        "p4294967289"
+      ],
+      "class": "Landroid/webkit/WebSettings;",
+      "invocation_type": "virtual",
+      "method": "setDefaultTextEncodingName",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getMainLooper",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/os/Handler;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lorg/ucam/ssb22/pinyinfdroid/MainActivity$Timer1;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967292",
+        "v1",
+        "v2",
+        "v3"
+      ],
+      "class": "Landroid/os/Handler;",
+      "invocation_type": "virtual",
+      "method": "postDelayed",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8"
+      ],
+      "class": "Lorg/ucam/ssb22/pinyinfdroid/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "runTimerLoop",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8"
+      ],
+      "class": "Lorg/ucam/ssb22/pinyinfdroid/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getIntent",
+      "return_value": "Landroid/content/Intent;#46",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4"
+      ],
+      "class": "Landroid/content/Intent;",
+      "invocation_type": "virtual",
+      "method": "getAction",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "v2"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "equals",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4"
+      ],
+      "class": "Landroid/content/Intent;",
+      "invocation_type": "virtual",
+      "method": "getAction",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "v2"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "equals",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "v9"
+      ],
+      "class": "Lorg/ucam/ssb22/pinyinfdroid/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "handleIntent",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v9",
+        "p4294967288"
+      ],
+      "class": "Landroid/webkit/WebView;",
+      "invocation_type": "virtual",
+      "method": "loadUrl",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    }
+  ],
+  "timestamp": "2026-09-27T14:32:07Z",
+  "total_api_calls": 102
+}

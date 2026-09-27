@@ -1,0 +1,218 @@
+{
+  "allocations": [],
+  "apk_name": "org.bobstuff.bobball.apk",
+  "objects": [
+    {
+      "class_descriptor": "Landroidx/arch/core/executor/ArchTaskExecutor;",
+      "creation_sequence": 0,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 1,
+      "readable_class": "androidx.arch.core.executor.ArchTaskExecutor",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Ljava/lang/Thread;",
+      "creation_sequence": 1,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 2,
+      "readable_class": "java.lang.Thread",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Ljava/lang/Runtime;",
+      "creation_sequence": 2,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 3,
+      "readable_class": "java.lang.Runtime",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/os/Looper;",
+      "creation_sequence": 3,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 4,
+      "readable_class": "android.os.Looper",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/os/MessageQueue;",
+      "creation_sequence": 4,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 5,
+      "readable_class": "android.os.MessageQueue",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/os/Handler;",
+      "creation_sequence": 5,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 6,
+      "readable_class": "android.os.Handler",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Lorg/bobstuff/bobball/Preferences;",
+      "creation_sequence": 6,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": true,
+      "object_id": 7,
+      "readable_class": "org.bobstuff.bobball.Preferences",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Lorg/bobstuff/bobball/Menus/menuMain;",
+      "creation_sequence": 7,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": true,
+      "object_id": 8,
+      "readable_class": "org.bobstuff.bobball.Menus.menuMain",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/view/Window;",
+      "creation_sequence": 8,
+      "creator_frame_id": 3,
+      "creator_pc": 7,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 9,
+      "readable_class": "android.view.Window",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/widget/ScrollView;",
+      "creation_sequence": 9,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 10,
+      "readable_class": "android.widget.ScrollView",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/widget/RelativeLayout;",
+      "creation_sequence": 10,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 11,
+      "readable_class": "android.widget.RelativeLayout",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/widget/TextView;",
+      "creation_sequence": 11,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 12,
+      "readable_class": "android.widget.TextView",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/widget/ImageView;",
+      "creation_sequence": 12,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 13,
+      "readable_class": "android.widget.ImageView",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/widget/Button;",
+      "creation_sequence": 13,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 14,
+      "readable_class": "android.widget.Button",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/widget/Button;",
+      "creation_sequence": 14,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 15,
+      "readable_class": "android.widget.Button",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/widget/Button;",
+      "creation_sequence": 15,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 16,
+      "readable_class": "android.widget.Button",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/widget/Button;",
+      "creation_sequence": 16,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 17,
+      "readable_class": "android.widget.Button",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/widget/Button;",
+      "creation_sequence": 17,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 18,
+      "readable_class": "android.widget.Button",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/widget/Button;",
+      "creation_sequence": 18,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 19,
+      "readable_class": "android.widget.Button",
+      "source": "REAL_DALVIK_INTERPRETER"
+    }
+  ],
+  "timestamp": "2026-09-27T14:32:22Z",
+  "total_allocations": 0,
+  "total_objects": 19
+}
