@@ -312,11 +312,26 @@ static std::string resolve_vars(const std::string& val,
     for (int guard = 0; guard < 8; ++guard) {
         size_t p = out.find("var(");
         if (p == std::string::npos) break;
-        size_t e = out.find(')', p);
-        if (e == std::string::npos) break;
-        std::string name = trim(out.substr(p + 4, e - p - 4));
-        std::string rep = custom.count(name) ? custom.at(name) : "";
-        out = out.substr(0, p) + rep + out.substr(e + 1);
+        // find the matching close paren (fallback may itself contain parens)
+        size_t e = p + 4, depth = 1;
+        while (e < out.size() && depth) {
+            depth += out[e] == '(' ? 1 : 0;
+            depth -= out[e] == ')' ? 1 : 0;
+            ++e;
+        }
+        if (depth) break;
+        std::string inner = out.substr(p + 4, e - p - 5);
+        // CSS Variables law: var(--name) → custom prop value;
+        // var(--name, fallback) → fallback when the prop is unset.
+        std::string name = inner, fallback;
+        size_t comma = inner.find(',');
+        if (comma != std::string::npos) {
+            name = inner.substr(0, comma);
+            fallback = inner.substr(comma + 1);
+        }
+        name = trim(name);
+        std::string rep = custom.count(name) ? custom.at(name) : trim(fallback);
+        out = out.substr(0, p) + rep + out.substr(e);
     }
     return out;
 }
@@ -346,7 +361,11 @@ void HtmlParser::apply_css(DomNode* node, const std::vector<CssRule>& rules,
     }
     // gather custom props visible at this node (walk-up merge happens via caller)
     static thread_local std::map<std::string, std::string> t_custom;
-    if (node->tag == "html") t_custom = custom_props ? *custom_props : t_custom;
+    // html AND body: re-sync from the accumulated root-level custom props —
+    // body defines --background1 in its own rule and its own background-color
+    // resolves in this visit, so the copy must happen AFTER the collection.
+    if (node->tag == "html" || node->tag == "body")
+        t_custom = custom_props ? *custom_props : t_custom;
     for (auto& kv : node->style)
         if (kv.first.rfind("--", 0) == 0) t_custom[kv.first] = kv.second;
 

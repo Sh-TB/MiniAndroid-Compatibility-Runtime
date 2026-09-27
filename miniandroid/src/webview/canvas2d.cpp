@@ -105,6 +105,11 @@ bool parse_font_bold(const std::string& css_font) {
 // ── state ───────────────────────────────────────────────────────────────
 void Canvas2D::set_size(int w, int h) {
     fb_ = std::make_unique<renderer::FrameBuffer>(std::max(1, w), std::max(1, h));
+    // ROOT-052 (WHATWG §4.12.5: "When the canvas is resized, the bitmap is
+    // reset to transparent black"). The FrameBuffer's WHITE default is the
+    // Android-surface convention; an opaque-white canvas bitmap painted a
+    // white page over every pixel the document had not drawn.
+    for (auto& px : fb_->get_pixels_mut()) px = renderer::RGBA{0, 0, 0, 0};
     has_clip_ = false;
     stack_.clear();
     path_.clear();

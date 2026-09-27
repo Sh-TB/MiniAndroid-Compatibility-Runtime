@@ -35213,12 +35213,31 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
+    if (class_name == "Ljava/util/regex/Pattern;" && method == "quote") {
+        // JDK law (java.util.regex.Pattern.quote): returns "\Q" + s + "\E" —
+        // a literal-pattern wrapper. blidraughts builds its version-split
+        // delimiter as Pattern.quote("."); the generic miss returned null
+        // and the consumer's parseInt saw the whole versionName.
+        std::string s = (!args.empty() && args[0].type == DalvikType::STRING_REF)
+                            ? args[0].string_val : "";
+        result = DalvikValue::make_string("\\Q" + s + "\\E", 0);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
     if (class_name == "Ljava/lang/String;" && method == "split") {
         // args[0] = this (String), args[1] = regex
         std::string str = args.empty() ? "" :
             (args[0].type == DalvikType::STRING_REF ? args[0].string_val : "");
         std::string delim = (args.size() >= 2 && args[1].type == DalvikType::STRING_REF)
             ? args[1].string_val : ";";
+        // JDK Pattern law: "\Q...\E" quotes a literal. The corpus builds
+        // delimiters through Pattern.quote — strip the wrapper and treat
+        // the inner text as the literal delimiter (no regex engine needed
+        // for the quoted-literal form).
+        if (delim.size() >= 4 && delim.rfind("\\Q", 0) == 0 &&
+            delim.compare(delim.size() - 2, 2, "\\E") == 0) {
+            delim = delim.substr(2, delim.size() - 4);
+        }
         std::vector<std::string> parts;
         size_t start = 0;
         size_t pos;

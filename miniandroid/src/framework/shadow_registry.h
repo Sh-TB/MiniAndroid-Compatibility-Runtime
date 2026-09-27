@@ -161,6 +161,16 @@ public:
         return false;
     }
 
+    // ROOT-053: store a STRING-valued field on a heap object (shadows that
+    // materialize framework DTOs — e.g. WebViewPackageInfo — must seed the
+    // raw fields so iget-object readers and getter-shadows see the same
+    // value). Default no-op: adapters that cannot write fields answer false.
+    virtual bool set_string_field(uint32_t object_id, const std::string& field_name,
+                                  const std::string& value) {
+        (void)object_id; (void)field_name; (void)value;
+        return false;
+    }
+
     // [R-NEW-360 (S45)] Read the i-th ELEMENT of an engine-modeled array
     // object ("array[i]" fields) as an OBJECT_REF (out = object_id).
     virtual bool get_object_array_ref_element(uint32_t array_id, size_t index,

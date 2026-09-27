@@ -1426,6 +1426,11 @@ public:
         if (class_name.find("Activity;") != std::string::npos) {
             return false;
         }
+        // ROOT-053: the WebView availability probe result type (API 26+)
+        // is answered by the View family (the runtime ships a WebView).
+        if (class_name == "Landroid/webkit/WebViewPackageInfo;") {
+            return true;
+        }
         // Match any class ending in "View;" or "ViewGroup;" or containing
         // well-known View subclasses. Specific dispatch is done by
         // method name.
