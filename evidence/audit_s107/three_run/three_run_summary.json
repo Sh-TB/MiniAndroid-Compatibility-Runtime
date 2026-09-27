@@ -1,0 +1,138 @@
+{
+ "org.ucam.ssb22.pinyinfdroid": {
+  "issue": 166,
+  "runs": [
+   {
+    "rc": 0,
+    "errors": 0,
+    "status": "SUCCESS",
+    "apk_version": "2.12.74 (vc 109)",
+    "unique_colors": 208,
+    "nonbg_ratio": 0.01503,
+    "sha": "e03921ecbff1246d"
+   },
+   {
+    "rc": 0,
+    "errors": 0,
+    "status": "SUCCESS",
+    "apk_version": "2.12.74 (vc 109)",
+    "unique_colors": 208,
+    "nonbg_ratio": 0.01503,
+    "sha": "e03921ecbff1246d"
+   },
+   {
+    "rc": 0,
+    "errors": 0,
+    "status": "SUCCESS",
+    "apk_version": "2.12.74 (vc 109)",
+    "unique_colors": 208,
+    "nonbg_ratio": 0.01503,
+    "sha": "e03921ecbff1246d"
+   }
+  ],
+  "verdict": "VERIFIED_3RUN",
+  "apk_version": "2.12.74 (vc 109)"
+ },
+ "com.smorgasbork.hotdeath": {
+  "issue": 68,
+  "runs": [
+   {
+    "rc": 1,
+    "errors": 0,
+    "status": "PARTIAL SUCCESS",
+    "apk_version": "1.0.11 (vc 11)",
+    "unique_colors": 634,
+    "nonbg_ratio": 0.10782,
+    "sha": "7c811bffb9a7c590"
+   },
+   {
+    "rc": 1,
+    "errors": 0,
+    "status": "PARTIAL SUCCESS",
+    "apk_version": "1.0.11 (vc 11)",
+    "unique_colors": 634,
+    "nonbg_ratio": 0.10782,
+    "sha": "7c811bffb9a7c590"
+   },
+   {
+    "rc": 1,
+    "errors": 0,
+    "status": "PARTIAL SUCCESS",
+    "apk_version": "1.0.11 (vc 11)",
+    "unique_colors": 634,
+    "nonbg_ratio": 0.10782,
+    "sha": "7c811bffb9a7c590"
+   }
+  ],
+  "verdict": "VERIFIED_3RUN",
+  "apk_version": "1.0.11 (vc 11)"
+ },
+ "org.bobstuff.bobball": {
+  "issue": 81,
+  "runs": [
+   {
+    "rc": 0,
+    "errors": 0,
+    "status": "SUCCESS",
+    "apk_version": "1.17 (vc 26)",
+    "unique_colors": 476,
+    "nonbg_ratio": 0.37189,
+    "sha": "efaced30f29f0d45"
+   },
+   {
+    "rc": 0,
+    "errors": 0,
+    "status": "SUCCESS",
+    "apk_version": "1.17 (vc 26)",
+    "unique_colors": 476,
+    "nonbg_ratio": 0.37189,
+    "sha": "efaced30f29f0d45"
+   },
+   {
+    "rc": 0,
+    "errors": 0,
+    "status": "SUCCESS",
+    "apk_version": "1.17 (vc 26)",
+    "unique_colors": 476,
+    "nonbg_ratio": 0.37189,
+    "sha": "efaced30f29f0d45"
+   }
+  ],
+  "verdict": "VERIFIED_3RUN",
+  "apk_version": "1.17 (vc 26)"
+ },
+ "com.dozingcatsoftware.bouncy": {
+  "issue": 121,
+  "runs": [
+   {
+    "rc": 1,
+    "errors": 16,
+    "status": "PARTIAL SUCCESS",
+    "apk_version": "1.16.0 (vc 43)",
+    "unique_colors": 494,
+    "nonbg_ratio": 0.47245,
+    "sha": "cf76282e5c2a6925"
+   },
+   {
+    "rc": 1,
+    "errors": 16,
+    "status": "PARTIAL SUCCESS",
+    "apk_version": "1.16.0 (vc 43)",
+    "unique_colors": 494,
+    "nonbg_ratio": 0.47245,
+    "sha": "cf76282e5c2a6925"
+   },
+   {
+    "rc": 1,
+    "errors": 16,
+    "status": "PARTIAL SUCCESS",
+    "apk_version": "1.16.0 (vc 43)",
+    "unique_colors": 494,
+    "nonbg_ratio": 0.47245,
+    "sha": "cf76282e5c2a6925"
+   }
+  ],
+  "verdict": "VERIFIED_3RUN",
+  "apk_version": "1.16.0 (vc 43)"
+ }
+}
