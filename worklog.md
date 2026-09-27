@@ -4116,3 +4116,24 @@ Work Log:
 
 Stage Summary:
 - Telegram error frontier CLOSED (0 uncaught). The pixel frontier remains: login widgets measured but not painting (R$styleable theme attrs + text-draw laws) — the next wave.
+
+---
+Task ID: S111
+Agent: Super Z (main)
+Task: User directive — read the 3 knowledge-transfer tickets (#353/#354/#355) + comments, transfer knowledge, rewrite them to the standard structure (fix methodology + metric tables + rendered images + GIF + Persian summary), fix wrong texts (outdated JS claim, Forkgram naming, hotdeath link) and oversized image sets; prove the 9th achievement (real HTML5 execution) WITH the image; cite the comments' help; the Telegram login tree remains.
+
+Work Log:
+- Read all 3 ticket bodies + 4 evidence comments (knowledge transfer). Key finding: #353 claimed "JS execution is not yet in the engine" — outdated: the QuickJS subsystem landed AFTER the tickets were written.
+- Ran Breakout at HEAD to find the truth: migrations died "TypeError: not a function", scripts executed=0, draw_calls=0. Applied the 12-step EXECUTION-FRONTIER loop:
+- ROOT-048: console family incomplete (no debug) — Chromium DevTools contract added (debug/trace/dir/dirxml/table/time/count/group/assert/clear). Result: 8/8 migrations ran.
+- ROOT-049: el_getContext registered only 6 members; the FULL Canvas2D C++ raster + pre-written binding helpers were unreachable from JS. Bound the complete WHATWG surface (30+ methods + 8 style attrs + pixel access + ellipse + missing transform). Result: scripts executed=1, js_errors=0, draw_calls=8.
+- ROOT-050: CSS calc(var(--vh,1vh)*100) resolved 0 (atof + missing var-fallback syntax) — var fallback + unit-aware calc evaluator + body custom-props resync. ROOT-051: root/body bg propagation to the page canvas. ROOT-052: canvas bitmap init transparent black (was opaque white).
+- ROOT-053: WebView.getCurrentWebViewPackage probe law (non-null WebViewPackageInfo, honest 1.0.0, heap-field seeded via new set_string_field adapter) + JDK Pattern.quote + quoted-literal split. blidraughts: probe→identity→its own "Update required!" dialog (APP-POLICY frontier; Chromium version NOT forged).
+- BREAKOUT RENDER PROOF: real game frame (menu HUD, paddle+ball, press-and-hold, dark theme) — 3/3 byte-identical 56834fb…, crash.log clean.
+- REGRESSION GATES byte-identical: ballbreak fe797c19, dooz a2ba4a49.
+- Pushed fad09c93 (S111 roots + light evidence). Rewrote #353/#354/#355 to the standard structure via scripts/s111_edit_tickets.py (outdated claim removed, !otdeath link fixed, Telegram→Forkgram naming fixed, image sets slimmed, comments' help cited in dedicated sections). Posted ACHIEVEMENT #9 comment on #353 with the image.
+
+Stage Summary:
+- 9TH ACHIEVEMENT PROVEN WITH IMAGE: HTML5/WebView executes real games (Breakout 71), generic capability (6 root laws, zero package checks).
+- Ticket wave #353/#354/#355 now standard-structured; wrong texts fixed; evidence comments explicitly credited.
+- Telegram login tree REMAINS the pixel frontier (R$styleable theme attrs + text-draw) — next wave: login pixels → phone input → SMS flow.
