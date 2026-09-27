@@ -31,6 +31,7 @@
 #include "../framework/dialog_shadow.h"
 #include "../framework/canvas_shadow.h"
 #include "../framework/heap_adapter.h"
+#include "../framework/bitmap_shadow.h"  // S109 ROOT-033: getDrawable raster decode
 #include "../framework/view_ancestry.h"  // G12 FIX-G12-001: AOSP framework ancestry law
 #include "../storage/sqlite_shadow.h"    // M3 F-ROOM-CHAIN: SQLite family shadow
 #include "../resources/resource_runtime.h"  // G10 FIX-G10-002: early classifier wiring
@@ -5823,15 +5824,17 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         return false;
     }
 
-    // EXP-058: setFragmentStack loops at PC=0x125 (invoke-interface returns
-    // VOID_, treated as zero by if-nez, doesn't branch, calls again).
-    if (class_descriptor.find("ActionBarLayout") != std::string::npos &&
-        method_name == "setFragmentStack") {
-        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
-            " — skipping (invoke-interface loop)");
-        recursion_depth_--;
-        return false;
-    }
+    // S109 ROOT-035 — EXP-058 setFragmentStack STUB REMOVED (retired).
+    // The stub pre-emptively skipped ActionBarLayout.setFragmentStack
+    // ("invoke-interface loop" era). The opcode-table fix (EXP-059, its
+    // own comment) retired the loop family — but this stub survived and
+    // silently dropped the ONLY writer of the fragment-stack field C0:
+    // LaunchActivity.onCreate's setFragmentStack(U) never ran → C0 stayed
+    // null → J1/G1/a/onMeasure/getLastFragment all NPE'd on
+    // List.isEmpty/size → the login UI (PhoneActivity via N4()) could
+    // never attach. AOSP law: setFragmentStack EXECUTES (the DEX body
+    // stores the list field-first, then rebuilds the tabs/side menu).
+    // Removal verified by [S109-SFS-CAND] dispatch + FIELD-TRACE C0 put.
 
     // EXP-059: loadCurrentState stub REMOVED. With the opcode-table fix,
     // the previous "invoke-interface loop" no longer occurs. The method
@@ -6946,6 +6949,19 @@ bool DalvikExecutionEngine::try_recursive_invoke(
 
     for (const dex::MethodInfo* method_ptr : f107_cands) {
         const dex::MethodInfo& method = *method_ptr;
+        if (method_name == "setFragmentStack") {
+            static thread_local uint64_t sfs_c = 0;
+            if (sfs_c < 10) {
+                ++sfs_c;
+                std::cerr << "[S109-SFS-CAND] " << method.name
+                          << method.descriptor
+                          << " bc=" << method.bytecode.size()
+                          << " want=" << (method_descriptor.empty()
+                                                 ? "<none>"
+                                                 : method_descriptor)
+                          << " argc=" << arg_count << std::endl;
+            }
+        }
         if (class_descriptor == "LE1/c;" && method_name == "<init>" &&
             std::getenv("MINIANDROID_E1_DIAG")) {
             std::cerr << "[E1-SEL] cand " << method.name << method.descriptor
@@ -8299,7 +8315,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     {
         static thread_local const bool tm = std::getenv("MINIANDROID_TRACE_MISS") != nullptr;
         static thread_local uint64_t miss_log_count = 0;
-        if (tm && miss_log_count < 400) {
+        if (tm && miss_log_count < 8000) {
             miss_log_count++;
             bool in_index = class_info_index_.count(declaring_class) != 0;
             std::cerr << "[INVOKE-MISS] " << declaring_class << "." << method_name
@@ -15220,6 +15236,23 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
                           "." + method_name_from_dex;
     }
     
+    // S109 forensics: trace setFragmentStack dispatch end-to-end.
+    if (method_name_from_dex == "setFragmentStack") {
+        static thread_local uint64_t sfs_n = 0;
+        if (sfs_n < 10) {
+            ++sfs_n;
+            std::cerr << "[S109-SFS] invoke-virtual entry pc=" << pc
+                      << " declaring=" << declaring_class
+                      << " runtime=" << runtime_type
+                      << " argc=" << args.size()
+                      << " a0=" << (args.empty() ? -1 : (int)args[0].type)
+                      << " o0=" << (args.empty() ? 0 : args[0].object_id)
+                      << " a1=" << (args.size() > 1 ? (int)args[1].type : -1)
+                      << " o1=" << (args.size() > 1 ? args[1].object_id : 0)
+                      << " caller=" << current_class_ << "." << current_method_
+                      << std::endl;
+        }
+    }
     // Try API bridge with resolved method info
     DalvikValue return_val = DalvikValue::make_void();
     ApiCallTrace::Status api_status = ApiCallTrace::Status::STUBBED;
@@ -23277,8 +23310,14 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         static std::map<int64_t, uint32_t> nbb_addr_to_oid;
         static int64_t nbb_next_addr = 0x1000000;
         if (method == "native_getFreeBuffer") {
-            int32_t cap = (args.size() > 1 && args[1].type == DalvikType::INT32)
-                              ? args[1].int_val : 0;
+            // S109 ROOT-030: the ctor's `invoke-static v6, native_getFreeBuffer(I)J`
+            // is STATIC — args[0] is the size. Some dispatch paths prepend a
+            // class/receiver slot (args[1]); scan for the first INT32 so both
+            // conventions work.
+            int32_t cap = 0;
+            for (const auto& a : args) {
+                if (a.type == DalvikType::INT32) { cap = a.int_val; break; }
+            }
             if (cap < 0) cap = 0;
             uint32_t bid = heap_.allocate("Ljava/nio/ByteBuffer;", 0, 0);
             heap_.set_object_field(bid, "__bb_cap__", DalvikValue::make_int(cap));
@@ -23294,10 +23333,27 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             return true;
         }
         if (method == "native_getJavaByteBuffer") {
-            int64_t addr = (args.size() > 1 && args[1].type == DalvikType::INT64)
-                               ? args[1].long_val : 0;
+            // S109 ROOT-030: `invoke-static v0, v1, native_getJavaByteBuffer(J)`
+            // passes the WIDE long — either as ONE INT64 entry (args[0]) or as
+            // a trailing slot (args[1]); scanning for INT64 fixes the
+            // buffer==null → position(I) NPE at NativeByteBuffer.<init> pc=27.
+            int64_t addr = 0;
+            bool have_addr = false;
+            for (const auto& a : args) {
+                if (a.type == DalvikType::INT64) {
+                    addr = a.long_val;
+                    have_addr = true;
+                    break;
+                }
+            }
+            if (!have_addr && args.size() > 1 &&
+                args[1].type == DalvikType::INT64) {
+                addr = args[1].long_val;
+                have_addr = true;
+            }
             auto it = nbb_addr_to_oid.find(addr);
-            if (it != nbb_addr_to_oid.end() && heap_.has_object(it->second)) {
+            if (have_addr && it != nbb_addr_to_oid.end() &&
+                heap_.has_object(it->second)) {
                 result = DalvikValue::make_object(it->second,
                                                   "Ljava/nio/ByteBuffer;");
             } else {
@@ -23509,54 +23565,1163 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
     }
     // ────────────────────────────────────────────────────────────────────────
-    // S108 ROOT-023 — android.util.SparseIntArray FAMILY (AOSP law).
-    // get(key, defIfNotFound) previously answered the generic null →
-    // unboxing NPE inside Telegram's ActionBar theming (d6.V / d6.N0).
-    // AOSP SparseIntArray: put appends/overwrites; get answers the stored
-    // int or the default; size/keyAt/valueAt index the pairs. Storage:
-    // per-object heap fields __spa_k<key>__ (identity via field table).
+    // S109 ROOT-027 — android.util.SparseIntArray FAMILY, AOSP-FAITHFUL
+    // ORDERED STORAGE + clone() (supersedes the S108 ROOT-023 minimal law).
+    //
+    // EVIDENCE (forkgram run14): d6.y3 does `Hl = Gl.clone()` — clone() had
+    // NO handler → generic-miss NULL → d6.V(pc=6) `Hl.get(key,def)` NPE →
+    // Theme.applyTheme died → LaunchActivity.onCreate unwound BEFORE the
+    // setFragmentStack call → fragment stack C0 stayed null → login UI
+    // never attached. The old storage also answered size()=0/indexOfKey=-1
+    // even when put() stored entries (per-key fields, no order) — every
+    // theme-color override guarded by `indexOfKey(k) >= 0` was silently
+    // skipped, and keyAt/valueAt were void.
+    //
+    // AOSP LAW (frameworks/base SparseIntArray.java): keys ASCENDING,
+    // binary search, put inserts/overwrites in order, append(key,val) only
+    // appends when key > last key (else put), get answers value-or-default,
+    // indexOfKey answers index or -(insertion+1), keyAt/valueAt index the
+    // pairs, delete shifts, clone deep-copies. Storage: per-object heap
+    // fields __spa_size__, __spa_key<i>__, __spa_val<i>__ (index-ordered).
     if (class_name == "Landroid/util/SparseIntArray;" ||
         class_name == "Landroid/util/SparseBooleanArray;" ||
         class_name == "Landroid/util/SparseLongArray;") {
-        if (method == "put" || method == "append" || method == "setValueAt" ||
-            method == "putIfAbsent") {
-            if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
-                args[0].object_id != 0 && args.size() > 2) {
-                char key[40];
-                std::snprintf(key, sizeof(key), "__spa_k%d__", args[1].int_val);
-                heap_.set_object_field(args[0].object_id, key, args[2]);
+        bool is_bool_family = class_name == "Landroid/util/SparseBooleanArray;";
+        bool is_long_family = class_name == "Landroid/util/SparseLongArray;";
+        uint32_t recv = (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                            ? args[0].object_id : 0;
+        // helpers over the index-ordered field storage
+        auto spa_size = [&](uint32_t oid) -> int32_t {
+            auto v = heap_.get_object_field(oid, "__spa_size__");
+            return (v.has_value() && v->type == DalvikType::INT32) ? v->int_val : 0;
+        };
+        auto spa_key_at = [&](uint32_t oid, int32_t i) -> int32_t {
+            auto v = heap_.get_object_field(oid, "__spa_key" + std::to_string(i) + "__");
+            return (v.has_value() && v->type == DalvikType::INT32) ? v->int_val : 0;
+        };
+        auto spa_val_at = [&](uint32_t oid, int32_t i) -> DalvikValue {
+            return heap_.get_object_field(oid, "__spa_val" + std::to_string(i) + "__")
+                .value_or(DalvikValue::make_int(0));
+        };
+        // binary search over ascending keys: found index or -(ins+1)
+        auto spa_binsearch = [&](uint32_t oid, int32_t key) -> int32_t {
+            int32_t lo = 0, hi = spa_size(oid) - 1;
+            while (lo <= hi) {
+                int32_t mid = (uint32_t)(lo + hi) >> 1;
+                int32_t mk = spa_key_at(oid, mid);
+                if (mk == key) return mid;
+                if (mk < key) lo = mid + 1; else hi = mid - 1;
             }
+            return -(lo + 1);
+        };
+        auto spa_shift = [&](uint32_t oid, int32_t from, int32_t to) {
+            // move entry `from` to index `to` (AOSP System.arraycopy law)
+            heap_.set_object_field(oid, "__spa_key" + std::to_string(to) + "__",
+                                   DalvikValue::make_int(spa_key_at(oid, from)));
+            heap_.set_object_field(oid, "__spa_val" + std::to_string(to) + "__",
+                                   spa_val_at(oid, from));
+        };
+        if (recv != 0) {
+            if (method == "put" || method == "append" || method == "putIfAbsent") {
+                if (args.size() > 2) {
+                    int32_t key = args[1].int_val;
+                    int32_t sz = spa_size(recv);
+                    int32_t idx = spa_binsearch(recv, key);
+                    bool do_put = true;
+                    if (method == "append" && sz > 0 &&
+                        spa_key_at(recv, sz - 1) > key) {
+                        do_put = false;  // AOSP append: only for key > last
+                    }
+                    if (method == "putIfAbsent" && idx >= 0) do_put = false;
+                    if (do_put) {
+                        if (idx >= 0) {
+                            heap_.set_object_field(
+                                recv, "__spa_val" + std::to_string(idx) + "__",
+                                args[2]);
+                        } else {
+                            int32_t ins = -(idx + 1);
+                            for (int32_t i = sz; i > ins; --i)
+                                spa_shift(recv, i - 1, i);
+                            heap_.set_object_field(
+                                recv, "__spa_key" + std::to_string(ins) + "__",
+                                DalvikValue::make_int(key));
+                            heap_.set_object_field(
+                                recv, "__spa_val" + std::to_string(ins) + "__",
+                                args[2]);
+                            heap_.set_object_field(
+                                recv, "__spa_size__",
+                                DalvikValue::make_int(sz + 1));
+                        }
+                    }
+                }
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "setValueAt" && args.size() > 2) {
+                int32_t i = args[1].int_val;
+                if (i >= 0 && i < spa_size(recv))
+                    heap_.set_object_field(
+                        recv, "__spa_val" + std::to_string(i) + "__", args[2]);
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "get") {
+                if (args.size() > 1) {
+                    int32_t idx = spa_binsearch(recv, args[1].int_val);
+                    if (idx >= 0) {
+                        result = spa_val_at(recv, idx);
+                        if (is_bool_family) {
+                            result = DalvikValue::make_bool(
+                                result.type == DalvikType::INT32
+                                    ? result.int_val != 0
+                                    : true);
+                        }
+                    } else if (args.size() > 2) {
+                        result = args[2];  // AOSP def-if-not-found law
+                    } else if (is_bool_family) {
+                        result = DalvikValue::make_bool(false);
+                    } else {
+                        result = DalvikValue::make_int(0);
+                    }
+                } else {
+                    result = DalvikValue::make_int(0);
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "indexOfKey") {
+                int32_t idx = (args.size() > 1) ? spa_binsearch(recv, args[1].int_val)
+                                                : -1;
+                result = DalvikValue::make_int(idx);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "containsKey") {
+                int32_t idx = (args.size() > 1) ? spa_binsearch(recv, args[1].int_val)
+                                                : -1;
+                result = DalvikValue::make_bool(idx >= 0);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "size") {
+                result = DalvikValue::make_int(spa_size(recv));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "isEmpty") {
+                result = DalvikValue::make_bool(spa_size(recv) == 0);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "keyAt" && args.size() > 1) {
+                int32_t i = args[1].int_val;
+                result = DalvikValue::make_int(
+                    (i >= 0 && i < spa_size(recv)) ? spa_key_at(recv, i) : 0);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "valueAt" && args.size() > 1) {
+                int32_t i = args[1].int_val;
+                result = (i >= 0 && i < spa_size(recv)) ? spa_val_at(recv, i)
+                                                        : DalvikValue::make_int(0);
+                if (is_bool_family) {
+                    result = DalvikValue::make_bool(
+                        result.type == DalvikType::INT32 ? result.int_val != 0
+                                                         : false);
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "delete" || method == "remove") {
+                if (args.size() > 1) {
+                    int32_t idx = spa_binsearch(recv, args[1].int_val);
+                    if (idx >= 0) {
+                        int32_t sz = spa_size(recv);
+                        for (int32_t i = idx; i < sz - 1; ++i)
+                            spa_shift(recv, i + 1, i);
+                        heap_.set_object_field(
+                            recv, "__spa_size__", DalvikValue::make_int(sz - 1));
+                    }
+                }
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "removeAt" && args.size() > 1) {
+                int32_t i = args[1].int_val;
+                int32_t sz = spa_size(recv);
+                if (i >= 0 && i < sz) {
+                    for (int32_t j = i; j < sz - 1; ++j) spa_shift(recv, j + 1, j);
+                    heap_.set_object_field(recv, "__spa_size__",
+                                           DalvikValue::make_int(sz - 1));
+                }
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "clear") {
+                heap_.set_object_field(recv, "__spa_size__",
+                                       DalvikValue::make_int(0));
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "clone") {
+                // AOSP deep copy: new object of the RECEIVER'S RUNTIME CLASS
+                // with every __spa_*__ entry copied (same API as the S108
+                // R-NEW-318 api_cls law — dispatch sees the declared class,
+                // clone must preserve the heap runtime class).
+                std::string runtime_cls = class_name;
+                if (const HeapObject* hobj = heap_.get(recv)) {
+                    if (!hobj->class_descriptor.empty())
+                        runtime_cls = hobj->class_descriptor;
+                }
+                uint32_t nid = heap_.allocate(runtime_cls, 0, 0);
+                int32_t sz = spa_size(recv);
+                heap_.set_object_field(nid, "__spa_size__",
+                                       DalvikValue::make_int(sz));
+                for (int32_t i = 0; i < sz; ++i) {
+                    heap_.set_object_field(
+                        nid, "__spa_key" + std::to_string(i) + "__",
+                        DalvikValue::make_int(spa_key_at(recv, i)));
+                    heap_.set_object_field(
+                        nid, "__spa_val" + std::to_string(i) + "__",
+                        spa_val_at(recv, i));
+                }
+                result = DalvikValue::make_object(nid, runtime_cls);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // S109 ROOT-029 — BitmapDrawable.getPaint() (AOSP law).
+    // forkgram r81 (RLottieDrawable) extends BitmapDrawable and its <init>
+    // does `getPaint().setFlags(Paint.ANTI_ALIAS_FLAG)` — getPaint had NO
+    // handler → NULL → NPE → Theme.Y0 init chain died. AOSP law:
+    // BitmapDrawable owns exactly ONE Paint (mPaint) created at
+    // construction; getPaint() returns that SAME object every call
+    // (identity contract — mutations through it must persist).
+    if (method == "getPaint") {
+        // R-NEW-318 api_cls law: bridge identity is the RECEIVER'S RUNTIME
+        // class — match by IS-A hierarchy (declared class, any app subclass
+        // via class_to_superclass_, or framework drawable-family names —
+        // framework classes have no DEX ancestry entry, so the name-family
+        // check covers ShapeDrawable/GradientDrawable/ColorDrawable/...).
+        bool is_drawable_family =
+            class_name.find("Drawable;") != std::string::npos ||
+            is_subclass_of(class_name,
+                           "Landroid/graphics/drawable/BitmapDrawable;") ||
+            is_subclass_of(class_name,
+                           "Landroid/graphics/drawable/Drawable;");
+        if (is_drawable_family) {
+            uint32_t recv =
+                (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                    ? args[0].object_id : 0;
+            if (recv != 0) {
+                auto existing = heap_.get_object_field(recv, "__bd_paint__");
+                if (existing.has_value() &&
+                    existing->type == DalvikType::OBJECT_REF &&
+                    existing->object_id != 0) {
+                    result = *existing;
+                } else {
+                    uint32_t pid =
+                        heap_.allocate("Landroid/graphics/Paint;", 0, 0);
+                    DalvikValue pv =
+                        DalvikValue::make_object(pid,
+                                                 "Landroid/graphics/Paint;");
+                    heap_.set_object_field(recv, "__bd_paint__", pv);
+                    result = pv;
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+    }
+    if (method == "mutate") {
+        // S109 ROOT-034 — Drawable.mutate() (AOSP law): returns THIS —
+        // "a drawable that you can modify without affecting other
+        // clients". The engine's drawables are already per-object
+        // instances, so identity is exact. Previously unhandled → NULL →
+        // forkgram t1.f (Premium star drawable) stayed null →
+        // setColorFilter NPE → Theme.applyTheme died.
+        bool is_drawable_mut =
+            class_name.find("Drawable;") != std::string::npos ||
+            is_subclass_of(class_name,
+                           "Landroid/graphics/drawable/Drawable;");
+        if (is_drawable_mut && !args.empty() &&
+            args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0) {
+            result = args[0];
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // S109 ROOT-039 — Drawable.getBounds/setBounds + Rect.width/height
+    // (AOSP law). Drawable.getBounds() NEVER answers null — it returns the
+    // internal mutable Rect mBounds (identity-stable); setBounds(l,t,r,b)
+    // writes those same fields. forkgram pz0.draw does
+    // `getBounds().width()` — the previous null answer NPE'd. Rect.width()
+    // = right-left, height() = bottom-top (android.graphics.Rect law).
+    if ((method == "getBounds" || method == "setBounds") &&
+        (class_name.find("Drawable;") != std::string::npos ||
+         is_subclass_of(class_name,
+                        "Landroid/graphics/drawable/Drawable;"))) {
+        uint32_t recv = (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                            ? args[0].object_id : 0;
+        if (recv != 0) {
+            auto ensure_bounds = [&]() -> uint32_t {
+                auto bv = heap_.get_object_field(recv, "__dr_bounds__");
+                if (bv.has_value() &&
+                    bv->type == DalvikType::OBJECT_REF &&
+                    bv->object_id != 0)
+                    return bv->object_id;
+                uint32_t rid = heap_.allocate("Landroid/graphics/Rect;", 0, 0);
+                heap_.set_object_field(rid, "left", DalvikValue::make_int(0));
+                heap_.set_object_field(rid, "top", DalvikValue::make_int(0));
+                heap_.set_object_field(rid, "right", DalvikValue::make_int(0));
+                heap_.set_object_field(rid, "bottom", DalvikValue::make_int(0));
+                heap_.set_object_field(
+                    recv, "__dr_bounds__",
+                    DalvikValue::make_object(rid, "Landroid/graphics/Rect;"));
+                return rid;
+            };
+            uint32_t rid = ensure_bounds();
+            if (method == "getBounds") {
+                result = DalvikValue::make_object(rid,
+                                                  "Landroid/graphics/Rect;");
+            } else {
+                // setBounds(l, t, r, b) — args[1..4] ints
+                if (args.size() >= 5) {
+                    heap_.set_object_field(rid, "left", args[1]);
+                    heap_.set_object_field(rid, "top", args[2]);
+                    heap_.set_object_field(rid, "right", args[3]);
+                    heap_.set_object_field(rid, "bottom", args[4]);
+                }
+                result = DalvikValue::make_void();
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    if ((method == "width" || method == "height") &&
+        (class_name == "Landroid/graphics/Rect;" ||
+         class_name == "Landroid/graphics/RectF;")) {
+        uint32_t recv = (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                            ? args[0].object_id : 0;
+        if (recv != 0) {
+            auto rf = [&](const char* f) -> int32_t {
+                auto v = heap_.get_object_field(recv, f);
+                return (v.has_value() && v->type == DalvikType::INT32)
+                           ? v->int_val : 0;
+            };
+            int32_t dim = (method == "width") ? (rf("right") - rf("left"))
+                                              : (rf("bottom") - rf("top"));
+            result = DalvikValue::make_int(dim);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // S109 ROOT-033b — Drawable intrinsic/minimum dims (AOSP law).
+    // AOSP Drawable: getIntrinsicWidth/Height answer the intrinsic dims
+    // (-1 when none); getMinimumWidth/Height answer the minimum (default
+    // = intrinsic, 0 when none). Callers (forkgram t1.c Premium star
+    // wrappers, every app's wrap_content measurement) previously got the
+    // generic 0 → createBitmap(0,0) → null → NPE. R-NEW-318 api_cls law:
+    // match by IS-A (declared Drawable or any subclass).
+    if (method == "getIntrinsicWidth" || method == "getIntrinsicHeight" ||
+        method == "getMinimumWidth" || method == "getMinimumHeight") {
+        bool is_drawable_type =
+            is_subclass_of(class_name,
+                           "Landroid/graphics/drawable/Drawable;") ||
+            class_name == "Landroid/graphics/drawable/Drawable;";
+        if (is_drawable_type && !args.empty() &&
+            args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0) {
+            bool want_w = (method == "getIntrinsicWidth" ||
+                           method == "getMinimumWidth");
+            auto v = heap_.get_object_field(
+                args[0].object_id, want_w ? "__dr_width__" : "__dr_height__");
+            int32_t dim = (v.has_value() && v->type == DalvikType::INT32)
+                              ? v->int_val : -1;
+            if (dim <= 0) {
+                // AOSP minimum* falls back to intrinsic, else 0
+                dim = (method[0] == 'm') ? 0 : -1;
+            }
+            result = DalvikValue::make_int(dim);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // S109 ROOT-037 — Bitmap.createBitmap(w, h, cfg) AOSP SIGNATURE LAW.
+    // AOSP Bitmap.java: createBitmap(width, height, config) THROWS
+    // IllegalArgumentException("width and height must be > 0") for
+    // non-positive dims — it NEVER answers null. The engine previously
+    // answered null (the shadow's w<=0 branch), so callers stored the
+    // null and NPE'd at a DIFFERENT site that is NOT inside their try
+    // block (forkgram d6.N0 pc=931: getWidth on the null result escaped
+    // the app boundary and killed the whole Theme resource pass, leaving
+    // the theme Paint statics null). LAW: throw the AOSP exception HERE
+    // (BEFORE the shadow) so the app's OWN try/catch around the bitmap
+    // block handles it exactly as on a real device and execution proceeds.
+    if (method == "createBitmap" && class_name == "Landroid/graphics/Bitmap;" &&
+        args.size() >= 3 && args[0].type == DalvikType::INT32 &&
+        args[1].type == DalvikType::INT32 &&
+        (args[0].int_val <= 0 || args[1].int_val <= 0)) {
+        std::string msg = "width and height must be > 0 (w=" +
+                          std::to_string(args[0].int_val) + " h=" +
+                          std::to_string(args[1].int_val) + ")";
+        std::cerr << "[S109-CB-IAE] createBitmap " << msg
+                  << " → IllegalArgumentException (AOSP law; caller's"
+                     " try/catch takes over)"
+                  << std::endl;
+        throw_deferred("Ljava/lang/IllegalArgumentException;", msg,
+                       "S109-CB-IAE");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_null();
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // S109 ROOT-038 — javax.xml SAX FAMILY + Resources.openRawResource.
+    // forkgram's theme pattern (R.raw.default_pattern, an SVG) flows:
+    //   Resources.openRawResource(resId) → InputStream
+    //   SAXParserFactory.newInstance().newSAXParser().getXMLReader()
+    //   XMLReader.setContentHandler(SvgHelper$SVGHandler)
+    //   XMLReader.parse(new InputSource(stream))
+    //   → handler.startElement/endElement (REAL DEX) → Path/Bitmap
+    // Every layer previously answered null (factory/stream/reader) so the
+    // pattern never decoded, N0's pz0 pattern stayed 0-dim, the whole
+    // theme-resource pass died and the theme Paint statics stayed null.
+    // LAW (AOSP javax.xml.parsers + org.xml.sax): newInstance() NEVER
+    // answers null (FactoryConfigurationError on failure); parse() feeds
+    // the ContentHandler exactly the document's elements. The engine
+    // implements a real minimal XML tokenizer (elements + attributes;
+    // prolog/doctype/comments skipped) and dispatches startElement/
+    // endElement back into the app's REAL DEX handler.
+    {
+        // shared stream registry: oid → resource bytes
+        static std::map<uint32_t, std::string> s109_stream_bytes;
+        if ((class_name.find("Resources") != std::string::npos) &&
+            method == "openRawResource" &&
+            args.size() >= 2 && args[1].type == DalvikType::INT32) {
+            uint32_t resid = (uint32_t)args[1].int_val;
+            const auto& resolver =
+                framework::BitmapShadow::drawable_bytes_resolver();
+            std::vector<uint8_t> bytes;
+            std::string path;
+            uint16_t density = 0;
+            if (resolver && resolver(resid, bytes, path, density) &&
+                !bytes.empty()) {
+                uint32_t sid =
+                    heap_.allocate("Ljava/io/ByteArrayInputStream;", 0, 0);
+                s109_stream_bytes[sid] =
+                    std::string(bytes.begin(), bytes.end());
+                DalvikValue sv;
+                sv.type = DalvikType::INT32;
+                sv.int_val = (int32_t)sid;
+                heap_.set_object_field(sid, "__is_len__",
+                                       DalvikValue::make_int(
+                                           (int32_t)bytes.size()));
+                std::cerr << "[S109-SAX] openRawResource resid=0x" << std::hex
+                          << resid << std::dec << " -> " << path << " ("
+                          << bytes.size() << " bytes) stream obj#" << sid
+                          << std::endl;
+                result = DalvikValue::make_object(
+                    sid, "Ljava/io/ByteArrayInputStream;");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            result = DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (class_name == "Ljavax/xml/parsers/SAXParserFactory;") {
+            if (method == "newInstance" || method == "newDefaultInstance") {
+                result = get_or_create_singleton(
+                    "Ljavax/xml/parsers/SAXParserFactory;");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "newSAXParser") {
+                uint32_t pid = heap_.allocate(
+                    "Ljavax/xml/parsers/SAXParser;", 0, 0);
+                result = DalvikValue::make_object(
+                    pid, "Ljavax/xml/parsers/SAXParser;");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            // namespace/prefix features: lawful no-op booleans
+            if (method == "setNamespaceAware" || method == "setValidating" ||
+                method == "setXIncludeAware") {
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+        if (class_name == "Ljavax/xml/parsers/SAXParser;") {
+            if (method == "getXMLReader") {
+                uint32_t rid = heap_.allocate("Lorg/xml/sax/XMLReader;", 0, 0);
+                result = DalvikValue::make_object(rid,
+                                                  "Lorg/xml/sax/XMLReader;");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "parse" || method == "isNamespaceAware") {
+                if (method == "isNamespaceAware") {
+                    result = DalvikValue::make_bool(false);
+                } else {
+                    result = DalvikValue::make_void();
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+        if (class_name == "Lorg/xml/sax/InputSource;") {
+            if (method == "<init>" && args.size() >= 2 &&
+                args[0].type == DalvikType::OBJECT_REF &&
+                args[1].type == DalvikType::OBJECT_REF) {
+                // InputSource(InputStream): args[0] = the new InputSource
+                // receiver, args[1] = the stream — keep the reference for
+                // parse() as the heap field __is_stream__.
+                heap_.set_object_field(args[0].object_id, "__is_stream__",
+                                       args[1]);
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+        if (class_name == "Lorg/xml/sax/XMLReader;") {
+            if (method == "setContentHandler" || method == "setEntityResolver" ||
+                method == "setErrorHandler" || method == "setDTDHandler" ||
+                method == "setFeature") {
+                if (method == "setContentHandler" && args.size() >= 2 &&
+                    args[0].type == DalvikType::OBJECT_REF) {
+                    heap_.set_object_field(args[0].object_id,
+                                           "__xr_handler__", args[1]);
+                }
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "parse" && args.size() >= 2 &&
+                args[0].type == DalvikType::OBJECT_REF) {
+                uint32_t reader_oid = args[0].object_id;
+                uint32_t src_oid = args[1].object_id;
+                // stream → bytes
+                uint32_t stream_oid = 0;
+                {
+                    auto sv = heap_.get_object_field(src_oid, "__is_stream__");
+                    if (sv.has_value() && sv->type == DalvikType::OBJECT_REF)
+                        stream_oid = sv->object_id;
+                }
+                auto it = s109_stream_bytes.find(stream_oid);
+                std::string xml =
+                    (it != s109_stream_bytes.end()) ? it->second : "";
+                // handler → (class, oid)
+                uint32_t handler_oid = 0;
+                std::string handler_cls;
+                {
+                    auto hv = heap_.get_object_field(reader_oid,
+                                                     "__xr_handler__");
+                    if (hv.has_value() &&
+                        hv->type == DalvikType::OBJECT_REF) {
+                        handler_oid = hv->object_id;
+                        handler_cls = hv->class_desc.empty()
+                                          ? "Ljava/lang/Object;"
+                                          : hv->class_desc;
+                    }
+                }
+                if (handler_oid == 0 || xml.empty()) {
+                    std::cerr << "[S109-SAX] parse: no handler ("
+                              << (handler_oid ? "yes" : "no") << ") or bytes ("
+                              << xml.size() << ")" << std::endl;
+                    result = DalvikValue::make_void();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                // ── minimal real XML tokenizer → app's DEX handler ──
+                size_t i = 0;
+                const size_t n = xml.size();
+                auto skip_ws = [&]() {
+                    while (i < n && (unsigned char)xml[i] <= ' ') ++i;
+                };
+                int elements = 0;
+                auto dispatch = [&](const char* kind,
+                                    const std::string& name,
+                                    uint32_t attrs_oid) {
+                    std::vector<DalvikValue> hargs;
+                    hargs.push_back(DalvikValue::make_object(
+                        handler_oid, handler_cls));
+                    hargs.push_back(DalvikValue::make_string("", 1));
+                    hargs.push_back(DalvikValue::make_string(name, 1));
+                    hargs.push_back(DalvikValue::make_string(name, 1));
+                    if (attrs_oid != 0)
+                        hargs.push_back(DalvikValue::make_object(
+                            attrs_oid, "Lorg/xml/sax/Attributes;"));
+                    std::string desc = std::string(kind) == "start"
+                        ? "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/"
+                          "String;Lorg/xml/sax/Attributes;)V"
+                        : "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/"
+                          "String;)V";
+                    DalvikValue ret;
+                    DalvikExecutionResult res;
+                    try_recursive_invoke(handler_cls, kind, hargs, ret, res,
+                                         desc);
+                };
+                auto build_attrs =
+                    [&](const std::vector<std::pair<std::string, std::string>>&
+                            as) -> uint32_t {
+                    uint32_t aid =
+                        heap_.allocate("Lorg/xml/sax/Attributes;", 0, 0);
+                    heap_.set_object_field(
+                        aid, "__attr_count__",
+                        DalvikValue::make_int((int32_t)as.size()));
+                    for (size_t ai = 0; ai < as.size(); ++ai) {
+                        heap_.set_object_field(
+                            aid, "__attr_name" + std::to_string(ai) + "__",
+                            DalvikValue::make_string(as[ai].first, 1));
+                        heap_.set_object_field(
+                            aid, "__attr_val" + std::to_string(ai) + "__",
+                            DalvikValue::make_string(as[ai].second, 1));
+                    }
+                    return aid;
+                };
+                while (i < n) {
+                    skip_ws();
+                    if (i >= n) break;
+                    if (xml[i] != '<') {
+                        // text node: skip to next '<'
+                        while (i < n && xml[i] != '<') ++i;
+                        continue;
+                    }
+                    // markup
+                    ++i;
+                    if (i < n && xml[i] == '?') {          // <?...?> prolog
+                        while (i + 1 < n && !(xml[i] == '?' && xml[i + 1] == '>')) ++i;
+                        i = (i + 2 <= n) ? i + 2 : n;
+                        continue;
+                    }
+                    if (i + 2 < n && xml[i] == '!' && xml[i + 1] == '-' &&
+                        xml[i + 2] == '-') {               // <!--...-->
+                        i += 3;
+                        while (i + 2 < n && !(xml[i] == '-' && xml[i + 1] == '-' &&
+                                              xml[i + 2] == '>')) ++i;
+                        i = (i + 3 <= n) ? i + 3 : n;
+                        continue;
+                    }
+                    if (i < n && xml[i] == '!') {          // <!DOCTYPE...>
+                        while (i < n && xml[i] != '>') ++i;
+                        if (i < n) ++i;
+                        continue;
+                    }
+                    if (i < n && xml[i] == '/') {          // </tag>
+                        ++i;
+                        std::string name;
+                        while (i < n && xml[i] != '>') name += xml[i++];
+                        if (i < n) ++i;
+                        // trim
+                        while (!name.empty() &&
+                               (unsigned char)name.back() <= ' ')
+                            name.pop_back();
+                        if (!name.empty()) {
+                            dispatch("endElement", name, 0);
+                        }
+                        continue;
+                    }
+                    // <tag attr="v" ...> or <tag/>
+                    std::string name;
+                    while (i < n && xml[i] != '>' && xml[i] != '/' &&
+                           (unsigned char)xml[i] > ' ')
+                        name += xml[i++];
+                    std::vector<std::pair<std::string, std::string>> as;
+                    bool self_closing = false;
+                    while (i < n && xml[i] != '>') {
+                        skip_ws();
+                        if (i < n && (xml[i] == '/' || xml[i] == '>')) break;
+                        std::string an;
+                        while (i < n && xml[i] != '=' && xml[i] != '>' &&
+                               xml[i] != '/' && (unsigned char)xml[i] > ' ')
+                            an += xml[i++];
+                        skip_ws();
+                        std::string av;
+                        if (i < n && xml[i] == '=') {
+                            ++i;
+                            skip_ws();
+                            if (i < n && (xml[i] == '"' || xml[i] == '\'')) {
+                                char q = xml[i++];
+                                while (i < n && xml[i] != q) {
+                                    if (xml[i] == '&' && i + 1 < n) {
+                                        // minimal entity decode
+                                        if (xml.compare(i, 5, "&amp;") == 0) { av += '&'; i += 5; continue; }
+                                        if (xml.compare(i, 4, "&lt;") == 0) { av += '<'; i += 4; continue; }
+                                        if (xml.compare(i, 4, "&gt;") == 0) { av += '>'; i += 4; continue; }
+                                        if (xml.compare(i, 6, "&quot;") == 0) { av += '"'; i += 6; continue; }
+                                        if (xml.compare(i, 6, "&apos;") == 0) { av += '\''; i += 6; continue; }
+                                    }
+                                    av += xml[i++];
+                                }
+                                if (i < n) ++i;  // closing quote
+                            } else {
+                                while (i < n && xml[i] != '>' &&
+                                       (unsigned char)xml[i] > ' ')
+                                    av += xml[i++];
+                            }
+                        }
+                        if (!an.empty()) as.emplace_back(an, av);
+                    }
+                    if (i < n && xml[i] == '/') {
+                        self_closing = true;
+                        ++i;
+                    }
+                    if (i < n && xml[i] == '>') ++i;
+                    if (!name.empty()) {
+                        dispatch("startElement", name, build_attrs(as));
+                        ++elements;
+                        if (self_closing) dispatch("endElement", name, 0);
+                    }
+                }
+                std::cerr << "[S109-SAX] parse OK: " << elements
+                          << " elements -> " << handler_cls << " ("
+                          << xml.size() << " bytes)" << std::endl;
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+        if (class_name == "Lorg/xml/sax/Attributes;") {
+            // heap-backed attribute list (built by parse())
+            uint32_t aid = (!args.empty() &&
+                            args[0].type == DalvikType::OBJECT_REF)
+                               ? args[0].object_id
+                               : 0;
+            auto count = [&]() -> int32_t {
+                auto v = heap_.get_object_field(aid, "__attr_count__");
+                return (v.has_value() && v->type == DalvikType::INT32)
+                           ? v->int_val
+                           : 0;
+            };
+            if (aid != 0 && method == "getLength") {
+                result = DalvikValue::make_int(count());
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (aid != 0 && method == "getValue" && args.size() >= 2) {
+                int32_t idx = -1;
+                bool by_name = false;
+                if (args[1].type == DalvikType::STRING_REF) {
+                    by_name = true;
+                } else if (args[1].type == DalvikType::INT32) {
+                    idx = args[1].int_val;
+                }
+                int32_t cnt = count();
+                if (by_name) {
+                    const std::string& want = args[1].string_val;
+                    for (int32_t k = 0; k < cnt && k < 64; ++k) {
+                        auto nv = heap_.get_object_field(
+                            aid, "__attr_name" + std::to_string(k) + "__");
+                        if (nv.has_value() &&
+                            nv->type == DalvikType::STRING_REF &&
+                            nv->string_val == want) {
+                            auto vv = heap_.get_object_field(
+                                aid, "__attr_val" + std::to_string(k) + "__");
+                            if (vv.has_value() &&
+                                vv->type == DalvikType::STRING_REF) {
+                                result = DalvikValue::make_string(
+                                    vv->string_val, 1);
+                            } else {
+                                result = DalvikValue::make_null();
+                            }
+                            status = ApiCallTrace::Status::IMPLEMENTED;
+                            return true;
+                        }
+                    }
+                    result = DalvikValue::make_null();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                if (idx >= 0 && idx < cnt && idx < 64) {
+                    auto vv = heap_.get_object_field(
+                        aid, "__attr_val" + std::to_string(idx) + "__");
+                    if (vv.has_value() &&
+                        vv->type == DalvikType::STRING_REF) {
+                        result = DalvikValue::make_string(vv->string_val, 1);
+                    } else {
+                        result = DalvikValue::make_null();
+                    }
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                result = DalvikValue::make_null();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            // S109: getQName/getLocalName(index) → the attribute NAME at
+            // the index (SVGHelper.getStringAttr iterates getQName(i)
+            // then name.equals(qname) — missing → null receiver NPE ×1490).
+            if (aid != 0 &&
+                (method == "getQName" || method == "getLocalName" ||
+                 method == "getType" || method == "getURI") &&
+                args.size() >= 2 && args[1].type == DalvikType::INT32) {
+                int32_t idx = args[1].int_val;
+                int32_t cnt = count();
+                if (idx >= 0 && idx < cnt && idx < 64) {
+                    auto nv = heap_.get_object_field(
+                        aid, "__attr_name" + std::to_string(idx) + "__");
+                    if (method == "getType") {
+                        result = DalvikValue::make_string("CDATA", 1);
+                    } else if (method == "getURI") {
+                        result = DalvikValue::make_string("", 1);
+                    } else if (nv.has_value() &&
+                               nv->type == DalvikType::STRING_REF) {
+                        result = DalvikValue::make_string(nv->string_val, 1);
+                    } else {
+                        result = DalvikValue::make_null();
+                    }
+                } else {
+                    result = DalvikValue::make_null();
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // S109 ROOT-043 — FRAMEWORK TextView.onDraw TEXT LAW (AOSP).
+    // Every Android TEXT view paints its text inside onDraw: TextView/
+    // Button/EditText draw through their TextPaint; Telegram's buttons
+    // (he1$d extends TextView, ov0$d, t81, …) call
+    // `invoke-super TextView.onDraw(canvas)` FIRST — the engine's super
+    // was a silent void, so no drawText op was ever recorded (ops=0) and
+    // the button labels never reached pixels. LAW: the framework super
+    // records the REAL drawText op on the caller's canvas through the
+    // CanvasShadow (paint color/size from the node's captured state,
+    // gravity-aware placement inside the view rect).
+    if (method == "onDraw" &&
+        (class_name == "Landroid/widget/TextView;" ||
+         class_name == "Landroid/widget/Button;" ||
+         class_name == "Landroid/widget/EditText;") &&
+        args.size() >= 2 && args[0].type == DalvikType::OBJECT_REF &&
+        args[1].type == DalvikType::OBJECT_REF &&
+        shadow_registry_ != nullptr) {
+        auto* vs = shadow_registry_->find_as<framework::ViewShadow>();
+        uint32_t view_oid = args[0].object_id;
+        uint32_t canvas_oid = args[1].object_id;
+        if (vs && view_oid != 0 && canvas_oid != 0) {
+            auto* n = vs->find_node(view_oid);
+            if (n && !n->text.empty()) {
+                // one Paint per view (AOSP mTextPaint identity)
+                uint32_t paint_oid = 0;
+                {
+                    auto pv = heap_.get_object_field(view_oid, "__tv_paint__");
+                    if (pv.has_value() &&
+                        pv->type == DalvikType::OBJECT_REF &&
+                        pv->object_id != 0) {
+                        paint_oid = pv->object_id;
+                    } else {
+                        paint_oid =
+                            heap_.allocate("Landroid/graphics/Paint;", 0, 0);
+                        heap_.set_object_field(
+                            view_oid, "__tv_paint__",
+                            DalvikValue::make_object(
+                                paint_oid, "Landroid/graphics/Paint;"));
+                    }
+                }
+                float tsize = n->text_size_px > 0 ? n->text_size_px : 42.f;
+                uint32_t tcol = n->text_color ? n->text_color : 0xFF1A1A1A;
+                // record paint state + the drawText op via the shadow layer
+                std::vector<DalvikValue> cargs;
+                DalvikValue pv2 = DalvikValue::make_object(
+                    paint_oid, "Landroid/graphics/Paint;");
+                cargs = {pv2, DalvikValue::make_int((int32_t)tcol)};
+                try_shadow_dispatch("Landroid/graphics/Paint;", "setColor",
+                                    cargs, result, status);
+                cargs = {pv2, DalvikValue::make_float(tsize)};
+                try_shadow_dispatch("Landroid/graphics/Paint;", "setTextSize",
+                                    cargs, result, status);
+                // placement: padding + gravity (center H default for
+                // buttons), baseline ~ padding + ascent (0.78 * size)
+                int32_t vw = n->measured_width > 0 ? n->measured_width
+                                                   : n->width;
+                int32_t vh = n->measured_height > 0 ? n->measured_height
+                                                    : n->height;
+                float approx_w = (float)(n->text.size()) * tsize * 0.55f;
+                float x = (float)n->padding_left;
+                float y = (float)n->padding_top + tsize * 0.78f;
+                uint32_t g = n->text_gravity
+                            ? (uint32_t)n->text_gravity
+                            : (n->lp_gravity > 0 ? (uint32_t)n->lp_gravity
+                                                 : 1u);
+                if (g & 1u) x += ((float)vw - approx_w) / 2.f;      // CENTER_H
+                else if (g & 4u) x += (float)vw - approx_w;         // RIGHT
+                if ((g & 0x30u) == 0x10u)                          // CENTER_V
+                    y = ((float)vh + tsize * 0.62f) / 2.f;
+                cargs = {DalvikValue::make_object(canvas_oid,
+                                                  "Landroid/graphics/Canvas;"),
+                         DalvikValue::make_string(n->text, 1),
+                         DalvikValue::make_float(x),
+                         DalvikValue::make_float(y), pv2};
+                try_shadow_dispatch("Landroid/graphics/Canvas;", "drawText",
+                                    cargs, result, status);
+                std::cerr << "[S109-TVTEXT] " << n->class_desc
+                          << " text=\"" << n->text.substr(0, 40)
+                          << "\" size=" << tsize << " at (" << (int)x << ","
+                          << (int)y << ") rect " << vw << "x" << vh
+                          << std::endl;
+            }
+        }
+        // AOSP TextView.onDraw is void; the super call succeeded.
+        result = DalvikValue::make_void();
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // S109 ROOT-042 — FRAMEWORK ViewGroup.onMeasure CHILD-DISPATCH LAW.
+    // AOSP FrameLayout/LinearLayout.onMeasure: measure EVERY child with
+    // getChildMeasureSpec(parentSize, padding, childLayoutParams), then
+    // resolve own size (EXACTLY → spec). The engine's framework super was
+    // a silent void, so containers measured themselves 0x0 and NO child
+    // ever received measure() — the login tree existed but nothing had a
+    // size to draw. This law mirrors the R347 measure wrapper per child
+    // (DEX onMeasure when the child overrides one, else the default
+    // View.onMeasure law) and resolves the container EXACTLY-spec.
+    if (method == "onMeasure" &&
+        (class_name == "Landroid/widget/FrameLayout;" ||
+         class_name == "Landroid/view/ViewGroup;" ||
+         class_name == "Landroid/widget/LinearLayout;" ||
+         class_name == "Landroid/widget/ScrollView;" ||
+         class_name == "Landroid/widget/RelativeLayout;" ||
+         class_name == "Landroid/widget/DrawerLayout;") &&
+        args.size() >= 3 && args[0].type == DalvikType::OBJECT_REF &&
+        args[1].type == DalvikType::INT32 && args[2].type == DalvikType::INT32 &&
+        shadow_registry_ != nullptr) {
+        auto* vs = shadow_registry_->find_as<framework::ViewShadow>();
+        uint32_t recv = args[0].object_id;
+        if (vs && recv != 0) {
+            auto* n = vs->find_node(recv);
+            if (n) {
+                int32_t wspec = args[1].int_val;
+                int32_t hspec = args[2].int_val;
+                auto spec_size = [](int32_t s) -> int32_t {
+                    return s & 0x3FFFFFFF;
+                };
+                int32_t pw = spec_size(wspec);
+                int32_t ph = spec_size(hspec);
+                // AOSP getChildMeasureSpec (no padding modeled): MATCH →
+                // EXACTLY(parent), WRAP → AT_MOST(parent), exact → EXACTLY.
+                auto child_spec = [&](int32_t parent_size,
+                                      int32_t child_dim) -> int32_t {
+                    if (child_dim == -1)
+                        return 0x40000000 | (parent_size & 0x3FFFFFFF);
+                    if (child_dim == -2)
+                        return 0x80000000 | (parent_size & 0x3FFFFFFF);
+                    return 0x40000000 | (child_dim & 0x3FFFFFFF);
+                };
+                int measured_children = 0;
+                // S109 ROOT-045b: recursive descent (same law as the R347
+                // wrapper's ROOT-045) — grandchildren measured with the
+                // child's resolved sizes so deep app trees (ScrollView →
+                // intro slide → ViewPager → button) gain real geometry.
+                std::function<void(framework::ViewShadow::ViewNode*, int32_t,
+                                   int32_t, int)>
+                    s109vg_measure_children;
+                s109vg_measure_children =
+                    [&](framework::ViewShadow::ViewNode* pn, int32_t pw2,
+                        int32_t ph2, int depth) {
+                        if (depth > 24 || !pn) return;
+                        for (uint32_t child : pn->children) {
+                            auto* cn = vs->find_node(child);
+                            if (!cn) continue;
+                            if (cn->visibility == 4 || cn->visibility == 8)
+                                continue;
+                            int32_t cw2 = child_spec(pw2, cn->width);
+                            int32_t ch2 = child_spec(ph2, cn->height);
+                            cn->dex_measure_valid = false;
+                            DalvikValue cret2 = DalvikValue::make_void();
+                            DalvikExecutionResult cres2;
+                            DalvikValue ca2[3] = {
+                                DalvikValue::make_object(child,
+                                                          cn->class_desc),
+                                DalvikValue::make_int(cw2),
+                                DalvikValue::make_int(ch2)};
+                            try_recursive_invoke(
+                                cn->class_desc, "onMeasure",
+                                std::vector<DalvikValue>(ca2, ca2 + 3),
+                                cret2, cres2, "(II)V");
+                            if (!cn->dex_measure_valid) {
+                                int32_t mmw = (int32_t)(((uint32_t)cw2) >> 30);
+                                int32_t mmh = (int32_t)(((uint32_t)ch2) >> 30);
+                                cn->dex_measured_w =
+                                    (mmw == 1 || mmw == 2)
+                                        ? (cw2 & 0x3FFFFFFF) : 0;
+                                cn->dex_measured_h =
+                                    (mmh == 1 || mmh == 2)
+                                        ? (ch2 & 0x3FFFFFFF) : 0;
+                                cn->dex_measure_valid = true;
+                                cn->measured_width = cn->dex_measured_w;
+                                cn->measured_height = cn->dex_measured_h;
+                            }
+                            s109vg_measure_children(
+                                cn, cn->measured_width, cn->measured_height,
+                                depth + 1);
+                        }
+                    };
+                for (uint32_t child : n->children) {
+                    auto* cn = vs->find_node(child);
+                    if (!cn) continue;
+                    int32_t cs_w = child_spec(pw, cn->width);
+                    int32_t cs_h = child_spec(ph, cn->height);
+                    // dispatch child.measure → the R347 law (DEX onMeasure
+                    // chain + default-size fallback) by invoking the child's
+                    // onMeasure directly, same as the measure() wrapper.
+                    cn->dex_measure_valid = false;
+                    DalvikValue cret = DalvikValue::make_void();
+                    DalvikExecutionResult cres;
+                    DalvikValue cargs[3] = {
+                        DalvikValue::make_object(child, cn->class_desc),
+                        DalvikValue::make_int(cs_w),
+                        DalvikValue::make_int(cs_h)};
+                    bool cok = try_recursive_invoke(
+                        cn->class_desc, "onMeasure",
+                        std::vector<DalvikValue>(cargs, cargs + 3), cret,
+                        cres, "(II)V");
+                    if (!cn->dex_measure_valid) {
+                        // default View.onMeasure law
+                        auto mode = [](int32_t s) -> int32_t {
+                            return (int32_t)(((uint32_t)s) >> 30);
+                        };
+                        auto dsize = [&](int32_t s) -> int32_t {
+                            int32_t mm = mode(s);
+                            return (mm == 1 || mm == 2) ? spec_size(s) : 0;
+                        };
+                        cn->dex_measured_w = dsize(cs_w);
+                        cn->dex_measured_h = dsize(cs_h);
+                        cn->dex_measure_valid = true;
+                        cn->measured_width = cn->dex_measured_w;
+                        cn->measured_height = cn->dex_measured_h;
+                    }
+                    // recurse into grandchildren with the child's sizes
+                    s109vg_measure_children(cn, cn->measured_width,
+                                            cn->measured_height, 1);
+                    (void)cok;
+                    ++measured_children;
+                }
+                // container self-size: EXACTLY → spec; AT_MOST → max child
+                auto* self = vs->find_node(recv);
+                if (self && !self->dex_measure_valid) {
+                    auto mode = [](int32_t s) -> int32_t {
+                        return (int32_t)(((uint32_t)s) >> 30);
+                    };
+                    int32_t mw = pw, mh = ph;
+                    if (mode(wspec) == 2 || mode(hspec) == 2) {
+                        for (uint32_t child : self->children) {
+                            auto* cn = vs->find_node(child);
+                            if (!cn) continue;
+                            if (mode(wspec) == 2)
+                                mw = std::max(mw, cn->measured_width);
+                            if (mode(hspec) == 2)
+                                mh = std::max(mh, cn->measured_height);
+                        }
+                    }
+                    self->dex_measured_w = mw;
+                    self->dex_measured_h = mh;
+                    self->dex_measure_valid = true;
+                    self->measured_width = mw;
+                    self->measured_height = mh;
+                }
+                std::cerr << "[S109-VG-MEASURE] " << class_name << " obj#"
+                          << recv << " spec=" << pw << "x" << ph
+                          << " children_measured=" << measured_children
+                          << " -> " << n->measured_width << "x"
+                          << n->measured_height << std::endl;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_void();
+                return true;
+            }
+        }
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // S109 ROOT-040 — AnimationUtils.loadAnimation + View Animation family.
+    // AOSP: loadAnimation(Context, resid) NEVER answers null for a valid
+    // resource (Resources$NotFoundException otherwise); the returned
+    // Animation carries duration/interpolator/repeat state. forkgram's
+    // intro slides (nr1$z) immediately call setInterpolator on the result —
+    // the previous null answer NPE'd and killed the intro fragment's view.
+    if (class_name == "Landroid/view/animation/AnimationUtils;" &&
+        method == "loadAnimation") {
+        uint32_t aid = heap_.allocate("Landroid/view/animation/Animation;", 0, 0);
+        heap_.set_object_field(aid, "__anim_duration__",
+                               DalvikValue::make_int(300));
+        result = DalvikValue::make_object(aid,
+                                          "Landroid/view/animation/Animation;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (class_name == "Landroid/view/animation/Animation;" ||
+        (class_name.find("Interpolator;") != std::string::npos &&
+         method != "<init>")) {
+        // View-animation state family (AOSP Animation.java): the setters
+        // are void/fluent no-ops over per-object fields; getters answer
+        // the stored defaults; start/cancel/reset are void.
+        if (method == "setInterpolator" || method == "setDuration" ||
+            method == "setRepeatCount" || method == "setRepeatMode" ||
+            method == "setFillAfter" || method == "setFillBefore" ||
+            method == "setStartOffset" || method == "setZAdjustment" ||
+            method == "setBackgroundColor" || method == "setDetachWallpaper"||
+            method == "start" || method == "cancel" || method == "reset" ||
+            method == "setAnimationListener" || method == "initialize" ||
+            method == "restrictDuration" || method == "scaleCurrentDuration" ||
+            method == "setRepeatable" || method == "setAllowRunAsynchronously") {
             result = DalvikValue::make_void();
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
-        if (method == "get") {
-            if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
-                args[0].object_id != 0 && args.size() > 1) {
-                char key[40];
-                std::snprintf(key, sizeof(key), "__spa_k%d__", args[1].int_val);
-                auto v = heap_.get_object_field(args[0].object_id, key);
-                if (v.has_value()) {
-                    result = *v;
-                } else if (args.size() > 2) {
-                    result = args[2];  // AOSP def-if-not-found law
-                } else {
-                    result = DalvikValue::make_int(0);
-                }
-            } else {
-                result = DalvikValue::make_int(0);
-            }
+        if (method == "hasStarted" || method == "hasEnded") {
+            result = DalvikValue::make_bool(false);
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
-        if (method == "indexOfKey" || method == "containsKey" || method == "size" ||
-            method == "clear" || method == "delete" || method == "remove" ||
-            method == "keyAt" || method == "valueAt") {
-            // minimal law: no entries known to the caller; size 0; miss -1
-            if (method == "size") result = DalvikValue::make_int(0);
-            else if (method == "indexOfKey") result = DalvikValue::make_int(-1);
-            else if (method == "containsKey") result = DalvikValue::make_bool(false);
-            else result = DalvikValue::make_void();
+        if (method == "getDuration") {
+            result = DalvikValue::make_long(300);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getTransformation" || method == "computeDurationHint") {
+            if (method == "computeDurationHint")
+                result = DalvikValue::make_long(300);
+            else
+                result = DalvikValue::make_bool(true);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // S109 ROOT-031 — PackageManager query families (AOSP never-null law).
+    // forkgram x8/a.a (CustomTabs browser picker) iterates
+    // queryIntentActivities(intent, 0).iterator() — the method had NO
+    // handler → NULL → iterator NPE. AOSP law: queryIntentActivities /
+    // queryIntentServices / queryBroadcastReceivers ALWAYS return a List
+    // (empty when nothing matches — never null); resolveActivity /
+    // resolveService return ResolveInfo or null (callers null-guard).
+    if (class_name == "Landroid/content/pm/PackageManager;") {
+        if (method == "queryIntentActivities" || method == "queryIntentServices" ||
+            method == "queryBroadcastReceivers" || method == "queryContentProviders" ||
+            method == "getInstalledPackages" || method == "getInstalledApplications" ||
+            method == "getPreferredActivities") {
+            uint32_t lid = heap_.allocate("Ljava/util/ArrayList;", 0, 0);
+            heap_.set_object_field(lid, "__array_length__",
+                                   DalvikValue::make_int(0));
+            result = DalvikValue::make_object(lid, "Ljava/util/ArrayList;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "resolveActivity" || method == "resolveService" ||
+            method == "resolveContentProvider" || method == "resolveActivityInfo") {
+            result = DalvikValue::make_null();
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
@@ -25509,7 +26674,18 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 const bool ok = try_recursive_invoke(
                     n->class_desc, "onMeasure",
                     {args[0], args[1], args[2]}, ret, res);
-                if (!ok && !n->dex_measure_valid) {
+                // S109 ROOT-041: AOSP measure-contract completion law. The
+                // DEX onMeasure may delegate to a FRAMEWORK super
+                // (ActionBarLayout.onMeasure → invoke-super FrameLayout.
+                // onMeasure) whose engine side is a silent void — the
+                // super never wrote setMeasuredDimension, yet ok=true,
+                // so the old `!ok && !valid` guard left the node at 0x0
+                // (the whole login tree rendered 0-sized). AOSP law
+                // (View.measure → onMeasure chain): when NOTHING in the
+                // chain wrote dimensions, the DEFAULT View.onMeasure law
+                // applies — setMeasuredDimension(getDefaultSize(spec)):
+                // EXACTLY/AT_MOST → spec size, UNSPECIFIED → 0.
+                if (!n->dex_measure_valid) {
                     // No DEX onMeasure anywhere in the chain → the default
                     // View.onMeasure law applies (getDefaultSize: AT_MOST/
                     // EXACTLY → specSize, UNSPECIFIED → suggested min = 0).
@@ -25528,6 +26704,73 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     n->dex_measure_valid = true;
                     n->measured_width = n->dex_measured_w;
                     n->measured_height = n->dex_measured_h;
+                    // S109 ROOT-045: recursive child measure (AOSP
+                    // ViewGroup.onMeasure contract). The default law sized
+                    // ONLY this node; custom containers (ActionBarLayout$l
+                    // and every app panel) then left all DESCENDANTS at
+                    // 0x0, so the intro ScrollView/slides/buttons never
+                    // gained the sizes the draw walk needs. Law: each
+                    // child gets getChildMeasureSpec(parent, lp) and the
+                    // same DEX-onMeasure-then-default treatment,
+                    // recursively (bounded by tree depth).
+                    std::function<void(framework::ViewShadow::ViewNode*,
+                                       int32_t, int32_t, int)>
+                        s109_measure_children;
+                    s109_measure_children =
+                        [&](framework::ViewShadow::ViewNode* pn, int32_t pw,
+                            int32_t ph, int depth) {
+                            if (depth > 24 || !pn) return;
+                            auto cspec = [](int32_t parent_size,
+                                            int32_t child_dim) -> int32_t {
+                                if (child_dim == -1)
+                                    return 0x40000000 |
+                                           (parent_size & 0x3FFFFFFF);
+                                if (child_dim == -2)
+                                    return 0x80000000 |
+                                           (parent_size & 0x3FFFFFFF);
+                                return 0x40000000 | (child_dim & 0x3FFFFFFF);
+                            };
+                            for (uint32_t child : pn->children) {
+                                auto* cn = view_shadow->find_node(child);
+                                if (!cn) continue;
+                                if (cn->visibility == 4 || cn->visibility == 8)
+                                    continue;
+                                int32_t cw = cspec(pw, cn->width);
+                                int32_t ch = cspec(ph, cn->height);
+                                cn->dex_measure_valid = false;
+                                DalvikValue cret2 = DalvikValue::make_void();
+                                DalvikExecutionResult cres2;
+                                DalvikValue ca2[3] = {
+                                    DalvikValue::make_object(child,
+                                                              cn->class_desc),
+                                    DalvikValue::make_int(cw),
+                                    DalvikValue::make_int(ch)};
+                                try_recursive_invoke(
+                                    cn->class_desc, "onMeasure",
+                                    std::vector<DalvikValue>(ca2, ca2 + 3),
+                                    cret2, cres2, "(II)V");
+                                if (!cn->dex_measure_valid) {
+                                    int32_t mmw = (int32_t)(
+                                        ((uint32_t)cw) >> 30);
+                                    int32_t mmh = (int32_t)(
+                                        ((uint32_t)ch) >> 30);
+                                    cn->dex_measured_w =
+                                        (mmw == 1 || mmw == 2)
+                                            ? (cw & 0x3FFFFFFF) : 0;
+                                    cn->dex_measured_h =
+                                        (mmh == 1 || mmh == 2)
+                                            ? (ch & 0x3FFFFFFF) : 0;
+                                    cn->dex_measure_valid = true;
+                                    cn->measured_width = cn->dex_measured_w;
+                                    cn->measured_height = cn->dex_measured_h;
+                                }
+                                s109_measure_children(
+                                    cn, cn->measured_width,
+                                    cn->measured_height, depth + 1);
+                            }
+                        };
+                    s109_measure_children(n, n->measured_width,
+                                          n->measured_height, 0);
                 }
                 static thread_local uint64_t r347_measure_log = 0;
                 if (r347_measure_log < 16) {
@@ -27583,6 +28826,27 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
+        if (method == "getAll") {
+            // S109 ROOT-036 — AOSP SharedPreferencesImpl.getAll law
+            // (SharedPreferencesImpl.java:348): returns the FULL String→?
+            // map — NEVER null; a fresh install answers an EMPTY map.
+            // forkgram nr1.w3 (IntroActivity.loadCurrentState) iterates
+            // getAll().entrySet(); the previous null answer NPE'd inside
+            // w3, its catch returned null, N4's BaseBundle.getInt NPE'd,
+            // the login fragment factory returned null and the whole
+            // fragment-present chain (O → onFragmentCreate) died.
+            // LAW: materialize a HashMap heap object with every key the
+            // receiver object actually has stored (fields on the prefs
+            // heap object; engine convention: key = field name), or an
+            // empty HashMap when none — entrySet()/keySet() then flow
+            // through the F-064 Map-view family (empty views).
+            uint32_t map_id = heap_.allocate("Ljava/util/HashMap;", 0, 0);
+            heap_.set_object_field(map_id, "__array_length__",
+                                   DalvikValue::make_int(0));
+            result = DalvikValue::make_object(map_id, "Ljava/util/HashMap;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
         if (method == "getStringSet") {
             // S108 ROOT-016: AOSP SharedPreferencesImpl.getStringSet law
             // (core/java/android/app/SharedPreferencesImpl.java:383-385):
@@ -28683,6 +29947,64 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         pv.string_val = path;
         pv.ref_id = 0;
         heap_.set_object_field(dw, "path", pv);
+        // ── S109 ROOT-033 — RASTER DECODE + INTRINSIC DIMS ─────────────
+        // AOSP law: Resources.getDrawable(resid) for a BITMAP resource
+        // materializes a BitmapDrawable whose bitmap IS the decoded
+        // pixels; getIntrinsicWidth/Height answer the bitmap's dims
+        // (density-scaled). The old stub returned a bare Drawable shell
+        // with NO dims → t1.c() computed createBitmap(0,0) → null →
+        // setColorFilter NPE → Theme.applyTheme died → the whole
+        // LaunchActivity.onCreate unwound before setFragmentStack.
+        // LAW: decode the raster (webp/png/jpg/gif/bmp) through the same
+        // BitmapShadow machinery BitmapFactory uses; store the bitmap oid
+        // + dims as fields (__dr_bitmap__/__dr_width__/__dr_height__) so
+        // the intrinsic-dims handlers and future BitmapDrawable bridges
+        // (draw/setBounds) can consume them. Vector/XML drawables keep
+        // the bare shell (intrinsic -1 per AOSP when there is no bitmap).
+        {
+            auto dot = path.rfind('.');
+            std::string ext =
+                (dot != std::string::npos) ? path.substr(dot + 1) : "";
+            for (char& c : ext) c = (char)std::tolower((unsigned char)c);
+            bool raster = ext == "webp" || ext == "png" || ext == "jpg" ||
+                          ext == "jpeg" || ext == "gif" || ext == "bmp";
+            if (raster) {
+                const auto& resolver =
+                    framework::BitmapShadow::drawable_bytes_resolver();
+                std::vector<uint8_t> bytes;
+                std::string r_path;
+                uint16_t r_density = 0;
+                if (resolver && resolver((uint32_t)resid, bytes, r_path,
+                                         r_density) &&
+                    !bytes.empty()) {
+                    framework::DalvikHeapAdapter adapter(&heap_, this);
+                    uint32_t bmp_oid = framework::BitmapShadow::
+                        decode_and_register(bytes, path, &adapter);
+                    if (bmp_oid != 0) {
+                        const framework::StoredBitmap* sb =
+                            framework::BitmapStore::instance().get(bmp_oid);
+                        int32_t bw = sb ? sb->width : 0;
+                        int32_t bh = sb ? sb->height : 0;
+                        // AOSP BitmapDrawable: intrinsic = pixel dims scaled
+                        // by (deviceDensity / sourceDensity); our device
+                        // profile pins 420dpi and modern assets ship at
+                        // 420/480/xxhdpi — the dominant case is ratio 1.
+                        float ratio = 1.0f;
+                        if (r_density > 0 && r_density < 420)
+                            ratio = 420.0f / (float)r_density;
+                        int32_t iw = (int32_t)(bw * ratio + 0.5f);
+                        int32_t ih = (int32_t)(bh * ratio + 0.5f);
+                        DalvikValue bv = DalvikValue::make_object(
+                            bmp_oid, "Landroid/graphics/Bitmap;");
+                        heap_.set_object_field(dw, "__dr_bitmap__", bv);
+                        heap_.set_object_field(dw, "__dr_width__",
+                                               DalvikValue::make_int(iw));
+                        heap_.set_object_field(dw, "__dr_height__",
+                                               DalvikValue::make_int(ih));
+                    }
+                }
+            }
+        }
         result = DalvikValue::make_object(dw, "Landroid/graphics/drawable/Drawable;");
         return true;
     }

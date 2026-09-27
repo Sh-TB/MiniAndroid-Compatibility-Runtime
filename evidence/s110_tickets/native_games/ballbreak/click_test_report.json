@@ -1,0 +1,36 @@
+{
+  "clickable_views": 1,
+  "frame1_sha_note": "screenshot.png (already written by stage_capture_output)",
+  "per_view": [
+    {
+      "changed_px": 0,
+      "class": "Lde.georgsieber.ballbreak.GameView;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lde/georgsieber/ballbreak/GameView$1;",
+      "state_changed": false,
+      "view_id": 113
+    },
+    {
+      "changed_px": 0,
+      "class": "Landroid/widget/Button;",
+      "click_dispatched": true,
+      "handler": "onClickWeb",
+      "kind": "xml_onClick",
+      "state_changed": false,
+      "view_id": 127
+    },
+    {
+      "changed_px": 0,
+      "class": "Landroid/widget/Button;",
+      "click_dispatched": true,
+      "handler": "onClickHighscores",
+      "kind": "xml_onClick",
+      "state_changed": false,
+      "view_id": 128
+    }
+  ],
+  "views_changed_second_frame": 0,
+  "views_probed": 3,
+  "xml_onclick_views": 2
+}
