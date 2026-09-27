@@ -34,6 +34,38 @@ struct NativeCallContext {
     std::vector<int32_t> int_args;
     std::vector<std::string> string_args;
     std::vector<uint32_t> object_args;
+
+    // ── S108 ROOT-017: positional typed args ────────────────────────────
+    // The legacy vectors above are UNPOSITIONED (int/string/object each go
+    // to their own list, positions are lost) and INT64 args were TRUNCATED
+    // to int32 at the marshalling site — impossible to pass a JNI pointer
+    // handle through. `pos` preserves the original argument order + full
+    // 64-bit precision; new handlers should read this one.
+    struct Arg {
+        enum class Kind { INT, LONG, FLOAT, DOUBLE, STRING, OBJECT, NULLREF, BOOLEAN } kind;
+        int32_t int_val = 0;
+        int64_t long_val = 0;
+        float float_val = 0.0f;
+        double double_val = 0.0;
+        bool bool_val = false;
+        std::string string_val;
+        uint32_t object_id = 0;
+
+        static Arg of_int(int32_t v) { Arg a; a.kind = Kind::INT; a.int_val = v; return a; }
+        static Arg of_long(int64_t v) { Arg a; a.kind = Kind::LONG; a.long_val = v; return a; }
+        static Arg of_bool(bool v) { Arg a; a.kind = Kind::BOOLEAN; a.bool_val = v; a.int_val = v ? 1 : 0; return a; }
+        static Arg of_float(float v) { Arg a; a.kind = Kind::FLOAT; a.float_val = v; a.double_val = v; return a; }
+        static Arg of_double(double v) { Arg a; a.kind = Kind::DOUBLE; a.double_val = v; return a; }
+        static Arg of_string(std::string v) { Arg a; a.kind = Kind::STRING; a.string_val = std::move(v); return a; }
+        static Arg of_object(uint32_t oid) { Arg a; a.kind = Kind::OBJECT; a.object_id = oid; return a; }
+        static Arg null() { Arg a; a.kind = Kind::NULLREF; return a; }
+    };
+    std::vector<Arg> pos;
+
+    const Arg& arg(size_t i) const {
+        static const Arg k_default = Arg::of_int(0);
+        return i < pos.size() ? pos[i] : k_default;
+    }
 };
 
 enum class NativeImplType {
@@ -52,6 +84,20 @@ using NativeHandler = std::function<void(
     uint32_t& object_result,
     bool& is_object_result
 )>;
+
+// S108 ROOT-017: string-result channel. A handler that produces a real
+// java.lang.String return calls mark_string_result(); invoke() RESETS the
+// flag before dispatch and the marshalling site reads it after — no
+// signature change needed (all existing handlers stay source-compatible).
+namespace detail {
+inline thread_local bool g_string_result_flag = false;
+}
+inline void mark_string_result() { detail::g_string_result_flag = true; }
+inline bool consume_string_result() {
+    bool v = detail::g_string_result_flag;
+    detail::g_string_result_flag = false;
+    return v;
+}
 
 struct NativeMethodEntry {
     std::string class_desc;
@@ -89,6 +135,7 @@ public:
                 float& float_ret, double& double_ret, std::string& string_ret,
                 uint32_t& obj_ret, bool& is_obj_ret) {
         std::string key = make_key(ctx.class_desc, ctx.method_name);
+        detail::g_string_result_flag = false;  // S108: reset string channel
         auto it = methods_.find(key);
         if (it == methods_.end()) {
             log_unsupported(ctx);

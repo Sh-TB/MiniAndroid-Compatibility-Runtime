@@ -6821,14 +6821,30 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             for (const auto& arg : args) {
                 if (arg.type == DalvikType::INT32 || arg.type == DalvikType::BOOLEAN) {
                     jni_ctx.int_args.push_back(arg.int_val);
+                    jni_ctx.pos.push_back(arg.type == DalvikType::BOOLEAN
+                                              ? jni::NativeCallContext::Arg::of_bool(arg.bool_val)
+                                              : jni::NativeCallContext::Arg::of_int(arg.int_val));
                 } else if (arg.type == DalvikType::INT64) {
+                    // S108 ROOT-017: legacy vector keeps the (lossy) int32
+                    // view for old stubs; the positional channel carries the
+                    // FULL 64-bit value (JNI pointer handles MUST survive).
                     jni_ctx.int_args.push_back(static_cast<int32_t>(arg.long_val));
+                    jni_ctx.pos.push_back(jni::NativeCallContext::Arg::of_long(arg.long_val));
+                } else if (arg.type == DalvikType::FLOAT32) {
+                    jni_ctx.pos.push_back(jni::NativeCallContext::Arg::of_float(arg.float_val));
+                } else if (arg.type == DalvikType::FLOAT64) {
+                    jni_ctx.pos.push_back(jni::NativeCallContext::Arg::of_double(arg.double_val));
                 } else if (arg.type == DalvikType::STRING_REF) {
                     jni_ctx.string_args.push_back(arg.string_val);
+                    jni_ctx.pos.push_back(jni::NativeCallContext::Arg::of_string(arg.string_val));
                 } else if (arg.type == DalvikType::OBJECT_REF) {
                     jni_ctx.object_args.push_back(arg.object_id);
+                    jni_ctx.pos.push_back(jni::NativeCallContext::Arg::of_object(arg.object_id));
                 } else if (arg.type == DalvikType::NULL_REF) {
                     jni_ctx.object_args.push_back(0);
+                    jni_ctx.pos.push_back(jni::NativeCallContext::Arg::null());
+                } else {
+                    jni_ctx.pos.push_back(jni::NativeCallContext::Arg::of_int(0));
                 }
             }
             // Dispatch
@@ -6863,7 +6879,12 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                     return_val = v; break;
                 }
                 case 'L': case '[':
-                    if (is_obj_ret && obj_ret > 0) {
+                    if (jni::consume_string_result()) {
+                        // S108 ROOT-017: real String return from a native
+                        // handler (e.g. SQLiteCursor.columnStringValue over
+                        // real sqlite3_column_text).
+                        return_val = DalvikValue::make_string(string_ret, 1);
+                    } else if (is_obj_ret && obj_ret > 0) {
                         return_val = DalvikValue::make_object(obj_ret, "Lnative_result;");
                     } else {
                         return_val = DalvikValue::make_null();
@@ -7019,6 +7040,56 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             }
         }
         if (!name_matches) continue;
+        // ────────────────────────────────────────────────────────────────
+        // S108 ROOT-019 (AOSP ART invoke-resolution law): when the call
+        // site supplies the EXACT method descriptor (the F-090i hoisted
+        // proto — every 35c/3rc invoke path provides it), a same-name
+        // candidate with a DIFFERENT descriptor is not an overload
+        // candidate at all. ART resolves the invoke against the exact
+        // (class, name, proto) triple from the method_ids table and never
+        // falls to a different-signature method.
+        // The old flow let the arity/lenient-type heuristics select such
+        // candidates: primitive params matched BY POSITION (J≡D≡I≡Z), so
+        // an `accept(J)V` interface call on the desugared-stream Sink
+        // resolved to k3.accept(D)V — one of the wrong-shape THROWERS
+        // ("called wrong accept method", t3.C) — while the real
+        // implementation lives on the SUPERCLASS (q6.accept(J)V). Every
+        // mapToLong/collect/toArray stream chain died at the thrower
+        // (Telegram MessagesController whitelistedBots + tonStakeddice
+        // families, 1600+ ISE per run).
+        // Law: exact descriptor known + descriptor mismatch → SKIP the
+        // candidate (never best, never fallback); when the local scan
+        // then selects nothing, the F-074 super-walk resolves the true
+        // override one ancestor up.
+        if (!method_descriptor.empty() && method_descriptor[0] == '(' &&
+            !method.descriptor.empty() && method.descriptor[0] == '(' &&
+            method.descriptor != method_descriptor) {
+            // S108-R019-DIAG: env-gated skip trace (bounded)
+            static thread_local uint64_t r019_skip_diag = 0;
+            if (std::getenv("MINIANDROID_R019_DIAG") != nullptr && r019_skip_diag < 400) {
+                ++r019_skip_diag;
+                std::cerr << "[R019-SKIP] " << cls_ref.name << "." << method.name
+                          << method.descriptor << " want=" << method_descriptor
+                          << " caller=" << current_class_ << "." << current_method_
+                          << std::endl;
+            }
+            // S108 ROOT-019 (strict): see the block comment above for the
+            // full law. Env-gated ON while auditing which call sites carry
+            // a TRUSTWORTHY call-site descriptor — the diag runs exposed
+            // wanted-descriptors that reference methods that DO NOT exist
+            // in the class (t/k.<init>(IILj6/g;)V vs real ()V/(I)V — the
+            // engine's method_idx/proto resolution can answer a descriptor
+            // that no local method declares; hard-filtering on it then
+            // selects NOTHING and the ctor never runs (v6.q → u.<init>
+            // family regression). Default OFF until the resolution layer
+            // is exact; ON via MINIANDROID_R019_STRICT=1 for A/B runs.
+            static thread_local const bool r019_strict =
+                std::getenv("MINIANDROID_R019_STRICT") != nullptr;
+            if (r019_strict) {
+                continue;  // same name, different signature — NOT this overload
+            }
+            // (default) fall through to the legacy lenient selection
+        }
         // EXP-082: Debug trace for the exact rejection point
         if (method_name.find("$r8$lambda$8Miu") != std::string::npos ||
             (method_name.find("lambda") != std::string::npos && method_name.find("createView") != std::string::npos)) {
@@ -23162,6 +23233,117 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
+    // ────────────────────────────────────────────────────────────────────────
+    // S108 ROOT-020 — java.util.TimeZone FAMILY (OpenJDK/AOSP law).
+    // TimeZone.getDefault() previously answered the generic-miss NULL and
+    // Telegram's ConnectionsManager.<init> pc=0x13a chain
+    //   TimeZone.getDefault().getRawOffset()
+    // NPE'd (f141-null-recv) → the ConnectionsManager singleton died →
+    // every ConnectionsManager.getInstance caller hit APP BOUNDARY (the
+    // whole tgnet layer went dark). AOSP law (TimeZone.java): getDefault
+    // returns the user's timezone (NEVER null for valid IDs); getRawOffset
+    // returns the offset in MILLISECONDS; getDSTSavings defaults to 0.
+    // The offset comes from the HOST localtime (tm_gmtoff), so the value
+    // is real for the running machine; getTimeZone(String) materializes a
+    // per-ID cached zone object (unknown IDs collapse to GMT — OpenJDK
+    // getTimeZone law: "the GMT zone is returned if the given ID cannot
+    // be understood").
+    if (class_name == "Ljava/util/TimeZone;") {
+        // host raw offset in ms (POSIX tm_gmtoff = seconds east of UTC)
+        auto tz_raw_offset_ms = []() -> int32_t {
+            time_t now = ::time(nullptr);
+            struct tm lt {};
+            localtime_r(&now, &lt);
+            return static_cast<int32_t>(lt.tm_gmtoff) * 1000;
+        };
+        auto materialize_zone = [&](const std::string& id) -> uint32_t {
+            static std::map<std::string, uint32_t> s108_zone_cache;
+            auto it = s108_zone_cache.find(id);
+            if (it != s108_zone_cache.end() && heap_.has_object(it->second)) {
+                return it->second;
+            }
+            uint32_t zid = heap_.allocate("Ljava/util/TimeZone;", 0, 0);
+            heap_.set_object_field(zid, "__tz_id__",
+                                   DalvikValue::make_string(id, 0));
+            // "GMT"/UTC zones have zero offset; every other ID uses the
+            // host offset (per-ID tables are an OpenJDK detail the engine
+            // approximates with the host zone — the raw-offset CONSUMERS
+            // in real apps compare against the local offset anyway).
+            int32_t off = (id == "GMT" || id == "UTC" || id == "Etc/UTC")
+                              ? 0 : tz_raw_offset_ms();
+            heap_.set_object_field(zid, "__tz_raw_offset__",
+                                   DalvikValue::make_int(off));
+            s108_zone_cache[id] = zid;
+            return zid;
+        };
+        if (method == "getDefault" || method == "getDefaultRef") {
+            uint32_t zid = materialize_zone("__default__");
+            result = DalvikValue::make_object(zid, "Ljava/util/TimeZone;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getTimeZone") {
+            std::string id = "GMT";
+            if (args.size() > 1 && args[1].type == DalvikType::STRING_REF &&
+                !args[1].string_val.empty()) {
+                id = args[1].string_val;
+            }
+            // OpenJDK law: unknown ID → GMT (never null)
+            uint32_t zid = materialize_zone(id);
+            result = DalvikValue::make_object(zid, "Ljava/util/TimeZone;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "setTimeZone" || method == "setDefault") {
+            // mutation is accepted and ignored (engine keeps host truth)
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // instance accessors — receiver in args[0]
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0 &&
+            (method == "getRawOffset" || method == "getDSTSavings" ||
+             method == "getID" || method == "getOffset" ||
+             method == "getDisplayName" || method == "inDaylightTime" ||
+             method == "useDaylightTime" || method == "hasSameRules" ||
+             method == "toString")) {
+            uint32_t rid = args[0].object_id;
+            auto id_f = heap_.get_object_field(rid, "__tz_id__");
+            std::string id = (id_f.has_value() &&
+                              id_f->type == DalvikType::STRING_REF)
+                                 ? id_f->string_val : "GMT";
+            auto off_f = heap_.get_object_field(rid, "__tz_raw_offset__");
+            int32_t off = (off_f.has_value() && off_f->type == DalvikType::INT32)
+                              ? off_f->int_val : 0;
+            if (method == "getRawOffset") {
+                result = DalvikValue::make_int(off);
+            } else if (method == "getDSTSavings") {
+                result = DalvikValue::make_int(0);  // AOSP default
+            } else if (method == "getID" || method == "toString") {
+                result = DalvikValue::make_string(id, 0);
+            } else if (method == "getOffset") {
+                // (long date) variant: raw offset (no DST modeling)
+                result = DalvikValue::make_int(off);
+            } else if (method == "getDisplayName") {
+                result = DalvikValue::make_string(id, 0);
+            } else if (method == "inDaylightTime" || method == "useDaylightTime") {
+                result = DalvikValue::make_bool(false);
+            } else {  // hasSameRules(TimeZone other)
+                bool same = off == 0 && id == "GMT";
+                if (args.size() > 1 && args[1].type == DalvikType::OBJECT_REF &&
+                    args[1].object_id != 0) {
+                    auto o2 = heap_.get_object_field(args[1].object_id,
+                                                     "__tz_raw_offset__");
+                    same = o2.has_value() && o2->type == DalvikType::INT32 &&
+                           o2->int_val == off;
+                }
+                result = DalvikValue::make_bool(same);
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
     // S83 LOCALE-ACCESSOR FAMILY: getDefault* / getLanguage / getCountry /
     // getDisplayName on a materialized Locale answer the tag components
     // (AOSP Locale.java). Covers the R8-inlined chains that immediately
@@ -26884,6 +27066,46 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
+        if (method == "getStringSet") {
+            // S108 ROOT-016: AOSP SharedPreferencesImpl.getStringSet law
+            // (core/java/android/app/SharedPreferencesImpl.java:383-385):
+            //     Object v = map.get(key);
+            //     return (v != null) ? (Set<String>) v : defValues;
+            // The engine previously had NO getStringSet handler — the call
+            // fell through to the generic default and answered NULL, so any
+            // app doing prefs.getStringSet("k", new HashSet<>()).stream()
+            // NPE'd immediately inside Collection$-EL.c →
+            // Spliterators.spliterator(null, flags) → requireNonNull(null)
+            // (real-world face: Telegram MessagesController.<init>
+            // "whitelistedBots" → singleton construction died →
+            // LaunchActivity APP BOUNDARY — the whole app failed to boot).
+            // Law: on miss return the defValues ARG as-is (identity
+            // preserved); a NULL default stays NULL (AOSP @Nullable law).
+            std::string key = (args.size() > 1 && args[1].type == DalvikType::STRING_REF) ? args[1].string_val : "";
+            if (prefs_obj_id && heap_.has_object(prefs_obj_id)) {
+                auto val = heap_.get_object_field(prefs_obj_id, key);
+                if (val.has_value() && val->type == DalvikType::OBJECT_REF &&
+                    heap_.has_object(val->object_id)) {
+                    // Set previously stored by putStringSet — return it
+                    result = *val;
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                if (val.has_value() && val->type == DalvikType::NULL_REF) {
+                    // explicitly-cleared key → AOSP null
+                    result = DalvikValue::make_null();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+            }
+            if (args.size() > 2) {
+                result = args[2];
+            } else {
+                result = DalvikValue::make_null();
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
         if (method == "contains") {
             std::string key = (args.size() > 1 && args[1].type == DalvikType::STRING_REF) ? args[1].string_val : "";
             if (prefs_obj_id && heap_.has_object(prefs_obj_id)) {
@@ -26935,6 +27157,24 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 }
             }
             // Return the editor for chaining
+            result = DalvikValue::make_object(prefs_obj_id, "Landroid/content/SharedPreferences$Editor;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "putStringSet" &&
+            (class_name.find("Editor") != std::string::npos ||
+             class_name.find("SharedPreferences") != std::string::npos)) {
+            // S108 ROOT-016 (write side): store the Set object reference under
+            // the key so the getStringSet reader above returns the SAME object
+            // (AOSP identity law — the persisted set must round-trip).
+            std::string key = (args.size() > 1 && args[1].type == DalvikType::STRING_REF) ? args[1].string_val : "";
+            if (prefs_obj_id && heap_.has_object(prefs_obj_id) && !key.empty()) {
+                if (args.size() > 2) {
+                    heap_.set_object_field(prefs_obj_id, key, args[2]);
+                } else {
+                    heap_.set_object_field(prefs_obj_id, key, DalvikValue::make_null());
+                }
+            }
             result = DalvikValue::make_object(prefs_obj_id, "Landroid/content/SharedPreferences$Editor;");
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;

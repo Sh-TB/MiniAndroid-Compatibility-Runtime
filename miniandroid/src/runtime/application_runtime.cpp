@@ -14,6 +14,7 @@
 #include "dex/dex_interpreter_batch.h"
 #include "diagnostics/mem_probe.h"  // EXP-042 Phase 1: memory probe
 #include "jni/jni_bridge.h"         // EXP-046 Phase 2: JNI bridge
+#include "jni/telegram_sqlite_jni.h" // S108 ROOT-017: org.telegram.SQLite natives
 // EXP-037 Phase B (BLOCKER-020): Use DalvikExecutionEngine instead of
 // DexInterpreterBatch for execute_on_create. DexInterpreterBatch only handles
 // 5 opcodes (const-string, new-instance, invoke-direct, invoke-virtual,
@@ -1110,6 +1111,10 @@ bool ApplicationRuntime::execute_on_create() {
         // This allows native method calls to be dispatched to host-side handlers
         // instead of silently returning void/null.
         miniandroid::jni::JNIBridge::instance().register_default_stubs();
+        // S108 ROOT-017: Telegram's private SQLite wrapper (org.telegram.SQLite.*)
+        // over the REAL sqlite3 backend — without it every cursor loop spins
+        // (step fail-soft 0 = "row available" forever).
+        miniandroid::jni::telegram_sqlite::register_all();
         std::cerr << "[EXP-046] JNI bridge initialized with "
                   << miniandroid::jni::JNIBridge::instance().registered_count()
                   << " native method handlers" << std::endl;
