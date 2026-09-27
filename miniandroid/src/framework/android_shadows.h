@@ -1431,6 +1431,11 @@ public:
         if (class_name == "Landroid/webkit/WebViewPackageInfo;") {
             return true;
         }
+        // ROOT-057: the WebView provider's cookie manager — ships with the
+        // runtime's WebView, served by the same shadow (singleton law).
+        if (class_name == "Landroid/webkit/CookieManager;") {
+            return true;
+        }
         // Match any class ending in "View;" or "ViewGroup;" or containing
         // well-known View subclasses. Specific dispatch is done by
         // method name.
