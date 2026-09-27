@@ -4086,3 +4086,17 @@ Work Log:
 Stage Summary:
 - Ticket wave complete (#353/#354/#355 with rendered images + GIFs + Persian TL;DR).
 - Telegram frontier: the 6 roots above; R$styleable family remains the biggest pixel lever.
+
+---
+Task ID: S110-part2
+Agent: Super Z (main)
+Task: Telegram continuation — attack the 6 residual errors (FingerprintController x2, j6/k.e, q8/z.t, 2x APP-BOUNDARY).
+
+Work Log:
+- ROOT-046 java.security.KeyStore FAMILY (dalvik_engine): getInstance(type) NEVER null (materializes a KeyStore object, type stored on the heap object); load/store no-op (AndroidKeyStore provider contract); containsAlias/isKeyEntry/isCertificateEntry honest FALSE (no secure-hardware aliases → apps take their degraded path — Telegram skips fingerprint auth instead of dying); getKey/getCertificate/getEntry null miss law; aliases empty Vector; size 0. DEX ground truth: FingerprintController.getKeyStore does getInstance("AndroidKeyStore") + load(null); isKeyReady does containsAlias("tmessages_passcode").
+- ROOT-047 Activity.getBaseContext() (ActivityShadow): AOSP ContextWrapper law — ActivityThread.attach() binds mBase BEFORE onCreate, so getBaseContext() inside onCreate is NEVER null. forkgram evidence: EXP057-MRO move-result-object v15 obj=0 pc=1307 (getBaseContext answered null) → Kotlin Intrinsics "Parameter specified as non-null is null: method q8.z.t, parameter context" → APP-BOUNDARY escape at LaunchActivity.onCreate invoke_pc=0x51c. FIX: per-activity base_contexts_ map (attachBaseContext records mBase identity, ROOT-047b) + getBaseContext handler serving the recorded mBase, else the R341 application context identity — never null.
+- RESULT: forkgram fix44 — **TOTAL ERRORS 0** (crash.log "[No errors recorded]"); 32 (S107) → 7 (S108) → 6 (S109) → 0 (S110). Full lifecycle RESUMED; login view tree intact (62 render entries, he1$d StartMessaging @ y=1656); themed window SHA 59fdbfcd deterministic; F-016 4 in-flight handled exceptions (app-caught, honest).
+- REGRESSION GATES (all PASS, byte-identical): ballbreak SUCCESS 0 errors fe797c19...; dooz 6 errors a2ba4a49...; HTML5 breakout 0 errors 5bcd77b8...
+
+Stage Summary:
+- Telegram error frontier CLOSED (0 uncaught). The pixel frontier remains: login widgets measured but not painting (R$styleable theme attrs + text-draw laws) — the next wave.

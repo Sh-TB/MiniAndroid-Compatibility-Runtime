@@ -2283,6 +2283,66 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
         }
         return CallResult::handled_null();
     }
+    if (m == "getBaseContext") {
+        // S110 ROOT-047: AOSP ContextWrapper.getBaseContext() law.
+        // ActivityThread.performLaunchActivity → Activity.attach(...) →
+        // attachBaseContext(baseContext) runs BEFORE onCreate, so
+        // getBaseContext() inside onCreate is NEVER null (ContextWrapper
+        // stores it as mBase). forkgram evidence: LaunchActivity.onCreate
+        // called getBaseContext() (EXP088-B-DISPATCH logged) and the
+        // dispatch had NO handler → the invocation bridge answered
+        // null (EXP057-MRO move-result-object v15 obj=0 pc=1307) →
+        // the null context hit Kotlin's Intrinsics parameter check
+        // ("Parameter specified as non-null is null: method q8.z.t,
+        // parameter context") → NPE escaped the app boundary
+        // (LaunchActivity.onCreate invoke_pc=0x51c) — 4 of the 6
+        // residual forkgram errors. LAW: serve the per-activity bound
+        // base context when one was recorded (attachBaseContext /
+        // set_base_context); else the R341 application context object
+        // (the engine's context identity — same object
+        // getApplicationContext serves, mirroring AOSP's shared
+        // package/appContext identity); NEVER null.
+        auto it = base_contexts_.find(ctx.receiver_id);
+        if (it != base_contexts_.end() && heap_ &&
+            heap_->has_object(it->second)) {
+            return CallResult::handled_object(
+                it->second,
+                base_context_classes_.count(ctx.receiver_id)
+                    ? base_context_classes_[ctx.receiver_id]
+                    : "Landroid/content/Context;");
+        }
+        if (heap_ && application_heap_id_ != 0 &&
+            heap_->has_object(application_heap_id_)) {
+            return CallResult::handled_object(
+                application_heap_id_,
+                application_heap_class_.empty()
+                    ? "Landroid/app/Application;"
+                    : application_heap_class_);
+        }
+        if (heap_) {
+            uint32_t ctx_id = heap_->get_or_create("Landroid/content/Context;");
+            return CallResult::handled_object(ctx_id, "Landroid/content/Context;");
+        }
+        return CallResult::handled_null();
+    }
+    if (m == "attachBaseContext") {
+        // S110 ROOT-047b: AOSP ContextWrapper.attachBaseContext(Context)
+        // stores mBase (per-receiver identity). Record the bound base
+        // context so the getBaseContext() law above serves the exact
+        // object the app attached (locale-wrapping ContextWrappers keep
+        // their wrapped identity across calls).
+        if (!ctx.args.empty() &&
+            ctx.args[0].kind == CallContext::Arg::Kind::OBJECT &&
+            ctx.args[0].object_id != 0) {
+            base_contexts_[ctx.receiver_id] = ctx.args[0].object_id;
+            base_context_classes_[ctx.receiver_id] =
+                ctx.args[0].object_class.empty()
+                    ? "Landroid/content/Context;"
+                    : ctx.args[0].object_class;
+        }
+        // AOSP ContextWrapper.attachBaseContext returns void.
+        return CallResult::handled_void();
+    }
     // M3 F-021 ROOT FIX (AOSP LayoutInflater singleton law): Activity
     // .getLayoutInflater() returns the window's LayoutInflater — the SAME
     // object LayoutInflater.from(activity) returns (PhoneWindow owns one
