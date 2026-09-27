@@ -91,8 +91,14 @@ static void collect_scripts(DomNode* n, ParsedDocument& doc,
     for (auto& c : n->children) collect_scripts(c.get(), doc, html, script_order);
 }
 
+// S113: fragment parse must not double-collect <link> styles (the engine
+// fetches them once at document level). Thread-local flag keeps the parser
+// signature stable for existing callers.
+static thread_local bool doc_is_fragment = false;
+
 ParsedDocument HtmlParser::parse(const std::string& html) {
     ParsedDocument doc;
+    doc_is_fragment = false;
     auto html_el = make_element("html");
     html_el->parent = nullptr;
     DomNode* cur = html_el.get();
@@ -205,6 +211,17 @@ ParsedDocument HtmlParser::parse(const std::string& html) {
         bool self_closing = tag_body.back() == '/' ||
                             tag == "meta" || tag == "link" || tag == "br" ||
                             tag == "img" || tag == "input" || tag == "hr";
+        // S113: <link rel="stylesheet" href=...> → external stylesheet law
+        // (elp is the stable pointer — el was already moved into the tree)
+        if (tag == "link" && !doc_is_fragment) {
+            std::string rel, href;
+            auto it = elp->attrs.find("rel");
+            if (it != elp->attrs.end()) rel = lower(it->second);
+            it = elp->attrs.find("href");
+            if (it != elp->attrs.end()) href = it->second;
+            if (rel.find("stylesheet") != std::string::npos && !href.empty())
+                doc.external_styles.push_back({href, ""});
+        }
         if (!raw && !self_closing) {
             open_stack.push_back(elp);
             cur = elp;
@@ -217,6 +234,7 @@ ParsedDocument HtmlParser::parse(const std::string& html) {
 }
 
 std::unique_ptr<DomNode> HtmlParser::parse_fragment(const std::string& html) {
+    doc_is_fragment = true;
     auto doc = parse(html);
     // wrap: return the container holding html's children
     auto box = make_element("#fragment");
@@ -242,7 +260,28 @@ static void parse_prop_list(const std::string& body, std::map<std::string, std::
     }
 }
 
+// S113: value-length parser for shorthand lists ("24px", "14px 20px",
+// "1px 2px 3px 4px") — px-only corpus law; returns count of values found.
+static int split_lengths(const std::string& v, int out[4]) {
+    std::istringstream ss(v);
+    std::string tok;
+    int n = 0;
+    while (ss >> tok && n < 4) {
+        out[n++] = int(::strtod(tok.c_str(), nullptr));
+    }
+    // CSS shorthand expansion law: 1=all, 2=(tb,lr), 3=(t,lr,b), 4=(t,r,b,l)
+    if (n == 2) { out[2] = out[0]; out[3] = out[1]; }
+    else if (n == 3) { out[3] = out[1]; }
+    else if (n == 1) { out[1] = out[2] = out[3] = out[0]; }
+    return n;
+}
+
 std::vector<CssRule> HtmlParser::parse_stylesheet(const std::string& css) {
+    return parse_stylesheet_impl(css, -1, -1);
+}
+
+std::vector<CssRule> HtmlParser::parse_stylesheet_impl(const std::string& css,
+                                                       int media_min_w, int media_max_w) {
     std::vector<CssRule> rules;
     // strip comments
     std::string s;
@@ -258,11 +297,64 @@ std::vector<CssRule> HtmlParser::parse_stylesheet(const std::string& css) {
         size_t brace = s.find('{', p);
         if (brace == std::string::npos) break;
         std::string selectors = trim(s.substr(p, brace - p));
-        size_t close = s.find('}', brace);
-        if (close == std::string::npos) close = s.size();
-        std::string body = s.substr(brace + 1, close - brace - 1);
-        p = close + 1;
-        if (selectors.find('@') != std::string::npos) continue;  // @media etc. skipped
+        // S113: nested-brace matching law — @media blocks CONTAIN rules, so
+        // the first '}' is an inner rule's close, not the block's. Depth-
+        // count to the matching close for @-blocks; flat rules keep the
+        // fast path. body_end = position of the closing '}'; p lands one
+        // past it (a selector must never swallow a previous '}').
+        size_t body_end, next_p;
+        {
+            size_t depth = 1, scan = brace + 1;
+            bool nested = selectors.rfind("@", 0) == 0;
+            if (nested) {
+                while (scan < s.size() && depth) {
+                    if (s[scan] == '{') ++depth;
+                    else if (s[scan] == '}') --depth;
+                    ++scan;
+                }
+                body_end = scan ? scan - 1 : scan;
+                next_p = scan;
+            } else {
+                body_end = s.find('}', brace);
+                if (body_end == std::string::npos) { body_end = s.size(); next_p = s.size(); }
+                else next_p = body_end + 1;
+            }
+        }
+        std::string body = s.substr(brace + 1, body_end - (brace + 1));
+        p = next_p;
+        // S113 @-rule law: @media hoists inner rules when the width constraint
+        // is recorded (evaluated at render time); @font-face keeps its props;
+        // @keyframes/other @-rules are dropped (static paint corpus).
+        if (selectors.rfind("@media", 0) == 0) {
+            int mn = media_min_w, mx = media_max_w;
+            size_t lp = selectors.find('(');
+            while (lp != std::string::npos) {
+                size_t rp = selectors.find(')', lp);
+                if (rp == std::string::npos) break;
+                std::string cond = selectors.substr(lp + 1, rp - lp - 1);
+                // tokenize feature:value
+                size_t colon = cond.find(':');
+                if (colon != std::string::npos) {
+                    std::string feat = lower(trim(cond.substr(0, colon)));
+                    int val = int(::strtod(cond.c_str() + colon + 1, nullptr));
+                    if (feat == "max-width") mx = mx < 0 ? val : std::min(mx, val);
+                    else if (feat == "min-width") mn = mn < 0 ? val : std::max(mn, val);
+                }
+                lp = selectors.find('(', rp);
+            }
+            // recurse into the media body with the constraint attached
+            for (auto& r : parse_stylesheet_impl(body, mn, mx))
+                rules.push_back(std::move(r));
+            continue;
+        }
+        if (selectors.rfind("@font-face", 0) == 0) {
+            CssRule r; r.selector = "@font-face";
+            parse_prop_list(body, r.props);
+            r.media_min_w = media_min_w; r.media_max_w = media_max_w;
+            rules.push_back(std::move(r));
+            continue;
+        }
+        if (selectors.find('@') != std::string::npos) continue;  // @keyframes etc. dropped
         size_t sp = 0;
         while (sp < selectors.size()) {
             size_t comma = selectors.find(',', sp);
@@ -271,6 +363,20 @@ std::vector<CssRule> HtmlParser::parse_stylesheet(const std::string& css) {
             if (!sel.empty()) {
                 CssRule r; r.selector = sel;
                 parse_prop_list(body, r.props);
+                r.media_min_w = media_min_w; r.media_max_w = media_max_w;
+                // S113 pseudo-element law: "sel::before" / "sel::after" (also
+                // legacy single-colon ":before"/":after" for non-pseudo classes)
+                auto mark_pseudo = [&](const std::string& suffix, bool before) {
+                    size_t pp = sel.rfind(suffix);
+                    if (pp != std::string::npos && pp + suffix.size() == sel.size()) {
+                        r.selector = trim(sel.substr(0, pp));
+                        if (before) r.pseudo_before = true; else r.pseudo_after = true;
+                    }
+                };
+                mark_pseudo("::before", true);
+                mark_pseudo("::after", false);
+                if (!r.pseudo_before) mark_pseudo(":before", true);
+                if (!r.pseudo_after && !r.pseudo_before) mark_pseudo(":after", false);
                 rules.push_back(std::move(r));
             }
             sp = comma + 1;
@@ -279,29 +385,54 @@ std::vector<CssRule> HtmlParser::parse_stylesheet(const std::string& css) {
     return rules;
 }
 
-static bool selector_matches(const std::string& sel, const DomNode* n) {
-    // supports "tag", ".class", "#id", "tag.class", "tag#id", "tag .class"
-    std::string tag, id, cls;
-    size_t sp = sel.rfind(' ');
-    std::string last = sp == std::string::npos ? sel : sel.substr(sp + 1);
-    size_t dot = last.find('.'), hash = last.find('#');
-    tag = last.substr(0, std::min(dot == std::string::npos ? last.size() : dot,
-                                    hash == std::string::npos ? last.size() : hash));
-    if (dot != std::string::npos) {
-        size_t end = hash == std::string::npos ? last.size() : hash;
-        if (dot < end) cls = last.substr(dot + 1, end - dot - 1);
+// S113 compound selector law: one part of a selector — optional tag/*,
+// optional #id, optional .class list ("div.cls-a.cls-b", "*", ".x#y").
+static bool compound_matches(const std::string& c0, const DomNode* n) {
+    std::string c = lower(trim(c0));
+    if (c.empty()) return false;
+    std::string tag, id;
+    std::vector<std::string> classes;
+    size_t i = 0;
+    if (c[0] != '.' && c[0] != '#') {
+        size_t e = c.find_first_of(".#");
+        tag = c.substr(0, e);
+        i = e == std::string::npos ? c.size() : e;
     }
-    if (hash != std::string::npos) id = last.substr(hash + 1);
-    if (!tag.empty() && tag != "*" && n->tag != lower(tag)) return false;
+    while (i < c.size()) {
+        char kind = c[i];
+        size_t e = c.find_first_of(".#", i + 1);
+        std::string tok = c.substr(i + 1, e - i - 1);
+        if (kind == '#') id = tok;
+        else if (kind == '.') classes.push_back(tok);
+        i = e == std::string::npos ? c.size() : e;
+    }
+    if (!tag.empty() && tag != "*" && n->tag != tag) return false;
     if (!id.empty() && (!n->attrs.count("id") || n->attrs.at("id") != id)) return false;
-    if (!cls.empty()) {
+    for (auto& cls : classes) {
         auto it = n->attrs.find("class");
         if (it == n->attrs.end()) return false;
-        // token match
         std::istringstream ss(it->second);
         std::string tok; bool found = false;
         while (ss >> tok) if (tok == cls) { found = true; break; }
         if (!found) return false;
+    }
+    return true;
+}
+
+// S113 selector law: compound parts joined by the descendant combinator
+// (space). The last part matches the node; earlier parts match ancestors.
+static bool selector_matches(const std::string& sel, const DomNode* n) {
+    std::vector<std::string> parts;
+    std::istringstream ss(sel);
+    std::string tok;
+    while (ss >> tok) parts.push_back(tok);
+    if (parts.empty()) return false;
+    if (!compound_matches(parts.back(), n)) return false;
+    const DomNode* anc = n->parent;
+    for (int i = int(parts.size()) - 2; i >= 0; --i) {
+        while (anc && !compound_matches(parts[i], anc)) anc = anc->parent;
+        if (!anc) return false;
+        anc = anc->parent;
     }
     return true;
 }
@@ -348,6 +479,12 @@ static void apply_rule_to(DomNode* n, const std::map<std::string, std::string>& 
 
 void HtmlParser::apply_css(DomNode* node, const std::vector<CssRule>& rules,
                            std::map<std::string, std::string>* custom_props) {
+    apply_css_impl(node, rules, custom_props, false);
+}
+
+void HtmlParser::apply_css_impl(DomNode* node, const std::vector<CssRule>& rules,
+                                std::map<std::string, std::string>* custom_props,
+                                bool ignore_media) {
     if (!node) return;
     // collect custom props from :root/html/body
     if (node->tag == "html" || node->tag == "body") {
@@ -377,6 +514,14 @@ void HtmlParser::apply_css(DomNode* node, const std::vector<CssRule>& rules,
             bool pass_ok = (pass == 0 && !is_id && !is_class) ||
                            (pass == 1 && is_class) || (pass == 2 && is_id);
             if (!pass_ok) continue;
+            // S113: ::before/::after rules style the PSEUDO-BOX, not the
+            // element — applying them to the element leaked e.g.
+            // .header::after { font-size:16px } onto .header itself.
+            // The engine's style walk consumes their content separately.
+            if (r.pseudo_before || r.pseudo_after) continue;
+            if (r.media_min_w >= 0 || r.media_max_w >= 0) {
+                if (ignore_media) continue;   // render-time evaluation handles these
+            }
             if (selector_matches(r.selector, node))
                 apply_rule_to(node, r.props, t_custom);
         }
@@ -385,7 +530,7 @@ void HtmlParser::apply_css(DomNode* node, const std::vector<CssRule>& rules,
     auto it = node->attrs.find("style");
     if (it != node->attrs.end()) parse_prop_list(it->second, node->style);
 
-    for (auto& c : node->children) apply_css(c.get(), rules, custom_props);
+    for (auto& c : node->children) apply_css_impl(c.get(), rules, custom_props, ignore_media);
 }
 
 std::string HtmlParser::inner_html(const DomNode* n) {
@@ -409,6 +554,10 @@ std::string HtmlParser::text_content(const DomNode* n) {
         else out += text_content(c.get());
     }
     return out;
+}
+
+bool HtmlParser::matches_selector(const std::string& sel, const DomNode* n) {
+    return selector_matches(sel, n);
 }
 
 }} // namespace miniandroid::webview

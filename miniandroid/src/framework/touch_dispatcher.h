@@ -72,7 +72,7 @@ public:
     // DEX callback bridges (owned by the engine). click_fn returns whether a
     // listener consumed the click; long_click_fn sets `consumed` per
     // onLongClick's return value.
-    using ClickFn = std::function<bool(uint32_t view_id)>;
+    using ClickFn = std::function<bool(uint32_t view_id, float x, float y)>;
     using LongClickFn = std::function<bool(uint32_t view_id, bool& consumed)>;
     // F-110e (S62+): touch-listener dispatch (View.OnTouchListener.onTouch).
     // `consumed` = the listener's boolean return (true = owns the gesture).
