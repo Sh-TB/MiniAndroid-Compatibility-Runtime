@@ -621,6 +621,9 @@ C2D_METHOD(rotate, { c->rotate(float(argf(ctx, argv[0]))); })
 C2D_METHOD(set_transform, { c->set_transform(float(argf(ctx, argv[0])), float(argf(ctx, argv[1])),
                                              float(argf(ctx, argv[2])), float(argf(ctx, argv[3])),
                                              float(argf(ctx, argv[4])), float(argf(ctx, argv[5]))); })
+C2D_METHOD(transform, { c->transform(float(argf(ctx, argv[0])), float(argf(ctx, argv[1])),
+                                     float(argf(ctx, argv[2])), float(argf(ctx, argv[3])),
+                                     float(argf(ctx, argv[4])), float(argf(ctx, argv[5]))); })
 C2D_METHOD(reset_transform, { c->reset_transform(); })
 #undef C2D_METHOD
 
@@ -1127,6 +1130,23 @@ static JSValue grad_addColorStop(JSContext* ctx, JSValueConst this_v, int argc, 
 }
 
 // ── canvas getContext (WHATWG: 2d context bound to the element bitmap) ──
+// ROOT-049 accessor wrappers (defined after this function; forward-declared)
+static JSValue c2d_fillStyle_get(JSContext*, JSValueConst, int, JSValueConst*);
+static JSValue c2d_fillStyle_set(JSContext*, JSValueConst, int, JSValueConst*);
+static JSValue c2d_strokeStyle_get(JSContext*, JSValueConst, int, JSValueConst*);
+static JSValue c2d_strokeStyle_set(JSContext*, JSValueConst, int, JSValueConst*);
+static JSValue c2d_globalAlpha_get(JSContext*, JSValueConst, int, JSValueConst*);
+static JSValue c2d_globalAlpha_set(JSContext*, JSValueConst, int, JSValueConst*);
+static JSValue c2d_gco_get(JSContext*, JSValueConst, int, JSValueConst*);
+static JSValue c2d_gco_set(JSContext*, JSValueConst, int, JSValueConst*);
+static JSValue c2d_lineWidth_get(JSContext*, JSValueConst, int, JSValueConst*);
+static JSValue c2d_lineWidth_set(JSContext*, JSValueConst, int, JSValueConst*);
+static JSValue c2d_font_get(JSContext*, JSValueConst, int, JSValueConst*);
+static JSValue c2d_font_set(JSContext*, JSValueConst, int, JSValueConst*);
+static JSValue c2d_textAlign_get(JSContext*, JSValueConst, int, JSValueConst*);
+static JSValue c2d_textAlign_set(JSContext*, JSValueConst, int, JSValueConst*);
+static JSValue c2d_textBaseline_get(JSContext*, JSValueConst, int, JSValueConst*);
+static JSValue c2d_textBaseline_set(JSContext*, JSValueConst, int, JSValueConst*);
 static JSValue el_getContext(JSContext* ctx, JSValueConst this_v, int argc, JSValueConst* argv) {
     if (wv_trace()) std::cerr << "[WV-T] el.getContext" << std::endl;
     auto* n = el_of(this_v);
@@ -1135,22 +1155,187 @@ static JSValue el_getContext(JSContext* ctx, JSValueConst this_v, int argc, JSVa
     JSValue o = JS_NewObjectClass(ctx, kCtx2DClass);
     if (JS_IsException(o)) return o;
     JS_SetOpaque(o, n->canvas.get());
-    JS_SetPropertyStr(ctx, o, "createLinearGradient",
-                      JS_NewCFunction(ctx, c2d_create_linear_gradient, "createLinearGradient", 4));
-    JS_SetPropertyStr(ctx, o, "createRadialGradient",
-                      JS_NewCFunction(ctx, c2d_create_radial_gradient, "createRadialGradient", 6));
-    JS_SetPropertyStr(ctx, o, "addColorStop",
-                      JS_NewCFunction(ctx, grad_addColorStop, "addColorStop", 2));
-    // dash support: accepted, dashes rasterized as solid strokes (documented
-    // approximation — dash pattern rasterization is a later frontier)
-    JS_SetPropertyStr(ctx, o, "setLineDash", JS_NewCFunction(ctx,
-        [](JSContext*, JSValueConst, int, JSValueConst*) { return JS_UNDEFINED; }, "setLineDash", 1));
-    JS_SetPropertyStr(ctx, o, "getLineDash", JS_NewCFunction(ctx,
-        [](JSContext* c, JSValueConst, int, JSValueConst*) { return JS_NewArray(c); }, "getLineDash", 0));
-    JS_SetPropertyStr(ctx, o, "isPointInPath", JS_NewCFunction(ctx,
-        [](JSContext*, JSValueConst, int, JSValueConst*) { return JS_FALSE; }, "isPointInPath", 2));
+    // ROOT-049 law: the WHATWG CanvasRenderingContext2D surface must be
+    // COMPLETE — the S109 build had the full C++ raster (Canvas2D) and even
+    // pre-written binding helpers, but el_getContext registered only 6 of
+    // them, so every real web app died with "TypeError: not a function" on
+    // its first beginPath/fillRect. A smoke test that only exercises
+    // registered members cannot catch this — the surface itself is the law.
+    auto m = [&](const char* name, JSCFunction f, int len) {
+        JS_SetPropertyStr(ctx, o, name, JS_NewCFunction(ctx, f, name, len));
+    };
+    // path + rect ops (C2D_METHOD-generated helpers)
+    m("beginPath", c2d_begin_path, 0);
+    m("closePath", c2d_close_path, 0);
+    m("moveTo", c2d_move_to, 2);
+    m("lineTo", c2d_line_to, 2);
+    m("arc", c2d_arc, 5);
+    m("ellipse", [](JSContext* c, JSValueConst t, int argc, JSValueConst* argv) -> JSValue {
+        // ellipse(cx,cy,rx,ry,rot,a0,a1,ccw) — exact geometry via a scaled
+        // unit-circle arc under a temporary transform.
+        auto* e = c2d_of(t);
+        if (e && argc >= 7) {
+            e->save();
+            e->translate(float(argf(c, argv[0])), float(argf(c, argv[1])));
+            e->rotate(float(argf(c, argv[4])));
+            e->scale(float(argf(c, argv[2])), float(argf(c, argv[3])));
+            e->arc(0, 0, 1, float(argf(c, argv[5])), float(argf(c, argv[6])),
+                   argc > 7 && JS_ToBool(c, argv[7]));
+            e->restore();
+        }
+        return JS_UNDEFINED;
+    }, 7);
+    m("quadraticCurveTo", c2d_quadratic_curve_to, 4);
+    m("bezierCurveTo", c2d_bezier_curve_to, 6);
+    m("rect", c2d_rect, 4);
+    m("fill", c2d_fill, 0);
+    m("stroke", c2d_stroke, 0);
+    m("clip", c2d_clip, 0);
+    m("fillRect", c2d_fill_rect, 4);
+    m("strokeRect", c2d_stroke_rect, 4);
+    m("clearRect", c2d_clear_rect, 4);
+    // state stack + transforms
+    m("save", c2d_save, 0);
+    m("restore", c2d_restore, 0);
+    m("translate", c2d_translate, 2);
+    m("scale", c2d_scale, 2);
+    m("rotate", c2d_rotate, 1);
+    m("transform", c2d_transform, 6);
+    m("setTransform", c2d_set_transform, 6);
+    m("resetTransform", c2d_reset_transform, 0);
+    // text
+    m("fillText", c2d_fill_text, 3);
+    m("strokeText", c2d_stroke_text, 3);
+    m("measureText", c2d_measure_text, 1);
+    // images + patterns
+    m("drawImage", c2d_draw_image, 5);
+    m("createPattern", c2d_create_pattern, 2);
+    // gradients (already registered pre-ROOT-049; kept on the same object)
+    m("createLinearGradient", c2d_create_linear_gradient, 4);
+    m("createRadialGradient", c2d_create_radial_gradient, 6);
+    m("addColorStop", grad_addColorStop, 2);  // also on the gradient objects
+    // dash + hit-testing (documented approximations)
+    m("setLineDash", [](JSContext*, JSValueConst, int, JSValueConst*) { return JS_UNDEFINED; }, 1);
+    m("getLineDash", [](JSContext* c, JSValueConst, int, JSValueConst*) { return JS_NewArray(c); }, 0);
+    m("isPointInPath", [](JSContext*, JSValueConst, int, JSValueConst*) { return JS_FALSE; }, 2);
+    // pixel access — real FrameBuffer raster (WHATWG §4.12.5.4)
+    m("getImageData", [](JSContext* c, JSValueConst t, int argc, JSValueConst* argv) -> JSValue {
+        auto* e = c2d_of(t);
+        if (!e || argc < 4) return JS_NULL;
+        int sx = int(argf(c, argv[0])), sy = int(argf(c, argv[1]));
+        int sw = int(argf(c, argv[2])), sh = int(argf(c, argv[3]));
+        if (sw <= 0 || sh <= 0) {
+            sw = e->width();   // WHATWG: non-positive dims → whole bitmap
+            sh = e->height();
+            sx = 0; sy = 0;
+        }
+        auto& bm = e->bitmap();
+        const auto& px = bm.get_pixels();
+        JSValue data = JS_NewArray(c);
+        for (int y = 0; y < sh; ++y)
+            for (int x = 0; x < sw; ++x) {
+                int bx = sx + x, by = sy + y;
+                renderer::RGBA p{0, 0, 0, 0};
+                if (bx >= 0 && by >= 0 && bx < bm.get_width() && by < bm.get_height())
+                    p = px[size_t(by) * bm.get_width() + bx];
+                uint32_t i = (uint32_t(y) * uint32_t(sw) + uint32_t(x)) * 4;
+                JS_SetPropertyUint32(c, data, i + 0, JS_NewInt32(c, p.r));
+                JS_SetPropertyUint32(c, data, i + 1, JS_NewInt32(c, p.g));
+                JS_SetPropertyUint32(c, data, i + 2, JS_NewInt32(c, p.b));
+                JS_SetPropertyUint32(c, data, i + 3, JS_NewInt32(c, p.a));
+            }
+        JSValue img = JS_NewObject(c);
+        JS_SetPropertyStr(c, img, "width", JS_NewInt32(c, sw));
+        JS_SetPropertyStr(c, img, "height", JS_NewInt32(c, sh));
+        JS_SetPropertyStr(c, img, "data", data);
+        return img;
+    }, 4);
+    m("putImageData", [](JSContext* c, JSValueConst t, int argc, JSValueConst* argv) -> JSValue {
+        auto* e = c2d_of(t);
+        if (!e || argc < 1) return JS_UNDEFINED;
+        double dx = argc > 1 ? argf(c, argv[1]) : 0, dy = argc > 2 ? argf(c, argv[2]) : 0;
+        JSValue data = JS_GetPropertyStr(c, argv[0], "data");
+        JSValue wv = JS_GetPropertyStr(c, argv[0], "width");
+        JSValue hv = JS_GetPropertyStr(c, argv[0], "height");
+        int iw = 0, ih = 0;
+        JS_ToInt32(c, &iw, wv); JS_ToInt32(c, &ih, hv);
+        JS_FreeValue(c, wv); JS_FreeValue(c, hv);
+        if (iw <= 0 || ih <= 0) { JS_FreeValue(c, data); return JS_UNDEFINED; }
+        auto& bm = e->bitmap();
+        auto& px = bm.get_pixels_mut();
+        for (int y = 0; y < ih; ++y)
+            for (int x = 0; x < iw; ++x) {
+                JSValue idx = JS_NewInt32(c, (y * iw + x) * 4);
+                JSValue r0 = JS_GetPropertyUint32(c, data, uint32_t((y * iw + x) * 4 + 0));
+                JSValue g0 = JS_GetPropertyUint32(c, data, uint32_t((y * iw + x) * 4 + 1));
+                JSValue b0 = JS_GetPropertyUint32(c, data, uint32_t((y * iw + x) * 4 + 2));
+                JSValue a0 = JS_GetPropertyUint32(c, data, uint32_t((y * iw + x) * 4 + 3));
+                uint32_t r = 0, g = 0, b = 0, a = 255;
+                JS_ToUint32(c, &r, r0); JS_ToUint32(c, &g, g0);
+                JS_ToUint32(c, &b, b0); JS_ToUint32(c, &a, a0);
+                JS_FreeValue(c, r0); JS_FreeValue(c, g0);
+                JS_FreeValue(c, b0); JS_FreeValue(c, a0);
+                JS_FreeValue(c, idx);
+                int bx = int(dx) + x, by = int(dy) + y;
+                if (bx >= 0 && by >= 0 && bx < bm.get_width() && by < bm.get_height())
+                    px[size_t(by) * bm.get_width() + bx] =
+                        renderer::RGBA{uint8_t(r), uint8_t(g), uint8_t(b), uint8_t(a)};
+            }
+        JS_FreeValue(c, data);
+        return JS_UNDEFINED;
+    }, 4);
+    m("createImageData", [](JSContext* c, JSValueConst, int argc, JSValueConst* argv) -> JSValue {
+        if (argc < 2) return JS_NULL;
+        int w = int(argf(c, argv[0])), h = int(argf(c, argv[1]));
+        JSValue data = JS_NewArray(c);
+        for (int i = 0; i < w * h * 4; ++i)
+            JS_SetPropertyUint32(c, data, uint32_t(i), JS_NewInt32(c, 0));
+        JSValue img = JS_NewObject(c);
+        JS_SetPropertyStr(c, img, "width", JS_NewInt32(c, w));
+        JS_SetPropertyStr(c, img, "height", JS_NewInt32(c, h));
+        JS_SetPropertyStr(c, img, "data", data);
+        return img;
+    }, 2);
+    // style properties — the 8 WHATWG attributes (real Canvas2D fields).
+    // Plain function-pointer wrappers (captureless lambdas cannot carry the
+    // accessor pointers; the getters have the 2-arg shape).
+    struct C2DAcc { const char* name; JSCFunction* get; JSCFunction* set; };
+    static const C2DAcc kC2dAccs[] = {
+        {"fillStyle", c2d_fillStyle_get, c2d_fillStyle_set},
+        {"strokeStyle", c2d_strokeStyle_get, c2d_strokeStyle_set},
+        {"globalAlpha", c2d_globalAlpha_get, c2d_globalAlpha_set},
+        {"globalCompositeOperation", c2d_gco_get, c2d_gco_set},
+        {"lineWidth", c2d_lineWidth_get, c2d_lineWidth_set},
+        {"font", c2d_font_get, c2d_font_set},
+        {"textAlign", c2d_textAlign_get, c2d_textAlign_set},
+        {"textBaseline", c2d_textBaseline_get, c2d_textBaseline_set},
+    };
+    for (const auto& a : kC2dAccs) {
+        JSAtom at = JS_NewAtom(ctx, a.name);
+        JS_DefinePropertyGetSet(ctx, o, at, JS_NewCFunction(ctx, a.get, a.name, 0),
+                                JS_NewCFunction(ctx, a.set, a.name, 1), JS_PROP_C_W_E);
+        JS_FreeAtom(ctx, at);
+    }
     return o;
 }
+
+// 2-arg getters / 4-arg setters wrapped into JSCFunction shape (ROOT-049)
+static JSValue c2d_fillStyle_get(JSContext* c, JSValueConst t, int, JSValueConst*) { return c2d_get_fillStyle(c, t); }
+static JSValue c2d_fillStyle_set(JSContext* c, JSValueConst t, int n, JSValueConst* a) { c2d_set_fillStyle(c, t, n, a); return JS_UNDEFINED; }
+static JSValue c2d_strokeStyle_get(JSContext* c, JSValueConst t, int, JSValueConst*) { return c2d_get_strokeStyle(c, t); }
+static JSValue c2d_strokeStyle_set(JSContext* c, JSValueConst t, int n, JSValueConst* a) { c2d_set_strokeStyle(c, t, n, a); return JS_UNDEFINED; }
+static JSValue c2d_globalAlpha_get(JSContext* c, JSValueConst t, int, JSValueConst*) { return c2d_get_globalAlpha(c, t); }
+static JSValue c2d_globalAlpha_set(JSContext* c, JSValueConst t, int n, JSValueConst* a) { c2d_set_globalAlpha(c, t, n, a); return JS_UNDEFINED; }
+static JSValue c2d_gco_get(JSContext* c, JSValueConst t, int, JSValueConst*) { return c2d_get_gco(c, t); }
+static JSValue c2d_gco_set(JSContext* c, JSValueConst t, int n, JSValueConst* a) { c2d_set_gco(c, t, n, a); return JS_UNDEFINED; }
+static JSValue c2d_lineWidth_get(JSContext* c, JSValueConst t, int, JSValueConst*) { return c2d_get_lineWidth(c, t); }
+static JSValue c2d_lineWidth_set(JSContext* c, JSValueConst t, int n, JSValueConst* a) { c2d_set_lineWidth(c, t, n, a); return JS_UNDEFINED; }
+static JSValue c2d_font_get(JSContext* c, JSValueConst t, int, JSValueConst*) { return c2d_get_font(c, t); }
+static JSValue c2d_font_set(JSContext* c, JSValueConst t, int n, JSValueConst* a) { c2d_set_font(c, t, n, a); return JS_UNDEFINED; }
+static JSValue c2d_textAlign_get(JSContext* c, JSValueConst t, int, JSValueConst*) { return c2d_get_textAlign(c, t); }
+static JSValue c2d_textAlign_set(JSContext* c, JSValueConst t, int n, JSValueConst* a) { c2d_set_textAlign(c, t, n, a); return JS_UNDEFINED; }
+static JSValue c2d_textBaseline_get(JSContext* c, JSValueConst t, int, JSValueConst*) { return c2d_get_textBaseline(c, t); }
+static JSValue c2d_textBaseline_set(JSContext* c, JSValueConst t, int n, JSValueConst* a) { c2d_set_textBaseline(c, t, n, a); return JS_UNDEFINED; }
 static JSValue c2d_create_linear_gradient(JSContext* ctx, JSValueConst this_v, int argc, JSValueConst* argv) {
     auto* c = c2d_of(this_v);
     if (!c || argc < 4) return JS_NULL;
@@ -1637,12 +1822,43 @@ void WebViewEngine::Impl::setup_bindings() {
     // globalThis == window
     JSValue global = JS_GetGlobalObject(ctx);
     {
-        // console
+        // console — full Chromium DevTools console contract (all members are
+        // FUNCTIONS; missing members are a law violation that kills real web
+        // apps: e.g. Breakout 71's migration runner calls console.debug after
+        // every successful migration, and one missing member aborted all 8
+        // migrations + the main inline script with "TypeError: not a function").
+        // log-level family (debug/trace/dir/dirxml/table alias log output)
         JSValue con = JS_NewObject(ctx);
         JS_SetPropertyStr(ctx, con, "log", JS_NewCFunction(ctx, js_console_log, "log", 1));
         JS_SetPropertyStr(ctx, con, "info", JS_NewCFunction(ctx, js_console_log, "info", 1));
         JS_SetPropertyStr(ctx, con, "warn", JS_NewCFunction(ctx, js_console_log, "warn", 1));
         JS_SetPropertyStr(ctx, con, "error", JS_NewCFunction(ctx, js_console_log, "error", 1));
+        JS_SetPropertyStr(ctx, con, "debug", JS_NewCFunction(ctx, js_console_log, "debug", 1));
+        JS_SetPropertyStr(ctx, con, "trace", JS_NewCFunction(ctx, js_console_log, "trace", 1));
+        JS_SetPropertyStr(ctx, con, "dir", JS_NewCFunction(ctx, js_console_log, "dir", 1));
+        JS_SetPropertyStr(ctx, con, "dirxml", JS_NewCFunction(ctx, js_console_log, "dirxml", 1));
+        JS_SetPropertyStr(ctx, con, "table", JS_NewCFunction(ctx, js_console_log, "table", 1));
+        // no-op-but-lawful diagnostics family (must exist as functions)
+        for (const char* m : {"time", "timeLog", "timeEnd", "timeStamp", "count", "countReset",
+                              "group", "groupCollapsed", "groupEnd", "clear", "profile", "profileEnd"}) {
+            JS_SetPropertyStr(ctx, con, m, JS_NewCFunction(ctx, [](JSContext*, JSValueConst, int, JSValueConst*) {
+                return JS_UNDEFINED;
+            }, m, 0));
+        }
+        // assert: no-op when the condition is truthy, logs "Assertion failed: ..." otherwise
+        JS_SetPropertyStr(ctx, con, "assert", JS_NewCFunction(ctx, [](JSContext* c, JSValueConst, int argc, JSValueConst* argv) {
+            bool truthy = argc > 0 && JS_ToBool(c, argv[0]);
+            if (!truthy) {
+                std::ostringstream oss;
+                oss << "Assertion failed:";
+                for (int i = 1; i < argc; ++i) {
+                    const char* s = JS_ToCString(c, argv[i]);
+                    if (s) { oss << ' ' << s; JS_FreeCString(c, s); }
+                }
+                std::cerr << "[WV-CONSOLE] " << oss.str() << std::endl;
+            }
+            return JS_UNDEFINED;
+        }, "assert", 1));
         JS_SetPropertyStr(ctx, global, "console", con);
         // base64
         JS_SetPropertyStr(ctx, global, "btoa", JS_NewCFunction(ctx, js_btoa, "btoa", 1));
@@ -2083,12 +2299,59 @@ void WebViewEngine::Impl::run_scripts() {
 }
 
 // ── layout + compose ────────────────────────────────────────────────────
+// ROOT-050 law: CSS <length> resolution must handle calc() and var() —
+// Breakout 71 sizes its canvas with `height:calc(var(--vh,1vh)*100)` and the
+// old atof() answered 0 for any calc() form, collapsing the canvas to a
+// ~30px strip. Resolution order: substitute var(--x, fallback) (custom props
+// are var-resolved upstream when defined), then evaluate the calc term
+// (<len> * <num> / <num> * <len> / <len> / <num> / plain <len>).
 static float css_len_px(const std::string& v, float viewport, float dflt) {
     if (v.empty()) return dflt;
-    auto val = [&](float unit = 1.f) { return ::atof(v.c_str()) * unit; };
-    if (v.find("vw") != std::string::npos) return val(viewport / 100.f);
-    if (v.find("vh") != std::string::npos) return val(viewport / 100.f);
-    if (v.back() == '%') return val(viewport / 100.f);
+    std::string s = v;
+    size_t vp;
+    while ((vp = s.find("var(")) != std::string::npos) {
+        size_t open = vp + 4, depth = 1, i = open;
+        while (i < s.size() && depth) {
+            depth += s[i] == '(' ? 1 : 0;
+            depth -= s[i] == ')' ? 1 : 0;
+            ++i;
+        }
+        std::string inner = s.substr(open, i - open - 1);
+        std::string repl;
+        size_t comma = inner.find(',');
+        if (comma != std::string::npos) repl = inner.substr(comma + 1);
+        s = s.substr(0, vp) + repl + s.substr(i);
+    }
+    if (s.rfind("calc(", 0) == 0 && !s.empty() && s.back() == ')') {
+        std::string body = s.substr(5, s.size() - 6);
+        size_t star = body.find('*'), slash = body.find('/');
+        if (star != std::string::npos && (slash == std::string::npos || star < slash)) {
+            std::string lhs = body.substr(0, star), rhs = body.substr(star + 1);
+            auto has_unit = [&](const std::string& t) {
+                return t.find("vw") != std::string::npos ||
+                       t.find("vh") != std::string::npos ||
+                       (!t.empty() && t.back() == '%');
+            };
+            // exactly one side is a <length>, the other a scalar
+            if (has_unit(lhs) && !has_unit(rhs))
+                return css_len_px(lhs, viewport, dflt) * ::atof(rhs.c_str());
+            if (has_unit(rhs) && !has_unit(lhs))
+                return css_len_px(rhs, viewport, dflt) * ::atof(lhs.c_str());
+            if (!has_unit(lhs) && !has_unit(rhs))
+                return float(::atof(lhs.c_str()) * ::atof(rhs.c_str()));
+            return dflt;  // both lengths: unit mismatch → invalid per CSS
+        }
+        if (slash != std::string::npos) {
+            std::string lhs = body.substr(0, slash), rhs = body.substr(slash + 1);
+            float denom = ::atof(rhs.c_str());
+            return denom != 0 ? css_len_px(lhs, viewport, dflt) / denom : dflt;
+        }
+        return css_len_px(body, viewport, dflt);
+    }
+    auto val = [&](float unit = 1.f) { return ::atof(s.c_str()) * unit; };
+    if (s.find("vw") != std::string::npos) return val(viewport / 100.f);
+    if (s.find("vh") != std::string::npos) return val(viewport / 100.f);
+    if (s.back() == '%') return val(viewport / 100.f);
     return val();
 }
 
@@ -2129,6 +2392,12 @@ static void style_element(DomNode* n, double vw, double vh) {
         std::string cw = get("width"), chh = get("height");
         if (!cw.empty()) n->w = int(css_len_px(cw, float(vw), float(n->canvas->width())));
         if (!chh.empty()) n->h = int(css_len_px(chh, float(vh), float(n->canvas->height())));
+        if (wv_trace())
+            std::cerr << "[WV-CANVAS] id=" << (n->attrs.count("id") ? n->attrs.at("id") : "")
+                      << " css_w=" << cw << " css_h=" << chh
+                      << " -> box " << n->w << "x" << n->h
+                      << " bitmap " << n->canvas->width() << "x" << n->canvas->height()
+                      << " positioned=" << n->positioned << std::endl;
     } else {
         std::string w = get("width"), h = get("height");
         if (!w.empty()) n->w = int(css_len_px(w, float(vw), 0));
@@ -2163,6 +2432,36 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
         for (auto& c : n->children) collect(c.get());
     };
     for (auto& c : impl->doc.root->children) collect(c.get());
+
+    // ROOT-051 law (CSS Backgrounds — the canvas background): the ROOT
+    // element's (html, else body) background propagates to the viewport
+    // canvas BEFORE any child paints. html/body are excluded from the flow
+    // painter, so without this propagation the page stayed white even when
+    // the document set a real theme color (--background1:#030c23).
+    {
+        DomNode* body = nullptr;
+        std::function<DomNode*(DomNode*)> find_body = [&](DomNode* n) -> DomNode* {
+            for (auto& c : n->children) {
+                if (c->tag == "body") return c.get();
+                if (auto* r = find_body(c.get())) return r;
+            }
+            return nullptr;
+        };
+        body = find_body(impl->doc.root.get());
+        DomNode* bg_src = impl->doc.root->has_bg ? (DomNode*)impl->doc.root.get() : body;
+        if (wv_trace())
+            std::cerr << "[WV-BG] root_has_bg=" << impl->doc.root->has_bg
+                      << " body=" << (body ? "yes" : "no")
+                      << " body_has_bg=" << (body ? body->has_bg : -1)
+                      << " body_style_bg=" << (body && body->style.count("background-color")
+                                               ? body->style["background-color"] : "<none>")
+                      << std::endl;
+        if (bg_src && bg_src->has_bg) {
+            renderer::RGBA c{uint8_t(bg_src->bg & 255), uint8_t((bg_src->bg >> 8) & 255),
+                             uint8_t((bg_src->bg >> 16) & 255), 255};
+            for (auto& px : surface_fb->get_pixels_mut()) px = c;
+        }
+    }
 
     // pass 2: paint — static flow first (document order), then positioned
     // (z-index ascending, stable) — CSS painting-order law (approximation).

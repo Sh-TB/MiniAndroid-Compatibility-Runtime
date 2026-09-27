@@ -2949,6 +2949,36 @@ static std::string webview_html_to_text(const std::string& html) {
 
 CallResult ViewShadow::dispatch(const CallContext& ctx) {
     const auto& m = ctx.method;
+
+    // ── ROOT-053: WebView availability probe (AOSP android.webkit law) ──
+    // WebView.getCurrentWebViewPackage (API 26+, static) returns a non-null
+    // WebViewPackageInfo on any device that ships a WebView implementation.
+    // This runtime SHIPS one (the S109 HTML5/QuickJS engine), so the lawful
+    // answer is a materialized package object — NOT null. Capacitor/Cordova
+    // apps gate their whole startup on this probe: blidraughts
+    // (CapacitorWebView) asked it, got the generic-miss null, and rendered
+    // "This app requires a WebView to work" instead of its own UI.
+    if (ctx.class_name == "Landroid/webkit/WebView;" && m == "getCurrentWebViewPackage") {
+        std::cerr << "[ROOT-053] WebView.getCurrentWebViewPackage probe → non-null WebViewPackageInfo"
+                  << std::endl;
+        uint32_t pkg = heap_->allocate("Landroid/webkit/WebViewPackageInfo;");
+        // Seed BOTH access paths: the getter shadows below AND the raw heap
+        // fields (Kotlin/desugared accessors and field reads must both see a
+        // real engine identity — the null versionName flowed into
+        // String.split and killed blidraughts' onCreate at pc=37).
+        heap_->set_string_field(pkg, "versionName", "1.0.0");
+        heap_->set_string_field(pkg, "packageName", "me.miniandroid.webview");
+        return CallResult::handled_object(pkg, "Landroid/webkit/WebViewPackageInfo;");
+    }
+    if (ctx.class_name == "Landroid/webkit/WebViewPackageInfo;" &&
+        (m == "getVersionName" || m == "getPackageName" || m == "getName")) {
+        // Honest identity: the runtime's own WebView engine, not a fake
+        // Chromium version string.
+        return CallResult::handled_string(m == "getVersionName"
+                                              ? "MiniAndroid-QuickJS-S109"
+                                              : "me.miniandroid.webview");
+    }
+
     // View instance methods — receiver_id is the View heap object_id.
 
     // MASTER CAMPAIGN FIX (F10 real-DEX onMeasure): View.setMeasuredDimension
