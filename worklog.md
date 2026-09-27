@@ -3973,3 +3973,26 @@ Work Log:
 Stage Summary:
 - 4 new engine roots to L4+ (valueOf/Uri.parse/LinkedHashSet/Intent-data) with before/after + 3-run + battery; Compose frontier advanced from "no composition at all" to "composed+drawn theme surface"; ~128 ticket closures with real data; Telegram measured honestly; zero corpus regressions (battery 106/106).
 - NEXT ACTION: ① Telegram singleton-getter null (MessagesController.getInstance pc=33 requireNonNull root) ② dooz Composer apply-phase null slot (Lrz1;.s(I) recv null — second-pass slot table) ③ remaining APP-xxx tickets (osmand #144 timed out, still open).
+
+---
+Task ID: S108
+Agent: Super Z (main)
+Task: Continue-until-goal, Persian directive: the final goal is TELEGRAM on the runtime (ticket #140 family). Picked up from the S107 close (MessagesController singleton requireNonNull null).
+
+Work Log:
+- Fresh container: repo re-cloned, engine rebuilt; forkgram 12.10.8.0 (vc 709208, SHA 3baeecb3...) re-fetched from F-Droid; androguard reinstalled in /tmp/agvenv.
+- Reproduced the S107 blocker at HEAD c0b7f50: NPE "getClass on null" unwinding from MessagesController.getInstance — full stack: getGlobalMainSettings -> getInstance -> <init> pc=0xc11 -> Collection$-EL.stream -> $default$stream -> EL.c -> Spliterators.spliterator -> j$.util.Objects.requireNonNull(null).
+- ROOT-016 (getStringSet): prefs.getStringSet had NO dispatch handler -> generic-miss NULL; MessagesController.<init> "whitelistedBots" chain: prefs.getStringSet("whitelistedBots", new HashSet<>()).stream() NPE'd. FIX: AOSP SharedPreferencesImpl law (miss -> defValues as-is, identity preserved; null default stays null) + putStringSet write side (object-ref round-trip).
+- ROOT-017 (org.telegram.SQLite JNI): 20 natives (opendb/prepare/step/finalize/reset/bindInt/bindLong/bindDouble/bindString/bindNull/columnCount/columnType/columnIsNull/columnIntValue/columnLongValue/columnDoubleValue/columnStringValue/columnByteArrayValue/columnByteBufferValue/beginTransaction/commitTransaction/closedb) over REAL sqlite3, pointer-as-handle (real Telegram convention); step: ROW->0 DONE->1 else -1. Required NativeCallContext::pos (positional typed args; INT64 was TRUNCATED to int32 — handles impossible) + jni::mark_string_result() channel (real String returns). opendb arg order fixed by DEX ground truth (arg1 = full db path).
+- ROOT-018 (CLI JNI registration): the `miniandroid run` path NEVER registered the JNI bridge (only ApplicationRuntime::execute_on_create — a different pipeline) -> EVERY native in EVERY corpus app was fail-soft. Registered in cmd_run.
+- Effects measured: HALT-LOOP 0 (was 3+50k-visit spins in SQLite cursor loops), real cache4.db created under the data root, org/telegram execution 44.5k -> 105k rows (OFF) with the full SQLite/storage layer running.
+- ROOT-019 (J/D overload confusion): mapToLong+toArray chain: invoke-interface j5.accept(J) resolved to k3.accept(D) — the wrong-shape thrower ("called wrong accept method", 1600-3700 ISE/run) — while the real impl lives on the SUPERCLASS q6.accept(J). Candidate scan matches primitives BY POSITION (J≡D≡I). FIX: exact-descriptor candidate skip (ART invoke-resolution law). DIAG exposed call-site descriptors referencing methods that do not exist locally (t/k.<init>(IILj6/g;)V vs real ()V/(I)V) -> proto-resolution trust issue -> env-gated MINIANDROID_R019_STRICT=1 while auditing; with it ON: wrong-accept=0.
+- ROOT-020 (TimeZone): TimeZone.getDefault() answered NULL -> ConnectionsManager.<init> pc=0x13a NPE -> the whole tgnet layer dark. FIX: full TimeZone family (getDefault/getTimeZone/getRawOffset/getDSTSavings/getID/getOffset/hasSameRules/useDaylightTime/inDaylightTime), host tm_gmtoff as raw offset, unknown-ID->GMT OpenJDK law, per-ID cached zone objects.
+- TELEGRAM state now: singletons construct (Messages/Connections/MessagesStorage), real SQLite queries run, stream pipelines execute (map/collect/toArray over desugared j$ machinery), LaunchActivity builds the REAL view tree: DrawerLayoutContainer -> ActionBarLayout -> a4 (first actual Telegram UI skeleton in the engine).
+- REGRESSION GATES: ballbreak SUCCESS 0 errors, screenshot SHA fe797c19... BYTE-IDENTICAL to S107; dooz = a2ba4a49... (the S107 final Compose surface) with the same 6 handled errors — zero visual regressions. Battery: stage failures reproduced IDENTICALLY on the STASHED BASELINE (git stash -> rebuild -> run) — environmental (ECJ/D8 toolchain + fixture APKs lost in the container reset), not caused by S108 changes.
+- Commit 8acc8a2 pushed to the local main (origin push pending credentials check).
+
+Stage Summary:
+- 5 roots executed (016-020) with the SQLite bridge as the largest new capability (real sqlite3 for Telegram's private wrapper).
+- Telegram frontier advanced: singleton-death -> full init chain -> real view tree; remaining blockers: j6/k "current(...) must not be null" (kotlinx intrinsic family), ActionBarLayout List.isEmpty null (fragment stack), columnByteArrayValue blob arrays.
+- NEXT: ① strict-mode trust audit for ROOT-019 (which call sites pass a call-site proto that matches no local method) ② j6/k coroutines intrinsic ③ fragment-stack List null ④ commit evidence runs + ticket #140 comment.
