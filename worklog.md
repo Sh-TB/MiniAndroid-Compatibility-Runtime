@@ -4066,3 +4066,23 @@ Stage Summary:
 - HONEST FINAL: of 128 S107 closures, 4 are VERIFIED_3RUN (visual + deterministic), 124 reopened as FALSE VISUAL CLOSURE (execution-only evidence). ACTUAL VISUAL VERIFIED = 4 (3.1%), not 128.
 - No production-code changes were made (audit-only per directive §11). Root causes to attack next (from reopen evidence): WebView-required error path (2 titles), blank activity surfaces (near-blank class), theme-surface-only Compose class.
 - NEXT ACTION: ① pick the largest reopen class (NEAR_BLANK white pages) and find the first divergent transform per S107 §1-§3 instrumentation; ② WebView requirement root (real WebView stub or honest BLOCKED verdict); ③ Telegram #140 singleton null remains open.
+
+---
+Task ID: S110
+Agent: Super Z (main)
+Task: Persian directive — knowledge transfer via GitHub tickets (HTML5 / games / Telegram, one each, with fix methodology + achievements + rendered images + GIFs), then continue Telegram execution.
+
+Work Log:
+- Fresh gates at the S109 HEAD: ballbreak SUCCESS 0 err (fe797c19 byte-identical), dooz (a2ba4a49 stable), HTML5 breakout me.lecaro.breakout_29826425 fetched from F-Droid -> SUCCESS 0 errors, 99.9% non-white px, WebView document header rendered.
+- Merged remote S108-AUDIT wave (124/128 false visual closures reopened; 4 VERIFIED_3RUN: bouncy #121, bobball #81, hotdeath #68, pinyinfdroid #166) with local S108/S109 history; worklog conflict resolved keeping both sections.
+- Pushed d6a11ed: S108+S109 roots + evidence/s109_telegram (run1 540s + run2 300s full-log) + evidence/s110_tickets pack.
+- Created the 3 knowledge-transfer tickets (Sh-TB token):
+  - #353 [HTML5-APPS] WebView content model — breakout full-load + browser TLS GIFs (4 images)
+  - #354 [GAMES] native family — gameplay GIFs + 5 engine laws + honest audit (9 images/GIFs)
+  - #355 [TELEGRAM] 32->6 errors + REAL login UI tree + evidence comment
+  Each with an evidence comment (visual verification + Persian explanation).
+- Telegram continuation started: 6 residual errors (FingerprintController.checkKeyReady x2, j6/k.e, q8/z.t, 2x APP-BOUNDARY at LaunchActivity.onCreate).
+
+Stage Summary:
+- Ticket wave complete (#353/#354/#355 with rendered images + GIFs + Persian TL;DR).
+- Telegram frontier: the 6 roots above; R$styleable family remains the biggest pixel lever.
