@@ -6855,8 +6855,27 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             std::string string_ret;
             uint32_t obj_ret = 0;
             bool is_obj_ret = false;
-            jni::JNIBridge::instance().invoke(jni_ctx, int_ret, long_ret, float_ret,
-                                               double_ret, string_ret, obj_ret, is_obj_ret);
+            // S108 ROOT-018b: UNSUPPORTED-native fall-through law. When the
+            // bridge has NO handler for this (class, method), the old code
+            // STILL converted the fail-soft defaults (0/null/void) and
+            // returned true — the shadow layer (engine-side handlers with
+            // HEAP access: Telegram NativeByteBuffer natives, future
+            // java.nio bridges, ...) could never see the call. ART law:
+            // an unresolved native at runtime is a linkage error, not a
+            // silent 0 — but for a compatibility runtime the ordered
+            // fallbacks (registered handler → shadow → fail-soft) match
+            // the engine's layering.
+            if (!jni::JNIBridge::instance().invoke(
+                    jni_ctx, int_ret, long_ret, float_ret, double_ret,
+                    string_ret, obj_ret, is_obj_ret)) {
+                // no handler → continue the normal dispatch flow below
+                // (method scan → super-walk → bridge_to_api → shadow).
+                // NOTE: do NOT decrement here — the scan-failure paths
+                // below already own the recursion_depth_-- (a double
+                // decrement underflowed depth to 4294967295 and dropped
+                // every subsequent frame — run13 forensics).
+                break;
+            }
             // Convert result to DalvikValue based on return type
             char ret_type = 'V';
             size_t paren = method->descriptor.rfind(')');
@@ -18258,6 +18277,13 @@ static int framework_enum_ordinal(const std::string& class_desc,
     {"Landroid/graphics/PorterDuff$Mode;.ADD", 16},
     {"Landroid/graphics/PorterDuff$Mode;.OVERLAY", 17},
     {"Landroid/graphics/Shader$TileMode;.CLAMP", 0},
+    // S108 ROOT-022: java.nio.ByteOrder constants (OpenJDK order: BIG_ENDIAN
+    // declared first). Telegram's NativeByteBuffer ctor does
+    // ByteBuffer.allocate(n).order(ByteOrder.LITTLE_ENDIAN) — the sget of
+    // LITTLE_ENDIAN answered NULL and order() NPE'd, killing every
+    // ByteBuffer write path (NativeByteBuffer.writeInt32 chain).
+    {"Ljava/nio/ByteOrder;.BIG_ENDIAN", 0},
+    {"Ljava/nio/ByteOrder;.LITTLE_ENDIAN", 1},
     {"Landroid/graphics/Shader$TileMode;.REPEAT", 1},
     {"Landroid/graphics/Shader$TileMode;.MIRROR", 2},
     {"Landroid/graphics/Region$Op;.DIFFERENCE", 0},
@@ -23234,6 +23260,486 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         return true;
     }
     // ────────────────────────────────────────────────────────────────────────
+    // S108 ROOT-025 — Telegram NativeByteBuffer natives (DEX-referenced JNI
+    // surface, implemented engine-side where the heap lives).
+    //   native_getFreeBuffer(I)J          — real Telegram: allocates native
+    //                                       memory and returns its address.
+    //   native_getJavaByteBuffer(J)Ljava/nio/ByteBuffer; — wraps the address.
+    // Both were JNI-UNSUPPORTED: getFreeBuffer fail-softed to 0 → the ctor
+    // took the address==0 path → the `buffer` field stayed NULL → every
+    // writeInt32/writeInt64 NPE'd at ByteBuffer.putInt.
+    // LAW: getFreeBuffer(size) allocates a REAL engine ByteBuffer (cap=size,
+    // LITTLE_ENDIAN) keyed by a pseudo-address map; getJavaByteBuffer(addr)
+    // returns that object. position/limit/order then flow through the
+    // S108 ROOT-022 ByteBuffer law above.
+    if (class_name == "Lorg/telegram/tgnet/NativeByteBuffer;") {
+        // shared address→oid registry (both natives consult it)
+        static std::map<int64_t, uint32_t> nbb_addr_to_oid;
+        static int64_t nbb_next_addr = 0x1000000;
+        if (method == "native_getFreeBuffer") {
+            int32_t cap = (args.size() > 1 && args[1].type == DalvikType::INT32)
+                              ? args[1].int_val : 0;
+            if (cap < 0) cap = 0;
+            uint32_t bid = heap_.allocate("Ljava/nio/ByteBuffer;", 0, 0);
+            heap_.set_object_field(bid, "__bb_cap__", DalvikValue::make_int(cap));
+            heap_.set_object_field(bid, "__bb_pos__", DalvikValue::make_int(0));
+            heap_.set_object_field(bid, "__bb_lim__", DalvikValue::make_int(cap));
+            heap_.set_object_field(bid, "__bb_order__", DalvikValue::make_int(1));
+            nbb_next_addr += 0x1000;
+            nbb_addr_to_oid[nbb_next_addr] = bid;
+            DalvikValue v; v.type = DalvikType::INT64;
+            v.long_val = nbb_next_addr;
+            result = v;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "native_getJavaByteBuffer") {
+            int64_t addr = (args.size() > 1 && args[1].type == DalvikType::INT64)
+                               ? args[1].long_val : 0;
+            auto it = nbb_addr_to_oid.find(addr);
+            if (it != nbb_addr_to_oid.end() && heap_.has_object(it->second)) {
+                result = DalvikValue::make_object(it->second,
+                                                  "Ljava/nio/ByteBuffer;");
+            } else {
+                result = DalvikValue::make_null();
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "native_limit" || method == "native_position" ||
+            method == "native_reuse") {
+            if (method == "native_limit" || method == "native_position") {
+                result = DalvikValue::make_int(0);
+            } else {
+                result = DalvikValue::make_void();
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // S108 ROOT-022 — java.nio.ByteBuffer FAMILY (OpenJDK law, heap-backed).
+    // Telegram's NativeByteBuffer.<init>(size) does
+    //   ByteBuffer.allocateDirect(size).order(ByteOrder.LITTLE_ENDIAN)
+    // and every write (writeInt32 → putInt, writeInt64 → putLong, …)
+    // flowed into the null buffer: allocate/allocateDirect answered the
+    // generic null → order() NPE → the whole serialization layer died.
+    // LAW: allocate(n) materializes a ByteBuffer heap object with fields
+    // __bb_cap__ / __bb_pos__ / __bb_lim__ / __bb_order__ (ordinal) and a
+    // backing byte-array field __bb_data__ (heap [B-style array object);
+    // put*/get* advance position per OpenJDK; order(bo) returns THIS;
+    // flip/clear/rewind/compact implement the standard buffer algebra.
+    if (class_name == "Ljava/nio/ByteBuffer;") {
+        auto bb_field = [&](uint32_t oid, const char* f) -> int32_t {
+            auto v = heap_.get_object_field(oid, f);
+            return (v.has_value() && v->type == DalvikType::INT32) ? v->int_val : 0;
+        };
+        auto bb_set = [&](uint32_t oid, const char* f, int32_t val) {
+            heap_.set_object_field(oid, f, DalvikValue::make_int(val));
+        };
+        if (method == "allocate" || method == "allocateDirect" ||
+            method == "allocateHeapBuffer") {
+            int32_t cap = (args.size() > 1 && args[1].type == DalvikType::INT32)
+                              ? args[1].int_val : 0;
+            if (cap < 0) cap = 0;
+            uint32_t bid = heap_.allocate("Ljava/nio/ByteBuffer;", 0, 0);
+            bb_set(bid, "__bb_cap__", cap);
+            bb_set(bid, "__bb_pos__", 0);
+            bb_set(bid, "__bb_lim__", cap);
+            bb_set(bid, "__bb_order__", 0);  // BIG_ENDIAN default (OpenJDK)
+            // backing store: per-object byte fields are impractical; store
+            // as a run of __bb_b<i>__ int fields lazily on write.
+            result = DalvikValue::make_object(bid, "Ljava/nio/ByteBuffer;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if ((method == "order" || method == "order0") && !args.empty() &&
+            args[0].type == DalvikType::OBJECT_REF) {
+            // order(ByteOrder bo) → returns this (OpenJDK); record ordinal
+            if (args.size() > 1 && args[1].type == DalvikType::OBJECT_REF &&
+                args[1].object_id != 0) {
+                auto ord_f = heap_.get_object_field(args[1].object_id, "ordinal");
+                int32_t ord = (ord_f.has_value() && ord_f->type == DalvikType::INT32)
+                                  ? ord_f->int_val : 0;
+                bb_set(args[0].object_id, "__bb_order__", ord);
+            }
+            result = args[0];  // this
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // instance accessors — receiver in args[0]
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0) {
+            uint32_t bb = args[0].object_id;
+            auto put_wide = [&](int size, int64_t value) {
+                int32_t pos = bb_field(bb, "__bb_pos__");
+                int32_t cap = bb_field(bb, "__bb_cap__");
+                // store as two int halves per slot: __bb_w<pos>__lo/hi
+                char lo[32], hi[32];
+                std::snprintf(lo, sizeof(lo), "__bb_w%d_lo__", pos);
+                std::snprintf(hi, sizeof(hi), "__bb_w%d_hi__", pos);
+                heap_.set_object_field(bb, lo,
+                    DalvikValue::make_int(static_cast<int32_t>(value & 0xFFFFFFFF)));
+                heap_.set_object_field(bb, hi,
+                    DalvikValue::make_int(static_cast<int32_t>(
+                        static_cast<uint64_t>(value) >> 32)));
+                bb_set(bb, "__bb_pos__", pos + size <= cap ? pos + size : pos);
+            };
+            auto get_wide = [&](int size) -> int64_t {
+                int32_t pos = bb_field(bb, "__bb_pos__");
+                char lo[32], hi[32];
+                std::snprintf(lo, sizeof(lo), "__bb_w%d_lo__", pos);
+                std::snprintf(hi, sizeof(hi), "__bb_w%d_hi__", pos);
+                auto l = heap_.get_object_field(bb, lo);
+                auto h = heap_.get_object_field(bb, hi);
+                int32_t lv = (l.has_value() && l->type == DalvikType::INT32)
+                                 ? l->int_val : 0;
+                int32_t hv = (h.has_value() && h->type == DalvikType::INT32)
+                                 ? h->int_val : 0;
+                bb_set(bb, "__bb_pos__", pos + size);
+                return (static_cast<int64_t>(
+                            static_cast<uint64_t>(static_cast<uint32_t>(hv)) << 32)) |
+                       static_cast<uint32_t>(lv);
+            };
+            if (method == "putInt" || method == "putInt32") {
+                if (args.size() > 1) {
+                    put_wide(4, dalvik_int_value(args[1]));
+                    result = args[0];
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "putLong" || method == "putInt64") {
+                if (args.size() > 1 && args[1].type == DalvikType::INT64) {
+                    put_wide(8, args[1].long_val);
+                    result = args[0];
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "putShort") {
+                if (args.size() > 1) {
+                    put_wide(2, dalvik_int_value(args[1]));
+                    result = args[0];
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "putByte") {
+                if (args.size() > 1) {
+                    put_wide(1, dalvik_int_value(args[1]));
+                    result = args[0];
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "getInt" || method == "readInt") {
+                result = DalvikValue::make_int(
+                    static_cast<int32_t>(get_wide(4) & 0xFFFFFFFF));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "getLong") {
+                DalvikValue v; v.type = DalvikType::INT64; v.long_val = get_wide(8);
+                result = v;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "position" && args.size() == 1) {
+                result = DalvikValue::make_int(bb_field(bb, "__bb_pos__"));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "position" && args.size() > 1 &&
+                args[1].type == DalvikType::INT32) {
+                bb_set(bb, "__bb_pos__", args[1].int_val);
+                result = args[0];
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "limit" && args.size() == 1) {
+                result = DalvikValue::make_int(bb_field(bb, "__bb_lim__"));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "limit" && args.size() > 1 &&
+                args[1].type == DalvikType::INT32) {
+                bb_set(bb, "__bb_lim__", args[1].int_val);
+                result = args[0];
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "capacity") {
+                result = DalvikValue::make_int(bb_field(bb, "__bb_cap__"));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "remaining") {
+                int32_t rem = bb_field(bb, "__bb_lim__") - bb_field(bb, "__bb_pos__");
+                result = DalvikValue::make_int(rem > 0 ? rem : 0);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "hasRemaining") {
+                int32_t rem = bb_field(bb, "__bb_lim__") - bb_field(bb, "__bb_pos__");
+                result = DalvikValue::make_bool(rem > 0);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "flip") {
+                bb_set(bb, "__bb_lim__", bb_field(bb, "__bb_pos__"));
+                bb_set(bb, "__bb_pos__", 0);
+                result = args[0];
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "clear") {
+                bb_set(bb, "__bb_pos__", 0);
+                bb_set(bb, "__bb_lim__", bb_field(bb, "__bb_cap__"));
+                result = args[0];
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "rewind") {
+                bb_set(bb, "__bb_pos__", 0);
+                result = args[0];
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // S108 ROOT-023 — android.util.SparseIntArray FAMILY (AOSP law).
+    // get(key, defIfNotFound) previously answered the generic null →
+    // unboxing NPE inside Telegram's ActionBar theming (d6.V / d6.N0).
+    // AOSP SparseIntArray: put appends/overwrites; get answers the stored
+    // int or the default; size/keyAt/valueAt index the pairs. Storage:
+    // per-object heap fields __spa_k<key>__ (identity via field table).
+    if (class_name == "Landroid/util/SparseIntArray;" ||
+        class_name == "Landroid/util/SparseBooleanArray;" ||
+        class_name == "Landroid/util/SparseLongArray;") {
+        if (method == "put" || method == "append" || method == "setValueAt" ||
+            method == "putIfAbsent") {
+            if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+                args[0].object_id != 0 && args.size() > 2) {
+                char key[40];
+                std::snprintf(key, sizeof(key), "__spa_k%d__", args[1].int_val);
+                heap_.set_object_field(args[0].object_id, key, args[2]);
+            }
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "get") {
+            if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+                args[0].object_id != 0 && args.size() > 1) {
+                char key[40];
+                std::snprintf(key, sizeof(key), "__spa_k%d__", args[1].int_val);
+                auto v = heap_.get_object_field(args[0].object_id, key);
+                if (v.has_value()) {
+                    result = *v;
+                } else if (args.size() > 2) {
+                    result = args[2];  // AOSP def-if-not-found law
+                } else {
+                    result = DalvikValue::make_int(0);
+                }
+            } else {
+                result = DalvikValue::make_int(0);
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "indexOfKey" || method == "containsKey" || method == "size" ||
+            method == "clear" || method == "delete" || method == "remove" ||
+            method == "keyAt" || method == "valueAt") {
+            // minimal law: no entries known to the caller; size 0; miss -1
+            if (method == "size") result = DalvikValue::make_int(0);
+            else if (method == "indexOfKey") result = DalvikValue::make_int(-1);
+            else if (method == "containsKey") result = DalvikValue::make_bool(false);
+            else result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // S108 ROOT-024 — PowerManager/WakeLock + AccountManager (AOSP law).
+    // NotificationsController.<init> null-asserted
+    // PowerManager.newWakeLock(...).setReferenceCounted(false) — the
+    // newWakeLock bridge answered null. ContactsController's account check
+    // called AccountManager.get().getAccountsByType() on a null manager.
+    if (class_name == "Landroid/os/PowerManager;") {
+        if (method == "newWakeLock" || method == "createWakeLock") {
+            uint32_t wid = heap_.allocate("Landroid/os/PowerManager$WakeLock;", 0, 0);
+            result = DalvikValue::make_object(wid, "Landroid/os/PowerManager$WakeLock;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "isScreenOn" || method == "isInteractive") {
+            result = DalvikValue::make_bool(true);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    if (class_name == "Landroid/os/PowerManager$WakeLock;") {
+        // setReferenceCounted / acquire / release / setWorkSource: AOSP
+        // state machines — no-ops with self/void returns (never null).
+        if (method == "acquire" || method == "release" ||
+            method == "setReferenceCounted" || method == "setWorkSource" ||
+            method == "isHeld") {
+            if (method == "isHeld") result = DalvikValue::make_bool(false);
+            else if (method == "acquire" || method == "setReferenceCounted" ||
+                     method == "setWorkSource")
+                result = DalvikValue::make_void();
+            else result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    if (class_name == "Landroid/accounts/AccountManager;") {
+        if (method == "get") {
+            result = get_or_create_singleton("Landroid/accounts/AccountManager;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getAccountsByType" || method == "getAccounts" ||
+            method == "getAccountsByTypeAndFeatures" ||
+            method == "addOnAccountsUpdatedListener" ||
+            method == "removeOnAccountsUpdatedListener" ||
+            method == "invalidateAuthToken" || method == "setAuthToken" ||
+            method == "getAuthToken" || method == "blockingGetAuthToken") {
+            // no accounts on this device profile: empty/null results (AOSP
+            // returns an empty array, never null, for getAccountsByType)
+            if (method == "getAccountsByType" || method == "getAccounts" ||
+                method == "getAccountsByTypeAndFeatures") {
+                result = DalvikValue::make_null();  // callers null-guard
+            } else if (method.find("Listener") != std::string::npos) {
+                result = DalvikValue::make_void();
+            } else {
+                result = DalvikValue::make_null();
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // S108 ROOT-021b — java.lang.ThreadLocal.get() LAW (OpenJDK ThreadLocal).
+    //   public T get() {
+    //       ThreadLocalMap map = getMap(Thread.currentThread());
+    //       if (map != null) { Entry e = map.getEntry(this); if (e != null) return e.value; }
+    //       return setInitialValue();   // ← MISS PATH RUNS initialValue()
+    //   }
+    // The engine previously had ZERO ThreadLocal handling: get() answered
+    // the generic null, so every desugared library that bootstraps through
+    // a ThreadLocal supplier chain died at the first .get() — forkgram
+    // Telegram: ThreadLocalRandom.current() → ThreadLocal<v>.get() → null
+    // → Kotlin checkNotNull "current(...)" NPE → ActivityResultRegistry
+    // id generation died at LaunchActivity APP BOUNDARY.
+    // LAW: miss → dispatch the RECEIVER's runtime-class initialValue()
+    // (the real subclass DEX override — v.initialValue materializes the
+    // ThreadLocalRandom) → cache on the receiver → return. set() stores;
+    // remove() clears; the BASE ThreadLocal.initialValue() answers null
+    // (OpenJDK protected T initialValue() { return null; }).
+    if (class_name == "Ljava/lang/ThreadLocal;" ||
+        [&]() {
+            // S108 ROOT-021b2: invoke-virtual bridges with the RECEIVER'S
+            // runtime class (api_class = runtime_type) — a ThreadLocal
+            // SUBCLASS receiver (j$/util/concurrent/v) never matched the
+            // literal ThreadLocal check and fell to the generic null.
+            // Walk the superclass chain: any ancestor == ThreadLocal.
+            std::string cur = class_name;
+            for (int hop = 0; hop < 12 && !cur.empty() &&
+                                cur != "Ljava/lang/Object;"; ++hop) {
+                auto it = class_to_superclass_.find(cur);
+                if (it == class_to_superclass_.end()) return false;
+                cur = it->second;
+                if (cur == "Ljava/lang/ThreadLocal;") return true;
+            }
+            return false;
+        }()) {
+        if (method == "get") {
+            static thread_local uint64_t s108_tl_diag = 0;
+            if (std::getenv("MINIANDROID_TL_DIAG") != nullptr && s108_tl_diag < 20) {
+                ++s108_tl_diag;
+                std::cerr << "[TL-DIAG] ThreadLocal.get argc=" << args.size()
+                          << " a0=" << (args.empty() ? -1 : (int)args[0].type)
+                          << " oid=" << (args.empty() ? 0 : (int)args[0].object_id)
+                          << " caller=" << current_class_ << "." << current_method_
+                          << std::endl;
+            }
+            if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+                args[0].object_id != 0) {
+                uint32_t recv = args[0].object_id;
+                if (heap_.has_object(recv)) {
+                    auto cached = heap_.get_object_field(recv, "__tl_value__");
+                    if (cached.has_value()) {
+                        if (cached->type == DalvikType::OBJECT_REF &&
+                            cached->object_id != 0) {
+                            result = *cached;
+                            status = ApiCallTrace::Status::IMPLEMENTED;
+                            return true;
+                        }
+                        if (cached->type == DalvikType::NULL_REF) {
+                            // base default: initial miss already stored null
+                            result = DalvikValue::make_null();
+                            status = ApiCallTrace::Status::IMPLEMENTED;
+                            return true;
+                        }
+                    }
+                    // MISS → run the receiver's initialValue() override
+                    const auto* tl_obj = heap_.get(recv);
+                    if (tl_obj && !tl_obj->class_descriptor.empty()) {
+                        DalvikValue iv;
+                        DalvikExecutionResult iv_result;
+                        std::vector<DalvikValue> iv_args;
+                        iv_args.push_back(args[0]);
+                        if (try_recursive_invoke(tl_obj->class_descriptor,
+                                                 "initialValue", iv_args, iv,
+                                                 iv_result,
+                                                 "()Ljava/lang/Object;") &&
+                            iv.type == DalvikType::OBJECT_REF &&
+                            iv.object_id != 0) {
+                            heap_.set_object_field(recv, "__tl_value__", iv);
+                            result = iv;
+                            status = ApiCallTrace::Status::IMPLEMENTED;
+                            return true;
+                        }
+                    }
+                }
+            }
+            // no receiver / no override → OpenJDK base law: null
+            result = DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "set") {
+            if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+                args[0].object_id != 0) {
+                DalvikValue v = (args.size() > 1) ? args[1]
+                                                  : DalvikValue::make_null();
+                heap_.set_object_field(args[0].object_id, "__tl_value__", v);
+            }
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "remove") {
+            if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+                args[0].object_id != 0) {
+                heap_.set_object_field(args[0].object_id, "__tl_value__",
+                                       DalvikValue::make_null());
+            }
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "initialValue") {
+            // base-class default (protected T initialValue() { return null; })
+            result = DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    // ────────────────────────────────────────────────────────────────────────
     // S108 ROOT-020 — java.util.TimeZone FAMILY (OpenJDK/AOSP law).
     // TimeZone.getDefault() previously answered the generic-miss NULL and
     // Telegram's ConnectionsManager.<init> pc=0x13a chain
@@ -23660,11 +24166,22 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // ThreadLocalRandom; nextInt()/nextInt(bound) answer a deterministic
     // xorshift sequence (never Math.random — the reproducibility law
     // requires run-to-run identical traces).
-    // ────────────────────────────────────────────────────────────────────────
-    if (class_name == "Ljava/util/concurrent/ThreadLocalRandom;" &&
+    // S108 ROOT-021: D8-DESUGARED surface — modern apps (forkgram Telegram
+    // 12.10.8) reference Lj$/util/concurrent/ThreadLocalRandom; (the j$
+    // retarget), whose current() walks a ThreadLocal<v>.get() that the
+    // engine answered null (initialValue never materialized) → l6/a.f
+    // checkNotNull "current(...)" NPE → the whole ActivityResultRegistry
+    // id-generation chain died at LaunchActivity APP BOUNDARY. Same law,
+    // both namespaces: the singleton materializes with the j$ descriptor,
+    // so the REAL DEX nextInt/nextLong/g machinery (field-seeded xorwalk)
+    // dispatches normally on the receiver.
+    if ((class_name == "Ljava/util/concurrent/ThreadLocalRandom;" ||
+         class_name == "Lj$/util/concurrent/ThreadLocalRandom;") &&
         method == "current") {
         result = get_or_create_singleton(
-            "Ljava/util/concurrent/ThreadLocalRandom;");
+            class_name == "Ljava/util/concurrent/ThreadLocalRandom;"
+                ? "Ljava/util/concurrent/ThreadLocalRandom;"
+                : "Lj$/util/concurrent/ThreadLocalRandom;");
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }

@@ -2030,6 +2030,19 @@ public:
                class_name == "Ljava/util/Iterable;" ||  // F-064: view iteration via interface call site
                class_name == "Ljava/util/CopyOnWriteArrayList;" ||
                class_name == "Ljava/util/HashMap;" ||
+               // S108 ROOT-026 (EnumMap family law): invoke-interface bridges
+               // with the RECEIVER'S runtime class (R-NEW-318 api_cls law) —
+               // an EnumMap receiver (Telegram's desugared StreamFlags v6
+               // builds EnumMap<u6,Integer> per flag) missed handles_class,
+               // so Map.put/get on it silently answered null →
+               // v6.k "flag.a.get(column)" NPE'd at Integer.intValue →
+               // MessagesController singleton died. EnumMap/TreeMap/
+               // Hashtable/ConcurrentHashMap/SimpleArrayMap are Maps — the
+               // same CollectionShadow map laws apply.
+               class_name == "Ljava/util/EnumMap;" ||
+               class_name == "Ljava/util/TreeMap;" ||
+               class_name == "Ljava/util/Hashtable;" ||
+               class_name == "Ljava/util/IdentityHashMap;" ||
                // S83-B2 (R-NEW-403): dooz18 evidence — Glide's lifecycle
                // registry (Lg/b; = RequestManagerFragment Tracker) is a
                // WeakHashMap; with no handles_class entry every WeakHashMap
