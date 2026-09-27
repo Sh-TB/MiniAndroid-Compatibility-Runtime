@@ -1,0 +1,6318 @@
+{
+  "apk_name": "me.lecaro.breakout_29826425.apk",
+  "main_class": "Lme/lecaro/breakout/MainActivity;",
+  "main_method": "onCreate",
+  "methods": [
+    {
+      "class": "Lme/lecaro/breakout/MainActivity;",
+      "entry_point": true,
+      "method": "onCreate",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/app/Activity;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/concurrent/atomic/AtomicReference;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/WeakHashMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lx4;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lc1;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Enum;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Enum;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Enum;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Enum;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Enum;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/ref/WeakReference;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lo0;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/concurrent/CopyOnWriteArraySet;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lq0;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/concurrent/CopyOnWriteArrayList;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lg3;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/WeakHashMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lx4;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Le5;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lf5;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/os/SystemClock;",
+      "invocation_type": "virtual",
+      "method": "uptimeMillis",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lm0;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Le0;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lm5;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lm5;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lm5;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lm5;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lj5;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/concurrent/atomic/AtomicInteger;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/LinkedHashMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/LinkedHashMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/LinkedHashMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/LinkedHashMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/LinkedHashMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/os/Bundle;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ln0;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/concurrent/CopyOnWriteArrayList;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/concurrent/CopyOnWriteArrayList;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/concurrent/CopyOnWriteArrayList;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/concurrent/CopyOnWriteArrayList;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/concurrent/CopyOnWriteArrayList;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/concurrent/CopyOnWriteArrayList;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/concurrent/CopyOnWriteArrayList;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Le0;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lj5;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lg0;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/concurrent/atomic/AtomicInteger;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lu0;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/concurrent/Executors;",
+      "invocation_type": "virtual",
+      "method": "newFixedThreadPool",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lm;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lm;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lm;",
+      "invocation_type": "virtual",
+      "method": "C",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0"
+      ],
+      "class": "Lm;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lm;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getMainLooper",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0"
+      ],
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getThread",
+      "return_value": "Ljava/lang/Thread;#2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Thread;",
+      "invocation_type": "virtual",
+      "method": "currentThread",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "p4294967288"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "c",
+      "return_value": "Ljava/lang/Thread;#2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967289",
+        "v9"
+      ],
+      "class": "Lc1;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lu4;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "v9",
+        "v5"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "put",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967289"
+      ],
+      "class": "Ljava/lang/ref/WeakReference;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Lme/lecaro/breakout/MainActivity;#8",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "v4"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "containsKey",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "v4"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Ljava/lang/Object;#67",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293"
+      ],
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "isEmpty",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Ls2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "v9"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "b",
+      "return_value": "Ls2;#15",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "v5"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967285"
+      ],
+      "class": "Ljava/lang/ref/WeakReference;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Lme/lecaro/breakout/MainActivity;#8",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1"
+      ],
+      "class": "Lu4;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lu4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lu4;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lu4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "f",
+      "return_value": "[class] Lu4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "v6"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "[class] Lu4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lg0;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lm;",
+      "invocation_type": "virtual",
+      "method": "C",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0"
+      ],
+      "class": "Lm;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lm;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getMainLooper",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0"
+      ],
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getThread",
+      "return_value": "Ljava/lang/Thread;#2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Thread;",
+      "invocation_type": "virtual",
+      "method": "currentThread",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "p4294967288"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "c",
+      "return_value": "Ljava/lang/Thread;#2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967289",
+        "v9"
+      ],
+      "class": "Lc1;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lu4;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "v9",
+        "v5"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "put",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967289"
+      ],
+      "class": "Ljava/lang/ref/WeakReference;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Lme/lecaro/breakout/MainActivity;#8",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "v4"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "containsKey",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "v4"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Ljava/lang/Object;#70",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293"
+      ],
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "isEmpty",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Ls2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "v3"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "v9"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "b",
+      "return_value": "Ls2;#15",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "v5"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967285"
+      ],
+      "class": "Ljava/lang/ref/WeakReference;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Lme/lecaro/breakout/MainActivity;#8",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1"
+      ],
+      "class": "Lu4;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lu4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lu4;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lu4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "f",
+      "return_value": "[class] Lu4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "v3"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "[class] Lu4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/activity/ComponentActivity$4;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lm;",
+      "invocation_type": "virtual",
+      "method": "C",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0"
+      ],
+      "class": "Lm;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lm;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getMainLooper",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0"
+      ],
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getThread",
+      "return_value": "Ljava/lang/Thread;#2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Thread;",
+      "invocation_type": "virtual",
+      "method": "currentThread",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "p4294967288"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "c",
+      "return_value": "Ljava/lang/Thread;#2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967289",
+        "v9"
+      ],
+      "class": "Lc1;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lu4;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "v9",
+        "v5"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "put",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967289"
+      ],
+      "class": "Ljava/lang/ref/WeakReference;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Lme/lecaro/breakout/MainActivity;#8",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "v4"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "containsKey",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "v4"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Ljava/lang/Object;#73",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293"
+      ],
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "isEmpty",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Ls2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "v3"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "v9"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "b",
+      "return_value": "Ls2;#15",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "v5"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967285"
+      ],
+      "class": "Ljava/lang/ref/WeakReference;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Lme/lecaro/breakout/MainActivity;#8",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1"
+      ],
+      "class": "Lu4;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lu4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lu4;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lu4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "f",
+      "return_value": "[class] Lu4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "v3"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "[class] Lu4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/savedstate/Recreator;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lm;",
+      "invocation_type": "virtual",
+      "method": "C",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0"
+      ],
+      "class": "Lm;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lm;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getMainLooper",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0"
+      ],
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getThread",
+      "return_value": "Ljava/lang/Thread;#2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Thread;",
+      "invocation_type": "virtual",
+      "method": "currentThread",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "p4294967288"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "c",
+      "return_value": "Ljava/lang/Thread;#2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967289",
+        "v9"
+      ],
+      "class": "Lc1;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lu4;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "v9",
+        "v5"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "put",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967289"
+      ],
+      "class": "Ljava/lang/ref/WeakReference;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Lme/lecaro/breakout/MainActivity;#8",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "v4"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "containsKey",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "v4"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Ljava/lang/Object;#76",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293"
+      ],
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "isEmpty",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Ls2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "v3"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "v9"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "b",
+      "return_value": "Ls2;#15",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "v5"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967285"
+      ],
+      "class": "Ljava/lang/ref/WeakReference;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Lme/lecaro/breakout/MainActivity;#8",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1"
+      ],
+      "class": "Lu4;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lu4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lu4;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lu4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "f",
+      "return_value": "[class] Lu4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1",
+        "v2"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "[class] Lu4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967292"
+      ],
+      "class": "Le5;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Le5;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lg0;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lm;",
+      "invocation_type": "virtual",
+      "method": "C",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0"
+      ],
+      "class": "Lm;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lm;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getMainLooper",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0"
+      ],
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getThread",
+      "return_value": "Ljava/lang/Thread;#2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Thread;",
+      "invocation_type": "virtual",
+      "method": "currentThread",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "p4294967288"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "c",
+      "return_value": "Ljava/lang/Thread;#2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967289",
+        "v9"
+      ],
+      "class": "Lc1;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lu4;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "v9",
+        "v5"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "put",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967289"
+      ],
+      "class": "Ljava/lang/ref/WeakReference;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Lme/lecaro/breakout/MainActivity;#8",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "v4"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "containsKey",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "v4"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Ljava/lang/Object;#79",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293"
+      ],
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "isEmpty",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Ls2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "v3"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "v9"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "b",
+      "return_value": "Ls2;#15",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "v5"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967285"
+      ],
+      "class": "Ljava/lang/ref/WeakReference;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Lme/lecaro/breakout/MainActivity;#8",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1"
+      ],
+      "class": "Lu4;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lu4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lu4;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lu4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "f",
+      "return_value": "[class] Lu4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1",
+        "v2"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "[class] Lu4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1"
+      ],
+      "class": "Lf5;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "[class] Lu4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lt4;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "p4294967292",
+        "v1"
+      ],
+      "class": "Ljava/util/WeakHashMap;",
+      "invocation_type": "virtual",
+      "method": "put",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Lx4;",
+      "invocation_type": "virtual",
+      "method": "iterator",
+      "return_value": "Lt4;#80",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4"
+      ],
+      "class": "Lt4;",
+      "invocation_type": "virtual",
+      "method": "hasNext",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p1"
+      ],
+      "class": "Le5;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Le5;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lz4;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lj5;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La5;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4"
+      ],
+      "class": "La5;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] La5;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lu4;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "v7",
+        "v3"
+      ],
+      "class": "Le5;",
+      "invocation_type": "virtual",
+      "method": "b",
+      "return_value": "[class] La5;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/lifecycle/SavedStateHandleAttacher;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lm;",
+      "invocation_type": "virtual",
+      "method": "C",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0"
+      ],
+      "class": "Lm;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lm;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getMainLooper",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0"
+      ],
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getThread",
+      "return_value": "Ljava/lang/Thread;#2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Thread;",
+      "invocation_type": "virtual",
+      "method": "currentThread",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "p4294967288"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "c",
+      "return_value": "Ljava/lang/Thread;#2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967289",
+        "v9"
+      ],
+      "class": "Lc1;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lu4;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "v9",
+        "v5"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "put",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967289"
+      ],
+      "class": "Ljava/lang/ref/WeakReference;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Lme/lecaro/breakout/MainActivity;#8",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "v4"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "containsKey",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "v4"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Ljava/lang/Object;#88",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293"
+      ],
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "isEmpty",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Ls2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "v3"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "v9"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "b",
+      "return_value": "Ls2;#15",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "v5"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967285"
+      ],
+      "class": "Ljava/lang/ref/WeakReference;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Lme/lecaro/breakout/MainActivity;#8",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1"
+      ],
+      "class": "Lu4;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lu4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lu4;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lu4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "f",
+      "return_value": "[class] Lu4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "v4"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "[class] Lu4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lh0;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4"
+      ],
+      "class": "Lh0;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lh0;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295",
+        "v3"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "equals",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lu4;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1",
+        "v3",
+        "v2"
+      ],
+      "class": "Le5;",
+      "invocation_type": "virtual",
+      "method": "b",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Li0;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967288",
+        "v1"
+      ],
+      "class": "Ljava/util/concurrent/CopyOnWriteArraySet;",
+      "invocation_type": "virtual",
+      "method": "add",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Le0;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lj5;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lp0;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "v3"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "-2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967292"
+      ],
+      "class": "Lq0;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lq0;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967292"
+      ],
+      "class": "Ljava/util/concurrent/CopyOnWriteArraySet;",
+      "invocation_type": "virtual",
+      "method": "iterator",
+      "return_value": "Ljava/util/concurrent/CopyOnWriteArraySet;#23",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Iterator;",
+      "invocation_type": "virtual",
+      "method": "hasNext",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Iterator;",
+      "invocation_type": "virtual",
+      "method": "next",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v9"
+      ],
+      "class": "Lme/lecaro/breakout/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lme/lecaro/breakout/MainActivity;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v9",
+        "p4294967288"
+      ],
+      "class": "Le5;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "v4"
+      ],
+      "class": "Li0;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Iterator;",
+      "invocation_type": "virtual",
+      "method": "hasNext",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Landroid/app/Activity;<super>",
+      "invocation_type": "virtual",
+      "method": "onCreate",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293"
+      ],
+      "class": "Lq4;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lq4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lr4$a;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Lme/lecaro/breakout/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "registerActivityLifecycleCallbacks",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La3;",
+      "invocation_type": "virtual",
+      "method": "b",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Lme/lecaro/breakout/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getFragmentManager",
+      "return_value": "Landroid/app/FragmentManager;#96",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "p4294967293"
+      ],
+      "class": "Landroid/app/FragmentManager;",
+      "invocation_type": "virtual",
+      "method": "findFragmentByTag",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Landroid/app/FragmentManager;",
+      "invocation_type": "virtual",
+      "method": "beginTransaction",
+      "return_value": "Landroid/app/FragmentTransaction;#97",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/app/Fragment;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1",
+        "v2",
+        "p4294967293"
+      ],
+      "class": "Landroid/app/FragmentTransaction;",
+      "invocation_type": "virtual",
+      "method": "add",
+      "return_value": "Landroid/app/FragmentTransaction;#97",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293"
+      ],
+      "class": "Landroid/app/FragmentTransaction;",
+      "invocation_type": "virtual",
+      "method": "commit",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Landroid/app/FragmentManager;",
+      "invocation_type": "virtual",
+      "method": "executePendingTransactions",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lp4;",
+      "invocation_type": "virtual",
+      "method": "b",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "v5"
+      ],
+      "class": "Lo0;<super>",
+      "invocation_type": "virtual",
+      "method": "onCreate",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293"
+      ],
+      "class": "Lq4;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lq4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lr4$a;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Lme/lecaro/breakout/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "registerActivityLifecycleCallbacks",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La3;",
+      "invocation_type": "virtual",
+      "method": "b",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Lme/lecaro/breakout/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getFragmentManager",
+      "return_value": "Landroid/app/FragmentManager;#96",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "p4294967293"
+      ],
+      "class": "Landroid/app/FragmentManager;",
+      "invocation_type": "virtual",
+      "method": "findFragmentByTag",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Landroid/app/FragmentManager;",
+      "invocation_type": "virtual",
+      "method": "beginTransaction",
+      "return_value": "Landroid/app/FragmentTransaction;#100",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/app/Fragment;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1",
+        "v2",
+        "p4294967293"
+      ],
+      "class": "Landroid/app/FragmentTransaction;",
+      "invocation_type": "virtual",
+      "method": "add",
+      "return_value": "Landroid/app/FragmentTransaction;#100",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293"
+      ],
+      "class": "Landroid/app/FragmentTransaction;",
+      "invocation_type": "virtual",
+      "method": "commit",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Landroid/app/FragmentManager;",
+      "invocation_type": "virtual",
+      "method": "executePendingTransactions",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lp4;",
+      "invocation_type": "virtual",
+      "method": "b",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4"
+      ],
+      "class": "Lme/lecaro/breakout/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getPackageManager",
+      "return_value": "Landroid/content/pm/PackageManager;#102",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "v5"
+      ],
+      "class": "Landroid/content/pm/PackageManager;",
+      "invocation_type": "virtual",
+      "method": "hasSystemFeature",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v5",
+        "v6"
+      ],
+      "class": "Lp0;<super>",
+      "invocation_type": "virtual",
+      "method": "onCreate",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v5",
+        "v6"
+      ],
+      "class": "Lme/lecaro/breakout/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "requestWindowFeature",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v5"
+      ],
+      "class": "Lme/lecaro/breakout/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getWindow",
+      "return_value": "Landroid/view/Window;#103",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967291",
+        "p4294967292",
+        "p4294967292"
+      ],
+      "class": "Landroid/view/Window;",
+      "invocation_type": "virtual",
+      "method": "setFlags",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/webkit/WebView;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967291"
+      ],
+      "class": "Landroid/webkit/WebView;",
+      "invocation_type": "virtual",
+      "method": "getSettings",
+      "return_value": "Landroid/webkit/WebSettings;#105",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967291",
+        "v6"
+      ],
+      "class": "Landroid/webkit/WebSettings;",
+      "invocation_type": "virtual",
+      "method": "setJavaScriptEnabled",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967291"
+      ],
+      "class": "Landroid/webkit/WebView;",
+      "invocation_type": "virtual",
+      "method": "getSettings",
+      "return_value": "Landroid/webkit/WebSettings;#105",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967291",
+        "v6"
+      ],
+      "class": "Landroid/webkit/WebSettings;",
+      "invocation_type": "virtual",
+      "method": "setDomStorageEnabled",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6"
+      ],
+      "class": "Landroid/webkit/WebView;",
+      "invocation_type": "virtual",
+      "method": "getSettings",
+      "return_value": "Landroid/webkit/WebSettings;#105",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "p4294967291"
+      ],
+      "class": "Landroid/webkit/WebSettings;",
+      "invocation_type": "virtual",
+      "method": "setSupportZoom",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "v3"
+      ],
+      "class": "Landroid/webkit/WebView;",
+      "invocation_type": "virtual",
+      "method": "loadUrl",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/webkit/WebChromeClient;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ld3;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "v3"
+      ],
+      "class": "Landroid/webkit/WebView;",
+      "invocation_type": "virtual",
+      "method": "setWebChromeClient",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lc3;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "v3"
+      ],
+      "class": "Landroid/webkit/WebView;",
+      "invocation_type": "virtual",
+      "method": "setDownloadListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lme/lecaro/breakout/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getWindow",
+      "return_value": "Landroid/view/Window;#103",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Landroid/view/Window;",
+      "invocation_type": "virtual",
+      "method": "getDecorView",
+      "return_value": "Landroid/view/View;#108",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Landroid/view/View;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294",
+        "v1",
+        "v2"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "setTag",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lme/lecaro/breakout/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getWindow",
+      "return_value": "Landroid/view/Window;#103",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Landroid/view/Window;",
+      "invocation_type": "virtual",
+      "method": "getDecorView",
+      "return_value": "Landroid/view/View;#108",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Landroid/view/View;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294",
+        "v1",
+        "v2"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "setTag",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lme/lecaro/breakout/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getWindow",
+      "return_value": "Landroid/view/Window;#103",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Landroid/view/Window;",
+      "invocation_type": "virtual",
+      "method": "getDecorView",
+      "return_value": "Landroid/view/View;#108",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Landroid/view/View;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294",
+        "v1",
+        "v2"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "setTag",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lme/lecaro/breakout/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getWindow",
+      "return_value": "Landroid/view/Window;#103",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Landroid/view/Window;",
+      "invocation_type": "virtual",
+      "method": "getDecorView",
+      "return_value": "Landroid/view/View;#108",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Landroid/view/View;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294",
+        "v1",
+        "v2"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "setTag",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lme/lecaro/breakout/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getWindow",
+      "return_value": "Landroid/view/Window;#103",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Landroid/view/Window;",
+      "invocation_type": "virtual",
+      "method": "getDecorView",
+      "return_value": "Landroid/view/View;#108",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Landroid/view/View;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294",
+        "v1",
+        "v2"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "setTag",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lme/lecaro/breakout/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getWindow",
+      "return_value": "Landroid/view/Window;#103",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Landroid/view/Window;",
+      "invocation_type": "virtual",
+      "method": "getDecorView",
+      "return_value": "Landroid/view/View;#108",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Landroid/view/View;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294",
+        "v1",
+        "v2"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "setTag",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lme/lecaro/breakout/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "c",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lme/lecaro/breakout/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getWindow",
+      "return_value": "Landroid/view/Window;#103",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Landroid/view/Window;",
+      "invocation_type": "virtual",
+      "method": "getDecorView",
+      "return_value": "Landroid/view/View;#108",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Landroid/view/View;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "getViewTreeObserver",
+      "return_value": "Landroid/view/ViewTreeObserver;#800200",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "p0"
+      ],
+      "class": "Landroid/view/ViewTreeObserver;",
+      "invocation_type": "virtual",
+      "method": "addOnDrawListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295",
+        "p4294967294"
+      ],
+      "class": "Lm0;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "v3"
+      ],
+      "class": "Landroid/app/Activity;<super>",
+      "invocation_type": "virtual",
+      "method": "setContentView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v5",
+        "v6"
+      ],
+      "class": "Lme/lecaro/breakout/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "setContentView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1"
+      ],
+      "class": "Le0;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Le0;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lj0;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Le0;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lj5;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La4;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "myLooper",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getMainLooper",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "equals",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lk2;",
+      "invocation_type": "virtual",
+      "method": "c",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getMainLooper",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/os/Handler;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lk0;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1",
+        "v2"
+      ],
+      "class": "Landroid/os/Handler;",
+      "invocation_type": "virtual",
+      "method": "post",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6"
+      ],
+      "class": "Lj5;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "La4;#109",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/concurrent/CopyOnWriteArrayList;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lf3;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6"
+      ],
+      "class": "La4;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] La4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lv3;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lu3;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "v5"
+      ],
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "add",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v5",
+        "p4294967291"
+      ],
+      "class": "Lu3;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1"
+      ],
+      "class": "Le0;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Le0;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lx3;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/concurrent/atomic/AtomicReferenceFieldUpdater;",
+      "invocation_type": "virtual",
+      "method": "newUpdater",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1",
+        "v2"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "getDeclaredField",
+      "return_value": "Ljava/lang/reflect/Field;#130",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1",
+        "v2"
+      ],
+      "class": "Ljava/lang/reflect/Field;",
+      "invocation_type": "virtual",
+      "method": "setAccessible",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1",
+        "v0"
+      ],
+      "class": "Ljava/lang/reflect/Field;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Lsun/misc/Unsafe;#131",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lb1;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v0",
+        "v2"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "getDeclaredField",
+      "return_value": "Ljava/lang/reflect/Field;#132",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1",
+        "v0"
+      ],
+      "class": "Lsun/misc/Unsafe;",
+      "invocation_type": "virtual",
+      "method": "objectFieldOffset",
+      "return_value": "16L",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Li5;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lk3;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lk3;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Li5;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lg3;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/AbstractList;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ln;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/AbstractList;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ln;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/LinkedHashSet;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/LinkedHashSet;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/LinkedHashSet;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lm3;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/LinkedHashSet;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/LinkedHashSet;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/LinkedHashSet;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lj3;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Set;",
+      "invocation_type": "virtual",
+      "method": "add",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p1"
+      ],
+      "class": "Lj3;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lj3;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Collection;",
+      "invocation_type": "virtual",
+      "method": "add",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lg3;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lm5;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lm5;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lm5;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1"
+      ],
+      "class": "Ljava/util/concurrent/atomic/AtomicReferenceFieldUpdater;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Ljava/util/concurrent/atomic/AtomicReferenceFieldUpdater;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1",
+        "v4",
+        "v2",
+        "v3"
+      ],
+      "class": "Lsun/misc/Unsafe;",
+      "invocation_type": "virtual",
+      "method": "getObjectVolatile",
+      "return_value": "Lk3;#133",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p1"
+      ],
+      "class": "Li5;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "Lk3;#133",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p1"
+      ],
+      "class": "Lk3;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lk3;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "p0"
+      ],
+      "class": "Ly3;",
+      "invocation_type": "virtual",
+      "method": "b",
+      "return_value": "[class] Lk3;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "p4294967294",
+        "v2",
+        "p4294967295"
+      ],
+      "class": "Lm3;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "[class] Lk3;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ly3;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967291"
+      ],
+      "class": "Lj5;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "Ly3;#120",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967291"
+      ],
+      "class": "Lj3;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lj3;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Set;",
+      "invocation_type": "virtual",
+      "method": "add",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Lm3;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lm3;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Ln;",
+      "invocation_type": "virtual",
+      "method": "i",
+      "return_value": "[class] Lm3;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "p4294967294"
+      ],
+      "class": "Ln;",
+      "invocation_type": "virtual",
+      "method": "d",
+      "return_value": "[class] Lm3;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Larray;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Larray;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "v5"
+      ],
+      "class": "Ln;",
+      "invocation_type": "virtual",
+      "method": "addFirst",
+      "return_value": "[class] Larray;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0"
+      ],
+      "class": "Ln;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Ln;",
+      "invocation_type": "virtual",
+      "method": "isEmpty",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0"
+      ],
+      "class": "Ln;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "1",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4"
+      ],
+      "class": "Ln;",
+      "invocation_type": "virtual",
+      "method": "isEmpty",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4"
+      ],
+      "class": "Ln;",
+      "invocation_type": "virtual",
+      "method": "iterator",
+      "return_value": "Ljava/util/Iterator;#139",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Iterator;",
+      "invocation_type": "virtual",
+      "method": "hasNext",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Iterator;",
+      "invocation_type": "virtual",
+      "method": "next",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Iterator;",
+      "invocation_type": "virtual",
+      "method": "hasNext",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Ln;",
+      "invocation_type": "virtual",
+      "method": "iterator",
+      "return_value": "Ljava/util/Iterator;#137",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Iterator;",
+      "invocation_type": "virtual",
+      "method": "hasNext",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Ln;",
+      "invocation_type": "virtual",
+      "method": "iterator",
+      "return_value": "Ljava/util/Iterator;#139",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Iterator;",
+      "invocation_type": "virtual",
+      "method": "hasNext",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Iterator;",
+      "invocation_type": "virtual",
+      "method": "next",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Iterator;",
+      "invocation_type": "virtual",
+      "method": "hasNext",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v12",
+        "v1"
+      ],
+      "class": "Lm3;",
+      "invocation_type": "virtual",
+      "method": "c",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Ln;",
+      "invocation_type": "virtual",
+      "method": "iterator",
+      "return_value": "Ljava/util/Iterator;#137",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Iterator;",
+      "invocation_type": "virtual",
+      "method": "hasNext",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Ln;",
+      "invocation_type": "virtual",
+      "method": "iterator",
+      "return_value": "Ljava/util/Iterator;#139",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Iterator;",
+      "invocation_type": "virtual",
+      "method": "hasNext",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Iterator;",
+      "invocation_type": "virtual",
+      "method": "next",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Iterator;",
+      "invocation_type": "virtual",
+      "method": "hasNext",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v12",
+        "v1"
+      ],
+      "class": "Lm3;",
+      "invocation_type": "virtual",
+      "method": "c",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lk2;",
+      "invocation_type": "virtual",
+      "method": "c",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lk3;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lk3;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1"
+      ],
+      "class": "Ljava/util/concurrent/atomic/AtomicReferenceFieldUpdater;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Ljava/util/concurrent/atomic/AtomicReferenceFieldUpdater;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1",
+        "v4",
+        "v2",
+        "v3"
+      ],
+      "class": "Lsun/misc/Unsafe;",
+      "invocation_type": "virtual",
+      "method": "getObjectVolatile",
+      "return_value": "Lk3;#133",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v12"
+      ],
+      "class": "Li5;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "Lk3;#133",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v5"
+      ],
+      "class": "Lk3;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lk3;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Lk3;",
+      "invocation_type": "virtual",
+      "method": "equals",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lk2;",
+      "invocation_type": "virtual",
+      "method": "c",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294",
+        "v2"
+      ],
+      "class": "Ljava/util/concurrent/atomic/AtomicReferenceFieldUpdater;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Lk3;#133",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v5"
+      ],
+      "class": "Lk3;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lk3;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Lk3;",
+      "invocation_type": "virtual",
+      "method": "equals",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lk2;",
+      "invocation_type": "virtual",
+      "method": "c",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294",
+        "v2",
+        "v3"
+      ],
+      "class": "Ljava/util/concurrent/atomic/AtomicReferenceFieldUpdater;",
+      "invocation_type": "virtual",
+      "method": "set",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v12",
+        "p4294967284"
+      ],
+      "class": "Li5;",
+      "invocation_type": "virtual",
+      "method": "b",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Set;",
+      "invocation_type": "virtual",
+      "method": "iterator",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Iterator;",
+      "invocation_type": "virtual",
+      "method": "hasNext",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Set;",
+      "invocation_type": "virtual",
+      "method": "iterator",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Iterator;",
+      "invocation_type": "virtual",
+      "method": "hasNext",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Set;",
+      "invocation_type": "virtual",
+      "method": "iterator",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Iterator;",
+      "invocation_type": "virtual",
+      "method": "hasNext",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Iterator;",
+      "invocation_type": "virtual",
+      "method": "next",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967284"
+      ],
+      "class": "Ly3;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Ly3;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Iterator;",
+      "invocation_type": "virtual",
+      "method": "hasNext",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Lm3;",
+      "invocation_type": "virtual",
+      "method": "b",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/activity/OnBackPressedDispatcher$addCallback$observer$1;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lm;",
+      "invocation_type": "virtual",
+      "method": "C",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0"
+      ],
+      "class": "Lm;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lm;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getMainLooper",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0"
+      ],
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getThread",
+      "return_value": "Ljava/lang/Thread;#2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Thread;",
+      "invocation_type": "virtual",
+      "method": "currentThread",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "p4294967288"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "c",
+      "return_value": "Ljava/lang/Thread;#2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967289",
+        "v9"
+      ],
+      "class": "Lc1;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lu4;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "v9",
+        "v5"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "put",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967289"
+      ],
+      "class": "Ljava/lang/ref/WeakReference;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Lme/lecaro/breakout/MainActivity;#8",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "v4"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "containsKey",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "v4"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Ljava/lang/Object;#158",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293"
+      ],
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "isEmpty",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Ls2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "v3"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "v9"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "b",
+      "return_value": "Ls2;#15",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "v5"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967285"
+      ],
+      "class": "Ljava/lang/ref/WeakReference;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Lme/lecaro/breakout/MainActivity;#8",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1"
+      ],
+      "class": "Lu4;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lu4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lu4;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lu4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "f",
+      "return_value": "[class] Lu4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "p4294967291"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "[class] Lu4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lw3;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "v5"
+      ],
+      "class": "Ljava/util/concurrent/CopyOnWriteArrayList;",
+      "invocation_type": "virtual",
+      "method": "add",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p1"
+      ],
+      "class": "Lme/lecaro/breakout/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lme/lecaro/breakout/MainActivity;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p1"
+      ],
+      "class": "Lme/lecaro/breakout/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lme/lecaro/breakout/MainActivity;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p1"
+      ],
+      "class": "Lme/lecaro/breakout/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lme/lecaro/breakout/MainActivity;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Enum;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Enum;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Enum;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Enum;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Enum;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Enum;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Enum;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lr2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lm;",
+      "invocation_type": "virtual",
+      "method": "C",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0"
+      ],
+      "class": "Lm;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lm;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getMainLooper",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0"
+      ],
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getThread",
+      "return_value": "Ljava/lang/Thread;#2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Thread;",
+      "invocation_type": "virtual",
+      "method": "currentThread",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p4294967295"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "c",
+      "return_value": "Ljava/lang/Thread;#2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v0"
+      ],
+      "class": "Larray;",
+      "invocation_type": "virtual",
+      "method": "clone",
+      "return_value": "Larray;#172",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "values",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "ordinal",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "ordinal",
+      "return_value": "4",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "ordinal",
+      "return_value": "1",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "ordinal",
+      "return_value": "3",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "ordinal",
+      "return_value": "2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "ordinal",
+      "return_value": "5",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "ordinal",
+      "return_value": "6",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "ordinal",
+      "return_value": "1",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "Ls2;#17",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967285"
+      ],
+      "class": "Ljava/lang/ref/WeakReference;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Lme/lecaro/breakout/MainActivity;#8",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1"
+      ],
+      "class": "Lu4;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lu4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lu4;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lu4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lu4;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lu4;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1",
+        "v2"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v7",
+        "v1"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1"
+      ],
+      "class": "Lc1;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lc1;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lv4;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1",
+        "v7",
+        "v8"
+      ],
+      "class": "Ljava/util/WeakHashMap;",
+      "invocation_type": "virtual",
+      "method": "put",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v7"
+      ],
+      "class": "Lv4;",
+      "invocation_type": "virtual",
+      "method": "hasNext",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v7"
+      ],
+      "class": "Lv4;",
+      "invocation_type": "virtual",
+      "method": "next",
+      "return_value": "Lu4;#67",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v9",
+        "v10"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "-2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v9",
+        "v8"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "containsKey",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "v9"
+      ],
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "add",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v9"
+      ],
+      "class": "Lp2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lp2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v10"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Ls2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v10"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "ordinal",
+      "return_value": "1",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "ordinal",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v5"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "Ls2;#16",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Ls2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "p4294967294"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "1",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1",
+        "p4294967285",
+        "v9"
+      ],
+      "class": "Lu2;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "1",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6"
+      ],
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "size",
+      "return_value": "1",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "v9"
+      ],
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "remove",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v9",
+        "v10"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "-1",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v9",
+        "v8"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "containsKey",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "v9"
+      ],
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "add",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v9"
+      ],
+      "class": "Lp2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lp2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v10"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Ls2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v10"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "ordinal",
+      "return_value": "2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "ordinal",
+      "return_value": "1",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v5"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "Ls2;#17",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Ls2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "p4294967294"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "1",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1",
+        "p4294967285",
+        "v9"
+      ],
+      "class": "Lu2;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "1",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6"
+      ],
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "size",
+      "return_value": "2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "v9"
+      ],
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "remove",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v9",
+        "v10"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v7"
+      ],
+      "class": "Lv4;",
+      "invocation_type": "virtual",
+      "method": "hasNext",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v7"
+      ],
+      "class": "Lv4;",
+      "invocation_type": "virtual",
+      "method": "next",
+      "return_value": "Lu4;#70",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v9",
+        "v10"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "-2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v9",
+        "v8"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "containsKey",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "v9"
+      ],
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "add",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v9"
+      ],
+      "class": "Lp2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lp2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v10"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Ls2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v10"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "ordinal",
+      "return_value": "1",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "ordinal",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v5"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "Ls2;#16",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Ls2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "p4294967294"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "1",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1",
+        "p4294967285",
+        "v9"
+      ],
+      "class": "Lu2;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "1",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6"
+      ],
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "size",
+      "return_value": "3",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "v9"
+      ],
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "remove",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v9",
+        "v10"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "-1",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v9",
+        "v8"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "containsKey",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "v9"
+      ],
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "add",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v9"
+      ],
+      "class": "Lp2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lp2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v10"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Ls2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v10"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "ordinal",
+      "return_value": "2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "ordinal",
+      "return_value": "1",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v5"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "Ls2;#17",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Ls2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "p4294967294"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "1",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1",
+        "p4294967285",
+        "v9"
+      ],
+      "class": "Lu2;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "1",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6"
+      ],
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "size",
+      "return_value": "4",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "v9"
+      ],
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "remove",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v9",
+        "v10"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v7"
+      ],
+      "class": "Lv4;",
+      "invocation_type": "virtual",
+      "method": "hasNext",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v7"
+      ],
+      "class": "Lv4;",
+      "invocation_type": "virtual",
+      "method": "next",
+      "return_value": "Lu4;#73",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v9",
+        "v10"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "-2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v9",
+        "v8"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "containsKey",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "v9"
+      ],
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "add",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v9"
+      ],
+      "class": "Lp2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lp2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v10"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Ls2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v10"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "ordinal",
+      "return_value": "1",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "ordinal",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v5"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "Ls2;#16",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Ls2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "p4294967294"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "1",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p1"
+      ],
+      "class": "Lme/lecaro/breakout/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getLastNonConfigurationInstance",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/LinkedHashMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lg3;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lm;",
+      "invocation_type": "virtual",
+      "method": "C",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0"
+      ],
+      "class": "Lm;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lm;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getMainLooper",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0"
+      ],
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getThread",
+      "return_value": "Ljava/lang/Thread;#2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Thread;",
+      "invocation_type": "virtual",
+      "method": "currentThread",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "p4294967293"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "c",
+      "return_value": "Ljava/lang/Thread;#2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Ljava/lang/Object;#73",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "v4"
+      ],
+      "class": "Lc1;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "Lu4;#73",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293"
+      ],
+      "class": "Ljava/util/WeakHashMap;",
+      "invocation_type": "virtual",
+      "method": "isEmpty",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293"
+      ],
+      "class": "Ljava/util/WeakHashMap;",
+      "invocation_type": "virtual",
+      "method": "keySet",
+      "return_value": "Ljava/util/Set;#177",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Set;",
+      "invocation_type": "virtual",
+      "method": "iterator",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Iterator;",
+      "invocation_type": "virtual",
+      "method": "hasNext",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Iterator;",
+      "invocation_type": "virtual",
+      "method": "next",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "p4294967294"
+      ],
+      "class": "Lv4;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "Ljava/lang/Object;#174",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Iterator;",
+      "invocation_type": "virtual",
+      "method": "hasNext",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "v4"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "remove",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p1",
+        "p0"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "e",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1",
+        "p4294967285",
+        "v9"
+      ],
+      "class": "Lu2;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6"
+      ],
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "size",
+      "return_value": "5",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "v9"
+      ],
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "remove",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v9",
+        "v10"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "-1",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v9",
+        "v8"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "containsKey",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "v9"
+      ],
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "add",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v9"
+      ],
+      "class": "Lp2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lp2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v10"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Ls2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v10"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "ordinal",
+      "return_value": "2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "ordinal",
+      "return_value": "1",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v5"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "Ls2;#17",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Ls2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "p4294967294"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "1",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lm;",
+      "invocation_type": "virtual",
+      "method": "C",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0"
+      ],
+      "class": "Lm;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lm;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getMainLooper",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0"
+      ],
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getThread",
+      "return_value": "Ljava/lang/Thread;#2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Thread;",
+      "invocation_type": "virtual",
+      "method": "currentThread",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "p4294967293"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "c",
+      "return_value": "Ljava/lang/Thread;#2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Ljava/lang/Object;#73",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "v4"
+      ],
+      "class": "Lc1;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "Lu4;#73",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293"
+      ],
+      "class": "Ljava/util/WeakHashMap;",
+      "invocation_type": "virtual",
+      "method": "isEmpty",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293"
+      ],
+      "class": "Ljava/util/WeakHashMap;",
+      "invocation_type": "virtual",
+      "method": "keySet",
+      "return_value": "Ljava/util/Set;#178",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Set;",
+      "invocation_type": "virtual",
+      "method": "iterator",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Iterator;",
+      "invocation_type": "virtual",
+      "method": "hasNext",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Iterator;",
+      "invocation_type": "virtual",
+      "method": "next",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "p4294967294"
+      ],
+      "class": "Lv4;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "Ljava/lang/Object;#174",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Iterator;",
+      "invocation_type": "virtual",
+      "method": "hasNext",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "v4"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "remove",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p1",
+        "p0"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "e",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1",
+        "p4294967285",
+        "v9"
+      ],
+      "class": "Lu2;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6"
+      ],
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "size",
+      "return_value": "6",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "v9"
+      ],
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "remove",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v9",
+        "v10"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v7"
+      ],
+      "class": "Lv4;",
+      "invocation_type": "virtual",
+      "method": "hasNext",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v7"
+      ],
+      "class": "Lv4;",
+      "invocation_type": "virtual",
+      "method": "next",
+      "return_value": "Lu4;#76",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v9",
+        "v10"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "-2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v9",
+        "v8"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "containsKey",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "v9"
+      ],
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "add",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v9"
+      ],
+      "class": "Lp2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lp2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v10"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Ls2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v10"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "ordinal",
+      "return_value": "1",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "ordinal",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v5"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "Ls2;#16",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Ls2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "p4294967294"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "1",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lm;",
+      "invocation_type": "virtual",
+      "method": "C",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0"
+      ],
+      "class": "Lm;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lm;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getMainLooper",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0"
+      ],
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getThread",
+      "return_value": "Ljava/lang/Thread;#2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Thread;",
+      "invocation_type": "virtual",
+      "method": "currentThread",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "p4294967293"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "c",
+      "return_value": "Ljava/lang/Thread;#2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "get",
+      "return_value": "Ljava/lang/Object;#76",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "v4"
+      ],
+      "class": "Lc1;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "Lu4;#76",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293"
+      ],
+      "class": "Ljava/util/WeakHashMap;",
+      "invocation_type": "virtual",
+      "method": "isEmpty",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293"
+      ],
+      "class": "Ljava/util/WeakHashMap;",
+      "invocation_type": "virtual",
+      "method": "keySet",
+      "return_value": "Ljava/util/Set;#179",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Set;",
+      "invocation_type": "virtual",
+      "method": "iterator",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Iterator;",
+      "invocation_type": "virtual",
+      "method": "hasNext",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Iterator;",
+      "invocation_type": "virtual",
+      "method": "next",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "p4294967294"
+      ],
+      "class": "Lv4;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "Ljava/lang/Object;#174",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Iterator;",
+      "invocation_type": "virtual",
+      "method": "hasNext",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "v4"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "remove",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v9",
+        "v8"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "e",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v8",
+        "v9"
+      ],
+      "class": "Le5;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1",
+        "p4294967285",
+        "v9"
+      ],
+      "class": "Lu2;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6"
+      ],
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "size",
+      "return_value": "7",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "v9"
+      ],
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "remove",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v9",
+        "v10"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "-1",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v9",
+        "v8"
+      ],
+      "class": "Ljava/util/HashMap;",
+      "invocation_type": "virtual",
+      "method": "containsKey",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "v9"
+      ],
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "add",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v9"
+      ],
+      "class": "Lp2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lp2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v10"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Ls2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v10"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "ordinal",
+      "return_value": "2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "ordinal",
+      "return_value": "1",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v5"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "Ls2;#17",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Ls2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "p4294967294"
+      ],
+      "class": "Ls2;",
+      "invocation_type": "virtual",
+      "method": "compareTo",
+      "return_value": "1",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/AssertionError;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1",
+        "p4294967285",
+        "v9"
+      ],
+      "class": "Lu2;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "f",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "v2"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "d",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lp4;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p1"
+      ],
+      "class": "Lme/lecaro/breakout/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lme/lecaro/breakout/MainActivity;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lr2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lm;",
+      "invocation_type": "virtual",
+      "method": "C",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0"
+      ],
+      "class": "Lm;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lm;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getMainLooper",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0"
+      ],
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getThread",
+      "return_value": "Ljava/lang/Thread;#2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Thread;",
+      "invocation_type": "virtual",
+      "method": "currentThread",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p4294967295"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "c",
+      "return_value": "Ljava/lang/Thread;#2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "ordinal",
+      "return_value": "1",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "Ls2;#17",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "v2"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "d",
+      "return_value": "Ls2;#17",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lp4;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p1"
+      ],
+      "class": "Lme/lecaro/breakout/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lme/lecaro/breakout/MainActivity;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p1"
+      ],
+      "class": "Lme/lecaro/breakout/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lme/lecaro/breakout/MainActivity;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p1"
+      ],
+      "class": "Lme/lecaro/breakout/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lme/lecaro/breakout/MainActivity;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lr2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lm;",
+      "invocation_type": "virtual",
+      "method": "C",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0"
+      ],
+      "class": "Lm;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lm;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getMainLooper",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0"
+      ],
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getThread",
+      "return_value": "Ljava/lang/Thread;#2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Thread;",
+      "invocation_type": "virtual",
+      "method": "currentThread",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p4294967295"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "c",
+      "return_value": "Ljava/lang/Thread;#2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "ordinal",
+      "return_value": "2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "Ls2;#18",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "v2"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "d",
+      "return_value": "Ls2;#18",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lp4;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p1"
+      ],
+      "class": "Lme/lecaro/breakout/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lme/lecaro/breakout/MainActivity;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lr2;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lm;",
+      "invocation_type": "virtual",
+      "method": "C",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0"
+      ],
+      "class": "Lm;",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "[class] Lm;",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getMainLooper",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0"
+      ],
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getThread",
+      "return_value": "Ljava/lang/Thread;#2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Thread;",
+      "invocation_type": "virtual",
+      "method": "currentThread",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p4294967295"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "c",
+      "return_value": "Ljava/lang/Thread;#2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "ordinal",
+      "return_value": "2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lr2;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "Ls2;#18",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "v2"
+      ],
+      "class": "Lv2;",
+      "invocation_type": "virtual",
+      "method": "d",
+      "return_value": "Ls2;#18",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lp4;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "source": "REAL_DALVIK_INTERPRETER"
+    }
+  ],
+  "timestamp": "2026-09-27T17:06:58Z",
+  "total_api_calls": 700
+}
