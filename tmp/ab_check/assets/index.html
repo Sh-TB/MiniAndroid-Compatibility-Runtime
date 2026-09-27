@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Block'Buster</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel=stylesheet type=text/css href="style.css">
+</head>
+
+<body id="test">
+  <div id="field"></div>
+  <div class="scores">Score: <span>0</span></div>
+  <div class="scores high">Highscore: <span>0</span></div>
+
+  <div class="wrap">
+    <div id="start" class="info">
+      <h1>Bl<span>o</span>ck'Buster</h1>
+      <section class="clear">
+        <input id="sfx" name="sfx" type="checkbox" checked><label for="sfx" class="sound_label"><span></span></label>
+      </section>
+      <span>Field size:</span>
+      <section class="clear">
+        <input type="radio" id="size1" name="size" value="32x18"><label for="size1" class="size_label">Small</label>
+        <input type="radio" id="size2" name="size" value="40x22" checked><label for="size2" class="size_label">Medium</label>
+        <input type="radio" id="size3" name="size" value="48x27"><label for="size3" class="size_label">Big</label>
+      </section>
+      <p><button onclick="start()">Start</button></p>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div id="pause" class="info">
+      <h2 class="status">||</h2>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div id="gameover" class="info">
+      <h2 class="status">Game over</h2>
+      <p id="highscore">New High Score: <span>23456</span></p>
+      <p id="stats">Games won: 15 / 244</p>
+      <p><button onclick="location.reload()">New game</button></p>
+    </div>
+  </div>
+
+  <audio preload="auto">
+    <source src="sound/ball.mp3">
+    <source src="sound/bonus.mp3">
+    <source src="sound/explosion.mp3">
+  </audio>
+
+  <script src="main.js"></script>
+</body>

@@ -8942,7 +8942,8 @@ bool DalvikExecutionEngine::dispatch_touch_listener(uint32_t view_object_id,
     return dispatched;
 }
 
-bool DalvikExecutionEngine::dispatch_click(uint32_t view_object_id) {
+bool DalvikExecutionEngine::dispatch_click(uint32_t view_object_id,
+                                           int tap_x, int tap_y) {
     if (shadow_registry_ == nullptr) {
         std::cerr << "[EXP060-CLICK] no shadow registry — cannot dispatch" << std::endl;
         return false;
@@ -8966,8 +8967,16 @@ bool DalvikExecutionEngine::dispatch_click(uint32_t view_object_id) {
     if (node->class_desc.find("WebView;") != std::string::npos) {
         auto eng = webview::WebViewRegistry::instance().find(view_object_id);
         if (eng) {
-            int lx = node->measured_width > 0 ? node->measured_width / 2 : 540;
-            int ly = node->measured_height > 0 ? node->measured_height / 2 : 960;
+            // S113 law: the tap POINT (view-local) drives the browser
+            // hit-test — the center fallback answers legacy callers only.
+            int lx, ly;
+            if (tap_x >= 0 && tap_y >= 0) {
+                lx = tap_x - node->x;
+                ly = tap_y - node->y;
+            } else {
+                lx = node->measured_width > 0 ? node->measured_width / 2 : 540;
+                ly = node->measured_height > 0 ? node->measured_height / 2 : 960;
+            }
             std::cerr << "[WV-INPUT] tap → browser events at local (" << lx << ","
                       << ly << ") view=o" << view_object_id << std::endl;
             for (const char* t : {"touchstart", "pointerdown", "mousedown",
@@ -15144,6 +15153,19 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
     // Covers NULL_REF and OBJECT_REF/object_id==0 (engine-wide null).
     // ────────────────────────────────────────────────────────────────────
     if (!args.empty() && f141_is_null_receiver(args[0])) {
+        // S113 ROOT-059 law: shadow-claimed platform classes route null
+        // receivers to the shadow's materialization law instead of the ART
+        // NPE — androidx's insets chain (Builder→Impl30→consume*) was built
+        // on non-null WindowInsets objects everywhere, and the runtime's
+        // platform law provides them. Unclaimed classes keep the
+        // ART-faithful throw below.
+        if (shadow_registry_ && shadow_registry_->claims_class(declaring_class)) {
+            std::cerr << "[ROOT-059] null-recv routed to shadow law: " << declaring_class
+                      << "." << method_name_from_dex << std::endl;
+            static_type = declaring_class;
+            runtime_type = declaring_class;
+            resolved_method = declaring_class + "." + method_name_from_dex;
+        } else {
         // F-141 DIAG (env-gated, bounded, remove after root closure §112-114):
         // dump the receiver value identity + current frame register window —
         // answers "which register carried the null receiver".
@@ -15172,10 +15194,12 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
                        "f141-null-recv");
         pc_ += 3;  // 35c length; a catch handler redirect overrides pc
         return true;
+        }
     }
 
     // Get the object reference (first arg is 'this' for virtual calls)
-    if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+    if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+        !(args[0].object_id == 0)) {
         DalvikValue this_obj = args[0];
         static_type = this_obj.class_desc;
 

@@ -9,6 +9,7 @@
 #include "bitmap_shadow.h"
 #include "matrix_shadow.h"
 #include "locale_insets_shadow.h"
+#include "window_insets_shadow.h"
 #include "gl_surface_shadow.h"
 #include "surface_view_shadow.h"
 #include "clipboard_shadow.h"
@@ -254,6 +255,8 @@ void register_platform_shadows(ShadowRegistry& reg) {
     reg.register_shadow<LooperShadow>();
     reg.register_shadow<HandlerShadow>();
     reg.register_shadow<ActivityShadow>();
+    // S113 ROOT-059: WindowInsets platform law (Builder.build + consume chain)
+    reg.register_shadow<WindowInsetsShadow>();
     reg.register_shadow<IntentShadow>();
     // M3 FAMILY-L ROOT FIX: java.util.concurrent.locks family
     // (ReentrantReadWriteLock/ReadLock/WriteLock/ReentrantLock). Exact-class

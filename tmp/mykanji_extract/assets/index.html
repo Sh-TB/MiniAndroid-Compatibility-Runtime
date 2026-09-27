@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>My Kanji</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="header">
+        My Kanji
+    </div>
+    <div class="n-kanji-seen">
+        <span id="seen-count"></span> / <span id="kanji-count"></span> kanji seen
+    </div>
+    <div id="cat-container">
+        <div class="kanji-display-cat kanji-display-cat1">
+        </div>
+    </div>
+    <div class="kanji-display">
+        <div class="streak">Streak: 0</div>
+        <div class="kanji-text">食べる</div>
+        <div class="kana-text"></div>
+    </div>
+    <div class="choices-question">
+        What does it mean?
+    </div>
+    <div class="choices-container">
+        <button class="choice-button">Study</button>
+        <button class="choice-button">Swim</button>
+        <button class="choice-button">Eat</button>
+        <button class="choice-button">Sleep</button>
+    </div>
+
+    <div id="dialogs">
+        <div class="dialog-overlay" id="successDialog" style="display: none;">
+            <div class="dialog-box">
+                <div class="dialog-header">
+                    🎉 Good job!
+                </div>
+                <div class="dialog-body">
+                    You got it right! 🌸<br>
+                    Keep going, you’re doing great!
+                </div>
+                <button class="dialog-button" onclick="closeCorrectDialog()">OK</button>
+            </div>
+        </div>
+
+        <div class="dialog-overlay" id="failDialog" style="display: none;">
+            <div class="dialog-box sad">
+                <div class="dialog-header">
+                    😿 Oops!
+                </div>
+                <div class="dialog-body">
+                    That’s not quite right…<br>
+                    The correct answer is <br/>
+                    "<span class="correct-answer"></span>"
+                </div>
+                <button class="dialog-button" onclick="closeIncorrectDialog()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="kanji.js"></script>
+    <script src="game.js"></script>
+    <audio id="click-sound" src="click.mp3" preload="auto"></audio>
+    <audio id="win1-sound" src="win1.mp3" preload="auto"></audio>
+    <audio id="win2-sound" src="win2.mp3" preload="auto"></audio>
+    <audio id="win3-sound" src="win3.mp3" preload="auto"></audio>
+    <audio id="lose-sound" src="lose.mp3" preload="auto"></audio>
+
+    <script>
+        const sound = document.getElementById("click-sound");
+        sound.volume = 0.5;
+
+        const win1 = document.getElementById("win1-sound");
+        const win2 = document.getElementById("win2-sound");
+        const win3 = document.getElementById("win3-sound");
+        const lose = document.getElementById("lose-sound");
+        win1.volume = 0.5;
+        win2.volume = 0.5;
+        win3.volume = 0.5;
+        lose.volume = 0.5;
+
+        document.querySelectorAll(".choice-button").forEach(button => {
+          button.addEventListener("click", () => {
+            sound.currentTime = 0;
+            sound.play().catch(e => {
+              console.log("Sound play failed:", e);
+            });
+          });
+        });
+    </script>
+
+</body>
+</html>

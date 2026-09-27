@@ -42,6 +42,10 @@ TouchDispatcher::TouchDispatcher(ViewShadow* views, HandlerShadow* handler,
 // OnClickListener, or a LongClickListener each set the respective AOSP flag
 // (setOnLongClickListener → setLongClickable, View.java L5930+).
 bool TouchDispatcher::view_touchable(const ViewShadow::ViewNode& n) const {
+    // S113 law (AOSP WebView.onTouchEvent): a WebView IS a touch target —
+    // the browser event pipeline consumes touches inside its bounds.
+    if (n.class_desc.find("Landroid/webkit/WebView;") != std::string::npos)
+        return true;
     // F-110e (S62+): a view with an OnTouchListener IS a touch target.
     // AOSP View.dispatchTouchEvent (View.java L16741+): the mOnTouchListener
     // gate runs BEFORE clickability matters — `li.mOnTouchListener != null &&
@@ -373,7 +377,7 @@ bool TouchDispatcher::fire_framework_callback(uint32_t token,
             const auto* n = views_->find_node(t);
             if (n && n->enabled) {
                 // View.performClick → dispatch onClick through real DEX.
-                rec["click_dispatched"] = click_fn_ ? click_fn_(t) : false;
+                rec["click_dispatched"] = click_fn_ ? click_fn_(t, down_x_, down_y_) : false;
             } else {
                 rec["click_dispatched"] = false;
                 rec["disabled_law"] = true;

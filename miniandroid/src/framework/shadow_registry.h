@@ -401,6 +401,18 @@ public:
     // Lookup a registered shadow by name (for direct configuration).
     Shadow* find(const std::string& name) const;
 
+    // S113 ROOT-059: true when any registered shadow claims the class.
+    // The F-141 null-receiver guard routes shadow-claimed invokes to the
+    // shadow's own null-receiver law (platform materialization) instead
+    // of the ART NPE — androidx's platform chain (Builder→Impl30→consume*)
+    // expects non-null WindowInsets objects everywhere, and the runtime's
+    // platform law provides them.
+    bool claims_class(const std::string& cls) const {
+        for (const auto& s : shadows_)
+            if (s->handles_class(cls)) return true;
+        return false;
+    }
+
     // Direct typed accessor (returns nullptr if not registered).
     template <typename T>
     T* find_as() const {

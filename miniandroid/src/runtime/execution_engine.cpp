@@ -588,8 +588,9 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                 touch_dispatcher_ = std::make_unique<framework::TouchDispatcher>(
                     view_shadow, handler_shadow);
                 touch_dispatcher_->set_click_dispatch(
-                    [this](uint32_t view_id) -> bool {
-                        return dalvik_engine_.dispatch_click(view_id);
+                    [this](uint32_t view_id, float x, float y) -> bool {
+                        return dalvik_engine_.dispatch_click(view_id, int(x),
+                                                             int(y));
                     });
                 touch_dispatcher_->set_long_click_dispatch(
                     [this](uint32_t view_id, bool& consumed) -> bool {

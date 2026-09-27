@@ -1,0 +1,57 @@
+{
+  "changed_pixels_vs_launch": 0,
+  "drains": [],
+  "events": [
+    {
+      "action": "ACTION_DOWN",
+      "consumed": false,
+      "law": "no touch target — dispatchTouchEvent returns false, no listener dispatch",
+      "root_id": 142,
+      "state_changes": [],
+      "target_view_id": 0,
+      "virtual_ms": 0,
+      "x": 540,
+      "y": 1440
+    }
+  ],
+  "frames": [
+    {
+      "event": "launch (no interaction)",
+      "file": "frame_000.png",
+      "index": 0,
+      "png_sha256": "429ffe7c12c84e89809c56e6e5d68c417d179379bb782a9dde12a502e5cd0a97",
+      "sha256": "37706eeebe06decf167c00baca2e060bcef4820f23d09a84a2544d3c8a40d5e2",
+      "visible_texts": []
+    }
+  ],
+  "gesture": "TAP",
+  "gesture_count": 1,
+  "laws": [
+    "View.java L17044-17047 touchable",
+    "L17049-17057 disabled",
+    "L17113-17125 DOWN setPressed + long-press arm",
+    "L17133-17169 UP post(PerformClick)+UnsetPressed(64ms)",
+    "L17172-17184 CANCEL cleanup",
+    "CheckForLongPress mHasPerformedLongPress suppression",
+    "one-MessageQueue ordering (framework tokens)"
+  ],
+  "no_target": true,
+  "pipeline": "canonical (TouchDispatcher law)",
+  "screen": {
+    "height": 1920,
+    "width": 1080
+  },
+  "touch_trace": [
+    {
+      "action": "ACTION_DOWN",
+      "consumed": false,
+      "law": "no touch target — dispatchTouchEvent returns false, no listener dispatch",
+      "root_id": 142,
+      "state_changes": [],
+      "target_view_id": 0,
+      "virtual_ms": 0,
+      "x": 540,
+      "y": 1440
+    }
+  ]
+}

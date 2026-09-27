@@ -1337,7 +1337,8 @@ public:
     //
     // `view_object_id` is the heap object_id of the target View.
     // Returns true if a listener was found and dispatched.
-    bool dispatch_click(uint32_t view_object_id);
+    bool dispatch_click(uint32_t view_object_id, int tap_x = -1,
+                        int tap_y = -1);
     // F-110e (S62+): dispatch a touch listener (View.OnTouchListener.onTouch)
     // for the G06 DOWN/UP pipeline. `consumed` mirrors the listener's boolean
     // return (true = the listener owns the gesture, AOSP View.dispatchTouchEvent).

@@ -102,6 +102,13 @@ struct WebViewEngine::Impl {
     bool page_error = false;
     bool layout_dirty = true;
 
+    // ── S113 CSS layout/paint state ─────────────────────────────────────
+    int css_viewport_w = -1;              // last width used for @media evaluation
+    std::vector<CssRule> active_rules;    // media-filtered rules for the current viewport
+    std::map<std::string, int> font_family_map;   // lowercased @font-face family → face idx
+    struct CachedImg { int w = 0, h = 0; std::vector<renderer::RGBA> px; bool ok = false; };
+    std::map<std::string, CachedImg> img_cache;
+
     double now() const { return now_ms; }
     WebViewEngine::Stats stats;
     // createElement/parse ownership bridge: node ptr → owning unique_ptr until
@@ -241,8 +248,17 @@ struct WebViewEngine::Impl {
     void run_scripts();
     void compute_layout();
     DomNode* body() const {
-        for (auto& c : doc.root->children)
-            if (c->tag == "body") return c.get();
+        // S113 law: the parser nests a real <html> element INSIDE the root
+        // holder (the parse() root is a synthetic holder), so <body> is NOT
+        // a direct child — search recursively (ROOT-051 find_body law).
+        std::function<DomNode*(DomNode*)> find = [&](DomNode* n) -> DomNode* {
+            for (auto& c : n->children) {
+                if (c->tag == "body") return c.get();
+                if (auto* r = find(c.get())) return r;
+            }
+            return nullptr;
+        };
+        if (auto* b = find(doc.root.get())) return b;
         return doc.root.get();
     }
 
@@ -849,14 +865,27 @@ static JSValue el_set_inner_html(JSContext* ctx, JSValueConst this_v, int argc, 
         const char* s = JS_ToCString(ctx, argv[0]);
         if (s) {
             auto frag = HtmlParser::parse_fragment(s);
+            // S113: injected subtrees get the active stylesheet applied
+            // (innerHTML-created elements match class/id rules immediately —
+            // the mykanji cat-swap law: .kanji-display-catN must style the
+            // fresh node the same frame it appears).
+            auto* imp = impl_of(ctx);
+            auto& rules = !imp->active_rules.empty() ? imp->active_rules : imp->css_rules;
+            // WHATWG innerHTML law: the setter REPLACES all children.
+            // (The old append-only behavior was invisible while injected
+            // nodes carried no styles; with full-GUI styling it produced
+            // duplicate cats — the S113 cat-swap regression.)
+            for (auto& old : n->children) imp->orphans.push_back({old.get(), std::move(old)});
+            n->children.clear();
             // adopt fragment children (transfer ownership out of the fragment box)
             for (auto& c : frag->children) {
                 DomNode* raw = c.get();
-                impl_of(ctx)->orphans.push_back({raw, std::move(c)});
+                imp->orphans.push_back({raw, std::move(c)});
                 raw->parent = n;
-                n->children.push_back(std::move(impl_of(ctx)->orphans.back().second));
+                n->children.push_back(std::move(imp->orphans.back().second));
                 // fix the orphan bridge to point at the new owner
-                impl_of(ctx)->orphans.pop_back();
+                imp->orphans.pop_back();
+                HtmlParser::apply_css_impl(raw, rules, &imp->custom_props, false);
             }
             JS_FreeCString(ctx, s);
         }
@@ -1027,6 +1056,30 @@ static JSValue el_removeEventListener(JSContext* ctx, JSValueConst this_v, int a
             JS_FreeCString(ctx, type);
         }
     }
+    return JS_UNDEFINED;
+}
+// S113 ROOT-060: HTMLMediaElement.play/pause — silent-resolution law.
+// The app-facing contract is the RETURN VALUE (a promise with .catch —
+// WHATWG HTML §4.8.11 play() returns a Promise); this runtime renders
+// without an audio sink, so playback resolves silently. The element-tag
+// check keeps non-media elements honest (undefined — "not a function"
+// stays correct for divs).
+static JSValue el_media_play(JSContext* ctx, JSValueConst this_v, int, JSValueConst*) {
+    auto* n = el_of(this_v);
+    if (!n || (n->tag != "audio" && n->tag != "video")) return JS_UNDEFINED;
+    // promise-like: { catch(fn), then(fn) } — fire-and-forget resolve
+    JSValue o = JS_NewObject(ctx);
+    JSValue catchfn = JS_NewCFunction(ctx, [](JSContext* c, JSValueConst, int,
+                                              JSValueConst*) -> JSValue {
+        return JS_UNDEFINED; }, "catch", 1);
+    JS_SetPropertyStr(ctx, o, "catch", catchfn);
+    JSValue thenfn = JS_NewCFunction(ctx, [](JSContext* c, JSValueConst, int,
+                                             JSValueConst*) -> JSValue {
+        return JS_UNDEFINED; }, "then", 1);
+    JS_SetPropertyStr(ctx, o, "then", thenfn);
+    return o;
+}
+static JSValue el_media_pause(JSContext* ctx, JSValueConst this_v, int, JSValueConst*) {
     return JS_UNDEFINED;
 }
 static JSValue el_getBoundingClientRect(JSContext* ctx, JSValueConst this_v, int, JSValueConst*) {
@@ -1622,8 +1675,72 @@ static JSValue doc_querySelectorAll(JSContext* ctx, JSValueConst, int argc, JSVa
         const char* sel = JS_ToCString(ctx, argv[0]);
         if (sel) {
             std::vector<DomNode*> out;
-            collect_tag(impl->doc.root.get(), lower_s(sel), out);
+            // S113 selector law: the REAL matcher (tag/.class/#id/compound/
+            // descendant) — the old tag-only collect_tag silently answered
+            // EMPTY for class selectors, so game.js's
+            // querySelectorAll(".choice-button").forEach(addEventListener)
+            // registered zero listeners (buttons were tap-dead).
+            std::function<void(DomNode*, const std::string&)> collect =
+                [&](DomNode* n, const std::string& s) {
+                if (n->tag != "#fragment" && HtmlParser::matches_selector(s, n))
+                    out.push_back(n);
+                for (auto& c : n->children) collect(c.get(), s);
+            };
+            collect(impl->doc.root.get(), lower_s(sel));
             JS_FreeCString(ctx, sel);
+            uint32_t i = 0;
+            for (auto* n : out) JS_SetPropertyUint32(ctx, arr, i++, impl->get_element_js(n));
+        }
+    }
+    return arr;
+}
+
+// S113 ROOT-060b: getElementsByClassName — live-ish array snapshot law
+// (WHATWG DOM §2.7). mykanji's fail dialog writes the correct answer via
+// document.getElementsByClassName("correct-answer")[0].
+static JSValue doc_getElementsByClassName(JSContext* ctx, JSValueConst, int argc, JSValueConst* argv) {
+    auto* impl = impl_of(ctx);
+    JSValue arr = JS_NewArray(ctx);
+    if (argc >= 1) {
+        const char* cls = JS_ToCString(ctx, argv[0]);
+        if (cls) {
+            std::string want(cls);
+            JS_FreeCString(ctx, cls);
+            std::function<void(DomNode*)> walk = [&](DomNode* n) {
+                auto it = n->attrs.find("class");
+                if (it != n->attrs.end()) {
+                    std::istringstream ss(it->second);
+                    std::string tok;
+                    while (ss >> tok)
+                        if (tok == want) { impl->get_element_js(n); break; }
+                }
+                bool matched = false;
+                {   // re-check for push (token loop above only probed)
+                    auto it2 = n->attrs.find("class");
+                    if (it2 != n->attrs.end()) {
+                        std::istringstream ss2(it2->second);
+                        std::string t2;
+                        while (ss2 >> t2) if (t2 == want) { matched = true; break; }
+                    }
+                }
+                if (matched) {
+                    // push (index computed via array length below)
+                }
+                for (auto& c : n->children) walk(c.get());
+            };
+            // simpler: direct collect
+            std::vector<DomNode*> out;
+            std::function<void(DomNode*)> collect = [&](DomNode* n) {
+                auto it = n->attrs.find("class");
+                if (it != n->attrs.end()) {
+                    std::istringstream ss(it->second);
+                    std::string tok;
+                    while (ss >> tok)
+                        if (tok == want) { out.push_back(n); break; }
+                }
+                for (auto& c : n->children) collect(c.get());
+            };
+            collect(impl->doc.root.get());
             uint32_t i = 0;
             for (auto* n : out) JS_SetPropertyUint32(ctx, arr, i++, impl->get_element_js(n));
         }
@@ -1754,6 +1871,13 @@ static void define_element_members(JSContext* ctx, JSValue o, DomNode* n) {
     method("getBoundingClientRect", el_getBoundingClientRect, 0);
     method("click", el_click, 0);
     method("focus", el_focus, 0);
+    // S113 ROOT-060: HTMLMediaElement law — play()/pause() exist on media
+    // elements; play() returns a promise (the app chains .catch on it).
+    // This runtime renders without an audio device: play resolves silently
+    // (honest degradation — the app's visual flow continues, which is what
+    // mykanji's sound.play().catch(...) gates).
+    method("play", el_media_play, 0);
+    method("pause", el_media_pause, 0);
     method("querySelector", doc_querySelector, 1);
     method("querySelectorAll", doc_querySelectorAll, 1);
     // canvas props + getContext
@@ -1908,6 +2032,7 @@ void WebViewEngine::Impl::setup_bindings() {
         JS_SetPropertyStr(ctx, document_obj, "getElementById", JS_NewCFunction(ctx, doc_getElementById, "getElementById", 1));
         JS_SetPropertyStr(ctx, document_obj, "querySelector", JS_NewCFunction(ctx, doc_querySelector, "querySelector", 1));
         JS_SetPropertyStr(ctx, document_obj, "querySelectorAll", JS_NewCFunction(ctx, doc_querySelectorAll, "querySelectorAll", 1));
+        JS_SetPropertyStr(ctx, document_obj, "getElementsByClassName", JS_NewCFunction(ctx, doc_getElementsByClassName, "getElementsByClassName", 1));
         JS_SetPropertyStr(ctx, document_obj, "createElement", JS_NewCFunction(ctx, doc_createElement, "createElement", 1));
         JS_SetPropertyStr(ctx, document_obj, "createTextNode", JS_NewCFunction(ctx, doc_createTextNode, "createTextNode", 1));
         JS_SetPropertyStr(ctx, document_obj, "addEventListener", JS_NewCFunction(ctx, win_addEventListener, "addEventListener", 2));
@@ -2359,7 +2484,15 @@ void WebViewEngine::Impl::compute_layout() {
     // (layout happens inside render; kept as a seam for future passes)
 }
 
-static void style_element(DomNode* n, double vw, double vh) {
+static std::string trim2(const std::string& s) {
+    size_t a = s.find_first_not_of(" \t\r\n");
+    if (a == std::string::npos) return "";
+    size_t b = s.find_last_not_of(" \t\r\n");
+    return s.substr(a, b - a + 1);
+}
+
+static void style_element(DomNode* n, double vw, double vh,
+                          const std::map<std::string, int>& font_map) {
     auto get = [&](const char* k) {
         auto it = n->style.find(k);
         return it != n->style.end() ? it->second : std::string();
@@ -2387,6 +2520,185 @@ static void style_element(DomNode* n, double vw, double vh) {
     n->bold = get("font-weight") == "bold" || get("font-weight") == "700";
     std::string ta = get("text-align");
     n->text_align = ta == "center" ? 1 : (ta == "right" ? 2 : 0);
+
+    // ── S113 CSS box model + paint properties ─────────────────────────
+    // padding shorthand (px corpus law; 1/2/3/4-value expansion)
+    {
+        int v[4] = {0, 0, 0, 0};
+        std::string pv = get("padding");
+        if (!pv.empty()) {
+            std::istringstream ss(pv); std::string tok; int k = 0;
+            while (ss >> tok && k < 4) v[k++] = int(::strtod(tok.c_str(), nullptr));
+            if (k == 1) { v[1] = v[2] = v[3] = v[0]; }
+            else if (k == 2) { v[2] = v[0]; v[3] = v[1]; }
+            else if (k == 3) { v[3] = v[1]; }
+        } else {
+            v[0] = int(::strtod(get("padding-top").c_str(), nullptr));
+            v[1] = int(::strtod(get("padding-right").c_str(), nullptr));
+            v[2] = int(::strtod(get("padding-bottom").c_str(), nullptr));
+            v[3] = int(::strtod(get("padding-left").c_str(), nullptr));
+        }
+        n->pad_t = v[0]; n->pad_r = v[1]; n->pad_b = v[2]; n->pad_l = v[3];
+    }
+    // margin shorthand + auto centering
+    {
+        int v[4] = {0, 0, 0, 0};
+        std::string mv = get("margin");
+        if (!mv.empty()) {
+            std::istringstream ss(mv); std::string tok; int k = 0;
+            while (ss >> tok && k < 4) {
+                if (tok == "auto") { if (k == 1 || k == 3) n->mar_lr_auto = true; v[k] = 0; }
+                else v[k] = int(::strtod(tok.c_str(), nullptr));
+                ++k;
+            }
+            if (k == 1) { v[1] = v[2] = v[3] = v[0]; }
+            else if (k == 2) { v[2] = v[0]; v[3] = v[1]; }
+            else if (k == 3) { v[3] = v[1]; }
+        } else {
+            v[0] = int(::strtod(get("margin-top").c_str(), nullptr));
+            v[1] = int(::strtod(get("margin-right").c_str(), nullptr));
+            v[2] = int(::strtod(get("margin-bottom").c_str(), nullptr));
+            v[3] = int(::strtod(get("margin-left").c_str(), nullptr));
+            n->mar_lr_auto = get("margin-left") == "auto" && get("margin-right") == "auto";
+        }
+        n->mar_t = v[0]; n->mar_r = v[1]; n->mar_b = v[2]; n->mar_l = v[3];
+        n->mar_t = std::max(-4096, std::min(4096, n->mar_t));
+        n->mar_b = std::max(-4096, std::min(4096, n->mar_b));
+    }
+    // border shorthand: "4px solid #ffcde4"
+    {
+        std::string bs = get("border");
+        if (!bs.empty()) {
+            std::istringstream ss(bs);
+            std::string wtok, styletok, coltok;
+            ss >> wtok >> styletok >> coltok;
+            int bw = int(::strtod(wtok.c_str(), nullptr));
+            bool okb = false;
+            uint32_t col = coltok.empty() ? 0xff000000 : parse_css_color(coltok, okb);
+            if (bw > 0 && styletok != "none") { n->border_w = bw; n->border_col = col; n->has_border = true; }
+        }
+        std::string bc = get("border-color");
+        std::string bws = get("border-width");
+        if (!bc.empty() && n->has_border) {
+            bool okb = false; uint32_t col = parse_css_color(bc, okb);
+            if (okb) n->border_col = col;
+        }
+        if (!bws.empty() && n->has_border)
+            n->border_w = int(::strtod(bws.c_str(), nullptr));
+    }
+    n->radius = int(::strtod(get("border-radius").c_str(), nullptr));
+    // display law: flex / inline / none (none already handled above)
+    {
+        std::string disp = get("display");
+        n->flex = disp == "flex";
+        if (disp == "inline") n->inline_el = true;
+        if (n->tag == "span" || n->tag == "a" || n->tag == "b" || n->tag == "strong" ||
+            n->tag == "em" || n->tag == "label" || n->tag == "small")
+            if (disp.empty()) n->inline_el = true;
+    }
+    if (get("align-items") == "center") n->align_items = 1;
+    if (get("justify-content") == "center") n->justify_content = 1;
+    // width/height % forms — S113 law: percentages resolve against the
+    // CONTAINING BLOCK at layout time; they must NOT set has_w (that would
+    // double-resolve against the viewport and add padding/border on top,
+    // producing 1126px buttons inside a 1080px container).
+    {
+        std::string ws = get("width"), hs = get("height");
+        if (!ws.empty() && ws.back() == '%') {
+            n->w_pct = float(::atof(ws.c_str()));
+        } else if (!ws.empty() && ws != "auto") {
+            n->w = int(css_len_px(ws, float(vw), 0));
+            n->has_w = true;   // px, vw, vh — all resolvable now
+        }
+        if (!hs.empty() && hs.back() == '%') {
+            n->h_pct = float(::atof(hs.c_str()));
+        } else if (!hs.empty() && hs != "auto") {
+            n->h = int(css_len_px(hs, float(vh), 0));
+            n->has_h = true;
+        }
+    }
+    if (!get("max-width").empty())
+        n->max_w = int(css_len_px(get("max-width"), float(vw), -1));
+    // background-image / gradient / shorthand backgrounds
+    {
+        std::string bi = get("background-image");
+        std::string bsh = get("background");
+        std::string src = !bi.empty() ? bi : bsh;
+        if (src.find("linear-gradient(") != std::string::npos) {
+            size_t g0 = src.find("linear-gradient(") + 16;
+            size_t g1 = src.find(')', g0);
+            if (g1 != std::string::npos) {
+                std::string body = src.substr(g0, g1 - g0);
+                // split top-level commas
+                std::vector<std::string> parts;
+                int depth = 0; std::string cur;
+                for (char c : body) {
+                    if (c == '(') ++depth;
+                    if (c == ')') --depth;
+                    if (c == ',' && depth == 0) { parts.push_back(trim2(cur)); cur.clear(); }
+                    else cur += c;
+                }
+                parts.push_back(trim2(cur));
+                size_t stop = 0;
+                if (!parts.empty() && parts[0].find("#") == std::string::npos &&
+                    parts[0].find("rgb") == std::string::npos)
+                    stop = 1;  // direction part
+                if (parts.size() >= stop + 2) {
+                    bool ok1 = false, ok2 = false;
+                    uint32_t c1 = parse_css_color(parts[stop], ok1);
+                    uint32_t c2 = parse_css_color(parts[stop + 1], ok2);
+                    if (ok1 && ok2) {
+                        n->grad = true; n->grad_from = c1; n->grad_to = c2;
+                        n->has_bg = false;  // gradient replaces the color
+                        if (!parts[0].empty() && parts[0].find("bottom") != std::string::npos)
+                            n->grad_diag = true;
+                    }
+                }
+            }
+        } else {
+            size_t u0 = src.find("url(");
+            if (u0 != std::string::npos) {
+                size_t p0 = u0 + 4, pe = src.find(')', p0);
+                if (pe != std::string::npos) {
+                    std::string url = src.substr(p0, pe - p0);
+                    url.erase(std::remove(url.begin(), url.end(), '"'), url.end());
+                    url.erase(std::remove(url.begin(), url.end(), '\''), url.end());
+                    n->bg_image = url;
+                }
+            }
+        }
+    }
+    if (get("background-size").find("contain") != std::string::npos) n->bg_contain = true;
+    if (get("transform").find("scaleX(-1)") != std::string::npos) n->bg_mirror = true;
+    // shadows
+    {
+        std::string ts = get("text-shadow");
+        if (!ts.empty()) {
+            size_t c0 = ts.find("rgba");
+            if (c0 == std::string::npos) c0 = ts.find("#");
+            if (c0 != std::string::npos) {
+                bool oks = false;
+                uint32_t col = parse_css_color(trim2(ts.substr(c0)), oks);
+                if (oks) { n->text_shadow = true; n->text_shadow_col = col; }
+            }
+        }
+        std::string bxs = get("box-shadow");
+        if (!bxs.empty() && bxs.find("inset") == std::string::npos) n->box_shadow = true;
+    }
+    // @font-face family resolution (Typeface.createFromAsset law)
+    {
+        auto fit = n->style.find("font-family");
+        if (fit != n->style.end()) {
+            std::string fams = lower_s(fit->second);
+            size_t comma = fams.find(',');
+            std::string first = comma == std::string::npos ? fams : fams.substr(0, comma);
+            first.erase(std::remove(first.begin(), first.end(), '"'), first.end());
+            first.erase(std::remove(first.begin(), first.end(), '\''), first.end());
+            first = trim2(first);
+            auto jit = font_map.find(first);
+            if (jit != font_map.end()) n->font_face = jit->second;
+        }
+    }
     if (n->is_canvas && n->canvas) {
         // canvas CSS size: style width/height; bitmap = JS-set size
         std::string cw = get("width"), chh = get("height");
@@ -2417,21 +2729,110 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
     }
     // page background: white (browser default) then body bg
     surface_fb->clear(renderer::Colors::WHITE);
-    auto* body = impl->body();
 
-    // pass 1: style + box computation
-    std::vector<DomNode*> flow;         // static, document order
-    std::vector<DomNode*> positioned;   // fixed/absolute, z-sorted later
-    std::function<void(DomNode*)> collect = [&](DomNode* n) {
+    // ══ S113 FULL-GUI RENDER LAW ═════════════════════════════════════════
+    // The render criterion is the COMPLETE graphical interface — CSS box
+    // layout (block + flex column), colors, borders, radii, gradients,
+    // images, shadows, pseudo-elements, typography — not merely "content
+    // present". Honest approximations: single-line text runs, px-only
+    // shorthands, static paint (CSS animations skipped).
+
+    // 0. @media evaluation — once per viewport width (constant per run).
+    if (impl->css_viewport_w != w) {
+        impl->active_rules.clear();
+        for (auto& r : impl->css_rules) {
+            if (r.media_min_w >= 0 && w < r.media_min_w) continue;
+            if (r.media_max_w >= 0 && w > r.media_max_w) continue;
+            impl->active_rules.push_back(r);
+        }
+        HtmlParser::apply_css(impl->doc.root.get(), impl->active_rules,
+                              &impl->custom_props);
+        impl->css_viewport_w = w;
+        std::cerr << "[WV-CSS] viewport=" << w
+                  << " active_rules=" << impl->active_rules.size() << std::endl;
+    }
+
+    // side tables (deterministic per render)
+    std::map<const DomNode*, std::string> merged_text;
+    std::map<const DomNode*, std::pair<int, int>> text_line;   // #text → (y_top, width)
+
+    auto face_of = [&](DomNode* n) {
+        return n->eff_face >= 0 ? n->eff_face : int(fonts::FACE_SYSTEM);
+    };
+
+    // 1. style walk: box-model resolution + inheritance + pseudo rules
+    std::function<void(DomNode*, DomNode*)> style_walk =
+        [&](DomNode* n, DomNode* parent) {
         if (n->tag == "script" || n->tag == "style" || n->tag == "head" ||
             n->tag == "title" || n->tag == "link" || n->tag == "meta")
             return;
-        style_element(n, double(w), double(h));
-        if (n->positioned) positioned.push_back(n);
-        else if (n->tag != "html" && n->tag != "body") flow.push_back(n);
-        for (auto& c : n->children) collect(c.get());
+        style_element(n, double(w), double(h), impl->font_family_map);
+        if (parent) {
+            n->eff_fg = n->has_fg ? n->fg : parent->eff_fg;
+            n->eff_fg_valid = n->has_fg || parent->eff_fg_valid;
+            n->eff_face = n->font_face >= 0 ? n->font_face : parent->eff_face;
+            n->eff_font_size = n->style.count("font-size")
+                ? n->font_size : parent->eff_font_size;
+            n->eff_bold = n->bold || parent->eff_bold;
+            // text-align tri-state law: explicit prop wins (including
+            // left!) — 0 must not mean "unset" or .choice-button's
+            // text-align:left would inherit the container's center.
+            n->eff_align = n->style.count("text-align")
+                ? (n->style.at("text-align") == "center" ? 1
+                  : n->style.at("text-align") == "right" ? 2 : 0)
+                : parent->eff_align;
+        } else {
+            n->eff_fg = n->fg; n->eff_fg_valid = n->has_fg;
+            n->eff_face = n->font_face;
+            n->eff_font_size = n->font_size;
+            n->eff_bold = n->bold;
+            n->eff_align = n->text_align;
+        }
+        // pseudo-element content (::before/::after rules)
+        n->pseudo_before.clear(); n->pseudo_after.clear();
+        for (auto& r : impl->active_rules) {
+            if (!r.pseudo_before && !r.pseudo_after) continue;
+            if (!HtmlParser::matches_selector(r.selector, n)) continue;
+            auto cit = r.props.find("content");
+            if (cit == r.props.end()) continue;
+            std::string content = cit->second;
+            if (content.size() >= 2 &&
+                (content.front() == '"' || content.front() == '\''))
+                content = content.substr(1, content.size() - 2);
+            if (r.pseudo_before) {
+                n->pseudo_before = content;
+                if (r.props.count("margin-right")) n->pseudo_before += " ";
+            } else {
+                if (r.props.count("margin-left")) n->pseudo_after += " ";
+                n->pseudo_after += content;
+            }
+        }
+        for (auto& c : n->children) style_walk(c.get(), n);
     };
-    for (auto& c : impl->doc.root->children) collect(c.get());
+    style_walk(impl->doc.root.get(), nullptr);
+
+    // own merged inline text of a node (spans merge into the parent flow;
+    // block children own their own lines — the S112 duplicate-text law fix)
+    std::function<void(DomNode*, std::string&)> gather_inline =
+        [&](DomNode* c, std::string& out) {
+        if (c->tag == "#text") { out += c->text; return; }
+        if (c->inline_el) for (auto& g : c->children) gather_inline(g.get(), out);
+    };
+    auto own_text_of = [&](DomNode* n) -> std::string {
+        auto it = merged_text.find(n);
+        if (it != merged_text.end()) return it->second;
+        std::string out;
+        for (auto& c : n->children) gather_inline(c.get(), out);
+        // whitespace-only merged text renders nothing (CSS white-space
+        // collapsing law — the newlines between block divs are HAM-less)
+        if (out.find_first_not_of(" \t\r\n") == std::string::npos) out.clear();
+        out = n->pseudo_before + out + n->pseudo_after;
+        merged_text[n] = out;
+        return out;
+    };
+    auto is_ws_text = [](const std::string& t) {
+        return t.find_first_not_of(" \t\r\n") == std::string::npos;
+    };
 
     // ROOT-051 law (CSS Backgrounds — the canvas background): the ROOT
     // element's (html, else body) background propagates to the viewport
@@ -2463,90 +2864,386 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
         }
     }
 
-    // pass 2: paint — static flow first (document order), then positioned
-    // (z-index ascending, stable) — CSS painting-order law (approximation).
-    auto paint_text_node = [&](DomNode* n, int x, int y, int w_box) {
-        std::string t = HtmlParser::text_content(n);
+    // 2. raster helpers — rounded-rect laws (per-pixel, alpha blending)
+    auto in_round = [&](int px, int py, int x, int y, int rw, int rh, int r) -> bool {
+        if (rw <= 0 || rh <= 0) return false;
+        if (px < x || px >= x + rw || py < y || py >= y + rh) return false;
+        if (r <= 0) return true;
+        if (r > rw / 2) r = rw / 2;
+        if (r > rh / 2) r = rh / 2;
+        int dx = 0, dy = 0;
+        if (px < x + r) dx = x + r - px;
+        else if (px >= x + rw - r) dx = px - (x + rw - r - 1);
+        if (py < y + r) dy = y + r - py;
+        else if (py >= y + rh - r) dy = py - (y + rh - r - 1);
+        return dx * dx + dy * dy <= r * r;
+    };
+    auto fill_round = [&](int x, int y, int rw, int rh, int r, renderer::RGBA col) {
+        for (int yy = std::max(0, y); yy < std::min(h, y + rh); ++yy)
+            for (int xx = std::max(0, x); xx < std::min(w, x + rw); ++xx)
+                if (in_round(xx, yy, x, y, rw, rh, r)) surface_fb->set_pixel(xx, yy, col);
+    };
+    auto fill_round_grad = [&](int x, int y, int rw, int rh, int r, bool diag,
+                               uint32_t from, uint32_t to) {
+        renderer::RGBA c1{uint8_t(from & 255), uint8_t((from >> 8) & 255),
+                          uint8_t((from >> 16) & 255), 255};
+        renderer::RGBA c2{uint8_t(to & 255), uint8_t((to >> 8) & 255),
+                          uint8_t((to >> 16) & 255), 255};
+        float denom = diag && (rw + rh) > 0 ? float(rw + rh) : float(rh > 0 ? rh : 1);
+        for (int yy = std::max(0, y); yy < std::min(h, y + rh); ++yy)
+            for (int xx = std::max(0, x); xx < std::min(w, x + rw); ++xx) {
+                if (!in_round(xx, yy, x, y, rw, rh, r)) continue;
+                float t = diag ? float((xx - x) + (yy - y)) / denom
+                               : float(yy - y) / denom;
+                t = std::max(0.f, std::min(1.f, t));
+                renderer::RGBA c{uint8_t(c1.r + (c2.r - c1.r) * t),
+                                 uint8_t(c1.g + (c2.g - c1.g) * t),
+                                 uint8_t(c1.b + (c2.b - c1.b) * t), 255};
+                surface_fb->set_pixel(xx, yy, c);
+            }
+    };
+    auto stroke_round_ring = [&](int x, int y, int rw, int rh, int r, int bw,
+                                 renderer::RGBA col) {
+        if (bw <= 0) return;
+        int ir = std::max(0, r - bw);
+        for (int yy = std::max(0, y); yy < std::min(h, y + rh); ++yy)
+            for (int xx = std::max(0, x); xx < std::min(w, x + rw); ++xx) {
+                if (!in_round(xx, yy, x, y, rw, rh, r)) continue;
+                if (in_round(xx, yy, x + bw, y + bw, std::max(0, rw - 2 * bw),
+                             std::max(0, rh - 2 * bw), ir))
+                    continue;
+                surface_fb->set_pixel(xx, yy, col);
+            }
+    };
+    // background-image (APK asset PNG law, contain fit, optional mirror)
+    auto draw_bg_image = [&](DomNode* n) {
+        auto it = impl->img_cache.find(n->bg_image);
+        if (it == impl->img_cache.end()) {
+            WebViewEngine::Impl::CachedImg img;
+            auto bytes = impl->fetch_asset(n->bg_image);
+            if (!bytes.empty()) {
+                renderer::DecodedImage dec;
+                if (renderer::decode_image_bytes(bytes, &dec) && dec.ok) {
+                    img.w = dec.width; img.h = dec.height; img.ok = true;
+                    img.px.resize(size_t(dec.width) * dec.height);
+                    for (size_t i = 0; i < img.px.size(); ++i)
+                        img.px[i] = {dec.rgba[i * 4], dec.rgba[i * 4 + 1],
+                                     dec.rgba[i * 4 + 2], dec.rgba[i * 4 + 3]};
+                }
+            }
+            if (wv_trace())
+                std::cerr << "[WV-IMG] " << n->bg_image << " ok=" << img.ok
+                          << " " << img.w << "x" << img.h << std::endl;
+            it = impl->img_cache.emplace(n->bg_image, std::move(img)).first;
+        }
+        if (!it->second.ok) return;
+        int cx = n->x + n->border_w + n->pad_l, cy2 = n->y + n->border_w + n->pad_t;
+        int cw = n->w - 2 * n->border_w - n->pad_l - n->pad_r;
+        int ch = n->h - 2 * n->border_w - n->pad_t - n->pad_b;
+        if (cw <= 0 || ch <= 0) return;
+        int dw = cw, dh = ch, ox = 0, oy = 0;
+        if (n->bg_contain) {
+            float sc = std::min(float(cw) / it->second.w, float(ch) / it->second.h);
+            dw = std::max(1, int(it->second.w * sc));
+            dh = std::max(1, int(it->second.h * sc));
+            ox = (cw - dw) / 2; oy = (ch - dh) / 2;
+        }
+        const auto& src = it->second.px;
+        int sw = it->second.w, sh2 = it->second.h;
+        for (int yy = 0; yy < dh; ++yy) {
+            int sy = int((yy + .5f) / dh * sh2);
+            if (sy >= sh2) sy = sh2 - 1;
+            for (int xx = 0; xx < dw; ++xx) {
+                int sx = int((xx + .5f) / dw * sw);
+                if (sx >= sw) sx = sw - 1;
+                if (n->bg_mirror) sx = sw - 1 - sx;
+                auto c = src[size_t(sy) * sw + sx];
+                if (c.a == 0) continue;
+                surface_fb->set_pixel(cx + ox + xx, cy2 + oy + yy, c);
+            }
+        }
+    };
+    // own merged text at the stored line position (align law, face law,
+    // text-shadow law)
+    auto draw_text_of = [&](DomNode* n, int line_y, int line_w) {
+        std::string t = own_text_of(n);
         if (t.empty()) return;
         auto& sh = fonts::TextShaper::instance();
         if (!sh.available()) return;
-        float size = n->font_size;
+        float size = n->eff_font_size;
+        int cw = n->w - 2 * n->border_w - n->pad_l - n->pad_r;
+        float tx = float(n->x + n->border_w + n->pad_l);
+        if (n->eff_align == 1)
+            tx = float(n->x + n->border_w + n->pad_l) +
+                 std::max(0.f, float(cw - line_w) / 2.f);
+        else if (n->eff_align == 2)
+            tx = float(n->x + n->w - n->border_w - n->pad_r - line_w);
         renderer::RGBA col{0, 0, 0, 255};
-        if (n->has_fg) {
-            col = renderer::RGBA{uint8_t(n->fg & 255), uint8_t((n->fg >> 8) & 255),
-                                 uint8_t((n->fg >> 16) & 255), uint8_t((n->fg >> 24) & 255)};
+        if (n->eff_fg_valid)
+            col = renderer::RGBA{uint8_t(n->eff_fg & 255),
+                                 uint8_t((n->eff_fg >> 8) & 255),
+                                 uint8_t((n->eff_fg >> 16) & 255),
+                                 uint8_t((n->eff_fg >> 24) & 255)};
+        int face = face_of(n);
+        float baseline = float(line_y) + size * 1.1f;   // legacy baseline law
+        if (n->text_shadow) {
+            renderer::RGBA shc{uint8_t(n->text_shadow_col & 255),
+                               uint8_t((n->text_shadow_col >> 8) & 255),
+                               uint8_t((n->text_shadow_col >> 16) & 255),
+                               uint8_t((n->text_shadow_col >> 24) & 255)};
+            sh.draw(*surface_fb, t, tx + 2, baseline + 2, size, shc, n->eff_bold, face);
         }
-        sh.draw(*surface_fb, t, float(x), float(y) + size * 1.1f, size, col, n->bold);
+        sh.draw(*surface_fb, t, tx, baseline, size, col, n->eff_bold, face);
     };
-    auto paint_box = [&](DomNode* n, int x, int y, int w_box, int h_box) {
-        n->x = x; n->y = y; n->w = w_box; n->h = h_box;
-        if (n->has_bg && w_box > 0 && h_box > 0) {
+
+    // 3. layout — block + flex-column subset (max-content shrink law,
+    //    block fill law, margin/padding/border box, auto-centering)
+    std::function<int(DomNode*)> measure_w = [&](DomNode* n) -> int {
+        int extra = 2 * n->border_w + n->pad_l + n->pad_r;
+        int cw2 = 0;
+        std::string t = own_text_of(n);
+        if (!t.empty()) {
+            auto& sh = fonts::TextShaper::instance();
+            if (sh.available())
+                cw2 = std::max(cw2, int(sh.shape(t, n->eff_font_size, n->eff_bold,
+                                                 face_of(n)).width));
+        }
+        for (auto& c : n->children) {
+            if (c->tag == "#text" || c->inline_el) continue;
+            if (c->display_none || !c->visible || c->positioned) continue;
+            if (c->has_w) cw2 = std::max(cw2, c->w + 2 * c->border_w + c->pad_l + c->pad_r);
+            else if (c->w_pct >= 0) continue;
+            else cw2 = std::max(cw2, measure_w(c.get()));
+        }
+        return cw2 + extra;
+    };
+
+    std::function<int(DomNode*, int, int, int)> layout_node_at;
+    auto layout_stack_once = [&](DomNode* n, int content_x, int content_y,
+                                 int content_w, int cy_shift) -> int {
+        int cy = content_y + cy_shift;
+        std::vector<int> widths(n->children.size(), -1);
+        std::vector<int> heights(n->children.size(), 0);
+        for (size_t i = 0; i < n->children.size(); ++i) {
+            DomNode* c = n->children[i].get();
+            if (c->tag == "#text") {
+                // whitespace-only text between block boxes renders nothing
+                if (is_ws_text(c->text)) continue;
+                int tw = 0;
+                auto& sh = fonts::TextShaper::instance();
+                if (sh.available() && !c->text.empty())
+                    tw = int(sh.shape(c->text, n->eff_font_size, n->eff_bold,
+                                      face_of(n)).width);
+                widths[i] = tw;
+                heights[i] = int(n->eff_font_size * 1.6f) + 4;   // legacy line law
+                continue;
+            }
+            // non-boxing elements: never take layout slots (the S113 audit:
+            // <audio> without controls and the head family are zero-size in
+            // browsers — as rows they added ~480px of phantom height).
+            if (c->tag == "script" || c->tag == "style" || c->tag == "head" ||
+                c->tag == "title" || c->tag == "link" || c->tag == "meta" ||
+                c->tag == "audio")
+                continue;
+            if (c->display_none || !c->visible || c->positioned) continue;
+            if (c->inline_el) { widths[i] = -2; continue; }   // merged into parent text
+            int extra = 2 * c->border_w + c->pad_l + c->pad_r;
+            if (c->has_w) widths[i] = c->w + extra;
+            else if (c->w_pct >= 0) widths[i] = int(float(content_w) * c->w_pct / 100.f);
+            else if (n->flex && n->align_items == 1)
+                widths[i] = std::min(measure_w(c), content_w);  // flex center shrink
+            else widths[i] = content_w;                         // block fill law
+            if (c->max_w >= 0 && widths[i] > c->max_w) widths[i] = c->max_w;
+            widths[i] = std::max(widths[i], 2 * c->border_w);
+        }
+        for (size_t i = 0; i < n->children.size(); ++i) {
+            DomNode* c = n->children[i].get();
+            if (c->tag == "#text") {
+                text_line[c] = {cy, widths[i]};
+                cy += heights[i];
+                continue;
+            }
+            if (widths[i] < 0) continue;
+            int x = content_x + c->mar_l;
+            if (n->align_items == 1 || c->mar_lr_auto)
+                x = content_x + std::max(0, content_w - widths[i]) / 2;
+            int hb = layout_node_at(c, x, cy, widths[i]);
+            cy += hb + c->mar_b;
+        }
+        return cy - content_y - cy_shift;
+    };
+    layout_node_at = [&](DomNode* n, int x, int y, int outer_w) -> int {
+        n->x = x; n->y = y; n->w = outer_w; n->laid_out = true;
+        if (wv_trace())
+            std::cerr << "[WV-BOX] tag=" << n->tag
+                      << " class=" << (n->attrs.count("class") ? n->attrs.at("class") : "")
+                      << " box=" << x << "," << y << " " << outer_w << "x" << n->h
+                      << " flex=" << n->flex << " hfixed=" << n->has_h
+                      << " fs=" << n->eff_font_size << std::endl;
+        int content_w = outer_w - 2 * n->border_w - n->pad_l - n->pad_r;
+        if (content_w < 0) content_w = 0;
+        int fixed_inner = -1;
+        if (n->has_h) fixed_inner = n->h - 2 * n->border_w - n->pad_t - n->pad_b;
+        int used = layout_stack_once(n, x + n->border_w + n->pad_l,
+                                     y + n->border_w + n->pad_t, content_w, 0);
+        if (n->flex && n->justify_content == 1 && fixed_inner > 0 && used < fixed_inner) {
+            layout_stack_once(n, x + n->border_w + n->pad_l,
+                              y + n->border_w + n->pad_t, content_w,
+                              (fixed_inner - used) / 2);
+            used = fixed_inner;
+        }
+        // leaf min-height law (legacy flow parity for leaf rows)
+        if (!n->has_h && n->h_pct < 0) {
+            bool leaf = true;
+            for (auto& c : n->children)
+                if (c->tag != "#text" && !c->inline_el) { leaf = false; break; }
+            if (leaf) {
+                int min_h = int(n->eff_font_size * 1.6f) + 4;
+                if (used < min_h) used = min_h;
+            }
+        }
+        if (!n->has_h)
+            n->h = used + 2 * n->border_w + n->pad_t + n->pad_b;
+        return n->h;
+    };
+
+    DomNode* body_n = impl->body();
+    layout_node_at(body_n, 0, 0, w);
+
+    // positioned roots (fixed/absolute) — resolve offsets, layout subtree
+    std::vector<DomNode*> pos_roots;
+    std::function<void(DomNode*)> collect_pos_roots = [&](DomNode* n) {
+        if (n->tag == "script" || n->tag == "style" || n->tag == "head" ||
+            n->tag == "title" || n->tag == "link" || n->tag == "meta") return;
+        if (n->positioned && n->visible) {
+            bool anc_pos = false;
+            for (DomNode* p = n->parent; p; p = p->parent)
+                if (p->positioned) { anc_pos = true; break; }
+            if (!anc_pos) pos_roots.push_back(n);
+        }
+        for (auto& c : n->children) collect_pos_roots(c.get());
+    };
+    collect_pos_roots(impl->doc.root.get());
+
+    std::function<void(DomNode*)> layout_positioned_root = [&](DomNode* n) {
+        auto gv = [&](const char* k) -> std::string {
+            auto it2 = n->style.find(k);
+            return it2 != n->style.end() ? it2->second : std::string();
+        };
+        float l = -1, t = -1, r_ = -1, b_ = -1;
+        if (!gv("left").empty()) l = css_len_px(gv("left"), float(w), 0);
+        if (!gv("top").empty()) t = css_len_px(gv("top"), float(h), 0);
+        if (!gv("right").empty()) r_ = css_len_px(gv("right"), float(w), 0);
+        if (!gv("bottom").empty()) b_ = css_len_px(gv("bottom"), float(h), 0);
+        int bw2 = n->w > 0 ? n->w : (r_ >= 0 && l >= 0 ? int(w - r_ - l)
+                                   : std::min(measure_w(n), w));
+        n->w = bw2;
+        int x2 = l >= 0 ? int(l) : (r_ >= 0 ? int(w - r_ - bw2) : 0);
+        int y2 = t >= 0 ? int(t) : 0;
+        n->x = x2; n->y = y2; n->laid_out = true;
+        int content_w = bw2 - 2 * n->border_w - n->pad_l - n->pad_r;
+        if (content_w < 0) content_w = 0;
+        int used = layout_stack_once(n, x2 + n->border_w + n->pad_l,
+                                     y2 + n->border_w + n->pad_t, content_w, 0);
+        if (n->flex && n->justify_content == 1) {
+            int fixed_inner = n->has_h ? n->h - 2 * n->border_w - n->pad_t - n->pad_b : -1;
+            if (fixed_inner > 0 && used < fixed_inner) {
+                layout_stack_once(n, x2 + n->border_w + n->pad_l,
+                                  y2 + n->border_w + n->pad_t, content_w,
+                                  (fixed_inner - used) / 2);
+                used = fixed_inner;
+            }
+        }
+        if (!n->has_h) {
+            int bh2 = (b_ >= 0 && t >= 0) ? int(h - b_ - t)
+                                          : used + 2 * n->border_w + n->pad_t + n->pad_b;
+            n->h = bh2;
+            if (b_ >= 0 && t < 0) n->y = int(h - b_ - bh2);
+        }
+    };
+    std::function<void(DomNode*)> layout_pos_nested = [&](DomNode* n) {
+        for (auto& c : n->children) {
+            if (c->tag == "script" || c->tag == "style" || c->tag == "head") continue;
+            if (c->positioned && c->visible) layout_positioned_root(c.get());
+            else if (!c->positioned) layout_pos_nested(c.get());
+        }
+    };
+    for (auto* pr : pos_roots) {
+        layout_positioned_root(pr);
+        layout_pos_nested(pr);
+    }
+
+    // 4. paint — flow (document order), then positioned (z ascending)
+    std::function<void(DomNode*)> paint_node = [&](DomNode* n) {
+        if (!n->visible || !n->laid_out) return;
+        if (n->tag == "script" || n->tag == "style" || n->tag == "head" ||
+            n->tag == "title" || n->tag == "link" || n->tag == "meta") return;
+        if (n->box_shadow)
+            fill_round(n->x, n->y + 6, n->w, n->h, n->radius + 4,
+                       renderer::RGBA{0, 0, 0, 36});
+        if (n->grad)
+            fill_round_grad(n->x, n->y, n->w, n->h, n->radius, n->grad_diag,
+                            n->grad_from, n->grad_to);
+        else if (n->has_bg) {
             renderer::RGBA c{uint8_t(n->bg & 255), uint8_t((n->bg >> 8) & 255),
-                             uint8_t((n->bg >> 16) & 255), uint8_t((n->bg >> 24) & 255)};
-            for (int yy = std::max(0, y); yy < std::min(h, y + h_box); ++yy)
-                for (int xx = std::max(0, x); xx < std::min(w, x + w_box); ++xx)
-                    surface_fb->set_pixel(xx, yy, c);
+                             uint8_t((n->bg >> 16) & 255), uint8_t(n->bg_alpha)};
+            fill_round(n->x, n->y, n->w, n->h, n->radius, c);
+        }
+        if (!n->bg_image.empty()) draw_bg_image(n);
+        if (n->has_border) {
+            renderer::RGBA bc{uint8_t(n->border_col & 255),
+                              uint8_t((n->border_col >> 8) & 255),
+                              uint8_t((n->border_col >> 16) & 255), 255};
+            stroke_round_ring(n->x, n->y, n->w, n->h, n->radius, n->border_w, bc);
         }
         if (n->is_canvas && n->canvas && n->canvas->bitmap().get_pixel_count() > 0 &&
-            w_box > 0 && h_box > 0) {
+            n->w > 0 && n->h > 0) {
             // canvas bitmap → page (drawImage semantics through Canvas2D)
             const auto& src = n->canvas->bitmap().get_pixels();
             int sw = n->canvas->bitmap().get_width(), shh = n->canvas->bitmap().get_height();
-            for (int yy = 0; yy < h_box; ++yy) {
-                int sy = int((yy + .5f) / h_box * shh);
+            for (int yy = 0; yy < n->h; ++yy) {
+                int sy = int((yy + .5f) / n->h * shh);
                 if (sy < 0 || sy >= shh) continue;
-                for (int xx = 0; xx < w_box; ++xx) {
-                    int sx = int((xx + .5f) / w_box * sw);
+                for (int xx = 0; xx < n->w; ++xx) {
+                    int sx = int((xx + .5f) / n->w * sw);
                     if (sx < 0 || sx >= sw) continue;
-                    int dx = x + xx, dy = y + yy;
+                    int dx = n->x + xx, dy = n->y + yy;
                     if (dx < 0 || dy < 0 || dx >= w || dy >= h) continue;
                     auto c = src[size_t(sy) * sw + sx];
-                    if (c.a == 255)
-                        surface_fb->set_pixel(dx, dy, c);
-                    else if (c.a > 0)
-                        surface_fb->set_pixel(dx, dy, c);  // set_pixel blends
+                    if (c.a > 0) surface_fb->set_pixel(dx, dy, c);
                 }
             }
         } else {
-            paint_text_node(n, x, y, w_box);
+            bool drawn = false;
+            for (auto& c : n->children) {
+                if (c->tag != "#text") continue;
+                if (drawn) break;
+                auto it2 = text_line.find(c.get());
+                if (it2 == text_line.end()) continue;
+                drawn = true;
+                draw_text_of(n, it2->second.first, it2->second.second);
+            }
+        }
+        for (auto& c : n->children) {
+            if (c->tag == "#text" || c->inline_el || c->positioned) continue;
+            paint_node(c.get());
         }
     };
+    // paint from the BODY (the root holder element is never laid out — the
+    // all-pink regression — and head-family children paint nothing anyway)
+    paint_node(body_n);
 
-    int flow_y = 0;
-    for (auto* n : flow) {
-        if (!n->visible) continue;
-        // block flow: full-width rows, stack vertically (document-order law
-        // approximation for block elements; corpus pages are fixed-layout)
-        int bh = n->h > 0 ? n->h : int(n->font_size * 1.6f) + 4;
-        int bw = n->w > 0 ? n->w : w;
-        if (bw > w) bw = w;
-        paint_box(n, 0, flow_y, bw, bh);
-        flow_y += bh;
-        if (flow_y > h) break;
-    }
-    std::stable_sort(positioned.begin(), positioned.end(),
+    std::vector<DomNode*> pos_paint;
+    std::function<void(DomNode*)> gather_pos = [&](DomNode* n) {
+        if (n->tag == "script" || n->tag == "style" || n->tag == "head" ||
+            n->tag == "title" || n->tag == "link" || n->tag == "meta") return;
+        if (n->positioned && n->visible && n->laid_out) pos_paint.push_back(n);
+        for (auto& c : n->children) gather_pos(c.get());
+    };
+    gather_pos(impl->doc.root.get());
+    std::stable_sort(pos_paint.begin(), pos_paint.end(),
                      [](const DomNode* a, const DomNode* b) { return a->z_index < b->z_index; });
-    for (auto* n : positioned) {
-        if (!n->visible) continue;
-        auto get = [&](const char* k) {
-            auto it = n->style.find(k);
-            return it != n->style.end() ? it->second : std::string();
-        };
-        float l = -1, t = -1, r = -1, b = -1;
-        if (!get("left").empty()) l = css_len_px(get("left"), float(w), 0);
-        if (!get("top").empty()) t = css_len_px(get("top"), float(h), 0);
-        if (!get("right").empty()) r = css_len_px(get("right"), float(w), 0);
-        if (!get("bottom").empty()) b = css_len_px(get("bottom"), float(h), 0);
-        std::string ntext = HtmlParser::text_content(n);
-        int bw = n->w > 0 ? n->w : (r >= 0 && l >= 0 ? int(w - r - l)
-                                    : int(fonts::TextShaper::instance()
-                                              .shape(ntext, n->font_size, n->bold)
-                                              .width) + 24);
-        int bh = n->h > 0 ? n->h : (b >= 0 && t >= 0 ? int(h - b - t) : int(n->font_size * 1.6f) + 8);
-        int x = l >= 0 ? int(l) : (r >= 0 ? int(w - r - bw) : 0);
-        int y = t >= 0 ? int(t) : (b >= 0 ? int(h - b - bh) : 0);
-        paint_box(n, x, y, bw, bh);
-    }
+    for (auto* p : pos_paint) paint_node(p);
 
     // blit the page surface into the caller's buffer
     const auto& px = surface_fb->get_pixels();
@@ -2638,6 +3335,17 @@ bool WebViewEngine::pointer_event(int x, int y, const std::string& type) {
     for (auto& c : impl->doc.root->children) walk(c.get());
     for (auto* n : all)
         if (contains(n, x, y)) hit = n;   // last in paint order wins
+    if (wv_trace())
+        std::cerr << "[WV-POINTER] " << type << " at (" << x << "," << y
+                  << ") hit=" << (hit ? hit->tag : "none")
+                  << (hit && hit->attrs.count("class")
+                          ? "." + hit->attrs.at("class")
+                          : "")
+                  << " listeners="
+                  << (hit && impl->listeners.count(hit)
+                          ? impl->listeners.at(hit).count(lower_s(type))
+                          : 0)
+                  << std::endl;
     if (!hit) return false;
     JSValue ev = JS_NewObject(impl->ctx);
     JS_SetPropertyStr(impl->ctx, ev, "type", JS_NewString(impl->ctx, type.c_str()));
@@ -2729,7 +3437,52 @@ bool WebViewEngine::load_document(const std::string& url, const std::string& htm
         for (auto& c : n->children) css(c.get());
     };
     css(impl->doc.root.get());
-    HtmlParser::apply_css(impl->doc.root.get(), impl->css_rules, &impl->custom_props);
+    // S113: external stylesheets — <link rel=stylesheet href> fetch + parse
+    // (the same APK-asset law external scripts use; no network dependency)
+    for (auto& [href, _tag] : impl->doc.external_styles) {
+        auto bytes = impl->fetch_asset(href);
+        if (bytes.empty()) {
+            std::cerr << "[WV-CSS] external stylesheet fetch FAILED: " << href << std::endl;
+            continue;
+        }
+        std::string css_text(bytes.begin(), bytes.end());
+        auto rules = HtmlParser::parse_stylesheet(css_text);
+        std::cerr << "[WV-CSS] external " << href << " rules=" << rules.size() << std::endl;
+        for (auto& r : rules) impl->css_rules.push_back(std::move(r));
+    }
+    // S113: @font-face registration law (Typeface.createFromAsset equivalence)
+    for (auto& r : impl->css_rules) {
+        if (r.selector != "@font-face") continue;
+        auto fam_it = r.props.find("font-family");
+        auto src_it = r.props.find("src");
+        if (fam_it == r.props.end() || src_it == r.props.end()) continue;
+        std::string family = lower_s(fam_it->second);
+        family.erase(std::remove(family.begin(), family.end(), '"'), family.end());
+        family.erase(std::remove(family.begin(), family.end(), '\''), family.end());
+        family = trim2(family);
+        size_t u0 = src_it->second.find("url(");
+        if (u0 == std::string::npos) continue;
+        size_t p0 = u0 + 4, pe = src_it->second.find(')', p0);
+        if (pe == std::string::npos) continue;
+        std::string url = src_it->second.substr(p0, pe - p0);
+        url.erase(std::remove(url.begin(), url.end(), '"'), url.end());
+        url.erase(std::remove(url.begin(), url.end(), '\''), url.end());
+        auto fbytes = impl->fetch_asset(url);
+        if (fbytes.empty()) {
+            std::cerr << "[WV-FONT] fetch FAILED: " << url << std::endl;
+            continue;
+        }
+        int idx = fonts::TextShaper::instance().register_app_font_memory(fbytes, family, false);
+        if (idx >= 0) {
+            impl->font_family_map[family] = idx;
+            std::cerr << "[WV-FONT] registered '" << family << "' face=" << idx
+                      << " (" << fbytes.size() << " bytes)" << std::endl;
+        } else {
+            std::cerr << "[WV-FONT] register FAILED for '" << family << "'" << std::endl;
+        }
+    }
+    HtmlParser::apply_css_impl(impl->doc.root.get(), impl->css_rules,
+                               &impl->custom_props, true);
     std::cerr << "[WV-ENGINE] css rules=" << impl->css_rules.size() << std::endl;
     impl->setup_bindings();
     impl->run_scripts();
