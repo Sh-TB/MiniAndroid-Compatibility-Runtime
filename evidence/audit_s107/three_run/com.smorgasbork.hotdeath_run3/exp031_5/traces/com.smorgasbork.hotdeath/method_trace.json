@@ -1,0 +1,175 @@
+{
+  "apk_name": "com.smorgasbork.hotdeath.apk",
+  "main_class": "Lcom/smorgasbork/hotdeath/Main;",
+  "main_method": "onCreate",
+  "methods": [
+    {
+      "class": "Lcom/smorgasbork/hotdeath/Main;",
+      "entry_point": true,
+      "method": "onCreate",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/app/Activity;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Landroid/app/Activity;<super>",
+      "invocation_type": "virtual",
+      "method": "onCreate",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Lcom/smorgasbork/hotdeath/Main;",
+      "invocation_type": "virtual",
+      "method": "setContentView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Lcom/smorgasbork/hotdeath/Main;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#11",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p1",
+        "p0"
+      ],
+      "class": "Landroid/widget/ImageButton;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Lcom/smorgasbork/hotdeath/Main;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#12",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p1",
+        "p0"
+      ],
+      "class": "Landroid/widget/ImageButton;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Lcom/smorgasbork/hotdeath/Main;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#13",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p1",
+        "p0"
+      ],
+      "class": "Landroid/widget/ImageButton;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Lcom/smorgasbork/hotdeath/Main;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#14",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p1",
+        "p0"
+      ],
+      "class": "Landroid/widget/ImageButton;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Lcom/smorgasbork/hotdeath/Main;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#15",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p1",
+        "p0"
+      ],
+      "class": "Landroid/widget/ImageButton;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "p1"
+      ],
+      "class": "Lcom/smorgasbork/hotdeath/Main;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#16",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p1",
+        "p0"
+      ],
+      "class": "Landroid/widget/ImageButton;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    }
+  ],
+  "timestamp": "2026-09-27T14:32:17Z",
+  "total_api_calls": 15
+}

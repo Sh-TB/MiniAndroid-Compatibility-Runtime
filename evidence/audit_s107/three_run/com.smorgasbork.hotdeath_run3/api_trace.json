@@ -1,0 +1,719 @@
+{
+  "calls": [
+    {
+      "category": "SYSTEM",
+      "class": "TraceEngine",
+      "level": "INFO",
+      "message": "Session started: EXP-001-20260927-143217-7094",
+      "method": "start_session",
+      "timestamp": 1790519537095
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Loading APK: /tmp/s107_audit_apks/com.smorgasbork.hotdeath.apk",
+      "method": "stage_load_apk",
+      "timestamp": 1790519537095
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Package: com.smorgasbork.hotdeath, Main Activity: com.smorgasbork.hotdeath.Main",
+      "method": "stage_load_apk",
+      "timestamp": 1790519537101
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Parsing DEX files",
+      "method": "stage_parse_dex",
+      "timestamp": 1790519537101
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Parsed 32 classes, 538 methods",
+      "method": "stage_parse_dex",
+      "timestamp": 1790519537105
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Initializing runtime",
+      "method": "stage_initialize_runtime",
+      "timestamp": 1790519537105
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Framebuffer allocated: 1080x1920",
+      "method": "stage_initialize_runtime",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Loading class definitions",
+      "method": "stage_load_classes",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/smorgasbork/hotdeath/GameActivity$a; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/smorgasbork/hotdeath/GameActivity$b; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/smorgasbork/hotdeath/GameActivity$c; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/smorgasbork/hotdeath/GameActivity$d; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/smorgasbork/hotdeath/GameActivity$e; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/smorgasbork/hotdeath/GameActivity; extends Landroid/app/Activity; (18 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/smorgasbork/hotdeath/Main; extends Landroid/app/Activity; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/smorgasbork/hotdeath/Prefs; extends Landroid/preference/PreferenceActivity; (19 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/smorgasbork/hotdeath/a; extends Ljava/lang/Object; (18 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/smorgasbork/hotdeath/b; extends Ljava/lang/Object; (9 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/smorgasbork/hotdeath/c; extends Landroid/widget/BaseAdapter; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/smorgasbork/hotdeath/d; extends Ljava/lang/Object; (9 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/smorgasbork/hotdeath/f$a; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/smorgasbork/hotdeath/f$b; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/smorgasbork/hotdeath/f$c; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/smorgasbork/hotdeath/f$d; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/smorgasbork/hotdeath/f$e; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/smorgasbork/hotdeath/f$f; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/smorgasbork/hotdeath/f$g; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/smorgasbork/hotdeath/f; extends Ljava/lang/Thread; (75 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/smorgasbork/hotdeath/g; extends Ljava/lang/Object; (15 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/smorgasbork/hotdeath/h$a; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/smorgasbork/hotdeath/h$b; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/smorgasbork/hotdeath/h$c; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/smorgasbork/hotdeath/h$d; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/smorgasbork/hotdeath/h; extends Landroid/view/View; (41 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/smorgasbork/hotdeath/i; extends Ljava/lang/Object; (18 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/smorgasbork/hotdeath/k; extends Ljava/lang/Object; (16 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/smorgasbork/hotdeath/l; extends Ljava/lang/Object; (36 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/smorgasbork/hotdeath/m; extends Landroid/app/Dialog; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/smorgasbork/hotdeath/e; extends Lcom/smorgasbork/hotdeath/l; (12 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/smorgasbork/hotdeath/j; extends Lcom/smorgasbork/hotdeath/l; (12 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Executing application lifecycle",
+      "method": "stage_execute_application",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "[REAL_DALVIK_INTERPRETER] Starting real bytecode execution",
+      "method": "stage_execute_application_real_dalvik",
+      "timestamp": 1790519537125
+    },
+    {
+      "category": "SYSTEM",
+      "class": "DalvikEngine",
+      "level": "INFO",
+      "message": "Instructions executed: 30",
+      "method": "execute_apk",
+      "timestamp": 1790519537139
+    },
+    {
+      "category": "SYSTEM",
+      "class": "DalvikEngine",
+      "level": "INFO",
+      "message": "API calls traced: 15",
+      "method": "execute_apk",
+      "timestamp": 1790519537139
+    },
+    {
+      "category": "SYSTEM",
+      "class": "DalvikEngine",
+      "level": "INFO",
+      "message": "Heap objects: 16",
+      "method": "execute_apk",
+      "timestamp": 1790519537139
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "✅ REAL EXECUTION CONFIRMED - 30 opcodes executed",
+      "method": "validation",
+      "timestamp": 1790519537139
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "ExecutionSource = REAL_DALVIK_INTERPRETER (verified)",
+      "method": "execution_source",
+      "timestamp": 1790519537139
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "[REAL_DALVIK_INTERPRETER] Creating view from execution evidence",
+      "method": "create_view_from_dalvik_result",
+      "timestamp": 1790519537139
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Creating HelloWorld view",
+      "method": "create_hello_world_view",
+      "timestamp": 1790519537139
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "✅ Lifecycle onCreate/onStart/onResume executed as DEX bytecode (REAL_DALVIK_INTERPRETER, entry-time provenance)",
+      "method": "lifecycle_source",
+      "timestamp": 1790519537139
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "✅ All lifecycle events sourced from REAL_DALVIK_INTERPRETER",
+      "method": "lifecycle_verified",
+      "timestamp": 1790519537139
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Generating mandatory trace files: /home/z/my-project/evidence/audit_s107/three_run/com.smorgasbork.hotdeath_run3/exp031_5/traces/com.smorgasbork.hotdeath",
+      "method": "trace_export",
+      "timestamp": 1790519537139
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "✅ Trace files generated successfully",
+      "method": "trace_export",
+      "timestamp": 1790519537139
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - opcode_trace.json",
+      "method": "trace_files",
+      "timestamp": 1790519537139
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - method_trace.json",
+      "method": "trace_files",
+      "timestamp": 1790519537139
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - register_trace.json",
+      "method": "trace_files",
+      "timestamp": 1790519537139
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - heap_trace.json",
+      "method": "trace_files",
+      "timestamp": 1790519537139
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - execution_summary.json (contains verdict)",
+      "method": "trace_files",
+      "timestamp": 1790519537139
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Found 6 views with click listeners",
+      "method": "phase_b_click",
+      "timestamp": 1790519537139
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "dispatch_click(16) → OK",
+      "method": "phase_b_click",
+      "timestamp": 1790519537139
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "dispatch_click(15) → OK",
+      "method": "phase_b_click",
+      "timestamp": 1790519537139
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "dispatch_click(14) → OK",
+      "method": "phase_b_click",
+      "timestamp": 1790519537140
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "dispatch_click(13) → OK",
+      "method": "phase_b_click",
+      "timestamp": 1790519537140
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "dispatch_click(12) → OK",
+      "method": "phase_b_click",
+      "timestamp": 1790519537140
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "dispatch_click(11) → OK",
+      "method": "phase_b_click",
+      "timestamp": 1790519537140
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Real Dalvik execution complete",
+      "method": "stage_execute_application_real_dalvik",
+      "timestamp": 1790519537140
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendering frame",
+      "method": "stage_render_frame",
+      "timestamp": 1790519537140
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "IMG-RES-RENDER drew 'res/drawable-xhdpi-v4/sel_btn_new_game.xml' (400x100, state-list->palette→rgba, src_density=320) fit-center at (277,645 525x131)",
+      "method": "stage_render_frame",
+      "timestamp": 1790519537165
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "IMG-RES-RENDER drew 'res/drawable-xhdpi-v4/sel_btn_settings.xml' (400x100, state-list->palette→rgba, src_density=320) fit-center at (277,771 525x131)",
+      "method": "stage_render_frame",
+      "timestamp": 1790519537166
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "IMG-RES-RENDER drew 'res/drawable-xhdpi-v4/sel_btn_help.xml' (400x100, state-list->palette→rgba, src_density=320) fit-center at (277,897 525x131)",
+      "method": "stage_render_frame",
+      "timestamp": 1790519537167
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "IMG-RES-RENDER drew 'res/drawable-xhdpi-v4/sel_btn_about.xml' (400x100, state-list->palette→rgba, src_density=320) fit-center at (277,1023 525x131)",
+      "method": "stage_render_frame",
+      "timestamp": 1790519537168
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "IMG-RES-RENDER drew 'res/drawable-xhdpi-v4/sel_btn_exit.xml' (400x100, state-list->palette→rgba, src_density=320) fit-center at (277,1149 525x131)",
+      "method": "stage_render_frame",
+      "timestamp": 1790519537169
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
+      "method": "stage_render_frame",
+      "timestamp": 1790519537190
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Capturing output",
+      "method": "stage_capture_output",
+      "timestamp": 1790519537190
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "post-lifecycle frame pump done",
+      "method": "stage_capture_output",
+      "timestamp": 1790519537190
+    },
+    {
+      "category": "SYSTEM",
+      "class": "TraceEngine",
+      "level": "INFO",
+      "message": "Screenshot captured: /home/z/my-project/evidence/audit_s107/three_run/com.smorgasbork.hotdeath_run3/screenshot.png (1080x1920, 8294400 bytes)",
+      "method": "log_screenshot",
+      "timestamp": 1790519537276
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "PNG screenshot saved to: /home/z/my-project/evidence/audit_s107/three_run/com.smorgasbork.hotdeath_run3/screenshot.png",
+      "method": "stage_capture_output",
+      "timestamp": 1790519537276
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendering frame",
+      "method": "stage_render_frame",
+      "timestamp": 1790519537316
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "IMG-RES-RENDER drew 'res/drawable-xhdpi-v4/sel_btn_new_game.xml' (400x100, state-list->palette→rgba, src_density=320) fit-center at (277,645 525x131)",
+      "method": "stage_render_frame",
+      "timestamp": 1790519537341
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "IMG-RES-RENDER drew 'res/drawable-xhdpi-v4/sel_btn_settings.xml' (400x100, state-list->palette→rgba, src_density=320) fit-center at (277,771 525x131)",
+      "method": "stage_render_frame",
+      "timestamp": 1790519537342
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "IMG-RES-RENDER drew 'res/drawable-xhdpi-v4/sel_btn_help.xml' (400x100, state-list->palette→rgba, src_density=320) fit-center at (277,897 525x131)",
+      "method": "stage_render_frame",
+      "timestamp": 1790519537343
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "IMG-RES-RENDER drew 'res/drawable-xhdpi-v4/sel_btn_about.xml' (400x100, state-list->palette→rgba, src_density=320) fit-center at (277,1023 525x131)",
+      "method": "stage_render_frame",
+      "timestamp": 1790519537344
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "IMG-RES-RENDER drew 'res/drawable-xhdpi-v4/sel_btn_exit.xml' (400x100, state-list->palette→rgba, src_density=320) fit-center at (277,1149 525x131)",
+      "method": "stage_render_frame",
+      "timestamp": 1790519537344
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendered ViewShadow tree with BitmapFont (root_id=9)",
+      "method": "stage_render_frame",
+      "timestamp": 1790519537366
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Capturing output (F-NEW-198 end-of-window pass)",
+      "method": "stage_capture_output",
+      "timestamp": 1790519537366
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "final pass: no compose pump (F-NEW-198 record-only)",
+      "method": "stage_capture_output",
+      "timestamp": 1790519537366
+    },
+    {
+      "category": "SYSTEM",
+      "class": "TraceEngine",
+      "level": "INFO",
+      "message": "Screenshot captured: /home/z/my-project/evidence/audit_s107/three_run/com.smorgasbork.hotdeath_run3/screenshot.png (1080x1920, 8294400 bytes)",
+      "method": "log_screenshot",
+      "timestamp": 1790519537452
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "PNG screenshot saved to: /home/z/my-project/evidence/audit_s107/three_run/com.smorgasbork.hotdeath_run3/screenshot.png",
+      "method": "stage_capture_output",
+      "timestamp": 1790519537452
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Generating reports",
+      "method": "stage_generate_reports",
+      "timestamp": 1790519537494
+    }
+  ],
+  "generated_at": "2026-09-27 14:32:17 UTC",
+  "session_id": "EXP-001-20260927-143217-7094",
+  "total_calls": 89
+}
