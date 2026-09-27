@@ -17,6 +17,7 @@
 #include "../resources/res_config.h"  // G04 §4: device_config() density law
 // EXP-086 Phase 7 (B4 FIX): HandlerShadow for Runnable queue drain
 #include "../framework/android_shadows.h"
+#include "../webview/webview_engine.h"
 #include "../framework/dialog_shadow.h"
 #include "../framework/gl_surface_shadow.h"
 #include "../gles/pgl_backend.h"
@@ -3050,7 +3051,39 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                             // Replaces the fixed 8x16 BitmapFont (which
                             // ignored textSize/colour/bold and rendered
                             // microscopic text on density-scaled screens).
-                            if (!node->text.empty() && !node_invisible) {
+                            // S109 WEBVIEW-ENGINE: WebView-family nodes paint
+                            // through the REAL HTML5 execution subsystem —
+                            // the composed DOM/canvas page surface is blitted
+                            // into the framebuffer at the node's layout rect.
+                            // node->text stays empty (engine owns the face);
+                            // the HTML→text law is only the no-engine
+                            // fallback (android_shadows F-085).
+                            bool webview_painted = false;
+                            if (!node_invisible && w > 0 && h > 0 &&
+                                node->class_desc.find("WebView;") != std::string::npos) {
+                                auto eng = webview::WebViewRegistry::instance()
+                                                .find(node->view_id);
+                                if (eng) {
+                                    std::vector<uint8_t> wvbuf(size_t(w) * h * 4);
+                                    eng->render(wvbuf.data(), w, h);
+                                    for (int yy = 0; yy < h; ++yy) {
+                                        const uint8_t* row =
+                                            &wvbuf[size_t(yy) * w * 4];
+                                        for (int xx = 0; xx < w; ++xx) {
+                                            fb.set_pixel(left + xx, top + yy,
+                                                         renderer::RGBA{
+                                                             row[xx * 4],
+                                                             row[xx * 4 + 1],
+                                                             row[xx * 4 + 2], 255});
+                                        }
+                                    }
+                                    webview_painted = true;
+                                    std::cerr << "[WV-RENDER] webview surface blitted: view=o"
+                                              << node->view_id << " rect=" << left << ","
+                                              << top << " " << w << "x" << h << std::endl;
+                                }
+                            }
+                            if (!node->text.empty() && !node_invisible && !webview_painted) {
                                 // S81: opt-in text-draw trace (visual root-cause
                                 // workflow §43 LOCATE step)
                                 static const bool s_text_trace =
@@ -4893,6 +4926,7 @@ int ExecutionEngine::pump_compose_frames(int max_frames) {
     auto* hs = registry->find_as<framework::HandlerShadow>();
     int fired_frames = 0;
     int clock_advances_ = 0;  // F-115b: virtual-clock advance budget
+    double pump_ms = 16.6;    // S109: webview event-loop clock (per-tick vsync)
     // [F100-IDLEDRAIN] AOSP MessageQueue idle law: messages dispatch on idle
     // INDEPENDENT of vsync (the Choreographer frame is only one wake source;
     // AndroidUiDispatcher.dispatch posts BOTH a handler message and a frame
@@ -4930,6 +4964,14 @@ int ExecutionEngine::pump_compose_frames(int max_frames) {
                 for (uint32_t rid : drained) invoke_handler_runnable(rid);
             }
         }
+        // S109 WEBVIEW-ENGINE: JS timers + requestAnimationFrame are driven by
+        // the same vsync pump (one frame clock law). 16.6ms per pump tick —
+        // the Choreographer frame interval (choreographer_shadow kFrameInterval).
+        if (webview::WebViewRegistry::instance().any_needs_frames()) {
+            webview::WebViewRegistry::instance().tick_all(pump_ms);
+            did_work = true;  // an rAF loop keeps the pump alive until the bound
+        }
+        pump_ms += 16.6;
         if (!did_work) {
             // F-115b REVISED (R-NEW-384 family): the LAUNCH-frame quiescence
             // does NOT advance the virtual clock. Contract: the launch frame
