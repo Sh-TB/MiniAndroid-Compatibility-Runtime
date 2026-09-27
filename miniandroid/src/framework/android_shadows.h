@@ -894,6 +894,12 @@ private:
     // Application object per process, bound by ActivityThread).
     uint32_t application_heap_id_ = 0;
     std::string application_heap_class_;
+    // S110 ROOT-047: per-activity base context (AOSP ContextWrapper.mBase
+    // identity law — attachBaseContext binds it BEFORE onCreate, so
+    // getBaseContext() inside onCreate is NEVER null). Keyed by the
+    // activity/receiver object id.
+    std::map<uint32_t, uint32_t> base_contexts_;
+    std::map<uint32_t, std::string> base_context_classes_;
     uint32_t content_view_id_ = 0;
     // F-058 (R-NEW-279): Application.ActivityLifecycleCallbacks registry
     // (CopyOnWriteArrayList semantics — see public accessors above).
