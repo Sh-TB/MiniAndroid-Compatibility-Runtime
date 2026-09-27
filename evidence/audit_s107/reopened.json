@@ -1,0 +1,622 @@
+[
+ {
+  "number": 141,
+  "package": "com.kompact",
+  "reason": "BACKGROUND_ONLY"
+ },
+ {
+  "number": 142,
+  "package": "com.ma.tehro",
+  "reason": "BACKGROUND_ONLY"
+ },
+ {
+  "number": 143,
+  "package": "net.bible.android.activity",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 145,
+  "package": "com.tutpro.baresip.plus",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 146,
+  "package": "it.fast4x.riplay",
+  "reason": "BACKGROUND_ONLY"
+ },
+ {
+  "number": 147,
+  "package": "org.stingle.photos",
+  "reason": "BLANK_SCREEN"
+ },
+ {
+  "number": 148,
+  "package": "com.forrestguice.suntimeswidget",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 149,
+  "package": "com.vayunmathur.clock",
+  "reason": "BACKGROUND_ONLY"
+ },
+ {
+  "number": 150,
+  "package": "com.luc4n3x.levyra",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 151,
+  "package": "com.firebirdberlin.nightdream.noGms",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 152,
+  "package": "com.vagujhelyigergely.calculatorm3",
+  "reason": "BACKGROUND_ONLY"
+ },
+ {
+  "number": 153,
+  "package": "com.hegocre.nextcloudpasswords",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 154,
+  "package": "com.chmouel.liseur",
+  "reason": "BACKGROUND_ONLY"
+ },
+ {
+  "number": 155,
+  "package": "protectedwp.safespace",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 159,
+  "package": "org.ojrandom.paiesque",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 160,
+  "package": "com.greenart7c3.nostrsigner",
+  "reason": "BACKGROUND_ONLY"
+ },
+ {
+  "number": 161,
+  "package": "com.divinelink.scenepeek",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 162,
+  "package": "app.fedilab.castlab",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 163,
+  "package": "de.schliweb.makeacopy",
+  "reason": "BLANK_SCREEN"
+ },
+ {
+  "number": 164,
+  "package": "fr.corenting.convertisseureurofranc",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 165,
+  "package": "io.paperterm.app",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 167,
+  "package": "com.kolakek.pimiwidget",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 168,
+  "package": "is.xyz.mpv",
+  "reason": "BACKGROUND_ONLY"
+ },
+ {
+  "number": 169,
+  "package": "orinasa.njarasoa.maripanatokana",
+  "reason": "BACKGROUND_ONLY"
+ },
+ {
+  "number": 170,
+  "package": "tibarj.tranquilstopwatch",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 171,
+  "package": "com.davidtakac.bura",
+  "reason": "BACKGROUND_ONLY"
+ },
+ {
+  "number": 177,
+  "package": "com.co3",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 178,
+  "package": "com.crome.forecastpoint",
+  "reason": "BACKGROUND_ONLY"
+ },
+ {
+  "number": 179,
+  "package": "com.metromusic",
+  "reason": "BACKGROUND_ONLY"
+ },
+ {
+  "number": 180,
+  "package": "com.bbzone.isitprime",
+  "reason": "OTHER"
+ },
+ {
+  "number": 181,
+  "package": "com.vsmartcard.acardemulator",
+  "reason": "BLANK_SCREEN"
+ },
+ {
+  "number": 182,
+  "package": "com.iris.gallery",
+  "reason": "BACKGROUND_ONLY"
+ },
+ {
+  "number": 183,
+  "package": "com.adeeteya.digital_calculator",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 184,
+  "package": "lab.rreedd.oriens",
+  "reason": "OTHER"
+ },
+ {
+  "number": 185,
+  "package": "org.godotengine.editor.v4",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 186,
+  "package": "foss.cnugteren.nlweer",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 187,
+  "package": "com.axiel7.anihyou",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 189,
+  "package": "net.aliasvault.app",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 190,
+  "package": "uk.org.boddie.android.weatherforecast",
+  "reason": "BACKGROUND_ONLY"
+ },
+ {
+  "number": 191,
+  "package": "de.phasenrauscher.bicyweather",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 192,
+  "package": "com.fixupxer",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 193,
+  "package": "com.github.vauvenal5.yaga",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 194,
+  "package": "fr.ign.geoportail",
+  "reason": "BLANK_SCREEN"
+ },
+ {
+  "number": 195,
+  "package": "com.kylecorry.trail_sense",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 196,
+  "package": "de.kaffeemitkoffein.tinyweatherforecastgermany",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 197,
+  "package": "dudeofx.eval",
+  "reason": "NO_MEANINGFUL_PIXELS"
+ },
+ {
+  "number": 198,
+  "package": "it.rignanese.leo.slimfacebook",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 199,
+  "package": "org.fossify.gallery",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 200,
+  "package": "deckers.thibault.aves.libre",
+  "reason": "BLANK_SCREEN"
+ },
+ {
+  "number": 201,
+  "package": "io.github.lordofpolls.shellwave",
+  "reason": "BACKGROUND_ONLY"
+ },
+ {
+  "number": 202,
+  "package": "org.fossify.clock",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 203,
+  "package": "com.justdeax.composeStopwatch",
+  "reason": "BACKGROUND_ONLY"
+ },
+ {
+  "number": 204,
+  "package": "yetzio.yetcalc",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 205,
+  "package": "trailence.org",
+  "reason": "WRONG_SCREEN"
+ },
+ {
+  "number": 206,
+  "package": "com.barghest.mesh",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 207,
+  "package": "dev.otaj.zelp",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 208,
+  "package": "takagi.ru.monica.fdroid",
+  "reason": "BACKGROUND_ONLY"
+ },
+ {
+  "number": 210,
+  "package": "com.vicolo.chrono",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 211,
+  "package": "com.freetime.geoweather",
+  "reason": "BACKGROUND_ONLY"
+ },
+ {
+  "number": 212,
+  "package": "com.foxdebug.acode",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 213,
+  "package": "me.timeto.app",
+  "reason": "BACKGROUND_ONLY"
+ },
+ {
+  "number": 214,
+  "package": "org.sherpr.app",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 215,
+  "package": "org.y20k.transistor",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 216,
+  "package": "org.asafonov.weather",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 217,
+  "package": "com.agatamessina.webinspector",
+  "reason": "BACKGROUND_ONLY"
+ },
+ {
+  "number": 218,
+  "package": "com.fpf.smartscan",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 219,
+  "package": "org.billthefarmer.buses",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 220,
+  "package": "dev.cipher.notes",
+  "reason": "BACKGROUND_ONLY"
+ },
+ {
+  "number": 221,
+  "package": "io.github.x0b.rcx",
+  "reason": "BLANK_SCREEN"
+ },
+ {
+  "number": 222,
+  "package": "com.google.android.stardroid",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 223,
+  "package": "duress.ultimate",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 224,
+  "package": "com.artifex.mupdf.viewer.app",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 64,
+  "package": "com.galaxyrio.sudokusolver",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 65,
+  "package": "org.lufebe16.pysolfc",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 66,
+  "package": "com.kaeruct.raumballer",
+  "reason": "BLANK_SCREEN"
+ },
+ {
+  "number": 67,
+  "package": "com.sanskritbasics.memory",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 69,
+  "package": "com.serwylo.retrowars",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 70,
+  "package": "org.opensurge2d.surgeengine",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 71,
+  "package": "com.eightsines.firestrike.opensource",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 72,
+  "package": "com.clavierhaus.gnubg",
+  "reason": "BACKGROUND_ONLY"
+ },
+ {
+  "number": 73,
+  "package": "com.sidhant.arrowescape",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 74,
+  "package": "com.vovagorodok.blidraughts",
+  "reason": "WRONG_SCREEN"
+ },
+ {
+  "number": 75,
+  "package": "com.yepgoryo.EggReturnsHome",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 76,
+  "package": "com.rocket9labs.boxcars",
+  "reason": "BACKGROUND_ONLY"
+ },
+ {
+  "number": 77,
+  "package": "io.github.johnathan.minesweeper",
+  "reason": "BACKGROUND_ONLY"
+ },
+ {
+  "number": 79,
+  "package": "jwtc.android.chess",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 80,
+  "package": "org.pipoypipagames.cowsrevenge",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 82,
+  "package": "com.vayunmathur.games.alchemist",
+  "reason": "BACKGROUND_ONLY"
+ },
+ {
+  "number": 83,
+  "package": "ru.hyst329.openfool",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 84,
+  "package": "org.codeberg.scovillo.bubble",
+  "reason": "WRONG_SCREEN"
+ },
+ {
+  "number": 85,
+  "package": "com.towerillusion.abdal",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 86,
+  "package": "com.sidhant.blockblast",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 87,
+  "package": "org.quentin_bettoum.librememorygame",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 88,
+  "package": "com.fairytrick.fairymahjong",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 89,
+  "package": "com.tacticmaster",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 90,
+  "package": "com.joeld.minesweeper",
+  "reason": "BLANK_SCREEN"
+ },
+ {
+  "number": 91,
+  "package": "com.adilhanney.ricochlime",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 96,
+  "package": "fr.arnaudguyon.spacevertex",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 97,
+  "package": "de.saschahlusiak.freebloks",
+  "reason": "BACKGROUND_ONLY"
+ },
+ {
+  "number": 98,
+  "package": "org.secuso.privacyfriendlymemory",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 99,
+  "package": "paper.loop",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 100,
+  "package": "dev.serwin.AnarchRE",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 101,
+  "package": "com.dozingcatsoftware.mouse_pounce",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 102,
+  "package": "com.sidhant.shikaku",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 103,
+  "package": "eve.game.tracker",
+  "reason": "BACKGROUND_ONLY"
+ },
+ {
+  "number": 104,
+  "package": "com.sanskritbasics",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 105,
+  "package": "eu.veldsoft.vitosha.blackjack",
+  "reason": "BLANK_SCREEN"
+ },
+ {
+  "number": 106,
+  "package": "com.mostafa.brickblast",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 107,
+  "package": "com.fr.laboussole.track",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 108,
+  "package": "eu.mokrzycki.learndigits",
+  "reason": "BLANK_SCREEN"
+ },
+ {
+  "number": 109,
+  "package": "com.game.asteroids_revenge",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 111,
+  "package": "org.pgnapps.pk2",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 112,
+  "package": "org.secuso.privacyfriendlydame",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 113,
+  "package": "com.itsfrz.tictactoe",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 114,
+  "package": "nodomain.playmaker",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 115,
+  "package": "com.chenyifaer.fafarunner",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 116,
+  "package": "org.secuso.privacyfriendlysolitaire",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 117,
+  "package": "com.movietrivia.filmfacts",
+  "reason": "BACKGROUND_ONLY"
+ },
+ {
+  "number": 118,
+  "package": "com.attenomy.janken",
+  "reason": "BACKGROUND_ONLY"
+ },
+ {
+  "number": 119,
+  "package": "com.sidhant.nonogram",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 120,
+  "package": "garden.lina.oblique_strategies",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 122,
+  "package": "com.sidhant.triplematch",
+  "reason": "NEAR_BLANK"
+ },
+ {
+  "number": 123,
+  "package": "net.sourceforge.solitaire_cg",
+  "reason": "RESOURCE_NOT_RENDERED"
+ },
+ {
+  "number": 124,
+  "package": "eu.veldsoft.tuty.fruty.slot",
+  "reason": "BLANK_SCREEN"
+ }
+]

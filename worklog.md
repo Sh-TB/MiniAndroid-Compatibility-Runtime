@@ -3975,6 +3975,7 @@ Stage Summary:
 - NEXT ACTION: ① Telegram singleton-getter null (MessagesController.getInstance pc=33 requireNonNull root) ② dooz Composer apply-phase null slot (Lrz1;.s(I) recv null — second-pass slot table) ③ remaining APP-xxx tickets (osmand #144 timed out, still open).
 
 ---
+---
 Task ID: S108
 Agent: Super Z (main)
 Task: Continue-until-goal, Persian directive: the final goal is TELEGRAM on the runtime (ticket #140 family). Picked up from the S107 close (MessagesController singleton requireNonNull null).
@@ -4044,3 +4045,24 @@ Work Log:
 - Residual 6 errors: FingerprintController.checkKeyReady NPE (x2), j6/k.e NPE (kotlinx intrinsic), q8/z.t NPE, 2x APP-BOUNDARY escapes at LaunchActivity.onCreate.
 - FRESH GATES (this HEAD, uncommitted->committed): ballbreak SUCCESS 0 errors shot SHA fe797c19... BYTE-IDENTICAL to S107/S108 anchors; dooz SUCCESS 6 errors a2ba4a49... identical; Telegram run1/run2 deterministic themed window 59fdbfcd..., 6 errors both.
 - run/s109/fix1..fix43: 90 run dirs of root-by-root forensics (R$styleable za1.i3 family work included).
+
+---
+Task ID: S108-AUDIT
+Agent: Super Z (main)
+Task: Full zero-trust audit of the S107 closure wave (128 tickets closed with "fresh S107 run evidence at HEAD 1818a325") — verify every closure against the project's visual-verification rules; reopen invalid closures with reason codes; honest final statistics.
+
+Work Log:
+- Extracted all 128 S107-wave closures from GitHub (signature "## CLOSED — fresh S107 run evidence at HEAD `1818a325`"); mapped each to its package + recorded metrics.
+- Pixel-level audit of all 259 committed screenshots (numpy): resolution/unique colors/entropy/dominant-color fraction/non-background ratio/content bbox/edge density/black-bar detection/SHA-256.
+- KEY FINDING: only ~26 distinct screenshots across 259 files; 149 share one SHA (white + black bars), 30 share the dark theme surface, 14 the light one. 117/128 closures (91.4%) are BLANK/NEAR_BLANK/BACKGROUND_ONLY.
+- Closure rule of the wave = unique-colors count only -> ruled INVALID vs Constitution visual rules (PNG/exit0/non-crash are not visual evidence).
+- Built 4 labeled contact sheets (128 titles) and visually inspected every distinct image + all 11 content candidates individually.
+- 7 of 11 "content" candidates downgraded by inspection: 2x "requires a WebView" error pages (blidraughts #74, trailence #205), 1 dialog-only (bubble #84), 1 tip-text-only empty board (solitaire_cg #123), 1 bottom-strip artifact (dudeofx.eval #197), 1 overlapping-garbled-text render (isitprime #180), 1 partial-form (oriens #184).
+- REOPENED 124 tickets on GitHub with per-ticket audit comment: REOPENED — FALSE VISUAL CLOSURE + reason code (77 NEAR_BLANK, 29 BACKGROUND_ONLY, 11 BLANK_SCREEN, 3 WRONG_SCREEN, 1 RESOURCE_NOT_RENDERED, 1 NO_MEANINGFUL_PIXELS, 2 OTHER) + EXECUTED_ONLY/VISUAL_UNVERIFIED classification. ok=124 fail=0.
+- Rebuilt runtime from HEAD (build/miniandroid, 54 objects) and ran 3 fresh independent runs for the 4 remaining content-bearing titles (#166 pinyinfdroid, #68 hotdeath, #81 bobball, #121 bouncy): byte-identical 3/3, SHA == wave evidence, real menu UI confirmed by direct inspection -> kept CLOSED with AUDIT VERIFIED_3RUN comments.
+- Committed audit artifacts (AUDIT_TABLE.md per-ticket ledger, contact_sheet_1..4.png, audit scripts, 3-run light evidence; heavy traces excluded) — pushed c0b7f501..6e93e7d4.
+
+Stage Summary:
+- HONEST FINAL: of 128 S107 closures, 4 are VERIFIED_3RUN (visual + deterministic), 124 reopened as FALSE VISUAL CLOSURE (execution-only evidence). ACTUAL VISUAL VERIFIED = 4 (3.1%), not 128.
+- No production-code changes were made (audit-only per directive §11). Root causes to attack next (from reopen evidence): WebView-required error path (2 titles), blank activity surfaces (near-blank class), theme-surface-only Compose class.
+- NEXT ACTION: ① pick the largest reopen class (NEAR_BLANK white pages) and find the first divergent transform per S107 §1-§3 instrumentation; ② WebView requirement root (real WebView stub or honest BLOCKED verdict); ③ Telegram #140 singleton null remains open.
