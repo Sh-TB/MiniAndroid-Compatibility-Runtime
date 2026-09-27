@@ -100,6 +100,14 @@ public:
         return false;
     }
 
+    // ROOT-053: STRING field write for shadows (WebViewPackageInfo seeds).
+    bool set_string_field(uint32_t object_id, const std::string& field_name,
+                          const std::string& value) override {
+        if (!heap_) return false;
+        return heap_->set_object_field(
+            object_id, field_name, dalvik::DalvikValue::make_string(value, 0));
+    }
+
     // CYCLE-E: expose heap float fields to shadows (RectF geometry reads).
     bool get_object_float_field(uint32_t object_id,
                                 const std::string& field_name,
