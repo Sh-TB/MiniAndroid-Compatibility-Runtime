@@ -83,6 +83,14 @@ struct SampleProfiler {
 
 #include "runtime/execution_engine.h"
 #include "apk/apk_parser.h"
+
+// S108 ROOT-018: the `miniandroid run` CLI path NEVER registered the JNI
+// bridge — only ApplicationRuntime::execute_on_create did (a different
+// pipeline). Every native method in every APK therefore degraded to
+// fail-soft defaults ("no handler registered"). Registering both the
+// default stubs AND the real org.telegram.SQLite sqlite3 surface here.
+#include "jni/jni_bridge.h"
+#include "jni/telegram_sqlite_jni.h"
 // EXP-086 Phase 7 (B4 FIX): ShadowRegistry + HandlerShadow for Runnable queue
 #include "framework/android_shadows.h"
 #include "framework/dialog_shadow.h"
@@ -331,6 +339,12 @@ runtime::ExecutionResult run_on_art_sized_stack(
 int cmd_run(const std::string& apk_path, const runtime::ExecutionConfig& config) {
     std::cout << "[*] Running APK: " << apk_path << std::endl;
     std::cout << "[*] Output directory: " << config.output_directory << std::endl;
+    
+    // S108 ROOT-018: register the JNI bridge on THIS path too (previously
+    // only ApplicationRuntime::execute_on_create did it — a different
+    // pipeline; here every native call was "no handler registered").
+    miniandroid::jni::JNIBridge::instance().register_default_stubs();
+    miniandroid::jni::telegram_sqlite::register_all();
     
     // M3 FINDING-012: apply the app-data root law BEFORE any storage
     // consumer initializes. Precedence: --data-root > MINIANDROID_DATA_ROOT
