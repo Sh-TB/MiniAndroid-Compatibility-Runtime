@@ -6,6 +6,7 @@
 
 // UNIFIED_007: real resource pipeline
 #include "../resources/resource_runtime.h"
+#include "../webview/webview_engine.h"
 
 #include <algorithm>
 #include <chrono>
@@ -4198,13 +4199,25 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
                         std::string html(bytes.begin(), bytes.end());
                         n->web_data = html;
                         n->web_mime = "text/html";
-                        n->text = webview_html_to_text(html);
-                        n->num_lines = 0;  // let the layout pass recount
-                        std::cerr << "[F085-WV] loadUrl asset render: webview=o"
-                                  << ctx.receiver_id << " entry=" << entry
-                                  << " bytes=" << html.size()
-                                  << " text_chars=" << n->text.size()
-                                  << std::endl;
+                        // S109 WEBVIEW-ENGINE: the document goes to the REAL
+                        // execution subsystem (parse → DOM → scripts →
+                        // canvas). The HTML→text pass below is only the
+                        // fallback when engine construction fails.
+                        auto eng = webview::WebViewRegistry::instance().find(ctx.receiver_id);
+                        if (!eng) eng = webview::WebViewRegistry::instance().create(ctx.receiver_id);
+                        std::string doc_url = entry;   // "assets/..." — relative-resolution base
+                        if (eng->load_document(doc_url, html, apk_path_wv)) {
+                            n->text.clear();  // engine owns the surface now
+                            std::cerr << "[WV-LOAD] loadUrl → engine ok: view=o"
+                                      << ctx.receiver_id << " doc=" << doc_url
+                                      << " bytes=" << html.size() << std::endl;
+                        } else {
+                            n->text = webview_html_to_text(html);
+                            std::cerr << "[F085-WV] loadUrl engine FAILED — honest "
+                                         "text fallback: webview=o" << ctx.receiver_id
+                                      << std::endl;
+                        }
+                        n->num_lines = 0;
                     } else {
                         std::cerr << "[F085-WV] loadUrl asset MISSING (honest"
                                      " placeholder): webview=o"
@@ -4236,7 +4249,23 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         n->web_mime = mime;
         // Render law: extract visible text (generic HTML→text) into the
         // node text so the standard pipeline paints the document body.
-        n->text = webview_html_to_text(data);
+        // S109 WEBVIEW-ENGINE: route loadData documents through the real
+        // execution subsystem (same law as loadUrl assets).
+        {
+            std::string doc_url = base.empty() ? "assets/_loaddata_.html" : base;
+            auto eng = webview::WebViewRegistry::instance().find(ctx.receiver_id);
+            if (!eng) eng = webview::WebViewRegistry::instance().create(ctx.receiver_id);
+            std::string apk_wv2;
+            if (auto* act = registry_ ? registry_->find_as<ActivityShadow>() : nullptr)
+                apk_wv2 = act->apk_path();
+            if (eng->load_document(doc_url, data, apk_wv2)) {
+                n->text.clear();
+                std::cerr << "[WV-LOAD] loadData → engine ok: view=o" << ctx.receiver_id
+                          << " base=" << doc_url << " bytes=" << data.size() << std::endl;
+            } else {
+                n->text = webview_html_to_text(data);
+            }
+        }
         n->num_lines = 0;  // let the layout pass recount
         layout_dirty = true;
         std::cerr << "[F085-WV] loadData: webview=o" << ctx.receiver_id

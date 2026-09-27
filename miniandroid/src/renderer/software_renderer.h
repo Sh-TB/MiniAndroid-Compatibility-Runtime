@@ -178,6 +178,10 @@ public:
     }
     
     const std::vector<RGBA>& get_pixels() const { return pixels_; }
+    // S109 WEBVIEW-ENGINE: surface copy target needs mutable pixel access
+    // (canvas pattern tiles blit the source bitmap verbatim — no per-pixel
+    // set_pixel blend desired; the copy IS the semantic).
+    std::vector<RGBA>& get_pixels_mut() { return pixels_; }
     
     int get_clear_count() const { return clear_count_; }
     int get_draw_count() const { return draw_count_; }
