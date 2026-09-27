@@ -1,0 +1,120 @@
+{
+  "apk_name": "org.asafonov.blockbuster_12.apk",
+  "main_class": "Lorg/asafonov/blockbuster/MainActivity;",
+  "main_method": "onCreate",
+  "methods": [
+    {
+      "class": "Lorg/asafonov/blockbuster/MainActivity;",
+      "entry_point": true,
+      "method": "onCreate",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/app/Activity;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "v2"
+      ],
+      "class": "Landroid/app/Activity;<super>",
+      "invocation_type": "virtual",
+      "method": "onCreate",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "v2"
+      ],
+      "class": "Lorg/asafonov/blockbuster/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "setContentView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "v2"
+      ],
+      "class": "Lorg/asafonov/blockbuster/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#10",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Landroid/webkit/WebView;",
+      "invocation_type": "virtual",
+      "method": "getSettings",
+      "return_value": "Landroid/webkit/WebSettings;#11",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "p4294967295"
+      ],
+      "class": "Landroid/webkit/WebSettings;",
+      "invocation_type": "virtual",
+      "method": "setJavaScriptEnabled",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "p4294967295"
+      ],
+      "class": "Landroid/webkit/WebSettings;",
+      "invocation_type": "virtual",
+      "method": "setDomStorageEnabled",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/webkit/WebViewClient;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lorg/asafonov/blockbuster/MyWebViewClient;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "p4294967295"
+      ],
+      "class": "Landroid/webkit/WebView;",
+      "invocation_type": "virtual",
+      "method": "setWebViewClient",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "v2"
+      ],
+      "class": "Landroid/webkit/WebView;",
+      "invocation_type": "virtual",
+      "method": "loadUrl",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    }
+  ],
+  "timestamp": "2026-09-27T21:04:18Z",
+  "total_api_calls": 11
+}
