@@ -3266,11 +3266,20 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                     !node->children.empty() &&
                                     !has_own_content && w > 40 && h > 40 &&
                                     node->visibility == 0;
+                                // S109 ROOT-044: TEXT-CONTENT views join the
+                                // onDraw dispatch — their framework super
+                                // (TextView.onDraw, ROOT-043) IS the text
+                                // painter (records drawText for replay).
+                                // The old !has_own_content gate excluded
+                                // every TextView-descendant leaf, so
+                                // Telegram's buttons/labels never painted.
+                                bool s109_text_leaf =
+                                    !node->text.empty() && node->children.empty();
                                 if (((!framework_class || compose_view_class) && node->children.empty() &&
-                                    !has_own_content && w > 40 && h > 40 &&
+                                    (!has_own_content || s109_text_leaf) && w > 40 && h > 40 &&
                                     node->visibility == 0) || f099_owner_gate ||
                                     (f108_dispatchdraw_contract && node->children.empty() &&
-                                     !has_own_content && node->visibility == 0)) {
+                                     (!has_own_content || s109_text_leaf) && node->visibility == 0)) {
                                     bool drew_real = false;
                                     if (task.view_id != 0 && shadow_registry_) {
                                         if (auto* canvas_shadow =
@@ -3338,13 +3347,16 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                                 // 1497 inside a ~790px view).
                                                 canvas_shadow->set_canvas_size(
                                                     (int)w, (int)h);
-                                                canvas_shadow->replay(canvas, font,
-                                                                      (float)left, (float)top,
-                                                                      (float)w, (float)h);
+                                                size_t s109_rp = canvas_shadow->replay(
+                                                    canvas, font,
+                                                    (float)left, (float)top,
+                                                    (float)w, (float)h);
                                                 drew_real = true;
                                                 std::cerr << "[C013-CUSTOMVIEW] onDraw replayed "
-                                                          << ondraw_ops << " ops for "
-                                                          << node->class_desc << std::endl;
+                                                          << ondraw_ops << " ops (rp=" << s109_rp << ") for "
+                                                          << node->class_desc
+                                                          << " at (" << left << "," << top
+                                                          << " " << w << "x" << h << ")" << std::endl;
                                             }
                                         }
                                     }
@@ -3890,6 +3902,17 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                     cnode->visibility == 4) continue;
                                 auto measured = measure_node(cnode, w);
                                 int tw = measured.first, th = measured.second;
+                                // S109 ROOT-046: prefer the REAL measured
+                                // dims (R347/VG measure passes write
+                                // dex_measured_* through the actual DEX
+                                // onMeasure chains) over the heuristic —
+                                // AOSP layout consumes the measure pass.
+                                if (cnode->dex_measure_valid &&
+                                    cnode->dex_measured_w > 0 &&
+                                    cnode->dex_measured_h > 0) {
+                                    tw = cnode->dex_measured_w;
+                                    th = cnode->dex_measured_h;
+                                }
                                 int cw, ch;
                                 if (cnode->lp_width == INT_MIN) {
                                     cw = cnode->text.empty() ? w : std::min(w, tw);
@@ -3907,6 +3930,18 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                 } else {
                                     ch = cnode->lp_height;
                                     if (ch <= 0) ch = std::max(th, 20);
+                                }
+                                // S109: measured-override for MATCH/WRAP too —
+                                // the real onMeasure already resolved them.
+                                if (cnode->dex_measure_valid &&
+                                    cnode->dex_measured_w > 0 &&
+                                    (cnode->lp_width == -1 || cnode->lp_width == -2 ||
+                                     cnode->lp_width == INT_MIN)) {
+                                    cw = std::min(cnode->dex_measured_w, w);
+                                }
+                                if (cnode->dex_measure_valid &&
+                                    cnode->dex_measured_h > 0) {
+                                    ch = cnode->dex_measured_h;
                                 }
                                 boxes.push_back({child_id, cw, ch, cnode});
                             }

@@ -52,6 +52,12 @@ bool ViewRenderer::is_edit_text(const ViewShadow::ViewNode& n) const {
 }
 
 static bool is_text_like(const ViewShadow::ViewNode& n) {
+    // S109: any node whose text/hint was captured (setText/EXP-066) IS
+    // text-carrying — Telegram's buttons/labels are CUSTOM view classes
+    // (he1$d "StartMessaging", ov0$d, ...) that draw their own text via
+    // onDraw on real Android; the renderer's semantic equivalent paints
+    // the captured text for every node that has one.
+    if (!n.text.empty() || !n.hint.empty()) return true;
     return n.class_desc.find("TextView;") != std::string::npos ||
            n.class_desc.find("Button;") != std::string::npos ||
            n.class_desc.find("EditText;") != std::string::npos ||
