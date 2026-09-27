@@ -16,7 +16,7 @@ ifeq ($(MINIANDROID_HAVE_LOTTIE),1)
 INCLUDES += -I$(RLOTTIE_DIR)/inc
 CXXFLAGS += -DMINIANDROID_HAVE_LOTTIE
 endif
-INCLUDES = -Isrc -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include
+INCLUDES = -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include
 # EXP-097 §5/§6: image codec libraries.
 # libwebp — Google reference WebP decoder (used by AOSP Skia / BitmapFactory)
 # libjpeg — IJG reference JPEG decoder (Android uses libjpeg-turbo, drop-in API)
@@ -54,7 +54,14 @@ FRAMEWORK_SOURCES = $(SRCDIR)/framework/executor_shadow.cpp $(SRCDIR)/framework/
 API_SOURCES = $(SRCDIR)/api/application_context.cpp $(SRCDIR)/api/shared_prefs.cpp $(SRCDIR)/api/http_client.cpp
 STORAGE_SOURCES = $(wildcard $(SRCDIR)/storage/*.cpp)
 
-CORE_SOURCES = $(APK_SOURCES) $(DEX_SOURCES) $(RUNTIME_SOURCES) $(DIAGNOSTICS_SOURCES) $(RESOURCES_SOURCES) $(RENDERER_SOURCES) $(FONTS_SOURCES) $(FRAMEWORK_SOURCES) $(API_SOURCES) $(STORAGE_SOURCES)
+# S109 WEBVIEW-ENGINE: real HTML5 execution subsystem (QuickJS + DOM + canvas2d)
+WEBVIEW_SOURCES = $(SRCDIR)/webview/webview_engine.cpp $(SRCDIR)/webview/html_dom.cpp $(SRCDIR)/webview/canvas2d.cpp
+QUICKJS_DIR = third_party/quickjs
+QUICKJS_SOURCES = $(QUICKJS_DIR)/quickjs.c $(QUICKJS_DIR)/libregexp.c $(QUICKJS_DIR)/libunicode.c $(QUICKJS_DIR)/cutils.c $(QUICKJS_DIR)/libbf.c
+QUICKJS_OBJECTS = $(patsubst $(QUICKJS_DIR)/%.c,$(BUILDDIR)/quickjs/%.o,$(QUICKJS_SOURCES))
+QUICKJS_CFLAGS = -O2 -std=gnu11 -D_GNU_SOURCE -DCONFIG_VERSION=\"2024-01-13\" -DCONFIG_BIGNUM -w -I$(QUICKJS_DIR)
+
+CORE_SOURCES = $(APK_SOURCES) $(DEX_SOURCES) $(RUNTIME_SOURCES) $(DIAGNOSTICS_SOURCES) $(RESOURCES_SOURCES) $(RENDERER_SOURCES) $(FONTS_SOURCES) $(FRAMEWORK_SOURCES) $(API_SOURCES) $(STORAGE_SOURCES) $(WEBVIEW_SOURCES)
 CORE_OBJECTS = $(patsubst $(SRCDIR)/%.cpp,$(BUILDDIR)/%.o,$(CORE_SOURCES))
 
 # Main executable
@@ -76,7 +83,7 @@ JSON_INCLUDE = -I$(JSON_DIR)/include
 
 all: $(EXECUTABLE)
 
-$(EXECUTABLE): $(CORE_OBJECTS) $(MAIN_OBJECT)
+$(EXECUTABLE): $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(MAIN_OBJECT)
 	@mkdir -p $(BUILDDIR)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $^ $(LIBS) $(FONTS_LIBS)
 	@echo "Build complete: $(EXECUTABLE)"
@@ -84,6 +91,10 @@ $(EXECUTABLE): $(CORE_OBJECTS) $(MAIN_OBJECT)
 $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
+
+$(BUILDDIR)/quickjs/%.o: $(QUICKJS_DIR)/%.c
+	@mkdir -p $(dir $@)
+	gcc $(QUICKJS_CFLAGS) -I$(QUICKJS_DIR) -c -o $@ $<
 
 $(BUILDDIR)/main.o: $(MAIN_SOURCE)
 	@mkdir -p $(BUILDDIR)

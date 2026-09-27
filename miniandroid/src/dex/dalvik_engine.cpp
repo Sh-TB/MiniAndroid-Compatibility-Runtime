@@ -27,6 +27,7 @@
 #include "../framework/shadow_registry.h"
 #include <functional>
 #include "../framework/android_shadows.h"
+#include "../webview/webview_engine.h"
 #include "../framework/choreographer_shadow.h"  // R-NEW-345 park-drain: vsync during park
 #include "../framework/dialog_shadow.h"
 #include "../framework/canvas_shadow.h"
@@ -8956,6 +8957,25 @@ bool DalvikExecutionEngine::dispatch_click(uint32_t view_object_id) {
         std::cerr << "[EXP060-CLICK] view_id=" << view_object_id
                   << " not found in ViewShadow" << std::endl;
         return false;
+    }
+    // S109 WEBVIEW-ENGINE: taps on WebView-family nodes route into the REAL
+    // browser event pipeline (touchstart/pointerdown → pointerup/touchend →
+    // click) with view-local coordinates (browser hit-test law: the tap point
+    // is the view center). The DEX onClick path below still runs — a WebView
+    // subclass may legally override performClick.
+    if (node->class_desc.find("WebView;") != std::string::npos) {
+        auto eng = webview::WebViewRegistry::instance().find(view_object_id);
+        if (eng) {
+            int lx = node->measured_width > 0 ? node->measured_width / 2 : 540;
+            int ly = node->measured_height > 0 ? node->measured_height / 2 : 960;
+            std::cerr << "[WV-INPUT] tap → browser events at local (" << lx << ","
+                      << ly << ") view=o" << view_object_id << std::endl;
+            for (const char* t : {"touchstart", "pointerdown", "mousedown",
+                                  "touchend", "pointerup", "mouseup", "click"}) {
+                bool ran = eng->pointer_event(lx, ly, t);
+                (void)ran;
+            }
+        }
     }
     // CAMPAIGN 013 B1: dialog window rows/buttons route as
     // DialogInterface$OnClickListener.onClick(DialogInterface dialog, int which).
