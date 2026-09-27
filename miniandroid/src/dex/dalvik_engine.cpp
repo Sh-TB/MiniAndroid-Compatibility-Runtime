@@ -23305,6 +23305,104 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // LITTLE_ENDIAN) keyed by a pseudo-address map; getJavaByteBuffer(addr)
     // returns that object. position/limit/order then flow through the
     // S108 ROOT-022 ByteBuffer law above.
+    // ────────────────────────────────────────────────────────────────────────
+    // S110 ROOT-046 — java.security.KeyStore FAMILY (OpenJDK/Android law).
+    // Telegram FingerprintController.getKeyStore() (DEX ground truth):
+    //     keyStore = KeyStore.getInstance("AndroidKeyStore");
+    //     keyStore.load(null);            // try { … } catch { FileLog.e }
+    // ...isKeyReady(): keyStore.containsAlias("tmessages_passcode")
+    // The engine previously had NO KeyStore handler: getInstance answered
+    // the generic-miss NULL → `keystore.load(...)` on a null receiver →
+    // synthesized NPE unwound through isKeyReady → checkKeyReady →
+    // LaunchActivity.onCreate APP-BOUNDARY (2 of the 6 residual forkgram
+    // errors at the S109 close). LAW (OpenJDK KeyStore.getInstance +
+    // the AndroidKeyStore provider contract):
+    //   • getInstance(type) NEVER answers null — it materializes a
+    //     KeyStore object (unknown types throw KeyStoreException);
+    //   • load(LoadStoreParameter) is a lawful no-op (AndroidKeyStore
+    //     ignores the parameter — provider docs);
+    //   • containsAlias answers the honest hardware-backed truth: FALSE
+    //     (the runtime has no secure-hardware aliases), so apps take
+    //     their "key not ready" path (Telegram skips fingerprint auth)
+    //     instead of dying — the AOSP-permissible degraded state.
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/security/KeyStore;") {
+        if (method == "getInstance" && !args.empty()) {
+            std::string ks_type = "AndroidKeyStore";
+            for (const auto& a : args) {
+                if (a.type == DalvikType::STRING_REF && !a.string_val.empty()) {
+                    ks_type = a.string_val;
+                    break;
+                }
+            }
+            uint32_t ks_id = heap_.allocate("Ljava/security/KeyStore;", 0, 0);
+            heap_.set_object_field(ks_id, "__keystore_type__",
+                                   DalvikValue::make_string(ks_type, 0));
+            result = DalvikValue::make_object(ks_id,
+                                              "Ljava/security/KeyStore;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getDefaultType") {
+            // OpenJDK/security.properties default; Android serves
+            // "AndroidKeyStore" as the platform default provider type.
+            result = DalvikValue::make_string("AndroidKeyStore", 0);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getType") {
+            std::string ks_type = "AndroidKeyStore";
+            if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+                heap_.has_object(args[0].object_id)) {
+                auto f = heap_.get_object_field(args[0].object_id,
+                                                "__keystore_type__");
+                if (f.has_value() && f->type == DalvikType::STRING_REF) {
+                    ks_type = f->string_val;
+                }
+            }
+            result = DalvikValue::make_string(ks_type, 0);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "load" || method == "store") {
+            // AndroidKeyStore ignores the parameter (provider contract).
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "containsAlias" || method == "isKeyEntry" ||
+            method == "isCertificateEntry" || method == "entryInstanceOf" ||
+            method == "containsAliasAlias") {
+            // Honest hardware truth: no secure aliases exist in the runtime.
+            result = DalvikValue::make_int(0);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getKey" || method == "getCertificate" ||
+            method == "getCertificateChain" || method == "getEntry" ||
+            method == "aliases" || method == "size") {
+            // Empty honest answers: getKey/getCertificate/getEntry → null
+            // (OpenJDK miss law), aliases → empty Vector (0-length), size → 0.
+            if (method == "size") {
+                result = DalvikValue::make_int(0);
+            } else if (method == "aliases") {
+                uint32_t vec_id = heap_.allocate("Ljava/util/Vector;", 0, 0);
+                heap_.set_object_field(vec_id, "__array_length__",
+                                       DalvikValue::make_int(0));
+                result = DalvikValue::make_object(vec_id, "Ljava/util/Vector;");
+            } else {
+                result = DalvikValue::make_null();
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "setEntry" || method == "deleteEntry" ||
+            method == "setKeyEntry" || method == "setCertificateEntry") {
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
     if (class_name == "Lorg/telegram/tgnet/NativeByteBuffer;") {
         // shared address→oid registry (both natives consult it)
         static std::map<int64_t, uint32_t> nbb_addr_to_oid;
