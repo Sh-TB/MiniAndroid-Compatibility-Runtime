@@ -4068,6 +4068,22 @@ Stage Summary:
 - NEXT ACTION: ① pick the largest reopen class (NEAR_BLANK white pages) and find the first divergent transform per S107 §1-§3 instrumentation; ② WebView requirement root (real WebView stub or honest BLOCKED verdict); ③ Telegram #140 singleton null remains open.
 
 ---
+Task ID: S109
+Agent: Super Z (main)
+Task: HTML5/WebView EXECUTION FRONTIER — build the generic WebView/HTML5 runtime capability (real JS engine + DOM + canvas), prove it on a real HTML5 game APK, then retry white-page titles.
+
+Work Log:
+- S107 audit deliverables landed first (124 reopen/4 verified pushed a829d7a7).
+- Investigated F-085 WebView law: loadUrl only did HTML->text extraction — the exact static-HTML trap the mission forbids counting as WebView support.
+- Vendored QuickJS 2024-01-13 (real ES2020 engine) into third_party; built src/webview/: html_dom (parser+CSS custom-props), canvas2d (FrameBuffer-backed raster: paths/scanline fills/gradients/patterns/TextShaper text/blend modes), webview_engine (DOM bindings, timers/rAF, localStorage file-backed, input dispatch, registry).
+- Integrated: F-085 loadUrl/loadData -> engine; view-tree render blits engine surface; pump_compose_frames drives tick_all (16.6ms vsync law); dispatch_click forwards touchstart/pointer/mouse/click with view-local coords.
+- Root causes fixed en route: NULL class protos (SEGV — property walks hit JS_NULL proto), C-function constructors need JS_CFUNC_constructor, timer-map iterator invalidated by clearTimeout inside callbacks (heap corruption), GC double-free finalizers (ctx2d/image), teardown-order abort (leak-at-exit), location/URL/Intl/AudioContext/btoa surface gaps.
+- Evidence: breakout_before (BEFORE: 20 chars text-only), breakout_run1..3 (AFTER: 1.5MB bundle executes, raf_pending=2/timers=6, JS DOM mutations in pixels: score '0 $' + game error texts, 3/3 deterministic exit=1 PARTIAL SUCCESS 0 errors).
+- blidraughts: still its own Java-side WebView-availability probe (before loadUrl) — next frontier.
+
+Stage Summary:
+- GENERIC CAPABILITY: real WebView/HTML5 execution stack landed (no package gates, all WebView-family APKs route through it). Gates passed: WEBVIEW_CREATED/URL_LOADED/HTML_LOADED/SCRIPT_EXECUTED(partial)/DOM_MUTATION->PIXELS/FRAME_CAPTURED. NOT yet claimed: full Breakout render (1 undefined symbol in a_) + input gate + independent-APK render.
+- NEXT ACTION: ① name the undefined symbol in a_ (QuickJS debug build / bytecode dump) ② blidraughts Java-side WebView probe (new WebView(this) path) ③ input gate on Breakout ④ retry white-page titles (audit reopen classes) with the engine.
 Task ID: S110
 Agent: Super Z (main)
 Task: Persian directive — knowledge transfer via GitHub tickets (HTML5 / games / Telegram, one each, with fix methodology + achievements + rendered images + GIFs), then continue Telegram execution.
