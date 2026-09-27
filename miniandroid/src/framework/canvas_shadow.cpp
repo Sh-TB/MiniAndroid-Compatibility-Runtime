@@ -605,6 +605,14 @@ size_t CanvasShadow::replay(renderer::SoftwareCanvas& canvas,
                 // SAME engine TextView uses; was ASCII-only bitmap font).
                 // No text size → legacy bitmap-font path (byte-identical).
                 if (op.text_size_px > 0.f && fonts::TextShaper::instance().available()) {
+                    if (getenv("MINIANDROID_S109_BITMAP")) {
+                        std::cerr << "[S109-DRAWTEXT] replay '"
+                                  << op.text.substr(0, 30) << "' at ("
+                                  << (left + op.x) << "," << (top + op.y)
+                                  << ") size=" << op.text_size_px
+                                  << " color=0x" << std::hex << op.color << std::dec
+                                  << std::endl;
+                    }
                     fonts::TextShaper::instance().draw(
                         canvas.fb(), op.text, left + op.x, top + op.y,
                         op.text_size_px, c, op.text_bold);

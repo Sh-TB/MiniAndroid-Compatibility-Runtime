@@ -810,6 +810,11 @@ void TextShaper::draw(renderer::FrameBuffer& fb, const std::string& utf8,
                       float x, float y_baseline, float size_px,
                       const renderer::RGBA& color, bool bold, int face_idx) {
     const ShapedText& st = shape(utf8, size_px, bold, face_idx);
+    if (getenv("MINIANDROID_S109_BITMAP")) {
+        std::fprintf(stderr, "[S109-SHAPE] draw '%s' glyphs=%zu avail=%d at (%f,%f) size=%f\n",
+                     utf8.substr(0, 24).c_str(), st.glyphs.size(), (int)available_,
+                     (double)x, (double)y_baseline, (double)size_px);
+    }
     if (!available_ || st.glyphs.empty()) return;
 
     face_idx = resolve_face(bold, face_idx);
@@ -883,6 +888,12 @@ void TextShaper::draw(renderer::FrameBuffer& fb, const std::string& utf8,
         }
         if (rit != rasters_.end()) {
             const auto& r = rit->second;
+            if (getenv("MINIANDROID_S109_BITMAP") && r.h > 0) {
+                std::fprintf(stderr, "[S109-GLYPH] gid=%u raster %dx%d at (%d,%d)\n",
+                             (unsigned)use_gid, r.w, r.h,
+                             (int)(pen_x + g.x_offset) + r.left,
+                             (int)std::lround(y_baseline - g.y_offset) - r.top);
+            }
             if (r.color) {
                 // Color raster reached via grayscale key — blit as color.
                 int gx = (int)std::lround(pen_x + g.x_offset);

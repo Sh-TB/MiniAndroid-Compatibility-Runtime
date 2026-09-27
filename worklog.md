@@ -4018,3 +4018,29 @@ Stage Summary:
 - 11 roots total this session (016-026) + 2 structural laws (018 CLI-JNI registration, 018b native fall-through).
 - Telegram: singleton-death chain (S107) -> full init (Messages/Connections/MessagesStorage singletons, real SQLite, streams, TimeZone, ThreadLocal/Random, ByteBuffer serialization) -> REAL view tree; remaining frontier: com.android.internal.R$styleable theme family (za1.i3) + 12 handled unwinds.
 - NEXT: ① R$styleable/Theme obtainStyledAttributes family ② the ActionBarLayout fragment-stack List nulls ③ 3-run determinism proof for the forkgram run ④ ticket #140 evidence comment + push.
+
+---
+Task ID: S109
+Agent: Super Z (main)
+Task: Telegram login-UI frontier (Persian directive: full Telegram run, SMS verification entry). Roots 027-045 executed in-session (~1459 lines, 6 files).
+
+Work Log:
+- ROOT-027 SparseIntArray FAMILY AOSP-FAITHFUL ordered storage + clone() (supersedes S108 ROOT-023 minimal law: keys ASCENDING, def-if-not-found, System.arraycopy move law).
+- ROOT-029 BitmapDrawable.getPaint() (AOSP law — Theme.Y0 init chain was dying on null paint).
+- ROOT-030 Telegram NativeByteBuffer DEX natives (native_getFreeBuffer/native_getJavaByteBuffer through ROOT-022 algebra).
+- ROOT-031 PackageManager query families never-null law (queryIntentActivities etc. -> empty list, iterator NPE killed login chain).
+- ROOT-033/033b getDrawable raster decode via bitmap_shadow + intrinsic/minimum dims (generic 0 -> createBitmap(0,0) NPE killed).
+- ROOT-034 Drawable.mutate() returns THIS (AOSP).
+- ROOT-035 setFragmentStack STUB REMOVED — AOSP law: executes the real DEX body (ActionBarLayout fragment stack).
+- ROOT-037 Bitmap.createBitmap(w,h,cfg) AOSP SIGNATURE law (w<=0 -> IllegalArgumentException HERE, not NPE downstream).
+- ROOT-038 javax.xml SAX family + Resources.openRawResource (newInstance NEVER null; feature no-op booleans).
+- ROOT-039 Drawable.getBounds NEVER null (returns the internal Rect) + Rect.width/height law.
+- ROOT-040 AnimationUtils.loadAnimation + View animation family.
+- ROOT-041 AOSP MEASURE-CONTRACT COMPLETION law — the whole login tree rendered 0-SIZED before (exact-spec resolution missing).
+- ROOT-042 ViewGroup.onMeasure CHILD-DISPATCH law (measure per child -> R347 DEX onMeasure; EXACTLY-spec container resolution).
+- ROOT-043 FRAMEWORK TextView.onDraw TEXT law — button labels never reached pixels (framework super paints text now).
+- ROOT-045b recursive descent measurement (grandchildren, same R347 law).
+- Telegram RESULT: view tree now contains the REAL LOGIN UI — ScrollView -> he1$a (login layout, 6 children) -> he1$d "StartMessaging" button @ (0,1656,1080x48), ViewPager, TextureView(200x150), LinearLayout, bottom-sheet yj$v family; 30+ real Telegram view nodes measured with real positions/sizes.
+- Residual 6 errors: FingerprintController.checkKeyReady NPE (x2), j6/k.e NPE (kotlinx intrinsic), q8/z.t NPE, 2x APP-BOUNDARY escapes at LaunchActivity.onCreate.
+- FRESH GATES (this HEAD, uncommitted->committed): ballbreak SUCCESS 0 errors shot SHA fe797c19... BYTE-IDENTICAL to S107/S108 anchors; dooz SUCCESS 6 errors a2ba4a49... identical; Telegram run1/run2 deterministic themed window 59fdbfcd..., 6 errors both.
+- run/s109/fix1..fix43: 90 run dirs of root-by-root forensics (R$styleable za1.i3 family work included).

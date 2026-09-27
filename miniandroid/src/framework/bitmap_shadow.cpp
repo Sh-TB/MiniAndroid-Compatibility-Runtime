@@ -202,6 +202,25 @@ CallResult BitmapShadow::dispatch(const CallContext& ctx) {
     const uint32_t recv = ctx.receiver_id;
 
     if (m == "createBitmap" || m == "createScaledBitmap") {
+        {
+            static thread_local uint64_t cb_dbg = 0;
+            static thread_local const bool cb_dbg_on =
+                std::getenv("MINIANDROID_S109_BITMAP") != nullptr;
+            if (cb_dbg_on && cb_dbg < 12) {
+                ++cb_dbg;
+                std::cerr << "[S109-BITMAP] " << m
+                          << " static=" << (ctx.has_receiver ? 0 : 1)
+                          << " argc=" << ctx.args.size();
+                for (size_t i = 0; i < ctx.args.size() && i < 4; ++i) {
+                    std::cerr << " a" << i << "k" << (int)ctx.args[i].kind;
+                    if (ctx.args[i].kind == CallContext::Arg::Kind::INT)
+                        std::cerr << "=" << ctx.args[i].int_val;
+                    if (ctx.args[i].kind == CallContext::Arg::Kind::OBJECT)
+                        std::cerr << "=o" << ctx.args[i].object_id;
+                }
+                std::cerr << std::endl;
+            }
+        }
         if (m == "createScaledBitmap") {
             // (Bitmap src, int dw, int dh, boolean filter) — static.
             const uint32_t src = ctx.arg_as_object(0, 0);
