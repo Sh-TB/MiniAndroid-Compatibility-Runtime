@@ -3996,3 +3996,25 @@ Stage Summary:
 - 5 roots executed (016-020) with the SQLite bridge as the largest new capability (real sqlite3 for Telegram's private wrapper).
 - Telegram frontier advanced: singleton-death -> full init chain -> real view tree; remaining blockers: j6/k "current(...) must not be null" (kotlinx intrinsic family), ActionBarLayout List.isEmpty null (fragment stack), columnByteArrayValue blob arrays.
 - NEXT: ① strict-mode trust audit for ROOT-019 (which call sites pass a call-site proto that matches no local method) ② j6/k coroutines intrinsic ③ fragment-stack List null ④ commit evidence runs + ticket #140 comment.
+
+---
+Task ID: S108-part2
+Agent: Super Z (main)
+Task: Telegram chain continuation (roots 021-026) + evidence + regression gates.
+
+Work Log:
+- ROOT-021: j$.util.concurrent.ThreadLocalRandom.current() — the desugared j$ surface was NOT covered by the F-086 law; DEX current() walks ThreadLocal<v>.get() which answered null (Kotlin checkNotNull "current(...)" NPE, ActivityResultRegistry chain). Fixed both: (a) the j$ singleton law, (b) ROOT-021b ThreadLocal.get/set/remove/initialValue OpenJDK law — miss dispatches the RECEIVER's real subclass initialValue() DEX body (v.initialValue materializes the TLR), cached per receiver; subclass receivers matched by walking class_to_superclass_ (invoke bridges pass the RUNTIME class, api_cls law).
+- ROOT-022: java.nio.ByteBuffer family (allocate/allocateDirect/order/putInt/putLong/putShort/putByte/getInt/getLong/position(int)/position()/limit/capacity/remaining/hasRemaining/flip/clear/rewind) — OpenJDK buffer algebra on heap fields (__bb_cap__/__bb_pos__/__bb_lim__/__bb_order__); ByteOrder enum synthesis (BIG=0/LITTLE=1) added to the framework enum table.
+- ROOT-023: SparseIntArray/SparseBooleanArray/SparseLongArray family (put/append/get with the AOSP def-if-not-found law) — d6 theme lookups unboxed null before.
+- ROOT-024: PowerManager.newWakeLock -> real WakeLock object (setReferenceCounted/acquire/release no-ops); AccountManager.get -> singleton (accounts queries -> null; call sites null-guard).
+- ROOT-025: Telegram NativeByteBuffer natives engine-side: native_getFreeBuffer(size) -> pseudo-address + REAL engine ByteBuffer registered in an address->oid map; native_getJavaByteBuffer(addr) -> the object; the ctor's position/limit/order then flow through the ROOT-022 law; writeInt32/writeInt64 chains unblocked.
+- ROOT-018b: unsupported-native fall-through law — a JNI native with NO registered handler now falls through to the method scan/super-walk/bridge/shadow layers instead of converting fail-soft 0/null as the answer. Depth-underflow bug (double decrement, depth 4294967295, every frame dropped) caught by run13 forensics and fixed (the scan-failure paths own the decrement).
+- ROOT-026: EnumMap/TreeMap/Hashtable/IdentityHashMap added to CollectionShadow.handles_class — invoke-interface bridges with the RECEIVER'S RUNTIME CLASS (R-NEW-318 api_cls law); EnumMap receivers missed the shadow so Map.put/get answered null (v6.k Integer.intValue NPE killed the MessagesController singleton construction). The 25 putIfAbsent entries were stored correctly all along — only the shadow routing was wrong.
+- FINAL forkgram STATE (run14, 540s budget): Status PARTIAL SUCCESS, 7 errors (was 32 at session start, 28 mid-session), APP BOUNDARY count 0 uncaught at the end, view tree: LaunchActivity$w -> DrawerLayoutContainer -> ActionBarLayout -> a4 (real Telegram UI skeleton, 1080x1920 themed window), SQLite real DB, ByteBuffer serialization layer live, ThreadLocalRandom live through the real D8 machinery.
+- EVIDENCE: evidence/s108_telegram/ (final_run.log + screenshot.png + crash.log + reference_forkgram.png SHA a96f6a13... matching the s82 registry pin).
+- REGRESSION GATES (post ALL S108 changes): ballbreak SUCCESS 0 errors, screenshot SHA fe797c19... BYTE-IDENTICAL to S107; dooz a2ba4a49... = the S107 final Compose surface with the same 6 handled errors — ZERO regressions.
+
+Stage Summary:
+- 11 roots total this session (016-026) + 2 structural laws (018 CLI-JNI registration, 018b native fall-through).
+- Telegram: singleton-death chain (S107) -> full init (Messages/Connections/MessagesStorage singletons, real SQLite, streams, TimeZone, ThreadLocal/Random, ByteBuffer serialization) -> REAL view tree; remaining frontier: com.android.internal.R$styleable theme family (za1.i3) + 12 handled unwinds.
+- NEXT: ① R$styleable/Theme obtainStyledAttributes family ② the ActionBarLayout fragment-stack List nulls ③ 3-run determinism proof for the forkgram run ④ ticket #140 evidence comment + push.
