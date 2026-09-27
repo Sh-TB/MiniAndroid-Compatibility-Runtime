@@ -4137,3 +4137,25 @@ Stage Summary:
 - 9TH ACHIEVEMENT PROVEN WITH IMAGE: HTML5/WebView executes real games (Breakout 71), generic capability (6 root laws, zero package checks).
 - Ticket wave #353/#354/#355 now standard-structured; wrong texts fixed; evidence comments explicitly credited.
 - Telegram login tree REMAINS the pixel frontier (R$styleable theme attrs + text-draw) — next wave: login pixels → phone input → SMS flow.
+
+---
+Task ID: S112
+Agent: Super Z (main)
+Task: User directive — post Breakout + generalization images as the achievement on GitHub; test whether the HTML5/WebView capability affects OTHER Android apps/games (does it run them too); answer whether the 3 tickets (#353/#354/#355) + comments helped.
+
+Work Log:
+- Re-read #353/#354/#355 + comments via API (S111 rewrite verified live; ACHIEVEMENT #9 comment with Breakout image confirmed on #353).
+- Fetched 3 APKs from F-Droid (blidraughts vc3 36MB, mykanji vc7 14MB, breakout vc29826425) and ran the WebView family beyond Breakout.
+- ROOT-054: WebView provider identity = platform build metadata (packageName com.android.webview, versionName 120.0.6099.144, env-overridable) — blidraughts' own "Update required!" gate now PASSES (parseInt("120") >= MIN_VERSION; dialog GONE).
+- ROOT-055: View.getLayoutParams never-null parent-type law (CoordinatorLayout.LayoutParams, anchorId NO_ID seeded under both field spellings anchorId/mAnchorId) — real-DEX prepareChildren no longer NPEs; no_webview fallback defeated.
+- ROOT-056: findViewById NO_ID law (id<=0 answers null) — kill the phantom root match that fired "View can not be anchored to the parent CoordinatorLayout".
+- ROOT-057: CookieManager.getInstance() process-wide singleton (AOSP: the WebView provider ships its cookie manager; honest empty store) — CapacitorCordovaCookieManager/MockCordovaWebViewImpl/Bridge$Builder.create chain now survives.
+- blidraughts (audit reopen #74): progressed dialog→layout→cookie→Bridge init (PluginManager, BridgeWebViewClient, CapConfig all run); BLOCKED at R8-transformed androidx.webkit feature registry (isSupported(String) finds zero matches in the static ConditionallySupportedFeature collection → its own RuntimeException "Unknown feature WEB_MESSAGE_LISTENER" → APP-BOUNDARY). ROOT-058 registered as the open frontier (app-DEX static-init gap for R8-de-enum'd androidx registries; DEX ground truth read via scripts/s112_dexdump.py + bytecode decode).
+- mykanji (plain WebView app): WebView created, loadUrl(file:///android_asset/index.html) engine-ok (3406 bytes), scripts executed=3, js_errors=0, real document text rendered (224 unique colors) — GENERALIZATION PROVEN for the HTML5 app family with image.
+- REGRESSION GATES byte-identical through all 4 roots: breakout 568342fb, ballbreak fe797c19, dooz a2ba4a49 — the 9th-achievement anchor has zero pixel drift.
+- Hygiene: dropped an unpushed UUID auto-commit carrying 45k-line traces (soft-reset to 935ed222; files stay on disk); committed light S112 evidence only.
+- Posted the ACHIEVEMENT #9 generalization comment on #353 with the mykanji render image + honest blidraughts status; answered the user's 3-tickets question in session.
+
+Stage Summary:
+- GENERALIZATION ANSWER: YES for rendered HTML5 apps (mykanji = 2nd APK, 3 scripts 0 js-errors) + the existing Breakout game anchor; blidraughts = 4 new roots landed, render still open (ROOT-058).
+- Capability is generic: zero package checks; all WebView-family APKs route through the same execution path.

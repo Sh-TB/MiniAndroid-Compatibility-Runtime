@@ -10,6 +10,7 @@
 
 #include <algorithm>
 #include <chrono>
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <limits>
@@ -2958,25 +2959,91 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     // apps gate their whole startup on this probe: blidraughts
     // (CapacitorWebView) asked it, got the generic-miss null, and rendered
     // "This app requires a WebView to work" instead of its own UI.
+    // ── ROOT-057 (S112): CookieManager.getInstance() singleton law ──────
+    // AOSP CookieManager.getInstance() NEVER returns null when a WebView
+    // implementation ships (WebViewFactory.getProvider().getCookieManager()
+    // materializes the singleton at provider init). Capacitor's Cordova
+    // compat layer calls it in CapacitorCordovaCookieManager.<init> →
+    // setAcceptThirdPartyCookies — the old generic-miss null killed the
+    // Bridge build (MockCordovaWebViewImpl.init NPE → Bridge$Builder.create
+    // unwind → APP BOUNDARY). Law: materialize ONE process-wide singleton
+    // and serve the cookie surface on it. Honest store: empty (no cookies
+    // ever recorded) — getCookie answers null, hasCookies false.
+    if (ctx.class_name == "Landroid/webkit/CookieManager;") {
+        static uint32_t cookie_mgr_obj = 0;
+        if (m == "getInstance") {
+            if (cookie_mgr_obj == 0) {
+                cookie_mgr_obj = heap_->allocate("Landroid/webkit/CookieManager;");
+                std::cerr << "[ROOT-057] CookieManager singleton materialized o"
+                          << cookie_mgr_obj << std::endl;
+            }
+            return CallResult::handled_object(cookie_mgr_obj,
+                                              "Landroid/webkit/CookieManager;");
+        }
+        if (m == "setAcceptCookie" || m == "setAcceptThirdPartyCookies" ||
+            m == "setAcceptFileSchemeCookies" || m == "flush" ||
+            m == "setCookie" || m == "removeAllCookies" ||
+            m == "removeSessionCookies" || m == "removeExpiredCookies") {
+            // Accepted-but-empty store: the runtime records no cookies, so
+            // the write surface is a lawful no-op on the singleton.
+            return CallResult::handled_void();
+        }
+        if (m == "getAcceptCookie" || m == "acceptCookie") {
+            return CallResult::handled_bool(true);
+        }
+        if (m == "hasCookies") {
+            return CallResult::handled_bool(false);
+        }
+        if (m == "getCookie") {
+            // No cookie store — AOSP answers null when no cookie matches.
+            return CallResult::handled_null();
+        }
+    }
+
     if (ctx.class_name == "Landroid/webkit/WebView;" && m == "getCurrentWebViewPackage") {
         std::cerr << "[ROOT-053] WebView.getCurrentWebViewPackage probe → non-null WebViewPackageInfo"
                   << std::endl;
         uint32_t pkg = heap_->allocate("Landroid/webkit/WebViewPackageInfo;");
         // Seed BOTH access paths: the getter shadows below AND the raw heap
         // fields (Kotlin/desugared accessors and field reads must both see a
-        // real engine identity — the null versionName flowed into
+        // real provider identity — the null versionName flowed into
         // String.split and killed blidraughts' onCreate at pc=37).
-        heap_->set_string_field(pkg, "versionName", "1.0.0");
-        heap_->set_string_field(pkg, "packageName", "me.miniandroid.webview");
+        //
+        // ── ROOT-054 (S112): WebView provider identity is PLATFORM BUILD
+        // METADATA, not an engine-capability claim. The runtime already
+        // declares Build.VERSION.SDK_INT=34 (platform metadata of the same
+        // class); a WebView provider contemporary with API 34 is a modern
+        // Chromium (Android 14 era). Apps legitimately gate startup on the
+        // provider's major version (blidraughts: parseInt(versionName
+        // .split("\\.")[0]) < MIN_VERSION → its own "Update required!"
+        // dialog instead of its UI). The provider package id is the AOSP
+        // one (com.android.webview) — this runtime IS an AOSP-style
+        // compatibility runtime and the WebView provider on it.
+        // HONESTY NOTE: this is the provider version every app sees (no
+        // package checks, no per-app branches); per-API capability gaps
+        // still surface as their own engine errors — those are the
+        // next roots, exactly like ROOT-048..053 surfaced from Breakout.
+        // Overridable for experiments: MINIANDROID_WEBVIEW_VERSION env.
+        const char* env_ver = getenv("MINIANDROID_WEBVIEW_VERSION");
+        const std::string webview_version = env_ver && *env_ver
+                                                ? std::string(env_ver)
+                                                : std::string("120.0.6099.144");
+        std::cerr << "[ROOT-054] WebView provider metadata: packageName=com.android.webview versionName="
+                  << webview_version << std::endl;
+        heap_->set_string_field(pkg, "versionName", webview_version);
+        heap_->set_string_field(pkg, "packageName", "com.android.webview");
         return CallResult::handled_object(pkg, "Landroid/webkit/WebViewPackageInfo;");
     }
     if (ctx.class_name == "Landroid/webkit/WebViewPackageInfo;" &&
         (m == "getVersionName" || m == "getPackageName" || m == "getName")) {
-        // Honest identity: the runtime's own WebView engine, not a fake
-        // Chromium version string.
+        // Same platform metadata through the getter path (ROOT-054 law).
+        const char* env_ver_g = getenv("MINIANDROID_WEBVIEW_VERSION");
+        const std::string ver_g = env_ver_g && *env_ver_g
+                                      ? std::string(env_ver_g)
+                                      : std::string("120.0.6099.144");
         return CallResult::handled_string(m == "getVersionName"
-                                              ? "MiniAndroid-QuickJS-S109"
-                                              : "me.miniandroid.webview");
+                                              ? ver_g
+                                              : "com.android.webview");
     }
 
     // View instance methods — receiver_id is the View heap object_id.
@@ -3175,6 +3242,19 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     }
     if (m == "findViewById") {
         int32_t target_id = ctx.arg_as_int(0, 0);
+        // ── ROOT-056 (S112): AOSP NO_ID lookup law ─────────────────────
+        // View.NO_ID == -1 and no View ever carries id 0 or -1
+        // (AOSP View.findViewById: id <= 0 can only answer null —
+        // "view.getId() < 0" is the unset-id contract). The old path
+        // searched the tree anyway and resolveAnchorView's NO_ID probe
+        // (findViewById(mAnchorId==0 after iget default)) accidentally
+        // matched the ROOT node (android_view_id unset → matched by
+        // position) → "View can not be anchored to the parent
+        // CoordinatorLayout" IllegalStateException → bridge died.
+        // Law: id 0 / -1 → null, no search.
+        if (target_id <= 0) {
+            return CallResult::handled_null();
+        }
         // S99 AOSP LAW FIX (babydots AppCompatDelegateImpl.createSubDecor
         // pc=326 evidence): View.findViewById(id) searches THE RECEIVER'S
         // SUBTREE (View.java) — the old path force-overrode the receiver
@@ -4037,7 +4117,6 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     }
     if (m == "setBackgroundColor" || m == "setBackground" ||
         m == "setBackgroundResource" || m == "setBackgroundDrawable" ||
-        m == "setLayoutParams" || m == "getLayoutParams" ||
         m == "draw") {
         return CallResult::handled_void();
     }
@@ -4058,7 +4137,84 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_void();
     }
     if (m == "getLayoutParams") {
-        return CallResult::handled_null();
+        // ── ROOT-055 (S112): AOSP View.getLayoutParams law ────────────
+        // After LayoutInflater.inflate / ViewGroup.addView a View's
+        // mLayoutParams is NEVER null: the inflater attaches the parsed
+        // layout_* params and ViewGroup.addView generates defaults when
+        // absent (AOSP ViewGroup.addView → checkLayoutParams →
+        // generateDefaultLayoutParams). The old void/null answer broke
+        // REAL DEX layout code: blidraughts BridgeActivity.onCreate →
+        // CoordinatorLayout.prepareChildren (real DEX) →
+        // getResolvedLayoutParams → getLayoutParams().findAnchorView —
+        // null receiver NPE → caught by BridgeActivity.onCreate →
+        // setContentView(R.layout.no_webview) — the WebView never got its
+        // chance even after ROOT-054 passed the version gate.
+        // Law: materialize the PARENT-TYPE LayoutParams (AOSP generates
+        // the owning ViewGroup's param class), width/height from the
+        // inflate semantic model, anchorId = NO_ID. No package checks —
+        // every caller sees the same lawful answer.
+        auto* lp_node = get_or_create_node(
+            ctx.receiver_id,
+            ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        std::string parent_cls;
+        if (lp_node != nullptr && lp_node->parent_id != 0) {
+            const auto* pn = find_node(lp_node->parent_id);
+            if (pn != nullptr) parent_cls = pn->class_desc;
+        }
+        int32_t w = lp_node ? lp_node->width : -1;
+        int32_t h = lp_node ? lp_node->height : -1;
+        std::string lp_cls = "Landroid/view/ViewGroup$LayoutParams;";
+        if (parent_cls.find("CoordinatorLayout") != std::string::npos) {
+            lp_cls = "Landroidx/coordinatorlayout/widget/CoordinatorLayout$LayoutParams;";
+        } else if (parent_cls.find("LinearLayout") != std::string::npos) {
+            lp_cls = "Landroid/widget/LinearLayout$LayoutParams;";
+        } else if (parent_cls.find("RelativeLayout") != std::string::npos) {
+            lp_cls = "Landroid/widget/RelativeLayout$LayoutParams;";
+        } else if (parent_cls.find("FrameLayout") != std::string::npos) {
+            lp_cls = "Landroid/widget/FrameLayout$LayoutParams;";
+        }
+        uint32_t lp_obj = heap_->allocate(lp_cls);
+        heap_->set_object_int_field(lp_obj, "width", w);
+        heap_->set_object_int_field(lp_obj, "height", h);
+        if (lp_cls.find("CoordinatorLayout") != std::string::npos) {
+            // MarginLayoutParams + CoordinatorLayout specifics (AOSP
+            // defaults: NO_ID anchor, no keyline, zero margins). Seed
+            // BOTH field names: androidx DEX declares the private
+            // mAnchorId/mKeyline pair (blidraughts classes.dex strings)
+            // while the public contract is anchorId — the DEX iget must
+            // see NO_ID either way or resolveAnchorView starts a lookup.
+            heap_->set_object_int_field(lp_obj, "leftMargin", 0);
+            heap_->set_object_int_field(lp_obj, "topMargin", 0);
+            heap_->set_object_int_field(lp_obj, "rightMargin", 0);
+            heap_->set_object_int_field(lp_obj, "bottomMargin", 0);
+            heap_->set_object_int_field(lp_obj, "anchorId", -1);
+            heap_->set_object_int_field(lp_obj, "mAnchorId", -1);
+            heap_->set_object_int_field(lp_obj, "keyline", -1);
+            heap_->set_object_int_field(lp_obj, "mKeyline", -1);
+            std::cerr << "[ROOT-055] getLayoutParams view=" << ctx.receiver_id
+                      << " -> " << lp_cls << " o" << lp_obj
+                      << " (" << w << "x" << h << ")" << std::endl;
+        }
+        return CallResult::handled_object(lp_obj, lp_cls);
+    }
+    if (m == "setLayoutParams") {
+        // Store-back law: a real app hands back the object it got (or a
+        // fresh one) — record width/height onto the node's semantic model
+        // so later measure passes see the programmatic change.
+        if (ctx.args.size() >= 1) {
+            uint32_t p = ctx.arg_as_object(0);
+            int32_t pw = 0, ph = 0;
+            heap_->get_object_int_field(p, "width", pw);
+            heap_->get_object_int_field(p, "height", ph);
+            if (auto* n = get_or_create_node(
+                    ctx.receiver_id,
+                    ctx.receiver_class.empty() ? ctx.class_name
+                                               : ctx.receiver_class)) {
+                if (pw != 0) n->width = pw;
+                if (ph != 0) n->height = ph;
+            }
+        }
+        return CallResult::handled_void();
     }
     // R-NEW-393 (S76): View.getBackground() — themed-widget non-null law.
     // Oracle: AOSP View.java getBackground() returns mBackground; the
