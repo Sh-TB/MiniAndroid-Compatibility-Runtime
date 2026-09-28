@@ -1735,6 +1735,28 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                                 entry_args.push_back(activity_val);  // p0 = this (Activity)
                                 entry_args.push_back(DalvikValue::make_null());  // p1 = Bundle (null)
 
+                                // ── ROOT-062 (S115): AOSP CREATED-PHASE FAN-OUT ──
+                                // Activity.performCreate law (API 29 pairing):
+                                //   dispatchActivityPreCreated → onCreate →
+                                //   dispatchActivityCreated → dispatchActivityPostCreated.
+                                // The androidx ReportFragment$LifecycleCallbacks
+                                // (registered DURING onCreate — ReportFragment
+                                // injection) drive the LifecycleRegistry from these
+                                // hooks: onActivityPostCreated → dispatch(ON_CREATE)
+                                // moves the registry INITIALIZED → CREATED and gives
+                                // every observer its first (ON_CREATE) event. Without
+                                // this pairing the first registry sync is ON_START:
+                                // androidx.savedstate.Recreator asserts
+                                // "Next event must be ON_CREATE" and the launch
+                                // dies at APP BOUNDARY (forkgram 12.10.8.0
+                                // LaunchActivity.onCreate evidence + the S115 sweep
+                                // family: secuso #86+#98, blockblast #86-class).
+                                // The manifest-class block below (the dooz path)
+                                // already fires this pairing — this site was the
+                                // only onCreate dispatch that skipped it.
+                                dispatch_activity_lifecycle_callbacks(
+                                    "onActivityPreCreated", result);
+
                                 execute_method_internal(
                                     cls.name,
                                     method.name,
@@ -1749,6 +1771,13 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                                     method.tries_data.data(),
                                     method.tries_data.size()
                                 );
+
+                                if (method.name == "onCreate") {
+                                    dispatch_activity_lifecycle_callbacks(
+                                        "onActivityCreated", result);
+                                    dispatch_activity_lifecycle_callbacks(
+                                        "onActivityPostCreated", result);
+                                }
                                 log("✅ execute_method_internal() returned");
                             } else {
                                 log("⚠️ Method " + method.name + " has EMPTY bytecode - skipping");
@@ -22191,6 +22220,363 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
         // insert(int, X), reverse(), deleteCharAt, setLength etc. can be
         // added when evidence shows they're on a hot path.
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // ROOT-063 (S115): android.text.StaticLayout$Builder / StaticLayout —
+    // REAL materialization (never-null fluent builder + measurable layout).
+    //
+    // ROOT CAUSE this fixes: no StaticLayout shadow existed. Telegram's
+    // TextLayout (Components/id$a.R) calls
+    //   StaticLayout.Builder.obtain(text, start, end, paint, width)
+    //     .setMaxLines(...).build()
+    // and the engine answered REC-MISS null → NPE
+    // "setMaxLines' on a null object reference" at LaunchActivity.onCreate
+    // (forkgram 12.10.8.0 run3 evidence, in-flight uncaught #1). Every app
+    // that measures rich text through StaticLayout hits the same wall.
+    //
+    // AOSP law (android.text.StaticLayout.Builder):
+    //   obtain(source, start, end, paint, width) — NEVER null
+    //   setXxx(...) — fluent, returns this
+    //   build() — returns a StaticLayout carrying the laid-out text metrics.
+    //
+    // Metric model (honest first version): deterministic greedy-wrap estimate
+    // from the paint's text size — ascent -0.928em / descent 0.24em
+    // (Paint.FontMetrics typographic ratios), leading 0 → line height
+    // 1.168em; average glyph advance 0.5em for wrapping. The RENDER path
+    // keeps using the engine's own G36/G47 TextShaper line boxes (the draw
+    // pipeline never consumes this object), so these metrics serve
+    // measurement (view sizing / line queries) only. Per-glyph StaticLayout
+    // fidelity = next frontier when a render consumer appears.
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/text/StaticLayout$Builder;" ||
+        class_name == "Landroid/text/StaticLayout;") {
+        // --- helpers -----------------------------------------------------
+        auto sl_string = [&](uint32_t oid, const char* field) -> std::string {
+            auto fv = heap_.get_object_field(oid, field);
+            if (fv.has_value() && fv->type == DalvikType::STRING_REF)
+                return fv->string_val;
+            return "";
+        };
+        auto sl_int = [&](uint32_t oid, const char* field,
+                          int32_t dflt) -> int32_t {
+            auto fv = heap_.get_object_field(oid, field);
+            if (fv.has_value() && fv->type == DalvikType::INT32)
+                return fv->int_val;
+            return dflt;
+        };
+        auto sl_float = [&](uint32_t oid, const char* field,
+                            float dflt) -> float {
+            auto fv = heap_.get_object_field(oid, field);
+            if (fv.has_value() && (fv->type == DalvikType::FLOAT32 ||
+                                   fv->type == DalvikType::FLOAT64))
+                return fv->type == DalvikType::FLOAT32 ? fv->float_val
+                                                       : (float)fv->double_val;
+            return dflt;
+        };
+        // paint's text size: probe the common field names, honest fallback.
+        auto paint_size = [&](uint32_t paint_oid) -> float {
+            if (paint_oid && heap_.has_object(paint_oid)) {
+                for (const char* f : {"textSize", "mTextSize"}) {
+                    auto fv = heap_.get_object_field(paint_oid, f);
+                    if (fv.has_value() && fv->type == DalvikType::FLOAT32 &&
+                        fv->float_val > 0)
+                        return fv->float_val;
+                    if (fv.has_value() && fv->type == DalvikType::FLOAT64 &&
+                        fv->double_val > 0)
+                        return (float)fv->double_val;
+                    if (fv.has_value() && fv->type == DalvikType::INT32 &&
+                        fv->int_val > 0)
+                        return (float)fv->int_val;
+                }
+            }
+            return 42.0f;  // documented fallback (≈16sp @ density 2.625)
+        };
+
+        // --- Builder.obtain(...) — static factory ------------------------
+        if (class_name == "Landroid/text/StaticLayout$Builder;" &&
+            (method == "obtain" || method.rfind("setText", 0) == 0 ||
+             method.rfind("setAlignment", 0) == 0 ||
+             method.rfind("setLineSpacing", 0) == 0 ||
+             method.rfind("setIncludePad", 0) == 0 ||
+             method.rfind("setEllipsize", 0) == 0 ||
+             method.rfind("setMaxLines", 0) == 0 ||
+             method.rfind("setBreakStrategy", 0) == 0 ||
+             method.rfind("setHyphenationFrequency", 0) == 0 ||
+             method.rfind("setIndents", 0) == 0 ||
+             method.rfind("setUseFallbackLineSpacing", 0) == 0 ||
+             method.rfind("setWidth", 0) == 0 ||
+             method.rfind("setTextLocale", 0) == 0)) {
+            uint32_t self = (!args.empty() &&
+                             args[0].type == DalvikType::OBJECT_REF)
+                                ? args[0].object_id
+                                : 0;
+            if (method == "obtain") {
+                // static: args = [source, start, end, paint, width]
+                self = heap_.allocate("Landroid/text/StaticLayout$Builder;",
+                                      pc_, 0);
+                heap_.set_object_field(
+                    self, "source",
+                    args.size() > 0 &&
+                            args[0].type == DalvikType::STRING_REF
+                        ? DalvikValue::make_string(args[0].string_val, 0)
+                        : DalvikValue::make_null());
+                int32_t start = args.size() > 1 ? sl_int(0, "x", 0) : 0;
+                if (args.size() > 1 && args[1].type == DalvikType::INT32)
+                    start = args[1].int_val;
+                int32_t end = args.size() > 2 && args[2].type == DalvikType::INT32
+                                  ? args[2].int_val
+                                  : 0;
+                uint32_t paint_oid = args.size() > 3 &&
+                                             args[3].type == DalvikType::OBJECT_REF
+                                         ? args[3].object_id
+                                         : 0;
+                int32_t width = args.size() > 4 && args[4].type == DalvikType::INT32
+                                    ? args[4].int_val
+                                    : 0;
+                DalvikValue v;
+                v.type = DalvikType::INT32; v.int_val = start;
+                heap_.set_object_field(self, "start", v);
+                v.int_val = end;   heap_.set_object_field(self, "end", v);
+                v.int_val = width; heap_.set_object_field(self, "width", v);
+                v.type = DalvikType::OBJECT_REF; v.object_id = paint_oid;
+                v.class_desc = "Landroid/text/TextPaint;";
+                heap_.set_object_field(self, "paint", v);
+                // AOSP Builder defaults
+                v.type = DalvikType::INT32;
+                v.int_val = INT32_MAX;  // maxLines
+                heap_.set_object_field(self, "maxLines", v);
+                v.type = DalvikType::FLOAT32; v.float_val = 0.0f;
+                heap_.set_object_field(self, "lineSpacingAdd", v);
+                v.float_val = 1.0f;  // lineSpacingMult
+                heap_.set_object_field(self, "lineSpacingMult", v);
+                v.type = DalvikType::INT32; v.int_val = 1;  // includePad=true
+                heap_.set_object_field(self, "includePad", v);
+                DalvikValue r;
+                r.type = DalvikType::OBJECT_REF;
+                r.object_id = self;
+                r.class_desc = "Landroid/text/StaticLayout$Builder;";
+                result = r;
+                std::cerr << "[ROOT-063] StaticLayout.Builder.obtain -> "
+                          << self << " width=" << width
+                          << " text.len=" << sl_string(self, "source").size()
+                          << std::endl;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            // fluent setters — store and return `this`
+            if (self && heap_.has_object(self)) {
+                DalvikValue v;
+                if (method.rfind("setText", 0) == 0 && args.size() >= 2) {
+                    heap_.set_object_field(self, "source", args[1]);
+                    if (args.size() >= 4 && args[2].type == DalvikType::INT32)
+                        heap_.set_object_field(self, "start", args[2]);
+                    if (args.size() >= 4 && args[3].type == DalvikType::INT32)
+                        heap_.set_object_field(self, "end", args[3]);
+                } else if (method == "setMaxLines" && args.size() >= 2) {
+                    heap_.set_object_field(self, "maxLines", args[1]);
+                } else if (method == "setWidth" && args.size() >= 2) {
+                    heap_.set_object_field(self, "width", args[1]);
+                } else if (method == "setLineSpacing" && args.size() >= 3) {
+                    heap_.set_object_field(self, "lineSpacingAdd", args[1]);
+                    heap_.set_object_field(self, "lineSpacingMult", args[2]);
+                } else if (method == "setIncludePad" && args.size() >= 2) {
+                    heap_.set_object_field(self, "includePad", args[1]);
+                } else if (method == "setAlignment" && args.size() >= 2) {
+                    heap_.set_object_field(self, "alignment", args[1]);
+                } else if (method == "setEllipsize" && args.size() >= 2) {
+                    heap_.set_object_field(self, "ellipsize", args[1]);
+                } else if (method == "setIndents" && args.size() >= 2) {
+                    // int[] indents — stored opaque
+                    heap_.set_object_field(self, "indents", args[1]);
+                }
+                DalvikValue r;
+                r.type = DalvikType::OBJECT_REF;
+                r.object_id = self;
+                r.class_desc = "Landroid/text/StaticLayout$Builder;";
+                result = r;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+
+        // --- Builder.build() ---------------------------------------------
+        if (class_name == "Landroid/text/StaticLayout$Builder;" &&
+            method == "build") {
+            uint32_t self = (!args.empty() &&
+                             args[0].type == DalvikType::OBJECT_REF)
+                                ? args[0].object_id
+                                : 0;
+            std::string text = sl_string(self, "source");
+            int32_t start = sl_int(self, "start", 0);
+            int32_t end = sl_int(self, "end", 0);
+            int32_t width = sl_int(self, "width", 0);
+            int32_t maxLines = sl_int(self, "maxLines", INT32_MAX);
+            float spacingAdd = sl_float(self, "lineSpacingAdd", 0.0f);
+            float spacingMult = sl_float(self, "lineSpacingMult", 1.0f);
+            if (end <= 0 || end > (int32_t)text.size())
+                end = (int32_t)text.size();
+            std::string sub = (start >= 0 && start < end)
+                                  ? text.substr(start, end - start)
+                                  : text;
+            uint32_t paint_oid = 0;
+            {
+                auto fv = heap_.get_object_field(self, "paint");
+                if (fv.has_value() && fv->type == DalvikType::OBJECT_REF)
+                    paint_oid = fv->object_id;
+            }
+            float size = paint_size(paint_oid);
+            // greedy wrap estimate: avg advance 0.5em
+            float avg_adv = size * 0.5f;
+            int chars_per_line = width > 0 && avg_adv > 0
+                                     ? (int)(width / avg_adv)
+                                     : (int)sub.size();
+            if (chars_per_line < 1) chars_per_line = 1;
+            int hard_breaks = 1;
+            for (char c : sub)
+                if (c == '\n') hard_breaks++;
+            int line_count = (int)((sub.size() + chars_per_line - 1) /
+                                   chars_per_line);
+            if (line_count < hard_breaks) line_count = hard_breaks;
+            if (line_count < 1) line_count = 1;
+            if (line_count > maxLines) line_count = maxLines;
+            float line_h = size * 1.168f * spacingMult + spacingAdd;
+            float height = line_h * line_count;
+            uint32_t lay = heap_.allocate("Landroid/text/StaticLayout;",
+                                          pc_, 0);
+            DalvikValue v;
+            v.type = DalvikType::STRING_REF;
+            v.string_val = sub;
+            heap_.set_object_field(lay, "text", v);
+            v.type = DalvikType::INT32;
+            v.int_val = width;      heap_.set_object_field(lay, "width", v);
+            v.int_val = line_count; heap_.set_object_field(lay, "lineCount", v);
+            v.int_val = (int32_t)sub.size();
+            heap_.set_object_field(lay, "textLen", v);
+            v.type = DalvikType::FLOAT32;
+            v.float_val = size;    heap_.set_object_field(lay, "textSize", v);
+            v.float_val = line_h;  heap_.set_object_field(lay, "lineHeight", v);
+            v.float_val = height;  heap_.set_object_field(lay, "height", v);
+            DalvikValue r;
+            r.type = DalvikType::OBJECT_REF;
+            r.object_id = lay;
+            r.class_desc = "Landroid/text/StaticLayout;";
+            result = r;
+            std::cerr << "[ROOT-063] StaticLayout.build -> " << lay
+                      << " lines=" << line_count << " height=" << (int)height
+                      << " width=" << width << " size=" << (int)size
+                      << " chars=" << sub.size() << std::endl;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+
+        // --- StaticLayout measurement getters ----------------------------
+        if (class_name == "Landroid/text/StaticLayout;") {
+            uint32_t self = (!args.empty() &&
+                             args[0].type == DalvikType::OBJECT_REF)
+                                ? args[0].object_id
+                                : 0;
+            if (self && heap_.has_object(self)) {
+                float size = sl_float(self, "textSize", 42.0f);
+                float line_h = sl_float(self, "lineHeight", size * 1.168f);
+                int line_count = sl_int(self, "lineCount", 1);
+                int32_t width = sl_int(self, "width", 0);
+                int text_len = sl_int(self, "textLen", 0);
+                if (method == "getHeight") {
+                    result = DalvikValue::make_int(
+                        (int32_t)sl_float(self, "height", line_h * line_count));
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                if (method == "getLineCount") {
+                    result = DalvikValue::make_int(line_count);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                if (method == "getWidth") {
+                    result = DalvikValue::make_int(width);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                if (method == "getText") {
+                    result = DalvikValue::make_string(sl_string(self, "text"),
+                                                      0);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                if (method == "getLineTop" || method == "getLineBottom" ||
+                    method == "getLineBaseline" || method == "getLineAscent" ||
+                    method == "getLineDescent" ||
+                    method == "getLineTopWithSpacing" ||
+                    method == "getLineBottomWithSpacing" ||
+                    method == "getLineBaselineWithSpacing" ||
+                    method == "getLineVisibleBottom") {
+                    int32_t line = args.size() > 1 ? sl_int(0, "x", 0) : 0;
+                    if (args.size() > 1 && args[1].type == DalvikType::INT32)
+                        line = args[1].int_val;
+                    if (line < 0) line = 0;
+                    if (line > line_count - 1) line = line_count - 1;
+                    float top = line_h * line;
+                    if (method.rfind("getLineTop", 0) == 0)
+                        result = DalvikValue::make_int((int32_t)top);
+                    else if (method.rfind("getLineBottom", 0) == 0)
+                        result = DalvikValue::make_int((int32_t)(top + line_h));
+                    else if (method.rfind("getLineBaseline", 0) == 0)
+                        result = DalvikValue::make_int(
+                            (int32_t)(top - (-0.928f) * size));
+                    else if (method.rfind("getLineAscent", 0) == 0)
+                        result = DalvikValue::make_int((int32_t)(-0.928f * size));
+                    else
+                        result = DalvikValue::make_int((int32_t)(0.24f * size));
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                if (method == "getLineWidth") {
+                    // deterministic: last line shorter; others full width
+                    int32_t line = args.size() > 1 ? sl_int(0, "x", 0) : 0;
+                    if (args.size() > 1 && args[1].type == DalvikType::INT32)
+                        line = args[1].int_val;
+                    int chars = (text_len + line_count - 1) / line_count;
+                    int remaining = text_len - line * chars;
+                    if (remaining < 0) remaining = 0;
+                    if (remaining > chars) remaining = chars;
+                    result = DalvikValue::make_int(
+                        (int32_t)(remaining * size * 0.5f));
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                if (method == "getLineStart" || method == "getLineEnd") {
+                    int32_t line = args.size() > 1 ? sl_int(0, "x", 0) : 0;
+                    if (args.size() > 1 && args[1].type == DalvikType::INT32)
+                        line = args[1].int_val;
+                    int chars = (text_len + line_count - 1) / line_count;
+                    int pos = line * chars;
+                    if (method == "getLineEnd") pos += chars;
+                    if (pos > text_len) pos = text_len;
+                    result = DalvikValue::make_int(pos);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                if (method == "getLineForOffset") {
+                    int32_t off = args.size() > 1 ? sl_int(0, "x", 0) : 0;
+                    if (args.size() > 1 && args[1].type == DalvikType::INT32)
+                        off = args[1].int_val;
+                    int chars = (text_len + line_count - 1) / line_count;
+                    int line = chars > 0 ? off / chars : 0;
+                    if (line > line_count - 1) line = line_count - 1;
+                    result = DalvikValue::make_int(line);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                if (method.rfind("getEllipsis", 0) == 0) {
+                    result = DalvikValue::make_int(0);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+            }
+        }
     }
 
     // ────────────────────────────────────────────────────────────────────────
