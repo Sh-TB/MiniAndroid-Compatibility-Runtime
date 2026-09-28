@@ -15,6 +15,7 @@
 #include "canvas2d.h"
 #include <map>
 #include <memory>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -27,6 +28,11 @@ struct DomNode {
     DomNode* parent = nullptr;
     std::string text;                   // #text payload
     std::map<std::string, std::string> style;   // computed (inline + css, var-resolved)
+    // S114: keys set by the style ATTRIBUTE or by JS style writes — these
+    // OUTRANK every stylesheet rule (CSS specificity: inline > selector);
+    // rule application must never overwrite them (the Block'Buster bricks:
+    // JS margin-left vs the universal `*{margin:0}` rule)
+    std::set<std::string> inline_keys;
     // layout (compositor)
     int x = 0, y = 0, w = 0, h = 0;
     bool visible = true;
@@ -55,6 +61,7 @@ struct DomNode {
     bool bg_contain = false;            // background-size: contain
     bool bg_mirror = false;             // transform: scaleX(-1)
     bool grad = false;                  // linear-gradient background
+    int grad_dir = 0;                   // S114: 0 down, 1 up (0deg), 2 right, 3 left
     uint32_t grad_from = 0, grad_to = 0;
     bool grad_diag = false;             // "to bottom right" diagonal law
     int bg_alpha = 255;                 // alpha of background-color (rgba law)
@@ -69,6 +76,28 @@ struct DomNode {
     float eff_font_size = 28.f;
     bool eff_bold = false;
     int eff_align = 0;
+    // ── S114 GENERIC CSS LAYOUT CORE ────────────────────────────────────
+    // One positional model for every element (WHATWG/CSS2.1 §9 + §10):
+    // static flow, relative offsets, absolute (containing block = nearest
+    // positioned ancestor, else the initial containing block), fixed (ICB).
+    int pos_mode = 0;                   // 0 static, 1 relative, 2 absolute, 3 fixed
+    bool z_given = false;               // z-index explicitly set (not "auto")
+    std::string off_l, off_t, off_r, off_b;   // raw offset strings (layout-time resolve)
+    std::string w_raw, h_raw;           // width/height strings containing % (deferred to CB)
+    bool vis_hidden_own = false;        // visibility:hidden (own prop)
+    bool eff_vis_hidden = false;        // inherited visibility chain
+    bool border_box = false;            // box-sizing: border-box
+    bool flex_row = false;              // flex-direction: row
+    bool overflow_hidden = false;       // clip children to the padding box
+    float line_h_num = -1.f;            // line-height unitless factor (-1 unset)
+    int line_h_px = 0;                  // line-height <length> (0 = legacy 1.6 law)
+    bool grad_text = false;             // -webkit-background-clip:text → gradient glyphs
+    int sh_ox = 0, sh_oy = 0, sh_blur = 0, sh_spread = 0;   // box-shadow parts
+    uint32_t sh_col = 0; bool sh_col_valid = false;
+    float bg_size_pct = -1.f;           // background-size: N% (single-value width law)
+    int static_x = 0, static_y = 0;     // flow position where the box would be placed
+    bool static_pos_recorded = false;   // S114: distinguishes a real (0,0) static
+                                        // slot from "never in flow" (inline subtrees)
     // layout result for hit-testing/paint
     bool laid_out = false;
 
@@ -86,6 +115,17 @@ struct DomNode {
         for (size_t i = 0; i < parent->children.size(); ++i)
             if (parent->children[i].get() == this) return i;
         return 0;
+    }
+    // S114: nearest previous sibling that is an element (not #text) —
+    // the CSS adjacent-sibling combinator ('+') ground truth.
+    DomNode* previous_element_sibling() const {
+        if (!parent) return nullptr;
+        DomNode* prev = nullptr;
+        for (auto& c : parent->children) {
+            if (c.get() == this) return prev;
+            if (c->tag != "#text") prev = c.get();
+        }
+        return nullptr;
     }
 };
 
@@ -130,6 +170,9 @@ public:
     static std::string text_content(const DomNode* n);
     // S113: selector matcher exposed for the engine's pseudo-element pass.
     static bool matches_selector(const std::string& sel, const DomNode* n);
+    // S114: var() substitution exposed for the engine's pseudo-box styling.
+    static std::string resolve_var_string(const std::string& val,
+                                          const std::map<std::string, std::string>& custom);
 };
 
 }} // namespace miniandroid::webview
