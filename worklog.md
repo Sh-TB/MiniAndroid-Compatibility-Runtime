@@ -4230,3 +4230,21 @@ Work Log:
 Stage Summary:
 - The 77 white pages are fully triaged into 5 shared families with per-ticket evidence + comments; the leverage point (empty-view-tree, ~43 tickets) is mapped, not per-ticket patched.
 - Telegram advanced by 2 generic roots to its first zero-error execution; the ROOT chain (016…063) continues untouched; the login-pixel frontier (R$styleable/TypedArray → text draw → framebuffer) is the next wave, then the empty-SQL string law, then re-sweep the 77.
+
+---
+Task ID: S116
+Agent: Super Z (main)
+Task: User directive — publish the comments/tickets on GitHub for review, send the achievements, republish all old pushes (new PAT provided), then continue toward the goal of full Telegram execution.
+
+Work Log:
+- New PAT verified (HTTP 200); git state clean: 0 unpushed commits — all previous waves (S108…S115) already on origin; every evidence image referenced by published comments verified HTTP 200 (incl. evidence/s114_bigfix/final/* and evidence/s115_telegram/*).
+- #353 body rewritten to the standard structure at the true state: the three-trap story (static-HTML → execution → completeness), law tables for S111 (ROOT-048..053), S112 (054..057), S113 layout engine (059..061), S114 ONE-BIG-FIX (6 laws), 4-era metric table, complete blockbuster start+gameplay frames (small 8-16 KB), family status incl. honest blidraughts ROOT-058/sokoban-corrupt labels.
+- #354 body extended with the S115 77-ticket assembly-line sweep section (0 closures / 68 blank / 4 PARTIAL / 5 corrupt fetches; family histogram: empty-view-tree ~43, libGDX .so ×6, ON_CREATE sequencing ×4, fragment-host ×3, MultiDex ×2, ViewTreeLifecycleOwner ×2) + honest S114 gate re-baseline note (fe797c19→25e72190, a2ba4a49→84c6d4a5 — shared rendering core, zero native-path drift).
+- #355 title+body updated: "errors 32 → 0, first fully clean run (rc=0, 0 uncaught)"; S115 wave table (ROOT-062 AOSP CREATED-PHASE fan-out, ROOT-063 StaticLayout$Builder); metric table +S115 column; §5 honest pixel state kept (NOT RENDERED — R$styleable/text-draw frontier).
+- Posted the S115 sweep-status comment on #354 (verdict table + leverage map; comment id 5865974988).
+- Stripped Persian text from all 7 legacy evidence comments (5857414802/5858470298/5858906111/5859831075 on #353, 5857414959 on #354, 5857415062/5857497464 on #355) per the no-Persian directive; re-verified: 0 Persian chars across all 3 ticket bodies + titles + all comments; 22/22 referenced images HTTP 200.
+- Scripts: scripts/s116_update_tickets.py, scripts/s116_strip_persian_comments.py.
+
+Stage Summary:
+- The three knowledge-transfer tickets now live at the true S115 state, English-only, small images, all claims backed by valid evidence links; all old pushes confirmed published.
+- GitHub publishing task CLOSED; next: the Telegram login-pixel frontier (R$styleable/TypedArray theme attrs → text draw → framebuffer).
