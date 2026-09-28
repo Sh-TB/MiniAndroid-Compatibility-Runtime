@@ -387,20 +387,59 @@ std::vector<CssRule> HtmlParser::parse_stylesheet_impl(const std::string& css,
 
 // S113 compound selector law: one part of a selector — optional tag/*,
 // optional #id, optional .class list ("div.cls-a.cls-b", "*", ".x#y").
+// S114 selector atoms: [attr], [attr=val], :checked — the state pseudo-
+// class and attribute grammars exercised by form-driven HTML5 apps.
+static bool atom_matches(const std::string& atom, const DomNode* n) {
+    if (atom == ":checked") {
+        auto it = n->attrs.find("checked");
+        return it != n->attrs.end() &&
+               (it->second.empty() || it->second == "checked" || it->second == "true");
+    }
+    if (!atom.empty() && atom[0] == '[') {
+        std::string body = atom.substr(1, atom.size() >= 2 ? atom.size() - 2 : 0);
+        size_t eq = body.find('=');
+        std::string key = eq == std::string::npos ? body : body.substr(0, eq);
+        std::string want = eq == std::string::npos ? std::string() : body.substr(eq + 1);
+        auto strip = [](std::string s) {
+            s.erase(std::remove(s.begin(), s.end(), '"'), s.end());
+            s.erase(std::remove(s.begin(), s.end(), '\''), s.end());
+            return trim(s);
+        };
+        key = trim(lower(key));
+        auto it = n->attrs.find(key);
+        if (eq == std::string::npos) return it != n->attrs.end();
+        return it != n->attrs.end() && strip(it->second) == strip(want);
+    }
+    return false;   // unknown atom never matches (honest)
+}
+
 static bool compound_matches(const std::string& c0, const DomNode* n) {
     std::string c = lower(trim(c0));
     if (c.empty()) return false;
     std::string tag, id;
-    std::vector<std::string> classes;
+    std::vector<std::string> classes, atoms;
     size_t i = 0;
-    if (c[0] != '.' && c[0] != '#') {
-        size_t e = c.find_first_of(".#");
+    if (c[0] != '.' && c[0] != '#' && c[0] != ':') {
+        size_t e = c.find_first_of(".#[:");
         tag = c.substr(0, e);
         i = e == std::string::npos ? c.size() : e;
     }
     while (i < c.size()) {
         char kind = c[i];
-        size_t e = c.find_first_of(".#", i + 1);
+        if (kind == ':') {
+            size_t e = c.find_first_of(".#[:", i + 1);
+            atoms.push_back(c.substr(i, e - i));
+            i = e == std::string::npos ? c.size() : e;
+            continue;
+        }
+        if (kind == '[') {
+            size_t e = c.find(']', i);
+            if (e == std::string::npos) return false;
+            atoms.push_back(c.substr(i, e - i + 1));
+            i = e + 1;
+            continue;
+        }
+        size_t e = c.find_first_of(".#[:", i + 1);
         std::string tok = c.substr(i + 1, e - i - 1);
         if (kind == '#') id = tok;
         else if (kind == '.') classes.push_back(tok);
@@ -416,23 +455,75 @@ static bool compound_matches(const std::string& c0, const DomNode* n) {
         while (ss >> tok) if (tok == cls) { found = true; break; }
         if (!found) return false;
     }
+    for (auto& a : atoms) if (!atom_matches(a, n)) return false;
     return true;
 }
 
-// S113 selector law: compound parts joined by the descendant combinator
-// (space). The last part matches the node; earlier parts match ancestors.
+// S114 selector grammar: a sequence of compounds joined by combinators —
+// ' ' descendant, '>' child, '+' adjacent sibling (CSS2.1 §5.1-§5.7).
+// Matching walks right-to-left from the subject node.
 static bool selector_matches(const std::string& sel, const DomNode* n) {
-    std::vector<std::string> parts;
-    std::istringstream ss(sel);
-    std::string tok;
-    while (ss >> tok) parts.push_back(tok);
+    // tokenize into (combinator, compound) pairs; combinator of the FIRST
+    // entry is ' ' (root)
+    struct Part { char comb; std::string compound; };
+    std::vector<Part> parts;
+    std::string cur;
+    char pending_comb = ' ';
+    size_t i = 0;
+    std::string s = trim(sel);
+    while (i <= s.size()) {
+        char ch = i < s.size() ? s[i] : '\0';
+        if (ch == '>' || ch == '+') {
+            if (!trim(cur).empty()) {
+                parts.push_back({pending_comb, trim(cur)});
+                cur.clear();
+            }
+            pending_comb = ch;
+            ++i;
+            continue;
+        }
+        if (ch == ' ' || ch == '\0') {
+            std::string t = trim(cur);
+            if (!t.empty()) {
+                // collapse: multiple spaces = single descendant combinator,
+                // but a pending '+'/'>' always wins (A > B, A + B)
+                parts.push_back({pending_comb, t});
+                pending_comb = ' ';
+                cur.clear();
+            }
+            ++i;
+            continue;
+        }
+        cur += ch;
+        ++i;
+    }
     if (parts.empty()) return false;
-    if (!compound_matches(parts.back(), n)) return false;
-    const DomNode* anc = n->parent;
-    for (int i = int(parts.size()) - 2; i >= 0; --i) {
-        while (anc && !compound_matches(parts[i], anc)) anc = anc->parent;
-        if (!anc) return false;
-        anc = anc->parent;
+    if (!compound_matches(parts.back().compound, n)) return false;
+    const DomNode* cur_n = n;
+    for (int p = int(parts.size()) - 1; p >= 1; --p) {
+        char comb = parts[p].comb;
+        if (comb == ' ') {
+            // descendant: climb until a match (or fail at the root)
+            const DomNode* anc = cur_n->parent;
+            bool hit = false;
+            while (anc) {
+                if (anc->tag != "#text" && compound_matches(parts[p - 1].compound, anc)) {
+                    cur_n = anc; hit = true; break;
+                }
+                anc = anc->parent;
+            }
+            if (!hit) return false;
+        } else if (comb == '>') {
+            const DomNode* par = cur_n->parent;
+            if (!par || par->tag == "#text" ||
+                !compound_matches(parts[p - 1].compound, par)) return false;
+            cur_n = par;
+        } else if (comb == '+') {
+            // adjacent: previous ELEMENT sibling
+            const DomNode* prev = cur_n->parent ? cur_n->previous_element_sibling() : nullptr;
+            if (!prev || !compound_matches(parts[p - 1].compound, prev)) return false;
+            cur_n = prev;
+        }
     }
     return true;
 }
@@ -470,10 +561,36 @@ static std::string resolve_vars(const std::string& val,
 static void apply_rule_to(DomNode* n, const std::map<std::string, std::string>& props,
                           const std::map<std::string, std::string>& custom) {
     for (auto& kv : props) {
+        // S114 specificity law: JS/inline-authored keys outrank stylesheet
+        // rules — never overwrite them (shorthand expansions skip too)
+        if (n->inline_keys.count(kv.first)) continue;
         std::string v = resolve_vars(kv.second, custom);
         // inheritable: color, font-size, font-weight, text-align
         if (kv.first == "color" && (v == "inherit")) continue;
         n->style[kv.first] = v;
+        // S114 cascade law: shorthands EXPAND into their longhands at apply
+        // time, so a later longhand (or a later rule's longhand) correctly
+        // overrides just its side (#field: universal `margin:0` then
+        // `#field{margin-top:var(--size_3)}` — the longhand used to lose
+        // against the stale shorthand key).
+        if (kv.first == "margin") {
+            if (v.find(' ') == std::string::npos) {   // single-value → expand;
+                // multi-value shorthands stay for the shorthand parser
+                for (const char* side : {"margin-top", "margin-right",
+                                         "margin-bottom", "margin-left"}) {
+                    if (n->inline_keys.count(side)) continue;
+                    n->style[side] = v;
+                }
+            }
+        } else if (kv.first == "padding") {
+            if (v.find(' ') == std::string::npos) {
+                for (const char* side : {"padding-top", "padding-right",
+                                         "padding-bottom", "padding-left"}) {
+                    if (n->inline_keys.count(side)) continue;
+                    n->style[side] = v;
+                }
+            }
+        }
     }
 }
 
@@ -526,9 +643,17 @@ void HtmlParser::apply_css_impl(DomNode* node, const std::vector<CssRule>& rules
                 apply_rule_to(node, r.props, t_custom);
         }
     }
-    // inline style wins (specificity law)
+    // inline style wins (specificity law) — keys recorded so later rule
+    // applications never overwrite them
     auto it = node->attrs.find("style");
-    if (it != node->attrs.end()) parse_prop_list(it->second, node->style);
+    if (it != node->attrs.end()) {
+        std::map<std::string, std::string> inline_props;
+        parse_prop_list(it->second, inline_props);
+        for (auto& kv : inline_props) {
+            node->style[kv.first] = kv.second;
+            node->inline_keys.insert(kv.first);
+        }
+    }
 
     for (auto& c : node->children) apply_css_impl(c.get(), rules, custom_props, ignore_media);
 }
@@ -558,6 +683,11 @@ std::string HtmlParser::text_content(const DomNode* n) {
 
 bool HtmlParser::matches_selector(const std::string& sel, const DomNode* n) {
     return selector_matches(sel, n);
+}
+
+std::string HtmlParser::resolve_var_string(const std::string& val,
+                                           const std::map<std::string, std::string>& custom) {
+    return resolve_vars(val, custom);
 }
 
 }} // namespace miniandroid::webview
