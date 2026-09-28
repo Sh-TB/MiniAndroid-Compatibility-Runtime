@@ -1,0 +1,65 @@
+Signature-Version: 1.0
+Created-By: 1.0 (Android)
+SHA-256-Digest-Manifest: Ocf5UPSnUebkCXxE7PwvmRudRKJQdKS63IeRsad2W1k=
+X-Android-APK-Signed: 2, 3
+
+Name: AndroidManifest.xml
+SHA-256-Digest: DpryBS1xST8k/s8EvjV+svB3JTfkWoSYYCAC3Prn0hY=
+
+Name: META-INF/com/android/build/gradle/app-metadata.properties
+SHA-256-Digest: dDV59wLsIF0P8R9Ra7jqjC1LZrYhZr/3a0ID9VElUI0=
+
+Name: META-INF/version-control-info.textproto
+SHA-256-Digest: xl7IvXwWUqlEBr91HKH6Qc2uWHzAHTlwaVV7PIsLpac=
+
+Name: assets/Iceland-Regular.ttf
+SHA-256-Digest: J9D9oUpzMy0uLIe5m42/7pZdaZR85QRTyWHScbjWBII=
+
+Name: assets/Play-Regular.ttf
+SHA-256-Digest: Z0rJZtTQCHs3HJEDaU4Tt8DLFADvl0/5sIm0wKDfq+g=
+
+Name: assets/index.html
+SHA-256-Digest: QezcquPSufJqQYRkjD2r+yQlj33YPAA7MS1gtisLuos=
+
+Name: assets/main.js
+SHA-256-Digest: +UCL7ak70/xkZraj9xgHuJZD/9z+7R3bApm/dhLQY8Y=
+
+Name: assets/skin/ico.png
+SHA-256-Digest: wVe7dagFH85n0DJVfMC/4UOL6D+GCvl3gfQ5QQTG9Bo=
+
+Name: assets/sound/ball.mp3
+SHA-256-Digest: g/SCRACRHWPUwdt9+jSZ42SlXfzXpOzbJ8l4fGMZSeg=
+
+Name: assets/sound/bonus.mp3
+SHA-256-Digest: KnJPm7gFaSbg/vSi1Rr6kNDcOd0vmWwFAGuThFbSikQ=
+
+Name: assets/sound/explosion.mp3
+SHA-256-Digest: uj5VXOUA1FbyQG58GlCis2620LFzO3lHrIXSgn+o6N8=
+
+Name: assets/style.css
+SHA-256-Digest: GElizNesV+eOhz8wnGC+2JdWz0RhVJsA1xjlEJXrhCU=
+
+Name: classes.dex
+SHA-256-Digest: F84BvfdyannNGFa5Q0ZCz7o7vNxsNCT1uw5qZ5F4eoo=
+
+Name: res/9w.png
+SHA-256-Digest: BMW6O9RQFgU3N22fX2ktAUVux3M/fHiJPBU6MyLyrxQ=
+
+Name: res/FS.png
+SHA-256-Digest: Bt1HtO9SsvIdbZY3XtKaCcJXUyGWnUBhSRfBu1dUdxg=
+
+Name: res/RJ.png
+SHA-256-Digest: gkv8Yy1zMB5U8V17IEqNfbRHvVNnO49X7y/Iz3mO5lQ=
+
+Name: res/o-.png
+SHA-256-Digest: NTXRNg6u9/CQiV/Su153h0mvg8uw4K4g7Msm1CREd2Q=
+
+Name: res/v9.xml
+SHA-256-Digest: pGNhP5XJMDE9vymEC2yB85V1MPs0+I3SvvpIw1BJiDA=
+
+Name: res/yn.png
+SHA-256-Digest: t9TPAgjia4/xNBUXtzCWSqrPLWNsYwxv+o12s4HYmW0=
+
+Name: resources.arsc
+SHA-256-Digest: 98WlAn9hTKU+mkOnivwsT6iznyd9EveodjuxHQSVGKI=
+

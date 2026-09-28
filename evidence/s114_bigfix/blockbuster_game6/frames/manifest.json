@@ -1,0 +1,150 @@
+{
+  "changed_pixels_vs_launch": 2073600,
+  "drains": [
+    [
+      {
+        "entry": 4026531842,
+        "virtual_ms": 50
+      },
+      {
+        "advanced_to_virtual_ms": 114,
+        "delta_ms": 64,
+        "event": "poll-timeout fast-forward"
+      },
+      {
+        "entry": 4026531843,
+        "virtual_ms": 114
+      }
+    ],
+    []
+  ],
+  "events": [
+    {
+      "action": "ACTION_DOWN",
+      "consumed": true,
+      "long_press_armed_ms": 500,
+      "root_id": 9,
+      "state_changes": [
+        "setPressed(true)"
+      ],
+      "target_class": "Landroid/webkit/WebView;",
+      "target_view_id": 10,
+      "virtual_ms": 0,
+      "x": 540,
+      "y": 1095
+    },
+    {
+      "action": "ACTION_UP",
+      "click_posted": true,
+      "consumed": true,
+      "root_id": 9,
+      "state_changes": [],
+      "target_view_id": 10,
+      "virtual_ms": 50,
+      "was_pressed": true,
+      "x": 540,
+      "y": 1095
+    }
+  ],
+  "frames": [
+    {
+      "event": "launch (no interaction)",
+      "file": "frame_000.png",
+      "index": 0,
+      "png_sha256": "53ca4c85e8931ed02f28a74e29085feaa9f734bf9eaf9ab33be94b3e4891dab2",
+      "sha256": "a9909cb9ddff26336af26a3464c6c8c25bd85c90a4ace63e0094f93fd4c43683",
+      "visible_texts": []
+    },
+    {
+      "event": "ACTION_DOWN pressed state (mid-gesture)",
+      "file": "frame_001.png",
+      "index": 1,
+      "png_sha256": "53ca4c85e8931ed02f28a74e29085feaa9f734bf9eaf9ab33be94b3e4891dab2",
+      "sha256": "a9909cb9ddff26336af26a3464c6c8c25bd85c90a4ace63e0094f93fd4c43683",
+      "target_pressed": true,
+      "target_view_id": 10,
+      "virtual_ms": 20,
+      "visible_texts": []
+    },
+    {
+      "changed_pixels_vs_previous": 2073600,
+      "event": "queue drain: framebuffer mutated (tick)",
+      "file": "frame_002.png",
+      "index": 2,
+      "png_sha256": "883aa751071a833a0582fd29363d67a1f4a37da796799866776b7236985a87cd",
+      "sha256": "b60bd9cb7da26c5e69bf2dfb4f57b331b3a4997b801dfa21e49ed91cd27a9cb1",
+      "virtual_ms": 50,
+      "visible_texts": []
+    },
+    {
+      "changed_pixels_vs_previous": 2073600,
+      "event": "post-gesture (callbacks drained, transitions applied)",
+      "file": "frame_003.png",
+      "index": 3,
+      "png_sha256": "883aa751071a833a0582fd29363d67a1f4a37da796799866776b7236985a87cd",
+      "sha256": "b60bd9cb7da26c5e69bf2dfb4f57b331b3a4997b801dfa21e49ed91cd27a9cb1",
+      "target_pressed_after": false,
+      "target_view_id": 10,
+      "virtual_ms": 184,
+      "visible_texts": []
+    }
+  ],
+  "gesture": "TAP",
+  "gesture_count": 1,
+  "laws": [
+    "View.java L17044-17047 touchable",
+    "L17049-17057 disabled",
+    "L17113-17125 DOWN setPressed + long-press arm",
+    "L17133-17169 UP post(PerformClick)+UnsetPressed(64ms)",
+    "L17172-17184 CANCEL cleanup",
+    "CheckForLongPress mHasPerformedLongPress suppression",
+    "one-MessageQueue ordering (framework tokens)"
+  ],
+  "pipeline": "canonical (TouchDispatcher law)",
+  "screen": {
+    "height": 1920,
+    "width": 1080
+  },
+  "touch_trace": [
+    {
+      "action": "ACTION_DOWN",
+      "consumed": true,
+      "long_press_armed_ms": 500,
+      "root_id": 9,
+      "state_changes": [
+        "setPressed(true)"
+      ],
+      "target_class": "Landroid/webkit/WebView;",
+      "target_view_id": 10,
+      "virtual_ms": 0,
+      "x": 540,
+      "y": 1095
+    },
+    {
+      "action": "ACTION_UP",
+      "click_posted": true,
+      "consumed": true,
+      "root_id": 9,
+      "state_changes": [],
+      "target_view_id": 10,
+      "virtual_ms": 50,
+      "was_pressed": true,
+      "x": 540,
+      "y": 1095
+    },
+    {
+      "callback": "PerformClick",
+      "click_dispatched": false,
+      "target_view_id": 10,
+      "virtual_ms": 50
+    },
+    {
+      "callback": "UnsetPressedState",
+      "state_changes": [
+        "setPressed(false)"
+      ],
+      "target_view_id": 10,
+      "virtual_ms": 114
+    }
+  ]
+}

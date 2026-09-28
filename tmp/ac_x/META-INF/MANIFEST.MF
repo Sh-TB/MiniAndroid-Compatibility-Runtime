@@ -1,0 +1,71 @@
+Manifest-Version: 1.0
+
+Name: AndroidManifest.xml
+SHA-256-Digest: zQOCX6nThH0uuEJxlcpjlpcvtEUt41EGspdcGEvqGfw=
+
+Name: META-INF/com/android/build/gradle/app-metadata.properties
+SHA-256-Digest: 1Kx5zYrZuj6nzwYN5FzaTaidk0DhG+IRk+AQDhiq6Ps=
+
+Name: META-INF/version-control-info.textproto
+SHA-256-Digest: NggHBKmqIwTp1UOV7IFR9xMBuLR6iBPCiP/r8X52awM=
+
+Name: assets/OFL.txt
+SHA-256-Digest: QXGxpkV5XCjCyOkHEXQvbWH8dX6+nyAXue3cA7Odz2k=
+
+Name: assets/RedditMono-VariableFont_wght.ttf
+SHA-256-Digest: Zh+HMgYJTyhW71brjTTbz4PQYCqTeBrN4v7gavKk/bc=
+
+Name: assets/adi-registration.properties
+SHA-256-Digest: Mbo/nOfoEN9H++A5oYUhOrNmnYWF0Yed01t1lMDw3fQ=
+
+Name: assets/images/car1.png
+SHA-256-Digest: oHAuZjYnUAZ7byv9anJJncCEE2BYC4emXqAnylclNTQ=
+
+Name: assets/images/car2.png
+SHA-256-Digest: vrXfBKNioHHUIXH+zQ2PN71n0oVJHTC3nCWdpaA+urU=
+
+Name: assets/images/house.png
+SHA-256-Digest: BrWcZoZ1CySFG8VJTWVuIAekBP6lmf4/IXq4nf7zZOA=
+
+Name: assets/images/palm_tree.png
+SHA-256-Digest: uVXhnHtXeTSBS0PSQCxEYUw+ukn7Jwk+LccR2BEDEAc=
+
+Name: assets/images/small_house.png
+SHA-256-Digest: tgOSHxnK6zV95EPtDKIeBTSujzCh00l6etwmG9CDMlw=
+
+Name: assets/images/tree.png
+SHA-256-Digest: 2z2mcQBycKt/1Z+jObKsq4I5RwstcBAOOlINWkbWCSs=
+
+Name: assets/index.html
+SHA-256-Digest: CcTj9dPqYCdyDD5C1xGUxQ2zar9bMGejiZ507AEYBqo=
+
+Name: assets/main.js
+SHA-256-Digest: vFmKVr76CPfIQCjahdN1gbCv9pQuPVRIOicXLKAfw80=
+
+Name: assets/style.css
+SHA-256-Digest: sJ8sGYxqova5miCz6yJ+vuGHYEapRvkfOQUBWMGOGLY=
+
+Name: classes.dex
+SHA-256-Digest: T2mjdpcYgUXBTKHVpqxDTf63qnfLpNgTKFWlGJkBYm4=
+
+Name: res/9w.png
+SHA-256-Digest: Z8+I0VufUPM42BKWPQDdzUWEBxN13Gs6sDF9zIpiIY4=
+
+Name: res/FS.png
+SHA-256-Digest: UbM+ODtRk3UOEDZ4SBKXAxO0cXMu0m5TU4GYWziS1Qg=
+
+Name: res/RJ.png
+SHA-256-Digest: IaARBKv4wdU6YW49X7iaFjZapmD16iR1vkV+1ChoJ3s=
+
+Name: res/o-.png
+SHA-256-Digest: Da6SVJyYWWXFk2MutS1+dwIy3oTNTTZlCxAk1zmrLIo=
+
+Name: res/v9.xml
+SHA-256-Digest: c2MZQdsxAqbLs4zCDIoVY3h4dsVEkIo1BqUooofUZ/c=
+
+Name: res/yn.png
+SHA-256-Digest: 0KxNwAz1vRj2uck9anMcp3W+Jh8UTXASPFtg9IOtMY8=
+
+Name: resources.arsc
+SHA-256-Digest: djZrt7Qcd7x+F5m4dH68hiDCaGRqByACTCCdN0UDMDE=
+

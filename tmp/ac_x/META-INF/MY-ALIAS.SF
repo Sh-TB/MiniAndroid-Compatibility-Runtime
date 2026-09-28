@@ -1,0 +1,74 @@
+Signature-Version: 1.0
+Created-By: 1.0 (Android)
+SHA-256-Digest-Manifest: C89fy5pCMMX61ZoFNCzDt+KmSE11yrc+pwvslHYHEF0=
+X-Android-APK-Signed: 2, 3
+
+Name: AndroidManifest.xml
+SHA-256-Digest: OpuxT31+XA76rSmRtrjlupgb1ynRh3viP12qopVMZRk=
+
+Name: META-INF/com/android/build/gradle/app-metadata.properties
+SHA-256-Digest: dDV59wLsIF0P8R9Ra7jqjC1LZrYhZr/3a0ID9VElUI0=
+
+Name: META-INF/version-control-info.textproto
+SHA-256-Digest: VGQtnbkw34lWJ+ympdfYT96V0JnJaz4z05alhdkU3zQ=
+
+Name: assets/OFL.txt
+SHA-256-Digest: JfGZhMw6PqE38W5pdNH5r/qvP1OLZ1rdyu9fWxbNvuQ=
+
+Name: assets/RedditMono-VariableFont_wght.ttf
+SHA-256-Digest: wNQkzTkZ+Ik+xX9tyWCaiGa1eQ+EHZHNXy45WHrSSIA=
+
+Name: assets/adi-registration.properties
+SHA-256-Digest: zkm6eN8LNOTHUMzqONY1+34aor4Z+tbdg1mqBMgV2B4=
+
+Name: assets/images/car1.png
+SHA-256-Digest: jW6ZPO9ysfw96a/oAC8+U7Bzz0FGA9H8jquqADHHE5M=
+
+Name: assets/images/car2.png
+SHA-256-Digest: aPQ0tD0M/tNB5Go1n+q6F5bBItggAbNPjt4JH2ExxG0=
+
+Name: assets/images/house.png
+SHA-256-Digest: re0hiq2DqL7G3uCUpzcWOpFFOos5dyhhBIzUiBg+bPs=
+
+Name: assets/images/palm_tree.png
+SHA-256-Digest: JXEZjX84pDNg6phXZCTrYPL0fRjkOU6msfHtsFgx+9o=
+
+Name: assets/images/small_house.png
+SHA-256-Digest: UYBy2RVu3lvERn9gP04lm+d2QJ1OQoUjm8HaCcj8klw=
+
+Name: assets/images/tree.png
+SHA-256-Digest: ee8v1JmjTRVCjit4hGRSmZYbWv6sOKNTZUgdctMseiM=
+
+Name: assets/index.html
+SHA-256-Digest: 3+/HaqNAAd/bPxKnsHbWqSHjcxI6PHPVJzF0tZnjtn0=
+
+Name: assets/main.js
+SHA-256-Digest: DkuuLadFY0XaA5RgbD+13Fkdu18xaLTF+KC1tax3oew=
+
+Name: assets/style.css
+SHA-256-Digest: hvuxCzunhVCcCQrU0oOO6Nlb/5nFBX3xWwZ9h2jy4Mk=
+
+Name: classes.dex
+SHA-256-Digest: 7wlD5bZqVfKhhQdM+gJ25hbKV6wPU4jvYm1IgYkOo3s=
+
+Name: res/9w.png
+SHA-256-Digest: 98GM4tBRTcepJTwkYVruz9x0v0I6UmnatFw8NDzWymM=
+
+Name: res/FS.png
+SHA-256-Digest: kMWzPtVib/iNZMpD2I5iY9x9jCKCpjAihjwQ7iXCFc0=
+
+Name: res/RJ.png
+SHA-256-Digest: 5nUCRbK0CVCBrViJ5qtEPfKSxHQKF00lDZvDV3BdTCg=
+
+Name: res/o-.png
+SHA-256-Digest: JUzxSpg3F+yONAgWCIAaG+QLJcsVh/FLbUhsseP85YE=
+
+Name: res/v9.xml
+SHA-256-Digest: pGNhP5XJMDE9vymEC2yB85V1MPs0+I3SvvpIw1BJiDA=
+
+Name: res/yn.png
+SHA-256-Digest: aKSaFuMSS6D/kHPR+HumI5g/0QqTcwZX98LeeGvjXTg=
+
+Name: resources.arsc
+SHA-256-Digest: yiMOqgLNraoTuW/jIlVME/Av/YF8399rfXeVNS3MLNQ=
+
