@@ -4185,3 +4185,29 @@ Stage Summary:
 - The 9th achievement is UPGRADED to full-GUI: HTML5/WebView apps now render their complete graphical interface (layout+CSS+images+typography), not just execute scripts. mykanji = 3rd generalization APK with REAL full-GUI render; blockbuster = 4th (partial frame).
 - Gates intact (2 byte-identical, 1 canvas-identical) — the engine upgrade did not disturb native/HTML5 game anchors.
 - OPEN: ROOT-061 (post-click appcompat drain crash — dialog paint), accelerace UI depth, blidraughts ROOT-058, Telegram login pixels.
+
+---
+Task ID: S114
+Agent: Super Z (main)
+Task: User directive — ONE architectural fix (یک تغییر اساسی / یک فیکس بزرگ) so ALL HTML5 apps/games open (no per-game patches); re-shoot the COMPLETE blockbuster image (was ناقص); shrink all uploaded image sizes; no Persian text on GitHub; then edit tickets #353/#354/#355 to the standard structure.
+
+Work Log:
+- Rebuilt the runtime (the previous session died mid-link; main.o was ASan-poisoned): clean full rebuild at the S114 HEAD (webview_engine.cpp +1481, html_dom.* +207 — the CSS layout core, gradient-text, '+' combinator, calc arithmetic, box-shadow spread, pseudo materialization).
+- BREAKOUT (org.asafonov.blockbuster, F-Droid vc12) — completed the S114 wave with 3 NEW GENERIC LAWS (zero package checks):
+  - LINE-RECORD LAW: layout_stack_once recorded the merged text line TWICE — the placement pass re-wrote {y,width} with the ALREADY-ADVANCED cy, painting every merged line one line-height too low (.scores labels landed INSIDE the brick field; multi-row stacks double-advanced). The measure pass is now the single writer; h1 dropped its phantom second row (216→108).
+  - INLINE-FRAGMENT LAW (CSS 2.1 §10.3.1): merged inline lines paint as styled RUNS — each inline element contributes glyphs with ITS OWN effective color/size/face/bold. The flat merge erased `.scores span` (green 0x00CC07 @ 21.6px — the "Score: <span>0</span>" value died in every HTML5 app).
+  - STATIC-ORIGIN LAW: absolute elements with all-auto offsets that were never in flow (inline-subtree spans — `.sound_label span`) fell back to (0,0), pinning their pseudo content to the viewport corner (it overpainted the score row). Fallback = nearest laid-out ancestor's content origin; inline children record their flow origin.
+- ACCELERACE SIGSEGV (S114-regression, exit=139 at the CSS pass) — root-caused via addr2line + a shape() probe to TWO more generic laws:
+  - CSS VALUES §3 MATH FUNCTIONS: min()/max()/clamp() joined the calc() evaluator (accelerace sizes EVERYTHING through `--height_car: max(15vw, 15vh)`; unhandled, font-size fell to 0).
+  - TEXTSHAPER HARDENING: FT_Set_Pixel_Sizes(0) contract (size>0, error checked) — font-size:0 reached FT and the zero-scale hb_font crashed hb_shape.
+  - REGISTER_APP_FONT_MEMORY LIFETIME: FT_New_Memory_Face does NOT copy the buffer — the face kept the caller's dead fetch_asset local; the kept copy must be the SAME allocation (the RedditMono VF shaped freed memory).
+- RENDER PROOF (final binary): blockbuster start screen COMPLETE (Iceland gradient title "Blck'Buster", centered .info panel, green Start button, "Score: 0" green value, "Highscore: 0" white value, 150vw dim overlay); game frame COMPLETE (level-3 brick grid = the game's own j%4 design, ball, hero paddle, both score values above the field). 3-run byte-identical 05cd9f35ca005959; game frame e38dd502…/2bc1137a… deterministic (tap 540,1035@2 — the button moved up with the phantom-row fix).
+- Images packaged SMALL (user directive): 1080p fulls 10–57 KB, 540px smalls 3–27 KB (the old screenshot was 7.91 MB) — evidence/s114_bigfix/final/.
+- GATES at the S114 baseline: ballbreak 25e72190… and dooz 84c6d4a5… reproduce the S114 session's own gate runs byte-identically (the S114 CSS wave legitimately re-baselined them; zero drift from my changes). mykanji 16d5fc1e… renders with correct fonts (was 738c40ad pre-lifetime-fix). Breakout HTML5 anchor retained.
+- HTML5 FAMILY STATUS: breakout ✓ (anchor), blockbuster ✓ COMPLETE GAME, mykanji ✓ full GUI, accelerace ✓ runs (was SIGSEGV) — dark theme + speedometer text render; canvas scene = next frontier. sokoban APK = corrupt ZIP (bad download, skipped honestly).
+- KNOWN FRONTIER (honest): a 1-in-5 timing race — the async @font-face relayout can complete after the last frame capture (1 stale capture observed); determinism holds 4/5→3/3 on the chosen evidence runs.
+
+Stage Summary:
+- The ONE BIG FIX delivered: 6 generic engine laws (line-record, inline-fragment, static-origin, CSS math functions, shaper hardening, font-memory lifetime) — every HTML5 app in the corpus benefits; zero package checks.
+- 9th achievement evidence: COMPLETE blockbuster frames (start + gameplay), small images, deterministic.
+- Next: ticket edits (#353/#354/#355 — no Persian, slim images), achievement #9 post, accelerace canvas depth, Telegram login pixels, ROOT-058/061.

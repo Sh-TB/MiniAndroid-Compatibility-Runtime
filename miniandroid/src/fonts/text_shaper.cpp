@@ -273,7 +273,15 @@ const ShapedText& TextShaper::shape(const std::string& utf8, float size_px,
     if (!face) face = reinterpret_cast<FT_Face>(faces_[kFaceRegular].ft_face);
 
     // Fixed pixel size — size_px is exactly the em size in px (26.6 fixed).
-    FT_Set_Pixel_Sizes(face, 0, (FT_UInt)std::lround(size_px));
+    // S114 hardening law (FreeType FT_Set_Pixel_Sizes contract): the size
+    // must be > 0 — a CSS `font-size:0` (image-replacement idiom) or an
+    // un-evaluated length used to reach FT as 0, the error was ignored and
+    // the zero-scale hb_font crashed hb_shape (accelerace SIGSEGV).
+    float sz = std::max(1.0f, size_px);
+    if (FT_Set_Pixel_Sizes(face, 0, (FT_UInt)std::lround(sz)) != 0) {
+        auto res = shape_cache_.emplace(key, std::move(result));
+        return res.first->second;
+    }
 
     // Font metrics at this size.
     result.ascent  = (float)(face->size->metrics.ascender  >> 6);
@@ -333,6 +341,9 @@ const ShapedText& TextShaper::shape(const std::string& utf8, float size_px,
     hb_buffer_t* buf = hb_buffer_create();
     hb_buffer_add_utf32(buf, vis.data(), (int)src.size(), 0, -1);
     hb_buffer_guess_segment_properties(buf);
+    if (getenv("TS_DEBUG"))
+        std::fprintf(stderr, "[TS] shape len=%d size=%.2f face=%d hb=%p text='%.24s'\n",
+                     (int)src.size(), sz, face_idx, (void*)hb_font, utf8.c_str());
     hb_shape(hb_font, buf, nullptr, 0);
 
     unsigned gn = 0;
@@ -693,9 +704,16 @@ void TextShaper::metrics(float size_px, bool bold, int face_idx,
 int TextShaper::register_app_font_memory(const std::vector<uint8_t>& bytes,
                                          const std::string& debug_name, bool is_bold) {
     if (!available_ || bytes.empty()) return -1;
+    // S114 lifetime law (FT_New_Memory_Face contract): the face does NOT
+    // copy the buffer — it keeps the raw pointer. The kept copy must be the
+    // SAME allocation the face reads; copying AFTER FT_New_Memory_Face left
+    // the face on the caller's dead local vector (the @font-face registration
+    // passed a fetch_asset local — the RedditMono VF shaped garbage and
+    // hb_shape SIGSEGV'd on its first call).
+    auto keep = std::make_shared<std::vector<uint8_t>>(bytes);
     FT_Face face = nullptr;
     if (FT_New_Memory_Face(reinterpret_cast<FT_Library>(ft_lib_),
-                           bytes.data(), (FT_Long)bytes.size(), 0, &face)) {
+                           keep->data(), (FT_Long)keep->size(), 0, &face)) {
         std::fprintf(stderr, "[TEXTSHAPER] register_app_font: FT_New_Memory_Face FAILED %s\n",
                      debug_name.c_str());
         return -1;
@@ -704,7 +722,7 @@ int TextShaper::register_app_font_memory(const std::vector<uint8_t>& bytes,
     f.ft_face = face;
     f.units_per_em = face->units_per_EM;
     f.path = debug_name;
-    f.bytes = std::make_shared<std::vector<uint8_t>>(bytes);  // must outlive face
+    f.bytes = keep;   // the exact buffer the face points at — outlives the face
     app_faces_.push_back(std::move(f));
     int idx = kBaseFaceCount + (int)app_faces_.size() - 1;
     if (is_bold) {
