@@ -2190,6 +2190,11 @@ public:
     std::map<std::string, uint32_t> dir_files_;
     // S88 F-NEW-181: code point → boxed Character id (valueOf cache 0..127).
     std::map<uint32_t, uint32_t> char_box_cache_;
+    // S120 R-NEW-408: boxed Integer value → heap id (OpenJDK IntegerCache
+    // law: valueOf(-128..127) returns the SAME object per value). Identity-
+    // keyed maps (HashMap<Integer,V>) put and get under valueOf — fresh
+    // boxes each call made every lookup miss → get → null → unboxing NPE.
+    std::map<int32_t, uint32_t> int_box_cache_;
     // F-067: the attached Application instance (heap object id + class)
     // recorded by the runtime layer before any activity runs.
     uint32_t application_object_id_ = 0;

@@ -21338,20 +21338,57 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // serves HashSet(Collection)/ArrayList(Collection) consumers unchanged.
     // Static overload family: args ARE the elements (no receiver slot).
     // ────────────────────────────────────────────────────────────────────
-    if (class_name == "Ljava/util/EnumSet;" && method == "of" && !args.empty()) {
+    if (class_name == "Ljava/util/EnumSet;" &&
+        (method == "of" || method == "noneOf" || method == "allOf" ||
+         method == "copyOf" || method == "complementOf")) {
         uint32_t set_id = heap_.allocate("Ljava/util/EnumSet;", pc_, 0);
         int n_elems = 0;
+        // noneOf(Class)/allOf(Class): arg0 is the element Class token — the
+        // set starts EMPTY in both cases (documented deviation for allOf:
+        // membership is driven by the add/contains bridge, not by the
+        // enum-constant registry; noneOf+add/contains — the corpus pattern —
+        // is exact).
+        const bool class_arg = (method == "noneOf" || method == "allOf" ||
+                                method == "complementOf");
+        if (class_arg) {
+            if (!args.empty())
+                heap_.set_object_field(set_id, "__element_class__", args[0]);
+            if (method == "allOf")
+                heap_.set_object_field(set_id, "__all_of__",
+                                       DalvikValue::make_int(1));
+        }
         for (const auto& ea : args) {
-            if (ea.type == DalvikType::OBJECT_REF && ea.object_id != 0) {
+            if (ea.type == DalvikType::OBJECT_REF && ea.object_id != 0 &&
+                !class_arg) {
                 heap_.set_object_field(set_id, "array[" + std::to_string(n_elems) + "]",
                                        ea);
                 n_elems++;
             }
         }
+        // copyOf(Collection): copy the source's array[i] elements when the
+        // argument carries the canonical heap iterable contract.
+        if (method == "copyOf" && !args.empty() &&
+            args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0) {
+            auto lf = heap_.get_object_field(args[0].object_id,
+                                             "__array_length__");
+            int32_t sn = (lf.has_value() && lf->type == DalvikType::INT32)
+                             ? lf->int_val : 0;
+            for (int32_t i = 0; i < sn; ++i) {
+                auto el = heap_.get_object_field(
+                    args[0].object_id, "array[" + std::to_string(i) + "]");
+                if (el.has_value()) {
+                    heap_.set_object_field(
+                        set_id, "array[" + std::to_string(n_elems) + "]", *el);
+                    n_elems++;
+                }
+            }
+        }
         heap_.set_object_field(set_id, "__array_length__",
                                DalvikValue::make_int(n_elems));
-        std::cerr << "[F104-ENUMSET] of(" << args.size() << " args) -> o"
-                  << set_id << " elems=" << n_elems
+        heap_.set_object_field(set_id, "__iterator_pos__",
+                               DalvikValue::make_int(0));
+        std::cerr << "[F104-ENUMSET] " << method << "(" << args.size()
+                  << " args) -> o" << set_id << " elems=" << n_elems
                   << " caller=" << current_class_ << "."
                   << current_method_ << std::endl;
         result = DalvikValue::make_object(set_id, "Ljava/util/EnumSet;");
@@ -35080,6 +35117,172 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // S120 (R-NEW-407) — java.util.EnumSet instance-method bridge.
+    // OpenJDK law: an EnumSet IS a Set — add/contains/remove/size/isEmpty/
+    // clear/iterator over the enum-constant elements. No law existed:
+    // EnumSet.noneOf returned NULL (REC-MISS) → the app field stayed null →
+    // the first EnumSet.contains NPE'd the whole render path. Evidence:
+    // eu.veldsoft.tri.peaks GameActivity.repaint pc=693 — "invokevirtual
+    // Ljava/util/EnumSet;.contains on a null object reference" right after
+    // GameState.<init> called EnumSet.noneOf — the card board never painted
+    // (green felt + HUD labels only). The F-104 static `of` law (element-
+    // array model) is the storage contract: elements live in "array[i]"
+    // heap fields, __array_length__ = count.
+    // Dispatch law mirrors the TreeSet bridge: the declaring class at the
+    // call site may be Ljava/util/EnumSet; OR a family interface
+    // (Set/Collection/AbstractSet) — so the gate matches (a) the declared
+    // name when the receiver is an EnumSet object, and (b) the declared
+    // EnumSet name regardless of the runtime object. Element identity:
+    // enum constants are heap singletons, so OBJECT_REF elements compare
+    // by object identity key; scalars by value.
+    // ────────────────────────────────────────────────────────────────────────
+    {
+        std::string es_recv_class;
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0) {
+            if (auto* ro = heap_.get(args[0].object_id))
+                es_recv_class = ro->class_descriptor;
+        }
+        bool es_recv = !es_recv_class.empty() &&
+                       es_recv_class.find("Ljava/util/EnumSet;") == 0;
+        bool es_decl = class_name.find("EnumSet") != std::string::npos;
+        if (es_recv || (es_decl && !args.empty() &&
+                        args[0].type == DalvikType::OBJECT_REF &&
+                        args[0].object_id != 0)) {
+            auto es_len = [&](uint32_t oid) -> int32_t {
+                auto lf = heap_.get_object_field(oid, "__array_length__");
+                return (lf.has_value() && lf->type == DalvikType::INT32)
+                           ? lf->int_val : 0;
+            };
+            auto es_key = [](const DalvikValue& v) -> std::string {
+                if (v.type == DalvikType::OBJECT_REF)
+                    return "obj_" + std::to_string(v.object_id);
+                if (v.type == DalvikType::STRING_REF)
+                    return v.string_val;
+                return std::to_string(v.int_val);
+            };
+            auto es_find = [&](uint32_t oid, const DalvikValue& e) -> int32_t {
+                int32_t n = es_len(oid);
+                std::string k = es_key(e);
+                for (int32_t i = 0; i < n; ++i) {
+                    auto el = heap_.get_object_field(
+                        oid, "array[" + std::to_string(i) + "]");
+                    if (el.has_value() && es_key(*el) == k) return i;
+                }
+                return -1;
+            };
+            if (method == "add" && args.size() >= 2) {
+                uint32_t oid = args[0].object_id;
+                if (es_find(oid, args[1]) >= 0) {
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_bool(false);
+                    return true;
+                }
+                int32_t n = es_len(oid);
+                heap_.set_object_field(oid, "array[" + std::to_string(n) + "]",
+                                       args[1]);
+                heap_.set_object_field(oid, "__array_length__",
+                                       DalvikValue::make_int(n + 1));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_bool(true);
+                static thread_local uint64_t r407_log = 0;
+                if (r407_log < 16) {
+                    ++r407_log;
+                    std::cerr << "[R407-ENUMSET] add -> o" << oid
+                              << " size=" << (n + 1) << " caller="
+                              << current_class_ << "." << current_method_
+                              << std::endl;
+                }
+                return true;
+            }
+            if (method == "contains" || method == "containsAll") {
+                uint32_t oid = args[0].object_id;
+                bool present = true;
+                for (size_t ai = 1; ai < args.size(); ++ai)
+                    if (es_find(oid, args[ai]) < 0) { present = false; break; }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_bool(present);
+                return true;
+            }
+            if (method == "remove" && args.size() >= 2) {
+                uint32_t oid = args[0].object_id;
+                int32_t idx = es_find(oid, args[1]);
+                if (idx < 0) {
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_bool(false);
+                    return true;
+                }
+                int32_t n = es_len(oid);
+                for (int32_t i = idx; i < n - 1; ++i) {
+                    auto el = heap_.get_object_field(
+                        oid, "array[" + std::to_string(i + 1) + "]");
+                    if (el.has_value())
+                        heap_.set_object_field(
+                            oid, "array[" + std::to_string(i) + "]", *el);
+                }
+                heap_.set_object_field(oid, "__array_length__",
+                                       DalvikValue::make_int(n - 1));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_bool(true);
+                return true;
+            }
+            if (method == "size") {
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_int(es_len(args[0].object_id));
+                return true;
+            }
+            if (method == "isEmpty") {
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_bool(es_len(args[0].object_id) == 0);
+                return true;
+            }
+            if (method == "clear") {
+                heap_.set_object_field(args[0].object_id, "__array_length__",
+                                       DalvikValue::make_int(0));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_void();
+                return true;
+            }
+            if (method == "iterator") {
+                heap_.set_object_field(args[0].object_id, "__iterator_pos__",
+                                       DalvikValue::make_int(0));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_object(args[0].object_id,
+                                                  "Ljava/util/Iterator;");
+                return true;
+            }
+            if (method == "hasNext") {
+                uint32_t oid = args[0].object_id;
+                auto pf = heap_.get_object_field(oid, "__iterator_pos__");
+                int32_t pos = (pf.has_value() && pf->type == DalvikType::INT32)
+                                  ? pf->int_val : 0;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_bool(pos < es_len(oid));
+                return true;
+            }
+            if (method == "next") {
+                uint32_t oid = args[0].object_id;
+                auto pf = heap_.get_object_field(oid, "__iterator_pos__");
+                int32_t pos = (pf.has_value() && pf->type == DalvikType::INT32)
+                                  ? pf->int_val : 0;
+                int32_t n = es_len(oid);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                if (pos < n) {
+                    auto el = heap_.get_object_field(
+                        oid, "array[" + std::to_string(pos) + "]");
+                    heap_.set_object_field(oid, "__iterator_pos__",
+                                           DalvikValue::make_int(pos + 1));
+                    result = el.has_value() ? *el : DalvikValue::make_null();
+                    return true;
+                }
+                throw_deferred("Ljava/util/NoSuchElementException;",
+                               "EnumSet iterator exhausted", "R407-ENUMSET-ITER");
+                return true;
+            }
+        }
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // F-097 (R-NEW-330 closure): java.util.TreeSet — real set semantics.
     //
     //   * Root-gap evidence (S28, dooz + MINIANDROID_R330_TRACE): compose
@@ -37681,6 +37884,42 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             heap_.set_object_field(box_id, "value", args[0]);
             if (cp <= 127) char_box_cache_[cp] = box_id;
             result = DalvikValue::make_object(box_id, class_name);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // ── S120 R-NEW-408 — Integer/Short/Byte/Long valueOf cache law ────
+        // OpenJDK IntegerCache: valueOf(I) returns the SAME object for
+        // -128..127 (Long/Short/Byte share the range; only Integer is
+        // cached here — the corpus identity-keyed maps use Integer keys).
+        // Ground truth (same family as S88 Character): TriPeaks
+        // GameActivity repaint builds HashMap<Integer, Integer> state via
+        // put(valueOf(k), valueOf(v)) then get(valueOf(k)) — fresh boxes
+        // each call made every get MISS → null → unboxing .intValue() NPE
+        // at repaint pc=740 killed the render chain.
+        if ((class_name == "Ljava/lang/Integer;" || class_name == "Ljava/lang/Short;" ||
+             class_name == "Ljava/lang/Byte;" || class_name == "Ljava/lang/Long;") &&
+            (args[0].type == DalvikType::INT32 || args[0].type == DalvikType::CHAR)) {
+            const int32_t bv = args[0].int_val;
+            if (bv >= -128 && bv <= 127) {
+                auto iit = int_box_cache_.find(bv);
+                if (iit != int_box_cache_.end() &&
+                    heap_.has_object(iit->second)) {
+                    // Return the box with the box's own class (a Long box
+                    // must keep Ljava/lang/Long; even when the call site
+                    // declared Integer — heap authority wins).
+                    std::string bc = "Ljava/lang/Integer;";
+                    if (auto* bo = heap_.get(iit->second))
+                        if (!bo->class_descriptor.empty())
+                            bc = bo->class_descriptor;
+                    result = DalvikValue::make_object(iit->second, bc);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+            }
+            uint32_t box_id2 = heap_.allocate(class_name, pc_ /*approx*/, 0);
+            heap_.set_object_field(box_id2, "value", args[0]);
+            if (bv >= -128 && bv <= 127) int_box_cache_[bv] = box_id2;
+            result = DalvikValue::make_object(box_id2, class_name);
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
