@@ -28,11 +28,13 @@ APK = f"{ROOT}/upload/s80_games/build_sd/snake_deluxe_v1.0_vc1.apk"
 
 GRID_X, GRID_Y = 15, 16
 CELL = 68
-BXL, BYT = 30, 132
-START_TAP = (540, 1500, 4)
+BXL, BYT = 30, 132  # S119 note: re-verify board rect if vision diverges
+# S119 recalibration (vision-measured from the current render): the layout
+# laws evolved since S80 and every button ROW moved up; x centers unchanged.
+START_TAP = (540, 1330, 4)
 
-BTN = {"TOP": (539, 1632), "LEFT": (309, 1743), "RIGHT": (834, 1743),
-       "BOTTOM": (539, 1854)}
+BTN = {"TOP": (539, 1510), "LEFT": (309, 1690), "RIGHT": (834, 1690),
+       "BOTTOM": (539, 1805)}
 DIRS = {"U": (0, -1), "D": (0, 1), "L": (-1, 0), "R": (1, 0)}
 DIRNAME_BTN = {"U": "TOP", "D": "BOTTOM", "L": "LEFT", "R": "RIGHT"}
 OPP = {"U": "D", "D": "U", "L": "R", "R": "L"}

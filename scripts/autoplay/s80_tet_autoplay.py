@@ -44,8 +44,10 @@ COLS, ROWS = 10, 20
 CELL = 65
 BXL, BYT = 30, 130
 
-BTN = {"LEFT": (211, 1725), "ROTATE": (539, 1725), "RIGHT": (868, 1725),
-       "DROP": (293, 1854), "START": (786, 1854)}
+# S119 recalibration: control rows moved up with the corrected layout laws
+# (measured from the current render: row1 y=1645, row2 y=1825; x unchanged).
+BTN = {"LEFT": (211, 1645), "ROTATE": (539, 1645), "RIGHT": (868, 1645),
+       "DROP": (293, 1825), "START": (786, 1825)}
 KIND_OF = {(BTN["LEFT"][0], BTN["LEFT"][1]): "L",
            (BTN["ROTATE"][0], BTN["ROTATE"][1]): "ROT",
            (BTN["RIGHT"][0], BTN["RIGHT"][1]): "R",
