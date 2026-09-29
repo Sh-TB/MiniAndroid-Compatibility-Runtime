@@ -3079,6 +3079,15 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                         }
                                     }
                                     webview_painted = true;
+                                    if (std::getenv("WV_DUMP")) {
+                                        std::ofstream df("/tmp/wvbuf_dump.ppm", std::ios::binary);
+                                        df << "P6\n" << w << " " << h << "\n255\n";
+                                        for (int yy = 0; yy < h; ++yy)
+                                            for (int xx = 0; xx < w; ++xx) {
+                                                const uint8_t* px2 = &wvbuf[size_t(yy) * w * 4 + size_t(xx) * 4];
+                                                df.put((char)px2[0]); df.put((char)px2[1]); df.put((char)px2[2]);
+                                            }
+                                    }
                                     std::cerr << "[WV-RENDER] webview surface blitted: view=o"
                                               << node->view_id << " rect=" << left << ","
                                               << top << " " << w << "x" << h << std::endl;
