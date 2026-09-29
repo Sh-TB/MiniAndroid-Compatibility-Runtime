@@ -4311,3 +4311,48 @@ Stage Summary:
 - Open frontiers (honest): weather data chain (fetch/crypto.subtle/geolocation
   + SVG icon color via CSS vars), accelerace timer-driven car/road animation,
   Telegram login pixels (R$styleable/text-draw), empty-view-tree family (~43).
+
+---
+Task ID: S118
+Agent: Super Z (main)
+Task: User directive — Telegram deprioritized for now; complete EVERY incomplete
+app/game using the standing generic-law rules, then comment on GitHub and continue.
+
+Work Log:
+- Investigated the incomplete HTML5 set end-to-end: accelerace (DOM/SVG game, NOT
+  canvas — cars are SVG/img positioned by JS), weather (data chain:
+  crypto.subtle.digest -> fetch -> JSON), mykanji gates, 4 sweep PARTIAL tickets.
+- Root-caused and shipped ELEVEN generic laws (zero package checks):
+  1 QuickJS job pump (async continuations never drained — no promise ever resumed);
+  2 fetch()+Response over the S100 NET-001 HTTPS client;
+  3 crypto.subtle.digest (OpenSSL EVP) + TextEncoder/TextDecoder;
+  4 SVG shape getBoundingClientRect (viewport bbox, paint-affine-consistent);
+  5 SVG intrinsic-ratio width (SVG2 7.2) in the 10.3.7 ladder;
+  6 flex-direction defaults to ROW (engine read missing direction as column);
+  7 justify-content:center main-axis law (shift was cross-wired to Y);
+  8 flex cross-axis stretch (align-items default) for definite cross sizes;
+  9 invalid-at-computed-value-time: undefined var() no-fallback -> width auto;
+  10 :nth-child family with full an+b grammar (Selectors 6.6.5);
+  11 forced sync layout + SVG stroke-width CSS-length resolution + box-shadow
+  paren-balanced calc() tokenizer + Gaussian-ish falloff + element-subtree
+  querySelector scoping.
+- RESULTS: accelerace blank -> RENDERED scene (centered road strip 460px @x=310,
+  street lights, score, road_lines animating; car SVG strokes paint 14.9M px but
+  still not visible in the capture — stacking/surface subtlety open);
+  weather -> LIVE NETWORK FETCH: real TLS GET to isengard.su API, HTTP 200,
+  7023 bytes, SHA-256-signed URL accepted, city "Moscow" rendered from the
+  response (first real HTTP round-trip in the HTML5 engine); forecast rows open;
+  mykanji full GUI re-verified (buttons flex-correct; 3 native appcompat
+  menu-inflater errors = native frontier, not a WebView regression).
+- GATES: ballbreak 25e72190 / dooz 84c6d4a5 byte-identical (native untouched);
+  blockbuster 05cd9f35 -> 901818a0, mykanji 16d5fc1e -> adb5719 — re-baselined by
+  the corrected CSS laws (documented, layouts improved).
+- Pushed 09f5000f (secret guard PASS); posted the S118 wave report on #353 + #354
+  (English only, evidence smalls 4-15KB in evidence/s118_complete/).
+
+Stage Summary:
+- The incomplete-apps frontier moved from "static HTML trap" to "real async
+  networked apps": promises, fetch, WebCrypto and live API data now work.
+- Open (honest): accelerace car visibility (stacking subtlety), weather forecast
+  rows, native appcompat menu-inflater NPE, empty-view-tree family (~43 sweep
+  tickets), libGDX .so family.
