@@ -53,12 +53,46 @@ def board_top(h=1920, w=1080):
     return max(140, (h - boardH - 40) // 2)
 
 
+# S119: MEASURED board top (vision). The centered-board assumption drifted
+# ~109px after the layout-law corrections, so every cell sample landed in a
+# row gap and the board read empty. We measure the first tile band from a
+# probe frame each session (C3: vision from rendered frames only).
+MEASURED_BT = None
+
+
+def measure_board_top(png):
+    """Scan ALL 4 column centers for the first palette-colored band
+    (fresh boards spawn only 2 tiles anywhere)."""
+    img = Image.open(png).convert("RGB")
+    px = img.load()
+    tops = []
+    for c in range(N):
+        x = PAD + c * (CELL + GAP) + CELL // 2
+        for y in range(140, 1400, 2):
+            hitcol = None
+            for v, col in PALETTE.items():
+                if all(abs(px[x, y][k] - col[k]) <= 10 for k in range(3)):
+                    hitcol = col
+                    break
+            if hitcol is not None:
+                # require a run of >=20px to reject glyph edges
+                ok = all(
+                    any(all(abs(px[x, y + d][k] - cc[k]) <= 10
+                            for k in range(3))
+                        for cc in PALETTE.values())
+                    for d in range(0, 40, 4))
+                if ok:
+                    tops.append(y)
+                    break
+    return min(tops) if tops else None
+
+
 def read_board(png_path):
     """Sample MULTIPLE points per cell (the digit glyph covers the
     center) and take the first palette hit; strict tolerance."""
     img = Image.open(png_path).convert("RGB")
     px = img.load()
-    bt = board_top()
+    bt = MEASURED_BT if MEASURED_BT is not None else board_top()
     board = {}
     offs = [(0, -int(CELL * 0.32)), (0, int(CELL * 0.32)),
             (-int(CELL * 0.30), 0), (int(CELL * 0.30), 0),
@@ -204,6 +238,15 @@ def main():
     score_seen = 0
     moves = 0
     cycle = 0
+
+    # S119 probe: one tap-free run to measure the real board top from pixels
+    global MEASURED_BT
+    probe_dir = f"{OUT}/probe"
+    rc = run_engine([], 4, probe_dir)
+    probe_frames = sorted(glob.glob(f"{probe_dir}/frames/frame_*.png"))
+    MEASURED_BT = measure_board_top(probe_frames[-1])
+    print(f"probe: measured board_top={MEASURED_BT} "
+          f"(derived assumption was {board_top()})")
 
     while moves < moves_target:
         last_tap = max((t[2] for t in taps), default=-1)
