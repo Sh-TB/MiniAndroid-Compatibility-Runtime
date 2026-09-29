@@ -4396,3 +4396,42 @@ Stage Summary:
 - Open: snake_deluxe wrap-aware AI, tetris tick re-anchor, 2048 gained-vs-HUD
   divergence; (deprioritized per directive) Telegram frontier + HTML5 weather
   forecast/accelerace car visibility.
+
+---
+Task ID: S120
+Agent: Super Z (main)
+Task: User directive — run NEW non-HTML5 games (not re-confirmations), different
+programming stacks, somewhat heavier; work from the GitHub issue list.
+
+Work Log:
+- Rebuilt the runtime after the container reset (binary was wiped).
+- Probed 6 NEW corpus games (never played before): tripeaks, fishrings,
+  bouncy, gmdice, opmt, dooz-compose (scripts/s120_new_games.py).
+- Root-caused TriPeaks' dead board through three exact gates:
+  1. F-115 Timer gate: splash -> lobby lives in Timer.schedule(task,5000);
+     earlier probes under-ran the virtual frame budget (not a dispatch gap).
+  2. R-NEW-407: java.util.EnumSet unmodeled — noneOf returned NULL ->
+     GameActivity.repaint pc=693 EnumSet.contains NPE killed the render.
+     Shipped the EnumSet law: static factories (noneOf/allOf/copyOf/
+     complementOf) + instance bridge (add/contains/remove/size/isEmpty/
+     clear/iterator) over the element-array heap store.
+  3. R-NEW-408: Integer valueOf had no cache — identity-keyed
+     HashMap<Integer,V> state missed every get -> null -> unboxing NPE at
+     repaint pc=740. Shipped the OpenJDK IntegerCache law (-128..127),
+     mirroring the S88 Character precedent.
+- RESULTS: TriPeaks full deal rendered (3 peaks, 10 face-up cards, waste,
+  HUD 'Cards Remaining 23'); agent tap dispatched into GameActivity$1 real
+  logic (waste 6c->7h, counters +, 1502 state-change px; click->card mapping
+  offset = honest open item). gmdice: agent roll -> rendered '6' (972 px).
+  opmt full menu (61% non-bg, 0 errors); fishrings full board (5151 colors);
+  bouncy menu renders (custom-view table = frontier); dooz-compose still
+  blank (Compose pipeline frontier).
+- Evidence: evidence/s120_new_games/ (26-62KB English-only; tripeaks as JPG).
+- Committed locally. BLOCKED: the PAT died with the container reset (401 on
+  API + git write) — push and GitHub comments pending a fresh token.
+
+Stage Summary:
+- Six new games on the board; TriPeaks went from NPE-dead to a dealt,
+  agent-playable solitaire through 3 generic laws (zero package checks).
+- Pending: fresh PAT -> push S120 commit + post the wave comment (#354 and
+  the per-game tickets).
