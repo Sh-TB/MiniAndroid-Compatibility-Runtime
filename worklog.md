@@ -4248,3 +4248,66 @@ Work Log:
 Stage Summary:
 - The three knowledge-transfer tickets now live at the true S115 state, English-only, small images, all claims backed by valid evidence links; all old pushes confirmed published.
 - GitHub publishing task CLOSED; next: the Telegram login-pixel frontier (R$styleable/TypedArray theme attrs → text draw → framebuffer).
+---
+Task ID: S117
+Agent: Super Z (main)
+Task: User directive — the PPM file must NOT be on GitHub (remove it); tell the peak-phase achievements; continue toward MORE apps/games with COMPLETE graphics.
+
+Work Log:
+- GITHUB HYGIENE: 139 tracked .ppm raw framebuffer dumps (825MB) untracked from
+  GitHub (files stay on disk; *.ppm stays gitignored) — commit 45a6b011 pushed;
+  remote tree verified 0 ppm. Old embedded-credential remote URL replaced with a
+  clean URL + token file (secret guard now passes).
+- Rebuilt the runtime after container reset (binary + build/ were wiped); full
+  make from clean state OK; S117 code commit (fragment/createView disasm + scene
+  work) pushed first.
+- S117 BATTERY (scripts/s117_complete_graphics.py): 4 HTML5 apps + 2 native gates
+  at the fresh binary. Gates: blockbuster 05cd9f35ca005959 / mykanji 16d5fc1ebda
+  a4 / ballbreak 25e7219086a5654d / dooz 84c6d4a59597e7f6 — ALL byte-identical to
+  the S114 baseline (zero drift through every new law below).
+- SIX GENERIC LAWS landed (zero package checks):
+  1. RFC 3986 §5.2.4 dot-segment normalization in fetch_asset ("./style.css"
+     resolved to "assets/./style.css" and never matched the zip — weather's
+     9KB CSS + 25KB JS were silently dropped; the app rendered a blank window).
+     One choke point covers scripts/stylesheets/images/@font-face.
+  2. WHATWG DOM traversal family on elements: nextElementSibling /
+     previousElementSibling / nextSibling / previousSibling / firstElementChild
+     / lastElementChild / lastChild / childElementCount (weather's
+     setMenuButtonVisibility walked nextElementSibling; one missing property
+     aborted the whole ControlView build).
+  3. CSS calc() nested math functions: min()/max()/clamp() are legal calc()
+     FACTORS (CSS Values §8.2). Weather chains --size4:max(0.6vw,0.6vh) through
+     calc(var(--size4)*6) for EVERY size — the calc parser hit 'm' and failed
+     the whole chain, collapsing every var-chained width/height to block fill.
+  4. CSS Flexbox §7.2 flex-shrink (default 1): overflowing flex ROW members
+     scale down proportionally (weather nav pushed its + icon to x=1149,
+     off-viewport).
+  5. SVG2 inline rendering (the family-wide icon idiom): <svg> = replaced leaf
+     box (CSS/attr-sized, else viewBox aspect, else icon square; symbols-only
+     svg = zero height); <use xlink:href="#id"> resolves <symbol>/<path>
+     definitions (symbols never render in place); viewBox → element box
+     xMidYMid-meet; full path-data flattener (M/L/H/V/C/S/Q/T/A/Z, relative +
+     implicit repeats, cubics 12seg/quads 10/arcs 14 via endpoint→center);
+     nonzero-winding scanline fill across all subpaths; stroke law (style →
+     attr → inherited, stroke-width scaled by the affine determinant).
+  6. SVG layout integration: shapes take no HTML slots; positioned svgs size
+     through the §10.3.7 ladder (100% heights honored).
+- RESULTS: weather NEAR_BLANK (0.23% non-bg) → real UI: full CSS theme, nav
+  icons PAINTING (stroke #AABCBE at 23-69px boxes, verified in trace + pixels),
+  ControlView builds js_errors=0 — PARTIAL honest (body content still needs the
+  network/fetch+crypto.subtle+geolocation data chain — open frontier, NOT
+  claimed). accelerace 29→40 5-bit colors (speedometer + road infrastructure
+  laid out; the game's own setInterval loop positions cars/road — timer-driven
+  animation is the next frontier). blockbuster/mykanji anchors byte-stable.
+- Diagnostics added: [WV-SVG] paint trace; scripts/s117_complete_graphics.py
+  battery with PPM pixel metrics + small-PNG packaging (3-20 KB each).
+- Pushed: 45a6b011 (ppm hygiene) + S117 engine + evidence commits.
+
+Stage Summary:
+- The PPM leak is closed on GitHub; the peak-phase scoreboard: 2 COMPLETE
+  anchors (blockbuster start+gameplay, mykanji full GUI) byte-identical at the
+  fresh binary, weather/accelerace advanced from blank/stub to structured
+  partial renders through 6 new generic laws, native gates untouched.
+- Open frontiers (honest): weather data chain (fetch/crypto.subtle/geolocation
+  + SVG icon color via CSS vars), accelerace timer-driven car/road animation,
+  Telegram login pixels (R$styleable/text-draw), empty-view-tree family (~43).

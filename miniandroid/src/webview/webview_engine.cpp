@@ -210,6 +210,31 @@ struct WebViewEngine::Impl {
     }
 
     // ── URL/asset law ──────────────────────────────────────────────────
+    // S117: RFC 3986 §5.2.4 remove_dot_segments law. Real browsers resolve a
+    // relative ref ("./style.css", "../img/x.png", "a//b.html") against the
+    // document base URL and NORMALIZE dot segments before any fetch; the raw
+    // string join produced entries like "assets/./style.css" that never match
+    // the APK zip directory, silently dropping every external stylesheet and
+    // script that used a "./"-prefixed href (org.asafonov.weather rendered a
+    // blank window: CSS 9KB + JS 25KB both unreached). One choke point covers
+    // every external ref family: scripts, stylesheets, images, @font-face.
+    static std::string normalize_dot_segments(std::string p) {
+        if (p.find("://") != std::string::npos) return p;              // scheme'd URL
+        bool abs = !p.empty() && p[0] == '/';
+        std::vector<std::string> out;
+        size_t i = 0;
+        while (i < p.size()) {
+            size_t j = p.find('/', i);
+            std::string seg = p.substr(i, (j == std::string::npos ? p.size() : j) - i);
+            i = (j == std::string::npos) ? p.size() : j + 1;
+            if (seg.empty() || seg == ".") continue;                    // drop "//", "."
+            if (seg == "..") { if (!out.empty()) out.pop_back(); continue; }
+            out.push_back(seg);
+        }
+        std::string r = abs ? "/" : "";
+        for (size_t k = 0; k < out.size(); ++k) { if (k) r += "/"; r += out[k]; }
+        return r;
+    }
     std::string url_dir() const {
         std::string u = self->document_url();
         if (u.rfind("assets/", 0) == 0) {
@@ -230,6 +255,7 @@ struct WebViewEngine::Impl {
         std::string entry = resolve_url(ref);
         size_t q = entry.find_first_of("?#");
         if (q != std::string::npos) entry.erase(q);
+        entry = normalize_dot_segments(entry);   // S117 RFC 3986 §5.2.4 law
         if (apk_path.empty()) return {};
         if (!resources::ResourceRuntime::instance().ensure_loaded(apk_path)) return {};
         return resources::ResourceRuntime::instance().apk().extract_entry_cached(entry);
@@ -957,6 +983,86 @@ static JSValue el_get_first_child(JSContext* ctx, JSValueConst this_v, int, JSVa
     auto* n = el_of(this_v);
     if (!n || n->children.empty()) return JS_NULL;
     return impl_of(ctx)->get_element_js(n->children.front().get());
+}
+// S117 DOM traversal law (WHATWG DOM §4.4): the full sibling/child family.
+// nextElementSibling/previousElementSibling return the adjacent ELEMENT
+// (skipping #text); nextSibling/previousSibling return the adjacent NODE of
+// any kind; firstElementChild/lastElementChild/lastChild/childElementCount
+// mirror the children list. org.asafonov.weather's NavigationView
+// (setMenuButtonVisibility) walks nextElementSibling to toggle its nav
+// buttons — one missing property aborted the whole ControlView build. Core
+// DOM family: every HTML5 app benefits, zero package checks.
+static JSValue el_get_next_element_sibling(JSContext* ctx, JSValueConst this_v, int, JSValueConst*) {
+    auto* n = el_of(this_v);
+    if (!n || !n->parent) return JS_NULL;
+    auto& sibs = n->parent->children;
+    for (size_t i = 0; i + 1 < sibs.size(); ++i)
+        if (sibs[i].get() == n)
+            for (size_t j = i + 1; j < sibs.size(); ++j)
+                if (sibs[j]->tag != "#text")
+                    return impl_of(ctx)->get_element_js(sibs[j].get());
+    return JS_NULL;
+}
+static JSValue el_get_prev_element_sibling(JSContext* ctx, JSValueConst this_v, int, JSValueConst*) {
+    auto* n = el_of(this_v);
+    if (!n || !n->parent) return JS_NULL;
+    auto& sibs = n->parent->children;
+    for (size_t i = sibs.size(); i-- > 1;)
+        if (sibs[i].get() == n)
+            for (size_t j = i; j-- > 0;)
+                if (sibs[j]->tag != "#text")
+                    return impl_of(ctx)->get_element_js(sibs[j].get());
+    return JS_NULL;
+}
+static JSValue el_get_next_sibling(JSContext* ctx, JSValueConst this_v, int, JSValueConst*) {
+    auto* n = el_of(this_v);
+    if (!n || !n->parent) return JS_NULL;
+    auto& sibs = n->parent->children;
+    for (size_t i = 0; i + 1 < sibs.size(); ++i)
+        if (sibs[i].get() == n) {
+            if (i + 1 < sibs.size())
+                return impl_of(ctx)->get_element_js(sibs[i + 1].get());
+            break;
+        }
+    return JS_NULL;
+}
+static JSValue el_get_prev_sibling(JSContext* ctx, JSValueConst this_v, int, JSValueConst*) {
+    auto* n = el_of(this_v);
+    if (!n || !n->parent) return JS_NULL;
+    auto& sibs = n->parent->children;
+    for (size_t i = sibs.size(); i-- > 1;)
+        if (sibs[i].get() == n)
+            return impl_of(ctx)->get_element_js(sibs[i - 1].get());
+    return JS_NULL;
+}
+static JSValue el_get_first_element_child(JSContext* ctx, JSValueConst this_v, int, JSValueConst*) {
+    auto* n = el_of(this_v);
+    if (n)
+        for (auto& c : n->children)
+            if (c->tag != "#text")
+                return impl_of(ctx)->get_element_js(c.get());
+    return JS_NULL;
+}
+static JSValue el_get_last_element_child(JSContext* ctx, JSValueConst this_v, int, JSValueConst*) {
+    auto* n = el_of(this_v);
+    if (n)
+        for (auto it = n->children.rbegin(); it != n->children.rend(); ++it)
+            if ((*it)->tag != "#text")
+                return impl_of(ctx)->get_element_js(it->get());
+    return JS_NULL;
+}
+static JSValue el_get_last_child(JSContext* ctx, JSValueConst this_v, int, JSValueConst*) {
+    auto* n = el_of(this_v);
+    if (!n || n->children.empty()) return JS_NULL;
+    return impl_of(ctx)->get_element_js(n->children.back().get());
+}
+static JSValue el_get_child_element_count(JSContext* ctx, JSValueConst this_v, int, JSValueConst*) {
+    auto* n = el_of(this_v);
+    int32_t cnt = 0;
+    if (n)
+        for (auto& c : n->children)
+            if (c->tag != "#text") ++cnt;
+    return JS_NewInt32(ctx, cnt);
 }
 static JSValue el_get_offset_w(JSContext* ctx, JSValueConst this_v, int, JSValueConst*) {
     auto* n = el_of(this_v);
@@ -1941,6 +2047,15 @@ static void define_element_members(JSContext* ctx, JSValue o, DomNode* n) {
     accessor("parentElement", el_get_parent, nullptr);
     accessor("parentNode", el_get_parent, nullptr);
     accessor("firstChild", el_get_first_child, nullptr);
+    // S117 DOM traversal law: full WHATWG sibling/child family
+    accessor("nextElementSibling", el_get_next_element_sibling, nullptr);
+    accessor("previousElementSibling", el_get_prev_element_sibling, nullptr);
+    accessor("nextSibling", el_get_next_sibling, nullptr);
+    accessor("previousSibling", el_get_prev_sibling, nullptr);
+    accessor("firstElementChild", el_get_first_element_child, nullptr);
+    accessor("lastElementChild", el_get_last_element_child, nullptr);
+    accessor("lastChild", el_get_last_child, nullptr);
+    accessor("childElementCount", el_get_child_element_count, nullptr);
     accessor("offsetWidth", el_get_offset_w, nullptr);
     accessor("offsetHeight", el_get_offset_h, nullptr);
     method("setAttribute", el_setAttribute, 2);
@@ -2575,6 +2690,8 @@ struct CssCtx {
     float em = 0;                // element font-size for em/rem
 };
 
+static float css_eval(const std::string& v, const CssCtx& cx, float dflt, int pct_axis);
+
 namespace css_eval_detail {
 struct Term {
     float px = 0;
@@ -2648,6 +2765,28 @@ struct Parser {
             skip_ws();
             if (i < s.size() && s[i] == ')') ++i; else ok = false;
             return t;
+        }
+        // S117 math-function nesting law: min()/max()/clamp() are legal
+        // calc() FACTORS (CSS Values §8.2). Weather chains
+        // --size4:max(0.6vw,0.6vh) into every size via
+        // calc(var(--size4)*6) — the number scanner hit 'm' and the whole
+        // calc() failed, collapsing every var-chained width/height to the
+        // block-fill fallback (icons 1080px, pages unrenderable).
+        if (s.compare(i, 4, "min(") == 0 || s.compare(i, 4, "max(") == 0 ||
+            s.compare(i, 6, "clamp(") == 0) {
+            size_t f0 = i;
+            size_t j = s.find('(', i);
+            if (j == std::string::npos) { ok = false; return {0, false}; }
+            int depth = 0;
+            for (; j < s.size(); ++j) {
+                depth += s[j] == '(' ? 1 : 0;
+                depth -= s[j] == ')' ? 1 : 0;
+                if (depth == 0) break;
+            }
+            if (depth != 0) { ok = false; return {0, false}; }
+            float r = css_eval(s.substr(f0, j - f0 + 1), cx, 0.f, pct_axis);
+            i = j + 1;
+            return {r, true};                  // a math function yields a length
         }
         size_t st = i;
         while (i < s.size() && (dig(s[i]) || s[i] == '.' || s[i] == '-' || s[i] == '+')) ++i;
@@ -3145,6 +3284,293 @@ static void style_element(DomNode* n, double vw, double vh,
     // double-resolved % strings against the viewport and polluted n->w/h
     // behind the layout pass's back; the S114 ladder above is the single
     // resolution site)
+}
+
+// ── S117 inline-SVG law: generic SVG2 shape materialization ─────────────
+// <svg> is a replaced leaf box; <path> paints through the page framebuffer
+// (nonzero-winding scanline fill, SVG2 default); <use xlink:href="#id">
+// resolves to <symbol>/<path> definitions (a <symbol> never renders in
+// place — SVG2 §5.6); viewBox maps into the element box with the
+// xMidYMid-meet law. Modern HTML5 UIs ship icons and figures as inline SVG
+// — a document-engine capability, not an app-specific patch (weather icon
+// sets, accelerace car figures, and the whole svg-icon idiom).
+struct SvgPt { float x, y; };
+
+static bool svg_viewbox(DomNode* n, float& vx, float& vy, float& vw, float& vh) {
+    auto it = n->attrs.find("viewbox");        // HTML stream is lowercased
+    if (it == n->attrs.end()) it = n->attrs.find("viewBox");
+    if (it == n->attrs.end()) return false;
+    if (sscanf(it->second.c_str(), "%f %f %f %f", &vx, &vy, &vw, &vh) != 4) return false;
+    return vw > 0 && vh > 0;
+}
+
+static inline void svg_ws(const char*& p) {
+    while (*p == ' ' || *p == ',' || *p == '\n' || *p == '\r' || *p == '\t') ++p;
+}
+static inline bool svg_num(const char*& p, float& out) {
+    svg_ws(p);
+    const char* q = p;
+    if (*p == '+' || *p == '-') ++p;
+    bool dig = false;
+    while (*p >= '0' && *p <= '9') { ++p; dig = true; }
+    if (*p == '.') { ++p; while (*p >= '0' && *p <= '9') { ++p; dig = true; } }
+    if (!dig) { p = q; return false; }
+    if (*p == 'e' || *p == 'E') {
+        const char* r = p + 1;
+        if (*r == '+' || *r == '-') ++r;
+        if (*r >= '0' && *r <= '9') { p = r; while (*p >= '0' && *p <= '9') ++p; }
+    }
+    out = float(strtod(q, nullptr));
+    return true;
+}
+
+// Flatten path data to device-space subpaths (a,b,c,d,e,f: user→device
+// affine x' = a·x + c·y + e, y' = b·x + d·y + f). Cubics 12 seg, quads 10,
+// arcs 14 (endpoint→center parameterization, SVG F.6).
+static std::vector<std::vector<SvgPt>> svg_flatten(const std::string& dstr,
+                                                   float a, float b, float c, float dd,
+                                                   float e, float f) {
+    std::vector<std::vector<SvgPt>> subs;
+    size_t cur = SIZE_MAX;
+    const char* p = dstr.c_str();
+    float cx = 0, cy = 0, sx = 0, sy = 0;
+    float lc1x = 0, lc1y = 0, lqx = 0, lqy = 0;
+    bool has_lc = false, has_lq = false;
+    char cmd = 0;
+    auto xform = [&](float ux, float uy) -> SvgPt {
+        return {a * ux + c * uy + e, b * ux + dd * uy + f};
+    };
+    auto ensure = [&](float ux, float uy) {
+        if (cur == SIZE_MAX) {
+            subs.emplace_back();
+            cur = subs.size() - 1;
+            subs[cur].push_back(xform(ux, uy));
+        }
+    };
+    auto line_to = [&](float ux, float uy) {
+        ensure(cx, cy);
+        subs[cur].push_back(xform(ux, uy));
+        cx = ux; cy = uy;
+    };
+    auto moveto = [&](float ux, float uy) {
+        subs.emplace_back();
+        cur = subs.size() - 1;
+        subs[cur].push_back(xform(ux, uy));
+        cx = ux; cy = uy; sx = ux; sy = uy;
+    };
+    while (true) {
+        svg_ws(p);
+        if (!*p) break;
+        if (strchr("MmLlHhVvCcSsQqTtAaZz", *p)) { cmd = *p++; svg_ws(p); }
+        float n1, n2, n3, n4, n5, n6, n7;
+        switch (cmd) {
+        case 'M': case 'm': {
+            if (!svg_num(p, n1)) break;
+            if (!svg_num(p, n2)) break;
+            moveto(cmd == 'M' ? n1 : cx + n1, cmd == 'M' ? n2 : cy + n2);
+            cmd = (cmd == 'M') ? 'L' : 'l';      // implicit repeats
+            break; }
+        case 'L': case 'l': {
+            if (!svg_num(p, n1) || !svg_num(p, n2)) break;
+            line_to(cmd == 'L' ? n1 : cx + n1, cmd == 'L' ? n2 : cy + n2);
+            break; }
+        case 'H': case 'h': {
+            if (!svg_num(p, n1)) break;
+            line_to(cmd == 'H' ? n1 : cx + n1, cy);
+            break; }
+        case 'V': case 'v': {
+            if (!svg_num(p, n1)) break;
+            line_to(cx, cmd == 'V' ? n1 : cy + n1);
+            break; }
+        case 'C': case 'c': {
+            if (!svg_num(p, n1) || !svg_num(p, n2) || !svg_num(p, n3) ||
+                !svg_num(p, n4) || !svg_num(p, n5) || !svg_num(p, n6)) break;
+            float x0 = cx, y0 = cy;
+            float x1 = cmd == 'C' ? n1 : cx + n1, y1 = cmd == 'C' ? n2 : cy + n2;
+            float x2 = cmd == 'C' ? n3 : cx + n3, y2 = cmd == 'C' ? n4 : cy + n4;
+            float x3 = cmd == 'C' ? n5 : cx + n5, y3 = cmd == 'C' ? n6 : cy + n6;
+            ensure(x0, y0);
+            for (int k = 1; k <= 12; ++k) {
+                float t = k / 12.f, mt = 1 - t;
+                float bx = mt*mt*mt*x0 + 3*mt*mt*t*x1 + 3*mt*t*t*x2 + t*t*t*x3;
+                float by = mt*mt*mt*y0 + 3*mt*mt*t*y1 + 3*mt*t*t*y2 + t*t*t*y3;
+                subs[cur].push_back(xform(bx, by));
+            }
+            cx = x3; cy = y3; lc1x = x2; lc1y = y2; has_lc = true; has_lq = false;
+            break; }
+        case 'S': case 's': {
+            if (!svg_num(p, n1) || !svg_num(p, n2) || !svg_num(p, n3) ||
+                !svg_num(p, n4)) break;
+            float x0 = cx, y0 = cy;
+            float x1 = has_lc ? 2 * cx - lc1x : cx, y1 = has_lc ? 2 * cy - lc1y : cy;
+            float x2 = cmd == 'S' ? n1 : cx + n1, y2 = cmd == 'S' ? n2 : cy + n2;
+            float x3 = cmd == 'S' ? n3 : cx + n3, y3 = cmd == 'S' ? n4 : cy + n4;
+            ensure(x0, y0);
+            for (int k = 1; k <= 12; ++k) {
+                float t = k / 12.f, mt = 1 - t;
+                float bx = mt*mt*mt*x0 + 3*mt*mt*t*x1 + 3*mt*t*t*x2 + t*t*t*x3;
+                float by = mt*mt*mt*y0 + 3*mt*mt*t*y1 + 3*mt*t*t*y2 + t*t*t*y3;
+                subs[cur].push_back(xform(bx, by));
+            }
+            cx = x3; cy = y3; lc1x = x2; lc1y = y2; has_lc = true; has_lq = false;
+            break; }
+        case 'Q': case 'q': {
+            if (!svg_num(p, n1) || !svg_num(p, n2) || !svg_num(p, n3) ||
+                !svg_num(p, n4)) break;
+            float x0 = cx, y0 = cy;
+            float x1 = cmd == 'Q' ? n1 : cx + n1, y1 = cmd == 'Q' ? n2 : cy + n2;
+            float x2 = cmd == 'Q' ? n3 : cx + n3, y2 = cmd == 'Q' ? n4 : cy + n4;
+            ensure(x0, y0);
+            for (int k = 1; k <= 10; ++k) {
+                float t = k / 10.f, mt = 1 - t;
+                float bx = mt*mt*x0 + 2*mt*t*x1 + t*t*x2;
+                float by = mt*mt*y0 + 2*mt*t*y1 + t*t*y2;
+                subs[cur].push_back(xform(bx, by));
+            }
+            cx = x2; cy = y2; lqx = x1; lqy = y1; has_lq = true; has_lc = false;
+            break; }
+        case 'T': case 't': {
+            if (!svg_num(p, n1) || !svg_num(p, n2)) break;
+            float x0 = cx, y0 = cy;
+            float x1 = has_lq ? 2 * cx - lqx : cx, y1 = has_lq ? 2 * cy - lqy : cy;
+            float x2 = cmd == 'T' ? n1 : cx + n1, y2 = cmd == 'T' ? n2 : cy + n2;
+            ensure(x0, y0);
+            for (int k = 1; k <= 10; ++k) {
+                float t = k / 10.f, mt = 1 - t;
+                float bx = mt*mt*x0 + 2*mt*t*x1 + t*t*x2;
+                float by = mt*mt*y0 + 2*mt*t*y1 + t*t*y2;
+                subs[cur].push_back(xform(bx, by));
+            }
+            cx = x2; cy = y2; lqx = x1; lqy = y1; has_lq = true; has_lc = false;
+            break; }
+        case 'A': case 'a': {
+            if (!svg_num(p, n1) || !svg_num(p, n2) || !svg_num(p, n3) ||
+                !svg_num(p, n4) || !svg_num(p, n5) || !svg_num(p, n6) ||
+                !svg_num(p, n7)) break;
+            float rx = fabsf(n1), ry = fabsf(n2);
+            float phi = n3 * float(M_PI) / 180.f;
+            bool laf = n4 != 0, sf = n5 != 0;
+            float x2 = cmd == 'a' ? cx + n6 : n6, y2 = cmd == 'a' ? cy + n7 : n7;
+            float x1 = cx, y1 = cy;
+            if (rx > 0 && ry > 0 && (x1 != x2 || y1 != y2)) {
+                float cosp = cosf(phi), sinp = sinf(phi);
+                float dx = (x1 - x2) / 2, dy = (y1 - y2) / 2;
+                float x1p =  cosp * dx + sinp * dy;
+                float y1p = -sinp * dx + cosp * dy;
+                float l = x1p*x1p/(rx*rx) + y1p*y1p/(ry*ry);
+                if (l > 1) { rx *= sqrtf(l); ry *= sqrtf(l); }
+                float num = rx*rx*ry*ry - rx*rx*y1p*y1p - ry*ry*x1p*x1p;
+                float den = rx*rx*y1p*y1p + ry*ry*x1p*x1p;
+                float co = sqrtf(std::max(0.f, num / std::max(den, 1e-9f)));
+                if (laf == sf) co = -co;
+                float cxp =  co * rx * y1p / ry;
+                float cyp = -co * ry * x1p / rx;
+                float ccx = cosp * cxp - sinp * cyp + (x1 + x2) / 2;
+                float ccy = sinp * cxp + cosp * cyp + (y1 + y2) / 2;
+                float ux = (x1p - cxp) / rx, uy = (y1p - cyp) / ry;
+                float vx2 = (-x1p - cxp) / rx, vy2 = (-y1p - cyp) / ry;
+                float th1 = atan2f(uy, ux);
+                float dth = acosf(std::max(-1.f, std::min(1.f,
+                    (ux*vx2 + uy*vy2) /
+                    std::max(sqrtf(ux*ux + uy*uy) * sqrtf(vx2*vx2 + vy2*vy2), 1e-9f))));
+                if (ux * vy2 - uy * vx2 < 0) dth = -dth;
+                if (!sf && dth > 0) dth -= float(2 * M_PI);
+                if (sf && dth < 0) dth += float(2 * M_PI);
+                for (int k = 1; k <= 14; ++k) {
+                    float th = th1 + dth * k / 14;
+                    float px2 = ccx + rx * cosf(th) * cosp - ry * sinf(th) * sinp;
+                    float py2 = ccy + rx * cosf(th) * sinp + ry * sinf(th) * cosp;
+                    line_to(px2, py2);
+                }
+            }
+            cx = x2; cy = y2;
+            break; }
+        case 'Z': case 'z': {
+            if (cur != SIZE_MAX) subs[cur].push_back(xform(sx, sy));
+            cx = sx; cy = sy; cur = SIZE_MAX;
+            break; }
+        default:
+            ++p;      // skip stray char (tolerant parse)
+            break;
+        }
+    }
+    return subs;
+}
+
+// nonzero-winding scanline fill (SVG2 fill-rule default) across ALL
+// subpaths — inter-subpath winding accumulates, so donut glyphs keep holes
+static void svg_fill_paths(renderer::FrameBuffer* fb, int W, int H,
+                           const std::vector<std::vector<SvgPt>>& subs,
+                           renderer::RGBA col) {
+    if (subs.empty() || W <= 0 || H <= 0) return;
+    struct Edge { float x0, y0, x1, y1; };
+    std::vector<Edge> edges;
+    float miny = 1e9f, maxy = -1e9f;
+    for (auto& s : subs) {
+        if (s.size() < 3) continue;
+        for (size_t i = 0; i < s.size(); ++i) {
+            const SvgPt& p0 = s[i == 0 ? s.size() - 1 : i - 1];
+            const SvgPt& p1 = s[i];
+            if (p0.y == p1.y) continue;              // horizontal: no crossing
+            edges.push_back({p0.x, p0.y, p1.x, p1.y});
+            miny = std::min(miny, std::min(p0.y, p1.y));
+            maxy = std::max(maxy, std::max(p0.y, p1.y));
+        }
+    }
+    if (edges.empty()) return;
+    int y0 = std::max(0, int(floorf(miny)) + 1);
+    int y1 = std::min(H - 1, int(ceilf(maxy)));
+    std::vector<std::pair<float, int>> xv;
+    for (int yy = y0; yy <= y1; ++yy) {
+        float sy = yy + 0.5f;
+        xv.clear();
+        for (auto& e2 : edges)
+            if ((e2.y0 <= sy && e2.y1 > sy) || (e2.y1 <= sy && e2.y0 > sy)) {
+                float t = (sy - e2.y0) / (e2.y1 - e2.y0);
+                xv.push_back({e2.x0 + t * (e2.x1 - e2.x0), e2.y1 > e2.y0 ? 1 : -1});
+            }
+        if (xv.empty()) continue;
+        std::sort(xv.begin(), xv.end());
+        int wind = 0;
+        float span0 = 0;
+        for (auto& q : xv) {
+            if (wind == 0) span0 = q.first;
+            wind += q.second;
+            if (wind == 0) {
+                int xa = std::max(0, int(ceilf(span0 - 0.5f)));
+                int xb = std::min(W - 1, int(ceilf(q.first - 0.5f)) - 1);
+                for (int xx = xa; xx <= xb; ++xx) fb->set_pixel(xx, yy, col);
+            }
+        }
+    }
+}
+
+// stroke law: polyline stroking via disc stamping along each segment —
+// round caps/joins for free, device width = user stroke-width × scale
+static void svg_stroke_paths(renderer::FrameBuffer* fb, int W, int H,
+                             const std::vector<std::vector<SvgPt>>& subs,
+                             renderer::RGBA col, float width) {
+    int r = std::max(0, int(width / 2));
+    if (r <= 0 && width <= 0) return;
+    if (r < 1) r = 1;
+    for (auto& s : subs) {
+        if (s.size() < 2) continue;
+        for (size_t i = 1; i < s.size(); ++i) {
+            float x0 = s[i - 1].x, y0 = s[i - 1].y, x1 = s[i].x, y1 = s[i].y;
+            float len = sqrtf((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0));
+            int steps = std::max(1, int(len));
+            for (int k = 0; k <= steps; ++k) {
+                float t = k / float(steps);
+                int ccx = int(x0 + (x1 - x0) * t), ccy = int(y0 + (y1 - y0) * t);
+                for (int yy = ccy - r; yy <= ccy + r; ++yy)
+                    for (int xx = ccx - r; xx <= ccx + r; ++xx) {
+                        if (xx < 0 || xx >= W || yy < 0 || yy >= H) continue;
+                        if ((xx - ccx) * (xx - ccx) + (yy - ccy) * (yy - ccy) <= r * r)
+                            fb->set_pixel(xx, yy, col);
+                    }
+            }
+        }
+    }
 }
 
 void WebViewEngine::render(uint8_t* dst, int w, int h) {
@@ -3732,6 +4158,7 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
                 c->tag == "title" || c->tag == "link" || c->tag == "meta" ||
                 c->tag == "audio")
                 continue;
+            if (n->tag == "svg") continue;   // S117: SVG shapes take no HTML slots
             if (c->display_none) continue;        // visibility:hidden keeps its slot
             if (c->inline_el) {
                 widths[i] = -2;                    // merged into parent text
@@ -3767,6 +4194,27 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
             else widths[i] = content_w;                         // block fill law
             if (c->max_w >= 0 && widths[i] > c->max_w) widths[i] = c->max_w;
             widths[i] = std::max(widths[i], 2 * c->border_w);
+        }
+        // S117 flex-shrink law (CSS Flexbox §7.2: flex-shrink defaults to
+        // 1): when a flex ROW's members overflow the container, every
+        // member scales down proportionally to its base size — the weather
+        // nav (list + pages(filling) + add) pushed its last icon to x=1149,
+        // off-viewport, without this law.
+        if (n->flex && n->flex_row) {
+            int total = 0;
+            for (size_t i = 0; i < n->children.size(); ++i)
+                if (widths[i] > 0)
+                    total += widths[i] + n->children[i]->mar_l + n->children[i]->mar_r;
+            if (total > content_w && total > 0) {
+                float factor = float(content_w) / float(total);
+                for (size_t i = 0; i < n->children.size(); ++i) {
+                    DomNode* c = n->children[i].get();
+                    if (widths[i] <= 0) continue;
+                    int m = c->mar_l + c->mar_r;
+                    int shr = int((widths[i] + m) * factor) - m;
+                    widths[i] = std::max(1, std::min(widths[i], shr));
+                }
+            }
         }
         // flex-ROW cross-size pass: tallest child governs the line height
         int row_h = 0;
@@ -3854,6 +4302,37 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
             x += dx; y += dy;
         }
         n->x = x; n->y = y; n->w = w_in; n->laid_out = true;
+        if (n->tag == "svg") {
+            // S117 SVG leaf-box law: an <svg> is a replaced element — its
+            // shapes take no HTML layout slots; the box is CSS/attr-sized
+            // (has_h path below stays authoritative), else viewBox aspect ×
+            // width, else an icon square (capped). A definitions-only svg
+            // (all <symbol>/<defs>) is zero-height — symbols render at their
+            // <use> site, never in place (SVG2 §5.6).
+            bool only_defs = true;
+            for (auto& cc : n->children)
+                if (cc->tag != "symbol" && cc->tag != "defs" && cc->tag != "#text") {
+                    only_defs = false; break;
+                }
+            if (!n->has_h) {
+                if (n->h_pct >= 0 && avail_h > 0) {
+                    n->h = int(float(avail_h) * n->h_pct / 100.f);   // CSS 100% law
+                } else if (!n->h_raw.empty() && avail_h > 0) {
+                    float pv = cb_len(n->h_raw, float(w), float(h), float(w_in),
+                                      float(avail_h), n->font_size, -1, 1);
+                    if (pv >= 0) n->h = int(pv);
+                } else {
+                    float vx, vy, vw2, vh2;
+                    if (only_defs) n->h = 0;
+                    else if (svg_viewbox(n, vx, vy, vw2, vh2) && n->w > 0)
+                        n->h = int(float(n->w) * vh2 / vw2 + 0.5f);
+                    else
+                        n->h = std::min(n->w, 128);
+                }
+                if (n->h > 4096) n->h = 4096;
+            }
+            return n->h;
+        }
         if (wv_trace())
             std::cerr << "[WV-BOX] tag=" << n->tag
                       << " class=" << (n->attrs.count("class") ? n->attrs.at("class") : "")
@@ -4074,6 +4553,123 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
     layout_positioned_tree(body_n, body_cb, 1);
 
 
+    // ── S117 inline-SVG paint law ───────────────────────────────────────
+    // property resolution: style (CSS wins) → presentational attribute →
+    // inherited (fill/stroke/stroke-width inherit down the tree) → default.
+    auto svg_prop_of = [&](DomNode* c, const char* prop) -> std::string {
+        auto st = c->style.find(prop);
+        if (st != c->style.end()) return st->second;
+        auto at = c->attrs.find(prop);
+        if (at != c->attrs.end()) return at->second;
+        for (DomNode* p = c->parent; p; p = p->parent) {
+            auto st2 = p->style.find(prop);
+            if (st2 != p->style.end()) return st2->second;
+            auto at2 = p->attrs.find(prop);
+            if (at2 != p->attrs.end()) return at2->second;
+        }
+        return "";
+    };
+    std::function<void(DomNode*, float, float, float, float, float, float,
+                       int, int, int, int)> paint_svg_content;
+    paint_svg_content = [&](DomNode* n, float A, float B, float C, float D,
+                            float E, float F, int bx, int by, int bw, int bh) {
+        for (auto& chp : n->children) {
+            DomNode* c = chp.get();
+            if (c->tag == "symbol" || c->tag == "defs") continue; // use-site only
+            if (c->tag == "path") {
+                auto dit = c->attrs.find("d");
+                if (dit == c->attrs.end() || dit->second.empty()) continue;
+                auto subs = svg_flatten(dit->second, A, B, C, D, E, F);
+                // fill (SVG default fill = black; fill:none skips)
+                std::string f = svg_prop_of(c, "fill");
+                if (f.empty()) f = "#000";
+                if (f != "none" && f != "transparent") {
+                    bool okc = false;
+                    uint32_t col = parse_css_color(f, okc);
+                    if (!okc) col = 0;
+                    svg_fill_paths(surface_fb, w, h, subs,
+                                   renderer::RGBA{uint8_t(col & 255),
+                                                  uint8_t((col >> 8) & 255),
+                                                  uint8_t((col >> 16) & 255), 255});
+                }
+                // stroke (SVG default = none; width default 1 user unit)
+                std::string stv = svg_prop_of(c, "stroke");
+                if (!stv.empty() && stv != "none" && stv != "transparent") {
+                    bool okc = false;
+                    uint32_t col = parse_css_color(stv, okc);
+                    if (!okc) col = 0;
+                    float swu = 1.f;
+                    std::string sww = svg_prop_of(c, "stroke-width");
+                    if (!sww.empty()) swu = std::max(0.05f, strtof(sww.c_str(), nullptr));
+                    float scale = sqrtf(fabsf(A * D - B * C));
+                    svg_stroke_paths(surface_fb, w, h, subs,
+                                     renderer::RGBA{uint8_t(col & 255),
+                                                    uint8_t((col >> 8) & 255),
+                                                    uint8_t((col >> 16) & 255), 255},
+                                     std::max(1.f, swu * scale));
+                }
+            } else if (c->tag == "use") {
+                std::string href;
+                auto h1 = c->attrs.find("xlink:href");
+                auto h2 = c->attrs.find("href");
+                if (h1 != c->attrs.end()) href = h1->second;
+                else if (h2 != c->attrs.end()) href = h2->second;
+                if (href.size() < 2 || href[0] != '#') continue;
+                DomNode* tgt = find_by_id(impl->doc.root.get(), href.substr(1));
+                if (!tgt) continue;
+                if (tgt->tag == "symbol") {
+                    float vx, vy, vw2, vh2;
+                    int uw = bw > 0 ? bw : 48, uh = bh > 0 ? bh : 48;
+                    if (svg_viewbox(tgt, vx, vy, vw2, vh2) && uw > 0 && uh > 0) {
+                        float s = std::min(float(uw) / vw2, float(uh) / vh2);
+                        paint_svg_content(tgt, s, 0, 0, s,
+                                          float(bx) + (uw - vw2 * s) / 2.f - vx * s,
+                                          float(by) + (uh - vh2 * s) / 2.f - vy * s,
+                                          bx, by, uw, uh);
+                    } else {
+                        paint_svg_content(tgt, 1, 0, 0, 1, float(bx), float(by),
+                                          bx, by, uw, uh);
+                    }
+                } else {
+                    paint_svg_content(tgt, A, B, C, D, E, F, bx, by, bw, bh);
+                }
+            } else if (c->tag == "g" || c->tag == "svg") {
+                if (c->tag == "svg") {
+                    float vx, vy, vw2, vh2;
+                    if (svg_viewbox(c, vx, vy, vw2, vh2) && c->w > 0 && c->h > 0) {
+                        float s = std::min(float(c->w) / vw2, float(c->h) / vh2);
+                        paint_svg_content(c, s, 0, 0, s,
+                                          float(c->x) + (c->w - vw2 * s) / 2.f - vx * s,
+                                          float(c->y) + (c->h - vh2 * s) / 2.f - vy * s,
+                                          c->x, c->y, c->w, c->h);
+                        continue;
+                    }
+                }
+                paint_svg_content(c, A, B, C, D, E, F, bx, by, bw, bh);
+            }
+        }
+    };
+    auto paint_svg_node = [&](DomNode* n) {
+        int bw = n->w - 2 * n->border_w - n->pad_l - n->pad_r;
+        int bh = n->h - 2 * n->border_w - n->pad_t - n->pad_b;
+        int bx = n->x + n->border_w + n->pad_l;
+        int by = n->y + n->border_w + n->pad_t;
+        if (wv_trace())
+            std::cerr << "[WV-SVG] box=" << bx << "," << by << " " << bw << "x" << bh
+                      << " kids=" << n->children.size() << std::endl;
+        if (bw <= 0 || bh <= 0) return;
+        float vx, vy, vw2, vh2;
+        if (svg_viewbox(n, vx, vy, vw2, vh2)) {
+            float s = std::min(float(bw) / vw2, float(bh) / vh2);
+            paint_svg_content(n, s, 0, 0, s,
+                              float(bx) + (bw - vw2 * s) / 2.f - vx * s,
+                              float(by) + (bh - vh2 * s) / 2.f - vy * s,
+                              bx, by, bw, bh);
+        } else {
+            paint_svg_content(n, 1, 0, 0, 1, float(bx), float(by), bx, by, bw, bh);
+        }
+    };
+
     // 4. paint — flow (document order), then positioned (z ascending).
     // S114: visibility chain (own hidden node skips its OWN box but children
     // may override back to visible — CSS 2.1 §11.1.2); box-shadow spread law.
@@ -4116,7 +4712,9 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
                                   uint8_t((n->border_col >> 16) & 255), 255};
                 stroke_round_ring(n->x, n->y, n->w, n->h, n->radius, n->border_w, bc);
             }
-            if (n->is_canvas && n->canvas && n->canvas->bitmap().get_pixel_count() > 0 &&
+            if (n->tag == "svg") {
+                paint_svg_node(n);          // S117 inline-SVG paint law
+            } else if (n->is_canvas && n->canvas && n->canvas->bitmap().get_pixel_count() > 0 &&
                 n->w > 0 && n->h > 0) {
                 // canvas bitmap → page (drawImage semantics through Canvas2D)
                 const auto& src = n->canvas->bitmap().get_pixels();

@@ -1,0 +1,235 @@
+{
+  "apk_name": "org.asafonov.weather_21.apk",
+  "main_class": "Lorg/asafonov/weather/MainActivity;",
+  "main_method": "onCreate",
+  "methods": [
+    {
+      "class": "Lorg/asafonov/weather/MainActivity;",
+      "entry_point": true,
+      "method": "onCreate",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/app/Activity;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "v3"
+      ],
+      "class": "Landroid/app/Activity;<super>",
+      "invocation_type": "virtual",
+      "method": "onCreate",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "v3"
+      ],
+      "class": "Lorg/asafonov/weather/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "setContentView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "v3"
+      ],
+      "class": "Lorg/asafonov/weather/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#10",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Landroid/webkit/WebView;",
+      "invocation_type": "virtual",
+      "method": "getSettings",
+      "return_value": "Landroid/webkit/WebSettings;#11",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "p4294967294"
+      ],
+      "class": "Landroid/webkit/WebSettings;",
+      "invocation_type": "virtual",
+      "method": "setJavaScriptEnabled",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "p4294967294"
+      ],
+      "class": "Landroid/webkit/WebSettings;",
+      "invocation_type": "virtual",
+      "method": "setGeolocationEnabled",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "p4294967294"
+      ],
+      "class": "Landroid/webkit/WebSettings;",
+      "invocation_type": "virtual",
+      "method": "setDomStorageEnabled",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "p4294967295"
+      ],
+      "class": "Landroid/webkit/WebSettings;",
+      "invocation_type": "virtual",
+      "method": "setCacheMode",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/webkit/WebViewClient;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lorg/asafonov/weather/MyWebViewClient;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "p4294967295"
+      ],
+      "class": "Landroid/webkit/WebView;",
+      "invocation_type": "virtual",
+      "method": "setWebViewClient",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/webkit/WebChromeClient;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lorg/asafonov/weather/MyWebChromeClient;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "p4294967295"
+      ],
+      "class": "Landroid/webkit/WebView;",
+      "invocation_type": "virtual",
+      "method": "setWebChromeClient",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "p4294967294"
+      ],
+      "class": "Landroid/webkit/WebView;",
+      "invocation_type": "virtual",
+      "method": "clearCache",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Landroid/webkit/WebView;",
+      "invocation_type": "virtual",
+      "method": "clearHistory",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/core/util/ObjectsCompat;",
+      "invocation_type": "virtual",
+      "method": "requireNonNull",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/core/os/BuildCompat;",
+      "invocation_type": "virtual",
+      "method": "isAtLeastT",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/os/Process;",
+      "invocation_type": "virtual",
+      "method": "myPid",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/os/Process;",
+      "invocation_type": "virtual",
+      "method": "myUid",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "v3",
+        "p4294967294",
+        "p4294967295"
+      ],
+      "class": "Lorg/asafonov/weather/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "checkPermission",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroidx/core/content/ContextCompat;",
+      "invocation_type": "virtual",
+      "method": "checkSelfPermission",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "p4294967293"
+      ],
+      "class": "Landroid/webkit/WebView;",
+      "invocation_type": "virtual",
+      "method": "loadUrl",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lorg/asafonov/weather/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "requestLocationPermissions",
+      "source": "REAL_DALVIK_INTERPRETER"
+    }
+  ],
+  "timestamp": "2026-09-29T12:07:32Z",
+  "total_api_calls": 25
+}
