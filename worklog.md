@@ -4510,3 +4510,31 @@ Stage Summary:
 - 3 generic laws shipped: addRule bridge (R-NEW-409), Start/End layout
   aliases (R-NEW-410), background-resource replace cache law (R-NEW-411).
 - TriPeaks full-loop HUD ledger is the wave's flagship evidence.
+
+---
+Task ID: S122
+Agent: main
+Task: S122 harder-games wave (user fa directive: "دوتا بازی سختر رو هم امتحان بکن" + push-all + evidence links + no GIFs)
+
+Work Log:
+- Verified the user's NEW PAT (github_pat_11CHBU2HY0qwf...MRdLDSfeV, API 200), installed at /tmp/.gh_token with credential-helper wrapper; pushed the 5 previously-unpushed S120/S121 commits (34f462e6..544dc8ec) — "تمامی پوش های قدیمی رو منتشر بکن" done.
+- Posted the armed S121 report comments with the new PAT (#354 comment 5898457041, #353 comment 5898457370).
+- Verified all evidence raw links 200 and delivered them to the user.
+- S122 picks: chess 10.6.0 vc298 (jwtc.android.chess, F-Droid, 3.5MB) + klondike vc3 (eu.veldsoft.free.klondike, F-Droid, 6.8MB).
+- Root-caused and fixed SIX generic engine laws (dalvik_engine.cpp / touch_dispatcher.cpp / android_shadows.h):
+  R-NEW-412 M3-19 cycle-guard primitive-identity refinement (chess VectorDrawableCompat ISE),
+  R-NEW-413 vector-XML drawable platform class label (gate getName probe),
+  R-NEW-414/414b instance field-initializer defaults + node-cached defaults (ContentFrameLayout mDecorPadding Rect NPE),
+  R-NEW-415 Resources.getInteger ARSC resolution (GridLayoutManager span 0 IAE),
+  R-NEW-416 Window.findViewById decor-tree delegation (board RecyclerView null),
+  R-NEW-417 DEX onTouchEvent override touchable + DOWN/UP dispatch arm, R-NEW-418 getWindowManager singleton (resizeImageViews NPE).
+- chess: probe rc=1/7-errors -> FULL LOAD with 0 errors; decor+toolbar painted; content paint pending the adapter->relayout traversal (documented frontier).
+- klondike: menu fully rendered; agent tap New Game (target=24) -> GameActivity; deck tap (target=143) -> deal state change (aces rendered with suits); Errors: 0.
+- Built DEX tooling (scripts/s122_dexdump.py) + androguard-assisted bytecode forensics for the R8-renamed androidx chains.
+- Evidence packaged to evidence/s122_harder_games/ (4 JPGs, 6-15KB, English-only, 460px).
+- Posted the S122 report (#354 comment 5900454144, #353 comment 5900454318).
+
+Stage Summary:
+- 2 harder games attempted per directive: chess = full-load/0-errors flagship with 6 new laws; klondike = interactive play chain proven (menu->game->deal).
+- New frontiers documented: chess adapter->relayout traversal; klondike move-validation pipeline.
+- All work committed and pushed to origin/main.

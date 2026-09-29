@@ -1036,6 +1036,12 @@ public:
         // content model or the default law. Capture fields for the
         // setMeasuredDimension shadow dispatch during that execution:
         bool overrides_on_measure = false;
+        // S122 (R-NEW-417): TRUE when the DEX chain overrides onTouchEvent —
+        // AOSP View.dispatchTouchEvent delivers to ANY view under the point
+        // whose class handles touches itself (game boards, custom controls);
+        // the touchable gate must include this, else the whole custom-view
+        // game family is tap-dead (klondike GameView evidence).
+        bool overrides_touch_event = false;
         int dex_measured_w = 0, dex_measured_h = 0;
         bool dex_measure_valid = false;
         // F-096 (R-NEW-329 root, real-DEX measure+layout lifecycle law):

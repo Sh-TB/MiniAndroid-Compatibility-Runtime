@@ -6601,6 +6601,50 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                     ++appended;
                 }
             }
+            // S122 (R-NEW-412) instance identity refinement: append up to 2
+            // PRIMITIVE argument values after the object identities.
+            //
+            // OBSERVATION (chess 10.6.0 vc298, jwtc.android.chess):
+            // R8-renamed androidx appcompat ResourceManagerInternal singleton
+            // executes
+            //   .e(ctx,R,checkSetup=true)  [outer, theme drawable]
+            //     -> .d(ctx,R)
+            //       -> .e(ctx,R,checkSetup=false) [inner, real load path]
+            // — a LEGAL AOSP delegation chain whose calls share the receiver
+            // AND the context, differing ONLY in the boolean flag. The
+            // object-identity key treated the inner call as a same-computation
+            // cycle, stubbed it to null, and the outer frame's vector-setup
+            // gate read the manufactured null as "the vector probe failed":
+            // ISE "This app has been built with an incorrect configuration.
+            // Please configure your build for VectorDrawableCompat." unwound
+            // ComponentActivity.onCreate -> blank screen (the S99 gate no-op
+            // law matches Landroidx/appcompat/widget/ResourceManagerInternal;
+            // by NAME and cannot see R8-renamed shadows like Ll/l2;).
+            //
+            // LAW: different primitive identities = different code-path
+            // payloads = legal nested dispatch (execute real DEX), mirroring
+            // F-098's object-payload law and F-076's static-identity law.
+            // Keys become strictly more specific, so the guard only ever
+            // fires LESS often; genuine same-argument cycles still collide;
+            // MAX_RECURSION_DEPTH remains the backstop. Primitive key-part
+            // syntax "=<value>" cannot collide with object-id parts "#<id>".
+            {
+                int prims = 0;
+                for (size_t i = 1; i < args.size() && prims < 2; ++i) {
+                    switch (args[i].type) {
+                        case DalvikType::INT32:
+                        case DalvikType::BOOLEAN:
+                        case DalvikType::BYTE:
+                        case DalvikType::CHAR:
+                        case DalvikType::SHORT:
+                            m3_active_key += "=" + std::to_string(args[i].int_val);
+                            ++prims;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
         }
     } else if (current_invoke_is_static_) {
         // F-076: statics have no receiver — key on leading object-arg
@@ -6613,6 +6657,50 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                 !args[i].is_null) {
                 m3_active_key += "#" + std::to_string(args[i].object_id);
                 ++appended;
+            }
+        }
+        // ────────────────────────────────────────────────────────────────
+        // S122 (R-NEW-412) static identity refinement: append up to 2
+        // PRIMITIVE argument values after the object identities.
+        //
+        // OBSERVATION (chess 10.6.0 vc298, jwtc.android.chess): R8-renamed
+        // androidx appcompat ResourceManagerInternal family executes
+        //   .e(ctx,R,checkSetup=true)  [outer, theme drawable]
+        //     -> .d(ctx,R)
+        //       -> .e(ctx,R,checkSetup=false)  [inner, real load path]
+        // — a LEGAL AOSP delegation chain whose calls differ ONLY in the
+        // boolean flag. The object-identity key treated the inner call as
+        // a same-computation cycle, stubbed it to null, and the outer
+        // frame's vector-setup gate read the manufactured null as "the
+        // vector probe failed": ISE "This app has been built with an
+        // incorrect configuration. Please configure your build for
+        // VectorDrawableCompat." unwound ComponentActivity.onCreate ->
+        // blank screen (the S99 gate no-op law matches
+        // Landroidx/appcompat/widget/ResourceManagerInternal; by NAME and
+        // cannot see R8-renamed shadows like Ll/l2;).
+        //
+        // LAW: different primitive identities = different code-path
+        // payloads = legal nested dispatch (execute real DEX). Same as
+        // F-098's object-payload refinement for instance methods: nesting
+        // is legal when the payload distinguishes it. Keys become strictly
+        // more specific, so the guard only ever fires LESS often; genuine
+        // same-argument cycles still collide; MAX_RECURSION_DEPTH remains
+        // the backstop. Primitive key-part syntax "=<value>" cannot collide
+        // with object-id parts "#<id>".
+        // ────────────────────────────────────────────────────────────────
+        int prims = 0;
+        for (size_t i = 0; i < args.size() && prims < 2; ++i) {
+            switch (args[i].type) {
+                case DalvikType::INT32:
+                case DalvikType::BOOLEAN:
+                case DalvikType::BYTE:
+                case DalvikType::CHAR:
+                case DalvikType::SHORT:
+                    m3_active_key += "=" + std::to_string(args[i].int_val);
+                    ++prims;
+                    break;
+                default:
+                    break;
             }
         }
     }
@@ -8520,6 +8608,7 @@ bool DalvikExecutionEngine::run_custom_view_constructor(
         if (view_shadow) {
             auto* node = view_shadow->find_node(view_object_id);
             bool overrides = class_chain_defines_method(cls, "onMeasure");
+            bool overrides_touch = class_chain_defines_method(cls, "onTouchEvent");
             if (node) {
                 // M3 F-005 FIX-A: framework content families (Button/
                 // TextView/…) are content-measured by the runtime itself —
@@ -8527,6 +8616,8 @@ bool DalvikExecutionEngine::run_custom_view_constructor(
                 node->aosp_default_measure =
                     !overrides && !runtime_content_measure_class(cls);
                 node->overrides_on_measure = overrides;
+                // S122 (R-NEW-417): same capture for the touch gate.
+                node->overrides_touch_event = overrides_touch;
             }
             static thread_local uint64_t dm_log = 0;
             if (dm_log < 12) {
@@ -8914,7 +9005,46 @@ bool DalvikExecutionEngine::dispatch_touch_listener(uint32_t view_object_id,
     auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
     if (view_shadow == nullptr) return false;
     const auto* node = view_shadow->find_node(view_object_id);
-    if (node == nullptr || node->touch_listener_id == 0) return false;
+    if (node == nullptr) return false;
+    // S122 (R-NEW-417): the view's OWN onTouchEvent arm — AOSP
+    // View.dispatchTouchEvent fallback: with no OnTouchListener the event
+    // flows into onTouchEvent(ACTION_*). Custom game boards (klondike
+    // GameView) override onTouchEvent and never register a listener; the
+    // old early-return left the whole custom-view game family tap-dead.
+    if (node->touch_listener_id == 0) {
+        if (!node->overrides_touch_event) return false;
+        std::string cls = node->class_desc;
+        if (!cls.empty() && cls[0] == 'L' && cls.find('.') != std::string::npos) {
+            std::string norm = "L";
+            for (size_t i = 1; i < cls.size(); ++i)
+                norm += (cls[i] == '.') ? '/' : cls[i];
+            cls = norm;
+        }
+        uint32_t ev_id = heap_.allocate("Landroid/view/MotionEvent;", pc_,
+                                        call_stack_.empty() ? 0
+                                                            : call_stack_.top().frame_id);
+        heap_.set_object_field(ev_id, "__action__", DalvikValue::make_int(action));
+        heap_.set_object_field(ev_id, "__x__", DalvikValue::make_float(x));
+        heap_.set_object_field(ev_id, "__y__", DalvikValue::make_float(y));
+        std::cerr << "[UI-EVENT] event=TOUCH action=" << action
+                  << " view_object=" << view_object_id
+                  << " view_class=" << node->class_desc
+                  << " arm=onTouchEvent(override)" << std::endl;
+        std::vector<DalvikValue> args;
+        args.push_back(DalvikValue::make_object(view_object_id, node->class_desc));
+        args.push_back(DalvikValue::make_object(ev_id, "Landroid/view/MotionEvent;"));
+        DalvikValue ret = DalvikValue::make_void();
+        DalvikExecutionResult res;
+        bool dispatched = try_recursive_invoke(cls, "onTouchEvent", args,
+                                               ret, res);
+        if (dispatched && ret.type == DalvikType::BOOLEAN)
+            consumed = ret.int_val != 0;
+        std::cerr << "[UI-EVENT] event=TOUCH action=" << action << " result="
+                  << (dispatched ? "DISPATCHED" : "FAILED")
+                  << " consumed=" << (consumed ? "true" : "false") << std::endl;
+        return dispatched;
+    }
+    if (node->touch_listener_id == 0) return false;
 
     uint32_t listener_id = node->touch_listener_id;
     std::string listener_class;
@@ -14075,6 +14205,154 @@ bool DalvikExecutionEngine::execute_iget(uint32_t pc, InstructionTrace& trace) {
     return true;
 }
 
+// ── S122 (R-NEW-414) — instance field-initializer defaults ──────────────
+// javac compiles `final Rect m = new Rect();` (and every other inline
+// instance-field initializer) into the constructor body: new-instance T vN
+// → invoke-direct T.<init> vN → iput-object vN → F. ART therefore
+// guarantees such fields are NON-NULL on any constructed object. This
+// runtime materializes view/heap objects for DEX-defined classes WITHOUT
+// running the class's <init> (the subdecor ContentFrameLayout path), so
+// iget-object on those fields answered null and apps died on the first
+// method call (chess 10.6.0: ContentFrameLayout field l — the AOSP
+// `mDecorPadding` Rect — read null in the measure path → Rect.set NPE →
+// onCreate unwound → blank screen).
+// LAW: a field whose constructor initializer is `new T` is materialized
+// as an empty T on a heap read that would otherwise answer null. Generic
+// across every DEX class; zero package checks.
+// S122: DEX instruction sizes (in 16-bit code units) for the R-NEW-414
+// initializer scan — standard format widths from the DEX spec tables.
+static size_t r414_opcode_size(uint8_t op) {
+    static const uint8_t k1[12] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06,
+                                   0x07, 0x08, 0x09, 0x0a, 0x0b};
+    static const uint8_t k1b[16] = {0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12,
+                                    0x1d, 0x1e, 0x27, 0x28, 0x7b, 0x7c, 0x7d,
+                                    0x7e, 0x27};
+    static const uint8_t k1c[8] = {0xb0, 0xb1, 0xb2, 0xb3, 0xb4, 0xb5, 0xb6,
+                                   0xb7};
+    if (op == 0x13 || op == 0x15 || op == 0x16 || op == 0x19 || op == 0x1c ||
+        op == 0x1f || op == 0x20 || op == 0x21 || op == 0x22 || op == 0x23)
+        return 2;
+    if (op == 0x14 || op == 0x17 || op == 0x18) return 3;
+    if (op == 0x1a) return 2;
+    if (op == 0x1b) return 3;
+    if (op == 0x29) return 2;
+    if (op == 0x2a || op == 0x2b || op == 0x2c) return 3;
+    if (op == 0x24 || op == 0x25 || op == 0x26) return 3;
+    if ((op >= 0x2d && op <= 0x31) || (op >= 0x44 && op <= 0x6d)) return 2;
+    if ((op >= 0x32 && op <= 0x3d)) return 2;
+    if ((op >= 0x3e && op <= 0x43)) return 2;  // unused range (nop-width)
+    if ((op >= 0x6e && op <= 0x72) || (op >= 0x74 && op <= 0x78)) return 3;
+    if (op >= 0x7f && op <= 0xaf) return 2;
+    for (uint8_t k : k1) if (op == k) return 1;
+    for (uint8_t k : k1b) if (op == k) return 1;
+    for (uint8_t k : k1c) if (op == k) return 1;
+    if (op >= 0xb8 && op <= 0xcf) return 1;
+    if (op >= 0xd0 && op <= 0xe2) return 2;
+    return 1;  // unknown: conservative 1-unit stride
+}
+
+void DalvikExecutionEngine::scan_init_field_defaults(const std::string& cls) {
+    if (init_defaults_scanned_.count(cls) > 0) return;
+    init_defaults_scanned_.insert(cls);
+    if (!dex_report_) return;
+    auto class_it = class_info_index_.find(cls);
+    if (class_it == class_info_index_.end()) return;
+    const dex::ClassInfo& info = dex_report_->classes[class_it->second];
+    uint32_t dex_idx = 0;
+    if (auto dit = class_to_dex_index_.find(cls); dit != class_to_dex_index_.end())
+        dex_idx = dit->second;
+    auto& field_map = init_field_defaults_[cls];
+    bool r414_trace = std::getenv("MINIANDROID_R414_TRACE") != nullptr;
+    for (const auto* list : {&info.direct_methods, &info.virtual_methods}) {
+        for (const auto& m : *list) {
+            if (m.name != "<init>" || m.bytecode.empty()) continue;
+            // reg → newest new-instance type (javac initializers store the
+            // freshly constructed object almost immediately)
+            std::map<uint16_t, std::string> reg_types;
+            const std::vector<uint16_t>& bc = m.bytecode;
+            size_t pc2 = 0;
+            while (pc2 + 1 < bc.size()) {
+                uint16_t unit = bc[pc2];
+                uint8_t op = unit & 0xFF;
+                uint8_t hi = (unit >> 8) & 0xFF;
+                if (op == 0x00) {
+                    // nop; skip pseudo-data payloads so the scan stays aligned
+                    if (hi == 0x01) {  // packed-switch-payload
+                        if (pc2 + 3 >= bc.size()) break;
+                        uint32_t sz = (uint32_t)bc[pc2 + 1] |
+                                      ((uint32_t)bc[pc2 + 2] << 16);
+                        pc2 += 4 + sz * 2;
+                        continue;
+                    }
+                    if (hi == 0x02) {  // sparse-switch-payload
+                        if (pc2 + 3 >= bc.size()) break;
+                        uint32_t sz = (uint32_t)bc[pc2 + 1] |
+                                      ((uint32_t)bc[pc2 + 2] << 16);
+                        pc2 += 2 + sz * 4;
+                        continue;
+                    }
+                    if (hi == 0x03) {  // fill-array-data-payload
+                        if (pc2 + 5 >= bc.size()) break;
+                        uint16_t ew = bc[pc2 + 1];
+                        uint32_t sz = (uint32_t)bc[pc2 + 2] |
+                                      ((uint32_t)bc[pc2 + 3] << 16);
+                        pc2 += 4 + (size_t)((uint64_t)sz * ew + 1) / 2;
+                        continue;
+                    }
+                    pc2 += 1;
+                    continue;
+                }
+                if (op == 0x22 && pc2 + 1 < bc.size()) {  // new-instance
+                    uint16_t reg = hi;
+                    uint16_t tidx = bc[pc2 + 1];
+                    reg_types[reg] = resolve_type_for_dex(tidx, dex_idx);
+                    pc2 += r414_opcode_size(op);
+                    continue;
+                }
+                if (op == 0x5B && pc2 + 1 < bc.size()) {  // iput-object
+                    uint8_t src = (unit >> 8) & 0xF;
+                    uint16_t fidx = bc[pc2 + 1];
+                    auto rt = reg_types.find(src);
+                    if (rt != reg_types.end()) {
+                        FieldResolution fr = resolve_field((uint16_t)fidx);
+                        if (fr.resolved && fr.field_type == rt->second) {
+                            field_map[fr.field_name] = rt->second;
+                        }
+                    }
+                    pc2 += r414_opcode_size(op);
+                    continue;
+                }
+                pc2 += r414_opcode_size(op);  // spec-width stride keeps the scan aligned
+            }
+            if (r414_trace && !field_map.empty()) {
+                std::cerr << "[R414-SCAN] " << cls << " initializers:";
+                for (auto& kv : field_map)
+                    std::cerr << " " << kv.first << "->" << kv.second;
+                std::cerr << std::endl;
+            }
+        }
+    }
+}
+
+DalvikValue DalvikExecutionEngine::materialize_init_default(
+    const std::string& type_desc) {
+    if (type_desc.empty() || type_desc[0] != 'L') return DalvikValue::make_null();
+    uint32_t oid = heap_.allocate(type_desc, 0, 0);
+    if (type_desc == "Landroid/graphics/Rect;" ||
+        type_desc == "Landroid/graphics/Point;" ||
+        type_desc == "Landroid/graphics/PointF;") {
+        for (const char* f : {"left", "top", "right", "bottom", "x", "y"})
+            heap_.set_object_field(oid, f, DalvikValue::make_int(0));
+    } else if (type_desc == "Landroid/util/TypedValue;") {
+        heap_.set_object_field(oid, "type", DalvikValue::make_int(0));
+    } else if (type_desc == "Ljava/lang/StringBuilder;" ||
+               type_desc == "Ljava/lang/StringBuffer;") {
+        // leave empty shell; string methods are shadow-dispatched
+    }
+    DalvikValue v = DalvikValue::make_object(oid, type_desc);
+    return v;
+}
+
 bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& trace) {
     // Format: 22c iget-object vA, vB, field@CCCC
     // Read object field from object and place reference in destination register
@@ -14148,6 +14426,107 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
                           << std::endl;
             }
             auto field_val = heap_.get_object_field(obj_ref.object_id, field_res.field_name);
+            // S122 (R-NEW-414): field-initializer default. A field whose
+            // constructor initializer is `new T` is NON-NULL on any real
+            // instance. When the heap object (materialized for a DEX-defined
+            // class, e.g. a view node whose <init> the inflater did not run)
+            // has NO entry — or a null/zero entry — for the field, materialize
+            // the initializer type instead of answering a manufactured null
+            // (chess: ContentFrameLayout.mDecorPadding Rect read null ->
+            // Rect.set NPE -> onCreate dead). The value is STORED so identity
+            // stays stable.
+            {
+                bool r414_missing = !field_val.has_value();
+                if (!r414_missing) {
+                    const DalvikValue& fv = field_val.value();
+                    r414_missing =
+                        fv.type == DalvikType::NULL_REF ||
+                        (fv.type == DalvikType::OBJECT_REF && fv.object_id == 0) ||
+                        (fv.type == DalvikType::OBJECT_REF &&
+                         !heap_.has_object(fv.object_id));
+                }
+                if (r414_missing) {
+                    const HeapObject* r414_hobj = heap_.get(obj_ref.object_id);
+                    std::string r414_cls =
+                        r414_hobj ? r414_hobj->class_descriptor
+                                  : field_res.class_descriptor;
+                    if (std::getenv("MINIANDROID_R414_TRACE") != nullptr) {
+                        static thread_local uint64_t r414_dbg_n = 0;
+                        if (r414_dbg_n < 40) {
+                            ++r414_dbg_n;
+                            std::cerr << "[R414-PROBE] field "
+                                      << field_res.class_descriptor << "."
+                                      << field_res.field_name << " recv_cls="
+                                      << r414_cls << " dex_defined="
+                                      << (class_info_index_.count(r414_cls) > 0)
+                                      << " caller=" << current_class_ << "."
+                                      << current_method_ << " pc=" << pc
+                                      << std::endl;
+                        }
+                    }
+                    if (!r414_cls.empty() && r414_cls[0] == 'L' &&
+                        !field_res.field_name.empty()) {
+                    // walk the superclass chain (initializers may live in a
+                    // superclass constructor), bounded. Two starting points:
+                    // (1) the receiver's own runtime class family; (2) when
+                    // that finds nothing, the field's DECLARING class — DEX
+                    // field refs name the class whose shape the code expects;
+                    // when the runtime materialized the inflated object under
+                    // a different node class (upstream check-cast re-shape),
+                    // the declared class's constructor initializer is the
+                    // honest source for the field's never-null default.
+                    std::string walk = r414_cls;
+                    std::string r414_hit_cls;
+                    for (int phase = 0; phase < 2 && r414_hit_cls.empty(); ++phase) {
+                        if (phase == 1) {
+                            walk = field_res.class_descriptor;
+                            if (walk.empty() || walk == r414_cls) break;
+                        }
+                        for (int hop = 0; hop < 8 && !walk.empty(); ++hop) {
+                            scan_init_field_defaults(walk);
+                            auto fm = init_field_defaults_.find(walk);
+                            if (fm != init_field_defaults_.end()) {
+                                auto ft = fm->second.find(field_res.field_name);
+                                if (ft != fm->second.end() && !ft->second.empty()) {
+                                    DalvikValue dv =
+                                        materialize_init_default(ft->second);
+                                    if (dv.type == DalvikType::OBJECT_REF &&
+                                        dv.object_id != 0) {
+                                        heap_.set_object_field(
+                                            obj_ref.object_id,
+                                            field_res.field_name, dv);
+                                        static thread_local uint64_t r414_n = 0;
+                                        if (r414_n < 24) {
+                                            ++r414_n;
+                                            std::cerr << "[R414-INIT-DEFAULT] "
+                                                      << walk << "."
+                                                      << field_res.field_name
+                                                      << " obj#"
+                                                      << obj_ref.object_id
+                                                      << " = new " << ft->second
+                                                      << " (recv=" << r414_cls
+                                                      << " caller="
+                                                      << current_class_ << "."
+                                                      << current_method_
+                                                      << " pc=" << pc << ")"
+                                                      << std::endl;
+                                        }
+                                        result_value = dv;
+                                        field_val = dv;
+                                        r414_hit_cls = walk;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (!r414_hit_cls.empty()) break;
+                            auto sit = class_to_superclass_.find(walk);
+                            walk = (sit != class_to_superclass_.end())
+                                       ? sit->second : "";
+                        }
+                    }
+                }
+                }
+            }
             // S72 null-field probe (env-gated, bounded, read-only): a read
             // where the heap object has NO ENTRY for the field means the
             // iput never ran (silent-lost write or skipped <init>) — the
@@ -14202,6 +14581,58 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
                     result_value.type != DalvikType::CLASS_REF) {
                     result_value.type = DalvikType::OBJECT_REF;
                 }
+            }
+        }
+    }
+    // S122 (R-NEW-414b): receiver NOT heap-backed — the in-heap law above
+    // never ran. The receiver id is a VIEW NODE (e.g. the android.R.id.content
+    // ContentFrameLayout node, id 800100 — chess evidence: Lg/c0;.y pc=454
+    // reads the AOSP mDecorPadding Rect, gets a manufactured null, and the
+    // following Rect.set NPE unwinds onCreate -> blank screen). Same honest
+    // initializer default, answered from the field's DECLARING class and
+    // cached per (node id, field) so identity stays stable across reads.
+    if (result_value.type == DalvikType::NULL_REF &&
+        obj_ref.type == DalvikType::OBJECT_REF && obj_ref.object_id != 0 &&
+        !heap_.has_object(obj_ref.object_id) && !field_res.field_name.empty() &&
+        !field_res.class_descriptor.empty() &&
+        field_res.class_descriptor[0] == 'L') {
+        auto nfkey = std::make_pair(obj_ref.object_id, field_res.field_name);
+        auto cached = node_field_defaults_.find(nfkey);
+        if (cached != node_field_defaults_.end()) {
+            result_value =
+                DalvikValue::make_object(cached->second, field_res.class_descriptor);
+        } else {
+            std::string walk = field_res.class_descriptor;
+            for (int hop = 0; hop < 8 && !walk.empty(); ++hop) {
+                scan_init_field_defaults(walk);
+                auto fm = init_field_defaults_.find(walk);
+                if (fm != init_field_defaults_.end()) {
+                    auto ft = fm->second.find(field_res.field_name);
+                    if (ft != fm->second.end() && !ft->second.empty()) {
+                        DalvikValue dv = materialize_init_default(ft->second);
+                        if (dv.type == DalvikType::OBJECT_REF &&
+                            dv.object_id != 0) {
+                            node_field_defaults_[nfkey] = dv.object_id;
+                            static thread_local uint64_t r414b_n = 0;
+                            if (r414b_n < 16) {
+                                ++r414b_n;
+                                std::cerr << "[R414B-NOHEAP] field "
+                                          << field_res.class_descriptor << "."
+                                          << field_res.field_name
+                                          << " node#" << obj_ref.object_id
+                                          << " = new " << ft->second
+                                          << " (caller=" << current_class_
+                                          << "." << current_method_
+                                          << " pc=" << pc << ")"
+                                          << std::endl;
+                            }
+                            result_value = dv;
+                        }
+                        break;
+                    }
+                }
+                auto sit = class_to_superclass_.find(walk);
+                walk = (sit != class_to_superclass_.end()) ? sit->second : "";
             }
         }
     }
@@ -15964,6 +16395,9 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
                 // answers from the native content model instead of the
                 // APK's own onMeasure bytecode.
                 node->overrides_on_measure = overrides;
+                // S122 (R-NEW-417): same capture for the touch gate.
+                node->overrides_touch_event =
+                    class_chain_defines_method(cls, "onTouchEvent");
             }
         }
     }
@@ -20253,6 +20687,40 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         std::cerr << "[F-NEW-186] Resources.obtainTypedArray -> TypedArray(len="
                   << n << ")" << std::endl;
         status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────
+    // S122 (R-NEW-415) — Resources.getInteger(int) (AOSP Resources.java
+    // law): integer resources resolve through the ARSC table; getValue
+    // → TypedValue with COERCE type, getInteger answers TypedValue.data.
+    // The engine had NO handler: the generic stub answered 0, and chess
+    // 10.6.0 built `new GridLayoutManager(this, getInteger(R.integer.x))`
+    // → androidx GridLayoutManager.setSpanCount(0) threw IAE "Span count
+    // should be at least 1. Provided 0" → onCreate unwound → blank screen.
+    // Zero package checks: every Resources.getInteger caller resolves its
+    // real ARSC integer now.
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/content/res/Resources;" &&
+        method == "getInteger" && args.size() >= 2 &&
+        args[1].type == DalvikType::INT32) {
+        int32_t gi_resid = args[1].int_val;
+        int32_t gi_val = 0;
+        bool gi_resolved = false;
+        {
+            auto& rt = resources::ResourceRuntime::instance();
+            if (rt.loaded() || rt.ensure_loaded(apk_path_)) {
+                auto v = rt.arsc().resolve_value((uint32_t)gi_resid);
+                if (v && (v->is_int() || v->is_bool() || v->is_color())) {
+                    gi_val = (int32_t)v->data;
+                    gi_resolved = true;
+                }
+            }
+        }
+        std::cerr << "[RES] getInteger resid=0x" << std::hex << gi_resid
+                  << std::dec << " -> " << gi_val
+                  << (gi_resolved ? "" : " (UNRESOLVED)") << std::endl;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_int(gi_val);
         return true;
     }
     // ────────────────────────────────────────────────────────────────────
@@ -29803,6 +30271,29 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // S122 (R-NEW-418) — Activity/Context.getWindowManager → WindowManager
+    // singleton (AOSP Activity.java attach law: mWindowManager is assigned
+    // during attach() and getWindowManager() NEVER answers null afterwards).
+    // The engine had NO handler → the generic stub answered null → every
+    // app reaching getWindowManager().getDefaultDisplay() NPE'd at the
+    // display fetch (klondike 10.6.0 evidence: GameActivity.resizeImageViews
+    // pc=9 "WindowManager.getDefaultDisplay on null" → the card-view
+    // resize + listener registration section was skipped → the whole board
+    // stayed touch-dead). The S86 getDefaultDisplay law already covers any
+    // WindowManager* receiver, so the singleton completes the chain.
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getWindowManager" &&
+        (class_name.find("Activity") != std::string::npos ||
+         class_name == "Landroid/view/Window;" ||
+         class_name.find("Context") != std::string::npos)) {
+        result = get_or_create_singleton("Landroid/view/WindowManagerImpl;");
+        std::cerr << "[R418-WM] getWindowManager -> WindowManagerImpl singleton"
+                  << " (recv=" << class_name << ")" << std::endl;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // S83-GFX-BASE §32 — F-NEW-159 root-cause fix (producers):
     // Window.getInsetsController() must return a REAL controller object —
     // androidx WindowInsetsControllerCompat wraps it and calls
@@ -30000,6 +30491,58 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_void();
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // S122 (R-NEW-416) — Window.findViewById(int) (AOSP PhoneWindow law):
+    // Window.findViewById delegates to the DECOR view hierarchy
+    // (getDecorView().findViewById(id)). The engine had NO handler — the
+    // generic stub answered null for every getWindow().findViewById call,
+    // and Activity.findViewById itself DELEGATES to the window in the
+    // androidx path, so any app inflating views through the window route
+    // got null receivers (chess 10.6.0: the board RecyclerView findViewById
+    // answered null -> setLayoutManager dispatched on null via ROOT-059 ->
+    // ViewFlinger OverScroller NPE -> onCreate unwound -> blank screen).
+    // Search root: the activity's decor (window_decor_for_activity_, the
+    // R005-DECOR link target), falling back to the ActivityShadow content
+    // view — the same ViewShadow find_by_android_id tree search the
+    // Activity path uses. Zero package checks.
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "findViewById" &&
+        class_name.find("Landroid/view/Window") != std::string::npos &&
+        args.size() >= 2 && args[1].type == DalvikType::INT32 &&
+        shadow_registry_ != nullptr) {
+        int32_t wf_target = args[1].int_val;
+        uint32_t wf_root = 0;
+        uint32_t wf_act = 0;
+        if (auto* act = shadow_registry_->find_as<framework::ActivityShadow>())
+            wf_act = act->current_activity_id();
+        if (wf_act != 0) {
+            auto it = window_decor_for_activity_.find(wf_act);
+            if (it != window_decor_for_activity_.end())
+                wf_root = it->second;
+        }
+        uint32_t wf_found = 0;
+        if (auto* vs = shadow_registry_->find_as<framework::ViewShadow>()) {
+            if (wf_root != 0)
+                wf_found = vs->find_by_android_id(wf_root, wf_target);
+            if (wf_found == 0 && wf_act != 0) {
+                uint32_t cv = 0;
+                if (auto* act2 =
+                        shadow_registry_->find_as<framework::ActivityShadow>())
+                    cv = act2->content_view_id();
+                if (cv != 0)
+                    wf_found = vs->find_by_android_id(cv, wf_target);
+            }
+        }
+        std::cerr << "[R416-WINDOW-FVBI] target=0x" << std::hex << wf_target
+                  << std::dec << " root=" << wf_root << " -> view="
+                  << wf_found << std::endl;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = wf_found != 0
+                     ? DalvikValue::make_object(wf_found, "Landroid/view/View;")
+                     : DalvikValue::make_null();
         return true;
     }
 
@@ -30690,7 +31233,42 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // null stub broke View.setForeground(icon) for every programmatic
         // view (FORGOTTEN-017; microtimer row buttons measured 0-tall
         // because their icon — the only content — was null).
-        uint32_t dw = heap_.allocate("Landroid/graphics/drawable/Drawable;", 0, 0);
+        // ── S122 (R-NEW-413) — vector-XML drawables carry the platform
+        // VectorDrawable class label (AOSP Resources.getDrawable law).
+        // The previous path allocated EVERY drawable as the bare base
+        // class Landroid/graphics/drawable/Drawable;. On a real API-21+
+        // device a <vector> XML materializes as
+        // android.graphics.drawable.VectorDrawable, and appcompat's
+        // vector-setup gate PROBES exactly that identity:
+        // ResourceManagerInternal.checkVectorDrawableSetup loads
+        // abc_vector_test, then reads drawable.getClass().getName()
+        // against Build.VERSION.SDK_INT; the base-class label answered
+        // "android.graphics.drawable.Drawable", the gate read it as "the
+        // vector pipeline is broken" and threw ISE "This app has been
+        // built with an incorrect configuration. Please configure your
+        // build for VectorDrawableCompat." (chess 10.6.0 vc298:
+        // onCreate dead, blank screen; the S99 boundary no-op only covers
+        // the UN-renamed ResourceManagerInternal method). The runtime's
+        // own drawable pipeline inflates <vector> XMLs natively
+        // (vector_inflater.cpp), so the gate's demand is satisfied by
+        // construction — the honest completion is to LABEL the object by
+        // its real AOSP family. Root-identity refinement, zero package
+        // checks: the class label follows the inflated XML root element.
+        std::string drawable_class = "Landroid/graphics/drawable/Drawable;";
+        if (path.size() > 4 &&
+            path.compare(path.size() - 4, 4, ".xml") == 0) {
+            std::vector<uint8_t> vxml;
+            {
+                auto& rt13 = resources::ResourceRuntime::instance();
+                vxml = rt13.apk().extract_entry_cached(path);
+            }
+            resources::AxmlParser vparser;
+            if (!vxml.empty() && vparser.parse(vxml) &&
+                vparser.root().name == "vector") {
+                drawable_class = "Landroid/graphics/drawable/VectorDrawable;";
+            }
+        }
+        uint32_t dw = heap_.allocate(drawable_class, 0, 0);
         DalvikValue dv;
         dv.type = DalvikType::INT32;
         dv.int_val = resid;
@@ -30758,7 +31336,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 }
             }
         }
-        result = DalvikValue::make_object(dw, "Landroid/graphics/drawable/Drawable;");
+        result = DalvikValue::make_object(dw, drawable_class);
         return true;
     }
 

@@ -46,6 +46,13 @@ bool TouchDispatcher::view_touchable(const ViewShadow::ViewNode& n) const {
     // the browser event pipeline consumes touches inside its bounds.
     if (n.class_desc.find("Landroid/webkit/WebView;") != std::string::npos)
         return true;
+    // S122 (R-NEW-417): a DEX-defined view whose class chain OVERRIDES
+    // onTouchEvent is a touch target — AOSP View.dispatchTouchEvent walks
+    // to the deepest view under the point and runs ITS onTouchEvent; no
+    // listener registration is required (klondike GameView board evidence:
+    // the custom board view had no listener, so the touchable gate answered
+    // false and every board tap resolved target=0).
+    if (n.overrides_touch_event) return true;
     // F-110e (S62+): a view with an OnTouchListener IS a touch target.
     // AOSP View.dispatchTouchEvent (View.java L16741+): the mOnTouchListener
     // gate runs BEFORE clickability matters — `li.mOnTouchListener != null &&
@@ -198,7 +205,13 @@ nlohmann::json TouchDispatcher::dispatch(uint32_t root_id,
             // returns true the result is consumed and the internal
             // touch-event processing (pressed feedback, long-press arming,
             // PerformClick) is skipped entirely.
-            if (n->touch_listener_id != 0 && touch_fn_) {
+            // F-110e (S62+) + S122 (R-NEW-417): OnTouchListener DOWN arm,
+            // extended to the view's OWN onTouchEvent override — AOSP
+            // View.dispatchTouchEvent: no listener OR listener returning
+            // false falls into onTouchEvent(ACTION_DOWN); a custom board
+            // view (klondike GameView) handles the gesture there.
+            if ((n->touch_listener_id != 0 || n->overrides_touch_event) &&
+                touch_fn_) {
                 bool consumed_by_listener = false;
                 const bool dispatched =
                     touch_fn_(target, 0 /*ACTION_DOWN*/, ev.x, ev.y,
