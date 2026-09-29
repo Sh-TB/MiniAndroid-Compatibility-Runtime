@@ -933,6 +933,13 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
         else if (n == "layout_marginTop") a.mt = parse_dim_attr(&at, stats), a.margin_set = true;
         else if (n == "layout_marginRight") a.mr = parse_dim_attr(&at, stats), a.margin_set = true;
         else if (n == "layout_marginBottom") a.mb = parse_dim_attr(&at, stats), a.margin_set = true;
+        // R-NEW-410 (S121): marginStart/marginEnd — AOSP MarginLayoutParams
+        // (ViewGroup.java MarginLayoutParams(c, attrs)): in LTR start==left,
+        // end==right; this runtime resolves the LTR configuration.
+        // Ground truth: one.scarecrow.games.OPMT activity_game.xml positions
+        // its board buttons with layout_marginStart/End exclusively.
+        else if (n == "layout_marginStart") a.ml = parse_dim_attr(&at, stats), a.margin_set = true;
+        else if (n == "layout_marginEnd") a.mr = parse_dim_attr(&at, stats), a.margin_set = true;
         else if (n == "padding") a.padding_all = parse_dim_attr(&at, stats);
         else if (n == "paddingLeft") a.pl = parse_dim_attr(&at, stats);
         else if (n == "paddingTop") a.pt = parse_dim_attr(&at, stats);
@@ -1185,7 +1192,9 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
         // truth org.billthefarmer.scope v140 res/v9.xml XScale).
         else if (n == "layout_below" || n == "layout_above" ||
                  n == "layout_toRightOf" || n == "layout_toLeftOf" ||
+                 n == "layout_toStartOf" || n == "layout_toEndOf" ||
                  n == "layout_alignLeft" || n == "layout_alignRight" ||
+                 n == "layout_alignStart" || n == "layout_alignEnd" ||
                  n == "layout_alignTop" || n == "layout_alignBottom") {
             std::string nm = parse_ref(raw).name;
             // Strip a leading "+" (android:id=@+id/name convention).
@@ -1202,12 +1211,20 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
             else if (n == "layout_above") a.rel_above = nm;
             else if (n == "layout_toRightOf") a.rel_right_of = nm;
             else if (n == "layout_toLeftOf") a.rel_left_of = nm;
+            // R-NEW-410 (S121): Start/End aliases — AOSP RelativeLayout
+            // normalizes START/END onto LEFT/RIGHT under the LTR resolved
+            // direction (RelativeLayout.java mRules mapping in
+            // getRelativeLayoutParams/TAG rules; this runtime is LTR).
+            else if (n == "layout_toEndOf") a.rel_right_of = nm;
+            else if (n == "layout_toStartOf") a.rel_left_of = nm;
             // ALIGN_* edge alignment — own fields, NOT aliases of the
             // position family (AOSP RelativeLayout.ALIGN_LEFT sets mLeft to
             // the anchor's left EDGE; toLeftOf sets mRight BEFORE the
             // anchor's left edge).
             else if (n == "layout_alignLeft") a.rel_align_left = nm;
             else if (n == "layout_alignRight") a.rel_align_right = nm;
+            else if (n == "layout_alignStart") a.rel_align_left = nm;
+            else if (n == "layout_alignEnd") a.rel_align_right = nm;
             else if (n == "layout_alignTop") a.rel_align_top = nm;
             else a.rel_align_bottom = nm;
         }
@@ -1217,6 +1234,14 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
         // lost those anchors.
         else if (n == "layout_alignParentLeft") { a.rel_align_parent_left = at.value.is_bool() ? at.value.data != 0 : raw == "true"; }
         else if (n == "layout_alignParentRight") { a.rel_align_parent_right = at.value.is_bool() ? at.value.data != 0 : raw == "true"; }
+        // R-NEW-410 (S121): alignParentStart/End — the RTL-parameterized
+        // spellings of alignParentLeft/Right (AOSP RelativeLayout rule
+        // constants ALIGN_PARENT_START=20 / ALIGN_PARENT_END=21 normalize to
+        // LEFT/RIGHT under LTR). OPMT's whole board anchors its right column
+        // with layout_alignParentEnd — previously dropped, collapsing the
+        // right buttons onto x=0 over their left twins.
+        else if (n == "layout_alignParentStart") { a.rel_align_parent_left = at.value.is_bool() ? at.value.data != 0 : raw == "true"; }
+        else if (n == "layout_alignParentEnd") { a.rel_align_parent_right = at.value.is_bool() ? at.value.data != 0 : raw == "true"; }
         // F-148 (S72-W4): ConstraintLayout.LayoutParams anchor family
         // (XML path). The anchor VALUE is either the literal "parent"
         // sentinel or a sibling id reference — resolved to a NAME with the

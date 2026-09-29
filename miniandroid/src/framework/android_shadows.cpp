@@ -4290,9 +4290,19 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         // dispatch time.
         n->click_listener_class.clear();
         n->clickable = true;  // setClickable(true) is implied
+        // R-NEW-409 DIAGNOSTIC (S121): record the listener object's REAL
+        // heap class at registration — the dispatch-time lookup printed a
+        // +1-shifted class for OPMT's board buttons (view 39 read
+        // "Lambda7" and the center read "Lambda9" = the dialog lambda),
+        // so either the binding or the dispatch lookup is off. This line
+        // separates the two.
+        std::string lcls_at_reg;
+        if (heap_ != nullptr)
+            heap_->get_object_class(listener_id, lcls_at_reg);
         std::cerr << "[EXP060-LISTENER] setOnClickListener view_id=" << ctx.receiver_id
                   << " class=" << ctx.class_name
                   << " listener_id=" << listener_id
+                  << " listener_class_at_reg=" << lcls_at_reg
                   << std::endl;
         return CallResult::handled_void();
     }

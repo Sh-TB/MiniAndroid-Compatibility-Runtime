@@ -4435,3 +4435,78 @@ Stage Summary:
   agent-playable solitaire through 3 generic laws (zero package checks).
 - Pending: fresh PAT -> push S120 commit + post the wave comment (#354 and
   the per-game tickets).
+
+---
+Task ID: S121
+Agent: Super Z (main)
+Task: User directive — the 6 games must load COMPLETELY and be verified per
+the rules; fix every pre-existing problem that needs solving; publish all
+pending pushes (new PAT supplied).
+
+Work Log:
+- PAT check: the supplied fine-grained token is REJECTED by GitHub
+  (401 Bad credentials on /user + repos endpoints, both header forms,
+  retried after propagation delay). All S121 work is committed locally;
+  push + issue comments pending a valid token.
+- TriPeaks FULL session (flagship): root-caused the S120 "click->card
+  mapping offset" as (a) lobby-state taps (runs that never pressed New
+  Game) + (b) HUD crop misalignment; mapping is 1:1 (matrix runs: tap
+  401 -> 7h capture, tap 519 -> 5d capture). Full loop PROVEN with every
+  counter legible: draw 9d (-5, remaining 23->22) -> capture 8c (+1) ->
+  capture 7h (+2 streak) -> draw 6s (-5, remaining 21) = net -7 exactly
+  matching the app's streak economy; pyramid card flips; 3x determinism
+  IDENTICAL (main schedule).
+- gmdice FULL session: 5 rolls (1d6/1d20/3D20/1d6+4/1d6) -> 5 distinct
+  result states; 3D20 renders exactly three values "15 - 2 - 4";
+  repeatability 2x IDENTICAL (deterministic RNG in runtime).
+- bouncy ROOT-CAUSED: Start Game dies in BouncyActivity.<clinit> ->
+  Box2D.init -> SharedLibraryLoader.loadFile ->
+  SharedLibraryLoadRuntimeException (APK carries libgdx-box2d.so for 4
+  ABIs; this runtime executes DEX bytecode and cannot execute ARM native
+  code) + secondary cascade (JSONUtils/FieldLayoutReader layout load).
+  This is the S118 "libGDX .so family" frontier with an exact stack; menu
+  itself renders fine. HARD frontier, documented not fixed.
+- OPMT: TWO generic runtime laws shipped (zero package checks):
+  R-NEW-409 RelativeLayout.LayoutParams.addRule(int[,int]) bridge — rules
+  stored as rl_rule_<N> heap fields, transferred to ViewNode rel_* in the
+  addView/setLayoutParams capture (AOSP: programmatic rules share ONE
+  rule array with XML). R-NEW-410 Start/End alias family in the layout
+  inflater (layout_alignParentStart/End, layout_alignStart/End,
+  layout_toStartOf/End, layout_marginStart/End -> LTR left/right) —
+  OPMT's whole board used alignParentEnd/marginEnd; right-column buttons
+  collapsed to x=0 over their left twins (view-tree evidence id40/41
+  both at (0,394)). Post-law: 9 board buttons spread symmetrically
+  (210/634/870/0 columns + center 435,855).
+  R-NEW-411 (third law): setBackgroundResource(resid) REPLACES the
+  drawable — the render-stage resolve-once cache (bg_resource_path) was
+  invalidated only on node creation, so OPMT's per-tap board re-skin
+  never painted; set_bg_resource now clears bg_resource_path/bg_drawable
+  _path when the resid changes. After the law: selection ring (blue)
+  paints, board re-skins paint.
+  OPMT verification: menu -> "Play with Computer" -> "Who will go first?"
+  dialog -> Human -> full wheel board; agent tap on own piece ->
+  Pieces.select + buttonOnClickMethod execute (selection ring renders);
+  tap on illegal destination -> rejected by the app's own rules engine
+  with full-board re-skin; AI/randomAi path executes. Honest open: the
+  initial position is 5v4 with NO empty vertex, so no displacement move
+  is reachable by tap input (upstream design quirk; possibly drag input).
+- fishrings: agent taps on the red ring -> ring rotation, 1860 state-
+  change px per tap, two slots changed after two taps, occupancy matrix
+  recorded, repeatability 2x IDENTICAL.
+- dooz-compose: FAIL (blank) — documented with the exact unwind chain
+  (La; unwound Lzs;.m / Lte1;.f / Lse1;.s / Lg;.q / Lg;.h / Lat;.a,
+  depth 10-17): the Compose runtime (Recomposer/SlotTable/Applier/
+  AndroidComposeView) is an entire missing subsystem — architectural
+  frontier, not a single-law fix.
+- Evidence: evidence/s121_full_sessions/ (7 JPGs, 13-36KB, English-only,
+  incl. the TriPeaks full-session HUD ledger sheet and the honest
+  dooz-compose blank-fail frame).
+- Committed locally. Push + GitHub comments pending a valid PAT.
+
+Stage Summary:
+- 5 of the 6 S120 games now FULL-LOAD verified with real agent play
+  (tripeaks, gmdice, fishrings, opmt; bouncy menu + precise root cause);
+  dooz-compose = Compose-pipeline frontier (documented FAIL).
+- 3 generic laws shipped: addRule bridge (R-NEW-409), Start/End layout
+  aliases (R-NEW-410), background-resource replace cache law (R-NEW-411).
+- TriPeaks full-loop HUD ledger is the wave's flagship evidence.

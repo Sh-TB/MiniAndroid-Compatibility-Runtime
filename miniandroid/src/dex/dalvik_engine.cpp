@@ -22742,6 +22742,57 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         return true;
     }
 
+    // ────────────────────────────────────────────────────────────────────────
+    // R-NEW-409 (S121): RelativeLayout.LayoutParams.addRule(int) /
+    // addRule(int, int) — the PROGRAMMATIC RelativeLayout rule path.
+    //
+    // AOSP law (frameworks/base RelativeLayout.java): programmatically built
+    // RelativeLayout.LayoutParams carry their anchors as RULE BITS added via
+    // addRule(rule) / addRule(rule, subject); RelativeLayout reads mRules,
+    // NOT XML attributes. The XML attribute path (layout_alignParentRight=…)
+    // was fully modeled (MASTER-2 FIX-MEASURE-002), but addRule calls were
+    // silently dropped — ground truth: one.scarecrow.games.OPMT builds its
+    // whole 9-position board programmatically (GameActivity.onCreate:
+    // new RelativeLayout.LayoutParams(210,210) + addRule(ALIGN_PARENT_LEFT/
+    // RIGHT) + addRule(CENTER_IN_PARENT)) and every right-column board
+    // button collapsed to x=0 on top of its left twin (view-tree evidence:
+    // id40/41 both at (0,394), id44/45 both at (0,1315) instead of x=870).
+    //
+    // Law here: store each rule as an int field `rl_rule_<N>` on the LP heap
+    // object (N = the AOSP rule constant; value = subject id, or 1 for the
+    // parent-align family where AOSP stores no subject). The
+    // addView/setLayoutParams capture below transfers them onto the child
+    // ViewNode's rel_* booleans, which the RelativeLayout layout pass
+    // already consumes. Rule constants (AOSP RelativeLayout):
+    //   ABOVE=0 BELOW=1 TO_LEFT_OF=2 TO_RIGHT_OF=3 ALIGN_LEFT=4 ALIGN_TOP=5
+    //   ALIGN_RIGHT=6 ALIGN_BOTTOM=7 TRUE=8 ALIGN_PARENT_LEFT=9
+    //   ALIGN_PARENT_TOP=10 ALIGN_PARENT_RIGHT=11 ALIGN_PARENT_BOTTOM=12
+    //   CENTER_IN_PARENT=13 CENTER_HORIZONTAL=14 CENTER_VERTICAL=15
+    // Sibling-anchored rules (0-7) store the subject id too; the layout
+    // pass resolves them when the anchor carries a resolvable id name.
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "addRule" && args.size() >= 2 &&
+        args[0].type == DalvikType::OBJECT_REF &&
+        args[0].object_id != 0 &&
+        args[1].type == DalvikType::INT32 &&
+        heap_.has_object(args[0].object_id)) {
+        int rule = args[1].int_val;
+        int subject = 1;
+        if (args.size() >= 3 && args[2].type == DalvikType::INT32)
+            subject = args[2].int_val != 0 ? args[2].int_val : 1;
+        DalvikValue v;
+        v.type = DalvikType::INT32;
+        v.int_val = subject;
+        heap_.set_object_field(args[0].object_id,
+                               ("rl_rule_" + std::to_string(rule)).c_str(), v);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        DalvikValue r;
+        r.type = DalvikType::INT32;   // AOSP addRule does not return a value
+        r.int_val = 0;
+        result = r;
+        return true;
+    }
+
     // EXP-095 (CM-019): addView(View child, ViewGroup.LayoutParams params) /
     // View.setLayoutParams(params) — capture the params into the view's
     // ViewNode so the renderer can lay out with real geometry. The
@@ -22791,6 +22842,19 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             if (vs != nullptr) {
                 vs->set_layout_params(child_id, w, h, gravity, ml, mt, mr, mb,
                                       weight);
+                // R-NEW-409 (S121): transfer programmatic RelativeLayout
+                // rules (rl_rule_<N> fields written by the addRule bridge)
+                // onto the child node — AOSP RelativeLayout reads ONE rule
+                // array for XML and programmatic rules alike.
+                static const int kRelParentRules[] = {9, 10, 11, 12, 13, 14, 15};
+                for (int rr : kRelParentRules) {
+                    auto rv = heap_.get_object_field(
+                        lp_id, ("rl_rule_" + std::to_string(rr)).c_str());
+                    if (rv.has_value() && rv->type == DalvikType::INT32 &&
+                        rv->int_val != 0) {
+                        vs->set_rel_rule(child_id, rr);
+                    }
+                }
                 std::cerr << "[EXP095-ADDVIEW-LP] child=" << child_id
                           << " w=" << w << " h=" << h
                           << " gravity=0x" << std::hex << gravity << std::dec
