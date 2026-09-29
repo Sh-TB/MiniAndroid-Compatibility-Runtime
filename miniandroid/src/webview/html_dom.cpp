@@ -395,6 +395,71 @@ static bool atom_matches(const std::string& atom, const DomNode* n) {
         return it != n->attrs.end() &&
                (it->second.empty() || it->second == "checked" || it->second == "true");
     }
+    // S118 positional pseudo-class law (CSS Selectors §6.6.5): :first-child,
+    // :last-child, :nth-child(an+b), :nth-last-child(an+b) — position among
+    // ELEMENT siblings (#text nodes never count). Modern stylesheets
+    // differentiate stacked icon layers through these (the accelerace car's
+    // three-layer stroke colorwork is pure :nth-child — without the law the
+    // stroke rules never matched and the car painted nothing).
+    auto element_index = [](const DomNode* nn) -> int {
+        if (!nn->parent) return -1;
+        int idx = 0;
+        for (auto& c : nn->parent->children) {
+            if (c->tag == "#text") continue;
+            ++idx;
+            if (c.get() == nn) return idx;
+        }
+        return -1;
+    };
+    auto element_count = [](const DomNode* nn) -> int {
+        if (!nn->parent) return 0;
+        int cnt = 0;
+        for (auto& c : nn->parent->children) if (c->tag != "#text") ++cnt;
+        return cnt;
+    };
+    auto nth_matches = [](const std::string& arg0, int idx) -> bool {
+        if (idx <= 0) return false;
+        std::string s = trim(arg0);
+        // case-insensitive per spec
+        for (auto& ch : s) ch = char(::tolower((unsigned char)ch));
+        if (s.empty()) return false;
+        if (s == "odd") return idx % 2 == 1;
+        if (s == "even") return idx % 2 == 0;
+        size_t np = s.find('n');
+        if (np == std::string::npos) {          // plain integer
+            for (char ch : s) if (ch != '+' && (ch < '0' || ch > '9')) return false;
+            return atoi(s.c_str()) == idx;
+        }
+        std::string a_part = trim(s.substr(0, np));
+        int a = 1;
+        if (a_part == "-") a = -1;
+        else if (!a_part.empty()) {
+            for (char ch : a_part)
+                if (ch != '+' && ch != '-' && (ch < '0' || ch > '9')) return false;
+            a = atoi(a_part.c_str());
+        }
+        std::string b_part = trim(s.substr(np + 1));
+        int b = 0;
+        if (!b_part.empty()) {
+            for (char ch : b_part)
+                if (ch != '+' && ch != '-' && (ch < '0' || ch > '9')) return false;
+            b = atoi(b_part.c_str());
+        }
+        if (a == 0) return idx == b;
+        int diff = idx - b;
+        return diff % a == 0 && diff / a >= 0;
+    };
+    if (atom == ":first-child") return element_index(n) == 1;
+    if (atom == ":last-child") {
+        int cnt = element_count(n);
+        return cnt > 0 && element_index(n) == cnt;
+    }
+    if (atom.rfind(":nth-child(", 0) == 0 && atom.back() == ')')
+        return nth_matches(atom.substr(11, atom.size() - 12), element_index(n));
+    if (atom.rfind(":nth-last-child(", 0) == 0 && atom.back() == ')') {
+        int cnt = element_count(n);
+        return nth_matches(atom.substr(16, atom.size() - 17), cnt - element_index(n) + 1);
+    }
     if (!atom.empty() && atom[0] == '[') {
         std::string body = atom.substr(1, atom.size() >= 2 ? atom.size() - 2 : 0);
         size_t eq = body.find('=');

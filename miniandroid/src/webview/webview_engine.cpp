@@ -2,7 +2,9 @@
 #include "webview_engine.h"
 #include "text_shaper.h"
 #include "../resources/resource_runtime.h"
+#include "../api/http_client.h"
 #include "../third_party/nlohmann_json/include/nlohmann/json.hpp"
+#include <openssl/evp.h>
 #include <algorithm>
 #include <chrono>
 #include <cmath>
@@ -117,6 +119,22 @@ struct WebViewEngine::Impl {
     std::unique_ptr<renderer::FrameBuffer> surface;
     bool page_error = false;
     bool layout_dirty = true;
+    bool painted_once = false;           // S118: first paint establishes the boxes
+
+    // S118 FORCED SYNCHRONOUS LAYOUT law (HTML rendering §reflow):
+    // getBoundingClientRect()/offsetWidth reads must reflect CURRENT layout.
+    // Scripts that measure geometry from DOMContentLoaded (accelerace's
+    // CarView) run before any paint — the old engine answered zero boxes
+    // and every derived position was garbage. A geometry read before the
+    // first paint runs the render pipeline once into a scratch buffer
+    // (idempotent, deterministic) so the boxes exist.
+    void sync_layout_if_needed() {
+        if (painted_once || !self) return;
+        int w = int(viewport_w), h = int(viewport_h);
+        if (w <= 0 || h <= 0) return;
+        std::vector<uint8_t> scratch(size_t(w) * size_t(h) * 4, 0);
+        self->render(scratch.data(), w, h);
+    }
 
     // ── S113 CSS layout/paint state ─────────────────────────────────────
     int css_viewport_w = -1;              // last width used for @media evaluation
@@ -288,6 +306,15 @@ struct WebViewEngine::Impl {
 
     void setup_bindings();
     void run_scripts();
+    // S118 JOB-PUMP law: async continuations live on the QuickJS job queue;
+    // the embedder owns the loop. Bounded drain keeps 3-run determinism.
+    int drain_pending_jobs(int bound) {
+        if (!rt) return 0;
+        JSContext* jx = nullptr;
+        int n = 0;
+        while (n < bound && JS_ExecutePendingJob(rt, &jx) > 0) ++n;
+        return n;
+    }
     void compute_layout();
     DomNode* body() const {
         // S113 law: the parser nests a real <html> element INSIDE the root
@@ -1260,10 +1287,27 @@ static JSValue el_media_play(JSContext* ctx, JSValueConst this_v, int, JSValueCo
 static JSValue el_media_pause(JSContext* ctx, JSValueConst this_v, int, JSValueConst*) {
     return JS_UNDEFINED;
 }
+// S118 SVG geometry law (fwd): shape elements have no HTML box; browsers
+// report the geometry bbox in viewport coordinates (SVG2 §3.2 +
+// SVGGeometryElement.getBoundingClientRect). Defined after svg_flatten.
+static bool svg_shape_rect(struct DomNode* n, float vpw, float vph,
+                           double& rx, double& ry, double& rw, double& rh);
+
 static JSValue el_getBoundingClientRect(JSContext* ctx, JSValueConst this_v, int, JSValueConst*) {
     auto* n = el_of(this_v);
+    if (auto* pi = impl_of(ctx)) pi->sync_layout_if_needed();
     JSValue o = JS_NewObject(ctx);
     double x = n ? n->x : 0, y = n ? n->y : 0, w = n ? n->w : 0, h = n ? n->h : 0;
+    // S118: an SVG shape (path/rect/circle/…/use) never gets an HTML slot,
+    // so its plain box reads (0,0,0,0). Browsers answer the geometry bbox —
+    // every app that measures an inline SVG icon/figure through
+    // getBoundingClientRect() (accelerace's car placement) needs this.
+    if (n && w <= 0 && h <= 0) {
+        double rx, ry, rw, rh;
+        if (auto* pi = impl_of(ctx))
+            if (svg_shape_rect(n, float(pi->viewport_w), float(pi->viewport_h),
+                               rx, ry, rw, rh)) { x = rx; y = ry; w = rw; h = rh; }
+    }
     JS_SetPropertyStr(ctx, o, "left", JS_NewFloat64(ctx, x));
     JS_SetPropertyStr(ctx, o, "top", JS_NewFloat64(ctx, y));
     JS_SetPropertyStr(ctx, o, "right", JS_NewFloat64(ctx, x + w));
@@ -1815,7 +1859,7 @@ static JSValue doc_getElementById(JSContext* ctx, JSValueConst, int argc, JSValu
     JS_FreeCString(ctx, id);
     return r ? impl->get_element_js(r) : JS_NULL;
 }
-static JSValue doc_querySelector(JSContext* ctx, JSValueConst, int argc, JSValueConst* argv) {
+static JSValue doc_querySelector(JSContext* ctx, JSValueConst this_v, int argc, JSValueConst* argv) {
     auto* impl = impl_of(ctx);
     if (argc < 1) return JS_NULL;
     const char* sel = JS_ToCString(ctx, argv[0]);
@@ -1825,6 +1869,24 @@ static JSValue doc_querySelector(JSContext* ctx, JSValueConst, int argc, JSValue
     // S114: querySelector routes through the REAL selector matcher — the old
     // tag/#/.-only branch answered NULL for the attribute grammar
     // (`input[name=sfx]` — every Block'Buster menu read dies there)
+    // S118 scope law: on an ELEMENT the search covers the element's subtree
+    // (DOM §querySelector; document.querySelector keeps the root scope).
+    // The old doc-scope call answered the FIRST doc match even when the app
+    // asked `this.element.querySelector(...)` — the wrong node for any app
+    // with repeated structures (accelerace's per-car svg path reads).
+    DomNode* scope = el_of(this_v);
+    if (scope) {
+        std::function<DomNode*(DomNode*)> walk2 = [&](DomNode* n) -> DomNode* {
+            for (auto& c : n->children) {
+                if (c->tag != "#fragment" && HtmlParser::matches_selector(s, c.get())) return c.get();
+                DomNode* r = walk2(c.get());
+                if (r) return r;
+            }
+            return nullptr;
+        };
+        DomNode* hit2 = walk2(scope);
+        return hit2 ? impl->get_element_js(hit2) : JS_NULL;
+    }
     std::function<DomNode*(DomNode*)> walk = [&](DomNode* n) -> DomNode* {
         if (n->tag != "#fragment" && HtmlParser::matches_selector(s, n)) return n;
         for (auto& c : n->children) { DomNode* r = walk(c.get()); if (r) return r; }
@@ -2375,7 +2437,171 @@ void WebViewEngine::Impl::setup_bindings() {
                 }
                 return argc >= 1 ? JS_DupValue(c, argv[0]) : JS_UNDEFINED;
             }, "getRandomValues", 1));
+        // S118 WebCrypto digest law: crypto.subtle.digest over the OpenSSL
+        // EVP backend (SHA-1/256/384/512 — the corpus signs request URLs
+        // through SHA-256 digests of TextEncoder bytes). Real crypto, real
+        // semantics: input BufferSource, output ArrayBuffer.
+        {
+            JSValue subtle = JS_NewObject(ctx);
+            JS_SetPropertyStr(ctx, subtle, "digest",
+                JS_NewCFunction(ctx, [](JSContext* c, JSValueConst, int argc, JSValueConst* argv) -> JSValue {
+                    if (argc < 2) return JS_ThrowTypeError(c, "digest: (algorithm, data)");
+                    const char* alg = JS_ToCString(c, argv[0]);
+                    if (!alg) return JS_EXCEPTION;
+                    std::string a = lower_s(alg);
+                    JS_FreeCString(c, alg);
+                    const EVP_MD* md = nullptr;
+                    if (a == "sha-1" || a == "sha1") md = EVP_sha1();
+                    else if (a == "sha-256" || a == "sha256") md = EVP_sha256();
+                    else if (a == "sha-384" || a == "sha384") md = EVP_sha384();
+                    else if (a == "sha-512" || a == "sha512") md = EVP_sha512();
+                    if (!md) return JS_ThrowTypeError(c, "digest: unsupported algorithm");
+                    // data: ArrayBuffer | TypedArray (BufferSource)
+                    size_t blen = 0;
+                    uint8_t* p = JS_GetArrayBuffer(c, &blen, argv[1]);
+                    if (!p) {
+                        JSValue exc = JS_GetException(c);   // clear the probe error
+                        JS_FreeValue(c, exc);
+                        size_t off = 0, bl = 0, bpe = 0;
+                        JSValue tab = JS_GetTypedArrayBuffer(c, argv[1], &off, &bl, &bpe);
+                        if (JS_IsException(tab))
+                            return JS_ThrowTypeError(c, "digest: data must be BufferSource");
+                        p = JS_GetArrayBuffer(c, &blen, tab);
+                        JS_FreeValue(c, tab);
+                        if (!p) return JS_ThrowTypeError(c, "digest: detached buffer");
+                        p += off; blen = bl;
+                    }
+                    unsigned char out[EVP_MAX_MD_SIZE];
+                    unsigned int olen = 0;
+                    if (!EVP_Digest(p, (size_t)blen, out, &olen, md, nullptr))
+                        return JS_ThrowInternalError(c, "digest failed");
+                    return JS_NewArrayBufferCopy(c, out, olen);
+                }, "digest", 2));
+            JS_SetPropertyStr(ctx, crypto_o, "subtle", subtle);
+        }
         JS_SetPropertyStr(ctx, global, "crypto", crypto_o);
+        // S118 TextEncoder/TextDecoder law (UTF-8 byte <-> string, WHATWG
+        // Encoding): the corpus encodes digest inputs and decodes fetched
+        // bytes through them. Implemented as JS over QuickJS primitives
+        // (UTF-8 via escape/unescape Annex-B pair) — byte-exact semantics.
+        {
+            static const char te_src[] =
+                "(function(){"
+                "function TextEncoder(){}"
+                "TextEncoder.prototype.encode=function(s){"
+                " s=unescape(encodeURIComponent(String(s)));"
+                " var a=new Uint8Array(s.length);"
+                " for(var i=0;i<s.length;++i) a[i]=s.charCodeAt(i)&0xff;"
+                " return a;};"
+                "TextEncoder.prototype.encoding='utf-8';"
+                "function TextDecoder(){"
+                " this.decode=function(u8){"
+                "  if(!u8) return '';"
+                "  var s='';"
+                "  if(typeof u8==='string') s=u8;"
+                "  else {var n=(u8.byteLength!==undefined)?u8.byteLength:(u8.length||0);"
+                "   for(var i=0;i<n;++i) s+=String.fromCharCode(u8[i]);}"
+                "  return decodeURIComponent(escape(s));};}"
+                "globalThis.TextEncoder=TextEncoder;"
+                "globalThis.TextDecoder=TextDecoder;"
+                "})()";
+            JSValue te = JS_Eval(ctx, te_src, sizeof(te_src) - 1,
+                                 "<text-encoding>", JS_EVAL_TYPE_GLOBAL);
+            JS_FreeValue(ctx, te);
+        }
+        // S118 fetch law: WHATWG fetch subset over the S100 NET-001 HTTPS
+        // client (mininet::http_get — OpenSSL TLS, redirects, chunked).
+        // fetch() returns a Promise; the GET is performed synchronously and
+        // the promise settles before return — the async/await continuation
+        // is a QuickJS JOB, drained by the S118 job-pump law at every
+        // engine quiescence point (run_scripts/tick). Response carries
+        // status/ok/url + text()/json() over the fetched body.
+        JSValue fetch_fn = JS_NewCFunction(ctx, [](JSContext* c, JSValueConst, int argc, JSValueConst* argv) -> JSValue {
+            if (!impl_of(c)) return JS_EXCEPTION;
+            std::string url;
+            if (argc >= 1) {
+                if (JS_IsString(argv[0])) {
+                    const char* u = JS_ToCString(c, argv[0]);
+                    if (u) { url = u; JS_FreeCString(c, u); }
+                } else {
+                    // Request-object form: read .url (feature-detected usage)
+                    JSValue uv = JS_GetPropertyStr(c, argv[0], "url");
+                    if (JS_IsString(uv)) {
+                        const char* u = JS_ToCString(c, uv);
+                        if (u) { url = u; JS_FreeCString(c, u); }
+                    }
+                    JS_FreeValue(c, uv);
+                }
+            }
+            JSValue resolving[2];
+            JSValue promise = JS_NewPromiseCapability(c, resolving);
+            if (JS_IsException(promise)) return promise;
+            if (url.empty()) {
+                JSValue err = JS_ThrowTypeError(c, "fetch: url required");
+                JSValue ignored = JS_Call(c, resolving[1], JS_UNDEFINED, 1, &err);
+                JS_FreeValue(c, ignored);
+                JS_FreeValue(c, err);
+                JS_FreeValue(c, resolving[0]);
+                JS_FreeValue(c, resolving[1]);
+                return promise;
+            }
+            std::cerr << "[WV-FETCH] GET " << url << std::endl;
+            mininet::HttpResponse hr = mininet::http_get(url, 5, 20000);
+            if (!hr.ok()) {
+                std::cerr << "[WV-FETCH] FAILED status=" << hr.status
+                          << " err=" << hr.error << std::endl;
+                std::string msg = hr.error.empty()
+                    ? ("http status " + std::to_string(hr.status)) : hr.error;
+                JSValue err = JS_NewError(c);
+                JS_SetPropertyStr(c, err, "message", JS_NewString(c, msg.c_str()));
+                JS_SetPropertyStr(c, err, "name", JS_NewString(c, "TypeError"));
+                JS_SetPropertyStr(c, err, "status", JS_NewInt32(c, hr.status));
+                JSValue ignored = JS_Call(c, resolving[1], JS_UNDEFINED, 1, &err);
+                JS_FreeValue(c, ignored);
+                JS_FreeValue(c, err);
+                JS_FreeValue(c, resolving[0]);
+                JS_FreeValue(c, resolving[1]);
+                return promise;
+            }
+            std::cerr << "[WV-FETCH] ok status=" << hr.status
+                      << " bytes=" << hr.body.size() << std::endl;
+            JSValue resp = JS_NewObject(c);
+            JS_SetPropertyStr(c, resp, "status", JS_NewInt32(c, hr.status));
+            JS_SetPropertyStr(c, resp, "ok", JS_NewBool(c, hr.status >= 200 && hr.status < 300));
+            JS_SetPropertyStr(c, resp, "url", JS_NewString(c, hr.final_url.c_str()));
+            JS_SetPropertyStr(c, resp, "bodyUsed", JS_NewBool(c, false));
+            // hidden body slot (read by text()/json())
+            JS_SetPropertyStr(c, resp, "\x01body", JS_NewStringLen(c, hr.body.data(), hr.body.size()));
+            JS_SetPropertyStr(c, resp, "text", JS_NewCFunction(c,
+                [](JSContext* c2, JSValueConst this_v2, int, JSValueConst*) {
+                    JSValue b = JS_GetPropertyStr(c2, this_v2, "\x01body");
+                    return b;   // move: string out
+                }, "text", 0));
+            JS_SetPropertyStr(c, resp, "json", JS_NewCFunction(c,
+                [](JSContext* c2, JSValueConst this_v2, int, JSValueConst*) {
+                    JSValue b = JS_GetPropertyStr(c2, this_v2, "\x01body");
+                    if (!JS_IsString(b)) return b;
+                    size_t bl2 = 0;
+                    const char* raw = JS_ToCStringLen(c2, &bl2, b);
+                    if (!raw) { JS_FreeValue(c2, b); return JS_EXCEPTION; }
+                    JSValue parsed = JS_ParseJSON(c2, raw, bl2, "<response>");
+                    JS_FreeCString(c2, raw);
+                    JS_FreeValue(c2, b);
+                    if (JS_IsException(parsed)) {
+                        // HTML/error pages are not JSON — throw the honest
+                        // SyntaxError the spec prescribes
+                        return parsed;
+                    }
+                    return parsed;
+                }, "json", 0));
+            JSValue ignored = JS_Call(c, resolving[0], JS_UNDEFINED, 1, &resp);
+            JS_FreeValue(c, ignored);
+            JS_FreeValue(c, resp);
+            JS_FreeValue(c, resolving[0]);
+            JS_FreeValue(c, resolving[1]);
+            return promise;
+        }, "fetch", 1);
+        JS_SetPropertyStr(ctx, global, "fetch", fetch_fn);
         // Blob / URL.createObjectURL / FileReader / AudioContext / Worker:
         // feature-detected by the corpus bundles; safe minimal semantics.
         JS_SetPropertyStr(ctx, global, "Blob",
@@ -2654,6 +2880,11 @@ void WebViewEngine::Impl::run_scripts() {
         std::cerr << "[WV-SCRIPT] external " << src << " bytes=" << code.size() << std::endl;
         exec_script(code, src);
     }
+    // S118 JOB-PUMP law: every script start (async fn kick-off, promise
+    // chains, await continuations) lands on the QuickJS job queue — without
+    // an explicit drain those continuations NEVER run (the embedder owns
+    // the job loop; there is no implicit pump). Bounded for determinism.
+    drain_pending_jobs(4096);
     // count DOM nodes for provenance
     std::function<void(DomNode*)> count = [&](DomNode* n) {
         stats.dom_nodes++;
@@ -2672,6 +2903,9 @@ void WebViewEngine::Impl::run_scripts() {
         JSValue lev = JS_NewObject(ctx);
         JS_SetPropertyStr(ctx, lev, "type", JS_NewString(ctx, "load"));
         dispatch(nullptr, "load", lev);
+        // S118 job pump: DCL/load listeners kick off async init chains
+        // (weather's ForecastView -> fetch -> await) — resume them here
+        drain_pending_jobs(4096);
     }
 }
 
@@ -3074,6 +3308,16 @@ static void style_element(DomNode* n, double vw, double vh,
     {
         std::string disp = get("display");
         n->flex = disp == "flex";
+        // S118 flex-direction default law (CSS Flexbox §4): the INITIAL
+        // value of flex-direction is row. The engine read a missing
+        // flex-direction as column — every `display:flex` container
+        // without an explicit direction stacked on the wrong axis and
+        // centered/stretched on the wrong one (accelerace's road).
+        if (n->flex) {
+            std::string fd = get("flex-direction");
+            if (fd.find("column") != std::string::npos) n->flex_row = false;
+            else n->flex_row = true;          // row / row-reverse / default
+        }
         if (disp == "inline" || disp == "inline-block") n->inline_el = true;
         if (n->tag == "span" || n->tag == "a" || n->tag == "b" || n->tag == "strong" ||
             n->tag == "em" || n->tag == "label" || n->tag == "small")
@@ -3222,11 +3466,32 @@ static void style_element(DomNode* n, double vw, double vh,
             std::vector<std::string> toks;
             {
                 std::istringstream ss(bxs); std::string tk;
+                auto balanced = [](const std::string& t) {
+                    int depth = 0;
+                    for (char c : t) { if (c == '(') ++depth; else if (c == ')') --depth; }
+                    return depth <= 0;
+                };
                 while (ss >> tk) {
                     if ((tk.rfind("rgba", 0) == 0 || tk.rfind("rgb", 0) == 0) &&
                         tk.back() != ')') {
                         std::string rest;
                         while (ss >> rest) { tk += " " + rest; if (rest.back() == ')') break; }
+                    }
+                    // S118 math-expression token law: calc()/var()/max()/min()
+                    // fragments are ONE token (paren-balanced) — whitespace
+                    // inside the expression split the old tokenizer and the
+                    // blur/spread lengths parsed as 0 (every glow rendered
+                    // as a hard-edged opaque slab)
+                    else if ((tk.find("calc(") != std::string::npos ||
+                              tk.find("var(") != std::string::npos ||
+                              tk.find("max(") != std::string::npos ||
+                              tk.find("min(") != std::string::npos) &&
+                             !balanced(tk)) {
+                        std::string rest;
+                        while (ss >> rest) {
+                            tk += " " + rest;
+                            if (balanced(tk)) break;
+                        }
                     }
                     toks.push_back(tk);
                 }
@@ -3497,6 +3762,159 @@ static std::vector<std::vector<SvgPt>> svg_flatten(const std::string& dstr,
     return subs;
 }
 
+// ── S118 SVG shape geometry law ─────────────────────────────────────────
+// getBoundingClientRect() on an SVG shape answers the geometry bbox in
+// VIEWPORT coordinates (SVG2 SVGGeometryElement; browsers include the
+// stroke). The affine mirrors the S117 paint law exactly (viewBox →
+// element box, xMidYMid-meet), so what measures == what paints.
+// <use> resolves symbol/path definitions through the same mapping the
+// paint path uses (symbol viewBox fitted into the use-site box).
+static bool svg_inherited_prop(DomNode* n, const char* prop, std::string& out) {
+    auto st = n->style.find(prop);
+    if (st != n->style.end()) { out = st->second; return true; }
+    auto at = n->attrs.find(prop);
+    if (at != n->attrs.end()) { out = at->second; return true; }
+    for (DomNode* p = n->parent; p; p = p->parent) {
+        auto st2 = p->style.find(prop);
+        if (st2 != p->style.end()) { out = st2->second; return true; }
+        auto at2 = p->attrs.find(prop);
+        if (at2 != p->attrs.end()) { out = at2->second; return true; }
+    }
+    return false;
+}
+
+static bool svg_shape_rect(DomNode* n, float vpw, float vph,
+                           double& rx, double& ry, double& rw, double& rh) {
+    static const char* shapes[] = {"path", "rect", "circle", "ellipse",
+                                   "line", "polygon", "polyline", "use"};
+    bool is_shape = false;
+    for (const char* s2 : shapes)
+        if (n->tag == s2) { is_shape = true; break; }
+    if (!is_shape) return false;
+    // nearest laid-out <svg> ancestor
+    DomNode* svg = nullptr;
+    for (DomNode* p = n->parent; p; p = p->parent)
+        if (p->tag == "svg" && p->w > 0 && p->h > 0) { svg = p; break; }
+    if (!svg) return false;
+    float vx = 0, vy = 0, vw2 = 0, vh2 = 0;
+    float s, E, F;
+    if (svg_viewbox(svg, vx, vy, vw2, vh2)) {
+        s = std::min(float(svg->w) / vw2, float(svg->h) / vh2);
+        E = float(svg->x) + (float(svg->w) - vw2 * s) / 2.f - vx * s;
+        F = float(svg->y) + (float(svg->h) - vh2 * s) / 2.f - vy * s;
+    } else { s = 1.f; E = float(svg->x); F = float(svg->y); }
+    float minx = 1e30f, miny = 1e30f, maxx = -1e30f, maxy = -1e30f;
+    bool any = false;
+    auto acc = [&](float px, float py) {
+        any = true;
+        minx = std::min(minx, px); miny = std::min(miny, py);
+        maxx = std::max(maxx, px); maxy = std::max(maxy, py);
+    };
+    auto num_attr = [&](DomNode* m, const char* k, float dflt) -> float {
+        auto it = m->attrs.find(k);
+        return it == m->attrs.end() ? dflt : strtof(it->second.c_str(), nullptr);
+    };
+    std::function<bool(DomNode*, float, float, float, float, float, float)>
+        geo_of = [&](DomNode* m, float A, float B, float C, float D,
+                     float E2, float F2) -> bool {
+        auto pt = [&](float ux, float uy) {
+            acc(A * ux + C * uy + E2, B * ux + D * uy + F2);
+        };
+        if (m->tag == "path") {
+            auto dit = m->attrs.find("d");
+            if (dit == m->attrs.end() || dit->second.empty()) return false;
+            auto subs = svg_flatten(dit->second, A, B, C, D, E2, F2);
+            for (auto& sp : subs) for (auto& p2 : sp) acc(p2.x, p2.y);
+            return !subs.empty();
+        }
+        if (m->tag == "rect") {
+            float x = num_attr(m, "x", 0), y = num_attr(m, "y", 0);
+            float w2 = num_attr(m, "width", 0), h2 = num_attr(m, "height", 0);
+            pt(x, y); pt(x + w2, y); pt(x, y + h2); pt(x + w2, y + h2);
+            return true;
+        }
+        if (m->tag == "circle" || m->tag == "ellipse") {
+            float cx = num_attr(m, "cx", 0), cy = num_attr(m, "cy", 0);
+            float r2 = m->tag == "circle" ? num_attr(m, "r", 0) : num_attr(m, "rx", 0);
+            float r3 = m->tag == "circle" ? r2 : num_attr(m, "ry", 0);
+            pt(cx - r2, cy - r3); pt(cx + r2, cy - r3);
+            pt(cx - r2, cy + r3); pt(cx + r2, cy + r3);
+            return true;
+        }
+        if (m->tag == "line") {
+            pt(num_attr(m, "x1", 0), num_attr(m, "y1", 0));
+            pt(num_attr(m, "x2", 0), num_attr(m, "y2", 0));
+            return true;
+        }
+        if (m->tag == "polygon" || m->tag == "polyline") {
+            auto pit = m->attrs.find("points");
+            if (pit != m->attrs.end()) {
+                const char* p3 = pit->second.c_str();
+                float nx, ny;
+                while (svg_num(p3, nx) && svg_num(p3, ny)) pt(nx, ny);
+                return true;
+            }
+            return false;
+        }
+        if (m->tag == "use") {
+            std::string href;
+            auto h1 = m->attrs.find("xlink:href");
+            auto h2 = m->attrs.find("href");
+            if (h1 != m->attrs.end()) href = h1->second;
+            else if (h2 != m->attrs.end()) href = h2->second;
+            if (href.size() < 2 || href[0] != '#') return false;
+            DomNode* tgt = find_by_id(svg, href.substr(1));
+            if (!tgt) return false;
+            if (tgt->tag == "symbol") {
+                float svx, svy, svw, svh;
+                if (svg_viewbox(tgt, svx, svy, svw, svh)) {
+                    // paint law: symbol viewBox fitted into the use-site box
+                    float s2 = std::min(float(svg->w) / svw, float(svg->h) / svh);
+                    float E3 = float(svg->x) + (float(svg->w) - svw * s2) / 2.f - svx * s2;
+                    float F3 = float(svg->y) + (float(svg->h) - svh * s2) / 2.f - svy * s2;
+                    bool got = false;
+                    for (auto& ch : tgt->children)
+                        got = geo_of(ch.get(), s2, 0, 0, s2, E3, F3) || got;
+                    return got;
+                }
+            }
+            bool got = false;
+            for (auto& ch : tgt->children)
+                got = geo_of(ch.get(), A, B, C, D, E2, F2) || got;
+            if (tgt->tag == "path") got = geo_of(tgt, A, B, C, D, E2, F2) || got;
+            return got;
+        }
+        if (m->tag == "g" || m->tag == "svg" || m->tag == "a") {
+            bool got = false;
+            for (auto& ch : m->children)
+                got = geo_of(ch.get(), A, B, C, D, E2, F2) || got;
+            return got;
+        }
+        return false;
+    };
+    geo_of(n, s, 0, 0, s, E, F);
+    if (!any) return false;
+    // stroke expansion (browsers include stroke in getBoundingClientRect)
+    std::string sw;
+    if (svg_inherited_prop(n, "stroke-width", sw)) {
+        // S118 length law: stroke-width resolves through the CSS evaluator
+        CssCtx gcx;
+        gcx.vw = vpw; gcx.vh = vph;
+        gcx.pctw = float(svg->w); gcx.pcth = float(svg->h);
+        float swu = 0;
+        {
+            float r3 = css_eval(sw, gcx, -1.f, 0);
+            swu = r3 > 0 ? r3 : strtof(sw.c_str(), nullptr);
+        }
+        if (swu > 0) {
+            float half = swu * s / 2.f;
+            minx -= half; miny -= half; maxx += half; maxy += half;
+        }
+    }
+    rx = minx; ry = miny; rw = maxx - minx; rh = maxy - miny;
+    return true;
+}
+
 // nonzero-winding scanline fill (SVG2 fill-rule default) across ALL
 // subpaths — inter-subpath winding accumulates, so donut glyphs keep holes
 static void svg_fill_paths(renderer::FrameBuffer* fb, int W, int H,
@@ -3553,6 +3971,8 @@ static void svg_stroke_paths(renderer::FrameBuffer* fb, int W, int H,
     int r = std::max(0, int(width / 2));
     if (r <= 0 && width <= 0) return;
     if (r < 1) r = 1;
+    long stamped = 0;
+    float mnx = 1e9f, mny = 1e9f, mxx = -1e9f, mxy = -1e9f;
     for (auto& s : subs) {
         if (s.size() < 2) continue;
         for (size_t i = 1; i < s.size(); ++i) {
@@ -3562,15 +3982,24 @@ static void svg_stroke_paths(renderer::FrameBuffer* fb, int W, int H,
             for (int k = 0; k <= steps; ++k) {
                 float t = k / float(steps);
                 int ccx = int(x0 + (x1 - x0) * t), ccy = int(y0 + (y1 - y0) * t);
+                mnx = std::min(mnx, float(ccx)); mny = std::min(mny, float(ccy));
+                mxx = std::max(mxx, float(ccx)); mxy = std::max(mxy, float(ccy));
                 for (int yy = ccy - r; yy <= ccy + r; ++yy)
                     for (int xx = ccx - r; xx <= ccx + r; ++xx) {
                         if (xx < 0 || xx >= W || yy < 0 || yy >= H) continue;
-                        if ((xx - ccx) * (xx - ccx) + (yy - ccy) * (yy - ccy) <= r * r)
+                        if ((xx - ccx) * (xx - ccx) + (yy - ccy) * (yy - ccy) <= r * r) {
                             fb->set_pixel(xx, yy, col);
+                            ++stamped;
+                        }
                     }
             }
         }
     }
+    if (wv_trace())
+        std::cerr << "[WV-SVG-STROKE] w=" << width << " stamped=" << stamped
+                  << " bbox=(" << mnx << "," << mny << ")-(" << mxx << "," << mxy
+                  << ") col=(" << int(col.r) << "," << int(col.g) << "," << int(col.b) << ")"
+                  << std::endl;
 }
 
 void WebViewEngine::render(uint8_t* dst, int w, int h) {
@@ -4126,9 +4555,16 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
     // by the 2-pass justify-center law)
     auto layout_stack_once = [&](DomNode* n, int content_x, int content_y,
                                  int content_w, int cy_shift, int avail_h,
-                                 int depth) -> int {
-        int cy = content_y + cy_shift;
-        int cx = content_x;                       // flex-row cursor
+                                 int depth, int& extent_out) -> int {
+        // S118 justify axis law: the shift is along the MAIN axis — X for a
+        // flex-row, Y for a column/block stack. The old code only shifted
+        // cy, so a row with justify-content:center never centered (the
+        // accelerace road strip stayed pinned at x=0).
+        bool row_axis = n->flex && n->flex_row;
+        int cy = content_y + (row_axis ? 0 : cy_shift);
+        int cx = content_x + (row_axis ? cy_shift : 0);
+        int row_main = 0;   // Σ member widths of THIS pass (nest-safe: a local,
+                            // the old captured global was wiped by nested rows)
         std::vector<int> widths(n->children.size(), -1);
         std::vector<int> heights(n->children.size(), 0);
         // S114 merged-run law: ALL inline content of the node paints as ONE
@@ -4180,10 +4616,21 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
             int ow = outer_w_of(c);
             if (ow >= 0) widths[i] = ow;
             else if (c->w_pct >= 0) widths[i] = int(float(content_w) * c->w_pct / 100.f);
-            else if (!c->w_raw.empty())
-                widths[i] = int(cb_len(c->w_raw, float(w), float(h),
-                                       float(content_w), float(avail_h > 0 ? avail_h : content_w),
-                                       c->font_size, content_w, 0));
+            else if (!c->w_raw.empty()) {
+                // S118 invalid-at-computed-value-time law (CSS Custom
+                // Properties §3.1): an undefined var() with no fallback
+                // invalidates the declaration — the property computes to its
+                // INITIAL value (width:auto → shrink-to-fit), never the
+                // containing-block size. `width: calc(var(--ligth))` in the
+                // accelerace stylesheet (an app typo) used to read as
+                // full-width and dragged the row shrink law onto the road.
+                float pv = cb_len(c->w_raw, float(w), float(h),
+                                  float(content_w),
+                                  float(avail_h > 0 ? avail_h : content_w),
+                                  c->font_size, -1.f, 0);
+                if (pv >= 0) widths[i] = int(pv);
+                else widths[i] = std::min(measure_w(c, 0), content_w);
+            }
             else if (n->flex && n->align_items == 1) {
                 widths[i] = std::min(measure_w(c, 0), content_w);  // flex center shrink
                 if (wv_trace())
@@ -4242,16 +4689,20 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
             if (heights[i] == -1) heights[i] = 0;   // marker consumed
             hb = layout_inflow(c, x, cy, widths[i], avail_h, depth + 1);
             if (n->flex_row) {
+                // S118 flex cross-axis STRETCH law (CSS Flexbox §9.4.4 —
+                // align-items defaults to stretch): a row member with an
+                // auto height fills the container's DEFINITE cross size
+                // (child_avail = fixed_inner). The road_sides strip in
+                // accelerace (no height, stretching road) stayed 0px tall
+                // and never painted without this.
+                if (avail_h > 0 && !c->has_h && c->h_pct < 0 && c->h_raw.empty()) {
+                    int target = avail_h - c->mar_t - c->mar_b;
+                    if (c->h < target) { c->h = target; hb = target; }
+                }
                 row_h = std::max(row_h, hb + c->mar_t + c->mar_b);
                 cx += widths[i] + c->mar_l + c->mar_r;
-                // vertical centering of the row member (align-items law)
-                int dy = 0;   // align start (stretch behaves as start here)
-                if (n->align_items == 1) dy = std::max(0, (row_h - (hb + c->mar_t + c->mar_b)) / 2);
-                if (dy) {
-                    int need = dy - 0;
-                    (void)need;
-                }
                 heights[i] = hb;
+                row_main += widths[i] + c->mar_l + c->mar_r;
             } else {
                 cy += hb + c->mar_b;
             }
@@ -4272,7 +4723,8 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
                 cx += widths[i] + c->mar_l + c->mar_r;
             }
         }
-        if (n->flex && n->flex_row) return row_h;
+        if (n->flex && n->flex_row) { extent_out = row_main; return row_h; }
+        extent_out = 0;
         return cy - content_y - cy_shift;
     };
 
@@ -4362,13 +4814,34 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
         int fixed_inner = -1;
         if (n->has_h) fixed_inner = n->h - 2 * n->border_w - n->pad_t - n->pad_b;
         int child_avail = fixed_inner > 0 ? fixed_inner : 0;
+        int justify_extent = 0;
         int used = layout_stack_once(n, x + n->border_w + n->pad_l,
-                                     y + n->border_w + n->pad_t, content_w, 0, child_avail, depth);
-        if (n->flex && n->justify_content == 1 && fixed_inner > 0 && used < fixed_inner) {
-            int shift = (fixed_inner - used) / 2;
-            layout_stack_once(n, x + n->border_w + n->pad_l,
-                              y + n->border_w + n->pad_t, content_w, shift, child_avail, depth);
-            used = fixed_inner;
+                                     y + n->border_w + n->pad_t, content_w, 0, child_avail, depth,
+                                     justify_extent);
+        if (n->flex && n->justify_content == 1) {
+            if (n->flex_row) {
+                // S118 main-axis (X) centering law: shift = (content width −
+                // Σ member widths)/2. The old branch compared the CROSS
+                // extent against the container height and shifted Y — both
+                // wrong-axis (accelerace road_sides pinned at x=0, y=9600).
+                if (wv_trace())
+                    std::cerr << "[WV-JUSTIFY] row tag=" << n->tag
+                              << " class=" << (n->attrs.count("class") ? n->attrs.at("class") : "")
+                              << " extent=" << justify_extent
+                              << " content_w=" << content_w << std::endl;
+                if (justify_extent > 0 && justify_extent < content_w) {
+                    int shift = (content_w - justify_extent) / 2;
+                    layout_stack_once(n, x + n->border_w + n->pad_l,
+                                      y + n->border_w + n->pad_t, content_w, shift, child_avail, depth,
+                                      justify_extent);
+                }
+            } else if (fixed_inner > 0 && used < fixed_inner) {
+                int shift = (fixed_inner - used) / 2;
+                layout_stack_once(n, x + n->border_w + n->pad_l,
+                                  y + n->border_w + n->pad_t, content_w, shift, child_avail, depth,
+                                  justify_extent);
+                used = fixed_inner;
+            }
         }
         // leaf min-height law (legacy flow parity for leaf rows)
         if (!n->has_h && n->h_pct < 0) {
@@ -4419,6 +4892,28 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
                     ow = int(float(box.w) - l - r_ - float(c->mar_l + c->mar_r));
                 int avail_w = int(float(box.w) - std::max(0.f, l) - std::max(0.f, r_)
                                  - float(c->mar_l + c->mar_r));
+                if (ow < 0 && c->tag == "svg") {
+                    // S118 SVG intrinsic-ratio law (SVG2 §7.2 replaced
+                    // element sizing): an <svg> with an auto width and a
+                    // definite height takes width = height × viewBox ratio
+                    // (else the box square). Zero-width svg boxes broke every
+                    // getBoundingClientRect() measure of inline icons
+                    // (accelerace car placement computed NaN/garbage).
+                    float vx, vy, vw2, vh2;
+                    bool only_defs2 = true;
+                    for (auto& cc2 : c->children)
+                        if (cc2->tag != "symbol" && cc2->tag != "defs" && cc2->tag != "#text") {
+                            only_defs2 = false; break;
+                        }
+                    int rh = c->has_h ? c->h
+                           : (c->h_pct >= 0 ? int(float(box.h) * c->h_pct / 100.f) : -1);
+                    if (!only_defs2 && rh > 0) {
+                        if (svg_viewbox(c, vx, vy, vw2, vh2))
+                            ow = std::max(1, int(float(rh) * vw2 / vh2 + 0.5f));
+                        else
+                            ow = rh;
+                    }
+                }
                 if (ow < 0) ow = std::min(measure_w(c, 0), std::max(0, avail_w));
                 if (c->max_w >= 0 && ow > c->max_w) ow = c->max_w;
                 ow = std::max(ow, 2 * c->border_w);
@@ -4552,6 +5047,25 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
     if (body_cb.h < 0) body_cb.h = 0;
     layout_positioned_tree(body_n, body_cb, 1);
 
+    // S118 trace: positioned box dump (WV_TRACE=1) — absolute/relative
+    // layout is the top diagnostic blind spot for positioned scene games
+    if (wv_trace()) {
+        std::function<void(DomNode*)> dump_pos = [&](DomNode* n) {
+            if (true)
+                std::cerr << "[WV-LAYOUT] tag=" << n->tag
+                          << (n->attrs.count("class") ? (" ." + n->attrs.at("class")) : "")
+                          << (n->attrs.count("id") ? (" #" + n->attrs.at("id")) : "")
+                          << (n->display_none ? " DISPLAY:NONE" : "")
+                          << " box=" << n->x << "," << n->y << " " << n->w << "x" << n->h
+                          << " pos=" << (n->positioned ? (n->style.count("position") ? n->style.at("position") : "?") : (n->style.count("position") ? n->style.at("position") : "static"))
+                          << " z=" << n->z_index << (n->z_given ? "g" : "")
+                          << " pm=" << n->pos_mode << " lo=" << n->laid_out << " vis=" << n->visible
+                          << std::endl;
+            for (auto& c : n->children) dump_pos(c.get());
+        };
+        dump_pos(body_n);
+    }
+
 
     // ── S117 inline-SVG paint law ───────────────────────────────────────
     // property resolution: style (CSS wins) → presentational attribute →
@@ -4583,6 +5097,12 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
                 // fill (SVG default fill = black; fill:none skips)
                 std::string f = svg_prop_of(c, "fill");
                 if (f.empty()) f = "#000";
+                // S118 trace: which paint properties each path resolved —
+                // inline-SVG styling gaps are invisible otherwise
+                if (wv_trace())
+                    std::cerr << "[WV-SVG-PATH] fill='" << f << "' stroke='"
+                              << svg_prop_of(c, "stroke") << "' dlen=" << dit->second.size()
+                              << std::endl;
                 if (f != "none" && f != "transparent") {
                     bool okc = false;
                     uint32_t col = parse_css_color(f, okc);
@@ -4600,7 +5120,24 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
                     if (!okc) col = 0;
                     float swu = 1.f;
                     std::string sww = svg_prop_of(c, "stroke-width");
-                    if (!sww.empty()) swu = std::max(0.05f, strtof(sww.c_str(), nullptr));
+                    if (!sww.empty()) {
+                        // S118 SVG length law: stroke-width computes through
+                        // the CSS length evaluator (px/vw/vh/calc/max) —
+                        // the raw string read 0 through strtof and every
+                        // stroked icon painted hairline-thin.
+                        CssCtx scx;
+                        scx.vw = float(w); scx.vh = float(h);
+                        scx.pctw = float(bw > 0 ? bw : 1);
+                        scx.pcth = float(bh > 0 ? bh : 1);
+                        scx.em = c->eff_font_size > 0 ? c->eff_font_size : 28.f;
+                        float r2 = css_eval(sww, scx, -1.f, 0);
+                        swu = r2 > 0 ? r2 : std::max(0.05f, strtof(sww.c_str(), nullptr));
+                        if (wv_trace())
+                            std::cerr << "[WV-SVG-SW] raw='" << sww << "' -> " << swu
+                                      << " user units (scale " << sqrtf(fabsf(A * D - B * C))
+                                      << ") subs=" << subs.size()
+                                      << " pts=" << (subs.empty() ? 0 : int(subs[0].size())) << std::endl;
+                    }
                     float scale = sqrtf(fabsf(A * D - B * C));
                     svg_stroke_paths(surface_fb, w, h, subs,
                                      renderer::RGBA{uint8_t(col & 255),
@@ -4684,13 +5221,40 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
                 if (n->sh_col_valid &&
                     (n->sh_ox || n->sh_oy || n->sh_blur || n->sh_spread)) {
                     uint8_t a = uint8_t((n->sh_col >> 24) & 255);
-                    fill_round(n->x + n->sh_ox - n->sh_spread,
-                               n->y + n->sh_oy - n->sh_spread,
-                               n->w + 2 * n->sh_spread, n->h + 2 * n->sh_spread,
-                               n->radius + n->sh_spread,
-                               renderer::RGBA{uint8_t(n->sh_col & 255),
-                                              uint8_t((n->sh_col >> 8) & 255),
-                                              uint8_t((n->sh_col >> 16) & 255), a});
+                    renderer::RGBA scol{uint8_t(n->sh_col & 255),
+                                        uint8_t((n->sh_col >> 8) & 255),
+                                        uint8_t((n->sh_col >> 16) & 255), a};
+                    int sx = n->x + n->sh_ox - n->sh_spread;
+                    int sy = n->y + n->sh_oy - n->sh_spread;
+                    int sw2 = n->w + 2 * n->sh_spread;
+                    int sh2 = n->h + 2 * n->sh_spread;
+                    int rad = n->radius + n->sh_spread;
+                    // S118 blur-falloff law (CSS Backgrounds §6.1): the
+                    // shadow edge fades from full alpha to transparent
+                    // across the blur radius. The old paint ignored the
+                    // blur and filled the spread rect SOLID — every glow
+                    // (accelerace street lights) rendered as an opaque slab.
+                    if (n->sh_blur > 0) {
+                        // S118 Gaussian-ish falloff law (CSS Backgrounds §6.1):
+                        // alpha ≈ 1 well inside the shape, ≈ 0.5 AT the shape
+                        // edge, → 0 across the blur radius outside. Painted
+                        // outside-in so the inner (more opaque) bands win.
+                        int B = std::min(int(n->sh_blur), 512);
+                        const int STEPS = 16;
+                        for (int k = STEPS; k >= 0; --k) {
+                            float d = (float(k) / STEPS) * B - B / 2.f;
+                            float t = d / (B / 2.f);
+                            float g = std::exp(-2.f * t * t);
+                            uint8_t ba = uint8_t(a * g);
+                            if (!ba) continue;
+                            int infl = int(d);
+                            fill_round(sx - infl, sy - infl, sw2 + 2 * infl,
+                                       sh2 + 2 * infl, std::max(0, rad + infl),
+                                       renderer::RGBA{scol.r, scol.g, scol.b, ba});
+                        }
+                    } else {
+                        fill_round(sx, sy, sw2, sh2, rad, scol);
+                    }
                 } else {
                     // legacy +6 soft shadow (shadow with no parseable parts)
                     fill_round(n->x, n->y + 6, n->w, n->h, n->radius + 4,
@@ -4760,8 +5324,32 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
         for (auto& c : n->children) gather_pos(c.get());
     };
     gather_pos(impl->doc.root.get());
+    // S118 STACKING law (CSS 2.1 Appendix E.2 + §9.9.1): positioned
+    // descendants include RELATIVE boxes — a relative element carrying a
+    // z-index joins the z-ordered paint phase. The old flow-only paint
+    // buried accelerace's car (position:relative, z-index:99) under the
+    // absolutely-positioned road that follows it in paint order.
+    // (relative boxes keep their flow paint; the z-phase repaint lands
+    // identical pixels on top, matching the browser's stacking result)
+    std::function<void(DomNode*)> gather_rel = [&](DomNode* n) {
+        if (n->display_none) return;
+        if (n->tag != "script" && n->tag != "style" && n->tag != "head" &&
+            n->tag != "title" && n->tag != "link" && n->tag != "meta" &&
+            n->pos_mode == 1 && n->z_given && n->visible && n->laid_out)
+            pos_paint.push_back(n);
+        for (auto& c : n->children) gather_rel(c.get());
+    };
+    gather_rel(impl->doc.root.get());
     std::stable_sort(pos_paint.begin(), pos_paint.end(),
                      [](const DomNode* a, const DomNode* b) { return a->z_index < b->z_index; });
+    if (wv_trace()) {
+        std::cerr << "[WV-POS] order:";
+        for (auto* p : pos_paint)
+            std::cerr << " " << p->tag
+                      << (p->attrs.count("class") ? ("." + p->attrs.at("class")) : "")
+                      << "(" << p->z_index << ")";
+        std::cerr << std::endl;
+    }
     for (auto* p : pos_paint) paint_node(p);
 
     // blit the page surface into the caller's buffer
@@ -4772,6 +5360,7 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
         dst[i * 4 + 2] = px[i].b;
         dst[i * 4 + 3] = px[i].a;
     }
+    impl->painted_once = true;   // S118: boxes are established from here on
 }
 
 // ── frame pump ──────────────────────────────────────────────────────────
@@ -4813,6 +5402,9 @@ void WebViewEngine::tick(double frame_ms) {
             JS_FreeValue(impl->ctx, func);
         }
     }
+    // S118 job pump: timer callbacks await promises (fetch chains) — the
+    // continuations must resume before the next frame paints
+    impl->drain_pending_jobs(4096);
     // 2) rAF: swap-queue law (callbacks registered now run NEXT frame)
     auto queue = std::move(impl->raf_queue);
     impl->raf_queue.clear();
