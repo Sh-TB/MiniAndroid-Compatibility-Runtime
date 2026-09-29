@@ -1703,6 +1703,33 @@ public:
         layout_dirty = true;
     }
 
+    // R-NEW-409 (S121): programmatic RelativeLayout rules — the addRule
+    // bridge stores `rl_rule_<N>` fields on the LP heap object; the
+    // addView/setLayoutParams capture transfers them here onto the same
+    // rel_* booleans the XML attribute path writes (AOSP RelativeLayout
+    // reads ONE rule array for both sources — ViewNode mirrors that with
+    // a single set of booleans). Rule constants (AOSP RelativeLayout.java):
+    //   ALIGN_PARENT_LEFT=9 ALIGN_PARENT_TOP=10 ALIGN_PARENT_RIGHT=11
+    //   ALIGN_PARENT_BOTTOM=12 CENTER_IN_PARENT=13 CENTER_HORIZONTAL=14
+    //   CENTER_VERTICAL=15
+    // Sibling-anchored rules (0-7) need id-name resolution and are not yet
+    // mapped here (honest open item; no caller in the corpus required one).
+    void set_rel_rule(uint32_t view_id, int rule) {
+        auto* n = get_or_create_node(view_id, "");
+        if (n == nullptr) return;
+        switch (rule) {
+            case 9:  n->rel_align_parent_left = true; break;
+            case 10: n->rel_align_parent_top = true; break;
+            case 11: n->rel_align_parent_right = true; break;
+            case 12: n->rel_align_parent_bottom = true; break;
+            case 13: n->rel_center_in_parent = true; break;
+            case 14: n->rel_center_horizontal = true; break;
+            case 15: n->rel_center_vertical = true; break;
+            default: break;   // 0-7 sibling anchors: open item (see above)
+        }
+        layout_dirty = true;
+    }
+
     // R-NEW-302 FIX (AOSP requestLayout law): ViewGroup/view geometry
     // mutations raise this flag; the frame renderer re-runs the real
     // measure/layout pass (LayoutInflater::measure_layout) on the next
@@ -1759,9 +1786,29 @@ public:
     // setBackgroundResource(int resid) — store the resid; the render stage
     // resolves it (ARSC select_file) to a state-list / shape / bitmap and
     // paints with the SAME draw laws the XML-inflated backgrounds use.
+    // R-NEW-411 (S121): AOSP View.setBackgroundResource(resid) REPLACES
+    // mBackground (View.java L20152: setBackgroundDrawable(getDrawable(resid))
+    // + requestLayout/invalidate) — the stale-drawable cache must be
+    // invalidated when the resid CHANGES, or every later swap on the same
+    // view keeps painting the FIRST drawable. Ground truth: OPMT's board
+    // (GameActivity.setAllBackgroundResourceValue re-skins all 9 board
+    // buttons on every tap: empty/black/white/selected drawables) painted
+    // its initial deal forever — the agent's piece selection was applied to
+    // the model (bg_resource_id → 0x7f020008 selected-state) but the frames
+    // never changed. The resolve-once cache in the render stage
+    // (execution_engine.cpp: `if (bg_resource_id != 0 &&
+    // bg_resource_path.empty())`) consults bg_resource_path, so clearing it
+    // here forces the re-resolution while the per-resid path map keeps
+    // repeat lookups cheap.
     void set_bg_resource(uint32_t view_id, uint32_t resid) {
         auto* n = get_or_create_node(view_id, "");
         if (n != nullptr) {
+            if (n->bg_resource_id != resid) {
+                // AOSP: a different drawable replaces the old one — drop the
+                // resolved path cache so the next draw picks the new resid.
+                n->bg_resource_path.clear();
+                n->bg_drawable_path.clear();
+            }
             n->bg_resource_id = resid;
             n->bg_from_xml = false;  // AOSP last-writer law
         }
