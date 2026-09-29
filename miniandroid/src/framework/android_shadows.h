@@ -32,6 +32,7 @@
 #include <memory>
 #include <string>
 #include <climits>
+#include <cmath>
 #include <vector>
 
 namespace miniandroid { namespace framework {
@@ -1691,7 +1692,14 @@ public:
         n->lp_margin_top = mt;
         n->lp_margin_right = mr;
         n->lp_margin_bottom = mb;
-        n->layout_weight = weight;
+        // ROOT-064b (weight-scale normalization law): the layout weight
+        // consumers (LayoutInflater measure/layout, G04 §9) read the node
+        // weight as value/1000.0f — the ×1000 convention the XML inflater
+        // itself writes ((int)lround(f*1000)). The programmatic LP sync must
+        // use the SAME scale: a raw float store truncated 1.0 → 1 (effective
+        // 0.001, ratio-preserving but rounding-lossy) and 0.5 → 0 (the
+        // weighted branch never fired at all). Normalize at the writer.
+        n->layout_weight = (int)std::lround(weight * 1000.0f);
         layout_dirty = true;
     }
 
