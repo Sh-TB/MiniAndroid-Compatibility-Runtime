@@ -4356,3 +4356,43 @@ Stage Summary:
 - Open (honest): accelerace car visibility (stacking subtlety), weather forecast
   rows, native appcompat menu-inflater NPE, empty-view-tree family (~43 sweep
   tickets), libGDX .so family.
+
+---
+Task ID: S119
+Agent: Super Z (main)
+Task: User directive — focus on dooz (Tic-Tac-Toe) and other NON-HTML5 native
+games; priority on games the agent can actually play and that are interesting.
+
+Work Log:
+- Ran the S83 tictactoe_deluxe (dooz) vision-driven agent-play driver at the
+  current HEAD: full agent-vs-phone game (X opening, AI replies, yellow win
+  strike, "Phone wins! Score x 0 : 1" dialog, NEXT ROUND -> round 2 with the
+  scoreboard preserved). 3 independent full runs -> all 4 stage frames
+  byte-identical (VERIFIED_3RUN, S100 §25).
+- Ran the other 5 native-game drivers; found a STALE DRIVER GEOMETRY family:
+  S80/S98 hard-coded taps/board rects missed the current render (layout laws
+  legitimately evolved). Snake never pressed START (tap y1500 vs button y1330);
+  2048's board_top() was 109px off so the board read empty and the driver
+  simmed gains that never happened ("score~248" while the HUD showed 4).
+- Fixed by the generic pattern (vision-recalibrate from rendered frames,
+  never re-hardcode): s80_sd START+BTN rows, s80_tet control rows, s80_2048
+  replaced derived board_top() with a runtime pixel probe (measure_board_top).
+  snake_neon (view-tree btn_map) and minicraft (runtime probe) were already
+  C3-compliant.
+- Re-ran after recalibration — REAL HUD-anchored gameplay: 2048 SCORE 84 with
+  16/8/8 merges; snake_deluxe SCORE 2/BEST 2, snake 3->5 then death (driver AI
+  not wrap-aware, honest open); tetris 7 locks + 10-piece stack (strict driver
+  model abort documented); minicraft PASS (cottage 113190 roof ink); snake_neon
+  HUD score=10 len=4 capture at frame 124.
+- Packaged 8 evidence PNGs (460px, 26-66KB, English-only) in
+  evidence/s119_games/; committed+pushed 34f462e6 (secret guard PASS); posted
+  the S119 wave report on #354 (issuecomment-5894337102).
+
+Stage Summary:
+- Native-game family: 6/6 playable with real evidence; dooz is the flagship
+  (complete agent-vs-phone game, VERIFIED_3RUN).
+- Root cause of the "driver said success, pixels said no" gap: model-derived
+  claims + stale geometry; the fleet is now HUD-anchored and self-recalibrating.
+- Open: snake_deluxe wrap-aware AI, tetris tick re-anchor, 2048 gained-vs-HUD
+  divergence; (deprioritized per directive) Telegram frontier + HTML5 weather
+  forecast/accelerace car visibility.
