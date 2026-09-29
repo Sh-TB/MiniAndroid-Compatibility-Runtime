@@ -1706,6 +1706,19 @@ public:
     // Built from dex_report_->classes[i].superclass_name.
     // Used by is_subclass_of() for semantic View inheritance resolution.
     std::map<std::string, std::string> class_to_superclass_;
+    // S122 (R-NEW-414): DEX class descriptor → (field name → inline
+    // initializer type descriptor). Built lazily by scanning each DEX class's
+    // <init> bytecode for the javac field-initializer pattern
+    // (new-instance T vN ... iput-object vN, field F). A field recorded here
+    // is NEVER NULL after a real constructor — reads that miss the heap
+    // materialize an empty T instead of a manufactured null.
+    std::map<std::string,
+             std::map<std::string, std::string>> init_field_defaults_;
+    std::set<std::string> init_defaults_scanned_;
+    // R-NEW-414b: identity-stable node-object field defaults. View nodes are
+    // not heap objects, so the answer is cached per (node id, field) — the
+    // app then reads/writes the SAME Rect across the measure/use round-trip.
+    std::map<std::pair<uint32_t, std::string>, uint32_t> node_field_defaults_;
     // R500 ROOT-REFLECTION-FIELD-IDENTITY: framework statics the engine
     // seeds (Build.*, Settings.Secure.*, MeasureSpec mode constants, ...)
     // are declared public fields for the reflection surface. Keyed
@@ -2018,6 +2031,16 @@ public:
         std::string error_message;
     };
     FieldResolution resolve_field(uint16_t field_idx);
+    // S122 (R-NEW-414): lazily scan a DEX class's <init> methods for the
+    // javac inline field-initializer pattern (new-instance T vN; … ;
+    // iput-object vN → F) and record field F → T in init_field_defaults_.
+    // Bounded linear scan; skips DEX pseudo-data payloads to stay aligned.
+    void scan_init_field_defaults(const std::string& cls);
+    // S122 (R-NEW-414): materialize an empty instance of `type_desc` for a
+    // field-initializer default (Rect/Point/PointF/TypedValue get their
+    // coordinate/int fields zeroed; other DEX classes get an empty shell).
+    // Returns a null value when the type is not materializable.
+    DalvikValue materialize_init_default(const std::string& type_desc);
     
     // Opcode implementations — Invokes
     bool execute_invoke_virtual(uint32_t pc, InstructionTrace& trace, DalvikExecutionResult& result);
