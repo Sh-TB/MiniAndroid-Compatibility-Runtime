@@ -1878,6 +1878,8 @@ bool LayoutInflater::image_intrinsic_size(const std::string& path,
 }
 
 void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_id) {
+    if (std::getenv("MINIANDROID_PROBE"))
+        fprintf(stderr, "[ROOT064-ENTRY] measure_layout root=%u\n", root_id);
     // =======================================================================
     // MEASURE PASS — AOSP MeasureSpec semantics (FIX-2, generic; no app
     // special-casing). Replaces the fixed 0.62f char-width text estimate:
@@ -2952,6 +2954,30 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                     content_w = std::max(0, sw.size - hpad);
                 if (sh.mode != M_UNSPEC)
                     content_h = std::max(0, sh.size - vpad);
+            }
+            // ── ROOT-064 (AOSP Space law — frameworks/base Space.java
+            // getDefaultSize2, "Compare to: View.getDefaultSize"): Space
+            // REPLACES the plain-View default measure with a variant where
+            // AT_MOST answers the CHILD'S OWN SIZE (suggested minimum = 0),
+            // NOT the spec size; only EXACTLY forces the spec size. A bare
+            // addView(Space) spacer (generateDefaultLayoutParams → wrap/wrap)
+            // must therefore measure 0 under AT_MOST and leave the leftover
+            // to its weighted siblings. Evidence: forkgram nr1 login — the
+            // spacer measured 1080x1920 under the plain-View
+            // aosp_default_measure law, consumed the whole vertical
+            // LinearLayout, the 0dp weight=1 content column collapsed to 0,
+            // and the entire login content stacked at y>=1920 (off-screen;
+            // [VSTACK] parent=11184 Space y=0 h=1920 / nr1$f y=1920 h=0).
+            {
+                const std::string& sc = n->class_desc;
+                const size_t sdot = sc.rfind('/');
+                const bool is_space =
+                    sc == "Landroid/widget/Space;" ||
+                    (sdot != std::string::npos && sc.compare(sdot, 7, "/Space;") == 0);
+                if (is_space) {
+                    if (sh.mode == M_AT_MOST) content_h = 0;
+                    if (sw.mode == M_AT_MOST) content_w = 0;
+                }
             }
             // Compound minimum (AOSP getSuggestedMinimum: 0 + padding).
             content_w = std::max(content_w, 0);

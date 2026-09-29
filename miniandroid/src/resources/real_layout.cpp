@@ -347,7 +347,10 @@ void RealInflater::convert_and_attach(const RView& rv, uint32_t parent_shadow_id
         n->padding_r = rv.pr;
         n->padding_b = rv.pb;
         n->orientation = rv.orientation;
-        n->layout_weight = rv.weight;
+        // ROOT-064b: ×1000 weight-scale normalization (matches the XML
+        // inflater writer and the value/1000.0f readers — see
+        // android_shadows.h set_layout_params).
+        n->layout_weight = (int)std::lround(rv.weight * 1000.0f);
         n->text = rv.text;
         n->hint = rv.hint;
         n->text_size_px = rv.text_size;

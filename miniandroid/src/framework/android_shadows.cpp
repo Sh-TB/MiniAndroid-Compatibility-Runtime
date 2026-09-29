@@ -4108,6 +4108,18 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         };
         auto default_size = [&](int32_t spec) -> int {
             const int mode = spec_mode(spec);
+            // ROOT-064 (AOSP Space law — Space.java getDefaultSize2,
+            // "Compare to: View.getDefaultSize"): Space answers AT_MOST
+            // with the CHILD'S OWN SIZE (suggested minimum = 0), NOT the
+            // spec size; only EXACTLY forces the spec size. Evidence:
+            // forkgram nr1 login — the bare addView(Space) spacer measured
+            // the full column height under this shadow law and pushed the
+            // entire login content below the screen.
+            const std::string& sc = n->class_desc;
+            const bool is_space =
+                sc == "Landroid/widget/Space;" ||
+                (sc.size() > 7 && sc.compare(sc.size() - 7, 7, "/Space;") == 0);
+            if (is_space) return mode == 1 ? spec_size(spec) : 0;
             if (mode == 1 || mode == 2) return spec_size(spec);  // EXACTLY/AT_MOST
             return 0;                                            // UNSPECIFIED
         };

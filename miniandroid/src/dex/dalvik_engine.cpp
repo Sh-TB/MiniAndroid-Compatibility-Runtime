@@ -15246,12 +15246,18 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
         // EXP-061: Debug — trace addView calls to find why child=0
         if (method_name_from_dex == "addView" && args.size() >= 2) {
             std::cerr << "[EXP062-ADDVIEW-TRACE] invoke-virtual addView"
+                      << " argc=" << args.size()
                       << " this_id=" << args[0].object_id
                       << " this_class=" << runtime_type
                       << " child_type=" << static_cast<int>(args[1].type)
                       << " child_id=" << args[1].object_id
-                      << " child_class=" << args[1].class_desc
-                      << " caller=" << current_class_ << "." << current_method_
+                      << " child_class=" << args[1].class_desc;
+            for (size_t ai = 2; ai < args.size(); ++ai)
+                std::cerr << " a" << ai << "=t" << static_cast<int>(args[ai].type)
+                          << "/v" << (args[ai].type == DalvikType::OBJECT_REF
+                                          ? args[ai].object_id
+                                          : (int64_t)args[ai].int_val);
+            std::cerr << " caller=" << current_class_ << "." << current_method_
                       << " pc=" << pc
                       << std::endl;
         }
@@ -22613,18 +22619,53 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         int w = arg_int(0, -2);
         int h = arg_int(1, -2);
         int gravity = 0, ml = 0, mt = 0, mr = 0, mb = 0;
-        // Overloads: (w,h) | (w,h,gravity) | (w,h,gravity,l,t,r,b) |
-        // (w,h,weight) 4-arg | (w,h,gravity,l,t,r,b,weight)
+        // ROOT-064c (static LP-factory field-materialization law): every
+        // documented overload field must land on the LP heap object.
+        // LayoutHelper.createLinear overloads:
+        //   (w,h) | (w,h,gravity) | (w,h,gravity,l,t,r,b)
+        //   (w,h,weight F) | (w,h,gravity,weight F)
+        //   (w,h,gravity,l,t,r,b,weight F)
+        // The old code read the 4th float as gravity and NEVER stored the
+        // trailing weight — the addView LP sync then saw weight=0 and a
+        // 0dp+weight child collapsed to 0. Distinguish overloads by ARG
+        // TYPE (a FLOAT32/64 tail arg is the weight), not by count alone.
+        auto arg_float = [&](size_t i) -> bool {
+            if (i >= args.size()) return false;
+            const auto& a = args[i];
+            return a.type == DalvikType::FLOAT32 || a.type == DalvikType::FLOAT64;
+        };
+        auto arg_fval = [&](size_t i) -> float {
+            if (i >= args.size()) return 0.0f;
+            const auto& a = args[i];
+            if (a.type == DalvikType::FLOAT32) return a.float_val;
+            if (a.type == DalvikType::FLOAT64) return (float)a.double_val;
+            if (a.type == DalvikType::INT32) return (float)a.int_val;
+            return 0.0f;
+        };
+        float weight = 0.0f;
         if (args.size() >= 8) {
+            // (w,h,gravity,l,t,r,b,weight F)
             gravity = arg_int(2, 0);
             ml = arg_int(3, 0); mt = arg_int(4, 0);
             mr = arg_int(5, 0); mb = arg_int(6, 0);
-        } else if (args.size() >= 7) {
+            weight = arg_fval(7);
+        } else if (args.size() == 7) {
             // createScroll(w, h, gravity) + others; or (w,h,gravity,l,t,r)
             // Telegram uses 7-arg mostly as (w,h,gravity,l,t,r,b) — all int.
             gravity = arg_int(2, 0);
             ml = arg_int(3, 0); mt = arg_int(4, 0);
             mr = arg_int(5, 0); mb = arg_int(6, 0);
+        } else if (args.size() == 4) {
+            // (w,h,gravity,weight F) vs (w,h,weight F): a FLOAT tail arg is
+            // the weight; the gravity slot only takes an int.
+            if (arg_float(3)) {
+                gravity = arg_int(2, 0);
+                weight = arg_fval(3);
+            } else if (arg_float(2)) {
+                weight = arg_fval(2);   // (w,h,weight F)
+            } else {
+                gravity = arg_int(2, 0);
+            }
         } else if (args.size() >= 3) {
             gravity = arg_int(2, 0);
         }
@@ -22639,6 +22680,12 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             val.int_val = v;
             heap_.set_object_field(lp_id, name, val);
         };
+        auto set_f32 = [&](const char* name, float v) {
+            DalvikValue val;
+            val.type = DalvikType::FLOAT32;
+            val.float_val = v;
+            heap_.set_object_field(lp_id, name, val);
+        };
         set_f("width", w);
         set_f("height", h);
         set_f("gravity", gravity);
@@ -22646,6 +22693,9 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         set_f("topMargin", mt);
         set_f("rightMargin", mr);
         set_f("bottomMargin", mb);
+        // ROOT-064c: materialize the weight (AOSP LinearLayout.LayoutParams
+        // field) — the addView sync reads it back as FLOAT32/INT32.
+        set_f32("weight", weight);
         status = ApiCallTrace::Status::IMPLEMENTED;
         DalvikValue r;
         r.type = DalvikType::OBJECT_REF;
@@ -25083,12 +25133,26 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                             if (!cn->dex_measure_valid) {
                                 int32_t mmw = (int32_t)(((uint32_t)cw2) >> 30);
                                 int32_t mmh = (int32_t)(((uint32_t)ch2) >> 30);
+                                // ROOT-064 (AOSP Space law): AT_MOST → own
+                                // size (0), EXACTLY → spec size.
+                                const bool sp_is_space =
+                                    cn->class_desc == "Landroid/widget/Space;" ||
+                                    (cn->class_desc.size() > 7 &&
+                                     cn->class_desc.compare(
+                                         cn->class_desc.size() - 7, 7,
+                                         "/Space;") == 0);
                                 cn->dex_measured_w =
-                                    (mmw == 1 || mmw == 2)
-                                        ? (cw2 & 0x3FFFFFFF) : 0;
+                                    (sp_is_space && mmw != 1)
+                                        ? 0
+                                        : ((mmw == 1 || mmw == 2)
+                                               ? (cw2 & 0x3FFFFFFF)
+                                               : 0);
                                 cn->dex_measured_h =
-                                    (mmh == 1 || mmh == 2)
-                                        ? (ch2 & 0x3FFFFFFF) : 0;
+                                    (sp_is_space && mmh != 1)
+                                        ? 0
+                                        : ((mmh == 1 || mmh == 2)
+                                               ? (ch2 & 0x3FFFFFFF)
+                                               : 0);
                                 cn->dex_measure_valid = true;
                                 cn->measured_width = cn->dex_measured_w;
                                 cn->measured_height = cn->dex_measured_h;
@@ -25122,15 +25186,37 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                         auto mode = [](int32_t s) -> int32_t {
                             return (int32_t)(((uint32_t)s) >> 30);
                         };
+                        // ROOT-064 (AOSP Space law): AT_MOST → own size (0),
+                        // EXACTLY → spec size (Space.getDefaultSize2).
+                        const bool is_space =
+                            cn->class_desc == "Landroid/widget/Space;" ||
+                            (cn->class_desc.size() > 7 &&
+                             cn->class_desc.compare(
+                                 cn->class_desc.size() - 7, 7,
+                                 "/Space;") == 0);
                         auto dsize = [&](int32_t s) -> int32_t {
                             int32_t mm = mode(s);
-                            return (mm == 1 || mm == 2) ? spec_size(s) : 0;
+                            if (is_space) return mm == 1 ? (s & 0x3FFFFFFF) : 0;
+                            return (mm == 1 || mm == 2) ? (s & 0x3FFFFFFF) : 0;
                         };
                         cn->dex_measured_w = dsize(cs_w);
                         cn->dex_measured_h = dsize(cs_h);
                         cn->dex_measure_valid = true;
                         cn->measured_width = cn->dex_measured_w;
                         cn->measured_height = cn->dex_measured_h;
+                        // ROOT-064 probe: which spec + fallback did the
+                        // spacer actually receive?
+                        if (std::getenv("MINIANDROID_PROBE") &&
+                            cn->class_desc.find("Space") != std::string::npos) {
+                            std::cerr << "[ROOT064-M] parent=" << n->class_desc
+                                      << " child=" << cn->class_desc
+                                      << " cw=" << cn->width
+                                      << " ch=" << cn->height
+                                      << " spec=0x" << std::hex << cs_w << "x"
+                                      << cs_h << std::dec
+                                      << " -> " << cn->dex_measured_w << "x"
+                                      << cn->dex_measured_h << std::endl;
+                        }
                     }
                     // recurse into grandchildren with the child's sizes
                     s109vg_measure_children(cn, cn->measured_width,
@@ -27225,13 +27311,36 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     };
                     auto default_size = [&](int32_t s) -> int32_t {
                         int32_t mm = spec_mode(s);
-                        return (mm == 1 || mm == 2) ? spec_size(s) : 0;
+                        int32_t view_default =
+                            (mm == 1 || mm == 2) ? spec_size(s) : 0;
+                        // ROOT-064 (AOSP Space law — Space.java
+                        // getDefaultSize2): Space answers AT_MOST with its
+                        // CHILD SIZE (suggested minimum = 0), not the spec
+                        // size; only EXACTLY forces the spec size. Evidence:
+                        // forkgram nr1 login — the bare addView(Space)
+                        // spacer measured the full column height and pushed
+                        // the whole login content off-screen.
+                        if (n->class_desc == "Landroid/widget/Space;" ||
+                            (n->class_desc.size() > 7 &&
+                             n->class_desc.compare(
+                                 n->class_desc.size() - 7, 7, "/Space;") == 0))
+                            return mm == 1 ? spec_size(s) : 0;
+                        return view_default;
                     };
                     n->dex_measured_w = default_size(args[1].int_val);
                     n->dex_measured_h = default_size(args[2].int_val);
                     n->dex_measure_valid = true;
                     n->measured_width = n->dex_measured_w;
                     n->measured_height = n->dex_measured_h;
+                    if (std::getenv("MINIANDROID_PROBE") &&
+                        n->class_desc.find("Space") != std::string::npos) {
+                        std::cerr << "[ROOT064-B] R347 default law on Space"
+                                  << " node=" << recv
+                                  << " spec=0x" << std::hex << args[1].int_val
+                                  << "x" << args[2].int_val << std::dec
+                                  << " -> " << n->dex_measured_w << "x"
+                                  << n->dex_measured_h << std::endl;
+                    }
                     // S109 ROOT-045: recursive child measure (AOSP
                     // ViewGroup.onMeasure contract). The default law sized
                     // ONLY this node; custom containers (ActionBarLayout$l
@@ -27282,12 +27391,27 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                         ((uint32_t)cw) >> 30);
                                     int32_t mmh = (int32_t)(
                                         ((uint32_t)ch) >> 30);
+                                    // ROOT-064 (AOSP Space law): AT_MOST →
+                                    // own size (0), EXACTLY → spec size.
+                                    const bool is_space =
+                                        cn->class_desc ==
+                                            "Landroid/widget/Space;" ||
+                                        (cn->class_desc.size() > 7 &&
+                                         cn->class_desc.compare(
+                                             cn->class_desc.size() - 7, 7,
+                                             "/Space;") == 0);
                                     cn->dex_measured_w =
-                                        (mmw == 1 || mmw == 2)
-                                            ? (cw & 0x3FFFFFFF) : 0;
+                                        (is_space && mmw != 1)
+                                            ? 0
+                                            : ((mmw == 1 || mmw == 2)
+                                                   ? (cw & 0x3FFFFFFF)
+                                                   : 0);
                                     cn->dex_measured_h =
-                                        (mmh == 1 || mmh == 2)
-                                            ? (ch & 0x3FFFFFFF) : 0;
+                                        (is_space && mmh != 1)
+                                            ? 0
+                                            : ((mmh == 1 || mmh == 2)
+                                                   ? (ch & 0x3FFFFFFF)
+                                                   : 0);
                                     cn->dex_measure_valid = true;
                                     cn->measured_width = cn->dex_measured_w;
                                     cn->measured_height = cn->dex_measured_h;
@@ -31288,8 +31412,30 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
         if (view_shadow && args[0].type == DalvikType::OBJECT_REF) {
             if (auto* n = view_shadow->find_node(args[0].object_id)) {
-                n->dex_measured_w = default_size(args[1].int_val);
-                n->dex_measured_h = default_size(args[2].int_val);
+                // ROOT-064 (AOSP Space law — frameworks/base Space.java
+                // getDefaultSize2, "Compare to: View.getDefaultSize"):
+                // Space REPLACES the View default measure — AT_MOST answers
+                // the CHILD'S OWN SIZE (suggested minimum = 0), NOT the
+                // spec size; only EXACTLY forces the spec size. Evidence:
+                // forkgram nr1 login — the bare addView(Space) spacer was
+                // materialized here with the plain-View law, measured the
+                // full column height, collapsed the 0dp weight=1 content
+                // column to 0 and pushed the entire login UI off-screen.
+                const std::string& sc = n->class_desc;
+                const bool sp_is_space =
+                    sc == "Landroid/widget/Space;" ||
+                    (sc.size() > 7 && sc.compare(sc.size() - 7, 7, "/Space;") == 0);
+                if (sp_is_space) {
+                    int32_t mw = spec_mode(args[1].int_val) == 1
+                                     ? spec_size(args[1].int_val) : 0;
+                    int32_t mh = spec_mode(args[2].int_val) == 1
+                                     ? spec_size(args[2].int_val) : 0;
+                    n->dex_measured_w = mw;
+                    n->dex_measured_h = mh;
+                } else {
+                    n->dex_measured_w = default_size(args[1].int_val);
+                    n->dex_measured_h = default_size(args[2].int_val);
+                }
                 n->dex_measure_valid = true;
                 // R-NEW-347 (S42): AOSP one-store write-through — the
                 // default View.onMeasure sets mMeasuredWidth/Height
