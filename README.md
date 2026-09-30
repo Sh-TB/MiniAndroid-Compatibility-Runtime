@@ -45,6 +45,25 @@ Dalvik-class interpreter over a deterministic software raster pipeline.
 | Open problem state | **33 canonical tickets** (1 P0 · 10 P1 · 16 P2 · 6 P3; 29 open / 4 CLOSED) — [TICKET_REGISTRY.json](docs/TICKET_REGISTRY.json) |
 | Position on 0→100 scale | **~52/100** (chain proven E4–E6; deep semantics open in text shaping, real networking, media-at-APK, web, native, modern runtimes) |
 
+## CONTROL SYSTEM (canonical, S125)
+
+> Living control system per [docs/ROADMAP.md](docs/ROADMAP.md) — every metric
+> below is **generated** from canonical state, never hand-invented.
+
+| Panel | Generated file |
+|---|---|
+| Capability registry (197 capabilities, SS5–22 layers) | [canonical/capability_registry.json](canonical/capability_registry.json) |
+| Status control panel (computed percentages, frontiers, load pipeline) | [docs/ROADMAP_STATUS.md](docs/ROADMAP_STATUS.md) |
+| Per-capability matrix | [docs/CAPABILITY_MATRIX.md](docs/CAPABILITY_MATRIX.md) |
+| App registry (L0–L7 checkpoints; honest BLOCKED frontiers) | [canonical/app_registry.json](canonical/app_registry.json) |
+| Game registry (88 titles; OBSERVED ≠ VERIFIED) | [canonical/game_registry.json](canonical/game_registry.json) |
+| Root-cause read model (420 roots) | [canonical/root_cause_registry.json](canonical/root_cause_registry.json) |
+| Evidence registry (waves + evidence law) | [canonical/evidence_registry.json](canonical/evidence_registry.json) |
+| Title × subsystem compatibility matrix | [canonical/compatibility_matrix.json](canonical/compatibility_matrix.json) |
+
+Honesty law: Telegram's grey frame and WhatsApp's black/white frame are **load
+frontiers — NOT renders**; no title is ever labelled "100% rendered".
+
 ## Real Executed Apps & Games
 
 Four real demos — actual APKs that executed on MiniAndroid with SHA-pinned,

@@ -1,0 +1,2670 @@
+{
+ "schema": "miniandroid.compatibility_matrix.v1",
+ "generated": "2026-09-30T16:14:55Z",
+ "apps": [
+  {
+   "id": "APP-001",
+   "title": "Heading Calculator",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": true,
+    "L6": true,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": true,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": true
+   }
+  },
+  {
+   "id": "APP-002",
+   "title": "uNote",
+   "status": "TESTED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "APP-003",
+   "title": "MicroTimer",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": true,
+    "L6": true,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": true,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": true
+   }
+  },
+  {
+   "id": "APP-004",
+   "title": "Simple Stopwatch",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": true,
+    "L6": true,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": true,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": true
+   }
+  },
+  {
+   "id": "APP-005",
+   "title": "Chess Clock",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": true,
+    "L6": true,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": true,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": true
+   }
+  },
+  {
+   "id": "APP-006",
+   "title": "Notes (billthefarmer)",
+   "status": "TESTED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "APP-007",
+   "title": "PMK-61 Calculator",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": true,
+    "L6": true,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": true,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": true
+   }
+  },
+  {
+   "id": "APP-008",
+   "title": "Shopping List Calc",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": true,
+    "L6": true,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": true,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": true
+   }
+  },
+  {
+   "id": "APP-009",
+   "title": "GH4A (GitHub client)",
+   "status": "TESTED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": null,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "APP-010",
+   "title": "OpenCalculator",
+   "status": "PARTIAL",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": null,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "APP-011",
+   "title": "OpenSudoku",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": true,
+    "L6": true,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": true,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": true
+   }
+  },
+  {
+   "id": "APP-012",
+   "title": "Telegram 12.10.1",
+   "status": "BLOCKED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "APP-013",
+   "title": "WhatsApp 2.26.38.74",
+   "status": "BLOCKED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "APP-014",
+   "title": "hello_smoke (control)",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": true,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": true,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "APP-015",
+   "title": "hello_widgets (control)",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": true,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": true,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  }
+ ],
+ "games": [
+  {
+   "id": "GAME-001",
+   "title": "Snake Deluxe",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": true,
+    "L6": true,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": true,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": true
+   }
+  },
+  {
+   "id": "GAME-002",
+   "title": "Mini Tetris",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": true,
+    "L6": true,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": true,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": true
+   }
+  },
+  {
+   "id": "GAME-003",
+   "title": "MiniCraft (House Builder)",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": true,
+    "L6": true,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": true,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": true
+   }
+  },
+  {
+   "id": "GAME-004",
+   "title": "2048",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": true,
+    "L6": true,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": true,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": true
+   }
+  },
+  {
+   "id": "GAME-005",
+   "title": "TicTacToe Deluxe",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": true,
+    "L6": true,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": true,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": true
+   }
+  },
+  {
+   "id": "GAME-006",
+   "title": "Vector Pinball (bouncy)",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": true,
+    "L6": true,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": true,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": true
+   }
+  },
+  {
+   "id": "GAME-007",
+   "title": "ca.rmen.nounours",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": true,
+    "L6": true,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": true,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": true
+   }
+  },
+  {
+   "id": "GAME-008",
+   "title": "com.dozingcatsoftware.dodge",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": true,
+    "L6": true,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": true,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": true
+   }
+  },
+  {
+   "id": "GAME-009",
+   "title": "com.smorgasbork.hotdeath",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": true,
+    "L6": true,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": true,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": true
+   }
+  },
+  {
+   "id": "GAME-010",
+   "title": "org.bobstuff.bobball",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": true,
+    "L6": true,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": true,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": true
+   }
+  },
+  {
+   "id": "GAME-011",
+   "title": "TicTacToe Classic",
+   "status": "PARTIAL",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": true,
+    "L6": true,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": true,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": true
+   }
+  },
+  {
+   "id": "GAME-012",
+   "title": "Anuto TD",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-013",
+   "title": "OpenSudoku",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-014",
+   "title": "FreeKlondike",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": false,
+    "L6": true,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": true
+   }
+  },
+  {
+   "id": "GAME-015",
+   "title": "Fish Rings",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": true,
+    "L6": true,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": true,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": true
+   }
+  },
+  {
+   "id": "GAME-016",
+   "title": "TriPeaks",
+   "status": "PARTIAL",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": false,
+    "L6": true,
+    "L7": true
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": true
+   }
+  },
+  {
+   "id": "GAME-017",
+   "title": "OPMT (One More Time\u2026)",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": false,
+    "L6": true,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": true
+   }
+  },
+  {
+   "id": "GAME-018",
+   "title": "com.trianguloy.adnihilation",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-019",
+   "title": "Mines (premy)",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-020",
+   "title": "de.georgsieber.ballbreak",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-021",
+   "title": "Balance the Ball",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-022",
+   "title": "x653.all_in_gold",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-023",
+   "title": "Memory",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": true,
+    "Graphics": true,
+    "Text": true,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-024",
+   "title": "bim.app",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-025",
+   "title": "com.clavierhaus.gnubg",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": false,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-026",
+   "title": "com.galaxyrio.sudokusolver",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-027",
+   "title": "com.helddertierwelt.mentalmath",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": false,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-028",
+   "title": "com.kaeruct.raumballer",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": false,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-029",
+   "title": "com.kingalex.kingpong",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-030",
+   "title": "com.octbit.rutmath",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-031",
+   "title": "com.qwde.ccm",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-032",
+   "title": "com.sanskritbasics.memory",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-033",
+   "title": "RetroWars",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-034",
+   "title": "com.sidhant.bubbleshooter",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-035",
+   "title": "com.sidhant.puzzle",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-036",
+   "title": "com.vayunmathur.games.alchemist",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": false,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-037",
+   "title": "com.vovagorodok.blichess",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": false,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-038",
+   "title": "com.vovagorodok.blidraughts",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": false,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-039",
+   "title": "Mancala",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-040",
+   "title": "io.github.ebraminio.bouncy",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-041",
+   "title": "io.github.hathibelagal.mykanji",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-042",
+   "title": "io.github.johnathan.minesweeper",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": false,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-043",
+   "title": "io.itch.pirate_solitaire",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": false,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-044",
+   "title": "Chess (jwtc)",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-045",
+   "title": "Navy Fleet Battle",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-046",
+   "title": "org.lufebe16.pysolfc",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-047",
+   "title": "Surge Engine (OpenSurge)",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-048",
+   "title": "TheXTech (SuperTux-like)",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-049",
+   "title": "xyz.deepdaikon.quinb",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-050",
+   "title": "Dooz (tic-tac-toe)",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-051",
+   "title": "Queens",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-052",
+   "title": "No Thanks!",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-053",
+   "title": "Blackjack",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-054",
+   "title": "Solitaire (vayunmathur)",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-055",
+   "title": "Solitaire (Bielefeld)",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-056",
+   "title": "PFBattleship",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-057",
+   "title": "Ball2Box",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-058",
+   "title": "Halma",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-059",
+   "title": "Astroloop",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-060",
+   "title": "Tarok",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-061",
+   "title": "Guandan",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-062",
+   "title": "Boxcars",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-063",
+   "title": "Tirailleur",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-064",
+   "title": "FireStrike",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-065",
+   "title": "name.boyle.chris.sgtpuzzles",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-066",
+   "title": "org.secuso.privacyfriendlydame",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-067",
+   "title": "org.secuso.privacyfriendlysudoku",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-068",
+   "title": "org.secuso.privacyfriendlysolitaire",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-069",
+   "title": "com.serwylo.babydots",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-070",
+   "title": "dev.lonami.klooni",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-071",
+   "title": "eu.quelltext.counting",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-072",
+   "title": "org.og8.a1tox",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-073",
+   "title": "ir.hsn6.tpb",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-074",
+   "title": "org.andstatus.game2048",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-075",
+   "title": "org.mattvchandler.a2050",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-076",
+   "title": "io.github.rotundtapir.fivehundred",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-077",
+   "title": "org99managers.futsal_edition",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-078",
+   "title": "io.github.divverent.aaaaxy",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-079",
+   "title": "com.towerillusion.abdal",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-080",
+   "title": "org.asafonov.accelerace",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-081",
+   "title": "com.games.boardgames.aeonsend",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-082",
+   "title": "com.mufradat.africaquiz",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-083",
+   "title": "com.ahorcado",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-084",
+   "title": "com.github.m374lx.alexvsbus",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-085",
+   "title": "org.secuso.privacyfriendlymemory",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-086",
+   "title": "org.secuso.privacyfriendly2048",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-087",
+   "title": "net.sourceforge.solitaire_cg",
+   "status": "OBSERVED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  },
+  {
+   "id": "GAME-088",
+   "title": "Dooz v23 (Compose)",
+   "status": "BLOCKED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "subsystems": {
+    "UI": false,
+    "Graphics": false,
+    "Text": false,
+    "Input": false,
+    "Storage": false,
+    "Network": false,
+    "Audio": false,
+    "Video": false,
+    "Native": false
+   }
+  }
+ ]
+}
