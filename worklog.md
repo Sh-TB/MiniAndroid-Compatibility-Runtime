@@ -4538,3 +4538,28 @@ Stage Summary:
 - 2 harder games attempted per directive: chess = full-load/0-errors flagship with 6 new laws; klondike = interactive play chain proven (menu->game->deal).
 - New frontiers documented: chess adapter->relayout traversal; klondike move-validation pipeline.
 - All work committed and pushed to origin/main.
+
+---
+Task ID: S123
+Agent: main
+Task: S123 themed-apps wave (user fa directive: themes/templates must load + structure understood; continue bird-through-pipes game; add Android calculator app; test Telegram/WhatsApp load progress — "خیلی مهم"; footer explanation in reports)
+
+Work Log:
+- Pushed the pending fc9344be commit first (push-all parity), rebuilt the runtime from source (72 C++ TU build, incremental make -j2 due to sandbox OOM at -j4).
+- FlappyCow 3.1.1 wave: root-caused the corrupt start screen (all drawBitmap dst-Rects null at (0,0) natural size) to the MISSING View.setFrame law and shipped R-NEW-419 onSizeChanged dispatch (both capture sites + two draw sites, per-size dedup). Start screen now 100% lawful.
+- Fixed the action-string launch chain: Intent(String) ctor arg-shape law (STRING or OBJECT+string_val), and the ACTION-RESOLVE manifest registration on the cmd_run ExecutionEngine path (was ApplicationRuntime-only) — S123-ACTION-REG + S123-ACTION-RESOLVE evidence; PLAY tap now resolves com.quchen.flappycow.Game and G08-LAUNCH dispatches the full Game lifecycle (onCreate 976 insns).
+- Root-caused the Game-onCreate abort two levels deep: ContainerHelpers.EMPTY_* nulls (two clinit gates: ensure_class_initialized Landroid/* blanket skip + the interpreter G12-ACF platform-ns skip) → R-NEW-421 app-bundled library clinit law (support/arch/databinding exempt, in-app-dex provenance test). arraycopy NPE gone.
+- Documented the honest GMS frontier: GameHelper.setup() has no try/catch (source-verified) so GoogleApiClient.Builder.build() games_lite ISE kills BaseGameActivity.onCreate exactly as ART on a device without Play Services.
+- Heading Calculator wave: getTag click chain verified (TAG-TRACE hit=1), found and fixed R-NEW-422 android.util.Pair law (ctor first/second + create factory) — the updateValues unboxing NPE that killed every display update is gone; display model updates on agent taps 1/2/3 (targets 79/80/81).
+- VERIFIED_3RUN: calculator 3 independent runs byte-identical (8c6bf751… ×3); flappycow start screen byte-identical (13cf4746… ×3) with G08-LAUNCH success in all 3.
+- Telegram 12.10.1 load test: LaunchActivity dispatches, onCreate proceeds past its catch-alls to invoke_pc 548+; blocker quantified (LocationController gms getImpliedScopes NPE ×6, 47 uncaught); frame pre-pixel (theme-attr/text-draw frontier, unchanged from S115 forkgram baseline).
+- WhatsApp 2.26.38.74 (freshly downloaded official APK, 147MB, SHA a013d225…): analyze + Main dispatch; only TWO distinct exception types (AppContext.set not invoked; INVOKE_RETURN null) — narrow app-idiom frontier, no pixels.
+- Flashlight probe: 0 recorded errors, blank frame (SurfaceView family) — kept as side observation, not flagship.
+- Evidence: evidence/s123_themed_apps/ 7 JPGs (460px, English-only, incl. before/after for R-NEW-419 and honest blank TG/WA frames); raw links verified 200.
+- Posted the S123 English reports (#354 comment 5908672398, #353 comment 5908672679) ending with the standing footer explanation; evidence links delivered in chat; no GIFs per directive.
+
+Stage Summary:
+- 4 new generic laws shipped (R-NEW-419 onSizeChanged, action-resolve cmd_run parity + Intent(String) arg shape, R-NEW-421 support/arch clinit, R-NEW-422 Pair) — all AOSP-derived, zero package checks.
+- FlappyCow: menu 100% + Game launch chain proven (bird-through-pipes gameplay blocked only by the documented GMS frontier).
+- Themed calculator: EXECUTED+RENDERED+INTERACTIVE VERIFIED_3RUN — the theme/template directive's app-side flagship.
+- Telegram/WhatsApp: load progress quantified with exact next-frontier targets (gms Api builder null; AppContext.set injection).
