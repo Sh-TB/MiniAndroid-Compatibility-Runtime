@@ -1,6 +1,6 @@
 {
  "schema": "miniandroid.capability_registry.v1",
- "generated": "2026-09-30T21:14:39Z",
+ "generated": "2026-09-30T21:53:15Z",
  "law": "IMPLEMENTED = source inventory hit only. TESTED/VERIFIED require recorded runtime evidence refs. Grep never proves VERIFIED (ROADMAP SS1).",
  "capabilities": [
   {
@@ -8,7 +8,7 @@
    "layer": "UI",
    "name": "View",
    "status": "TESTED",
-   "src_hits": 358,
+   "src_hits": 359,
    "evidence": [
     "evidence/s113_fullgui (hello_smoke/hello_widgets control APKs)",
     "miniandroid/tests/shadow_registry_invariant_test.cpp"
@@ -19,7 +19,7 @@
    "layer": "UI",
    "name": "ViewGroup",
    "status": "TESTED",
-   "src_hits": 114,
+   "src_hits": 146,
    "evidence": [
     "evidence/s113_fullgui",
     "evidence/s124_theme_base (TableLayout/LinearLayout/FrameLayout themed renders)"
@@ -847,7 +847,7 @@
    "layer": "INPUT",
    "name": "MotionEvent",
    "status": "VERIFIED",
-   "src_hits": 22,
+   "src_hits": 26,
    "evidence": [
     "touch_dispatcher + scripts/autoplay drivers",
     "evidence/s119_games 6 games real taps",
@@ -868,23 +868,27 @@
    "layer": "INPUT",
    "name": "dispatchTouchEvent",
    "status": "IMPLEMENTED",
-   "src_hits": 15,
+   "src_hits": 23,
    "evidence": []
   },
   {
    "id": "CAP-INPUT-100",
    "layer": "INPUT",
    "name": "onInterceptTouchEvent",
-   "status": "PENDING",
-   "src_hits": 0,
-   "evidence": []
+   "status": "IMPLEMENTED",
+   "src_hits": 20,
+   "evidence": [
+    "S128 R-NEW-424 intercept pass: onInterceptTouchEvent DEX bridge + intercept-at-DOWN retarget + mid-gesture CANCEL law",
+    "116-stage battery ALL PASS",
+    "real-APK DEX-override wave pending (no tap-path override in current wave set)"
+   ]
   },
   {
    "id": "CAP-INPUT-101",
    "layer": "INPUT",
    "name": "onTouchEvent",
    "status": "TESTED",
-   "src_hits": 23,
+   "src_hits": 24,
    "evidence": [
     "R-NEW-417 DEX onTouchEvent override dispatch",
     "evidence/s122 chess"
@@ -894,9 +898,14 @@
    "id": "CAP-INPUT-102",
    "layer": "INPUT",
    "name": "TouchTarget",
-   "status": "PENDING",
-   "src_hits": 0,
-   "evidence": []
+   "status": "TESTED",
+   "src_hits": 3,
+   "evidence": [
+    "S128 R-NEW-424 TouchTarget chain law (reverse draw-order + chain capture)",
+    "run/s128 calc_taps max_chain=5 + PerformClick x3 + display state change",
+    "run/s128 flappy chain + StartscreenView onTouchEvent arm",
+    "116-stage battery ALL PASS"
+   ]
   },
   {
    "id": "CAP-INPUT-103",
@@ -954,7 +963,7 @@
    "layer": "INPUT",
    "name": "GestureDetector",
    "status": "IMPLEMENTED",
-   "src_hits": 75,
+   "src_hits": 107,
    "evidence": []
   },
   {
@@ -1481,7 +1490,7 @@
    "layer": "VIDEO",
    "name": "frame timing",
    "status": "IMPLEMENTED",
-   "src_hits": 119,
+   "src_hits": 120,
    "evidence": []
   },
   {

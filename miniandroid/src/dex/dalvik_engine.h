@@ -1344,6 +1344,12 @@ public:
     // return (true = the listener owns the gesture, AOSP View.dispatchTouchEvent).
     bool dispatch_touch_listener(uint32_t view_object_id, int action,
                                  float x, float y, bool& consumed);
+    // S128 (R-NEW-424, CAP-INPUT-100): dispatch ViewGroup.onInterceptTouchEvent
+    // for the TouchTarget pipeline. `intercepted` mirrors the override's
+    // boolean return (true = this ViewGroup takes the gesture from its
+    // children — AOSP ViewGroup.dispatchTouchEvent law).
+    bool dispatch_intercept(uint32_t view_object_id, int action, float x,
+                            float y, bool& intercepted);
     // GOLDEN-02: AOSP View.performLongClick() law — dispatch to the
     // registered OnLongClickListener.onLongClick(View)Z via
     // try_recursive_invoke, using the REAL listener object stored by

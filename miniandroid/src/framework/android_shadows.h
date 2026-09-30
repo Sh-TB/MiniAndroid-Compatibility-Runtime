@@ -1057,6 +1057,13 @@ public:
         // the touchable gate must include this, else the whole custom-view
         // game family is tap-dead (klondike GameView evidence).
         bool overrides_touch_event = false;
+        // S128 (R-NEW-424, CAP-INPUT-100): TRUE when the DEX chain overrides
+        // ViewGroup.onInterceptTouchEvent — AOSP ViewGroup.dispatchTouchEvent
+        // asks every ViewGroup along the dispatch chain BEFORE the child gets
+        // the event (DOWN: intercept-at-down retargets the gesture to the
+        // ViewGroup itself; MOVE: mid-gesture interception CANCELs the child
+        // target and retargets the parent — scrolling containers law).
+        bool overrides_intercept_touch_event = false;
         // S123 (R-NEW-419): TRUE when the DEX chain overrides onSizeChanged —
         // dispatched at the draw site with the node's laid-out pixel size
         // (AOSP View.setFrame law: size change → onSizeChanged BEFORE the

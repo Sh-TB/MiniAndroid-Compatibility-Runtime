@@ -281,6 +281,8 @@ CAP_EVIDENCE = {
     ("INPUT", "MotionEvent"): ("VERIFIED", ["touch_dispatcher + scripts/autoplay drivers", "evidence/s119_games 6 games real taps", "evidence/s121 opmt/fishrings taps", "3-run reproducible input schedules"]),
     ("INPUT", "click"): ("VERIFIED", ["S123 TAG-TRACE getTag click chain (calc targets 79/80/81)", "evidence/s123_themed_apps calc2_display_after_keypad_input.jpg"]),
     ("INPUT", "onTouchEvent"): ("TESTED", ["R-NEW-417 DEX onTouchEvent override dispatch", "evidence/s122 chess"]),
+    ("INPUT", "TouchTarget"): ("TESTED", ["S128 R-NEW-424 TouchTarget chain law (reverse draw-order + chain capture)", "run/s128 calc_taps max_chain=5 + PerformClick x3 + display state change", "run/s128 flappy chain + StartscreenView onTouchEvent arm", "116-stage battery ALL PASS"]),
+    ("INPUT", "onInterceptTouchEvent"): ("IMPLEMENTED", ["S128 R-NEW-424 intercept pass: onInterceptTouchEvent DEX bridge + intercept-at-DOWN retarget + mid-gesture CANCEL law", "116-stage battery ALL PASS", "real-APK DEX-override wave pending (no tap-path override in current wave set)"]),
     ("FRAMES", "Choreographer"): ("TESTED", ["choreographer_shadow + post-lifecycle frame pump (S39 pump law)", "evidence/s123 flappycow G08-LAUNCH"]),
     ("ANIMATION", "ValueAnimator"): ("TESTED", ["animator_shadow.cpp", "evidence/s115_sweep animation fixtures"]),
     ("SCROLLING", "ScrollView"): ("TESTED", ["R-NEW-336 ScrollView-root chain + evidence/s38 wave4 scroll_min fixture"]),

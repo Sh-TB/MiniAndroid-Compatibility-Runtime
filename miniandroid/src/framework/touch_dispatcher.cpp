@@ -33,6 +33,33 @@ const char* touch_action_name(TouchAction a) {
     return "?";
 }
 
+// S128 (R-NEW-424, CAP-INPUT-100): run onInterceptTouchEvent along the
+// TouchTarget chain — AOSP ViewGroup.dispatchTouchEvent asks EVERY ViewGroup
+// in the chain, root-most FIRST (the outermost container decides before its
+// descendants). Returns the intercepting view id (0 = nobody intercepted).
+// requestDisallowInterceptTouchEvent is a documented boundary (no child-set
+// disallow flag API in this runtime yet — recorded in the master worklist).
+uint32_t TouchDispatcher::run_intercept_chain(int action, int x, int y,
+                                              nlohmann::json* rec) {
+    if (!intercept_fn_ || gesture_chain_.size() < 2) return 0;
+    for (auto it = gesture_chain_.rbegin(); it != gesture_chain_.rend(); ++it) {
+        const auto* n = views_->find_node(*it);
+        if (!n || !n->overrides_intercept_touch_event) continue;
+        bool intercepted = false;
+        const bool dispatched =
+            intercept_fn_(*it, action, float(x), float(y), intercepted);
+        if (rec) {
+            nlohmann::json ask;
+            ask["view_id"] = *it;
+            ask["dispatched"] = dispatched;
+            ask["intercepted"] = intercepted;
+            (*rec)["intercept_asked"].push_back(ask);
+        }
+        if (dispatched && intercepted) return *it;
+    }
+    return 0;
+}
+
 TouchDispatcher::TouchDispatcher(ViewShadow* views, HandlerShadow* handler,
                                  const Config& cfg)
     : views_(views), handler_(handler), cfg_(cfg) {}
@@ -90,6 +117,7 @@ void TouchDispatcher::reset_gesture() {
     unschedule(tok_perform_click_);
     unschedule(tok_unset_pressed_);
     gesture_target_ = 0;
+    gesture_chain_.clear();
     pressed_ = false;
     has_performed_long_press_ = false;
     touch_listener_owns_ = false;  // F-110e
@@ -157,6 +185,13 @@ nlohmann::json TouchDispatcher::dispatch(uint32_t root_id,
             // target=0 while the board paints (run/s79_reproofs/fishrings_s10).
             // MINIANDROID_HITPROBE=1 logs every walked node (render-neutral,
             // stderr-only probe) to keep the producer trace inspectable.
+            // ────────────────────────────────────────────────────────────
+            // S128 (R-NEW-424, CAP-INPUT-102 TouchTarget law): children are
+            // iterated in REVERSE draw order (AOSP ViewGroup.dispatchTouchEvent
+            // walks `for (int i = childrenCount - 1; i >= 0; i--)`): the
+            // TOPMOST-drawn sibling at the point wins — first-in-order used to
+            // win overlaps, which hands the gesture to a view painted UNDER
+            // its later sibling (z-order inversion).
             uint32_t target = 0;
             const bool hitprobe = getenv("MINIANDROID_HITPROBE") != nullptr;
             std::function<void(uint32_t, int)> walk = [&](uint32_t id,
@@ -172,11 +207,26 @@ nlohmann::json TouchDispatcher::dispatch(uint32_t root_id,
                               << view_touchable(*n) << " kids="
                               << n->children.size() << std::endl;
                 if (at && view_touchable(*n)) target = id;  // deepest wins
-                for (uint32_t cid : n->children) walk(cid, depth + 1);
+                for (auto cit = n->children.rbegin();
+                     cit != n->children.rend(); ++cit)
+                    walk(*cit, depth + 1);
             };
             walk(root_id, 0);
             gesture_target_ = target;
+            // S128 (CAP-INPUT-102): capture the TouchTarget chain — the
+            // target plus every ancestor up to the dispatch root. AOSP: each
+            // ViewGroup in the chain holds its own mFirstTouchTarget; MOVE/UP
+            // dispatch through the chain (and the intercept pass runs along
+            // it) instead of re-hit-testing.
+            gesture_chain_.clear();
+            for (uint32_t cur = target; cur != 0;) {
+                gesture_chain_.push_back(cur);
+                const auto* cn = views_->find_node(cur);
+                if (!cn || cn->parent_id == 0 || cn->view_id == root_id) break;
+                cur = cn->parent_id;
+            }
             rec["target_view_id"] = target;
+            rec["touch_target_chain"] = gesture_chain_;
             if (const auto* tn = views_->find_node(target))
                 rec["target_class"] = tn->class_desc;
             if (target == 0) {
@@ -184,6 +234,32 @@ nlohmann::json TouchDispatcher::dispatch(uint32_t root_id,
                 rec["law"] = "no touch target — dispatchTouchEvent returns "
                              "false, no listener dispatch";
                 break;
+            }
+            // S128 (CAP-INPUT-100): intercept pass at DOWN. AOSP
+            // ViewGroup.dispatchTouchEvent asks onInterceptTouchEvent(DOWN)
+            // on the ViewGroups of the chain (root-most first) BEFORE the
+            // child is handed the event; a true return retargets the gesture
+            // to the intercepting ViewGroup itself (its own onTouchEvent
+            // processing follows — pressed/long-press arms below if it is
+            // touchable).
+            if (const uint32_t interceptor =
+                    run_intercept_chain(0 /*ACTION_DOWN*/, ev.x, ev.y, &rec)) {
+                gesture_target_ = interceptor;
+                gesture_chain_.clear();
+                for (uint32_t cur = interceptor; cur != 0;) {
+                    gesture_chain_.push_back(cur);
+                    const auto* cn = views_->find_node(cur);
+                    if (!cn || cn->parent_id == 0 || cn->view_id == root_id)
+                        break;
+                    cur = cn->parent_id;
+                }
+                rec["intercepted_at_down"] = true;
+                rec["intercept_view_id"] = interceptor;
+                rec["target_view_id"] = interceptor;
+                rec["touch_target_chain"] = gesture_chain_;
+                target = interceptor;
+                const auto* tn2 = views_->find_node(target);
+                if (tn2) rec["target_class"] = tn2->class_desc;
             }
             const auto* n = views_->find_node(target);
             const bool touchable = view_touchable(*n);
@@ -239,6 +315,48 @@ nlohmann::json TouchDispatcher::dispatch(uint32_t root_id,
         case TouchAction::MOVE: {
             if (gesture_target_ == 0) {
                 rec["consumed"] = false;
+                break;
+            }
+            // S128 (CAP-INPUT-100): mid-gesture interception. AOSP
+            // ViewGroup.dispatchTouchEvent runs onInterceptTouchEvent(MOVE)
+            // along the chain BEFORE handing MOVE to the captured target; a
+            // true return sends ACTION_CANCEL to the child and the ViewGroup
+            // owns the gesture from that point (scrolling containers law).
+            if (const uint32_t interceptor =
+                    run_intercept_chain(1 /*ACTION_MOVE*/, ev.x, ev.y, &rec)) {
+                if (touch_listener_owns_ && touch_fn_) {
+                    bool consumed_by_listener = false;
+                    touch_fn_(gesture_target_, 3 /*ACTION_CANCEL*/, ev.x,
+                              ev.y, consumed_by_listener);
+                    rec["cancel_dispatched_to_listener"] = true;
+                }
+                unpress(gesture_target_, &rec);
+                unschedule(tok_check_long_press_);
+                rec["intercepted_mid_gesture"] = true;
+                rec["intercept_view_id"] = interceptor;
+                rec["cancel_sent_to"] = gesture_target_;
+                gesture_target_ = interceptor;
+                gesture_chain_.clear();
+                for (uint32_t cur = interceptor; cur != 0;) {
+                    gesture_chain_.push_back(cur);
+                    const auto* cn = views_->find_node(cur);
+                    if (!cn || cn->parent_id == 0 || cn->view_id == root_id)
+                        break;
+                    cur = cn->parent_id;
+                }
+                rec["touch_target_chain"] = gesture_chain_;
+                touch_listener_owns_ = false;
+                const auto* in = views_->find_node(interceptor);
+                if (in && in->enabled && view_touchable(*in)) {
+                    press(interceptor, ev.x, ev.y, &rec);
+                    has_performed_long_press_ = false;
+                    schedule(tok_check_long_press_, "CheckForLongPress",
+                             cfg_.long_press_timeout_ms);
+                }
+                rec["consumed"] = true;
+                rec["law"] = "ViewGroup.dispatchTouchEvent: mid-gesture "
+                             "interception CANCELs the child target and "
+                             "retargets the ViewGroup";
                 break;
             }
             const auto* n = views_->find_node(gesture_target_);

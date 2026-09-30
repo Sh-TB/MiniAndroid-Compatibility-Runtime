@@ -8711,6 +8711,10 @@ bool DalvikExecutionEngine::run_custom_view_constructor(
                 node->overrides_on_measure = overrides;
                 // S122 (R-NEW-417): same capture for the touch gate.
                 node->overrides_touch_event = overrides_touch;
+                // S128 (R-NEW-424, CAP-INPUT-100): same capture for the
+                // ViewGroup.onInterceptTouchEvent intercept gate.
+                node->overrides_intercept_touch_event =
+                    class_chain_defines_method(cls, "onInterceptTouchEvent");
                 // S123 (R-NEW-419): same capture for the onSizeChanged law —
                 // dispatched before the first onDraw with the laid-out size.
                 node->overrides_on_size_changed =
@@ -9195,6 +9199,60 @@ bool DalvikExecutionEngine::dispatch_touch_listener(uint32_t view_object_id,
     std::cerr << "[UI-EVENT] event=TOUCH action=" << action << " result="
               << (dispatched ? "DISPATCHED" : "FAILED")
               << " consumed=" << (consumed ? "true" : "false") << std::endl;
+    return dispatched;
+}
+
+// S128 (R-NEW-424, CAP-INPUT-100) — ViewGroup.onInterceptTouchEvent law.
+// AOSP ViewGroup.dispatchTouchEvent: when the DEX chain of a ViewGroup
+// overrides onInterceptTouchEvent, the override decides whether THIS ViewGroup
+// steals the gesture from its children. Default (no override) = false — the
+// AOSP ViewGroup implementation returns false unless a subclass overrides it.
+// The MotionEvent is materialized with the same bridge law as onTouch.
+bool DalvikExecutionEngine::dispatch_intercept(uint32_t view_object_id,
+                                                int action, float x, float y,
+                                                bool& intercepted) {
+    intercepted = false;
+    if (shadow_registry_ == nullptr) return false;
+    auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+    if (view_shadow == nullptr) return false;
+    const auto* node = view_shadow->find_node(view_object_id);
+    if (node == nullptr) return false;
+    // No override in the class chain → AOSP default: never intercepts.
+    if (!node->overrides_intercept_touch_event) return false;
+
+    std::string cls = node->class_desc;
+    if (!cls.empty() && cls[0] == 'L' && cls.find('.') != std::string::npos) {
+        std::string norm = "L";
+        for (size_t i = 1; i < cls.size(); ++i)
+            norm += (cls[i] == '.') ? '/' : cls[i];
+        cls = norm;
+    }
+    uint32_t ev_id = heap_.allocate("Landroid/view/MotionEvent;", pc_,
+                                    call_stack_.empty() ? 0
+                                                        : call_stack_.top().frame_id);
+    heap_.set_object_field(ev_id, "__action__", DalvikValue::make_int(action));
+    heap_.set_object_field(ev_id, "__x__", DalvikValue::make_float(x));
+    heap_.set_object_field(ev_id, "__y__", DalvikValue::make_float(y));
+
+    std::cerr << "[UI-EVENT] event=INTERCEPT action=" << action
+              << " view_object=" << view_object_id
+              << " view_class=" << node->class_desc
+              << " arm=onInterceptTouchEvent(override)" << std::endl;
+    // AOSP ViewGroup.onInterceptTouchEvent(MotionEvent ev):
+    //   args[0] = this (the ViewGroup)  args[1] = the event.
+    std::vector<DalvikValue> args;
+    args.push_back(DalvikValue::make_object(view_object_id, node->class_desc));
+    args.push_back(DalvikValue::make_object(ev_id, "Landroid/view/MotionEvent;"));
+    DalvikValue ret = DalvikValue::make_void();
+    DalvikExecutionResult res;
+    bool dispatched = try_recursive_invoke(cls, "onInterceptTouchEvent", args,
+                                           ret, res);
+    if (dispatched && ret.type == DalvikType::BOOLEAN)
+        intercepted = ret.int_val != 0;
+    std::cerr << "[UI-EVENT] event=INTERCEPT action=" << action << " result="
+              << (dispatched ? "DISPATCHED" : "FAILED")
+              << " intercepted=" << (intercepted ? "true" : "false")
+              << std::endl;
     return dispatched;
 }
 
@@ -16598,6 +16656,9 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
                 // S122 (R-NEW-417): same capture for the touch gate.
                 node->overrides_touch_event =
                     class_chain_defines_method(cls, "onTouchEvent");
+                // S128 (R-NEW-424, CAP-INPUT-100): intercept-gate capture.
+                node->overrides_intercept_touch_event =
+                    class_chain_defines_method(cls, "onInterceptTouchEvent");
                 // S123 (R-NEW-419): same capture for the onSizeChanged law.
                 node->overrides_on_size_changed =
                     class_chain_defines_method(cls, "onSizeChanged");
