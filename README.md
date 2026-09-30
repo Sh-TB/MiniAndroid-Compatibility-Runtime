@@ -40,7 +40,7 @@ Dalvik-class interpreter over a deterministic software raster pipeline.
 | Content-verified tier | **22 VERIFIED** (+ 5 candidate visual/interactive, 12 interactive GIF titles) — [ACHIEVEMENTS.md](docs/ACHIEVEMENTS.md) |
 | Honest frontier tier | 112 OBSERVED · 7 PARTIAL-family · 1 FRAME_CAPTURED · 1 FAILED — each with recorded cause |
 | Regression battery | **99/99 ALL PASS** — [testing/BATTERY_INDEX.json](docs/testing/BATTERY_INDEX.json) |
-| Engine roots closed | **420-root append-only registry**; 21+ ROOT-CAUSED-FIXED families — [root_registry.json](root_registry.json) |
+| Engine roots closed | **421-root append-only registry**; 21+ ROOT-CAUSED-FIXED families — [root_registry.json](root_registry.json) |
 | Source-first library | **127 entries · 122 distinct verified repos · 48 evidenced laws · 65 deep-inspected** — [GRAPHICS_SOURCE_REGISTRY.md](docs/GRAPHICS_SOURCE_REGISTRY.md) |
 | Open problem state | **33 canonical tickets** (1 P0 · 10 P1 · 16 P2 · 6 P3; 29 open / 4 CLOSED) — [TICKET_REGISTRY.json](docs/TICKET_REGISTRY.json) |
 | Position on 0→100 scale | **~52/100** (chain proven E4–E6; deep semantics open in text shaping, real networking, media-at-APK, web, native, modern runtimes) |
@@ -57,7 +57,7 @@ Dalvik-class interpreter over a deterministic software raster pipeline.
 | Per-capability matrix | [docs/CAPABILITY_MATRIX.md](docs/CAPABILITY_MATRIX.md) |
 | App registry (L0–L7 checkpoints; honest BLOCKED frontiers) | [canonical/app_registry.json](canonical/app_registry.json) |
 | Game registry (88 titles; OBSERVED ≠ VERIFIED) | [canonical/game_registry.json](canonical/game_registry.json) |
-| Root-cause read model (420 roots) | [canonical/root_cause_registry.json](canonical/root_cause_registry.json) |
+| Root-cause read model (421 roots) | [canonical/root_cause_registry.json](canonical/root_cause_registry.json) |
 | Evidence registry (waves + evidence law) | [canonical/evidence_registry.json](canonical/evidence_registry.json) |
 | Title × subsystem compatibility matrix | [canonical/compatibility_matrix.json](canonical/compatibility_matrix.json) |
 
