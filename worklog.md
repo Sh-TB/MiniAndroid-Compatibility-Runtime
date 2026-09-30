@@ -4692,3 +4692,22 @@ Work Log:
 Stage Summary:
 - The framework RES-TABLE base now decodes the REAL modern framework-res end-to-end: compact entries + reference chains + file-backed ColorStateLists, all verified against aapt2 dump ground truth. The S126 "4 golden failures" are closed by ONE P0 root with four generic laws, zero app checks.
 - Next frontiers (computed): INPUT/VIDEO/GAME capability layers; S68 default-theme law (uNote no-manifest-theme -> platform default); per-activity themes (sudoku SplashTheme); Telegram SvgHelper + WhatsApp AppContext.set frontiers unchanged.
+
+---
+Task ID: S128
+Agent: main
+Task: MASTER CAMPAIGN — "STOP HIDING THE MASTER WORKLIST" (user EN directive): Phase 0 = build the REAL canonical master worklist covering the entire MiniAndroid base, show it, then continue executing.
+
+Work Log:
+- Phase-0 audit (scripts/s128_audit_state.py -> audit/s128_state_dump.json): read root_registry (421 roots; 195 open = 103 PARTIAL + 72 UNPROVEN + 16 RESEARCHED-NOT-IMPLEMENTED + 4 OPEN F-*), 197 caps (37 PENDING), 15 apps, 88 games, worklog S120-S127, 100 open GitHub issues, keyword sweep (TODO/FIXME/STUB/PLACEHOLDER/HARDCODED/not-implemented).
+- REGISTRY REPAIR R1: audit found FlappyCow / GameMasterDice / Snake Neon missing from docs/verified_executed_games.json — the S125 GAME_OVERRIDES for them were silently dead. scripts/s128_registry_repair.py (idempotent) added 3 evidence-shaped rows; canonical regenerated: 91 games, overrides bind (GAME-024 FlappyCow, GAME-025 gmdice, GAME-026 snake-neon). Game IDs shifted +3 for observed titles (ids are generation-order, not permanent keys).
+- Built the taxonomy: scripts/s128_master_categories.py — the campaign's 127 required categories + 2 discovered (128 security/sandbox boundary, 129 IPC/Binder/Parcel) = MC-001..MC-129, each with AOSP/upstream reference + mature implementation (TOOL-FIRST law), plus a secondary probe-code classifier (MQ-*/LK-*/UI-*) and terse-entry inheritance (same-as-NNN). Result: 0 unclassified items.
+- Built the worklist: scripts/s128_worklist_data.py (480 items = 421 roots + 37 PENDING caps + 22 campaign-mandated M-items; registry-status -> worklist-status mapping law; 27 fields per item) + scripts/s128_build_master_worklist.py (renderer).
+- EMITTED: canonical/master_worklist.json (machine twin) + docs/MASTER_WORKLIST.md (8723 lines, VISIBLE): S0 laws, S1 status counts, S2 visual roadmap (DONE/IN-PROGRESS/PENDING/BLOCKED/SUPERSEDED + 19-node pipeline table APK->...->REDRAW with per-node open roots/caps/APKs/next blocker), S3 APK coverage matrix (27 targets x 15 columns LOAD..REDRAW, computed from L0-L7 + frontier overrides), S4 root-cause clustering (16 clusters), S5 dependency graph + critical path (R-NEW-294 -> 295 -> 246/279/285 -> 256 -> 242 -> dooz unblock; M-01 INPUT -> corpus; M-03 GAME -> SurfaceView corpus), S6 P0-P4 queues, S7 all 129 categories, S8 full 27-field records for all 260 open items, S9 closed ledger (220), S10 campaign watchlist, S11 audit trail.
+- Counts (computed): VERIFIED_3RUN 3 · VERIFIED 148 · TESTED 13 · IMPLEMENTED 7 · OBSERVED 6 · PARTIAL 105 · PENDING 145 · BLOCKED 3 · SUPERSEDED 49 · IN_PROGRESS 1 = 480. P0 20 · P1 68 · P2 64 · P3 105 · P4 3 (open).
+- S127 state recorded: R-NEW-423 ROOT-CAUSED-CLOSED/VERIFIED_3RUN (M-18); battery gate zero-FAIL; goldens preserved (calc a169346e x3, flappy menu 13cf4746 x3).
+- Wired into control system: README CONTROL SYSTEM panel row + docs/ROADMAP.md SS3 registry list.
+- Next automatic root (computed, campaign SS18): highest-fan-out unresolved pipeline layer = INPUT (M-01); first law = CAP-INPUT-102 TouchTarget (AOSP ViewGroup.dispatchTouchEvent TouchTarget chain), then intercept/VelocityTracker/EdgeEffect.
+
+Stage Summary:
+- The master worklist now EXISTS, is CANONICAL, GENERATED, and VISIBLE (docs/MASTER_WORKLIST.md + canonical/master_worklist.json); "421 roots" is no longer an abstraction — every open item carries all 27 campaign fields, every category MC-001..MC-129 is explicitly present, the APK matrix and dependency graph are computed, and the P0-P4 queues are recomputed on every regeneration.
