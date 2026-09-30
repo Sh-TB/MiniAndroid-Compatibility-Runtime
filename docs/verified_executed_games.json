@@ -54,7 +54,7 @@
     "Mines (premy)",
     "Memory",
     "Balance the Ball",
-    "OPMT (One More Time\u2026)",
+    "OPMT (One More Time…)",
     "Anuto TD",
     "OpenSudoku",
     "FreeKlondike",
@@ -84,16 +84,16 @@
      "title": "Memory",
      "package": "eu.quelltext.memory",
      "type": "game",
-     "reason": "status VERIFIED at L0 (L0_LOADED_ONLY) with rendered=false \u2014 blank-class frames are not visual evidence (S54 screenshot-gate law)",
-     "action": "downgraded to OBSERVED in this audit (canonical registry untouched \u2014 historical evidence not modified)"
+     "reason": "status VERIFIED at L0 (L0_LOADED_ONLY) with rendered=false — blank-class frames are not visual evidence (S54 screenshot-gate law)",
+     "action": "downgraded to OBSERVED in this audit (canonical registry untouched — historical evidence not modified)"
     },
     {
      "id": "AUD-DG-2",
      "title": "Chess Clock",
      "package": "com.chessclock.android",
      "type": "app",
-     "reason": "status VERIFIED at L0 (L0_LOADED_ONLY) with rendered=false \u2014 blank-class frames are not visual evidence (S54 screenshot-gate law)",
-     "action": "downgraded to OBSERVED in this audit (canonical registry untouched \u2014 historical evidence not modified)"
+     "reason": "status VERIFIED at L0 (L0_LOADED_ONLY) with rendered=false — blank-class frames are not visual evidence (S54 screenshot-gate law)",
+     "action": "downgraded to OBSERVED in this audit (canonical registry untouched — historical evidence not modified)"
     }
    ]
   },
@@ -126,7 +126,7 @@
    {
     "id": "AUD-IC-6",
     "title": "registry vs ACHIEVEMENTS status drift",
-    "detail": "7 GIF titles carry candidate_*/FRAME_CAPTURED/FAILED in registry.json (S92 \u00a729 human-review gate pending) while ACHIEVEMENTS.md prints VERIFIED-INTERACTIVE (12). Both read from the same evidence; the S92-gate promotion was never executed."
+    "detail": "7 GIF titles carry candidate_*/FRAME_CAPTURED/FAILED in registry.json (S92 §29 human-review gate pending) while ACHIEVEMENTS.md prints VERIFIED-INTERACTIVE (12). Both read from the same evidence; the S92-gate promotion was never executed."
    }
   ]
  },
@@ -136,7 +136,7 @@
    "package": "com.miniandroid.snakedeluxe",
    "version": "1.0 (vc1)",
    "kind": "game",
-   "upstream": "in-house \u2014 games/snake-deluxe (source in repo)",
+   "upstream": "in-house — games/snake-deluxe (source in repo)",
    "fdroid": null,
    "apk_sha256": null,
    "registry_status": "candidate_INTERACTION_VERIFIED",
@@ -175,7 +175,7 @@
    "package": "com.miniandroid.tetris",
    "version": "1.0 (vc1)",
    "kind": "game",
-   "upstream": "in-house \u2014 games/mini-tetris (source in repo)",
+   "upstream": "in-house — games/mini-tetris (source in repo)",
    "fdroid": null,
    "apk_sha256": "cb2818dfe6c6cadb651348ddaf4c91c57bea5ecc134f215d25fb5ffdffdf8644",
    "registry_status": "VISUALLY_PARTIAL",
@@ -183,7 +183,7 @@
    "evidence_level": "E5",
    "render_level": "L3 L3_STRUCT_CANDIDATE",
    "sessions": "S80 / S83 / S95",
-   "execution_protocol": "real-dalvik run; START tap at (786,1854) (S95 protocol correction \u2014 old (540,1500) hit no touch target); autoplay driver scripts/s80_tet_autoplay.py",
+   "execution_protocol": "real-dalvik run; START tap at (786,1854) (S95 protocol correction — old (540,1500) hit no touch target); autoplay driver scripts/s80_tet_autoplay.py",
    "interaction": true,
    "state_change_evidence": "piece falls + NEXT queue changes: 6 unique frames per 24-frame run, identical across 3 deterministic runs (wave_c_determinism.json)",
    "recorded_runs": 5,
@@ -213,7 +213,7 @@
    "package": "com.miniandroid.minicraft",
    "version": "1.0",
    "kind": "game",
-   "upstream": "in-house \u2014 games/minicraft (source in repo)",
+   "upstream": "in-house — games/minicraft (source in repo)",
    "fdroid": null,
    "apk_sha256": "77b9629ee111b968ccc9dbd4507eab3564a0a7a6e26dcacbe28f99de189c3a90",
    "registry_status": "candidate_INTERACTION_VERIFIED",
@@ -250,7 +250,7 @@
    "package": "com.miniandroid.g2048",
    "version": "1.0 (vc1)",
    "kind": "game",
-   "upstream": "in-house \u2014 games/2048 (source in repo)",
+   "upstream": "in-house — games/2048 (source in repo)",
    "fdroid": null,
    "apk_sha256": "1b1c602a5f0a27231ebcdcfdc632a96c82f6fb74aaae7d80130ac63ab185d278",
    "registry_status": "candidate_INTERACTION_VERIFIED",
@@ -273,7 +273,7 @@
    "github_issue": null,
    "issue_status": "MISSING_ISSUE",
    "last_verified_commit": "d5946533",
-   "limitations": "rendering L2; S92 reclassification candidate_INTERACTION_VERIFIED pending S92 \u00a729 human review (registry status not yet promoted)",
+   "limitations": "rendering L2; S92 reclassification candidate_INTERACTION_VERIFIED pending S92 §29 human review (registry status not yet promoted)",
    "ticket": null,
    "permanent_evidence": [
     "docs/evidence/canonical/com.miniandroid.g2048.gif",
@@ -287,7 +287,7 @@
    "package": "com.miniandroid.tictactoedeluxe",
    "version": "1.0 (vc1)",
    "kind": "game",
-   "upstream": "in-house \u2014 games/tictactoe-deluxe (source in repo)",
+   "upstream": "in-house — games/tictactoe-deluxe (source in repo)",
    "fdroid": null,
    "apk_sha256": null,
    "registry_status": "candidate_INTERACTION_VERIFIED",
@@ -299,7 +299,7 @@
    "interaction": true,
    "state_change_evidence": "O/X placement + turn flip captured across 4 GIF frames",
    "recorded_runs": 1,
-   "runs_evidence": "S83 canonical session only \u2014 no repeat protocol recorded",
+   "runs_evidence": "S83 canonical session only — no repeat protocol recorded",
    "screenshot": {
     "path": "docs/evidence/canonical/com.miniandroid.tictactoedeluxe.gif",
     "url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/blob/main/docs/evidence/canonical/com.miniandroid.tictactoedeluxe.gif",
@@ -321,7 +321,7 @@
   {
    "title": "Vector Pinball (bouncy)",
    "package": "com.dozingcatsoftware.bouncy",
-   "version": "\u2014",
+   "version": "—",
    "kind": "game",
    "upstream": "https://github.com/dozingcatsoftware/Bouncy",
    "fdroid": "https://f-droid.org/en/packages/com.dozingcatsoftware.bouncy/",
@@ -335,7 +335,7 @@
    "interaction": true,
    "state_change_evidence": "ball launch + score state change captured (registry interacted=true state_changed=true)",
    "recorded_runs": 3,
-   "runs_evidence": "S62+ canonical + S85 sweep + S95 before/after captures (screenshot SHAs 362b191e\u2026 -> cf76282e\u2026)",
+   "runs_evidence": "S62+ canonical + S85 sweep + S95 before/after captures (screenshot SHAs 362b191e… -> cf76282e…)",
    "screenshot": {
     "path": "docs/evidence/canonical/com.dozingcatsoftware.bouncy.gif",
     "url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/blob/main/docs/evidence/canonical/com.dozingcatsoftware.bouncy.gif",
@@ -456,7 +456,7 @@
    "github_issue": null,
    "issue_status": "MISSING_ISSUE",
    "last_verified_commit": "4e44124c",
-   "limitations": "S92 downgraded to FRAME_CAPTURED (assets_rendered/visual failing); S95 vector/adaptive decode fix (GAME-0006 CLOSED) restored SEMANTIC_PASS \u2014 registry status field still FRAME_CAPTURED (recorded as inconsistency AUD-IC-2)",
+   "limitations": "S92 downgraded to FRAME_CAPTURED (assets_rendered/visual failing); S95 vector/adaptive decode fix (GAME-0006 CLOSED) restored SEMANTIC_PASS — registry status field still FRAME_CAPTURED (recorded as inconsistency AUD-IC-2)",
    "ticket": "GAME-0006",
    "permanent_evidence": [
     "docs/evidence/canonical/com.smorgasbork.hotdeath.gif",
@@ -493,7 +493,7 @@
    "github_issue": null,
    "issue_status": "MISSING_ISSUE",
    "last_verified_commit": "4e44124c",
-   "limitations": "S95 verdict SEMANTIC_PARTIAL(0) \u2014 residual named gap: none open (GAME-0003 CLOSED)",
+   "limitations": "S95 verdict SEMANTIC_PARTIAL(0) — residual named gap: none open (GAME-0003 CLOSED)",
    "ticket": "GAME-0003",
    "permanent_evidence": [
     "docs/evidence/canonical/org.bobstuff.bobball.gif",
@@ -505,7 +505,7 @@
   {
    "title": "TicTacToe Classic",
    "package": "com.emmanuelmess.tictactoe",
-   "version": "\u2014",
+   "version": "—",
    "kind": "game",
    "upstream": "F-Droid com.emmanuelmess.tictactoe",
    "fdroid": "https://f-droid.org/en/packages/com.emmanuelmess.tictactoe/",
@@ -543,7 +543,7 @@
   {
    "title": "Anuto TD",
    "package": "ch.logixisland.anuto",
-   "version": "\u2014",
+   "version": "—",
    "kind": "game",
    "upstream": "https://github.com/jogishop/AnutoTD",
    "fdroid": "https://f-droid.org/en/packages/ch.logixisland.anuto/",
@@ -579,7 +579,7 @@
   {
    "title": "OpenSudoku",
    "package": "cz.romario.opensudoku",
-   "version": "\u2014",
+   "version": "—",
    "kind": "game",
    "upstream": "https://github.com/romario333/opensudoku",
    "fdroid": "https://f-droid.org/en/packages/cz.romario.opensudoku/",
@@ -615,7 +615,7 @@
   {
    "title": "FreeKlondike",
    "package": "eu.veldsoft.free.klondike",
-   "version": "\u2014",
+   "version": "—",
    "kind": "game",
    "upstream": "https://github.com/VelbazhdSoftwareLLC/FreeKlondike",
    "fdroid": "https://f-droid.org/en/packages/eu.veldsoft.free.klondike/",
@@ -692,7 +692,7 @@
   {
    "title": "TriPeaks",
    "package": "eu.veldsoft.tri.peaks",
-   "version": "\u2014",
+   "version": "—",
    "kind": "game",
    "upstream": "https://github.com/VelbazhdSoftwareLLC/TriPeaks",
    "fdroid": "https://f-droid.org/en/packages/eu.veldsoft.tri.peaks/",
@@ -726,9 +726,9 @@
    "downgrade": null
   },
   {
-   "title": "OPMT (One More Time\u2026)",
+   "title": "OPMT (One More Time…)",
    "package": "one.scarecrow.games.OPMT",
-   "version": "\u2014",
+   "version": "—",
    "kind": "game",
    "upstream": "https://github.com/scarecrowgames/OneMoreTimePuzzleGame",
    "fdroid": "https://f-droid.org/en/packages/one.scarecrow.games.OPMT/",
@@ -757,7 +757,7 @@
    "ticket": null,
    "permanent_evidence": [
     "docs/evidence/canonical/one.scarecrow.games.OPMT.jpg",
-    "docs/ACHIEVEMENTS.md#opmt-one-more-time\u2026"
+    "docs/ACHIEVEMENTS.md#opmt-one-more-time…"
    ],
    "downgrade": null
   },
@@ -800,7 +800,7 @@
   {
    "title": "Mines (premy)",
    "package": "cos.premy.mines",
-   "version": "\u2014",
+   "version": "—",
    "kind": "game",
    "upstream": "F-Droid",
    "fdroid": "https://f-droid.org/en/packages/cos.premy.mines/",
@@ -872,7 +872,7 @@
   {
    "title": "Balance the Ball",
    "package": "com.jeffliu.balancetheball",
-   "version": "\u2014",
+   "version": "—",
    "kind": "game",
    "upstream": "F-Droid",
    "fdroid": "https://f-droid.org/en/packages/com.jeffliu.balancetheball/",
@@ -897,7 +897,7 @@
    "github_issue": null,
    "issue_status": "MISSING_ISSUE",
    "last_verified_commit": "d5946533",
-   "limitations": "no interaction probe (sensor-driven game \u2014 tilt not implemented)",
+   "limitations": "no interaction probe (sensor-driven game — tilt not implemented)",
    "ticket": null,
    "permanent_evidence": [
     "docs/evidence/canonical/com.jeffliu.balancetheball.jpg",
@@ -944,7 +944,7 @@
   {
    "title": "Memory",
    "package": "eu.quelltext.memory",
-   "version": "\u2014",
+   "version": "—",
    "kind": "game",
    "upstream": "F-Droid",
    "fdroid": "https://f-droid.org/en/packages/eu.quelltext.memory/",
@@ -969,13 +969,73 @@
    "github_issue": null,
    "issue_status": "MISSING_ISSUE",
    "last_verified_commit": "d5946533",
-   "limitations": "EVIDENCE DOWNGRADE AUD-DG-1: canonical status VERIFIED at L0 with rendered=false \u2014 blank-class frames are not visual evidence (S54 law); audit status OBSERVED",
+   "limitations": "EVIDENCE DOWNGRADE AUD-DG-1: canonical status VERIFIED at L0 with rendered=false — blank-class frames are not visual evidence (S54 law); audit status OBSERVED",
    "ticket": null,
    "permanent_evidence": [
     "docs/evidence/canonical/eu.quelltext.memory.jpg",
     "docs/ACHIEVEMENTS.md#memory"
    ],
    "downgrade": "AUD-DG-1"
+  },
+  {
+   "title": "FlappyCow",
+   "package": "com.quchen.flappycow",
+   "version": "rebuilt (S123)",
+   "kind": "game",
+   "upstream": "upstream source rebuild — upload/flappycow_rebuilt.apk",
+   "fdroid": null,
+   "apk_sha256": null,
+   "registry_status": "candidate_INTERACTION_VERIFIED",
+   "audit_status": "VERIFIED",
+   "evidence_level": "E5",
+   "render_level": "L4 L4_RENDER_CANDIDATE",
+   "sessions": "S123 / S124 / S127",
+   "execution_protocol": "real-dalvik run; start-screen golden 13cf4746 3-run byte-identical (S124, re-proven S127 wave); G08-LAUNCH chain: PLAY tap (541,910) -> StartscreenView.onTouchEvent -> startActivity(new Intent(com.quchen.flappycow.Game)) -> Game activity full lifecycle (onCreate 976 instructions)",
+   "interaction": true,
+   "state_change_evidence": "23472 px state change on PLAY tap (S123)",
+   "recorded_runs": 3,
+   "runs_evidence": "S123/S124/S127 golden waves",
+   "note": "Start screen VERIFIED_3RUN; gameplay blocked by GMS frontier (honest: load+menu render only)"
+  },
+  {
+   "title": "GameMasterDice",
+   "package": "de.duenndns.gmdice",
+   "version": "8",
+   "kind": "game",
+   "upstream": "F-Droid (de.duenndns.gmdice)",
+   "fdroid": "https://f-droid.org/packages/de.duenndns.gmdice/",
+   "apk_sha256": null,
+   "registry_status": "VERIFIED",
+   "audit_status": "VERIFIED",
+   "evidence_level": "E5",
+   "render_level": "L4",
+   "sessions": "S121 / S124 / S127",
+   "execution_protocol": "real-dalvik run; S121 full-load + roll tap state change; S124 themed menu render; S127 wave stable",
+   "interaction": true,
+   "state_change_evidence": "agent roll tap -> dice result change (S121)",
+   "recorded_runs": 2,
+   "runs_evidence": "S121, S127 wave",
+   "note": "full-load + themed menu + roll interaction (S124 theme base)"
+  },
+  {
+   "title": "Snake Neon",
+   "package": "com.miniandroid.snakeneon",
+   "version": "1.0 (vc1)",
+   "kind": "game",
+   "upstream": "in-house — games/snake-neon (source in repo)",
+   "fdroid": null,
+   "apk_sha256": null,
+   "registry_status": "candidate_INTERACTION_VERIFIED",
+   "audit_status": "VERIFIED",
+   "evidence_level": "E5",
+   "render_level": "L4",
+   "sessions": "S119",
+   "execution_protocol": "real-dalvik run, autoplay driver; score=10 len=4 HUD-anchored",
+   "interaction": true,
+   "state_change_evidence": "score 10 / len 4 HUD (S119)",
+   "recorded_runs": 1,
+   "runs_evidence": "S119 wave",
+   "note": "wrap-wall BFS AI reference implementation for snake_deluxe port"
   }
  ],
  "observed_games": [
@@ -994,7 +1054,7 @@
    "apk_sha256": null,
    "upstream": null,
    "artifact": null,
-   "notes": "S85 sweep promotion: prior OBSERVED \u2192 L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
+   "notes": "S85 sweep promotion: prior OBSERVED → L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
   },
   {
    "title": "com.clavierhaus.gnubg",
@@ -1011,7 +1071,7 @@
    "apk_sha256": "a951da343ca91f10512d888802123cb040c4be72dc3d3eb58ce8ddfab80d78ff",
    "upstream": "https://github.com/clavierhaus/gnubg-android",
    "artifact": null,
-   "notes": "S84 NEW title. rc_obs=1 errors=32 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=3 entropy=0.034 resources(dex/classes)=? [frame belongs to the shared/near-blank content class \u2014 not canonical visual evidence per S54 law]"
+   "notes": "S84 NEW title. rc_obs=1 errors=32 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=3 entropy=0.034 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]"
   },
   {
    "title": "com.galaxyrio.sudokusolver",
@@ -1045,7 +1105,7 @@
    "apk_sha256": "68af653d1dc0b1841374100462163c12a36fe5c9afe4b187bd1a0400fe546dc7",
    "upstream": "https://codeberg.org/Mental-Math/MentalMath",
    "artifact": null,
-   "notes": "S84 NEW title. rc_obs=1 errors=32 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=3 entropy=0.034 resources(dex/classes)=? [frame belongs to the shared/near-blank content class \u2014 not canonical visual evidence per S54 law]"
+   "notes": "S84 NEW title. rc_obs=1 errors=32 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=3 entropy=0.034 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]"
   },
   {
    "title": "com.kaeruct.raumballer",
@@ -1062,7 +1122,7 @@
    "apk_sha256": "e0eb9a7dfbd82162c44e25d0294b89f6f811396cce7691a969443bd271658bc1",
    "upstream": "https://github.com/KaeruCT/RaumBaller",
    "artifact": null,
-   "notes": "S84 NEW title. rc_obs=1 errors=1 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=1 entropy=-0.0 resources(dex/classes)=? [frame belongs to the shared/near-blank content class \u2014 not canonical visual evidence per S54 law]"
+   "notes": "S84 NEW title. rc_obs=1 errors=1 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=1 entropy=-0.0 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]"
   },
   {
    "title": "com.kingalex.kingpong",
@@ -1079,7 +1139,7 @@
    "apk_sha256": "9545a66697a83c25957767b7f9adb296d71fd57e30365dc742225104feb70b66",
    "upstream": "https://github.com/KingAlexGilbert/king-pong",
    "artifact": null,
-   "notes": "S84 NEW title. rc_obs=0 errors=0 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=1 entropy=-0.0 resources(dex/classes)=? [frame belongs to the shared/near-blank content class \u2014 not canonical visual evidence per S54 law]"
+   "notes": "S84 NEW title. rc_obs=0 errors=0 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=1 entropy=-0.0 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]"
   },
   {
    "title": "com.octbit.rutmath",
@@ -1096,7 +1156,7 @@
    "apk_sha256": null,
    "upstream": null,
    "artifact": null,
-   "notes": "S85 sweep promotion: prior OBSERVED \u2192 L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
+   "notes": "S85 sweep promotion: prior OBSERVED → L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
   },
   {
    "title": "com.qwde.ccm",
@@ -1113,7 +1173,7 @@
    "apk_sha256": null,
    "upstream": null,
    "artifact": null,
-   "notes": "S85 sweep promotion: prior OBSERVED \u2192 L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
+   "notes": "S85 sweep promotion: prior OBSERVED → L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
   },
   {
    "title": "com.sanskritbasics.memory",
@@ -1130,7 +1190,7 @@
    "apk_sha256": null,
    "upstream": null,
    "artifact": null,
-   "notes": "S85 sweep promotion: prior OBSERVED \u2192 L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
+   "notes": "S85 sweep promotion: prior OBSERVED → L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
   },
   {
    "title": "RetroWars",
@@ -1147,7 +1207,7 @@
    "apk_sha256": null,
    "upstream": null,
    "artifact": null,
-   "notes": "S85 sweep promotion: prior OBSERVED \u2192 L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
+   "notes": "S85 sweep promotion: prior OBSERVED → L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
   },
   {
    "title": "com.sidhant.bubbleshooter",
@@ -1164,7 +1224,7 @@
    "apk_sha256": null,
    "upstream": null,
    "artifact": null,
-   "notes": "S87 re-probe at HEAD; upstream sidhant947/BubbleShooter (SurfaceView-family game; lifecycle completes but nothing inflates \u2014 honest open)"
+   "notes": "S87 re-probe at HEAD; upstream sidhant947/BubbleShooter (SurfaceView-family game; lifecycle completes but nothing inflates — honest open)"
   },
   {
    "title": "com.sidhant.puzzle",
@@ -1181,7 +1241,7 @@
    "apk_sha256": null,
    "upstream": null,
    "artifact": null,
-   "notes": "S85 sweep promotion: prior OBSERVED \u2192 L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
+   "notes": "S85 sweep promotion: prior OBSERVED → L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
   },
   {
    "title": "com.vayunmathur.games.alchemist",
@@ -1198,7 +1258,7 @@
    "apk_sha256": "88a0ac6f06e9c57f25977ebcfd49081d2e909137619b5359246e5bd1411c74f1",
    "upstream": "https://github.com/vayun-mathur/Modern-Apps",
    "artifact": null,
-   "notes": "S84 NEW title. rc_obs=1 errors=15 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=3 entropy=0.034 resources(dex/classes)=? [frame belongs to the shared/near-blank content class \u2014 not canonical visual evidence per S54 law]"
+   "notes": "S84 NEW title. rc_obs=1 errors=15 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=3 entropy=0.034 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]"
   },
   {
    "title": "com.vovagorodok.blichess",
@@ -1215,7 +1275,7 @@
    "apk_sha256": "3ae86223a70439511f32ffe7489de6050b430dd9692d7a45ae6506933dddc69d",
    "upstream": "https://github.com/vovagorodok/blichess/",
    "artifact": null,
-   "notes": "S84 NEW title. rc_obs=1 errors=2 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=3 entropy=0.034 resources(dex/classes)=? [frame belongs to the shared/near-blank content class \u2014 not canonical visual evidence per S54 law]"
+   "notes": "S84 NEW title. rc_obs=1 errors=2 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=3 entropy=0.034 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]"
   },
   {
    "title": "com.vovagorodok.blidraughts",
@@ -1232,7 +1292,7 @@
    "apk_sha256": "f7f4582fa24607d87c304c3acaca0cc150fa311da22e469cd15150c73d20ba2d",
    "upstream": "https://github.com/vovagorodok/blidraughts/",
    "artifact": null,
-   "notes": "S84 NEW title. rc_obs=1 errors=2 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=3 entropy=0.034 resources(dex/classes)=? [frame belongs to the shared/near-blank content class \u2014 not canonical visual evidence per S54 law]"
+   "notes": "S84 NEW title. rc_obs=1 errors=2 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=3 entropy=0.034 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]"
   },
   {
    "title": "Mancala",
@@ -1249,7 +1309,7 @@
    "apk_sha256": null,
    "upstream": null,
    "artifact": null,
-   "notes": "S85 sweep promotion: prior OBSERVED \u2192 L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
+   "notes": "S85 sweep promotion: prior OBSERVED → L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
   },
   {
    "title": "io.github.ebraminio.bouncy",
@@ -1266,7 +1326,7 @@
    "apk_sha256": "a509db2afda544f6da9620eb473319b0a034c6ffc8b6536e2a8a7bcc0f407f54",
    "upstream": "https://github.com/ebraminio/bouncy",
    "artifact": null,
-   "notes": "S84 NEW title. rc_obs=0 errors=0 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=1 entropy=-0.0 resources(dex/classes)=? [frame belongs to the shared/near-blank content class \u2014 not canonical visual evidence per S54 law]"
+   "notes": "S84 NEW title. rc_obs=0 errors=0 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=1 entropy=-0.0 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]"
   },
   {
    "title": "io.github.hathibelagal.mykanji",
@@ -1283,7 +1343,7 @@
    "apk_sha256": "b20274a0885d03ba6947f82975c90e8415a4174dded8409e4798f92cb3a763a1",
    "upstream": "https://github.com/hathibelagal-dev/MyKanji",
    "artifact": null,
-   "notes": "S87 source-first probe (vc7, APK SHA matches pin b20274a0885d03ba\u2026); upstream hathibelagal-dev/MyKanji \u2014 main UI is a WebView over local HTML (upstream source read)"
+   "notes": "S87 source-first probe (vc7, APK SHA matches pin b20274a0885d03ba…); upstream hathibelagal-dev/MyKanji — main UI is a WebView over local HTML (upstream source read)"
   },
   {
    "title": "io.github.johnathan.minesweeper",
@@ -1300,7 +1360,7 @@
    "apk_sha256": "3b52a2fd21c4b4184eed1a1d4a9944e89bb9e7f99bf37329f03bd5eca962942e",
    "upstream": "https://github.com/john-athan/minesweeper",
    "artifact": null,
-   "notes": "S84 NEW title. rc_obs=1 errors=32 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=3 entropy=0.034 resources(dex/classes)=? [frame belongs to the shared/near-blank content class \u2014 not canonical visual evidence per S54 law]"
+   "notes": "S84 NEW title. rc_obs=1 errors=32 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=3 entropy=0.034 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]"
   },
   {
    "title": "io.itch.pirate_solitaire",
@@ -1317,7 +1377,7 @@
    "apk_sha256": "b9fbe6023d8696b62f334085378a3ae3bc8f979d4d12698ce6facaed36bb02f8",
    "upstream": "https://github.com/Pheonyxior/Pirate-Solitaire-Git-Repo/tree/master",
    "artifact": null,
-   "notes": "S84 NEW title. rc_obs=1 errors=1 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=1 entropy=-0.0 resources(dex/classes)=? [frame belongs to the shared/near-blank content class \u2014 not canonical visual evidence per S54 law]"
+   "notes": "S84 NEW title. rc_obs=1 errors=1 frames=8/8 click: probed=-1 state_changed=-1. unique_colors=1 entropy=-0.0 resources(dex/classes)=? [frame belongs to the shared/near-blank content class — not canonical visual evidence per S54 law]"
   },
   {
    "title": "Chess (jwtc)",
@@ -1334,7 +1394,7 @@
    "apk_sha256": null,
    "upstream": null,
    "artifact": null,
-   "notes": "S87 re-probe at HEAD; upstream jcarolus/android-chess read (classic View board game; ChessBoardView is a plain onDraw Canvas \u2014 renders once TypedArray/obtainStyledAttributes law lands)"
+   "notes": "S87 re-probe at HEAD; upstream jcarolus/android-chess read (classic View board game; ChessBoardView is a plain onDraw Canvas — renders once TypedArray/obtainStyledAttributes law lands)"
   },
   {
    "title": "Navy Fleet Battle",
@@ -1351,7 +1411,7 @@
    "apk_sha256": null,
    "upstream": null,
    "artifact": null,
-   "notes": "S85 sweep promotion: prior OBSERVED \u2192 L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
+   "notes": "S85 sweep promotion: prior OBSERVED → L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
   },
   {
    "title": "org.lufebe16.pysolfc",
@@ -1368,7 +1428,7 @@
    "apk_sha256": "5b8ba9abc4c11ba0ebcc75d663f2b472704c00840ab564631feb0c84feb45664",
    "upstream": null,
    "artifact": null,
-   "notes": "S84 BLOCKED verdict was a TRUNCATED APK (74.6MB > 48MB cap) \u2014 re-downloaded vc102130601; renders L2 frames with Kivy bootstrap exceptions (honest PARTIAL). | S85 near-blank gate: rendered frames are the engine-default shell class; Kivy chain does not paint real UI yet. | Vocabulary: OBSERVED = loaded/ran with near-blank frames (S84 law); Kivy exceptions recorded in run/s85 logs."
+   "notes": "S84 BLOCKED verdict was a TRUNCATED APK (74.6MB > 48MB cap) — re-downloaded vc102130601; renders L2 frames with Kivy bootstrap exceptions (honest PARTIAL). | S85 near-blank gate: rendered frames are the engine-default shell class; Kivy chain does not paint real UI yet. | Vocabulary: OBSERVED = loaded/ran with near-blank frames (S84 law); Kivy exceptions recorded in run/s85 logs."
   },
   {
    "title": "Surge Engine (OpenSurge)",
@@ -1385,7 +1445,7 @@
    "apk_sha256": null,
    "upstream": null,
    "artifact": null,
-   "notes": "S85 sweep promotion: prior OBSERVED \u2192 L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
+   "notes": "S85 sweep promotion: prior OBSERVED → L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
   },
   {
    "title": "TheXTech (SuperTux-like)",
@@ -1402,7 +1462,7 @@
    "apk_sha256": null,
    "upstream": null,
    "artifact": null,
-   "notes": "S85 sweep promotion: prior OBSERVED \u2192 L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
+   "notes": "S85 sweep promotion: prior OBSERVED → L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
   },
   {
    "title": "xyz.deepdaikon.quinb",
@@ -1419,7 +1479,7 @@
    "apk_sha256": null,
    "upstream": null,
    "artifact": null,
-   "notes": "S85 sweep promotion: prior OBSERVED \u2192 L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
+   "notes": "S85 sweep promotion: prior OBSERVED → L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
   },
   {
    "title": "Dooz (tic-tac-toe)",
@@ -1436,7 +1496,7 @@
    "apk_sha256": "d81292cd346dcb23b04488bca400ca95af0f6eaa4aefefd31f847fe535cbdc17",
    "upstream": "F-Droid io.github.yamin8000.dooz",
    "artifact": null,
-   "notes": "S85 audit: the restored s83b evidence was a near-blank loading shell (99.9% white) \u2014 demoted per S54 gate; no honest UI claim at HEAD."
+   "notes": "S85 audit: the restored s83b evidence was a near-blank loading shell (99.9% white) — demoted per S54 gate; no honest UI claim at HEAD."
   },
   {
    "title": "Queens",
@@ -1453,7 +1513,7 @@
    "apk_sha256": null,
    "upstream": null,
    "artifact": null,
-   "notes": "S85 sweep promotion: prior OBSERVED \u2192 L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
+   "notes": "S85 sweep promotion: prior OBSERVED → L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
   },
   {
    "title": "No Thanks!",
@@ -1487,7 +1547,7 @@
    "apk_sha256": null,
    "upstream": null,
    "artifact": null,
-   "notes": "S83 campaign (games__crypto.o0o0o0o0o.games.blackjack_4__L0_LOADED_ONLY.jpg) is the shared near-blank frame class \u2014 no canonical visual per S54 law; evidence = run logs"
+   "notes": "S83 campaign (games__crypto.o0o0o0o0o.games.blackjack_4__L0_LOADED_ONLY.jpg) is the shared near-blank frame class — no canonical visual per S54 law; evidence = run logs"
   },
   {
    "title": "Solitaire (vayunmathur)",
@@ -1504,7 +1564,7 @@
    "apk_sha256": null,
    "upstream": null,
    "artifact": null,
-   "notes": "S83 campaign (games__com.vayunmathur.games.solitaire_20260804__L2_GRAPHICALLY_INCOMPLETE.jpg) is the shared near-blank frame class \u2014 no canonical visual per S54 law; evidence = run logs"
+   "notes": "S83 campaign (games__com.vayunmathur.games.solitaire_20260804__L2_GRAPHICALLY_INCOMPLETE.jpg) is the shared near-blank frame class — no canonical visual per S54 law; evidence = run logs"
   },
   {
    "title": "Solitaire (Bielefeld)",
@@ -1538,7 +1598,7 @@
    "apk_sha256": null,
    "upstream": null,
    "artifact": null,
-   "notes": "S85 sweep promotion: prior OBSERVED \u2192 L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
+   "notes": "S85 sweep promotion: prior OBSERVED → L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
   },
   {
    "title": "Ball2Box",
@@ -1555,7 +1615,7 @@
    "apk_sha256": null,
    "upstream": null,
    "artifact": null,
-   "notes": "S83 campaign (games__com.simondalvai.ball2box_69__L0_LOADED_ONLY.jpg) is the shared near-blank frame class \u2014 no canonical visual per S54 law; evidence = run logs"
+   "notes": "S83 campaign (games__com.simondalvai.ball2box_69__L0_LOADED_ONLY.jpg) is the shared near-blank frame class — no canonical visual per S54 law; evidence = run logs"
   },
   {
    "title": "Halma",
@@ -1572,7 +1632,7 @@
    "apk_sha256": null,
    "upstream": null,
    "artifact": null,
-   "notes": "S87 re-probe at HEAD; upstream Crazy-Marvin/Halma (libGDX game \u2014 gated by the documented GL frontier)"
+   "notes": "S87 re-probe at HEAD; upstream Crazy-Marvin/Halma (libGDX game — gated by the documented GL frontier)"
   },
   {
    "title": "Astroloop",
@@ -1589,7 +1649,7 @@
    "apk_sha256": null,
    "upstream": null,
    "artifact": null,
-   "notes": "S85 sweep promotion: prior OBSERVED \u2192 L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
+   "notes": "S85 sweep promotion: prior OBSERVED → L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
   },
   {
    "title": "Tarok",
@@ -1606,7 +1666,7 @@
    "apk_sha256": null,
    "upstream": null,
    "artifact": null,
-   "notes": "S85 sweep promotion: prior OBSERVED \u2192 L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
+   "notes": "S85 sweep promotion: prior OBSERVED → L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
   },
   {
    "title": "Guandan",
@@ -1623,7 +1683,7 @@
    "apk_sha256": null,
    "upstream": null,
    "artifact": null,
-   "notes": "S83 campaign (games__page.codeberg.lanticy.guandan_7__L2_GRAPHICALLY_INCOMPLETE.jpg) is the shared near-blank frame class \u2014 no canonical visual per S54 law; evidence = run logs"
+   "notes": "S83 campaign (games__page.codeberg.lanticy.guandan_7__L2_GRAPHICALLY_INCOMPLETE.jpg) is the shared near-blank frame class — no canonical visual per S54 law; evidence = run logs"
   },
   {
    "title": "Boxcars",
@@ -1640,7 +1700,7 @@
    "apk_sha256": null,
    "upstream": null,
    "artifact": null,
-   "notes": "S83 campaign (games__com.rocket9labs.boxcars_104090__L1_NONBLANK.jpg) is the shared near-blank frame class \u2014 no canonical visual per S54 law; evidence = run logs"
+   "notes": "S83 campaign (games__com.rocket9labs.boxcars_104090__L1_NONBLANK.jpg) is the shared near-blank frame class — no canonical visual per S54 law; evidence = run logs"
   },
   {
    "title": "Tirailleur",
@@ -1657,7 +1717,7 @@
    "apk_sha256": null,
    "upstream": null,
    "artifact": null,
-   "notes": "S85 sweep promotion: prior OBSERVED \u2192 L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
+   "notes": "S85 sweep promotion: prior OBSERVED → L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
   },
   {
    "title": "FireStrike",
@@ -1674,7 +1734,7 @@
    "apk_sha256": null,
    "upstream": null,
    "artifact": null,
-   "notes": "S85 sweep promotion: prior OBSERVED \u2192 L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
+   "notes": "S85 sweep promotion: prior OBSERVED → L2 render | S85 near-blank gate: all frames match the engine-default shell class (nonbg_ratio=0.0113, white fb + black status region); no honest visual claim (S54 law)."
   },
   {
    "title": "name.boyle.chris.sgtpuzzles",
@@ -1708,7 +1768,7 @@
    "apk_sha256": "41727c0121fef8ab760f34c348b04ccef5a41269f9a0f32516c50529cecd2b33",
    "upstream": "https://github.com/SecUSo/privacy-friendly-dame",
    "artifact": null,
-   "notes": "S87 source-first probe (vc101, APK SHA matches S85 pin 41727c0121fef8ab\u2026); upstream SecUSo/privacy-friendly-dame read (BaseActivity\u2192pfacore DrawerActivity; SplashActivity routes then finish()); S54 gate: no artifact until L2+"
+   "notes": "S87 source-first probe (vc101, APK SHA matches S85 pin 41727c0121fef8ab…); upstream SecUSo/privacy-friendly-dame read (BaseActivity→pfacore DrawerActivity; SplashActivity routes then finish()); S54 gate: no artifact until L2+"
   },
   {
    "title": "org.secuso.privacyfriendlysudoku",
@@ -2048,7 +2108,7 @@
    "apk_sha256": "02c799d3d582669daf2acf920093c68d2933f60aa937bb72fa2a805557233fe8",
    "upstream": "https://github.com/SecUSo/privacy-friendly-2048",
    "artifact": null,
-   "notes": "S87 source-first probe (vc100, APK SHA matches pin 02c799d3d582669d\u2026); upstream SecUSo/privacy-friendly-2048 (same pfacore scaffold as dame)"
+   "notes": "S87 source-first probe (vc100, APK SHA matches pin 02c799d3d582669d…); upstream SecUSo/privacy-friendly-2048 (same pfacore scaffold as dame)"
   },
   {
    "title": "net.sourceforge.solitaire_cg",

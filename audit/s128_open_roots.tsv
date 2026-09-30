@@ -1,0 +1,196 @@
+OPEN: 195
+R-NEW-001|PARTIAL|P0|enqueue order edges, IdleHandler, sync barriers, quit|registry probe MQ-01: enqueue past/now/future + remove-by-id
+R-NEW-002|PARTIAL|P1|removeCallbacks identity law|probe MQ-02
+R-NEW-004|PARTIAL|P1|monitor ownership edges|probe LK-01
+R-NEW-005|PARTIAL|P1|reacquire ordering|probe LK-02
+R-NEW-006|PARTIAL|P1|notifyAll wake order|probe LK-03
+R-NEW-007|UNPROVEN|P2|interrupt state machine|implement on trace evidence
+R-NEW-008|UNPROVEN|P2|IE propagation via sleep/wait|implement on trace evidence
+R-NEW-010|UNPROVEN|P2|covariant store check|implement on trace evidence
+R-NEW-015|PARTIAL|P1|initialize/resolve flag matrix|extend F-029 fixture
+R-NEW-017|PARTIAL|P1|getDeclaredFields/inherited-member walk|hidden-gap list (audit §H)
+R-NEW-018|UNPROVEN|P3|-|NOT-APPLICABLE until Parcel law needed
+R-NEW-019|UNPROVEN|P3|-|same
+R-NEW-020|PARTIAL|P2|CREATOR envelope law|implement on trace evidence
+R-NEW-021|PARTIAL|P2|propagation coalescing law|probe UI-01
+R-NEW-022|PARTIAL|P2|damage-region law|probe UI-02
+R-NEW-024|PARTIAL|P1|UNSPECIFIED edges|extend fixture
+R-NEW-029|PARTIAL|P2|error-type matrix|CONDITIONAL (audit §B)
+R-NEW-030|PARTIAL|P2|isolation semantics|CONDITIONAL
+R-NEW-031|PARTIAL|P2|multi-ApkAssets composition|on demand
+R-NEW-032|UNPROVEN|P3|-|on demand
+R-NEW-034|PARTIAL|P1|locale/qualifier selection|RESEARCHED P2 (audit §O)
+R-NEW-035|PARTIAL|P2|coercion matrix|extend fixture
+R-NEW-036|PARTIAL|P2|Factory/Factory2 chain corners|on demand
+R-NEW-037|PARTIAL|P3|ClassLoader propagation|on demand
+R-NEW-038|UNPROVEN|P3|-|on demand
+R-NEW-039|UNPROVEN|P3|-|on demand
+R-NEW-040|UNPROVEN|P3|-|probe MQ-03
+R-NEW-041|UNPROVEN|P3|-|on demand
+R-NEW-042|UNPROVEN|P3|-|on demand
+R-NEW-043|UNPROVEN|P3|-|on demand
+R-NEW-044|PARTIAL|P3|dynamic load APIs|CONDITIONAL
+R-NEW-046|UNPROVEN|P3|-|on demand
+R-NEW-047|RESEARCHED-NOT-IMPLEMENTED|P3|-|keep law; implement on demand
+R-NEW-048|RESEARCHED-NOT-IMPLEMENTED|P3|-|on demand
+R-NEW-049|RESEARCHED-NOT-IMPLEMENTED|P3|-|on demand
+R-NEW-050|RESEARCHED-NOT-IMPLEMENTED|P3|-|radar retained
+R-NEW-055|UNPROVEN|P2|-|CONDITIONAL
+R-NEW-061|PARTIAL|P0|Job-active cancellation (R-NEW-285)|M8 roadmap item 10
+R-NEW-062|PARTIAL|P1|propagation matrix|with 061
+R-NEW-064|RESEARCHED-NOT-IMPLEMENTED|P3|-|on demand
+R-NEW-066|PARTIAL|P2|decode density transform|on demand
+R-NEW-067|PARTIAL|P3|Config matrix|on demand
+R-NEW-068|PARTIAL|P2|layer-list, inset, rotate|on demand
+R-NEW-069|PARTIAL|P2|state machine matrix|on demand
+R-NEW-070|PARTIAL|P2|tint law|on demand
+R-NEW-071|UNPROVEN|P3|-|on demand
+R-NEW-072|UNPROVEN|P2|-|on demand
+R-NEW-073|UNPROVEN|P3|-|on demand
+R-NEW-078|PARTIAL|P2|scaleType geometry matrix|on demand
+R-NEW-079|PARTIAL|P2|intrinsic→measure law|on demand
+R-NEW-080|PARTIAL|P3|lifetime law|on demand
+R-NEW-083|UNPROVEN|P2|v1/v2 verification|on demand
+R-NEW-084|UNPROVEN|P3|-|on demand
+R-NEW-085|UNPROVEN|P3|-|on demand
+R-NEW-086|PARTIAL|P2|fuzz corpus campaign|tooling class G
+R-NEW-087|PARTIAL|P3|duplicate-entry law|tooling class G
+R-NEW-088|PARTIAL|P2|traversal corpus|tooling class G
+R-NEW-089|PARTIAL|P2|hostile corpus|tooling class G
+R-NEW-090|PARTIAL|P2|hostile corpus|tooling class G
+R-NEW-091|PARTIAL|P3|confusion corpus|on demand
+R-NEW-092|PARTIAL|P3|isolation law|on demand
+R-NEW-093|PARTIAL|P2|security attribute matrix|on demand
+R-NEW-094|UNPROVEN|P3|-|on demand
+R-NEW-095|PARTIAL|P3|caller identity law|on demand
+R-NEW-097|UNPROVEN|P3|-|on demand
+R-NEW-110|PARTIAL|P3|-|on demand
+R-NEW-114|RESEARCHED-NOT-IMPLEMENTED|P3|-|on demand
+R-NEW-115|RESEARCHED-NOT-IMPLEMENTED|P3|-|on demand
+R-NEW-116|RESEARCHED-NOT-IMPLEMENTED|P3|-|on demand
+R-NEW-117|RESEARCHED-NOT-IMPLEMENTED|P3|-|on demand
+R-NEW-118|RESEARCHED-NOT-IMPLEMENTED|P3|-|on demand
+R-NEW-119|RESEARCHED-NOT-IMPLEMENTED|P3|-|on demand
+R-NEW-120|RESEARCHED-NOT-IMPLEMENTED|P3|-|on demand
+R-NEW-121|RESEARCHED-NOT-IMPLEMENTED|P3|-|on demand
+R-NEW-122|PARTIAL|P2|verifier-equivalent semantics|CONDITIONAL
+R-NEW-123|PARTIAL|P2|hostile DEX corpus|tooling class G
+R-NEW-124|PARTIAL|P2|confusion corpus|on demand
+R-NEW-125|PARTIAL|P2|adversarial corpus|on demand
+R-NEW-126|PARTIAL|P2|adversarial handler table|fuzz band
+R-NEW-127|PARTIAL|P1|control-flow fuzz|tooling class G
+R-NEW-128|PARTIAL|P2|payload edge shapes|with 055
+R-NEW-129|PARTIAL|P3|access law matrix|on demand
+R-NEW-131|PARTIAL|P3|-|with 030
+R-NEW-132|UNPROVEN|P3|-|on demand
+R-NEW-133|UNPROVEN|P3|-|on demand
+R-NEW-134|PARTIAL|P3|-|regression-watch
+R-NEW-136|PARTIAL|P2|visibility law|on demand
+R-NEW-137|UNPROVEN|P3|-|on demand
+R-NEW-140|UNPROVEN|P3|-|on demand
+R-NEW-141|PARTIAL|P3|-|on demand
+R-NEW-142|UNPROVEN|P3|-|on demand
+R-NEW-143|UNPROVEN|P3|-|on demand
+R-NEW-150|PARTIAL|P3|external storage law|on demand
+R-NEW-151|UNPROVEN|P3|-|on demand
+R-NEW-152|PARTIAL|P3|auth law|on demand
+R-NEW-155|UNPROVEN|P3|-|on demand
+R-NEW-159|UNPROVEN|P3|-|on demand
+R-NEW-161|UNPROVEN|P3|-|on demand
+R-NEW-162|PARTIAL|P3|-|regression-watch
+R-NEW-164|RESEARCHED-NOT-IMPLEMENTED|P2|-|build fuzz probes on infra
+R-NEW-165|RESEARCHED-NOT-IMPLEMENTED|P2|-|tooling class F
+R-NEW-166|RESEARCHED-NOT-IMPLEMENTED|P2|-|tooling class F
+R-NEW-167|PARTIAL|P2|-|regression-watch
+R-NEW-168|PARTIAL|P2|-|regression-watch
+R-NEW-169|UNPROVEN|P3|-|on demand
+R-NEW-170|PARTIAL|P3|overflow corpus|on demand
+R-NEW-172|PARTIAL|P2|cross-stack audit|with tooling G
+R-NEW-173|PARTIAL|P1|measure-vs-draw delta law|on demand
+R-NEW-175|PARTIAL|P2|identity law|on demand
+R-NEW-176|PARTIAL|P2|fallback chain law|on demand
+R-NEW-177|PARTIAL|P2|complex-script corpus|on demand
+R-NEW-178|PARTIAL|P2|RTL corpus|on demand
+R-NEW-179|UNPROVEN|P3|-|on demand
+R-NEW-180|UNPROVEN|P3|-|on demand
+R-NEW-181|UNPROVEN|P3|-|on demand
+R-NEW-182|UNPROVEN|P3|-|on demand
+R-NEW-183|PARTIAL|P2|wrap law|on demand
+R-NEW-184|UNPROVEN|P3|-|on demand
+R-NEW-185|UNPROVEN|P3|-|on demand
+R-NEW-186|PARTIAL|P3|matrix|on demand
+R-NEW-189|PARTIAL|P3|rounding law|on demand
+R-NEW-190|PARTIAL|P3|-|on demand
+R-NEW-191|PARTIAL|P2|coordinate matrix|on demand
+R-NEW-192|UNPROVEN|P3|-|on demand
+R-NEW-193|UNPROVEN|P2|-|on demand
+R-NEW-196|PARTIAL|P2|UNSPECIFIED law|on demand
+R-NEW-200|PARTIAL|P3|min-law|on demand
+R-NEW-201|PARTIAL|P2|matrix|on demand
+R-NEW-202|UNPROVEN|P3|-|on demand
+R-NEW-203|PARTIAL|P3|direction law|on demand
+R-NEW-204|PARTIAL|P2|bounds law|on demand
+R-NEW-205|PARTIAL|P2|parent law|on demand
+R-NEW-206|PARTIAL|P2|clip-stack corpus|on demand
+R-NEW-207|PARTIAL|P2|propagation law|on demand
+R-NEW-209|UNPROVEN|P3|-|on demand
+R-NEW-210|UNPROVEN|P3|-|on demand
+R-NEW-211|UNPROVEN|P3|-|on demand
+R-NEW-212|UNPROVEN|P3|-|on demand
+R-NEW-213|UNPROVEN|P3|-|on demand
+R-NEW-214|PARTIAL|P3|premult law|on demand
+R-NEW-215|UNPROVEN|P3|-|on demand
+R-NEW-216|PARTIAL|P3|matrix|on demand
+R-NEW-217|UNPROVEN|P3|-|on demand
+R-NEW-219|UNPROVEN|P3|-|on demand
+R-NEW-221|PARTIAL|P2|inheritance law|on demand
+R-NEW-222|PARTIAL|P2|precedence matrix|on demand
+R-NEW-223|PARTIAL|P1|-|regression-watch
+R-NEW-224|PARTIAL|P2|law|on demand
+R-NEW-225|PARTIAL|P3|stateful law|on demand
+R-NEW-226|UNPROVEN|P3|-|on demand
+R-NEW-227|PARTIAL|P3|precedence|on demand
+R-NEW-229|UNPROVEN|P3|-|on demand
+R-NEW-230|UNPROVEN|P3|-|on demand
+R-NEW-231|UNPROVEN|P3|-|on demand
+R-NEW-232|UNPROVEN|P3|-|on demand
+R-NEW-233|UNPROVEN|P3|-|on demand
+R-NEW-234|UNPROVEN|P3|-|on demand
+R-NEW-235|PARTIAL|P3|dim/brightness law|on demand
+R-NEW-236|PARTIAL|P3|Z law|on demand
+R-NEW-237|UNPROVEN|P3|-|on demand
+R-NEW-238|UNPROVEN|P3|-|on demand
+R-NEW-239|UNPROVEN|P3|-|on demand
+R-NEW-241|PARTIAL|P2|animation clock law|with 242
+R-NEW-242|PARTIAL|P0|first frame end-to-end|M8 roadmap item 10
+R-NEW-243|UNPROVEN|P3|-|on demand
+R-NEW-244|UNPROVEN|P3|-|on demand
+R-NEW-245|UNPROVEN|P3|-|on demand
+R-NEW-246|PARTIAL|P0|MonotonicFrameClock fold (R-NEW-294) + composition render (R-NEW-295)|close R-NEW-294 then R-NEW-295
+R-NEW-247|UNPROVEN|P3|-|on demand
+R-NEW-248|UNPROVEN|P3|-|on demand
+R-NEW-249|UNPROVEN|P3|-|on demand
+R-NEW-250|UNPROVEN|P3|-|on demand
+R-NEW-251|PARTIAL|P2|hit-test law|on demand
+R-NEW-252|PARTIAL|P1|ordering matrix|regression-watch
+R-NEW-253|PARTIAL|P3|pressed law|on demand
+R-NEW-255|UNPROVEN|P3|-|on demand
+R-NEW-256|PARTIAL|P0|ComposeView children 0→N|M9 frontier
+R-NEW-258|PARTIAL|P1|observation law|on demand
+R-NEW-259|PARTIAL|P0|-|M9 frontier
+R-NEW-260|PARTIAL|P0|owner-walk tail|hello_color regression-watch
+R-NEW-261|PARTIAL|P1|-|with 242
+R-NEW-266|PARTIAL|P3|layer law|on demand
+R-NEW-271|PARTIAL|P2|full provenance chain|extend tooling (§25 pixel provenance)
+R-NEW-273|PARTIAL|P3|-|on demand
+R-NEW-278|PARTIAL|P2|format matrix|on demand
+R-NEW-279|PARTIAL|P0|frame pixels via R-NEW-294/295 closure|R-NEW-294
+R-NEW-281|UNPROVEN|P1|implementation + proof|Known gap (M9-B analysis): no collection-view law at HEAD (g
+R-NEW-282|UNPROVEN|P2|implementation + proof|singletonList/emptyList/unmodifiableList covered by F-039 (3
+R-NEW-283|UNPROVEN|P1|implementation + proof|FIX-INTENT-001 carries the descriptor on CLASS_REF args (dal
+R-NEW-284|UNPROVEN|P1|implementation + proof|execute_check_cast validates and (by code inspection) preser
+R-NEW-285|PARTIAL|P0|MonotonicFrameClock fold (R-NEW-294)|R-NEW-294
+F-143|OPEN|P1||
+F-144|OPEN|P2||
+F-145|OPEN|P1||
+F-147|OPEN|P1||

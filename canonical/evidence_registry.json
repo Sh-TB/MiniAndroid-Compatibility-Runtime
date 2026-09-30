@@ -1,6 +1,6 @@
 {
  "schema": "miniandroid.evidence_registry.v1",
- "generated": "2026-09-30T20:52:31Z",
+ "generated": "2026-09-30T21:14:39Z",
  "law": "Visual evidence: 460px JPG <=100KB, English-only; VERIFIED needs 3-run byte-identical SHA256; blank/grey frames are NOT renders.",
  "canonical_evidence_index": {
   "total_files": 95,

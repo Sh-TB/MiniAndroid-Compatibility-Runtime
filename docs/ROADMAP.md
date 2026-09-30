@@ -54,6 +54,10 @@ canonical/game_registry.json         GAME-### with L0-L7 checkpoints
 canonical/root_cause_registry.json   projection of live root_registry.json (420 roots)
 canonical/evidence_registry.json     evidence waves + evidence law
 canonical/compatibility_matrix.json  title x subsystems
+canonical/master_worklist.json       MASTER WORKLIST (S128) — 480 deduplicated items,
+                                     27 fields each, MC-001..MC-129 categories, P0-P4 queues
+docs/MASTER_WORKLIST.md              the VISIBLE canonical worklist (roadmap, APK coverage
+                                     matrix LOAD..REDRAW, root clustering, dependency graph)
 ```
 
 `root_registry.json` remains the single writable store; the canonical file is a
