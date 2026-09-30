@@ -159,8 +159,14 @@ for y in range(h):
 #      button can be ADJACENT (no silent gap), so gaps alone cannot split
 #      them; ink density can.
 #   2. Text bands = clusters of non-solid ink rows separated by gaps.
-row_ink = {y: sum(1 for x in range(w) if out[y*stride + x*ch] < 200
-                  and out[y*stride + x*ch + 1] < 200) for y in range(h)}
+# S125 THEME-AGNOSTIC INK LAW: the framework default theme (Theme.Material,
+# API 21+) paints the window dark (#ff303030) — ink is any pixel CONTRASTING
+# with the dominant background channel value, not merely "dark on light".
+bg_r = out[8*stride + 8*ch]; bg_g = out[8*stride + 8*ch + 1]
+def ink(px_i):
+    r = out[px_i]; g = out[px_i + 1]
+    return abs(r - bg_r) > 90 and abs(g - bg_g) > 90
+row_ink = {y: sum(1 for x in range(w) if ink(y*stride + x*ch)) for y in range(h)}
 SOLID_MIN = 320  # button surface ~470 px/row; headline strokes stay < 300
 text_rows = [y for y in range(h) if row_ink[y] > 3 and row_ink[y] < SOLID_MIN]
 clusters = []
@@ -178,7 +184,7 @@ def band(rows):
     if not rows:
         return None
     xs = [x for y in rows[:6] for x in range(w)
-          if out[y*stride + x*ch] < 200]
+          if ink(y*stride + x*ch)]
     return {"top": rows[0], "bottom": rows[-1],
             "height": rows[-1] - rows[0] + 1,
             "left": min(xs), "right": max(xs)}

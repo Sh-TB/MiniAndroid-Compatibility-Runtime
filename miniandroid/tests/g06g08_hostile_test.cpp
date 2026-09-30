@@ -35,7 +35,7 @@ struct Rig {
     Rig() {
         views.init(&heap_adapter);
         handler.init(&heap_adapter);
-        dispatcher.set_click_dispatch([&](uint32_t) { clicks++; return true; });
+        dispatcher.set_click_dispatch([&](uint32_t, float, float) { clicks++; return true; });
         dispatcher.set_long_click_dispatch(
             [](uint32_t, bool& c) { c = true; return true; });
     }

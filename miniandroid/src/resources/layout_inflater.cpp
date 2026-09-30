@@ -604,6 +604,16 @@ bool LayoutInflater::apply_style_item(Attrs& a, uint32_t attr_key,
                 a.from_style_bg = true;
                 return true;
             }
+            // S125 FRAMEWORK-RES FILE LAW: package-0x01 references whose
+            // value is a res/ file (theme windowBackground selectors)
+            // resolve through the committed framework res/ tree.
+            auto fw_col = resources::ResourceRuntime::instance()
+                              .resolve_framework_file_color(v.ref_id);
+            if (fw_col) {
+                a.bg_color = *fw_col;
+                a.from_style_bg = true;
+                return true;
+            }
         }
         return false;   // shape/selector XML backgrounds: existing laws only
     }
