@@ -195,6 +195,13 @@ std::optional<ResValue> ResourceRuntime::resolve_theme_attr_value(
     //    ResTable_map key with parent-chain inheritance (cycle-safe).
     auto v = arsc_.bag_value(mi.application_theme_resid, attr_key,
                              device_config());
+    if (f93_diag)
+        std::cerr << "[F093-DIAG] bag_query attr=0x" << std::hex << attr_key
+                  << std::dec << " hit=" << (v ? "YES" : "no")
+                  << (v ? " data=0x" + [] (uint32_t d) {
+                             std::ostringstream s; s << std::hex << d; return s.str();
+                         }((uint32_t)v->data) : std::string())
+                  << std::endl;
     if (!v) return std::nullopt;
 
     // 3. Dereference one reference hop (style item referencing a color /

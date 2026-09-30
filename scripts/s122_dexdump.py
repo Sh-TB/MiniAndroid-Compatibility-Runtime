@@ -105,6 +105,22 @@ class Dex:
         SIZES[_o] = 1
     SIZES[0x28] = 1
     SIZES[0x14] = 3  # const vAA, #+BBBBBBBB
+    SIZES[0x15] = 2  # const/high16 vAA, #+BBBB0000
+    SIZES[0x16] = 2  # const-wide/16
+    SIZES[0x17] = 3
+    SIZES[0x18] = 5
+    SIZES[0x19] = 2
+    SIZES[0x1A] = 2  # const-string
+    SIZES[0x1B] = 3
+    SIZES[0x1C] = 2
+    for _o in range(0x24, 0x27):
+        SIZES[_o] = 3
+    for _o in range(0x44, 0x52):
+        SIZES[_o] = 3
+    for _o in list(range(0x74, 0x79)):
+        SIZES[_o] = 3
+    for _o in range(0xD0, 0xE3):
+        SIZES[_o] = 2
     SIZES[0x29] = 2
     SIZES[0x2A] = 3
     SIZES[0x2B] = 3
@@ -191,9 +207,20 @@ def main():
                 op = cu & 0xFF
                 size = Dex.SIZES.get(op, 0)
                 txt = ""
-                if op in Dex.INVOKE_OPS:
+                if op in (0x74, 0x75, 0x76, 0x77, 0x78):
                     midx = dx._u16(insns_off + pc * 2 + 2)
                     txt = f"→ {dx.method(midx)}"
+                elif op in Dex.INVOKE_OPS:
+                    midx = dx._u16(insns_off + pc * 2 + 2)
+                    w0 = dx._u16(insns_off + pc * 2)
+                    w1 = dx._u16(insns_off + pc * 2 + 4)
+                    cnt = (w0 >> 12) & 0xF
+                    g = (w0 >> 8) & 0xF
+                    cdef = [w1 & 0xF, (w1 >> 4) & 0xF, (w1 >> 8) & 0xF,
+                            (w1 >> 12) & 0xF]
+                    order = cdef[:4] + [g]
+                    regs = ",".join(f"v{x}" for x in order[:cnt])
+                    txt = f"{{{regs}}} → {dx.method(midx)}"
                 elif op in Dex.FIELD_OPS:
                     fidx = dx._u16(insns_off + pc * 2 + 2)
                     txt = f"→ {dx.field(fidx)}"
