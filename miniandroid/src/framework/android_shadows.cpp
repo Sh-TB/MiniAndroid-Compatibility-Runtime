@@ -1799,11 +1799,39 @@ CallResult IntentShadow::dispatch(const CallContext& ctx) {
         // Intent(), Intent(String action), Intent(Context, Class),
         // Intent(String action, Uri) — all initialize the receiver.
         auto pi = get_or_create_intent(ctx.receiver_id);
+        {
+            // S123 DIAG (bounded): ctor arg shapes as the shadow sees them.
+            static thread_local uint64_t ictor_n = 0;
+            if (ictor_n < 12) {
+                ictor_n++;
+                std::cerr << "[S123-ICTOR2] Intent.<init> recv=" << ctx.receiver_id
+                          << " args=" << ctx.args.size();
+                for (size_t ii = 0; ii < ctx.args.size() && ii < 3; ++ii) {
+                    std::cerr << " a" << ii << "k" << static_cast<int>(ctx.args[ii].kind);
+                    if (!ctx.args[ii].string_val.empty())
+                        std::cerr << "=\"" << ctx.args[ii].string_val << "\"";
+                }
+                std::cerr << std::endl;
+            }
+        }
         if (ctx.args.size() >= 1) {
             // First arg can be action (String) or Context (Object).
+            // S123 STRING-ARG-SHAPE law: a const-string register may reach
+            // the bridge as kind=STRING (string literal) OR kind=OBJECT
+            // (materialized heap String carrying string_val — EXP-091
+            // translation law, same shape arg_as_string already honors).
+            // FlappyCow live evidence: new Intent("com.quchen.flappycow.
+            // Game") left pi->action EMPTY (kind=OBJECT) → startActivity
+            // dead-ended "no component set" and the game never opened.
             const auto& a = ctx.args[0];
             if (a.kind == CallContext::Arg::Kind::STRING) {
                 pi->action = a.string_val;
+            } else if (a.kind == CallContext::Arg::Kind::OBJECT &&
+                       !a.string_val.empty()) {
+                // A String object arg is an ACTION only when the ctor arity
+                // is 1 (Intent(String)); Intent(Context, Class) passes a
+                // Context at arg0 — never treat that as an action string.
+                if (ctx.args.size() == 1) pi->action = a.string_val;
             }
         }
         // MASTER-2 FIX-INTENT-001: Intent(Context, Class) — arg 1 is a
@@ -2552,6 +2580,18 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                     auto pi = intent_shadow->get_or_create_intent(intent_id);
                     pi->intent_object_id = intent_id;   // G08: keep the object
                     intent_shadow->set_pending(pi);
+                    {
+                        // S123 DIAG (bounded): launch-time intent state.
+                        static thread_local uint64_t sa_n = 0;
+                        if (sa_n < 12) {
+                            sa_n++;
+                            std::cerr << "[S123-SA] " << m
+                                      << " intent_id=" << intent_id
+                                      << " action=\"" << pi->action << "\""
+                                      << " component=\"" << pi->component_class << "\""
+                                      << std::endl;
+                        }
+                    }
                     // S123 ACTION-RESOLVE law: component-less Intent with an
                     // action string resolves through the manifest's
                     // intent-filter map (AOSP PackageManager resolution —

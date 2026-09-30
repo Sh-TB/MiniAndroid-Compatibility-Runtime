@@ -472,6 +472,44 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                               "android.permission.SCHEDULE_EXACT_ALARM") != perms.end();
                 pi_shadow->set_manifest_exact_alarm_capable(exact_capable);
             }
+            // S123 ACTION-RESOLVE LAW (cmd_run path parity): register the
+            // manifest's full action → activity map on the IntentShadow.
+            // AOSP PackageManager.queryIntentActivities resolves component-
+            // less Intents ("new Intent(action)") through the manifest
+            // intent-filter map. The ApplicationRuntime path registers this
+            // in resolve_manifest; this ExecutionEngine path never did, so
+            // every action-string second-activity launch dead-ended
+            // ACTIVITY_NOT_FOUND at consume_pending_intent (flappycow Play
+            // tap evidence: "no component (implicit intent)").
+            if (auto* it_shadow =
+                    shadow_registry_->find_as<framework::IntentShadow>()) {
+                auto manifest_raw =
+                    apk_parser_.extract_entry_cached("AndroidManifest.xml");
+                if (!manifest_raw.empty()) {
+                    apk::ManifestReader mr;
+                    apk::ManifestInfo mi = mr.parse(manifest_raw);
+                    const std::string& pkg = mi.package_name.empty()
+                                                 ? result.apk_info.package_name
+                                                 : mi.package_name;
+                    int registered = 0;
+                    for (const auto& act : mi.activities) {
+                        std::string full = act.name;
+                        if (!full.empty() && full[0] == '.') {
+                            full = pkg + full;
+                        } else if (!full.empty() &&
+                                   full.find('.') == std::string::npos) {
+                            full = pkg + "." + full;
+                        }
+                        for (const auto& action : act.actions) {
+                            it_shadow->register_action_target(action, full);
+                            registered++;
+                        }
+                    }
+                    std::cerr << "[S123-ACTION-REG] activities="
+                              << mi.activities.size()
+                              << " action_targets=" << registered << std::endl;
+                }
+            }
         }
         // FIX-4 (generic app fonts): register font files the app ships in
         // its own assets/ (any package, any name — AOSP Typeface family
@@ -3367,7 +3405,14 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                                         << "x" << h << ")" << std::endl;
                                                 }
                                             }
-                                            int ondraw_ops =
+                                            int ondraw_ops = 0;
+                                            // S123 (R-NEW-419): AOSP setFrame law —
+                                            // size change dispatches onSizeChanged
+                                            // BEFORE the first onDraw (custom views
+                                            // build their draw geometry here).
+                                            dalvik_engine_.dispatch_custom_view_onsizechanged(
+                                                task.view_id, (int)w, (int)h);
+                                            ondraw_ops =
                                                 dalvik_engine_.dispatch_custom_view_draw(task.view_id);
                                             if (ondraw_ops > 0) {
                                                 // S83 CANVAS-GEOMETRY LAW (P0
@@ -4127,6 +4172,11 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                                     continue;
                                                 }
                                             }
+                                            // S123 (R-NEW-419): setFrame law —
+                                            // onSizeChanged before the first onDraw,
+                                            // same as the inline replay site.
+                                            dalvik_engine_.dispatch_custom_view_onsizechanged(
+                                                cv.view_id, (int)cv.w, (int)cv.h);
                                             ondraw_ops = dalvik_engine_.dispatch_custom_view_draw(cv.view_id);
                                             if (ondraw_ops > 0) {
                                                 // S83 CANVAS-GEOMETRY LAW (P0):
