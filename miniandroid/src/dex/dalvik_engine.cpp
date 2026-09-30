@@ -10099,6 +10099,20 @@ bool DalvikExecutionEngine::dump_view_tree(const std::string& path) {
     // can distinguish a live-window walk from the legacy full-heap scan.
     root["node_source"] = node_source;
     root["content_root_id"] = content_root;
+    // S124 THEME-BASE: embed the last setContentView inflation stats (raw
+    // JSON string carried by ActivityShadow) so the theme/template engine
+    // activity is measurable per run — theme_attrs_resolved /
+    // def_style_applied / theme_overlays_pushed are the S124 law counters.
+    {
+        std::string is_json;
+        if (auto* as = shadow_registry_->find_as<framework::ActivityShadow>())
+            is_json = as->last_inflate_stats();
+        if (!is_json.empty()) {
+            json parsed = json::parse(is_json, nullptr, /*allow_exceptions=*/false);
+            if (!parsed.is_null()) root["inflate_stats"] = parsed;
+            else root["inflate_stats_raw"] = is_json;
+        }
+    }
     root["nodes"] = nodes;
 
     // Write to file

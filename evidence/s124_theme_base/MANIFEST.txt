@@ -1,0 +1,14 @@
+S124 THEME/TEMPLATE BASE evidence — English-only, 460px, <=100KB
+Engine: AOSP-law theme engine (Theme overlay stack + GetAttribute hops
++ defStyleAttr tier + android:theme subtree overlays + framework-res
+package 0x01 router with staged-package skip + SPARSE/OFFSET16 type laws).
+
+s124_calc1_themed_render.jpg: Heading Calculator final render — 3-run deterministic a169346e, framework-res base active
+s124_flappy1_start_screen_golden.jpg: FlappyCow start screen — byte-identical to S123 golden 13cf4746 x3 (no regression)
+s124_gmdice1_themed_menu.jpg: gmdice menu — app theme now resolves through real framework chain
+s124_unote1_menu.jpg: unote menu — window background + action bar from lawful theme values
+s124_microtimer1_keypad.jpg: microtimer keypad render
+s124_dooz1_blank_frontier.jpg: dooz last frame — theme base 355 keys loaded; first frame still blank (Compose frontier R-NEW-344)
+s124_telegram1_grey_frontier.jpg: Telegram last frame — 3 grey colors: NOT A RENDER; SvgHelper themed-icon parsing runs; 8 uncaught
+s124_whatsapp1_blackwhite_frontier.jpg: WhatsApp last frame — 2 colors black/white: NOT A RENDER; AppContext.set frontier unchanged
+s124_notes1_defstyle.jpg: notes — defStyleAttr tier active (2 widget template bags applied)

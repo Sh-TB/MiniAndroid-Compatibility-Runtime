@@ -16,7 +16,11 @@
 #include "arsc_parser.h"
 #include "axml_parser.h"
 #include "layout_inflater.h"
+#include "theme_engine.h"
 #include "../apk/apk_parser.h"
+#include <sys/utsname.h>
+#include <unistd.h>
+#include <climits>
 
 namespace miniandroid {
 namespace resources {
@@ -135,6 +139,33 @@ public:
     std::optional<ResValue> resolve_theme_attr_typed(const std::string& apk_path,
                                                      uint32_t attr_key,
                                                      int flavor_hint = -1);
+    // S124 THEME-BASE: the AOSP-law Theme object for the launch theme
+    // (activity > application), built ONCE per APK with Theme::apply_style
+    // overlay semantics (AssetManager2.cpp Theme::ApplyStyle law). The
+    // resolution order for every theme attr becomes: android:theme subtree
+    // overlays (ThemeEngine stack) → base theme → framework default table.
+    const Theme& base_theme();
+    bool base_theme_valid() const { return base_theme_valid_; }
+    // S124: the View-ctor defStyleAttr law — resolve a widget's default-style
+    // ATTR (e.g. buttonStyle 0x01010048) through the theme chain (overlays →
+    // base) to the STYLE RESID it names, WITHOUT dereferencing the style
+    // entry (a style is a bag, not a value — AOSP ApplyStyle loads the bag
+    // from the raw resid). Returns 0 when the chain carries none.
+    uint32_t resolve_def_style_resid(const std::string& apk_path,
+                                     uint32_t def_style_attr);
+    // S124 FW-PACKAGE: load the ORIGINAL framework resource table
+    // (framework-res resources.arsc, package 0x01) once per process. This is
+    // the base every Android app's themes/templates resolve against (AOSP
+    // AssetManager2 multi-package law). Returns false when the table file is
+    // absent — the engine then degrades to the generated attr-default table.
+    bool ensure_framework_resources();
+    ArscRouter arsc_router() {
+        ensure_framework_resources();
+        ArscRouter r;
+        r.app = &arsc_;
+        r.fw = fw_arsc_loaded_ ? &fw_arsc_ : nullptr;
+        return r;
+    }
 
     // Evidence dump
     std::string stats_json() const;
@@ -156,6 +187,13 @@ private:
     LayoutInflater::CustomViewMeasureHook custom_view_measure_hook_;
     // G12 FIX-G12-002: process-wide superclass classifier (same Factory law).
     std::function<bool(const std::string&, const std::string&)> is_a_;
+    // S124 THEME-BASE: cached AOSP-law Theme for the loaded APK.
+    Theme base_theme_;
+    bool base_theme_valid_ = false;
+    bool base_theme_built_ = false;
+    // S124 FW-PACKAGE: the ORIGINAL framework resource table (package 0x01).
+    ArscParser fw_arsc_;
+    bool fw_arsc_loaded_ = false;
 };
 
 } // namespace resources
