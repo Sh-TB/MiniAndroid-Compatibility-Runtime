@@ -1825,6 +1825,10 @@ CallResult IntentShadow::dispatch(const CallContext& ctx) {
         //   * other app-shaped L…; classes keep the MASTER-2 claim.
         if (ctx.args.size() >= 2) {
             const auto& c = ctx.args[1];
+            std::cerr << "[S123-ICTOR] intent_ctor args=" << ctx.args.size()
+                      << " arg1_kind=" << static_cast<int>(c.kind)
+                      << " arg1_class=" << c.object_class
+                      << " arg1_id=" << c.object_id << std::endl;
             if (c.kind == CallContext::Arg::Kind::OBJECT &&
                 c.object_class.size() > 1 && c.object_class.front() == 'L' &&
                 c.object_class.back() == ';') {
@@ -1835,6 +1839,30 @@ CallResult IntentShadow::dispatch(const CallContext& ctx) {
                     // activity component (PackageParser rejects android.*
                     // components; a Class token carries its referent only in
                     // the engine's own field, not in object_class).
+                    // S123 CLASS-TOKEN-COMPONENT law: AOSP
+                    // Intent(Context, Class) = setClass(ctx, cls) — the
+                    // component IS the Class token's referent. The engine's
+                    // const-class materialization (F-069 family) stores the
+                    // referent descriptor in the token's __referent_desc
+                    // string field; a token arg therefore RESOLVES to an app
+                    // activity component, never a framework one. Live
+                    // evidence (flappycow): the start screen's tap handler
+                    // ran startActivity(new Intent(this, Game.class)) →
+                    // component empty → "[INTENT] startActivity called (no
+                    // component set)" → the Game activity never launched
+                    // and the game could not be started by tap input.
+                    if (c.object_class == "Ljava/lang/Class;" && heap_) {
+                        std::string referent;
+                        if (heap_->get_object_string_field(
+                                c.object_id, "__referent_desc", referent) &&
+                            referent.size() > 1 && referent.front() == 'L' &&
+                            referent.back() == ';' &&
+                            referent.rfind("Landroid/", 0) != 0 &&
+                            referent.rfind("Ljava/", 0) != 0 &&
+                            referent.rfind("Landroidx/", 0) != 0) {
+                            pi->component_class = referent;
+                        }
+                    }
                 } else if (c.object_class == "Landroid/net/Uri;") {
                     // Intent(String, Uri) / setData data law.
                     pi->data_uri_object = c.object_id;
@@ -2524,6 +2552,24 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                     auto pi = intent_shadow->get_or_create_intent(intent_id);
                     pi->intent_object_id = intent_id;   // G08: keep the object
                     intent_shadow->set_pending(pi);
+                    // S123 ACTION-RESOLVE law: component-less Intent with an
+                    // action string resolves through the manifest's
+                    // intent-filter map (AOSP PackageManager resolution —
+                    // `new Intent("com.quchen.flappycow.Game")` targets the
+                    // activity whose filter declares that action). Without
+                    // this the launch dead-ends with "no component set" and
+                    // every action-string second-activity family never
+                    // opens (flappycow Play tap live evidence).
+                    if (pi->component_class.empty() && !pi->action.empty()) {
+                        std::string resolved =
+                            intent_shadow->resolve_action_target(pi->action);
+                        if (!resolved.empty()) {
+                            pi->component_class = resolved;
+                            std::cerr << "[S123-ACTION-RESOLVE] action=\""
+                                      << pi->action << "\" -> " << resolved
+                                      << std::endl;
+                        }
+                    }
                     // G08: startActivityForResult(Intent, int) — capture the
                     // request code for onActivityResult delivery on pop.
                     if (m == "startActivityForResult" && ctx.args.size() >= 2 &&

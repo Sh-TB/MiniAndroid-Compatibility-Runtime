@@ -89,6 +89,11 @@ struct ManifestInfo {
         std::string name;
         bool is_main_activity = false;
         bool is_launcher = false;
+        // S123 ACTION-RESOLVE law: every <action android:name> declared by
+        // this activity's <intent-filter> elements (AOSP PackageParser
+        // keeps the full filter set per activity; the runtime needs the
+        // action→activity map to resolve implicit/action-string Intents).
+        std::vector<std::string> actions;
     };
     std::vector<ActivityInfo> activities;
     

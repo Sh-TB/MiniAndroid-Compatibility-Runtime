@@ -590,6 +590,15 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
                 activity_has_main_action_ = true;
                 log("Found MAIN action");
             }
+            // S123 ACTION-RESOLVE law: record EVERY action of this
+            // activity (not only MAIN) so the runtime's implicit-intent
+            // resolver can map action strings → activity classes
+            // (live evidence: flappycow's start screen launches the game
+            // via `new Intent("com.quchen.flappycow.Game")` — an
+            // action-string Intent resolved through the manifest filter).
+            if (!action_name.empty() && !result_.activities.empty()) {
+                result_.activities.back().actions.push_back(action_name);
+            }
         }
         
         if (name == "category") {
