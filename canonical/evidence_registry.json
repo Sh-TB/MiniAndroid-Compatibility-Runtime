@@ -1,0 +1,107 @@
+{
+ "schema": "miniandroid.evidence_registry.v1",
+ "generated": "2026-09-30T16:14:55Z",
+ "law": "Visual evidence: 460px JPG <=100KB, English-only; VERIFIED needs 3-run byte-identical SHA256; blank/grey frames are NOT renders.",
+ "canonical_evidence_index": {
+  "total_files": 95,
+  "verified_count": 85
+ },
+ "waves": [
+  {
+   "wave": "audit_s107",
+   "files": 8
+  },
+  {
+   "wave": "cleanup",
+   "files": 7
+  },
+  {
+   "wave": "s105_issues",
+   "files": 5
+  },
+  {
+   "wave": "s106_fresh",
+   "files": 0
+  },
+  {
+   "wave": "s107_fresh",
+   "files": 1
+  },
+  {
+   "wave": "s107_games",
+   "files": 0
+  },
+  {
+   "wave": "s108_telegram",
+   "files": 2
+  },
+  {
+   "wave": "s109_telegram",
+   "files": 0
+  },
+  {
+   "wave": "s109_webview",
+   "files": 0
+  },
+  {
+   "wave": "s110_telegram",
+   "files": 0
+  },
+  {
+   "wave": "s110_tickets",
+   "files": 1
+  },
+  {
+   "wave": "s112_html5_generalization",
+   "files": 1
+  },
+  {
+   "wave": "s113_fullgui",
+   "files": 0
+  },
+  {
+   "wave": "s114_bigfix",
+   "files": 0
+  },
+  {
+   "wave": "s115_sweep",
+   "files": 1
+  },
+  {
+   "wave": "s115_telegram",
+   "files": 1
+  },
+  {
+   "wave": "s117_complete_graphics",
+   "files": 1
+  },
+  {
+   "wave": "s118_complete",
+   "files": 4
+  },
+  {
+   "wave": "s119_games",
+   "files": 8
+  },
+  {
+   "wave": "s120_new_games",
+   "files": 6
+  },
+  {
+   "wave": "s121_full_sessions",
+   "files": 7
+  },
+  {
+   "wave": "s122_harder_games",
+   "files": 4
+  },
+  {
+   "wave": "s123_themed_apps",
+   "files": 7
+  },
+  {
+   "wave": "s124_theme_base",
+   "files": 10
+  }
+ ]
+}

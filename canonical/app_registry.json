@@ -1,0 +1,316 @@
+{
+ "schema": "miniandroid.app_registry.v1",
+ "generated": "2026-09-30T16:14:55Z",
+ "status_vocabulary": [
+  "VERIFIED",
+  "TESTED",
+  "OBSERVED",
+  "PARTIAL",
+  "BLOCKED",
+  "PENDING",
+  "SUPERSEDED"
+ ],
+ "checkpoint_law": "L0 APK accepted; L1 runtime executes; L2 lifecycle; L3 view tree; L4 rendering; L5 input; L6 state changes; L7 multi-feature interaction; V visual evidence. Telegram/WhatsApp are honest BLOCKED load frontiers \u2014 their frames are NOT renders.",
+ "apps": [
+  {
+   "id": "APP-001",
+   "title": "Heading Calculator",
+   "package": "com.\u2026headingcalc",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": true,
+    "L6": true,
+    "L7": false
+   },
+   "note": "themed interactive VERIFIED_3RUN a169346e x3; TAG-TRACE getTag click chain; R-NEW-422 Pair law",
+   "sessions": "S123/S124",
+   "evidence_refs": [
+    "evidence/s123_themed_apps/calc1..2",
+    "evidence/s124_theme_base/s124_calc1"
+   ]
+  },
+  {
+   "id": "APP-002",
+   "title": "uNote",
+   "package": "\u2026",
+   "status": "TESTED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L7": false
+   },
+   "note": "S124 themed menu render (framework-res values lawful)",
+   "sessions": "S124",
+   "evidence_refs": [
+    "evidence/s124_theme_base/s124_unote1_menu.jpg"
+   ]
+  },
+  {
+   "id": "APP-003",
+   "title": "MicroTimer",
+   "package": "\u2026",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": true,
+    "L6": true,
+    "L7": false
+   },
+   "note": "audit VERIFIED (repeated-run) + S124 themed keypad",
+   "sessions": "S95/S124",
+   "evidence_refs": [
+    "evidence/s124_theme_base/s124_microtimer1_keypad.jpg"
+   ]
+  },
+  {
+   "id": "APP-004",
+   "title": "Simple Stopwatch",
+   "package": "\u2026",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": true,
+    "L6": true,
+    "L7": false
+   },
+   "note": "audit VERIFIED repeated-run",
+   "sessions": "S95",
+   "evidence_refs": [
+    "docs/verified_executed_games.json"
+   ]
+  },
+  {
+   "id": "APP-005",
+   "title": "Chess Clock",
+   "package": "\u2026",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": true,
+    "L6": true,
+    "L7": false
+   },
+   "note": "audit VERIFIED",
+   "sessions": "S95",
+   "evidence_refs": [
+    "docs/verified_executed_games.json"
+   ]
+  },
+  {
+   "id": "APP-006",
+   "title": "Notes (billthefarmer)",
+   "package": "\u2026",
+   "status": "TESTED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L7": false
+   },
+   "note": "audit VERIFIED + S124 defStyleAttr tier applied",
+   "sessions": "S95/S124",
+   "evidence_refs": [
+    "evidence/s124_theme_base/s124_notes1_defstyle.jpg"
+   ]
+  },
+  {
+   "id": "APP-007",
+   "title": "PMK-61 Calculator",
+   "package": "\u2026",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": true,
+    "L6": true,
+    "L7": false
+   },
+   "note": "audit VERIFIED",
+   "sessions": "S95",
+   "evidence_refs": [
+    "docs/verified_executed_games.json"
+   ]
+  },
+  {
+   "id": "APP-008",
+   "title": "Shopping List Calc",
+   "package": "\u2026",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": true,
+    "L6": true,
+    "L7": false
+   },
+   "note": "audit VERIFIED",
+   "sessions": "S95",
+   "evidence_refs": [
+    "docs/verified_executed_games.json"
+   ]
+  },
+  {
+   "id": "APP-009",
+   "title": "GH4A (GitHub client)",
+   "package": "com.gh4a",
+   "status": "TESTED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": null,
+    "L7": false
+   },
+   "note": "audit VERIFIED core; heavy app \u2014 levels capped to recorded runs",
+   "sessions": "S95",
+   "evidence_refs": [
+    "docs/verified_executed_games.json"
+   ]
+  },
+  {
+   "id": "APP-010",
+   "title": "OpenCalculator",
+   "package": "\u2026",
+   "status": "PARTIAL",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": null,
+    "L7": false
+   },
+   "note": "near-blank A/B byte-identical = SlidingUpPanelLayout gravity idiom frontier; honest: NOT A RENDER",
+   "sessions": "S124",
+   "evidence_refs": [
+    "docs/maintenance/worklog.md S124"
+   ]
+  },
+  {
+   "id": "APP-011",
+   "title": "OpenSudoku",
+   "package": "\u2026",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": true,
+    "L6": true,
+    "L7": false
+   },
+   "note": "audit VERIFIED + S124 SplashTheme/AppTheme per-activity observation",
+   "sessions": "S95/S124",
+   "evidence_refs": [
+    "docs/verified_executed_games.json"
+   ]
+  },
+  {
+   "id": "APP-012",
+   "title": "Telegram 12.10.1",
+   "package": "org.telegram.messenger",
+   "status": "BLOCKED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": false,
+    "L7": false
+   },
+   "note": "LaunchActivity dispatches deep (invoke_pc 548+); frame = 3 grey colors -> NOT A RENDER (honest); frontier: SvgHelper themed-icon SVG parsing + gms Api builder nulls",
+   "sessions": "S123/S124",
+   "evidence_refs": [
+    "evidence/s124_theme_base/s124_telegram1_grey_frontier.jpg"
+   ]
+  },
+  {
+   "id": "APP-013",
+   "title": "WhatsApp 2.26.38.74",
+   "package": "com.whatsapp",
+   "status": "BLOCKED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L7": false
+   },
+   "note": "24f = 2 colors black/white -> NOT A RENDER (honest); frontier: AppContext.set injection + INVOKE_RETURN null; A/B byte-identical eb16ab5c",
+   "sessions": "S123/S124",
+   "evidence_refs": [
+    "evidence/s124_theme_base/s124_whatsapp1_blackwhite_frontier.jpg"
+   ]
+  },
+  {
+   "id": "APP-014",
+   "title": "hello_smoke (control)",
+   "package": "in-house",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": true,
+    "L7": false
+   },
+   "note": "control APK full-paint stable; regression gate",
+   "sessions": "S38-S124",
+   "evidence_refs": [
+    "evidence/s113_fullgui"
+   ]
+  },
+  {
+   "id": "APP-015",
+   "title": "hello_widgets (control)",
+   "package": "in-house",
+   "status": "VERIFIED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": true,
+    "L7": false
+   },
+   "note": "most advanced control render: ImageView+EditText+Button+TableLayout+RelativeLayout; golden 2059104 nonwhite",
+   "sessions": "S38+",
+   "evidence_refs": [
+    "docs/maintenance/worklog.md S38"
+   ]
+  }
+ ]
+}
