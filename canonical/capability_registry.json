@@ -1,0 +1,1685 @@
+{
+ "schema": "miniandroid.capability_registry.v1",
+ "generated": "2026-09-30T16:14:55Z",
+ "law": "IMPLEMENTED = source inventory hit only. TESTED/VERIFIED require recorded runtime evidence refs. Grep never proves VERIFIED (ROADMAP SS1).",
+ "capabilities": [
+  {
+   "id": "CAP-UI-001",
+   "layer": "UI",
+   "name": "View",
+   "status": "TESTED",
+   "src_hits": 357,
+   "evidence": [
+    "evidence/s113_fullgui (hello_smoke/hello_widgets control APKs)",
+    "miniandroid/tests/shadow_registry_invariant_test.cpp"
+   ]
+  },
+  {
+   "id": "CAP-UI-002",
+   "layer": "UI",
+   "name": "ViewGroup",
+   "status": "TESTED",
+   "src_hits": 114,
+   "evidence": [
+    "evidence/s113_fullgui",
+    "evidence/s124_theme_base (TableLayout/LinearLayout/FrameLayout themed renders)"
+   ]
+  },
+  {
+   "id": "CAP-UI-003",
+   "layer": "UI",
+   "name": "Window",
+   "status": "TESTED",
+   "src_hits": 1,
+   "evidence": [
+    "evidence/s122_harder_games (chess decor+toolbar painted)"
+   ]
+  },
+  {
+   "id": "CAP-UI-004",
+   "layer": "UI",
+   "name": "WindowManager",
+   "status": "IMPLEMENTED",
+   "src_hits": 25,
+   "evidence": []
+  },
+  {
+   "id": "CAP-UI-005",
+   "layer": "UI",
+   "name": "DecorView",
+   "status": "TESTED",
+   "src_hits": 29,
+   "evidence": [
+    "evidence/s122_harder_games chess_full_load_0err_toolbar.jpg"
+   ]
+  },
+  {
+   "id": "CAP-UI-006",
+   "layer": "UI",
+   "name": "Root View",
+   "status": "IMPLEMENTED",
+   "src_hits": 24,
+   "evidence": []
+  },
+  {
+   "id": "CAP-UI-007",
+   "layer": "UI",
+   "name": "ViewRoot/traversal equivalent",
+   "status": "IMPLEMENTED",
+   "src_hits": 24,
+   "evidence": []
+  },
+  {
+   "id": "CAP-UI-008",
+   "layer": "UI",
+   "name": "requestLayout",
+   "status": "IMPLEMENTED",
+   "src_hits": 23,
+   "evidence": []
+  },
+  {
+   "id": "CAP-UI-009",
+   "layer": "UI",
+   "name": "invalidate",
+   "status": "IMPLEMENTED",
+   "src_hits": 49,
+   "evidence": []
+  },
+  {
+   "id": "CAP-UI-010",
+   "layer": "UI",
+   "name": "MeasureSpec",
+   "status": "TESTED",
+   "src_hits": 38,
+   "evidence": [
+    "evidence/s121_full_sessions (5 games full-load with real measure pass)"
+   ]
+  },
+  {
+   "id": "CAP-UI-011",
+   "layer": "UI",
+   "name": "EXACTLY",
+   "status": "IMPLEMENTED",
+   "src_hits": 132,
+   "evidence": []
+  },
+  {
+   "id": "CAP-UI-012",
+   "layer": "UI",
+   "name": "AT_MOST",
+   "status": "IMPLEMENTED",
+   "src_hits": 58,
+   "evidence": []
+  },
+  {
+   "id": "CAP-UI-013",
+   "layer": "UI",
+   "name": "UNSPECIFIED",
+   "status": "IMPLEMENTED",
+   "src_hits": 13,
+   "evidence": []
+  },
+  {
+   "id": "CAP-UI-014",
+   "layer": "UI",
+   "name": "measured dimensions",
+   "status": "IMPLEMENTED",
+   "src_hits": 55,
+   "evidence": []
+  },
+  {
+   "id": "CAP-UI-015",
+   "layer": "UI",
+   "name": "setFrame",
+   "status": "TESTED",
+   "src_hits": 13,
+   "evidence": [
+    "R-NEW-419 onSizeChanged/setFrame law",
+    "evidence/s123_themed_apps flappycow1_start_screen_full.jpg",
+    "3-run golden 13cf4746 x3"
+   ]
+  },
+  {
+   "id": "CAP-UI-016",
+   "layer": "UI",
+   "name": "layout/onLayout",
+   "status": "TESTED",
+   "src_hits": 30,
+   "evidence": [
+    "R-NEW-409/410 layout laws",
+    "evidence/s121_full_sessions"
+   ]
+  },
+  {
+   "id": "CAP-UI-017",
+   "layer": "UI",
+   "name": "gravity",
+   "status": "TESTED",
+   "src_hits": 246,
+   "evidence": [
+    "evidence/s121_full_sessions opmt board relayout (R-NEW-409 addRule)"
+   ]
+  },
+  {
+   "id": "CAP-UI-018",
+   "layer": "UI",
+   "name": "margin",
+   "status": "IMPLEMENTED",
+   "src_hits": 307,
+   "evidence": []
+  },
+  {
+   "id": "CAP-UI-019",
+   "layer": "UI",
+   "name": "padding",
+   "status": "IMPLEMENTED",
+   "src_hits": 212,
+   "evidence": []
+  },
+  {
+   "id": "CAP-UI-020",
+   "layer": "UI",
+   "name": "MATCH_PARENT",
+   "status": "IMPLEMENTED",
+   "src_hits": 23,
+   "evidence": []
+  },
+  {
+   "id": "CAP-UI-021",
+   "layer": "UI",
+   "name": "WRAP_CONTENT",
+   "status": "IMPLEMENTED",
+   "src_hits": 20,
+   "evidence": []
+  },
+  {
+   "id": "CAP-UI-022",
+   "layer": "UI",
+   "name": "weight",
+   "status": "IMPLEMENTED",
+   "src_hits": 86,
+   "evidence": []
+  },
+  {
+   "id": "CAP-UI-023",
+   "layer": "UI",
+   "name": "draw/onDraw",
+   "status": "TESTED",
+   "src_hits": 63,
+   "evidence": [
+    "evidence/s113_fullgui",
+    "evidence/s119_games (6 games)"
+   ]
+  },
+  {
+   "id": "CAP-UI-024",
+   "layer": "UI",
+   "name": "dispatchDraw",
+   "status": "IMPLEMENTED",
+   "src_hits": 19,
+   "evidence": []
+  },
+  {
+   "id": "CAP-UI-025",
+   "layer": "UI",
+   "name": "drawChild",
+   "status": "IMPLEMENTED",
+   "src_hits": 7,
+   "evidence": []
+  },
+  {
+   "id": "CAP-UI-026",
+   "layer": "UI",
+   "name": "clipping",
+   "status": "IMPLEMENTED",
+   "src_hits": 9,
+   "evidence": []
+  },
+  {
+   "id": "CAP-UI-027",
+   "layer": "UI",
+   "name": "alpha",
+   "status": "IMPLEMENTED",
+   "src_hits": 81,
+   "evidence": []
+  },
+  {
+   "id": "CAP-UI-028",
+   "layer": "UI",
+   "name": "transforms",
+   "status": "IMPLEMENTED",
+   "src_hits": 45,
+   "evidence": []
+  },
+  {
+   "id": "CAP-UI-029",
+   "layer": "UI",
+   "name": "visibility",
+   "status": "IMPLEMENTED",
+   "src_hits": 154,
+   "evidence": []
+  },
+  {
+   "id": "CAP-UI-030",
+   "layer": "UI",
+   "name": "focus",
+   "status": "IMPLEMENTED",
+   "src_hits": 23,
+   "evidence": []
+  },
+  {
+   "id": "CAP-UI-031",
+   "layer": "UI",
+   "name": "view state",
+   "status": "IMPLEMENTED",
+   "src_hits": 4,
+   "evidence": []
+  },
+  {
+   "id": "CAP-RENDERING-032",
+   "layer": "RENDERING",
+   "name": "Canvas",
+   "status": "TESTED",
+   "src_hits": 54,
+   "evidence": [
+    "evidence/s117_complete_graphics",
+    "evidence/s119_games"
+   ]
+  },
+  {
+   "id": "CAP-RENDERING-033",
+   "layer": "RENDERING",
+   "name": "Paint",
+   "status": "TESTED",
+   "src_hits": 2,
+   "evidence": [
+    "evidence/s117_complete_graphics"
+   ]
+  },
+  {
+   "id": "CAP-RENDERING-034",
+   "layer": "RENDERING",
+   "name": "Bitmap",
+   "status": "TESTED",
+   "src_hits": 23,
+   "evidence": [
+    "evidence/s123_themed_apps flappycow drawBitmap dst-Rect chain"
+   ]
+  },
+  {
+   "id": "CAP-RENDERING-035",
+   "layer": "RENDERING",
+   "name": "Color",
+   "status": "IMPLEMENTED",
+   "src_hits": 14,
+   "evidence": []
+  },
+  {
+   "id": "CAP-RENDERING-036",
+   "layer": "RENDERING",
+   "name": "Rect/RectF",
+   "status": "IMPLEMENTED",
+   "src_hits": 35,
+   "evidence": []
+  },
+  {
+   "id": "CAP-RENDERING-037",
+   "layer": "RENDERING",
+   "name": "Path",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-RENDERING-038",
+   "layer": "RENDERING",
+   "name": "Matrix",
+   "status": "IMPLEMENTED",
+   "src_hits": 15,
+   "evidence": []
+  },
+  {
+   "id": "CAP-RENDERING-039",
+   "layer": "RENDERING",
+   "name": "save/restore",
+   "status": "IMPLEMENTED",
+   "src_hits": 3,
+   "evidence": []
+  },
+  {
+   "id": "CAP-RENDERING-040",
+   "layer": "RENDERING",
+   "name": "translate/scale/rotate",
+   "status": "IMPLEMENTED",
+   "src_hits": 69,
+   "evidence": []
+  },
+  {
+   "id": "CAP-RENDERING-041",
+   "layer": "RENDERING",
+   "name": "clip",
+   "status": "IMPLEMENTED",
+   "src_hits": 164,
+   "evidence": []
+  },
+  {
+   "id": "CAP-RENDERING-042",
+   "layer": "RENDERING",
+   "name": "drawRect",
+   "status": "IMPLEMENTED",
+   "src_hits": 56,
+   "evidence": []
+  },
+  {
+   "id": "CAP-RENDERING-043",
+   "layer": "RENDERING",
+   "name": "drawBitmap",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-RENDERING-044",
+   "layer": "RENDERING",
+   "name": "drawPath",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-RENDERING-045",
+   "layer": "RENDERING",
+   "name": "drawText",
+   "status": "TESTED",
+   "src_hits": 34,
+   "evidence": [
+    "evidence/s119_games HUD text (2048 SCORE 84, snake SCORE/BEST)"
+   ]
+  },
+  {
+   "id": "CAP-RENDERING-046",
+   "layer": "RENDERING",
+   "name": "software rasterization",
+   "status": "IMPLEMENTED",
+   "src_hits": 86,
+   "evidence": []
+  },
+  {
+   "id": "CAP-RENDERING-047",
+   "layer": "RENDERING",
+   "name": "framebuffer",
+   "status": "IMPLEMENTED",
+   "src_hits": 262,
+   "evidence": []
+  },
+  {
+   "id": "CAP-RENDERING-048",
+   "layer": "RENDERING",
+   "name": "Surface",
+   "status": "TESTED",
+   "src_hits": 74,
+   "evidence": [
+    "evidence/s123_themed_apps flappycow2_game_activity_after_play_tap.jpg"
+   ]
+  },
+  {
+   "id": "CAP-RENDERING-049",
+   "layer": "RENDERING",
+   "name": "SurfaceHolder",
+   "status": "IMPLEMENTED",
+   "src_hits": 17,
+   "evidence": []
+  },
+  {
+   "id": "CAP-RENDERING-050",
+   "layer": "RENDERING",
+   "name": "lockCanvas",
+   "status": "TESTED",
+   "src_hits": 18,
+   "evidence": [
+    "surface_view_shadow + evidence/s123 (flappycow Game launch chain)"
+   ]
+  },
+  {
+   "id": "CAP-RENDERING-051",
+   "layer": "RENDERING",
+   "name": "unlockCanvasAndPost",
+   "status": "IMPLEMENTED",
+   "src_hits": 8,
+   "evidence": []
+  },
+  {
+   "id": "CAP-RENDERING-052",
+   "layer": "RENDERING",
+   "name": "screenshot",
+   "status": "VERIFIED",
+   "src_hits": 191,
+   "evidence": [
+    "evidence/s122..s124 3-run byte-identical SHA protocol (calc a169346e x3, flappy 13cf4746 x3) \u2014 screenshot+SHA256+pixel metrics are the campaign evidence engine"
+   ]
+  },
+  {
+   "id": "CAP-TEXT-053",
+   "layer": "TEXT",
+   "name": "TextPaint",
+   "status": "IMPLEMENTED",
+   "src_hits": 3,
+   "evidence": []
+  },
+  {
+   "id": "CAP-TEXT-054",
+   "layer": "TEXT",
+   "name": "Typeface",
+   "status": "TESTED",
+   "src_hits": 6,
+   "evidence": [
+    "miniandroid/src/fonts",
+    "docs/SYSTEM_FONTS.md",
+    "evidence/s119_games HUD glyphs"
+   ]
+  },
+  {
+   "id": "CAP-TEXT-055",
+   "layer": "TEXT",
+   "name": "font loading",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-TEXT-056",
+   "layer": "TEXT",
+   "name": "font fallback",
+   "status": "IMPLEMENTED",
+   "src_hits": 213,
+   "evidence": []
+  },
+  {
+   "id": "CAP-TEXT-057",
+   "layer": "TEXT",
+   "name": "StaticLayout",
+   "status": "IMPLEMENTED",
+   "src_hits": 35,
+   "evidence": []
+  },
+  {
+   "id": "CAP-TEXT-058",
+   "layer": "TEXT",
+   "name": "line breaking",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-TEXT-059",
+   "layer": "TEXT",
+   "name": "baseline",
+   "status": "IMPLEMENTED",
+   "src_hits": 71,
+   "evidence": []
+  },
+  {
+   "id": "CAP-TEXT-060",
+   "layer": "TEXT",
+   "name": "alignment",
+   "status": "IMPLEMENTED",
+   "src_hits": 45,
+   "evidence": []
+  },
+  {
+   "id": "CAP-TEXT-061",
+   "layer": "TEXT",
+   "name": "Unicode",
+   "status": "IMPLEMENTED",
+   "src_hits": 126,
+   "evidence": []
+  },
+  {
+   "id": "CAP-TEXT-062",
+   "layer": "TEXT",
+   "name": "Bidi",
+   "status": "IMPLEMENTED",
+   "src_hits": 7,
+   "evidence": []
+  },
+  {
+   "id": "CAP-TEXT-063",
+   "layer": "TEXT",
+   "name": "emoji",
+   "status": "IMPLEMENTED",
+   "src_hits": 51,
+   "evidence": []
+  },
+  {
+   "id": "CAP-TEXT-064",
+   "layer": "TEXT",
+   "name": "HarfBuzz",
+   "status": "IMPLEMENTED",
+   "src_hits": 22,
+   "evidence": []
+  },
+  {
+   "id": "CAP-TEXT-065",
+   "layer": "TEXT",
+   "name": "FreeType",
+   "status": "IMPLEMENTED",
+   "src_hits": 99,
+   "evidence": []
+  },
+  {
+   "id": "CAP-TEXT-066",
+   "layer": "TEXT",
+   "name": "ICU",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-TEXT-067",
+   "layer": "TEXT",
+   "name": "glyph rasterization",
+   "status": "TESTED",
+   "src_hits": 400,
+   "evidence": [
+    "evidence/s119_games (CJK dialog painted snake_deluxe S79)"
+   ]
+  },
+  {
+   "id": "CAP-RESOURCES-068",
+   "layer": "RESOURCES",
+   "name": "Resources",
+   "status": "IMPLEMENTED",
+   "src_hits": 8,
+   "evidence": []
+  },
+  {
+   "id": "CAP-RESOURCES-069",
+   "layer": "RESOURCES",
+   "name": "AssetManager",
+   "status": "IMPLEMENTED",
+   "src_hits": 60,
+   "evidence": []
+  },
+  {
+   "id": "CAP-RESOURCES-070",
+   "layer": "RESOURCES",
+   "name": "Theme",
+   "status": "TESTED",
+   "src_hits": 13,
+   "evidence": [
+    "S124 theme engine (AOSP AssetManager2 Theme::ApplyStyle port)",
+    "evidence/s124_theme_base 9 JPGs",
+    "heading calc themed render 3-run"
+   ]
+  },
+  {
+   "id": "CAP-RESOURCES-071",
+   "layer": "RESOURCES",
+   "name": "TypedArray",
+   "status": "TESTED",
+   "src_hits": 60,
+   "evidence": [
+    "F-NEW-175 obtainStyledAttributes shadow + S124 defStyleAttr tier (14 widgets)",
+    "evidence/s124_theme_base notes1/sudoku1"
+   ]
+  },
+  {
+   "id": "CAP-RESOURCES-072",
+   "layer": "RESOURCES",
+   "name": "AttributeSet",
+   "status": "IMPLEMENTED",
+   "src_hits": 13,
+   "evidence": []
+  },
+  {
+   "id": "CAP-RESOURCES-073",
+   "layer": "RESOURCES",
+   "name": "Configuration",
+   "status": "IMPLEMENTED",
+   "src_hits": 91,
+   "evidence": []
+  },
+  {
+   "id": "CAP-RESOURCES-074",
+   "layer": "RESOURCES",
+   "name": "DisplayMetrics",
+   "status": "IMPLEMENTED",
+   "src_hits": 28,
+   "evidence": []
+  },
+  {
+   "id": "CAP-RESOURCES-075",
+   "layer": "RESOURCES",
+   "name": "ColorStateList",
+   "status": "IMPLEMENTED",
+   "src_hits": 6,
+   "evidence": []
+  },
+  {
+   "id": "CAP-RESOURCES-076",
+   "layer": "RESOURCES",
+   "name": "BitmapDrawable",
+   "status": "IMPLEMENTED",
+   "src_hits": 11,
+   "evidence": []
+  },
+  {
+   "id": "CAP-RESOURCES-077",
+   "layer": "RESOURCES",
+   "name": "ColorDrawable",
+   "status": "IMPLEMENTED",
+   "src_hits": 19,
+   "evidence": []
+  },
+  {
+   "id": "CAP-RESOURCES-078",
+   "layer": "RESOURCES",
+   "name": "GradientDrawable",
+   "status": "IMPLEMENTED",
+   "src_hits": 33,
+   "evidence": []
+  },
+  {
+   "id": "CAP-RESOURCES-079",
+   "layer": "RESOURCES",
+   "name": "ShapeDrawable",
+   "status": "IMPLEMENTED",
+   "src_hits": 1,
+   "evidence": []
+  },
+  {
+   "id": "CAP-RESOURCES-080",
+   "layer": "RESOURCES",
+   "name": "StateListDrawable",
+   "status": "TESTED",
+   "src_hits": 38,
+   "evidence": [
+    "miniandroid/src/framework/state_list.cpp",
+    "evidence/s121 opmt selection ring"
+   ]
+  },
+  {
+   "id": "CAP-RESOURCES-081",
+   "layer": "RESOURCES",
+   "name": "LayerDrawable",
+   "status": "IMPLEMENTED",
+   "src_hits": 27,
+   "evidence": []
+  },
+  {
+   "id": "CAP-RESOURCES-082",
+   "layer": "RESOURCES",
+   "name": "InsetDrawable",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-RESOURCES-083",
+   "layer": "RESOURCES",
+   "name": "VectorDrawable",
+   "status": "TESTED",
+   "src_hits": 31,
+   "evidence": [
+    "R-NEW-412/413 vector laws",
+    "evidence/s122 chess full-load 0 errors"
+   ]
+  },
+  {
+   "id": "CAP-RESOURCES-084",
+   "layer": "RESOURCES",
+   "name": "AdaptiveIcon",
+   "status": "IMPLEMENTED",
+   "src_hits": 5,
+   "evidence": []
+  },
+  {
+   "id": "CAP-RESOURCES-085",
+   "layer": "RESOURCES",
+   "name": "RippleDrawable",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-RESOURCES-086",
+   "layer": "RESOURCES",
+   "name": "NinePatch",
+   "status": "IMPLEMENTED",
+   "src_hits": 6,
+   "evidence": []
+  },
+  {
+   "id": "CAP-INFLATION-087",
+   "layer": "INFLATION",
+   "name": "LayoutInflater",
+   "status": "TESTED",
+   "src_hits": 158,
+   "evidence": [
+    "inflate stats embedded in view_tree.json (S124)",
+    "evidence/s124_theme_base"
+   ]
+  },
+  {
+   "id": "CAP-INFLATION-088",
+   "layer": "INFLATION",
+   "name": "XML parsing",
+   "status": "IMPLEMENTED",
+   "src_hits": 13,
+   "evidence": []
+  },
+  {
+   "id": "CAP-INFLATION-089",
+   "layer": "INFLATION",
+   "name": "constructor resolution",
+   "status": "IMPLEMENTED",
+   "src_hits": 227,
+   "evidence": []
+  },
+  {
+   "id": "CAP-INFLATION-090",
+   "layer": "INFLATION",
+   "name": "custom Views",
+   "status": "IMPLEMENTED",
+   "src_hits": 85,
+   "evidence": []
+  },
+  {
+   "id": "CAP-INFLATION-091",
+   "layer": "INFLATION",
+   "name": "include",
+   "status": "IMPLEMENTED",
+   "src_hits": 1069,
+   "evidence": []
+  },
+  {
+   "id": "CAP-INFLATION-092",
+   "layer": "INFLATION",
+   "name": "merge",
+   "status": "IMPLEMENTED",
+   "src_hits": 26,
+   "evidence": []
+  },
+  {
+   "id": "CAP-INFLATION-093",
+   "layer": "INFLATION",
+   "name": "ViewStub",
+   "status": "IMPLEMENTED",
+   "src_hits": 3,
+   "evidence": []
+  },
+  {
+   "id": "CAP-INFLATION-094",
+   "layer": "INFLATION",
+   "name": "styles",
+   "status": "TESTED",
+   "src_hits": 44,
+   "evidence": [
+    "S124 bag-tier precedence XML > style= > defStyleAttr",
+    "evidence/s124_theme_base notes/sudoku defStyleAttr bags"
+   ]
+  },
+  {
+   "id": "CAP-INFLATION-095",
+   "layer": "INFLATION",
+   "name": "themes",
+   "status": "TESTED",
+   "src_hits": 52,
+   "evidence": [
+    "S124 android:theme subtree overlays + framework-res pkg 0x01 router",
+    "dooz Theme.Dooz 355 keys",
+    "evidence/s124_theme_base"
+   ]
+  },
+  {
+   "id": "CAP-INFLATION-096",
+   "layer": "INFLATION",
+   "name": "attributes",
+   "status": "TESTED",
+   "src_hits": 21,
+   "evidence": [
+    "S124 resolve_attribute package-routed deref; ?attr/style items one law",
+    "evidence/s124_theme_base"
+   ]
+  },
+  {
+   "id": "CAP-INPUT-097",
+   "layer": "INPUT",
+   "name": "MotionEvent",
+   "status": "VERIFIED",
+   "src_hits": 22,
+   "evidence": [
+    "touch_dispatcher + scripts/autoplay drivers",
+    "evidence/s119_games 6 games real taps",
+    "evidence/s121 opmt/fishrings taps",
+    "3-run reproducible input schedules"
+   ]
+  },
+  {
+   "id": "CAP-INPUT-098",
+   "layer": "INPUT",
+   "name": "KeyEvent",
+   "status": "IMPLEMENTED",
+   "src_hits": 2,
+   "evidence": []
+  },
+  {
+   "id": "CAP-INPUT-099",
+   "layer": "INPUT",
+   "name": "dispatchTouchEvent",
+   "status": "IMPLEMENTED",
+   "src_hits": 15,
+   "evidence": []
+  },
+  {
+   "id": "CAP-INPUT-100",
+   "layer": "INPUT",
+   "name": "onInterceptTouchEvent",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-INPUT-101",
+   "layer": "INPUT",
+   "name": "onTouchEvent",
+   "status": "TESTED",
+   "src_hits": 23,
+   "evidence": [
+    "R-NEW-417 DEX onTouchEvent override dispatch",
+    "evidence/s122 chess"
+   ]
+  },
+  {
+   "id": "CAP-INPUT-102",
+   "layer": "INPUT",
+   "name": "TouchTarget",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-INPUT-103",
+   "layer": "INPUT",
+   "name": "focus",
+   "status": "IMPLEMENTED",
+   "src_hits": 23,
+   "evidence": []
+  },
+  {
+   "id": "CAP-INPUT-104",
+   "layer": "INPUT",
+   "name": "keyboard",
+   "status": "IMPLEMENTED",
+   "src_hits": 16,
+   "evidence": []
+  },
+  {
+   "id": "CAP-INPUT-105",
+   "layer": "INPUT",
+   "name": "click",
+   "status": "VERIFIED",
+   "src_hits": 17,
+   "evidence": [
+    "S123 TAG-TRACE getTag click chain (calc targets 79/80/81)",
+    "evidence/s123_themed_apps calc2_display_after_keypad_input.jpg"
+   ]
+  },
+  {
+   "id": "CAP-INPUT-106",
+   "layer": "INPUT",
+   "name": "long click",
+   "status": "IMPLEMENTED",
+   "src_hits": 27,
+   "evidence": []
+  },
+  {
+   "id": "CAP-INPUT-107",
+   "layer": "INPUT",
+   "name": "multi-touch",
+   "status": "IMPLEMENTED",
+   "src_hits": 71,
+   "evidence": []
+  },
+  {
+   "id": "CAP-INPUT-108",
+   "layer": "INPUT",
+   "name": "VelocityTracker",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-INPUT-109",
+   "layer": "INPUT",
+   "name": "GestureDetector",
+   "status": "IMPLEMENTED",
+   "src_hits": 75,
+   "evidence": []
+  },
+  {
+   "id": "CAP-INPUT-110",
+   "layer": "INPUT",
+   "name": "TouchDelegate",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-FRAMES-111",
+   "layer": "FRAMES",
+   "name": "Choreographer",
+   "status": "TESTED",
+   "src_hits": 64,
+   "evidence": [
+    "choreographer_shadow + post-lifecycle frame pump (S39 pump law)",
+    "evidence/s123 flappycow G08-LAUNCH"
+   ]
+  },
+  {
+   "id": "CAP-FRAMES-112",
+   "layer": "FRAMES",
+   "name": "INPUT/ANIMATION/TRAVERSAL callbacks",
+   "status": "IMPLEMENTED",
+   "src_hits": 14,
+   "evidence": []
+  },
+  {
+   "id": "CAP-FRAMES-113",
+   "layer": "FRAMES",
+   "name": "frame pump",
+   "status": "IMPLEMENTED",
+   "src_hits": 11,
+   "evidence": []
+  },
+  {
+   "id": "CAP-ANIMATION-114",
+   "layer": "ANIMATION",
+   "name": "ValueAnimator",
+   "status": "TESTED",
+   "src_hits": 17,
+   "evidence": [
+    "animator_shadow.cpp",
+    "evidence/s115_sweep animation fixtures"
+   ]
+  },
+  {
+   "id": "CAP-ANIMATION-115",
+   "layer": "ANIMATION",
+   "name": "ObjectAnimator",
+   "status": "IMPLEMENTED",
+   "src_hits": 6,
+   "evidence": []
+  },
+  {
+   "id": "CAP-ANIMATION-116",
+   "layer": "ANIMATION",
+   "name": "AnimatorSet",
+   "status": "IMPLEMENTED",
+   "src_hits": 2,
+   "evidence": []
+  },
+  {
+   "id": "CAP-ANIMATION-117",
+   "layer": "ANIMATION",
+   "name": "AnimationHandler",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-ANIMATION-118",
+   "layer": "ANIMATION",
+   "name": "ViewPropertyAnimator",
+   "status": "IMPLEMENTED",
+   "src_hits": 11,
+   "evidence": []
+  },
+  {
+   "id": "CAP-ANIMATION-119",
+   "layer": "ANIMATION",
+   "name": "Interpolator",
+   "status": "IMPLEMENTED",
+   "src_hits": 10,
+   "evidence": []
+  },
+  {
+   "id": "CAP-ANIMATION-120",
+   "layer": "ANIMATION",
+   "name": "layout animation",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-SCROLLING-121",
+   "layer": "SCROLLING",
+   "name": "ScrollView",
+   "status": "TESTED",
+   "src_hits": 32,
+   "evidence": [
+    "R-NEW-336 ScrollView-root chain + evidence/s38 wave4 scroll_min fixture"
+   ]
+  },
+  {
+   "id": "CAP-SCROLLING-122",
+   "layer": "SCROLLING",
+   "name": "HorizontalScrollView",
+   "status": "IMPLEMENTED",
+   "src_hits": 7,
+   "evidence": []
+  },
+  {
+   "id": "CAP-SCROLLING-123",
+   "layer": "SCROLLING",
+   "name": "Scroller/OverScroller",
+   "status": "IMPLEMENTED",
+   "src_hits": 1,
+   "evidence": []
+  },
+  {
+   "id": "CAP-SCROLLING-124",
+   "layer": "SCROLLING",
+   "name": "scrollTo/scrollBy",
+   "status": "IMPLEMENTED",
+   "src_hits": 7,
+   "evidence": []
+  },
+  {
+   "id": "CAP-SCROLLING-125",
+   "layer": "SCROLLING",
+   "name": "fling",
+   "status": "IMPLEMENTED",
+   "src_hits": 1,
+   "evidence": []
+  },
+  {
+   "id": "CAP-SCROLLING-126",
+   "layer": "SCROLLING",
+   "name": "computeScroll",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-SCROLLING-127",
+   "layer": "SCROLLING",
+   "name": "EdgeEffect",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-SCROLLING-128",
+   "layer": "SCROLLING",
+   "name": "nested scrolling",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-THREADING-129",
+   "layer": "THREADING",
+   "name": "Thread",
+   "status": "IMPLEMENTED",
+   "src_hits": 37,
+   "evidence": []
+  },
+  {
+   "id": "CAP-THREADING-130",
+   "layer": "THREADING",
+   "name": "Runnable",
+   "status": "IMPLEMENTED",
+   "src_hits": 294,
+   "evidence": []
+  },
+  {
+   "id": "CAP-THREADING-131",
+   "layer": "THREADING",
+   "name": "Looper",
+   "status": "IMPLEMENTED",
+   "src_hits": 213,
+   "evidence": []
+  },
+  {
+   "id": "CAP-THREADING-132",
+   "layer": "THREADING",
+   "name": "Handler",
+   "status": "TESTED",
+   "src_hits": 280,
+   "evidence": [
+    "locks_shadow/executor_shadow",
+    "evidence/s40 dooz23 real Hilt execution (0-error SUCCESS)"
+   ]
+  },
+  {
+   "id": "CAP-THREADING-133",
+   "layer": "THREADING",
+   "name": "Message/MessageQueue",
+   "status": "IMPLEMENTED",
+   "src_hits": 63,
+   "evidence": []
+  },
+  {
+   "id": "CAP-THREADING-134",
+   "layer": "THREADING",
+   "name": "HandlerThread",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-THREADING-135",
+   "layer": "THREADING",
+   "name": "main thread",
+   "status": "IMPLEMENTED",
+   "src_hits": 30,
+   "evidence": []
+  },
+  {
+   "id": "CAP-THREADING-136",
+   "layer": "THREADING",
+   "name": "synchronization",
+   "status": "VERIFIED",
+   "src_hits": 63,
+   "evidence": [
+    "R-NEW-337 full atomicfu-via-Unsafe contract (CAS/volatile offsets) \u2014 30 offsets registered, 0 ISE across 3 runs"
+   ]
+  },
+  {
+   "id": "CAP-THREADING-137",
+   "layer": "THREADING",
+   "name": "UI dispatch",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-STORAGE-138",
+   "layer": "STORAGE",
+   "name": "files/cache dirs",
+   "status": "IMPLEMENTED",
+   "src_hits": 14,
+   "evidence": []
+  },
+  {
+   "id": "CAP-STORAGE-139",
+   "layer": "STORAGE",
+   "name": "SharedPreferences",
+   "status": "TESTED",
+   "src_hits": 242,
+   "evidence": [
+    "evidence/s115_sweep sharedprefs fixtures"
+   ]
+  },
+  {
+   "id": "CAP-STORAGE-140",
+   "layer": "STORAGE",
+   "name": "SQLite",
+   "status": "IMPLEMENTED",
+   "src_hits": 265,
+   "evidence": []
+  },
+  {
+   "id": "CAP-STORAGE-141",
+   "layer": "STORAGE",
+   "name": "Cursor",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-STORAGE-142",
+   "layer": "STORAGE",
+   "name": "ContentValues",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-STORAGE-143",
+   "layer": "STORAGE",
+   "name": "ContentResolver",
+   "status": "IMPLEMENTED",
+   "src_hits": 10,
+   "evidence": []
+  },
+  {
+   "id": "CAP-STORAGE-144",
+   "layer": "STORAGE",
+   "name": "URI",
+   "status": "IMPLEMENTED",
+   "src_hits": 22,
+   "evidence": []
+  },
+  {
+   "id": "CAP-STORAGE-145",
+   "layer": "STORAGE",
+   "name": "permissions",
+   "status": "IMPLEMENTED",
+   "src_hits": 70,
+   "evidence": []
+  },
+  {
+   "id": "CAP-NETWORK-146",
+   "layer": "NETWORK",
+   "name": "DNS",
+   "status": "IMPLEMENTED",
+   "src_hits": 1,
+   "evidence": []
+  },
+  {
+   "id": "CAP-NETWORK-147",
+   "layer": "NETWORK",
+   "name": "TCP sockets",
+   "status": "IMPLEMENTED",
+   "src_hits": 8,
+   "evidence": []
+  },
+  {
+   "id": "CAP-NETWORK-148",
+   "layer": "NETWORK",
+   "name": "HTTP/HTTPS",
+   "status": "IMPLEMENTED",
+   "src_hits": 23,
+   "evidence": []
+  },
+  {
+   "id": "CAP-NETWORK-149",
+   "layer": "NETWORK",
+   "name": "URLConnection",
+   "status": "IMPLEMENTED",
+   "src_hits": 6,
+   "evidence": []
+  },
+  {
+   "id": "CAP-NETWORK-150",
+   "layer": "NETWORK",
+   "name": "TLS",
+   "status": "IMPLEMENTED",
+   "src_hits": 3,
+   "evidence": []
+  },
+  {
+   "id": "CAP-NETWORK-151",
+   "layer": "NETWORK",
+   "name": "connectivity state",
+   "status": "IMPLEMENTED",
+   "src_hits": 5,
+   "evidence": []
+  },
+  {
+   "id": "CAP-WEBVIEW-152",
+   "layer": "WEBVIEW",
+   "name": "WebView",
+   "status": "IMPLEMENTED",
+   "src_hits": 52,
+   "evidence": []
+  },
+  {
+   "id": "CAP-WEBVIEW-153",
+   "layer": "WEBVIEW",
+   "name": "HTML parsing",
+   "status": "IMPLEMENTED",
+   "src_hits": 12,
+   "evidence": []
+  },
+  {
+   "id": "CAP-WEBVIEW-154",
+   "layer": "WEBVIEW",
+   "name": "CSS",
+   "status": "IMPLEMENTED",
+   "src_hits": 141,
+   "evidence": []
+  },
+  {
+   "id": "CAP-WEBVIEW-155",
+   "layer": "WEBVIEW",
+   "name": "JavaScript",
+   "status": "IMPLEMENTED",
+   "src_hits": 2,
+   "evidence": []
+  },
+  {
+   "id": "CAP-WEBVIEW-156",
+   "layer": "WEBVIEW",
+   "name": "DOM",
+   "status": "IMPLEMENTED",
+   "src_hits": 20,
+   "evidence": []
+  },
+  {
+   "id": "CAP-WEBVIEW-157",
+   "layer": "WEBVIEW",
+   "name": "navigation",
+   "status": "IMPLEMENTED",
+   "src_hits": 14,
+   "evidence": []
+  },
+  {
+   "id": "CAP-WEBVIEW-158",
+   "layer": "WEBVIEW",
+   "name": "cookies",
+   "status": "IMPLEMENTED",
+   "src_hits": 23,
+   "evidence": []
+  },
+  {
+   "id": "CAP-WEBVIEW-159",
+   "layer": "WEBVIEW",
+   "name": "local storage",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-WEBVIEW-160",
+   "layer": "WEBVIEW",
+   "name": "JS bridge",
+   "status": "IMPLEMENTED",
+   "src_hits": 1,
+   "evidence": []
+  },
+  {
+   "id": "CAP-AUDIO-161",
+   "layer": "AUDIO",
+   "name": "AudioTrack",
+   "status": "IMPLEMENTED",
+   "src_hits": 9,
+   "evidence": []
+  },
+  {
+   "id": "CAP-AUDIO-162",
+   "layer": "AUDIO",
+   "name": "AudioRecord",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-AUDIO-163",
+   "layer": "AUDIO",
+   "name": "MediaPlayer",
+   "status": "IMPLEMENTED",
+   "src_hits": 32,
+   "evidence": []
+  },
+  {
+   "id": "CAP-AUDIO-164",
+   "layer": "AUDIO",
+   "name": "audio focus",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-AUDIO-165",
+   "layer": "AUDIO",
+   "name": "PCM",
+   "status": "IMPLEMENTED",
+   "src_hits": 3,
+   "evidence": []
+  },
+  {
+   "id": "CAP-AUDIO-166",
+   "layer": "AUDIO",
+   "name": "WAV",
+   "status": "IMPLEMENTED",
+   "src_hits": 1,
+   "evidence": []
+  },
+  {
+   "id": "CAP-AUDIO-167",
+   "layer": "AUDIO",
+   "name": "MP3/AAC",
+   "status": "IMPLEMENTED",
+   "src_hits": 3,
+   "evidence": []
+  },
+  {
+   "id": "CAP-AUDIO-168",
+   "layer": "AUDIO",
+   "name": "mixer/volume",
+   "status": "IMPLEMENTED",
+   "src_hits": 11,
+   "evidence": []
+  },
+  {
+   "id": "CAP-AUDIO-169",
+   "layer": "AUDIO",
+   "name": "streaming",
+   "status": "IMPLEMENTED",
+   "src_hits": 55,
+   "evidence": []
+  },
+  {
+   "id": "CAP-VIDEO-170",
+   "layer": "VIDEO",
+   "name": "MediaCodec",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-VIDEO-171",
+   "layer": "VIDEO",
+   "name": "MediaExtractor",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-VIDEO-172",
+   "layer": "VIDEO",
+   "name": "video decode",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-VIDEO-173",
+   "layer": "VIDEO",
+   "name": "frame timing",
+   "status": "IMPLEMENTED",
+   "src_hits": 118,
+   "evidence": []
+  },
+  {
+   "id": "CAP-VIDEO-174",
+   "layer": "VIDEO",
+   "name": "Surface output",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-GAME-175",
+   "layer": "GAME",
+   "name": "SurfaceView games",
+   "status": "TESTED",
+   "src_hits": 32,
+   "evidence": [
+    "surface_view_shadow + evidence/s123 flappycow (Game launch); flashlight blank = honest frontier"
+   ]
+  },
+  {
+   "id": "CAP-GAME-176",
+   "layer": "GAME",
+   "name": "TextureView",
+   "status": "IMPLEMENTED",
+   "src_hits": 4,
+   "evidence": []
+  },
+  {
+   "id": "CAP-GAME-177",
+   "layer": "GAME",
+   "name": "lockCanvas loop",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-GAME-178",
+   "layer": "GAME",
+   "name": "game loops",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-GAME-179",
+   "layer": "GAME",
+   "name": "fixed/variable timestep",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-GAME-180",
+   "layer": "GAME",
+   "name": "sprites",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-GAME-181",
+   "layer": "GAME",
+   "name": "OpenGL ES",
+   "status": "IMPLEMENTED",
+   "src_hits": 103,
+   "evidence": []
+  },
+  {
+   "id": "CAP-GAME-182",
+   "layer": "GAME",
+   "name": "EGL",
+   "status": "IMPLEMENTED",
+   "src_hits": 59,
+   "evidence": []
+  },
+  {
+   "id": "CAP-GAME-183",
+   "layer": "GAME",
+   "name": "shaders",
+   "status": "IMPLEMENTED",
+   "src_hits": 26,
+   "evidence": []
+  },
+  {
+   "id": "CAP-GAME-184",
+   "layer": "GAME",
+   "name": "frame timing",
+   "status": "IMPLEMENTED",
+   "src_hits": 42,
+   "evidence": []
+  },
+  {
+   "id": "CAP-NATIVE-185",
+   "layer": "NATIVE",
+   "name": "JNI",
+   "status": "VERIFIED",
+   "src_hits": 42,
+   "evidence": [
+    "R-NEW-337 Unsafe/JNI contract",
+    "evidence/s40 dooz23 36MB stderr real native interop, 3-run deterministic"
+   ]
+  },
+  {
+   "id": "CAP-NATIVE-186",
+   "layer": "NATIVE",
+   "name": "System.loadLibrary",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-NATIVE-187",
+   "layer": "NATIVE",
+   "name": "libc/libm/libdl",
+   "status": "IMPLEMENTED",
+   "src_hits": 37,
+   "evidence": []
+  },
+  {
+   "id": "CAP-NATIVE-188",
+   "layer": "NATIVE",
+   "name": "pthread",
+   "status": "IMPLEMENTED",
+   "src_hits": 9,
+   "evidence": []
+  },
+  {
+   "id": "CAP-NATIVE-189",
+   "layer": "NATIVE",
+   "name": "native memory",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-NATIVE-190",
+   "layer": "NATIVE",
+   "name": "file descriptors",
+   "status": "IMPLEMENTED",
+   "src_hits": 70,
+   "evidence": []
+  },
+  {
+   "id": "CAP-NATIVE-191",
+   "layer": "NATIVE",
+   "name": "native callbacks",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-DATABASE-192",
+   "layer": "DATABASE",
+   "name": "SQLiteDatabase",
+   "status": "IMPLEMENTED",
+   "src_hits": 222,
+   "evidence": []
+  },
+  {
+   "id": "CAP-DATABASE-193",
+   "layer": "DATABASE",
+   "name": "Cursor",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  },
+  {
+   "id": "CAP-DATABASE-194",
+   "layer": "DATABASE",
+   "name": "transactions",
+   "status": "IMPLEMENTED",
+   "src_hits": 20,
+   "evidence": []
+  },
+  {
+   "id": "CAP-DATABASE-195",
+   "layer": "DATABASE",
+   "name": "prepared statements",
+   "status": "IMPLEMENTED",
+   "src_hits": 7,
+   "evidence": []
+  },
+  {
+   "id": "CAP-DATABASE-196",
+   "layer": "DATABASE",
+   "name": "indexes",
+   "status": "IMPLEMENTED",
+   "src_hits": 210,
+   "evidence": []
+  },
+  {
+   "id": "CAP-DATABASE-197",
+   "layer": "DATABASE",
+   "name": "database lifecycle",
+   "status": "PENDING",
+   "src_hits": 0,
+   "evidence": []
+  }
+ ]
+}

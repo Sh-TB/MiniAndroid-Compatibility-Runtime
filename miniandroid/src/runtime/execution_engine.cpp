@@ -150,14 +150,31 @@ ExecutionResult ExecutionEngine::execute(const std::string& path, const Executio
     
     // Execute pipeline stages
     bool success = true;
-    
-    success &= stage_load_apk(path, result);
-    if (success) success &= stage_parse_dex(result);
-    if (success) success &= stage_initialize_runtime(result, config);
-    if (success) success &= stage_load_classes(result);
-    if (success) success &= stage_execute_application(result, config);
-    if (success) success &= stage_render_frame(result, config);
-    if (success) success &= stage_capture_output(result, config);
+
+    // ── S125 BOOT-ORDER LAW (docs/ROADMAP.md §0) ──────────────────────────
+    // The base is self-knowing: every APK runs the SAME load order and the
+    // log must prove it stage by stage (FRAME PROVENANCE / SS26). Emit one
+    // [BOOT-ORDER] line per base stage with wall-clock ms. Generic — no
+    // app/package checks anywhere.
+    int boot_stage_no = 0;
+    const auto boot_t0 = std::chrono::high_resolution_clock::now();
+    auto boot_stage = [&](const char* name, bool ok) {
+        ++boot_stage_no;
+        const auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::high_resolution_clock::now() - boot_t0).count();
+        std::cerr << "[BOOT-ORDER] " << boot_stage_no << "/7 stage=" << name
+                  << " ok=" << (ok ? 1 : 0)
+                  << " ms=" << ms << std::endl;
+        return ok;
+    };
+
+    success &= boot_stage("load_apk", stage_load_apk(path, result));
+    if (success) success &= boot_stage("parse_dex", stage_parse_dex(result));
+    if (success) success &= boot_stage("initialize_runtime", stage_initialize_runtime(result, config));
+    if (success) success &= boot_stage("load_classes", stage_load_classes(result));
+    if (success) success &= boot_stage("execute_application", stage_execute_application(result, config));
+    if (success) success &= boot_stage("render_frame", stage_render_frame(result, config));
+    if (success) success &= boot_stage("capture_output", stage_capture_output(result, config));
     // UNIFIED_011.2 CLICK-TEST: runs AFTER the first frame is captured so the
     // baseline PNG on disk is the untouched frame 1. Never fails the run.
     if (success && config.click_test) stage_click_test(result, config);

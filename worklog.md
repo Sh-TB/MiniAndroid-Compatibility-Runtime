@@ -4623,3 +4623,27 @@ Stage Summary:
 - Next frontiers: framework DRAWABLE files (windowBackground = framework selector drawables
   resolve to an honest miss today), per-activity themes (sudoku SplashTheme vs AppTheme),
   Telegram themed-icon pixel chain, WhatsApp AppContext.set injection.
+
+---
+Task ID: S125
+Agent: main
+Task: User directive (fa) — "fix the BASE so it loads framework/manifest/template/APK first, automatically; the base must know itself what loads where" + MASTER ROADMAP pasted with SS37 FIRST EXECUTION (canonical registries + generated docs before any random class work).
+
+Work Log:
+- Pushed pending 5bd49ae3 first (PAT verified API 200).
+- SS37 FIRST EXECUTION — built the canonical control system, generated from repo ground truth (scripts/s125_build_canonical.py + s125_capabilities_seed.py; numbers computed, never invented):
+  canonical/capability_registry.json (197 caps across the SS5-22 layers: VERIFIED 5 / TESTED 32 / IMPLEMENTED 123 source-only / PENDING 37 — grep hits max out at IMPLEMENTED, never VERIFIED),
+  canonical/game_registry.json (88 titles: audit 23 evidence rows mapped to L0-L7 + 64 OBSERVED trace-only + dooz Compose BLOCKED; recent-session overrides S119-S124),
+  canonical/app_registry.json (15 titles incl. honest BLOCKED Telegram/WhatsApp NOT-A-RENDER rows),
+  canonical/root_cause_registry.json (GENERATED PROJECTION of live root_registry.json — 420 roots; no duplicate writable store),
+  canonical/evidence_registry.json (wave scan + evidence law),
+  canonical/compatibility_matrix.json (title x subsystems).
+- Generated docs: docs/ROADMAP.md (law doc: SS0 self-knowing BASE load order, status model, checkpoint law, closure rule), docs/ROADMAP_STATUS.md (computed control panel: layer table, title counts 88g/15a, root stats, blocked frontiers, highest-fan-out PENDING layers = INPUT/VIDEO/GAME), docs/CAPABILITY_MATRIX.md (full 197-row table). README gained a CONTROL SYSTEM (canonical, S125) panel section.
+- BASE law made enforceable: S125 BOOT-ORDER trace in ExecutionEngine::execute — every cmd_run now emits [BOOT-ORDER] n/7 stage=<load_apk|parse_dex|initialize_runtime|load_classes|execute_application|render_frame|capture_output> ok=<0/1> ms=<elapsed>. Generic, zero app checks; any frame failing stages 5-7 is a LOAD FRONTIER, never a render.
+- Rebuilt the runtime from source (container reset had wiped build/; one foreground make -j2 pass, 72 TUs, 110MB binary).
+- BOOT-ORDER verified on real APKs: uNote 7/7 ok (load 8ms -> capture 383ms), frame 2,073,600 nonwhite / 69 colors; heading calculator 7/7 ok 0 errors (regression gate). First-run FAILURE was a bad --out flag, not a stage failure.
+- Honesty preserved: Telegram/WhatsApp remain NOT A RENDER frontiers in every generated panel.
+
+Stage Summary:
+- The control system now exists and is generated: registries + status panels + the BASE load-order law, all evidence-gated. "100% rendered" claims structurally impossible in generated docs.
+- Next: fan-out — attack the computed highest-fan-out PENDING layers (INPUT/VIDEO/GAME), framework DRAWABLE files frontier, per-activity themes; then the user's batch (chess wave 2, calculator-class apps, FlappyCow gameplay past GMS frontier).
