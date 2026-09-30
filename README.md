@@ -45,18 +45,19 @@ Dalvik-class interpreter over a deterministic software raster pipeline.
 | Open problem state | **33 canonical tickets** (1 P0 · 10 P1 · 16 P2 · 6 P3; 29 open / 4 CLOSED) — [TICKET_REGISTRY.json](docs/TICKET_REGISTRY.json) |
 | Position on 0→100 scale | **~52/100** (chain proven E4–E6; deep semantics open in text shaping, real networking, media-at-APK, web, native, modern runtimes) |
 
-## CONTROL SYSTEM (canonical, S125)
+## CONTROL SYSTEM (canonical, S125/S128)
 
 > Living control system per [docs/ROADMAP.md](docs/ROADMAP.md) — every metric
 > below is **generated** from canonical state, never hand-invented.
 
 | Panel | Generated file |
 |---|---|
+| **CANONICAL MASTER WORKLIST (S128: 480 items, all 27 fields, 129 categories, P0–P4 queues, APK matrix, dependency graph)** | [docs/MASTER_WORKLIST.md](docs/MASTER_WORKLIST.md) + [canonical/master_worklist.json](canonical/master_worklist.json) |
 | Capability registry (197 capabilities, SS5–22 layers) | [canonical/capability_registry.json](canonical/capability_registry.json) |
 | Status control panel (computed percentages, frontiers, load pipeline) | [docs/ROADMAP_STATUS.md](docs/ROADMAP_STATUS.md) |
 | Per-capability matrix | [docs/CAPABILITY_MATRIX.md](docs/CAPABILITY_MATRIX.md) |
 | App registry (L0–L7 checkpoints; honest BLOCKED frontiers) | [canonical/app_registry.json](canonical/app_registry.json) |
-| Game registry (88 titles; OBSERVED ≠ VERIFIED) | [canonical/game_registry.json](canonical/game_registry.json) |
+| Game registry (91 titles; OBSERVED ≠ VERIFIED) | [canonical/game_registry.json](canonical/game_registry.json) |
 | Root-cause read model (421 roots) | [canonical/root_cause_registry.json](canonical/root_cause_registry.json) |
 | Evidence registry (waves + evidence law) | [canonical/evidence_registry.json](canonical/evidence_registry.json) |
 | Title × subsystem compatibility matrix | [canonical/compatibility_matrix.json](canonical/compatibility_matrix.json) |
