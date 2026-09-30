@@ -56,7 +56,14 @@ bool parse_hex_color(const std::string& s, uint32_t* argb) {
 
 // Extract a color from an <item>: android:color attribute (ColorStateList
 // form) or the first nested <shape>/<solid> android:color (shape form).
-bool item_color(const resources::AxmlElement& item, uint32_t* argb) {
+// S127 (R-NEW-423 follow-up): android:color may compile to a REFERENCE
+// (@color/… — the universal form in framework ColorStateLists, e.g.
+// primary_text_light's default item = @color/bright_foreground_light).
+// The reference id is recorded in *ref (0 = none) for the caller that
+// owns the ARSC router to deref; the literal paths behave as before.
+bool item_color(const resources::AxmlElement& item, uint32_t* argb,
+                uint32_t* ref = nullptr) {
+    if (ref) *ref = 0;
     if (const auto* a = item.attr("color", "android")) {
         if (a->value.type == resources::DataType::COLOR_ARGB8 ||
             a->value.type == resources::DataType::COLOR_RGB8 ||
@@ -67,6 +74,13 @@ bool item_color(const resources::AxmlElement& item, uint32_t* argb) {
         }
         if (!a->raw_value.empty() && parse_hex_color(a->raw_value, argb))
             return true;
+        if (a->value.type == resources::DataType::REFERENCE ||
+            a->value.type == resources::DataType::ATTRIBUTE ||
+            a->value.type == resources::DataType::DYNAMIC_REFERENCE) {
+            if (ref) *ref = a->value.data;
+            *argb = 0;
+            return true;
+        }
         // aapt2 compiles colors to COLOR_*; anything else is not a color
         // law — reject.
         return false;
@@ -110,10 +124,15 @@ bool parse_state_list(const std::vector<uint8_t>& axml,
         it.state_enabled = tri_state(item, "state_enabled");
         it.state_selected = tri_state(item, "state_selected");
         it.state_checked = tri_state(item, "state_checked");  // S106 MG-022
+        // S127: window_focused/activated framework selector states.
+        it.state_window_focused = tri_state(item, "state_window_focused");
+        it.state_activated = tri_state(item, "state_activated");
         uint32_t c = 0;
-        if (item_color(item, &c)) {
+        uint32_t cref = 0;
+        if (item_color(item, &c, &cref)) {
             it.color = c;
             it.has_color = true;
+            it.color_ref_id = cref;
         }
         if (const auto* d = item.attr("drawable", "android")) {
             // Reference form: raw "@drawable/name" or a typed reference —

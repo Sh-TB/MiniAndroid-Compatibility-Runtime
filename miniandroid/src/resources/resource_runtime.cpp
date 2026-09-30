@@ -135,12 +135,41 @@ std::optional<uint32_t> ResourceRuntime::resolve_framework_file_color(uint32_t r
             std::vector<framework::ViewShadow::ViewNode::BgStateItem> items;
             if (!framework::parse_state_list(axml, &items)) return std::nullopt;
             // StateListDrawable first-match law with the DEFAULT view state
-            // (not pressed / enabled / unselected / unchecked).
+            // (window focused, not pressed / enabled / unselected /
+            // unchecked / not activated). S127: the full tri-state law —
+            // framework ColorStateLists declare window_focused/activated
+            // items that the old 3-state skip mis-ordered.
+            auto tri_matches = [](int req, bool cur) {
+                return req < 0 || req == (cur ? 1 : 0);
+            };
+            // Bounded file-recursion depth for @color chains whose target
+            // is itself a file-backed ColorStateList.
+            std::function<std::optional<uint32_t>(uint32_t, int)> deref =
+                [&](uint32_t ref, int depth) -> std::optional<uint32_t> {
+                if (depth > 4) return std::nullopt;
+                ResolutionResult r = rt.fw->resolve_full(ref, device_config());
+                if (!r.ok || !r.value()) return std::nullopt;
+                const ResValue& tv = *r.value();
+                if (tv.is_int()) return (uint32_t)tv.data;
+                if (tv.is_color())
+                    return color_data_to_argb((uint8_t)tv.type, tv.data);
+                if (tv.is_string() && tv.string_value.rfind("res/", 0) == 0 &&
+                    !r.chain.empty()) {
+                    return resolve_framework_file_color(r.chain.back().id);
+                }
+                return std::nullopt;
+            };
             for (const auto& it : items) {
-                if (it.state_pressed > 0 || it.state_selected > 0 ||
-                    it.state_checked > 0)
+                if (!tri_matches(it.state_pressed, false) ||
+                    !tri_matches(it.state_enabled, true) ||
+                    !tri_matches(it.state_selected, false) ||
+                    !tri_matches(it.state_checked, false) ||
+                    !tri_matches(it.state_window_focused, true) ||
+                    !tri_matches(it.state_activated, false))
                     continue;   // requires a non-default state — not first match
                 if (it.has_color && it.color != 0) return it.color;
+                if (it.has_color && it.color_ref_id != 0)
+                    return deref(it.color_ref_id, 0);
                 if (!it.drawable_path.empty() &&
                     it.drawable_path.rfind("@color/", 0) == 0) {
                     auto id = rt.fw->find_id("", "color",
@@ -154,6 +183,30 @@ std::optional<uint32_t> ResourceRuntime::resolve_framework_file_color(uint32_t r
             }
             return std::nullopt;
         }
+    }
+    return std::nullopt;
+}
+
+std::optional<uint32_t> ResourceRuntime::resolve_color_reference_argb(uint32_t resid) {
+    // S127: package-routed terminal-value color law (see resource_runtime.h).
+    ArscRouter rt = arsc_router();
+    if ((resid >> 24) == 0x01) {
+        if (!rt.fw) return std::nullopt;
+        ResolutionResult r = rt.fw->resolve_full(resid, device_config());
+        if (r.ok && r.value()) {
+            const ResValue& tv = *r.value();
+            if (tv.is_string() && tv.string_value.rfind("res/", 0) == 0)
+                return resolve_framework_file_color(resid);
+            if (tv.is_int()) return (uint32_t)tv.data;
+            return color_data_to_argb((uint8_t)tv.type, tv.data);
+        }
+        return std::nullopt;
+    }
+    ResolutionResult r = arsc_.resolve_full(resid, device_config());
+    if (r.ok && r.value()) {
+        const ResValue& tv = *r.value();
+        if (tv.is_int()) return (uint32_t)tv.data;
+        return color_data_to_argb((uint8_t)tv.type, tv.data);
     }
     return std::nullopt;
 }
@@ -213,12 +266,19 @@ std::optional<uint32_t> ResourceRuntime::resolve_window_background_argb(
     auto fb = resolve_theme_attr_typed(apk_path, 0x01010054, -1);
     if (s95_dbg) std::cerr << "[S95-THEME] typed fb=" << (fb.has_value() ? "hit" : "miss") << std::endl;
     if (fb.has_value()) {
-        // S125 FRAMEWORK-RES FILE LAW: a reference (theme windowBackground
-        // = @drawable/screen_background_selector_light) resolves through
-        // the committed framework res/ file tree first.
+        // S127 (R-NEW-423 follow-up): a REFERENCE attribute value derefs
+        // through the AOSP ResolveAttributeReference law — package-routed
+        // resolve_full (bounded chain walk), file-backed entries through
+        // the committed framework res/ tree, terminal INT/COLOR via the
+        // one color law. Previously only file references / raw constants
+        // were handled and a @color reference's RAW data (e.g. 0x0106010e)
+        // was painted as a color — the black Material.Light window.
         if (fb->is_reference()) {
-            auto file_color = resolve_framework_file_color(fb->ref_id);
-            if (file_color) return file_color;
+            if ((fb->ref_id >> 24) == 0x01) {
+                if (auto file_color = resolve_framework_file_color(fb->ref_id))
+                    return file_color;
+            }
+            return resolve_color_reference_argb(fb->ref_id);
         }
         // The framework table emits INT_HEX (data IS the #AARRGGBB
         // constant — the same law everywhere an INT_HEX color resolves);
@@ -329,7 +389,52 @@ std::optional<ResValue> ResourceRuntime::resolve_theme_attr_typed(
     // default table.
     auto v = ThemeEngine::instance().resolve_attr(arsc_router(), device_config(),
                                                   &base_theme(), attr_key);
-    if (v) return v;
+    if (v) {
+        // S127 ColorStateList/DRAWABLE FILE LAW (AOSP ResourcesImpl
+        // .loadColorStateList / loadDrawable): framework color/drawable
+        // entries are FILE-BACKED — the entry value is a STRING carrying
+        // the res/ path (aapt2 file-reference law; e.g. Theme.Light
+        // textColorPrimary = @color/primary_text_light whose table value
+        // is "res/color/primary_text_light.xml"). Consumers need the
+        // COLOR, so the attr service loads the XML from the committed
+        // framework_res/res tree (FILE_MANIFEST.txt, byte-verified from
+        // the same framework-res.apk as the table) and converts it
+        // through the StateListDrawable/ColorStateList default-state law.
+        // Conversion happens ONLY when the file parses and yields a
+        // color; otherwise the raw value returns untouched (honest).
+        if (v->is_string() && v->string_value.rfind("res/", 0) == 0) {
+            static const bool csl_diag = std::getenv("MINIANDROID_CSL_DIAG") != nullptr;
+            if (csl_diag)
+                std::cerr << "[S127-CSL] attr file value '" << v->string_value
+                          << "'" << std::endl;
+            size_t slash = v->string_value.find('/', 4);
+            size_t dot = v->string_value.rfind('.');
+            if (slash != std::string::npos && dot != std::string::npos && dot > slash) {
+                std::string dir = v->string_value.substr(4, slash - 4);   // color | drawable
+                std::string name = v->string_value.substr(slash + 1, dot - slash - 1);
+                ArscRouter rt = arsc_router();
+                if (rt.fw) {
+                    auto fid = rt.fw->find_id("", dir, name);
+                    if (csl_diag)
+                        std::cerr << "[S127-CSL] find_id " << dir << "/" << name
+                                  << " -> " << (fid ? "HIT" : "MISS") << std::endl;
+                    if (fid) {
+                        auto col = resolve_framework_file_color(*fid);
+                        if (csl_diag)
+                            std::cerr << "[S127-CSL] file_color="
+                                      << (col ? "HIT" : "MISS") << std::endl;
+                        if (col) {
+                            ResValue out;
+                            out.type = DataType::INT_HEX;
+                            out.data = (int32_t)*col;
+                            return out;
+                        }
+                    }
+                }
+            }
+        }
+        return v;
+    }
 
     // 2. Framework theme defaults (AOSP law; generated table).
     if ((attr_key >> 24) == 0x01) {

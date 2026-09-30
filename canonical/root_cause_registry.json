@@ -1,7 +1,7 @@
 {
  "_projection_of": "root_registry.json",
  "_law": "root_registry.json is the single writable store; this file is a generated read model (ROADMAP SS3: no duplicate canonical registries).",
- "generated": "2026-09-30T18:38:18Z",
+ "generated": "2026-09-30T20:52:31Z",
  "total": 421,
  "status_counts": {
   "PARTIAL": 103,
@@ -25,7 +25,7 @@
   "USED_BY_EXECUTION": 7,
   "ROOT_CAUSED-FIXED": 2,
   "FIXED-VERIFIED": 1,
-  "ROOT-CAUSED-OPEN": 1
+  "ROOT-CAUSED-CLOSED": 1
  },
  "roots": [
   {
@@ -2971,7 +2971,7 @@
   {
    "id": "R-NEW-423",
    "title": "framework-res ARSC parser entry-value corruption for non-attr/style types (color/drawable/plain entries decode cross-contaminated values)",
-   "status": "ROOT-CAUSED-OPEN",
+   "status": "ROOT-CAUSED-CLOSED",
    "priority": "P0",
    "layer": "RESOURCES"
   }

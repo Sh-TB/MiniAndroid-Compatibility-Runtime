@@ -118,6 +118,17 @@ public:
     // no package-name checks (the 0x01 test IS the AOSP package router).
     std::optional<uint32_t> resolve_framework_file_color(uint32_t resid);
 
+    // S127 (R-NEW-423 follow-up, AOSP AssetManager2 ResolveAttributeReference
+    // law): a REFERENCE whose target is a COLOR resolves package-routed —
+    // package-0x01 ids through the framework table, app ids through the app
+    // table — with resolve_full's bounded reference-chain walk terminating on
+    // the first non-reference value (e.g. Theme.Material.Light
+    // windowBackground = @color/background_material_light
+    // = @color/material_grey_50 = #fffafafa). A terminal STRING "res/…"
+    // (file-backed drawable/color) resolves through the committed framework
+    // res/ tree. Returns the final ARGB, or nullopt (honest miss).
+    std::optional<uint32_t> resolve_color_reference_argb(uint32_t resid);
+
     // F-093 (R-NEW-326, S25): theme attribute resolution through the
     // APPLICATION theme's style parent chain (ArscParser::bag_value —
     // ResTable_map key query with cycle-safe parent hops). Upstream law:

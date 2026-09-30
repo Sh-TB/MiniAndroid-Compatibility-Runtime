@@ -70,66 +70,6 @@
       "source": "REAL_DALVIK_INTERPRETER"
     },
     {
-      "class": "Ljava/lang/Enum;",
-      "invocation_type": "virtual",
-      "method": "<init>",
-      "source": "REAL_DALVIK_INTERPRETER"
-    },
-    {
-      "class": "Landroidx/lifecycle/Lifecycle$State;",
-      "invocation_type": "virtual",
-      "method": "<init>",
-      "source": "REAL_DALVIK_INTERPRETER"
-    },
-    {
-      "class": "Ljava/lang/Enum;",
-      "invocation_type": "virtual",
-      "method": "<init>",
-      "source": "REAL_DALVIK_INTERPRETER"
-    },
-    {
-      "class": "Landroidx/lifecycle/Lifecycle$State;",
-      "invocation_type": "virtual",
-      "method": "<init>",
-      "source": "REAL_DALVIK_INTERPRETER"
-    },
-    {
-      "class": "Ljava/lang/Enum;",
-      "invocation_type": "virtual",
-      "method": "<init>",
-      "source": "REAL_DALVIK_INTERPRETER"
-    },
-    {
-      "class": "Landroidx/lifecycle/Lifecycle$State;",
-      "invocation_type": "virtual",
-      "method": "<init>",
-      "source": "REAL_DALVIK_INTERPRETER"
-    },
-    {
-      "class": "Ljava/lang/Enum;",
-      "invocation_type": "virtual",
-      "method": "<init>",
-      "source": "REAL_DALVIK_INTERPRETER"
-    },
-    {
-      "class": "Landroidx/lifecycle/Lifecycle$State;",
-      "invocation_type": "virtual",
-      "method": "<init>",
-      "source": "REAL_DALVIK_INTERPRETER"
-    },
-    {
-      "class": "Ljava/lang/Enum;",
-      "invocation_type": "virtual",
-      "method": "<init>",
-      "source": "REAL_DALVIK_INTERPRETER"
-    },
-    {
-      "class": "Landroidx/lifecycle/Lifecycle$State;",
-      "invocation_type": "virtual",
-      "method": "<init>",
-      "source": "REAL_DALVIK_INTERPRETER"
-    },
-    {
       "class": "Landroidx/lifecycle/LifecycleRegistry;",
       "invocation_type": "virtual",
       "method": "<init>",
@@ -355,18 +295,6 @@
     },
     {
       "class": "Landroidx/activity/ComponentActivity$3;",
-      "invocation_type": "virtual",
-      "method": "<init>",
-      "source": "REAL_DALVIK_INTERPRETER"
-    },
-    {
-      "class": "Landroidx/arch/core/executor/ArchTaskExecutor$1;",
-      "invocation_type": "virtual",
-      "method": "<init>",
-      "source": "REAL_DALVIK_INTERPRETER"
-    },
-    {
-      "class": "Landroidx/arch/core/executor/ArchTaskExecutor$2;",
       "invocation_type": "virtual",
       "method": "<init>",
       "source": "REAL_DALVIK_INTERPRETER"
@@ -2094,6 +2022,6 @@
       "source": "REAL_DALVIK_INTERPRETER"
     }
   ],
-  "timestamp": "2026-09-28T00:43:00Z",
-  "total_api_calls": 268
+  "timestamp": "2026-09-30T19:52:39Z",
+  "total_api_calls": 256
 }

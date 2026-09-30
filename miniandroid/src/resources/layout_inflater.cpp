@@ -614,6 +614,19 @@ bool LayoutInflater::apply_style_item(Attrs& a, uint32_t attr_key,
                 a.from_style_bg = true;
                 return true;
             }
+            // S127 (R-NEW-423 follow-up, AOSP ResolveAttributeReference
+            // law): package-routed deref of color references through the
+            // framework table (resolve_full bounded chain walk) — a
+            // framework color ref (background_material_light →
+            // material_grey_50 → #fffafafa) previously fell through as an
+            // honest miss and the widget kept the raw window color.
+            auto deref_col = resources::ResourceRuntime::instance()
+                                 .resolve_color_reference_argb(v.ref_id);
+            if (deref_col) {
+                a.bg_color = *deref_col;
+                a.from_style_bg = true;
+                return true;
+            }
         }
         return false;   // shape/selector XML backgrounds: existing laws only
     }
