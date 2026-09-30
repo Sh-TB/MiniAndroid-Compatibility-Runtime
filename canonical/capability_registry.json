@@ -1,6 +1,6 @@
 {
  "schema": "miniandroid.capability_registry.v1",
- "generated": "2026-09-30T18:38:18Z",
+ "generated": "2026-09-30T20:52:31Z",
  "law": "IMPLEMENTED = source inventory hit only. TESTED/VERIFIED require recorded runtime evidence refs. Grep never proves VERIFIED (ROADMAP SS1).",
  "capabilities": [
   {
@@ -264,7 +264,7 @@
    "layer": "UI",
    "name": "focus",
    "status": "IMPLEMENTED",
-   "src_hits": 23,
+   "src_hits": 33,
    "evidence": []
   },
   {
@@ -589,7 +589,7 @@
    "layer": "RESOURCES",
    "name": "Resources",
    "status": "IMPLEMENTED",
-   "src_hits": 8,
+   "src_hits": 9,
    "evidence": []
   },
   {
@@ -597,7 +597,7 @@
    "layer": "RESOURCES",
    "name": "AssetManager",
    "status": "IMPLEMENTED",
-   "src_hits": 61,
+   "src_hits": 62,
    "evidence": []
   },
   {
@@ -636,7 +636,7 @@
    "layer": "RESOURCES",
    "name": "Configuration",
    "status": "IMPLEMENTED",
-   "src_hits": 92,
+   "src_hits": 95,
    "evidence": []
   },
   {
@@ -652,7 +652,7 @@
    "layer": "RESOURCES",
    "name": "ColorStateList",
    "status": "IMPLEMENTED",
-   "src_hits": 6,
+   "src_hits": 14,
    "evidence": []
   },
   {
@@ -692,7 +692,7 @@
    "layer": "RESOURCES",
    "name": "StateListDrawable",
    "status": "TESTED",
-   "src_hits": 43,
+   "src_hits": 52,
    "evidence": [
     "miniandroid/src/framework/state_list.cpp",
     "evidence/s121 opmt selection ring"
@@ -903,7 +903,7 @@
    "layer": "INPUT",
    "name": "focus",
    "status": "IMPLEMENTED",
-   "src_hits": 23,
+   "src_hits": 33,
    "evidence": []
   },
   {
@@ -1481,7 +1481,7 @@
    "layer": "VIDEO",
    "name": "frame timing",
    "status": "IMPLEMENTED",
-   "src_hits": 118,
+   "src_hits": 119,
    "evidence": []
   },
   {

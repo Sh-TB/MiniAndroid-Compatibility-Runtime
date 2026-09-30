@@ -64,9 +64,15 @@ enum class DataType : uint8_t {
     DYNAMIC_REFERENCE = 0x07,
 };
 
-// ResTable_entry flags
+// ResTable_entry flags (AOSP ResourceTypes.h main — ResTable_entry::enum).
+// S127 R-NEW-423: PUBLIC is 0x0002 (was mislabeled WEAK at 0x0002),
+// WEAK is 0x0004, COMPACT (0x0008) marks the 8-byte ResTable_entry::Compact
+// {u16 key, u16 flags(high8 = Res_value dataType, low8 = these flags),
+//  u32 inline data} — the modern aapt2 encoding for simple entries.
 static constexpr uint16_t ENTRY_FLAG_COMPLEX = 0x0001;
-static constexpr uint16_t ENTRY_FLAG_WEAK    = 0x0002;
+static constexpr uint16_t ENTRY_FLAG_PUBLIC  = 0x0002;
+static constexpr uint16_t ENTRY_FLAG_WEAK    = 0x0004;
+static constexpr uint16_t ENTRY_FLAG_COMPACT = 0x0008;
 // ResTable_type flags
 static constexpr uint8_t  TYPE_FLAG_SPARSE   = 0x01;
 
