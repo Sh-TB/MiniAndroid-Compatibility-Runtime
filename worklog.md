@@ -4711,3 +4711,21 @@ Work Log:
 
 Stage Summary:
 - The master worklist now EXISTS, is CANONICAL, GENERATED, and VISIBLE (docs/MASTER_WORKLIST.md + canonical/master_worklist.json); "421 roots" is no longer an abstraction — every open item carries all 27 campaign fields, every category MC-001..MC-129 is explicitly present, the APK matrix and dependency graph are computed, and the P0-P4 queues are recomputed on every regeneration.
+
+---
+Task ID: S128b
+Agent: main
+Task: campaign SS18 — after the worklist landed, execute the next automatic root; never stop after one cycle.
+
+Work Log:
+- Selected by the worklist's own priority computation: INPUT (highest-fan-out PENDING layer) -> R-NEW-424 (P0): TouchTarget + onInterceptTouchEvent law (CAP-INPUT-102/100).
+- Implemented 3 generic laws (AOSP android-14 anchors, zero app checks): (1) reverse draw-order child hit-test (AOSP ViewGroup child-iteration law; first-in-order used to win overlaps = z-order inversion); (2) TouchTarget chain capture per gesture (mFirstTouchTarget law) exported in every dispatch record; (3) onInterceptTouchEvent DEX bridge (dispatch_intercept in dalvik_engine + overrides_intercept_touch_event captured at both ctor sites) with intercept-at-DOWN retarget and mid-gesture CANCEL/retarget; requestDisallowInterceptTouchEvent recorded as documented boundary.
+- Files: touch_dispatcher.h/.cpp (walk/chain/intercept), android_shadows.h (flag), dalvik_engine.h/.cpp (capture + bridge), execution_engine.cpp (wiring).
+- Rebuilt; 116-stage battery gate ALL PASS (zero regressions).
+- S128 INPUT wave (scripts/s128_input_wave.py) 9/9 PASS: calc goldens a169346e x3 + flappy menu 13cf4746 x3 PRESERVED; calc taps touch_target_chain max=5, PerformClick x3 via real DEX, display state change 90080684 (before frame == golden byte-exact); flappy StartscreenView chain + onTouchEvent arm x10; uNote BOOT-ORDER 7/7; ttt byte-identical baseline b5a7a35d (honest target=0 tree-visibility frontier noted); telegram/whatsapp NOT-A-RENDER unchanged (3/2 colors).
+- Evidence: evidence/s128_input_law/ 8 JPGs (before==golden, after!=before).
+- Registries: R-NEW-424 registered ROOT-CAUSED-FIXED (422 roots); CAP-INPUT-102 -> TESTED, CAP-INPUT-100 -> IMPLEMENTED (PENDING 37->35); canonical + master worklist regenerated (641 items — caps now all listed so status upgrades never remove entries); M-01 -> PARTIAL with residuals (VelocityTracker, TouchDelegate, intercept real-APK wave).
+- Pushed df18cc30 (worklist) + ecb7f2cb (R-NEW-424); reports posted (#354 comments 5919982161 + S128b).
+
+Stage Summary:
+- The master worklist now drives execution: next automatic root = CAP-INPUT-108 VelocityTracker -> CAP-INPUT-110 TouchDelegate -> intercept wave on scrollable-container APKs -> M-03 GAME lockCanvas loop.
