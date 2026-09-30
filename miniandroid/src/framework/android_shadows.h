@@ -1147,8 +1147,22 @@ public:
             // S106 (MG-022): android:state_checked — AOSP StateListDrawable
             // standard state (Checkable families: CheckBox/Switch/MenuItem).
             int state_checked = -1;
+            // S127 (R-NEW-423 follow-up — framework ColorStateList files):
+            // window_focused/activated participate in the framework
+            // selector first-match law (primary_text_light declares
+            // state_window_focused="false" and state_activated="true"
+            // items); the DEFAULT view state is focused=true,
+            // activated=false.
+            int state_window_focused = -1;
+            int state_activated = -1;
             uint32_t color = 0;           // android:color or shape solid
             bool has_color = false;
+            // S127: android:color as a REFERENCE (@color/…, the aapt2
+            // compiled form in framework ColorStateLists — e.g.
+            // primary_text_light's default item = @color/
+            // bright_foreground_light); resolved by the caller that owns
+            // the ARSC router (resolve_framework_file_color).
+            uint32_t color_ref_id = 0;
             std::string drawable_path;    // android:drawable file (may be empty)
         };
         std::vector<BgStateItem> bg_state_items;

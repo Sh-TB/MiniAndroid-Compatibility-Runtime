@@ -98,6 +98,32 @@ std::string ArscParser::config_to_string(const uint8_t* cfg, size_t /*cfg_size*/
 // ---------------------------------------------------------------------------
 // Res_value decode
 // ---------------------------------------------------------------------------
+// S127 (R-NEW-423): the ONE derived-field law for a decoded {type, data} pair
+// (AOSP TypedValue semantics) — shared by the classic Res_value byte path and
+// the ResTable_entry::Compact path so both populate ref_id / dim fields
+// identically. A compact REFERENCE that skipped this law carried ref_id=0 and
+// every resolve_full chain through it died as MISSING_REFERENCE_TARGET
+// (background_material_light → material_grey_50 never walked).
+static void finish_res_value_law(ResValue& out) {
+    switch (out.type) {
+        case DataType::DIMENSION:
+        case DataType::FRACTION:
+            // GOLDEN-03 §7: FRACTION (0x06) — same complex mantissa law as
+            // DIMENSION; the low nibble is the FRACTION unit (0 = % of base,
+            // 1 = % of parent). TypedValue.complexToFraction multiplies by the
+            // consumer's base/pbase at use time; here we store the multiplier.
+            out.dim_value = complex_to_float(out.data);
+            out.dim_unit = (uint8_t)(out.data & COMPLEX_UNIT_MASK);   // COMPLEX_UNIT_SHIFT = 0
+            break;
+        case DataType::REFERENCE:
+        case DataType::ATTRIBUTE:
+        case DataType::DYNAMIC_REFERENCE:
+            out.ref_id = out.data;
+            break;
+        default: break;
+    }
+}
+
 bool ArscParser::decode_res_value(const uint8_t* p, size_t avail, const Pool& /*global*/,
                                   const Package& pkg, ResValue& out) {
     if (avail < 8) { return false; }
@@ -108,33 +134,15 @@ bool ArscParser::decode_res_value(const uint8_t* p, size_t avail, const Pool& /*
     if (vsize < 8 || res0 != 0) { /* tolerate */ }
     out.type = (DataType)dtype;
     out.data = ddata;
-    switch ((DataType)dtype) {
+    switch (out.type) {
         case DataType::STRING: {
             const std::string* s = pkg.key_strings.get(ddata);  // placeholder; real table uses global pool
             (void)s;
             break;
         }
-        case DataType::DIMENSION: {
-            out.dim_value = complex_to_float(ddata);
-            out.dim_unit = (uint8_t)(ddata & COMPLEX_UNIT_MASK);   // COMPLEX_UNIT_SHIFT = 0
-            break;
-        }
-        case DataType::FRACTION: {
-            // GOLDEN-03 §7: FRACTION (0x06) — same complex mantissa law as
-            // DIMENSION; the low nibble is the FRACTION unit (0 = % of base,
-            // 1 = % of parent). TypedValue.complexToFraction multiplies by the
-            // consumer's base/pbase at use time; here we store the multiplier.
-            out.dim_value = complex_to_float(ddata);
-            out.dim_unit = (uint8_t)(ddata & COMPLEX_UNIT_MASK);
-            break;
-        }
-        case DataType::REFERENCE:
-        case DataType::ATTRIBUTE:
-        case DataType::DYNAMIC_REFERENCE:
-            out.ref_id = ddata;
-            break;
         default: break;
     }
+    finish_res_value_law(out);
     return true;
 }
 
@@ -243,19 +251,46 @@ bool ArscParser::parse_type_chunk(const uint8_t* base, size_t avail, Package& pk
         size_t ep = chunk_offset + tc.entry_positions[i];
         if (ep + 8 > avail) continue;
         const uint8_t* e = base + ep;
-        uint16_t esize = rd16(e);
         uint16_t eflags = rd16(e + 2);
-        uint32_t key_idx = rd32(e + 4);
+        // S127 R-NEW-423 FIX (AOSP ResourceTypes.h main, ResTable_entry
+        // union): FLAG_COMPACT (0x0008) marks an 8-byte
+        // ResTable_entry::Compact {u16 key, u16 flags, u32 data} where
+        // dataType = flags >> 8, the Res_value data is INLINE, the key
+        // index is 16-bit, and the entry is never complex
+        // (ResTable_entry::map_entry() returns null for compact).
+        // The classic path below reads the first u16 as a size and the
+        // value at e+size — for compact entries that cross-read the NEXT
+        // entry's bytes, so every framework color/drawable/bool in a
+        // compact bucket decoded as garbage (types 0/253/208; probe
+        // scripts/s125_csl_probe4.cpp vs aapt2 dump ground truth:
+        // background_dark 0x0106000e must be #ff000000 ARGB8, etc).
+        const bool compact = (eflags & ENTRY_FLAG_COMPACT) != 0;
         ArscEntry entry;
         entry.package_id = pkg.id;
         entry.type_index = type_id;
         // S124 FW-PACKAGE: for SPARSE types the slot value is the REAL entry
         // index (ResTable_sparseTypeEntry.idx); dense paths carry i itself.
         entry.entry_index = sparse ? (uint32_t)tc.entry_offsets[i] : i;
-        entry.is_complex = (eflags & ENTRY_FLAG_COMPLEX) != 0;
         entry.config_desc = tc.config_desc;
         entry.config = tc.config;          // CAMPAIGN 009 §6
         entry.has_config = tc.has_config;
+        if (compact) {
+            entry.is_complex = false;
+            ResValue v;
+            v.type = (DataType)(eflags >> 8);
+            v.data = rd32(e + 4);
+            finish_res_value_law(v);   // S127: ONE derived-field law (ref_id/dim)
+            if (v.is_string()) {
+                const std::string* s = global_strings_.get(v.data);
+                if (s) v.string_value = *s;
+            }
+            entry.value = v;
+            const std::string* key = pkg.key_strings.get(rd16(e));
+            if (key) entry.name = *key;
+        } else {
+        uint16_t esize = rd16(e);
+        uint32_t key_idx = rd32(e + 4);
+        entry.is_complex = (eflags & ENTRY_FLAG_COMPLEX) != 0;
         const std::string* key = pkg.key_strings.get(key_idx);
         if (key) entry.name = *key;
         // value
@@ -314,6 +349,7 @@ bool ArscParser::parse_type_chunk(const uint8_t* base, size_t avail, Package& pk
                 if (!entry.complex_items.empty()) entry.value = entry.complex_items[0];
             }
         }
+        } // S127 R-NEW-423: end of classic (non-compact) path
         type_entries_.push_back(std::move(entry));
     }
 

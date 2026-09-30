@@ -4213,7 +4213,7 @@
   {
    "id": "R-NEW-423",
    "title": "framework-res ARSC parser entry-value corruption for non-attr/style types (color/drawable/plain entries decode cross-contaminated values)",
-   "status": "ROOT-CAUSED-OPEN",
+   "status": "ROOT-CAUSED-CLOSED",
    "priority": "P0",
    "layer": "RESOURCES",
    "discovered": "S125",
@@ -4224,9 +4224,17 @@
     "0x01080098/0x01080099 screen_background drawables -> type=0/253 garbage values",
     "theme diag: BASE windowBackground key carries type=8 data=0x9a010000 (no such Res_value type 8; 0x9a010000 is not a resid) \u2014 ThemeEngine merge consumed the corrupted entry",
     "result: Theme.Material.Light app (helloworld_golden, manifest S95 L-S95-DEFTHEME-1) paints window #ff303030 dark instead of background_light #ffffffff; battery goldens helloworld/EXT-01/EXT-02/M3-F-012 pixel laws fail on the same root",
-    "frozen ids verified vs AOSP main public-final.xml (background_dark 0x0106000e, background_light 0x0106000f, screen_background_dark 0x01080098, screen_background_light 0x01080099)"
+    "frozen ids verified vs AOSP main public-final.xml (background_dark 0x0106000e, background_light 0x0106000f, screen_background_dark 0x01080098, screen_background_light 0x01080099)",
+    "probe /tmp/s127_chain.cpp (persisted run): 0x0106010e chain walks to 0xfffafafa == aapt2 dump",
+    "scripts/s127_arsc_audit.py + s127_off16_probe.py: independent Python instruments reproduce the corruption then verify the fix",
+    "helloworld_golden S95 window now #fafafa (was corrupt dark); battery helloworld/EXT-01/EXT-02/M3-F-012 all PASS",
+    "BATTERY GATE ALL PASS (106-114 stages, zero FAIL); EXT-01 restored from upstream with byte-exact SHA 009b4671...",
+    "fan-out: headingcalc golden a169346e x3 + flappycow menu golden 13cf4746 x3 PRESERVED byte-identical; uNote 3 -> 243 colors (bottom-bar text restored via CSL law), notes 2 -> 65 colors; gmdice/microtimer/stopwatch/tictactoe/sudoku/dooz/telegram/whatsapp byte-identical to S126 A/B (no regressions)",
+    "evidence/s127_base_graphics/: 7 JPGs incl. unote before/after + helloworld light window"
    ],
-   "next": "chunk-by-chunk arsc_parser.cpp audit against aapt2 dump for types color(06)/drawable(08)/anim/array: suspected SPARSE/OFFSET16 offset-array decode or type-chunk iteration bug (S124 laws cover entry_index/sparse but values still cross-read); then re-run helloworld golden with S125 framework file law (committed res/drawable/screen_background_selector_light.xml)"
+   "next": "CLOSED. Remaining theme frontiers are separate roots: S68 manifest reader misses app themes when NO android:theme is declared (uNote falls to the documented #303030 no-theme fallback; real Android would use the platform default theme), and the per-activity themes frontier (sudoku SplashTheme vs AppTheme).",
+   "closed": "S127",
+   "fix": "S127 four-law fix, all AOSP-sourced, zero app checks: (1) arsc_parser.cpp ResTable_entry::Compact law (AOSP ResourceTypes.h main, fetched and quoted): FLAG_COMPACT(0x0008) entries are 8-byte {u16 key, u16 flags, u32 data}, dataType = flags >> 8, value inline, key 16-bit, never complex \u2014 modern framework-res encodes every simple color/drawable/bool/int entry this way and the classic decode cross-read the next entry; (2) finish_res_value_law: ONE derived-field law (ref_id/dim) shared by classic and compact paths \u2014 compact REFERENCEs previously carried ref_id=0 and every resolve_full chain through them died as MISSING_REFERENCE_TARGET; (3) ResourceRuntime::resolve_color_reference_argb: AOSP AssetManager2 ResolveAttributeReference package-routed deref (windowBackground ?attr chains: Theme.Material.Light -> @color/background_material_light -> @color/material_grey_50 -> #fffafafa); (4) ColorStateList/DRAWABLE FILE LAW: framework-res res/color + res/drawable trees (1120 files, 1.04MB, FILE_MANIFEST.txt SHA256 per file) committed from the SAME byte-verified framework-res.apk as the table; theme attr service converts STRING res/... file values through parse_state_list with the full tri-state default-state first-match (window_focused/activated added) and bounded @color reference recursion (primary_text_light -> bright_foreground_light -> background_dark -> #ff000000)."
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry\u2194docs single-source-of-truth restored); registry 372\u2192374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots. | S80: three real games (Snake Deluxe, Mini Tetris, 2048) built + played on the runtime; R-NEW-401 external-cache bridge.",
