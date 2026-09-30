@@ -2303,7 +2303,18 @@ bool DalvikExecutionEngine::execute_method_internal(
         bool clinit_in_app_dex =
             class_info_index_.find(class_name) != class_info_index_.end() ||
             class_info_index_.find(norm) != class_info_index_.end();
-        bool is_platform_ns = (norm.rfind("Landroid/", 0) == 0);
+        // S123 (R-NEW-421c): the support/arch/databinding trees are
+        // APP-BUNDLED LIBRARY bytecode (never platform) — same exemption as
+        // ensure_class_initialized R-NEW-421. ContainerHelpers.<clinit>
+        // evidence: the [platform-ns] skip here silently no-op'd the clinit
+        // AFTER the ensure_class_initialized law fixed its gate, keeping
+        // EMPTY_INTS/EMPTY_OBJECTS null and killing every SimpleArrayMap.
+        bool is_app_library_ns =
+            norm.rfind("Landroid/support/", 0) == 0 ||
+            norm.rfind("Landroid/arch/", 0) == 0 ||
+            norm.rfind("Landroid/databinding/", 0) == 0;
+        bool is_platform_ns =
+            (norm.rfind("Landroid/", 0) == 0) && !is_app_library_ns;
         bool is_library_ns =
             norm.rfind("Landroidx/", 0) == 0 ||
             norm.rfind("Ljava/", 0) == 0 ||
@@ -3563,6 +3574,24 @@ bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_de
     // Landroid/* stays an unconditional skip: app-bundled platform-namespace
     // copies must never shadow framework semantics (G12 parent-delegation
     // law, FIND-G09-ACF-001).
+    // S123 (R-NEW-421) — APP-BUNDLED LIBRARY NAMESPACE EXCEPTION: the
+    // Landroid/support/** and Landroid/arch/** trees are APP-BUNDLED
+    // LIBRARY bytecode in every real APK (support-v4/v7/v13, architecture
+    // components) — NOT platform stubs. The unconditional skip marked
+    // them initialized without running their <clinit>, so support statics
+    // (ContainerHelpers.EMPTY_INTS/EMPTY_OBJECTS — the backing arrays of
+    // every SimpleArrayMap; ProcessMyEventKeeper log) read back null and
+    // the first SimpleArrayMap.put died in System.arraycopy(null)
+    // (flappycow Game.onCreate → BaseGameActivity.onCreate →
+    // GoogleApiClient.Builder NPE evidence, view root never set). LAW
+    // (AOSP ClassLinker, same as M3 FINDING-013): initialization is
+    // decided by WHERE THE BYTECODE LIVES — when the class exists in the
+    // app DexReport, run its own <clinit>; only ABSENT android.* classes
+    // keep the platform-skip.
+    const bool app_library_ns =
+        normalized.rfind("Landroid/support/", 0) == 0 ||
+        normalized.rfind("Landroid/arch/", 0) == 0 ||
+        normalized.rfind("Landroid/databinding/", 0) == 0;
     {
         bool in_app_dex = class_info_index_.find(class_descriptor) !=
                               class_info_index_.end() ||
@@ -3581,9 +3610,18 @@ bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_de
             initialized_classes_.insert(class_descriptor);
             return true;
         }
-        if (normalized.rfind("Landroid/", 0) == 0) {
+        if (normalized.rfind("Landroid/", 0) == 0 && !app_library_ns) {
             // Platform namespace is never initialized from app bytecode,
             // even when an app-bundled copy exists in the DexReport.
+            initialized_classes_.insert(normalized);
+            initialized_classes_.insert(class_descriptor);
+            return true;
+        }
+        // S123 (R-NEW-421b): an app-library-namespace class that is NOT in
+        // the app DEX (e.g. a support class that R8 stripped) keeps the
+        // platform-skip semantics — mark and return without clinit.
+        if (app_library_ns && !in_app_dex) {
+            phase_clock().ci_skipfw.fetch_add(1, std::memory_order_relaxed);
             initialized_classes_.insert(normalized);
             initialized_classes_.insert(class_descriptor);
             return true;
@@ -8524,6 +8562,49 @@ int DalvikExecutionEngine::dispatch_custom_view_draw(uint32_t view_object_id) {
     return ops;
 }
 
+// ── S123 (R-NEW-419): AOSP View.setFrame layout law ────────────────────────
+// View.setFrame (frameworks/base/core/java/android/view/View.java) — when a
+// view's frame size CHANGES during layout it dispatches onSizeChanged(
+// newW, newH, oldW, oldH) BEFORE the first onDraw. Apps like FlappyCow build
+// every custom-view dst Rect there; without this dispatch the Rects stay
+// null and every drawBitmap lands at (0,0) natural size (corrupt stacked
+// tiles evidence, s123 flappycow start screen). Dedup per (w,h): AOSP only
+// fires on the change; relayouts with the same size are no-ops.
+int DalvikExecutionEngine::dispatch_custom_view_onsizechanged(
+        uint32_t view_object_id, int w, int h) {
+    if (shadow_registry_ == nullptr) return 0;
+    auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+    if (!view_shadow) return 0;
+    auto* node = view_shadow->find_node(view_object_id);
+    if (!node || !node->overrides_on_size_changed) return 0;
+    if (!heap_.has_object(view_object_id)) return 0;
+    if (node->last_size_w == w && node->last_size_h == h) return 0;
+    std::string cls = node->class_desc;
+    if (const auto* obj = heap_.get(view_object_id);
+        obj && !obj->class_descriptor.empty()) cls = obj->class_descriptor;
+    if (!cls.empty() && cls[0] == 'L' && cls.find('.') != std::string::npos) {
+        std::string norm = "L";
+        for (size_t i = 1; i < cls.size(); ++i)
+            norm += (cls[i] == '.') ? '/' : cls[i];
+        cls = norm;
+    }
+    std::vector<DalvikValue> args;
+    args.push_back(DalvikValue::make_object(view_object_id, cls));
+    args.push_back(DalvikValue::make_int(w));
+    args.push_back(DalvikValue::make_int(h));
+    args.push_back(DalvikValue::make_int(0));   // oldw — first layout
+    args.push_back(DalvikValue::make_int(0));   // oldh
+    DalvikValue ret = DalvikValue::make_void();
+    DalvikExecutionResult res;
+    const bool ok = try_recursive_invoke(cls, "onSizeChanged", args, ret, res);
+    node->last_size_w = w;
+    node->last_size_h = h;
+    std::cerr << "[C013-ONSIZE] view=" << view_object_id << " class=" << cls
+              << " dispatched=" << (ok ? "YES" : "NO")
+              << " size=" << w << "x" << h << std::endl;
+    return ok ? 1 : 0;
+}
+
 // ── G11 FIX-G11-001 (AOSP LayoutInflater.createView law) ───────────────────
 // Execute an app class's REAL View constructor. Law chain (AOSP
 // frameworks/base/core/java/android/view/LayoutInflater.java createView):
@@ -8630,6 +8711,10 @@ bool DalvikExecutionEngine::run_custom_view_constructor(
                 node->overrides_on_measure = overrides;
                 // S122 (R-NEW-417): same capture for the touch gate.
                 node->overrides_touch_event = overrides_touch;
+                // S123 (R-NEW-419): same capture for the onSizeChanged law —
+                // dispatched before the first onDraw with the laid-out size.
+                node->overrides_on_size_changed =
+                    class_chain_defines_method(cls, "onSizeChanged");
             }
             static thread_local uint64_t dm_log = 0;
             if (dm_log < 12) {
@@ -15513,6 +15598,15 @@ bool DalvikExecutionEngine::execute_sput_object(uint32_t pc, InstructionTrace& t
     if (field_res.resolved) {
         std::string static_key = field_res.class_descriptor + "." + field_res.field_name;
         static_field_storage_[static_key] = src_val;
+        // S123 DIAG (bounded): where do ContainerHelpers' static writes land?
+        if (current_method_ == "<clinit>" &&
+            static_key.find("ContainerHelpers") != std::string::npos) {
+            std::cerr << "[S123-SPUT-CH] key=" << static_key
+                      << " val_type=" << static_cast<int>(src_val.type)
+                      << " obj=" << src_val.object_id
+                      << " caller=" << current_class_ << "." << current_method_
+                      << std::endl;
+        }
     } else {
         // M3 FINDING-013 diag: an UNRESOLVED sput-object silently vanishes —
         // exactly the invisible-state-loss class that cost dooz its
@@ -16490,6 +16584,9 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
                 // S122 (R-NEW-417): same capture for the touch gate.
                 node->overrides_touch_event =
                     class_chain_defines_method(cls, "onTouchEvent");
+                // S123 (R-NEW-419): same capture for the onSizeChanged law.
+                node->overrides_on_size_changed =
+                    class_chain_defines_method(cls, "onSizeChanged");
             }
         }
     }
@@ -20848,6 +20945,43 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_int(gi_val);
         return true;
+    }
+    // ────────────────────────────────────────────────────────────────────
+    // S123 (R-NEW-422) — AOSP android.util.Pair law.
+    // UPSTREAM: frameworks/base/core/java/android/util/Pair.java:
+    //   public class Pair<F, S> {
+    //       public final F first; public final S second;
+    //       public Pair(F first, S second) { this.first = first; this.second = second; }
+    //       public static <A, B> Pair<A, B> create(A a, B b) { return new Pair<>(a, b); }
+    //   }
+    // Without a law the ctor no-oped, every Pair field read stayed null,
+    // and the first unboxing (pair.first.intValue()) NPE'd — killing the
+    // whole display-update chain after each keypress (heading-calculator
+    // live evidence: CalculatorDisplay.updateValues pc=34 NPE at APP
+    // BOUNDARY; display never reflected the keypad input).
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/util/Pair;") {
+        if (method == "<init>" && !args.empty() &&
+            args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0) {
+            uint32_t recv = args[0].object_id;
+            heap_.set_object_field(recv, "first",
+                                   args.size() > 1 ? args[1]
+                                                   : DalvikValue::make_null());
+            heap_.set_object_field(recv, "second",
+                                   args.size() > 2 ? args[2]
+                                                   : DalvikValue::make_null());
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "create" && args.size() >= 2) {
+            uint32_t pid = heap_.allocate("Landroid/util/Pair;", pc_, 0);
+            heap_.set_object_field(pid, "first", args[0]);
+            heap_.set_object_field(pid, "second", args[1]);
+            result = DalvikValue::make_object(pid, "Landroid/util/Pair;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
     }
     // ────────────────────────────────────────────────────────────────────
     // S89 F-NEW-185 — android.os.StrictMode builder family. AOSP

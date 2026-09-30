@@ -1355,6 +1355,16 @@ public:
     bool dispatch_long_click(uint32_t view_object_id, bool& listener_consumed);
     // CAMPAIGN 013: run a custom view's REAL onDraw(Canvas) bytecode.
     int dispatch_custom_view_draw(uint32_t view_object_id);
+    // S123 (R-NEW-419): AOSP View.setFrame layout law — when a view's frame
+    // size changes during layout, View.setFrame dispatches onSizeChanged(
+    // newW, newH, oldW, oldH) BEFORE the first onDraw. Custom views (games
+    // especially) compute ALL their draw geometry there (FlappyCow
+    // StartscreenView builds every button dst Rect inside onSizeChanged);
+    // without this dispatch the rects stay null and every drawBitmap lands
+    // at (0,0) natural size. Dedup: only fires when (w,h) differs from the
+    // last dispatched size (AOSP "size changed" clause). Returns 1 when the
+    // app's onSizeChanged bytecode executed.
+    int dispatch_custom_view_onsizechanged(uint32_t view_object_id, int w, int h);
 
     // S83-GFX-BASE §25: run one GLSurfaceView frame for the view at
     // view_id — onSurfaceCreated (once, lazily) → onSurfaceChanged (on
