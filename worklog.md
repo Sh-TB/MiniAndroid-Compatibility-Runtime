@@ -4563,3 +4563,63 @@ Stage Summary:
 - FlappyCow: menu 100% + Game launch chain proven (bird-through-pipes gameplay blocked only by the documented GMS frontier).
 - Themed calculator: EXECUTED+RENDERED+INTERACTIVE VERIFIED_3RUN — the theme/template directive's app-side flagship.
 - Telegram/WhatsApp: load progress quantified with exact next-frontier targets (gms Api builder null; AppContext.set injection).
+
+---
+Task ID: S124
+Agent: main
+Task: User directive (fa) — every app carries a theme/template structure; build the loading base on the ORIGINAL framework (research it from the internet/source first); never claim games/apps are 100% rendered (WhatsApp's black/white "render" screen is not a render); re-test Telegram/WhatsApp load progress ("خیلی مهم").
+
+Work Log:
+- RESEARCHED the original framework itself (fetched byte-verified from AOSP main):
+  AssetManager2.cpp (Theme::ApplyStyle overlay law / GetAttribute attr-hop <=20 /
+  ResolveAttributeReference), AttributeResolution.cpp (source-quoted priority chain:
+  XML attrs > XML style= > defStyleAttr/defStyleRes > theme > @null), ResourcesImpl.java
+  ThemeImpl, public-final.xml (frozen defStyleAttr ids), ResourceTypes.h (SPARSE 0x01 @byte9,
+  OFFSET16 0x02, ResTable_sparseTypeEntry {idx, offset/4}).
+- Built miniandroid/src/resources/theme_engine.h (the theme/template loading base):
+  Theme = AOSP Theme port (apply_style force/normal overlay merge through parent chains,
+  get_attribute sorted lookup with hops, resolve_attribute package-routed deref);
+  ThemeEngine = android:theme subtree overlay stack (MaterialComponents ThemeOverlay law)
+  + the one resolution service (overlays -> base theme -> generated framework table);
+  View-ctor defStyleAttr tier (14 widgets, ids verified; custom views 0) with bag-tier
+  guards keeping XML > style= > defStyleAttr precedence; widget template keys
+  background/padding/textStyle consumed by apply_style_item.
+- FW-PACKAGE: real framework-res resources.arsc (Android 16, pkg 0x01; ids verified frozen
+  vs public-final.xml) committed at miniandroid/framework_res/ and loaded as the second
+  package via ArscRouter; app themes climbing into Theme.Material/AppCompat now resolve the
+  REAL framework bags. dooz Theme.Dooz: 0 -> 355 theme keys.
+- PARSER LAWS (arsc_parser.cpp): ResTable_type flags read at byte 9 (was the reserved byte);
+  SPARSE + OFFSET16 dense/sparse offset-array encodings with per-encoding bounds; sparse
+  entry_index = idx (was array position); STAGED duplicate-id package chunks skipped
+  (framework-res = 1 real + 6 staged, all id 0x01 — indexing them corrupted resolutions);
+  secondary-package parse failure = warning, not table rejection.
+- WIRING: resolve_theme_attr_typed + resolve_theme_attr_value delegated to the engine
+  (one law for ?attr, style items, and the F-NEW-175 obtainStyledAttributes shadow);
+  inflate stats extended (theme_attrs_resolved/unresolved_theme_attrs/def_style_applied/
+  theme_overlays_pushed) and embedded into view_tree.json.
+- HONESTY GATE per directive: Telegram 48f last frame = 3 grey colors -> labeled NOT A RENDER
+  (SvgHelper themed-icon SVG parsing runs ~24M+ instrs; 8 uncaught, same-config A/B parity
+  with the pre-S124 binary; S123's 47-uncaught was a longer-run artifact). WhatsApp 24f = 2
+  colors black/white -> NOT A RENDER (AppContext.set + INVOKE_RETURN frontier, A/B
+  byte-identical eb16ab5c). dooz theme base 355 keys but first frame still blank (Compose
+  frontier R-NEW-344; no visual claim). opencalculator near-blank A/B byte-identical =
+  pre-existing SlidingUpPanelLayout gravity idiom, not a regression.
+- VERIFICATION: heading calculator 3-run byte-identical a169346e (full themed render);
+  FlappyCow start screen == S123 golden 13cf4746 x3 + G08-LAUNCH chain on the final binary;
+  gmdice/unote/microtimer coherent themed renders (visual deltas = lawful framework values);
+  notes/sudoku defStyleAttr tier applied (2 bags each).
+- Incident: a stash A/B dance lost the dalvik_engine.cpp embed + to_json counters in the
+  working tree (index had them) — restored via git checkout -- from the index; A/B binaries
+  preserved at /tmp/miniandroid_{preS124,s124}.
+- Evidence: evidence/s124_theme_base/ 9 JPG 460px English-only <=100KB; raw links verified 200.
+- Pushed 24d2be1b..88ba2f6d; reports posted (#354 comment 5913720820, #353 5913721321) with
+  the standing footer explanation; no GIFs per directive.
+
+Stage Summary:
+- The theme/template loading base now follows the ORIGINAL framework law end-to-end:
+  framework-res package router -> Theme overlay object -> attr-hop resolution ->
+  defStyleAttr widget templates -> android:theme subtree overlays.
+- Honest labels enforced: grey/black-white frames reported as load frontiers, not renders.
+- Next frontiers: framework DRAWABLE files (windowBackground = framework selector drawables
+  resolve to an honest miss today), per-activity themes (sudoku SplashTheme vs AppTheme),
+  Telegram themed-icon pixel chain, WhatsApp AppContext.set injection.
