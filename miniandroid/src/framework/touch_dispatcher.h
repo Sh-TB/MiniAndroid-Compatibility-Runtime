@@ -78,6 +78,11 @@ public:
     // `consumed` = the listener's boolean return (true = owns the gesture).
     using TouchFn = std::function<bool(uint32_t view_id, int action, float x,
                                        float y, bool& consumed)>;
+    // S128 (R-NEW-424, CAP-INPUT-100): ViewGroup.onInterceptTouchEvent dispatch.
+    // `intercepted` = the override's boolean return (true = this ViewGroup
+    // steals the gesture from its children — AOSP ViewGroup law).
+    using InterceptFn = std::function<bool(uint32_t view_id, int action,
+                                           float x, float y, bool& intercepted)>;
 
     TouchDispatcher(ViewShadow* views, HandlerShadow* handler,
                     const Config& cfg = Config());
@@ -85,6 +90,9 @@ public:
     void set_click_dispatch(ClickFn fn) { click_fn_ = std::move(fn); }
     void set_long_click_dispatch(LongClickFn fn) { long_click_fn_ = std::move(fn); }
     void set_touch_dispatch(TouchFn fn) { touch_fn_ = std::move(fn); }
+    void set_intercept_dispatch(InterceptFn fn) {
+        intercept_fn_ = std::move(fn);
+    }
 
     // Dispatch one event through the AOSP onTouchEvent law. Returns the
     // dispatch record (also appended to the cumulative trace).
@@ -102,6 +110,12 @@ public:
     uint32_t gesture_target() const { return gesture_target_; }
     bool gesture_pressed() const { return pressed_; }
     bool has_performed_long_press() const { return has_performed_long_press_; }
+    // S128 (CAP-INPUT-102): the TouchTarget dispatch chain — target first,
+    // then each ancestor ViewGroup up to the root (AOSP: every ViewGroup in
+    // the chain holds its own mFirstTouchTarget pointing down the chain).
+    const std::vector<uint32_t>& gesture_chain() const {
+        return gesture_chain_;
+    }
 
     // Drop the active gesture without CANCEL semantics (new DOWN resets).
     void reset_gesture();
@@ -117,6 +131,9 @@ private:
     void press(uint32_t view_id, int x, int y, nlohmann::json* rec);
     void unpress(uint32_t view_id, nlohmann::json* rec);
     bool view_touchable(const ViewShadow::ViewNode& n) const;
+    // S128 (R-NEW-424, CAP-INPUT-100): intercept pass along the TouchTarget
+    // chain; returns the intercepting view id (0 = none).
+    uint32_t run_intercept_chain(int action, int x, int y, nlohmann::json* rec);
 
     ViewShadow* views_;
     HandlerShadow* handler_;
@@ -124,11 +141,13 @@ private:
     ClickFn click_fn_;
     LongClickFn long_click_fn_;
     TouchFn touch_fn_;               // F-110e
+    InterceptFn intercept_fn_;       // S128 CAP-INPUT-100
     bool touch_listener_owns_ = false;  // F-110e: listener consumed DOWN
 
     // Single active gesture (single-pointer model — multi-touch is an
     // explicit documented boundary).
     uint32_t gesture_target_ = 0;
+    std::vector<uint32_t> gesture_chain_;  // S128 CAP-INPUT-102 TouchTarget chain
     int down_x_ = 0, down_y_ = 0;
     bool pressed_ = false;
     bool has_performed_long_press_ = false;

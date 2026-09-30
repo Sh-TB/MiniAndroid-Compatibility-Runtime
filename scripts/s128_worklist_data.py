@@ -119,10 +119,21 @@ def build():
             'next': r.get('next') or 'on demand', 'status': st,
         })
 
-    # ---- items from PENDING capabilities ----
+    # ---- items from ALL capabilities (nothing may disappear from the list;
+    # status upgrades change the record, they never remove it) ----
     for c in caps:
-        if c.get('status') != 'PENDING':
-            continue
+        cst = c.get('status')
+        if cst == 'PENDING':
+            root_cause = 'capability never implemented (source-grep only seed)'
+            missing = c.get('name', '?') + ' implementation + runtime evidence'
+            exists = f"tracked in capability registry since S125 ({c.get('evidence','-')})"
+        else:
+            root_cause = f'capability at {cst} level (evidence-gated, SS2 ceiling law)'
+            missing = {'TESTED': 'real-APK fan-out + 3-run reproducibility for VERIFIED',
+                       'IMPLEMENTED': 'runtime evidence (TESTED tier requires real-APK proof)',
+                       'VERIFIED': 'regression watch only',
+                       'TESTED_X': ''}.get(cst, 'next evidence tier')
+            exists = f"evidence: {'; '.join(c.get('evidence', [])) if isinstance(c.get('evidence'), list) else c.get('evidence','-')}"[:280]
         cat = cap_cat.get(c['id'])
         if cat:
             cc = next(x for x in CATEGORIES if x[0] == cat)
@@ -132,21 +143,23 @@ def build():
             catn, cat_name, sub, layer, aosp, impl = None, 'UNCLASSIFIED (reconcile queue)', 'INFRA', 'APK', '-', '-'
         node = c.get('layer', layer)
         items.append({
-            'id': c['id'], 'title': f"Capability gap: {c.get('name','?')}",
+            'id': c['id'], 'title': f"Capability [{cst}]: {c.get('name','?')}",
             'category': f'MC-{catn:03d} {cat_name}' if catn else 'MC-000 UNCLASSIFIED',
             'category_num': catn, 'subsystem': sub, 'layer': layer,
-            'current_status': 'PENDING', 'root_cause': f"capability never implemented (source-grep only seed)",
-            'exists': f"tracked in capability registry since S125 ({c.get('evidence','-')})",
-            'missing': c.get('name','?') + ' implementation + runtime evidence',
-            'dependencies': '-', 'fanout': 'P1-MAJOR (layer gap)', 'visual_impact': 'YES' if layer in VISUAL_NODES else 'INDIRECT',
+            'current_status': cst, 'root_cause': root_cause,
+            'exists': exists,
+            'missing': missing,
+            'dependencies': '-', 'fanout': 'P1-MAJOR (layer gap)' if cst == 'PENDING' else 'tier upgrade path',
+            'visual_impact': 'YES' if layer in VISUAL_NODES else 'INDIRECT',
             'affected_apks': CAT_DEFAULT_APKS.get(catn, 'layer-wide corpus'),
             'affected_caps': c['id'], 'source_law': 'capability seed law (grep hits max out at IMPLEMENTED)',
             'aosp_ref': aosp, 'mature_impl': impl,
             'reuse': f'HIGH - reuse {impl}' if impl and impl != '-' else 'project law',
-            'plan': f"TOOL-FIRST: reuse {impl or 'AOSP'}; implement missing piece; add unit+control+real-APK evidence",
+            'plan': (f"TOOL-FIRST: reuse {impl or 'AOSP'}; implement missing piece; add unit+control+real-APK evidence"
+                     if cst == 'PENDING' else 'advance evidence tier per SS2 law; regression watch'),
             'test_plan': TEST_PLAN_STD, 'regressions': 'battery gate + golden ladder',
-            'evidence': '-', 'blocker': '-', 'next': 'implement via TOOL-FIRST reuse path',
-            'status': 'PENDING',
+            'evidence': '-', 'blocker': '-', 'next': 'implement via TOOL-FIRST reuse path' if cst == 'PENDING' else 'evidence-tier upgrade / regression watch',
+            'status': cst,
         })
 
     return items, caps, apps, games, cap_cat, cat_caps, unclassified
@@ -154,7 +167,7 @@ def build():
 # ---- mandated campaign items (user directives + honest frontiers) ----
 MANDATED = [
  dict(id='M-01', title='INPUT layer completion: touch dispatch + gestures + focus + scrolling',
-      cat='MC-053 touch dispatch', layer='INPUT', status='PENDING', fanout='P0-ARCHITECTURAL (highest computed fan-out)',
+      cat='MC-053 touch dispatch', layer='INPUT', status='PARTIAL', fanout='P0-ARCHITECTURAL (highest computed fan-out) — TouchTarget + intercept DONE S128 (R-NEW-424), residuals below',
       root_cause='highest-fan-out PENDING layers computed from capability registry: INPUT 4 pending caps (onInterceptTouchEvent CAP-INPUT-100, TouchTarget CAP-INPUT-102, VelocityTracker CAP-INPUT-108, TouchDelegate CAP-INPUT-110) + SCROLLING 3 (computeScroll 126, EdgeEffect 127, nested 128)',
       missing='AOSP TouchTarget law, intercept pass, velocity tracking, edge effects',
       apks='every interactive app/game (L5 band of the whole corpus)', caps='CAP-INPUT-100/102/108/110, CAP-SCROLLING-126/127/128',

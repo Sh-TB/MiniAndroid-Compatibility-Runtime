@@ -658,6 +658,15 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                         return dalvik_engine_.dispatch_touch_listener(
                             view_id, action, x, y, consumed);
                     });
+                // S128 (R-NEW-424, CAP-INPUT-100): ViewGroup
+                // onInterceptTouchEvent bridge — the intercept pass asks the
+                // app's real DEX overrides along the TouchTarget chain.
+                touch_dispatcher_->set_intercept_dispatch(
+                    [this](uint32_t view_id, int action, float x, float y,
+                           bool& intercepted) -> bool {
+                        return dalvik_engine_.dispatch_intercept(
+                            view_id, action, x, y, intercepted);
+                    });
             }
         }
         std::cerr << "[EXP086-P1] Configured dalvik_engine_ with "

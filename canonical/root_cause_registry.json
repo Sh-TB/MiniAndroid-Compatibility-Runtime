@@ -1,8 +1,8 @@
 {
  "_projection_of": "root_registry.json",
  "_law": "root_registry.json is the single writable store; this file is a generated read model (ROADMAP SS3: no duplicate canonical registries).",
- "generated": "2026-09-30T21:14:39Z",
- "total": 421,
+ "generated": "2026-09-30T21:53:15Z",
+ "total": 422,
  "status_counts": {
   "PARTIAL": 103,
   "VERIFIED-CORRECT": 46,
@@ -13,7 +13,7 @@
   "NOT-APPLICABLE": 42,
   "OBSERVED-FAIL": 6,
   "IMPLEMENTED": 7,
-  "ROOT-CAUSED-FIXED": 47,
+  "ROOT-CAUSED-FIXED": 48,
   "PARTIAL-FIX": 1,
   "PROVEN-FIXED": 1,
   "IMPLEMENTED+TESTED": 6,
@@ -2974,6 +2974,13 @@
    "status": "ROOT-CAUSED-CLOSED",
    "priority": "P0",
    "layer": "RESOURCES"
+  },
+  {
+   "id": "R-NEW-424",
+   "title": "INPUT TouchTarget + onInterceptTouchEvent law (CAP-INPUT-102/100): hit-test walked children in DRAW order (AOSP walks REVERSE \u2014 topmost sibling must win overlaps), no TouchTarget chain was captured (MOVE/UP could not dispatch through ancestors), and ViewGroup.onInterceptTouchEvent never ran (no intercept-at-DOWN retarget, no mid-gesture CANCEL) \u2014 the AOSP ViewGroup.dispatchTouchEvent core was only partially modeled.",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P0",
+   "layer": null
   }
  ]
 }
