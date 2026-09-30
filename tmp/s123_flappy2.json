@@ -1,0 +1,38 @@
+[
+  {
+    "url": "https://github.com",
+    "name": "Tejas-beep/AndroSploit: We can access android using",
+    "snippet": "We can access android using AndroSploit, we can use it to access android device connected to same wifi and using usb we can also use adb command.",
+    "host_name": "github.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://gist.github.com",
+    "name": "Backdooring Android Apps with FatRat and Metasploit",
+    "snippet": "Let's download a clean APK . In this example, I downloaded the Flappy Bird APK from here. This is the authentic APK game. I personally renamed the download ...",
+    "host_name": "gist.github.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://flutter.ducafecat.com",
+    "name": "moha-b/Flappy-Bird",
+    "snippet": "We created Flappy Bird , a straightforward game based on flutter animation, from scratch using only Dart & Flutter and no third-party games components.",
+    "host_name": "flutter.ducafecat.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.instagram.com",
+    "name": "All of this just so I can play an old childhood game mind you🤦🏽‍♀️",
+    "snippet": "FlappySwift is open source and self-hosted. FlappySwift is a open-source clone. Flappy Bird clone . → Full source available on the repo link. → Released ...",
+    "host_name": "www.instagram.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  }
+]

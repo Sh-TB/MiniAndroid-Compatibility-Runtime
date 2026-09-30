@@ -1,0 +1,19 @@
+<resources>
+
+    <!-- AppTheme (appcompat parent) removed: rebuilt without the appcompat
+         AAR; the style was referenced nowhere (manifest uses the framework
+         Theme.NoTitleBar.Fullscreen). Zero functional change. -->
+
+     <style name="PrettyButton">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">#000000</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:shadowColor">#000000</item>
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">2</item>
+    </style>
+
+</resources>

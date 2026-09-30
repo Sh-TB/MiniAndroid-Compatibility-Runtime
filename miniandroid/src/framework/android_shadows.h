@@ -632,6 +632,20 @@ public:
     }
     bool has_pending() const { return pending_ != nullptr; }
 
+    // S123 ACTION-RESOLVE law: manifest intent-filter action → activity
+    // map (AOSP PackageManager.queryIntentActivities resolution). The
+    // runtime registers every <activity> <intent-filter> <action> pair at
+    // manifest-resolve time; startActivity on a component-less Intent with
+    // an action string resolves its target activity from this map.
+    void register_action_target(const std::string& action,
+                                const std::string& activity_class) {
+        action_targets_[action] = activity_class;
+    }
+    std::string resolve_action_target(const std::string& action) const {
+        auto it = action_targets_.find(action);
+        return it != action_targets_.end() ? it->second : std::string();
+    }
+
     // EXP-051: Public so ActivityShadow.startActivity can mark an
     // existing Intent heap object as pending. The Intent must already
     // have been created (the bytecode allocates it via new-instance +
@@ -641,6 +655,7 @@ public:
 private:
     std::shared_ptr<PendingIntent> pending_;
     std::map<uint32_t, std::shared_ptr<PendingIntent>> intents_;
+    std::map<std::string, std::string> action_targets_;  // S123 ACTION-RESOLVE
 };
 
 // ─────────────────────────────────────────────────────────────────────────

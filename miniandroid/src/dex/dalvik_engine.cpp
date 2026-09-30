@@ -3743,19 +3743,31 @@ bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_de
                   << " bytecode_size=" << m.bytecode.size()
                   << std::endl;
         DalvikValue dummy_return;
-        bool ok = try_recursive_invoke(
-            class_descriptor,
-            "<clinit>",
-            /*args=*/{},
-            dummy_return,
-            *current_result_
-        );
-        std::cerr << "[CLASS_INIT] class=" << class_descriptor
-                  << " method=<clinit>"
-                  << " result=" << (ok ? "OK" : "FAILED")
-                  << " engine=" << (const void*)this
-                  << " storage_size=" << static_field_storage_.size()
-                  << std::endl;
+        {
+            DalvikExecutionResult diag_result;
+            bool ok_diag = try_recursive_invoke(
+                class_descriptor,
+                "<clinit>",
+                /*args=*/{},
+                dummy_return,
+                diag_result
+            );
+            // S123 CLINIT-DIAG: surface WHY a clinit failed (no silent aborts).
+            std::cerr << "[CLASS_INIT] class=" << class_descriptor
+                      << " method=<clinit>"
+                      << " result=" << (ok_diag ? "OK" : "FAILED")
+                      << " engine=" << (const void*)this
+                      << " storage_size=" << static_field_storage_.size();
+            if (!ok_diag) {
+                std::cerr << " diag_final_status=" << static_cast<int>(diag_result.final_status)
+                          << " diag_halt_reason=" << diag_result.halt_reason;
+                if (!diag_result.uncaught_in_flight_log.empty()) {
+                    std::cerr << " diag_uncaught0="
+                              << diag_result.uncaught_in_flight_log.front();
+                }
+            }
+            std::cerr << std::endl;
+        }
         break;
     }
     return true;
@@ -15292,8 +15304,88 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
                     result_value = DalvikValue::make_char(':');
                 }
                 static_field_storage_[static_key] = result_value;
+            } else if (
+                // S123-CLINIT-MAT: shared-geometry static materialization
+                // after a FAILED <clinit>. AOSP law: a class's <clinit> runs
+                // before any static read; inline-initialized statics like
+                // `public static final RectF rectTmp = new RectF()` are
+                // therefore NEVER null at first use. If the class's clinit
+                // aborted partway (unmodeled API mid-<clinit>), every static
+                // declared AFTER the abort point reads back null and the app
+                // draw code NPEs on the first geometry call (live evidence:
+                // forkgram he1$d.onDraw pc=16 — sget-object
+                // AndroidUtilities.rectTmp → null → RectF.set NPE ×65
+                // APP-BOUNDARY unwinds; the "StartMessaging" text was already
+                // measured on the login view). The class IS marked
+                // initialized (attempted), so re-running clinit is not
+                // possible; materialize the AOSP no-arg-ctor state (zero
+                // geometry) for the shared graphics primitives, cached per
+                // static_key so identity (==) holds across the app.
+                field_res.field_type == "Landroid/graphics/RectF;" ||
+                field_res.field_type == "Landroid/graphics/Rect;" ||
+                field_res.field_type == "Landroid/graphics/Point;" ||
+                field_res.field_type == "Landroid/graphics/Paint;") {
+                const bool attempted =
+                    initialized_classes_.find(field_res.class_descriptor) !=
+                    initialized_classes_.end();
+                auto null_probe = static_field_storage_.find(static_key);
+                const bool stored_null =
+                    null_probe != static_field_storage_.end() &&
+                    null_probe->second.type == DalvikType::NULL_REF;
+                if (attempted || stored_null) {
+                    uint32_t geo_id = heap_.allocate(field_res.field_type,
+                                                     pc, 0);
+                    // AOSP no-arg ctor state: zero geometry fields.
+                    if (field_res.field_type == "Landroid/graphics/RectF;") {
+                        heap_.set_object_field(geo_id, "left",
+                                               DalvikValue::make_float(0.0f));
+                        heap_.set_object_field(geo_id, "top",
+                                               DalvikValue::make_float(0.0f));
+                        heap_.set_object_field(geo_id, "right",
+                                               DalvikValue::make_float(0.0f));
+                        heap_.set_object_field(geo_id, "bottom",
+                                               DalvikValue::make_float(0.0f));
+                    } else if (field_res.field_type ==
+                               "Landroid/graphics/Rect;") {
+                        heap_.set_object_field(geo_id, "left",
+                                               DalvikValue::make_int(0));
+                        heap_.set_object_field(geo_id, "top",
+                                               DalvikValue::make_int(0));
+                        heap_.set_object_field(geo_id, "right",
+                                               DalvikValue::make_int(0));
+                        heap_.set_object_field(geo_id, "bottom",
+                                               DalvikValue::make_int(0));
+                    } else if (field_res.field_type ==
+                               "Landroid/graphics/Point;") {
+                        heap_.set_object_field(geo_id, "x",
+                                               DalvikValue::make_int(0));
+                        heap_.set_object_field(geo_id, "y",
+                                               DalvikValue::make_int(0));
+                    } else {
+                        // Landroid/graphics/Paint; — AOSP default paint:
+                        // FILL style, BLACK color, anti-alias off.
+                        heap_.set_object_field(geo_id, "color",
+                                               DalvikValue::make_int(
+                                                   0xFF000000));
+                    }
+                    result_value = DalvikValue::make_object(
+                        geo_id, field_res.field_type);
+                    static_field_storage_[static_key] = result_value;
+                    std::cerr << "[S123-CLINIT-MAT] materialized "
+                              << field_res.class_descriptor << "."
+                              << field_res.field_name
+                              << " type=" << field_res.field_type
+                              << " oid=" << geo_id
+                              << " (clinit attempted="
+                              << (attempted ? "true" : "false")
+                              << " stored_null="
+                              << (stored_null ? "true" : "false") << ")"
+                              << std::endl;
+                } else {
+                    result_value.type = DalvikType::NULL_REF;
+                    result_value.object_id = 0;
+                }
             } else {
-                // F-119 (R-NEW-386): X.TYPE primitive-class law.
                 // OpenJDK Integer.java: `public static final Class<Integer>
                 // TYPE = int.class;` (and the same for the other boxes) —
                 // the primitive Class constants are JVM-injected, never
@@ -18888,6 +18980,34 @@ static int framework_static_int(const std::string& class_desc,
     {"Landroid/view/MotionEvent;.ACTION_POINTER_DOWN", 5},
     {"Landroid/view/MotionEvent;.ACTION_POINTER_UP", 6},
     {"Landroid/view/MotionEvent;.ACTION_MASK", 255},
+    // S123 ROOT-CALC-B — android.view.Gravity constant family (AOSP
+    // Gravity.java law). sget of Gravity.TOP in the lib chain previously
+    // fell through every synthesis arm and answered NULL_REF; the null
+    // register became TypedArray.getInt's defValue slot (non-INT32 →
+    // default 0) and SlidingUpPanelLayout.setGravity(0) threw
+    // IllegalArgumentException "gravity must be set to either top or
+    // bottom" at the calculator's first inflate. AOSP values:
+    //   LEFT = AXIS_SPECIFIED|AXIS_PULL_BEFORE<<AXIS_X_SHIFT = 3
+    //   TOP  = AXIS_SPECIFIED|AXIS_PULL_BEFORE<<AXIS_Y_SHIFT = 48
+    //   END/START carry RELATIVE_HORIZONTAL_GRAVITY (0x00800000).
+    {"Landroid/view/Gravity;.NO_GRAVITY", 0},
+    {"Landroid/view/Gravity;.LEFT", 3},
+    {"Landroid/view/Gravity;.RIGHT", 5},
+    {"Landroid/view/Gravity;.TOP", 48},
+    {"Landroid/view/Gravity;.BOTTOM", 80},
+    {"Landroid/view/Gravity;.CENTER_VERTICAL", 16},
+    {"Landroid/view/Gravity;.CENTER_HORIZONTAL", 1},
+    {"Landroid/view/Gravity;.CENTER", 17},
+    {"Landroid/view/Gravity;.FILL_VERTICAL", 112},
+    {"Landroid/view/Gravity;.FILL_HORIZONTAL", 7},
+    {"Landroid/view/Gravity;.FILL", 119},
+    {"Landroid/view/Gravity;.CLIP_VERTICAL", 128},
+    {"Landroid/view/Gravity;.CLIP_HORIZONTAL", 8},
+    {"Landroid/view/Gravity;.START", 8388611},       // 0x00800003
+    {"Landroid/view/Gravity;.END", 8388613},         // 0x00800005
+    {"Landroid/view/Gravity;.RELATIVE_LAYOUT_DIRECTION", 8388608},
+    {"Landroid/view/Gravity;.DISPLAY_CLIP_VERTICAL", 0x10000000},
+    {"Landroid/view/Gravity;.DISPLAY_CLIP_HORIZONTAL", 0x01000000},
     // S83-GFX-BASE §24/§25: GL constants (GL10 = ES1.0; GLES20 shares the
     // buffer-bit values). l6 evidence: GL10.GL_COLOR_BUFFER_BIT sget
     // resolved 0 → glClear(0) → GL_INVALID_VALUE → black frame.
@@ -19886,6 +20006,12 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                           uint32_t method_idx_hint) {
     uint64_t f107_t0 = 0; phase_clock().enter(phase_clock().bridge, f107_t0);
     struct F107Guard { PhaseClock::Phase& ph; uint64_t t0; ~F107Guard(){{ phase_clock().exit(ph, t0);}} } f107_guard{phase_clock().bridge, f107_t0};
+    if (std::getenv("MINIANDROID_S123_DIAG") && class_name == "Landroid/content/Intent;") {
+        std::cerr << "[S123-BRIDGE] bridge_to_api " << class_name << "."
+                  << method << " argc=" << args.size()
+                  << " caller=" << current_class_ << "." << current_method_
+                  << std::endl;
+    }
     // ────────────────────────────────────────────────────────────────────
     // R-NEW-350 probe (S43, env-gated read-only): forName calls reaching
     // the BRIDGE — log the arg KINDS so the arg-shape mismatch that skips
@@ -22276,8 +22402,21 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         uint32_t obj = heap_.allocate(rcls, pc_, 0);
         std::vector<DalvikValue> call_args;
         call_args.push_back(DalvikValue::make_object(obj, rcls));
-        if (args.size() > 1 && args[1].type == DalvikType::OBJECT_REF &&
-            args[1].object_id != 0) {
+        // S123 CTOR-ARG-PASS law: a framework-class constructor bridge must
+        // receive the CALLER'S EXPLICIT ARGS. The previous block copied only
+        // a varargs-array expansion and silently dropped every other
+        // argument, so `new Intent(this, Game.class)` reached the
+        // IntentShadow <init> law with NO (Context, Class) pair — the
+        // component stayed empty ("startActivity called (no component set)")
+        // and every Intent(Context, Class) launch family (flappycow Game
+        // start, unote NoteEdit) dead-ended. A modeled-array second arg
+        // (F-036 __array_length__ convention) still expands as varargs.
+        const bool second_is_varargs_array =
+            args.size() == 2 && args[1].type == DalvikType::OBJECT_REF &&
+            args[1].object_id != 0 &&
+            heap_.get_object_field(args[1].object_id, "__array_length__")
+                .has_value();
+        if (second_is_varargs_array) {
             auto len_f = heap_.get_object_field(args[1].object_id,
                                                 "__array_length__");
             int n = len_f.has_value() ? len_f->int_val : 0;
@@ -22286,6 +22425,10 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     args[1].object_id, "array[" + std::to_string(i) + "]");
                 call_args.push_back(el.has_value() ? *el
                                                    : DalvikValue::make_null());
+            }
+        } else {
+            for (size_t i = 1; i < args.size(); ++i) {
+                call_args.push_back(args[i]);
             }
         }
         DalvikValue out;
@@ -25910,6 +26053,116 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
     }
     // ────────────────────────────────────────────────────────────────────────
+    // S123 ROOT-CALC-A — java.text.DecimalFormatSymbols (AOSP law).
+    // OpenJDK DecimalFormatSymbols.java: getInstance()/getInstance(Locale)
+    // NEVER answer null — they materialize a symbol table for the locale
+    // (AOSP default locale en-US: decimal '.', grouping ',', minus '-',
+    // zero '0', infinity "∞", NaN "NaN", percent '%', perMill '‰').
+    // Live evidence (opencalculator vc53 MainActivity.<init>): the
+    // DecimalFormatSymbols.getInstance REC-MISS answered null →
+    // getDecimalSeparator NPE on the null receiver → APP BOUNDARY unwind
+    // before the calculator UI ever inflated. The app reads exactly the
+    // decimal/grouping chars and formats user-visible numbers with them.
+    if (class_name == "Ljava/text/DecimalFormatSymbols;") {
+        auto materialize_dfs = [&](uint32_t& sid) {
+            sid = heap_.allocate("Ljava/text/DecimalFormatSymbols;", 0, 0);
+            heap_.set_object_field(sid, "decimalSeparator",
+                                   DalvikValue::make_char('.'));
+            heap_.set_object_field(sid, "groupingSeparator",
+                                   DalvikValue::make_char(','));
+            heap_.set_object_field(sid, "minusSign",
+                                   DalvikValue::make_char('-'));
+            heap_.set_object_field(sid, "zeroDigit",
+                                   DalvikValue::make_char('0'));
+            heap_.set_object_field(sid, "percent",
+                                   DalvikValue::make_char('%'));
+            return sid;
+        };
+        if (method == "getInstance") {
+            uint32_t sid = 0;
+            materialize_dfs(sid);
+            result = DalvikValue::make_object(
+                sid, "Ljava/text/DecimalFormatSymbols;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "<init>") {
+            // no-arg / (Locale) ctors: bind the AOSP default symbol fields
+            // onto the allocated `this` receiver (args[0]).
+            if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+                args[0].object_id != 0) {
+                uint32_t sid = args[0].object_id;
+                heap_.set_object_field(sid, "decimalSeparator",
+                                       DalvikValue::make_char('.'));
+                heap_.set_object_field(sid, "groupingSeparator",
+                                       DalvikValue::make_char(','));
+                heap_.set_object_field(sid, "minusSign",
+                                       DalvikValue::make_char('-'));
+                heap_.set_object_field(sid, "zeroDigit",
+                                       DalvikValue::make_char('0'));
+                heap_.set_object_field(sid, "percent",
+                                       DalvikValue::make_char('%'));
+            }
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getDecimalSeparator") {
+            result = DalvikValue::make_char('.');
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getGroupingSeparator") {
+            result = DalvikValue::make_char(',');
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getMinusSign") {
+            result = DalvikValue::make_char('-');
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getZeroDigit") {
+            result = DalvikValue::make_char('0');
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getInfinity") {
+            result = DalvikValue::make_string("∞", 0);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getNaN") {
+            result = DalvikValue::make_string("NaN", 0);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method.rfind("set", 0) == 0) {
+            // setDecimalSeparator(char) family — per-object state store.
+            if (args.size() >= 2 && args[0].type == DalvikType::OBJECT_REF &&
+                args[0].object_id != 0 &&
+                args[1].type == DalvikType::CHAR) {
+                static const std::map<std::string, std::string>
+                    k_dfs_setters = {
+                        {"setDecimalSeparator", "decimalSeparator"},
+                        {"setGroupingSeparator", "groupingSeparator"},
+                        {"setMinusSign", "minusSign"},
+                        {"setZeroDigit", "zeroDigit"},
+                        {"setPercent", "percent"},
+                    };
+                auto it = k_dfs_setters.find(method);
+                if (it != k_dfs_setters.end()) {
+                    heap_.set_object_field(args[0].object_id, it->second,
+                                           DalvikValue::make_char(
+                                               (char)args[1].char_val));
+                }
+            }
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    // ────────────────────────────────────────────────────────────────────────
     // S108 ROOT-024 — PowerManager/WakeLock + AccountManager (AOSP law).
     // NotificationsController.<init> null-asserted
     // PowerManager.newWakeLock(...).setReferenceCounted(false) — the
@@ -27729,13 +27982,54 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             if (auto vf = heap_.get_object_field(
                     args[0].object_id, "array[" + std::to_string(f93_idx) + "]");
                 vf && vf->type == DalvikType::INT32) {
-                f93_val = vf->int_val;
+                // S123 PRESENCE-READ law: the F-093 producer writes array[i]
+                // = decoded for EVERY slot (0 when the attribute did not
+                // resolve) and records resolution separately in
+                // array_present[i] (S99 presence law). The reader previously
+                // ignored the presence flag, so an UNRESOLVED attribute
+                // answered 0 instead of the caller's default — AOSP
+                // TypedArray.getInt(idx, def) answers def when the value is
+                // TYPE_NULL/absent. Live evidence (opencalculator vc53):
+                // SlidingUpPanelLayout.<init> read umanoPanelGravity →
+                // unresolved → 0 → setGravity(0) → IllegalArgumentException
+                // "gravity must be set to either top or bottom" →
+                // APP BOUNDARY unwind; the calculator never inflated.
+                // A resolved zero (windowActionBar=false) stays PRESENT and
+                // still answers 0 — the S99 semantics are untouched.
+                auto pf = heap_.get_object_field(
+                    args[0].object_id,
+                    "array_present[" + std::to_string(f93_idx) + "]");
+                const bool present =
+                    pf && pf->type == DalvikType::INT32 && pf->int_val != 0;
+                if (present) {
+                    f93_val = vf->int_val;
+                }
             }
             status = ApiCallTrace::Status::IMPLEMENTED;
             if (method == "getBoolean") {
                 result = DalvikValue::make_bool(f93_val != 0);
             } else {
                 result = DalvikValue::make_int(f93_val);
+            }
+            if (std::getenv("MINIANDROID_F093_DIAG") && method == "getInt") {
+                auto pf2 = heap_.get_object_field(
+                    args[0].object_id,
+                    "array_present[" + std::to_string(f93_idx) + "]");
+                auto sf = heap_.get_object_field(
+                    args[0].object_id,
+                    "array[" + std::to_string(f93_idx) + "]");
+                std::cerr << "[F175-READ] getInt idx=" << f93_idx
+                          << " stored="
+                          << (sf && sf->type == DalvikType::INT32
+                                  ? sf->int_val : -2147483647)
+                          << " present="
+                          << (pf2 && pf2->type == DalvikType::INT32
+                                  ? pf2->int_val : -1)
+                          << " def="
+                          << (args.size() >= 3 &&
+                                      args[2].type == DalvikType::INT32
+                                  ? args[2].int_val : -1)
+                          << " answered=" << f93_val << std::endl;
             }
             return true;
         }
@@ -39702,6 +39996,20 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             } else if (args[i].type == DalvikType::FLOAT64) {
                 arg.kind = framework::CallContext::Arg::Kind::DOUBLE;
                 arg.double_val = args[i].double_val;
+            } else if (args[i].type == DalvikType::CLASS_REF) {
+                // S123 CLASS-ARG law: mirror the bridge_to_api arg builder
+                // (make_class semantics): a class literal arg keeps the
+                // token's heap id and carries the REFERENT descriptor as its
+                // object_class. The previous default-NULL drop meant any
+                // shadow receiving a Class literal (Intent(Context, Class)
+                // ctor — `new Intent(this, Game.class)`) saw NO second arg
+                // and left the component unset ("startActivity called (no
+                // component set)"), so for-result/second-activity launches
+                // silently did nothing.
+                arg.kind = framework::CallContext::Arg::Kind::OBJECT;
+                arg.object_id = args[i].ref_id;
+                arg.object_class = args[i].class_desc;
+                arg.string_val = args[i].class_desc;
             }
             ctx.args.push_back(arg);
         }

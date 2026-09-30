@@ -588,6 +588,27 @@ bool ApplicationRuntime::resolve_manifest() {
                               "android.permission.SCHEDULE_EXACT_ALARM") != perms.end();
                 pi_shadow->set_manifest_exact_alarm_capable(exact_capable);
             }
+            // S123 ACTION-RESOLVE law: register the manifest's full
+            // action → activity map on the IntentShadow so component-less
+            // (action-string) Intents resolve their target activity at
+            // startActivity time. Short manifest names (".Game") normalize
+            // against the package (AOSP PackageParser.fullActivityName law).
+            if (auto* it_shadow =
+                    shadow_registry_->find_as<framework::IntentShadow>()) {
+                const std::string& pkg = manifest_info.package_name;
+                for (const auto& act : manifest_info.activities) {
+                    for (const auto& action : act.actions) {
+                        std::string full = act.name;
+                        if (!full.empty() && full[0] == '.') {
+                            full = pkg + full;
+                        } else if (!full.empty() &&
+                                   full.find('.') == std::string::npos) {
+                            full = pkg + "." + full;
+                        }
+                        it_shadow->register_action_target(action, full);
+                    }
+                }
+            }
         }
         
         auto end = std::chrono::steady_clock::now();
