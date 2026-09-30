@@ -4,6 +4,7 @@
  */
 #include "arsc_parser.h"
 #include "string_pool.h"  // FIND-REUSE-004: the ONE ResStringPool decoder
+#include <iostream>       // S124: skipped-secondary-package warning
 
 namespace miniandroid {
 namespace resources {
@@ -155,13 +156,27 @@ bool ArscParser::parse_type_chunk(const uint8_t* base, size_t avail, Package& pk
 
     if (chunk_offset + chunk_size > avail) { last_error_ = "type: overruns"; return false; }
     if (header_size < 20) { last_error_ = "type: bad header"; return false; }
-    // GOLDEN-03 §14 hardening: hostile entryCount / entries_start must not
-    // push the offset-array read past the chunk (the offs[i] scan below is
-    // data-driven and MUST be pre-bounded before dereferencing).
-    if ((uint64_t)header_size + (uint64_t)entry_count * 4 > chunk_size) {
+    // S124 FW-PACKAGE (AOSP ResourceTypes.h ResTable_type law, fetched from
+    // frameworks/base main): id@8, FLAGS@9 (FLAG_SPARSE=0x01 since O;
+    // FLAG_OFFSET16=0x02), reserved@10, entryCount@12, entriesStart@16,
+    // config@20. The pre-S124 code read flags from p[10] (the reserved byte)
+    // — modern framework-res tables (SPARSE/OFFSET16) were misparsed as
+    // dense 4-byte arrays and rejected by the sanity bounds below.
+    uint8_t  type_flags = p[9];
+    const bool sparse = (type_flags & 0x01) != 0;
+    const bool offset16 = (type_flags & 0x02) != 0;
+    (void)res0;
+    // GOLDEN-03 §14 hardening (hostile-table bounds), now per-encoding:
+    //   dense      : entryCount * 4 bytes of uint32 offsets
+    //   OFFSET16   : entryCount * 2 bytes of uint16 offsets (offset*4, 0xffff=NO_ENTRY)
+    //   SPARSE     : entryCount * 4 bytes of ResTable_sparseTypeEntry {u16 idx, u16 offset/4}
+    const uint64_t arr_bytes = sparse ? (uint64_t)entry_count * 4
+                                      : offset16 ? (uint64_t)entry_count * 2
+                                                 : (uint64_t)entry_count * 4;
+    if ((uint64_t)header_size + arr_bytes > chunk_size) {
         last_error_ = "type: entry offsets overrun chunk"; return false;
     }
-    if (entries_start < (uint32_t)header_size + entry_count * 4 ||
+    if (entries_start < (uint64_t)header_size + arr_bytes ||
         entries_start > chunk_size) {
         last_error_ = "type: entries_start out of range"; return false;
     }
@@ -181,12 +196,10 @@ bool ArscParser::parse_type_chunk(const uint8_t* base, size_t avail, Package& pk
         }
     }
 
-    if (flags & TYPE_FLAG_SPARSE) {
-        // Sparse entries: header extended by 4 bytes; offsets are
-        // ResTable_sparseTypeEntry pairs {u16 idx, u32le 24-bit offset<<2}
-        if (header_size < 24) { last_error_ = "type: sparse bad header"; return false; }
-        uint16_t off16 = rd16(p + 22);
-        (void)off16;
+    if (sparse) {
+        // Sparse entries law (ResourceTypes.h ResTable_sparseTypeEntry):
+        // uint32 {u16 idx, u16 offset}; the offset is stored DIVIDED by 4
+        // (real offset = offset << 2, from entriesStart).
         const uint8_t* sp = p + header_size;
         for (uint32_t i = 0; i < entry_count; i++) {
             if ((size_t)(sp - base) + 4 > avail) return false;
@@ -198,6 +211,19 @@ bool ArscParser::parse_type_chunk(const uint8_t* base, size_t avail, Package& pk
             sp += 4;
         }
         stats_.entry_count += entry_count;
+    } else if (offset16) {
+        // OFFSET16 dense law (FLAG_OFFSET16): uint16 offsets; real offset =
+        // off16 * 4 from entriesStart; 0xffff = NO_ENTRY.
+        const uint16_t* offs = (const uint16_t*)(p + header_size);
+        uint32_t present = 0;
+        for (uint32_t i = 0; i < entry_count; i++) {
+            uint16_t o = offs[i];
+            bool none = o == 0xffff;
+            if (!none) present++;
+            tc.entry_offsets.push_back(none ? -1 : (int32_t)i);
+            tc.entry_positions.push_back(entries_start + (none ? 0 : (uint32_t)o * 4u));
+        }
+        stats_.entry_count += present;
     } else {
         const uint32_t* offs = (const uint32_t*)(p + header_size);
         for (uint32_t i = 0; i < entry_count; i++) {
@@ -223,7 +249,9 @@ bool ArscParser::parse_type_chunk(const uint8_t* base, size_t avail, Package& pk
         ArscEntry entry;
         entry.package_id = pkg.id;
         entry.type_index = type_id;
-        entry.entry_index = i;
+        // S124 FW-PACKAGE: for SPARSE types the slot value is the REAL entry
+        // index (ResTable_sparseTypeEntry.idx); dense paths carry i itself.
+        entry.entry_index = sparse ? (uint32_t)tc.entry_offsets[i] : i;
         entry.is_complex = (eflags & ENTRY_FLAG_COMPLEX) != 0;
         entry.config_desc = tc.config_desc;
         entry.config = tc.config;          // CAMPAIGN 009 §6
@@ -395,7 +423,28 @@ bool ArscParser::parse(const std::vector<uint8_t>& data) {
         uint32_t csize = rd32(p + pos + 4);
         if (csize == 0) break;
         if (ctype == RES_TABLE_PACKAGE_TYPE) {
-            if (!parse_package(p, size_, pos, csize)) return false;
+            // S124 FW-PACKAGE (AOSP AssetManager2 staged-package law): API 31+
+            // tables append small STAGED package chunks that duplicate the
+            // live package id (observed: framework-res = 1 real + 6 staged
+            // chunks, all id=0x01). Staged packages are NOT part of the live
+            // table — indexing them collides with real entries and corrupts
+            // every resolution. Law: only the FIRST chunk of an id parses;
+            // later duplicate-id chunks are skipped.
+            uint32_t pkg_id = rd32(p + pos + 8);
+            if (parsed_pkg_ids_.count(pkg_id)) {
+                std::cerr << "[S124-ARSC] staged duplicate package id=0x"
+                          << std::hex << pkg_id << std::dec << " skipped"
+                          << std::endl;
+            } else if (!parse_package(p, size_, pos, csize)) {
+                // Multi-package resilience (AssetManager2 loads packages
+                // independently) — a secondary failure must not reject the
+                // table; the framework router only needs package 0x01.
+                std::cerr << "[S124-ARSC] package chunk skipped: "
+                          << last_error_ << std::endl;
+                parsed_pkg_ids_.insert(pkg_id);
+            } else {
+                parsed_pkg_ids_.insert(pkg_id);
+            }
             pkg_seen++;
         }
         pos += csize;

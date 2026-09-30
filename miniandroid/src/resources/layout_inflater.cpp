@@ -574,6 +574,57 @@ bool LayoutInflater::apply_style_item(Attrs& a, uint32_t attr_key,
         a.style_text_color = v.data;
         return true;
     }
+    // ── S124 THEME-BASE: widget-template keys (the themed widget base) ────
+    // AOSP View-ctor law: the defStyleAttr tier's bag (e.g. the theme's
+    // buttonStyle template) supplies background / padding / textStyle for
+    // EVERY widget unless a nearer tier (style= or the XML attrs) provides
+    // one. The bag-tier guards keep first-writer precedence correct.
+    static constexpr uint32_t ATTR_BACKGROUND = 0x010100d4u;  // public-final.xml
+    static constexpr uint32_t ATTR_PADDING    = 0x010100d5u;  // public-final.xml
+    static constexpr uint32_t ATTR_TEXT_STYLE = 0x01010097u;  // public-final.xml
+    if (attr_key == ATTR_BACKGROUND) {
+        if (a.from_style_bg) return false;
+        if (v.is_color() || v.is_int()) {
+            a.bg_color = (uint32_t)v.data;
+            a.from_style_bg = true;
+            return true;
+        }
+        if (v.is_reference()) {
+            uint16_t sel_d = 0;
+            std::string p = drawable_file_for_resid(v.ref_id, &sel_d);
+            if (!p.empty()) {
+                a.bg_drawable = p;
+                a.bg_drawable_density = sel_d;
+                a.from_style_bg = true;
+                return true;
+            }
+            auto val = arsc_.resolve_value(v.ref_id);
+            if (val && (val->is_color() || val->is_int())) {
+                a.bg_color = (uint32_t)val->data;
+                a.from_style_bg = true;
+                return true;
+            }
+        }
+        return false;   // shape/selector XML backgrounds: existing laws only
+    }
+    if (attr_key == ATTR_PADDING) {
+        if (a.from_style_padding) return false;
+        if (!v.is_dimension() && !v.is_int()) return false;
+        a.padding_all = v.is_dimension()
+                            ? complex_to_dimension_pixel_size(v.data, density_context())
+                            : (int)v.data;
+        a.from_style_padding = true;
+        return true;
+    }
+    if (attr_key == ATTR_TEXT_STYLE) {
+        if (a.from_style_text_style) return false;
+        if (v.is_int()) {
+            a.text_style = (int)v.data;   // bit0 bold, bit1 italic (AOSP)
+            a.from_style_text_style = true;
+            return true;
+        }
+        return false;
+    }
     return false;   // key not consumed by the inflater (honest stats)
 }
 
@@ -789,6 +840,32 @@ uint32_t LayoutInflater::inflate_element(framework::ViewShadow* views, const Axm
     stats.views_created++;
     if (parent_view_id) views->add_child(parent_view_id, view_id);
 
+    // ── S124 THEME-OVERLAY (android:theme subtree law) ──────────────────
+    // AOSP MaterialComponents ThemeOverlay law (MaterialThemeOverlay.wrap):
+    // a view tag carrying android:theme=@style/… wraps its ENTIRE subtree's
+    // inflation context in a ContextThemeWrapper that applies the referenced
+    // style — every theme-attr resolution below (the view's own ctor attrs
+    // included) consults the overlay FIRST; keys the overlay does not define
+    // fall through to the base theme. Balanced push/pop with a depth cookie
+    // (ResourceRuntime::ensure_loaded also clears leaked scopes defensively).
+    uint32_t overlay_cookie = 0;
+    if (const AxmlAttribute* th = el.attr("theme", "android")) {
+        uint32_t overlay_resid = 0;
+        if (th->value.is_reference()) overlay_resid = th->value.ref_id;
+        else {
+            std::string sv = !th->raw_value.empty() ? th->raw_value
+                                                    : th->value.string_value;
+            if (sv.rfind("@style/", 0) == 0) {
+                if (auto id = arsc_.find_id("", "style", sv.substr(7)))
+                    overlay_resid = *id;
+            }
+        }
+        if (overlay_resid != 0) {
+            overlay_cookie = resources::ThemeEngine::instance().push_overlay(overlay_resid);
+            stats.theme_overlays_pushed++;
+        }
+    }
+
     Attrs a;
     apply_element_attrs(*node, el, a, stats);
 
@@ -858,6 +935,9 @@ uint32_t LayoutInflater::inflate_element(framework::ViewShadow* views, const Axm
                 cn->visibility = 8;   // GONE (ViewAnimator.showOnly(0) law)
         }
     }
+    // S124 THEME-OVERLAY: the subtree scope ends here (AOSP ContextThemeWrapper
+    // is scoped to the themed view and its descendants).
+    if (overlay_cookie) resources::ThemeEngine::instance().pop_overlay(overlay_cookie);
     return view_id;
 }
 
@@ -917,6 +997,28 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
             else if (sv[0] == '@') {
                 auto id = arsc_.find_id("", "style", sv.substr(1));
                 if (id) apply_style(node, a, *id, stats);
+            }
+        }
+    }
+
+    // ── S124 THEME-BASE (AOSP View-ctor defStyleAttr law) ─────────────────
+    // AttributeResolution.cpp ApplyStyle priority (source-quoted): "we
+    // prioritize values coming from, first XML attributes, then XML style,
+    // then default style, and finally the theme." A framework widget tag
+    // with NO explicit style= inherits its DEFAULT widget template (Button
+    // ctor passes android.R.attr.buttonStyle; the theme maps the attr to
+    // the widget style). Applied HERE — after the style= walk, before the
+    // direct-attr walk — so the first-writer slots give the correct order:
+    // XML attrs > style= bag > defStyleAttr bag. Custom views carry
+    // defStyleAttr 0 (AOSP View(Context, AttributeSet) law) — table answers 0.
+    if (!style_attr) {
+        uint32_t def_style_attr = resources::ThemeEngine::framework_def_style_attr(el.name);
+        if (def_style_attr != 0) {
+            uint32_t def_style_resid = resources::ResourceRuntime::instance()
+                                           .resolve_def_style_resid(apk_path_, def_style_attr);
+            if (def_style_resid != 0) {
+                apply_style(node, a, def_style_resid, stats);
+                stats.def_style_applied++;
             }
         }
     }
@@ -1823,6 +1925,10 @@ std::string InflateStats::to_json() const {
     out += ",\"includes_expanded\":" + std::to_string(includes_expanded);
     out += ",\"ids_resolved\":" + std::to_string(ids_resolved);
     out += ",\"unresolved_refs\":" + std::to_string(unresolved_refs);
+    out += ",\"theme_attrs_resolved\":" + std::to_string(theme_attrs_resolved);
+    out += ",\"unresolved_theme_attrs\":" + std::to_string(unresolved_theme_attrs);
+    out += ",\"def_style_applied\":" + std::to_string(def_style_applied);
+    out += ",\"theme_overlays_pushed\":" + std::to_string(theme_overlays_pushed);
     out += ",\"warnings\":[";
     for (size_t i = 0; i < warnings.size(); i++) {
         if (i) out += ",";

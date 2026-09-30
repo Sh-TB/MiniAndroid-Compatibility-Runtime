@@ -27,6 +27,7 @@
 #include <cstdint>
 #include <cstring>
 #include <string>
+#include <set>
 #include <vector>
 #include <map>
 #include <unordered_map>
@@ -332,6 +333,8 @@ private:
     size_t size_ = 0;
     Pool global_strings_;
     std::vector<Package> packages_;
+    // S124 FW-PACKAGE: ids of packages already parsed (staged duplicates skip).
+    std::set<uint32_t> parsed_pkg_ids_;
     bool valid_ = false;
     std::string last_error_;
     Stats stats_;
