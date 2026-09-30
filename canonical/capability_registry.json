@@ -1,6 +1,6 @@
 {
  "schema": "miniandroid.capability_registry.v1",
- "generated": "2026-09-30T16:14:55Z",
+ "generated": "2026-09-30T18:38:18Z",
  "law": "IMPLEMENTED = source inventory hit only. TESTED/VERIFIED require recorded runtime evidence refs. Grep never proves VERIFIED (ROADMAP SS1).",
  "capabilities": [
   {
@@ -8,7 +8,7 @@
    "layer": "UI",
    "name": "View",
    "status": "TESTED",
-   "src_hits": 357,
+   "src_hits": 358,
    "evidence": [
     "evidence/s113_fullgui (hello_smoke/hello_widgets control APKs)",
     "miniandroid/tests/shadow_registry_invariant_test.cpp"
@@ -453,7 +453,7 @@
    "layer": "RENDERING",
    "name": "screenshot",
    "status": "VERIFIED",
-   "src_hits": 191,
+   "src_hits": 192,
    "evidence": [
     "evidence/s122..s124 3-run byte-identical SHA protocol (calc a169346e x3, flappy 13cf4746 x3) \u2014 screenshot+SHA256+pixel metrics are the campaign evidence engine"
    ]
@@ -597,7 +597,7 @@
    "layer": "RESOURCES",
    "name": "AssetManager",
    "status": "IMPLEMENTED",
-   "src_hits": 60,
+   "src_hits": 61,
    "evidence": []
   },
   {
@@ -636,7 +636,7 @@
    "layer": "RESOURCES",
    "name": "Configuration",
    "status": "IMPLEMENTED",
-   "src_hits": 91,
+   "src_hits": 92,
    "evidence": []
   },
   {
@@ -692,7 +692,7 @@
    "layer": "RESOURCES",
    "name": "StateListDrawable",
    "status": "TESTED",
-   "src_hits": 38,
+   "src_hits": 43,
    "evidence": [
     "miniandroid/src/framework/state_list.cpp",
     "evidence/s121 opmt selection ring"
@@ -789,7 +789,7 @@
    "layer": "INFLATION",
    "name": "include",
    "status": "IMPLEMENTED",
-   "src_hits": 1069,
+   "src_hits": 1070,
    "evidence": []
   },
   {

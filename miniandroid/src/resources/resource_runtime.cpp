@@ -3,6 +3,7 @@
  */
 #include "resource_runtime.h"
 #include "framework_theme_attrs.h"
+#include "framework/state_list.h"
 #include "../apk/manifest_reader.h"
 #include <fstream>
 #include <iostream>
@@ -87,6 +88,76 @@ std::string ResourceRuntime::stats_json() const {
 // Attribute ids 0x01010000 (theme) / 0x01010054 (windowBackground) verified
 // from the aapt2 dump above — NOT hardcoded from memory.
 // ─────────────────────────────────────────────────────────────────────────────
+// ── S125 FRAMEWORK-RES FILE LAW ─────────────────────────────────────────────
+// AOSP law: framework-res.apk carries res/drawable + res/color FILES (theme
+// windowBackground selectors, text color state lists). The committed
+// framework package is table-only, so a package-0x01 reference to such a
+// file previously resolved to an honest miss and the window fell back to a
+// non-themed surface. This law resolves those references from the committed
+// framework_res/res/ tree — the REAL files, byte-verified from the same
+// framework-res.apk the table came from (reuse-first: zero invented
+// constants). Selector resolution follows the StateListDrawable
+// first-match law (first item whose state spec matches the default view
+// state) and the item's @color reference derefs through the framework
+// table (AssetManager2 ResolveAttributeReference).
+std::optional<uint32_t> ResourceRuntime::resolve_framework_file_color(uint32_t resid) {
+    if ((resid >> 24) != 0x01) return std::nullopt;
+    ArscRouter rt = arsc_router();
+    if (!rt.fw) return std::nullopt;
+    auto r = rt.fw->resolve_full(resid, device_config());
+    if (!r.ok || r.entry_name.empty()) return std::nullopt;
+    const std::string& name = r.entry_name;
+
+    // Same search law as ensure_framework_resources (exe-relative + cwd).
+    std::vector<std::string> roots;
+    if (const char* env = std::getenv("MINIANDROID_FRAMEWORK_RES_DIR"))
+        roots.push_back(env);
+    char exe_buf[PATH_MAX] = {0};
+    ssize_t n = readlink("/proc/self/exe", exe_buf, sizeof(exe_buf) - 1);
+    if (n > 0) {
+        std::string exe_dir(exe_buf, (size_t)n);
+        auto slash = exe_dir.rfind('/');
+        if (slash != std::string::npos) exe_dir.resize(slash);
+        roots.push_back(exe_dir + "/../framework_res");
+        roots.push_back(exe_dir + "/framework_res");
+    }
+    roots.push_back("framework_res");
+    roots.push_back("miniandroid/framework_res");
+
+    static const char* kDirs[] = {"res/drawable/", "res/color/"};
+    for (const auto& root : roots) {
+        for (const char* dir : kDirs) {
+            std::string path = root + "/" + dir + name + ".xml";
+            std::ifstream f(path, std::ios::binary);
+            if (!f) continue;
+            std::vector<uint8_t> axml((std::istreambuf_iterator<char>(f)),
+                                      std::istreambuf_iterator<char>());
+            std::vector<framework::ViewShadow::ViewNode::BgStateItem> items;
+            if (!framework::parse_state_list(axml, &items)) return std::nullopt;
+            // StateListDrawable first-match law with the DEFAULT view state
+            // (not pressed / enabled / unselected / unchecked).
+            for (const auto& it : items) {
+                if (it.state_pressed > 0 || it.state_selected > 0 ||
+                    it.state_checked > 0)
+                    continue;   // requires a non-default state — not first match
+                if (it.has_color && it.color != 0) return it.color;
+                if (!it.drawable_path.empty() &&
+                    it.drawable_path.rfind("@color/", 0) == 0) {
+                    auto id = rt.fw->find_id("", "color",
+                                             it.drawable_path.substr(7));
+                    if (!id) return std::nullopt;
+                    auto v = rt.fw->resolve_value(*id);
+                    if (v && (v->is_color() || v->is_int()))
+                        return (uint32_t)v->data;
+                    return std::nullopt;
+                }
+            }
+            return std::nullopt;
+        }
+    }
+    return std::nullopt;
+}
+
 std::optional<uint32_t> ResourceRuntime::resolve_window_background_argb(
         const std::string& apk_path) {
     if (!ensure_loaded(apk_path)) return std::nullopt;
@@ -142,6 +213,13 @@ std::optional<uint32_t> ResourceRuntime::resolve_window_background_argb(
     auto fb = resolve_theme_attr_typed(apk_path, 0x01010054, -1);
     if (s95_dbg) std::cerr << "[S95-THEME] typed fb=" << (fb.has_value() ? "hit" : "miss") << std::endl;
     if (fb.has_value()) {
+        // S125 FRAMEWORK-RES FILE LAW: a reference (theme windowBackground
+        // = @drawable/screen_background_selector_light) resolves through
+        // the committed framework res/ file tree first.
+        if (fb->is_reference()) {
+            auto file_color = resolve_framework_file_color(fb->ref_id);
+            if (file_color) return file_color;
+        }
         // The framework table emits INT_HEX (data IS the #AARRGGBB
         // constant — the same law everywhere an INT_HEX color resolves);
         // only literal COLOR_* types go through the named decoder.

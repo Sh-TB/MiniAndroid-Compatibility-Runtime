@@ -147,7 +147,7 @@ struct InputRig {
     InputRig() {
         views.init(&heap_adapter);
         handler.init(&heap_adapter);
-        dispatcher.set_click_dispatch([&](uint32_t id) {
+        dispatcher.set_click_dispatch([&](uint32_t id, float, float) {
             ++clicks; last_click = id; return true;
         });
         dispatcher.set_long_click_dispatch([&](uint32_t id, bool& consumed) {

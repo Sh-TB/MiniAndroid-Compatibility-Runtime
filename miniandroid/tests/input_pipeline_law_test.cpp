@@ -57,7 +57,7 @@ struct Rig {
     Rig() {
         views.init(&heap_adapter);
         handler.init(&heap_adapter);
-        dispatcher.set_click_dispatch([&](uint32_t id) {
+        dispatcher.set_click_dispatch([&](uint32_t id, float /*x*/, float /*y*/) {
             clicks++;
             last_click_target = id;
             return true;

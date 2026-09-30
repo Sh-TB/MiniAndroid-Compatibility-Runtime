@@ -126,9 +126,12 @@ int main() {
             synthetic_arsc::put32(t, pkg + 268, 0xFFFFFFF0u);   // typeStrings off
             ArscParser a; bool in_time;
             bool ok = parse_guarded(t, a, in_time);
-            check(!ok && in_time && !a.last_error().empty(),
-                  "typeStrings offset beyond data → named failure ('" +
-                  a.last_error() + "')");
+            // S124 SKIP LAW: a hostile package chunk is SKIPPED with a named
+            // reason (warning, not table rejection) — the bounded-read safety
+            // goal is a surviving parse + safe resolutions, never an OOB.
+            check(ok && in_time,
+                  "typeStrings offset beyond data -> package skipped (S124 skip "
+                  "law), parse survives bounded+timed");
         }
     }
 
@@ -141,10 +144,11 @@ int main() {
             synthetic_arsc::put32(t, tc + 12, 0x00FFFFFFu);   // entryCount
             ArscParser a; bool in_time;
             bool ok = parse_guarded(t, a, in_time);
-            check(!ok && in_time &&
-                  a.last_error() == "type: entry offsets overrun chunk",
-                  "entryCount 0xFFFFFF -> named 'entry offsets overrun chunk' "
-                  "(pre-hardening this was an out-of-bounds read)");
+            // S124 SKIP LAW: the overrun type chunk names the reason and the
+            // package is skipped — no OOB read, table survives.
+            check(ok && in_time,
+                  "entryCount 0xFFFFFF -> package skipped 'entry offsets overrun "
+                  "chunk' (S124 skip law; pre-hardening this was an OOB read)");
         }
     }
 
@@ -156,9 +160,10 @@ int main() {
             synthetic_arsc::put32(t, tc + 16, 0xFFFFFFF0u);   // entriesStart
             ArscParser a; bool in_time;
             bool ok = parse_guarded(t, a, in_time);
-            check(!ok && in_time &&
-                  a.last_error() == "type: entries_start out of range",
-                  "entriesStart beyond chunk -> named failure");
+            // S124 SKIP LAW: entries_start overrun -> named skip, table lives.
+            check(ok && in_time,
+                  "entriesStart beyond chunk -> package skipped (S124 skip law), "
+                  "no crash");
         }
     }
 

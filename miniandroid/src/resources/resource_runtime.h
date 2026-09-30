@@ -108,6 +108,15 @@ public:
     // Returns nullopt when the APK declares no resolvable theme item
     // (caller falls back to the plain default surface).
     std::optional<uint32_t> resolve_window_background_argb(const std::string& apk_path);
+    // S125 FRAMEWORK-RES FILE LAW: package-0x01 references whose entry is a
+    // res/ FILE (theme windowBackground selectors — files the arsc-only
+    // framework package does not carry) resolve from the committed
+    // framework_res/res/ tree (REAL AOSP framework-res.apk files,
+    // byte-verified; reuse-first SS31). A color-bearing selector resolves
+    // through the StateListDrawable first-match/default law and its
+    // @color reference through the framework table. No invented colors,
+    // no package-name checks (the 0x01 test IS the AOSP package router).
+    std::optional<uint32_t> resolve_framework_file_color(uint32_t resid);
 
     // F-093 (R-NEW-326, S25): theme attribute resolution through the
     // APPLICATION theme's style parent chain (ArscParser::bag_value —
