@@ -52,6 +52,8 @@ struct InflateStats {
     int unresolved_refs = 0;
     int theme_attrs_resolved = 0;      // S68 W2: ?attr resolved via theme
     int unresolved_theme_attrs = 0;    // S68 W2: unresolvable ?attr (reported)
+    int def_style_applied = 0;         // S124: defStyleAttr tier bags applied
+    int theme_overlays_pushed = 0;     // S124: android:theme subtree overlays
     std::vector<std::string> warnings;
     std::string to_json() const;
 };
@@ -265,6 +267,12 @@ private:
         bool from_style_text_size = false;
         uint32_t style_text_color = 0;
         float style_text_size_px = 0;
+        // S124 THEME-BASE: bag-tier guards — the defStyleAttr tier may fill a
+        // slot ONLY when neither an explicit style= bag nor a previous bag
+        // wrote it (AOSP ApplyStyle priority: XML > style= > defStyleAttr).
+        bool from_style_bg = false;
+        bool from_style_padding = false;
+        bool from_style_text_style = false;
     };
 
     uint32_t inflate_element(framework::ViewShadow* views, const AxmlElement& el,

@@ -19,6 +19,12 @@ bool ResourceRuntime::ensure_loaded(const std::string& apk_path) {
     if (loaded_ && apk_path_ == apk_path) return true;
     loaded_ = false;
     apk_path_ = apk_path;
+    // S124 THEME-BASE: the cached AOSP-law Theme is invalid for a new APK,
+    // and unbalanced inflate scopes must not leak overlays across APKs.
+    base_theme_built_ = false;
+    base_theme_valid_ = false;
+    base_theme_ = Theme{};
+    ThemeEngine::instance().clear_overlays();
 
     // read arsc through the APK parser (caches ZIP data for later extraction)
     auto info = apk_.parse(apk_path);
@@ -146,72 +152,21 @@ std::optional<uint32_t> ResourceRuntime::resolve_window_background_argb(
 }
 
 // F-093 (R-NEW-326, S25): theme attribute resolution — see resource_runtime.h.
+// S124 LAW UPGRADE: the old body resolved against the APPLICATION theme only
+// (a single bag_value). Every obtainStyledAttributes consumer (the F-NEW-175
+// shadow) runs under an ACTIVITY context whose theme chain is activity >
+// application — so this service now delegates to resolve_theme_attr_typed:
+// overlays → base Theme object → framework default table (the AOSP
+// ContextThemeWrapper chain), keeping the "raw reference still meaningful"
+// contract for unresolvable refs.
 std::optional<ResValue> ResourceRuntime::resolve_theme_attr_value(
         const std::string& apk_path, uint32_t attr_key) {
     static const bool f93_diag = std::getenv("MINIANDROID_F093_DIAG") != nullptr;
-    if (!ensure_loaded(apk_path)) return std::nullopt;
-
-    // 1. Application-level theme from the binary manifest.
-    std::vector<uint8_t> mf = apk_.extract_entry_cached("AndroidManifest.xml");
-    if (mf.empty()) return std::nullopt;
-    apk::ManifestReader mr;
-    apk::ManifestInfo mi = mr.parse(mf);
-    if (mi.application_theme_resid == 0) {
-        // F-094 (R-NEW-327): plain-text manifests carry android:theme as
-        // a reference string ("@style/AppTheme.NoActionBar") — resolve the
-        // style name to a resid through the canonical ARSC find_id.
-        if (!mi.application_theme_ref.empty()) {
-            std::string ref = mi.application_theme_ref;
-            if (ref.rfind("@", 0) == 0) ref.erase(0, 1);
-            // form: "<type>/<name>" (aapt2 also accepts "android:style/…")
-            size_t slash = ref.find('/');
-            std::string type = "style", name = ref;
-            if (slash != std::string::npos) {
-                type = ref.substr(0, slash);
-                name = ref.substr(slash + 1);
-            }
-            if (type.rfind("android:", 0) == 0) type.erase(0, 8);
-            if (auto id = arsc_.find_id(mi.package_name, type, name)) {
-                mi.application_theme_resid = *id;
-                if (f93_diag)
-                    std::cerr << "[F093-DIAG] theme_ref=" 
-                              << mi.application_theme_ref << " → resid 0x"
-                              << std::hex << *id << std::dec << std::endl;
-            }
-        }
-        if (mi.application_theme_resid == 0) {
-            if (f93_diag)
-                std::cerr << "[F093-DIAG] no application_theme_resid in manifest"
-                          << std::endl;
-            return std::nullopt;
-        }
-    }
+    auto out = resolve_theme_attr_typed(apk_path, attr_key, -1);
     if (f93_diag)
-        std::cerr << "[F093-DIAG] theme_resid=0x" << std::hex
-                  << mi.application_theme_resid << std::dec << " attr=0x"
-                  << std::hex << attr_key << std::dec << std::endl;
-
-    // 2. Attribute-KEY bag query through the canonical resolver —
-    //    ResTable_map key with parent-chain inheritance (cycle-safe).
-    auto v = arsc_.bag_value(mi.application_theme_resid, attr_key,
-                             device_config());
-    if (f93_diag)
-        std::cerr << "[F093-DIAG] bag_query attr=0x" << std::hex << attr_key
-                  << std::dec << " hit=" << (v ? "YES" : "no")
-                  << (v ? " data=0x" + [] (uint32_t d) {
-                             std::ostringstream s; s << std::hex << d; return s.str();
-                         }((uint32_t)v->data) : std::string())
-                  << std::endl;
-    if (!v) return std::nullopt;
-
-    // 3. Dereference one reference hop (style item referencing a color /
-    //    bool resource) through the canonical bounded path.
-    ResValue out = *v;
-    if (out.is_reference()) {
-        ResolutionResult r = arsc_.resolve_full(out.ref_id, device_config());
-        if (!r.ok) return out;   // raw reference still meaningful to caller
-        out = *r.value();
-    }
+        std::cerr << "[F093-DIAG] S124 engine path attr=0x" << std::hex
+                  << attr_key << std::dec
+                  << " hit=" << (out ? "YES" : "no") << std::endl;
     return out;
 }
 
@@ -285,21 +240,22 @@ ResourceRuntime::LaunchTheme ResourceRuntime::resolve_launch_theme(
 
 std::optional<ResValue> ResourceRuntime::resolve_theme_attr_typed(
         const std::string& apk_path, uint32_t attr_key, int flavor_hint) {
-    // 1. Theme chain (activity theme > application theme).
-    LaunchTheme lt = resolve_launch_theme(apk_path);
-    if (lt.valid) {
-        auto v = arsc_.bag_value(lt.resid, attr_key, device_config());
-        if (v) {
-            ResValue out = *v;
-            if (out.is_reference()) {
-                ResolutionResult r = arsc_.resolve_full(out.ref_id, device_config());
-                if (r.ok) out = *r.value();
-            }
-            return out;
-        }
-    }
+    if (!ensure_loaded(apk_path)) return std::nullopt;
+
+    // S124 THEME-BASE — the original-framework resolution order (fetched
+    // AOSP libs/androidfw/AttributeResolution.cpp ApplyStyle + AssetManager2
+    // Theme): (a) android:theme subtree overlays (ThemeOverlay law, newest
+    // first), (b) the base Theme object (activity > application, attr-hop
+    // + reference deref per Theme::GetAttribute / ResolveAttributeReference,
+    // package-routed into framework-res), then (c) the generated framework
+    // default table.
+    auto v = ThemeEngine::instance().resolve_attr(arsc_router(), device_config(),
+                                                  &base_theme(), attr_key);
+    if (v) return v;
+
     // 2. Framework theme defaults (AOSP law; generated table).
     if ((attr_key >> 24) == 0x01) {
+        LaunchTheme lt = resolve_launch_theme(apk_path);
         const int flavor = flavor_hint >= 0 ? flavor_hint : lt.flavor;
         for (size_t i = 0; i < FRAMEWORK_THEME_ATTR_COUNT; i++) {
             const auto& fa = FRAMEWORK_THEME_ATTRS[i];
@@ -323,6 +279,102 @@ std::optional<ResValue> ResourceRuntime::resolve_theme_attr_typed(
         }
     }
     return std::nullopt;
+}
+
+// S124 THEME-BASE (the original-framework loading base — user directive: apps
+// carry themes/templates; load them through the REAL framework law). The base
+// Theme is built once per APK with Theme::apply_style (AssetManager2
+// Theme::ApplyStyle law): the launch theme merges its bag through the parent
+// chain into a sorted key→value overlay set; normal apply (force=false) keeps
+// the nearest-writer — the AOSP precedence inside one theme chain.
+// ─────────────────────────────────────────────────────────────────────────
+// S124 FW-PACKAGE: load the ORIGINAL framework resource table once. Paths
+// tried in order: $MINIANDROID_FRAMEWORK_ARSC, <exe_dir>/../framework_res/
+// resources.arsc, <exe_dir>/framework_res/resources.arsc, cwd-relative
+// framework_res/resources.arsc. The table is the AOSP multi-package base
+// (AssetManager2 ApkAssets[framework-res, app]): Theme.Material + the whole
+// framework style/attr/color system become resolvable for app themes.
+// ─────────────────────────────────────────────────────────────────────────
+bool ResourceRuntime::ensure_framework_resources() {
+    if (fw_arsc_loaded_) return true;
+    static bool attempted = false;
+    if (attempted) return false;
+    attempted = true;
+
+    std::vector<std::string> candidates;
+    if (const char* env = std::getenv("MINIANDROID_FRAMEWORK_ARSC"))
+        candidates.push_back(env);
+    char exe_buf[PATH_MAX] = {0};
+    ssize_t n = readlink("/proc/self/exe", exe_buf, sizeof(exe_buf) - 1);
+    if (n > 0) {
+        std::string exe_dir(exe_buf, (size_t)n);
+        auto slash = exe_dir.rfind('/');
+        if (slash != std::string::npos) exe_dir.resize(slash);
+        candidates.push_back(exe_dir + "/../framework_res/resources.arsc");
+        candidates.push_back(exe_dir + "/framework_res/resources.arsc");
+    }
+    candidates.push_back("framework_res/resources.arsc");
+    candidates.push_back("miniandroid/framework_res/resources.arsc");
+
+    for (const auto& p : candidates) {
+        std::ifstream f(p, std::ios::binary);
+        if (!f) continue;
+        std::vector<uint8_t> data((std::istreambuf_iterator<char>(f)),
+                                  std::istreambuf_iterator<char>());
+        if (data.empty()) continue;
+        if (fw_arsc_.parse(data)) {
+            fw_arsc_loaded_ = true;
+            std::cerr << "[S124-FWRES] framework-res table loaded: " << p
+                      << " bytes=" << data.size()
+                      << " types=" << fw_arsc_.stats().entries_by_type.size()
+                      << std::endl;
+            return true;
+        }
+        std::cerr << "[S124-FWRES] parse FAILED for " << p << ": "
+                  << fw_arsc_.last_error() << std::endl;
+        return false;
+    }
+    std::cerr << "[S124-FWRES] framework-res table NOT FOUND (degrading to "
+              << "generated attr-default table)" << std::endl;
+    return false;
+}
+
+const Theme& ResourceRuntime::base_theme() {
+    if (base_theme_built_) return base_theme_;
+    base_theme_built_ = true;
+    LaunchTheme lt = resolve_launch_theme(apk_path_);
+    if (lt.valid && lt.resid != 0) {
+        base_theme_.apply_style(arsc_router(), device_config(), lt.resid, /*force=*/false);
+        base_theme_valid_ = base_theme_.size() > 0;
+    }
+    static const bool diag = std::getenv("MINIANDROID_THEME_DIAG") != nullptr;
+    if (diag)
+        fprintf(stderr, "[S124-THEME] base_theme apk=%s resid=0x%x valid=%d keys=%zu\n",
+                apk_path_.c_str(), lt.resid, base_theme_valid_ ? 1 : 0,
+                base_theme_.size());
+    return base_theme_;
+}
+
+// S124: the View-ctor defStyleAttr law — raw theme entry → style resid
+// (references stay raw: a style entry is a bag, not a value).
+uint32_t ResourceRuntime::resolve_def_style_resid(const std::string& apk_path,
+                                                  uint32_t def_style_attr) {
+    if (def_style_attr == 0 || !ensure_loaded(apk_path)) return 0;
+    auto raw = ThemeEngine::instance().resolve_attr_raw(
+        arsc_router(), device_config(), &base_theme(), def_style_attr);
+    if (!raw) return 0;
+    if (raw->type == DataType::REFERENCE || raw->type == DataType::DYNAMIC_REFERENCE)
+        return raw->ref_id;
+    // legacy plain-text themes carry "@style/Foo" string items
+    if (raw->type == DataType::STRING &&
+        raw->string_value.rfind("@style/", 0) == 0) {
+        const ArscParser* arsc = arsc_router().for_id(0x7f000000);
+        if (arsc) {
+            if (auto id = arsc->find_id("", "style", raw->string_value.substr(7)))
+                return *id;
+        }
+    }
+    return 0;
 }
 
 } // namespace resources
