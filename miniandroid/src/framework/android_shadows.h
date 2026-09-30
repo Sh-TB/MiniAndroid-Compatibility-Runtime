@@ -1057,6 +1057,13 @@ public:
         // the touchable gate must include this, else the whole custom-view
         // game family is tap-dead (klondike GameView evidence).
         bool overrides_touch_event = false;
+        // S123 (R-NEW-419): TRUE when the DEX chain overrides onSizeChanged —
+        // dispatched at the draw site with the node's laid-out pixel size
+        // (AOSP View.setFrame law: size change → onSizeChanged BEFORE the
+        // first onDraw; custom views build their draw geometry there).
+        // last_size_w/h dedup: only re-dispatch when the size actually changed.
+        bool overrides_on_size_changed = false;
+        int last_size_w = -1, last_size_h = -1;
         int dex_measured_w = 0, dex_measured_h = 0;
         bool dex_measure_valid = false;
         // F-096 (R-NEW-329 root, real-DEX measure+layout lifecycle law):
