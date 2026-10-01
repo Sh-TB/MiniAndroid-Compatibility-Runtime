@@ -19982,6 +19982,61 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
     };
 
     // Pass 1: try with the declared class_name.
+    // ────────────────────────────────────────────────────────────────────
+    // F-NEW-166 (S134 wave 3): AOSP ContextWrapper BASE-CONTEXT law —
+    // served for EVERY ContextWrapper-family receiver, not only Activities.
+    // AOSP: getBaseContext()/attachBaseContext() are ContextWrapper
+    // CONTRACT methods (mBase set during attach; never null after), and
+    // ContextWrapper.<init>(Context base) DELEGATES to attachBaseContext.
+    // The S110 law implementation lives inside ActivityShadow::dispatch,
+    // but ActivityShadow::handles_class matches only Activity-shaped
+    // names — a plain app-level ContextWrapper descendant (WhatsApp
+    // LX/00J; extends ContextWrapper) never routed there:
+    //   <init>(base)      → REC-MISS → ctor base argument DROPPED
+    //   getBaseContext    → REC-MISS → stub null
+    //   → the app's own Intrinsics check (LX/00i;.A06 → A0F) threw
+    //     "INVOKE_RETURN must not be null" during attachBaseContext →
+    //     Application.onCreate never ran → no window → WHITE screen.
+    // Route the three shapes here for Context-family receivers,
+    // delegating to the SAME law implementation (one state owner:
+    // ActivityShadow base_contexts_/application fallbacks — never null).
+    // Evidence: s134 WhatsApp run, [REC-MISS] ContextWrapper.<init> +
+    // ContextWrapper.getBaseContext + THROWABLE-STACK chain
+    // 004.attachBaseContext → 00J.<init> → 009.<init> → A06 → A0F.
+    // ────────────────────────────────────────────────────────────────────
+    if ((method == "getBaseContext" || method == "attachBaseContext" ||
+         (method == "<init>" && !args.empty())) &&
+        (class_name.find("ContextWrapper") != std::string::npos ||
+         class_name.find("ContextThemeWrapper") != std::string::npos ||
+         class_name.find("Context;") != std::string::npos)) {
+        if (auto* as = shadow_registry_->find_as<framework::ActivityShadow>()) {
+            framework::CallContext ctx166 = build_ctx(class_name);
+            // AOSP ctor law: ContextWrapper.<init>(base) ==
+            // attachBaseContext(base) — route through the same law.
+            if (method == "<init>")
+                ctx166.method = "attachBaseContext";
+            auto cr166 = as->dispatch(ctx166);
+            if (cr166.handled) {
+                switch (cr166.status) {
+                    case framework::ApiCallStatus::IMPLEMENTED:
+                        status = ApiCallTrace::Status::IMPLEMENTED; break;
+                    case framework::ApiCallStatus::STUBBED:
+                        status = ApiCallTrace::Status::STUBBED; break;
+                    default:
+                        status = ApiCallTrace::Status::STUBBED; break;
+                }
+                result = call_result_to_dalvik(cr166);
+                std::cerr << "[F166-BASECTX] " << method << " served for "
+                          << class_name << " (receiver="
+                          << ((!args.empty() &&
+                               args[0].type == DalvikType::OBJECT_REF)
+                                  ? args[0].object_id : 0u) << ")"
+                          << std::endl;
+                return true;
+            }
+        }
+    }
+
     auto cr = shadow_registry_->dispatch(build_ctx(class_name));
     // M3-DIAG (temporary): why do tick-path setText calls miss the shadow?
     static const bool m3sd = std::getenv("MINIANDROID_M3_SHADOW_DIAG") != nullptr;
@@ -31561,6 +31616,63 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                               << r005_sub << " linked under decor="
                               << r005_decor << " (activity=" << r005_act_view
                               << ")" << std::endl;
+                }
+
+                // ────────────────────────────────────────────────────────
+                // F-NEW-165 (S134, AOSP PhoneWindow.setContentView law) —
+                // the CONTENT-ANCHOR leg. AOSP: Activity.setContentView
+                // DELEGATES to Window.setContentView; PhoneWindow installs
+                // the view under mContentParent (android.R.id.content
+                // inside the decor) and the activity's content anchor
+                // advances to it. The R005 link above only satisfied the
+                // findViewById-delegation law (R-NEW-416) — apps whose
+                // delegate calls getWindow().setContentView(subDecor)
+                // (droidify, WhatsApp: AppCompatDelegateImpl.createSubDecor)
+                // kept content_view_id == 0 → effective_content_root_
+                // fell back to an EMPTY S83 content node → the walk
+                // produced zero app pixels → WHITE screen with a green
+                // boot chain (S135 logger: VIEWTREE NOT_REACHED divergence,
+                // DEFAULT_BACKGROUND_ONLY). Law: the installed view is
+                // ALSO (a) a child of the decor's android.R.id.content
+                // content parent and (b) the activity's content root.
+                // ────────────────────────────────────────────────────────
+                uint32_t content_parent = vs->find_by_android_id(r005_decor,
+                                                                 0x01020002);
+                if (content_parent == 0 || content_parent == r005_sub) {
+                    const uint32_t cp = heap_.allocate(
+                        "Landroid/widget/FrameLayout;", pc_,
+                        call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+                    auto* cp_node = vs->get_or_create_node(
+                        cp, "Landroid/widget/FrameLayout;");
+                    cp_node->android_view_id = 0x01020002;
+                    vs->add_child(r005_decor, cp);
+                    content_parent = cp;
+                    std::cerr << "[F165-CONTENT] android.R.id.content node="
+                              << cp << " materialized under decor="
+                              << r005_decor << std::endl;
+                }
+                // mContentParent.addView(view) — idempotent: skip when the
+                // view already sits under the content parent.
+                const auto* sub_node = vs->find_node(r005_sub);
+                const bool already_under_content =
+                    sub_node && sub_node->parent_id == content_parent;
+                if (!already_under_content && content_parent != r005_sub) {
+                    vs->add_child(content_parent, r005_sub);
+                    std::cerr << "[F165-CONTENT] view=" << r005_sub
+                              << " installed under content parent="
+                              << content_parent << std::endl;
+                }
+                if (auto* act2 =
+                        shadow_registry_->find_as<framework::ActivityShadow>()) {
+                    if (act2->current_activity_id() == r005_act_view ||
+                        r005_act_view != 0) {
+                        act2->set_content_view(r005_sub);
+                        // R-NEW-302 law: setContentView must invalidate
+                        // layout (measured: re-render after install).
+                        vs->layout_dirty = true;
+                        std::cerr << "[F165-CONTENT] activity content root="
+                                  << r005_sub << std::endl;
+                    }
                 }
             }
         }

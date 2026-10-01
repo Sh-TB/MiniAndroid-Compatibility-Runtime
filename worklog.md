@@ -4968,3 +4968,18 @@ Work Log:
 
 Stage Summary:
 - The first S135-isolated divergence is now a ROOT-CAUSED-FIXED law with full evidence chain and zero regression: the white screen family "green chain + empty content root" has a semantic fix (content-anchor leg of Window.setContentView). The campaign loop PROVE → FIX → TEST → REGRESS → FAN-OUT is closed for F-NEW-165; F-NEW-166 (WhatsApp pre-setContent NPE) and the droidify Compose-content frontier are the next highest-impact roots.
+---
+Task ID: S134-wave-4
+Agent: Super Z (main)
+Task: S134 continuation — F-NEW-166 (WhatsApp attachBaseContext NPE face) root-cause and fix; regression discipline.
+
+Work Log:
+- SOURCE-FIRST: androguard reinstalled (workspace reset had wiped it); s134_wa_disasm.py persisted. Disassembly ground truth: LX/00i;.A0F = R8 Intrinsics throw helper ("X must not be null"); the string "INVOKE_RETURN" is APP-BAKED (dex string pool) — the app's OWN null-check threw on an invoke result. THROWABLE-STACK chain: 004.attachBaseContext → 00J.<init> → 009.<init> pc=9 → A06 → A0F. The invoke at 009.<init>: ContextWrapper.getBaseContext() returned NULL.
+- BACKWARD WALK (§38): the runtime logged [REC-MISS] for ContextWrapper.<init> AND ContextWrapper.getBaseContext — the S110 base-context law exists but lives inside ActivityShadow::dispatch, and ActivityShadow::handles_class matches only Activity-shaped names. A plain app ContextWrapper descendant (LX/00J;) never routed there → mBase never recorded → getBaseContext stub-answered null.
+- F-NEW-166 FIX (dex/dalvik_engine.cpp try_shadow_dispatch, path-scoped routing law): ContextWrapper/ContextThemeWrapper/Context receivers now reach the S110 law for getBaseContext/attachBaseContext, and ContextWrapper.<init>(base) is AOSP-delegated to attachBaseContext (mBase recorded). 5 dispatches fired on WhatsApp; the null-check PASSED; the app now boots into onCreate and creates views (frame REAL_APP_CONTENT, 23472 non-default px).
+- REGRESSION + the §26/§40 law applied to OUR OWN GATE: simplestopwatch SHA changed (1797c760 vs record e00fe7e0). A/B discipline: (a) F166 disabled rebuild → SAME 1797c760 → law innocent; (b) zero F166 firings in the log → cross-run variance suspected; (c) isolated --data-root → e00fe7e082c385f8 byte-identical ×2 → the delta was the DOCUMENTED shared-data-root prefs persistence (S134 law), not a code regression. The A/B also re-proved the data-root determinism driver.
+- F-NEW-167 registered (next frontier): WhatsApp infra/logging Log.<clinit> hits the java.util.concurrent/nio REC-MISS family (AtomicReference.<init>, CountDownLatch.<init>, ReentrantLock.<init>, Charset.defaultCharset, TimeZone.getDefault) → VirtualMachineError unwind → "AppContext.set has not been invoked" ISE — the classic §17 chain (missing API → clinit failure → static state missing → downstream failure).
+- Gates: laws130 51/51; dooz/ballbreak byte-identical; F-NEW-166 → PARTIAL with the residual recorded.
+
+Stage Summary:
+- WhatsApp moved from "dies in attachBaseContext, zero windows" to "boots through onCreate, real window content" — the base-context law is now served for EVERY ContextWrapper-family receiver per AOSP contract. The next face is the concurrent/nio API family inside Log.<clinit> (F-NEW-167) — a bounded, well-understood API-coverage frontier, not a graphics bug.
