@@ -1438,7 +1438,8 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
         // ===================================================================
         // LIFECYCLE SOURCE VALIDATION (EXP-031.5 Golden Debug Protocol)
         // ===================================================================
-        api::Bundle* null_bundle = nullptr;
+        // (21-P0-4: the host null_bundle was only consumed by the removed
+        // HOST_SHORTCUT lifecycle calls — no synthetic lifecycle remains.)
         
         // Check if lifecycle methods were invoked through DEX execution
         // MASTER CAMPAIGN FIX (lifecycle-provenance law): the engine records
@@ -1456,22 +1457,30 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
         }
 
         if (!lifecycle_from_dex) {
-            // WARNING: Lifecycle not from DEX execution
-            // This is allowed for now but MUST be tracked as HOST_SHORTCUT
+            // FINAL CAMPAIGN item 21-P0-4 (host-lifecycle law): the
+            // REAL_DALVIK contract is that lifecycle events are consequences
+            // of REAL bytecode execution. The old fallback CALLED
+            // onCreate/onStart/onResume from C++ — fake host lifecycle used
+            // as a rendering recovery mechanism, and a double-execution
+            // hazard whenever the framework semantics had partially run.
+            // Honest state now: record the missing provenance, downgrade to
+            // PARTIAL_SUCCESS, and DO NOT synthesize lifecycle. If framework
+            // Activity-superclass behavior is needed, it must dispatch
+            // through the real DEX/framework semantic chain (phase 4).
             trace_engine_.warning("ExecutionEngine", "lifecycle_source",
-                                  "⚠️ Lifecycle (onCreate/onStart/onResume) NOT found in DEX execution traces. "
-                                  "Falling back to HOST_SHORTCUT lifecycle calls. "
-                                  "This means lifecycle events are NOT consequences of bytecode execution.");
-            
-            // Mark execution as PARTIAL_SUCCESS since lifecycle is fake
+                                  "Lifecycle (onCreate/onStart/onResume) NOT executed from DEX bytecode. "
+                                  "No host lifecycle is synthesized (21-P0-4); run is PARTIAL.");
             result.status = ExecutionStatus::PARTIAL_SUCCESS;
-            
-            // Still call lifecycle for visibility, but mark source clearly
-            trace_engine_.info("ExecutionEngine", "lifecycle_fallback",
-                               "[HOST_SHORTCUT] Calling onCreate/onStart/onResume from C++ (NOT from DEX)");
-            result.activity->onCreate(null_bundle);
-            result.activity->onStart();
-            result.activity->onResume();
+            {
+                auto e = trace_engine_.make_event(
+                    diagnostics::ev::LIFECYCLE_STATE,
+                    diagnostics::EventSev::FAILURE,
+                    "lifecycle", "lifecycle provenance missing", "NO_DEX_LIFECYCLE");
+                e.method = "onCreate/onStart/onResume";
+                e.extra = {{"law", "21-P0-4 no-host-lifecycle"},
+                           {"first_missing_stage", "DEX_LIFECYCLE"}};
+                trace_engine_.runtime_event(std::move(e));
+            }
         } else {
             // Lifecycle fully from DEX - this is the goal!
             trace_engine_.info("ExecutionEngine", "lifecycle_verified",
@@ -2675,6 +2684,11 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
 
 bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const ExecutionConfig& config) {
     trace_engine_.info("ExecutionEngine", "stage_render_frame", "Rendering frame");
+    // 21-P0-2/P0-6: the frame-truth census resets at EVERY frame entry so
+    // every downstream path (no shadows, no root, exception, legacy) reports
+    // its own honest state — never a stale ledger from a previous frame.
+    frame_census_.reset();
+    frame_baseline_ = framebuffer_;
     // S135 §3: render-pass frontier — MEASURE/LAYOUT/DRAW are now formally
     // STARTED (PENDING) until the composed frame confirms them.
     {
@@ -2743,83 +2757,33 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
         auto* activity_shadow = shadow_registry_->find_as<framework::ActivityShadow>();
         auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
         if (activity_shadow && view_shadow) {
-                        // R-NEW-440b (S132): ONE render/input root law — the draw
-            // walk, stage_tap and the long-press stage all resolve the
-            // same root (Activity content root, else the S83
-            // android.R.id.content node — AOSP ViewRootImpl law).
+            // R-NEW-440b (S132) + FINAL CAMPAIGN 21-P0-1: ONE render/input
+            // root law — the draw walk, stage_tap, swipe, dialogs and the
+            // final capture all resolve the SAME root via
+            // effective_content_root_() (Activity content root, else the S83
+            // android.R.id.content node — AOSP ViewRootImpl law). The former
+            // EXP-090/EXP-094 heuristics (last-setParams receiver,
+            // newest-suffix SmsView/PhoneView) are REMOVED: a detached/orphan
+            // ViewNode must never become the authoritative render root merely
+            // because setParams happened, its class name resembles some app
+            // type, or its object id is newer. Orphans become visible only
+            // through REAL attachment (fragment-host chain — phase 4).
             uint32_t root_id = effective_content_root_();
             if (root_id != 0 && root_id != activity_shadow->content_view_id()) {
                 std::cerr << "[R440-ROOT] content_view_id unset — "
                           << "rendering from android.R.id.content node="
                           << root_id << std::endl;
             }
-
-            // EXP-090: Search for the "current visible" fragment view by class name.
-            // Fragment views (PhoneView, SmsView) are created by DEX bytecode and
-            // may not be connected to the root in the ViewShadow tree (orphan nodes).
-            // EXP-094 (CM-018): Priority is now:
-            //   1. The view that last received setParams (the app's OWN signal
-            //      for "this is the active page" — the app configures exactly
-            //      the page it is showing).
-            //   2. Newest SmsView (suffix match)  3. Newest PhoneView  4. root.
-            {
-                uint32_t chosen_root = 0;
-                // 1. The app's own navigation signal: last setParams receiver.
-                uint32_t params_view = dalvik_engine_.last_set_params_view();
-                if (params_view != 0) {
-                    const auto* pv = view_shadow->find_node(params_view);
-                    if (pv && !pv->children.empty()) {
-                        std::cerr << "[EXP094-RENDER] Using last-setParams view as render root: view_id="
-                                  << params_view << " class=" << pv->class_desc
-                                  << " children=" << pv->children.size() << std::endl;
-                        chosen_root = params_view;
-                    }
-                }
-                if (chosen_root == 0) {
-                    uint32_t found_sms = 0, found_phone = 0;
-                    // EXP-094: SUFFIX match on the simple class name — the real
-                    // SmsView/PhoneView classes END with "SmsView;"/"PhoneView;"
-                    // (e.g. "Lorg/telegram/ui/LoginActivity$LoginActivitySmsView;")
-                    // while their inner/lambda classes end with "$2;",
-                    // "$$ExternalSyntheticLambda4;", etc. A plain find("SmsView")
-                    // matches lambdas; a find("$")-exclusion matches nothing
-                    // because the OUTER separator is also "$".
-                    auto ends_with = [](const std::string& s, const std::string& suffix) {
-                        return s.size() >= suffix.size() &&
-                               s.compare(s.size() - suffix.size(), suffix.size(), suffix) == 0;
-                    };
-                    for (const auto& [id, node_ptr] : view_shadow->all_nodes()) {
-                        if (!node_ptr) continue;
-                        if (ends_with(node_ptr->class_desc, "SmsView;")) {
-                            if (found_sms == 0 || id > found_sms) {
-                                found_sms = id;
-                            }
-                        }
-                        if (ends_with(node_ptr->class_desc, "PhoneView;")) {
-                            if (found_phone == 0 || id > found_phone) {
-                                found_phone = id;
-                            }
-                        }
-                    }
-                    if (found_sms != 0) {
-                        const auto* sms_node = view_shadow->find_node(found_sms);
-                        std::cerr << "[EXP090-RENDER] Using SmsView as render root: view_id=" << found_sms
-                                  << " class=" << (sms_node ? sms_node->class_desc : "?")
-                                  << " children=" << (sms_node ? sms_node->children.size() : 0)
-                                  << std::endl;
-                        chosen_root = found_sms;
-                    } else if (found_phone != 0) {
-                        const auto* phone_node = view_shadow->find_node(found_phone);
-                        std::cerr << "[EXP090-RENDER] Using PhoneView as render root: view_id=" << found_phone
-                                  << " class=" << (phone_node ? phone_node->class_desc : "?")
-                                  << " children=" << (phone_node ? phone_node->children.size() : 0)
-                                  << std::endl;
-                        chosen_root = found_phone;
-                    }
-                }
-                if (chosen_root != 0) {
-                    root_id = chosen_root;
-                }
+            if (root_id == 0 || !view_shadow->find_node(root_id)) {
+                frame_census_.no_root = true;
+                trace_engine_.set_first_divergence(
+                    "VIEWTREE",
+                    "authoritative window content root (AOSP ViewRootImpl)",
+                    root_id == 0 ? "no window content root resolved"
+                                 : "root node missing from ViewShadow",
+                    "effective_content_root_() == " + std::to_string(root_id));
+            } else {
+                frame_census_.auth_root_valid = true;
             }
 
             if (root_id != 0) {
@@ -2910,7 +2874,24 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                         };
                         std::vector<RenderTask> queue;
                         std::set<uint32_t> visited;
-                        const int MAX_NODES = 500;
+                        // FINAL CAMPAIGN item 21-P0-7 (no silent truncation):
+                        // the fixed MAX_NODES=500 / depth>20 hard caps are
+                        // replaced by GENEROUS, env-configurable safety
+                        // budgets. Hitting a budget is EVIDENCE, not a silent
+                        // skip: the census records budget_exhausted +
+                        // nodes_visited/skipped/depth_max/unreachable_children
+                        // and the frame verdict becomes PARTIAL, never clean
+                        // SUCCESS. Defaults are far above any real app tree;
+                        // tests force small budgets to verify the honest
+                        // exhaustion state.
+                        const int max_nodes = []{
+                            const char* e = std::getenv("MINIANDROID_RENDER_MAX_NODES");
+                            return e ? std::atoi(e) : 200000;
+                        }();
+                        const int max_depth = []{
+                            const char* e = std::getenv("MINIANDROID_RENDER_MAX_DEPTH");
+                            return e ? std::atoi(e) : 128;
+                        }();
                         int node_count = 0;
                         // FIX-2b (AOSP relayout law): RE-MEASURE the tree at
                         // render time. Views created before lifecycle code ran
@@ -2948,6 +2929,11 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                         return dalvik_engine_.is_subclass_of(c, a);
                                     });
                                 rt.inflater().measure_layout(view_shadow, root_id);
+                                // 21-P0-6/P1-2 census: the canonical measure
+                                // + layout pass RAN for this frame.
+                                frame_census_.measure_ran = true;
+                                frame_census_.layout_ran = true;
+                                frame_census_.layout_source = "inflater";
                                 // R-NEW-302: traversal done — consume the
                                 // requestLayout flag (AOSP performTraversals
                                 // clears the dirty chain after measure/layout).
@@ -2989,13 +2975,30 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
 
                         queue.push_back({root_id, 0, 0, config.screen_width, config.screen_height, 0, 0, 0, 0, 0});
 
-                        while (!queue.empty() && node_count < MAX_NODES) {
+                        while (!queue.empty()) {
+                            if (node_count >= max_nodes) {
+                                // 21-P0-7: budget exhaustion is honest evidence.
+                                frame_census_.budget_exhausted = true;
+                                frame_census_.unreachable_children = queue.size();
+                                trace_engine_.set_first_divergence(
+                                    "DRAW",
+                                    "full ViewTree draw (node budget " +
+                                        std::to_string(max_nodes) + ")",
+                                    "node budget exhausted",
+                                    "visited=" + std::to_string(node_count) +
+                                        " stranded=" + std::to_string(queue.size()));
+                                break;
+                            }
                             RenderTask task = queue.back();
                             queue.pop_back();
 
                             if (visited.count(task.view_id)) continue;  // cycle detection
                             visited.insert(task.view_id);
                             node_count++;
+                            frame_census_.nodes_visited = node_count;
+                            frame_census_.draw_walk_ran = true;
+                            if ((int)task.depth > frame_census_.depth_max)
+                                frame_census_.depth_max = (int)task.depth;
                             // S130 (R-NEW-430): AOSP View.draw → computeScroll
                             // law — scrolling views pull their Scroller state
                             // during every draw pass (ViewRootImpl
@@ -3005,7 +3008,19 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                     dalvik_engine_.call_compute_scroll(
                                         task.view_id);
 
-                            if (task.depth > 20) continue;
+                            if ((int)task.depth > max_depth) {
+                                // 21-P0-7: depth exhaustion is honest evidence.
+                                frame_census_.nodes_skipped_depth++;
+                                frame_census_.budget_exhausted = true;
+                                trace_engine_.set_first_divergence(
+                                    "DRAW",
+                                    "full ViewTree draw (depth budget " +
+                                        std::to_string(max_depth) + ")",
+                                    "depth budget exhausted at depth " +
+                                        std::to_string(task.depth),
+                                    "view_id=" + std::to_string(task.view_id));
+                                continue;
+                            }
 
                             const auto* node = view_shadow->find_node(task.view_id);
                             if (!node) continue;
@@ -3020,30 +3035,44 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                       << " size=(" << task.width << "x" << task.height << ")"
                                       << std::endl;
 
-                            // The parent already computed this node's geometry
-                            // (task.left/top/width/height) — use it directly.
-                            int w = task.width;
-                            int h = task.height;
-                            // MG-124/125 (S98): AOSP View translation law —
-                            // translationX/Y shift the rendered subtree (self
-                            // content + children) AFTER layout (View.java
-                            // mTransformationInfo.mTranslationX/Y). The task
-                            // frame ALREADY carries ancestor translation+scroll
-                            // deltas (baked in at push time); THIS node's own
-                            // translation applies here (self draw origin).
-                            int left = task.left
-                                     + (int)std::lround(node->translation_x);
-                            int top = task.top
-                                    + (int)std::lround(node->translation_y);
-                            // UNIFIED_007: when the real inflater measured this
-                            // tree (ARSC→AXML inflation), use its exact geometry.
+                            // FINAL CAMPAIGN item 21-P1-5 (AOSP translation
+                            // law): canonical order is layout bounds FIRST,
+                            // accumulated ancestor content deltas (off_tx/ty
+                            // translations, off_sx/sy scrolls) SECOND, this
+                            // view's own translation THIRD. The old code
+                            // computed task.left+translation then OVERWROTE
+                            // with measured geometry — dropping this view's
+                            // own translation while its children still
+                            // received it via the push delta (self-shifted
+                            // children, un-shifted parent).
                             bool use_measured = node->laid_out;
+                            int left, top;
+                            int w, h;
                             if (use_measured) {
-                                left = node->measured_left;
-                                top = node->measured_top;
+                                // UNIFIED_007: the real inflater's exact
+                                // layout position + the accumulated ancestor
+                                // translation/scroll deltas (applied ONCE —
+                                // the measured push passes PURE layout
+                                // geometry and carries deltas in off_*).
+                                left = node->measured_left + task.off_tx
+                                     - task.off_sx;
+                                top = node->measured_top + task.off_ty
+                                    - task.off_sy;
                                 w = node->measured_width;
                                 h = node->measured_height;
+                            } else {
+                                // Heuristic path: the parent push already
+                                // baked every ancestor delta into the
+                                // absolute task rect (off_* reset at push).
+                                left = task.left;
+                                top = task.top;
+                                w = task.width;
+                                h = task.height;
                             }
+                            // Own translation applies AFTER layout bounds
+                            // (AOSP View.java mTransformationInfo).
+                            left += (int)std::lround(node->translation_x);
+                            top += (int)std::lround(node->translation_y);
                             int right = left + w;
                             int bottom = top + h;
                             visited_rects[task.view_id] = {{left, top}, {w, h}};
@@ -3621,15 +3650,27 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                 // the AndroidViewsHandler attached by real DEX
                                 // addView) must not suppress it. Generic
                                 // override check — no class names hardcoded.
+                                // 21-P0-6: a painted background (bitmap /
+                                // shape / selector / color) is an app-owned
+                                // draw operation (AOSP View.draw:
+                                // drawBackground runs before onDraw).
+                                if (drew_bg) frame_census_.app_draw_ops++;
                                 bool dispatchdraw_override =
                                     dalvik_engine_.chain_overrides_method(
                                         node->class_desc, "dispatchDraw");
                                 // F-108: the owner gate no longer requires the
                                 // androidx name prefix — the override IS the contract.
+                                // FINAL CAMPAIGN item 21-P1-3: the
+                                // arbitrary `w > 40 && h > 40` size gate is
+                                // REMOVED — any visible custom view whose
+                                // semantic contract includes onDraw executes
+                                // it regardless of size (AOSP View law:
+                                // Canvas clipping handles small/zero bounds;
+                                // small icons/controls are not skippable).
                                 bool f099_owner_gate =
                                     dispatchdraw_override && !framework_class &&
                                     !node->children.empty() &&
-                                    !has_own_content && w > 40 && h > 40 &&
+                                    !has_own_content &&
                                     node->visibility == 0;
                                 // S109 ROOT-044: TEXT-CONTENT views join the
                                 // onDraw dispatch — their framework super
@@ -3641,7 +3682,7 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                 bool s109_text_leaf =
                                     !node->text.empty() && node->children.empty();
                                 if (((!framework_class || compose_view_class) && node->children.empty() &&
-                                    (!has_own_content || s109_text_leaf) && w > 40 && h > 40 &&
+                                    (!has_own_content || s109_text_leaf) &&
                                     node->visibility == 0) || f099_owner_gate ||
                                     (f108_dispatchdraw_contract && node->children.empty() &&
                                      (!has_own_content || s109_text_leaf) && node->visibility == 0)) {
@@ -3681,6 +3722,7 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                                         (float)h);
                                                 if (sv_ops > 0) {
                                                     drew_real = true;
+                                                    frame_census_.app_draw_ops += sv_ops;
                                                     std::cerr
                                                         << "[F-NEW-164] surface replayed "
                                                         << sv_ops << " ops for "
@@ -3724,6 +3766,7 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                                     (float)left, (float)top,
                                                     (float)w, (float)h);
                                                 drew_real = true;
+                                                frame_census_.app_draw_ops += ondraw_ops;
                                                 std::cerr << "[C013-CUSTOMVIEW] onDraw replayed "
                                                           << ondraw_ops << " ops (rp=" << s109_rp << ") for "
                                                           << node->class_desc
@@ -3783,13 +3826,21 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                                 // honestly blank (S134 §19:
                                                 // an empty view stays empty
                                                 // unless its semantics draw).
-                                                if (!node->text.empty())
+                                                // FINAL CAMPAIGN item 21-P1-4
+                                                // (honest drew_real): the flag
+                                                // means REAL canvas ops happened.
+                                                // An empty text view is honestly
+                                                // blank — it must not flip the
+                                                // success signal.
+                                                if (!node->text.empty()) {
                                                     canvas.draw_text(
                                                         node->text, left + 8,
                                                         top + (h > 0 ? (int)h / 2 : 0),
                                                         renderer::RGBA{0x20, 0x20, 0x20, 0xFF},
                                                         &font);
-                                                drew_real = true;
+                                                    drew_real = true;
+                                                    frame_census_.app_draw_ops++;
+                                                }
                                                 std::cerr << "[C013-CUSTOMVIEW] "
                                                           << "text-base routing: "
                                                           << (node->text.empty()
@@ -3809,37 +3860,25 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                                           << "pipeline (F-NEW-162)"
                                                           << std::endl;
                                             } else {
-                                        // Nothing drawn anywhere: draw the
-                                        // honest placeholder INLINE (grey
-                                        // surface + class name). The old
-                                        // screen-blankness gate hid this when
-                                        // ANY other view painted pixels — an
-                                        // invisible custom view is less
-                                        // truthful than a labeled one, per the
-                                        // CAMPAIGN 013 evidence standard.
-                                        canvas.draw_rect(left, top, right, bottom,
-                                                       renderer::RGBA{0xF0, 0xF0, 0xF0, 0xFF});
-                                        canvas.draw_rect(left, top, right, top + 1,
-                                                       renderer::RGBA{0xD8, 0xD8, 0xD8, 0xFF});
-                                        canvas.draw_rect(left, top, left + 1, bottom,
-                                                       renderer::RGBA{0xD8, 0xD8, 0xD8, 0xFF});
-                                        // S81 FIX-4 (VF-PLACEHOLDER-GARBLE):
-                                        // the label used to be the raw class
-                                        // descriptor (e.g.
-                                        // "Lorg.billthefarmer.markdown.MarkdownView")
-                                        // at the top-left of a full-screen
-                                        // region — that debug string WAS the
-                                        // user-visible garble in Notes and
-                                        // Simple Stopwatch screenshots. Honest
-                                        // marker kept, but neutral, small, at
-                                        // the region's bottom-left; the class
-                                        // name stays in the stderr trace only.
-                                        canvas.draw_text("custom view (not rendered)",
-                                                       left + 8,
-                                                       bottom - font.get_line_height() - 8,
-                                                       renderer::RGBA{0xB4, 0xB4, 0xB4, 0xFF},
-                                                       &font);
-                                        std::cerr << "[C013-CUSTOMVIEW] inline placeholder: "
+                                        // FINAL CAMPAIGN item 21-P0-5
+                                        // (authoritative-frame purity): the
+                                        // grey box + "custom view (not
+                                        // rendered)" label are DIAGNOSTIC
+                                        // pixels and are NO LONGER painted
+                                        // into the authoritative frame. The
+                                        // authoritative frame keeps exactly
+                                        // what Android semantics produced
+                                        // (here: nothing). The region is
+                                        // recorded in the frame-truth census
+                                        // (verdict marks it UNRENDERED) and the
+                                        // trace overlay may visualize it on the
+                                        // diagnostic COPY — never in
+                                        // screenshot.png.
+                                        frame_census_.diag_regions.push_back(
+                                            {left, top, right, bottom,
+                                             "custom-view-unrendered",
+                                             node->class_desc});
+                                        std::cerr << "[C013-CUSTOMVIEW] unrendered custom view RECORDED (not painted): "
                                                   << node->class_desc
                                                   << " at (" << left << "," << top
                                                   << " " << w << "x" << h << ")" << std::endl;
@@ -3992,6 +4031,7 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                         canvas.draw_image(decoded.rgba.data(),
                                                           decoded.width, decoded.height,
                                                           fr.x, fr.y, fr.w, fr.h);
+                                        frame_census_.app_draw_ops++;
                                         if (diagnostics::GfxProvenance::instance().enabled())
                                             diagnostics::GfxProvenance::instance().record_image(
                                                 "imageview-direct", node->image_resource_id,
@@ -4015,13 +4055,15 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                             "stage_render_frame",
                                             std::string("PNG decode failed for '") +
                                             node->image_drawable_path + "': " + decoded.error);
-                                        // Fall back to a labelled placeholder so the user can
-                                        // see that an image *should* be there.
-                                        canvas.draw_rect(left + 5, top + 5, right - 5, bottom - 5,
-                                                       renderer::RGBA{0xCC, 0xCC, 0xCC, 0xFF});
-                                        canvas.draw_text("IMG?", left + 10,
-                                                       top + font.get_line_height(),
-                                                       renderer::Colors::GREY_800, &font);
+                                        // FINAL CAMPAIGN item 21-P0-5: decode
+                                        // failure NEVER paints "IMG?" into the
+                                        // authoritative frame — the region is
+                                        // recorded UNRENDERED in the census and
+                                        // the failure travels via GfxProvenance.
+                                        frame_census_.diag_regions.push_back(
+                                            {left, top, right, bottom,
+                                             "image-decode-failed",
+                                             node->image_drawable_path});
                                     }
                             }
                             if (is_image_view && node->image_drawable_path.empty() && !node_invisible &&
@@ -4101,6 +4143,7 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                         canvas.draw_image(decoded.rgba.data(),
                                                           decoded.width, decoded.height,
                                                           fr.x, fr.y, fr.w, fr.h);
+                                        frame_census_.app_draw_ops++;
                                         if (diagnostics::GfxProvenance::instance().enabled())
                                             diagnostics::GfxProvenance::instance().record_image(
                                                 "imageview-resid", node->image_resource_id,
@@ -4122,25 +4165,30 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                             std::to_string(fr.w) + "x" + std::to_string(fr.h) + ")");
                                     } else {
                                         // Resolution succeeded but decode failed (or
-                                        // unsupported format, e.g. XML drawable) — keep
-                                        // the visible placeholder with the path evidence.
-                                        canvas.draw_rect(left + 5, top + 5, right - 5, bottom - 5,
-                                                       renderer::RGBA{0xCC, 0xCC, 0xCC, 0xFF});
-                                        canvas.draw_text("IMG?", left + 10,
-                                                       top + font.get_line_height(),
-                                                       renderer::Colors::GREY_800, &font);
+                                        // unsupported format, e.g. XML drawable).
+                                        // FINAL CAMPAIGN item 21-P0-5: no "IMG?"
+                                        // diagnostic enters the authoritative
+                                        // frame — the region is recorded
+                                        // UNRENDERED in the frame-truth census.
+                                        frame_census_.diag_regions.push_back(
+                                            {left, top, right, bottom,
+                                             "image-decode-failed",
+                                             resolved_img_path});
                                         trace_engine_.warning("ExecutionEngine",
                                             "stage_render_frame",
                                             std::string("IMG-RES-RENDER decode failed for '") +
                                             resolved_img_path + "'");
                                     }
                                 } else {
-                                    // No APK entry matched the R-field name — placeholder
-                                    // with the resid as evidence (legacy behavior).
-                                    canvas.draw_rect(left + 5, top + 5, right - 5, bottom - 5,
-                                                   renderer::RGBA{0xCC, 0xCC, 0xCC, 0xFF});
-                                    canvas.draw_text("IMG", left + 10, top + font.get_line_height(),
-                                                   renderer::Colors::GREY_800, &font);
+                                    // No APK entry matched the R-field name.
+                                    // FINAL CAMPAIGN item 21-P0-5: no "IMG"
+                                    // diagnostic enters the authoritative
+                                    // frame — the region is recorded
+                                    // UNRENDERED in the frame-truth census.
+                                    frame_census_.diag_regions.push_back(
+                                        {left, top, right, bottom,
+                                         "image-resource-unresolved",
+                                         "resid=" + std::to_string(node->image_resource_id)});
                                 }
                             }
 
@@ -4173,6 +4221,7 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                         const int fy = top + (h - dh) / 2;
                                         canvas.draw_image(fgd.rgba.data(), fgd.width,
                                                           fgd.height, fx, fy, dw, dh);
+                                        frame_census_.app_draw_ops++;
                                     }
                                 }
                             }
@@ -4254,6 +4303,7 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                     canvas.draw_image(const_cast<uint8_t*>(node->anim_frame_rgba.data()),
                                                       node->anim_w, node->anim_h,
                                                       draw_x, draw_y);
+                                    frame_census_.app_draw_ops++;
                                 }
                             }
 
@@ -4289,37 +4339,48 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                     if (!cn || cn->visibility == 8 ||
                                         cn->visibility == 4)
                                         continue;
-                                    // MG-123/124/125 (S98): child content
-                                    // delta = Σ ancestor translations
-                                    // (off_tx + self translation) − Σ ancestor
-                                    // scrolls (off_sx + self scroll) — AOSP
-                                    // View.java: translation shifts self+subtree,
-                                    // scroll shifts CONTENT by −scroll.
-                                    int cdx = task.off_tx - task.off_sx
-                                            + (int)std::lround(node->translation_x)
-                                            - node->scroll_x;
-                                    int cdy = task.off_ty - task.off_sy
-                                            + (int)std::lround(node->translation_y)
-                                            - node->scroll_y;
+                                    // FINAL CAMPAIGN 21-P1-5/21-P1-6: the
+                                    // push passes PURE layout geometry — the
+                                    // accumulated translation/scroll deltas
+                                    // travel in off_* and are applied ONCE
+                                    // at the child's own draw origin (AOSP
+                                    // View draw: layout position + ancestor
+                                    // content transforms + own translation).
+                                    // The nearest scrolling ancestor clip is
+                                    // INHERITED by every descendant until a
+                                    // nearer scroll replaces it — clip_l
+                                    // defaults no longer silently drop an
+                                    // outer scroll window mid-subtree.
                                     RenderTask ct{cid,
-                                                       cn->measured_left + cdx,
-                                                       cn->measured_top + cdy,
+                                                       cn->measured_left,
+                                                       cn->measured_top,
                                                        cn->measured_width, cn->measured_height,
                                                        task.depth + 1,
                                                        task.off_tx + (int)std::lround(node->translation_x),
                                                        task.off_ty + (int)std::lround(node->translation_y),
                                                        task.off_sx + node->scroll_x,
-                                                       task.off_sy + node->scroll_y};
-                                    // S130 (R-NEW-436): scrolling ancestor clip
-                                    // propagation + fully-outside skip law.
+                                                       task.off_sy + node->scroll_y,
+                                                       task.clip_l, task.clip_t,
+                                                       task.clip_r, task.clip_b};
+                                    // S130 (R-NEW-436): a scrolling node IS a
+                                    // (nearer) scrolling ancestor — its own
+                                    // visible rect replaces the inherited
+                                    // clip (AOSP ScrollView clipping law).
                                     if (node->scroll_x != 0 || node->scroll_y != 0) {
-                                        ct.clip_l = task.left;
-                                        ct.clip_t = task.top;
-                                        ct.clip_r = task.left + std::max(1, task.width);
-                                        ct.clip_b = task.top + std::max(1, task.height);
+                                        ct.clip_l = left;
+                                        ct.clip_t = top;
+                                        ct.clip_r = left + std::max(1, w);
+                                        ct.clip_b = top + std::max(1, h);
                                     }
                                     if (ct.clip_l != INT_MIN) {
-                                        const int cl = ct.left, ctp = ct.top;
+                                        // 21-P1-6: the outside-check runs in
+                                        // DRAW space — the child's pure layout
+                                        // rect plus the SAME accumulated
+                                        // deltas its draw origin will apply
+                                        // (off translations − off scrolls),
+                                        // so clip and draw agree.
+                                        const int cl = ct.left + ct.off_tx - ct.off_sx;
+                                        const int ctp = ct.top + ct.off_ty - ct.off_sy;
                                         const int cr = cl + std::max(0, cn->measured_width);
                                         const int cb = ctp + std::max(0, cn->measured_height);
                                         if (cl >= ct.clip_r || ctp >= ct.clip_b ||
@@ -4417,7 +4478,13 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                             child_tasks.reserve(boxes.size());
                             int cursor_x = left;
                             int cursor_y = top;
-                            if (task.depth == 0) cursor_y += 30;  // status-bar area
+                            // FINAL CAMPAIGN item 21-P1-1 (insets law): the
+                            // hard-coded `if (task.depth == 0) cursor_y += 30`
+                            // status-bar offset is REMOVED. Content geometry
+                            // comes from the authoritative window/content
+                            // chain; system chrome owns its own coordinate
+                            // space and never leaks a magic constant into
+                            // child layout (AOSP PhoneWindow insets law).
                             if (horizontal) {
                                 // Horizontal row: children advance left→right.
                                 // The row is centered in the parent when the
@@ -4448,7 +4515,19 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                     } else if (cyg == 0x50) {
                                         cy = top + h - b.ch - b.n->lp_margin_bottom;
                                     }
-                                    child_tasks.push_back({b.id, cx, cy, b.cw, b.ch, task.depth + 1});
+                                    // 21-P1-6: the heuristic path inherits the nearest scrolling-ancestor
+                                    // clip too (descendants keep the outer
+                                    // scroll window until a nearer scroll
+                                    // replaces it); off_* stay zero because
+                                    // this path bakes deltas into absolute
+                                    // child rects.
+                                    {
+                                        RenderTask ct_task{b.id, cx, cy, b.cw, b.ch, task.depth + 1,
+                                                           0, 0, 0, 0,
+                                                           task.clip_l, task.clip_t,
+                                                           task.clip_r, task.clip_b};
+                                        child_tasks.push_back(ct_task);
+                                    }
                                     row_x = cx + b.cw + b.n->lp_margin_right;
                                 }
                                 (void)cursor_x; (void)cursor_y;
@@ -4490,7 +4569,19 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                             cy = top + cnode->lp_margin_top;
                                         }
                                     }
-                                    child_tasks.push_back({b.id, cx, cy, b.cw, b.ch, task.depth + 1});
+                                    // 21-P1-6: the heuristic path inherits the nearest scrolling-ancestor
+                                    // clip too (descendants keep the outer
+                                    // scroll window until a nearer scroll
+                                    // replaces it); off_* stay zero because
+                                    // this path bakes deltas into absolute
+                                    // child rects.
+                                    {
+                                        RenderTask ct_task{b.id, cx, cy, b.cw, b.ch, task.depth + 1,
+                                                           0, 0, 0, 0,
+                                                           task.clip_l, task.clip_t,
+                                                           task.clip_r, task.clip_b};
+                                        child_tasks.push_back(ct_task);
+                                    }
                                 }
                             }
                             // LIFO stack: push in reverse so children pop in order.
@@ -4507,12 +4598,18 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                         // content (e.g. simplestopwatch's BigTextView screen)
                         // keep their exact pixels — the golden is untouched.
                         {
-                            const auto& px_c = fb.get_pixels();
-                            size_t nw = 0;
-                            for (const auto& c : px_c) {
-                                if (c.r < 250 || c.g < 250 || c.b < 250) nw++;
-                            }
-                            if (nw < 5000 && !custom_view_placeholders.empty()) {
+                            // FINAL CAMPAIGN items 21-P1-9 + 21-P0-5: the
+                            // screen-blankness gate (`nw < 5000`) is REMOVED
+                            // from authoritative rendering — a mostly-white
+                            // app is LEGAL and no global pixel-count threshold
+                            // may decide when synthetic content may appear.
+                            // What remains here is REAL content only: the
+                            // second-chance onDraw / surface replay for views
+                            // whose inline attempt produced zero ops. Views
+                            // that still cannot render are recorded as
+                            // UNRENDERED regions in the frame-truth census —
+                            // never painted as grey placeholders.
+                            if (!custom_view_placeholders.empty()) {
                                 for (const auto& cv : custom_view_placeholders) {
                                     // CAMPAIGN 013 (§15 LIBGDX-canvas / §19): run the
                                     // app's REAL onDraw(Canvas) bytecode first. When
@@ -4540,11 +4637,14 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                                 dalvik_engine_.dispatch_surface_view_lifecycle(
                                                     cv.view_id, (int)cv.w,
                                                     (int)cv.h, &sv_created);
-                                                if (canvas_shadow->replay_surface(
+                                                const size_t sv_ops_d =
+                                                    canvas_shadow->replay_surface(
                                                         cv.view_id, canvas, font,
                                                         (float)cv.l, (float)cv.t,
                                                         (float)cv.w,
-                                                        (float)cv.h) > 0) {
+                                                        (float)cv.h);
+                                                if (sv_ops_d > 0) {
+                                                    frame_census_.app_draw_ops += sv_ops_d;
                                                     std::cerr
                                                         << "[F-NEW-164] deferred surface replayed for "
                                                         << cv.cls << std::endl;
@@ -4566,6 +4666,7 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                                 canvas_shadow->replay(canvas, font,
                                                                       (float)cv.l, (float)cv.t,
                                                                       (float)cv.w, (float)cv.h);
+                                                frame_census_.app_draw_ops += ondraw_ops;
                                             }
                                         }
                                     }
@@ -4576,22 +4677,14 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                                   << cv.w << "x" << cv.h << ")" << std::endl;
                                         continue;
                                     }
-                                    canvas.draw_rect(cv.l, cv.t, cv.l + cv.w, cv.t + cv.h,
-                                                   renderer::RGBA{0xF0, 0xF0, 0xF0, 0xFF});
-                                    canvas.draw_rect(cv.l, cv.t, cv.l + cv.w, cv.t + 1,
-                                                   renderer::RGBA{0xD8, 0xD8, 0xD8, 0xFF});
-                                    canvas.draw_rect(cv.l, cv.t, cv.l + 1, cv.t + cv.h,
-                                                   renderer::RGBA{0xD8, 0xD8, 0xD8, 0xFF});
-                                    // S81 FIX-4 (VF-PLACEHOLDER-GARBLE):
-                                    // neutral bottom-left marker instead of the
-                                    // raw class descriptor (same law as the
-                                    // inline placeholder site above).
-                                    canvas.draw_text("custom view (not rendered)",
-                                                   cv.l + 8,
-                                                   cv.t + cv.h - font.get_line_height() - 8,
-                                                   renderer::RGBA{0xB4, 0xB4, 0xB4, 0xFF},
-                                                   &font);
-                                    std::cerr << "[C013-CUSTOMVIEW] placeholder drawn: "
+                                    // FINAL CAMPAIGN item 21-P0-5: the grey
+                                    // placeholder + label are diagnostic pixels
+                                    // — recorded, NOT painted. The authoritative
+                                    // frame keeps what Android semantics made.
+                                    frame_census_.diag_regions.push_back(
+                                        {cv.l, cv.t, cv.l + cv.w, cv.t + cv.h,
+                                         "custom-view-unrendered", cv.cls});
+                                    std::cerr << "[C013-CUSTOMVIEW] unrendered custom view RECORDED (not painted): "
                                               << cv.cls << " at (" << cv.l << "," << cv.t
                                               << " " << cv.w << "x" << cv.h << ")" << std::endl;
                                 }
@@ -4605,6 +4698,9 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                         // its decor ViewNodes carry the clickable rows.
                         if (auto* dialog_shadow =
                                 shadow_registry_->find_as<framework::DialogShadow>()) {
+                            for (const auto& dw : dialog_shadow->windows())
+                                if (dw.showing)
+                                    frame_census_.dialog_content_rendered = true;
                             dialog_shadow->render_dialogs(
                                 canvas, fb, config.screen_width, config.screen_height,
                                 [this](int32_t resid) -> std::string {
@@ -4646,11 +4742,25 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                         // composed frame IS the evidence the pipeline
                         // reached the end of the draw walk.
                         {
+                            // FINAL CAMPAIGN item 21-P0-6 (RENDER_OK law):
+                            // CONFIRMED DRAW evidence requires app-owned draw
+                            // ops (or dialog content). A walk that composed
+                            // only background/chrome stays PENDING — the stage
+                            // machine must not confirm DRAW for a frame whose
+                            // app content never rendered.
+                            const bool app_content_drew =
+                                frame_census_.app_draw_ops > 0 ||
+                                frame_census_.dialog_content_rendered;
                             trace_engine_.runtime_event(trace_engine_.make_event(
                                 diagnostics::ev::RENDER_OK,
-                                diagnostics::EventSev::CONFIRMED, "render",
+                                app_content_drew ? diagnostics::EventSev::CONFIRMED
+                                                 : diagnostics::EventSev::PENDING,
+                                "render",
                                 "nonwhite=" + std::to_string(fb_non_white) +
-                                " total=" + std::to_string(pixels.size()), "OK"));
+                                " total=" + std::to_string(pixels.size()) +
+                                " app_ops=" + std::to_string(frame_census_.app_draw_ops) +
+                                " diag_regions=" + std::to_string(frame_census_.diag_regions.size()),
+                                app_content_drew ? "OK" : "NO_APP_OPS"));
                         }
                         // S82-GFX §6: SURFACE evidence — composed-frame census.
                         if (diagnostics::GfxProvenance::instance().enabled()) {
@@ -4683,14 +4793,63 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                     } catch (const std::exception& e) {
                         trace_engine_.record_error("RENDER_ERROR", e.what(),
                                                    "ExecutionEngine", "stage_render_frame");
-                        // Fall through to synthetic path
+                        // FINAL CAMPAIGN item 21-P0-3 (no synthetic fallback
+                        // from the authoritative render): a real-render
+                        // exception is an HONEST render failure. Any partially
+                        // mutated framebuffer is DISCARDED (background fill),
+                        // the divergence is recorded, and in REAL_DALVIK mode
+                        // the synthetic api::View renderer never runs — the
+                        // captured frame is the background + verdict
+                        // RENDER_EXCEPTION, never fake UI.
+                        frame_census_.render_exception = true;
+                        {
+                            const uint8_t br = (uint8_t)((config.background_color >> 16) & 0xFF);
+                            const uint8_t bg = (uint8_t)((config.background_color >> 8) & 0xFF);
+                            const uint8_t bb = (uint8_t)(config.background_color & 0xFF);
+                            const uint8_t ba = (uint8_t)((config.background_color >> 24) & 0xFF);
+                            for (size_t i = 0; i + 3 < framebuffer_.size(); i += 4) {
+                                framebuffer_[i] = br;
+                                framebuffer_[i + 1] = bg;
+                                framebuffer_[i + 2] = bb;
+                                framebuffer_[i + 3] = ba;
+                            }
+                        }
+                        trace_engine_.set_first_divergence(
+                            "DRAW",
+                            "real ViewShadow draw walk completes",
+                            "exception during the real draw walk",
+                            e.what());
+                        trace_engine_.runtime_event(trace_engine_.make_event(
+                            diagnostics::ev::RENDER_FAIL,
+                            diagnostics::EventSev::FAILURE, "render",
+                            "real draw walk exception", e.what()));
+                        if (config.execution_mode == ExecutionMode::REAL_DALVIK) {
+                            trace_engine_.increment_frame_count();
+                            return true;  // evidence pipeline continues; verdict = RENDER_EXCEPTION
+                        }
+                        // LEGACY mode: fall through to the synthetic demo
+                        // renderer (documented non-authoritative mode).
                     }
                 }
             }
         }
     }
 
-    // Fall back to the synthetic api::View rendering path
+    // FINAL CAMPAIGN item 21-P0-3: the synthetic api::View rendering path is
+    // a NON-AUTHORITATIVE demo/legacy mode only. In REAL_DALVIK mode it must
+    // never paint the authoritative frame: whatever it draws ("Real Dalvik
+    // Execution [REAL]" heuristics) is fake UI that previously produced
+    // EXECUTION SUCCESS + WHITE-ISH FRAME with synthetic pixels.
+    if (config.execution_mode == ExecutionMode::REAL_DALVIK) {
+        frame_census_.synthetic_suppressed = true;
+        trace_engine_.warning("ExecutionEngine", "stage_render_frame",
+                              "Synthetic api::View renderer suppressed in REAL_DALVIK "
+                              "(21-P0-3 authoritative law) — frame carries only real content");
+        trace_engine_.increment_frame_count();
+        return true;  // evidence pipeline continues; capture records the honest verdict
+    }
+
+    // Fall back to the synthetic api::View rendering path (LEGACY demo mode)
     if (!result.content_view) {
         trace_engine_.warning("ExecutionEngine", "stage_render_frame", "No content view to render");
         return true;  // Not fatal
@@ -4857,7 +5016,9 @@ bool ExecutionEngine::stage_capture_output( ExecutionResult& result, const Execu
     
     // Generate screenshot filename
     std::string screenshot_path = config.output_directory + "/screenshot.png";
-    result.screenshot_path = screenshot_path;
+    // FINAL CAMPAIGN item 21-P1-8: result.screenshot_path is assigned ONLY
+    // after the PNG actually wrote (below) — it must never point at a
+    // nonexistent "successful" artifact.
 
     // S135 §3: FRAME_SUBMIT — the composed frame leaves the render pipeline
     // toward capture. (Frame_CAPTURE follows from log_screenshot.)
@@ -4894,12 +5055,19 @@ bool ExecutionEngine::stage_capture_output( ExecutionResult& result, const Execu
         }
 
         // ────────────────────────────────────────────────────────────────
-        // S135 §5/§7: FRAME ANALYSIS — default background vs real content.
-        // Law: the DOMINANT color is the default-background candidate
-        // (never assume white — the runtime background is configurable);
-        // non-default pixels = pixels differing from the dominant color.
-        // Verdict: DEFAULT_BACKGROUND_ONLY when nothing differs, else
-        // REAL_APP_CONTENT. Numbers always travel with the verdict.
+        // S135 §5/§7 + FINAL CAMPAIGN item 21-P0-6: PIXEL-OWNERSHIP VERDICT.
+        // Law: the dominant color is the background candidate (S135, kept);
+        // "nonwhite" alone is NEVER the truth signal. Verdicts require
+        // CORRELATED proof from the frame-truth census:
+        //   valid authoritative root → MEASURE → LAYOUT → DRAW →
+        //   app-owned draw ops → pixels this frame actually produced
+        //   (changed vs the pre-frame baseline) outside diagnostic regions.
+        // Ownership classes: NO_ROOT / RENDER_EXCEPTION /
+        // DEFAULT_BACKGROUND_ONLY / SYSTEM_CHROME_ONLY (non-dominant pixels
+        // predate this draw pass — chrome or earlier pipeline fills) /
+        // DIAGNOSTIC_ONLY / VIEWTREE_NO_APP_PIXELS / PARTIAL_RENDER_BUDGET /
+        // REAL_APP_CONTENT. first_missing_stage names the earliest stage of
+        // the proof chain that never happened.
         // ────────────────────────────────────────────────────────────────
         if (trace_engine_.boot_trace_enabled()) {
             std::map<uint32_t, size_t> fa_hist;
@@ -4915,8 +5083,49 @@ bool ExecutionEngine::stage_capture_output( ExecutionResult& result, const Execu
             const size_t total_px = fb.get_pixels().size();
             const size_t non_default = total_px - dominant_n;
             const double pct = total_px ? 100.0 * double(dominant_n) / double(total_px) : 0.0;
-            const char* verdict = non_default == 0 ? "DEFAULT_BACKGROUND_ONLY"
-                                                   : "REAL_APP_CONTENT";
+            // Pixel-ownership law: the authoritative frame is composed FROM
+            // SCRATCH every pass (FrameBuffer cleared to the window
+            // background, then the walk paints) — so every pixel differing
+            // from the dominant color was produced by THIS draw pass.
+            // Diagnostic regions own ZERO pixels by construction (21-P0-5:
+            // placeholders are recorded, never painted). Framework-chrome
+            // pixel regions (status bar drawn by decor views) get exact
+            // ownership with the canonical window stack (campaign phase 5);
+            // until then the correlated-proof chain below is the truth gate.
+            const size_t app_owned_px = non_default;
+            const size_t diag_owned_px = 0;
+            // Correlated proof chain — earliest missing stage first.
+            const char* first_missing = nullptr;
+            if (frame_census_.no_root || !frame_census_.auth_root_valid)
+                first_missing = "WINDOW_ROOT";
+            else if (frame_census_.render_exception)
+                first_missing = "DRAW (exception)";
+            else if (!frame_census_.measure_ran)
+                first_missing = "MEASURE";
+            else if (!frame_census_.layout_ran)
+                first_missing = "LAYOUT";
+            else if (!frame_census_.draw_walk_ran)
+                first_missing = "DRAW";
+            else if (frame_census_.app_draw_ops == 0 &&
+                     !frame_census_.dialog_content_rendered)
+                first_missing = "APP_DRAW_OPS";
+            else if (app_owned_px == 0)
+                first_missing = "APP_PIXELS";
+            std::string verdict;
+            if (frame_census_.render_exception)
+                verdict = "RENDER_EXCEPTION";
+            else if (frame_census_.no_root && non_default == 0)
+                verdict = "NO_ROOT";             // no app window, zero content
+            else if (frame_census_.no_root)
+                verdict = "SYSTEM_CHROME_ONLY";  // pixels but NO app window
+            else if (non_default == 0)
+                verdict = "DEFAULT_BACKGROUND_ONLY";
+            else if (frame_census_.budget_exhausted)
+                verdict = "PARTIAL_RENDER_BUDGET";  // 21-P0-7: never clean SUCCESS
+            else if (first_missing != nullptr)
+                verdict = "VIEWTREE_NO_APP_PIXELS";
+            else
+                verdict = "REAL_APP_CONTENT";
             auto file_sha = [](const std::string& p) -> std::string {
                 std::ifstream f(p, std::ios::binary);
                 if (!f) return "";
@@ -4928,6 +5137,55 @@ bool ExecutionEngine::stage_capture_output( ExecutionResult& result, const Execu
             trace_engine_.record_frame_analysis(
                 config.screen_width, config.screen_height, dominant, pct,
                 fa_hist.size(), non_default, verdict, auth_sha);
+            // 21-P0-6: the census travels WITH the verdict (trace_summary +
+            // FRAME_ANALYSIS event) — no consumer sees a verdict without the
+            // correlated proof behind it.
+            {
+                nlohmann::json census = {
+                    {"verdict_law", "21-P0-6 pixel ownership + correlated proof"},
+                    {"auth_root_valid", frame_census_.auth_root_valid},
+                    {"no_root", frame_census_.no_root},
+                    {"measure_ran", frame_census_.measure_ran},
+                    {"layout_ran", frame_census_.layout_ran},
+                    {"draw_walk_ran", frame_census_.draw_walk_ran},
+                    {"app_draw_ops", frame_census_.app_draw_ops},
+                    {"dialog_content_rendered", frame_census_.dialog_content_rendered},
+                    {"app_owned_pixels", app_owned_px},
+                    {"diag_owned_pixels", diag_owned_px},
+                    {"diag_regions", frame_census_.diag_regions.size()},
+                    {"synthetic_suppressed", frame_census_.synthetic_suppressed},
+                    {"render_exception", frame_census_.render_exception},
+                    {"budget_exhausted", frame_census_.budget_exhausted},
+                    {"nodes_visited", frame_census_.nodes_visited},
+                    {"nodes_skipped_depth", frame_census_.nodes_skipped_depth},
+                    {"depth_max", frame_census_.depth_max},
+                    {"unreachable_children", frame_census_.unreachable_children},
+                    {"layout_source", frame_census_.layout_source.empty() ?
+                        nlohmann::json(nullptr) : nlohmann::json(frame_census_.layout_source)},
+                };
+                if (first_missing != nullptr)
+                    census["first_missing_stage"] = first_missing;
+                trace_engine_.record_frame_census(census);
+            }
+            // 21-P0-2/P0-3/P0-6: an honest verdict downgrades the run status —
+            // EXECUTION SUCCESS + a frame without authoritative app content
+            // is the exact false-success this law forbids. (Applied in
+            // REAL_DALVIK mode — the authoritative contract. The legacy demo
+            // mode stays non-authoritative and keeps its historical status
+            // behavior; its frame_analysis still records the honest verdict.)
+            const bool frame_has_app_content =
+                (verdict == "REAL_APP_CONTENT");
+            if (config.execution_mode == ExecutionMode::REAL_DALVIK &&
+                !frame_has_app_content && result.status == ExecutionStatus::SUCCESS) {
+                result.status = ExecutionStatus::PARTIAL_SUCCESS;
+                result.status_message +=
+                    " [21-P0 frame truth: verdict=" + verdict +
+                    (first_missing ? (", first_missing_stage=" + std::string(first_missing)) : "") +
+                    " — SUCCESS requires authoritative app content]";
+                trace_engine_.warning("ExecutionEngine", "stage_capture_output",
+                                      "Status downgraded SUCCESS->PARTIAL_SUCCESS: verdict=" +
+                                      verdict);
+            }
 
             // S135 §10: TWO screenshots — the authoritative PNG above stays
             // untouched; the diagnostic overlay composes a COPY.
@@ -5026,19 +5284,34 @@ bool ExecutionEngine::stage_capture_output( ExecutionResult& result, const Execu
         ppm_file.close();
 
         if (!png_ok) {
-            // Only log screenshot if PNG failed
-            trace_engine_.log_screenshot(ppm_path, config.screen_width, config.screen_height,
-                                         framebuffer_.size());
+            // FINAL CAMPAIGN item 21-P1-8 (authoritative capture law): when a
+            // PNG screenshot was requested, PNG failure IS a capture failure.
+            // The PPM remains an AUXILIARY diagnostic artifact only — it is
+            // never the authoritative screenshot, the run is downgraded, and
+            // result.screenshot_path stays empty (never points at a
+            // nonexistent successful PNG).
+            trace_engine_.record_error("CAPTURE_FAILED",
+                                       "authoritative PNG write failed; PPM is auxiliary only",
+                                       "ExecutionEngine", "stage_capture_output");
+            trace_engine_.set_first_divergence(
+                "FRAME",
+                "authoritative screenshot.png written",
+                "PNG write failed",
+                "auxiliary PPM at " + ppm_path);
+            if (result.status == ExecutionStatus::SUCCESS)
+                result.status = ExecutionStatus::PARTIAL_SUCCESS;
+            result.status_message +=
+                " [21-P1-8 capture law: authoritative PNG write FAILED — "
+                "capture failure; PPM diagnostic only]";
 
             std::string note_path = config.output_directory + "/screenshot_note.txt";
             std::ofstream note(note_path);
-            note << "PNG write failed — saved as PPM only.\n";
+            note << "PNG write failed — CAPTURE FAILURE (21-P1-8). PPM is auxiliary only.\n";
             note << "PPM: " << ppm_path << "\n";
             note << "Resolution: " << config.screen_width << "x" << config.screen_height << "\n";
             note.close();
-
-            trace_engine_.info("ExecutionEngine", "stage_capture_output",
-                              "PPM fallback saved to: " + ppm_path);
+        } else {
+            result.screenshot_path = screenshot_path;  // 21-P1-8: only on real success
         }
     } else {
         set_error("Failed to write screenshot file");
@@ -5695,6 +5968,12 @@ bool ExecutionEngine::stage_frame_sequence( ExecutionResult& result, const Execu
     pump_compose_frames(/*max_frames=*/1);
     for (int k = 1; k < config.frame_count; ++k) {
         hs->advance_virtual(config.frame_delay_ms);
+        // FINAL CAMPAIGN item 21-P0-8 (per-frame pump law): the frame pump
+        // runs at EVERY frame boundary, not only before the loop. One
+        // canonical pump drives Choreographer callbacks, the Handler queue,
+        // resumed Compose work and WebView JS/rAF ticks per frame — a
+        // Compose recomposition or rAF loop must never starve after frame 0.
+        pump_compose_frames(/*max_frames=*/1);
         std::vector<uint32_t> drained;
         size_t n = hs->drain_ready(&drained);
         fired_total += static_cast<int>(n);
@@ -5878,7 +6157,12 @@ bool ExecutionEngine::stage_frame_sequence( ExecutionResult& result, const Execu
                 std::cerr << "[S129-SWIPE] no ActivityShadow — swipe skipped"
                           << std::endl;
             } else {
-                uint32_t swipe_root = activity_shadow->content_view_id();
+                // FINAL CAMPAIGN item 21-P1-7 (one root law): swipe
+                // resolves the SAME root as render + tap
+                // (effective_content_root_) — content_view_id is unset on
+                // the AppCompat delegate path and raw use skipped the
+                // android.R.id.content fallback.
+                uint32_t swipe_root = effective_content_root_();
                 // R-NEW-394 dialog-window routing (same law as taps).
                 if (auto* dialog_shadow =
                         shadow_registry_->find_as<framework::DialogShadow>()) {

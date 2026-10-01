@@ -297,6 +297,12 @@ public:
                                const std::string& verdict,
                                const std::string& sha_hex);
 
+    // FINAL CAMPAIGN item 21 (P0-6): merge the frame-truth census (render
+    // correlation ledger + pixel ownership) into frame_analysis_. Carried
+    // into trace_summary.json + the FRAME_ANALYSIS event so no consumer can
+    // see a verdict without the correlated proof behind it.
+    void record_frame_census(const nlohmann::json& census);
+
     // Renderer family observation (PURPLE provenance lane).
     void set_renderer_family(const std::string& family,
                              const std::string& evidence);

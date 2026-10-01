@@ -343,6 +343,45 @@ private:
     // State
     std::vector<uint8_t> framebuffer_;
     std::string last_error_;
+
+public:
+    // ═══════════════════════════════════════════════════════════════════
+    // FINAL CAMPAIGN item 21 (P0-2/3/5/6/7): FRAME-TRUTH CENSUS.
+    // One per-frame ledger of WHAT the authoritative render actually did.
+    // Filled by stage_render_frame, consumed by stage_capture_output's
+    // pixel-ownership verdict + trace_summary. No verdict may claim
+    // REAL_APP_CONTENT without the correlated proof this ledger carries.
+    // ═══════════════════════════════════════════════════════════════════
+    struct FrameRenderCensus {
+        bool auth_root_valid = false;        // P0-6: authoritative root resolved + node found
+        bool measure_ran = false;            // P0-6: a measure pass ran
+        bool layout_ran = false;             // P0-6: a layout pass ran
+        bool draw_walk_ran = false;          // P0-6: >= 1 node visited by the draw walk
+        uint64_t app_draw_ops = 0;           // P0-6: real app-owned canvas ops (bg/onDraw/text/images)
+        bool dialog_content_rendered = false;// P0-6: a showing dialog painted app content
+        bool synthetic_suppressed = false;   // P0-3: synthetic api::View path refused in REAL_DALVIK
+        bool render_exception = false;       // P0-3: real draw walk threw; framebuffer discarded
+        bool no_root = false;                // P0-2: zero authoritative window content reachable
+        bool budget_exhausted = false;       // P0-7: node/depth budget hit — frame is PARTIAL
+        int  nodes_visited = 0;              // P0-7 census
+        int  nodes_skipped_depth = 0;        // P0-7 census
+        int  depth_max = 0;                  // P0-7 census
+        uint64_t unreachable_children = 0;   // P0-7: queue entries stranded by the node budget
+        std::string layout_source;           // P1-2 census: "inflater" | "programmatic"
+        // P0-5: diagnostic regions recorded, NEVER painted into the
+        // authoritative frame (l,t,r,b in screen coordinates).
+        struct DiagRegion { int l, t, r, b; std::string kind; std::string detail; };
+        std::vector<DiagRegion> diag_regions;
+        void reset() { *this = FrameRenderCensus{}; }
+        bool app_content_proof() const {
+            return auth_root_valid && draw_walk_ran && app_draw_ops > 0;
+        }
+    };
+    FrameRenderCensus frame_census_;
+    // P0-6: pre-walk framebuffer snapshot — pixels identical to this baseline
+    // after the walk were NOT produced by this draw pass (system chrome /
+    // pipeline fills) and can never masquerade as app content.
+    std::vector<uint8_t> frame_baseline_;
 };
 
 } // namespace runtime
