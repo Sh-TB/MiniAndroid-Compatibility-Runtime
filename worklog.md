@@ -5037,3 +5037,17 @@ Work Log:
 
 Stage Summary:
 - GitHub is current again: origin/main = 71563e2e (18 commits published) and issue #354 carries the full S130..S135 achievement record with evidence hashes. The comment-debt problem is closed by two persisted, idempotent scripts (bodies + poster) — future waves should post their progress comment in-wave, not retroactively. Next runtime frontier unchanged: F-NEW-169 DI provider-null lattice.
+---
+Task ID: FINAL-CAMPAIGN-P0+P1
+Agent: Super Z (main)
+Task: MISSION FINAL GENERIC RUNTIME COMPATIBILITY CAMPAIGN — Phase 0 (law+HEAD) and Phase 1 (repository hygiene).
+
+Work Log:
+- PHASE 0: laws read (CONSTITUTION_V2 all 56 sections; ROADMAP_STATUS full; ARTIFACT_LIFECYCLE full; REPO_HYGIENE_FORENSICS; S134/S135 worklog entries). HEAD = 7bf17710 (main, clean); S135 logger commit a60db4b5 PROVEN ancestor of HEAD via git merge-base --is-ancestor (not assumed); remote synced.
+- PHASE 1 AUDIT (scripts/final_campaign_phase1_audit.py): tracked tree 591.89 MiB / 9673 files; evidence/ 264.57 + tmp/ 189.82 = 76.8%. Waste decomposition: 1129 raw trace files = 241.47 MiB inside evidence (canonical screenshots only ~12 MiB); tmp offenders: archidx.json 88.44, index-v1.json 60.20, mykanji_extract 14.38, idx.jar 13.98, blid 7.15 (APK-derived classes.dex), flappy_build 1.23, ac_x 0.99, aa_check 0.94.
+- REFERENCE CHECK (no blind deletion): archidx/index-v1/idx.jar/mykanji_extract/notoserifjp = ZERO canonical refs; tmp/blid referenced only by scripts/s112_decode_issupported.py; z.ai bundle 3.09 MiB referenced by REPORT_S133.md table.
+- EXECUTION (scripts/final_campaign_phase1_cleanup.py --apply): 1129 raw traces distilled into 545 evidence/*/TRACE_SUMMARIES.json (SHA256 + census top-20 APIs + distinct count per trace — provenance preserved); DISPOSITION_LEDGER.json 1283 entries with SHA256+reason+law cite; git rm 1283 tracked files; blid dex restored to external_backup/s112/blid (SHA c4ca8802…e88e verified); s112 script + REPORT_S133.md references updated to external/SHA provenance; .gitignore extended (tmp scratch classes, evidence raw-trace classes, *_bundle*.js, *.apk/*.aab); OVERSIZE_ALLOWLIST documented for framework_res/resources.arsc (AOSP base data, S127 law) + tools/r8/r8.jar (pinned build tool).
+- GATES: tools/check_repo_hygiene.py PASS (8390 files, zero violations); artifact registry regenerated from actual tree (docs/ARTIFACT_REGISTRY.json updated); post tree: 160.04 MiB / 8390 files (−431.85 MiB, −73%).
+
+Stage Summary:
+- evidence/ 264.57→20.01 MiB; tmp/ 189.82→2.50 MiB; every removed byte SHA256-ledgered (docs/history/final_campaign_phase1/DISPOSITION_LEDGER.json); no canonical reference broken (2 refs updated in place). Phase 2 (field identity audit) next.

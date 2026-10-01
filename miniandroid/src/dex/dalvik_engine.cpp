@@ -34961,8 +34961,18 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         };
         auto field_name_for337 = [&](int64_t off) -> std::string {
             auto it = unsafe_offset_to_field_.find(off);
-            return it == unsafe_offset_to_field_.end() ? ""
-                                                       : it->second.second;
+            if (it == unsafe_offset_to_field_.end()) return "";
+            // FINAL-CAMPAIGN PHASE 2 (field identity, F-NEW-160 law): the
+            // offset registry stores (declaring-class, field-name); Unsafe
+            // heap access must address the SAME storage the interpreter
+            // iput/iget use — qualified primary for DEX-defined declarers,
+            // bare name for framework-owned fields. Without this, an Unsafe
+            // volatile write lands in a slot the qualified read can never
+            // see (silent-wrong, Constitution §17).
+            const std::string decl =
+                resolved_field_declarer(it->second.first, it->second.second);
+            return s134_dex_field_key(decl, it->second.second,
+                                      is_dex_defined_class(decl));
         };
         auto get_unsafe337 = [&]() -> DalvikValue {
             if (unsafe_singleton_id_ == 0 ||
@@ -35277,7 +35287,17 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     result = DalvikValue::make_null();
                     return true;
                 }
-                auto v = heap_.get_object_field(args[1].object_id, name337);
+                // FINAL-CAMPAIGN PHASE 2 (field identity, F-NEW-160 law):
+                // reflection must see the SAME field the interpreter sees.
+                // DEX-defined declarer -> qualified primary key;
+                // framework-owned declarer -> bare name (shadow interop).
+                // A never-written DEX field answers its typed default —
+                // never another class's same-named bare slot.
+                const std::string r500_decl =
+                    resolved_field_declarer(decl337, name337);
+                const std::string r500_qkey = s134_dex_field_key(
+                    r500_decl, name337, is_dex_defined_class(r500_decl));
+                auto v = heap_.get_object_field(args[1].object_id, r500_qkey);
                 DalvikValue sv =
                     v.has_value() ? v.value() : typed_default500(type337);
                 status = ApiCallTrace::Status::IMPLEMENTED;
@@ -35351,6 +35371,20 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     status = ApiCallTrace::Status::IMPLEMENTED;
                     result = DalvikValue::make_void();
                     return true;
+                }
+                // FINAL-CAMPAIGN PHASE 2: dual-write exactly like the
+                // interpreter iput law (qualified primary + bare legacy
+                // mirror) so reflection, DEX execution and C++ shadow
+                // readers all observe one field identity.
+                {
+                    const std::string r500_decl_w =
+                        resolved_field_declarer(decl337, name337);
+                    if (is_dex_defined_class(r500_decl_w)) {
+                        heap_.set_object_field(
+                            args[1].object_id,
+                            s134_dex_field_key(r500_decl_w, name337, true),
+                            unbox500(args[2], type337));
+                    }
                 }
                 heap_.set_object_field(args[1].object_id, name337,
                                        unbox500(args[2], type337));
