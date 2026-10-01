@@ -5120,3 +5120,20 @@ REGISTRY: F-NEW-174..180 appended (canonical/root_cause_registry.json 466→473)
 
 Stage Summary:
 - Item 21 P0 family (P0-1..P0-8) IMPLEMENTED+TESTED except Compose multi-frame acceptance (rides R-NEW-381) and AppCompat/multi-activity root fixtures (queued); P1-1/3/4/5/6/7/8/9 done. Remaining item-21: P1-2 full measure/layout unification (census layout_source recorded; unification = own wave), REG retests (written_bits_ proof, field-identity/StandardCharsets/move16 re-verified via goldens + WhatsApp run), root-fixture matrix, P0-5 overlay visualization (regions recorded, overlay draw optional). Golden drifts documented per phase-19 law (all = diagnostic-pixel removal).
+
+---
+Task ID: FINAL-CAMPAIGN-ITEM21-WAVE-B
+Agent: Super Z (main)
+Task: Item 21 wave B — REG-5 written_bits_ proof + phase 3 wave 3 (F-NEW-173 bounded attack).
+
+Work Log:
+- REG-5 (written_bits_): PROVEN diagnostics-only — get_written_registers() has ZERO call sites in the runtime (grep: definitions only, dalvik_engine.h + dex_interpreter_batch.h). Latent width hazards fixed anyway: bitmap dynamically sized to the register count (was fixed 16x64=1024, bits silently dropped past it), get_written_registers returns uint16_t (was uint8_t — wrapped every reg >= 256). No regression (dooz d602648e8e401895 byte-identical; laws130 51/51).
+- F-NEW-173 ATTACK (source-first): (1) disassembled the app's OWN smear — LX/09i.smear = mul-long(C1) -> long-to-int -> Integer.rotateLeft(,15) -> mul-long(C2) (murmur mix; wave-2's "C2*rotl(k,15)" formula was incomplete). (2) Extended the F172 probe sensor to aget-byte (the large-path table is a BYTE array; wave-2 only watched aget-short) + added SPIN-KEYS entries dump. (3) MEASURED probe walk: key1 probes [0], key2 [0,1], key3 [0,1,2]... — every key hashes to slot 0, exactly the Sigma(0..k) quadratic signature. (4) MINIANDROID_HASH_TRACE live: hashCode on a BOXED Integer (heap object o1659, value=33604) returned h=0 — the bridge read the register's int_val (0 for a box) instead of the box's 'value' field. THE ROOT: boxed-primitive identity.
+- F-NEW-173 FIX (generic platform law, java.lang.* contract classes only): hashCode + equals bridges now unbox heap-boxed primitives (Integer/Long/Short/Byte/Character/Boolean) — hashCode reads the box value; equals compares same-boxed-class + same value (was reference identity — map.get(key) missed right after map.put(key)).
+- POST-FIX STATE: createHashTable COMPLETES (F084 storm GONE); WhatsApp chain advanced DEEPEST EVER — RegularImmutableMap.get executes (2.5M instructions), new frontier F-NEW-181: get() probe-loop spin at PC=0x6f (SPIN-* instrumentation covers it; wave C = one instrumented run + hash/equals comparison in the walk).
+
+GATES: laws130 51/51 after every rebuild; dooz d602648e8e401895 unchanged post REG-5.
+REGISTRY: F-NEW-173 ROOT-CAUSED-FIXED (+resolution); F-NEW-181 registered OBSERVED-FAIL. 474 roots.
+
+Stage Summary:
+- The DI-lattice ImmutableMap now BUILDS. The white-screen chain front moved from "map build spins" to "map lookup spins" — the runtime's object-identity laws (box value, hash, equals) are converging with the app's real semantics.
