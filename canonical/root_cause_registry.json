@@ -2,7 +2,7 @@
  "_projection_of": "root_registry.json",
  "_law": "root_registry.json is the single writable store; this file is a generated read model (ROADMAP SS3: no duplicate canonical registries).",
  "generated": "S135 session",
- "total": 473,
+ "total": 474,
  "status_counts": {
   "PARTIAL": 105,
   "VERIFIED-CORRECT": 46,
@@ -3338,13 +3338,14 @@
   },
   {
    "id": "F-NEW-173",
-   "status": "OBSERVED-FAIL",
+   "status": "ROOT-CAUSED-FIXED",
    "priority": "P0",
    "summary": "Upstream key-materialization divergence: 07r.A0Q builds an ImmutableMap keyed by boxed Integers (AppContext slot ids, values < 2^17) where the real app map is keyed by richer objects/strings; with guava smear math every int key < 2^17 hashes to slot 0 at tableSize 32768, so the build degrades quadratically. The keys are placeholder-materialized downstream of the DI lattice (same family as the F-NEW-171 register-aliasing face). Bounded next step: trace the map.put key feed in 07r.A0Q to the constructor/parameter that materializes Integer(22183) instead of the real key object.",
    "evidence": "SPIN-REGS v10=o1987<Ljava/lang/Integer;> value=22183; smear math: rotl(h,15) low 15 bits = h>>17 = 0 for h < 2^17.",
    "layer": "DEX object model / key identity",
    "title": "F-NEW-173",
-   "law": null
+   "law": null,
+   "resolution": "Boxed-primitive identity law: hashCode/equals on boxed heap objects read the box's 'value' field (the register int_val is 0 for boxes) \u2014 every key hashed 0 -> smear(k)&mask==0 -> all probes from slot 0 -> quadratic storm. Post-fix: createHashTable completes, chain advanced to RegularImmutableMap.get (deepest ever, 2.5M instructions)."
   },
   {
    "id": "F-NEW-174",
@@ -3429,6 +3430,16 @@
    "implementation": "cursor_y+=30 removed; measured push passes PURE layout geometry (deltas in off_*, applied once at the child origin); clip_* inherited + draw-space outside-check; 40px gates removed; drew_real only on real text; PNG failure law + screenshot_path move.",
    "source_authority": "AOSP frameworks/base (View.java, ViewRootImpl, PhoneWindow, ScrollView, TextView)",
    "campaign": "final-generic-runtime-compat-v2 item 21 wave A"
+  },
+  {
+   "id": "F-NEW-181",
+   "status": "OBSERVED-FAIL",
+   "priority": "P0",
+   "layer": "dalvik/map-lookup",
+   "title": "RegularImmutableMap.get probe-loop spin (post box-identity fix frontier)",
+   "law": "SOURCE-first: get() = hash(key) -> slot walk -> equals compare. The createHashTable build completed post-F-NEW-173; get() now spins at PC=0x6f/134 (50001 visits, F084). Next bounded step: SPIN-REGS/HISTO on get() frame \u2014 compare the walk's hash recompute vs the build-time hash, and the equals result on the matching entry.",
+   "evidence": "WhatsApp run: build completes (no F084 in createHashTable), chain reaches get(), 2.5M instructions, spin in get at 0x6f. Permanent SPIN-* instrumentation covers the new halt.",
+   "implementation": "No Guava-specific patch (mandate). One more instrumented run cycle queued (wave C)."
   }
  ]
 }

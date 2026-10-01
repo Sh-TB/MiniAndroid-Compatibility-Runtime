@@ -548,6 +548,13 @@ public:
         ins_count_ = ins_count;
         registers_.clear();
         registers_.resize(count, DalvikValue::make_uninit());
+        // FINAL-CAMPAIGN item 21-REG-5 (written-set metadata law): the
+        // written-register bitmap is metadata ONLY (zero semantic consumers —
+        // get_written_registers() has no call sites in the runtime). It is
+        // now DYNAMICALLY SIZED to the register count so the F-NEW-171
+        // width family (uint8/uint16 truncation, bits silently dropped past
+        // a fixed word count) can never re-enter through diagnostics.
+        written_bits_.assign(((size_t)count + 63) / 64 + 1, 0ULL);
         
         // Mark parameter registers (last N registers are 'p' registers)
         // EXP-058: CRITICAL FIX — was `ins_count < count` which failed when
@@ -573,7 +580,7 @@ public:
             // std::set<uint8_t> did a red-black tree insert PER REGISTER
             // WRITE (the hot path writes 2-5 registers per instruction).
             // Same ordered iteration semantics for get_written_registers().
-            if ((reg >> 6) < 16)
+            if ((reg >> 6) < written_bits_.size())
                 written_bits_[reg >> 6] |= (1ULL << (reg & 63));
         }
     }
@@ -587,7 +594,7 @@ public:
         uint32_t reg = static_cast<uint32_t>(param_start_) + param_idx;
         if (reg < size_) {
             registers_[reg] = value;
-            if ((reg >> 6) < 16)
+            if ((reg >> 6) < written_bits_.size())
                 written_bits_[reg >> 6] |= (1ULL << (reg & 63));
         }
     }
@@ -609,17 +616,19 @@ public:
     uint32_t get_size() const { return size_; }
     uint32_t get_ins_count() const { return ins_count_; }
     
-    std::vector<uint8_t> get_written_registers() const {
+    std::vector<uint16_t> get_written_registers() const {
         // F-109a: iterate the bitmap in ascending register order (identical
-        // output to the old ordered set).
-        std::vector<uint8_t> out;
-        for (uint32_t w = 0; w < 16; ++w) {
+        // output to the old ordered set). 21-REG-5: uint16_t — register
+        // numbers are 16-bit (DEX /16 formats); the old uint8_t return
+        // WRAPPED every register >= 256 in the diagnostics it fed.
+        std::vector<uint16_t> out;
+        for (uint32_t w = 0; w < written_bits_.size(); ++w) {
             if (w * 64ULL >= size_) break;
             uint64_t bits = written_bits_[w];
             while (bits) {
-                uint8_t b = (uint8_t)(__builtin_ctzll(bits));
+                unsigned b = (unsigned)(__builtin_ctzll(bits));
                 uint32_t r = w * 64 + b;
-                if (r < size_) out.push_back((uint8_t)r);
+                if (r < size_) out.push_back((uint16_t)r);
                 bits &= bits - 1;
             }
         }
@@ -641,7 +650,7 @@ public:
                                      : ("v" + std::to_string(i));
             entry["index"] = i;
             entry["value"] = registers_[i].to_json();
-            entry["written"] = ((i >> 6) < 16 &&
+            entry["written"] = ((i >> 6) < written_bits_.size() &&
                                 ((written_bits_[i >> 6] >> (i & 63)) & 1ULL) != 0);
             result["registers"].push_back(entry);
         }
@@ -665,8 +674,9 @@ private:
     uint32_t param_start_ = 0;
     uint32_t pc_ = 0;
     std::vector<DalvikValue> registers_;
-    // F-109a: fixed 256-bit written-register bitmap (registers are uint8_t).
-    uint64_t written_bits_[16] = {0};  // FINAL-CAMPAIGN: 16×64 = 1024 regs (DEX /16 formats)
+    // F-109a: written-register bitmap — 21-REG-5: dynamically sized to the
+    // register count (metadata only; zero semantic consumers).
+    std::vector<uint64_t> written_bits_;
 };
 
 // ============================================================================

@@ -10975,7 +10975,9 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     result_val.type = result_type; \
                     /* FINAL-CAMPAIGN PHASE 3 (F-NEW-172): bounded aget-short \
                      * evidence probe on the spinning createHashTable table. */ \
-                    if (op_name[0] == 'a' && result_type == DalvikType::SHORT && \
+                    if (op_name[0] == 'a' && \
+                        (result_type == DalvikType::SHORT || \
+                         result_type == DalvikType::BYTE) && \
                         current_method_ == "createHashTable") { \
                         static thread_local uint64_t f172_aget = 0; \
                         if (f172_aget < 24) { \
@@ -10988,11 +10990,16 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                                 if (lf2.has_value() && lf2->type == DalvikType::INT32) \
                                     probe_len = lf2->int_val; \
                             } \
+                            std::string f172_field = "array[" + std::to_string(idx) + "]"; \
+                            std::string f172_stored = "MISSING"; \
+                            auto f172_elem = heap_.get_object_field( \
+                                arr_val.object_id, f172_field); \
+                            if (f172_elem.has_value()) \
+                                f172_stored = dalvik_value_to_string(*f172_elem); \
                             std::cerr << "[F172-AGET] idx=" << idx \
                                       << " arr=o" << (arr_val.type == DalvikType::OBJECT_REF ? arr_val.object_id : 0) \
                                       << " len=" << probe_len \
-                                      << " arrval_type=" << static_cast<int>(arr_val.type) \
-                                      << " arrval_int=" << arr_val.int_val \
+                                      << " stored=" << f172_stored \
                                       << std::endl; \
                         } \
                     } \
@@ -13560,6 +13567,42 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 std::cerr << std::endl;
             }
             dump_frame_locals_diag("SPIN");
+            {
+                // FINAL-CAMPAIGN PHASE 3 WAVE 3 (F-NEW-173): KEY-FEED
+                // provenance. The spinning probe hashes a key whose identity
+                // is the divergence (all-small-Integer keys -> smear low bits
+                // collapse -> quadratic storm). Dump the ENTRIES source array
+                // (the createHashTable v16 parameter): for its first slots,
+                // each element's class + key/value fields — this names the
+                // materializing object family the real app feeds vs ours.
+                if (current_method_ == "createHashTable" && current_registers_) {
+                    DalvikValue entries = current_registers_->read_v(16);
+                    if (entries.type == DalvikType::OBJECT_REF &&
+                        heap_.has_object(entries.object_id)) {
+                        for (int32_t i = 0; i < 6; ++i) {
+                            auto el = heap_.get_object_field(
+                                entries.object_id,
+                                "array[" + std::to_string(i) + "]");
+                            if (!el.has_value() ||
+                                el->type != DalvikType::OBJECT_REF ||
+                                !heap_.has_object(el->object_id))
+                                continue;
+                            const auto* ho = heap_.get(el->object_id);
+                            if (!ho) continue;
+                            std::cerr << "[SPIN-KEYS] entries[" << i
+                                      << "] o" << el->object_id << "<"
+                                      << ho->class_descriptor << ">";
+                            int fcnt = 0;
+                            for (const auto& kv : ho->fields) {
+                                if (fcnt++ >= 4) break;
+                                std::cerr << " " << kv.first << "="
+                                          << dalvik_value_to_string(kv.second);
+                            }
+                            std::cerr << std::endl;
+                        }
+                    }
+                }
+            }
             {
                 // FINAL-CAMPAIGN PHASE 3 (F-NEW-172): inspect the probe table
                 // state at halt — the spinning frame's v4 is the hash table.
@@ -30346,6 +30389,65 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
+        // ── FINAL CAMPAIGN F-NEW-173 (boxed-primitive equals law) ──────────
+        // OpenJDK Integer/Long/Short/Byte/Character/Boolean.equals: equal iff
+        // SAME boxed class AND same primitive value. The old bridge answered
+        // reference identity for every heap pair — two distinct boxes of one
+        // logical value compared unequal, so map.get(key) missed right after
+        // map.put(key) (the RegularImmutableMap probe's Object.equals call).
+        {
+            auto unbox = [&](const DalvikValue& v,
+                             std::string* boxed_cls) -> std::pair<bool, int64_t> {
+                if (v.type == DalvikType::INT32)  return {true, v.int_val};
+                if (v.type == DalvikType::BOOLEAN) return {true, v.int_val};
+                if (v.type == DalvikType::BYTE)   return {true, v.byte_val};
+                if (v.type == DalvikType::SHORT)  return {true, v.short_val};
+                if (v.type == DalvikType::CHAR)   return {true, v.char_val};
+                if (v.type == DalvikType::INT64)  return {true, v.long_val};
+                if (v.type == DalvikType::OBJECT_REF && v.object_id != 0 &&
+                    heap_.has_object(v.object_id)) {
+                    const auto* o = heap_.get(v.object_id);
+                    static const char* kBoxes[] = {
+                        "Ljava/lang/Integer;", "Ljava/lang/Long;",
+                        "Ljava/lang/Short;", "Ljava/lang/Byte;",
+                        "Ljava/lang/Character;", "Ljava/lang/Boolean;"};
+                    for (const char* bx : kBoxes) {
+                        if (o && o->class_descriptor == bx) {
+                            auto bv = heap_.get_object_field(v.object_id, "value");
+                            if (bv.has_value()) {
+                                *boxed_cls = o->class_descriptor;
+                                if (bv->type == DalvikType::INT32)
+                                    return {true, bv->int_val};
+                                if (bv->type == DalvikType::INT64)
+                                    return {true, bv->long_val};
+                                if (bv->type == DalvikType::BOOLEAN)
+                                    return {true, bv->int_val};
+                                if (bv->type == DalvikType::BYTE)
+                                    return {true, bv->byte_val};
+                                if (bv->type == DalvikType::SHORT)
+                                    return {true, bv->short_val};
+                                if (bv->type == DalvikType::CHAR)
+                                    return {true, bv->char_val};
+                            }
+                        }
+                    }
+                }
+                return {false, 0};
+            };
+            std::string xc, yc;
+            auto xb = unbox(x, &xc);
+            auto yb = unbox(y, &yc);
+            if (xb.first && yb.first) {
+                // Boxed equality: same class (when both carried a box class)
+                // and same value. Inline primitives have no class — compare
+                // value only (a primitive register equals its own box).
+                bool eq = (xc.empty() || yc.empty() || xc == yc) &&
+                          xb.second == yb.second;
+                result = DalvikValue::make_bool(eq);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
         // Receiver gates: either a heap object of an app-DEX-defined class
         // (class_to_superclass_ is the DEX class map — framework classes
         // like String are absent and keep their dedicated handlers), or a
@@ -38765,14 +38867,37 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                       << " caller=" << current_class_ << "."
                       << current_method_ << " pc=" << pc_ << std::endl;
         }
+        // ── FINAL CAMPAIGN F-NEW-173 (boxed-primitive identity law) ────────
+        // A boxed primitive may arrive as a HEAP OBJECT (invoke-virtual
+        // Object.hashCode passes the box reference). The primitive value then
+        // lives in the box's 'value' field; the register's int_val is 0 and
+        // the old code hashed 0 for EVERY boxed key. Measured live:
+        // WhatsApp RegularImmutableMap.createHashTable — every key hashed 0
+        // → smear(k)&mask == 0 → every probe from slot 0 → the Σ(0..n)
+        // quadratic probe storm (F084 halt after 315 entries).
+        DalvikValue box_val = recv;
+        if (recv.type == DalvikType::OBJECT_REF && recv.object_id != 0 &&
+            heap_.has_object(recv.object_id)) {
+            auto bv = heap_.get_object_field(recv.object_id, "value");
+            if (bv.has_value()) box_val = *bv;
+        }
         if (cd == "Ljava/lang/Boolean;" || (cd.empty() && recv.type == DalvikType::BOOLEAN)) {
-            h = (recv.int_val != 0) ? 1231 : 1237;
+            int32_t b = box_val.type == DalvikType::INT32 ? box_val.int_val
+                      : box_val.type == DalvikType::BYTE  ? box_val.byte_val
+                      : recv.int_val;
+            h = (b != 0) ? 1231 : 1237;
         } else if (cd == "Ljava/lang/Long;") {
-            uint64_t uv = static_cast<uint64_t>(recv.long_val);
+            uint64_t uv = box_val.type == DalvikType::INT64
+                ? static_cast<uint64_t>(box_val.long_val)
+                : static_cast<uint64_t>(recv.long_val);
             h = static_cast<int32_t>(uv ^ (uv >> 32));
         } else if (cd == "Ljava/lang/Integer;" || cd == "Ljava/lang/Short;" ||
                    cd == "Ljava/lang/Byte;" || cd == "Ljava/lang/Character;") {
-            h = recv.int_val;
+            h = box_val.type == DalvikType::INT32 ? box_val.int_val
+              : box_val.type == DalvikType::CHAR  ? (int32_t)box_val.char_val
+              : box_val.type == DalvikType::BYTE  ? (int32_t)box_val.byte_val
+              : box_val.type == DalvikType::SHORT ? (int32_t)box_val.short_val
+              : recv.int_val;
         } else if (recv.type == DalvikType::STRING_REF) {
             // OpenJDK String.hashCode over UTF-16 code units.
             int32_t hh = 0;
