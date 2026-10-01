@@ -58,6 +58,20 @@ struct InflateStats {
     std::string to_json() const;
 };
 
+// ── R-NEW-442 (S132): shared path-law helpers (definitions live in
+// vector_inflater.cpp; used by both the vector law and the SVG-asset law).
+struct VMat {
+    float a = 1, b = 0, c = 0, d = 1, e = 0, f = 0;
+    void map(float x, float y, float& ox, float& oy) const {
+        ox = a * x + c * y + e;
+        oy = b * x + d * y + f;
+    }
+    void pre_concat(const VMat& r);   // this = this ∘ r
+};
+bool parse_floats(const std::string& s, size_t& pos, float& out);
+void flatten_path_data(const std::string& d, const VMat& m,
+                       std::vector<std::vector<std::pair<float, float>>>& contours);
+
 class LayoutInflater {
 public:
     LayoutInflater(ArscParser& arsc, apk::ApkParser& apk, const std::string& apk_path,
@@ -167,6 +181,20 @@ public:
     void apply_vector_background(framework::ViewShadow::ViewNode& node,
                                  const std::string& xml_path, InflateStats& stats);
 
+    // ── R-NEW-442 (S132 Wave-2): SVG-ASSET law ─────────────────────────
+    // Telegram SvgHelper family loads PLAIN-TEXT .svg assets through the
+    // drawable slot (res/*.svg entries). The runtime already owns the SVG
+    // path grammar (PathParser/PathEvaluator laws in vector_inflater.cpp)
+    // and the scanline fill — this adapter adds only the text-XML reader
+    // for the MEASURED Telegram feature subset (50 files: <path>/<circle>/
+    // <rect>/<ellipse>; zero gradients/masks/clips/strokes) and reuses
+    // flatten_path_data + the bg_vector paint law. Reuse decision recorded
+    // in reuse_registry: nanoSVG (4k LOC parser+rasterizer, frozen upstream)
+    // would duplicate both existing laws for the same measured subset.
+    bool apply_svg_background(framework::ViewShadow::ViewNode& node,
+                              const std::string& svg_path,
+                              InflateStats& stats);
+
     // S83-B2 §14: LayerDrawable <layer-list> inflation — AOSP
     // LayerDrawable.inflate: items in DOCUMENT ORDER render bottom→top;
     // each <item> carries android:drawable (ref) OR an inline child
@@ -175,6 +203,25 @@ public:
     void apply_layer_list_background(framework::ViewShadow::ViewNode& node,
                                      const std::string& xml_path,
                                      InflateStats& stats);
+
+    // ── R-NEW-440 (S132): ONE CANONICAL MEASURE LAW ────────────────────
+    // AOSP View.measure dispatches the node's own measure law (ViewGroup
+    // containers run THEIR law incl. child negotiation). The runtime
+    // models the framework container laws ONCE, in measure_layout
+    // (ConstraintLayout anchors F-148, LinearLayout weights G04 §9,
+    // TableLayout rows G12, RelativeLayout FIX-MEASURE-002). The engine's
+    // DEX measure bridge (real container onMeasure calling child.measure)
+    // delegates CONTAINER subtrees here so the SAME canonical law sizes
+    // them — instead of the engine's primitive spec fallback that knows
+    // no anchors/weights (opencalculator v53: SlidingUpPanelLayout's real
+    // DEX onMeasure measured its ConstraintLayout child through the
+    // primitive law → TableLayout 0dp collapsed → 34 buttons 0x0).
+    // Decodes Android MeasureSpec words (mode in the top 2 bits) and runs
+    // the canonical law for the subtree rooted at vid. Returns false when
+    // the node is unknown (caller keeps its own default law).
+    bool measure_view_spec(framework::ViewShadow* views, uint32_t vid,
+                           int wspec_word, int hspec_word,
+                           int& out_w, int& out_h);
 
 private:
     // G04 §8: drawable intrinsic-size probe cache (path → natural dims;
@@ -340,6 +387,35 @@ private:
     std::map<uint32_t, std::string> id_names_;
     std::vector<std::string> apk_entries_;  // cached entry list
     int pending_id_counter_ = 0;
+
+    // ── R-NEW-440: canonical measure law plumbing ──────────────────────
+    // AOSP MeasureSpec model shared by measure_layout and measure_view_spec.
+    enum MeasureMode { MS_UNSPEC = 0, MS_EXACTLY = 1, MS_AT_MOST = 2 };
+    struct MeasureSpec2 {
+        int size = 0;
+        MeasureMode mode = MS_UNSPEC;
+    };
+    // M3 §7 memo key: (view, incoming specs) — the pure-function law.
+    struct M3MemoKey {
+        uint32_t vid;
+        int w_size, w_mode, h_size, h_mode;
+        bool operator<(const M3MemoKey& o) const {
+            if (vid != o.vid) return vid < o.vid;
+            if (w_size != o.w_size) return w_size < o.w_size;
+            if (w_mode != o.w_mode) return w_mode < o.w_mode;
+            if (h_size != o.h_size) return h_size < o.h_size;
+            return h_mode < o.h_mode;
+        }
+    };
+    std::map<M3MemoKey, std::pair<int, int>> m3_measure_memo_;
+    // Raw measure law (the former measure_layout lambda, promoted) + the
+    // memo wrapper every call site routes through.
+    std::pair<int, int> measure_node_raw(framework::ViewShadow* views,
+                                         uint32_t vid, const MeasureSpec2& sw,
+                                         const MeasureSpec2& sh, int depth);
+    std::pair<int, int> measure_node(framework::ViewShadow* views,
+                                     uint32_t vid, const MeasureSpec2& sw,
+                                     const MeasureSpec2& sh, int depth);
 };
 
 } // namespace resources

@@ -28,23 +28,17 @@ namespace miniandroid {
 namespace resources {
 
 namespace {
+}  // namespace
 
-struct VMat {
-    float a = 1, b = 0, c = 0, d = 1, e = 0, f = 0;
-    void map(float x, float y, float& ox, float& oy) const {
-        ox = a * x + c * y + e;
-        oy = b * x + d * y + f;
-    }
-    void pre_concat(const VMat& r) {   // this = this ∘ r
-        const float na = a * r.a + c * r.b;
-        const float nb = b * r.a + d * r.b;
-        const float nc = a * r.c + c * r.d;
-        const float nd = b * r.c + d * r.d;
-        const float ne = a * r.e + c * r.f + e;
-        const float nf = b * r.e + d * r.f + f;
-        a = na; b = nb; c = nc; d = nd; e = ne; f = nf;
-    }
-};
+void VMat::pre_concat(const VMat& r) {   // this = this ∘ r
+    const float na = a * r.a + c * r.b;
+    const float nb = b * r.a + d * r.b;
+    const float nc = a * r.c + c * r.d;
+    const float nd = b * r.c + d * r.d;
+    const float ne = a * r.e + c * r.f + e;
+    const float nf = b * r.e + d * r.f + f;
+    a = na; b = nb; c = nc; d = nd; e = ne; f = nf;
+}
 
 // Float attribute: aapt2 FLOAT type (data = IEEE bits), dimension, or string.
 float attr_float(const AxmlAttribute* at, float def) {
@@ -299,7 +293,7 @@ void flatten_path_data(const std::string& d, const VMat& m,
     flush();
 }
 
-}  // namespace
+
 
 void LayoutInflater::apply_vector_background(
     framework::ViewShadow::ViewNode& node, const std::string& xml_path,

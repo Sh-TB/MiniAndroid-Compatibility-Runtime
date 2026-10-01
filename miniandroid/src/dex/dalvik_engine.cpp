@@ -8840,6 +8840,22 @@ bool DalvikExecutionEngine::dispatch_view_lifecycle_once(
     if (!view_shadow) return false;
     auto* node = view_shadow->find_node(view_object_id);
     if (!node || node->f096_lifecycle_done) return false;
+    // ── R-NEW-441 (S132): AOSP traversal-order gate. onMeasure/onLayout
+    // dispatch on a DEGENERATE frame (both axes 0) never happens on real
+    // Android — ViewRootImpl.performTraversals measures and lays out with
+    // the window-sized spec BEFORE any lifecycle dispatch, and a 0x0
+    // layout frame means the view was never added to a laid-out window.
+    // Evidence (opencalculator v53): the first wave dispatched the REAL
+    // DEX SlidingUpPanelLayout.onLayout with rect=(0,0 0x0); its
+    // dimChildToDimen cover test (SlidingUpPanelLayout.java L680-697:
+    // child fully inside the panel rect → INVISIBLE) read degenerate
+    // child/panel bounds and setVisibility(INVISIBLE) on the whole pad —
+    // state corruption no real device produces. Skip the dispatch; the
+    // node keeps its f096 one-shot flag so a later materialized frame
+    // still dispatches exactly once with real geometry.
+    if (r - l <= 0 && b - t <= 0) {
+        return false;
+    }
     node->f096_lifecycle_done = true;
 
     std::string cls = node->class_desc;
@@ -28643,6 +28659,54 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 // applies — setMeasuredDimension(getDefaultSize(spec)):
                 // EXACTLY/AT_MOST → spec size, UNSPECIFIED → 0.
                 if (!n->dex_measure_valid) {
+                    // ── R-NEW-440 (S132): ONE CANONICAL MEASURE LAW ────────
+                    // AOSP View.measure dispatches the node's OWN measure
+                    // law; ViewGroup containers run their child negotiation
+                    // inside it. When the DEX chain did not write dims, the
+                    // runtime's canonical container law (ResourceRuntime
+                    // inflater: ConstraintLayout anchors F-148, LinearLayout
+                    // weights G04 §9, TableLayout rows G12, RelativeLayout
+                    // FIX-MEASURE-002) IS the model of that law — the
+                    // primitive spec fallback below knows none of it.
+                    // Evidence (opencalculator v53): the real DEX
+                    // SlidingUpPanelLayout.onMeasure measured its
+                    // ConstraintLayout child through THIS bridge's primitive
+                    // recursion → TableLayout 0dp collapsed → all 34 pad
+                    // buttons 0x0. Delegation is gated to ViewGroup
+                    // subclasses with the runtime loaded; leaves and
+                    // programmatic-only trees keep the primitive law.
+                    if (is_subclass_of(n->class_desc, "Landroid/view/ViewGroup;") &&
+                        !apk_path_.empty() && shadow_registry_) {
+                        auto& rt = resources::ResourceRuntime::instance();
+                        auto* vs = shadow_registry_->find_as<framework::ViewShadow>();
+                        if (vs && rt.ensure_loaded(apk_path_)) {
+                            int cw2 = 0, ch2 = 0;
+                            if (rt.inflater().measure_view_spec(
+                                    vs, recv, args[1].int_val, args[2].int_val,
+                                    cw2, ch2)) {
+                                n->dex_measured_w = cw2;
+                                n->dex_measured_h = ch2;
+                                n->dex_measure_valid = true;
+                                n->measured_width = cw2;
+                                n->measured_height = ch2;
+                                static thread_local uint64_t r440_log = 0;
+                                if (r440_log < 16) {
+                                    ++r440_log;
+                                    std::cerr << "[R440-CANONICAL] container "
+                                              << "measure delegated view="
+                                              << recv << " class="
+                                              << n->class_desc << " spec=0x"
+                                              << std::hex << args[1].int_val
+                                              << "x" << args[2].int_val
+                                              << std::dec << " -> " << cw2
+                                              << "x" << ch2 << std::endl;
+                                }
+                                status = ApiCallTrace::Status::IMPLEMENTED;
+                                result = DalvikValue::make_void();
+                                return true;
+                            }
+                        }
+                    }
                     // No DEX onMeasure anywhere in the chain → the default
                     // View.onMeasure law applies (getDefaultSize: AT_MOST/
                     // EXACTLY → specSize, UNSPECIFIED → suggested min = 0).

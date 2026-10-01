@@ -292,6 +292,15 @@ private:
     // the GL surface pass so every frame path composites GL surfaces).
     bool stage_render_frame_impl(ExecutionResult& result, const ExecutionConfig& config);
 
+    // R-NEW-440b (S132): ONE render/input root law. AOSP ViewRootImpl
+    // renders and hit-tests the hierarchy under android.R.id.content.
+    // ActivityShadow.content_view_id() is unset (0) when the appcompat
+    // delegate installs content via Window.setContentView + content.addView
+    // (R005-DECOR + S83-CONTENT path) — the S83 content-parent node
+    // (android_view_id == 0x01020002) is then the root for the draw walk
+    // AND the touch dispatcher (same law, same root).
+    uint32_t effective_content_root_() const;
+
     bool stage_generate_reports(ExecutionResult& result, const ExecutionConfig& config);
     
     // Helper methods

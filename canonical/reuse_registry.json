@@ -33,7 +33,10 @@
   "PLANNED": 4,
   "ORACLE": 3,
   "REFERENCE_ONLY": 5,
-  "REJECTED": 1
+  "REJECTED": 1,
+  "REJECTED_FOR_MC041_EXISTING_SUPERIOR": 1,
+  "s132_wave2": "svg law implemented; nanoSVG not adopted (measured subset)",
+  "s132_wave3": "no video corpus need; audio already covered by adopted codecs"
  },
  "candidates": [
   {
@@ -681,9 +684,9 @@
    "APK_COVERAGE": "Telegram + vector-drawable APKs",
    "MAINTENANCE_STATUS": "FROZEN (maintained upstream little)",
    "UPDATEABILITY": "LOW \u2014 stable but little movement",
-   "DECISION": "EVALUATE-FIRST",
-   "REASON": "Smallest practical SVG rasterizer; unblocks Telegram SvgHelper family with ~4k LOC instead of a full SVG engine. resvg (below) is the fidelity upgrade. Law \u00a72: tiny+embeddable outranks completeness when coverage matches corpus.",
-   "status": "EVALUATE",
+   "DECISION": "EVALUATED \u2192 NOT_USEFUL for the measured feature set (existing components superior)",
+   "REASON": "S132 Wave-2 measured evidence (scripts corpus scan): Telegram/Forkgram ship 50 .svg assets (656KB, max 507KB) using ONLY <path>/<circle>/<rect>/<ellipse> \u2014 zero gradients, masks, clipPaths, strokes or path-attr transforms. The runtime ALREADY owns the SVG path grammar (flatten_path_data = PathParser/PathEvaluator law) and the scanline fill (bg_vector paint). R-NEW-442 added a ~260 LOC text-XML adapter over that substrate; nanoSVG (~4k LOC parser + rasterizer, frozen upstream) would DUPLICATE both existing laws for the same subset. Re-trigger: a corpus APK measuring gradients/masks in real SVG assets.",
+   "status": "EVALUATED_NOT_USEFUL_FOR_MEASURED_SUBSET",
    "categories": [
     "MC-093",
     "MC-008"
@@ -740,9 +743,9 @@
    "APK_COVERAGE": "every video APK (blockbuster-class)",
    "MAINTENANCE_STATUS": "VERY ACTIVE",
    "UPDATEABILITY": "STABLE \u2014 industry standard",
-   "DECISION": "INTEGRATE-SELECTIVE",
-   "REASON": "Law \u00a76 video + \u00a711: large accepted BECAUSE leverage is massive \u2014 one integration closes MC-091 (5 items), M-02, and the autoplay/video game class; selective configure keeps binary small. Never write our own H.264.",
-   "status": "PLANNED",
+   "DECISION": "EVALUATED \u2192 NOT_USEFUL NOW (corpus gate) \u2014 re-trigger on a measured video root",
+   "REASON": "S132 Wave-3 corpus-first scan (the directive's own evidence rule): ZERO video assets (.mp4/.mkv/.webm/.3gp) across the entire corpus; VideoView/ExoPlayer/MediaCodec references exist only as library class names (Telegram/Forkgram/sudoku) with NO exercised video-playback root. The measured audio needs (ogg/wav/mp3 in 8 APKs) are already served by ADOPTED components (stb_vorbis, sndfile, mpg123). Integrating FFmpeg now would create a dead dependency \u2014 the exact 'library graveyard' the reuse law forbids. RE-TRIGGER: any corpus APK measured FAILING at a video decode/playback root (MediaCodec/VideoView exercised at runtime), or the video-game class entering the campaign targets.",
+   "status": "NOT_USEFUL_NOW_CORPUS_GATE",
    "categories": [
     "MC-091"
    ],
@@ -916,14 +919,14 @@
    "APK_COVERAGE": "modern-layout APKs",
    "MAINTENANCE_STATUS": "VERY ACTIVE",
    "UPDATEABILITY": "GOOD",
-   "DECISION": "INTEGRATE",
-   "REASON": "Already measured (10/10 differential); finishing the wiring is reuse of a proven component, not new code.",
-   "status": "PLANNED",
+   "DECISION": "REJECTED \u2192 EXISTING IMPLEMENTATION SUPERIOR (for the measured root)",
+   "REASON": "S132 source-first comparison (S132 directive items 1-11): opencalculator's real layout uses TableLayout/TableRow/weight + ConstraintLayout MATCH_CONSTRAINT \u2014 semantics Yoga does not model (no TableLayout rows, no CL anchors). The actual defects were LOCAL law gaps (R-NEW-438/439/440), fixed with ~150 LOC of AOSP-anchored law code instead of a ~40k LOC library + adapter. Honesty fix: no Yoga adapter exists in the current tree (campaign-010's f131606 was lost in the UNIFIED rebases; its 10/10 differential was on a simple LinearLayout tree). Yoga remains the candidate for a measured FlexboxLayout-class APK.",
+   "status": "REJECTED_FOR_MC041_EXISTING_SUPERIOR",
    "categories": [
     "MC-039",
     "MC-041"
    ],
-   "evidence": "docs/GRAPHICS_DO_NOT_REINVENT.md flexbox row (R3)"
+   "evidence": "docs/runtime/knowledge/campaign010/evidence/uc010_yoga_differential.txt (historical); S132 worklog"
   },
   {
    "REUSE_CANDIDATE": "jadx",
