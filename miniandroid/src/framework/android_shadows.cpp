@@ -3515,6 +3515,45 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         const auto* n = find_node(ctx.receiver_id);
         return CallResult::handled_int(n ? n->scroll_y : 0);
     }
+    // ── S129 (R-NEW-426, CAP-INPUT-110): View.setTouchDelegate law ──────
+    // AOSP View.setTouchDelegate(TouchDelegate): mTouchDelegate = delegate.
+    // The TouchDelegateShadow ctor recorded the (bounds, delegate view) pair
+    // on the TouchDelegate heap object; here they are copied onto the owning
+    // ViewNode so the dispatcher's View.onTouchEvent law can consult them
+    // (View.java L17060-17064: delegate consulted BEFORE the clickable
+    // switch). setTouchDelegate(null) clears (AOSP law).
+    if (m == "setTouchDelegate") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty()
+                                                         ? ctx.class_name
+                                                         : ctx.receiver_class);
+        if (ctx.args.empty() ||
+            ctx.args[0].kind != CallContext::Arg::Kind::OBJECT ||
+            ctx.args[0].object_id == 0) {
+            n->touch_delegate_view = 0;
+            return CallResult::handled_void();
+        }
+        const uint32_t td = ctx.args[0].object_id;
+        int32_t l = 0, t = 0, r = 0, b = 0;
+        if (heap_) {
+            heap_->get_object_int_field(td, "__bounds_l__", l);
+            heap_->get_object_int_field(td, "__bounds_t__", t);
+            heap_->get_object_int_field(td, "__bounds_r__", r);
+            heap_->get_object_int_field(td, "__bounds_b__", b);
+        }
+        uint32_t delegate_view = 0;
+        if (heap_) {
+            uint32_t oid = 0; std::string ocls, ostr; bool is_str = false;
+            heap_->get_object_ref_field(td, "__delegate_view__", oid, ocls,
+                                        ostr, is_str);
+            delegate_view = oid;
+        }
+        n->delegate_bounds_left = l;
+        n->delegate_bounds_top = t;
+        n->delegate_bounds_right = r;
+        n->delegate_bounds_bottom = b;
+        n->touch_delegate_view = delegate_view;
+        return CallResult::handled_void();
+    }
     // ── MG-124..129 (S98): View transformation property laws (View.java
     // setTranslationX/getTranslationX, setScaleX/getScaleX, setRotation/
     // getRotation, setPivotX/getPivotX — defaults 0/1/0 per View.java:
@@ -4709,6 +4748,57 @@ CallResult WebSettingsShadow::dispatch(const CallContext& ctx) {
     // LayoutAlgorithm/NightMode enum family (set/get pairs handled above);
     // anything else on WebSettings: honest not-handled → the bridge logs it.
     return CallResult::not_handled();
+}
+
+// ── S129 (R-NEW-426, CAP-INPUT-110): TouchDelegate ctor capture ──────────
+// AOSP TouchDelegate.java ctor (android-14.0.0_r2):
+//   public TouchDelegate(Rect bounds, View delegateView) {
+//       mBounds = bounds;
+//       mSlop = ViewConfiguration.get(delegateView.getContext())
+//               .getScaledTouchSlop();
+//       mSlopBounds = new Rect(bounds);
+//       mSlopBounds.inset(-mSlop, -mSlop);
+//       mDelegateView = delegateView;
+//   }
+// The bounds are "in local coordinates of the containing view" (ctor doc).
+// The shadow records the raw bounds + delegate view on the TouchDelegate
+// heap object; mSlopBounds is DERIVED at consultation time from the
+// dispatcher's touch-slop config (21 px @420dpi — the same 8dp law as the
+// View touch slop), so one config drives both.
+CallResult TouchDelegateShadow::dispatch(const CallContext& ctx) {
+    const std::string& m = ctx.method;
+    if (m != "<init>") return CallResult::not_handled();
+    // Arg conventions: the bridge's generic shadow dispatch carries the
+    // receiver in ctx.receiver_id and ctx.args are the DECLARED parameters
+    // — <init>(Rect, View) → args = [rect, view]. The direct-call form
+    // (args[0] = self, as in engine-internal dispatches) is supported too.
+    uint32_t self = ctx.has_receiver ? ctx.receiver_id : 0;
+    size_t base = 0;
+    if (self == 0 && ctx.args.size() >= 3) {
+        self = ctx.args[0].object_id;
+        base = 1;
+    }
+    if (self == 0 || ctx.args.size() < base + 2)
+        return CallResult::not_handled();
+    const uint32_t rect = ctx.args[base].object_id;
+    const uint32_t view = ctx.args[base + 1].object_id;
+    if (!heap_) return CallResult::handled_void();
+    if (rect != 0) {
+        int32_t l = 0, t = 0, r = 0, b = 0;
+        heap_->get_object_int_field(rect, "left", l);
+        heap_->get_object_int_field(rect, "top", t);
+        heap_->get_object_int_field(rect, "right", r);
+        heap_->get_object_int_field(rect, "bottom", b);
+        heap_->set_object_int_field(self, "__bounds_l__", l);
+        heap_->set_object_int_field(self, "__bounds_t__", t);
+        heap_->set_object_int_field(self, "__bounds_r__", r);
+        heap_->set_object_int_field(self, "__bounds_b__", b);
+    }
+    if (view != 0) {
+        heap_->set_object_ref_field(self, "__delegate_view__", view,
+                                    "Landroid/view/View;", "", false);
+    }
+    return CallResult::handled_void();
 }
 
 }} // namespace miniandroid::framework

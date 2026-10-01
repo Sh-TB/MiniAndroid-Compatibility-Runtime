@@ -1,0 +1,402 @@
+{
+ "calc_run1": {
+  "rc": 0,
+  "boot": {
+   "stages": 7,
+   "all_ok": true
+  },
+  "frame_sha": "a169346e26d9fa83",
+  "colors": 271,
+  "touch": {
+   "targets": 0,
+   "chains": 0,
+   "max_chain": 0,
+   "clicks": 0,
+   "click_dispatched": 0,
+   "moves_dispatched": 0,
+   "swipes": 0,
+   "downs": 0,
+   "ups": 0,
+   "delegates": 0,
+   "intercept_asked": 0,
+   "moves_in_log": 0
+  }
+ },
+ "calc_run2": {
+  "rc": 0,
+  "boot": {
+   "stages": 7,
+   "all_ok": true
+  },
+  "frame_sha": "a169346e26d9fa83",
+  "colors": 271,
+  "touch": {
+   "targets": 0,
+   "chains": 0,
+   "max_chain": 0,
+   "clicks": 0,
+   "click_dispatched": 0,
+   "moves_dispatched": 0,
+   "swipes": 0,
+   "downs": 0,
+   "ups": 0,
+   "delegates": 0,
+   "intercept_asked": 0,
+   "moves_in_log": 0
+  }
+ },
+ "calc_run3": {
+  "rc": 0,
+  "boot": {
+   "stages": 7,
+   "all_ok": true
+  },
+  "frame_sha": "a169346e26d9fa83",
+  "colors": 271,
+  "touch": {
+   "targets": 0,
+   "chains": 0,
+   "max_chain": 0,
+   "clicks": 0,
+   "click_dispatched": 0,
+   "moves_dispatched": 0,
+   "swipes": 0,
+   "downs": 0,
+   "ups": 0,
+   "delegates": 0,
+   "intercept_asked": 0,
+   "moves_in_log": 0
+  }
+ },
+ "flappy_run1": {
+  "rc": 1,
+  "boot": {
+   "stages": 7,
+   "all_ok": true
+  },
+  "frame_sha": "ea5f773f8da55511",
+  "colors": 5,
+  "touch": {
+   "targets": 5,
+   "chains": 5,
+   "max_chain": 1,
+   "clicks": 0,
+   "click_dispatched": 0,
+   "moves_dispatched": 0,
+   "swipes": 0,
+   "downs": 5,
+   "ups": 0,
+   "delegates": 0,
+   "intercept_asked": 0,
+   "moves_in_log": 10
+  },
+  "menu_sha": "13cf47464d9787f4"
+ },
+ "flappy_run2": {
+  "rc": 1,
+  "boot": {
+   "stages": 7,
+   "all_ok": true
+  },
+  "frame_sha": "ea5f773f8da55511",
+  "colors": 5,
+  "touch": {
+   "targets": 5,
+   "chains": 5,
+   "max_chain": 1,
+   "clicks": 0,
+   "click_dispatched": 0,
+   "moves_dispatched": 0,
+   "swipes": 0,
+   "downs": 5,
+   "ups": 0,
+   "delegates": 0,
+   "intercept_asked": 0,
+   "moves_in_log": 10
+  },
+  "menu_sha": "13cf47464d9787f4"
+ },
+ "flappy_run3": {
+  "rc": 1,
+  "boot": {
+   "stages": 7,
+   "all_ok": true
+  },
+  "frame_sha": "ea5f773f8da55511",
+  "colors": 5,
+  "touch": {
+   "targets": 5,
+   "chains": 5,
+   "max_chain": 1,
+   "clicks": 0,
+   "click_dispatched": 0,
+   "moves_dispatched": 0,
+   "swipes": 0,
+   "downs": 5,
+   "ups": 0,
+   "delegates": 0,
+   "intercept_asked": 0,
+   "moves_in_log": 10
+  },
+  "menu_sha": "13cf47464d9787f4"
+ },
+ "fixture_tap": {
+  "rc": 0,
+  "boot": {
+   "stages": 7,
+   "all_ok": true
+  },
+  "frame_sha": "8666eb755861f53e",
+  "colors": 112,
+  "touch": {
+   "targets": 1,
+   "chains": 1,
+   "max_chain": 2,
+   "clicks": 0,
+   "click_dispatched": 1,
+   "moves_dispatched": 0,
+   "swipes": 0,
+   "downs": 1,
+   "ups": 0,
+   "delegates": 1,
+   "intercept_asked": 0,
+   "moves_in_log": 0
+  },
+  "texts": [
+   "B",
+   "VY=0;VX=0",
+   "DELEGATE-CLICK"
+  ]
+ },
+ "fixture_swipe": {
+  "rc": 0,
+  "boot": {
+   "stages": 7,
+   "all_ok": true
+  },
+  "frame_sha": "42e77f89c661cf86",
+  "colors": 140,
+  "touch": {
+   "targets": 2,
+   "chains": 1,
+   "max_chain": 2,
+   "clicks": 0,
+   "click_dispatched": 0,
+   "moves_dispatched": 0,
+   "swipes": 1,
+   "downs": 1,
+   "ups": 1,
+   "delegates": 0,
+   "intercept_asked": 0,
+   "moves_in_log": 14
+  },
+  "texts": [
+   "B",
+   "VY=999;VX=0",
+   "NO-DELEGATE-CLICK"
+  ]
+ },
+ "fixture_swipe_run1": {
+  "rc": 0,
+  "boot": {
+   "stages": 7,
+   "all_ok": true
+  },
+  "frame_sha": "42e77f89c661cf86",
+  "colors": 140,
+  "touch": {
+   "targets": 2,
+   "chains": 1,
+   "max_chain": 2,
+   "clicks": 0,
+   "click_dispatched": 0,
+   "moves_dispatched": 0,
+   "swipes": 1,
+   "downs": 1,
+   "ups": 1,
+   "delegates": 0,
+   "intercept_asked": 0,
+   "moves_in_log": 14
+  }
+ },
+ "fixture_swipe_run2": {
+  "rc": 0,
+  "boot": {
+   "stages": 7,
+   "all_ok": true
+  },
+  "frame_sha": "42e77f89c661cf86",
+  "colors": 140,
+  "touch": {
+   "targets": 2,
+   "chains": 1,
+   "max_chain": 2,
+   "clicks": 0,
+   "click_dispatched": 0,
+   "moves_dispatched": 0,
+   "swipes": 1,
+   "downs": 1,
+   "ups": 1,
+   "delegates": 0,
+   "intercept_asked": 0,
+   "moves_in_log": 14
+  }
+ },
+ "fixture_swipe_run3": {
+  "rc": 0,
+  "boot": {
+   "stages": 7,
+   "all_ok": true
+  },
+  "frame_sha": "42e77f89c661cf86",
+  "colors": 140,
+  "touch": {
+   "targets": 2,
+   "chains": 1,
+   "max_chain": 2,
+   "clicks": 0,
+   "click_dispatched": 0,
+   "moves_dispatched": 0,
+   "swipes": 1,
+   "downs": 1,
+   "ups": 1,
+   "delegates": 0,
+   "intercept_asked": 0,
+   "moves_in_log": 14
+  }
+ },
+ "fixture_swipe_3run_identical": "42e77f89c661cf86",
+ "unote_swipe": {
+  "rc": 0,
+  "boot": {
+   "stages": 7,
+   "all_ok": true
+  },
+  "frame_sha": "4f1a9e4e8f64fae8",
+  "colors": 128,
+  "touch": {
+   "targets": 0,
+   "chains": 0,
+   "max_chain": 0,
+   "clicks": 0,
+   "click_dispatched": 0,
+   "moves_dispatched": 0,
+   "swipes": 1,
+   "downs": 1,
+   "ups": 1,
+   "delegates": 0,
+   "intercept_asked": 0,
+   "moves_in_log": 0
+  }
+ },
+ "calc_taps": {
+  "rc": 0,
+  "boot": {
+   "stages": 7,
+   "all_ok": true
+  },
+  "frame_sha": "90080684dc46aa74",
+  "colors": 264,
+  "touch": {
+   "targets": 3,
+   "chains": 3,
+   "max_chain": 5,
+   "clicks": 0,
+   "click_dispatched": 3,
+   "moves_dispatched": 0,
+   "swipes": 0,
+   "downs": 3,
+   "ups": 0,
+   "delegates": 0,
+   "intercept_asked": 0,
+   "moves_in_log": 0
+  }
+ },
+ "ttt_taps": {
+  "rc": 1,
+  "boot": {
+   "stages": 7,
+   "all_ok": true
+  },
+  "frame_sha": "b5a7a35d5fe0564b",
+  "colors": 1,
+  "touch": {
+   "targets": 0,
+   "chains": 0,
+   "max_chain": 0,
+   "clicks": 0,
+   "click_dispatched": 0,
+   "moves_dispatched": 0,
+   "swipes": 0,
+   "downs": 1,
+   "ups": 0,
+   "delegates": 0,
+   "intercept_asked": 0,
+   "moves_in_log": 0
+  }
+ },
+ "unote": {
+  "rc": 0,
+  "boot": {
+   "stages": 7,
+   "all_ok": true
+  },
+  "frame_sha": "4f1a9e4e8f64fae8",
+  "colors": 128,
+  "touch": {
+   "targets": 0,
+   "chains": 0,
+   "max_chain": 0,
+   "clicks": 0,
+   "click_dispatched": 0,
+   "moves_dispatched": 0,
+   "swipes": 0,
+   "downs": 0,
+   "ups": 0,
+   "delegates": 0,
+   "intercept_asked": 0,
+   "moves_in_log": 0
+  }
+ },
+ "gmdice": {
+  "rc": 0,
+  "boot": {
+   "stages": 7,
+   "all_ok": true
+  },
+  "frame_sha": "f3b483fe7b7cf51b",
+  "colors": 187,
+  "touch": {
+   "targets": 0,
+   "chains": 0,
+   "max_chain": 0,
+   "clicks": 0,
+   "click_dispatched": 0,
+   "moves_dispatched": 0,
+   "swipes": 0,
+   "downs": 0,
+   "ups": 0,
+   "delegates": 0,
+   "intercept_asked": 0,
+   "moves_in_log": 0
+  }
+ },
+ "telegram": {
+  "rc": 1,
+  "boot": {
+   "stages": 7,
+   "all_ok": true
+  },
+  "frame_sha": "59fdbfcd60b86a23",
+  "colors": 3
+ },
+ "whatsapp": {
+  "rc": 1,
+  "boot": {
+   "stages": 7,
+   "all_ok": true
+  },
+  "frame_sha": "eb16ab5c68fa9b6c",
+  "colors": 2
+ }
+}

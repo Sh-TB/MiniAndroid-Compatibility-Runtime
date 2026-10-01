@@ -141,6 +141,16 @@ struct ExecutionConfig {
     // EMPTY = legacy law exactly (tap k fires at frame k). When non-empty,
     // size MUST equal tap_sequence.size() (all-or-none, enforced in main).
     std::vector<int> tap_at_frames;
+    // S129 (R-NEW-425/426): generic swipe/drag gesture — canonical AOSP
+    // cadence DOWN → N MOVEs (16ms virtual apart — 60Hz, linear interpolation) →
+    // UP, all through the TouchDispatcher law pipeline. Drives the MOVE
+    // delivery law (VelocityTracker.addMovement / GestureDetector.onScroll
+    // streams) and scroll containers. `--swipe x1,y1,x2,y2[@frame]`;
+    // fires ONCE at frame == swipe_at_frame (default 2).
+    bool swipe_enabled = false;
+    int swipe_x1 = 0, swipe_y1 = 0, swipe_x2 = 0, swipe_y2 = 0;
+    int swipe_at_frame = 2;
+    int swipe_steps = 12;
     bool generate_reports = true;
     
     // EXP-031: Execution mode (CRITICAL - determines real vs fake path)

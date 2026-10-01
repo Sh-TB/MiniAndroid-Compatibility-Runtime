@@ -1,8 +1,8 @@
 {
  "_projection_of": "root_registry.json",
  "_law": "root_registry.json is the single writable store; this file is a generated read model (ROADMAP SS3: no duplicate canonical registries).",
- "generated": "2026-09-30T21:53:15Z",
- "total": 422,
+ "generated": "2026-10-01T03:05:21Z",
+ "total": 424,
  "status_counts": {
   "PARTIAL": 103,
   "VERIFIED-CORRECT": 46,
@@ -13,7 +13,7 @@
   "NOT-APPLICABLE": 42,
   "OBSERVED-FAIL": 6,
   "IMPLEMENTED": 7,
-  "ROOT-CAUSED-FIXED": 48,
+  "ROOT-CAUSED-FIXED": 50,
   "PARTIAL-FIX": 1,
   "PROVEN-FIXED": 1,
   "IMPLEMENTED+TESTED": 6,
@@ -2980,6 +2980,20 @@
    "title": "INPUT TouchTarget + onInterceptTouchEvent law (CAP-INPUT-102/100): hit-test walked children in DRAW order (AOSP walks REVERSE \u2014 topmost sibling must win overlaps), no TouchTarget chain was captured (MOVE/UP could not dispatch through ancestors), and ViewGroup.onInterceptTouchEvent never ran (no intercept-at-DOWN retarget, no mid-gesture CANCEL) \u2014 the AOSP ViewGroup.dispatchTouchEvent core was only partially modeled.",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P0",
+   "layer": null
+  },
+  {
+   "id": "R-NEW-425",
+   "title": "INPUT VelocityTracker law gap (CAP-INPUT-108): the runtime had no velocity tracker \u2014 android.view.VelocityTracker.obtain/addMovement/computeCurrentVelocity/getXVelocity did not exist, and the dispatcher never delivered MOVE events to app code, so every fling/gesture-velocity path (ScrollView fling seeding, GestureDetector.onFling) was starved of data.",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P1",
+   "layer": null
+  },
+  {
+   "id": "R-NEW-426",
+   "title": "INPUT TouchDelegate law gap + MOVE-delivery law gap (CAP-INPUT-110): android.view.TouchDelegate did not exist (no ctor capture, no setTouchDelegate, no View.onTouchEvent consult \u2014 View.java L17060-17064), and the dispatcher delivered only DOWN/UP to app code (MOVE events never reached OnTouchListener/onTouchEvent overrides \u2014 every drag-driven app path was starved).",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P1",
    "layer": null
   }
  ]

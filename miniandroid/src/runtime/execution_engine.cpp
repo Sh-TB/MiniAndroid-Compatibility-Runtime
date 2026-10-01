@@ -5367,6 +5367,77 @@ bool ExecutionEngine::stage_frame_sequence( ExecutionResult& result, const Execu
             }  // F-117 else-branch close
         }
 
+        // ── S129 (R-NEW-425/426): generic swipe/drag gesture ────────────
+        // Canonical AOSP drag cadence through the TouchDispatcher law
+        // pipeline (no input bypass): DOWN at (x1,y1) → N MOVEs stepping
+        // linearly toward (x2,y2) at 50ms virtual intervals → UP at (x2,y2).
+        // Drives the MOVE delivery law (VelocityTracker streams) and
+        // scroll containers. Fires ONCE at frame == swipe_at_frame.
+        if (config.swipe_enabled && touch_dispatcher_ && shadow_registry_ &&
+            k == config.swipe_at_frame) {
+            auto* activity_shadow =
+                shadow_registry_->find_as<framework::ActivityShadow>();
+            if (!activity_shadow) {
+                std::cerr << "[S129-SWIPE] no ActivityShadow — swipe skipped"
+                          << std::endl;
+            } else {
+                uint32_t swipe_root = activity_shadow->content_view_id();
+                // R-NEW-394 dialog-window routing (same law as taps).
+                if (auto* dialog_shadow =
+                        shadow_registry_->find_as<framework::DialogShadow>()) {
+                    if (uint32_t decor_root = dialog_shadow->decor_root_at(
+                            config.swipe_x1, config.swipe_y1)) {
+                        swipe_root = decor_root;
+                    }
+                }
+                const int steps = config.swipe_steps > 0 ? config.swipe_steps
+                                                         : 12;
+                const int x1 = config.swipe_x1, y1 = config.swipe_y1;
+                const int x2 = config.swipe_x2, y2 = config.swipe_y2;
+                std::cerr << "[S129-SWIPE] frame " << k << " DOWN (" << x1
+                          << "," << y1 << ") -> UP (" << x2 << "," << y2
+                          << ") steps=" << steps << std::endl;
+                auto down_rec = touch_dispatcher_->dispatch(
+                    swipe_root, {framework::TouchAction::DOWN, x1, y1});
+                for (int i = 1; i <= steps; ++i) {
+                    hs->advance_virtual(16);  // 60Hz drag sampling (AOSP canonical; <40ms stopped-law)
+                    const int mx = x1 + (x2 - x1) * i / steps;
+                    const int my = y1 + (y2 - y1) * i / steps;
+                    touch_dispatcher_->dispatch(
+                        swipe_root, {framework::TouchAction::MOVE, mx, my});
+                }
+                hs->advance_virtual(50);
+                auto up_rec = touch_dispatcher_->dispatch(
+                    swipe_root, {framework::TouchAction::UP, x2, y2});
+                // Drain the gesture's posted callbacks (PerformClick chain).
+                for (int round = 0; round < 8; ++round) {
+                    std::vector<uint32_t> swipe_drained;
+                    if (hs->drain_ready(&swipe_drained) == 0) break;
+                    for (uint32_t rid : swipe_drained)
+                        invoke_handler_runnable(rid);
+                }
+                // F-NEW-199 interaction-manifest law: record the gesture.
+                {
+                    nlohmann::json ir;
+                    ir["event"] = "swipe (S129 generic drag gesture)";
+                    ir["frame"] = k;
+                    ir["from"] = {x1, y1};
+                    ir["to"] = {x2, y2};
+                    ir["steps"] = steps;
+                    ir["step_ms"] = 16;
+                    ir["down_record"] = down_rec;
+                    ir["up_record"] = up_rec;
+                    ir["after_frame_index"] = k;
+                    if (!manifest.contains("interactions") ||
+                        !manifest["interactions"].is_array()) {
+                        manifest["interactions"] = nlohmann::json::array();
+                    }
+                    manifest["interactions"].push_back(ir);
+                }
+                stage_render_frame(result, config);  // post-gesture state
+            }
+        }
+
         stage_render_frame(result, config);  // re-render CURRENT state
 
         size_t diff_px = 0;

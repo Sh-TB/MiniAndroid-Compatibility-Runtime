@@ -123,6 +123,166 @@ void TouchDispatcher::reset_gesture() {
     touch_listener_owns_ = false;  // F-110e
 }
 
+// S129 (R-NEW-426, CAP-INPUT-110): the DOWN response law shared by the
+// normal target path and the delegate-retarget path. Body = the View.java
+// processing that ran inline for every DOWN since G06: disabled law →
+// OnTouchListener/onTouchEvent override arm (F-110e/S122) → pressed
+// feedback + 500ms long-press arming.
+void TouchDispatcher::apply_down_response_(uint32_t target, int x, int y,
+                                           nlohmann::json* rec,
+                                           bool& consumed) {
+    const auto* n = views_->find_node(target);
+    if (!n) {
+        consumed = false;
+        return;
+    }
+    const bool touchable = view_touchable(*n);
+
+    if (!n->enabled) {
+        // DISABLED law (View.java L17049-17057): a disabled touchable
+        // view CONSUMES the sequence but does not respond — no press,
+        // no long-press scheduling.
+        if (rec) {
+            (*rec)["consumed"] = touchable;
+            (*rec)["disabled_law"] = true;
+            (*rec)["law"] = "View.java L17049-17057: disabled view consumes "
+                            "without response";
+        }
+        consumed = touchable;
+        return;
+    }
+
+    // F-110e (S62+): OnTouchListener DOWN arm. AOSP
+    // View.dispatchTouchEvent (View.java L16741-16760): if the
+    // listener exists and ENABLED, onTouch(DOWN) runs FIRST; when it
+    // returns true the result is consumed and the internal
+    // touch-event processing (pressed feedback, long-press arming,
+    // PerformClick) is skipped entirely.
+    // F-110e (S62+) + S122 (R-NEW-417): OnTouchListener DOWN arm,
+    // extended to the view's OWN onTouchEvent override — AOSP
+    // View.dispatchTouchEvent: no listener OR listener returning
+    // false falls into onTouchEvent(ACTION_DOWN); a custom board
+    // view (klondike GameView) handles the gesture there.
+    if ((n->touch_listener_id != 0 || n->overrides_touch_event) && touch_fn_) {
+        bool consumed_by_listener = false;
+        const bool dispatched = touch_fn_(target, 0 /*ACTION_DOWN*/,
+                                          float(x), float(y),
+                                          consumed_by_listener);
+        if (rec) {
+            (*rec)["touch_dispatched"] = dispatched;
+            (*rec)["touch_listener_consumed"] = consumed_by_listener;
+        }
+        if (dispatched && consumed_by_listener) {
+            touch_listener_owns_ = true;
+            consumed = true;
+            return;
+        }
+    }
+    // Enabled + touchable: DOWN shows pressed feedback immediately
+    // (non-scrolling-container law, View.java L17119-17125) and arms
+    // the 500ms long-press check (checkForLongClick).
+    press(target, x, y, rec);
+    has_performed_long_press_ = false;
+    schedule(tok_check_long_press_, "CheckForLongPress",
+             cfg_.long_press_timeout_ms);
+    if (rec) (*rec)["long_press_armed_ms"] = cfg_.long_press_timeout_ms;
+    consumed = true;
+}
+
+// S129 (R-NEW-426, CAP-INPUT-110): consult `owner`'s TouchDelegate for a
+// DOWN at (x,y). AOSP TouchDelegate.onTouchEvent DOWN arm:
+//   mDelegateTargeted = mBounds.contains(x, y);
+//   sendToDelegate = mDelegateTargeted;
+//   ... event.setLocation(mDelegateView.getWidth() / 2,
+//                         mDelegateView.getHeight() / 2);
+//   handled = mDelegateView.dispatchTouchEvent(event);
+// mBounds are OWNER-LOCAL (ctor doc) → translated by the owner's absolute
+// origin here (the render layout stores absolute node geometry).
+bool TouchDispatcher::consult_delegate_down_(uint32_t owner, int x, int y,
+                                             uint32_t root_id,
+                                             nlohmann::json* rec) {
+    const auto* on = views_->find_node(owner);
+    if (!on || on->touch_delegate_view == 0) return false;
+    const int bl = on->x + on->delegate_bounds_left;
+    const int bt = on->y + on->delegate_bounds_top;
+    const int br = on->x + on->delegate_bounds_right;
+    const int bb = on->y + on->delegate_bounds_bottom;
+    // AOSP DOWN arm: EXACT mBounds (no slop on DOWN; the slop bounds
+    // gate only the MOVE/UP follow-through).
+    if (!(x >= bl && x < br && y >= bt && y < bb)) return false;
+    const uint32_t dv = on->touch_delegate_view;
+    const auto* dn = views_->find_node(dv);
+    if (!dn) return false;
+
+    delegate_ = DelegateState{true, owner, dv, bl, bt, br, bb,
+                              cfg_.touch_slop_px};
+    // Retarget the gesture to the delegate view (TouchTarget chain: the
+    // delegate plus every ancestor up to the dispatch root).
+    gesture_target_ = dv;
+    gesture_chain_.clear();
+    for (uint32_t cur = dv; cur != 0;) {
+        gesture_chain_.push_back(cur);
+        const auto* cn = views_->find_node(cur);
+        if (!cn || cn->parent_id == 0 || cn->view_id == root_id) break;
+        cur = cn->parent_id;
+    }
+    // AOSP: setLocation(w/2, h/2) — the event lands at the delegate's
+    // center in the delegate's LOCAL space = origin + center absolute.
+    const int cx = dn->x + dn->width / 2;
+    const int cy = dn->y + dn->height / 2;
+    down_x_ = cx;
+    down_y_ = cy;  // PerformClick carries the translated point
+    if (rec) {
+        (*rec)["delegate_law"] = true;
+        (*rec)["delegate_owner_view_id"] = owner;
+        (*rec)["delegate_view_id"] = dv;
+        (*rec)["delegate_bounds_abs"] = {bl, bt, br, bb};
+        (*rec)["event_translated_to"] = {cx, cy};
+        (*rec)["target_view_id"] = dv;
+        (*rec)["touch_target_chain"] = gesture_chain_;
+        (*rec)["target_class"] = dn->class_desc;
+    }
+    // The delegate's OWN dispatchTouchEvent law follows (disabled gate,
+    // listener arm, press + long-press) — the same View.java processing.
+    bool consumed = false;
+    apply_down_response_(dv, cx, cy, rec, consumed);
+    if (rec) (*rec)["consumed"] = consumed;
+    return true;
+}
+
+// S129 (R-NEW-426, CAP-INPUT-110): the AOSP fallback arm. When NO child
+// claims the DOWN, ViewGroup.dispatchTouchEvent falls through to
+// dispatchTransformedTouchEvent(child=null) → View.dispatchTouchEvent →
+// View.onTouchEvent — where the delegate is consulted (L17060-17064).
+// The candidate is the DEEPEST VISIBLE view containing the point
+// (touchability NOT required — AOSP isTransformedTouchPointInView gates on
+// visibility only); on failure the recursion unwinds through the
+// ancestors' onTouchEvent arms, so each ancestor's delegate is consulted
+// in turn, deepest first.
+bool TouchDispatcher::consult_fallback_delegates_(uint32_t root_id, int x,
+                                                  int y, nlohmann::json* rec) {
+    uint32_t candidate = 0;
+    std::function<void(uint32_t)> walk = [&](uint32_t id) {
+        const auto* n = views_->find_node(id);
+        if (!n || n->visibility != 0) return;
+        if (node_at(n, x, y)) candidate = id;  // deepest wins
+        for (auto cit = n->children.rbegin(); cit != n->children.rend();
+             ++cit)
+            walk(*cit);
+    };
+    walk(root_id);
+    for (uint32_t cur = candidate; cur != 0;) {
+        if (consult_delegate_down_(cur, x, y, root_id, rec)) {
+            if (rec) (*rec)["fallback_delegate_law"] = true;
+            return true;
+        }
+        if (cur == root_id) break;
+        const auto* cn = views_->find_node(cur);
+        cur = cn ? cn->parent_id : 0;
+    }
+    return false;
+}
+
 void TouchDispatcher::press(uint32_t view_id, int x, int y,
                             nlohmann::json* rec) {
     if (auto* n = views_->find_node(view_id)) {
@@ -162,6 +322,7 @@ nlohmann::json TouchDispatcher::dispatch(uint32_t root_id,
             // preceding UP/CANCEL is hostile — reset defensively so no
             // stale callbacks of the old gesture leak into the new one).
             reset_gesture();
+            delegate_ = DelegateState{};  // S129: fresh per-gesture state
             down_x_ = ev.x;
             down_y_ = ev.y;
 
@@ -230,6 +391,15 @@ nlohmann::json TouchDispatcher::dispatch(uint32_t root_id,
             if (const auto* tn = views_->find_node(target))
                 rec["target_class"] = tn->class_desc;
             if (target == 0) {
+                // S129 (R-NEW-426, CAP-INPUT-110): AOSP fallback arm — no
+                // child claimed the DOWN, so the deepest visible view (and
+                // then its ancestors) runs View.onTouchEvent, where the
+                // TouchDelegate is consulted BEFORE the clickable switch
+                // (View.java L17060-17064).
+                if (consult_fallback_delegates_(root_id, ev.x, ev.y, &rec)) {
+                    rec["consumed"] = true;
+                    break;
+                }
                 rec["consumed"] = false;
                 rec["law"] = "no touch target — dispatchTouchEvent returns "
                              "false, no listener dispatch";
@@ -261,54 +431,20 @@ nlohmann::json TouchDispatcher::dispatch(uint32_t root_id,
                 const auto* tn2 = views_->find_node(target);
                 if (tn2) rec["target_class"] = tn2->class_desc;
             }
-            const auto* n = views_->find_node(target);
-            const bool touchable = view_touchable(*n);
-
-            if (!n->enabled) {
-                // DISABLED law (View.java L17049-17057): a disabled touchable
-                // view CONSUMES the sequence but does not respond — no press,
-                // no long-press scheduling.
-                rec["consumed"] = touchable;
-                rec["disabled_law"] = true;
-                rec["law"] = "View.java L17049-17057: disabled view consumes "
-                             "without response";
+            // S129 (R-NEW-426, CAP-INPUT-110): the target's OWN delegate —
+            // AOSP order: interception already ran above; the target's
+            // View.onTouchEvent consults mTouchDelegate BEFORE the
+            // clickable switch (View.java L17060-17064).
+            if (consult_delegate_down_(target, ev.x, ev.y, root_id, &rec)) {
+                rec["consumed"] = true;
                 break;
             }
-
-            // F-110e (S62+): OnTouchListener DOWN arm. AOSP
-            // View.dispatchTouchEvent (View.java L16741-16760): if the
-            // listener exists and ENABLED, onTouch(DOWN) runs FIRST; when it
-            // returns true the result is consumed and the internal
-            // touch-event processing (pressed feedback, long-press arming,
-            // PerformClick) is skipped entirely.
-            // F-110e (S62+) + S122 (R-NEW-417): OnTouchListener DOWN arm,
-            // extended to the view's OWN onTouchEvent override — AOSP
-            // View.dispatchTouchEvent: no listener OR listener returning
-            // false falls into onTouchEvent(ACTION_DOWN); a custom board
-            // view (klondike GameView) handles the gesture there.
-            if ((n->touch_listener_id != 0 || n->overrides_touch_event) &&
-                touch_fn_) {
-                bool consumed_by_listener = false;
-                const bool dispatched =
-                    touch_fn_(target, 0 /*ACTION_DOWN*/, ev.x, ev.y,
-                              consumed_by_listener);
-                rec["touch_dispatched"] = dispatched;
-                rec["touch_listener_consumed"] = consumed_by_listener;
-                if (dispatched && consumed_by_listener) {
-                    touch_listener_owns_ = true;
-                    rec["consumed"] = true;
-                    break;
-                }
-            }
-            // Enabled + touchable: DOWN shows pressed feedback immediately
-            // (non-scrolling-container law, View.java L17119-17125) and arms
-            // the 500ms long-press check (checkForLongClick).
-            press(target, ev.x, ev.y, &rec);
-            has_performed_long_press_ = false;
-            schedule(tok_check_long_press_, "CheckForLongPress",
-                     cfg_.long_press_timeout_ms);
-            rec["consumed"] = true;
-            rec["long_press_armed_ms"] = cfg_.long_press_timeout_ms;
+            // S129: the DOWN response law (disabled gate → listener arm →
+            // press + long-press) — extracted verbatim into the shared
+            // helper so the delegate-retarget path runs the SAME law.
+            bool consumed = false;
+            apply_down_response_(target, ev.x, ev.y, &rec, consumed);
+            rec["consumed"] = consumed;
             break;
         }
 
@@ -365,13 +501,46 @@ nlohmann::json TouchDispatcher::dispatch(uint32_t root_id,
                 rec["consumed"] = touchable;
                 break;
             }
+            // S129 (R-NEW-426, CAP-INPUT-110): delegate MOVE forwarding —
+            // AOSP TouchDelegate.onTouchEvent MOVE arm: sendToDelegate =
+            // mDelegateTargeted; hit = mSlopBounds.contains(x, y);
+            // hit → setLocation(delegate w/2, h/2); !hit → setLocation(
+            // -(slop*2), -(slop*2)) (outside, so pressed tracking clears).
+            int fx = ev.x, fy = ev.y;
+            if (delegate_.targeted && gesture_target_ == delegate_.delegate) {
+                const auto* dn = views_->find_node(delegate_.delegate);
+                if (delegate_.in_slop_bounds(ev.x, ev.y) && dn) {
+                    fx = dn->x + dn->width / 2;
+                    fy = dn->y + dn->height / 2;
+                    rec["delegate_move_hit"] = true;
+                } else if (dn) {
+                    fx = dn->x - 2 * delegate_.slop;
+                    fy = dn->y - 2 * delegate_.slop;
+                    rec["delegate_move_outside_slop_bounds"] = true;
+                }
+            }
+            // S129 (R-NEW-425, CAP-INPUT-108): MOVE delivery law — AOSP
+            // dispatchTransformedTouchEvent delivers EVERY event of the
+            // gesture to the captured target's OnTouchListener/onTouchEvent
+            // (VelocityTracker.addMovement and GestureDetector.onScroll
+            // receive the MOVE stream; S128 only delivered DOWN/UP, which
+            // left every drag-driven app path starved of moves).
+            if (touch_fn_ &&
+                (n->touch_listener_id != 0 || n->overrides_touch_event)) {
+                bool consumed_by_listener = false;
+                const bool dispatched =
+                    touch_fn_(gesture_target_, 2 /*ACTION_MOVE (AOSP code)*/,
+                              float(fx), float(fy), consumed_by_listener);
+                rec["move_dispatched"] = dispatched;
+                rec["move_consumed"] = consumed_by_listener;
+            }
             // Lenient move law (View.java L17198-17208): leaving the button
             // bounds beyond touch slop removes the tap + long-press callbacks
             // and clears pressed (AOSP pointInView + mTouchSlop margin).
             const int slop = cfg_.touch_slop_px;
             const bool inside =
-                ev.x >= n->x - slop && ev.x < n->x + std::max(1, n->width) + slop &&
-                ev.y >= n->y - slop && ev.y < n->y + std::max(1, n->height) + slop;
+                fx >= n->x - slop && fx < n->x + std::max(1, n->width) + slop &&
+                fy >= n->y - slop && fy < n->y + std::max(1, n->height) + slop;
             if (!inside) {
                 unschedule(tok_check_long_press_);
                 unpress(gesture_target_, &rec);
@@ -391,6 +560,13 @@ nlohmann::json TouchDispatcher::dispatch(uint32_t root_id,
             auto* n = views_->find_node(gesture_target_);
             const bool touchable = n ? view_touchable(*n) : false;
             rec["target_view_id"] = gesture_target_;
+            if (delegate_.targeted && gesture_target_ == delegate_.delegate) {
+                // S129 (R-NEW-426): UP forwards while mDelegateTargeted —
+                // the slop-bounds hit only affects the EVENT LOCATION (our
+                // UP law is location-independent: the pressed flag gates
+                // the click), so record the arm without altering the law.
+                rec["delegate_up_forwarded"] = true;
+            }
             if (!n || !touchable) {
                 rec["consumed"] = false;
                 reset_gesture();
@@ -456,7 +632,9 @@ nlohmann::json TouchDispatcher::dispatch(uint32_t root_id,
         case TouchAction::CANCEL: {
             // View.java L17172-17184: setPressed(false) + removeTapCallback +
             // removeLongPressCallback + flag reset. The gesture ends; the
-            // next DOWN starts clean.
+            // next DOWN starts clean. S129: TouchDelegate.onTouchEvent
+            // CANCEL arm clears mDelegateTargeted.
+            delegate_.targeted = false;
             unschedule(tok_check_long_press_);
             unschedule(tok_perform_click_);
             unschedule(tok_unset_pressed_);

@@ -595,6 +595,43 @@ int main(int argc, char* argv[]) {
                               ? (") after frame " + std::to_string(tap_at_frame))
                               : "")
                       << ") — frames + touch trace saved to <output>/frames/\n";
+        } else if (arg == "--swipe" && i + 1 < argc) {
+            // S129 (R-NEW-425/426): generic swipe/drag gesture through the
+            // TouchDispatcher law pipeline. DOWN at (x1,y1), N MOVEs at 16ms
+            // virtual intervals (60Hz) (linear interpolation), UP at (x2,y2).
+            // `x1,y1,x2,y2@frame` schedules the fire frame (F-117 cadence).
+            std::string spec = argv[++i];
+            int swipe_at_frame = 2;
+            auto at_sign = spec.rfind('@');
+            if (at_sign != std::string::npos) {
+                swipe_at_frame = std::stoi(spec.substr(at_sign + 1));
+                spec = spec.substr(0, at_sign);
+            }
+            std::vector<int> vals;
+            size_t pos = 0;
+            while (vals.size() < 4) {
+                auto comma = spec.find(',', pos);
+                if (comma == std::string::npos) {
+                    vals.push_back(std::stoi(spec.substr(pos)));
+                    break;
+                }
+                vals.push_back(std::stoi(spec.substr(pos, comma - pos)));
+                pos = comma + 1;
+            }
+            if (vals.size() != 4) {
+                std::cerr << "[ERROR] --swipe expects x1,y1,x2,y2[@frame] (got \""
+                          << argv[i] << "\")\n";
+                return 1;
+            }
+            config.swipe_enabled = true;
+            config.swipe_x1 = vals[0];
+            config.swipe_y1 = vals[1];
+            config.swipe_x2 = vals[2];
+            config.swipe_y2 = vals[3];
+            config.swipe_at_frame = swipe_at_frame;
+            std::cout << "[*] SWIPE gesture queued (" << vals[0] << "," << vals[1]
+                      << ") -> (" << vals[2] << "," << vals[3] << ") after frame "
+                      << swipe_at_frame << " — frames + touch trace saved to <output>/frames/\n";
         } else if (arg == "--frame-delay" && i + 1 < argc) {
             config.frame_delay_ms = std::stoi(argv[++i]);
             std::cout << "[*] frame delay: " << config.frame_delay_ms << "ms virtual\n";

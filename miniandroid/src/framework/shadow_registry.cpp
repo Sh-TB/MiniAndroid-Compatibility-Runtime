@@ -3,6 +3,8 @@
 // EXP-051 — Android Framework Shadow Registry (implementation)
 
 #include "shadow_registry.h"
+
+#include "velocity_tracker.h"  // S129 R-NEW-425/426
 #include "android_shadows.h"
 #include "dialog_shadow.h"
 #include "canvas_shadow.h"
@@ -340,6 +342,16 @@ void register_platform_shadows(ShadowRegistry& reg) {
     // (ValueAnimator.setRepeatCount on a null object reference → APP
     // BOUNDARY unwind).
     reg.register_shadow<AnimatorShadow>();
+    // S129 (R-NEW-425, CAP-INPUT-108): VelocityTracker law — LSQ2 estimator
+    // (AOSP VelocityTracker.h/cpp port) + the DEX bridge. Exact-class claim;
+    // registered after the view catch-all (no overlap: VelocityTracker is
+    // not a View descriptor).
+    reg.register_shadow<VelocityTrackerShadow>();
+    // S129 (R-NEW-426, CAP-INPUT-110): TouchDelegate ctor capture — the
+    // (bounds, delegate view) pair is recorded on the TouchDelegate heap
+    // object and copied onto the owning ViewNode by View.setTouchDelegate.
+    // Exact-class claim; ViewShadow must NOT capture these ctors.
+    reg.register_shadow<TouchDelegateShadow>();
 }
 
 }} // namespace miniandroid::framework

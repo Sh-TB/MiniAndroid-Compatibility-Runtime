@@ -9127,6 +9127,15 @@ bool DalvikExecutionEngine::dispatch_touch_listener(uint32_t view_object_id,
         heap_.set_object_field(ev_id, "__action__", DalvikValue::make_int(action));
         heap_.set_object_field(ev_id, "__x__", DalvikValue::make_float(x));
         heap_.set_object_field(ev_id, "__y__", DalvikValue::make_float(y));
+        // S129 (R-NEW-425, CAP-INPUT-108): AOSP MotionEvent.getEventTime —
+        // VelocityTracker.addMovement orders samples by event time. The
+        // materialized event carries the VIRTUAL clock instant (one-queue
+        // law → deterministic velocity values across runs).
+        if (auto* hs = shadow_registry_
+                           ? shadow_registry_->find_as<framework::HandlerShadow>()
+                           : nullptr)
+            heap_.set_object_field(ev_id, "__time__",
+                                   DalvikValue::make_long(hs->virtual_now_ms()));
         std::cerr << "[UI-EVENT] event=TOUCH action=" << action
                   << " view_object=" << view_object_id
                   << " view_class=" << node->class_desc
@@ -9176,6 +9185,13 @@ bool DalvikExecutionEngine::dispatch_touch_listener(uint32_t view_object_id,
     heap_.set_object_field(ev_id, "__action__", DalvikValue::make_int(action));
     heap_.set_object_field(ev_id, "__x__", DalvikValue::make_float(x));
     heap_.set_object_field(ev_id, "__y__", DalvikValue::make_float(y));
+    // S129 (R-NEW-425, CAP-INPUT-108): virtual-clock event time on the
+    // materialized MotionEvent (see the first __time__ site for the law).
+    if (auto* hs = shadow_registry_
+                       ? shadow_registry_->find_as<framework::HandlerShadow>()
+                       : nullptr)
+        heap_.set_object_field(ev_id, "__time__",
+                               DalvikValue::make_long(hs->virtual_now_ms()));
 
     std::cerr << "[UI-EVENT] event=TOUCH"
               << " action=" << action
@@ -9233,6 +9249,13 @@ bool DalvikExecutionEngine::dispatch_intercept(uint32_t view_object_id,
     heap_.set_object_field(ev_id, "__action__", DalvikValue::make_int(action));
     heap_.set_object_field(ev_id, "__x__", DalvikValue::make_float(x));
     heap_.set_object_field(ev_id, "__y__", DalvikValue::make_float(y));
+    // S129 (R-NEW-425, CAP-INPUT-108): virtual-clock event time on the
+    // materialized MotionEvent (see the first __time__ site for the law).
+    if (auto* hs = shadow_registry_
+                       ? shadow_registry_->find_as<framework::HandlerShadow>()
+                       : nullptr)
+        heap_.set_object_field(ev_id, "__time__",
+                               DalvikValue::make_long(hs->virtual_now_ms()));
 
     std::cerr << "[UI-EVENT] event=INTERCEPT action=" << action
               << " view_object=" << view_object_id
@@ -19152,6 +19175,12 @@ static int framework_static_int(const std::string& class_desc,
     {"Landroid/view/MotionEvent;.ACTION_POINTER_DOWN", 5},
     {"Landroid/view/MotionEvent;.ACTION_POINTER_UP", 6},
     {"Landroid/view/MotionEvent;.ACTION_MASK", 255},
+    // S129 (R-NEW-425, CAP-INPUT-108): AOSP MotionEvent axis constants —
+    // VelocityTracker.getAxisVelocity(AXIS_X|AXIS_Y) and the planar-axis
+    // set in the native tracker law (VelocityTracker.cpp PLANAR_AXES).
+    {"Landroid/view/MotionEvent;.AXIS_X", 0},
+    {"Landroid/view/MotionEvent;.AXIS_Y", 1},
+    {"Landroid/view/MotionEvent;.AXIS_SCROLL", 26},
     // S123 ROOT-CALC-B — android.view.Gravity constant family (AOSP
     // Gravity.java law). sget of Gravity.TOP in the lib chain previously
     // fell through every synthesis arm and answered NULL_REF; the null
@@ -20703,6 +20732,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // F-110e (S62+): MotionEvent receiver-side getters. The G06 touch
     // pipeline materializes the event object with __action__/__x__/__y__
     // heap fields; AOSP MotionEvent.getAction()/getX()/getY() read them.
+    // S129 (R-NEW-425): getEventTime()/getTime() read __time__ (virtual
+    // clock ms — VelocityTracker.addMovement and gesture timing consume it).
     if (class_name == "Landroid/view/MotionEvent;" && !args.empty()) {
         uint32_t ev_id = args[0].object_id;
         if (method == "getAction" || method == "getActionMasked") {
@@ -20721,6 +20752,12 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             auto f = heap_.get_object_field(ev_id, "__y__");
             status = ApiCallTrace::Status::IMPLEMENTED;
             result = f.has_value() ? *f : DalvikValue::make_float(0.f);
+            return true;
+        }
+        if (method == "getEventTime" || method == "getTime") {
+            auto f = heap_.get_object_field(ev_id, "__time__");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = f.has_value() ? *f : DalvikValue::make_long(0);
             return true;
         }
     }

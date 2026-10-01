@@ -126,6 +126,21 @@ private:
         std::string label;
     };
 
+    // S129 (R-NEW-426, CAP-INPUT-110): per-gesture TouchDelegate state.
+    // AOSP TouchDelegate.java: mDelegateTargeted (DOWN inside mBounds),
+    // mSlopBounds (mBounds inset by -touchSlop) gate MOVE/UP forwarding.
+    struct DelegateState {
+        bool targeted = false;      // mDelegateTargeted
+        uint32_t owner = 0;         // view carrying the TouchDelegate
+        uint32_t delegate = 0;      // mDelegateView
+        int bl = 0, bt = 0, br = 0, bb = 0;  // absolute mBounds
+        int slop = 0;               // mSlop (px)
+        bool in_slop_bounds(int x, int y) const {
+            return targeted && x >= bl - slop && x < br + slop &&
+                   y >= bt - slop && y < bb + slop;
+        }
+    };
+
     uint32_t schedule(TokenState& slot, const char* label, int64_t delay_ms);
     void unschedule(TokenState& slot);
     void press(uint32_t view_id, int x, int y, nlohmann::json* rec);
@@ -134,6 +149,27 @@ private:
     // S128 (R-NEW-424, CAP-INPUT-100): intercept pass along the TouchTarget
     // chain; returns the intercepting view id (0 = none).
     uint32_t run_intercept_chain(int action, int x, int y, nlohmann::json* rec);
+    // S129 (R-NEW-426, CAP-INPUT-110): consult `owner`'s TouchDelegate for a
+    // DOWN at (x,y) — AOSP TouchDelegate.onTouchEvent DOWN arm:
+    // mDelegateTargeted = mBounds.contains(x, y) (EXACT bounds, no slop).
+    // On a hit the gesture retargets to the delegate view and the normal
+    // DOWN response law runs ON THE DELEGATE (event translated to the
+    // delegate's center — AOSP setLocation(w/2, h/2)). Returns true when
+    // the delegate claimed the gesture.
+    bool consult_delegate_down_(uint32_t owner, int x, int y,
+                                uint32_t root_id, nlohmann::json* rec);
+    // S129: AOSP ViewGroup.dispatchTouchEvent fallback arm — when no child
+    // claims the DOWN, the deepest visible ViewGroup containing the point
+    // runs its View.onTouchEvent (delegate consult, L17060-17064), then the
+    // recursion unwinds through its ancestors. Returns true when claimed.
+    bool consult_fallback_delegates_(uint32_t root_id, int x, int y,
+                                     nlohmann::json* rec);
+    // S129: the DOWN response law (View.onTouchEvent DOWN processing):
+    // disabled law → OnTouchListener/onTouchEvent override arm →
+    // pressed feedback + long-press arming. Shared by the normal target
+    // path and the delegate-retarget path (same law, different view).
+    void apply_down_response_(uint32_t target, int x, int y,
+                              nlohmann::json* rec, bool& consumed);
 
     ViewShadow* views_;
     HandlerShadow* handler_;
@@ -151,6 +187,8 @@ private:
     int down_x_ = 0, down_y_ = 0;
     bool pressed_ = false;
     bool has_performed_long_press_ = false;
+    // S129 (R-NEW-426, CAP-INPUT-110): TouchDelegate per-gesture state.
+    DelegateState delegate_;
 
     TokenState tok_check_long_press_{{0}, "CheckForLongPress"};
     TokenState tok_perform_click_{{0}, "PerformClick"};
