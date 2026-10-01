@@ -70,6 +70,7 @@ static JSClassID kImageClass = 0;
 static JSClassID kGradientClass = 0;
 
 static void noop_finalizer(JSRuntime*, JSValue) {}
+
 static void ctx2d_finalizer(JSRuntime*, JSValue val) {
     // Canvas2D is owned by the canvas DomNode (unique_ptr) — the JS object is
     // a non-owning view. Deleting here double-frees on GC. (S109 lesson.)
@@ -143,6 +144,59 @@ struct WebViewEngine::Impl {
     struct CachedImg { int w = 0, h = 0; std::vector<renderer::RGBA> px; bool ok = false; };
     std::map<std::string, CachedImg> img_cache;
 
+    // ── S133 RESOURCE FORENSICS ────────────────────────────────────────
+    // One record per external resource fetch (script/style/font/image),
+    // network OR asset — the browser resource table. Dumped to
+    // $WV_DIAG_DIR/webview_resource_trace.json when WV_DIAG is set.
+    struct ResourceRecord {
+        int request_id = 0;
+        std::string url;            // requested ref (as written / resolved)
+        std::string final_url;      // post-redirect (network fetches)
+        std::string type;           // script|style|font|image|other
+        int status = 0;             // HTTP status, 200 = asset ok, 0 = failure
+        size_t bytes = 0;
+        std::string source;         // network|mininet-http|apk-asset|none
+        std::string consumer;       // script-exec|stylesheet|font-face|img-src
+        std::string error;          // non-empty => failure reason
+        double ms = 0;
+    };
+    std::vector<ResourceRecord> resources;
+    int next_request_id = 1;
+    void record_resource(ResourceRecord r) {
+        r.request_id = next_request_id++;
+        resources.push_back(std::move(r));
+        std::cerr << "[WV-RES] #" << resources.back().request_id
+                  << " type=" << resources.back().type
+                  << " status=" << resources.back().status
+                  << " bytes=" << resources.back().bytes
+                  << " src=" << resources.back().source
+                  << " consumer=" << resources.back().consumer
+                  << " url=" << resources.back().url.substr(0, 100)
+                  << (resources.back().error.empty()
+                          ? "" : (" ERR=" + resources.back().error))
+                  << std::endl;
+    }
+    void dump_resource_trace() {
+        const char* dir = getenv("WV_DIAG_DIR");
+        if (!getenv("WV_DIAG") || !dir || !*dir) return;
+        nlohmann::json j = nlohmann::json::array();
+        for (auto& r : resources) {
+            j.push_back({{"request_id", r.request_id}, {"url", r.url},
+                         {"final_url", r.final_url}, {"type", r.type},
+                         {"status", r.status}, {"bytes", r.bytes},
+                         {"source", r.source}, {"consumer", r.consumer},
+                         {"error", r.error}, {"ms", r.ms}});
+        }
+        std::string doc_url = self ? self->document_url() : "";
+        nlohmann::json out = {{"document_url", doc_url},
+                              {"resource_count", resources.size()},
+                              {"resources", j}};
+        std::string path = std::string(dir) + "/webview_resource_trace.json";
+        std::ofstream f(path);
+        if (f) { f << out.dump(1) << std::endl;
+                 std::cerr << "[WV-DIAG] resource trace → " << path << std::endl; }
+    }
+
     double now() const { return now_ms; }
     WebViewEngine::Stats stats;
     // createElement/parse ownership bridge: node ptr → owning unique_ptr until
@@ -159,6 +213,7 @@ struct WebViewEngine::Impl {
     std::vector<ImageObj*> owned_images;
 
     ~Impl() {
+        dump_resource_trace();   // S133 resource forensics (gated: WV_DIAG)
         for (auto& [n, m] : listeners)
             for (auto& [t, v] : m)
                 for (auto& f : v) JS_FreeValue(ctx, f);
@@ -213,11 +268,17 @@ struct WebViewEngine::Impl {
         JS_FreeValue(ctx, exc);
     }
 
-    bool exec_script(const std::string& code, const std::string& name) {
+    bool exec_script(const std::string& code, const std::string& name,
+                     bool is_module = false) {
         if (code.empty()) return false;
         set_deadline(20.0);  // hang guard: no infinite loop stalls the runtime
         auto t0 = std::chrono::steady_clock::now();
-        JSValue r = JS_Eval(ctx, code.c_str(), code.size(), name.c_str(), JS_EVAL_TYPE_GLOBAL);
+        // S133 ES-MODULE law (WHATWG HTML §4.12.21): type=module code parses
+        // with module goals — import/export allowed, top-level `this` is
+        // undefined, the module is evaluated through QuickJS's module system
+        // (module loader resolves static and dynamic import() specifiers).
+        int flags = is_module ? JS_EVAL_TYPE_MODULE : JS_EVAL_TYPE_GLOBAL;
+        JSValue r = JS_Eval(ctx, code.c_str(), code.size(), name.c_str(), flags);
         stats.script_ms += std::chrono::duration<double, std::milli>(
             std::chrono::steady_clock::now() - t0).count();
         bool ok = !JS_IsException(r);
@@ -255,6 +316,15 @@ struct WebViewEngine::Impl {
     }
     std::string url_dir() const {
         std::string u = self->document_url();
+        // S133 WEB-001 fan-out: an http(s) document base resolves relative
+        // refs against its own directory (RFC 3986 §5.2 relative transform)
+        // — NOT against the APK asset root.
+        if (u.rfind("http://", 0) == 0 || u.rfind("https://", 0) == 0) {
+            size_t slash = u.rfind('/');
+            if (slash != std::string::npos && u.find("://", 0) + 2 < slash)
+                return u.substr(0, slash + 1);
+            return u;   // no path segment ("https://host") — base is the URL
+        }
         if (u.rfind("assets/", 0) == 0) {
             size_t slash = u.rfind('/');
             if (slash != std::string::npos && slash >= 7) return u.substr(0, slash + 1);
@@ -266,9 +336,90 @@ struct WebViewEngine::Impl {
         if (ref.rfind("file:///android_asset/", 0) == 0)
             return "assets/" + ref.substr(strlen("file:///android_asset/"));
         if (ref.rfind("http://", 0) == 0 || ref.rfind("https://", 0) == 0) return ref;
-        if (ref[0] == '/') return "assets" + ref;   // app-root-relative
+        // already-resolved asset-root form — idempotent (module names flow
+        // through resolve_url multiple times: exec_script, loader, fetch)
+        if (ref.rfind("assets/", 0) == 0) return ref;
+        if (ref.rfind("//", 0) == 0) return "https:" + ref;   // scheme-relative law
+        if (ref.rfind("/assets/", 0) == 0) return ref.substr(1);
+        if (ref[0] == '/') {
+            // Root-relative: against an http(s) base it's scheme+host+ref.
+            std::string u = self->document_url();
+            if (u.rfind("http://", 0) == 0 || u.rfind("https://", 0) == 0) {
+                size_t host_end = u.find("://", 0);
+                size_t path0 = u.find('/', host_end + 3);
+                if (path0 == std::string::npos) return u + ref.substr(1);
+                return u.substr(0, path0) + ref;
+            }
+            return "assets" + ref;   // app-root-relative
+        }
         return url_dir() + ref;
     }
+    // S133: classify an external ref by consumer context (resource table).
+    static const char* resource_type_of(const char* consumer, const std::string& ref) {
+        std::string low = ref;
+        std::transform(low.begin(), low.end(), low.begin(),
+                       [](unsigned char c) { return char(::tolower(c)); });
+        if (consumer && std::string(consumer) == "font-face") return "font";
+        if (consumer && std::string(consumer) == "stylesheet") return "style";
+        if (consumer && (std::string(consumer) == "script-exec" ||
+                         std::string(consumer) == "module-import")) return "script";
+        if (low.find(".js") != std::string::npos || low.find(".mjs") != std::string::npos)
+            return "script";
+        if (low.find(".css") != std::string::npos) return "style";
+        if (low.find(".png") != std::string::npos) return "image";
+        if (low.find(".jpg") != std::string::npos || low.find(".jpeg") != std::string::npos ||
+            low.find(".webp") != std::string::npos || low.find(".gif") != std::string::npos ||
+            low.find(".svg") != std::string::npos || low.find(".ico") != std::string::npos)
+            return "image";
+        return "other";
+    }
+    // S133 NETWORK RESOURCE LAW: fetch_asset gains the network tier. An
+    // http(s) ref (absolute, or relative against an http(s) document base)
+    // fetches through mininet::http_get — the SAME S100 NET-001 substrate
+    // WEB-001 uses for the top-level document. Asset refs keep the APK
+    // path. Every fetch lands in the resource forensics table.
+    std::vector<uint8_t> fetch_resource(const std::string& ref, const char* consumer) {
+        ResourceRecord rec;
+        rec.url = ref;
+        rec.type = resource_type_of(consumer, ref);
+        rec.consumer = consumer ? consumer : "other";
+        std::string entry = resolve_url(ref);
+        size_t q = entry.find_first_of("?#");
+        std::string bare = q == std::string::npos ? entry : entry.substr(0, q);
+        bool is_http = bare.rfind("http://", 0) == 0 || bare.rfind("https://", 0) == 0;
+        std::vector<uint8_t> out;
+        auto t0 = std::chrono::steady_clock::now();
+        if (is_http) {
+            mininet::HttpResponse hr = mininet::http_get(bare, 5, 20000);
+            rec.ms = std::chrono::duration<double, std::milli>(
+                         std::chrono::steady_clock::now() - t0).count();
+            rec.final_url = hr.final_url;
+            rec.status = hr.status;
+            rec.source = "mininet-http";
+            if (!hr.ok()) rec.error = hr.error.empty()
+                ? ("http status " + std::to_string(hr.status)) : hr.error;
+            else {
+                out.assign(hr.body.begin(), hr.body.end());
+                rec.bytes = out.size();
+            }
+        } else {
+            entry = normalize_dot_segments(bare);
+            if (!apk_path.empty() &&
+                resources::ResourceRuntime::instance().ensure_loaded(apk_path)) {
+                auto bytes =
+                    resources::ResourceRuntime::instance().apk().extract_entry_cached(entry);
+                rec.status = bytes.empty() ? 0 : 200;
+                rec.source = bytes.empty() ? "none" : "apk-asset";
+                if (bytes.empty()) rec.error = "asset missing: " + entry;
+                else { out = std::move(bytes); rec.bytes = out.size(); }
+            } else {
+                rec.error = "no apk context";
+            }
+        }
+        record_resource(std::move(rec));
+        return out;
+    }
+    // Legacy asset-only path retained for non-resource lookups.
     std::vector<uint8_t> fetch_asset(const std::string& ref) {
         std::string entry = resolve_url(ref);
         size_t q = entry.find_first_of("?#");
@@ -1426,7 +1577,20 @@ static JSValue el_getContext(JSContext* ctx, JSValueConst this_v, int argc, JSVa
     if (wv_trace()) std::cerr << "[WV-T] el.getContext" << std::endl;
     auto* n = el_of(this_v);
     if (!n || !n->is_canvas) return JS_NULL;
-    if (!n->canvas) n->canvas = std::make_unique<Canvas2D>();
+    if (!n->canvas) {
+        n->canvas = std::make_unique<Canvas2D>();
+        // S133 REPLACED-ELEMENT law (WHATWG HTML §4.12.4): the canvas
+        // bitmap is sized from the width=/height= ATTRIBUTES (300x150
+        // default) when the context is FIRST acquired — parse-time
+        // attributes never sized the bitmap, so every fill landed on a
+        // 1x1 surface and the canvas stayed invisible (T09 fixture:
+        // draw_calls=2, zero pixels).
+        auto aw = n->attrs.find("width");
+        auto ah = n->attrs.find("height");
+        int bw = aw != n->attrs.end() ? atoi(aw->second.c_str()) : 300;
+        int bh = ah != n->attrs.end() ? atoi(ah->second.c_str()) : 150;
+        n->canvas->set_size(std::max(1, bw), std::max(1, bh));
+    }
     JSValue o = JS_NewObjectClass(ctx, kCtx2DClass);
     if (JS_IsException(o)) return o;
     JS_SetOpaque(o, n->canvas.get());
@@ -1975,6 +2139,39 @@ static JSValue doc_getElementsByClassName(JSContext* ctx, JSValueConst, int argc
     return arr;
 }
 
+// ── S133 getElementsByTagName law (DOM §Live collections; array form) ───
+// document.getElementsByTagName(tag) walks the live tree in document order
+// matching the lowercased tag name ("*" matches all). Measured need: the
+// z.ai GTM bootstrap calls d.getElementsByTagName(s)[0] — a missing method
+// throws "not a function" and kills the whole analytics inline script.
+static JSValue doc_getElementsByTagName(JSContext* ctx, JSValueConst, int argc,
+                                        JSValueConst* argv) {
+    auto* impl = impl_of(ctx);
+    JSValue arr = JS_NewArray(ctx);
+    if (argc >= 1) {
+        const char* t = JS_ToCString(ctx, argv[0]);
+        if (t) {
+            std::string want = t;
+            JS_FreeCString(ctx, t);
+            std::transform(want.begin(), want.end(), want.begin(),
+                           [](unsigned char c) { return char(::tolower(c)); });
+            std::vector<DomNode*> out;
+            std::function<void(DomNode*)> collect = [&](DomNode* n) {
+                std::string tag = n->tag;
+                std::transform(tag.begin(), tag.end(), tag.begin(),
+                               [](unsigned char c) { return char(::tolower(c)); });
+                if ((want == "*" && !tag.empty() && tag[0] != '#') || tag == want)
+                    out.push_back(n);
+                for (auto& c : n->children) collect(c.get());
+            };
+            collect(impl->doc.root.get());
+            uint32_t i = 0;
+            for (auto* n : out) JS_SetPropertyUint32(ctx, arr, i++, impl->get_element_js(n));
+        }
+    }
+    return arr;
+}
+
 // ── image (new Image()) ─────────────────────────────────────────────────
 static JSValue image_new(JSContext* ctx, JSValueConst, int, JSValueConst*) {
     auto* impl = impl_of(ctx);
@@ -2008,7 +2205,7 @@ static JSValue audio_new(JSContext* ctx, JSValueConst, int argc, JSValueConst* a
     return o;
 }
 static void image_decode(ImageObj* im, WebViewEngine::Impl* impl) {
-    auto bytes = impl->fetch_asset(im->src);
+    auto bytes = impl->fetch_resource(im->src, "img-src");
     if (bytes.empty()) {
         std::cerr << "[WV-IMAGE] asset missing: " << im->src << std::endl;
         return;
@@ -2334,6 +2531,7 @@ void WebViewEngine::Impl::setup_bindings() {
         JS_SetPropertyStr(ctx, document_obj, "querySelector", JS_NewCFunction(ctx, doc_querySelector, "querySelector", 1));
         JS_SetPropertyStr(ctx, document_obj, "querySelectorAll", JS_NewCFunction(ctx, doc_querySelectorAll, "querySelectorAll", 1));
         JS_SetPropertyStr(ctx, document_obj, "getElementsByClassName", JS_NewCFunction(ctx, doc_getElementsByClassName, "getElementsByClassName", 1));
+        JS_SetPropertyStr(ctx, document_obj, "getElementsByTagName", JS_NewCFunction(ctx, doc_getElementsByTagName, "getElementsByTagName", 1));
         JS_SetPropertyStr(ctx, document_obj, "createElement", JS_NewCFunction(ctx, doc_createElement, "createElement", 1));
         JS_SetPropertyStr(ctx, document_obj, "createTextNode", JS_NewCFunction(ctx, doc_createTextNode, "createTextNode", 1));
         JS_SetPropertyStr(ctx, document_obj, "addEventListener", JS_NewCFunction(ctx, win_addEventListener, "addEventListener", 2));
@@ -2376,7 +2574,11 @@ void WebViewEngine::Impl::setup_bindings() {
             if (q != std::string::npos) { search_v = doc_url.substr(q); doc_url = doc_url.substr(0, q); }
         }
         JS_SetPropertyStr(ctx, loc, "href", JS_NewString(ctx, self->document_url().c_str()));
-        JS_SetPropertyStr(ctx, loc, "protocol", JS_NewString(ctx, "file:"));
+        // S133: reflect the real scheme (hardcoded "file:" misled http(s)
+        // document scripts; jQuery's support checks branch on it)
+        JS_SetPropertyStr(ctx, loc, "protocol", JS_NewString(
+            ctx, (doc_url.rfind("https://", 0) == 0 ? "https:"
+                  : doc_url.rfind("http://", 0) == 0 ? "http:" : "file:")));
         JS_SetPropertyStr(ctx, loc, "hash", JS_NewString(ctx, hash_v.c_str()));
         JS_SetPropertyStr(ctx, loc, "search", JS_NewString(ctx, search_v.c_str()));
         JS_SetPropertyStr(ctx, loc, "pathname", JS_NewString(ctx, doc_url.c_str()));
@@ -2387,6 +2589,11 @@ void WebViewEngine::Impl::setup_bindings() {
         JS_SetPropertyStr(ctx, loc, "reload", JS_NewCFunction(ctx, [](JSContext*, JSValueConst, int, JSValueConst*) { return JS_UNDEFINED; }, "reload", 0));
         JS_SetPropertyStr(ctx, loc, "replace", JS_NewCFunction(ctx, [](JSContext*, JSValueConst, int, JSValueConst*) { return JS_UNDEFINED; }, "replace", 1));
         JS_SetPropertyStr(ctx, global, "location", loc);
+        // S133 DOCUMENT-LOCATION alias law (HTML §5.2): document.location
+        // IS window.location (same object). jQuery reads
+        // document.location.host — the missing alias broke its support
+        // checks ("cannot read property 'host' of undefined").
+        JS_SetPropertyStr(ctx, document_obj, "location", JS_DupValue(ctx, loc));
         // localStorage (file-backed, per-package)
         storage_obj = JS_NewObjectClass(ctx, kStorageClass);
         JS_SetPropertyStr(ctx, storage_obj, "getItem", JS_NewCFunction(ctx, storage_getItem, "getItem", 1));
@@ -2509,6 +2716,39 @@ void WebViewEngine::Impl::setup_bindings() {
                                  "<text-encoding>", JS_EVAL_TYPE_GLOBAL);
             JS_FreeValue(ctx, te);
         }
+        // S133 web-vitals/stubs law: telemetry-driven pages reference
+        // PerformanceObserver at load; a missing global throws a
+        // ReferenceError that kills the whole inline script (z.ai's first
+        // inline bundle died here BEFORE its real payload ran). The stub
+        // records nothing but keeps the calling script alive — the honest
+        // semantic is "observer registered, no metrics available".
+        {
+            static const char po_src[] =
+                "(function(){"
+                "function PerformanceObserver(cb){"
+                " this.observe=function(){(cb||function(){})({"
+                "  getEntries:function(){return [];},"
+                "  getEntriesByType:function(){return [];},"
+                "  getEntriesByName:function(){return [];}});};"
+                " this.disconnect=function(){};"
+                " this.takeRecords=function(){return [];};}"
+                "PerformanceObserver.supportedEntryTypes=[];"
+                "globalThis.PerformanceObserver=PerformanceObserver;"
+                "globalThis.IntersectionObserver=globalThis.IntersectionObserver||PerformanceObserver;"
+                "globalThis.MutationObserver=globalThis.MutationObserver||PerformanceObserver;"
+                "globalThis.ResizeObserver=globalThis.ResizeObserver||PerformanceObserver;"
+                "globalThis.matchMedia=globalThis.matchMedia||function(q){"
+                " return {matches:false, media:String(q||''), addListener:function(){},"
+                "  removeListener:function(){}, addEventListener:function(){},"
+                "  removeEventListener:function(){}, onchange:null, dispatchEvent:function(){return false;}};};"
+                "globalThis.requestIdleCallback=globalThis.requestIdleCallback||function(f){"
+                " return setTimeout(function(){f({didTimeout:false,timeRemaining:function(){return 0;}});},1);};"
+                "globalThis.cancelIdleCallback=globalThis.cancelIdleCallback||clearTimeout;"
+                "})()";
+            JSValue po = JS_Eval(ctx, po_src, sizeof(po_src) - 1,
+                                 "<web-stubs>", JS_EVAL_TYPE_GLOBAL);
+            JS_FreeValue(ctx, po);
+        }
         // S118 fetch law: WHATWG fetch subset over the S100 NET-001 HTTPS
         // client (mininet::http_get — OpenSSL TLS, redirects, chunked).
         // fetch() returns a Promise; the GET is performed synchronously and
@@ -2545,8 +2785,118 @@ void WebViewEngine::Impl::setup_bindings() {
                 JS_FreeValue(c, resolving[1]);
                 return promise;
             }
-            std::cerr << "[WV-FETCH] GET " << url << std::endl;
-            mininet::HttpResponse hr = mininet::http_get(url, 5, 20000);
+            // S133 FETCH-URL law (WHATWG Fetch §"parse a URL"): the spec
+            // string resolves against the DOCUMENT base when the caller is
+            // a document/worker — fetch("/api/config") MUST hit the site's
+            // origin, not throw "bad url". resolve_url merges relative,
+            // root-relative and scheme-relative refs (absolute passes
+            // through unchanged).
+            auto* impl_fetch = impl_of(c);
+            if (impl_fetch) url = impl_fetch->resolve_url(url);
+            // S133 FETCH-INIT law (WHATWG Fetch §4.1): fetch(url, init) —
+            // init.method selects the request method (GET supported; any
+            // other method is an HONEST visible rejection, never a silent
+            // GET), init.headers forwards request headers (Authorization
+            // Bearer — measured need: chat.z.ai /api/models 403 without it,
+            // 200 with it). Plain-object Headers form.
+            std::map<std::string, std::string> req_headers;
+            std::string method = "GET";
+            if (argc >= 2 && JS_IsObject(argv[1])) {
+                JSValue mv = JS_GetPropertyStr(c, argv[1], "method");
+                if (JS_IsString(mv)) {
+                    const char* m = JS_ToCString(c, mv);
+                    if (m) {
+                        method = m;
+                        JS_FreeCString(c, m);
+                    }
+                    // WHATWG: normalize the method (case-insensitive)
+                    for (auto& ch : method) ch = char(::toupper((unsigned char)ch));
+                }
+                JS_FreeValue(c, mv);
+                JSValue hv = JS_GetPropertyStr(c, argv[1], "headers");
+                if (JS_IsObject(hv)) {
+                    JSPropertyEnum* props = nullptr;
+                    uint32_t nprops = 0;
+                    if (JS_GetOwnPropertyNames(c, &props, &nprops, hv,
+                                               JS_GPN_STRING_MASK | JS_GPN_ENUM_ONLY) == 0) {
+                        for (uint32_t i = 0; i < nprops; ++i) {
+                            const char* k = JS_AtomToCString(c, props[i].atom);
+                            JSValue val = JS_GetProperty(c, hv, props[i].atom);
+                            const char* v = JS_IsString(val) ? JS_ToCString(c, val) : nullptr;
+                            if (k && v) req_headers[k] = v;
+                            if (k) JS_FreeCString(c, k);
+                            if (v) JS_FreeCString(c, v);
+                            JS_FreeValue(c, val);
+                            JS_FreeAtom(c, props[i].atom);
+                        }
+                        js_free(c, props);
+                    }
+                }
+                JS_FreeValue(c, hv);
+            }
+            if (method != "GET") {
+                std::string msg = "fetch method " + method +
+                                  " not supported by the runtime fetch substrate "
+                                  "(GET only) — visible rejection, not a silent GET";
+                std::cerr << "[WV-FETCH] REJECT " << method << " " << url << std::endl;
+                JSValue err = JS_NewError(c);
+                JS_SetPropertyStr(c, err, "message", JS_NewString(c, msg.c_str()));
+                JS_SetPropertyStr(c, err, "name", JS_NewString(c, "TypeError"));
+                JSValue ign = JS_Call(c, resolving[1], JS_UNDEFINED, 1, &err);
+                JS_FreeValue(c, ign);
+                JS_FreeValue(c, err);
+                JS_FreeValue(c, resolving[0]);
+                JS_FreeValue(c, resolving[1]);
+                return promise;
+            }
+            std::string hdr_note;
+            for (auto& [hk, hv2] : req_headers) hdr_note += " " + hk + "=" + hv2;
+            std::cerr << "[WV-FETCH] GET " << url
+                      << (hdr_note.empty() ? "" : (" headers:" + hdr_note))
+                      << std::endl;
+            // S133 FETCH-ASSET law: after base resolution a ref that is NOT
+            // http(s) is a LOCAL document (AOSP WebView file:///android_asset
+            // base → the APK asset tree serves fetch, matching Chromium's
+            // file-protocol handling). Network refs go over mininet.
+            if (url.rfind("http://", 0) != 0 && url.rfind("https://", 0) != 0) {
+                auto* impl_f2 = impl_of(c);
+                auto bytes = impl_f2 ? impl_f2->fetch_resource(url, "fetch")
+                                     : std::vector<uint8_t>{};
+                JSValue resp2 = JS_NewObject(c);
+                JS_SetPropertyStr(c, resp2, "status",
+                                  JS_NewInt32(c, bytes.empty() ? 404 : 200));
+                JS_SetPropertyStr(c, resp2, "ok", JS_NewBool(c, !bytes.empty()));
+                JS_SetPropertyStr(c, resp2, "url", JS_NewString(c, url.c_str()));
+                JS_SetPropertyStr(c, resp2, "bodyUsed", JS_NewBool(c, false));
+                JS_SetPropertyStr(c, resp2, "\x01body",
+                                  JS_NewStringLen(c, (const char*)bytes.data(),
+                                                  bytes.size()));
+                JS_SetPropertyStr(c, resp2, "text", JS_NewCFunction(c,
+                    [](JSContext* c2, JSValueConst this_v2, int, JSValueConst*) {
+                        return JS_GetPropertyStr(c2, this_v2, "\x01body");
+                    }, "text", 0));
+                JS_SetPropertyStr(c, resp2, "json", JS_NewCFunction(c,
+                    [](JSContext* c2, JSValueConst this_v2, int, JSValueConst*) {
+                        JSValue b = JS_GetPropertyStr(c2, this_v2, "\x01body");
+                        if (!JS_IsString(b)) return b;
+                        size_t bl2 = 0;
+                        const char* raw = JS_ToCStringLen(c2, &bl2, b);
+                        if (!raw) { JS_FreeValue(c2, b); return JS_EXCEPTION; }
+                        JSValue parsed = JS_ParseJSON(c2, raw, bl2, "<fetch-asset>");
+                        JS_FreeCString(c2, raw);
+                        JS_FreeValue(c2, b);
+                        return parsed;   // non-JSON → honest SyntaxError
+                    }, "json", 0));
+                JSValue ign2 = JS_Call(c, resolving[0], JS_UNDEFINED, 1, &resp2);
+                JS_FreeValue(c, ign2);
+                JS_FreeValue(c, resp2);
+                JS_FreeValue(c, resolving[0]);
+                JS_FreeValue(c, resolving[1]);
+                return promise;
+            }
+            mininet::HttpResponse hr = req_headers.empty()
+                ? mininet::http_get(url, 5, 20000)
+                : mininet::http_get_ex(url, req_headers, 5, 20000);
             if (!hr.ok()) {
                 std::cerr << "[WV-FETCH] FAILED status=" << hr.status
                           << " err=" << hr.error << std::endl;
@@ -2636,6 +2986,61 @@ void WebViewEngine::Impl::setup_bindings() {
         JS_SetPropertyStr(ctx, url_ctor, "revokeObjectURL",
             JS_NewCFunction(ctx, [](JSContext*, JSValueConst, int, JSValueConst*) { return JS_UNDEFINED; }, "revokeObjectURL", 1));
         JS_SetPropertyStr(ctx, global, "URL", url_ctor);
+        // ── S133 URLSearchParams law (WHATWG URL §urlencoded) ───────────
+        // Measured need: 30+ call sites in the z.ai bundle (query building
+        // for every API fetch). Implemented as a JS polyfill (same pattern
+        // as the TextEncoder law): parse from string (leading '?' stripped,
+        // '+' = space, percent-decode) | pair-array | record; append/set/
+        // get/has/delete/toString/forEach + entries/keys/values iterators.
+        {
+            static const char usp_src[] =
+                "(function(){"
+                "function USP(init){"
+                " this._p=[];"
+                " if(init==null) return;"
+                " if(typeof init==='string'){"
+                "  if(init.charAt(0)==='?') init=init.slice(1);"
+                "  var ps=init.split('&');"
+                "  for(var i=0;i<ps.length;i++){"
+                "   if(ps[i]==='') continue;"
+                "   var eq=ps[i].indexOf('='),k,v;"
+                "   if(eq<0){k=ps[i];v='';}else{k=ps[i].slice(0,eq);v=ps[i].slice(eq+1);}"
+                "   k=k.replace(/\\+/g,' ').replace(/%([^0-9A-Fa-f]{2}|$)/g,function(m,g){return g?'%25'+g:'%25';});"
+                "   v=v.replace(/\\+/g,' ');"
+                "   try{k=decodeURIComponent(k);}catch(e){}"
+                "   try{v=decodeURIComponent(v);}catch(e){}"
+                "   this._p.push([k,v]);"
+                "  }"
+                " } else if(Array.isArray(init)){"
+                "  for(var i=0;i<init.length;i++) this._p.push([String(init[i][0]),String(init[i][1])]);"
+                " } else {"
+                "  for(var k in init) if(Object.prototype.hasOwnProperty.call(init,k)) this._p.push([String(k),String(init[k])]);"
+                " }"
+                "}"
+                "USP.prototype.append=function(k,v){this._p.push([String(k),String(v)]);};"
+                "USP.prototype.set=function(k,v){k=String(k);v=String(v);var f=false,out=[];"
+                " for(var i=0;i<this._p.length;i++){if(this._p[i][0]===k){if(!f){out.push([k,v]);f=true;}}else out.push(this._p[i]);}"
+                " if(!f)out.push([k,v]); this._p=out;};"
+                "USP.prototype.get=function(k){k=String(k);for(var i=0;i<this._p.length;i++)if(this._p[i][0]===k)return this._p[i][1];return null;};"
+                "USP.prototype.has=function(k){k=String(k);for(var i=0;i<this._p.length;i++)if(this._p[i][0]===k)return true;return false;};"
+                "USP.prototype.delete=function(k){k=String(k);var out=[];for(var i=0;i<this._p.length;i++)if(this._p[i][0]!==k)out.push(this._p[i]);this._p=out;};"
+                "USP.prototype.toString=function(){var out=[];"
+                " var e=function(x){return encodeURIComponent(x).replace(/%20/g,'+');};"
+                " for(var i=0;i<this._p.length;i++)out.push(e(this._p[i][0])+'='+e(this._p[i][1]));"
+                " return out.join('&');};"
+                "USP.prototype.forEach=function(cb,ta){for(var i=0;i<this._p.length;i++)cb.call(ta,this._p[i][1],this._p[i][0],this);};"
+                "USP.prototype.entries=function*(){for(var i=0;i<this._p.length;i++)yield [this._p[i][0],this._p[i][1]];"
+                " if(typeof Symbol==='function'&&Symbol.iterator&&USP.prototype.entries&&!USP.prototype.entries.__tagged){Object.defineProperty(USP.prototype.entries,'__tagged',{value:1});}"
+                " };"
+                "USP.prototype.keys=function*(){for(var i=0;i<this._p.length;i++)yield this._p[i][0];};"
+                "USP.prototype.values=function*(){for(var i=0;i<this._p.length;i++)yield this._p[i][1];};"
+                "if(typeof Symbol==='function'&&Symbol.iterator) USP.prototype[Symbol.iterator]=USP.prototype.entries;"
+                "globalThis.URLSearchParams=USP;"
+                "})()";
+            JSValue usp = JS_Eval(ctx, usp_src, sizeof(usp_src) - 1,
+                                  "<urlsearch-params>", JS_EVAL_TYPE_GLOBAL);
+            JS_FreeValue(ctx, usp);
+        }
         JS_SetPropertyStr(ctx, global, "FileReader",
             make_ctor(ctx, [](JSContext* c, JSValueConst, int, JSValueConst*) {
                 JSValue o = JS_NewObject(c);
@@ -2868,17 +3273,39 @@ void WebViewEngine::Impl::run_scripts() {
     // external <script src> fetch (document order, inline scripts interleaved
     // by position — approximated: inline run first in document order, then
     // externals; documented deviation, corpus entry scripts are terminal).
-    for (auto& code : doc.inline_scripts) exec_script(code, "inline");
-    for (auto& [src, _] : doc.external_scripts) {
-        auto bytes = fetch_asset(src);
+    // S133: inline module scripts carry a synthetic module name anchored at
+    // the document base so their relative imports resolve.
+    int inline_module_n = 0;
+    for (auto& [code, is_mod] : doc.inline_scripts) {
+        if (is_mod) {
+            std::string base = self->document_url();
+            if (base.empty()) base = "module";
+            exec_script(code, base + "#inline-" + std::to_string(++inline_module_n),
+                        true);
+        } else {
+            // S133: per-script eval filename — minified stacks like
+            // "inline:5" are unattributable when every inline script shares
+            // one name; inline-<n>:<line> maps a failure to its script.
+            exec_script(code, "inline-" + std::to_string(++inline_module_n));
+        }
+    }
+    for (auto& [src, stype] : doc.external_scripts) {
+        bool is_mod = stype == "module";
+        auto bytes = fetch_resource(src, "script-exec");
         if (bytes.empty()) {
             std::cerr << "[WV-SCRIPT] external script missing: " << src
                       << " (resolved " << resolve_url(src) << ")" << std::endl;
             continue;
         }
         std::string code(bytes.begin(), bytes.end());
-        std::cerr << "[WV-SCRIPT] external " << src << " bytes=" << code.size() << std::endl;
-        exec_script(code, src);
+        // module name = RESOLVED absolute ref (the loader's base for its own
+        // imports); classic scripts keep the raw src as the eval filename
+        std::string name = is_mod ? resolve_url(src) : src;
+        if (is_mod) {
+            size_t q = name.find_first_of("?#");
+            if (q != std::string::npos) name.erase(q);
+        }
+        exec_script(code, name, is_mod);
     }
     // S118 JOB-PUMP law: every script start (async fn kick-off, promise
     // chains, await continuations) lands on the QuickJS job queue — without
@@ -3319,6 +3746,8 @@ static void style_element(DomNode* n, double vw, double vh,
             else n->flex_row = true;          // row / row-reverse / default
         }
         if (disp == "inline" || disp == "inline-block") n->inline_el = true;
+        // S133 ATOMIC INLINE-BOX law: inline-block is an atomic box, not text
+        if (disp == "inline-block") n->inline_block = true;
         if (n->tag == "span" || n->tag == "a" || n->tag == "b" || n->tag == "strong" ||
             n->tag == "em" || n->tag == "label" || n->tag == "small")
             if (disp.empty()) n->inline_el = true;
@@ -3538,12 +3967,69 @@ static void style_element(DomNode* n, double vw, double vh,
         if (!chh.empty() && chh != "auto" && chh.back() != '%' &&
             chh.find('%') == std::string::npos && chh.find("calc(") != 0)
             n->h = int(len(chh, float(n->canvas->height()), 1));
+        // S133 REPLACED-ELEMENT INTRINSIC law (WHATWG HTML §4.12.4): the
+        // canvas width=/height= ATTRIBUTES are the element's default box
+        // (300x150 fallback) when CSS leaves it auto — attribute-only
+        // canvases laid out 0x0 and never painted (T09 fixture).
+        // The SAME attributes size the BITMAP (the attribute IS the bitmap
+        // dimensions): a parsed canvas kept a 1x1 bitmap, so fillRect drew
+        // into a degenerate surface (T09 draw_calls=2, zero pixels).
+        if (n->canvas->width() <= 1 && n->canvas->height() <= 1) {
+            auto aw = n->attrs.find("width");
+            auto ah = n->attrs.find("height");
+            int bw = aw != n->attrs.end() ? atoi(aw->second.c_str()) : 300;
+            int bh = ah != n->attrs.end() ? atoi(ah->second.c_str()) : 150;
+            n->canvas->set_size(std::max(1, bw), std::max(1, bh));
+        }
+        if (!n->has_w && cw.empty()) {
+            auto aw = n->attrs.find("width");
+            if (aw != n->attrs.end()) {
+                n->w = std::max(1, atoi(aw->second.c_str()));
+                n->has_w = true;
+            } else {
+                n->w = 300;
+                n->has_w = true;
+            }
+        }
+        if (!n->has_h && chh.empty()) {
+            auto ah = n->attrs.find("height");
+            if (ah != n->attrs.end()) {
+                n->h = std::max(1, atoi(ah->second.c_str()));
+                n->has_h = true;
+            } else {
+                n->h = 150;
+                n->has_h = true;
+            }
+        }
         if (wv_trace())
             std::cerr << "[WV-CANVAS] id=" << (n->attrs.count("id") ? n->attrs.at("id") : "")
                       << " css_w=" << cw << " css_h=" << chh
                       << " -> box " << n->w << "x" << n->h
                       << " bitmap " << n->canvas->width() << "x" << n->canvas->height()
                       << " positioned=" << n->positioned << std::endl;
+    }
+    // ── S133 REPLACED-IMAGE law (WHATWG HTML §4.8.3 <img>) ──────────────
+    // <img> is an atomic inline-level replaced element. Box: CSS width/
+    // height (the resolution ladder) else the width=/height= attributes.
+    // The source fetches through the SAME resource substrate (network or
+    // asset) at paint; decode errors keep the honest empty box.
+    if (n->tag == "img") {
+        n->inline_el = true;
+        n->inline_block = true;
+        if (!n->has_w) {
+            auto aw = n->attrs.find("width");
+            if (aw != n->attrs.end()) {
+                n->w = std::max(1, atoi(aw->second.c_str()));
+                n->has_w = true;
+            }
+        }
+        if (!n->has_h) {
+            auto ah = n->attrs.find("height");
+            if (ah != n->attrs.end()) {
+                n->h = std::max(1, atoi(ah->second.c_str()));
+                n->has_h = true;
+            }
+        }
     }
     // (the non-canvas duplicate width re-resolution was REMOVED — it
     // double-resolved % strings against the viewport and polluted n->w/h
@@ -4198,6 +4684,9 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
         [&](DomNode* c, std::string& out) {
         if (c->eff_vis_hidden) return;
         if (c->tag == "#text") { out += c->text; return; }
+        // S133: inline-block is ATOMIC (CSS 2.1 §9.2.2) — its text belongs
+        // to its own box, never to the parent's merged run
+        if (c->inline_block) return;
         if (c->inline_el) for (auto& g : c->children) gather_inline(g.get(), out);
     };
     auto own_text_of = [&](DomNode* n) -> std::string {
@@ -4306,7 +4795,7 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
         auto it = impl->img_cache.find(n->bg_image);
         if (it == impl->img_cache.end()) {
             WebViewEngine::Impl::CachedImg img;
-            auto bytes = impl->fetch_asset(n->bg_image);
+            auto bytes = impl->fetch_resource(n->bg_image, "img-src");
             if (!bytes.empty()) {
                 renderer::DecodedImage dec;
                 if (renderer::decode_image_bytes(bytes, &dec) && dec.ok) {
@@ -4520,8 +5009,17 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
                                                  face_of(n)).width));
         }
         for (auto& c : n->children) {
-            if (c->tag == "#text" || c->inline_el) continue;
+            if (c->tag == "#text") continue;
             if (c->display_none || c->positioned) continue;   // hidden keeps slot (visibility law)
+            // S133: an atomic inline-block contributes its OUTER width to a
+            // shrink-to-fit parent (CSS 2.1 §10.3.9)
+            if (c->inline_block && !c->has_w && c->w_pct < 0 && c->w_raw.empty()) {
+                cw2 = std::max(cw2, measure_w(c.get(), mw_depth + 1) +
+                                        2 * c->border_w + c->pad_l + c->pad_r +
+                                        (c->border_box ? 0 : 0));
+                continue;
+            }
+            if (c->inline_el) continue;
             if (c->has_w)
                 cw2 = std::max(cw2, c->w + (c->border_box ? 0 : 2 * c->border_w + c->pad_l + c->pad_r));
             else if (c->w_pct >= 0 || !c->w_raw.empty()) continue;
@@ -4596,6 +5094,30 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
                 continue;
             if (n->tag == "svg") continue;   // S117: SVG shapes take no HTML slots
             if (c->display_none) continue;        // visibility:hidden keeps its slot
+            if (c->inline_block && !c->positioned) {
+                // S133 ATOMIC INLINE-BOX law (CSS 2.1 §9.2.2/§10.3.9): the
+                // box keeps its slot in the inline run — shrink-to-fit when
+                // no explicit width, wrap on the second sweep.
+                int ow2 = outer_w_of(c);
+                if (ow2 >= 0) widths[i] = ow2;
+                else if (c->w_pct >= 0)
+                    widths[i] = int(float(content_w) * c->w_pct / 100.f);
+                else if (!c->w_raw.empty()) {
+                    float pv = cb_len(c->w_raw, float(w), float(h),
+                                      float(content_w),
+                                      float(avail_h > 0 ? avail_h : content_w),
+                                      c->font_size, -1.f, 0);
+                    widths[i] = pv >= 0 ? int(pv)
+                                        : std::min(measure_w(c, 0), content_w);
+                } else {
+                    widths[i] = std::min(measure_w(c, 0), content_w);
+                }
+                widths[i] = std::max(widths[i], 2 * c->border_w);
+                c->static_x = content_x;
+                c->static_y = cy;
+                c->static_pos_recorded = true;
+                continue;
+            }
             if (c->inline_el) {
                 widths[i] = -2;                    // merged into parent text
                 // S114: inline subtrees may still CONTAIN positioned
@@ -4668,6 +5190,8 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
         if (n->flex && n->flex_row)
             for (size_t i = 0; i < n->children.size(); ++i)
                 if (widths[i] >= 0 && heights[i] == 0) heights[i] = -1;  // element child marker
+        // S133 inline-run cursors (atomic inline-block line state)
+        int ib_x = content_x, ib_y = cy, ib_run_h = 0;
         for (size_t i = 0; i < n->children.size(); ++i) {
             DomNode* c = n->children[i].get();
             if (c->tag == "#text") {
@@ -4680,6 +5204,25 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
                 continue;
             }
             if (widths[i] < 0) continue;
+            // ── S133 ATOMIC INLINE-BOX RUN law (CSS 2.1 §9.2.2) ──────────
+            // inline-block boxes flow HORIZONTALLY in the parent's line,
+            // wrapping to the next line when the run exceeds the container
+            // width (T02 color chips, T14's 2000-cell grid). The block
+            // stack's cursor (cy) follows the deepest wrapped line.
+            if (c->inline_block && !c->positioned && !n->flex) {
+                int iw = widths[i] + c->mar_l + c->mar_r;
+                if (ib_x > content_x && ib_x + iw > content_x + content_w) {
+                    ib_x = content_x;              // wrap: new line at run start
+                    ib_y += ib_run_h;              // advance by the line's height
+                    ib_run_h = 0;
+                }
+                int hb = layout_inflow(c, ib_x + c->mar_l, ib_y, widths[i],
+                                       avail_h, depth + 1);
+                ib_x += iw;
+                ib_run_h = std::max(ib_run_h, hb + c->mar_t + c->mar_b);
+                cy = std::max(cy, ib_y + ib_run_h);
+                continue;
+            }
             int x;
             if (n->flex_row) x = cx + c->mar_l;
             else x = content_x + c->mar_l;
@@ -4705,6 +5248,9 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
                 row_main += widths[i] + c->mar_l + c->mar_r;
             } else {
                 cy += hb + c->mar_b;
+                // S133: a block sibling ends the inline run — the next
+                // inline-block line starts BELOW the placed block
+                ib_x = content_x; ib_y = cy; ib_run_h = 0;
             }
         }
         // second sweep for flex-row vertical centering (2-pass shift law)
@@ -5090,10 +5636,53 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
         for (auto& chp : n->children) {
             DomNode* c = chp.get();
             if (c->tag == "symbol" || c->tag == "defs") continue; // use-site only
-            if (c->tag == "path") {
-                auto dit = c->attrs.find("d");
-                if (dit == c->attrs.end() || dit->second.empty()) continue;
-                auto subs = svg_flatten(dit->second, A, B, C, D, E, F);
+            // ── S133 SVG2 BASIC-SHAPES law (§10.3/§10.4) ────────────────
+            // rect/circle/ellipse paint through the SAME path raster as
+            // <path>: synthesize equivalent path data (zero new raster
+            // code). Measured: the fixture page's <circle>/<rect> (and any
+            // icon set using basic shapes) painted nothing before.
+            std::string shape_d;
+            if (c->tag == "rect" || c->tag == "circle" || c->tag == "ellipse") {
+                auto num = [&](const char* k) -> float {
+                    auto it = c->attrs.find(k);
+                    return it == c->attrs.end()
+                               ? 0.f
+                               : strtof(it->second.c_str(), nullptr);
+                };
+                char buf[64];
+                if (c->tag == "rect") {
+                    float x = num("x"), y = num("y");
+                    float w2 = num("width"), h2 = num("height");
+                    if (w2 <= 0 || h2 <= 0) continue;
+                    snprintf(buf, sizeof buf, "M %g %g H %g V %g H %g Z",
+                             x, y, x + w2, y + h2, x);
+                    shape_d = buf;
+                } else {
+                    float cx2 = num("cx"), cy2 = num("cy");
+                    float rx = c->tag == "circle" ? num("r") : num("rx");
+                    float ry = c->tag == "circle" ? num("r") : num("ry");
+                    if (rx <= 0 || ry <= 0) continue;
+                    const int SEG = 48;
+                    for (int k2 = 0; k2 <= SEG; ++k2) {
+                        float th = float(k2) / SEG * 2.f * float(M_PI);
+                        snprintf(buf, sizeof buf, "%s %g %g",
+                                 k2 == 0 ? "M" : "L",
+                                 cx2 + rx * cosf(th), cy2 + ry * sinf(th));
+                        shape_d += buf;
+                    }
+                    shape_d += " Z";
+                }
+            }
+            if (c->tag == "path" || !shape_d.empty()) {
+                std::string dstr;
+                if (c->tag == "path") {
+                    auto dit = c->attrs.find("d");
+                    if (dit == c->attrs.end() || dit->second.empty()) continue;
+                    dstr = dit->second;
+                } else {
+                    dstr = shape_d;
+                }
+                auto subs = svg_flatten(dstr, A, B, C, D, E, F);
                 // fill (SVG default fill = black; fill:none skips)
                 std::string f = svg_prop_of(c, "fill");
                 if (f.empty()) f = "#000";
@@ -5101,7 +5690,7 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
                 // inline-SVG styling gaps are invisible otherwise
                 if (wv_trace())
                     std::cerr << "[WV-SVG-PATH] fill='" << f << "' stroke='"
-                              << svg_prop_of(c, "stroke") << "' dlen=" << dit->second.size()
+                              << svg_prop_of(c, "stroke") << "' dlen=" << dstr.size()
                               << std::endl;
                 if (f != "none" && f != "transparent") {
                     bool okc = false;
@@ -5278,6 +5867,50 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
             }
             if (n->tag == "svg") {
                 paint_svg_node(n);          // S117 inline-SVG paint law
+            } else if (n->tag == "img" && n->w > 0 && n->h > 0) {
+                // ── S133 REPLACED-IMAGE paint law ───────────────────────
+                // src → fetch_resource (network OR asset, one resource
+                // table) → decode (decode_image_bytes) → blit scaled into
+                // the box (drawImage semantics; the same scaling law the
+                // canvas blit uses). Missing/broken source = honest empty
+                // box (no fabricated pixels).
+                auto it2 = impl->img_cache.find(n->attrs.count("src")
+                                                    ? n->attrs["src"]
+                                                    : std::string());
+                if (it2 == impl->img_cache.end()) {
+                    auto sit = n->attrs.find("src");
+                    if (sit != n->attrs.end()) {
+                        auto bytes = impl->fetch_resource(sit->second, "img-src");
+                        WebViewEngine::Impl::CachedImg img;
+                        if (!bytes.empty()) {
+                            renderer::DecodedImage dec;
+                            if (renderer::decode_image_bytes(bytes, &dec) && dec.ok) {
+                                img.w = dec.width; img.h = dec.height; img.ok = true;
+                                img.px.resize(size_t(dec.width) * dec.height);
+                                for (size_t pi = 0; pi < img.px.size(); ++pi)
+                                    img.px[pi] = {dec.rgba[pi * 4], dec.rgba[pi * 4 + 1],
+                                                  dec.rgba[pi * 4 + 2], dec.rgba[pi * 4 + 3]};
+                            }
+                        }
+                        it2 = impl->img_cache.emplace(sit->second, std::move(img)).first;
+                    }
+                }
+                if (it2 != impl->img_cache.end() && it2->second.ok &&
+                    it2->second.w > 0 && it2->second.h > 0) {
+                    int sw = it2->second.w, shh = it2->second.h;
+                    for (int yy = 0; yy < n->h; ++yy) {
+                        int sy = int((yy + .5f) / n->h * shh);
+                        if (sy < 0 || sy >= shh) continue;
+                        for (int xx = 0; xx < n->w; ++xx) {
+                            int sx = int((xx + .5f) / n->w * sw);
+                            if (sx < 0 || sx >= sw) continue;
+                            int dx = n->x + xx, dy = n->y + yy;
+                            if (dx < 0 || dy < 0 || dx >= w || dy >= h) continue;
+                            auto c = it2->second.px[size_t(sy) * sw + sx];
+                            surface_fb->set_pixel(dx, dy, c);
+                        }
+                    }
+                }
             } else if (n->is_canvas && n->canvas && n->canvas->bitmap().get_pixel_count() > 0 &&
                 n->w > 0 && n->h > 0) {
                 // canvas bitmap → page (drawImage semantics through Canvas2D)
@@ -5308,7 +5941,11 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
             }
         }
         for (auto& c : n->children) {
-            if (c->tag == "#text" || c->inline_el || c->positioned) continue;
+            // S133: inline_block is atomic — it IS painted (unlike plain
+            // inline elements, whose boxes merge into the parent flow)
+            if (c->tag == "#text" || (c->inline_el && !c->inline_block) ||
+                c->positioned)
+                continue;
             paint_node(c.get());
         }
     };
@@ -5572,12 +6209,184 @@ bool WebViewEngine::key_event(const std::string& key, const std::string& type, c
     return ran;
 }
 
+// ── S133 ES-MODULE loader law ───────────────────────────────────────────
+// WHATWG HTML §4.12.21 + ES2020 modules: type=module scripts (and any
+// import()/static import they trigger) resolve specifiers against the
+// document base and fetch through the SAME resource substrate as every
+// other external ref (S133 fetch_resource → mininet::http_get / APK
+// assets). QuickJS owns the module map — one instance per resolved name.
+struct WebViewEngine::Impl;   // fwd (defined below)
+
+static char* s133_module_normalize(JSContext* ctx, const char* base_name,
+                                   const char* name, void* opaque) {
+    (void)opaque;
+    std::string ref = name;
+    // Bare module specifier ("react-dom/client"): NOT a path — hand it back
+    // unchanged; the loader refuses it with an honest error (import maps are
+    // a separate measured-need feature).
+    if (!(ref.rfind("/", 0) == 0 || ref.rfind("./", 0) == 0 ||
+          ref.rfind("../", 0) == 0 || ref.rfind("//", 0) == 0 ||
+          ref.rfind("http://", 0) == 0 || ref.rfind("https://", 0) == 0 ||
+          ref.rfind("assets/", 0) == 0 || ref.rfind("file:", 0) == 0 ||
+          ref.rfind("data:", 0) == 0)) {
+        char* out = (char*)js_malloc(ctx, ref.size() + 1);
+        memcpy(out, ref.c_str(), ref.size() + 1);
+        return out;
+    }
+    // already absolute (scheme'd or APK-asset form) — take as-is
+    if (ref.rfind("http://", 0) == 0 || ref.rfind("https://", 0) == 0 ||
+        ref.rfind("assets/", 0) == 0 || ref.rfind("file:", 0) == 0) {
+        char* out = (char*)js_malloc(ctx, ref.size() + 1);
+        memcpy(out, ref.c_str(), ref.size() + 1);
+        return out;
+    }
+    // merge against the importing module's URL (RFC 3986 §5.2 transform).
+    // base_name is the module's own resolved name (absolute or asset path).
+    std::string base = base_name ? base_name : "";
+    std::string dir;
+    if (ref.rfind("//", 0) == 0) {
+        ref = "https:" + ref;
+        char* out = (char*)js_malloc(ctx, ref.size() + 1);
+        memcpy(out, ref.c_str(), ref.size() + 1);
+        return out;
+    }
+    size_t slash = base.rfind('/');
+    if (slash == std::string::npos) dir = "";
+    else {
+        // keep scheme+host+directory (skip the "path0" root edge)
+        size_t scheme_end = base.find("://");
+        if (ref[0] == '/' && scheme_end != std::string::npos) {
+            size_t host_slash = base.find('/', scheme_end + 3);
+            dir = base.substr(0, host_slash == std::string::npos
+                                      ? base.size() : host_slash);
+        } else {
+            dir = base.substr(0, slash + 1);
+        }
+    }
+    std::string merged = ref[0] == '/' ? dir + ref : dir + ref;
+    // RFC 3986 §5.2.4 remove_dot_segments over the path portion. Only a
+    // "://" form carries a scheme+authority prefix; asset paths ("assets/…")
+    // are ROOTED relative names — they must NOT gain a leading slash.
+    {
+        std::string prefix;
+        std::string p = merged;
+        size_t se = p.find("://");
+        if (se != std::string::npos) {
+            size_t hs = p.find('/', se + 3);
+            if (hs != std::string::npos) {
+                prefix = p.substr(0, hs);
+                p = p.substr(hs);
+            } else {
+                prefix = p;
+                p.clear();
+            }
+        }
+        std::vector<std::string> out;
+        size_t i = 0;
+        while (i < p.size()) {
+            size_t j = p.find('/', i);
+            std::string seg = p.substr(i, (j == std::string::npos ? p.size() : j) - i);
+            i = (j == std::string::npos) ? p.size() : j + 1;
+            if (seg.empty() || seg == ".") continue;
+            if (seg == "..") { if (!out.empty()) out.pop_back(); continue; }
+            out.push_back(seg);
+        }
+        std::string r = prefix;
+        for (size_t k = 0; k < out.size(); ++k) {
+            if (!r.empty() && r.back() != '/') r += "/";
+            r += out[k];
+        }
+        merged = r;
+    }
+    char* out = (char*)js_malloc(ctx, merged.size() + 1);
+    memcpy(out, merged.c_str(), merged.size() + 1);
+    return out;
+}
+
+static JSModuleDef* s133_module_loader(JSContext* ctx, const char* module_name,
+                                       void* opaque) {
+    auto* impl = (WebViewEngine::Impl*)opaque;
+    if (!impl) {
+        JS_ThrowInternalError(ctx, "module loader: no engine");
+        return nullptr;
+    }
+    // Bare specifiers (react-dom/client) are NOT resolvable: honest error
+    // (a bare-import map is a separate, measured-need feature).
+    if (std::string(module_name).rfind("http", 0) != 0 &&
+        std::string(module_name).rfind("assets/", 0) != 0 &&
+        std::string(module_name).rfind("/assets/", 0) != 0) {
+        std::string msg = std::string("could not resolve module specifier '") +
+                          module_name + "' (no import map)";
+        std::cerr << "[WV-MODULE] " << msg << std::endl;
+        JS_ThrowReferenceError(ctx, msg.c_str());
+        return nullptr;
+    }
+    auto bytes = impl->fetch_resource(module_name, "module-import");
+    if (bytes.empty()) {
+        std::string msg = std::string("could not load module '") + module_name + "'";
+        std::cerr << "[WV-MODULE] " << msg << std::endl;
+        JS_ThrowReferenceError(ctx, msg.c_str());
+        return nullptr;
+    }
+    std::string code(bytes.begin(), bytes.end());
+    JSValue func_val = JS_Eval(ctx, code.c_str(), code.size(), module_name,
+                               JS_EVAL_TYPE_MODULE | JS_EVAL_FLAG_COMPILE_ONLY);
+    if (JS_IsException(func_val)) return nullptr;
+    // COMPILE_ONLY module eval returns JS_TAG_MODULE whose ptr IS the def.
+    JSModuleDef* m = (JSModuleDef*)JS_VALUE_GET_PTR(func_val);
+    JS_FreeValue(ctx, func_val);   // def stays registered in the module map
+    std::cerr << "[WV-MODULE] loaded " << module_name << " ("
+              << code.size() << " bytes)" << std::endl;
+    return m;
+}
+
+// ── S133 UNHANDLED-REJECTION law ────────────────────────────────────────
+// A real browser reports unhandled promise rejections on the console
+// (WHATWG HTML §8.1.2.6 "unhandledrejection"). The engine swallowed them
+// silently — a whole SPA boot chain can die invisibly (measured: z.ai's
+// mount promise chain). The tracker makes every rejection VISIBLE.
+static void s133_promise_rejection(JSContext* ctx, JSValueConst promise,
+                                   JSValueConst reason, JS_BOOL is_handled,
+                                   void* opaque) {
+    (void)promise;
+    (void)opaque;
+    if (is_handled) return;
+    const char* msg = JS_ToCString(ctx, reason);
+    std::cerr << "[WV-REJECT] unhandled promise rejection: "
+              << (msg ? msg : "(no reason)") << std::endl;
+    if (msg) JS_FreeCString(ctx, msg);
+    // S133: line/column when present — minified single-line bundles still
+    // carry pc2line positions on the exception object
+    for (const char* prop : {"lineNumber", "columnNumber"}) {
+        JSValue v = JS_GetPropertyStr(ctx, reason, prop);
+        if (JS_IsNumber(v)) {
+            double d = -1; JS_ToFloat64(ctx, &d, v);
+            std::cerr << "[WV-REJECT]   " << prop << "=" << long(d) << std::endl;
+        }
+        JS_FreeValue(ctx, v);
+    }
+    JSValue stack = JS_GetPropertyStr(ctx, reason, "stack");
+    if (JS_IsString(stack)) {
+        const char* st = JS_ToCString(ctx, stack);
+        if (st && *st) std::cerr << "[WV-REJECT] stack: " << st << std::endl;
+        if (st) JS_FreeCString(ctx, st);
+    }
+    JS_FreeValue(ctx, stack);
+}
+
 // ── engine lifecycle ────────────────────────────────────────────────────
 WebViewEngine::WebViewEngine(uint32_t view_id) : view_id_(view_id) {
     impl_ = std::make_unique<Impl>();
     impl_->self = this;
     impl_->rt = JS_NewRuntime();
     JS_SetMemoryLimit(impl_->rt, 512ull * 1024 * 1024);
+    // S133 ES-MODULE law: the runtime module system resolves specifiers
+    // against the importing module's URL and fetches through the engine's
+    // resource substrate (network + assets, one resource table).
+    JS_SetModuleLoaderFunc(impl_->rt, s133_module_normalize, s133_module_loader,
+                           impl_.get());
+    JS_SetHostPromiseRejectionTracker(impl_->rt, s133_promise_rejection,
+                                      impl_.get());
     register_js_classes(impl_->rt);
     impl_->rng_state ^= view_id * 2654435761u + 1;
 }
@@ -5614,10 +6423,11 @@ bool WebViewEngine::load_document(const std::string& url, const std::string& htm
         for (auto& c : n->children) css(c.get());
     };
     css(impl->doc.root.get());
-    // S113: external stylesheets — <link rel=stylesheet href> fetch + parse
-    // (the same APK-asset law external scripts use; no network dependency)
+    // S113+ external stylesheets — <link rel=stylesheet href> fetch + parse
+    // (S133: APK-asset OR network tier through fetch_resource — one resource
+    // table covers every consumer).
     for (auto& [href, _tag] : impl->doc.external_styles) {
-        auto bytes = impl->fetch_asset(href);
+        auto bytes = impl->fetch_resource(href, "stylesheet");
         if (bytes.empty()) {
             std::cerr << "[WV-CSS] external stylesheet fetch FAILED: " << href << std::endl;
             continue;
@@ -5644,7 +6454,7 @@ bool WebViewEngine::load_document(const std::string& url, const std::string& htm
         std::string url = src_it->second.substr(p0, pe - p0);
         url.erase(std::remove(url.begin(), url.end(), '"'), url.end());
         url.erase(std::remove(url.begin(), url.end(), '\''), url.end());
-        auto fbytes = impl->fetch_asset(url);
+        auto fbytes = impl->fetch_resource(url, "font-face");
         if (fbytes.empty()) {
             std::cerr << "[WV-FONT] fetch FAILED: " << url << std::endl;
             continue;

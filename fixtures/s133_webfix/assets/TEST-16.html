@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html><head><style>body{margin:0;background:#FFFFFF}
+#ok{width:800px;height:400px;background:#AA0055;display:none}</style></head>
+<body>
+<div id="ok"></div>
+<script type="module">
+const mod = await import('./mod-b.js');
+document.getElementById('ok').style.display = 'block';
+console.log('F16-DYN', mod.msg);
+</script>
+</body></html>

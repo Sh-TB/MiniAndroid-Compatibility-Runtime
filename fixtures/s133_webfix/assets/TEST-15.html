@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html><head><style>body{margin:0;background:#FFFFFF}
+#ok{width:800px;height:400px;background:#00AA55;display:none}</style></head>
+<body>
+<div id="ok"></div>
+<script>
+fetch('/static/result.json').then(r=>r.json()).then(d=>console.log('F15-DATA', d.ok));
+</script>
+<script type="module">
+import { state } from './mod-a.js';
+document.getElementById('ok').style.display = 'block';
+console.log('F15-MODULE', state);
+</script>
+</body></html>

@@ -1,6 +1,6 @@
 {
  "schema": "miniandroid.evidence_registry.v1",
- "generated": "2026-10-01T03:05:21Z",
+ "generated": "2026-10-01T11:12:23Z",
  "law": "Visual evidence: 460px JPG <=100KB, English-only; VERIFIED needs 3-run byte-identical SHA256; blank/grey frames are NOT renders.",
  "canonical_evidence_index": {
   "total_files": 95,
@@ -110,6 +110,26 @@
   {
    "wave": "s128_input_law",
    "files": 8
+  },
+  {
+   "wave": "s129_input_law",
+   "files": 9
+  },
+  {
+   "wave": "s131_input_wave",
+   "files": 3
+  },
+  {
+   "wave": "s132_reuse_wave",
+   "files": 3
+  },
+  {
+   "wave": "s133_browser",
+   "files": 0
+  },
+  {
+   "wave": "s133_webfix",
+   "files": 0
   }
  ]
 }

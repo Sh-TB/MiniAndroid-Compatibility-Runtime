@@ -12,7 +12,9 @@
 //     https via libssl, http via plain POSIX sockets.
 //
 // Scope (honest): GET with redirects (301/302/303/307/308, max 5),
-// Content-Length and chunked bodies, connect/read timeouts, response caps.
+// Content-Length and chunked bodies, connect/read timeouts, response caps,
+// S133: per-request EXTRA HEADERS (Authorization/Bearer — the authenticated
+// SPA law; measured: chat.z.ai /api/models 403 without it, 200 with it).
 // No POST, no cookies, no proxy, no keep-alive, no HTTP/2. Deviations
 // from libcore are recorded at the call site by the bridge.
 // ============================================================================
@@ -43,6 +45,13 @@ struct HttpResponse {
 // timeout_ms clamps connect and per-read waits. body cap: 8 MiB.
 HttpResponse http_get(const std::string& url, int max_redirects = 5,
                       int timeout_ms = 15000);
+
+// S133: GET with extra request headers (WHATWG fetch Headers law at the
+// transport layer). Header names are forwarded verbatim; the client does
+// NOT synthesize a cookie jar (no persistent session law yet).
+HttpResponse http_get_ex(const std::string& url,
+                         const std::map<std::string, std::string>& extra_headers,
+                         int max_redirects = 5, int timeout_ms = 15000);
 
 // Parse "scheme://host[:port]/path?query" (path defaults "/").
 struct UrlParts {

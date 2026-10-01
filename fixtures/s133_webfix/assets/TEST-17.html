@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html><head><style>body{margin:0;background:#FFFFFF}
+#ok{width:800px;height:400px;background:#5500AA;display:none}</style></head>
+<body>
+<div id="ok"></div>
+<script>
+async function boot(){
+  const [a, b] = await Promise.allSettled([Promise.resolve('x'), Promise.reject(new Error('y'))]);
+  document.getElementById('ok').style.display = 'block';
+  console.log('F17-ALLSETTLED', a.status, b.status);
+}
+boot();
+</script>
+</body></html>

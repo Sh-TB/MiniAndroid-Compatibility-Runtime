@@ -7,6 +7,9 @@
 // UNIFIED_007: real resource pipeline
 #include "../resources/resource_runtime.h"
 #include "../webview/webview_engine.h"
+// S133 WEB-001: the S100 NET-001 HTTPS client is the runtime's existing
+// fetch substrate — REUSED for network document loads (no new network code).
+#include "../api/http_client.h"
 
 #include <algorithm>
 #include <chrono>
@@ -4783,9 +4786,79 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
                 }
             }
         }
-        // Generic render law: an http(s) URL has no local document body in
-        // this engine (no WebView network stack); the node renders its
-        // honest placeholder via the standard path (no text).
+        // ── S133 WEB-001 NETWORK DOCUMENT LAW ─────────────────────────────
+        // AOSP WebView.loadUrl loads http(s) documents over the network
+        // stack; the honest-placeholder law above held only while this
+        // runtime had no fetch path for the TOP-LEVEL document (JS fetch()
+        // and java.net already reach the network; asset/res documents load
+        // through the engine). The S100 NET-001 client (mininet::http_get —
+        // OpenSSL TLS, redirect following, chunked, timeouts) is the
+        // EXISTING substrate: reused here as the document fetch. Chain:
+        // loadUrl(url) → http_get → status/content-type gate →
+        // WebViewEngine::load_document(final_url, body). The FINAL url (post
+        // redirects) becomes the document base so relative resource refs
+        // resolve against it (RFC 3986 §5). Failures keep the honest
+        // placeholder — no content fabrication, network errors recorded.
+        {
+            const std::string& u = n->web_url;
+            bool is_http = u.rfind("http://", 0) == 0 || u.rfind("https://", 0) == 0;
+            // data:/about:/javascript: and unknown schemes keep the old law.
+            if (is_http) {
+                auto t0 = std::chrono::steady_clock::now();
+                mininet::HttpResponse hr = mininet::http_get(u, 5, 20000);
+                auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+                              std::chrono::steady_clock::now() - t0).count();
+                std::string ctype;
+                hr.header("content-type", ctype);
+                std::cerr << "[WEB-001] GET " << u << " status=" << hr.status
+                          << " redirects=" << hr.redirect_count
+                          << " final=\"" << hr.final_url << "\""
+                          << " bytes=" << hr.body.size()
+                          << " type=" << ctype
+                          << " ms=" << ms
+                          << (hr.error.empty() ? "" : (" err=" + hr.error))
+                          << std::endl;
+                bool html_like = ctype.empty() ||
+                                 ctype.find("text/html") != std::string::npos ||
+                                 ctype.find("application/xhtml") != std::string::npos ||
+                                 ctype.find("text/plain") != std::string::npos;
+                if (hr.ok() && html_like && !hr.body.empty()) {
+                    // The post-redirect URL is the document base (relative
+                    // resolution law); the WebView node records it too.
+                    if (!hr.final_url.empty()) n->web_url = hr.final_url;
+                    std::string apk_path_wv;
+                    if (auto* act = registry_ ? registry_->find_as<ActivityShadow>()
+                                              : nullptr)
+                        apk_path_wv = act->apk_path();
+                    auto eng = webview::WebViewRegistry::instance().find(ctx.receiver_id);
+                    if (!eng) eng = webview::WebViewRegistry::instance().create(ctx.receiver_id);
+                    if (eng->load_document(n->web_url, hr.body, apk_path_wv)) {
+                        n->web_data = hr.body;
+                        n->web_mime = "text/html";
+                        n->text.clear();
+                        n->num_lines = 0;
+                        layout_dirty = true;
+                        std::cerr << "[WEB-001] loadUrl → engine ok: view=o"
+                                  << ctx.receiver_id << " base=" << n->web_url
+                                  << " bytes=" << hr.body.size() << std::endl;
+                        return CallResult::handled_void();
+                    }
+                    std::cerr << "[WEB-001] engine FAILED — honest text fallback"
+                              << std::endl;
+                    n->text = webview_html_to_text(hr.body);
+                    n->num_lines = 0;
+                    layout_dirty = true;
+                    return CallResult::handled_void();
+                }
+                // Fetch failed or non-HTML payload: keep the honest
+                // placeholder (old law) and record WHY.
+                std::cerr << "[WEB-001] network document NOT loaded — status="
+                          << hr.status << " html_like=" << html_like
+                          << " err=" << hr.error << std::endl;
+            }
+        }
+        // Generic render law (unchanged for non-http schemes and failures):
+        // the node renders its honest placeholder via the standard path.
         layout_dirty = true;
         std::cerr << "[F085-WV] loadUrl/postUrl: webview=o" << ctx.receiver_id
                   << " url=\"" << n->web_url.substr(0, 80) << "\"" << std::endl;

@@ -1,22 +1,22 @@
 {
  "_projection_of": "root_registry.json",
  "_law": "root_registry.json is the single writable store; this file is a generated read model (ROADMAP SS3: no duplicate canonical registries).",
- "generated": "2026-10-01T03:05:21Z",
- "total": 424,
+ "generated": "2026-10-01T11:12:23Z",
+ "total": 454,
  "status_counts": {
-  "PARTIAL": 103,
+  "PARTIAL": 102,
   "VERIFIED-CORRECT": 46,
   "UNPROVEN": 72,
   "VERIFIED-FIXED": 48,
-  "SUPERSEDED-BY-EVIDENCE": 7,
+  "SUPERSEDED-BY-EVIDENCE": 9,
   "RESEARCHED-NOT-IMPLEMENTED": 16,
   "NOT-APPLICABLE": 42,
   "OBSERVED-FAIL": 6,
-  "IMPLEMENTED": 7,
-  "ROOT-CAUSED-FIXED": 50,
+  "IMPLEMENTED": 16,
+  "ROOT-CAUSED-FIXED": 60,
   "PARTIAL-FIX": 1,
   "PROVEN-FIXED": 1,
-  "IMPLEMENTED+TESTED": 6,
+  "IMPLEMENTED+TESTED": 10,
   "ROOT-CAUSED-REMEASURED-GENERIC-OK": 1,
   "FIXED-S75": 1,
   "ROOT-CAUSED-SEMANTIC": 1,
@@ -25,7 +25,10 @@
   "USED_BY_EXECUTION": 7,
   "ROOT_CAUSED-FIXED": 2,
   "FIXED-VERIFIED": 1,
-  "ROOT-CAUSED-CLOSED": 1
+  "ROOT-CAUSED-CLOSED": 2,
+  "VERIFIED_3RUN": 1,
+  "VERIFIED": 3,
+  "BLOCKED": 1
  },
  "roots": [
   {
@@ -1781,14 +1784,14 @@
   {
    "id": "R-NEW-251",
    "title": null,
-   "status": "PARTIAL",
+   "status": "SUPERSEDED-BY-EVIDENCE",
    "priority": "P2",
    "layer": null
   },
   {
    "id": "R-NEW-252",
    "title": null,
-   "status": "PARTIAL",
+   "status": "SUPERSEDED-BY-EVIDENCE",
    "priority": "P1",
    "layer": null
   },
@@ -2994,6 +2997,216 @@
    "title": "INPUT TouchDelegate law gap + MOVE-delivery law gap (CAP-INPUT-110): android.view.TouchDelegate did not exist (no ctor capture, no setTouchDelegate, no View.onTouchEvent consult \u2014 View.java L17060-17064), and the dispatcher delivered only DOWN/UP to app code (MOVE events never reached OnTouchListener/onTouchEvent overrides \u2014 every drag-driven app path was starved).",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P1",
+   "layer": null
+  },
+  {
+   "id": "R-NEW-427",
+   "title": "Scroller/OverScroller 1:1 port (startScroll/fling spline physics/viscousFluid/DECELERATION_RATE/settle-at-final)",
+   "status": "IMPLEMENTED+TESTED",
+   "priority": "P1",
+   "layer": null
+  },
+  {
+   "id": "R-NEW-428",
+   "title": "View.scrollTo/scrollBy fire onScrollChanged hook (AOSP View law)",
+   "status": "IMPLEMENTED",
+   "priority": "P1",
+   "layer": null
+  },
+  {
+   "id": "R-NEW-429",
+   "title": "GestureDetector state machine 1:1 (onDown/onShowPress/onSingleTapUp/onLongPress/onScroll/onFling/onSingleTapConfirmed + double-tap; timeouts 100/500/300/40ms; LSQ2 velocity)",
+   "status": "IMPLEMENTED+TESTED",
+   "priority": "P1",
+   "layer": null
+  },
+  {
+   "id": "R-NEW-430",
+   "title": "computeScroll dispatch per frame in the draw walk (AOSP ViewGroup draw law)",
+   "status": "IMPLEMENTED",
+   "priority": "P1",
+   "layer": null
+  },
+  {
+   "id": "R-NEW-431",
+   "title": "View.setChecked/toggle/isChecked + onCheckedChanged hook",
+   "status": "IMPLEMENTED",
+   "priority": "P1",
+   "layer": null
+  },
+  {
+   "id": "R-NEW-432",
+   "title": "FocusFinder one-focus law: setFocusable/requestFocus/clearFocus/isFocused + set_focused_view",
+   "status": "IMPLEMENTED+TESTED",
+   "priority": "P1",
+   "layer": null
+  },
+  {
+   "id": "R-NEW-433",
+   "title": "View listener family storage (OnScrollChangeListener/OnCheckedChangeListener/OnItemClickListener/OnItemLongClickListener/OnItemSelectedListener/OnKeyListener)",
+   "status": "IMPLEMENTED",
+   "priority": "P1",
+   "layer": null
+  },
+  {
+   "id": "R-NEW-434",
+   "title": "KeyEvent dispatch: onKey listener -> onKeyDown/onKeyUp arms (AOSP View.java L6952+)",
+   "status": "IMPLEMENTED+TESTED",
+   "priority": "P1",
+   "layer": null
+  },
+  {
+   "id": "R-NEW-435",
+   "title": "ViewPropertyAnimator record + settle-on-start",
+   "status": "IMPLEMENTED",
+   "priority": "P1",
+   "layer": null
+  },
+  {
+   "id": "R-NEW-436",
+   "title": "Scroll-clip walk law: scrolling-ancestor fully-outside skip + RenderTask clip fields",
+   "status": "IMPLEMENTED",
+   "priority": "P1",
+   "layer": null
+  },
+  {
+   "id": "R-NEW-437",
+   "title": "[HONESTY-CORRECTED S132] opencalculator pad collapsed (34 buttons/8 rows bounds=0, blank screen) \u2014 TableLayout/TableRow/weight + ConstraintLayout MATCH_CONSTRAINT family; NOT GridLayout (the APK has no GridLayout \u2014 S131 probe misread the 76-node heap scan)",
+   "status": "ROOT-CAUSED-CLOSED",
+   "priority": "P1",
+   "layer": null
+  },
+  {
+   "id": "R-NEW-438",
+   "title": "DEX onMeasure override emulation defeats the native container laws (incomplete-emulation law missing) \u2014 library containers collapse to 0x0 or skip child measure",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P1",
+   "layer": null
+  },
+  {
+   "id": "R-NEW-439",
+   "title": "ConstraintLayout PARENT_ID sentinel: modern AGP compiles app:layout_constraint*_to*Of=\"parent\" as typed INT 0 without a raw string \u2014 the raw==\"parent\"-only capture dropped every parent anchor",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P1",
+   "layer": null
+  },
+  {
+   "id": "R-NEW-440",
+   "title": "Two competing measure laws: the engine's DEX measure bridge sized container subtrees with the primitive spec law (no anchors/weights/TableLayout rows) instead of the canonical inflater law; render/input roots also diverged (content_view_id unset on the appcompat delegate path)",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P1",
+   "layer": null
+  },
+  {
+   "id": "R-NEW-441",
+   "title": "SlidingUpPanelLayout runtime-state family: View.getLeft/getTop/getRight/getBottom had NO bridge (umano dimChildToDimen cover test read degenerate bounds); F096 dispatched real-DEX onLayout with a degenerate 0x0 rect; layout weight shares computed 3x too tall for opencalculator rows",
+   "status": "PARTIAL",
+   "priority": "P1",
+   "layer": null
+  },
+  {
+   "id": "R-NEW-442",
+   "title": "SVG-asset law missing (Telegram SvgHelper family loads plain-text .svg assets; no text-XML reader existed) \u2014 adapter law over the existing path/fill substrate",
+   "status": "IMPLEMENTED",
+   "priority": "P2",
+   "layer": null
+  },
+  {
+   "id": "R-NEW-443",
+   "title": "WEB-001 network document law missing: WebView.loadUrl(http/https) kept the honest-placeholder law (no top-level fetch) \u2014 the FIRST divergence of every live-site load",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P0",
+   "layer": null
+  },
+  {
+   "id": "R-NEW-444",
+   "title": "ES-MODULE script law missing: <script type=module> executed with classic goals \u2192 SyntaxError: unsupported keyword: export \u2014 the FIRST DIVERGENCE of the live z.ai load (the 3.2MB Vue/Svelte SPA bundle died at parse; app never mounted; page white)",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P0",
+   "layer": null
+  },
+  {
+   "id": "R-NEW-445",
+   "title": "fetch() relative-URL resolution missing (WHATWG Fetch base-URL law): fetch('/api/config') threw 'bad url' instead of hitting the document origin",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P1",
+   "layer": null
+  },
+  {
+   "id": "R-NEW-446",
+   "title": "fetch(url, init) headers/method ignored (WHATWG Fetch \u00a74.1 init law): Authorization/Content-Type dropped \u2014 every authenticated-SPA request degraded",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P1",
+   "layer": null
+  },
+  {
+   "id": "R-NEW-447",
+   "title": "HTTP cookie store missing (RFC 6265 \u00a75.3/\u00a75.4): Set-Cookie never stored, Cookie never echoed \u2014 the z.ai session flow (token cookie from /api/v1/auths/ gating /api/models) returned 403",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P1",
+   "layer": null
+  },
+  {
+   "id": "R-NEW-448",
+   "title": "Unhandled promise rejections were INVISIBLE (no host rejection tracker) \u2014 a whole SPA boot chain died silently (white screen with zero error surface)",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P1",
+   "layer": null
+  },
+  {
+   "id": "R-NEW-449",
+   "title": "Web-API stub family missing: PerformanceObserver/IntersectionObserver/MutationObserver/ResizeObserver/matchMedia/requestIdleCallback \u2014 z.ai's first inline telemetry script died at 'PerformanceObserver is not defined' BEFORE its payload ran",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P1",
+   "layer": null
+  },
+  {
+   "id": "R-NEW-450",
+   "title": "ATOMIC INLINE-BOX law missing (CSS 2.1 \u00a79.2.2): display:inline-block elements text-merged into the parent (never laid out lo=0, never painted) \u2014 T02 color chips and T14's 2000-node grid rendered NOTHING (the dominant general-roots divergence from the fixture suite)",
+   "status": "VERIFIED_3RUN",
+   "priority": "P1",
+   "layer": null
+  },
+  {
+   "id": "R-NEW-451",
+   "title": "<img> replaced-element law missing: DOM <img> had no fetch, no box, no paint (only JS new Image()/CSS background existed) \u2014 T05 fixture image invisible; klondike banner.html family affected",
+   "status": "VERIFIED",
+   "priority": "P1",
+   "layer": null
+  },
+  {
+   "id": "R-NEW-452",
+   "title": "Inline SVG BASIC-SHAPES law missing (SVG2 \u00a710.3/\u00a710.4): paint_svg_content painted only <path>/<use> \u2014 <circle>/<rect>/<ellipse> rendered nothing (T06 fixture; the S132 Telegram subset measured circle/rect usage)",
+   "status": "VERIFIED",
+   "priority": "P1",
+   "layer": null
+  },
+  {
+   "id": "R-NEW-453",
+   "title": "Canvas attribute intrinsic-size law missing (WHATWG HTML \u00a74.12.4): parsed <canvas width= height=> kept a 1x1 bitmap AND a 0x0 box \u2014 every parse-time fillRect landed on a degenerate surface (T09: draw_calls=2, ZERO pixels)",
+   "status": "VERIFIED",
+   "priority": "P1",
+   "layer": null
+  },
+  {
+   "id": "R-NEW-454",
+   "title": "Browser DOM/URL surface family missing for module-class pages: URLSearchParams (30+ z.ai bundle sites), document.getElementsByTagName (z.ai GTM bootstrap), document.location alias (jQuery support checks)",
+   "status": "IMPLEMENTED",
+   "priority": "P1",
+   "layer": null
+  },
+  {
+   "id": "R-NEW-455",
+   "title": "Browser resource-forensics instrumentation missing (S133 \u00a74/\u00a75/\u00a731): no per-resource table, no stage traces, no diagnostic artifact dump",
+   "status": "IMPLEMENTED",
+   "priority": "P1",
+   "layer": null
+  },
+  {
+   "id": "R-NEW-456",
+   "title": "LIVE z.ai residual: the Svelte-5 runtime inside the minified app bundle rejects the boot ('TypeError: value is not iterable', twice, unhandled) at bundle line 7 (~48K chars) \u2014 the SPA mounts nothing and the page stays the honest white shell",
+   "status": "BLOCKED",
+   "priority": "P2",
    "layer": null
   }
  ]

@@ -84,8 +84,12 @@ static void collect_scripts(DomNode* n, ParsedDocument& doc,
     (void)html; (void)script_order;
     if (n->tag == "script") {
         std::string src = n->attrs.count("src") ? n->attrs["src"] : "";
-        if (!src.empty()) doc.external_scripts.push_back({src, ""});
-        else if (!n->text.empty()) doc.inline_scripts.push_back(n->text);
+        // S133 ES-MODULE law: type="module" selects module parse goals.
+        std::string stype;
+        if (n->attrs.count("type")) stype = lower(n->attrs["type"]);
+        bool is_module = stype.find("module") != std::string::npos;
+        if (!src.empty()) doc.external_scripts.push_back({src, is_module ? "module" : ""});
+        else if (!n->text.empty()) doc.inline_scripts.push_back({n->text, is_module});
         doc.script_nodes_total++;
     }
     for (auto& c : n->children) collect_scripts(c.get(), doc, html, script_order);
