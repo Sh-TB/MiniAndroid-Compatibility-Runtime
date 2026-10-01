@@ -996,6 +996,26 @@ public:
     }
 };
 
+// S129 (R-NEW-426, CAP-INPUT-110): TouchDelegate ctor capture.
+// AOSP TouchDelegate.java ctor: TouchDelegate(Rect bounds, View delegateView)
+// — mBounds = bounds; mSlop = ViewConfiguration touch slop;
+// mSlopBounds = mBounds inset(-mSlop, -mSlop); mDelegateView = delegateView.
+// The shadow records (bounds, delegate view) on the heap object; the
+// View.setTouchDelegate bridge (ViewShadow) copies them onto the owning
+// ViewNode and the TouchDispatcher applies the onTouchEvent law
+// (View.java L17060-17064: delegate consulted BEFORE the clickable switch).
+class TouchDelegateShadow : public Shadow {
+public:
+    std::string name() const override { return "TouchDelegateShadow"; }
+    bool handles_class(const std::string& class_name) const override {
+        return class_name == "Landroid/view/TouchDelegate;";
+    }
+    CallResult dispatch(const CallContext& ctx) override;
+    std::vector<std::string> implemented_methods() const override {
+        return {"<init>"};
+    }
+};
+
 class ViewShadow : public Shadow {
 public:
     // ── F-062: compose saveable-id anchor key ───────────────────────────
@@ -1064,6 +1084,19 @@ public:
         // ViewGroup itself; MOVE: mid-gesture interception CANCELs the child
         // target and retargets the parent — scrolling containers law).
         bool overrides_intercept_touch_event = false;
+        // S129 (R-NEW-426, CAP-INPUT-110): TouchDelegate law (AOSP View.java
+        // L17060-17064: View.onTouchEvent consults mTouchDelegate BEFORE the
+        // clickable switch; TouchDelegate.java ctor: mSlopBounds =
+        // mBounds inset by -touchSlop). Fields captured by the
+        // TouchDelegateShadow ctor + View.setTouchDelegate bridge:
+        // bounds are in the OWNING view's local coordinates (AOSP ctor doc:
+        // "Bounds in local coordinates of the containing view"), the
+        // dispatcher translates them by the owner's absolute origin.
+        int32_t delegate_bounds_left = 0;
+        int32_t delegate_bounds_top = 0;
+        int32_t delegate_bounds_right = 0;
+        int32_t delegate_bounds_bottom = 0;
+        uint32_t touch_delegate_view = 0;  // delegate view id (0 = none)
         // S123 (R-NEW-419): TRUE when the DEX chain overrides onSizeChanged —
         // dispatched at the draw site with the node's laid-out pixel size
         // (AOSP View.setFrame law: size change → onSizeChanged BEFORE the

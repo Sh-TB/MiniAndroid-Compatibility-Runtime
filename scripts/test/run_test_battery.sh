@@ -452,6 +452,96 @@ gate "G06 input pipeline law (expect 45)" $?
 tail -1 /tmp/battery_g06law.out
 fi
 
+# S129 (R-NEW-425): CAP-INPUT-108 VelocityTracker law battery — AOSP LSQ2
+# native estimator port (HORIZON 100ms / HISTORY 20 / 40ms stopped-reset /
+# units+clamp scaling / UP-never-samples), 17 checks.
+if cached "S129 velocity tracker law (expect 17)"; then
+    skip "link velocity_tracker_law_test"; skip "S129 velocity tracker law (expect 17)"
+else
+g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/velocity_tracker_law_test \
+    tests/velocity_tracker_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
+    build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
+    build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o build/webview/*.o build/quickjs/*.o \
+    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 -lssl -lcrypto \
+    > /tmp/battery_s129vt.log 2>&1
+gate "link velocity_tracker_law_test" $?
+timeout 120 ./build/velocity_tracker_law_test > /tmp/battery_s129vt.out 2>&1
+gate "S129 velocity tracker law (expect 17)" $?
+tail -1 /tmp/battery_s129vt.out
+fi
+
+# S129 (R-NEW-426): CAP-INPUT-110 TouchDelegate law battery — View.java
+# L17060-17064 consult law + TouchDelegate DOWN-exact-bounds / slopBounds
+# MOVE/UP / CANCEL arms + fallback ancestor unwind, 23 checks.
+if cached "S129 touch delegate law (expect 23)"; then
+    skip "link touch_delegate_law_test"; skip "S129 touch delegate law (expect 23)"
+else
+g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/touch_delegate_law_test \
+    tests/touch_delegate_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
+    build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
+    build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o build/webview/*.o build/quickjs/*.o \
+    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 -lssl -lcrypto \
+    > /tmp/battery_s129td.log 2>&1
+gate "link touch_delegate_law_test" $?
+timeout 120 ./build/touch_delegate_law_test > /tmp/battery_s129td.out 2>&1
+gate "S129 touch delegate law (expect 23)" $?
+tail -1 /tmp/battery_s129td.out
+fi
+
+# S129 real-DEX input-law fixture (CAP-INPUT-108 + CAP-INPUT-110): aapt2+ECJ+D8
+# build, then (a) delegate tap → tv_delegate becomes DELEGATE-CLICK via the
+# TouchDelegate law; (b) --swipe drive → VelView's real-Dex VelocityTracker
+# computes VY=999;VX=0 (192px / 12 MOVEs @16ms, LSQ2 float32); (c) 3-run
+# frame-SHA determinism of the swipe run.
+S129_FIX_SRC="$MA/tests/fixtures/s129_input_law"
+rm -rf /tmp/battery_s129; mkdir -p /tmp/battery_s129
+if cached "S129 input-law fixture (delegate click + VY=999 + 3-run)"; then
+    skip "S129 fixture build (aapt2+ECJ+D8)"
+    skip "S129 fixture delegate tap law (CAP-INPUT-110)"
+    skip "S129 fixture swipe velocity law (CAP-INPUT-108)"
+    skip "S129 fixture 3-run determinism (frame SHAs identical)"
+elif [ -d "$S129_FIX_SRC" ]; then
+    bash "$REPOSCRIPTS/build/build_fixture_apk.sh" \
+        "$S129_FIX_SRC" /tmp/battery_s129/inputlaw.apk \
+        > /tmp/battery_s129/build.log 2>&1
+    gate "S129 fixture build (aapt2+ECJ+D8)" $?
+    ./build/miniandroid run /tmp/battery_s129/inputlaw.apk \
+        -o /tmp/battery_s129/tap --frames 4 --tap 900,700@2 --dump-view-tree \
+        > /tmp/battery_s129/tap.log 2>&1
+    python3 -c "
+import json,sys
+vt = json.load(open('/tmp/battery_s129/tap/view_tree.json'))
+texts = [n.get('text','') for n in vt['nodes']]
+sys.exit(0 if 'DELEGATE-CLICK' in texts else 1)
+"
+    gate "S129 fixture delegate tap law (CAP-INPUT-110)" $?
+    for i in 1 2 3; do
+        mkdir -p "/tmp/battery_s129/swipe$i"
+        ./build/miniandroid run /tmp/battery_s129/inputlaw.apk \
+            -o "/tmp/battery_s129/swipe$i" --frames 4 \
+            --swipe 100,1400,100,1592@2 --dump-view-tree \
+            > "/tmp/battery_s129/swipe$i.log" 2>&1
+    done
+    python3 -c "
+import json,sys
+vt = json.load(open('/tmp/battery_s129/swipe1/view_tree.json'))
+texts = [n.get('text','') for n in vt['nodes']]
+vel = [t for t in texts if t.startswith('VY=')]
+ok = bool(vel) and vel[0] == 'VY=999;VX=0'
+if not ok:
+    print('  velocity text:', vel, file=sys.stderr)
+sys.exit(0 if ok else 1)
+"
+    gate "S129 fixture swipe velocity law (CAP-INPUT-108)" $?
+    S1=$(python3 -c "import json;m=json.load(open('/tmp/battery_s129/swipe1/frames/manifest.json'));print(','.join(f['sha256'] for f in m['frames']))")
+    S2=$(python3 -c "import json;m=json.load(open('/tmp/battery_s129/swipe2/frames/manifest.json'));print(','.join(f['sha256'] for f in m['frames']))")
+    S3=$(python3 -c "import json;m=json.load(open('/tmp/battery_s129/swipe3/frames/manifest.json'));print(','.join(f['sha256'] for f in m['frames']))")
+    [ "$S1" = "$S2" ] && [ "$S2" = "$S3" ] && [ -n "$S1" ]
+    gate "S129 fixture 3-run determinism (frame SHAs identical)" $?
+else
+    gate "S129 fixture build (aapt2+ECJ+D8)" 1
+fi
+
 # G07 §7/§8/§10: lifecycle state machine + MessageQueue ordering law battery
 if cached "G07 lifecycle law (expect 25)"; then
     skip "link lifecycle_law_test"; skip "G07 lifecycle law (expect 25)"
