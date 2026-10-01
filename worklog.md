@@ -4953,3 +4953,18 @@ REGISTRIES: F-NEW-163 (S135 logger, IMPLEMENTED/TESTED) + F-NEW-164 (font law, R
 Stage Summary:
 - The runtime now answers "what produced this screen and where did the walk stop" for EVERY run in machine form (trace.jsonl/trace_summary.json) AND visually (trace_overlay.png on a copy, authoritative evidence byte-stable). Two failure frontiers are now immediately visible on real cases: droidify white screen = VIEWTREE divergence (next S134 root), WhatsApp = same fingerprint family.
 - Next automatic frontiers: (1) S134 root attack on the droidify/WhatsApp VIEWTREE divergence family (content root never set), (2) WebView/Compose/SurfaceView lane events wired into the backbone (mechanical), (3) R-NEW-456 replay bisect.
+---
+Task ID: S134-wave-3
+Agent: Super Z (main)
+Task: S134 continuation — attack the first divergence isolated by the S135 logger: the droidify/WhatsApp white-screen family (VIEWTREE divergence).
+
+Work Log:
+- SOURCE-FIRST (S134 §38): droidify --dump-api-trace → exactly ONE Window.setContentView call, status IMPLEMENTED, log line [R005-DECOR] view=1278 linked under decor=1249. But [R440-ROOT] content_view_id unset — render fell back to android.R.id.content node=800100 (empty). Central-hypothesis audit: the Window path and the content-anchor state were TWO writers of the same logical state ("activity content root") with only one connected — the §3 aliasing pattern at the LAW level.
+- SEMANTIC LAW (upstream): AOSP Activity.setContentView DELEGATES to Window.setContentView; PhoneWindow installs the view under mContentParent (android.R.id.content inside the decor) and the activity content anchor advances. MiniAndroid's R005-DECOR handler satisfied ONLY the R-NEW-416 findViewById-delegation law — the content anchor stayed 0. Apps whose androidx delegate calls getWindow().setContentView(subDecor) therefore rendered from an EMPTY content node → white screen with a green boot chain (this is why the RenderVerificationGate alone could not name it: pixels existed, chain was "fine" — the S135 VIEWTREE divergence is what isolated it).
+- F-NEW-165 FIX (dex/dalvik_engine.cpp R005-DECOR handler, no heuristics): (a) find-or-materialize the decor's android.R.id.content (0x01020002) content parent; (b) mContentParent.addView(view) (idempotent); (c) ActivityShadow.set_content_view(view); (d) layout_dirty=true (R-NEW-302). ≈40 LOC.
+- PROOF: droidify DEFAULT_BACKGROUND_ONLY (0 non-default px) → REAL_APP_CONTENT (3883 non-default px): the app bar + bottom bar chrome render (next frontier = the Compose list content, a Compose-recomposition/data-load root, NOT a window law). 3-run byte-identical 59fdbfcd60b86a23 with isolated --data-root.
+- REGRESSION (§40): dooz ba8a95eb2278594f, ballbreak 8a951f5f975c4742, simplestopwatch e00fe7e082c385f8 ALL byte-identical; headingcalc 823 colors / 466062 px unchanged; laws130 51/51; F165 fired 0× on non-target apps (path-scoped law).
+- WhatsApp face (F-NEW-166, OBSERVED-FAIL, P1): dies BEFORE setContentView — NPE "INVOKE_RETURN must not be null" at LX/00i;.A0F pc=19; zero R005/F165 hits = the app never reached the window law. Next step recorded: disassemble LX/00i;.A0F pc=19, answer the AOSP non-null contract at the stub.
+
+Stage Summary:
+- The first S135-isolated divergence is now a ROOT-CAUSED-FIXED law with full evidence chain and zero regression: the white screen family "green chain + empty content root" has a semantic fix (content-anchor leg of Window.setContentView). The campaign loop PROVE → FIX → TEST → REGRESS → FAN-OUT is closed for F-NEW-165; F-NEW-166 (WhatsApp pre-setContent NPE) and the droidify Compose-content frontier are the next highest-impact roots.
