@@ -4997,3 +4997,20 @@ Work Log:
 
 Stage Summary:
 - Three generic laws landed this session on the SAME white-screen causal chain (S135 logger → F-NEW-165 content anchor → F-NEW-166 base context → F-NEW-167 blocking queue), each with disassembly-level proof, A/B or 3-run determinism, and byte-identical goldens. WhatsApp now boots through onCreate; the remaining faces are the androidx fragment-host family (F-NEW-168) — a bounded API-coverage frontier.
+---
+Task ID: S134-wave-6
+Agent: Super Z (main)
+Task: S134 continuation (user: black/white screen fix remains top priority; achievements reported as comments) — F-NEW-168 wave: Context.getDir face + the DI-lattice frontier discovery.
+
+Work Log:
+- USER COMMENT REPORT delivered in-session: full S135 + S134 waves 3-5 achievement summary posted as a comment (no send_message tool in this session), then work resumed from the last recorded frontier (F-NEW-168).
+- BASELINE REPRO: WhatsApp on HEAD 3b1934be — boots into onCreate (waves 4-5 confirmed) with REAL_APP_CONTENT (23472 px) but rc=1 via F-016: 4 uncaught in-flight exception chains.
+- FIRST DIVERGENCE (chain 1): LX/004;.onCreate → LX/00A;.A06 → Context.getDir(String,int) REC-MISS → stub null → app-baked Intrinsics null-check LX/00i;.A06 NPE → APP-BOUNDARY unwind. Disassembly ground truth captured (iget 009.A00 → Context.getDir → move-result → 00i.A06).
+- F-NEW-168 FACE-1 FIX (dex/dalvik_engine.cpp, after P0.13 getFilesDir): AOSP ContextImpl.getDir law — app_data_root()/app_<name>, create-directories (AOSP "creating if needed"), single-segment name clamp (no '/'/'..'/empty → "default"), F-NEW-179 pathed stable File identity, mode recorded-only (API 24+ no-op). AOSP contract: getDir NEVER answers null on a live context; ContextWrapper delegates via the F-NEW-166 base-context routing.
+- PROOF: the getDir chain is GONE post-fix; first divergence MOVED to the 08C.<clinit>/08B.<init> DI lattice chains; app reaches onCreateWithUlitralightReady → AbstractAppShellDelegate.onCreate → Main.onCreate pc≈0x5ba (deepest ever). Frame stays REAL_APP_CONTENT.
+- FRONTIER DISCOVERY (F-NEW-169 registered, OBSERVED-FAIL): the DI provider-null lattice — 00t.get() → 1QL.A01 packed-switch arms (~900 AppContext slots) A0F-null-check dependency invokes ("INVOKE_RETURN must not be null"); REC-MISS-fed dependencies null → arms NPE → 2 uncaught chains (08C/08B/088/089/07r) AND Main.onCreate dies at 0gV.A02 → 00t.get() null → 08k.A0B() NPE (caught once at pc=34, fatal at pc=1470) — which ALSO blocks the F-NEW-168 faces 2+3 (0I9.<init> constructs 0JY/0JZ FragmentController host; host A08 null at onStart/onResume → androidx ISE "No activity" / "FragmentManager has not been attached to a host."). One dominant root, four observed chains.
+- GATES: laws130 51/51; dooz ba8a95eb2278594f + simplestopwatch e00fe7e082c385f8 byte-identical; headingcalc 823 colors / 466062 px exact; WhatsApp x3 deterministic eb16ab5c68fa9b6c; F168 fired 0x on goldens (path-scoped). ballbreak APK MISSING from cache (pre-reset workspace gap, like the 3 S114 fixtures) — a ball2box probe was A/B-exonerated (F168 fired 0x, dooz identical proves binary neutrality); the true de.georgsieber.ballbreak golden needs a re-fetch before its next gate.
+- REGISTRY DEBT CLOSED: root_registry.json (both copies) + canonical/master_worklist.json lagged the worklog (max F-NEW-157). F-NEW-163..169 appended with wave-cited evidence via scripts/s134_wave6_registry.py; totals now 461 roots / 680 worklist items.
+
+Stage Summary:
+- F-NEW-168 face-1 (getDir null contract) is ROOT-CAUSED-FIXED with zero regression; the campaign loop closed again on a storage-family API law. The remaining WhatsApp frontier is F-NEW-169 (DI provider-null lattice) which gates the fragment-host faces — next wave: trace the first failing slot arm (00T.A03/00C.A02 getters, slots 169/864/112/109) to its REC-MISS dependency and fix the generic law.

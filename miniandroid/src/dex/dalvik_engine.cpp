@@ -31419,6 +31419,59 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-168 (S134 wave 6) — Context.getDir(String name, int mode) → File
+    // FIRST DIVERGENCE of the WhatsApp onCreate chain (runtime-proven,
+    // run/s134/wa_w6_r1): LX/004;.onCreate → LX/00A;.A06 → Context.getDir
+    // REC-MISS'd → stub null → the app-baked R8 null-check helper
+    // LX/00i;.A06 threw NPE on the RETURN VALUE → APP-BOUNDARY unwind
+    // (4 in-flight exception chains → F-016 honesty gate FAIL at RUN_END).
+    // Disassembly ground truth (s134_wa_disasm.py):
+    //   LX/00A;.A06 (Ljava/lang/String; I)Ljava/io/File;
+    //     iget-object v0, v1, LX/009;->A00 Landroid/content/Context;
+    //     invoke-virtual v0, v2, v3, Context;->getDir(Ljava/lang/String; I)
+    //     move-result-object v0
+    //     invoke-static v0, LX/00i;->A06(Ljava/lang/Object;)V  ← throw
+    // AOSP LAW (android.app.ContextImpl.getDir): "Retrieve, creating if
+    // needed, a new directory in which the application can place its own
+    // custom data files." The directory lives under the app data dir with
+    // the literal "app_" NAME PREFIX, is CREATED before return, and the
+    // method NEVER answers null on a live context — WhatsApp-style infra
+    // singletons null-check the result with a baked Intrinsics throw, so
+    // null is a guaranteed crash, never a fallback path.
+    // AOSP ContextWrapper.getDir delegates to mBase (the F-NEW-166
+    // base-context routing already lands Context-family receivers here).
+    // The int mode is RECORDED-ONLY (world-writable modes are no-ops since
+    // API 24 — AOSP ignores them for app_ directories).
+    // Implementation: app_data_root()/app_<name> + host mkdir (creating if
+    // needed, exactly as the law states) + F-NEW-179 PATHED stable File
+    // identity — repeated getDir(same-name) answers the SAME heap object,
+    // matching the getFilesDir/getCacheDir family identity contract.
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getDir" &&
+        (class_name.find("Context") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos ||
+         class_name.find("Application") != std::string::npos ||
+         class_name.find("Service") != std::string::npos)) {
+        std::string dir_name = "default";
+        if (args.size() >= 2 && args[1].type == DalvikType::STRING_REF)
+            dir_name = args[1].string_val;
+        // Single-segment clamp: a '/' or ".." in the name would escape the
+        // app data root (AOSP never hits this — the name is a plain
+        // directory literal from app code). Clamp, never traverse.
+        if (dir_name.empty() || dir_name.find('/') != std::string::npos ||
+            dir_name == ".." || dir_name == ".")
+            dir_name = "default";
+        std::filesystem::path dir_path =
+            std::filesystem::path(Storage::app_data_root()) /
+            ("app_" + dir_name);
+        std::error_code ec;
+        std::filesystem::create_directories(dir_path, ec);  // creating if needed
+        result = get_or_create_dir_file(dir_path.string());
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // P1.1 — Activity.getWindow → Window singleton
     // F-NEW-156 FACE-1 ROOT FIX (S134, solitaire 71 first divergence —
     // runtime-proven): getWindow() arrives with the DEX method-reference
