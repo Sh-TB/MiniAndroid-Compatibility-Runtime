@@ -123,6 +123,9 @@ void print_usage(const char* program_name) {
     std::cout << "  --height <pixels>      Screen height (default: 1920)\n";
     std::cout << "  --text <text>          Override displayed text\n";
     std::cout << "  --click-test           Dispatch real clicks on clickable views after the first frame\n";
+    std::cout << "  --trace                S135 runtime event backbone: trace.jsonl + trace_summary.json\n";
+    std::cout << "  --trace-ui             S135 visual trace overlay: trace_overlay.png (semantic boot panel)\n";
+    std::cout << "                         MINIANDROID_TRACE_UI=1|header|expanded selects the panel mode\n";
     std::cout << "  --max-seconds <s>      Wall-clock soft budget for the run (graceful evidence stop)\n";
     std::cout << "  --long-press <x>,<y>   Long-press gesture at coordinates after the first frame\n";
     std::cout << "  --tap <x>,<y>         Canonical tap gesture (DOWN/UP law pipeline) after the first frame\n";
@@ -498,6 +501,20 @@ int main(int argc, char* argv[]) {
             // touch → callback → state change → second frame (§10).
             config.click_test = true;
             std::cout << "[*] CLICK-TEST enabled (dispatch real clicks after first frame)\n";
+        } else if (arg == "--trace-ui") {
+            // S135 VISUAL RUNTIME BOOT/TRACE LOGGER: render the runtime
+            // boot/trace panel onto a COPY of the authoritative frame →
+            // trace_overlay.png (the authoritative screenshot stays clean).
+            // Default panel; MINIANDROID_TRACE_UI=header/expanded overrides.
+            setenv("MINIANDROID_TRACE_UI",
+                   getenv("MINIANDROID_TRACE_UI") ? getenv("MINIANDROID_TRACE_UI") : "1",
+                   0);
+            setenv("MINIANDROID_BOOT_TRACE", "1", 0);
+            std::cout << "[*] TRACE-UI enabled (S135 visual runtime trace overlay)\n";
+        } else if (arg == "--trace") {
+            // S135 machine-readable trace only (trace.jsonl + summary, no UI).
+            setenv("MINIANDROID_BOOT_TRACE", "1", 0);
+            std::cout << "[*] BOOT-TRACE enabled (S135 runtime event backbone)\n";
         } else if (arg == "--dump-api-trace") {
             // S69 SOURCE-LINKED CAMPAIGN: dump the engine's ApiCallTrace
             // ring to <output>/api_calls.json (live dispatch surface:
