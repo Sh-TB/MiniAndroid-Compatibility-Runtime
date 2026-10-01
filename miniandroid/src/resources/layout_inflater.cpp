@@ -206,8 +206,18 @@ std::string LayoutInflater::class_to_descriptor(const std::string& xml_name) {
     auto it = KNOWN.find(xml_name);
     if (it != KNOWN.end()) return it->second;
     if (xml_name.find('.') != std::string::npos) {
-        // custom view: fully-qualified
-        return "L" + xml_name + ";";
+        // ── ADDITIONAL-AUDIT P1-4 (DEX descriptor-form law) ─────────────
+        // A fully-qualified XML tag is a Java BINARY NAME; the DEX class
+        // index, the ctor hook and every is-a/superclass lookup key on the
+        // SLASHED descriptor (JVMS §4.2 / Dalvik type_id "Lcom/pkg/Cls;").
+        // The old raw "Lcom.example.MyView;" never matched the app DEX →
+        // ctor hook skipped, superclass unknown, render fell back to a
+        // bare View. Dots → slashes; inner-class '$' is legal in both
+        // forms and passes through unchanged.
+        std::string slashed;
+        slashed.reserve(xml_name.size());
+        for (char c : xml_name) slashed += (c == '.') ? '/' : c;
+        return "L" + slashed + ";";
     }
     // unknown short name — treat as generic View (evidence warning added by caller)
     return "Landroid/view/View;";
@@ -221,7 +231,19 @@ std::string LayoutInflater::class_to_descriptor(const std::string& xml_name) {
 bool LayoutInflater::is_app_class_descriptor(const std::string& class_desc) {
     static const char* kNonAppPrefixes[] = {
         "Landroid/", "Ljava/", "Ljavax/", "Ldalvik/", "Lkotlin/", "Lkotlinx/",
-        "Lcom/google/android/", "Lcom/google/", "Lorg/apache/", "Lorg/json/",
+        // ── ADDITIONAL-AUDIT P1-3 (DEX-existence constructor law) ───────
+        // "Lcom/google/android/" and "Lcom/google/" are REMOVED from the
+        // blanket-suppression list. AOSP authority for constructor
+        // execution is "does the class exist in the APK DEX" — NOT the
+        // package prefix. The bundled Material/AppCompat families
+        // (MaterialButton, TextInputEditText, FloatingActionButton, …)
+        // live under com.google.android.* AND in the APK dex; the old
+        // prefix gate silently skipped their real <init> (missing field
+        // init / listener wiring → partially-initialized widgets). The
+        // ctor hook (run_custom_view_constructor) keeps the REAL
+        // authority: its class_info_index_ check fails cleanly for
+        // classes genuinely absent from the dex (warning only).
+        "Lorg/apache/", "Lorg/json/",
         "Lorg/xml/", "Lorg/w3c/", "Lorg/ccil/", "Lj$/",
     };
     if (class_desc.size() < 3 || class_desc.front() != 'L') return false;
@@ -1450,8 +1472,22 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
                   << a.appearance_text_size_px << "px (density="
                   << metrics_.density * metrics_.scale_fonts << ")\n";
     }
-    if (a.text_color != 0) node.text_color = a.text_color;
-    else if (a.style_text_color != 0) node.text_color = a.style_text_color;   // GOLDEN-03 §8
+    // ── ADDITIONAL-AUDIT P1-10 (text-color provenance law) ──────────────
+    // A color that came from android:textColor / a style bag is
+    // STYLE_RESOLVED provenance — distinguishable from an EXPLICIT_RUNTIME
+    // setTextColor() (android_shadows.cpp) and from an unresolved default.
+    // The old setTextColor black-heuristic (drop 0xFF000000 when a style
+    // color exists) is replaced by this provenance field: explicit runtime
+    // black ALWAYS wins; only genuinely unresolved values keep the style.
+    if (a.text_color != 0) {
+        node.text_color = a.text_color;
+        node.text_color_provenance =
+            framework::ViewShadow::ViewNode::TEXT_COLOR_STYLE_RESOLVED;
+    } else if (a.style_text_color != 0) {
+        node.text_color = a.style_text_color;   // GOLDEN-03 §8
+        node.text_color_provenance =
+            framework::ViewShadow::ViewNode::TEXT_COLOR_STYLE_RESOLVED;
+    }
     node.text_style = a.text_style;
     node.text_bold = (a.text_style & 1) != 0;
     node.text_italic = (a.text_style & 2) != 0;
@@ -1956,8 +1992,34 @@ uint32_t LayoutInflater::inflate_layout_resid(framework::ViewShadow* views, uint
     // inflate root element as the content root. parent_view_id != 0 is the
     // LayoutInflater.inflate(resId, root[, attachToRoot=true]) path — the
     // inflated root attaches INTO the given parent (G11 FIX-G11-002).
+    //
+    // ── ADDITIONAL-AUDIT P0-1 (AOSP attach-before-measure law) ──────────
+    // The eager `measure_layout(views, root)` that used to run here is
+    // REMOVED. AOSP law (ViewRootImpl.performTraversals): inflation builds
+    // the View TREE ONLY — measure NEVER runs before the first traversal's
+    // dispatchAttachedToWindow. The old eager pass dispatched REAL DEX
+    // onMeasure (custom_view_measure_hook_ → overrides_on_measure) while
+    // the tree was UNATTACHED — the exact family that kills Compose-related
+    // custom views (onMeasure → windowRecomposer →
+    // checkPrecondition(isAttachedToWindow) → ISE → onCreate dies →
+    // blank/white screen). Architecture now:
+    //   inflation = create tree
+    //   authoritative traversal = ATTACH → MEASURE → LAYOUT → DRAW
+    // Consumers:
+    //   * setContentView(int): the ActivityShadow records
+    //     pending_inflate_attach; the engine's frame render consumes it
+    //     (attach wave, then the canonical measure) — traversal timing,
+    //     NOT inline (the S43 lesson: inline attach raced post-inflate
+    //     field setup).
+    //   * setContentView(View): unchanged R349 law (record_pending_
+    //     setcontent_attach_measure consumed by the engine).
+    //   * render path: the canonical per-frame measure_layout (R-NEW-302)
+    //     re-measures every frame — geometry stays single-truth.
+    //   * inflate(res, root, attachToRoot=true): no measure — the caller's
+    //     traversal (or the render pass) owns it.
+    // Inflater-only intrinsic/resource parsing (attrs, styles, drawables,
+    // ids) is untouched — none of it requires attached state.
     uint32_t root = inflate_element(views, parser.root(), parent_view_id, stats);
-    if (root) measure_layout(views, root);
     return root;
 }
 

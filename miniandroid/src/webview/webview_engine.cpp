@@ -288,6 +288,62 @@ struct WebViewEngine::Impl {
         return ok;
     }
 
+    // ── ADDITIONAL-AUDIT P1-11: evaluateJavascript evaluation core ─────
+    // Android contract (WebView.java evaluateJavascript): the script runs
+    // in the page's global scope; the result is JSON-ENCODED for the
+    // ValueCallback ("null" for undefined and for script exceptions — the
+    // callback ALWAYS fires). Promise/async continuations the script
+    // schedules drain through the S118 JOB-PUMP law (bounded for 3-run
+    // determinism). DOM/canvas mutations surface on the next frame render
+    // (the render walk re-composites the engine surface every frame).
+    std::string eval_json(const std::string& script, bool& ok,
+                          std::string& err) {
+        ok = false;
+        err.clear();
+        if (script.empty()) {
+            err = "empty script";
+            return "null";
+        }
+        set_deadline(20.0);  // hang guard (same law as exec_script)
+        auto t0 = std::chrono::steady_clock::now();
+        JSValue r = JS_Eval(ctx, script.c_str(), script.size(),
+                            "<evaluateJavascript>", JS_EVAL_TYPE_GLOBAL);
+        stats.script_ms += std::chrono::duration<double, std::milli>(
+            std::chrono::steady_clock::now() - t0).count();
+        // Async chains started by the evaluation advance at this boundary.
+        drain_pending_jobs(256);
+        if (JS_IsException(r)) {
+            report_exception("evaluateJavascript");
+            err = "script exception";
+            JS_FreeValue(ctx, r);
+            return "null";
+        }
+        stats.scripts_executed++;
+        std::string out = "null";
+        if (JS_IsUndefined(r) || JS_IsNull(r)) {
+            out = "null";
+        } else {
+            JSValue j = JS_JSONStringify(ctx, r, JS_UNDEFINED, JS_UNDEFINED);
+            if (JS_IsException(j)) {
+                // Clear the pending exception so it cannot poison later
+                // evaluations (JSON.stringify of a cyclic object).
+                JSValue pe = JS_GetException(ctx);
+                JS_FreeValue(ctx, pe);
+                out = "null";
+            } else if (JS_IsUndefined(j)) {
+                out = "null";
+            } else {
+                const char* s = JS_ToCString(ctx, j);
+                if (s) out = s;
+                if (s) JS_FreeCString(ctx, s);
+            }
+            JS_FreeValue(ctx, j);
+        }
+        JS_FreeValue(ctx, r);
+        ok = true;
+        return out;
+    }
+
     // ── URL/asset law ──────────────────────────────────────────────────
     // S117: RFC 3986 §5.2.4 remove_dot_segments law. Real browsers resolve a
     // relative ref ("./style.css", "../img/x.png", "a//b.html") against the
@@ -6481,6 +6537,24 @@ bool WebViewEngine::load_document(const std::string& url, const std::string& htm
               << " timers=" << impl->timers.size()
               << " script_ms=" << int(impl->stats.script_ms) << std::endl;
     return true;
+}
+
+// ── ADDITIONAL-AUDIT P1-11: WebView.evaluateJavascript engine entry ─────
+bool WebViewEngine::evaluate_javascript(const std::string& script,
+                                        std::string* json_out,
+                                        std::string* error_out) {
+    auto* impl = impl_.get();
+    if (!impl) {
+        if (error_out) *error_out = "engine not initialized";
+        if (json_out) *json_out = "null";
+        return false;
+    }
+    bool ok = false;
+    std::string err;
+    const std::string result = impl->eval_json(script, ok, err);
+    if (json_out) *json_out = result;
+    if (error_out) *error_out = err;
+    return ok;
 }
 
 // ── registry ────────────────────────────────────────────────────────────

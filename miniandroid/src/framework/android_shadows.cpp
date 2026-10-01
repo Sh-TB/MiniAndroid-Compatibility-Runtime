@@ -7,6 +7,8 @@
 // UNIFIED_007: real resource pipeline
 #include "../resources/resource_runtime.h"
 #include "../webview/webview_engine.h"
+// ADDITIONAL-AUDIT P1-2: canonical Bitmap pixel store (setImageBitmap law)
+#include "bitmap_shadow.h"
 // S133 WEB-001: the S100 NET-001 HTTPS client is the runtime's existing
 // fetch substrate — REUSED for network document loads (no new network code).
 #include "../api/http_client.h"
@@ -27,6 +29,27 @@
 namespace miniandroid { namespace framework {
 
 using json = nlohmann::json;
+
+// ─────────────────────────────────────────────────────────────────────────
+// ADDITIONAL-AUDIT P0-3 (runtime class-identity law): every View-returning
+// shadow bridge must answer the node's REAL class descriptor, not a generic
+// "Landroid/view/View;". AOSP: findViewById/getChildAt/getContentView
+// return the actual runtime object — app code check-casts it
+// (MaterialButton/Subclass) and instance-of tests it; a wrong identity
+// throws CCE or takes the wrong dispatch branch and UI construction dies.
+// Object id stays the key; only the descriptor becomes truthful. Falls
+// back to the given static descriptor when the node is unknown (legacy
+// synthetic objects that have no ViewNode).
+// ─────────────────────────────────────────────────────────────────────────
+static std::string real_view_class(ViewShadow* views, uint32_t oid,
+                                   const std::string& fallback) {
+    if (views && oid != 0) {
+        if (const auto* n = views->find_node(oid)) {
+            if (!n->class_desc.empty()) return n->class_desc;
+        }
+    }
+    return fallback;
+}
 
 // ─────────────────────────────────────────────────────────────────────────
 // F-120 (R-NEW-387) — AOSP Button default-style gravity law.
@@ -2067,6 +2090,22 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
         // setContentView(View) or setContentView(int layoutResId).
         if (!ctx.args.empty()) {
             if (ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
+                // ── ADDITIONAL-AUDIT P1-9 (AOSP replacement law) ────────
+                // PhoneWindow.setContentView REPLACES the previous content:
+                // the old subtree is detached from the window before the new
+                // root installs. Objects survive (the app may still hold
+                // them); the authoritative window tree keeps AT MOST ONE
+                // active content root.
+                if (content_view_id_ != 0 &&
+                    content_view_id_ != ctx.args[0].object_id && registry_) {
+                    if (auto* view_shadow = registry_->find_as<ViewShadow>()) {
+                        view_shadow->detach_from_parent(content_view_id_);
+                        std::cerr << "[P1-9-REPLACE] setContentView(View) old"
+                                  << " content=" << content_view_id_
+                                  << " detached (single-active-content law)"
+                                  << std::endl;
+                    }
+                }
                 content_view_id_ = ctx.args[0].object_id;
                 // ────────────────────────────────────────────────────────
                 // F-023 (AOSP PhoneWindow.setContentView parent-link law):
@@ -2245,7 +2284,30 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                         // Goldens unaffected: their trees were always accepted.
                         const bool substantive = root_id != 0;
                         if (root_id != 0 && substantive) {
+                            // ── ADDITIONAL-AUDIT P1-9 (replacement law) ──
+                            // Detach the previous content subtree before the
+                            // new root installs (same law as the View branch).
+                            if (content_view_id_ != 0 &&
+                                content_view_id_ != root_id) {
+                                view_shadow->detach_from_parent(content_view_id_);
+                                std::cerr << "[P1-9-REPLACE] setContentView(res)"
+                                          << " old content=" << content_view_id_
+                                          << " detached (single-active-content"
+                                          << " law)" << std::endl;
+                            }
                             content_view_id_ = root_id;
+                            // ── ADDITIONAL-AUDIT P0-1 (attach-before-measure)
+                            // The inflater no longer measures (P0-1 law);
+                            // record the first-traversal root — the engine's
+                            // frame render consumes it: attach wave FIRST,
+                            // canonical measure SECOND. Traversal timing (not
+                            // inline) honors the S43 post-inflate-field-setup
+                            // lesson.
+                            view_shadow->record_pending_inflate_attach(root_id);
+                            std::cerr << "[P0-1-ORDER] setContentView(res) root="
+                                      << root_id
+                                      << " recorded for first-traversal"
+                                      << " attach+measure" << std::endl;
                             last_inflate_stats_ = istats.to_json();
                             for (const auto& w : istats.warnings) {
                                 if (warnings_.size() < 64) warnings_.push_back(w);
@@ -2264,6 +2326,14 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
     }
     if (m == "getContentView") {
         if (content_view_id_ == 0) return CallResult::handled_null();
+        // ── ADDITIONAL-AUDIT P0-3 (real runtime class identity) ────────
+        if (registry_) {
+            if (auto* vs = registry_->find_as<ViewShadow>()) {
+                return CallResult::handled_object(
+                    content_view_id_,
+                    real_view_class(vs, content_view_id_, "Landroid/view/View;"));
+            }
+        }
         return CallResult::handled_object(content_view_id_, "Landroid/view/View;");
     }
     if (m == "findViewById") {
@@ -2281,7 +2351,10 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                 if (found != 0) {
                     std::cerr << "[EXP088-B] findViewById(0x" << std::hex << target_id
                               << std::dec << ") → view_id=" << found << std::endl;
-                    return CallResult::handled_object(found, "Landroid/view/View;");
+                    // ── ADDITIONAL-AUDIT P0-3 (real runtime class identity) ─
+                    return CallResult::handled_object(
+                        found, real_view_class(view_shadow, found,
+                                               "Landroid/view/View;"));
                 } else {
                     std::cerr << "[EXP088-B-DBG] find_by_android_id returned 0" << std::endl;
                 }
@@ -2792,6 +2865,23 @@ bool ViewShadow::remove_child(uint32_t parent_id, uint32_t child_id) {
     // R-NEW-302: AOSP removeView(View) → requestLayout.
     layout_dirty = true;
     return true;
+}
+
+// ── ADDITIONAL-AUDIT P1-9 (AOSP PhoneWindow.setContentView replacement
+// law): detach a view from its parent WITHOUT destroying it — the app may
+// still hold references (ViewStub-advance, splash widgets). The window
+// subtree simply stops reaching it (mContentParent.removeAllViews()).
+void ViewShadow::detach_from_parent(uint32_t view_id) {
+    auto* n = find_node(view_id);
+    if (!n || n->parent_id == 0) return;
+    if (auto* parent = find_node(n->parent_id)) {
+        parent->children.erase(
+            std::remove(parent->children.begin(), parent->children.end(), view_id),
+            parent->children.end());
+    }
+    n->parent_id = 0;
+    // AOSP: removing the previous content invalidates the window layout.
+    layout_dirty = true;
 }
 
 uint32_t ViewShadow::find_by_android_id(uint32_t root_id, int32_t android_id) const {
@@ -3351,7 +3441,14 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         if (!n) return CallResult::handled_null();
         int32_t idx = ctx.arg_as_int(0, -1);
         if (idx < 0 || (size_t)idx >= n->children.size()) return CallResult::handled_null();
-        return CallResult::handled_object(n->children[idx], "Landroid/view/View;");
+        // ── ADDITIONAL-AUDIT P0-3 (real class identity law) ────────────
+        // AOSP ViewGroup.getChildAt returns the ACTUAL child object; app
+        // code check-casts it (AppCompat delegate: content.getChildAt →
+        // ViewGroup/ComposeView) — a generic View descriptor broke every
+        // subclass dispatch while the object id was correct.
+        return CallResult::handled_object(
+            n->children[idx],
+            real_view_class(this, n->children[idx], "Landroid/view/View;"));
     }
     if (m == "getChildCount") {
         const auto* n = find_node(ctx.receiver_id);
@@ -3406,8 +3503,10 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
                                   << ctx.receiver_id << std::dec
                                   << " → FOUND view_id=" << found
                                   << " (receiver subtree)" << std::endl;
+                        // ── ADDITIONAL-AUDIT P0-3 (real class identity) ──
                         return CallResult::handled_object(
-                            found, "Landroid/view/View;");
+                            found, real_view_class(this, found,
+                                                   "Landroid/view/View;"));
                     }
                 }
                 search_root = legacy_root;
@@ -3418,7 +3517,9 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         if (found == 0) found = find_by_android_id(search_root, target_id);
         if (found != 0) {
             std::cerr << "[EXP088-B-VS] FOUND view_id=" << found << std::endl;
-            return CallResult::handled_object(found, "Landroid/view/View;");
+            // ── ADDITIONAL-AUDIT P0-3 (real class identity) ───────────
+            return CallResult::handled_object(
+                found, real_view_class(this, found, "Landroid/view/View;"));
         }
         // ── S83-GFX-BASE (AOSP window content-root law) ──────────────────
         // android.R.id.content (0x01020002) ALWAYS resolves on a live
@@ -3428,22 +3529,53 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         // getChildAt/addView on it — a null here NPEs the whole Compose
         // root (APP-001 exact trace: ComponentActivityKt.setContent pc=18
         // "getChildAt on null object reference"). Lazily materialize the
-        // content parent on first lookup (idempotent; deterministic id).
+        // content parent on first lookup.
+        //
+        // ── ADDITIONAL-AUDIT P0-2 (ONE STABLE CONTENT OBJECT LAW) ────────
+        // The old implementation allocated a NEW FrameLayout on EVERY call
+        // (next_window_content_id_++ inside the lookup) while the comment
+        // claimed idempotence. AOSP PhoneWindow law: the content parent is
+        // ONE object per window — DecorView.findViewById(android.R.id.
+        // content) answers the SAME instance every call; framework
+        // machinery (AppCompat ContentFrameLayout attach, ComposeView
+        // setContent, fragment containers) attaches children to that
+        // instance. Two identities = split ViewTree = owner/tag lookups
+        // reach the wrong branch = blank/partial screens.
+        // Resolution order:
+        //   (1) an existing content node inside the searched subtree,
+        //   (2) the per-window remembered node (window_content_nodes_),
+        //   (3) only then materialize a new node and remember it.
+        // add_child (not raw push_back) dedupes repeated parent-child edges.
         if (target_id == 0x01020002 /* android.R.id.content */) {
+            const std::string content_cls = "Landroid/widget/FrameLayout;";
+            uint32_t existing = search_root != 0
+                                    ? find_by_android_id(search_root, 0x01020002)
+                                    : 0;
+            if (existing == 0 && search_root != 0) {
+                auto it = window_content_nodes_.find(search_root);
+                if (it != window_content_nodes_.end()) existing = it->second;
+            }
+            if (existing != 0 && find_node(existing)) {
+                std::cerr << "[P0-2-CONTENT] android.R.id.content REUSED node="
+                          << existing << " (window=" << search_root
+                          << ", one-stable-object law)" << std::endl;
+                if (search_root != 0)
+                    window_content_nodes_[search_root] = existing;
+                return CallResult::handled_object(
+                    existing, real_view_class(this, existing, content_cls));
+            }
             const uint32_t content_id = next_window_content_id_++;
-            auto* content = get_or_create_node(
-                content_id, "Landroid/widget/FrameLayout;");
+            auto* content = get_or_create_node(content_id, content_cls);
             content->android_view_id = 0x01020002;
             if (search_root != 0) {
-                content->parent_id = search_root;
-                if (auto* root = find_node(search_root))
-                    root->children.push_back(content_id);
+                add_child(search_root, content_id);   // edge-deduping law
+                window_content_nodes_[search_root] = content_id;
                 std::cerr << "[S83-CONTENT] android.R.id.content node="
                           << content_id << " linked under view="
-                          << search_root << std::endl;
+                          << search_root << " (single stable object)"
+                          << std::endl;
             }
-            return CallResult::handled_object(content_id,
-                                              "Landroid/widget/FrameLayout;");
+            return CallResult::handled_object(content_id, content_cls);
         }
         std::cerr << "[EXP088-B-VS] NOT FOUND" << std::endl;
         return CallResult::handled_null();
@@ -3472,7 +3604,26 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     }
     if (m == "setVisibility") {
         auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        const int old_vis = n->visibility;
         n->visibility = ctx.arg_as_int(0, 0);
+        // ── ADDITIONAL-AUDIT P1-1 (AOSP View.setVisibility law) ─────────
+        // AOSP setVisibility → setFlags → (PFLAG_DRAWING_STATE_CHANGED +
+        // requestLayout + invalidate). GONE changes LAYOUT INPUTS (the
+        // node leaves the measure pass — siblings expand, weights rescale);
+        // every transition invalidates the next traversal. Without the
+        // requestLayout raise, DEX toggles kept the OLD measured geometry:
+        // panels vanished but siblings stayed collapsed / content stayed
+        // 0x0 → stale screenshot (black/white/stale family).
+        // The canonical render-path measure (R-NEW-302 layout_dirty law)
+        // consumes the flag at the NEXT authoritative traversal — no
+        // ad-hoc inline re-measure here.
+        if (n->visibility != old_vis) {
+            layout_dirty = true;
+            std::cerr << "[P1-1-VIS] view=" << ctx.receiver_id << " "
+                      << n->class_desc << " visibility " << old_vis
+                      << " -> " << n->visibility
+                      << " (requestLayout raised)" << std::endl;
+        }
         // R-NEW-441 diagnostic (S132): who hides whole panels? The
         // opencalculator pad (constraintLayout2) went INVISIBLE during the
         // first real-DEX SlidingUpPanelLayout lifecycle wave — this trace
@@ -4113,8 +4264,33 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
                       << " ctx_id=" << (n ? n->context_object_id : 0)
                       << " caller_thread_ok" << std::endl;
         }
+        // ── ADDITIONAL-AUDIT P0-4 (context runtime-identity law) ───────
+        // AOSP View.getContext() returns the ACTUAL Context object the view
+        // was constructed with — usually the Activity (a ContextThemeWrapper
+        // subclass). App code does getContext() instanceof Activity and
+        // check-cast Activity (BaseFragment.getParentActivity family). The
+        // old bridge answered the correct OBJECT ID labeled with the generic
+        // "Landroid/content/Context;" descriptor — the instanceof/check-cast
+        // compared against the WRONG class and failed even though the heap
+        // object WAS the activity. Resolve the heap object's real class;
+        // identity laws stay aligned with ActivityShadow/Application.
+        auto context_descriptor = [&](uint32_t ctx_oid,
+                                      const std::string& fallback)
+            -> std::string {
+            if (heap_ && ctx_oid != 0) {
+                std::string heap_cls;
+                if (heap_->get_object_class(ctx_oid, heap_cls) &&
+                    !heap_cls.empty()) {
+                    return heap_cls;
+                }
+            }
+            return fallback;
+        };
         if (n && n->context_object_id != 0) {
-            return CallResult::handled_object(n->context_object_id, "Landroid/content/Context;");
+            return CallResult::handled_object(
+                n->context_object_id,
+                context_descriptor(n->context_object_id,
+                                   "Landroid/content/Context;"));
         }
         // S99 NEVER-NULL FALLBACK (babydots ToolbarWidgetWrapper.<init> →
         // TintTypedArray.obtainStyledAttributes(null,…) NPE evidence):
@@ -4129,7 +4305,10 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
             if (auto* act = registry_->find_as<ActivityShadow>()) {
                 uint32_t act_ctx = act->current_activity_id();
                 if (act_ctx != 0) {
-                    return CallResult::handled_object(act_ctx, "Landroid/content/Context;");
+                    return CallResult::handled_object(
+                        act_ctx,
+                        context_descriptor(act_ctx,
+                                           "Landroid/content/Context;"));
                 }
             }
         }
@@ -4159,7 +4338,139 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     }
     if (m == "setImageDrawable" || m == "setImageBitmap" ||
         m == "setImageIcon" || m == "setImageURI") {
-        // For now, just mark that an image was set (we don't decode drawables yet).
+        // ── ADDITIONAL-AUDIT P1-2 (one canonical image-state law) ───────
+        // AOSP ImageView.java: EVERY image setter resolves the argument
+        // into the internal drawee state, then requestLayout()+invalidate().
+        // The old handler was a silent handled_void — programmatic images
+        // (bitmaps decoded at runtime, URIs, icons) never reached the real
+        // pipeline. Each setter now routes into the SAME canonical state
+        // the renderer already consumes (src_drawable_path /
+        // image_resource_id / stored-bitmap provenance) or records an
+        // EXPLICIT BLOCKED event with evidence — never a silent drop.
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        // AOSP: a new image assignment REPLACES the previous one.
+        n->image_resource_id = 0;
+        n->src_drawable_path.clear();
+        n->image_drawable_path.clear();
+        n->image_bitmap_object = 0;
+        n->image_drawable_object = 0;
+        bool reached_pipeline = false;
+        std::string evidence;
+        auto route_bitmap_object = [&](uint32_t bmp_oid) {
+            n->image_bitmap_object = bmp_oid;
+            const auto* sb = BitmapStore::instance().get(bmp_oid);
+            if (sb && sb->has_pixels && !sb->source_desc.empty() &&
+                sb->source_desc.find('/') != std::string::npos) {
+                // decodeResource provenance IS the APK entry path → the
+                // real path-decode pipeline draws these pixels.
+                n->src_drawable_path = sb->source_desc;
+                reached_pipeline = true;
+                evidence = "bitmap provenance path: " + sb->source_desc;
+                return;
+            }
+            if (sb && sb->has_pixels) {
+                evidence = "stored bitmap pixels without APK-path provenance "
+                           "(source_desc=" + sb->source_desc +
+                           ") — direct-pixel draw is a recorded frontier";
+                return;
+            }
+            evidence = "bitmap heap object has no BitmapStore pixels";
+        };
+        if (m == "setImageBitmap") {
+            const uint32_t bmp_oid =
+                ctx.args.size() >= 1 && ctx.args[0].kind == CallContext::Arg::Kind::OBJECT
+                    ? ctx.args[0].object_id : 0;
+            if (bmp_oid == 0) {
+                // AOSP: setImageBitmap(null) clears the content — an honest
+                // empty image IS the pipeline state.
+                reached_pipeline = true;
+                evidence = "null bitmap clears content";
+            } else {
+                route_bitmap_object(bmp_oid);
+            }
+        } else if (m == "setImageDrawable") {
+            const uint32_t d_oid =
+                ctx.args.size() >= 1 && ctx.args[0].kind == CallContext::Arg::Kind::OBJECT
+                    ? ctx.args[0].object_id : 0;
+            if (d_oid == 0) {
+                reached_pipeline = true;
+                evidence = "null drawable clears content";
+            } else {
+                n->image_drawable_object = d_oid;
+                // BitmapDrawable-family: probe the wrapper's bitmap field
+                // (R-NEW-360 field-name scan — no class-name special cases).
+                uint32_t inner = 0;
+                for (const char* fn : {"bitmap", "mBitmap", "bitmapState",
+                                       "mBitmapState", "drawable", "mDrawable"}) {
+                    uint32_t v = 0;
+                    if (heap_ && heap_->get_object_ref_field(d_oid, fn, v) &&
+                        v != 0) {
+                        inner = v;
+                        break;
+                    }
+                }
+                if (inner != 0) {
+                    route_bitmap_object(inner);
+                } else {
+                    evidence = "drawable object without a probeable bitmap "
+                               "field (wrapper class " +
+                               [&]{ std::string c; return heap_ && heap_->get_object_class(d_oid, c) ? c : std::string("?"); }() +
+                               ")";
+                }
+            }
+        } else if (m == "setImageIcon") {
+            const uint32_t i_oid =
+                ctx.args.size() >= 1 && ctx.args[0].kind == CallContext::Arg::Kind::OBJECT
+                    ? ctx.args[0].object_id : 0;
+            if (i_oid == 0) {
+                reached_pipeline = true;
+                evidence = "null icon clears content";
+            } else {
+                // Icon.TYPE_RESOURCE carries the resource id in a numeric
+                // field (Icon.java mResId/mResInt1 family).
+                for (const char* fn : {"resid", "mResId", "mRes", "resInt1",
+                                       "mResInt1"}) {
+                    int32_t v = 0;
+                    if (heap_ && heap_->get_object_int_field(i_oid, fn, v) &&
+                        v != 0) {
+                        n->image_resource_id = v;
+                        reached_pipeline = true;
+                        evidence = "icon resource id captured";
+                        break;
+                    }
+                }
+                if (!reached_pipeline)
+                    evidence = "icon object without a probeable resource id";
+            }
+        } else { // setImageURI
+            const std::string uri = ctx.arg_as_string(0);
+            n->image_uri = uri;
+            if (uri.empty()) {
+                reached_pipeline = true;
+                evidence = "null uri clears content";
+            } else if (uri.rfind("file:///android_asset/", 0) == 0) {
+                n->src_drawable_path = uri.substr(strlen("file:///android_asset/"));
+                reached_pipeline = true;
+                evidence = "asset uri → " + n->src_drawable_path;
+            } else if (uri.rfind("res/", 0) == 0 || uri.rfind("assets/", 0) == 0) {
+                n->src_drawable_path = uri;
+                reached_pipeline = true;
+                evidence = "apk path uri";
+            } else {
+                evidence = "unsupported uri scheme (content:/http: family) "
+                           "— recorded frontier";
+            }
+        }
+        // AOSP: every assignment (and clear) requestLayout()+invalidate().
+        layout_dirty = true;
+        if (reached_pipeline) {
+            std::cerr << "[P1-2-IMAGE] " << m << " view=" << ctx.receiver_id
+                      << " → real pipeline (" << evidence << ")" << std::endl;
+        } else {
+            if (n->image_blocked_events < 255) n->image_blocked_events++;
+            std::cerr << "[P1-2-IMAGE-BLOCKED] " << m << " view="
+                      << ctx.receiver_id << " : " << evidence << std::endl;
+        }
         return CallResult::handled_void();
     }
     if (m == "setBackgroundResource") {
@@ -4233,23 +4544,24 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         if (!ctx.args.empty() && ctx.args[0].kind == CallContext::Arg::Kind::INT) {
             const uint32_t c = (uint32_t)ctx.args[0].int_val;
-            // M3 FIX-M3-007b: the engine's UNRESOLVED getColor default is
-            // 0xFF000000 — indistinguishable from a genuine black. When the
-            // node already carries a resolved style color, a bare-black
-            // runtime value is treated as the unresolved default and NOT
-            // applied (documented deviation; a real device always resolves).
-            if (c == 0xFF000000u && n->text_color != 0) {
-                std::cerr << "[M3-SETTEXTCOLOR] view_id=" << ctx.receiver_id
-                          << " unresolved-default black - style color 0x"
-                          << std::hex << n->text_color << std::dec
-                          << " retained"
-                          << std::endl;
-                return CallResult::handled_void();
-            }
+            // ── ADDITIONAL-AUDIT P1-10 (provenance replaces value guessing)
+            // AOSP TextView.setTextColor(int) sets mTextColor EXPLICITLY —
+            // the call IS the provenance. The old M3-007b heuristic (drop
+            // bare 0xFF000000 when a style color exists) discarded genuine
+            // explicit black and is removed. An EXPLICIT_RUNTIME color now
+            // always wins over STYLE_RESOLVED; the style color is only
+            // retained by colors that actually came from style resolution
+            // (layout_inflater P1-10 provenance marks).
+            const uint32_t prev = n->text_color;
+            const uint8_t prev_prov = n->text_color_provenance;
             n->text_color = c;
+            n->text_color_provenance =
+                ViewNode::TEXT_COLOR_EXPLICIT_RUNTIME;
             std::cerr << "[M3-SETTEXTCOLOR] view_id=" << ctx.receiver_id
                       << " color=0x" << std::hex << n->text_color << std::dec
-                      << std::endl;
+                      << " provenance=EXPLICIT_RUNTIME (prev=0x" << std::hex
+                      << prev << std::dec << " prov=" << int(prev_prov)
+                      << ")" << std::endl;
         } else if (!ctx.args.empty() && ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
             // ColorStateList variant: capture the heap object for the
             // renderer's state-list law (default color = the CSL default).
@@ -4930,11 +5242,55 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_void();
     }
     if (m == "evaluateJavascript") {
-        // No JS engine. The callback (ValueCallback) is NOT invoked —
-        // invoking it with a fake result would fabricate app-visible
-        // state. Honest: record + drop.
-        std::cerr << "[F085-WV] evaluateJavascript dropped (no JS engine)"
-                  << std::endl;
+        // ── ADDITIONAL-AUDIT P1-11 (evaluateJavascript routing law) ─────
+        // The runtime SHIPS a real WebView/QuickJS execution subsystem
+        // (S109 WebViewEngine) — the old "no JS engine" silent drop is
+        // WRONG for every WebView that has a loaded document. The script
+        // evaluates in the page's global scope (DOM/canvas mutations
+        // surface on the next frame render — the walk re-composites the
+        // engine surface every frame); the ValueCallback receives the
+        // JSON-encoded result via the engine's pending-callback drain
+        // (shadow-recorded, DEX-invoked — the Room/Thread split law).
+        // An explicit BLOCKED diagnostic (never a silent drop) is emitted
+        // when no engine/document exists on this WebView.
+        const std::string script = ctx.arg_as_string(0);
+        const uint32_t cb_oid =
+            ctx.args.size() >= 2 && ctx.args[1].kind == CallContext::Arg::Kind::OBJECT
+                ? ctx.args[1].object_id : 0;
+        auto eng = webview::WebViewRegistry::instance().find(ctx.receiver_id);
+        const bool has_document = [&]{
+            const ViewNode* wn = find_node(ctx.receiver_id);
+            return wn && (!wn->web_data.empty() || !wn->web_url.empty());
+        }();
+        if (!eng && !has_document) {
+            std::cerr << "[P1-11-WV] evaluateJavascript BLOCKED on view="
+                      << ctx.receiver_id
+                      << " : no WebViewEngine document loaded"
+                      << " (explicit unsupported frontier — script length "
+                      << script.size() << ")" << std::endl;
+            return CallResult::handled_void();
+        }
+        if (!eng) eng = webview::WebViewRegistry::instance().create(ctx.receiver_id);
+        std::string json_result, err;
+        const bool ok =
+            eng->evaluate_javascript(script, &json_result, &err);
+        if (ok) {
+            std::cerr << "[P1-11-WV] evaluateJavascript executed on view="
+                      << ctx.receiver_id << " script_len=" << script.size()
+                      << " result_len=" << json_result.size() << std::endl;
+        } else {
+            // WebView contract: a JS exception still invokes the callback
+            // — with the literal "null".
+            std::cerr << "[P1-11-WV] evaluateJavascript script exception on view="
+                      << ctx.receiver_id << " : " << err
+                      << " — callback receives null" << std::endl;
+            json_result = "null";
+        }
+        if (cb_oid != 0) {
+            record_pending_js_callback(cb_oid, json_result);
+            std::cerr << "[P1-11-WV] ValueCallback recorded (oid=" << cb_oid
+                      << ") for engine drain" << std::endl;
+        }
         return CallResult::handled_void();
     }
     if (m == "setWebContentsDebuggingEnabled") {
