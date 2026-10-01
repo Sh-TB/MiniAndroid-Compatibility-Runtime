@@ -455,7 +455,7 @@
    "status": "VERIFIED",
    "src_hits": 192,
    "evidence": [
-    "evidence/s122..s124 3-run byte-identical SHA protocol (calc a169346e x3, flappy 13cf4746 x3) \u2014 screenshot+SHA256+pixel metrics are the campaign evidence engine"
+    "evidence/s122..s124 3-run byte-identical SHA protocol (calc a169346e x3, flappy 13cf4746 x3) — screenshot+SHA256+pixel metrics are the campaign evidence engine"
    ]
   },
   {
@@ -867,9 +867,9 @@
    "id": "CAP-INPUT-099",
    "layer": "INPUT",
    "name": "dispatchTouchEvent",
-   "status": "IMPLEMENTED",
+   "status": "TESTED",
    "src_hits": 28,
-   "evidence": []
+   "evidence": "S131 real-APK fan-out: sudoku TutorialActivity$1/$2 CLICK DISPATCHED through the R-NEW-424 walk law (run/s131/wave_report.json); state change 45962e01 -> f78aa16c on Skip; S128 calc chain max=5 + PerformClick x3"
   },
   {
    "id": "CAP-INPUT-100",
@@ -1192,7 +1192,7 @@
    "status": "VERIFIED",
    "src_hits": 63,
    "evidence": [
-    "R-NEW-337 full atomicfu-via-Unsafe contract (CAS/volatile offsets) \u2014 30 offsets registered, 0 ISE across 3 runs"
+    "R-NEW-337 full atomicfu-via-Unsafe contract (CAS/volatile offsets) — 30 offsets registered, 0 ISE across 3 runs"
    ]
   },
   {

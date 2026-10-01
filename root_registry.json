@@ -4271,9 +4271,130 @@
    "missing": "TouchDelegate accessibility hover arm (onTouchExplorationHoverEvent) not modeled; requestDisallowInterceptTouchEvent child flag remains a documented boundary; per-pointer delegate split (multi-touch) out of the single-pointer model.",
    "next": "M-01 INPUT residuals: CAP-INPUT-107 multi-touch upgrade; intercept wave on sudoku/opencalculator SlidingUpPanelLayout; then M-03 GAME lockCanvas loop (CAP-SCROLLING-126 computeScroll chain).",
    "commit": "S129 (this session)"
+  },
+  {
+   "id": "R-NEW-427",
+   "status": "IMPLEMENTED+TESTED",
+   "priority": "P1",
+   "fg": false,
+   "title": "Scroller/OverScroller 1:1 port (startScroll/fling spline physics/viscousFluid/DECELERATION_RATE/settle-at-final)",
+   "evidence": "scroller_shadow.{h,cpp}; S130 laws + S131 gate: s130_laws_test 51/51 (make laws130), battery 124-stage ALL PASS, AOSP android-14.0.0_r2 anchors in docs/upstream/aosp/s130_laws/",
+   "missing": "real-APK fan-out evidence waves (S131 audit queue)",
+   "next": "evidence wave per docs/REUSE_AUDIT_INPUT.md next-wave queue",
+   "commit": "5b78ba70"
+  },
+  {
+   "id": "R-NEW-428",
+   "status": "IMPLEMENTED",
+   "priority": "P1",
+   "fg": false,
+   "title": "View.scrollTo/scrollBy fire onScrollChanged hook (AOSP View law)",
+   "evidence": "android_shadows scroll hooks + dispatch_scroll_changed bridge; S130 laws + S131 gate: s130_laws_test 51/51 (make laws130), battery 124-stage ALL PASS, AOSP android-14.0.0_r2 anchors in docs/upstream/aosp/s130_laws/",
+   "missing": "real-APK fan-out evidence waves (S131 audit queue)",
+   "next": "evidence wave per docs/REUSE_AUDIT_INPUT.md next-wave queue",
+   "commit": "5b78ba70"
+  },
+  {
+   "id": "R-NEW-429",
+   "status": "IMPLEMENTED+TESTED",
+   "priority": "P1",
+   "fg": false,
+   "title": "GestureDetector state machine 1:1 (onDown/onShowPress/onSingleTapUp/onLongPress/onScroll/onFling/onSingleTapConfirmed + double-tap; timeouts 100/500/300/40ms; LSQ2 velocity)",
+   "evidence": "gesture_detector_shadow.{h,cpp} + dispatch_gesture_cb bridge; S130 laws + S131 gate: s130_laws_test 51/51 (make laws130), battery 124-stage ALL PASS, AOSP android-14.0.0_r2 anchors in docs/upstream/aosp/s130_laws/",
+   "missing": "real-APK fan-out evidence waves (S131 audit queue)",
+   "next": "evidence wave per docs/REUSE_AUDIT_INPUT.md next-wave queue",
+   "commit": "5b78ba70"
+  },
+  {
+   "id": "R-NEW-430",
+   "status": "IMPLEMENTED",
+   "priority": "P1",
+   "fg": false,
+   "title": "computeScroll dispatch per frame in the draw walk (AOSP ViewGroup draw law)",
+   "evidence": "call_compute_scroll bridge + overrides capture; S130 laws + S131 gate: s130_laws_test 51/51 (make laws130), battery 124-stage ALL PASS, AOSP android-14.0.0_r2 anchors in docs/upstream/aosp/s130_laws/",
+   "missing": "real-APK fan-out evidence waves (S131 audit queue)",
+   "next": "evidence wave per docs/REUSE_AUDIT_INPUT.md next-wave queue",
+   "commit": "5b78ba70"
+  },
+  {
+   "id": "R-NEW-431",
+   "status": "IMPLEMENTED",
+   "priority": "P1",
+   "fg": false,
+   "title": "View.setChecked/toggle/isChecked + onCheckedChanged hook",
+   "evidence": "android_shadows checked laws + dispatch_checked_changed; S130 laws + S131 gate: s130_laws_test 51/51 (make laws130), battery 124-stage ALL PASS, AOSP android-14.0.0_r2 anchors in docs/upstream/aosp/s130_laws/",
+   "missing": "real-APK fan-out evidence waves (S131 audit queue)",
+   "next": "evidence wave per docs/REUSE_AUDIT_INPUT.md next-wave queue",
+   "commit": "5b78ba70"
+  },
+  {
+   "id": "R-NEW-432",
+   "status": "IMPLEMENTED+TESTED",
+   "priority": "P1",
+   "fg": false,
+   "title": "FocusFinder one-focus law: setFocusable/requestFocus/clearFocus/isFocused + set_focused_view",
+   "evidence": "android_shadows + key_event_shadow focus_search; S130 laws + S131 gate: s130_laws_test 51/51 (make laws130), battery 124-stage ALL PASS, AOSP android-14.0.0_r2 anchors in docs/upstream/aosp/s130_laws/",
+   "missing": "real-APK fan-out evidence waves (S131 audit queue)",
+   "next": "evidence wave per docs/REUSE_AUDIT_INPUT.md next-wave queue",
+   "commit": "5b78ba70"
+  },
+  {
+   "id": "R-NEW-433",
+   "status": "IMPLEMENTED",
+   "priority": "P1",
+   "fg": false,
+   "title": "View listener family storage (OnScrollChangeListener/OnCheckedChangeListener/OnItemClickListener/OnItemLongClickListener/OnItemSelectedListener/OnKeyListener)",
+   "evidence": "android_shadows listener storage; S130 laws + S131 gate: s130_laws_test 51/51 (make laws130), battery 124-stage ALL PASS, AOSP android-14.0.0_r2 anchors in docs/upstream/aosp/s130_laws/",
+   "missing": "real-APK fan-out evidence waves (S131 audit queue)",
+   "next": "evidence wave per docs/REUSE_AUDIT_INPUT.md next-wave queue",
+   "commit": "5b78ba70"
+  },
+  {
+   "id": "R-NEW-434",
+   "status": "IMPLEMENTED+TESTED",
+   "priority": "P1",
+   "fg": false,
+   "title": "KeyEvent dispatch: onKey listener -> onKeyDown/onKeyUp arms (AOSP View.java L6952+)",
+   "evidence": "key_event_shadow + dispatch_key_event bridge; S130 laws + S131 gate: s130_laws_test 51/51 (make laws130), battery 124-stage ALL PASS, AOSP android-14.0.0_r2 anchors in docs/upstream/aosp/s130_laws/",
+   "missing": "real-APK fan-out evidence waves (S131 audit queue)",
+   "next": "evidence wave per docs/REUSE_AUDIT_INPUT.md next-wave queue",
+   "commit": "5b78ba70"
+  },
+  {
+   "id": "R-NEW-435",
+   "status": "IMPLEMENTED",
+   "priority": "P1",
+   "fg": false,
+   "title": "ViewPropertyAnimator record + settle-on-start",
+   "evidence": "android_shadows animator record; S130 laws + S131 gate: s130_laws_test 51/51 (make laws130), battery 124-stage ALL PASS, AOSP android-14.0.0_r2 anchors in docs/upstream/aosp/s130_laws/",
+   "missing": "real-APK fan-out evidence waves (S131 audit queue)",
+   "next": "evidence wave per docs/REUSE_AUDIT_INPUT.md next-wave queue",
+   "commit": "5b78ba70"
+  },
+  {
+   "id": "R-NEW-436",
+   "status": "IMPLEMENTED",
+   "priority": "P1",
+   "fg": false,
+   "title": "Scroll-clip walk law: scrolling-ancestor fully-outside skip + RenderTask clip fields",
+   "evidence": "execution_engine render task; S130 laws + S131 gate: s130_laws_test 51/51 (make laws130), battery 124-stage ALL PASS, AOSP android-14.0.0_r2 anchors in docs/upstream/aosp/s130_laws/",
+   "missing": "real-APK fan-out evidence waves (S131 audit queue)",
+   "next": "evidence wave per docs/REUSE_AUDIT_INPUT.md next-wave queue",
+   "commit": "5b78ba70"
+  },
+  {
+   "id": "R-NEW-437",
+   "status": "OBSERVED",
+   "priority": "P1",
+   "fg": false,
+   "title": "opencalculator GridLayout button bounds unassigned (76 buttons, w=0 in tree dump) — measure/layout family",
+   "evidence": "S131 probe run/s131/opencalculator_probe2: 76 Buttons, 0 with bounds; only FitWindowsLinearLayout/ContentFrameLayout laid out (1080x1920); blocks M-01 intercept wave on opencalculator",
+   "missing": "GridLayout measure/layout pass assigning child bounds (MC-041 family; REUSE-FIRST audit forbids input-side workarounds)",
+   "next": "MC-041 GridLayout measure law (AOSP GridLayout.java anchor)",
+   "commit": "c3c6054f"
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry↔docs single-source-of-truth restored); registry 372→374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots. | S80: three real games (Snake Deluxe, Mini Tetris, 2048) built + played on the runtime; R-NEW-401 external-cache bridge.",
- "total": 420,
+ "total": 435,
  "count": 420
 }
