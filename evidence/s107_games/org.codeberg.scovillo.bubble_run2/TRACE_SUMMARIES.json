@@ -1,0 +1,14 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "4b1c768897c7861f629fdff1fae65c25c2e2ad05f692d0d3a374edaa30ead894",
+   "size_bytes": 918,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s107_games/org.codeberg.scovillo.bubble_run2/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

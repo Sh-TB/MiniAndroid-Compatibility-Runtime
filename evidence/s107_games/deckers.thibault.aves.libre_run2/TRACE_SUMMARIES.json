@@ -1,0 +1,14 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "0d60c8b02460235253e4a82d755b249c3ed3a7effc437dae967fe5f7c768562c",
+   "size_bytes": 830,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s107_games/deckers.thibault.aves.libre_run2/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

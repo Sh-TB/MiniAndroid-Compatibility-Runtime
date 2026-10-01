@@ -1,0 +1,14 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "693a75602f1247b7bf6b8708060e92d2ba9940719d9ce4b929eb1e13ebe7add1",
+   "size_bytes": 912,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s107_games/com.movietrivia.filmfacts_run1/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

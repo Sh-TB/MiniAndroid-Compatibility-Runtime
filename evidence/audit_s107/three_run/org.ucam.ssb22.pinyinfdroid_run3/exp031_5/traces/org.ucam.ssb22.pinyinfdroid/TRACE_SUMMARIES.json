@@ -1,0 +1,38 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "09ff368b5890cc65bc108136e22aef809d96106cf5964fe669a419c58064438f",
+   "size_bytes": 15006,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/audit_s107/three_run/org.ucam.ssb22.pinyinfdroid_run3/exp031_5/traces/org.ucam.ssb22.pinyinfdroid/heap_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "7db86eb4d097525c2f329c578a27f52509b9f34129fdc7d1099008229781ce72",
+   "size_bytes": 24993,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/audit_s107/three_run/org.ucam.ssb22.pinyinfdroid_run3/exp031_5/traces/org.ucam.ssb22.pinyinfdroid/method_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "63e42957dd1da1289367bafcc6f4e549988b6cfdb9f77ed0dcf3fc0582540c55",
+   "size_bytes": 185,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/audit_s107/three_run/org.ucam.ssb22.pinyinfdroid_run3/exp031_5/traces/org.ucam.ssb22.pinyinfdroid/opcode_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "c667c19e76d76065e87851e56993e7eda81e895b42117f98d2c33259a2d41fa7",
+   "size_bytes": 169,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/audit_s107/three_run/org.ucam.ssb22.pinyinfdroid_run3/exp031_5/traces/org.ucam.ssb22.pinyinfdroid/register_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

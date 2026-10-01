@@ -1,0 +1,14 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "712630b500a095e90325191da52057b14a5c75adebbde5819950336e07c2ba58",
+   "size_bytes": 814,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s107_games/com.tacticmaster_run2/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

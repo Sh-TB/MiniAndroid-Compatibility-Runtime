@@ -1,0 +1,14 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "b76aad13ffe81ce5412b4f898ab63d86e583144c8881a8f4007bea987db434f6",
+   "size_bytes": 836,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s107_games/org.ucam.ssb22.pinyinfdroid_run1/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

@@ -1,0 +1,42 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "a1eec5be2c93788d1aa66d5fb4af9e0336086ed08f49d39c6f52eb5ffbfb5c37",
+   "size_bytes": 1058,
+   "generated_at": "2026-09-28 00:42:59 UTC",
+   "session_id": "EXP-001-20260928-004259-1353",
+   "total_calls": 4,
+   "top_apis": [
+    {
+     "api": "start_session",
+     "count": 1
+    },
+    {
+     "api": "stage_load_apk",
+     "count": 1
+    },
+    {
+     "api": "parse",
+     "count": 1
+    },
+    {
+     "api": "stage_generate_reports",
+     "count": 1
+    }
+   ],
+   "distinct_apis": 4,
+   "path": "evidence/s114_bigfix/sokoban/api_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "8678d0f2317759e73b6c0762c1896ae9f732fe47e048fa66a272fc9599a8a2c9",
+   "size_bytes": 197,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s114_bigfix/sokoban/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

@@ -1,0 +1,38 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "aa836becf8ca682bb05261db605256364875391def14f5b96a864c2e2c975910",
+   "size_bytes": 908718,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s106_fresh/solitaire_postfix1/exp031_5/traces/com.vayunmathur.games.solitaire/heap_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "0d253de895231ffd3467c644f9d7832aa3eb921af71867594f65bae21e1bf2f7",
+   "size_bytes": 1231931,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s106_fresh/solitaire_postfix1/exp031_5/traces/com.vayunmathur.games.solitaire/method_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "10232b2eb1f88f3f120107237394620ed1f511f9c7025385cd7beb9b573e0f3e",
+   "size_bytes": 178,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s106_fresh/solitaire_postfix1/exp031_5/traces/com.vayunmathur.games.solitaire/opcode_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "7d5f6d752d3f351b4fb97d3e6174dc9f2e3603cac8e8d2e3817ec86214f1a4c8",
+   "size_bytes": 160,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s106_fresh/solitaire_postfix1/exp031_5/traces/com.vayunmathur.games.solitaire/register_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

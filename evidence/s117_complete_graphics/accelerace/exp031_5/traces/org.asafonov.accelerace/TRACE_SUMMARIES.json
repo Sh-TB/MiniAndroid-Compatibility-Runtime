@@ -1,0 +1,38 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "ff168179294561d203e2e5a928c05fedbbe37c922d2eb13088888a7dc0405383",
+   "size_bytes": 5079,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s117_complete_graphics/accelerace/exp031_5/traces/org.asafonov.accelerace/heap_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "95ceeb4be7867ec62ac53dcac81b35aca5aae8825c598c5df5168598f2e5621c",
+   "size_bytes": 4644,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s117_complete_graphics/accelerace/exp031_5/traces/org.asafonov.accelerace/method_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "bb6817dd327bc089c7de8e6d07aaa0dd0d2dc71168b6810ab142b290269391b9",
+   "size_bytes": 170,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s117_complete_graphics/accelerace/exp031_5/traces/org.asafonov.accelerace/opcode_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "79fda007b203a707f7fd1c507558bd32e07b7e558f5e4acf047a853dd4474858",
+   "size_bytes": 155,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s117_complete_graphics/accelerace/exp031_5/traces/org.asafonov.accelerace/register_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

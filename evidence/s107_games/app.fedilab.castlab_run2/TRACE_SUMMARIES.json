@@ -1,0 +1,14 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "58aa309b153bffabd550a181ac847146a0f2a4a648b6c070f70df7ee7174811d",
+   "size_bytes": 820,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s107_games/app.fedilab.castlab_run2/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

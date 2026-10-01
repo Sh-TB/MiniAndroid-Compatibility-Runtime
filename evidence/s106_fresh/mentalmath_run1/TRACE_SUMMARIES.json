@@ -1,0 +1,106 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "fb318c22a5144ed701115f17b0f15d695309c81e5e98d2823c3cd17f44a87755",
+   "size_bytes": 2926425,
+   "generated_at": "2026-09-26 12:30:27 UTC",
+   "session_id": "EXP-001-20260926-123026-5295",
+   "total_calls": 9234,
+   "top_apis": [
+    {
+     "api": "stage_load_classes",
+     "count": 9162
+    },
+    {
+     "api": "Unknown",
+     "count": 32
+    },
+    {
+     "api": "stage_capture_output",
+     "count": 6
+    },
+    {
+     "api": "trace_files",
+     "count": 5
+    },
+    {
+     "api": "stage_render_frame",
+     "count": 4
+    },
+    {
+     "api": "execute_apk",
+     "count": 3
+    },
+    {
+     "api": "stage_load_apk",
+     "count": 2
+    },
+    {
+     "api": "stage_parse_dex",
+     "count": 2
+    },
+    {
+     "api": "stage_initialize_runtime",
+     "count": 2
+    },
+    {
+     "api": "stage_execute_application_real_dalvik",
+     "count": 2
+    },
+    {
+     "api": "trace_export",
+     "count": 2
+    },
+    {
+     "api": "log_screenshot",
+     "count": 2
+    },
+    {
+     "api": "start_session",
+     "count": 1
+    },
+    {
+     "api": "stage_execute_application",
+     "count": 1
+    },
+    {
+     "api": "validation",
+     "count": 1
+    },
+    {
+     "api": "execution_source",
+     "count": 1
+    },
+    {
+     "api": "create_view_from_dalvik_result",
+     "count": 1
+    },
+    {
+     "api": "create_hello_world_view",
+     "count": 1
+    },
+    {
+     "api": "lifecycle_source",
+     "count": 1
+    },
+    {
+     "api": "lifecycle_verified",
+     "count": 1
+    }
+   ],
+   "distinct_apis": 22,
+   "path": "evidence/s106_fresh/mentalmath_run1/api_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "752892359423e93da533ff0d7f7c01f29e2ec6008f1f6f4f8c6f48b6e63c57a0",
+   "size_bytes": 1014,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s106_fresh/mentalmath_run1/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

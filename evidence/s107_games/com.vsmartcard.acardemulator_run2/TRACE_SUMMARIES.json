@@ -1,0 +1,14 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "3d4d84c631d8d012c6d6aabd34b8d567e7d59cfb05f64456a6f93a51ab862226",
+   "size_bytes": 838,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s107_games/com.vsmartcard.acardemulator_run2/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "6aa2ff20f92ab6ed2244d034bed56d14a1fe308e55210c01d4840644f5ef0601",
+   "size_bytes": 896,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s107_games/com.fpf.smartscan_run2/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

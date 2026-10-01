@@ -1,0 +1,38 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "903d2175e17251a163c4184c5f4113dc53c981e06551596cbc5e6aece01ed7bc",
+   "size_bytes": 119195,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s113_fullgui/mykanji_run6/exp031_5/traces/io.github.hathibelagal.mykanji/heap_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "d93f46e8fd4b571008284b23f550a56db2c4d0018cb042879bab1792c472a739",
+   "size_bytes": 176720,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s113_fullgui/mykanji_run6/exp031_5/traces/io.github.hathibelagal.mykanji/method_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "a06c28b084cc90bc3b4806c90bae1dd6152bd14fb9f0ce26290a5532231669b1",
+   "size_bytes": 168,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s113_fullgui/mykanji_run6/exp031_5/traces/io.github.hathibelagal.mykanji/opcode_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "583c1d0d27a01496786cb2fc63bcf03ec5b1cffc0f55273ec633c83b1782f7d9",
+   "size_bytes": 151,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s113_fullgui/mykanji_run6/exp031_5/traces/io.github.hathibelagal.mykanji/register_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

@@ -1,0 +1,106 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "8929d2cf4f42a867805a3eded508bd9dfe49e9425817af0f7a06dfd3f32a54b7",
+   "size_bytes": 610687,
+   "generated_at": "2026-09-27 21:02:15 UTC",
+   "session_id": "EXP-001-20260927-210215-7550",
+   "total_calls": 2053,
+   "top_apis": [
+    {
+     "api": "stage_load_classes",
+     "count": 2012
+    },
+    {
+     "api": "stage_capture_output",
+     "count": 6
+    },
+    {
+     "api": "trace_files",
+     "count": 5
+    },
+    {
+     "api": "stage_render_frame",
+     "count": 4
+    },
+    {
+     "api": "execute_apk",
+     "count": 3
+    },
+    {
+     "api": "stage_load_apk",
+     "count": 2
+    },
+    {
+     "api": "stage_parse_dex",
+     "count": 2
+    },
+    {
+     "api": "stage_initialize_runtime",
+     "count": 2
+    },
+    {
+     "api": "stage_execute_application_real_dalvik",
+     "count": 2
+    },
+    {
+     "api": "trace_export",
+     "count": 2
+    },
+    {
+     "api": "phase_b_click",
+     "count": 2
+    },
+    {
+     "api": "log_screenshot",
+     "count": 2
+    },
+    {
+     "api": "start_session",
+     "count": 1
+    },
+    {
+     "api": "stage_execute_application",
+     "count": 1
+    },
+    {
+     "api": "validation",
+     "count": 1
+    },
+    {
+     "api": "execution_source",
+     "count": 1
+    },
+    {
+     "api": "create_view_from_dalvik_result",
+     "count": 1
+    },
+    {
+     "api": "create_hello_world_view",
+     "count": 1
+    },
+    {
+     "api": "lifecycle_source",
+     "count": 1
+    },
+    {
+     "api": "lifecycle_verified",
+     "count": 1
+    }
+   ],
+   "distinct_apis": 21,
+   "path": "evidence/s113_fullgui/gates/ballbreak/api_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "8b999332d82f7c5e1cb273d7c85ba122032a70bb17bae38246527d7c064b4413",
+   "size_bytes": 835,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s113_fullgui/gates/ballbreak/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}
