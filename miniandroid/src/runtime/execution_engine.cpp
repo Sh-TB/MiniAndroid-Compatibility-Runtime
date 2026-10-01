@@ -3567,6 +3567,82 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                         }
                                     }
                                     if (!drew_real && !drew_bg && node->bg_color == 0) {
+                                        // S134 F-NEW-162 RENDERER-FAMILY
+                                        // ROUTING LAW (S134 §16/§19): the
+                                        // placeholder may NOT stand in for a
+                                        // view whose SEMANTIC BASE the runtime
+                                        // implements.
+                                        // (1) TextView-family descendants with
+                                        // live text render that text (AOSP
+                                        // TextView draws the text — a custom
+                                        // subclass inherits the base draw
+                                        // contract unless it overrides draw);
+                                        // (2) SurfaceView/GLSurfaceView
+                                        // descendants NEVER receive the
+                                        // diagnostic — their pixels belong to
+                                        // their own surface pipeline; a grey
+                                        // diagnostic inside a surface region
+                                        // is false evidence (boxcars
+                                        // EbitenSurfaceView full-screen
+                                        // placeholder measured this session).
+                                        {
+                                            // S134: the view-node class_desc may
+                                            // be DOTTED (Lorg.debian...) while the
+                                            // DEX hierarchy index is SLASHED —
+                                            // normalize before walking, else the
+                                            // semantic base is never found.
+                                            std::string walk = node->class_desc;
+                                            for (auto& ch : walk)
+                                                if (ch == '.') ch = '/';
+                                            bool is_text_base = false;
+                                            bool is_surface_base = false;
+                                            for (int hop = 0;
+                                                 hop < 24 && !walk.empty(); ++hop) {
+                                                if (walk == "Landroid/widget/TextView;" ||
+                                                    walk == "Landroid/widget/Button;" ||
+                                                    walk == "Landroid/widget/EditText;" ||
+                                                    walk == "Landroid/widget/CheckBox;" ||
+                                                    walk == "Landroid/widget/RadioButton;" ||
+                                                    walk == "Landroid/widget/Switch;")
+                                                    is_text_base = true;
+                                                if (walk == "Landroid/view/SurfaceView;" ||
+                                                    walk == "Landroid/opengl/GLSurfaceView;")
+                                                    is_surface_base = true;
+                                                walk = dalvik_engine_.superclass_of(walk);
+                                            }
+                                            if (is_text_base) {
+                                                // AOSP TextView semantics: draw
+                                                // the text when present; a
+                                                // text view with NO text is
+                                                // honestly blank (S134 §19:
+                                                // an empty view stays empty
+                                                // unless its semantics draw).
+                                                if (!node->text.empty())
+                                                    canvas.draw_text(
+                                                        node->text, left + 8,
+                                                        top + (h > 0 ? (int)h / 2 : 0),
+                                                        renderer::RGBA{0x20, 0x20, 0x20, 0xFF},
+                                                        &font);
+                                                drew_real = true;
+                                                std::cerr << "[C013-CUSTOMVIEW] "
+                                                          << "text-base routing: "
+                                                          << (node->text.empty()
+                                                                  ? std::string("empty text (honest blank)")
+                                                                  : node->text)
+                                                          << " for "
+                                                          << node->class_desc
+                                                          << " (F-NEW-162)"
+                                                          << std::endl;
+                                            } else if (is_surface_base) {
+                                                std::cerr << "[C013-CUSTOMVIEW] "
+                                                          << "surface-family: "
+                                                          << "placeholder SUPPRESSED "
+                                                          << "for " << node->class_desc
+                                                          << " — surface pixels are "
+                                                          << "owned by the surface "
+                                                          << "pipeline (F-NEW-162)"
+                                                          << std::endl;
+                                            } else {
                                         // Nothing drawn anywhere: draw the
                                         // honest placeholder INLINE (grey
                                         // surface + class name). The old
@@ -3601,6 +3677,8 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                                   << node->class_desc
                                                   << " at (" << left << "," << top
                                                   << " " << w << "x" << h << ")" << std::endl;
+                                            }  // S134 F-NEW-162 routing else
+                                        }  // S134 F-NEW-162 routing bare block
                                     }
                                 }
                             }
