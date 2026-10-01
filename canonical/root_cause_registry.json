@@ -2,7 +2,7 @@
  "_projection_of": "root_registry.json",
  "_law": "root_registry.json is the single writable store; this file is a generated read model (ROADMAP SS3: no duplicate canonical registries).",
  "generated": "S135 session",
- "total": 465,
+ "total": 466,
  "status_counts": {
   "PARTIAL": 105,
   "VERIFIED-CORRECT": 46,
@@ -3328,12 +3328,22 @@
   },
   {
    "id": "F-NEW-172",
-   "status": "OBSERVED-FAIL",
+   "status": "PARTIAL",
    "priority": "P0",
-   "summary": "RegularImmutableMap.createHashTable hash-probe loop spins >50001 visits (F084 halt) during WhatsApp 07r.A0Q MobileConfig map build. The loop is O(tableSize) in guava \u2014 a real run never spins. Candidate semantics: [B aget-byte/aput-byte/Arrays.fill byte-table state or the if-ge exit comparison on the entry count; bounded disassembly-driven investigation queued (createHashTable 341 units, spin PC=0xaf, op 0xb5).",
-   "evidence": "FINAL-CAMPAIGN Phase 3 wave 1: wa_full6.log 1470-1476 (PROGRESS 700k-1.1M instructions inside createHashTable -> HALT-LOOP visited 50001); disasm run/cht_disasm.txt.",
+   "summary": "RegularImmutableMap.createHashTable probe spin \u2014 ROOT-CAUSED TO THE KEY-MATERIALIZATION LAYER: instrumented evidence (SPIN-REGS/HISTO/TABLE, F172-AGET) proves (a) the hash table is correctly filled (-1 markers, len 32768), (b) 315 entries placed, (c) the probe visits 49,685 slots = sum(0..314) quadratic signature = ALL keys hash to slot 0 because guava smear(k) = C2*rotl(k,15) has low-15-bits zero for every integer key < 2^17. Real Android never sees this because real MobileConfig map keys are not placeholder Integers. Fix shipped this wave: Arrays.fill length resolution now reads __new_array_length__ (uniform new-array convention; R-NEW-361 no-op-fill family). Remaining: F-NEW-173.",
+   "evidence": "wa_spin2-6.log SPIN-HISTO (pc0xaf=50001/pc0xdf=49685 quadratic signature), SPIN-REGS (v10=Integer(22183), v9=17750, v6=315), SPIN-TABLE (o24744: 3781 empty/315 occupied in first 4096), F172-AGET sequential probe trace.",
    "layer": "DEX interpreter / array + loop semantics",
    "title": "F-NEW-172",
+   "law": null
+  },
+  {
+   "id": "F-NEW-173",
+   "status": "OBSERVED-FAIL",
+   "priority": "P0",
+   "summary": "Upstream key-materialization divergence: 07r.A0Q builds an ImmutableMap keyed by boxed Integers (AppContext slot ids, values < 2^17) where the real app map is keyed by richer objects/strings; with guava smear math every int key < 2^17 hashes to slot 0 at tableSize 32768, so the build degrades quadratically. The keys are placeholder-materialized downstream of the DI lattice (same family as the F-NEW-171 register-aliasing face). Bounded next step: trace the map.put key feed in 07r.A0Q to the constructor/parameter that materializes Integer(22183) instead of the real key object.",
+   "evidence": "SPIN-REGS v10=o1987<Ljava/lang/Integer;> value=22183; smear math: rotl(h,15) low 15 bits = h>>17 = 0 for h < 2^17.",
+   "layer": "DEX object model / key identity",
+   "title": "F-NEW-173",
    "law": null
   }
  ]

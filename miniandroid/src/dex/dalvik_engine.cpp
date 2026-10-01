@@ -10973,6 +10973,29 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                      * types from the heap. */ \
                     DalvikValue result_val; \
                     result_val.type = result_type; \
+                    /* FINAL-CAMPAIGN PHASE 3 (F-NEW-172): bounded aget-short \
+                     * evidence probe on the spinning createHashTable table. */ \
+                    if (op_name[0] == 'a' && result_type == DalvikType::SHORT && \
+                        current_method_ == "createHashTable") { \
+                        static thread_local uint64_t f172_aget = 0; \
+                        if (f172_aget < 24) { \
+                            ++f172_aget; \
+                            int32_t probe_len = 0; \
+                            if (arr_val.type == DalvikType::OBJECT_REF && \
+                                heap_.has_object(arr_val.object_id)) { \
+                                auto lf2 = heap_.get_object_field( \
+                                    arr_val.object_id, "__array_length__"); \
+                                if (lf2.has_value() && lf2->type == DalvikType::INT32) \
+                                    probe_len = lf2->int_val; \
+                            } \
+                            std::cerr << "[F172-AGET] idx=" << idx \
+                                      << " arr=o" << (arr_val.type == DalvikType::OBJECT_REF ? arr_val.object_id : 0) \
+                                      << " len=" << probe_len \
+                                      << " arrval_type=" << static_cast<int>(arr_val.type) \
+                                      << " arrval_int=" << arr_val.int_val \
+                                      << std::endl; \
+                        } \
+                    } \
                     /* Try reading from heap for ALL types (not just OBJECT_REF). */ \
                     if (arr_val.type == DalvikType::OBJECT_REF && \
                         heap_.has_object(arr_val.object_id)) { \
@@ -13501,7 +13524,87 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                           ", op_at_pc=0x" + to_hex16(op_at_pc) + ").";
             halted_ = true;
             std::cerr << "[HALT-LOOP] " << halt_reason_ << std::endl;
+            // FINAL-CAMPAIGN PHASE 3 (F-NEW-172): one-shot live-register dump
+            // of the spinning frame — turn the halt into EVIDENCE.
+            if (current_registers_) {
+                const uint32_t nregs = current_registers_->get_size();
+                std::cerr << "[SPIN-REGS] " << current_class_ << "."
+                          << current_method_ << " regs=" << nregs;
+                for (uint32_t r = 0; r < nregs && r < 32; ++r) {
+                    DalvikValue v = current_registers_->read_v(
+                        static_cast<uint16_t>(r));
+                    std::cerr << " v" << r << "=";
+                    if (v.type == DalvikType::INT32)
+                        std::cerr << v.int_val;
+                    else if (v.type == DalvikType::OBJECT_REF) {
+                        std::cerr << "o" << v.object_id;
+                        if (heap_.has_object(v.object_id)) {
+                            const auto* ho = heap_.get(v.object_id);
+                            if (ho) {
+                                std::cerr << "<" << ho->class_descriptor << ">";
+                                int fcnt = 0;
+                                for (const auto& kv : ho->fields) {
+                                    if (fcnt++ >= 3) break;
+                                    std::cerr << " " << kv.first << "="
+                                              << dalvik_value_to_string(kv.second);
+                                }
+                            }
+                        }
+                    }
+                    else if (v.type == DalvikType::REGISTER_UNSET ||
+                             v.type == DalvikType::UNINITIALIZED)
+                        std::cerr << "uninit";
+                    else
+                        std::cerr << "t" << static_cast<int>(v.type);
+                }
+                std::cerr << std::endl;
+            }
             dump_frame_locals_diag("SPIN");
+            {
+                // FINAL-CAMPAIGN PHASE 3 (F-NEW-172): inspect the probe table
+                // state at halt — the spinning frame's v4 is the hash table.
+                if (current_method_ == "createHashTable" && current_registers_) {
+                    DalvikValue tbl = current_registers_->read_v(4);
+                    if (tbl.type == DalvikType::OBJECT_REF &&
+                        heap_.has_object(tbl.object_id)) {
+                        uint64_t occupied = 0, missing = 0, empty = 0;
+                        int32_t tlen = 0;
+                        auto lf = heap_.get_object_field(tbl.object_id, "__array_length__");
+                        auto nf = heap_.get_object_field(tbl.object_id, "__new_array_length__");
+                        if (lf.has_value() && lf->type == DalvikType::INT32) tlen = lf->int_val;
+                        if (tlen <= 0 && nf.has_value() && nf->type == DalvikType::INT32) tlen = nf->int_val;
+                        int32_t scan = tlen > 4096 ? 4096 : tlen;
+                        for (int32_t i = 0; i < scan; ++i) {
+                            auto e = heap_.get_object_field(
+                                tbl.object_id, "array[" + std::to_string(i) + "]");
+                            if (!e.has_value()) { missing++; continue; }
+                            int32_t iv = dalvik_int_value(*e);
+                            if (iv == -1 || (iv & 0xFFFF) == 0xFFFF) empty++;
+                            else occupied++;
+                        }
+                        std::cerr << "[SPIN-TABLE] o" << tbl.object_id
+                                  << " len_field=" << tlen
+                                  << " scanned=" << scan
+                                  << " empty=" << empty
+                                  << " occupied=" << occupied
+                                  << " missing=" << missing << std::endl;
+                    }
+                }
+                // FINAL-CAMPAIGN PHASE 3 (F-NEW-172): visit histogram of the
+                // spinning frame — which instructions actually cycle.
+                std::vector<std::pair<uint32_t, uint64_t>> top;
+                for (const auto& kv : pc_visit_count_)
+                    top.push_back(kv);
+                std::sort(top.begin(), top.end(),
+                          [](auto& a, auto& b) { return a.second > b.second; });
+                std::cerr << "[SPIN-HISTO]";
+                int shown = 0;
+                for (auto& kv : top) {
+                    if (shown++ >= 12) break;
+                    std::cerr << " pc" << to_hex(kv.first) << "=" << kv.second;
+                }
+                std::cerr << std::endl;
+            }
             break;
         }
         
@@ -27994,6 +28097,17 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         int32_t n = 0;
         auto lenf = heap_.get_object_field(arr_id, "__array_length__");
         if (lenf.has_value() && lenf->type == DalvikType::INT32) n = lenf->int_val;
+        // FINAL-CAMPAIGN PHASE 3 (F-NEW-172): uniform array-length convention.
+        // new-array may record the length as __new_array_length__ (the same
+        // fallback the ARRAY_GET macros use); without it, fill resolved n=0
+        // and silently wrote NOTHING — the WhatsApp RegularImmutableMap
+        // .createHashTable probe then spun forever on an all-zero [S table
+        // (every slot read "occupied" instead of the -1 empty marker).
+        if (n <= 0) {
+            auto nmf = heap_.get_object_field(arr_id, "__new_array_length__");
+            if (nmf.has_value() && nmf->type == DalvikType::INT32)
+                n = nmf->int_val;
+        }
         if (n <= 0) n = args[0].int_val > 0 ? args[0].int_val : 0;
         int32_t from = 0, to = n;
         const DalvikValue* value = nullptr;

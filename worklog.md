@@ -5070,3 +5070,18 @@ Work Log:
 
 Stage Summary:
 - Three generic roots fixed in one wave (platform-constant statics law, missing-opcode law, register-width law) — all reachable from ANY R8-heavy app, zero package checks. WhatsApp moved from "clinit-poisoned static state" through "register-aliased ctor corruption" to "real ImmutableMap build in progress" — the white-screen causal chain is being eaten from the front. Frame-truth correction (status bar ≠ app content) corrects the S134-wave record interpretation.
+---
+Task ID: FINAL-CAMPAIGN-P3-WAVE2
+Agent: Super Z (main)
+Task: Phase 3 wave 2 — F-NEW-172 (createHashTable probe spin) bounded instrumented attack.
+
+Work Log:
+- INSTRUMENTATION (all permanent, bounded): F084 halt now dumps SPIN-REGS (live registers incl. heap class+fields), SPIN-HISTO (pc visit histogram), SPIN-TABLE (hash-table state census), F172-AGET (aget-short probe trace).
+- EVIDENCE CHAIN: SPIN-TABLE o24744: len_field=32768, 3781 empty/315 occupied in first 4096 — the Arrays.fill -1 markers ARE present (fill length law was NOT the bug; the __new_array_length__ fallback added anyway = R-NEW-361 family hardening). SPIN-HISTO: pc0xaf=50001/pc0xdf=49685 — the probe cycled the FULL occupied path. SPIN-REGS: v6=315 (entries placed), v12=230, v10=o1987<Ljava/lang/Integer;> value=22183.
+- ROOT CAUSE (arithmetic proof): 49,685 occupied-probe visits ≈ Σ(0..314) = 49,612 — the QUADRATIC COLLISION SIGNATURE. Guava smear(k) = C2 * rotl(k, 15); rotl(h,15) low 15 bits = h >> 17 = 0 for every h < 2^17 → smear & (tableSize-1) = 0 for ALL integer keys < 2^17. ALL keys hash to slot 0 → linear probe walks Σk² → F084 halt.
+- THE DEEPER LAW: real Android never sees this because the real MobileConfig map is NOT keyed by small placeholder Integers — the keys materialized as boxed slot-id Integers downstream of the DI lattice (F-NEW-171 family). Registered F-NEW-173 (OBSERVED-FAIL, P0): upstream key-materialization divergence; next bounded step = trace the map.put key feed in 07r.A0Q to the materializing constructor/parameter.
+- REGISTRY: F-NEW-172 → PARTIAL (fill-length fix shipped; spin root re-attributed), F-NEW-173 registered (465/466 roots).
+- GATES: laws130 51/51 (after each rebuild); build clean.
+
+Stage Summary:
+- The instrumentation permanently upgrades every future F084 halt into live-state evidence (SPIN-REGS/HISTO/TABLE). The WhatsApp chain now has a precise, arithmetic-level attribution: the map build itself is honest; the KEY IDENTITY is the divergence — which is exactly the §3 central-hypothesis family (two writers, one state / identity mismatch) at a new layer.
