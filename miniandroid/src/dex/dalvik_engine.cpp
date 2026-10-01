@@ -21107,6 +21107,126 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             return true;
         }
     }
+    // ────────────────────────────────────────────────────────────────────
+    // F-NEW-167 (S134 wave 5): BLOCKING-QUEUE LAW — AOSP
+    // ArrayBlockingQueue/LinkedBlockingQueue dequeue/enqueue contract.
+    // Evidence: WhatsApp Log.<clinit> spawns the infra logger thread;
+    // its run() body loops on ArrayBlockingQueue.take() — the take was
+    // REC-MISS (stub void) → the consumer loop spun 50001× → F084
+    // HALT-LOOP → VirtualMachineError escaped the app boundary at
+    // attachBaseContext → AppContext state missing → Main.onCreate ISE
+    // (S135 logger: EXCEPTION FRONTIER at Log.<clinit>, [TRACE] 9-12).
+    // AOSP law (ArrayBlockingQueue.take): "removes the head of this
+    // queue, waiting if necessary for elements to become available" —
+    // the suspend-until-available contract R-NEW-345 explicitly names
+    // ArrayBlockingQueue.take as an intended park consumer. The
+    // serialized engine's counterpart (same law as LockSupport.park):
+    //   - FIFO stored in heap fields (__bq_n__ count, __bq_i<i>__ slots)
+    //     so put/offer → take hand real elements across drain points;
+    //   - take/remove/element on an EMPTY queue = the park-yield at the
+    //     drain boundary (never an in-body spin);
+    //   - poll/peek answer null when empty (non-blocking contract).
+    // ────────────────────────────────────────────────────────────────────
+    if ((class_name == "Ljava/util/concurrent/ArrayBlockingQueue;" ||
+         class_name == "Ljava/util/concurrent/LinkedBlockingQueue;") &&
+        !args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+        args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+        const uint32_t bq = args[0].object_id;
+        auto bq_read_count = [&]() -> int32_t {
+            auto c = heap_.get_object_field(bq, "__bq_n__");
+            return (c.has_value() && c->type == DalvikType::INT32)
+                       ? c->int_val : 0;
+        };
+        auto bq_write_slot = [&](int idx, const DalvikValue& v) {
+            heap_.set_object_field(
+                bq, "__bq_i" + std::to_string(idx) + "__", v);
+        };
+        auto bq_read_slot = [&](int idx) -> std::optional<DalvikValue> {
+            return heap_.get_object_field(
+                bq, "__bq_i" + std::to_string(idx) + "__");
+        };
+
+        if (method == "put" || method == "offer" || method == "add") {
+            // enqueue args[1] (bounded offers never fail in the serialized
+            // engine: capacity pressure is not observable across drains)
+            if (args.size() >= 2) {
+                const int n = bq_read_count();
+                bq_write_slot(n, args[1]);
+                heap_.set_object_field(
+                    bq, "__bq_n__", DalvikValue::make_int(n + 1));
+            }
+            if (method == "add") result = DalvikValue::make_int(1);
+            else if (method == "offer") result = DalvikValue::make_int(1);
+            else result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "take" || method == "remove" || method == "element" ||
+            method == "poll" || method == "peek") {
+            const bool blocking =
+                (method == "take" || method == "remove" ||
+                 method == "element");
+            const int n = bq_read_count();
+            if (n <= 0) {
+                if (!blocking) {
+                    // non-blocking contract: null when empty
+                    result = DalvikValue::make_null();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                // AOSP blocking contract → the R-NEW-345 park-yield at the
+                // drain boundary (identical mechanics to LockSupport.park
+                // in a drained worker body: the frame chain suspends and
+                // re-checks at the next scheduler tick — never spins).
+                uint64_t bq_park_work =
+                    drain_park_queues_bounded("bq-take");
+                (void)bq_park_work;
+                park_yield_pending_ = true;
+                if (auto* hs_bq = shadow_registry_
+                                      ? shadow_registry_->find_as<
+                                            framework::HandlerShadow>()
+                                      : nullptr)
+                    park_yield_wake_at_ = hs_bq->virtual_now_ms() + 1;
+                else
+                    park_yield_wake_at_ = 0;
+                static thread_local uint64_t bq_log = 0;
+                if (bq_log < 12) {
+                    ++bq_log;
+                    std::cerr << "[F167-BQ-TAKE] empty queue obj=" << bq
+                              << " — parked consumer at " << current_class_
+                              << "." << current_method_
+                              << " (AOSP take-blocking law)" << std::endl;
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_null();
+                return true;
+            }
+            // dequeue head + shift the FIFO left
+            auto head = bq_read_slot(0);
+            for (int i = 1; i < n; ++i) {
+                auto v = bq_read_slot(i);
+                bq_write_slot(i - 1, v.value_or(DalvikValue::make_null()));
+            }
+            heap_.set_object_field(bq, "__bq_n__",
+                                   DalvikValue::make_int(n - 1));
+            result = (head.has_value() &&
+                      head->type != DalvikType::VOID_ &&
+                      head->type != DalvikType::INT32)
+                         ? *head
+                         : (head.has_value() &&
+                            head->type == DalvikType::INT32)
+                               ? *head
+                               : DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "size" || method == "remainingCapacity") {
+            if (method == "size") result = DalvikValue::make_int(bq_read_count());
+            else result = DalvikValue::make_int(1024);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
     // R-NEW-345 THREAD-START SELF-RUN DRAIN (generic law). When a Thread
     // subclass (kotlinx scheduler Worker, OkHttp/Looper threads — no
     // Runnable ctor target recorded) starts, ThreadShadow queues a SELF-run
