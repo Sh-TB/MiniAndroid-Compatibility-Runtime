@@ -70,6 +70,10 @@ struct DomNode {
     bool box_shadow = false;            // non-inset box-shadow present
     int font_face = -1;                 // @font-face registered face index (-1 = system)
     bool inline_el = false;             // display:inline — text merges into parent flow
+    // S133 ATOMIC INLINE-BOX law (CSS 2.1 §9.2.2): inline-block is an
+    // atomic inline-level box — its content does NOT merge into the
+    // parent's text run; the box itself flows horizontally with wrapping.
+    bool inline_block = false;          // display:inline-block
     // inherited chains (filled by the render-time style walk, parent→child)
     uint32_t eff_fg = 0; bool eff_fg_valid = false;
     int eff_face = -1;
@@ -140,9 +144,12 @@ struct CssRule {
 struct ParsedDocument {
     std::unique_ptr<DomNode> root;      // html element
     std::string title;
-    std::vector<std::pair<std::string, std::string>> external_scripts; // src order
+    std::vector<std::pair<std::string, std::string>> external_scripts; // (src, type:""|"module")
     std::vector<std::pair<std::string, std::string>> external_styles;
-    std::vector<std::string> inline_scripts;   // in document order
+    // S133 ES-MODULE law: <script type=module> inline code records
+    // is_module — module scripts parse with module goals (import/export
+    // allowed) and execute after their dependencies (WHATWG §4.12.21).
+    std::vector<std::pair<std::string, bool>> inline_scripts; // (code, is_module)
     size_t script_nodes_total = 0;
 };
 

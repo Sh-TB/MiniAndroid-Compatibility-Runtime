@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- S133 VC2: url bar + FULL RENDER WebView (the runtime's HTML5 engine).
+     VC1 (frozen, evidence/s100_browser) was the text-reader architecture
+     point; VC2 upgrades the same app (same package com.miniandroid.browser)
+     to render real pages through android.webkit.WebView — the Mini Browser
+     full-page-load target of the S133 campaign. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -28,18 +33,8 @@
             android:textSize="14sp" />
     </LinearLayout>
 
-    <ScrollView
+    <WebView
+        android:id="@+id/webview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <TextView
-            android:id="@+id/page_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="12dp"
-            android:textSize="13sp"
-            android:textColor="#111111"
-            android:text="Mini Browser ready.\nTap Go to load a real website over HTTP(S)."
-            android:typeface="monospace" />
-    </ScrollView>
+        android:layout_height="match_parent" />
 </LinearLayout>

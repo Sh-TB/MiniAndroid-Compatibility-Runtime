@@ -1,0 +1,116 @@
+{
+ "source": "run/s133/repro/T02_r1/screenshot.png",
+ "width": 1080,
+ "height": 1920,
+ "pixel_count": 2073600,
+ "unique_colors": 193,
+ "white_pixels": 262695,
+ "black_pixels": 0,
+ "grey_pixels": 0,
+ "non_background_pixels": 1810905,
+ "non_white_pixels": 1810905,
+ "non_black_pixels": 2073600,
+ "luma_mean": 145.53,
+ "luma_variance": 4693.22,
+ "entropy_bits": 1.828,
+ "luma_histogram_16": [
+  0,
+  300000,
+  0,
+  150000,
+  0,
+  0,
+  0,
+  0,
+  0,
+  1199438,
+  2501,
+  152402,
+  1959,
+  1513,
+  2035,
+  263752
+ ],
+ "top_colors": [
+  {
+   "rgb": [
+    111,
+    168,
+    220
+   ],
+   "count": 1199353,
+   "frac": 0.57839
+  },
+  {
+   "rgb": [
+    0,
+    0,
+    255
+   ],
+   "count": 300000,
+   "frac": 0.14468
+  },
+  {
+   "rgb": [
+    255,
+    255,
+    255
+   ],
+   "count": 261355,
+   "frac": 0.12604
+  },
+  {
+   "rgb": [
+    255,
+    0,
+    0
+   ],
+   "count": 150000,
+   "frac": 0.07234
+  },
+  {
+   "rgb": [
+    0,
+    255,
+    0
+   ],
+   "count": 150000,
+   "frac": 0.07234
+  },
+  {
+   "rgb": [
+    162,
+    199,
+    232
+   ],
+   "count": 410,
+   "frac": 0.0002
+  },
+  {
+   "rgb": [
+    149,
+    191,
+    229
+   ],
+   "count": 402,
+   "frac": 0.00019
+  },
+  {
+   "rgb": [
+    194,
+    218,
+    240
+   ],
+   "count": 390,
+   "frac": 0.00019
+  }
+ ],
+ "repeated_row_period": 1,
+ "repeated_row_ratio": 0.861,
+ "repeated_col_period": 0,
+ "repeated_col_ratio": 0.37,
+ "unique_row_hashes": 257,
+ "unique_col_hashes": 580,
+ "stride_note": "screenshot row stride = 3240 bytes (RGB); if a repeated period \u2248 1080*4/3 or a stride mismatch shows, compare with framebuffer stride = width*4 (RGBA)",
+ "classification": "REPEATED-PATTERN"
+}

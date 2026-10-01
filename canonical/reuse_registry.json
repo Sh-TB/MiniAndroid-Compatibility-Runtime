@@ -36,7 +36,8 @@
   "REJECTED": 1,
   "REJECTED_FOR_MC041_EXISTING_SUPERIOR": 1,
   "s132_wave2": "svg law implemented; nanoSVG not adopted (measured subset)",
-  "s132_wave3": "no video corpus need; audio already covered by adopted codecs"
+  "s132_wave3": "no video corpus need; audio already covered by adopted codecs",
+  "s133": "no new external components; QuickJS module system + S100 mininet extended in-tree (fetch headers/cookie jar); litehtml trigger NOT fired (no document-class CSS layout root measured \u2014 z.ai CSS 1436 rules handled)"
  },
  "candidates": [
   {
@@ -391,7 +392,7 @@
    "MAINTENANCE_STATUS": "ACTIVE (upstream); quickjs-ng fork very active",
    "UPDATEABILITY": "GOOD \u2014 vendored; ng fork offers drop-in updates",
    "DECISION": "KEEP",
-   "REASON": "Law \u00a76 JavaScript: never write a JS interpreter. QuickJS = smallest practical mature engine; already wired into the build.",
+   "REASON": "Law \u00a76 JavaScript: never write a JS interpreter. QuickJS = smallest practical mature engine; already wired into the build. | S133: QuickJS module system (JS_EVAL_TYPE_MODULE + JS_SetModuleLoaderFunc) became the ES-module substrate \u2014 ~150 LOC adapter parsed+executed the 3.2MB live z.ai SPA bundle. No new JS engine needed.",
    "status": "ADOPTED_VENDORED",
    "categories": [
     "MC-094",

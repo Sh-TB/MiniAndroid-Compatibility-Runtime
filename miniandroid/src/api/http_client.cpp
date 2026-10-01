@@ -14,6 +14,8 @@
 #include <cctype>
 #include <cerrno>
 #include <cstring>
+#include <mutex>
+#include <vector>
 
 namespace mininet {
 
@@ -124,10 +126,63 @@ std::string read_chunked(SSL* ssl, int fd) {
     return out;
 }
 
+// ── S133 COOKIE STORE LAW (RFC 6265 §5.3/§5.4) ────────────────────────
+// A real browser keeps a cookie store: Set-Cookie values are stored per
+// host and echoed back on subsequent requests to that host (measured:
+// chat.z.ai /api/v1/auths/ sets `token=<JWT>; HttpOnly; Path=/` and
+// /api/models answers 403 without the echoed Cookie, 200 with it). The
+// minimal honest subset:
+//   * host-only storage (Domain attribute NOT honored → no cross-host leak)
+//   * name=value pair before the first ';' (attributes ignored)
+//   * session scope (process lifetime — no persistent cookie file)
+//   * Cookie header only on https requests (the measured cookie is Secure)
+struct CookieJar {
+    std::mutex mu;
+    std::map<std::string, std::map<std::string, std::string>> by_host;
+
+    static std::string trim_copy(const std::string& s) {
+        size_t b = s.find_first_not_of(" \t");
+        if (b == std::string::npos) return "";
+        size_t e = s.find_last_not_of(" \t");
+        return s.substr(b, e - b + 1);
+    }
+
+    void store(const std::string& host, const std::string& set_cookie_value) {
+        size_t semi = set_cookie_value.find(';');
+        std::string nv = semi == std::string::npos
+                             ? set_cookie_value
+                             : set_cookie_value.substr(0, semi);
+        size_t eq = nv.find('=');
+        if (eq == std::string::npos) return;
+        std::string name = trim_copy(nv.substr(0, eq));
+        std::string value = trim_copy(nv.substr(eq + 1));
+        if (name.empty()) return;   // RFC 6265 §5.2: ignore-name form skipped
+        std::lock_guard<std::mutex> lk(mu);
+        by_host[host][name] = value;
+    }
+
+    std::string header_for(const std::string& host) {
+        std::lock_guard<std::mutex> lk(mu);
+        auto it = by_host.find(host);
+        if (it == by_host.end() || it->second.empty()) return "";
+        std::string out;
+        for (auto& [n, v] : it->second) {
+            if (!out.empty()) out += "; ";
+            out += n + "=" + v;
+        }
+        return out;
+    }
+};
+CookieJar& cookie_jar() {
+    static CookieJar j;
+    return j;
+}
+
 // One request hop (no redirect following here).
 HttpResponse fetch_once(const std::string& scheme, const std::string& host,
                         const std::string& port, const std::string& path,
-                        int timeout_ms) {
+                        int timeout_ms,
+                        const std::map<std::string, std::string>* extra_headers = nullptr) {
     HttpResponse r;
     bool is_tls = (scheme == "https");
     int fd = connect_host(host, port.empty() ? (is_tls ? "443" : "80") : port,
@@ -168,11 +223,29 @@ HttpResponse fetch_once(const std::string& scheme, const std::string& host,
         setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
     }
 
+    std::string extra;
+    if (extra_headers) {
+        for (auto& [name, value] : *extra_headers) {
+            // S133 header-injection law (RFC 7230 §3.2): each field line is
+            // "name: value" CRLF; names are forwarded verbatim (the WHATWG
+            // fetch Headers normalizes case at the JS layer, not here).
+            extra += name + ": " + value + "\r\n";
+        }
+    }
+    // S133 cookie-echo law (RFC 6265 §5.4): attach the host's cookie pairs
+    // unless the request already carries an explicit Cookie header.
+    if (is_tls && extra_headers &&
+        extra_headers->find("Cookie") == extra_headers->end() &&
+        extra_headers->find("cookie") == extra_headers->end()) {
+        std::string cookie = cookie_jar().header_for(host);
+        if (!cookie.empty()) extra += "Cookie: " + cookie + "\r\n";
+    }
     std::string req = "GET " + path + " HTTP/1.1\r\n"
                       "Host: " + host +
                       (port.empty() ? "" : (":" + port)) + "\r\n"
                       "User-Agent: MiniAndroid/0.1 (S100 NET-001; Linux)\r\n"
                       "Accept: */*\r\n"
+                      + extra +
                       "Connection: close\r\n\r\n";
     bool sent = ssl ? SSL_write(ssl, req.data(), (int)req.size()) ==
                             (int)req.size()
@@ -197,12 +270,14 @@ HttpResponse fetch_once(const std::string& scheme, const std::string& host,
     // "HTTP/1.1 200 OK"
     if (status_line.size() > 12 && status_line.compare(0, 5, "HTTP/") == 0)
         r.status = atoi(status_line.c_str() + 9);
+    std::vector<std::string> set_cookies;   // S133: preserve every Set-Cookie line
     for (;;) {
         std::string h;
         if (!read_line_ssl(ssl, fd, h)) break;
         if (h.empty()) break;
         size_t colon = h.find(':');
         if (colon != std::string::npos) {
+            std::string name = lower(h.substr(0, colon));
             // S102 LAW 5 — HEADER-OWS-TRIM (RFC 7230 §3.2): "A field value
             // does not include leading or trailing whitespace" — OWS is
             // trimmed when composing the field line, NOT part of the value.
@@ -219,9 +294,12 @@ HttpResponse fetch_once(const std::string& scheme, const std::string& host,
                 size_t e = v.find_last_not_of(" \t");
                 v = v.substr(b, e - b + 1);
             }
-            r.headers[lower(h.substr(0, colon))] = v;
+            if (name == "set-cookie") set_cookies.push_back(v);
+            else r.headers[name] = v;
         }
     }
+    // S133 cookie-store law: every Set-Cookie lands in the host jar.
+    for (auto& sc : set_cookies) cookie_jar().store(host, sc);
 
     std::string te, cl;
     bool chunked = r.header("transfer-encoding", te) &&
@@ -279,6 +357,12 @@ UrlParts parse_url(const std::string& url) {
 
 HttpResponse http_get(const std::string& url, int max_redirects,
                       int timeout_ms) {
+    return http_get_ex(url, {}, max_redirects, timeout_ms);
+}
+
+HttpResponse http_get_ex(const std::string& url,
+                         const std::map<std::string, std::string>& extra_headers,
+                         int max_redirects, int timeout_ms) {
     HttpResponse combined;
     std::string current = url;
     for (int hop = 0; hop <= (max_redirects > 0 ? max_redirects : 0) + 1; ++hop) {
@@ -288,7 +372,7 @@ HttpResponse http_get(const std::string& url, int max_redirects,
             return combined;
         }
         HttpResponse r = fetch_once(p.scheme, p.host, p.port, p.path,
-                                    timeout_ms);
+                                    timeout_ms, &extra_headers);
         combined = r;
         combined.final_url = current;
         combined.redirect_count = hop;

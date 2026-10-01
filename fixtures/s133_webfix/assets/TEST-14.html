@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html><head><style>
+body{margin:0}
+.cell{width:100px;height:100px;display:inline-block}
+</style></head>
+<body>
+<script>
+var s = '';
+for (var i = 0; i < 2000; i++) {
+  var hue = (i * 37) % 256;
+  s += '<div class="cell" style="background:rgb(' + hue + ',128,255-' + hue + ')"></div>';
+}
+document.body.innerHTML = s;
+</script>
+</body></html>

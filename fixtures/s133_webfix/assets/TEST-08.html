@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html><head><style>
+body{margin:0}
+#mut{width:1000px;height:500px;background:#111111}
+#after{width:1000px;height:300px;background:#DDDDDD;display:none}
+</style></head>
+<body>
+<div id="mut"></div>
+<div id="after"></div>
+<script>
+document.getElementById('mut').style.background = '#00CC44';
+document.getElementById('after').style.display = 'block';
+document.getElementById('after').innerHTML = '<div style="width:500px;height:300px;background:#990044"></div>';
+</script>
+</body></html>
