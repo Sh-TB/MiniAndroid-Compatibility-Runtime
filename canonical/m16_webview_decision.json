@@ -1,0 +1,49 @@
+{
+ "schema": "m16_webview_decision/1 (S131 REUSE-FIRST LAW \u00a76/\u00a79/\u00a714)",
+ "mandate": "M-16 (P0): WebView/HTML5 engine TOOL-FIRST decision",
+ "measured_baseline": {
+  "engine_loc": 7410,
+  "engine_files": [
+   "src/webview/html_dom.{h,cpp}",
+   "src/webview/canvas2d.{h,cpp}",
+   "src/webview/webview_engine.{h,cpp}"
+  ],
+  "js_engine": "QuickJS 2024-01-13 (vendored, ADOPTED_VENDORED, JS_Eval/JS_Call wired at webview_engine.cpp L220/L2050/L2179)",
+  "html5_battery": "S114: blockbuster(start+game), mykanji, accelerace, sokoban, breakout \u2014 real APK runs with pixel gates, part of the 124-stage battery (ALL PASS at S131)",
+  "regression_gate": "scripts/test/run_test_battery.sh (124 stages, zero FAIL at S131)"
+ },
+ "candidates_compared": [
+  {
+   "id": "current",
+   "what": "hand-rolled html_dom + canvas2d + QuickJS",
+   "verdict": "KEEP for canvas-game-class WebViews (measured: S114 battery)"
+  },
+  {
+   "id": "quickjs",
+   "what": "JS engine",
+   "verdict": "ALREADY THE SUBSTRATE \u2014 never replace (law \u00a76 JavaScript)"
+  },
+  {
+   "id": "litehtml",
+   "what": "HTML4/5 + CSS2.1/3-subset layout, ~30k LOC C++, BSD-3, no JS",
+   "verdict": "ADOPT-TRIGGER: document-class WebView rendering (measured APK case required first)"
+  },
+  {
+   "id": "lexbor",
+   "what": "WHATWG HTML5 parser, ~100k LOC C, Apache-2.0",
+   "verdict": "FALLBACK: if litehtml parser subset proves insufficient"
+  },
+  {
+   "id": "chromium_webkit_servo",
+   "what": "full engines",
+   "verdict": "REJECTED for now \u2014 leverage not yet measured (law \u00a711: large accepted only for massive measured coverage)"
+  }
+ ],
+ "high_leverage_test": {
+  "roots_in_cluster": "MC-094 WebView 12 + MC-095 HTML 1 + MC-097 JavaScript 1 + MC-098 1",
+  "if_litehtml_integrated": "document-class layout roots close as a family; canvas-game class already closed by S114 battery",
+  "if_current_engine_extended_by_hand": "FORBIDDEN by this decision before the litehtml trigger fires"
+ },
+ "decision": "STAGED REUSE. (1) QuickJS remains the JS substrate. (2) The S114-proven canvas2d pipeline remains the game-class WebView path. (3) litehtml is the PRE-APPROVED component for document-class layout \u2014 integrate when a corpus APK measurably fails on DOM/CSS layout (not on JS/canvas), per law \u00a710 corpus-driven reuse. (4) Any new hand-written DOM/CSS layout code before that trigger violates M-16.",
+ "trigger_evidence_template": "APK id + failing frame + DOM/CSS trace (--dump-api-trace) + why html_dom cannot serve it + litehtml adapter plan"
+}
