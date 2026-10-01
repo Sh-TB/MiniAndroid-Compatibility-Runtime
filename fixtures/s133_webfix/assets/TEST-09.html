@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html><head><style>body{margin:0}</style></head>
+<body>
+<canvas id="c" width="1000" height="800" style="background:#FFFFFF"></canvas>
+<script>
+var ctx = document.getElementById('c').getContext('2d');
+ctx.fillStyle = '#FF00FF';
+ctx.fillRect(50, 50, 400, 300);
+ctx.fillStyle = '#00FFFF';
+ctx.beginPath();
+ctx.arc(700, 200, 150, 0, Math.PI * 2, false);
+ctx.fill();
+</script>
+</body></html>

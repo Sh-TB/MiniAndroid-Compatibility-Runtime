@@ -1,6 +1,6 @@
 {
  "schema": "miniandroid.capability_registry.v1",
- "generated": "2026-10-01T03:05:21Z",
+ "generated": "2026-10-01T11:12:23Z",
  "law": "IMPLEMENTED = source inventory hit only. TESTED/VERIFIED require recorded runtime evidence refs. Grep never proves VERIFIED (ROADMAP SS1).",
  "capabilities": [
   {
@@ -8,7 +8,7 @@
    "layer": "UI",
    "name": "View",
    "status": "TESTED",
-   "src_hits": 361,
+   "src_hits": 380,
    "evidence": [
     "evidence/s113_fullgui (hello_smoke/hello_widgets control APKs)",
     "miniandroid/tests/shadow_registry_invariant_test.cpp"
@@ -19,7 +19,7 @@
    "layer": "UI",
    "name": "ViewGroup",
    "status": "TESTED",
-   "src_hits": 149,
+   "src_hits": 157,
    "evidence": [
     "evidence/s113_fullgui",
     "evidence/s124_theme_base (TableLayout/LinearLayout/FrameLayout themed renders)"
@@ -48,7 +48,7 @@
    "layer": "UI",
    "name": "DecorView",
    "status": "TESTED",
-   "src_hits": 29,
+   "src_hits": 30,
    "evidence": [
     "evidence/s122_harder_games chess_full_load_0err_toolbar.jpg"
    ]
@@ -66,7 +66,7 @@
    "layer": "UI",
    "name": "ViewRoot/traversal equivalent",
    "status": "IMPLEMENTED",
-   "src_hits": 24,
+   "src_hits": 27,
    "evidence": []
   },
   {
@@ -82,7 +82,7 @@
    "layer": "UI",
    "name": "invalidate",
    "status": "IMPLEMENTED",
-   "src_hits": 49,
+   "src_hits": 51,
    "evidence": []
   },
   {
@@ -90,7 +90,7 @@
    "layer": "UI",
    "name": "MeasureSpec",
    "status": "TESTED",
-   "src_hits": 38,
+   "src_hits": 53,
    "evidence": [
     "evidence/s121_full_sessions (5 games full-load with real measure pass)"
    ]
@@ -100,7 +100,7 @@
    "layer": "UI",
    "name": "EXACTLY",
    "status": "IMPLEMENTED",
-   "src_hits": 132,
+   "src_hits": 145,
    "evidence": []
   },
   {
@@ -108,7 +108,7 @@
    "layer": "UI",
    "name": "AT_MOST",
    "status": "IMPLEMENTED",
-   "src_hits": 58,
+   "src_hits": 70,
    "evidence": []
   },
   {
@@ -116,7 +116,7 @@
    "layer": "UI",
    "name": "UNSPECIFIED",
    "status": "IMPLEMENTED",
-   "src_hits": 13,
+   "src_hits": 14,
    "evidence": []
   },
   {
@@ -124,7 +124,7 @@
    "layer": "UI",
    "name": "measured dimensions",
    "status": "IMPLEMENTED",
-   "src_hits": 55,
+   "src_hits": 59,
    "evidence": []
   },
   {
@@ -144,7 +144,7 @@
    "layer": "UI",
    "name": "layout/onLayout",
    "status": "TESTED",
-   "src_hits": 30,
+   "src_hits": 33,
    "evidence": [
     "R-NEW-409/410 layout laws",
     "evidence/s121_full_sessions"
@@ -155,7 +155,7 @@
    "layer": "UI",
    "name": "gravity",
    "status": "TESTED",
-   "src_hits": 246,
+   "src_hits": 247,
    "evidence": [
     "evidence/s121_full_sessions opmt board relayout (R-NEW-409 addRule)"
    ]
@@ -165,7 +165,7 @@
    "layer": "UI",
    "name": "margin",
    "status": "IMPLEMENTED",
-   "src_hits": 307,
+   "src_hits": 311,
    "evidence": []
   },
   {
@@ -173,7 +173,7 @@
    "layer": "UI",
    "name": "padding",
    "status": "IMPLEMENTED",
-   "src_hits": 212,
+   "src_hits": 213,
    "evidence": []
   },
   {
@@ -189,7 +189,7 @@
    "layer": "UI",
    "name": "WRAP_CONTENT",
    "status": "IMPLEMENTED",
-   "src_hits": 20,
+   "src_hits": 25,
    "evidence": []
   },
   {
@@ -224,7 +224,7 @@
    "layer": "UI",
    "name": "drawChild",
    "status": "IMPLEMENTED",
-   "src_hits": 7,
+   "src_hits": 8,
    "evidence": []
   },
   {
@@ -240,7 +240,7 @@
    "layer": "UI",
    "name": "alpha",
    "status": "IMPLEMENTED",
-   "src_hits": 81,
+   "src_hits": 89,
    "evidence": []
   },
   {
@@ -248,7 +248,7 @@
    "layer": "UI",
    "name": "transforms",
    "status": "IMPLEMENTED",
-   "src_hits": 45,
+   "src_hits": 52,
    "evidence": []
   },
   {
@@ -256,7 +256,7 @@
    "layer": "UI",
    "name": "visibility",
    "status": "IMPLEMENTED",
-   "src_hits": 156,
+   "src_hits": 159,
    "evidence": []
   },
   {
@@ -264,7 +264,7 @@
    "layer": "UI",
    "name": "focus",
    "status": "IMPLEMENTED",
-   "src_hits": 33,
+   "src_hits": 86,
    "evidence": []
   },
   {
@@ -351,7 +351,7 @@
    "layer": "RENDERING",
    "name": "translate/scale/rotate",
    "status": "IMPLEMENTED",
-   "src_hits": 69,
+   "src_hits": 70,
    "evidence": []
   },
   {
@@ -359,7 +359,7 @@
    "layer": "RENDERING",
    "name": "clip",
    "status": "IMPLEMENTED",
-   "src_hits": 164,
+   "src_hits": 177,
    "evidence": []
   },
   {
@@ -401,7 +401,7 @@
    "layer": "RENDERING",
    "name": "software rasterization",
    "status": "IMPLEMENTED",
-   "src_hits": 86,
+   "src_hits": 89,
    "evidence": []
   },
   {
@@ -417,7 +417,7 @@
    "layer": "RENDERING",
    "name": "Surface",
    "status": "TESTED",
-   "src_hits": 74,
+   "src_hits": 75,
    "evidence": [
     "evidence/s123_themed_apps flappycow2_game_activity_after_play_tap.jpg"
    ]
@@ -455,7 +455,7 @@
    "status": "VERIFIED",
    "src_hits": 192,
    "evidence": [
-    "evidence/s122..s124 3-run byte-identical SHA protocol (calc a169346e x3, flappy 13cf4746 x3) — screenshot+SHA256+pixel metrics are the campaign evidence engine"
+    "evidence/s122..s124 3-run byte-identical SHA protocol (calc a169346e x3, flappy 13cf4746 x3) \u2014 screenshot+SHA256+pixel metrics are the campaign evidence engine"
    ]
   },
   {
@@ -491,7 +491,7 @@
    "layer": "TEXT",
    "name": "font fallback",
    "status": "IMPLEMENTED",
-   "src_hits": 220,
+   "src_hits": 226,
    "evidence": []
   },
   {
@@ -539,7 +539,7 @@
    "layer": "TEXT",
    "name": "Bidi",
    "status": "IMPLEMENTED",
-   "src_hits": 7,
+   "src_hits": 8,
    "evidence": []
   },
   {
@@ -636,7 +636,7 @@
    "layer": "RESOURCES",
    "name": "Configuration",
    "status": "IMPLEMENTED",
-   "src_hits": 97,
+   "src_hits": 100,
    "evidence": []
   },
   {
@@ -719,7 +719,7 @@
    "layer": "RESOURCES",
    "name": "VectorDrawable",
    "status": "TESTED",
-   "src_hits": 31,
+   "src_hits": 32,
    "evidence": [
     "R-NEW-412/413 vector laws",
     "evidence/s122 chess full-load 0 errors"
@@ -754,7 +754,7 @@
    "layer": "INFLATION",
    "name": "LayoutInflater",
    "status": "TESTED",
-   "src_hits": 158,
+   "src_hits": 163,
    "evidence": [
     "inflate stats embedded in view_tree.json (S124)",
     "evidence/s124_theme_base"
@@ -781,7 +781,7 @@
    "layer": "INFLATION",
    "name": "custom Views",
    "status": "IMPLEMENTED",
-   "src_hits": 85,
+   "src_hits": 86,
    "evidence": []
   },
   {
@@ -789,7 +789,7 @@
    "layer": "INFLATION",
    "name": "include",
    "status": "IMPLEMENTED",
-   "src_hits": 1079,
+   "src_hits": 1112,
    "evidence": []
   },
   {
@@ -797,7 +797,7 @@
    "layer": "INFLATION",
    "name": "merge",
    "status": "IMPLEMENTED",
-   "src_hits": 26,
+   "src_hits": 29,
    "evidence": []
   },
   {
@@ -847,7 +847,7 @@
    "layer": "INPUT",
    "name": "MotionEvent",
    "status": "VERIFIED",
-   "src_hits": 41,
+   "src_hits": 49,
    "evidence": [
     "touch_dispatcher + scripts/autoplay drivers",
     "evidence/s119_games 6 games real taps",
@@ -860,16 +860,16 @@
    "layer": "INPUT",
    "name": "KeyEvent",
    "status": "IMPLEMENTED",
-   "src_hits": 2,
+   "src_hits": 26,
    "evidence": []
   },
   {
    "id": "CAP-INPUT-099",
    "layer": "INPUT",
    "name": "dispatchTouchEvent",
-   "status": "TESTED",
+   "status": "IMPLEMENTED",
    "src_hits": 28,
-   "evidence": "S131 real-APK fan-out: sudoku TutorialActivity$1/$2 CLICK DISPATCHED through the R-NEW-424 walk law (run/s131/wave_report.json); state change 45962e01 -> f78aa16c on Skip; S128 calc chain max=5 + PerformClick x3"
+   "evidence": []
   },
   {
    "id": "CAP-INPUT-100",
@@ -888,7 +888,7 @@
    "layer": "INPUT",
    "name": "onTouchEvent",
    "status": "TESTED",
-   "src_hits": 40,
+   "src_hits": 42,
    "evidence": [
     "R-NEW-417 DEX onTouchEvent override dispatch",
     "evidence/s122 chess"
@@ -912,7 +912,7 @@
    "layer": "INPUT",
    "name": "focus",
    "status": "IMPLEMENTED",
-   "src_hits": 33,
+   "src_hits": 86,
    "evidence": []
   },
   {
@@ -939,7 +939,7 @@
    "layer": "INPUT",
    "name": "long click",
    "status": "IMPLEMENTED",
-   "src_hits": 27,
+   "src_hits": 43,
    "evidence": []
   },
   {
@@ -955,7 +955,7 @@
    "layer": "INPUT",
    "name": "VelocityTracker",
    "status": "IMPLEMENTED",
-   "src_hits": 102,
+   "src_hits": 117,
    "evidence": []
   },
   {
@@ -963,7 +963,7 @@
    "layer": "INPUT",
    "name": "GestureDetector",
    "status": "IMPLEMENTED",
-   "src_hits": 132,
+   "src_hits": 164,
    "evidence": []
   },
   {
@@ -971,7 +971,7 @@
    "layer": "INPUT",
    "name": "TouchDelegate",
    "status": "IMPLEMENTED",
-   "src_hits": 46,
+   "src_hits": 47,
    "evidence": []
   },
   {
@@ -1041,7 +1041,7 @@
    "layer": "ANIMATION",
    "name": "ViewPropertyAnimator",
    "status": "IMPLEMENTED",
-   "src_hits": 11,
+   "src_hits": 13,
    "evidence": []
   },
   {
@@ -1049,7 +1049,7 @@
    "layer": "ANIMATION",
    "name": "Interpolator",
    "status": "IMPLEMENTED",
-   "src_hits": 10,
+   "src_hits": 14,
    "evidence": []
   },
   {
@@ -1083,7 +1083,7 @@
    "layer": "SCROLLING",
    "name": "Scroller/OverScroller",
    "status": "IMPLEMENTED",
-   "src_hits": 1,
+   "src_hits": 48,
    "evidence": []
   },
   {
@@ -1091,7 +1091,7 @@
    "layer": "SCROLLING",
    "name": "scrollTo/scrollBy",
    "status": "IMPLEMENTED",
-   "src_hits": 7,
+   "src_hits": 9,
    "evidence": []
   },
   {
@@ -1099,15 +1099,15 @@
    "layer": "SCROLLING",
    "name": "fling",
    "status": "IMPLEMENTED",
-   "src_hits": 1,
+   "src_hits": 19,
    "evidence": []
   },
   {
    "id": "CAP-SCROLLING-126",
    "layer": "SCROLLING",
    "name": "computeScroll",
-   "status": "PENDING",
-   "src_hits": 0,
+   "status": "IMPLEMENTED",
+   "src_hits": 23,
    "evidence": []
   },
   {
@@ -1155,7 +1155,7 @@
    "layer": "THREADING",
    "name": "Handler",
    "status": "TESTED",
-   "src_hits": 284,
+   "src_hits": 291,
    "evidence": [
     "locks_shadow/executor_shadow",
     "evidence/s40 dooz23 real Hilt execution (0-error SUCCESS)"
@@ -1190,9 +1190,9 @@
    "layer": "THREADING",
    "name": "synchronization",
    "status": "VERIFIED",
-   "src_hits": 63,
+   "src_hits": 67,
    "evidence": [
-    "R-NEW-337 full atomicfu-via-Unsafe contract (CAS/volatile offsets) — 30 offsets registered, 0 ISE across 3 runs"
+    "R-NEW-337 full atomicfu-via-Unsafe contract (CAS/volatile offsets) \u2014 30 offsets registered, 0 ISE across 3 runs"
    ]
   },
   {
@@ -1290,7 +1290,7 @@
    "layer": "NETWORK",
    "name": "HTTP/HTTPS",
    "status": "IMPLEMENTED",
-   "src_hits": 23,
+   "src_hits": 37,
    "evidence": []
   },
   {
@@ -1306,7 +1306,7 @@
    "layer": "NETWORK",
    "name": "TLS",
    "status": "IMPLEMENTED",
-   "src_hits": 3,
+   "src_hits": 4,
    "evidence": []
   },
   {
@@ -1322,7 +1322,7 @@
    "layer": "WEBVIEW",
    "name": "WebView",
    "status": "IMPLEMENTED",
-   "src_hits": 52,
+   "src_hits": 57,
    "evidence": []
   },
   {
@@ -1330,7 +1330,7 @@
    "layer": "WEBVIEW",
    "name": "HTML parsing",
    "status": "IMPLEMENTED",
-   "src_hits": 12,
+   "src_hits": 17,
    "evidence": []
   },
   {
@@ -1338,7 +1338,7 @@
    "layer": "WEBVIEW",
    "name": "CSS",
    "status": "IMPLEMENTED",
-   "src_hits": 141,
+   "src_hits": 148,
    "evidence": []
   },
   {
@@ -1346,7 +1346,7 @@
    "layer": "WEBVIEW",
    "name": "JavaScript",
    "status": "IMPLEMENTED",
-   "src_hits": 2,
+   "src_hits": 3,
    "evidence": []
   },
   {
@@ -1354,7 +1354,7 @@
    "layer": "WEBVIEW",
    "name": "DOM",
    "status": "IMPLEMENTED",
-   "src_hits": 20,
+   "src_hits": 21,
    "evidence": []
   },
   {
@@ -1362,7 +1362,7 @@
    "layer": "WEBVIEW",
    "name": "navigation",
    "status": "IMPLEMENTED",
-   "src_hits": 14,
+   "src_hits": 17,
    "evidence": []
   },
   {
@@ -1370,7 +1370,7 @@
    "layer": "WEBVIEW",
    "name": "cookies",
    "status": "IMPLEMENTED",
-   "src_hits": 23,
+   "src_hits": 45,
    "evidence": []
   },
   {
@@ -1490,7 +1490,7 @@
    "layer": "VIDEO",
    "name": "frame timing",
    "status": "IMPLEMENTED",
-   "src_hits": 120,
+   "src_hits": 127,
    "evidence": []
   },
   {
