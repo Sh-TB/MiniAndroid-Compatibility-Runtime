@@ -5014,3 +5014,26 @@ Work Log:
 
 Stage Summary:
 - F-NEW-168 face-1 (getDir null contract) is ROOT-CAUSED-FIXED with zero regression; the campaign loop closed again on a storage-family API law. The remaining WhatsApp frontier is F-NEW-169 (DI provider-null lattice) which gates the fragment-host faces — next wave: trace the first failing slot arm (00T.A03/00C.A02 getters, slots 169/864/112/109) to its REC-MISS dependency and fix the generic law.
+---
+Task ID: S135-github-backfill
+Agent: Super Z (main)
+Task: USER DIRECTIVE (fa): the last GitHub comment was S129 (2026-10-01T03:08Z) and the last pushed commit was 1448f3fd — publish ALL achievements (comments + commits) to GitHub.
+
+Work Log:
+- GIT FOUR-VALUE TRUTH: local HEAD 71563e2e (S134 wave 6) vs remote refs/heads/main 1448f3fd (S129) — 18 commits ahead, 0 behind → safe push.
+- SECRET GUARD incident (fail-closed, working as designed): first push BLOCKED — the finding was the session's own GitHub token file (tmp/.gh_token_env) written during tooling setup; removed it, guard PASS, push succeeded. Token now only lives in-process via git credential fill (never written to the tree).
+- PUSH: 1448f3fd..71563e2e main -> main (18 commits: S130 mass batch, S131/S131b/S131c reuse law + M-16/M-01, S132 reuse proof, S133 browser wave, S134 waves 1-6, S135 logger, 2 cycle-ID records, worklist regen). Verified ls-remote 71563e2e.
+- SOURCE-FIRST comment reconstruction: read worklog S130..S134-wave-6 entries + commit messages; comment format matched to the established issue-354 progress-report pattern (S127/S128/S129 comments).
+- POSTED 8 comments to issue #354 (idempotent poster scripts/s135_publish_achievements.py, bodies in scripts/s135_comment_bodies.py):
+  - 5935845159 BACKFILL-HEADER (18-commit push list)
+  - 5935845846 S130 mass batch (Scroller/GD/KeyEvent laws)
+  - 5935846456 S131 reuse-first mechanized + M-16 + M-01 + battery 124 ALL PASS
+  - 5935847121 S132 reuse proof (opencalculator, Yoga/nanoSVG/FFmpeg measured-and-rejected)
+  - 5935847781 S133 browser wave (live z.ai JS-DATA PASS, ES modules, 14 roots)
+  - 5935848369 S134 waves 1-2 (F-NEW-160 central hypothesis + F-NEW-162 routing law)
+  - 5935848947 S135 visual runtime boot/trace logger
+  - 5935849501 S134 waves 3-6 (white-screen causal chain F-NEW-165..168 — user top priority)
+- SELF-CORRECTION: header comment initially misattributed wave 5 to 08e669b5 (correct: 0b9c9ec5; 08e669b5 = worklist regen) — fixed in the bodies file and PATCHed live via scripts/s135_patch_backfill_comment.py (updated_at 2026-10-01T16:32:46Z verified).
+
+Stage Summary:
+- GitHub is current again: origin/main = 71563e2e (18 commits published) and issue #354 carries the full S130..S135 achievement record with evidence hashes. The comment-debt problem is closed by two persisted, idempotent scripts (bodies + poster) — future waves should post their progress comment in-wave, not retroactively. Next runtime frontier unchanged: F-NEW-169 DI provider-null lattice.
