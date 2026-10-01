@@ -9,6 +9,7 @@
 #include "../dex/trace_exporter.h"  // EXP-031.5: Mandatory trace generation
 #include "../diagnostics/click_audit.h"  // UNIFIED_002 EXP-100: env-gated click audit (DIAGNOSTIC)
 #include "../diagnostics/gfx_provenance.h"  // S82-GFX §6: evidence-bit pixel chain
+#include "../diagnostics/trace_overlay.h"   // S135: visual runtime boot/trace logger
 // EXP-086 Phase 3 (B1 FIX): PNGWriter for direct PNG output
 #include "../renderer/software_renderer.h"
 #include "../fonts/text_shaper.h"
@@ -42,6 +43,12 @@ namespace miniandroid {
 namespace runtime {
 
 namespace fs = std::filesystem;
+
+// S135 §10/§24: forward declaration — the definition (with the Sha256
+// helper struct) lives in an anonymous namespace later in this file.
+namespace {
+std::string sha256_hex(const std::vector<uint8_t>& data);
+}
 
 // ── G04 §4/§12: ONE density-scaling + placement law for EVERY image draw ───
 // BitmapFactory law chain (BitmapFactory.java decodeResourceStream +
@@ -146,6 +153,9 @@ ExecutionResult ExecutionEngine::execute(const std::string& path, const Executio
     
     // Start tracing session
     trace_engine_.start_session();
+    // S135: canonical runtime event backbone — ONE backbone, many sinks
+    // (JSONL / ring buffer / stage machine / visual overlay / evidence).
+    trace_engine_.boot_trace_begin(config.output_directory, path);
     // Note: verbose logging handled by individual parsers
     
     diagnostics::ScopedTimer timer(trace_engine_, "TotalExecution");
@@ -292,7 +302,26 @@ ExecutionResult ExecutionEngine::execute(const std::string& path, const Executio
     
     // Copy metrics
     result.metrics = trace_engine_.get_metrics();
-    
+
+    // ────────────────────────────────────────────────────────────────────
+    // S135 §24/§31: FINALIZE the boot trace — derive FIRST_DIVERGENCE from
+    // the canonical stage machine, write trace_summary.json, close the
+    // JSONL stream with RUN_END. Runs AFTER the final status mapping so the
+    // summary carries the honest run status.
+    // ────────────────────────────────────────────────────────────────────
+    {
+        auto e = trace_engine_.make_event(
+            diagnostics::ev::RUN_END,
+            result.status == ExecutionStatus::SUCCESS
+                ? diagnostics::EventSev::CONFIRMED
+                : diagnostics::EventSev::FAILURE,
+            "boot", result.status_message, result.status == ExecutionStatus::SUCCESS
+                                              ? "OK" : "FAIL");
+        e.extra = {{"status", static_cast<int>(result.status)}};
+        trace_engine_.runtime_event(std::move(e));
+        trace_engine_.boot_trace_finalize(config.output_directory);
+    }
+
     // End session
     trace_engine_.end_session();
     
@@ -322,7 +351,20 @@ bool ExecutionEngine::stage_load_apk(const std::string& path, ExecutionResult& r
     trace_engine_.info("ExecutionEngine", "stage_load_apk",
                        "Package: " + result.apk_info.package_name +
                        ", Main Activity: " + result.apk_info.main_activity);
-    
+
+    // S135: APK stage confirmation with the authoritative package label.
+    trace_engine_.set_package_label(result.apk_info.package_name);
+    {
+        auto e = trace_engine_.make_event(diagnostics::ev::APK_LOADED,
+                                          diagnostics::EventSev::CONFIRMED, "boot",
+                                          "pkg=" + result.apk_info.package_name, "OK");
+        trace_engine_.runtime_event(std::move(e));
+        auto m = trace_engine_.make_event(diagnostics::ev::MANIFEST_PARSED,
+                                          diagnostics::EventSev::CONFIRMED, "boot",
+                                          "activity=" + result.apk_info.main_activity, "OK");
+        trace_engine_.runtime_event(std::move(m));
+    }
+
     return true;
 }
 
@@ -368,7 +410,17 @@ bool ExecutionEngine::stage_parse_dex( ExecutionResult& result) {
                        "Parsed " + std::to_string(result.dex_report.classes_count) +
                        " classes, " + std::to_string(result.dex_report.methods_count) +
                        " methods");
-    
+
+    // S135: DEX stage confirmation (classes/methods counts = state).
+    {
+        auto e = trace_engine_.make_event(diagnostics::ev::DEX_PARSED,
+                                          diagnostics::EventSev::CONFIRMED, "boot",
+                                          "classes=" + std::to_string(result.dex_report.classes_count) +
+                                          " methods=" + std::to_string(result.dex_report.methods_count),
+                                          "OK");
+        trace_engine_.runtime_event(std::move(e));
+    }
+
     return true;
 }
 
@@ -397,20 +449,37 @@ bool ExecutionEngine::stage_initialize_runtime(ExecutionResult& result, const Ex
     trace_engine_.info("ExecutionEngine", "stage_initialize_runtime",
                        "Framebuffer allocated: " + std::to_string(config.screen_width) + 
                        "x" + std::to_string(config.screen_height));
-    
+
+    // S135: RUNTIME_READY carries the screen geometry (frame analysis law
+    // needs the DEFAULT background definition — the framebuffer fill above).
+    {
+        auto e = trace_engine_.make_event(diagnostics::ev::RUNTIME_READY,
+                                          diagnostics::EventSev::CONFIRMED, "boot",
+                                          std::to_string(config.screen_width) + "x" +
+                                          std::to_string(config.screen_height), "OK");
+        e.extra = {{"background_color", config.background_color}};
+        trace_engine_.runtime_event(std::move(e));
+    }
+
     return true;
 }
 
 bool ExecutionEngine::stage_load_classes(ExecutionResult& result) {
     trace_engine_.info("ExecutionEngine", "stage_load_classes", "Loading class definitions");
-    
+
     // In v0.1, we don't actually load real classes - we use stubs
     // This stage would be expanded in future versions
-    
+
     if (result.dex_report.classes.empty()) {
         trace_engine_.warning("ExecutionEngine", "stage_load_classes",
                               "No classes in DEX report");
     } else {
+        // S135: CLASS-INIT stage confirmation (class count = state).
+        auto e = trace_engine_.make_event(diagnostics::ev::CLASSES_LOADED,
+                                          diagnostics::EventSev::CONFIRMED, "boot",
+                                          "classes=" + std::to_string(result.dex_report.classes.size()),
+                                          "OK");
+        trace_engine_.runtime_event(std::move(e));
         // Log class information
         for (const auto& cls : result.dex_report.classes) {
             trace_engine_.debug("ExecutionEngine", "stage_load_classes",
@@ -448,6 +517,21 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
     // In future: this will come from DEX class loading
     result.activity = std::make_shared<api::Activity>();
     result.activity->set_package_name(result.apk_info.package_name);
+
+    // S135: the resolved launcher activity is a canonical event (§3) —
+    // with the manifest-authoritative class name, no rename guessing.
+    trace_engine_.set_activity_label(result.apk_info.main_activity_full);
+    {
+        auto e = trace_engine_.make_event(diagnostics::ev::ACTIVITY_RESOLVED,
+                                          diagnostics::EventSev::CONFIRMED,
+                                          "activity",
+                                          result.apk_info.main_activity_full, "OK");
+        trace_engine_.runtime_event(std::move(e));
+        auto a = trace_engine_.make_event(diagnostics::ev::APPLICATION_CREATE,
+                                          diagnostics::EventSev::PENDING,
+                                          "activity", "dex interpreter", "PENDING");
+        trace_engine_.runtime_event(std::move(a));
+    }
     
     // EXP-086 Phase 1: Configure dalvik_engine_ with per-DEX raw data and APK path
     // before calling execute_apk_with_activity. Without this, multi-DEX method
@@ -1043,6 +1127,49 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
             config.verbose_logging
         );
 
+        // ────────────────────────────────────────────────────────────
+        // S135 §16: MISSING-API / stub frontier — every MISSING/ERROR api
+        // call is a canonical MISSING_API event with the authoritative
+        // owner/method/descriptor and the caller-visible state. Bounded:
+        // first 20 + census (ring buffer hygiene).
+        // ────────────────────────────────────────────────────────────
+        {
+            size_t missing = 0, errored = 0;
+            for (const auto& t : dalvik_result.api_call_traces) {
+                if (t.status == dalvik::ApiCallTrace::Status::MISSING) {
+                    ++missing;
+                    if (missing <= 20) {
+                        auto e = trace_engine_.make_event(
+                            diagnostics::ev::MISSING_API, diagnostics::EventSev::FAILURE,
+                            "api", "status=MISSING", "FAIL");
+                        e.cls = t.api_class;
+                        e.method = t.method;
+                        e.descriptor = t.descriptor;
+                        e.extra = {{"pc", t.pc}};
+                        trace_engine_.runtime_event(std::move(e));
+                    }
+                } else if (t.status == dalvik::ApiCallTrace::Status::ERROR) {
+                    ++errored;
+                    if (errored <= 20) {
+                        auto e = trace_engine_.make_event(
+                            diagnostics::ev::DISPATCH_FAILURE, diagnostics::EventSev::FAILURE,
+                            "api", "status=ERROR", "FAIL");
+                        e.cls = t.api_class;
+                        e.method = t.method;
+                        e.descriptor = t.descriptor;
+                        trace_engine_.runtime_event(std::move(e));
+                    }
+                }
+            }
+            if (missing + errored > 0) {
+                auto e = trace_engine_.make_event(
+                    diagnostics::ev::TRACE_MARK, diagnostics::EventSev::INFO,
+                    "api", "missing=" + std::to_string(missing) +
+                    " errors=" + std::to_string(errored) + " (first 20 emitted)", "OK");
+                trace_engine_.runtime_event(std::move(e));
+            }
+        }
+
         // ────────────────────────────────────────────────────────────────
         // S69 SOURCE-LINKED CAMPAIGN: API dispatch trace dump (the LIVE
         // dispatch surface). Every invoke the engine bridged to the
@@ -1220,6 +1347,24 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                                      "law; record state advances regardless)"),
                     hs_clock->virtual_now_ms());
                 as->set_state(framework::ActivityShadow::LifecycleState::RESUMED);
+            }
+
+            // S135 §18: the lifecycle machine state as a canonical event
+            // (visible even when a WHITE screen follows — the answer to
+            // "CREATED but never RESUMED?" is machine-readable now).
+            {
+                const char* phase = framework::lifecycle_phase_name(lifecycle_.state());
+                trace_engine_.set_lifecycle_label(phase);
+                auto e = trace_engine_.make_event(
+                    diagnostics::ev::LIFECYCLE_STATE,
+                    lifecycle_.state() == framework::LifecyclePhase::RESUMED
+                        ? diagnostics::EventSev::CONFIRMED
+                        : diagnostics::EventSev::PENDING,
+                    "activity", phase,
+                    lifecycle_.state() == framework::LifecyclePhase::RESUMED
+                        ? "OK" : "PENDING");
+                e.extra = lifecycle_.to_json(result.apk_info.apk_path, act_class);
+                trace_engine_.runtime_event(std::move(e));
             }
         }
         
@@ -2530,6 +2675,27 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
 
 bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const ExecutionConfig& config) {
     trace_engine_.info("ExecutionEngine", "stage_render_frame", "Rendering frame");
+    // S135 §3: render-pass frontier — MEASURE/LAYOUT/DRAW are now formally
+    // STARTED (PENDING) until the composed frame confirms them.
+    {
+        trace_engine_.runtime_event(trace_engine_.make_event(
+            diagnostics::ev::RENDER_START, diagnostics::EventSev::PENDING,
+            "render", "measure/layout/draw pass", "PENDING"));
+        // VIEWTREE observation: content root existence + renderer family.
+        // Family law (S135 §14): GL surface ⇒ OPENGL_GLES; WebView engine
+        // ⇒ WEBVIEW; else the classic canvas walk below.
+        auto* act_shadow = shadow_registry_ ? shadow_registry_->find_as<framework::ActivityShadow>() : nullptr;
+        if (act_shadow && act_shadow->content_view_id() != 0) {
+            auto v = trace_engine_.make_event(
+                diagnostics::ev::VIEWTREE_CREATED, diagnostics::EventSev::CONFIRMED,
+                "viewtree", "root_id=" + std::to_string(act_shadow->content_view_id()), "OK");
+            trace_engine_.runtime_event(std::move(v));
+        }
+        if (trace_engine_.current_renderer_family().empty()) {
+            trace_engine_.set_renderer_family(diagnostics::rf::CLASSIC_CANVAS,
+                                              "stage_render_frame default walk");
+        }
+    }
     // S95 L-S95-ADAPTIVE-1: app-resource resolver for vector/adaptive-icon
     // decoding (one resolver per frame pass; resid lookups cached inside).
     renderer::VectorRefResolver img_resolver = image_ref_resolver();
@@ -4476,6 +4642,16 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                             }
                         }
                         std::cerr << "[EXP092-COPY] framebuffer_ has " << fb_non_white << " non-white pixels" << std::endl;
+                        // S135 §3: DRAW/MEASURE/LAYOUT confirmation — the
+                        // composed frame IS the evidence the pipeline
+                        // reached the end of the draw walk.
+                        {
+                            trace_engine_.runtime_event(trace_engine_.make_event(
+                                diagnostics::ev::RENDER_OK,
+                                diagnostics::EventSev::CONFIRMED, "render",
+                                "nonwhite=" + std::to_string(fb_non_white) +
+                                " total=" + std::to_string(pixels.size()), "OK"));
+                        }
                         // S82-GFX §6: SURFACE evidence — composed-frame census.
                         if (diagnostics::GfxProvenance::instance().enabled()) {
                             std::map<uint32_t, size_t> color_hist;
@@ -4593,6 +4769,25 @@ bool ExecutionEngine::stage_gl_surfaces(ExecutionResult& result,
         trace_engine_.info("ExecutionEngine", "stage_gl_surfaces",
                            "GL frame presented " + std::to_string(gw) + "x" +
                                std::to_string(gh) + (first ? " (surface created)" : ""));
+        // S135 §14: GL/Surface renderer family + frame-presented events.
+        if (first) {
+            auto sc = trace_engine_.make_event(
+                diagnostics::ev::SURFACE_CREATED, diagnostics::EventSev::CONFIRMED,
+                "surface", std::to_string(gw) + "x" + std::to_string(gh), "OK");
+            sc.renderer_family = diagnostics::rf::OPENGL_GLES;
+            sc.extra = {{"view_id", vid}};
+            trace_engine_.runtime_event(std::move(sc));
+            trace_engine_.set_renderer_family(
+                diagnostics::rf::OPENGL_GLES, "stage_gl_surfaces GL frame");
+        }
+        {
+            auto gp = trace_engine_.make_event(
+                diagnostics::ev::GL_FRAME_PRESENT, diagnostics::EventSev::CONFIRMED,
+                "surface", std::to_string(gw) + "x" + std::to_string(gh), "OK");
+            gp.renderer_family = diagnostics::rf::OPENGL_GLES;
+            gp.extra = {{"view_id", vid}, {"first", first}};
+            trace_engine_.runtime_event(std::move(gp));
+        }
         if (diagnostics::GfxProvenance::instance().enabled()) {
             diagnostics::GfxProvenance::instance().record_gl_presented(
                 vid, gw, gh, first);
@@ -4664,6 +4859,13 @@ bool ExecutionEngine::stage_capture_output( ExecutionResult& result, const Execu
     std::string screenshot_path = config.output_directory + "/screenshot.png";
     result.screenshot_path = screenshot_path;
 
+    // S135 §3: FRAME_SUBMIT — the composed frame leaves the render pipeline
+    // toward capture. (Frame_CAPTURE follows from log_screenshot.)
+    trace_engine_.runtime_event(trace_engine_.make_event(
+        diagnostics::ev::FRAME_SUBMIT, diagnostics::EventSev::CONFIRMED,
+        "capture", std::to_string(config.screen_width) + "x" +
+                   std::to_string(config.screen_height), "OK"));
+
     // EXP-086 Phase 3 (B1 FIX): Write PNG directly using PNGWriter.
     // Previously this only wrote PPM (raw bitmap) and a note saying
     // "convert later" — that left screenshots inaccessible to most tools.
@@ -4689,6 +4891,106 @@ bool ExecutionEngine::stage_capture_output( ExecutionResult& result, const Execu
                                          framebuffer_.size());
             trace_engine_.info("ExecutionEngine", "stage_capture_output",
                               "PNG screenshot saved to: " + screenshot_path);
+        }
+
+        // ────────────────────────────────────────────────────────────────
+        // S135 §5/§7: FRAME ANALYSIS — default background vs real content.
+        // Law: the DOMINANT color is the default-background candidate
+        // (never assume white — the runtime background is configurable);
+        // non-default pixels = pixels differing from the dominant color.
+        // Verdict: DEFAULT_BACKGROUND_ONLY when nothing differs, else
+        // REAL_APP_CONTENT. Numbers always travel with the verdict.
+        // ────────────────────────────────────────────────────────────────
+        if (trace_engine_.boot_trace_enabled()) {
+            std::map<uint32_t, size_t> fa_hist;
+            for (const auto& c : fb.get_pixels()) {
+                uint32_t key = (uint32_t(c.r) << 16) | (uint32_t(c.g) << 8) |
+                               uint32_t(c.b);
+                fa_hist[key]++;
+            }
+            uint32_t dominant = 0xFFFFFF; size_t dominant_n = 0;
+            for (const auto& kv : fa_hist) {
+                if (kv.second > dominant_n) { dominant_n = kv.second; dominant = kv.first; }
+            }
+            const size_t total_px = fb.get_pixels().size();
+            const size_t non_default = total_px - dominant_n;
+            const double pct = total_px ? 100.0 * double(dominant_n) / double(total_px) : 0.0;
+            const char* verdict = non_default == 0 ? "DEFAULT_BACKGROUND_ONLY"
+                                                   : "REAL_APP_CONTENT";
+            auto file_sha = [](const std::string& p) -> std::string {
+                std::ifstream f(p, std::ios::binary);
+                if (!f) return "";
+                std::vector<uint8_t> bytes((std::istreambuf_iterator<char>(f)),
+                                            std::istreambuf_iterator<char>());
+                return sha256_hex(bytes);
+            };
+            const std::string auth_sha = png_ok ? file_sha(screenshot_path) : std::string();
+            trace_engine_.record_frame_analysis(
+                config.screen_width, config.screen_height, dominant, pct,
+                fa_hist.size(), non_default, verdict, auth_sha);
+
+            // S135 §10: TWO screenshots — the authoritative PNG above stays
+            // untouched; the diagnostic overlay composes a COPY.
+            if (trace_engine_.trace_ui_enabled() && png_ok) {
+                try {
+                    diagnostics::TraceOverlay::Options o =
+                        diagnostics::TraceOverlay::options_from_env();
+                    renderer::FrameBuffer diag =
+                        diagnostics::TraceOverlay::compose(fb, trace_engine_, o);
+                    const std::string trace_png =
+                        config.output_directory + "/trace_overlay.png";
+                    if (renderer::PNGWriter::write_png(trace_png, diag)) {
+                        const std::string trace_sha = file_sha(trace_png);
+                        trace_engine_.info("ExecutionEngine", "stage_capture_output",
+                                          "trace overlay saved: " + trace_png +
+                                          " sha256=" + trace_sha);
+                        // S135 §24: sha256.json — authoritative vs diagnostic
+                        // SHAs are the evidence that overlay ≠ app pixels.
+                        nlohmann::json shas = {
+                            {"authoritative", {
+                                {"path", "screenshot.png"},
+                                {"sha256", auth_sha},
+                            }},
+                            {"trace_overlay", {
+                                {"path", "trace_overlay.png"},
+                                {"sha256", trace_sha},
+                            }},
+                            {"law", "AUTHORITATIVE_SHA256 != TRACE_SHA256 by "
+                                    "construction: the overlay composes a COPY "
+                                    "after the authoritative write"},
+                        };
+                        std::ofstream sf(config.output_directory + "/sha256.json");
+                        if (sf) sf << shas.dump(2) << std::endl;
+                        // S135 §24: screenshot_metrics.json
+                        nlohmann::json metrics = {
+                            {"schema", "miniandroid.screenshot_metrics/1.0"},
+                            {"authoritative_png", screenshot_path},
+                            {"authoritative_sha256", auth_sha},
+                            {"trace_overlay_png", trace_png},
+                            {"trace_overlay_sha256", trace_sha},
+                            {"width", config.screen_width},
+                            {"height", config.screen_height},
+                            {"dominant_color_hex", (nlohmann::json)([] (uint32_t c) {
+                                std::ostringstream o;
+                                o << "#" << std::hex << std::setw(6)
+                                  << std::setfill('0') << c;
+                                return o.str();
+                            })(dominant)},
+                            {"dominant_pct", pct},
+                            {"unique_colors", fa_hist.size()},
+                            {"non_default_pixels", non_default},
+                            {"verdict", verdict},
+                            {"overlay_mutated_authoritative_frame", false},
+                        };
+                        std::ofstream mf(config.output_directory +
+                                         "/screenshot_metrics.json");
+                        if (mf) mf << metrics.dump(2) << std::endl;
+                    }
+                } catch (const std::exception& oe) {
+                    trace_engine_.record_error("TRACE_OVERLAY_ERROR", oe.what(),
+                                               "TraceOverlay", "compose");
+                }
+            }
         }
         // S82-GFX §6: SCREENSHOT_CAPTURED + final census; writes the JSON.
         if (diagnostics::GfxProvenance::instance().enabled()) {
@@ -5200,6 +5502,12 @@ int ExecutionEngine::pump_compose_frames(int max_frames) {
     int fired_frames = 0;
     int clock_advances_ = 0;  // F-115b: virtual-clock advance budget
     double pump_ms = 16.6;    // S109: webview event-loop clock (per-tick vsync)
+    // S135 §14: a Compose recomposition pump firing = the COMPOSE renderer
+    // family owns (part of) the screen. PURPLE provenance event, once.
+    if (fired_frames == 0 && cs->has_pending_callbacks()) {
+        trace_engine_.set_renderer_family(diagnostics::rf::COMPOSE,
+                                          "choreographer/composition pump active");
+    }
     // [F100-IDLEDRAIN] AOSP MessageQueue idle law: messages dispatch on idle
     // INDEPENDENT of vsync (the Choreographer frame is only one wake source;
     // AndroidUiDispatcher.dispatch posts BOTH a handler message and a frame

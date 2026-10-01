@@ -4909,3 +4909,47 @@ Work Log (S134 wave 2 — F-NEW-162):
 
 Stage Summary:
 - Two P0/P1 §19 writer-contamination faces closed in-wave with the C013 routing law; the placeholder can no longer stand in for a surface family or a TextView descendant. Next: §30 SUCCESS-gate downgrade (boxcars honest status), solitaire support-v7 onStart chain, F-NEW-161 attribution.
+---
+Task ID: S135
+Agent: Super Z (main)
+Task: S135 — VISUAL RUNTIME BOOT/TRACE LOGGER (user FA directive, independent of RenderVerificationGate): machine-readable runtime logger + visual on-screen trace overlay; plus S134 continuation (white/black screen root-cause campaign, main priority).
+
+LAWS READ:
+- CONSTITUTION_V2 (source-first, evidence contract §31-35, no-fake-render §34)
+- S135 directive §1-32 (source-first inventory before code; no duplicate logger; overlay outside app render path; two screenshots; first-divergence engine; 3-run; 32 acceptance criteria)
+- worklog.md (S131/S132/S133/S134 entries — all prior waves)
+- Existing instruments inventoried BEFORE code (S135 §1/§23/§30): TraceEngine (EXP-001 session/report engine), GfxProvenance (S82 §6 pixel chain + §34 C7 FIRST_DIVERGENCE), crash_forensics (native frames), InstructionTrace/ApiCallTrace (dex), [TAG] stdout markers, stage_capture_output PNG pipeline, BitmapFont 8x16 (EXP-092), PNGWriter, FrameBuffer.
+
+CURRENT HEAD (at session start): aa5d18bb3bd360dc93d36e8da6b043742c42a261
+BRANCH: main / ORIGIN MAIN: N/A (local-only repo) / WORKTREE: tmp/flappycow (scratch)
+
+ARCHITECTURE DECISION (S135 §23): EXTEND — ONE RUNTIME EVENT BACKBONE on the existing TraceEngine (new runtime_event() API + sinks: ring buffer 512, streaming JSONL, stage machine, first-divergence engine, frame analysis, summary). ONE new sink component: diagnostics/trace_overlay (visual composer reading TraceEngine state). Existing record_error/log_screenshot calls auto-emit canonical events (zero duplicate wiring). TraceEngine/GfxProvenance/crash_forensics unchanged in role.
+
+IMPLEMENTED:
+- runtime_event.h: canonical RuntimeEvent schema + curated vocabulary (ev::*, rf::*, stage order BOOT→APK→DEX→CLASS-INIT→LIFECYCLE→VIEWTREE→MEASURE→LAYOUT→DRAW→FRAME)
+- trace_engine: runtime_event dispatch (6 sinks), mark_stage with WALK-THROUGH CONFIRMATION law (a CONFIRMED stage proves earlier PENDING stages passed; NOT_REACHED not promoted), FIRST-DIVERGENCE derivation (first FAILURE stage authoritative, else first non-CONFIRMED; FIRST_DIVERGENCE != LAST_EXCEPTION enforced — exceptions travel as evidence keys), record_frame_analysis (dominant color = default-background candidate, non-default px, DEFAULT_BACKGROUND_ONLY vs REAL_APP_CONTENT), boot_trace_begin/finalize (trace.jsonl streaming + trace_summary.json + RUN_END)
+- trace_overlay: semantic-color panel (GREEN/YELLOW/RED/BLUE/PURPLE/GRAY) + custom status glyphs (✓ ✗ tilde dash — ASCII font cannot draw them), header/compact/expanded modes, composed ONTO A COPY after the authoritative PNG write (§8/§9/§27 laws: never an app pixel owner, never a placeholder renderer)
+- execution_engine wiring: boot_trace_begin, APK_LOADED/MANIFEST_PARSED/DEX_PARSED/RUNTIME_READY/CLASSES_LOADED, ACTIVITY_RESOLVED/APPLICATION_CREATE, MISSING_API+DISPATCH_FAILURE scan over ApiCallTrace (first 20 + census), LIFECYCLE_STATE, RENDER_START (opens MEASURE/LAYOUT/DRAW pending), VIEWTREE_CREATED (content root), RENDER_OK (nonwhite evidence), SURFACE_CREATED/GL_FRAME_PRESENT (OPENGL_GLES family), COMPOSE family via choreographer pump, FRAME_SUBMIT, FRAME_CAPTURE (via log_screenshot), EXCEPTION (via record_error), frame analysis + overlay + sha256.json + screenshot_metrics.json at capture, RUN_END + finalize at execute() end
+- main.cpp: --trace / --trace-ui flags (+ MINIANDROID_TRACE_UI=1|header|expanded, MINIANDROID_BOOT_TRACE, MINIANDROID_TRACE_VERBOSE, MINIANDROID_TRACE_BUFFER env contract)
+- Makefile: trace_overlay.cpp added to DIAGNOSTICS_SOURCES
+
+BUGS FOUND+FIXED IN-WAVE:
+- Dangling-reference crash (SIGSEGV on first overlay render): last_event_name() ternary mixed const char*/std::string → temporary bound to returned const& → use-after-free. Fixed with member-backed static.
+- F-NEW-164 (PRE-EXISTING RUNTIME DEFECT EXPOSED BY THE OVERLAY): bitmap_font_data.h shipped 5 corrupt glyphs — glyph_dot_bitmap = 16x0xFF (solid block!), glyph_minus 3 full rows, glyph_E/I/z corrupted; every '.' on the BitmapFont path drew a solid block. Root cause: generator tight-crops ink bbox before scaling → wide-flat glyphs become all-ink cells. FIXED by full-cell re-render from DejaVuSansMono (scripts/s135_fix_font_glyphs.py), ASCII-art verified. Goldens byte-identical (no impact on their paths).
+
+EVIDENCE (all on current HEAD, real APKs):
+- dooz ×3: authoritative SHA ba8a95eb2278594f BYTE-IDENTICAL ×3 AND equal to the S134 golden with logger ON; 56-event trace sequence IDENTICAL ×3 (modulo by-design run_id/ts/pid/out-path); screenshot metrics identical ×3 → DETERMINISTIC
+- overlay-OFF: zero trace artifacts, authoritative unchanged → §8 hard rule PROVEN by A/B
+- headingcalc: chain green, 823 colors, 466062 non-default px (matches S134 wave-2)
+- chessclock: chain green + EXCEPTION lane (NPE at app boundary captured with class), rc=1
+- droidify (WHITE SCREEN CASE): chain green through LIFECYCLE, VIEWTREE NOT_REACHED (content root never materialized), FRAME=DEFAULT_BACKGROUND_ONLY, non-default=0, colors=1, verdict readable on the overlay — the logger answers §5 exactly
+- WhatsApp (TWO-COLOR BLANK): VIEWTREE NOT_REACHED, 2 colors, 23472 non-default px — the exact S134 F-NEW-156 family fingerprint, now machine-derived
+- FlappyCow: no native libs → honest CLASSIC_CANVAS family (636 colors, real render)
+- missing APK: graceful BOOT divergence, no fabricated stages
+- laws130 51/51 PASS; ballbreak 8a951f5f975c4742 + dooz ba8a95eb2278594f byte-identical to S134 record (s112_gates 'want' fields remain S112-era = SUPERSEDED by S134 A/B method); battery: 2 executable stages golden-identical, 3 S114 fixture APKs still missing (pre-reset workspace gap, unchanged)
+
+REGISTRIES: F-NEW-163 (S135 logger, IMPLEMENTED/TESTED) + F-NEW-164 (font law, ROOT-CAUSED-FIXED) → root_registry 457→459. Canonical doc: docs/BOOT_TRACE_LOGGER.md (14 sections). Scripts persisted: scripts/s135_font_test.cpp, scripts/s135_fix_font_glyphs.py.
+
+Stage Summary:
+- The runtime now answers "what produced this screen and where did the walk stop" for EVERY run in machine form (trace.jsonl/trace_summary.json) AND visually (trace_overlay.png on a copy, authoritative evidence byte-stable). Two failure frontiers are now immediately visible on real cases: droidify white screen = VIEWTREE divergence (next S134 root), WhatsApp = same fingerprint family.
+- Next automatic frontiers: (1) S134 root attack on the droidify/WhatsApp VIEWTREE divergence family (content root never set), (2) WebView/Compose/SurfaceView lane events wired into the backbone (mechanical), (3) R-NEW-456 replay bisect.

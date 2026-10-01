@@ -284,9 +284,9 @@ static const uint8_t glyph_minus_bitmap[16] = {
     0x00, // row  3
     0x00, // row  4
     0x00, // row  5
-    0xFF, // row  6
-    0xFF, // row  7
-    0xFF, // row  8
+    0x18, // row  6
+    0x00, // row  7
+    0x00, // row  8
     0x00, // row  9
     0x00, // row 10
     0x00, // row 11
@@ -298,22 +298,22 @@ static const uint8_t glyph_minus_bitmap[16] = {
 
 // ASCII 46 = '.' (glyph name: dot)
 static const uint8_t glyph_dot_bitmap[16] = {
-    0xFF, // row  0
-    0xFF, // row  1
-    0xFF, // row  2
-    0xFF, // row  3
-    0xFF, // row  4
-    0xFF, // row  5
-    0xFF, // row  6
-    0xFF, // row  7
-    0xFF, // row  8
-    0xFF, // row  9
-    0xFF, // row 10
-    0xFF, // row 11
-    0xFF, // row 12
-    0xFF, // row 13
-    0xFF, // row 14
-    0xFF, // row 15
+    0x00, // row  0
+    0x00, // row  1
+    0x00, // row  2
+    0x00, // row  3
+    0x00, // row  4
+    0x00, // row  5
+    0x00, // row  6
+    0x18, // row  7
+    0x18, // row  8
+    0x00, // row  9
+    0x00, // row 10
+    0x00, // row 11
+    0x00, // row 12
+    0x00, // row 13
+    0x00, // row 14
+    0x00, // row 15
 };
 
 // ASCII 47 = '/' (glyph name: slash)
@@ -759,20 +759,20 @@ static const uint8_t glyph_D_bitmap[16] = {
 // ASCII 69 = 'E' (glyph name: E)
 static const uint8_t glyph_E_bitmap[16] = {
     0x00, // row  0
-    0xFF, // row  1
-    0xFF, // row  2
-    0xC0, // row  3
-    0xC0, // row  4
-    0xC0, // row  5
-    0xC0, // row  6
-    0xFF, // row  7
-    0xFF, // row  8
-    0xC0, // row  9
-    0xC0, // row 10
-    0xC0, // row 11
-    0xC0, // row 12
-    0xFF, // row 13
-    0xFF, // row 14
+    0x00, // row  1
+    0x00, // row  2
+    0x00, // row  3
+    0x3C, // row  4
+    0x20, // row  5
+    0x20, // row  6
+    0x3C, // row  7
+    0x20, // row  8
+    0x20, // row  9
+    0x20, // row 10
+    0x3C, // row 11
+    0x00, // row 12
+    0x00, // row 13
+    0x00, // row 14
     0x00, // row 15
 };
 
@@ -839,20 +839,20 @@ static const uint8_t glyph_H_bitmap[16] = {
 // ASCII 73 = 'I' (glyph name: I)
 static const uint8_t glyph_I_bitmap[16] = {
     0x00, // row  0
-    0xFF, // row  1
-    0xFF, // row  2
-    0x18, // row  3
-    0x18, // row  4
+    0x00, // row  1
+    0x00, // row  2
+    0x00, // row  3
+    0x3C, // row  4
     0x18, // row  5
     0x18, // row  6
     0x18, // row  7
     0x18, // row  8
     0x18, // row  9
     0x18, // row 10
-    0x18, // row 11
-    0x18, // row 12
-    0xFF, // row 13
-    0xFF, // row 14
+    0x3C, // row 11
+    0x00, // row 12
+    0x00, // row 13
+    0x00, // row 14
     0x00, // row 15
 };
 
@@ -1820,17 +1820,17 @@ static const uint8_t glyph_y_bitmap[16] = {
 static const uint8_t glyph_z_bitmap[16] = {
     0x00, // row  0
     0x00, // row  1
-    0xFF, // row  2
-    0xFF, // row  3
-    0x03, // row  4
-    0x04, // row  5
-    0x04, // row  6
-    0x18, // row  7
-    0x20, // row  8
+    0x00, // row  2
+    0x00, // row  3
+    0x00, // row  4
+    0x3C, // row  5
+    0x0C, // row  6
+    0x08, // row  7
+    0x10, // row  8
     0x20, // row  9
-    0x20, // row 10
-    0xFF, // row 11
-    0xFF, // row 12
+    0x3C, // row 10
+    0x00, // row 11
+    0x00, // row 12
     0x00, // row 13
     0x00, // row 14
     0x00, // row 15
