@@ -2,7 +2,7 @@
  "_projection_of": "root_registry.json",
  "_law": "root_registry.json is the single writable store; this file is a generated read model (ROADMAP SS3: no duplicate canonical registries).",
  "generated": "S135 session",
- "total": 459,
+ "total": 461,
  "status_counts": {
   "PARTIAL": 104,
   "VERIFIED-CORRECT": 46,
@@ -11,9 +11,9 @@
   "SUPERSEDED-BY-EVIDENCE": 9,
   "RESEARCHED-NOT-IMPLEMENTED": 16,
   "NOT-APPLICABLE": 42,
-  "OBSERVED-FAIL": 6,
+  "OBSERVED-FAIL": 7,
   "IMPLEMENTED": 17,
-  "ROOT-CAUSED-FIXED": 62,
+  "ROOT-CAUSED-FIXED": 63,
   "PARTIAL-FIX": 1,
   "PROVEN-FIXED": 1,
   "IMPLEMENTED+TESTED": 10,
@@ -3265,6 +3265,34 @@
     "upstream_law": "glyph bitmaps must be scaled on the FULL CELL, never on the tight-cropped ink bbox (aspect + position law)"
    },
    "session": "S135"
+  },
+  {
+   "id": "F-NEW-165",
+   "title": "Window.setContentView (R005-DECOR path) satisfied only the findViewById-delegation law and never advanced the CONTENT ANCHOR: apps whose AppCompat delegate calls getWindow().setContentView(subDecor) (AOSP: Activity.setContentView DELEGATES to PhoneWindow.setContentView which installs under mContentParent=android.R.id.content and advances the anchor) kept content_view_id==0 -> effective_content_root_ fell back to an EMPTY S83 content node -> zero app pixels -> WHITE screen with a GREEN boot chain. Exposed by the S135 logger as VIEWTREE NOT_REACHED + DEFAULT_BACKGROUND_ONLY (droidify: 0 non-default px; WhatsApp: same family fingerprint, earlier NPE face).",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P0",
+   "component": "dex/window-content-anchor",
+   "fix": "F165-CONTENT law in the R005-DECOR handler: (a) materialize/find the decor's android.R.id.content (0x01020002) content parent, (b) install the view under it (mContentParent.addView, idempotent), (c) ActivityShadow.set_content_view(view), (d) layout_dirty=true (R-NEW-302)",
+   "evidence": {
+    "before": "droidify: DEFAULT_BACKGROUND_ONLY, 0 non-default px, 1 color, divergence VIEWTREE",
+    "after": "droidify: REAL_APP_CONTENT, 3883 non-default px, chrome (app bar + bottom bar) rendered, chain green, divergence None",
+    "determinism": "3-run byte-identical 59fdbfcd60b86a23 (isolated --data-root per run)",
+    "regression": "dooz ba8a95eb2278594f + ballbreak 8a951f5f975c4742 + simplestopwatch e00fe7e082c385f8 byte-identical; headingcalc 823 colors unchanged; laws130 51/51; F165 fired 0 times on non-target apps",
+    "logger": "S135 boot-trace infra (F-NEW-163) is the instrument that isolated this root"
+   },
+   "session": "S134 wave 3"
+  },
+  {
+   "id": "F-NEW-166",
+   "title": "WhatsApp_next_face (F-NEW-156 family): onCreate dies BEFORE any setContentView \u2014 NPE 'INVOKE_RETURN must not be null' at LX/00i;.A0F pc=19 (obfuscated helper); a stubbed invoke returned null where AOSP guarantees non-null, propagated to a throw before content install. VIEWTREE NOT_REACHED with ZERO R005-DECOR/F165 hits in the log (the app never reached Window.setContentView).",
+   "status": "OBSERVED-FAIL",
+   "priority": "P1",
+   "component": "dex/invoke-return-null",
+   "evidence": {
+    "log": "[THROWABLE-MSG] Ljava/lang/NullPointerException; msg=\"INVOKE_RETURN must not be null\" caller=LX/00i;.A0F pc=19 depth=5",
+    "next_step": "identify the invoked method whose null return is illegal (disassemble LX/00i;.A0F pc=19), answer the AOSP non-null contract at the stub, or fix the dispatch hole"
+   },
+   "session": "S134 wave 3"
   }
  ]
 }
