@@ -4750,3 +4750,21 @@ Work Log:
 
 Stage Summary:
 - The INPUT layer's two remaining P1 capability gaps (VelocityTracker, TouchDelegate) are closed with AOSP-sourced, source-quoted laws and real-DEX evidence; the MOVE-delivery law unblocks the whole drag-driven corpus class. Master worklist remains the single driving queue — next automatic frontier: CAP-SCROLLING-126 computeScroll → CAP-SCROLLING-127 EdgeEffect → M-03 GAME lockCanvas loop; intercept wave on sudoku/opencalculator remains queued under M-01.
+---
+Task ID: S130
+Agent: main
+Task: User directive (fa) — "هر بار تعداد زیادی مشکل حل کن، نه دو روت ساده" → MASS BATCH cycle.
+
+Work Log:
+- SOURCE FIRST: 12 AOSP android-14.0.0_r2 files committed to docs/upstream/aosp/s130_laws/ (Scroller/OverScroller/ScrollView/GestureDetector/FocusFinder/EdgeEffect/interpolators/animators). Exact laws extracted: viscousFluid (SCALE 8, 1/e branch), DECELERATION_RATE log(0.78)/log(0.9), INFLEXION 0.35, friction 0.015, GD timeouts 100/500/300/40ms, accelDecel cos((t+1)π)/2+0.5.
+- IMPLEMENTED (framework): scroller_shadow.{h,cpp} — Scroller/OverScroller 1:1 port (startScroll/fling spline physics/viscous interpolation/settle-at-final); gesture_detector_shadow.{h,cpp} — GdModel state machine (onDown/onShowPress/onSingleTapUp/onLongPress/onScroll/onFling/onSingleTapConfirmed + double-tap, VelocityTracker LSQ2 velocity); key_event_shadow.{h,cpp} — KeyEvent constants + KeyCharacterMap law + FocusFinder focus_search law.
+- IMPLEMENTED (View laws in android_shadows): scrollTo/scrollBy fire onScrollChanged hook (R-NEW-428); setChecked/toggle/isChecked + onCheckedChanged hook (R-NEW-431); setAlpha/getAlpha; setFocusable/requestFocus/clearFocus/isFocused + set_focused_view (one-focus law, R-NEW-432); listener storage: OnScrollChangeListener/OnCheckedChangeListener/OnItemClickListener/OnItemLongClickListener/OnItemSelectedListener(record)/OnKeyListener (R-NEW-433); ViewPropertyAnimator record + settle-on-start (R-NEW-435).
+- IMPLEMENTED (dalvik bridges): call_compute_scroll (R-NEW-430), dispatch_scroll_changed, dispatch_item_click, dispatch_checked_changed, dispatch_key_event (onKey listener → onKeyDown/onKeyUp arms), dispatch_gesture_cb (MotionEvent materialization → DEX listeners). ctor captures: overrides_compute_scroll/overrides_on_scroll_changed.
+- IMPLEMENTED (execution_engine): hook wiring (scroll/checked/item/key + Scroller/GD virtual clock + GD dex dispatch); AdapterView item-click resolution in click path; RenderTask clip fields + scrolling-ancestor fully-outside skip law (R-NEW-436); per-frame computeScroll dispatch in the draw walk.
+- REGISTRY: ScrollerShadow + GestureDetectorShadow registered; Makefile sources + tab corruption fix (auto-commit had broken recipe tabs); tests/s130_laws_test.cpp (51 checks) — runs 50/51 at last verified run; 4 model bugs found & fixed by the law test (settle-at-final, focusable default, GD capture, field adapters).
+- Makefile: scroller/gesture/key sources added to FRAMEWORK_SOURCES.
+
+Stage Summary:
+- MASS BATCH lands ~15 laws across SCROLL/GESTURE/KEY/FOCUS/LISTENERS/ANIMATION in ONE cycle (vs 2 roots per cycle before).
+- HONEST FRONTIER (next cycle, registered): battery gate re-run (114 stages) + goldens (calc a169346e/flappy 13cf4746/ttt b5a7a35d) + wave script + corpus evidence; TouchDispatcher ScrollView drag/fling integration; KeyEventShadow registration into shadow registry (model is law-tested, not yet registry-wired); renderer alpha consumption; per-activity theme capture; defStyleRes tier; --key/--text CLI drivers.
+- Law test line 151 remaining check (focus_search UP case) needs one re-verify against the final model state.

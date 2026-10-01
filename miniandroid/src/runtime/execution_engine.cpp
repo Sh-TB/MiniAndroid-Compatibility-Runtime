@@ -17,6 +17,8 @@
 #include "../resources/res_config.h"  // G04 §4: device_config() density law
 // EXP-086 Phase 7 (B4 FIX): HandlerShadow for Runnable queue drain
 #include "../framework/android_shadows.h"
+#include "../framework/scroller_shadow.h"  // S130 R-NEW-427
+#include "../framework/gesture_detector_shadow.h"  // S130 R-NEW-429
 #include "../webview/webview_engine.h"
 #include "../framework/dialog_shadow.h"
 #include "../framework/gl_surface_shadow.h"
@@ -644,8 +646,36 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                     view_shadow, handler_shadow);
                 touch_dispatcher_->set_click_dispatch(
                     [this](uint32_t view_id, float x, float y) -> bool {
-                        return dalvik_engine_.dispatch_click(view_id, int(x),
-                                                             int(y));
+                        const bool consumed = dalvik_engine_.dispatch_click(
+                            view_id, int(x), int(y));
+                        // S130 (R-NEW-433): AdapterView item-click law — the
+                        // click target resolves to the nearest AdapterView
+                        // ancestor carrying an item listener; position = the
+                        // child index (header offsets documented frontier).
+                        if (auto* vs = shadow_registry_->find_as<framework::ViewShadow>()) {
+                            uint32_t cur = view_id;
+                            int guard = 0;
+                            while (cur != 0 && guard++ < 16) {
+                                const auto* n = vs->find_node(cur);
+                                if (!n) break;
+                                const bool is_adapter =
+                                    n->class_desc.find("AdapterView;") != std::string::npos ||
+                                    n->class_desc.find("ListView;") != std::string::npos ||
+                                    n->class_desc.find("GridView;") != std::string::npos;
+                                if (is_adapter && n->item_click_listener_id != 0) {
+                                    int pos = 0;
+                                    for (uint32_t cid : n->children) {
+                                        if (cid == view_id) break;
+                                        ++pos;
+                                    }
+                                    dalvik_engine_.dispatch_item_click(
+                                        n->view_id, view_id, pos, false);
+                                    break;
+                                }
+                                cur = n->parent_id;
+                            }
+                        }
+                        return consumed;
                     });
                 touch_dispatcher_->set_long_click_dispatch(
                     [this](uint32_t view_id, bool& consumed) -> bool {
@@ -667,6 +697,46 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                         return dalvik_engine_.dispatch_intercept(
                             view_id, action, x, y, intercepted);
                     });
+                // ── S130 MASS BATCH: framework→DEX bridges ─────────────
+                // R-NEW-428/431/432/433 hooks (scroll/checked/item/key laws).
+                view_shadow->scroll_changed_hook =
+                    [this](uint32_t vid, int l, int t, int ol, int ot) {
+                        dalvik_engine_.dispatch_scroll_changed(vid, l, t, ol,
+                                                               ot);
+                    };
+                view_shadow->checked_hook = [this](uint32_t vid, bool ch) {
+                    dalvik_engine_.dispatch_checked_changed(vid, ch);
+                };
+                view_shadow->item_click_hook =
+                    [this](uint32_t aid, uint32_t vid, int pos, bool lc) {
+                        dalvik_engine_.dispatch_item_click(aid, vid, pos, lc);
+                    };
+                view_shadow->key_hook = [this](uint32_t vid, int a, int kc,
+                                               int rep, int64_t tm) -> bool {
+                    bool consumed = false;
+                    dalvik_engine_.dispatch_key_event(vid, a, kc, rep, tm,
+                                                      consumed);
+                    return consumed;
+                };
+                // S130: Scroller/GestureDetector run on the ONE virtual clock
+                // and route callbacks into the real DEX listeners.
+                if (auto* sc = shadow_registry_->find_as<framework::ScrollerShadow>())
+                    sc->set_now_fn([handler_shadow]() {
+                        return handler_shadow->virtual_now_ms();
+                    });
+                if (auto* gd = shadow_registry_->find_as<framework::GestureDetectorShadow>()) {
+                    gd->set_now_fn([handler_shadow]() {
+                        return handler_shadow->virtual_now_ms();
+                    });
+                    gd->set_dex_dispatch(
+                        [this](uint32_t gdo, uint32_t lo, const std::string& cb,
+                               float f1, float f2, float f3, float f4,
+                               bool& consumed) {
+                            dalvik_engine_.dispatch_gesture_cb(gdo, lo, cb, f1,
+                                                               f2, f3, f4,
+                                                               consumed);
+                        });
+                }
             }
         }
         std::cerr << "[EXP086-P1] Configured dalvik_engine_ with "
@@ -2657,6 +2727,11 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                             // the subtree at push time.
                             int off_tx = 0, off_ty = 0;
                             int off_sx = 0, off_sy = 0;
+                            // S130 (R-NEW-436): AOSP ViewGroup.drawChild clip —
+                            // scrolling containers clip content; children fully
+                            // outside the nearest scrolling ancestor's draw rect
+                            // are skipped (INT_MIN = no scrolling ancestor).
+                            int clip_l = INT_MIN, clip_t = 0, clip_r = 0, clip_b = 0;
                         };
                         std::vector<RenderTask> queue;
                         std::set<uint32_t> visited;
@@ -2746,6 +2821,14 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                             if (visited.count(task.view_id)) continue;  // cycle detection
                             visited.insert(task.view_id);
                             node_count++;
+                            // S130 (R-NEW-430): AOSP View.draw → computeScroll
+                            // law — scrolling views pull their Scroller state
+                            // during every draw pass (ViewRootImpl
+                            // performTraversals → draw → computeScroll).
+                            if (auto* cs_node = view_shadow->find_node(task.view_id))
+                                if (cs_node->overrides_compute_scroll)
+                                    dalvik_engine_.call_compute_scroll(
+                                        task.view_id);
 
                             if (task.depth > 20) continue;
 
@@ -3965,7 +4048,7 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                     int cdy = task.off_ty - task.off_sy
                                             + (int)std::lround(node->translation_y)
                                             - node->scroll_y;
-                                    m_tasks.push_back({cid,
+                                    RenderTask ct{cid,
                                                        cn->measured_left + cdx,
                                                        cn->measured_top + cdy,
                                                        cn->measured_width, cn->measured_height,
@@ -3973,7 +4056,24 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                                        task.off_tx + (int)std::lround(node->translation_x),
                                                        task.off_ty + (int)std::lround(node->translation_y),
                                                        task.off_sx + node->scroll_x,
-                                                       task.off_sy + node->scroll_y});
+                                                       task.off_sy + node->scroll_y};
+                                    // S130 (R-NEW-436): scrolling ancestor clip
+                                    // propagation + fully-outside skip law.
+                                    if (node->scroll_x != 0 || node->scroll_y != 0) {
+                                        ct.clip_l = task.left;
+                                        ct.clip_t = task.top;
+                                        ct.clip_r = task.left + std::max(1, task.width);
+                                        ct.clip_b = task.top + std::max(1, task.height);
+                                    }
+                                    if (ct.clip_l != INT_MIN) {
+                                        const int cl = ct.left, ctp = ct.top;
+                                        const int cr = cl + std::max(0, cn->measured_width);
+                                        const int cb = ctp + std::max(0, cn->measured_height);
+                                        if (cl >= ct.clip_r || ctp >= ct.clip_b ||
+                                            cr <= ct.clip_l || cb <= ct.clip_t)
+                                            continue;  // fully outside the scroll window
+                                    }
+                                    m_tasks.push_back(ct);
                                 }
                                 for (auto it = m_tasks.rbegin(); it != m_tasks.rend(); ++it)
                                     queue.push_back(*it);

@@ -8715,6 +8715,12 @@ bool DalvikExecutionEngine::run_custom_view_constructor(
                 // ViewGroup.onInterceptTouchEvent intercept gate.
                 node->overrides_intercept_touch_event =
                     class_chain_defines_method(cls, "onInterceptTouchEvent");
+                // S130 MASS BATCH (R-NEW-430/428): computeScroll + onScroll-
+                // Changed override captures (per-frame scroll pump gates).
+                node->overrides_compute_scroll =
+                    class_chain_defines_method(cls, "computeScroll");
+                node->overrides_on_scroll_changed =
+                    class_chain_defines_method(cls, "onScrollChanged");
                 // S123 (R-NEW-419): same capture for the onSizeChanged law —
                 // dispatched before the first onDraw with the laid-out size.
                 node->overrides_on_size_changed =
@@ -9098,6 +9104,234 @@ bool DalvikExecutionEngine::chain_overrides_method(
 // no Telegram-specific code is needed here.
 //
 // Returns true if a listener was found and dispatched.
+// ── S130 MASS BATCH bridges (AOSP callback laws) ─────────────────────────
+// Shared DEX-class normalizer: "com.app.Foo" / "Lcom/app/Foo;" → DEX desc.
+static std::string s130_norm_cls(std::string cls) {
+    if (!cls.empty() && cls[0] == 'L' && cls.find('.') != std::string::npos) {
+        std::string norm = "L";
+        for (size_t i = 1; i < cls.size(); ++i)
+            norm += (cls[i] == '.') ? '/' : cls[i];
+        cls = norm;
+    }
+    return cls;
+}
+
+// R-NEW-430: ViewRootImpl performTraversals → draw → computeScroll law.
+void DalvikExecutionEngine::call_compute_scroll(uint32_t view_object_id) {
+    if (shadow_registry_ == nullptr) return;
+    auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+    if (view_shadow == nullptr) return;
+    const auto* node = view_shadow->find_node(view_object_id);
+    if (node == nullptr || !node->overrides_compute_scroll) return;
+    std::string cls = s130_norm_cls(node->class_desc);
+    std::vector<DalvikValue> args;
+    DalvikValue ret = DalvikValue::make_void();
+    DalvikExecutionResult res;
+    try_recursive_invoke(cls, "computeScroll", args, ret, res);
+}
+
+// R-NEW-428: View.onScrollChanged + View.OnScrollChangeListener.onScrollChange.
+void DalvikExecutionEngine::dispatch_scroll_changed(uint32_t view_object_id,
+                                                    int l, int t, int oldl,
+                                                    int oldt) {
+    if (shadow_registry_ == nullptr) return;
+    auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+    if (view_shadow == nullptr) return;
+    const auto* node = view_shadow->find_node(view_object_id);
+    if (node == nullptr) return;
+    std::cerr << "[UI-EVENT] event=SCROLL_CHANGED view_object=" << view_object_id
+              << " (" << oldl << "," << oldt << ")->(" << l << "," << t << ")"
+              << std::endl;
+    if (node->overrides_on_scroll_changed) {
+        std::string cls = s130_norm_cls(node->class_desc);
+        std::vector<DalvikValue> args{DalvikValue::make_int(l),
+                                      DalvikValue::make_int(t),
+                                      DalvikValue::make_int(oldl),
+                                      DalvikValue::make_int(oldt)};
+        DalvikValue ret = DalvikValue::make_void();
+        DalvikExecutionResult res;
+        try_recursive_invoke(cls, "onScrollChanged", args, ret, res);
+    }
+    if (node->scroll_change_listener_id != 0) {
+        std::string lcls;
+    if (HeapObject* lo = heap_.get(node->scroll_change_listener_id)) lcls = lo->class_descriptor;
+    if (lcls.empty()) return;
+        {
+            std::vector<DalvikValue> args{
+                DalvikValue::make_object(view_object_id, node->class_desc),
+                DalvikValue::make_int(l), DalvikValue::make_int(t),
+                DalvikValue::make_int(oldl), DalvikValue::make_int(oldt)};
+            DalvikValue ret = DalvikValue::make_void();
+            DalvikExecutionResult res;
+            try_recursive_invoke(s130_norm_cls(lcls), "onScrollChange", args,
+                                 ret, res);
+        }
+    }
+}
+
+// R-NEW-433: AdapterView.OnItemClickListener / OnItemLongClickListener.
+bool DalvikExecutionEngine::dispatch_item_click(uint32_t adapter_id,
+                                                uint32_t view_id, int position,
+                                                bool long_click) {
+    if (shadow_registry_ == nullptr) return false;
+    auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+    if (view_shadow == nullptr) return false;
+    const auto* adapter = view_shadow->find_node(adapter_id);
+    const auto* child = view_shadow->find_node(view_id);
+    if (adapter == nullptr || child == nullptr) return false;
+    uint32_t listener = long_click ? adapter->item_long_click_listener_id
+                                   : adapter->item_click_listener_id;
+    if (listener == 0) return false;
+    std::string lcls;
+    if (HeapObject* lo = heap_.get(listener)) lcls = lo->class_descriptor;
+    if (lcls.empty()) return false;
+    std::vector<DalvikValue> args{
+        DalvikValue::make_object(adapter_id, adapter->class_desc),
+        DalvikValue::make_object(view_id, child->class_desc),
+        DalvikValue::make_int(position),
+        DalvikValue::make_long(int64_t(position))};
+    DalvikValue ret = DalvikValue::make_void();
+    DalvikExecutionResult res;
+    const char* method = long_click ? "onItemLongClick" : "onItemClick";
+    bool ok = try_recursive_invoke(s130_norm_cls(lcls), method, args, ret, res);
+    std::cerr << "[UI-EVENT] event=" << (long_click ? "ITEM_LONG_CLICK" : "ITEM_CLICK")
+              << " adapter=" << adapter_id << " position=" << position
+              << " result=" << (ok ? "DISPATCHED" : "FAILED") << std::endl;
+    return ok;
+}
+
+// R-NEW-431: CompoundButton.onCheckedChanged(buttonView, isChecked).
+void DalvikExecutionEngine::dispatch_checked_changed(uint32_t view_id,
+                                                     bool checked) {
+    if (shadow_registry_ == nullptr) return;
+    auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+    if (view_shadow == nullptr) return;
+    const auto* node = view_shadow->find_node(view_id);
+    if (node == nullptr || node->checked_listener_id == 0) return;
+    std::string lcls;
+    if (HeapObject* lo = heap_.get(node->checked_listener_id)) lcls = lo->class_descriptor;
+    if (lcls.empty()) return;
+    std::vector<DalvikValue> args{
+        DalvikValue::make_object(view_id, node->class_desc),
+        DalvikValue::make_bool(checked)};
+    DalvikValue ret = DalvikValue::make_void();
+    DalvikExecutionResult res;
+    try_recursive_invoke(s130_norm_cls(lcls), "onCheckedChanged", args, ret, res);
+    std::cerr << "[UI-EVENT] event=CHECKED_CHANGED view=" << view_id
+              << " checked=" << (checked ? "true" : "false")
+              << " result=DISPATCHED" << std::endl;
+}
+
+// R-NEW-432: key pipeline — onKey listener → onKeyDown/onKeyUp (View.java
+// dispatchKeyEvent → onKeyDown/Up law). Returns consumed via ref.
+void DalvikExecutionEngine::dispatch_key_event(uint32_t view_id, int action,
+                                               int keycode, int repeat,
+                                               int64_t time_ms, bool& consumed) {
+    consumed = false;
+    if (shadow_registry_ == nullptr) return;
+    auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+    auto* handler = shadow_registry_->find_as<framework::HandlerShadow>();
+    if (view_shadow == nullptr) return;
+    const auto* node = view_shadow->find_node(view_id);
+    if (node == nullptr) return;
+    std::string vcls = s130_norm_cls(node->class_desc);
+    uint32_t ev = heap_.allocate("Landroid/view/KeyEvent;", pc_,
+                                 call_stack_.empty() ? 0
+                                                     : call_stack_.top().frame_id);
+    heap_.set_object_field(ev, "__action__", DalvikValue::make_int(action));
+    heap_.set_object_field(ev, "__keycode__", DalvikValue::make_int(keycode));
+    heap_.set_object_field(ev, "__repeat__", DalvikValue::make_int(repeat));
+    heap_.set_object_field(ev, "__time__",
+                           DalvikValue::make_long(handler ? handler->virtual_now_ms()
+                                                          : time_ms));
+    std::cerr << "[UI-EVENT] event=KEY action=" << action
+              << " keycode=" << keycode << " view_object=" << view_id
+              << " view_class=" << node->class_desc << std::endl;
+    // Arm 1 — View.OnKeyListener.onKey(View, int, KeyEvent)Z (AOSP: listener
+    // runs BEFORE the onKeyDown fallback, View.java L6952+).
+    if (node->key_listener_id != 0) {
+        std::string lcls;
+        if (HeapObject* lo = heap_.get(node->key_listener_id)) lcls = lo->class_descriptor;
+        if (!lcls.empty()) {
+            std::vector<DalvikValue> args{
+                DalvikValue::make_object(view_id, node->class_desc),
+                DalvikValue::make_int(keycode),
+                DalvikValue::make_object(ev, "Landroid/view/KeyEvent;")};
+            DalvikValue ret = DalvikValue::make_void();
+            DalvikExecutionResult res;
+            if (try_recursive_invoke(s130_norm_cls(lcls), "onKey", args, ret, res) &&
+                ret.type == DalvikType::BOOLEAN)
+                consumed = ret.int_val != 0;
+        }
+    }
+    // Arm 2 — View.onKeyDown/onKeyUp overrides (AOSP dispatchKeyEvent
+    // default arm; invoked only when the class defines the override).
+    const char* arm = (action == 0) ? "onKeyDown" : "onKeyUp";
+    if (!consumed && class_chain_defines_method(vcls, arm)) {
+        std::vector<DalvikValue> args{
+            DalvikValue::make_int(keycode),
+            DalvikValue::make_object(ev, "Landroid/view/KeyEvent;")};
+        DalvikValue ret = DalvikValue::make_void();
+        DalvikExecutionResult res;
+        if (try_recursive_invoke(vcls, arm, args, ret, res) &&
+            ret.type == DalvikType::BOOLEAN)
+            consumed = ret.int_val != 0;
+    }
+    std::cerr << "[UI-EVENT] event=KEY result="
+              << (consumed ? "CONSUMED" : "UNHANDLED") << std::endl;
+}
+
+// R-NEW-434: GestureDetector callbacks → real DEX listener methods.
+void DalvikExecutionEngine::dispatch_gesture_cb(uint32_t gd_obj,
+                                                uint32_t listener_obj,
+                                                const std::string& cb,
+                                                float f1, float f2, float f3,
+                                                float f4, bool& consumed) {
+    (void)gd_obj;
+    consumed = false;
+    if (listener_obj == 0) return;
+    std::string lcls_raw;
+    if (HeapObject* lo = heap_.get(listener_obj)) lcls_raw = lo->class_descriptor;
+    if (lcls_raw.empty()) return;
+    std::string lcls = s130_norm_cls(lcls_raw);
+    // e1 = the DOWN event of the current gesture (f1,f2 = down coords);
+    // e2 = the current event. scroll/fling carry the deltas/velocities.
+    const bool two_events = (cb == "onScroll" || cb == "onFling");
+    auto make_ev = [&](int action, float x, float y) {
+        uint32_t ev = heap_.allocate("Landroid/view/MotionEvent;", pc_,
+                                     call_stack_.empty()
+                                         ? 0
+                                         : call_stack_.top().frame_id);
+        heap_.set_object_field(ev, "__action__", DalvikValue::make_int(action));
+        heap_.set_object_field(ev, "__x__", DalvikValue::make_float(x));
+        heap_.set_object_field(ev, "__y__", DalvikValue::make_float(y));
+        if (auto* hs = shadow_registry_
+                           ? shadow_registry_->find_as<framework::HandlerShadow>()
+                           : nullptr)
+            heap_.set_object_field(ev, "__time__",
+                                   DalvikValue::make_long(hs->virtual_now_ms()));
+        return ev;
+    };
+    uint32_t e1 = make_ev(0, f1, f2);
+    std::vector<DalvikValue> args{
+        DalvikValue::make_object(e1, "Landroid/view/MotionEvent;")};
+    if (two_events) {
+        uint32_t e2 = make_ev(2, f1, f2);
+        args.push_back(DalvikValue::make_object(e2, "Landroid/view/MotionEvent;"));
+        args.push_back(DalvikValue::make_float(f3));
+        args.push_back(DalvikValue::make_float(f4));
+    } else {
+        args[0] = DalvikValue::make_object(e1, "Landroid/view/MotionEvent;");
+    }
+    DalvikValue ret = DalvikValue::make_void();
+    DalvikExecutionResult res;
+    const bool ok = try_recursive_invoke(lcls, cb, args, ret, res);
+    if (ok && ret.type == DalvikType::BOOLEAN) consumed = ret.int_val != 0;
+    std::cerr << "[UI-EVENT] event=GESTURE cb=" << cb
+              << " listener=o" << listener_obj
+              << " result=" << (ok ? "DISPATCHED" : "FAILED") << std::endl;
+}
+
 bool DalvikExecutionEngine::dispatch_touch_listener(uint32_t view_object_id,
                                                     int action, float x,
                                                     float y, bool& consumed) {
