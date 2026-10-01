@@ -2073,6 +2073,13 @@ public:
     // java*/kotlin* packages (support library, androidx) ARE DEX-defined and
     // must use qualified field identity (class->name) — their field names
     // collide across the hierarchy (solitaire 71: e.m vs classes.c.m).
+    // S134 F-NEW-162: public read-only DEX superclass lookup (renderer
+    // family routing — a custom view's semantic base is its superclass
+    // chain, not its own class name).
+    std::string superclass_of(const std::string& cls) const {
+        auto it = class_to_superclass_.find(cls);
+        return (it != class_to_superclass_.end()) ? it->second : std::string();
+    }
     bool is_dex_defined_class(const std::string& desc) const {
         return class_info_index_.find(desc) != class_info_index_.end();
     }
