@@ -5085,3 +5085,38 @@ Work Log:
 
 Stage Summary:
 - The instrumentation permanently upgrades every future F084 halt into live-state evidence (SPIN-REGS/HISTO/TABLE). The WhatsApp chain now has a precise, arithmetic-level attribution: the map build itself is honest; the KEY IDENTITY is the divergence — which is exactly the §3 central-hypothesis family (two writers, one state / identity mismatch) at a new layer.
+
+---
+Task ID: FINAL-CAMPAIGN-V2-MANDATE
+Agent: Super Z (main)
+Task: User directive — continue phases 4-20 without stopping + NEW item 21 (execution_engine.cpp second-layer audit, P0-1..P0-8, P1-1..P1-9, REG) + standing reporting law.
+
+Work Log:
+- Registered canonical/final_campaign_mandate_v2.md: S-REPORT standing law (every session ends with done/remaining table — silent skipping FORBIDDEN), work list v2 (items 1-22), acceptance gate verbatim.
+- Recon: engine binary build/miniandroid current with HEAD f820a3f9 (built Oct 1 18:07); APK cache intact (WhatsApp_real.apk, dooz, stopwatch, etc.); aapt2/r8/ecj toolchain wiped by container reset (bootstrap queued, only needed for fixture rebuilds).
+- Priority order set: 21-P0-2/3/6 (false-success) → 21-P0-5 (placeholders) → 21-P0-1 (window root) → 21-P0-4/7/8 → 21-P1 batch → REG retests → phase 4 / F-NEW-173.
+
+Stage Summary:
+- Mandate v2 in force. Execution begins at 21-P0 false-success family (overlaps campaign phases 6/7/16/17 — same file, same laws).
+
+---
+Task ID: FINAL-CAMPAIGN-ITEM21-WAVE-A
+Agent: Super Z (main)
+Task: Item 21 wave A — execution_engine.cpp second-layer audit, P0 false-success family + P1 geometry batch (user mandate v2).
+
+Work Log:
+- P0-4: HOST_SHORTCUT C++ lifecycle calls removed from REAL_DALVIK; honesty event + PARTIAL (no synthetic lifecycle, no double-execution).
+- P0-1: EXP-090/EXP-094 render-root heuristics (last-setParams receiver, newest SmsView/PhoneView suffix match) DELETED — one root law effective_content_root_ for render/tap/swipe/capture (P1-7 swipe fixed too).
+- P0-2/P0-6: FrameRenderCensus ledger added (header + engine): root/measure/layout/draw/app_ops/diag regions/budget counters. Capture verdict law: NO_ROOT / RENDER_EXCEPTION / DEFAULT_BACKGROUND_ONLY / SYSTEM_CHROME_ONLY / PARTIAL_RENDER_BUDGET / VIEWTREE_NO_APP_PIXELS / REAL_APP_CONTENT + first_missing_stage; SUCCESS downgraded when verdict lacks app content (REAL_DALVIK only; legacy demo mode keeps historical status).
+- P0-3: real-render exception discards framebuffer + RENDER_FAIL + divergence; synthetic api::View renderer suppressed in REAL_DALVIK (verified live: WhatsApp frame 2 colors→1 color, fake 45px band GONE).
+- P0-5/P1-9: all placeholder paint sites (grey boxes, "custom view (not rendered)", "IMG?", "IMG") → census diag_regions records; nw<5000 gate removed; deferred second-chance REAL onDraw/surface replay kept and un-gated.
+- P0-7: MAX_NODES=500/depth>20 → env budgets (MINIANDROID_RENDER_MAX_NODES/DEPTH) + budget_exhausted/unreachable_children census; acceptance run MAX_NODES=3 → PARTIAL_RENDER_BUDGET.
+- P0-8: pump_compose_frames(1) per frame boundary in stage_frame_sequence; microtimer --frames 5 x3 frame_003 da73010a37dd0189 BYTE-IDENTICAL.
+- P1-1: cursor_y+=30 removed. P1-3: w>40&&h>40 gates removed. P1-4: drew_real only on real text (empty = honest blank). P1-5: translation applied AFTER layout bounds; measured push passes PURE layout geometry, deltas accumulate in off_tx/ty (applied once) and off_sx/sy. P1-6: nearest-scrolling-ancestor clip inherited through descendants + draw-space outside-check. P1-8: PNG failure = CAPTURE_FAILED + status downgrade; screenshot_path only on success; PPM auxiliary.
+- A/B DISCIPLINE: HEAD stash-rebuild A/B run isolated the dooz/simplestopwatch drift to the removed placeholder pixels (old dooz golden = white + 0xB4/0xD8 placeholder px, old ssw dominant 909090 = dialog-dimmed placeholder box) — old "REAL_APP_CONTENT" verdicts were false positives on diagnostic pixels.
+
+GATES: laws130 51/51 after every rebuild; dooz d602648e8e401895 x3; simplestopwatch 10446aaf0cd642cc x3; headingcalc 4d462461006fe7fe x2 with 823 colors / 466,062 px EXACT (real content untouched); WhatsApp NO_ROOT + white frame; microtimer frames x3 deterministic.
+REGISTRY: F-NEW-174..180 appended (canonical/root_cause_registry.json 466→473) via scripts/final_campaign_item21_wave_a_registry.py.
+
+Stage Summary:
+- Item 21 P0 family (P0-1..P0-8) IMPLEMENTED+TESTED except Compose multi-frame acceptance (rides R-NEW-381) and AppCompat/multi-activity root fixtures (queued); P1-1/3/4/5/6/7/8/9 done. Remaining item-21: P1-2 full measure/layout unification (census layout_source recorded; unification = own wave), REG retests (written_bits_ proof, field-identity/StandardCharsets/move16 re-verified via goldens + WhatsApp run), root-fixture matrix, P0-5 overlay visualization (regions recorded, overlay draw optional). Golden drifts documented per phase-19 law (all = diagnostic-pixel removal).

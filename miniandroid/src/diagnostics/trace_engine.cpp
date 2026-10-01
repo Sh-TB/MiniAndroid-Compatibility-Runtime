@@ -691,6 +691,22 @@ void TraceEngine::record_frame_analysis(int w, int h, uint32_t dominant_color,
     runtime_event(std::move(e));
 }
 
+// FINAL CAMPAIGN item 21 (P0-6): the frame-truth census travels WITH the
+// verdict — trace_summary + FRAME_ANALYSIS event carry the correlated proof
+// (or its absence) next to every pixel-verdict, never the verdict alone.
+void TraceEngine::record_frame_census(const nlohmann::json& census) {
+    if (frame_analysis_.is_null()) frame_analysis_ = nlohmann::json::object();
+    if (census.is_object()) {
+        for (auto it = census.begin(); it != census.end(); ++it)
+            frame_analysis_[it.key()] = it.value();
+    }
+    RuntimeEvent e = make_event(ev::TRACE_MARK, EventSev::INFO, "capture",
+                                frame_analysis_.value("verdict", ""),
+                                "CENSUS");
+    e.extra = census;
+    runtime_event(std::move(e));
+}
+
 void TraceEngine::set_renderer_family(const std::string& family,
                                       const std::string& evidence) {
     if (renderer_family_ == family) return;
