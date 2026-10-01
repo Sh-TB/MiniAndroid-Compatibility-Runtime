@@ -217,8 +217,18 @@ ExecutionResult ExecutionEngine::execute(const std::string& path, const Executio
     // frames/manifest.json records. Non-interactive single-frame runs are
     // unaffected (state identical; the re-write is idempotent).
     if (success) {
-        stage_render_frame(result, config);   // framebuffer = current state
-        stage_capture_output(result, config, /*final_pass=*/true);
+        // ── ADDITIONAL-AUDIT P1-6 (render-return check law) ────────────
+        // The final capture must NEVER describe a framebuffer the failed
+        // render did not refresh — that is stale-frame laundering into
+        // screenshot.png (the P0-3 false-SUCCESS family). A failed final
+        // render downgrades to no capture + explicit failure record.
+        if (stage_render_frame(result, config)) {
+            stage_capture_output(result, config, /*final_pass=*/true);
+        } else {
+            std::cerr << "[P1-6-RENDER] final render FAILED — screenshot"
+                      << " re-capture SKIPPED (stale framebuffer not"
+                      << " published as current state)" << std::endl;
+        }
     }
 
 
@@ -2917,7 +2927,33 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                             // at its first position forever.
                             const bool vs_dirty =
                                 view_shadow != nullptr && view_shadow->layout_dirty;
-                            if (rt.loaded() || vs_dirty) {
+                            // ── ADDITIONAL-AUDIT P0-1 (attach-before-measure,
+                            // XML path): consume the pending setContentView(res)
+                            // first-traversal root — the attach wave runs HERE,
+                            // before the canonical measure (AOSP
+                            // ViewRootImpl.performTraversals order:
+                            // dispatchAttachedToWindow → performMeasure).
+                            // Traversal timing (first frame, after
+                            // onCreate/onStart/onResume) honors the S43
+                            // post-inflate-field-setup lesson — lateinit fields
+                            // are assigned before any traversal can run.
+                            bool inflated_attach_consumed = false;
+                            {
+                                uint32_t ia_root = 0;
+                                if (view_shadow &&
+                                    view_shadow->consume_pending_inflate_attach(ia_root)) {
+                                    inflated_attach_consumed = true;
+                                    const bool attached =
+                                        dalvik_engine_.dispatch_attached_subtree_from(ia_root);
+                                    std::cerr << "[P0-1-ORDER] first-traversal attach"
+                                              << " wave root=" << ia_root
+                                              << " attached=" << attached
+                                              << " (attach strictly precedes"
+                                              << " measure)" << std::endl;
+                                    view_shadow->layout_dirty = true;  // force re-measure below
+                                }
+                            }
+                            if (rt.loaded() || vs_dirty || inflated_attach_consumed) {
                                 // G10 FIX-G10-002 + G12 FIX-G12-002: the
                                 // DEX-backed superclass classifier is owned
                                 // by the ResourceRuntime (Factory law) and
@@ -5367,6 +5403,11 @@ bool ExecutionEngine::stage_click_test( ExecutionResult& result, const Execution
     // Shared probe: mutate state via `dispatch_fn`, re-render, diff vs frame1.
     size_t diff_px = 0;
     bool dispatched = false;
+    // ── ADDITIONAL-AUDIT P1-6 (render-return check law): a failed
+    // authoritative render must never feed the pixel-diff oracle — the
+    // framebuffer then belongs to an EARLIER frame and any "changed_px"
+    // claim is false visual evidence. Failures surface in the report.
+    size_t render_failures = 0;
     auto probe = [&](bool disp) -> size_t {
         framebuffer_ = frame1;
         if (disp) {
@@ -5393,7 +5434,13 @@ bool ExecutionEngine::stage_click_test( ExecutionResult& result, const Execution
             // instead of app-driven change. stage_render_frame re-renders
             // the CURRENT shadow tree (post-handler mutation) into
             // framebuffer_ with identical logic and writes no files.
-            stage_render_frame(result, config);
+            if (!stage_render_frame(result, config)) {
+                render_failures++;
+                std::cerr << "[P1-6-RENDER] click-probe render FAILED — stale"
+                          << " framebuffer not diffed (no state_changed"
+                          << " claim from foreign pixels)" << std::endl;
+                return 0;
+            }
             size_t diff = 0;
             if (framebuffer_.size() == frame1.size()) {
                 for (size_t i = 0; i < framebuffer_.size(); i += 4) {
@@ -5410,6 +5457,9 @@ bool ExecutionEngine::stage_click_test( ExecutionResult& result, const Execution
 
     nlohmann::json report;
     report["clickable_views"] = candidates.size();
+    // ── ADDITIONAL-AUDIT P1-6: render failures during the click oracle —
+    // any suppressed diff above is attributed here (never silent).
+    report["render_failures"] = render_failures;
     report["xml_onclick_views"] = xml_candidates.size();
     report["frame1_sha_note"] = "screenshot.png (already written by stage_capture_output)";
     nlohmann::json per_view = nlohmann::json::array();
@@ -6090,7 +6140,10 @@ bool ExecutionEngine::stage_frame_sequence( ExecutionResult& result, const Execu
                       << tpy << ") target=" << tap_target << std::endl;
             if (tap_target != 0) {
                 hs->advance_virtual(20);   // pressed-state window
-                stage_render_frame(result, config);
+                if (!stage_render_frame(result, config)) {
+                    std::cerr << "[P1-6-RENDER] tap pressed-state render FAILED"
+                              << " — press visual not refreshed" << std::endl;
+                }
                 hs->advance_virtual(30);   // t0+50ms UP → PerformClick queue
                 touch_dispatcher_->dispatch(
                     tap_root, {framework::TouchAction::UP, tpx, tpy});
@@ -6215,14 +6268,23 @@ bool ExecutionEngine::stage_frame_sequence( ExecutionResult& result, const Execu
                     }
                     manifest["interactions"].push_back(ir);
                 }
-                stage_render_frame(result, config);  // post-gesture state
+                // ── ADDITIONAL-AUDIT P1-6: post-gesture render checked.
+                if (!stage_render_frame(result, config)) {
+                    std::cerr << "[P1-6-RENDER] post-gesture render FAILED"
+                              << " — gesture visual not refreshed" << std::endl;
+                }
             }
         }
 
-        stage_render_frame(result, config);  // re-render CURRENT state
+        // ── ADDITIONAL-AUDIT P1-6: the per-frame render return value is
+        // the frame's AUTHENTICITY bit. On failure the framebuffer still
+        // holds frame k-1; saving it as frame k (or diffing it) fabricates
+        // visual/state-change evidence. The manifest records the failure
+        // and the sha of the NOT-refreshed buffer is marked invalid.
+        const bool frame_render_ok = stage_render_frame(result, config);
 
         size_t diff_px = 0;
-        if (framebuffer_.size() == prev.size()) {
+        if (frame_render_ok && framebuffer_.size() == prev.size()) {
             for (size_t i = 0; i < framebuffer_.size(); i += 4) {
                 if (framebuffer_[i] != prev[i] ||
                     framebuffer_[i + 1] != prev[i + 1] ||
@@ -6245,6 +6307,15 @@ bool ExecutionEngine::stage_frame_sequence( ExecutionResult& result, const Execu
         f["runnables_fired"] = n;
         f["looper_virtual_ms"] = hs->virtual_now_ms();
         f["changed_pixels_vs_previous"] = diff_px;
+        // ── ADDITIONAL-AUDIT P1-6: frame authenticity recorded in the
+        // manifest — downstream verifiers can distinguish a real fresh
+        // frame from a render failure that left frame k-1 in the buffer.
+        f["render_ok"] = frame_render_ok;
+        if (!frame_render_ok) {
+            f["changed_pixels_vs_previous"] = 0;
+            f["note"] = "RENDER FAILED — buffer holds previous frame; "
+                        "changed_pixels suppressed (P1-6 law)";
+        }
         f["sha256"] = sha256_hex(framebuffer_);
         f["png_sha256"] = png_sha;
         f["visible_texts"] = collect_texts();
@@ -6444,10 +6515,15 @@ bool ExecutionEngine::stage_click_sequence( ExecutionResult& result, const Execu
         if (dispatched) dispatched_total++;
 
         framebuffer_ = prev;
-        stage_render_frame(result, config);  // re-render CURRENT state
+        // ── ADDITIONAL-AUDIT P1-6: checked render (diff suppressed on failure).
+        const bool seq_render_ok = stage_render_frame(result, config);
+        if (!seq_render_ok) {
+            std::cerr << "[P1-6-RENDER] click-seq re-render FAILED — diff"
+                      << " suppressed (stale buffer not laundered)" << std::endl;
+        }
 
         size_t diff_px = 0;
-        if (framebuffer_.size() == prev.size()) {
+        if (seq_render_ok && framebuffer_.size() == prev.size()) {
             for (size_t i = 0; i < framebuffer_.size(); i += 4) {
                 if (framebuffer_[i] != prev[i] ||
                     framebuffer_[i + 1] != prev[i + 1] ||
@@ -6704,10 +6780,15 @@ bool ExecutionEngine::stage_long_press(ExecutionResult& result, const ExecutionC
 
     // ── Second frame: re-render CURRENT app state ────────────────────────
     framebuffer_ = prev;
-    stage_render_frame(result, config);
+    // ── ADDITIONAL-AUDIT P1-6: checked render (diff suppressed on failure).
+    const bool lp_render_ok = stage_render_frame(result, config);
+    if (!lp_render_ok) {
+        std::cerr << "[P1-6-RENDER] long-press re-render FAILED — diff"
+                  << " suppressed (stale buffer not laundered)" << std::endl;
+    }
 
     size_t diff_px = 0;
-    if (framebuffer_.size() == prev.size()) {
+    if (lp_render_ok && framebuffer_.size() == prev.size()) {
         for (size_t i = 0; i < framebuffer_.size(); i += 4) {
             if (framebuffer_[i] != prev[i] ||
                 framebuffer_[i + 1] != prev[i + 1] ||
@@ -7404,8 +7485,12 @@ bool ExecutionEngine::stage_tap(ExecutionResult& result,
             // framebuffer change; save exactly one frame per mutation,
             // keyed to the content (not the clock), so runs without visible
             // ticks save nothing extra.
-            stage_render_frame(result, config);
-            if (framebuffer_.size() == last_saved_fb.size() &&
+            if (!stage_render_frame(result, config)) {
+                std::cerr << "[P1-6-RENDER] tick render FAILED — tick-frame"
+                          << " capture skipped (stale buffer not saved as"
+                          << " mutation evidence)" << std::endl;
+            }
+            else if (framebuffer_.size() == last_saved_fb.size() &&
                 framebuffer_ != last_saved_fb) {
                 size_t tdiff = 0;
                 for (size_t i = 0; i < framebuffer_.size(); i += 4) {
@@ -7470,7 +7555,10 @@ bool ExecutionEngine::stage_tap(ExecutionResult& result,
 
         // ── t0+20ms: pressed frame (state visible) ───────────────────────
         handler_shadow->advance_virtual(20);
-        stage_render_frame(result, config);
+        if (!stage_render_frame(result, config)) {
+            std::cerr << "[P1-6-RENDER] pressed-frame render FAILED — press"
+                      << " visual not refreshed" << std::endl;
+        }
         {
             std::string png_sha;
             nlohmann::json f;
@@ -7526,9 +7614,14 @@ bool ExecutionEngine::stage_tap(ExecutionResult& result,
         if (!finish_rec.is_null()) manifest["finish_cascade"] = finish_rec;
 
         // ── post-gesture frame: post-click / post-launch / post-restore ──
-        stage_render_frame(result, config);
+        // ── ADDITIONAL-AUDIT P1-6: checked render.
+        const bool pg_render_ok = stage_render_frame(result, config);
+        if (!pg_render_ok) {
+            std::cerr << "[P1-6-RENDER] post-gesture render FAILED — diff"
+                      << " suppressed (stale buffer not laundered)" << std::endl;
+        }
         size_t diff_px = 0;
-        if (framebuffer_.size() == prev.size()) {
+        if (pg_render_ok && framebuffer_.size() == prev.size()) {
             for (size_t i = 0; i < framebuffer_.size(); i += 4) {
                 if (framebuffer_[i] != prev[i] ||
                     framebuffer_[i + 1] != prev[i + 1] ||

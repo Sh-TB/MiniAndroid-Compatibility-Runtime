@@ -13604,6 +13604,77 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 }
             }
             {
+                // FINAL-CAMPAIGN WAVE C (F-NEW-181): RegularImmutableMap.get
+                // probe-loop evidence. The disassembly (run/wavec_get_disasm.txt)
+                // proves the compiled get() re-masks each step
+                // (and-int v1, mask at 0x56) — the walk is in-bounds; the ONLY
+                // exits are a matching key or the sentinel (0xFF/0xFFFF/-1).
+                // A livelock therefore means the conversion table is FULL
+                // (no sentinel) and/or the receiver map instance is
+                // incoherent (fields from different build generations).
+                // This probe dumps: per-slot sentinel census of the table
+                // (v5) + the alternating entries each occupied slot points at
+                // + the walk's (index, mask, tableLen) state.
+                if (current_method_ == "get" && current_class_.find(
+                        "RegularImmutableMap") != std::string::npos &&
+                    current_registers_) {
+                    DalvikValue tbl = current_registers_->read_v(5);
+                    DalvikValue alt = current_registers_->read_v(6);
+                    DalvikValue size_v = current_registers_->read_v(7);
+                    auto tlen_f = heap_.get_object_field(tbl.object_id, "__array_length__");
+                    auto nlen_f = heap_.get_object_field(tbl.object_id, "__new_array_length__");
+                    int32_t tlen = 0;
+                    if (tlen_f.has_value() && tlen_f->type == DalvikType::INT32) tlen = tlen_f->int_val;
+                    if (tlen <= 0 && nlen_f.has_value() && nlen_f->type == DalvikType::INT32) tlen = nlen_f->int_val;
+                    uint64_t sentinels = 0, occupied = 0;
+                    int32_t scan = tlen > 256 ? 256 : tlen;
+                    for (int32_t i = 0; i < scan; ++i) {
+                        auto e = heap_.get_object_field(tbl.object_id,
+                                                        "array[" + std::to_string(i) + "]");
+                        if (!e.has_value()) continue;
+                        int32_t v = dalvik_int_value(*e) & 0xFFFF;
+                        if (v == 0xFF || v == 0xFFFF) ++sentinels; else ++occupied;
+                    }
+                    std::cerr << "[SPIN-GET] table=o" << tbl.object_id
+                              << " len=" << tlen
+                              << " scanned=" << scan
+                              << " sentinels=" << sentinels
+                              << " occupied=" << occupied
+                              << " size_param="
+                              << dalvik_int_value(size_v) << std::endl;
+                    // First 4 occupied slots: which alternating entries they
+                    // point at (class identity of stored keys).
+                    int shown2 = 0;
+                    for (int32_t i = 0; i < scan && shown2 < 4; ++i) {
+                        auto e = heap_.get_object_field(tbl.object_id,
+                                                        "array[" + std::to_string(i) + "]");
+                        if (!e.has_value()) continue;
+                        int32_t v = dalvik_int_value(*e) & 0xFFFF;
+                        if (v == 0xFF || v == 0xFFFF) continue;
+                        ++shown2;
+                        auto k = heap_.get_object_field(alt.object_id,
+                                                        "array[" + std::to_string(v) + "]");
+                        std::string kd = "MISSING";
+                        if (k.has_value() && k->type == DalvikType::OBJECT_REF &&
+                            heap_.has_object(k->object_id)) {
+                            const auto* ho = heap_.get(k->object_id);
+                            kd = "o" + std::to_string(k->object_id) +
+                                 "<" + (ho ? ho->class_descriptor : "?") + ">";
+                            if (ho) {
+                                int fc = 0;
+                                for (const auto& kv : ho->fields) {
+                                    if (fc++ >= 2) break;
+                                    kd += " " + kv.first + "=" +
+                                          dalvik_value_to_string(kv.second);
+                                }
+                            }
+                        }
+                        std::cerr << "[SPIN-GET] slot[" << i << "] -> offset "
+                                  << v << " key=" << kd << std::endl;
+                    }
+                }
+            }
+            {
                 // FINAL-CAMPAIGN PHASE 3 (F-NEW-172): inspect the probe table
                 // state at halt — the spinning frame's v4 is the hash table.
                 if (current_method_ == "createHashTable" && current_registers_) {
@@ -29495,6 +29566,48 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                         std::cerr << "[R349-ORDER] setContentView(View)"
                                   << " attach wave + measure done, root="
                                   << sc_root << std::endl;
+                    }
+                }
+            }
+            // ── ADDITIONAL-AUDIT P1-11: WebView.evaluateJavascript
+            // ValueCallback drain. The shadow routed the script through the
+            // REAL WebViewEngine and recorded (callback oid, JSON result);
+            // the callback fires HERE on the dispatch thread (AOSP: "as
+            // soon as practical", UI thread) — invoked as REAL DEX
+            // onReceiveValue(String) via try_recursive_invoke, the same
+            // shadow-flag/engine-callback split as Room onCreate and
+            // Thread.start run().
+            if (method == "evaluateJavascript" && shadow_registry_ != nullptr) {
+                if (auto* vs =
+                        shadow_registry_->find_as<framework::ViewShadow>()) {
+                    uint32_t cb_oid = 0;
+                    std::string json_result;
+                    if (vs->consume_pending_js_callback(cb_oid, json_result)) {
+                        framework::DalvikHeapAdapter js_heap_adapter(&heap_, this);
+                        std::string cb_cls;
+                        if (js_heap_adapter.get_object_class(cb_oid, cb_cls) &&
+                            !cb_cls.empty()) {
+                            DalvikValue js_arg;
+                            js_arg.type = DalvikType::STRING_REF;
+                            js_arg.string_val = json_result;
+                            js_arg.class_desc = "Ljava/lang/String;";
+                            DalvikValue cb_ret;
+                            DalvikExecutionResult cb_res;
+                            std::vector<DalvikValue> cb_args{js_arg};
+                            const bool fired = try_recursive_invoke(
+                                cb_cls, "onReceiveValue", cb_args, cb_ret,
+                                cb_res, "(Ljava/lang/String;)V");
+                            std::cerr << "[P1-11-WV] ValueCallback.onReceiveValue -> "
+                                      << (fired ? "REAL DEX callback executed"
+                                                : "no app override dispatched")
+                                      << " (result_len=" << json_result.size()
+                                      << ")" << std::endl;
+                        } else {
+                            std::cerr << "[P1-11-WV] ValueCallback heap object "
+                                      << cb_oid << " class unresolved — callback "
+                                      << "NOT invoked (honest frontier)"
+                                      << std::endl;
+                        }
                     }
                 }
             }

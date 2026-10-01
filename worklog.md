@@ -5137,3 +5137,28 @@ REGISTRY: F-NEW-173 ROOT-CAUSED-FIXED (+resolution); F-NEW-181 registered OBSERV
 
 Stage Summary:
 - The DI-lattice ImmutableMap now BUILDS. The white-screen chain front moved from "map build spins" to "map lookup spins" — the runtime's object-identity laws (box value, hash, equals) are converging with the app's real semantics.
+
+---
+Task ID: FINAL-CAMPAIGN-ITEM22-WAVE-A + WAVE-C
+Agent: Super Z (main)
+Task: User directive — complete phases 4-20 + wave C (F-NEW-181) + item-21 P1-2 + NEW 17-item ADDITIONAL ROOT-CAUSE AUDIT (P0-1..P0-4, P1-1..P1-11) + standing done/remaining report.
+
+Work Log:
+- AUDIT P0-1 (F-NEW-182): inflate_layout_resid no longer measures (tree-only law); setContentView(int) records pending_inflate_attach; engine frame render consumes it: attach wave FIRST, canonical measure SECOND (traversal timing per S43 lesson). Microtimer (XML custom view) da73010a37dd0189 x3 byte-identical.
+- AUDIT P0-2 (F-NEW-183): android.R.id.content = ONE stable object per window — subtree search, per-window remembered node, add_child edge-dedupe; new-node materialization only on first miss. [P0-2-CONTENT] REUSED trace.
+- AUDIT P0-3+P0-4 (F-NEW-184): real_view_class() helper — ActivityShadow.findViewById/getContentView, ViewShadow.findViewById (2 paths), getChildAt return the node's REAL class descriptor; getContext() resolves the heap class (DalvikHeapAdapter.get_object_class) so instanceof Activity works on the activity object.
+- AUDIT P1-1 (F-NEW-185a): setVisibility raises layout_dirty on transitions (AOSP setFlags -> requestLayout+invalidate); canonical traversal re-measures; [P1-1-VIS] trace.
+- AUDIT P1-2 (F-NEW-185b): setImageBitmap/Drawable/Icon/URI leave handled_void — one canonical image state: BitmapStore provenance path -> real decode pipeline; icon resid; asset-uri law; null clears; otherwise EXPLICIT [P1-2-IMAGE-BLOCKED] evidence (bounded counter). ViewNode capture fields added. requestLayout raised on every assignment.
+- AUDIT P1-10 (F-NEW-185c): setTextColor = EXPLICIT_RUNTIME provenance (black heuristic REMOVED — explicit black always wins); inflater marks STYLE_RESOLVED.
+- AUDIT P1-3+P1-4 (F-NEW-186): is_app_class_descriptor drops the com/google blanket prefixes (DEX class-index is the authority; Material classes keep real <init>); class_to_descriptor normalizes dots->slashes (JVMS 4.2) for fully-qualified XML tags.
+- AUDIT P1-5/P1-6/P1-7/P1-8 (F-NEW-187 + wave-A verification): P1-5/P1-8 verified wave-A census/placeholder laws still green; P1-6 closed — all 9 stage_render_frame call sites now checked ([P1-6-RENDER]); final capture SKIPPED on failed render; frame manifest records render_ok and suppresses changed_pixels on failure; click-oracle diff suppressed + report[render_failures]. P1-7 verified wave-A budgets (MAX_NODES/DEPTH env + PARTIAL_RENDER_BUDGET acceptance run).
+- AUDIT P1-9: setContentView replacement detaches the OLD content subtree (both View and res paths) — ViewShadow::detach_from_parent; single-active-content law.
+- AUDIT P1-11 (F-NEW-188): evaluateJavascript routes into the REAL WebViewEngine (QuickJS): Impl::eval_json (global eval + JSON.stringify + bounded job pump + exception hygiene); ValueCallback fires via the engine drain (try_recursive_invoke onReceiveValue, Room/Thread split law); explicit BLOCKED only when no document/engine.
+- WAVE C (F-NEW-181): disassembled the app's own RegularImmutableMap.get + createHashTable (run/wavec_get_disasm.txt): the compiled probe re-masks (and-int at 0x56) — in-bounds; exits = match or sentinel. NEW permanent SPIN-GET probe: table byte[3] sentinels=0 occupied=3 (FULL — livelock structural); all 3 slots -> offset 0 -> alternating[0]=o1659 Integer(33604) = THE F-NEW-173 placeholder; size_param=17750 with tableSize=3 (chooseTableSize(17750)=32768 required) + alternating len 47425 = builder-growth array — map instance fields from different build generations. ATTRIBUTION: F-NEW-181 = F-NEW-173 family (upstream key/size materialization); NEXT = trace the tableSize feed into createHashTable.
+- GATE LAW DISCOVERY (F-NEW-189): simplestopwatch golden requires a FRESH data root (SharedPreferences persistence — reused data-root lawfully renders the restored state: 88377dd328d6e041 vs fresh 10446aaf0cd642cc; same binary sha 3e21e875bf7c5622, both x3 byte-identical). Gate script updated.
+- A/B DISCIPLINE: headingcalc drift suspicion resolved by stash-rebuild A/B — OLD-HEAD binary produces be1cea9cf994b26a IDENTICALLY (the /tmp 4d462461006fe7fe record was stale evidence from an unreproducible container state); all 17 audit fixes proven pixel-neutral.
+- GATES: dooz d602648e8e401895 x3 MATCH; simplestopwatch 10446aaf0cd642cc x3 MATCH (fresh data-root); headingcalc be1cea9cf994b26a x3 (A/B-proven == HEAD); microtimer da73010a37dd0189 x3 MATCH; WhatsApp 31ddd4d5b8e6d18e x3 deterministic (PARTIAL, F-016 honesty, 32 errors at the DI-lattice frontier). Zero regressions from all 17 audit fixes.
+- REGISTRY: F-NEW-181 ROOT-ATTRIBUTED (wave C), F-NEW-182..188 appended, F-NEW-189 gate law; canonical/root_cause_registry.json 474 -> 484 (bidirectional sync with root_registry.json — recovered F-NEW-160/161/162/167/169/174..180 missing copies); worklist item 22 registered (681 items).
+
+Stage Summary:
+- The 17-item ADDITIONAL AUDIT is code-complete with runtime evidence: 15 items implemented+tested this wave, P1-5/P1-7 verified as wave-A coverage, item-21 P1-2 full measure/layout unification remains its own wave. Wave C closed the F-NEW-181 mystery to a precise attribution with permanent instrumentation. The DI-lattice frontier (F-NEW-173/181 family) is the single dominant WhatsApp white-screen blocker.

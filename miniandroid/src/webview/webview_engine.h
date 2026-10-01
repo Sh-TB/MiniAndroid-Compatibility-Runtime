@@ -36,6 +36,17 @@ public:
     bool load_document(const std::string& url, const std::string& html,
                        const std::string& apk_path);
 
+    // ── ADDITIONAL-AUDIT P1-11: WebView.evaluateJavascript law ───────
+    // Android WebView.evaluateJavascript(script, callback): the script
+    // evaluates in the PAGE's global scope (full DOM/canvas/timer access,
+    // same realm as the document's own scripts); the callback receives the
+    // result JSON-ENCODED ("null" for undefined and for script exceptions).
+    // Returns false only when the evaluation could not run (exception);
+    // json_out carries the callback payload either way. Async work the
+    // script schedules drains through the S118 JOB-PUMP law (bounded).
+    bool evaluate_javascript(const std::string& script, std::string* json_out,
+                             std::string* error_out = nullptr);
+
     // Frame pump: fire due timers, then run pending rAF callbacks.
     void tick(double frame_ms);
     bool needs_frames() const;
