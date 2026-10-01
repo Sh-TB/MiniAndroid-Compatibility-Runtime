@@ -3285,14 +3285,18 @@
   {
    "id": "F-NEW-166",
    "title": "WhatsApp_next_face (F-NEW-156 family): onCreate dies BEFORE any setContentView \u2014 NPE 'INVOKE_RETURN must not be null' at LX/00i;.A0F pc=19 (obfuscated helper); a stubbed invoke returned null where AOSP guarantees non-null, propagated to a throw before content install. VIEWTREE NOT_REACHED with ZERO R005-DECOR/F165 hits in the log (the app never reached Window.setContentView).",
-   "status": "OBSERVED-FAIL",
+   "status": "PARTIAL",
    "priority": "P1",
    "component": "dex/invoke-return-null",
    "evidence": {
-    "log": "[THROWABLE-MSG] Ljava/lang/NullPointerException; msg=\"INVOKE_RETURN must not be null\" caller=LX/00i;.A0F pc=19 depth=5",
-    "next_step": "identify the invoked method whose null return is illegal (disassemble LX/00i;.A0F pc=19), answer the AOSP non-null contract at the stub, or fix the dispatch hole"
+    "before": "NPE 'INVOKE_RETURN must not be null' at LX/00i;.A0F during attachBaseContext; app died before onCreate",
+    "after": "5 [F166-BASECTX] dispatches; the null-check PASSED; app boots into onCreate, creates views; frame REAL_APP_CONTENT (23472 non-default px, chrome renders)",
+    "regression": "laws130 51/51; dooz ba8a95eb2278594f + ballbreak 8a951f5f975c4742 byte-identical; simplestopwatch e00fe7e082c385f8 with isolated --data-root (the 1797c760 delta was the DOCUMENTED shared-data-root prefs persistence law, A/B-proven not a code regression)",
+    "disassembly": "s134_wa_disasm.py: LX/009;.<init> getBaseContext \u2192 A06 null-check; A0F = R8 Intrinsics throw helper"
    },
-   "session": "S134 wave 3"
+   "session": "S134 wave 3",
+   "fix": "F166-BASECTX routing law in try_shadow_dispatch: ContextWrapper-family receivers now reach the S110 base-context law for getBaseContext/attachBaseContext, and ContextWrapper.<init>(base) records mBase (AOSP ctor=attachBaseContext delegation). Path-scoped: fires only on Context-named receiver classes where REC-MISS previously answered null.",
+   "residual": "Next frontier faces (new root F-NEW-167): the app's infra/logging Log.<clinit> hits the java.util.concurrent/nio REC-MISS family (AtomicReference.<init>, CountDownLatch.<init>, ReentrantLock.<init>, Charset.defaultCharset, TimeZone.getDefault) \u2192 VirtualMachineError unwind \u2192 AppContext.set state missing. Classic \u00a717 chain: missing API \u2192 clinit failure \u2192 static state missing \u2192 downstream ISE."
   }
  ]
 }
