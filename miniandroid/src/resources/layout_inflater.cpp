@@ -1222,6 +1222,16 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
                     a.src_drawable_density = sel_d;
                 }
             }
+            // R-NEW-442 (S132 Wave-2): an .svg src is a TEXT-XML asset —
+            // parse into bg_vector (the existing vector paint law renders
+            // it in the background slot) and clear the bitmap slot so the
+            // image decoder does not record an honest-but-loud failure.
+            if (a.src_drawable.size() > 4 &&
+                a.src_drawable.compare(a.src_drawable.size() - 4, 4, ".svg") == 0) {
+                apply_svg_background(node, a.src_drawable, stats);
+                a.src_drawable.clear();
+                a.src_drawable_density = 0;
+            }
         }
         else if (n == "onClick") a.onClick = raw;
         else if (n == "scaleType") {
@@ -1377,6 +1387,22 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
             std::string nm;
             auto cl_anchor = [&]() {
                 if (raw == "parent") { nm = "parent"; return; }
+                // R-NEW-439 (S132): AOSP ConstraintLayout.LayoutParams
+                // PARENT_ID sentinel law. ConstraintLayout.java:
+                // `public static final int PARENT_ID = 0` and the attr
+                // family layout_constraint*_to*Of is declared as an
+                // integer enum with parent=0. Modern AGP/aapt2 compiles
+                // app:layout_constraint*_to*Of="parent" as the typed INT
+                // value 0 WITHOUT a raw string (opencalculator v53
+                // evidence: layout_constraintTop_toTopOf=INT(0) in
+                // activity_main AXML) — the old raw=="parent"-only law
+                // dropped every parent anchor, so 0dp children under a
+                // ConstraintLayout lost their span (both-edges law never
+                // fired) and collapsed to 0.
+                if (raw.empty() && at.value.is_int() && at.value.data == 0) {
+                    nm = "parent";
+                    return;
+                }
                 nm = parse_ref(raw).name;
                 if (!nm.empty() && nm[0] == '+') nm.erase(nm.begin());
                 if (nm.empty() && at.value.is_reference()) {
@@ -1570,6 +1596,12 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
 void LayoutInflater::apply_shape_background(framework::ViewShadow::ViewNode& node,
                                             const std::string& xml_path,
                                             InflateStats& stats) {
+    // R-NEW-442 (S132 Wave-2): .svg assets are TEXT XML — routed to the
+    // SVG-asset law BEFORE the AXML parse (which would fail on plain text).
+    if (xml_path.size() > 4 && xml_path.compare(xml_path.size() - 4, 4, ".svg") == 0) {
+        apply_svg_background(node, xml_path, stats);
+        return;
+    }
     std::vector<uint8_t> xml = apk_.extract_entry_cached(xml_path);
     if (xml.empty()) xml = apk_.extract_entry(apk_path_, xml_path);
     if (xml.empty()) {
@@ -2031,26 +2063,60 @@ bool LayoutInflater::image_intrinsic_size(const std::string& path,
     return true;
 }
 
-void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_id) {
-    if (std::getenv("MINIANDROID_PROBE"))
-        fprintf(stderr, "[ROOT064-ENTRY] measure_layout root=%u\n", root_id);
-    // =======================================================================
-    // MEASURE PASS — AOSP MeasureSpec semantics (FIX-2, generic; no app
-    // special-casing). Replaces the fixed 0.62f char-width text estimate:
-    // leaf text desired size now comes from the REAL shaping pipeline
-    // (FriBidi/HarfBuzz/FreeType via fonts::layout_text), and parent/child
-    // size negotiation follows ViewGroup.getChildMeasureSpec:
-    //
-    //   child dim >= 0        -> EXACTLY child
-    //   MATCH_PARENT (-1)     -> EXACTLY(parent) | AT_MOST(parent) | UNSPEC
-    //   WRAP_CONTENT (-2)     -> AT_MOST(parent)  | UNSPEC
-    //
-    // Every node records the full geometry evidence (class, lp, measured,
-    // bounds, text metrics) for the proof artifacts.
-    // =======================================================================
-    enum Mode { M_UNSPEC = 0, M_EXACTLY, M_AT_MOST };
-    struct Spec { int size; Mode mode; };
 
+// ───────────────────────────────────────────────────────────────────────────
+// R-NEW-440 (S132): ONE CANONICAL MEASURE LAW — member functions.
+// The former measure_layout lambda, promoted so the engine's DEX measure
+// bridge (real container onMeasure → child.measure) can delegate container
+// subtrees to the SAME law the render walk uses. AOSP ground truth:
+// View.measure dispatches the node's own law — ViewGroup containers run
+// their child negotiation INSIDE it; the runtime models those laws once.
+// ───────────────────────────────────────────────────────────────────────────
+std::pair<int, int> LayoutInflater::measure_node(
+    framework::ViewShadow* views, uint32_t vid, const MeasureSpec2& sw,
+    const MeasureSpec2& sh, int depth) {
+    // M3 §7 convergence memo: identical (view, specs) inside one pass are
+    // computed exactly ONCE and replayed byte-identically thereafter
+    // (convergence law + DEX-hook single-execution law + complexity bound
+    // for the match-parent second pass). The memo is a MEMBER so nested
+    // measure_view_spec entries (DEX measure bridge during this pass)
+    // dedupe against the same table (purity + termination).
+    M3MemoKey k{vid, sw.size, (int)sw.mode, sh.size, (int)sh.mode};
+    auto it = m3_measure_memo_.find(k);
+    if (it != m3_measure_memo_.end()) return it->second;
+    auto r = measure_node_raw(views, vid, sw, sh, depth);
+    m3_measure_memo_.emplace(k, r);
+    return r;
+}
+
+bool LayoutInflater::measure_view_spec(framework::ViewShadow* views,
+                                       uint32_t vid, int wspec_word,
+                                       int hspec_word, int& out_w,
+                                       int& out_h) {
+    auto* n = views ? views->find_node(vid) : nullptr;
+    if (!n) return false;
+    // R-NEW-302 companion: a dirty layout invalidates remembered (view,
+    // spec) results — the memo must not replay stale geometry.
+    if (views->layout_dirty) m3_measure_memo_.clear();
+    auto decode = [](int w) -> MeasureSpec2 {
+        return MeasureSpec2{w & 0x3FFFFFFF,
+                            (MeasureMode)(((uint32_t)w) >> 30)};
+    };
+    measure_node(views, vid, decode(wspec_word), decode(hspec_word), 0);
+    out_w = n->measured_width;
+    out_h = n->measured_height;
+    return true;
+}
+
+std::pair<int, int> LayoutInflater::measure_node_raw(
+    framework::ViewShadow* views, uint32_t vid, const MeasureSpec2& sw,
+    const MeasureSpec2& sh, int depth) {
+    using Spec = MeasureSpec2;
+    const MeasureMode M_UNSPEC = MS_UNSPEC, M_EXACTLY = MS_EXACTLY,
+                      M_AT_MOST = MS_AT_MOST;
+    auto& m3_measure_memo = m3_measure_memo_;
+    auto* n = views->find_node(vid);
+    if (!n) return {0, 0};
     auto child_spec = [](const Spec& p, int padding, int child_dim) -> Spec {
         const int avail = std::max(0, p.size - padding);
         if (child_dim >= 0)  return {child_dim, M_EXACTLY};
@@ -2092,44 +2158,6 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                cd.find("ViewPager") != std::string::npos ||
                cd.find("RecyclerView") != std::string::npos;
     };
-
-    // -----------------------------------------------------------------------
-    // measure(vid, spec_w, spec_h) -> desired (w, h) including own padding.
-    // Children are measured FIRST (bottom-up) exactly like AOSP.
-    // -----------------------------------------------------------------------
-    // M3 §7 convergence memo: within ONE measure_layout call, measuring the
-    // same view with the same specs is PURE — it must return the identical
-    // result without recomputing (and without re-executing DEX onMeasure
-    // hooks, whose app-visible side effects must not double-apply). The
-    // match-parent second pass (FIX-M3-004) makes repeated subtree measures
-    // structurally likely; without the memo a deep match chain re-measures
-    // exponentially (hostile-battery timeout evidence). Key covers the full
-    // spec inputs — different specs are different measurements.
-    struct M3MemoKey {
-        uint32_t vid;
-        int w_size, w_mode, h_size, h_mode;
-        bool operator<(const M3MemoKey& o) const {
-            if (vid != o.vid) return vid < o.vid;
-            if (w_size != o.w_size) return w_size < o.w_size;
-            if (w_mode != o.w_mode) return w_mode < o.w_mode;
-            if (h_size != o.h_size) return h_size < o.h_size;
-            return h_mode < o.h_mode;
-        }
-    };
-    std::map<M3MemoKey, std::pair<int,int>> m3_measure_memo;
-    std::function<std::pair<int,int>(uint32_t, const Spec&, const Spec&, int)> measure;
-    std::function<std::pair<int,int>(uint32_t, const Spec&, const Spec&, int)> measure_raw =
-        [&](uint32_t vid, const Spec& sw, const Spec& sh, int depth) -> std::pair<int,int> {
-        auto* n = views->find_node(vid);
-        if (!n) return {0, 0};
-        // M3 §7 memo hit: same view + same specs inside one pass → the
-        // already-computed result (pure-function law; protects DEX hooks
-        // from double execution).
-        {
-            M3MemoKey k{vid, sw.size, (int)sw.mode, sh.size, (int)sh.mode};
-            auto it = m3_measure_memo.find(k);
-            if (it != m3_measure_memo.end()) return it->second;
-        }
         // G12 diagnostic (opt-in): incoming specs + container classification — level 3.
         if (getenv("U007_LAYOUT_DEBUG") &&
             std::string(getenv("U007_LAYOUT_DEBUG") ? getenv("U007_LAYOUT_DEBUG") : "") == "3") {
@@ -2169,7 +2197,7 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
         // subtree measure; the returned size becomes the content size.
         //
         // R-NEW-347 (S42) EXTENSION — containers included. Oracle: AOSP
-        // View.measure() dispatches onMeasure for EVERY View subclass —
+        // View.measure_node(views, ) dispatches onMeasure for EVERY View subclass —
         // nothing restricts the override to leaf views; a ViewGroup that
         // overrides onMeasure (LinearLayout, GridLayout, Compose's
         // AndroidComposeView, app custom containers) runs ITS OWN measure
@@ -2197,9 +2225,71 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
             };
             int ow = 0, oh = 0;
             if (custom_view_measure_hook_(vid, encode(sw), encode(sh), ow, oh)) {
-                n->measured_width = ow;
-                n->measured_height = oh;
-                return {ow, oh};
+                // R-NEW-438 (S132): INCOMPLETE-EMULATION LAW. A DEX
+                // onMeasure override whose result is degenerate (both axes
+                // 0) while the incoming specs demand non-zero size
+                // (EXACTLY/AT_MOST with size > 0) is evidence the
+                // interpreter emulation of that override was INCOMPLETE —
+                // the real bytecode measured nothing because its
+                // internals (library container machinery, optimization
+                // tables, member arrays) did not execute to completion.
+                // Evidence: opencalculator v53 — the app-bundled
+                // androidx.ConstraintLayout.onMeasure answered 0x0 under
+                // EXACTLY(1080)xEXACTLY(1920) ([DEX-MEASURE] line,
+                // S132 oc_base run) while its 76-node subtree carried
+                // real text content (buttons measured 231x126 intrinsic),
+                // collapsing the whole pad. AOSP behavior for the same
+                // class IS the native container law (F-148 anchors,
+                // LinearLayout weights) — the same AOSP source the
+                // library implements. So the degenerate result is not
+                // authoritative and the native measure laws take over.
+                // Genuine custom views (F10/dooz23 compose) measure to
+                // real sizes and are unaffected.
+                const bool spec_demands_size =
+                    (sw.mode == M_EXACTLY && sw.size > 0) ||
+                    (sh.mode == M_EXACTLY && sh.size > 0) ||
+                    (sw.mode == M_AT_MOST && sw.size > 0) ||
+                    (sh.mode == M_AT_MOST && sh.size > 0);
+                bool incomplete_emulation =
+                    (ow == 0 && oh == 0 && spec_demands_size);
+                // R-NEW-438 arm 2 — AOSP ViewGroup.onMeasure CONTRACT law:
+                // a container onMeasure MUST measure its children before
+                // setMeasuredDimension (ViewGroup.java measureChildren /
+                // dispatchMeasureHover... contract; every AOSP container
+                // does). An override that returns a size but left every
+                // visible child UNMEASURED (0x0) violated the contract
+                // through incomplete emulation. Evidence: opencalculator
+                // v53 SlidingUpPanelLayout.onMeasure returned a real size
+                // while its whole subtree (ConstraintLayout2 → TableLayout
+                // → 8 rows → 34 buttons) stayed measured=0x0 — the native
+                // walk never descended, and the render only had the black
+                // display bar. The native container law (which models the
+                // same AOSP semantics) takes over exactly like arm 1.
+                if (!incomplete_emulation && is_container_node(n)) {
+                    size_t visible = 0;
+                    bool any_child_measured = false;
+                    for (uint32_t cid : n->children) {
+                        auto* c = views->find_node(cid);
+                        if (!c || c->visibility == 8) continue;
+                        ++visible;
+                        if (c->measured_width > 0 || c->measured_height > 0) {
+                            any_child_measured = true;
+                            break;
+                        }
+                    }
+                    if (visible > 0 && !any_child_measured)
+                        incomplete_emulation = true;
+                }
+                if (!incomplete_emulation) {
+                    n->measured_width = ow;
+                    n->measured_height = oh;
+                    return {ow, oh};
+                }
+                if (getenv("U007_LAYOUT_DEBUG"))
+                    fprintf(stderr, "[U007-LAYOUT] R-NEW-438 degenerate DEX "
+                                    "onMeasure (%dx%d) at view %u (%s) — "
+                                    "native container law takes over\n",
+                            ow, oh, vid, n->class_desc.c_str());
             }
         }
         // ── S100 #345 CHILD-SNAPSHOT LAW ─────────────────────────────────────
@@ -2400,7 +2490,7 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                 } else {
                     hspec = {std::max(0, myHeight), M_AT_MOST};
                 }
-                auto sz = measure(kids[i], wspec, hspec, depth + 1);
+                auto sz = measure_node(views, kids[i], wspec, hspec, depth + 1);
                 child_sizes[i] = sz;
                 // positionChildHorizontal — cache edges from measured width.
                 if (e.l == NOT_SET && e.r != NOT_SET) {
@@ -2464,7 +2554,7 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                                                  cn->lp_margin_bottom,
                                                  n->padding_top,
                                                  n->padding_bottom, myHeight);
-                auto sz = measure(kids[i], wspec, hspec, depth + 1);
+                auto sz = measure_node(views, kids[i], wspec, hspec, depth + 1);
                 child_sizes[i] = sz;
                 // positionChildVertical — cache edges from measured height.
                 if (e.t == NOT_SET && e.b != NOT_SET) {
@@ -2627,7 +2717,7 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
             Spec hspec = cn->lp_height >= 0 ? Spec{cn->lp_height, M_EXACTLY}
                                             : child_spec(sh, vpad + cn->lp_margin_top + cn->lp_margin_bottom,
                                                          cn->lp_height);
-            auto sz = measure(kids[i], wspec, hspec, depth + 1);
+            auto sz = measure_node(views, kids[i], wspec, hspec, depth + 1);
             child_sizes[i] = sz;
             if (h_both) {
                 if (cn->lp_width != 0) {
@@ -2703,7 +2793,7 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                 hspec = child_spec(sh, vpad + cn->lp_margin_top + cn->lp_margin_bottom,
                                    cn->lp_height);
             }
-            auto sz = measure(kids[i], wspec, hspec, depth + 1);
+            auto sz = measure_node(views, kids[i], wspec, hspec, depth + 1);
             child_sizes[i] = sz;
             if (v_both) {
                 if (cn->lp_height != 0) {
@@ -2751,16 +2841,45 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
             // and is sized from scratch with an EXACTLY share in the weight
             // pass. Measure it with an EXACTLY-0 main-axis spec (cross axis
             // still normal) so its cross-axis content size stays correct.
+            //
+            // R-NEW-438 (S132) — AOSP measureHorizontal/Vertical AT_MOST
+            // branch (LinearLayout.java android-14: `else { if
+            // (useExcessSpace) lp.width = WRAP_CONTENT; …
+            // measureChildBeforeLayout(...) }`): when the parent's MAIN-axis
+            // spec is AT_MOST/UNSPECIFIED (wrap measurement), the weighted
+            // child IS measured — with WRAP_CONTENT on the main axis — so
+            // its content size feeds the container's own wrap size and its
+            // CROSS-axis content (the button text height inside a
+            // wrap-height TableRow) reaches maxHeight. The old
+            // always-EXACTLY-0 law collapsed every wrap container whose
+            // children were all 0dp+weight (opencalculator v53 rows:
+            // buttons content 231x126 measured 0 main → row wrap 0x0 →
+            // the whole pad collapsed to 42x1921 padding-only).
             if (parent_ll && cn->layout_weight > 0) {
-                if (!horiz_ll && ch_ == 0) csh = {0, M_EXACTLY};
-                if (horiz_ll && cw_ == 0)  csw = {0, M_EXACTLY};
+                const bool main_exact =
+                    horiz_ll ? (sw.mode == M_EXACTLY) : (sh.mode == M_EXACTLY);
+                if (main_exact) {
+                    if (!horiz_ll && ch_ == 0) csh = {0, M_EXACTLY};
+                    if (horiz_ll && cw_ == 0)  csw = {0, M_EXACTLY};
+                } else {
+                    // AT_MOST/UNSPEC main axis: measure the weighted child
+                    // WRAP (AOSP lp.width = WRAP_CONTENT restore-after law;
+                    // the weight pass re-sizes it with the EXACTLY share).
+                    if (!horiz_ll && ch_ == 0) ch_ = -2;
+                    if (horiz_ll && cw_ == 0)  cw_ = -2;
+                    // The child's own resolve must answer its MEASURED
+                    // content, not re-apply the XML 0dp lp shortcut.
+                    cn->measure_weight_wrap = true;
+                    csw = child_spec(sw, hpad + cn->lp_margin_left + cn->lp_margin_right, cw_);
+                    csh = child_spec(sh, vpad + cn->lp_margin_top + cn->lp_margin_bottom, ch_);
+                }
             }
             // ScrollView measures its single child with UNSPECIFIED height
             // (AOSP ScrollView.onMeasure law).
             if (n->class_desc.find("ScrollView;") != std::string::npos &&
                 n->class_desc.find("Horizontal") == std::string::npos)
                 csh = {std::max(0, sh.size - vpad), M_UNSPEC};
-            child_sizes[i] = measure(kids[i], csw, csh, depth + 1);
+            child_sizes[i] = measure_node(views, kids[i], csw, csh, depth + 1);
         }
 
         // ===================================================================
@@ -2853,9 +2972,9 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                         const Spec main_s{std::max(0, final_main), M_EXACTLY};
                         const Spec cross_s = child_spec(cspec, cm, lp_cross);
                         child_sizes[i] = main_horiz
-                                             ? measure(kids[i], main_s,
+                                             ? measure_node(views, kids[i], main_s,
                                                        cross_s, depth + 1)
-                                             : measure(kids[i], cross_s,
+                                             : measure_node(views, kids[i], cross_s,
                                                        main_s, depth + 1);
                     }
                 }
@@ -2930,9 +3049,9 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                         const Spec cross_s = child_spec(cspec2, cpad2 + m_cross,
                                                         lp_cross);
                         child_sizes[i] = main_horiz2
-                                             ? measure(kids[i], main_s,
+                                             ? measure_node(views, kids[i], main_s,
                                                        cross_s, depth + 1)
-                                             : measure(kids[i], cross_s,
+                                             : measure_node(views, kids[i], cross_s,
                                                        main_s, depth + 1);
                     }
                 }
@@ -3203,9 +3322,15 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
         // 296x123 -> 1080x0 under EXACTLY(480)). The lp shortcut is kept
         // ONLY for non-EXACTLY specs (conservative: fixed-lp children
         // measured through paths whose spec does not encode the lp).
-        int final_w = (lpw >= 0 && sw.mode != M_EXACTLY)
+        // R-NEW-438: a 0dp+weight child measured under the AOSP AT_MOST
+        // wrap branch resolves to its MEASURED content size (the XML 0dp
+        // was temporarily WRAP_CONTENT for the measure — restore happens
+        // in the weight pass, not in the resolve).
+        const bool wrap_weight = n->measure_weight_wrap;
+        n->measure_weight_wrap = false;
+        int final_w = (lpw >= 0 && sw.mode != M_EXACTLY && !wrap_weight)
                           ? lpw : resolve_final(total_content_w, sw);
-        int final_h = (lph >= 0 && sh.mode != M_EXACTLY)
+        int final_h = (lph >= 0 && sh.mode != M_EXACTLY && !wrap_weight)
                           ? lph : resolve_final(total_content_h, sh);
         // EXACTLY spec wins for match_parent too (already EXACTLY from
         // child_spec); explicit lp never shrinks below the spec EXACTLY size
@@ -3220,22 +3345,42 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                     final_w, final_h);
         }
         return {n->measured_width, n->measured_height};
-    };
-    // M3 §7 memo wrapper: every measure(…) call (root + all recursive
-    // sites) routes through this — identical (view, specs) inside one
-    // measure_layout call are computed exactly ONCE and replayed
-    // byte-identically thereafter (convergence law + DEX-hook
-    // single-execution law + complexity bound for the match-parent
-    // second pass).
-    measure = [&](uint32_t vid, const Spec& sw, const Spec& sh,
-                  int depth) -> std::pair<int,int> {
-        M3MemoKey k{vid, sw.size, (int)sw.mode, sh.size, (int)sh.mode};
-        auto it = m3_measure_memo.find(k);
-        if (it != m3_measure_memo.end()) return it->second;
-        auto r = measure_raw(vid, sw, sh, depth);
-        m3_measure_memo.emplace(k, r);
-        return r;
-    };
+}
+
+void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_id) {
+    if (std::getenv("MINIANDROID_PROBE"))
+        fprintf(stderr, "[ROOT064-ENTRY] measure_layout root=%u\n", root_id);
+    // R-NEW-440: the measure law is a MEMBER function now (the engine's
+    // DEX measure bridge delegates container subtrees to the SAME law via
+    // measure_view_spec). Type aliases keep the law body verbatim; the
+    // M3 §7 memo is a member (shared with measure_view_spec) and is reset
+    // at the start of every top-level pass (R-NEW-302: tree mutations
+    // between passes invalidate remembered results).
+    using Spec = MeasureSpec2;
+    const MeasureMode M_UNSPEC = MS_UNSPEC, M_EXACTLY = MS_EXACTLY,
+                      M_AT_MOST = MS_AT_MOST;
+    auto& m3_measure_memo = m3_measure_memo_;
+    m3_measure_memo_.clear();
+    // =======================================================================
+    // MEASURE PASS — AOSP MeasureSpec semantics (FIX-2, generic; no app
+    // special-casing). Replaces the fixed 0.62f char-width text estimate:
+    // leaf text desired size now comes from the REAL shaping pipeline
+    // (FriBidi/HarfBuzz/FreeType via fonts::layout_text), and parent/child
+    // size negotiation follows ViewGroup.getChildMeasureSpec:
+    //
+    //   child dim >= 0        -> EXACTLY child
+    //   MATCH_PARENT (-1)     -> EXACTLY(parent) | AT_MOST(parent) | UNSPEC
+    //   WRAP_CONTENT (-2)     -> AT_MOST(parent)  | UNSPEC
+    //
+    // Every node records the full geometry evidence (class, lp, measured,
+    // bounds, text metrics) for the proof artifacts.
+    // =======================================================================
+    // -----------------------------------------------------------------------
+    // measure(vid, spec_w, spec_h) -> desired (w, h) including own padding.
+    // Children are measured FIRST (bottom-up) exactly like AOSP.
+    // (R-NEW-440: the law lives in the member measure_node_raw; the M3 §7
+    //  memo struct/map moved to the header — shared with measure_view_spec.)
+    // -----------------------------------------------------------------------
 
     // Root fills the screen (EXACTLY), per AOSP window measure.
     // Root spec: the window hands the content root EXACTLY(screen); the
@@ -3248,7 +3393,7 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
     std::pair<int,int> root_size_first;
     {
         auto* rn = views->find_node(root_id);
-        Mode rwm = M_EXACTLY, rhm = M_EXACTLY;
+        MeasureMode rwm = MS_EXACTLY, rhm = MS_EXACTLY;
         int rws = metrics_.screen_width, rhs = metrics_.screen_height;
         if (rn) {
             // R-NEW-302 FIX (AOSP ViewRootImpl window law): the window ALWAYS
@@ -3265,11 +3410,11 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
             const int lpw = rn->lp_width  == INT_MIN ? -1 : rn->lp_width;
             const int lph = rn->lp_height == INT_MIN ? -1 : rn->lp_height;
             if (lpw >= 0) rws = lpw;
-            else if (lpw == -2) rwm = M_AT_MOST;
+            else if (lpw == -2) rwm = MS_AT_MOST;
             if (lph >= 0) rhs = lph;
-            else if (lph == -2) rhm = M_AT_MOST;
+            else if (lph == -2) rhm = MS_AT_MOST;
         }
-        root_size_first = measure(root_id, {rws, rwm}, {rhs, rhm}, 0);
+        root_size_first = measure_node(views, root_id, {rws, rwm}, {rhs, rhm}, 0);
     }
     (void)root_size_first;
 
@@ -3407,7 +3552,7 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                         Spec rsh = cn->lp_height >= 0 ? Spec{cn->lp_height, M_EXACTLY}
                                  : cn->lp_height == -1 ? Spec{cross, M_EXACTLY}
                                  : Spec{cross, M_AT_MOST};
-                        measure(kids[i], {std::max(0, final_w[i]), M_EXACTLY}, rsh, 0);
+                        measure_node(views, kids[i], {std::max(0, final_w[i]), M_EXACTLY}, rsh, 0);
                     } else if (cn->lp_width >= 0) {
                         final_w[i] = cn->lp_width;
                     } else {
@@ -3541,7 +3686,7 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                         Spec rsw = cn->lp_width >= 0 ? Spec{cn->lp_width, M_EXACTLY}
                                  : cn->lp_width == -1 ? Spec{cross, M_EXACTLY}
                                  : Spec{cross, M_AT_MOST};
-                        measure(kids[i], rsw, {std::max(0, final_h[i]), M_EXACTLY}, 0);
+                        measure_node(views, kids[i], rsw, {std::max(0, final_h[i]), M_EXACTLY}, 0);
                     } else if (cn->lp_height >= 0) {
                         final_h[i] = cn->lp_height;
                     } else {
