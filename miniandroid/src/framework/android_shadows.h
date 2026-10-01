@@ -1031,6 +1031,26 @@ public:
     }
 
     struct ViewNode {
+        // ── ADDITIONAL-AUDIT P1-10 (text-color provenance law) ──────────
+        // Provenance of `text_color` (replaces the M3-007b value-based
+        // black heuristic):
+        //   TEXT_COLOR_STYLE_RESOLVED — set from android:textColor/style
+        //   TEXT_COLOR_EXPLICIT_RUNTIME — set by TextView.setTextColor(int)
+        //   (AOSP law: an explicit runtime color ALWAYS wins)
+        //   0/UNSET — renderer default (near-black), not app state
+        static const uint8_t TEXT_COLOR_STYLE_RESOLVED = 1;
+        static const uint8_t TEXT_COLOR_EXPLICIT_RUNTIME = 2;
+        uint8_t text_color_provenance = 0;
+        // ── ADDITIONAL-AUDIT P1-2 (canonical image-setter state) ────────
+        // One canonical Drawable/Image state for EVERY programmatic image
+        // setter (setImageBitmap/setImageDrawable/setImageIcon/setImageURI
+        // join setImageResource). image_uri carries the raw URI/path
+        // argument for evidence; the BLOCKED counter is the honest frontier
+        // when a setter's argument could not reach the real pipeline.
+        uint32_t image_bitmap_object = 0;   // heap oid of a Bitmap arg
+        uint32_t image_drawable_object = 0; // heap oid of a Drawable arg
+        std::string image_uri;              // setImageURI raw argument
+        uint32_t image_blocked_events = 0;  // bounded BLOCKED-evidence count
         uint32_t view_id = 0;
         uint32_t parent_id = 0;
         std::vector<uint32_t> children;
@@ -1736,6 +1756,44 @@ public:
         return true;
     }
 
+    // ── ADDITIONAL-AUDIT P0-1 (XML attach-before-measure law) ───────────
+    // setContentView(int layoutResId) inflates a tree whose custom views
+    // may dispatch REAL DEX onMeasure. AOSP: that measure belongs to the
+    // FIRST TRAVERSAL, after attach — never inline at inflation (the S43
+    // lesson: inline attach raced post-inflate field setup). The shadow
+    // records the inflated root; the ENGINE consumes it at frame render:
+    // attach wave FIRST, then the canonical measure_layout. One-shot.
+    void record_pending_inflate_attach(uint32_t root_id) {
+        pending_inflate_attach_ = root_id;
+    }
+    bool consume_pending_inflate_attach(uint32_t& root_id) {
+        if (pending_inflate_attach_ == 0) return false;
+        root_id = pending_inflate_attach_;
+        pending_inflate_attach_ = 0;
+        return true;
+    }
+
+    // ── ADDITIONAL-AUDIT P1-11 (evaluateJavascript callback law) ────────
+    // The WebViewEngine evaluates the script synchronously in the page's
+    // global scope; the ValueCallback (ValueCallback<String>) receives the
+    // JSON result. Shadows cannot dispatch DEX — the pair (callback oid,
+    // json result) is recorded here and the ENGINE invokes
+    // onReceiveValue via try_recursive_invoke at the post-dispatch drain
+    // (same split as Room onCreate / Thread.start run()). One-shot.
+    void record_pending_js_callback(uint32_t callback_oid,
+                                    const std::string& json_result) {
+        if (callback_oid == 0) return;
+        pending_js_callback_ = {callback_oid, json_result};
+    }
+    bool consume_pending_js_callback(uint32_t& callback_oid,
+                                     std::string& json_result) {
+        if (pending_js_callback_.first == 0) return false;
+        callback_oid = pending_js_callback_.first;
+        json_result  = pending_js_callback_.second;
+        pending_js_callback_ = {0, ""};
+        return true;
+    }
+
 private:
     // R-NEW-347 (S42): (parent, child) pairs whose child still needs the
     // AOSP addViewInner attach dispatch. Filled ONLY when the parent node
@@ -1750,10 +1808,26 @@ private:
     // eager measure_layout (AOSP ViewRootImpl.performTraversals ordering).
     std::pair<uint32_t, uint32_t> pending_setcontent_attach_measure_{0, 0};
 
+    // ADDITIONAL-AUDIT P0-1: pending XML-inflation first-traversal root
+    // (setContentView(int) law — consumed by the engine at frame render).
+    uint32_t pending_inflate_attach_ = 0;
+    // ADDITIONAL-AUDIT P1-11: pending evaluateJavascript ValueCallback
+    // (callback oid, JSON result) — consumed by the engine post-dispatch.
+    std::pair<uint32_t, std::string> pending_js_callback_{0, ""};
+    // ADDITIONAL-AUDIT P0-2: window → android.R.id.content node identity
+    // (one stable content-parent object per window content root).
+    std::unordered_map<uint32_t, uint32_t> window_content_nodes_;
+
 public:
     // Add child to parent (updates both parent's children and child's parent_id).
     bool add_child(uint32_t parent_id, uint32_t child_id);
     bool remove_child(uint32_t parent_id, uint32_t child_id);
+    // ── ADDITIONAL-AUDIT P1-9 (setContentView replacement law) ──────────
+    // AOSP PhoneWindow.setContentView: a new content view REPLACES the old
+    // one — the previous content subtree is detached from the window
+    // (mContentParent.removeAllViews()). Objects survive (the app may hold
+    // references); the window subtree no longer reaches them.
+    void detach_from_parent(uint32_t view_id);
 
     // DFS search for a descendant with the given Android view_id.
     // Returns 0 if not found.
