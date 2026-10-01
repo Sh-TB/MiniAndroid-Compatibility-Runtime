@@ -1,12 +1,12 @@
 {
  "schema": "master-worklist/1.0",
- "generated": "2026-10-01T03:05:28Z",
+ "generated": "2026-10-01T06:30:50Z",
  "law": "GENERATED from root_registry.json + canonical registries + campaign mandates (S128). Do not hand-edit; edit the registries or s128_* generators and regenerate.",
  "counts": {
-  "PARTIAL": 106,
+  "PARTIAL": 104,
   "VERIFIED": 156,
   "PENDING": 140,
-  "SUPERSEDED": 49,
+  "SUPERSEDED": 51,
   "OBSERVED": 6,
   "IMPLEMENTED": 133,
   "TESTED": 46,
@@ -97,7 +97,10 @@
    "evidence": "3ed13292",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-004",
@@ -265,7 +268,10 @@
    "evidence": "5488eba0",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-010",
@@ -321,7 +327,10 @@
    "evidence": "3ed13292",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-012",
@@ -349,7 +358,10 @@
    "evidence": "96ecc9f4",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-013",
@@ -377,7 +389,10 @@
    "evidence": "5488eba0",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-014",
@@ -405,7 +420,10 @@
    "evidence": "3ed13292",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-015",
@@ -433,7 +451,10 @@
    "evidence": "8de5382b",
    "blocker": "-",
    "next": "extend F-029 fixture",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "jadx"
+   ]
   },
   {
    "id": "R-NEW-016",
@@ -461,7 +482,10 @@
    "evidence": "8de5382b",
    "blocker": "-",
    "next": "keep protected; fixture on next battery pass",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-017",
@@ -489,7 +513,10 @@
    "evidence": "8de5382b",
    "blocker": "-",
    "next": "hidden-gap list (audit §H)",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-018",
@@ -601,7 +628,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "probe UI-01",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "yoga"
+   ]
   },
   {
    "id": "R-NEW-022",
@@ -713,7 +743,10 @@
    "evidence": "0383f19f",
    "blocker": "-",
    "next": "M9 frontier: dispatch pump + lifecycle registry (R-NEW-279/285)",
-   "status": "SUPERSEDED"
+   "status": "SUPERSEDED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-026",
@@ -769,7 +802,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "jadx"
+   ]
   },
   {
    "id": "R-NEW-028",
@@ -797,7 +833,10 @@
    "evidence": "b03ad3b1",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-029",
@@ -825,7 +864,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "CONDITIONAL (audit §B)",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "jadx"
+   ]
   },
   {
    "id": "R-NEW-030",
@@ -853,7 +895,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "CONDITIONAL",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "jadx"
+   ]
   },
   {
    "id": "R-NEW-031",
@@ -881,7 +926,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "R-NEW-032",
@@ -937,7 +985,10 @@
    "evidence": "96ecc9f4",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "R-NEW-034",
@@ -993,7 +1044,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "extend fixture",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "yoga"
+   ]
   },
   {
    "id": "R-NEW-036",
@@ -1049,7 +1103,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "jadx"
+   ]
   },
   {
    "id": "R-NEW-038",
@@ -1077,7 +1134,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "jadx"
+   ]
   },
   {
    "id": "R-NEW-039",
@@ -1105,7 +1165,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "jadx"
+   ]
   },
   {
    "id": "R-NEW-040",
@@ -1245,7 +1308,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "CONDITIONAL",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "jadx"
+   ]
   },
   {
    "id": "R-NEW-045",
@@ -1273,7 +1339,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-046",
@@ -1301,7 +1370,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-047",
@@ -1441,7 +1513,10 @@
    "evidence": "b03ad3b1",
    "blocker": "-",
    "next": "keep protected",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "jadx"
+   ]
   },
   {
    "id": "R-NEW-052",
@@ -1469,7 +1544,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-053",
@@ -1497,7 +1575,10 @@
    "evidence": "b03ad3b1",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-054",
@@ -1525,7 +1606,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-055",
@@ -1553,7 +1637,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "CONDITIONAL",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "harfbuzz"
+   ]
   },
   {
    "id": "R-NEW-056",
@@ -1581,7 +1668,10 @@
    "evidence": "3ed13292",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-057",
@@ -1609,7 +1699,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-058",
@@ -1637,7 +1730,10 @@
    "evidence": "b03ad3b1",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-059",
@@ -1665,7 +1761,10 @@
    "evidence": "3ed13292",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-060",
@@ -1693,7 +1792,10 @@
    "evidence": "b03ad3b1",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-061",
@@ -1721,7 +1823,10 @@
    "evidence": "ad4349a9",
    "blocker": "-",
    "next": "M8 roadmap item 10",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "aosp_compose"
+   ]
   },
   {
    "id": "R-NEW-062",
@@ -1749,7 +1854,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "with 061",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "aosp_compose"
+   ]
   },
   {
    "id": "R-NEW-063",
@@ -1777,7 +1885,10 @@
    "evidence": "6d88661a",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-064",
@@ -1805,7 +1916,12 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "zlib",
+    "miniz",
+    "apktool_arsclib"
+   ]
   },
   {
    "id": "R-NEW-065",
@@ -1833,7 +1949,13 @@
    "evidence": "96ecc9f4",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "libpng",
+    "libjpeg-turbo",
+    "libwebp",
+    "stb_image"
+   ]
   },
   {
    "id": "R-NEW-066",
@@ -1917,7 +2039,10 @@
    "evidence": "96ecc9f4",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "nanosvg"
+   ]
   },
   {
    "id": "R-NEW-069",
@@ -1973,7 +2098,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "nanosvg"
+   ]
   },
   {
    "id": "R-NEW-071",
@@ -2001,7 +2129,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "nanosvg"
+   ]
   },
   {
    "id": "R-NEW-072",
@@ -2029,7 +2160,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "nanosvg"
+   ]
   },
   {
    "id": "R-NEW-073",
@@ -2057,7 +2191,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "nanosvg"
+   ]
   },
   {
    "id": "R-NEW-074",
@@ -2085,7 +2222,11 @@
    "evidence": "-",
    "blocker": "-",
    "next": "radar retained for HW path",
-   "status": "SUPERSEDED"
+   "status": "SUPERSEDED",
+   "reuse_candidate": [
+    "libpng",
+    "skia"
+   ]
   },
   {
    "id": "R-NEW-075",
@@ -2281,7 +2422,10 @@
    "evidence": "96ecc9f4",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "R-NEW-082",
@@ -2309,7 +2453,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "radar retained",
-   "status": "SUPERSEDED"
+   "status": "SUPERSEDED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "R-NEW-083",
@@ -2337,7 +2484,12 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "zlib",
+    "miniz",
+    "apktool_arsclib"
+   ]
   },
   {
    "id": "R-NEW-084",
@@ -2365,7 +2517,12 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "openssl",
+    "http_client",
+    "curl"
+   ]
   },
   {
    "id": "R-NEW-085",
@@ -2393,7 +2550,12 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "openssl",
+    "http_client",
+    "curl"
+   ]
   },
   {
    "id": "R-NEW-086",
@@ -2421,7 +2583,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "tooling class G",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "openssl"
+   ]
   },
   {
    "id": "R-NEW-087",
@@ -2449,7 +2614,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "tooling class G",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "openssl"
+   ]
   },
   {
    "id": "R-NEW-088",
@@ -2505,7 +2673,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "tooling class G",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "androguard"
+   ]
   },
   {
    "id": "R-NEW-090",
@@ -2533,7 +2704,11 @@
    "evidence": "-",
    "blocker": "-",
    "next": "tooling class G",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "androguard",
+    "apktool_arsclib"
+   ]
   },
   {
    "id": "R-NEW-091",
@@ -2589,7 +2764,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "jadx"
+   ]
   },
   {
    "id": "R-NEW-093",
@@ -3177,7 +3355,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "radar retained",
-   "status": "SUPERSEDED"
+   "status": "SUPERSEDED",
+   "reuse_candidate": [
+    "openssl"
+   ]
   },
   {
    "id": "R-NEW-114",
@@ -3569,7 +3750,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "tooling class G",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-128",
@@ -3625,7 +3809,10 @@
    "evidence": "8de5382b",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "jadx"
+   ]
   },
   {
    "id": "R-NEW-130",
@@ -3681,7 +3868,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "with 030",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "jadx"
+   ]
   },
   {
    "id": "R-NEW-132",
@@ -3709,7 +3899,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "jadx"
+   ]
   },
   {
    "id": "R-NEW-133",
@@ -3737,7 +3930,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "jadx"
+   ]
   },
   {
    "id": "R-NEW-134",
@@ -3765,7 +3961,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-135",
@@ -3793,7 +3992,10 @@
    "evidence": "96ecc9f4",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-136",
@@ -3821,7 +4023,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "jadx"
+   ]
   },
   {
    "id": "R-NEW-137",
@@ -3849,7 +4054,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "jadx"
+   ]
   },
   {
    "id": "R-NEW-138",
@@ -3877,7 +4085,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-139",
@@ -3905,7 +4116,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-140",
@@ -3933,7 +4147,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "jadx"
+   ]
   },
   {
    "id": "R-NEW-141",
@@ -3961,7 +4178,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "jadx"
+   ]
   },
   {
    "id": "R-NEW-142",
@@ -3989,7 +4209,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "jadx"
+   ]
   },
   {
    "id": "R-NEW-143",
@@ -4017,7 +4240,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "jadx"
+   ]
   },
   {
    "id": "R-NEW-144",
@@ -4045,7 +4271,11 @@
    "evidence": "-",
    "blocker": "-",
    "next": "radar retained",
-   "status": "SUPERSEDED"
+   "status": "SUPERSEDED",
+   "reuse_candidate": [
+    "quickjs",
+    "litehtml"
+   ]
   },
   {
    "id": "R-NEW-145",
@@ -4073,7 +4303,11 @@
    "evidence": "-",
    "blocker": "-",
    "next": "radar retained",
-   "status": "SUPERSEDED"
+   "status": "SUPERSEDED",
+   "reuse_candidate": [
+    "quickjs",
+    "litehtml"
+   ]
   },
   {
    "id": "R-NEW-146",
@@ -4101,7 +4335,11 @@
    "evidence": "-",
    "blocker": "-",
    "next": "radar retained",
-   "status": "SUPERSEDED"
+   "status": "SUPERSEDED",
+   "reuse_candidate": [
+    "quickjs",
+    "litehtml"
+   ]
   },
   {
    "id": "R-NEW-147",
@@ -4129,7 +4367,11 @@
    "evidence": "-",
    "blocker": "-",
    "next": "radar retained",
-   "status": "SUPERSEDED"
+   "status": "SUPERSEDED",
+   "reuse_candidate": [
+    "quickjs",
+    "litehtml"
+   ]
   },
   {
    "id": "R-NEW-148",
@@ -4157,7 +4399,11 @@
    "evidence": "-",
    "blocker": "-",
    "next": "radar retained",
-   "status": "SUPERSEDED"
+   "status": "SUPERSEDED",
+   "reuse_candidate": [
+    "quickjs",
+    "litehtml"
+   ]
   },
   {
    "id": "R-NEW-149",
@@ -4185,7 +4431,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-150",
@@ -4269,7 +4518,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "openssl"
+   ]
   },
   {
    "id": "R-NEW-153",
@@ -4297,7 +4549,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-154",
@@ -4325,7 +4580,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "radar retained",
-   "status": "SUPERSEDED"
+   "status": "SUPERSEDED",
+   "reuse_candidate": [
+    "openssl"
+   ]
   },
   {
    "id": "R-NEW-155",
@@ -4353,7 +4611,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "openssl"
+   ]
   },
   {
    "id": "R-NEW-156",
@@ -4381,7 +4642,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "radar retained",
-   "status": "SUPERSEDED"
+   "status": "SUPERSEDED",
+   "reuse_candidate": [
+    "openssl"
+   ]
   },
   {
    "id": "R-NEW-157",
@@ -4409,7 +4673,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "radar retained",
-   "status": "SUPERSEDED"
+   "status": "SUPERSEDED",
+   "reuse_candidate": [
+    "openssl"
+   ]
   },
   {
    "id": "R-NEW-158",
@@ -4437,7 +4704,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "radar retained",
-   "status": "SUPERSEDED"
+   "status": "SUPERSEDED",
+   "reuse_candidate": [
+    "openssl"
+   ]
   },
   {
    "id": "R-NEW-159",
@@ -4465,7 +4735,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "openssl"
+   ]
   },
   {
    "id": "R-NEW-160",
@@ -4577,7 +4850,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "radar retained",
-   "status": "SUPERSEDED"
+   "status": "SUPERSEDED",
+   "reuse_candidate": [
+    "openssl"
+   ]
   },
   {
    "id": "R-NEW-164",
@@ -4605,7 +4881,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "build fuzz probes on infra",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-165",
@@ -4633,7 +4912,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "tooling class F",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-166",
@@ -4661,7 +4943,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "tooling class F",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-167",
@@ -4689,7 +4974,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-168",
@@ -4717,7 +5005,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-169",
@@ -4829,7 +5120,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "with tooling G",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "openssl"
+   ]
   },
   {
    "id": "R-NEW-173",
@@ -4857,7 +5151,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "R-NEW-174",
@@ -4885,7 +5182,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-175",
@@ -4913,7 +5213,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "freetype"
+   ]
   },
   {
    "id": "R-NEW-176",
@@ -4941,7 +5244,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "freetype"
+   ]
   },
   {
    "id": "R-NEW-177",
@@ -4969,7 +5275,13 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "freetype",
+    "harfbuzz",
+    "fribidi",
+    "tesseract"
+   ]
   },
   {
    "id": "R-NEW-178",
@@ -5137,7 +5449,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "tesseract"
+   ]
   },
   {
    "id": "R-NEW-184",
@@ -5165,7 +5480,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "tesseract"
+   ]
   },
   {
    "id": "R-NEW-185",
@@ -5193,7 +5511,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "tesseract"
+   ]
   },
   {
    "id": "R-NEW-186",
@@ -5221,7 +5542,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "tesseract"
+   ]
   },
   {
    "id": "R-NEW-187",
@@ -5249,7 +5573,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-188",
@@ -5277,7 +5604,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-189",
@@ -5305,7 +5635,14 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "libpng",
+    "libjpeg-turbo",
+    "libwebp",
+    "stb_image",
+    "skia"
+   ]
   },
   {
    "id": "R-NEW-190",
@@ -5361,7 +5698,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "aosp_input"
+   ]
   },
   {
    "id": "R-NEW-192",
@@ -5389,7 +5729,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "aosp_input"
+   ]
   },
   {
    "id": "R-NEW-193",
@@ -5417,7 +5760,14 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "libpng",
+    "libjpeg-turbo",
+    "libwebp",
+    "stb_image",
+    "skia"
+   ]
   },
   {
    "id": "R-NEW-194",
@@ -5445,7 +5795,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-195",
@@ -5473,7 +5826,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-196",
@@ -5501,7 +5857,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-197",
@@ -5529,7 +5888,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-198",
@@ -5557,7 +5919,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-199",
@@ -5585,7 +5950,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-200",
@@ -5613,7 +5981,14 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "libpng",
+    "libjpeg-turbo",
+    "libwebp",
+    "stb_image",
+    "skia"
+   ]
   },
   {
    "id": "R-NEW-201",
@@ -5641,7 +6016,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "yoga"
+   ]
   },
   {
    "id": "R-NEW-202",
@@ -5669,7 +6047,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "yoga"
+   ]
   },
   {
    "id": "R-NEW-203",
@@ -5697,7 +6078,13 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "freetype",
+    "harfbuzz",
+    "fribidi",
+    "tesseract"
+   ]
   },
   {
    "id": "R-NEW-204",
@@ -5725,7 +6112,14 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "libpng",
+    "libjpeg-turbo",
+    "libwebp",
+    "stb_image",
+    "skia"
+   ]
   },
   {
    "id": "R-NEW-205",
@@ -5753,7 +6147,14 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "libpng",
+    "libjpeg-turbo",
+    "libwebp",
+    "stb_image",
+    "skia"
+   ]
   },
   {
    "id": "R-NEW-206",
@@ -5809,7 +6210,14 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "libpng",
+    "libjpeg-turbo",
+    "libwebp",
+    "stb_image",
+    "skia"
+   ]
   },
   {
    "id": "R-NEW-208",
@@ -5837,7 +6245,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-209",
@@ -5865,7 +6276,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-210",
@@ -5893,7 +6307,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-211",
@@ -5921,7 +6338,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-212",
@@ -5949,7 +6369,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-213",
@@ -5977,7 +6400,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-214",
@@ -6005,7 +6431,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "skia"
+   ]
   },
   {
    "id": "R-NEW-215",
@@ -6033,7 +6462,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "skia"
+   ]
   },
   {
    "id": "R-NEW-216",
@@ -6061,7 +6493,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "skia"
+   ]
   },
   {
    "id": "R-NEW-217",
@@ -6089,7 +6524,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "skia"
+   ]
   },
   {
    "id": "R-NEW-218",
@@ -6173,7 +6611,10 @@
    "evidence": "96ecc9f4",
    "blocker": "-",
    "next": "hello_color regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-221",
@@ -6201,7 +6642,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "aosp_compose"
+   ]
   },
   {
    "id": "R-NEW-222",
@@ -6229,7 +6673,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "aosp_compose"
+   ]
   },
   {
    "id": "R-NEW-223",
@@ -6313,7 +6760,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "nanosvg"
+   ]
   },
   {
    "id": "R-NEW-226",
@@ -6341,7 +6791,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "nanosvg"
+   ]
   },
   {
    "id": "R-NEW-227",
@@ -6369,7 +6822,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "nanosvg"
+   ]
   },
   {
    "id": "R-NEW-228",
@@ -6621,7 +7077,14 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "libpng",
+    "libjpeg-turbo",
+    "libwebp",
+    "stb_image",
+    "skia"
+   ]
   },
   {
    "id": "R-NEW-237",
@@ -6649,7 +7112,14 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "libpng",
+    "libjpeg-turbo",
+    "libwebp",
+    "stb_image",
+    "skia"
+   ]
   },
   {
    "id": "R-NEW-238",
@@ -6677,7 +7147,14 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "libpng",
+    "libjpeg-turbo",
+    "libwebp",
+    "stb_image",
+    "skia"
+   ]
   },
   {
    "id": "R-NEW-239",
@@ -6705,7 +7182,14 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "libpng",
+    "libjpeg-turbo",
+    "libwebp",
+    "stb_image",
+    "skia"
+   ]
   },
   {
    "id": "R-NEW-240",
@@ -6733,7 +7217,11 @@
    "evidence": "-",
    "blocker": "-",
    "next": "radar retained",
-   "status": "SUPERSEDED"
+   "status": "SUPERSEDED",
+   "reuse_candidate": [
+    "libpng",
+    "skia"
+   ]
   },
   {
    "id": "R-NEW-241",
@@ -6761,7 +7249,10 @@
    "evidence": "ad4349a9",
    "blocker": "-",
    "next": "with 242",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "rlottie_upstream"
+   ]
   },
   {
    "id": "R-NEW-242",
@@ -6789,7 +7280,10 @@
    "evidence": "ad4349a9",
    "blocker": "-",
    "next": "M8 roadmap item 10",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-243",
@@ -6817,7 +7311,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-244",
@@ -6845,7 +7342,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-245",
@@ -6873,7 +7373,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-246",
@@ -7017,80 +7520,83 @@
   },
   {
    "id": "R-NEW-251",
-   "title": "touch_dispatcher transforms",
-   "category": "MC-053 touch dispatch",
-   "category_num": 53,
-   "subsystem": "INPUT",
-   "layer": "INPUT",
-   "current_status": "PARTIAL",
-   "root_cause": "touch_dispatcher transforms",
-   "exists": "touch_dispatcher transforms",
+   "title": "R-NEW-424 reverse draw-order walk implements the AOSP isTransformedTouchPointInView hit-test law (S128 chain max=5 + S131 audit);",
+   "category": "MC-037 View",
+   "category_num": 37,
+   "subsystem": "UI",
+   "layer": "VIEWTREE",
+   "current_status": "SUPERSEDED-BY-EVIDENCE",
+   "root_cause": "R-NEW-424 reverse draw-order walk implements the AOSP isTransformedTouchPointInView hit-test law (S128 chain max=5 + S131 audit); battery 124-stage ALL PASS",
+   "exists": "R-NEW-424 reverse draw-order walk implements the AOSP isTransformedTouchPointInView hit-test law (S128 chain max=5 + S131 audit); battery 124-stage ALL PASS",
    "missing": "hit-test law",
-   "dependencies": "-",
-   "fanout": "P2-MEDIUM (4 caps in category)",
+   "dependencies": "R-NEW-424",
+   "fanout": "P2-MEDIUM (3 caps in category)",
    "visual_impact": "YES",
    "affected_apks": "corpus class",
-   "affected_caps": "CAP-INPUT-099, CAP-INPUT-100, CAP-INPUT-102, CAP-INPUT-110",
-   "source_law": "touch_dispatcher transforms",
-   "aosp_ref": "AOSP ViewGroup.dispatchTouchEvent + TouchTarget law",
-   "mature_impl": "AOSP",
-   "reuse": "HIGH - reuse AOSP",
-   "plan": "on demand",
+   "affected_caps": "CAP-UI-001, CAP-UI-006, CAP-UI-031",
+   "source_law": "R-NEW-424 reverse draw-order walk implements the AOSP isTransformedTouchPointInView hit-test law (S128 chain max=5 + S131 audit); battery 124-stage ALL PASS",
+   "aosp_ref": "AOSP frameworks/base core/java/android/view/View.java",
+   "mature_impl": "AOSP View; ViewRootImpl",
+   "reuse": "HIGH - reuse AOSP View; ViewRootImpl",
+   "plan": "superseded by R-NEW-424",
    "test_plan": "reproducer run + fan-out wave (2 unrelated APK + 2 unrelated games) + battery gate + golden ladder G0-G11 + 3-run byte-identical SHA when visual",
    "regressions": "battery 114-stage gate + golden ladder G0-G11 + affected titles",
    "evidence": "-",
    "blocker": "-",
-   "next": "on demand",
-   "status": "PARTIAL"
+   "next": "superseded by R-NEW-424",
+   "status": "SUPERSEDED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "R-NEW-252",
-   "title": "touch_dispatcher.cpp; tictactoe_golden 9/9 clicks (§29 battery)",
-   "category": "MC-053 touch dispatch",
-   "category_num": 53,
-   "subsystem": "INPUT",
-   "layer": "INPUT",
-   "current_status": "PARTIAL",
-   "root_cause": "touch_dispatcher.cpp; tictactoe_golden 9/9 clicks (§29 battery)",
-   "exists": "touch_dispatcher.cpp; tictactoe_golden 9/9 clicks (§29 battery)",
+   "title": "ordering matrix = R-NEW-424 walk law; ttt byte-identical b5a7a35d, calc goldens a169346e x3, battery 124-stage ALL PASS (S131 audi",
+   "category": "MC-121 200-title corpus",
+   "category_num": 121,
+   "subsystem": "CORPUS",
+   "layer": "APK",
+   "current_status": "SUPERSEDED-BY-EVIDENCE",
+   "root_cause": "ordering matrix = R-NEW-424 walk law; ttt byte-identical b5a7a35d, calc goldens a169346e x3, battery 124-stage ALL PASS (S131 audit)",
+   "exists": "ordering matrix = R-NEW-424 walk law; ttt byte-identical b5a7a35d, calc goldens a169346e x3, battery 124-stage ALL PASS (S131 audit)",
    "missing": "ordering matrix",
-   "dependencies": "-",
-   "fanout": "P1-MAJOR (4 caps in category)",
-   "visual_impact": "YES",
-   "affected_apks": "corpus class",
-   "affected_caps": "CAP-INPUT-099, CAP-INPUT-100, CAP-INPUT-102, CAP-INPUT-110",
-   "source_law": "touch_dispatcher.cpp; tictactoe_golden 9/9 clicks (§29 battery)",
-   "aosp_ref": "AOSP ViewGroup.dispatchTouchEvent + TouchTarget law",
-   "mature_impl": "AOSP",
-   "reuse": "HIGH - reuse AOSP",
-   "plan": "regression-watch",
+   "dependencies": "R-NEW-424",
+   "fanout": "P1-MAJOR",
+   "visual_impact": "INDIRECT",
+   "affected_apks": "200-title corpus + 114-stage battery",
+   "affected_caps": "-",
+   "source_law": "ordering matrix = R-NEW-424 walk law; ttt byte-identical b5a7a35d, calc goldens a169346e x3, battery 124-stage ALL PASS (S131 audit)",
+   "aosp_ref": "project corpus law (CORPUS->CLUSTER->ROOT FIX->RETEST)",
+   "mature_impl": "project",
+   "reuse": "HIGH - reuse project",
+   "plan": "superseded by R-NEW-424",
    "test_plan": "reproducer run + fan-out wave (2 unrelated APK + 2 unrelated games) + battery gate + golden ladder G0-G11 + 3-run byte-identical SHA when visual",
    "regressions": "battery 114-stage gate + golden ladder G0-G11 + affected titles",
    "evidence": "-",
    "blocker": "-",
-   "next": "regression-watch",
-   "status": "PARTIAL"
+   "next": "superseded by R-NEW-424",
+   "status": "SUPERSEDED"
   },
   {
    "id": "R-NEW-253",
    "title": "partial",
-   "category": "MC-053 touch dispatch",
-   "category_num": 53,
-   "subsystem": "INPUT",
-   "layer": "INPUT",
+   "category": "MC-121 200-title corpus",
+   "category_num": 121,
+   "subsystem": "CORPUS",
+   "layer": "APK",
    "current_status": "PARTIAL",
    "root_cause": "partial",
    "exists": "partial",
    "missing": "pressed law",
    "dependencies": "-",
-   "fanout": "P3-LOCAL (4 caps in category)",
-   "visual_impact": "YES",
-   "affected_apks": "corpus class",
-   "affected_caps": "CAP-INPUT-099, CAP-INPUT-100, CAP-INPUT-102, CAP-INPUT-110",
+   "fanout": "P3-LOCAL",
+   "visual_impact": "INDIRECT",
+   "affected_apks": "200-title corpus + 114-stage battery",
+   "affected_caps": "-",
    "source_law": "partial",
-   "aosp_ref": "AOSP ViewGroup.dispatchTouchEvent + TouchTarget law",
-   "mature_impl": "AOSP",
-   "reuse": "HIGH - reuse AOSP",
+   "aosp_ref": "project corpus law (CORPUS->CLUSTER->ROOT FIX->RETEST)",
+   "mature_impl": "project",
+   "reuse": "HIGH - reuse project",
    "plan": "on demand",
    "test_plan": "reproducer run + fan-out wave (2 unrelated APK + 2 unrelated games) + battery gate + golden ladder G0-G11 + 3-run byte-identical SHA when visual",
    "regressions": "battery 114-stage gate + golden ladder G0-G11 + affected titles",
@@ -7125,7 +7631,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-255",
@@ -7153,7 +7662,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-256",
@@ -7181,7 +7693,10 @@
    "evidence": "96ecc9f4",
    "blocker": "-",
    "next": "M9 frontier",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "aosp_compose"
+   ]
   },
   {
    "id": "R-NEW-257",
@@ -7209,7 +7724,10 @@
    "evidence": "774d6cdd",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-258",
@@ -7237,7 +7755,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-259",
@@ -7265,7 +7786,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "M9 frontier",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "aosp_compose"
+   ]
   },
   {
    "id": "R-NEW-260",
@@ -7293,7 +7817,10 @@
    "evidence": "96ecc9f4",
    "blocker": "-",
    "next": "hello_color regression-watch",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "R-NEW-261",
@@ -7321,7 +7848,14 @@
    "evidence": "ad4349a9",
    "blocker": "-",
    "next": "with 242",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "stb_image",
+    "gif_s106",
+    "wuffs",
+    "libnsgif",
+    "godot_libgdx"
+   ]
   },
   {
    "id": "R-NEW-262",
@@ -7349,7 +7883,11 @@
    "evidence": "-",
    "blocker": "-",
    "next": "radar retained",
-   "status": "SUPERSEDED"
+   "status": "SUPERSEDED",
+   "reuse_candidate": [
+    "libpng",
+    "skia"
+   ]
   },
   {
    "id": "R-NEW-263",
@@ -7377,7 +7915,11 @@
    "evidence": "-",
    "blocker": "-",
    "next": "radar retained",
-   "status": "SUPERSEDED"
+   "status": "SUPERSEDED",
+   "reuse_candidate": [
+    "libpng",
+    "skia"
+   ]
   },
   {
    "id": "R-NEW-264",
@@ -7405,7 +7947,11 @@
    "evidence": "-",
    "blocker": "-",
    "next": "radar retained",
-   "status": "SUPERSEDED"
+   "status": "SUPERSEDED",
+   "reuse_candidate": [
+    "libpng",
+    "skia"
+   ]
   },
   {
    "id": "R-NEW-265",
@@ -7433,7 +7979,11 @@
    "evidence": "-",
    "blocker": "-",
    "next": "radar retained",
-   "status": "SUPERSEDED"
+   "status": "SUPERSEDED",
+   "reuse_candidate": [
+    "libpng",
+    "skia"
+   ]
   },
   {
    "id": "R-NEW-266",
@@ -7461,7 +8011,14 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "libpng",
+    "libjpeg-turbo",
+    "libwebp",
+    "stb_image",
+    "skia"
+   ]
   },
   {
    "id": "R-NEW-267",
@@ -7629,7 +8186,10 @@
    "evidence": "0383f19f",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "aosp_compose"
+   ]
   },
   {
    "id": "R-NEW-273",
@@ -7657,7 +8217,14 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "libpng",
+    "libjpeg-turbo",
+    "libwebp",
+    "stb_image",
+    "skia"
+   ]
   },
   {
    "id": "R-NEW-274",
@@ -7685,7 +8252,11 @@
    "evidence": "-",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "libpng",
+    "skia"
+   ]
   },
   {
    "id": "R-NEW-275",
@@ -7713,7 +8284,10 @@
    "evidence": "96ecc9f4",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-276",
@@ -7741,7 +8315,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-277",
@@ -7769,7 +8346,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-278",
@@ -7853,7 +8433,10 @@
    "evidence": "3093cd48",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-281",
@@ -7881,7 +8464,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "Known gap (M9-B analysis): no collection-view law at HEAD (grep clean); views must reflect the backing map. Compose/AndroidX uses values() on hot paths. No live failure recorded yet — implement with OpenJDK view semantics + micro-fixture when a trace reaches it.",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "R-NEW-282",
@@ -8021,7 +8607,10 @@
    "evidence": "3093cd48",
    "blocker": "-",
    "next": "-",
-   "status": "SUPERSEDED"
+   "status": "SUPERSEDED",
+   "reuse_candidate": [
+    "aosp_compose"
+   ]
   },
   {
    "id": "R-NEW-287",
@@ -8049,7 +8638,10 @@
    "evidence": "3093cd48",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-288",
@@ -8189,7 +8781,10 @@
    "evidence": "3093cd48",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-293",
@@ -8217,7 +8812,10 @@
    "evidence": "3093cd48",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-294",
@@ -8273,7 +8871,10 @@
    "evidence": "7178c890",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-296",
@@ -8301,7 +8902,10 @@
    "evidence": "7178c890",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "aosp_compose"
+   ]
   },
   {
    "id": "R-NEW-297",
@@ -8329,7 +8933,10 @@
    "evidence": "7178c890",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-298",
@@ -8357,7 +8964,10 @@
    "evidence": "PENDING-S21",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "jadx"
+   ]
   },
   {
    "id": "R-NEW-299",
@@ -8385,7 +8995,10 @@
    "evidence": "PENDING-S21",
    "blocker": "-",
    "next": "regression-watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-300",
@@ -8413,7 +9026,10 @@
    "evidence": "PENDING-S22",
    "blocker": "-",
    "next": "micro-test + close after F-077 clears the dooz path",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-301",
@@ -8441,7 +9057,10 @@
    "evidence": "S35-F-LEDGER-CLOSURE",
    "blocker": "-",
    "next": "trace one put() op from N/d$a.put to the slot write",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "jadx"
+   ]
   },
   {
    "id": "R-NEW-302",
@@ -8469,7 +9088,10 @@
    "evidence": "PENDING-MC4",
    "blocker": "-",
    "next": "CLOSED. Fix lives in layout_inflater.cpp (FrameLayout margins law + root MATCH_PARENT window law), android_shadows.{h,cpp} (layout_dirty flag on tree mutators), execution_engine.cpp (dirty-gated render-time re-measure).",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "R-NEW-303",
@@ -8833,7 +9455,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "R-NEW-329",
@@ -8861,7 +9486,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "R-NEW-330",
@@ -8889,7 +9517,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "SUPERSEDED"
+   "status": "SUPERSEDED",
+   "reuse_candidate": [
+    "yoga"
+   ]
   },
   {
    "id": "R-NEW-331",
@@ -8945,7 +9576,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "R-NEW-333",
@@ -8973,7 +9607,14 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "SUPERSEDED"
+   "status": "SUPERSEDED",
+   "reuse_candidate": [
+    "libpng",
+    "libjpeg-turbo",
+    "libwebp",
+    "stb_image",
+    "skia"
+   ]
   },
   {
    "id": "R-NEW-334",
@@ -9001,7 +9642,10 @@
    "evidence": "S36-F101",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-335",
@@ -9029,7 +9673,10 @@
    "evidence": "S37-NARROWED",
    "blocker": "-",
    "next": "on demand",
-   "status": "SUPERSEDED"
+   "status": "SUPERSEDED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "R-NEW-336",
@@ -9057,7 +9704,10 @@
    "evidence": "S38-NEW",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "yoga"
+   ]
   },
   {
    "id": "R-NEW-337",
@@ -9085,7 +9735,10 @@
    "evidence": "S39-NEW",
    "blocker": "-",
    "next": "(1) Field-write trace on Loj0; instance o828 between object creation and throw: who wrote the state field (Loj0;.e/_state slot) and with what value — expect either a premature makeCompleting/complete call from engine re-dispatch or dual-store corruption (R-NEW-335 family: state read from wrong store). (2) Identify Lkp1;/Lwl;/Ls; via APK mapping (kp1 may be Recomposer's LazyStandaloneCoroutine; Ls;.g/h0 = startCoroutineCancellable family). (3) Check whether engine ran the coroutine start path TWICE (duplicate Ls;.g entries for same receiver in api_trace/lifecycle_trace). (4) Fix-law candidates: honor JobSupport state machine exactly — if tryMakeCompleting returns already-completing sentinel on a job the engine itself completed, the completion was duplicated engine-side; trace and remove the duplicate dispatch at its source (preferred) vs masking sentinel in T (rejected: hides real state bug).",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "R-NEW-338",
@@ -9141,7 +9794,10 @@
    "evidence": "S39-FIX",
    "blocker": "-",
    "next": "Frontier advanced: composition machinery survives; content nodes not yet composed (Lt4; children=0, framebuffer white = real draw path pending). Next probe: Recomposer frame pump — does the Choreographer frame callback / MonotonicFrameClock withFrameNanos chain dispatch so composition produces content nodes? (R-NEW-340 candidate.)",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "R-NEW-340",
@@ -9337,7 +9993,10 @@
    "evidence": "S42",
    "blocker": "-",
    "next": "R-NEW-348: composition pass (44 ComposerImpl calls) terminates at Lpz0;.c1 -> U0(Z)Lwt0; null bail — compose 1.11.4 composition-capabilities orchestration (Lqz0;.g = capability bits 128|0x400000; root-node Lkz0;.d composer != querying composer -> null) — the app content lambda ({ Content() } -> Dooz composables) is still never invoked; that gate is the exact next frontier.",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "R-NEW-348",
@@ -9365,7 +10024,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "(1) Identify Lwt0;/Lkz0;/Lje1; against runtime 1.11.4 sources (already at /tmp/s42/runtime_src, ui 1.11.4 at /tmp/s42/ui_src): map ControlledComposition capability flags (bits 128, 0x400000) and the composition-services registration path — WHO must set Lkz0;->d (owner's composer) and WHEN; (2) verify the owner (AndroidComposeView Owner) wiring: Lkz0;.d is set at composition creation — probe whether our run created TWO composers (one from the suspended Ls7;.i wrapper, one from composeInitial) making the root-node lookup mismatch; (3) implement the missing generic law(s) in the capabilities/orchestration path; (4) then the content lambda { Content() } should finally invoke the Dooz composables.",
-   "status": "SUPERSEDED"
+   "status": "SUPERSEDED",
+   "reuse_candidate": [
+    "aosp_compose"
+   ]
   },
   {
    "id": "R-NEW-349",
@@ -9393,7 +10055,10 @@
    "evidence": "S43",
    "blocker": "-",
    "next": "SCOPE NOTE: an S43 draft also drained pending_child_attaches after setContentView — that fired DEX onAttachedToWindow for XML-inflated trees (microtimer RoTimeControl) before their post-inflate field setup, a lateinit ISE escaped onCreate and the app went white (A/B-proven). The landed law drains pending-child-attaches at addView/addViewInLayout ONLY; the R349 attach wave starts from the recorded content root only.",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "R-NEW-350",
@@ -9449,7 +10114,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "(1) Dump Llt0;.w fully (1009B) and the Lta1; ctor to map which array (v11 rebinding) the aput targets and where its size comes from; (2) probe the objects array the engine built at Ly81;.c case 3 (filled-new-array {v2,v3}) — verify heap length == 2; (3) validate against protobuf MessageSchema field-table law (fields_count*3 / *2 sizing visible at 0x2f2/0x2fa); (4) close -> the DataStore theme read completes -> runBlocking unblocks -> the compose content lambda composes for real.",
-   "status": "SUPERSEDED"
+   "status": "SUPERSEDED",
+   "reuse_candidate": [
+    "jadx"
+   ]
   },
   {
    "id": "R-NEW-352",
@@ -9477,7 +10145,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "(1) Trace the loop body between two forName visits (move-result -> checkNotNull -> getDeclaredConstructor -> newInstance -> which branch jumps back); (2) compare the S42 bridge-path result shape (was ensure_class_initialized actually reached? was the return CLASS_REF or a stale value?) against the interpreter-law result; (3) either restore loop-progress semantics (why did the S42 path leave the app green) or make the interpreter law idempotent-cheap and re-enable it by default.",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "skia"
+   ]
   },
   {
    "id": "R-NEW-353",
@@ -9533,7 +10204,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "R-NEW-355",
@@ -9589,7 +10263,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "aosp_input"
+   ]
   },
   {
    "id": "R-NEW-357",
@@ -9617,7 +10294,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "jadx"
+   ]
   },
   {
    "id": "R-NEW-358",
@@ -9673,7 +10353,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "R-NEW-360",
@@ -9813,7 +10496,14 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "stb_image",
+    "gif_s106",
+    "wuffs",
+    "libnsgif",
+    "godot_libgdx"
+   ]
   },
   {
    "id": "R-NEW-376",
@@ -9869,7 +10559,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "F-084",
@@ -10009,7 +10702,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "F-103",
@@ -10121,7 +10817,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "(a) F-110 lever (measured, registered): per-invoke constants tri.resolve 15.8us + em.setup 22.7us and DalvikValue copy cost (2xstd::string per register read/write) — the composition needs ~700K instructions; at current ~1,459-2,200 inst/s it completes only past ~480s; a 3-6x constant-cost reduction is the path to completion inside evidence budgets. (b) When composition completes: verify dispatchDraw -> CanvasShadow ops -> real Compose pixels. R-NEW-380 stays closed.",
-   "status": "OBSERVED"
+   "status": "OBSERVED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "F-110",
@@ -10149,7 +10848,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "TESTED"
+   "status": "TESTED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "F-111",
@@ -10177,7 +10879,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "F-112",
@@ -10233,7 +10938,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "TESTED"
+   "status": "TESTED",
+   "reuse_candidate": [
+    "jadx"
+   ]
   },
   {
    "id": "R-NEW-382",
@@ -10373,7 +11081,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "F-119",
@@ -10457,7 +11168,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "A7",
@@ -10541,7 +11255,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "F-121",
@@ -10569,7 +11286,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "F-122",
@@ -10597,7 +11317,14 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "libpng",
+    "libjpeg-turbo",
+    "libwebp",
+    "stb_image",
+    "skia"
+   ]
   },
   {
    "id": "F-123",
@@ -10625,7 +11352,14 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "libpng",
+    "libjpeg-turbo",
+    "libwebp",
+    "stb_image",
+    "skia"
+   ]
   },
   {
    "id": "F-124",
@@ -10653,7 +11387,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "A2",
@@ -10709,7 +11446,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "C3",
@@ -10737,7 +11477,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "yoga"
+   ]
   },
   {
    "id": "F-135",
@@ -10765,7 +11508,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "F-137",
@@ -10877,7 +11623,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "F-143",
@@ -10989,7 +11738,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "F-147",
@@ -11045,7 +11797,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "aosp_compose"
+   ]
   },
   {
    "id": "F-149",
@@ -11073,7 +11828,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "F-150",
@@ -11101,7 +11859,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "godot_libgdx"
+   ]
   },
   {
    "id": "F-120",
@@ -11157,7 +11918,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "aosp_compose"
+   ]
   },
   {
    "id": "R-NEW-391",
@@ -11213,7 +11977,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "R-NEW-393",
@@ -11241,7 +12008,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "R-NEW-394",
@@ -11325,7 +12095,11 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "libpng",
+    "skia"
+   ]
   },
   {
    "id": "F-154",
@@ -11409,7 +12183,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "TESTED"
+   "status": "TESTED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "R-NEW-397",
@@ -11465,7 +12242,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "TESTED"
+   "status": "TESTED",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "F-155",
@@ -11521,7 +12301,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "TESTED"
+   "status": "TESTED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "R-NEW-400",
@@ -11549,7 +12332,16 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "TESTED"
+   "status": "TESTED",
+   "reuse_candidate": [
+    "mpg123",
+    "libsndfile",
+    "minimp3",
+    "stb_vorbis",
+    "dr_libs",
+    "miniaudio",
+    "sdl2"
+   ]
   },
   {
    "id": "R-NEW-401",
@@ -11577,7 +12369,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "TESTED"
+   "status": "TESTED",
+   "reuse_candidate": [
+    "sqlite3"
+   ]
   },
   {
    "id": "VF-NEW-001",
@@ -11605,7 +12400,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "VF-NEW-002",
@@ -11633,7 +12431,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "F-NEW-156",
@@ -11689,7 +12490,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "androguard"
+   ]
   },
   {
    "id": "F-NEW-157",
@@ -11773,7 +12577,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "on demand",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "R-NEW-423",
@@ -11829,7 +12636,10 @@
    "evidence": "S128 (this session)",
    "blocker": "-",
    "next": "M-01 residual: CAP-INPUT-108 VelocityTracker then CAP-INPUT-110 TouchDelegate; intercept wave on a scrollable-container APK (sudoku / opencalculator SlidingUpPanelLayout family).",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "R-NEW-425",
@@ -11857,7 +12667,10 @@
    "evidence": "S129 (this session)",
    "blocker": "-",
    "next": "CAP-SCROLLING-126 computeScroll + 127 EdgeEffect — the fling consumer chain (OverScroller/fling seed from computed velocity) is the next INPUT→SCROLLING handoff.",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "R-NEW-426",
@@ -11885,7 +12698,10 @@
    "evidence": "S129 (this session)",
    "blocker": "-",
    "next": "M-01 INPUT residuals: CAP-INPUT-107 multi-touch upgrade; intercept wave on sudoku/opencalculator SlidingUpPanelLayout; then M-03 GAME lockCanvas loop (CAP-SCROLLING-126 computeScroll chain).",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "CAP-UI-001",
@@ -11913,7 +12729,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "TESTED"
+   "status": "TESTED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "CAP-UI-002",
@@ -12053,7 +12872,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "CAP-UI-007",
@@ -12333,7 +13155,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "TESTED"
+   "status": "TESTED",
+   "reuse_candidate": [
+    "yoga"
+   ]
   },
   {
    "id": "CAP-UI-017",
@@ -12361,7 +13186,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "TESTED"
+   "status": "TESTED",
+   "reuse_candidate": [
+    "yoga"
+   ]
   },
   {
    "id": "CAP-UI-018",
@@ -12725,7 +13553,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "aosp_input"
+   ]
   },
   {
    "id": "CAP-UI-031",
@@ -12753,7 +13584,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "cdroid"
+   ]
   },
   {
    "id": "CAP-RENDERING-032",
@@ -12781,7 +13615,14 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "TESTED"
+   "status": "TESTED",
+   "reuse_candidate": [
+    "libpng",
+    "libjpeg-turbo",
+    "libwebp",
+    "stb_image",
+    "skia"
+   ]
   },
   {
    "id": "CAP-RENDERING-033",
@@ -12809,7 +13650,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "TESTED"
+   "status": "TESTED",
+   "reuse_candidate": [
+    "skia"
+   ]
   },
   {
    "id": "CAP-RENDERING-034",
@@ -12837,7 +13681,13 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "TESTED"
+   "status": "TESTED",
+   "reuse_candidate": [
+    "libpng",
+    "libjpeg-turbo",
+    "libwebp",
+    "stb_image"
+   ]
   },
   {
    "id": "CAP-RENDERING-035",
@@ -12921,7 +13771,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "implement via TOOL-FIRST reuse path",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "skia"
+   ]
   },
   {
    "id": "CAP-RENDERING-038",
@@ -13173,7 +14026,11 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "libpng",
+    "skia"
+   ]
   },
   {
    "id": "CAP-RENDERING-047",
@@ -13397,7 +14254,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "TESTED"
+   "status": "TESTED",
+   "reuse_candidate": [
+    "freetype"
+   ]
   },
   {
    "id": "CAP-TEXT-055",
@@ -13425,7 +14285,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "implement via TOOL-FIRST reuse path",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "freetype"
+   ]
   },
   {
    "id": "CAP-TEXT-056",
@@ -13453,7 +14316,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "freetype"
+   ]
   },
   {
    "id": "CAP-TEXT-057",
@@ -13509,7 +14375,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "implement via TOOL-FIRST reuse path",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "harfbuzz"
+   ]
   },
   {
    "id": "CAP-TEXT-059",
@@ -13621,7 +14490,13 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "freetype",
+    "harfbuzz",
+    "fribidi",
+    "tesseract"
+   ]
   },
   {
    "id": "CAP-TEXT-063",
@@ -13677,7 +14552,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "harfbuzz"
+   ]
   },
   {
    "id": "CAP-TEXT-065",
@@ -13705,7 +14583,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "freetype"
+   ]
   },
   {
    "id": "CAP-TEXT-066",
@@ -13761,7 +14642,11 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "TESTED"
+   "status": "TESTED",
+   "reuse_candidate": [
+    "libpng",
+    "skia"
+   ]
   },
   {
    "id": "CAP-RESOURCES-068",
@@ -14013,7 +14898,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "nanosvg"
+   ]
   },
   {
    "id": "CAP-RESOURCES-077",
@@ -14041,7 +14929,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "nanosvg"
+   ]
   },
   {
    "id": "CAP-RESOURCES-078",
@@ -14069,7 +14960,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "nanosvg"
+   ]
   },
   {
    "id": "CAP-RESOURCES-079",
@@ -14097,7 +14991,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "nanosvg"
+   ]
   },
   {
    "id": "CAP-RESOURCES-080",
@@ -14125,7 +15022,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "TESTED"
+   "status": "TESTED",
+   "reuse_candidate": [
+    "nanosvg"
+   ]
   },
   {
    "id": "CAP-RESOURCES-081",
@@ -14153,7 +15053,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "nanosvg"
+   ]
   },
   {
    "id": "CAP-RESOURCES-082",
@@ -14181,7 +15084,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "implement via TOOL-FIRST reuse path",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "nanosvg"
+   ]
   },
   {
    "id": "CAP-RESOURCES-083",
@@ -14209,7 +15115,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "TESTED"
+   "status": "TESTED",
+   "reuse_candidate": [
+    "nanosvg"
+   ]
   },
   {
    "id": "CAP-RESOURCES-084",
@@ -14265,7 +15174,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "implement via TOOL-FIRST reuse path",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "nanosvg"
+   ]
   },
   {
    "id": "CAP-RESOURCES-086",
@@ -14293,7 +15205,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "nanosvg"
+   ]
   },
   {
    "id": "CAP-INFLATION-087",
@@ -14321,7 +15236,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "TESTED"
+   "status": "TESTED",
+   "reuse_candidate": [
+    "yoga"
+   ]
   },
   {
    "id": "CAP-INFLATION-088",
@@ -14349,7 +15267,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "yoga"
+   ]
   },
   {
    "id": "CAP-INFLATION-089",
@@ -14377,7 +15298,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "yoga"
+   ]
   },
   {
    "id": "CAP-INFLATION-090",
@@ -14405,7 +15329,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "yoga"
+   ]
   },
   {
    "id": "CAP-INFLATION-091",
@@ -14433,7 +15360,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "yoga"
+   ]
   },
   {
    "id": "CAP-INFLATION-092",
@@ -14461,7 +15391,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "yoga"
+   ]
   },
   {
    "id": "CAP-INFLATION-093",
@@ -14489,7 +15422,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "yoga"
+   ]
   },
   {
    "id": "CAP-INFLATION-094",
@@ -14573,7 +15509,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "TESTED"
+   "status": "TESTED",
+   "reuse_candidate": [
+    "yoga"
+   ]
   },
   {
    "id": "CAP-INPUT-097",
@@ -14601,7 +15540,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "aosp_input"
+   ]
   },
   {
    "id": "CAP-INPUT-098",
@@ -14629,7 +15571,11 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "aosp_input",
+    "sdl2"
+   ]
   },
   {
    "id": "CAP-INPUT-099",
@@ -14657,7 +15603,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "aosp_input"
+   ]
   },
   {
    "id": "CAP-INPUT-100",
@@ -14685,7 +15634,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "aosp_input"
+   ]
   },
   {
    "id": "CAP-INPUT-101",
@@ -14713,7 +15665,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "TESTED"
+   "status": "TESTED",
+   "reuse_candidate": [
+    "aosp_input"
+   ]
   },
   {
    "id": "CAP-INPUT-102",
@@ -14741,7 +15696,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "TESTED"
+   "status": "TESTED",
+   "reuse_candidate": [
+    "aosp_input"
+   ]
   },
   {
    "id": "CAP-INPUT-103",
@@ -14769,7 +15727,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "aosp_input"
+   ]
   },
   {
    "id": "CAP-INPUT-104",
@@ -14797,7 +15758,11 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "aosp_input",
+    "sdl2"
+   ]
   },
   {
    "id": "CAP-INPUT-105",
@@ -14825,7 +15790,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "VERIFIED"
+   "status": "VERIFIED",
+   "reuse_candidate": [
+    "aosp_input"
+   ]
   },
   {
    "id": "CAP-INPUT-106",
@@ -14853,7 +15821,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "aosp_input"
+   ]
   },
   {
    "id": "CAP-INPUT-107",
@@ -14909,7 +15880,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "aosp_input"
+   ]
   },
   {
    "id": "CAP-INPUT-109",
@@ -14937,7 +15911,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "aosp_input"
+   ]
   },
   {
    "id": "CAP-INPUT-110",
@@ -14965,7 +15942,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "aosp_input"
+   ]
   },
   {
    "id": "CAP-FRAMES-111",
@@ -15077,7 +16057,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "TESTED"
+   "status": "TESTED",
+   "reuse_candidate": [
+    "rlottie_upstream"
+   ]
   },
   {
    "id": "CAP-ANIMATION-115",
@@ -15105,7 +16088,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "rlottie_upstream"
+   ]
   },
   {
    "id": "CAP-ANIMATION-116",
@@ -15133,7 +16119,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "rlottie_upstream"
+   ]
   },
   {
    "id": "CAP-ANIMATION-117",
@@ -15161,7 +16150,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "implement via TOOL-FIRST reuse path",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "rlottie_upstream"
+   ]
   },
   {
    "id": "CAP-ANIMATION-118",
@@ -15189,7 +16181,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "rlottie_upstream"
+   ]
   },
   {
    "id": "CAP-ANIMATION-119",
@@ -15217,7 +16212,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "rlottie_upstream"
+   ]
   },
   {
    "id": "CAP-ANIMATION-120",
@@ -15245,7 +16243,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "implement via TOOL-FIRST reuse path",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "rlottie_upstream"
+   ]
   },
   {
    "id": "CAP-SCROLLING-121",
@@ -15273,7 +16274,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "TESTED"
+   "status": "TESTED",
+   "reuse_candidate": [
+    "aosp_input"
+   ]
   },
   {
    "id": "CAP-SCROLLING-122",
@@ -15301,7 +16305,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "aosp_input"
+   ]
   },
   {
    "id": "CAP-SCROLLING-123",
@@ -15329,7 +16336,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "aosp_input"
+   ]
   },
   {
    "id": "CAP-SCROLLING-124",
@@ -15357,7 +16367,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "aosp_input"
+   ]
   },
   {
    "id": "CAP-SCROLLING-125",
@@ -15385,7 +16398,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "aosp_input"
+   ]
   },
   {
    "id": "CAP-SCROLLING-126",
@@ -15413,7 +16429,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "implement via TOOL-FIRST reuse path",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "aosp_input"
+   ]
   },
   {
    "id": "CAP-SCROLLING-127",
@@ -15441,7 +16460,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "implement via TOOL-FIRST reuse path",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "aosp_input"
+   ]
   },
   {
    "id": "CAP-SCROLLING-128",
@@ -15469,7 +16491,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "implement via TOOL-FIRST reuse path",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "aosp_input"
+   ]
   },
   {
    "id": "CAP-THREADING-129",
@@ -15749,7 +16774,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "sqlite3"
+   ]
   },
   {
    "id": "CAP-STORAGE-139",
@@ -15805,7 +16833,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "sqlite3"
+   ]
   },
   {
    "id": "CAP-STORAGE-141",
@@ -15973,7 +17004,12 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "openssl",
+    "http_client",
+    "curl"
+   ]
   },
   {
    "id": "CAP-NETWORK-147",
@@ -16001,7 +17037,12 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "openssl",
+    "http_client",
+    "curl"
+   ]
   },
   {
    "id": "CAP-NETWORK-148",
@@ -16029,7 +17070,12 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "openssl",
+    "http_client",
+    "curl"
+   ]
   },
   {
    "id": "CAP-NETWORK-149",
@@ -16057,7 +17103,12 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "openssl",
+    "http_client",
+    "curl"
+   ]
   },
   {
    "id": "CAP-NETWORK-150",
@@ -16085,7 +17136,12 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "openssl",
+    "http_client",
+    "curl"
+   ]
   },
   {
    "id": "CAP-NETWORK-151",
@@ -16113,7 +17169,12 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "openssl",
+    "http_client",
+    "curl"
+   ]
   },
   {
    "id": "CAP-WEBVIEW-152",
@@ -16141,7 +17202,11 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "quickjs",
+    "litehtml"
+   ]
   },
   {
    "id": "CAP-WEBVIEW-153",
@@ -16169,7 +17234,12 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "quickjs",
+    "litehtml",
+    "lexbor"
+   ]
   },
   {
    "id": "CAP-WEBVIEW-154",
@@ -16197,7 +17267,11 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "quickjs",
+    "litehtml"
+   ]
   },
   {
    "id": "CAP-WEBVIEW-155",
@@ -16225,7 +17299,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "quickjs"
+   ]
   },
   {
    "id": "CAP-WEBVIEW-156",
@@ -16253,7 +17330,11 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "quickjs",
+    "litehtml"
+   ]
   },
   {
    "id": "CAP-WEBVIEW-157",
@@ -16281,7 +17362,11 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "quickjs",
+    "litehtml"
+   ]
   },
   {
    "id": "CAP-WEBVIEW-158",
@@ -16309,7 +17394,11 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "quickjs",
+    "litehtml"
+   ]
   },
   {
    "id": "CAP-WEBVIEW-159",
@@ -16337,7 +17426,11 @@
    "evidence": "-",
    "blocker": "-",
    "next": "implement via TOOL-FIRST reuse path",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "quickjs",
+    "litehtml"
+   ]
   },
   {
    "id": "CAP-WEBVIEW-160",
@@ -16365,7 +17458,11 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "quickjs",
+    "litehtml"
+   ]
   },
   {
    "id": "CAP-AUDIO-161",
@@ -16393,7 +17490,16 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "mpg123",
+    "libsndfile",
+    "minimp3",
+    "stb_vorbis",
+    "dr_libs",
+    "miniaudio",
+    "sdl2"
+   ]
   },
   {
    "id": "CAP-AUDIO-162",
@@ -16421,7 +17527,16 @@
    "evidence": "-",
    "blocker": "-",
    "next": "implement via TOOL-FIRST reuse path",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "mpg123",
+    "libsndfile",
+    "minimp3",
+    "stb_vorbis",
+    "dr_libs",
+    "miniaudio",
+    "sdl2"
+   ]
   },
   {
    "id": "CAP-AUDIO-163",
@@ -16449,7 +17564,16 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "mpg123",
+    "libsndfile",
+    "minimp3",
+    "stb_vorbis",
+    "dr_libs",
+    "miniaudio",
+    "sdl2"
+   ]
   },
   {
    "id": "CAP-AUDIO-164",
@@ -16477,7 +17601,16 @@
    "evidence": "-",
    "blocker": "-",
    "next": "implement via TOOL-FIRST reuse path",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "mpg123",
+    "libsndfile",
+    "minimp3",
+    "stb_vorbis",
+    "dr_libs",
+    "miniaudio",
+    "sdl2"
+   ]
   },
   {
    "id": "CAP-AUDIO-165",
@@ -16505,7 +17638,16 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "mpg123",
+    "libsndfile",
+    "minimp3",
+    "stb_vorbis",
+    "dr_libs",
+    "miniaudio",
+    "sdl2"
+   ]
   },
   {
    "id": "CAP-AUDIO-166",
@@ -16533,7 +17675,16 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "mpg123",
+    "libsndfile",
+    "minimp3",
+    "stb_vorbis",
+    "dr_libs",
+    "miniaudio",
+    "sdl2"
+   ]
   },
   {
    "id": "CAP-AUDIO-167",
@@ -16561,7 +17712,16 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "mpg123",
+    "libsndfile",
+    "minimp3",
+    "stb_vorbis",
+    "dr_libs",
+    "miniaudio",
+    "sdl2"
+   ]
   },
   {
    "id": "CAP-AUDIO-168",
@@ -16589,7 +17749,16 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "mpg123",
+    "libsndfile",
+    "minimp3",
+    "stb_vorbis",
+    "dr_libs",
+    "miniaudio",
+    "sdl2"
+   ]
   },
   {
    "id": "CAP-AUDIO-169",
@@ -16617,7 +17786,16 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "mpg123",
+    "libsndfile",
+    "minimp3",
+    "stb_vorbis",
+    "dr_libs",
+    "miniaudio",
+    "sdl2"
+   ]
   },
   {
    "id": "CAP-VIDEO-170",
@@ -16645,7 +17823,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "implement via TOOL-FIRST reuse path",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "ffmpeg"
+   ]
   },
   {
    "id": "CAP-VIDEO-171",
@@ -16673,7 +17854,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "implement via TOOL-FIRST reuse path",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "ffmpeg"
+   ]
   },
   {
    "id": "CAP-VIDEO-172",
@@ -16701,7 +17885,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "implement via TOOL-FIRST reuse path",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "ffmpeg"
+   ]
   },
   {
    "id": "CAP-VIDEO-173",
@@ -16729,7 +17916,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "ffmpeg"
+   ]
   },
   {
    "id": "CAP-VIDEO-174",
@@ -16869,7 +18059,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "implement via TOOL-FIRST reuse path",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "godot_libgdx"
+   ]
   },
   {
    "id": "CAP-GAME-179",
@@ -16897,7 +18090,14 @@
    "evidence": "-",
    "blocker": "-",
    "next": "implement via TOOL-FIRST reuse path",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "stb_image",
+    "gif_s106",
+    "wuffs",
+    "libnsgif",
+    "godot_libgdx"
+   ]
   },
   {
    "id": "CAP-GAME-180",
@@ -16953,7 +18153,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "portablegl"
+   ]
   },
   {
    "id": "CAP-GAME-182",
@@ -16981,7 +18184,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "portablegl"
+   ]
   },
   {
    "id": "CAP-GAME-183",
@@ -17261,7 +18467,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "sqlite3"
+   ]
   },
   {
    "id": "CAP-DATABASE-193",
@@ -17373,7 +18582,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "evidence-tier upgrade / regression watch",
-   "status": "IMPLEMENTED"
+   "status": "IMPLEMENTED",
+   "reuse_candidate": [
+    "jadx"
+   ]
   },
   {
    "id": "CAP-DATABASE-197",
@@ -17401,7 +18613,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "implement via TOOL-FIRST reuse path",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "sqlite3"
+   ]
   },
   {
    "id": "M-01",
@@ -17429,7 +18644,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "CAP-INPUT-102 TouchTarget law first (blocks click routing correctness)",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "aosp_input"
+   ]
   },
   {
    "id": "M-02",
@@ -17457,7 +18675,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "G-decision: FFmpeg candidate + license (report G)",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "ffmpeg"
+   ]
   },
   {
    "id": "M-03",
@@ -17485,7 +18706,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "CAP-GAME-177 lockCanvas loop",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "godot_libgdx"
+   ]
   },
   {
    "id": "M-04",
@@ -17569,7 +18793,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "R-NEW-294 (MonotonicFrameClock) — the single highest-dependency node",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "aosp_compose"
+   ]
   },
   {
    "id": "M-07",
@@ -17709,7 +18936,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "slidingpanelayout law port",
-   "status": "PARTIAL"
+   "status": "PARTIAL",
+   "reuse_candidate": [
+    "aosp_compose"
+   ]
   },
   {
    "id": "M-12",
@@ -17793,7 +19023,14 @@
    "evidence": "-",
    "blocker": "-",
    "next": "driver patch",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "stb_image",
+    "gif_s106",
+    "wuffs",
+    "libnsgif",
+    "godot_libgdx"
+   ]
   },
   {
    "id": "M-15",
@@ -17849,7 +19086,11 @@
    "evidence": "-",
    "blocker": "-",
    "next": "decision record + mykanji/weather probe",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "quickjs",
+    "litehtml"
+   ]
   },
   {
    "id": "M-17",
@@ -17905,7 +19146,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "none; regression watch",
-   "status": "VERIFIED_3RUN"
+   "status": "VERIFIED_3RUN",
+   "reuse_candidate": [
+    "nanosvg"
+   ]
   },
   {
    "id": "M-19",
@@ -17933,7 +19177,10 @@
    "evidence": "-",
    "blocker": "-",
    "next": "piggyback on M-12 waves",
-   "status": "PENDING"
+   "status": "PENDING",
+   "reuse_candidate": [
+    "pixelmatch"
+   ]
   },
   {
    "id": "M-20",

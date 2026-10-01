@@ -101,6 +101,18 @@ $(BUILDDIR)/main.o: $(MAIN_SOURCE)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
 
 # Tests
+# S130 law tests (pure models, deterministic). Full CORE closure so the
+# battery gate can always rebuild them reproducibly.
+LAWS130_SOURCE = $(TESTDIR)/s130_laws_test.cpp
+LAWS130_EXECUTABLE = $(BUILDDIR)/s130_laws_test
+
+laws130: $(LAWS130_EXECUTABLE)
+	./$(LAWS130_EXECUTABLE)
+
+$(LAWS130_EXECUTABLE): $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(LAWS130_SOURCE)
+	@mkdir -p $(BUILDDIR)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $(LAWS130_SOURCE) $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(LIBS) $(FONTS_LIBS)
+
 test: $(TEST_EXECUTABLE)
 	./$(TEST_EXECUTABLE)
 
