@@ -1,0 +1,106 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "662c4c1ae011e663f4c968cc4862c187ef2df342a3fa8aba514139fbdefd381c",
+   "size_bytes": 1170653,
+   "generated_at": "2026-09-29 11:26:46 UTC",
+   "session_id": "EXP-001-20260929-112645-1287",
+   "total_calls": 4671,
+   "top_apis": [
+    {
+     "api": "stage_load_classes",
+     "count": 4597
+    },
+    {
+     "api": "Unknown",
+     "count": 32
+    },
+    {
+     "api": "stage_capture_output",
+     "count": 6
+    },
+    {
+     "api": "trace_files",
+     "count": 5
+    },
+    {
+     "api": "stage_render_frame",
+     "count": 4
+    },
+    {
+     "api": "execute_apk",
+     "count": 3
+    },
+    {
+     "api": "stage_load_apk",
+     "count": 2
+    },
+    {
+     "api": "stage_parse_dex",
+     "count": 2
+    },
+    {
+     "api": "stage_initialize_runtime",
+     "count": 2
+    },
+    {
+     "api": "stage_execute_application_real_dalvik",
+     "count": 2
+    },
+    {
+     "api": "trace_export",
+     "count": 2
+    },
+    {
+     "api": "log_screenshot",
+     "count": 2
+    },
+    {
+     "api": "start_session",
+     "count": 1
+    },
+    {
+     "api": "stage_execute_application",
+     "count": 1
+    },
+    {
+     "api": "drain_handler_queue",
+     "count": 1
+    },
+    {
+     "api": "deferred_runnables",
+     "count": 1
+    },
+    {
+     "api": "validation",
+     "count": 1
+    },
+    {
+     "api": "execution_source",
+     "count": 1
+    },
+    {
+     "api": "create_view_from_dalvik_result",
+     "count": 1
+    },
+    {
+     "api": "create_hello_world_view",
+     "count": 1
+    }
+   ],
+   "distinct_apis": 24,
+   "path": "evidence/s117_complete_graphics/g_dooz/api_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "075ce7e0dbc0e26433b2457c9a619f7feda9fa5ba45398f6535e859637cb930b",
+   "size_bytes": 989,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s117_complete_graphics/g_dooz/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

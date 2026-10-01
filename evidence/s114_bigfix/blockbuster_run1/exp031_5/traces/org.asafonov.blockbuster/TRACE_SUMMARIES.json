@@ -1,0 +1,38 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "a1de44bc0908b7a0b37c849bebc25e32d08b6230e0e88af0e4d00f12388a9c3f",
+   "size_bytes": 4060,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s114_bigfix/blockbuster_run1/exp031_5/traces/org.asafonov.blockbuster/heap_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "2d73e98b7bac1752fff0813acb07fc8afabc2930e48dca38b75d4efd984d238f",
+   "size_bytes": 3030,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s114_bigfix/blockbuster_run1/exp031_5/traces/org.asafonov.blockbuster/method_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "9e748e61124cd414c0aa03572255a09c941bcfb5940e06f250a1d7adf6f6f096",
+   "size_bytes": 184,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s114_bigfix/blockbuster_run1/exp031_5/traces/org.asafonov.blockbuster/opcode_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "88f3650feac42d309eaa57565d311b76258fc6dd007f8f9af004b6f3026bf49c",
+   "size_bytes": 169,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s114_bigfix/blockbuster_run1/exp031_5/traces/org.asafonov.blockbuster/register_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

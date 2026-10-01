@@ -1,0 +1,106 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "13e2f1437aca41721d49dd8e221edfe23eb38814c35971a5f12e8d53580de16a",
+   "size_bytes": 1330575,
+   "generated_at": "2026-09-26 18:19:32 UTC",
+   "session_id": "EXP-001-20260926-181931-4317",
+   "total_calls": 5369,
+   "top_apis": [
+    {
+     "api": "stage_load_classes",
+     "count": 5321
+    },
+    {
+     "api": "stage_capture_output",
+     "count": 6
+    },
+    {
+     "api": "Unknown",
+     "count": 5
+    },
+    {
+     "api": "trace_files",
+     "count": 5
+    },
+    {
+     "api": "stage_render_frame",
+     "count": 4
+    },
+    {
+     "api": "execute_apk",
+     "count": 3
+    },
+    {
+     "api": "stage_load_apk",
+     "count": 2
+    },
+    {
+     "api": "stage_parse_dex",
+     "count": 2
+    },
+    {
+     "api": "stage_initialize_runtime",
+     "count": 2
+    },
+    {
+     "api": "stage_execute_application_real_dalvik",
+     "count": 2
+    },
+    {
+     "api": "trace_export",
+     "count": 2
+    },
+    {
+     "api": "log_screenshot",
+     "count": 2
+    },
+    {
+     "api": "start_session",
+     "count": 1
+    },
+    {
+     "api": "stage_execute_application",
+     "count": 1
+    },
+    {
+     "api": "app_fonts",
+     "count": 1
+    },
+    {
+     "api": "drain_handler_queue",
+     "count": 1
+    },
+    {
+     "api": "deferred_runnables",
+     "count": 1
+    },
+    {
+     "api": "validation",
+     "count": 1
+    },
+    {
+     "api": "execution_source",
+     "count": 1
+    },
+    {
+     "api": "create_view_from_dalvik_result",
+     "count": 1
+    }
+   ],
+   "distinct_apis": 25,
+   "path": "evidence/s107_games/com.ma.tehro_run2/api_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "3fbb55c52e2da32d4be0f845a7d1be227485842c63feda6a98434dcdad820501",
+   "size_bytes": 970,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s107_games/com.ma.tehro_run2/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

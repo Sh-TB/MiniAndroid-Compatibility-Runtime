@@ -1,0 +1,38 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "60031d9c8ee6bb4184fe3b0b3dff9d14a9be2987479ae75dcf9928d6ad8a2671",
+   "size_bytes": 53991,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s109_webview/breakout_fix48_run2/exp031_5/traces/me.lecaro.breakout/heap_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "d3fde82a144fb3b78ac9e8aa9c13620989f0379ed19abd38522c5075615712b2",
+   "size_bytes": 147487,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s109_webview/breakout_fix48_run2/exp031_5/traces/me.lecaro.breakout/method_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "91259f9496914b0d351aa0e695fe520e24d7e482ff3b971631ac8c40fa2e7395",
+   "size_bytes": 186,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s109_webview/breakout_fix48_run2/exp031_5/traces/me.lecaro.breakout/opcode_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "dabba39673800529aee4e9211082af2e4d60142a9d808f0bd2c6cc43526ece3e",
+   "size_bytes": 169,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s109_webview/breakout_fix48_run2/exp031_5/traces/me.lecaro.breakout/register_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

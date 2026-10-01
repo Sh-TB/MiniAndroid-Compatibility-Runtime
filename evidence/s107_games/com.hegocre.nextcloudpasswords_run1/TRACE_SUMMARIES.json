@@ -1,0 +1,14 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "20453ee94ce5fc33eaea89b32247f560069acc02f29a2c37f775b9a01c6aa949",
+   "size_bytes": 856,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s107_games/com.hegocre.nextcloudpasswords_run1/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

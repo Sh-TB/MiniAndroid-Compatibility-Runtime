@@ -1,0 +1,14 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "e5f6be9ec0c88ab06f83072e5dfc42f214b9c8288def6da391869f1a4ffdea0b",
+   "size_bytes": 1004,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s107_games/orinasa.njarasoa.maripanatokana_run1/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

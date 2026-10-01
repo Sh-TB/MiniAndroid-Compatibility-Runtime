@@ -1,0 +1,106 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "b2a406b8dba53445f13e28f9cd7bcf1c94d17d34976fa06736a6cce41af46d8f",
+   "size_bytes": 21626,
+   "generated_at": "2026-09-27 14:32:04 UTC",
+   "session_id": "EXP-001-20260927-143203-0292",
+   "total_calls": 81,
+   "top_apis": [
+    {
+     "api": "stage_load_classes",
+     "count": 39
+    },
+    {
+     "api": "stage_capture_output",
+     "count": 6
+    },
+    {
+     "api": "trace_files",
+     "count": 5
+    },
+    {
+     "api": "stage_render_frame",
+     "count": 4
+    },
+    {
+     "api": "execute_apk",
+     "count": 3
+    },
+    {
+     "api": "stage_load_apk",
+     "count": 2
+    },
+    {
+     "api": "stage_parse_dex",
+     "count": 2
+    },
+    {
+     "api": "stage_initialize_runtime",
+     "count": 2
+    },
+    {
+     "api": "stage_execute_application_real_dalvik",
+     "count": 2
+    },
+    {
+     "api": "trace_export",
+     "count": 2
+    },
+    {
+     "api": "log_screenshot",
+     "count": 2
+    },
+    {
+     "api": "start_session",
+     "count": 1
+    },
+    {
+     "api": "stage_execute_application",
+     "count": 1
+    },
+    {
+     "api": "drain_handler_queue",
+     "count": 1
+    },
+    {
+     "api": "deferred_runnables",
+     "count": 1
+    },
+    {
+     "api": "validation",
+     "count": 1
+    },
+    {
+     "api": "execution_source",
+     "count": 1
+    },
+    {
+     "api": "create_view_from_dalvik_result",
+     "count": 1
+    },
+    {
+     "api": "create_hello_world_view",
+     "count": 1
+    },
+    {
+     "api": "lifecycle_source",
+     "count": 1
+    }
+   ],
+   "distinct_apis": 23,
+   "path": "evidence/audit_s107/three_run/org.ucam.ssb22.pinyinfdroid_run1/api_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "4a980050fb2e6c12a3602af0167389be8754cc3abc2354baf773837a2136b0d9",
+   "size_bytes": 842,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/audit_s107/three_run/org.ucam.ssb22.pinyinfdroid_run1/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

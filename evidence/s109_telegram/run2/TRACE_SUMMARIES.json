@@ -1,0 +1,106 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "553f9b8343cd9a2d02d11ab4594742ca65fee29b7aa9970d89c3b84d74ca1129",
+   "size_bytes": 2546139,
+   "generated_at": "2026-09-27 15:46:46 UTC",
+   "session_id": "EXP-001-20260927-154557-3644",
+   "total_calls": 9608,
+   "top_apis": [
+    {
+     "api": "stage_load_classes",
+     "count": 9549
+    },
+    {
+     "api": "phase_b_click",
+     "count": 10
+    },
+    {
+     "api": "Unknown",
+     "count": 6
+    },
+    {
+     "api": "stage_capture_output",
+     "count": 6
+    },
+    {
+     "api": "trace_files",
+     "count": 5
+    },
+    {
+     "api": "stage_render_frame",
+     "count": 4
+    },
+    {
+     "api": "execute_apk",
+     "count": 3
+    },
+    {
+     "api": "stage_load_apk",
+     "count": 2
+    },
+    {
+     "api": "stage_parse_dex",
+     "count": 2
+    },
+    {
+     "api": "stage_initialize_runtime",
+     "count": 2
+    },
+    {
+     "api": "stage_execute_application_real_dalvik",
+     "count": 2
+    },
+    {
+     "api": "create_view_from_dalvik_result",
+     "count": 2
+    },
+    {
+     "api": "trace_export",
+     "count": 2
+    },
+    {
+     "api": "log_screenshot",
+     "count": 2
+    },
+    {
+     "api": "start_session",
+     "count": 1
+    },
+    {
+     "api": "stage_execute_application",
+     "count": 1
+    },
+    {
+     "api": "app_fonts",
+     "count": 1
+    },
+    {
+     "api": "drain_handler_queue",
+     "count": 1
+    },
+    {
+     "api": "deferred_runnables",
+     "count": 1
+    },
+    {
+     "api": "validation",
+     "count": 1
+    }
+   ],
+   "distinct_apis": 25,
+   "path": "evidence/s109_telegram/run2/api_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "2071d78186d3880fa97267602c456cfe3691a19b99d8312f26eab6e48bd3b8ae",
+   "size_bytes": 821,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s109_telegram/run2/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}
