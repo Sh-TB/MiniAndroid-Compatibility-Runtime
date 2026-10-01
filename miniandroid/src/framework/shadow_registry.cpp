@@ -5,6 +5,8 @@
 #include "shadow_registry.h"
 
 #include "velocity_tracker.h"  // S129 R-NEW-425/426
+#include "scroller_shadow.h"  // S130 R-NEW-427
+#include "gesture_detector_shadow.h"  // S130 R-NEW-429
 #include "android_shadows.h"
 #include "dialog_shadow.h"
 #include "canvas_shadow.h"
@@ -352,6 +354,9 @@ void register_platform_shadows(ShadowRegistry& reg) {
     // object and copied onto the owning ViewNode by View.setTouchDelegate.
     // Exact-class claim; ViewShadow must NOT capture these ctors.
     reg.register_shadow<TouchDelegateShadow>();
+    // S130 MASS BATCH: Scroller/OverScroller + GestureDetector laws.
+    reg.register_shadow<ScrollerShadow>();
+    reg.register_shadow<GestureDetectorShadow>();
 }
 
 }} // namespace miniandroid::framework
