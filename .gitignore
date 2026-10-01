@@ -187,3 +187,28 @@ run/s94/source_mining/clones/
 external_backup/
 core
 *.ppm
+
+# FINAL CAMPAIGN PHASE 1 (repo hygiene law docs/ARTIFACT_LIFECYCLE.md):
+# tmp/ must contain NO required repository artifact. Scratch APK-derived files
+# (extracted APKs, .dex/.jar payloads, market/archive indices, external fonts)
+# and raw multi-MB traces live outside git; canonical evidence = distilled
+# summaries + SHA256 ledgers (docs/history/final_campaign_phase1/).
+tmp/archidx.json
+tmp/index-v1.json
+tmp/idx.jar
+tmp/mykanji_extract/
+tmp/blid/
+tmp/flappy_build/
+tmp/*_check/
+tmp/*_trace*/
+tmp/*_tap*
+tmp/*_x*/
+tmp/*_tg*/
+evidence/**/api_trace.json
+evidence/**/heap_trace.json
+evidence/**/method_trace.json
+evidence/**/opcode_trace.json
+evidence/**/register_trace.json
+evidence/**/*_bundle*.js
+*.apk
+*.aab

@@ -31,6 +31,14 @@ OVERSIZE_ALLOWLIST = {
     "docs/foundation/api_matrix.json": "canonical API matrix",
     "upstream/s44/protobuf.jar": "pinned upstream reference jar",
     "upstream/s43/ui-android-1.11.4-sources.jar": "pinned upstream reference jar",
+    "miniandroid/framework_res/resources.arsc": (
+        "AOSP framework-res resource table — runtime base data, NOT APK-derived "
+        "payload (S127 R-NEW-423 law: engine package-0x01 router + 1120 "
+        "framework-res files committed; required by every APK resource resolve)"),
+    "tools/r8/r8.jar": (
+        "pinned upstream R8/D8 dex compiler build tool (Google, Apache-2.0) — "
+        "required for canonical fixture builds; external-cache refetch recipe "
+        "documented in ledger docs/history/final_campaign_phase1/"),
 }
 
 LOG_WHITELIST = (

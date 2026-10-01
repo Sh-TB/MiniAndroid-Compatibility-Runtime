@@ -1,0 +1,106 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "38c458845166f19ca5036c80b6b48dbf69f2b4c1f06de075d955410a7d970c8e",
+   "size_bytes": 23371,
+   "generated_at": "2026-09-27 14:32:16 UTC",
+   "session_id": "EXP-001-20260927-143216-0203",
+   "total_calls": 89,
+   "top_apis": [
+    {
+     "api": "stage_load_classes",
+     "count": 33
+    },
+    {
+     "api": "stage_render_frame",
+     "count": 14
+    },
+    {
+     "api": "phase_b_click",
+     "count": 7
+    },
+    {
+     "api": "stage_capture_output",
+     "count": 6
+    },
+    {
+     "api": "trace_files",
+     "count": 5
+    },
+    {
+     "api": "execute_apk",
+     "count": 3
+    },
+    {
+     "api": "stage_load_apk",
+     "count": 2
+    },
+    {
+     "api": "stage_parse_dex",
+     "count": 2
+    },
+    {
+     "api": "stage_initialize_runtime",
+     "count": 2
+    },
+    {
+     "api": "stage_execute_application_real_dalvik",
+     "count": 2
+    },
+    {
+     "api": "trace_export",
+     "count": 2
+    },
+    {
+     "api": "log_screenshot",
+     "count": 2
+    },
+    {
+     "api": "start_session",
+     "count": 1
+    },
+    {
+     "api": "stage_execute_application",
+     "count": 1
+    },
+    {
+     "api": "validation",
+     "count": 1
+    },
+    {
+     "api": "execution_source",
+     "count": 1
+    },
+    {
+     "api": "create_view_from_dalvik_result",
+     "count": 1
+    },
+    {
+     "api": "create_hello_world_view",
+     "count": 1
+    },
+    {
+     "api": "lifecycle_source",
+     "count": 1
+    },
+    {
+     "api": "lifecycle_verified",
+     "count": 1
+    }
+   ],
+   "distinct_apis": 21,
+   "path": "evidence/audit_s107/three_run/com.smorgasbork.hotdeath_run1/api_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "db62cead0dcf4f8f897edaa5bc9dd5f081177cc56ed48a4f2778db2d390d5608",
+   "size_bytes": 3379,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/audit_s107/three_run/com.smorgasbork.hotdeath_run1/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

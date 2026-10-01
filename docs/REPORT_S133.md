@@ -151,7 +151,7 @@ browser:        new tests T01–T17 all deterministic; T02 byte-identical ×3
 | live z.ai console traces | evidence/s133_browser/zai_live*_console.log |
 | z.ai white-shell screenshot + metrics | evidence/s133_browser/zai_live_white_shell.png, zai_live_screen_metrics.json |
 | z.ai resource trace (live) | run/s133/zai_live2/webview_resource_trace.json |
-| z.ai main bundle (diagnostic copy) | evidence/s133_browser/zai_main_bundle_index-BEIsjDOv.js |
+| z.ai main bundle (diagnostic copy) | REMOVED from git Phase-1 hygiene (copied production JS bundle); SHA256 988e28944fd8a323e692178e1d161bbf7b487f4374aef4f032b4177f1a984bdd, size 3,244,563 B, external-cache only — ledger docs/history/final_campaign_phase1/ |
 | S100 browser live-z.ai probe (text reader) | evidence/s133_browser/s100_browser_zai_textreader.png |
 | Mini Browser v2 APK | upload/s133_browser/build/minibrowser_v2.0_vc2.apk (sha c5705d40dc1eba05af26198884a5869e78e7da2aa72523cb3d50dec125a9aacf) |
 | control harness APK | upload/s133_webfix/build/webfix_v1.0_vc1.apk (sha b4aadf3d1bbb14e30a1f3ec46228c138b917dee87c0e813535a6928320ce4246) |

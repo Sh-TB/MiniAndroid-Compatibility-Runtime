@@ -1,0 +1,14 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "bb5f9f38370a5728eb4517004cee57c7987eb2c56c237e9ec5cfc1206290ced6",
+   "size_bytes": 3715,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s107_games/de.kaffeemitkoffein.tinyweatherforecastgermany_run2/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

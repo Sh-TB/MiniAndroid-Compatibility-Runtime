@@ -1,0 +1,106 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "acf7b9efc6142ed0d581bc81ac712954cad6d4e025b437685c139c6b35a8f9f2",
+   "size_bytes": 1713152,
+   "generated_at": "2026-09-27 18:41:11 UTC",
+   "session_id": "EXP-001-20260927-184110-4155",
+   "total_calls": 5716,
+   "top_apis": [
+    {
+     "api": "stage_load_classes",
+     "count": 5670
+    },
+    {
+     "api": "stage_capture_output",
+     "count": 6
+    },
+    {
+     "api": "trace_files",
+     "count": 5
+    },
+    {
+     "api": "stage_render_frame",
+     "count": 4
+    },
+    {
+     "api": "execute_apk",
+     "count": 3
+    },
+    {
+     "api": "phase_b_click",
+     "count": 3
+    },
+    {
+     "api": "stage_load_apk",
+     "count": 2
+    },
+    {
+     "api": "stage_parse_dex",
+     "count": 2
+    },
+    {
+     "api": "stage_initialize_runtime",
+     "count": 2
+    },
+    {
+     "api": "stage_execute_application_real_dalvik",
+     "count": 2
+    },
+    {
+     "api": "trace_export",
+     "count": 2
+    },
+    {
+     "api": "log_screenshot",
+     "count": 2
+    },
+    {
+     "api": "start_session",
+     "count": 1
+    },
+    {
+     "api": "stage_execute_application",
+     "count": 1
+    },
+    {
+     "api": "app_fonts",
+     "count": 1
+    },
+    {
+     "api": "Unknown",
+     "count": 1
+    },
+    {
+     "api": "drain_handler_queue",
+     "count": 1
+    },
+    {
+     "api": "deferred_runnables",
+     "count": 1
+    },
+    {
+     "api": "validation",
+     "count": 1
+    },
+    {
+     "api": "execution_source",
+     "count": 1
+    }
+   ],
+   "distinct_apis": 25,
+   "path": "evidence/s112_html5_generalization/blidraughts_run1/api_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "b8e37f9c83a451927ad65935f3d2905af407edd3654151cd17618706a74dd318",
+   "size_bytes": 967,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s112_html5_generalization/blidraughts_run1/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

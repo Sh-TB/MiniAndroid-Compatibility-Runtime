@@ -1,0 +1,38 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "847b6bf6bd79d881563fda1afbb249a6d2a34b5add0a43218d85370bb192cbc3",
+   "size_bytes": 43685,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s106_fresh/ballbreak_run3/exp031_5/traces/de.georgsieber.ballbreak/heap_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "311e7940e8db03dccf0ec643e8f9399d12ff3889471d67162d1273a3d4700f4d",
+   "size_bytes": 57652,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s106_fresh/ballbreak_run3/exp031_5/traces/de.georgsieber.ballbreak/method_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "10cc9c8b8264eead8a92c246b57cb89404f95c6d117d648791406dcbeb0a819e",
+   "size_bytes": 186,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s106_fresh/ballbreak_run3/exp031_5/traces/de.georgsieber.ballbreak/opcode_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "b809db4cb3ae373a2035ee585bd728323fcd7d797137af22c335c9f9590e7202",
+   "size_bytes": 169,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s106_fresh/ballbreak_run3/exp031_5/traces/de.georgsieber.ballbreak/register_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

@@ -1,0 +1,38 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "f36c39fb6613a6c64d55d7c96a4305df33664fe7a73eb5e4a9607047a3e9ae85",
+   "size_bytes": 1690619,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s114_bigfix/g_dooz/exp031_5/traces/io.github.yamin8000.dooz/heap_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "26196b0f00826312c0682e1e4dd2f7f636d6e9854857e4703adb450a5602a988",
+   "size_bytes": 463181,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s114_bigfix/g_dooz/exp031_5/traces/io.github.yamin8000.dooz/method_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "00fd69f3b8ce74f9c23ced1244152ae40f5c6956ff5965fd15808085cb721968",
+   "size_bytes": 176,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s114_bigfix/g_dooz/exp031_5/traces/io.github.yamin8000.dooz/opcode_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "69e89c62fe6e7c2391a9cb0706351029477e9816f728cb03f035d4280c68fd5a",
+   "size_bytes": 158,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s114_bigfix/g_dooz/exp031_5/traces/io.github.yamin8000.dooz/register_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

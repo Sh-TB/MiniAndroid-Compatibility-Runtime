@@ -1,0 +1,106 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "f82cb28891efae928172e5a42c0234f5d7951e68e8f3a3206893eb88a8b54a96",
+   "size_bytes": 429979,
+   "generated_at": "2026-09-26 14:34:09 UTC",
+   "session_id": "EXP-001-20260926-143408-4688",
+   "total_calls": 1409,
+   "top_apis": [
+    {
+     "api": "stage_load_classes",
+     "count": 1348
+    },
+    {
+     "api": "Unknown",
+     "count": 16
+    },
+    {
+     "api": "stage_render_frame",
+     "count": 9
+    },
+    {
+     "api": "stage_capture_output",
+     "count": 6
+    },
+    {
+     "api": "trace_files",
+     "count": 5
+    },
+    {
+     "api": "execute_apk",
+     "count": 3
+    },
+    {
+     "api": "stage_load_apk",
+     "count": 2
+    },
+    {
+     "api": "stage_parse_dex",
+     "count": 2
+    },
+    {
+     "api": "stage_initialize_runtime",
+     "count": 2
+    },
+    {
+     "api": "stage_execute_application_real_dalvik",
+     "count": 2
+    },
+    {
+     "api": "trace_export",
+     "count": 2
+    },
+    {
+     "api": "log_screenshot",
+     "count": 2
+    },
+    {
+     "api": "start_session",
+     "count": 1
+    },
+    {
+     "api": "stage_execute_application",
+     "count": 1
+    },
+    {
+     "api": "validation",
+     "count": 1
+    },
+    {
+     "api": "execution_source",
+     "count": 1
+    },
+    {
+     "api": "create_view_from_dalvik_result",
+     "count": 1
+    },
+    {
+     "api": "create_hello_world_view",
+     "count": 1
+    },
+    {
+     "api": "lifecycle_source",
+     "count": 1
+    },
+    {
+     "api": "lifecycle_verified",
+     "count": 1
+    }
+   ],
+   "distinct_apis": 22,
+   "path": "evidence/s107_fresh/bouncy_run2/api_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "e035c8b06a7ffe9455e73d3294e714d874f8c219384edecbd2fff2dac68d7fc4",
+   "size_bytes": 924,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s107_fresh/bouncy_run2/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

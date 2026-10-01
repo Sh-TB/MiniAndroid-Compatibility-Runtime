@@ -1,0 +1,38 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "dda6d16e36b2d45a415a5b33b2ed13ee0c4b5795058003ff7878e8b01b8aa235",
+   "size_bytes": 3556330,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s109_telegram/run1/exp031_5/traces/org.forkgram.classic/heap_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "cfa4ff8be16ad99c7364ddfabbc67c618af21565125706a09820d03094d3f190",
+   "size_bytes": 1048972,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s109_telegram/run1/exp031_5/traces/org.forkgram.classic/method_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "5941daa086a57701cfdccfc70ee8fc2ede08b3a27d3496b5a605a75b10ee93ce",
+   "size_bytes": 169,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s109_telegram/run1/exp031_5/traces/org.forkgram.classic/opcode_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "3fb30bd55f8595d8413e64871612c8506cb0154d2422413cdb355bd8b61c75bf",
+   "size_bytes": 150,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s109_telegram/run1/exp031_5/traces/org.forkgram.classic/register_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

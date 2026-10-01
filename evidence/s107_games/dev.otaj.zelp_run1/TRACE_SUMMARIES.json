@@ -1,0 +1,14 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "334796b0093f66c3aff1fb9174204ff48c491f85183a6cb85fb73ffa10fb2fe1",
+   "size_bytes": 808,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s107_games/dev.otaj.zelp_run1/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

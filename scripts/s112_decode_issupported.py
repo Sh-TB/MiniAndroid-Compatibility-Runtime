@@ -4,7 +4,7 @@ import struct, sys
 sys.path.insert(0, '/home/z/my-project/scripts')
 from s112_dexdump import Dex
 
-d = Dex('/home/z/my-project/tmp/blid/classes.dex')
+d = Dex('/home/z/my-project/external_backup/s112/blid/classes.dex')  # Phase-1 hygiene: tmp/ payload moved out of git (SHA256 c4ca8802a0992675042dfe2e1e7de7d2b43fe81f3648bfa8e80390a58269e88e, ledger docs/history/final_campaign_phase1/)
 b = d.b
 
 def mname(idx):

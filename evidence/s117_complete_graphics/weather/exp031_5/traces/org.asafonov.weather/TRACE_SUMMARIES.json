@@ -1,0 +1,38 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "caabb71c46ddcd4b0ec4b666370a8a61b8704eac88c32dcc17af6d13b2fb0459",
+   "size_bytes": 4389,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s117_complete_graphics/weather/exp031_5/traces/org.asafonov.weather/heap_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "e8bcccc5efbb06a733b6d868797ebc2b9a369fa0f4432a6cb7f558a764d2bcb3",
+   "size_bytes": 6012,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s117_complete_graphics/weather/exp031_5/traces/org.asafonov.weather/method_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "661205b16adc513d17524bc3a48ba174432784fa2285218ceb475c051a6fbbd6",
+   "size_bytes": 180,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s117_complete_graphics/weather/exp031_5/traces/org.asafonov.weather/opcode_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "2cbbecd773e73a1f729e2bcd6e250fe70f0ce7c80951aefecb82070f4f8fbf32",
+   "size_bytes": 165,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s117_complete_graphics/weather/exp031_5/traces/org.asafonov.weather/register_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

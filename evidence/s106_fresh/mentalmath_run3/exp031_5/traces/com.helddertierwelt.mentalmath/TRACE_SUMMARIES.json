@@ -1,0 +1,38 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "8c9cc9adc0a1ee124b7ef301e7dc32af5aa27b03882af2f20a180b39ac630d5b",
+   "size_bytes": 689776,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s106_fresh/mentalmath_run3/exp031_5/traces/com.helddertierwelt.mentalmath/heap_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "55e18e1d31cd01c26df82f41929ab3d585086bc6af887710684b4cf16e2cbcf9",
+   "size_bytes": 945447,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s106_fresh/mentalmath_run3/exp031_5/traces/com.helddertierwelt.mentalmath/method_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "aea311c07400770b91ba5a007a6236040234e69bbeba62ba71ede9112d9ca9d8",
+   "size_bytes": 173,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s106_fresh/mentalmath_run3/exp031_5/traces/com.helddertierwelt.mentalmath/opcode_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "b34166a23bc769a832c5321b88eb9b315a85997c318d31375d3437e43416bd78",
+   "size_bytes": 155,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s106_fresh/mentalmath_run3/exp031_5/traces/com.helddertierwelt.mentalmath/register_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

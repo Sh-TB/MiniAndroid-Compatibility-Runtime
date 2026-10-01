@@ -1,0 +1,14 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "b5c169435757ffee7dde5be2192fa3b1ca027d88ce2c637c3e7a6eaf0870faab",
+   "size_bytes": 815,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s107_games/com.towerillusion.abdal_run1/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

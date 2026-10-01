@@ -1,0 +1,38 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "74dce396a524a2f090df90ee7362b4c7b17babe97e314538520b631d22f6f911",
+   "size_bytes": 80050,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/audit_s107/three_run/com.dozingcatsoftware.bouncy_run2/exp031_5/traces/com.dozingcatsoftware.bouncy/heap_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "7b89de416303f8ca376989f4e91ace55456899778abb658555361ac92cdfc79a",
+   "size_bytes": 233227,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/audit_s107/three_run/com.dozingcatsoftware.bouncy_run2/exp031_5/traces/com.dozingcatsoftware.bouncy/method_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "b89ffc8ee987ee205e8579ce203093f033a225e11b269c8e225fa5de0f823534",
+   "size_bytes": 187,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/audit_s107/three_run/com.dozingcatsoftware.bouncy_run2/exp031_5/traces/com.dozingcatsoftware.bouncy/opcode_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "e994c3bffa6d443843bb83c2f3f84dffc4c7a9a301bdee5509d3f626592b14c3",
+   "size_bytes": 170,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/audit_s107/three_run/com.dozingcatsoftware.bouncy_run2/exp031_5/traces/com.dozingcatsoftware.bouncy/register_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

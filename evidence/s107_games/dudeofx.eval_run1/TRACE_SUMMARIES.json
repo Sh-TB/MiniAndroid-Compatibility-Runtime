@@ -1,0 +1,14 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "2a45b425881d7453f425ae1f02e433189b4adac601b4f4e9dff5e195bdde7b86",
+   "size_bytes": 964,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s107_games/dudeofx.eval_run1/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

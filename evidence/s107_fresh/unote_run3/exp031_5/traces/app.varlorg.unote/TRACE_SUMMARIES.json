@@ -1,0 +1,38 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "3a53815a37cbd537fd4bff92c7ffdc54ba03bb1dba56b4340813c6c8f9d54cdb",
+   "size_bytes": 12738,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s107_fresh/unote_run3/exp031_5/traces/app.varlorg.unote/heap_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "863c0955a8366f889e2452b038527635ca54479d13f5cc61a226b83f15be7bda",
+   "size_bytes": 11202,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s107_fresh/unote_run3/exp031_5/traces/app.varlorg.unote/method_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "80cde9adec20b0db443fe4e4d0e1939c6dd3f52dd952a804b47457094908be90",
+   "size_bytes": 178,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s107_fresh/unote_run3/exp031_5/traces/app.varlorg.unote/opcode_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "cb7cfbed7f136e4ab48bbcfeb43ee06193a33ca12d1ebf6c6bcdb999d277a61e",
+   "size_bytes": 162,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s107_fresh/unote_run3/exp031_5/traces/app.varlorg.unote/register_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

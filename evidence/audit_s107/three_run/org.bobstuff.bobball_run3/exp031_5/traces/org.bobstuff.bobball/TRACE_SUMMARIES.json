@@ -1,0 +1,38 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "3e0b8e00e305dc079bc36bc48a0cc3845a785c561afb3fda3f0edf3b84edd09e",
+   "size_bytes": 6235,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/audit_s107/three_run/org.bobstuff.bobball_run3/exp031_5/traces/org.bobstuff.bobball/heap_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "13d8cb32145956ca64728f6f85947b03d30bde2d643efad828be5689f9214eec",
+   "size_bytes": 2041,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/audit_s107/three_run/org.bobstuff.bobball_run3/exp031_5/traces/org.bobstuff.bobball/method_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "73fa2c3fe160e1502556263d1e1cb8e92e268812a12d7ac8bcf2b1e6cc03b44f",
+   "size_bytes": 177,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/audit_s107/three_run/org.bobstuff.bobball_run3/exp031_5/traces/org.bobstuff.bobball/opcode_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "917216dd109aa2eeb61fc16a3bf386515d99a5b3067fcd99cc80ac459cd6f02d",
+   "size_bytes": 162,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/audit_s107/three_run/org.bobstuff.bobball_run3/exp031_5/traces/org.bobstuff.bobball/register_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

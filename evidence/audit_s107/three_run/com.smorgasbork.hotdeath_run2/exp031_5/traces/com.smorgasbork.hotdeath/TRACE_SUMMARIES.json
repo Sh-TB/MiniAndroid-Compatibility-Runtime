@@ -1,0 +1,38 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "ee268e51193787ede924f385178b5b8721670ea346d322adb46082ad4c76e089",
+   "size_bytes": 5319,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/audit_s107/three_run/com.smorgasbork.hotdeath_run2/exp031_5/traces/com.smorgasbork.hotdeath/heap_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "98abf0f53e790e8cbd4d5047393d81dc3b96da2332d3ce3de07e1ec8ef442a85",
+   "size_bytes": 4292,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/audit_s107/three_run/com.smorgasbork.hotdeath_run2/exp031_5/traces/com.smorgasbork.hotdeath/method_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "cdb912006a3aaece8f5c6705f03ed21630ffe7e5d5afb7d3d017105c9ee01eeb",
+   "size_bytes": 181,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/audit_s107/three_run/com.smorgasbork.hotdeath_run2/exp031_5/traces/com.smorgasbork.hotdeath/opcode_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "7027959a8f712609867a5937bf90a6ea07d82c414ba12b8162e84bb154ce9d80",
+   "size_bytes": 166,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/audit_s107/three_run/com.smorgasbork.hotdeath_run2/exp031_5/traces/com.smorgasbork.hotdeath/register_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

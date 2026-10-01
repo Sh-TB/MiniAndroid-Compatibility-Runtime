@@ -1,0 +1,14 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "ec602ccab11d905561ec7109773a472585ea70ac288234422ef985dc9f051f2a",
+   "size_bytes": 844,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s107_games/io.github.lordofpolls.shellwave_run2/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

@@ -1,0 +1,38 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "94e8870563d9fe449119e7aa44826c9879fce6c3065df0149b9c003bcc3babfc",
+   "size_bytes": 108743,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s112_html5_generalization/blidraughts_run7/exp031_5/traces/com.vovagorodok.blidraughts/heap_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "d2266875353509c4407d6cb98ec4af8eb16e7c4974bc8e443a943973a9ce5fe6",
+   "size_bytes": 288023,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s112_html5_generalization/blidraughts_run7/exp031_5/traces/com.vovagorodok.blidraughts/method_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "7137dcbd5b8ea1172323734804a1a28714e55faacbc5826a77fe45f8da51101e",
+   "size_bytes": 172,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s112_html5_generalization/blidraughts_run7/exp031_5/traces/com.vovagorodok.blidraughts/opcode_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "9b837b575fd6b1cc4c4708f55346866acae0a84c5236ba766a2a3abc51dababd",
+   "size_bytes": 155,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s112_html5_generalization/blidraughts_run7/exp031_5/traces/com.vovagorodok.blidraughts/register_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "4f8948b31f8989c6c3d31ff98fcdd3d2c921da547249d55b27a167a523566298",
+   "size_bytes": 822,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s107_games/com.bbzone.isitprime_run1/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

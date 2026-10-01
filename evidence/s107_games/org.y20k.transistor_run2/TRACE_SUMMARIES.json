@@ -1,0 +1,14 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "00dc9748c1f108a319f25bd871e2b11c900fa1d920c5a65e27aa21e45dad5860",
+   "size_bytes": 820,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s107_games/org.y20k.transistor_run2/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

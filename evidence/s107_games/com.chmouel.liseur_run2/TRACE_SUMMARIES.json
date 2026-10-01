@@ -1,0 +1,14 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "a9b47429196bbb9407da090ecaf776b24572e3a98f5cc22815a84dc903433375",
+   "size_bytes": 898,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s107_games/com.chmouel.liseur_run2/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

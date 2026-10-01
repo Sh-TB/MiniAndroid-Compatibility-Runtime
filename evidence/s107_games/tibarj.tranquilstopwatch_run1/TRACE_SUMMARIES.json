@@ -1,0 +1,14 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "7b963bbf87a13c1a7739261f80e7f165b494dde0b4e8a15e7d05ccac6cece95e",
+   "size_bytes": 830,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s107_games/tibarj.tranquilstopwatch_run1/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

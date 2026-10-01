@@ -1,0 +1,14 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "7e84465b1fa4804c03db8e1571e39389800165365ac035e3d05769dbac16e59a",
+   "size_bytes": 1027,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s107_games/uk.org.boddie.android.weatherforecast_run2/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

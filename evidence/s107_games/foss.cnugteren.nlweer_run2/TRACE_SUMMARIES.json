@@ -1,0 +1,14 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "a5eae1cd37853f53b4b7fde35d7412087f2d36c23520500104b06a0b790a1d14",
+   "size_bytes": 824,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s107_games/foss.cnugteren.nlweer_run2/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

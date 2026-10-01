@@ -1,0 +1,14 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "2685bc601022ebbaaf45e6e033cfd0e4791ca769797f13f48ce072cd58a1b521",
+   "size_bytes": 3408,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s107_games/org.fossify.clock_run1/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

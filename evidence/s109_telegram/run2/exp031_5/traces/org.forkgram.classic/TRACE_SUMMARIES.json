@@ -1,0 +1,22 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "a05414b3d950eb7e596d6888c4d19052e9137138eb4171411b8111037e8b2eb9",
+   "size_bytes": 1047998,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s109_telegram/run2/exp031_5/traces/org.forkgram.classic/method_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "7a4c41a905425e250e7792ce1d77c9bcd935bd8480bcfb941e9c78dde93bbe68",
+   "size_bytes": 169,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s109_telegram/run2/exp031_5/traces/org.forkgram.classic/opcode_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

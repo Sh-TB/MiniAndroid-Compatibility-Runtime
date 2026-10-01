@@ -1,0 +1,38 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "8555812f0218bc6c93965cc317b4fad59f5411518c8ef80cfb36a12d9084dfc7",
+   "size_bytes": 1786964,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s110_tickets/native_games/dooz/exp031_5/traces/io.github.yamin8000.dooz/heap_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "b6b89c22ee7268432480de6547049e65e5ea9271998b8189e64cfc81591b485c",
+   "size_bytes": 1030382,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s110_tickets/native_games/dooz/exp031_5/traces/io.github.yamin8000.dooz/method_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "ba4fd7c9a0e93235b1e60abeac7941205cd48479ac2368d8581644b81577a7e2",
+   "size_bytes": 188,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s110_tickets/native_games/dooz/exp031_5/traces/io.github.yamin8000.dooz/opcode_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  },
+  {
+   "sha256": "5888be2e9dc5f59faf6bb42a6b963eb7604bee842020ea46d7799f55a93b516a",
+   "size_bytes": 169,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s110_tickets/native_games/dooz/exp031_5/traces/io.github.yamin8000.dooz/register_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "43fdf54b6288688931cd6c252cd05361d2aafbc08f40acff54e25941492d7699",
+   "size_bytes": 918,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s107_games/eu.veldsoft.tuty.fruty.slot_run1/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

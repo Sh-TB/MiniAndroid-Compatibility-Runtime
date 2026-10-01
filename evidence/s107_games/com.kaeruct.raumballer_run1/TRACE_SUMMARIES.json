@@ -1,0 +1,14 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "63b6befa18989e0bebe1075a8e3a1a872050a6caeb35198b96157a2f23a10124",
+   "size_bytes": 896,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s107_games/com.kaeruct.raumballer_run1/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

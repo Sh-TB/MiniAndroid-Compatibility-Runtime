@@ -1,0 +1,14 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "809866a44e7abb21db805163df24962b44defa3b93a0f97440353b488f3768d1",
+   "size_bytes": 811,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s107_games/jwtc.android.chess_run1/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}

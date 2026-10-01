@@ -1,0 +1,14 @@
+{
+ "_law": "ARTIFACT_LIFECYCLE.md \u00a73-4: raw traces deleted after distillation; SHA256 provenance preserved",
+ "distilled_at": "2026-10-02",
+ "traces": [
+  {
+   "sha256": "a417f12e7bf8ca755b468eb8c04b93bdda9838f58a2df2897b0b9e172d50a138",
+   "size_bytes": 826,
+   "generated_at": null,
+   "session_id": null,
+   "path": "evidence/s107_games/com.sidhant.blockblast_run2/lifecycle_trace.json",
+   "disposition": "DELETE_RAW_TRACE (distilled; law ARTIFACT_LIFECYCLE \u00a73 RAW_LOG/\u00a74 Logs-traces)"
+  }
+ ]
+}
