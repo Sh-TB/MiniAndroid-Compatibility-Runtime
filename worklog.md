@@ -4899,3 +4899,13 @@ Work Log (S134 continued):
 Stage Summary:
 - The S134 central hypothesis is PROVEN and FIXED: MiniAndroid aliased same-named instance fields of different classes into one heap slot; the fix (declaring-class-qualified identity + ART declarer resolution + honest defaults) moves solitaire from "AppCompat delegate never constructs → blank screen" to "app boots through AppCompat theme machinery to onStart" with zero regressions vs a clean-HEAD A/B and 3-run determinism everywhere measured.
 - Next automatic frontier: F-NEW-162 (C013 placeholder law — base-class routing + §30 SUCCESS gate), then the solitaire support-v7 downstream chain, F-NEW-161 attribution, R-NEW-456 replay bisect.
+
+Work Log (S134 wave 2 — F-NEW-162):
+- C013 RENDERER-FAMILY ROUTING LAW implemented (runtime/execution_engine.cpp placeholder branch): (1) SurfaceView/GLSurfaceView descendants NEVER receive the inline placeholder — the surface pipeline owns those pixels (boxcars EbitenSurfaceView: contaminated 3-color frame → honest 1-color); (2) TextView-family descendants (TextView/Button/EditText/CheckBox/RadioButton/Switch) route to text semantics — real text draws when present, empty text = honest blank (headingcalc ExplainableTextView TC/WD/TH/TAS/WS headings now render; unique colors 483→823; pink placeholder boxes eliminated).
+- NEW MICRO-LAW: view-tree class_desc may be DOTTED (Lorg.debian...) vs the DEX hierarchy index SLASHED — normalized before the superclass walk; without it the semantic base is invisible and routing silently no-ops (measured).
+- Gates on the final binary: laws130 51/51; dooz ba8a95eb2278594f + ballbreak 8a951f5f975c4742 BYTE-IDENTICAL to HEAD; T02 c95affdefb734ffd ×3. FAST suite: solitaire frontier unchanged (support-v7 onStart chain), headingcalc 823 colors REAL headings, simplestopwatch 18 colors 0 errors, boxcars honest empty, chessclock unchanged (F-NEW-161).
+- Registry: F-NEW-162 → PARTIAL (SUCCESS-gate downgrade + routed-text geometry refinement remain). Worklist regenerated.
+- Commits: wave 1 committed; wave 2 committed with this entry.
+
+Stage Summary:
+- Two P0/P1 §19 writer-contamination faces closed in-wave with the C013 routing law; the placeholder can no longer stand in for a surface family or a TextView descendant. Next: §30 SUCCESS-gate downgrade (boxcars honest status), solitaire support-v7 onStart chain, F-NEW-161 attribution.

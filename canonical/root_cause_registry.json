@@ -1,17 +1,17 @@
 {
  "_projection_of": "root_registry.json",
  "_law": "root_registry.json is the single writable store; this file is a generated read model (ROADMAP SS3: no duplicate canonical registries).",
- "generated": "S134",
+ "generated": "S134-wave2",
  "total": 457,
  "status_counts": {
-  "PARTIAL": 103,
+  "PARTIAL": 104,
   "VERIFIED-CORRECT": 46,
   "UNPROVEN": 72,
   "VERIFIED-FIXED": 48,
   "SUPERSEDED-BY-EVIDENCE": 9,
   "RESEARCHED-NOT-IMPLEMENTED": 16,
   "NOT-APPLICABLE": 42,
-  "OBSERVED-FAIL": 7,
+  "OBSERVED-FAIL": 6,
   "IMPLEMENTED": 16,
   "ROOT-CAUSED-FIXED": 61,
   "PARTIAL-FIX": 1,
@@ -3231,11 +3231,11 @@
   },
   {
    "id": "F-NEW-162",
-   "title": "C013-CUSTOMVIEW inline placeholder contaminates visible frames and can stand in for unimplemented renderer families: (a) headingcalc_1 — pink \"custom view (not rendered)\" boxes overpaint REAL heading text (Heading custom views extend a text base and must route to the base draw semantics per S134 §16, not a placeholder); (b) simplestopwatch_26 — BigTextView placeholder label in the live frame; (c) boxcars_libgdx (EbitenSurfaceView, GL/SurfaceView family) — the FULL-SCREEN frame IS the inline placeholder while the run reports Status: SUCCESS Errors: 0 (§30 gate violation: placeholder + nonblank framebuffer classified as success instead of the honest NATIVE/JS-ENGINE-DEPENDENCY failure). LAW NEEDED: unknown custom views extending known bases route to base semantics with live state; SurfaceView/GLSurfaceView subclasses route to the surface pipeline; placeholders never overwrite real pixels and never produce SUCCESS.",
-   "status": "OBSERVED-FAIL",
+   "title": "C013-CUSTOMVIEW inline placeholder contaminates visible frames and can stand in for unimplemented renderer families: (a) headingcalc_1 — pink \"custom view (not rendered)\" boxes overpaint REAL heading text (Heading custom views extend a text base and must route to the base draw semantics per S134 §16, not a placeholder); (b) simplestopwatch_26 — BigTextView placeholder label in the live frame; (c) boxcars_libgdx (EbitenSurfaceView, GL/SurfaceView family) — the FULL-SCREEN frame IS the inline placeholder while the run reports Status: SUCCESS Errors: 0 (§30 gate violation: placeholder + nonblank framebuffer classified as success instead of the honest NATIVE/JS-ENGINE-DEPENDENCY failure). LAW NEEDED: unknown custom views extending known bases route to base semantics with live state; SurfaceView/GLSurfaceView subclasses route to the surface pipeline; placeholders never overwrite real pixels and never produce SUCCESS. | S134 FIX LANDED (PARTIAL): (1) SurfaceView/GLSurfaceView-family custom views NEVER receive the inline placeholder (boxcars EbitenSurfaceView frame now honest single-color, contamination eliminated); (2) TextView-family descendants route to text semantics — headingcalc ExplainableTextView headings now render real labels (TC/WD/TH), unique colors 483->823; dotted/slash class_desc normalization law. REMAINING: the §30 SUCCESS-gate downgrade for surface-family-only frames (boxcars still reports SUCCESS with an unrendered surface) and the routed-text position/overlap refinement.",
+   "status": "PARTIAL",
    "priority": "P1",
    "layer": "renderer/framework",
-   "evidence": "run/s134/fast/headingcalc_1/screenshot.png (visible overpaint), run/s134/fast/boxcars_libgdx/run.log (C013 placeholder + SUCCESS + EXP092-COPY nonwhite claims), run/s134/fast/simplestopwatch_26",
+   "evidence": "run/s134/fast/ (before/after fingerprints; boxcars 1-color frame; headingcalc 823 colors with real headings), run logs [C013-CUSTOMVIEW] surface-family + text-base routing lines, T02 c95affdefb734ffd x3, dooz/ballbreak byte-identical to HEAD A/B",
    "writer_classification": "C013 inline placeholder = DIAGNOSTIC writer currently reaching AUTHORITATIVE frames (§19 violation)"
   }
  ]

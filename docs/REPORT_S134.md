@@ -195,3 +195,31 @@ NEW LAWS DISCOVERED AND REGISTERED:
   N-134-5  Determinism law (measured): identical runs require isolated
            --data-root; a shared root feeds run N's prefs into run N+1.
 ```
+
+## L. WAVE 2 — F-NEW-162 C013 PLACEHOLDER LAW (same session)
+
+```
+STATUS: PARTIAL (contamination eliminated; SUCCESS-gate downgrade open)
+```
+
+- **Surface-family suppression**: SurfaceView/GLSurfaceView-descendant custom
+  views never receive the diagnostic placeholder. boxcars (EbitenSurfaceView)
+  frame went from placeholder-contaminated (3 colors) to an honest single-
+  color frame — the diagnostic writer no longer stands in for an unrendered
+  surface.
+- **Text-base routing**: custom views descending from TextView/Button/EditText/
+  CheckBox/RadioButton/Switch route to text semantics — text draws when
+  present; empty text is an honest blank (§19: an empty view stays empty
+  unless its own semantics draw). headingcalc's ExplainableTextView headings
+  (TC/WD/TH/TAS/WS) now render REAL labels; the pink "custom view (not
+  rendered)" boxes are gone; unique colors 483 → 823.
+- **Descriptor normalization law**: the view-tree class_desc may be DOTTED
+  (Lorg.debian...) while the DEX hierarchy index is SLASHED — the semantic
+  base is invisible without normalization (measured: routing silently no-op'd
+  until normalized).
+- **Regression on the final binary**: laws130 51/51; dooz `ba8a95eb2278594f` +
+  ballbreak `8a951f5f975c4742` byte-identical to HEAD; T02 `c95affdefb734ffd` ×3.
+- **Remaining frontier**: §30 SUCCESS-gate downgrade for surface-family-only
+  frames (boxcars still reports SUCCESS with an unrendered native surface) and
+  routed-text geometry refinement (label/value overlap).
+
