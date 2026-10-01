@@ -3034,6 +3034,16 @@ static std::string webview_html_to_text(const std::string& html) {
     return tidy;
 }
 
+// S130 (R-NEW-432): THE focus law — AOSP ViewRootImpl keeps ONE focused
+// view per window; requestFocus/clearFocus/dpad traversal converge here and
+// the per-node `focused` flag mirrors it for DEX isFocused() readers.
+void ViewShadow::set_focused_view(uint32_t view_id) {
+    if (focused_view_id == view_id) return;
+    if (auto* old = find_node(focused_view_id)) old->focused = false;
+    focused_view_id = view_id;
+    if (auto* nw = find_node(view_id)) nw->focused = true;
+}
+
 CallResult ViewShadow::dispatch(const CallContext& ctx) {
     const auto& m = ctx.method;
 
@@ -3476,11 +3486,56 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         for (int i = 0; kFluentProps[i]; ++i) {
             if (m == kFluentProps[i]) {
                 if (ctx.has_receiver && ctx.receiver_id != 0) {
+                    // S130 (R-NEW-435): record the property command; start()
+                    // applies the settled end-state (bounded-pump law, the
+                    // per-frame interpolation walk is the recorded frontier).
+                    std::string base = m;
+                    bool is_by = false;
+                    if (base.size() > 2 && base.compare(base.size() - 2, 2, "By") == 0) {
+                        base = base.substr(0, base.size() - 2);
+                        is_by = true;
+                    }
+                    if (!ctx.args.empty()) {
+                        const float v = ctx.arg_as_float(0, 0.0f);
+                        auto& tgt = vp_anim_props_[ctx.receiver_id][base];
+                        tgt = is_by ? tgt + v : v;
+                        vp_anim_by_[ctx.receiver_id][base] = is_by;
+                    }
                     return CallResult::handled_object(
                         ctx.receiver_id, "Landroid/view/ViewPropertyAnimator;");
                 }
                 return CallResult::handled_void();
             }
+        }
+        if (m == "start" || m == "end") {
+            // S130 settle law: apply recorded properties to the target view
+            // (AOSP ViewPropertyAnimator.start runs them over the duration;
+            // the bounded-pump runtime settles them on this frame and the
+            // interpolated walk stays the documented frontier).
+            for (auto& kv : view_animators_) {
+                if (kv.second != ctx.receiver_id) continue;
+                auto* n = find_node(kv.first);
+                if (!n) break;
+                auto pit = vp_anim_props_.find(ctx.receiver_id);
+                if (pit == vp_anim_props_.end()) break;
+                for (auto& pv : pit->second) {
+                    const float v = pv.second;
+                    if (pv.first == "alpha")
+                        n->alpha = uint8_t(std::min(1.0f, std::max(0.0f, v)) * 255.0f);
+                    else if (pv.first == "translationX") n->translation_x = v;
+                    else if (pv.first == "translationY") n->translation_y = v;
+                    else if (pv.first == "scaleX") n->scale_x = v;
+                    else if (pv.first == "scaleY") n->scale_y = v;
+                    else if (pv.first == "rotation") n->rotation_deg = v;
+                    else if (pv.first == "x") n->translation_x = v - float(n->x);
+                    else if (pv.first == "y") n->translation_y = v - float(n->y);
+                    std::cerr << "[ANIM-SETTLE] view=" << kv.first << " "
+                              << pv.first << "=" << v << std::endl;
+                }
+                vp_anim_props_.erase(pit);
+                break;
+            }
+            return CallResult::handled_void();
         }
         if (m == "start" || m == "cancel" || m == "end" || m == "startDelay") {
             return CallResult::handled_void();
@@ -3497,14 +3552,24 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     // getScrollX/Y(): the offsets the CONTENT draws at (−scroll).
     if (m == "scrollTo") {
         auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        const int old_x = n->scroll_x, old_y = n->scroll_y;
         n->scroll_x = ctx.arg_as_int(0, 0);
         n->scroll_y = ctx.arg_as_int(1, 0);
+        // S130 (R-NEW-428): AOSP View.scrollTo fires onScrollChanged(l, t,
+        // oldl, oldt) when the offsets actually changed (View.java).
+        if ((old_x != n->scroll_x || old_y != n->scroll_y) && scroll_changed_hook)
+            scroll_changed_hook(ctx.receiver_id, n->scroll_x, n->scroll_y,
+                                old_x, old_y);
         return CallResult::handled_void();
     }
     if (m == "scrollBy") {
         auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        const int old_x = n->scroll_x, old_y = n->scroll_y;
         n->scroll_x += ctx.arg_as_int(0, 0);
         n->scroll_y += ctx.arg_as_int(1, 0);
+        if ((old_x != n->scroll_x || old_y != n->scroll_y) && scroll_changed_hook)
+            scroll_changed_hook(ctx.receiver_id, n->scroll_x, n->scroll_y,
+                                old_x, old_y);
         return CallResult::handled_void();
     }
     if (m == "getScrollX") {
@@ -3514,6 +3579,59 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     if (m == "getScrollY") {
         const auto* n = find_node(ctx.receiver_id);
         return CallResult::handled_int(n ? n->scroll_y : 0);
+    }
+
+    // ── S130 MASS BATCH (R-NEW-428/432/433/434): CompoundButton, focus,
+    // alpha laws ─────────────────────────────────────────────────────────
+    if (m == "setChecked" || m == "toggle") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        const bool new_checked = (m == "setChecked") ? ctx.arg_as_bool(0, false)
+                                                     : !n->checked;
+        if (new_checked != n->checked) {
+            n->checked = new_checked;
+            // AOSP CompoundButton.setChecked: fires onCheckedChanged BEFORE
+            // the external listener broadcast.
+            if (checked_hook) checked_hook(ctx.receiver_id, n->checked);
+        }
+        return CallResult::handled_void();
+    }
+    if (m == "isChecked") {
+        const auto* n = find_node(ctx.receiver_id);
+        return CallResult::handled_bool(n ? n->checked : false);
+    }
+    if (m == "setAlpha") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        const float a = ctx.arg_as_float(0, 1.0f);
+        n->alpha = uint8_t(std::min(1.0f, std::max(0.0f, a)) * 255.0f);
+        return CallResult::handled_void();
+    }
+    if (m == "getAlpha") {
+        const auto* n = find_node(ctx.receiver_id);
+        return CallResult::handled_float(n ? float(n->alpha) / 255.0f : 1.0f);
+    }
+    if (m == "setFocusable" || m == "setFocusableInTouchMode") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        const bool v = ctx.arg_as_bool(0, true);
+        if (m == "setFocusable") n->focusable = v;
+        else n->focusable_in_touch_mode = v;
+        return CallResult::handled_void();
+    }
+    if (m == "requestFocus") {
+        // AOSP View.requestFocus → requestFocusNoLog: sets the focus chain.
+        set_focused_view(ctx.receiver_id);
+        return CallResult::handled_bool(true);
+    }
+    if (m == "clearFocus") {
+        if (focused_view_id == ctx.receiver_id) focused_view_id = 0;
+        if (auto* n = find_node(ctx.receiver_id)) n->focused = false;
+        return CallResult::handled_void();
+    }
+    if (m == "isFocused") {
+        return CallResult::handled_bool(focused_view_id == ctx.receiver_id);
+    }
+    if (m == "isFocusable") {
+        const auto* n = find_node(ctx.receiver_id);
+        return CallResult::handled_bool(n ? (n->focusable || n->focusable_in_touch_mode) : false);
     }
     // ── S129 (R-NEW-426, CAP-INPUT-110): View.setTouchDelegate law ──────
     // AOSP View.setTouchDelegate(TouchDelegate): mTouchDelegate = delegate.
@@ -4452,10 +4570,67 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         m == "setOnHoverListener" ||
         m == "setOnGenericMotionListener" ||
         m == "setOnContextClickListener" ||
-        m == "setOnScrollChangeListener" ||
         m == "setOnCapturedPointerListener") {
         // Other listeners — acknowledge but don't store. None are
         // dispatched by the runtime today.
+        return CallResult::handled_void();
+    }
+    // ── S130 MASS BATCH (R-NEW-431/433): listener family storage ────────
+    // AOSP View/AdapterView/CompoundButton listener setters store the
+    // listener object; dispatch laws below bridge to the real DEX.
+    if (m == "setOnScrollChangeListener") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        n->scroll_change_listener_id = ctx.arg_as_object(0, 0);
+        n->scroll_change_listener_class.clear();
+        if (n->scroll_change_listener_id && heap_)
+            heap_->get_object_class(n->scroll_change_listener_id,
+                                    n->scroll_change_listener_class);
+        return CallResult::handled_void();
+    }
+    if (m == "setOnCheckedChangeListener") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        n->checked_listener_id = ctx.arg_as_object(0, 0);
+        n->checked_listener_class.clear();
+        if (n->checked_listener_id && heap_)
+            heap_->get_object_class(n->checked_listener_id,
+                                    n->checked_listener_class);
+        return CallResult::handled_void();
+    }
+    if (m == "setOnItemClickListener") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        n->item_click_listener_id = ctx.arg_as_object(0, 0);
+        n->item_click_listener_class.clear();
+        if (n->item_click_listener_id && heap_)
+            heap_->get_object_class(n->item_click_listener_id,
+                                    n->item_click_listener_class);
+        return CallResult::handled_void();
+    }
+    if (m == "setOnItemLongClickListener") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        n->item_long_click_listener_id = ctx.arg_as_object(0, 0);
+        n->item_long_click_listener_class.clear();
+        if (n->item_long_click_listener_id && heap_)
+            heap_->get_object_class(n->item_long_click_listener_id,
+                                    n->item_long_click_listener_class);
+        return CallResult::handled_void();
+    }
+    if (m == "setOnItemSelectedListener") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        n->item_selected_listener_id = ctx.arg_as_object(0, 0);
+        n->item_selected_listener_class.clear();
+        if (n->item_selected_listener_id && heap_)
+            heap_->get_object_class(n->item_selected_listener_id,
+                                    n->item_selected_listener_class);
+        // Dispatch frontier: onItemSelected fires on adapter data walks —
+        // recorded, not dispatched (documented boundary).
+        return CallResult::handled_void();
+    }
+    if (m == "setOnKeyListener") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        n->key_listener_id = ctx.arg_as_object(0, 0);
+        n->key_listener_class.clear();
+        if (n->key_listener_id && heap_)
+            heap_->get_object_class(n->key_listener_id, n->key_listener_class);
         return CallResult::handled_void();
     }
 

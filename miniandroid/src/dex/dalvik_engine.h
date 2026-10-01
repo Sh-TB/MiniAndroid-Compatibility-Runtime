@@ -1350,6 +1350,26 @@ public:
     // children — AOSP ViewGroup.dispatchTouchEvent law).
     bool dispatch_intercept(uint32_t view_object_id, int action, float x,
                             float y, bool& intercepted);
+    // ── S130 MASS BATCH bridges (AOSP callback laws) ────────────────────
+    // R-NEW-430: View.draw → computeScroll() per-frame dispatch (ViewRootImpl
+    // performTraversals → draw → computeScroll chain).
+    void call_compute_scroll(uint32_t view_object_id);
+    // R-NEW-428: View.onScrollChanged(l,t,oldl,oldt) + OnScrollChangeListener.
+    void dispatch_scroll_changed(uint32_t view_object_id, int l, int t,
+                                 int oldl, int oldt);
+    // R-NEW-433: AdapterView.OnItemClickListener.onItemClick(parent,view,pos,id)
+    // (long_click → OnItemLongClick.onItemLongClick(...)Z).
+    bool dispatch_item_click(uint32_t adapter_id, uint32_t view_id,
+                             int position, bool long_click);
+    // R-NEW-431: CompoundButton.onCheckedChanged(buttonView, isChecked).
+    void dispatch_checked_changed(uint32_t view_id, bool checked);
+    // R-NEW-432: key pipeline — onKey listener → onKeyDown/onKeyUp law.
+    void dispatch_key_event(uint32_t view_id, int action, int keycode,
+                            int repeat, int64_t time_ms, bool& consumed);
+    // R-NEW-434: GestureDetector listener callbacks → DEX.
+    void dispatch_gesture_cb(uint32_t gd_obj, uint32_t listener_obj,
+                             const std::string& cb, float f1, float f2,
+                             float f3, float f4, bool& consumed);
     // GOLDEN-02: AOSP View.performLongClick() law — dispatch to the
     // registered OnLongClickListener.onLongClick(View)Z via
     // try_recursive_invoke, using the REAL listener object stored by

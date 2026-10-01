@@ -25,6 +25,7 @@
 #include <chrono>
 #include <deque>
 #include <atomic>
+#include <functional>
 #include <iostream>
 #include <cstdlib>
 #include <map>
@@ -1248,6 +1249,30 @@ public:
         std::string long_click_listener_class;
         uint32_t touch_listener_id = 0;
         std::string touch_listener_class;
+        // S130 MASS BATCH — listener family law (AOSP View/AdapterView/
+        // CompoundButton listeners; stored object ids + DEX classes).
+        uint32_t checked_listener_id = 0;          // CompoundButton.onCheckedChanged
+        std::string checked_listener_class;
+        uint32_t scroll_change_listener_id = 0;    // View.OnScrollChangeListener
+        std::string scroll_change_listener_class;
+        uint32_t item_click_listener_id = 0;       // AdapterView.OnItemClickListener
+        std::string item_click_listener_class;
+        uint32_t item_long_click_listener_id = 0;  // OnItemLongClickListener
+        std::string item_long_click_listener_class;
+        uint32_t item_selected_listener_id = 0;    // OnItemSelectedListener
+        std::string item_selected_listener_class;
+        uint32_t key_listener_id = 0;              // View.OnKeyListener
+        std::string key_listener_class;
+        // S130: View.alpha (View.java mTransformationInfo mAlpha, 0..1 —
+        // stored 0..255; renderer consumption is the recorded frontier).
+        uint8_t alpha = 255;
+        // S130: CompoundButton state (setChecked/toggle/isChecked law).
+        bool checked = false;
+        // S130 focusability reuses the 1174/1175 ViewNode law fields above.
+        // S130: override captures (class_chain_defines_method, ctor law) for
+        // computeScroll + onScrollChanged dispatch gates.
+        bool overrides_compute_scroll = false;
+        bool overrides_on_scroll_changed = false;
         // EXP-095 (CM-019): Layout params captured from
         // addView(view, LayoutHelper.createLinear/createFrame(params)).
         // Per AOSP ViewGroup.LayoutParams / MarginLayoutParams:
@@ -1819,6 +1844,31 @@ public:
     // schedules performTraversals (measure+layout+draw) — DEX-driven tree
     // changes (addView/removeView/setLayoutParams) must re-measure before
     // the next frame or every frame after the first reuses stale geometry.
+    // ── S130 MASS BATCH: framework→DEX bridges (AOSP callback law) ─────
+    // View.onScrollChanged(l, t, oldl, oldt) — View.java scrollTo law.
+    std::function<void(uint32_t view_id, int l, int t, int oldl, int oldt)>
+        scroll_changed_hook;
+    // CompoundButton.onCheckedChanged(buttonView, isChecked).
+    std::function<void(uint32_t view_id, bool checked)> checked_hook;
+    // AdapterView.OnItemClickListener.onItemClick(parent, view, pos, id)
+    // (long_click=true → OnItemLongClick.onItemLongClick(...)Z).
+    std::function<void(uint32_t adapter_id, uint32_t view_id, int position,
+                       bool long_click)>
+        item_click_hook;
+    // View key pipeline → dispatchKeyEvent/onKeyDown/onKeyUp/onKey law
+    // (returns consumed).
+    std::function<bool(uint32_t view_id, int action, int keycode, int repeat,
+                       int64_t time_ms)>
+        key_hook;
+    // THE focused view (AOSP ViewRootImpl: one focused view per window);
+    // requestFocus/clearFocus/dpad traversal converge here.
+    uint32_t focused_view_id = 0;
+    void set_focused_view(uint32_t view_id);
+    // S130 (R-NEW-435): ViewPropertyAnimator recorded property commands
+    // (animator obj → prop → value) + By-suffix flags; start() settles them.
+    std::map<uint32_t, std::map<std::string, float>> vp_anim_props_;
+    std::map<uint32_t, std::map<std::string, bool>> vp_anim_by_;
+
     bool layout_dirty = false;
 
     // EXP-095: Store TextView.setGravity (text alignment inside the view).
