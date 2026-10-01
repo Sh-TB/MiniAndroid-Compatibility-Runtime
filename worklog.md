@@ -5051,3 +5051,22 @@ Work Log:
 
 Stage Summary:
 - evidence/ 264.57→20.01 MiB; tmp/ 189.82→2.50 MiB; every removed byte SHA256-ledgered (docs/history/final_campaign_phase1/DISPOSITION_LEDGER.json); no canonical reference broken (2 refs updated in place). Phase 2 (field identity audit) next.
+---
+Task ID: FINAL-CAMPAIGN-P3-WAVE1
+Agent: Super Z (main)
+Task: MISSION FINAL GENERIC RUNTIME COMPATIBILITY CAMPAIGN — Phase 3 wave 1: attack the WhatsApp first divergence with bounded first-REC-MISS tracing (mission steps A-K).
+
+Work Log:
+- A/B SETUP: upload/whatsapp.apk is an HTML download page (NOT an APK — parse fail); the real corpus APK is /tmp/my-project/apk_cache/WhatsApp_real.apk. All runs on isolated --data-root + S135 --trace.
+- FRAME TRUTH (Phase 5/7 relevance discovered early): WhatsApp AND stopwatch_6 produce BYTE-IDENTICAL screenshots eb16ab5c68fa9b6c (2 colors, 98.87% white, 23472 non-default px). Pixel-forensics: ALL non-white pixels are rows y=0..44 — the 45px STATUS BAR band. The S134-wave "REAL_APP_CONTENT 23472px" verdict was a FALSE POSITIVE (framework chrome counted as app content); WhatsApp is still in the white-screen family. Verdict-law fix queued for Phase 7/16.
+- FIRST DIVERGENCE (bounded trace, wa_full.log 988-997): [CLASS_INIT] 08C.<clinit> -> 08D.<clinit> -> [SGET-MISS] StandardCharsets.UTF_8 -> null -> Charset.name() NPE -> 08C.<clinit> unwind -> static Sets unwritten -> 00S.A03 sget 08C.A02 null -> Set.contains NPE -> Main.onCreate pc=34 caught / pc=1470 fatal.
+- F-NEW-170 FIX (generic, no package checks): sget platform-constant arm for StandardCharsets (six JDK constants, same heap Charset identity as the Charset.forName law). Post-fix: StandardCharsets SGET-MISS=0; Set.contains face GONE.
+- CLINIT HONESTY residual recorded: CLASS_INIT result=OK despite clinit-frame unwind (EIIIE law) — F-NEW-170 residual, own wave.
+- NEXT DIVERGENCE: UNIMPL-DIAG LX/07r;.<init>@0x5a (opcode 0x09 move-object/16 had NO interpreter case — default arm skipped 1 unit not 3 -> pc desync -> "invoke 00D.<init> on null"). FIX (F-NEW-171 face 1): execute_move_object_16 (32x, 3 units).
+- NEXT: IGET-MISS-DIAG (new Phase-3 diagnostic, SGET-MISS-probe precedent) caught "asked=ImmutableMap$Builder->size obj#21003 cls=Ljava/lang/Integer keys: value" — RECEIVER WAS A BOXED INTEGER: register aliasing. F-NEW-171 faces 2+3: DexRegisterFile accessors uint8_t -> uint16_t (read_v/write_v/get_register/set_register/set_wide_pair; written_bits_ 4->16 words) + write_p ABSOLUTE-register arithmetic uint8_t->uint32 (param_start_>255 truncated; arguments incl. this landed in wrong registers).
+- POST-FIX STATE (wa_full6.log): 00D-null count=0; chain advanced DEEPEST EVER — 07r.<init> to pc=0x5662, ImmutableMap$Builder.put/ensureCapacity/build + RegularImmutableMap.create reached (the DI lattice IS being filled now). New frontier F-NEW-172: RegularImmutableMap.createHashTable probe loop spins 50001+ (F084 halt) — O(tableSize) in guava, never spins on ART; bounded disassembly investigation queued (run/cht_disasm.txt).
+- GATES: laws130 51/51; dooz ba8a95eb2278594f x3 BYTE-IDENTICAL; stopwatch_6 eb16ab5c68fa9b6c x3 deterministic; 0 regressions.
+- REGISTRY: F-NEW-170 ROOT-CAUSED-FIXED (+EIIIE residual), F-NEW-171 ROOT-CAUSED-FIXED, F-NEW-172 OBSERVED-FAIL (next frontier) appended to both registry copies via scripts/final_campaign_p3_registry.py.
+
+Stage Summary:
+- Three generic roots fixed in one wave (platform-constant statics law, missing-opcode law, register-width law) — all reachable from ANY R8-heavy app, zero package checks. WhatsApp moved from "clinit-poisoned static state" through "register-aliased ctor corruption" to "real ImmutableMap build in progress" — the white-screen causal chain is being eaten from the front. Frame-truth correction (status bar ≠ app content) corrects the S134-wave record interpretation.

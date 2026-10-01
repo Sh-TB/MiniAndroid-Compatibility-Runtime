@@ -2,7 +2,7 @@
  "_projection_of": "root_registry.json",
  "_law": "root_registry.json is the single writable store; this file is a generated read model (ROADMAP SS3: no duplicate canonical registries).",
  "generated": "S135 session",
- "total": 462,
+ "total": 465,
  "status_counts": {
   "PARTIAL": 105,
   "VERIFIED-CORRECT": 46,
@@ -3305,6 +3305,36 @@
    "priority": "P1",
    "component": "androidx/fragment-host",
    "session": "S134 wave 5"
+  },
+  {
+   "id": "F-NEW-170",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P0",
+   "summary": "StandardCharsets platform-constant law: the engine had no Ljava/nio/charset/StandardCharsets; statics, so sget UTF_8 answered null; WhatsApp 08D.<clinit> invoked Charset.name() on that null; 08C.<clinit> died leaving its static Set fields unwritten (SGET-MISS -> null) and the downstream Set.contains NPE chain killed Main.onCreate (white screen). Fix: sget arm materializes the six JDK constants as heap Charset objects (__charset_name__) under the same identity as the Charset.forName law. Residual (recorded, own wave): clinit-failure honesty \u2014 the engine records CLASS_INIT result=OK even when the clinit frame unwound; ART law is class-erroneous + ExceptionInInitializerError on access.",
+   "evidence": "FINAL-CAMPAIGN Phase 3 wave 1: wa_full.log lines 988-997 (SGET-MISS StandardCharsets.UTF_8 -> SYNTH-EXC Charset.name null -> 08C unwind); post-fix wa_full2.log: StandardCharsets SGET-MISS count=0, Set.contains face GONE. Gates: laws130 51/51, dooz ba8a95eb2278594f x3, stopwatch_6 eb16ab5c68fa9b6c x3.",
+   "layer": "DEX/JVM statics + java.nio.charset",
+   "title": "F-NEW-170",
+   "law": null
+  },
+  {
+   "id": "F-NEW-171",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P0",
+   "summary": "DEX register-width law (three faces, one root): (1) opcode 0x09 move-object/16 was DEFINED but had NO interpreter case \u2014 the default arm skipped 1 unit instead of 3, desyncing pc (07r.<init> @0x5a garbage decode -> new-instance 00D flow corrupted -> \"invoke 00D.<init> on null\"); (2) DexRegisterFile accessors were uint8_t \u2014 /16 formats (emitted exactly when reg indices exceed 255) truncated v256+ onto v0.. (register ALIASING: Builder.put receiver became a boxed Integer); (3) write_p computed the ABSOLUTE register as uint8_t param_start_+idx \u2014 methods with >255 regs landed arguments (incl. this) in wrong registers. Fix: move-object/16 handler (32x, 3 units); read_v/write_v/get_register/set_register/set_wide_pair widened to uint16_t; written_bits_ 4->16 words; write_p/read_p absolute-register arithmetic widened to uint32.",
+   "evidence": "FINAL-CAMPAIGN Phase 3 wave 1: wa_full2.log 1416-1419 (UNIMPL-DIAG 07r @0x5a + 00D-null); wa_full4.log IGET-MISS-DIAG \"asked=Builder->size obj#21003 cls=Ljava/lang/Integer\" (register aliasing smoking gun); wa_full5/6.log: 00D-null count 0, chain advanced deep into 07r.A0Q -> ImmutableMap build. Gates: laws130 51/51, dooz x3 byte-identical, stopwatch_6 x3.",
+   "layer": "DEX interpreter / register file",
+   "title": "F-NEW-171",
+   "law": null
+  },
+  {
+   "id": "F-NEW-172",
+   "status": "OBSERVED-FAIL",
+   "priority": "P0",
+   "summary": "RegularImmutableMap.createHashTable hash-probe loop spins >50001 visits (F084 halt) during WhatsApp 07r.A0Q MobileConfig map build. The loop is O(tableSize) in guava \u2014 a real run never spins. Candidate semantics: [B aget-byte/aput-byte/Arrays.fill byte-table state or the if-ge exit comparison on the entry count; bounded disassembly-driven investigation queued (createHashTable 341 units, spin PC=0xaf, op 0xb5).",
+   "evidence": "FINAL-CAMPAIGN Phase 3 wave 1: wa_full6.log 1470-1476 (PROGRESS 700k-1.1M instructions inside createHashTable -> HALT-LOOP visited 50001); disasm run/cht_disasm.txt.",
+   "layer": "DEX interpreter / array + loop semantics",
+   "title": "F-NEW-172",
+   "law": null
   }
  ]
 }

@@ -561,32 +561,44 @@ public:
         }
     }
     
-    void write_v(uint8_t reg, const DalvikValue& value) {
+    // FINAL-CAMPAIGN PHASE 3 (register width law): DEX register numbers are
+    // UNSIGNED 16-BIT in the /16 and /range instruction formats (DEX spec:
+    // "vAAAA"); R8 emits them precisely when a method needs more than 255
+    // registers. The file already resizes to any count — only the accessor
+    // width truncated v256+ onto v0.., aliasing live registers.
+    void write_v(uint16_t reg, const DalvikValue& value) {
         if (reg < size_) {
             registers_[reg] = value;
             // F-109a (S62): written-set as a fixed bitmap — the old
             // std::set<uint8_t> did a red-black tree insert PER REGISTER
             // WRITE (the hot path writes 2-5 registers per instruction).
             // Same ordered iteration semantics for get_written_registers().
-            written_bits_[reg >> 6] |= (1ULL << (reg & 63));
+            if ((reg >> 6) < 16)
+                written_bits_[reg >> 6] |= (1ULL << (reg & 63));
         }
     }
     
     void write_p(uint8_t param_idx, const DalvikValue& value) {
-        uint8_t reg = param_start_ + param_idx;
+        // FINAL-CAMPAIGN PHASE 3 (register width law): the ABSOLUTE register
+        // is param_start_ + idx — for methods with >255 registers param_start_
+        // exceeds uint8_t and the sum TRUNCATED, landing arguments (incl.
+        // `this`) in wrong registers (measured: WhatsApp LX/07r;.<init> →
+        // "invoke LX/00D;.<init> on a null object reference").
+        uint32_t reg = static_cast<uint32_t>(param_start_) + param_idx;
         if (reg < size_) {
             registers_[reg] = value;
-            written_bits_[reg >> 6] |= (1ULL << (reg & 63));
+            if ((reg >> 6) < 16)
+                written_bits_[reg >> 6] |= (1ULL << (reg & 63));
         }
     }
     
-    DalvikValue read_v(uint8_t reg) const {
+    DalvikValue read_v(uint16_t reg) const {
         if (reg < size_) return registers_[reg];
         return DalvikValue::make_uninit();
     }
     
     DalvikValue read_p(uint8_t param_idx) const {
-        uint8_t reg = param_start_ + param_idx;
+        uint32_t reg = static_cast<uint32_t>(param_start_) + param_idx;
         if (reg < size_) return registers_[reg];
         return DalvikValue::make_uninit();
     }
@@ -601,11 +613,13 @@ public:
         // F-109a: iterate the bitmap in ascending register order (identical
         // output to the old ordered set).
         std::vector<uint8_t> out;
-        for (uint32_t w = 0; w < 4; ++w) {
+        for (uint32_t w = 0; w < 16; ++w) {
+            if (w * 64ULL >= size_) break;
             uint64_t bits = written_bits_[w];
             while (bits) {
                 uint8_t b = (uint8_t)(__builtin_ctzll(bits));
-                out.push_back((uint8_t)(w * 64 + b));
+                uint32_t r = w * 64 + b;
+                if (r < size_) out.push_back((uint8_t)r);
                 bits &= bits - 1;
             }
         }
@@ -620,14 +634,15 @@ public:
         result["pc"] = pc_;
         result["registers"] = json::array();
         
-        for (uint8_t i = 0; i < size_; ++i) {
+        for (uint32_t i = 0; i < size_; ++i) {
             json entry;
             bool is_param = (i >= param_start_);
             entry["name"] = is_param ? ("p" + std::to_string(i - param_start_)) 
                                      : ("v" + std::to_string(i));
             entry["index"] = i;
             entry["value"] = registers_[i].to_json();
-            entry["written"] = ((written_bits_[i >> 6] >> (i & 63)) & 1ULL) != 0;
+            entry["written"] = ((i >> 6) < 16 &&
+                                ((written_bits_[i >> 6] >> (i & 63)) & 1ULL) != 0);
             result["registers"].push_back(entry);
         }
         return result;
@@ -635,7 +650,7 @@ public:
     
     std::map<std::string, DalvikValue> get_snapshot() const {
         std::map<std::string, DalvikValue> snap;
-        for (uint8_t i = 0; i < size_; ++i) {
+        for (uint32_t i = 0; i < size_; ++i) {
             bool is_param = (i >= param_start_);
             std::string name = is_param ? ("p" + std::to_string(i - param_start_)) 
                                        : ("v" + std::to_string(i));
@@ -651,7 +666,7 @@ private:
     uint32_t pc_ = 0;
     std::vector<DalvikValue> registers_;
     // F-109a: fixed 256-bit written-register bitmap (registers are uint8_t).
-    uint64_t written_bits_[4] = {0, 0, 0, 0};
+    uint64_t written_bits_[16] = {0};  // FINAL-CAMPAIGN: 16×64 = 1024 regs (DEX /16 formats)
 };
 
 // ============================================================================
@@ -2036,6 +2051,7 @@ public:
     // EXP-038 (BLOCKER-026): move-object/from16 (0x08, format 22x)
     // Required by Telegram's LaunchActivity.onCreate() at PC=1.
     bool execute_move_object_from16(uint32_t pc, InstructionTrace& trace);
+    bool execute_move_object_16(uint32_t pc, InstructionTrace& trace);
     bool execute_move_result(uint32_t pc, InstructionTrace& trace);
     bool execute_move_result_object(uint32_t pc, InstructionTrace& trace);
     
@@ -2149,15 +2165,15 @@ public:
     void handle_unimplemented(uint16_t opcode, uint32_t pc, InstructionTrace& trace);
     
     // Register access helpers
-    void set_register(uint8_t reg, const DalvikValue& value);
+    void set_register(uint16_t reg, const DalvikValue& value);
     // F-028b (M4 §A1) WIDE-PAIR SLOT LAW: ART stores a wide (J/D) value in
     // TWO consecutive registers — vReg holds the value, vReg+1 holds the
     // high 32-bit word of its bit pattern. The tagged-union register file
     // keeps the full value in vReg; the shadow slot must still be filled
     // so raw register-window reads (range-invoke passthrough, unresolvable
     // protos) observe ART's slot layout instead of stale/garbage words.
-    void set_wide_pair(uint8_t reg, const DalvikValue& value);
-    DalvikValue get_register(uint8_t reg) const;
+    void set_wide_pair(uint16_t reg, const DalvikValue& value);
+    DalvikValue get_register(uint16_t reg) const;
     std::string register_name(uint8_t reg) const;
 
     // S56 frontier diagnostic (env-gated, read-only, M3-law safe): dump the

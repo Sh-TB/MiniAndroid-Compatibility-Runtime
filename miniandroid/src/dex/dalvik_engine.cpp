@@ -10724,6 +10724,11 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 success = execute_move_object_from16(pc_, trace);
                 trace.opcode_name = "move-object/from16";
                 break;
+            case Opcode::MOVE_OBJECT_16:
+                // FINAL-CAMPAIGN PHASE 3: move-object/16 (32x, 3 units)
+                success = execute_move_object_16(pc_, trace);
+                trace.opcode_name = "move-object/16";
+                break;
             case Opcode::MOVE_RESULT:
                 success = execute_move_result(pc_, trace);
                 trace.opcode_name = "move-result";
@@ -13116,8 +13121,8 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 if (pc_ + 2 >= bytecode_.size()) return false;
                 uint16_t src = bytecode_[pc_ + 1];
                 uint16_t dest = bytecode_[pc_ + 2];
-                DalvikValue val = get_register(static_cast<uint8_t>(src));
-                set_register(static_cast<uint8_t>(dest), val);
+                DalvikValue val = get_register(src);
+                set_register(dest, val);
                 trace.opcode_name = "move/16";
                 pc_ += 3;
                 break;
@@ -14119,7 +14124,7 @@ bool DalvikExecutionEngine::execute_move_object_from16(uint32_t pc, InstructionT
     uint8_t dest = (instr >> 8) & 0xFF;  // 8-bit dest register (was 0xF for move-object)
     uint16_t src = bytecode_[pc + 1];    // 16-bit source register
     
-    DalvikValue val = get_register(static_cast<uint8_t>(src));
+    DalvikValue val = get_register(src);
     if (val.type == DalvikType::REGISTER_UNSET || val.type == DalvikType::UNINITIALIZED) {
         val = DalvikValue::make_null();
     }
@@ -14128,6 +14133,33 @@ bool DalvikExecutionEngine::execute_move_object_from16(uint32_t pc, InstructionT
     trace.operands.push_back({"v" + std::to_string(dest), "v" + std::to_string(src)});
     
     pc_ = pc + 2;  // 22x format = 2 code units
+    return true;
+}
+
+// FINAL-CAMPAIGN PHASE 3 (F-NEW-169 face-2): move-object/16 (DEX spec opcode
+// 0x09, format 32x: op | vAAAA | vBBBB = 3 code units). The enum defined the
+// opcode but the interpreter had NO case — execution fell to the default
+// UNIMPLEMENTED arm which skips ONE unit instead of THREE, desynchronizing
+// the pc and decoding garbage mid-instruction (measured: WhatsApp
+// LX/07r;.<init> @0x5a — new-instance 00D flow corrupted → "invoke
+// LX/00D;.<init> on a null object reference" → ctor broken → DI provider
+// slots left unfilled → downstream Intrinsics NPE chain → white screen).
+// AOSP law: ART MterpMoveObject16 — 16-bit register move of an object ref.
+bool DalvikExecutionEngine::execute_move_object_16(uint32_t pc, InstructionTrace& trace) {
+    if (pc + 2 >= bytecode_.size()) return false;
+
+    uint16_t dest = bytecode_[pc + 1];  // vAAAA — 16-bit dest register
+    uint16_t src = bytecode_[pc + 2];   // vBBBB — 16-bit source register
+
+    DalvikValue val = get_register(src);
+    if (val.type == DalvikType::REGISTER_UNSET || val.type == DalvikType::UNINITIALIZED) {
+        val = DalvikValue::make_null();
+    }
+    set_register(dest, val);
+    
+    trace.operands.push_back({"v" + std::to_string(dest), "v" + std::to_string(src)});
+    
+    pc_ = pc + 3;  // 32x format = 3 code units
     return true;
 }
 
@@ -14692,6 +14724,31 @@ bool DalvikExecutionEngine::execute_iget(uint32_t pc, InstructionTrace& trace) {
                 is_dex_defined_class(s134_decl)) {
                 // AOSP law: an instance field never written answers its
                 // DEFAULT value — never another class's same-named slot.
+                // FINAL-CAMPAIGN PHASE 3 diag (SGET-MISS probe precedent):
+                // a DEX-defined qualified read that misses means the writer
+                // used a different identity — dump the asked key + the
+                // object's actual keys (throttled) so the mismatch is
+                // EVIDENCE, not a guess.
+                static thread_local uint64_t iget_miss_diag_n = 0;
+                if (iget_miss_diag_n < 16) {
+                    ++iget_miss_diag_n;
+                    const auto* hobj = heap_.get(obj_ref.object_id);
+                    std::string have;
+                    if (hobj) {
+                        int cnt = 0;
+                        for (const auto& kv : hobj->fields) {
+                            if (cnt++ >= 6) break;
+                            have += " " + kv.first;
+                        }
+                    }
+                    std::cerr << "[IGET-MISS-DIAG] asked=\"" << s134_fkey
+                              << "\" obj#" << obj_ref.object_id
+                              << " cls="
+                              << (hobj ? hobj->class_descriptor : std::string("<no-heap-obj>"))
+                              << " keys:" << (have.empty() ? " <none>" : have)
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << std::endl;
+                }
                 field_val = s134_field_default(field_res.field_type);
             }
             if (field_val.has_value()) {
@@ -15989,6 +16046,40 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
                     result_value = DalvikValue::make_class(
                         prim->second, instruction_sequence_);
                     static_field_storage_[static_key] = result_value;
+                } else if (field_res.class_descriptor ==
+                           "Ljava/nio/charset/StandardCharsets;") {
+                // FINAL-CAMPAIGN PHASE 3 (F-NEW-169 face-1):
+                // java.nio.charset.StandardCharsets is a JDK platform-constant
+                // holder — OpenJDK StandardCharsets.java defines the six
+                // charset constants as static finals initialized in
+                // <clinit>, which on a live JVM ALWAYS completes. The engine
+                // runs no such <clinit> (framework class, no DEX body), so
+                // the sget answered null and the first consumer (WhatsApp
+                // 08D.<clinit> → Charset.name()) NPE'd → the requesting
+                // clinit died leaving its statics unwritten (SGET-MISS →
+                // null) → app-baked null-check NPE chain → white screen.
+                // Object identity: the SAME heap Charset convention the
+                // Charset.forName law uses (__charset_name__ field).
+                static const std::map<std::string, std::string>
+                    k_standard_charsets = {
+                        {"UTF_8", "UTF-8"},
+                        {"ISO_8859_1", "ISO-8859-1"},
+                        {"US_ASCII", "US-ASCII"},
+                        {"UTF_16", "UTF-16"},
+                        {"UTF_16BE", "UTF-16BE"},
+                        {"UTF_16LE", "UTF-16LE"},
+                    };
+                auto sc = k_standard_charsets.find(field_res.field_name);
+                if (sc != k_standard_charsets.end()) {
+                    uint32_t cs_id =
+                        heap_.allocate("Ljava/nio/charset/Charset;", pc_, 0);
+                    heap_.set_object_field(
+                        cs_id, "__charset_name__",
+                        DalvikValue::make_string(sc->second, 0));
+                    result_value = DalvikValue::make_object(
+                        cs_id, "Ljava/nio/charset/Charset;");
+                    static_field_storage_[static_key] = result_value;
+                }
                 } else {
                 // M3 FINDING-013 miss-probe: print the missing key and the
                 // presence of ANY same-class keys in storage — a clinit that
@@ -19245,7 +19336,7 @@ void DalvikExecutionEngine::handle_unimplemented(uint16_t opcode, uint32_t pc,
 // Register Helpers
 // ============================================================================
 
-void DalvikExecutionEngine::set_register(uint8_t reg, const DalvikValue& value) {
+void DalvikExecutionEngine::set_register(uint16_t reg, const DalvikValue& value) {
     if (current_registers_) {
         current_registers_->write_v(reg, value);
         current_registers_->set_pc(pc_);
@@ -19256,7 +19347,7 @@ void DalvikExecutionEngine::set_register(uint8_t reg, const DalvikValue& value) 
 // wide value into vReg and the high 32 bits of its bit pattern into the
 // vReg+1 shadow slot (INT32-tagged), exactly mirroring ART's physical
 // two-slot layout. Bounds-safe: write_v ignores out-of-range registers.
-void DalvikExecutionEngine::set_wide_pair(uint8_t reg, const DalvikValue& value) {
+void DalvikExecutionEngine::set_wide_pair(uint16_t reg, const DalvikValue& value) {
     if (!current_registers_) return;
     current_registers_->write_v(reg, value);
     current_registers_->set_pc(pc_);
@@ -19271,10 +19362,10 @@ void DalvikExecutionEngine::set_wide_pair(uint8_t reg, const DalvikValue& value)
     DalvikValue shadow;
     shadow.type = DalvikType::INT32;
     shadow.int_val = static_cast<int32_t>(static_cast<uint32_t>(bits >> 32));
-    current_registers_->write_v(static_cast<uint8_t>(reg + 1), shadow);
+    current_registers_->write_v(static_cast<uint16_t>(reg + 1), shadow);
 }
 
-DalvikValue DalvikExecutionEngine::get_register(uint8_t reg) const {
+DalvikValue DalvikExecutionEngine::get_register(uint16_t reg) const {
     if (current_registers_) {
         return current_registers_->read_v(reg);
     }
