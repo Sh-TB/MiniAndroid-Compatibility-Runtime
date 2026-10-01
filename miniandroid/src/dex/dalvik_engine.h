@@ -2067,6 +2067,24 @@ public:
         std::string error_message;
     };
     FieldResolution resolve_field(uint16_t field_idx);
+    // S134 F-NEW-160: a declaring class is FRAMEWORK-OWNED (bare field keys,
+    // C++ shadow interop) iff the runtime provides it — i.e. it has NO DEX
+    // body in this APK. App-bundled classes that merely live under android*/
+    // java*/kotlin* packages (support library, androidx) ARE DEX-defined and
+    // must use qualified field identity (class->name) — their field names
+    // collide across the hierarchy (solitaire 71: e.m vs classes.c.m).
+    bool is_dex_defined_class(const std::string& desc) const {
+        return class_info_index_.find(desc) != class_info_index_.end();
+    }
+    // S134 F-NEW-160: ART field resolution law — a field ref (C, name)
+    // resolves to the ACTUAL declaring class: walk C's superclass chain
+    // until a DEX class that DECLARES the field. The ref's class_idx is
+    // only the starting point (javac/R8 emit the register's static type,
+    // which may be a subclass of the declarer: simplestopwatch wrote
+    // ShowTime.options and read StopWatch.options — ONE logical field,
+    // two ref classes). Returns ref_cls when no DEX declarer exists.
+    std::string resolved_field_declarer(const std::string& ref_cls,
+                                        const std::string& name) const;
     // S122 (R-NEW-414): lazily scan a DEX class's <init> methods for the
     // javac inline field-initializer pattern (new-instance T vN; … ;
     // iput-object vN → F) and record field F → T in init_field_defaults_.
