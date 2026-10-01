@@ -2,9 +2,9 @@
  "_projection_of": "root_registry.json",
  "_law": "root_registry.json is the single writable store; this file is a generated read model (ROADMAP SS3: no duplicate canonical registries).",
  "generated": "S135 session",
- "total": 461,
+ "total": 462,
  "status_counts": {
-  "PARTIAL": 104,
+  "PARTIAL": 105,
   "VERIFIED-CORRECT": 46,
   "UNPROVEN": 72,
   "VERIFIED-FIXED": 48,
@@ -3297,6 +3297,14 @@
    "session": "S134 wave 3",
    "fix": "F166-BASECTX routing law in try_shadow_dispatch: ContextWrapper-family receivers now reach the S110 base-context law for getBaseContext/attachBaseContext, and ContextWrapper.<init>(base) records mBase (AOSP ctor=attachBaseContext delegation). Path-scoped: fires only on Context-named receiver classes where REC-MISS previously answered null.",
    "residual": "Next frontier faces (new root F-NEW-167): the app's infra/logging Log.<clinit> hits the java.util.concurrent/nio REC-MISS family (AtomicReference.<init>, CountDownLatch.<init>, ReentrantLock.<init>, Charset.defaultCharset, TimeZone.getDefault) \u2192 VirtualMachineError unwind \u2192 AppContext.set state missing. Classic \u00a717 chain: missing API \u2192 clinit failure \u2192 static state missing \u2192 downstream ISE."
+  },
+  {
+   "id": "F-NEW-168",
+   "title": "WhatsApp next faces (F-NEW-156 chain continues): (a) androidx FragmentManager host law \u2014 'FragmentManager has not been attached to a host' ISE at LX/0JZ;.A0G + 'No activity' at LX/0JZ;.A0c: the app's wrapper-context FragmentManager init (FragmentActivity/attachBaseContext-time FragmentController) never recorded the host activity in the runtime's fragment shadow; (b) AppContext.set static-state law \u2014 the app's own context registry (LX/00I;.A00) reports set-has-not-been-invoked, downstream of the attach order.",
+   "status": "OBSERVED-FAIL",
+   "priority": "P1",
+   "component": "androidx/fragment-host",
+   "session": "S134 wave 5"
   }
  ]
 }

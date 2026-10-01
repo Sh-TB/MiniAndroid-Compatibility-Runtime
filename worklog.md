@@ -4983,3 +4983,17 @@ Work Log:
 
 Stage Summary:
 - WhatsApp moved from "dies in attachBaseContext, zero windows" to "boots through onCreate, real window content" — the base-context law is now served for EVERY ContextWrapper-family receiver per AOSP contract. The next face is the concurrent/nio API family inside Log.<clinit> (F-NEW-167) — a bounded, well-understood API-coverage frontier, not a graphics bug.
+---
+Task ID: S134-wave-5
+Agent: Super Z (main)
+Task: S134 continuation — F-NEW-167 (WhatsApp Log.<clinit> F084 halt-loop / concurrent-nio family).
+
+Work Log:
+- BACKWARD WALK: [HALT-LOOP] Infinite loop PC=0x1 in LX/00v;.A00 (visited 50001x) — the WhatsApp logger thread's consumer loop spins on ArrayBlockingQueue.take() because take was REC-MISS (stub void) — the loop retried forever → F084 interpreter halt → VirtualMachineError escaped the app boundary at attachBaseContext → Log.<clinit> poisoned → downstream AppContext/ISE faces.
+- SEMANTIC LAW: AOSP ArrayBlockingQueue.take = "removes the head, WAITING if necessary" — R-NEW-345's own text names ArrayBlockingQueue.take as an intended park consumer; the park law existed but take had NO handler, so the app spun BEFORE ever parking.
+- F-NEW-167 FIX (≈90 LOC, dex/dalvik_engine.cpp): BlockingQueue law — heap-field FIFO (put/offer/add → take/poll/peek deliver), empty blocking take = park-yield at the drain boundary (identical mechanics to LockSupport.park), empty poll/peek = null. Verified: [F167-BQ-TAKE] parked consumer; Log.<clinit> result=OK; VirtualMachineError escape GONE.
+- GATES: laws130 51/51; dooz ba8a95eb2278594f + ballbreak 8a951f5f975c4742 byte-identical; WhatsApp frame REAL_APP_CONTENT unchanged (23472 px).
+- F-NEW-168 registered (next faces): androidx FragmentManager host law ('FragmentManager has not been attached to a host' / 'No activity') + the app's AppContext.set static registry — both downstream of the attach order, both in the known fragment-host family.
+
+Stage Summary:
+- Three generic laws landed this session on the SAME white-screen causal chain (S135 logger → F-NEW-165 content anchor → F-NEW-166 base context → F-NEW-167 blocking queue), each with disassembly-level proof, A/B or 3-run determinism, and byte-identical goldens. WhatsApp now boots through onCreate; the remaining faces are the androidx fragment-host family (F-NEW-168) — a bounded API-coverage frontier.
