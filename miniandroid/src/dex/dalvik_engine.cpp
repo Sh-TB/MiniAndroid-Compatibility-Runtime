@@ -14595,6 +14595,71 @@ DalvikExecutionEngine::FieldResolution DalvikExecutionEngine::resolve_field(uint
     return resolution;
 }
 
+// ── S134 (F-NEW-160) — DEX INSTANCE FIELD IDENTITY LAW ──────────────────
+// A DEX instance field is identified by (declaring class, name, type) —
+// NEVER by bare name. The heap's name-keyed field map makes two same-named
+// fields of two different classes alias ONE storage slot (central §3
+// hypothesis: two writers, one state). Measured face (solitaire 71,
+// current HEAD): activity obj#16 read `iget-object e.m` (support
+// AppCompatActivity delegate field) → the resolver answered the bare name
+// "m" → the app's own `m` Handler field (b/b#30) leaked out as the
+// "delegate" → e.onCreate invoked the delegate family on a HANDLER →
+// g.a(Activity,f) got a Handler as its Activity arg → Window null →
+// support/v7/app/h.<init> pc=11 NPE → APP-BOUNDARY unwind → blank
+// two-color screen. ART law: fields occupy distinct slots per declaring
+// class; a field of a superclass cannot alias a subclass field.
+// Fix mechanics (no heap-storage refactor):
+//   * NON-framework declaring class → key = "Lcls;->name" (qualified).
+//     Reads answer the field DEFAULT (zero/null) when the qualified key
+//     was never written — never another class's slot.
+//   * FRAMEWORK declaring class (Landroid/*, Ljava/*, …) → bare name —
+//     C++ shadow writers/readers keep their bare-key interop unchanged.
+//   * DEX writes dual-write (qualified primary + bare legacy mirror) so
+//     existing C++ bare-name readers of app fields stay fed.
+// ─────────────────────────────────────────────────────────────────────────
+static std::string s134_dex_field_key(const std::string& cls,
+                                      const std::string& name,
+                                      bool dex_defined) {
+    if (cls.empty() || name.empty()) return name;
+    // S134 F-NEW-160: FRAMEWORK-OWNED classes (no DEX body - C++ shadows own
+    // their fields) keep bare-name keys. DEX-defined classes (support lib /
+    // androidx included, whatever their package prefix) use qualified
+    // identity. Package-prefix heuristics are FORBIDDEN (S134 section 5):
+    // the support library lives under Landroid/* and still collides.
+    if (!dex_defined) return name;
+    return cls + "->" + name;
+}
+
+// S134 F-NEW-160 implementation — see dalvik_engine.h declaration.
+std::string DalvikExecutionEngine::resolved_field_declarer(
+    const std::string& ref_cls, const std::string& name) const {
+    if (ref_cls.empty() || name.empty()) return ref_cls;
+    std::string walk = ref_cls;
+    for (int hop = 0; hop < 32 && !walk.empty(); ++hop) {
+        if (!is_dex_defined_class(walk)) break;  // framework ancestor: stop
+        auto cit = class_info_index_.find(walk);
+        if (cit != class_info_index_.end() && dex_report_ != nullptr) {
+            const dex::ClassInfo& ci = dex_report_->classes[cit->second];
+            for (const auto& f : ci.instance_fields)
+                if (f.name == name) return walk;  // declarer found
+        }
+        auto sit = class_to_superclass_.find(walk);
+        walk = (sit != class_to_superclass_.end()) ? sit->second : std::string();
+    }
+    return ref_cls;  // no DEX declarer found: keep the ref class as-is
+}
+
+static DalvikValue s134_field_default(const std::string& type_desc) {
+    if (!type_desc.empty() && (type_desc[0] == 'L' || type_desc[0] == '['))
+        return DalvikValue::make_null();
+    switch (type_desc.empty() ? 'I' : type_desc[0]) {
+        case 'J': return DalvikValue::make_long(0);
+        case 'F': return DalvikValue::make_float(0.0f);
+        case 'D': return DalvikValue::make_double(0.0);
+        default: return DalvikValue::make_int(0);
+    }
+}
+
 bool DalvikExecutionEngine::execute_iget(uint32_t pc, InstructionTrace& trace) {
     // Format: 22c iget vA, vB, field@CCCC (2 code units)
     // EXP-042 Phase 2 FIX: same advance-pc-on-failure strategy as iget-object.
@@ -14616,7 +14681,19 @@ bool DalvikExecutionEngine::execute_iget(uint32_t pc, InstructionTrace& trace) {
     if (field_res.resolved) {
         DalvikValue obj_ref = get_register(obj_reg);
         if (obj_ref.type == DalvikType::OBJECT_REF && heap_.has_object(obj_ref.object_id)) {
-            auto field_val = heap_.get_object_field(obj_ref.object_id, field_res.field_name);
+            // S134 F-NEW-160: qualified field identity (declaring class + name).
+            const std::string s134_decl = resolved_field_declarer(
+                field_res.class_descriptor, field_res.field_name);
+            std::string s134_fkey =
+                s134_dex_field_key(s134_decl, field_res.field_name,
+                                   is_dex_defined_class(s134_decl));
+            auto field_val = heap_.get_object_field(obj_ref.object_id, s134_fkey);
+            if (!field_val.has_value() &&
+                is_dex_defined_class(s134_decl)) {
+                // AOSP law: an instance field never written answers its
+                // DEFAULT value — never another class's same-named slot.
+                field_val = s134_field_default(field_res.field_type);
+            }
             if (field_val.has_value()) {
                 result_value = field_val.value();
             }
@@ -14867,7 +14944,40 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
                           << " obj#" << (tgt.type == DalvikType::OBJECT_REF ? tgt.object_id : 0)
                           << std::endl;
             }
-            auto field_val = heap_.get_object_field(obj_ref.object_id, field_res.field_name);
+            const std::string s134_decl =
+                resolved_field_declarer(field_res.class_descriptor,
+                                        field_res.field_name);
+            auto field_val = heap_.get_object_field(obj_ref.object_id,
+                s134_dex_field_key(s134_decl, field_res.field_name,
+                                   is_dex_defined_class(s134_decl)));
+            // S134 F-NEW-160 probe: qualified-read hit/miss visibility.
+            {
+                static thread_local const bool s134_qprobe =
+                    std::getenv("MINIANDROID_S134_QPROBE") != nullptr;
+                if (s134_qprobe) {
+                    static thread_local uint64_t s134_qn = 0;
+                    if (s134_qn < 60) {
+                        ++s134_qn;
+                        std::cerr << "[S134-QGET] key="
+                                  << s134_dex_field_key(field_res.class_descriptor,
+                                                        field_res.field_name,
+                                                        is_dex_defined_class(
+                                                            field_res.class_descriptor))
+                                  << " obj#" << obj_ref.object_id
+                                  << " hit=" << (field_val.has_value() ? "Y" : "N")
+                                  << (field_val.has_value()
+                                          ? " val=" + field_val->to_string()
+                                          : "")
+                                  << " caller=" << current_class_ << "."
+                                  << current_method_ << " pc=" << pc
+                                  << std::endl;
+                    }
+                }
+            }
+            // S134 F-NEW-160: qualified identity read (declaring class + name);
+            // non-framework miss answers the field DEFAULT (null for refs —
+            // the R-NEW-414 initializer materialization below still applies
+            // on top of the honest default).
             // S122 (R-NEW-414): field-initializer default. A field whose
             // constructor initializer is `new T` is NON-NULL on any real
             // instance. When the heap object (materialized for a DEX-defined
@@ -14906,34 +15016,47 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
                                       << std::endl;
                         }
                     }
-                    if (!r414_cls.empty() && r414_cls[0] == 'L' &&
+                    // S134 F-NEW-160 LAW FIX: the initializer scan must read
+                    // the FIELD'S DECLARING CLASS only, and the initializer
+                    // type must MATCH the declared field type. The previous
+                    // receiver-chain walk matched by NAME alone, so an
+                    // unrelated same-named field of a superclass leaked its
+                    // initializer into this read (solitaire 71: `e.m`
+                    // (delegate, no initializer) picked up classes.c's
+                    // `m = new b.b()` Handler → the Handler answered as the
+                    // AppCompat delegate → Window null → boot death — the
+                    // exact name-aliasing family this law closes).
+                    // ART law: a field initializer belongs to the class that
+                    // DECLARES the field; identity is (class, name, type).
+                    if (!field_res.class_descriptor.empty() &&
+                        field_res.class_descriptor[0] == 'L' &&
                         !field_res.field_name.empty()) {
-                    // walk the superclass chain (initializers may live in a
-                    // superclass constructor), bounded. Two starting points:
-                    // (1) the receiver's own runtime class family; (2) when
-                    // that finds nothing, the field's DECLARING class — DEX
-                    // field refs name the class whose shape the code expects;
-                    // when the runtime materialized the inflated object under
-                    // a different node class (upstream check-cast re-shape),
-                    // the declared class's constructor initializer is the
-                    // honest source for the field's never-null default.
-                    std::string walk = r414_cls;
-                    std::string r414_hit_cls;
-                    for (int phase = 0; phase < 2 && r414_hit_cls.empty(); ++phase) {
-                        if (phase == 1) {
-                            walk = field_res.class_descriptor;
-                            if (walk.empty() || walk == r414_cls) break;
-                        }
-                        for (int hop = 0; hop < 8 && !walk.empty(); ++hop) {
-                            scan_init_field_defaults(walk);
-                            auto fm = init_field_defaults_.find(walk);
-                            if (fm != init_field_defaults_.end()) {
-                                auto ft = fm->second.find(field_res.field_name);
-                                if (ft != fm->second.end() && !ft->second.empty()) {
+                    {
+                        std::string walk = field_res.class_descriptor;
+                        scan_init_field_defaults(walk);
+                        auto fm = init_field_defaults_.find(walk);
+                        if (fm != init_field_defaults_.end()) {
+                            auto ft = fm->second.find(field_res.field_name);
+                            if (ft != fm->second.end() && !ft->second.empty() &&
+                                ft->second == field_res.field_type) {
                                     DalvikValue dv =
                                         materialize_init_default(ft->second);
                                     if (dv.type == DalvikType::OBJECT_REF &&
                                         dv.object_id != 0) {
+                                        // S134 F-NEW-160: store under the
+                                        // QUALIFIED identity (declaring class
+                                        // + name) so the next qualified read
+                                        // re-hits the SAME object (identity
+                                        // stability); bare mirror for legacy
+                                        // C++ readers.
+                                        heap_.set_object_field(
+                                            obj_ref.object_id,
+                                            s134_dex_field_key(
+                                                resolved_field_declarer(
+                                                    field_res.class_descriptor,
+                                                    field_res.field_name),
+                                                field_res.field_name, true),
+                                            dv);
                                         heap_.set_object_field(
                                             obj_ref.object_id,
                                             field_res.field_name, dv);
@@ -14955,18 +15078,11 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
                                         }
                                         result_value = dv;
                                         field_val = dv;
-                                        r414_hit_cls = walk;
-                                        break;
                                     }
                                 }
                             }
-                            if (!r414_hit_cls.empty()) break;
-                            auto sit = class_to_superclass_.find(walk);
-                            walk = (sit != class_to_superclass_.end())
-                                       ? sit->second : "";
                         }
                     }
-                }
                 }
             }
             // S72 null-field probe (env-gated, bounded, read-only): a read
@@ -15168,7 +15284,22 @@ bool DalvikExecutionEngine::execute_iput(uint32_t pc, InstructionTrace& trace) {
 
     if (field_res.resolved && obj_ref.type == DalvikType::OBJECT_REF &&
         heap_.has_object(obj_ref.object_id)) {
-        heap_.set_object_field(obj_ref.object_id, field_res.field_name, src_val);
+        // S134 F-NEW-160: dual write — qualified primary key (declaring
+        // class + name) + bare legacy mirror (C++ shadow readers).
+        {
+            const std::string s134_decl = resolved_field_declarer(
+                field_res.class_descriptor, field_res.field_name);
+            if (!is_dex_defined_class(s134_decl)) {
+                heap_.set_object_field(obj_ref.object_id, field_res.field_name,
+                                       src_val);
+            } else {
+                heap_.set_object_field(obj_ref.object_id,
+                    s134_dex_field_key(s134_decl, field_res.field_name, true),
+                    src_val);
+                heap_.set_object_field(obj_ref.object_id, field_res.field_name,
+                                       src_val);
+            }
+        }
         // M3 FIELD-TRACE (AG diagnostic): env-gated field-store value trace.
         // NOTE: render via dalvik_value_to_string — printing .long_val on an
         // INT32 union read shows stale upper bytes as false corruption.
@@ -15333,7 +15464,21 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
 
     if (field_res.resolved && obj_ref.type == DalvikType::OBJECT_REF &&
         heap_.has_object(obj_ref.object_id)) {
-        heap_.set_object_field(obj_ref.object_id, field_res.field_name, src_val);
+        // S134 F-NEW-160: dual write (qualified primary + bare legacy mirror).
+        {
+            const std::string s134_decl = resolved_field_declarer(
+                field_res.class_descriptor, field_res.field_name);
+            if (!is_dex_defined_class(s134_decl)) {
+                heap_.set_object_field(obj_ref.object_id, field_res.field_name,
+                                       src_val);
+            } else {
+                heap_.set_object_field(obj_ref.object_id,
+                    s134_dex_field_key(s134_decl, field_res.field_name, true),
+                    src_val);
+                heap_.set_object_field(obj_ref.object_id, field_res.field_name,
+                                       src_val);
+            }
+        }
         if (field_trace_active(field_res.field_name.c_str(),
                                (current_class_ + "." + current_method_).c_str())) {
             std::cerr << "[FIELD-TRACE] put-obj " << current_class_ << "."
@@ -31100,12 +31245,93 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
 
     // ────────────────────────────────────────────────────────────────────────
     // P1.1 — Activity.getWindow → Window singleton
+    // F-NEW-156 FACE-1 ROOT FIX (S134, solitaire 71 first divergence —
+    // runtime-proven): getWindow() arrives with the DEX method-reference
+    // class of a RENAMED Activity subclass
+    // (Lde/tobiasbielefeld/solitaire/b/b; — the app's obfuscated base
+    // activity; caller support/v7/app/g;.a = AppCompatDelegate.create).
+    // The old dispatch matched the reference-class STRING ("Activity" must
+    // appear) → miss → null → support/v7/app/h.<init> pc=11 NPE'd on
+    // Window.getCallback with a NULL Window receiver → APP-BOUNDARY unwind
+    // → blank two-color screen (FAST fingerprint: 2 colors, 98.87% dom).
+    // AOSP LAW (android.app.Activity.java attach()): mWindow is created
+    // during attach() BEFORE onCreate; getWindow() NEVER answers null
+    // afterwards — for ANY Activity receiver, renamed or not. Dispatch
+    // therefore keys on RECEIVER IDENTITY (the live activity object),
+    // never on the reference class string (S134 §5: no name-based
+    // dispatch).
     // ────────────────────────────────────────────────────────────────────────
-    if (method == "getWindow" &&
-        class_name.find("Activity") != std::string::npos) {
-        result = get_or_create_singleton("Landroid/view/Window;");
-        status = ApiCallTrace::Status::IMPLEMENTED;
-        return true;
+    if (method == "getWindow") {
+        bool recv_is_activity = false;
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+            if (shadow_registry_ != nullptr) {
+                auto* act = shadow_registry_->find_as<framework::ActivityShadow>();
+                if (act != nullptr && act->current_activity_id() != 0 &&
+                    act->current_activity_id() == args[0].object_id)
+                    recv_is_activity = true;
+            }
+            if (!recv_is_activity) {
+                if (auto* hobj = heap_.get(args[0].object_id)) {
+                    const std::string& rt = hobj->class_descriptor;
+                    if (rt.find("Activity") != std::string::npos)
+                        recv_is_activity = true;
+                }
+            }
+        }
+        if (recv_is_activity ||
+            class_name.find("Activity") != std::string::npos) {
+            result = get_or_create_singleton("Landroid/view/Window;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            std::cerr << "[S134-F134A] getWindow answered ("
+                      << (recv_is_activity ? "RECEIVER IDENTITY" : "ref-class")
+                      << " ref_class=" << class_name
+                      << " recv_oid="
+                      << (args.empty() ? 0 : args[0].object_id)
+                      << " act_oid="
+                      << (shadow_registry_
+                              ? [&] {
+                                    auto* a = shadow_registry_->find_as<
+                                        framework::ActivityShadow>();
+                                    return a ? a->current_activity_id() : 0;
+                                }()
+                              : 0)
+                      << ")" << std::endl;
+            return true;
+        }
+    }
+    {
+        // S134-F134A diagnostic: getWindow/getCallback reaching the bridge
+        // via a NON-"Activity" class reference (renamed-subclass hazard).
+        static thread_local const bool s134_wtrace =
+            std::getenv("MINIANDROID_S134_WINDOW_TRACE") != nullptr;
+        if (s134_wtrace &&
+            (method == "getWindow" || method == "getCallback" ||
+             method == "getCurrentFocus")) {
+            std::string recv = "<none>";
+            if (!args.empty() && (args[0].type == DalvikType::OBJECT_REF ||
+                                  args[0].type == DalvikType::NULL_REF)) {
+                recv = (args[0].type == DalvikType::NULL_REF)
+                           ? std::string("NULL")
+                           : args[0].class_desc;
+                if (args[0].type == DalvikType::OBJECT_REF) {
+                    if (auto* hobj = heap_.get(args[0].object_id))
+                        recv += std::string("(runtime=") +
+                                hobj->class_descriptor + " oid=" +
+                                std::to_string(args[0].object_id) + ")";
+                }
+            }
+            uint32_t s134_act = 0;
+            if (shadow_registry_ != nullptr) {
+                auto* a = shadow_registry_->find_as<framework::ActivityShadow>();
+                if (a) s134_act = a->current_activity_id();
+            }
+            std::cerr << "[S134-WINDOW] bridge " << class_name << "."
+                      << method << " recv=" << recv
+                      << " act_oid=" << s134_act
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << " status=FALLTHROUGH(null)"
+                      << std::endl;
+        }
     }
 
     // ────────────────────────────────────────────────────────────────────────
@@ -31151,6 +31377,17 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // AppCompat wrappers call getCallback() and CHECK it ("Window callback
     // may not be null" IAE in the TimeLimit chain when it resolved null).
     if (method == "getCallback" && class_name.find("Window") != std::string::npos) {
+        {
+            // S134 probe: why does getCallback fall through?
+            auto* act = (shadow_registry_ != nullptr)
+                            ? shadow_registry_->find_as<framework::ActivityShadow>()
+                            : nullptr;
+            std::cerr << "[S134-GCB] bridge getCallback recv=" << class_name
+                      << " reg=" << (shadow_registry_ ? "Y" : "N")
+                      << " act=" << (act ? act->current_activity_id() : 0)
+                      << " caller=" << current_class_ << "." << current_method_
+                      << std::endl;
+        }
         if (shadow_registry_ != nullptr) {
             auto* act = shadow_registry_->find_as<framework::ActivityShadow>();
             if (act != nullptr && act->current_activity_id() != 0) {
