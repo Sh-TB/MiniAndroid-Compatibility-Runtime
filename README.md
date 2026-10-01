@@ -52,7 +52,7 @@ Dalvik-class interpreter over a deterministic software raster pipeline.
 
 | Panel | Generated file |
 |---|---|
-| **CANONICAL MASTER WORKLIST (S129: 643 items — 424 roots + 197 caps + 22 mandates, all 27 fields, 129 categories, P0–P4 queues, APK matrix, dependency graph; INPUT caps PENDING 37→33)** | [docs/MASTER_WORKLIST.md](docs/MASTER_WORKLIST.md) + [canonical/master_worklist.json](canonical/master_worklist.json) |
+| **CANONICAL MASTER WORKLIST (S131: 643 items — 424 roots + 197 caps + 22 mandates, all 27 fields + reuse_candidate, 129 categories, P0–P4 queues, APK matrix, dependency graph; §12 REUSE MAP: 43 candidates 21 mandated fields; INPUT caps PENDING 33, R-NEW-251/252 superseded by R-NEW-424)** | [docs/MASTER_WORKLIST.md](docs/MASTER_WORKLIST.md) + [canonical/master_worklist.json](canonical/master_worklist.json) + [docs/REUSE_EXTERNAL_COMPONENT_MAP.md](docs/REUSE_EXTERNAL_COMPONENT_MAP.md) + [docs/REUSE_AUDIT_INPUT.md](docs/REUSE_AUDIT_INPUT.md) |
 | Capability registry (197 capabilities, SS5–22 layers) | [canonical/capability_registry.json](canonical/capability_registry.json) |
 | Status control panel (computed percentages, frontiers, load pipeline) | [docs/ROADMAP_STATUS.md](docs/ROADMAP_STATUS.md) |
 | Per-capability matrix | [docs/CAPABILITY_MATRIX.md](docs/CAPABILITY_MATRIX.md) |

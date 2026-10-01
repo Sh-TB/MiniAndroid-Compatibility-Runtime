@@ -2549,22 +2549,22 @@
   },
   {
    "id": "R-NEW-251",
-   "status": "PARTIAL",
+   "status": "SUPERSEDED-BY-EVIDENCE",
    "priority": "P2",
    "fg": false,
-   "evidence": "touch_dispatcher transforms",
+   "evidence": "R-NEW-424 reverse draw-order walk implements the AOSP isTransformedTouchPointInView hit-test law (S128 chain max=5 + S131 audit); battery 124-stage ALL PASS",
    "missing": "hit-test law",
-   "next": "on demand",
+   "next": "superseded by R-NEW-424",
    "commit": "-"
   },
   {
    "id": "R-NEW-252",
-   "status": "PARTIAL",
+   "status": "SUPERSEDED-BY-EVIDENCE",
    "priority": "P1",
    "fg": false,
-   "evidence": "touch_dispatcher.cpp; tictactoe_golden 9/9 clicks (§29 battery)",
+   "evidence": "ordering matrix = R-NEW-424 walk law; ttt byte-identical b5a7a35d, calc goldens a169346e x3, battery 124-stage ALL PASS (S131 audit)",
    "missing": "ordering matrix",
-   "next": "regression-watch",
+   "next": "superseded by R-NEW-424",
    "commit": "-"
   },
   {

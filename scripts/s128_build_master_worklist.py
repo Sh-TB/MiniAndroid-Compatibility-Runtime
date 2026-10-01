@@ -17,6 +17,25 @@ data = assemble()
 items, caps, apps, games = data['items'], data['caps'], data['apps'], data['games']
 cap_cat, cat_caps = data['cap_cat'], data['cat_caps']
 
+# S131 REUSE-FIRST LAW: load the candidate registry; every item gains a
+# `reuse_candidate` field (category -> candidates) before any emission.
+REUSE_REG_PATH = f'{ROOT}/canonical/reuse_registry.json'
+reuse_cands = []
+reuse_by_cat = {}
+if os.path.exists(REUSE_REG_PATH):
+    with open(REUSE_REG_PATH) as _f:
+        reuse_cands = json.load(_f).get('candidates', [])
+    for _c in reuse_cands:
+        for _k in _c.get('categories', []):
+            reuse_by_cat.setdefault(_k, []).append(_c['REUSE_CANDIDATE'])
+    _enriched = 0
+    for _i in items:
+        _ids = reuse_by_cat.get(str(_i.get('category', '')).split()[0], [])
+        if _ids:
+            _i['reuse_candidate'] = _ids
+            _enriched += 1
+    print(f'reuse enrichment: {_enriched} items carry reuse_candidate')
+
 F27 = ['ID','TITLE','CATEGORY','SUBSYSTEM','LAYER','CURRENT STATUS','ROOT CAUSE','WHAT ALREADY EXISTS',
        'WHAT IS MISSING','DEPENDENCIES','FAN-OUT','VISUAL IMPACT','AFFECTED APKs/APPS/GAMES',
        'AFFECTED CAPABILITIES','SOURCE LAW','AOSP/UPSTREAM REFERENCE','EXISTING MATURE IMPLEMENTATION',
@@ -325,6 +344,31 @@ w('- Registry repair R1: FlappyCow / GameMasterDice / Snake Neon were missing fr
 w('- Keyword sweep: TODO/FIXME/STUB/PLACEHOLDER/HARDCODED scanned over src+scripts+docs; live-code findings are limited to `bitmap_shadow.cpp` resample nearest-registered note (registered root) + observatory status vocabulary; exp*/historical harness strings are not runtime laws.')
 w('- Open GitHub issues (100) reconciled: micro-gap MG tickets (#290-#330) ↔ registry PARTIAL roots; Telegram knowledge-transfer series (#356-#363) ↔ M-07; APP-0xx/APP-1xx compatibility-report queue ↔ corpus backlog M-12/M-20.')
 w('- Every historical unresolved item is now: completed+verified (§9), an open record with all 27 fields (§8), or superseded with evidence (§9).')
+w('')
+
+# ---- §12 REUSE / EXTERNAL COMPONENT MAP (S131 REUSE-FIRST GLOBAL LAW) ----
+w('## 12. REUSE / EXTERNAL COMPONENT MAP (S131 REUSE-FIRST LAW)')
+w('')
+w('> LAW: MAXIMUM REAL-APK COMPATIBILITY WITH MINIMUM NEW CODE. Before ANY new')
+w('> subsystem code: search existing implementation, AOSP, AndroidX, libcore/ART,')
+w('> mature open-source, embeddable libraries, maintained projects. Machine twin:')
+w('> `canonical/reuse_registry.json` (21 mandated fields per candidate).')
+w('> Full decision table: `docs/REUSE_EXTERNAL_COMPONENT_MAP.md`.')
+w('')
+w('| STATUS | CANDIDATES |')
+w('|---|---|')
+if reuse_cands:
+    _rs = collections.Counter(_c['status'] for _c in reuse_cands)
+    for _s, _n in sorted(_rs.items()):
+        _names = ', '.join(_c['REUSE_CANDIDATE'] for _c in reuse_cands if _c['status'] == _s)
+        w(f'| [{_s}] ({_n}) | {_names} |')
+    w('')
+    w('Category → candidates (drives every item\'s `reuse_candidate` field):')
+    w('')
+    for _k in sorted(reuse_by_cat):
+        w(f'- **{_k}** → {", ".join(reuse_by_cat[_k])}')
+    w('')
+    w('Decision law: ADOPTED_WIRED/ADOPTED_VENDORED/ADAPTED = already the substrate (never re-implement around them); EVALUATE/PLANNED = integrate-or-justify before new code in that category; ORACLE = diff-test authority; REFERENCE_ONLY = port laws 1:1 with anchors, never wholesale; REJECTED = recorded reason.')
 w('')
 
 open(f'{ROOT}/docs/MASTER_WORKLIST.md', 'w').write('\n'.join(md))

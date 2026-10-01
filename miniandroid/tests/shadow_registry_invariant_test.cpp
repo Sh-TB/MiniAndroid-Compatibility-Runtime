@@ -87,8 +87,8 @@ int main() {
     {
         ShadowRegistry reg;
         register_platform_shadows(reg);
-        check(reg.stats().shadow_count == 31,
-              "register_platform_shadows registers exactly 31 shadows (S68 21 + S83 LocaleInsets/GLSurfaceView + S86 SurfaceView + S87 executor split + S99 AnimatorShadow + S113 WindowInsetsShadow ROOT-059 + S129 VelocityTrackerShadow R-NEW-425 + TouchDelegateShadow R-NEW-426)");
+        check(reg.stats().shadow_count == 33,
+              "register_platform_shadows registers exactly 33 shadows (S68 21 + S83 LocaleInsets/GLSurfaceView + S86 SurfaceView + S87 executor split + S99 AnimatorShadow + S113 WindowInsetsShadow ROOT-059 + S129 VelocityTrackerShadow R-NEW-425 + TouchDelegateShadow R-NEW-426 + S130 ScrollerShadow R-NEW-427 + GestureDetectorShadow R-NEW-429)");
     }
 
     printf("== §6 INV-3: deterministic ownership (register → find identity) ==\n");
@@ -149,8 +149,8 @@ int main() {
         check(reduced.find_as<ThreadShadow>() != nullptr &&
                   reduced.find_as<LooperShadow>() != nullptr,
               "canonical registration completes a reduced registry");
-        check(reduced.stats().shadow_count == 33,
-              "count law: 31 canonical + 2 pre-registered = 33 visible (S68 21 + S83 LocaleInsetsShadow/GLSurfaceViewShadow + S86 SurfaceViewShadow + S87 executor-split drift, plus M3 F-020 AtomicShadow + §4 ExecutorShadow + F-050 ChoreographerShadow + S56 F-085 WebSettingsShadow + S68 BitmapShadow lineage + S99 AnimatorShadow + S113 WindowInsetsShadow + S129 VelocityTrackerShadow R-NEW-425 + TouchDelegateShadow R-NEW-426)");
+        check(reduced.stats().shadow_count == 35,
+              "count law: 33 canonical + 2 pre-registered = 35 visible (S68 21 + S83 LocaleInsetsShadow/GLSurfaceViewShadow + S86 SurfaceViewShadow + S87 executor-split drift, plus M3 F-020 AtomicShadow + §4 ExecutorShadow + F-050 ChoreographerShadow + S56 F-085 WebSettingsShadow + S68 BitmapShadow lineage + S99 AnimatorShadow + S113 WindowInsetsShadow + S129 VelocityTrackerShadow R-NEW-425 + TouchDelegateShadow R-NEW-426 + S130 ScrollerShadow R-NEW-427 + GestureDetectorShadow R-NEW-429)");
     }
 
     printf("§6 shadow registry invariant battery: %d checks, %d failures\n",
