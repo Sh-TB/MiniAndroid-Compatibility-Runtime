@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- S129 input-law fixture layout. One screen carries both CAP-INPUT-108
+     (VelocityTracker via the VelView custom view) and CAP-INPUT-110
+     (TouchDelegate expanding btn_delegate far beyond its 48dp bounds). -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/btn_delegate"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:text="B" />
+
+    <com.miniandroid.inputlaw.VelView
+        android:id="@+id/vel"
+        android:layout_width="300dp"
+        android:layout_height="180dp"
+        android:layout_marginTop="500dp" />
+
+    <TextView
+        android:id="@+id/tv_velocity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="686dp"
+        android:text="VY=0;VX=0" />
+
+    <TextView
+        android:id="@+id/tv_delegate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="712dp"
+        android:text="NO-DELEGATE-CLICK" />
+</FrameLayout>

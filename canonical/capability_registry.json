@@ -1,6 +1,6 @@
 {
  "schema": "miniandroid.capability_registry.v1",
- "generated": "2026-09-30T21:53:15Z",
+ "generated": "2026-10-01T03:05:21Z",
  "law": "IMPLEMENTED = source inventory hit only. TESTED/VERIFIED require recorded runtime evidence refs. Grep never proves VERIFIED (ROADMAP SS1).",
  "capabilities": [
   {
@@ -8,7 +8,7 @@
    "layer": "UI",
    "name": "View",
    "status": "TESTED",
-   "src_hits": 359,
+   "src_hits": 361,
    "evidence": [
     "evidence/s113_fullgui (hello_smoke/hello_widgets control APKs)",
     "miniandroid/tests/shadow_registry_invariant_test.cpp"
@@ -19,7 +19,7 @@
    "layer": "UI",
    "name": "ViewGroup",
    "status": "TESTED",
-   "src_hits": 146,
+   "src_hits": 149,
    "evidence": [
     "evidence/s113_fullgui",
     "evidence/s124_theme_base (TableLayout/LinearLayout/FrameLayout themed renders)"
@@ -256,7 +256,7 @@
    "layer": "UI",
    "name": "visibility",
    "status": "IMPLEMENTED",
-   "src_hits": 154,
+   "src_hits": 156,
    "evidence": []
   },
   {
@@ -319,7 +319,7 @@
    "layer": "RENDERING",
    "name": "Rect/RectF",
    "status": "IMPLEMENTED",
-   "src_hits": 35,
+   "src_hits": 39,
    "evidence": []
   },
   {
@@ -491,7 +491,7 @@
    "layer": "TEXT",
    "name": "font fallback",
    "status": "IMPLEMENTED",
-   "src_hits": 213,
+   "src_hits": 220,
    "evidence": []
   },
   {
@@ -636,7 +636,7 @@
    "layer": "RESOURCES",
    "name": "Configuration",
    "status": "IMPLEMENTED",
-   "src_hits": 95,
+   "src_hits": 97,
    "evidence": []
   },
   {
@@ -789,7 +789,7 @@
    "layer": "INFLATION",
    "name": "include",
    "status": "IMPLEMENTED",
-   "src_hits": 1070,
+   "src_hits": 1079,
    "evidence": []
   },
   {
@@ -847,7 +847,7 @@
    "layer": "INPUT",
    "name": "MotionEvent",
    "status": "VERIFIED",
-   "src_hits": 26,
+   "src_hits": 41,
    "evidence": [
     "touch_dispatcher + scripts/autoplay drivers",
     "evidence/s119_games 6 games real taps",
@@ -868,7 +868,7 @@
    "layer": "INPUT",
    "name": "dispatchTouchEvent",
    "status": "IMPLEMENTED",
-   "src_hits": 23,
+   "src_hits": 28,
    "evidence": []
   },
   {
@@ -888,7 +888,7 @@
    "layer": "INPUT",
    "name": "onTouchEvent",
    "status": "TESTED",
-   "src_hits": 24,
+   "src_hits": 40,
    "evidence": [
     "R-NEW-417 DEX onTouchEvent override dispatch",
     "evidence/s122 chess"
@@ -899,7 +899,7 @@
    "layer": "INPUT",
    "name": "TouchTarget",
    "status": "TESTED",
-   "src_hits": 3,
+   "src_hits": 4,
    "evidence": [
     "S128 R-NEW-424 TouchTarget chain law (reverse draw-order + chain capture)",
     "run/s128 calc_taps max_chain=5 + PerformClick x3 + display state change",
@@ -947,15 +947,15 @@
    "layer": "INPUT",
    "name": "multi-touch",
    "status": "IMPLEMENTED",
-   "src_hits": 71,
+   "src_hits": 81,
    "evidence": []
   },
   {
    "id": "CAP-INPUT-108",
    "layer": "INPUT",
    "name": "VelocityTracker",
-   "status": "PENDING",
-   "src_hits": 0,
+   "status": "IMPLEMENTED",
+   "src_hits": 102,
    "evidence": []
   },
   {
@@ -963,15 +963,15 @@
    "layer": "INPUT",
    "name": "GestureDetector",
    "status": "IMPLEMENTED",
-   "src_hits": 107,
+   "src_hits": 132,
    "evidence": []
   },
   {
    "id": "CAP-INPUT-110",
    "layer": "INPUT",
    "name": "TouchDelegate",
-   "status": "PENDING",
-   "src_hits": 0,
+   "status": "IMPLEMENTED",
+   "src_hits": 46,
    "evidence": []
   },
   {
@@ -1139,7 +1139,7 @@
    "layer": "THREADING",
    "name": "Runnable",
    "status": "IMPLEMENTED",
-   "src_hits": 294,
+   "src_hits": 295,
    "evidence": []
   },
   {
@@ -1155,7 +1155,7 @@
    "layer": "THREADING",
    "name": "Handler",
    "status": "TESTED",
-   "src_hits": 280,
+   "src_hits": 284,
    "evidence": [
     "locks_shadow/executor_shadow",
     "evidence/s40 dooz23 real Hilt execution (0-error SUCCESS)"
