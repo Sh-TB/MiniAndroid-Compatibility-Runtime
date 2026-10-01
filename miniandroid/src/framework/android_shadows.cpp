@@ -2804,6 +2804,24 @@ uint32_t ViewShadow::find_by_android_id(uint32_t root_id, int32_t android_id) co
         }
         frontier = std::move(next);
     }
+    // R-NEW-441b (S132): AOSP View.findViewById root law — an appcompat
+    // delegate app installs content via Window.setContentView +
+    // content.addView (R005-DECOR + S83-CONTENT), so the Activity content
+    // root may be unset (0) while the tree lives under the S83
+    // android.R.id.content node. When the rooted BFS misses (root 0 or
+    // the target lives outside the recorded subtree), fall back to the
+    // full-node scan — AOSP DecorView.findViewById walks the WHOLE decor
+    // hierarchy, and the app's own findViewById(R.id.resultDisplay) at
+    // click time must answer the live view (opencalculator v53: the tap's
+    // PerformClick ran keyDigitPadMappingToDisplay but its
+    // findViewById(resultDisplay) answered null → no setText → no state
+    // change; with the fallback the same tap mutates the display).
+    for (const auto& [id, node_ptr] : nodes_) {
+        if (node_ptr && node_ptr->android_view_id == android_id &&
+            node_ptr->parent_id != 0) {
+            return id;
+        }
+    }
     return 0;
 }
 
@@ -3452,6 +3470,16 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     if (m == "setVisibility") {
         auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         n->visibility = ctx.arg_as_int(0, 0);
+        // R-NEW-441 diagnostic (S132): who hides whole panels? The
+        // opencalculator pad (constraintLayout2) went INVISIBLE during the
+        // first real-DEX SlidingUpPanelLayout lifecycle wave — this trace
+        // names the receiver and the DEX caller for the root-cause step.
+        if (n->visibility != 0 &&
+            std::getenv("MINIANDROID_VIS_TRACE") != nullptr) {
+            std::cerr << "[VIS-TRACE] setVisibility(" << n->visibility
+                      << ") on view=" << ctx.receiver_id << " "
+                      << n->class_desc << std::endl;
+        }
         return CallResult::handled_void();
     }
     // ── S99 (babydots SpeedDialView.init pc→ViewPropertyAnimatorCompat.
@@ -3780,6 +3808,26 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         if (m == "getMeasuredHeight")
             return CallResult::handled_int(n->measured_height);
         return CallResult::handled_int(n->measured_bottom - n->measured_top);
+    }
+    // ── R-NEW-441 (S132): AOSP View.getLeft/getTop/getRight/getBottom law.
+    // View.java: mLeft/mTop/mRight/mBottom are set by View.layout(l,t,r,b)
+    // and read by EVERY library that makes geometry decisions from view
+    // bounds (umano SlidingUpPanelLayout dimChildToDimen L680-697: a child
+    // is hidden only when its clamped bounds fall entirely INSIDE the
+    // panel's rect). The runtime's layout phase assigns the SAME state to
+    // measured_left/top/right/bottom — answer from there. Without this
+    // bridge the getters fell to the generic stub answering 0, the cover
+    // test saw 0,0,0,0 as "fully covered", and the whole opencalculator
+    // pad (constraintLayout2) was setVisibility(INVISIBLE) during the
+    // first real-DEX SlidingUpPanelLayout onLayout wave (S132 oc_fix7
+    // [VIS-TRACE] evidence).
+    if (m == "getLeft" || m == "getTop" || m == "getRight" || m == "getBottom") {
+        const auto* n = find_node(ctx.receiver_id);
+        if (!n) return CallResult::handled_int(0);
+        if (m == "getLeft")   return CallResult::handled_int(n->measured_left);
+        if (m == "getTop")    return CallResult::handled_int(n->measured_top);
+        if (m == "getRight")  return CallResult::handled_int(n->measured_right);
+        return CallResult::handled_int(n->measured_bottom);
     }
     // ── S83-GFX-BASE §19: ImageView.setScaleType law ─────────────────────
     // AOSP ImageView.setScaleType(ScaleType) stores the enum; the ordinal

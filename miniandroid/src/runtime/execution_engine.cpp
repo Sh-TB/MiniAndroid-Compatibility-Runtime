@@ -2577,7 +2577,16 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
         auto* activity_shadow = shadow_registry_->find_as<framework::ActivityShadow>();
         auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
         if (activity_shadow && view_shadow) {
-            uint32_t root_id = activity_shadow->content_view_id();
+                        // R-NEW-440b (S132): ONE render/input root law — the draw
+            // walk, stage_tap and the long-press stage all resolve the
+            // same root (Activity content root, else the S83
+            // android.R.id.content node — AOSP ViewRootImpl law).
+            uint32_t root_id = effective_content_root_();
+            if (root_id != 0 && root_id != activity_shadow->content_view_id()) {
+                std::cerr << "[R440-ROOT] content_view_id unset — "
+                          << "rendering from android.R.id.content node="
+                          << root_id << std::endl;
+            }
 
             // EXP-090: Search for the "current visible" fragment view by class name.
             // Fragment views (PhoneView, SmsView) are created by DEX bytecode and
@@ -5389,7 +5398,9 @@ bool ExecutionEngine::stage_frame_sequence( ExecutionResult& result, const Execu
             } else {
             for (size_t f117_i : f117_due) {
             const auto& [tpx, tpy] = config.tap_sequence[f117_i];
-            uint32_t tap_root = activity_shadow->content_view_id();
+            // R-NEW-440b: ONE render/input root law (content_view_id is
+            // unset on the appcompat delegate path — see helper).
+            uint32_t tap_root = effective_content_root_();
             // R-NEW-394 (S76): AOSP topmost-window touch law — a dialog
             // window sits ABOVE the activity window; when the tap point
             // falls inside a showing dialog's frame the dispatch root is
@@ -5952,7 +5963,7 @@ bool ExecutionEngine::stage_long_press(ExecutionResult& result, const ExecutionC
     // mirrors ViewRenderer::hit_test semantics without instantiating the
     // (currently unlinked) renderer.
     const int px = config.long_press_x, py = config.long_press_y;
-    uint32_t root_id = activity_shadow->content_view_id();
+    uint32_t root_id = effective_content_root_();  // R-NEW-440b
     std::function<uint32_t(uint32_t)> hit_walk = [&](uint32_t id) -> uint32_t {
         const auto* n = view_shadow->find_node(id);
         if (!n || n->visibility != 0) return 0;
@@ -6507,6 +6518,22 @@ nlohmann::json ExecutionEngine::consume_finish_cascade() {
 //   t0+120ms  drain        → UnsetPressedState → setPressed(false)
 //   final     frame_002    → post-click, unpressed state
 // No sleeps anywhere: every timestamp is the HandlerShadow virtual clock.
+// ── R-NEW-440b (S132): the single render/input root resolution ──────
+uint32_t ExecutionEngine::effective_content_root_() const {
+    if (!shadow_registry_) return 0;
+    auto* as_ = shadow_registry_->find_as<framework::ActivityShadow>();
+    auto* vs_ = shadow_registry_->find_as<framework::ViewShadow>();
+    if (!as_ || !vs_) return 0;
+    uint32_t root_id = as_->content_view_id();
+    if (root_id != 0 && vs_->find_node(root_id)) return root_id;
+    for (const auto& [id, node_ptr] : vs_->all_nodes()) {
+        if (node_ptr && node_ptr->android_view_id == 0x01020002) {
+            return id;
+        }
+    }
+    return 0;
+}
+
 bool ExecutionEngine::stage_tap(ExecutionResult& result,
                                 const ExecutionConfig& config) {
     if (!config.tap_enabled) return true;
@@ -6632,7 +6659,7 @@ bool ExecutionEngine::stage_tap(ExecutionResult& result,
         manifest["frames"].push_back(f);
     }
 
-    uint32_t root_id = activity_shadow->content_view_id();
+    uint32_t root_id = effective_content_root_();  // R-NEW-440b
     int frame_index = 1;  // frame_000 = launch, captured above
     size_t total_diff = 0;
     nlohmann::json all_drains = nlohmann::json::array();

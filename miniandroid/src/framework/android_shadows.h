@@ -1107,6 +1107,13 @@ public:
         int last_size_w = -1, last_size_h = -1;
         int dex_measured_w = 0, dex_measured_h = 0;
         bool dex_measure_valid = false;
+        // R-NEW-438 (S132): transient — set by the canonical measure law on
+        // a 0dp+weight child measured under the AOSP AT_MOST wrap branch
+        // (LinearLayout lp.width = WRAP_CONTENT restore-after law). The
+        // child's resolve must answer its MEASURED content size, not re-apply
+        // the XML 0dp through the lp shortcut (which would collapse the
+        // wrap-measured button back to width 0).
+        bool measure_weight_wrap = false;
         // F-096 (R-NEW-329 root, real-DEX measure+layout lifecycle law):
         // AOSP View lifecycle dispatches onMeasure/onLayout for EVERY view
         // — including PROGRAMMATICALLY-CREATED ViewGroup subclasses whose
