@@ -212,3 +212,5 @@ evidence/**/register_trace.json
 evidence/**/*_bundle*.js
 *.apk
 *.aab
+tmp/wa169/
+tmp/gate_dr/
