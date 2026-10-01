@@ -4849,3 +4849,53 @@ Stage Summary:
 - The browser network frontier crossed from "no live site loads" to "live z.ai: NETWORK/HTML/DOM/CSS/JS-LOAD/JS-DATA all PASS with 3×200 API proofs" — the white screen root-caused to two JS-layer laws (module parse: fixed; Svelte-5 in-bundle rejection: recorded with attribution) and explicitly NOT framebuffer/stride corruption (measured).
 - 14 roots, ≈700 LOC of law code on the existing substrate, zero new dependencies, battery green, 3-run determinism everywhere.
 - Next automatic frontier: R-NEW-456 replay bisect → the engine law beneath the Svelte-5 rejection; fetch POST + response Headers; first_divergence.json auto-generation.
+
+---
+Task ID: S134
+Agent: Super Z (main)
+Task: S134 FINAL RUNTIME ROOT-CAUSE CAMPAIGN — White/Black/Grey/Blank/Stale screen full-stack forensic investigation, first-divergence isolation, fix, regression.
+
+LAWS READ:
+- CONSTITUTION_V2.md (in-tree; law vocabulary, status ladder, evidence contract)
+- S134 directive (48 sections): first-divergence engine, failure taxonomy, source-first law, FAST/MID/DEEP model, 3-run rule, corpus strategy, control-plane reconciliation, final YAML deliverable
+- worklog.md (491,968 bytes; S82/S83 F-NEW-156/157/159 history, S130 laws, S131/S132 reuse waves, S133 z.ai browser wave)
+- canonical/root_cause_registry.json (454 roots; OPEN: F-143, F-144, F-145, F-147; OBSERVED-FAIL P0: F-NEW-156, F-NEW-157; BLOCKED: R-NEW-456)
+- canonical/master_worklist.json (673 items; counts: VERIFIED 166, PENDING 143, IMPLEMENTED 143, PARTIAL 106, SUPERSEDED 51, TESTED 50, BLOCKED 3)
+- docs/REPORT_S133.md (z.ai live chain: NETWORK/HTML/DOM/CSS/JS-DATA PASS; white shell = honest static shell, NOT stride corruption; R-NEW-456 residual)
+- Historical laws from worklog: F-NEW-159 LocaleList/WindowInsetsController shadow law (35/35 signature-eliminated, S83); F-NEW-156 = onCreate app-boundary unwind family (4 faces); status law §7/§16 (two-color + text_px<500 = STATE-NONBLANK + FAIL-PALETTE); §34 FIRST_DIVERGENCE in gfx_provenance; L5 never self-granted.
+
+CURRENT HEAD: fbc0291494215ce13f454a5d8b9b7eef8c2a2c7b
+BRANCH: main
+ORIGIN MAIN: N/A — no origin remote configured (local-only repo); ls-remote fails honestly
+WORKTREE: only tmp/flappycow modified (scratch); build/ was WIPED (workspace reset) → runtime rebuilt from source this session (make all laws130, log /tmp/s134build/build.log)
+
+CONTROL-PLANE RECONCILIATION:
+- master_worklist/generated=673 matches registry root count 454 + caps/mandates — CONSISTENT with S133 record
+- F-NEW-156 OBSERVED-FAIL with 4 named faces; S83 fanout claimed 35/35 signature-eliminated for the F-NEW-159 sub-signature ONLY (LocaleList/WindowInsets) — the P0 root itself was never closed → re-validate on current HEAD this session
+- F-NEW-157 ADVANCED per S83 (GLSurfaceView/EGL/GL10 shadows landed; l6_glsurface ladder PASS) but root still OBSERVED-FAIL (libGDX AndroidGraphics.createGLSurfaceView chain open) → re-validate
+- R-NEW-456 BLOCKED (z.ai Svelte-5) — P2, replay-bisect queued as secondary
+- miniandroid/build/ empty on session start = README/registry claims of "battery ALL PASS" were HISTORICAL (pre-reset binary) → rebuild + re-run gates this session before any claim
+
+NEW LAWS DISCOVERED: (none yet — recorded as of session start)
+
+TARGET (FAST path first, per §35):
+- F-NEW-156 faces: de.tobiasbielefeld.solitaire_71, org.debian.eugen.headingcalculator_1, com.chessclock.android_29, omegacentauri.mobi.simplestopwatch_26 (all in /tmp/my-project/apk_cache)
+- F-NEW-157 libGDX face: com.rocket9labs.boxcars_104090 (libGDX APK in s82 cache)
+RENDERER FAMILY: classic View (156 faces) / GLSurfaceView+libGDX (157)
+CURRENT FAILURE: onCreate app-boundary unwind → blank two-color screen (156); GL surface NPE unwind (157)
+FIRST HYPOTHESIS: per-face first divergence at named invoke sites; NOT assumed graphics
+
+Work Log (S134 continued):
+- HEAD verified fbc0291494215ce13f454a5d8b9b7eef8c2a2c7b (branch main, no origin remote — local-only; worktree clean except tmp/flappycow). miniandroid/build/ WIPED by workspace reset → full rebuild (make all laws130) before ANY claim.
+- FAST path (§35) on all F-NEW-156/157 faces (scripts/s134/s134_fast_path.py): solitaire rc=1 TRUE_EMPTY 2 colors with 9 SYNTH-EXC (first: support/v7/app/h.<init> pc=11 Window.getCallback on NULL receiver); headingcalc rc=0 483 colors; chessclock rc=1 Uri.toString null; simplestopwatch rc=0 16 colors; boxcars rc=0 SUCCESS Errors=0 BUT frame = C013 placeholder (TRUE_EMPTY 3 colors 99.81%) — §30 gate violation observed.
+- ROOT-CAUSE CHAIN (solitaire, §38 backward walk): NPE at h.<init> ← Window null from g.a(Activity,f) invoked ON A HANDLER ← e.i (getDelegate) returned b/b#30 (the app Handler) as the delegate ← iget-object e.m read the app's classes.c `m` field ← HEAP INSTANCE FIELDS KEYED BY BARE NAME = two logical fields aliased one slot (the §3 central hypothesis PROVEN on current HEAD). Proof: [S134-QGET] key=m obj#16 hit=Y val=b/b#30; DEX dumps (b.b.<init> = Handler subclass ctor; e.i returns #30 at 0xc).
+- F-NEW-160 FIX (semantic law, no heuristics): qualified field identity "Lcls;->name" for DEX-defined declaring classes (framework-owned stay bare for shadow interop); ART declarer resolution resolved_field_declarer() walks the superclass chain to the actual owner; never-written fields answer their declared DEFAULT; R-NEW-414 initializer scan restricted to the declaring class with type matching; DEX iput dual-writes qualified + bare mirror. ≈90 LOC in dex/dalvik_engine.cpp.
+- IN-WAVE REGRESSION CAUGHT+FIXED: first cut split simplestopwatch ShowTime.options(write-ref)/StopWatch.options(read-ref) → blank FAST rerun → ART declarer walk added → simplestopwatch restored (18 colors, 0 errors, 3-run e00fe7e082c385f8 ×3 with isolated --data-root per §26/§40; shared data root = documented cross-run prefs persistence, NOT nondeterminism).
+- POST-FIX FRONTIER (solitaire): delegate constructs → Window.setCallback → AppCompat theme machinery (S124 ARSC framework-res live, obtainStyledAttributes/TypedValue chain) → app reaches onStart; NEW first divergence = support-v7 view/i WindowCallbackWrapper IAE family + SharedPreferences null at c/m.aR + FragmentManager "No activity" at v4/b/r.a from m.onStart. 3-run solitaire 6588621c4a0c4182 ×3 (deterministic new state).
+- REGRESSION (§40/§41, A/B method): git worktree fbc0291 rebuilt clean → dooz ba8a95eb2278594f (6 pre-existing errors) and ballbreak 8a951f5f975c4742 (0 errors) BYTE-IDENTICAL to the fixed tree → zero regression from the field law; s112_gates.py `want` SHAs are S112-era → marked SUPERSEDED by the A/B method. laws130 51/51 PASS. webfix T01–T14 suite all render; T02 golden c95affdefb734ffd ×3 preserved. S114 HTML5 fixture APKs (mykanji/accelerace/sokoban) MISSING from the reset workspace (tmp/apks) — honest environment gap, re-run BLOCKED pending re-fetch.
+- REGISTRIES: F-NEW-160 ROOT-CAUSED-FIXED (P0, dex/vm), F-NEW-161 OBSERVED-FAIL (P1, chessclock Uri producer unattributed — disassembler buffer mismatch on the 300+-instruction method), F-NEW-162 OBSERVED-FAIL (P1, C013 placeholder contamination + false SUCCESS: headingcalc overpaint, boxcars EbitenSurfaceView full-screen placeholder with Errors=0); F-NEW-156 → PARTIAL (solitaire face fixed via F-NEW-160), F-NEW-157 annotated with the boxcars measurement. root_registry 454→457. Master worklist regenerated: 673 items, open 259.
+- REPORT: docs/REPORT_S134.md (14 sections; §45 questions answered with evidence paths).
+
+Stage Summary:
+- The S134 central hypothesis is PROVEN and FIXED: MiniAndroid aliased same-named instance fields of different classes into one heap slot; the fix (declaring-class-qualified identity + ART declarer resolution + honest defaults) moves solitaire from "AppCompat delegate never constructs → blank screen" to "app boots through AppCompat theme machinery to onStart" with zero regressions vs a clean-HEAD A/B and 3-run determinism everywhere measured.
+- Next automatic frontier: F-NEW-162 (C013 placeholder law — base-class routing + §30 SUCCESS gate), then the solitaire support-v7 downstream chain, F-NEW-161 attribution, R-NEW-456 replay bisect.

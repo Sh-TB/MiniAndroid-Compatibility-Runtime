@@ -1,6 +1,6 @@
 {
  "schema": "master-worklist/1.0",
- "generated": "2026-10-01T11:12:28Z",
+ "generated": "2026-10-01T13:27:13Z",
  "law": "GENERATED from root_registry.json + canonical registries + campaign mandates (S128). Do not hand-edit; edit the registries or s128_* generators and regenerate.",
  "counts": {
   "PARTIAL": 106,
