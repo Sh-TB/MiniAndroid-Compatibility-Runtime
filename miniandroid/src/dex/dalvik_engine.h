@@ -1574,6 +1574,29 @@ public:
     // exceptions must never report plain SUCCESS).
     size_t uncaught_in_flight_count() const { return uncaught_in_flight_count_; }
     const std::vector<std::string>& uncaught_in_flight_log() const { return uncaught_in_flight_log_; }
+    // F-NEW-200 STUBBED-VOCABULARY LAW: unbounded per-status API census.
+    // The api_call_traces ring is capacity-capped by design (S43 memory
+    // law) — this census is the honest roll-up surface behind every
+    // SUCCESS/PARTIAL claim: the run must say how much of its executed
+    // path was stub-answered. Reset per run with the exception state.
+    uint64_t api_status_implemented_ = 0, api_status_stubbed_ = 0,
+             api_status_missing_ = 0, api_status_error_ = 0;
+    void note_api_status(const ApiCallTrace& t) {
+        switch (t.status) {
+            case ApiCallTrace::Status::IMPLEMENTED:
+                ++api_status_implemented_; break;
+            case ApiCallTrace::Status::STUBBED:
+                ++api_status_stubbed_; break;
+            case ApiCallTrace::Status::MISSING:
+                ++api_status_missing_; break;
+            case ApiCallTrace::Status::ERROR:
+                ++api_status_error_; break;
+        }
+    }
+    uint64_t api_status_implemented() const { return api_status_implemented_; }
+    uint64_t api_status_stubbed() const { return api_status_stubbed_; }
+    uint64_t api_status_missing() const { return api_status_missing_; }
+    uint64_t api_status_error() const { return api_status_error_; }
     // M3 FINDING-016 strict mode (ART process-death law): true when an
     // uncaught exception escaped the outermost app frame under
     // MINIANDROID_EXC_STRICT=1; the run must be reported CRASH.

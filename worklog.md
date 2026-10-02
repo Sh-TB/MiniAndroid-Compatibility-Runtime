@@ -5396,3 +5396,17 @@ Work Log:
 Stage Summary:
 - Done: F-NEW-220 IMPLEMENTED+TESTED (tree-build first leg closed); F-NEW-221 registered with evidence.
 - Remaining: F-NEW-221 (R8 merge model), ConstraintLayout 0x0 measure propagation, F-NEW-217 kotlinx resume protocol, DEEP-AUDIT P0/P1s, SUCCESS-PATH corpus, final §28 deliverable.
+---
+Task ID: F-NEW-200/201/202 WAVE (DEEP-AUDIT P0 batch)
+Agent: Super Z (main)
+Task: DEEP-AUDIT P0 items — F-NEW-202 settle virtual-time, F-NEW-200 stub vocabulary, F-NEW-201 content-parent canonicality extension.
+
+Work Log:
+- F-NEW-202 SETTLE-TIME LAW (P0): settle() jumped virtual_now_ms_ += 1000000000LL (11.5 days) unconditionally — the ONE virtual clock is shared with ScrollerShadow/GestureDetectorShadow now-fns (set_now_fn) and the F-150 Thread.sleep wake law, so every settle point self-finished scroll animations and permanently closed double-tap windows. FIX: jump to max(ready_at over pending queue) — same drain set (acceptance law post(A),post(B),postDelayed(C,400),remove(B),drain→A,C preserved by construction), clock lands on a real work boundary; empty queue → no jump.
+- F-NEW-200 STUBBED-VOCABULARY LAW (P0): unbounded per-status API census on the engine (4 counters, reset per run, incremented at ALL 6 ApiCallTrace push sites — ring stays capped per S43); every SUCCESS/PARTIAL status_message now carries the stub roll-up. Live: opencalc "[F-NEW-200 stub-census: 8678 IMPLEMENTED, 1188 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded]".
+- F-NEW-201: closed via the F-NEW-220 companion proof (content parent always inside the screen tree; parallel-node family gone) — registry updated with the construction-level evidence.
+- GATES: laws130 51/51; goldens x3 BYTE-IDENTICAL (dooz d602648e8e401895, ssw 10446aaf0cd642cc, headingcalc be1cea9cf994b26a, microtimer da73010a37dd0189, whatsapp 31ddd4d5b8e6d18e); opencalc frame stable at 2291d74de0b6bac5.
+
+Stage Summary:
+- Done: F-NEW-200/201/202 IMPLEMENTED+TESTED with zero golden drift.
+- Remaining: F-NEW-204/205/206/207 (P1 audit batch), F-NEW-192, F-NEW-217/221 deep attacks, SUCCESS-PATH corpus, §28 final deliverable.
