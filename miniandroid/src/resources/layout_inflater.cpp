@@ -2944,6 +2944,19 @@ std::pair<int, int> LayoutInflater::measure_node_raw(
             if (!cn) { child_sizes[i] = {0, 0}; continue; }
             int cw_ = cn->lp_width  == INT_MIN ? -2 : cn->lp_width;
             int ch_ = cn->lp_height == INT_MIN ? -2 : cn->lp_height;
+            // F-NEW-228 LEG-A (AOSP TableLayout.findLargestCells,
+            // TableLayout.java L527-529: `layoutParams.height =
+            // LayoutParams.WRAP_CONTENT` forced on every visible TableRow
+            // BEFORE super.measureVertical): a table row's first-pass
+            // main-axis measurement is its CONTENT height, never the
+            // match-parent inflation. The match+weight rows measured
+            // against the table's full spec poisoned mTotalLength →
+            // negative excess → weighted rows collapsed to 0 and the last
+            // row was pushed off-screen (opencalc: rows 731/738 h=0, row
+            // 753 at y=2274 h=1056; expected ≈ equal ~358px rows).
+            if (is_a(n->class_desc, "Landroid/widget/TableLayout;") &&
+                is_a(cn->class_desc, "Landroid/widget/TableRow;") && ch_ == -1)
+                ch_ = -2;
             Spec csw = child_spec(sw, hpad + cn->lp_margin_left + cn->lp_margin_right, cw_);
             Spec csh = child_spec(sh, vpad + cn->lp_margin_top + cn->lp_margin_bottom, ch_);
             // G04 §9 (LinearLayout.java L855 useExcessSpace law): a
@@ -3007,10 +3020,23 @@ std::pair<int, int> LayoutInflater::measure_node_raw(
         // the same shares for positioning (idempotent).
         // ===================================================================
         if (!is_rl_container && container &&
-            is_a(n->class_desc, "Landroid/widget/LinearLayout;") &&
-            !is_a(n->class_desc, "Landroid/widget/TableLayout;") &&
-            !is_a(n->class_desc, "Landroid/widget/TableRow;")) {
-            const bool main_horiz = n->orientation != 1;   // FIX-G10-001
+            is_a(n->class_desc, "Landroid/widget/LinearLayout;")) {
+            // F-NEW-228 LEG-B: the TableLayout/TableRow exclusion is
+            // REMOVED — AOSP TableLayout.onMeasure → measureVertical →
+            // super.measureVertical (TableLayout.java L470-476) means the
+            // LinearLayout weight pass RUNS for table rows, and TableRow is
+            // a plain horizontal LinearLayout (same law for its cells).
+            bool main_horiz = n->orientation != 1;   // FIX-G10-001
+            // F-NEW-228 LEG-B2 (AOSP TableLayout.java L433-437: onMeasure
+            // enforces VERTICAL — rows are its only children): the
+            // TableLayout orientation field is never XML-set (orient=-1),
+            // so the FIX-G10-001 default-horizontal law misroutes the
+            // weight pass to the WIDTH axis (rows received EXACTLY(width)
+            // shares and EXACTLY(screen) cross heights: measured 0x1920).
+            // Same force as the first pass (FIX-G12-001) and the layout
+            // phase (G12).
+            if (is_a(n->class_desc, "Landroid/widget/TableLayout;"))
+                main_horiz = false;
             const Spec& mspec = main_horiz ? sw : sh;
             const Spec& cspec = main_horiz ? sh : sw;
             if (mspec.mode != M_UNSPEC) {
@@ -3034,8 +3060,17 @@ std::pair<int, int> LayoutInflater::measure_node_raw(
                         has_weight = true;
                         weight_total += cn->layout_weight / 1000.0f;
                         if (lp_main != 0)
-                            total_length += (lp_main >= 0 ? lp_main
-                                                          : cn->measured_width) + m;
+                            // F-NEW-228 FIX (AOSP mTotalLength law): the
+                            // weighted child's main-axis measurement —
+                            // measured_HEIGHT for a vertical container (the
+                            // old measured_width poisoned total_length for
+                            // wrap/match+weight rows: opencalc rows added
+                            // 1038/945 widths instead of 126 heights →
+                            // negative excess → rows collapsed to 0).
+                            total_length +=
+                                (lp_main >= 0 ? lp_main
+                                              : (main_horiz ? cn->measured_width
+                                                            : cn->measured_height)) + m;
                         else
                             total_length += m;
                     } else {
@@ -3045,7 +3080,24 @@ std::pair<int, int> LayoutInflater::measure_node_raw(
                     }
                 }
                 if (has_weight && weight_total > 0.0f) {
-                    int excess = mspec.size - mpad - total_length;
+                    // F-NEW-228 LEG-C (AOSP LinearLayout.java L978-985):
+                    // remainingExcess is computed against the RESOLVED
+                    // container size — resolveSizeAndState caps a wrap
+                    // (AT_MOST) container at min(content, spec), so a wrap
+                    // container NEVER expands its weighted children (excess
+                    // <= 0 there); only an EXACTLY container distributes
+                    // positive excess. The old raw `spec.size - content`
+                    // expanded weighted rows of every wrap-content
+                    // container to the full available height.
+                    // NOTE: ssw/headingcalc/secuso frames are identical
+                    // under both laws at HEAD (bisected 2026-10-02) — their
+                    // banked goldens are stale-config, not law-sensitive.
+                    const int content_with_pad = mpad + total_length;
+                    const int resolved = (mspec.mode == M_EXACTLY)
+                                             ? mspec.size
+                                             : std::min(content_with_pad,
+                                                        mspec.size);
+                    int excess = resolved - content_with_pad;
                     float rws = (n->weight_sum_valid && n->weight_sum > 0.0f)
                                     ? n->weight_sum : weight_total;
                     for (size_t i : vis) {

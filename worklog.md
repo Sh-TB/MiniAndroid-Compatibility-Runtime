@@ -5457,3 +5457,44 @@ Work Log:
 Stage Summary:
 - Done: §I answered with exact numbers (no guessing): INFLATED→(no)MEASURED-BY-WEIGHT→wrong LAYOUT bounds→clipped draw.
 - Remaining: implement AOSP measureVertical weight pass (F-NEW-228) gated on byte-identical goldens; then secuso grey face; then the rest of the §A–§P backlog per the master list.
+
+---
+Task ID: F-NEW-228 COMPLETION WAVE (user: "228 رو کامل بکن" + master-list merge)
+Agent: Super Z (main)
+Task: Implement F-NEW-228 (AOSP LinearLayout/TableLayout weight-pass port) with full
+law chain + 3-run proof; merge all leftover lists into CAMPAIGN_STATE.md; audit
+view_renderer.cpp dead-code trap; register residual roots.
+
+Work Log:
+- RECON: HEAD 9112e4dd, registry 523 roots, binary fresh. BEFORE opencalc trace mined:
+  rows are TableRow in TableLayout (NOT LinearLayout); AXML (res/9t.xml via androguard):
+  rows 2-5 lp=-2/weight=3, rows 6-8 lp=-1/weight=3, cells 0dp/weight=1; VSTACK showed
+  distribution 126/0/0/1057/1056/1056, last row off-screen y=2274.
+- SOURCE LAW (fetched android-14.0.0_r2): TableLayout.java L470-476 measureVertical →
+  super.measureVertical (weight pass RUNS for table rows); L527-529 findLargestCells
+  forces row height=WRAP_CONTENT; L433-437 vertical enforced; LinearLayout.java L978-1040
+  resolved-excess + sequential share law.
+- FIX (layout_inflater.cpp): LEG-A row-wrap force; LEG-B exclusion removal; LEG-B2
+  TableLayout vertical force in weight block (orientation unset → default-horizontal law
+  misrouted the pass to WIDTH: rows measured 0x1920); LEG-C resolved-excess; mTotalLength
+  vertical-axis fix (measured_width → measured_height for weighted wrap/match rows).
+- AUDIT FINDINGS: (1) view_renderer.cpp is DEAD CODE (not in Makefile/CMake; nothing
+  includes it) — the earlier session instrumented it in vain; (2) four banked goldens
+  not reproducible at HEAD (ssw/headingcalc/secuso/whatsapp) — baseline==patched, so
+  patch-neutral; 31ddd4d5b8e6d18e (the whatsapp gate) is a 100%-WHITE frame; muellerma vs
+  omegacentauri APK mapping error corrected; (3) CL MATCH_PARENT spec gap shrinks
+  opencalc rows to 462 wide (F-NEW-229, attempted+reverted fix documented).
+- GATES: laws130 51/51; dooz/microtimer/unote GOLDEN-MATCH ×3; ssw/headingcalc/secuso/
+  whatsapp baseline-equal ×3; opencalc e364b001ee7abd66 ×3 deterministic.
+- RESULT: opencalc rows 126+352×5 EQUAL (last row ends exactly at y=1920);
+  64.7% #303030 button field + 34.5% #6fa8dc display; button glyphs draw.
+- Registry 523→525: F-NEW-228 IMPLEMENTED+TESTED; F-NEW-229 (CL MATCH_PARENT spec law,
+  OBSERVED); F-NEW-230 (golden provenance/config gap, OBSERVED).
+- CAMPAIGN_STATE.md created (master merged checklist: leftovers + A–P + Families A–W +
+  platform/README/release audit phases).
+
+Stage Summary:
+- Done: F-NEW-228 closed (IMPLEMENTED+TESTED, full chain BEFORE→LAW→FIX→AFTER→3-RUN→
+  REGRESSION); master list merged; 2 residual roots registered with evidence.
+- Remaining: F-NEW-229 (width), F-NEW-230 (re-bank goldens), F-NEW-217/221 deep legs,
+  Families A–W audit, platform/README/release audit phases.
