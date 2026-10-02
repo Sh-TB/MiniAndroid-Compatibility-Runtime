@@ -1,0 +1,3 @@
+DEX Version: 035
+Strings: 15414
+Classes: 1347
