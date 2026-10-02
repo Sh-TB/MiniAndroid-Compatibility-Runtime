@@ -904,7 +904,19 @@ public:
     // UNIFIED_007: real inflation evidence
     const std::string& last_inflate_stats() const { return last_inflate_stats_; }
 
+    // ── SECONDARY CAMPAIGN V2 (legacy-default-screen honesty law) ──────
+    // Outcome of the LAST setContentView(int) inflation attempt:
+    //   false = no attempt yet, OR the attempt produced a real root.
+    //   true  = the attempt ran and produced NO root (inflate failure).
+    // The engine's frame-truth census consumes this to classify the frame
+    // RESOURCE_INFLATION_FAILED instead of silently keeping the legacy
+    // default screen (a failed real APK inflation is RENDER BLOCKED,
+    // never a synthetic success).
+    bool last_inflate_failed() const { return last_inflate_failed_; }
+    void set_last_inflate_failed(bool v) { last_inflate_failed_ = v; }
+
 private:
+    bool last_inflate_failed_ = false;
     uint32_t current_activity_id_ = 0;
     std::string current_activity_class_;
     // R-NEW-341: the process-wide Application identity (AOSP: exactly one
@@ -1051,6 +1063,11 @@ public:
         uint32_t image_drawable_object = 0; // heap oid of a Drawable arg
         std::string image_uri;              // setImageURI raw argument
         uint32_t image_blocked_events = 0;  // bounded BLOCKED-evidence count
+        // SECONDARY CAMPAIGN V6: bounded count of getContext() calls that
+        // answered via the NEVER-NULL activity fallback because the
+        // constructor-captured Context was MISSING (observable identity
+        // event — silent fallbacks are forbidden by the audit).
+        uint32_t fallback_ctx_events = 0;
         uint32_t view_id = 0;
         uint32_t parent_id = 0;
         std::vector<uint32_t> children;

@@ -728,6 +728,13 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                         return dalvik_engine_.dispatch_custom_view_measure(
                             view_id, wspec, hspec, out_w, out_h);
                     });
+                // ── SECONDARY CAMPAIGN V4: DEX-existence authority for
+                // unknown short XML tags (generic-tag law — see
+                // LayoutInflater::inflate_element).
+                rt.set_dex_class_exists_hook(
+                    [this](const std::string& desc) -> bool {
+                        return dalvik_engine_.is_dex_defined_class(desc);
+                    });
             }
             // G06 §4: canonical input pipeline. The dispatcher shares the
             // ViewShadow tree (geometry/state) and the HandlerShadow virtual
@@ -2786,6 +2793,13 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
             }
             if (root_id == 0 || !view_shadow->find_node(root_id)) {
                 frame_census_.no_root = true;
+                // ── SECONDARY CAMPAIGN V2 (legacy-default-screen law) ──
+                // Distinguish "no setContentView attempt" from "the real
+                // APK's inflation FAILED": a failed inflation is
+                // RESOURCE_INFLATION_FAILED — the honest render-blocked
+                // state, never a silent synthetic default screen.
+                if (activity_shadow && activity_shadow->last_inflate_failed())
+                    frame_census_.inflation_failed = true;
                 trace_engine_.set_first_divergence(
                     "VIEWTREE",
                     "authoritative window content root (AOSP ViewRootImpl)",
@@ -3010,6 +3024,40 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                         };
 
                         queue.push_back({root_id, 0, 0, config.screen_width, config.screen_height, 0, 0, 0, 0, 0});
+
+                        // ── SECONDARY CAMPAIGN V1/V7 (content-bounds law) ──
+                        // The authoritative content bounds are the laid-out
+                        // rect of the content ROOT (post-measure). Verdict
+                        // law at capture: app-owned pixels must exist INSIDE
+                        // these bounds; non-dominant pixels OUTSIDE them are
+                        // window chrome (status/nav/decor bands) and can
+                        // never count as app content. When the root has no
+                        // measured geometry yet the bounds are the full
+                        // screen (AOSP: the window IS the content frame).
+                        if (const auto* root_node = view_shadow->find_node(root_id)) {
+                            if (root_node->laid_out &&
+                                root_node->measured_width > 0 &&
+                                root_node->measured_height > 0) {
+                                frame_census_.content_l = root_node->measured_left;
+                                frame_census_.content_t = root_node->measured_top;
+                                frame_census_.content_r = root_node->measured_left +
+                                                          root_node->measured_width;
+                                frame_census_.content_b = root_node->measured_top +
+                                                          root_node->measured_height;
+                            } else {
+                                frame_census_.content_l = 0;
+                                frame_census_.content_t = 0;
+                                frame_census_.content_r = config.screen_width;
+                                frame_census_.content_b = config.screen_height;
+                            }
+                            frame_census_.content_bounds_valid = true;
+                            std::cerr << "[V1-CONTENT-BOUNDS] root=" << root_id
+                                      << " rect=(" << frame_census_.content_l
+                                      << "," << frame_census_.content_t
+                                      << "," << frame_census_.content_r
+                                      << "," << frame_census_.content_b << ")"
+                                      << std::endl;
+                        }
 
                         while (!queue.empty()) {
                             if (node_count >= max_nodes) {
@@ -5107,28 +5155,66 @@ bool ExecutionEngine::stage_capture_output( ExecutionResult& result, const Execu
         // ────────────────────────────────────────────────────────────────
         if (trace_engine_.boot_trace_enabled()) {
             std::map<uint32_t, size_t> fa_hist;
-            for (const auto& c : fb.get_pixels()) {
+            const auto& fa_px = fb.get_pixels();
+            // ── SECONDARY CAMPAIGN V1/V7: pixel-ownership REGIONS ─────
+            // Every non-dominant pixel is classified by the AUTHORITATIVE
+            // CONTENT BOUNDS (the laid-out content-root rect):
+            //   inside  → AUTHORITATIVE_APP_CONTENT candidates
+            //   outside → WINDOW_CHROME (status/nav/decor bands — never
+            //             app content, no fixed-pixel heuristic involved:
+            //             the bounds come from the real measure/layout).
+            // The dominant color remains the WINDOW_BACKGROUND candidate;
+            // the diagnostic overlay is a SEPARATE file (trace_overlay.png)
+            // and owns zero authoritative pixels by construction.
+            const bool cb_valid = frame_census_.content_bounds_valid;
+            const int cb_l = frame_census_.content_l;
+            const int cb_t = frame_census_.content_t;
+            const int cb_r = frame_census_.content_r;
+            const int cb_b = frame_census_.content_b;
+            size_t non_default_inside = 0, non_default_outside = 0;
+            const int fb_w = config.screen_width;
+            for (size_t idx = 0; idx < fa_px.size(); idx++) {
+                const auto& c = fa_px[idx];
                 uint32_t key = (uint32_t(c.r) << 16) | (uint32_t(c.g) << 8) |
                                uint32_t(c.b);
                 fa_hist[key]++;
+            }
+            {
+                uint32_t dominant0 = 0xFFFFFF; size_t dn0 = 0;
+                for (const auto& kv : fa_hist)
+                    if (kv.second > dn0) { dn0 = kv.second; dominant0 = kv.first; }
+                for (size_t idx = 0; idx < fa_px.size(); idx++) {
+                    const auto& c = fa_px[idx];
+                    uint32_t key = (uint32_t(c.r) << 16) | (uint32_t(c.g) << 8) |
+                                   uint32_t(c.b);
+                    if (key == dominant0) continue;
+                    const int x = (int)(idx % (size_t)fb_w);
+                    const int y = (int)(idx / (size_t)fb_w);
+                    if (cb_valid && (x < cb_l || x >= cb_r || y < cb_t || y >= cb_b))
+                        non_default_outside++;
+                    else
+                        non_default_inside++;
+                }
             }
             uint32_t dominant = 0xFFFFFF; size_t dominant_n = 0;
             for (const auto& kv : fa_hist) {
                 if (kv.second > dominant_n) { dominant_n = kv.second; dominant = kv.first; }
             }
-            const size_t total_px = fb.get_pixels().size();
+            const size_t total_px = fa_px.size();
             const size_t non_default = total_px - dominant_n;
             const double pct = total_px ? 100.0 * double(dominant_n) / double(total_px) : 0.0;
             // Pixel-ownership law: the authoritative frame is composed FROM
             // SCRATCH every pass (FrameBuffer cleared to the window
             // background, then the walk paints) — so every pixel differing
             // from the dominant color was produced by THIS draw pass.
-            // Diagnostic regions own ZERO pixels by construction (21-P0-5:
-            // placeholders are recorded, never painted). Framework-chrome
-            // pixel regions (status bar drawn by decor views) get exact
-            // ownership with the canonical window stack (campaign phase 5);
-            // until then the correlated-proof chain below is the truth gate.
-            const size_t app_owned_px = non_default;
+            // V1/V7: app-owned pixels are the non-dominant pixels INSIDE
+            // the authoritative content bounds; pixels OUTSIDE them are
+            // window chrome. Diagnostic regions own ZERO pixels by
+            // construction (21-P0-5: placeholders are recorded, never
+            // painted); the diagnostic overlay composes a COPY (separate
+            // PNG).
+            const size_t app_owned_px = cb_valid ? non_default_inside : non_default;
+            const size_t chrome_owned_px = cb_valid ? non_default_outside : 0;
             const size_t diag_owned_px = 0;
             // Correlated proof chain — earliest missing stage first.
             const char* first_missing = nullptr;
@@ -5150,6 +5236,8 @@ bool ExecutionEngine::stage_capture_output( ExecutionResult& result, const Execu
             std::string verdict;
             if (frame_census_.render_exception)
                 verdict = "RENDER_EXCEPTION";
+            else if (frame_census_.inflation_failed)
+                verdict = "RESOURCE_INFLATION_FAILED";  // V2: failed inflation ≠ synthetic screen
             else if (frame_census_.no_root && non_default == 0)
                 verdict = "NO_ROOT";             // no app window, zero content
             else if (frame_census_.no_root)
@@ -5187,6 +5275,19 @@ bool ExecutionEngine::stage_capture_output( ExecutionResult& result, const Execu
                     {"app_draw_ops", frame_census_.app_draw_ops},
                     {"dialog_content_rendered", frame_census_.dialog_content_rendered},
                     {"app_owned_pixels", app_owned_px},
+                    {"app_owned_pixels_inside_content_bounds", app_owned_px},
+                    {"window_chrome_pixels", chrome_owned_px},
+                    {"window_background_px", dominant_n},
+                    {"content_bounds", {
+                        {"valid", frame_census_.content_bounds_valid},
+                        {"l", frame_census_.content_l}, {"t", frame_census_.content_t},
+                        {"r", frame_census_.content_r}, {"b", frame_census_.content_b},
+                    }},
+                    {"inflation_failed", frame_census_.inflation_failed},
+                    {"verdict_regions_law", "V1/V7: WINDOW_BACKGROUND=dominant; "
+                        "AUTHORITATIVE_APP_CONTENT=non-dominant inside content "
+                        "bounds; WINDOW_CHROME=non-dominant outside; "
+                        "DIAGNOSTIC_OVERLAY=separate trace_overlay.png"},
                     {"diag_owned_pixels", diag_owned_px},
                     {"diag_regions", frame_census_.diag_regions.size()},
                     {"synthetic_suppressed", frame_census_.synthetic_suppressed},

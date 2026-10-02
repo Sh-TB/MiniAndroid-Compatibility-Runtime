@@ -368,6 +368,18 @@ public:
         int  depth_max = 0;                  // P0-7 census
         uint64_t unreachable_children = 0;   // P0-7: queue entries stranded by the node budget
         std::string layout_source;           // P1-2 census: "inflater" | "programmatic"
+        // ── SECONDARY CAMPAIGN V1/V2 (authoritative verdict hardening) ──
+        // V2: a real APK's setContentView(res) that produced NO root is
+        // RESOURCE_INFLATION_FAILED — never a silent synthetic default
+        // screen. Set from the ActivityShadow inflate outcome each frame.
+        bool inflation_failed = false;
+        // V1/V7: the laid-out rect of the AUTHORITATIVE content root.
+        // Verdict law: REAL_APP_CONTENT requires app-owned pixels INSIDE
+        // these bounds; non-dominant pixels OUTSIDE them are window chrome
+        // (status bar / nav / decor bands) and can never masquerade as app
+        // content. Invalid when no root resolved.
+        bool content_bounds_valid = false;
+        int  content_l = 0, content_t = 0, content_r = 0, content_b = 0;
         // P0-5: diagnostic regions recorded, NEVER painted into the
         // authoritative frame (l,t,r,b in screen coordinates).
         struct DiagRegion { int l, t, r, b; std::string kind; std::string detail; };

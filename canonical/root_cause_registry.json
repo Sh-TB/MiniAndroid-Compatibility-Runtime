@@ -1,8 +1,8 @@
 {
  "_projection_of": "root_registry.json",
  "_law": "root_registry.json is the single writable store; this file is a generated read model (ROADMAP SS3: no duplicate canonical registries).",
- "generated": "S135 session",
- "total": 474,
+ "generated": "2026-10-02T00:00:00Z",
+ "total": 492,
  "status_counts": {
   "PARTIAL": 106,
   "VERIFIED-CORRECT": 46,
@@ -13,14 +13,14 @@
   "NOT-APPLICABLE": 42,
   "OBSERVED-FAIL": 8,
   "IMPLEMENTED": 19,
-  "ROOT-CAUSED-FIXED": 79,
+  "ROOT-CAUSED-FIXED": 86,
   "PARTIAL-FIX": 1,
   "PROVEN-FIXED": 1,
   "IMPLEMENTED+TESTED": 11,
   "ROOT-CAUSED-REMEASURED-GENERIC-OK": 1,
   "FIXED-S75": 1,
   "ROOT-CAUSED-SEMANTIC": 1,
-  "REGISTERED": 1,
+  "REGISTERED": 3,
   "OPEN": 4,
   "USED_BY_EXECUTION": 7,
   "ROOT_CAUSED-FIXED": 2,
@@ -28,8 +28,7 @@
   "ROOT-CAUSED-CLOSED": 2,
   "VERIFIED_3RUN": 1,
   "VERIFIED": 3,
-  "BLOCKED": 1,
-  "ROOT-ATTRIBUTED": 1
+  "BLOCKED": 1
  },
  "roots": [
   {
@@ -3565,7 +3564,62 @@
    "title": "PHASE 10 draw/z-order audit residue: AOSP View.draw order (drawBackground -> onDraw -> dispatchDraw -> decorations) is enforced in the frame walk (21-P0-6 census law; forward child pop; S86 visibility gates; item-21 placeholders out of the authoritative frame) but elevation/translationZ (RenderNode Z ordering, outline shadows) is NOT modeled \u2014 sibling overlap order on elevated views may diverge.",
    "law": "AOSP View.draw + RenderNode Z law: children draw in program order; Z-elevated siblings reorder above flat ones with shadow decoration.",
    "evidence": "scripts/fc_audit_stubs.py census (34 void-answer sites: 12 lawful-void / 21 state-capture verified / 1 silent-void FIXED = setIntent state identity); draw walk audit execution_engine.cpp L3640-4460."
+  },
+  {
+   "id": "F-NEW-193",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P0",
+   "layer": "visual-verdict/frame-truth",
+   "title": "SECONDARY CAMPAIGN V1/V2/V7 false-success family: the verdict chain could not (a) separate pixels INSIDE the authoritative content bounds from window chrome outside them, (b) distinguish a FAILED setContentView(res) inflation from an absent one (failed inflation silently kept the legacy default screen), and (c) carried no per-region capture record (chrome/background/content/overlay). A status-bar band or stray decor pixels inside a valid-root frame could ride into REAL_APP_CONTENT.",
+   "law": "V1/V7: verdict requires REAL ViewTree reached + content root identified + measure executed + layout executed + authoritative draw executed + app-owned pixels INSIDE the laid-out content-root rect > 0; non-dominant pixels outside the content rect = WINDOW_CHROME and can never count as app content; dominant = WINDOW_BACKGROUND; trace_overlay.png = DIAGNOSTIC_OVERLAY (separate file, S135 sha law). V2: a real APK inflation that produces no root sets RESOURCE_INFLATION_FAILED (ActivityShadow.last_inflate_failed -> census inflation_failed) \u2014 the legacy default screen is NOT app content and never upgrades the verdict.",
+   "evidence": "FrameRenderCensus + content_bounds (l,t,r,b) from the laid-out root node; capture loop classifies inside/outside per pixel (no fixed heuristics \u2014 bounds come from the real measure/layout). Forkgram census: verdict=REAL_APP_CONTENT, app_owned_pixels_inside_content_bounds=117133, window_chrome_pixels=0, bounds valid; goldens dooz d602648e8e401895 / ssw 10446aaf0cd642cc / headingcalc be1cea9cf994b26a / microtimer da73010a37dd0189 / whatsapp 31ddd4d5b8e6d18e x3 BYTE-IDENTICAL (pixel-neutral laws); laws130 51/51.",
+   "fix": "execution_engine.h census fields inflation_failed + content_bounds_valid/l/t/r/b; execution_engine.cpp stage_render_frame_impl records root laid-out rect + consumes ActivityShadow.last_inflate_failed; stage_capture_output RESOURCE_INFLATION_FAILED verdict + region-classified census JSON (window_chrome_pixels, window_background_px, app_owned_pixels_inside_content_bounds, verdict_regions_law); android_shadows.cpp inflate failure/success markers [V2-INFLATE-FAILED].",
+   "wave": "SECONDARY-V1V2V7"
+  },
+  {
+   "id": "F-NEW-194",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P1",
+   "layer": "inflation/generic-view-identity",
+   "title": "V4 generic-tag silent degradation: ANY unknown short XML tag silently inflated as a generic Landroid/view/View; leaf \u2014 real class identity lost (a platform/custom ViewGroup became a content-less leaf; container measure/layout semantics dropped) with NO evidence the degradation happened.",
+   "law": "AOSP LayoutInflater.createViewFromTag: a short tag is a platform widget name. Generic DEX-EXISTENCE law: unknown short tags resolve against Landroid/{widget,view,webkit}/ and Lcom/android/internal/widget/ BY APK DEX CLASS EXISTENCE (is_dex_defined_class \u2014 the bundled dex is the authority); when nothing matches, the generic-View degradation is recorded as EXPLICIT evidence (inflater warning + [V4-TAG] line), never silent. No hardcoded widget list extension needed for bundled platform-family classes.",
+   "evidence": "LayoutInflater::inflate_element V4 block + DexClassExistsHook (Factory-law propagation through ResourceRuntime: set_dex_class_exists_hook + apply on ensure_loaded); engine hook install at stage entry. Wave corpus: 0 unknown-tag triggers (all tags KNOWN-mapped or dotted \u2014 honest absence); hook verified installed on every inflater recreation path.",
+   "fix": "layout_inflater.h DexClassExistsHook + resource_runtime.h pass-through (Factory law) + execution_engine.cpp install; inflate_element resolution + evidence block.",
+   "wave": "SECONDARY-V4"
+  },
+  {
+   "id": "F-NEW-195",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P1",
+   "layer": "context-identity/observability",
+   "title": "V6 silent context-fallback conversion: View.getContext() with a MISSING constructor-captured Context silently answered the activity context \u2014 an identity conversion that can surface much later as white UI (View->Context->Resources->Theme->Drawable chain) with ZERO evidence the fallback fired.",
+   "law": "Observable-identity law: the NEVER-NULL fallback to the activity context is recorded per-view (bounded counter ViewNode.fallback_ctx_events) with an explicit [V6-CTX-FALLBACK] evidence line naming the view, its class and the fallback target; the ctor-captured path keeps the real heap-class descriptor (F-NEW-184).",
+   "evidence": "android_shadows.cpp getContext block: bounded counter + evidence line before the activity-context return; Wave corpus runs: 0 fallback triggers recorded (honest absence \u2014 all queried views had ctor-captured contexts); counter available in ViewNode for census consumers.",
+   "fix": "ViewNode.fallback_ctx_events field + getContext evidence block.",
+   "wave": "SECONDARY-V6"
+  },
+  {
+   "id": "F-NEW-196",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P1",
+   "layer": "image-pipeline/provenance",
+   "title": "V5 provenance states were IMPLICIT: the three pixel-source classes (resource-resolved, APK-path, raw pixels) existed in the pipeline but carried no canonical name in the provenance record \u2014 a bitmap dropped for lacking an APK path could not be told apart from a resource image in evidence.",
+   "law": "Every image provenance event carries ONE explicit state: IMAGE_RESOURCE (resid != 0), IMAGE_APK_PATH (entry path), IMAGE_DIRECT_PIXELS (raw BitmapStore pixels \u2014 canvas replay/decoders; a valid bitmap is NEVER dropped merely for lacking an APK path; unsupported sources emit the bounded [P1-2-IMAGE-BLOCKED] evidence).",
+   "evidence": "gfx_provenance.h record_image derives provenance_state from (resid, path, pixel-presence); record_canvas_bitmap stamps IMAGE_DIRECT_PIXELS; P1-2 setter contract (F-NEW-185b) unchanged. Forkgram evidence: [P1-2-IMAGE-BLOCKED] wrapper-drawable events recorded honestly (r81/ni wrappers).",
+   "fix": "gfx_provenance.h provenance_state field (derived in-record, no signature churn).",
+   "wave": "SECONDARY-V5"
+  },
+  {
+   "id": "F-NEW-197",
+   "status": "REGISTERED",
+   "priority": "P0",
+   "layer": "white-screen family",
+   "title": "V10 five-app gate white/black frontier (fresh census attribution): Dame (blidraughts), Droidify, OpenCalculator all reach auth_root_valid + measure + layout + draw-walk but stop at first_missing_stage=APP_DRAW_OPS with a 2-node visited tree (root+1 child) \u2014 the app's real view-building never reaches the authoritative walk. game2048 stops earlier: NO_ROOT (effective_content_root_()==0, setContentView never lands). This refines the phase-15 'shared empty-shell SHA' class into two machine-readable states: APP_DRAW_OPS-starved root (dame/droidify/opencalc, SHA b5a7a35d5fe0564b shared) vs NO_ROOT (game2048, SHA 31ddd4d5b8e6d18e = WhatsApp empty-shell class).",
+   "law": "No-fake-success: DEFAULT_BACKGROUND_ONLY / NO_ROOT verdicts stay OPEN until real app-content evidence exists; next attack = trace the app-side view construction chain (dame/droidify/opencalc: why the built tree never gains app ops; game2048: why setContentView landed no root).",
+   "evidence": "scripts/v10_five_app_gate.py \u2014 5 apps x3 deterministic runs: forkgram cf4c41e62ceb6557 REAL_APP_CONTENT x3 (OBSERVED, 117133 app px in-bounds, 204 colors), game2048/dame/droidify/opencalc BLOCKED with census first_missing_stage; results /tmp/v10/v10_results.json.",
+   "fix": "OPEN \u2014 next-root material (V3-R1 F-096 one-time dispatch containment + app-side view-build chains queued).",
+   "wave": "SECONDARY-V10"
   }
  ],
- "total_roots": 484
+ "total_roots": 492
 }
