@@ -14,7 +14,7 @@
 | Frames Rendered | 2 |
 | Execution Time | 0ms |
 | Memory Peak | 0.00 B |
-| Errors | 3 |
+| Errors | 5 |
 | Warnings | 0 |
 
 ## API Trace Summary
@@ -24,7 +24,7 @@
 | `DalvikEngine` | 3 |
 | `ExecutionEngine` | 6598 |
 | `TraceEngine` | 3 |
-| `Unknown` | 3 |
+| `Unknown` | 5 |
 
 ## Top Method Calls
 
@@ -32,9 +32,9 @@
 |--------|-------|
 | `ExecutionEngine.stage_load_classes` | 6562 |
 | `ExecutionEngine.stage_capture_output` | 6 |
+| `Unknown.Unknown` | 5 |
 | `ExecutionEngine.trace_files` | 5 |
 | `ExecutionEngine.stage_render_frame` | 4 |
-| `Unknown.Unknown` | 3 |
 | `DalvikEngine.execute_apk` | 3 |
 | `TraceEngine.log_screenshot` | 2 |
 | `ExecutionEngine.trace_export` | 2 |
@@ -52,6 +52,18 @@
 | `ExecutionEngine.execution_source` | 1 |
 
 ## Errors & Issues
+
+### EXC-UNCAUGHT-TOP
+
+- **Message:** [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Landroidx/appcompat/app/AppCompatActivity;.attachBaseContext invoke_pc=0x4 depth=2
+- **Location:** `.`
+- **Fatal:** No
+
+### EXC-UNCAUGHT-TOP
+
+- **Message:** [EXC-UNCAUGHT-TOP] Ljava/lang/NullPointerException; escaped the app boundary at <unknown>.<unknown> invoke_pc=0x0 depth=1 [APP-BOUNDARY]
+- **Location:** `.`
+- **Fatal:** No
 
 ### EXC-UNCAUGHT-TOP
 
@@ -91,5 +103,5 @@
 
 ## Session Info
 
-- **Session ID:** `EXP-001-20260928-004258-9867`
-- **Generated:** 2026-09-28 00:42:59 UTC
+- **Session ID:** `EXP-001-20261002-013319-1441`
+- **Generated:** 2026-10-02 01:33:20 UTC
