@@ -3657,6 +3657,29 @@ bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_de
     // never shadow framework semantics.
     const std::string normalized =
         framework::normalize_class_desc(class_descriptor);
+    // F-NEW-215 CLASS-INIT HONESTY LAW: an ERRONEOUS class (its <clinit>
+    // already ran and threw) stays erroneous — JVMS 5.5 forbids re-running
+    // <clinit>, and the honest answer to "is it initialized?" is NO, not
+    // the historical silent true. Active-use sites consult
+    // class_clinit_failed() to raise NoClassDefFoundError; the earlier
+    // evidence (08C.<clinit> FAILED while bookkeeping stayed OK, statics
+    // missing far downstream) is exactly the silent-state-corruption
+    // family this law closes.
+    {
+        auto f215_fit = failed_clinit_classes_.find(normalized);
+        if (f215_fit == failed_clinit_classes_.end())
+            f215_fit = failed_clinit_classes_.find(class_descriptor);
+        if (f215_fit != failed_clinit_classes_.end()) {
+            static std::atomic<uint64_t> f215_reuse_n{0};
+            if (f215_reuse_n.fetch_add(1, std::memory_order_relaxed) < 8) {
+                std::cerr << "[F-NEW-215] ERRONEOUS-REUSE class="
+                          << class_descriptor
+                          << " (clinit previously failed: " << f215_fit->second
+                          << ")" << std::endl;
+            }
+            return false;
+        }
+    }
     // Already initialized?
     if (initialized_classes_.count(normalized) > 0 ||
         initialized_classes_.count(class_descriptor) > 0) {
@@ -3915,6 +3938,40 @@ bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_de
                 }
             }
             std::cerr << std::endl;
+            if (!ok_diag) {
+                // F-NEW-215 CLASS-INIT HONESTY LAW (JVMS 5.5 / AOSP
+                // ClassLinker::EnsureInitialized): a <clinit> that threw
+                // leaves the class ERRONEOUS — never silently INITIALIZED.
+                // Record the first divergence and answer honestly; the
+                // class is NOT erased from initialized_classes_ (erroneous
+                // persists — <clinit> is never re-run), but every later
+                // active use observes the failure via class_clinit_failed()
+                // (NoClassDefFoundError at sget/sput/new-instance/forName).
+                std::string f215_ev = diag_result.halt_reason;
+                if (!diag_result.uncaught_in_flight_log.empty()) {
+                    std::string f215_u0 =
+                        diag_result.uncaught_in_flight_log.front();
+                    if (f215_u0.size() > 120) f215_u0 = f215_u0.substr(0, 120);
+                    f215_ev += " uncaught0=" + f215_u0;
+                }
+                if (f215_ev.size() > 200) f215_ev = f215_ev.substr(0, 200);
+                // F-NEW-215 evidence honesty: distinguish "clinit THREW"
+                // (failure evidence present) from "clinit never produced
+                // evidence" (bridge bypass / lookup miss — the statics are
+                // equally missing, but the forensics differ).
+                if (diag_result.final_status ==
+                        DalvikExecutionResult::FinalStatus::COMPLETED_SUCCESS &&
+                    diag_result.halt_reason.empty() &&
+                    diag_result.uncaught_in_flight_log.empty()) {
+                    f215_ev = "clinit-not-run-no-evidence (bypass/lookup miss)";
+                }
+                failed_clinit_classes_[class_descriptor] = f215_ev;
+                failed_clinit_classes_[normalized] = f215_ev;
+                std::cerr << "[F-NEW-215] CLINIT-FAILED class="
+                          << class_descriptor << " evidence=" << f215_ev
+                          << std::endl;
+                return false;
+            }
         }
         break;
     }
@@ -5768,8 +5825,23 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             should_bypass = true;
         }
         if (should_bypass) {
-            recursion_depth_--;
-            return false;
+            // F-NEW-215 companion law (CLASS-INIT HONESTY): <clinit> is the
+            // class INITIALIZATION PROTOCOL (JVMS 5.5) — it is not
+            // bridge-dispatchable and must never be swallowed by a method
+            // bypass. Bypassing it silently drops every static initializer
+            // (droidify face: Lj$/util/concurrent/ConcurrentHashMap; 11
+            // statics lost → okhttp ConnectionPool / DI CursorOwner died
+            // far from the cause with empty-evidence bookkeeping). The
+            // bypass still owns exactly the looping compute-methods it was
+            // built for (CHM .e/.f computeIfAbsent/compute).
+            if (method_name != "<clinit>") {
+                recursion_depth_--;
+                return false;
+            }
+            std::cerr << "[F-NEW-215] CLINIT-BYPASS-LIFTED class="
+                      << declaring_class
+                      << " (initialization protocol runs; compute-methods stay bypassed)"
+                      << std::endl;
         }
     }
     // END EXP-071 intercepts ─────────────────────────────────────────────
@@ -6003,9 +6075,19 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // EXP-088+ Phase 5: desugared Java 8 ConcurrentHashMap.
         class_descriptor.find("Lj$/util/concurrent/ConcurrentHashMap;") == 0 ||
         class_descriptor.find("Ljava/util/concurrent/ConcurrentHashMap;") == 0) {
-        // Force bridge_to_api for framework classes.
-        recursion_depth_--;
-        return false;
+        // F-NEW-215 companion law: <clinit> is the class INITIALIZATION
+        // PROTOCOL (JVMS 5.5) — never bridge-bypassed. This is the SECOND
+        // independent class-level swallow list that silently dropped the
+        // j$-CHM statics (the first is the should_bypass block above);
+        // compute-methods (.e/.f) remain bypassed exactly as designed.
+        if (method_name != "<clinit>") {
+            // Force bridge_to_api for framework classes.
+            recursion_depth_--;
+            return false;
+        }
+        std::cerr << "[F-NEW-215] CLINIT-BYPASS-LIFTED class="
+                  << class_descriptor << " (second swallow list)"
+                  << std::endl;
     }
 
     // EXP-042 Phase 4: Skip "stub-only" methods — methods that HAVE bytecode
@@ -14700,6 +14782,21 @@ bool DalvikExecutionEngine::execute_new_instance(uint32_t pc, InstructionTrace& 
     // Previously only sget/sput triggered initialization, so classes that
     // were first touched via new-instance ran with uninitialized statics.
     ensure_class_initialized(class_desc);
+    // F-NEW-215: new-instance on an ERRONEOUS class raises
+    // NoClassDefFoundError (JVMS 5.5 new-instance is active use).
+    if (class_clinit_failed(class_desc)) {
+        static std::atomic<uint64_t> f215_new_n{0};
+        if (f215_new_n.fetch_add(1, std::memory_order_relaxed) < 8) {
+            std::cerr << "[F-NEW-215] ACTIVE-USE new-instance class="
+                      << class_desc << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+        }
+        throw_deferred("Ljava/lang/NoClassDefFoundError;",
+                       class_desc + " <clinit> failed previously (erroneous class)",
+                       "F-NEW-215");
+        pc_ = pc + 2;
+        return false;
+    }
 
     // Store object reference in register
     set_register(dest_reg, DalvikValue::make_object(obj_id, class_desc));
@@ -16060,8 +16157,25 @@ bool DalvikExecutionEngine::execute_sget(uint32_t pc, InstructionTrace& trace) {
     FieldResolution field_res = resolve_field(field_idx);
 
     // EXP-053: Ensure the class is initialized before reading its static field.
+    // F-NEW-215: active use (sget) of an ERRONEOUS class raises
+    // NoClassDefFoundError instead of silently reading a missing static.
     if (field_res.resolved) {
         ensure_class_initialized(field_res.class_descriptor);
+        if (class_clinit_failed(field_res.class_descriptor)) {
+            static std::atomic<uint64_t> f215_sget_n{0};
+            if (f215_sget_n.fetch_add(1, std::memory_order_relaxed) < 8) {
+                std::cerr << "[F-NEW-215] ACTIVE-USE sget class="
+                          << field_res.class_descriptor << " caller="
+                          << current_class_ << "." << current_method_
+                          << std::endl;
+            }
+            throw_deferred("Ljava/lang/NoClassDefFoundError;",
+                           field_res.class_descriptor +
+                               " <clinit> failed previously (erroneous class)",
+                           "F-NEW-215");
+            pc_ = pc + 2;
+            return false;
+        }
     }
 
     DalvikValue result_value;
@@ -16163,8 +16277,25 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
     uint64_t f107_si0 = 0; phase_clock().enter(phase_clock().sget_init_ph, f107_si0);
 
     // EXP-053: Ensure the class is initialized before reading its static field.
+    // F-NEW-215: active use (sget-object family) of an ERRONEOUS class
+    // raises NoClassDefFoundError instead of answering null.
     if (field_res.resolved) {
         ensure_class_initialized(field_res.class_descriptor);
+        if (class_clinit_failed(field_res.class_descriptor)) {
+            static std::atomic<uint64_t> f215_sgeto_n{0};
+            if (f215_sgeto_n.fetch_add(1, std::memory_order_relaxed) < 8) {
+                std::cerr << "[F-NEW-215] ACTIVE-USE sget-object class="
+                          << field_res.class_descriptor << " caller="
+                          << current_class_ << "." << current_method_
+                          << std::endl;
+            }
+            throw_deferred("Ljava/lang/NoClassDefFoundError;",
+                           field_res.class_descriptor +
+                               " <clinit> failed previously (erroneous class)",
+                           "F-NEW-215");
+            pc_ = pc + 2;
+            return false;
+        }
     }
 
     phase_clock().exit(phase_clock().sget_init_ph, f107_si0);
@@ -16609,6 +16740,29 @@ bool DalvikExecutionEngine::execute_sput(uint32_t pc, InstructionTrace& trace) {
     FieldResolution field_res = resolve_field(field_idx);
     DalvikValue src_val = get_register(src_reg);
     
+    // F-NEW-215: sput is ACTIVE USE (JVMS 5.5) — the write must trigger
+    // class initialization exactly like sget, and an ERRONEOUS class must
+    // raise NoClassDefFoundError instead of silently writing a static the
+    // class's own <clinit> never got to build.
+    if (field_res.resolved) {
+        ensure_class_initialized(field_res.class_descriptor);
+        if (class_clinit_failed(field_res.class_descriptor)) {
+            static std::atomic<uint64_t> f215_sput_n{0};
+            if (f215_sput_n.fetch_add(1, std::memory_order_relaxed) < 8) {
+                std::cerr << "[F-NEW-215] ACTIVE-USE sput class="
+                          << field_res.class_descriptor << " caller="
+                          << current_class_ << "." << current_method_
+                          << std::endl;
+            }
+            throw_deferred("Ljava/lang/NoClassDefFoundError;",
+                           field_res.class_descriptor +
+                               " <clinit> failed previously (erroneous class)",
+                           "F-NEW-215");
+            pc_ = pc + 2;
+            return false;
+        }
+    }
+    
     if (field_res.resolved) {
         std::string static_key = field_res.class_descriptor + "." + field_res.field_name;
         static_field_storage_[static_key] = src_val;
@@ -16632,6 +16786,27 @@ bool DalvikExecutionEngine::execute_sput_object(uint32_t pc, InstructionTrace& t
     
     FieldResolution field_res = resolve_field(field_idx);
     DalvikValue src_val = get_register(src_reg);
+    
+    // F-NEW-215: sput-object is ACTIVE USE — same law as sput (init
+    // trigger + NoClassDefFoundError on an erroneous class).
+    if (field_res.resolved) {
+        ensure_class_initialized(field_res.class_descriptor);
+        if (class_clinit_failed(field_res.class_descriptor)) {
+            static std::atomic<uint64_t> f215_sputo_n{0};
+            if (f215_sputo_n.fetch_add(1, std::memory_order_relaxed) < 8) {
+                std::cerr << "[F-NEW-215] ACTIVE-USE sput-object class="
+                          << field_res.class_descriptor << " caller="
+                          << current_class_ << "." << current_method_
+                          << std::endl;
+            }
+            throw_deferred("Ljava/lang/NoClassDefFoundError;",
+                           field_res.class_descriptor +
+                               " <clinit> failed previously (erroneous class)",
+                           "F-NEW-215");
+            pc_ = pc + 2;
+            return false;
+        }
+    }
     
     if (field_res.resolved) {
         std::string static_key = field_res.class_descriptor + "." + field_res.field_name;
@@ -20075,7 +20250,13 @@ static int framework_enum_ordinal(const std::string& class_desc,
     {"Landroid/view/View$Visibility;.VISIBLE", 0},
     {"Landroid/view/View$Visibility;.INVISIBLE", 1},
     {"Landroid/view/View$Visibility;.GONE", 2},
-    {"Ljava/util/concurrent/TimeUnit;.NANOS", 0},
+    // F-NEW-216 ENUM-CONSTANT NAME LAW (OpenJDK TimeUnit.java): the member
+    // is NANOSECONDS — "NANOS" is java.time.temporal.ChronoUnit's name and
+    // TimeUnit has no such member. The fictional name made every sget of
+    // TimeUnit.NANOSECONDS answer null (droidify face: kotlin toDuration
+    // NPE'd on the null receiver inside the Dagger SettingsSerializer
+    // chain — datastore settings never built, app died far from cause).
+    {"Ljava/util/concurrent/TimeUnit;.NANOSECONDS", 0},
     {"Ljava/util/concurrent/TimeUnit;.MICROSECONDS", 1},
     {"Ljava/util/concurrent/TimeUnit;.MILLISECONDS", 2},
     {"Ljava/util/concurrent/TimeUnit;.SECONDS", 3},
@@ -34385,6 +34566,23 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 args[1].int_val != 0) {
                 ensure_class_initialized(desc);
             }
+            // F-NEW-215: Class.forName on an ERRONEOUS class throws
+            // NoClassDefFoundError (JDK Class.forName semantics; the cause
+            // carries the original <clinit> failure).
+            if (class_clinit_failed(desc)) {
+                static std::atomic<uint64_t> f215_fn_n{0};
+                if (f215_fn_n.fetch_add(1, std::memory_order_relaxed) < 8) {
+                    std::cerr << "[F-NEW-215] ACTIVE-USE Class.forName class="
+                              << desc << " caller=" << current_class_ << "."
+                              << current_method_ << std::endl;
+                }
+                throw_deferred("Ljava/lang/NoClassDefFoundError;",
+                               desc + " <clinit> failed previously (erroneous class)",
+                               "F-NEW-215");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_null();
+                return true;
+            }
             status = ApiCallTrace::Status::IMPLEMENTED;
             result = DalvikValue::make_class(desc, instruction_sequence_);
             std::cerr << "[M3-REFLECT] Class.forName \"" << want
@@ -36337,6 +36535,18 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 uint32_t obj = target337(1);
                 std::string fname = field_name_for337(offset337(2));
                 if (obj == 0 || fname.empty()) {
+                    // F-NEW-217 observability: a CAS that cannot resolve its
+                    // (object, offset) target silently returns false forever
+                    // — the atomicfu caller then spins (droidify face:
+                    // MutexImpl.unlock 50k visits). Bounded first-divergence.
+                    static std::atomic<uint64_t> f217_caso_n{0};
+                    if (f217_caso_n.fetch_add(1,
+                            std::memory_order_relaxed) < 16) {
+                        std::cerr << "[F-NEW-217] UNSAFE-CAS-UNRESOLVED method="
+                                  << method << " obj=" << obj << " offset="
+                                  << offset337(2) << " caller=" << current_class_
+                                  << "." << current_method_ << std::endl;
+                    }
                     status = ApiCallTrace::Status::IMPLEMENTED;
                     result = DalvikValue::make_bool(false);
                     return true;
@@ -36398,6 +36608,15 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 uint32_t obj = target337(1);
                 std::string fname = field_name_for337(offset337(2));
                 if (obj == 0 || fname.empty()) {
+                    // F-NEW-217 observability (same law as CAS-object):
+                    static std::atomic<uint64_t> f217_casi_n{0};
+                    if (f217_casi_n.fetch_add(1,
+                            std::memory_order_relaxed) < 16) {
+                        std::cerr << "[F-NEW-217] UNSAFE-CAS-UNRESOLVED method="
+                                  << method << " obj=" << obj << " offset="
+                                  << offset337(2) << " caller=" << current_class_
+                                  << "." << current_method_ << std::endl;
+                    }
                     status = ApiCallTrace::Status::IMPLEMENTED;
                     result = DalvikValue::make_bool(false);
                     return true;
