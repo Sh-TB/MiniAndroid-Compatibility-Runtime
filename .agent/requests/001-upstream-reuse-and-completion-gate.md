@@ -792,3 +792,20 @@ A future request must first inspect previous request ledgers and carry unfinishe
 This request intentionally combines the new upstream-reuse objective with unresolved requirements from earlier campaigns.
 
 The Coder must treat this as a continuity contract, not a fresh isolated task.
+
+---
+
+# COMPLETION LEDGER (filled 2026-10-03, forensic wave, HEAD 438f8e85+fixes)
+
+| # | Requirement | STATUS | Evidence |
+|---|---|---|---|
+| 1 | Laws read | DONE | CONSTITUTION_V2 (headers + evidence laws), CAMPAIGN_STATE, worklog tail, .agent/* (state.md + master_campaign_state.md recorded STALE), CODER_REQUEST_PROTOCOL |
+| 2 | Upstream inventory | DONE | docs/UPSTREAM_CODE_INVENTORY.md + .jsonl (11 rows, class+call-path per row) |
+| 3 | Available-but-unused search | DONE | docs/UPSTREAM_AVAILABLE_NOT_USED.jsonl (10 verdict rows incl. nanoSVG/FFmpeg/SDL2/Yoga) |
+| 4 | Duplicate/custom audit | DONE | UPSTREAM_RUNTIME_USAGE.jsonl marks WIRED_NOT_CONSUMED rows (PortableGL, audio) + ADAPTED rows |
+| 5 | License/attribution audit | DONE | docs/UPSTREAM_LICENSE_MATRIX.jsonl (17 rows) |
+| 6 | Maintenance/update path | DONE | docs/UPSTREAM_UPDATE_TRACKING.jsonl (5 rows) |
+| 7-33 | Carry-over campaign rows | SUPERSEDED->ISSUE #364 | Owner folded this request into issue #364; the 33-row ledger is posted there (comment by forensic wave 2026-10-03) |
+
+Honest verdict: request 001 is not silently closed; its upstream half is
+delivered (rows 2-6) and its completion-gate half now lives in #364's ledger.

@@ -1,0 +1,9 @@
+{"component": "QuickJS", "measured_consumer": "Breakout-71 HTML5 game loop (#353, E4/E5)", "status": "PROVEN"}
+{"component": "nlohmann/json", "measured_consumer": "pkgstore/pkgaudit/provenance JSONL (probe 23/23)", "status": "PROVEN"}
+{"component": "zlib/libpng/libjpeg/libwebp", "measured_consumer": "BitmapFactory decode paths; AFD bytes == entry bytes (probe)", "status": "PROVEN"}
+{"component": "SQLite", "measured_consumer": "probe WAL/db persistence on store; cache4.db telegram record", "status": "PROVEN"}
+{"component": "OpenSSL", "measured_consumer": "S100 browser HTTPS GET + 307 (E5)", "status": "PROVEN"}
+{"component": "FreeType/HarfBuzz/FriBidi", "measured_consumer": "text-bearing goldens (opencalc/unote/chess x3 byte-identical)", "status": "PROVEN"}
+{"component": "PortableGL", "measured_consumer": "NONE (compiled-but-zero-caller, LOAD-AUDIT census)", "status": "WIRED_NOT_CONSUMED"}
+{"component": "mpg123/libsndfile", "measured_consumer": "NONE yet (audio consumer proof pending ST)", "status": "WIRED_NOT_CONSUMED"}
+{"component": "stb_image/GIF compositor", "measured_consumer": "GIF disposal OBSERVED rows (MG-214..216)", "status": "OBSERVED"}

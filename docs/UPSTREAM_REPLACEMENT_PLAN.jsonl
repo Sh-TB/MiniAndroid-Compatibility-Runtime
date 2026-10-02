@@ -1,0 +1,7 @@
+{"id": "UPP-001", "area": "dlopen/JNI native libraries (S-2)", "current": "no native .so loading; NDK libs unexercised", "plan": "adopt a minimal ELF/dynamic-loader path or bridge to host dlopen with ABI selection; AOSP RuntimeInfo + android_dlopen_ext semantics", "fanout": "any app with lib/<abi>/*.so", "status": "PENDING"}
+{"id": "UPP-002", "area": "content:// query/Cursor + FileProvider (S-4)", "current": "provider install stage landed; query/Cursor not", "plan": "port ContentProvider query contract + Cursor window semantics from AOSP; FileProvider after", "status": "PENDING"}
+{"id": "UPP-003", "area": "split APKs (S-11)", "current": "base-only", "plan": "base+config split merge at install (AOSP SplitApkVerifier law)", "status": "PENDING"}
+{"id": "UPP-004", "area": "resource config/density/font selection (SELECTION_FROZEN)", "current": "first-config fallback; density 420 hard-coded", "plan": "AOSP ResourceTypes config-selection law port + density buckets", "fanout": "all density/night/land resources", "status": "PENDING"}
+{"id": "UPP-005", "area": "Compose runtime", "current": "frontier roots recorded (S102-B LocalDensity, recomposer host)", "plan": "upstream AndroidX compose source as ORACLE; implement host hooks only where measured", "status": "PENDING"}
+{"id": "UPP-006", "area": "Broadcasts/Services deep legs (S-3/S-13)", "plan": "AOSP ActiveServices semantics port", "status": "PENDING"}
+{"id": "UPP-007", "area": "sqlite/font provenance traces (ST-10)", "plan": "extend provenance JSONL to sqlite+font consumers", "status": "PENDING"}

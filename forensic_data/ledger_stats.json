@@ -1,0 +1,27 @@
+{
+ "total_reconstructed_requests": 390,
+ "issue_rows": 365,
+ "non_issue_rows": 25,
+ "verified_status_counts": {
+  "OBSERVED": 105,
+  "TESTED": 82,
+  "SUPERSEDED": 2,
+  "VERIFIED": 30,
+  "PARTIAL": 43,
+  "PENDING": 122,
+  "BLOCKED": 5,
+  "UNVERIFIED_CLAIM": 1
+ },
+ "evidence_level_counts": {
+  "E3": 87,
+  "E4": 50,
+  "E1": 6,
+  "E5": 13,
+  "E0": 122,
+  "E2": 112
+ },
+ "notes": {
+  "MAPPED_status_vocab": "root-registry statuses were normalized: ROOT-CAUSED-FIXED/VERIFIED-FIXED -> TESTED-family evidence retained in explanation; see per-row fields",
+  "reproducibility": "docs/FORENSIC_ALL_REQUESTS_LEDGER.jsonl is the single source; recompute with scripts/forensic_ledger.py"
+ }
+}
