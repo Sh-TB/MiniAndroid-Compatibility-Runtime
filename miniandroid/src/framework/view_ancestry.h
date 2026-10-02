@@ -70,6 +70,54 @@ framework_direct_superclass() {
         {"Landroid/widget/AbsListView;", "Landroid/widget/AdapterView;"},
         {"Landroid/widget/Spinner;", "Landroid/widget/AbsSpinner;"},
         {"Landroid/widget/AbsSpinner;", "Landroid/widget/AdapterView;"},
+        // ── F-NEW-225c (user campaign §B/§I companion): JDK COLLECTION
+        // HIERARCHY (OpenJDK/libcore source — the canonical direct
+        // superclass of every core container). The hierarchy walk and the
+        // getGenericSuperclass law both need the JDK family, not just the
+        // view family: Gson's ReflectiveTypeAdapterFactory.getBoundFields
+        // climbs ArrayList → AbstractList → AbstractCollection → Object on
+        // every reflective serialization. AOSP android.jar ships the same
+        // libcore classes; these edges are the source truth.
+        {"Ljava/util/ArrayList;", "Ljava/util/AbstractList;"},
+        {"Ljava/util/AbstractList;", "Ljava/util/AbstractCollection;"},
+        {"Ljava/util/AbstractCollection;", "Ljava/lang/Object;"},
+        {"Ljava/util/LinkedList;", "Ljava/util/AbstractSequentialList;"},
+        {"Ljava/util/AbstractSequentialList;", "Ljava/util/AbstractList;"},
+        {"Ljava/util/Vector;", "Ljava/util/AbstractList;"},
+        {"Ljava/util/Stack;", "Ljava/util/Vector;"},
+        {"Ljava/util/HashMap;", "Ljava/util/AbstractMap;"},
+        {"Ljava/util/AbstractMap;", "Ljava/lang/Object;"},
+        {"Ljava/util/LinkedHashMap;", "Ljava/util/HashMap;"},
+        {"Ljava/util/Hashtable;", "Ljava/util/Dictionary;"},
+        {"Ljava/util/Dictionary;", "Ljava/lang/Object;"},
+        {"Ljava/util/HashSet;", "Ljava/util/AbstractSet;"},
+        {"Ljava/util/AbstractSet;", "Ljava/util/AbstractCollection;"},
+        {"Ljava/util/LinkedHashSet;", "Ljava/util/HashSet;"},
+        {"Ljava/util/TreeSet;", "Ljava/util/AbstractSet;"},
+        {"Ljava/util/TreeMap;", "Ljava/util/AbstractMap;"},
+        {"Ljava/util/PriorityQueue;", "Ljava/util/AbstractQueue;"},
+        {"Ljava/util/AbstractQueue;", "Ljava/util/AbstractCollection;"},
+        {"Ljava/util/ArrayDeque;", "Ljava/util/AbstractCollection;"},
+        {"Ljava/util/concurrent/ConcurrentHashMap;",
+         "Ljava/util/AbstractMap;"},
+        {"Ljava/util/concurrent/ConcurrentLinkedQueue;",
+         "Ljava/util/AbstractQueue;"},
+        {"Ljava/util/concurrent/CopyOnWriteArrayList;",
+         "Ljava/lang/Object;"},
+        {"Ljava/lang/Exception;", "Ljava/lang/Throwable;"},
+        {"Ljava/lang/RuntimeException;", "Ljava/lang/Exception;"},
+        {"Ljava/lang/IllegalArgumentException;", "Ljava/lang/RuntimeException;"},
+        {"Ljava/lang/IllegalStateException;", "Ljava/lang/RuntimeException;"},
+        {"Ljava/lang/NullPointerException;", "Ljava/lang/RuntimeException;"},
+        {"Ljava/lang/UnsupportedOperationException;",
+         "Ljava/lang/RuntimeException;"},
+        {"Ljava/lang/IndexOutOfBoundsException;",
+         "Ljava/lang/RuntimeException;"},
+        {"Ljava/lang/NoSuchElementException;",
+         "Ljava/lang/RuntimeException;"},
+        {"Ljava/lang/Throwable;", "Ljava/lang/Object;"},
+        // F-NEW-226 companion: TextPaint IS-A Paint (AOSP android.text).
+        {"Landroid/text/TextPaint;", "Landroid/graphics/Paint;"},
     };
     return kTable;
 }
@@ -81,14 +129,39 @@ framework_direct_superclass() {
 // constructor hook normalized for the class-index, but the superclass
 // classifier compared raw dot-form keys against slash-form map keys and
 // every app container fell through to leaf classification.
+// ────────────────────────────────────────────────────────────────────────
+// F-NEW-224 (user campaign §B) — ONE CANONICAL DESCRIPTOR NORMALIZATION
+// LAW. The four spellings below must resolve IDENTICALLY everywhere:
+//     Landroidx/foo/Bar;      ← canonical internal DEX descriptor
+//     androidx.foo.Bar        ← bare dotted (manifests, reflection names)
+//     androidx/foo/Bar        ← bare slashed
+//     Landroidx.foo.Bar;      ← L-form dotted (malformed/toolchain drift)
+// Every hierarchy/lookup consumer (superclass walk, method/field/ctor
+// resolution, shadow lookup, View/LayoutParams/framework detection) must
+// compare ONLY the canonical form — no per-caller string surgery.
+// Primitives (I, Z, J...), arrays ([I, [Ljava/lang/String;) and already-
+// canonical descriptors pass through byte-identically (law: normalization
+// is idempotent and never invents a type).
+// ────────────────────────────────────────────────────────────────────────
 inline std::string normalize_class_desc(const std::string& desc) {
-    if (desc.size() < 3 || desc.front() != 'L' || desc.back() != ';')
-        return desc;
-    if (desc.find('.') == std::string::npos) return desc;
-    std::string out = desc;
-    for (size_t i = 1; i + 1 < out.size(); ++i)
-        if (out[i] == '.') out[i] = '/';
-    return out;
+    if (desc.empty()) return desc;
+    // Arrays and multi-char non-L forms (e.g. "[I") keep their shape; the
+    // ELEMENT descriptor of an array type is normalized recursively below.
+    if (desc[0] == '[') {
+        std::string elem = desc.substr(1);
+        std::string norm_elem = normalize_class_desc(elem);
+        return "[" + norm_elem;
+    }
+    const bool l_form = desc.size() >= 3 && desc.front() == 'L' && desc.back() == ';';
+    const std::string body = l_form ? desc.substr(1, desc.size() - 2) : desc;
+    if (body.empty()) return desc;
+    const bool dotted = body.find('.') != std::string::npos;
+    if (!l_form && !dotted && body.find('/') == std::string::npos)
+        return desc;  // primitives and other special forms: untouched
+    std::string out = body;
+    for (auto& c : out)
+        if (c == '.') c = '/';
+    return l_form || dotted ? "L" + out + ";" : out;
 }
 
 // One-hop lookup: the direct framework superclass of `class_desc`, or "".
