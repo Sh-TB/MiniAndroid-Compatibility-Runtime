@@ -23,6 +23,7 @@
 #ifndef MINIANDROID_DATA_ROOT_H
 #define MINIANDROID_DATA_ROOT_H
 
+#include <filesystem>
 #include <string>
 
 namespace Storage {
@@ -37,6 +38,57 @@ const std::string& app_data_root();
 
 /// True once an explicit --data-root / env override was applied.
 bool app_data_root_explicit();
+
+// ═══════════════════════════════════════════════════════════════════════
+// F-NEW-234 — PER-PACKAGE CONTEXT LAW (AOSP ContextImpl semantics).
+//
+// AOSP law (frameworks/base core/java/android/app/ContextImpl.java):
+//   * getFilesDir()        → /data/user/0/<package>/files
+//   * getCacheDir()        → /data/user/0/<package>/cache
+//   * getSharedPreferences → /data/data/<package>/shared_prefs (prefs xml)
+//   * getDatabasePath()    → /data/user/0/<package>/databases/<name>
+//   * getDir(name, mode)   → /data/user/0/<package>/app_<name>
+//   * getExternalFilesDir  → /storage/emulated/0/Android/data/<package>/files
+//   * getExternalCacheDir  → /storage/emulated/0/Android/data/<package>/cache
+// EVERY Context-anchored directory family is scoped to the RUNNING
+// package. Before F-NEW-234 MiniAndroid resolved these from a single flat
+// process root with per-site ad-hoc scoping (files/cache flat = cross-
+// package contamination; prefs under <root>/<pkg>; the F-NEW-231 install
+// created <root>/data/data/<pkg>/* that NO runtime consumer ever read —
+// proven live by the IAPK-0 STATE B→C diff).
+//
+// MiniAndroid mapping (documented deviation, mirrors the F-NEW-231 store
+// law): the package data dir is <app-data-root>/data/data/<package>/ and
+// the shared external volume is <app-data-root>/storage/emulated/0/.
+// ═══════════════════════════════════════════════════════════════════════
+
+/// Bind the RUNNING package identity. All Context-anchored directory
+/// families now resolve inside <root>/data/data/<pkg>/. Also re-points
+/// DatabaseShadow::set_databases_dir at the package databases dir and
+/// creates the AOSP framework dirs (files/cache/shared_prefs/databases/
+/// code_cache/no_backup). Empty string resets to the legacy flat root.
+void set_context_package(const std::string& package);
+
+/// The bound running package ("" = none bound → legacy flat resolution).
+const std::string& context_package();
+
+/// The running package's private data dir:
+///   <root>/data/data/<pkg>   (package bound)
+///   <root>                   (no package — legacy flat behavior)
+std::filesystem::path package_data_dir();
+
+/// Context-anchored subdirectory (files/cache/shared_prefs/databases/
+/// app_<name>/...): package_data_dir() / sub. sub may be "" (the dir
+/// itself). No-package fallback: <root>/<sub>.
+std::filesystem::path context_dir(const std::string& sub);
+
+/// External app-specific directory (AOSP Android/data/<pkg>/<kind>):
+///   kind = "files" | "cache" | "media"
+/// No-package fallback keeps the legacy flat <root>/external_<leaf> shape.
+std::filesystem::path external_app_dir(const std::string& kind);
+
+/// External OBB directory (AOSP Android/obb/<pkg>).
+std::filesystem::path external_obb_dir();
 
 } // namespace Storage
 

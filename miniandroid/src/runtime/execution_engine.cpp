@@ -9,6 +9,8 @@
 #include "../dex/trace_exporter.h"  // EXP-031.5: Mandatory trace generation
 #include "../diagnostics/click_audit.h"  // UNIFIED_002 EXP-100: env-gated click audit (DIAGNOSTIC)
 #include "../diagnostics/gfx_provenance.h"  // S82-GFX §6: evidence-bit pixel chain
+#include "../diagnostics/file_io_trace.h"   // IAPK: file-IO provenance (F-NEW-234 wave)
+#include "../storage/data_root.h"           // F-NEW-234: per-package context law
 #include "../diagnostics/trace_overlay.h"   // S135: visual runtime boot/trace logger
 // EXP-086 Phase 3 (B1 FIX): PNGWriter for direct PNG output
 #include "../renderer/software_renderer.h"
@@ -153,6 +155,10 @@ ExecutionResult ExecutionEngine::execute(const std::string& path, const Executio
     
     // Start tracing session
     trace_engine_.start_session();
+    // IAPK: file-IO provenance instrument must open BEFORE any DEX/lifecycle
+    // work runs — app code writes files from onCreate onward (the render-stage
+    // begin() missed every pre-capture write; empty-trace bug fixed).
+    diagnostics::FileIoTrace::instance().begin();
     // S135: canonical runtime event backbone — ONE backbone, many sinks
     // (JSONL / ring buffer / stage machine / visual overlay / evidence).
     trace_engine_.boot_trace_begin(config.output_directory, path);
@@ -616,6 +622,12 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
             result.apk_info.package_name,
             result.apk_info.version_code,
             result.apk_info.version_name);
+        // F-NEW-234: bind the RUNNING package identity to the storage law —
+        // every Context-anchored directory family (files/cache/shared_prefs/
+        // databases/getDir/external-*) now resolves inside
+        // <data-root>/data/data/<package>/ (AOSP ContextImpl semantics),
+        // BEFORE any app code or storage consumer runs.
+        Storage::set_context_package(result.apk_info.package_name);
         // F-116 (R-NEW-384 family): manifest <meta-data> tables for the
         // PackageManager.getActivityInfo().metaData law.
         dalvik_engine_.set_activity_meta_data(result.apk_info.activity_meta_data,
@@ -5522,6 +5534,11 @@ bool ExecutionEngine::stage_capture_output( ExecutionResult& result, const Execu
             }
             diagnostics::GfxProvenance::instance().finalize(
                 screenshot_path, png_ok, shot_nonwhite, shot_hist.size());
+        }
+        // IAPK: write the file-IO provenance JSONL (op/path/result/caller).
+        if (diagnostics::FileIoTrace::instance().enabled()) {
+            diagnostics::FileIoTrace::instance().finalize(
+                Storage::context_package());
         }
     } catch (const std::exception& e) {
         trace_engine_.record_error("PNG_WRITE_ERROR", e.what(),

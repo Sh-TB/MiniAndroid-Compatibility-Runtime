@@ -124,6 +124,8 @@ void print_usage(const char* program_name) {
     std::cout << "  run       Execute APK and generate output\n";
     std::cout << "  install   Install an APK into the package store (--data-root required)\n";
     std::cout << "  list-packages  List installed packages from the package store\n";
+    std::cout << "  pkgaudit  Audit an installed package: identity, integrity re-hash,\n";
+    std::cout << "            recursive code+data inventory (--package + --data-root)\n";
     std::cout << "  version   Show version information\n";
     std::cout << "  help      Show this help message\n\n";
     std::cout << "Options:\n";
@@ -460,8 +462,11 @@ bool write_record(const PackageRecord& rec, const std::string& data_root) {
     auto dir = package_dir(data_root, rec.package);
     std::filesystem::create_directories(dir, ec);
     if (ec) return false;
-    // App-private dirs (AOSP /data/data/<pkg> family law).
-    for (const char* sub : {"files", "cache", "shared_prefs", "databases"}) {
+    // App-private dirs (AOSP /data/data/<pkg> family law; F-NEW-234 aligns
+    // the runtime Context family with this exact layout — code_cache and
+    // no_backup are created at first Context use on AOSP; eager here).
+    for (const char* sub : {"files", "cache", "shared_prefs", "databases",
+                            "code_cache", "no_backup"}) {
         std::filesystem::create_directories(
             std::filesystem::path(data_root) / "data" / "data" / rec.package / sub, ec);
     }
@@ -615,6 +620,112 @@ int cmd_list_packages(const std::string& data_root) {
         std::cout << "\n";
     }
     std::cout << "]\n";
+    return 0;
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// IAPK CAMPAIGN — pkgaudit: reusable INSTALLED-APP AUDIT capability.
+// Takes --package <pkg> --data-root <dir> and produces a machine-readable
+// audit of the installed state — identity, codePath, integrity re-hash,
+// and a recursive inventory of the package-owned filesystem. Generic for
+// ANY installed APK; no package-specific logic anywhere.
+// ═══════════════════════════════════════════════════════════════════════
+int cmd_pkg_audit(const std::string& package, const std::string& data_root) {
+    if (data_root.empty() || package.empty()) {
+        std::cerr << "[ERROR] pkgaudit requires --package <pkg> --data-root <dir>\n";
+        return 1;
+    }
+    namespace fs = std::filesystem;
+    auto code_dir = pkgstore::package_dir(data_root, package);
+    auto base_apk = code_dir / "base.apk";
+    auto data_dir = fs::path(data_root) / "data" / "data" / package;
+    if (!fs::exists(base_apk)) {
+        std::cerr << "[ERROR] Package not installed: " << package << " (looked for "
+                  << base_apk.string() << ")\n";
+        return 1;
+    }
+
+    std::cout << "{\n";
+    std::cout << "  \"audit\": \"INSTALLED_APP_AUDIT\",\n";
+    std::cout << "  \"package\": \"" << pkgstore::json_escape(package) << "\",\n";
+
+    // Identity: the package.json record (verbatim) + integrity re-hash.
+    std::ifstream rec(pkgstore::package_json(data_root, package).string());
+    if (rec.is_open()) {
+        std::stringstream ss; ss << rec.rdbuf();
+        std::string body = ss.str();
+        while (!body.empty() && (body.back() == '\n' || body.back() == '\r'))
+            body.pop_back();
+        std::cout << "  \"record\": " << body << ",\n";
+    } else {
+        std::cout << "  \"record\": null,\n";
+    }
+    bool sha_ok = false;
+    std::string live_sha = pkgstore::sha256_file(base_apk.string(), &sha_ok);
+    std::cout << "  \"codePath\": \"/data/app/"
+              << pkgstore::json_escape(package) << "/base.apk\",\n";
+    std::cout << "  \"hostCodePath\": \"" << pkgstore::json_escape(base_apk.string())
+              << "\",\n";
+    std::cout << "  \"liveBaseApkSha256\": \"" << live_sha << "\",\n";
+
+    // Recursive inventory of both package-owned trees.
+    auto audit_tree = [&](const char* label, const fs::path& root) {
+        unsigned long long files = 0, dirs = 0, bytes = 0;
+        std::map<std::string, unsigned long long> exts;
+        std::vector<std::pair<unsigned long long, std::string>> largest;
+        if (fs::exists(root)) {
+            std::error_code walk_ec;
+            for (auto it = fs::recursive_directory_iterator(
+                     root, fs::directory_options::skip_permission_denied, walk_ec);
+                 it != fs::recursive_directory_iterator();
+                 it.increment(walk_ec)) {
+                std::error_code ec;
+                if (it->is_directory(ec)) { dirs++; continue; }
+                if (!it->is_regular_file(ec)) continue;
+                files++;
+                unsigned long long sz = it->file_size(ec);
+                if (!ec) bytes += sz;
+                largest.emplace_back(sz, it->path().string());
+                std::string ext = it->path().extension().string();
+                for (auto& c : ext) c = std::tolower(static_cast<unsigned char>(c));
+                exts[ext.empty() ? "<none>" : ext]++;
+            }
+        }
+        std::sort(largest.rbegin(), largest.rend());
+        std::cout << "  \"" << label << "\": {\n";
+        std::cout << "    \"root\": \"" << pkgstore::json_escape(root.string())
+                  << "\",\n";
+        std::cout << "    \"exists\": " << (fs::exists(root) ? "true" : "false")
+                  << ",\n";
+        std::cout << "    \"files\": " << files << ", \"dirs\": " << dirs
+                  << ", \"bytes\": " << bytes << ",\n";
+        std::cout << "    \"extHistogram\": {";
+        bool first = true;
+        for (const auto& [e, n] : exts) {
+            if (!first) std::cout << ", ";
+            std::cout << "\"" << pkgstore::json_escape(e) << "\": " << n;
+            first = false;
+        }
+        std::cout << "},\n";
+        std::cout << "    \"largestFiles\": [";
+        first = true;
+        for (size_t i = 0; i < largest.size() && i < 5; i++) {
+            if (!first) std::cout << ", ";
+            bool ok = false;
+            std::string h = pkgstore::sha256_file(largest[i].second, &ok);
+            std::cout << "\n      {\"path\": \""
+                      << pkgstore::json_escape(largest[i].second)
+                      << "\", \"size\": " << largest[i].first
+                      << ", \"sha256\": \"" << h << "\"}";
+            first = false;
+        }
+        std::cout << (first ? "" : "\n    ") << "]\n";
+        std::cout << "  }";
+    };
+    audit_tree("codeTree", code_dir);
+    std::cout << ",\n";
+    audit_tree("dataTree", data_dir);
+    std::cout << "\n}\n";
     return 0;
 }
 
@@ -975,7 +1086,8 @@ int main(int argc, char* argv[]) {
         }
     }
     
-    if (apk_path.empty() && run_package.empty() && command != "list-packages") {
+    if (apk_path.empty() && run_package.empty() && command != "list-packages" &&
+        command != "pkgaudit") {
         std::cerr << "[ERROR] No APK file specified\n\n";
         print_usage(argv[0]);
         return 1;
@@ -984,7 +1096,8 @@ int main(int argc, char* argv[]) {
     // F-NEW-231: resolve an installed package from identity alone. The run
     // then operates on the INSTALLED base.apk — provenance flows from the
     // resolved codePath (ApplicationInfo.sourceDir law), not the sideload.
-    if (!run_package.empty()) {
+    // (pkgaudit does its own resolution + JSON — keep stdout machine-clean.)
+    if (!run_package.empty() && command != "pkgaudit") {
         if (config.data_root.empty()) {
             std::cerr << "[ERROR] --package requires --data-root <dir>\n";
             return 1;
@@ -1014,6 +1127,8 @@ int main(int argc, char* argv[]) {
         return cmd_install(apk_path, config.data_root, verbose);
     } else if (command == "list-packages") {
         return cmd_list_packages(config.data_root);
+    } else if (command == "pkgaudit") {
+        return cmd_pkg_audit(run_package, config.data_root);
     } else if (command == "analyze") {
         return cmd_analyze(apk_path, verbose);
     } else if (command == "dex") {
