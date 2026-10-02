@@ -124,6 +124,8 @@ void print_usage(const char* program_name) {
     std::cout << "  run       Execute APK and generate output\n";
     std::cout << "  install   Install an APK into the package store (--data-root required)\n";
     std::cout << "  list-packages  List installed packages from the package store\n";
+    std::cout << "  uninstall  Remove an installed package completely: codePath,\n";
+    std::cout << "             record, internal + external data trees (--package + --data-root)\n";
     std::cout << "  pkgaudit  Audit an installed package: identity, integrity re-hash,\n";
     std::cout << "            recursive code+data inventory (--package + --data-root)\n";
     std::cout << "  version   Show version information\n";
@@ -587,6 +589,82 @@ int cmd_install(const std::string& apk_path, const std::string& data_root,
     std::cout << "}\n";
     std::cout << "\n[+] Installed. Post-install identity = package name + data-root only.\n";
     return 0;
+}
+
+// UNINSTALL SEMANTICS (AOSP PackageManager.deletePackage law): the package
+// leaves the store COMPLETELY — codePath (base.apk), its package record, the
+// internal data tree (/data/data/<pkg>) and the external app dirs
+// (/storage/emulated/0/Android/<data|media|obb>/<pkg>). Any OTHER package's
+// trees must remain byte-identical (package isolation). Generic: no package
+// conditionals; the package identity comes from --package alone.
+struct UninstallReport {
+    bool found = false;
+    std::vector<std::string> removed;
+    std::vector<std::string> absent;   // legal: tree never created by any run
+    std::vector<std::string> errors;
+};
+
+static void uninstall_remove_tree(const std::filesystem::path& p,
+                                  const char* label, UninstallReport& rep) {
+    std::error_code ec;
+    if (!std::filesystem::exists(p, ec)) {
+        rep.absent.push_back(std::string(label) + "=" + p.string());
+        return;
+    }
+    std::filesystem::remove_all(p, ec);
+    if (ec) {
+        rep.errors.push_back(std::string(label) + "=" + ec.message());
+        return;
+    }
+    if (std::filesystem::exists(p, ec)) {
+        rep.errors.push_back(std::string(label) + "=still-present-after-remove_all");
+        return;
+    }
+    rep.removed.push_back(std::string(label) + "=" + p.string());
+}
+
+int cmd_uninstall(const std::string& package, const std::string& data_root) {
+    namespace fs = std::filesystem;
+    if (data_root.empty() || package.empty()) {
+        std::cerr << "[ERROR] uninstall requires --package <pkg> --data-root <dir>\n";
+        return 1;
+    }
+    // Identity honesty: only a package that is actually installed (record or
+    // codePath present) may be uninstalled — mirrors PMS NAME_NOT_FOUND.
+    auto code_dir = pkgstore::package_dir(data_root, package);
+    std::error_code ec;
+    bool has_record = fs::exists(pkgstore::package_json(data_root, package), ec);
+    bool has_code = fs::exists(code_dir / "base.apk", ec);
+    if (!has_record && !has_code) {
+        std::cout << "{\n  \"uninstall\": \"NOT_INSTALLED\",\n  \"package\": \""
+                  << pkgstore::json_escape(package) << "\"\n}\n";
+        return 2;
+    }
+    UninstallReport rep;
+    rep.found = true;
+    uninstall_remove_tree(code_dir, "codePath", rep);                       // /data/app/<pkg>
+    uninstall_remove_tree(pkgstore::package_json(data_root, package),
+                          "packageRecord", rep);                            // package.json
+    uninstall_remove_tree(fs::path(data_root) / "data" / "data" / package,
+                          "internalData", rep);                             // /data/data/<pkg>
+    // External app dirs (all three AOSP families under the virtual external
+    // root; absent trees are legal and reported as such).
+    for (const char* fam : {"Android/data", "Android/media", "Android/obb"}) {
+        uninstall_remove_tree(fs::path(data_root) / "storage" / "emulated" / "0" /
+                              fs::path(fam) / package, fam, rep);
+    }
+    std::cout << "{\n  \"uninstall\": \""
+              << (rep.errors.empty() ? "SUCCESS" : "ERROR") << "\",\n";
+    std::cout << "  \"package\": \"" << pkgstore::json_escape(package) << "\",\n";
+    std::cout << "  \"removed\": [";
+    for (size_t i = 0; i < rep.removed.size(); i++)
+        std::cout << (i ? ", ":"") << "\"" << pkgstore::json_escape(rep.removed[i]) << "\"";
+    std::cout << "],\n";
+    std::cout << "  \"absent\": [";
+    for (size_t i = 0; i < rep.absent.size(); i++)
+        std::cout << (i ? ", ":"") << "\"" << pkgstore::json_escape(rep.absent[i]) << "\"";
+    std::cout << "]\n}\n";
+    return rep.errors.empty() ? 0 : 1;
 }
 
 int cmd_list_packages(const std::string& data_root) {
@@ -1097,7 +1175,9 @@ int main(int argc, char* argv[]) {
     // then operates on the INSTALLED base.apk — provenance flows from the
     // resolved codePath (ApplicationInfo.sourceDir law), not the sideload.
     // (pkgaudit does its own resolution + JSON — keep stdout machine-clean.)
-    if (!run_package.empty() && command != "pkgaudit") {
+    // (uninstall must NOT be pre-guarded: NOT_INSTALLED is its own honest
+    // verdict with its own exit contract, like PMS NAME_NOT_FOUND.)
+    if (!run_package.empty() && command != "pkgaudit" && command != "uninstall") {
         if (config.data_root.empty()) {
             std::cerr << "[ERROR] --package requires --data-root <dir>\n";
             return 1;
@@ -1125,6 +1205,8 @@ int main(int argc, char* argv[]) {
     // Execute command
     if (command == "install") {
         return cmd_install(apk_path, config.data_root, verbose);
+    } else if (command == "uninstall") {
+        return cmd_uninstall(run_package, config.data_root);
     } else if (command == "list-packages") {
         return cmd_list_packages(config.data_root);
     } else if (command == "pkgaudit") {

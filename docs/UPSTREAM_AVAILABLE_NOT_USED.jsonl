@@ -1,0 +1,10 @@
+{"candidate": "nanoSVG", "url": "https://github.com/memononen/nanosvg", "license": "zlib", "verdict": "EVALUATED_NOT_USEFUL_FOR_MEASURED_SUBSET", "reason": "S132 measured the app-corpus SVG subset and implemented the needed law in-tree (s132_svg_reader); adopting a full parser would add unmeasured surface."}
+{"candidate": "FFmpeg (libavcodec/libavformat)", "license": "LGPL/GPL", "verdict": "NOT_USEFUL_NOW_CORPUS_GATE", "reason": "no video corpus need measured; audio already covered by adopted codecs (S132 wave-3 record)."}
+{"candidate": "Wuffs / libnsgif", "verdict": "EVALUATE", "reason": "GIF already served by stb-based in-repo compositor; swap only if fidelity root measured."}
+{"candidate": "resvg", "verdict": "EVALUATE", "reason": "full SVG fidelity beyond measured subset; not triggered."}
+{"candidate": "litehtml / Lexbor", "verdict": "EVALUATE", "reason": "no document-class CSS layout root measured (z.ai CSS 1436 rules handled by S133 record); trigger not fired."}
+{"candidate": "miniz / dr_libs / miniaudio / libcurl / rlottie / tesseract / pixelmatch", "verdict": "EVALUATE-PLANNED", "reason": "registry PLANNED/EVALUATE rows: awaiting a measured root (pixelmatch+tesseract planned for visual-diff/OCR tooling)."}
+{"candidate": "SDL2", "verdict": "REJECTED", "reason": "window/event model conflicts with the runtime framebuffer/window shadow laws."}
+{"candidate": "Yoga (flexbox)", "verdict": "REJECTED_FOR_MC041_EXISTING_SUPERIOR", "reason": "existing layout interpreter + AOSP weight-pass port covers measured corpus; MC041 decision record."}
+{"candidate": "jadx / androguard / ApkTool / ARSCLib", "verdict": "ORACLE", "reason": "used as ground-truth oracles for DEX/ARSC/AXML verification, not linked into the runtime."}
+{"candidate": "Skia / cdroid / Compose-skiko / Godot / libGDX", "verdict": "REFERENCE_ONLY", "reason": "loop/law references recorded in the graphics registry; no code imported."}

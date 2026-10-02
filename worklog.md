@@ -5930,3 +5930,56 @@ Work Log:
 Stage Summary:
 - LOADING-CAMPAIGN implementation wave CLOSED at the P0 class with 23/23
   probe gate + 5/5 golden gates; ledger + evidence on issue #354.
+
+---
+Task ID: FORENSIC-365 + UPSTREAM-364
+Agent: Super Z (main)
+Task: MASTER FORENSIC VERIFICATION (issue #365) — reconstruct the entire request
+corpus, classify every item under the strict evidence vocabulary, re-verify
+claimed completions at current HEAD, produce the canonical forensic documents,
+and complete issue #364 (upstream reuse + carry-over campaign).
+
+Work Log:
+- LAWS READ: CONSTITUTION_V2 (headers + §16/§17/§23-§27/§31-§46 evidence laws),
+  CAMPAIGN_STATE.md, worklog (S84..LOADING-EXEC-CLOSE tail), .agent/* (7 files;
+  state.md + master_campaign_state.md identified STALE), CODER_REQUEST_PROTOCOL,
+  requests/001, issues #1-365 metadata + 708 comments + 597 commits fetched
+  (forensic_data/), 7 registries parsed.
+- HEAD TRUTH RE-RUNS (2026-10-03): working_vs_failing_probe.sh 5/5 goldens x3
+  byte-identical; loading_probe_runner.sh 23/23; verify_canonical_evidence.py
+  3 FAIL FOUND (R4 fish.rings duplicate, R10 x2 unregistered browser GIFs) ->
+  FIXED (registry 148->150, stale jpg removed, README/ACHIEVEMENTS/CANONICAL_
+  SCREENSHOTS synced) -> 0 FAIL.
+- GENERIC FIX (365 §21): `uninstall` command implemented (main.cpp: AOSP
+  deletePackage law — codePath + package.json + data/data/<pkg> +
+  storage/emulated/0/Android/{data,media,obb}/<pkg> removal; NOT_INSTALLED
+  honesty rc=2; --package pre-guard exemption). UNINSTALL-PROOF-GATE 16/16
+  (scripts/forensic_uninstall_proof.sh). Regression after fix: goldens x3 + probe
+  gate ALL PASS. Closes the F-NEW-231 recorded PENDING row (uninstall command).
+- LEDGER: scripts/forensic_ledger.py -> docs/FORENSIC_ALL_REQUESTS_LEDGER.jsonl
+  (390 rows = 365 issues + 25 non-issue rows incl. 18 checked Telegram goals +
+  chat-direct master executions) with strict #365 §2 statuses + E0-E5 levels +
+  commit/test/runtime/screenshot/regression refs. Counts: VERIFIED 30, TESTED 82,
+  OBSERVED 105, PARTIAL 43, PENDING 122, BLOCKED 5, SUPERSEDED 2,
+  UNVERIFIED_CLAIM 1, REGRESSED 0.
+- DOCS: FORENSIC_CLAIMS_VS_EVIDENCE.md, FORENSIC_VERIFIED_WORK.md,
+  FORENSIC_UNVERIFIED_CLAIMS.md, FORENSIC_MISSING_EVIDENCE.md,
+  FORENSIC_REQUEST_GRAPH.md/.jsonl (338 edges), FORENSIC_REGRESSION_STATUS.jsonl
+  (4 current-HEAD gates + 2 historical justified re-baselines),
+  FORENSIC_EVIDENCE_INDEX.jsonl (52 artifacts), FORENSIC_ALL_REQUESTS_LEDGER.md.
+- UPSTREAM (#364): UPSTREAM_CODE_INVENTORY.md/.jsonl, UPSTREAM_AVAILABLE_NOT_
+  USED.jsonl, UPSTREAM_REPLACEMENT_PLAN.jsonl, UPSTREAM_LICENSE_MATRIX.jsonl,
+  UPSTREAM_RUNTIME_USAGE.jsonl (PortableGL + audio honestly WIRED_NOT_CONSUMED),
+  UPSTREAM_UPDATE_TRACKING.jsonl; requests/001 completion ledger filled.
+- KEY FINDINGS: 202-title corpus 41/202 executed (161 NOT_TESTED, 96 registry
+  orphans, 4 BLOCKED_DOWNLOAD_FAIL); ROOT-062..067 + S102-* missing from all
+  registries; canonical/root_cause_registry.json lags root_registry.json
+  (492 vs 530); TELEGRAM_JOURNEY_S117_S119.md never committed (dead preview
+  link) -> UNVERIFIED_CLAIM; tmp/ still tracks ~177 MB disposable blobs;
+  .agent state files stale; micro-gaps are synthetic-class (E2 cap).
+- STATE: CAMPAIGN_STATE.md forensic+upstream wave appended.
+
+Stage Summary:
+- The forensic ledger is the ONE canonical record of what is proven vs claimed.
+- Current-HEAD gates all green after the uninstall + canonical-sync fixes.
+- Completion ledgers posted to issue #365 (33 rows) and issue #364 (33 rows).

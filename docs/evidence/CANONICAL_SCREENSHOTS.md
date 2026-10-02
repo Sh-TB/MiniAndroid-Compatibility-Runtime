@@ -122,7 +122,7 @@
 | dev.lonami.klooni | game | `dev.lonami.klooni` | [source](https://codeberg.org/Lonami/Klooni1010) | 55641cdb5dba7f30… | — | — | L1 | — | S85 |
 | eu.quelltext.counting | game | `eu.quelltext.counting` | [source](https://gitlab.com/niccokunzmann/12345) | 98fe65f21ff8e519… | — | — | L0 | — | S85 |
 | Memory | game | `eu.quelltext.memory` | F-Droid | 4dd3957983e3c3f3… | [eu.quelltext.memory.jpg](docs/evidence/canonical/eu.quelltext.memory.jpg) | 1f36d707ec9f685c… | L0 | — | S83 |
-| Fish Rings | game | `eu.veldsoft.fish.rings` | [source](https://github.com/VelbazhdSoftwareLLC/FishRingsForAndroid) | — | [eu.veldsoft.fish.rings.jpg](docs/evidence/canonical/eu.veldsoft.fish.rings.jpg) | 28c952a6e1657b02… | L10 | — | S65 |
+| Fish Rings | game | `eu.veldsoft.fish.rings` | [source](https://github.com/VelbazhdSoftwareLLC/FishRingsForAndroid) | — | [eu.veldsoft.fish.rings.gif](docs/evidence/canonical/eu.veldsoft.fish.rings.gif) | 28c952a6e1657b02… | L10 | — | S65 |
 | FreeKlondike | game | `eu.veldsoft.free.klondike` | [source](https://github.com/VelbazhdSoftwareLLC/FreeKlondike) | — | [eu.veldsoft.free.klondike.jpg](docs/evidence/canonical/eu.veldsoft.free.klondike.jpg) | 7dd689bf2d692980… | L10 | — | S64 |
 | No Thanks! | game | `eu.veldsoft.no.thanks` | F-Droid | — | — | — | L1 | — | S83 |
 | TriPeaks | game | `eu.veldsoft.tri.peaks` | [source](https://github.com/VelbazhdSoftwareLLC/TriPeaks) | — | [eu.veldsoft.tri.peaks.jpg](docs/evidence/canonical/eu.veldsoft.tri.peaks.jpg) | 8e1d41a151898010… | L10 | — | S65 |
@@ -158,3 +158,5 @@
 | Tarok | game | `si.palcka.tarok` |  | — | — | — | L1 | — | S85-sweep |
 | x653.all_in_gold | game | `x653.all_in_gold` | [source](https://gitlab.com/x653/all_in_gold) | 01f04f99173ead82… | [x653.all_in_gold.jpg](docs/evidence/canonical/x653.all_in_gold.jpg) | 658d0a2825cce720… | L2 | — | S85 |
 | xyz.deepdaikon.quinb | game | `xyz.deepdaikon.quinb` |  | — | — | — | L1 | — | S85-sweep |
+| Mini Browser | app | `com.miniandroid.browser` | [in-house](https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/tree/main/games/simple-browser) | — | [com.miniandroid.browser.gif](docs/evidence/canonical/com.miniandroid.browser.gif) | ee3cc2e6812c6180… | L10 | — | S100 |
+| Mini Browser z.ai | app | `com.miniandroid.browser.zai` | [in-house](https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/tree/main/games/simple-browser) | — | [com.miniandroid.browser.zai.gif](docs/evidence/canonical/com.miniandroid.browser.zai.gif) | ee3cc2e6812c6180… | L10 | — | S100 |

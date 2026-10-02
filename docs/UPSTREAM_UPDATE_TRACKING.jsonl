@@ -1,0 +1,5 @@
+{"component": "QuickJS", "vendored_version": "2024-01-13", "upstream_latest": "2025 snapshot exists", "strategy": "re-vendor only on a measured JS-compat root; frozen until then", "next_check": "on S-10/WebView root"}
+{"component": "nlohmann/json", "strategy": "API-stable; update optional", "next_check": "annual"}
+{"component": "PortableGL", "strategy": "keep-or-drop decision tied to F-NEW-157 GLSurfaceView family", "next_check": "on F-NEW-157 attack"}
+{"component": "HOST-LINKED libs", "strategy": "host distro manages versions; CI rebuild law keeps compatibility", "next_check": "per build"}
+{"component": "AOSP ports", "strategy": "law-pinned to AOSP branch heads cited in source; re-derive on semantic drift (e.g. RES_TABLE_ENTRY Compact law S127)", "next_check": "per campaign"}

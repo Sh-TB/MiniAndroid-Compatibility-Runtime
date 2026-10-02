@@ -111,3 +111,55 @@ S-2 (dlopen/JNI), S-4 (content:// query/Cursor + FileProvider), S-11 splits,
 S-3/S-13 broadcasts/services, SELECTION_FROZEN (config/density/fonts),
 S-10 localStorage; sqlite/font provenance traces (ST-10); provider-stage
 consumer proof on an androidx.startup-shipping app end-to-end.
+
+## FORENSIC VERIFICATION WAVE (2026-10-03, issue #365) + UPSTREAM WAVE (issue #364)
+
+### LAWS READ
+CONSTITUTION_V2 (§0-46 headers + evidence/verdict laws), CAMPAIGN_STATE, worklog
+(S84..LOADING-EXEC-CLOSE), .agent/{CODER_REQUEST_PROTOCOL,mission,state,
+master_campaign_state,decisions,backlog,requests/001} — state.md +
+master_campaign_state.md recorded STALE (EXP-090/D05 era), issue #354 comments
+(37), issues #353-365, 190-goal roadmap (#363 §3).
+
+### INDEPENDENT HEAD TRUTH (all re-run 2026-10-03 at HEAD)
+- WORKING-VS-FAILING-GATE 5/5 goldens x3 byte-identical (opencalc e364b001ee7abd66,
+  chess b5a7a35d5fe0564b, dooz d602648e8e401895, microtimer da73010a37dd0189,
+  unote 4f1a9e4e8f64fae8).
+- LOADING-PROBE-GATE 23/23 ALL PASS.
+- UNINSTALL-PROOF-GATE 16/16 ALL PASS — NEW generic `uninstall` command
+  (codePath + record + internal + Android/{data,media,obb} removal, isolation,
+  NOT_INSTALLED honesty, reinstall-clean); closes the F-NEW-231 recorded
+  PENDING row.
+- CANONICAL EVIDENCE VALIDATOR 0 FAIL (was 3 FAIL: R4 fish.rings duplicate
+  artifact removed; R10 x2 S100 browser GIFs registered; registry 148->150;
+  README/ACHIEVEMENTS/CANONICAL_SCREENSHOTS synchronized).
+
+### FORENSIC DELIVERABLES (issue #365)
+FORENSIC_ALL_REQUESTS_LEDGER.jsonl/.md (390 request rows; strict §2 vocabulary),
+FORENSIC_CLAIMS_VS_EVIDENCE.md, FORENSIC_VERIFIED_WORK.md,
+FORENSIC_UNVERIFIED_CLAIMS.md, FORENSIC_MISSING_EVIDENCE.md,
+FORENSIC_REQUEST_GRAPH.md/.jsonl (338 edges), FORENSIC_REGRESSION_STATUS.jsonl
+(4 current-HEAD gates + 2 historical justified re-baselines; REGRESSED=0),
+FORENSIC_EVIDENCE_INDEX.jsonl (52 artifacts).
+Key findings: 202-title corpus 41/202 executed (161 NOT_TESTED, 96 registry
+orphans); ROOT-062..067 + S102-* in NO registry (coverage gap); canonical
+projection lags root_registry.json (492 vs 530); TELEGRAM_JOURNEY doc never
+committed (UNVERIFIED_CLAIM); tmp/ still tracks ~177 MB disposable blobs
+(88.4+60.2+14+22.4+21.8); .agent state files stale.
+
+### UPSTREAM DELIVERABLES (issue #364)
+UPSTREAM_CODE_INVENTORY.md/.jsonl (11 rows), UPSTREAM_AVAILABLE_NOT_USED.jsonl,
+UPSTREAM_REPLACEMENT_PLAN.jsonl (7 pending plans S-2/S-4/S-11/SELECTION_FROZEN/
+compose/broadcasts/ST-10), UPSTREAM_LICENSE_MATRIX.jsonl (17),
+UPSTREAM_RUNTIME_USAGE.jsonl (PROVEN vs WIRED_NOT_CONSUMED),
+UPSTREAM_UPDATE_TRACKING.jsonl.
+
+### STATUS VOCAB (ledger counts)
+VERIFIED 30 / TESTED 82 / OBSERVED 105 / PARTIAL 43 / PENDING 122 / BLOCKED 5 /
+SUPERSEDED 2 / UNVERIFIED_CLAIM 1 / REGRESSED 0 (evidence: E0=122 E1=6 E2=112
+E3=87 E4=50 E5=13).
+
+### NEXT
+M1 registry backfill (ROOT-062..067, S102-*); M2 commit journey doc; M3 fresh
+s117_tg_run.sh at HEAD; then the §21 continuation queue (S-2, S-4, S-11,
+SELECTION_FROZEN).

@@ -2512,9 +2512,9 @@
   },
   {
    "apk_sha256": "",
-   "artifact": "docs/evidence/canonical/eu.veldsoft.fish.rings.jpg",
-   "artifact_kind": ".jpg",
-   "artifact_sha256": "28c952a6e1657b0204fd8bf988c4cbbacd54bbb29a0d4d02c4b2caaa5ab51654",
+   "artifact": "docs/evidence/canonical/eu.veldsoft.fish.rings.gif",
+   "artifact_kind": ".gif",
+   "artifact_sha256": "f225a04b9187b6074ad985ea4a8e8a8be8bcd15b3db39175f48262bda27e8e7c",
    "first_divergence": "see session report",
    "interacted": false,
    "last_success_stage": "see S65 report",
@@ -3957,7 +3957,38 @@
    "type": "game",
    "upstream": "in-house (games/minicraft) \u2014 companion to Snake Deluxe / Mini Tetris / 2048 / TicTacToe Deluxe",
    "version": "1.0"
+  },
+  {
+   "id": "com.miniandroid.browser",
+   "package": "com.miniandroid.browser",
+   "title": "Mini Browser (example.com over TLS)",
+   "type": "app",
+   "status": "VERIFIED",
+   "evidence_level": "E5",
+   "source": "in-house source games/simple-browser/ (S100)",
+   "session": "S100",
+   "apk_sha256": "ee3cc2e6812c61801890c4d422b1c6d5e631fb69396231ed2327b0292bd350f3",
+   "artifact": "docs/evidence/canonical/com.miniandroid.browser.gif",
+   "artifact_kind": ".gif",
+   "artifact_sha256": "454c1c5bd820d50d227ca0b7a7d11c75bc93c4bf5fdfe8fda0b5f1677815f3e0",
+   "note": "Real HTTPS GET example.com (HTTP 200, 559 bytes), 12,087 px state change, 3/3 byte-identical runs (S100 runs 5-7)."
+  },
+  {
+   "id": "com.miniandroid.browser.zai",
+   "package": "com.miniandroid.browser.zai",
+   "title": "Mini Browser (z.ai 307 redirect over TLS)",
+   "type": "app",
+   "status": "VERIFIED",
+   "evidence_level": "E5",
+   "source": "in-house source games/simple-browser/ (S100 zai leg)",
+   "session": "S100",
+   "apk_sha256": "ee3cc2e6812c61801890c4d422b1c6d5e631fb69396231ed2327b0292bd350f3",
+   "artifact": "docs/evidence/canonical/com.miniandroid.browser.zai.gif",
+   "artifact_kind": ".gif",
+   "artifact_sha256": "ed20fd6219f247c48c930361e984cf69c61d1a335e97a0a7d55fff078e436666",
+   "note": "Same simplebrowser APK (same SHA), z.ai target: 307 -> chat.z.ai redirect followed end-to-end over TLS, HTTP 200, 15,727 bytes (S102 HEADER-OWS-TRIM law)."
   }
  ],
- "wave": "S87"
+ "wave": "S87",
+ "generated": "2026-10-03 forensic sync (issue #365 R4/R10 closure)"
 }
