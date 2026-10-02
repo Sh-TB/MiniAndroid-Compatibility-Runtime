@@ -1598,9 +1598,23 @@ int64_t HandlerShadow::next_ready_ms() const {
 }
 
 void HandlerShadow::settle() {
-    // Idle-settle: the app finished its current work and the main Looper is
-    // draining. Jump far enough forward that every pending entry is due.
-    virtual_now_ms_ += 1000000000LL;
+    // F-NEW-202 SETTLE-TIME LAW (idle-settle honesty): the idle-settle
+    // jump must land on the FARTHEST pending entry's ready time — "every
+    // pending entry is now due" — never on now+1e9. The old unconditional
+    // +1000000000LL left the ONE virtual clock (shared by the Scroller/
+    // GestureDetectorShadow now-fns and the F-150 Thread.sleep wake law)
+    // 11.5 days in the future after every settle point: scroll
+    // animations self-finish (progress = (now-start)/duration saturates),
+    // cross-settle gesture intervals (double-tap timeout) never reopen.
+    // Same drain set (max(ready_at) makes every pending entry due by
+    // construction), but the clock stays on a real work boundary.
+    // Empty queue → no jump (nothing to make due).
+    int64_t farthest = std::numeric_limits<int64_t>::min();
+    for (const auto& q : queue_)
+        if (q.ready_at_ms > farthest) farthest = q.ready_at_ms;
+    if (farthest != std::numeric_limits<int64_t>::min() &&
+        farthest > virtual_now_ms_)
+        virtual_now_ms_ = farthest;
 }
 
 void HandlerShadow::advance_virtual(int64_t delta_ms) {

@@ -1553,6 +1553,11 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
     uncaught_in_flight_log_.clear();
     strict_uncaught_crash_ = false;
     strict_crash_reason_.clear();
+    // F-NEW-200: per-run reset of the API status census (stub roll-up).
+    api_status_implemented_ = 0;
+    api_status_stubbed_ = 0;
+    api_status_missing_ = 0;
+    api_status_error_ = 0;
     {
         const char* es = std::getenv("MINIANDROID_EXC_STRICT");
         exc_strict_ = (es != nullptr && es[0] == '1');
@@ -11919,6 +11924,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 api_trace.method = method_name;
                 api_trace.status = status;
                 api_trace.pc = pc_;
+                note_api_status(api_trace);  // F-NEW-200 census
                 batched_cap_push(result.api_call_traces,
                                   static_cast<size_t>(config_.api_call_trace_cap),
                                   std::move(api_trace));
@@ -17366,6 +17372,7 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
     api_trace.status = api_status;
     api_trace.pc = pc;
     api_trace.frame_id = call_stack_.empty() ? 0 : call_stack_.top().frame_id;
+    note_api_status(api_trace);  // F-NEW-200 census
     
     batched_cap_push(result.api_call_traces, static_cast<size_t>(config_.api_call_trace_cap), std::move(api_trace));
     
@@ -17558,6 +17565,7 @@ uint8_t arg_count = static_cast<uint8_t>((instr >> 12) & 0xF);
     api_trace.status = api_status;
     api_trace.pc = pc;
     api_trace.frame_id = call_stack_.empty() ? 0 : call_stack_.top().frame_id;
+    note_api_status(api_trace);  // F-NEW-200 census
     batched_cap_push(result.api_call_traces, static_cast<size_t>(config_.api_call_trace_cap), std::move(api_trace));
 
     // Trace evidence
@@ -17790,6 +17798,7 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
     api_trace.method = method_name;
     api_trace.status = status;
     api_trace.pc = pc;
+    note_api_status(api_trace);  // F-NEW-200 census
     batched_cap_push(result.api_call_traces, static_cast<size_t>(config_.api_call_trace_cap), std::move(api_trace));
     
     trace.invoked_method = class_name + "." + method_name;
@@ -18450,6 +18459,7 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
     api_trace.method = method_name;
     api_trace.status = status;
     api_trace.pc = pc;
+    note_api_status(api_trace);  // F-NEW-200 census
     batched_cap_push(result.api_call_traces, static_cast<size_t>(config_.api_call_trace_cap), std::move(api_trace));
 
     trace.invoked_method = class_name + "." + method_name;
@@ -18866,6 +18876,7 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
     api_trace.method = method_name;
     api_trace.status = status;
     api_trace.pc = pc;
+    note_api_status(api_trace);  // F-NEW-200 census
     batched_cap_push(result.api_call_traces, static_cast<size_t>(config_.api_call_trace_cap), std::move(api_trace));
 
     trace.invoked_method = class_name + "." + method_name;

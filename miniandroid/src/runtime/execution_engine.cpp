@@ -310,6 +310,32 @@ ExecutionResult ExecutionEngine::execute(const std::string& path, const Executio
         }
     }
     
+    // ────────────────────────────────────────────────────────────────────
+    // F-NEW-200 STUBBED-VOCABULARY LAW (SUCCESS roll-up honesty): a run
+    // that reports SUCCESS/PARTIAL while its executed path answered STUBBED
+    // / MISSING / ERROR APIs must SAY SO — the plain "completed
+    // successfully" message is exactly the false-success family (success
+    // claims that hide stub-driven behavior). The census is unbounded on
+    // the engine (the api_call_traces ring is capacity-capped by design);
+    // the per-call truth stays in api_calls.json (S69 ground truth).
+    // ────────────────────────────────────────────────────────────────────
+    {
+        const uint64_t f200_stub = dalvik_engine_.api_status_stubbed();
+        const uint64_t f200_missing = dalvik_engine_.api_status_missing();
+        const uint64_t f200_error = dalvik_engine_.api_status_error();
+        if (f200_stub + f200_missing + f200_error > 0 &&
+            (result.status == ExecutionStatus::SUCCESS ||
+             result.status == ExecutionStatus::PARTIAL_SUCCESS)) {
+            result.status_message +=
+                " [F-NEW-200 stub-census: " +
+                std::to_string(dalvik_engine_.api_status_implemented()) +
+                " IMPLEMENTED, " + std::to_string(f200_stub) + " STUBBED, " +
+                std::to_string(f200_missing) + " MISSING, " +
+                std::to_string(f200_error) + " ERROR — success claim is "
+                "stubby-bounded; per-call truth in api_calls.json]";
+        }
+    }
+
     // Copy metrics
     result.metrics = trace_engine_.get_metrics();
 
