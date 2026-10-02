@@ -145,7 +145,8 @@ public:
     // layer, so the executor installs this hook (same law as set_is_a).
     // Hook returns true when a constructor executed (class found in app DEX).
     using CustomViewCtorHook =
-        std::function<bool(uint32_t view_id, const std::string& class_desc)>;
+        std::function<bool(uint32_t view_id, const std::string& class_desc,
+                           const std::vector<AxmlAttribute>& xml_attrs)>;
     void set_custom_view_ctor_hook(CustomViewCtorHook fn) {
         custom_view_ctor_hook_ = std::move(fn);
     }

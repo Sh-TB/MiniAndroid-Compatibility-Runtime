@@ -929,6 +929,23 @@ private:
     // activity/receiver object id.
     std::map<uint32_t, uint32_t> base_contexts_;
     std::map<uint32_t, std::string> base_context_classes_;
+    // F-NEW-197: createConfigurationContext law — derived context id →
+    // the override Configuration heap object (bounded evidence record).
+    std::map<uint32_t, uint32_t> config_overrides_;
+  public:
+    // F-NEW-197 CONFIG-CONTEXT dual-view recorder: both dispatch layers
+    // (ActivityShadow::dispatch + try_shadow_dispatch) register derived
+    // contexts here so the S110 base-context law serves the full chain
+    // (getBaseContext/getResources on AOSP createConfigurationContext
+    // results — non-NULL always).
+    void record_config_context(uint32_t derived_id, uint32_t base_id,
+                               uint32_t override_config_id) {
+        if (derived_id == 0) return;
+        base_contexts_[derived_id] = base_id;
+        base_context_classes_[derived_id] = "Landroid/content/Context;";
+        if (override_config_id != 0)
+            config_overrides_[derived_id] = override_config_id;
+    }
     uint32_t content_view_id_ = 0;
     // F-058 (R-NEW-279): Application.ActivityLifecycleCallbacks registry
     // (CopyOnWriteArrayList semantics — see public accessors above).

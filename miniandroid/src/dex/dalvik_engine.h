@@ -19,6 +19,7 @@
 #include "../runtime/vtable_dispatch.h"
 #include "../api/android_stubs.h"
 #include "../resources/arsc_parser.h"   // GOLDEN-03: canonical resolver hook
+#include "../resources/attribute_set_store.h"  // F-NEW-197: XML AttributeSet law
 #include "../resources/res_config.h"    // G04 §4: device_config() (inTargetDensity)
 #include "../storage/sqlite_shadow.h"   // M3 F-ROOM-CHAIN: databases dir wiring
 #include "../storage/data_root.h"       // M3 FINDING-012: app-data root law
@@ -1478,9 +1479,13 @@ public:
     // this runs <init>(Context, AttributeSet) / <init>(Context) so the
     // app-side child hierarchy (inflate/addView/findViewById inside the
     // constructor) is created through the real runtime path.
-    // Returns true when a constructor body executed.
+    // Returns true when a constructor body executed. xml_attrs carries the
+    // parsed XML attributes of the tag (F-NEW-197 XML-AttributeSet law) —
+    // installed on the AttributeSet marker so obtainStyledAttributes
+    // resolves styleable slots with AOSP precedence (XML > style > theme).
     bool run_custom_view_constructor(uint32_t view_object_id,
-                                     const std::string& class_desc_slashed);
+                                     const std::string& class_desc_slashed,
+                                     const std::vector<resources::XmlAttrRecord>& xml_attrs = {});
 
     // EXP-060: Convenience wrapper — find a View by class descriptor
     // substring (e.g. "IntroActivity$4" or "startMessagingButton") and

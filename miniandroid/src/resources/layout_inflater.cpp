@@ -996,7 +996,13 @@ uint32_t LayoutInflater::inflate_element(framework::ViewShadow* views, const Axm
     // App-class test is a pure descriptor gate (framework prefixes excluded);
     // the hook re-verifies the class actually exists in the app DEX.
     if (custom_view_ctor_hook_ && is_app_class_descriptor(node->class_desc)) {
-        const bool constructed = custom_view_ctor_hook_(view_id, node->class_desc);
+        // F-NEW-197 XML-AttributeSet law: the constructor receives the SAME
+        // XML attribute set AOSP passes (AttributeSet argument) — the parsed
+        // attrs travel with the call so obtainStyledAttributes can resolve
+        // styleable slots from the XML (AOSP precedence: XML > style >
+        // theme > caller default).
+        const bool constructed =
+            custom_view_ctor_hook_(view_id, node->class_desc, el.attributes);
         if (!constructed) {
             stats.warnings.push_back(
                 "custom-view constructor not executed: " + node->class_desc);
