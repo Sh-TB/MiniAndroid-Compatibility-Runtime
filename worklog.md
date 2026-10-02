@@ -5162,3 +5162,27 @@ Work Log:
 
 Stage Summary:
 - The 17-item ADDITIONAL AUDIT is code-complete with runtime evidence: 15 items implemented+tested this wave, P1-5/P1-7 verified as wave-A coverage, item-21 P1-2 full measure/layout unification remains its own wave. Wave C closed the F-NEW-181 mystery to a precise attribution with permanent instrumentation. The DI-lattice frontier (F-NEW-173/181 family) is the single dominant WhatsApp white-screen blocker.
+
+---
+Task ID: FINAL-CAMPAIGN-P4+WAVEC
+Agent: Super Z (main)
+Task: User directive (fa) — complete all remaining numbered items (main + sub-branches). Wave C closure (F-NEW-181 tableSize feed trace) + PHASE 4 (Context/Application/Fragment host identity). Methodology law enforced per item.
+
+Work Log:
+- BASELINE: container reset recovery — local main synced to origin/main 67991858 (21 commits); toolchain re-bootstrapped (aapt2/ecj/r8/android-34 + DroidSansMono sha-verified); engine rebuilt; baseline gates ALL GREEN (5 goldens x3 byte-identical + laws130 51/51).
+- WAVE C / F-NEW-181 ROOT-CAUSED-FIXED (array type law):
+  * SOURCE: APK DEX RegularImmutableMap.create/get/createHashTable disassembled (scripts/wavec_scan.py one-pass + wavec_disasm.py, androguard 3.3.5 in /home/z/venv). R8 deduped chooseTableSize into ImmutableSet; ONLY createHashTable call site = RegularImmutableMap.create; the duplicate-key wrapper {partialTable, insertedCount, dupEntry} is gated by `instance-of v2, [Ljava/lang/Object;`.
+  * ROOT: NEW_ARRAY stamped EVERY array "Larray;" (resolved descriptor discarded) -> is_subclass_of("Larray;","[Ljava/lang/Object;")=FALSE -> wrapper stored AS the map hash table -> lawful get() probe looped (PC=0x6f spin, F-NEW-181).
+  * FIX 1: NEW_ARRAY stores the REAL descriptor (filled-new-array precedent) + __element_type__ heap provenance. FIX 2: is_subclass_of ARRAY TYPE LAW (primitive arrays final; object arrays covariant; nested arrays; Larray; = unknown-element object array; arrays are Object/Cloneable/Serializable).
+  * INSTRUMENTED RUN (permanent MINIANDROID_WAVEC_TRACE probe): chooseTableSize(17750)->32768 LAWFUL; createHashTable(alternating=47425, maxSize=17750, tableSize=32768); post-fix wrapper DETECTED+UNWRAPPED — real [S 32768 table, lawfully truncated at dup key (size=16052, copyOf 32104, guava-33 semantics). 0 HALT-LOOP/F084 spins; WhatsApp errors 32->8.
+  * UPSTREAM residue: the dup key itself = F-NEW-173 placeholder-materialization family (deepest DI-lattice frontier, open).
+- PHASE 4 (F-NEW-190 + F-NEW-191):
+  * F-NEW-190 device identity: Build.SUPPORTED_ABIS/_32/_64/CPU_ABI seeded (arm64-v8a primary — ISE "No supported ABIs found" x3 GONE); ApplicationInfo install-time identity law (sourceDir=real APK path/publicSourceDir/nativeLibraryDir/primaryCpuAbi) at getApplicationInfo + Field.get framework-declarer fallback — SoLoader sourceDir null face GONE (LX/0EU.CKw direct iget evidence; LX/0Dl.A01 NPE GONE; exception census 12->9).
+  * F-NEW-191 attach law: run_activity_default_init now dispatches the app-level attachBaseContext override after <init> on ALL launch paths (direct + bounded super climb; AOSP performLaunchActivity ordering). POST: [WAVEC-ATTACH-FIELD] A0B/A03/A05 stored on the activity before onCreate (DI members-injector executed). HONEST RESIDUE: attach still dies at iget LX/0IE;->A00 (component-state holder; only writer = reflective injector A3d — no direct invokers in the DEX) = the F-NEW-173/169 deep DI-lattice face; the fragment-host ISE faces are downstream of it.
+  * FORENSICS TOOLS PERSISTED: wavec_disasm.py, wavec_scan.py, wavec_field_writers.py (single-writer proof for A0B).
+- REGISTRY: F-NEW-181 ROOT-CAUSED-FIXED; F-NEW-190/191 appended (scripts/wavec_register.py) — 486 roots.
+- GATES after EACH rebuild: 5 goldens x3 BYTE-IDENTICAL (dooz d602648e8e401895, ssw 10446aaf0cd642cc, headingcalc be1cea9cf994b26a, microtimer da73010a37dd0189, whatsapp 31ddd4d5b8e6d18e) + laws130 51/51 — ZERO regressions across all 5 law commits this wave.
+
+Stage Summary:
+- Done this batch: Wave C closure (F-NEW-181 fixed via the generic array-type law — the #1 registry NEXT), PHASE 4 core laws (device identity + attach ordering) — 3 new generic laws, 1 root fixed, 2 roots appended, WhatsApp exception census 32->9, chain crosses SoLoader + DI-map-build into the shell onCreate.
+- Remaining numbered faces: F-NEW-169 deep DI-lattice (0IE.A00/A3d reflective injector) gates the fragment-host family; PHASE 5-20 execution continues next batch.
