@@ -2579,6 +2579,24 @@ private:
     // /new-instance on the class).
     std::set<std::string> initialized_classes_;
 
+    // F-NEW-215 CLASS-INIT HONESTY LAW (JVMS 5.5 / AOSP ClassLinker::
+    // EnsureInitialized): classes whose <clinit> RAN and THREW. The class
+    // stays erroneous for the rest of the process — <clinit> is never
+    // re-run, and every subsequent ACTIVE USE (sget/sput/new-instance/
+    // Class.forName) must observe the failure (NoClassDefFoundError)
+    // instead of silently reading missing statics (the far-from-cause
+    // NPE / white-screen generator). Keyed by raw AND normalized
+    // descriptor; value = bounded first-divergence evidence.
+    std::map<std::string, std::string> failed_clinit_classes_;
+
+    // True only when the class's own <clinit> executed and threw
+    // (erroneous state). Not-found / shadow-resolved paths never mark
+    // this — those are legitimate platform-skip semantics, not failures.
+    bool class_clinit_failed(const std::string& class_descriptor) const {
+        return failed_clinit_classes_.find(class_descriptor) !=
+               failed_clinit_classes_.end();
+    }
+
     // M3 FIX-M3-012 (§14 reflection identity): Package object identity —
     // one heap object per dotted package name, so Class.getPackage() is
     // referentially stable across calls (AOSP packages are classloader-

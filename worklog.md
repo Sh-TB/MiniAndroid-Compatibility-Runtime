@@ -5350,3 +5350,18 @@ Stage Summary:
   reaches executeOnDiskIO; F-NEW-198/200/201/202/204..207 still PENDING;
   F-NEW-197 sub-frontiers A (type-reflection family) and B (tree-build
   gap); SUCCESS-PATH corpus F-NEW-208..214.
+---
+Task ID: F-NEW-215/216/217 WAVE (new FINAL GENERIC RUNTIME COMPATIBILITY CAMPAIGN §6/§26)
+Agent: Super Z (main)
+Task: Add remaining previous-campaign items + new §0-30 campaign to the master list; attack the class-initialization honesty family first (§29 priority 3); answer honestly whether white screens moved to real content.
+
+Work Log:
+- MASTER LIST compiled: open items = F-NEW-197 sub-frontier A (type-reflection/Gson TypeToken) + B (tree-build gap), F-NEW-198/200/201/202/204/205/206/207 (DEEP-AUDIT P0/P1), F-NEW-192 (elevation residue), F-NEW-208..214 (SUCCESS-PATH), F-NEW-199 acceptance probe; NEW campaign deltas registered as F-NEW-215 (class-init honesty), F-NEW-216 (enum-constant name law), F-NEW-217 (kotlinx virtual-concurrency). Registry 509->512 roots, worklist 731 (open 283).
+- F-NEW-215 CLASS-INIT HONESTY (P0, JVMS 5.5/AOSP ClassLinker): (1) ensure_class_initialized marked initialized BEFORE <clinit> and returned true on failure — now records failed_clinit_classes_ (erroneous-persists, never re-run), returns false honestly, evidence = halt reason + first uncaught or "clinit-not-run-no-evidence"; (2) ACTIVE USE propagation: sget/sget-object/sput/sput-object/new-instance/Class.forName on an erroneous class raise NoClassDefFoundError via throw_deferred (bounded 8/run evidence); (3) sput/sput-object previously had NO init trigger at all — added (JVMS 5.5 active use); (4) TWO independent class-level bypass lists (should_bypass block + framework-prefix list) swallowed <clinit> itself — exempted (initialization protocol is not bridge-interceptable; compute-methods stay bypassed). Droidify face: j$-CHM 11 statics lost -> okhttp ConnectionPool/CursorOwner NCDFE far from cause -> post-fix clinit runs, NCDFE faces GONE.
+- F-NEW-216 ENUM-CONSTANT NAME LAW (P0, OpenJDK source-first): kOrdinals carried FICTIONAL TimeUnit.NANOS (ChronoUnit's name); TimeUnit has NANOSECONDS. Every sget answered null -> kotlin toDuration NPE -> Dagger SettingsSerializer chain dead (datastore settings never built). Fixed name; cached identity obj across DurationUnit.<clinit> + InstantKt.toDuration verified (obj_id=201).
+- F-NEW-217 observability: [F-NEW-217] UNSAFE-CAS-UNRESOLVED bounded diag added to compareAndSwapInt/Object — zero hits (CAS resolution proven NOT the MutexImpl.unlock spin cause; spin is the waiter-resume protocol across the virtual thread model — registered PENDING with full SPIN-REGS/HISTO evidence).
+- GATES: laws130 51/51; goldens x3 BYTE-IDENTICAL (dooz d602648e8e401895, ssw 10446aaf0cd642cc, headingcalc be1cea9cf994b26a, microtimer da73010a37dd0189, whatsapp 31ddd4d5b8e6d18e) — zero drift from all 3 law commits.
+
+Stage Summary:
+- Done: 3 roots registered; F-NEW-215+216 IMPLEMENTED+TESTED (honest class-init state machine end-to-end + AOSP enum names); droidify chain advanced (j$-CHM + toDuration + SettingsSerializer now build; remaining = kotlinx mutex/resume family).
+- Remaining: F-NEW-217 deep attack (resume protocol); F-NEW-197-A type-reflection (opencalc Gson); DEEP-AUDIT P0/P1 items; SUCCESS-PATH corpus; the §28 final deliverable (root table + maps A-E).
