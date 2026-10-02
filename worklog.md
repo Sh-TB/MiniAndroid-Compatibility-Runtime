@@ -5498,3 +5498,38 @@ Stage Summary:
   REGRESSION); master list merged; 2 residual roots registered with evidence.
 - Remaining: F-NEW-229 (width), F-NEW-230 (re-bank goldens), F-NEW-217/221 deep legs,
   Families A–W audit, platform/README/release audit phases.
+
+---
+Task ID: MEGA-0 (FINAL MEGA-CAMPAIGN phase 0)
+Agent: Super Z (main)
+Task: Laws read + campaign skeleton + state audit + corpus reality check.
+
+Work Log:
+- LAWS READ:
+  CONSTITUTION_V2 (source-first §2, never-invent §6, unknown-unknown §7, hypothesis≠root §8,
+  fresh-live-evidence §9, first-divergence §16, silent-wrong §17, register-width §21, R8 §22,
+  end-to-end §26), MASTER ROADMAP, CAMPAIGN_STATE.md, worklog.md (full tail), root_registry.json
+  (525 roots, status census), FRAME_CAPTURE_TRUTH, FRAMEWORK_CHROME_ONLY ≠ REAL_APP_CONTENT,
+  F084 freeze, DEX register law, class-init honesty, REC-MISS 7-class, no-package-specific-fixes,
+  bounded logging, source-first, issue-per-problem, screenshot/runtime proof (21-P0-6 pixel
+  ownership), APK hygiene, installed-APK filesystem requirements, README.md, ACHIEVEMENTS.md,
+  ROADMAP_STATUS.md, canonical/v10_results_latest.json, docs/corpus/s82/title_registry.json.
+- STATE AUDIT: HEAD 286b4994 (main). One stray auto-commit "286b4994 <uuid>" adds only
+  scripts/f228_comment.py (50 lines, helper) — flagged for release audit, no runtime code touched.
+  Working tree: only tmp/flappycow modified (untracked tmp artifact). Binary build/miniandroid
+  fresh (built 2026-10-02 14:54 > last src change 2026-10-02 00:01).
+- CORPUS REALITY: frozen corpus = 202 titles (100 game + 100 app + 2 mandatory) in
+  docs/corpus/s82/title_registry.json — the "255" number does not match the frozen registry;
+  s107 wave ran 129 unique titles from /tmp/s107_apks which is PURGED (disk hygiene; no
+  re-download per law). Local honest random-selection pool = canonical 11 + gate APKs
+  (opencalc, forkgram, telegram_official, secuso notes/sudoku, klondike, chess, ballbreak,
+  flappycow) + wave builds (~25 total real APKs).
+- SENTINEL IDENTITY SEARCH: "Safir" and "Black" — ZERO matches in root_registry.json,
+  worklog.md, docs/, evidence/, CAMPAIGN_STATE.md. Neither name exists in any project record.
+  Recorded as BLOCKED-BY-IDENTITY (APKs needed from user); existing goldens kept as working
+  sentinels. Not silently accepted, not fabricated.
+- CREATED: docs/FINAL_COMPATIBILITY_CAMPAIGN.md — the ONE master checklist per §15
+  (checklist + random ledger + entry format + corpus reality + Safir/Black block).
+
+Stage Summary:
+- Phase 0 complete. Next: WAVE 1 = installed-APK access gap audit (§3 mandatory).

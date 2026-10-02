@@ -1,0 +1,4 @@
+  "package_name": "com.dozingcatsoftware.bouncy",
+  "version_name": "1.16.0",
+  "version_code": 43,
+  "main_activity_full": "com.dozingcatsoftware.bouncy.BouncyActivity",

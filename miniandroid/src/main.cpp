@@ -9,6 +9,8 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <sstream>
+#include <ctime>
 #include "diagnostics/crash_forensics.h"
 #include <filesystem>
 #include <cstdlib>
@@ -91,6 +93,12 @@ struct SampleProfiler {
 // default stubs AND the real org.telegram.SQLite sqlite3 surface here.
 #include "jni/jni_bridge.h"
 #include "jni/telegram_sqlite_jni.h"
+// F-NEW-231 INSTALLED_APK_ACCESS: the package store (AOSP PackageManagerService
+// install law — /data/app/<package>/base.apk + PackageInfo metadata + app data
+// dirs). Lets the agent install an APK once and then discover/inspect/launch it
+// FROM THE INSTALLED STATE (package identity only), never needing the original
+// sideload path again.
+#include <openssl/evp.h>
 // EXP-086 Phase 7 (B4 FIX): ShadowRegistry + HandlerShadow for Runnable queue
 #include "framework/android_shadows.h"
 #include "framework/dialog_shadow.h"
@@ -114,6 +122,8 @@ void print_usage(const char* program_name) {
     std::cout << "  analyze   Parse APK and display information\n";
     std::cout << "  dex       Parse DEX files and show class/method info\n";
     std::cout << "  run       Execute APK and generate output\n";
+    std::cout << "  install   Install an APK into the package store (--data-root required)\n";
+    std::cout << "  list-packages  List installed packages from the package store\n";
     std::cout << "  version   Show version information\n";
     std::cout << "  help      Show this help message\n\n";
     std::cout << "Options:\n";
@@ -133,7 +143,10 @@ void print_usage(const char* program_name) {
     std::cout << "                          long press suppresses the UP click — AOSP law)\n";
     std::cout << "  --execution-mode <mode> Execution mode: legacy | real-dalvik (default: real-dalvik)\n";
     std::cout << "  --data-root <dir>       App private storage root (Android /data/data analog).\n";
-    std::cout << "                          Determinism/persistence drivers MUST set this per run.\n\n";
+    std::cout << "                          Determinism/persistence drivers MUST set this per run.\n";
+    std::cout << "  --package <pkg>         Run an INSTALLED package: resolve\n";
+    std::cout << "                          <data-root>/data/app/<pkg>/base.apk (F-NEW-231).\n";
+    std::cout << "                          Package identity is the only input — no APK path.\n\n";
     std::cout << "Examples:\n";
     std::cout << "  " << program_name << " analyze HelloWorld.apk\n";
     std::cout << "  " << program_name << " run -o ./output HelloWorld.apk\n";
@@ -339,6 +352,272 @@ runtime::ExecutionResult run_on_art_sized_stack(
 }
 } // namespace
 
+// ════════════════════════════════════════════════════════════════════
+// F-NEW-231 INSTALLED_APK_ACCESS — the MiniAndroid package store.
+//
+// AOSP LAW (android-14 source, PackageManagerService / PackageInstaller):
+//  * An install commits the APK into the package code path under /data/app
+//    as `base.apk` (PMS: preparePackageLI → rename to codePath; split APKs
+//    become base.apk + split_*.apk siblings).
+//  * PackageInfo/ApplicationInfo.sourceDir points at the installed base.apk
+//    (NOT the original sideload path — the installer does not preserve it).
+//  * PackageManager.getInstalledPackages() enumerates installed packages
+//    from the package settings (our scan of the store metadata).
+//  * App-private storage lives under /data/data/<package>/{files,cache,
+//    shared_prefs,databases} (Environment.getDataDirectory + package).
+//
+// MINIANDROID DEVIATION LAW (deliberate, documented): AOSP randomizes the
+// per-install directory (/data/app/~~rand==/<pkg>-rand==/base.apk). MiniAndroid
+// uses the DETERMINISTIC mapping <data-root>/data/app/<package>/base.apk —
+// the platform-audit requirement is agent inspectability ("agent can discover
+// the installed package from package identity alone"), which a randomized
+// path would defeat. Recorded in every package.json.
+// ════════════════════════════════════════════════════════════════════
+namespace pkgstore {
+
+std::string sha256_file(const std::string& path, bool* ok) {
+    *ok = false;
+    FILE* f = fopen(path.c_str(), "rb");
+    if (!f) return "";
+    EVP_MD_CTX* ctx = EVP_MD_CTX_new();
+    unsigned char digest[EVP_MAX_MD_SIZE];
+    unsigned int dlen = 0;
+    std::string hex;
+    if (ctx && EVP_DigestInit_ex(ctx, EVP_sha256(), nullptr) == 1) {
+        char buf[65536];
+        size_t n;
+        bool stream_ok = true;
+        while ((n = fread(buf, 1, sizeof(buf), f)) > 0) {
+            if (EVP_DigestUpdate(ctx, buf, n) != 1) { stream_ok = false; break; }
+        }
+        if (stream_ok && !ferror(f) &&
+            EVP_DigestFinal_ex(ctx, digest, &dlen) == 1) {
+            static const char* H = "0123456789abcdef";
+            for (unsigned int i = 0; i < dlen; i++) {
+                hex += H[digest[i] >> 4];
+                hex += H[digest[i] & 0xf];
+            }
+            *ok = true;
+        }
+    }
+    if (ctx) EVP_MD_CTX_free(ctx);
+    fclose(f);
+    return hex;
+}
+
+std::string json_escape(const std::string& s) {
+    std::string out;
+    for (char c : s) {
+        switch (c) {
+            case '"': out += "\\\""; break;
+            case '\\': out += "\\\\"; break;
+            case '\n': out += "\\n"; break;
+            case '\r': out += "\\r"; break;
+            case '\t': out += "\\t"; break;
+            default:
+                if (static_cast<unsigned char>(c) < 0x20) {
+                    char b[8]; snprintf(b, sizeof(b), "\\u%04x", c);
+                    out += b;
+                } else out += c;
+        }
+    }
+    return out;
+}
+
+std::filesystem::path store_root(const std::string& data_root) {
+    return std::filesystem::path(data_root) / "data" / "app";
+}
+
+std::filesystem::path package_dir(const std::string& data_root,
+                                  const std::string& package) {
+    return store_root(data_root) / package;
+}
+
+std::filesystem::path package_json(const std::string& data_root,
+                                   const std::string& package) {
+    return package_dir(data_root, package) / "package.json";
+}
+
+// One installed-package record. Fields mirror the PackageInfo the AOSP
+// PackageParser produces (package, versionName, versionCode, main activity,
+// requested permissions) + the integrity/provenance fields the evidence
+// laws require (apk sha256, size, install timestamp).
+struct PackageRecord {
+    std::string package;
+    std::string version_name;
+    long long version_code = 0;
+    std::string main_activity;
+    std::vector<std::string> permissions;
+    std::string apk_sha256;
+    unsigned long long apk_size = 0;
+    std::string installed_at;
+    std::string min_sdk;
+    std::string target_sdk;
+};
+
+bool write_record(const PackageRecord& rec, const std::string& data_root) {
+    std::error_code ec;
+    auto dir = package_dir(data_root, rec.package);
+    std::filesystem::create_directories(dir, ec);
+    if (ec) return false;
+    // App-private dirs (AOSP /data/data/<pkg> family law).
+    for (const char* sub : {"files", "cache", "shared_prefs", "databases"}) {
+        std::filesystem::create_directories(
+            std::filesystem::path(data_root) / "data" / "data" / rec.package / sub, ec);
+    }
+    std::ofstream out(package_json(data_root, rec.package).string(),
+                      std::ios::binary | std::ios::trunc);
+    if (!out.is_open()) return false;
+    out << "{\n";
+    out << "  \"package\": \"" << json_escape(rec.package) << "\",\n";
+    out << "  \"versionName\": \"" << json_escape(rec.version_name) << "\",\n";
+    out << "  \"versionCode\": " << rec.version_code << ",\n";
+    out << "  \"mainActivity\": \"" << json_escape(rec.main_activity) << "\",\n";
+    out << "  \"minSdk\": \"" << json_escape(rec.min_sdk) << "\",\n";
+    out << "  \"targetSdk\": \"" << json_escape(rec.target_sdk) << "\",\n";
+    out << "  \"requestedPermissions\": [";
+    for (size_t i = 0; i < rec.permissions.size(); i++) {
+        out << "\n    \"" << json_escape(rec.permissions[i]) << "\"";
+        if (i + 1 < rec.permissions.size()) out << ",";
+    }
+    out << (rec.permissions.empty() ? "" : "\n  ") << "],\n";
+    // NOTE (AOSP law): the original sideload path is deliberately NOT recorded —
+    // the installer does not preserve it; post-install identity = package only.
+    out << "  \"origin\": \"sideload\",\n";
+    out << "  \"codePath\": \"" << json_escape("/data/app/" + rec.package + "/base.apk")
+        << "\",\n";
+    out << "  \"hostCodePath\": \"" << json_escape((package_dir(data_root, rec.package)
+              / "base.apk").string()) << "\",\n";
+    out << "  \"apkSha256\": \"" << rec.apk_sha256 << "\",\n";
+    out << "  \"apkSize\": " << rec.apk_size << ",\n";
+    out << "  \"installedAt\": \"" << rec.installed_at << "\",\n";
+    out << "  \"installLayout\": \"MiniAndroid deterministic package store "
+           "(F-NEW-231; AOSP /data/app law, deterministic mapping deviation)\"\n";
+    out << "}\n";
+    return out.good();
+}
+
+} // namespace pkgstore
+
+int cmd_install(const std::string& apk_path, const std::string& data_root,
+                bool verbose) {
+    std::cout << "[*] Installing APK: " << apk_path << "\n";
+    if (data_root.empty()) {
+        std::cerr << "[ERROR] install requires --data-root <dir> (the MiniAndroid "
+                     "package store root)\n";
+        return 1;
+    }
+    apk::ApkParser parser;
+    parser.set_verbose(verbose);
+    auto info = parser.parse(apk_path);
+    if (!info.is_valid) {
+        std::cerr << "[ERROR] Failed to parse APK: " << info.validation_error << "\n";
+        return 1;
+    }
+    if (info.package_name.empty()) {
+        std::cerr << "[ERROR] Manifest has no package name — cannot install\n";
+        return 1;
+    }
+    bool sha_ok = false;
+    std::string sha = pkgstore::sha256_file(apk_path, &sha_ok);
+    if (!sha_ok) {
+        std::cerr << "[ERROR] SHA-256 of APK could not be computed\n";
+        return 1;
+    }
+    std::error_code ec;
+    unsigned long long size = std::filesystem::file_size(apk_path, ec);
+    if (ec) size = 0;
+    std::time_t now = std::time(nullptr);
+    char ts[32];
+    std::strftime(ts, sizeof(ts), "%Y-%m-%dT%H:%M:%SZ", std::gmtime(&now));
+
+    pkgstore::PackageRecord rec;
+    rec.package = info.package_name;
+    rec.version_name = info.version_name;
+    rec.version_code = info.version_code;
+    rec.main_activity = info.main_activity_full;
+    rec.permissions = info.permissions;
+    rec.apk_sha256 = sha;
+    rec.apk_size = size;
+    rec.installed_at = ts;
+    rec.min_sdk = info.min_sdk_version;
+    rec.target_sdk = info.target_sdk_version;
+
+    // Commit: copy the APK into the store as base.apk (AOSP commit law),
+    // then write the package record. Copy FIRST, record SECOND — a record
+    // without base.apk must never exist (PMS ordering law).
+    auto dst = pkgstore::package_dir(data_root, rec.package) / "base.apk";
+    std::filesystem::create_directories(pkgstore::package_dir(data_root, rec.package), ec);
+    std::filesystem::copy_file(apk_path, dst,
+                               std::filesystem::copy_options::overwrite_existing, ec);
+    if (ec) {
+        std::cerr << "[ERROR] Copy into package store failed: " << ec.message() << "\n";
+        return 1;
+    }
+    // Integrity: the installed bytes must equal the source bytes.
+    bool dst_ok = false;
+    std::string dst_sha = pkgstore::sha256_file(dst.string(), &dst_ok);
+    if (!dst_ok || dst_sha != sha) {
+        std::cerr << "[ERROR] Installed base.apk integrity check FAILED (sha mismatch)\n";
+        std::filesystem::remove_all(pkgstore::package_dir(data_root, rec.package), ec);
+        return 1;
+    }
+    if (!pkgstore::write_record(rec, data_root)) {
+        std::cerr << "[ERROR] package.json write failed\n";
+        return 1;
+    }
+    std::cout << "\n=== Install Result ===\n\n";
+    std::cout << "{\n";
+    std::cout << "  \"install\": \"SUCCESS\",\n";
+    std::cout << "  \"package\": \"" << pkgstore::json_escape(rec.package) << "\",\n";
+    std::cout << "  \"versionName\": \"" << pkgstore::json_escape(rec.version_name)
+              << "\",\n";
+    std::cout << "  \"versionCode\": " << rec.version_code << ",\n";
+    std::cout << "  \"codePath\": \"/data/app/"
+              << pkgstore::json_escape(rec.package) << "/base.apk\",\n";
+    std::cout << "  \"hostCodePath\": \"" << pkgstore::json_escape(dst.string()) << "\",\n";
+    std::cout << "  \"apkSha256\": \"" << sha << "\",\n";
+    std::cout << "  \"apkSize\": " << size << ",\n";
+    std::cout << "  \"installedAt\": \"" << ts << "\"\n";
+    std::cout << "}\n";
+    std::cout << "\n[+] Installed. Post-install identity = package name + data-root only.\n";
+    return 0;
+}
+
+int cmd_list_packages(const std::string& data_root) {
+    if (data_root.empty()) {
+        std::cerr << "[ERROR] list-packages requires --data-root <dir>\n";
+        return 1;
+    }
+    std::error_code ec;
+    auto root = pkgstore::store_root(data_root);
+    if (!std::filesystem::exists(root, ec)) {
+        std::cout << "[]\n";
+        return 0;
+    }
+    std::vector<std::string> packages;
+    for (auto it = std::filesystem::directory_iterator(root, ec);
+         it != std::filesystem::directory_iterator(); ++it) {
+        if (it->is_directory(ec)) packages.push_back(it->path().filename().string());
+    }
+    std::sort(packages.begin(), packages.end());
+    std::cout << "[\n";
+    for (size_t i = 0; i < packages.size(); i++) {
+        std::ifstream in(pkgstore::package_json(data_root, packages[i]).string());
+        std::stringstream ss; ss << in.rdbuf();
+        std::cout << "  {\"package\": \"" << pkgstore::json_escape(packages[i])
+                  << "\", \"record\": ";
+        std::string body = ss.str();
+        while (!body.empty() && (body.back() == '\n' || body.back() == '\r'))
+            body.pop_back();
+        std::cout << (body.empty() ? "null" : body) << "}";
+        if (i + 1 < packages.size()) std::cout << ",";
+        std::cout << "\n";
+    }
+    std::cout << "]\n";
+    return 0;
+}
+
 int cmd_run(const std::string& apk_path, const runtime::ExecutionConfig& config) {
     std::cout << "[*] Running APK: " << apk_path << std::endl;
     std::cout << "[*] Output directory: " << config.output_directory << std::endl;
@@ -465,6 +744,8 @@ int main(int argc, char* argv[]) {
     }
     std::string apk_path;
     bool verbose = false;
+    // F-NEW-231: run-by-package (installed state; package identity only).
+    std::string run_package;
 
     // F-107b2 (R-NEW-381, S61): per-instruction tracing is OFF by default
     // (trace_cap=0). The gprof profile showed the always-on InstructionTrace
@@ -665,6 +946,8 @@ int main(int argc, char* argv[]) {
                 return 1;
             }
             config.data_root = root;
+        } else if (arg == "--package" && i + 1 < argc) {
+            run_package = argv[++i];
         } else if (arg.find("--execution-mode") == 0) {
             // EXP-031: Parse execution mode
             std::string mode_str;
@@ -692,10 +975,31 @@ int main(int argc, char* argv[]) {
         }
     }
     
-    if (apk_path.empty()) {
+    if (apk_path.empty() && run_package.empty() && command != "list-packages") {
         std::cerr << "[ERROR] No APK file specified\n\n";
         print_usage(argv[0]);
         return 1;
+    }
+
+    // F-NEW-231: resolve an installed package from identity alone. The run
+    // then operates on the INSTALLED base.apk — provenance flows from the
+    // resolved codePath (ApplicationInfo.sourceDir law), not the sideload.
+    if (!run_package.empty()) {
+        if (config.data_root.empty()) {
+            std::cerr << "[ERROR] --package requires --data-root <dir>\n";
+            return 1;
+        }
+        auto installed = pkgstore::package_dir(config.data_root, run_package)
+                         / "base.apk";
+        std::error_code ec;
+        if (!std::filesystem::exists(installed, ec)) {
+            std::cerr << "[ERROR] Package not installed: " << run_package
+                      << " (looked for " << installed.string() << ")\n";
+            return 1;
+        }
+        std::cout << "[*] INSTALLED-PACKAGE MODE: " << run_package << "\n";
+        std::cout << "[*] codePath: " << installed.string() << "\n";
+        apk_path = installed.string();
     }
 
     // Interaction drivers are mutually exclusive: one manifest writer per run.
@@ -706,7 +1010,11 @@ int main(int argc, char* argv[]) {
     }
     
     // Execute command
-    if (command == "analyze") {
+    if (command == "install") {
+        return cmd_install(apk_path, config.data_root, verbose);
+    } else if (command == "list-packages") {
+        return cmd_list_packages(config.data_root);
+    } else if (command == "analyze") {
         return cmd_analyze(apk_path, verbose);
     } else if (command == "dex") {
         return cmd_dex(apk_path, verbose);
