@@ -309,6 +309,26 @@ STATUS: IMPLEMENTED+TESTED
 | 2 | ACHIEVEMENTS reclassified (VALID/STALE/UNVERIFIED/SUPERSEDED) | [ ] |
 | 3 | Release audit: clean git state, no stray commits, registry consistent | [ ] |
 
+### §14 LOADING ARCHITECTURE AUDIT (2026-10-03 — installed-filesystem + full file/resource/media campaign)
+
+Deliverables: `docs/REAL_ANDROID_LOADING_ORACLE.md` (AOSP oracle) ·
+`docs/FILE_RESOURCE_LOADING_COMPATIBILITY.md` (full diff + 38 roots in 7 families) ·
+`docs/LOAD_COMPATIBILITY_MATRIX.jsonl` (36 layers). Census: 164 files/137,756 lines,
+64 TUs live, 13 dead, World-A test-only, canonical path proven.
+
+| # | Item | Status |
+|---|------|--------|
+| 1 | Laws read + LAWS_PRINTED | [✓✓] CONSTITUTION §16/17/25/26, CAMPAIGN_STATE, ROADMAP, FINAL_CAMPAIGN, worklog IAPK, F-NEW-231..234 registry, AOSP oracle |
+| 2 | SOURCE_FILE_CENSUS (no file outside audit) | [✓✓] 164/137,756; dead+stale build metadata flagged |
+| 3 | Canonical run path + split-brain verdict | [✓✓] WORLD B production; WORLD A test-only; ApplicationRuntime megabatch-only |
+| 4 | REAL_ANDROID_LOADING_MATRIX | [✓✓] oracle doc, 14 law families + 12 universal questions |
+| 5 | MINIANDROID_LOADING_MATRIX (36 layers) | [✓✓] jsonl + compatibility doc |
+| 6 | First-divergence structural roots (not per-app) | [✓✓] 38 roots line-cited; 7 fan-out families |
+| 7 | WE FORGOT THIS list (new classes) | [✓✓] 20 items (providers stage, getAbsolutePath hijack, FileOutputStream void, FD void, popen(unzip), prefs corruption, WAL, Intent.getData null, frozen config, …) |
+| 8 | Runtime live proof of P0 findings | [✓✓] 3 goldens reproduced ×3 from hidden-source installed identity; ST-4 live (/dev/urandom); P-1/P-2 NOT-OBSERVED-THIS-CORPUS (probe APK needed) |
+| 9 | Fix wave for P0 roots (ST-1/ST-2/R-1/R-2/S-1) | [ ] next wave — generic infrastructure only |
+| 10 | Corpus random validation after fixes (202 frozen) | [ ] |
+
 ## ENTRY FORMAT (§16 — every completed item)
 
 ```text
