@@ -6,6 +6,7 @@
 
 // UNIFIED_007: real resource pipeline
 #include "../resources/resource_runtime.h"
+#include "../resources/attribute_set_store.h"  // F-NEW-197: XML AttributeSet law
 #include "../webview/webview_engine.h"
 // ADDITIONAL-AUDIT P1-2: canonical Bitmap pixel store (setImageBitmap law)
 #include "bitmap_shadow.h"
@@ -2508,6 +2509,40 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
         // AOSP ContextWrapper.attachBaseContext returns void.
         return CallResult::handled_void();
     }
+    if (m == "createConfigurationContext") {
+        // F-NEW-197 CONFIG-CONTEXT LAW (AOSP ContextImpl.createConfiguration
+        // Context): Context.createConfigurationContext(Configuration) returns
+        // a NON-NULL fresh Context that shares the receiver's asset/resource
+        // identity but carries the override configuration. The previous
+        // behavior: no handler → null → the appcompat attachBaseContext2
+        // chain (opencalculator vc53: AppCompatActivity = Lg/m;
+        // attachBaseContext pc=180 createConfigurationContext → pc=184
+        // .getResources() on the result) NPE'd "getResources on a null
+        // object reference" at APP BOUNDARY → the whole activity build
+        // aborted (f141 null-receiver family — same signature as the
+        // solitaire support-chain record). Generic fan-out: every
+        // appcompat-1.6+ activity attach path calls this (uiMode/night
+        // override). Identity: one fresh context object per call (AOSP
+        // ContextImpl per-call law — never a shared singleton); the
+        // derived context records the receiver as its base context (the
+        // S110 base-context law then serves getBaseContext/getResources
+        // chains) and the override Configuration object is kept for the
+        // bounded evidence record.
+        if (heap_) {
+            uint32_t ctx_id = heap_->allocate("Landroid/content/Context;");
+            if (!ctx.args.empty() &&
+                ctx.args[0].kind == CallContext::Arg::Kind::OBJECT &&
+                ctx.args[0].object_id != 0) {
+                config_overrides_[ctx_id] = ctx.args[0].object_id;
+            }
+            base_contexts_[ctx_id] = ctx.receiver_id;
+            base_context_classes_[ctx_id] =
+                "Landroid/content/Context;";
+            return CallResult::handled_object(ctx_id,
+                                              "Landroid/content/Context;");
+        }
+        return CallResult::not_handled();
+    }
     // M3 F-021 ROOT FIX (AOSP LayoutInflater singleton law): Activity
     // .getLayoutInflater() returns the window's LayoutInflater — the SAME
     // object LayoutInflater.from(activity) returns (PhoneWindow owns one
@@ -2601,33 +2636,102 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                 "Landroid/content/res/TypedArray;");
             heap_->set_object_int_field(ta_id, "__array_length__", n);
             auto& rt = resources::ResourceRuntime::instance();
+            // ── F-NEW-197 XML-ATTRIBUTESET LAW ──────────────────────────────
+            // AOSP AttributeResolution.cpp precedence per styleable slot:
+            // (1) XML AttributeSet value (the view-ctor argument), (2) style,
+            // (3) theme, (4) absent → caller default. The AttributeSet marker
+            // carries the tag's parsed XML attributes in the store below.
+            const std::vector<resources::XmlAttrRecord>* xml_recs = nullptr;
+            for (const auto& a : ctx.args) {
+                if (a.kind != CallContext::Arg::Kind::OBJECT ||
+                    a.object_id == 0)
+                    continue;
+                if (a.object_class == "Landroid/util/AttributeSet;") {
+                    xml_recs =
+                        resources::AttributeSetStore::instance().lookup(
+                            a.object_id);
+                    break;
+                }
+            }
+            if (xml_recs && !xml_recs->empty()) {
+                static const bool f197_diag =
+                    std::getenv("MINIANDROID_F093_DIAG") != nullptr;
+                if (f197_diag)
+                    std::cerr << "[F-NEW-197] obtainStyledAttributes XML "
+                              << "AttributeSet values=" << xml_recs->size()
+                              << std::endl;
+            }
             for (int32_t i = 0; i < n; ++i) {
                 int32_t attr_id = 0;
                 heap_->get_object_int_field(
                     styleable_id, "array[" + std::to_string(i) + "]",
                     attr_id);
                 int32_t decoded = 0;
+                bool slot_present = false;
                 if (attr_id != 0) {
-                    auto v = rt.resolve_theme_attr_value(apk_path_,
-                                                         (uint32_t)attr_id);
-                    if (v) {
-                        // AOSP TypedValue law: booleans decode as
-                        // data!=0; ints/colors pass data through.
-                        decoded = (int32_t)v->data;
-                        // S99 PRESENCE LAW (babydots AppCompatDelegateImpl.
-                        // createSubDecor ISE evidence): a resolved attribute
-                        // with a ZERO value (e.g. windowActionBar=false in
-                        // Theme.AppCompat.Light.NoActionBar — the babydots
-                        // AppTheme parent) is PRESENT with value false; the
-                        // old materialization stored only data → hasValue
-                        // answered (val!=0)=false → appcompat threw
-                        // "You need to use a Theme.AppCompat theme".
-                        // Record presence separately from the value.
-                        heap_->set_object_int_field(
-                            ta_id, "array_present[" + std::to_string(i) + "]",
-                            1);
+                    // (1) XML AttributeSet value — AOSP precedence FIRST.
+                    if (xml_recs) {
+                        const auto* r =
+                            resources::AttributeSetStore::instance().find(
+                                xml_recs, (uint32_t)attr_id);
+                        if (r &&
+                            resources::xml_attr_is_int_family(
+                                r->type)) {
+                            // REFERENCE slots carry the target resource id
+                            // (getResourceId law); int/enum/color/boolean/
+                            // dimension slots carry the raw data word.
+                            decoded = (r->type == resources::DataType::REFERENCE ||
+                                       r->type == resources::DataType::DYNAMIC_REFERENCE)
+                                          ? (int32_t)(r->ref_id ? r->ref_id
+                                                                : r->data)
+                                          : r->data;
+                            slot_present = true;
+                        }
+                    }
+                    // (2)+(3) style/theme chain — only when the XML did not
+                    // define the attribute (AOSP precedence).
+                    if (!slot_present) {
+                        auto v = rt.resolve_theme_attr_value(apk_path_,
+                                                             (uint32_t)attr_id);
+                        if (v) {
+                            // AOSP TypedValue law: booleans decode as
+                            // data!=0; ints/colors pass data through.
+                            decoded = (int32_t)v->data;
+                            // S99 PRESENCE LAW (babydots
+                            // AppCompatDelegateImpl.createSubDecor ISE
+                            // evidence): a resolved attribute with a ZERO
+                            // value (e.g. windowActionBar=false in
+                            // Theme.AppCompat.Light.NoActionBar — the
+                            // babydots AppTheme parent) is PRESENT with
+                            // value false; the old materialization stored
+                            // only data → hasValue answered (val!=0)=false
+                            // → appcompat threw "You need to use a
+                            // Theme.AppCompat theme". Presence is recorded
+                            // separately from the value.
+                            slot_present = true;
+                        }
                     }
                 }
+                // F-NEW-197 STALE-PRESENCE LAW (opencalculator vc53
+                // SlidingUpPanelLayout.<init> evidence): the TypedArray heap
+                // object is a RECYCLED singleton (get_or_create) — AOSP
+                // TypedArray.obtain rewrites EVERY slot of the pooled array
+                // per call (AttributeResolution.cpp: unfilled positions are
+                // TYPE_NULL/absent). The materialization previously wrote
+                // array_present[i] ONLY on resolution, so a slot left absent
+                // by this call retained the presence flag of an EARLIER
+                // obtain on the same shared object (opencalc: call 1 resolved
+                // styleable[0]=0x01010054 present; call 2 styleable[0]=
+                // 0x010100af hit=no → present[0] stayed 1 with value 0 →
+                // getInt(0, Gravity.BOTTOM) answered 0 → setGravity(0) →
+                // IllegalArgumentException "gravity must be set to either top
+                // or bottom" → APP BOUNDARY unwind → the calculator never
+                // inflated). Presence is therefore written UNCONDITIONALLY
+                // per slot: 1 when THIS call resolved it (XML or theme),
+                // 0 when it did not — value and presence always agree.
+                heap_->set_object_int_field(
+                    ta_id, "array_present[" + std::to_string(i) + "]",
+                    slot_present ? 1 : 0);
                 heap_->set_object_int_field(
                     ta_id, "array[" + std::to_string(i) + "]", decoded);
             }

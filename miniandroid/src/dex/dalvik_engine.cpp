@@ -8803,7 +8803,8 @@ int DalvikExecutionEngine::dispatch_custom_view_onsizechanged(
 // objects share ONE heap/id space), so constructor side effects
 // (inflate(res, this), addView, findViewById) operate on the live node.
 bool DalvikExecutionEngine::run_custom_view_constructor(
-    uint32_t view_object_id, const std::string& class_desc_slashed) {
+    uint32_t view_object_id, const std::string& class_desc_slashed,
+    const std::vector<resources::XmlAttrRecord>& xml_attrs) {
     if (!dex_report_ || !shadow_registry_) return false;
     if (view_object_id == 0 || class_desc_slashed.empty()) return false;
 
@@ -8854,11 +8855,18 @@ bool DalvikExecutionEngine::run_custom_view_constructor(
     if (ctx_id == 0)
         ctx_id = heap_.allocate("Landroid/content/Context;", pc_, 0);
 
-    // 5) AttributeSet argument: marker heap object (corpus constructors do
-    //    not read attrs today; reading framework attrs inside app
-    //    constructors is recorded as a future layer).
+    // 5) AttributeSet argument: marker heap object. F-NEW-197
+    //    XML-AttributeSet law: the marker now carries the tag's parsed XML
+    //    attributes (AttributeSetStore, keyed by the marker object id) so
+    //    the obtainStyledAttributes producer resolves styleable slots with
+    //    the AOSP precedence XML > style > theme — real APK custom views
+    //    (e.g. SlidingUpPanelLayout gravity/dragView) read their XML values
+    //    through the AttributeSet argument, never the theme alone.
     uint32_t attrs_id =
         heap_.allocate("Landroid/util/AttributeSet;", pc_, 0);
+    if (!xml_attrs.empty()) {
+        resources::AttributeSetStore::instance().install(attrs_id, xml_attrs);
+    }
 
     // 6) Constructor signature probe (AOSP order): (Context, AttributeSet)
     //    is the XML-inflation constructor; fall back to (Context). The
@@ -14826,14 +14834,33 @@ bool DalvikExecutionEngine::execute_instance_of(uint32_t pc, InstructionTrace& t
     // KClass.java round-trip value stored via Ljj;->a) rejected the
     // CLASS_REF → IAE "Key must be a class" at depth 79 → APP BOUNDARY
     // unwind. Classify CLASS_REF values by the token's heap record.
-    if (src_val.type == DalvikType::CLASS_REF && src_val.ref_id != 0) {
+    if (src_val.type == DalvikType::CLASS_REF) {
         std::string tok_cls = "Ljava/lang/Class;";
-        if (heap_.has_object(src_val.ref_id)) {
+        if (src_val.ref_id != 0 && heap_.has_object(src_val.ref_id)) {
             const auto* tok = heap_.get(src_val.ref_id);
             if (tok && !tok->class_descriptor.empty())
                 tok_cls = tok->class_descriptor;
         }
+        // F-105c (S59, R-NEW-379): INSTANCE-OF ON A CLASS TOKEN VALUE.
+        // F-NEW-197 REF_ID==0 extension: a CLASS_REF with NO heap token
+        // backing (bridges that answer make_class(desc, 0) — e.g. the
+        // ParameterizedType.getRawType family) is STILL a class token by
+        // definition; its runtime class is java.lang.Class (opencalculator
+        // vc53 live face: Gson $Gson$Types.getRawType `type instanceof
+        // Class<?>` answered FALSE for the ArrayList.class token → the
+        // IllegalArgumentException error branch fired at APP BOUNDARY →
+        // MainActivity.onCreate aborted). ART law: `X.class instanceof Y`
+        // classifies the TOKEN — java.lang.Class — for every class token,
+        // heap-backed or not.
         is_instance = is_subclass_of(tok_cls, target_type);
+    }
+    else if (src_val.type == DalvikType::OBJECT_REF &&
+             src_val.object_id == 0 && !src_val.class_desc.empty()) {
+        // F-NEW-197 DESC-ONLY REFERENCE law: a reference with no heap
+        // object carries only its creation-site declaration — that
+        // declaration is the only type information (F-103's authority
+        // law degenerates to the declaration). Classify by class_desc.
+        is_instance = is_subclass_of(src_val.class_desc, target_type);
     }
     else if (src_val.type == DalvikType::OBJECT_REF && src_val.object_id != 0) {
         // F-103 (S58, R-NEW-378) ART RUNTIME-TYPE LAW: the class of the
@@ -20360,6 +20387,41 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
     // producing exactly ONE [EXP093-SVC] autofill line — the dooz marker).
     // Same registry, two views — identical to the bridge_to_api block.
     // ────────────────────────────────────────────────────────────────────
+    // F-NEW-197 CONFIG-CONTEXT dual-view law (companion to R-NEW-339):
+    // Context.createConfigurationContext(Configuration) must NEVER answer
+    // null for ANY context-family receiver. AOSP ContextImpl returns a
+    // fresh Context sharing the base's resources identity with the override
+    // configuration applied. Live evidence (opencalculator vc53):
+    //   Lg/m (AppCompatActivity).attachBaseContext pc=180
+    //     createConfigurationContext → pc=184 .getResources() NPE (f141),
+    //   Ll/c (ContextThemeWrapper).getResources pc=39 → pc=43 .getResources()
+    //     NPE on the unimplemented answer. The appcompat day-night attach
+    //     chain aborts → activity never builds its ViewTree → white frame.
+    // Identity: one FRESH context object per call (AOSP ContextImpl law —
+    // never a shared singleton); the S110 base-context map records the
+    // receiver so downstream getBaseContext/getResources resolve.
+    // ────────────────────────────────────────────────────────────────────
+    if (method == "createConfigurationContext") {
+        uint32_t base_recv =
+            (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                ? args[0].object_id
+                : 0;
+        if (base_recv != 0) {
+            uint32_t derived = heap_.allocate("Landroid/content/Context;",
+                                              pc_, 0);
+            uint32_t override_cfg = 0;
+            if (args.size() >= 2 &&
+                args[1].type == DalvikType::OBJECT_REF)
+                override_cfg = args[1].object_id;
+            if (auto* ash =
+                    shadow_registry_->find_as<framework::ActivityShadow>())
+                ash->record_config_context(derived, base_recv, override_cfg);
+            result = DalvikValue::make_object(derived,
+                                              "Landroid/content/Context;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
     if (method == "getSystemService" &&
         (class_name.find("Context") != std::string::npos ||
          class_name.find("Activity") != std::string::npos)) {
@@ -30559,6 +30621,23 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
+    if (method == "newTheme" &&
+        class_name.find("Resources") != std::string::npos) {
+        // F-NEW-197 NEW-THEME LAW (AOSP Resources.java newTheme()):
+        // Resources.newTheme() returns a NEW non-null Resources.Theme
+        // (ThemeImpl.getWrappedObject). The previous behavior: no handler →
+        // null → AOSP ContextThemeWrapper.getTheme() — Ll/c (obfuscated
+        // framework class, opencalculator vc53) — did
+        //   mTheme = getResources().newTheme(); mTheme.setTo(...);
+        // → setTo on a null object reference NPE at Ll/c;.b pc=26 → the
+        // appcompat attach chain aborted → activity never built its tree.
+        // Theme authority: the SAME Resources$Theme singleton the F-141f
+        // getTheme law serves (one theme authority, one contract).
+        result = get_or_create_singleton(
+            "Landroid/content/res/Resources$Theme;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
     // ── S101: Resources$Theme.obtainStyledAttributes PRODUCER LAW ──────────
     // AOSP law (Resources.java / ResourcesImpl.ThemeImpl): Theme.
     // obtainStyledAttributes(int[] attrs) is the SAME theme-backed
@@ -36621,6 +36700,21 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 args[0].class_desc.empty() ? "Ljava/lang/String;"
                                            : args[0].class_desc,
                 instruction_sequence_);
+            return true;
+        }
+        if (!args.empty() && args[0].type == DalvikType::CLASS_REF) {
+            // F-NEW-197 CLASS-TOKEN IDENTITY LAW (AOSP Object.getClass):
+            // the receiver of getClass may itself be a Class token
+            // (CLASS_REF — e.g. Gson $Gson$Types.getRawType's
+            // `type.getClass().getName()` error-branch probe;
+            // opencalculator vc53 live face: receiver = CLASS_REF
+            // Ljava/util/ArrayList; → miss → null → getName NPE →
+            // APP BOUNDARY unwind). ART law: a Class object's runtime
+            // class IS java.lang.Class — every CLASS_REF receiver
+            // answers the Ljava/lang/Class; token, never null.
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_class("Ljava/lang/Class;",
+                                             instruction_sequence_);
             return true;
         }
         if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&

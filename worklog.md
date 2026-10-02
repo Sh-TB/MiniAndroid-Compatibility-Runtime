@@ -5232,3 +5232,83 @@ Work Log:
 
 Stage Summary:
 - V-waves COMPLETE (V1-V11) with the mandated final outputs: confirmed roots (V1/V2/V4/V5/V6 verdict-precision laws fixed; F-NEW-197 fresh white-screen attribution), false-success mechanisms enumerated (5 closed: out-of-bounds pixels, failed-inflation synthetic screen, silent context fallback, unnamed provenance states, unknown-tag silent View), duplicated renderer/layout paths classified (V3/V8 doc), reusable-library candidates tabled (V9 doc), 5-app before/after evidence (forkgram OBSERVED in-bounds proof; 4 frontiers with machine-readable first_missing_stage), remaining white/black frontiers named, exact next root = F-NEW-197 APP_DRAW_OPS family (dame/droidify/opencalc view-build chain) then game2048 NO_ROOT.
+
+---
+Task ID: F-NEW-197-WAVE2 + CAMPAIGN-REGISTRATION
+Agent: Super Z (main)
+Task: (1) Register the three new user-mandated campaigns in the worklist
+(SUCCESS-PATH FIRST 13 parts, SUCCESS-FIRST COMPATIBILITY 10 parts,
+SECONDARY DEEP AUDIT 10 items) and attack F-NEW-197. (2) Methodology chain
+per item: SOURCE -> CURRENT CODE PATH -> SEMANTIC LAW -> MINIMAL REPRO ->
+RUNTIME TRACE -> FIX -> 3-RUN REGRESSION.
+
+Work Log:
+- REGISTRATION: 17 new worklist entries F-NEW-198..214 appended to
+  canonical/root_cause_registry.json + root_registry.json (492 -> 509,
+  bidirectional sync verified identical); master worklist regenerated
+  (728 items, open 284). DEEP-AUDIT P0-1..P1-10 = F-NEW-198..207;
+  SUCCESS-PATH/SFC items = F-NEW-208..214. F-NEW-198 carries the V8
+  partial-coverage note; F-NEW-200/201/207 carry the partial-coverage
+  pointers to existing laws.
+- F-NEW-197 ATTACK (opencalculator vc53 as first target, generic laws only):
+  SOURCE+TRACE: instrumented runs (/tmp/fn197/op*). Found 3 kill-chains:
+  K1 Lg/m(AppCompatActivity).attachBaseContext NPE (f141), K2
+  SlidingUpPanelLayout.setGravity ISE "gravity must be set to either top or
+  bottom", K3 Gson $Gson$Types.getRawType NPE in MainActivity.onCreate
+  pc=1871. Disassembled the APK DEX (scripts/fn197_*_disasm.py,
+  fn197_styleable_dump.py): Ll1/d;.b = int[]{0x010100af} (1-entry styleable,
+  android:gravity), getInt(v7,v7) — the caller default is genuinely 0, so
+  real Android resolves gravity from the XML AttributeSet.
+- FIX 1 TYPEDARRAY STALE-PRESENCE (android_shadows.cpp): the TypedArray
+  heap object is a recycled singleton (get_or_create); array_present[i] was
+  written only on resolution -> presence from an earlier obtain leaked into
+  later ones (diag proved: call1 attr=0x1010054 hit=YES present=1; call2
+  attr=0x010100af hit=no -> present stayed 1 value 0 -> getInt answered 0
+  -> setGravity(0) -> ISE). Law: presence written UNCONDITIONALLY per slot
+  (AOSP TypedArray.obtain rewrites every slot; unfilled = absent).
+- FIX 2 XML-ATTRIBUTESET PRECEDENCE (layout_inflater.h/.cpp +
+  attribute_set_store.h + execution_engine.cpp + dalvik_engine.cpp +
+  android_shadows.cpp): the ctor hook now carries the tag's parsed AXML
+  attrs (attr_resid + typed value) -> AttributeSetStore keyed by the
+  AttributeSet marker id -> obtainStyledAttributes resolves each slot
+  XML-first, then style/theme, else absent->caller default (AOSP
+  AttributeResolution order). Evidence: [F175-READ] getInt idx=0 stored=48
+  present=1 answered=48 (Gravity.TOP from XML); absent slots honor defaults
+  (def=400 -> 400, def=-1 -> -1). ISE "gravity" GONE.
+- FIX 3 CONFIG-CONTEXT LAW (android_shadows.h/.cpp + dalvik_engine.cpp
+  dual-view): Context.createConfigurationContext NEVER null (AOSP
+  ContextImpl); fresh context per call; S110 base-context map records the
+  receiver via ActivityShadow::record_config_context; installed in BOTH
+  dispatch layers (try_shadow_dispatch dual-view companion to R-NEW-339).
+  Face: appcompat attachBaseContext2 (pc=180 -> pc=184 .getResources() NPE)
+  — attach chain now completes. NPE GONE.
+- FIX 4 NEW-THEME LAW (dalvik_engine.cpp): Resources.newTheme() non-null
+  (AOSP Resources.java); ContextThemeWrapper.getTheme()
+  mTheme=newTheme();mTheme.setTo() NPE (Ll/c;.b pc=26) GONE.
+- FIX 5 CLASS-TOKEN getClass LAW (dalvik_engine.cpp): Object.getClass on a
+  CLASS_REF receiver answers Ljava/lang/Class; (never null) — Gson
+  getRawType type.getClass().getName() probe.
+- FIX 6 CLASS-TOKEN INSTANCEOF LAWS (execute_instance_of): CLASS_REF with
+  ref_id==0 classifies as the java.lang.Class token; desc-only OBJECT_REF
+  (oid=0, desc present) classifies by its descriptor.
+- RESULT: opencalc uncaught-in-flight exceptions 3 -> 1; remaining faces
+  registered IN F-NEW-197: (A) generic-type reflection family
+  (getGenericSuperclass/getActualTypeArguments/getRawType all UNBRIDGED ->
+  Gson TypeToken IAE in onResume — INSTANCEOF-DIAG proved the argument
+  register arrives degenerate oid=0 desc=empty); (B) tree-build gap (frame
+  still shared empty-shell SHA b5a7a35d5fe0564b DEFAULT_BACKGROUND_ONLY).
+- GATES: laws130 51/51; goldens x3 BYTE-IDENTICAL with exact SHAs (dooz
+  d602648e8e401895, ssw 10446aaf0cd642cc, headingcalc be1cea9cf994b26a,
+  microtimer da73010a37dd0189, whatsapp 31ddd4d5b8e6d18e); opencalc x3
+  deterministic b5a7a35d5fe0564b. Zero regressions from all 6 law commits.
+  No package/class/title-specific branches anywhere.
+
+Stage Summary:
+- Done: 17 campaign entries registered (F-NEW-198..214, registry 509);
+  F-NEW-197 attacked with 6 generic laws IMPLEMENTED+TESTED (TypedArray
+  stale-presence, XML-AttributeSet precedence, config-context, newTheme,
+  class-token getClass, class-token instanceof); K1+K2+K3-NPE faces closed;
+  3-run proofs + zero golden drift.
+- Remaining: F-NEW-197 sub-frontier A (type-reflection family) and B
+  (tree-build gap); DEEP-AUDIT items F-NEW-199..207 (P0-2 ArchTaskExecutor
+  background exec next); SUCCESS-PATH corpus F-NEW-208..214.
