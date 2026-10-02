@@ -4204,6 +4204,24 @@
    "after": "positive deterministic widths",
    "before": "unbridged fallback",
    "aff": []
+  },
+  {
+   "id": "F-NEW-228",
+   "status": "OBSERVED",
+   "priority": "P0",
+   "layer": "layout/weighted-row-distribution",
+   "title": "WEIGHTED-ROW HEIGHT DISTRIBUTION LAW (opencalc §I provenance answer): every calculator button row INFLATED with real text (nodes 715-759), but LAYOUT distributed row heights wrongly — AC/( )/%/÷/7/8/9/× rows size=(259x0) HEIGHT=0 at y=161 (zero-height → text draw clips to nothing), last row (.-0-=) at y=2274 OFF-SCREEN (screen 1920) with height=1056. The rows use weight-based vertical sizing (layout_height=0dp + weight) — the engine distributes the total to one row and 0 to others instead of equal shares.",
+   "law": "AOSP LinearLayout.measureVertical with layout_height=0dp + layout_weight: each weighted child gets its share of the REMAINING height after fixed children (total/weights); never 0 while space remains, never more than the remaining space. Law: implement the exact AOSP weight pass (first measure fixed children, then distribute remaining = (available - used) by weight; delta redistribution with weightSum). This is the §I case-B face: LAYOUT ran but with wrong measure propagation for weighted rows.",
+   "evidence": "EXP092-RENDER: node=734 AC pos=(21,161) size=(259x0); node=741 7 (259x0); node=742 8; node=743 9; node=739 ÷ (260x0); node=756 0 pos=(21,2274) size=(259x1056) off-screen; visible rows 456- and 123+ drew text (app_draw_ops=34, app pixels 180772)",
+   "fanout": "every app using vertical weight distribution for grids/rows (calculator pads, dashboards, list headers)",
+   "test": "AOSP measureVertical parity: 6 weighted rows in 1920 → 6×320; opencalc rows all visible; goldens byte-identical (weight-law must not disturb non-weighted layouts)",
+   "source": "user campaign §I (ViewTree→pixel provenance, do not guess) + opencalc frame",
+   "current": "OBSERVED (exact bounds captured; AOSP measureVertical weight pass = next implementation wave)",
+   "risk": "layout-engine change — must be gated against the byte-identical goldens (dooz/headingcalc/microtimer rely on current non-weighted layout behavior)",
+   "fix": "",
+   "after": "",
+   "before": "rows 7-8-9-× height=0; row .-0-= off-screen y=2274",
+   "aff": []
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry↔docs single-source-of-truth restored); registry 372→374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots. | S80: three real games (Snake Deluxe, Mini Tetris, 2048) built + played on the runtime; R-NEW-401 external-cache bridge.",

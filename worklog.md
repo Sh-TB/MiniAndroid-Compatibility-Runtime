@@ -5444,3 +5444,16 @@ Work Log:
 Stage Summary:
 - Done: 6 law roots IMPLEMENTED+TESTED with 3-run proofs; opencalc white/crash family CLOSED (rc=0, zero uncaught, REAL_APP_CONTENT ×3); ssw honest advance to real UI; §H storage semantics fully generically implemented.
 - Remaining: secuso notes grey-face provenance (§I next frontier); Fossify-Notes-equivalent deep run; F-NEW-225 Signature/ParameterizedType parsing leg; F-NEW-227 shaper-integrated metrics; F-NEW-204..207 P1 batch; F-NEW-217/221 deep legs; §I button-row provenance for opencalc (7/8/9/×/.0= rows + layout distribution); §28 final deliverable update.
+---
+Task ID: F-NEW-228 (§P continuation — §I provenance, do-not-stop mandate)
+Agent: Super Z (main)
+Task: §I ViewTree→pixel provenance for opencalc's missing button rows — identify the exact stage where they stop.
+
+Work Log:
+- EXP092-RENDER mining: ALL button rows INFLATED with real text (nodes 715-759: √ π ! AC ( ) % ÷ 7 8 9 × . 0 =). Rows 4-5-6-− and 1-2-3-+ landed in the visible band and DREW (app_draw_ops=34).
+- EXACT STOP STAGE = LAYOUT BOUNDS DISTRIBUTION (§I case B): AC/( )/%/÷/7/8/9/× all size=(259x0) HEIGHT=0 at y=161 → zero-height clip → no pixels; last row .-0-= at y=2274 (off-screen, height=1056). Weighted vertical rows (layout_height=0dp+weight) distributed 0/0/all instead of equal shares.
+- Registered F-NEW-228 (P0 OBSERVED) with the AOSP LinearLayout.measureVertical weight-pass law + golden-gating risk note; registry 522→523.
+
+Stage Summary:
+- Done: §I answered with exact numbers (no guessing): INFLATED→(no)MEASURED-BY-WEIGHT→wrong LAYOUT bounds→clipped draw.
+- Remaining: implement AOSP measureVertical weight pass (F-NEW-228) gated on byte-identical goldens; then secuso grey face; then the rest of the §A–§P backlog per the master list.
