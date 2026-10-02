@@ -5730,3 +5730,90 @@ Stage Summary:
 - Remaining: uninstall command (PENDING); F-NEW-229 CL width law; secuso
   button-text; forkgram/ssw/headingcalc/secuso golden re-banks; F-NEW-217/221
   deep legs; README/release audit (stray uuid commit 7abb39ce flagged).
+
+---
+Task ID: LOAD-AUDIT-0/1 (installed-app filesystem + FULL file/resource/media loading audit)
+Agent: Super Z (main)
+Task: Triple-attached audit campaign (INSTALLED-APP FILESYSTEM P0 + SUPPLEMENT FILE/RESOURCE/MEDIA 0-44 + ULTIMATE AUDIT 0-148) — line-by-line source audit, REAL_ANDROID_LOADING_ORACLE, loading matrix, first-divergence roots.
+
+Work Log:
+- LAWS READ: CONSTITUTION_V2 (§16 first-divergence, §17 silent-wrong, §25 ARSC, §26 end-to-end),
+  CAMPAIGN_STATE.md (F-NEW-231/234 wave state, corpus=202), docs/ROADMAP_STATUS.md (197 caps),
+  docs/FINAL_COMPATIBILITY_CAMPAIGN.md (master checklist §3 21 rows), worklog.md IAPK-0/IAPK-FINAL
+  entries, root_registry.json F-NEW-231/232/233/234 entries, FOUNDATION_RUNTIME_MAP.md (chain +
+  api_matrix classes), Makefile/CMakeLists (real build graph), AOSP oracle (ContextImpl/
+  AssetManager2/ResourcesImpl/PMS/SQLite/Prefs/Typeface/ContentResolver laws — see new oracle doc).
+- SOURCE_FILE_CENSUS: 164 files / 137,756 lines; 64 TUs compiled (Makefile is the real graph);
+  13 dead .cpp (8,164 lines); audio_engine.cpp + gles20_bridge.cpp compiled-but-zero-caller;
+  CMakeLists stale (6 nonexistent files); S68 graph stale; docs/foundation/source_inventory.json
+  is actually an APK ledger.
+- CANONICAL PATH PROVEN: cmd_run -> ExecutionEngine -> DalvikExecutionEngine (WORLD B).
+  WORLD A (ApplicationContext/FileSandbox/api SharedPreferences) = test-only, unreachable;
+  ApplicationRuntime = megabatch-only legacy; APK-visible Context is a DEX-heap object served
+  by bridge_to_api; ResourceRuntime = process-wide singleton, re-init only on apk_path change.
+- 4-WAY SUBSYSTEM AUDIT (census/path, storage, resources/media, startup/classload) produced
+  54 line-cited structural findings; top P0s:
+  (1) File.getAbsolutePath() hijacked by EXP-043 stub -> constant /tmp/miniandroid/files
+      (dalvik_engine.cpp:38652 shadows the real law at 39908; F-NEW-234 branch unreachable);
+  (2) FileOutputStream/openFileOutput/openFileInput/fileList/deleteFile DO NOT EXIST;
+  (3) AssetManager.open() fake-success (3 duplicate sites, no FileNotFoundException contract);
+  (4) FD family (openFd/openRawResourceFd/PFD/AFD) = zero hits;
+  (5) No ContentProvider installation stage (androidx.startup never runs);
+  (6) two divergent live readLine impls; assets via popen(unzip) uncapped;
+  (7) prefs non-atomic + unescaped XML + commit() always true + clear() no-op;
+  (8) WAL flag recorded-never-set; databases_dir set by 3 competing parties;
+  (9) Intent.getData() hardwired null; (10) system services null-marked-IMPLEMENTED;
+  (11) -night/-land buckets unreachable + first-config fallback; (12) decodeStream
+  unsupported + BitmapFactory.Options absent + density hardcoded 420;
+  (13) external-storage two spellings break stream round-trips; (14) no /data/user/0 alias.
+- DELIVERABLES: docs/REAL_ANDROID_LOADING_ORACLE.md (AOSP semantic oracle, 14 subsystem law
+  families + 12 universal questions); docs/FILE_RESOURCE_LOADING_COMPATIBILITY.md (full diff
+  matrix + 38 structural roots in 7 fan-out families + WE-FORGOT-THIS 20 items + Q44 answer);
+  docs/LOAD_COMPATIBILITY_MATRIX.jsonl (36 machine-readable layer rows).
+- CORPUS RECONCILIATION: frozen corpus = 202 titles confirmed (docs/corpus/s82/title_registry.json);
+  255-vs-202 question closed by CAMPAIGN_STATE + FINAL_CAMPAIGN §4.
+
+Stage Summary:
+- Audit verdict: MiniAndroid has a REAL installed-package filesystem MODEL (F-NEW-231/234)
+  but the byte-loading architecture above it is materially incomplete: the P0 class is
+  fake-success resolution (assets/getIdentifier/services) + missing write path
+  (FileOutputStream family) + missing FD family + missing provider stage. ROOT FAMILIES
+  (fan-out rank): FD_AND_STREAM_VOID, FAKE-SUCCESS_RESOLUTION, COMPONENT_CONTRACT_MISSING,
+  PATH_LAW_INCOMPLETENESS, NATIVE_FICTION, SELECTION_FROZEN, STATE_LAYER_DIVERGENCE.
+- Registry untouched this phase (audit-only). Runtime live proofs of the P0 findings are
+  LOAD-AUDIT-2 (build in progress). No code changed; no package-specific anything.
+
+---
+Task ID: LOAD-AUDIT-2 (runtime live proofs of the loading-audit P0 findings)
+Agent: Super Z (main)
+Task: Build HEAD binary; prove installed-identity chain + probe the code-proven P0 findings live.
+
+Work Log:
+- BUILD: 3GB-RAM box killed parallel/detached builds twice (OOM); final chain =
+  foreground `make -j1 CXXFLAGS="-O0 -g0"` -> 68 TUs, link OK build/miniandroid 17.7MB.
+  Build metadata law candidate: document RAM-safe build recipe.
+- OPENCALC installed (store run/audit/store): base.apk SHA == source SHA
+  (2642613868a8a80f); store layout {files,cache,code_cache,databases,shared_prefs,no_backup};
+  source APK PHYSICALLY HIDDEN during all runs; x3 runs rc=0,
+  screenshot e364b001ee7abd66 x3 == registry golden (determinism + installed identity).
+- CHESS installed: source hidden, x3 runs = b5a7a35d5fe0564b x3 == registry golden.
+- TELEGRAM installed (64MB): source hidden, 1 run = bbb6cd10a834963d == registry golden.
+- P-3 CROSS-CHECK (telegram file-IO JSONL, 185 ops): 7 asset OPENs, ALL with
+  provenance '@ apk=<INSTALLED base.apk>' + real app DEX callers; ALL 7 entries
+  cross-verified present in the installed base.apk -> NO fake-success observed live;
+  R-1 (missing existence check) stays CODE-PROVEN, RUNTIME-NOT-OBSERVED (honest).
+  files->APK fallback law observed live (bluebubbles.attheme).
+- ST-4 LIVE PROOF: telegram OPENed '/dev/urandom' as a raw host path (SUCCESS) ->
+  no sandbox containment for absolute paths, confirmed at runtime (dalvik_engine:39849).
+- P-1 (getAbsolutePath hijack) and P-2 (FileOutputStream void): NOT-OBSERVED-THIS-CORPUS
+  (opencalc/chess/telegram do not call those APIs; 1,517 traced calls scanned) —
+  remain line-proven; need a targeted probe APK (next wave).
+- DOCS updated: FILE_RESOURCE_LOADING_COMPATIBILITY.md section 7 rewritten with the live
+  table; FINAL_COMPATIBILITY_CAMPAIGN.md row 8 -> done-partial.
+
+Stage Summary:
+- Runtime verdict: installed-identity chain REPRODUCED at HEAD for 3 targets with zero
+  drift (all goldens byte-identical); byte provenance = INSTALLED APK only; sandbox
+  containment gap proven live (/dev/urandom); write-path + getAbsolutePath gaps await a
+  probe APK. Registry: no new roots needed this phase (audit-only campaign); fix wave
+  queue = FD_AND_STREAM_VOID + FAKE-SUCCESS_RESOLUTION + COMPONENT_CONTRACT_MISSING.
