@@ -3556,6 +3556,15 @@
    "law": "AOSP ActivityThread.performLaunchActivity ordering law: activity.attach (drives attachBaseContext on the VIRTUAL override \u2014 closest declaration wins) precedes onCreate and the lifecycle-callback fan-outs. Chains without an override resolve to the framework boundary (F-NEW-166 ContextWrapper law serves mBase).",
    "resolution": "run_activity_default_init now dispatches attachBaseContext after <init> on every launch path (direct + try_recursive_invoke_on_super bounded climb, receiver identity preserved; F-NEW-184 base-context convention). POST: [WAVEC-ATTACH-FIELD] A0B=obj#29343 A03/A05 stored on obj#28223 before onCreate; the SoLoader family advanced. HONEST RESIDUE: the attach still dies partway at iget LX/0IE;->A00 (the component-state holder, only writer = reflective injector A3d) \u2014 the F-NEW-173/169 DI-lattice deep face remains the dominant WhatsApp frontier; fragment-host ISE faces are downstream of it.",
    "evidence": "scripts/wavec_field_writers.py (A0B single-writer proof: LX/0IH.attachBaseContext); FIELD-TRACE A0B put/get census on obj#28223; 0IH.attachBaseContext + 0IH.onCreate disassembly; gates x3 byte-identical."
+  },
+  {
+   "id": "F-NEW-192",
+   "status": "REGISTERED",
+   "priority": "P2",
+   "layer": "renderer/z-order",
+   "title": "PHASE 10 draw/z-order audit residue: AOSP View.draw order (drawBackground -> onDraw -> dispatchDraw -> decorations) is enforced in the frame walk (21-P0-6 census law; forward child pop; S86 visibility gates; item-21 placeholders out of the authoritative frame) but elevation/translationZ (RenderNode Z ordering, outline shadows) is NOT modeled \u2014 sibling overlap order on elevated views may diverge.",
+   "law": "AOSP View.draw + RenderNode Z law: children draw in program order; Z-elevated siblings reorder above flat ones with shadow decoration.",
+   "evidence": "scripts/fc_audit_stubs.py census (34 void-answer sites: 12 lawful-void / 21 state-capture verified / 1 silent-void FIXED = setIntent state identity); draw walk audit execution_engine.cpp L3640-4460."
   }
  ],
  "total_roots": 484
