@@ -3100,6 +3100,34 @@ uint32_t ViewShadow::find_by_android_id(uint32_t root_id, int32_t android_id) co
     return 0;
 }
 
+// F-NEW-220 CONTENT-PARENT REUSE LAW: first descendant (BFS, root
+// excluded) whose class_desc contains class_substr. The appcompat
+// subDecor case — the screen's own ContentFrameLayout BECOMES
+// android.R.id.content via the delegate's id-swap; the content anchor
+// must reuse it instead of materializing a parallel node the render
+// walk can never reach (opencalc vc53 empty-shell face).
+uint32_t ViewShadow::find_first_descendant_by_class(
+    uint32_t root_id, const std::string& class_substr) const {
+    std::vector<uint32_t> frontier;
+    {
+        const auto* rn = find_node(root_id);
+        if (rn) frontier = rn->children;
+    }
+    while (!frontier.empty()) {
+        std::vector<uint32_t> next;
+        for (uint32_t id : frontier) {
+            const auto* n = find_node(id);
+            if (!n) continue;
+            if (!class_substr.empty() &&
+                n->class_desc.find(class_substr) != std::string::npos)
+                return id;
+            for (uint32_t c : n->children) next.push_back(c);
+        }
+        frontier = std::move(next);
+    }
+    return 0;
+}
+
 // R-NEW-357 (S44): name -> android resource id VALUE. AOSP
 // Resources.getIdentifier(name, "id", pkg) resolves against the resource
 // tables; our per-run id table is the inflated view tree's android:id

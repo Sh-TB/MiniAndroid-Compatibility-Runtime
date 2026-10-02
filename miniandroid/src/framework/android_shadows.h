@@ -1866,6 +1866,13 @@ public:
     // DFS search for a descendant with the given Android view_id.
     // Returns 0 if not found.
     uint32_t find_by_android_id(uint32_t root_id, int32_t android_id) const;
+    // F-NEW-220 CONTENT-PARENT REUSE LAW: the appcompat subDecor carries
+    // its own ContentFrameLayout (action_bar_activity_content) and the
+    // delegate's id-swap makes THAT frame android.R.id.content. Returns
+    // the FIRST descendant (BFS, root excluded) of root_id whose
+    // class_desc contains class_substr — 0 when none. Read-only.
+    uint32_t find_first_descendant_by_class(uint32_t root_id,
+                                            const std::string& class_substr) const;
     // S83-GFX-BASE: lazily materialized window content root
     // (android.R.id.content law) — synthetic id space shared with dialogs.
     uint32_t next_window_content_id_ = 800100;
