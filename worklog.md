@@ -5365,3 +5365,19 @@ Work Log:
 Stage Summary:
 - Done: 3 roots registered; F-NEW-215+216 IMPLEMENTED+TESTED (honest class-init state machine end-to-end + AOSP enum names); droidify chain advanced (j$-CHM + toDuration + SettingsSerializer now build; remaining = kotlinx mutex/resume family).
 - Remaining: F-NEW-217 deep attack (resume protocol); F-NEW-197-A type-reflection (opencalc Gson); DEEP-AUDIT P0/P1 items; SUCCESS-PATH corpus; the §28 final deliverable (root table + maps A-E).
+---
+Task ID: F-NEW-218/219 WAVE (F-NEW-197-A type-reflection family closure)
+Agent: Super Z (main)
+Task: Attack F-NEW-197-A (opencalc Gson TypeToken reflection family) with the SOURCE → CURRENT CODE PATH → SEMANTIC LAW → FIX → REGRESSION chain; disassemble the exact throwing methods from the APK.
+
+Work Log:
+- RERUN FIRST: opencalc's IAE face moved under the wave-1 laws — now "Expected a Class, ParameterizedType, or GenericArrayType, but <class java.util.ArrayList> is of type java.lang.Class" at Le1/d;.g (Gson $Gson$Types.getRawType, R8).
+- DISASSEMBLED (androguard, scripts/s137_disasm_e1d_g.py): Le1/d;.g full bytecode + the caller chain MainActivity.onResume → LZ/q;.b(pc=92 Object.getClass on the ArrayList) → Lc1/d;.d → Lj1/a;.<init> → Le1/d;.g; the same value passed check-cast Type (optimistic pass) and failed instance-of Class (honest classifier) → classification asymmetry isolated to the CLASS_REF arm.
+- F-NEW-218 TOKEN-BACKING VALIDATION (P0): getClass answers tokens with ref_id = instruction_sequence_ (execution counter, NOT a heap id); the shared id space made heap_.has_object(ref_id) collide with live objects (PROVEN: ref_id=63 = CopyOnWriteArrayList record while token referent = java.util.ArrayList) → the token's runtime class became random → instanceof Class false. LAW: a CLASS_REF classifies as Ljava/lang/Class; unconditionally (ART token law; F-105 contradiction applied to tokens) + bounded collision diag. ALSO seeded the Class hierarchy (Class→Object + Type/AnnotatedElement/GenericDeclaration/TypeVariable/Serializable interfaces — OpenJDK Class.java) so `token instanceof Object/Type` is ART-correct.
+- F-NEW-219 REFLECTION METHOD-FAMILY LAW (P0, §7 MUST_THROW): Class.getMethod/getDeclaredMethod minted a record for ANY name (fake isRecord record) and Method.getReturnType was UNBRIDGED (null) — the null chain killed onCreate. LAW: app-DEX receivers resolve against the class method table (getMethod walks superclasses; __reflect_ret/__reflect_params recorded), missing → NoSuchMethodException; framework receiver + JDK 9-17 APIs absent from the Android surface (isRecord, getRecordComponents, getRecord, isSealed, getPermittedSubclasses, getNestHost, getNestMembers, isNestmateOf, descriptorString, accessFlags) → NoSuchMethodException (Gson's designed fallback); framework mint otherwise preserved (HandlerCompat createAsync path intact) with __reflect_ret=Object; Method.getReturnType NEVER null.
+- RESULT: opencalc rc=1→0, Status PARTIAL→SUCCESS (zero uncaught); the appcompat makeOptionalFitsSystemWindows reflective probe now correctly caught by its designed handler.
+- GATES: laws130 51/51; goldens x3 BYTE-IDENTICAL (dooz d602648e8e401895, ssw 10446aaf0cd642cc, headingcalc be1cea9cf994b26a, microtimer da73010a37dd0189, whatsapp 31ddd4d5b8e6d18e). Registry 514 roots, worklist 733 (open 283).
+
+Stage Summary:
+- Done: F-NEW-218+219 IMPLEMENTED+TESTED; F-NEW-197-A faces A (records probe null-chain) closed; opencalc runs CLEAN.
+- Remaining: F-NEW-197-B tree-build gap (opencalc frame still the empty-shell b5a7a35d5fe0564b — content root has 0 children); generic ParameterizedType/TypeVariable/getGenericSuperclass family for full generic serialization; F-NEW-217 kotlinx resume protocol; DEEP-AUDIT P0/P1s; SUCCESS-PATH corpus.

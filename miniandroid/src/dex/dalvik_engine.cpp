@@ -586,6 +586,22 @@ void DalvikExecutionEngine::build_class_dex_index(const dex::DexReport& report) 
     for (size_t fwv = 0; fwv < kNumFrameworkViews; ++fwv) {
         class_to_superclass_[kFrameworkViews[fwv].k] = kFrameworkViews[fwv].v;
     }
+    // F-NEW-218 CLASS-TOKEN HIERARCHY LAW (OpenJDK Class.java declaration):
+    // java.lang.Class extends Object and implements Type, AnnotatedElement,
+    // GenericDeclaration, TypeVariable and Serializable. Every Class token
+    // (const-class / getClass / forName result) must satisfy `token
+    // instanceof Object/Type/AnnotatedElement/...` exactly like ART. The
+    // Gson type-resolution family ($Gson$Types.getRawType → check-cast
+    // Type / instanceof Type chains) walks these edges on every app that
+    // serializes through Gson (opencalculator vc53 face).
+    class_to_superclass_["Ljava/lang/Class;"] = "Ljava/lang/Object;";
+    class_to_interfaces_["Ljava/lang/Class;"] = {
+        "Ljava/lang/reflect/Type;",
+        "Ljava/lang/reflect/AnnotatedElement;",
+        "Ljava/lang/reflect/GenericDeclaration;",
+        "Ljava/lang/reflect/TypeVariable;",
+        "Ljava/io/Serializable;",
+    };
     // Now add APK-defined classes from the DEX report.
     int apk_class_count = 0;
     for (const auto& cls : report.classes) {
@@ -14932,24 +14948,40 @@ bool DalvikExecutionEngine::execute_instance_of(uint32_t pc, InstructionTrace& t
     // CLASS_REF → IAE "Key must be a class" at depth 79 → APP BOUNDARY
     // unwind. Classify CLASS_REF values by the token's heap record.
     if (src_val.type == DalvikType::CLASS_REF) {
-        std::string tok_cls = "Ljava/lang/Class;";
+        // F-NEW-218 TOKEN-BACKING VALIDATION LAW (ART Object.getClass /
+        // Class token identity): a Class token's runtime class IS
+        // java.lang.Class — every CLASS_REF classifies as Ljava/lang/Class;
+        // for the instanceof target, regardless of heap backing. The old
+        // raw deref of ref_id adopted whatever heap record sat at that id
+        // as the token's runtime class — but getClass answers tokens with
+        // ref_id = instruction_sequence_ (an execution counter, NOT a heap
+        // id) and the engine shares ONE integer id space (F-105's
+        // premise), so the counter collides with live heap objects and the
+        // token's classification became RANDOM (opencalculator vc53 face:
+        // ArrayList.getClass() → `instanceof Class` FALSE → Gson
+        // $Gson$Types.getRawType IAE "Expected a Class, ParameterizedType,
+        // or GenericArrayType" at APP BOUNDARY → MainActivity.onCreate
+        // aborted → empty frame). A heap record only backs a token when it
+        // IS a Ljava/lang/Class; object — anything else at the shared id
+        // belongs to a different entity (F-105 CONTRADICTION applied to
+        // tokens). Detection is logged, bounded; classification stays
+        // collision-proof.
         if (src_val.ref_id != 0 && heap_.has_object(src_val.ref_id)) {
-            const auto* tok = heap_.get(src_val.ref_id);
-            if (tok && !tok->class_descriptor.empty())
-                tok_cls = tok->class_descriptor;
+            if (const auto* tok = heap_.get(src_val.ref_id);
+                tok && !tok->class_descriptor.empty() &&
+                tok->class_descriptor != "Ljava/lang/Class;") {
+                static std::atomic<uint64_t> f218_n{0};
+                if (f218_n.fetch_add(1, std::memory_order_relaxed) < 8) {
+                    std::cerr << "[F-NEW-218] TOKEN-BACKING-COLLISION ref_id="
+                              << src_val.ref_id << " heap_desc="
+                              << tok->class_descriptor
+                              << " token_referent=" << src_val.class_desc
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << std::endl;
+                }
+            }
         }
-        // F-105c (S59, R-NEW-379): INSTANCE-OF ON A CLASS TOKEN VALUE.
-        // F-NEW-197 REF_ID==0 extension: a CLASS_REF with NO heap token
-        // backing (bridges that answer make_class(desc, 0) — e.g. the
-        // ParameterizedType.getRawType family) is STILL a class token by
-        // definition; its runtime class is java.lang.Class (opencalculator
-        // vc53 live face: Gson $Gson$Types.getRawType `type instanceof
-        // Class<?>` answered FALSE for the ArrayList.class token → the
-        // IllegalArgumentException error branch fired at APP BOUNDARY →
-        // MainActivity.onCreate aborted). ART law: `X.class instanceof Y`
-        // classifies the TOKEN — java.lang.Class — for every class token,
-        // heap-backed or not.
-        is_instance = is_subclass_of(tok_cls, target_type);
+        is_instance = is_subclass_of("Ljava/lang/Class;", target_type);
     }
     else if (src_val.type == DalvikType::OBJECT_REF &&
              src_val.object_id == 0 && !src_val.class_desc.empty()) {
@@ -22889,6 +22921,110 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             reflected = args[0].class_desc;
         }
         std::string name = args.size() > 1 ? args[1].string_val : "";
+        // ────────────────────────────────────────────────────────────────
+        // F-NEW-219 REFLECTION METHOD-FAMILY LAW (OpenJDK/AOSP contract):
+        // Class.getMethod/getDeclaredMethod RESOLVE or THROW
+        // NoSuchMethodException — they never fabricate a record for a
+        // method the class does not declare. The old mint-for-any-name
+        // path is the §17 silent-wrong: Gson 2.10.1's records probe
+        // Class.getMethod("isRecord") minted a fake record, the follow-up
+        // Method.getReturnType() REC-MISS answered null, and the null
+        // chain NPE'd (Class.getComponentType on null) killing
+        // MainActivity.onCreate (opencalc vc53 face).
+        //   • Receiver in app DEX: resolve against the class's own method
+        //     table (name match). Found → record carries __reflect_ret /
+        //     __reflect_params. Not found → NoSuchMethodException (the
+        //     caller's catch is the designed path).
+        //   • getMethod walks the superclass chain; getDeclaredMethod is
+        //     this class only (OpenJDK law).
+        //   • Framework receiver + a JDK 9-17 reflective API Android does
+        //     not declare (AOSP libcore surface: isRecord,
+        //     getRecordComponents, getRecord, isSealed, ...) →
+        //     NoSuchMethodException — the records probe must fail honestly
+        //     so adapters fall back to the non-record path.
+        //   • Framework receiver otherwise → F-029 mint (unknown body),
+        //     __reflect_ret = Object (getReturnType answers non-null).
+        // ────────────────────────────────────────────────────────────────
+        static const char* kAbsentOnAndroid219[] = {
+            "isRecord", "getRecordComponents", "getRecord", "isSealed",
+            "getPermittedSubclasses", "getNestHost", "getNestMembers",
+            "isNestmateOf", "descriptorString", "accessFlags",
+        };
+        auto absent_on_android219 = [&](const std::string& n) {
+            for (const char* k : kAbsentOnAndroid219)
+                if (n == k) return true;
+            return false;
+        };
+        auto cit219 = class_info_index_.find(reflected);
+        if (cit219 != class_info_index_.end()) {
+            bool found219 = false;
+            std::string ret219, params219;
+            std::string walk219 = reflected;
+            for (int hops = 0; hops < 16 && !found219 && !walk219.empty();
+                 ++hops) {
+                auto cit_w = class_info_index_.find(walk219);
+                if (cit_w == class_info_index_.end()) break;
+                const dex::ClassInfo& cls_w =
+                    dex_report_->classes[cit_w->second];
+                for (const auto& mi : cls_w.all_methods()) {
+                    if (mi.is_constructor || mi.name != name) continue;
+                    found219 = true;
+                    ret219 = mi.return_type;
+                    for (size_t pi = 0; pi < mi.parameters.size(); ++pi)
+                        params219 += (pi ? "," : "") + mi.parameters[pi];
+                    break;
+                }
+                if (found219) break;
+                // getMethod continues through superclasses;
+                // getDeclaredMethod stays on the receiver class.
+                if (method != "getMethod") break;
+                auto sup219 = class_to_superclass_.find(walk219);
+                walk219 = sup219 != class_to_superclass_.end()
+                              ? sup219->second
+                              : std::string();
+            }
+            if (!found219) {
+                std::string msg219 = reflected + "." + name + "(...)";
+                std::cerr << "[F-NEW-219] NOT-RESOLVED " << msg219
+                          << " → NoSuchMethodException caller="
+                          << current_class_ << "." << current_method_
+                          << std::endl;
+                throw_deferred("Ljava/lang/NoSuchMethodException;", msg219,
+                               "F-NEW-219");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_null();
+                return true;
+            }
+            uint32_t rec = heap_.allocate("Ljava/lang/reflect/Method;", pc_, 0);
+            heap_.set_object_field(rec, "__reflect_class",
+                                   DalvikValue::make_string(reflected, 0));
+            heap_.set_object_field(rec, "__reflect_name",
+                                   DalvikValue::make_string(name, 0));
+            heap_.set_object_field(rec, "__reflect_ret",
+                                   DalvikValue::make_string(
+                                       ret219.empty() ? "Ljava/lang/Object;"
+                                                      : ret219, 0));
+            heap_.set_object_field(rec, "__reflect_params",
+                                   DalvikValue::make_string(params219, 0));
+            heap_.set_object_field(rec, "class_desc",
+                                   DalvikValue::make_string(reflected, 0));
+            result = DalvikValue::make_object(rec,
+                                              "Ljava/lang/reflect/Method;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (absent_on_android219(name)) {
+            std::string msg219 = "java.lang.Class." + name +
+                                 " (not declared by the Android API surface)";
+            std::cerr << "[F-NEW-219] ABSENT-ON-ANDROID " << msg219
+                      << " → NoSuchMethodException caller=" << current_class_
+                      << "." << current_method_ << std::endl;
+            throw_deferred("Ljava/lang/NoSuchMethodException;", msg219,
+                           "F-NEW-219");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_null();
+            return true;
+        }
         const bool is_ctor = method == "getDeclaredConstructor" ||
                              method == "getConstructor";
         std::string rec_cls = is_ctor ? "Ljava/lang/reflect/Constructor;"
@@ -22901,9 +23037,30 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                DalvikValue::make_string(reflected, 0));
         heap_.set_object_field(rec, "__reflect_name",
                                DalvikValue::make_string(name, 0));
+        heap_.set_object_field(rec, "__reflect_ret",
+                               DalvikValue::make_string("Ljava/lang/Object;", 0));
         heap_.set_object_field(rec, "class_desc",
                                DalvikValue::make_string(reflected, 0));
         result = DalvikValue::make_object(rec, rec_cls);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (class_name == "Ljava/lang/reflect/Method;" &&
+        method == "getReturnType") {
+        // F-NEW-219 (OpenJDK Method.getReturnType): answers the declared
+        // return type Class — NEVER null. __reflect_ret carries the DEX
+        // return descriptor when the method resolved from a real class;
+        // minted framework records answer java.lang.Object.
+        std::string ret219 = "Ljava/lang/Object;";
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+            auto rv = heap_.get_object_field(args[0].object_id,
+                                             "__reflect_ret");
+            if (rv.has_value() && rv->type == DalvikType::STRING_REF &&
+                !rv->string_val.empty())
+                ret219 = rv->string_val;
+        }
+        result = DalvikValue::make_class(ret219, instruction_sequence_);
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
