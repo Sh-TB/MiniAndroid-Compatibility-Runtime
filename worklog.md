@@ -5312,3 +5312,41 @@ Stage Summary:
 - Remaining: F-NEW-197 sub-frontier A (type-reflection family) and B
   (tree-build gap); DEEP-AUDIT items F-NEW-199..207 (P0-2 ArchTaskExecutor
   background exec next); SUCCESS-PATH corpus F-NEW-208..214.
+
+---
+Task ID: F-NEW-199+F-NEW-203 WAVE
+Agent: Super Z (main)
+Task: SECONDARY DEEP AUDIT P0-2 (ArchTaskExecutor background execution) +
+P1-6 (main-thread identity UNKNOWN observability) — same batch, methodology
+chain per mandate.
+
+Work Log:
+- F-NEW-199 DISK-IO EXECUTION LAW (android_shadows.cpp
+  ArchTaskExecutorShadow::dispatch): executeOnDiskIO(Runnable) previously
+  dropped the runnable ("enqueue on disk thread (we use a no-op)") — the
+  background-executor gap that leaves AndroidX apps white after a
+  compute->post->UI chain. Law: the runnable is enqueued on the canonical
+  pump queue (delay 0, class ArchTaskExecutor-DiskIO) and executes
+  deterministically at the next drain point (deterministic virtual
+  execution law; AOSP concurrent ordering serialized, observable contract
+  preserved). Bounded [F-NEW-199] evidence line per enqueue.
+- F-NEW-203 THREAD-IDENTITY OBSERVABILITY LAW: isMainThread resolution
+  hoisted — main_thread/bound read independently; UNKNOWN state now emits
+  a bounded [F-NEW-203] evidence line naming both ids before answering
+  false (background-classified). Silent UNKNOWN->BACKGROUND conversion
+  removed; the first divergence is exposed per the user mandate.
+- Probe: droidify reaches ArchTaskExecutor class-init but dies earlier in
+  its own chain (Miui.getSystemProperty getClass-null, kotlin toDuration,
+  protobuf CNFE family — separate frontiers, not executor faces).
+- GATES: laws130 51/51; goldens x3 BYTE-IDENTICAL (dooz d602648e8e401895,
+  ssw 10446aaf0cd642cc, headingcalc be1cea9cf994b26a, microtimer
+  da73010a37dd0189, whatsapp 31ddd4d5b8e6d18e). Zero regressions.
+- Registry: F-NEW-199 + F-NEW-203 -> IMPLEMENTED (wave-2 law text +
+  evidence appended); worklist regenerated (728 items, open 282).
+
+Stage Summary:
+- Done: DEEP-AUDIT P0-2 + P1-6 laws implemented with zero regression.
+- Remaining: acceptance probe for F-NEW-199 pending a corpus title that
+  reaches executeOnDiskIO; F-NEW-198/200/201/202/204..207 still PENDING;
+  F-NEW-197 sub-frontiers A (type-reflection family) and B (tree-build
+  gap); SUCCESS-PATH corpus F-NEW-208..214.

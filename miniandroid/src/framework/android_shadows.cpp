@@ -1117,26 +1117,73 @@ CallResult ArchTaskExecutorShadow::dispatch(const CallContext& ctx) {
         //
         // To prove the identity, look up both shadows via the registry and
         // verify they're bound to the same id.
+        uint32_t main_thread = 0, bound = 0;
         if (registry_) {
-            if (auto* ts = registry_->find_as<ThreadShadow>()) {
-                if (auto* ls = registry_->find_as<LooperShadow>()) {
-                    uint32_t main_thread = ts->main_thread_id();
-                    uint32_t bound = ls->bound_thread_id();
-                    if (main_thread != 0 && main_thread == bound) {
-                        // Identity contract holds — return true.
-                        return CallResult::handled_bool(true);
-                    }
-                }
+            if (auto* ts = registry_->find_as<ThreadShadow>())
+                main_thread = ts->main_thread_id();
+            if (auto* ls = registry_->find_as<LooperShadow>())
+                bound = ls->bound_thread_id();
+            if (main_thread != 0 && main_thread == bound) {
+                // Identity contract holds — return true.
+                return CallResult::handled_bool(true);
             }
         }
-        // Identity not yet established — return false (matches real Android
-        // when mDelegate is null, which would NPE).
+        // F-NEW-203 THREAD-IDENTITY OBSERVABILITY LAW: identity UNKNOWN is
+        // never silently converted into a background answer. When the
+        // ThreadShadow/LooperShadow identity contract is not established
+        // (either shadow missing, main unbound, or main != bound), the
+        // UNKNOWN state is EXPOSED via a bounded evidence line — the
+        // first-divergence rule (user-mandated: MAIN / BACKGROUND / UNKNOWN
+        // must be distinguishable; the previous silent `false` could hide
+        // an executor gap until the UI stayed white). The boolean still
+        // answers false (background-classified) for compatibility, but the
+        // divergence is named.
+        {
+            static thread_local uint64_t f203_log = 0;
+            if (f203_log < 8) {
+                ++f203_log;
+                std::cerr << "[F-NEW-203] isMainThread identity UNKNOWN "
+                          << "(main_thread=" << main_thread
+                          << ", bound=" << bound << ") -> false "
+                          << "(background-classified, divergence exposed)"
+                          << std::endl;
+            }
+        }
         return CallResult::handled_bool(false);
     }
     if (m == "executeOnDiskIO" || m == "postToMainThread" ||
         m == "delegate" || m == "setDelegate") {
-        // executeOnDiskIO(Runnable) → enqueue on disk thread (we use a no-op).
-        // postToMainThread(Runnable) → enqueue via HandlerShadow.
+        // F-NEW-199 DISK-IO EXECUTION LAW (AOSP ArchTaskExecutor.executeOn
+        // DiskIO -> DefaultTaskExecutor.executeOnDiskIO): the Runnable MUST
+        // actually execute. The previous behavior: "enqueue on disk thread
+        // (we use a no-op)" — the runnable was DROPPED, so an AndroidX app
+        // that computes on the background executor and posts the result to
+        // main (executeOnDiskIO -> compute -> postToMainThread -> UI update)
+        // left the UI white forever (user-mandated P0: the background
+        // executor gap). Deterministic virtual execution law: real OS
+        // threads are not required — the runnable is enqueued on the
+        // canonical pump queue (delay 0) and executes deterministically at
+        // the next drain point, exactly like postToMainThread below.
+        // Post-completion ordering: AOSP runs disk work concurrently; the
+        // deterministic subset serializes it — the observable contract
+        // (background work executes, state changes, main callback fires)
+        // holds.
+        if (m == "executeOnDiskIO" && registry_) {
+            if (auto* hs = registry_->find_as<HandlerShadow>()) {
+                uint32_t r = HandlerShadow::extract_runnable(ctx, 0);
+                if (r != 0) {
+                    hs->enqueue(r, 0, /*cls=*/"ArchTaskExecutor-DiskIO");
+                    static thread_local uint64_t f199_log = 0;
+                    if (f199_log < 8) {
+                        ++f199_log;
+                        std::cerr << "[F-NEW-199] executeOnDiskIO runnable="
+                                  << r << " enqueued (deterministic "
+                                  << "background execution law)"
+                                  << std::endl;
+                    }
+                }
+            }
+        }
         if (m == "postToMainThread" && registry_) {
             if (auto* hs = registry_->find_as<HandlerShadow>()) {
                 uint32_t r = HandlerShadow::extract_runnable(ctx, 0);
