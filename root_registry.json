@@ -5,8 +5,8 @@
   "open_frontiers": [
    "R-NEW-381"
   ],
-  "last_updated": "S79 (2026-09-22): F-155 ROOT-CAUSED-FIXED via R-NEW-400 (MediaPlayer object law; fishrings input->state chain closed at HEAD, det x2); R-NEW-399 implemented (AOSP per-child hit-test walk law + HITPROBE; corpus blockers refuted as stale coordinates \u2014 honest note); gmdice multi-roll closed (580,1848 x2 rolls '6'->'5'); microtimer/unote/bouncy/opmt re-proven at HEAD; snake gameplay GIF published to gh-pages site",
-  "note": "S65 breadth: 3 NEW source-first apps executed (TriPeaks S7 + det \u00d73, FishRings S10 PROVEN with 3 input\u2192state\u2192changed-frame interactions det \u00d73, OPMT S6 + app-own nextInt(0) stopper). New laws: F-118 activity-constructor (R-NEW-385 \u2014 G08 launches now run <init>; 3 consumers day one) + F-119 X.TYPE/primitive-array (R-NEW-386). New open family: OBJECT-IDENTITY (field/array element view-ref identity churn \u2014 blocks TriPeaks S8/OPMT S7+, forensic trail recorded). Battery 92/94 + EXT-01/02 environmental; zero regressions. S64 commit carried PENDING-PUSH into this session (no credential); S65 commit carries both. || S64: 3 apps (pmk S6, FreeKlondike S10, SLC S9) + F-114..F-117. | S74: repaired stale summary totals (was 372 vs actual roots list); back-registered F-120 (S66 law) after validator gap detection. || S77 CANONICALIZATION (2026-09-22): stale scalar total 397 -> 404 (summary.total_roots and roots length were already 404; no records added or removed). F-NUMBERING RESOLVED: F-151 is a confirmed numbering gap \u2014 no record with ID F-151 was ever registered (next-free-id scan at S76 jumped it); F-152 (dooz Llt0;.w pc=808 null receiver) and F-153 (dialog CJK label paint) are the canonical S76 failure IDs. ROOT COUNT 397->404 enumerated exactly: R-NEW-390 (File.getAbsoluteFile), R-NEW-391 (File.getCanonicalFile/Path), R-NEW-392 (TextView subsumption), R-NEW-393 (View.getBackground themed-widget + Drawable.setColorFilter), R-NEW-394 (dialog decor layout + topmost-window touch), F-152, F-153. COMMIT ACCOUNTING: 8 unpublished commits at S77 start = 5 S75 carry-over (affc0d57, 310aba44, 84ac7869, 2835e9c6, b326acfd) + 3 S76 (2f13abe2, 3057ddb3, a8704916); origin/main = c67230be (ls-remote verified). PUBLISH: PUBLISH_BLOCKED (no GH_TOKEN in session; constitution \u00a752).",
+  "last_updated": "S79 (2026-09-22): F-155 ROOT-CAUSED-FIXED via R-NEW-400 (MediaPlayer object law; fishrings input->state chain closed at HEAD, det x2); R-NEW-399 implemented (AOSP per-child hit-test walk law + HITPROBE; corpus blockers refuted as stale coordinates — honest note); gmdice multi-roll closed (580,1848 x2 rolls '6'->'5'); microtimer/unote/bouncy/opmt re-proven at HEAD; snake gameplay GIF published to gh-pages site",
+  "note": "S65 breadth: 3 NEW source-first apps executed (TriPeaks S7 + det ×3, FishRings S10 PROVEN with 3 input→state→changed-frame interactions det ×3, OPMT S6 + app-own nextInt(0) stopper). New laws: F-118 activity-constructor (R-NEW-385 — G08 launches now run <init>; 3 consumers day one) + F-119 X.TYPE/primitive-array (R-NEW-386). New open family: OBJECT-IDENTITY (field/array element view-ref identity churn — blocks TriPeaks S8/OPMT S7+, forensic trail recorded). Battery 92/94 + EXT-01/02 environmental; zero regressions. S64 commit carried PENDING-PUSH into this session (no credential); S65 commit carries both. || S64: 3 apps (pmk S6, FreeKlondike S10, SLC S9) + F-114..F-117. | S74: repaired stale summary totals (was 372 vs actual roots list); back-registered F-120 (S66 law) after validator gap detection. || S77 CANONICALIZATION (2026-09-22): stale scalar total 397 -> 404 (summary.total_roots and roots length were already 404; no records added or removed). F-NUMBERING RESOLVED: F-151 is a confirmed numbering gap — no record with ID F-151 was ever registered (next-free-id scan at S76 jumped it); F-152 (dooz Llt0;.w pc=808 null receiver) and F-153 (dialog CJK label paint) are the canonical S76 failure IDs. ROOT COUNT 397->404 enumerated exactly: R-NEW-390 (File.getAbsoluteFile), R-NEW-391 (File.getCanonicalFile/Path), R-NEW-392 (TextView subsumption), R-NEW-393 (View.getBackground themed-widget + Drawable.setColorFilter), R-NEW-394 (dialog decor layout + topmost-window touch), F-152, F-153. COMMIT ACCOUNTING: 8 unpublished commits at S77 start = 5 S75 carry-over (affc0d57, 310aba44, 84ac7869, 2835e9c6, b326acfd) + 3 S76 (2f13abe2, 3057ddb3, a8704916); origin/main = c67230be (ls-remote verified). PUBLISH: PUBLISH_BLOCKED (no GH_TOKEN in session; constitution §52).",
   "total": 409,
   "verified_fixed": 43,
   "by_status": {
@@ -30,7 +30,7 @@
    "OPEN": 4,
    "USED_BY_EXECUTION": 4
   },
-  "primary_frontier": "R-NEW-361 (dooz v18+v23 converge: ScatterMap/probe arithmetic \u2014 refined R-NEW-335)",
+  "primary_frontier": "R-NEW-361 (dooz v18+v23 converge: ScatterMap/probe arithmetic — refined R-NEW-335)",
   "status_vocabulary": [
    "OBSERVED-FAIL",
    "ROOT-CAUSED-FIXED",
@@ -2337,7 +2337,7 @@
   },
   {
    "id": "R-NEW-341",
-   "title": "getApplicationContext served a plain Context singleton \u2014 Hilt Application resolution ISE killed dooz23 first composition",
+   "title": "getApplicationContext served a plain Context singleton — Hilt Application resolution ISE killed dooz23 first composition",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P0",
    "layer": null
@@ -2351,42 +2351,42 @@
   },
   {
    "id": "R-NEW-343",
-   "title": "java.lang.Class.cast(Object) unimplemented \u2014 Hilt component-holder unwrap Lpm;.B null-poisoned the whole DI chain",
+   "title": "java.lang.Class.cast(Object) unimplemented — Hilt component-holder unwrap Lpm;.B null-poisoned the whole DI chain",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P0",
    "layer": null
   },
   {
    "id": "R-NEW-344",
-   "title": "dooz23 ScatterMap full-table probe spin: second grow computed newCapacity=15 instead of nextCapacity(15)=31 \u2014 ROOT-CAUSED as missing java.lang.Long bridge (F-086), fixed + regression-tested at S57",
+   "title": "dooz23 ScatterMap full-table probe spin: second grow computed newCapacity=15 instead of nextCapacity(15)=31 — ROOT-CAUSED as missing java.lang.Long bridge (F-086), fixed + regression-tested at S57",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P0",
    "layer": null
   },
   {
    "id": "R-NEW-345",
-   "title": "runBlocking/BlockingCoroutine joinBlocking livelock \u2014 kotlinx event-loop state machine + worker threads never observed their own work; HALT-LOOP destroyed two coroutine frames; dooz theme-load never completed",
+   "title": "runBlocking/BlockingCoroutine joinBlocking livelock — kotlinx event-loop state machine + worker threads never observed their own work; HALT-LOOP destroyed two coroutine frames; dooz theme-load never completed",
    "status": "IMPLEMENTED",
    "priority": "P0",
    "layer": null
   },
   {
    "id": "R-NEW-347",
-   "title": "dooz23 first-frame chain (compose BOM 2026.06.01 / runtime 1.11.4): AndroidComposeView never attached, never DEX-measured, View.measure void, File path/name family missing \u2014 content composition started but root stayed 0x0",
+   "title": "dooz23 first-frame chain (compose BOM 2026.06.01 / runtime 1.11.4): AndroidComposeView never attached, never DEX-measured, View.measure void, File path/name family missing — content composition started but root stayed 0x0",
    "status": "IMPLEMENTED",
    "priority": "P0",
    "layer": null
   },
   {
    "id": "R-NEW-348",
-   "title": "dooz23: compose 1.11.4 composition-capabilities gate \u2014 Lpz0;.c1() aborts via U0(Z)Lwt0;==null before ever invoking the app content lambda",
+   "title": "dooz23: compose 1.11.4 composition-capabilities gate — Lpz0;.c1() aborts via U0(Z)Lwt0;==null before ever invoking the app content lambda",
    "status": "SUPERSEDED-BY-EVIDENCE",
    "priority": "P0",
    "layer": null
   },
   {
    "id": "R-NEW-349",
-   "title": "dooz23 onCreate death: eager measure inside setContentView(View) dispatched real DEX AbstractComposeView.onMeasure on an UNATTACHED tree \u2014 windowRecomposer checkPrecondition(isAttachedToWindow) threw ISE before any composition existed",
+   "title": "dooz23 onCreate death: eager measure inside setContentView(View) dispatched real DEX AbstractComposeView.onMeasure on an UNATTACHED tree — windowRecomposer checkPrecondition(isAttachedToWindow) threw ISE before any composition existed",
    "status": "IMPLEMENTED",
    "priority": "P0",
    "layer": null
@@ -2400,35 +2400,35 @@
   },
   {
    "id": "R-NEW-351",
-   "title": "dooz23 FIRST real protobuf schema build dies: MessageSchema table builder Llt0;.w aput-oob 'length=1; index=1' \u2014 the int[] field table sized from the parsed MessageInfo is 1 short for the writer loop",
+   "title": "dooz23 FIRST real protobuf schema build dies: MessageSchema table builder Llt0;.w aput-oob 'length=1; index=1' — the int[] field table sized from the parsed MessageInfo is 1 short for the writer loop",
    "status": "SUPERSEDED-BY-EVIDENCE",
    "priority": "P0",
    "layer": null
   },
   {
    "id": "R-NEW-352",
-   "title": "microtimer Room initDb retry loop under interpreter-level forName resolution \u2014 50k re-visits of the SAME forName invoke starve the run budget (the reason R-NEW-350 is env-gated MINIANDROID_R350_LAW=1)",
+   "title": "microtimer Room initDb retry loop under interpreter-level forName resolution — 50k re-visits of the SAME forName invoke starve the run budget (the reason R-NEW-350 is env-gated MINIANDROID_R350_LAW=1)",
    "status": "PROVEN-FIXED",
    "priority": "P2",
    "layer": null
   },
   {
    "id": "R-NEW-353",
-   "title": "String.charAt bridge law drops its result \u2014 bridge result-out contract",
+   "title": "String.charAt bridge law drops its result — bridge result-out contract",
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "layer": null
   },
   {
    "id": "R-NEW-354",
-   "title": "Framework-class registry law \u2014 Class.forName must answer engine framework surface",
+   "title": "Framework-class registry law — Class.forName must answer engine framework surface",
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "layer": null
   },
   {
    "id": "R-NEW-355",
-   "title": "INVOKE PC-ADVANCE CONTRACT \u2014 interpreter-level forName law exits never advanced pc_",
+   "title": "INVOKE PC-ADVANCE CONTRACT — interpreter-level forName law exits never advanced pc_",
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "layer": null
@@ -2456,35 +2456,35 @@
   },
   {
    "id": "R-NEW-359",
-   "title": "View.post/postDelayed/removeCallbacks + Activity.runOnUiThread silently swallowed their Runnables (handled_void, no enqueue) \u2014 the deferred compose-request chain never reached the main MessageQueue",
+   "title": "View.post/postDelayed/removeCallbacks + Activity.runOnUiThread silently swallowed their Runnables (handled_void, no enqueue) — the deferred compose-request chain never reached the main MessageQueue",
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "layer": null
   },
   {
    "id": "R-NEW-360",
-   "title": "ArrayList(Collection) copy-ctor law blind to R8-renamed wrapper collections (Arrays$ArrayList Lzc; has no get(I); kotlin ArrayDeque Lad; is circular) \u2014 copies came out EMPTY \u2192 NoSuchElementException('List is empty.') in NavController.popBackStack killed the first composition",
+   "title": "ArrayList(Collection) copy-ctor law blind to R8-renamed wrapper collections (Arrays$ArrayList Lzc; has no get(I); kotlin ArrayDeque Lad; is circular) — copies came out EMPTY → NoSuchElementException('List is empty.') in NavController.popBackStack killed the first composition",
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "layer": null
   },
   {
    "id": "R-NEW-361",
-   "title": "R-NEW-335 REFINED (dooz v18+v23 converge on one face): compose SlotTable/ScatterMap probe arithmetic yields NEGATIVE corrupt indices (v23: aput-oob length=15 index=-733270216 in Lbw0;.a after HALT-LOOP in Lbw0;.d 2.4M instrs; v18: length=2 index=-76748249 in LP/v$a;.a after HALT-LOOP in Lh/r;.b) \u2014 metadata Arrays.fill VERIFIED CORRECT ([F040-DIAG] fill([J,0,2,0x8080808080808080) xN), wide ushr/shr laws verified correct \u2014 corruption sits in the probe/binary-search index computation (identity hashCode of DEX objects suspected: key.hashCode() feeding murmur h2/slot math)",
+   "title": "R-NEW-335 REFINED (dooz v18+v23 converge on one face): compose SlotTable/ScatterMap probe arithmetic yields NEGATIVE corrupt indices (v23: aput-oob length=15 index=-733270216 in Lbw0;.a after HALT-LOOP in Lbw0;.d 2.4M instrs; v18: length=2 index=-76748249 in LP/v$a;.a after HALT-LOOP in Lh/r;.b) — metadata Arrays.fill VERIFIED CORRECT ([F040-DIAG] fill([J,0,2,0x8080808080808080) xN), wide ushr/shr laws verified correct — corruption sits in the probe/binary-search index computation (identity hashCode of DEX objects suspected: key.hashCode() feeding murmur h2/slot math)",
    "status": "VERIFIED-FIXED",
    "priority": "P1",
    "layer": null
   },
   {
    "id": "R-NEW-367",
-   "title": "SharedPreferences shadow hard-coded the EXP-era data dir 'org.telegram.messenger/shared_prefs' for EVERY app \u2014 any non-Telegram APK's getSharedPreferences loaded from / stored into the wrong package directory",
+   "title": "SharedPreferences shadow hard-coded the EXP-era data dir 'org.telegram.messenger/shared_prefs' for EVERY app — any non-Telegram APK's getSharedPreferences loaded from / stored into the wrong package directory",
    "status": "VERIFIED-FIXED",
    "priority": "P1",
    "layer": null
   },
   {
    "id": "R-NEW-368",
-   "title": "uNote main-menu buttons unreachable for input \u2014 REFUTED at S56: the 16-probe grid (y 300..1780) never covered the bottom 44px button band (y=1876..1920); a tap at the real coordinates hits, consumes, and launches NoteEdition",
+   "title": "uNote main-menu buttons unreachable for input — REFUTED at S56: the 16-probe grid (y 300..1780) never covered the bottom 44px button band (y=1876..1920); a tap at the real coordinates hits, consumes, and launches NoteEdition",
    "status": "VERIFIED-FIXED",
    "priority": "P1",
    "layer": null
@@ -2498,49 +2498,49 @@
   },
   {
    "id": "R-NEW-376",
-   "title": "Dooz ctor-climb: Compose init constructor-invocation chains exceeding the 2048-frame budget (v18 Lj/j0; x7 + Lt0/t;/LE0/c; x2; v23 Lgz1; x3 + Lbp1; x1) \u2014 impossible-in-valid-DEX self-delegating face",
+   "title": "Dooz ctor-climb: Compose init constructor-invocation chains exceeding the 2048-frame budget (v18 Lj/j0; x7 + Lt0/t;/LE0/c; x2; v23 Lgz1; x3 + Lbp1; x1) — impossible-in-valid-DEX self-delegating face",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P0",
    "layer": null
   },
   {
    "id": "R-NEW-377",
-   "title": "billthefarmer Notes v139 renders RENDER_ONLY: FAB click swapped NOTHING \u2014 ViewSwitcher.setDisplayedChild (the read<->edit face state machine) was a REC-MISS silent no-op (no ViewAnimator family law in ViewShadow). S53-era \"ListView item paint\" hypothesis REFUTED by S55 tree forensics: v139 has NO ListView \u2014 main layout = FrameLayout \u2192 ViewSwitcher[ScrollView+EditText | MarkdownView] + FAB ViewSwitcher[2\u00d7 ImageButton]",
+   "title": "billthefarmer Notes v139 renders RENDER_ONLY: FAB click swapped NOTHING — ViewSwitcher.setDisplayedChild (the read<->edit face state machine) was a REC-MISS silent no-op (no ViewAnimator family law in ViewShadow). S53-era \"ListView item paint\" hypothesis REFUTED by S55 tree forensics: v139 has NO ListView — main layout = FrameLayout → ViewSwitcher[ScrollView+EditText | MarkdownView] + FAB ViewSwitcher[2× ImageButton]",
    "status": "VERIFIED-FIXED",
    "priority": "P1",
    "layer": null
   },
   {
    "id": "F-084",
-   "title": "HALT-RETURN containment law: a callee frame that exits via the loop-detector/instruction-budget halt has NO defined return value \u2014 the engine must not deliver the stale last_invoke_return_ to the caller's move-result",
+   "title": "HALT-RETURN containment law: a callee frame that exits via the loop-detector/instruction-budget halt has NO defined return value — the engine must not deliver the stale last_invoke_return_ to the caller's move-result",
    "status": "IMPLEMENTED+TESTED",
    "priority": "P0",
    "layer": null
   },
   {
    "id": "F-086",
-   "title": "java.lang.Long 64-bit comparison bridge family (compare/compareUnsigned, OpenJDK Long.java law) \u2014 closes the STUBBED-typed-zero class for wide-arg static invokes",
+   "title": "java.lang.Long 64-bit comparison bridge family (compare/compareUnsigned, OpenJDK Long.java law) — closes the STUBBED-typed-zero class for wide-arg static invokes",
    "status": "IMPLEMENTED+TESTED",
    "priority": "P0",
    "layer": null
   },
   {
    "id": "R-NEW-378",
-   "title": "Dooz post-F-102 cascade: compose rememberSaveable ACCEPTABLE_CLASSES IAE \"Can't put value with type null into saved state\" (Ljb1;.f via Lje;.<init> pc=73..104) + Class-keyed map IAE \"Key must be a class\" (Lwl0;.containsKey instance-of) \u2014 APP BOUNDARY unwind at MainActivity.onCreate invoke_pc=317",
+   "title": "Dooz post-F-102 cascade: compose rememberSaveable ACCEPTABLE_CLASSES IAE \"Can't put value with type null into saved state\" (Ljb1;.f via Lje;.<init> pc=73..104) + Class-keyed map IAE \"Key must be a class\" (Lwl0;.containsKey instance-of) — APP BOUNDARY unwind at MainActivity.onCreate invoke_pc=317",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P0",
    "layer": null
   },
   {
    "id": "R-NEW-379",
-   "title": "Dooz next frontier (post F-102/F-103): compose init dies at ViewTreeLifecycleOwner \u2014 ISE \"ViewTreeLifecycleOwner not found from Lho;@1074\" (Log0;.c) uncaught at MainActivity.onCreate invoke_pc=317; the owner-tag walk finds no ViewTreeLifecycleOwner on the decor/compose root chain (predecessor face R-NEW-317 fixed only the ViewShadow routing; the owner SET law + walk extension remain)",
+   "title": "Dooz next frontier (post F-102/F-103): compose init dies at ViewTreeLifecycleOwner — ISE \"ViewTreeLifecycleOwner not found from Lho;@1074\" (Log0;.c) uncaught at MainActivity.onCreate invoke_pc=317; the owner-tag walk finds no ViewTreeLifecycleOwner on the decor/compose root chain (predecessor face R-NEW-317 fixed only the ViewShadow routing; the owner SET law + walk extension remain)",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P1",
    "layer": null
   },
   {
    "id": "F-102",
-   "title": "F-102 (S58): 3rc invoke-*/range descriptor dispatch law \u2014 pass the call site proto to try_recursive_invoke on both attempts (F-023 exact-descriptor selection); fixes the ctor-climb self-recursion (R-NEW-376)",
+   "title": "F-102 (S58): 3rc invoke-*/range descriptor dispatch law — pass the call site proto to try_recursive_invoke on both attempts (F-023 exact-descriptor selection); fixes the ctor-climb self-recursion (R-NEW-376)",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P0",
    "layer": null
@@ -2554,21 +2554,21 @@
   },
   {
    "id": "F-104",
-   "title": "F-104 (S58): io/state law family \u2014 FileInputStream/FileReader sandbox ctor law + \"file:\" stream keys in cached_asset_bytes (4 MiB bound); Uri.fromFile/getPath/getScheme/getLastPathSegment; ContentResolver.openInputStream; AsyncTask.execute (doInBackground+onPostExecute dispatch, ancestor-walk recognized); EnumSet.of; java.util.regex Pattern.compile / Matcher.find/matches/group/appendReplacement/appendTail (std::regex); requestPermissions -> onRequestPermissionsResult callback dispatch; BufferedInputStream joins the EXP-071 wrapper-propagation chain; [EXP093-FNA] trace env-gated (F-074 hygiene)",
+   "title": "F-104 (S58): io/state law family — FileInputStream/FileReader sandbox ctor law + \"file:\" stream keys in cached_asset_bytes (4 MiB bound); Uri.fromFile/getPath/getScheme/getLastPathSegment; ContentResolver.openInputStream; AsyncTask.execute (doInBackground+onPostExecute dispatch, ancestor-walk recognized); EnumSet.of; java.util.regex Pattern.compile / Matcher.find/matches/group/appendReplacement/appendTail (std::regex); requestPermissions -> onRequestPermissionsResult callback dispatch; BufferedInputStream joins the EXP-071 wrapper-propagation chain; [EXP093-FNA] trace env-gated (F-074 hygiene)",
    "status": "IMPLEMENTED",
    "priority": "P1",
    "layer": null
   },
   {
    "id": "R-NEW-380",
-   "title": "Dooz next frontier (post F-105): ViewModelProvider create chain falls to the throwing factory fallback \u2014 RuntimeException \"Cannot create an instance of \" (class-name portion EMPTY) caller=Leo;.n pc=53 depth=81; chain Lyd0;.b -> Ltf1;.b -> Lt32;.b -> Lt32;.d -> Leo;.n while constructing the app GameViewModel after the Lwl0;.containsKey Class-key guard PASSES (F-105c)",
+   "title": "Dooz next frontier (post F-105): ViewModelProvider create chain falls to the throwing factory fallback — RuntimeException \"Cannot create an instance of \" (class-name portion EMPTY) caller=Leo;.n pc=53 depth=81; chain Lyd0;.b -> Ltf1;.b -> Lt32;.b -> Lt32;.d -> Leo;.n while constructing the app GameViewModel after the Lwl0;.containsKey Class-key guard PASSES (F-105c)",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P1",
    "layer": null
   },
   {
    "id": "R-NEW-381",
-   "title": "Dooz v23 first-frame content \u2014 S61 face: the Compose draw path is now WIRED (F-108 R8-rename law: identity via dispatchDraw-override contract instead of the wiped androidx package prefix) and the dispatch reaches the compose owner view; the remaining gap is COMPOSITION VOLUME \u2014 the interpreted composition (627 cold class inits + ~23K invokes + ~700K instructions) does not complete inside practical budgets, so dispatchDraw still yields 0 canvas ops.",
+   "title": "Dooz v23 first-frame content — S61 face: the Compose draw path is now WIRED (F-108 R8-rename law: identity via dispatchDraw-override contract instead of the wiped androidx package prefix) and the dispatch reaches the compose owner view; the remaining gap is COMPOSITION VOLUME — the interpreted composition (627 cold class inits + ~23K invokes + ~700K instructions) does not complete inside practical budgets, so dispatchDraw still yields 0 canvas ops.",
    "status": "OBSERVED-FAIL",
    "priority": "P1",
    "layer": null
@@ -2596,14 +2596,14 @@
   },
   {
    "id": "F-113",
-   "title": "java.security.SecureRandom IS-A Random bridge law (R-NEW-382) \u2014 framework-subclass virtual dispatch must resolve ancestor laws",
+   "title": "java.security.SecureRandom IS-A Random bridge law (R-NEW-382) — framework-subclass virtual dispatch must resolve ancestor laws",
    "status": "IMPLEMENTED+TESTED",
    "priority": "P0",
    "layer": null
   },
   {
    "id": "R-NEW-382",
-   "title": "gmdice dice roll typed-zero face (SecureRandom.nextInt \u2192 0)",
+   "title": "gmdice dice roll typed-zero face (SecureRandom.nextInt → 0)",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P0",
    "layer": null
@@ -2624,7 +2624,7 @@
   },
   {
    "id": "F-118",
-   "title": "Activity-constructor law (R-NEW-385) \u2014 every activity-construction path must run the declared no-arg <init>()V before onCreate (Instrumentation.newActivity / performLaunchActivity contract)",
+   "title": "Activity-constructor law (R-NEW-385) — every activity-construction path must run the declared no-arg <init>()V before onCreate (Instrumentation.newActivity / performLaunchActivity contract)",
    "status": "IMPLEMENTED+TESTED",
    "priority": "P0",
    "layer": null
@@ -2638,28 +2638,28 @@
   },
   {
    "id": "F-119",
-   "title": "X.TYPE primitive-class + primitive-array descriptor law (R-NEW-386) \u2014 Integer.TYPE & friends answer canonical Class objects; Array.newInstance builds [I-style descriptors for primitives",
+   "title": "X.TYPE primitive-class + primitive-array descriptor law (R-NEW-386) — Integer.TYPE & friends answer canonical Class objects; Array.newInstance builds [I-style descriptors for primitives",
    "status": "IMPLEMENTED+TESTED",
    "priority": "P0",
    "layer": null
   },
   {
    "id": "R-NEW-386",
-   "title": "FishRings board NPE (Integer.TYPE typed-zero \u2192 null matrix)",
+   "title": "FishRings board NPE (Integer.TYPE typed-zero → null matrix)",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P0",
    "layer": null
   },
   {
    "id": "R-NEW-388",
-   "title": "TriPeaks geometry \u2014 generic RL anchor laws PROVEN on f14 (current binary); game screen blocked at SplashActivity (app-specific path)",
+   "title": "TriPeaks geometry — generic RL anchor laws PROVEN on f14 (current binary); game screen blocked at SplashActivity (app-specific path)",
    "status": "ROOT-CAUSED-REMEASURED-GENERIC-OK",
    "priority": "P2",
    "layer": null
   },
   {
    "id": "A7",
-   "title": "Manifest label/icon \u2014 identity consumer law missing (label raw in parse, zero runtime consumers, icon unparsed)",
+   "title": "Manifest label/icon — identity consumer law missing (label raw in parse, zero runtime consumers, icon unparsed)",
    "status": "FIXED-S75",
    "priority": "P2",
    "layer": null
@@ -2673,7 +2673,7 @@
   },
   {
    "id": "R-NEW-389",
-   "title": "bouncy 81-px top-band divergence \u2014 ROOT-CAUSED: F-136 collateral (splash hint now renders), NOT nondeterminism",
+   "title": "bouncy 81-px top-band divergence — ROOT-CAUSED: F-136 collateral (splash hint now renders), NOT nondeterminism",
    "status": "ROOT-CAUSED-SEMANTIC",
    "priority": "P1",
    "layer": null
@@ -2687,7 +2687,7 @@
   },
   {
    "id": "F-122",
-   "title": "Color.rgb/argb/parseColor static factories were REC-MISS\u21920\u2192invisible",
+   "title": "Color.rgb/argb/parseColor static factories were REC-MISS→0→invisible",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P1",
    "layer": null
@@ -2701,14 +2701,14 @@
   },
   {
    "id": "F-124",
-   "title": "XML visibility enum space {0,1,2}\u2192View {0,4,8}",
+   "title": "XML visibility enum space {0,1,2}→View {0,4,8}",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P1",
    "layer": null
   },
   {
    "id": "A2",
-   "title": "getDimensionPixelSize args[1]-not-this + ARSC-first + complexToDimensionPixelSize (100dp\u2192263px exact)",
+   "title": "getDimensionPixelSize args[1]-not-this + ARSC-first + complexToDimensionPixelSize (100dp→263px exact)",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P1",
    "layer": null
@@ -2729,21 +2729,21 @@
   },
   {
    "id": "F-135",
-   "title": "OpenJDK NaN/infinite/compare family (Double/Float isNaN, isInfinite, compare) \u2014 694 static sites \u00d7 7 APKs, bouncy 480\u00d7 STUB\u2192IMPL",
+   "title": "OpenJDK NaN/infinite/compare family (Double/Float isNaN, isInfinite, compare) — 694 static sites × 7 APKs, bouncy 480× STUB→IMPL",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P0",
    "layer": null
   },
   {
    "id": "F-137",
-   "title": "ANCESTRY-DISPATCH root law \u2014 substring guards miss app subclasses (Application/Activity/Service receivers fell to type-default stub)",
+   "title": "ANCESTRY-DISPATCH root law — substring guards miss app subclasses (Application/Activity/Service receivers fell to type-default stub)",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P0",
    "layer": null
   },
   {
    "id": "F-138",
-   "title": "ScoreView hint HUD geometry \u2014 bitmap-font text drawn at (0,0) (legacy text path, text_size=0)",
+   "title": "ScoreView hint HUD geometry — bitmap-font text drawn at (0,0) (legacy text path, text_size=0)",
    "status": "REGISTERED",
    "priority": "P1",
    "layer": null
@@ -2757,7 +2757,7 @@
   },
   {
    "id": "F-142",
-   "title": "Layout-inflated ImageView src/drawable \u2192 Bitmap resolution + paint (fishrings 44-view game tree paints nothing)",
+   "title": "Layout-inflated ImageView src/drawable → Bitmap resolution + paint (fishrings 44-view game tree paints nothing)",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P1",
    "layer": null
@@ -2771,7 +2771,7 @@
   },
   {
    "id": "F-144",
-   "title": "GL/EGL surface family for libGDX apps (EGLContext.getEGL \u2192 checkGL20 \u2192 GdxRuntimeException)",
+   "title": "GL/EGL surface family for libGDX apps (EGLContext.getEGL → checkGL20 → GdxRuntimeException)",
    "status": "OPEN",
    "priority": "P2",
    "layer": null
@@ -2792,14 +2792,14 @@
   },
   {
    "id": "F-147",
-   "title": "dooz: ViewGroup.getChildAt(I) on null receiver at MainActivity.onCreate pc=228 (v10 null \u2014 likely a findViewById/content-view resolution gap)",
+   "title": "dooz: ViewGroup.getChildAt(I) on null receiver at MainActivity.onCreate pc=228 (v10 null — likely a findViewById/content-view resolution gap)",
    "status": "OPEN",
    "priority": "P1",
    "layer": null
   },
   {
    "id": "F-148",
-   "title": "ConstraintLayout anchor family unimplemented \u2014 every child measured 0-wide/stacked at x=0 (layout_constraint* attrs unparsed; no solver semantics)",
+   "title": "ConstraintLayout anchor family unimplemented — every child measured 0-wide/stacked at x=0 (layout_constraint* attrs unparsed; no solver semantics)",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P0",
    "layer": null
@@ -2911,7 +2911,7 @@
   },
   {
    "id": "F-155",
-   "title": "fishrings: MediaPlayer.create REC-MISS stub returned null player \u2192 GameActivity.sound() NPE aborted ring-rotation onClick (input \u2192 state chain dead; the S10 interaction was invisible at HEAD)",
+   "title": "fishrings: MediaPlayer.create REC-MISS stub returned null player → GameActivity.sound() NPE aborted ring-rotation onClick (input → state chain dead; the S10 interaction was invisible at HEAD)",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P1",
    "layer": null
@@ -2925,49 +2925,49 @@
   },
   {
    "id": "R-NEW-400",
-   "title": "AOSP MediaPlayer object law: create() \u2192 non-null PREPARED player; start/pause/stop/release/reset per the state-machine table",
+   "title": "AOSP MediaPlayer object law: create() → non-null PREPARED player; start/pause/stop/release/reset per the state-machine table",
    "status": "USED_BY_EXECUTION",
    "priority": "P1",
    "layer": null
   },
   {
    "id": "R-NEW-401",
-   "title": "Context.getExternalCacheDir \u2192 File bridge: external storage emulated as AVAILABLE (mirrors getExternalFilesDir P1.7)",
+   "title": "Context.getExternalCacheDir → File bridge: external storage emulated as AVAILABLE (mirrors getExternalFilesDir P1.7)",
    "status": "USED_BY_EXECUTION",
    "priority": "P2",
    "layer": null
   },
   {
    "id": "VF-NEW-001",
-   "title": "VF-DIALOG-ITEMS: AlertDialog$Builder.setItems(CharSequence[],listener) drops the item array \u2014 dialog paints title/message with items=0",
+   "title": "VF-DIALOG-ITEMS: AlertDialog$Builder.setItems(CharSequence[],listener) drops the item array — dialog paints title/message with items=0",
    "status": "ROOT_CAUSED-FIXED",
    "priority": "P0",
    "layer": null
   },
   {
    "id": "VF-NEW-002",
-   "title": "VF-PLACEHOLDER-GARBLE: C013-CUSTOMVIEW placeholder painted the raw class descriptor (e.g. Lorg.billthefarmer.markdown.MarkdownView) over full-screen regions \u2014 user-visible garbled text",
+   "title": "VF-PLACEHOLDER-GARBLE: C013-CUSTOMVIEW placeholder painted the raw class descriptor (e.g. Lorg.billthefarmer.markdown.MarkdownView) over full-screen regions — user-visible garbled text",
    "status": "ROOT_CAUSED-FIXED",
    "priority": "P0",
    "layer": null
   },
   {
    "id": "F-NEW-156",
-   "title": "Fresh-corpus onCreate APP BOUNDARY unwind family: first-run NPE inside app onCreate (before/at setContentView) unwinds process \u2192 blank two-color screen. Faces: de.tobiasbielefeld.solitaire GameSelector.onCreate invoke#3, org.debian.eugen.headingcalculator MainActivity.onCreate invoke#6 (MainActivity$1.<init>), com.chessclock ChessClock.onCreate invoke#2, omegacentauri.simplestopwatch StopWatch.onCreate invoke#18 (findViewById null \u2192 downstream NPE) | S134 UPDATE: solitaire_71 face ROOT-CAUSED-FIXED via F-NEW-160 (field identity law) \u2014 delegate constructs, AppCompat theme machinery runs, app reaches onStart (3-run 6588621c4a0c4182); NEXT faces: support-v7 i.<init> Window-callback wrapper IAE family, SharedPreferences.getBoolean null at c/m.aR, FragmentManager \"No activity\" at v4/b/r.a from m.onStart (downstream of the F-NEW-160 frontier). chessclock face \u2192 F-NEW-161; simplestopwatch+headingcalc faces render (residual C013 contamination \u2192 F-NEW-162).",
+   "title": "Fresh-corpus onCreate APP BOUNDARY unwind family: first-run NPE inside app onCreate (before/at setContentView) unwinds process → blank two-color screen. Faces: de.tobiasbielefeld.solitaire GameSelector.onCreate invoke#3, org.debian.eugen.headingcalculator MainActivity.onCreate invoke#6 (MainActivity$1.<init>), com.chessclock ChessClock.onCreate invoke#2, omegacentauri.simplestopwatch StopWatch.onCreate invoke#18 (findViewById null → downstream NPE) | S134 UPDATE: solitaire_71 face ROOT-CAUSED-FIXED via F-NEW-160 (field identity law) — delegate constructs, AppCompat theme machinery runs, app reaches onStart (3-run 6588621c4a0c4182); NEXT faces: support-v7 i.<init> Window-callback wrapper IAE family, SharedPreferences.getBoolean null at c/m.aR, FragmentManager \"No activity\" at v4/b/r.a from m.onStart (downstream of the F-NEW-160 frontier). chessclock face → F-NEW-161; simplestopwatch+headingcalc faces render (residual C013 contamination → F-NEW-162).",
    "status": "PARTIAL",
    "priority": "P0",
    "layer": null
   },
   {
    "id": "R-NEW-402",
-   "title": "S81 visual audit instrument: status ladder EXECUTED \u2260 VISUALLY COMPATIBLE (L0 LOADED_ONLY \u2026 L5 VISUALLY_VERIFIED) + metric suite (UNIQUE_COLORS/COLOR_ENTROPY/DOMINANT ratios/region classes) + APK-raster-vs-screen image-presence gap detector",
+   "title": "S81 visual audit instrument: status ladder EXECUTED ≠ VISUALLY COMPATIBLE (L0 LOADED_ONLY … L5 VISUALLY_VERIFIED) + metric suite (UNIQUE_COLORS/COLOR_ENTROPY/DOMINANT ratios/region classes) + APK-raster-vs-screen image-presence gap detector",
    "status": "IMPLEMENTED",
    "priority": "P1",
    "layer": null
   },
   {
    "id": "F-NEW-157",
-   "title": "libGDX AndroidGraphics.createGLSurfaceView NPE (EGL/GLSurfaceView frontier): app-boundary unwind at MainActivity.onCreate \u2014 libGDX AndroidBackend GL surface creation chain unimplemented | S134 UPDATE: boxcars (libGDX-class Ebiten engine via gomobile) measured \u2014 run completes rc=0 Errors=0 but the frame is the C013 placeholder (TRUE_EMPTY 3 colors 99.81%): the honest classification is native/Go-engine dependency missing; root continues via F-NEW-162 (placeholder/false-SUCCESS law) and the GL/EGL chain (F-144).",
+   "title": "libGDX AndroidGraphics.createGLSurfaceView NPE (EGL/GLSurfaceView frontier): app-boundary unwind at MainActivity.onCreate — libGDX AndroidBackend GL surface creation chain unimplemented | S134 UPDATE: boxcars (libGDX-class Ebiten engine via gomobile) measured — run completes rc=0 Errors=0 but the frame is the C013 placeholder (TRUE_EMPTY 3 colors 99.81%): the honest classification is native/Go-engine dependency missing; root continues via F-NEW-162 (placeholder/false-SUCCESS law) and the GL/EGL chain (F-144).",
    "status": "OBSERVED-FAIL",
    "priority": "P0",
    "layer": null
@@ -2995,21 +2995,21 @@
   },
   {
    "id": "R-NEW-424",
-   "title": "INPUT TouchTarget + onInterceptTouchEvent law (CAP-INPUT-102/100): hit-test walked children in DRAW order (AOSP walks REVERSE \u2014 topmost sibling must win overlaps), no TouchTarget chain was captured (MOVE/UP could not dispatch through ancestors), and ViewGroup.onInterceptTouchEvent never ran (no intercept-at-DOWN retarget, no mid-gesture CANCEL) \u2014 the AOSP ViewGroup.dispatchTouchEvent core was only partially modeled.",
+   "title": "INPUT TouchTarget + onInterceptTouchEvent law (CAP-INPUT-102/100): hit-test walked children in DRAW order (AOSP walks REVERSE — topmost sibling must win overlaps), no TouchTarget chain was captured (MOVE/UP could not dispatch through ancestors), and ViewGroup.onInterceptTouchEvent never ran (no intercept-at-DOWN retarget, no mid-gesture CANCEL) — the AOSP ViewGroup.dispatchTouchEvent core was only partially modeled.",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P0",
    "layer": null
   },
   {
    "id": "R-NEW-425",
-   "title": "INPUT VelocityTracker law gap (CAP-INPUT-108): the runtime had no velocity tracker \u2014 android.view.VelocityTracker.obtain/addMovement/computeCurrentVelocity/getXVelocity did not exist, and the dispatcher never delivered MOVE events to app code, so every fling/gesture-velocity path (ScrollView fling seeding, GestureDetector.onFling) was starved of data.",
+   "title": "INPUT VelocityTracker law gap (CAP-INPUT-108): the runtime had no velocity tracker — android.view.VelocityTracker.obtain/addMovement/computeCurrentVelocity/getXVelocity did not exist, and the dispatcher never delivered MOVE events to app code, so every fling/gesture-velocity path (ScrollView fling seeding, GestureDetector.onFling) was starved of data.",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P1",
    "layer": null
   },
   {
    "id": "R-NEW-426",
-   "title": "INPUT TouchDelegate law gap + MOVE-delivery law gap (CAP-INPUT-110): android.view.TouchDelegate did not exist (no ctor capture, no setTouchDelegate, no View.onTouchEvent consult \u2014 View.java L17060-17064), and the dispatcher delivered only DOWN/UP to app code (MOVE events never reached OnTouchListener/onTouchEvent overrides \u2014 every drag-driven app path was starved).",
+   "title": "INPUT TouchDelegate law gap + MOVE-delivery law gap (CAP-INPUT-110): android.view.TouchDelegate did not exist (no ctor capture, no setTouchDelegate, no View.onTouchEvent consult — View.java L17060-17064), and the dispatcher delivered only DOWN/UP to app code (MOVE events never reached OnTouchListener/onTouchEvent overrides — every drag-driven app path was starved).",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P1",
    "layer": null
@@ -3086,21 +3086,21 @@
   },
   {
    "id": "R-NEW-437",
-   "title": "[HONESTY-CORRECTED S132] opencalculator pad collapsed (34 buttons/8 rows bounds=0, blank screen) \u2014 TableLayout/TableRow/weight + ConstraintLayout MATCH_CONSTRAINT family; NOT GridLayout (the APK has no GridLayout \u2014 S131 probe misread the 76-node heap scan)",
+   "title": "[HONESTY-CORRECTED S132] opencalculator pad collapsed (34 buttons/8 rows bounds=0, blank screen) — TableLayout/TableRow/weight + ConstraintLayout MATCH_CONSTRAINT family; NOT GridLayout (the APK has no GridLayout — S131 probe misread the 76-node heap scan)",
    "status": "ROOT-CAUSED-CLOSED",
    "priority": "P1",
    "layer": null
   },
   {
    "id": "R-NEW-438",
-   "title": "DEX onMeasure override emulation defeats the native container laws (incomplete-emulation law missing) \u2014 library containers collapse to 0x0 or skip child measure",
+   "title": "DEX onMeasure override emulation defeats the native container laws (incomplete-emulation law missing) — library containers collapse to 0x0 or skip child measure",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P1",
    "layer": null
   },
   {
    "id": "R-NEW-439",
-   "title": "ConstraintLayout PARENT_ID sentinel: modern AGP compiles app:layout_constraint*_to*Of=\"parent\" as typed INT 0 without a raw string \u2014 the raw==\"parent\"-only capture dropped every parent anchor",
+   "title": "ConstraintLayout PARENT_ID sentinel: modern AGP compiles app:layout_constraint*_to*Of=\"parent\" as typed INT 0 without a raw string — the raw==\"parent\"-only capture dropped every parent anchor",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P1",
    "layer": null
@@ -3121,21 +3121,21 @@
   },
   {
    "id": "R-NEW-442",
-   "title": "SVG-asset law missing (Telegram SvgHelper family loads plain-text .svg assets; no text-XML reader existed) \u2014 adapter law over the existing path/fill substrate",
+   "title": "SVG-asset law missing (Telegram SvgHelper family loads plain-text .svg assets; no text-XML reader existed) — adapter law over the existing path/fill substrate",
    "status": "IMPLEMENTED",
    "priority": "P2",
    "layer": null
   },
   {
    "id": "R-NEW-443",
-   "title": "WEB-001 network document law missing: WebView.loadUrl(http/https) kept the honest-placeholder law (no top-level fetch) \u2014 the FIRST divergence of every live-site load",
+   "title": "WEB-001 network document law missing: WebView.loadUrl(http/https) kept the honest-placeholder law (no top-level fetch) — the FIRST divergence of every live-site load",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P0",
    "layer": null
   },
   {
    "id": "R-NEW-444",
-   "title": "ES-MODULE script law missing: <script type=module> executed with classic goals \u2192 SyntaxError: unsupported keyword: export \u2014 the FIRST DIVERGENCE of the live z.ai load (the 3.2MB Vue/Svelte SPA bundle died at parse; app never mounted; page white)",
+   "title": "ES-MODULE script law missing: <script type=module> executed with classic goals → SyntaxError: unsupported keyword: export — the FIRST DIVERGENCE of the live z.ai load (the 3.2MB Vue/Svelte SPA bundle died at parse; app never mounted; page white)",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P0",
    "layer": null
@@ -3149,56 +3149,56 @@
   },
   {
    "id": "R-NEW-446",
-   "title": "fetch(url, init) headers/method ignored (WHATWG Fetch \u00a74.1 init law): Authorization/Content-Type dropped \u2014 every authenticated-SPA request degraded",
+   "title": "fetch(url, init) headers/method ignored (WHATWG Fetch §4.1 init law): Authorization/Content-Type dropped — every authenticated-SPA request degraded",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P1",
    "layer": null
   },
   {
    "id": "R-NEW-447",
-   "title": "HTTP cookie store missing (RFC 6265 \u00a75.3/\u00a75.4): Set-Cookie never stored, Cookie never echoed \u2014 the z.ai session flow (token cookie from /api/v1/auths/ gating /api/models) returned 403",
+   "title": "HTTP cookie store missing (RFC 6265 §5.3/§5.4): Set-Cookie never stored, Cookie never echoed — the z.ai session flow (token cookie from /api/v1/auths/ gating /api/models) returned 403",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P1",
    "layer": null
   },
   {
    "id": "R-NEW-448",
-   "title": "Unhandled promise rejections were INVISIBLE (no host rejection tracker) \u2014 a whole SPA boot chain died silently (white screen with zero error surface)",
+   "title": "Unhandled promise rejections were INVISIBLE (no host rejection tracker) — a whole SPA boot chain died silently (white screen with zero error surface)",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P1",
    "layer": null
   },
   {
    "id": "R-NEW-449",
-   "title": "Web-API stub family missing: PerformanceObserver/IntersectionObserver/MutationObserver/ResizeObserver/matchMedia/requestIdleCallback \u2014 z.ai's first inline telemetry script died at 'PerformanceObserver is not defined' BEFORE its payload ran",
+   "title": "Web-API stub family missing: PerformanceObserver/IntersectionObserver/MutationObserver/ResizeObserver/matchMedia/requestIdleCallback — z.ai's first inline telemetry script died at 'PerformanceObserver is not defined' BEFORE its payload ran",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P1",
    "layer": null
   },
   {
    "id": "R-NEW-450",
-   "title": "ATOMIC INLINE-BOX law missing (CSS 2.1 \u00a79.2.2): display:inline-block elements text-merged into the parent (never laid out lo=0, never painted) \u2014 T02 color chips and T14's 2000-node grid rendered NOTHING (the dominant general-roots divergence from the fixture suite)",
+   "title": "ATOMIC INLINE-BOX law missing (CSS 2.1 §9.2.2): display:inline-block elements text-merged into the parent (never laid out lo=0, never painted) — T02 color chips and T14's 2000-node grid rendered NOTHING (the dominant general-roots divergence from the fixture suite)",
    "status": "VERIFIED_3RUN",
    "priority": "P1",
    "layer": null
   },
   {
    "id": "R-NEW-451",
-   "title": "<img> replaced-element law missing: DOM <img> had no fetch, no box, no paint (only JS new Image()/CSS background existed) \u2014 T05 fixture image invisible; klondike banner.html family affected",
+   "title": "<img> replaced-element law missing: DOM <img> had no fetch, no box, no paint (only JS new Image()/CSS background existed) — T05 fixture image invisible; klondike banner.html family affected",
    "status": "VERIFIED",
    "priority": "P1",
    "layer": null
   },
   {
    "id": "R-NEW-452",
-   "title": "Inline SVG BASIC-SHAPES law missing (SVG2 \u00a710.3/\u00a710.4): paint_svg_content painted only <path>/<use> \u2014 <circle>/<rect>/<ellipse> rendered nothing (T06 fixture; the S132 Telegram subset measured circle/rect usage)",
+   "title": "Inline SVG BASIC-SHAPES law missing (SVG2 §10.3/§10.4): paint_svg_content painted only <path>/<use> — <circle>/<rect>/<ellipse> rendered nothing (T06 fixture; the S132 Telegram subset measured circle/rect usage)",
    "status": "VERIFIED",
    "priority": "P1",
    "layer": null
   },
   {
    "id": "R-NEW-453",
-   "title": "Canvas attribute intrinsic-size law missing (WHATWG HTML \u00a74.12.4): parsed <canvas width= height=> kept a 1x1 bitmap AND a 0x0 box \u2014 every parse-time fillRect landed on a degenerate surface (T09: draw_calls=2, ZERO pixels)",
+   "title": "Canvas attribute intrinsic-size law missing (WHATWG HTML §4.12.4): parsed <canvas width= height=> kept a 1x1 bitmap AND a 0x0 box — every parse-time fillRect landed on a degenerate surface (T09: draw_calls=2, ZERO pixels)",
    "status": "VERIFIED",
    "priority": "P1",
    "layer": null
@@ -3212,21 +3212,21 @@
   },
   {
    "id": "R-NEW-455",
-   "title": "Browser resource-forensics instrumentation missing (S133 \u00a74/\u00a75/\u00a731): no per-resource table, no stage traces, no diagnostic artifact dump",
+   "title": "Browser resource-forensics instrumentation missing (S133 §4/§5/§31): no per-resource table, no stage traces, no diagnostic artifact dump",
    "status": "IMPLEMENTED",
    "priority": "P1",
    "layer": null
   },
   {
    "id": "R-NEW-456",
-   "title": "LIVE z.ai residual: the Svelte-5 runtime inside the minified app bundle rejects the boot ('TypeError: value is not iterable', twice, unhandled) at bundle line 7 (~48K chars) \u2014 the SPA mounts nothing and the page stays the honest white shell",
+   "title": "LIVE z.ai residual: the Svelte-5 runtime inside the minified app bundle rejects the boot ('TypeError: value is not iterable', twice, unhandled) at bundle line 7 (~48K chars) — the SPA mounts nothing and the page stays the honest white shell",
    "status": "BLOCKED",
    "priority": "P2",
    "layer": null
   },
   {
    "id": "F-NEW-160",
-   "title": "DEX INSTANCE FIELD IDENTITY LAW: heap instance fields were keyed by BARE NAME only \u2014 two same-named fields of two different classes aliased ONE storage slot. Faces: (1) solitaire_71 e.m (AppCompat delegate field, support/v7/app/e) collided with classes.c.m (app Handler field, b/b#30) \u2192 the Handler answered as the delegate \u2192 g.a(Activity,f) invoked on a Handler \u2192 Window null \u2192 support/v7/app/h.<init> pc=11 \"Window.getCallback on null receiver\" NPE \u2192 APP-BOUNDARY unwind \u2192 blank two-color screen; (2) R-NEW-414 initializer scan matched by NAME across the superclass chain and materialized an unrelated class's `new T` initializer (classes.c m=new b.b()) for the undeclared e.m; (3) simplestopwatch_26 StopWatch.options (read ref class) vs ShowTime.options (write ref class) \u2014 ONE logical field, two ref classes \u2014 split by the naive qualified key and regressed to null prefs until the ART declarer-resolution walk was added. FIX (S134): qualified key \"Lcls;->name\" for DEX-defined declaring classes (framework-owned classes keep bare keys for C++ shadow interop); ART law resolved_field_declarer() walks the superclass chain to the actual declarer; field reads of never-written fields answer the declared DEFAULT (zero/null) \u2014 never another class's slot; DEX writes dual-write (qualified primary + bare legacy mirror).",
+   "title": "DEX INSTANCE FIELD IDENTITY LAW: heap instance fields were keyed by BARE NAME only — two same-named fields of two different classes aliased ONE storage slot. Faces: (1) solitaire_71 e.m (AppCompat delegate field, support/v7/app/e) collided with classes.c.m (app Handler field, b/b#30) → the Handler answered as the delegate → g.a(Activity,f) invoked on a Handler → Window null → support/v7/app/h.<init> pc=11 \"Window.getCallback on null receiver\" NPE → APP-BOUNDARY unwind → blank two-color screen; (2) R-NEW-414 initializer scan matched by NAME across the superclass chain and materialized an unrelated class's `new T` initializer (classes.c m=new b.b()) for the undeclared e.m; (3) simplestopwatch_26 StopWatch.options (read ref class) vs ShowTime.options (write ref class) — ONE logical field, two ref classes — split by the naive qualified key and regressed to null prefs until the ART declarer-resolution walk was added. FIX (S134): qualified key \"Lcls;->name\" for DEX-defined declaring classes (framework-owned classes keep bare keys for C++ shadow interop); ART law resolved_field_declarer() walks the superclass chain to the actual declarer; field reads of never-written fields answer the declared DEFAULT (zero/null) — never another class's slot; DEX writes dual-write (qualified primary + bare legacy mirror).",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P0",
    "layer": "dex/vm",
@@ -3238,7 +3238,7 @@
   },
   {
    "id": "F-NEW-161",
-   "title": "chessclock_29: NPE \"Uri.toString on null receiver\" at ChessClock.setUpGame pc=321 \u2192 APP-BOUNDARY unwind. getIntPref chain works (prefs shadow OK); the null Uri producer (RingtoneManager.getDefaultUri family or Uri.parse(pref)) is not yet attributed \u2014 disassembler tooling cannot disassemble the 300+ instruction method (dex_method_dump.py buffer mismatch). STATUS: OBSERVED-FAIL, first-divergence producer pending per-instruction proof.",
+   "title": "chessclock_29: NPE \"Uri.toString on null receiver\" at ChessClock.setUpGame pc=321 → APP-BOUNDARY unwind. getIntPref chain works (prefs shadow OK); the null Uri producer (RingtoneManager.getDefaultUri family or Uri.parse(pref)) is not yet attributed — disassembler tooling cannot disassemble the 300+ instruction method (dex_method_dump.py buffer mismatch). STATUS: OBSERVED-FAIL, first-divergence producer pending per-instruction proof.",
    "status": "OBSERVED-FAIL",
    "priority": "P1",
    "layer": "dex/api",
@@ -3246,16 +3246,16 @@
   },
   {
    "id": "F-NEW-162",
-   "title": "C013-CUSTOMVIEW inline placeholder contaminates visible frames and can stand in for unimplemented renderer families: (a) headingcalc_1 \u2014 pink \"custom view (not rendered)\" boxes overpaint REAL heading text (Heading custom views extend a text base and must route to the base draw semantics per S134 \u00a716, not a placeholder); (b) simplestopwatch_26 \u2014 BigTextView placeholder label in the live frame; (c) boxcars_libgdx (EbitenSurfaceView, GL/SurfaceView family) \u2014 the FULL-SCREEN frame IS the inline placeholder while the run reports Status: SUCCESS Errors: 0 (\u00a730 gate violation: placeholder + nonblank framebuffer classified as success instead of the honest NATIVE/JS-ENGINE-DEPENDENCY failure). LAW NEEDED: unknown custom views extending known bases route to base semantics with live state; SurfaceView/GLSurfaceView subclasses route to the surface pipeline; placeholders never overwrite real pixels and never produce SUCCESS. | S134 FIX LANDED (PARTIAL): (1) SurfaceView/GLSurfaceView-family custom views NEVER receive the inline placeholder (boxcars EbitenSurfaceView frame now honest single-color, contamination eliminated); (2) TextView-family descendants route to text semantics \u2014 headingcalc ExplainableTextView headings now render real labels (TC/WD/TH), unique colors 483->823; dotted/slash class_desc normalization law. REMAINING: the \u00a730 SUCCESS-gate downgrade for surface-family-only frames (boxcars still reports SUCCESS with an unrendered surface) and the routed-text position/overlap refinement.",
+   "title": "C013-CUSTOMVIEW inline placeholder contaminates visible frames and can stand in for unimplemented renderer families: (a) headingcalc_1 — pink \"custom view (not rendered)\" boxes overpaint REAL heading text (Heading custom views extend a text base and must route to the base draw semantics per S134 §16, not a placeholder); (b) simplestopwatch_26 — BigTextView placeholder label in the live frame; (c) boxcars_libgdx (EbitenSurfaceView, GL/SurfaceView family) — the FULL-SCREEN frame IS the inline placeholder while the run reports Status: SUCCESS Errors: 0 (§30 gate violation: placeholder + nonblank framebuffer classified as success instead of the honest NATIVE/JS-ENGINE-DEPENDENCY failure). LAW NEEDED: unknown custom views extending known bases route to base semantics with live state; SurfaceView/GLSurfaceView subclasses route to the surface pipeline; placeholders never overwrite real pixels and never produce SUCCESS. | S134 FIX LANDED (PARTIAL): (1) SurfaceView/GLSurfaceView-family custom views NEVER receive the inline placeholder (boxcars EbitenSurfaceView frame now honest single-color, contamination eliminated); (2) TextView-family descendants route to text semantics — headingcalc ExplainableTextView headings now render real labels (TC/WD/TH), unique colors 483->823; dotted/slash class_desc normalization law. REMAINING: the §30 SUCCESS-gate downgrade for surface-family-only frames (boxcars still reports SUCCESS with an unrendered surface) and the routed-text position/overlap refinement.",
    "status": "PARTIAL",
    "priority": "P1",
    "layer": "renderer/framework",
    "evidence": "run/s134/fast/ (before/after fingerprints; boxcars 1-color frame; headingcalc 823 colors with real headings), run logs [C013-CUSTOMVIEW] surface-family + text-base routing lines, T02 c95affdefb734ffd x3, dooz/ballbreak byte-identical to HEAD A/B",
-   "writer_classification": "C013 inline placeholder = DIAGNOSTIC writer currently reaching AUTHORITATIVE frames (\u00a719 violation)"
+   "writer_classification": "C013 inline placeholder = DIAGNOSTIC writer currently reaching AUTHORITATIVE frames (§19 violation)"
   },
   {
    "id": "F-NEW-163",
-   "title": "S135 VISUAL RUNTIME BOOT/TRACE LOGGER \u2014 dual-path observability (machine trace.jsonl + semantic overlay trace_overlay.png) built on ONE backbone (TraceEngine runtime_event + sinks); overlay composes a COPY after the authoritative write (never an app pixel owner); FIRST-DIVERGENCE stage machine (BOOT/APK/DEX/CLASS-INIT/LIFECYCLE/VIEWTREE/MEASURE/LAYOUT/DRAW/FRAME) with walk-through-confirmation + FAILURE-first derivation; FIRST_DIVERGENCE != LAST_EXCEPTION law enforced by construction",
+   "title": "S135 VISUAL RUNTIME BOOT/TRACE LOGGER — dual-path observability (machine trace.jsonl + semantic overlay trace_overlay.png) built on ONE backbone (TraceEngine runtime_event + sinks); overlay composes a COPY after the authoritative write (never an app pixel owner); FIRST-DIVERGENCE stage machine (BOOT/APK/DEX/CLASS-INIT/LIFECYCLE/VIEWTREE/MEASURE/LAYOUT/DRAW/FRAME) with walk-through-confirmation + FAILURE-first derivation; FIRST_DIVERGENCE != LAST_EXCEPTION law enforced by construction",
    "status": "IMPLEMENTED",
    "priority": "P1",
    "component": "diagnostics/boot-trace",
@@ -3269,7 +3269,7 @@
   },
   {
    "id": "F-NEW-164",
-   "title": "EXP-092 bitmap font shipped 5 corrupt glyphs (glyph_dot_bitmap=16x0xFF solid block, glyph_minus 3 full rows, glyph_E/I/z corrupted) \u2014 every '.' on the BitmapFont path drew a solid 8x16 block. ROOT CAUSE: generator tight-crops the ink bbox before scaling => wide-flat glyphs become all-ink cells. FIXED by full-cell re-render from DejaVuSansMono (scripts/s135_fix_font_glyphs.py); goldens byte-identical (no BitmapFont '.' on their paths)",
+   "title": "EXP-092 bitmap font shipped 5 corrupt glyphs (glyph_dot_bitmap=16x0xFF solid block, glyph_minus 3 full rows, glyph_E/I/z corrupted) — every '.' on the BitmapFont path drew a solid 8x16 block. ROOT CAUSE: generator tight-crops the ink bbox before scaling => wide-flat glyphs become all-ink cells. FIXED by full-cell re-render from DejaVuSansMono (scripts/s135_fix_font_glyphs.py); goldens byte-identical (no BitmapFont '.' on their paths)",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P2",
    "component": "renderer/bitmap-font",
@@ -3299,7 +3299,7 @@
   },
   {
    "id": "F-NEW-166",
-   "title": "WhatsApp_next_face (F-NEW-156 family): onCreate dies BEFORE any setContentView \u2014 NPE 'INVOKE_RETURN must not be null' at LX/00i;.A0F pc=19 (obfuscated helper); a stubbed invoke returned null where AOSP guarantees non-null, propagated to a throw before content install. VIEWTREE NOT_REACHED with ZERO R005-DECOR/F165 hits in the log (the app never reached Window.setContentView).",
+   "title": "WhatsApp_next_face (F-NEW-156 family): onCreate dies BEFORE any setContentView — NPE 'INVOKE_RETURN must not be null' at LX/00i;.A0F pc=19 (obfuscated helper); a stubbed invoke returned null where AOSP guarantees non-null, propagated to a throw before content install. VIEWTREE NOT_REACHED with ZERO R005-DECOR/F165 hits in the log (the app never reached Window.setContentView).",
    "status": "PARTIAL",
    "priority": "P1",
    "component": "dex/invoke-return-null",
@@ -3307,15 +3307,15 @@
     "before": "NPE 'INVOKE_RETURN must not be null' at LX/00i;.A0F during attachBaseContext; app died before onCreate",
     "after": "5 [F166-BASECTX] dispatches; the null-check PASSED; app boots into onCreate, creates views; frame REAL_APP_CONTENT (23472 non-default px, chrome renders)",
     "regression": "laws130 51/51; dooz ba8a95eb2278594f + ballbreak 8a951f5f975c4742 byte-identical; simplestopwatch e00fe7e082c385f8 with isolated --data-root (the 1797c760 delta was the DOCUMENTED shared-data-root prefs persistence law, A/B-proven not a code regression)",
-    "disassembly": "s134_wa_disasm.py: LX/009;.<init> getBaseContext \u2192 A06 null-check; A0F = R8 Intrinsics throw helper"
+    "disassembly": "s134_wa_disasm.py: LX/009;.<init> getBaseContext → A06 null-check; A0F = R8 Intrinsics throw helper"
    },
    "session": "S134 wave 3",
    "fix": "F166-BASECTX routing law in try_shadow_dispatch: ContextWrapper-family receivers now reach the S110 base-context law for getBaseContext/attachBaseContext, and ContextWrapper.<init>(base) records mBase (AOSP ctor=attachBaseContext delegation). Path-scoped: fires only on Context-named receiver classes where REC-MISS previously answered null.",
-   "residual": "Next frontier faces (new root F-NEW-167): the app's infra/logging Log.<clinit> hits the java.util.concurrent/nio REC-MISS family (AtomicReference.<init>, CountDownLatch.<init>, ReentrantLock.<init>, Charset.defaultCharset, TimeZone.getDefault) \u2192 VirtualMachineError unwind \u2192 AppContext.set state missing. Classic \u00a717 chain: missing API \u2192 clinit failure \u2192 static state missing \u2192 downstream ISE."
+   "residual": "Next frontier faces (new root F-NEW-167): the app's infra/logging Log.<clinit> hits the java.util.concurrent/nio REC-MISS family (AtomicReference.<init>, CountDownLatch.<init>, ReentrantLock.<init>, Charset.defaultCharset, TimeZone.getDefault) → VirtualMachineError unwind → AppContext.set state missing. Classic §17 chain: missing API → clinit failure → static state missing → downstream ISE."
   },
   {
    "id": "F-NEW-168",
-   "title": "WhatsApp next faces (F-NEW-156 chain continues): (a) androidx FragmentManager host law \u2014 'FragmentManager has not been attached to a host' ISE at LX/0JZ;.A0G + 'No activity' at LX/0JZ;.A0c: the app's wrapper-context FragmentManager init (FragmentActivity/attachBaseContext-time FragmentController) never recorded the host activity in the runtime's fragment shadow; (b) AppContext.set static-state law \u2014 the app's own context registry (LX/00I;.A00) reports set-has-not-been-invoked, downstream of the attach order.",
+   "title": "WhatsApp next faces (F-NEW-156 chain continues): (a) androidx FragmentManager host law — 'FragmentManager has not been attached to a host' ISE at LX/0JZ;.A0G + 'No activity' at LX/0JZ;.A0c: the app's wrapper-context FragmentManager init (FragmentActivity/attachBaseContext-time FragmentController) never recorded the host activity in the runtime's fragment shadow; (b) AppContext.set static-state law — the app's own context registry (LX/00I;.A00) reports set-has-not-been-invoked, downstream of the attach order.",
    "status": "OBSERVED-FAIL",
    "priority": "P1",
    "component": "androidx/fragment-host",
@@ -3325,7 +3325,7 @@
    "id": "F-NEW-170",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P0",
-   "summary": "StandardCharsets platform-constant law: the engine had no Ljava/nio/charset/StandardCharsets; statics, so sget UTF_8 answered null; WhatsApp 08D.<clinit> invoked Charset.name() on that null; 08C.<clinit> died leaving its static Set fields unwritten (SGET-MISS -> null) and the downstream Set.contains NPE chain killed Main.onCreate (white screen). Fix: sget arm materializes the six JDK constants as heap Charset objects (__charset_name__) under the same identity as the Charset.forName law. Residual (recorded, own wave): clinit-failure honesty \u2014 the engine records CLASS_INIT result=OK even when the clinit frame unwound; ART law is class-erroneous + ExceptionInInitializerError on access.",
+   "summary": "StandardCharsets platform-constant law: the engine had no Ljava/nio/charset/StandardCharsets; statics, so sget UTF_8 answered null; WhatsApp 08D.<clinit> invoked Charset.name() on that null; 08C.<clinit> died leaving its static Set fields unwritten (SGET-MISS -> null) and the downstream Set.contains NPE chain killed Main.onCreate (white screen). Fix: sget arm materializes the six JDK constants as heap Charset objects (__charset_name__) under the same identity as the Charset.forName law. Residual (recorded, own wave): clinit-failure honesty — the engine records CLASS_INIT result=OK even when the clinit frame unwound; ART law is class-erroneous + ExceptionInInitializerError on access.",
    "evidence": "FINAL-CAMPAIGN Phase 3 wave 1: wa_full.log lines 988-997 (SGET-MISS StandardCharsets.UTF_8 -> SYNTH-EXC Charset.name null -> 08C unwind); post-fix wa_full2.log: StandardCharsets SGET-MISS count=0, Set.contains face GONE. Gates: laws130 51/51, dooz ba8a95eb2278594f x3, stopwatch_6 eb16ab5c68fa9b6c x3.",
    "layer": "DEX/JVM statics + java.nio.charset",
    "title": "F-NEW-170",
@@ -3335,7 +3335,7 @@
    "id": "F-NEW-171",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P0",
-   "summary": "DEX register-width law (three faces, one root): (1) opcode 0x09 move-object/16 was DEFINED but had NO interpreter case \u2014 the default arm skipped 1 unit instead of 3, desyncing pc (07r.<init> @0x5a garbage decode -> new-instance 00D flow corrupted -> \"invoke 00D.<init> on null\"); (2) DexRegisterFile accessors were uint8_t \u2014 /16 formats (emitted exactly when reg indices exceed 255) truncated v256+ onto v0.. (register ALIASING: Builder.put receiver became a boxed Integer); (3) write_p computed the ABSOLUTE register as uint8_t param_start_+idx \u2014 methods with >255 regs landed arguments (incl. this) in wrong registers. Fix: move-object/16 handler (32x, 3 units); read_v/write_v/get_register/set_register/set_wide_pair widened to uint16_t; written_bits_ 4->16 words; write_p/read_p absolute-register arithmetic widened to uint32.",
+   "summary": "DEX register-width law (three faces, one root): (1) opcode 0x09 move-object/16 was DEFINED but had NO interpreter case — the default arm skipped 1 unit instead of 3, desyncing pc (07r.<init> @0x5a garbage decode -> new-instance 00D flow corrupted -> \"invoke 00D.<init> on null\"); (2) DexRegisterFile accessors were uint8_t — /16 formats (emitted exactly when reg indices exceed 255) truncated v256+ onto v0.. (register ALIASING: Builder.put receiver became a boxed Integer); (3) write_p computed the ABSOLUTE register as uint8_t param_start_+idx — methods with >255 regs landed arguments (incl. this) in wrong registers. Fix: move-object/16 handler (32x, 3 units); read_v/write_v/get_register/set_register/set_wide_pair widened to uint16_t; written_bits_ 4->16 words; write_p/read_p absolute-register arithmetic widened to uint32.",
    "evidence": "FINAL-CAMPAIGN Phase 3 wave 1: wa_full2.log 1416-1419 (UNIMPL-DIAG 07r @0x5a + 00D-null); wa_full4.log IGET-MISS-DIAG \"asked=Builder->size obj#21003 cls=Ljava/lang/Integer\" (register aliasing smoking gun); wa_full5/6.log: 00D-null count 0, chain advanced deep into 07r.A0Q -> ImmutableMap build. Gates: laws130 51/51, dooz x3 byte-identical, stopwatch_6 x3.",
    "layer": "DEX interpreter / register file",
    "title": "F-NEW-171",
@@ -3345,7 +3345,7 @@
    "id": "F-NEW-172",
    "status": "PARTIAL",
    "priority": "P0",
-   "summary": "RegularImmutableMap.createHashTable probe spin \u2014 ROOT-CAUSED TO THE KEY-MATERIALIZATION LAYER: instrumented evidence (SPIN-REGS/HISTO/TABLE, F172-AGET) proves (a) the hash table is correctly filled (-1 markers, len 32768), (b) 315 entries placed, (c) the probe visits 49,685 slots = sum(0..314) quadratic signature = ALL keys hash to slot 0 because guava smear(k) = C2*rotl(k,15) has low-15-bits zero for every integer key < 2^17. Real Android never sees this because real MobileConfig map keys are not placeholder Integers. Fix shipped this wave: Arrays.fill length resolution now reads __new_array_length__ (uniform new-array convention; R-NEW-361 no-op-fill family). Remaining: F-NEW-173.",
+   "summary": "RegularImmutableMap.createHashTable probe spin — ROOT-CAUSED TO THE KEY-MATERIALIZATION LAYER: instrumented evidence (SPIN-REGS/HISTO/TABLE, F172-AGET) proves (a) the hash table is correctly filled (-1 markers, len 32768), (b) 315 entries placed, (c) the probe visits 49,685 slots = sum(0..314) quadratic signature = ALL keys hash to slot 0 because guava smear(k) = C2*rotl(k,15) has low-15-bits zero for every integer key < 2^17. Real Android never sees this because real MobileConfig map keys are not placeholder Integers. Fix shipped this wave: Arrays.fill length resolution now reads __new_array_length__ (uniform new-array convention; R-NEW-361 no-op-fill family). Remaining: F-NEW-173.",
    "evidence": "wa_spin2-6.log SPIN-HISTO (pc0xaf=50001/pc0xdf=49685 quadratic signature), SPIN-REGS (v10=Integer(22183), v9=17750, v6=315), SPIN-TABLE (o24744: 3781 empty/315 occupied in first 4096), F172-AGET sequential probe trace.",
    "layer": "DEX interpreter / array + loop semantics",
    "title": "F-NEW-172",
@@ -3360,7 +3360,7 @@
    "layer": "DEX object model / key identity",
    "title": "F-NEW-173",
    "law": null,
-   "resolution": "Boxed-primitive identity law: hashCode/equals on boxed heap objects read the box's 'value' field (the register int_val is 0 for boxes) \u2014 every key hashed 0 -> smear(k)&mask==0 -> all probes from slot 0 -> quadratic storm. Post-fix: createHashTable completes, chain advanced to RegularImmutableMap.get (deepest ever, 2.5M instructions)."
+   "resolution": "Boxed-primitive identity law: hashCode/equals on boxed heap objects read the box's 'value' field (the register int_val is 0 for boxes) — every key hashed 0 -> smear(k)&mask==0 -> all probes from slot 0 -> quadratic storm. Post-fix: createHashTable completes, chain advanced to RegularImmutableMap.get (deepest ever, 2.5M instructions)."
   },
   {
    "id": "F-NEW-174",
@@ -3429,7 +3429,7 @@
    "layer": "renderer/frame-pump",
    "title": "Per-frame canonical pump for Compose/WebView/Choreographer (item 21 P0-8)",
    "law": "The one canonical pump (pump_compose_frames) runs at EVERY frame boundary in --frames sequences: virtual clock advance -> Choreographer callbacks -> Handler queue -> resumed Compose work -> WebView JS/rAF tick -> render -> capture. Compose recomposition / rAF must never starve after frame 0.",
-   "evidence": "microtimer --frames 5 x3: frame_003 da73010a37dd0189 BYTE-IDENTICAL x3 (deterministic). Compose animation >=3-frame acceptance rides on R-NEW-381 (composition stagnation) \u2014 queued to phase 13.",
+   "evidence": "microtimer --frames 5 x3: frame_003 da73010a37dd0189 BYTE-IDENTICAL x3 (deterministic). Compose animation >=3-frame acceptance rides on R-NEW-381 (composition stagnation) — queued to phase 13.",
    "implementation": "stage_frame_sequence loop: pump_compose_frames(1) inserted after the clock advance, before the drain.",
    "source_authority": "AOSP frameworks/base (View.java, ViewRootImpl, PhoneWindow, ScrollView, TextView)",
    "campaign": "final-generic-runtime-compat-v2 item 21 wave A"
@@ -3453,9 +3453,9 @@
    "layer": "dex/di-lattice",
    "title": "WAVE C: RegularImmutableMap.get() probe livelock attributed to the F-NEW-173 placeholder-materialization family",
    "law": "ARRAY TYPE LAW (JVMS 4.4 / AOSP Class.isAssignableFrom): an array object's runtime class IS its descriptor. NEW_ARRAY now stores the resolved element-type descriptor (filled-new-array precedent) + __element_type__ provenance; is_subclass_of classifies array types: primitive arrays final (exact-only), object arrays covariant on element type, nested arrays = Object/Cloneable/Serializable family, non-array vs array type FALSE, legacy 'Larray;' = unknown-element object array.",
-   "evidence": "SPIN-GET probe (permanent): table=o26443 byte[3] sentinels=0 occupied=3 \u2014 100% full; ALL 3 slots -> offset 0 -> alternating[0] = o1659 Integer(33604) \u2014 THE EXACT placeholder-Integer of F-NEW-173. size_param=17750 with tableSize=3: guava chooseTableSize(17750) must be 32768 (int path) \u2014 the caller's tableSize materialized as 3 from the same placeholder family. alternating len 47425 = builder-growth array (31,616*3/2+1), NOT 2*size=35,500 \u2014 the map instance carries fields from different build generations.",
-   "implementation": "NEXT: trace the tableSize parameter feed into createHashTable (chooseTableSize execution on placeholder inputs) \u2014 one instrumented run; the SPIN-GET probe is permanent evidence. No fake fix: the honest frontier is the upstream key/size materialization.",
-   "resolution": "SOURCE->CODE PATH->LAW->REPRO->TRACE->FIX->3RUN complete. SOURCE: APK DEX RegularImmutableMap.create/get/createHashTable (scripts/wavec_scan.py, wavec_disasm.py): the only createHashTable call site gates the duplicate-key wrapper {partialTable, insertedCount, dupEntry} with `instance-of v2, [Ljava/lang/Object;`. CODE PATH: NEW_ARRAY stamped every array 'Larray;' -> is_subclass_of answered FALSE -> the Object[3] wrapper was stored AS the map table -> lawful get() probe looped (PC=0x6f, 50001 visits). TRACE (one instrumented run, MINIANDROID_WAVEC_TRACE permanent probe): chooseTableSize(17750) -> 32768 LAWFUL; createHashTable(alternating=47425, maxSize=17750, tableSize=32768); post-fix the wrapper is detected and unwrapped \u2014 map built with the real [S 32768 table, lawfully truncated at the dup key (size=16052, alternating copyOf 32104) per guava-33 semantics; chain advanced (0 HALT-LOOP/F084 spins, 32->8 errors). FIX: NEW_ARRAY real descriptor + is_subclass_of array closure. 3RUN: all 5 goldens byte-identical (dooz d602648e8e401895, ssw 10446aaf0cd642cc, headingcalc be1cea9cf994b26a, microtimer da73010a37dd0189, whatsapp 31ddd4d5b8e6d18e) x3 + laws130 51/51. UPSTREAM: the duplicate key itself = F-NEW-173 placeholder-materialization family (open, deepest DI-lattice frontier)."
+   "evidence": "SPIN-GET probe (permanent): table=o26443 byte[3] sentinels=0 occupied=3 — 100% full; ALL 3 slots -> offset 0 -> alternating[0] = o1659 Integer(33604) — THE EXACT placeholder-Integer of F-NEW-173. size_param=17750 with tableSize=3: guava chooseTableSize(17750) must be 32768 (int path) — the caller's tableSize materialized as 3 from the same placeholder family. alternating len 47425 = builder-growth array (31,616*3/2+1), NOT 2*size=35,500 — the map instance carries fields from different build generations.",
+   "implementation": "NEXT: trace the tableSize parameter feed into createHashTable (chooseTableSize execution on placeholder inputs) — one instrumented run; the SPIN-GET probe is permanent evidence. No fake fix: the honest frontier is the upstream key/size materialization.",
+   "resolution": "SOURCE->CODE PATH->LAW->REPRO->TRACE->FIX->3RUN complete. SOURCE: APK DEX RegularImmutableMap.create/get/createHashTable (scripts/wavec_scan.py, wavec_disasm.py): the only createHashTable call site gates the duplicate-key wrapper {partialTable, insertedCount, dupEntry} with `instance-of v2, [Ljava/lang/Object;`. CODE PATH: NEW_ARRAY stamped every array 'Larray;' -> is_subclass_of answered FALSE -> the Object[3] wrapper was stored AS the map table -> lawful get() probe looped (PC=0x6f, 50001 visits). TRACE (one instrumented run, MINIANDROID_WAVEC_TRACE permanent probe): chooseTableSize(17750) -> 32768 LAWFUL; createHashTable(alternating=47425, maxSize=17750, tableSize=32768); post-fix the wrapper is detected and unwrapped — map built with the real [S 32768 table, lawfully truncated at the dup key (size=16052, alternating copyOf 32104) per guava-33 semantics; chain advanced (0 HALT-LOOP/F084 spins, 32->8 errors). FIX: NEW_ARRAY real descriptor + is_subclass_of array closure. 3RUN: all 5 goldens byte-identical (dooz d602648e8e401895, ssw 10446aaf0cd642cc, headingcalc be1cea9cf994b26a, microtimer da73010a37dd0189, whatsapp 31ddd4d5b8e6d18e) x3 + laws130 51/51. UPSTREAM: the duplicate key itself = F-NEW-173 placeholder-materialization family (open, deepest DI-lattice frontier)."
   },
   {
    "id": "F-NEW-182",
@@ -3463,8 +3463,8 @@
    "priority": "P0",
    "layer": "inflater/lifecycle-order",
    "title": "XML inflation must not measure before window attach (audit P0-1)",
-   "law": "AOSP ViewRootImpl.performTraversals: inflation builds the VIEW TREE ONLY; measure belongs to the first traversal AFTER dispatchAttachedToWindow. The eager measure_layout in inflate_layout_resid dispatched REAL DEX onMeasure (custom_view_measure_hook_) on an UNATTACHED tree \u2014 the windowRecomposer/isAttachedToWindow death family for any Compose-related custom view in XML.",
-   "evidence": "Source proof: inflate_layout_resid measured immediately after inflate_element; setContentView(View) already had the R349 attach-first law but the XML path did not. FIX ARCHITECTURE: inflater creates the tree only; setContentView(int) records pending_inflate_attach; the engine's frame render consumes it (attach wave FIRST, canonical measure SECOND) \u2014 traversal timing honors the S43 post-inflate-field-setup lesson. No second DEX onMeasure per traversal (same-spec memo).",
+   "law": "AOSP ViewRootImpl.performTraversals: inflation builds the VIEW TREE ONLY; measure belongs to the first traversal AFTER dispatchAttachedToWindow. The eager measure_layout in inflate_layout_resid dispatched REAL DEX onMeasure (custom_view_measure_hook_) on an UNATTACHED tree — the windowRecomposer/isAttachedToWindow death family for any Compose-related custom view in XML.",
+   "evidence": "Source proof: inflate_layout_resid measured immediately after inflate_element; setContentView(View) already had the R349 attach-first law but the XML path did not. FIX ARCHITECTURE: inflater creates the tree only; setContentView(int) records pending_inflate_attach; the engine's frame render consumes it (attach wave FIRST, canonical measure SECOND) — traversal timing honors the S43 post-inflate-field-setup lesson. No second DEX onMeasure per traversal (same-spec memo).",
    "implementation": "layout_inflater.cpp: eager measure removed; android_shadows.cpp: record_pending_inflate_attach in the int branch; execution_engine.cpp: consume + dispatch_attached_subtree_from before measure. REGRESSION MICROTIMER (XML custom view with onAttachedToWindow/onMeasure): da73010a37dd0189 x3 byte-identical."
   },
   {
@@ -3473,7 +3473,7 @@
    "priority": "P0",
    "layer": "viewtree/identity",
    "title": "android.R.id.content must be ONE stable object per window (audit P0-2)",
-   "law": "AOSP PhoneWindow: the content parent is ONE object per window \u2014 findViewById(android.R.id.content) answers the SAME instance every call. The old next_window_content_id_++ allocated a NEW FrameLayout per lookup while claiming idempotence; framework machinery attaching to different synthetic parents = split ViewTree = blank/partial screens.",
+   "law": "AOSP PhoneWindow: the content parent is ONE object per window — findViewById(android.R.id.content) answers the SAME instance every call. The old next_window_content_id_++ allocated a NEW FrameLayout per lookup while claiming idempotence; framework machinery attaching to different synthetic parents = split ViewTree = blank/partial screens.",
    "evidence": "Source proof at android_shadows.cpp (S83-GFX-BASE). FIX: resolution order (1) subtree BFS for existing content node, (2) per-window remembered node (window_content_nodes_), (3) materialize once; add_child edge-dedup; real class descriptor returned.",
    "implementation": "ViewShadow::findViewById 0x01020002 law rewritten; [P0-2-CONTENT] REUSED trace."
   },
@@ -3493,7 +3493,7 @@
    "priority": "P1",
    "layer": "shadows/state-laws",
    "title": "setVisibility raises requestLayout; image setters enter the real pipeline; explicit black wins (audit P1-1 + P1-2 + P1-10)",
-   "law": "AOSP View.setVisibility -> setFlags -> requestLayout+invalidate: GONE changes LAYOUT INPUTS (siblings expand) \u2014 the stale-geometry family is fixed by raising layout_dirty (consumed by the canonical traversal, no inline re-measure). AOSP ImageView.setImage{Bitmap,Drawable,Icon,URI} -> one canonical drawee state then requestLayout+invalidate: every setter now routes into the REAL image pipeline (BitmapStore provenance path / icon resid / asset-uri law) or records an EXPLICIT BLOCKED event with evidence \u2014 silent handled_void removed. AOSP TextView.setTextColor is EXPLICIT_RUNTIME provenance: the value-guessing black heuristic (M3-007b) is removed; explicit black ALWAYS wins; style colors carry STYLE_RESOLVED provenance from the inflater.",
+   "law": "AOSP View.setVisibility -> setFlags -> requestLayout+invalidate: GONE changes LAYOUT INPUTS (siblings expand) — the stale-geometry family is fixed by raising layout_dirty (consumed by the canonical traversal, no inline re-measure). AOSP ImageView.setImage{Bitmap,Drawable,Icon,URI} -> one canonical drawee state then requestLayout+invalidate: every setter now routes into the REAL image pipeline (BitmapStore provenance path / icon resid / asset-uri law) or records an EXPLICIT BLOCKED event with evidence — silent handled_void removed. AOSP TextView.setTextColor is EXPLICIT_RUNTIME provenance: the value-guessing black heuristic (M3-007b) is removed; explicit black ALWAYS wins; style colors carry STYLE_RESOLVED provenance from the inflater.",
    "evidence": "[P1-1-VIS] raised-requestLayout trace; [P1-2-IMAGE]/[P1-2-IMAGE-BLOCKED] per-setter pipeline-or-blocked evidence; [M3-SETTEXTCOLOR] provenance trace. BitmapStore source_desc (decodeResource = APK path) is the provenance that connects setImageBitmap(decodeResource(...)) to the path-decode pipeline.",
    "implementation": "android_shadows.cpp setVisibility/image-setters/setTextColor laws; ViewNode.text_color_provenance + image capture fields; layout_inflater.cpp STYLE_RESOLVED marks."
   },
@@ -3503,7 +3503,7 @@
    "priority": "P1",
    "layer": "inflater/class-identity",
    "title": "Material constructor gate = DEX existence; fully-qualified XML class = slashed DEX descriptor (audit P1-3 + P1-4)",
-   "law": "Constructor-hook authority is 'does the class exist in the APK DEX' (the hook's class_info_index_ check), never a package-prefix blanket. Lcom/google/android/ + Lcom/google/ removed from the suppression list: bundled Material classes (MaterialButton/TextInputEditText/FAB) keep their real <init>; genuinely absent classes fail cleanly (warning only). A fully-qualified XML tag is a Java binary name: dots normalize to slashes (JVMS 4.2) \u2014 'Lcom.example.MyView;' never matched the DEX; inner-class $ unchanged; KNOWN mappings unchanged.",
+   "law": "Constructor-hook authority is 'does the class exist in the APK DEX' (the hook's class_info_index_ check), never a package-prefix blanket. Lcom/google/android/ + Lcom/google/ removed from the suppression list: bundled Material classes (MaterialButton/TextInputEditText/FAB) keep their real <init>; genuinely absent classes fail cleanly (warning only). A fully-qualified XML tag is a Java binary name: dots normalize to slashes (JVMS 4.2) — 'Lcom.example.MyView;' never matched the DEX; inner-class $ unchanged; KNOWN mappings unchanged.",
    "evidence": "run_custom_view_constructor: class_info_index_ is the real authority (fails cleanly). class_to_descriptor: slashed normalization with the law documented.",
    "implementation": "layout_inflater.cpp is_app_class_descriptor (2 prefixes removed) + class_to_descriptor (dot->slash)."
   },
@@ -3514,7 +3514,7 @@
    "layer": "renderer/frame-truth",
    "title": "Every authoritative render return value checked; frame authenticity recorded (audit P1-5/P1-6 close-out)",
    "law": "A failed stage_render_frame must never let a stale framebuffer become current evidence: the final capture is SKIPPED on failure; frame manifests record render_ok + suppress changed_pixels when the render failed (frame k cannot be derived from frame k-1's buffer); the click-oracle pixel diff is suppressed on render failure with a report counter.",
-   "evidence": "9 call sites patched ([P1-6-RENDER] traces): final-pass capture, frame-sequence per-frame + post-gesture + tap pressed, click-seq, long-press, tick-frame, click-test probe. report[render_failures] surfaces suppressed diffs. Wave-A already made render failure explicit (RENDER_FAIL + framebuffer discard + synthetic suppressed) \u2014 this wave closes the remaining unchecked-return paths.",
+   "evidence": "9 call sites patched ([P1-6-RENDER] traces): final-pass capture, frame-sequence per-frame + post-gesture + tap pressed, click-seq, long-press, tick-frame, click-test probe. report[render_failures] surfaces suppressed diffs. Wave-A already made render failure explicit (RENDER_FAIL + framebuffer discard + synthetic suppressed) — this wave closes the remaining unchecked-return paths.",
    "implementation": "execution_engine.cpp: stage_render_frame return checked everywhere; manifest f[render_ok]/note law."
   },
   {
@@ -3523,7 +3523,7 @@
    "priority": "P1",
    "layer": "webview/js-engine",
    "title": "WebView.evaluateJavascript routes into the REAL QuickJS engine; ValueCallback fires (audit P1-11)",
-   "law": "The runtime SHIPS a real WebView/QuickJS subsystem (S109) \u2014 the old 'no JS engine' silent drop is wrong for any WebView with a loaded document. Android law: the script evaluates in the page's global scope (same realm, full DOM/canvas access), the callback receives the JSON-encoded result ('null' for undefined/exception \u2014 the callback ALWAYS fires), async work drains via the S118 JOB-PUMP law. Shadow/engine split: the shadow records (callback oid, JSON); the ENGINE invokes onReceiveValue via try_recursive_invoke (Room/Thread pattern).",
+   "law": "The runtime SHIPS a real WebView/QuickJS subsystem (S109) — the old 'no JS engine' silent drop is wrong for any WebView with a loaded document. Android law: the script evaluates in the page's global scope (same realm, full DOM/canvas access), the callback receives the JSON-encoded result ('null' for undefined/exception — the callback ALWAYS fires), async work drains via the S118 JOB-PUMP law. Shadow/engine split: the shadow records (callback oid, JSON); the ENGINE invokes onReceiveValue via try_recursive_invoke (Room/Thread pattern).",
    "evidence": "WebViewEngine::evaluate_javascript + Impl::eval_json (JS_EVAL_TYPE_GLOBAL + JS_JSONStringify + bounded job drain + exception hygiene); [P1-11-WV] executed/exception/BLOCKED diagnostics; explicit BLOCKED frontier only when no document/engine exists. DOM mutations surface on the next frame render (walk re-composites every frame).",
    "implementation": "webview_engine.h/.cpp + android_shadows.cpp evaluateJavascript + dalvik_engine.cpp post-dispatch ValueCallback drain."
   },
@@ -3533,22 +3533,22 @@
    "priority": "P1",
    "layer": "gates/determinism",
    "title": "Gate data-root freshness law discovered and documented (simplestopwatch SharedPreferences persistence)",
-   "law": "Golden gates must run on a FRESH data root: apps persist state via SharedPreferences (simplestopwatch stores elapsed time) and a reused data-root LAWFULLY loads prior state \u2014 a gate, not the runtime, was the nondeterminism source.",
-   "evidence": "Same binary (sha 3e21e875bf7c5622): fresh data-root = 10446aaf0cd642cc (golden match), reused data-root = 88377dd328d6e041 (state-restored render) \u2014 both byte-identical x3 within their class. Gate script updated to fresh-per-run.",
+   "law": "Golden gates must run on a FRESH data root: apps persist state via SharedPreferences (simplestopwatch stores elapsed time) and a reused data-root LAWFULLY loads prior state — a gate, not the runtime, was the nondeterminism source.",
+   "evidence": "Same binary (sha 3e21e875bf7c5622): fresh data-root = 10446aaf0cd642cc (golden match), reused data-root = 88377dd328d6e041 (state-restored render) — both byte-identical x3 within their class. Gate script updated to fresh-per-run.",
    "implementation": "scripts/final_campaign_item22_gates.py fresh data-root per run."
   },
   {
    "id": "F-NEW-169",
    "status": "OBSERVED-FAIL",
    "priority": "P0",
-   "summary": "WhatsApp DI provider-null lattice (NEW frontier, wave 6): AppContext slot providers (00t.get \u2192 1QL.A01 packed-switch arms over ~900 slots) null-check dependency invokes with LX/00i;.A0F \"INVOKE_RETURN must not be null\"; when a dependency hit a REC-MISS stub the arm NPEs and the whole component lattice (08C.<clinit>/08B/088/089 ctors, 07r.<init>) unwinds uncaught (2 of the 4 F-016 in-flight chains). Same null-provider face kills Main.onCreate at pc=0x5ba (0gV.A02 \u2192 00t.get() \u2192 null \u2192 08k.A0B() NPE) which blocks F-NEW-168 faces 2+3 (0I9.<init> constructs 0JY/0JZ host). Attack order: identify which REC-MISS stub feeds the first failing arm (slots 169/864/112/109 via 00T.A03/00C.A02 getters), fix the generic API law, re-measure.",
-   "evidence": "run/s134/wa_w6_f1 stdout THROWABLE-STACK (00i.A0F \u2190 07f.A00 \u2190 07P.A08 \u2190 AbstractAppShellDelegate.onCreate \u2190 004.onCreateWithUlitralightReady), crash.log chains 1+2 (08C lattice) + Main.onCreate pc=1470 NPE; disassembly of 00C.A03/06E.A00/069.get/06F.A00/1Vq.BTm/07r.<init>."
+   "summary": "WhatsApp DI provider-null lattice (NEW frontier, wave 6): AppContext slot providers (00t.get → 1QL.A01 packed-switch arms over ~900 slots) null-check dependency invokes with LX/00i;.A0F \"INVOKE_RETURN must not be null\"; when a dependency hit a REC-MISS stub the arm NPEs and the whole component lattice (08C.<clinit>/08B/088/089 ctors, 07r.<init>) unwinds uncaught (2 of the 4 F-016 in-flight chains). Same null-provider face kills Main.onCreate at pc=0x5ba (0gV.A02 → 00t.get() → null → 08k.A0B() NPE) which blocks F-NEW-168 faces 2+3 (0I9.<init> constructs 0JY/0JZ host). Attack order: identify which REC-MISS stub feeds the first failing arm (slots 169/864/112/109 via 00T.A03/00C.A02 getters), fix the generic API law, re-measure.",
+   "evidence": "run/s134/wa_w6_f1 stdout THROWABLE-STACK (00i.A0F ← 07f.A00 ← 07P.A08 ← AbstractAppShellDelegate.onCreate ← 004.onCreateWithUlitralightReady), crash.log chains 1+2 (08C lattice) + Main.onCreate pc=1470 NPE; disassembly of 00C.A03/06E.A00/069.get/06F.A00/1Vq.BTm/07r.<init>."
   },
   {
    "id": "F-NEW-167",
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P0",
-   "summary": "BlockingQueue law: heap-field FIFO (put/offer/add \u2192 take/poll/peek) + empty blocking take = R-NEW-345 park-yield at the drain boundary. WhatsApp Log.<clinit> completes; F084 halt-loop / VirtualMachineError escape eliminated.",
+   "summary": "BlockingQueue law: heap-field FIFO (put/offer/add → take/poll/peek) + empty blocking take = R-NEW-345 park-yield at the drain boundary. WhatsApp Log.<clinit> completes; F084 halt-loop / VirtualMachineError escape eliminated.",
    "evidence": "worklog S134 wave 5; dex/dalvik_engine.cpp ~90 LOC; [F167-BQ-TAKE] parked consumer; goldens byte-identical."
   },
   {
@@ -3557,7 +3557,7 @@
    "priority": "P1",
    "layer": "framework/device-identity",
    "title": "PHASE 4 device identity: Build.SUPPORTED_ABIS absent (ISE \"No supported ABIs found on this device\" x3, LX/0Cz) + ApplicationInfo install-time identity absent (sourceDir null -> SoLoader LX/0Dl.A01 NPE \"String.equals on null\" via LX/0EU.CKw direct read; primaryCpuAbi null via reflective getDeclaredField).",
-   "law": "AOSP Build/PackageParser laws: SUPPORTED_ABIS/SUPPORTED_32/64_BIT_ABIS/CPU_ABI(_2) come from ro.product.cpu.abilist and are never empty; a normal install records sourceDir/publicSourceDir/dataDir/nativeLibraryDir/primaryCpuAbi on ApplicationInfo \u2014 never null. The runtime models an arm64 android-34 device (arm64-v8a primary, matching the SDK_INT=34 fingerprint law).",
+   "law": "AOSP Build/PackageParser laws: SUPPORTED_ABIS/SUPPORTED_32/64_BIT_ABIS/CPU_ABI(_2) come from ro.product.cpu.abilist and are never empty; a normal install records sourceDir/publicSourceDir/dataDir/nativeLibraryDir/primaryCpuAbi on ApplicationInfo — never null. The runtime models an arm64 android-34 device (arm64-v8a primary, matching the SDK_INT=34 fingerprint law).",
    "resolution": "seed_framework_device_statics: ABI list arrays (heap [Ljava/lang/String; with element provenance); getApplicationInfo law seeds sourceDir (real APK path)/publicSourceDir/nativeLibraryDir/primaryCpuAbi; Field.get instance fallback answers primaryCpuAbi/nativeLibraryDir for the framework declarer. POST: both SoLoader faces + the ABI ISE faces GONE (exception census 12 -> 9).",
    "evidence": "run /tmp/wavec8-10 logs; [R337-REFLECT] getDeclaredField(\"primaryCpuAbi\") synthetic-auto trace; LX/0EU.CKw disasm (sourceDir direct iget); gates x3 byte-identical."
   },
@@ -3567,8 +3567,8 @@
    "priority": "P0",
    "layer": "framework/activity-attach",
    "title": "PHASE 4 attach ordering: the engine never ran the app-level attachBaseContext override during activity launch (AOSP performLaunchActivity: <init> -> attach -> onCreate). WhatsApp LX/0IH override = the DI members-injector (stores lattice providers into A01/A0H/A03/A0I/A0F/A0B via LX/00C slot lookups); absent it, onCreate reads null fields -> NPE 'Map.get on null' (0IH.onCreate pc=14) -> Main.onCreate catch-all rethrow BEFORE super.onCreate -> the fragment host never attaches -> the onResume/onStart ISE family (\"FragmentManager has not been attached to a host.\" / \"No activity\").",
-   "law": "AOSP ActivityThread.performLaunchActivity ordering law: activity.attach (drives attachBaseContext on the VIRTUAL override \u2014 closest declaration wins) precedes onCreate and the lifecycle-callback fan-outs. Chains without an override resolve to the framework boundary (F-NEW-166 ContextWrapper law serves mBase).",
-   "resolution": "run_activity_default_init now dispatches attachBaseContext after <init> on every launch path (direct + try_recursive_invoke_on_super bounded climb, receiver identity preserved; F-NEW-184 base-context convention). POST: [WAVEC-ATTACH-FIELD] A0B=obj#29343 A03/A05 stored on obj#28223 before onCreate; the SoLoader family advanced. HONEST RESIDUE: the attach still dies partway at iget LX/0IE;->A00 (the component-state holder, only writer = reflective injector A3d) \u2014 the F-NEW-173/169 DI-lattice deep face remains the dominant WhatsApp frontier; fragment-host ISE faces are downstream of it.",
+   "law": "AOSP ActivityThread.performLaunchActivity ordering law: activity.attach (drives attachBaseContext on the VIRTUAL override — closest declaration wins) precedes onCreate and the lifecycle-callback fan-outs. Chains without an override resolve to the framework boundary (F-NEW-166 ContextWrapper law serves mBase).",
+   "resolution": "run_activity_default_init now dispatches attachBaseContext after <init> on every launch path (direct + try_recursive_invoke_on_super bounded climb, receiver identity preserved; F-NEW-184 base-context convention). POST: [WAVEC-ATTACH-FIELD] A0B=obj#29343 A03/A05 stored on obj#28223 before onCreate; the SoLoader family advanced. HONEST RESIDUE: the attach still dies partway at iget LX/0IE;->A00 (the component-state holder, only writer = reflective injector A3d) — the F-NEW-173/169 DI-lattice deep face remains the dominant WhatsApp frontier; fragment-host ISE faces are downstream of it.",
    "evidence": "scripts/wavec_field_writers.py (A0B single-writer proof: LX/0IH.attachBaseContext); FIELD-TRACE A0B put/get census on obj#28223; 0IH.attachBaseContext + 0IH.onCreate disassembly; gates x3 byte-identical."
   },
   {
@@ -3576,7 +3576,7 @@
    "status": "REGISTERED",
    "priority": "P2",
    "layer": "renderer/z-order",
-   "title": "PHASE 10 draw/z-order audit residue: AOSP View.draw order (drawBackground -> onDraw -> dispatchDraw -> decorations) is enforced in the frame walk (21-P0-6 census law; forward child pop; S86 visibility gates; item-21 placeholders out of the authoritative frame) but elevation/translationZ (RenderNode Z ordering, outline shadows) is NOT modeled \u2014 sibling overlap order on elevated views may diverge.",
+   "title": "PHASE 10 draw/z-order audit residue: AOSP View.draw order (drawBackground -> onDraw -> dispatchDraw -> decorations) is enforced in the frame walk (21-P0-6 census law; forward child pop; S86 visibility gates; item-21 placeholders out of the authoritative frame) but elevation/translationZ (RenderNode Z ordering, outline shadows) is NOT modeled — sibling overlap order on elevated views may diverge.",
    "law": "AOSP View.draw + RenderNode Z law: children draw in program order; Z-elevated siblings reorder above flat ones with shadow decoration.",
    "evidence": "scripts/fc_audit_stubs.py census (34 void-answer sites: 12 lawful-void / 21 state-capture verified / 1 silent-void FIXED = setIntent state identity); draw walk audit execution_engine.cpp L3640-4460."
   },
@@ -3586,8 +3586,8 @@
    "priority": "P0",
    "layer": "visual-verdict/frame-truth",
    "title": "SECONDARY CAMPAIGN V1/V2/V7 false-success family: the verdict chain could not (a) separate pixels INSIDE the authoritative content bounds from window chrome outside them, (b) distinguish a FAILED setContentView(res) inflation from an absent one (failed inflation silently kept the legacy default screen), and (c) carried no per-region capture record (chrome/background/content/overlay). A status-bar band or stray decor pixels inside a valid-root frame could ride into REAL_APP_CONTENT.",
-   "law": "V1/V7: verdict requires REAL ViewTree reached + content root identified + measure executed + layout executed + authoritative draw executed + app-owned pixels INSIDE the laid-out content-root rect > 0; non-dominant pixels outside the content rect = WINDOW_CHROME and can never count as app content; dominant = WINDOW_BACKGROUND; trace_overlay.png = DIAGNOSTIC_OVERLAY (separate file, S135 sha law). V2: a real APK inflation that produces no root sets RESOURCE_INFLATION_FAILED (ActivityShadow.last_inflate_failed -> census inflation_failed) \u2014 the legacy default screen is NOT app content and never upgrades the verdict.",
-   "evidence": "FrameRenderCensus + content_bounds (l,t,r,b) from the laid-out root node; capture loop classifies inside/outside per pixel (no fixed heuristics \u2014 bounds come from the real measure/layout). Forkgram census: verdict=REAL_APP_CONTENT, app_owned_pixels_inside_content_bounds=117133, window_chrome_pixels=0, bounds valid; goldens dooz d602648e8e401895 / ssw 10446aaf0cd642cc / headingcalc be1cea9cf994b26a / microtimer da73010a37dd0189 / whatsapp 31ddd4d5b8e6d18e x3 BYTE-IDENTICAL (pixel-neutral laws); laws130 51/51.",
+   "law": "V1/V7: verdict requires REAL ViewTree reached + content root identified + measure executed + layout executed + authoritative draw executed + app-owned pixels INSIDE the laid-out content-root rect > 0; non-dominant pixels outside the content rect = WINDOW_CHROME and can never count as app content; dominant = WINDOW_BACKGROUND; trace_overlay.png = DIAGNOSTIC_OVERLAY (separate file, S135 sha law). V2: a real APK inflation that produces no root sets RESOURCE_INFLATION_FAILED (ActivityShadow.last_inflate_failed -> census inflation_failed) — the legacy default screen is NOT app content and never upgrades the verdict.",
+   "evidence": "FrameRenderCensus + content_bounds (l,t,r,b) from the laid-out root node; capture loop classifies inside/outside per pixel (no fixed heuristics — bounds come from the real measure/layout). Forkgram census: verdict=REAL_APP_CONTENT, app_owned_pixels_inside_content_bounds=117133, window_chrome_pixels=0, bounds valid; goldens dooz d602648e8e401895 / ssw 10446aaf0cd642cc / headingcalc be1cea9cf994b26a / microtimer da73010a37dd0189 / whatsapp 31ddd4d5b8e6d18e x3 BYTE-IDENTICAL (pixel-neutral laws); laws130 51/51.",
    "fix": "execution_engine.h census fields inflation_failed + content_bounds_valid/l/t/r/b; execution_engine.cpp stage_render_frame_impl records root laid-out rect + consumes ActivityShadow.last_inflate_failed; stage_capture_output RESOURCE_INFLATION_FAILED verdict + region-classified census JSON (window_chrome_pixels, window_background_px, app_owned_pixels_inside_content_bounds, verdict_regions_law); android_shadows.cpp inflate failure/success markers [V2-INFLATE-FAILED].",
    "wave": "SECONDARY-V1V2V7"
   },
@@ -3596,9 +3596,9 @@
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P1",
    "layer": "inflation/generic-view-identity",
-   "title": "V4 generic-tag silent degradation: ANY unknown short XML tag silently inflated as a generic Landroid/view/View; leaf \u2014 real class identity lost (a platform/custom ViewGroup became a content-less leaf; container measure/layout semantics dropped) with NO evidence the degradation happened.",
-   "law": "AOSP LayoutInflater.createViewFromTag: a short tag is a platform widget name. Generic DEX-EXISTENCE law: unknown short tags resolve against Landroid/{widget,view,webkit}/ and Lcom/android/internal/widget/ BY APK DEX CLASS EXISTENCE (is_dex_defined_class \u2014 the bundled dex is the authority); when nothing matches, the generic-View degradation is recorded as EXPLICIT evidence (inflater warning + [V4-TAG] line), never silent. No hardcoded widget list extension needed for bundled platform-family classes.",
-   "evidence": "LayoutInflater::inflate_element V4 block + DexClassExistsHook (Factory-law propagation through ResourceRuntime: set_dex_class_exists_hook + apply on ensure_loaded); engine hook install at stage entry. Wave corpus: 0 unknown-tag triggers (all tags KNOWN-mapped or dotted \u2014 honest absence); hook verified installed on every inflater recreation path.",
+   "title": "V4 generic-tag silent degradation: ANY unknown short XML tag silently inflated as a generic Landroid/view/View; leaf — real class identity lost (a platform/custom ViewGroup became a content-less leaf; container measure/layout semantics dropped) with NO evidence the degradation happened.",
+   "law": "AOSP LayoutInflater.createViewFromTag: a short tag is a platform widget name. Generic DEX-EXISTENCE law: unknown short tags resolve against Landroid/{widget,view,webkit}/ and Lcom/android/internal/widget/ BY APK DEX CLASS EXISTENCE (is_dex_defined_class — the bundled dex is the authority); when nothing matches, the generic-View degradation is recorded as EXPLICIT evidence (inflater warning + [V4-TAG] line), never silent. No hardcoded widget list extension needed for bundled platform-family classes.",
+   "evidence": "LayoutInflater::inflate_element V4 block + DexClassExistsHook (Factory-law propagation through ResourceRuntime: set_dex_class_exists_hook + apply on ensure_loaded); engine hook install at stage entry. Wave corpus: 0 unknown-tag triggers (all tags KNOWN-mapped or dotted — honest absence); hook verified installed on every inflater recreation path.",
    "fix": "layout_inflater.h DexClassExistsHook + resource_runtime.h pass-through (Factory law) + execution_engine.cpp install; inflate_element resolution + evidence block.",
    "wave": "SECONDARY-V4"
   },
@@ -3607,9 +3607,9 @@
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P1",
    "layer": "context-identity/observability",
-   "title": "V6 silent context-fallback conversion: View.getContext() with a MISSING constructor-captured Context silently answered the activity context \u2014 an identity conversion that can surface much later as white UI (View->Context->Resources->Theme->Drawable chain) with ZERO evidence the fallback fired.",
+   "title": "V6 silent context-fallback conversion: View.getContext() with a MISSING constructor-captured Context silently answered the activity context — an identity conversion that can surface much later as white UI (View->Context->Resources->Theme->Drawable chain) with ZERO evidence the fallback fired.",
    "law": "Observable-identity law: the NEVER-NULL fallback to the activity context is recorded per-view (bounded counter ViewNode.fallback_ctx_events) with an explicit [V6-CTX-FALLBACK] evidence line naming the view, its class and the fallback target; the ctor-captured path keeps the real heap-class descriptor (F-NEW-184).",
-   "evidence": "android_shadows.cpp getContext block: bounded counter + evidence line before the activity-context return; Wave corpus runs: 0 fallback triggers recorded (honest absence \u2014 all queried views had ctor-captured contexts); counter available in ViewNode for census consumers.",
+   "evidence": "android_shadows.cpp getContext block: bounded counter + evidence line before the activity-context return; Wave corpus runs: 0 fallback triggers recorded (honest absence — all queried views had ctor-captured contexts); counter available in ViewNode for census consumers.",
    "fix": "ViewNode.fallback_ctx_events field + getContext evidence block.",
    "wave": "SECONDARY-V6"
   },
@@ -3618,32 +3618,366 @@
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P1",
    "layer": "image-pipeline/provenance",
-   "title": "V5 provenance states were IMPLICIT: the three pixel-source classes (resource-resolved, APK-path, raw pixels) existed in the pipeline but carried no canonical name in the provenance record \u2014 a bitmap dropped for lacking an APK path could not be told apart from a resource image in evidence.",
-   "law": "Every image provenance event carries ONE explicit state: IMAGE_RESOURCE (resid != 0), IMAGE_APK_PATH (entry path), IMAGE_DIRECT_PIXELS (raw BitmapStore pixels \u2014 canvas replay/decoders; a valid bitmap is NEVER dropped merely for lacking an APK path; unsupported sources emit the bounded [P1-2-IMAGE-BLOCKED] evidence).",
+   "title": "V5 provenance states were IMPLICIT: the three pixel-source classes (resource-resolved, APK-path, raw pixels) existed in the pipeline but carried no canonical name in the provenance record — a bitmap dropped for lacking an APK path could not be told apart from a resource image in evidence.",
+   "law": "Every image provenance event carries ONE explicit state: IMAGE_RESOURCE (resid != 0), IMAGE_APK_PATH (entry path), IMAGE_DIRECT_PIXELS (raw BitmapStore pixels — canvas replay/decoders; a valid bitmap is NEVER dropped merely for lacking an APK path; unsupported sources emit the bounded [P1-2-IMAGE-BLOCKED] evidence).",
    "evidence": "gfx_provenance.h record_image derives provenance_state from (resid, path, pixel-presence); record_canvas_bitmap stamps IMAGE_DIRECT_PIXELS; P1-2 setter contract (F-NEW-185b) unchanged. Forkgram evidence: [P1-2-IMAGE-BLOCKED] wrapper-drawable events recorded honestly (r81/ni wrappers).",
    "fix": "gfx_provenance.h provenance_state field (derived in-record, no signature churn).",
    "wave": "SECONDARY-V5"
   },
   {
    "id": "F-NEW-197",
-   "status": "REGISTERED",
+   "status": "PARTIAL",
    "priority": "P0",
    "layer": "white-screen family",
-   "title": "V10 five-app gate white/black frontier (fresh census attribution): Dame (blidraughts), Droidify, OpenCalculator all reach auth_root_valid + measure + layout + draw-walk but stop at first_missing_stage=APP_DRAW_OPS with a 2-node visited tree (root+1 child) \u2014 the app's real view-building never reaches the authoritative walk. game2048 stops earlier: NO_ROOT (effective_content_root_()==0, setContentView never lands). This refines the phase-15 'shared empty-shell SHA' class into two machine-readable states: APP_DRAW_OPS-starved root (dame/droidify/opencalc, SHA b5a7a35d5fe0564b shared) vs NO_ROOT (game2048, SHA 31ddd4d5b8e6d18e = WhatsApp empty-shell class).",
-   "law": "No-fake-success: DEFAULT_BACKGROUND_ONLY / NO_ROOT verdicts stay OPEN until real app-content evidence exists; next attack = trace the app-side view construction chain (dame/droidify/opencalc: why the built tree never gains app ops; game2048: why setContentView landed no root).",
-   "evidence": "scripts/v10_five_app_gate.py \u2014 5 apps x3 deterministic runs: forkgram cf4c41e62ceb6557 REAL_APP_CONTENT x3 (OBSERVED, 117133 app px in-bounds, 204 colors), game2048/dame/droidify/opencalc BLOCKED with census first_missing_stage; results /tmp/v10/v10_results.json.",
-   "fix": "OPEN \u2014 next-root material (V3-R1 F-096 one-time dispatch containment + app-side view-build chains queued).",
+   "title": "V10 five-app gate white/black frontier (fresh census attribution): Dame (blidraughts), Droidify, OpenCalculator all reach auth_root_valid + measure + layout + draw-walk but stop at first_missing_stage=APP_DRAW_OPS with a 2-node visited tree (root+1 child) — the app's real view-building never reaches the authoritative walk. game2048 stops earlier: NO_ROOT (effective_content_root_()==0, setContentView never lands). This refines the phase-15 'shared empty-shell SHA' class into two machine-readable states: APP_DRAW_OPS-starved root (dame/droidify/opencalc, SHA b5a7a35d5fe0564b shared) vs NO_ROOT (game2048, SHA 31ddd4d5b8e6d18e = WhatsApp empty-shell class).",
+   "law": "F-NEW-197 WAVE 2 (SUCCESS-PATH methodology: source-first, SOURCE->CODE PATH->LAW->REPRO->TRACE->FIX->3-RUN). Six generic laws IMPLEMENTED+TESTED, all package-agnostic:\n  1. TYPEDARRAY STALE-PRESENCE LAW: the TypedArray heap object is a recycled singleton; AOSP TypedArray.obtain rewrites EVERY slot per call (AttributeResolution.cpp: unfilled = TYPE_NULL/absent). array_present[i] is now written UNCONDITIONALLY per slot (1 resolved / 0 absent) — presence from an earlier obtain can never leak (opencalc face: call 1 resolved 0x01010054; call 2 styleable[0]=0x010100af hit=no inherited present=1 value=0 -> getInt answered 0 -> setGravity(0) -> ISE 'gravity must be set to either top or bottom' -> APP BOUNDARY).\n  2. XML-ATTRIBUTESET PRECEDENCE LAW: obtainStyledAttributes resolves each styleable slot with the AOSP order (1) XML AttributeSet value, (2) style, (3) theme, (4) absent -> caller default. The inflater passes the tag's parsed AXML attrs (attr_resid + typed value) through CustomViewCtorHook -> AttributeSetStore -> the F-NEW-175 producer. Evidence: gravity slot now answers 48 (Gravity.TOP) from the XML ([F175-READ] stored=48 present=1); absent slots honor caller defaults (def=400 -> 400).\n  3. CONFIG-CONTEXT LAW: Context.createConfigurationContext never answers null (AOSP ContextImpl); dual-view implemented in both dispatch layers; one FRESH context per call; S110 base-context map records the receiver. Face: appcompat attachBaseContext2 chain (AppCompatActivity=Lg/m; pc=180 createConfigurationContext -> pc=184 .getResources()) NPE'd -> attach aborted (f141 family, same signature as the solitaire support-chain record).\n  4. NEW-THEME LAW: Resources.newTheme() answers a non-null Theme (AOSP Resources.java); ContextThemeWrapper.getTheme()'s mTheme=newTheme(); mTheme.setTo() NPE'd (Ll/c;.b pc=26).\n  5. CLASS-TOKEN getClass LAW: Object.getClass on a CLASS_REF receiver answers Ljava/lang/Class; (a Class object's runtime class IS java.lang.Class) — never null (Gson $Gson$Types.getRawType type.getClass().getName() probe NPE'd).\n  6. CLASS-TOKEN INSTANCEOF LAWS: (a) CLASS_REF with ref_id==0 classifies as the java.lang.Class token (heap-backed or not); (b) desc-only OBJECT_REF (oid=0, desc present) classifies by its creation-site descriptor.\nEVIDENCE: opencalculator vc53 uncaught-in-flight exceptions 3 -> 1 across the wave; laws130 51/51; goldens x3 BYTE-IDENTICAL (dooz d602648e8e401895, ssw 10446aaf0cd642cc, headingcalc be1cea9cf994b26a, microtimer da73010a37dd0189, whatsapp 31ddd4d5b8e6d18e); opencalc x3 deterministic b5a7a35d5fe0564b.\nREMAINING SUB-FRONTIERS (refined, machine-readable):\n  A. GENERIC-TYPE REFLECTION FAMILY: Class.getGenericSuperclass / ParameterizedType.getActualTypeArguments / .getRawType are UNBRIDGED (null) -> Gson TypeToken (j1/a;.<init> -> Le1/d;.g) IAE 'Expected a Class, ParameterizedType, or GenericArrayType' in MainActivity.onResume; the instanceof diag proves the argument register arrives degenerate (oid=0 desc=empty) from the unbridged chain. Needed: real ParameterizedType heap objects carrying type-argument identity.\n  B. TREE-BUILD GAP: the frame remains the shared empty-shell SHA b5a7a35d5fe0564b (DEFAULT_BACKGROUND_ONLY) — the XML tree the inflater builds still does not reach the authoritative draw walk (2-node visited family). Next probe: R005-DECOR view=927 under decor=899 vs the walk's effective_content_root.",
+   "evidence": "Wave-2 runs: /tmp/fn197/op3..op9 + det1..det3; [F175-READ] getInt idx=0 stored=48 present=1 answered=48 (XML law); [F-NEW-197] XML AttributeSet values=4..9; crash.log error count 3->1; GATE: goldens x3 byte-identical + laws130 51/51 + opencalc x3 b5a7a35d5fe0564b.",
+   "fix": "OPEN — next-root material (V3-R1 F-096 one-time dispatch containment + app-side view-build chains queued).",
    "wave": "SECONDARY-V10"
+  },
+  {
+   "id": "F-NEW-198",
+   "status": "PENDING",
+   "priority": "P1",
+   "layer": "runtime/legacy-rendering-path",
+   "title": "DEEP-AUDIT P0-1: ApplicationRuntime legacy rendering path — prove by call graph + runtime trace that no real APK execution can reach render_pipeline_->render, 'Hello MiniAndroid'/'main'/'activity_main' layout fallbacks, stubbed onCreate, or perform_layout() claiming measure/layout without executing it; if reachable, route through the canonical Window->ViewTree->measure->layout->draw->capture path; a synthetic frame must NEVER classify as REAL_APP_CONTENT.",
+   "law": "V8 authority audit (SECONDARY CAMPAIGN) proved ApplicationRuntime REFERENCE_ONLY (unreachable from cmd_run) and ExecutionEngine the only screenshot path — the per-site probe list above (Hello MiniAndroid/main/activity_main/perform_layout) still requires the itemized site-level proof.",
+   "evidence": "docs/SECONDARY_CAMPAIGN_V3_V8_AUTHORITY_AUDIT.md",
+   "fanout": "single authoritative-path guarantee for every APK",
+   "test": "3-run protocol",
+   "source": "user campaign mandate",
+   "current": "",
+   "risk": "",
+   "fix": "",
+   "after": "",
+   "before": "",
+   "affected_titles": "",
+   "api": "",
+   "upstream_source": "AOSP frameworks/base (per-entry law text)"
+  },
+  {
+   "id": "F-NEW-199",
+   "status": "PENDING",
+   "priority": "P0",
+   "layer": "runtime/arch-task-executor",
+   "title": "DEEP-AUDIT P0-2: ArchTaskExecutorShadow::dispatch treats executeOnDiskIO(Runnable) as effectively no-op — background work disappears, so an AndroidX app that computes on a background executor and posts the result to main leaves the UI white forever. Implement minimum generic deterministic semantics: main executor + background executor + completion back to main queue; the Runnable must actually execute.",
+   "law": "Deterministic virtual execution is the project law — real OS threads not required, but background Runnable must execute (acceptance: post background -> executes -> state changes -> main callback -> visible UI change; 3-run deterministic proof).",
+   "evidence": "user mandate (SECONDARY DEEP AUDIT)",
+   "fanout": "every AndroidX WorkManager/ArchExecutor app",
+   "test": "3-run protocol",
+   "source": "user campaign mandate",
+   "current": "",
+   "risk": "",
+   "fix": "",
+   "after": "",
+   "before": "",
+   "affected_titles": "",
+   "api": "",
+   "upstream_source": "AOSP frameworks/base (per-entry law text)"
+  },
+  {
+   "id": "F-NEW-200",
+   "status": "PENDING",
+   "priority": "P1",
+   "layer": "runtime/truth-contract",
+   "title": "DEEP-AUDIT P0-3: forbid STUBBED+return-true+SUCCESS transitions — required state vocabulary EXECUTED / EXECUTED_WITH_STUB / NOT_EXECUTED / FAILED / BLOCKED; a STUBBED operation may allow diagnostic continuation but must not independently produce RENDER_SUCCESS / REAL_APP_CONTENT / VERIFIED / FRAME_RENDERED unless real app content is proven; add a regression test.",
+   "law": "S135 provenance + wave-A census verdict laws cover the render gate; the EXECUTED_WITH_STUB distinction and its regression test remain.",
+   "evidence": "PHASE 11 stub census (34 sites: 12 lawful-void / 21 state-capture / 1 fixed)",
+   "fanout": "cross-cutting evidence-honesty law",
+   "test": "3-run protocol",
+   "source": "user campaign mandate",
+   "current": "",
+   "risk": "",
+   "fix": "",
+   "after": "",
+   "before": "",
+   "affected_titles": "",
+   "api": "",
+   "upstream_source": "AOSP frameworks/base (per-entry law text)"
+  },
+  {
+   "id": "F-NEW-201",
+   "status": "PENDING",
+   "priority": "P1",
+   "layer": "window/identity",
+   "title": "DEEP-AUDIT P0-4 (extended proofs beyond F-NEW-183): the one canonical content parent per live window must survive repeated findViewById(android.R.id.content), getContentView, setContentView, findViewById, ComposeView.setContent, and AppCompat subDecor creation — object identity preserved; no package checks.",
+   "law": "F-NEW-183 (item-22 wave A) proved ONE stable content object per window (subtree search -> per-window map -> materialize-once); the extended sequence test battery (ComposeView/AppCompat subDecor) is the remaining work.",
+   "evidence": "[P0-2-CONTENT] REUSED trace; goldens x3",
+   "fanout": "Compose/AppCompat/ViewBinding family",
+   "test": "3-run protocol",
+   "source": "user campaign mandate",
+   "current": "",
+   "risk": "",
+   "fix": "",
+   "after": "",
+   "before": "",
+   "affected_titles": "",
+   "api": "",
+   "upstream_source": "AOSP frameworks/base (per-entry law text)"
+  },
+  {
+   "id": "F-NEW-202",
+   "status": "PENDING",
+   "priority": "P1",
+   "layer": "runtime/virtual-time",
+   "title": "DEEP-AUDIT P1-5: HandlerShadow::settle advances virtual time by an extremely large amount — prove normal screenshot capture cannot execute delayed navigation/splash-removal/animations/state mutations early; separate FRAME ADVANCE from END-OF-RUN SETTLE; deterministic regression postDelayed(A,100)+postDelayed(B,10000) with explicit frame-0/frame-1/final-settle state transitions.",
+   "law": "A normal frame must execute only work due for that frame (AOSP Choreographer/MessageQueue semantics).",
+   "evidence": "user mandate (SECONDARY DEEP AUDIT)",
+   "fanout": "splash-navigation family; timing-dependent UIs",
+   "test": "3-run protocol",
+   "source": "user campaign mandate",
+   "current": "",
+   "risk": "",
+   "fix": "",
+   "after": "",
+   "before": "",
+   "affected_titles": "",
+   "api": "",
+   "upstream_source": "AOSP frameworks/base (per-entry law text)"
+  },
+  {
+   "id": "F-NEW-203",
+   "status": "PENDING",
+   "priority": "P1",
+   "layer": "runtime/thread-identity",
+   "title": "DEEP-AUDIT P1-6: ArchTaskExecutorShadow::isMainThread / ThreadShadow::currentThread / LooperShadow convert identity UNKNOWN into FALSE -> background dispatch -> executor gap -> UI callback never runs. Introduce explicit MAIN/BACKGROUND/UNKNOWN diagnostic state; never silently convert UNKNOWN into BACKGROUND; expose the first divergence.",
+   "law": "Identity-unknown must be observable, not silently converted (same honesty family as the V6 context-fallback law).",
+   "evidence": "user mandate (SECONDARY DEEP AUDIT)",
+   "fanout": "executors/AsyncTask/Coroutine ICC family",
+   "test": "3-run protocol",
+   "source": "user campaign mandate",
+   "current": "",
+   "risk": "",
+   "fix": "",
+   "after": "",
+   "before": "",
+   "affected_titles": "",
+   "api": "",
+   "upstream_source": "AOSP frameworks/base (per-entry law text)"
+  },
+  {
+   "id": "F-NEW-204",
+   "status": "PENDING",
+   "priority": "P2",
+   "layer": "diagnostics/logging",
+   "title": "DEEP-AUDIT P1-7: audit unconditional std::cerr/std::cout in HandlerShadow/ActivityShadow/ViewShadow/rendering + dispatch hot paths; replace unbounded per-call logs with ERROR/FIRST-DIVERGENCE/BOUNDED/SUMMARY classes; logging must not alter runtime timing or create apparent hangs.",
+   "law": "S135 bounded ring (rt_cap_=512) + distilled TRACE_SUMMARIES are the backbone; the hot-path per-call audit is the remaining sweep.",
+   "evidence": "PHASE 14 logging contract (worklog FINAL-CAMPAIGN-PHASES5-20)",
+   "fanout": "all long runs",
+   "test": "3-run protocol",
+   "source": "user campaign mandate",
+   "current": "",
+   "risk": "",
+   "fix": "",
+   "after": "",
+   "before": "",
+   "affected_titles": "",
+   "api": "",
+   "upstream_source": "AOSP frameworks/base (per-entry law text)"
+  },
+  {
+   "id": "F-NEW-205",
+   "status": "PENDING",
+   "priority": "P1",
+   "layer": "lifecycle/viewtree-owner",
+   "title": "DEEP-AUDIT P1-8: view_tree_lifecycle_owner installation must be window-canonical — owner lookup from Compose/AndroidX lifecycle/ViewTree owners must reach the same object through Window->DecorView->Content->View tree; if Activity-as-view is the intentional MiniAndroid equivalent, document and prove the invariant against AOSP ViewTree traversal semantics.",
+   "law": "AOSP ViewTreeLifecycleOwner.get walks the View tree ancestors; the F-105 activity-as-view shared-id-space law must be proven consistent with it.",
+   "evidence": "user mandate (SECONDARY DEEP AUDIT); R-NEW-379 evidence",
+   "fanout": "Compose family",
+   "test": "3-run protocol",
+   "source": "user campaign mandate",
+   "current": "",
+   "risk": "",
+   "fix": "",
+   "after": "",
+   "before": "",
+   "affected_titles": "",
+   "api": "",
+   "upstream_source": "AOSP frameworks/base (per-entry law text)"
+  },
+  {
+   "id": "F-NEW-206",
+   "status": "PENDING",
+   "priority": "P1",
+   "layer": "layout/traversal",
+   "title": "DEEP-AUDIT P1-9: cross-check the traversal order against AOSP ViewRootImpl — attach -> measure -> layout -> pre-draw/state checks -> draw -> capture; requestLayout DURING layout must schedule a second layout pass (AOSP supports re-entrant valid requesters), not mark layout complete and move on; no simplistic measure-once/layout-once/draw-once model where Android semantics require another pass.",
+   "law": "AOSP ViewRootImpl performTraversals / requestLayout during layout (second-pass law).",
+   "evidence": "user mandate (SECONDARY DEEP AUDIT)",
+   "fanout": "dynamic-layout family (GONE toggle F-NEW-185, adapters)",
+   "test": "3-run protocol",
+   "source": "user campaign mandate",
+   "current": "",
+   "risk": "",
+   "fix": "",
+   "after": "",
+   "before": "",
+   "affected_titles": "",
+   "api": "",
+   "upstream_source": "AOSP frameworks/base (per-entry law text)"
+  },
+  {
+   "id": "F-NEW-207",
+   "status": "PENDING",
+   "priority": "P1",
+   "layer": "gate/visual-truth",
+   "title": "DEEP-AUDIT P1-10: final visual gate — never accept status bar/navigation bar/placeholder pixels/diagnostic overlay/synthetic text/framework chrome as REAL_APP_CONTENT; require VIEWTREE_REACHED + MEASURE_REACHED + LAYOUT_REACHED + DRAW_REACHED + APP_DRAW_CALL_OBSERVED + APP_PIXEL_PROVENANCE + VISIBLE_CONTENT_PIXELS > chrome-only + 3-run proof; the 45px status-bar false-positive (F-NEW-169) must remain permanently covered by regression.",
+   "law": "F-NEW-193 content-bounds pixel-ownership verdict law implements the gate; the dedicated 45px regression check needs explicit permanent coverage.",
+   "evidence": "V10 five-app gate; F-NEW-169 45px record",
+   "fanout": "every visual verdict",
+   "test": "3-run protocol",
+   "source": "user campaign mandate",
+   "current": "",
+   "risk": "",
+   "fix": "",
+   "after": "",
+   "before": "",
+   "affected_titles": "",
+   "api": "",
+   "upstream_source": "AOSP frameworks/base (per-entry law text)"
+  },
+  {
+   "id": "F-NEW-208",
+   "status": "PENDING",
+   "priority": "P0",
+   "layer": "campaign/success-path",
+   "title": "SUCCESS-PATH SP-1+SFC-1/2: build the success corpus + per-title success signature — every title with real L4 evidence (VERIFIED / TESTED L4=true / PARTIAL L4=true / hello_smoke / hello_widgets / successful games) recorded with the full field set: APK SHA, execution mode, renderer family, Activity, content_view_id, effective_content_root, ViewTree shape/classes, measure/layout/draw counts, Canvas/Drawable/Text/image/Surface/GL/WebView op families, Bitmap decode path, resource/theme usage, input path, state mutation, invalidate/requestLayout path, frame-to-frame delta, executed framework APIs, DEX methods/opcodes, REC-MISS, fallback usage, exceptions, authoritative renderer, screenshot SHA, 3-run reproducibility. Never count a frame as success merely because a PNG exists.",
+   "law": "SUCCESS-PATH FIRST mandate: find the common runtime path/capability set shared by real successful frames BEFORE attacking failed APKs.",
+   "evidence": "user mandate (SUCCESS-PATH FIRST + SUCCESS-FIRST COMPATIBILITY)",
+   "test": "3-run protocol",
+   "source": "user campaign mandate",
+   "current": "",
+   "risk": "",
+   "fix": "",
+   "after": "",
+   "before": "",
+   "affected_titles": "",
+   "api": "",
+   "upstream_source": "AOSP frameworks/base (per-entry law text)"
+  },
+  {
+   "id": "F-NEW-209",
+   "status": "PENDING",
+   "priority": "P0",
+   "layer": "campaign/success-path",
+   "title": "SUCCESS-PATH SP-2/3/12 + SFC-3/4/5: prove the common successful chain (APK->manifest->Application->Activity->Window->Decor/content root->attachment->setContentView->ViewTree->measure->layout->draw traversal->app-owned draw op->framebuffer mutation->capture, each stage PASS/FAIL/NOT_USED/UNKNOWN); build the success-vs-white capability matrix; cluster successful titles into runtime families (XML widget / ImageView-Bitmap / custom Canvas / SurfaceView / game-loop / theme-heavy / activity-transition / dynamic Drawable / WebView / Compose / GL) derived from RUNTIME EVIDENCE, never package names; find similar titles per family; compare at the FIRST divergence (target X, not the blank screenshot); separate white-screen families VIEWTREE_NOT_REACHED / MEASURE_NOT_RUN / LAYOUT_NOT_RUN / DRAW_NOT_RUN / APP_DRAW_OPS=0 / APP_DRAW_OPS>0-but-blank / REAL-FRAME-but-incomplete into distinct root families.",
+   "law": "Family generalization law: if 8/10 similar APKs render, strengthen the shared implementation instead of debugging each APK individually.",
+   "evidence": "user mandate; F-NEW-197 family A+E attribution",
+   "fanout": "families x corpus",
+   "test": "3-run protocol",
+   "source": "user campaign mandate",
+   "current": "",
+   "risk": "",
+   "fix": "",
+   "after": "",
+   "before": "",
+   "affected_titles": "",
+   "api": "",
+   "upstream_source": "AOSP frameworks/base (per-entry law text)"
+  },
+  {
+   "id": "F-NEW-210",
+   "status": "PENDING",
+   "priority": "P1",
+   "layer": "campaign/success-path",
+   "title": "SUCCESS-PATH SP-4/5/6/7/8: authority-accounting audits — renderer-family selection must use only runtime semantics (no package/app names, class-name guesses, newest object id, last setParams receiver, diagnostic placeholders, synthetic demo renderer deciding the authoritative root); log window_id/decor_id/content_id/effective_root_id/root_class/attached/visible/measured/laid_out for every successful frame (downgrade evidence rather than guess); classify every frame_census_.app_draw_ops increment as APP_REAL_DRAW / FRAMEWORK_DRAW / FALLBACK_DRAW / DIAGNOSTIC_DRAW / UNKNOWN with only APP_REAL_DRAW satisfying the render gate (fix the accounting law if any framework default/background/text/fallback can increment it); classify legacy paths (ApplicationRuntime/RenderPipeline/software_renderer/synthetic api::View) as AUTHORITATIVE/LEGACY/TEST-ONLY/DEMO/DEAD with exactly ONE authoritative framebuffer owner.",
+   "law": "REAL_DALVIK must have exactly ONE authoritative framebuffer owner; a legacy renderer must never allow real-app-failed -> synthetic-draws -> success.",
+   "evidence": "user mandate; V8 authority audit (partial)",
+   "test": "3-run protocol",
+   "source": "user campaign mandate",
+   "current": "",
+   "risk": "",
+   "fix": "",
+   "after": "",
+   "before": "",
+   "affected_titles": "",
+   "api": "",
+   "upstream_source": "AOSP frameworks/base (per-entry law text)"
+  },
+  {
+   "id": "F-NEW-211",
+   "status": "PENDING",
+   "priority": "P1",
+   "layer": "campaign/success-path",
+   "title": "SUCCESS-PATH SP-9/10: investigate the successful apps' upstream source (TicTacToe Classic, Simple Stopwatch, billthefarmer Notes, Dodge, one Compose/failed counterpart) — map each source operation (XML hierarchy / programmatic View / Canvas.onDraw / SurfaceView / ImageView / TextView / WebView / Compose) to the MiniAndroid runtime operation to derive reusable Android semantic laws (NOT package-specific adapters); then derive the COMMON MINIMUM RENDER CONTRACT from evidence (Activity has Window -> real Decor/content root -> attached -> measure -> layout -> View.draw -> at least one app-owned visual primitive reaches the authoritative buffer -> that buffer is captured -> no synthetic pixels -> any earlier failure = NOT_RENDERED).",
+   "law": "Source-first methodology law; the contract is DERIVED, not assumed.",
+   "evidence": "user mandate",
+   "test": "3-run protocol",
+   "source": "user campaign mandate",
+   "current": "",
+   "risk": "",
+   "fix": "",
+   "after": "",
+   "before": "",
+   "affected_titles": "",
+   "api": "",
+   "upstream_source": "AOSP frameworks/base (per-entry law text)"
+  },
+  {
+   "id": "F-NEW-212",
+   "status": "PENDING",
+   "priority": "P1",
+   "layer": "campaign/success-path",
+   "title": "SUCCESS-PATH SP-11 + SFC-9: high-fan-out missing-laws search — once the successful path is known, inspect failed titles that should use the same path; prioritize generic laws affecting many apps (activity/window/content attachment, visibility, measure/layout dimensions, ViewGroup child traversal, draw ordering, Canvas save/restore, Paint defaults, text measurement, Drawable resolution, ImageView resource resolution, Bitmap density, TypedArray, Context/Application identity, Fragment host, lifecycle generated adapters, Handler/Looper/Choreographer, invalidate/requestLayout, post/postDelayed, configuration/density, theme/background resolution, exception propagation, DEX register semantics, class initialization, reflection/Unsafe field identity); rank by fan-out x evidence x proximity-to-draw; per-family metric: titles tested / reaching L3 / L4 / L6, real visual pass rate, common APIs, common renderer, common missing capabilities, regressions.",
+   "law": "Rank by technical fan-out, never by app fame.",
+   "evidence": "user mandate",
+   "test": "3-run protocol",
+   "source": "user campaign mandate",
+   "current": "",
+   "risk": "",
+   "fix": "",
+   "after": "",
+   "before": "",
+   "affected_titles": "",
+   "api": "",
+   "upstream_source": "AOSP frameworks/base (per-entry law text)"
+  },
+  {
+   "id": "F-NEW-213",
+   "status": "PENDING",
+   "priority": "P1",
+   "layer": "campaign/success-path",
+   "title": "SUCCESS-PATH SP-13 + SFC-6/7: SUCCESS-PATH REPORT (A working titles examined; B exact renderer family of each; C common successful stages; D first stage where white titles diverge; E common capabilities missing from failed titles; F existing runtime laws already covering them; G missing generic laws; H false-success paths discovered; I legacy/synthetic renderer contamination; J highest fan-out root causes; K tests required; L 3-run proof plan) + the success-path protection regression set (one XML widget app, one ImageView-heavy app, one custom Canvas game, one SurfaceView game, one themed app, one multi-Activity app, hello_widgets, hello_smoke) run before every generic subsystem change — a fix is rejected if it regresses any working family; forbidden: package==/class==Telegram/WhatsApp/title==/SmsView/PhoneView hacks.",
+   "law": "Protect-successful-paths law; generalization by semantic Android behavior only.",
+   "evidence": "user mandate",
+   "test": "3-run protocol",
+   "source": "user campaign mandate",
+   "current": "",
+   "risk": "",
+   "fix": "",
+   "after": "",
+   "before": "",
+   "affected_titles": "",
+   "api": "",
+   "upstream_source": "AOSP frameworks/base (per-entry law text)"
+  },
+  {
+   "id": "F-NEW-214",
+   "status": "PENDING",
+   "priority": "P2",
+   "layer": "campaign/success-path",
+   "title": "SUCCESS-PATH SFC-8: logs-as-data law — distill run logs into bounded records (first_divergence, execution_family, API census, ViewTree census, render census, resource census, exception census, REC-MISS census, frame metrics, SHA, state-change evidence); keep raw traces outside the canonical repository unless required as provenance.",
+   "law": "No thousands of raw lines stored or manually inspected.",
+   "evidence": "user mandate",
+   "test": "3-run protocol",
+   "source": "user campaign mandate",
+   "current": "",
+   "risk": "",
+   "fix": "",
+   "after": "",
+   "before": "",
+   "affected_titles": "",
+   "api": "",
+   "upstream_source": "AOSP frameworks/base (per-entry law text)"
   }
  ],
- "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry\u2194docs single-source-of-truth restored); registry 372\u2192374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots. | S80: three real games (Snake Deluxe, Mini Tetris, 2048) built + played on the runtime; R-NEW-401 external-cache bridge.",
- "total": 492,
+ "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry↔docs single-source-of-truth restored); registry 372→374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots. | S80: three real games (Snake Deluxe, Mini Tetris, 2048) built + played on the runtime; R-NEW-401 external-cache bridge.",
+ "total": 509,
  "count": 492,
  "meta": {
   "last_update": "S132 reuse-proof wave"
  },
  "status_counts": {
-  "PARTIAL": 106,
+  "PARTIAL": 107,
   "VERIFIED-CORRECT": 46,
   "UNPROVEN": 72,
   "VERIFIED-FIXED": 48,
@@ -3659,7 +3993,7 @@
   "ROOT-CAUSED-REMEASURED-GENERIC-OK": 1,
   "FIXED-S75": 1,
   "ROOT-CAUSED-SEMANTIC": 1,
-  "REGISTERED": 3,
+  "REGISTERED": 2,
   "OPEN": 4,
   "USED_BY_EXECUTION": 7,
   "ROOT_CAUSED-FIXED": 2,
@@ -3667,8 +4001,9 @@
   "ROOT-CAUSED-CLOSED": 2,
   "VERIFIED_3RUN": 1,
   "VERIFIED": 3,
-  "BLOCKED": 1
+  "BLOCKED": 1,
+  "PENDING": 17
  },
- "total_roots": 489,
+ "total_roots": 509,
  "generated": "2026-10-02T00:00:00Z"
 }

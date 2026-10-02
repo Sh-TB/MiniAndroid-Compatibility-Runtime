@@ -700,9 +700,26 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                 auto& rt = resources::ResourceRuntime::instance();
                 rt.set_custom_view_ctor_hook(
                     [this](uint32_t view_id,
-                           const std::string& class_desc) -> bool {
+                           const std::string& class_desc,
+                           const std::vector<resources::AxmlAttribute>&
+                               xml_attrs) -> bool {
+                        // F-NEW-197: XML attrs travel with the ctor call —
+                        // translated here into the engine-visible record
+                        // set (typed value + resource id per attribute).
+                        std::vector<resources::XmlAttrRecord> recs;
+                        recs.reserve(xml_attrs.size());
+                        for (const auto& a : xml_attrs) {
+                            if (a.attr_resid == 0) continue;
+                            resources::XmlAttrRecord r;
+                            r.resid = a.attr_resid;
+                            r.type = a.value.type;
+                            r.data = (int32_t)a.value.data;
+                            r.ref_id = a.value.ref_id;
+                            r.str = a.value.string_value;
+                            recs.push_back(std::move(r));
+                        }
                         return dalvik_engine_.run_custom_view_constructor(
-                            view_id, class_desc);
+                            view_id, class_desc, recs);
                     });
                 // G12 FIX-G12-002 (completes G10 FIX-G10-002's intent): the
                 // DEX superclass classifier must be wired for EVERY inflate/
