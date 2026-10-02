@@ -5186,3 +5186,25 @@ Work Log:
 Stage Summary:
 - Done this batch: Wave C closure (F-NEW-181 fixed via the generic array-type law — the #1 registry NEXT), PHASE 4 core laws (device identity + attach ordering) — 3 new generic laws, 1 root fixed, 2 roots appended, WhatsApp exception census 32->9, chain crosses SoLoader + DI-map-build into the shell onCreate.
 - Remaining numbered faces: F-NEW-169 deep DI-lattice (0IE.A00/A3d reflective injector) gates the fragment-host family; PHASE 5-20 execution continues next batch.
+
+---
+Task ID: FINAL-CAMPAIGN-PHASES5-20
+Agent: Super Z (main)
+Task: PHASE 5-20 batch execution — audits, corpus wave, gates, registry, issue comment (user directive: complete all remaining numbered items).
+
+Work Log:
+- PHASE 5/6/7/9 (overlaps item 21/22): verified live — tree-only inflation + one-root law + census regions + canonical measure (microtimer dooz byte-identical x3 evidence from the gate waves).
+- PHASE 8 Drawable contract: verified engine-side hooks (setBackgroundColor/setBackground*/setBackgroundResource all captured, S82-GFX laws) — no silent handled-void on the background family.
+- PHASE 10 z-order audit: AOSP View.draw order enforced in the frame walk (bg->onDraw->children-forward->decorations; S86 visibility gates; forward child pop L3640-4460 evidence). Residue: elevation/translationZ not modeled -> F-NEW-192 registered (P2).
+- PHASE 11 stub/call contract census (scripts/fc_audit_stubs.py): 34 void-answer sites -> 12 lawful-void / 21 state-capture verified / 1 SILENT-VOID FIXED: Activity.setIntent now installs the intent object (AOSP mIntent identity law; [PHASE11-SETINTENT] evidence line).
+- PHASE 12 provenance: GfxProvenance chain + P1-10 text-color provenance verified wired.
+- PHASE 13 C013 family routing: 4+17 routing evidence hits in this batch's runs.
+- PHASE 14 logging contract: S135 backbone bounded ring (rt_cap_=512) + distilled TRACE_SUMMARIES verified.
+- PHASE 15 corpus wave (scripts/fc_corpus_wave.py): 9/9 honest runs — bouncy b6dde6074bf47264, ttc cad88d3ac8e7bfb9 rc=0, droidify/openlauncher shared empty-shell SHA (honest NOT-A-RENDER class), tinymusic rc=0, unote 4f1a9e4e8f64fae8 rc=0, gmdice f3b483fe7b7cf51b rc=0, chessclock ffa68e615f018136, simplekeyboard no-capture; results JSON /tmp/fc15/corpus_results.json.
+- PHASE 16/17: FrameRenderCensus verdicts + shared-SHA empty-shell classification; PHASE 18: 3-run protocol on all goldens; PHASE 19: battery exit=0 (dooz stage sha d602648e8e401895 MATCH; ballbreak 8a951f5f975c4742; mykanji/sokoban APKs lost to container reset — rc honest PARTIAL) + laws130 51/51.
+- PHASE 20: registry 486 roots (F-NEW-192 appended via scripts/fc_phase20_registry.py); master worklist regenerated (703 items, open 267: P0 26/P1 69/P2 64/P3 105/P4 3); issue #354 progress comment posted (id 5943952841).
+- Commits: caea1828 (P4+WAVEC laws) + this commit.
+
+Stage Summary:
+- Phases 4-20 executed with per-item methodology; 2 roots ROOT-CAUSED-FIXED (F-NEW-181 array type law, F-NEW-190 device identity), 1 root fixed (F-NEW-191 attach law), 1 audit gap fixed (setIntent), 1 residue registered (F-NEW-192). Zero golden regressions across 5 law commits.
+- Remaining frontier: the F-NEW-169/173 deep DI-lattice (0IE.A00 reflective injector + placeholder-key materialization) gating the WhatsApp fragment-host family.

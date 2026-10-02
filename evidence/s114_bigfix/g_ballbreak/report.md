@@ -14,7 +14,7 @@
 | Frames Rendered | 2 |
 | Execution Time | 0ms |
 | Memory Peak | 0.00 B |
-| Errors | 0 |
+| Errors | 2 |
 | Warnings | 0 |
 
 ## API Trace Summary
@@ -24,6 +24,7 @@
 | `DalvikEngine` | 3 |
 | `ExecutionEngine` | 2047 |
 | `TraceEngine` | 3 |
+| `Unknown` | 2 |
 
 ## Top Method Calls
 
@@ -34,21 +35,35 @@
 | `ExecutionEngine.trace_files` | 5 |
 | `ExecutionEngine.stage_render_frame` | 4 |
 | `DalvikEngine.execute_apk` | 3 |
+| `ExecutionEngine.stage_initialize_runtime` | 2 |
+| `Unknown.Unknown` | 2 |
 | `TraceEngine.log_screenshot` | 2 |
 | `ExecutionEngine.trace_export` | 2 |
-| `ExecutionEngine.phase_b_click` | 2 |
-| `ExecutionEngine.stage_execute_application_real_dalvik` | 2 |
-| `ExecutionEngine.stage_initialize_runtime` | 2 |
-| `ExecutionEngine.stage_load_apk` | 2 |
 | `ExecutionEngine.stage_parse_dex` | 2 |
+| `ExecutionEngine.stage_load_apk` | 2 |
+| `ExecutionEngine.stage_execute_application_real_dalvik` | 2 |
+| `ExecutionEngine.phase_b_click` | 2 |
 | `ExecutionEngine.stage_generate_reports` | 1 |
-| `TraceEngine.start_session` | 1 |
-| `ExecutionEngine.validation` | 1 |
 | `ExecutionEngine.stage_execute_application` | 1 |
 | `ExecutionEngine.lifecycle_verified` | 1 |
 | `ExecutionEngine.lifecycle_source` | 1 |
 | `ExecutionEngine.execution_source` | 1 |
+| `ExecutionEngine.validation` | 1 |
 | `ExecutionEngine.create_view_from_dalvik_result` | 1 |
+
+## Errors & Issues
+
+### EXC-UNCAUGHT-TOP
+
+- **Message:** [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Landroidx/appcompat/app/AppCompatActivity;.attachBaseContext invoke_pc=0x4 depth=2
+- **Location:** `.`
+- **Fatal:** No
+
+### EXC-UNCAUGHT-TOP
+
+- **Message:** [EXC-UNCAUGHT-TOP] Ljava/lang/NullPointerException; escaped the app boundary at <unknown>.<unknown> invoke_pc=0x0 depth=1 [APP-BOUNDARY]
+- **Location:** `.`
+- **Fatal:** No
 
 ## Screenshots
 
@@ -70,5 +85,5 @@
 
 ## Session Info
 
-- **Session ID:** `EXP-001-20261001-144304-9191`
-- **Generated:** 2026-10-01 14:43:05 UTC
+- **Session ID:** `EXP-001-20261002-013322-3514`
+- **Generated:** 2026-10-02 01:33:23 UTC

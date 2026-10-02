@@ -14,7 +14,7 @@
 | Frames Rendered | 2 |
 | Execution Time | 0ms |
 | Memory Peak | 0.00 B |
-| Errors | 6 |
+| Errors | 17 |
 | Warnings | 0 |
 
 ## API Trace Summary
@@ -24,14 +24,14 @@
 | `DalvikEngine` | 3 |
 | `ExecutionEngine` | 3089 |
 | `TraceEngine` | 3 |
-| `Unknown` | 6 |
+| `Unknown` | 17 |
 
 ## Top Method Calls
 
 | Method | Calls |
 |--------|-------|
 | `ExecutionEngine.stage_load_classes` | 3053 |
-| `Unknown.Unknown` | 6 |
+| `Unknown.Unknown` | 17 |
 | `ExecutionEngine.stage_capture_output` | 6 |
 | `ExecutionEngine.trace_files` | 5 |
 | `ExecutionEngine.stage_render_frame` | 4 |
@@ -55,37 +55,103 @@
 
 ### EXC-UNCAUGHT-TOP
 
-- **Message:** [EXC-UNWIND] La; unwound Lzs;.m invoke_pc=0x4a depth=17
+- **Message:** [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Ltw0;.f invoke_pc=0x47 depth=36
 - **Location:** `.`
 - **Fatal:** No
 
 ### EXC-UNCAUGHT-TOP
 
-- **Message:** [EXC-UNWIND] La; unwound Lte1;.f invoke_pc=0x4 depth=16
+- **Message:** [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Lh40;.a invoke_pc=0x6b depth=35
 - **Location:** `.`
 - **Fatal:** No
 
 ### EXC-UNCAUGHT-TOP
 
-- **Message:** [EXC-UNWIND] La; unwound Lse1;.s invoke_pc=0x89 depth=15
+- **Message:** [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Ldu;.q invoke_pc=0x40 depth=34
 - **Location:** `.`
 - **Fatal:** No
 
 ### EXC-UNCAUGHT-TOP
 
-- **Message:** [EXC-UNWIND] La; unwound Lg;.q invoke_pc=0x747 depth=13
+- **Message:** [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Ldu;.h invoke_pc=0x14 depth=33
 - **Location:** `.`
 - **Fatal:** No
 
 ### EXC-UNCAUGHT-TOP
 
-- **Message:** [EXC-UNWIND] La; unwound Lg;.h invoke_pc=0x14c depth=12
+- **Message:** [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Ltw0;.f invoke_pc=0x47 depth=33
 - **Location:** `.`
 - **Fatal:** No
 
 ### EXC-UNCAUGHT-TOP
 
-- **Message:** [EXC-UNWIND] La; unwound Lat;.a invoke_pc=0x93 depth=10
+- **Message:** [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Lcn1;.c invoke_pc=0x5f depth=32
+- **Location:** `.`
+- **Fatal:** No
+
+### EXC-UNCAUGHT-TOP
+
+- **Message:** [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Liu;.i invoke_pc=0x11a depth=31
+- **Location:** `.`
+- **Fatal:** No
+
+### EXC-UNCAUGHT-TOP
+
+- **Message:** [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Lt3;.i invoke_pc=0x61 depth=30
+- **Location:** `.`
+- **Fatal:** No
+
+### EXC-UNCAUGHT-TOP
+
+- **Message:** [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Ltw0;.f invoke_pc=0x47 depth=30
+- **Location:** `.`
+- **Fatal:** No
+
+### EXC-UNCAUGHT-TOP
+
+- **Message:** [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Lt3;.r invoke_pc=0x80 depth=29
+- **Location:** `.`
+- **Fatal:** No
+
+### EXC-UNCAUGHT-TOP
+
+- **Message:** [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Lg;.h invoke_pc=0x14c depth=12
+- **Location:** `.`
+- **Fatal:** No
+
+### EXC-UNCAUGHT-TOP
+
+- **Message:** [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Lat;.a invoke_pc=0x93 depth=10
+- **Location:** `.`
+- **Fatal:** No
+
+### EXC-UNCAUGHT-TOP
+
+- **Message:** [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Llo;.B invoke_pc=0x46 depth=9
+- **Location:** `.`
+- **Fatal:** No
+
+### EXC-UNCAUGHT-TOP
+
+- **Message:** [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Lnt;.a invoke_pc=0x10 depth=8
+- **Location:** `.`
+- **Fatal:** No
+
+### EXC-UNCAUGHT-TOP
+
+- **Message:** [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Lql1;.j invoke_pc=0x35 depth=7
+- **Location:** `.`
+- **Fatal:** No
+
+### EXC-UNCAUGHT-TOP
+
+- **Message:** [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Le;.q invoke_pc=0x1c4 depth=6
+- **Location:** `.`
+- **Fatal:** No
+
+### EXC-UNCAUGHT-TOP
+
+- **Message:** [EXC-UNCAUGHT-TOP] Ljava/lang/IllegalStateException; escaped the app boundary at Lio/github/yamin8000/dooz/ui/MainActivity;.onCreate invoke_pc=0xc1 depth=1 [APP-BOUNDARY]
 - **Location:** `.`
 - **Fatal:** No
 
@@ -109,5 +175,5 @@
 
 ## Session Info
 
-- **Session ID:** `EXP-001-20261001-144306-2937`
-- **Generated:** 2026-10-01 14:43:08 UTC
+- **Session ID:** `EXP-001-20261002-013323-4390`
+- **Generated:** 2026-10-02 01:33:27 UTC

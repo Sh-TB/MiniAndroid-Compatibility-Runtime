@@ -2382,6 +2382,21 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_null();
     }
     if (m == "setIntent") {
+        // PHASE 11 call-contract audit fix (AOSP Activity.setIntent law):
+        // setIntent REPLACES mIntent — a later getIntent() returns THE SAME
+        // object (state-identity law, the P1-2 pattern). The silent-void
+        // dropped the arg: real DEX that routes via setIntent then reads
+        // getIntent() got the LAUNCH intent (or a synthetic) instead of the
+        // one the app installed.
+        if (heap_ && !ctx.args.empty() &&
+            ctx.args.size() >= 2 &&
+            ctx.args[1].kind == framework::CallContext::Arg::Kind::OBJECT &&
+            ctx.args[1].object_id != 0) {
+            set_launch_intent_id(ctx.args[1].object_id);
+            std::cerr << "[PHASE11-SETINTENT] activity setIntent -> intent_id="
+                      << ctx.args[1].object_id
+                      << " (getIntent now returns this object)" << std::endl;
+        }
         return CallResult::handled_void();
     }
     if (m == "finish") {
