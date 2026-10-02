@@ -32899,6 +32899,43 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 // ────────────────────────────────────────────────────────
                 uint32_t content_parent = vs->find_by_android_id(r005_decor,
                                                                  0x01020002);
+                // ────────────────────────────────────────────────────────
+                // F-NEW-220 CONTENT-PARENT REUSE LAW (AOSP
+                // AppCompatDelegateImpl.createSubDecor): the appcompat
+                // subDecor (abc_screen_toolbar) ALREADY CONTAINS its own
+                // ContentFrameLayout (action_bar_activity_content) and the
+                // delegate then swaps ids so that frame BECOMES
+                // android.R.id.content. Materializing a PARALLEL node above
+                // the screen root (the old F165 fallback for this shape)
+                // landed the app's layout in a SIBLING position the render
+                // walk never reaches (opencalc vc53 face: content parent=945
+                // above screen root=935 while the walk descended
+                // 935→939(empty) → empty-shell frame b5a7a35d5fe0564b with
+                // the app layout invisible; addView evidence: child
+                // ConstraintLayout 533 → parent 945, never rendered).
+                // Law: reuse the subDecor's OWN ContentFrameLayout and
+                // install the android.R.id.content id on it (the appcompat
+                // id-swap) so every later android.R.id.content lookup —
+                // including the delegate's content.addView(appLayout) —
+                // resolves INSIDE the screen tree.
+                // ────────────────────────────────────────────────────────
+                bool f220_content_inside_sub = false;
+                if (content_parent == 0 || content_parent == r005_sub) {
+                    uint32_t f220_cp =
+                        vs->find_first_descendant_by_class(
+                            r005_sub, "ContentFrameLayout;");
+                    if (f220_cp != 0) {
+                        if (auto* cp220 = vs->find_node(f220_cp))
+                            cp220->android_view_id = 0x01020002;
+                        content_parent = f220_cp;
+                        f220_content_inside_sub = true;
+                        std::cerr << "[F-NEW-220] CONTENT-PARENT-REUSED node="
+                                  << content_parent
+                                  << " (subDecor's own ContentFrameLayout;"
+                                  << " android.R.id.content id-swap law)"
+                                  << std::endl;
+                    }
+                }
                 if (content_parent == 0 || content_parent == r005_sub) {
                     const uint32_t cp = heap_.allocate(
                         "Landroid/widget/FrameLayout;", pc_,
@@ -32908,16 +32945,23 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     cp_node->android_view_id = 0x01020002;
                     vs->add_child(r005_decor, cp);
                     content_parent = cp;
+                    f220_content_inside_sub = false;
                     std::cerr << "[F165-CONTENT] android.R.id.content node="
                               << cp << " materialized under decor="
                               << r005_decor << std::endl;
                 }
                 // mContentParent.addView(view) — idempotent: skip when the
-                // view already sits under the content parent.
+                // view already sits under the content parent. F-NEW-220:
+                // ALSO skip when the content parent is a DESCENDANT of the
+                // installed view (the appcompat subDecor case — the view is
+                // the content parent's ANCESTOR; adding would build a
+                // cycle). AOSP moves window-content children INTO the
+                // screen's frame instead.
                 const auto* sub_node = vs->find_node(r005_sub);
                 const bool already_under_content =
                     sub_node && sub_node->parent_id == content_parent;
-                if (!already_under_content && content_parent != r005_sub) {
+                if (!already_under_content && content_parent != r005_sub &&
+                    !f220_content_inside_sub) {
                     vs->add_child(content_parent, r005_sub);
                     std::cerr << "[F165-CONTENT] view=" << r005_sub
                               << " installed under content parent="
