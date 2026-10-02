@@ -21,6 +21,7 @@
 
 #include "shared_prefs.h"
 #include "../storage/data_root.h"
+#include "../diagnostics/file_io_trace.h"
 #include <iostream>
 #include <algorithm>
 #include <cstring>
@@ -205,12 +206,22 @@ SharedPreferences::SharedPreferences(
     , m_name(prefs_name) {
     
     // Construct path: <base_path>/<package>/shared_prefs/<name>.xml
+    // F-NEW-234: when the caller did not pin an explicit base path (the
+    // "runtime/data" default sentinel), the AOSP ContextImpl law applies —
+    // prefs live under the RUNNING package's private data dir
+    // <data-root>/data/data/<pkg>/shared_prefs/.
     fs::path base(base_path);
-    fs::path pkg_dir = base / package_name / "shared_prefs";
+    fs::path pkg_dir =
+        (base_path == "runtime/data")
+            ? Storage::context_dir("shared_prefs")
+            : base / package_name / "shared_prefs";
     m_file_path = pkg_dir / (prefs_name + ".xml");
     
     // Ensure directory exists
     fs::create_directories(pkg_dir);
+    miniandroid::diagnostics::FileIoTrace::instance().record(
+        "MKDIR", pkg_dir.string(), true, "SharedPreferences.ctor",
+        package_name);
     
     // Load existing data if file exists
     if (fs::exists(m_file_path)) {
@@ -642,6 +653,9 @@ bool SharedPreferences::saveToFile() {
     
     {
         std::ofstream file(temp_path, std::ios::binary | std::ios::trunc);
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "WRITE", m_file_path.string(), file.is_open(), "SharedPreferences.saveToFile",
+            m_package_name);
         if (!file.is_open()) {
             m_last_error = "Cannot open temp file for writing: " + temp_path.string();
             return false;
@@ -1038,8 +1052,9 @@ std::shared_ptr<SharedPreferences> createForTelegram(
 std::vector<std::string> listPreferences(const std::string& package_name) {
     std::vector<std::string> result;
     
-    // M3 FINDING-012: root must follow the process-wide app-data root law.
-    fs::path prefs_dir = fs::path(Storage::app_data_root()) / package_name / "shared_prefs";
+    // M3 FINDING-012 + F-NEW-234: root follows the app-data root, scoped to
+    // the RUNNING package (AOSP ContextImpl shared_prefs dir law).
+    fs::path prefs_dir = Storage::context_dir("shared_prefs");
     
     if (!fs::exists(prefs_dir)) {
         return result;
@@ -1058,8 +1073,9 @@ std::vector<std::string> listPreferences(const std::string& package_name) {
 size_t deleteAllPreferences(const std::string& package_name) {
     size_t count = 0;
     
-    // M3 FINDING-012: root must follow the process-wide app-data root law.
-    fs::path prefs_dir = fs::path(Storage::app_data_root()) / package_name / "shared_prefs";
+    // M3 FINDING-012 + F-NEW-234: root follows the app-data root, scoped to
+    // the RUNNING package (AOSP ContextImpl shared_prefs dir law).
+    fs::path prefs_dir = Storage::context_dir("shared_prefs");
     
     if (!fs::exists(prefs_dir)) {
         return 0;

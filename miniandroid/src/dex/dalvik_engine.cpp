@@ -22,6 +22,7 @@
 #include "../diagnostics/click_audit.h"  // UNIFIED_002 EXP-100: env-gated click audit (DIAGNOSTIC)
 #include "../diagnostics/crash_forensics.h"  // S100 §3: last-op ring (issue #345)
 #include "../diagnostics/gfx_provenance.h"  // S82-GFX §6: evidence-bit pixel chain
+#include "../diagnostics/file_io_trace.h"   // IAPK: file-IO provenance (F-NEW-234 wave)
 #include "../jni/jni_bridge.h"
 // EXP-051: Shadow registry integration.
 #include "../framework/shadow_registry.h"
@@ -5248,9 +5249,14 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // object the Context.getCacheDir law answers (F-NEW-179 identity).
     if (declaring_class.find("AndroidUtilities") != std::string::npos &&
         method_name == "getCacheDir") {
-        return_val = get_or_create_dir_file(
-            (std::filesystem::path(Storage::app_data_root()) / "cache")
-                .string());
+        // F-NEW-234: per-package law — <root>/data/data/<pkg>/cache.
+        std::string au_cache = Storage::context_dir("cache").string();
+        std::error_code auc_ec;
+        std::filesystem::create_directories(au_cache, auc_ec);
+        return_val = get_or_create_dir_file(au_cache);
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "MKDIR", au_cache, true, "AndroidUtilities.getCacheDir",
+            current_class_ + "." + current_method_);
         last_invoke_return_ = return_val;
         recursion_depth_--;
         return true;
@@ -5655,6 +5661,14 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         is_val.object_id = is_id;
         is_val.class_desc = "Ljava/io/InputStream;";
         return_val = is_val;
+        // IAPK: asset READ provenance — the bytes resolve from apk_path_,
+        // which IS the installed codePath when running from the package
+        // store (F-NEW-231/--package law). Record both the logical asset
+        // path and the physical APK the bytes come from.
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "OPEN", "assets/" + asset_path + " @ apk=" + apk_path_,
+            !apk_path_.empty(), "AssetManager.open",
+            current_class_ + "." + current_method_);
         std::cerr << "[EXP071-ASSET] AssetManager.open(\""
                   << asset_path << "\") → InputStream id=" << is_id
                   << std::endl;
@@ -23482,9 +23496,12 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             std::filesystem::path p =
                 (fpath[0] == '/')
                     ? std::filesystem::path(fpath)
-                    : std::filesystem::path(Storage::app_data_root()) / fpath;
+                    : Storage::package_data_dir() / fpath;  // F-NEW-234 sandbox anchor
             std::error_code f104_ec;
             bool present = std::filesystem::exists(p, f104_ec) && !f104_ec;
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "OPEN", p.string(), present, "FileInputStream.open",
+                current_class_ + "." + current_method_);
             // Register the stream either way: reads on an absent file
             // answer EOF (loud diagnostic at the read law), matching the
             // existing asset-law shape.
@@ -23529,7 +23546,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         sv.type = DalvikType::STRING_REF;
         if (!fpath.empty() && fpath[0] != '/') {
             std::filesystem::path abs =
-                std::filesystem::path(Storage::app_data_root()) / fpath;
+                Storage::package_data_dir() / fpath;  // F-NEW-234 sandbox anchor
             sv.string_val = abs.string();
         } else {
             sv.string_val = fpath;
@@ -23701,9 +23718,12 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             std::filesystem::path p =
                 (upath[0] == '/')
                     ? std::filesystem::path(upath)
-                    : std::filesystem::path(Storage::app_data_root()) / upath;
+                    : Storage::package_data_dir() / upath;  // F-NEW-234 sandbox anchor
             std::error_code cr_ec;
             bool present = std::filesystem::exists(p, cr_ec) && !cr_ec;
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "OPEN", p.string(), present, "ContentResolver.openInputStream",
+                current_class_ + "." + current_method_);
             open_assets_[stream_id] = {std::string("file:") + p.string(), 0};
             std::cerr << "[F104-CRIS] stream=o" << stream_id << " path=\""
                       << p.string() << "\" present=" << (present ? 1 : 0)
@@ -31986,8 +32006,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         name_val.ref_id = 0;
         heap_.set_object_field(obj_id, "prefs_name", name_val);
         std::string prefs_pkg = package_name_.empty() ? std::string("unknown.package") : package_name_;
-        std::string prefs_dir = (std::filesystem::path(Storage::app_data_root()) /
-                               prefs_pkg / "shared_prefs").string();
+        // F-NEW-234: per-package law — <root>/data/data/<pkg>/shared_prefs.
+        std::string prefs_dir = Storage::context_dir("shared_prefs").string();
         std::string prefs_file = prefs_dir + "/" + prefs_name + ".xml";
         std::ifstream infile(prefs_file);
         if (infile.is_open()) {
@@ -32119,8 +32139,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // hard-coded package. Resolves from the manifest-derived package
         // (same source Context.getPackageName uses).
         std::string prefs_pkg = package_name_.empty() ? std::string("unknown.package") : package_name_;
-        std::string prefs_dir = (std::filesystem::path(Storage::app_data_root()) /
-                               prefs_pkg / "shared_prefs").string();
+        // F-NEW-234: per-package law — <root>/data/data/<pkg>/shared_prefs.
+        std::string prefs_dir = Storage::context_dir("shared_prefs").string();
         std::string prefs_file = prefs_dir + "/" + prefs_name + ".xml";
         std::ifstream infile(prefs_file);
         if (infile.is_open()) {
@@ -32236,8 +32256,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
 
         // AOSP one-shot guard (PreferenceManager.java:666).
         std::string prefs_pkg = package_name_.empty() ? std::string("unknown.package") : package_name_;
-        std::string prefs_dir = (std::filesystem::path(Storage::app_data_root()) /
-                                 prefs_pkg / "shared_prefs").string();
+        // F-NEW-234: per-package law — <root>/data/data/<pkg>/shared_prefs.
+        std::string prefs_dir = Storage::context_dir("shared_prefs").string();
         std::string prefs_file = prefs_dir + "/" + sp_name + ".xml";
         bool already_set = false;
         {
@@ -32344,9 +32364,12 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                             lines_keep[k] = std::string("    <string name=\"") + k + "\">" + v.string_val + "</string>";
                     }
                 lines_keep["_has_set_default_values"] = "    <boolean name=\"_has_set_default_values\" value=\"true\" />";
-                std::string mkdir_cmd = "mkdir -p " + prefs_dir;
-                system(mkdir_cmd.c_str());
+                std::error_code f114_mkdir_ec;
+                std::filesystem::create_directories(prefs_dir, f114_mkdir_ec);
                 std::ofstream out(prefs_file);
+                miniandroid::diagnostics::FileIoTrace::instance().record(
+                    "WRITE", prefs_file, out.is_open(), "PreferenceManager.setDefaultValues",
+                    current_class_ + "." + current_method_);
                 if (out.is_open()) {
                     out << "<?xml version='1.0' encoding='utf-8' standalone='yes' ?>\n<map>\n";
                     for (const auto& [k, l] : lines_keep) out << l << "\n";
@@ -32755,13 +32778,19 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     // R-NEW-367: package dir is the running application's
                     // manifest package (AOSP ContextImpl.getPreferencesDir law).
                     std::string prefs_pkg2 = package_name_.empty() ? std::string("unknown.package") : package_name_;
-                    std::string prefs_dir = (std::filesystem::path(Storage::app_data_root()) /
-                               prefs_pkg2 / "shared_prefs").string();
+                    // F-NEW-234: per-package law — <root>/data/data/<pkg>/shared_prefs.
+                    std::string prefs_dir = Storage::context_dir("shared_prefs").string();
                     // Create directory
-                    std::string mkdir_cmd = "mkdir -p " + prefs_dir;
-                    system(mkdir_cmd.c_str());
+                    std::error_code prefs_mkdir_ec;
+                    std::filesystem::create_directories(prefs_dir, prefs_mkdir_ec);
+                    miniandroid::diagnostics::FileIoTrace::instance().record(
+                        "MKDIR", prefs_dir, !prefs_mkdir_ec, "SharedPreferences.write",
+                        current_class_ + "." + current_method_);
                     std::string prefs_file = prefs_dir + "/" + prefs_name + ".xml";
                     std::ofstream out(prefs_file);
+                    miniandroid::diagnostics::FileIoTrace::instance().record(
+                        "WRITE", prefs_file, out.is_open(), "SharedPreferences.commit",
+                        current_class_ + "." + current_method_);
                     if (out.is_open()) {
                         out << "<?xml version='1.0' encoding='utf-8' standalone='yes' ?>\n<map>\n";
                         for (const auto& [key, val] : prefs_obj->fields) {
@@ -32797,8 +32826,15 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         (class_name.find("Context") != std::string::npos ||
          class_name.find("Activity") != std::string::npos)) {
         // S88 F-NEW-179: PATHED stable File (was pathless class singleton).
-        result = get_or_create_dir_file(
-            (std::filesystem::path(Storage::app_data_root()) / "files").string());
+        // F-NEW-234: per-package law — <root>/data/data/<pkg>/files
+        // (AOSP ContextImpl.getFilesDir = /data/user/0/<pkg>/files).
+        std::string files_dir = Storage::context_dir("files").string();
+        std::error_code fdir_ec;
+        std::filesystem::create_directories(files_dir, fdir_ec);
+        result = get_or_create_dir_file(files_dir);
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "MKDIR", files_dir, true, "Context.getFilesDir",
+            current_class_ + "." + current_method_);
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
@@ -32847,8 +32883,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             dir_name == ".." || dir_name == ".")
             dir_name = "default";
         std::filesystem::path dir_path =
-            std::filesystem::path(Storage::app_data_root()) /
-            ("app_" + dir_name);
+            Storage::context_dir("app_" + dir_name);  // F-NEW-234
         std::error_code ec;
         std::filesystem::create_directories(dir_path, ec);  // creating if needed
         result = get_or_create_dir_file(dir_path.string());
@@ -34309,9 +34344,23 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         (class_name.find("Context") != std::string::npos ||
          class_name.find("Activity") != std::string::npos)) {
         // S88 F-NEW-179: PATHED stable File (was pathless class singleton).
-        result = get_or_create_dir_file(
-            (std::filesystem::path(Storage::app_data_root()) / "external_files")
-                .string());
+        // F-NEW-234: AOSP Android/data/<pkg>/files (+ optional type subdir).
+        std::filesystem::path ext_files = Storage::external_app_dir("files");
+        if (args.size() >= 2 && args[1].type == DalvikType::STRING_REF &&
+            !args[1].string_val.empty()) {
+            // AOSP ContextImpl.getExternalFilesDir(type): the type is an
+            // optional subdirectory ("Music", " Pictures", ...).
+            std::string t = args[1].string_val;
+            if (t.find('/') != std::string::npos || t == ".." || t == ".")
+                t = "default";  // single-segment clamp, never traverse
+            ext_files /= t;
+        }
+        std::error_code extdir_ec;
+        std::filesystem::create_directories(ext_files, extdir_ec);
+        result = get_or_create_dir_file(ext_files.string());
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "MKDIR", ext_files.string(), true, "Context.getExternalFilesDir",
+            current_class_ + "." + current_method_);
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
@@ -34332,9 +34381,14 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
          class_name.find("Application") != std::string::npos ||
          class_name.find("Service") != std::string::npos)) {
         // S88 F-NEW-179: PATHED stable File (was pathless class singleton).
-        result = get_or_create_dir_file(
-            (std::filesystem::path(Storage::app_data_root()) / "external_cache")
-                .string());
+        // F-NEW-234: AOSP Android/data/<pkg>/cache.
+        std::string ext_cache = Storage::external_app_dir("cache").string();
+        std::error_code extcache_ec;
+        std::filesystem::create_directories(ext_cache, extcache_ec);
+        result = get_or_create_dir_file(ext_cache);
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "MKDIR", ext_cache, true, "Context.getExternalCacheDir",
+            current_class_ + "." + current_method_);
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
@@ -34371,12 +34425,15 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
          class_name.find("Application") != std::string::npos ||
          class_name.find("Service") != std::string::npos)) {
         const std::string leaf =
-            method == "getExternalCacheDirs" ? "external_cache"
-            : method == "getExternalFilesDirs" ? "external_files"
-            : method == "getExternalMediaDirs" ? "external_media"
+            method == "getExternalCacheDirs" ? "cache"
+            : method == "getExternalFilesDirs" ? "files"
+            : method == "getExternalMediaDirs" ? "media"
                                                : "obb";
-        DalvikValue filev = get_or_create_dir_file(
-            (std::filesystem::path(Storage::app_data_root()) / leaf).string());
+        // F-NEW-234: AOSP Android/data/<pkg>/<kind> (obb: Android/obb/<pkg>).
+        std::filesystem::path ext_dir = method == "getObbDirs"
+            ? Storage::external_obb_dir()
+            : Storage::external_app_dir(leaf);
+        DalvikValue filev = get_or_create_dir_file(ext_dir.string());
         uint32_t arr_id = heap_.allocate("[Ljava/io/File;", pc_, 0);
         heap_.set_object_field(arr_id, "__array_length__",
                                DalvikValue::make_int(1));
@@ -34521,8 +34578,14 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         (class_name.find("Context") != std::string::npos ||
          class_name.find("Activity") != std::string::npos)) {
         // S88 F-NEW-179: PATHED stable File (was pathless class singleton).
-        result = get_or_create_dir_file(
-            (std::filesystem::path(Storage::app_data_root()) / "cache").string());
+        // F-NEW-234: per-package law — <root>/data/data/<pkg>/cache.
+        std::string cache_dir = Storage::context_dir("cache").string();
+        std::error_code cachedir_ec;
+        std::filesystem::create_directories(cache_dir, cachedir_ec);
+        result = get_or_create_dir_file(cache_dir);
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "MKDIR", cache_dir, true, "Context.getCacheDir",
+            current_class_ + "." + current_method_);
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
@@ -34548,9 +34611,15 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         else if (!args.empty() && args[0].type == DalvikType::STRING_REF)
             db_name = args[0].string_val;   // static-form safety
         if (!db_name.empty()) {
-            result = get_or_create_dir_file(
-                (std::filesystem::path(Storage::app_data_root()) / "databases" /
-                 db_name).string());
+            // F-NEW-234: per-package law — <root>/data/data/<pkg>/databases/<name>.
+            std::filesystem::path db_path = Storage::context_dir("databases") / db_name;
+            std::error_code dbdir_ec;
+            std::filesystem::create_directories(db_path.parent_path(), dbdir_ec);
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "STAT", db_path.string(), std::filesystem::exists(db_path),
+                "Context.getDatabasePath",
+                current_class_ + "." + current_method_);
+            result = get_or_create_dir_file(db_path.string());
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
@@ -39782,12 +39851,15 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 // sandbox backing store (the mount point always exists).
                 p = host_path_for_virtual_volume(fpath);
             } else {
-                p = std::filesystem::path(Storage::app_data_root()) / fpath;
+                p = Storage::package_data_dir() / fpath;  // F-NEW-234 sandbox anchor
             }
         }
         std::error_code ec;
         bool present = !fpath.empty() && std::filesystem::exists(p, ec);
         bool is_dir = present && std::filesystem::is_directory(p, ec);
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            method == "exists" ? "EXISTS" : "STAT", p.string(), present,
+            "File." + method, current_class_ + "." + current_method_);
         status = ApiCallTrace::Status::IMPLEMENTED;
         if (method == "exists") result = DalvikValue::make_bool(present);
         else if (method == "isDirectory") result = DalvikValue::make_bool(is_dir);
@@ -39904,18 +39976,16 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 result = DalvikValue::make_string(fpath, 0);
             } else {
                 result = DalvikValue::make_string(
-                    (std::filesystem::path(Storage::app_data_root()) / fpath)
-                        .string(),
-                    0);
+                    (Storage::package_data_dir() / fpath).string(),
+                    0);  // F-NEW-234 sandbox anchor
             }
         } else {  // getAbsolutePath
             if (!fpath.empty() && fpath[0] == '/') {
                 result = DalvikValue::make_string(fpath, 0);
             } else {
                 result = DalvikValue::make_string(
-                    (std::filesystem::path(Storage::app_data_root()) / fpath)
-                        .string(),
-                    0);
+                    (Storage::package_data_dir() / fpath).string(),
+                    0);  // F-NEW-234 sandbox anchor
             }
         }
         static thread_local uint64_t r347_file_log = 0;
@@ -39968,7 +40038,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             if (fpath[0] == '/') {
                 p = host_path_for_virtual_volume(fpath);
             } else {
-                p = std::filesystem::path(Storage::app_data_root()) / fpath;
+                p = Storage::package_data_dir() / fpath;  // F-NEW-234 sandbox anchor
             }
             std::error_code mk_ec;
             if (method == "createNewFile") {
@@ -39977,6 +40047,9 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 if (!std::filesystem::exists(p, mk_ec)) {
                     std::ofstream touch(p, std::ios::app);
                     ok = touch.good();
+                    miniandroid::diagnostics::FileIoTrace::instance().record(
+                        "CREATE", p.string(), ok, "File.createNewFile",
+                        current_class_ + "." + current_method_);
                 } else {
                     // AOSP: createNewFile returns false when the file exists.
                     ok = false;
@@ -39984,6 +40057,9 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             } else {
                 ok = std::filesystem::create_directories(p, mk_ec) ||
                      std::filesystem::is_directory(p, mk_ec);
+                miniandroid::diagnostics::FileIoTrace::instance().record(
+                    "MKDIR", p.string(), ok, "File." + method,
+                    current_class_ + "." + current_method_);
             }
             status = ApiCallTrace::Status::IMPLEMENTED;
         } else {

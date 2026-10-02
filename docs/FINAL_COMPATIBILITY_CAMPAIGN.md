@@ -1,7 +1,7 @@
 # FINAL COMPATIBILITY CAMPAIGN — MASTER CHECKLIST
 
 The ONE permanent master checklist (user directive §15). No competing checklist.
-Created: 2026-10-02 · HEAD at creation: 286b4994 · Registry: 525 roots
+Created: 2026-10-02 · HEAD at creation: 286b4994 · Registry: 525 roots (529 at 2026-10-03: +F-NEW-234)
 
 Status legend:
 
@@ -84,14 +84,76 @@ docs/ACHIEVEMENTS.md, docs/ROADMAP_STATUS.md, issue #354 checkpoint flow.
 | 7 | APP proof (opencalc) ×3 runs | [✓✓] e364b001ee7abd66 ×3 (= golden) |
 | 8 | GAME proof (bouncy) ×3 runs | [✓✓] b6dde6074bf47264 ×3 (real content, PARTIAL rc) |
 | 9 | 10 platform claims answered | [✓✓] 10/10 PASS (registry F-NEW-231) |
+| 10 | F-NEW-234 per-package context-root law (installed-app FILESYSTEM) | [✓✓] 3-layout mismatch root-caused + generic fix; 12 installed runs ×3 all per-package; see IAPK wave entry |
+| 11 | Package data dirs consumed by runtime (was decorative) | [✓✓] 23/23 runtime-created files under data/data/<pkg> |
+| 12 | Source-APK hiding test (mandatory) | [✓✓] 4 targets physically quarantined during ALL runs; runs succeeded from identity only |
+| 13 | Recursive filesystem tree + state diffs (A→E) | [✓✓] manifests + diffs in run/iapk/after |
+| 14 | Runtime file-IO provenance (MINIANDROID_FILE_IO) | [✓✓] telegram r1 = 100 ops, 3 honest failures; app-DEX callers recorded |
+| 15 | Asset byte-source provenance (INSTALLED vs SOURCE vs APP-DATA) | [✓✓] gfx byte_source + file-IO 'assets/… @ apk=<store>/data/app/<pkg>/base.apk' |
+| 16 | Telegram installed test (large app, 64MB) | [✓✓] bbb6cd10a834963d ×3 from identity; 22 data files/10.6MB; filesystem NOT the settings-face cause (intro/auth nav chain remains) |
+| 17 | Large-app filesystem scaling (TARGET D + TG) | [✓✓] chess (assets+sounds) + telegram 10.6MB data tree |
+| 18 | Persistence / reinstall cycle | [✓✓] prefs persist + reinstall → clean → re-created; UNINSTALL_SEMANTICS = PENDING (no command; simulated via fs) |
+| 19 | Installed-vs-sideload comparison | [✓✓] opencalc + bouncy byte-identical across both modes |
+| 20 | Reusable installed-app audit capability | [✓✓] `pkgaudit --package <pkg> --data-root <dir>` (generic, JSON) |
+| 21 | Uninstall command | [ ] PENDING (no command exists — recorded, not faked) |
 
 ### §4–5 Random corpus loop
 
 | Iteration | Seed | Random APK 1 | Before | Root | After | Random APK 2 | Before | Root | After |
 |----------:|------|--------------|--------|------|-------|--------------|--------|------|-------|
 | MEGA-W2 | 20261002 | sudoku_secuso_101 (app, sha 1aff917f4ac9952b) | 31ddd4d5b8e6d18e WHITE (rc=0, false-SUCCESS pre-F-NEW-233) | F-NEW-232/233 + splash-Timer deferred UI | 45962e018344e94d ×3 (TutorialActivity + 2 buttons; text missing) | fishrings_v1.23_vc6 (game, sha 14d7dd80f7563c6a) | b5a7a35d5fe0564b flat #303030 | F-NEW-232 (splash Timer 5000ms never observed) | a341e3ad9092f640 ×3 REAL GAME BOARD |
+| IAPK | 20261003 | app.varlorg.unote_30 (app, sha be91103f0e7db443) | golden 4f1a9e4e8f64fae8 (sideload-verified) | — (law check: installed-mode fidelity) | 4f1a9e4e8f64fae8 rc=0 FROM INSTALLED IDENTITY (= golden; notes.db per-package) | WhatsApp_real (app, sha a013d2250a28c8f2) | 31ddd4d5b8e6d18e white (known frontier) | — (no regression; F-NEW-233 honest NO_ROOT) | 31ddd4d5b8e6d18e PARTIAL rc=1 installed-mode (same known face) |
 
 ### WAVE ENTRIES (§16 format)
+
+```text
+ID: F-NEW-234
+DATE: 2026-10-03
+ROOT: PER-PACKAGE CONTEXT-ROOT LAW GAP — three incompatible app-storage layouts;
+      install-created data/data/<pkg> decorative; Context files/cache/db flat
+      (cross-package contamination); prefs non-AOSP shape
+SOURCE: AOSP ContextImpl getFilesDir/getCacheDir/getSharedPreferences/
+        getDatabasePath/getDir/getExternalFilesDir laws (android-14)
+LAW: every Context-anchored dir is scoped to the RUNNING package;
+     MiniAndroid mapping <data-root>/data/data/<pkg> + shared volume
+     <data-root>/storage/emulated/0 (documented deviation)
+BEFORE: live STATE B→C diff — telegram cache4.db family written to FLAT
+        <store>/files/ (shared across packages); install dirs stayed EMPTY
+CHANGE: Storage::set_context_package/context_dir/package_data_dir/
+        external_app_dir law family; 16 engine sites re-anchored; wired at
+        set_package_info (sideload AND --package); install creates
+        code_cache/no_backup; MINIANDROID_FILE_IO file-IO provenance
+        instrument; gfx byte_source classification; reusable `pkgaudit`
+AFTER: 12 installed runs (4 targets ×3, sources quarantined) — all 23
+       runtime-created files under data/data/<pkg>; telegram 22 files/10.6MB;
+       asset reads prove installed base.apk as byte source
+APK: opencalculator_53 / bouncy / telegram_official / chess_jwtc_298 / unote_30 /
+     WhatsApp_real (seeded randoms)
+PACKAGE: com.darkempire78.opencalculator / com.dozingcatsoftware.bouncy /
+         org.telegram.messenger.web / jwtc.android.chess / app.varlorg.unote /
+         com.whatsapp
+APK SHA: 2642613868a8a80f / ffda0d9cb0b1b2aa / e37aced2a49c1dbb / 3245b9ec35f6c1df
+         / be91103f0e7db443 / a013d2250a28c8f2
+RUN CONFIG: run --package <pkg> --data-root <store> (MINIANDROID_FILE_IO +
+            MINIANDROID_GFX_PROVENANCE) ×3; sources physically hidden
+RUNTIME RESULT: opencalc e364b001ee7abd66 ×3 rc=0 (= golden); bouncy
+        b6dde6074bf47264 ×3; chess b5a7a35d5fe0564b ×3; telegram
+        bbb6cd10a834963d ×3 — installed identity ONLY, byte-identical
+VIEWTREE/PROVENANCE: lifecycle apk=<store>/data/app/<pkg>/base.apk; file-IO
+        JSONL ops 100 (tg r1) with app-DEX callers; asset provenance
+        'assets/… @ apk=<installed base.apk>'
+SCREENSHOT: run/iapk/after/<target>_r{1,2,3}/screenshot.png
+SCREENSHOT SHA: e364b001ee7abd66 / b6dde6074bf47264 / b5a7a35d5fe0564b /
+        bbb6cd10a834963d (all ×3 identical)
+3-RUN: ×3 byte-identical all four targets (+ unote random = golden ×1)
+NEW SUCCESS: installed-app FILESYSTEM model proven (platform capability);
+        unote first installed-mode golden reproduction
+REGRESSION: none — dooz/microtimer/unote/opencalc goldens ×3 MATCH under the
+        new law; whatsapp random = known face (no drift)
+COMMIT: (this wave)
+ISSUE: #354
+STATUS: IMPLEMENTED+TESTED
+```
 
 ```text
 ID: F-NEW-231
