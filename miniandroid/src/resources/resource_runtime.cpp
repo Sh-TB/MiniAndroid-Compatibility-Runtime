@@ -62,6 +62,9 @@ bool ResourceRuntime::ensure_loaded(const std::string& apk_path) {
     // inherited container law in the render pass — the cross-pass
     // oscillation root cause). One classification law for EVERY pass.
     apply_is_a();
+    // SECONDARY CAMPAIGN V4: same Factory law for the DEX-existence hook
+    // (unknown short-tag resolution).
+    apply_dex_class_exists_hook();
     loaded_ = true;
     std::cerr << "[U007-RES] ResourceRuntime loaded: " << apk_path
               << " named_ids=" << arsc_.stats().named_ids
