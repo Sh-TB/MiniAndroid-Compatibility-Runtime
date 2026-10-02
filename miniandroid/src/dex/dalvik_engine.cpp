@@ -603,10 +603,14 @@ void DalvikExecutionEngine::build_class_dex_index(const dex::DexReport& report) 
         "Ljava/io/Serializable;",
     };
     // Now add APK-defined classes from the DEX report.
+    // F-NEW-224 (user campaign §B): the hierarchy map is keyed/stored in the
+    // ONE canonical descriptor form — dotted or bare superclass spellings
+    // from toolchain drift are normalized at INGESTION, not at every walk.
     int apk_class_count = 0;
     for (const auto& cls : report.classes) {
         if (!cls.superclass_name.empty()) {
-            class_to_superclass_[cls.name] = cls.superclass_name;
+            class_to_superclass_[framework::normalize_class_desc(cls.name)] =
+                framework::normalize_class_desc(cls.superclass_name);
             apk_class_count++;
         }
         // F-087 (R-NEW-313): index runtime-visible class annotations for
@@ -756,10 +760,13 @@ size_t DalvikExecutionEngine::inject_secondary_dex_classes() {
         size_t added = 0;
         for (const auto& cls : mutable_classes) {
             if (!cls.superclass_name.empty()) {
-                if (class_to_superclass_.find(cls.name) == class_to_superclass_.end()) {
+                // F-NEW-224: same canonical-form ingestion as the primary map.
+                const std::string key224 = framework::normalize_class_desc(cls.name);
+                const std::string val224 = framework::normalize_class_desc(cls.superclass_name);
+                if (class_to_superclass_.find(key224) == class_to_superclass_.end()) {
                     added++;
                 }
-                class_to_superclass_[cls.name] = cls.superclass_name;
+                class_to_superclass_[key224] = val224;
             }
         }
         std::cerr << "[EXP095-HIER] superclass map extended by " << added
@@ -16473,6 +16480,36 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
                 } else {
                     static_field_storage_[static_key] = result_value;
                 }
+            } else if (field_res.class_descriptor == "Landroid/os/Environment;" &&
+                       (field_res.field_name == "MEDIA_MOUNTED" ||
+                        field_res.field_name == "MEDIA_MOUNTED_READ_ONLY" ||
+                        field_res.field_name == "MEDIA_REMOVED" ||
+                        field_res.field_name == "MEDIA_UNMOUNTED" ||
+                        field_res.field_name == "MEDIA_BAD_REMOVAL" ||
+                        field_res.field_name == "MEDIA_CHECKING" ||
+                        field_res.field_name == "MEDIA_NOFS" ||
+                        field_res.field_name == "MEDIA_SHARED" ||
+                        field_res.field_name == "MEDIA_UNKNOWN" ||
+                        field_res.field_name == "MEDIA_EJECTING")) {
+                // F-NEW-223 (user campaign §H): Environment storage-state
+                // String constants. AOSP Environment.java — apps gate their
+                // storage paths on `state.equals(Environment.MEDIA_MOUNTED)`;
+                // with no seed the sget answered null and String.equals(null)
+                // returned false → the app concluded "no external storage" →
+                // onCreate died. Values are the AOSP constant strings.
+                const char* s223 =
+                    field_res.field_name == "MEDIA_MOUNTED"            ? "mounted"
+                    : field_res.field_name == "MEDIA_MOUNTED_READ_ONLY" ? "mounted_ro"
+                    : field_res.field_name == "MEDIA_REMOVED"           ? "removed"
+                    : field_res.field_name == "MEDIA_UNMOUNTED"         ? "unmounted"
+                    : field_res.field_name == "MEDIA_BAD_REMOVAL"       ? "bad_removal"
+                    : field_res.field_name == "MEDIA_CHECKING"          ? "checking"
+                    : field_res.field_name == "MEDIA_NOFS"              ? "nofs"
+                    : field_res.field_name == "MEDIA_SHARED"            ? "shared"
+                    : field_res.field_name == "MEDIA_EJECTING"          ? "ejecting"
+                                                                        : "unknown";
+                result_value = DalvikValue::make_string(s223, 0);
+                static_field_storage_[static_key] = result_value;
             } else if (field_res.class_descriptor == "Ljava/util/Collections;" &&
                        (field_res.field_name == "EMPTY_SET" ||
                         field_res.field_name == "EMPTY_LIST" ||
@@ -19834,7 +19871,35 @@ bool DalvikExecutionEngine::execute_##name(uint32_t pc, InstructionTrace& trace)
        indistinguishable from any other zero. */ \
     bool a_is_ref = (a.type == DalvikType::OBJECT_REF || a.type == DalvikType::NULL_REF || a.type == DalvikType::CLASS_REF); \
     bool b_is_ref = (b.type == DalvikType::OBJECT_REF || b.type == DalvikType::NULL_REF || b.type == DalvikType::CLASS_REF); \
-    if (a_is_ref && b_is_ref) { \
+    if (a_is_ref && b_is_ref && a.type == DalvikType::CLASS_REF && b.type == DalvikType::CLASS_REF) { \
+        /* F-NEW-225d (completes F-NEW-218/F-069) — CLASS TOKEN DESCRIPTOR \
+           IDENTITY LAW. ART: a class has exactly ONE Class object, so \
+           `clsA == clsB` holds IFF they name the same class. Engine \
+           minted tokens carry ref_id = instruction_sequence_ (F-NEW-218 \
+           getClass law) — EVERY token mints a fresh id, so ref_id \
+           comparison answers never-equal for two tokens of the SAME \
+           class. Observable face (opencalc vc53): Gson's \
+           ReflectiveTypeAdapterFactory.getBoundFields loop guard \
+           `while (raw != Object.class)` never terminated — the Object \
+           token comparison missed, the loop climbed one level further, \
+           fed getGenericSuperclass(Object)==null into \
+           TypeToken.get(null) → $Gson$Types.getRawType IAE → \
+           MainActivity.onCreate APP-BOUNDARY death. LAW: CLASS_REF vs \
+           CLASS_REF compares the CANONICAL descriptor (F-NEW-224 form), \
+           not the mint id. */ \
+        taken = (framework::normalize_class_desc(a.class_desc) op \
+                 framework::normalize_class_desc(b.class_desc)); \
+        { \
+            static thread_local uint64_t f225d_n = 0; \
+            if (f225d_n < 24) { \
+                ++f225d_n; \
+                std::cerr << "[F-NEW-225d] " << op_name << " a=" << a.class_desc \
+                          << " b=" << b.class_desc << " taken=" << (taken ? "YES" : "NO") \
+                          << " caller=" << current_class_ << "." << current_method_ \
+                          << std::endl; \
+            } \
+        } \
+    } else if (a_is_ref && b_is_ref) { \
         uint32_t a_obj = (a.type == DalvikType::OBJECT_REF) ? a.object_id \
                         : (a.type == DalvikType::CLASS_REF) ? a.ref_id : 0; \
         uint32_t b_obj = (b.type == DalvikType::OBJECT_REF) ? b.object_id \
@@ -21494,6 +21559,39 @@ bool DalvikExecutionEngine::dalvik_class_assignable(const std::string& from_desc
     return false;
 }
 
+// ────────────────────────────────────────────────────────────────────────
+// F-NEW-223 (user campaign §H) — VIRTUAL EXTERNAL-STORAGE VOLUME LAW.
+// AOSP Environment.java + StorageManager: every device has a PRIMARY
+// external storage volume, EMULATED, mounted at /storage/emulated/0,
+// state MEDIA_MOUNTED, readable+writable by the app. Apps probe it at
+// startup (user evidence: opencalc's onCreate died because the path
+// "does not exist" — the honest R-NEW-346 metadata law answered ABSENT
+// for the raw absolute path, which on real hardware is a MOUNT POINT
+// that always exists). The runtime emulates a device: the volume is a
+// VIRTUAL MOUNT backed physically by <data_root>/storage/emulated/0
+// (the ONE sandbox root law — no writes escape the sandbox, deterministic
+// across runs). Translation is a pure prefix map; the backing root is
+// materialized on demand so exists() on the mount point is TRUE without
+// any app-side mkdirs (AOSP: the volume is mounted at boot, before any
+// app runs).
+// ────────────────────────────────────────────────────────────────────────
+static std::string host_path_for_virtual_volume(const std::string& p) {
+    static const char* kMount = "/storage/emulated/0";
+    if (p.empty() || p.rfind(kMount, 0) != 0)
+        return p;
+    namespace fs = std::filesystem;
+    fs::path backing =
+        fs::path(Storage::app_data_root()) / "storage" / "emulated" / "0";
+    // The mount point itself exists from boot (materialize once, idempotent).
+    std::error_code mk_ec;
+    fs::create_directories(backing, mk_ec);
+    std::string rest = p.size() > strlen(kMount) ? p.substr(strlen(kMount)) : "";
+    std::string hp = (backing.string() + rest);
+    // Collapse the mount point to its canonical host form without
+    // touching the caller's spelling of the virtual path.
+    return hp;
+}
+
 bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                           const std::string& method,
                                           const std::vector<DalvikValue>& args,
@@ -22859,6 +22957,39 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                             (pi ? "," : "") + mi.parameters[pi];
                     break;
                 }
+            }
+        }
+        if (!matched) {
+            // ── F-NEW-225b (user campaign; opencalc vc53 face) —
+            // FRAMEWORK-CONSTRUCTOR REFLECTION LAW (OpenJDK source-first):
+            // getDeclaredConstructor/getConstructor consult the app DEX
+            // first (above). Framework classes have NO DEX body here —
+            // but their JDK constructors objectively EXIST on every
+            // Android runtime (OpenJDK ArrayList/HashMap/... all declare
+            // public <init>()V). Pre-fix: framework lookups fell through
+            // to NoSuchMethodException — Gson's collection-adapter path
+            // (LA/h;.z pc=0x94 getDeclaredConstructor(ArrayList, []))
+            // took its "Failed making constructor" ERROR-ADAPTER branch
+            // and the adapter chain degraded. LAW: when the class is a
+            // FRAMEWORK class (JDK/android surface, not app-DEX) and the
+            // requested parameter list is the no-arg form, mint the
+            // public ()V Constructor record. App-DEX classes and
+            // parameterized requests keep the honest NoSuchMethodException
+            // (the caller's designed catch is still the path for those).
+            if (!referent.empty() && want_params.empty() &&
+                class_info_index_.find(referent) == class_info_index_.end() &&
+                (referent.rfind("Ljava/", 0) == 0 ||
+                 referent.rfind("Ljavax/", 0) == 0 ||
+                 referent.rfind("Landroid/", 0) == 0 ||
+                 referent.rfind("Landroidx/", 0) == 0)) {
+                matched = true;
+                matched_desc = "()V";
+                matched_mods = 0x1;  // public
+                matched_param_list = "";
+                std::cerr << "[F-NEW-225b] framework ctor " << referent
+                          << ".<init>()V minted (JDK default ctor law)"
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
             }
         }
         if (!matched) {
@@ -25348,6 +25479,118 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
     }
 
+    // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-226 (user campaign §A companion; ssw vc53 face) — VIEW PAINT
+    // IDENTITY LAW (AOSP TextView.java + Paint.java source-first).
+    //   • TextView.getPaint() returns the view's OWN TextPaint, created at
+    //     construction and reused for the view's LIFETIME (identity
+    //     contract — mutations through it persist; two getPaint() calls on
+    //     one view answer the SAME object, like BitmapDrawable.getPaint).
+    //   • Paint.setTextSize(float) records the size on the paint object
+    //     (AOSP: mTextSize = size; default 16sp — 42.0px at the 2.625
+    //     device-density law used by EXT-AOSP-002).
+    //   • F-NEW-227 PAINT.MEASURETEXT LAW: measureText answers the advance
+    //     width of the text subset — NON-NEGATIVE, 0 for an empty range,
+    //     positive for non-empty (deterministic per-char estimate driven
+    //     by the paint's recorded size; the software runtime has no
+    //     free-type metric for this bridge, same law boundary as the
+    //     audio-output no-op — the OBJECT/STATE law is what app logic
+    //     depends on: MyChrono.setFractionView scales the fraction view
+    //     from measureText vs width).
+    // Pre-fix: NO handler → getPaint() NULL → TextPaint.measureText
+    // NPE at MyChrono.setFractionView pc=23 → StopWatch.onCreate
+    // APP-BOUNDARY death (the face became reachable once F-NEW-225d made
+    // the launcher flow skip its token-identity-masked relaunch loop).
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getPaint" &&
+        (class_name.find("Landroid/widget/TextView;") == 0 ||
+         class_name.find("Landroid/widget/Button;") == 0 ||
+         class_name.find("Landroid/widget/EditText;") == 0 ||
+         class_name.find("TextPaint;") != std::string::npos ||
+         is_subclass_of(class_name, "Landroid/widget/TextView;"))) {
+        uint32_t recv = (!args.empty() &&
+                         args[0].type == DalvikType::OBJECT_REF)
+                            ? args[0].object_id
+                            : 0;
+        if (recv != 0) {
+            auto existing = heap_.get_object_field(recv, "__view_text_paint__");
+            if (existing.has_value() && existing->type == DalvikType::OBJECT_REF &&
+                existing->object_id != 0) {
+                result = *existing;
+            } else {
+                uint32_t pid = heap_.allocate("Landroid/text/TextPaint;", pc_, 0);
+                DalvikValue pv = DalvikValue::make_object(pid, "Landroid/text/TextPaint;");
+                heap_.set_object_field(pid, "__text_size_px__",
+                                       DalvikValue::make_float(42.0f));
+                heap_.set_object_field(recv, "__view_text_paint__", pv);
+                result = pv;
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    // Paint.setTextSize capture — the Paint object records its own size
+    // (F-NEW-226 state half; the EXT-AOSP-002 view law above handles the
+    // TextView receiver shape — this handles the PAINT receiver shape).
+    if (method == "setTextSize" &&
+        (class_name.find("Landroid/graphics/Paint;") != std::string::npos ||
+         class_name.find("Landroid/text/TextPaint;") != std::string::npos)) {
+        float px226 = -1.0f;
+        if (args.size() >= 2 && args[1].type == DalvikType::FLOAT32)
+            px226 = args[1].float_val;
+        else if (args.size() >= 2 && args[1].type == DalvikType::INT32) {
+            std::memcpy(&px226, &args[1].int_val, sizeof(px226));
+        }
+        if (px226 > 0.0f && !args.empty() &&
+            args[0].type == DalvikType::OBJECT_REF &&
+            heap_.has_object(args[0].object_id)) {
+            heap_.set_object_field(args[0].object_id, "__text_size_px__",
+                                   DalvikValue::make_float(px226));
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+    }
+    // F-NEW-227 — Paint/TextPaint.measureText family.
+    if (method == "measureText" &&
+        (class_name.find("Landroid/graphics/Paint;") != std::string::npos ||
+         class_name.find("Landroid/text/TextPaint;") != std::string::npos)) {
+        float size_px = 42.0f;
+        int32_t char_count = 0;
+        std::string mtxt;
+        if (!args.empty() && args[1].type == DalvikType::STRING_REF) {
+            mtxt = args[1].string_val;  // (String) / (String, start, end)
+        }
+        if (!mtxt.empty()) {
+            int32_t start = 0, end = static_cast<int32_t>(mtxt.size());
+            if (args.size() >= 4 && args[2].type == DalvikType::INT32 &&
+                args[3].type == DalvikType::INT32) {
+                start = args[2].int_val;
+                end = args[3].int_val;
+            }
+            if (start < 0) start = 0;
+            if (end > static_cast<int32_t>(mtxt.size()))
+                end = static_cast<int32_t>(mtxt.size());
+            char_count = start < end ? end - start : 0;
+        }
+        // The receiver paint's recorded size (identity state).
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0) {
+            auto sz = heap_.get_object_field(args[0].object_id,
+                                             "__text_size_px__");
+            if (sz.has_value() && sz->type == DalvikType::FLOAT32 &&
+                sz->float_val > 0.0f)
+                size_px = sz->float_val;
+        }
+        // Deterministic advance estimate: 0.5em per code unit — the same
+        // neutral-metric law the Canvas text pipeline uses for unknown
+        // glyphs. 0 for an empty range (AOSP contract).
+        float width = 0.5f * size_px * static_cast<float>(char_count);
+        result = DalvikValue::make_float(width);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
     // EXP-095 (CM-019): LinearLayout.setOrientation(int) — 0=HORIZONTAL,
     // 1=VERTICAL. Captured so the renderer lays out children correctly
     // (e.g. CodeFieldContainer's 5 digit fields are a HORIZONTAL row).
@@ -25809,6 +26052,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // the F-036 iterator law serves them with zero new machinery.
     if (class_name == "Ljava/util/Collections;" &&
         (method == "singletonList" || method == "emptyList" ||
+         method == "emptyMap" || method == "emptySet" ||
          method == "unmodifiableList" || method == "unmodifiableMap" ||
          method == "unmodifiableSet" || method == "unmodifiableCollection")) {
         // F-106b (S60, R-NEW-380): Collections.unmodifiableMap/Set/Collection.
@@ -25822,6 +26066,48 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // (SavedStateViewModelFactory → NewInstanceFactory → F-106's
         // honest NoSuchMethodException) instead of the Hilt multi-binding
         // creation path. Same law family as unmodifiableList below.
+        // ────────────────────────────────────────────────────────────────
+        // F-NEW-222 (opencalc vc53 face): Collections.emptyMap/emptySet.
+        // OpenJDK Collections.java: `emptyMap()` returns the SAME shared
+        // EMPTY_MAP singleton as the static field (identity law), and
+        // every read succeeds (R-NEW-397 contract). Pre-fix: NO handler →
+        // the bridge fallback answered UNSET → `move-result-object v1`
+        // after Collections.emptyMap() stored an unset register → the R8
+        // horizontal-merge synthetic ctor <init>(Ljava/lang/Object; I
+        // Ljava/lang/Object;)V iput-object'd that unset value into the
+        // merged host's `b` field (LA/h; opencalc obj#1232 b=<unset>) →
+        // z() Map.get on null receiver → NPE → MainActivity.onCreate
+        // APP-BOUNDARY unwind. Identity law: the factory singleton and
+        // the sget EMPTY_MAP singleton share the SAME static_key
+        // ("Ljava/util/Collections;.EMPTY_MAP") so == holds across both
+        // access paths exactly as in OpenJDK.
+        if (method == "emptyMap" || method == "emptySet") {
+            const std::string singleton_key =
+                std::string("Ljava/util/Collections;.") +
+                (method == "emptyMap" ? "EMPTY_MAP" : "EMPTY_SET");
+            auto it222 = static_field_storage_.find(singleton_key);
+            if (it222 != static_field_storage_.end() &&
+                it222->second.type == DalvikType::OBJECT_REF &&
+                it222->second.object_id != 0 &&
+                heap_.has_object(it222->second.object_id)) {
+                result = it222->second;
+            } else {
+                const char* empty_cls =
+                    method == "emptyMap" ? "Ljava/util/Collections$EmptyMap;"
+                                         : "Ljava/util/Collections$EmptySet;";
+                uint32_t e_id = heap_.allocate(empty_cls, pc_, 0);
+                heap_.set_object_field(e_id, "__array_length__",
+                                       DalvikValue::make_int(0));
+                heap_.set_object_field(e_id, "__iterator_pos__",
+                                       DalvikValue::make_int(0));
+                result = DalvikValue::make_object(e_id, empty_cls);
+                static_field_storage_[singleton_key] = result;
+                std::cerr << "[F-NEW-222] Collections." << method
+                          << " → shared singleton obj#" << e_id << std::endl;
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
         uint32_t list_id = heap_.allocate("Ljava/util/Collections$SingletonList;", pc_, 0);
         int32_t n = 0;
         if (method == "singletonList" && args.size() >= 1) {
@@ -34106,6 +34392,66 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-223 (user campaign §H) — android.os.Environment STATIC LAWS.
+    // AOSP frameworks/base Environment.java: a device ALWAYS has a primary
+    // emulated external volume at /storage/emulated/0 with state
+    // MEDIA_MOUNTED ("mounted"). Pre-fix: NO handler at all → every
+    // Environment call REC-MISS'd (user evidence: the app probed
+    // /storage/emulated/0, got nothing usable, onCreate died). The volume
+    // mount + honest File metadata laws (this wave) make exists()/mkdirs()
+    // real under the virtual mount.
+    //   getExternalStorageDirectory()       → PATHED File (deprecated API,
+    //                                         still non-null on every device)
+    //   getExternalStorageState()           → "mounted"
+    //   getExternalStoragePublicDirectory() → <volume>/<type>
+    //   isExternalStorageEmulated()         → true (primary volume)
+    //   isExternalStorageRemovable()        → false (primary volume)
+    //   getRootDirectory()                  → "/system"  (PATHED File)
+    //   getDataDirectory()                  → "/data"    (PATHED File)
+    // Identity: one get_or_create_dir_file per path (S88 F-NEW-179 keyed-by-
+    // path law — repeated calls return the SAME File object).
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/os/Environment;") {
+        if (method == "getExternalStorageDirectory") {
+            result = get_or_create_dir_file("/storage/emulated/0");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getExternalStorageState") {
+            result = DalvikValue::make_string("mounted", 0);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getExternalStoragePublicDirectory" && !args.empty() &&
+            args[0].type == DalvikType::STRING_REF) {
+            result = get_or_create_dir_file(
+                std::string("/storage/emulated/0/") + args[0].string_val);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "isExternalStorageEmulated") {
+            result = DalvikValue::make_bool(true);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "isExternalStorageRemovable") {
+            result = DalvikValue::make_bool(false);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getRootDirectory") {
+            result = get_or_create_dir_file("/system");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getDataDirectory") {
+            result = get_or_create_dir_file("/data");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // F-045 (MASTER CAMPAIGN 4): System.identityHashCode(Object) → int.
     // OpenJDK ojluni System.java law: returns the same hash code for a
     // given object for its ENTIRE lifetime (the default hashCode —
@@ -35402,6 +35748,64 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
             return true;
         }
+        // ── F-NEW-225c (user campaign; opencalc vc53 face) —
+        // Class.getGenericSuperclass LAW (OpenJDK Class.java
+        // source-first). Contract: returns the Type of the DIRECT
+        // superclass; NULL only for Object, interfaces, primitives and
+        // void — never for a class that extends something. Without
+        // generic-signature metadata the erased answer is the superclass
+        // CLASS token (structurally sound: a Class IS a Type and every
+        // downstream `$Gson$Types.resolve` branch handles it; the
+        // signature/ParameterizedType leg stays a registered follow-up).
+        // Pre-fix: NO handler → bridge fallback UNSET/null → Gson's
+        // ReflectiveTypeAdapterFactory.getBoundFields superclass climb
+        // (Lf1/m;.b pc=0x406 getGenericSuperclass → resolve → j1/a.<init>)
+        // built TypeToken.get(null) → $Gson$Types.getRawType(null) IAE
+        // "Expected a Class, ParameterizedType, or GenericArrayType, but
+        // <null> is of type null" → MainActivity.onCreate APP-BOUNDARY
+        // death. Source order: app-DEX superclass first; framework
+        // classes resolve through the AOSP hierarchy table (ArrayList →
+        // AbstractList → ...) so the climb terminates exactly like on a
+        // JVM. F-NEW-224 canonical form everywhere.
+        if (method == "getGenericSuperclass" && !dotted.empty()) {
+            std::string super_desc;
+            if (dotted != "java.lang.Object") {
+                for (const auto& cd : dex_report_->classes) {
+                    if (cd.name == referent_desc) {
+                        super_desc = framework::normalize_class_desc(
+                            cd.superclass_name);
+                        break;
+                    }
+                }
+                if (super_desc.empty()) {
+                    super_desc = framework::framework_superclass_of(
+                        referent_desc);
+                }
+                if (super_desc == "Ljava/lang/Object;")
+                    super_desc = "Ljava/lang/Object;";  // valid direct super
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            if (super_desc.empty()) {
+                // Object itself / interface / synthetic-with-no-def —
+                // the documented null cases.
+                result = DalvikValue::make_null();
+            } else {
+                result = DalvikValue::make_class(super_desc,
+                                                 instruction_sequence_);
+            }
+            {
+                static thread_local uint64_t g223_n = 0;
+                if (g223_n < 16) {
+                    ++g223_n;
+                    std::cerr << "[F-NEW-225c] getGenericSuperclass("
+                              << referent_desc << ") -> "
+                              << (super_desc.empty() ? "null" : super_desc)
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << std::endl;
+                }
+            }
+            return true;
+        }
         // F-087 (R-NEW-313): runtime annotation reflection law (OpenJDK
         // Class.getAnnotation / isAnnotationPresent). The receiver is the
         // QUERIED class (CLASS_REF); args[1] is the annotation TYPE
@@ -36369,6 +36773,31 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 return true;
             }
             if (method == "getType") {
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_class(
+                    type337.empty() ? "Ljava/lang/Object;" : type337,
+                    instruction_sequence_);
+                return true;
+            }
+            // ── F-NEW-225 (user campaign; opencalc vc53 face) —
+            // Field.getGenericType ERASED-FALLBACK LAW (OpenJDK
+            // Field.java source-first): getGenericType() NEVER returns
+            // null — with generic-signature metadata it parses the
+            // declared Type; WITHOUT it (the common case: erased field
+            // in an R8 release APK, or engine fields with no signature
+            // record) it returns EXACTLY getType() — the declared Class.
+            // Pre-fix: NO handler → bridge fallback answered UNSET/null →
+            // Gson ReflectiveTypeAdapterFactory built
+            // TypeToken.get(nullType) → $Gson$Types.getRawType(null) IAE
+            // "Expected a Class, ParameterizedType, or GenericArrayType,
+            // but <null> is of type null" → MainActivity.onCreate died
+            // (stack: e1/d.g ← j1/a.<init> ← f1/m.b pc=0x132/0x1ee — the
+            // field-walk feeds Field.getGenericType() straight into the
+            // TypeToken ctor). Generic-signature (DEX Signature
+            // annotation) parsing stays a registered follow-up; the
+            // erased answer is exact for non-generic fields and
+            // structurally sound (non-crashing) for generic ones.
+            if (method == "getGenericType") {
                 status = ApiCallTrace::Status::IMPLEMENTED;
                 result = DalvikValue::make_class(
                     type337.empty() ? "Ljava/lang/Object;" : type337,
@@ -39349,7 +39778,9 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         std::filesystem::path p;
         if (!fpath.empty()) {
             if (fpath[0] == '/') {
-                p = fpath;
+                // F-NEW-223: virtual external-volume paths resolve to the
+                // sandbox backing store (the mount point always exists).
+                p = host_path_for_virtual_volume(fpath);
             } else {
                 p = std::filesystem::path(Storage::app_data_root()) / fpath;
             }
@@ -39506,14 +39937,62 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
-    // EXP-043 Phase 3: File.exists → boolean (true, pretend file exists)
+    // F-NEW-223 (user campaign §H) — HONEST File CREATION LAW (supersedes
+    // the EXP-043 Phase 3 pretend-true stub for the creation family).
+    // AOSP law: mkdir()/mkdirs()/createNewFile() ACTUALLY create the
+    // directory/file and return true on success, false on failure — they
+    // never lie. The old stub returned true WITHOUT creating anything, so
+    // the later honest R-NEW-346 exists() read ABSENT (the exact face the
+    // user captured: the app created its dirs, then exists() said no, then
+    // onCreate died). Directory creation is REAL here: under the data-root
+    // sandbox for relative paths, under the virtual external volume for
+    // /storage/emulated/0 paths (host_path_for_virtual_volume), as-is for
+    // other absolute paths. exists()-after-mkdirs therefore holds.
     // ────────────────────────────────────────────────────────────────────────
     if (class_name == "Ljava/io/File;" &&
-        (method == "exists" || method == "isDirectory" || method == "canRead" ||
-         method == "canWrite" || method == "mkdirs" || method == "mkdir" ||
-         method == "createNewFile")) {
-        status = ApiCallTrace::Status::IMPLEMENTED;
-        result = DalvikValue::make_bool(true);
+        (method == "mkdirs" || method == "mkdir" || method == "createNewFile")) {
+        std::string fpath;
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            heap_.has_object(args[0].object_id)) {
+            const auto& fobj = heap_.all_objects().at(args[0].object_id);
+            for (const auto& [fname, fval] : fobj.fields) {
+                if (fval.type == DalvikType::STRING_REF &&
+                    fval.string_val.size() > fpath.size()) {
+                    fpath = fval.string_val;
+                }
+            }
+        }
+        bool ok = false;
+        if (!fpath.empty()) {
+            std::filesystem::path p;
+            if (fpath[0] == '/') {
+                p = host_path_for_virtual_volume(fpath);
+            } else {
+                p = std::filesystem::path(Storage::app_data_root()) / fpath;
+            }
+            std::error_code mk_ec;
+            if (method == "createNewFile") {
+                if (!p.parent_path().empty())
+                    std::filesystem::create_directories(p.parent_path(), mk_ec);
+                if (!std::filesystem::exists(p, mk_ec)) {
+                    std::ofstream touch(p, std::ios::app);
+                    ok = touch.good();
+                } else {
+                    // AOSP: createNewFile returns false when the file exists.
+                    ok = false;
+                }
+            } else {
+                ok = std::filesystem::create_directories(p, mk_ec) ||
+                     std::filesystem::is_directory(p, mk_ec);
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+        } else {
+            // Unknown receiver path: keep the legacy optimistic answer for
+            // the stub singleton family (no path → no filesystem target).
+            ok = true;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+        }
+        result = DalvikValue::make_bool(ok);
         return true;
     }
 
