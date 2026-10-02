@@ -1,0 +1,1153 @@
+{
+  "forkgram": {
+    "apk": "/home/z/my-project/upload/forkgram_709208.apk",
+    "apk_sha256": "3baeecb3288577e9548ffeb13a1740ac73963c4c1cfb6b21750916566095f654",
+    "runs": [
+      {
+        "run": 1,
+        "rc": 1,
+        "sha16": "cf4c41e62ceb6557",
+        "stage_hits": {
+          "ACTIVITY": 1,
+          "CAPTURE": 2
+        },
+        "census_events": 0,
+        "first_divergence": null,
+        "verdicts": [
+          "REAL_APP_CONTENT"
+        ],
+        "census": {
+          "app_draw_ops": 11,
+          "app_owned_pixels": 117133,
+          "app_owned_pixels_inside_content_bounds": 117133,
+          "auth_root_valid": true,
+          "budget_exhausted": false,
+          "content_bounds": {
+            "b": 1920,
+            "l": 0,
+            "r": 1080,
+            "t": 0,
+            "valid": true
+          },
+          "depth_max": 7,
+          "diag_owned_pixels": 0,
+          "diag_regions": 15,
+          "dialog_content_rendered": false,
+          "dominant_color": [
+            "#e1e1e1"
+          ],
+          "dominant_pct": 94.3512249228395,
+          "draw_walk_ran": true,
+          "height": 1920,
+          "inflation_failed": false,
+          "layout_ran": true,
+          "layout_source": "inflater",
+          "measure_ran": true,
+          "no_root": false,
+          "nodes_skipped_depth": 0,
+          "nodes_visited": 31,
+          "non_default_pixels": 117133,
+          "render_exception": false,
+          "screenshot_sha256": "cf4c41e62ceb6557ccd7dee008f0827c5dac93f821e292de5f95be626c1455ed",
+          "size": "1080x1920",
+          "synthetic_suppressed": false,
+          "unique_colors": 204,
+          "unreachable_children": 0,
+          "verdict": "REAL_APP_CONTENT",
+          "verdict_law": "21-P0-6 pixel ownership + correlated proof",
+          "verdict_regions_law": "V1/V7: WINDOW_BACKGROUND=dominant; AUTHORITATIVE_APP_CONTENT=non-dominant inside content bounds; WINDOW_CHROME=non-dominant outside; DIAGNOSTIC_OVERLAY=separate trace_overlay.png",
+          "width": 1080,
+          "window_background_px": 1956467,
+          "window_chrome_pixels": 0
+        },
+        "content_bounds": "0,0,1080,1920",
+        "inflate_failed": false,
+        "v4_tags": 0,
+        "v6_fallbacks": 0,
+        "frame_analysis": [],
+        "px_total": 2073600,
+        "px_dominant": [
+          225,
+          225,
+          225
+        ],
+        "px_dominant_pct": 94.35,
+        "px_nonwhite": 1961434,
+        "unique_colors": 204
+      },
+      {
+        "run": 2,
+        "rc": 1,
+        "sha16": "cf4c41e62ceb6557",
+        "stage_hits": {
+          "ACTIVITY": 1,
+          "CAPTURE": 2
+        },
+        "census_events": 0,
+        "first_divergence": null,
+        "verdicts": [
+          "REAL_APP_CONTENT"
+        ],
+        "census": {
+          "app_draw_ops": 11,
+          "app_owned_pixels": 117133,
+          "app_owned_pixels_inside_content_bounds": 117133,
+          "auth_root_valid": true,
+          "budget_exhausted": false,
+          "content_bounds": {
+            "b": 1920,
+            "l": 0,
+            "r": 1080,
+            "t": 0,
+            "valid": true
+          },
+          "depth_max": 7,
+          "diag_owned_pixels": 0,
+          "diag_regions": 15,
+          "dialog_content_rendered": false,
+          "dominant_color": [
+            "#e1e1e1"
+          ],
+          "dominant_pct": 94.3512249228395,
+          "draw_walk_ran": true,
+          "height": 1920,
+          "inflation_failed": false,
+          "layout_ran": true,
+          "layout_source": "inflater",
+          "measure_ran": true,
+          "no_root": false,
+          "nodes_skipped_depth": 0,
+          "nodes_visited": 31,
+          "non_default_pixels": 117133,
+          "render_exception": false,
+          "screenshot_sha256": "cf4c41e62ceb6557ccd7dee008f0827c5dac93f821e292de5f95be626c1455ed",
+          "size": "1080x1920",
+          "synthetic_suppressed": false,
+          "unique_colors": 204,
+          "unreachable_children": 0,
+          "verdict": "REAL_APP_CONTENT",
+          "verdict_law": "21-P0-6 pixel ownership + correlated proof",
+          "verdict_regions_law": "V1/V7: WINDOW_BACKGROUND=dominant; AUTHORITATIVE_APP_CONTENT=non-dominant inside content bounds; WINDOW_CHROME=non-dominant outside; DIAGNOSTIC_OVERLAY=separate trace_overlay.png",
+          "width": 1080,
+          "window_background_px": 1956467,
+          "window_chrome_pixels": 0
+        },
+        "content_bounds": "0,0,1080,1920",
+        "inflate_failed": false,
+        "v4_tags": 0,
+        "v6_fallbacks": 0,
+        "frame_analysis": [],
+        "px_total": 2073600,
+        "px_dominant": [
+          225,
+          225,
+          225
+        ],
+        "px_dominant_pct": 94.35,
+        "px_nonwhite": 1961434,
+        "unique_colors": 204
+      },
+      {
+        "run": 3,
+        "rc": 1,
+        "sha16": "cf4c41e62ceb6557",
+        "stage_hits": {
+          "ACTIVITY": 1,
+          "CAPTURE": 2
+        },
+        "census_events": 0,
+        "first_divergence": null,
+        "verdicts": [
+          "REAL_APP_CONTENT"
+        ],
+        "census": {
+          "app_draw_ops": 11,
+          "app_owned_pixels": 117133,
+          "app_owned_pixels_inside_content_bounds": 117133,
+          "auth_root_valid": true,
+          "budget_exhausted": false,
+          "content_bounds": {
+            "b": 1920,
+            "l": 0,
+            "r": 1080,
+            "t": 0,
+            "valid": true
+          },
+          "depth_max": 7,
+          "diag_owned_pixels": 0,
+          "diag_regions": 15,
+          "dialog_content_rendered": false,
+          "dominant_color": [
+            "#e1e1e1"
+          ],
+          "dominant_pct": 94.3512249228395,
+          "draw_walk_ran": true,
+          "height": 1920,
+          "inflation_failed": false,
+          "layout_ran": true,
+          "layout_source": "inflater",
+          "measure_ran": true,
+          "no_root": false,
+          "nodes_skipped_depth": 0,
+          "nodes_visited": 31,
+          "non_default_pixels": 117133,
+          "render_exception": false,
+          "screenshot_sha256": "cf4c41e62ceb6557ccd7dee008f0827c5dac93f821e292de5f95be626c1455ed",
+          "size": "1080x1920",
+          "synthetic_suppressed": false,
+          "unique_colors": 204,
+          "unreachable_children": 0,
+          "verdict": "REAL_APP_CONTENT",
+          "verdict_law": "21-P0-6 pixel ownership + correlated proof",
+          "verdict_regions_law": "V1/V7: WINDOW_BACKGROUND=dominant; AUTHORITATIVE_APP_CONTENT=non-dominant inside content bounds; WINDOW_CHROME=non-dominant outside; DIAGNOSTIC_OVERLAY=separate trace_overlay.png",
+          "width": 1080,
+          "window_background_px": 1956467,
+          "window_chrome_pixels": 0
+        },
+        "content_bounds": "0,0,1080,1920",
+        "inflate_failed": false,
+        "v4_tags": 0,
+        "v6_fallbacks": 0,
+        "frame_analysis": [],
+        "px_total": 2073600,
+        "px_dominant": [
+          225,
+          225,
+          225
+        ],
+        "px_dominant_pct": 94.35,
+        "px_nonwhite": 1961434,
+        "unique_colors": 204
+      }
+    ],
+    "deterministic": true,
+    "verdicts": [
+      "REAL_APP_CONTENT",
+      "REAL_APP_CONTENT",
+      "REAL_APP_CONTENT"
+    ],
+    "classification": "OBSERVED"
+  },
+  "game2048": {
+    "apk": "/tmp/my-project/apk_cache/s37new/org.andstatus.game2048_47.apk",
+    "apk_sha256": "2d6707624623fe8857da271dcc19511ab52472ce1fee6ac23bc7f2ecf2e7eea9",
+    "runs": [
+      {
+        "run": 1,
+        "rc": 1,
+        "sha16": "31ddd4d5b8e6d18e",
+        "stage_hits": {
+          "ACTIVITY": 1,
+          "CAPTURE": 2
+        },
+        "census_events": 0,
+        "first_divergence": null,
+        "verdicts": [
+          "NO_ROOT"
+        ],
+        "census": {
+          "app_draw_ops": 0,
+          "app_owned_pixels": 0,
+          "app_owned_pixels_inside_content_bounds": 0,
+          "auth_root_valid": false,
+          "budget_exhausted": false,
+          "content_bounds": {
+            "b": 0,
+            "l": 0,
+            "r": 0,
+            "t": 0,
+            "valid": false
+          },
+          "depth_max": 0,
+          "diag_owned_pixels": 0,
+          "diag_regions": 0,
+          "dialog_content_rendered": false,
+          "dominant_color": [
+            "#ffffff"
+          ],
+          "dominant_pct": 100.0,
+          "draw_walk_ran": false,
+          "first_missing_stage": "WINDOW_ROOT",
+          "height": 1920,
+          "inflation_failed": false,
+          "layout_ran": false,
+          "layout_source": null,
+          "measure_ran": false,
+          "no_root": true,
+          "nodes_skipped_depth": 0,
+          "nodes_visited": 0,
+          "non_default_pixels": 0,
+          "render_exception": false,
+          "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093",
+          "size": "1080x1920",
+          "synthetic_suppressed": true,
+          "unique_colors": 1,
+          "unreachable_children": 0,
+          "verdict": "NO_ROOT",
+          "verdict_law": "21-P0-6 pixel ownership + correlated proof",
+          "verdict_regions_law": "V1/V7: WINDOW_BACKGROUND=dominant; AUTHORITATIVE_APP_CONTENT=non-dominant inside content bounds; WINDOW_CHROME=non-dominant outside; DIAGNOSTIC_OVERLAY=separate trace_overlay.png",
+          "width": 1080,
+          "window_background_px": 2073600,
+          "window_chrome_pixels": 0
+        },
+        "inflate_failed": false,
+        "v4_tags": 0,
+        "v6_fallbacks": 0,
+        "frame_analysis": [],
+        "px_total": 2073600,
+        "px_dominant": [
+          255,
+          255,
+          255
+        ],
+        "px_dominant_pct": 100.0,
+        "px_nonwhite": 0,
+        "unique_colors": 1
+      },
+      {
+        "run": 2,
+        "rc": 1,
+        "sha16": "31ddd4d5b8e6d18e",
+        "stage_hits": {
+          "ACTIVITY": 1,
+          "CAPTURE": 2
+        },
+        "census_events": 0,
+        "first_divergence": null,
+        "verdicts": [
+          "NO_ROOT"
+        ],
+        "census": {
+          "app_draw_ops": 0,
+          "app_owned_pixels": 0,
+          "app_owned_pixels_inside_content_bounds": 0,
+          "auth_root_valid": false,
+          "budget_exhausted": false,
+          "content_bounds": {
+            "b": 0,
+            "l": 0,
+            "r": 0,
+            "t": 0,
+            "valid": false
+          },
+          "depth_max": 0,
+          "diag_owned_pixels": 0,
+          "diag_regions": 0,
+          "dialog_content_rendered": false,
+          "dominant_color": [
+            "#ffffff"
+          ],
+          "dominant_pct": 100.0,
+          "draw_walk_ran": false,
+          "first_missing_stage": "WINDOW_ROOT",
+          "height": 1920,
+          "inflation_failed": false,
+          "layout_ran": false,
+          "layout_source": null,
+          "measure_ran": false,
+          "no_root": true,
+          "nodes_skipped_depth": 0,
+          "nodes_visited": 0,
+          "non_default_pixels": 0,
+          "render_exception": false,
+          "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093",
+          "size": "1080x1920",
+          "synthetic_suppressed": true,
+          "unique_colors": 1,
+          "unreachable_children": 0,
+          "verdict": "NO_ROOT",
+          "verdict_law": "21-P0-6 pixel ownership + correlated proof",
+          "verdict_regions_law": "V1/V7: WINDOW_BACKGROUND=dominant; AUTHORITATIVE_APP_CONTENT=non-dominant inside content bounds; WINDOW_CHROME=non-dominant outside; DIAGNOSTIC_OVERLAY=separate trace_overlay.png",
+          "width": 1080,
+          "window_background_px": 2073600,
+          "window_chrome_pixels": 0
+        },
+        "inflate_failed": false,
+        "v4_tags": 0,
+        "v6_fallbacks": 0,
+        "frame_analysis": [],
+        "px_total": 2073600,
+        "px_dominant": [
+          255,
+          255,
+          255
+        ],
+        "px_dominant_pct": 100.0,
+        "px_nonwhite": 0,
+        "unique_colors": 1
+      },
+      {
+        "run": 3,
+        "rc": 1,
+        "sha16": "31ddd4d5b8e6d18e",
+        "stage_hits": {
+          "ACTIVITY": 1,
+          "CAPTURE": 2
+        },
+        "census_events": 0,
+        "first_divergence": null,
+        "verdicts": [
+          "NO_ROOT"
+        ],
+        "census": {
+          "app_draw_ops": 0,
+          "app_owned_pixels": 0,
+          "app_owned_pixels_inside_content_bounds": 0,
+          "auth_root_valid": false,
+          "budget_exhausted": false,
+          "content_bounds": {
+            "b": 0,
+            "l": 0,
+            "r": 0,
+            "t": 0,
+            "valid": false
+          },
+          "depth_max": 0,
+          "diag_owned_pixels": 0,
+          "diag_regions": 0,
+          "dialog_content_rendered": false,
+          "dominant_color": [
+            "#ffffff"
+          ],
+          "dominant_pct": 100.0,
+          "draw_walk_ran": false,
+          "first_missing_stage": "WINDOW_ROOT",
+          "height": 1920,
+          "inflation_failed": false,
+          "layout_ran": false,
+          "layout_source": null,
+          "measure_ran": false,
+          "no_root": true,
+          "nodes_skipped_depth": 0,
+          "nodes_visited": 0,
+          "non_default_pixels": 0,
+          "render_exception": false,
+          "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093",
+          "size": "1080x1920",
+          "synthetic_suppressed": true,
+          "unique_colors": 1,
+          "unreachable_children": 0,
+          "verdict": "NO_ROOT",
+          "verdict_law": "21-P0-6 pixel ownership + correlated proof",
+          "verdict_regions_law": "V1/V7: WINDOW_BACKGROUND=dominant; AUTHORITATIVE_APP_CONTENT=non-dominant inside content bounds; WINDOW_CHROME=non-dominant outside; DIAGNOSTIC_OVERLAY=separate trace_overlay.png",
+          "width": 1080,
+          "window_background_px": 2073600,
+          "window_chrome_pixels": 0
+        },
+        "inflate_failed": false,
+        "v4_tags": 0,
+        "v6_fallbacks": 0,
+        "frame_analysis": [],
+        "px_total": 2073600,
+        "px_dominant": [
+          255,
+          255,
+          255
+        ],
+        "px_dominant_pct": 100.0,
+        "px_nonwhite": 0,
+        "unique_colors": 1
+      }
+    ],
+    "deterministic": true,
+    "verdicts": [
+      "NO_ROOT",
+      "NO_ROOT",
+      "NO_ROOT"
+    ],
+    "classification": "BLOCKED"
+  },
+  "dame": {
+    "apk": "/tmp/my-project/apk_cache/s82/com.vovagorodok.blidraughts_3.apk",
+    "apk_sha256": "f7f4582fa24607d87c304c3acaca0cc150fa311da22e469cd15150c73d20ba2d",
+    "runs": [
+      {
+        "run": 1,
+        "rc": 1,
+        "sha16": "c125d541e4d4f034",
+        "stage_hits": {
+          "ACTIVITY": 1,
+          "CAPTURE": 2
+        },
+        "census_events": 0,
+        "first_divergence": null,
+        "verdicts": [
+          "DEFAULT_BACKGROUND_ONLY"
+        ],
+        "census": {
+          "app_draw_ops": 0,
+          "app_owned_pixels": 0,
+          "app_owned_pixels_inside_content_bounds": 0,
+          "auth_root_valid": true,
+          "budget_exhausted": false,
+          "content_bounds": {
+            "b": 1920,
+            "l": 0,
+            "r": 1080,
+            "t": 0,
+            "valid": true
+          },
+          "depth_max": 1,
+          "diag_owned_pixels": 0,
+          "diag_regions": 1,
+          "dialog_content_rendered": false,
+          "dominant_color": [
+            "#ededf6"
+          ],
+          "dominant_pct": 100.0,
+          "draw_walk_ran": true,
+          "first_missing_stage": "APP_DRAW_OPS",
+          "height": 1920,
+          "inflation_failed": false,
+          "layout_ran": true,
+          "layout_source": "inflater",
+          "measure_ran": true,
+          "no_root": false,
+          "nodes_skipped_depth": 0,
+          "nodes_visited": 2,
+          "non_default_pixels": 0,
+          "render_exception": false,
+          "screenshot_sha256": "c125d541e4d4f0347f350494778f85bcbe45ded1c2423b0bebd7e750ce04eede",
+          "size": "1080x1920",
+          "synthetic_suppressed": false,
+          "unique_colors": 1,
+          "unreachable_children": 0,
+          "verdict": "DEFAULT_BACKGROUND_ONLY",
+          "verdict_law": "21-P0-6 pixel ownership + correlated proof",
+          "verdict_regions_law": "V1/V7: WINDOW_BACKGROUND=dominant; AUTHORITATIVE_APP_CONTENT=non-dominant inside content bounds; WINDOW_CHROME=non-dominant outside; DIAGNOSTIC_OVERLAY=separate trace_overlay.png",
+          "width": 1080,
+          "window_background_px": 2073600,
+          "window_chrome_pixels": 0
+        },
+        "content_bounds": "0,0,1080,1920",
+        "inflate_failed": false,
+        "v4_tags": 0,
+        "v6_fallbacks": 0,
+        "frame_analysis": [],
+        "px_total": 2073600,
+        "px_dominant": [
+          237,
+          237,
+          246
+        ],
+        "px_dominant_pct": 100.0,
+        "px_nonwhite": 2073600,
+        "unique_colors": 1
+      },
+      {
+        "run": 2,
+        "rc": 1,
+        "sha16": "c125d541e4d4f034",
+        "stage_hits": {
+          "ACTIVITY": 1,
+          "CAPTURE": 2
+        },
+        "census_events": 0,
+        "first_divergence": null,
+        "verdicts": [
+          "DEFAULT_BACKGROUND_ONLY"
+        ],
+        "census": {
+          "app_draw_ops": 0,
+          "app_owned_pixels": 0,
+          "app_owned_pixels_inside_content_bounds": 0,
+          "auth_root_valid": true,
+          "budget_exhausted": false,
+          "content_bounds": {
+            "b": 1920,
+            "l": 0,
+            "r": 1080,
+            "t": 0,
+            "valid": true
+          },
+          "depth_max": 1,
+          "diag_owned_pixels": 0,
+          "diag_regions": 1,
+          "dialog_content_rendered": false,
+          "dominant_color": [
+            "#ededf6"
+          ],
+          "dominant_pct": 100.0,
+          "draw_walk_ran": true,
+          "first_missing_stage": "APP_DRAW_OPS",
+          "height": 1920,
+          "inflation_failed": false,
+          "layout_ran": true,
+          "layout_source": "inflater",
+          "measure_ran": true,
+          "no_root": false,
+          "nodes_skipped_depth": 0,
+          "nodes_visited": 2,
+          "non_default_pixels": 0,
+          "render_exception": false,
+          "screenshot_sha256": "c125d541e4d4f0347f350494778f85bcbe45ded1c2423b0bebd7e750ce04eede",
+          "size": "1080x1920",
+          "synthetic_suppressed": false,
+          "unique_colors": 1,
+          "unreachable_children": 0,
+          "verdict": "DEFAULT_BACKGROUND_ONLY",
+          "verdict_law": "21-P0-6 pixel ownership + correlated proof",
+          "verdict_regions_law": "V1/V7: WINDOW_BACKGROUND=dominant; AUTHORITATIVE_APP_CONTENT=non-dominant inside content bounds; WINDOW_CHROME=non-dominant outside; DIAGNOSTIC_OVERLAY=separate trace_overlay.png",
+          "width": 1080,
+          "window_background_px": 2073600,
+          "window_chrome_pixels": 0
+        },
+        "content_bounds": "0,0,1080,1920",
+        "inflate_failed": false,
+        "v4_tags": 0,
+        "v6_fallbacks": 0,
+        "frame_analysis": [],
+        "px_total": 2073600,
+        "px_dominant": [
+          237,
+          237,
+          246
+        ],
+        "px_dominant_pct": 100.0,
+        "px_nonwhite": 2073600,
+        "unique_colors": 1
+      },
+      {
+        "run": 3,
+        "rc": 1,
+        "sha16": "c125d541e4d4f034",
+        "stage_hits": {
+          "ACTIVITY": 1,
+          "CAPTURE": 2
+        },
+        "census_events": 0,
+        "first_divergence": null,
+        "verdicts": [
+          "DEFAULT_BACKGROUND_ONLY"
+        ],
+        "census": {
+          "app_draw_ops": 0,
+          "app_owned_pixels": 0,
+          "app_owned_pixels_inside_content_bounds": 0,
+          "auth_root_valid": true,
+          "budget_exhausted": false,
+          "content_bounds": {
+            "b": 1920,
+            "l": 0,
+            "r": 1080,
+            "t": 0,
+            "valid": true
+          },
+          "depth_max": 1,
+          "diag_owned_pixels": 0,
+          "diag_regions": 1,
+          "dialog_content_rendered": false,
+          "dominant_color": [
+            "#ededf6"
+          ],
+          "dominant_pct": 100.0,
+          "draw_walk_ran": true,
+          "first_missing_stage": "APP_DRAW_OPS",
+          "height": 1920,
+          "inflation_failed": false,
+          "layout_ran": true,
+          "layout_source": "inflater",
+          "measure_ran": true,
+          "no_root": false,
+          "nodes_skipped_depth": 0,
+          "nodes_visited": 2,
+          "non_default_pixels": 0,
+          "render_exception": false,
+          "screenshot_sha256": "c125d541e4d4f0347f350494778f85bcbe45ded1c2423b0bebd7e750ce04eede",
+          "size": "1080x1920",
+          "synthetic_suppressed": false,
+          "unique_colors": 1,
+          "unreachable_children": 0,
+          "verdict": "DEFAULT_BACKGROUND_ONLY",
+          "verdict_law": "21-P0-6 pixel ownership + correlated proof",
+          "verdict_regions_law": "V1/V7: WINDOW_BACKGROUND=dominant; AUTHORITATIVE_APP_CONTENT=non-dominant inside content bounds; WINDOW_CHROME=non-dominant outside; DIAGNOSTIC_OVERLAY=separate trace_overlay.png",
+          "width": 1080,
+          "window_background_px": 2073600,
+          "window_chrome_pixels": 0
+        },
+        "content_bounds": "0,0,1080,1920",
+        "inflate_failed": false,
+        "v4_tags": 0,
+        "v6_fallbacks": 0,
+        "frame_analysis": [],
+        "px_total": 2073600,
+        "px_dominant": [
+          237,
+          237,
+          246
+        ],
+        "px_dominant_pct": 100.0,
+        "px_nonwhite": 2073600,
+        "unique_colors": 1
+      }
+    ],
+    "deterministic": true,
+    "verdicts": [
+      "DEFAULT_BACKGROUND_ONLY",
+      "DEFAULT_BACKGROUND_ONLY",
+      "DEFAULT_BACKGROUND_ONLY"
+    ],
+    "classification": "BLOCKED"
+  },
+  "droidify": {
+    "apk": "/tmp/my-project/apk_cache/corpus/droidify.apk",
+    "apk_sha256": "08d5a826be0cc5b699139b80bd5b610a9b3663a69987bc082ac0d9825afc72f6",
+    "runs": [
+      {
+        "run": 1,
+        "rc": 1,
+        "sha16": "b5a7a35d5fe0564b",
+        "stage_hits": {
+          "ACTIVITY": 1,
+          "CAPTURE": 2
+        },
+        "census_events": 0,
+        "first_divergence": null,
+        "verdicts": [
+          "DEFAULT_BACKGROUND_ONLY"
+        ],
+        "census": {
+          "app_draw_ops": 0,
+          "app_owned_pixels": 0,
+          "app_owned_pixels_inside_content_bounds": 0,
+          "auth_root_valid": true,
+          "budget_exhausted": false,
+          "content_bounds": {
+            "b": 1920,
+            "l": 0,
+            "r": 1080,
+            "t": 0,
+            "valid": true
+          },
+          "depth_max": 2,
+          "diag_owned_pixels": 0,
+          "diag_regions": 0,
+          "dialog_content_rendered": false,
+          "dominant_color": [
+            "#303030"
+          ],
+          "dominant_pct": 100.0,
+          "draw_walk_ran": true,
+          "first_missing_stage": "APP_DRAW_OPS",
+          "height": 1920,
+          "inflation_failed": false,
+          "layout_ran": true,
+          "layout_source": "inflater",
+          "measure_ran": true,
+          "no_root": false,
+          "nodes_skipped_depth": 0,
+          "nodes_visited": 3,
+          "non_default_pixels": 0,
+          "render_exception": false,
+          "screenshot_sha256": "b5a7a35d5fe0564b08842f187f4e293bbb1d1b63099ba43978542449ae8c1f5b",
+          "size": "1080x1920",
+          "synthetic_suppressed": false,
+          "unique_colors": 1,
+          "unreachable_children": 0,
+          "verdict": "DEFAULT_BACKGROUND_ONLY",
+          "verdict_law": "21-P0-6 pixel ownership + correlated proof",
+          "verdict_regions_law": "V1/V7: WINDOW_BACKGROUND=dominant; AUTHORITATIVE_APP_CONTENT=non-dominant inside content bounds; WINDOW_CHROME=non-dominant outside; DIAGNOSTIC_OVERLAY=separate trace_overlay.png",
+          "width": 1080,
+          "window_background_px": 2073600,
+          "window_chrome_pixels": 0
+        },
+        "content_bounds": "0,0,1080,1920",
+        "inflate_failed": false,
+        "v4_tags": 0,
+        "v6_fallbacks": 0,
+        "frame_analysis": [],
+        "px_total": 2073600,
+        "px_dominant": [
+          48,
+          48,
+          48
+        ],
+        "px_dominant_pct": 100.0,
+        "px_nonwhite": 2073600,
+        "unique_colors": 1
+      },
+      {
+        "run": 2,
+        "rc": 1,
+        "sha16": "b5a7a35d5fe0564b",
+        "stage_hits": {
+          "ACTIVITY": 1,
+          "CAPTURE": 2
+        },
+        "census_events": 0,
+        "first_divergence": null,
+        "verdicts": [
+          "DEFAULT_BACKGROUND_ONLY"
+        ],
+        "census": {
+          "app_draw_ops": 0,
+          "app_owned_pixels": 0,
+          "app_owned_pixels_inside_content_bounds": 0,
+          "auth_root_valid": true,
+          "budget_exhausted": false,
+          "content_bounds": {
+            "b": 1920,
+            "l": 0,
+            "r": 1080,
+            "t": 0,
+            "valid": true
+          },
+          "depth_max": 2,
+          "diag_owned_pixels": 0,
+          "diag_regions": 0,
+          "dialog_content_rendered": false,
+          "dominant_color": [
+            "#303030"
+          ],
+          "dominant_pct": 100.0,
+          "draw_walk_ran": true,
+          "first_missing_stage": "APP_DRAW_OPS",
+          "height": 1920,
+          "inflation_failed": false,
+          "layout_ran": true,
+          "layout_source": "inflater",
+          "measure_ran": true,
+          "no_root": false,
+          "nodes_skipped_depth": 0,
+          "nodes_visited": 3,
+          "non_default_pixels": 0,
+          "render_exception": false,
+          "screenshot_sha256": "b5a7a35d5fe0564b08842f187f4e293bbb1d1b63099ba43978542449ae8c1f5b",
+          "size": "1080x1920",
+          "synthetic_suppressed": false,
+          "unique_colors": 1,
+          "unreachable_children": 0,
+          "verdict": "DEFAULT_BACKGROUND_ONLY",
+          "verdict_law": "21-P0-6 pixel ownership + correlated proof",
+          "verdict_regions_law": "V1/V7: WINDOW_BACKGROUND=dominant; AUTHORITATIVE_APP_CONTENT=non-dominant inside content bounds; WINDOW_CHROME=non-dominant outside; DIAGNOSTIC_OVERLAY=separate trace_overlay.png",
+          "width": 1080,
+          "window_background_px": 2073600,
+          "window_chrome_pixels": 0
+        },
+        "content_bounds": "0,0,1080,1920",
+        "inflate_failed": false,
+        "v4_tags": 0,
+        "v6_fallbacks": 0,
+        "frame_analysis": [],
+        "px_total": 2073600,
+        "px_dominant": [
+          48,
+          48,
+          48
+        ],
+        "px_dominant_pct": 100.0,
+        "px_nonwhite": 2073600,
+        "unique_colors": 1
+      },
+      {
+        "run": 3,
+        "rc": 1,
+        "sha16": "b5a7a35d5fe0564b",
+        "stage_hits": {
+          "ACTIVITY": 1,
+          "CAPTURE": 2
+        },
+        "census_events": 0,
+        "first_divergence": null,
+        "verdicts": [
+          "DEFAULT_BACKGROUND_ONLY"
+        ],
+        "census": {
+          "app_draw_ops": 0,
+          "app_owned_pixels": 0,
+          "app_owned_pixels_inside_content_bounds": 0,
+          "auth_root_valid": true,
+          "budget_exhausted": false,
+          "content_bounds": {
+            "b": 1920,
+            "l": 0,
+            "r": 1080,
+            "t": 0,
+            "valid": true
+          },
+          "depth_max": 2,
+          "diag_owned_pixels": 0,
+          "diag_regions": 0,
+          "dialog_content_rendered": false,
+          "dominant_color": [
+            "#303030"
+          ],
+          "dominant_pct": 100.0,
+          "draw_walk_ran": true,
+          "first_missing_stage": "APP_DRAW_OPS",
+          "height": 1920,
+          "inflation_failed": false,
+          "layout_ran": true,
+          "layout_source": "inflater",
+          "measure_ran": true,
+          "no_root": false,
+          "nodes_skipped_depth": 0,
+          "nodes_visited": 3,
+          "non_default_pixels": 0,
+          "render_exception": false,
+          "screenshot_sha256": "b5a7a35d5fe0564b08842f187f4e293bbb1d1b63099ba43978542449ae8c1f5b",
+          "size": "1080x1920",
+          "synthetic_suppressed": false,
+          "unique_colors": 1,
+          "unreachable_children": 0,
+          "verdict": "DEFAULT_BACKGROUND_ONLY",
+          "verdict_law": "21-P0-6 pixel ownership + correlated proof",
+          "verdict_regions_law": "V1/V7: WINDOW_BACKGROUND=dominant; AUTHORITATIVE_APP_CONTENT=non-dominant inside content bounds; WINDOW_CHROME=non-dominant outside; DIAGNOSTIC_OVERLAY=separate trace_overlay.png",
+          "width": 1080,
+          "window_background_px": 2073600,
+          "window_chrome_pixels": 0
+        },
+        "content_bounds": "0,0,1080,1920",
+        "inflate_failed": false,
+        "v4_tags": 0,
+        "v6_fallbacks": 0,
+        "frame_analysis": [],
+        "px_total": 2073600,
+        "px_dominant": [
+          48,
+          48,
+          48
+        ],
+        "px_dominant_pct": 100.0,
+        "px_nonwhite": 2073600,
+        "unique_colors": 1
+      }
+    ],
+    "deterministic": true,
+    "verdicts": [
+      "DEFAULT_BACKGROUND_ONLY",
+      "DEFAULT_BACKGROUND_ONLY",
+      "DEFAULT_BACKGROUND_ONLY"
+    ],
+    "classification": "BLOCKED"
+  },
+  "opencalc": {
+    "apk": "/home/z/my-project/upload/opencalculator_53.apk",
+    "apk_sha256": "2642613868a8a80f0ce963a4863bc153e7281b97b3bbdf36ca92a99dded7134a",
+    "runs": [
+      {
+        "run": 1,
+        "rc": 1,
+        "sha16": "2291d74de0b6bac5",
+        "stage_hits": {
+          "ACTIVITY": 1,
+          "CAPTURE": 2
+        },
+        "census_events": 0,
+        "first_divergence": null,
+        "verdicts": [
+          "REAL_APP_CONTENT"
+        ],
+        "census": {
+          "app_draw_ops": 34,
+          "app_owned_pixels": 180772,
+          "app_owned_pixels_inside_content_bounds": 180772,
+          "auth_root_valid": true,
+          "budget_exhausted": false,
+          "content_bounds": {
+            "b": 1920,
+            "l": 0,
+            "r": 1080,
+            "t": 0,
+            "valid": true
+          },
+          "depth_max": 7,
+          "diag_owned_pixels": 0,
+          "diag_regions": 3,
+          "dialog_content_rendered": false,
+          "dominant_color": [
+            "#6fa8dc"
+          ],
+          "dominant_pct": 91.28221450617283,
+          "draw_walk_ran": true,
+          "height": 1920,
+          "inflation_failed": false,
+          "layout_ran": true,
+          "layout_source": "inflater",
+          "measure_ran": true,
+          "no_root": false,
+          "nodes_skipped_depth": 0,
+          "nodes_visited": 48,
+          "non_default_pixels": 180772,
+          "render_exception": false,
+          "screenshot_sha256": "2291d74de0b6bac595c38e5927564e76b2f1630ae8b0b027413e84868d976f6d",
+          "size": "1080x1920",
+          "synthetic_suppressed": false,
+          "unique_colors": 361,
+          "unreachable_children": 0,
+          "verdict": "REAL_APP_CONTENT",
+          "verdict_law": "21-P0-6 pixel ownership + correlated proof",
+          "verdict_regions_law": "V1/V7: WINDOW_BACKGROUND=dominant; AUTHORITATIVE_APP_CONTENT=non-dominant inside content bounds; WINDOW_CHROME=non-dominant outside; DIAGNOSTIC_OVERLAY=separate trace_overlay.png",
+          "width": 1080,
+          "window_background_px": 1892828,
+          "window_chrome_pixels": 0
+        },
+        "content_bounds": "0,0,1080,1920",
+        "inflate_failed": false,
+        "v4_tags": 0,
+        "v6_fallbacks": 0,
+        "frame_analysis": [],
+        "px_total": 2073600,
+        "px_dominant": [
+          111,
+          168,
+          220
+        ],
+        "px_dominant_pct": 91.28,
+        "px_nonwhite": 2073600,
+        "unique_colors": 361
+      },
+      {
+        "run": 2,
+        "rc": 1,
+        "sha16": "2291d74de0b6bac5",
+        "stage_hits": {
+          "ACTIVITY": 1,
+          "CAPTURE": 2
+        },
+        "census_events": 0,
+        "first_divergence": null,
+        "verdicts": [
+          "REAL_APP_CONTENT"
+        ],
+        "census": {
+          "app_draw_ops": 34,
+          "app_owned_pixels": 180772,
+          "app_owned_pixels_inside_content_bounds": 180772,
+          "auth_root_valid": true,
+          "budget_exhausted": false,
+          "content_bounds": {
+            "b": 1920,
+            "l": 0,
+            "r": 1080,
+            "t": 0,
+            "valid": true
+          },
+          "depth_max": 7,
+          "diag_owned_pixels": 0,
+          "diag_regions": 3,
+          "dialog_content_rendered": false,
+          "dominant_color": [
+            "#6fa8dc"
+          ],
+          "dominant_pct": 91.28221450617283,
+          "draw_walk_ran": true,
+          "height": 1920,
+          "inflation_failed": false,
+          "layout_ran": true,
+          "layout_source": "inflater",
+          "measure_ran": true,
+          "no_root": false,
+          "nodes_skipped_depth": 0,
+          "nodes_visited": 48,
+          "non_default_pixels": 180772,
+          "render_exception": false,
+          "screenshot_sha256": "2291d74de0b6bac595c38e5927564e76b2f1630ae8b0b027413e84868d976f6d",
+          "size": "1080x1920",
+          "synthetic_suppressed": false,
+          "unique_colors": 361,
+          "unreachable_children": 0,
+          "verdict": "REAL_APP_CONTENT",
+          "verdict_law": "21-P0-6 pixel ownership + correlated proof",
+          "verdict_regions_law": "V1/V7: WINDOW_BACKGROUND=dominant; AUTHORITATIVE_APP_CONTENT=non-dominant inside content bounds; WINDOW_CHROME=non-dominant outside; DIAGNOSTIC_OVERLAY=separate trace_overlay.png",
+          "width": 1080,
+          "window_background_px": 1892828,
+          "window_chrome_pixels": 0
+        },
+        "content_bounds": "0,0,1080,1920",
+        "inflate_failed": false,
+        "v4_tags": 0,
+        "v6_fallbacks": 0,
+        "frame_analysis": [],
+        "px_total": 2073600,
+        "px_dominant": [
+          111,
+          168,
+          220
+        ],
+        "px_dominant_pct": 91.28,
+        "px_nonwhite": 2073600,
+        "unique_colors": 361
+      },
+      {
+        "run": 3,
+        "rc": 1,
+        "sha16": "2291d74de0b6bac5",
+        "stage_hits": {
+          "ACTIVITY": 1,
+          "CAPTURE": 2
+        },
+        "census_events": 0,
+        "first_divergence": null,
+        "verdicts": [
+          "REAL_APP_CONTENT"
+        ],
+        "census": {
+          "app_draw_ops": 34,
+          "app_owned_pixels": 180772,
+          "app_owned_pixels_inside_content_bounds": 180772,
+          "auth_root_valid": true,
+          "budget_exhausted": false,
+          "content_bounds": {
+            "b": 1920,
+            "l": 0,
+            "r": 1080,
+            "t": 0,
+            "valid": true
+          },
+          "depth_max": 7,
+          "diag_owned_pixels": 0,
+          "diag_regions": 3,
+          "dialog_content_rendered": false,
+          "dominant_color": [
+            "#6fa8dc"
+          ],
+          "dominant_pct": 91.28221450617283,
+          "draw_walk_ran": true,
+          "height": 1920,
+          "inflation_failed": false,
+          "layout_ran": true,
+          "layout_source": "inflater",
+          "measure_ran": true,
+          "no_root": false,
+          "nodes_skipped_depth": 0,
+          "nodes_visited": 48,
+          "non_default_pixels": 180772,
+          "render_exception": false,
+          "screenshot_sha256": "2291d74de0b6bac595c38e5927564e76b2f1630ae8b0b027413e84868d976f6d",
+          "size": "1080x1920",
+          "synthetic_suppressed": false,
+          "unique_colors": 361,
+          "unreachable_children": 0,
+          "verdict": "REAL_APP_CONTENT",
+          "verdict_law": "21-P0-6 pixel ownership + correlated proof",
+          "verdict_regions_law": "V1/V7: WINDOW_BACKGROUND=dominant; AUTHORITATIVE_APP_CONTENT=non-dominant inside content bounds; WINDOW_CHROME=non-dominant outside; DIAGNOSTIC_OVERLAY=separate trace_overlay.png",
+          "width": 1080,
+          "window_background_px": 1892828,
+          "window_chrome_pixels": 0
+        },
+        "content_bounds": "0,0,1080,1920",
+        "inflate_failed": false,
+        "v4_tags": 0,
+        "v6_fallbacks": 0,
+        "frame_analysis": [],
+        "px_total": 2073600,
+        "px_dominant": [
+          111,
+          168,
+          220
+        ],
+        "px_dominant_pct": 91.28,
+        "px_nonwhite": 2073600,
+        "unique_colors": 361
+      }
+    ],
+    "deterministic": true,
+    "verdicts": [
+      "REAL_APP_CONTENT",
+      "REAL_APP_CONTENT",
+      "REAL_APP_CONTENT"
+    ],
+    "classification": "OBSERVED"
+  }
+}

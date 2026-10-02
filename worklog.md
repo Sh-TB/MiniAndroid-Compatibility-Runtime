@@ -5410,3 +5410,17 @@ Work Log:
 Stage Summary:
 - Done: F-NEW-200/201/202 IMPLEMENTED+TESTED with zero golden drift.
 - Remaining: F-NEW-204/205/206/207 (P1 audit batch), F-NEW-192, F-NEW-217/221 deep attacks, SUCCESS-PATH corpus, §28 final deliverable.
+---
+Task ID: F-NEW-208/209 + FIVE-APP GATE WAVE
+Agent: Super Z (main)
+Task: Five-app visual gate re-run (honest white→content answer) + §28 deliverable + issue #354 report.
+
+Work Log:
+- V10 five-app gate re-run (3 runs each, byte-identical law): forkgram OBSERVED REAL_APP_CONTENT ×3 (cf4c41e62ceb6557); opencalc OBSERVED REAL_APP_CONTENT ×3 (2291d74de0b6bac5) — MOVED FROM BLOCKED THIS SESSION via the F-NEW-215/216/218/219/220 law chain; dame/game2048/droidify BLOCKED deterministic with first-missing attribution (F-NEW-217 kotlinx resume protocol, F-NEW-221 R8 merge model, droidify protobuf-CNFE family). Results banked: canonical/v10_results_latest.json.
+- RUNNING-APP LAW (user question "why do these run and these don't"): the working family shares five laws — honest clinit bookkeeping (215), real constant identity (216), correct class-token identity (218), resolve-or-throw reflection (219), canonical content parent inside the screen tree (220). Every failing title inspected fails exactly one of these; the census names which per title.
+- §28 deliverable (root table + maps) posted to issue #354: comment 5951761853.
+- Registry 516 roots (open 281), worklist 735.
+
+Stage Summary:
+- Done: waves 1-5 banked; opencalc white→REAL_APP_CONTENT proven ×3; issue #354 report posted.
+- Remaining: F-NEW-204/205/206/207 P1 audit batch + F-NEW-192; F-NEW-217/221 deep attacks; SUCCESS-PATH corpus formalization (F-NEW-210..214); droidify/dame/2048 legs.

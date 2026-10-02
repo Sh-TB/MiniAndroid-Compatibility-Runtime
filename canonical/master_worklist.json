@@ -1,6 +1,6 @@
 {
  "schema": "master-worklist/1.0",
- "generated": "2026-10-02T11:42:35Z",
+ "generated": "2026-10-02T11:49:18Z",
  "law": "GENERATED from root_registry.json + canonical registries + campaign mandates (S128). Do not hand-edit; edit the registries or s128_* generators and regenerate.",
  "counts": {
   "PARTIAL": 111,
@@ -14013,7 +14013,7 @@
    "subsystem": "UI",
    "layer": "VIEWTREE",
    "current_status": "PARTIAL",
-   "root_cause": "Wave-2 runs: /tmp/fn197/op3..op9 + det1..det3; [F175-READ] getInt idx=0 stored=48 present=1 answered=48 (XML law); [F-NEW-197] XML AttributeSet values=4..9; crash.log error count 3->1; GATE: goldens x3 byte-identical + laws130 51/51 + opencalc x3 b5a7a35d5fe0564b.",
+   "root_cause": "Wave-2 runs: /tmp/fn197/op3..op9 + det1..det3; [F175-READ] getInt idx=0 stored=48 present=1 answered=48 (XML law); [F-NEW-197] XML AttributeSet values=4..9; crash.log error count 3->1; GATE: goldens x3 byte-identical + laws130 51/51 + opencalc x3 b5a7a35d5fe0564b.; WAVE-5 FIVE-APP GATE RE-RUN: opencalc MOVED from BLOCKED(empty-shell b5a7a35d5fe0564b) to OBSERVED REAL_APP_CONTENT x3 deterministic (",
    "exists": "Wave-2 runs: /tmp/fn197/op3..op9 + det1..det3; [F175-READ] getInt idx=0 stored=48 present=1 answered=48 (XML law); [F-NEW-197] XML AttributeSet values=4..9; crash.log error count 3->1; GATE: goldens x",
    "missing": "-",
    "dependencies": "-",
