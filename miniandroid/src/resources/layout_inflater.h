@@ -168,6 +168,21 @@ public:
         return custom_view_measure_hook_;
     }
 
+    // ── SECONDARY CAMPAIGN V4 (generic-tag DEX-existence law) ─────────
+    // Unknown short XML tags must not silently degrade to a generic
+    // Landroid/view/View; leaf. The executor installs this hook (same
+    // law as the ctor/measure hooks — resources cannot depend on dex)
+    // answering "does this descriptor exist in the APK DEX"; inflation
+    // resolves unknown tags against the platform package candidates and
+    // records honest evidence when nothing matches.
+    using DexClassExistsHook = std::function<bool(const std::string& desc)>;
+    void set_dex_class_exists_hook(DexClassExistsHook fn) {
+        dex_class_exists_hook_ = std::move(fn);
+    }
+    const DexClassExistsHook& dex_class_exists_hook() const {
+        return dex_class_exists_hook_;
+    }
+
     // S82-GFX F-NEW-158: exposed — the render stage resolves programmatic
     // setBackgroundResource(resid) shape drawables through the SAME
     // inflate-time parse the XML layout path uses (one parse law).
@@ -382,6 +397,7 @@ private:
     // standalone law-test harnesses drive the inflater without the engine).
     CustomViewCtorHook custom_view_ctor_hook_;
     CustomViewMeasureHook custom_view_measure_hook_;
+    DexClassExistsHook dex_class_exists_hook_;
     // FIX-2c: id → key-name map (lazily built from resources.arsc) used to
     // name compiled android:id references and bind RelativeLayout rules.
     std::map<uint32_t, std::string> id_names_;

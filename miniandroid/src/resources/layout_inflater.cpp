@@ -854,6 +854,49 @@ uint32_t LayoutInflater::inflate_element(framework::ViewShadow* views, const Axm
                                                      : class_attr->value.string_value);
     else class_desc = class_to_descriptor(el.name);
 
+    // ── SECONDARY CAMPAIGN V4 (generic-tag DEX-existence law) ─────────
+    // AOSP LayoutInflater.createViewFromTag: a short tag is a PLATFORM
+    // widget name — either a known mapping or a real platform class.
+    // The old fallback silently created a generic Landroid/view/View;
+    // leaf for ANY unknown short tag, losing the real class identity
+    // (a custom/platform ViewGroup became a content-less leaf — children
+    // attached but container measure/layout semantics were lost).
+    // Generic law: resolve against the platform packages BY DEX
+    // EXISTENCE (the APK's bundled dex is the authority — bundled
+    // platform-family classes keep their real identity); when nothing
+    // matches, the generic-View degradation is recorded as EXPLICIT
+    // evidence, never silent.
+    if (class_desc == "Landroid/view/View;" && !class_attr &&
+        el.name.find('.') == std::string::npos &&
+        el.name != "view" && el.name != "View" &&
+        dex_class_exists_hook_) {
+        static const char* kPlatformPkgs[] = {
+            "android/widget", "android/view", "android/webkit",
+            "com/android/internal/widget",
+        };
+        bool resolved = false;
+        for (const char* pkg : kPlatformPkgs) {
+            std::string cand = std::string("L") + pkg + "/" + el.name + ";";
+            if (dex_class_exists_hook_(cand)) {
+                class_desc = cand;
+                resolved = true;
+                std::cerr << "[V4-TAG] unknown short tag <" << el.name
+                          << "> resolved via DEX existence → " << cand
+                          << std::endl;
+                break;
+            }
+        }
+        if (!resolved) {
+            if (stats.warnings.size() < 64)
+                stats.warnings.push_back("unknown tag '" + el.name +
+                                         "' inflated as generic View "
+                                         "(not in DEX)");
+            std::cerr << "[V4-TAG] unknown short tag <" << el.name
+                      << "> not in DEX — generic View leaf (evidence"
+                      << " recorded, not silent)" << std::endl;
+        }
+    }
+
     // <merge> → inflate children into parent directly
     if (el.name == "merge") {
         // G10 FIX-G10-003 (AOSP LayoutInflater merge law): <merge> has no

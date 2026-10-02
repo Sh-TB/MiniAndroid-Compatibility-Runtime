@@ -2284,6 +2284,11 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                         // Goldens unaffected: their trees were always accepted.
                         const bool substantive = root_id != 0;
                         if (root_id != 0 && substantive) {
+                            // ── SECONDARY CAMPAIGN V2 (inflate-outcome law) ──
+                            // A real root landed: the last inflation attempt
+                            // is a success — the census no longer reports
+                            // RESOURCE_INFLATION_FAILED for this window.
+                            set_last_inflate_failed(false);
                             // ── ADDITIONAL-AUDIT P1-9 (replacement law) ──
                             // Detach the previous content subtree before the
                             // new root installs (same law as the View branch).
@@ -2314,7 +2319,18 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                             }
                         }
                         if (root_id == 0) {
-                            std::cerr << "[U007-INFLATE] no root produced — keeping legacy default screen" << std::endl;
+                            // ── SECONDARY CAMPAIGN V2 (legacy-default-screen
+                            // law): a failed real APK inflation must NEVER
+                            // silently become a successful synthetic screen.
+                            // The honest state is RESOURCE_INFLATION_FAILED /
+                            // RENDER_BLOCKED — recorded here and consumed by
+                            // the engine's frame-truth census at capture.
+                            set_last_inflate_failed(true);
+                            std::cerr << "[V2-INFLATE-FAILED] setContentView(res=0x"
+                                      << std::hex << (uint32_t)layout_resource_id_ << std::dec
+                                      << ") produced NO root — RESOURCE_INFLATION_FAILED"
+                                      << " (legacy default screen is NOT app content)"
+                                      << std::endl;
                         }
                     }
                 } else if (apk_path_.empty()) {
@@ -4271,7 +4287,7 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     //   getView().getContext() instanceof Activity
     // We store the context_object_id when the View constructor is called with a Context arg.
     if (m == "getContext") {
-        const auto* n = find_node(ctx.receiver_id);
+        auto* n = find_node(ctx.receiver_id);  // mutable: V6 fallback counter lives on the node
         if (std::getenv("MINIANDROID_CTX_DIAG")) {
             std::cerr << "[CTX-GET] recv=obj#" << ctx.receiver_id
                       << " cls=" << ctx.receiver_class
@@ -4320,6 +4336,19 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
             if (auto* act = registry_->find_as<ActivityShadow>()) {
                 uint32_t act_ctx = act->current_activity_id();
                 if (act_ctx != 0) {
+                    // ── SECONDARY CAMPAIGN V6 (observable-identity law) ──
+                    // A missing constructor-captured Context is a REAL
+                    // identity event and must be OBSERVABLE: the fallback
+                    // to the activity context is recorded with a bounded
+                    // counter — never a silent conversion of missing
+                    // identity into an unrelated context object.
+                    if (n->fallback_ctx_events < 255) n->fallback_ctx_events++;
+                    std::cerr << "[V6-CTX-FALLBACK] view=obj#" << ctx.receiver_id
+                              << " cls=" << ctx.receiver_class
+                              << " ctor-context MISSING — falling back to"
+                              << " activity context obj#" << act_ctx
+                              << " (events=" << (int)n->fallback_ctx_events << ")"
+                              << std::endl;
                     return CallResult::handled_object(
                         act_ctx,
                         context_descriptor(act_ctx,

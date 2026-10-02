@@ -70,6 +70,16 @@ public:
             {"dst", {{"x", dx}, {"y", dy}, {"w", dw}, {"h", dh}}},
         };
         if (!failure.empty()) r["FAILURE"] = failure;
+        // ── SECONDARY CAMPAIGN V5: explicit provenance states ──────────
+        // Every real pixel source carries ONE canonical state:
+        //   IMAGE_RESOURCE      — resolved through resources.arsc (resid)
+        //   IMAGE_APK_PATH      — an APK entry path (asset/file-backed)
+        //   IMAGE_DIRECT_PIXELS — raw bitmap pixels (BitmapFactory/
+        //                         programmatic canvas; never dropped for
+        //                         lacking an APK path)
+        r["provenance_state"] = resid != 0 ? "IMAGE_RESOURCE"
+                                : !path.empty() ? "IMAGE_APK_PATH"
+                                : "IMAGE_DIRECT_PIXELS";
         events_.push_back(std::move(r));
     }
 
@@ -85,6 +95,9 @@ public:
             {"REPLAYED", replayed},
             {"width", sw}, {"height", sh},
             {"DRAW_CALLED", replayed},
+            // V5: canvas replay consumes stored raw pixels — the direct
+            // pixel provenance state (no APK path required by law).
+            {"provenance_state", "IMAGE_DIRECT_PIXELS"},
         });
     }
 

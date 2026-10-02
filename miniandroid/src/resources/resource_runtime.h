@@ -80,6 +80,13 @@ public:
         if (inflater_) inflater_->set_is_a(is_a_);
     }
 
+    // SECONDARY CAMPAIGN V4: same Factory law for the DEX-existence hook
+    // (unknown short-tag resolution — see LayoutInflater).
+    void set_dex_class_exists_hook(LayoutInflater::DexClassExistsHook fn) {
+        dex_class_exists_hook_ = std::move(fn);
+        if (inflater_) inflater_->set_dex_class_exists_hook(dex_class_exists_hook_);
+    }
+
 private:
     void apply_custom_view_ctor_hook() {
         if (inflater_ && custom_view_ctor_hook_)
@@ -92,6 +99,10 @@ private:
     void apply_is_a() {
         if (inflater_ && is_a_)
             inflater_->set_is_a(is_a_);
+    }
+    void apply_dex_class_exists_hook() {
+        if (inflater_ && dex_class_exists_hook_)
+            inflater_->set_dex_class_exists_hook(dex_class_exists_hook_);
     }
 
 public:
@@ -205,6 +216,7 @@ private:
     // MASTER CAMPAIGN FIX (F10): process-wide real-DEX onMeasure hook
     // (same Factory law).
     LayoutInflater::CustomViewMeasureHook custom_view_measure_hook_;
+    LayoutInflater::DexClassExistsHook dex_class_exists_hook_;
     // G12 FIX-G12-002: process-wide superclass classifier (same Factory law).
     std::function<bool(const std::string&, const std::string&)> is_a_;
     // S124 THEME-BASE: cached AOSP-law Theme for the loaded APK.
