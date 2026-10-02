@@ -5589,3 +5589,18 @@ Stage Summary:
   this session; registry 528; random ledger row 1 banked.
 - Remaining: F-NEW-229 CL width law; sudoku button-text gap; forkgram/ssw/headingcalc/
   secuso golden re-banks; F-NEW-217/221 deep legs; README/release audit phases.
+
+---
+Task ID: MEGA-FINAL (campaign state sync + push)
+Agent: Super Z (main)
+Task: CAMPAIGN_STATE.md sync, issue #354 wave report (comment 5956211403), push.
+
+Work Log:
+- Pushed bf1ecfd3..d52e19ce to origin/main (4 commits: 286b4994 stray helper from
+  the prior session + F-NEW-231 wave + MEGA-W2 + state sync). SECRET GUARD PASS.
+- Stray-commit note (release audit): 286b4994 (uuid message) adds only
+  scripts/f228_comment.py — harmless helper; left in history, flagged.
+
+Stage Summary:
+- Session closed with registry 528, HEAD d52e19ce, master checklist live at
+  docs/FINAL_COMPATIBILITY_CAMPAIGN.md, wave report on #354.
