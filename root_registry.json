@@ -4238,12 +4238,12 @@
   },
   {
    "id": "F-NEW-230",
-   "status": "OBSERVED",
+   "status": "PARTIAL",
    "priority": "P1",
    "layer": "evidence/golden-provenance",
    "title": "GOLDEN PROVENANCE/CONFIG GAP: four banked golden SHAs are not reproducible at HEAD with default configs \u2014 ssw f48ae6d467d1e746 (omegacentauri.mobi.simplestopwatch_26: HEAD+baseline produce 0297e27f4e217286 = 99.4% black, time text collapsed via BigTextView 0dp+weight wrap-measure=0), headingcalc be1cea9cf994b26a (HEAD produces 4d462461006fe7fe with IDENTICAL code to the banking commit), secuso eb5ebd559cad1028 (HEAD produces 31ddd4d5b8e6d18e = 100% WHITE), whatsapp 31ddd4d5b8e6d18e (the golden itself IS a pure-white frame). The worklog's 'goldens x3 byte-identical' gates were run with configs/flows not recorded in the registry (screen size, click flows, run duration, APK path variants).",
    "law": "Evidence law (CONSTITUTION V2): a golden gate must carry the FULL reproduction command (APK sha256 + screen WxH + flags + flow + frame index). A golden that cannot be reproduced from the registry is not evidence \u2014 it is a lead. 31ddd4d5b8e6d18e (pure white) being banked as the whatsapp gate also violates the blank-frame law (FRAME_CAPTURE_TRUTH).",
-   "evidence": "scripts/f228_regress.sh matrix 2026-10-02: dooz/microtimer/unote MATCH@1920 \u00d73; ssw/headingcalc/secuso/whatsapp DRIFT equally on the HEAD baseline binary AND the F-NEW-228 patch binary (patch-neutral); muellerma.stopwatch_6 vs omegacentauri.simplestopwatch_26 APK-mapping error found and corrected in the process.",
+   "evidence": "scripts/f228_regress.sh matrix 2026-10-02: dooz/microtimer/unote MATCH@1920 \u00d73; ssw/headingcalc/secuso/whatsapp DRIFT equally on the HEAD baseline binary AND the F-NEW-228 patch binary (patch-neutral); muellerma.stopwatch_6 vs omegacentauri.simplestopwatch_26 APK-mapping error found and corrected in the process. | 2026-10-02 mega-campaign re-bank: {\"valid_x3_with_repro\": [{\"name\": \"dooz\", \"apk\": \"/tmp/my-project/apk_cache/corpus/dooz.apk\", \"sha\": \"d602648e8e401895\", \"repro\": \"./build/miniandroid run <apk> -o <out> (defaults 1080x1920) x3\"}, {\"name\": \"microtimer\", \"apk\": \"/tmp/my-project/apk_cache/dubrowgn.microtimer_8.apk\", \"sha\": \"da73010a37dd0189\", \"repro\": \"./build/miniandroid run <apk> -o <out> x3\"}, {\"name\": \"unote\", \"apk\": \"/tmp/my-project/apk_cache/app.varlorg.unote_30.apk\", \"sha\": \"4f1a9e4e8f64fae8\", \"repro\": \"./build/miniandroid run <apk> -o <out> x3\"}, {\"name\": \"opencalc\", \"apk\": \"/home/z/my-project/upload/opencalculator_53.apk\", \"sha\": \"e364b001ee7abd66\", \"repro\": \"./build/miniandroid run <apk> -o <out> x3 (F-NEW-228 weight-pass frame; also reproduced FROM THE INSTALLED PACKAGE via 'run --package com.darkempire78.opencalculator' \\u2014 F-NEW-231)\"}], \"stale_remeasured_2026_10_02\": [{\"name\": \"forkgram\", \"old\": \"cf4c41e62ceb6557\", \"now\": \"bbb6cd10a834963d\", \"note\": \"REAL_APP_CONTENT verdict; frame drifted from the V10 bank (F-NEW-226/227 text-identity + measureText laws changed text pixels globally); current face = real Telegram menu with DOUBLE-DRAWN 'LowPowerEnabledTitle' (overlap bug registered); re-bank needed\"}, {\"name\": \"ssw\", \"old\": \"f48ae6d467d1e746\", \"note\": \"STALE per F-NEW-228 session\"}, {\"name\": \"headingcalc\", \"old\": \"be1cea9cf994b26a\", \"note\": \"STALE per F-NEW-228 session\"}, {\"name\": \"secuso\", \"old\": \"eb5ebd559cad1028\", \"note\": \"STALE per F-NEW-228 session\"}, {\"name\": \"whatsapp\", \"old\": \"31ddd4d5b8e6d18e\", \"note\": \"INVALID \\u2014 the golden itself is a 100% white frame; rejected as a gate per the blank-frame law\"}]}",
    "fix": "Re-bank the 4 goldens with a recorded reproduction block (apk sha256, WxH, flags, flow steps, frame index); add a golden_repro field to the registry schema; whitelist-blank-frame gate (a 100%-single-color golden must be rejected at banking time).",
    "test": "every banked golden reproduces \u00d73 from its registry repro block on a clean checkout.",
    "fanout": "all 8+ regression-gated APKs; any future session re-running the gate.",
@@ -4273,16 +4273,42 @@
     "reusable": "PASS (generic package store, any APK)",
     "second_apk_retest": "PASS (game bouncy after app opencalc)"
    }
+  },
+  {
+   "id": "F-NEW-232",
+   "status": "IMPLEMENTED+TESTED",
+   "priority": "P1",
+   "layer": "evidence/deferred-ui-observability",
+   "title": "LAUNCH-FRAME DEFERRED-UI OBSERVABILITY: a plain run freezes at the launch frame (F-NEW-197/F-115b law \u2014 an idle Looper cannot observe its own future), so apps whose UI appears only after a deferred Timer/postDelayed/pending-activity-launch (fishrings splash Timer 5000ms -> GameActivity; secuso sudoku splash -> TutorialActivity) were classified by a PROVISIONAL face (flat #303030 / white) with the census recording nothing \u2014 the blank verdict silently presented a launch-frame face as the app's state.",
+   "law": "AOSP MessageQueue/Looper law: nativePollOnce(timeout) wakes for the next message when \u2014 future-dated work is legal and fires in real time; the launch frame predates it. Evidence law: a verdict computed at Looper-time ~0 with future-due queue entries or a pending activity launch is PROVISIONAL and must say so.",
+   "evidence": "BEFORE: fishrings plain run = b5a7a35d5fe0564b (100% #303030), census silent; disasm proves SplashActivity.onResume Timer.schedule(task, 5000) -> startActivity(GameActivity). sudoku plain run = 31ddd4d5b8e6d18e (100% white), G08-LAUNCH(TutorialActivity) executes AFTER capture. AFTER (same binary, time-driven capture --frames 14 --frame-delay 500): fishrings a341e3ad9092f640 x3 rc=0 \u2014 REAL GAME BOARD (6673 colors, ebingo logo + ring board + rotation arrows); sudoku 45962e018344e94d x3 \u2014 TutorialActivity layout + 2 buttons (text still missing \u2014 registered finding). Census now records deferred_ui_pending/queue_size/earliest_ready_ms and the quiescence log names DEFERRED-UI-PENDING.",
+   "fix": "FrameRenderCensus gains deferred_ui_pending/deferred_queue_size/deferred_earliest_ready_ms; the F100 quiescence branch records them when the queue holds future-due entries; the capture stage takes a second snapshot covering PENDING INTENTS (IntentShadow.has_pending \u2014 G08 deferred launches); the run message carries the [F-NEW-232 deferred-UI pending] annotation post-final-status.",
+   "test": "fishrings x3 + sudoku x3 byte-identical under time-driven capture; plain runs unchanged pixel-wise (launch-frame law frozen); goldens dooz/microtimer/unote/opencalc byte-identical x3 after the change.",
+   "fanout": "every deferred-transition app (splash-Timer family: fishrings, klondike, sudoku, chess?; postDelayed menu family); the corpus blank-face classification layer.",
+   "aff": "evidence infrastructure; no rendering change."
+  },
+  {
+   "id": "F-NEW-233",
+   "status": "IMPLEMENTED+TESTED",
+   "priority": "P0",
+   "layer": "evidence/frame-truth",
+   "title": "FRAME-TRUTH CENSUS WAS TRACE-GATED (false-SUCCESS family): the entire 21-P0 census + verdict + status-downgrade block ran only when boot trace was enabled. A PLAIN run (no --trace) reported SUCCESS for a 100%-white frame (secuso sudoku live: 31ddd4d5b8e6d18e, rc=0, 'Status: SUCCESS') \u2014 the exact false-success the 21-P0 pixel-ownership law exists to forbid.",
+   "law": "21-P0-6 pixel ownership + correlated proof: SUCCESS requires authoritative app content. The verdict is the product of the CAPTURE, not of the trace flag. CONSTITUTION V2 \u00a717: silent wrong is more dangerous than crash.",
+   "evidence": "BEFORE: sudoku plain run 'Status: SUCCESS' with a 1-unique-color white screenshot (the verdict block skipped; no [21-P0 frame truth] in the message). AFTER (same APK, same frame): 'Status: PARTIAL SUCCESS' + '[F-NEW-233 frame truth: verdict=NO_ROOT, first_missing_stage=WINDOW_ROOT \u2014 SUCCESS requires authoritative app content]' + '[F-NEW-232 deferred-UI pending ...]' in the message; census fields recorded. Goldens/gates byte-identical x3 after the change (dooz d602648e8e401895, microtimer da73010a37dd0189, unote 4f1a9e4e8f64fae8, opencalc e364b001ee7abd66).",
+   "fix": "Un-gate the census computation + verdict + 21-P0 downgrade (only the overlay composition stays trace-gated); persist verdict/first_missing_stage on the census; append the frame-truth annotation POST-final-status (the final-status block overwrites status_message \u2014 same placement law as F-016/F-NEW-200).",
+   "test": "Every plain run now carries verdict + first_missing_stage in its message when the frame is not REAL_APP_CONTENT; REAL_APP_CONTENT runs unchanged; regression battery x3 byte-identical.",
+   "fanout": "every run, every corpus title, every future golden gate.",
+   "aff": "evidence infrastructure; no rendering change."
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry\u2194docs single-source-of-truth restored); registry 372\u2192374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots. | S80: three real games (Snake Deluxe, Mini Tetris, 2048) built + played on the runtime; R-NEW-401 external-cache bridge.",
  "total": 509,
- "count": 526,
+ "count": 528,
  "meta": {
   "last_update": "S132 reuse-proof wave"
  },
  "status_counts": {
-  "PARTIAL": 107,
+  "PARTIAL": 108,
   "VERIFIED-CORRECT": 46,
   "UNPROVEN": 72,
   "VERIFIED-FIXED": 48,
@@ -4294,7 +4320,7 @@
   "ROOT-CAUSED-FIXED": 86,
   "PARTIAL-FIX": 1,
   "PROVEN-FIXED": 1,
-  "IMPLEMENTED+TESTED": 13,
+  "IMPLEMENTED+TESTED": 15,
   "ROOT-CAUSED-REMEASURED-GENERIC-OK": 1,
   "FIXED-S75": 1,
   "ROOT-CAUSED-SEMANTIC": 1,
@@ -4308,7 +4334,7 @@
   "VERIFIED": 3,
   "BLOCKED": 1,
   "PENDING": 13,
-  "OBSERVED": 3
+  "OBSERVED": 2
  },
  "total_roots": 525,
  "generated": "2026-10-02"

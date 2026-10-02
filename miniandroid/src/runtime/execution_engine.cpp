@@ -336,6 +336,33 @@ ExecutionResult ExecutionEngine::execute(const std::string& path, const Executio
         }
     }
 
+    // ────────────────────────────────────────────────────────────────────
+    // F-NEW-232/233 FRAME-TRUTH MESSAGE LAW (post-final-status placement):
+    // the final-status block above OVERWRITES status_message, wiping any
+    // verdict annotation appended during capture. The frame-truth verdict
+    // and the deferred-UI provenance are appended HERE (same placement law
+    // as F-016/F-NEW-200) so no run can print a bare "completed
+    // successfully" next to a non-REAL_APP_CONTENT frame.
+    // ────────────────────────────────────────────────────────────────────
+    if (!frame_census_.verdict.empty() && frame_census_.verdict != "REAL_APP_CONTENT") {
+        result.status_message +=
+            std::string(" [F-NEW-233 frame truth: verdict=") +
+            frame_census_.verdict +
+            (frame_census_.first_missing_stage.empty()
+                 ? ""
+                 : ", first_missing_stage=" + frame_census_.first_missing_stage) +
+            " — SUCCESS requires authoritative app content]";
+        if (frame_census_.deferred_ui_pending) {
+            result.status_message +=
+                " [F-NEW-232 deferred-UI pending: queue_size=" +
+                std::to_string(frame_census_.deferred_queue_size) +
+                " earliest_ready_at=" +
+                std::to_string(frame_census_.deferred_earliest_ready_ms) +
+                "ms — launch-frame face is provisional; cross-check with "
+                "--frames time-driven capture]";
+        }
+    }
+
     // Copy metrics
     result.metrics = trace_engine_.get_metrics();
 
@@ -5196,7 +5223,14 @@ bool ExecutionEngine::stage_capture_output( ExecutionResult& result, const Execu
         // REAL_APP_CONTENT. first_missing_stage names the earliest stage of
         // the proof chain that never happened.
         // ────────────────────────────────────────────────────────────────
-        if (trace_engine_.boot_trace_enabled()) {
+        // F-NEW-233 UNCONDITIONAL FRAME-TRUTH LAW: the census + verdict +
+        // 21-P0 status downgrade ran only when boot trace was enabled, so a
+        // PLAIN run (no --trace) reported SUCCESS for a 100%-blank frame
+        // (secuso sudoku live: white frame, rc=0, "SUCCESS"). The honest
+        // verdict is the product of the CAPTURE, not of the trace flag —
+        // it now computes on every run; only the overlay composition stays
+        // trace-gated (its own trace_ui_enabled() check below).
+        {
             std::map<uint32_t, size_t> fa_hist;
             const auto& fa_px = fb.get_pixels();
             // ── SECONDARY CAMPAIGN V1/V7: pixel-ownership REGIONS ─────
@@ -5261,6 +5295,31 @@ bool ExecutionEngine::stage_capture_output( ExecutionResult& result, const Execu
             const size_t diag_owned_px = 0;
             // Correlated proof chain — earliest missing stage first.
             const char* first_missing = nullptr;
+            // F-NEW-232 (capture-time snapshot): a PENDING activity launch
+            // (startActivity deferred to a frame boundary — G08) or any
+            // future-due MessageQueue entry at capture time makes this
+            // launch frame PROVISIONAL. Recorded in the census + verdict
+            // annotation; the settled face needs the time-driven cross-check.
+            {
+                auto* intent_shadow_c232 =
+                    shadow_registry_
+                        ? shadow_registry_->find_as<framework::IntentShadow>()
+                        : nullptr;
+                auto* hs_c232 = shadow_registry_
+                                    ? shadow_registry_->find_as<
+                                          framework::HandlerShadow>()
+                                    : nullptr;
+                if (intent_shadow_c232 && intent_shadow_c232->has_pending()) {
+                    frame_census_.deferred_ui_pending = true;
+                    frame_census_.deferred_queue_size += 1;
+                }
+                if (hs_c232 && hs_c232->queue_size() > 0) {
+                    frame_census_.deferred_ui_pending = true;
+                    frame_census_.deferred_queue_size =
+                        std::max(frame_census_.deferred_queue_size,
+                                 static_cast<int>(hs_c232->queue_size()));
+                }
+            }
             if (frame_census_.no_root || !frame_census_.auth_root_valid)
                 first_missing = "WINDOW_ROOT";
             else if (frame_census_.render_exception)
@@ -5293,6 +5352,10 @@ bool ExecutionEngine::stage_capture_output( ExecutionResult& result, const Execu
                 verdict = "VIEWTREE_NO_APP_PIXELS";
             else
                 verdict = "REAL_APP_CONTENT";
+            // F-NEW-233: persist for the post-final-status message law.
+            frame_census_.verdict = verdict;
+            frame_census_.first_missing_stage =
+                first_missing ? std::string(first_missing) : std::string();
             auto file_sha = [](const std::string& p) -> std::string {
                 std::ifstream f(p, std::ios::binary);
                 if (!f) return "";
@@ -5342,6 +5405,12 @@ bool ExecutionEngine::stage_capture_output( ExecutionResult& result, const Execu
                     {"unreachable_children", frame_census_.unreachable_children},
                     {"layout_source", frame_census_.layout_source.empty() ?
                         nlohmann::json(nullptr) : nlohmann::json(frame_census_.layout_source)},
+                    // F-NEW-232: provisional launch-frame flag — future-due
+                    // MessageQueue entries existed at quiescence; the settled
+                    // face needs a time-driven (--frames) cross-check.
+                    {"deferred_ui_pending", frame_census_.deferred_ui_pending},
+                    {"deferred_queue_size", frame_census_.deferred_queue_size},
+                    {"deferred_earliest_ready_ms", frame_census_.deferred_earliest_ready_ms},
                 };
                 if (first_missing != nullptr)
                     census["first_missing_stage"] = first_missing;
@@ -5362,6 +5431,18 @@ bool ExecutionEngine::stage_capture_output( ExecutionResult& result, const Execu
                     " [21-P0 frame truth: verdict=" + verdict +
                     (first_missing ? (", first_missing_stage=" + std::string(first_missing)) : "") +
                     " — SUCCESS requires authoritative app content]";
+                // F-NEW-232: a launch-frame blank/flat verdict with pending
+                // deferred UI is PROVISIONAL by construction — the census and
+                // the status message must both say so (no silent blank faces).
+                if (frame_census_.deferred_ui_pending) {
+                    result.status_message +=
+                        " [F-NEW-232 deferred-UI pending: queue_size=" +
+                        std::to_string(frame_census_.deferred_queue_size) +
+                        " earliest_ready_at=" +
+                        std::to_string(frame_census_.deferred_earliest_ready_ms) +
+                        "ms — launch-frame face is provisional; cross-check with "
+                        "--frames time-driven capture]";
+                }
                 trace_engine_.warning("ExecutionEngine", "stage_capture_output",
                                       "Status downgraded SUCCESS->PARTIAL_SUCCESS: verdict=" +
                                       verdict);
@@ -6029,9 +6110,26 @@ int ExecutionEngine::pump_compose_frames(int max_frames) {
             // under the TIME-DRIVEN capture (--frames advances the clock,
             // drain fires due entries; F-117 taps schedule per frame). The
             // plain-run quiescence stays the frozen launch-frame law.
+            // F-NEW-232: quiescing with FUTURE-due queue entries is recorded
+            // in the census — this frame is a provisional launch face, not
+            // proof the app's settled state is blank/flat.
+            if (hs && hs->queue_size() > 0) {
+                frame_census_.deferred_ui_pending = true;
+                frame_census_.deferred_queue_size =
+                    static_cast<int>(hs->queue_size());
+                frame_census_.deferred_earliest_ready_ms = hs->next_ready_ms();
+            }
             std::cerr << "[F100-STATE] quiescence at tick=" << tick
                       << " pending_cb=" << cs->has_pending_callbacks()
-                      << " queue_size=" << (hs ? hs->queue_size() : 999) << std::endl;
+                      << " queue_size=" << (hs ? hs->queue_size() : 999)
+                      << (frame_census_.deferred_ui_pending
+                              ? " DEFERRED-UI-PENDING (earliest ready_at=" +
+                                    std::to_string(
+                                        frame_census_.deferred_earliest_ready_ms) +
+                                    "ms — launch frame is provisional; "
+                                    "cross-check with --frames time-driven capture)"
+                              : "")
+                      << std::endl;
             break;  // quiescence: no vsync, no messages
         }
     }

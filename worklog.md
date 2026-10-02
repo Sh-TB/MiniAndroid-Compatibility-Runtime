@@ -5533,3 +5533,59 @@ Work Log:
 
 Stage Summary:
 - Phase 0 complete. Next: WAVE 1 = installed-APK access gap audit (§3 mandatory).
+
+---
+Task ID: MEGA-W2 (random corpus loop + deferred-UI fan-out family + frame-truth law)
+Agent: Super Z (main)
+Task: §4-5 random selection (seed 20261002) + BEFORE/AFTER loop + regression set + §6 Telegram.
+
+Work Log:
+- RANDOM SELECTION (recorded): seed 20261002, pool = locally frozen APKs (tmp corpus
+  purged per disk-hygiene; pool + SHAs in run/f231/random_selection.json) →
+  APP sudoku_secuso_101 (1aff917f4ac9952b) + GAME fishrings_v1.23_vc6 (14d7dd80f7563c6a).
+- BEFORE: sudoku = 31ddd4d5b8e6d18e 100% WHITE rc=0 (false-SUCCESS — F-NEW-233 face);
+  fishrings = b5a7a35d5fe0564b flat #303030, only 19 app APIs.
+- FIRST DIVERGENCE (fishrings): SplashActivity.onCreate loads WebView
+  file:///android_asset/banner.html — asset GENUINELY ABSENT from the APK (honest
+  F085 placeholder). onResumme schedules java.util.Timer(task, 5000) →
+  startActivity(GameActivity). [F115-TIMER] fired but the F-NEW-197/F-115b
+  launch-frame law keeps the plain run at Looper t≈0 — the app's real UI never
+  observed in plain runs. sudoku: same family (splash → TutorialActivity; G08-LAUNCH
+  runs after capture).
+- F-NEW-232 (IMPLEMENTED+TESTED): deferred-UI observability — census gains
+  deferred_ui_pending/queue_size/earliest_ready_ms, recorded at pump quiescence AND
+  at capture (IntentShadow.has_pending covers G08 deferred launches); message
+  annotation. Launch-frame law NOT changed (frozen goldens preserved). Time-driven
+  cross-check (--frames 14 --frame-delay 500):
+  fishrings a341e3ad9092f640 ×3 rc=0 REAL GAME BOARD (6673 colors — ebingo logo +
+  ring board + rotation arrows) = NEW SUCCESS; sudoku 45962e018344e94d ×3
+  (TutorialActivity layout + 2 buttons, text missing — registered finding).
+- F-NEW-233 (IMPLEMENTED+TESTED, P0 false-SUCCESS family): the 21-P0 frame-truth
+  census/verdict/downgrade block was gated on boot_trace_enabled() — plain runs
+  (no --trace) reported SUCCESS on 100%-blank frames (sudoku live repro). Now
+  unconditional; verdict/first_missing_stage persisted on the census; annotation
+  appended post-final-status (the final-status block overwrites status_message).
+  sudoku plain now: PARTIAL + [F-NEW-233 frame truth: verdict=NO_ROOT,
+  first_missing_stage=WINDOW_ROOT] + [F-NEW-232 deferred-UI pending].
+- REGRESSION SET (§14): dooz d602648e8e401895 ×3 / microtimer da73010a37dd0189 ×3 /
+  unote 4f1a9e4e8f64fae8 ×3 / opencalc e364b001ee7abd66 ×3 — ALL MATCH, zero drift;
+  forkgram bbb6cd10a834963d (drifted from V10 cf4c41e62ceb6557 — F-NEW-226/227 text
+  laws changed text pixels; REAL_APP_CONTENT verdict; F-016 ×6 uncaught);
+  sudoku/fishrings plain runs now honest PARTIAL.
+- TELEGRAM (§6): telegram_official.apk launches (F-016 ×4) — final face = REAL
+  Telegram settings activity ("LowPowerEnabledTitle" doubled text + "Disable"),
+  same sha as forkgram (both land on the same settings face). NOT the main UI;
+  NOT marked success. First missing laws = intro/auth navigation chain +
+  title-overlap layout bug.
+- F-NEW-230 progress: dooz/microtimer/unote/opencalc re-banked VALID with repro
+  blocks (plain AND installed-state for opencalc); whatsapp white golden REJECTED
+  as gate; ssw/headingcalc/secuso/forkgram = STALE re-bank pending.
+- SENTINELS: Safir/Black = zero project records (BLOCKED-BY-IDENTITY, APKs needed);
+  working sentinels all SAFE.
+
+Stage Summary:
+- Done: MEGA-W2 complete — +1 NEW SUCCESS (fishrings), 2 evidence-law roots
+  IMPLEMENTED+TESTED (232/233), F-NEW-231 installed-APK capability closed earlier
+  this session; registry 528; random ledger row 1 banked.
+- Remaining: F-NEW-229 CL width law; sudoku button-text gap; forkgram/ssw/headingcalc/
+  secuso golden re-banks; F-NEW-217/221 deep legs; README/release audit phases.
