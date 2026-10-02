@@ -140,6 +140,16 @@ struct ManifestInfo {
     // Raw data access
     bool parse_success = false;
     std::string error_message;
+
+    // S-1 FIX (LOADING-CAMPAIGN): manifest <provider> components (AOSP
+    // PackageParser keeps every <provider> android:name; ActivityThread
+    // installs them BEFORE Application.onCreate — androidx.startup's
+    // InitializationProvider runs its init chain in that window).
+    struct ProviderInfo {
+        std::string name;         // android:name (class, short or full)
+        std::string authorities;  // android:authorities (identity only)
+    };
+    std::vector<ProviderInfo> providers;
 };
 
 // AXML chunk header

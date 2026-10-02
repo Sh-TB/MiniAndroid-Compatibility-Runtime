@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LoadingProbe</string>
+    <string name="probe_string">PROBE-STRING-VALUE</string>
+</resources>

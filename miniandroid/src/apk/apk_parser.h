@@ -65,7 +65,16 @@ struct ApkInfo {
     
     // Permissions
     std::vector<std::string> permissions;
-    
+
+    // S-1 FIX (LOADING-CAMPAIGN): manifest <provider> components (AOSP
+    // ActivityThread.installContentProviders order — installed BEFORE
+    // Application.onCreate; androidx.startup runs in that window).
+    struct ApkProviderInfo {
+        std::string name;
+        std::string authorities;
+    };
+    std::vector<ApkProviderInfo> providers;
+
     // Contents
     std::vector<std::string> dex_files;
     std::vector<std::string> native_libraries;

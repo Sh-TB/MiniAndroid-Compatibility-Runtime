@@ -2008,7 +2008,15 @@ CallResult IntentShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_string(pi->action);
     }
     if (m == "getData") {
-        // EXP-056: No URI set on the default Intent — return null.
+        // EXP-056 + S-5 FIX (LOADING-CAMPAIGN): the ctor/setData path
+        // RECORDS the Uri object (data_uri_object above) — getData must
+        // return it (AOSP Intent.getData: the Uri the Intent was started
+        // with, null only when none). The old hardwired null broke every
+        // ACTION_VIEW/deep-link consumer (Intent.getData().getPath() NPE).
+        if (pi->data_uri_object != 0) {
+            return CallResult::handled_object(pi->data_uri_object,
+                                              pi->data_uri_class);
+        }
         return CallResult::handled_null();
     }
     if (m == "setClass" || m == "setClassName" || m == "setComponent") {

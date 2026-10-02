@@ -551,6 +551,21 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
             " name: " + result_.application_name);
     }
     
+    // S-1 FIX (LOADING-CAMPAIGN): parse <provider> components — AOSP
+    // PackageParser.Provider keeps android:name + android:authorities.
+    // The install stage instantiates each provider BEFORE Application
+    // onCreate (androidx.startup.InitializationProvider window).
+    if (name == "provider") {
+        ManifestInfo::ProviderInfo prov;
+        prov.name = get_attribute_value(attrs, "name");
+        prov.authorities = get_attribute_value(attrs, "authorities");
+        if (!prov.name.empty()) {
+            result_.providers.push_back(prov);
+            log("Provider: " + prov.name +
+                (prov.authorities.empty() ? "" : " (" + prov.authorities + ")"));
+        }
+    }
+
     // Handle activity element
     // EXP-038 (BLOCKER-022 FIX): Also track activity-alias elements.
     // Telegram (and many real apps) use <activity-alias> to declare launcher

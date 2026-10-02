@@ -87,6 +87,16 @@ public:
     static void set_drawable_bytes_resolver(DrawableBytesResolver fn);
     static const DrawableBytesResolver& drawable_bytes_resolver();
 
+    // LOADING-CAMPAIGN (R-10 FIX): stream object id → REAL bytes. The
+    // engine owns open_assets_ (asset/file/apkfd keys) and registers this
+    // hook; decodeStream drains the stream's bytes through it (AOSP
+    // BitmapFactory.decodeStream: the canonical asset/network→bitmap path).
+    using StreamBytesResolver =
+        std::function<bool(uint32_t stream_id, std::vector<uint8_t>& bytes,
+                           std::string& source_desc)>;
+    static void set_stream_bytes_resolver(StreamBytesResolver fn);
+    static const StreamBytesResolver& stream_bytes_resolver();
+
     // Shared decode-and-register helper (used by every decode* entry):
     // returns the new Bitmap object id, or 0 on failed decode (AOSP null).
     static uint32_t decode_and_register(const std::vector<uint8_t>& bytes,

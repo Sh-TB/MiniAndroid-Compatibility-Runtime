@@ -592,6 +592,10 @@ void ApkParser::analyze_manifest(const std::vector<uint8_t>& manifest_data, ApkI
     // F-116 (R-NEW-384 family): meta-data tables
     info.application_meta_data = manifest_info.application_meta_data;
     info.activity_meta_data = manifest_info.activity_meta_data;
+    // S-1 FIX (LOADING-CAMPAIGN): carry the <provider> component list.
+    for (const auto& p : manifest_info.providers) {
+        info.providers.push_back({p.name, p.authorities});
+    }
 }
 
 void ApkParser::log(const std::string& message) {

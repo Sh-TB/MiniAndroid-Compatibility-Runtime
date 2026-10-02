@@ -1,0 +1,19 @@
+{"deliverable": "REAL_ANDROID_LOADING_ORACLE.md", "status": "updated — 14 subsystem law families + device-node allowlist law"}
+{"deliverable": "FILE_RESOURCE_LOADING_COMPATIBILITY.md", "status": "updated — §9 implementation wave + §10 probe results"}
+{"deliverable": "LOAD_COMPATIBILITY_MATRIX.jsonl", "status": "updated — statuses after the fix wave"}
+{"deliverable": "WORKING_VS_FAILING_LOADING_MATRIX.jsonl", "status": "NEW — 8 rows (6 real + probe + failing class)"}
+{"deliverable": "WORKING_APP_LOADING_EXPLANATIONS.md", "status": "NEW — per-app WHY-IT-WORKED traces"}
+{"deliverable": "LOADING_API_COVERAGE_MATRIX.jsonl", "status": "NEW — 37 API rows"}
+{"deliverable": "WHITE_SCREEN_LOADING_ROOTS.md", "status": "NEW — loading vs non-loading classification"}
+{"deliverable": "AUDIT_REQUIREMENT_COVERAGE.jsonl", "status": "NEW — this file"}
+{"deliverable": "INSTALL_TREE_PROOF.jsonl", "status": "NEW — store trees + SHA identity"}
+{"deliverable": "LOADING_RUNTIME_TRACE.jsonl", "status": "NEW — probe REQUEST→…→CONSUMER rows"}
+{"deliverable": "LOADING_ROOT_FANOUT.md", "status": "NEW — root closure map"}
+{"deliverable": "LOADING_FAILURE_DIAGNOSTICS.md", "status": "NEW — probe-discovered failure diagnostics"}
+{"deliverable": "scripts/load_audit_proof.sh", "status": "existing (LOAD-AUDIT-2)"}
+{"deliverable": "scripts/loading_probe_runner.sh", "status": "NEW — probe build+install+3run+assert"}
+{"deliverable": "scripts/storage_tree_proof.sh", "status": "NEW — store tree dump"}
+{"deliverable": "scripts/working_vs_failing_probe.sh", "status": "NEW — regression golden compare"}
+{"deliverable": "CAMPAIGN_STATE.md", "status": "updated — LOADING-CAMPAIGN wave entry"}
+{"deliverable": "docs/FINAL_COMPATIBILITY_CAMPAIGN.md", "status": "updated — §16 loading implementation checklist"}
+{"deliverable": "root_registry.json", "status": "updated — R-NEW-457 loading-campaign root family"}

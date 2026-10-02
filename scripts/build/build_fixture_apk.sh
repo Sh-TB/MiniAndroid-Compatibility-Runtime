@@ -156,6 +156,15 @@ def put(z, name, data):
     zi.compress_type = zipfile.ZIP_DEFLATED
     z.writestr(zi, data)
 
+def put_stored(z, name, data):
+    # STORED (uncompressed) — assets/ entries: AOSP AssetManager.openFd
+    # serves ONLY stored entries (compressed → FileNotFoundException), and
+    # aapt2 packages png/ogg/… assets uncompressed. Fixtures that probe
+    # openFd need the same shape.
+    zi = zipfile.ZipInfo(name, date_time=(1980, 1, 1, 0, 0, 0))
+    zi.compress_type = zipfile.ZIP_STORED
+    z.writestr(zi, data)
+
 entries = []
 if base_apk:
     # REAL aapt2-linked APK: binary manifest + resources.arsc + binary
@@ -164,6 +173,14 @@ if base_apk:
         for n in b.namelist():
             entries.append((n, b.read(n)))
     entries.append(("classes.dex", (Path(work) / "dex" / "classes.dex").read_bytes()))
+    # assets/ (LOADING-CAMPAIGN fix): the aapt2 branch previously DROPPED
+    # assets/ entirely — fixture probes could never exercise the asset
+    # family. Stored entries, matching aapt2's NO_COMPRESS asset shape.
+    assets_dir = src_dir / "assets"
+    if assets_dir.is_dir():
+        for p in sorted(assets_dir.rglob("*")):
+            if p.is_file():
+                entries.append((p.relative_to(src_dir).as_posix(), p.read_bytes(), True))
 else:
     entries.append(("AndroidManifest.xml",
                     (src_dir / "AndroidManifest.xml").read_bytes()))
@@ -176,8 +193,13 @@ else:
                     entries.append((p.relative_to(src_dir).as_posix(), p.read_bytes()))
 
 with zipfile.ZipFile(out_apk, "w", zipfile.ZIP_DEFLATED) as z:
-    for name, data in entries:
-        put(z, name, data)
+    for item in entries:
+        if len(item) == 3:
+            name, data, stored = item
+            put_stored(z, name, data)
+        else:
+            name, data = item
+            put(z, name, data)
 
 h = hashlib.sha256(out_apk.read_bytes()).hexdigest()
 print("APK:", out_apk)
