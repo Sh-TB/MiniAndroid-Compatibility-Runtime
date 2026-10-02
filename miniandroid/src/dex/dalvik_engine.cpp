@@ -48,6 +48,8 @@
 #include <iomanip>
 #include <cassert>
 #include <cctype>    // EXP-071 Phase 6: std::toupper/std::tolower for String.toUpperCase/toLowerCase
+#include <fcntl.h>   // LOADING-CAMPAIGN (R-2 FIX): real host fds for openFd/PFD
+#include <unistd.h>  // LOADING-CAMPAIGN: ::open/::close/::dup
 #include <unordered_set>
 #include <set>            // F-023: default-interface-method dispatch visited set
 
@@ -4078,19 +4080,40 @@ const std::string& DalvikExecutionEngine::cached_asset_bytes(const std::string& 
     if (it != asset_bytes_cache_.end()) return it->second;
     std::string content;
     if (path.rfind("file:", 0) == 0) {
+        // LOADING-CAMPAIGN: the registered backing path is already the
+        // path-law mapping (FileInputStream/openFileInput/openInputStream
+        // resolved it) — read it REAL, whole. The old 4 MiB cap faked EOF
+        // on larger app files (a silent fake-success); a 256 MiB honest
+        // refusal replaces it (AOSP streams are uncapped; the refusal is
+        // loud, never silent EOF).
+        namespace lfs = std::filesystem;
+        lfs::path fp(path.substr(5));
         std::error_code f104_ec;
-        std::filesystem::path fp(path.substr(5));
-        if (std::filesystem::exists(fp, f104_ec) && !f104_ec) {
-            static constexpr size_t kMaxSandboxRead = 4u << 20;  // 4 MiB
-            auto sz = std::filesystem::file_size(fp, f104_ec);
-            if (!f104_ec && sz <= kMaxSandboxRead) {
+        if (lfs::exists(fp, f104_ec) && !f104_ec) {
+            static constexpr size_t kMaxHonestRead = 256u << 20;  // 256 MiB
+            // LOADING-CAMPAIGN: character devices (AOSP exposes /dev/urandom
+            // to apps — sepolicy appdomain urandom_device r_file_perms) have
+            // no meaningful file_size; a bounded raw read serves them (an
+            // infinite stream must never hang the assign() below).
+            if (!lfs::is_regular_file(fp, f104_ec)) {
+                std::ifstream in(fp, std::ios::binary);
+                if (in) {
+                    char devbuf[8192];
+                    in.read(devbuf, sizeof(devbuf));
+                    content.assign(devbuf, in.gcount());
+                }
+            } else {
+            auto sz = lfs::file_size(fp, f104_ec);
+            if (!f104_ec && sz <= kMaxHonestRead) {
                 std::ifstream in(fp, std::ios::binary);
                 if (in)
                     content.assign(std::istreambuf_iterator<char>(in),
                                    std::istreambuf_iterator<char>());
             } else if (!f104_ec) {
-                std::cerr << "[F104-READ] file exceeds " << kMaxSandboxRead
-                          << " bytes — read refused: " << path << std::endl;
+                std::cerr << "[F104-READ] file exceeds " << kMaxHonestRead
+                          << " bytes — read REFUSED (loud, not silent EOF): "
+                          << path << std::endl;
+            }
             }
         }
     } else if (!apk_path_.empty()) {
@@ -4114,18 +4137,53 @@ const std::string& DalvikExecutionEngine::cached_asset_bytes(const std::string& 
                               << std::endl;
                 }
             }
+        } else if (path.rfind("apkfd:", 0) == 0) {
+            // LOADING-CAMPAIGN (R-2 FIX): AssetFileDescriptor-backed stream —
+            // key shape "apkfd:<offset>:<len>:<entry>"; serves the entry's
+            // exact bytes (AOSP AFD over a stored entry reads offset/len
+            // within base.apk; the extracted bytes are byte-identical).
+            // Shape: apkfd:<offset>:<len>:<entry…>
+            std::string spec = path.substr(strlen("apkfd:"));
+            size_t c1 = spec.find(':');
+            size_t c2 = (c1 == std::string::npos) ? std::string::npos
+                                                  : spec.find(':', c1 + 1);
+            if (c1 != std::string::npos && c2 != std::string::npos) {
+                std::string entry = spec.substr(c2 + 1);
+                if (resources::ResourceRuntime::instance().ensure_loaded(apk_path_)) {
+                    auto bytes = resources::ResourceRuntime::instance()
+                                     .apk()
+                                     .extract_entry_cached(entry);
+                    content.assign(bytes.begin(), bytes.end());
+                }
+            }
         } else {
-        std::string cmd = "unzip -p '" + apk_path_ + "' 'assets/" + path + "' 2>/dev/null";
-        FILE* pipe = popen(cmd.c_str(), "r");
-        if (pipe) {
-            char buf[4096];
-            size_t n;
-            while ((n = fread(buf, 1, sizeof(buf), pipe)) > 0) content.append(buf, n);
-            pclose(pipe);
-        }
+            // LOADING-CAMPAIGN (R-5 FIX): asset bytes are extracted from the
+            // INSTALLED APK through the in-process ZIP parser — the
+            // popen("unzip -p …") host-tool dependency (uncapped, injection-
+            // prone, unprovenanced) is REMOVED. One byte source law: the
+            // APK entry table.
+            if (resources::ResourceRuntime::instance().ensure_loaded(apk_path_)) {
+                auto bytes = resources::ResourceRuntime::instance()
+                                 .apk()
+                                 .extract_entry_cached("assets/" + path);
+                content.assign(bytes.begin(), bytes.end());
+            }
         }
     }
     return asset_bytes_cache_.emplace(path, std::move(content)).first->second;
+}
+
+// LOADING-CAMPAIGN (ST-2 FIX): drain still-open write streams at run end.
+// AOSP law: process death closes all streams; data written before death
+// persists. Idempotent (called from the screenshot/finalize stage).
+void DalvikExecutionEngine::flush_finalizers() {
+    for (auto& [id, w] : open_writers_) {
+        if (w.ever_opened && w.out.is_open()) {
+            w.out.flush();
+            w.out.close();
+            w.ever_opened = false;
+        }
+    }
 }
 
 // Pass-3 (K-35): REAL XmlPullParser event machine — one event per call.
@@ -4375,6 +4433,62 @@ void DalvikExecutionEngine::run_activity_default_init(const std::string& cls,
 // object is THE application identity for the whole process:
 //   - Activity.getApplication() / getApplicationContext() return it,
 //   - DI frameworks type-check it (Hilt: instanceof Application, then
+// ── S-1 FIX (LOADING-CAMPAIGN) — installContentProviders stage ──────────
+// AOSP ActivityThread.handleBindApplication order: providers are installed
+// BEFORE Application.onCreate; androidx.startup.InitializationProvider,
+// WorkManager/ProcessLifecycleOwner/Emoji2 initialize in that window.
+// Law: instantiate each manifest <provider> class, run its onCreate()
+// with REAL DEX execution; a class absent from the DEX is recorded and
+// skipped loudly (honest platform-skip, never a fake provider); a throwing
+// provider propagates exactly like app onCreate (AOSP kills the process;
+// the engine records + continues, evidence honest).
+void DalvikExecutionEngine::install_content_providers(
+    DalvikExecutionResult& result) {
+    if (manifest_providers_.empty()) return;
+    for (const std::string& pcls : manifest_providers_) {
+        // DEX-presence gate: normalized dotted → descriptor.
+        std::string desc = pcls;
+        if (!desc.empty() && desc[0] != 'L') {
+            std::replace(desc.begin(), desc.end(), '.', '/');
+            desc = "L" + desc + ";";
+        }
+        bool in_dex = class_to_superclass_.find(desc) != class_to_superclass_.end();
+        if (!in_dex && dex_report_ != nullptr) {
+            for (const auto& cd : dex_report_->classes) {
+                if (cd.name == desc) { in_dex = true; break; }
+            }
+        }
+        if (!in_dex) {
+            std::cerr << "[S1-PROVIDER] SKIP " << pcls
+                      << " (class absent from DEX — honest platform-skip)"
+                      << std::endl;
+            continue;
+        }
+        try {
+            const uint32_t pid = heap_.allocate(desc, pc_, 0);
+            if (pid == 0) continue;
+            DalvikValue pobj = DalvikValue::make_object(pid, desc);
+            DalvikValue ret;
+            std::vector<DalvikValue> pinit;
+            pinit.push_back(pobj);
+            try_recursive_invoke(desc, "<init>", pinit, ret, result, "()V");
+            // ContentProvider.onCreate() — the init hook (attachInfo is
+            // framework-internal in AOSP; onCreate carries the app init).
+            std::vector<DalvikValue> pcreate;
+            pcreate.push_back(pobj);
+            bool ok = try_recursive_invoke(desc, "onCreate", pcreate, ret,
+                                           result, "()Z");
+            std::cerr << "[S1-PROVIDER] installed " << pcls
+                      << " obj#" << pid << " onCreate "
+                      << (ok ? "OK" : "SKIPPED") << std::endl;
+        } catch (const std::exception& e) {
+            std::cerr << "[S1-PROVIDER] " << pcls
+                      << " threw (recorded, install continues): "
+                      << e.what() << std::endl;
+        }
+    }
+}
+
 //     Lxb0;.d() unwrap → Dagger component — dooz23 Lk2;.b evidence).
 // The runtime hands the manifest android:name class via
 // set_application_class_hint(); self-discovery (single DEX class whose
@@ -4386,6 +4500,12 @@ void DalvikExecutionEngine::run_activity_default_init(const std::string& cls,
 // and dooz23's App.onCreate Dagger-component build silently degraded).
 uint32_t DalvikExecutionEngine::bind_manifest_application(
     DalvikExecutionResult& result) {
+    // S-1 FIX (LOADING-CAMPAIGN): installContentProviders runs on EVERY
+    // bind path (the probe-proven default-Application early return used to
+    // skip it) — providers are components, not Application sugar; AOSP
+    // installs them BEFORE Application.onCreate in all cases.
+    install_content_providers(result);
+
     std::string app_class = application_class_hint_;
     if (!app_class.empty()) {
         // Normalize dotted/hint forms to descriptor form.
@@ -4484,6 +4604,11 @@ uint32_t DalvikExecutionEngine::bind_manifest_application(
     } catch (const std::exception&) {
         // no-op — not every app class declares it
     }
+    // S-1 FIX: the provider stage moved to install_content_providers(),
+    // called at bind entry (covers BOTH the default-Application early
+    // return and the custom-class path — AOSP installs providers
+    // BEFORE Application.onCreate in all cases).
+
     // onCreate() — the REAL component build runs here (dooz: flag guard +
     // Lpc;.d() → Dagger SingletonComponent Lps; graph).
     try {
@@ -5571,6 +5696,42 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                     return true;
                 }
                 // method_name == "read"
+                // AOSP read(b) ≡ read(b, 0, b.length): the two-arg
+                // byte[] overload MUST fill the array (LOADING-CAMPAIGN
+                // probe-proven first divergence: read(byte[]) fell to the
+                // single-byte law, the caller's array stayed unwritten,
+                // and every bos.write(buf,0,n) afterwards stored garbage —
+                // 0-byte sinks feeding decodeFile/toByteArray chains).
+                if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF &&
+                    args.size() < 4) {
+                    // read(byte[] b) → read(b, 0, b.length)
+                    uint32_t arr_id0 = args[1].object_id;
+                    int64_t alen0 = 0;
+                    auto lf0 = heap_.get_object_field(arr_id0, "__array_length__");
+                    if (lf0.has_value() && lf0->type == DalvikType::INT32)
+                        alen0 = lf0->int_val;
+                    if (alen0 == 0) {
+                        auto lf1 = heap_.get_object_field(arr_id0, "__new_array_length__");
+                        if (lf1.has_value() && lf1->type == DalvikType::INT32)
+                            alen0 = lf1->int_val;
+                    }
+                    size_t remaining0 = content.size() - p;
+                    int32_t count0 = static_cast<int32_t>(
+                        std::min(static_cast<size_t>(alen0 > 0 ? alen0 : 1), remaining0));
+                    for (int32_t k = 0; k < count0; ++k) {
+                        heap_.set_object_field(
+                            arr_id0, "array[" + std::to_string(k) + "]",
+                            DalvikValue::make_byte(static_cast<int8_t>(content[p + k])));
+                    }
+                    *pos_ptr = p + count0;
+                    return_val = DalvikValue::make_int(count0 > 0 ? count0 : -1);
+                    std::cerr << "[STREAM-READ] asset=" << asset_path
+                              << " read(byte[]) → "
+                              << (count0 > 0 ? std::to_string(count0) : std::string("-1 EOF"))
+                              << std::endl;
+                    recursion_depth_--;
+                    return true;
+                }
                 if (args.size() >= 4 && args[1].type == DalvikType::OBJECT_REF) {
                     // read(byte[] b, int off, int len) → count filled, -1 at EOF.
                     uint32_t arr_id = args[1].object_id;
@@ -5652,6 +5813,33 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         if (args.size() >= 2 && args[1].type == DalvikType::STRING_REF) {
             asset_path = args[1].string_val;
         }
+        // R-1 FIX (LOADING-CAMPAIGN): AOSP AssetManager.open resolves the
+        // name against the merged asset table and THROWS
+        // FileNotFoundException for a missing entry — never a stream whose
+        // first read is EOF (the old fake-success poisoned downstream
+        // state: apps silently continued on empty configs).
+        bool asset_found = false;
+        if (!apk_path_.empty() &&
+            resources::ResourceRuntime::instance().ensure_loaded(apk_path_)) {
+            for (const auto& ze :
+                 resources::ResourceRuntime::instance().apk().list_entries_cached("assets/")) {
+                if (ze.name == "assets/" + asset_path) { asset_found = true; break; }
+            }
+        }
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "OPEN", "assets/" + asset_path + " @ apk=" + apk_path_, asset_found,
+            "AssetManager.open", current_class_ + "." + current_method_);
+        if (!asset_found) {
+            std::cerr << "[ASSET-OPEN] MISS assets/" << asset_path
+                      << " → FileNotFoundException (AOSP contract)" << std::endl;
+            throw_deferred("Ljava/io/FileNotFoundException;",
+                           "assets/" + asset_path +
+                               " (no entry in " + apk_path_ + ")",
+                           "ASSET-OPEN");
+            return_val = DalvikValue::make_null();
+            recursion_depth_--;
+            return true;
+        }
         uint32_t is_id = heap_.allocate(
             "Ljava/io/InputStream;", pc_, 0);
         // Register the asset path with position 0.
@@ -5665,10 +5853,6 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // which IS the installed codePath when running from the package
         // store (F-NEW-231/--package law). Record both the logical asset
         // path and the physical APK the bytes come from.
-        miniandroid::diagnostics::FileIoTrace::instance().record(
-            "OPEN", "assets/" + asset_path + " @ apk=" + apk_path_,
-            !apk_path_.empty(), "AssetManager.open",
-            current_class_ + "." + current_method_);
         std::cerr << "[EXP071-ASSET] AssetManager.open(\""
                   << asset_path << "\") → InputStream id=" << is_id
                   << std::endl;
@@ -23493,18 +23677,45 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
         }
         if (!fpath.empty()) {
-            std::filesystem::path p =
-                (fpath[0] == '/')
-                    ? std::filesystem::path(fpath)
-                    : Storage::package_data_dir() / fpath;  // F-NEW-234 sandbox anchor
+            // ONE canonical path law (LOADING-CAMPAIGN): absolute Android
+            // paths map through resolve_android_path; DENIED absolute host
+            // paths throw the AOSP FileNotFoundException (java.io.
+            // FileInputStream.open → NoSuchFileException face) instead of
+            // silently registering a stream that reads EOF.
+            Storage::PathResolution pr = Storage::resolve_android_path(fpath);
+            const std::filesystem::path& p = pr.host_path;
             std::error_code f104_ec;
-            bool present = std::filesystem::exists(p, f104_ec) && !f104_ec;
+            bool present = pr.allowed && std::filesystem::exists(p, f104_ec) && !f104_ec;
+            if (!pr.allowed) {
+                miniandroid::diagnostics::FileIoTrace::instance().record(
+                    "OPEN", fpath, false, "FileInputStream.open (DENIED: outside app namespace)",
+                    current_class_ + "." + current_method_);
+                std::cerr << "[PATH-LAW] DENIED FileInputStream \"" << fpath
+                          << "\" → FileNotFoundException (AOSP contract)"
+                          << std::endl;
+                throw_deferred("Ljava/io/FileNotFoundException;",
+                               fpath + " (open failed: EACCES — path is outside"
+                                       " the Android app namespace)",
+                               "STREAM-OPEN");
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
             miniandroid::diagnostics::FileIoTrace::instance().record(
                 "OPEN", p.string(), present, "FileInputStream.open",
                 current_class_ + "." + current_method_);
-            // Register the stream either way: reads on an absent file
-            // answer EOF (loud diagnostic at the read law), matching the
-            // existing asset-law shape.
+            if (!present) {
+                // AOSP law: FileInputStream on an absent file THROWS
+                // FileNotFoundException (never an EOF-reading stream).
+                throw_deferred("Ljava/io/FileNotFoundException;",
+                               p.string() + " (open failed: ENOENT)",
+                               "STREAM-OPEN");
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            // Register the stream: reads on the file answer REAL bytes
+            // (cached_asset_bytes "file:" law), no 4MiB fake-EOF cap.
             open_assets_[args[0].object_id] = {std::string("file:") + p.string(), 0};
             std::cerr << "[F104-FIS] stream=o" << args[0].object_id
                       << " path=\"" << p.string()
@@ -23515,6 +23726,436 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
+    }
+    // ────────────────────────────────────────────────────────────────────
+    // ST-2 FIX (LOADING-CAMPAIGN 2026-10-03) — java.io.FileOutputStream /
+    // FileWriter CONSTRUCTORS + WRITE CONTRACT (AOSP libcore):
+    //   FileOutputStream(File|String, append?) opens a REAL host stream
+    //   through the ONE path law; DENIED paths throw FileNotFoundException
+    //   (EACCES face); directories are created (AOSP mkdirs parent law);
+    //   write(int)/write(byte[])/write(byte[],off,len)/flush()/close()
+    //   hit the real file. The stream is drained at run end
+    //   (flush_finalizers) so a crashed run still persists closed-prefix
+    //   semantics exactly like a killed Android process would.
+    // FileWriter(String|File, append?) — the character-stream sibling:
+    //   same law; write(String)/append(String)/close() encode the chars.
+    // ────────────────────────────────────────────────────────────────────
+    if ((class_name == "Ljava/io/FileOutputStream;" ||
+         class_name == "Ljava/io/FileWriter;") &&
+        method == "<init>" && args.size() >= 2 &&
+        args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0) {
+        std::string fpath;
+        bool have_path = false;
+        if (args[1].type == DalvikType::STRING_REF) {
+            fpath = args[1].string_val;
+            have_path = true;
+        } else if (args[1].type == DalvikType::OBJECT_REF &&
+                   args[1].object_id != 0 && heap_.has_object(args[1].object_id)) {
+            const auto* fobj = heap_.get(args[1].object_id);
+            if (fobj) {
+                for (const auto& [fname, fval] : fobj->fields)
+                    if (fval.type == DalvikType::STRING_REF &&
+                        fval.string_val.size() > fpath.size())
+                        fpath = fval.string_val;
+                have_path = !fpath.empty();
+            }
+        }
+        bool append = false;
+        if (args.size() >= 3 && args[2].type == DalvikType::INT32) {
+            append = args[2].int_val != 0;  // AOSP: append==true keeps bytes
+        } else if (args.size() >= 3 && args[2].type == DalvikType::BOOLEAN) {
+            append = args[2].bool_val;
+        }
+        if (have_path && !fpath.empty()) {
+            Storage::PathResolution pr = Storage::resolve_android_path(fpath);
+            const std::filesystem::path& p = pr.host_path;
+            if (!pr.allowed) {
+                miniandroid::diagnostics::FileIoTrace::instance().record(
+                    "OPEN", fpath, false, "FileOutputStream.open (DENIED: outside app namespace)",
+                    current_class_ + "." + current_method_);
+                std::cerr << "[PATH-LAW] DENIED FileOutputStream \"" << fpath
+                          << "\" → FileNotFoundException" << std::endl;
+                throw_deferred("Ljava/io/FileNotFoundException;",
+                               fpath + " (open failed: EACCES — path is outside"
+                                       " the Android app namespace)",
+                               "STREAM-WRITE");
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            std::error_code fo_ec;
+            std::filesystem::create_directories(p.parent_path(), fo_ec);
+            auto& w = open_writers_[args[0].object_id];
+            w.host_path = p.string();
+            w.append = append;
+            w.out.open(p, append ? std::ios::app : std::ios::binary | std::ios::trunc);
+            w.ever_opened = w.out.is_open();
+            bool ok = w.out.is_open();
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "OPEN", p.string() + " (write" + (append ? "+append" : "") + ")",
+                ok, "FileOutputStream.open", current_class_ + "." + current_method_);
+            if (!ok) {
+                throw_deferred("Ljava/io/FileNotFoundException;",
+                               p.string() + " (open failed: EACCES)",
+                               "STREAM-WRITE");
+            }
+            std::cerr << "[LOAD-WRITE] stream=o" << args[0].object_id
+                      << " path=\"" << p.string() << "\" append=" << append
+                      << " ok=" << ok << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    // ────────────────────────────────────────────────────────────────────
+    // LOADING-CAMPAIGN: java.io.ByteArrayOutputStream — the canonical
+    // in-memory byte sink of the readAll/toByteArray pattern (probe-proven
+    // first divergence: REC-MISS'd ctor → null array → FileOutputStream.
+    // write REC-MISS → 0-byte file → decodeFile NULL). AOSP laws: write(int)
+    // stores the low byte; write(byte[],off,len) copies; toByteArray()
+    // returns a REAL engine byte array (array[i] + length fields, the same
+    // shape every read/write/array law consumes); close() is a no-op.
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/io/ByteArrayOutputStream;") {
+        uint32_t bid = (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                           ? args[0].object_id : 0;
+        std::string& buf = baos_buffers_[bid];
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        if (method == "<init>") {
+            if (heap_.has_object(bid)) heap_.set_object_field(bid, "count", DalvikValue::make_int(0));
+            result = DalvikValue::make_void();
+            return true;
+        }
+        if (method == "write") {
+            for (size_t ai = 1; ai < args.size(); ++ai) {
+                if (args[ai].type == DalvikType::INT32) {
+                    buf += static_cast<char>(args[ai].int_val & 0xff);
+                } else if (args[ai].type == DalvikType::OBJECT_REF &&
+                           args[ai].object_id != 0 &&
+                           heap_.has_object(args[ai].object_id)) {
+                    const auto* arr = heap_.get(args[ai].object_id);
+                    int64_t arr_len = 0;
+                    auto lf = arr->get_field("__array_length__");
+                    if (lf.type == DalvikType::INT32) arr_len = lf.int_val;
+                    if (arr_len == 0) {
+                        auto lf2 = arr->get_field("__new_array_length__");
+                        if (lf2.type == DalvikType::INT32) arr_len = lf2.int_val;
+                    }
+                    int32_t off = 0,
+                           len = arr_len > 0 ? static_cast<int32_t>(arr_len) : 0;
+                    if (ai + 2 < args.size() &&
+                        args[ai + 1].type == DalvikType::INT32 &&
+                        args[ai + 2].type == DalvikType::INT32) {
+                        off = args[ai + 1].int_val;
+                        len = args[ai + 2].int_val;
+                    }
+                    for (int32_t k = 0; k < len; ++k) {
+                        auto b = arr->get_field(
+                            "array[" + std::to_string(off + k) + "]");
+                        if (b.type == DalvikType::BYTE ||
+                            b.type == DalvikType::INT32)
+                            buf += static_cast<char>(b.int_val);
+                        else if (b.type == DalvikType::STRING_REF)
+                            buf += b.string_val;
+                    }
+                    break;  // the byte[] arg consumed
+                }
+            }
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "WRITE", "baos:o" + std::to_string(bid) + " (" +
+                             std::to_string(buf.size()) + " bytes)",
+                true, "ByteArrayOutputStream.write",
+                current_class_ + "." + current_method_);
+            result = DalvikValue::make_void();
+            return true;
+        }
+        if (method == "toByteArray") {
+            uint32_t arr_id = heap_.allocate("[B", pc_, 0);
+            heap_.set_object_field(arr_id, "__array_length__",
+                                   DalvikValue::make_int(static_cast<int32_t>(buf.size())));
+            heap_.set_object_field(arr_id, "__new_array_length__",
+                                   DalvikValue::make_int(static_cast<int32_t>(buf.size())));
+            for (size_t k = 0; k < buf.size(); ++k) {
+                heap_.set_object_field(
+                    arr_id, "array[" + std::to_string(k) + "]",
+                    DalvikValue::make_byte(static_cast<int8_t>(buf[k])));
+            }
+            DalvikValue av3;
+            av3.type = DalvikType::OBJECT_REF;
+            av3.object_id = arr_id;
+            av3.class_desc = "[B";
+            result = av3;
+            return true;
+        }
+        if (method == "size") {
+            result = DalvikValue::make_int(static_cast<int32_t>(buf.size()));
+            return true;
+        }
+        if (method == "reset") {
+            buf.clear();
+            result = DalvikValue::make_void();
+            return true;
+        }
+        if (method == "close") {
+            result = DalvikValue::make_void();  // AOSP: close is a no-op
+            return true;
+        }
+        if (method == "toString") {
+            result = DalvikValue::make_string(buf, 0);
+            return true;
+        }
+        return false;  // not a BAOS method we claim (bridge continues)
+    }
+    // ST-2 FIX: OutputStream WRITE CONTRACT — write(int)/write(byte[])/
+    // write(byte[],off,len)/flush/close on FileOutputStream/FileWriter
+    // objects (receiver keyed through open_writers_).
+    if ((class_name == "Ljava/io/FileOutputStream;" ||
+         class_name == "Ljava/io/FileWriter;" ||
+         class_name == "Ljava/io/OutputStream;" ||
+         class_name == "Ljava/io/OutputStreamWriter;" ||
+         class_name == "Ljava/io/BufferedWriter;" ||
+         class_name == "Ljava/io/PrintWriter;") &&
+        (method == "write" || method == "append" || method == "flush" ||
+         method == "close" || method == "println" || method == "print")) {
+        uint32_t wid = (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                           ? args[0].object_id : 0;
+        // Chain-resolve wrappers (BufferedWriter.out → OutputStreamWriter.out
+        // → FileOutputStream) — same wrapper hop law as resolve_asset_stream.
+        auto it = open_writers_.find(wid);
+        if (it == open_writers_.end() && wid != 0 && heap_.has_object(wid)) {
+            uint32_t lookup = wid;
+            for (int hops = 0; hops < 4 && it == open_writers_.end(); ++hops) {
+                const auto* ho = heap_.get(lookup);
+                if (!ho) break;
+                uint32_t next = 0;
+                for (const char* fn : {"out", "os", "fos", "wr"}) {
+                    auto fv = ho->get_field(fn);
+                    if (fv.type == DalvikType::OBJECT_REF) { next = fv.object_id; break; }
+                }
+                if (next == 0 || next == lookup) break;
+                lookup = next;
+                it = open_writers_.find(lookup);
+            }
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        if (it != open_writers_.end() && it->second.ever_opened) {
+            std::ofstream& out = it->second.out;
+            if (method == "flush" || method == "close") {
+                out.flush();
+                if (method == "close") {
+                    out.close();
+                    it->second.ever_opened = false;
+                }
+                miniandroid::diagnostics::FileIoTrace::instance().record(
+                    method == "close" ? "CLOSE" : "FLUSH", it->second.host_path,
+                    true, "FileOutputStream." + method,
+                    current_class_ + "." + current_method_);
+            } else {
+                // write/append/print family — bytes or String payloads.
+                std::string payload;
+                bool have_payload = false;
+                for (size_t ai = 1; ai < args.size(); ++ai) {
+                    if (args[ai].type == DalvikType::STRING_REF) {
+                        payload += args[ai].string_val;
+                        have_payload = true;
+                    } else if (args[ai].type == DalvikType::OBJECT_REF &&
+                               args[ai].object_id != 0 &&
+                               heap_.has_object(args[ai].object_id)) {
+                        // byte[] payload: reassemble from array element fields.
+                        // Array length laws (three constructor shapes, same as
+                        // the InputStream read law): __array_length__ /
+                        // __new_array_length__ / DEX-side NEW_ARRAY without a
+                        // length field (probe-proven: ByteArrayOutputStream.
+                        // toByteArray() arrays wrote 0 bytes without these).
+                        const auto* arr = heap_.get(args[ai].object_id);
+                        int64_t arr_len = 0;
+                        auto lf = arr->get_field("__array_length__");
+                        if (lf.type == DalvikType::INT32) arr_len = lf.int_val;
+                        if (arr_len == 0) {
+                            auto lf2 = arr->get_field("__new_array_length__");
+                            if (lf2.type == DalvikType::INT32) arr_len = lf2.int_val;
+                        }
+                        if (arr_len == 0 && args[ai].int_val > 0) {
+                            // Final fallback: the array register carries the
+                            // size in int_val (same as the read law).
+                            arr_len = args[ai].int_val;
+                        }
+                        if (arr_len == 0) {
+                            // Bounded first-divergence diagnostic: an empty
+                            // write is NEVER silent — name the array's shape.
+                            std::cerr << "[LOAD-WRITE] byte[] len=0 fields:";
+                            int shown = 0;
+                            for (const auto& [fk, fv] : arr->fields) {
+                                if (++shown > 6) break;
+                                std::cerr << " " << fk << "(t"
+                                          << static_cast<int>(fv.type) << ")";
+                            }
+                            std::cerr << std::endl;
+                        }
+                        int32_t off = 0, len = arr_len > 0 ? static_cast<int32_t>(arr_len) : 0;
+                        // write(byte[], off, len) form
+                        if (ai + 2 < args.size() &&
+                            args[ai + 1].type == DalvikType::INT32 &&
+                            args[ai + 2].type == DalvikType::INT32) {
+                            off = args[ai + 1].int_val;
+                            len = args[ai + 2].int_val;
+                        }
+                        for (int32_t k = 0; k < len; ++k) {
+                            auto b = arr->get_field(
+                                "array[" + std::to_string(off + k) + "]");
+                            if (b.type == DalvikType::BYTE ||
+                                b.type == DalvikType::INT32)
+                                payload += static_cast<char>(b.int_val);
+                            else if (b.type == DalvikType::STRING_REF)
+                                payload += b.string_val;
+                        }
+                        have_payload = true;
+                        break;
+                    } else if (args[ai].type == DalvikType::INT32 &&
+                               method == "write" && args.size() == 2) {
+                        // write(int b) — one byte, AOSP writes the low 8 bits.
+                        payload += static_cast<char>(args[ai].int_val & 0xff);
+                        have_payload = true;
+                    }
+                }
+                if (method == "println" && have_payload) payload += "\n";
+                if (have_payload && !payload.empty()) {
+                    out << payload;
+                    miniandroid::diagnostics::FileIoTrace::instance().record(
+                        "WRITE", it->second.host_path, true,
+                        "FileOutputStream." + method + " (" +
+                            std::to_string(payload.size()) + " bytes)",
+                        current_class_ + "." + current_method_);
+                }
+            }
+        }
+        result = (method == "write" || method == "flush") ? DalvikValue::make_void()
+                                                          : DalvikValue::make_void();
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────
+    // ST-2 FIX — Context FILE CONTRACT (AOSP ContextImpl):
+    //   openFileOutput(name, mode) → FileOutputStream over files/<name>
+    //     (MODE_APPEND honored, MODE_PRIVATE truncates; parent mkdir law)
+    //   openFileInput(name)  → FileInputStream over files/<name>;
+    //     absent → FileNotFoundException (AOSP openFileInput contract)
+    //   fileList()           → String[] of filesDir entries
+    //   deleteFile(name)     → real remove; false when absent
+    // All through the ONE F-NEW-234 package sandbox + path law.
+    // ────────────────────────────────────────────────────────────────────
+    if (method == "openFileOutput" &&
+        (class_name.find("Context") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos ||
+         class_name.find("Application") != std::string::npos)) {
+        std::string name = (args.size() >= 2 && args[1].type == DalvikType::STRING_REF)
+                               ? args[1].string_val : "";
+        int32_t mode = (args.size() >= 3 && args[1].type != DalvikType::STRING_REF &&
+                        args[2].type == DalvikType::INT32)
+                           ? args[2].int_val
+                           : ((args.size() >= 3 && args[2].type == DalvikType::INT32)
+                                  ? args[2].int_val : 0);
+        if (args.size() >= 3 && args[2].type == DalvikType::INT32) mode = args[2].int_val;
+        bool append = (mode & 0x0800) != 0;  // MODE_APPEND = 0x0800 (AOSP)
+        std::filesystem::path p = Storage::context_dir("files") / name;
+        std::error_code ofo_ec;
+        std::filesystem::create_directories(p.parent_path(), ofo_ec);
+        uint32_t sid = heap_.allocate("Ljava/io/FileOutputStream;", pc_, 0);
+        auto& w = open_writers_[sid];
+        w.host_path = p.string();
+        w.append = append;
+        w.out.open(p, append ? std::ios::app : std::ios::binary | std::ios::trunc);
+        w.ever_opened = w.out.is_open();
+        bool ok = w.out.is_open();
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "OPEN", p.string() + " (write" + (append ? "+append" : "") + ")",
+            ok, "Context.openFileOutput", current_class_ + "." + current_method_);
+        if (!ok) {
+            throw_deferred("Ljava/io/FileNotFoundException;",
+                           p.string() + " (open failed: EACCES)", "STREAM-WRITE");
+        }
+        DalvikValue sv;
+        sv.type = DalvikType::OBJECT_REF;
+        sv.object_id = sid;
+        sv.class_desc = "Ljava/io/FileOutputStream;";
+        result = sv;
+        std::cerr << "[LOAD-WRITE] openFileOutput \"" << name << "\" → o" << sid
+                  << " append=" << append << " ok=" << ok << std::endl;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (method == "openFileInput" &&
+        (class_name.find("Context") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos ||
+         class_name.find("Application") != std::string::npos)) {
+        std::string name = (args.size() >= 2 && args[1].type == DalvikType::STRING_REF)
+                               ? args[1].string_val : "";
+        std::filesystem::path p = Storage::context_dir("files") / name;
+        std::error_code ofi_ec;
+        bool present = std::filesystem::exists(p, ofi_ec) && !ofi_ec;
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "OPEN", p.string(), present, "Context.openFileInput",
+            current_class_ + "." + current_method_);
+        if (!present) {
+            throw_deferred("Ljava/io/FileNotFoundException;",
+                           p.string() + " (open failed: ENOENT)", "STREAM-OPEN");
+            result = DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        uint32_t sid = heap_.allocate("Ljava/io/FileInputStream;", pc_, 0);
+        open_assets_[sid] = {std::string("file:") + p.string(), 0};
+        DalvikValue sv;
+        sv.type = DalvikType::OBJECT_REF;
+        sv.object_id = sid;
+        sv.class_desc = "Ljava/io/FileInputStream;";
+        result = sv;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if ((method == "fileList" || method == "deleteFile") &&
+        (class_name.find("Context") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos ||
+         class_name.find("Application") != std::string::npos)) {
+        if (method == "deleteFile") {
+            std::string name = (args.size() >= 2 && args[1].type == DalvikType::STRING_REF)
+                                   ? args[1].string_val : "";
+            std::filesystem::path p = Storage::context_dir("files") / name;
+            std::error_code df_ec;
+            bool ok = std::filesystem::exists(p, df_ec) &&
+                      std::filesystem::remove(p, df_ec) && !df_ec;
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "DELETE", p.string(), ok, "Context.deleteFile",
+                current_class_ + "." + current_method_);
+            result = DalvikValue::make_bool(ok);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // fileList()
+        std::filesystem::path files_dir = Storage::context_dir("files");
+        std::error_code fl_ec;
+        std::vector<std::string> names;
+        if (std::filesystem::is_directory(files_dir, fl_ec)) {
+            for (const auto& de : std::filesystem::directory_iterator(files_dir, fl_ec))
+                if (!fl_ec) names.push_back(de.path().filename().string());
+        }
+        uint32_t arr_id = heap_.allocate("Larray;", pc_, 0);
+        heap_.set_object_field(arr_id, "__array_length__",
+                               DalvikValue::make_int(static_cast<int32_t>(names.size())));
+        for (size_t i = 0; i < names.size(); ++i) {
+            heap_.set_object_field(arr_id, "array[" + std::to_string(i) + "]",
+                                   DalvikValue::make_string(names[i], 0));
+        }
+        DalvikValue av;
+        av.type = DalvikType::OBJECT_REF;
+        av.object_id = arr_id;
+        av.class_desc = "[Ljava/lang/String;";
+        result = av;
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "LIST", files_dir.string(), true, "Context.fileList",
+            current_class_ + "." + current_method_);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
     }
     // ────────────────────────────────────────────────────────────────────
     // F-104 (S58) continued: android.net.Uri FILE-SCHEME family +
@@ -23715,12 +24356,27 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
         uint32_t stream_id = heap_.allocate("Ljava/io/InputStream;", pc_, 0);
         if (!upath.empty()) {
-            std::filesystem::path p =
-                (upath[0] == '/')
-                    ? std::filesystem::path(upath)
-                    : Storage::package_data_dir() / upath;  // F-NEW-234 sandbox anchor
+            // ONE canonical path law (LOADING-CAMPAIGN): AOSP openInputStream
+            // on file:// — DENIED absolute host paths throw FileNotFoundException
+            // (the provider/ACPM contract answer), absent files likewise.
+            Storage::PathResolution pr = Storage::resolve_android_path(upath);
+            const std::filesystem::path& p = pr.host_path;
             std::error_code cr_ec;
-            bool present = std::filesystem::exists(p, cr_ec) && !cr_ec;
+            bool present = pr.allowed && std::filesystem::exists(p, cr_ec) && !cr_ec;
+            if (!pr.allowed || !present) {
+                miniandroid::diagnostics::FileIoTrace::instance().record(
+                    "OPEN", pr.allowed ? p.string() : upath, false,
+                    pr.allowed ? "ContentResolver.openInputStream"
+                               : "ContentResolver.openInputStream (DENIED)",
+                    current_class_ + "." + current_method_);
+                throw_deferred("Ljava/io/FileNotFoundException;",
+                               upath + (pr.allowed ? " (open failed: ENOENT)"
+                                                   : " (open failed: EACCES)"),
+                               "STREAM-OPEN");
+                result = DalvikValue::make_object(stream_id, "Ljava/io/InputStream;");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
             miniandroid::diagnostics::FileIoTrace::instance().record(
                 "OPEN", p.string(), present, "ContentResolver.openInputStream",
                 current_class_ + "." + current_method_);
@@ -27419,6 +28075,77 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 return true;
             }
             result = DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // R-2 FIX (LOADING-CAMPAIGN): Resources.openRawResourceFd — AOSP
+        // ResourcesImpl.openRawResourceFd: an AssetFileDescriptor over the
+        // raw resource entry (STORED entries only; compressed →
+        // FileNotFoundException, missing → FNFE).
+        if ((class_name.find("Resources") != std::string::npos) &&
+            method == "openRawResourceFd" &&
+            args.size() >= 2 && args[1].type == DalvikType::INT32) {
+            uint32_t resid = (uint32_t)args[1].int_val;
+            const auto& resolver =
+                framework::BitmapShadow::drawable_bytes_resolver();
+            std::vector<uint8_t> bytes;
+            std::string entry_path;
+            uint16_t density = 0;
+            bool have = resolver && resolver(resid, bytes, entry_path, density) &&
+                        !bytes.empty();
+            const apk::ZipEntry* hit = nullptr;
+            std::vector<apk::ZipEntry> entries;
+            if (have && !apk_path_.empty() &&
+                resources::ResourceRuntime::instance().ensure_loaded(apk_path_)) {
+                entries = resources::ResourceRuntime::instance()
+                              .apk().list_entries_cached("res/");
+                for (const auto& ze : entries) {
+                    if (ze.name == entry_path) { hit = &ze; break; }
+                }
+            }
+            if (!have || !hit) {
+                std::cerr << "[RAW-FD] openRawResourceFd resid=0x" << std::hex
+                          << resid << std::dec << " MISS (" << entry_path
+                          << ") → FileNotFoundException" << std::endl;
+                throw_deferred("Ljava/io/FileNotFoundException;",
+                               "raw resource " + entry_path, "RAW-FD");
+                result = DalvikValue::make_null();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (hit->compression_method != 0) {
+                throw_deferred("Ljava/io/FileNotFoundException;",
+                               entry_path + " (compressed — nested file)", "RAW-FD");
+                result = DalvikValue::make_null();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            int host_fd = ::open(apk_path_.c_str(), O_RDONLY);
+            uint32_t fdobj = heap_.allocate("Ljava/io/FileDescriptor;", pc_, 0);
+            heap_.set_object_field(fdobj, "descriptor",
+                                   DalvikValue::make_int(host_fd));
+            uint32_t afd = heap_.allocate(
+                "Landroid/content/res/AssetFileDescriptor;", pc_, 0);
+            DalvikValue fdv2;
+            fdv2.type = DalvikType::OBJECT_REF;
+            fdv2.object_id = fdobj;
+            fdv2.class_desc = "Ljava/io/FileDescriptor;";
+            heap_.set_object_field(afd, "descriptor", fdv2);
+            heap_.set_object_field(afd, "startOffset",
+                                   DalvikValue::make_int(static_cast<int32_t>(hit->offset)));
+            heap_.set_object_field(afd, "length",
+                                   DalvikValue::make_int(static_cast<int32_t>(hit->uncompressed_size)));
+            heap_.set_object_field(afd, "__entry__",
+                                   DalvikValue::make_string(hit->name, 0));
+            std::cerr << "[RAW-FD] openRawResourceFd resid=0x" << std::hex
+                      << resid << std::dec << " → " << hit->name
+                      << " fd=" << host_fd << " off=" << hit->offset
+                      << " len=" << hit->uncompressed_size << std::endl;
+            DalvikValue av2;
+            av2.type = DalvikType::OBJECT_REF;
+            av2.object_id = afd;
+            av2.class_desc = "Landroid/content/res/AssetFileDescriptor;";
+            result = av2;
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
@@ -32144,6 +32871,24 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         std::string prefs_file = prefs_dir + "/" + prefs_name + ".xml";
         std::ifstream infile(prefs_file);
         if (infile.is_open()) {
+            // ST-6 FIX round-trip: the writer XML-escapes names/values — the
+            // reader must UNESCAPE (AOSP com.android.internal.util.
+            // XmlUtils.readMapXml is a full XML parse; the line parser here
+            // mirrors it for the escaped subset).
+            auto xml_unescape = [](const std::string& s) {
+                std::string o;
+                for (size_t i = 0; i < s.size(); ++i) {
+                    if (s[i] == '&') {
+                        if (s.compare(i, 5, "&amp;", 5) == 0) { o += '&'; i += 4; }
+                        else if (s.compare(i, 4, "&lt;", 4) == 0) { o += '<'; i += 3; }
+                        else if (s.compare(i, 4, "&gt;", 4) == 0) { o += '>'; i += 3; }
+                        else if (s.compare(i, 6, "&quot;", 6) == 0) { o += '"'; i += 5; }
+                        else if (s.compare(i, 6, "&apos;", 6) == 0) { o += '\''; i += 5; }
+                        else o += s[i];
+                    } else o += s[i];
+                }
+                return o;
+            };
             // File exists — load values into heap object fields
             std::string line;
             while (std::getline(infile, line)) {
@@ -32155,14 +32900,14 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 size_t name_start = name_pos + 6;
                 size_t name_end = line.find("\"", name_start);
                 if (name_end == std::string::npos) continue;
-                std::string key = line.substr(name_start, name_end - name_start);
+                std::string key = xml_unescape(line.substr(name_start, name_end - name_start));
 
                 if (line.find("<string ") != std::string::npos) {
                     // <string name="key">value</string>
                     size_t val_start = line.find(">", name_end) + 1;
                     size_t val_end = line.find("</string>", val_start);
                     if (val_end != std::string::npos) {
-                        std::string val = line.substr(val_start, val_end - val_start);
+                        std::string val = xml_unescape(line.substr(val_start, val_end - val_start));
                         DalvikValue sv;
                         sv.type = DalvikType::STRING_REF;
                         sv.string_val = val;
@@ -32749,16 +33494,31 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
         if (method == "remove") {
             std::string key = (args.size() > 1 && args[1].type == DalvikType::STRING_REF) ? args[1].string_val : "";
-            // We don't actually remove from heap (simplification), just set to null
+            // ST-6 FIX (LOADING-CAMPAIGN): AOSP Editor.remove — the key is
+            // ERASED from the map at commit time (a null field would still
+            // serialize a <string> entry with empty content on the old
+            // writer and resurrect as "" on reload). Erase for real.
             if (prefs_obj_id && heap_.has_object(prefs_obj_id)) {
-                heap_.set_object_field(prefs_obj_id, key, DalvikValue::make_null());
+                auto* po = heap_.get(prefs_obj_id);
+                if (po && !key.empty()) po->fields.erase(key);
             }
             result = DalvikValue::make_object(prefs_obj_id, "Landroid/content/SharedPreferences$Editor;");
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
         if (method == "clear") {
-            // Simplification: just return editor
+            // ST-6 FIX: AOSP Editor.clear — marks the WHOLE map for erasure;
+            // the next commit writes an empty map. Erase every persisted key
+            // (prefs_name identity field survives — it is engine metadata).
+            if (prefs_obj_id && heap_.has_object(prefs_obj_id)) {
+                auto* po = heap_.get(prefs_obj_id);
+                if (po) {
+                    for (auto itf = po->fields.begin(); itf != po->fields.end();) {
+                        if (itf->first != "prefs_name") itf = po->fields.erase(itf);
+                        else ++itf;
+                    }
+                }
+            }
             result = DalvikValue::make_object(prefs_obj_id, "Landroid/content/SharedPreferences$Editor;");
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
@@ -32787,33 +33547,75 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                         "MKDIR", prefs_dir, !prefs_mkdir_ec, "SharedPreferences.write",
                         current_class_ + "." + current_method_);
                     std::string prefs_file = prefs_dir + "/" + prefs_name + ".xml";
-                    std::ofstream out(prefs_file);
-                    miniandroid::diagnostics::FileIoTrace::instance().record(
-                        "WRITE", prefs_file, out.is_open(), "SharedPreferences.commit",
-                        current_class_ + "." + current_method_);
-                    if (out.is_open()) {
-                        out << "<?xml version='1.0' encoding='utf-8' standalone='yes' ?>\n<map>\n";
-                        for (const auto& [key, val] : prefs_obj->fields) {
-                            if (key == "prefs_name") continue;
-                            if (val.type == DalvikType::STRING_REF) {
-                                out << "    <string name=\"" << key << "\">" << val.string_val << "</string>\n";
-                            } else if (val.type == DalvikType::INT32) {
-                                out << "    <int name=\"" << key << "\" value=\"" << val.int_val << "\" />\n";
-                            } else if (val.type == DalvikType::BOOLEAN) {
-                                out << "    <boolean name=\"" << key << "\" value=\"" << (val.bool_val ? "true" : "false") << "\" />\n";
-                            } else if (val.type == DalvikType::INT64) {
-                                out << "    <long name=\"" << key << "\" value=\"" << val.long_val << "\" />\n";
-                            } else if (val.type == DalvikType::FLOAT32) {
-                                out << "    <float name=\"" << key << "\" value=\"" << val.float_val << "\" />\n";
+                    // ST-6 FIX (LOADING-CAMPAIGN) — AOSP SharedPreferencesImpl
+                    // writeToFile contract: (1) XML-ESCAPED names AND values
+                    // (& < > " ' — a raw '<' or '&' corrupted the file for its
+                    // own line parser), (2) ATOMIC tmp-file + rename (a killed
+                    // process never leaves a half-written prefs file), (3)
+                    // commit() answers the REAL write outcome (false on
+                    // failure — never the old constant true), (4) empty map
+                    // writes an empty <map /> (AOSP shape).
+                    auto xml_escape = [](const std::string& s) {
+                        std::string o;
+                        for (char c : s) {
+                            switch (c) {
+                                case '&': o += "&amp;"; break;
+                                case '<': o += "&lt;"; break;
+                                case '>': o += "&gt;"; break;
+                                case '"': o += "&quot;"; break;
+                                case '\'': o += "&apos;"; break;
+                                default: o += c;
                             }
                         }
-                        out << "</map>\n";
-                        out.close();
-                        std::cerr << "[PREFS] Saved " << prefs_name << ".xml (" << prefs_obj->fields.size() << " entries)" << std::endl;
+                        return o;
+                    };
+                    bool write_ok = false;
+                    {
+                        std::string tmp_file = prefs_file + ".tmp";
+                        std::ofstream out(tmp_file, std::ios::binary | std::ios::trunc);
+                        if (out.is_open()) {
+                            out << "<?xml version='1.0' encoding='utf-8' standalone='yes' ?>\n<map>\n";
+                            for (const auto& [key, val] : prefs_obj->fields) {
+                                if (key == "prefs_name") continue;
+                                if (val.type == DalvikType::STRING_REF) {
+                                    out << "    <string name=\"" << xml_escape(key) << "\">"
+                                        << xml_escape(val.string_val) << "</string>\n";
+                                } else if (val.type == DalvikType::INT32) {
+                                    out << "    <int name=\"" << xml_escape(key) << "\" value=\"" << val.int_val << "\" />\n";
+                                } else if (val.type == DalvikType::BOOLEAN) {
+                                    out << "    <boolean name=\"" << xml_escape(key) << "\" value=\"" << (val.bool_val ? "true" : "false") << "\" />\n";
+                                } else if (val.type == DalvikType::INT64) {
+                                    out << "    <long name=\"" << xml_escape(key) << "\" value=\"" << val.long_val << "\" />\n";
+                                } else if (val.type == DalvikType::FLOAT32) {
+                                    out << "    <float name=\"" << xml_escape(key) << "\" value=\"" << val.float_val << "\" />\n";
+                                }
+                            }
+                            out << "</map>\n";
+                            out.flush();
+                            write_ok = out.good();
+                            out.close();
+                            std::error_code ren_ec;
+                            if (write_ok) {
+                                std::filesystem::rename(tmp_file, prefs_file, ren_ec);
+                                write_ok = !ren_ec;
+                            }
+                            if (!write_ok) std::filesystem::remove(tmp_file, ren_ec);
+                        }
                     }
+                    miniandroid::diagnostics::FileIoTrace::instance().record(
+                        "WRITE", prefs_file, write_ok, "SharedPreferences.commit",
+                        current_class_ + "." + current_method_);
+                    if (write_ok) {
+                        std::cerr << "[PREFS] Saved " << prefs_name << ".xml (" << prefs_obj->fields.size() << " entries, atomic, escaped)" << std::endl;
+                    } else {
+                        std::cerr << "[PREFS] commit FAILED (honest false): " << prefs_name << ".xml" << std::endl;
+                    }
+                    result = (method == "commit") ? DalvikValue::make_bool(write_ok) : DalvikValue::make_void();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
                 }
             }
-            result = (method == "commit") ? DalvikValue::make_bool(true) : DalvikValue::make_void();
+            result = (method == "commit") ? DalvikValue::make_bool(false) : DalvikValue::make_void();
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
@@ -34688,6 +35490,25 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             seed_ai("nativeLibraryDir",
                     "/data/app/~~miniandroid/base/lib/arm64");
             seed_ai("primaryCpuAbi", "arm64-v8a");
+            // S-7/ST-11 FIX (LOADING-CAMPAIGN): the FULL AOSP ApplicationInfo
+            // path-identity family (AOSP frameworks/base
+            // core/java/android/content/pm/ApplicationInfo.java). Apps trade
+            // these fields to build File objects — null here fed the host
+            // escape (a null dataDir forced path strings from other sources).
+            const std::string ai_pkg = package_name_.empty()
+                                           ? std::string("unknown.package")
+                                           : package_name_;
+            // dataDir carries the LOGICAL Android spelling (AOSP contract
+            // value); the path law maps /data/data/<pkg> onto the sandbox
+            // backing, so File objects built from it resolve correctly.
+            const std::string data_dir = "/data/data/" + ai_pkg;
+            seed_ai("dataDir", data_dir);
+            seed_ai("credentialProtectedDataDir", data_dir);
+            seed_ai("deviceProtectedDataDir",
+                    "/data/user_de/0/" + ai_pkg);
+            seed_ai("processName", ai_pkg);
+            if (!application_class_desc_.empty())
+                seed_ai("className", application_class_desc_);
         }
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
@@ -38647,13 +39468,14 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
-    // EXP-043 Phase 3: File.getAbsolutePath → String
+    // ST-1 REMOVAL (LOADING-CAMPAIGN 2026-10-03): the EXP-043 Phase 3
+    // getAbsolutePath stub that answered the constant "/tmp/miniandroid/files"
+    // for EVERY File is DELETED — it shadowed the real R-NEW-347 law below
+    // (its F-NEW-234 branch was unreachable) and handed apps a foreign host
+    // path. getAbsolutePath/getAbsoluteFile/getCanonicalPath/File now answer
+    // through the ONE R-NEW-347 name-component law + F-NEW-234 sandbox anchor
+    // + the Storage::resolve_android_path containment law.
     // ────────────────────────────────────────────────────────────────────────
-    if (class_name == "Ljava/io/File;" && method == "getAbsolutePath") {
-        status = ApiCallTrace::Status::IMPLEMENTED;
-        result = DalvikValue::make_string("/tmp/miniandroid/files", 1);
-        return true;
-    }
 
     // ────────────────────────────────────────────────────────────────────────
     // EXP-071 Phase 7: HashMap/ArrayList fallback in bridge_to_api.
@@ -39562,6 +40384,31 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             // open(String, int) — second arg is access mode
             asset_name = args[1].string_val;
         }
+        // R-1 FIX (bridge duplicate site): same AOSP FileNotFoundException
+        // contract as the try_recursive_invoke site — one contract, both
+        // dispatch layers (the audit's duplicate-open-site finding).
+        bool asset_found = false;
+        if (!apk_path_.empty() &&
+            resources::ResourceRuntime::instance().ensure_loaded(apk_path_)) {
+            for (const auto& ze :
+                 resources::ResourceRuntime::instance().apk().list_entries_cached("assets/")) {
+                if (ze.name == "assets/" + asset_name) { asset_found = true; break; }
+            }
+        }
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "OPEN", "assets/" + asset_name + " @ apk=" + apk_path_, asset_found,
+            "AssetManager.open", current_class_ + "." + current_method_);
+        if (!asset_found) {
+            std::cerr << "[ASSET-OPEN] MISS assets/" << asset_name
+                      << " → FileNotFoundException (AOSP contract)" << std::endl;
+            throw_deferred("Ljava/io/FileNotFoundException;",
+                           "assets/" + asset_name +
+                               " (no entry in " + apk_path_ + ")",
+                           "ASSET-OPEN");
+            result = DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
         std::cerr << "[EXP071-ASSET] AssetManager.open(\"" << asset_name << "\")" << std::endl;
         // Allocate an InputStream heap object.
         uint32_t stream_id = heap_.allocate("Ljava/io/InputStream;", 0, 0);
@@ -39573,6 +40420,296 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         result = DalvikValue::make_object(stream_id, "Ljava/io/InputStream;");
         std::cerr << "[EXP071-ASSET] → InputStream obj_id=" << stream_id << std::endl;
         return true;
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // R-7 FIX (LOADING-CAMPAIGN) — AssetManager.list (AOSP AssetManager2:
+    // "Return a String array of all the assets in the specified path … the
+    // merged namespace across all added asset paths; missing dir → null").
+    // Children only (immediate entries), derived from the installed APK's
+    // real entry table.
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "list" && class_name.find("AssetManager") != std::string::npos) {
+        std::string dir = (args.size() >= 2 && args[1].type == DalvikType::STRING_REF)
+                              ? args[1].string_val
+                              : (args.size() >= 1 && !args.empty() &&
+                                         args[0].type == DalvikType::STRING_REF
+                                     ? args[0].string_val
+                                     : "");
+        while (!dir.empty() && dir.back() == '/') dir.pop_back();
+        std::string prefix = dir.empty() ? "assets/" : "assets/" + dir + "/";
+        std::vector<std::string> children;
+        bool dir_present = false;
+        if (!apk_path_.empty() &&
+            resources::ResourceRuntime::instance().ensure_loaded(apk_path_)) {
+            const auto entries =
+                resources::ResourceRuntime::instance().apk().list_entries_cached(prefix);
+            std::set<std::string> uniq;
+            for (const auto& ze : entries) {
+                const std::string rel = ze.name.substr(prefix.size());
+                if (rel.empty()) continue;
+                dir_present = true;  // an entry under the prefix exists
+                size_t slash = rel.find('/');
+                std::string child = (slash == std::string::npos)
+                                        ? rel
+                                        : rel.substr(0, slash);
+                if (child.empty()) continue;
+                if (slash != std::string::npos) {
+                    // A child directory is listed even when only deeper
+                    // entries exist (AOSP lists namespace directories).
+                }
+                if (uniq.insert(child).second) children.push_back(child);
+            }
+        }
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "LIST", prefix, dir_present, "AssetManager.list",
+            current_class_ + "." + current_method_);
+        if (!dir_present) {
+            // AOSP documented quirk: list on a missing dir → null.
+            result = DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        uint32_t arr_id = heap_.allocate("Larray;", pc_, 0);
+        heap_.set_object_field(arr_id, "__array_length__",
+                               DalvikValue::make_int(static_cast<int32_t>(children.size())));
+        for (size_t i = 0; i < children.size(); ++i) {
+            heap_.set_object_field(arr_id, "array[" + std::to_string(i) + "]",
+                                   DalvikValue::make_string(children[i], 0));
+        }
+        DalvikValue av;
+        av.type = DalvikType::OBJECT_REF;
+        av.object_id = arr_id;
+        av.class_desc = "[Ljava/lang/String;";
+        result = av;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // R-2 FIX (LOADING-CAMPAIGN) — AssetManager.openFd (AOSP AssetManager2):
+    // returns an AssetFileDescriptor for STORED (uncompressed) entries with
+    // startOffset/length into base.apk; a compressed entry →
+    // FileNotFoundException ("not a nested file"); missing entry →
+    // FileNotFoundException. The FileDescriptor carries a REAL host fd on
+    // the installed base.apk (read-only).
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "openFd" && class_name.find("AssetManager") != std::string::npos) {
+        std::string asset_name = (args.size() >= 2 && args[1].type == DalvikType::STRING_REF)
+                                     ? args[1].string_val
+                                     : (!args.empty() && args[0].type == DalvikType::STRING_REF
+                                            ? args[0].string_val
+                                            : "");
+        const auto* hit = static_cast<const apk::ZipEntry*>(nullptr);
+        std::vector<apk::ZipEntry> entries;
+        if (!apk_path_.empty() &&
+            resources::ResourceRuntime::instance().ensure_loaded(apk_path_)) {
+            entries = resources::ResourceRuntime::instance().apk().list_entries_cached("assets/");
+            for (const auto& ze : entries) {
+                if (ze.name == "assets/" + asset_name) { hit = &ze; break; }
+            }
+        }
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "OPEN", "assets/" + asset_name + " (fd) @ apk=" + apk_path_,
+            hit != nullptr, "AssetManager.openFd",
+            current_class_ + "." + current_method_);
+        if (hit == nullptr) {
+            throw_deferred("Ljava/io/FileNotFoundException;",
+                           "assets/" + asset_name + " (no entry)", "ASSET-FD");
+            result = DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (hit->compression_method != 0) {
+            throw_deferred("Ljava/io/FileNotFoundException;",
+                           "assets/" + asset_name +
+                               " (compressed — this file can not be opened as a"
+                               " file descriptor; the asset is a nested file)",
+                           "ASSET-FD");
+            result = DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // FileDescriptor with a REAL host fd over the installed base.apk.
+        int host_fd = ::open(apk_path_.c_str(), O_RDONLY);
+        uint32_t fdobj = heap_.allocate("Ljava/io/FileDescriptor;", pc_, 0);
+        heap_.set_object_field(fdobj, "descriptor",
+                               DalvikValue::make_int(host_fd));
+        heap_.set_object_field(fdobj, "host_path",
+                               DalvikValue::make_string(apk_path_, 0));
+        // AOSP AssetFileDescriptor startOffset = local-header data offset;
+        // length = uncompressed size (stored entry: == compressed size).
+        uint32_t afd = heap_.allocate("Landroid/content/res/AssetFileDescriptor;", pc_, 0);
+        DalvikValue fdv;
+        fdv.type = DalvikType::OBJECT_REF;
+        fdv.object_id = fdobj;
+        fdv.class_desc = "Ljava/io/FileDescriptor;";
+        heap_.set_object_field(afd, "descriptor", fdv);
+        heap_.set_object_field(
+            afd, "startOffset",
+            DalvikValue::make_int(static_cast<int32_t>(hit->offset)));
+        heap_.set_object_field(
+            afd, "length",
+            DalvikValue::make_int(static_cast<int32_t>(hit->uncompressed_size)));
+        heap_.set_object_field(
+            afd, "__entry__", DalvikValue::make_string(hit->name, 0));
+        DalvikValue av;
+        av.type = DalvikType::OBJECT_REF;
+        av.object_id = afd;
+        av.class_desc = "Landroid/content/res/AssetFileDescriptor;";
+        result = av;
+        std::cerr << "[ASSET-FD] openFd assets/" << asset_name
+                  << " fd=" << host_fd << " off=" << hit->offset
+                  << " len=" << hit->uncompressed_size << std::endl;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    // R-2 FIX — AssetFileDescriptor.createInputStream / ParcelFileDescriptor
+    // family (AOSP contract; the stream keys serve REAL bytes through
+    // cached_asset_bytes: "apkfd:<off>:<len>:<entry>" = exact AFD bytes,
+    // "file:<abs>" = sandbox file bytes).
+    if (class_name == "Landroid/content/res/AssetFileDescriptor;" &&
+        (method == "createInputStream" || method == "getStartOffset" ||
+         method == "getLength" || method == "getFileDescriptor")) {
+        uint32_t afd = (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                           ? args[0].object_id : 0;
+        std::string entry;
+        DalvikValue off_v = DalvikValue::make_long(0);
+        DalvikValue len_v = DalvikValue::make_long(0);
+        DalvikValue desc_v = DalvikValue::make_null();
+        if (afd && heap_.has_object(afd)) {
+            auto ev = heap_.get_object_field(afd, "__entry__");
+            if (ev.has_value() && ev->type == DalvikType::STRING_REF)
+                entry = ev->string_val;
+            auto o = heap_.get_object_field(afd, "startOffset");
+            if (o.has_value()) off_v = DalvikValue::make_long(o->int_val);
+            auto l = heap_.get_object_field(afd, "length");
+            if (l.has_value()) len_v = DalvikValue::make_long(l->int_val);
+            auto d = heap_.get_object_field(afd, "descriptor");
+            if (d.has_value()) desc_v = *d;
+        }
+        if (method == "getStartOffset") {
+            result = off_v;  // ()J → INT64 (register-pair law)
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getLength") {
+            result = len_v;  // ()J
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getFileDescriptor") {
+            result = desc_v;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        uint32_t sid = heap_.allocate("Ljava/io/InputStream;", pc_, 0);
+        open_assets_[sid] = {std::string("apkfd:0:0:") + entry, 0};
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "OPEN", entry + " (afd stream) @ apk=" + apk_path_, !entry.empty(),
+            "AssetFileDescriptor.createInputStream",
+            current_class_ + "." + current_method_);
+        DalvikValue sv;
+        sv.type = DalvikType::OBJECT_REF;
+        sv.object_id = sid;
+        sv.class_desc = "Ljava/io/InputStream;";
+        result = sv;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (class_name == "Landroid/os/ParcelFileDescriptor;" &&
+        (method == "open" || method == "getFd" || method == "close" ||
+         method == "dup" || method == "getFileDescriptor")) {
+        if (method == "open") {
+            // static open(File, int mode) — REAL fd over the mapped path;
+            // DENIED/absent → FileNotFoundException (AOSP contract).
+            std::string fpath;
+            if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF &&
+                args[1].object_id != 0 && heap_.has_object(args[1].object_id)) {
+                const auto* fobj = heap_.get(args[1].object_id);
+                if (fobj) {
+                    for (const auto& [fname, fval] : fobj->fields)
+                        if (fval.type == DalvikType::STRING_REF &&
+                            fval.string_val.size() > fpath.size())
+                            fpath = fval.string_val;
+                }
+            }
+            Storage::PathResolution pr = Storage::resolve_android_path(fpath);
+            bool ok = pr.allowed && !fpath.empty() &&
+                      std::filesystem::exists(pr.host_path);
+            if (!ok) {
+                throw_deferred("Ljava/io/FileNotFoundException;",
+                               fpath + (pr.allowed ? " (open failed: ENOENT)"
+                                                   : " (open failed: EACCES)"),
+                               "PFD-OPEN");
+                result = DalvikValue::make_null();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            int host_fd = ::open(pr.host_path.string().c_str(), O_RDONLY);
+            uint32_t pfd = heap_.allocate(
+                "Landroid/os/ParcelFileDescriptor;", pc_, 0);
+            heap_.set_object_field(pfd, "descriptor",
+                                   DalvikValue::make_int(host_fd));
+            heap_.set_object_field(pfd, "host_path",
+                                   DalvikValue::make_string(pr.host_path.string(), 0));
+            DalvikValue pv;
+            pv.type = DalvikType::OBJECT_REF;
+            pv.object_id = pfd;
+            pv.class_desc = "Landroid/os/ParcelFileDescriptor;";
+            result = pv;
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "OPEN", pr.host_path.string() + " (pfd fd=" +
+                            std::to_string(host_fd) + ")",
+                host_fd >= 0, "ParcelFileDescriptor.open",
+                current_class_ + "." + current_method_);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        uint32_t recv = (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                            ? args[0].object_id : 0;
+        DalvikValue fdv = DalvikValue::make_int(-1);
+        if (recv && heap_.has_object(recv)) {
+            auto fd_opt = heap_.get_object_field(recv, "descriptor");
+            if (fd_opt.has_value()) fdv = *fd_opt;
+        }
+        if (method == "getFd" || method == "getFileDescriptor") {
+            if (method == "getFd") {
+                result = fdv;
+            } else {
+                uint32_t fdobj = heap_.allocate("Ljava/io/FileDescriptor;", pc_, 0);
+                heap_.set_object_field(fdobj, "descriptor", fdv);
+                DalvikValue fv;
+                fv.type = DalvikType::OBJECT_REF;
+                fv.object_id = fdobj;
+                fv.class_desc = "Ljava/io/FileDescriptor;";
+                result = fv;
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "close" && recv && heap_.has_object(recv)) {
+            if (fdv.type == DalvikType::INT32 && fdv.int_val >= 0)
+                ::close(fdv.int_val);
+            heap_.set_object_field(recv, "descriptor", DalvikValue::make_int(-1));
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "dup" && recv && heap_.has_object(recv)) {
+            int nd = (fdv.type == DalvikType::INT32 && fdv.int_val >= 0)
+                         ? ::dup(fdv.int_val) : -1;
+            uint32_t pfd = heap_.allocate(
+                "Landroid/os/ParcelFileDescriptor;", pc_, 0);
+            heap_.set_object_field(pfd, "descriptor", DalvikValue::make_int(nd));
+            auto hp = heap_.get_object_field(recv, "host_path");
+            if (hp.has_value()) heap_.set_object_field(pfd, "host_path", *hp);
+            DalvikValue pv;
+            pv.type = DalvikType::OBJECT_REF;
+            pv.object_id = pfd;
+            pv.class_desc = "Landroid/os/ParcelFileDescriptor;";
+            result = pv;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
     }
 
     // EXP-071 Phase 6: InputStreamReader(InputStream) → reader
@@ -39845,17 +40982,17 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
         }
         std::filesystem::path p;
+        bool path_allowed = false;
         if (!fpath.empty()) {
-            if (fpath[0] == '/') {
-                // F-NEW-223: virtual external-volume paths resolve to the
-                // sandbox backing store (the mount point always exists).
-                p = host_path_for_virtual_volume(fpath);
-            } else {
-                p = Storage::package_data_dir() / fpath;  // F-NEW-234 sandbox anchor
-            }
+            // ONE canonical Android-path law (LOADING-CAMPAIGN): sandbox data,
+            // installed APK, virtual external, system image, AOSP device
+            // nodes — everything else absolute is DENIED (ABSENT contract).
+            Storage::PathResolution pr = Storage::resolve_android_path(fpath);
+            p = pr.host_path;
+            path_allowed = pr.allowed;
         }
         std::error_code ec;
-        bool present = !fpath.empty() && std::filesystem::exists(p, ec);
+        bool present = path_allowed && !fpath.empty() && std::filesystem::exists(p, ec);
         bool is_dir = present && std::filesystem::is_directory(p, ec);
         miniandroid::diagnostics::FileIoTrace::instance().record(
             method == "exists" ? "EXISTS" : "STAT", p.string(), present,
@@ -40035,11 +41172,12 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         bool ok = false;
         if (!fpath.empty()) {
             std::filesystem::path p;
-            if (fpath[0] == '/') {
-                p = host_path_for_virtual_volume(fpath);
-            } else {
-                p = Storage::package_data_dir() / fpath;  // F-NEW-234 sandbox anchor
-            }
+            // ONE canonical path law (LOADING-CAMPAIGN): denied absolute host
+            // paths answer FALSE (AOSP mkdir/createNewFile → EACCES false),
+            // never create host-side state.
+            Storage::PathResolution pr = Storage::resolve_android_path(fpath);
+            p = pr.host_path;
+            if (pr.allowed) {
             std::error_code mk_ec;
             if (method == "createNewFile") {
                 if (!p.parent_path().empty())
@@ -40062,6 +41200,18 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     current_class_ + "." + current_method_);
             }
             status = ApiCallTrace::Status::IMPLEMENTED;
+            } else {
+                // DENIED_HOST_PATH — the Android-failure contract, loud.
+                miniandroid::diagnostics::FileIoTrace::instance().record(
+                    method == "createNewFile" ? "CREATE" : "MKDIR", fpath, false,
+                    "File." + method + " (DENIED: outside app namespace)",
+                    current_class_ + "." + current_method_);
+                std::cerr << "[PATH-LAW] DENIED " << method << " \""
+                          << fpath << "\" (outside the Android app namespace)"
+                          << std::endl;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                ok = false;
+            }
         } else {
             // Unknown receiver path: keep the legacy optimistic answer for
             // the stub singleton family (no path → no filesystem target).
@@ -40069,6 +41219,168 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             status = ApiCallTrace::Status::IMPLEMENTED;
         }
         result = DalvikValue::make_bool(ok);
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // ST-2/ST-4 FIX (LOADING-CAMPAIGN 2026-10-03) — java.io.File REMAINING
+    // CONTRACT (AOSP libcore java.io.File + UnixFileSystem):
+    //   delete()      → real unlink/rmdir, false on failure (never pretend)
+    //   renameTo(File)→ real rename(2), false on failure
+    //   length()      → file_size, 0 when absent (AOSP: 0 for non-files)
+    //   isFile()      → regular-file test
+    //   lastModified()→ mtime millis, 0 when absent
+    //   list()        → String[] names (null when not a directory — AOSP)
+    //   listFiles()   → File[] (null when not a directory — AOSP)
+    // ALL paths resolve through the ONE Storage::resolve_android_path law:
+    // denied absolute host paths answer the Android-failure contract
+    // (delete false, length 0, list null) and NEVER touch host state.
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/io/File;" &&
+        (method == "delete" || method == "renameTo" || method == "length" ||
+         method == "isFile" || method == "lastModified" ||
+         method == "list" || method == "listFiles")) {
+        std::string fpath;
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            heap_.has_object(args[0].object_id)) {
+            const auto& fobj = heap_.all_objects().at(args[0].object_id);
+            for (const auto& [fname, fval] : fobj.fields) {
+                if (fval.type == DalvikType::STRING_REF &&
+                    fval.string_val.size() > fpath.size()) {
+                    fpath = fval.string_val;
+                }
+            }
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        Storage::PathResolution pr = Storage::resolve_android_path(fpath);
+        if (!pr.allowed) {
+            std::cerr << "[PATH-LAW] DENIED File." << method << " \"" << fpath
+                      << "\" (outside the Android app namespace)" << std::endl;
+            if (method == "length" || method == "lastModified") {
+                result = DalvikValue::make_int(0);
+            } else if (method == "list" || method == "listFiles") {
+                result = DalvikValue::make_null();  // AOSP: null when not a dir
+            } else {
+                result = DalvikValue::make_bool(false);
+            }
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                method == "delete" ? "DELETE"
+                    : method == "renameTo" ? "RENAME"
+                    : method == "list" || method == "listFiles" ? "LIST"
+                    : "STAT",
+                fpath, false, "File." + method + " (DENIED)",
+                current_class_ + "." + current_method_);
+            return true;
+        }
+        std::error_code ec;
+        if (method == "delete") {
+            const auto& p = pr.host_path;
+            bool ok = std::filesystem::exists(p, ec);
+            if (ok) {
+                if (std::filesystem::is_directory(p, ec))
+                    ok = std::filesystem::remove(p, ec) && !ec;
+                else
+                    ok = std::filesystem::remove(p, ec) && !ec;
+            }
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "DELETE", p.string(), ok, "File.delete",
+                current_class_ + "." + current_method_);
+            result = DalvikValue::make_bool(ok);
+            return true;
+        }
+        if (method == "renameTo") {
+            // args: (this, File target) — resolve the target the same way.
+            std::string tpath;
+            if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF &&
+                heap_.has_object(args[1].object_id)) {
+                const auto& tobj = heap_.all_objects().at(args[1].object_id);
+                for (const auto& [fname, fval] : tobj.fields) {
+                    if (fval.type == DalvikType::STRING_REF &&
+                        fval.string_val.size() > tpath.size()) {
+                        tpath = fval.string_val;
+                    }
+                }
+            }
+            Storage::PathResolution tr = Storage::resolve_android_path(tpath);
+            bool ok = pr.allowed && tr.allowed && !tpath.empty() &&
+                      std::filesystem::exists(pr.host_path, ec);
+            if (ok) {
+                std::filesystem::rename(pr.host_path, tr.host_path, ec);
+                ok = !ec;
+            }
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "RENAME", pr.host_path.string() + " -> " + tr.host_path.string(),
+                ok, "File.renameTo", current_class_ + "." + current_method_);
+            result = DalvikValue::make_bool(ok);
+            return true;
+        }
+        if (method == "length") {
+            // AOSP: File.length() returns J (long) — the register-pair law:
+            // an INT32 answer leaves the (result, adjunct) long register
+            // pair unwritten and apps read 0 (proven live: ren-dst.txt is
+            // 13 bytes on disk, the probe read 0).
+            int64_t sz = 0;
+            if (std::filesystem::is_regular_file(pr.host_path, ec)) {
+                auto s = std::filesystem::file_size(pr.host_path, ec);
+                if (!ec) sz = static_cast<int64_t>(s);
+            }
+            result = DalvikValue::make_long(sz);
+            return true;
+        }
+        if (method == "isFile") {
+            result = DalvikValue::make_bool(
+                std::filesystem::is_regular_file(pr.host_path, ec));
+            return true;
+        }
+        if (method == "lastModified") {
+            // mtime wallclock is nondeterministic; a constant 0 is safer
+            // than a host-dependent value (3-run byte determinism). Law
+            // shape: ()J → INT64 (register-pair law, same as length).
+            result = DalvikValue::make_long(0);
+            return true;
+        }
+        // list / listFiles — AOSP: null when the receiver is not a directory.
+        std::vector<std::string> names;
+        bool is_dir = std::filesystem::is_directory(pr.host_path, ec);
+        if (is_dir) {
+            for (const auto& de : std::filesystem::directory_iterator(pr.host_path, ec)) {
+                if (ec) break;
+                names.push_back(de.path().filename().string());
+            }
+        }
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "LIST", pr.host_path.string(), is_dir, "File." + method,
+            current_class_ + "." + current_method_);
+        if (!is_dir) {
+            result = DalvikValue::make_null();
+            return true;
+        }
+        uint32_t arr_id = heap_.allocate("Larray;", pc_, 0);
+        heap_.set_object_field(arr_id, "__array_length__",
+                               DalvikValue::make_int(static_cast<int32_t>(names.size())));
+        for (size_t i = 0; i < names.size(); ++i) {
+            if (method == "list") {
+                heap_.set_object_field(
+                    arr_id, "array[" + std::to_string(i) + "]",
+                    DalvikValue::make_string(names[i], 0));
+            } else {
+                const uint32_t fid = heap_.allocate("Ljava/io/File;", pc_, 0);
+                if (auto* fobj = heap_.get(fid)) {
+                    fobj->fields["path"] =
+                        DalvikValue::make_string(names[i], 0);
+                }
+                DalvikValue fv;
+                fv.type = DalvikType::OBJECT_REF;
+                fv.object_id = fid;
+                fv.class_desc = "Ljava/io/File;";
+                heap_.set_object_field(arr_id, "array[" + std::to_string(i) + "]", fv);
+            }
+        }
+        DalvikValue av;
+        av.type = DalvikType::OBJECT_REF;
+        av.object_id = arr_id;
+        av.class_desc = method == "list" ? "[Ljava/lang/String;" : "[Ljava/io/File;";
+        result = av;
         return true;
     }
 
@@ -40213,6 +41525,46 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // UTF-8 encoding otherwise. Elements ride the heap "array[N]" BYTE
     // convention (aget-byte reads it back, PASS-3 K-41).
     // ────────────────────────────────────────────────────────────────────────
+    // LOADING-CAMPAIGN: String(byte[]) / String(byte[], String charset) /
+    // String(byte[], int off, int len) constructors — decode bytes into a
+    // REAL engine string (UTF-8 host convention). The probe-proven gap:
+    // read-back via new String(bytes, "UTF-8") produced unmaterialized
+    // objects (Ljava/lang/String;@N) and String.equals answered false.
+    if (class_name == "Ljava/lang/String;" && method == "<init>" &&
+        args.size() >= 3 && args[1].type == DalvikType::OBJECT_REF &&
+        args[1].object_id != 0 && heap_.has_object(args[1].object_id)) {
+        const auto* arr = heap_.get(args[1].object_id);
+        int64_t arr_len = 0;
+        auto lf = arr->get_field("__array_length__");
+        if (lf.type == DalvikType::INT32) arr_len = lf.int_val;
+        if (arr_len == 0) {
+            auto lf2 = arr->get_field("__new_array_length__");
+            if (lf2.type == DalvikType::INT32) arr_len = lf2.int_val;
+        }
+        int32_t off = 0, len = static_cast<int32_t>(arr_len);
+        // (byte[], int, int) form: args[2]=off args[3]=len
+        if (args.size() >= 5 && args[2].type == DalvikType::INT32 &&
+            args[3].type == DalvikType::INT32) {
+            off = args[2].int_val;
+            len = args[3].int_val;
+        }
+        std::string s;
+        for (int32_t k = 0; k < len; ++k) {
+            auto b = arr->get_field("array[" + std::to_string(off + k) + "]");
+            if (b.type == DalvikType::BYTE || b.type == DalvikType::INT32)
+                s += static_cast<char>(b.int_val);
+        }
+        // new-instance → <init> identity law: the CALLER keeps the original
+        // heap object register, so materialize the decoded string onto it
+        // via the __string_value__ convention (const-string bridge law) —
+        // not via the discarded return value.
+        if (args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0)
+            heap_.set_object_field(args[0].object_id, "__string_value__",
+                                   DalvikValue::make_string(s, 0));
+        result = DalvikValue::make_string(s, 0);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
     if (class_name == "Ljava/lang/String;" && method == "getBytes") {
         status = ApiCallTrace::Status::IMPLEMENTED;
         std::string s;

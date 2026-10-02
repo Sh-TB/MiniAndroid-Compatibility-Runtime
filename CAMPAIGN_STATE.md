@@ -63,3 +63,51 @@ The ONE master checklist lives at **docs/FINAL_COMPATIBILITY_CAMPAIGN.md**
    ballbreak — same first divergence as fishrings).
 4. Telegram intro/auth chain + title-overlap bug.
 5. F-NEW-217/221 deep legs; README/release audit phases.
+
+---
+
+## LOADING-CAMPAIGN IMPLEMENTATION WAVE (2026-10-03) — audit → implementation → proof
+
+### LAWS READ
+
+CONSTITUTION_V2 (§16 first-divergence, §17 silent-wrong, §25 ARSC, §26
+end-to-end), FINAL_COMPATIBILITY_CAMPAIGN §15, CAMPAIGN_STATE (F-NEW-231..234),
+REAL_ANDROID_LOADING_ORACLE (14 subsystem law families), AOSP sources
+(AssetManager2, ResourcesImpl, ContextImpl, SharedPreferencesImpl, ActivityThread
+handleBindApplication/installContentProviders, libcore File/UnixFileSystem/
+InputStream, sepolicy appdomain device-node law), FRAME_CAPTURE_TRUTH
+(F-NEW-233), 21-P0-6 pixel ownership, no-package-specific-fixes law.
+
+### NEW LAWS DISCOVERED (probe-driven, registered)
+
+read(byte[]) fill law ≡ read(b,0,b.length); ByteArrayOutputStream family;
+String(byte[]) __string_value__ materialization (new-instance identity);
+()J INT64 register-pair law (File.length/lastModified, AFD getStartOffset/
+getLength); character-device bounded-read law (/dev/urandom AOSP-legal);
+ONE path law categories (SANDBOX_DATA/INSTALLED_APK/VIRTUAL_EXTERNAL/
+SYSTEM_IMAGE/DEVICE_NODE/DENIED_HOST_PATH); ONE databases_dir authority.
+
+### STATE
+
+- P0 fix wave IMPLEMENTED: ST-1/ST-2/R-1/R-2/R-5/R-7/R-10/ST-4/ST-5/ST-6/
+  ST-7/S-1(launch)/S-5/S-7/ST-11 — all generic, all AOSP-cited, all runtime-
+  proven via the synthetic probe (fixtures/loading_probe, 23/23 gate).
+- Probe gate: scripts/loading_probe_runner.sh — ALL PASS.
+- Regression gate: opencalc e364b001ee7abd66 ×3 / chess b5a7a35d5fe0564b ×3 /
+  dooz d602648e8e401895 ×3 / microtimer da73010a37dd0189 ×3 / unote
+  4f1a9e4e8f64fae8 ×3 / telegram bbb6cd10a834963d ×1 — ALL == goldens.
+- Deliverables: WORKING_VS_FAILING_LOADING_MATRIX.jsonl,
+  WORKING_APP_LOADING_EXPLANATIONS.md, LOADING_API_COVERAGE_MATRIX.jsonl,
+  AUDIT_REQUIREMENT_COVERAGE.jsonl, INSTALL_TREE_PROOF.jsonl,
+  LOADING_RUNTIME_TRACE.jsonl, LOADING_ROOT_FANOUT.md,
+  LOADING_FAILURE_DIAGNOSTICS.md, WHITE_SCREEN_LOADING_ROOTS.md,
+  loading_probe_runner.sh / working_vs_failing_probe.sh /
+  storage_tree_proof.sh; FILE_RESOURCE_LOADING_COMPATIBILITY §9/§10;
+  FINAL_COMPATIBILITY_CAMPAIGN §16; registry R-NEW-457.
+
+### NEXT
+
+S-2 (dlopen/JNI), S-4 (content:// query/Cursor + FileProvider), S-11 splits,
+S-3/S-13 broadcasts/services, SELECTION_FROZEN (config/density/fonts),
+S-10 localStorage; sqlite/font provenance traces (ST-10); provider-stage
+consumer proof on an androidx.startup-shipping app end-to-end.
