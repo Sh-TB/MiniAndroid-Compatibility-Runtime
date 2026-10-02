@@ -1,7 +1,7 @@
 # CAMPAIGN_STATE — MiniAndroid-Compatibility-Runtime
 
-HEAD at state update: e9ce717b (MEGA-W2) ← b865a27d (F-NEW-231) ← 286b4994
-Date: 2026-10-02 (FINAL MEGA-CAMPAIGN session)
+HEAD at state update: F-NEW-234 wave (IAPK campaign) ← e9ce717b (MEGA-W2) ← 286b4994
+Date: 2026-10-03 (INSTALLED-APP FILESYSTEM + MEDIA campaign)
 
 ## LAWS READ
 
@@ -22,30 +22,34 @@ The ONE master checklist lives at **docs/FINAL_COMPATIBILITY_CAMPAIGN.md**
 | # | Item | Status |
 |---|------|--------|
 | 1 | F-NEW-231 INSTALLED_APK_ACCESS (§3 mandatory) | IMPLEMENTED+TESTED — 10/10 claims, 2 APKs, source-hidden proof |
-| 2 | F-NEW-232 deferred-UI observability | IMPLEMENTED+TESTED — fishrings NEW SUCCESS ×3 |
-| 3 | F-NEW-233 unconditional frame-truth law | IMPLEMENTED+TESTED — false-SUCCESS family closed |
-| 4 | F-NEW-230 golden validity | PARTIAL — 4 goldens VALID ×3 w/ repro blocks; whatsapp REJECTED; 4 STALE recorded |
-| 5 | F-NEW-229 CL MATCH_PARENT spec law | OPEN (next attack) |
-| 6 | F-NEW-221 R8 merged-class / F-NEW-217 kotlinx resume / F-NEW-204..207 / F-NEW-192 | OPEN |
-| 7 | secuso sudoku button-text gap | REGISTERED (wave-2 finding) |
-| 8 | Telegram title-overlap + intro/auth chain | REGISTERED (§6 first missing laws) |
-| 9 | Safir / Black sentinels | BLOCKED-BY-IDENTITY (zero project records; APKs needed) |
-| 10 | Families A–W root/fan-out audit | IN PROGRESS — deferred-UI fan-out family identified (7+ titles) |
-| 11 | README/front-page + release audit (Phases 10–21) | NOT STARTED |
-| 12 | APK-inspection skill feasibility | NOT STARTED (F-NEW-231 provides the runtime base) |
+| 2 | F-NEW-234 per-package context-root law (installed-app FILESYSTEM) | IMPLEMENTED+TESTED — 3-layout mismatch root-caused; 12 installed runs ×3; sources quarantined; file-IO + asset provenance; pkgaudit capability; goldens ×3 MATCH |
+| 3 | F-NEW-232 deferred-UI observability | IMPLEMENTED+TESTED — fishrings NEW SUCCESS ×3 |
+| 4 | F-NEW-233 unconditional frame-truth law | IMPLEMENTED+TESTED — false-SUCCESS family closed |
+| 5 | F-NEW-230 golden validity | PARTIAL — 4 goldens VALID ×3 w/ repro blocks; whatsapp REJECTED; 4 STALE recorded |
+| 6 | F-NEW-229 CL MATCH_PARENT spec law | OPEN (next attack) |
+| 7 | F-NEW-221 R8 merged-class / F-NEW-217 kotlinx resume / F-NEW-204..207 / F-NEW-192 | OPEN |
+| 8 | secuso sudoku button-text gap | REGISTERED (wave-2 finding) |
+| 9 | Telegram title-overlap + intro/auth chain | REGISTERED — installed-mode filesystem RULED OUT as cause (F-NEW-234 file-IO trace: only benign first-launch theme-extract misses) |
+| 10 | Safir / Black sentinels | BLOCKED-BY-IDENTITY (zero project records; APKs needed) |
+| 11 | Families A–W root/fan-out audit | IN PROGRESS — deferred-UI fan-out family identified (7+ titles) |
+| 12 | README/front-page + release audit (Phases 10–21) | NOT STARTED (stray uuid auto-commit 7abb39ce flagged) |
+| 13 | APK-inspection skill feasibility | PARTIAL — `pkgaudit` runtime capability landed (F-NEW-234 wave) |
+| 14 | Uninstall command | PENDING (recorded, not faked) |
 
 ## LIVE STATE
 
-- HEAD: e9ce717b (main)
-- Registry: 528 roots (F-NEW-231/232/233 IMPLEMENTED+TESTED; F-NEW-229 OBSERVED;
-  F-NEW-230 PARTIAL)
-- laws130: 51/51 (unchanged this session — no interpreter/layout semantics touched)
-- Golden gate (×3, 1080x1920, file-sha): dooz d602648e8e401895 MATCH;
-  microtimer da73010a37dd0189 MATCH; unote 4f1a9e4e8f64fae8 MATCH;
-  opencalc e364b001ee7abd66 MATCH (plain AND installed-state).
-- Installed-state gate: opencalc --package ×3 = e364b001ee7abd66 (store:
-  run/f231/store).
-- New success: fishrings a341e3ad9092f640 ×3 (time-driven capture).
+- Registry: 529 roots (F-NEW-234 IMPLEMENTED+TESTED)
+- Installed-state gate (store run/iapk/store2, sources hidden): opencalc
+  e364b001ee7abd66 ×3 = golden; bouncy b6dde6074bf47264 ×3; chess
+  b5a7a35d5fe0564b ×3; telegram bbb6cd10a834963d ×3; unote (seeded random)
+  4f1a9e4e8f64fae8 = golden; whatsapp (seeded random) = known face, no drift.
+- Golden gate (sideload, ×3): dooz/microtimer/unote/opencalc ALL MATCH under
+  the F-NEW-234 law.
+- Filesystem law: ALL runtime app writes land in
+  <data-root>/data/data/<package>/ (23/23 files in the AFTER suite); external
+  app dirs = <data-root>/storage/emulated/0/Android/data/<pkg>/.
+- Instruments: MINIANDROID_FILE_IO (file-IO JSONL provenance), gfx
+  byte_source, `pkgaudit` command.
 - Corpus reality: 202 frozen titles (100 game + 100 app + 2 mandatory); s107
   tmp APKs purged; local honest pool ~25 APKs; random ledger row 1 banked
   (seed 20261002).

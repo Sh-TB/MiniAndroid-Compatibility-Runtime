@@ -5604,3 +5604,129 @@ Work Log:
 Stage Summary:
 - Session closed with registry 528, HEAD d52e19ce, master checklist live at
   docs/FINAL_COMPATIBILITY_CAMPAIGN.md, wave report on #354.
+
+---
+Task ID: IAPK-0 (installed-app filesystem campaign phase 0+1)
+Agent: Super Z (main)
+Task: LAWS READ + F-NEW-231 line-by-line stage audit (installed-app filesystem + media campaign).
+
+Work Log:
+- LAWS READ: CONSTITUTION_V2 (§1 core principle, §2 source-first, §6 never-invent-semantics,
+  §7 unknown-remains-unknown, §9 fresh-live-evidence, §16 first-divergence, §17 silent-wrong,
+  §26 end-to-end, §27 blank-screen, §31 viewtree≠visual, §33/34 pixel/no-fake-success,
+  §51 no-app-specific-hacks, §52 generic fan-out), docs/ROADMAP_STATUS.md (197 capabilities,
+  STORAGE 8 tracked 1 V+T; AUDIO/VIDEO pending), CAMPAIGN_STATE.md (HEAD e9ce717b → now
+  7abb39ce), docs/FINAL_COMPATIBILITY_CAMPAIGN.md (master checklist §3 installed-APK 10/10),
+  worklog.md tail (MEGA-0/W2/FINAL), root_registry.json F-NEW-231/232/233 entries,
+  main.cpp pkgstore (install/list-packages/--package, lines 355-620, 984-1016),
+  storage/data_root.{h,cpp} (M3 FINDING-012 single-root law), storage/file_sandbox.{h,cpp}
+  (<root>/<pkg>/{files,cache,databases,shared_prefs,lib} layout), api/application_context.cpp
+  (ContextWrapper/ApplicationContext delegate to FileSandbox), dalvik_engine.cpp Context-dir
+  family (22 app_data_root() sites: files 32801, cache 5252/34525, getDir app_<name> 32850,
+  shared_prefs 31989/32122/32239/32758, databases 34552, external_files 34313, external_cache
+  34336, external-storage root 21584, relative-path sandbox 23485/23532/23704/39785/39893/
+  39907/39916/39971), storage/sqlite_shadow.cpp (DatabaseShadow::databases_dir_), AOSP laws
+  (PMS install commit base.apk; ContextImpl.getFilesDir=/data/user/0/<pkg>/files;
+  getDir app_ prefix; Environment external Android/data/<pkg>), diagnostics/gfx_provenance.h
+  (C7 chain; records path but no SOURCE-vs-INSTALLED classification).
+- STATE AUDIT: HEAD 7abb39ce (main) = ANOTHER stray uuid auto-commit on top of d52e19ce —
+  touches only androguard.db-shm/-wal (deleted) + tmp/fr_classes.dex (added); flagged for
+  release audit, no runtime code. Working tree: tmp/flappycow modified (untracked tmp
+  artifact). Binary build/miniandroid present. Disk 6.5G free.
+- APK INVENTORY (local real pool): upload/ opencalculator_53, forkgram_709208,
+  telegram_official, notes_secuso_105, sudoku_secuso_101, klondike_veldsoft_3, chess_jwtc_298,
+  flappycow_rebuilt; upload/canonical_apks/ bouncy + canonical 11; /tmp/my-project/apk_cache/
+  tinymusicplayer, droidify, openlauncher, tictactoeclassic, simplekeyboardinputmethod, dooz,
+  bouncy.
+
+Stage Summary:
+- PHASE 1 CODE AUDIT VERDICT (to be runtime-proven live): F-NEW-231 install/identity/
+  discovery/inspection/launch chain = IMPLEMENTED+TESTED. BUT the runtime Context-directory
+  family is a FLAT process-wide root: dalvik_engine resolves getFilesDir/getCacheDir/
+  shared_prefs/databases/getDir/external-* against Storage::app_data_root() with NO package
+  component, while cmd_install pre-creates <data-root>/data/data/<pkg>/{files,cache,
+  shared_prefs,databases} that the runtime NEVER reads. Consequences (predicted, unproven):
+  (a) installed-mode runs write app data to <data-root>/files etc. — outside the package
+  sandbox; (b) two packages in one store share one sandbox (cross-package contamination);
+  (c) install-created package dirs stay empty forever (decorative). Candidate root
+  F-NEW-234 = per-package context-root law (AOSP ContextImpl /data/user/0/<pkg>).
+  No dedicated FILE_IO provenance instrument exists (grep FILE_IO = empty). gfx provenance
+  lacks a SOURCE-APK vs INSTALLED-APK vs APP-DATA distinction. Uninstall = PENDING (no
+  command). Next: live decisive experiment (STATE A→C diff) before any code change.
+
+---
+Task ID: IAPK-FINAL (installed-app filesystem + media loading validation wave)
+Agent: Super Z (main)
+Task: Prove INSTALL -> sandbox -> filesystem -> resource/media access -> real
+runtime use; root-cause the installed-app filesystem model gap; F-NEW-234.
+
+Work Log:
+- PHASE 1 CODE AUDIT: F-NEW-231 install chain = IMPLEMENTED+TESTED, but the
+  runtime Context family had THREE incompatible layouts: (a) install-created
+  <root>/data/data/<pkg>/* (decorative — never read), (b) flat
+  <root>/{files,cache,databases,app_*,external_*} for Context APIs
+  (cross-package contamination), (c) <root>/<pkg>/shared_prefs for prefs.
+- LIVE PROOF OF MISMATCH (store run/iapk/store, 4 installs + 4 launches):
+  opencalc prefs -> <store>/<pkg>/shared_prefs (shape 3); telegram ->
+  <store>/files/cache4.db + account1-3 + <store>/cache/000000000_999999_temp.f
+  (FLAT, shared); install dirs stayed EMPTY. Provenance clean:
+  lifecycle apk=<store>/data/app/<pkg>/base.apk in every run.
+- F-NEW-234 (IMPLEMENTED+TESTED): Storage::set_context_package/context_dir/
+  package_data_dir/external_app_dir/external_obb_dir law family (AOSP
+  ContextImpl mapping); 16 engine sites re-anchored; binding wired at
+  set_package_info (BEFORE any app code; covers sideload AND --package);
+  install creates code_cache/no_backup; DatabaseShadow re-pointed; prefs
+  law re-anchored incl. api/shared_prefs.cpp ctor (default sentinel) +
+  list/delete helpers.
+- INSTRUMENTS: diagnostics/file_io_trace.h (MINIANDROID_FILE_IO JSONL:
+  op/path/result/caller/package, bounded 4000) wired into prefs write sites,
+  F104 streams, File exists/STAT/mkdirs/createNewFile, AssetManager.open;
+  begin() moved to execute() entry (render-stage begin missed pre-capture
+  writes — empty-trace bug found and fixed); gfx_provenance byte_source
+  classification (INSTALLED_APK|APP_DATA_FILE|EXTERNAL_APP_FILE|OTHER).
+- AFTER SUITE (store run/iapk/store2, sources PHYSICALLY QUARANTINED in
+  run/iapk/quarantine during ALL runs, restored after with SHA verification):
+  opencalc e364b001ee7abd66 x3 rc=0 (= golden); bouncy b6dde6074bf47264 x3;
+  chess b5a7a35d5fe0564b x3; telegram bbb6cd10a834963d x3. STATE B->D diff:
+  ALL 23 runtime-created files under data/data/<pkg> (telegram 22 files /
+  10.6MB: cache4.db account1-3, mainconfig/userconfig/themeconfig prefs;
+  chess ChessPlayer.xml; opencalc THEME=2 prefs). ZERO cross-package
+  leakage. FILE-IO: tg r1 = 100 ops / 3 failures (benign first-launch
+  theme-extract misses — bluebubbles.attheme absent from files/ falls back
+  to the APK asset = correct AOSP first-launch behavior); asset reads
+  prove 'assets/... @ apk=<store>/data/app/<pkg>/base.apk' with app DEX
+  callers (o6;.p0, ih/a;.a, ResLottieMeta;.l, sg0;.<init>).
+- PERSISTENCE/REINSTALL: opencalc prefs persist across runs; remove pkg dir
+  -> reinstall -> shared_prefs clean (0 files) -> run -> prefs re-created ->
+  golden face. UNINSTALL_SEMANTICS = PENDING (no uninstall command exists;
+  simulated via filesystem, recorded not faked).
+- INSTALLED-vs-SIDELOAD: opencalc + bouncy byte-identical across modes.
+- REGRESSION BATTERY: dooz d602648e8e401895 x3, microtimer da73010a37dd0189
+  x3, unote 4f1a9e4e8f64fae8 x3, opencalc sideload e364b001ee7abd66 x3 —
+  ALL MATCH under the new law (no golden re-bank needed).
+- RANDOM LEDGER row 2 (seed 20261003, pool 33 local APKs, recorded in
+  run/iapk/after/random_selection_seed20261003.json): unote_30 installed =
+  4f1a9e4e8f64fae8 rc=0 = golden FROM INSTALLED IDENTITY (notes.db at
+  data/data/app.varlorg.unote/databases/); WhatsApp_real installed =
+  31ddd4d5b8e6d18e PARTIAL rc=1 (known white-face frontier, F-NEW-233
+  honest NO_ROOT verdict; no regression, no new cause).
+- TELEGRAM §9 VERDICT (evidence-based): installed-mode filesystem is RULED
+  OUT as the settings-face cause — the file-IO trace shows no missing
+  database/prefs/cache path that would block the intro; the first missing
+  law remains the intro/auth navigation chain + title-overlap layout bug.
+- CAPABILITY: `pkgaudit --package <pkg> --data-root <dir>` (generic JSON
+  audit: identity, integrity re-hash, code+data recursive inventory with
+  ext histogram + largest-file SHAs). Telegram pkgaudit: data tree 22
+  files/10.6MB — filesystem model scales to a 64MB large app.
+- DOCS: root_registry.json 528->529 (+F-NEW-234 IMPLEMENTED+TESTED);
+  FINAL_COMPATIBILITY_CAMPAIGN.md §3 rows 10-21 + IAPK wave entry + random
+  ledger row 2; CAMPAIGN_STATE.md live state.
+
+Stage Summary:
+- Done: F-NEW-234 closed with the full BEFORE→LAW→FIX→AFTER→3-RUN→REGRESSION
+  chain. VERDICT: MiniAndroid now has a REAL installed-app filesystem model
+  (per-package sandbox law + provenance instruments), not just an installed
+  -APK copy. Registry 529. Sources restored intact.
+- Remaining: uninstall command (PENDING); F-NEW-229 CL width law; secuso
+  button-text; forkgram/ssw/headingcalc/secuso golden re-banks; F-NEW-217/221
+  deep legs; README/release audit (stray uuid commit 7abb39ce flagged).

@@ -31,6 +31,30 @@ public:
         return inst;
     }
 
+    // IAPK: classify a byte path into the canonical source classes the
+    // installed-app campaign requires:
+    //   SOURCE_APK      — the original sideload APK (pre-install identity)
+    //   INSTALLED_APK   — the package store codePath (.../data/app/<pkg>/base.apk)
+    //   APP_DATA_FILE   — the package's private data (.../data/data/<pkg>/...)
+    //   EXTERNAL_APP_FILE — the shared volume's app-specific area
+    //                       (.../Android/data/<pkg>/...)
+    //   OTHER_HOST_PATH — any other host path
+    static std::string classify_byte_source(const std::string& path) {
+        if (path.find("/data/app/") != std::string::npos)
+            return "INSTALLED_APK";
+        if (path.find("/data/data/") != std::string::npos)
+            return "APP_DATA_FILE";
+        if (path.find("/Android/data/") != std::string::npos ||
+            path.find("/Android/obb/") != std::string::npos)
+            return "EXTERNAL_APP_FILE";
+        if (path.find("/storage/emulated/") != std::string::npos)
+            return "EXTERNAL_SHARED_FILE";
+        // Unversioned store-relative or sideload paths: heuristics are
+        // forbidden — only the two canonical markers above are certain;
+        // everything else is honest OTHER.
+        return "OTHER_HOST_PATH";
+    }
+
     // Reads MINIANDROID_GFX_PROVENANCE=<out.json>; also flips verbose
     // stdout markers off by keeping records internal.
     void begin() {
@@ -80,6 +104,12 @@ public:
         r["provenance_state"] = resid != 0 ? "IMAGE_RESOURCE"
                                 : !path.empty() ? "IMAGE_APK_PATH"
                                 : "IMAGE_DIRECT_PIXELS";
+        // IAPK (F-NEW-234 wave): byte-source classification — proves whether
+        // the pixel bytes came from the INSTALLED package, the original
+        // sideload APK, app-private data, external app storage, or elsewhere.
+        if (!path.empty()) {
+            r["byte_source"] = classify_byte_source(path);
+        }
         events_.push_back(std::move(r));
     }
 
