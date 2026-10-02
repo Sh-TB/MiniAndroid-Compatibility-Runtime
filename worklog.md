@@ -5381,3 +5381,18 @@ Work Log:
 Stage Summary:
 - Done: F-NEW-218+219 IMPLEMENTED+TESTED; F-NEW-197-A faces A (records probe null-chain) closed; opencalc runs CLEAN.
 - Remaining: F-NEW-197-B tree-build gap (opencalc frame still the empty-shell b5a7a35d5fe0564b — content root has 0 children); generic ParameterizedType/TypeVariable/getGenericSuperclass family for full generic serialization; F-NEW-217 kotlinx resume protocol; DEEP-AUDIT P0/P1s; SUCCESS-PATH corpus.
+---
+Task ID: F-NEW-220/221 WAVE (F-NEW-197-B tree-build gap, first leg)
+Agent: Super Z (main)
+Task: opencalc tree-build gap — why the census walked an empty ContentFrameLayout while addView evidence proved the app layout landed in the tree.
+
+Work Log:
+- TREE TRACE: R005-DECOR view=935 under decor=907; F165-CONTENT materialized a PARALLEL android.R.id.content node=945 ABOVE the screen root and installed 935 under it; the app's ConstraintLayout (533) addView'd into 945 (sibling of 935) while the census walk descended 935→939(empty) — the render never reaches the sibling.
+- F-NEW-220 CONTENT-PARENT REUSE LAW (P0, AOSP AppCompatDelegateImpl.createSubDecor): reuse the subDecor's OWN ContentFrameLayout (find_first_descendant_by_class BFS) and install android.R.id.content on it (the appcompat id-swap law); skip the re-parent install when the content parent is a descendant of the installed view (cycle guard); materialization fallback preserved for non-appcompat shapes. ViewShadow::find_first_descendant_by_class added.
+- RESULT: opencalc tree = FitWindowsLinearLayout(935) → ContentFrameLayout(939,children=1) → ConstraintLayout(533,children=8) → View 1080x147 / HorizontalScrollView / EditText...; frame SHA moved OFF the empty-shell for the first time: b5a7a35d5fe0564b → 2291d74de0b6bac5.
+- F-NEW-221 registered (OBSERVED): the tree-build unblocked deeper Gson runtime — new first divergence = R8-MERGED CLASS ctor/dispatch mismatch (LA/h; horizontal merge: z(TypeToken) Map-cache fast-path from one merged origin ran on an instance whose ctor path left b=null → Map.get NPE at Lc1/d;.c → APP BOUNDARY, run PARTIAL 1 uncaught). Evidence captured (ctor ran, no new-instance trace, packed-switch ctor paths disassembled).
+- GATES: laws130 51/51; goldens x3 BYTE-IDENTICAL (dooz d602648e8e401895, ssw 10446aaf0cd642cc, headingcalc be1cea9cf994b26a, microtimer da73010a37dd0189, whatsapp 31ddd4d5b8e6d18e). Registry 516 roots, worklist 735 (open 284).
+
+Stage Summary:
+- Done: F-NEW-220 IMPLEMENTED+TESTED (tree-build first leg closed); F-NEW-221 registered with evidence.
+- Remaining: F-NEW-221 (R8 merge model), ConstraintLayout 0x0 measure propagation, F-NEW-217 kotlinx resume protocol, DEEP-AUDIT P0/P1s, SUCCESS-PATH corpus, final §28 deliverable.
