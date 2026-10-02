@@ -36,7 +36,7 @@ Dalvik-class interpreter over a deterministic software raster pipeline.
 
 | Signal | Value (canonical source) |
 |---|---|
-| Real APK corpus executed & recorded | **148** (87 games · 60 apps · 1 fixture) — [canonical/registry.json](docs/evidence/canonical/registry.json) |
+| Real APK corpus executed & recorded | **150** (88 games · 61 apps · 1 fixture) — [canonical/registry.json](docs/evidence/canonical/registry.json) |
 | Content-verified tier | **22 VERIFIED** (+ 5 candidate visual/interactive, 12 interactive GIF titles) — [ACHIEVEMENTS.md](docs/ACHIEVEMENTS.md) |
 | Honest frontier tier | 112 OBSERVED · 7 PARTIAL-family · 1 FRAME_CAPTURED · 1 FAILED — each with recorded cause |
 | Regression battery | **99/99 ALL PASS** — [testing/BATTERY_INDEX.json](docs/testing/BATTERY_INDEX.json) |

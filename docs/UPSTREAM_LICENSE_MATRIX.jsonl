@@ -1,0 +1,17 @@
+{"component": "MiniAndroid (this repo)", "license": "MIT", "attribution": "README", "risk": "none"}
+{"component": "QuickJS", "license": "MIT", "attribution": "third_party/quickjs/LICENSE", "risk": "low"}
+{"component": "nlohmann/json", "license": "MIT", "attribution": "embedded headers", "risk": "low"}
+{"component": "PortableGL", "license": "MIT", "attribution": "upstream header", "risk": "low"}
+{"component": "stb/minimp3/stb_vorbis", "license": "PD/CC0", "attribution": "public domain", "risk": "none"}
+{"component": "zlib", "license": "zlib", "attribution": "host system", "risk": "none"}
+{"component": "libpng", "license": "libpng-2.0", "attribution": "host system", "risk": "none"}
+{"component": "libjpeg-turbo", "license": "IJG/BSD-3", "attribution": "host system", "risk": "none"}
+{"component": "libwebp", "license": "BSD-3", "attribution": "host system", "risk": "none"}
+{"component": "SQLite", "license": "Public Domain", "attribution": "host system", "risk": "none"}
+{"component": "OpenSSL", "license": "Apache-2.0", "attribution": "host system", "risk": "low (advertise-with-notice)"}
+{"component": "FreeType", "license": "FTL/GPL-2.0 dual", "attribution": "host system; FTL notice", "risk": "low"}
+{"component": "HarfBuzz", "license": "MIT (Old MIT)", "attribution": "host system", "risk": "none"}
+{"component": "FriBidi", "license": "LGPL-2.1+", "attribution": "host system, dynamically linked", "risk": "low"}
+{"component": "mpg123", "license": "LGPL-2.1", "attribution": "host system, dynamically linked", "risk": "low"}
+{"component": "libsndfile", "license": "LGPL-2.1", "attribution": "host system, dynamically linked", "risk": "low"}
+{"component": "AOSP-derived ported code", "license": "Apache-2.0", "attribution": "per-file law citations + docs/REAL_ANDROID_LOADING_ORACLE.md", "risk": "low (NOTICE required at release)"}

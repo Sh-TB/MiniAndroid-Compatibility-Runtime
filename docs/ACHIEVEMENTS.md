@@ -33,10 +33,10 @@ L0 recognized → L1 manifest → L2 DEX → L3 lifecycle → L4 UI machinery �
 
 ## Totals (generated from registry.json — not hand-written)
 
-- Titles: **148** (87 games, 60 apps, 1 fixtures) — 33 added in S84
-- VERIFIED: **34** · VERIFIED-INTERACTIVE: **12** · PARTIAL: **2** · BLOCKED: **0**
+- Titles: **150** (88 games, 61 apps, 1 fixtures) — 33 added in S84; 2 browser titles registered at forensic sync (#365)
+- VERIFIED: **36** · VERIFIED-INTERACTIVE: **12** · PARTIAL: **2** · BLOCKED: **0**
 - Rendered: 129 · Interacted: 13 · State-change proven: 12
-- Canonical screenshots: **148** (12 GIF + 24 JPG) — one per title, zero duplicates
+- Canonical screenshots: **150** (14 GIF + 24 JPG) — one per title, zero duplicates
 
 ---
 
@@ -2077,4 +2077,17 @@ L0 recognized → L1 manifest → L2 DEX → L3 lifecycle → L4 UI machinery �
 * **Proven exactly:** LOADED/LAUNCHED/RENDERED
 * **Remaining:** session-specific (see report)
 * **Notes:** canonical harvested from docs/evidence/external_hello_golden
+
+## Mini Browser (`com.miniandroid.browser`)
+
+- Status: VERIFIED (E5, S100)
+- Real HTTPS GET example.com; 3/3 byte-identical; 12,087 px state change.
+- Canonical evidence: [GIF](evidence/canonical/com.miniandroid.browser.gif) · session record [S100](evidence/s100_browser/README.md)
+
+
+## Mini Browser z.ai (`com.miniandroid.browser.zai`)
+
+- Status: VERIFIED (E5, S100)
+- 307 redirect to chat.z.ai followed over TLS; 15,727 bytes rendered.
+- Canonical evidence: [GIF](evidence/canonical/com.miniandroid.browser.zai.gif) · session record [S100](evidence/s100_browser/README.md)
 
