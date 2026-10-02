@@ -1213,6 +1213,52 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                     return !bytes.empty();
                 });
         }
+        // LOADING-CAMPAIGN (R-10 FIX): register the stream-bytes resolver —
+        // decodeStream drains REAL stream bytes (asset / sandbox file /
+        // AFD-backed sources) through the engine's open_assets_ + cached
+        // byte-source laws. Registered EARLY, same law as the drawable
+        // resolver (decodeStream can run in onCreate).
+        {
+            dalvik::DalvikExecutionEngine& de = dalvik_engine_;
+            framework::BitmapShadow::set_stream_bytes_resolver(
+                [&de](uint32_t stream_id, std::vector<uint8_t>& bytes,
+                      std::string& source_desc) -> bool {
+                    std::string key;
+                    size_t* pos_ptr = nullptr;
+                    if (!de.resolve_asset_stream(stream_id, key, pos_ptr) ||
+                        key.empty())
+                        return false;
+                    const std::string& content = de.cached_asset_bytes(key);
+                    if (content.empty()) return false;
+                    bytes.assign(content.begin(), content.end());
+                    source_desc = key;
+                    return true;
+                });
+        }
+        // S-1 FIX (LOADING-CAMPAIGN): pass the manifest <provider> classes —
+        // the install stage runs them BEFORE Application.onCreate.
+        {
+            std::vector<std::string> prov_classes;
+            for (const auto& p : result.apk_info.providers) {
+                // Normalize ".Foo" / "com.foo.Foo" → "com.foo.Foo" law (AOSP
+                // PackageParser.expandPackageName): a leading '.' appends to
+                // the manifest package; a short name gets it as prefix.
+                std::string cls = p.name;
+                if (!cls.empty()) {
+                    if (cls[0] == '.') {
+                        cls = result.apk_info.package_name + cls;
+                    } else if (cls.find('.') == std::string::npos) {
+                        cls = result.apk_info.package_name + "." + cls;
+                    }
+                }
+                if (!cls.empty()) prov_classes.push_back(cls);
+            }
+            dalvik_engine_.set_manifest_providers(prov_classes);
+            std::cerr << "[S1-PROVIDER] manifest providers transferred: "
+                      << prov_classes.size() << std::endl;
+            for (const auto& pc : prov_classes)
+                std::cerr << "[S1-PROVIDER]   " << pc << std::endl;
+        }
         // CALL DALVIK ENGINE - This is the REAL execution path
         // ===================================================================
         // S60 (R-NEW-380): propagate the wall-clock soft budget (0 = off).
@@ -5536,6 +5582,9 @@ bool ExecutionEngine::stage_capture_output( ExecutionResult& result, const Execu
                 screenshot_path, png_ok, shot_nonwhite, shot_hist.size());
         }
         // IAPK: write the file-IO provenance JSONL (op/path/result/caller).
+        // LOADING-CAMPAIGN (ST-2 FIX): drain any still-open write streams
+        // FIRST (AOSP: process death closes streams — data must persist).
+        dalvik_engine_.flush_finalizers();
         if (diagnostics::FileIoTrace::instance().enabled()) {
             diagnostics::FileIoTrace::instance().finalize(
                 Storage::context_package());

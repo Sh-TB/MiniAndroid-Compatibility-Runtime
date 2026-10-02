@@ -337,3 +337,32 @@ APK: / PACKAGE: / APK SHA: / RUN CONFIG: / RUNTIME RESULT:
 VIEWTREE/PROVENANCE: / SCREENSHOT: / SCREENSHOT SHA: / 3-RUN:
 NEW SUCCESS: / REGRESSION: / COMMIT: / ISSUE: / STATUS:
 ```
+
+## 16. LOADING-CAMPAIGN IMPLEMENTATION WAVE (2026-10-03) — audit → fix → proof
+
+Master-request checklist (AUDIT → IMPLEMENTATION → RUNTIME PROOF →
+WORKING/FAILING COMPARISON → REGRESSION):
+
+| # | Item | Status |
+|---|------|--------|
+| 1 | ONE canonical path law + /data/user/0 alias + host-escape closure | ✅ IMPLEMENTED+TESTED — Storage::resolve_android_path; probe host-deny/alias/urandom asserts |
+| 2 | File/Context write family (ST-2) | ✅ IMPLEMENTED+TESTED — restart counter 1→2→3; store trees |
+| 3 | Asset contract (R-1/R-7) | ✅ IMPLEMENTED+TESTED — FNFE-HONEST; real list() |
+| 4 | FD layer (R-2): openFd/AFD/PFD/openRawResourceFd | ✅ IMPLEMENTED+TESTED (openRawResourceFd code-proven, probe caller pending) |
+| 5 | decodeStream/decodeFile (R-10/ST-5) | ✅ IMPLEMENTED+TESTED — 8x8 bitmaps from probe bytes |
+| 6 | Prefs atomic/escaped/commit-truth + remove/clear (ST-6) | ✅ IMPLEMENTED+TESTED |
+| 7 | SQLite WAL + single databases_dir authority (ST-7) | ✅ IMPLEMENTED+TESTED |
+| 8 | Provider installation stage (S-1) | ✅ IMPLEMENTED+TESTED (launch leg) |
+| 9 | Intent.getData + ApplicationInfo path identity (S-5/S-7/ST-11) | ✅ IMPLEMENTED |
+| 10 | Universal loading trace (FileIoTrace READ/LIST/DELETE/RENAME + provenance) | ✅ EMITTED at every new law |
+| 11 | Synthetic probe covering the APIs the corpus never calls | ✅ 23/23 gate (fixtures/loading_probe) |
+| 12 | Write→read→restart ×3 + real-package persistence | ✅ probe ×3 + opencalc/chess/microtimer/unote trees |
+| 13 | Package isolation | ✅ probe isolation-other-pkg=false + per-package store law |
+| 14 | Working-vs-failing matrix + explanations | ✅ docs/WORKING_VS_FAILING_LOADING_MATRIX.jsonl + WORKING_APP_LOADING_EXPLANATIONS.md |
+| 15 | White-screen first-missing classification (loading vs non-loading) | ✅ docs/WHITE_SCREEN_LOADING_ROOTS.md |
+| 16 | Regression: goldens byte-identical | ✅ opencalc/chess/dooz/microtimer/unote ×3 + telegram ×1 == goldens |
+
+Open frontiers (honest, next campaigns): S-2 native/dlopen, S-4 content://
+query/Cursor, S-11 splits, S-3/S-13 broadcasts/services, SELECTION_FROZEN
+(config/density/fonts), S-10 localStorage, ST-10 sqlite/font provenance
+traces, ST-12 getDir clamp deviation.

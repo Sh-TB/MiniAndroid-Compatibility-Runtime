@@ -268,3 +268,66 @@ glyph coverage on host DejaVu; large-asset (>4MiB) behavior in real apps.
 **COMMON ROOTS REMAINING:** the 7 families of §5 — fix order = fan-out rank: FD_AND_STREAM_VOID
 and FAKE-SUCCESS_RESOLUTION first (they gate persistence, assets, media, decodeStream),
 then COMPONENT_CONTRACT_MISSING (providers), then PATH_LAW_INCOMPLETENESS.
+
+---
+
+## 9. IMPLEMENTATION WAVE (LOADING-CAMPAIGN, 2026-10-03, HEAD = this commit)
+
+The P0 class of §4 is now IMPLEMENTED + runtime-proven (no package-specific
+code; every law cites AOSP):
+
+| Root | Fix (generic) | Runtime proof |
+|---|---|---|
+| ST-1 abs-path hijack | EXP-043 stub DELETED; R-NEW-347 + F-NEW-234 branch now reachable | probe `abs-ok=true` (`/data/user/0/...` answers verbatim) |
+| ST-2 write family void | FileOutputStream/FileWriter/BAOS ctor+write/flush/close; Context openFileOutput(MODE_APPEND honored)/openFileInput/fileList/deleteFile; File delete/renameTo/length(J)/isFile/list/listFiles | `write-length=14`; `probe.txt` 14B on store; `ren-dst-length=13`; `deleteFile-again=false` |
+| ST-4 containment + alias | ONE `Storage::resolve_android_path` law (SANDBOX_DATA / INSTALLED_APK / VIRTUAL_EXTERNAL / SYSTEM_IMAGE / DEVICE_NODE / DENIED_HOST_PATH); `/data/user/0` ≡ `/data/data` | `host-deny=FNFE-HONEST`; `/etc` mkdirs=false; `/home` list=null; `alias-exists=true`; `/dev/urandom` ALLOWED (AOSP sepolicy-legal) |
+| R-1 asset fake-success | APK-entry existence check at BOTH open sites → FileNotFoundException; provenance recorded | `asset-missing=FNFE-HONEST` |
+| R-5 popen(unzip) + 4MiB fake-EOF | in-process ZIP extraction only; 256MiB honest refusal; char-device read law | no unzip subprocess in any trace; `urandom-read=OK` |
+| R-7 AssetManager.list | real ZIP namespace; missing dir → null (AOSP quirk) | `asset-list-has-text=1`; nested len=1 |
+| R-2 FD family void | openFd (stored-only law) → AssetFileDescriptor + REAL host fd; AFD getStartOffset/getLength (INT64)/createInputStream; ParcelFileDescriptor open/getFd/dup/close; openRawResourceFd | `openFd off=7417 len=75`; `afd-bytes=75`; magic `89 50` |
+| R-10 decodeStream | engine-registered stream-bytes resolver drains open_assets_ sources → decoder | `decodeStream=8x8` |
+| ST-5 decodeFile/spellings | decodeFile through the path law | `decodeFile=8x8` (75B png written via the write family) |
+| ST-6 prefs | atomic tmp+rename, XML-escaped names+values (+unescape on read), commit() = real result, remove/clear real | `prefs-esc=a<b>&c"d'e` round-trip; `prefs-clear-killed-esc=1` |
+| ST-7 SQLite authority+WAL | set_package_info setter REMOVED (one authority: set_context_package); real `PRAGMA journal_mode=WAL` on request | `-wal`/`-shm` files on microtimer store; `probe_db.sqlite` |
+| S-1 provider stage | `install_content_providers()` at bind entry (BOTH default + custom app paths); manifest `<provider>` parse; real DEX `<init>`+onCreate | `provider-ran=1`; `[S1-PROVIDER] installed ... onCreate OK` |
+| S-5 Intent.getData | returns the recorded Uri object | code law (android_shadows) |
+| S-7/ST-11 ApplicationInfo | dataDir (logical `/data/data/<pkg>`), credentialProtected, deviceProtected (`/data/user_de/0`), processName, className seeded | seeded fields on the AI singleton |
+| ST-2/ST-4 File metadata | length/lastModified `()J` INT64 register-pair law; isFile; delete/renameTo real; list/listFiles with null-when-not-dir | `ren-dst-length=13`; `ren-dst-isFile=true` |
+
+### Probe-discovered NEW LAWS (registered; see docs/LOADING_FAILURE_DIAGNOSTICS.md)
+
+1. `InputStream.read(byte[]) ≡ read(b,0,b.length)` fill law (the 2-arg
+   overload must fill the caller's array — previously the single-byte law
+   answered, leaving buffers unwritten → 0-byte sinks).
+2. `java.io.ByteArrayOutputStream` family (ctor/write/toByteArray/size/reset).
+3. `String(byte[])` ctors materialize onto the receiver object via the
+   `__string_value__` convention (new-instance identity law).
+4. `File.length()/lastModified()` + AFD `getStartOffset()/getLength()` are
+   `()J` — INT64 register-pair law (INT32 answers read as 0).
+
+## 10. PROBE + REGRESSION RESULTS (the wave's runtime evidence)
+
+- **Synthetic probe gate: 23/23 ALL PASS** (`scripts/loading_probe_runner.sh`)
+  — build → install → 3 runs on ONE store (restart law) → asserts on the
+  rendered probe text + store tree + file-IO JSONL.
+- **Restart persistence**: prefs counter 1→2→3 across restarts; probe.txt /
+  img_copy.png (75B) / ren-dst.txt / probe_db.sqlite persisted in
+  `<store>/data/data/com.probe.loading/`.
+- **Real-package restart proof**: 3 gate runs on one store leave persisted
+  state per package — opencalc `<pkg>_preferences.xml`, chess
+  `chess_pgn.db`+`ChessPlayer.xml`, microtimer `app-data(-wal/-shm)`, unote
+  `notes.db` (docs/INSTALL_TREE_PROOF.jsonl).
+- **Regression (goldens byte-identical, zero drift)**: opencalc
+  `e364b001ee7abd66` ×3, chess `b5a7a35d5fe0564b` ×3, dooz
+  `d602648e8e401895` ×3, microtimer `da73010a37dd0189` ×3, unote
+  `4f1a9e4e8f64fae8` ×3, telegram `bbb6cd10a834963d` ×1
+  (`scripts/working_vs_failing_probe.sh`).
+
+**Verdict**: the byte-loading architecture is no longer materially
+incomplete at the P0 class — install identity (previous wave) + write/read
+families + asset contract + FD layer + path law + provider stage now have
+AOSP-shaped, runtime-proven implementations. Remaining frontiers (honest):
+S-2 native/dlopen layer, S-4 content:// query/Cursor, S-11 split APKs,
+S-3/S-13 broadcasts/services, SELECTION_FROZEN (config/density/fonts),
+S-10 localStorage — each with a deterministic synthetic probe still to run
+before any implementation claim.

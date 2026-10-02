@@ -161,6 +161,18 @@ framework::CallResult DatabaseShadow::open_helper_database(uint32_t helper_oid,
     }
     st.db = raw;
 
+    // ST-7 FIX (LOADING-CAMPAIGN): a helper constructed with the WAL request
+    // (setWriteAheadLoggingEnabled BEFORE first open) applies the REAL
+    // pragma at open — the -wal file then visibly exists while connections
+    // are open, matching the AOSP SQLiteOpenHelper.enableWriteAheadLogging
+    // contract; isWriteAheadLoggingEnabled answers the real state.
+    if (h->wal_requested) {
+        char* wal_err = nullptr;
+        sqlite3_exec(raw, "PRAGMA journal_mode=WAL;", nullptr, nullptr, &wal_err);
+        st.wal_enabled = true;
+        if (wal_err) sqlite3_free(wal_err);
+    }
+
     // Version gate — real PRAGMA user_version, matching AOSP SQLiteOpenHelper.
     int uv = 0;
     {
@@ -258,8 +270,28 @@ framework::CallResult DatabaseShadow::helper_dispatch(const framework::CallConte
     if (m == "setWriteAheadLoggingEnabled") {
         HelperState* h = helper_of(this_oid);
         if (h && !ctx.args.empty()) h->wal_requested = ctx.args[0].bool_val;
-        // Journal mode intentionally left default for byte-determinism; the
-        // flag is recorded for isOpen/isWriteAheadLoggingEnabled law answers.
+        // ST-7 FIX (LOADING-CAMPAIGN): when the database is ALREADY open the
+        // request applies NOW (AOSP SQLiteDatabase.enableWriteAheadLogging
+        // contract) — the journal mode is a real PRAGMA, not a recorded-only
+        // flag. Byte-determinism: WAL only when the app explicitly requests
+        // it, exactly like AOSP.
+        if (h && h->db_oid) {
+            DbState* st = db_of(h->db_oid);
+            if (st && st->db) {
+                char* err = nullptr;
+                if (h->wal_requested) {
+                    sqlite3_exec(st->db, "PRAGMA journal_mode=WAL;", nullptr,
+                                 nullptr, &err);
+                    st->wal_enabled = true;
+                    if (err) sqlite3_free(err);
+                } else {
+                    sqlite3_exec(st->db, "PRAGMA journal_mode=DELETE;", nullptr,
+                                 nullptr, &err);
+                    st->wal_enabled = false;
+                    if (err) sqlite3_free(err);
+                }
+            }
+        }
         return framework::CallResult::handled_void();
     }
     if (m == "close") {

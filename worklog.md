@@ -5846,3 +5846,71 @@ Stage Summary:
   comment 5959628673. Audit verdict stands: REAL installed-package filesystem MODEL,
   byte-loading architecture materially incomplete; fix queue head = FD_AND_STREAM_VOID
   + FAKE-SUCCESS_RESOLUTION, then COMPONENT_CONTRACT_MISSING, PATH_LAW_INCOMPLETENESS.
+
+---
+Task ID: LOADING-EXEC (implementation wave of the FILE/RESOURCE/MEDIA loading campaign)
+Agent: Super Z (main)
+Task: MASTER EXECUTION REQUEST — move LOAD-AUDIT from documentation to
+IMPLEMENTATION + RUNTIME PROOF + WORKING/FAILING COMPARISON + REGRESSION.
+Fix the generic runtime so apps load files/resources/assets/images/DBs/prefs
+through coherent Android-like semantics; close host-escape; prove WHY working
+apps worked; classify white screens by first-missing stage.
+
+Work Log:
+- IMPLEMENTED (all generic, AOSP-cited): ONE path law
+  (Storage::resolve_android_path with category contract + user-0 alias +
+  /dev device-node allowlist); ST-1 hijack deletion; File metadata/write
+  family (delete/renameTo/length(J)/isFile/lastModified/list/listFiles);
+  FileOutputStream/FileWriter + Context openFileOutput(MODE_APPEND)/
+  openFileInput/fileList/deleteFile; asset contract (existence check at both
+  open sites → FileNotFoundException; list(); openFd stored-only → AFD +
+  REAL host fd; openRawResourceFd); ParcelFileDescriptor open/getFd/dup/
+  close; cached_asset_bytes: popen(unzip) REMOVED → in-process ZIP; 4MiB
+  fake-EOF → 256MiB honest refusal + char-device bounded read; decodeStream
+  via engine-registered stream-bytes resolver; decodeFile through path law;
+  prefs atomic tmp+rename + XML escape/unescape + honest commit + real
+  remove/clear; SQLite real WAL pragma + single databases_dir authority
+  (set_package_info setter removed); provider install stage at bind entry
+  (manifest <provider> parse + DEX <init>+onCreate on EVERY bind path);
+  Intent.getData returns recorded Uri; ApplicationInfo dataDir/
+  deviceProtected/credentialProtected/processName/className seeded;
+  FileIoTrace READ/LIST/DELETE/RENAME emitted.
+- PROBE-DRIVEN NEW LAWS: read(byte[]) fill law (2-arg overload fell to the
+  single-byte law → unwritten buffers → 0-byte sinks); ByteArrayOutputStream
+  family; String(byte[]) __string_value__ materialization; ()J INT64
+  register-pair law (File.length/lastModified/AFD getters); /dev/urandom
+  bounded char-device read. All recorded in docs/LOADING_FAILURE_DIAGNOSTICS.md.
+- SYNTHETIC PROBE: fixtures/loading_probe (aapt2+ECJ+D8; provider + 18 probe
+  groups incl. asset existing/missing/nested/list/openFd/AFD-stream/
+  decodeStream/decodeFile, write→read→restart, alias, containment, urandom,
+  isolation, raw, prefs escape/clear, SQLite, external) — gate
+  scripts/loading_probe_runner.sh **23/23 ALL PASS** (prefs-runs 1→2→3).
+- BUILD FIX during wave: build_fixture_apk.sh aapt2 branch DROPPED assets/ —
+  fixed (stored entries); toolchain re-fetched (ecj 3.36.0, android-34 Sable,
+  aapt2 8.13.2 Google Maven).
+- WORKING-vs-FAILING: docs/WORKING_VS_FAILING_LOADING_MATRIX.jsonl (8 rows) +
+  WORKING_APP_LOADING_EXPLANATIONS.md — the working apps' traces show they
+  stayed inside pre-campaign capabilities (SQLite/prefs/assets-existing/
+  ARSC) and never called the voided APIs; failing-class white screens carry
+  non-loading first-missing stages (docs/WHITE_SCREEN_LOADING_ROOTS.md).
+- REGRESSION (zero drift): opencalc e364b001ee7abd66 ×3 / chess
+  b5a7a35d5fe0564b ×3 / dooz d602648e8e401895 ×3 / microtimer
+  da73010a37dd0189 ×3 / unote 4f1a9e4e8f64fae8 ×3 / telegram
+  bbb6cd10a834963d ×1 — ALL byte-identical to goldens with the full fix wave
+  in (scripts/working_vs_failing_probe.sh).
+- DELIVERABLES: LOADING_API_COVERAGE_MATRIX.jsonl (38 APIs),
+  AUDIT_REQUIREMENT_COVERAGE.jsonl, INSTALL_TREE_PROOF.jsonl,
+  LOADING_RUNTIME_TRACE.jsonl, LOADING_ROOT_FANOUT.md,
+  LOADING_FAILURE_DIAGNOSTICS.md, WHITE_SCREEN_LOADING_ROOTS.md,
+  storage_tree_proof.sh; FILE_RESOURCE_LOADING_COMPATIBILITY §9/§10;
+  FINAL_COMPATIBILITY_CAMPAIGN §16; CAMPAIGN_STATE wave entry;
+  root_registry R-NEW-457 (529→530).
+
+Stage Summary:
+- The P0 byte-loading class is IMPLEMENTED + runtime-proven: install identity
+  (F-NEW-231/234) + write/read families + asset contract + FD layer + ONE
+  path law + provider stage, all with provenance and honest failure
+  contracts. Goldens byte-identical — no package-specific anything.
+- Open frontiers (honest): S-2 dlopen/JNI, S-4 content:// query/Cursor,
+  S-11 splits, S-3/S-13 broadcasts/services, SELECTION_FROZEN, S-10
+  localStorage, ST-10 sqlite/font provenance.

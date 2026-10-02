@@ -23,6 +23,7 @@
 #include "../resources/res_config.h"    // G04 §4: device_config() (inTargetDensity)
 #include "../storage/sqlite_shadow.h"   // M3 F-ROOM-CHAIN: databases dir wiring
 #include "../storage/data_root.h"       // M3 FINDING-012: app-data root law
+#include <fstream>                      // LOADING-CAMPAIGN (ST-2): OpenWriter.ofstream
 // EXP-051: Shadow registry forward-declarations.
 namespace miniandroid { namespace framework {
 class ShadowRegistry;
@@ -1279,6 +1280,13 @@ public:
     }
     // EXP-071 Phase 6: Set the APK path so AssetManager.open can read assets.
     void set_apk_path(const std::string& path) { apk_path_ = path; }
+    // S-1 FIX (LOADING-CAMPAIGN): the manifest <provider> class list (AOSP
+    // ActivityThread.installContentProviders order — providers instantiate
+    // and run onCreate BEFORE Application.onCreate; androidx.startup
+    // InitializationProvider depends on this window).
+    void set_manifest_providers(std::vector<std::string> classes) {
+        manifest_providers_ = std::move(classes);
+    }
     // F-116 (R-NEW-384 family): manifest <meta-data> tables for the
     // PackageManager.getActivityInfo().metaData law (AOSP PackageItemInfo).
     void set_activity_meta_data(
@@ -1291,20 +1299,13 @@ public:
     // EXP-093/F011: Manifest-derived package identity
     void set_package_info(const std::string& pkg, int vcode, const std::string& vname) {
         package_name_ = pkg; version_code_ = vcode; version_name_ = vname;
-        // M3 F-ROOM-CHAIN: aim the SQLite shadow at this app's databases dir
-        // (sandbox law: <root>/<package>/databases/<name> — mirrors
-        // /data/data/<pkg>/databases on a device; per-run sandbox => the
-        // harness controls the initial DB state for deterministic goldens).
-        if (!pkg.empty()) {
-            // M3 FINDING-012: the sandbox ROOT obeys the process-wide
-            // app-data root (default runtime/data, overridable via
-            // --data-root / MINIANDROID_DATA_ROOT) — the engine must not
-            // hardcode the CWD-relative literal anymore.
-            storage::DatabaseShadow::set_databases_dir(
-                (std::filesystem::path(Storage::app_data_root()) / pkg /
-                 "databases")
-                    .string());
-        }
+        // ST-7 FIX (LOADING-CAMPAIGN) — ONE DATA ROOT LAW: the databases_dir
+        // authority is Storage::set_context_package (F-NEW-234, called by the
+        // runtime right after this). The OLD setter here aimed the SQLite
+        // shadow at the pre-F-NEW-234 flat shape <root>/<pkg>/databases — a
+        // competing second authority that order-dependently fought the
+        // per-package law. REMOVED: no storage consumer may set its own
+        // data root; they all obey the one binding stage.
     }
 
     // EXP-038 (BLOCKER-033): Build class→DEX index map from DexReport.
@@ -2587,6 +2588,26 @@ public:
     std::map<std::string, int> permission_state_;
     // Map: heap object_id (InputStream) → (asset_name, line_index)
     std::map<uint32_t, std::pair<std::string, size_t>> open_assets_;
+    // LOADING-CAMPAIGN (ST-2 FIX): open WRITE streams. heap object_id
+    // (FileOutputStream/FileWriter) → (host backing path, append mode,
+    // live output stream). Writes are REAL; close/flush persists; the
+    // run-end flush_finalizers() drains anything left open (AOSP: streams
+    // close at process death, data hits the page cache).
+    struct OpenWriter {
+        std::string host_path;
+        bool append = false;
+        std::ofstream out;
+        bool ever_opened = false;
+    };
+    std::map<uint32_t, OpenWriter> open_writers_;
+    // LOADING-CAMPAIGN: ByteArrayOutputStream buffers (heap oid → bytes).
+    std::map<uint32_t, std::string> baos_buffers_;
+    // LOADING-CAMPAIGN: drain pending writes at run end (idempotent).
+    void flush_finalizers();
+    // S-1 FIX: manifest <provider> classes (install stage, AOSP order).
+    std::vector<std::string> manifest_providers_;
+    // S-1 FIX: the provider install stage (runs at bind entry, every path).
+    void install_content_providers(DalvikExecutionResult& result);
     // FINAL CANONICAL MASTER RECONCILIATION Pass-3 (K-34): full asset bytes
     // extracted once per path and cached, so InputStream.read()/available()
     // (and readLine) read REAL bytes without re-running `unzip -p` per call.

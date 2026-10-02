@@ -4,6 +4,7 @@
 #include "../diagnostics/gfx_provenance.h"
 #include "../renderer/software_renderer.h"
 #include "../resources/res_config.h"
+#include "../storage/data_root.h"  // LOADING-CAMPAIGN: ONE path law (ST-5 fix)
 
 #include <algorithm>
 #include <cmath>
@@ -58,8 +59,20 @@ static BitmapShadow::DrawableBytesResolver& resolver_slot() {
 void BitmapShadow::set_drawable_bytes_resolver(DrawableBytesResolver fn) {
     resolver_slot() = std::move(fn);
 }
+
+// LOADING-CAMPAIGN (R-10 FIX): stream-bytes resolver slot (engine-registered).
+static BitmapShadow::StreamBytesResolver& stream_resolver_slot() {
+    static BitmapShadow::StreamBytesResolver fn;
+    return fn;
+}
+void BitmapShadow::set_stream_bytes_resolver(StreamBytesResolver fn) {
+    stream_resolver_slot() = std::move(fn);
+}
 const BitmapShadow::DrawableBytesResolver& BitmapShadow::drawable_bytes_resolver() {
     return resolver_slot();
+}
+const BitmapShadow::StreamBytesResolver& BitmapShadow::stream_bytes_resolver() {
+    return stream_resolver_slot();
 }
 
 uint32_t BitmapShadow::decode_and_register(const std::vector<uint8_t>& bytes,
@@ -167,13 +180,23 @@ CallResult BitmapShadow::dispatch(const CallContext& ctx) {
         if (m == "decodeFile") {
             const std::string path = ctx.arg_as_string(0, "");
             if (path.empty()) return CallResult::handled_null();
-            // APK-embedded entries are extracted through the engine's APK
-            // parser via the resolver hook ONLY for resids. Files on disk
-            // (app data) go through stdio per AOSP decodeFile law.
-            FILE* f = fopen(path.c_str(), "rb");
+            // LOADING-CAMPAIGN (ST-5 FIX): the ONE path-law translation —
+            // Android logical paths (/data/…, /storage/emulated/0/…, /data/
+            // user/0/… alias) map to the sandbox backing; DENIED absolute
+            // host paths answer the AOSP contract (null + loud diagnostic,
+            // never a host read). Previously this opened the raw string as
+            // a HOST path (the two external-storage spellings broke here).
+            Storage::PathResolution pr = Storage::resolve_android_path(path);
+            if (!pr.allowed) {
+                std::cerr << "[BITMAP-FACTORY] decodeFile DENIED (outside app"
+                             " namespace): " << path << std::endl;
+                return CallResult::handled_null();
+            }
+            FILE* f = fopen(pr.host_path.string().c_str(), "rb");
             if (!f) {
-                std::cerr << "[BITMAP-FACTORY] decodeFile open FAILED: " << path
-                          << std::endl;
+                std::cerr << "[BITMAP-FACTORY] decodeFile open FAILED: "
+                          << pr.host_path.string() << " (logical " << path
+                          << ")" << std::endl;
                 return CallResult::handled_null();
             }
             std::vector<uint8_t> bytes;
@@ -187,12 +210,32 @@ CallResult BitmapShadow::dispatch(const CallContext& ctx) {
             return CallResult::handled_object(bmp, "Landroid/graphics/Bitmap;");
         }
         if (m == "decodeStream") {
-            // InputStream bytes are not yet materializable for arbitrary
-            // streams (Contract: registered, not silently dropped).
-            std::cerr << "[BITMAP-FACTORY] decodeStream: InputStream contents "
-                      << "not materializable — EXPLICIT-UNSUPPORTED -> null"
-                      << std::endl;
-            return CallResult::handled_null();
+            // LOADING-CAMPAIGN (R-10 FIX): AOSP decodeStream is the canonical
+            // asset/network→bitmap path. The engine-registered resolver
+            // drains the stream object's REAL bytes (asset / sandbox file /
+            // AFD-backed sources through open_assets_); a failed decode or
+            // an unresolvable stream answers null LOUDLY (AOSP: null only
+            // for non-image data — never for "stream type unsupported").
+            const uint32_t stream_id = ctx.arg_as_object(0, 0);
+            if (stream_id == 0) return CallResult::handled_null();
+            if (!stream_bytes_resolver()) {
+                std::cerr << "[BITMAP-FACTORY] decodeStream: no stream-bytes"
+                             " resolver registered — EXPLICIT-UNSUPPORTED -> null"
+                          << std::endl;
+                return CallResult::handled_null();
+            }
+            std::vector<uint8_t> bytes;
+            std::string source_desc;
+            if (!stream_bytes_resolver()(stream_id, bytes, source_desc) ||
+                bytes.empty()) {
+                std::cerr << "[BITMAP-FACTORY] decodeStream: stream o"
+                          << stream_id << " yielded no bytes (honest null)"
+                          << std::endl;
+                return CallResult::handled_null();
+            }
+            const uint32_t bmp = decode_and_register(bytes, "decodeStream:" + source_desc, heap_);
+            if (bmp == 0) return CallResult::handled_null();
+            return CallResult::handled_object(bmp, "Landroid/graphics/Bitmap;");
         }
         return CallResult::not_handled();
     }

@@ -4314,6 +4314,14 @@
    "aff": "storage law core + dalvik_engine Context family + main.cpp package store + evidence instruments (file_io_trace, gfx byte_source). No rendering change; goldens byte-identical.",
    "apk": "opencalculator_53 / bouncy / telegram_official / chess_jwtc_298 / unote_30 (random) / WhatsApp_real (random)",
    "date": "2026-10-03"
+  },
+  {
+   "id": "R-NEW-457",
+   "title": "LOADING-CAMPAIGN root family: P0 byte-loading contract (ST-1/ST-2/R-1/R-2/R-5/R-7/R-10/ST-4/ST-5/ST-6/ST-7/S-1 launch/S-5/S-7/ST-11)",
+   "status": "IMPLEMENTED+TESTED",
+   "law": "ONE canonical path law (Storage::resolve_android_path: SANDBOX_DATA/INSTALLED_APK/VIRTUAL_EXTERNAL/SYSTEM_IMAGE/DEVICE_NODE/DENIED_HOST_PATH) + AOSP-shaped write family, asset contract (FileNotFoundException), FD layer (AFD/PFD real fds), decodeStream resolver, atomic escaped prefs, real WAL pragma, single databases_dir authority, provider install stage at bind entry, Intent.getData identity, ApplicationInfo path fields. Probe-discovered sub-laws: read(byte[]) fill, BAOS family, String(byte[]) __string_value__ materialization, ()J INT64 register-pair, char-device bounded read.",
+   "evidence": "fixtures/loading_probe 23/23 gate (scripts/loading_probe_runner.sh); prefs-runs 1→2→3 restart; regression goldens byte-identical ×3 (opencalc/chess/dooz/microtimer/unote) + telegram ×1; docs/LOADING_RUNTIME_TRACE.jsonl + LOADING_FAILURE_DIAGNOSTICS.md",
+   "date": "2026-10-03"
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry↔docs single-source-of-truth restored); registry 372→374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots. | S80: three real games (Snake Deluxe, Mini Tetris, 2048) built + played on the runtime; R-NEW-401 external-cache bridge.",

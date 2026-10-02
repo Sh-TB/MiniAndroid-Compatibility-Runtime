@@ -90,6 +90,57 @@ std::filesystem::path external_app_dir(const std::string& kind);
 /// External OBB directory (AOSP Android/obb/<pkg>).
 std::filesystem::path external_obb_dir();
 
+// ═══════════════════════════════════════════════════════════════════════
+// LOADING-CAMPAIGN (2026-10-03) — ONE CANONICAL ANDROID-PATH LAW.
+//
+// AOSP law (frameworks/base + libcore): an application-supplied absolute
+// path is resolved by the KERNEL inside the app's mount namespace. The
+// app can only see:
+//   /data/data/<pkg>  ==  /data/user/0/<pkg>   (user-0 alias, same inode)
+//   /data/user/<id>/<pkg>                        (per-user homes)
+//   /data/user_de/0/<pkg>                        (device-protected)
+//   /data/app/.../<pkg>/base.apk                 (its own installed code)
+//   /storage/emulated/0/...                      (external volume, FUSE)
+//   /system/*, /apex/*, /product/*, /vendor/*    (read-only system image)
+//   a handful of device nodes                    (/dev/urandom, /dev/random,
+//                                                 /dev/null, /dev/zero)
+// ANY OTHER absolute host path (e.g. /etc/passwd, /home, /proc, /tmp on
+// the host) is NOT part of the app's namespace and cannot be opened —
+// attempts answer ABSENT / EACCES, never silent host access.
+//
+// MiniAndroid mapping (the ONE authoritative translation; every consumer
+// — File family, streams, BitmapFactory, SQLite, prefs, fonts, URI — must
+// route through resolve_android_path; no subsystem may invent its own):
+//   /data/{data,user/0,user/<id>,user_de/0}/<pkg>/… → <root>/data/data/<pkg>/…
+//   /data/app/…base.apk                             → <root>/data/app/<pkg>/base.apk
+//   /storage/emulated/0/…                           → <root>/storage/emulated/0/…
+//   /system/fonts/<name>                            → <root>/system/fonts/<name>
+//   /dev/{urandom,random,null,zero}                 → host node (same semantics)
+//   anything else absolute                          → DENIED
+// ═══════════════════════════════════════════════════════════════════════
+
+enum class PathCategory {
+    RELATIVE_APP_DATA,   // relative path — anchored at the package data dir
+    SANDBOX_DATA,        // /data/data|/data/user/<id>|/data/user_de/0 + pkg
+    INSTALLED_APK,       // /data/app/**/base.apk (F-NEW-231 store backing)
+    VIRTUAL_EXTERNAL,    // /storage/emulated/0/**
+    SYSTEM_IMAGE,        // /system/fonts/** (virtual system image backing)
+    DEVICE_NODE,         // /dev/urandom|random|null|zero (host node, AOSP-legal)
+    DENIED_HOST_PATH     // any other absolute host path — NOT in the namespace
+};
+
+struct PathResolution {
+    PathCategory category = PathCategory::DENIED_HOST_PATH;
+    std::filesystem::path host_path;  // the physical backing path (allowed cases)
+    bool allowed = false;             // false → the Android-failure contract
+};
+
+/// THE canonical Android-logical → MiniAndroid-physical mapping.
+/// `logical` may be relative (anchored to the running package data dir —
+/// R-NEW-346/F-NEW-234 sandbox anchor) or absolute (resolved through the
+/// category table above; unknown absolute paths come back DENIED).
+PathResolution resolve_android_path(const std::string& logical);
+
 } // namespace Storage
 
 #endif // MINIANDROID_DATA_ROOT_H
