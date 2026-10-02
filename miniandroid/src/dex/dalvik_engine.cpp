@@ -879,6 +879,60 @@ bool DalvikExecutionEngine::is_subclass_of(const std::string& class_desc,
         m3_path = current;
     }
     if (current == want) return true;
+    // ────────────────────────────────────────────────────────────────────
+    // F-NEW-181 (WAVE C, FINAL CAMPAIGN phases 5/6 — ARRAY TYPE LAW).
+    // ART/JVMS array classification: an array object's runtime type is its
+    // descriptor. Rules implemented (AOSP Class.isAssignableFrom + JVMS
+    // 4.4 assignability):
+    //   • primitive arrays ([B [S [I [J [Z [C [F [D]) are FINAL types —
+    //     instance-of another array type is FALSE (exact match above);
+    //   • [LS; is an instance of [LT; iff S is assignable to T (covariant,
+    //     store-checks guard writes at runtime — AOSP ArrayStoreException);
+    //   • [[X; / any nested array is an instance of [Ljava/lang/Object;,
+    //     [Ljava/lang/Cloneable;, [Ljava/io/Serializable; (and the plain
+    //     Object/Cloneable/Serializable CLASS types);
+    //   • a non-array object is NEVER an instance of an array type;
+    //   • every array IS a java.lang.Object / Cloneable / Serializable.
+    // The engine's synthetic "Larray;" marker (legacy shadow allocations)
+    // is classified as an object array of unknown element: instance of
+    // [Ljava/lang/Object; / Object / Cloneable / Serializable only.
+    // Measured root face: guava RegularImmutableMap.create's duplicate-key
+    // wrapper gate `instance-of v2, [Ljava/lang/Object;` answered FALSE on
+    // a NEW_ARRAY'd wrapper stamped "Larray;" — the wrapper was stored AS
+    // the hash table and the lawful get() probe looped (F-NEW-181 spin).
+    // ────────────────────────────────────────────────────────────────────
+    const auto is_prim_array_desc = [](const std::string& d) {
+        return d.size() >= 2 && d[0] == '[' && d[1] != 'L' && d[1] != '[';
+    };
+    if (!want.empty() && want[0] == '[') {
+        if (is_prim_array_desc(want)) return false;  // final: exact-only
+        std::string Y = want.substr(2, want.size() - 3);  // [LY; → LY;
+        if (current == "Larray;") return (Y == "Ljava/lang/Object;");
+        if (current.size() > 2 && current[0] == '[') {
+            std::string EC = current.substr(1);
+            if (EC[0] == '[')
+                return (Y == "Ljava/lang/Object;" ||
+                        Y == "Ljava/lang/Cloneable;" ||
+                        Y == "Ljava/io/Serializable;");
+            if (EC.size() > 2 && EC[0] == 'L' && EC.back() == ';') {
+                std::string elem = EC.substr(1, EC.size() - 2);
+                if (elem == Y) return true;
+                return is_subclass_of(elem, Y);
+            }
+            return false;  // primitive-element array vs object-array type
+        }
+        return false;  // non-array object vs array type
+    }
+    if (!current.empty() &&
+        (current[0] == '[' || current == "Larray;")) {
+        // array queried against a CLASS type
+        return (want == "Ljava/lang/Object;" ||
+                want == "Ljava/lang/Cloneable;" ||
+                want == "Ljava/io/Serializable;");
+    }
+    if (want == "Ljava/lang/Object;" && !current.empty() &&
+        (current[0] == 'L' || current[0] == '['))
+        return true;  // every reference type is-a Object
     std::unordered_set<std::string> visited;  // cycle protection
     // ────────────────────────────────────────────────────────────────────
     // F-023 (DEX type-closure law — implements hierarchy): instance-of and
@@ -2469,6 +2523,62 @@ bool DalvikExecutionEngine::execute_method_internal(
                 else if (a.type == DalvikType::OBJECT_REF) std::cerr << " obj=" << a.object_id << " cls=" << a.class_desc;
                 else if (a.is_null) std::cerr << " NULL";
                 std::cerr << "}";
+            }
+            std::cerr << std::endl;
+        }
+    }
+    // WAVE C (F-NEW-181) TABLESIZE FEED TRACE — env-gated, bounded.
+    // Names the full feed chain into the map build: chooseTableSize's input,
+    // createHashTable's (alternating, maxSize, tableSize, mask), and the
+    // <init> store (table object identity + length + element provenance).
+    // Evidence law: one instrumented run must NAME the divergence instead
+    // of asserting it.
+    if (std::getenv("MINIANDROID_WAVEC_TRACE")) {
+        static thread_local uint64_t wavec_n = 0;
+        bool wavec_hit = false;
+        const char* wavec_tag = "";
+        if (class_name.find("RegularImmutableMap") != std::string::npos &&
+            method_name == "createHashTable") {
+            wavec_hit = true;
+            wavec_tag = "CHT";
+        } else if (class_name.find("RegularImmutableMap") != std::string::npos &&
+                   method_name == "<init>") {
+            wavec_hit = true;
+            wavec_tag = "INIT";
+        } else if (class_name.find("ImmutableSet") != std::string::npos &&
+                   method_name == "chooseTableSize") {
+            wavec_hit = true;
+            wavec_tag = "CTS";
+        }
+        if (wavec_hit && wavec_n < 64) {
+            ++wavec_n;
+            std::cerr << "[WAVEC-" << wavec_tag << "] #" << wavec_n << " "
+                      << class_name << "." << method_name;
+            for (size_t ai = 0; ai < args.size() && ai < 5; ++ai) {
+                const auto& a = args[ai];
+                if (a.type == DalvikType::OBJECT_REF) {
+                    std::cerr << " p" << ai << "=o" << a.object_id;
+                    if (heap_.has_object(a.object_id)) {
+                        const auto* ho = heap_.get(a.object_id);
+                        if (ho) {
+                            std::cerr << "<" << ho->class_descriptor << ">";
+                            auto lf = heap_.get_object_field(
+                                a.object_id, "__array_length__");
+                            if (lf.has_value() && lf->type == DalvikType::INT32)
+                                std::cerr << " len=" << lf->int_val;
+                            auto et = heap_.get_object_field(
+                                a.object_id, "__element_type__");
+                            if (et.has_value() &&
+                                et->type == DalvikType::STRING_REF)
+                                std::cerr << " elem=" << et->string_val;
+                        }
+                    }
+                } else if (a.type == DalvikType::INT32)
+                    std::cerr << " p" << ai << "=" << a.int_val;
+                else if (a.is_null)
+                    std::cerr << " p" << ai << "=NULL";
+                else
+                    std::cerr << " p" << ai << "=t" << (int)a.type;
             }
             std::cerr << std::endl;
         }
@@ -4090,6 +4200,83 @@ void DalvikExecutionEngine::run_activity_default_init(const std::string& cls,
         }
     } catch (const std::exception& e) {
         log(std::string("⚠️ activity <init> dispatch skipped: ") + e.what());
+    }
+    // ── F-NEW-169 (FINAL CAMPAIGN PHASE 4 — activity attach law) ────────
+    // AOSP ActivityThread.performLaunchActivity: after newInstance (the
+    // <init> above) and BEFORE onCreate, activity.attach(...) drives
+    // attachBaseContext(base) — the VIRTUAL dispatch lands on the app's
+    // override when one exists. The app-level attachBaseContext is the
+    // canonical attach-time state setup point:
+    //   • WhatsApp LX/0IH override = the DI members-injector (stores the
+    //     lattice providers via LX/00C;.A02(slotId) into A01/A0H/A03/A0I/
+    //     A0F/A0B). Without the attach step the fields stay NULL and
+    //     onCreate reads them → NPE 'Map.get on null object reference'
+    //     (0IH.onCreate pc=14) → Main.onCreate catch-all rethrow BEFORE
+    //     super.onCreate → the FragmentManager host is never attached →
+    //     the onResume/onStart ISE family ('FragmentManager has not been
+    //     attached to a host.' / 'No activity') — the FULL cascade.
+    //   • Chains without an override resolve up to the framework boundary
+    //     (ContextWrapper.attachBaseContext — the F-NEW-166 base-context
+    //     law serves it, recording mBase) — identical observable outcome
+    //     to the previous shadow-state seeding.
+    // Ordering law: <init> → attachBaseContext → [pre-created fan-out] →
+    // onCreate. try_recursive_invoke=false = no override in the DEX chain
+    // (framework boundary serves the contract) — honest no-op, not an
+    // error.
+    {
+        DalvikValue athis =
+            DalvikValue::make_object(activity_obj_id, cls);
+        DalvikValue aret;
+        std::vector<DalvikValue> attach_args;
+        attach_args.push_back(athis);
+        // F-NEW-184 base-context law: the engine's Context identity is the
+        // bound object itself (the same convention the Application bind
+        // uses) — never null.
+        attach_args.push_back(athis);
+        try {
+            bool aok = try_recursive_invoke(cls, "attachBaseContext",
+                                            attach_args, aret, result);
+            if (!aok)
+                aok = try_recursive_invoke_on_super(
+                    cls, "attachBaseContext", attach_args, aret, result, "");
+            // F-NEW-169 evidence: if the attach override was not reached,
+            // dump the DEX superclass chain the climb walked (bounded 16)
+            // so the resolution gap is NAMED, not guessed.
+            if (!aok && std::getenv("MINIANDROID_WAVEC_TRACE")) {
+                std::cerr << "[WAVEC-ATTACH-CHAIN] " << cls << ":";
+                std::string walk = cls;
+                for (int hop = 0; hop < 16; ++hop) {
+                    auto sit = class_to_superclass_.find(walk);
+                    if (sit == class_to_superclass_.end()) {
+                        std::cerr << " (no-super-for=" << walk << ")";
+                        break;
+                    }
+                    walk = sit->second;
+                    std::cerr << " -> " << walk;
+                    if (walk.empty() || walk == "Ljava/lang/Object;") break;
+                }
+                std::cerr << std::endl;
+            }
+            // F-NEW-169 decisive evidence: read the DI fields the override
+            // must have stored. If A0B is still null after a successful
+            // dispatch, the attach died partway (its NPE is deferred).
+            if (std::getenv("MINIANDROID_WAVEC_TRACE")) {
+                for (const char* fn : {"A0B", "A03", "A05"}) {
+                    auto fv = heap_.get_object_field(activity_obj_id, fn);
+                    std::cerr << "[WAVEC-ATTACH-FIELD] " << cls << " obj#"
+                              << activity_obj_id << " " << fn << " = "
+                              << (fv.has_value() ? dalvik_value_to_string(*fv)
+                                                 : "<no-field>")
+                              << std::endl;
+                }
+            }
+            log(std::string("✅ F-NEW-169 activity attachBaseContext ") +
+                (aok ? "executed (app override ran)"
+                     : "not declared in DEX chain (framework boundary serves)"));
+        } catch (const std::exception& e) {
+            log(std::string("⚠️ activity attachBaseContext dispatch skipped: ") +
+                e.what());
+        }
     }
 }
 
@@ -10795,12 +10982,33 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 int32_t array_size = dalvik_int_value(size_val);
                 if (array_size < 0) array_size = 0;
 
+                // F-NEW-181 (WAVE C, FINAL CAMPAIGN phase 5/6 law — array
+                // runtime identity): NEW_ARRAY was the ONLY array producer
+                // that discarded the resolved element-type descriptor and
+                // stamped every array with the synthetic "Larray;" marker.
+                // filled-new-array already stores the REAL descriptor (the
+                // in-tree precedent). The divergence is observable: guava's
+                // RegularImmutableMap.create gates the duplicate-key wrapper
+                // with `instance-of v2, [Ljava/lang/Object;` — with the
+                // wrapper stamped "Larray;", is_subclass_of answered FALSE,
+                // the Object[3] wrapper {partialTable, insertedCount,
+                // duplicateEntry} was stored AS the map's hash table, and
+                // the lawful get() probe looped forever on a non-table
+                // (F-NEW-181 spin, PC=0x6f). ART law: an array object's
+                // runtime class IS its descriptor ([B, [S, [I,
+                // [Ljava/lang/Object;, ...). Record the real descriptor on
+                // the heap object AND in the register's class_desc.
+                std::string na_type_desc =
+                    resolve_type_for_dex(type_idx, current_dex_index_);
+
                 // Allocate array object on heap (simplified — just store as OBJECT_REF)
-                uint32_t obj_id = heap_.allocate("Larray;", pc_, 0);
+                uint32_t obj_id = heap_.allocate(
+                    na_type_desc.empty() ? "Larray;" : na_type_desc, pc_, 0);
                 DalvikValue result_val;
                 result_val.type = DalvikType::OBJECT_REF;
                 result_val.object_id = obj_id;
-                result_val.class_desc = "Larray;";
+                result_val.class_desc =
+                    na_type_desc.empty() ? "Larray;" : na_type_desc.c_str();
                 result_val.int_val = array_size;  // store size in int_val for convenience
                 set_register(vA, result_val);
 
@@ -10814,6 +11022,11 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                         DalvikValue::make_int(array_size));
                     heap_.set_object_field(obj_id, "__array_length__",
                         DalvikValue::make_int(array_size));
+                    // F-NEW-181: element-type provenance for heap-side
+                    // classification (SPIN probes, get_object_class law).
+                    if (!na_type_desc.empty())
+                        heap_.set_object_field(obj_id, "__element_type__",
+                            DalvikValue::make_string(na_type_desc, 0));
                 }
 
                 // EXP-066: Use per-DEX type resolution for trace evidence.
@@ -20510,6 +20723,44 @@ void DalvikExecutionEngine::seed_framework_device_statics() {
     seed("Landroid/os/Build;.HARDWARE", DalvikValue::make_string("miniandroid", 0));
     seed("Landroid/os/Build;.FINGERPRINT", DalvikValue::make_string("MiniAndroid/miniandroid/miniandroid:14/MINI.20260905/0:userdebug/test-keys", 0));
     seed("Landroid/os/Build;.SERIAL", DalvikValue::make_string("miniandroid", 0));
+    // F-NEW-190 (FINAL CAMPAIGN PHASE 4 — device/context identity, AOSP
+    // Build ABI law): Build.SUPPORTED_ABIS / SUPPORTED_64_BIT_ABIS /
+    // SUPPORTED_32_BIT_ABIS / CPU_ABI / CPU_ABI2 are framework statics fed
+    // from ro.product.cpu.abilist on a real device — NEVER null/empty on
+    // any Android build. The runtime models an arm64 android-34 device
+    // (SDK_INT=34 + fingerprint above); the list follows the AOSP
+    // emulator-equivalent arm64 primary order. Measured face (WhatsApp
+    // LX/0Cz;.A01 ×3): the app's own ABI utility threw ISE "No supported
+    // ABIs found on this device" — the absent static made its fallback
+    // classify the device as unsupported.
+    {
+        auto seed_array = [this, &seed](const std::string& key,
+                                        const std::vector<std::string>& items) {
+            uint32_t arr_id = heap_.allocate("[Ljava/lang/String;", 0, 0);
+            DalvikValue len = DalvikValue::make_int((int32_t)items.size());
+            heap_.set_object_field(arr_id, "__array_length__", len);
+            heap_.set_object_field(arr_id, "__new_array_length__", len);
+            heap_.set_object_field(arr_id, "__element_type__",
+                DalvikValue::make_string("[Ljava/lang/String;", 0));
+            for (size_t i = 0; i < items.size(); ++i)
+                heap_.set_object_field(arr_id, "array[" + std::to_string(i) + "]",
+                                       DalvikValue::make_string(items[i], 0));
+            DalvikValue av;
+            av.type = DalvikType::OBJECT_REF;
+            av.object_id = arr_id;
+            av.class_desc = "[Ljava/lang/String;";
+            seed(key, av);
+        };
+        seed_array("Landroid/os/Build;.SUPPORTED_ABIS",
+                   {"arm64-v8a", "armeabi-v7a", "armeabi"});
+        seed_array("Landroid/os/Build;.SUPPORTED_64_BIT_ABIS", {"arm64-v8a"});
+        seed_array("Landroid/os/Build;.SUPPORTED_32_BIT_ABIS",
+                   {"armeabi-v7a", "armeabi"});
+        seed("Landroid/os/Build;.CPU_ABI",
+             DalvikValue::make_string("arm64-v8a", 0));
+        seed("Landroid/os/Build;.CPU_ABI2",
+             DalvikValue::make_string("armeabi-v7a", 0));
+    }
     // AOSP: Settings.Secure.ANDROID_ID == the column name "android_id".
     seed("Landroid/provider/Settings$Secure;.ANDROID_ID", DalvikValue::make_string("android_id", 0));
     // Deterministic virtual-device ANDROID_ID (16 lowercase hex chars,
@@ -33513,11 +33764,44 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
 
     // ────────────────────────────────────────────────────────────────────────
     // EXP-043 Phase 3: Context.getApplicationInfo → ApplicationInfo singleton
+    // F-NEW-190 (PHASE 4 device identity, AOSP PackageParser law): a real
+    // ApplicationInfo carries primaryCpuAbi (the ABI the package was
+    // installed for) and nativeLibraryDir (the ABI-scoped lib dir) — both
+    // are set at install time by the framework, never null for a
+    // normal install. SoLoader's ABI recorder (WhatsApp LX/0Dl;.A01
+    // evidence) reads primaryCpuAbi REFLECTIVELY
+    // (getDeclaredField("primaryCpuAbi")), passes it to its recorder, and
+    // NPEs 'String.equals on null' when absent.
     // ────────────────────────────────────────────────────────────────────────
     if (method == "getApplicationInfo" &&
         (class_name.find("Context") != std::string::npos ||
          class_name.find("Activity") != std::string::npos)) {
         result = get_or_create_singleton("Landroid/content/pm/ApplicationInfo;");
+        if (result.type == DalvikType::OBJECT_REF &&
+            heap_.has_object(result.object_id)) {
+            // F-NEW-190 (PHASE 4 device identity, AOSP PackageParser +
+            // LoadedApk laws): the install-time ApplicationInfo identity.
+            // A real device NEVER serves null for these — a normal install
+            // records: sourceDir (the APK path), dataDir, nativeLibraryDir
+            // (ABI-scoped lib dir), primaryCpuAbi. WhatsApp's SoLoader
+            // (LX/0EU;.CKw) reads sourceDir DIRECTLY and passed null to
+            // its ABI recorder (LX/0Dl;.A01 NPE 'String.equals on null').
+            auto seed_ai = [&](const char* fn, const std::string& val) {
+                auto cur = heap_.get_object_field(result.object_id, fn);
+                if (!cur.has_value() ||
+                    (cur->type != DalvikType::STRING_REF &&
+                     cur->type != DalvikType::OBJECT_REF))
+                    heap_.set_object_field(result.object_id, fn,
+                                           DalvikValue::make_string(val, 0));
+            };
+            if (!apk_path_.empty())
+                seed_ai("sourceDir", apk_path_);
+            seed_ai("publicSourceDir",
+                    apk_path_.empty() ? "/data/app/base.apk" : apk_path_);
+            seed_ai("nativeLibraryDir",
+                    "/data/app/~~miniandroid/base/lib/arm64");
+            seed_ai("primaryCpuAbi", "arm64-v8a");
+        }
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
@@ -35718,6 +36002,33 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 const std::string r500_qkey = s134_dex_field_key(
                     r500_decl, name337, is_dex_defined_class(r500_decl));
                 auto v = heap_.get_object_field(args[1].object_id, r500_qkey);
+                // F-NEW-190 (PHASE 4 device identity, AOSP PackageParser
+                // law): install-time ApplicationInfo fields are NEVER
+                // absent on a real device — primaryCpuAbi is the ABI the
+                // package was installed for, nativeLibraryDir the ABI-
+                // scoped lib dir. SoLoader reads primaryCpuAbi
+                // reflectively and NPEs when the engine answers the
+                // typed default (null). The runtime models an arm64
+                // android-34 device.
+                if (!v.has_value() &&
+                    decl337 == "Landroid/content/pm/ApplicationInfo;") {
+                    if (name337 == "primaryCpuAbi") {
+                        result = box500(
+                            DalvikValue::make_string("arm64-v8a", 0), type337);
+                        std::cerr << "[F190-ABI] Field.get primaryCpuAbi -> "
+                                     "arm64-v8a" << std::endl;
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                        return true;
+                    }
+                    if (name337 == "nativeLibraryDir") {
+                        result = box500(
+                            DalvikValue::make_string(
+                                "/data/app/~~miniandroid/base/lib/arm64", 0),
+                            type337);
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                        return true;
+                    }
+                }
                 DalvikValue sv =
                     v.has_value() ? v.value() : typed_default500(type337);
                 status = ApiCallTrace::Status::IMPLEMENTED;
