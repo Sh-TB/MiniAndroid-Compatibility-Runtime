@@ -5914,3 +5914,19 @@ Stage Summary:
 - Open frontiers (honest): S-2 dlopen/JNI, S-4 content:// query/Cursor,
   S-11 splits, S-3/S-13 broadcasts/services, SELECTION_FROZEN, S-10
   localStorage, ST-10 sqlite/font provenance.
+
+---
+Task ID: LOADING-EXEC-CLOSE (gate confirmation + publish)
+Agent: Super Z (main)
+Work Log:
+- WORKING-VS-FAILING-GATE run to completion: ALL PASS — opencalc
+  e364b001ee7abd66 x3 / chess b5a7a35d5fe0564b x3 / dooz d602648e8e401895
+  x3 / microtimer da73010a37dd0189 x3 / unote 4f1a9e4e8f64fae8 x3 (all
+  byte-identical to goldens with the full fix wave in).
+- Completion ledger posted to issue #354 (comment 5961411302) in the new
+  CODER_REQUEST_PROTOCOL format (STATUS/result/evidence per requirement).
+- Rebased on owner's protocol commits (b4db44b7); push b4db44b7..81134ac5.
+
+Stage Summary:
+- LOADING-CAMPAIGN implementation wave CLOSED at the P0 class with 23/23
+  probe gate + 5/5 golden gates; ledger + evidence on issue #354.
