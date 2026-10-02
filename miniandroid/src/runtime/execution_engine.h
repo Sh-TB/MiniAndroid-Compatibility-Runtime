@@ -384,6 +384,22 @@ public:
         // authoritative frame (l,t,r,b in screen coordinates).
         struct DiagRegion { int l, t, r, b; std::string kind; std::string detail; };
         std::vector<DiagRegion> diag_regions;
+        // F-NEW-232 LAUNCH-FRAME DEFERRED-UI OBSERVABILITY: a plain run
+        // freezes at the launch frame (F-NEW-197/F-115b law — an idle Looper
+        // cannot observe its own future). When the pump quiesces while the
+        // MessageQueue still holds FUTURE-due entries (Timer.schedule /
+        // postDelayed), this frame is a PROVISIONAL launch face — downstream
+        // verdicts (and humans) must not read a blank/flat face here as the
+        // app's settled state without a time-driven (--frames) cross-check.
+        bool deferred_ui_pending = false;
+        int  deferred_queue_size = 0;
+        long long deferred_earliest_ready_ms = 0;
+        // F-NEW-233: the final frame verdict + earliest missing proof stage,
+        // persisted on the census so the post-final-status message law can
+        // annotate the run message (the capture-side message gets wiped by
+        // the final-status overwrite).
+        std::string verdict;
+        std::string first_missing_stage;
         void reset() { *this = FrameRenderCensus{}; }
         bool app_content_proof() const {
             return auth_root_valid && draw_walk_ran && app_draw_ops > 0;
