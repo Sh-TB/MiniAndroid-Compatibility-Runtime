@@ -1,0 +1,2 @@
+game 3-run screenshot file-shas: b6dde6074bf47264 b6dde6074bf47264 b6dde6074bf47264 rc:111
+game integrity: installed_sha == record_sha: True

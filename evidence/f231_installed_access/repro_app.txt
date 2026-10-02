@@ -1,0 +1,2 @@
+app 3-run screenshot file-shas: e364b001ee7abd66 e364b001ee7abd66 e364b001ee7abd66 rc:000
+app integrity: installed_sha == record_sha: True

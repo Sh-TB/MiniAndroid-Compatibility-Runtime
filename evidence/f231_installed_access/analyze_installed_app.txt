@@ -1,0 +1,4 @@
+  "package_name": "com.darkempire78.opencalculator",
+  "version_name": "3.2.0",
+  "version_code": 53,
+  "main_activity_full": "com.darkempire78.opencalculator.activities.MainActivity",

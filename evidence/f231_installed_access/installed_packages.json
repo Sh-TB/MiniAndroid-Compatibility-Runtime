@@ -1,0 +1,39 @@
+[
+  {"package": "com.darkempire78.opencalculator", "record": {
+  "package": "com.darkempire78.opencalculator",
+  "versionName": "3.2.0",
+  "versionCode": 53,
+  "mainActivity": "com.darkempire78.opencalculator.activities.MainActivity",
+  "minSdk": "21",
+  "targetSdk": "34",
+  "requestedPermissions": [
+    "android.permission.VIBRATE",
+    "android.permission.SYSTEM_ALERT_WINDOW",
+    "android.permission.USE_FULL_SCREEN_INTENT",
+    "com.darkempire78.opencalculator.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/com.darkempire78.opencalculator/base.apk",
+  "hostCodePath": "/home/z/my-project/run/f231/store/data/app/com.darkempire78.opencalculator/base.apk",
+  "apkSha256": "2642613868a8a80f0ce963a4863bc153e7281b97b3bbdf36ca92a99dded7134a",
+  "apkSize": 2359134,
+  "installedAt": "2026-10-02T15:25:41Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}},
+  {"package": "com.dozingcatsoftware.bouncy", "record": {
+  "package": "com.dozingcatsoftware.bouncy",
+  "versionName": "1.16.0",
+  "versionCode": 43,
+  "mainActivity": "com.dozingcatsoftware.bouncy.BouncyActivity",
+  "minSdk": "4",
+  "targetSdk": "37",
+  "requestedPermissions": [],
+  "origin": "sideload",
+  "codePath": "/data/app/com.dozingcatsoftware.bouncy/base.apk",
+  "hostCodePath": "/home/z/my-project/run/f231/store/data/app/com.dozingcatsoftware.bouncy/base.apk",
+  "apkSha256": "ffda0d9cb0b1b2aa58be9559dda891c4fa24391bc481d297a8e3d96c31f62721",
+  "apkSize": 3233743,
+  "installedAt": "2026-10-02T15:25:41Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}}
+]
