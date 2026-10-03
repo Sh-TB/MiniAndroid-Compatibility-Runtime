@@ -1,0 +1,45 @@
+{
+  "content_root_id": 206,
+  "experiment": "EXP-061",
+  "inflate_stats": {
+    "colors_resolved": 0,
+    "def_style_applied": 0,
+    "dimens_resolved": 0,
+    "drawables_resolved": 0,
+    "elements_total": 1,
+    "ids_resolved": 0,
+    "includes_expanded": 0,
+    "strings_resolved": 0,
+    "styles_applied": 0,
+    "theme_attrs_resolved": 0,
+    "theme_overlays_pushed": 0,
+    "unresolved_refs": 0,
+    "unresolved_theme_attrs": 0,
+    "views_created": 1,
+    "warnings": []
+  },
+  "node_source": "content-root-walk",
+  "nodes": [
+    {
+      "android_view_id": 2131165235,
+      "children": [],
+      "class": "Landroid/widget/FrameLayout;",
+      "clickable": false,
+      "enabled": true,
+      "has_click_listener": false,
+      "height": 1920,
+      "hint": "",
+      "image_resource_id": 0,
+      "object_id": 206,
+      "parent_id": 0,
+      "text": "",
+      "text_resource_id": 0,
+      "view_type": "ViewGroup",
+      "visibility": 0,
+      "width": 1080,
+      "x": 0,
+      "y": 0
+    }
+  ],
+  "view_count": 1
+}

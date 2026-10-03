@@ -1,0 +1,82 @@
+{
+ "asteroids": {
+  "identity_match": true,
+  "run_rc": 1,
+  "screenshot_sha256": "c125d541e4d4f0347f350494778f85bcbe45ded1c2423b0bebd7e750ce04eede",
+  "sha_changed_vs_pre_fix": true,
+  "frame_verdict": "DEFAULT_BACKGROUND_ONLY",
+  "app_draw_ops": 0,
+  "next_first_divergence": null,
+  "wall_s": 1.2
+ },
+ "spacevertex": {
+  "identity_match": true,
+  "run_rc": 1,
+  "screenshot_sha256": "9d8c64b1f9f908b4f543829f25824f7984e53b38a99d3ed69a1895d9b2aded93",
+  "sha_changed_vs_pre_fix": false,
+  "frame_verdict": "DEFAULT_BACKGROUND_ONLY",
+  "app_draw_ops": 1,
+  "next_first_divergence": null,
+  "wall_s": 0.9
+ },
+ "bouncy": {
+  "identity_match": true,
+  "run_rc": 1,
+  "screenshot_sha256": "b6dde6074bf47264b6cf8ab53a9c259eb47dfe88fd549c2ce5cc7f7c47abf4cc",
+  "sha_changed_vs_pre_fix": false,
+  "frame_verdict": "REAL_APP_CONTENT",
+  "app_draw_ops": 11,
+  "next_first_divergence": "[EXC-PROPAGATE] Lcom/badlogic/gdx/utils/SharedLibraryLoadRuntimeException; caught at caller Lcom/badlogic/gdx/utils/SharedLibraryLoader;.load invoke_pc=34 handler=0x0x2a type=<catch-all>",
+  "wall_s": 0.9
+ },
+ "opencalc": {
+  "identity_match": true,
+  "run_rc": 0,
+  "screenshot_sha256": "e364b001ee7abd668d0ab798431eb4a34032f16fb5b4d6233e2ef3e0a1629ec5",
+  "sha_changed_vs_pre_fix": false,
+  "frame_verdict": "REAL_APP_CONTENT",
+  "app_draw_ops": 36,
+  "next_first_divergence": "[EXC-PROPAGATE] Ljava/lang/NoSuchMethodException; caught at caller Lh1/c;.<clinit> invoke_pc=2 handler=0x0x6 type=Ljava/lang/NoSuchMethodException;",
+  "wall_s": 1.3
+ },
+ "unote": {
+  "identity_match": true,
+  "run_rc": 0,
+  "screenshot_sha256": "4f1a9e4e8f64fae8c8e21aec3ddae4812e3df00d4d897872cc4b69fa41c05b86",
+  "sha_changed_vs_pre_fix": false,
+  "frame_verdict": "REAL_APP_CONTENT",
+  "app_draw_ops": 7,
+  "next_first_divergence": null,
+  "wall_s": 0.7
+ },
+ "microtimer": {
+  "identity_match": true,
+  "run_rc": 0,
+  "screenshot_sha256": "da73010a37dd018962d88c90445bbf335bec78cc7132e59ee80984ed437a18cf",
+  "sha_changed_vs_pre_fix": false,
+  "frame_verdict": "REAL_APP_CONTENT",
+  "app_draw_ops": 22,
+  "next_first_divergence": null,
+  "wall_s": 0.8
+ },
+ "dooz": {
+  "identity_match": true,
+  "run_rc": 1,
+  "screenshot_sha256": "d602648e8e401895b7b440bc9c0becd4af8748b37808ce0870735b19502dab71",
+  "sha_changed_vs_pre_fix": false,
+  "frame_verdict": "DEFAULT_BACKGROUND_ONLY",
+  "app_draw_ops": 0,
+  "next_first_divergence": "[THROWABLE-MSG] Ljava/lang/IllegalStateException; msg=\"The number of released permits cannot be greater than 1\" caller=Lek1;.b pc=268 depth=37",
+  "wall_s": 4.2
+ },
+ "memory": {
+  "identity_match": true,
+  "run_rc": 1,
+  "screenshot_sha256": "0666775d14475766346d906d17dfa7cc81f00bc67eba9bb23f6939bf0ee6a28e",
+  "sha_changed_vs_pre_fix": false,
+  "frame_verdict": "DEFAULT_BACKGROUND_ONLY",
+  "app_draw_ops": 1,
+  "next_first_divergence": "[EXC-PROPAGATE] Ljava/lang/NullPointerException; uncaught at caller Lcom/sanskritbasics/memory/MainActivity;.onCreate invoke_pc=368 \u2192 APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)",
+  "wall_s": 1.1
+ }
+}
