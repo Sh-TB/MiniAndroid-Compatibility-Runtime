@@ -101,6 +101,26 @@ struct ManifestInfo {
     // PackageItemInfo.metaData contract (application level + per-activity).
     std::vector<std::pair<std::string, std::string>> application_meta_data;
     std::map<std::string, std::vector<std::pair<std::string, std::string>>> activity_meta_data;
+
+    // 371-CLOSEOUT: component <meta-data> with RESOURCE references (AOSP
+    // PackageParser law). Every manifest component (application, activity,
+    // activity-alias, provider, service, receiver) can declare <meta-data>
+    // children; android:resource="@xml/foo" arrives as an AXML TYPE_REFERENCE
+    // (0x01) and AOSP stores the RESOLVED INTEGER resource id in the Bundle.
+    // androidx FileProvider.parsePathStrategy → ProviderInfo.loadXmlMetaData
+    // reads exactly this (metaData.getInt("android.support.FILE_PROVIDER_PATHS")
+    // → pm.getXml(resid)); without the resource capture the lookup returns
+    // null and every FileProvider-declaring app dies at provider install
+    // (Suntimes CalculatorProvider.onCreate chain = first divergence).
+    struct MetaDataEntry {
+        std::string name;
+        std::string value;         // android:value raw string (may be empty)
+        bool has_resource = false; // android:resource present
+        uint32_t resource_id = 0;  // resolved AXML reference id (has_resource)
+    };
+    // key = component class (dotted or descriptor form as written); "" =
+    // application level. Value/string entries AND resource entries unified.
+    std::map<std::string, std::vector<MetaDataEntry>> component_meta_data;
     
     // Permissions
     std::vector<std::string> permissions;
@@ -385,6 +405,13 @@ private:
     // GATE A: <service>/<receiver> component context (actions routing).
     bool in_service_ = false;
     bool in_receiver_ = false;
+    // 371-CLOSEOUT: <provider> component context + unified component key for
+    // <meta-data> capture (AOSP PackageParser: meta-data attaches to whatever
+    // component element it is nested inside).
+    bool in_provider_ = false;
+    std::string current_provider_name_;
+    std::string current_service_name_;
+    std::string current_receiver_name_;
     uint32_t activity_theme_resid_pending_ = 0;   // S68 W2: android:theme of the element being parsed
     std::string current_activity_name_;
     std::string current_activity_target_;  // EXP-038: targetActivity for activity-alias

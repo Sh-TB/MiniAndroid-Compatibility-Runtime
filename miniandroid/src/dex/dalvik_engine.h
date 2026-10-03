@@ -15,6 +15,7 @@
 
 #include "dex_parser.h"
 #include "class_resolver.h"
+#include "../apk/manifest_reader.h"  // 371-CLOSEOUT: component meta-data law
 #include "../runtime/runtime_metadata.h"
 #include "../runtime/vtable_dispatch.h"
 #include "../api/android_stubs.h"
@@ -1301,6 +1302,15 @@ public:
         std::vector<std::pair<std::string, bool>> name_grants) {
         manifest_provider_grants_ = std::move(name_grants);
     }
+    // 371-CLOSEOUT: component meta-data with resource references — the
+    // ProviderInfo.metaData / resolveContentProvider / loadXmlMetaData law
+    // set (androidx FileProvider contract; generic across all components).
+    void set_component_meta_data(
+        std::map<std::string,
+                 std::vector<miniandroid::apk::ManifestInfo::MetaDataEntry>>
+            component_md) {
+        component_meta_data_ = std::move(component_md);
+    }
     // ── #371 PHASE B5 setters (manifest component transfer) ──
     void set_manifest_services(
         std::vector<std::pair<std::string, std::vector<std::string>>> svc) {
@@ -2094,6 +2104,13 @@ public:
     // Pass-3 (K-35): advance an XmlPullParser state by one event — REAL event
     // progression (START_DOCUMENT → tags/text → END_DOCUMENT) with termination.
     void xml_pull_advance(XmlPullState& st);
+    // 371-CLOSEOUT: PackageManager.getXml(resid) /
+    // ProviderInfo.loadXmlMetaData law — resolve a resource id to the
+    // compiled XML resource entry, decode AXML → text, and register a REAL
+    // K-35 XmlPullParser over it. False when the id resolves to nothing
+    // (the call site then answers the AOSP failure shape: NotFoundException
+    // for getXml, null for loadXmlMetaData).
+    bool xml_parser_for_resid(uint32_t resid, DalvikValue& result);
 
     // UNIFIED_011.3 EXC-PROPAGATE: exception in flight while unwinding.
     // Set by raise_synthetic_exception / THROW-no-handler in the frame that
@@ -2624,6 +2641,11 @@ public:
              std::vector<std::pair<std::string, std::string>>>
         activity_meta_data_;
     std::vector<std::pair<std::string, std::string>> application_meta_data_;
+    // 371-CLOSEOUT: component meta-data with resource references (AOSP
+    // PackageParser Bundle contract — see manifest_reader.h MetaDataEntry).
+    std::map<std::string,
+             std::vector<miniandroid::apk::ManifestInfo::MetaDataEntry>>
+        component_meta_data_;
     // EXP-093/F008: Permission state map (permission_name → 0=GRANTED, -1=DENIED)
     std::map<std::string, int> permission_state_;
     // Map: heap object_id (InputStream) → (asset_name, line_index)
