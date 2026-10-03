@@ -179,6 +179,57 @@ def api_matrix():
         ("PackageManager provider identity", "TESTED", "probe ID-04 + PROV-01 (attachInfo law)"),
     ]:
         row("Resources/State/Native", api, "AOSP semantic contract", "generic law", st, evi)
+    for api, st, evi in [
+        ("ContentResolver.insert/update/delete", "TESTED",
+         "probe PROV-02/04/05 — authority→provider map (installContentProviders), provider invocation, ContentValues read-back, caller-visible state change (insert→query count, delete→table empty); failure contracts: unknown-authority IAE (PROV-08), non-content Unknown URL (loud)"),
+        ("ContentResolver.query → Cursor", "TESTED",
+         "probe PROV-03/09 — MatrixCursor row pool + typed accessors; unknown authority → documented null WITH PROVIDER-* trace row (no silent null)"),
+        ("ContentResolver.getType/call", "TESTED", "probe PROV-07 getType=vnd.probe.note; call() → AOSP null default (no override)"),
+        ("ContentResolver.openFileDescriptor", "TESTED",
+         "probe PROV-06 — provider openFile → PFD → FileInputStream(FD) bytes == direct bytes; base ContentProvider.openFile without override → AOSP FileNotFoundException"),
+        ("MatrixCursor row pool + Cursor interface", "TESTED",
+         "probe PROV-03..05 (getCount/getColumnIndex/moveToFirst/getString/close; getColumnIndexOrThrow IAE law)"),
+        ("ContentValues typed map", "TESTED",
+         "probe PROV-02/04 (put(String,Integer/String), getAsString, getAsInteger box-unwrap law)"),
+        ("UriMatcher addURI/match (# and * wildcards)", "TESTED",
+         "probe PROV-02..05 — provider routing via matcher codes (notes vs notes/#)"),
+        ("ContentUris.withAppendedId/parseId", "TESTED", "probe PROV-02 (insert→notes/1), PROV-07 (parseId=41)"),
+        ("Uri.getAuthority/getQueryParameter/toString", "TESTED", "provider routing + insert uri construction (B1 law)"),
+    ]:
+        row("ContentProvider/ContentResolver", api, "AOSP ContentResolver.acquireProvider + Cursor contract", "generic law", st, evi)
+    for api, st, evi in [
+        ("System.loadLibrary (3 failure shapes)", "TESTED",
+         "probe NAT-01 (absent→not-found), NAT-05 (absent detail), NAT-04 (extracted→precise ULE with path+size+sha16; MINIANDROID_NATIVE_DLOPEN_PROBE records REAL host dlerror — never a fake success)"),
+        ("Install-time ABI-scoped lib extraction (G-4)", "TESTED",
+         "install command extracts primary ABI lib/<abi>/*.so into codePath lib dir + native_libs.json manifest; probe NAT-02/03 nativeLibraryDir=/data/app/<pkg>/lib/arm64-v8a (extraction-backed); multiapp libs inventory shows extracted trees"),
+        ("ApplicationInfo.nativeLibraryDir real identity", "TESTED",
+         "probe NAT-03 — extraction-backed logical dir (G-4 CLOSED); phantom identity only as honest fallback for pre-G-4 stores"),
+    ]:
+        row("Native (pre-path + frontier)", api, "AOSP Runtime.loadLibrary0 → dlopen boundary", "generic law", st, evi)
+    for api, st, evi in [
+        ("Service lifecycle (ActiveServices core)", "TESTED",
+         "probe SVC-01..04 — startService×2 → onCreate=1 onStartCommand=2; bindService → onBind + onServiceConnected(live binder); unbind on STARTED service keeps it alive; stopService → onDestroy"),
+        ("Broadcast delivery (manifest + dynamic)", "TESTED",
+         "probe BCAST-01..04 — manifest intent-filter receiver delivered (ctx bound), dynamic registerReceiver delivered, unregister stops delivery, null-action broadcast → IAE (loud)"),
+        ("IntentFilter action registry", "TESTED", "probe BCAST-02 (engine-side filter state; varargs ctor expansion)"),
+    ]:
+        row("Services/Broadcasts (UPP-006 probe-justified)", api, "AOSP ActiveServices + BroadcastReceiver dispatch law", "generic law", st, evi)
+    for api, st, evi in [
+        ("createDeviceProtectedStorageContext (G-8)", "TESTED",
+         "probe DE-01 — DE context dir family under /data/user_de/0/<pkg>, distinct host fence, write+isolation-from-CE asserted; user_de prefix-strip bug fixed (paths were DENIED)"),
+    ]:
+        row("Device-protected storage", api, "AOSP ContextImpl DE fence law", "generic law", st, evi)
+    for api, st, evi in [
+        ("Multi-config selection (frozen profile)", "TESTED",
+         "probe CFG-01..03 — -zh-rCN/-land/-night unreachable at en-US/portrait/NIGHT_NO; default wins; fallback law"),
+        ("Density best-match", "TESTED",
+         "probe CFG-04 — 420dpi picks xhdpi(320) 32px over mdpi(160) 16px (AOSP distance law)"),
+        ("Font resource resolve + bytes", "TESTED",
+         "probe CFG-05 — res/font id + openRawResource TTF magic; FONT-FACE provenance rows (ST-10)"),
+        ("SQLite/font provenance rows (ST-10)", "TESTED",
+         "SQLITE-OPEN/SQLITE-EXEC/SQLITE-WAL + FONT-FACE rows in MINIANDROID_FILE_IO JSONL (same evidence model)"),
+    ]:
+        row("Config/Provenance (UPP-004/007)", api, "AOSP ResTable_config best-match + provenance law", "generic law", st, evi)
     jl("INSTALL_ENVIRONMENT_API_MATRIX.jsonl", A)
     return A
 
@@ -194,20 +245,20 @@ def capability_gate_jsonl():
         ("7 resources", "TESTED", "probe RES-01..04; getIdentifier R-4 fixed; NotFoundException R-3 fixed; ARSC inventory CLI"),
         ("8 image/font/media inventory", "IMPLEMENTED", "pkginspect media section (class/size/method/expected decoder)"),
         ("9 prefs + sqlite", "TESTED", "probe PREF/DB blocks; physical XML + SQLite files; restart 1→2→3"),
-        ("10 URI/provider", "PARTIAL", "provider identity + install stage + attachInfo PROVEN (PROV-01); content:// query dispatch = gap G-3"),
-        ("11 native libraries", "TESTED", "inventory ELF/ABI/SONAME/JNI (chess 4 .so / 61 JNI exports); loadLibrary honest ULE"),
+        ("10 URI/provider", "TESTED", "G-1/G-3 CLOSED (#371): authority→provider map at installContentProviders; query/insert/update/delete/getType/call/openFileDescriptor dispatch with AOSP failure contracts; MatrixCursor/ContentValues/UriMatcher/ContentUris laws; probe PROV-02..09"),
+        ("11 native libraries", "TESTED", "inventory ELF/ABI/SONAME/JNI (chess 4 .so / 61 JNI exports); install-time ABI extraction (G-4 CLOSED, native_libs.json); System.loadLibrary 3-shape precise ULE + env-gated real dlopen/dlerror probe; EXECUTION stays the S-2 frontier (never faked)"),
         ("12 manifest/components", "IMPLEMENTED", "pkginspect manifest: activities/services(new)/receivers(new)/providers/permissions/meta-data"),
         ("13 DEX/multidex", "IMPLEMENTED", "pkginspect dex: per-file counts + native methods + class sample"),
         ("14 provenance graph", "IMPLEMENTED", "pkginspect provenance section + PROVENANCE_SCHEMA.jsonl chain"),
         ("15 agent CLI", "IMPLEMENTED", "miniandroid pkginspect --what ... --jsonl (machine-readable)"),
-        ("16 universal trace", "IMPLEMENTED", "PROVENANCE_SCHEMA.jsonl 20-stage chain + file_io.jsonl op trace"),
-        ("17 synthetic probe", "TESTED", "fixtures/gate_a_probe: 69 PASS / 0 FAIL / 2 INFO (documented laws)"),
+        ("16 universal trace", "IMPLEMENTED", "PROVENANCE_SCHEMA.jsonl 20-stage chain + file_io.jsonl op trace + ST-10 SQLITE-*/FONT-FACE rows + pkginspect runtime/diagnostics sections (first-divergence, #371 Phase C)"),
+        ("17 synthetic probe", "TESTED", "fixtures/gate_a_probe: 95 PASS / 0 FAIL / 2 INFO (69 prior + PROV-02..09, SVC-01..04, BCAST-01..04, DE-01, CFG-01..05, NAT-03..05)"),
         ("18 multi-app proof", "TESTED", "5 families incl. render-FAIL blockblast — inspection complete"),
         ("19 negative tests", "TESTED", "17/17 (CLI + runtime-law probes)"),
         ("20 restart/uninstall/reinstall", "TESTED", "8/8 matrix"),
         ("21 hard completion gate", "PASS", "fake-success audit: 11 divergences found by probe and fixed, 0 silent successes left in gate scope"),
         ("22 artifacts", "IMPLEMENTED", "this file set (9)"),
-        ("23 final regression", "PASS", "goldens 4/4 REAL_APP_CONTENT; determinism 5/5 x3; probe 23/23; uninstall 16/16"),
+        ("23 final regression", "PASS", "goldens 4/4 REAL_APP_CONTENT; determinism 5/5 x3 byte-identical; uninstall 16/16; negatives 17/17; reinstall 8/8; multiapp 5/5; ROOT-A/B/C holds; random corpus sample (seed 20261003) fishrings REAL_APP_CONTENT 44 draw ops; #371 fan-out flappycow + notes_secuso VERIFIED_REAL_APP_CONTENT x3 (source hidden, identity launch)"),
     ]
     for name, status, result in sections:
         rows.append({"identity": IDENTITY, "section": name, "status": status,

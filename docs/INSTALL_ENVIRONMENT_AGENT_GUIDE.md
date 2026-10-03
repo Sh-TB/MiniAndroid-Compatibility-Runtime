@@ -95,3 +95,53 @@ Every artifact in this gate carries identity: HEAD commit, runtime binary
 sha16, evidence-generation script path. Executed evidence lives under
 `run/gatea/` (probe store + runs), `run/gatea/multiapp_evidence/` (5-app
 proof), `run/gatea/negative/`, `run/gatea/reinstall_matrix/`.
+
+## #371 FINAL COMPLETION wave — runtime + diagnostics (Phase C)
+
+The inspection surface now covers not only WHAT IS INSTALLED but WHAT RAN.
+
+### New sections
+
+```
+miniandroid pkginspect --package <pkg> --data-root <store> \
+    --what runtime,diagnostics \
+    --file-io <run>/file_io.jsonl     # MINIANDROID_FILE_IO output of a run
+    --api-trace <run>/api_calls.json  # run with --dump-api-trace
+```
+
+- `runtime` — file-IO op counts (OPEN/WRITE/SQLITE-*/FONT-FACE/
+  PROVIDER-*/SVC-*/BCAST-*/DE-CONTEXT/...), failure count, first failure
+  rows, API call status census (IMPLEMENTED/STUBBED/MISSING/ERROR).
+- `diagnostics` — `firstDivergence` (kind = MISSING_API | API_ERROR |
+  FILE_IO_FAILURE + where, incl. caller), `firstMissingSemantic`,
+  `runtimeTarget`, the source→law→implementation→probe→trace chain and the
+  deterministic-JSONL flag. A fake empty result is never emitted: absence
+  of divergence is an explicit `null` with the law chain stated.
+
+### Section inventory (15)
+
+identity, manifest, entries, dex, resources, assets, libs, media, data,
+external, dbs, prefs, provenance, runtime, diagnostics.
+
+### Provenance of a run (canonical protocol)
+
+1. `install <apk> --data-root <store>` → package identity + ABI extraction
+   (`nativePrimaryAbi`, `nativeLibsExtracted`, native_libs.json).
+2. Hide/remove the source APK.
+3. `run --package <pkg> --data-root <store> --dump-view-tree --trace
+   --dump-api-trace --frames 40 -o <out>` with `MINIANDROID_FILE_IO=<out>/file_io.jsonl`.
+4. `pkginspect --package <pkg> --data-root <store> --what all --jsonl
+   <out>/inspect.jsonl --file-io <out>/file_io.jsonl --api-trace
+   <out>/api_calls.json`.
+5. Verdicts come from the F-NEW-233 frame analysis (trace_summary.json) —
+   BYTE-STABLE ≠ PIXEL-TRUTH; chrome-only/blank is never success.
+
+### ContentProvider call-chain law (new in this wave)
+
+An installed provider is addressable at
+`content://<authority>/<path>`; every dispatch records a PROVIDER-* row.
+Failure contracts: unknown authority → IllegalArgumentException on
+insert/update/delete, documented null on query (trace row keeps it
+observable), FileNotFoundException from openFileDescriptor when the
+provider does not support files. Services/broadcasts follow the same
+loud-trace pattern (SVC-*/BCAST-* rows).
