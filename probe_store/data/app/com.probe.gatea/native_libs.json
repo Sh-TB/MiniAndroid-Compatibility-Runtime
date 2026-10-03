@@ -1,0 +1,8 @@
+{
+  "primaryAbi": "arm64-v8a",
+  "nativeLibraryDir": "/data/app/com.probe.gatea/lib/arm64-v8a",
+  "extracted": [
+    {"entry": "lib/arm64-v8a/libprobe.so", "size": 10584}
+  ],
+  "count": 1
+}

@@ -27,6 +27,7 @@
 #include "../diagnostics/file_io_trace.h"   // IAPK: file-IO provenance (F-NEW-234 wave)
 #include "../diagnostics/install_inspection.h"  // GATE A: zip_contains_entry (System.loadLibrary law)
 #include "../jni/jni_bridge.h"
+#include "../jni/dlopen_exec.h"  // #371 CLOSEOUT S-2: real native execution layer
 // EXP-051: Shadow registry integration.
 #include "../framework/shadow_registry.h"
 #include <functional>
@@ -7746,6 +7747,128 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             if (!jni::JNIBridge::instance().invoke(
                     jni_ctx, int_ret, long_ret, float_ret, double_ret,
                     string_ret, obj_ret, is_obj_ret)) {
+                // ── #371 CLOSEOUT S-2: REAL native execution attempt ────
+                // AOSP law (art_jni.cc): an ACC_NATIVE method dispatches to
+                // the loaded-library symbol resolved by JNI mangling or
+                // RegisterNatives; an unresolved native on a class whose
+                // loader HAS loaded a library is UnsatisfiedLinkError("No
+                // implementation found"), never a silent fail-soft 0.
+                // Ordered layering preserved: registered JNIBridge handlers
+                // above → REAL dlopen library → fail-soft flow below.
+                if (nativeexec::has_loaded_libs()) {
+                    std::string tried;
+                    void* fn = nativeexec::find_symbol(
+                        class_descriptor, method_name, method->descriptor,
+                        tried);
+                    if (fn) {
+                        bool is_static =
+                            (method->access_flags & 0x0008) != 0;  // ACC_STATIC
+                        std::vector<nativeexec::JArg> jargs;
+                        for (const auto& a : args) {
+                            switch (a.type) {
+                                case DalvikType::INT32:
+                                    jargs.push_back(nativeexec::JArg::of_int(a.int_val));
+                                    break;
+                                case DalvikType::BOOLEAN:
+                                    jargs.push_back(nativeexec::JArg::of_bool(a.bool_val));
+                                    break;
+                                case DalvikType::INT64:
+                                    jargs.push_back(nativeexec::JArg::of_long(a.long_val));
+                                    break;
+                                case DalvikType::FLOAT32:
+                                    jargs.push_back(nativeexec::JArg::of_float(a.float_val));
+                                    break;
+                                case DalvikType::FLOAT64:
+                                    jargs.push_back(nativeexec::JArg::of_double(a.double_val));
+                                    break;
+                                case DalvikType::STRING_REF:
+                                    jargs.push_back(nativeexec::JArg::of_string(a.string_val));
+                                    break;
+                                case DalvikType::OBJECT_REF:
+                                    jargs.push_back(nativeexec::JArg::of_object(a.object_id));
+                                    break;
+                                default:
+                                    jargs.push_back(nativeexec::JArg::null());
+                            }
+                        }
+                        nativeexec::JOutcome out;
+                        std::string nerr;
+                        nativeexec::call_native(fn, is_static,
+                                                method->descriptor, jargs,
+                                                out, nerr);
+                        out.provenance = tried;
+                        switch (out.kind) {
+                            case nativeexec::JOutcome::Kind::VOID:
+                                return_val = DalvikValue::make_void();
+                                break;
+                            case nativeexec::JOutcome::Kind::BOOLEAN:
+                                return_val = DalvikValue::make_int(out.i ? 1 : 0);
+                                break;
+                            case nativeexec::JOutcome::Kind::INT:
+                            case nativeexec::JOutcome::Kind::BYTE:
+                            case nativeexec::JOutcome::Kind::CHAR:
+                            case nativeexec::JOutcome::Kind::SHORT:
+                                return_val = DalvikValue::make_int((int32_t)out.i);
+                                break;
+                            case nativeexec::JOutcome::Kind::LONG: {
+                                DalvikValue v;
+                                v.type = DalvikType::INT64;
+                                v.long_val = out.i;
+                                return_val = v;
+                                break;
+                            }
+                            case nativeexec::JOutcome::Kind::FLOAT: {
+                                DalvikValue v;
+                                v.type = DalvikType::FLOAT32;
+                                v.float_val = (float)out.d;
+                                return_val = v;
+                                break;
+                            }
+                            case nativeexec::JOutcome::Kind::DOUBLE: {
+                                DalvikValue v;
+                                v.type = DalvikType::FLOAT64;
+                                v.double_val = out.d;
+                                return_val = v;
+                                break;
+                            }
+                            case nativeexec::JOutcome::Kind::STRING:
+                                return_val = DalvikValue::make_string(out.str, 1);
+                                break;
+                            case nativeexec::JOutcome::Kind::OBJECT:
+                                return_val = out.object_id
+                                                 ? DalvikValue::make_object(
+                                                       out.object_id,
+                                                       "Lnative_result;")
+                                                 : DalvikValue::make_null();
+                                break;
+                        }
+                        log("🔌 S2-NATIVE DISPATCH: " + class_descriptor + "." +
+                            method_name + " → " + out.provenance);
+                        miniandroid::diagnostics::FileIoTrace::instance().record(
+                            "NATIVE-CALL", out.provenance, true,
+                            class_descriptor + "." + method_name +
+                                method->descriptor,
+                            current_class_ + "." + current_method_);
+                        recursion_depth_--;
+                        return true;  // REAL native dispatch completed
+                    }
+                    // No symbol found anywhere in the loaded libraries:
+                    // AOSP "No implementation found" linkage error — loud,
+                    // never a fake 0.
+                    std::string ule =
+                        "No implementation found for " + class_descriptor +
+                        "." + method_name + method->descriptor +
+                        " (tried " + tried + ")";
+                    log("🔌 S2-NATIVE MISS: " + ule);
+                    miniandroid::diagnostics::FileIoTrace::instance().record(
+                        "NATIVE", method_name, false, ule,
+                        current_class_ + "." + current_method_);
+                    throw_deferred("Ljava/lang/UnsatisfiedLinkError;", ule,
+                                   "S2-NATIVE");
+                    // Deferred ULE pending — fall through to the normal
+                    // flow so the exception machinery owns the unwind.
+                    break;
+                }
                 // no handler → continue the normal dispatch flow below
                 // (method scan → super-walk → bridge_to_api → shadow).
                 // NOTE: do NOT decrement here — the scan-failure paths
@@ -18192,6 +18315,18 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
     DalvikValue return_val = DalvikValue::make_void();
     ApiCallTrace::Status status = ApiCallTrace::Status::STUBBED;
 
+    // ── #371 CLOSEOUT: JVMS 5.5 / AOSP ClassLinker::EnsureInitialized law
+    // ── the first ACTIVE USE of a class triggers initialization, and
+    // invoke-static IS an active use. sget/sput/new-instance already
+    // ensured this; a class first touched via static-method invocation ran
+    // uninitialized (S-2 evidence: NativeProbe.<clinit> — the canonical
+    // System.loadLibrary-in-static-init pattern — never executed, so the
+    // native library never loaded and every native call failed softly 0).
+    // ensure_class_initialized early-exits on the already-initialized set,
+    // so the per-call cost is one hash lookup.
+    if (!class_name.empty() && class_name[0] == 'L')
+        ensure_class_initialized(class_name);
+
     // EXP-038 (BLOCKER-034): Try recursive invocation.
     bool recursively_invoked = false;
     if (config_.enable_api_bridge) {
@@ -18866,6 +19001,18 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
         pc_ = pc + 3;
         return true;
     }
+
+    // ── #371 CLOSEOUT: JVMS 5.5 / AOSP ClassLinker::EnsureInitialized law
+    // ── the first ACTIVE USE of a class triggers initialization, and
+    // invoke-static IS an active use. sget/sput/new-instance already
+    // ensured this; a class first touched via static-method invocation ran
+    // uninitialized (S-2 evidence: NativeProbe.<clinit> — the canonical
+    // System.loadLibrary-in-static-init pattern — never executed, so the
+    // native library never loaded and every native call failed softly 0).
+    // ensure_class_initialized early-exits on the already-initialized set,
+    // so the per-call cost is one hash lookup.
+    if (!class_name.empty() && class_name[0] == 'L')
+        ensure_class_initialized(class_name);
 
     // EXP-038 (BLOCKER-034): Try recursive invocation.
     bool recursively_invoked = false;
@@ -46211,13 +46358,21 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // ────────────────────────────────────────────────────────────────────────
     // GATE A (issue #370 §11) — System.loadLibrary(String) / System.load
     // contract. AOSP Runtime.loadLibrary0: request → ABI → installed
-    // location → dlopen → success OR UnsatisfiedLinkError. The runtime has
-    // NO native execution layer (S-2 frontier), so the honest answer is
-    // ALWAYS UnsatisfiedLinkError — the trace distinguishes the two AOSP
-    // failure shapes: library absent from the installed APK ("not found")
-    // vs present-but-not-loadable (extraction/dlopen frontier). The old
-    // behavior: REC-MISS → silent void → apps "succeeded" loading nothing
-    // (the exact fake-success GATE A exists to kill).
+    // location → dlopen → JNI_OnLoad handshake → success OR
+    // UnsatisfiedLinkError.
+    //
+    // #371 CLOSEOUT (S-2 frontier CLOSED): the extracted library is now
+    // REALLY dlopen'd on the host (the ABI the runtime can execute) and
+    // JNI_OnLoad runs through the minimal JavaVM bridge (src/jni/
+    // dlopen_exec.cpp). Success is a real loaded handle that native-method
+    // dispatch resolves symbols against. Every failure shape stays honest:
+    //   (1) library absent from the installed APK ("not found");
+    //   (2) present in the APK but never extracted to nativeLibraryDir;
+    //   (3) extracted but the host refuses the ELF — the REAL dlerror
+    //       (e.g. wrong ELF class for an arm64 library on the x86_64 host:
+    //       exactly what a real x86_64 device without translation says).
+    // No fabricated success: a successful load is only reported after a
+    // real dlopen (+ JNI_OnLoad when present) of the extracted bytes.
     // ────────────────────────────────────────────────────────────────────────
     if (class_name == "Ljava/lang/System;" &&
         (method == "loadLibrary" || method == "load")) {
@@ -46231,20 +46386,14 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
         }
         if (lib.empty()) return false;
-        // #371 PHASE B2 (G-2 precision upgrade): the pre-native path is
-        // COMPLETE — request → ABI → extracted location → dlopen boundary.
-        // Three honest failure shapes now (AOSP Runtime.loadLibrary0 chain):
+        // #371 CLOSEOUT (S-2): request → ABI → extracted location → REAL
+        // dlopen + JNI_OnLoad → live handle for native dispatch. Honest
+        // failure shapes (AOSP Runtime.loadLibrary0 chain):
         //   (1) library absent from the installed APK entirely ("not found");
         //   (2) present in the APK but the ABI tree was never extracted
         //       (pre-G-4 store);
-        //   (3) extracted at nativeLibraryDir, dlopen/JNI execution
-        //       unavailable (the S-2 frontier, stated with the real file
-        //       identity: path, size, sha16).
-        // MINIANDROID_NATIVE_DLOPEN_PROBE=1 additionally attempts a REAL
-        // host dlopen and records the REAL dlerror string — a diagnostic
-        // that keeps the boundary precise. It NEVER reports success: even
-        // a dlopen that succeeds cannot complete JNI_OnLoad (no JNIEnv),
-        // and AOSP requires JNI_OnLoad before any native dispatch.
+        //   (3) extracted but the host dlopen refuses the ELF — the REAL
+        //       dlerror string (wrong ELF class for arm64-on-x86_64, etc.).
         auto native_frontier_throw = [&](const std::string& d) {
             throw_deferred("Ljava/lang/UnsatisfiedLinkError;", d,
                            "GATEA-NATIVE");
@@ -46252,137 +46401,136 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         std::cerr << "[GATEA-NATIVE] System." << method << "(\"" << lib
                   << "\") caller=" << current_class_ << "." << current_method_
                   << std::endl;
-        miniandroid::diagnostics::FileIoTrace::instance().record(
-            "NATIVE", lib, false, "System." + method,
-            current_class_ + "." + current_method_);
-        std::string detail;
+        auto sha16_of_file = [](const std::string& path) -> std::string {
+            FILE* fp = fopen(path.c_str(), "rb");
+            if (!fp) return "?";
+            EVP_MD_CTX* c = EVP_MD_CTX_new();
+            unsigned char dg[EVP_MAX_MD_SIZE];
+            unsigned int dl = 0;
+            std::string hex;
+            bool ok2 = false;
+            if (c && EVP_DigestInit_ex(c, EVP_sha256(), nullptr) == 1) {
+                char buf[65536];
+                size_t n2;
+                bool stream_ok = true;
+                while ((n2 = fread(buf, 1, sizeof(buf), fp)) > 0)
+                    if (EVP_DigestUpdate(c, buf, n2) != 1) {
+                        stream_ok = false;
+                        break;
+                    }
+                if (stream_ok && EVP_DigestFinal_ex(c, dg, &dl) == 1) {
+                    static const char* H = "0123456789abcdef";
+                    for (unsigned int i = 0; i < dl; i++) {
+                        hex += H[dg[i] >> 4];
+                        hex += H[dg[i] & 0xf];
+                    }
+                    ok2 = true;
+                }
+            }
+            if (c) EVP_MD_CTX_free(c);
+            fclose(fp);
+            return ok2 && hex.size() >= 16 ? hex.substr(0, 16) : "?";
+        };
+        std::string extracted_file;
+        std::string logical_file;
         if (method == "loadLibrary") {
-            static const char* kAbi = "arm64-v8a";
-            bool stored = false;
-            std::string entry =
-                std::string("lib/") + kAbi + "/lib" + lib + ".so";
-            bool present = !apk_path_.empty() &&
-                           gatea::zip_contains_entry(apk_path_, entry, &stored);
             // Extracted-tree check (G-4): the install command materializes
             // lib/<abi>/ under the package codePath in the store.
-            std::string extracted_file;
             if (!native_lib_dir_host_.empty()) {
                 std::filesystem::path cand = std::filesystem::path(
                     native_lib_dir_host_) / ("lib" + lib + ".so");
                 std::error_code nl_ec;
-                if (std::filesystem::exists(cand, nl_ec) && !nl_ec)
+                if (std::filesystem::exists(cand, nl_ec) && !nl_ec) {
                     extracted_file = cand.string();
-            }
-            if (!extracted_file.empty()) {
-                std::error_code sz_ec;
-                unsigned long long fsz =
-                    std::filesystem::file_size(extracted_file, sz_ec);
-                std::string sha16 = "?";
-                {
-                    auto sha16_of_file = [](const std::string& path) {
-                        FILE* fp = fopen(path.c_str(), "rb");
-                        if (!fp) return std::string("?");
-                        EVP_MD_CTX* c = EVP_MD_CTX_new();
-                        unsigned char dg[EVP_MAX_MD_SIZE];
-                        unsigned int dl = 0;
-                        std::string hex;
-                        bool ok2 = false;
-                        if (c && EVP_DigestInit_ex(c, EVP_sha256(), nullptr) == 1) {
-                            char buf[65536];
-                            size_t n2;
-                            bool stream_ok = true;
-                            while ((n2 = fread(buf, 1, sizeof(buf), fp)) > 0)
-                                if (EVP_DigestUpdate(c, buf, n2) != 1) {
-                                    stream_ok = false;
-                                    break;
-                                }
-                            if (stream_ok &&
-                                EVP_DigestFinal_ex(c, dg, &dl) == 1) {
-                                static const char* H = "0123456789abcdef";
-                                for (unsigned int i = 0; i < dl; i++) {
-                                    hex += H[dg[i] >> 4];
-                                    hex += H[dg[i] & 0xf];
-                                }
-                                ok2 = true;
-                            }
-                        }
-                        if (c) EVP_MD_CTX_free(c);
-                        fclose(fp);
-                        return ok2 && hex.size() >= 16 ? hex.substr(0, 16)
-                                                       : std::string("?");
-                    };
-                    sha16 = sha16_of_file(extracted_file);
+                    logical_file = native_lib_dir_logical_ + "/lib" + lib + ".so";
                 }
-                detail = "\"" + lib + "\" extracted at " + native_lib_dir_logical_ +
-                         "/lib" + lib + ".so (size=" + std::to_string(fsz) +
-                         ", sha16=" + sha16 + ") but MiniAndroid has no native "
-                         "execution layer (S-2 frontier): dlopen/JNI unavailable";
-                if (std::getenv("MINIANDROID_NATIVE_DLOPEN_PROBE")) {
-                    void* h = dlopen(extracted_file.c_str(), RTLD_NOW | RTLD_LOCAL);
-                    if (h) {
-                        dlclose(h);
-                        detail += "; host dlopen SUCCEEDED but JNI_OnLoad cannot "
-                                  "run (no JNIEnv bridge) — never treated as a "
-                                  "load success";
-                    } else {
-                        const char* dlerr = dlerror();
-                        detail += "; host dlopen refused: ";
-                        detail += dlerr ? dlerr : "unknown dlerror";
-                        detail += " (Android ELF on x86_64 host — S-2 frontier)";
-                    }
-                }
-            } else {
-                detail = present
-                    ? "\"" + lib + "\" present at " + entry + " (" +
-                          (stored ? "stored" : "deflate") +
-                          ") but not extracted to nativeLibraryDir and MiniAndroid "
-                          "has no native execution layer (S-2 frontier)"
-                    : "dlopen failed: library \"" + lib + "\" not found in the "
-                          "installed APK (no " + entry + ")";
             }
         } else {
             // System.load(absolute path): resolve the logical nativeLibraryDir
             // spelling to the extracted backing when the caller addresses it.
-            std::string resolved = lib;
-            bool backed = false;
             if (!native_lib_dir_host_.empty() &&
                 lib.rfind(native_lib_dir_logical_, 0) == 0) {
                 std::string suffix = lib.substr(native_lib_dir_logical_.size());
                 std::filesystem::path cand = std::filesystem::path(
-                    native_lib_dir_host_) / (suffix.empty() ? "" : suffix.substr(1));
+                    native_lib_dir_host_) /
+                    (suffix.empty() ? "" : suffix.substr(1));
                 std::error_code ld_ec;
                 if (std::filesystem::exists(cand, ld_ec) && !ld_ec) {
-                    resolved = cand.string();
-                    backed = true;
+                    extracted_file = cand.string();
+                    logical_file = lib;
                 }
-            }
-            std::error_code le_ec;
-            bool file_there =
-                backed && std::filesystem::exists(resolved, le_ec) && !le_ec;
-            detail = backed
-                ? (file_there
-                       ? "filename load \"" + lib +
-                             "\" — extracted backing exists but MiniAndroid has "
-                             "no native execution layer (S-2 frontier): dlopen "
-                             "unavailable"
-                       : "dlopen failed: library \"" + lib + "\" not found")
-                : "filename load \"" + lib +
-                      "\" — MiniAndroid has no native execution layer (S-2 "
-                      "frontier): dlopen unavailable";
-            if (backed && file_there &&
-                std::getenv("MINIANDROID_NATIVE_DLOPEN_PROBE")) {
-                void* h = dlopen(resolved.c_str(), RTLD_NOW | RTLD_LOCAL);
-                if (!h) {
-                    const char* dlerr = dlerror();
-                    detail += "; host dlopen refused: ";
-                    detail += dlerr ? dlerr : "unknown dlerror";
-                } else {
-                    dlclose(h);
-                    detail += "; host dlopen SUCCEEDED but JNI_OnLoad cannot run "
-                              "(no JNIEnv bridge)";
+            } else {
+                std::error_code le_ec;
+                std::filesystem::path p(lib);
+                if (std::filesystem::exists(p, le_ec) && !le_ec) {
+                    extracted_file = lib;
+                    logical_file = lib;
                 }
             }
         }
+        if (!extracted_file.empty()) {
+            // ── REAL LOAD ATTEMPT (S-2 closeout) ──────────────────────────
+            auto lo = nativeexec::load_library(lib, extracted_file, logical_file);
+            nativeexec::note_loader(current_class_, lib);
+            if (lo.ok) {
+                std::error_code sz_ec;
+                unsigned long long fsz =
+                    std::filesystem::file_size(extracted_file, sz_ec);
+                std::cerr << "[S2-NATIVE] System." << method << "(\"" << lib
+                          << "\") LOADED size=" << fsz << " sha16="
+                          << sha16_of_file(extracted_file) << " (" << lo.detail
+                          << ")" << std::endl;
+                miniandroid::diagnostics::FileIoTrace::instance().record(
+                    "NATIVE-LOADED", logical_file, true,
+                    "System." + method + " " + lo.detail,
+                    current_class_ + "." + current_method_);
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            std::error_code sz_ec;
+            unsigned long long fsz =
+                std::filesystem::file_size(extracted_file, sz_ec);
+            std::string detail = "\"" + lib + "\" extracted at " + logical_file +
+                                 " (size=" + std::to_string(fsz) + ", sha16=" +
+                                 sha16_of_file(extracted_file) + ") but " +
+                                 lo.detail;
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "NATIVE", logical_file, false, "System." + method + " " + lo.detail,
+                current_class_ + "." + current_method_);
+            native_frontier_throw(detail);
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // Library not extracted: AOSP ABI-availability shape. Report the
+        // APK-internal presence with the device ABI list so the failure is
+        // diagnosable as an ABI mismatch, never as a generic "missing".
+        std::string detail;
+        {
+            bool present_any = false;
+            std::string found_entries;
+            static const char* kAbiScan[] = {"x86_64", "x86", "arm64-v8a",
+                                             "armeabi-v7a"};
+            for (const char* abi : kAbiScan) {
+                std::string e = std::string("lib/") + abi + "/lib" + lib + ".so";
+                bool st = false;
+                if (!apk_path_.empty() &&
+                    gatea::zip_contains_entry(apk_path_, e, &st)) {
+                    present_any = true;
+                    found_entries += (found_entries.empty() ? "" : ", ") + e;
+                }
+            }
+            detail = present_any
+                ? "library \"" + lib + "\" present in the installed APK (" +
+                      found_entries + ") but MiniAndroid extracted a different "
+                      "primary ABI; nativeLibraryDir has no lib" + lib + ".so"
+                : "dlopen failed: library \"" + lib + "\" not found in the "
+                      "installed APK";
+        }
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "NATIVE", lib, false, "System." + method,
+            current_class_ + "." + current_method_);
         native_frontier_throw(detail);
         result = DalvikValue::make_void();
         status = ApiCallTrace::Status::IMPLEMENTED;

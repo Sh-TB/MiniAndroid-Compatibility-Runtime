@@ -61,8 +61,10 @@ QUICKJS_SOURCES = $(QUICKJS_DIR)/quickjs.c $(QUICKJS_DIR)/libregexp.c $(QUICKJS_
 QUICKJS_OBJECTS = $(patsubst $(QUICKJS_DIR)/%.c,$(BUILDDIR)/quickjs/%.o,$(QUICKJS_SOURCES))
 QUICKJS_CFLAGS = -O2 -std=gnu11 -D_GNU_SOURCE -DCONFIG_VERSION=\"2024-01-13\" -DCONFIG_BIGNUM -w -I$(QUICKJS_DIR)
 
-CORE_SOURCES = $(APK_SOURCES) $(DEX_SOURCES) $(RUNTIME_SOURCES) $(DIAGNOSTICS_SOURCES) $(RESOURCES_SOURCES) $(RENDERER_SOURCES) $(FONTS_SOURCES) $(FRAMEWORK_SOURCES) $(API_SOURCES) $(STORAGE_SOURCES) $(WEBVIEW_SOURCES)
+CORE_SOURCES = $(APK_SOURCES) $(DEX_SOURCES) $(RUNTIME_SOURCES) $(DIAGNOSTICS_SOURCES) $(RESOURCES_SOURCES) $(RENDERER_SOURCES) $(FONTS_SOURCES) $(FRAMEWORK_SOURCES) $(API_SOURCES) $(STORAGE_SOURCES) $(WEBVIEW_SOURCES) $(SRCDIR)/jni/dlopen_exec.cpp
 CORE_OBJECTS = $(patsubst $(SRCDIR)/%.cpp,$(BUILDDIR)/%.o,$(CORE_SOURCES))
+# S-2 native execution thunk (System V x86_64 dynamic call)
+THUNK_OBJECT = $(BUILDDIR)/jni/native_thunk.o
 
 # Main executable
 MAIN_SOURCE = $(SRCDIR)/main.cpp
@@ -83,10 +85,14 @@ JSON_INCLUDE = -I$(JSON_DIR)/include
 
 all: $(EXECUTABLE)
 
-$(EXECUTABLE): $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(MAIN_OBJECT)
+$(EXECUTABLE): $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(THUNK_OBJECT) $(MAIN_OBJECT)
 	@mkdir -p $(BUILDDIR)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $^ $(LIBS) $(FONTS_LIBS)
 	@echo "Build complete: $(EXECUTABLE)"
+
+$(THUNK_OBJECT): $(SRCDIR)/jni/native_thunk.S
+	@mkdir -p $(dir $@)
+	gcc -c -o $@ $<
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp
 	@mkdir -p $(dir $@)
@@ -172,8 +178,8 @@ help:
 
 clean:
 	rm -rf $(BUILDDIR)
-	# UNIFIED_011 (28): never delete run/ - it contains TRACKED evidence
-	# (exp096/exp097 BEFORE/AFTER proof). Only build/ is a build artifact.
+        # UNIFIED_011 (28): never delete run/ - it contains TRACKED evidence
+        # (exp096/exp097 BEFORE/AFTER proof). Only build/ is a build artifact.
 	@echo "Cleaned build artifacts"
 
 # Download nlohmann/json if not present

@@ -862,25 +862,21 @@ public class MainActivity extends Activity {
             ok("NAT-02", "nativeLibraryDir=" + nld);
         } catch (Throwable t) { fail("NAT-02", t); }
 
-        // #371 PHASE B2 (G-4/G-2): extraction-backed native identity.
+        // #371 CLOSEOUT (S-2): extraction-backed native identity + REAL load.
         try {
             String nld = getApplicationInfo().nativeLibraryDir;
-            if (nld != null && nld.endsWith("/data/app/" + PKG + "/lib/arm64-v8a"))
-                ok("NAT-03", "nativeLibraryDir=" + nld + " (extraction-backed)");
+            if (nld != null && nld.endsWith("/data/app/" + PKG + "/lib/x86_64"))
+                ok("NAT-03", "nativeLibraryDir=" + nld + " (extraction-backed, host-executable ABI)");
             else fail("NAT-03", "nativeLibraryDir=" + nld);
         } catch (Throwable t) { fail("NAT-03", t); }
         try {
-            try {
-                System.loadLibrary("probe");
-                fail("NAT-04", "no exception (fake load success)");
-            } catch (UnsatisfiedLinkError ule) {
-                String m = ule.getMessage() != null ? ule.getMessage()
-                                                    : String.valueOf(ule);
-                if (m.contains("extracted at"))
-                    ok("NAT-04", "ULE precise: " + m.substring(0, Math.min(120, m.length())));
-                else fail("NAT-04", "ULE without extraction detail: " + m);
-            }
-        } catch (Throwable t) { fail("NAT-04", t); }
+            // S-2 CLOSED: the extracted x86_64 library is REALLY dlopen'd
+            // (JNI_OnLoad handshake included) — a load attempt must succeed.
+            System.loadLibrary("probe");
+            ok("NAT-04", "loadLibrary(probe) real-load success (dlopen + JNI_OnLoad)");
+        } catch (Throwable t) {
+            fail("NAT-04", "real load failed: " + t);
+        }
         try {
             try {
                 System.loadLibrary("gatea_nosuch_lib");
