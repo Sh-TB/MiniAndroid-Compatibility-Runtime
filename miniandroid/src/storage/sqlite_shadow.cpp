@@ -206,6 +206,45 @@ framework::CallResult DatabaseShadow::open_helper_database(uint32_t helper_oid,
 // ─────────────────────────────────────────────────────────────────────────
 // dispatch entry
 // ─────────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────
+// GATE A (issue #370) — Context.openOrCreateDatabase open path. ONE open
+// machinery shared with the helper path (AOSP ContextImpl routes there);
+// no lifecycle flags. Identity law: repeated opens of the same name answer
+// the SAME connection while it is open (dbs_ keyed by db_oid; a second
+// open creates a second connection over the same file — sqlite3 serializes
+// them, matching AndroidSQLiteDatabase's multi-connection reality closely
+// enough for the deterministic single-thread runtime).
+// ─────────────────────────────────────────────────────────────────────────
+framework::CallResult DatabaseShadow::open_standalone_database(
+    const std::string& name) {
+    DbState st;
+    if (name == ":memory:") {
+        st.path = ":memory:";
+    } else {
+        fs::path dir(databases_dir_);
+        std::error_code ec;
+        fs::create_directories(dir, ec);
+        st.path = (dir / name).string();
+    }
+    sqlite3* raw = nullptr;
+    int flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
+    int rc = sqlite3_open_v2(st.path.c_str(), &raw, flags, nullptr);
+    if (rc != SQLITE_OK) {
+        std::cerr << "[SQLITE-SHADOW] standalone open failed rc=" << rc
+                  << " path=" << st.path << " err="
+                  << (raw ? sqlite3_errmsg(raw) : "?") << std::endl;
+        if (raw) sqlite3_close(raw);
+        return framework::CallResult::not_handled();
+    }
+    st.db = raw;
+    uint32_t db_oid = heap_->allocate("Landroid/database/sqlite/SQLiteDatabase;");
+    dbs_[db_oid] = st;
+    std::cerr << "[SQLITE-SHADOW] standalone-open db oid=" << db_oid
+              << " path=" << st.path << std::endl;
+    return framework::CallResult::handled_object(
+        db_oid, "Landroid/database/sqlite/SQLiteDatabase;");
+}
+
 framework::CallResult DatabaseShadow::dispatch(const framework::CallContext& ctx) {
     if (ctx.class_name == "Landroid/database/sqlite/SQLiteOpenHelper;")
         return helper_dispatch(ctx);

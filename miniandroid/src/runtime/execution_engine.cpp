@@ -1258,6 +1258,22 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                       << prov_classes.size() << std::endl;
             for (const auto& pc : prov_classes)
                 std::cerr << "[S1-PROVIDER]   " << pc << std::endl;
+            // GATE A (issue #370): provider name+authorities identity for
+            // the PackageManager.getPackageInfo(GET_PROVIDERS) law. Same
+            // ".Foo"/"Foo" → full-class normalization law as prov_classes.
+            std::vector<std::pair<std::string, std::string>> prov_identity;
+            for (const auto& p : result.apk_info.providers) {
+                std::string cls = p.name;
+                if (!cls.empty()) {
+                    if (cls[0] == '.') {
+                        cls = result.apk_info.package_name + cls;
+                    } else if (cls.find('.') == std::string::npos) {
+                        cls = result.apk_info.package_name + "." + cls;
+                    }
+                }
+                prov_identity.emplace_back(cls, p.authorities);
+            }
+            dalvik_engine_.set_manifest_provider_identity(prov_identity);
         }
         // CALL DALVIK ENGINE - This is the REAL execution path
         // ===================================================================

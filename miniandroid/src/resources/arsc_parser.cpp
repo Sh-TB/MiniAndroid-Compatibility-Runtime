@@ -806,6 +806,48 @@ std::vector<std::pair<uint32_t, std::string>> ArscParser::list_type(
     return out;
 }
 
+// ─────────────────────────────────────────────────────────────────────────
+// GATE A (issue #370 §7): static ARSC inventory — whole-table walk over
+// packages_/types_ (private members, full access here). Config-bucket
+// count per entry = number of type chunks (configs) whose offsets carry
+// the entry (NO_ENTRY excluded). No resolution, no defaults invented.
+// ─────────────────────────────────────────────────────────────────────────
+std::vector<ArscParser::InvPackage> ArscParser::inventory() const {
+    std::vector<InvPackage> out;
+    for (const auto& pkg : packages_) {
+        InvPackage ip;
+        ip.id = pkg.id;
+        ip.name = pkg.name;
+        for (const auto& [type_id, chunks] : pkg.types) {
+            if (chunks.empty()) continue;
+            InvType it;
+            const std::string* tn = pkg.type_strings.get(type_id - 1);
+            it.type_name = tn ? *tn : ("type_" + std::to_string(type_id));
+            std::map<uint32_t, uint32_t> entry_buckets;  // entry idx → buckets
+            for (const auto& chunk : chunks) {
+                for (size_t i = 0; i < chunk.entry_offsets.size(); i++) {
+                    if (chunk.entry_offsets[i] < 0) continue;  // NO_ENTRY
+                    entry_buckets[(uint32_t)i]++;
+                }
+            }
+            // Name each entry through the key pool (entry idx = key index).
+            for (const auto& [idx, buckets] : entry_buckets) {
+                InvEntry ie;
+                ie.id = (pkg.id << 24) | ((uint32_t)type_id << 16) | idx;
+                const std::string* kn = pkg.key_strings.get(idx);
+                if (kn) ie.name = *kn;
+                ie.config_buckets = buckets;
+                it.entries.push_back(ie);
+            }
+            std::sort(it.entries.begin(), it.entries.end(),
+                      [](const InvEntry& a, const InvEntry& b) { return a.id < b.id; });
+            ip.types.push_back(it);
+        }
+        out.push_back(ip);
+    }
+    return out;
+}
+
 std::optional<std::string> ArscParser::apk_path_for(uint32_t resource_id,
                                                     const std::vector<std::string>& apk_paths) const {
     return apk_path_for(resource_id, apk_paths, device_config());

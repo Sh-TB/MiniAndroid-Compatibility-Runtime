@@ -23,6 +23,7 @@
 #include "../diagnostics/crash_forensics.h"  // S100 §3: last-op ring (issue #345)
 #include "../diagnostics/gfx_provenance.h"  // S82-GFX §6: evidence-bit pixel chain
 #include "../diagnostics/file_io_trace.h"   // IAPK: file-IO provenance (F-NEW-234 wave)
+#include "../diagnostics/install_inspection.h"  // GATE A: zip_contains_entry (System.loadLibrary law)
 #include "../jni/jni_bridge.h"
 // EXP-051: Shadow registry integration.
 #include "../framework/shadow_registry.h"
@@ -4498,6 +4499,46 @@ void DalvikExecutionEngine::install_content_providers(
             std::vector<DalvikValue> pinit;
             pinit.push_back(pobj);
             try_recursive_invoke(desc, "<init>", pinit, ret, result, "()V");
+            // GATE A (issue #370): AOSP ActivityThread.installProvider law —
+            // attachInfo(context, info) runs BEFORE onCreate and binds
+            // mContext + mInfo. The engine mirrors it: build a ProviderInfo
+            // heap object (name + authority identity from the manifest) and
+            // invoke the provider's attachInfo override (or the framework
+            // default) with the bound application context.
+            {
+                uint32_t pinfo_id = heap_.allocate(
+                    "Landroid/content/pm/ProviderInfo;", pc_, 0);
+                heap_.set_object_field(pinfo_id, "name",
+                                       DalvikValue::make_string(desc, 1));
+                std::string auth;
+                for (const auto& [pname, pauth] : manifest_provider_identity_) {
+                    if (pname == pcls) { auth = pauth; break; }
+                }
+                heap_.set_object_field(pinfo_id, "authority",
+                                       DalvikValue::make_string(auth, 1));
+                heap_.set_object_field(pinfo_id, "authorities",
+                                       DalvikValue::make_string(auth, 1));
+                DalvikValue pinfo;
+                pinfo.type = DalvikType::OBJECT_REF;
+                pinfo.object_id = pinfo_id;
+                pinfo.class_desc = "Landroid/content/pm/ProviderInfo;";
+                uint32_t ctx_id = application_object_id_;
+                DalvikValue ctx_obj;
+                if (ctx_id != 0 && heap_.has_object(ctx_id)) {
+                    ctx_obj.type = DalvikType::OBJECT_REF;
+                    ctx_obj.object_id = ctx_id;
+                    ctx_obj.class_desc = application_class_desc_.empty()
+                                             ? "Landroid/app/Application;"
+                                             : application_class_desc_;
+                } else {
+                    ctx_obj = get_or_create_singleton("Landroid/content/Context;");
+                }
+                std::vector<DalvikValue> pattach{pobj, ctx_obj, pinfo};
+                try_recursive_invoke(desc, "attachInfo", pattach, ret, result,
+                                     "(Landroid/content/Context;"
+                                     "Landroid/content/pm/ProviderInfo;)V");
+                provider_context_[pid] = ctx_obj.object_id;
+            }
             // ContentProvider.onCreate() — the init hook (attachInfo is
             // framework-internal in AOSP; onCreate carries the app init).
             std::vector<DalvikValue> pcreate;
@@ -4505,7 +4546,7 @@ void DalvikExecutionEngine::install_content_providers(
             bool ok = try_recursive_invoke(desc, "onCreate", pcreate, ret,
                                            result, "()Z");
             std::cerr << "[S1-PROVIDER] installed " << pcls
-                      << " obj#" << pid << " onCreate "
+                      << " obj#" << pid << " attachInfo+onCreate "
                       << (ok ? "OK" : "SKIPPED") << std::endl;
         } catch (const std::exception& e) {
             std::cerr << "[S1-PROVIDER] " << pcls
@@ -22945,6 +22986,26 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     activity_shadow->content_view_id(), name);
             }
         }
+        // GATE A (issue #370 §7, R-4 law): non-id types resolve through the
+        // FULL ARSC (name→ID for string/drawable/raw/layout/color/…), not
+        // only inflated view ids. Package arg (args[3]) first, manifest
+        // package as fallback — AOSP ResourcesImpl.getIdentifier contract.
+        if (found_id == 0 && !def_type.empty()) {
+            auto& rt = resources::ResourceRuntime::instance();
+            if (rt.loaded()) {
+                std::vector<std::string> pkgs;
+                if (args.size() >= 4 && args[3].type == DalvikType::STRING_REF &&
+                    !args[3].string_val.empty())
+                    pkgs.push_back(args[3].string_val);
+                if (!package_name_.empty() &&
+                    (pkgs.empty() || pkgs.back() != package_name_))
+                    pkgs.push_back(package_name_);
+                for (const auto& p : pkgs) {
+                    auto id = rt.arsc().find_id(p, def_type, name);
+                    if (id) { found_id = (int32_t)*id; break; }
+                }
+            }
+        }
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_int(found_id);
         std::cerr << "[R357-GETID] getIdentifier(\"" << name
@@ -24249,7 +24310,11 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                            : ((args.size() >= 3 && args[2].type == DalvikType::INT32)
                                   ? args[2].int_val : 0);
         if (args.size() >= 3 && args[2].type == DalvikType::INT32) mode = args[2].int_val;
-        bool append = (mode & 0x0800) != 0;  // MODE_APPEND = 0x0800 (AOSP)
+        // GATE A (issue #370 §4, IO-02 probe evidence): AOSP Context.java
+        // MODE_APPEND = 0x00008000 — the old check tested 0x0800 (a
+        // MODE_WORLD_* legacy bit), so every append opened with trunc and
+        // silently ATE the previous bytes.
+        bool append = (mode & 0x8000) != 0;  // MODE_APPEND = 0x8000 (AOSP)
         std::filesystem::path p = Storage::context_dir("files") / name;
         std::error_code ofo_ec;
         std::filesystem::create_directories(p.parent_path(), ofo_ec);
@@ -28246,27 +28311,76 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             std::vector<uint8_t> bytes;
             std::string path;
             uint16_t density = 0;
+            bool served = false;
+            std::string entry_key;
             if (resolver && resolver(resid, bytes, path, density) &&
                 !bytes.empty()) {
-                uint32_t sid =
-                    heap_.allocate("Ljava/io/ByteArrayInputStream;", 0, 0);
-                s109_stream_bytes[sid] =
-                    std::string(bytes.begin(), bytes.end());
-                DalvikValue sv;
-                sv.type = DalvikType::INT32;
-                sv.int_val = (int32_t)sid;
-                heap_.set_object_field(sid, "__is_len__",
-                                       DalvikValue::make_int(
-                                           (int32_t)bytes.size()));
+                served = true;
+                entry_key = "apk-entry:" + path;
+            } else {
+                // GATE A (issue #370 §7): raw resources are NOT drawables —
+                // the drawable-bytes resolver misses them, and the old code
+                // answered a silent NULL stream (fake success). AOSP law:
+                // ResourcesImpl.openRawResource serves the entry bytes for
+                // ANY raw/file-backed resource; NotFoundException when the
+                // id resolves to nothing. Fallback: ARSC id → APK entry →
+                // real ZIP bytes.
+                auto& rt = resources::ResourceRuntime::instance();
+                std::vector<std::string> apk_paths;
+                if (rt.ensure_loaded(apk_path_)) {
+                    for (const auto& ze : rt.apk().list_entries_cached("res/"))
+                        apk_paths.push_back(ze.name);
+                    auto sel_file = rt.arsc().select_file(
+                        resid, apk_paths, resources::device_config());
+                    std::string entry;
+                    if (sel_file) entry = sel_file->path;
+                    if (entry.empty()) {
+                        auto sel = rt.arsc().apk_path_for(resid, apk_paths);
+                        if (sel) entry = *sel;
+                    }
+                    if (entry.empty() && entry.find("res/") != 0) {
+                        // terminal STRING path without the res/ prefix
+                    }
+                    if (!entry.empty()) {
+                        if (entry.find("res/") != 0) entry = "res/" + entry;
+                        bytes = rt.apk().extract_entry(apk_path_, entry);
+                        if (!bytes.empty()) {
+                            path = entry;
+                            served = true;
+                        }
+                    }
+                }
+            }
+            if (served) {
+                // GATE A: serve the stream through the ONE asset-byte law
+                // (apk-entry: = root ZIP entry bytes, inflate included) — the
+                // previous s109_stream_bytes registry had NO read handler,
+                // so every read on an openRawResource stream answered EOF
+                // (probe RES-03 evidence: 0 bytes served for a 26-byte raw).
+                uint32_t sid = heap_.allocate("Ljava/io/InputStream;", 0, 0);
+                open_assets_[sid] = {entry_key, 0};
+                miniandroid::diagnostics::FileIoTrace::instance().record(
+                    "OPEN", entry_key, true, "Resources.openRawResource",
+                    current_class_ + "." + current_method_);
                 std::cerr << "[S109-SAX] openRawResource resid=0x" << std::hex
                           << resid << std::dec << " -> " << path << " ("
                           << bytes.size() << " bytes) stream obj#" << sid
                           << std::endl;
                 result = DalvikValue::make_object(
-                    sid, "Ljava/io/ByteArrayInputStream;");
+                    sid, "Ljava/io/InputStream;");
                 status = ApiCallTrace::Status::IMPLEMENTED;
                 return true;
             }
+            // GATE A: missing id → NotFoundException (never a silent null).
+            std::cerr << "[S109-SAX] openRawResource resid=0x" << std::hex
+                      << resid << std::dec << " MISS → NotFoundException"
+                      << std::endl;
+            throw_deferred("Landroid/content/res/Resources$NotFoundException;",
+                           "raw resource ID #0x" + ([](uint32_t v) {
+                               char b[16]; snprintf(b, sizeof(b), "%x", v);
+                               return std::string(b);
+                           })(resid),
+                           "GATEA-RAW-NOTFOUND");
             result = DalvikValue::make_null();
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
@@ -31907,6 +32021,20 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         is_subclass_of(class_name, "Landroid/content/ContentProvider;")) {
         static thread_local uint64_t ctx_law_n = 0;
         bool log_law = ctx_law_n++ < 16;
+        // GATE A: prefer the provider's OWN bound context (attachInfo law,
+        // install_content_providers) before the process-wide app context.
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+            auto pit = provider_context_.find(args[0].object_id);
+            if (pit != provider_context_.end() && pit->second != 0 &&
+                heap_.has_object(pit->second)) {
+                auto* cobj = heap_.get(pit->second);
+                result = DalvikValue::make_object(
+                    pit->second, cobj ? cobj->class_descriptor
+                                      : "Landroid/content/Context;");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
         if (application_object_id_ != 0 &&
             heap_.has_object(application_object_id_)) {
             result = DalvikValue::make_object(
@@ -32857,6 +32985,54 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         package_name.string_val = package_name_.empty() ? "unknown.package" : package_name_;
         package_name.ref_id = 0;
         heap_.set_object_field(obj_id, "packageName", package_name);
+        // GATE A (issue #370) — GET_PROVIDERS (flags bit 0x8) law (AOSP
+        // PackageManager.getPackageInfo: with GET_PROVIDERS the returned
+        // PackageInfo.providers array lists every manifest <provider> as a
+        // ProviderInfo carrying name + authorities). Without the flag the
+        // array stays empty (AOSP behavior — components are only included
+        // when the matching GET_* flag is set). Array shape follows the
+        // engine's array convention (array[N] fields + __array_length__).
+        int64_t pm_flags = 0;
+        for (size_t i = 1; i < args.size(); i++) {
+            if (args[i].type == DalvikType::INT32) {
+                pm_flags = args[i].int_val;
+                break;
+            }
+        }
+        if ((pm_flags & 0x8) != 0 && !manifest_provider_identity_.empty()) {
+            uint32_t arr_id = heap_.allocate(
+                "[Landroid/content/pm/ProviderInfo;", pc_, 0);
+            heap_.set_object_field(
+                arr_id, "__array_length__",
+                DalvikValue::make_int((int)manifest_provider_identity_.size()));
+            for (size_t i = 0; i < manifest_provider_identity_.size(); i++) {
+                uint32_t pid = heap_.allocate(
+                    "Landroid/content/pm/ProviderInfo;", pc_, 0);
+                heap_.set_object_field(
+                    pid, "name",
+                    DalvikValue::make_string(manifest_provider_identity_[i].first, 1));
+                // AOSP ProviderInfo field is `authority` (singular). Seed the
+                // legacy plural alias too — consumers may read either.
+                heap_.set_object_field(
+                    pid, "authority",
+                    DalvikValue::make_string(manifest_provider_identity_[i].second, 1));
+                heap_.set_object_field(
+                    pid, "authorities",
+                    DalvikValue::make_string(manifest_provider_identity_[i].second, 1));
+                DalvikValue piv;
+                piv.type = DalvikType::OBJECT_REF;
+                piv.object_id = pid;
+                piv.class_desc = "Landroid/content/pm/ProviderInfo;";
+                heap_.set_object_field(arr_id, "array[" + std::to_string(i) + "]",
+                                       piv);
+            }
+            DalvikValue pav;
+            pav.type = DalvikType::OBJECT_REF;
+            pav.object_id = arr_id;
+            pav.class_desc = "[Landroid/content/pm/ProviderInfo;";
+            pav.int_val = (int64_t)manifest_provider_identity_.size();
+            heap_.set_object_field(obj_id, "providers", pav);
+        }
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
@@ -33974,6 +34150,166 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // GATE A (issue #370) — Context dir-family completion (AOSP ContextImpl):
+    //   getDataDir()          → /data/user/0/<pkg>          (the data dir itself)
+    //   getCodeCacheDir()     → /data/user/0/<pkg>/code_cache
+    //   getNoBackupFilesDir() → /data/user/0/<pkg>/no_backup
+    //   getFileStreamPath(n)  → /data/user/0/<pkg>/files/<n>  (NO creation —
+    //                           AOSP returns the File handle; existence is
+    //                           the caller's concern. Also used by
+    //                           openFileOutput's path law internally.)
+    // All four anchor through Storage::context_dir (F-NEW-234 per-package
+    // law) — one path law, no per-site roots. Device-protected variants
+    // (/data/user_de/0) are honestly NOT modeled: MiniAndroid has no
+    // credential-encryption boundary, so getDeviceProtected* would answer
+    // the same physical tree — those calls REC-MISS loudly instead of
+    // faking a distinction that does not exist.
+    // ────────────────────────────────────────────────────────────────────────
+    if ((method == "getDataDir" || method == "getCodeCacheDir" ||
+         method == "getNoBackupFilesDir" || method == "getFileStreamPath") &&
+        (class_name.find("Context") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos ||
+         class_name.find("Application") != std::string::npos ||
+         class_name.find("Service") != std::string::npos)) {
+        if (method == "getFileStreamPath") {
+            // (String name) → files/<name>; name sanitized like getDir.
+            // AOSP: returns the File handle WITHOUT creating anything.
+            std::string name = "default";
+            if (args.size() >= 2 && args[1].type == DalvikType::STRING_REF &&
+                !args[1].string_val.empty())
+                name = args[1].string_val;
+            if (name.find('/') != std::string::npos || name == ".." || name == ".")
+                name = "default";
+            std::filesystem::path p = Storage::context_dir("files") / name;
+            std::string logical = Storage::logical_android_path(p);
+            if (logical.empty()) logical = p.string();
+            uint32_t fid = heap_.allocate("Ljava/io/File;", pc_, 0);
+            heap_.set_object_field(fid, "path",
+                                   DalvikValue::make_string(logical, 0));
+            DalvikValue fv;
+            fv.type = DalvikType::OBJECT_REF;
+            fv.object_id = fid;
+            fv.class_desc = "Ljava/io/File;";
+            result = fv;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        std::string sub = method == "getDataDir" ? ""
+                          : method == "getCodeCacheDir" ? "code_cache"
+                                                        : "no_backup";
+        std::filesystem::path dir_path = Storage::context_dir(sub);
+        std::error_code gdir_ec;
+        std::filesystem::create_directories(dir_path, gdir_ec);
+        result = get_or_create_dir_file(dir_path.string());
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "MKDIR", dir_path.string(), true, "Context." + method,
+            current_class_ + "." + current_method_);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // GATE A (issue #370) — Context.databaseList() (AOSP ContextImpl +
+    // DatabaseFileList: the sorted names of the databases directory,
+    // EXCLUDING the -wal/-shm/-journal sidecars of the same database).
+    // Rec-miss previously → null → app NPE. Honest empty list when the
+    // directory does not exist yet (AOSP answers an empty array there too).
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "databaseList" &&
+        (class_name.find("Context") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos ||
+         class_name.find("Application") != std::string::npos)) {
+        std::vector<std::string> names;
+        std::filesystem::path db_dir = Storage::context_dir("databases");
+        std::error_code dlist_ec;
+        if (std::filesystem::exists(db_dir, dlist_ec)) {
+            for (auto it = std::filesystem::directory_iterator(db_dir, dlist_ec);
+                 it != std::filesystem::directory_iterator(); ++it) {
+                if (!it->is_regular_file(dlist_ec)) continue;
+                std::string n = it->path().filename().string();
+                static const char* kSidecars[] = {"-wal", "-shm", "-journal"};
+                bool sidecar = false;
+                for (const char* sfx : kSidecars) {
+                    if (n.size() > strlen(sfx) &&
+                        n.compare(n.size() - strlen(sfx), strlen(sfx), sfx) == 0) {
+                        sidecar = true;
+                        break;
+                    }
+                }
+                if (!sidecar) names.push_back(n);
+            }
+        }
+        std::sort(names.begin(), names.end());
+        uint32_t arr_id = heap_.allocate("[Ljava/lang/String;", pc_, 0);
+        heap_.set_object_field(arr_id, "__array_length__",
+                               DalvikValue::make_int((int)names.size()));
+        for (size_t i = 0; i < names.size(); i++) {
+            heap_.set_object_field(
+                arr_id, "array[" + std::to_string(i) + "]",
+                DalvikValue::make_string(names[i], 1));
+        }
+        DalvikValue av;
+        av.type = DalvikType::OBJECT_REF;
+        av.object_id = arr_id;
+        av.class_desc = "[Ljava/lang/String;";
+        av.int_val = (int64_t)names.size();
+        result = av;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // GATE A (issue #370) — Context.openOrCreateDatabase(String name, int
+    // mode, CursorFactory) (AOSP ContextImpl.openOrCreateDatabase: routes to
+    // the SAME open path as SQLiteOpenHelper — a non-null SQLiteDatabase
+    // backed by databases/<name>, or an exception; never a silent null).
+    // No onCreate/onUpgrade lifecycle here (that contract belongs to
+    // helpers); the DatabaseShadow::open_standalone_database law keeps ONE
+    // open path for the whole engine.
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "openOrCreateDatabase" &&
+        (class_name.find("Context") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos ||
+         class_name.find("Application") != std::string::npos)) {
+        std::string db_name;
+        for (size_t i = 1; i < args.size(); i++) {
+            if (args[i].type == DalvikType::STRING_REF && !args[i].string_val.empty()) {
+                db_name = args[i].string_val;
+                break;
+            }
+        }
+        if (shadow_registry_ != nullptr) {
+            auto* db_shadow = shadow_registry_->find_as<storage::DatabaseShadow>();
+            if (db_shadow && !db_name.empty()) {
+                framework::CallResult open_res =
+                    db_shadow->open_standalone_database(db_name);
+                if (open_res.handled) {
+                    if (open_res.ret_kind == framework::CallResult::RetKind::OBJECT &&
+                        open_res.object_id != 0) {
+                        DalvikValue dv;
+                        dv.type = DalvikType::OBJECT_REF;
+                        dv.object_id = open_res.object_id;
+                        dv.class_desc = open_res.object_class;
+                        result = dv;
+                    } else {
+                        result = DalvikValue::make_void();
+                    }
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+            }
+        }
+        // No shadow / empty name → AOSP SQLiteException-on-open contract:
+        // fail loudly, never silently null.
+        throw_deferred("Landroid/database/sqlite/SQLiteException;",
+                       "openOrCreateDatabase failed: " + db_name,
+                       "GATEA-DBOPEN");
+        result = DalvikValue::make_null();
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // F-NEW-168 (S134 wave 6) — Context.getDir(String name, int mode) → File
     // FIRST DIVERGENCE of the WhatsApp onCreate chain (runtime-proven,
     // run/s134/wa_w6_r1): LX/004;.onCreate → LX/00A;.A06 → Context.getDir
@@ -34789,20 +35125,49 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     timeunit_not_handled:;
 
     // ────────────────────────────────────────────────────────────────────────
-    // P1.4 — Resources.getIdentifier(String, String, String) → int (not found)
+    // P1.4 — Resources.getIdentifier(String, String, String) → int
+    // GATE A (issue #370 §7) — name→ID is a REQUIRED resolution direction
+    // (R-4 law fix): AOSP ResourcesImpl.getIdentifier consults the FULL
+    // resource table for ANY type (string/drawable/raw/layout/color/…),
+    // not just inflated "id" tree nodes. Implementation: ARSC find_id over
+    // the app package (package arg normalized; manifest package as the
+    // fallback when the caller passes null/"android" mismatches), bounded
+    // by the ARSC itself. The old behavior answered 0 for every non-id
+    // type — programmatic resource binding was dead.
     // EXP-052: Log every resource identifier query for evidence.
     if (method == "getIdentifier" &&
         class_name.find("Resources") != std::string::npos) {
-        // Args: (String name, String defType, String defPackage)
-        std::string name = args.size() >= 1 ? args[0].string_val : "<unknown>";
-        std::string defType = args.size() >= 2 ? args[1].string_val : "<unknown>";
-        std::string defPackage = args.size() >= 3 ? args[2].string_val : "<unknown>";
+        // Args: (String name, String defType, String defPackage) — the
+        // receiver (Resources) may occupy args[0] on instance dispatch.
+        std::string name, defType, defPackage;
+        {
+            int s = 0;
+            if (args.size() >= 4) s = 1;  // receiver slot present
+            name = args.size() > (size_t)s ? args[s].string_val : "<unknown>";
+            defType = args.size() > (size_t)s + 1 ? args[s + 1].string_val : "<unknown>";
+            defPackage = args.size() > (size_t)s + 2 ? args[s + 2].string_val : "<unknown>";
+        }
+        int32_t found = 0;
+        {
+            auto& rt = resources::ResourceRuntime::instance();
+            if (rt.loaded()) {
+                std::vector<std::string> pkgs;
+                if (!defPackage.empty() && defPackage != "<unknown>")
+                    pkgs.push_back(defPackage);
+                if (!package_name_.empty() && package_name_ != defPackage)
+                    pkgs.push_back(package_name_);
+                for (const auto& p : pkgs) {
+                    auto id = rt.arsc().find_id(p, defType, name);
+                    if (id) { found = (int32_t)*id; break; }
+                }
+            }
+        }
         std::cerr << "[RES] getIdentifier name=\"" << name
                   << "\" defType=\"" << defType
                   << "\" defPackage=\"" << defPackage
-                  << "\" → 0 (not found)" << std::endl;
+                  << "\" → 0x" << std::hex << found << std::dec << std::endl;
         status = ApiCallTrace::Status::IMPLEMENTED;
-        result = DalvikValue::make_int(0);
+        result = DalvikValue::make_int(found);
         return true;
     }
 
@@ -35048,9 +35413,23 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             result = DalvikValue::make_string(resolved, 0);
             return true;
         }
+        // GATE A (issue #370 §7) — ResourceNotFound law (AOSP
+        // ResourcesImpl.getString → Resources.NotFoundException). A
+        // silent "" default is the R-3 fake-success: AOSP answers a
+        // thrown NotFoundException for an id that resolves to no entry.
+        // 0 (no id at all) keeps the legacy honest-empty contract for
+        // degenerate call sites.
         std::cerr << "[RES-F136] getString resid=0x" << std::hex << resid
-                  << std::dec << " → \"\" (F136-UNRESOLVED)"
+                  << std::dec << " → NotFoundException (GATE-A law)"
                   << std::endl;
+        if (resid != 0) {
+            throw_deferred("Landroid/content/res/Resources$NotFoundException;",
+                           "String resource ID #0x" + ([](uint32_t v) {
+                               char b[16]; snprintf(b, sizeof(b), "%x", v);
+                               return std::string(b);
+                           })((uint32_t)resid),
+                           "GATEA-RES-NOTFOUND");
+        }
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_string("", 0);
         return true;
@@ -35553,11 +35932,22 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     if ((method == "getExternalCacheDirs" ||
          method == "getExternalFilesDirs" ||
          method == "getExternalMediaDirs" ||
-         method == "getObbDirs") &&
+         method == "getObbDirs" ||
+         method == "getObbDir") &&
         (class_name.find("Context") != std::string::npos ||
          class_name.find("Activity") != std::string::npos ||
          class_name.find("Application") != std::string::npos ||
          class_name.find("Service") != std::string::npos)) {
+        // GATE A: getObbDir (singular) — AOSP ContextImpl.getObbDir returns
+        // the primary-volume OBB directory as a File (never null).
+        if (method == "getObbDir") {
+            std::filesystem::path obb_dir = Storage::external_obb_dir();
+            std::error_code obb_ec;
+            std::filesystem::create_directories(obb_dir, obb_ec);
+            result = get_or_create_dir_file(obb_dir.string());
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
         const std::string leaf =
             method == "getExternalCacheDirs" ? "cache"
             : method == "getExternalFilesDirs" ? "files"
@@ -35819,6 +36209,17 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 seed_ai("sourceDir", apk_path_);
             seed_ai("publicSourceDir",
                     apk_path_.empty() ? "/data/app/base.apk" : apk_path_);
+            // GATE A (issue #370): the sourceDir the APPLICATION trades must
+            // be the AOSP logical identity /data/app/<pkg>/base.apk — the
+            // host store backing is resolve_android_path's business
+            // (INSTALLED_APK category maps it back). The raw host spelling
+            // is kept on the private identity fields below for engine-internal
+            // consumers.
+            if (!package_name_.empty()) {
+                seed_ai("hostSourceDir", apk_path_);
+                seed_ai("sourceDir", "/data/app/" + package_name_ + "/base.apk");
+                seed_ai("publicSourceDir", "/data/app/" + package_name_ + "/base.apk");
+            }
             seed_ai("nativeLibraryDir",
                     "/data/app/~~miniandroid/base/lib/arm64");
             seed_ai("primaryCpuAbi", "arm64-v8a");
@@ -40883,6 +41284,13 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         heap_.set_object_field(
             afd, "length",
             DalvikValue::make_int(static_cast<int32_t>(hit->uncompressed_size)));
+        // GATE A (issue #370 §5): AOSP AssetFileDescriptor carries BOTH the
+        // declared length (what the app sees via getDeclaredLength) and the
+        // physical length. Seed both — the probe caught getDeclaredLength
+        // answering 0 because only "length" existed.
+        heap_.set_object_field(
+            afd, "declaredLength",
+            DalvikValue::make_int(static_cast<int32_t>(hit->uncompressed_size)));
         heap_.set_object_field(
             afd, "__entry__", DalvikValue::make_string(hit->name, 0));
         DalvikValue av;
@@ -40902,7 +41310,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // "file:<abs>" = sandbox file bytes).
     if (class_name == "Landroid/content/res/AssetFileDescriptor;" &&
         (method == "createInputStream" || method == "getStartOffset" ||
-         method == "getLength" || method == "getFileDescriptor")) {
+         method == "getLength" || method == "getDeclaredLength" ||
+         method == "getFileDescriptor")) {
         uint32_t afd = (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
                            ? args[0].object_id : 0;
         std::string entry;
@@ -40925,8 +41334,13 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
-        if (method == "getLength") {
-            result = len_v;  // ()J
+        if (method == "getLength" || method == "getDeclaredLength") {
+            // GATE A: getDeclaredLength reads the same declared length the
+            // openFd law seeds (AOSP AssetFileDescriptor contract).
+            result = (method == "getLength") ? len_v : len_v;  // ()J → INT64
+            auto dl = heap_.get_object_field(afd, "declaredLength");
+            if (method == "getDeclaredLength" && dl.has_value())
+                result = DalvikValue::make_long(dl->int_val);
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
@@ -40955,15 +41369,22 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         if (method == "open") {
             // static open(File, int mode) — REAL fd over the mapped path;
             // DENIED/absent → FileNotFoundException (AOSP contract).
+            // GATE A: arg-convention proof — static calls may arrive with or
+            // without a receiver slot; the File is the FIRST OBJECT_REF arg.
             std::string fpath;
-            if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF &&
-                args[1].object_id != 0 && heap_.has_object(args[1].object_id)) {
-                const auto* fobj = heap_.get(args[1].object_id);
-                if (fobj) {
-                    for (const auto& [fname, fval] : fobj->fields)
-                        if (fval.type == DalvikType::STRING_REF &&
-                            fval.string_val.size() > fpath.size())
-                            fpath = fval.string_val;
+            for (size_t i = 0; i < args.size(); i++) {
+                if (args[i].type == DalvikType::OBJECT_REF &&
+                    args[i].object_id != 0 && heap_.has_object(args[i].object_id)) {
+                    const auto* fobj = heap_.get(args[i].object_id);
+                    if (fobj && fobj->class_descriptor != "Ljava/io/File;")
+                        continue;  // skip receiver-ish objects (context etc.)
+                    if (fobj) {
+                        for (const auto& [fname, fval] : fobj->fields)
+                            if (fval.type == DalvikType::STRING_REF &&
+                                fval.string_val.size() > fpath.size())
+                                fpath = fval.string_val;
+                    }
+                    if (!fpath.empty()) break;
                 }
             }
             Storage::PathResolution pr = Storage::resolve_android_path(fpath);
@@ -43949,6 +44370,61 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // GATE A (issue #370 §11) — System.loadLibrary(String) / System.load
+    // contract. AOSP Runtime.loadLibrary0: request → ABI → installed
+    // location → dlopen → success OR UnsatisfiedLinkError. The runtime has
+    // NO native execution layer (S-2 frontier), so the honest answer is
+    // ALWAYS UnsatisfiedLinkError — the trace distinguishes the two AOSP
+    // failure shapes: library absent from the installed APK ("not found")
+    // vs present-but-not-loadable (extraction/dlopen frontier). The old
+    // behavior: REC-MISS → silent void → apps "succeeded" loading nothing
+    // (the exact fake-success GATE A exists to kill).
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/lang/System;" &&
+        (method == "loadLibrary" || method == "load")) {
+        // GATE A: static-call arg convention varies (receiver slot present
+        // or not) — the library name is the FIRST STRING arg.
+        std::string lib;
+        for (const auto& a : args) {
+            if (a.type == DalvikType::STRING_REF && !a.string_val.empty()) {
+                lib = a.string_val;
+                break;
+            }
+        }
+        if (lib.empty()) return false;
+        std::cerr << "[GATEA-NATIVE] System." << method << "(\"" << lib
+                  << "\") caller=" << current_class_ << "." << current_method_
+                  << std::endl;
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "NATIVE", lib, false, "System." + method,
+            current_class_ + "." + current_method_);
+        std::string detail;
+        if (method == "loadLibrary") {
+            static const char* kAbi = "arm64-v8a";
+            bool stored = false;
+            std::string entry =
+                std::string("lib/") + kAbi + "/lib" + lib + ".so";
+            bool present = !apk_path_.empty() &&
+                           gatea::zip_contains_entry(apk_path_, entry, &stored);
+            detail = present
+                ? "\"" + lib + "\" present at " + entry + " (" +
+                      (stored ? "stored" : "deflate") +
+                      ") but MiniAndroid has no native execution layer (S-2 "
+                      "frontier): dlopen/JNI unavailable"
+                : "dlopen failed: library \"" + lib + "\" not found in the "
+                      "installed APK (no " + entry + ")";
+        } else {
+            detail = "filename load \"" + lib +
+                     "\" — MiniAndroid has no native execution layer (S-2 "
+                     "frontier): dlopen unavailable";
+        }
+        throw_deferred("Ljava/lang/UnsatisfiedLinkError;", detail, "GATEA-NATIVE");
+        result = DalvikValue::make_void();
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // STUB: Theme.getColor (when currentColors cache is null) — return black
     // ────────────────────────────────────────────────────────────────────────
     if (method == "getColor" &&
@@ -45062,7 +45538,16 @@ bool DalvikExecutionEngine::is_thread_receiver(const std::string& cls) {
 // h/f.v getParentFile).
 DalvikValue DalvikExecutionEngine::get_or_create_dir_file(const std::string& path) {
     static const std::string kFileDesc = "Ljava/io/File;";
-    auto it = dir_files_.find(path);
+    // GATE A (issue #370): an application NEVER sees a host path (AOSP
+    // ContextImpl law). Store-internal host backings map to their
+    // ANDROID-LOGICAL spelling (/data/data/<pkg>/…, /data/app/<pkg>/…,
+    // /storage/emulated/0/…, /system/fonts/…) BEFORE the File object is
+    // minted; the physical mapping happens in resolve_android_path at
+    // open time. Non-store paths (Environment statics, device nodes)
+    // pass through unchanged.
+    std::string visible = Storage::logical_android_path(path);
+    if (visible.empty()) visible = path;
+    auto it = dir_files_.find(visible);
     if (it != dir_files_.end() && heap_.has_object(it->second)) {
         DalvikValue v;
         v.type = DalvikType::OBJECT_REF;
@@ -45072,8 +45557,8 @@ DalvikValue DalvikExecutionEngine::get_or_create_dir_file(const std::string& pat
     }
     const uint32_t obj_id = heap_.allocate(
         kFileDesc, pc_, call_stack_.empty() ? 0 : call_stack_.top().frame_id);
-    heap_.set_object_field(obj_id, "path", DalvikValue::make_string(path, 0));
-    dir_files_[path] = obj_id;
+    heap_.set_object_field(obj_id, "path", DalvikValue::make_string(visible, 0));
+    dir_files_[visible] = obj_id;
     DalvikValue v;
     v.type = DalvikType::OBJECT_REF;
     v.object_id = obj_id;

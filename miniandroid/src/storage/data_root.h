@@ -141,6 +141,17 @@ struct PathResolution {
 /// category table above; unknown absolute paths come back DENIED).
 PathResolution resolve_android_path(const std::string& logical);
 
+// ═══════════════════════════════════════════════════════════════════════
+// GATE A (issue #370) — REVERSE mapping: host backing → Android-logical.
+// AOSP law: an application NEVER sees a host path. Context.getFilesDir()
+// answers /data/user/0/<pkg>/files (alias /data/data/<pkg>/files), never
+// the physical store location. MiniAndroid therefore constructs every
+// app-visible File object from the ANDROID-LOGICAL spelling; the physical
+// mapping happens inside resolve_android_path at open time.
+// Returns "" when the host path is not inside the store (no mapping).
+// ═══════════════════════════════════════════════════════════════════════
+std::string logical_android_path(const std::filesystem::path& host_path);
+
 } // namespace Storage
 
 #endif // MINIANDROID_DATA_ROOT_H

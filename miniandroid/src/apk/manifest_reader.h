@@ -150,6 +150,21 @@ struct ManifestInfo {
         std::string authorities;  // android:authorities (identity only)
     };
     std::vector<ProviderInfo> providers;
+
+    // GATE A (issue #370 §12): <service> / <receiver> components (AOSP
+    // PackageParser keeps every manifest component; an agent must answer
+    // what is installed WITHOUT rendering — GATE A ≠ GATE B). Additive
+    // parse: name + declared intent-filter <action> strings, manifest order.
+    struct ServiceInfo {
+        std::string name;
+        std::vector<std::string> actions;
+    };
+    struct ReceiverInfo {
+        std::string name;
+        std::vector<std::string> actions;
+    };
+    std::vector<ServiceInfo> services;
+    std::vector<ReceiverInfo> receivers;
 };
 
 // AXML chunk header
@@ -359,6 +374,9 @@ private:
     ManifestInfo result_;
     int depth_ = 0;
     bool in_activity_ = false;
+    // GATE A: <service>/<receiver> component context (actions routing).
+    bool in_service_ = false;
+    bool in_receiver_ = false;
     uint32_t activity_theme_resid_pending_ = 0;   // S68 W2: android:theme of the element being parsed
     std::string current_activity_name_;
     std::string current_activity_target_;  // EXP-038: targetActivity for activity-alias

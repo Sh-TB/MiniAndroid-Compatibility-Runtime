@@ -68,6 +68,15 @@ public:
     // persists PRAGMA user_version = requested version.
     void notify_lifecycle_callbacks_done(uint32_t helper_oid);
 
+    // ── GATE A (issue #370): Context.openOrCreateDatabase open path ─────
+    // AOSP ContextImpl.openOrCreateDatabase routes to the SAME open
+    // machinery as SQLiteOpenHelper (non-null SQLiteDatabase backed by
+    // databases/<name> or throw). No lifecycle flags (onCreate/onUpgrade
+    // belong to helpers only). Returns handled_object(SQLiteDatabase)
+    // or not_handled on open failure (engine converts to a loud
+    // SQLiteException — never a silent null).
+    framework::CallResult open_standalone_database(const std::string& name);
+
     size_t active_connections() const;
     size_t open_cursors() const;
 
