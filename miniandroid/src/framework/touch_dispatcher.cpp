@@ -355,10 +355,36 @@ nlohmann::json TouchDispatcher::dispatch(uint32_t root_id,
             // its later sibling (z-order inversion).
             uint32_t target = 0;
             const bool hitprobe = getenv("MINIANDROID_HITPROBE") != nullptr;
-            std::function<void(uint32_t, int)> walk = [&](uint32_t id,
-                                                          int depth) {
+            // 371-CLOSEOUT: AOSP ViewGroup.dispatchTouchEvent claim law.
+            // The previous walk kept OVERWRITING the target with every
+            // later-walked hit — the LAST walked (lowest-z) sibling won,
+            // inverting z-order. AOSP walks children in reverse draw order
+            // and STOPS at the first child whose subtree claims the point
+            // (dispatchTransformedTouchEvent true → mFirstTouchTarget =
+            // child; break). Evidence (suntimes WelcomeActivity): the
+            // ViewPager was default-measured to the full window and the
+            // Next/Back buttons are LATER siblings drawn on top — the old
+            // walk handed every bottom-bar tap to the ViewPager (target=
+            // pager id, 4×) and the wizard never advanced; the AOSP claim
+            // law gives the tap to the topmost claiming view (the button).
+            std::function<uint32_t(uint32_t, int)> claim =
+                [&](uint32_t id, int depth) -> uint32_t {
                 const auto* n = views_->find_node(id);
-                if (!n || n->visibility != 0) return;
+                if (!n || n->visibility != 0) return 0;
+                for (auto cit = n->children.rbegin();
+                     cit != n->children.rend(); ++cit) {
+                    const auto* cn = views_->find_node(*cit);
+                    if (!cn || cn->visibility != 0) continue;
+                    if (!node_at(cn, ev.x, ev.y)) continue;
+                    if (hitprobe)
+                        std::cerr << "[HITPROBE] d=" << (depth + 1)
+                                  << " id=" << *cit << " " << cn->class_desc
+                                  << " (" << cn->x << "," << cn->y << " "
+                                  << cn->width << "x" << cn->height
+                                  << ") contains → dispatch" << std::endl;
+                    uint32_t t = claim(*cit, depth + 1);
+                    if (t != 0) return t;  // first topmost claimant wins
+                }
                 const bool at = node_at(n, ev.x, ev.y);
                 if (hitprobe)
                     std::cerr << "[HITPROBE] d=" << depth << " id=" << id
@@ -367,12 +393,12 @@ nlohmann::json TouchDispatcher::dispatch(uint32_t root_id,
                               << ") at=" << at << " touchable="
                               << view_touchable(*n) << " kids="
                               << n->children.size() << std::endl;
-                if (at && view_touchable(*n)) target = id;  // deepest wins
-                for (auto cit = n->children.rbegin();
-                     cit != n->children.rend(); ++cit)
-                    walk(*cit, depth + 1);
+                // No child claimed the DOWN → the node itself is the touch
+                // target when its own onTouchEvent would handle it.
+                if (at && view_touchable(*n)) return id;
+                return 0;
             };
-            walk(root_id, 0);
+            target = claim(root_id, 0);
             gesture_target_ = target;
             // S128 (CAP-INPUT-102): capture the TouchTarget chain — the
             // target plus every ancestor up to the dispatch root. AOSP: each
