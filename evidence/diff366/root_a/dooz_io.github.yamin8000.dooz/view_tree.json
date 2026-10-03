@@ -1,0 +1,50 @@
+{
+  "content_root_id": 970,
+  "experiment": "EXP-061",
+  "node_source": "content-root-walk",
+  "nodes": [
+    {
+      "android_view_id": 0,
+      "children": [
+        1313
+      ],
+      "class": "Lho;",
+      "clickable": false,
+      "enabled": true,
+      "has_click_listener": false,
+      "height": 1920,
+      "hint": "",
+      "image_resource_id": 0,
+      "object_id": 970,
+      "parent_id": 33,
+      "text": "",
+      "text_resource_id": 0,
+      "view_type": "ViewGroup",
+      "visibility": 0,
+      "width": 1080,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "android_view_id": 0,
+      "children": [],
+      "class": "Lt4;",
+      "clickable": false,
+      "enabled": true,
+      "has_click_listener": false,
+      "height": 105,
+      "hint": "",
+      "image_resource_id": 0,
+      "object_id": 1313,
+      "parent_id": 970,
+      "text": "",
+      "text_resource_id": 0,
+      "view_type": "ViewGroup",
+      "visibility": 0,
+      "width": 0,
+      "x": 0,
+      "y": 0
+    }
+  ],
+  "view_count": 2
+}

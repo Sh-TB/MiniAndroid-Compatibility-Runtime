@@ -23637,6 +23637,150 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         result = DalvikValue::make_bool(answer);
         return true;
     }
+    // ────────────────────────────────────────────────────────────────────
+    // CONT-366 ROOT-A — java.lang.Class reflection-metadata + newInstance
+    // null/zero-contract laws (generic; OpenJDK Class.java / ART semantics;
+    // receiver token convention as F-103: args[0] CLASS_REF descriptor, or
+    // heap Class object via __referent_desc).
+    // Runtime evidence (spacevertex v29, first-divergence trace):
+    //   * androidx FragmentTransaction.add (Landroidx/fragment/app/a;.b)
+    //     evaluates getClass→getModifiers→isAnonymousClass→Modifier.isPublic
+    //     →isMemberClass→Modifier.isStatic. With NO handler, getModifiers()
+    //     answered the STUBBED typed-zero (0) → Modifier.isPublic(0)=false →
+    //     the `|| !Modifier.isPublic(mods)` disjunct fired →
+    //     IllegalStateException "Fragment fr.arnaudguyon.spacevertex.home.
+    //     HomeFragment must be a public static class..." for a TOP-LEVEL
+    //     PUBLIC class → HomeActivity.pushFragment unwind → white frame.
+    //   * kotlin internal platform init (Ldm;.<clinit>):
+    //     Class.forName("kotlin.internal...Implementations").newInstance() —
+    //     newInstance unhandled → null → Kotlin Intrinsics NPE
+    //     "forName(...).newInstance() must not be null".
+    // OpenJDK laws implemented here:
+    //   * newInstance() NEVER returns null — it constructs through the
+    //     public no-arg constructor, or throws InstantiationException
+    //     (abstract / interface / unresolvable class). A silent null here
+    //     is a Kotlin-Intrinsics-NPE factory for every compiled caller.
+    //   * getModifiers() returns the defining DEX class access_flags
+    //     (ACC_* bits) when the class is in the DEX index. Framework Class
+    //     tokens name the runtime's shadow object model, whose entry
+    //     points are all public API — PUBLIC is the architecturally honest
+    //     default. Typed-zero is a false "not public" verdict for every
+    //     class and is the direct root of the fragment ISE above.
+    //   * isMemberClass/isAnonymousClass deterministic subset (compiler
+    //     binary-name law): a member class name carries '$' after the last
+    //     '/'; anonymous classes are Enclosing$<digits>. Top-level classes
+    //     answer false (HomeFragment: no '$' → false — both branches false
+    //     → no ISE even before modifiers are consulted).
+    //   * isInterface/isAbstract answer from the same access_flags source
+    //     (ACC_INTERFACE 0x200 / ACC_ABSTRACT 0x400).
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/lang/Class;" &&
+        (method == "getModifiers" || method == "isMemberClass" ||
+         method == "isAnonymousClass" || method == "newInstance" ||
+         method == "isInterface" || method == "isAbstract")) {
+        std::string recv_cls366;
+        if (!args.empty()) {
+            if (args[0].type == DalvikType::CLASS_REF)
+                recv_cls366 = args[0].class_desc;
+            else if (args[0].type == DalvikType::OBJECT_REF)
+                recv_cls366 = args[0].class_desc;
+            if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+                args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+                auto ref366 = heap_.get_object_field(args[0].object_id,
+                                                     "__referent_desc");
+                if (ref366.has_value() && ref366->type == DalvikType::STRING_REF &&
+                    !ref366->string_val.empty())
+                    recv_cls366 = ref366->string_val;
+            }
+        }
+        bool is_dex_class = recv_cls366.size() > 2 && recv_cls366[0] == 'L' &&
+                            recv_cls366.back() == ';';
+        auto cit366 = is_dex_class ? class_info_index_.find(recv_cls366)
+                                    : class_info_index_.end();
+        uint32_t flags366 = 0x1;  // PUBLIC default for framework tokens
+        if (is_dex_class && cit366 != class_info_index_.end())
+            flags366 = dex_report_->classes[cit366->second].access_flags;
+        if (method == "getModifiers") {
+            result = DalvikValue::make_int(static_cast<int32_t>(flags366));
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "isInterface" || method == "isAbstract") {
+            bool b366 = (flags366 & (method == "isInterface" ? 0x200u
+                                                              : 0x400u)) != 0;
+            result = DalvikValue::make_bool(b366);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "isMemberClass" || method == "isAnonymousClass") {
+            bool ans366 = false;
+            size_t dollar366 = recv_cls366.rfind('$');
+            if (is_dex_class && dollar366 != std::string::npos &&
+                dollar366 > recv_cls366.rfind('/')) {
+                if (method == "isMemberClass") {
+                    ans366 = true;
+                } else {
+                    // anonymous: Enclosing$<digits> (compiler-name law)
+                    size_t end366 = recv_cls366.size() - 1;  // drop ';'
+                    if (dollar366 + 1 < end366) {
+                        ans366 = true;
+                        for (size_t ci = dollar366 + 1; ci < end366; ++ci)
+                            if (!std::isdigit(
+                                    static_cast<unsigned char>(
+                                        recv_cls366[ci]))) {
+                                ans366 = false;
+                                break;
+                            }
+                    }
+                }
+            }
+            result = DalvikValue::make_bool(ans366);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // method == "newInstance" — OpenJDK: construct via the public
+        // no-arg constructor; throw InstantiationException on abstract/
+        // interface/unresolvable. NEVER a silent null.
+        if (recv_cls366.empty()) {
+            throw_deferred("Ljava/lang/InstantiationException;",
+                           "Class.newInstance on unresolvable class token",
+                           "class-newinst-empty");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_null();
+            return true;
+        }
+        if (!is_dex_class || cit366 == class_info_index_.end()) {
+            throw_deferred("Ljava/lang/InstantiationException;",
+                           "Class.newInstance cannot resolve " + recv_cls366,
+                           "class-newinst-nodex");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_null();
+            return true;
+        }
+        if (flags366 & (0x200u | 0x400u)) {
+            throw_deferred("Ljava/lang/InstantiationException;",
+                           "cannot instantiate abstract/interface " +
+                               recv_cls366,
+                           "class-newinst-abstract");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_null();
+            return true;
+        }
+        uint32_t obj366 = heap_.allocate(
+            recv_cls366, pc_,
+            call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+        std::vector<DalvikValue> ctor366;
+        ctor366.push_back(DalvikValue::make_object(obj366, recv_cls366));
+        DalvikValue ctor_out366;
+        DalvikExecutionResult ctor_exec366;
+        try_recursive_invoke(recv_cls366, "<init>", ctor366, ctor_out366,
+                             ctor_exec366);
+        result = DalvikValue::make_object(obj366, recv_cls366);
+        std::cerr << "[CLASS-NEWINSTANCE] " << recv_cls366
+                  << " -> obj=" << obj366 << std::endl;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
     // NOTE (S78): java.lang.Class.cast(Object) is implemented by the proven
     // R-NEW-343 law (Hilt DI unwrap evidence, runs r341..r353) further below
     // in this function — identity for castable, null for null, CCE via the
@@ -29961,6 +30105,89 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         result = DalvikValue::make_null();  // void
         return true;
     }
+    // ────────────────────────────────────────────────────────────────────
+    // CONT-366 ROOT-A — java.util.Arrays.toString law (OpenJDK
+    // Arrays.java, all 8 primitive + Object[] shapes; statics carry no
+    // receiver so args[0] IS the array). OpenJDK law:
+    //   * toString(null) returns the FOUR-CHARACTER STRING "null" — it
+    //     NEVER returns a null reference. A shadow that answers null here
+    //     converts every Kotlin caller into an Intrinsics NPE.
+    //   * otherwise "[e0, e1, ...]", elements stringified per
+    //     String.valueOf (null element → "null"; nested arrays render in
+    //     the descriptor@identity deterministic subset; char elements are
+    //     NOT quoted — only toString(char[]) semantics).
+    // Runtime evidence (asteroids v100242, first-divergence trace):
+    //   GodotActivity.onCreate → Intent.getStringArrayExtra (absent extra →
+    //   null, legal) → Arrays.toString(params) → REC-MISS → null →
+    //   kotlin Intrinsics.checkNotNullExpressionValue NPE
+    //   "toString(...) must not be null" → onCreate died at pc=0x3a before
+    //   GodotView creation → white frame. The same shape guards every
+    //   Kotlin-compiled Log.d(TAG, Arrays.toString(...)) call site.
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/util/Arrays;" && method == "toString" &&
+        args.size() == 1) {
+        auto elem_str366 = [&](const DalvikValue& e) -> std::string {
+            switch (e.type) {
+                case DalvikType::STRING_REF: return e.string_val;
+                case DalvikType::INT32: return std::to_string(e.int_val);
+                case DalvikType::INT64: return std::to_string(e.long_val);
+                case DalvikType::BOOLEAN: return e.bool_val ? "true" : "false";
+                case DalvikType::CHAR:
+                    return std::string(1, static_cast<char>(e.int_val));
+                case DalvikType::BYTE:
+                    return std::to_string(static_cast<int8_t>(e.int_val));
+                case DalvikType::SHORT:
+                    return std::to_string(static_cast<int16_t>(e.int_val));
+                case DalvikType::FLOAT32: return std::to_string(e.float_val);
+                case DalvikType::FLOAT64: return std::to_string(e.double_val);
+                case DalvikType::NULL_REF: return "null";
+                case DalvikType::CLASS_REF: return e.class_desc;
+                case DalvikType::OBJECT_REF: {
+                    if (heap_.has_object(e.object_id)) {
+                        auto sv366 = heap_.get_object_field(e.object_id,
+                                                            "sb_value");
+                        if (!sv366.has_value())
+                            sv366 = heap_.get_object_field(e.object_id,
+                                                           "value");
+                        if (sv366.has_value() &&
+                            sv366->type == DalvikType::STRING_REF)
+                            return sv366->string_val;
+                        // nested arrays: deterministic descriptor subset
+                        auto* h366 = heap_.get(e.object_id);
+                        if (h366 && h366->class_descriptor.size() > 1 &&
+                            h366->class_descriptor[0] == '[')
+                            return h366->class_descriptor + "@" +
+                                   std::to_string(e.object_id);
+                    }
+                    return "null";
+                }
+                default: return "null";
+            }
+        };
+        if (args[0].type != DalvikType::OBJECT_REF) {
+            // null array → the STRING "null" (never a null reference)
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_string("null", 0);
+            return true;
+        }
+        uint32_t arr366 = args[0].object_id;
+        int32_t n366 = 0;
+        auto lenf366 = heap_.get_object_field(arr366, "__array_length__");
+        if (lenf366.has_value() && lenf366->type == DalvikType::INT32)
+            n366 = lenf366->int_val;
+        std::string out366 = "[";
+        for (int32_t i = 0; i < n366; ++i) {
+            if (i) out366 += ", ";
+            auto el366 = heap_.get_object_field(
+                arr366, "array[" + std::to_string(i) + "]");
+            out366 += elem_str366(el366.has_value() ? *el366
+                                                    : DalvikValue::make_null());
+        }
+        out366 += "]";
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_string(out366, 0);
+        return true;
+    }
     // ────────────────────────────────────────────────────────────────────────
     // F-043 (MASTER-6 §C) — java.lang.Double/Float IEEE bit-conversion law.
     // OpenJDK (Double.java/Float.java): doubleToRawLongBits returns the
@@ -31590,6 +31817,39 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
         // Fallback: return the LaunchActivity singleton
         result = get_or_create_singleton("Lorg/telegram/ui/LaunchActivity;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // CONT-366 ROOT-A — ContentProvider.getContext() null-contract law.
+    // AOSP ContentProvider.java: ActivityThread.installContentProviders →
+    // installProvider → attachInfo(context, provider) sets mContext BEFORE
+    // onCreate() runs; getContext() returns that context and is NEVER null
+    // on an installed provider (the null-guard is a "not yet attached"
+    // contract that cannot fire inside onCreate).
+    // Runtime evidence (ROOT-A fan-out, asteroids v100242 + spacevertex v29):
+    // androidx.startup.InitializationProvider.onCreate pc=0..8 evaluates
+    // getContext() → REC-MISS → null → the provider's own if-eqz null-guard
+    // threw (obfuscated StartupException wrapper) → provider init aborted →
+    // no startup initializers. The install_content_providers stage created
+    // the provider object but never attached the context — this law binds
+    // the APPLICATION context object (the same identity getApplicationContext
+    // serves per R341-APPCTX), keyed by the REAL superclass chain (any
+    // ContentProvider subclass, not a name-suffix guess).
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getContext" &&
+        is_subclass_of(class_name, "Landroid/content/ContentProvider;")) {
+        if (application_object_id_ != 0 &&
+            heap_.has_object(application_object_id_)) {
+            result = DalvikValue::make_object(
+                application_object_id_,
+                application_class_desc_.empty()
+                    ? "Landroid/app/Application;"
+                    : application_class_desc_);
+        } else {
+            result = get_or_create_singleton("Landroid/content/Context;");
+        }
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }

@@ -4322,11 +4322,41 @@
    "law": "ONE canonical path law (Storage::resolve_android_path: SANDBOX_DATA/INSTALLED_APK/VIRTUAL_EXTERNAL/SYSTEM_IMAGE/DEVICE_NODE/DENIED_HOST_PATH) + AOSP-shaped write family, asset contract (FileNotFoundException), FD layer (AFD/PFD real fds), decodeStream resolver, atomic escaped prefs, real WAL pragma, single databases_dir authority, provider install stage at bind entry, Intent.getData identity, ApplicationInfo path fields. Probe-discovered sub-laws: read(byte[]) fill, BAOS family, String(byte[]) __string_value__ materialization, ()J INT64 register-pair, char-device bounded read.",
    "evidence": "fixtures/loading_probe 23/23 gate (scripts/loading_probe_runner.sh); prefs-runs 1→2→3 restart; regression goldens byte-identical ×3 (opencalc/chess/dooz/microtimer/unote) + telegram ×1; docs/LOADING_RUNTIME_TRACE.jsonl + LOADING_FAILURE_DIAGNOSTICS.md",
    "date": "2026-10-03"
+  },
+  {
+   "id": "R-NEW-458",
+   "title": "DIFFERENTIAL-366 ROOT-A1: java.util.Arrays.toString null-contract law",
+   "status": "IMPLEMENTED+TESTED",
+   "law": "OpenJDK Arrays.java: toString(null) returns the 4-char STRING \"null\" (never a null reference); else \"[e0, e1, ...]\" with elements per String.valueOf (all 8 primitive + Object[] shapes, name-dispatched). Evidence: asteroids v100242 GodotActivity.onCreate -> getStringArrayExtra (absent->null, legal) -> Arrays.toString -> REC-MISS null -> kotlin Intrinsics.checkNotNullExpressionValue NPE 'toString(...) must not be null' -> onCreate death pc=0x3a before GodotView -> WHITE.",
+   "fix": "Arrays.toString law in dalvik_engine.cpp (heap array convention __array_length__/array[i], local element formatter)",
+   "fanout": "asteroids: Intrinsics NPE GONE, onCreate progresses past Log.d into androidx startup chain (next divergence: provider context, then GodotView native). Regression: 5 goldens x3 byte-identical + probe 23/23 + uninstall 16/16 ALL PASS.",
+   "first_evidence": "evidence/diff366/root_a/asteroids_com.game.asteroids_revenge/run.log",
+   "date": "2026-10-03"
+  },
+  {
+   "id": "R-NEW-459",
+   "title": "DIFFERENTIAL-366 ROOT-A2: java.lang.Class reflection metadata + newInstance laws",
+   "status": "IMPLEMENTED+TESTED",
+   "law": "OpenJDK Class.java: getModifiers() returns defining DEX class access_flags (ACC_* bits; framework Class tokens = PUBLIC, the runtime shadow API is public); isMemberClass/isAnonymousClass deterministic subset ($-name compiler law; top-level classes answer false); newInstance() constructs via the real no-arg <init> (try_recursive_invoke) or throws InstantiationException (abstract/interface/unresolvable) — NEVER silent null. Evidence: spacevertex v29 — (a) kotlin platform init Ldm;.<clinit> Class.forName(...).newInstance() REC-MISS null -> Intrinsics NPE; (b) androidx FragmentTransaction.add (a.b) getClass->getModifiers typed-zero 0 -> Modifier.isPublic(0)=false -> !isPublic disjunct -> ISE 'Fragment HomeFragment must be a public static class' for a top-level PUBLIC class.",
+   "fix": "Class getModifiers/isMemberClass/isAnonymousClass/isInterface/isAbstract/newInstance law block in dalvik_engine.cpp (F-103 receiver-token convention)",
+   "fanout": "spacevertex: both failures GONE; view tree now 8 views incl. app Scene class (was 2-node stub); no uncaught exceptions remain; arrest moves to APP_PIXELS (GL surface draw never fires) = next frontier. Regression: 5 goldens x3 byte-identical + probe + uninstall ALL PASS.",
+   "first_evidence": "evidence/diff366/root_a/spacevertex_fr.arnaudguyon.spacevertex/{run.log,view_tree.json}",
+   "date": "2026-10-03"
+  },
+  {
+   "id": "R-NEW-460",
+   "title": "DIFFERENTIAL-366 ROOT-A3: ContentProvider.getContext() null-contract law",
+   "status": "IMPLEMENTED+TESTED",
+   "law": "AOSP ContentProvider.java: ActivityThread.installContentProviders -> installProvider -> attachInfo(context, provider) sets mContext BEFORE onCreate; getContext() NEVER null on an installed provider. Engine law: serve the application context object (R341-APPCTX identity), keyed by the real superclass chain (is_subclass_of ContentProvider), not a name guess. Evidence: asteroids + spacevertex androidx.startup.InitializationProvider.onCreate getContext() -> REC-MISS null -> provider null-guard threw (obfuscated StartupException/Lzc;) -> startup initializers aborted.",
+   "fix": "ContentProvider.getContext law in dalvik_engine.cpp",
+   "fanout": "Both apps: [S1-PROVIDER] installed androidx.startup.InitializationProvider onCreate OK; StartupException/Lzc; frontier GONE. Regression: gates ALL PASS.",
+   "first_evidence": "evidence/diff366/root_a/{asteroids,spacevertex}/*/run.log",
+   "date": "2026-10-03"
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry↔docs single-source-of-truth restored); registry 372→374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots. | S80: three real games (Snake Deluxe, Mini Tetris, 2048) built + played on the runtime; R-NEW-401 external-cache bridge.",
- "total": 509,
- "count": 528,
+ "total": 533,
+ "count": 533,
  "meta": {
   "last_update": "S132 reuse-proof wave"
  },
