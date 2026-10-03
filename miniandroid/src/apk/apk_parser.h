@@ -14,6 +14,7 @@
 #include <memory>
 #include <cstdint>
 #include <functional>
+#include "manifest_reader.h"  // 371-CLOSEOUT: ManifestInfo::MetaDataEntry
 
 namespace miniandroid {
 namespace apk {
@@ -62,6 +63,10 @@ struct ApkInfo {
     // (AOSP PackageItemInfo.metaData contract).
     std::vector<std::pair<std::string, std::string>> application_meta_data;
     std::map<std::string, std::vector<std::pair<std::string, std::string>>> activity_meta_data;
+
+    // 371-CLOSEOUT: component meta-data with resource references (AOSP
+    // PackageParser Bundle contract; androidx FileProvider loadXmlMetaData).
+    std::map<std::string, std::vector<ManifestInfo::MetaDataEntry>> component_meta_data;
     
     // Permissions
     std::vector<std::string> permissions;

@@ -575,6 +575,9 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
             log("Provider: " + prov.name +
                 (prov.authorities.empty() ? "" : " (" + prov.authorities + ")"));
         }
+        // 371-CLOSEOUT: provider component scope for <meta-data> capture.
+        in_provider_ = true;
+        current_provider_name_ = prov.name;
     }
 
     // Handle activity element
@@ -616,6 +619,7 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
         svc.name = get_attribute_value(attrs, "name");
         result_.services.push_back(svc);
         in_service_ = true;
+        current_service_name_ = svc.name;
         log("Service: " + svc.name);
     }
     if (name == "receiver") {
@@ -623,6 +627,7 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
         rcv.name = get_attribute_value(attrs, "name");
         result_.receivers.push_back(rcv);
         in_receiver_ = true;
+        current_receiver_name_ = rcv.name;
         log("Receiver: " + rcv.name);
     }
 
@@ -680,10 +685,47 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
     // application-level (AOSP PackageItemInfo.metaData contract). Values are
     // stored as the raw manifest string; the read side types numeric-looking
     // values as Bundle ints (Bundle.getInt) and keeps the rest as strings.
+    // 371-CLOSEOUT: extended to EVERY component (provider/service/receiver)
+    // and to android:resource references (AXML TYPE_REFERENCE 0x01 → resolved
+    // resource id, AOSP PackageParser Bundle.putInt contract — the form
+    // androidx FileProvider's loadXmlMetaData contract reads).
     if (name == "meta-data") {
         std::string md_name = get_attribute_value(attrs, "name");
         std::string md_value = get_attribute_value(attrs, "value");
         if (!md_name.empty()) {
+            // Component key resolution (AOSP meta-data attaches to the
+            // enclosing component): activity → its class, provider/service/
+            // receiver → their class, else application level.
+            std::string comp_key;
+            if (in_activity_ && !current_activity_name_.empty())
+                comp_key = current_activity_name_;
+            else if (in_provider_ && !current_provider_name_.empty())
+                comp_key = current_provider_name_;
+            else if (in_service_ && !current_service_name_.empty())
+                comp_key = current_service_name_;
+            else if (in_receiver_ && !current_receiver_name_.empty())
+                comp_key = current_receiver_name_;
+            ManifestInfo::MetaDataEntry entry;
+            entry.name = md_name;
+            entry.value = md_value;
+            for (const auto& a : attrs) {
+                const std::string aname = get_string(a.name_index);
+                if (aname == "resource") {
+                    // AOSP: android:resource="@xml/foo" → Bundle int = the
+                    // resolved resource id (AXML reference value).
+                    entry.has_resource = true;
+                    entry.resource_id = a.value_data;
+                    if ((a.value_data_type & 0xFF) == 0x01)
+                        entry.resource_id = a.value_data;
+                    else if ((a.value_data_type & 0xFF) == 0x03 &&
+                             a.value_string_index != 0xFFFFFFFF) {
+                        // string form "@xml/foo" — id resolved later by the
+                        // read side against the ARSC; keep 0 and remember.
+                        entry.value = get_string(a.value_string_index);
+                    }
+                }
+            }
+            result_.component_meta_data[comp_key].push_back(entry);
             if (in_activity_ && !current_activity_name_.empty()) {
                 result_.activity_meta_data[current_activity_name_].push_back(
                     {md_name, md_value});
@@ -757,6 +799,21 @@ void ManifestReader::process_end_element(const std::string& ns, const std::strin
         
         in_activity_ = false;
         current_activity_name_.clear();
+    }
+    // 371-CLOSEOUT: close provider/service/receiver component scopes
+    // (meta-data capture keys off these; AOSP PackageParser nests meta-data
+    // strictly inside its component element).
+    if (name == "provider") {
+        in_provider_ = false;
+        current_provider_name_.clear();
+    }
+    if (name == "service") {
+        in_service_ = false;
+        current_service_name_.clear();
+    }
+    if (name == "receiver") {
+        in_receiver_ = false;
+        current_receiver_name_.clear();
     }
 }
 

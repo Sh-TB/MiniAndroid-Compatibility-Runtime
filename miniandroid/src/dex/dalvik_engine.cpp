@@ -4216,6 +4216,68 @@ void DalvikExecutionEngine::flush_finalizers() {
     }
 }
 
+// 371-CLOSEOUT: binary-XML resource → text XML. The K-35 XmlPullParser
+// event machine runs over TEXT; compiled @xml resources (res/xml/*.xml,
+// e.g. androidx FileProvider's android.support.FILE_PROVIDER_PATHS paths
+// file) are binary AXML. AOSP answers Resources.getXml(resid) with an
+// XmlResourceParser over the DECODED document — this serializer is that
+// decode hop: AXML chunk tree → escaped text XML, attribute order kept.
+static std::string axml_attr_text(const resources::AxmlAttribute& a) {
+    if (a.value.is_string()) return a.value.string_value;
+    if (!a.raw_value.empty()) return a.raw_value;
+    switch (a.value.type) {
+        case resources::DataType::INT_BOOLEAN:
+            return a.value.data != 0 ? "true" : "false";
+        case resources::DataType::INT_DEC:
+        case resources::DataType::INT_HEX:
+        case resources::DataType::REFERENCE:
+            return std::to_string(a.value.data);
+        default:
+            return std::to_string(a.value.data);
+    }
+}
+static std::string xml_escape_text_371(const std::string& s) {
+    std::string out;
+    out.reserve(s.size());
+    for (char c : s) {
+        switch (c) {
+            case '&': out += "&amp;"; break;
+            case '<': out += "&lt;"; break;
+            case '>': out += "&gt;"; break;
+            case '"': out += "&quot;"; break;
+            default: out += c;
+        }
+    }
+    return out;
+}
+static void axml_element_to_text(const resources::AxmlElement& el,
+                                 std::string& out, int depth) {
+    out.append(depth * 2, ' ');
+    out += "<" + xml_escape_text_371(el.name);
+    for (const auto& a : el.attributes) {
+        out += "\n" + std::string((depth + 1) * 2, ' ') +
+               xml_escape_text_371(a.name) + "=\"" +
+               xml_escape_text_371(axml_attr_text(a)) + "\"";
+    }
+    if (el.children.empty() && el.cdata.empty()) {
+        out += " />\n";
+        return;
+    }
+    out += ">\n";
+    if (!el.cdata.empty())
+        out += xml_escape_text_371(el.cdata) + "\n";
+    for (const auto& c : el.children) axml_element_to_text(c, out, depth + 1);
+    out.append(depth * 2, ' ');
+    out += "</" + xml_escape_text_371(el.name) + ">\n";
+}
+static std::string axml_bytes_to_text_371(const std::vector<uint8_t>& bytes) {
+    resources::AxmlParser p;
+    if (!p.parse(bytes) || !p.valid()) return std::string();
+    std::string out;
+    axml_element_to_text(p.root(), out, 0);
+    return out;
+}
+
 // Pass-3 (K-35): REAL XmlPullParser event machine — one event per call.
 // Progression: START_DOCUMENT → (misc-skip: whitespace/comments/PI/DOCTYPE)
 // → START_TAG / TEXT / END_TAG … → END_DOCUMENT (terminal; next() after it
@@ -4347,6 +4409,54 @@ void DalvikExecutionEngine::xml_pull_advance(XmlPullState& st) {
     st.attrs.clear();
     st.event = 4;  // TEXT
     st.pos = (e2 == std::string::npos) ? s.size() : e2;
+}
+
+// 371-CLOSEOUT: PackageManager.getXml(resid) / ProviderInfo.loadXmlMetaData
+// shared hop (AOSP ResourcesImpl.getXml law): resource id → ARSC file
+// selection → APK ZIP entry bytes → binary-XML decode → REAL K-35
+// XmlPullParser over the decoded document. Returns false when the id does
+// not resolve to an XML entry (call sites then answer their own AOSP
+// failure shapes; never a silent fake parser).
+bool DalvikExecutionEngine::xml_parser_for_resid(uint32_t resid,
+                                                 DalvikValue& result) {
+    auto& rt = resources::ResourceRuntime::instance();
+    std::vector<uint8_t> bytes;
+    std::string entry;
+    if (rt.ensure_loaded(apk_path_)) {
+        std::vector<std::string> apk_paths;
+        for (const auto& ze : rt.apk().list_entries_cached("res/"))
+            apk_paths.push_back(ze.name);
+        auto sel_file = rt.arsc().select_file(resid, apk_paths,
+                                              resources::device_config());
+        if (sel_file) entry = sel_file->path;
+        if (entry.empty()) {
+            auto sel = rt.arsc().apk_path_for(resid, apk_paths);
+            if (sel) entry = *sel;
+        }
+        if (!entry.empty() && entry.find("res/") != 0) entry = "res/" + entry;
+        if (!entry.empty()) bytes = rt.apk().extract_entry(apk_path_, entry);
+    }
+    if (bytes.empty()) return false;
+    std::string text = axml_bytes_to_text_371(bytes);
+    if (text.empty()) {
+        // Non-binary XML: serve the raw entry bytes as the document
+        // (AOSP getXml also accepts plain-text XML resources).
+        text.assign(bytes.begin(), bytes.end());
+    }
+    uint32_t frame_id = call_stack_.empty() ? 0 : call_stack_.top().frame_id;
+    uint32_t obj_id = heap_.allocate("Lorg/xmlpull/v1/XmlPullParser;", pc_,
+                                     frame_id);
+    xml_parsers_[obj_id] = XmlPullState{};
+    xml_parsers_[obj_id].content = text;
+    xml_parsers_[obj_id].event = 0;  // START_DOCUMENT
+    miniandroid::diagnostics::FileIoTrace::instance().record(
+        "OPEN", "apk-entry:" + entry, true, "getXml/loadXmlMetaData",
+        current_class_ + "." + current_method_);
+    result = DalvikValue::make_object(obj_id, "Lorg/xmlpull/v1/XmlPullParser;");
+    std::cerr << "[371-XML] xml_parser_for_resid resid=0x" << std::hex << resid
+              << std::dec << " -> " << entry << " (" << text.size()
+              << " text bytes) obj#" << obj_id << std::endl;
+    return true;
 }
 
 // EXP-038 (BLOCKER-034): Recursive DEX method invocation.
@@ -4531,6 +4641,53 @@ void DalvikExecutionEngine::install_content_providers(
                 }
                 heap_.set_object_field(pinfo_id, "grantUriPermissions",
                                        DalvikValue::make_bool(grant_up));
+                // 371-CLOSEOUT: ProviderInfo.metaData (AOSP PackageParser
+                // law — component <meta-data> children become the Bundle;
+                // android:resource refs land as the RESOLVED resource id
+                // int, value entries as typed ints/strings). androidx
+                // FileProvider.attachInfo → parsePathStrategy reads
+                // metaData.getInt("android.support.FILE_PROVIDER_PATHS")
+                // via loadXmlMetaData; a missing metaData bundle answers
+                // null there and every FileProvider app died at install.
+                auto md_it = component_meta_data_.find(pcls);
+                if (md_it == component_meta_data_.end() && !pcls.empty()) {
+                    // descriptor→dotted fallback (manifest keys are dotted).
+                    std::string bare = pcls;
+                    std::replace(bare.begin(), bare.end(), '/', '.');
+                    if (bare.size() > 2 && bare.front() == 'L' && bare.back() == ';')
+                        bare = bare.substr(1, bare.size() - 2);
+                    md_it = component_meta_data_.find(bare);
+                }
+                if (md_it != component_meta_data_.end() && !md_it->second.empty()) {
+                    uint32_t md_bundle = heap_.allocate("Landroid/os/Bundle;",
+                                                        pc_, 0);
+                    static const std::string kDigits = "0123456789";
+                    for (const auto& mde : md_it->second) {
+                        if (mde.has_resource && mde.resource_id != 0) {
+                            heap_.set_object_field(
+                                md_bundle, "bundle:" + mde.name,
+                                DalvikValue::make_int(
+                                    static_cast<int32_t>(mde.resource_id)));
+                        } else if (!mde.value.empty() &&
+                                   mde.value.find_first_not_of(kDigits) ==
+                                       std::string::npos) {
+                            heap_.set_object_field(
+                                md_bundle, "bundle:" + mde.name,
+                                DalvikValue::make_int(std::stoi(mde.value)));
+                        } else if (!mde.value.empty()) {
+                            heap_.set_object_field(
+                                md_bundle, "bundle:" + mde.name,
+                                DalvikValue::make_string(mde.value, 0));
+                        }
+                    }
+                    heap_.set_object_field(
+                        pinfo_id, "metaData",
+                        DalvikValue::make_object(md_bundle,
+                                                 "Landroid/os/Bundle;"));
+                    std::cerr << "[371-MD] ProviderInfo " << pcls
+                              << " metaData entries="
+                              << md_it->second.size() << std::endl;
+                }
                 DalvikValue pinfo;
                 pinfo.type = DalvikType::OBJECT_REF;
                 pinfo.object_id = pinfo_id;
@@ -20853,9 +21010,7 @@ static std::vector<DalvikValue> build_invoke_args(
 // and sget-object of e.g. Paint$Style.STROKE materialized NULL — breaking
 // Paint.setStyle / Path.setFillType / PorterDuff modes for every real
 // drawing call. Ordinals below are the fixed AOSP declaration orders.
-static int framework_enum_ordinal(const std::string& class_desc,
-                                  const std::string& field_name) {
-    static const miniandroid::dalvik::KvInt kOrdinals[] = {
+static const miniandroid::dalvik::KvInt kOrdinals[] = {
     {"Landroid/graphics/Paint$Style;.FILL", 0},
     {"Landroid/graphics/Paint$Style;.STROKE", 1},
     {"Landroid/graphics/Paint$Style;.FILL_AND_STROKE", 2},
@@ -20941,9 +21096,45 @@ static int framework_enum_ordinal(const std::string& class_desc,
     {"Landroid/widget/ImageView$ScaleType;.CENTER", 5},
     {"Landroid/widget/ImageView$ScaleType;.CENTER_CROP", 6},
     {"Landroid/widget/ImageView$ScaleType;.CENTER_INSIDE", 7},
+    // 371-CLOSEOUT: java.lang.Thread.State (OpenJDK Thread.java declaration
+    // order) — Thread.State.values()/valueOf() used by thread-pool and
+    // lifecycle inspection code across real apps.
+    {"Ljava/lang/Thread$State;.NEW", 0},
+    {"Ljava/lang/Thread$State;.RUNNABLE", 1},
+    {"Ljava/lang/Thread$State;.BLOCKED", 2},
+    {"Ljava/lang/Thread$State;.WAITING", 3},
+    {"Ljava/lang/Thread$State;.TIMED_WAITING", 4},
+    {"Ljava/lang/Thread$State;.TERMINATED", 5},
 };
+static int framework_enum_ordinal(const std::string& class_desc,
+                                  const std::string& field_name) {
     return kvint_table_find(kOrdinals, sizeof(kOrdinals) / sizeof(kOrdinals[0]),
                             class_desc + "." + field_name, -1);
+}
+
+// 371-CLOSEOUT: framework-enum static accessor support. Returns the ORDERED
+// (ordinal, name) constant list for a framework enum class by scanning the
+// kOrdinals table above (entries are "Lcls;.NAME", ordinal). Art/Android
+// semantics: every enum class has values() → the constants in declaration
+// order, and valueOf(String) → the matching constant. The same table drives
+// sget constant materialization, so identity is coherent across accessors.
+static std::vector<std::pair<int, std::string>>
+framework_enum_constants(const std::string& class_desc) {
+    std::vector<std::pair<int, std::string>> out;
+    const std::string prefix = class_desc + ".";
+    const size_t kTableSize = sizeof(kOrdinals) / sizeof(kOrdinals[0]);
+    for (size_t i = 0; i < kTableSize; ++i) {
+        std::string key = kOrdinals[i].k;
+        if (key.rfind(prefix, 0) == 0) {
+            out.emplace_back(kOrdinals[i].v, key.substr(prefix.size()));
+        }
+    }
+    std::sort(out.begin(), out.end(),
+              [](const std::pair<int, std::string>& a,
+                 const std::pair<int, std::string>& b) {
+                  return a.first < b.first;
+              });
+    return out;
 }
 
 // F-110e (S62+): framework static INT constant table (AOSP values).
@@ -22184,6 +22375,72 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                           uint32_t method_idx_hint) {
     uint64_t f107_t0 = 0; phase_clock().enter(phase_clock().bridge, f107_t0);
     struct F107Guard { PhaseClock::Phase& ph; uint64_t t0; ~F107Guard(){{ phase_clock().exit(ph, t0);}} } f107_guard{phase_clock().bridge, f107_t0};
+    // ────────────────────────────────────────────────────────────────────────
+    // 371-CLOSEOUT: FRAMEWORK-ENUM STATIC ACCESSOR LAW (values()/valueOf()).
+    // Android/ART: every enum class exposes `values()` (constants in
+    // declaration order — a fresh array per call) and `valueOf(String)`
+    // (matching constant; unknown name → IllegalArgumentException per
+    // j.l.Enum.valueOf). Framework enums are not defined in app DEX, so
+    // this bridge is the only dispatch: the sget law already materializes
+    // constants with ordinals, but the static accessors had no law — code
+    // like `for (TimeUnit u : TimeUnit.values())` (time4j Moment.<clinit>
+    // registerUnits loop — Suntimes CalculatorProvider.onCreate chain) saw
+    // an empty iteration, registered ZERO axis units and
+    // TimeAxis$Builder.build threw IllegalStateException "No time unit was
+    // registered.", killing the app far from the cause. Same table as the
+    // sget law → identity (==) coherent: values()[i] == the sget constant.
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "values" || method == "valueOf") {
+        auto consts = framework_enum_constants(class_name);
+        if (!consts.empty() &&
+            (method == "values"
+                 ? args.empty()
+                 : (!args.empty() && args[0].type == DalvikType::STRING_REF))) {
+            auto const_obj = [&](const std::string& name,
+                                 int ordinal) -> DalvikValue {
+                const std::string static_key = class_name + "." + name;
+                auto it = static_field_storage_.find(static_key);
+                if (it != static_field_storage_.end()) return it->second;
+                uint32_t enum_id = heap_.allocate(class_name, pc_, 0);
+                heap_.set_object_field(enum_id, "ordinal",
+                                       DalvikValue::make_int(ordinal));
+                heap_.set_object_field(enum_id, "enum_name",
+                                       DalvikValue::make_string(name, 0));
+                DalvikValue v = DalvikValue::make_object(enum_id, class_name);
+                static_field_storage_[static_key] = v;
+                return v;
+            };
+            if (method == "values") {
+                const std::string arr_cls = "[L" + class_name.substr(1);
+                uint32_t arr_id = heap_.allocate(arr_cls, pc_, 0);
+                heap_.set_object_field(
+                    arr_id, "__array_length__",
+                    DalvikValue::make_int(static_cast<int32_t>(consts.size())));
+                for (size_t ci = 0; ci < consts.size(); ++ci) {
+                    heap_.set_object_field(
+                        arr_id, "array[" + std::to_string(ci) + "]",
+                        const_obj(consts[ci].second, consts[ci].first));
+                }
+                result = DalvikValue::make_object(arr_id, arr_cls);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            const std::string& want = args[0].string_val;
+            for (const auto& c : consts) {
+                if (c.second == want) {
+                    result = const_obj(c.second, c.first);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+            }
+            throw_deferred("Ljava/lang/IllegalArgumentException;",
+                           "No enum constant " + class_name + "." + want,
+                           "371-FRAMEWORK-ENUM-VALUEOF");
+            result = DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
     if (std::getenv("MINIANDROID_S123_DIAG") && class_name == "Landroid/content/Intent;") {
         std::cerr << "[S123-BRIDGE] bridge_to_api " << class_name << "."
                   << method << " argc=" << args.size()
@@ -30107,6 +30364,28 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     {
         // shared stream registry: oid → resource bytes
         static std::map<uint32_t, std::string> s109_stream_bytes;
+        // 371-CLOSEOUT: Resources.getXml(resid) (AOSP ResourcesImpl.getXml
+        // law) — answers an XmlResourceParser over the DECODED compiled XML;
+        // Resources$NotFoundException when the id resolves to nothing. The
+        // parser object is a REAL K-35 XmlPullParser over the AXML-decoded
+        // text (see xml_parser_for_resid).
+        if ((class_name.find("Resources") != std::string::npos) &&
+            method == "getXml" && args.size() >= 2 &&
+            args[1].type == DalvikType::INT32) {
+            uint32_t resid = (uint32_t)args[1].int_val;
+            DalvikValue parser;
+            if (xml_parser_for_resid(resid, parser)) {
+                result = parser;
+            } else {
+                throw_deferred("Landroid/content/res/Resources$NotFoundException;",
+                               "File " + std::to_string(resid) +
+                                   " from xml type xml resource ID",
+                               "371-GETXML-NOTFOUND");
+                result = DalvikValue::make_null();
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
         if ((class_name.find("Resources") != std::string::npos) &&
             method == "openRawResource" &&
             args.size() >= 2 && args[1].type == DalvikType::INT32) {
@@ -30977,8 +31256,110 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             return true;
         }
         if (method == "resolveActivity" || method == "resolveService" ||
-            method == "resolveContentProvider" || method == "resolveActivityInfo") {
+            method == "resolveActivityInfo") {
             result = DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // 371-CLOSEOUT: resolveContentProvider (AOSP PackageManagerService
+        // law) — resolveContentProvider(authority, flags) answers the
+        // ProviderInfo of any INSTALLED provider authority (never null);
+        // null only for an authority nothing provides. The blanket-null
+        // answer made androidx FileProvider.parsePathStrategy fail one
+        // hop early ("Couldn't find provider..."); with the authority
+        // resolved, its loadXmlMetaData contract decides meta-data
+        // presence. Serves name/authority/authorities/grantUriPermissions
+        // + metaData exactly as the install-time attachInfo seed does.
+        if (method == "resolveContentProvider") {
+            std::string want_auth;
+            for (size_t i = 1; i < args.size(); ++i) {
+                if (args[i].type == DalvikType::STRING_REF) {
+                    want_auth = args[i].string_val;
+                    break;
+                }
+            }
+            std::string owner_class;
+            for (const auto& [pname, pauth] : manifest_provider_identity_) {
+                // authorities are ';'-joined — each spelling maps to the
+                // same provider (same law as ContentResolver dispatch).
+                size_t start = 0;
+                while (start <= pauth.size()) {
+                    size_t semi = pauth.find(';', start);
+                    std::string one = pauth.substr(
+                        start, semi == std::string::npos ? std::string::npos
+                                                          : semi - start);
+                    if (!one.empty() && one == want_auth) {
+                        owner_class = pname;
+                        break;
+                    }
+                    if (semi == std::string::npos) break;
+                    start = semi + 1;
+                }
+                if (!owner_class.empty()) break;
+            }
+            if (!want_auth.empty() && owner_class.empty()) {
+                // authority→class through the installed provider map
+                auto by_auth = provider_by_authority_.find(want_auth);
+                if (by_auth != provider_by_authority_.end()) {
+                    auto cls_it = provider_class_by_oid_.find(by_auth->second);
+                    if (cls_it != provider_class_by_oid_.end())
+                        owner_class = cls_it->second;
+                }
+            }
+            if (want_auth.empty() || owner_class.empty()) {
+                result = DalvikValue::make_null();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            uint32_t pi_id = heap_.allocate("Landroid/content/pm/ProviderInfo;",
+                                            pc_, 0);
+            heap_.set_object_field(
+                pi_id, "name",
+                DalvikValue::make_string(owner_class, 1));
+            heap_.set_object_field(
+                pi_id, "authority",
+                DalvikValue::make_string(want_auth, 1));
+            heap_.set_object_field(
+                pi_id, "authorities",
+                DalvikValue::make_string(want_auth, 1));
+            for (const auto& [gname, gval] : manifest_provider_grants_) {
+                if (gname == owner_class) {
+                    heap_.set_object_field(
+                        pi_id, "grantUriPermissions",
+                        DalvikValue::make_bool(gval));
+                    break;
+                }
+            }
+            auto md_it = component_meta_data_.find(owner_class);
+            if (md_it != component_meta_data_.end() && !md_it->second.empty()) {
+                uint32_t md_bundle = heap_.allocate("Landroid/os/Bundle;", pc_, 0);
+                static const std::string kDigitsMd = "0123456789";
+                for (const auto& mde : md_it->second) {
+                    if (mde.has_resource && mde.resource_id != 0) {
+                        heap_.set_object_field(
+                            md_bundle, "bundle:" + mde.name,
+                            DalvikValue::make_int(
+                                static_cast<int32_t>(mde.resource_id)));
+                    } else if (!mde.value.empty() &&
+                               mde.value.find_first_not_of(kDigitsMd) ==
+                                   std::string::npos) {
+                        heap_.set_object_field(
+                            md_bundle, "bundle:" + mde.name,
+                            DalvikValue::make_int(std::stoi(mde.value)));
+                    } else if (!mde.value.empty()) {
+                        heap_.set_object_field(
+                            md_bundle, "bundle:" + mde.name,
+                            DalvikValue::make_string(mde.value, 0));
+                    }
+                }
+                heap_.set_object_field(
+                    pi_id, "metaData",
+                    DalvikValue::make_object(md_bundle, "Landroid/os/Bundle;"));
+            }
+            result = DalvikValue::make_object(
+                pi_id, "Landroid/content/pm/ProviderInfo;");
+            std::cerr << "[371-RCP] resolveContentProvider " << want_auth
+                      << " -> " << owner_class << std::endl;
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
@@ -45778,6 +46159,48 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // Unresolvable class token: leave result null and report STUBBED so
         // the trace keeps the failure honest (§18 — no silent fake success).
         status = ApiCallTrace::Status::STUBBED;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // 371-CLOSEOUT: ProviderInfo.loadXmlMetaData(pm, name) (AOSP
+    // PackageItemInfo.loadXmlMetaData law — frameworks/base
+    // PackageItemInfo.java): reads the component's metaData Bundle for
+    // `name`, and when the value is an INTEGER resource id answers an
+    // XmlResourceParser over that compiled XML resource. metaData missing
+    // or name absent or resid == 0 → null (the REAL androidx
+    // FileProvider.parsePathStrategy contract turns that into
+    // IllegalArgumentException "Couldn't find meta-data for provider with
+    // authority …"). Receiver = args[0]; pm = args[1]; name = args[2].
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/content/pm/ProviderInfo;" &&
+        method == "loadXmlMetaData" && !args.empty() &&
+        args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0) {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_null();
+        auto md_opt = heap_.get_object_field(args[0].object_id, "metaData");
+        std::string want_name;
+        for (size_t i = 2; i < args.size(); ++i) {
+            if (args[i].type == DalvikType::STRING_REF) {
+                want_name = args[i].string_val;
+                break;
+            }
+        }
+        if (md_opt.has_value() && md_opt->type == DalvikType::OBJECT_REF &&
+            md_opt->object_id != 0 && !want_name.empty()) {
+            auto residf = heap_.get_object_field(md_opt->object_id,
+                                                 "bundle:" + want_name);
+            if (residf.has_value() && residf->type == DalvikType::INT32 &&
+                residf->int_val != 0) {
+                DalvikValue parser;
+                if (xml_parser_for_resid((uint32_t)residf->int_val, parser)) {
+                    result = parser;
+                }
+            }
+        }
+        std::cerr << "[371-LXMD] loadXmlMetaData name=" << want_name
+                  << " -> " << (result.object_id != 0 ? "parser" : "null")
+                  << std::endl;
+        return true;
     }
 
     // ────────────────────────────────────────────────────────────────────────

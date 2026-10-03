@@ -632,6 +632,9 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
         // PackageManager.getActivityInfo().metaData law.
         dalvik_engine_.set_activity_meta_data(result.apk_info.activity_meta_data,
                                               result.apk_info.application_meta_data);
+        // 371-CLOSEOUT: component meta-data with resource references —
+        // ProviderInfo.metaData seeding + resolveContentProvider/loadXmlMetaData.
+        dalvik_engine_.set_component_meta_data(result.apk_info.component_meta_data);
         // M3 F-018: EXACT-ALARM CAPABILITY LAW (AOSP API 31+) — derived
         // from the RUNNING APK's manifest permission list, never
         // hardcoded per-app. MiniAndroid INSTALL-TIME GRANT identity:
