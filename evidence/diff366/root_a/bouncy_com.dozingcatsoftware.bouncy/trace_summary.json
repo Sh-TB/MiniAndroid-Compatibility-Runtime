@@ -1,7 +1,7 @@
 {
   "activity": "com.dozingcatsoftware.bouncy.BouncyActivity",
   "apk_package": "com.dozingcatsoftware.bouncy",
-  "duration_ms": 786,
+  "duration_ms": 771,
   "events_retained": 34,
   "events_total": 34,
   "first_divergence": null,
@@ -68,24 +68,24 @@
       "event": "MANIFEST_PARSED",
       "package": "com.dozingcatsoftware.bouncy",
       "result": "OK",
-      "run_id": "1791002017005-1",
+      "run_id": "1791002448795-1",
       "seq": 3,
       "sev": "CONFIRMED",
       "state": "activity=com.dozingcatsoftware.bouncy.BouncyActivity",
       "thread": "main",
-      "ts_ms": 1791002017008
+      "ts_ms": 1791002448798
     },
     {
       "component": "boot",
       "event": "DEX_PARSED",
       "package": "com.dozingcatsoftware.bouncy",
       "result": "OK",
-      "run_id": "1791002017005-1",
+      "run_id": "1791002448795-1",
       "seq": 4,
       "sev": "CONFIRMED",
       "state": "classes=1347 methods=17176",
       "thread": "main",
-      "ts_ms": 1791002017065
+      "ts_ms": 1791002448855
     },
     {
       "component": "boot",
@@ -95,24 +95,24 @@
       },
       "package": "com.dozingcatsoftware.bouncy",
       "result": "OK",
-      "run_id": "1791002017005-1",
+      "run_id": "1791002448795-1",
       "seq": 5,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1791002017085
+      "ts_ms": 1791002448874
     },
     {
       "component": "boot",
       "event": "CLASSES_LOADED",
       "package": "com.dozingcatsoftware.bouncy",
       "result": "OK",
-      "run_id": "1791002017005-1",
+      "run_id": "1791002448795-1",
       "seq": 6,
       "sev": "CONFIRMED",
       "state": "classes=1347",
       "thread": "main",
-      "ts_ms": 1791002017085
+      "ts_ms": 1791002448874
     },
     {
       "activity": "com.dozingcatsoftware.bouncy.BouncyActivity",
@@ -120,12 +120,12 @@
       "event": "ACTIVITY_RESOLVED",
       "package": "com.dozingcatsoftware.bouncy",
       "result": "OK",
-      "run_id": "1791002017005-1",
+      "run_id": "1791002448795-1",
       "seq": 7,
       "sev": "CONFIRMED",
       "state": "com.dozingcatsoftware.bouncy.BouncyActivity",
       "thread": "main",
-      "ts_ms": 1791002017090
+      "ts_ms": 1791002448880
     },
     {
       "activity": "com.dozingcatsoftware.bouncy.BouncyActivity",
@@ -133,12 +133,12 @@
       "event": "APPLICATION_CREATE",
       "package": "com.dozingcatsoftware.bouncy",
       "result": "PENDING",
-      "run_id": "1791002017005-1",
+      "run_id": "1791002448795-1",
       "seq": 8,
       "sev": "PENDING",
       "state": "dex interpreter",
       "thread": "main",
-      "ts_ms": 1791002017090
+      "ts_ms": 1791002448880
     },
     {
       "activity": "com.dozingcatsoftware.bouncy.BouncyActivity",
@@ -147,12 +147,12 @@
       "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Lcom/badlogic/gdx/utils/SharedLibraryLoadRuntimeException; unwound Lcom/badlogic/gdx/utils/SharedLibraryLoader;.loadFile invoke_pc=0x0 depth=6",
       "package": "com.dozingcatsoftware.bouncy",
       "result": "FAIL",
-      "run_id": "1791002017005-1",
+      "run_id": "1791002448795-1",
       "seq": 9,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1791002017390
+      "ts_ms": 1791002449170
     },
     {
       "activity": "com.dozingcatsoftware.bouncy.BouncyActivity",
@@ -161,12 +161,12 @@
       "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Lcom/badlogic/gdx/utils/SharedLibraryLoadRuntimeException; unwound Lcom/badlogic/gdx/physics/box2d/Box2D;.init invoke_pc=0x7 depth=4",
       "package": "com.dozingcatsoftware.bouncy",
       "result": "FAIL",
-      "run_id": "1791002017005-1",
+      "run_id": "1791002448795-1",
       "seq": 10,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1791002017390
+      "ts_ms": 1791002449170
     },
     {
       "activity": "com.dozingcatsoftware.bouncy.BouncyActivity",
@@ -175,12 +175,12 @@
       "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Lcom/badlogic/gdx/utils/SharedLibraryLoadRuntimeException; unwound Lcom/dozingcatsoftware/bouncy/BouncyActivity;.<clinit> invoke_pc=0x0 depth=3",
       "package": "com.dozingcatsoftware.bouncy",
       "result": "FAIL",
-      "run_id": "1791002017005-1",
+      "run_id": "1791002448795-1",
       "seq": 11,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1791002017390
+      "ts_ms": 1791002449170
     },
     {
       "activity": "com.dozingcatsoftware.bouncy.BouncyActivity",
@@ -189,12 +189,12 @@
       "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Lcom/badlogic/gdx/utils/SharedLibraryLoadRuntimeException; unwound Lcom/dozingcatsoftware/bouncy/BouncyActivity;.getInitialLevel invoke_pc=0x8 depth=2",
       "package": "com.dozingcatsoftware.bouncy",
       "result": "FAIL",
-      "run_id": "1791002017005-1",
+      "run_id": "1791002448795-1",
       "seq": 12,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1791002017390
+      "ts_ms": 1791002449170
     },
     {
       "activity": "com.dozingcatsoftware.bouncy.BouncyActivity",
@@ -203,12 +203,12 @@
       "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNCAUGHT-TOP] Lcom/badlogic/gdx/utils/SharedLibraryLoadRuntimeException; escaped the app boundary at Lcom/dozingcatsoftware/bouncy/BouncyActivity;.onCreate invoke_pc=0x63 depth=1 [APP-BOUNDARY]",
       "package": "com.dozingcatsoftware.bouncy",
       "result": "FAIL",
-      "run_id": "1791002017005-1",
+      "run_id": "1791002448795-1",
       "seq": 13,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1791002017390
+      "ts_ms": 1791002449170
     },
     {
       "activity": "com.dozingcatsoftware.bouncy.BouncyActivity",
@@ -217,12 +217,12 @@
       "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/RuntimeException; unwound Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.layoutMapForLevel invoke_pc=0xe depth=3",
       "package": "com.dozingcatsoftware.bouncy",
       "result": "FAIL",
-      "run_id": "1791002017005-1",
+      "run_id": "1791002448795-1",
       "seq": 14,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1791002017390
+      "ts_ms": 1791002449170
     },
     {
       "activity": "com.dozingcatsoftware.bouncy.BouncyActivity",
@@ -231,12 +231,12 @@
       "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/RuntimeException; unwound Lcom/dozingcatsoftware/bouncy/BouncyActivity;.resetFieldForCurrentLevel invoke_pc=0x4 depth=2",
       "package": "com.dozingcatsoftware.bouncy",
       "result": "FAIL",
-      "run_id": "1791002017005-1",
+      "run_id": "1791002448795-1",
       "seq": 15,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1791002017390
+      "ts_ms": 1791002449170
     },
     {
       "activity": "com.dozingcatsoftware.bouncy.BouncyActivity",
@@ -245,12 +245,12 @@
       "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNCAUGHT-TOP] Ljava/lang/RuntimeException; escaped the app boundary at Lcom/dozingcatsoftware/bouncy/BouncyActivity;.onCreate invoke_pc=0x69 depth=1 [APP-BOUNDARY]",
       "package": "com.dozingcatsoftware.bouncy",
       "result": "FAIL",
-      "run_id": "1791002017005-1",
+      "run_id": "1791002448795-1",
       "seq": 16,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1791002017390
+      "ts_ms": 1791002449170
     },
     {
       "activity": "com.dozingcatsoftware.bouncy.BouncyActivity",
@@ -259,12 +259,12 @@
       "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNCAUGHT-TOP] Ljava/lang/NullPointerException; escaped the app boundary at Lcom/dozingcatsoftware/bouncy/BouncyActivity;.onCreate invoke_pc=0x94 depth=1 [APP-BOUNDARY]",
       "package": "com.dozingcatsoftware.bouncy",
       "result": "FAIL",
-      "run_id": "1791002017005-1",
+      "run_id": "1791002448795-1",
       "seq": 17,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1791002017390
+      "ts_ms": 1791002449170
     },
     {
       "activity": "com.dozingcatsoftware.bouncy.BouncyActivity",
@@ -300,12 +300,12 @@
       },
       "package": "com.dozingcatsoftware.bouncy",
       "result": "OK",
-      "run_id": "1791002017005-1",
+      "run_id": "1791002448795-1",
       "seq": 18,
       "sev": "CONFIRMED",
       "state": "RESUMED",
       "thread": "main",
-      "ts_ms": 1791002017392
+      "ts_ms": 1791002449172
     },
     {
       "activity": "com.dozingcatsoftware.bouncy.BouncyActivity",
@@ -313,12 +313,12 @@
       "event": "RENDER_START",
       "package": "com.dozingcatsoftware.bouncy",
       "result": "PENDING",
-      "run_id": "1791002017005-1",
+      "run_id": "1791002448795-1",
       "seq": 19,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1791002017401
+      "ts_ms": 1791002449181
     },
     {
       "activity": "com.dozingcatsoftware.bouncy.BouncyActivity",
@@ -326,12 +326,12 @@
       "event": "VIEWTREE_CREATED",
       "package": "com.dozingcatsoftware.bouncy",
       "result": "OK",
-      "run_id": "1791002017005-1",
+      "run_id": "1791002448795-1",
       "seq": 20,
       "sev": "CONFIRMED",
-      "state": "root_id=94",
+      "state": "root_id=95",
       "thread": "main",
-      "ts_ms": 1791002017401
+      "ts_ms": 1791002449181
     },
     {
       "activity": "com.dozingcatsoftware.bouncy.BouncyActivity",
@@ -341,12 +341,12 @@
       "provenance": "stage_render_frame default walk",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002017005-1",
+      "run_id": "1791002448795-1",
       "seq": 21,
       "sev": "RENDERER",
       "state": "CLASSIC_CANVAS",
       "thread": "main",
-      "ts_ms": 1791002017401
+      "ts_ms": 1791002449181
     },
     {
       "activity": "com.dozingcatsoftware.bouncy.BouncyActivity",
@@ -355,12 +355,12 @@
       "package": "com.dozingcatsoftware.bouncy",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002017005-1",
+      "run_id": "1791002448795-1",
       "seq": 22,
       "sev": "CONFIRMED",
       "state": "nonwhite=2073600 total=2073600 app_ops=11 diag_regions=1",
       "thread": "main",
-      "ts_ms": 1791002017453
+      "ts_ms": 1791002449230
     },
     {
       "activity": "com.dozingcatsoftware.bouncy.BouncyActivity",
@@ -369,12 +369,12 @@
       "package": "com.dozingcatsoftware.bouncy",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002017005-1",
+      "run_id": "1791002448795-1",
       "seq": 23,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1791002017453
+      "ts_ms": 1791002449231
     },
     {
       "activity": "com.dozingcatsoftware.bouncy.BouncyActivity",
@@ -387,12 +387,12 @@
       "package": "com.dozingcatsoftware.bouncy",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002017005-1",
+      "run_id": "1791002448795-1",
       "seq": 24,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1791002017528
+      "ts_ms": 1791002449305
     },
     {
       "activity": "com.dozingcatsoftware.bouncy.BouncyActivity",
@@ -414,12 +414,12 @@
       "package": "com.dozingcatsoftware.bouncy",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002017005-1",
+      "run_id": "1791002448795-1",
       "seq": 25,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
       "thread": "main",
-      "ts_ms": 1791002017544
+      "ts_ms": 1791002449321
     },
     {
       "activity": "com.dozingcatsoftware.bouncy.BouncyActivity",
@@ -464,12 +464,12 @@
       "package": "com.dozingcatsoftware.bouncy",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "CENSUS",
-      "run_id": "1791002017005-1",
+      "run_id": "1791002448795-1",
       "seq": 26,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
       "thread": "main",
-      "ts_ms": 1791002017544
+      "ts_ms": 1791002449321
     },
     {
       "activity": "com.dozingcatsoftware.bouncy.BouncyActivity",
@@ -478,12 +478,12 @@
       "package": "com.dozingcatsoftware.bouncy",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1791002017005-1",
+      "run_id": "1791002448795-1",
       "seq": 27,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1791002017596
+      "ts_ms": 1791002449373
     },
     {
       "activity": "com.dozingcatsoftware.bouncy.BouncyActivity",
@@ -492,12 +492,12 @@
       "package": "com.dozingcatsoftware.bouncy",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002017005-1",
+      "run_id": "1791002448795-1",
       "seq": 28,
       "sev": "CONFIRMED",
-      "state": "root_id=94",
+      "state": "root_id=95",
       "thread": "main",
-      "ts_ms": 1791002017596
+      "ts_ms": 1791002449373
     },
     {
       "activity": "com.dozingcatsoftware.bouncy.BouncyActivity",
@@ -506,12 +506,12 @@
       "package": "com.dozingcatsoftware.bouncy",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002017005-1",
+      "run_id": "1791002448795-1",
       "seq": 29,
       "sev": "CONFIRMED",
       "state": "nonwhite=2073600 total=2073600 app_ops=11 diag_regions=1",
       "thread": "main",
-      "ts_ms": 1791002017641
+      "ts_ms": 1791002449418
     },
     {
       "activity": "com.dozingcatsoftware.bouncy.BouncyActivity",
@@ -520,12 +520,12 @@
       "package": "com.dozingcatsoftware.bouncy",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002017005-1",
+      "run_id": "1791002448795-1",
       "seq": 30,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1791002017642
+      "ts_ms": 1791002449419
     },
     {
       "activity": "com.dozingcatsoftware.bouncy.BouncyActivity",
@@ -538,12 +538,12 @@
       "package": "com.dozingcatsoftware.bouncy",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002017005-1",
+      "run_id": "1791002448795-1",
       "seq": 31,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1791002017717
+      "ts_ms": 1791002449493
     },
     {
       "activity": "com.dozingcatsoftware.bouncy.BouncyActivity",
@@ -565,12 +565,12 @@
       "package": "com.dozingcatsoftware.bouncy",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002017005-1",
+      "run_id": "1791002448795-1",
       "seq": 32,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
       "thread": "main",
-      "ts_ms": 1791002017733
+      "ts_ms": 1791002449510
     },
     {
       "activity": "com.dozingcatsoftware.bouncy.BouncyActivity",
@@ -615,12 +615,12 @@
       "package": "com.dozingcatsoftware.bouncy",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "CENSUS",
-      "run_id": "1791002017005-1",
+      "run_id": "1791002448795-1",
       "seq": 33,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
       "thread": "main",
-      "ts_ms": 1791002017733
+      "ts_ms": 1791002449510
     },
     {
       "activity": "com.dozingcatsoftware.bouncy.BouncyActivity",
@@ -632,12 +632,12 @@
       "package": "com.dozingcatsoftware.bouncy",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "FAIL",
-      "run_id": "1791002017005-1",
+      "run_id": "1791002448795-1",
       "seq": 34,
       "sev": "FAILURE",
       "state": "Execution completed successfully [F-016 exception-honesty: 5 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 1554 IMPLEMENTED, 48 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json]",
       "thread": "main",
-      "ts_ms": 1791002017791
+      "ts_ms": 1791002449566
     }
   ],
   "last_exception": {
@@ -650,18 +650,18 @@
     "package": "com.dozingcatsoftware.bouncy",
     "renderer_family": "CLASSIC_CANVAS",
     "result": "FAIL",
-    "run_id": "1791002017005-1",
+    "run_id": "1791002448795-1",
     "seq": 34,
     "sev": "FAILURE",
     "state": "Execution completed successfully [F-016 exception-honesty: 5 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 1554 IMPLEMENTED, 48 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json]",
     "thread": "main",
-    "ts_ms": 1791002017791
+    "ts_ms": 1791002449566
   },
   "lifecycle": "RESUMED",
   "renderer_family": "CLASSIC_CANVAS",
-  "run_id": "1791002017005-1",
+  "run_id": "1791002448795-1",
   "schema": "miniandroid.boot_trace/1.0",
-  "session_id": "EXP-001-20261003-043337-7231",
+  "session_id": "EXP-001-20261003-044048-4204",
   "severity_census": {
     "CONFIRMED": 15,
     "FAILURE": 10,
@@ -696,7 +696,7 @@
       "state": "CONFIRMED"
     },
     {
-      "detail": "root_id=94",
+      "detail": "root_id=95",
       "stage": "VIEWTREE",
       "state": "CONFIRMED"
     },
