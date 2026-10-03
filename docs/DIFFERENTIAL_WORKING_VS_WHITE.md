@@ -403,3 +403,87 @@ as AOSP-cited semantic laws.
 - Chess regression root (start.onCreate NPE + RecyclerView never bound) is recorded but not
   fixed (diagnose-only mission); its RecyclerView-never-bound frontier joins continuation.
 - The five generic fix candidates (§12) are the recommended next campaign, in leverage order.
+
+## 16. CONTINUATION WAVE — ROOT CAMPAIGN OUTCOMES (same-Issue protocol, HEAD 5dbfe5f2+)
+
+The generic-fix campaign (§12 order) executed with the fan-out law (§14). Every fix is
+generic (no package conditionals); every wave re-proved the regression battery (goldens
+5/5 ×3 byte-identical, loading probe 23/23, uninstall 16/16). Root registry: 530→536.
+
+### ROOT-A — java.util/java.lang null contracts (R-NEW-458/459/460) — FIXED
+
+| Law | AOSP/OpenJDK semantic | Runtime evidence that forced it |
+|-----|------------------------|-------------------------------|
+| `Arrays.toString` (R-NEW-458) | `toString(null)` returns the STRING `"null"`, never a null reference | asteroids `GodotActivity.onCreate`: `getStringArrayExtra` (absent→null, legal) → `Arrays.toString` → REC-MISS null → Kotlin `Intrinsics.checkNotNullExpressionValue` NPE → onCreate death pc=0x3a |
+| `Class.getModifiers/isMemberClass/isAnonymousClass/isInterface/isAbstract/newInstance` (R-NEW-459) | real DEX access_flags; `$`-name deterministic subset for member/anonymous; `newInstance()` constructs via the real no-arg `<init>` or throws `InstantiationException` — NEVER silent null | spacevertex: (a) kotlin platform-init `Class.forName(...).newInstance()` → null → Intrinsics NPE; (b) androidx `FragmentTransaction.add` bytecode-proven: `getModifiers()` typed-zero → `isPublic(0)=false` → `!isPublic` disjunct → ISE "must be a public static class" for the top-level PUBLIC HomeFragment |
+| `ContentProvider.getContext` (R-NEW-460) | attachInfo sets mContext BEFORE onCreate; never null on an installed provider | androidx.startup `InitializationProvider.onCreate` null-guard threw (obfuscated StartupException wrapper / `Lzc;`) in asteroids + spacevertex |
+
+**Post-fix fan-out (8 apps, `scripts/diff366_root_a_fanout.py`)**: asteroids advanced past
+the Intrinsics NPE; spacevertex advanced past BOTH failures — view tree grew from a 2-node
+stub to 8 views including the app's own `Scene` class, with ZERO uncaught exceptions; the 4
+working apps + dooz + memory byte-identical (no drift).
+
+### ROOT-B — AndroidX WindowInsets compat (R-NEW-461) — FIXED
+
+`WindowInsets.CONSUMED` (API 30+) is a public static final WindowInsets — never null.
+Runtime evidence: memory v34 `WindowInsetsCompat.<clinit>` → `s0$k.<clinit>` → `J0.a()`
+(`sget CONSUMED`) → typed-null → `requireNonNull` NPE → `ActionBarOverlayLayout.<init>`
+death. Fix: seed a REAL heap WindowInsets (consumed instance) in the framework statics.
+**Post-fix**: memory WHITE → **REAL_APP_CONTENT** (sha `67845303a9460d86…`, 2 app draw
+ops — the first app-owned pixels); next divergence recorded (URI-null in its zip/WebView
+path). AndroidX controls fossifyclock + blockblast byte-identical (unrelated roots).
+
+### ROOT-C — Fragment recreation + provider receiver identity (R-NEW-462) — FIXED
+
+Fragment recreation/instantiation is carried by R-NEW-459 (`Class.newInstance` +
+`getModifiers` laws are exactly the `FragmentFactory.instantiate` path) — spacevertex's
+fragment tree builds fully. Unrelated Fragment-app fan-out surfaced the provider
+receiver-identity defect: ViewShadow's user-class claim intercepted
+`ContentProvider.getContext` during the install window (no activity context exists yet)
+and answered `handled_null` — suntimes `CalculatorProvider.onCreate` ISE "encountered null
+context". Fix: 3-part receiver-identity gate (ViewShadow not_handled for non-view
+receivers + `Provider;` class-shape exclusion (EXP-075 precedent) + DEX-hierarchy skip in
+bridge_to_api so `CalculatorProvider1 extends CalculatorProvider extends ContentProvider`
+is hierarchy-honest). **Post-fix**: both suntimes providers receive the app context;
+next divergences recorded (ActivityResultLauncherCompat null; WorkManagerInitializer).
+
+### ROOT-D — ComposeView materialization: the honest 4-way separation (diagnose-only)
+
+The frontier is NOT one "Compose root"; four distinct cases, separately evidenced:
+
+1. **ComposeView cannot materialize** — blockblast: `view_count=0`,
+   `content_root_id=0`, verdict `NO_ROOT`/`first_missing=WINDOW_ROOT`; "ComposeView NOT
+   in class index" attach diag. The compose activity's content never constructs a view
+   object at all (arrested before ComposeView creation).
+2. **Composition materializes but does not draw** — dooz: the ComposeView host object
+   EXISTS (`Lho;` obj#971, full 1080×1920, attached + measured per R349) with one
+   0×105 child; `app_draw_ops=0` — the composition subtree never produces content.
+3. **Composition/recomposer machinery fails (upstream trigger of 2)** — dooz: deferred
+   CNFE `androidx.compose.ui.platform.AndroidCompositionLocals_androidKt` at
+   `Lgq0;.<clinit>` — the class is **absent from the APK** (R8-renamed compose
+   internals; canonical-name lookup fails) → composition-locals never initialize →
+   `ensureCompositionCreated` produces no content. Same #350 family
+   ("LocalDensity not present" ← getWindowRecomposer).
+4. **Rendering backend fails** — NOT OBSERVABLE: no compose app reaches any app-owned
+   draw op; the backend frontier sits downstream of cases 1–3 and cannot be honestly
+   claimed either way.
+
+### ROOT-E — native/Godot (S-2 frontier REACHED, not fixed)
+
+After R-NEW-458/459/460, asteroids executes the FULL non-native path: onCreate →
+onStart → onResume (including R8 synthetic-lambda dispatch), FileProvider +
+InitializationProvider OK, decor FrameLayout stubs attached. The arrest is now exactly
+the native surface: `GodotView` (GLSurfaceView subclass) is never constructed because
+`GodotLib` natives are never loaded — the runtime has no dlopen/JNI registration layer
+(S-2). Frame: `DEFAULT_BACKGROUND_ONLY`, `first_missing=APP_DRAW_OPS`. Per the
+continuation law, native compatibility is NOT marked fixed — the S-2 dlopen/JNI/native
+surface campaign is the continuation, now cleanly reachable.
+
+### Wave evidence
+
+`evidence/diff366/root_a/` (8-app fan-out + root_a_fanout.json),
+`evidence/diff366/root_c/` (fragment fan-out + root_c_fanout.json),
+`evidence/diff366/root_e/asteroids_current/` (S-2 frontier run),
+`scripts/diff366_root_a_fanout.py`, `scripts/diff366_root_c_fanout.py`,
+`scripts/cont_disasm_fragment_ise{,2,3}.py`, `scripts/cont_disasm_winsets.py`,
+`scripts/cont_disasm_startup.py` (bytecode-proven root evidence).
