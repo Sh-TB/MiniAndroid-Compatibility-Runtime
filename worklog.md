@@ -6043,3 +6043,20 @@ Stage Summary:
   ANDROIDX-LIFECYCLE) — never installation, never resource/asset/file loading.
 - chess reclassified REGRESSION (determinism-golden, white frame); bouncy promoted to
   the working quota; evidence E4 with 3-run reproducibility on all 9.
+
+---
+Task ID: CONT-0
+Agent: Super Z (main)
+Task: MASTER CONTINUATION §0 — fix #366 evidence integrity (microtimer/dooz run1-only vs claimed x9 3-run)
+
+Work Log:
+- DISCLOSED contradiction: posted #366 ledger row 18 claimed 3-run x9; DIFFERENTIAL_EVIDENCE_INDEX.jsonl had run1 only for dubrowgn.microtimer + io.github.yamin8000.dooz (pipeline three_run=False rows).
+- OPTION A executed: scripts/diff366_run23.py ran missing run2/run3 on CURRENT HEAD 9289177d, binary 4b2db3540575b1c4, same stores, pkgaudit live re-hash match, sources hidden.
+- RESULTS: microtimer da73010a37dd0189... x3 REAL_APP_CONTENT rc=0; dooz d602648e8e401895... x3 DEFAULT_BACKGROUND_ONLY rc=1 (same as run1); screenshot SHAs byte-identical; first divergence stable; no NONDETERMINISTIC.
+- LEDGERS UPDATED: DIFFERENTIAL_WORKING_VS_WHITE.jsonl (reproducibility 3-run + three_run_shas + trace_shas), DIFFERENTIAL_EVIDENCE_INDEX.jsonl (runs [run1,run2,run3] + artifact lists), DIFFERENTIAL_WORKING_VS_WHITE.md §10 (11-row table + closure paragraph), stage_matrices.json _run23_closure, final_state.json.
+- POSTED correction comment to issue #366: https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/366#issuecomment-5965370293
+- Residue sweep: remaining "single-run" mentions (WhatsApp/Signal probes) are unrelated true statements; no #366 contradiction remains.
+
+Stage Summary:
+- The x9/x11 3-run claim is now TRUE on persisted artifacts; discrepancy disclosed + closed by execution, not by claim downgrade.
+- New artifact: evidence/diff366/final/{microtimer,dooz}/run2,run3 + scripts/diff366_run23.py + scripts/diff366_run23_comment.py.
