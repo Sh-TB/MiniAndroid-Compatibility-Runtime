@@ -82,6 +82,12 @@ std::filesystem::path package_data_dir();
 /// itself). No-package fallback: <root>/<sub>.
 std::filesystem::path context_dir(const std::string& sub);
 
+/// G-8 (#371): device-protected storage context dir family —
+/// <root>/data/user_de/0/<pkg>/[sub] (AOSP ContextImpl
+/// createDeviceProtectedStorageContext law; a DISTINCT fence from the
+/// credential-protected /data/data tree).
+std::filesystem::path device_protected_dir(const std::string& sub);
+
 /// External app-specific directory (AOSP Android/data/<pkg>/<kind>):
 ///   kind = "files" | "cache" | "media"
 /// No-package fallback keeps the legacy flat <root>/external_<leaf> shape.

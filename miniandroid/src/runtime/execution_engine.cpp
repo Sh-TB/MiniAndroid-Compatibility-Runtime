@@ -1274,6 +1274,57 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                 prov_identity.emplace_back(cls, p.authorities);
             }
             dalvik_engine_.set_manifest_provider_identity(prov_identity);
+            // #371: per-provider grantUriPermissions (ProviderInfo law).
+            std::vector<std::pair<std::string, bool>> prov_grants;
+            for (const auto& p : result.apk_info.providers) {
+                std::string cls = p.name;
+                if (!cls.empty()) {
+                    if (cls[0] == '.')
+                        cls = result.apk_info.package_name + cls;
+                    else if (cls.find('.') == std::string::npos)
+                        cls = result.apk_info.package_name + "." + cls;
+                }
+                prov_grants.emplace_back(cls, p.grant_uri_permissions);
+            }
+            dalvik_engine_.set_manifest_provider_grants(prov_grants);
+            // ── #371 PHASE B5: manifest <service>/<receiver> transfer ──
+            // Services/receivers live on ManifestInfo (the AXML parse), so
+            // this path re-parses the binary manifest (same as the S123
+            // action-registration block) and applies the same ".Foo"/"Foo"
+            // → full-class normalization law as providers (AOSP
+            // PackageParser component-name expansion).
+            std::vector<std::pair<std::string, std::vector<std::string>>>
+                svc_classes, rcv_actions;
+            {
+                auto manifest_raw =
+                    apk_parser_.extract_entry_cached("AndroidManifest.xml");
+                if (!manifest_raw.empty()) {
+                    apk::ManifestReader mr5;
+                    apk::ManifestInfo mi5 = mr5.parse(manifest_raw);
+                    for (const auto& s : mi5.services) {
+                        std::string cls = s.name;
+                        if (!cls.empty()) {
+                            if (cls[0] == '.')
+                                cls = result.apk_info.package_name + cls;
+                            else if (cls.find('.') == std::string::npos)
+                                cls = result.apk_info.package_name + "." + cls;
+                        }
+                        if (!cls.empty()) svc_classes.emplace_back(cls, s.actions);
+                    }
+                    for (const auto& r : mi5.receivers) {
+                        std::string cls = r.name;
+                        if (!cls.empty()) {
+                            if (cls[0] == '.')
+                                cls = result.apk_info.package_name + cls;
+                            else if (cls.find('.') == std::string::npos)
+                                cls = result.apk_info.package_name + "." + cls;
+                        }
+                        if (!cls.empty()) rcv_actions.emplace_back(cls, r.actions);
+                    }
+                }
+            }
+            dalvik_engine_.set_manifest_services(svc_classes);
+            dalvik_engine_.set_manifest_receiver_actions(rcv_actions);
         }
         // CALL DALVIK ENGINE - This is the REAL execution path
         // ===================================================================

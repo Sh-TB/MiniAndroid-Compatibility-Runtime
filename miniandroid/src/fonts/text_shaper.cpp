@@ -6,6 +6,8 @@
 
 #include "text_shaper.h"
 
+#include "../diagnostics/file_io_trace.h"  // #371 PHASE B6 (ST-10): font-consumer provenance
+
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
@@ -222,11 +224,26 @@ bool TextShaper::load_face(int idx, const char* path) {
     FT_Face face = nullptr;
     if (FT_New_Face(reinterpret_cast<FT_Library>(ft_lib_), path, 0, &face)) {
         std::fprintf(stderr, "[TEXTSHAPER] FT_New_Face FAILED path=%s\n", path);
+        // ST-10 (#371): font-consumer provenance row — failed load is loud.
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "FONT-FACE", path ? path : "<null>", false, "FT_New_Face failed",
+            "TextShaper");
         return false;
     }
     faces_[idx].ft_face = face;
     faces_[idx].units_per_em = face->units_per_EM;
     faces_[idx].path = path;
+    // ST-10 (#371): font-consumer provenance row — the REAL shaper backing
+    // (font file → FreeType face) enters the same evidence model as file/sqlite
+    // provenance (AOSP: TextPaint glyph runs resolve through the font stack).
+    {
+        std::string family = face->family_name ? face->family_name : "?";
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "FONT-FACE", path ? path : "<null>", true,
+            "family=" + family + " upem=" +
+                std::to_string(face->units_per_EM),
+            "TextShaper");
+    }
     return true;
 }
 

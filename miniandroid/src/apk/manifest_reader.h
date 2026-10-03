@@ -148,6 +148,14 @@ struct ManifestInfo {
     struct ProviderInfo {
         std::string name;         // android:name (class, short or full)
         std::string authorities;  // android:authorities (identity only)
+        // #371 PHASE D fix (probe-discovered, generic): AOSP PackageParser
+        // parses android:grantUriPermissions into ProviderInfo —
+        // androidx FileProvider.attachInfo REQUIRES it to be true and
+        // throws SecurityException("Provider must grant uri permissions")
+        // otherwise. Without this field every FileProvider app died at
+        // install (notes_secuso SplashActivity chain = first divergence).
+        bool grant_uri_permissions = false;
+        bool exported = false;
     };
     std::vector<ProviderInfo> providers;
 

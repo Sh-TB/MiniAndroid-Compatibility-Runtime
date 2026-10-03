@@ -13,6 +13,8 @@
 #include "dalvik_engine.h"
 #include "dex_parser.h"
 #include "mutf8.h"
+#include <dlfcn.h>  // #371 PHASE B2: real dlopen/dlerror boundary diagnostics
+#include <openssl/evp.h>  // #371 PHASE B2: sha16 file identity for loadLibrary law
 #include "../api/android_stubs.h"
 #include "../api/http_client.h"  // S100 NET-001 (MG-247/248): real HTTP(S)
 #include "../storage/data_root.h"
@@ -4518,6 +4520,16 @@ void DalvikExecutionEngine::install_content_providers(
                                        DalvikValue::make_string(auth, 1));
                 heap_.set_object_field(pinfo_id, "authorities",
                                        DalvikValue::make_string(auth, 1));
+                // #371: ProviderInfo.grantUriPermissions (AOSP
+                // PackageParser law). androidx FileProvider.attachInfo
+                // throws SecurityException when this is false — the seed
+                // must reflect the REAL manifest value.
+                bool grant_up = false;
+                for (const auto& [gname, gval] : manifest_provider_grants_) {
+                    if (gname == pcls) { grant_up = gval; break; }
+                }
+                heap_.set_object_field(pinfo_id, "grantUriPermissions",
+                                       DalvikValue::make_bool(grant_up));
                 DalvikValue pinfo;
                 pinfo.type = DalvikType::OBJECT_REF;
                 pinfo.object_id = pinfo_id;
@@ -4538,6 +4550,31 @@ void DalvikExecutionEngine::install_content_providers(
                                      "(Landroid/content/Context;"
                                      "Landroid/content/pm/ProviderInfo;)V");
                 provider_context_[pid] = ctx_obj.object_id;
+                // ── #371 PHASE B1: authority→provider dispatch map ──
+                // AOSP law: ContentResolver.acquireProvider resolves a
+                // content URI authority through the PMS provider map that
+                // installContentProviders populates. Authorities are
+                // ';'-joined in ProviderInfo — each spelling maps to the
+                // SAME installed provider instance.
+                for (const auto& [pname, pauth] : manifest_provider_identity_) {
+                    if (pname != pcls) continue;
+                    const std::string& auth_all = pauth;
+                    size_t start = 0;
+                    while (start <= auth_all.size()) {
+                        size_t semi = auth_all.find(';', start);
+                        std::string one = auth_all.substr(
+                            start, semi == std::string::npos
+                                       ? std::string::npos
+                                       : semi - start);
+                        if (!one.empty()) {
+                            provider_by_authority_[one] = pid;
+                            provider_class_by_oid_[pid] = pcls;
+                        }
+                        if (semi == std::string::npos) break;
+                        start = semi + 1;
+                    }
+                    break;
+                }
             }
             // ContentProvider.onCreate() — the init hook (attachInfo is
             // framework-internal in AOSP; onCreate carries the app init).
@@ -4554,6 +4591,100 @@ void DalvikExecutionEngine::install_content_providers(
                       << e.what() << std::endl;
         }
     }
+}
+
+// ────────────────────────────────────────────────────────────────────────
+// #371 PHASE B1/B5 helpers: content-URI parsing, provider resolution,
+// provider/lifecycle invocation, Uri object construction.
+// ────────────────────────────────────────────────────────────────────────
+bool DalvikExecutionEngine::parse_content_uri(const std::string& raw,
+                                              std::string& scheme,
+                                              std::string& authority,
+                                              std::string& path,
+                                              std::string& query) {
+    // AOSP Uri law: "content://authority/path?query" — hierarchical form;
+    // fragment splits first, then scheme, then authority up to '/' or '?'.
+    std::string body = raw;
+    auto hash = body.find('#');
+    if (hash != std::string::npos) body = body.substr(0, hash);
+    size_t colon = body.find(':');
+    if (colon == std::string::npos) return false;
+    scheme = body.substr(0, colon);
+    if (scheme != "content") return false;
+    body = body.substr(colon + 1);
+    // "//authority..." — authority ends at '/', '?' or end.
+    if (body.size() >= 2 && body[0] == '/' && body[1] == '/')
+        body = body.substr(2);
+    else
+        return false;  // AOSP: hierarchical URIs need "//<authority>"
+    auto slash = body.find('/');
+    auto qm = body.find('?');
+    size_t auth_end = std::min(slash, qm);
+    authority = body.substr(0, auth_end == std::string::npos ? body.size()
+                                                             : auth_end);
+    if (authority.empty()) return false;
+    if (slash != std::string::npos && (qm == std::string::npos || slash < qm)) {
+        size_t path_end = (qm == std::string::npos) ? body.size() : qm;
+        path = body.substr(slash, path_end - slash);
+    }
+    if (qm != std::string::npos) query = body.substr(qm + 1);
+    return true;
+}
+
+uint32_t DalvikExecutionEngine::resolve_provider_for_authority(
+    const std::string& authority, std::string& provider_cls) {
+    auto it = provider_by_authority_.find(authority);
+    if (it == provider_by_authority_.end()) return 0;
+    provider_cls.clear();
+    auto cls_it = provider_class_by_oid_.find(it->second);
+    if (cls_it != provider_class_by_oid_.end()) provider_cls = cls_it->second;
+    return it->second;
+}
+
+bool DalvikExecutionEngine::invoke_provider_method(
+    uint32_t provider_oid, const std::string& provider_cls,
+    const std::string& method, std::vector<DalvikValue> args, DalvikValue& ret,
+    std::string& err) {
+    DalvikExecutionResult tmp;
+    std::vector<DalvikValue> full;
+    DalvikValue recv = DalvikValue::make_object(provider_oid, provider_cls);
+    full.push_back(recv);
+    for (auto& a : args) full.push_back(a);
+    bool ok = try_recursive_invoke(provider_cls, method, full, ret, tmp, "");
+    if (!ok) err = "provider method not found: " + provider_cls + "." + method;
+    return ok;
+}
+
+uint32_t DalvikExecutionEngine::make_uri_object(const std::string& raw) {
+    // The Uri.parse law path (bridge handler above) is the canonical
+    // constructor of Uri heap objects; reuse its field layout here.
+    uint32_t uri_id = heap_.allocate("Landroid/net/Uri;", pc_, 0);
+    auto put = [&](const char* k, const std::string& v) {
+        heap_.set_object_field(uri_id, k, DalvikValue::make_string(v, 0));
+    };
+    put("uri_raw", raw);
+    std::string scheme, authority, path, query;
+    if (parse_content_uri(raw, scheme, authority, path, query)) {
+        put("scheme", scheme);
+        put("path", path);
+        if (!query.empty()) put("query", query);
+    } else {
+        // Non-content form: keep the raw string reachable (longest-string
+        // field law serves getPath/getLastPathSegment honestly).
+        put("path", raw);
+    }
+    put("ssp", raw);
+    return uri_id;
+}
+
+bool DalvikExecutionEngine::invoke_lifecycle_method(
+    uint32_t oid, const std::string& cls, const std::string& method,
+    std::vector<DalvikValue> args, DalvikValue& ret) {
+    DalvikExecutionResult tmp;
+    std::vector<DalvikValue> full;
+    full.push_back(DalvikValue::make_object(oid, cls));
+    for (auto& a : args) full.push_back(a);
+    return try_recursive_invoke(cls, method, full, ret, tmp, "");
 }
 
 //     Lxb0;.d() unwrap → Dagger component — dooz23 Lk2;.b evidence).
@@ -23939,8 +24070,31 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             fpath = args[1].string_val;
         } else if (args[1].type == DalvikType::OBJECT_REF &&
                    args[1].object_id != 0 && heap_.has_object(args[1].object_id)) {
-            // R-NEW-346: the File object's longest string field is the path.
             const auto* fobj = heap_.get(args[1].object_id);
+            // #371 B1 (probe PROV-06): FileInputStream(FileDescriptor) over a
+            // ParcelFileDescriptor-backed FD — the FD object carries the
+            // host_path of the file the PFD opened; the stream must read
+            // THAT file's bytes (AOSP: same open file description).
+            if (fobj && fobj->class_descriptor == "Ljava/io/FileDescriptor;") {
+                auto hp = heap_.get_object_field(args[1].object_id, "host_path");
+                if (hp.has_value() && hp->type == DalvikType::STRING_REF) {
+                    fpath = hp->string_val;
+                    std::error_code fdesc_ec;
+                    if (!fpath.empty() &&
+                        std::filesystem::exists(fpath, fdesc_ec) && !fdesc_ec) {
+                        open_assets_[args[0].object_id] =
+                            {std::string("file:") + fpath, 0};
+                        miniandroid::diagnostics::FileIoTrace::instance().record(
+                            "OPEN", fpath, true,
+                            "FileInputStream over FileDescriptor (PFD backing)",
+                            current_class_ + "." + current_method_);
+                        result = DalvikValue::make_void();
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                        return true;
+                    }
+                }
+            }
+            // R-NEW-346: the File object's longest string field is the path.
             if (fobj) {
                 for (const auto& [fname, fval] : fobj->fields)
                     if (fval.type == DalvikType::STRING_REF &&
@@ -24616,6 +24770,1350 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
+    }
+    // ────────────────────────────────────────────────────────────────────
+    // #371 PHASE B1 (issue #371 — G-1/G-3 closure): ContentResolver client
+    // dispatch over the installed provider map. AOSP laws:
+    //   ContentResolver.acquireProvider resolves the URI authority through
+    //   the PMS provider map; query() returns null when no provider exists
+    //   for the authority (documented contract), insert/update/delete throw
+    //   IllegalArgumentException("Unknown URI ..."), openFileDescriptor
+    //   throws FileNotFoundException. A known authority dispatches to the
+    //   provider's query/insert/update/delete/openFile override with the
+    //   provider instance bound at attachInfo (R-NEW-460 law).
+    //   Every dispatch records a PROVIDER-* FileIoTrace row — a null/empty
+    //   result is never silent (the #370 no-silent-null law).
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/content/ContentResolver;" &&
+        (method == "query" || method == "insert" || method == "update" ||
+         method == "delete" || method == "getType" || method == "call" ||
+         method == "openFileDescriptor" ||
+         method == "openAssetFileDescriptor" ||
+         method == "openOutputStream" || method == "openInputStream" ||
+         method == "acquireContentProviderClient" ||
+         method == "acquireUnstableContentProviderClient")) {
+        // ── shared arg-shape helpers (receiver slot may or may not lead) ──
+        auto uri_raw_of = [&](const DalvikValue& v) -> std::string {
+            if (v.type != DalvikType::OBJECT_REF || v.object_id == 0 ||
+                !heap_.has_object(v.object_id))
+                return std::string();
+            const auto* uobj = heap_.get(v.object_id);
+            std::string raw, longest;
+            if (uobj) {
+                for (const auto& [fname, fval] : uobj->fields) {
+                    if (fval.type != DalvikType::STRING_REF) continue;
+                    if (fname == "uri_raw") raw = fval.string_val;
+                    if (fval.string_val.size() > longest.size())
+                        longest = fval.string_val;
+                }
+            }
+            return raw.empty() ? longest : raw;
+        };
+        auto first_uri_arg = [&]() -> DalvikValue {
+            for (size_t i = 1; i < args.size() && i < 4; ++i) {
+                if (args[i].type == DalvikType::OBJECT_REF &&
+                    args[i].object_id != 0 && heap_.has_object(args[i].object_id)) {
+                    const auto* o = heap_.get(args[i].object_id);
+                    if (o && o->class_descriptor == "Landroid/net/Uri;")
+                        return args[i];
+                }
+            }
+            return DalvikValue::make_null();
+        };
+        auto string_array_of = [&](const DalvikValue& v) -> std::vector<std::string> {
+            std::vector<std::string> out;
+            if (v.type != DalvikType::OBJECT_REF || v.object_id == 0 ||
+                !heap_.has_object(v.object_id))
+                return out;
+            auto lenf = heap_.get_object_field(v.object_id, "__array_length__");
+            int n = lenf.has_value() ? lenf->int_val : 0;
+            for (int i = 0; i < n; ++i) {
+                auto el = heap_.get_object_field(
+                    v.object_id, "array[" + std::to_string(i) + "]");
+                if (el.has_value() && el->type == DalvikType::STRING_REF)
+                    out.push_back(el->string_val);
+                else if (el.has_value() && el->type != DalvikType::OBJECT_REF)
+                    out.push_back(std::to_string(
+                        dalvik_int_value(*el)));
+            }
+            return out;
+        };
+        const DalvikValue uarg = first_uri_arg();
+        const std::string uri_raw = uri_raw_of(uarg);
+        std::string uscheme, uauth, upath, uquery;
+        const bool parsed = parse_content_uri(uri_raw, uscheme, uauth, upath, uquery);
+        auto rec = [&](const std::string& op, bool ok, const std::string& detail) {
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                op, uri_raw.empty() ? "<no-uri>" : uri_raw, ok, detail,
+                current_class_ + "." + current_method_);
+        };
+
+        // Method-not-dispatched pairs: openInputStream/openOutputStream on
+        // file:// fall through to the dedicated handlers below; the
+        // provider-client acquisitions dispatch identically to query.
+        const bool client_call =
+            method == "query" || method == "insert" || method == "update" ||
+            method == "delete" || method == "getType" || method == "call" ||
+            method == "openFileDescriptor" ||
+            method == "openAssetFileDescriptor" ||
+            method == "acquireContentProviderClient" ||
+            method == "acquireUnstableContentProviderClient";
+        if (client_call) {
+            // AOSP failure contracts first — loud, never silent.
+            if (uri_raw.empty()) {
+                throw_deferred("Ljava/lang/IllegalArgumentException;",
+                               "uri null or unresolvable (content dispatch)",
+                               "PROVIDER-DISPATCH");
+                rec("PROVIDER-DISPATCH", false, "null-uri");
+                result = DalvikValue::make_null();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (!parsed) {
+                // AOSP: non-content (e.g. file://) query/insert routes have
+                // no provider — insert/update/delete throw
+                // IllegalArgumentException("Unknown URL ..."); query on a
+                // scheme with no provider answers null (documented).
+                rec("PROVIDER-DISPATCH", false,
+                    "scheme-not-content scheme=" + uscheme);
+                if (method == "query") {
+                    result = DalvikValue::make_null();
+                } else {
+                    throw_deferred("Ljava/lang/IllegalArgumentException;",
+                                   "Unknown URL " + uri_raw, "PROVIDER-DISPATCH");
+                    result = DalvikValue::make_null();
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            std::string prov_cls;
+            uint32_t prov_oid = resolve_provider_for_authority(uauth, prov_cls);
+            if (prov_oid == 0) {
+                rec("PROVIDER-" + method, false, "unknown-authority=" + uauth);
+                if (method == "query" ||
+                    method == "acquireContentProviderClient" ||
+                    method == "acquireUnstableContentProviderClient") {
+                    // Documented null-provider contract — the trace row above
+                    // keeps it observable (no silent null).
+                    result = DalvikValue::make_null();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                if (method == "openFileDescriptor" ||
+                    method == "openAssetFileDescriptor") {
+                    throw_deferred("Ljava/io/FileNotFoundException;",
+                                   "No files supported by the provider at " +
+                                       uri_raw,
+                                   "PROVIDER-DISPATCH");
+                    result = DalvikValue::make_null();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                throw_deferred("Ljava/lang/IllegalArgumentException;",
+                               "Unknown authority: " + uauth,
+                               "PROVIDER-DISPATCH");
+                result = DalvikValue::make_null();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+
+            // ── known authority: dispatch into the provider instance ──
+            DalvikValue uri_arg = uarg;
+            std::vector<DalvikValue> pargs;  // AFTER the receiver slot
+            DalvikValue ret;
+            std::string err;
+            if (method == "query") {
+                // Legacy 5-arg override: (Uri, String[], String, String[],
+                // String). Pass through the caller's slots when present.
+                DalvikValue proj = args.size() > 2 ? args[2] : DalvikValue::make_null();
+                DalvikValue sel  = args.size() > 3 ? args[3] : DalvikValue::make_null();
+                DalvikValue sargs= args.size() > 4 ? args[4] : DalvikValue::make_null();
+                DalvikValue sort = args.size() > 5 ? args[5] : DalvikValue::make_null();
+                // 2-arg overload (Uri, String[]) → selection family null.
+                if (args.size() == 3) { sel = DalvikValue::make_null();
+                    sargs = DalvikValue::make_null();
+                    sort = DalvikValue::make_null(); }
+                pargs = {uri_arg, proj, sel, sargs, sort};
+            } else if (method == "insert") {
+                DalvikValue vals = args.size() > 2 ? args[2]
+                                                   : DalvikValue::make_null();
+                pargs = {uri_arg, vals};
+            } else if (method == "update") {
+                DalvikValue vals = args.size() > 2 ? args[2]
+                                                   : DalvikValue::make_null();
+                DalvikValue sel  = args.size() > 3 ? args[3]
+                                                   : DalvikValue::make_null();
+                DalvikValue sargs= args.size() > 4 ? args[4]
+                                                   : DalvikValue::make_null();
+                pargs = {uri_arg, vals, sel, sargs};
+            } else if (method == "delete") {
+                DalvikValue sel  = args.size() > 2 ? args[2]
+                                                   : DalvikValue::make_null();
+                DalvikValue sargs= args.size() > 3 ? args[3]
+                                                   : DalvikValue::make_null();
+                pargs = {uri_arg, sel, sargs};
+            } else if (method == "getType") {
+                pargs = {uri_arg};
+            } else if (method == "call") {
+                DalvikValue m1 = args.size() > 2 ? args[2]
+                                                 : DalvikValue::make_null();
+                DalvikValue m2 = args.size() > 3 ? args[3]
+                                                 : DalvikValue::make_null();
+                DalvikValue ex = args.size() > 4 ? args[4]
+                                                 : DalvikValue::make_null();
+                pargs = {m1, m2, uri_arg, ex};
+            } else {  // openFileDescriptor / openAssetFileDescriptor / clients
+                DalvikValue mode = DalvikValue::make_string("r", 0);
+                for (size_t i = 2; i < args.size(); ++i)
+                    if (args[i].type == DalvikType::STRING_REF) {
+                        mode = args[i];
+                        break;
+                    }
+                pargs = {uri_arg, mode};
+            }
+            const std::string prov_method =
+                (method == "openFileDescriptor") ? "openFile"
+                : (method == "openAssetFileDescriptor") ? "openFile"
+                : (method == "acquireContentProviderClient" ||
+                   method == "acquireUnstableContentProviderClient")
+                    ? "query" : method;
+            bool invoked = invoke_provider_method(prov_oid, prov_cls,
+                                                  prov_method, pargs, ret, err);
+            if (!invoked) {
+                // AOSP: the framework ContentProvider base answers — openFile
+                // throws FileNotFoundException("No files supported..."),
+                // call() returns null, everything else is app-overridden
+                // (a missing app override means the class never declared it:
+                // loud MissingMethod-style contract, never a fake result).
+                if (prov_method == "openFile") {
+                    throw_deferred("Ljava/io/FileNotFoundException;",
+                                   "No files supported by the provider at " +
+                                       uri_raw,
+                                   "PROVIDER-OPENFILE");
+                    rec("PROVIDER-OPENFILE", false, "no-override");
+                    result = DalvikValue::make_null();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                if (prov_method == "call") {
+                    rec("PROVIDER-CALL", true, "no-override → null (AOSP)");
+                    result = DalvikValue::make_null();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                rec("PROVIDER-" + method, false, err);
+                throw_deferred("Ljava/lang/UnsupportedOperationException;",
+                               err + " (authority " + uauth + ")",
+                               "PROVIDER-DISPATCH");
+                result = DalvikValue::make_null();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            // Provider threw inside its own code — the exception machinery
+            // already unwound; record and answer null (caller-side contract).
+            rec("PROVIDER-" + method, true,
+                "provider=" + prov_cls + " dispatched");
+            if (method == "openFileDescriptor" ||
+                method == "openAssetFileDescriptor") {
+                // The provider returned a ParcelFileDescriptor — hand it to
+                // the caller (real descriptor bytes flow through the PFD law
+                // implemented in the GATE A wave).
+                result = ret;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            result = ret;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    // ── #371 PHASE B1: MatrixCursor — the Cursor implementation real
+    // providers answer with. AOSP MatrixCursor: values live in an
+    // Object[] per row; AbstractCursor holds the position (before-first
+    // = -1) and the row-pool accessors read row[col] with type coercion.
+    if (class_name == "Landroid/database/MatrixCursor;") {
+        auto ensure_state = [&](uint32_t oid) -> MatrixCursorState& {
+            return matrix_cursors_[oid];
+        };
+        auto col_to_str = [](const DalvikValue& v) -> std::string {
+            switch (v.type) {
+                case DalvikType::STRING_REF: return v.string_val;
+                case DalvikType::INT32: return std::to_string(v.int_val);
+                case DalvikType::INT64: return std::to_string(v.long_val);
+                case DalvikType::BOOLEAN: return v.bool_val ? "true" : "false";
+                case DalvikType::FLOAT32: return std::to_string(v.float_val);
+                case DalvikType::FLOAT64: return std::to_string(v.double_val);
+                default: return std::string();
+            }
+        };
+        auto row_value = [&](MatrixCursorState& st, int col) -> DalvikValue {
+            if (st.pos < 0 || st.pos >= (int)st.rows.size()) return DalvikValue::make_null();
+            if (col < 0 || col >= (int)st.rows[st.pos].size()) return DalvikValue::make_null();
+            DalvikValue v = st.rows[st.pos][col];
+            if (v.type == DalvikType::OBJECT_REF && v.object_id != 0 &&
+                heap_.has_object(v.object_id)) {
+                // Boxed Integer/Long/Boolean law: the value lives in the
+                // "value" field when the heap object carries one.
+                auto boxed = heap_.get_object_field(v.object_id, "value");
+                if (boxed.has_value()) return *boxed;
+            }
+            return v;
+        };
+        if (method == "<init>") {
+            // MatrixCursor(String[]) / (String[], int) / (String...)
+            for (const auto& a : args) {
+                if (a.type == DalvikType::OBJECT_REF && a.object_id != 0 &&
+                    heap_.has_object(a.object_id)) {
+                    auto lenf = heap_.get_object_field(a.object_id,
+                                                       "__array_length__");
+                    if (!lenf.has_value()) continue;
+                    MatrixCursorState& st = ensure_state(args[0].object_id);
+                    st = MatrixCursorState{};
+                    int n = lenf->int_val;
+                    for (int i = 0; i < n; ++i) {
+                        auto el = heap_.get_object_field(
+                            a.object_id, "array[" + std::to_string(i) + "]");
+                        st.columns.push_back(
+                            el.has_value() ? el->string_val : std::string());
+                    }
+                    break;
+                }
+            }
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "addRow" || method == "newRow" || method == "add") {
+            if (args.empty() || args[0].object_id == 0) return false;
+            MatrixCursorState& st = ensure_state(args[0].object_id);
+            std::vector<DalvikValue> row;
+            if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF &&
+                args[1].object_id != 0 && heap_.has_object(args[1].object_id)) {
+                auto lenf = heap_.get_object_field(args[1].object_id,
+                                                   "__array_length__");
+                int n = lenf.has_value() ? lenf->int_val : 0;
+                for (int i = 0; i < n; ++i) {
+                    auto el = heap_.get_object_field(
+                        args[1].object_id, "array[" + std::to_string(i) + "]");
+                    row.push_back(el.has_value() ? *el
+                                                 : DalvikValue::make_null());
+                }
+            }
+            st.rows.push_back(row);
+            if (method == "newRow") {
+                // AOSP RowBuilder.add(...) → cursor-bound; return the builder
+                // (the receiver) per AOSP MatrixCursor.newRow().
+                result = DalvikValue::make_object(args[0].object_id,
+                                                  class_name);
+            } else {
+                result = DalvikValue::make_void();
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // Position/cursor interface laws (AOSP AbstractCursor + MatrixCursor).
+        if (method == "getCount") {
+            result = DalvikValue::make_int(
+                (int)ensure_state(args[0].object_id).rows.size());
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getColumnNames") {
+            MatrixCursorState& st = ensure_state(args[0].object_id);
+            uint32_t arr = heap_.allocate("[Ljava/lang/String;", pc_, 0);
+            heap_.set_object_field(
+                arr, "__array_length__", DalvikValue::make_int((int)st.columns.size()));
+            for (size_t i = 0; i < st.columns.size(); ++i)
+                heap_.set_object_field(
+                    arr, "array[" + std::to_string(i) + "]",
+                    DalvikValue::make_string(st.columns[i], 0));
+            result = DalvikValue::make_object(arr, "[Ljava/lang/String;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getColumnName") {
+            MatrixCursorState& st = ensure_state(args[0].object_id);
+            int col = args.size() > 1 ? dalvik_int_value(args[1]) : 0;
+            result = (col >= 0 && col < (int)st.columns.size())
+                         ? DalvikValue::make_string(st.columns[col], 0)
+                         : DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getColumnIndex") {
+            MatrixCursorState& st = ensure_state(args[0].object_id);
+            std::string want = args.size() > 1 ? args[1].string_val : std::string();
+            for (size_t i = 0; i < st.columns.size(); ++i)
+                if (st.columns[i] == want) {
+                    result = DalvikValue::make_int((int)i);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+            result = DalvikValue::make_int(-1);  // AOSP: -1 when absent
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getColumnIndexOrThrow") {
+            MatrixCursorState& st = ensure_state(args[0].object_id);
+            std::string want = args.size() > 1 ? args[1].string_val : std::string();
+            for (size_t i = 0; i < st.columns.size(); ++i)
+                if (st.columns[i] == want) {
+                    result = DalvikValue::make_int((int)i);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+            throw_deferred("Ljava/lang/IllegalArgumentException;",
+                           "column '" + want + "' does not exist",
+                           "CURSOR-ACCESS");
+            result = DalvikValue::make_int(-1);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "moveToPosition") {
+            MatrixCursorState& st = ensure_state(args[0].object_id);
+            int want = args.size() > 1 ? dalvik_int_value(args[1]) : 0;
+            int count = (int)st.rows.size();
+            if (want >= count) { st.pos = count; result = DalvikValue::make_bool(false); }
+            else { st.pos = want; result = DalvikValue::make_bool(count > 0); }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "moveToFirst" || method == "moveToNext" ||
+            method == "moveToPrevious" || method == "moveToLast") {
+            MatrixCursorState& st = ensure_state(args[0].object_id);
+            int count = (int)st.rows.size();
+            bool moved = false;
+            if (method == "moveToFirst") {
+                if (count > 0) { st.pos = 0; moved = true; }
+                else st.pos = 0;
+            } else if (method == "moveToLast") {
+                if (count > 0) { st.pos = count - 1; moved = true; }
+                else st.pos = 0;
+            } else if (method == "moveToNext") {
+                if (st.pos < count - 1) { st.pos++; moved = true; }
+                else { st.pos = count; moved = false; }
+            } else {  // moveToPrevious
+                if (st.pos > 0) { st.pos--; moved = st.pos >= 0; }
+                else { st.pos = -1; moved = false; }
+            }
+            result = DalvikValue::make_bool(moved);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "isAfterLast") {
+            MatrixCursorState& st = ensure_state(args[0].object_id);
+            int count = (int)st.rows.size();
+            result = DalvikValue::make_bool(count == 0 || st.pos >= count);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "isBeforeFirst") {
+            MatrixCursorState& st = ensure_state(args[0].object_id);
+            result = DalvikValue::make_bool(
+                st.rows.empty() || st.pos < 0);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "isFirst" || method == "isLast") {
+            MatrixCursorState& st = ensure_state(args[0].object_id);
+            int count = (int)st.rows.size();
+            bool v = method == "isFirst"
+                         ? (st.pos == 0 && count > 0)
+                         : (count > 0 && st.pos == count - 1);
+            result = DalvikValue::make_bool(v);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getPosition") {
+            result = DalvikValue::make_int(ensure_state(args[0].object_id).pos);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getString" || method == "getInt" || method == "getLong" ||
+            method == "getShort" || method == "getFloat" || method == "getDouble" ||
+            method == "getBlob" || method == "isNull" || method == "getType") {
+            MatrixCursorState& st = ensure_state(args[0].object_id);
+            int col = args.size() > 1 ? dalvik_int_value(args[1]) : 0;
+            DalvikValue v = row_value(st, col);
+            if (method == "getString") {
+                result = DalvikValue::make_string(col_to_str(v), 0);
+            } else if (method == "getInt") {
+                result = DalvikValue::make_int(dalvik_int_value(v));
+            } else if (method == "getShort") {
+                result = DalvikValue::make_int((int16_t)dalvik_int_value(v));
+            } else if (method == "getLong") {
+                int64_t lv = (v.type == DalvikType::INT64)
+                                 ? v.long_val
+                                 : (int64_t)dalvik_int_value(v);
+                result = DalvikValue::make_long(lv);
+            } else if (method == "getFloat") {
+                result = DalvikValue::make_float(
+                    v.type == DalvikType::FLOAT32
+                        ? v.float_val
+                        : (v.type == DalvikType::FLOAT64
+                               ? (float)v.double_val
+                               : (float)dalvik_int_value(v)));
+            } else if (method == "getDouble") {
+                result = DalvikValue::make_double(
+                    v.type == DalvikType::FLOAT64
+                        ? v.double_val
+                        : (v.type == DalvikType::FLOAT32
+                               ? (double)v.float_val
+                               : (double)dalvik_int_value(v)));
+            } else if (method == "getBlob") {
+                uint32_t arr = heap_.allocate("[B", pc_, 0);
+                heap_.set_object_field(arr, "__array_length__",
+                                       DalvikValue::make_int(0));
+                result = DalvikValue::make_object(arr, "[B");
+            } else if (method == "isNull") {
+                result = DalvikValue::make_bool(
+                    v.type == DalvikType::OBJECT_REF && v.object_id == 0);
+            } else {  // getType (FIELD_TYPE_STRING law)
+                int ft = 3;  // FIELD_TYPE_NULL = 0
+                switch (v.type) {
+                    case DalvikType::STRING_REF: ft = 3; break;   // STRING
+                    case DalvikType::INT32: case DalvikType::INT64:
+                    case DalvikType::BOOLEAN: case DalvikType::BYTE:
+                    case DalvikType::SHORT: ft = 1; break;        // INTEGER
+                    case DalvikType::FLOAT32: case DalvikType::FLOAT64:
+                        ft = 2; break;                            // FLOAT
+                    case DalvikType::OBJECT_REF: ft = 4; break;   // BLOB
+                    default: ft = 0; break;
+                }
+                result = DalvikValue::make_int(ft);
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "close") {
+            ensure_state(args[0].object_id).closed = true;
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "isClosed") {
+            result = DalvikValue::make_bool(ensure_state(args[0].object_id).closed);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "registerContentObserver" ||
+            method == "unregisterContentObserver" ||
+            method == "setNotificationUri" || method == "respond") {
+            result = (method == "respond") ? DalvikValue::make_null()
+                                           : DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    // ── #371 PHASE B1: ContentValues — the Parcelable key/value carrier
+    // providers receive on insert/update. AOSP: put stores, get retrieves.
+    if (class_name == "Landroid/content/ContentValues;") {
+        auto ensure_cv = [&](uint32_t oid)
+            -> std::vector<std::pair<std::string, DalvikValue>>& {
+            return content_values_[oid];
+        };
+        auto find_key = [&](uint32_t oid,
+                            const std::string& k) -> DalvikValue {
+            for (auto& [ck, cv] : content_values_[oid])
+                if (ck == k) return cv;
+            return DalvikValue::make_null();
+        };
+        if (method == "<init>") {
+            if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF &&
+                args[1].object_id != 0 && args[1].object_id != args[0].object_id) {
+                content_values_[args[0].object_id] = content_values_[args[1].object_id];
+            }
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "put" && args.size() >= 3) {
+            std::string k = args[1].type == DalvikType::STRING_REF
+                                ? args[1].string_val
+                                : std::string();
+            ensure_cv(args[0].object_id).emplace_back(k, args[2]);
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "get" || method == "getAsString" || method == "getAsInteger" ||
+            method == "getAsLong" || method == "getAsBoolean" ||
+            method == "getAsDouble" || method == "getAsFloat" ||
+            method == "getAsByte" || method == "getAsShort") {
+            std::string k = args.size() > 1 && args[1].type == DalvikType::STRING_REF
+                                ? args[1].string_val
+                                : std::string();
+            DalvikValue v = find_key(args[0].object_id, k);
+            // Unwrap a BOXED value first (AOSP: put(String, Integer) stores
+            // the box; getAsInteger returns THAT box — dalvik_int_value of an
+            // OBJECT_REF is 0, so the box must be opened through its "value"
+            // field before any numeric conversion).
+            if (v.type == DalvikType::OBJECT_REF && v.object_id != 0 &&
+                heap_.has_object(v.object_id)) {
+                auto boxed = heap_.get_object_field(v.object_id, "value");
+                if (boxed.has_value() && boxed->type != DalvikType::OBJECT_REF)
+                    v = *boxed;
+            }
+            if (method == "get") {
+                result = v.type == DalvikType::OBJECT_REF && v.object_id == 0
+                             ? DalvikValue::make_null() : v;
+            } else if (method == "getAsString") {
+                if (v.type == DalvikType::STRING_REF)
+                    result = DalvikValue::make_string(v.string_val, 0);
+                else if (v.type == DalvikType::OBJECT_REF && v.object_id == 0)
+                    result = DalvikValue::make_null();
+                else
+                    result = DalvikValue::make_string(
+                        std::to_string(dalvik_int_value(v)), 0);
+            } else {
+                // Boxed numeric laws: allocate the boxed object with the
+                // canonical "value" field (heap boxed-value convention).
+                const char* cls =
+                    method == "getAsInteger" ? "Ljava/lang/Integer;"
+                    : method == "getAsLong" ? "Ljava/lang/Long;"
+                    : method == "getAsBoolean" ? "Ljava/lang/Boolean;"
+                    : method == "getAsDouble" ? "Ljava/lang/Double;"
+                    : method == "getAsFloat" ? "Ljava/lang/Float;"
+                    : "Ljava/lang/Number;";
+                if (v.type == DalvikType::OBJECT_REF && v.object_id == 0) {
+                    result = DalvikValue::make_null();
+                } else {
+                    uint32_t bid = heap_.allocate(cls, pc_, 0);
+                    if (method == "getAsBoolean")
+                        heap_.set_object_field(
+                            bid, "value",
+                            DalvikValue::make_bool(dalvik_int_value(v) != 0));
+                    else if (method == "getAsDouble")
+                        heap_.set_object_field(
+                            bid, "value",
+                            DalvikValue::make_double((double)dalvik_int_value(v)));
+                    else if (method == "getAsFloat")
+                        heap_.set_object_field(
+                            bid, "value",
+                            DalvikValue::make_float((float)dalvik_int_value(v)));
+                    else if (method == "getAsLong")
+                        heap_.set_object_field(
+                            bid, "value",
+                            DalvikValue::make_long((int64_t)dalvik_int_value(v)));
+                    else
+                        heap_.set_object_field(
+                            bid, "value",
+                            DalvikValue::make_int(dalvik_int_value(v)));
+                    result = DalvikValue::make_object(bid, cls);
+                }
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "containsKey") {
+            std::string k = args.size() > 1 ? args[1].string_val : std::string();
+            bool found = false;
+            for (auto& [ck, cv] : content_values_[args[0].object_id])
+                if (ck == k) { found = true; break; }
+            result = DalvikValue::make_bool(found);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "size") {
+            result = DalvikValue::make_int(
+                (int)content_values_[args[0].object_id].size());
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "clear" || method == "remove") {
+            if (method == "clear") {
+                content_values_[args[0].object_id].clear();
+            } else {
+                std::string k = args.size() > 1 ? args[1].string_val : std::string();
+                auto& v = content_values_[args[0].object_id];
+                for (auto it = v.begin(); it != v.end(); ++it)
+                    if (it->first == k) { v.erase(it); break; }
+            }
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "keySet" || method == "valueSet") {
+            // Return an ArrayList-backed Set/Collection of keys.
+            auto& pairs = content_values_[args[0].object_id];
+            uint32_t arr = heap_.allocate("[Ljava/lang/Object;", pc_, 0);
+            heap_.set_object_field(
+                arr, "__array_length__",
+                DalvikValue::make_int((int)pairs.size()));
+            for (size_t i = 0; i < pairs.size(); ++i)
+                heap_.set_object_field(
+                    arr, "array[" + std::to_string(i) + "]",
+                    method == "keySet"
+                        ? DalvikValue::make_string(pairs[i].first, 0)
+                        : pairs[i].second);
+            uint32_t set = heap_.allocate("Ljava/util/ArrayList;", pc_, 0);
+            heap_.set_object_field(set, "array", DalvikValue::make_object(arr, "[Ljava/lang/Object;"));
+            result = DalvikValue::make_object(set, "Ljava/util/ArrayList;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    // ── #371 PHASE B1: UriMatcher — provider URI routing law.
+    // AOSP UriMatcher: addURI(authority, path, code); match(Uri) → code,
+    // or the ctor's no-match code (-1 default). Path wildcards: '#'
+    // matches exactly one numeric segment, '*' matches one segment.
+    if (class_name == "Landroid/content/UriMatcher;") {
+        if (method == "<init>") {
+            UriMatcherState st;
+            if (args.size() >= 2) st.no_match_code = dalvik_int_value(args[1]);
+            uri_matchers_[args[0].object_id] = st;
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "addURI" && args.size() >= 4) {
+            uri_matchers_[args[0].object_id].rules.emplace_back(
+                args[1].string_val, args[2].string_val,
+                dalvik_int_value(args[3]));
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "match" && args.size() >= 2) {
+            std::string raw;
+            if (args[1].type == DalvikType::OBJECT_REF &&
+                args[1].object_id != 0 && heap_.has_object(args[1].object_id)) {
+                for (const auto& [fname, fval] :
+                     heap_.get(args[1].object_id)->fields)
+                    if (fval.type == DalvikType::STRING_REF &&
+                        fval.string_val.size() > raw.size())
+                        raw = fval.string_val;
+            }
+            std::string scheme, auth, path, q;
+            UriMatcherState& st = uri_matchers_[args[0].object_id];
+            int matched = st.no_match_code;
+            if (parse_content_uri(raw, scheme, auth, path, q)) {
+                std::string pseg = path.empty() ? std::string() : path.substr(1);
+                std::vector<std::string> segs;
+                size_t s0 = 0;
+                while (s0 <= pseg.size()) {
+                    size_t sl = pseg.find('/', s0);
+                    segs.push_back(pseg.substr(
+                        s0, sl == std::string::npos ? std::string::npos
+                                                    : sl - s0));
+                    if (sl == std::string::npos) break;
+                    s0 = sl + 1;
+                }
+                for (auto& [rauth, rpath, rcode] : st.rules) {
+                    if (rauth != auth && rauth != "*") continue;
+                    std::vector<std::string> rsegs;
+                    size_t t0 = 0;
+                    while (t0 <= rpath.size()) {
+                        size_t sl = rpath.find('/', t0);
+                        rsegs.push_back(rpath.substr(
+                            t0, sl == std::string::npos ? std::string::npos
+                                                        : sl - t0));
+                        if (sl == std::string::npos) break;
+                        t0 = sl + 1;
+                    }
+                    bool eq = rpath == pseg;
+                    if (!eq && rpath.find('*') != std::string::npos &&
+                        rsegs.size() == segs.size()) {
+                        eq = true;
+                        for (size_t i = 0; i < rsegs.size() && eq; ++i) {
+                            const std::string& rp = rsegs[i];
+                            const std::string& sp = segs[i];
+                            if (rp == "*") continue;
+                            if (rp == "#") {
+                                if (sp.empty()) { eq = false; break; }
+                                for (char c : sp)
+                                    if (!isdigit((unsigned char)c)) { eq = false; break; }
+                                continue;
+                            }
+                            if (rp != sp) eq = false;
+                        }
+                    }
+                    if (eq) { matched = rcode; break; }
+                }
+            }
+            result = DalvikValue::make_int(matched);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    // ── #371 PHASE B1: ContentUris — the id-appending laws real provider
+    // callers use (withAppendedId / parseId / getSegmentOrder family).
+    if (class_name == "Landroid/content/ContentUris;") {
+        if (method == "withAppendedId" && args.size() >= 2) {
+            std::string raw;
+            if (args[0].type == DalvikType::OBJECT_REF &&
+                args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+                for (const auto& [fname, fval] :
+                     heap_.get(args[0].object_id)->fields)
+                    if (fval.type == DalvikType::STRING_REF &&
+                        fval.string_val.size() > raw.size())
+                        raw = fval.string_val;
+            }
+            int64_t idv = args[1].type == DalvikType::INT64
+                              ? args[1].long_val
+                              : dalvik_int_value(args[1]);
+            std::string built = raw + "/" + std::to_string(idv);
+            result = DalvikValue::make_object(make_uri_object(built),
+                                              "Landroid/net/Uri;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if ((method == "parseId" || method == "getSegmentOrder") &&
+            args.size() >= 1) {
+            std::string raw;
+            if (args[0].type == DalvikType::OBJECT_REF &&
+                args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+                for (const auto& [fname, fval] :
+                     heap_.get(args[0].object_id)->fields)
+                    if (fval.type == DalvikType::STRING_REF &&
+                        fval.string_val.size() > raw.size())
+                        raw = fval.string_val;
+            }
+            auto slash = raw.rfind('/');
+            std::string last = slash == std::string::npos
+                                   ? raw
+                                   : raw.substr(slash + 1);
+            result = DalvikValue::make_long(
+                std::atoll(last.c_str()));
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    // ── #371 PHASE B1: Uri.getAuthority/getQueryParameter — the routing
+    // accessors provider code uses beside the existing getPath/getScheme
+    // laws (Uri heap objects carry the parsed fields).
+    if (class_name == "Landroid/net/Uri;" &&
+        (method == "getAuthority" || method == "getQueryParameter" ||
+         method == "getHost" || method == "isHierarchical" ||
+         method == "isAbsolute" || method == "toString")) {
+        if (args.empty() || args[0].object_id == 0 ||
+            !heap_.has_object(args[0].object_id))
+            return false;
+        std::string raw, scheme, auth, path, query;
+        for (const auto& [fname, fval] : heap_.get(args[0].object_id)->fields)
+            if (fval.type == DalvikType::STRING_REF &&
+                fval.string_val.size() > raw.size())
+                raw = fval.string_val;
+        bool okp = parse_content_uri(raw, scheme, auth, path, query);
+        if (method == "toString") {
+            // AOSP Uri.toString returns the original string form.
+            result = raw.empty() ? DalvikValue::make_null()
+                                 : DalvikValue::make_string(raw, 0);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "isHierarchical") {
+            result = DalvikValue::make_bool(true);
+        } else if (method == "isAbsolute") {
+            result = DalvikValue::make_bool(!scheme.empty());
+        } else if (method == "getQueryParameter") {
+            std::string key = args.size() > 1 ? args[1].string_val : std::string();
+            std::string out;
+            if (!query.empty()) {
+                size_t s0 = 0;
+                while (s0 <= query.size()) {
+                    size_t amp = query.find('&', s0);
+                    std::string pair = query.substr(
+                        s0, amp == std::string::npos ? std::string::npos
+                                                     : amp - s0);
+                    auto eq = pair.find('=');
+                    if (eq != std::string::npos && pair.substr(0, eq) == key)
+                        out = pair.substr(eq + 1);
+                    if (!out.empty() || amp == std::string::npos) break;
+                    s0 = amp + 1;
+                }
+            }
+            result = out.empty() ? DalvikValue::make_null()
+                                 : DalvikValue::make_string(out, 0);
+        } else {
+            // getAuthority / getHost — same law (single-authority form).
+            result = okp && !auth.empty()
+                         ? DalvikValue::make_string(auth, 0)
+                         : DalvikValue::make_null();
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────
+    // #371 PHASE B5 (issue #371 — UPP-006 probe-justified legs):
+    // IntentFilter action registry (engine-side state for the broadcast
+    // dispatch law) — AOSP IntentFilter: ctor captures action strings,
+    // addAction appends.
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/content/IntentFilter;" &&
+        (method == "<init>" || method == "addAction" ||
+         method == "countActions" || method == "getAction")) {
+        if (method == "<init>") {
+            std::vector<std::string> actions;
+            for (size_t i = 1; i < args.size(); ++i) {
+                if (args[i].type == DalvikType::STRING_REF) {
+                    actions.push_back(args[i].string_val);
+                } else if (args[i].type == DalvikType::OBJECT_REF &&
+                           args[i].object_id != 0 &&
+                           heap_.has_object(args[i].object_id)) {
+                    // Varargs String[] expansion (IntentFilter(String...)
+                    // compiles to (String, String[])).
+                    auto lenf = heap_.get_object_field(args[i].object_id,
+                                                       "__array_length__");
+                    int n = lenf.has_value() ? lenf->int_val : 0;
+                    for (int k = 0; k < n; ++k) {
+                        auto el = heap_.get_object_field(
+                            args[i].object_id,
+                            "array[" + std::to_string(k) + "]");
+                        if (el.has_value() &&
+                            el->type == DalvikType::STRING_REF)
+                            actions.push_back(el->string_val);
+                    }
+                }
+            }
+            intent_filters_[args[0].object_id] = actions;
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "addAction") {
+            if (args.size() >= 2 && args[1].type == DalvikType::STRING_REF)
+                intent_filters_[args[0].object_id].push_back(args[1].string_val);
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "countActions") {
+            result = DalvikValue::make_int(
+                (int)intent_filters_[args[0].object_id].size());
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getAction") {
+            auto& acts = intent_filters_[args[0].object_id];
+            int idx = args.size() > 1 ? dalvik_int_value(args[1]) : 0;
+            result = (idx >= 0 && idx < (int)acts.size())
+                         ? DalvikValue::make_string(acts[idx], 0)
+                         : DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    // ────────────────────────────────────────────────────────────────────
+    // #371 PHASE B5 (issue #371 — UPP-006): Services + Broadcasts.
+    // AOSP ActiveServices law: startService instantiates the manifest
+    // service class, runs onCreate then onStartCommand(intent, flags,
+    // startId); a second start on a LIVE service delivers ONLY
+    // onStartCommand; stopService/stopSelf run onDestroy. Broadcast law:
+    // sendBroadcast(Intent) delivers onReceive(context, intent) to every
+    // receiver whose registered action matches — dynamic registerReceiver
+    // registrations AND manifest <receiver> intent-filters — with the app
+    // context bound per the provider-context precedent (R-NEW-460).
+    // Every dispatch records SVC-*/BCAST-* FileIoTrace rows (loud, never
+    // silent; justified by the gate-a probe which ships a real service +
+    // receiver — the corpus census shows no earlier measured demand).
+    // ────────────────────────────────────────────────────────────────────
+    if ((method == "startService" || method == "startForegroundService" ||
+         method == "stopService" || method == "bindService" ||
+         method == "unbindService") &&
+        (class_name.find("Context") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos ||
+         class_name.find("Application") != std::string::npos ||
+         class_name.find("Service") != std::string::npos)) {
+        // Resolve the target service class from the Intent arg: the
+        // IntentShadow records component_class at ctor/setClass time.
+        std::string target_cls;   // dotted or descriptor form
+        bool have_target = false;
+        for (size_t i = 1; i < args.size(); ++i) {
+            if (args[i].type == DalvikType::OBJECT_REF &&
+                args[i].object_id != 0 && heap_.has_object(args[i].object_id)) {
+                const auto* io = heap_.get(args[i].object_id);
+                if (io && io->class_descriptor == "Landroid/content/Intent;") {
+                    if (shadow_registry_ != nullptr) {
+                        auto* ish =
+                            shadow_registry_->find_as<framework::IntentShadow>();
+                        if (ish) {
+                            auto pi = ish->get_or_create_intent(args[i].object_id);
+                            if (pi && !pi->component_class.empty()) {
+                                target_cls = pi->component_class;
+                                have_target = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        // Normalize dotted → descriptor (the manifest transfer stored dotted
+        // full names; DEX class lookups take descriptors).
+        auto to_descriptor = [](const std::string& c) -> std::string {
+            if (c.empty()) return c;
+            if (c[0] == 'L') {
+                std::string d = c;
+                if (d.back() != ';') d += ';';
+                return d;
+            }
+            std::string d = c;
+            std::replace(d.begin(), d.end(), '.', '/');
+            return "L" + d + ";";
+        };
+        std::string target_desc = to_descriptor(target_cls);
+        // Manifest service classes for this package (dotted names).
+        std::string manifest_match;
+        for (auto& [svc_name, acts] : manifest_service_classes_) {
+            if (target_cls == svc_name ||
+                target_desc == to_descriptor(svc_name)) {
+                manifest_match = svc_name;
+                break;
+            }
+        }
+        bool class_in_dex = !target_desc.empty() &&
+            dex_report_ != nullptr &&
+            class_to_superclass_.find(target_desc) != class_to_superclass_.end();
+        if (method == "stopService") {
+            if (have_target && live_services_.count(manifest_match.empty()
+                                                        ? target_desc
+                                                        : manifest_match)) {
+                auto& svc = live_services_[manifest_match.empty()
+                                               ? target_desc
+                                               : manifest_match];
+                if (svc.created && !svc.destroyed) {
+                    DalvikValue ignore;
+                    invoke_lifecycle_method(svc.oid, svc.cls, "onDestroy", {},
+                                            ignore);
+                    svc.destroyed = true;
+                    svc.started = false;
+                    svc.bindings = 0;
+                    miniandroid::diagnostics::FileIoTrace::instance().record(
+                        "SVC-STOP", svc.cls, true, "onDestroy delivered",
+                        current_class_ + "." + current_method_);
+                    result = DalvikValue::make_bool(true);
+                } else {
+                    result = DalvikValue::make_bool(false);
+                }
+            } else {
+                miniandroid::diagnostics::FileIoTrace::instance().record(
+                    "SVC-STOP", target_cls, false,
+                    "service not running (AOSP: stopService answers false)",
+                    current_class_ + "." + current_method_);
+                result = DalvikValue::make_bool(false);
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "unbindService") {
+            // AOSP ActiveServices law: unbindService removes ONE binding.
+            // A STARTED service (startService path) stays alive until
+            // stopService/stopSelf; a purely-bound service comes down when
+            // its last binding is gone.
+            for (auto& [cls, svc] : live_services_) {
+                if (svc.created && !svc.destroyed && svc.bindings > 0) {
+                    svc.bindings--;
+                    if (svc.bindings == 0 && !svc.started) {
+                        DalvikValue ignore;
+                        invoke_lifecycle_method(svc.oid, svc.cls, "onDestroy",
+                                                {}, ignore);
+                        svc.destroyed = true;
+                        miniandroid::diagnostics::FileIoTrace::instance().record(
+                            "SVC-UNBIND", svc.cls, true,
+                            "last binding gone → onDestroy",
+                            current_class_ + "." + current_method_);
+                    } else {
+                        miniandroid::diagnostics::FileIoTrace::instance().record(
+                            "SVC-UNBIND", svc.cls, true,
+                            "binding removed; service stays (" +
+                                std::string(svc.started ? "started" : "bound") +
+                                ")",
+                            current_class_ + "." + current_method_);
+                    }
+                    break;
+                }
+            }
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (!have_target) {
+            // AOSP: startService on a component-less intent throws
+            // IllegalArgumentException (service actions are not resolvable
+            // without a package/component for non-exported services).
+            throw_deferred("Ljava/lang/IllegalArgumentException;",
+                           "service intent has no component target",
+                           "SVC-START");
+            result = DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (manifest_match.empty() && !class_in_dex) {
+            throw_deferred("Ljava/lang/IllegalArgumentException;",
+                           "service class not found in manifest or DEX: " +
+                               target_cls,
+                           "SVC-START");
+            result = DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        std::string svc_key =
+            manifest_match.empty() ? target_desc : manifest_match;
+        ServiceInstance& svc = live_services_[svc_key];
+        if (svc.oid == 0) {
+            svc.cls = target_desc;
+            svc.oid = heap_.allocate(target_desc, pc_, 0);
+        }
+        DalvikValue svc_obj = DalvikValue::make_object(svc.oid, svc.cls);
+        DalvikValue ignore;
+        DalvikValue intent_arg = DalvikValue::make_null();
+        for (size_t i = 1; i < args.size(); ++i)
+            if (args[i].type == DalvikType::OBJECT_REF &&
+                args[i].object_id != 0 &&
+                heap_.has_object(args[i].object_id)) {
+                const auto* io = heap_.get(args[i].object_id);
+                if (io && io->class_descriptor == "Landroid/content/Intent;") {
+                    intent_arg = args[i];
+                    break;
+                }
+            }
+        if (method == "bindService") {
+            // AOSP bindService law: ensure onCreate ran; the connection is
+            // handed the binder returned by onBind (null → no callback).
+            if (!svc.created) {
+                invoke_lifecycle_method(svc.oid, svc.cls, "onCreate", {}, ignore);
+                svc.created = true;
+            }
+            svc.bindings++;
+            DalvikValue binder;
+            bool has_bind = invoke_lifecycle_method(
+                svc.oid, svc.cls, "onBind", {intent_arg}, binder);
+            bool delivered = false;
+            if (has_bind && binder.type == DalvikType::OBJECT_REF &&
+                binder.object_id != 0 && args.size() >= 3 &&
+                args[2].type == DalvikType::OBJECT_REF &&
+                args[2].object_id != 0) {
+                // onServiceConnected(ComponentName, IBinder) on the caller's
+                // connection object — the conn runtime class resolves the
+                // override via try_recursive_invoke.
+                std::string conn_cls =
+                    heap_.get(args[2].object_id)
+                        ? heap_.get(args[2].object_id)->class_descriptor
+                        : std::string();
+                uint32_t cn_id = heap_.allocate(
+                    "Landroid/content/ComponentName;", pc_, 0);
+                DalvikValue cn = DalvikValue::make_object(
+                    cn_id, "Landroid/content/ComponentName;");
+                DalvikValue cb_ret;
+                DalvikExecutionResult cb_tmp;
+                std::vector<DalvikValue> cb_args{args[2], cn, binder};
+                delivered = try_recursive_invoke(
+                    conn_cls, "onServiceConnected", cb_args, cb_ret, cb_tmp, "");
+            }
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "SVC-BIND", svc.cls, true,
+                std::string("onCreate+onBind; connected=") +
+                    (delivered ? "1" : "0"),
+                current_class_ + "." + current_method_);
+            result = DalvikValue::make_bool(true);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // startService / startForegroundService.
+        static uint32_t svc_start_id = 0;
+        ++svc_start_id;
+        svc.started = true;
+        if (!svc.created) {
+            invoke_lifecycle_method(svc.oid, svc.cls, "onCreate", {}, ignore);
+            svc.created = true;
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "SVC-START", svc.cls, true, "onCreate delivered",
+                current_class_ + "." + current_method_);
+        }
+        DalvikValue osc_ret;
+        invoke_lifecycle_method(svc.oid, svc.cls, "onStartCommand",
+                                {intent_arg,
+                                 DalvikValue::make_int(0),
+                                 DalvikValue::make_int((int32_t)svc_start_id)},
+                                osc_ret);
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "SVC-START", svc.cls, true,
+            "onStartCommand startId=" + std::to_string(svc_start_id) +
+                (svc.created ? " (live service)" : ""),
+            current_class_ + "." + current_method_);
+        // startService returns the ComponentName of the started service.
+        uint32_t cn_id = heap_.allocate("Landroid/content/ComponentName;", pc_, 0);
+        heap_.set_object_field(cn_id, "class",
+                               DalvikValue::make_string(svc.cls, 0));
+        result = DalvikValue::make_object(cn_id,
+                                          "Landroid/content/ComponentName;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if ((method == "stopSelf" || method == "stopSelfResult" ||
+         method == "startForeground" || method == "stopForeground") &&
+        (class_name.find("Service") != std::string::npos ||
+         class_name.find("Service;") != std::string::npos)) {
+        if (method == "stopSelf" || method == "stopSelfResult") {
+            std::string self_cls = class_name;
+            for (auto& [cls, svc] : live_services_) {
+                if (svc.oid == (args.empty() ? 0 : args[0].object_id) ||
+                    cls == self_cls) {
+                    if (svc.created && !svc.destroyed) {
+                        DalvikValue ignore;
+                        invoke_lifecycle_method(svc.oid, svc.cls, "onDestroy",
+                                                {}, ignore);
+                        svc.destroyed = true;
+                        svc.started = false;
+                        miniandroid::diagnostics::FileIoTrace::instance().record(
+                            "SVC-STOP", svc.cls, true,
+                            "stopSelf → onDestroy",
+                            current_class_ + "." + current_method_);
+                    }
+                    result = (method == "stopSelfResult")
+                                 ? DalvikValue::make_bool(true)
+                                 : DalvikValue::make_void();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+            }
+            result = (method == "stopSelfResult") ? DalvikValue::make_bool(false)
+                                                  : DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // startForeground/stopForeground: notification surface is a GATE C
+        // frontier; the lifecycle signal is honest no-op IMPLEMENTED.
+        result = DalvikValue::make_void();
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if ((method == "registerReceiver" || method == "unregisterReceiver" ||
+         method == "sendBroadcast" || method == "sendOrderedBroadcast") &&
+        (class_name.find("Context") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos ||
+         class_name.find("Application") != std::string::npos ||
+         class_name.find("Service") != std::string::npos)) {
+        if (method == "registerReceiver" && args.size() >= 3) {
+            DynamicReceiver dr;
+            dr.oid = args[1].object_id;
+            dr.cls = args[1].object_id != 0 && heap_.has_object(args[1].object_id)
+                         ? heap_.get(args[1].object_id)->class_descriptor
+                         : std::string();
+            if (args[2].type == DalvikType::OBJECT_REF &&
+                args[2].object_id != 0) {
+                for (const auto& a : intent_filters_[args[2].object_id])
+                    dr.actions.push_back(a);
+            }
+            dynamic_receivers_.push_back(dr);
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "BCAST-REGISTER", dr.cls, true,
+                "actions=" + std::to_string(dr.actions.size()),
+                current_class_ + "." + current_method_);
+            result = DalvikValue::make_null();  // AOSP: sticky Intent, null here
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "unregisterReceiver" && args.size() >= 2) {
+            uint32_t rid = args[1].object_id;
+            auto& v = dynamic_receivers_;
+            for (auto it = v.begin(); it != v.end(); ++it)
+                if (it->oid == rid) { v.erase(it); break; }
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "sendBroadcast" || method == "sendOrderedBroadcast") {
+            std::string action;
+            uint32_t intent_oid = 0;
+            for (size_t i = 1; i < args.size(); ++i) {
+                if (args[i].type == DalvikType::OBJECT_REF &&
+                    args[i].object_id != 0 &&
+                    heap_.has_object(args[i].object_id)) {
+                    const auto* io = heap_.get(args[i].object_id);
+                    if (io && io->class_descriptor == "Landroid/content/Intent;") {
+                        intent_oid = args[i].object_id;
+                        if (shadow_registry_ != nullptr) {
+                            auto* ish =
+                                shadow_registry_->find_as<framework::IntentShadow>();
+                            if (ish) {
+                                auto pi = ish->get_or_create_intent(intent_oid);
+                                if (pi) action = pi->action;
+                            }
+                        }
+                    }
+                }
+            }
+            // AOSP: broadcasting a null-action intent is a caller bug —
+            // loud, not silent.
+            if (action.empty()) {
+                throw_deferred("Ljava/lang/IllegalArgumentException;",
+                               "cannot broadcast an intent with no action",
+                               "BCAST-SEND");
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            // Bound context for onReceive (application object per R-NEW-460).
+            DalvikValue ctx_obj;
+            uint32_t ctx_id = application_object_id_;
+            if (ctx_id != 0 && heap_.has_object(ctx_id)) {
+                ctx_obj = DalvikValue::make_object(
+                    ctx_id, application_class_desc_.empty()
+                                ? "Landroid/app/Application;"
+                                : application_class_desc_);
+            } else {
+                ctx_obj = get_or_create_singleton("Landroid/content/Context;");
+            }
+            int delivered = 0;
+            // 1) dynamic receivers (registration order).
+            for (auto& dr : dynamic_receivers_) {
+                bool match = false;
+                for (const auto& a : dr.actions)
+                    if (a == action) { match = true; break; }
+                if (!match || dr.oid == 0) continue;
+                DalvikValue recv_obj =
+                    DalvikValue::make_object(dr.oid, dr.cls);
+                DalvikExecutionResult tmp;
+                DalvikValue ret;
+                std::vector<DalvikValue> on_args{
+                    recv_obj, ctx_obj,
+                    intent_oid ? DalvikValue::make_object(
+                                     intent_oid, "Landroid/content/Intent;")
+                               : DalvikValue::make_null()};
+                if (try_recursive_invoke(dr.cls, "onReceive", on_args, ret,
+                                         tmp, ""))
+                    ++delivered;
+            }
+            // 2) manifest receivers with a matching intent-filter action —
+            // AOSP LoadedApk instantiates the receiver class per delivery.
+            for (auto& [rcv_cls, acts] : manifest_receiver_actions_) {
+                bool match = false;
+                for (const auto& a : acts)
+                    if (a == action) { match = true; break; }
+                if (!match) continue;
+                std::string desc = rcv_cls;
+                if (desc[0] != 'L') {
+                    std::replace(desc.begin(), desc.end(), '.', '/');
+                    desc = "L" + desc + ";";
+                }
+                uint32_t rid = heap_.allocate(desc, pc_, 0);
+                DalvikValue recv_obj = DalvikValue::make_object(rid, desc);
+                DalvikValue ignore;
+                DalvikExecutionResult ctor_tmp;
+                std::vector<DalvikValue> ctor_args{recv_obj};
+                try_recursive_invoke(desc, "<init>", ctor_args, ignore,
+                                     ctor_tmp, "");
+                DalvikExecutionResult tmp;
+                DalvikValue ret;
+                std::vector<DalvikValue> on_args{
+                    recv_obj, ctx_obj,
+                    intent_oid ? DalvikValue::make_object(
+                                     intent_oid, "Landroid/content/Intent;")
+                               : DalvikValue::make_null()};
+                if (try_recursive_invoke(desc, "onReceive", on_args, ret,
+                                         tmp, ""))
+                    ++delivered;
+            }
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "BCAST-SEND", action, true,
+                "delivered=" + std::to_string(delivered) +
+                    " (dynamic+manifest)",
+                current_class_ + "." + current_method_);
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
     }
     if (class_name == "Landroid/content/ContentResolver;" &&
         method == "openInputStream" && args.size() >= 2 &&
@@ -34261,18 +35759,61 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // ────────────────────────────────────────────────────────────────────────
     // P0.13 — Context.getFilesDir → File
     // ────────────────────────────────────────────────────────────────────────
+    if (method == "createDeviceProtectedStorageContext" &&
+        (class_name.find("Context") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos ||
+         class_name.find("Application") != std::string::npos ||
+         class_name.find("Service") != std::string::npos)) {
+        // G-8 FIX (#371): AOSP ContextImpl.createDeviceProtectedStorageContext
+        // returns a Context whose dir family resolves under the
+        // /data/user_de/0/<pkg> fence. The returned heap object carries the
+        // deviceProtected=1 identity flag; getFilesDir/getDataDir/
+        // getCodeCacheDir/getNoBackupFilesDir honor it (see below) and the
+        // forward path law maps /data/user_de/0/<pkg> to its OWN backing
+        // (<root>/data/user_de/0/<pkg> — distinct from /data/data).
+        uint32_t de_id = heap_.allocate("Landroid/content/Context;", pc_, 0);
+        heap_.set_object_field(de_id, "deviceProtected",
+                               DalvikValue::make_string("1", 0));
+        DalvikValue de;
+        de.type = DalvikType::OBJECT_REF;
+        de.object_id = de_id;
+        de.class_desc = "Landroid/content/Context;";
+        result = de;
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "DE-CONTEXT", "/data/user_de/0/" + package_name_, true,
+            "createDeviceProtectedStorageContext",
+            current_class_ + "." + current_method_);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
     if (method == "getFilesDir" &&
         (class_name.find("Context") != std::string::npos ||
          class_name.find("Activity") != std::string::npos)) {
         // S88 F-NEW-179: PATHED stable File (was pathless class singleton).
         // F-NEW-234: per-package law — <root>/data/data/<pkg>/files
         // (AOSP ContextImpl.getFilesDir = /data/user/0/<pkg>/files).
-        std::string files_dir = Storage::context_dir("files").string();
+        // G-8 FIX (#371): a device-protected context answers its own fence
+        // (/data/user_de/0/<pkg>/files) — AOSP
+        // ContextImpl.createDeviceProtectedStorageContext law.
+        bool de_ctx = !args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+                      args[0].object_id != 0 &&
+                      heap_.has_object(args[0].object_id);
+        if (de_ctx) {
+            auto df = heap_.get_object_field(args[0].object_id, "deviceProtected");
+            de_ctx = df.has_value() && df->type == DalvikType::STRING_REF &&
+                     df->string_val == "1";
+        }
+        std::string files_dir =
+            (de_ctx ? Storage::device_protected_dir("files")
+                    : Storage::context_dir("files"))
+                .string();
         std::error_code fdir_ec;
         std::filesystem::create_directories(files_dir, fdir_ec);
         result = get_or_create_dir_file(files_dir);
         miniandroid::diagnostics::FileIoTrace::instance().record(
-            "MKDIR", files_dir, true, "Context.getFilesDir",
+            "MKDIR", files_dir, true,
+            de_ctx ? "Context.getFilesDir (device-protected)"
+                   : "Context.getFilesDir",
             current_class_ + "." + current_method_);
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
@@ -34326,12 +35867,25 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         std::string sub = method == "getDataDir" ? ""
                           : method == "getCodeCacheDir" ? "code_cache"
                                                         : "no_backup";
-        std::filesystem::path dir_path = Storage::context_dir(sub);
+        // G-8 FIX (#371): device-protected contexts resolve their dir
+        // family under the user_de fence (AOSP ContextImpl law).
+        bool de_ctx2 = !args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+                       args[0].object_id != 0 &&
+                       heap_.has_object(args[0].object_id);
+        if (de_ctx2) {
+            auto df2 = heap_.get_object_field(args[0].object_id, "deviceProtected");
+            de_ctx2 = df2.has_value() && df2->type == DalvikType::STRING_REF &&
+                      df2->string_val == "1";
+        }
+        std::filesystem::path dir_path =
+            de_ctx2 ? Storage::device_protected_dir(sub)
+                    : Storage::context_dir(sub);
         std::error_code gdir_ec;
         std::filesystem::create_directories(dir_path, gdir_ec);
         result = get_or_create_dir_file(dir_path.string());
         miniandroid::diagnostics::FileIoTrace::instance().record(
-            "MKDIR", dir_path.string(), true, "Context." + method,
+            "MKDIR", dir_path.string(), true,
+            std::string("Context.") + method + (de_ctx2 ? " (device-protected)" : ""),
             current_class_ + "." + current_method_);
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
@@ -36349,8 +37903,53 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 seed_ai("sourceDir", "/data/app/" + package_name_ + "/base.apk");
                 seed_ai("publicSourceDir", "/data/app/" + package_name_ + "/base.apk");
             }
-            seed_ai("nativeLibraryDir",
-                    "/data/app/~~miniandroid/base/lib/arm64");
+            // #371 PHASE B2 (G-4 closure): ABI-scoped native library
+            // extraction identity. AOSP PMS law: install extracts ONE ABI's
+            // lib/ tree into the codePath's lib dir and ApplicationInfo.
+            // nativeLibraryDir points THERE. The install command extracts
+            // the primary ABI under <store>/data/app/<pkg>/lib/<abi>/;
+            // when that tree exists for the installed package the seeded
+            // value is the real logical dir, else the pre-G-4 phantom
+            // identity is kept (honest, recorded).
+            std::string nld_logical =
+                "/data/app/~~miniandroid/base/lib/arm64";
+            std::string nld_host;
+            {
+                std::string derived;
+                const std::string kLibMarker = "/data/app/";
+                size_t pos = apk_path_.find(kLibMarker);
+                if (pos != std::string::npos && !package_name_.empty()) {
+                    std::string store_root =
+                        apk_path_.substr(0, pos);
+                    derived = store_root + kLibMarker + package_name_ +
+                              "/lib/";
+                    namespace afsc = std::filesystem;
+                    static const char* kAbiOrder[] = {
+                        "arm64-v8a", "armeabi-v7a", "x86_64", "x86"};
+                    std::error_code g4_ec;
+                    for (const char* abi : kAbiOrder) {
+                        afsc::path cand =
+                            afsc::path(derived) / abi;
+                        if (afsc::exists(cand, g4_ec) &&
+                            afsc::is_directory(cand, g4_ec)) {
+                            nld_logical =
+                                "/data/app/" + package_name_ + "/lib/" + abi;
+                            nld_host = cand.string();
+                            // ApplicationInfo.sourceDir-seeding law keeps
+                            // the host backing on private fields.
+                            break;
+                        }
+                    }
+                }
+            }
+            seed_ai("nativeLibraryDir", nld_logical);
+            if (!nld_host.empty()) {
+                seed_ai("hostNativeLibraryDir", nld_host);
+                native_lib_dir_logical_ = nld_logical;
+                native_lib_dir_host_ = nld_host;
+                native_primary_abi_ = nld_logical.substr(
+                    nld_logical.rfind('/') + 1);
+            }
             seed_ai("primaryCpuAbi", "arm64-v8a");
             // S-7/ST-11 FIX (LOADING-CAMPAIGN): the FULL AOSP ApplicationInfo
             // path-identity family (AOSP frameworks/base
@@ -41664,6 +43263,14 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             } else {
                 uint32_t fdobj = heap_.allocate("Ljava/io/FileDescriptor;", pc_, 0);
                 heap_.set_object_field(fdobj, "descriptor", fdv);
+                // #371 B1: carry the backing so FileInputStream(fd) can
+                // register a REAL byte source (AOSP: the FD wraps the same
+                // file the PFD opened — bytes must flow).
+                if (recv && heap_.has_object(recv)) {
+                    auto hp = heap_.get_object_field(recv, "host_path");
+                    if (hp.has_value() && hp->type == DalvikType::STRING_REF)
+                        heap_.set_object_field(fdobj, "host_path", *hp);
+                }
                 DalvikValue fv;
                 fv.type = DalvikType::OBJECT_REF;
                 fv.object_id = fdobj;
@@ -44624,6 +46231,24 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
         }
         if (lib.empty()) return false;
+        // #371 PHASE B2 (G-2 precision upgrade): the pre-native path is
+        // COMPLETE — request → ABI → extracted location → dlopen boundary.
+        // Three honest failure shapes now (AOSP Runtime.loadLibrary0 chain):
+        //   (1) library absent from the installed APK entirely ("not found");
+        //   (2) present in the APK but the ABI tree was never extracted
+        //       (pre-G-4 store);
+        //   (3) extracted at nativeLibraryDir, dlopen/JNI execution
+        //       unavailable (the S-2 frontier, stated with the real file
+        //       identity: path, size, sha16).
+        // MINIANDROID_NATIVE_DLOPEN_PROBE=1 additionally attempts a REAL
+        // host dlopen and records the REAL dlerror string — a diagnostic
+        // that keeps the boundary precise. It NEVER reports success: even
+        // a dlopen that succeeds cannot complete JNI_OnLoad (no JNIEnv),
+        // and AOSP requires JNI_OnLoad before any native dispatch.
+        auto native_frontier_throw = [&](const std::string& d) {
+            throw_deferred("Ljava/lang/UnsatisfiedLinkError;", d,
+                           "GATEA-NATIVE");
+        };
         std::cerr << "[GATEA-NATIVE] System." << method << "(\"" << lib
                   << "\") caller=" << current_class_ << "." << current_method_
                   << std::endl;
@@ -44638,19 +46263,127 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 std::string("lib/") + kAbi + "/lib" + lib + ".so";
             bool present = !apk_path_.empty() &&
                            gatea::zip_contains_entry(apk_path_, entry, &stored);
-            detail = present
-                ? "\"" + lib + "\" present at " + entry + " (" +
-                      (stored ? "stored" : "deflate") +
-                      ") but MiniAndroid has no native execution layer (S-2 "
-                      "frontier): dlopen/JNI unavailable"
-                : "dlopen failed: library \"" + lib + "\" not found in the "
-                      "installed APK (no " + entry + ")";
+            // Extracted-tree check (G-4): the install command materializes
+            // lib/<abi>/ under the package codePath in the store.
+            std::string extracted_file;
+            if (!native_lib_dir_host_.empty()) {
+                std::filesystem::path cand = std::filesystem::path(
+                    native_lib_dir_host_) / ("lib" + lib + ".so");
+                std::error_code nl_ec;
+                if (std::filesystem::exists(cand, nl_ec) && !nl_ec)
+                    extracted_file = cand.string();
+            }
+            if (!extracted_file.empty()) {
+                std::error_code sz_ec;
+                unsigned long long fsz =
+                    std::filesystem::file_size(extracted_file, sz_ec);
+                std::string sha16 = "?";
+                {
+                    auto sha16_of_file = [](const std::string& path) {
+                        FILE* fp = fopen(path.c_str(), "rb");
+                        if (!fp) return std::string("?");
+                        EVP_MD_CTX* c = EVP_MD_CTX_new();
+                        unsigned char dg[EVP_MAX_MD_SIZE];
+                        unsigned int dl = 0;
+                        std::string hex;
+                        bool ok2 = false;
+                        if (c && EVP_DigestInit_ex(c, EVP_sha256(), nullptr) == 1) {
+                            char buf[65536];
+                            size_t n2;
+                            bool stream_ok = true;
+                            while ((n2 = fread(buf, 1, sizeof(buf), fp)) > 0)
+                                if (EVP_DigestUpdate(c, buf, n2) != 1) {
+                                    stream_ok = false;
+                                    break;
+                                }
+                            if (stream_ok &&
+                                EVP_DigestFinal_ex(c, dg, &dl) == 1) {
+                                static const char* H = "0123456789abcdef";
+                                for (unsigned int i = 0; i < dl; i++) {
+                                    hex += H[dg[i] >> 4];
+                                    hex += H[dg[i] & 0xf];
+                                }
+                                ok2 = true;
+                            }
+                        }
+                        if (c) EVP_MD_CTX_free(c);
+                        fclose(fp);
+                        return ok2 && hex.size() >= 16 ? hex.substr(0, 16)
+                                                       : std::string("?");
+                    };
+                    sha16 = sha16_of_file(extracted_file);
+                }
+                detail = "\"" + lib + "\" extracted at " + native_lib_dir_logical_ +
+                         "/lib" + lib + ".so (size=" + std::to_string(fsz) +
+                         ", sha16=" + sha16 + ") but MiniAndroid has no native "
+                         "execution layer (S-2 frontier): dlopen/JNI unavailable";
+                if (std::getenv("MINIANDROID_NATIVE_DLOPEN_PROBE")) {
+                    void* h = dlopen(extracted_file.c_str(), RTLD_NOW | RTLD_LOCAL);
+                    if (h) {
+                        dlclose(h);
+                        detail += "; host dlopen SUCCEEDED but JNI_OnLoad cannot "
+                                  "run (no JNIEnv bridge) — never treated as a "
+                                  "load success";
+                    } else {
+                        const char* dlerr = dlerror();
+                        detail += "; host dlopen refused: ";
+                        detail += dlerr ? dlerr : "unknown dlerror";
+                        detail += " (Android ELF on x86_64 host — S-2 frontier)";
+                    }
+                }
+            } else {
+                detail = present
+                    ? "\"" + lib + "\" present at " + entry + " (" +
+                          (stored ? "stored" : "deflate") +
+                          ") but not extracted to nativeLibraryDir and MiniAndroid "
+                          "has no native execution layer (S-2 frontier)"
+                    : "dlopen failed: library \"" + lib + "\" not found in the "
+                          "installed APK (no " + entry + ")";
+            }
         } else {
-            detail = "filename load \"" + lib +
-                     "\" — MiniAndroid has no native execution layer (S-2 "
-                     "frontier): dlopen unavailable";
+            // System.load(absolute path): resolve the logical nativeLibraryDir
+            // spelling to the extracted backing when the caller addresses it.
+            std::string resolved = lib;
+            bool backed = false;
+            if (!native_lib_dir_host_.empty() &&
+                lib.rfind(native_lib_dir_logical_, 0) == 0) {
+                std::string suffix = lib.substr(native_lib_dir_logical_.size());
+                std::filesystem::path cand = std::filesystem::path(
+                    native_lib_dir_host_) / (suffix.empty() ? "" : suffix.substr(1));
+                std::error_code ld_ec;
+                if (std::filesystem::exists(cand, ld_ec) && !ld_ec) {
+                    resolved = cand.string();
+                    backed = true;
+                }
+            }
+            std::error_code le_ec;
+            bool file_there =
+                backed && std::filesystem::exists(resolved, le_ec) && !le_ec;
+            detail = backed
+                ? (file_there
+                       ? "filename load \"" + lib +
+                             "\" — extracted backing exists but MiniAndroid has "
+                             "no native execution layer (S-2 frontier): dlopen "
+                             "unavailable"
+                       : "dlopen failed: library \"" + lib + "\" not found")
+                : "filename load \"" + lib +
+                      "\" — MiniAndroid has no native execution layer (S-2 "
+                      "frontier): dlopen unavailable";
+            if (backed && file_there &&
+                std::getenv("MINIANDROID_NATIVE_DLOPEN_PROBE")) {
+                void* h = dlopen(resolved.c_str(), RTLD_NOW | RTLD_LOCAL);
+                if (!h) {
+                    const char* dlerr = dlerror();
+                    detail += "; host dlopen refused: ";
+                    detail += dlerr ? dlerr : "unknown dlerror";
+                } else {
+                    dlclose(h);
+                    detail += "; host dlopen SUCCEEDED but JNI_OnLoad cannot run "
+                              "(no JNIEnv bridge)";
+                }
+            }
         }
-        throw_deferred("Ljava/lang/UnsatisfiedLinkError;", detail, "GATEA-NATIVE");
+        native_frontier_throw(detail);
         result = DalvikValue::make_void();
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;

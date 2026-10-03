@@ -662,6 +662,29 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         auto* state = get_or_create(obj_id);
         if (state->is_map) return CallResult::not_handled();
         if (m == "remove" && !ctx.args.empty()) {
+            // ── #371 PHASE B1 fix (probe-discovered, generic): List.remove
+            // has TWO AOSP overloads. With an INT argument this is
+            // remove(int index) — removes the position, shifts left, and
+            // RETURNS THE REMOVED ELEMENT (OpenJDK ArrayList.remove(int)):
+            // the previous code treated every arg as an element reference,
+            // so remove(index) silently matched nothing and returned false
+            // (GateProvider probe TABLE.remove(TABLE.size()-1) kept stale
+            // rows → content:// delete state change lost).
+            if (ctx.args[0].kind == CallContext::Arg::Kind::INT &&
+                ctx.class_name != "Ljava/util/HashSet;" &&
+                ctx.class_name != "Ljava/util/LinkedHashSet;") {
+                int32_t idx = ctx.args[0].int_val;
+                if (idx >= 0 && (size_t)idx < state->elements.size()) {
+                    uint32_t removed = state->elements[idx];
+                    state->elements.erase(state->elements.begin() + idx);
+                    return CallResult::handled_object(removed,
+                                                      "Ljava/lang/Object;");
+                }
+                // AOSP: index out of range → IndexOutOfBoundsException;
+                // the shadow channel has no exception kind yet — loud bool
+                // false, never a silent success.
+                return CallResult::handled_bool(false);
+            }
             // remove(Object) — remove first occurrence of the arg element.
             uint32_t item = ctx.arg_as_object(0, 0);
             for (auto it = state->elements.begin();
