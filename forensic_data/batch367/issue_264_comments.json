@@ -1,0 +1,49 @@
+[
+ {
+  "url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/comments/5846739357",
+  "html_url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/264#issuecomment-5846739357",
+  "issue_url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/264",
+  "id": 5846739357,
+  "node_id": "IC_kwDOT2Ndhs8AAAABXH4pnQ",
+  "user": {
+   "login": "Sh-TB",
+   "id": 298011935,
+   "node_id": "U_kgDOEcNNHw",
+   "avatar_url": "https://avatars.githubusercontent.com/u/298011935?v=4",
+   "gravatar_id": "",
+   "url": "https://api.github.com/users/Sh-TB",
+   "html_url": "https://github.com/Sh-TB",
+   "followers_url": "https://api.github.com/users/Sh-TB/followers",
+   "following_url": "https://api.github.com/users/Sh-TB/following{/other_user}",
+   "gists_url": "https://api.github.com/users/Sh-TB/gists{/gist_id}",
+   "starred_url": "https://api.github.com/users/Sh-TB/starred{/owner}{/repo}",
+   "subscriptions_url": "https://api.github.com/users/Sh-TB/subscriptions",
+   "organizations_url": "https://api.github.com/users/Sh-TB/orgs",
+   "repos_url": "https://api.github.com/users/Sh-TB/repos",
+   "events_url": "https://api.github.com/users/Sh-TB/events{/privacy}",
+   "received_events_url": "https://api.github.com/users/Sh-TB/received_events",
+   "type": "User",
+   "user_view_type": "public",
+   "site_admin": false
+  },
+  "created_at": "2026-09-26T13:41:30Z",
+  "updated_at": "2026-09-26T13:41:30Z",
+  "body": "## CLOSED \u2014 fenced by the S106 micro-gap wave (commit `7a0a8dab`)\n\n**Checkpoint:** `G2` in battery stage **\"s106 gif laws (expect 17)\"** \u2014 PASS (stage registered in `scripts/test/run_test_battery.sh`; full battery ALL PASS, rc=0, at this commit).\n\n**AOSP/upstream law asserted:** GIF89a disposal method 2 (restore to background): frame 2's rect region is CLEARED (transparent black) for frame 3; frame 1's red survives everywhere else; frame 3's own content draws.\n\n**Fix (part of this commit):** FIXED a real bug in the vendored stb_image: dispose-2 restored the PRE-FRAME CANVAS (stb's historical deviation) instead of the background \u2014 now spec-true transparent black per GIF89a + Android/Skia SkGifCodec.\n\n**Evidence standard (per the ticket's fix protocol):**\n- Reproduced against the REAL engine objects (no mocks): aapt2-built fixture APK `tests/fixtures/s106_drawables` \u2192 binary AXML \u2192 GifDecoder/stb\n- Named battery stage added and green: `s106 gif laws (expect 17)` (expect 17))\n- Full canonical battery ALL PASS (rc=0) at `7a0a8dab`; post-fix real-APK regression runs (dooz/ballbreak/solitaire/mykanji \u00d73) byte/semantics-identical \u2014 zero regressions\n- Registry synced: `docs/MICRO_GAP_REGISTRY.json` MG-215 \u2192 CLOSED (CLOSED count 32 \u2192 79)",
+  "author_association": "OWNER",
+  "pin": null,
+  "reactions": {
+   "url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/comments/5846739357/reactions",
+   "total_count": 0,
+   "+1": 0,
+   "-1": 0,
+   "laugh": 0,
+   "hooray": 0,
+   "confused": 0,
+   "heart": 0,
+   "rocket": 0,
+   "eyes": 0
+  },
+  "performed_via_github_app": null,
+  "minimized": null
+ }
+]

@@ -1,0 +1,2756 @@
+{
+ "fr_by_issue": {
+  "1": [
+   {
+    "request_id": "FR-001",
+    "parent_id": "FR-016",
+    "issue": 1,
+    "source": "github-issue",
+    "date": "2026-08-19",
+    "request_text": "EXP-064 login image proven by pixels",
+    "acceptance_criteria": "",
+    "claimed_status": "DONE (issue body)",
+    "verified_status": "OBSERVED",
+    "evidence_level": "E3",
+    "commit_shas": [
+     "1e1ec2b4",
+     "c322b479",
+     "1dda55ae",
+     "78c182f3"
+    ],
+    "test_refs": [],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "Screenshot + OCR session evidence; predates golden/3-run laws; superseded by the S107+ Telegram chain."
+   }
+  ],
+  "2": [
+   {
+    "request_id": "FR-002",
+    "parent_id": "FR-016",
+    "issue": 2,
+    "source": "github-issue",
+    "date": "2026-08-19",
+    "request_text": "EXP-065 multi-DEX const-string fix",
+    "acceptance_criteria": "",
+    "claimed_status": "DONE (issue body)",
+    "verified_status": "TESTED",
+    "evidence_level": "E3",
+    "commit_shas": [
+     "ff073348",
+     "b327292d",
+     "78c182f3"
+    ],
+    "test_refs": [],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "Session proof; law re-verified by later multi-DEX campaigns."
+   }
+  ],
+  "3": [
+   {
+    "request_id": "FR-003",
+    "parent_id": "FR-016",
+    "issue": 3,
+    "source": "github-issue",
+    "date": "2026-08-20",
+    "request_text": "EXP-066 multi-DEX audit + text capture",
+    "acceptance_criteria": "",
+    "claimed_status": "DONE (issue body)",
+    "verified_status": "OBSERVED",
+    "evidence_level": "E3",
+    "commit_shas": [
+     "1e1ec2b4"
+    ],
+    "test_refs": [],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "Session evidence."
+   }
+  ],
+  "4": [
+   {
+    "request_id": "FR-004",
+    "parent_id": "FR-016",
+    "issue": 4,
+    "source": "github-issue",
+    "date": "2026-08-20",
+    "request_text": "EXP-067 resource resolution + AXML + drawable decode",
+    "acceptance_criteria": "",
+    "claimed_status": "DONE (issue body)",
+    "verified_status": "OBSERVED",
+    "evidence_level": "E3",
+    "commit_shas": [],
+    "test_refs": [],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "Superseded by ARSC/AXML law waves (S126/S127 R-NEW-423)."
+   }
+  ],
+  "5": [
+   {
+    "request_id": "FR-005",
+    "parent_id": "FR-016",
+    "issue": 5,
+    "source": "github-issue",
+    "date": "2026-08-20",
+    "request_text": "EXP-068 generic view inheritance",
+    "acceptance_criteria": "",
+    "claimed_status": "DONE (issue body)",
+    "verified_status": "OBSERVED",
+    "evidence_level": "E3",
+    "commit_shas": [],
+    "test_refs": [],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "Session evidence."
+   }
+  ],
+  "6": [
+   {
+    "request_id": "FR-006",
+    "parent_id": "FR-016",
+    "issue": 6,
+    "source": "github-issue",
+    "date": "2026-08-20",
+    "request_text": "EXP-069 generic text input + click dispatch",
+    "acceptance_criteria": "",
+    "claimed_status": "DONE (issue body)",
+    "verified_status": "OBSERVED",
+    "evidence_level": "E3",
+    "commit_shas": [],
+    "test_refs": [],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "Session evidence."
+   }
+  ],
+  "7": [
+   {
+    "request_id": "FR-007",
+    "parent_id": "FR-016",
+    "issue": 7,
+    "source": "github-issue",
+    "date": "2026-08-21",
+    "request_text": "EXP-071 login->SMS page transition (CHECKPOINT M)",
+    "acceptance_criteria": "",
+    "claimed_status": "DONE (issue body)",
+    "verified_status": "OBSERVED",
+    "evidence_level": "E4",
+    "commit_shas": [],
+    "test_refs": [],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": ".agent/state.md checkpoint table records 15 checkpoints; session-bound, not re-verified at HEAD."
+   }
+  ],
+  "8": [
+   {
+    "request_id": "FR-008",
+    "parent_id": "FR-016",
+    "issue": 8,
+    "source": "github-issue",
+    "date": "2026-09-05",
+    "request_text": "Campaign evidence ledger (REUSE-FIRST 2026-09-05)",
+    "acceptance_criteria": "",
+    "claimed_status": "DONE (issue body)",
+    "verified_status": "SUPERSEDED",
+    "evidence_level": "E3",
+    "commit_shas": [
+     "2e166f91",
+     "fd53167a",
+     "8ffc8760",
+     "d244fce7"
+    ],
+    "test_refs": [],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "canonical registries (S84+)",
+    "explanation": "55-comment evidence thread; superseded by canonical registries (S84 law, one record per title)."
+   }
+  ],
+  "10": [
+   {
+    "request_id": "FR-010",
+    "parent_id": "",
+    "issue": 10,
+    "source": "github-issue",
+    "date": "2026-09-21",
+    "request_text": "[EXEC] HelloWorld \u2014 APK Execution & Visual Proof",
+    "acceptance_criteria": "APK executes + renders real app content + evidence recorded",
+    "claimed_status": "closed",
+    "verified_status": "VERIFIED",
+    "evidence_level": "E5",
+    "commit_shas": [
+     "c67230be",
+     "3505591b",
+     "135559eb",
+     "038f0be6"
+    ],
+    "test_refs": [],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [
+     "scripts/working_vs_failing_probe.sh 2026-10-03 ALL PASS"
+    ],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "battery + golden era"
+   }
+  ],
+  "11": [
+   {
+    "request_id": "FR-011",
+    "parent_id": "",
+    "issue": 11,
+    "source": "github-issue",
+    "date": "2026-09-21",
+    "request_text": "[EXEC] TicTacToe \u2014 APK Execution & Gameplay Proof",
+    "acceptance_criteria": "APK executes + renders real app content + evidence recorded",
+    "claimed_status": "closed",
+    "verified_status": "OBSERVED",
+    "evidence_level": "E3",
+    "commit_shas": [],
+    "test_refs": [],
+    "runtime_refs": [
+     "docs/evidence/canonical/registry.json"
+    ],
+    "screenshot_refs": [
+     "docs/evidence/canonical/com.emmanuelmess.tictactoe.gif"
+    ],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "early session proof; canonical registry OBSERVED"
+   }
+  ],
+  "12": [
+   {
+    "request_id": "FR-012",
+    "parent_id": "",
+    "issue": 12,
+    "source": "github-issue",
+    "date": "2026-09-21",
+    "request_text": "[EXEC] ConnectFour \u2014 APK Execution & Gameplay Proof",
+    "acceptance_criteria": "APK executes + renders real app content + evidence recorded",
+    "claimed_status": "closed",
+    "verified_status": "OBSERVED",
+    "evidence_level": "E3",
+    "commit_shas": [],
+    "test_refs": [],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "early session proof"
+   }
+  ],
+  "13": [
+   {
+    "request_id": "FR-013",
+    "parent_id": "",
+    "issue": 13,
+    "source": "github-issue",
+    "date": "2026-09-21",
+    "request_text": "[EXEC] AndroidGameSnake \u2014 Autonomous Gameplay Proof",
+    "acceptance_criteria": "APK executes + renders real app content + evidence recorded",
+    "claimed_status": "closed",
+    "verified_status": "VERIFIED",
+    "evidence_level": "E5",
+    "commit_shas": [],
+    "test_refs": [],
+    "runtime_refs": [
+     "docs/evidence/canonical/registry.json"
+    ],
+    "screenshot_refs": [
+     "docs/evidence/canonical/com.miniandroid.snakedeluxe.gif"
+    ],
+    "regression_refs": [
+     "scripts/working_vs_failing_probe.sh 2026-10-03 ALL PASS"
+    ],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "full gameplay loop; x2 runs + 4-run sweep; canonical GIF"
+   }
+  ],
+  "15": [
+   {
+    "request_id": "FR-015",
+    "parent_id": "",
+    "issue": 15,
+    "source": "github-issue",
+    "date": "2026-09-21",
+    "request_text": "[EXEC] Unote \u2014 Runtime/UI Completion",
+    "acceptance_criteria": "APK executes + renders real app content + evidence recorded",
+    "claimed_status": "closed",
+    "verified_status": "VERIFIED",
+    "evidence_level": "E5",
+    "commit_shas": [
+     "ecc5adf4",
+     "aaf146c2"
+    ],
+    "test_refs": [],
+    "runtime_refs": [
+     "docs/evidence/canonical/registry.json"
+    ],
+    "screenshot_refs": [
+     "docs/evidence/canonical/app.varlorg.unote.jpg"
+    ],
+    "regression_refs": [
+     "scripts/working_vs_failing_probe.sh 2026-10-03 ALL PASS"
+    ],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "golden 4f1a9e4e8f64fae8 x3 re-verified at HEAD 2026-10-03"
+   }
+  ],
+  "17": [
+   {
+    "request_id": "FR-017",
+    "parent_id": "",
+    "issue": 17,
+    "source": "github-issue",
+    "date": "2026-09-21",
+    "request_text": "[EXEC] GMDice \u2014 APK Execution & Visual Proof",
+    "acceptance_criteria": "APK executes + renders real app content + evidence recorded",
+    "claimed_status": "closed",
+    "verified_status": "VERIFIED",
+    "evidence_level": "E4",
+    "commit_shas": [
+     "ecc5adf4"
+    ],
+    "test_refs": [],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [
+     "scripts/working_vs_failing_probe.sh 2026-10-03 ALL PASS"
+    ],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "AXML inflation + OCR text verified (D05)"
+   }
+  ],
+  "18": [
+   {
+    "request_id": "FR-018",
+    "parent_id": "",
+    "issue": 18,
+    "source": "github-issue",
+    "date": "2026-09-21",
+    "request_text": "[EXEC] MicroTimer \u2014 APK Execution & Visual Proof",
+    "acceptance_criteria": "APK executes + renders real app content + evidence recorded",
+    "claimed_status": "closed",
+    "verified_status": "VERIFIED",
+    "evidence_level": "E5",
+    "commit_shas": [
+     "ecc5adf4"
+    ],
+    "test_refs": [],
+    "runtime_refs": [
+     "docs/evidence/canonical/registry.json"
+    ],
+    "screenshot_refs": [
+     "docs/evidence/canonical/dubrowgn.microtimer.jpg"
+    ],
+    "regression_refs": [
+     "scripts/working_vs_failing_probe.sh 2026-10-03 ALL PASS"
+    ],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "golden da73010a37dd0189 x3 re-verified at HEAD 2026-10-03"
+   }
+  ],
+  "68": [
+   {
+    "request_id": "FR-068",
+    "parent_id": "FR-024",
+    "issue": 68,
+    "source": "github-issue",
+    "date": "2026-09-22",
+    "request_text": "[GAME-044] com.smorgasbork.hotdeath \u2014 compatibility report",
+    "acceptance_criteria": "per-title compatibility report with runtime evidence",
+    "claimed_status": "report opened",
+    "verified_status": "VERIFIED",
+    "evidence_level": "E4",
+    "commit_shas": [
+     "e59335d6"
+    ],
+    "test_refs": [],
+    "runtime_refs": [
+     "docs/corpus/s82/title_registry.json"
+    ],
+    "screenshot_refs": [
+     "docs/evidence/canonical/com.smorgasbork.hotdeath.gif"
+    ],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "canonical game registry record (checkpoints: )"
+   }
+  ],
+  "81": [
+   {
+    "request_id": "FR-081",
+    "parent_id": "FR-024",
+    "issue": 81,
+    "source": "github-issue",
+    "date": "2026-09-22",
+    "request_text": "[GAME-057] org.bobstuff.bobball \u2014 compatibility report",
+    "acceptance_criteria": "per-title compatibility report with runtime evidence",
+    "claimed_status": "report opened",
+    "verified_status": "VERIFIED",
+    "evidence_level": "E4",
+    "commit_shas": [
+     "e59335d6"
+    ],
+    "test_refs": [],
+    "runtime_refs": [
+     "docs/corpus/s82/title_registry.json"
+    ],
+    "screenshot_refs": [
+     "docs/evidence/canonical/org.bobstuff.bobball.gif"
+    ],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "canonical game registry record (checkpoints: )"
+   }
+  ],
+  "121": [
+   {
+    "request_id": "FR-121",
+    "parent_id": "FR-024",
+    "issue": 121,
+    "source": "github-issue",
+    "date": "2026-09-22",
+    "request_text": "[GAME-097] com.dozingcatsoftware.bouncy \u2014 compatibility report",
+    "acceptance_criteria": "per-title compatibility report with runtime evidence",
+    "claimed_status": "report opened",
+    "verified_status": "VERIFIED",
+    "evidence_level": "E4",
+    "commit_shas": [
+     "e59335d6"
+    ],
+    "test_refs": [],
+    "runtime_refs": [
+     "docs/corpus/s82/title_registry.json"
+    ],
+    "screenshot_refs": [
+     "docs/evidence/canonical/com.dozingcatsoftware.bouncy.gif"
+    ],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "canonical game registry record (checkpoints: )"
+   }
+  ],
+  "166": [
+   {
+    "request_id": "FR-166",
+    "parent_id": "FR-024",
+    "issue": 166,
+    "source": "github-issue",
+    "date": "2026-09-22",
+    "request_text": "[APP-042] org.ucam.ssb22.pinyinfdroid \u2014 compatibility report",
+    "acceptance_criteria": "per-title compatibility report with runtime evidence",
+    "claimed_status": "report opened",
+    "verified_status": "PENDING",
+    "evidence_level": "E0",
+    "commit_shas": [
+     "e59335d6"
+    ],
+    "test_refs": [],
+    "runtime_refs": [
+     "docs/corpus/s82/title_registry.json"
+    ],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "title registry: NOT_TESTED \u2014 no execution record found"
+   }
+  ],
+  "234": [
+   {
+    "request_id": "FR-234",
+    "parent_id": "FR-233",
+    "issue": 234,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-051] Font fallback selection \u2014 text/font (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [
+     "b6dc9077"
+    ],
+    "test_refs": [
+     "MG-051"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-051 STATUS=CLOSED; evidence: named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/Typeface.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "235": [
+   {
+    "request_id": "FR-235",
+    "parent_id": "FR-233",
+    "issue": 235,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-073] ellipsize \u2014 text/font (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-073"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-073 STATUS=CLOSED; evidence: named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS; UPSTREAM_SOURCE: frameworks/base/core/java/android/widget/TextView.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "236": [
+   {
+    "request_id": "FR-236",
+    "parent_id": "FR-233",
+    "issue": 236,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-080] Unicode combining marks \u2014 text/font (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-080"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-080 STATUS=CLOSED; evidence: named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS; UPSTREAM_SOURCE: external/icu (bidi/shaping) +HarfBuzz upstream \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "237": [
+   {
+    "request_id": "FR-237",
+    "parent_id": "FR-233",
+    "issue": 237,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-081] RTL basic shaping \u2014 text/font (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-081"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-081 STATUS=CLOSED; evidence: named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS; UPSTREAM_SOURCE: external/icu (bidi/shaping) +HarfBuzz upstream \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "238": [
+   {
+    "request_id": "FR-238",
+    "parent_id": "FR-233",
+    "issue": 238,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-082] Arabic joining \u2014 text/font (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-082"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-082 STATUS=CLOSED; evidence: named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS; UPSTREAM_SOURCE: external/icu (bidi/shaping) +HarfBuzz upstream \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "239": [
+   {
+    "request_id": "FR-239",
+    "parent_id": "FR-233",
+    "issue": 239,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-083] emoji fallback \u2014 text/font (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-083"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-083 STATUS=CLOSED; evidence: named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS; UPSTREAM_SOURCE: external/icu (bidi/shaping) +HarfBuzz upstream \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "240": [
+   {
+    "request_id": "FR-240",
+    "parent_id": "FR-233",
+    "issue": 240,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-084] surrogate pairs \u2014 text/font (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-084"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-084 STATUS=CLOSED; evidence: named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS; UPSTREAM_SOURCE: external/icu (bidi/shaping) +HarfBuzz upstream \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "241": [
+   {
+    "request_id": "FR-241",
+    "parent_id": "FR-233",
+    "issue": 241,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-085] UTF-8/UTF-16 boundary \u2014 text/font (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-085"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-085 STATUS=CLOSED; evidence: named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS; UPSTREAM_SOURCE: external/icu (bidi/shaping) +HarfBuzz upstream \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "242": [
+   {
+    "request_id": "FR-242",
+    "parent_id": "FR-233",
+    "issue": 242,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-115] requestLayout propagation \u2014 layout/geometry (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-115"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-115 STATUS=CLOSED; evidence: battery stage 's106_layout_net_law_test L1/L2' (FIXED View.requestLayout() bridge swallowing the call as no-op \u2014 now rai; UPSTREAM_SOURCE: frameworks/base/core/java/android/view/View.java (measure/layout) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "243": [
+   {
+    "request_id": "FR-243",
+    "parent_id": "FR-233",
+    "issue": 243,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-123] scroll offset \u2014 layout/geometry (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [
+     "b6dc9077"
+    ],
+    "test_refs": [
+     "MG-123"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-123 STATUS=CLOSED; evidence: named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS; UPSTREAM_SOURCE: frameworks/base/core/java/android/view/View.java (measure/layout) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "244": [
+   {
+    "request_id": "FR-244",
+    "parent_id": "FR-233",
+    "issue": 244,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-124] translationX \u2014 layout/geometry (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-124"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-124 STATUS=CLOSED; evidence: named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS; UPSTREAM_SOURCE: frameworks/base/core/java/android/view/View.java (measure/layout) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "245": [
+   {
+    "request_id": "FR-245",
+    "parent_id": "FR-233",
+    "issue": 245,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-125] translationY \u2014 layout/geometry (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-125"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-125 STATUS=CLOSED; evidence: named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS; UPSTREAM_SOURCE: frameworks/base/core/java/android/view/View.java (measure/layout) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "246": [
+   {
+    "request_id": "FR-246",
+    "parent_id": "FR-233",
+    "issue": 246,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-126] scaleX \u2014 layout/geometry (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-126"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-126 STATUS=CLOSED; evidence: named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS; UPSTREAM_SOURCE: frameworks/base/core/java/android/view/View.java (measure/layout) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "247": [
+   {
+    "request_id": "FR-247",
+    "parent_id": "FR-233",
+    "issue": 247,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-127] scaleY \u2014 layout/geometry (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-127"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-127 STATUS=CLOSED; evidence: named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS; UPSTREAM_SOURCE: frameworks/base/core/java/android/view/View.java (measure/layout) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "248": [
+   {
+    "request_id": "FR-248",
+    "parent_id": "FR-233",
+    "issue": 248,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-128] rotation \u2014 layout/geometry (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-128"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-128 STATUS=CLOSED; evidence: named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS; UPSTREAM_SOURCE: frameworks/base/core/java/android/view/View.java (measure/layout) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "249": [
+   {
+    "request_id": "FR-249",
+    "parent_id": "FR-233",
+    "issue": 249,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-129] pivot \u2014 layout/geometry (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-129"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-129 STATUS=CLOSED; evidence: named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS; UPSTREAM_SOURCE: frameworks/base/core/java/android/view/View.java (measure/layout) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "250": [
+   {
+    "request_id": "FR-250",
+    "parent_id": "FR-233",
+    "issue": 250,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-171] SharedPreferences default file \u2014 storage/state (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-171"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-171 STATUS=CLOSED; evidence: named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer; UPSTREAM_SOURCE: frameworks/base/core/java/android/app/SharedPreferencesImpl.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "251": [
+   {
+    "request_id": "FR-251",
+    "parent_id": "FR-233",
+    "issue": 251,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-172] custom file \u2014 storage/state (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-172"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-172 STATUS=CLOSED; evidence: named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer; UPSTREAM_SOURCE: frameworks/base/core/java/android/app/SharedPreferencesImpl.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "252": [
+   {
+    "request_id": "FR-252",
+    "parent_id": "FR-233",
+    "issue": 252,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-173] boolean persistence \u2014 storage/state (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-173"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-173 STATUS=CLOSED; evidence: named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer; UPSTREAM_SOURCE: frameworks/base/core/java/android/app/SharedPreferencesImpl.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "253": [
+   {
+    "request_id": "FR-253",
+    "parent_id": "FR-233",
+    "issue": 253,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-174] int persistence \u2014 storage/state (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-174"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-174 STATUS=CLOSED; evidence: named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer; UPSTREAM_SOURCE: frameworks/base/core/java/android/app/SharedPreferencesImpl.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "254": [
+   {
+    "request_id": "FR-254",
+    "parent_id": "FR-233",
+    "issue": 254,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-175] long persistence \u2014 storage/state (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-175"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-175 STATUS=CLOSED; evidence: named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer; UPSTREAM_SOURCE: frameworks/base/core/java/android/app/SharedPreferencesImpl.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "255": [
+   {
+    "request_id": "FR-255",
+    "parent_id": "FR-233",
+    "issue": 255,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-176] float persistence \u2014 storage/state (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-176"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-176 STATUS=CLOSED; evidence: named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer; UPSTREAM_SOURCE: frameworks/base/core/java/android/app/SharedPreferencesImpl.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "256": [
+   {
+    "request_id": "FR-256",
+    "parent_id": "FR-233",
+    "issue": 256,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-177] string persistence \u2014 storage/state (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-177"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-177 STATUS=CLOSED; evidence: named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer; UPSTREAM_SOURCE: frameworks/base/core/java/android/app/SharedPreferencesImpl.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "257": [
+   {
+    "request_id": "FR-257",
+    "parent_id": "FR-233",
+    "issue": 257,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-178] editor apply \u2014 storage/state (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-178"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-178 STATUS=CLOSED; evidence: named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer; UPSTREAM_SOURCE: frameworks/base/core/java/android/app/SharedPreferencesImpl.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "258": [
+   {
+    "request_id": "FR-258",
+    "parent_id": "FR-233",
+    "issue": 258,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-179] editor commit \u2014 storage/state (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-179"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-179 STATUS=CLOSED; evidence: named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer; UPSTREAM_SOURCE: frameworks/base/core/java/android/app/SharedPreferencesImpl.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "259": [
+   {
+    "request_id": "FR-259",
+    "parent_id": "FR-233",
+    "issue": 259,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-180] remove \u2014 storage/state (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-180"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-180 STATUS=CLOSED; evidence: named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer; UPSTREAM_SOURCE: frameworks/base/core/java/android/app/SharedPreferencesImpl.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "260": [
+   {
+    "request_id": "FR-260",
+    "parent_id": "FR-233",
+    "issue": 260,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-181] clear \u2014 storage/state (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-181"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-181 STATUS=CLOSED; evidence: named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer; UPSTREAM_SOURCE: frameworks/base/core/java/android/app/SharedPreferencesImpl.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "261": [
+   {
+    "request_id": "FR-261",
+    "parent_id": "FR-233",
+    "issue": 261,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-182] contains \u2014 storage/state (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-182"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-182 STATUS=CLOSED; evidence: named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer; UPSTREAM_SOURCE: frameworks/base/core/java/android/app/SharedPreferencesImpl.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "262": [
+   {
+    "request_id": "FR-262",
+    "parent_id": "FR-233",
+    "issue": 262,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-183] preference process persistence \u2014 storage/state (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-183"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-183 STATUS=CLOSED; evidence: named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer; UPSTREAM_SOURCE: frameworks/base/core/java/android/app/SharedPreferencesImpl.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "263": [
+   {
+    "request_id": "FR-263",
+    "parent_id": "FR-233",
+    "issue": 263,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-214] GIF disposal NONE \u2014 animation (OBSERVED)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "OBSERVED",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-214"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-214 STATUS=CLOSED; evidence: battery stage 's106_gif_law_test G1' (GIF89a disposal 1 (leave-in-place) composited over canvas \u2014 stbi_load_gif_from_mem; UPSTREAM_SOURCE: external/ (giflib decode law) + frameworks/base/graphics/android/graphics/Movie.java semantics \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "264": [
+   {
+    "request_id": "FR-264",
+    "parent_id": "FR-233",
+    "issue": 264,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-215] GIF disposal BACKGROUND \u2014 animation (OBSERVED)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "OBSERVED",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-215"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-215 STATUS=CLOSED; evidence: battery stage 's106_gif_law_test G2' (disposal 2 = restore to BACKGROUND (transparent black, GIF89a + Android/Skia law) ; UPSTREAM_SOURCE: external/ (giflib decode law) + frameworks/base/graphics/android/graphics/Movie.java semantics \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "265": [
+   {
+    "request_id": "FR-265",
+    "parent_id": "FR-233",
+    "issue": 265,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-216] GIF disposal PREVIOUS \u2014 animation (OBSERVED)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "OBSERVED",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-216"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-216 STATUS=CLOSED; evidence: battery stage 's106_gif_law_test G3' (disposal 3 = restore to PREVIOUS \u2014 FIXED stb two_back dangling pointer (OOB read a; UPSTREAM_SOURCE: external/ (giflib decode law) + frameworks/base/graphics/android/graphics/Movie.java semantics \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "266": [
+   {
+    "request_id": "FR-266",
+    "parent_id": "FR-233",
+    "issue": 266,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-248] HTTP GET \u2014 network (PENDING)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PENDING",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-248"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-248 STATUS=CLOSED; evidence: battery stage 's106_layout_net_law_test W1-W4' (REAL HTTP GET: parse_url decomposition, 200+exact body, 404 status prese; UPSTREAM_SOURCE: libcore/luni/src/main/java/java/net/ (URL/HttpURLConnection) + okhttp upstream \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "267": [
+   {
+    "request_id": "FR-267",
+    "parent_id": "FR-233",
+    "issue": 267,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-047] adaptive icon foreground \u2014 resource/asset (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-047"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-047 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test A1' (adaptive-icon background color fills the canvas); commit of record = S106 wa; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/AdaptiveIconDrawable.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "268": [
+   {
+    "request_id": "FR-268",
+    "parent_id": "FR-233",
+    "issue": 268,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-048] adaptive icon background \u2014 resource/asset (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-048"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-048 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test A2' (adaptive-icon foreground vector draws OVER background); commit of record = S; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/AdaptiveIconDrawable.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "269": [
+   {
+    "request_id": "FR-269",
+    "parent_id": "FR-233",
+    "issue": 269,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-052] Missing glyph detection \u2014 text/font (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-052"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-052 STATUS=CLOSED; evidence: battery stage 's106_text2_law_test X1' (uncovered codepoint (PUA U+E700) flags notdef_count>=1); commit of record = S106; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/Typeface.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "270": [
+   {
+    "request_id": "FR-270",
+    "parent_id": "FR-233",
+    "issue": 270,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-053] tofu detection \u2014 text/font (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-053"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-053 STATUS=CLOSED; evidence: battery stage 's106_text2_law_test X2' (covered mixed-script string reports notdef_count==0 (no false tofu)); commit of ; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/Typeface.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "273": [
+   {
+    "request_id": "FR-273",
+    "parent_id": "FR-233",
+    "issue": 273,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-061] lineSpacing \u2014 text/font (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-061"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-061 STATUS=CLOSED; evidence: battery stage 's106_text2_law_test X3' (line spacing mult=2 doubles line box; add=6 adds flat px (StaticLayout law)); co; UPSTREAM_SOURCE: frameworks/base/core/java/android/widget/TextView.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "274": [
+   {
+    "request_id": "FR-274",
+    "parent_id": "FR-233",
+    "issue": 274,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-062] includeFontPadding \u2014 text/font (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-062"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-062 STATUS=CLOSED; evidence: battery stage 's106_text2_law_test X4' (includeFontPadding: pad=true uses |fm.top| >= |fm.ascent|; pad=false tracks asce; UPSTREAM_SOURCE: frameworks/base/core/java/android/widget/TextView.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "275": [
+   {
+    "request_id": "FR-275",
+    "parent_id": "FR-233",
+    "issue": 275,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-067] font ascent \u2014 text/font (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-067"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-067 STATUS=CLOSED; evidence: battery stage 's106_text2_law_test X5' (font ascent positive + deterministic across calls); commit of record = S106 wave; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/Typeface.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "276": [
+   {
+    "request_id": "FR-276",
+    "parent_id": "FR-233",
+    "issue": 276,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-068] font descent \u2014 text/font (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-068"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-068 STATUS=CLOSED; evidence: battery stage 's106_text2_law_test X6' (descent positive; ascent+descent <= line_height); commit of record = S106 wave; ; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/Typeface.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "277": [
+   {
+    "request_id": "FR-277",
+    "parent_id": "FR-233",
+    "issue": 277,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-071] whitespace handling \u2014 text/font (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-071"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-071 STATUS=CLOSED; evidence: battery stage 's106_text2_law_test X7' (trailing spaces excluded from line width (layout law)); commit of record = S106 ; UPSTREAM_SOURCE: frameworks/base/core/java/android/widget/TextView.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "279": [
+   {
+    "request_id": "FR-279",
+    "parent_id": "FR-233",
+    "issue": 279,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-074] maxLines \u2014 text/font (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-074"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-074 STATUS=CLOSED; evidence: battery stage 's106_text2_law_test X8' (max_lines=2 caps block at 2 lines; FIXED off-by-one that emitted an extra empty ; UPSTREAM_SOURCE: frameworks/base/core/java/android/widget/TextView.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "280": [
+   {
+    "request_id": "FR-280",
+    "parent_id": "FR-233",
+    "issue": 280,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-075] singleLine \u2014 text/font (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-075"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-075 STATUS=CLOSED; evidence: battery stage 's106_text2_law_test X9' (singleLine (max_lines=1) never word-wraps); commit of record = S106 wave; batter; UPSTREAM_SOURCE: frameworks/base/core/java/android/widget/TextView.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "285": [
+   {
+    "request_id": "FR-285",
+    "parent_id": "FR-233",
+    "issue": 285,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-086] font file loading failure semantics \u2014 text/font (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-086"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-086 STATUS=CLOSED; evidence: battery stage 's106_text2_law_test X10' (unknown font family resolution falls back to usable face (honest failure semant; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/Typeface.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "286": [
+   {
+    "request_id": "FR-286",
+    "parent_id": "FR-233",
+    "issue": 286,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-087] Android resource font family \u2014 text/font (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-087"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-087 STATUS=CLOSED; evidence: battery stage 's106_text2_law_test X11' (resolve_family distinguishes monospace vs sans-serif faces); commit of record =; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/Typeface.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "287": [
+   {
+    "request_id": "FR-287",
+    "parent_id": "FR-233",
+    "issue": 287,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-088] downloadable-font failure fallback \u2014 text/font (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-088"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-088 STATUS=CLOSED; evidence: battery stage 's106_text2_law_test X12' (unavailable (downloadable) family falls back to system face \u2014 TextView fallback; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/Typeface.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "289": [
+   {
+    "request_id": "FR-289",
+    "parent_id": "FR-233",
+    "issue": 289,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-130] ViewGroup child ordering \u2014 layout/geometry (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-130"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-130 STATUS=CLOSED; evidence: battery stage 's106_layout_net_law_test L3' (ViewGroup children preserve document order; getChildAt/getChildCount resolv; UPSTREAM_SOURCE: frameworks/base/core/java/android/view/ViewGroup.java (onInterceptTouchEvent) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "291": [
+   {
+    "request_id": "FR-291",
+    "parent_id": "FR-233",
+    "issue": 291,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-002] Vector viewportWidth/viewportHeight \u2014 resource/asset (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-002"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-002 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test V1' (viewport units map by raster/vp scale (24u@2x vs 48u@1x ink bboxes exact)); ; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/VectorDrawable.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "292": [
+   {
+    "request_id": "FR-292",
+    "parent_id": "FR-233",
+    "issue": 292,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-003] Vector path fillType \u2014 resource/asset (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-003"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-003 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test V2' (fillType=evenOdd punches hole in overlap (center px alpha=0)); commit of rec; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/VectorDrawable.java (VPath) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "293": [
+   {
+    "request_id": "FR-293",
+    "parent_id": "FR-233",
+    "issue": 293,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-004] Vector path winding \u2014 resource/asset (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-004"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-004 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test V3' (nonZero fill winding-direction-insensitive (single reversed contour fills id; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/VectorDrawable.java (VPath) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "294": [
+   {
+    "request_id": "FR-294",
+    "parent_id": "FR-233",
+    "issue": 294,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-005] Vector path strokeWidth \u2014 resource/asset (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-005"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-005 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test V4' (stroke ink widens with strokeWidth; FIXED fill/stroke independence (stroke-o; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/VectorDrawable.java (VPath) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "298": [
+   {
+    "request_id": "FR-298",
+    "parent_id": "FR-233",
+    "issue": 298,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-009] Vector group pivotX/pivotY \u2014 resource/asset (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-009"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-009 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test V5' (pivot-relative transform composition law (scale2 about pivot0 vs pivot12 dif; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/VectorDrawable.java (VGroup) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "299": [
+   {
+    "request_id": "FR-299",
+    "parent_id": "FR-233",
+    "issue": 299,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-010] Vector group rotation \u2014 resource/asset (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-010"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-010 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test V5' (rotation 90 exact mapping (x,y)->(24-y,x) about pivot (12,12)); commit of re; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/VectorDrawable.java (VGroup) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "300": [
+   {
+    "request_id": "FR-300",
+    "parent_id": "FR-233",
+    "issue": 300,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-011] Vector group scale \u2014 resource/asset (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-011"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-011 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test V6' (group scaleX/Y 2 doubles ink bbox from pivot); commit of record = S106 wave;; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/VectorDrawable.java (VGroup) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "301": [
+   {
+    "request_id": "FR-301",
+    "parent_id": "FR-233",
+    "issue": 301,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-012] Vector group translation \u2014 resource/asset (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-012"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-012 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test V7' (group translateX/Y shifts ink by exact px); commit of record = S106 wave; ba; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/VectorDrawable.java (VGroup) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "302": [
+   {
+    "request_id": "FR-302",
+    "parent_id": "FR-233",
+    "issue": 302,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-013] Vector nested group transforms \u2014 resource/asset (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-013"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-013 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test V8' (nested group matrices compose in document order (outer translate \u2218 inner rot; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/VectorDrawable.java (VGroup) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "303": [
+   {
+    "request_id": "FR-303",
+    "parent_id": "FR-233",
+    "issue": 303,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-014] Vector alpha inheritance \u2014 resource/asset (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-014"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-014 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test V9' (IMPLEMENTED group android:alpha inheritance (multiplicative through the grou; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/VectorDrawable.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "305": [
+   {
+    "request_id": "FR-305",
+    "parent_id": "FR-233",
+    "issue": 305,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-016] Layer-list ordering \u2014 resource/asset (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-016"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-016 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test L1' (layer-list items parse in DOCUMENT ORDER with colors preserved); commit of r; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/LayerDrawable.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "306": [
+   {
+    "request_id": "FR-306",
+    "parent_id": "FR-233",
+    "issue": 306,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-017] Layer-list inset \u2014 resource/asset (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-017"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-017 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test L2' (layer-list left/top insets land as px offsets (12dp x density 2.625 = 32px)); UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/LayerDrawable.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "307": [
+   {
+    "request_id": "FR-307",
+    "parent_id": "FR-233",
+    "issue": 307,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-020] State-list selected state \u2014 resource/asset (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-020"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-020 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test S1' (state_selected=true picks the selected item (first-match)); commit of record; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/StateListDrawable.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "308": [
+   {
+    "request_id": "FR-308",
+    "parent_id": "FR-233",
+    "issue": 308,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-021] State-list disabled state \u2014 resource/asset (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-021"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-021 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test S2' (state_enabled=false picks the disabled item); commit of record = S106 wave; ; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/StateListDrawable.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "309": [
+   {
+    "request_id": "FR-309",
+    "parent_id": "FR-233",
+    "issue": 309,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-022] State-list checked state \u2014 resource/asset (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-022"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-022 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test S3' (IMPLEMENTED state_checked in BgStateItem + pick_state_list (AOSP Checkable f; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/StateListDrawable.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "310": [
+   {
+    "request_id": "FR-310",
+    "parent_id": "FR-233",
+    "issue": 310,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-023] State-list state fallback \u2014 resource/asset (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-023"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-023 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test S4' (no state match -> wildcard last item fallback); commit of record = S106 wave; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/StateListDrawable.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "313": [
+   {
+    "request_id": "FR-313",
+    "parent_id": "FR-233",
+    "issue": 313,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-046] mipmap XML indirection \u2014 resource/asset (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-046"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-046 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test M1' (mipmap XML indirection: @mipmap id -> resolve_full -> XML -> drawable refere; UPSTREAM_SOURCE: frameworks/base/core/java/android/content/res/Resources.java (alias/indirection) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "314": [
+   {
+    "request_id": "FR-314",
+    "parent_id": "FR-233",
+    "issue": 314,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-204] scaling filter quality classes \u2014 graphics/render (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-204"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-204 STATUS=CLOSED; evidence: battery stage 's106_cia_law_test C5' (draw_image_region nearest-neighbour upscale keeps block structure (Paint.FilterBit; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/Paint.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "315": [
+   {
+    "request_id": "FR-315",
+    "parent_id": "FR-233",
+    "issue": 315,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-207] canvas translation \u2014 graphics/render (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-207"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-207 STATUS=CLOSED; evidence: battery stage 's106_cia_law_test C1' (canvas translate maps by +t; T\u2218S != S\u2218T pre-concat law (Skia)); commit of record =; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/Canvas.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "316": [
+   {
+    "request_id": "FR-316",
+    "parent_id": "FR-233",
+    "issue": 316,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-208] canvas scale \u2014 graphics/render (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-208"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-208 STATUS=CLOSED; evidence: battery stage 's106_cia_law_test C2' (scale multiplies linear columns; mean_scale=sqrt|det| (Skia stroke law)); commit o; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/Canvas.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "317": [
+   {
+    "request_id": "FR-317",
+    "parent_id": "FR-233",
+    "issue": 317,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-209] canvas rotation \u2014 graphics/render (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-209"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-209 STATUS=CLOSED; evidence: battery stage 's106_cia_law_test C3' (rot90 maps +x onto +y (y-down clockwise); FIXED pre_rotate computing M\u00b7R\u1d40 (rotated; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/Canvas.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "318": [
+   {
+    "request_id": "FR-318",
+    "parent_id": "FR-233",
+    "issue": 318,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-210] nested transforms \u2014 graphics/render (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-210"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-210 STATUS=CLOSED; evidence: battery stage 's106_cia_law_test C4' (nested save/translate/rotate composes M0\u2218T\u2218R exactly (hand-verified)); commit of r; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/Canvas.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "319": [
+   {
+    "request_id": "FR-319",
+    "parent_id": "FR-233",
+    "issue": 319,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-146] event cancellation \u2014 input (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-146"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-146 STATUS=CLOSED; evidence: battery stage 's106_cia_law_test I1' (DOWN\u2192CANCEL unpresses, no click, no long-press (View.java L17172-17184 cleanup law; UPSTREAM_SOURCE: frameworks/base/core/java/android/view/ViewGroup.java (onInterceptTouchEvent) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "321": [
+   {
+    "request_id": "FR-321",
+    "parent_id": "FR-233",
+    "issue": 321,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-149] touch outside bounds \u2014 input (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-149"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-149 STATUS=CLOSED; evidence: battery stage 's106_cia_law_test I2' (touch outside bounds never targets/presses/clicks; in-bounds control clicks); comm; UPSTREAM_SOURCE: frameworks/base/core/java/android/view/ViewGroup.java (onInterceptTouchEvent) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "323": [
+   {
+    "request_id": "FR-323",
+    "parent_id": "FR-233",
+    "issue": 323,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-223] ValueAnimator basic timing \u2014 animation (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [
+     "d0f03cb7",
+     "92537dbd"
+    ],
+    "test_refs": [
+     "MG-223"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-223 STATUS=CLOSED; evidence: S99 run/s99/full_load/com.serwylo.babydots/obs_obs.log [ANIM] ValueAnimator.ofFloat -> animator obj=560; battery 105/105; UPSTREAM_SOURCE: frameworks/base/core/java/android/animation/ValueAnimator.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "331": [
+   {
+    "request_id": "FR-331",
+    "parent_id": "FR-233",
+    "issue": 331,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-231] SoundPool initialization \u2014 audio (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-231"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-231 STATUS=CLOSED; evidence: battery stage 's106_cia_law_test A2' (SoundPool construct\u2192load\u2192play: sample loaded, stream PLAYING, stop->STOPPED; audio; UPSTREAM_SOURCE: frameworks/base/media/java/android/media/SoundPool.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "332": [
+   {
+    "request_id": "FR-332",
+    "parent_id": "FR-233",
+    "issue": 332,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-232] MediaPlayer initialization \u2014 audio (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [],
+    "test_refs": [
+     "MG-232"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-232 STATUS=CLOSED; evidence: battery stage 's106_cia_law_test A1' (MediaPlayer IDLE\u2192INITIALIZED\u2192PREPARED\u2192STARTED\u2192PLAYBACK_COMPLETED with AOSP illegal; UPSTREAM_SOURCE: frameworks/base/media/java/android/media/SoundPool.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "333": [
+   {
+    "request_id": "FR-333",
+    "parent_id": "FR-233",
+    "issue": 333,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "[MG-233] resource audio loading \u2014 audio (PARTIAL)",
+    "acceptance_criteria": "executable test + source-backed law + runtime fixture",
+    "claimed_status": "PARTIAL",
+    "verified_status": "TESTED",
+    "evidence_level": "E2",
+    "commit_shas": [
+     "d963ff1e"
+    ],
+    "test_refs": [
+     "MG-233"
+    ],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "registry MG-233 STATUS=CLOSED; evidence: battery stage 's106_cia_law_test A3' (real RIFF/WAVE decodes to PCM (rate/channels/duration exact) via decode_audio_file; UPSTREAM_SOURCE: frameworks/base/media/java/android/media/SoundPool.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven"
+   }
+  ],
+  "334": [
+   {
+    "request_id": "FR-334",
+    "parent_id": "FR-354",
+    "issue": 334,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "GAMES-1 full-load 5-10 games end-to-end",
+    "acceptance_criteria": "autonomous play + rendered state change + reproducible evidence",
+    "claimed_status": "closed",
+    "verified_status": "VERIFIED",
+    "evidence_level": "E5",
+    "commit_shas": [],
+    "test_refs": [],
+    "runtime_refs": [],
+    "screenshot_refs": [
+     "docs/EXECUTED_GIFS.md"
+    ],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "wave delivered: snake/2048/tetris/tictactoe/dooz evidence packages"
+   }
+  ],
+  "335": [
+   {
+    "request_id": "FR-335",
+    "parent_id": "FR-354",
+    "issue": 335,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "GAMES-2 autonomous Snake Deluxe play",
+    "acceptance_criteria": "autonomous play + rendered state change + reproducible evidence",
+    "claimed_status": "closed",
+    "verified_status": "VERIFIED",
+    "evidence_level": "E5",
+    "commit_shas": [],
+    "test_refs": [],
+    "runtime_refs": [],
+    "screenshot_refs": [
+     "docs/EXECUTED_GIFS.md"
+    ],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "autoplay GIF + S79/S83 reproof matrix"
+   }
+  ],
+  "336": [
+   {
+    "request_id": "FR-336",
+    "parent_id": "FR-354",
+    "issue": 336,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "GAMES-3 house-building autonomous play (Minicraft)",
+    "acceptance_criteria": "autonomous play + rendered state change + reproducible evidence",
+    "claimed_status": "closed",
+    "verified_status": "OBSERVED",
+    "evidence_level": "E4",
+    "commit_shas": [],
+    "test_refs": [],
+    "runtime_refs": [],
+    "screenshot_refs": [
+     "docs/EXECUTED_GIFS.md"
+    ],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "minicraft_autoplay.gif exists (S98); full house-building loop not proven"
+   }
+  ],
+  "337": [
+   {
+    "request_id": "FR-337",
+    "parent_id": "FR-354",
+    "issue": 337,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "GAMES-4 NEW snake variant build+play",
+    "acceptance_criteria": "autonomous play + rendered state change + reproducible evidence",
+    "claimed_status": "closed",
+    "verified_status": "OBSERVED",
+    "evidence_level": "E4",
+    "commit_shas": [],
+    "test_refs": [],
+    "runtime_refs": [],
+    "screenshot_refs": [
+     "docs/EXECUTED_GIFS.md"
+    ],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "snakeneon_autoplay.gif exists (S98)"
+   }
+  ],
+  "338": [
+   {
+    "request_id": "FR-338",
+    "parent_id": "FR-354",
+    "issue": 338,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "GAMES-5 autonomous 2048 play",
+    "acceptance_criteria": "autonomous play + rendered state change + reproducible evidence",
+    "claimed_status": "closed",
+    "verified_status": "VERIFIED",
+    "evidence_level": "E5",
+    "commit_shas": [],
+    "test_refs": [],
+    "runtime_refs": [],
+    "screenshot_refs": [
+     "docs/EXECUTED_GIFS.md"
+    ],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "g2048 autoplay GIF + score-to-200 state change"
+   }
+  ],
+  "340": [
+   {
+    "request_id": "FR-340",
+    "parent_id": "FR-354",
+    "issue": 340,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "GAMES-7 autonomous TicTacToe Deluxe play",
+    "acceptance_criteria": "autonomous play + rendered state change + reproducible evidence",
+    "claimed_status": "closed",
+    "verified_status": "VERIFIED",
+    "evidence_level": "E4",
+    "commit_shas": [],
+    "test_refs": [],
+    "runtime_refs": [],
+    "screenshot_refs": [
+     "docs/EXECUTED_GIFS.md"
+    ],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "tictactoe GIF + session record"
+   }
+  ],
+  "341": [
+   {
+    "request_id": "FR-341",
+    "parent_id": "FR-354",
+    "issue": 341,
+    "source": "github-issue",
+    "date": "2026-09-24",
+    "request_text": "GAMES-8 wave evidence package + gh-pages GIFs",
+    "acceptance_criteria": "autonomous play + rendered state change + reproducible evidence",
+    "claimed_status": "closed",
+    "verified_status": "VERIFIED",
+    "evidence_level": "E4",
+    "commit_shas": [],
+    "test_refs": [],
+    "runtime_refs": [],
+    "screenshot_refs": [
+     "docs/EXECUTED_GIFS.md"
+    ],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "docs/EXECUTED_GIFS.md + canonical GIF set shipped"
+   }
+  ],
+  "342": [
+   {
+    "request_id": "FR-342",
+    "parent_id": "",
+    "issue": 342,
+    "source": "github-issue",
+    "date": "2026-09-25",
+    "request_text": "[F-NEW-165] androidx AppCompatDelegateImpl.createSubDecor theme-gate frontier \u2014 theme attr resolution gap for non-AppCompat-ancestor themes (mykanji family)",
+    "acceptance_criteria": "",
+    "claimed_status": "closed",
+    "verified_status": "TESTED",
+    "evidence_level": "E4",
+    "commit_shas": [
+     "c09bca02",
+     "2a86a3eb"
+    ],
+    "test_refs": [],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "root_registry.json id=F-NEW-165 raw status=ROOT-CAUSED-FIXED"
+   }
+  ],
+  "345": [
+   {
+    "request_id": "FR-345",
+    "parent_id": "",
+    "issue": 345,
+    "source": "github-issue",
+    "date": "2026-09-25",
+    "request_text": "[F-NEW-168] crash-on-launch family \u2014 rc=1 NPE chains (raumballer/tictactoe-classic) + dooz rc=-11 process-death",
+    "acceptance_criteria": "",
+    "claimed_status": "closed",
+    "verified_status": "OBSERVED",
+    "evidence_level": "E3",
+    "commit_shas": [
+     "71563e2e",
+     "08e669b5",
+     "0b9c9ec5",
+     "2a86a3eb"
+    ],
+    "test_refs": [],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "root_registry.json id=F-NEW-168 raw status=OBSERVED-FAIL"
+   }
+  ],
+  "347": [
+   {
+    "request_id": "FR-347",
+    "parent_id": "",
+    "issue": 347,
+    "source": "github-issue",
+    "date": "2026-09-25",
+    "request_text": "[F-NEW-169] dooz compose-navigation NPE chain \u2014 3 roots after rc=-11 fix",
+    "acceptance_criteria": "",
+    "claimed_status": "closed",
+    "verified_status": "OBSERVED",
+    "evidence_level": "E3",
+    "commit_shas": [
+     "71563e2e",
+     "2a86a3eb"
+    ],
+    "test_refs": [],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "root_registry.json id=F-NEW-169 raw status=OBSERVED-FAIL"
+   }
+  ],
+  "349": [
+   {
+    "request_id": "FR-349",
+    "parent_id": "",
+    "issue": 349,
+    "source": "github-issue",
+    "date": "2026-09-25",
+    "request_text": "S102-A solitaire R8-merged SavedStateRegistryController",
+    "acceptance_criteria": "",
+    "claimed_status": "closed",
+    "verified_status": "TESTED",
+    "evidence_level": "E4",
+    "commit_shas": [
+     "c31873bf",
+     "4fa24dde"
+    ],
+    "test_refs": [],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "fix recorded in worklog S102 wave; solitaire rendering evidence in wave records; root id S102-* NOT present in root_registry.json (registry coverage gap)"
+   }
+  ],
+  "350": [
+   {
+    "request_id": "FR-350",
+    "parent_id": "",
+    "issue": 350,
+    "source": "github-issue",
+    "date": "2026-09-25",
+    "request_text": "S102-B compose LocalDensity not present",
+    "acceptance_criteria": "",
+    "claimed_status": "closed",
+    "verified_status": "PARTIAL",
+    "evidence_level": "E3",
+    "commit_shas": [],
+    "test_refs": [],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "compose frontier open (WindowRecomposer host) \u2014 recorded as open family; root id S102-* NOT present in root_registry.json (registry coverage gap)"
+   }
+  ],
+  "352": [
+   {
+    "request_id": "FR-352",
+    "parent_id": "",
+    "issue": 352,
+    "source": "github-issue",
+    "date": "2026-09-25",
+    "request_text": "S102-D coroutines LockSupport.park spin",
+    "acceptance_criteria": "",
+    "claimed_status": "closed",
+    "verified_status": "TESTED",
+    "evidence_level": "E4",
+    "commit_shas": [],
+    "test_refs": [],
+    "runtime_refs": [],
+    "screenshot_refs": [],
+    "regression_refs": [],
+    "blockers": "",
+    "superseded_by": "",
+    "explanation": "LockSupport park law landed; worker spin resolved in session records; root id S102-* NOT present in root_registry.json (registry coverage gap)"
+   }
+  ]
+ },
+ "me_by_issue": {},
+ "titles": {
+  "1": "EXP-064 \u2014 REAL LOGIN IMAGE PROVEN BY PIXELS (OCR-validated PhoneView rendered)",
+  "2": "EXP-065 \u2014 Fix multi-DEX const-string bug (FIELD_PREFERRED_AUDIO_LANGUAGES leak resolved)",
+  "3": "EXP-066 \u2014 Multi-DEX semantic audit + OutlineTextContainerView text capture (Phone number label visible)",
+  "4": "EXP-067 \u2014 Resource resolution + AXML parser + Drawable decoding (real WebP images in Login UI)",
+  "5": "EXP-068 \u2014 Generic View inheritance + Floating Next button (semantic superclass resolution)",
+  "6": "EXP-069 \u2014 Generic text input + click dispatch: phone number injected + Next button clicked",
+  "7": "EXP-071 \u2014 Telegram Login \u2192 SMS Code Page Transition (CHECKPOINT_M PROVEN)",
+  "8": "MiniAndroid campaign evidence \u2014 verified achievements (REUSE-FIRST campaign, 2026-09-05)",
+  "10": "[EXEC] HelloWorld \u2014 APK Execution & Visual Proof",
+  "11": "[EXEC] TicTacToe \u2014 APK Execution & Gameplay Proof",
+  "12": "[EXEC] ConnectFour \u2014 APK Execution & Gameplay Proof",
+  "13": "[EXEC] AndroidGameSnake \u2014 Autonomous Gameplay Proof",
+  "15": "[EXEC] Unote \u2014 Runtime/UI Completion",
+  "17": "[EXEC] GMDice \u2014 APK Execution & Visual Proof",
+  "18": "[EXEC] MicroTimer \u2014 APK Execution & Visual Proof",
+  "68": "[GAME-044] com.smorgasbork.hotdeath \u2014 compatibility report",
+  "81": "[GAME-057] org.bobstuff.bobball \u2014 compatibility report",
+  "121": "[GAME-097] com.dozingcatsoftware.bouncy \u2014 compatibility report",
+  "166": "[APP-042] org.ucam.ssb22.pinyinfdroid \u2014 compatibility report",
+  "234": "[MG-051] Font fallback selection \u2014 text/font (PARTIAL)",
+  "235": "[MG-073] ellipsize \u2014 text/font (PARTIAL)",
+  "236": "[MG-080] Unicode combining marks \u2014 text/font (PARTIAL)",
+  "237": "[MG-081] RTL basic shaping \u2014 text/font (PARTIAL)",
+  "238": "[MG-082] Arabic joining \u2014 text/font (PARTIAL)",
+  "239": "[MG-083] emoji fallback \u2014 text/font (PARTIAL)",
+  "240": "[MG-084] surrogate pairs \u2014 text/font (PARTIAL)",
+  "241": "[MG-085] UTF-8/UTF-16 boundary \u2014 text/font (PARTIAL)",
+  "242": "[MG-115] requestLayout propagation \u2014 layout/geometry (PARTIAL)",
+  "243": "[MG-123] scroll offset \u2014 layout/geometry (PARTIAL)",
+  "244": "[MG-124] translationX \u2014 layout/geometry (PARTIAL)",
+  "245": "[MG-125] translationY \u2014 layout/geometry (PARTIAL)",
+  "246": "[MG-126] scaleX \u2014 layout/geometry (PARTIAL)",
+  "247": "[MG-127] scaleY \u2014 layout/geometry (PARTIAL)",
+  "248": "[MG-128] rotation \u2014 layout/geometry (PARTIAL)",
+  "249": "[MG-129] pivot \u2014 layout/geometry (PARTIAL)",
+  "250": "[MG-171] SharedPreferences default file \u2014 storage/state (PARTIAL)",
+  "251": "[MG-172] custom file \u2014 storage/state (PARTIAL)",
+  "252": "[MG-173] boolean persistence \u2014 storage/state (PARTIAL)",
+  "253": "[MG-174] int persistence \u2014 storage/state (PARTIAL)",
+  "254": "[MG-175] long persistence \u2014 storage/state (PARTIAL)",
+  "255": "[MG-176] float persistence \u2014 storage/state (PARTIAL)",
+  "256": "[MG-177] string persistence \u2014 storage/state (PARTIAL)",
+  "257": "[MG-178] editor apply \u2014 storage/state (PARTIAL)",
+  "258": "[MG-179] editor commit \u2014 storage/state (PARTIAL)",
+  "259": "[MG-180] remove \u2014 storage/state (PARTIAL)",
+  "260": "[MG-181] clear \u2014 storage/state (PARTIAL)",
+  "261": "[MG-182] contains \u2014 storage/state (PARTIAL)",
+  "262": "[MG-183] preference process persistence \u2014 storage/state (PARTIAL)",
+  "263": "[MG-214] GIF disposal NONE \u2014 animation (OBSERVED)",
+  "264": "[MG-215] GIF disposal BACKGROUND \u2014 animation (OBSERVED)",
+  "265": "[MG-216] GIF disposal PREVIOUS \u2014 animation (OBSERVED)",
+  "266": "[MG-248] HTTP GET \u2014 network (PENDING)",
+  "267": "[MG-047] adaptive icon foreground \u2014 resource/asset (PARTIAL)",
+  "268": "[MG-048] adaptive icon background \u2014 resource/asset (PARTIAL)",
+  "269": "[MG-052] Missing glyph detection \u2014 text/font (PARTIAL)",
+  "270": "[MG-053] tofu detection \u2014 text/font (PARTIAL)",
+  "273": "[MG-061] lineSpacing \u2014 text/font (PARTIAL)",
+  "274": "[MG-062] includeFontPadding \u2014 text/font (PARTIAL)",
+  "275": "[MG-067] font ascent \u2014 text/font (PARTIAL)",
+  "276": "[MG-068] font descent \u2014 text/font (PARTIAL)",
+  "277": "[MG-071] whitespace handling \u2014 text/font (PARTIAL)",
+  "279": "[MG-074] maxLines \u2014 text/font (PARTIAL)",
+  "280": "[MG-075] singleLine \u2014 text/font (PARTIAL)",
+  "285": "[MG-086] font file loading failure semantics \u2014 text/font (PARTIAL)",
+  "286": "[MG-087] Android resource font family \u2014 text/font (PARTIAL)",
+  "287": "[MG-088] downloadable-font failure fallback \u2014 text/font (PARTIAL)",
+  "289": "[MG-130] ViewGroup child ordering \u2014 layout/geometry (PARTIAL)",
+  "291": "[MG-002] Vector viewportWidth/viewportHeight \u2014 resource/asset (PARTIAL)",
+  "292": "[MG-003] Vector path fillType \u2014 resource/asset (PARTIAL)",
+  "293": "[MG-004] Vector path winding \u2014 resource/asset (PARTIAL)",
+  "294": "[MG-005] Vector path strokeWidth \u2014 resource/asset (PARTIAL)",
+  "298": "[MG-009] Vector group pivotX/pivotY \u2014 resource/asset (PARTIAL)",
+  "299": "[MG-010] Vector group rotation \u2014 resource/asset (PARTIAL)",
+  "300": "[MG-011] Vector group scale \u2014 resource/asset (PARTIAL)",
+  "301": "[MG-012] Vector group translation \u2014 resource/asset (PARTIAL)",
+  "302": "[MG-013] Vector nested group transforms \u2014 resource/asset (PARTIAL)",
+  "303": "[MG-014] Vector alpha inheritance \u2014 resource/asset (PARTIAL)",
+  "305": "[MG-016] Layer-list ordering \u2014 resource/asset (PARTIAL)",
+  "306": "[MG-017] Layer-list inset \u2014 resource/asset (PARTIAL)",
+  "307": "[MG-020] State-list selected state \u2014 resource/asset (PARTIAL)",
+  "308": "[MG-021] State-list disabled state \u2014 resource/asset (PARTIAL)",
+  "309": "[MG-022] State-list checked state \u2014 resource/asset (PARTIAL)",
+  "310": "[MG-023] State-list state fallback \u2014 resource/asset (PARTIAL)",
+  "313": "[MG-046] mipmap XML indirection \u2014 resource/asset (PARTIAL)",
+  "314": "[MG-204] scaling filter quality classes \u2014 graphics/render (PARTIAL)",
+  "315": "[MG-207] canvas translation \u2014 graphics/render (PARTIAL)",
+  "316": "[MG-208] canvas scale \u2014 graphics/render (PARTIAL)",
+  "317": "[MG-209] canvas rotation \u2014 graphics/render (PARTIAL)",
+  "318": "[MG-210] nested transforms \u2014 graphics/render (PARTIAL)",
+  "319": "[MG-146] event cancellation \u2014 input (PARTIAL)",
+  "321": "[MG-149] touch outside bounds \u2014 input (PARTIAL)",
+  "323": "[MG-223] ValueAnimator basic timing \u2014 animation (PARTIAL)",
+  "331": "[MG-231] SoundPool initialization \u2014 audio (PARTIAL)",
+  "332": "[MG-232] MediaPlayer initialization \u2014 audio (PARTIAL)",
+  "333": "[MG-233] resource audio loading \u2014 audio (PARTIAL)",
+  "334": "[GAMES-1] Full-load 5-10 games end-to-end (launch + render + interaction evidence)",
+  "335": "[GAMES-2] Autonomous Snake Deluxe play (self-play, no game-memory cheating)",
+  "336": "[GAMES-3] House-building autonomous play (Minicraft)",
+  "337": "[GAMES-4] NEW snake variant \u2014 build, load, autonomous play",
+  "338": "[GAMES-5] Autonomous 2048 play",
+  "340": "[GAMES-7] Autonomous TicTacToe Deluxe play",
+  "341": "[GAMES-8] Wave evidence package + gh-pages gameplay GIFs",
+  "342": "[F-NEW-165] androidx AppCompatDelegateImpl.createSubDecor theme-gate frontier \u2014 theme attr resolution gap for non-AppCompat-ancestor themes (mykanji family)",
+  "345": "[F-NEW-168] crash-on-launch family \u2014 rc=1 NPE chains (raumballer/tictactoe-classic) + dooz rc=-11 process-death",
+  "347": "[F-NEW-169] dooz compose-navigation NPE chain \u2014 3 roots after rc=-11 fix",
+  "349": "[S102-A] solitaire: R8-merged SavedStateRegistryController \u2014 getSavedStateProvider invoked on null registry receiver inside ComponentActivity.<init>",
+  "350": "[S102-B] compose frontier: 'CompositionLocal LocalDensity not present' \u2014 WindowRecomposer host wiring (solitaire, the real compose-runtime root)",
+  "352": "[S102-D] coroutines: CoroutineScheduler$Worker.tryPark interpreter spin (LockSupport.park has no blocking semantics)"
+ }
+}

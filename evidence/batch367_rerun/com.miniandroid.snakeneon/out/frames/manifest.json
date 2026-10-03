@@ -1,0 +1,128 @@
+{
+  "frame_count_requested": 3,
+  "frame_delay_ms": 300,
+  "frames": [
+    {
+      "event": "launch (no interaction)",
+      "file": "frame_000.png",
+      "index": 0,
+      "png_sha256": "477bb95e1e6398ce2bf743b3be28f11003bf25e67ccdb848da89b8ebaf2c1e56",
+      "sha256": "9bef11ffcc507414c30b0d3d8deb028abe19ac0a32e8fae1703b31ddf12ad732",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 18
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "UP",
+          "view_id": 19
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "DOWN",
+          "view_id": 20
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 21
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 6272,
+      "event": "timer (virtual +300ms)",
+      "file": "frame_001.png",
+      "index": 1,
+      "looper_virtual_ms": 370,
+      "png_sha256": "bf9a41d3ece5f1c7b630e5bd31640323e5694640cca902357abaafa52ee097d5",
+      "render_ok": true,
+      "runnables_fired": 0,
+      "sha256": "75b090c848e9f666862dfb807e335a2cbc77c5179e5cee62a67be71cc07beb03",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 18
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "UP",
+          "view_id": 19
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "DOWN",
+          "view_id": 20
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 21
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 6272,
+      "event": "timer (virtual +300ms)",
+      "file": "frame_002.png",
+      "index": 2,
+      "looper_virtual_ms": 670,
+      "png_sha256": "19b86fb5462057e1921c27761144f0dd4870bbc981e4201429c42b6d4c7ff87c",
+      "render_ok": true,
+      "runnables_fired": 0,
+      "sha256": "3e7d90edb79307f9958f3e7a8b73b124dc50587338fd03a544d0c0ffd47163f8",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "LEFT",
+          "view_id": 18
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "UP",
+          "view_id": 19
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "DOWN",
+          "view_id": 20
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "RIGHT",
+          "view_id": 21
+        }
+      ]
+    }
+  ],
+  "interactions": [
+    {
+      "after_frame_index": 1,
+      "down_record": {
+        "action": "ACTION_DOWN",
+        "consumed": false,
+        "law": "no touch target — dispatchTouchEvent returns false, no listener dispatch",
+        "root_id": 13,
+        "state_changes": [],
+        "target_view_id": 0,
+        "touch_target_chain": [],
+        "virtual_ms": 300,
+        "x": 540,
+        "y": 960
+      },
+      "event": "tap (scheduled F-117)",
+      "frame": 1,
+      "target_view_id": 0,
+      "x": 540,
+      "y": 960
+    }
+  ],
+  "runnables_fired_total": 0,
+  "screen": {
+    "height": 1920,
+    "width": 1080
+  }
+}

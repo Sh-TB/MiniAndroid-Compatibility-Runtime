@@ -1,0 +1,49 @@
+[
+ {
+  "url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/comments/5824897496",
+  "html_url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/334#issuecomment-5824897496",
+  "issue_url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/334",
+  "id": 5824897496,
+  "node_id": "IC_kwDOT2Ndhs8AAAABWzDh2A",
+  "user": {
+   "login": "Sh-TB",
+   "id": 298011935,
+   "node_id": "U_kgDOEcNNHw",
+   "avatar_url": "https://avatars.githubusercontent.com/u/298011935?v=4",
+   "gravatar_id": "",
+   "url": "https://api.github.com/users/Sh-TB",
+   "html_url": "https://github.com/Sh-TB",
+   "followers_url": "https://api.github.com/users/Sh-TB/followers",
+   "following_url": "https://api.github.com/users/Sh-TB/following{/other_user}",
+   "gists_url": "https://api.github.com/users/Sh-TB/gists{/gist_id}",
+   "starred_url": "https://api.github.com/users/Sh-TB/starred{/owner}{/repo}",
+   "subscriptions_url": "https://api.github.com/users/Sh-TB/subscriptions",
+   "organizations_url": "https://api.github.com/users/Sh-TB/orgs",
+   "repos_url": "https://api.github.com/users/Sh-TB/repos",
+   "events_url": "https://api.github.com/users/Sh-TB/events{/privacy}",
+   "received_events_url": "https://api.github.com/users/Sh-TB/received_events",
+   "type": "User",
+   "user_view_type": "public",
+   "site_admin": false
+  },
+  "created_at": "2026-09-25T01:01:19Z",
+  "updated_at": "2026-09-25T01:01:19Z",
+  "body": "**CLOSED \u2014 9/10 FULL LOAD PASS + 1 honest LOAD_ISSUE**\n\nEvidence: `docs/evidence/s98/games_full_load.json` (runner `scripts/s98/s98_games_full_load.py`)\n\n| Game | Source | Verdict | Ink | Interaction |\n|---|---|---|---|---|\n| snake-deluxe | in-house S80 | FULL_LOAD_PASS | 99.4% | tap\u2192SHA delta \u2713 |\n| **snake-neon (NEW)** | in-house S98 | FULL_LOAD_PASS | 100% | \u2713 |\n| 2048 | in-house S80 | FULL_LOAD_PASS | 99.7% | \u2713 |\n| tetris | in-house S80 | FULL_LOAD_PASS | 99.3% | \u2713 |\n| tictactoe-deluxe | in-house S83 | FULL_LOAD_PASS | 99.3% | \u2713 |\n| minicraft (house builder) | in-house S86 | FULL_LOAD_PASS | 99.5% | \u2713 |\n| fishrings | real corpus | FULL_LOAD_PASS | 100% | \u2713 |\n| tripeaks | real corpus | FULL_LOAD_PASS | 100% | \u2713 |\n| gmdice | real corpus | FULL_LOAD_PASS | 99.4% | \u2713 |\n| bouncy | real corpus | LOAD_ISSUE | \u2014 | multidex/APP-BOUNDARY family (tracked #227) |\n\n10 games rostered, 9 fully loaded with rendered-ink + view-tree + real-tap state-change evidence; bouncy's multidex unwind is recorded honestly against the known frontier family.",
+  "author_association": "OWNER",
+  "pin": null,
+  "reactions": {
+   "url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/comments/5824897496/reactions",
+   "total_count": 0,
+   "+1": 0,
+   "-1": 0,
+   "laugh": 0,
+   "hooray": 0,
+   "confused": 0,
+   "heart": 0,
+   "rocket": 0,
+   "eyes": 0
+  },
+  "performed_via_github_app": null,
+  "minimized": null
+ }
+]

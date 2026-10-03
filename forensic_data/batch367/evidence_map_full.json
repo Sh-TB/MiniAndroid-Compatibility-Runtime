@@ -1,0 +1,3075 @@
+[
+ {
+  "issue": 1,
+  "title": "EXP-064 \u2014 REAL LOGIN IMAGE PROVEN BY PIXELS (OCR-validated PhoneView rendered)",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-001",
+    "vs": "OBSERVED",
+    "lvl": "E3",
+    "commits": [
+     "1e1ec2b4",
+     "c322b479",
+     "1dda55ae",
+     "78c182f3"
+    ],
+    "expl": "Screenshot + OCR session evidence; predates golden/3-run laws; superseded by the S107+ Telegram chain.",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [],
+    "regr": []
+   }
+  ],
+  "mg_id": null,
+  "mg_status": null,
+  "mg_evidence": null,
+  "mg_api": null,
+  "mg_domain": null,
+  "mg_note": null
+ },
+ {
+  "issue": 2,
+  "title": "EXP-065 \u2014 Fix multi-DEX const-string bug (FIELD_PREFERRED_AUDIO_LANGUAGES leak resolved)",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-002",
+    "vs": "TESTED",
+    "lvl": "E3",
+    "commits": [
+     "ff073348",
+     "b327292d",
+     "78c182f3"
+    ],
+    "expl": "Session proof; law re-verified by later multi-DEX campaigns.",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [],
+    "regr": []
+   }
+  ],
+  "mg_id": null,
+  "mg_status": null,
+  "mg_evidence": null,
+  "mg_api": null,
+  "mg_domain": null,
+  "mg_note": null
+ },
+ {
+  "issue": 3,
+  "title": "EXP-066 \u2014 Multi-DEX semantic audit + OutlineTextContainerView text capture (Phone number label visible)",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-003",
+    "vs": "OBSERVED",
+    "lvl": "E3",
+    "commits": [
+     "1e1ec2b4"
+    ],
+    "expl": "Session evidence.",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [],
+    "regr": []
+   }
+  ],
+  "mg_id": null,
+  "mg_status": null,
+  "mg_evidence": null,
+  "mg_api": null,
+  "mg_domain": null,
+  "mg_note": null
+ },
+ {
+  "issue": 4,
+  "title": "EXP-067 \u2014 Resource resolution + AXML parser + Drawable decoding (real WebP images in Login UI)",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-004",
+    "vs": "OBSERVED",
+    "lvl": "E3",
+    "commits": [],
+    "expl": "Superseded by ARSC/AXML law waves (S126/S127 R-NEW-423).",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [],
+    "regr": []
+   }
+  ],
+  "mg_id": null,
+  "mg_status": null,
+  "mg_evidence": null,
+  "mg_api": null,
+  "mg_domain": null,
+  "mg_note": null
+ },
+ {
+  "issue": 5,
+  "title": "EXP-068 \u2014 Generic View inheritance + Floating Next button (semantic superclass resolution)",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-005",
+    "vs": "OBSERVED",
+    "lvl": "E3",
+    "commits": [],
+    "expl": "Session evidence.",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [],
+    "regr": []
+   }
+  ],
+  "mg_id": null,
+  "mg_status": null,
+  "mg_evidence": null,
+  "mg_api": null,
+  "mg_domain": null,
+  "mg_note": null
+ },
+ {
+  "issue": 6,
+  "title": "EXP-069 \u2014 Generic text input + click dispatch: phone number injected + Next button clicked",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-006",
+    "vs": "OBSERVED",
+    "lvl": "E3",
+    "commits": [],
+    "expl": "Session evidence.",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [],
+    "regr": []
+   }
+  ],
+  "mg_id": null,
+  "mg_status": null,
+  "mg_evidence": null,
+  "mg_api": null,
+  "mg_domain": null,
+  "mg_note": null
+ },
+ {
+  "issue": 7,
+  "title": "EXP-071 \u2014 Telegram Login \u2192 SMS Code Page Transition (CHECKPOINT_M PROVEN)",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-007",
+    "vs": "OBSERVED",
+    "lvl": "E4",
+    "commits": [],
+    "expl": ".agent/state.md checkpoint table records 15 checkpoints; session-bound, not re-verified at HEAD.",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [],
+    "regr": []
+   }
+  ],
+  "mg_id": null,
+  "mg_status": null,
+  "mg_evidence": null,
+  "mg_api": null,
+  "mg_domain": null,
+  "mg_note": null
+ },
+ {
+  "issue": 8,
+  "title": "MiniAndroid campaign evidence \u2014 verified achievements (REUSE-FIRST campaign, 2026-09-05)",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-008",
+    "vs": "SUPERSEDED",
+    "lvl": "E3",
+    "commits": [
+     "2e166f91",
+     "fd53167a",
+     "8ffc8760",
+     "d244fce7"
+    ],
+    "expl": "55-comment evidence thread; superseded by canonical registries (S84 law, one record per title).",
+    "superseded_by": "canonical registries (S84+)",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [],
+    "regr": []
+   }
+  ],
+  "mg_id": null,
+  "mg_status": null,
+  "mg_evidence": null,
+  "mg_api": null,
+  "mg_domain": null,
+  "mg_note": null
+ },
+ {
+  "issue": 10,
+  "title": "[EXEC] HelloWorld \u2014 APK Execution & Visual Proof",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-010",
+    "vs": "VERIFIED",
+    "lvl": "E5",
+    "commits": [
+     "c67230be",
+     "3505591b",
+     "135559eb",
+     "038f0be6"
+    ],
+    "expl": "battery + golden era",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [],
+    "regr": [
+     "scripts/working_vs_failing_probe.sh 2026-10-03 ALL PASS"
+    ]
+   }
+  ],
+  "mg_id": null,
+  "mg_status": null,
+  "mg_evidence": null,
+  "mg_api": null,
+  "mg_domain": null,
+  "mg_note": null
+ },
+ {
+  "issue": 11,
+  "title": "[EXEC] TicTacToe \u2014 APK Execution & Gameplay Proof",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-011",
+    "vs": "OBSERVED",
+    "lvl": "E3",
+    "commits": [],
+    "expl": "early session proof; canonical registry OBSERVED",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [
+     "docs/evidence/canonical/com.emmanuelmess.tictactoe.gif"
+    ],
+    "rt": [
+     "docs/evidence/canonical/registry.json"
+    ],
+    "tests": [],
+    "regr": []
+   }
+  ],
+  "mg_id": null,
+  "mg_status": null,
+  "mg_evidence": null,
+  "mg_api": null,
+  "mg_domain": null,
+  "mg_note": null
+ },
+ {
+  "issue": 12,
+  "title": "[EXEC] ConnectFour \u2014 APK Execution & Gameplay Proof",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-012",
+    "vs": "OBSERVED",
+    "lvl": "E3",
+    "commits": [],
+    "expl": "early session proof",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [],
+    "regr": []
+   }
+  ],
+  "mg_id": null,
+  "mg_status": null,
+  "mg_evidence": null,
+  "mg_api": null,
+  "mg_domain": null,
+  "mg_note": null
+ },
+ {
+  "issue": 13,
+  "title": "[EXEC] AndroidGameSnake \u2014 Autonomous Gameplay Proof",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-013",
+    "vs": "VERIFIED",
+    "lvl": "E5",
+    "commits": [],
+    "expl": "full gameplay loop; x2 runs + 4-run sweep; canonical GIF",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [
+     "docs/evidence/canonical/com.miniandroid.snakedeluxe.gif"
+    ],
+    "rt": [
+     "docs/evidence/canonical/registry.json"
+    ],
+    "tests": [],
+    "regr": [
+     "scripts/working_vs_failing_probe.sh 2026-10-03 ALL PASS"
+    ]
+   }
+  ],
+  "mg_id": null,
+  "mg_status": null,
+  "mg_evidence": null,
+  "mg_api": null,
+  "mg_domain": null,
+  "mg_note": null
+ },
+ {
+  "issue": 15,
+  "title": "[EXEC] Unote \u2014 Runtime/UI Completion",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-015",
+    "vs": "VERIFIED",
+    "lvl": "E5",
+    "commits": [
+     "ecc5adf4",
+     "aaf146c2"
+    ],
+    "expl": "golden 4f1a9e4e8f64fae8 x3 re-verified at HEAD 2026-10-03",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [
+     "docs/evidence/canonical/app.varlorg.unote.jpg"
+    ],
+    "rt": [
+     "docs/evidence/canonical/registry.json"
+    ],
+    "tests": [],
+    "regr": [
+     "scripts/working_vs_failing_probe.sh 2026-10-03 ALL PASS"
+    ]
+   }
+  ],
+  "mg_id": null,
+  "mg_status": null,
+  "mg_evidence": null,
+  "mg_api": null,
+  "mg_domain": null,
+  "mg_note": null
+ },
+ {
+  "issue": 17,
+  "title": "[EXEC] GMDice \u2014 APK Execution & Visual Proof",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-017",
+    "vs": "VERIFIED",
+    "lvl": "E4",
+    "commits": [
+     "ecc5adf4"
+    ],
+    "expl": "AXML inflation + OCR text verified (D05)",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [],
+    "regr": [
+     "scripts/working_vs_failing_probe.sh 2026-10-03 ALL PASS"
+    ]
+   }
+  ],
+  "mg_id": null,
+  "mg_status": null,
+  "mg_evidence": null,
+  "mg_api": null,
+  "mg_domain": null,
+  "mg_note": null
+ },
+ {
+  "issue": 18,
+  "title": "[EXEC] MicroTimer \u2014 APK Execution & Visual Proof",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-018",
+    "vs": "VERIFIED",
+    "lvl": "E5",
+    "commits": [
+     "ecc5adf4"
+    ],
+    "expl": "golden da73010a37dd0189 x3 re-verified at HEAD 2026-10-03",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [
+     "docs/evidence/canonical/dubrowgn.microtimer.jpg"
+    ],
+    "rt": [
+     "docs/evidence/canonical/registry.json"
+    ],
+    "tests": [],
+    "regr": [
+     "scripts/working_vs_failing_probe.sh 2026-10-03 ALL PASS"
+    ]
+   }
+  ],
+  "mg_id": null,
+  "mg_status": null,
+  "mg_evidence": null,
+  "mg_api": null,
+  "mg_domain": null,
+  "mg_note": null
+ },
+ {
+  "issue": 68,
+  "title": "[GAME-044] com.smorgasbork.hotdeath \u2014 compatibility report",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-068",
+    "vs": "VERIFIED",
+    "lvl": "E4",
+    "commits": [
+     "e59335d6"
+    ],
+    "expl": "canonical game registry record (checkpoints: )",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [
+     "docs/evidence/canonical/com.smorgasbork.hotdeath.gif"
+    ],
+    "rt": [
+     "docs/corpus/s82/title_registry.json"
+    ],
+    "tests": [],
+    "regr": []
+   }
+  ],
+  "mg_id": null,
+  "mg_status": null,
+  "mg_evidence": null,
+  "mg_api": null,
+  "mg_domain": null,
+  "mg_note": null
+ },
+ {
+  "issue": 81,
+  "title": "[GAME-057] org.bobstuff.bobball \u2014 compatibility report",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-081",
+    "vs": "VERIFIED",
+    "lvl": "E4",
+    "commits": [
+     "e59335d6"
+    ],
+    "expl": "canonical game registry record (checkpoints: )",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [
+     "docs/evidence/canonical/org.bobstuff.bobball.gif"
+    ],
+    "rt": [
+     "docs/corpus/s82/title_registry.json"
+    ],
+    "tests": [],
+    "regr": []
+   }
+  ],
+  "mg_id": null,
+  "mg_status": null,
+  "mg_evidence": null,
+  "mg_api": null,
+  "mg_domain": null,
+  "mg_note": null
+ },
+ {
+  "issue": 121,
+  "title": "[GAME-097] com.dozingcatsoftware.bouncy \u2014 compatibility report",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-121",
+    "vs": "VERIFIED",
+    "lvl": "E4",
+    "commits": [
+     "e59335d6"
+    ],
+    "expl": "canonical game registry record (checkpoints: )",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [
+     "docs/evidence/canonical/com.dozingcatsoftware.bouncy.gif"
+    ],
+    "rt": [
+     "docs/corpus/s82/title_registry.json"
+    ],
+    "tests": [],
+    "regr": []
+   }
+  ],
+  "mg_id": null,
+  "mg_status": null,
+  "mg_evidence": null,
+  "mg_api": null,
+  "mg_domain": null,
+  "mg_note": null
+ },
+ {
+  "issue": 166,
+  "title": "[APP-042] org.ucam.ssb22.pinyinfdroid \u2014 compatibility report",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-166",
+    "vs": "PENDING",
+    "lvl": "E0",
+    "commits": [
+     "e59335d6"
+    ],
+    "expl": "title registry: NOT_TESTED \u2014 no execution record found",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [
+     "docs/corpus/s82/title_registry.json"
+    ],
+    "tests": [],
+    "regr": []
+   }
+  ],
+  "mg_id": null,
+  "mg_status": null,
+  "mg_evidence": null,
+  "mg_api": null,
+  "mg_domain": null,
+  "mg_note": null
+ },
+ {
+  "issue": 234,
+  "title": "[MG-051] Font fallback selection \u2014 text/font (PARTIAL)",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-234",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [
+     "b6dc9077"
+    ],
+    "expl": "registry MG-051 STATUS=CLOSED; evidence: named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/Typeface.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-051"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-051",
+  "mg_status": "CLOSED",
+  "mg_evidence": "named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS",
+  "mg_api": "Font fallback selection",
+  "mg_domain": "text/font",
+  "mg_note": "HarfBuzz/FreeType/FriBidi pipeline implemented (TEXT-001 class); per-law battery fencing pending \u2014 queued"
+ },
+ {
+  "issue": 235,
+  "title": "[MG-073] ellipsize \u2014 text/font (PARTIAL)",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-235",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-073 STATUS=CLOSED; evidence: named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS; UPSTREAM_SOURCE: frameworks/base/core/java/android/widget/TextView.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-073"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-073",
+  "mg_status": "CLOSED",
+  "mg_evidence": "named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS",
+  "mg_api": "ellipsize",
+  "mg_domain": "text/font",
+  "mg_note": "HarfBuzz/FreeType/FriBidi pipeline implemented (TEXT-001 class); per-law battery fencing pending \u2014 queued"
+ },
+ {
+  "issue": 236,
+  "title": "[MG-080] Unicode combining marks \u2014 text/font (PARTIAL)",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-236",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-080 STATUS=CLOSED; evidence: named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS; UPSTREAM_SOURCE: external/icu (bidi/shaping) +HarfBuzz upstream \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-080"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-080",
+  "mg_status": "CLOSED",
+  "mg_evidence": "named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS",
+  "mg_api": "Unicode combining marks",
+  "mg_domain": "text/font",
+  "mg_note": "HarfBuzz/FreeType/FriBidi pipeline implemented (TEXT-001 class); per-law battery fencing pending \u2014 queued"
+ },
+ {
+  "issue": 237,
+  "title": "[MG-081] RTL basic shaping \u2014 text/font (PARTIAL)",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-237",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-081 STATUS=CLOSED; evidence: named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS; UPSTREAM_SOURCE: external/icu (bidi/shaping) +HarfBuzz upstream \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-081"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-081",
+  "mg_status": "CLOSED",
+  "mg_evidence": "named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS",
+  "mg_api": "RTL basic shaping",
+  "mg_domain": "text/font",
+  "mg_note": "HarfBuzz/FreeType/FriBidi pipeline implemented (TEXT-001 class); per-law battery fencing pending \u2014 queued"
+ },
+ {
+  "issue": 238,
+  "title": "[MG-082] Arabic joining \u2014 text/font (PARTIAL)",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-238",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-082 STATUS=CLOSED; evidence: named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS; UPSTREAM_SOURCE: external/icu (bidi/shaping) +HarfBuzz upstream \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-082"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-082",
+  "mg_status": "CLOSED",
+  "mg_evidence": "named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS",
+  "mg_api": "Arabic joining",
+  "mg_domain": "text/font",
+  "mg_note": "HarfBuzz/FreeType/FriBidi pipeline implemented (TEXT-001 class); per-law battery fencing pending \u2014 queued"
+ },
+ {
+  "issue": 239,
+  "title": "[MG-083] emoji fallback \u2014 text/font (PARTIAL)",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-239",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-083 STATUS=CLOSED; evidence: named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS; UPSTREAM_SOURCE: external/icu (bidi/shaping) +HarfBuzz upstream \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-083"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-083",
+  "mg_status": "CLOSED",
+  "mg_evidence": "named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS",
+  "mg_api": "emoji fallback",
+  "mg_domain": "text/font",
+  "mg_note": "HarfBuzz/FreeType/FriBidi pipeline implemented (TEXT-001 class); per-law battery fencing pending \u2014 queued"
+ },
+ {
+  "issue": 240,
+  "title": "[MG-084] surrogate pairs \u2014 text/font (PARTIAL)",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-240",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-084 STATUS=CLOSED; evidence: named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS; UPSTREAM_SOURCE: external/icu (bidi/shaping) +HarfBuzz upstream \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-084"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-084",
+  "mg_status": "CLOSED",
+  "mg_evidence": "named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS",
+  "mg_api": "surrogate pairs",
+  "mg_domain": "text/font",
+  "mg_note": "HarfBuzz/FreeType/FriBidi pipeline implemented (TEXT-001 class); per-law battery fencing pending \u2014 queued"
+ },
+ {
+  "issue": 241,
+  "title": "[MG-085] UTF-8/UTF-16 boundary \u2014 text/font (PARTIAL)",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-241",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-085 STATUS=CLOSED; evidence: named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS; UPSTREAM_SOURCE: external/icu (bidi/shaping) +HarfBuzz upstream \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-085"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-085",
+  "mg_status": "CLOSED",
+  "mg_evidence": "named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS",
+  "mg_api": "UTF-8/UTF-16 boundary",
+  "mg_domain": "text/font",
+  "mg_note": "HarfBuzz/FreeType/FriBidi pipeline implemented (TEXT-001 class); per-law battery fencing pending \u2014 queued"
+ },
+ {
+  "issue": 242,
+  "title": "[MG-115] requestLayout propagation \u2014 layout/geometry (PARTIAL)",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-242",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-115 STATUS=CLOSED; evidence: battery stage 's106_layout_net_law_test L1/L2' (FIXED View.requestLayout() bridge swallowing the call as no-op \u2014 now rai; UPSTREAM_SOURCE: frameworks/base/core/java/android/view/View.java (measure/layout) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-115"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-115",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_layout_net_law_test L1/L2' (FIXED View.requestLayout() bridge swallowing the call as no-op \u2014 now raises the R-NEW-302 layout_dirty traversal flag (AOSP PFLAG_FORCE_LAYOUT law); setLayoutParams path re-verified); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "requestLayout propagation",
+  "mg_domain": "layout/geometry",
+  "mg_note": "render-path properties implemented (S94 transform laws); dedicated law tests pending"
+ },
+ {
+  "issue": 243,
+  "title": "[MG-123] scroll offset \u2014 layout/geometry (PARTIAL)",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-243",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [
+     "b6dc9077"
+    ],
+    "expl": "registry MG-123 STATUS=CLOSED; evidence: named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS; UPSTREAM_SOURCE: frameworks/base/core/java/android/view/View.java (measure/layout) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-123"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-123",
+  "mg_status": "CLOSED",
+  "mg_evidence": "named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS",
+  "mg_api": "scroll offset",
+  "mg_domain": "layout/geometry",
+  "mg_note": "render-path properties implemented (S94 transform laws); dedicated law tests pending"
+ },
+ {
+  "issue": 244,
+  "title": "[MG-124] translationX \u2014 layout/geometry (PARTIAL)",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-244",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-124 STATUS=CLOSED; evidence: named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS; UPSTREAM_SOURCE: frameworks/base/core/java/android/view/View.java (measure/layout) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-124"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-124",
+  "mg_status": "CLOSED",
+  "mg_evidence": "named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS",
+  "mg_api": "translationX",
+  "mg_domain": "layout/geometry",
+  "mg_note": "render-path properties implemented (S94 transform laws); dedicated law tests pending"
+ },
+ {
+  "issue": 245,
+  "title": "[MG-125] translationY \u2014 layout/geometry (PARTIAL)",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-245",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-125 STATUS=CLOSED; evidence: named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS; UPSTREAM_SOURCE: frameworks/base/core/java/android/view/View.java (measure/layout) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-125"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-125",
+  "mg_status": "CLOSED",
+  "mg_evidence": "named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS",
+  "mg_api": "translationY",
+  "mg_domain": "layout/geometry",
+  "mg_note": "render-path properties implemented (S94 transform laws); dedicated law tests pending"
+ },
+ {
+  "issue": 246,
+  "title": "[MG-126] scaleX \u2014 layout/geometry (PARTIAL)",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-246",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-126 STATUS=CLOSED; evidence: named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS; UPSTREAM_SOURCE: frameworks/base/core/java/android/view/View.java (measure/layout) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-126"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-126",
+  "mg_status": "CLOSED",
+  "mg_evidence": "named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS",
+  "mg_api": "scaleX",
+  "mg_domain": "layout/geometry",
+  "mg_note": "render-path properties implemented (S94 transform laws); dedicated law tests pending"
+ },
+ {
+  "issue": 247,
+  "title": "[MG-127] scaleY \u2014 layout/geometry (PARTIAL)",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-247",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-127 STATUS=CLOSED; evidence: named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS; UPSTREAM_SOURCE: frameworks/base/core/java/android/view/View.java (measure/layout) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-127"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-127",
+  "mg_status": "CLOSED",
+  "mg_evidence": "named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS",
+  "mg_api": "scaleY",
+  "mg_domain": "layout/geometry",
+  "mg_note": "render-path properties implemented (S94 transform laws); dedicated law tests pending"
+ },
+ {
+  "issue": 248,
+  "title": "[MG-128] rotation \u2014 layout/geometry (PARTIAL)",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-248",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-128 STATUS=CLOSED; evidence: named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS; UPSTREAM_SOURCE: frameworks/base/core/java/android/view/View.java (measure/layout) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-128"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-128",
+  "mg_status": "CLOSED",
+  "mg_evidence": "named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS",
+  "mg_api": "rotation",
+  "mg_domain": "layout/geometry",
+  "mg_note": "render-path properties implemented (S94 transform laws); dedicated law tests pending"
+ },
+ {
+  "issue": 249,
+  "title": "[MG-129] pivot \u2014 layout/geometry (PARTIAL)",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-249",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-129 STATUS=CLOSED; evidence: named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS; UPSTREAM_SOURCE: frameworks/base/core/java/android/view/View.java (measure/layout) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-129"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-129",
+  "mg_status": "CLOSED",
+  "mg_evidence": "named battery stage 's98 text laws (expect 21)' / 's98 scroll/transform laws (expect 13)'; canonical battery ALL PASS",
+  "mg_api": "pivot",
+  "mg_domain": "layout/geometry",
+  "mg_note": "render-path properties implemented (S94 transform laws); dedicated law tests pending"
+ },
+ {
+  "issue": 250,
+  "title": "[MG-171] SharedPreferences default file \u2014 storage/state (PARTIAL)",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-250",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-171 STATUS=CLOSED; evidence: named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer; UPSTREAM_SOURCE: frameworks/base/core/java/android/app/SharedPreferencesImpl.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-171"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-171",
+  "mg_status": "CLOSED",
+  "mg_evidence": "named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer",
+  "mg_api": "SharedPreferences default file",
+  "mg_domain": "storage/state",
+  "mg_note": "SharedPreferences shadow implemented (F-026/027 fixtures use it); process-persistence machine proof pending"
+ },
+ {
+  "issue": 251,
+  "title": "[MG-172] custom file \u2014 storage/state (PARTIAL)",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-251",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-172 STATUS=CLOSED; evidence: named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer; UPSTREAM_SOURCE: frameworks/base/core/java/android/app/SharedPreferencesImpl.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-172"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-172",
+  "mg_status": "CLOSED",
+  "mg_evidence": "named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer",
+  "mg_api": "custom file",
+  "mg_domain": "storage/state",
+  "mg_note": "SharedPreferences shadow implemented (F-026/027 fixtures use it); process-persistence machine proof pending"
+ },
+ {
+  "issue": 252,
+  "title": "[MG-173] boolean persistence \u2014 storage/state (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-252",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-173 STATUS=CLOSED; evidence: named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer; UPSTREAM_SOURCE: frameworks/base/core/java/android/app/SharedPreferencesImpl.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-173"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-173",
+  "mg_status": "CLOSED",
+  "mg_evidence": "named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer",
+  "mg_api": "boolean persistence",
+  "mg_domain": "storage/state",
+  "mg_note": "SharedPreferences shadow implemented (F-026/027 fixtures use it); process-persistence machine proof pending"
+ },
+ {
+  "issue": 253,
+  "title": "[MG-174] int persistence \u2014 storage/state (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-253",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-174 STATUS=CLOSED; evidence: named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer; UPSTREAM_SOURCE: frameworks/base/core/java/android/app/SharedPreferencesImpl.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-174"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-174",
+  "mg_status": "CLOSED",
+  "mg_evidence": "named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer",
+  "mg_api": "int persistence",
+  "mg_domain": "storage/state",
+  "mg_note": "SharedPreferences shadow implemented (F-026/027 fixtures use it); process-persistence machine proof pending"
+ },
+ {
+  "issue": 254,
+  "title": "[MG-175] long persistence \u2014 storage/state (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-254",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-175 STATUS=CLOSED; evidence: named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer; UPSTREAM_SOURCE: frameworks/base/core/java/android/app/SharedPreferencesImpl.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-175"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-175",
+  "mg_status": "CLOSED",
+  "mg_evidence": "named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer",
+  "mg_api": "long persistence",
+  "mg_domain": "storage/state",
+  "mg_note": "SharedPreferences shadow implemented (F-026/027 fixtures use it); process-persistence machine proof pending"
+ },
+ {
+  "issue": 255,
+  "title": "[MG-176] float persistence \u2014 storage/state (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-255",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-176 STATUS=CLOSED; evidence: named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer; UPSTREAM_SOURCE: frameworks/base/core/java/android/app/SharedPreferencesImpl.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-176"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-176",
+  "mg_status": "CLOSED",
+  "mg_evidence": "named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer",
+  "mg_api": "float persistence",
+  "mg_domain": "storage/state",
+  "mg_note": "SharedPreferences shadow implemented (F-026/027 fixtures use it); process-persistence machine proof pending"
+ },
+ {
+  "issue": 256,
+  "title": "[MG-177] string persistence \u2014 storage/state (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-256",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-177 STATUS=CLOSED; evidence: named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer; UPSTREAM_SOURCE: frameworks/base/core/java/android/app/SharedPreferencesImpl.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-177"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-177",
+  "mg_status": "CLOSED",
+  "mg_evidence": "named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer",
+  "mg_api": "string persistence",
+  "mg_domain": "storage/state",
+  "mg_note": "SharedPreferences shadow implemented (F-026/027 fixtures use it); process-persistence machine proof pending"
+ },
+ {
+  "issue": 257,
+  "title": "[MG-178] editor apply \u2014 storage/state (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-257",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-178 STATUS=CLOSED; evidence: named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer; UPSTREAM_SOURCE: frameworks/base/core/java/android/app/SharedPreferencesImpl.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-178"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-178",
+  "mg_status": "CLOSED",
+  "mg_evidence": "named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer",
+  "mg_api": "editor apply",
+  "mg_domain": "storage/state",
+  "mg_note": "SharedPreferences shadow implemented (F-026/027 fixtures use it); process-persistence machine proof pending"
+ },
+ {
+  "issue": 258,
+  "title": "[MG-179] editor commit \u2014 storage/state (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-258",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-179 STATUS=CLOSED; evidence: named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer; UPSTREAM_SOURCE: frameworks/base/core/java/android/app/SharedPreferencesImpl.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-179"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-179",
+  "mg_status": "CLOSED",
+  "mg_evidence": "named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer",
+  "mg_api": "editor commit",
+  "mg_domain": "storage/state",
+  "mg_note": "SharedPreferences shadow implemented (F-026/027 fixtures use it); process-persistence machine proof pending"
+ },
+ {
+  "issue": 259,
+  "title": "[MG-180] remove \u2014 storage/state (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-259",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-180 STATUS=CLOSED; evidence: named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer; UPSTREAM_SOURCE: frameworks/base/core/java/android/app/SharedPreferencesImpl.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-180"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-180",
+  "mg_status": "CLOSED",
+  "mg_evidence": "named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer",
+  "mg_api": "remove",
+  "mg_domain": "storage/state",
+  "mg_note": "SharedPreferences shadow implemented (F-026/027 fixtures use it); process-persistence machine proof pending"
+ },
+ {
+  "issue": 260,
+  "title": "[MG-181] clear \u2014 storage/state (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-260",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-181 STATUS=CLOSED; evidence: named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer; UPSTREAM_SOURCE: frameworks/base/core/java/android/app/SharedPreferencesImpl.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-181"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-181",
+  "mg_status": "CLOSED",
+  "mg_evidence": "named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer",
+  "mg_api": "clear",
+  "mg_domain": "storage/state",
+  "mg_note": "SharedPreferences shadow implemented (F-026/027 fixtures use it); process-persistence machine proof pending"
+ },
+ {
+  "issue": 261,
+  "title": "[MG-182] contains \u2014 storage/state (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-261",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-182 STATUS=CLOSED; evidence: named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer; UPSTREAM_SOURCE: frameworks/base/core/java/android/app/SharedPreferencesImpl.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-182"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-182",
+  "mg_status": "CLOSED",
+  "mg_evidence": "named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer",
+  "mg_api": "contains",
+  "mg_domain": "storage/state",
+  "mg_note": "SharedPreferences shadow implemented (F-026/027 fixtures use it); process-persistence machine proof pending"
+ },
+ {
+  "issue": 262,
+  "title": "[MG-183] preference process persistence \u2014 storage/state (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-262",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-183 STATUS=CLOSED; evidence: named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer; UPSTREAM_SOURCE: frameworks/base/core/java/android/app/SharedPreferencesImpl.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-183"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-183",
+  "mg_status": "CLOSED",
+  "mg_evidence": "named battery stage 's98 prefs laws (expect 15)' on the REAL AndroidAPI::SharedPreferences layer",
+  "mg_api": "preference process persistence",
+  "mg_domain": "storage/state",
+  "mg_note": "SharedPreferences shadow implemented (F-026/027 fixtures use it); process-persistence machine proof pending"
+ },
+ {
+  "issue": 263,
+  "title": "[MG-214] GIF disposal NONE \u2014 animation (OBSERVED)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-263",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-214 STATUS=CLOSED; evidence: battery stage 's106_gif_law_test G1' (GIF89a disposal 1 (leave-in-place) composited over canvas \u2014 stbi_load_gif_from_mem; UPSTREAM_SOURCE: external/ (giflib decode law) + frameworks/base/graphics/android/graphics/Movie.java semantics \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-214"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-214",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_gif_law_test G1' (GIF89a disposal 1 (leave-in-place) composited over canvas \u2014 stbi_load_gif_from_memory wired into GifDecoder; frame N content survives into N+1); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "GIF disposal NONE",
+  "mg_domain": "animation",
+  "mg_note": "12 canonical interactive GIFs prove frame progression/order/state change on real titles; GIF disposal classes implemented (S94/S95 GIF work); per-class machine fence pending"
+ },
+ {
+  "issue": 264,
+  "title": "[MG-215] GIF disposal BACKGROUND \u2014 animation (OBSERVED)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-264",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-215 STATUS=CLOSED; evidence: battery stage 's106_gif_law_test G2' (disposal 2 = restore to BACKGROUND (transparent black, GIF89a + Android/Skia law) ; UPSTREAM_SOURCE: external/ (giflib decode law) + frameworks/base/graphics/android/graphics/Movie.java semantics \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-215"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-215",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_gif_law_test G2' (disposal 2 = restore to BACKGROUND (transparent black, GIF89a + Android/Skia law) \u2014 FIXED vendored stb deviation (restored pre-frame canvas)); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "GIF disposal BACKGROUND",
+  "mg_domain": "animation",
+  "mg_note": "12 canonical interactive GIFs prove frame progression/order/state change on real titles; GIF disposal classes implemented (S94/S95 GIF work); per-class machine fence pending"
+ },
+ {
+  "issue": 265,
+  "title": "[MG-216] GIF disposal PREVIOUS \u2014 animation (OBSERVED)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-265",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-216 STATUS=CLOSED; evidence: battery stage 's106_gif_law_test G3' (disposal 3 = restore to PREVIOUS \u2014 FIXED stb two_back dangling pointer (OOB read a; UPSTREAM_SOURCE: external/ (giflib decode law) + frameworks/base/graphics/android/graphics/Movie.java semantics \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-216"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-216",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_gif_law_test G3' (disposal 3 = restore to PREVIOUS \u2014 FIXED stb two_back dangling pointer (OOB read across realloc) with per-GIF prev_canvas snapshot); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "GIF disposal PREVIOUS",
+  "mg_domain": "animation",
+  "mg_note": "12 canonical interactive GIFs prove frame progression/order/state change on real titles; GIF disposal classes implemented (S94/S95 GIF work); per-class machine fence pending"
+ },
+ {
+  "issue": 266,
+  "title": "[MG-248] HTTP GET \u2014 network (PENDING)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-266",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-248 STATUS=CLOSED; evidence: battery stage 's106_layout_net_law_test W1-W4' (REAL HTTP GET: parse_url decomposition, 200+exact body, 404 status prese; UPSTREAM_SOURCE: libcore/luni/src/main/java/java/net/ (URL/HttpURLConnection) + okhttp upstream \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-248"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-248",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_layout_net_law_test W1-W4' (REAL HTTP GET: parse_url decomposition, 200+exact body, 404 status preserved, transport error named (NET-001 client against a live local server)); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "HTTP GET",
+  "mg_domain": "network",
+  "mg_note": "NET-001 (only P0 ticket) \u2014 real HTTP(S) through existing shadow API; urlchecker first real-APK target"
+ },
+ {
+  "issue": 267,
+  "title": "[MG-047] adaptive icon foreground \u2014 resource/asset (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-267",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-047 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test A1' (adaptive-icon background color fills the canvas); commit of record = S106 wa; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/AdaptiveIconDrawable.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-047"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-047",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_drawables_law_test A1' (adaptive-icon background color fills the canvas); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "adaptive icon foreground",
+  "mg_domain": "resource/asset",
+  "mg_note": "source-backed laws in GRAPHICS_SOURCE_REGISTRY (S94/S95); vector family fan-out measured (3 cleared + ~30 themed beneficiaries); not individually battery-fenced"
+ },
+ {
+  "issue": 268,
+  "title": "[MG-048] adaptive icon background \u2014 resource/asset (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-268",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-048 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test A2' (adaptive-icon foreground vector draws OVER background); commit of record = S; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/AdaptiveIconDrawable.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-048"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-048",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_drawables_law_test A2' (adaptive-icon foreground vector draws OVER background); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "adaptive icon background",
+  "mg_domain": "resource/asset",
+  "mg_note": "source-backed laws in GRAPHICS_SOURCE_REGISTRY (S94/S95); vector family fan-out measured (3 cleared + ~30 themed beneficiaries); not individually battery-fenced"
+ },
+ {
+  "issue": 269,
+  "title": "[MG-052] Missing glyph detection \u2014 text/font (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-269",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-052 STATUS=CLOSED; evidence: battery stage 's106_text2_law_test X1' (uncovered codepoint (PUA U+E700) flags notdef_count>=1); commit of record = S106; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/Typeface.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-052"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-052",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_text2_law_test X1' (uncovered codepoint (PUA U+E700) flags notdef_count>=1); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "Missing glyph detection",
+  "mg_domain": "text/font",
+  "mg_note": "HarfBuzz/FreeType/FriBidi pipeline implemented (TEXT-001 class); per-law battery fencing pending \u2014 queued"
+ },
+ {
+  "issue": 270,
+  "title": "[MG-053] tofu detection \u2014 text/font (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-270",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-053 STATUS=CLOSED; evidence: battery stage 's106_text2_law_test X2' (covered mixed-script string reports notdef_count==0 (no false tofu)); commit of ; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/Typeface.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-053"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-053",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_text2_law_test X2' (covered mixed-script string reports notdef_count==0 (no false tofu)); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "tofu detection",
+  "mg_domain": "text/font",
+  "mg_note": "HarfBuzz/FreeType/FriBidi pipeline implemented (TEXT-001 class); per-law battery fencing pending \u2014 queued"
+ },
+ {
+  "issue": 273,
+  "title": "[MG-061] lineSpacing \u2014 text/font (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-273",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-061 STATUS=CLOSED; evidence: battery stage 's106_text2_law_test X3' (line spacing mult=2 doubles line box; add=6 adds flat px (StaticLayout law)); co; UPSTREAM_SOURCE: frameworks/base/core/java/android/widget/TextView.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-061"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-061",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_text2_law_test X3' (line spacing mult=2 doubles line box; add=6 adds flat px (StaticLayout law)); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "lineSpacing",
+  "mg_domain": "text/font",
+  "mg_note": "HarfBuzz/FreeType/FriBidi pipeline implemented (TEXT-001 class); per-law battery fencing pending \u2014 queued"
+ },
+ {
+  "issue": 274,
+  "title": "[MG-062] includeFontPadding \u2014 text/font (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-274",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-062 STATUS=CLOSED; evidence: battery stage 's106_text2_law_test X4' (includeFontPadding: pad=true uses |fm.top| >= |fm.ascent|; pad=false tracks asce; UPSTREAM_SOURCE: frameworks/base/core/java/android/widget/TextView.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-062"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-062",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_text2_law_test X4' (includeFontPadding: pad=true uses |fm.top| >= |fm.ascent|; pad=false tracks ascent exactly); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "includeFontPadding",
+  "mg_domain": "text/font",
+  "mg_note": "HarfBuzz/FreeType/FriBidi pipeline implemented (TEXT-001 class); per-law battery fencing pending \u2014 queued"
+ },
+ {
+  "issue": 275,
+  "title": "[MG-067] font ascent \u2014 text/font (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-275",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-067 STATUS=CLOSED; evidence: battery stage 's106_text2_law_test X5' (font ascent positive + deterministic across calls); commit of record = S106 wave; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/Typeface.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-067"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-067",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_text2_law_test X5' (font ascent positive + deterministic across calls); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "font ascent",
+  "mg_domain": "text/font",
+  "mg_note": "HarfBuzz/FreeType/FriBidi pipeline implemented (TEXT-001 class); per-law battery fencing pending \u2014 queued"
+ },
+ {
+  "issue": 276,
+  "title": "[MG-068] font descent \u2014 text/font (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-276",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-068 STATUS=CLOSED; evidence: battery stage 's106_text2_law_test X6' (descent positive; ascent+descent <= line_height); commit of record = S106 wave; ; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/Typeface.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-068"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-068",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_text2_law_test X6' (descent positive; ascent+descent <= line_height); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "font descent",
+  "mg_domain": "text/font",
+  "mg_note": "HarfBuzz/FreeType/FriBidi pipeline implemented (TEXT-001 class); per-law battery fencing pending \u2014 queued"
+ },
+ {
+  "issue": 277,
+  "title": "[MG-071] whitespace handling \u2014 text/font (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-277",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-071 STATUS=CLOSED; evidence: battery stage 's106_text2_law_test X7' (trailing spaces excluded from line width (layout law)); commit of record = S106 ; UPSTREAM_SOURCE: frameworks/base/core/java/android/widget/TextView.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-071"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-071",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_text2_law_test X7' (trailing spaces excluded from line width (layout law)); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "whitespace handling",
+  "mg_domain": "text/font",
+  "mg_note": "HarfBuzz/FreeType/FriBidi pipeline implemented (TEXT-001 class); per-law battery fencing pending \u2014 queued"
+ },
+ {
+  "issue": 279,
+  "title": "[MG-074] maxLines \u2014 text/font (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-279",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-074 STATUS=CLOSED; evidence: battery stage 's106_text2_law_test X8' (max_lines=2 caps block at 2 lines; FIXED off-by-one that emitted an extra empty ; UPSTREAM_SOURCE: frameworks/base/core/java/android/widget/TextView.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-074"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-074",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_text2_law_test X8' (max_lines=2 caps block at 2 lines; FIXED off-by-one that emitted an extra empty line past the cap); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "maxLines",
+  "mg_domain": "text/font",
+  "mg_note": "HarfBuzz/FreeType/FriBidi pipeline implemented (TEXT-001 class); per-law battery fencing pending \u2014 queued"
+ },
+ {
+  "issue": 280,
+  "title": "[MG-075] singleLine \u2014 text/font (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-280",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-075 STATUS=CLOSED; evidence: battery stage 's106_text2_law_test X9' (singleLine (max_lines=1) never word-wraps); commit of record = S106 wave; batter; UPSTREAM_SOURCE: frameworks/base/core/java/android/widget/TextView.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-075"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-075",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_text2_law_test X9' (singleLine (max_lines=1) never word-wraps); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "singleLine",
+  "mg_domain": "text/font",
+  "mg_note": "HarfBuzz/FreeType/FriBidi pipeline implemented (TEXT-001 class); per-law battery fencing pending \u2014 queued"
+ },
+ {
+  "issue": 285,
+  "title": "[MG-086] font file loading failure semantics \u2014 text/font (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-285",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-086 STATUS=CLOSED; evidence: battery stage 's106_text2_law_test X10' (unknown font family resolution falls back to usable face (honest failure semant; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/Typeface.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-086"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-086",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_text2_law_test X10' (unknown font family resolution falls back to usable face (honest failure semantics, no crash)); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "font file loading failure semantics",
+  "mg_domain": "text/font",
+  "mg_note": "HarfBuzz/FreeType/FriBidi pipeline implemented (TEXT-001 class); per-law battery fencing pending \u2014 queued"
+ },
+ {
+  "issue": 286,
+  "title": "[MG-087] Android resource font family \u2014 text/font (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-286",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-087 STATUS=CLOSED; evidence: battery stage 's106_text2_law_test X11' (resolve_family distinguishes monospace vs sans-serif faces); commit of record =; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/Typeface.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-087"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-087",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_text2_law_test X11' (resolve_family distinguishes monospace vs sans-serif faces); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "Android resource font family",
+  "mg_domain": "text/font",
+  "mg_note": "HarfBuzz/FreeType/FriBidi pipeline implemented (TEXT-001 class); per-law battery fencing pending \u2014 queued"
+ },
+ {
+  "issue": 287,
+  "title": "[MG-088] downloadable-font failure fallback \u2014 text/font (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-287",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-088 STATUS=CLOSED; evidence: battery stage 's106_text2_law_test X12' (unavailable (downloadable) family falls back to system face \u2014 TextView fallback; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/Typeface.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-088"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-088",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_text2_law_test X12' (unavailable (downloadable) family falls back to system face \u2014 TextView fallback law); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "downloadable-font failure fallback",
+  "mg_domain": "text/font",
+  "mg_note": "HarfBuzz/FreeType/FriBidi pipeline implemented (TEXT-001 class); per-law battery fencing pending \u2014 queued"
+ },
+ {
+  "issue": 289,
+  "title": "[MG-130] ViewGroup child ordering \u2014 layout/geometry (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-289",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-130 STATUS=CLOSED; evidence: battery stage 's106_layout_net_law_test L3' (ViewGroup children preserve document order; getChildAt/getChildCount resolv; UPSTREAM_SOURCE: frameworks/base/core/java/android/view/ViewGroup.java (onInterceptTouchEvent) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-130"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-130",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_layout_net_law_test L3' (ViewGroup children preserve document order; getChildAt/getChildCount resolve by index); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "ViewGroup child ordering",
+  "mg_domain": "layout/geometry",
+  "mg_note": "render-path properties implemented (S94 transform laws); dedicated law tests pending"
+ },
+ {
+  "issue": 291,
+  "title": "[MG-002] Vector viewportWidth/viewportHeight \u2014 resource/asset (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-291",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-002 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test V1' (viewport units map by raster/vp scale (24u@2x vs 48u@1x ink bboxes exact)); ; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/VectorDrawable.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-002"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-002",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_drawables_law_test V1' (viewport units map by raster/vp scale (24u@2x vs 48u@1x ink bboxes exact)); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "Vector viewportWidth/viewportHeight",
+  "mg_domain": "resource/asset",
+  "mg_note": "adaptive icon pipeline from S94/S95 source laws; icon-level verification pending"
+ },
+ {
+  "issue": 292,
+  "title": "[MG-003] Vector path fillType \u2014 resource/asset (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-292",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-003 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test V2' (fillType=evenOdd punches hole in overlap (center px alpha=0)); commit of rec; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/VectorDrawable.java (VPath) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-003"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-003",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_drawables_law_test V2' (fillType=evenOdd punches hole in overlap (center px alpha=0)); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "Vector path fillType",
+  "mg_domain": "resource/asset",
+  "mg_note": "adaptive icon pipeline from S94/S95 source laws; icon-level verification pending"
+ },
+ {
+  "issue": 293,
+  "title": "[MG-004] Vector path winding \u2014 resource/asset (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-293",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-004 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test V3' (nonZero fill winding-direction-insensitive (single reversed contour fills id; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/VectorDrawable.java (VPath) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-004"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-004",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_drawables_law_test V3' (nonZero fill winding-direction-insensitive (single reversed contour fills identically)); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "Vector path winding",
+  "mg_domain": "resource/asset",
+  "mg_note": "adaptive icon pipeline from S94/S95 source laws; icon-level verification pending"
+ },
+ {
+  "issue": 294,
+  "title": "[MG-005] Vector path strokeWidth \u2014 resource/asset (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-294",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-005 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test V4' (stroke ink widens with strokeWidth; FIXED fill/stroke independence (stroke-o; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/VectorDrawable.java (VPath) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-005"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-005",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_drawables_law_test V4' (stroke ink widens with strokeWidth; FIXED fill/stroke independence (stroke-only paths drew nothing)); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "Vector path strokeWidth",
+  "mg_domain": "resource/asset",
+  "mg_note": "adaptive icon pipeline from S94/S95 source laws; icon-level verification pending"
+ },
+ {
+  "issue": 298,
+  "title": "[MG-009] Vector group pivotX/pivotY \u2014 resource/asset (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-298",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-009 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test V5' (pivot-relative transform composition law (scale2 about pivot0 vs pivot12 dif; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/VectorDrawable.java (VGroup) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-009"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-009",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_drawables_law_test V5' (pivot-relative transform composition law (scale2 about pivot0 vs pivot12 differs by exactly pivot-delta*(s-1)*scale_px)); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "Vector group pivotX/pivotY",
+  "mg_domain": "resource/asset",
+  "mg_note": "adaptive icon pipeline from S94/S95 source laws; icon-level verification pending"
+ },
+ {
+  "issue": 299,
+  "title": "[MG-010] Vector group rotation \u2014 resource/asset (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-299",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-010 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test V5' (rotation 90 exact mapping (x,y)->(24-y,x) about pivot (12,12)); commit of re; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/VectorDrawable.java (VGroup) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-010"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-010",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_drawables_law_test V5' (rotation 90 exact mapping (x,y)->(24-y,x) about pivot (12,12)); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "Vector group rotation",
+  "mg_domain": "resource/asset",
+  "mg_note": "adaptive icon pipeline from S94/S95 source laws; icon-level verification pending"
+ },
+ {
+  "issue": 300,
+  "title": "[MG-011] Vector group scale \u2014 resource/asset (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-300",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-011 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test V6' (group scaleX/Y 2 doubles ink bbox from pivot); commit of record = S106 wave;; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/VectorDrawable.java (VGroup) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-011"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-011",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_drawables_law_test V6' (group scaleX/Y 2 doubles ink bbox from pivot); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "Vector group scale",
+  "mg_domain": "resource/asset",
+  "mg_note": "adaptive icon pipeline from S94/S95 source laws; icon-level verification pending"
+ },
+ {
+  "issue": 301,
+  "title": "[MG-012] Vector group translation \u2014 resource/asset (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-301",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-012 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test V7' (group translateX/Y shifts ink by exact px); commit of record = S106 wave; ba; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/VectorDrawable.java (VGroup) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-012"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-012",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_drawables_law_test V7' (group translateX/Y shifts ink by exact px); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "Vector group translation",
+  "mg_domain": "resource/asset",
+  "mg_note": "adaptive icon pipeline from S94/S95 source laws; icon-level verification pending"
+ },
+ {
+  "issue": 302,
+  "title": "[MG-013] Vector nested group transforms \u2014 resource/asset (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-302",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-013 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test V8' (nested group matrices compose in document order (outer translate \u2218 inner rot; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/VectorDrawable.java (VGroup) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-013"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-013",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_drawables_law_test V8' (nested group matrices compose in document order (outer translate \u2218 inner rotate)); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "Vector nested group transforms",
+  "mg_domain": "resource/asset",
+  "mg_note": "adaptive icon pipeline from S94/S95 source laws; icon-level verification pending"
+ },
+ {
+  "issue": 303,
+  "title": "[MG-014] Vector alpha inheritance \u2014 resource/asset (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-303",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-014 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test V9' (IMPLEMENTED group android:alpha inheritance (multiplicative through the grou; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/VectorDrawable.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-014"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-014",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_drawables_law_test V9' (IMPLEMENTED group android:alpha inheritance (multiplicative through the group chain; fill+stroke alpha multiply)); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "Vector alpha inheritance",
+  "mg_domain": "resource/asset",
+  "mg_note": "adaptive icon pipeline from S94/S95 source laws; icon-level verification pending"
+ },
+ {
+  "issue": 305,
+  "title": "[MG-016] Layer-list ordering \u2014 resource/asset (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-305",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-016 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test L1' (layer-list items parse in DOCUMENT ORDER with colors preserved); commit of r; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/LayerDrawable.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-016"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-016",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_drawables_law_test L1' (layer-list items parse in DOCUMENT ORDER with colors preserved); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "Layer-list ordering",
+  "mg_domain": "resource/asset",
+  "mg_note": "implemented in resource pipeline; corpus-level visual evidence via canonical GIFs; no dedicated law test"
+ },
+ {
+  "issue": 306,
+  "title": "[MG-017] Layer-list inset \u2014 resource/asset (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-306",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-017 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test L2' (layer-list left/top insets land as px offsets (12dp x density 2.625 = 32px)); UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/LayerDrawable.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-017"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-017",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_drawables_law_test L2' (layer-list left/top insets land as px offsets (12dp x density 2.625 = 32px)); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "Layer-list inset",
+  "mg_domain": "resource/asset",
+  "mg_note": "implemented in resource pipeline; corpus-level visual evidence via canonical GIFs; no dedicated law test"
+ },
+ {
+  "issue": 307,
+  "title": "[MG-020] State-list selected state \u2014 resource/asset (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-307",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-020 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test S1' (state_selected=true picks the selected item (first-match)); commit of record; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/StateListDrawable.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-020"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-020",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_drawables_law_test S1' (state_selected=true picks the selected item (first-match)); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "State-list selected state",
+  "mg_domain": "resource/asset",
+  "mg_note": "source-backed laws in GRAPHICS_SOURCE_REGISTRY (S94/S95); vector family fan-out measured (3 cleared + ~30 themed beneficiaries); not individually battery-fenced"
+ },
+ {
+  "issue": 308,
+  "title": "[MG-021] State-list disabled state \u2014 resource/asset (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-308",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-021 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test S2' (state_enabled=false picks the disabled item); commit of record = S106 wave; ; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/StateListDrawable.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-021"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-021",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_drawables_law_test S2' (state_enabled=false picks the disabled item); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "State-list disabled state",
+  "mg_domain": "resource/asset",
+  "mg_note": "source-backed laws in GRAPHICS_SOURCE_REGISTRY (S94/S95); vector family fan-out measured (3 cleared + ~30 themed beneficiaries); not individually battery-fenced"
+ },
+ {
+  "issue": 309,
+  "title": "[MG-022] State-list checked state \u2014 resource/asset (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-309",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-022 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test S3' (IMPLEMENTED state_checked in BgStateItem + pick_state_list (AOSP Checkable f; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/StateListDrawable.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-022"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-022",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_drawables_law_test S3' (IMPLEMENTED state_checked in BgStateItem + pick_state_list (AOSP Checkable family law)); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "State-list checked state",
+  "mg_domain": "resource/asset",
+  "mg_note": "source-backed laws in GRAPHICS_SOURCE_REGISTRY (S94/S95); vector family fan-out measured (3 cleared + ~30 themed beneficiaries); not individually battery-fenced"
+ },
+ {
+  "issue": 310,
+  "title": "[MG-023] State-list state fallback \u2014 resource/asset (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-310",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-023 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test S4' (no state match -> wildcard last item fallback); commit of record = S106 wave; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/drawable/StateListDrawable.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-023"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-023",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_drawables_law_test S4' (no state match -> wildcard last item fallback); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "State-list state fallback",
+  "mg_domain": "resource/asset",
+  "mg_note": "source-backed laws in GRAPHICS_SOURCE_REGISTRY (S94/S95); vector family fan-out measured (3 cleared + ~30 themed beneficiaries); not individually battery-fenced"
+ },
+ {
+  "issue": 313,
+  "title": "[MG-046] mipmap XML indirection \u2014 resource/asset (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-313",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-046 STATUS=CLOSED; evidence: battery stage 's106_drawables_law_test M1' (mipmap XML indirection: @mipmap id -> resolve_full -> XML -> drawable refere; UPSTREAM_SOURCE: frameworks/base/core/java/android/content/res/Resources.java (alias/indirection) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-046"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-046",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_drawables_law_test M1' (mipmap XML indirection: @mipmap id -> resolve_full -> XML -> drawable reference chain); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "mipmap XML indirection",
+  "mg_domain": "resource/asset",
+  "mg_note": "source-backed laws in GRAPHICS_SOURCE_REGISTRY (S94/S95); vector family fan-out measured (3 cleared + ~30 themed beneficiaries); not individually battery-fenced"
+ },
+ {
+  "issue": 314,
+  "title": "[MG-204] scaling filter quality classes \u2014 graphics/render (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-314",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-204 STATUS=CLOSED; evidence: battery stage 's106_cia_law_test C5' (draw_image_region nearest-neighbour upscale keeps block structure (Paint.FilterBit; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/Paint.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-204"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-204",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_cia_law_test C5' (draw_image_region nearest-neighbour upscale keeps block structure (Paint.FilterBitmap=false default law)); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "scaling filter quality classes",
+  "mg_domain": "graphics/render",
+  "mg_note": "FILTER_BITMAP flag semantics vs nearest law interaction pending fence"
+ },
+ {
+  "issue": 315,
+  "title": "[MG-207] canvas translation \u2014 graphics/render (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-315",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-207 STATUS=CLOSED; evidence: battery stage 's106_cia_law_test C1' (canvas translate maps by +t; T\u2218S != S\u2218T pre-concat law (Skia)); commit of record =; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/Canvas.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-207"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-207",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_cia_law_test C1' (canvas translate maps by +t; T\u2218S != S\u2218T pre-concat law (Skia)); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "canvas translation",
+  "mg_domain": "graphics/render",
+  "mg_note": "matrix ops implemented; transform-composition law tests pending (S94 transform laws exist)"
+ },
+ {
+  "issue": 316,
+  "title": "[MG-208] canvas scale \u2014 graphics/render (PARTIAL)",
+  "batch": "2",
+  "fr_rows": [
+   {
+    "rid": "FR-316",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-208 STATUS=CLOSED; evidence: battery stage 's106_cia_law_test C2' (scale multiplies linear columns; mean_scale=sqrt|det| (Skia stroke law)); commit o; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/Canvas.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-208"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-208",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_cia_law_test C2' (scale multiplies linear columns; mean_scale=sqrt|det| (Skia stroke law)); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "canvas scale",
+  "mg_domain": "graphics/render",
+  "mg_note": "matrix ops implemented; transform-composition law tests pending (S94 transform laws exist)"
+ },
+ {
+  "issue": 317,
+  "title": "[MG-209] canvas rotation \u2014 graphics/render (PARTIAL)",
+  "batch": "3",
+  "fr_rows": [
+   {
+    "rid": "FR-317",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-209 STATUS=CLOSED; evidence: battery stage 's106_cia_law_test C3' (rot90 maps +x onto +y (y-down clockwise); FIXED pre_rotate computing M\u00b7R\u1d40 (rotated; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/Canvas.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-209"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-209",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_cia_law_test C3' (rot90 maps +x onto +y (y-down clockwise); FIXED pre_rotate computing M\u00b7R\u1d40 (rotated the wrong way)); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "canvas rotation",
+  "mg_domain": "graphics/render",
+  "mg_note": "matrix ops implemented; transform-composition law tests pending (S94 transform laws exist)"
+ },
+ {
+  "issue": 318,
+  "title": "[MG-210] nested transforms \u2014 graphics/render (PARTIAL)",
+  "batch": "3",
+  "fr_rows": [
+   {
+    "rid": "FR-318",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-210 STATUS=CLOSED; evidence: battery stage 's106_cia_law_test C4' (nested save/translate/rotate composes M0\u2218T\u2218R exactly (hand-verified)); commit of r; UPSTREAM_SOURCE: frameworks/base/graphics/java/android/graphics/Canvas.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-210"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-210",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_cia_law_test C4' (nested save/translate/rotate composes M0\u2218T\u2218R exactly (hand-verified)); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "nested transforms",
+  "mg_domain": "graphics/render",
+  "mg_note": "matrix ops implemented; transform-composition law tests pending (S94 transform laws exist)"
+ },
+ {
+  "issue": 319,
+  "title": "[MG-146] event cancellation \u2014 input (PARTIAL)",
+  "batch": "3",
+  "fr_rows": [
+   {
+    "rid": "FR-319",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-146 STATUS=CLOSED; evidence: battery stage 's106_cia_law_test I1' (DOWN\u2192CANCEL unpresses, no click, no long-press (View.java L17172-17184 cleanup law; UPSTREAM_SOURCE: frameworks/base/core/java/android/view/ViewGroup.java (onInterceptTouchEvent) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-146"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-146",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_cia_law_test I1' (DOWN\u2192CANCEL unpresses, no click, no long-press (View.java L17172-17184 cleanup law)); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "event cancellation",
+  "mg_domain": "input",
+  "mg_note": "implemented in input pipeline; not individually fenced"
+ },
+ {
+  "issue": 321,
+  "title": "[MG-149] touch outside bounds \u2014 input (PARTIAL)",
+  "batch": "3",
+  "fr_rows": [
+   {
+    "rid": "FR-321",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-149 STATUS=CLOSED; evidence: battery stage 's106_cia_law_test I2' (touch outside bounds never targets/presses/clicks; in-bounds control clicks); comm; UPSTREAM_SOURCE: frameworks/base/core/java/android/view/ViewGroup.java (onInterceptTouchEvent) \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-149"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-149",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_cia_law_test I2' (touch outside bounds never targets/presses/clicks; in-bounds control clicks); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "touch outside bounds",
+  "mg_domain": "input",
+  "mg_note": "implemented in input pipeline; not individually fenced"
+ },
+ {
+  "issue": 323,
+  "title": "[MG-223] ValueAnimator basic timing \u2014 animation (PARTIAL)",
+  "batch": "3",
+  "fr_rows": [
+   {
+    "rid": "FR-323",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [
+     "d0f03cb7",
+     "92537dbd"
+    ],
+    "expl": "registry MG-223 STATUS=CLOSED; evidence: S99 run/s99/full_load/com.serwylo.babydots/obs_obs.log [ANIM] ValueAnimator.ofFloat -> animator obj=560; battery 105/105; UPSTREAM_SOURCE: frameworks/base/core/java/android/animation/ValueAnimator.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-223"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-223",
+  "mg_status": "CLOSED",
+  "mg_evidence": "S99 run/s99/full_load/com.serwylo.babydots/obs_obs.log [ANIM] ValueAnimator.ofFloat -> animator obj=560; battery 105/105 ALL PASS after landing",
+  "mg_api": "ValueAnimator basic timing",
+  "mg_domain": "animation",
+  "mg_note": "S99: shadow lands; animator-driving choreographer integration remains future work (getAnimatedValue pre-start null is the AOSP contract, animators do not yet tick the render clock)"
+ },
+ {
+  "issue": 331,
+  "title": "[MG-231] SoundPool initialization \u2014 audio (PARTIAL)",
+  "batch": "3",
+  "fr_rows": [
+   {
+    "rid": "FR-331",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-231 STATUS=CLOSED; evidence: battery stage 's106_cia_law_test A2' (SoundPool construct\u2192load\u2192play: sample loaded, stream PLAYING, stop->STOPPED; audio; UPSTREAM_SOURCE: frameworks/base/media/java/android/media/SoundPool.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-231"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-231",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_cia_law_test A2' (SoundPool construct\u2192load\u2192play: sample loaded, stream PLAYING, stop->STOPPED; audio module WIRED into the build (was source-only)); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "SoundPool initialization",
+  "mg_domain": "audio",
+  "mg_note": "audio engine IMPLEMENTED (real codecs incl. stb_vorbis) per CAPABILITY_MATRIX; machine playback evidence = AUDIO-001 queue (do NOT re-implement)"
+ },
+ {
+  "issue": 332,
+  "title": "[MG-232] MediaPlayer initialization \u2014 audio (PARTIAL)",
+  "batch": "3",
+  "fr_rows": [
+   {
+    "rid": "FR-332",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [],
+    "expl": "registry MG-232 STATUS=CLOSED; evidence: battery stage 's106_cia_law_test A1' (MediaPlayer IDLE\u2192INITIALIZED\u2192PREPARED\u2192STARTED\u2192PLAYBACK_COMPLETED with AOSP illegal; UPSTREAM_SOURCE: frameworks/base/media/java/android/media/SoundPool.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-232"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-232",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_cia_law_test A1' (MediaPlayer IDLE\u2192INITIALIZED\u2192PREPARED\u2192STARTED\u2192PLAYBACK_COMPLETED with AOSP illegal-transition error law); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "MediaPlayer initialization",
+  "mg_domain": "audio",
+  "mg_note": "audio engine IMPLEMENTED (real codecs incl. stb_vorbis) per CAPABILITY_MATRIX; machine playback evidence = AUDIO-001 queue (do NOT re-implement)"
+ },
+ {
+  "issue": 333,
+  "title": "[MG-233] resource audio loading \u2014 audio (PARTIAL)",
+  "batch": "3",
+  "fr_rows": [
+   {
+    "rid": "FR-333",
+    "vs": "TESTED",
+    "lvl": "E2",
+    "commits": [
+     "d963ff1e"
+    ],
+    "expl": "registry MG-233 STATUS=CLOSED; evidence: battery stage 's106_cia_law_test A3' (real RIFF/WAVE decodes to PCM (rate/channels/duration exact) via decode_audio_file; UPSTREAM_SOURCE: frameworks/base/media/java/android/media/SoundPool.java \u2014 battery/synthetic class: real-APK fan-out NOT individually proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [
+     "MG-233"
+    ],
+    "regr": []
+   }
+  ],
+  "mg_id": "MG-233",
+  "mg_status": "CLOSED",
+  "mg_evidence": "battery stage 's106_cia_law_test A3' (real RIFF/WAVE decodes to PCM (rate/channels/duration exact) via decode_audio_file); commit of record = S106 wave; battery ALL PASS at close",
+  "mg_api": "resource audio loading",
+  "mg_domain": "audio",
+  "mg_note": "audio engine IMPLEMENTED (real codecs incl. stb_vorbis) per CAPABILITY_MATRIX; machine playback evidence = AUDIO-001 queue (do NOT re-implement)"
+ },
+ {
+  "issue": 334,
+  "title": "[GAMES-1] Full-load 5-10 games end-to-end (launch + render + interaction evidence)",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-334",
+    "vs": "VERIFIED",
+    "lvl": "E5",
+    "commits": [],
+    "expl": "wave delivered: snake/2048/tetris/tictactoe/dooz evidence packages",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [
+     "docs/EXECUTED_GIFS.md"
+    ],
+    "rt": [],
+    "tests": [],
+    "regr": []
+   }
+  ],
+  "mg_id": null,
+  "mg_status": null,
+  "mg_evidence": null,
+  "mg_api": null,
+  "mg_domain": null,
+  "mg_note": null
+ },
+ {
+  "issue": 335,
+  "title": "[GAMES-2] Autonomous Snake Deluxe play (self-play, no game-memory cheating)",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-335",
+    "vs": "VERIFIED",
+    "lvl": "E5",
+    "commits": [],
+    "expl": "autoplay GIF + S79/S83 reproof matrix",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [
+     "docs/EXECUTED_GIFS.md"
+    ],
+    "rt": [],
+    "tests": [],
+    "regr": []
+   }
+  ],
+  "mg_id": null,
+  "mg_status": null,
+  "mg_evidence": null,
+  "mg_api": null,
+  "mg_domain": null,
+  "mg_note": null
+ },
+ {
+  "issue": 336,
+  "title": "[GAMES-3] House-building autonomous play (Minicraft)",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-336",
+    "vs": "OBSERVED",
+    "lvl": "E4",
+    "commits": [],
+    "expl": "minicraft_autoplay.gif exists (S98); full house-building loop not proven",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [
+     "docs/EXECUTED_GIFS.md"
+    ],
+    "rt": [],
+    "tests": [],
+    "regr": []
+   }
+  ],
+  "mg_id": null,
+  "mg_status": null,
+  "mg_evidence": null,
+  "mg_api": null,
+  "mg_domain": null,
+  "mg_note": null
+ },
+ {
+  "issue": 337,
+  "title": "[GAMES-4] NEW snake variant \u2014 build, load, autonomous play",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-337",
+    "vs": "OBSERVED",
+    "lvl": "E4",
+    "commits": [],
+    "expl": "snakeneon_autoplay.gif exists (S98)",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [
+     "docs/EXECUTED_GIFS.md"
+    ],
+    "rt": [],
+    "tests": [],
+    "regr": []
+   }
+  ],
+  "mg_id": null,
+  "mg_status": null,
+  "mg_evidence": null,
+  "mg_api": null,
+  "mg_domain": null,
+  "mg_note": null
+ },
+ {
+  "issue": 338,
+  "title": "[GAMES-5] Autonomous 2048 play",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-338",
+    "vs": "VERIFIED",
+    "lvl": "E5",
+    "commits": [],
+    "expl": "g2048 autoplay GIF + score-to-200 state change",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [
+     "docs/EXECUTED_GIFS.md"
+    ],
+    "rt": [],
+    "tests": [],
+    "regr": []
+   }
+  ],
+  "mg_id": null,
+  "mg_status": null,
+  "mg_evidence": null,
+  "mg_api": null,
+  "mg_domain": null,
+  "mg_note": null
+ },
+ {
+  "issue": 340,
+  "title": "[GAMES-7] Autonomous TicTacToe Deluxe play",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-340",
+    "vs": "VERIFIED",
+    "lvl": "E4",
+    "commits": [],
+    "expl": "tictactoe GIF + session record",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [
+     "docs/EXECUTED_GIFS.md"
+    ],
+    "rt": [],
+    "tests": [],
+    "regr": []
+   }
+  ],
+  "mg_id": null,
+  "mg_status": null,
+  "mg_evidence": null,
+  "mg_api": null,
+  "mg_domain": null,
+  "mg_note": null
+ },
+ {
+  "issue": 341,
+  "title": "[GAMES-8] Wave evidence package + gh-pages gameplay GIFs",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-341",
+    "vs": "VERIFIED",
+    "lvl": "E4",
+    "commits": [],
+    "expl": "docs/EXECUTED_GIFS.md + canonical GIF set shipped",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [
+     "docs/EXECUTED_GIFS.md"
+    ],
+    "rt": [],
+    "tests": [],
+    "regr": []
+   }
+  ],
+  "mg_id": null,
+  "mg_status": null,
+  "mg_evidence": null,
+  "mg_api": null,
+  "mg_domain": null,
+  "mg_note": null
+ },
+ {
+  "issue": 342,
+  "title": "[F-NEW-165] androidx AppCompatDelegateImpl.createSubDecor theme-gate frontier \u2014 theme attr resolution gap for non-AppCompat-ancestor themes (mykanji family)",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-342",
+    "vs": "TESTED",
+    "lvl": "E4",
+    "commits": [
+     "c09bca02",
+     "2a86a3eb"
+    ],
+    "expl": "root_registry.json id=F-NEW-165 raw status=ROOT-CAUSED-FIXED",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [],
+    "regr": []
+   }
+  ],
+  "mg_id": null,
+  "mg_status": null,
+  "mg_evidence": null,
+  "mg_api": null,
+  "mg_domain": null,
+  "mg_note": null
+ },
+ {
+  "issue": 345,
+  "title": "[F-NEW-168] crash-on-launch family \u2014 rc=1 NPE chains (raumballer/tictactoe-classic) + dooz rc=-11 process-death",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-345",
+    "vs": "OBSERVED",
+    "lvl": "E3",
+    "commits": [
+     "71563e2e",
+     "08e669b5",
+     "0b9c9ec5",
+     "2a86a3eb"
+    ],
+    "expl": "root_registry.json id=F-NEW-168 raw status=OBSERVED-FAIL",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [],
+    "regr": []
+   }
+  ],
+  "mg_id": null,
+  "mg_status": null,
+  "mg_evidence": null,
+  "mg_api": null,
+  "mg_domain": null,
+  "mg_note": null
+ },
+ {
+  "issue": 347,
+  "title": "[F-NEW-169] dooz compose-navigation NPE chain \u2014 3 roots after rc=-11 fix",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-347",
+    "vs": "OBSERVED",
+    "lvl": "E3",
+    "commits": [
+     "71563e2e",
+     "2a86a3eb"
+    ],
+    "expl": "root_registry.json id=F-NEW-169 raw status=OBSERVED-FAIL",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [],
+    "regr": []
+   }
+  ],
+  "mg_id": null,
+  "mg_status": null,
+  "mg_evidence": null,
+  "mg_api": null,
+  "mg_domain": null,
+  "mg_note": null
+ },
+ {
+  "issue": 349,
+  "title": "[S102-A] solitaire: R8-merged SavedStateRegistryController \u2014 getSavedStateProvider invoked on null registry receiver inside ComponentActivity.<init>",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-349",
+    "vs": "TESTED",
+    "lvl": "E4",
+    "commits": [
+     "c31873bf",
+     "4fa24dde"
+    ],
+    "expl": "fix recorded in worklog S102 wave; solitaire rendering evidence in wave records; root id S102-* NOT present in root_registry.json (registry coverage gap)",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [],
+    "regr": []
+   }
+  ],
+  "mg_id": null,
+  "mg_status": null,
+  "mg_evidence": null,
+  "mg_api": null,
+  "mg_domain": null,
+  "mg_note": null
+ },
+ {
+  "issue": 350,
+  "title": "[S102-B] compose frontier: 'CompositionLocal LocalDensity not present' \u2014 WindowRecomposer host wiring (solitaire, the real compose-runtime root)",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-350",
+    "vs": "PARTIAL",
+    "lvl": "E3",
+    "commits": [],
+    "expl": "compose frontier open (WindowRecomposer host) \u2014 recorded as open family; root id S102-* NOT present in root_registry.json (registry coverage gap)",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [],
+    "regr": []
+   }
+  ],
+  "mg_id": null,
+  "mg_status": null,
+  "mg_evidence": null,
+  "mg_api": null,
+  "mg_domain": null,
+  "mg_note": null
+ },
+ {
+  "issue": 352,
+  "title": "[S102-D] coroutines: CoroutineScheduler$Worker.tryPark interpreter spin (LockSupport.park has no blocking semantics)",
+  "batch": "1",
+  "fr_rows": [
+   {
+    "rid": "FR-352",
+    "vs": "TESTED",
+    "lvl": "E4",
+    "commits": [],
+    "expl": "LockSupport park law landed; worker spin resolved in session records; root id S102-* NOT present in root_registry.json (registry coverage gap)",
+    "superseded_by": "",
+    "blockers": "",
+    "ss": [],
+    "rt": [],
+    "tests": [],
+    "regr": []
+   }
+  ],
+  "mg_id": null,
+  "mg_status": null,
+  "mg_evidence": null,
+  "mg_api": null,
+  "mg_domain": null,
+  "mg_note": null
+ }
+]

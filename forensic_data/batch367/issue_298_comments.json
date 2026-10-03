@@ -1,0 +1,49 @@
+[
+ {
+  "url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/comments/5846744221",
+  "html_url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/298#issuecomment-5846744221",
+  "issue_url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/298",
+  "id": 5846744221,
+  "node_id": "IC_kwDOT2Ndhs8AAAABXH48nQ",
+  "user": {
+   "login": "Sh-TB",
+   "id": 298011935,
+   "node_id": "U_kgDOEcNNHw",
+   "avatar_url": "https://avatars.githubusercontent.com/u/298011935?v=4",
+   "gravatar_id": "",
+   "url": "https://api.github.com/users/Sh-TB",
+   "html_url": "https://github.com/Sh-TB",
+   "followers_url": "https://api.github.com/users/Sh-TB/followers",
+   "following_url": "https://api.github.com/users/Sh-TB/following{/other_user}",
+   "gists_url": "https://api.github.com/users/Sh-TB/gists{/gist_id}",
+   "starred_url": "https://api.github.com/users/Sh-TB/starred{/owner}{/repo}",
+   "subscriptions_url": "https://api.github.com/users/Sh-TB/subscriptions",
+   "organizations_url": "https://api.github.com/users/Sh-TB/orgs",
+   "repos_url": "https://api.github.com/users/Sh-TB/repos",
+   "events_url": "https://api.github.com/users/Sh-TB/events{/privacy}",
+   "received_events_url": "https://api.github.com/users/Sh-TB/received_events",
+   "type": "User",
+   "user_view_type": "public",
+   "site_admin": false
+  },
+  "created_at": "2026-09-26T13:42:15Z",
+  "updated_at": "2026-09-26T13:42:15Z",
+  "body": "## CLOSED \u2014 fenced by the S106 micro-gap wave (commit `7a0a8dab`)\n\n**Checkpoint:** `V5` in battery stage **\"s106 drawables laws (expect 39)\"** \u2014 PASS (stage registered in `scripts/test/run_test_battery.sh`; full battery ALL PASS, rc=0, at this commit).\n\n**AOSP/upstream law asserted:** pivot law: scale-2 about pivot(0,0) vs pivot(12,12) on the same square differs by exactly pivot-delta*(s-1)*scale_px = 24 px in both axes (AOSP VGroup pivot-relative composition).\n\n\n**Evidence standard (per the ticket's fix protocol):**\n- Reproduced against the REAL engine objects (no mocks): aapt2-built fixture APK `tests/fixtures/s106_drawables` \u2192 binary AXML \u2192 decode_vector_drawable / state_list / ResourceRuntime\n- Named battery stage added and green: `s106 drawables laws (expect 39)` (expect 39))\n- Full canonical battery ALL PASS (rc=0) at `7a0a8dab`; post-fix real-APK regression runs (dooz/ballbreak/solitaire/mykanji \u00d73) byte/semantics-identical \u2014 zero regressions\n- Registry synced: `docs/MICRO_GAP_REGISTRY.json` MG-009 \u2192 CLOSED (CLOSED count 32 \u2192 79)",
+  "author_association": "OWNER",
+  "pin": null,
+  "reactions": {
+   "url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/comments/5846744221/reactions",
+   "total_count": 0,
+   "+1": 0,
+   "-1": 0,
+   "laugh": 0,
+   "hooray": 0,
+   "confused": 0,
+   "heart": 0,
+   "rocket": 0,
+   "eyes": 0
+  },
+  "performed_via_github_app": null,
+  "minimized": null
+ }
+]

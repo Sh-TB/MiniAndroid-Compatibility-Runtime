@@ -1,0 +1,16 @@
+{
+ "title": "com.dozingcatsoftware.bouncy",
+ "apk": "/home/z/my-project/upload/canonical_apks/bouncy.apk",
+ "apk_sha16": "ffda0d9cb0b1b2aa",
+ "rc": 1,
+ "status": "PARTIAL SUCCESS \u26a0\ufe0f",
+ "wall_s": 1.5,
+ "screenshot_sha16": "b6dde6074bf47264",
+ "pixels": {
+  "unique_colors": 413,
+  "dominant_ratio": 0.5214,
+  "nonbg_ratio": 0.4786
+ },
+ "frame_delta_tap": false,
+ "runtime_head": "9c3dc4d1"
+}

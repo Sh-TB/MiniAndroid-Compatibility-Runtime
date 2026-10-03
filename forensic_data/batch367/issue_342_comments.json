@@ -1,0 +1,49 @@
+[
+ {
+  "url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/comments/5828938912",
+  "html_url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/342#issuecomment-5828938912",
+  "issue_url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/342",
+  "id": 5828938912,
+  "node_id": "IC_kwDOT2Ndhs8AAAABW26MoA",
+  "user": {
+   "login": "Sh-TB",
+   "id": 298011935,
+   "node_id": "U_kgDOEcNNHw",
+   "avatar_url": "https://avatars.githubusercontent.com/u/298011935?v=4",
+   "gravatar_id": "",
+   "url": "https://api.github.com/users/Sh-TB",
+   "html_url": "https://github.com/Sh-TB",
+   "followers_url": "https://api.github.com/users/Sh-TB/followers",
+   "following_url": "https://api.github.com/users/Sh-TB/following{/other_user}",
+   "gists_url": "https://api.github.com/users/Sh-TB/gists{/gist_id}",
+   "starred_url": "https://api.github.com/users/Sh-TB/starred{/owner}{/repo}",
+   "subscriptions_url": "https://api.github.com/users/Sh-TB/subscriptions",
+   "organizations_url": "https://api.github.com/users/Sh-TB/orgs",
+   "repos_url": "https://api.github.com/users/Sh-TB/repos",
+   "events_url": "https://api.github.com/users/Sh-TB/events{/privacy}",
+   "received_events_url": "https://api.github.com/users/Sh-TB/received_events",
+   "type": "User",
+   "user_view_type": "public",
+   "site_admin": false
+  },
+  "created_at": "2026-09-25T07:54:54Z",
+  "updated_at": "2026-09-25T07:54:54Z",
+  "body": "## S100: theme-gate ROOT CAUSE + FIX \u2014 ARSC parent-chain hop bound\n\n**Root cause (BAG-DIAG evidence):** `ArscParser::bag_value` walked the style\nparent chain with `max_parent_hops = 8`. MyKanji's theme\n`Theme.MyKanji (0x7f100274)` \u2192 `Theme.MaterialComponents.DayNight.DarkActionBar`\nchains through ~12-14 MaterialComponents/AppCompat style bridges; the walk hit\nthe bound at **hop 9 (`Theme.AppCompat.Light`, 0x7f100219)** and answered\nABSENT for `windowActionBar (0x7f03047c)` \u2192 `hasValue=false` \u2192 the appcompat\nISE \"You need to use a Theme.AppCompat theme (or descendant)\".\n\nAOSP ResourceTypes bounds the parent walk only by cycle detection \u2014 no hop\nlimit. Fix: bound raised 8 \u2192 32 (defensive, cycle-safe), with a bounded\nMINIANDROID_BAG_DIAG walk-evidence diagnostic.\n\n**Result:** the theme-gate ISE family no longer fires (0 occurrences in the\nre-run; 0 MAX-HOPS); MyKanji advances deep into appcompat decor\nconstruction. Battery ALL PASS. Remaining MyKanji failure is a NEW\nsub-family: ActionBarOverlayLayout.getDecorToolbar ISE (\"Can't make a decor\ntoolbar out of Toolbar/null\") \u2192 next ticket #348.",
+  "author_association": "OWNER",
+  "pin": null,
+  "reactions": {
+   "url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/comments/5828938912/reactions",
+   "total_count": 0,
+   "+1": 0,
+   "-1": 0,
+   "laugh": 0,
+   "hooray": 0,
+   "confused": 0,
+   "heart": 0,
+   "rocket": 0,
+   "eyes": 0
+  },
+  "performed_via_github_app": null,
+  "minimized": null
+ }
+]

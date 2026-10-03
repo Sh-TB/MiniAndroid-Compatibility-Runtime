@@ -1,0 +1,49 @@
+[
+ {
+  "url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/comments/5824898762",
+  "html_url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/337#issuecomment-5824898762",
+  "issue_url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/337",
+  "id": 5824898762,
+  "node_id": "IC_kwDOT2Ndhs8AAAABWzDmyg",
+  "user": {
+   "login": "Sh-TB",
+   "id": 298011935,
+   "node_id": "U_kgDOEcNNHw",
+   "avatar_url": "https://avatars.githubusercontent.com/u/298011935?v=4",
+   "gravatar_id": "",
+   "url": "https://api.github.com/users/Sh-TB",
+   "html_url": "https://github.com/Sh-TB",
+   "followers_url": "https://api.github.com/users/Sh-TB/followers",
+   "following_url": "https://api.github.com/users/Sh-TB/following{/other_user}",
+   "gists_url": "https://api.github.com/users/Sh-TB/gists{/gist_id}",
+   "starred_url": "https://api.github.com/users/Sh-TB/starred{/owner}{/repo}",
+   "subscriptions_url": "https://api.github.com/users/Sh-TB/subscriptions",
+   "organizations_url": "https://api.github.com/users/Sh-TB/orgs",
+   "repos_url": "https://api.github.com/users/Sh-TB/repos",
+   "events_url": "https://api.github.com/users/Sh-TB/events{/privacy}",
+   "received_events_url": "https://api.github.com/users/Sh-TB/received_events",
+   "type": "User",
+   "user_view_type": "public",
+   "site_admin": false
+  },
+  "created_at": "2026-09-25T01:01:26Z",
+  "updated_at": "2026-09-25T01:01:26Z",
+  "body": "**CLOSED \u2014 NEW snake variant built, loaded, autonomously played**\n\n`games/snake-neon` (com.miniandroid.snakeneon) \u2014 mechanically NEW: WRAP-AROUND walls + obstacle blocks + speed HUD. Built via the canonical aapt2/ECJ/D8 toolchain (`scripts/s98/s98_build_snakeneon.sh`), loaded on the runtime (9156 teal px + 1252 food px, 0 errors), and autonomously played by `scripts/s98/s98_snakeneon_autoplay.py`: wrap-aware BFS planner (reverse-guard-banned), full-path turn scheduling at the 1-move=2-frames tick law \u2014 snake ATE food and grew (len 3\u21924). Full source\u2192APK\u2192runtime\u2192pixel chain on fresh content. GIF: `docs/evidence/s98/snakeneon_autoplay.gif`",
+  "author_association": "OWNER",
+  "pin": null,
+  "reactions": {
+   "url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/comments/5824898762/reactions",
+   "total_count": 0,
+   "+1": 0,
+   "-1": 0,
+   "laugh": 0,
+   "hooray": 0,
+   "confused": 0,
+   "heart": 0,
+   "rocket": 0,
+   "eyes": 0
+  },
+  "performed_via_github_app": null,
+  "minimized": null
+ }
+]

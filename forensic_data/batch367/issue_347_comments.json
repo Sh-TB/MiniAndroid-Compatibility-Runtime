@@ -1,0 +1,49 @@
+[
+ {
+  "url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/comments/5846298309",
+  "html_url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/347#issuecomment-5846298309",
+  "issue_url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/347",
+  "id": 5846298309,
+  "node_id": "IC_kwDOT2Ndhs8AAAABXHduxQ",
+  "user": {
+   "login": "Sh-TB",
+   "id": 298011935,
+   "node_id": "U_kgDOEcNNHw",
+   "avatar_url": "https://avatars.githubusercontent.com/u/298011935?v=4",
+   "gravatar_id": "",
+   "url": "https://api.github.com/users/Sh-TB",
+   "html_url": "https://github.com/Sh-TB",
+   "followers_url": "https://api.github.com/users/Sh-TB/followers",
+   "following_url": "https://api.github.com/users/Sh-TB/following{/other_user}",
+   "gists_url": "https://api.github.com/users/Sh-TB/gists{/gist_id}",
+   "starred_url": "https://api.github.com/users/Sh-TB/starred{/owner}{/repo}",
+   "subscriptions_url": "https://api.github.com/users/Sh-TB/subscriptions",
+   "organizations_url": "https://api.github.com/users/Sh-TB/orgs",
+   "repos_url": "https://api.github.com/users/Sh-TB/repos",
+   "events_url": "https://api.github.com/users/Sh-TB/events{/privacy}",
+   "received_events_url": "https://api.github.com/users/Sh-TB/received_events",
+   "type": "User",
+   "user_view_type": "public",
+   "site_admin": false
+  },
+  "created_at": "2026-09-26T12:32:39Z",
+  "updated_at": "2026-09-26T12:32:39Z",
+  "body": "## CLOSED \u2014 all 3 named roots + 2 cascades executed with commits; fresh evidence at HEAD `176710b1`\n\nThe ticket listed 3 roots after the rc=-11 (SIGSEGV) fix, plus 2 handled-but-degraded items. Each was attacked individually:\n\n| # | Ticket symptom | Root + commit | Status |\n|---|----------------|---------------|--------|\n| 1 | `Handler.postAtFrontOfQueue` on null receiver at `Lr;.onAttachedToWindow pc=50` | `View.getHandler` law matched `class_name.find(\"View\")` \u2014 receiver's runtime class is `Lr;` (R8-obfuscated `AndroidComposeView`, no \"View\" substring) \u2192 law missed \u2192 null. Fix `7f3b1314`: dispatch via `is_subclass_of(class, Landroid/view/View;)` ancestry walk. | **GONE** |\n| 2 | `Object.getClass` on null at `Lox0;.a pc=30` \u2192 `Leo;.V pc=44` (follows `Lej0;.<clinit>` `Field.get` null \u2014 reflection family) | `Lsr;.run` worker spin root: park bridge destroyed enclosing drain depth \u2192 F084 halt; fix `871e209c` (depth save/restore + one rescan per boundary). The nav-NPE chain (`Lox0;.a \u2192 Leo;.V \u2192 Lnb0;.n \u2192 Lwo;.j \u2192 Lfb1;.J`) and Job double-completion ISE (`Loj0;.T`) were downstream cascades of the same scheduler root \u2014 all 0 rows post-fix. | **GONE** |\n| 3 | `View.getWidth` on null at `Lt4;.L pc=112` (inside Lt4.onLayout) | `Lt4;.L` caches `View.getRootView()` then calls `getWidth()/getHeight()`; engine had NO getRootView \u2192 null. Fix `f5849b87`: getRootView NEVER-NULL law (AOSP walk-parents / unattached-returns-self), bounded 64-hop ViewShadow ancestry walk. | **GONE** |\n\n**Fresh runtime evidence (S106 re-verification, 3/3 runs, HEAD `176710b1`, both APK variants):**\n```\nio.github.yamin8000.dooz_23:          6 errors x3 (was 17-18), exception-set hash d5c33116c62eff1d x3\nio.github.yamin8000.dooz_23_toplevel: 6 errors x3 (was 17 + HALT)\nF084 halt rows: 0 | APP BOUNDARY rows: 0 | Job ISE (Loj0;.T): 0 | nav NPE (Lox0;.a): 0\nscreenshot SHA 59fdbfcd60b86a23... x3 (matches S105 record)\nremaining 6 rows = EXC-UNWIND bookkeeping of ONE handled CancellationException (caught at Llo;.B)\n```\n**Regression:** battery 105/105 ALL PASS \u00d73 gates this wave-line; solitaire 0 errors; ballbreak SUCCESS 0 errors.\n\nNext dooz frontier (recomposition content) is tracked in the S105 report \u00a710; it is a different root than this ticket's 3. Logs: `evidence/s106_fresh/`.",
+  "author_association": "OWNER",
+  "pin": null,
+  "reactions": {
+   "url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/comments/5846298309/reactions",
+   "total_count": 0,
+   "+1": 0,
+   "-1": 0,
+   "laugh": 0,
+   "hooray": 0,
+   "confused": 0,
+   "heart": 0,
+   "rocket": 0,
+   "eyes": 0
+  },
+  "performed_via_github_app": null,
+  "minimized": null
+ }
+]

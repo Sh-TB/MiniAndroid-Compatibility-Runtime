@@ -1,0 +1,233 @@
+{
+  "frame_count_requested": 3,
+  "frame_delay_ms": 300,
+  "frames": [
+    {
+      "event": "launch (no interaction)",
+      "file": "frame_000.png",
+      "index": 0,
+      "png_sha256": "4ead94c20ffbd0f7bc7b20458272a409c68ee2a771bf4b7c5d9f0ca508452bcb",
+      "sha256": "f141b13341ec85fb817187ba5fea947b8b01a3179203173723110ca5d5b86acf",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "1",
+          "view_id": 21
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "2",
+          "view_id": 22
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "3",
+          "view_id": 23
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "4",
+          "view_id": 25
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "5",
+          "view_id": 26
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "6",
+          "view_id": 27
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "7",
+          "view_id": 29
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "8",
+          "view_id": 30
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "9",
+          "view_id": 31
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "NEW GAME",
+          "view_id": 33
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "MODE: VS PHONE",
+          "view_id": 34
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 524984,
+      "event": "timer (virtual +300ms)",
+      "file": "frame_001.png",
+      "index": 1,
+      "looper_virtual_ms": 370,
+      "png_sha256": "af6094295ecb50e38e624cdbd1ce74f75d3407f595438ac51cf58180df52f483",
+      "render_ok": true,
+      "runnables_fired": 0,
+      "sha256": "d1c40593d8bf5b0704793e9c70c18075d4bc1b17d78eb6951d1a3e96fe3a5d21",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "1",
+          "view_id": 21
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "2",
+          "view_id": 22
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "3",
+          "view_id": 23
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "4",
+          "view_id": 25
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "5",
+          "view_id": 26
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "6",
+          "view_id": 27
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "7",
+          "view_id": 29
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "8",
+          "view_id": 30
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "9",
+          "view_id": 31
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "NEW GAME",
+          "view_id": 33
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "MODE: VS PHONE",
+          "view_id": 34
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 0,
+      "event": "timer (virtual +300ms)",
+      "file": "frame_002.png",
+      "index": 2,
+      "looper_virtual_ms": 670,
+      "png_sha256": "af6094295ecb50e38e624cdbd1ce74f75d3407f595438ac51cf58180df52f483",
+      "render_ok": true,
+      "runnables_fired": 0,
+      "sha256": "d1c40593d8bf5b0704793e9c70c18075d4bc1b17d78eb6951d1a3e96fe3a5d21",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "1",
+          "view_id": 21
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "2",
+          "view_id": 22
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "3",
+          "view_id": 23
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "4",
+          "view_id": 25
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "5",
+          "view_id": 26
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "6",
+          "view_id": 27
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "7",
+          "view_id": 29
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "8",
+          "view_id": 30
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "9",
+          "view_id": 31
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "NEW GAME",
+          "view_id": 33
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "MODE: VS PHONE",
+          "view_id": 34
+        }
+      ]
+    }
+  ],
+  "interactions": [
+    {
+      "after_frame_index": 1,
+      "down_record": {
+        "action": "ACTION_DOWN",
+        "consumed": false,
+        "law": "no touch target — dispatchTouchEvent returns false, no listener dispatch",
+        "root_id": 13,
+        "state_changes": [],
+        "target_view_id": 0,
+        "touch_target_chain": [],
+        "virtual_ms": 300,
+        "x": 540,
+        "y": 960
+      },
+      "event": "tap (scheduled F-117)",
+      "frame": 1,
+      "target_view_id": 0,
+      "x": 540,
+      "y": 960
+    }
+  ],
+  "runnables_fired_total": 0,
+  "screen": {
+    "height": 1920,
+    "width": 1080
+  }
+}

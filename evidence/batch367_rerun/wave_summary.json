@@ -1,0 +1,60 @@
+{
+ "wave": "closed-issue-forensic-batch367-rerun",
+ "head": "9c3dc4d1",
+ "generated": "2026-10-03",
+ "results": {
+  "de.duenndns.gmdice": {
+   "title": "de.duenndns.gmdice",
+   "apk": "/home/z/my-project/upload/canonical_apks/de.duenndns.gmdice_8.apk",
+   "apk_sha16": "1621eda11b5dbc0c",
+   "rc": 0,
+   "status": "SUCCESS \u2705",
+   "wall_s": 1.2,
+   "screenshot_sha16": "f3b483fe7b7cf51b",
+   "pixels": {
+    "unique_colors": 892,
+    "dominant_ratio": 0.9165,
+    "nonbg_ratio": 0.0835
+   },
+   "frame_delta_tap": false,
+   "runtime_head": "9c3dc4d1"
+  },
+  "com.miniandroid.snakeneon": {
+   "title": "com.miniandroid.snakeneon",
+   "apk": "/home/z/my-project/upload/s98_games/build_snakeneon/snakeneon_v1.0_vc1.apk",
+   "apk_sha16": "b36885c181a323ab",
+   "rc": 0,
+   "status": "SUCCESS \u2705",
+   "wall_s": 1.7,
+   "screenshot_sha16": "19b86fb5462057e1",
+   "pixels": {
+    "unique_colors": 884,
+    "dominant_ratio": 0.8408,
+    "nonbg_ratio": 0.1592
+   },
+   "frame_delta_tap": true,
+   "runtime_head": "9c3dc4d1"
+  },
+  "com.dozingcatsoftware.bouncy": {
+   "title": "com.dozingcatsoftware.bouncy",
+   "apk": "/home/z/my-project/upload/canonical_apks/bouncy.apk",
+   "apk_sha16": "ffda0d9cb0b1b2aa",
+   "rc": 1,
+   "status": "PARTIAL SUCCESS \u26a0\ufe0f",
+   "wall_s": 1.5,
+   "screenshot_sha16": "b6dde6074bf47264",
+   "pixels": {
+    "unique_colors": 413,
+    "dominant_ratio": 0.5214,
+    "nonbg_ratio": 0.4786
+   },
+   "frame_delta_tap": false,
+   "runtime_head": "9c3dc4d1"
+  },
+  "com.miniandroid.tictactoedeluxe": {
+   "title": "com.miniandroid.tictactoedeluxe",
+   "build": "FAILED",
+   "log": "find: \u2018games/tictactoe-deluxe/src\u2019: No such file or directory\nbuild_fixture_apk: no .java sources under games/tictactoe-deluxe/src\n"
+  }
+ }
+}
