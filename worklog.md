@@ -6293,3 +6293,55 @@ Stage Summary:
   now answerable YES (with the G-3 content:// boundary recorded as a
   typed gap, not a silent hole). Issues remain open per the same-Issue
   protocol — no completion declarations.
+
+---
+Task ID: 371-FINAL
+Agent: Super Z (main agent)
+Task: #371 FINAL COMPLETION CONTINUATION — finish remaining Gate-A gaps
+(G-1/G-3 ContentResolver/Cursor, G-4 native extraction, G-8 device-protected
+storage, B3 config probe, B5 services/broadcasts, B6 ST-10 provenance),
+complete the agent inspection surface (Phase C), execute the mandatory
+TWO-NEW-TARGET fan-out (Phase D) with A/B causality (Phase E), full
+regression (Phase F), and post the line-by-line final report to #371
+(Phase G).
+
+Work Log:
+- Read current HEAD/issues/docs; reconciled the open gap rows from the
+  #371 verification wave.
+- B1: authority→provider map + ContentResolver query/insert/update/delete/
+  openFileDescriptor/getType/call dispatch with AOSP failure contracts;
+  MatrixCursor/ContentValues/UriMatcher/ContentUris/Uri laws; probe
+  PROV-02..09.
+- B2: install-time ABI-scoped lib extraction (native_libs.json), real
+  nativeLibraryDir, 3-shape loadLibrary ULE + env-gated real dlopen/dlerror
+  probe; NAT-03..05.
+- B5: ActiveServices lifecycle (started-vs-bound) + broadcast dispatch
+  (dynamic + manifest) + IntentFilter state; SVC-01..04, BCAST-01..04.
+- B3: multi-config probe CFG-01..05 at the untouched frozen profile.
+- B6/G-8: SQLITE-*/FONT-FACE provenance rows; user_de prefix-strip bug fix
+  + DE fence + createDeviceProtectedStorageContext; DE-01.
+- Fan-out-discovered generic laws: List.remove(int), FileInputStream(FD)
+  PFD backing, ProviderInfo.grantUriPermissions (FileProvider.attachInfo
+  SecurityException root), Uri.toString.
+- Probe extended 69 → 95 PASS / 0 FAIL / 2 INFO; negatives 17/17;
+  reinstall 8/8; multiapp 5/5; goldens 4/4 REAL_APP_CONTENT; determinism
+  5/5×3 zero drift; uninstall 16/16; battery 124/124 ALL PASS at 58f2dde2.
+- Phase C: pkginspect 15 sections incl. runtime + diagnostics.
+- Phase D: flappycow + notes_secuso VERIFIED_REAL_APP_CONTENT ×3
+  (source hidden, identity launch, byte-identical screenshots); full
+  10-candidate screening recorded.
+- Phase E: A/B vs base 51f7e5f9 (c7f430427ebdcb75): notes SecurityException
+  1→0 errors (grant law proven on real software); flappycow equivalence
+  recorded — no visual flip claimed.
+- Phase F: ROOT-A/B/C holds + random corpus sample fishrings
+  REAL_APP_CONTENT.
+- Phase G: GAPS.md rewritten, JSONL artifacts regenerated, UPP plan updated
+  (UPP-007 COMPLETE), CAMPAIGN_STATE updated; final ledger posted to #371
+  (comment 5970492770).
+
+Stage Summary:
+- Gate-A gap inventory now: G-1/G-3/G-4/G-5/G-6/G-7/G-8 CLOSED with
+  probe-asserted evidence; G-2 = explicit S-2 execution frontier with the
+  pre-native path complete. New real-software proof banked ×3 for two NEW
+  targets; all regression gates green at HEAD 58f2dde2; issue #371 kept
+  OPEN with the final report posted for independent verification.
