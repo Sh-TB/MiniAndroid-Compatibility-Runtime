@@ -222,6 +222,27 @@ public:
     // All entry names of a type in a package ("layout" → ids+names)
     std::vector<std::pair<uint32_t, std::string>> list_type(const std::string& package,
                                                             const std::string& type) const;
+
+    // ── GATE A (issue #370 §7): static ARSC inventory ─────────────────────
+    // Machine-readable whole-table walk for the inspection CLI: every
+    // package → every type → every entry (id, name, config-bucket count).
+    // Read-only; no resolution invented. Bounded callers (inspection tools)
+    // decide output size.
+    struct InvEntry {
+        uint32_t id = 0;
+        std::string name;
+        uint32_t config_buckets = 0;  // number of type chunks carrying it
+    };
+    struct InvType {
+        std::string type_name;
+        std::vector<InvEntry> entries;
+    };
+    struct InvPackage {
+        uint32_t id = 0;
+        std::string name;
+        std::vector<InvType> types;
+    };
+    std::vector<InvPackage> inventory() const;
     // APK path for a resource of file-backed type (layout → "res/layout/x.xml")
     // Searches raw file paths from the APK (caller supplies path list).
     std::optional<std::string> apk_path_for(uint32_t resource_id,

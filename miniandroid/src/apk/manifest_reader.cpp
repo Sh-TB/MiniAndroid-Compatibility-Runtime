@@ -596,7 +596,25 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
         
         log("Activity: " + current_activity_name_ + (name == "activity-alias" ? " (alias, target=" + current_activity_target_ + ")" : ""));
     }
-    
+
+    // GATE A (issue #370 §12): <service>/<receiver> components — additive
+    // parse mirroring the activity law (name at start tag, actions appended
+    // while inside the component element).
+    if (name == "service") {
+        ManifestInfo::ServiceInfo svc;
+        svc.name = get_attribute_value(attrs, "name");
+        result_.services.push_back(svc);
+        in_service_ = true;
+        log("Service: " + svc.name);
+    }
+    if (name == "receiver") {
+        ManifestInfo::ReceiverInfo rcv;
+        rcv.name = get_attribute_value(attrs, "name");
+        result_.receivers.push_back(rcv);
+        in_receiver_ = true;
+        log("Receiver: " + rcv.name);
+    }
+
     // Handle intent-filter elements inside activity
     if (in_activity_) {
         if (name == "action") {
@@ -621,6 +639,19 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
             if (category_name == "android.intent.category.LAUNCHER" || category_name == "LAUNCHER") {
                 activity_has_launcher_category_ = true;
                 log("Found LAUNCHER category");
+            }
+        }
+    }
+
+    // GATE A: intent-filter <action> routing for service/receiver components.
+    if (in_service_ || in_receiver_) {
+        if (name == "action") {
+            std::string action_name = get_attribute_value(attrs, "name");
+            if (!action_name.empty()) {
+                if (in_service_ && !result_.services.empty())
+                    result_.services.back().actions.push_back(action_name);
+                if (in_receiver_ && !result_.receivers.empty())
+                    result_.receivers.back().actions.push_back(action_name);
             }
         }
     }
@@ -664,6 +695,9 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
 }
 
 void ManifestReader::process_end_element(const std::string& ns, const std::string& name) {
+    // GATE A: component scope ends with its element (actions routing).
+    if (name == "service") in_service_ = false;
+    if (name == "receiver") in_receiver_ = false;
     // EXP-038 (BLOCKER-022 FIX): Also handle activity-alias END_ELEMENT
     if ((name == "activity" || name == "activity-alias") && in_activity_) {
         if (activity_has_main_action_ && activity_has_launcher_category_) {

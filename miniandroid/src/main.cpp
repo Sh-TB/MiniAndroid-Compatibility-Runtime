@@ -102,6 +102,8 @@ struct SampleProfiler {
 // EXP-086 Phase 7 (B4 FIX): ShadowRegistry + HandlerShadow for Runnable queue
 #include "framework/android_shadows.h"
 #include "framework/dialog_shadow.h"
+// GATE A (issue #370): installed-environment inspection surface.
+#include "diagnostics/install_inspection.h"
 #include "framework/clipboard_shadow.h"
 #include "framework/canvas_shadow.h"
 #include "dex/dex_parser.h"
@@ -128,6 +130,12 @@ void print_usage(const char* program_name) {
     std::cout << "             record, internal + external data trees (--package + --data-root)\n";
     std::cout << "  pkgaudit  Audit an installed package: identity, integrity re-hash,\n";
     std::cout << "            recursive code+data inventory (--package + --data-root)\n";
+    std::cout << "  pkginspect  GATE A installed-environment inspection: identity,\n";
+    std::cout << "            manifest/components, APK entries, DEX, resources, assets,\n";
+    std::cout << "            native libs, data/external trees, databases, preferences,\n";
+    std::cout << "            provenance (--package + --data-root, or --apk <path>;\n";
+    std::cout << "            --what identity,manifest,... selects sections; --jsonl <out>\n";
+    std::cout << "            writes the full-fidelity machine-readable stream)\n";
     std::cout << "  version   Show version information\n";
     std::cout << "  help      Show this help message\n\n";
     std::cout << "Options:\n";
@@ -935,6 +943,9 @@ int main(int argc, char* argv[]) {
     bool verbose = false;
     // F-NEW-231: run-by-package (installed state; package identity only).
     std::string run_package;
+    // GATE A (issue #370): pkginspect options.
+    std::string inspect_what = "all";
+    std::string inspect_jsonl;
 
     // F-107b2 (R-NEW-381, S61): per-instruction tracing is OFF by default
     // (trace_cap=0). The gprof profile showed the always-on InstructionTrace
@@ -1137,6 +1148,12 @@ int main(int argc, char* argv[]) {
             config.data_root = root;
         } else if (arg == "--package" && i + 1 < argc) {
             run_package = argv[++i];
+        } else if (arg == "--what" && i + 1 < argc) {
+            // GATE A: section filter for pkginspect (comma-separated).
+            inspect_what = argv[++i];
+        } else if (arg == "--jsonl" && i + 1 < argc) {
+            // GATE A: full-fidelity machine-readable JSONL output path.
+            inspect_jsonl = argv[++i];
         } else if (arg.find("--execution-mode") == 0) {
             // EXP-031: Parse execution mode
             std::string mode_str;
@@ -1165,7 +1182,7 @@ int main(int argc, char* argv[]) {
     }
     
     if (apk_path.empty() && run_package.empty() && command != "list-packages" &&
-        command != "pkgaudit") {
+        command != "pkgaudit" && command != "pkginspect" && command != "uninstall") {
         std::cerr << "[ERROR] No APK file specified\n\n";
         print_usage(argv[0]);
         return 1;
@@ -1175,9 +1192,12 @@ int main(int argc, char* argv[]) {
     // then operates on the INSTALLED base.apk — provenance flows from the
     // resolved codePath (ApplicationInfo.sourceDir law), not the sideload.
     // (pkgaudit does its own resolution + JSON — keep stdout machine-clean.)
+    // (pkginspect likewise resolves internally and keeps stdout machine-
+    // readable — GATE A inspection is its own resolution authority.)
     // (uninstall must NOT be pre-guarded: NOT_INSTALLED is its own honest
     // verdict with its own exit contract, like PMS NAME_NOT_FOUND.)
-    if (!run_package.empty() && command != "pkgaudit" && command != "uninstall") {
+    if (!run_package.empty() && command != "pkgaudit" && command != "pkginspect" &&
+        command != "uninstall") {
         if (config.data_root.empty()) {
             std::cerr << "[ERROR] --package requires --data-root <dir>\n";
             return 1;
@@ -1211,6 +1231,17 @@ int main(int argc, char* argv[]) {
         return cmd_list_packages(config.data_root);
     } else if (command == "pkgaudit") {
         return cmd_pkg_audit(run_package, config.data_root);
+    } else if (command == "pkginspect") {
+        // GATE A (issue #370): installed-environment inspection. Package
+        // resolution is INTERNAL (pkgaudit-style: stdout stays machine-clean).
+        miniandroid::gatea::InspectRequest req;
+        req.package = run_package;
+        req.data_root = config.data_root;
+        req.apk_path = apk_path;
+        req.what = inspect_what;
+        req.jsonl_out = inspect_jsonl;
+        req.verbose = verbose;
+        return miniandroid::gatea::cmd_pkg_inspect(req);
     } else if (command == "analyze") {
         return cmd_analyze(apk_path, verbose);
     } else if (command == "dex") {
