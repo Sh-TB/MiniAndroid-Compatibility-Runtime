@@ -4489,6 +4489,21 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     // We store the context_object_id when the View constructor is called with a Context arg.
     if (m == "getContext") {
         auto* n = find_node(ctx.receiver_id);  // mutable: V6 fallback counter lives on the node
+        // ── CONT-366 ROOT-C (receiver-identity law) ─────────────────────
+        // AOSP View.getContext() is a VIEW contract. A receiver with no
+        // ViewNode is NOT a view — it is some other Context consumer
+        // (ContentProvider subclass during provider install, etc.) whose
+        // getContext law belongs to its own layer (ContentProvider.attachInfo
+        // → mContext per AOSP). Claiming the call here and answering
+        // handled_null() converted every provider's getContext() into a
+        // FALSE NULL during the provider-install window (no activity exists
+        // yet → the S99 activity fallback missed → handled_null) — the
+        // suntimes CalculatorProvider.onCreate "encountered null context"
+        // ISE. A shadow must never answer for a receiver that is not its
+        // own: pass through so the receiver's own law serves it.
+        if (!n) {
+            return CallResult::not_handled();
+        }
         if (std::getenv("MINIANDROID_CTX_DIAG")) {
             std::cerr << "[CTX-GET] recv=obj#" << ctx.receiver_id
                       << " cls=" << ctx.receiver_class

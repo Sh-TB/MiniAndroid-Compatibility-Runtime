@@ -6077,3 +6077,17 @@ Work Log:
 Stage Summary:
 - ROOT-A complete: 3 generic laws, both ROOT-A white apps advanced past their recorded divergences, zero golden drift.
 - Fan-out evidence: evidence/diff366/root_a/ (8 app dirs + root_a_fanout.json).
+
+---
+Task ID: CONT-ROOT-B-C
+Agent: Super Z (main)
+Task: MASTER CONTINUATION §3 ROOT-B (WindowInsets) + ROOT-C (Fragment recreation / provider context)
+
+Work Log:
+- ROOT-B: disassembled memory v34 androidx WindowInsetsCompat clinit chain (s0;/s0$k;/J0.a()=sget WindowInsets.CONSUMED); CONSUMED typed-null -> requireNonNull NPE -> ActionBarOverlayLayout death. FIX R-NEW-461: seed real heap WindowInsets CONSUMED static. RESULT: memory WHITE -> REAL_APP_CONTENT (sha 67845303a9460d86, 2 app draw ops); next div = URI.toString null (memory zip/WebView path).
+- ROOT-C: spacevertex Fragment ISE already closed by R-NEW-459 (Class laws) — full fragment view tree builds. Fragment fan-out: stardroid + suntimes with installed identity. suntimes "CalculatorProvider null context" root-caused via 5-step diagnostic loop ([CTX-DIAG]->[CTX-BISect]->[CTX-CLAIM]) to ViewShadow claiming provider receivers via user-class heuristic + handled_null in install window. FIX R-NEW-462 (3-part receiver-identity gate): ViewShadow not_handled for non-node receivers + Provider; exclusion in handles_class + bridge_to_api DEX-hierarchy skip before shadow claim.
+- NEXT DIVERGENCES RECORDED: suntimes = ActivityResultLauncherCompat null (activity-result family); stardroid = WorkManagerInitializer (honest empty startup metaData consequence).
+- REGRESSION after each wave: goldens 5/5 x3 byte-identical + probe 23/23 + uninstall 16/16 ALL PASS. AndroidX controls fossifyclock/blockblast byte-identical (unrelated roots).
+
+Stage Summary:
+- 3 more generic laws (R-NEW-461/462 family) + 1 white app advanced (memory -> REAL_APP_CONTENT). Root registry 534. Temp diagnostics removed; bounded law markers kept.

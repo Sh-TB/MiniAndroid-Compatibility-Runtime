@@ -31437,7 +31437,23 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
     }
 
-    if (try_shadow_dispatch(class_name, method, args, result, status)) {
+    // ────────────────────────────────────────────────────────────────────
+    // CONT-366 ROOT-C (receiver-identity gate): a ContentProvider-family
+    // receiver's getContext() belongs to the provider context law BELOW in
+    // this function (AOSP attachInfo/mContext contract) — NEVER to the
+    // View shadow. The DEX hierarchy is authoritative here (unlike a
+    // name-suffix guess): CalculatorProvider1 extends CalculatorProvider
+    // extends ContentProvider would otherwise be claimed by the View
+    // shadow's user-class heuristic and answered handled_null during the
+    // provider-install window. Skip the shadow claim for this exact
+    // (receiver-family, method) pair and fall through to the law.
+    // ────────────────────────────────────────────────────────────────────
+    const bool provider_ctx366 =
+        method == "getContext" &&
+        is_subclass_of(class_name, "Landroid/content/ContentProvider;");
+
+    if (!provider_ctx366 &&
+        try_shadow_dispatch(class_name, method, args, result, status)) {
             // ────────────────────────────────────────────────────────────
             // R-NEW-347 (S42) — AOSP addViewInner child-attach law
             // (consume side). The ViewShadow recorded pending child
@@ -31867,6 +31883,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // ────────────────────────────────────────────────────────────────────────
     if (method == "getContext" &&
         is_subclass_of(class_name, "Landroid/content/ContentProvider;")) {
+        static thread_local uint64_t ctx_law_n = 0;
+        bool log_law = ctx_law_n++ < 16;
         if (application_object_id_ != 0 &&
             heap_.has_object(application_object_id_)) {
             result = DalvikValue::make_object(
@@ -31877,6 +31895,11 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         } else {
             result = get_or_create_singleton("Landroid/content/Context;");
         }
+        if (log_law)
+            std::cerr << "[S1-PROVIDER-CTX] " << class_name
+                      << ".getContext -> obj#" << result.object_id
+                      << " (app=" << (application_object_id_ != 0 ? "y" : "n")
+                      << ")" << std::endl;
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
