@@ -123,10 +123,14 @@ def first_divergence(run_out):
     return None
 
 
-def run_target(binary, name, kind, pkg, apk, runs=1, frames=40):
+def run_target(binary, name, kind, pkg, apk, runs=1, frames=40, tag=''):
+    # tag isolates evidence per binary (A/B causality must never overwrite).
+    if not tag:
+        tag = sha256(binary)[:16]
+    suffix = f'_{tag}'
     res = {'name': name, 'kind': kind, 'apk': apk, 'runs': []}
-    store = f'{OUT}/store_{name}'
-    runroot = f'{OUT}/{name}'
+    store = f'{OUT}/store_{name}{suffix}'
+    runroot = f'{OUT}/{name}{suffix}'
     shutil.rmtree(store, ignore_errors=True)
     shutil.rmtree(runroot, ignore_errors=True)
     os.makedirs(store, exist_ok=True)
