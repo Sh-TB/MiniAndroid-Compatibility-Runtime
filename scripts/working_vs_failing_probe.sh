@@ -1,8 +1,17 @@
 #!/bin/bash
-# working_vs_failing_probe.sh — LOADING-CAMPAIGN regression gate.
-# Re-runs the working goldens from their installed stores and compares the
+# working_vs_failing_probe.sh — LOADING-CAMPAIGN DETERMINISM regression gate.
+# Re-runs the regression anchors from their installed stores and compares the
 # screenshot SHA-256 (first 16 hex) against the recorded golden. A generic
-# fix that drifts ANY golden fails the gate.
+# fix that drifts ANY anchor fails the gate.
+#
+# PIXEL-TRUTH LAW (F-NEW-233 + continuation §2): BYTE-STABLE != PIXEL-TRUTH.
+# The chess (jwtc) and dooz anchors are DETERMINISM GATES ONLY — their frames
+# are 100% white (0 app draw ops, F-NEW-233 verdict DEFAULT_BACKGROUND_ONLY,
+# #366 differential evidence); they anchor byte-stability of the render
+# pipeline, NOT visual success. Neither title may be cited as visually
+# VERIFIED on the basis of this gate. Pixel-truth anchors live in
+# scripts/user_golden_gate.py (2048 / Snake Deluxe / MiniCraft / HelloWorld,
+# all REAL_APP_CONTENT per user designation).
 set -uo pipefail
 B=/home/z/my-project/miniandroid/build/miniandroid
 REG=/home/z/my-project/run/audit/regression
