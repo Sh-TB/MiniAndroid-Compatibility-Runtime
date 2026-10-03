@@ -6409,3 +6409,50 @@ Stage Summary:
 - S-2 CLOSED: native execution is real (dlopen+JNI_OnLoad+dlsym+System V
   dispatch), failures are honest AOSP shapes, no package conditionals.
 - Regression green at the PATCH binary for all gates re-run so far.
+
+---
+Task ID: 371-CLOSEOUT-SUNTIMES
+Agent: Super Z (main agent)
+Task: #371 FINAL CLOSEOUT — Suntimes/time4j initialization frontier.
+
+Work Log:
+- First divergence chain re-established at current HEAD (suntimes_135
+  re-fetched, sha bd0fbe51f684895d…): PlainDate.registerUnits NPE at
+  EnumSet.range → REC-MISS null → TimeAxis$Builder.appendUnit "Set.iterator
+  on a null object reference" → PlainDate/PlainTime/PlainTimestamp <clinit>
+  died → time4j unusable.
+- GENERIC FIX 1 — java.util.EnumSet.range(E,E) law (dalvik_engine.cpp):
+  OpenJDK semantics via the enum's $VALUES static registry + heap ordinal
+  fields; per-constant class spellings ($1) normalized to the enum class;
+  also upgraded allOf(Class) to REAL semantics when $VALUES resolves
+  (time4j registerClockUnits iterates allOf(ClockUnit); previous
+  empty-set deviation registered zero units). PlainDate/PlainTime/
+  PlainTimestamp class init now COMPLETES (was: NPE death).
+- GENERIC FIX 2 — Map key equality law (android_shadows.cpp
+  map_key_value_law): boxed primitive keys (Integer/Long/Short/Byte/
+  Character/Boolean/Float/Double) compare by VALUE per OpenJDK
+  Integer.equals/hashCode — fresh boxes outside the valueOf cache range
+  made put/get miss (ActivityResultLaunchHelper.registerForActivityResultCompat
+  → null launcher → SuntimesLaunchActivity.showWelcome NPE). All Map
+  put/get/containsKey/remove/singletonMap sites now derive keys uniformly.
+- GENERIC FIX 3 — java.util.Calendar + java.util.Date family law
+  (dalvik_engine.cpp): getInstance/getTime/getTimeInMillis/get(field
+  derivations incl. 0-based MONTH, SUNDAY=1)/setTime/setTimeInMillis/
+  after/before/getTimeZone; Date wraps the same millis. Time4JCalendarDisplay
+  formatDate no longer NPEs.
+- Chain state after 3 fix cycles (binary 34c457cb7dd16c47): next
+  first-divergence = Duration.<clinit> → Duration.in → Duration$Metric.<init>
+  → AbstractMetric.<init> IllegalArgumentException("Duplicate unit")
+  — engine varargs-array/equals semantics inside deep time4j metric
+  validation; olson CNFE (net.time4j.tz.olson.AFRICA — class genuinely
+  absent from this APK, dex has 0 olson classes) + PlatformTimezone
+  chain are sibling gaps in the same time4j tz layering.
+- Honest classification: PARTIAL — time4j engine initialization now
+  completes (all previously recorded divergences passed), app still
+  NO_ROOT white; next actionable root cause recorded precisely.
+- Regression: determinism 5/5×3 byte-identical + goldens 4/4 REAL_APP_CONTENT
+  at 34c457cb — the 3 new laws cause zero drift on all anchors.
+
+Stage Summary:
+- 3 generic engine laws landed; Suntimes first-divergence advanced three
+  layers deeper; anchors byte-stable. Issue #371 remains OPEN.

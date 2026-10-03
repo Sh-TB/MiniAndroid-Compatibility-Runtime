@@ -222,6 +222,44 @@ CollectionShadow::CollectionState* CollectionShadow::get_or_create(uint32_t obje
     return &state;
 }
 
+// ── #371 CLOSEOUT (Suntimes/ActivityResult chain): OpenJDK Map key
+// equality law — boxed primitive keys (Integer/Long/Short/Byte/Character/
+// Boolean/Float/Double) compare by VALUE (Integer.equals/hashCode), never
+// by box identity. The engine allocates a fresh box for every
+// Integer.valueOf outside the cache range, so identity-derived keys
+// ("obj:<id>") made put(boxA) → get(boxB of the same value) MISS, and
+// ActivityResultLaunchHelper.registerForActivityResultCompat returned null
+// → SuntimesLaunchActivity.showWelcome NPE → NO_ROOT white screen.
+static std::string map_key_value_law(const CallContext& ctx, size_t i,
+                                     HeapAllocator* heap) {
+    if (i >= ctx.args.size()) return "";
+    const auto& a = ctx.args[i];
+    if (a.kind == CallContext::Arg::Kind::STRING) return a.string_val;
+    if (a.kind == CallContext::Arg::Kind::OBJECT && a.object_id != 0 && heap) {
+        std::string cls;
+        if (heap->get_object_class(a.object_id, cls)) {
+            static const char* kBoxes[] = {
+                "Ljava/lang/Integer;", "Ljava/lang/Long;", "Ljava/lang/Short;",
+                "Ljava/lang/Byte;", "Ljava/lang/Character;",
+                "Ljava/lang/Boolean;", "Ljava/lang/Float;",
+                "Ljava/lang/Double;"};
+            bool boxed = false;
+            for (const char* b : kBoxes)
+                if (cls == b) { boxed = true; break; }
+            if (boxed) {
+                int32_t iv = 0;
+                int64_t lv = 0;
+                if (heap->get_object_int_field(a.object_id, "value", iv))
+                    return "int:" + std::to_string(iv);
+                if (heap->get_object_long_field(a.object_id, "value", lv))
+                    return "long:" + std::to_string(lv);
+            }
+        }
+        return "obj:" + std::to_string(a.object_id);
+    }
+    return ctx.arg_as_string(i);
+}
+
 CallResult CollectionShadow::dispatch(const CallContext& ctx) {
     const auto& m = ctx.method;
     uint32_t obj_id = ctx.receiver_id;
@@ -383,11 +421,7 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         if (m == "singletonMap") {
             uint32_t map_id = heap_->allocate("Ljava/util/LinkedHashMap;");
             auto* st = get_or_create(map_id, /*is_map=*/true);
-            std::string key = ctx.arg_as_string(0);
-            if (key.empty() && !ctx.args.empty() &&
-                ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
-                key = "obj:" + std::to_string(ctx.args[0].object_id);
-            }
+            std::string key = map_key_value_law(ctx, 0, heap_);
             if (!ctx.args.empty() && ctx.args.size() >= 2 &&
                 ctx.args[1].kind == CallContext::Arg::Kind::STRING) {
                 st->map_string_entries[key] = ctx.args[1].string_val;
@@ -561,11 +595,7 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         // map_string_entries. For List collections (ArrayList, LinkedList),
         // get(index) uses the integer index to look up elements[].
         if (state->is_map) {
-            std::string key = ctx.arg_as_string(0);
-            if (key.empty() && !ctx.args.empty() &&
-                ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
-                key = "obj:" + std::to_string(ctx.args[0].object_id);
-            }
+            std::string key = map_key_value_law(ctx, 0, heap_);
             // EXP-071 diagnostic
             if (key.find("US") != std::string::npos) {
                 std::cerr << "[EXP071-CS-GET] map=" << obj_id
@@ -758,11 +788,7 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         // Key derivation MUST match get/put/containsKey exactly
         // (string keys verbatim; object keys as "obj:<id>").
         if (state->is_map) {
-            std::string key = ctx.arg_as_string(0);
-            if (key.empty() && !ctx.args.empty() &&
-                ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
-                key = "obj:" + std::to_string(ctx.args[0].object_id);
-            }
+            std::string key = map_key_value_law(ctx, 0, heap_);
             // String entries first — same precedence as get().
             auto sit = state->map_string_entries.find(key);
             if (sit != state->map_string_entries.end()) {
@@ -910,11 +936,7 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
     if (m == "put") {
         auto* state = get_or_create(obj_id, true);
         if (ctx.args.size() >= 2) {
-            std::string key = ctx.arg_as_string(0);
-            // Use key as the map key. For object keys, use object_id as string.
-            if (key.empty() && ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
-                key = "obj:" + std::to_string(ctx.args[0].object_id);
-            }
+            std::string key = map_key_value_law(ctx, 0, heap_);
             // F-089 diagnostics (bounded): Map.put visibility for the
             // navigation registration chain (dooz "composable" frontier).
             {
@@ -956,10 +978,7 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
 
     if (m == "containsKey") {
         auto* state = get_or_create(obj_id, true);
-        std::string key = ctx.arg_as_string(0);
-        if (key.empty() && !ctx.args.empty() && ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
-            key = "obj:" + std::to_string(ctx.args[0].object_id);
-        }
+        std::string key = map_key_value_law(ctx, 0, heap_);
         // EXP-071 Phase 7: Check both object and string entries.
         bool found = (state->map_entries.count(key) > 0) ||
                      (state->map_string_entries.count(key) > 0);
