@@ -94,6 +94,36 @@ recorded evidence ([audit](docs/VERIFIED_EXECUTED_GAMES.md)):
 
 ---
 
+## CURRENT CAPABILITY STATE (evidence-derived, continuation T9)
+
+> Every number below is generated from a canonical artifact — never hand-invented.
+> Status vocabulary is the strict audit set: **VERIFIED / TESTED / OBSERVED / PARTIAL /
+> BLOCKED / PENDING** — a screenshot file, an exit code, or a byte-stable capture is
+> **never** execution or visual proof ([evidence standard](#evidence-standard)).
+
+**Working vs white — the one-paragraph answer** (#366 differential evidence, 9 apps × 3 runs
+with installed-APK identity proofs): apps that render are exactly those whose paths cross
+ViewTree → measure → layout → draw with **≥7 app-owned draw ops**; white-screen apps are
+arrested before any app-owned draw op survives — at distinct generic roots (WindowInsets
+statics, Class metadata/newInstance null contracts, provider-context identity, Compose
+composition machinery, native surface). Installation / package identity / resource / asset /
+file loading is proven innocent in all nine (Case A in every case).
+
+| Capability area | Current state (evidence) |
+|---|---|
+| **Real rendered achievements** | 4 user-designated goldens **4/4 REAL_APP_CONTENT** pixel-gated (2048 · Snake Deluxe · MiniCraft · HelloWorld — `scripts/user_golden_gate.py`) + canonical registry 150 titles with 22 VERIFIED-tier rows |
+| **Determinism anchors (NOT visual successes)** | chess + dooz regression gates are byte-stability anchors whose frames are 100% white — BYTE-STABLE ≠ PIXEL-TRUTH ([F-NEW-233](docs/DIFFERENTIAL_WORKING_VS_WHITE.md)) |
+| **White/blocked frontier** | 5 white-screen roots: ComposeView materialization (4-way separation in [§16](docs/DIFFERENTIAL_WORKING_VS_WHITE.md)), Godot/native S-2, Fragment-adjacent ActivityResult, startup-metadata (WorkManager), memory zip/WebView path — each with recorded first divergence |
+| **Root-cause frontier** | **535 roots** ([root_registry.json](root_registry.json), projection == store); R-NEW-458..462 ROOT-A/B/C fixes landed with fan-out + zero golden drift |
+| **202-title corpus** | **79 executed-with-evidence** (71 OBSERVED + 8 VERIFIED) · 119 NOT_TESTED (explicitly closed) · 4 BLOCKED-DOWNLOAD — [M6 reconciliation](docs/FORENSIC_MISSING_EVIDENCE.jsonl); stale "41/161/96" numbers are historical |
+| **Telegram** | forkgram face `bbb6cd10a834963d` byte-identical ×2 at current HEAD ( ActionBar-chain NPE frontier); official **BLOCKED-APK-ABSENT**; grey frames are load frontiers — never renders ([journey](docs/TELEGRAM_JOURNEY_S117_S119.md)) |
+| **Compose / WebView / native** | Compose: composition machinery fails before first draw (R8-rename CNFE — diagnose-only); WebView: engine ships (s133 webfix wave); native: no dlopen/JNI layer yet (S-2 — reached cleanly by asteroids) |
+| **Installed-APK capability** | source SHA == installed base.apk SHA == pkgaudit live re-hash (11/11); uninstall 16/16; per-package context-root law ([LOAD-AUDIT docs](docs/REAL_ANDROID_LOADING_ORACLE.md)) |
+| **Upstream reuse** | 7 replacement rows dispositioned (2 PENDING_RESEARCH, 4 AVAILABLE_NOT_USED, 1 ADAPTED) — [UPSTREAM_REPLACEMENT_PLAN.jsonl](docs/UPSTREAM_REPLACEMENT_PLAN.jsonl); 127-entry source-first library |
+| **Roadmap** | [docs/ROADMAP_STATUS.md](docs/ROADMAP_STATUS.md) (generated) · live state: [CAMPAIGN_STATE.md](CAMPAIGN_STATE.md) continuation wave |
+
+---
+
 ## ARCHITECTURE (target vs status)
 
 ```text
