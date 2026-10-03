@@ -1,0 +1,2 @@
+{"seq":0,"op":"OPEN","path":"assets/_cl_ @ apk=/home/z/my-project/run/diff366/stores/store_asteroids/data/app/com.game.asteroids_revenge/base.apk","result":"SUCCESS","subsystem":"AssetManager.open","caller":"Lorg/godotengine/godot/GodotActivity;.onCreate","package":"com.game.asteroids_revenge"}
+{"summary":{"total_ops":1,"failures":0,"events_emitted":1,"events_dropped":0,"package":"com.game.asteroids_revenge","OPEN":1}}

@@ -1,0 +1,3 @@
+{"seq":0,"op":"MKDIR","path":"/home/z/my-project/run/diff366/stores/store_t222/data/data/com.google.android.stardroid/files","result":"SUCCESS","subsystem":"Context.getFilesDir","caller":"Lha/a;.k","package":"com.google.android.stardroid"}
+{"seq":1,"op":"MKDIR","path":"/home/z/my-project/run/diff366/stores/store_t222/data/data/com.google.android.stardroid/files","result":"SUCCESS","subsystem":"Context.getFilesDir","caller":"Lha/a;.k","package":"com.google.android.stardroid"}
+{"summary":{"total_ops":2,"failures":0,"events_emitted":2,"events_dropped":0,"package":"com.google.android.stardroid","MKDIR":2}}

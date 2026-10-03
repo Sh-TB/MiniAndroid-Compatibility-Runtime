@@ -1,0 +1,2 @@
+{"seq":0,"op":"MKDIR","path":"/home/z/my-project/run/diff366/stores/store_t88/data/data/com.fairytrick.fairymahjong/files","result":"SUCCESS","subsystem":"Context.getFilesDir","caller":"Ll;.a","package":"com.fairytrick.fairymahjong"}
+{"summary":{"total_ops":1,"failures":0,"events_emitted":1,"events_dropped":0,"package":"com.fairytrick.fairymahjong","MKDIR":1}}

@@ -1,0 +1,655 @@
+{
+  "activity": "com.fairytrick.fairymahjong.MainActivity",
+  "apk_package": "com.fairytrick.fairymahjong",
+  "duration_ms": 1377,
+  "events_retained": 26,
+  "events_total": 26,
+  "first_divergence": {
+    "actual": "no window content root resolved",
+    "evidence": "effective_content_root_() == 0",
+    "expected": "authoritative window content root (AOSP ViewRootImpl)",
+    "first_failure_event": {
+      "cls": "",
+      "event": "EXCEPTION",
+      "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNCAUGHT-TOP] Ljava/lang/IllegalStateException; escaped the app boundary at Lcom/fairytrick/fairymahjong/MainActivity;.onCreate invoke_pc=0x10 depth=1 [APP-BOUNDARY]",
+      "method": "",
+      "seq": 13,
+      "stage": null,
+      "state": "nonfatal"
+    },
+    "last_successful_stage": "LIFECYCLE",
+    "next_required_stage": "MEASURE",
+    "seq": 16,
+    "source": "explicit-evidence",
+    "stage": "VIEWTREE"
+  },
+  "first_failure_event": null,
+  "frame_analysis": {
+    "app_draw_ops": 0,
+    "app_owned_pixels": 0,
+    "app_owned_pixels_inside_content_bounds": 0,
+    "auth_root_valid": false,
+    "budget_exhausted": false,
+    "content_bounds": {
+      "b": 0,
+      "l": 0,
+      "r": 0,
+      "t": 0,
+      "valid": false
+    },
+    "deferred_earliest_ready_ms": 0,
+    "deferred_queue_size": 0,
+    "deferred_ui_pending": false,
+    "depth_max": 0,
+    "diag_owned_pixels": 0,
+    "diag_regions": 0,
+    "dialog_content_rendered": false,
+    "dominant_color": [
+      "#ffffff"
+    ],
+    "dominant_pct": 100.0,
+    "draw_walk_ran": false,
+    "first_missing_stage": "WINDOW_ROOT",
+    "height": 1920,
+    "inflation_failed": false,
+    "layout_ran": false,
+    "layout_source": null,
+    "measure_ran": false,
+    "no_root": true,
+    "nodes_skipped_depth": 0,
+    "nodes_visited": 0,
+    "non_default_pixels": 0,
+    "render_exception": false,
+    "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093",
+    "size": "1080x1920",
+    "synthetic_suppressed": true,
+    "unique_colors": 1,
+    "unreachable_children": 0,
+    "verdict": "NO_ROOT",
+    "verdict_law": "21-P0-6 pixel ownership + correlated proof",
+    "verdict_regions_law": "V1/V7: WINDOW_BACKGROUND=dominant; AUTHORITATIVE_APP_CONTENT=non-dominant inside content bounds; WINDOW_CHROME=non-dominant outside; DIAGNOSTIC_OVERLAY=separate trace_overlay.png",
+    "width": 1080,
+    "window_background_px": 2073600,
+    "window_chrome_pixels": 0
+  },
+  "instrument": "S135 VISUAL RUNTIME BOOT/TRACE LOGGER",
+  "last_events": [
+    {
+      "component": "boot",
+      "event": "RUN_START",
+      "extra": {
+        "boot_trace": true,
+        "buffer_cap": 512,
+        "pid": 1906,
+        "trace_ui": false
+      },
+      "result": "PENDING",
+      "run_id": "1790992703400-1",
+      "seq": 1,
+      "sev": "PENDING",
+      "state": "apk=/home/z/my-project/run/diff366/stores/store_t88/data/app/com.fairytrick.fairymahjong/base.apk",
+      "thread": "main",
+      "ts_ms": 1790992703400
+    },
+    {
+      "component": "boot",
+      "event": "APK_LOADED",
+      "package": "com.fairytrick.fairymahjong",
+      "result": "OK",
+      "run_id": "1790992703400-1",
+      "seq": 2,
+      "sev": "CONFIRMED",
+      "state": "pkg=com.fairytrick.fairymahjong",
+      "thread": "main",
+      "ts_ms": 1790992703435
+    },
+    {
+      "component": "boot",
+      "event": "MANIFEST_PARSED",
+      "package": "com.fairytrick.fairymahjong",
+      "result": "OK",
+      "run_id": "1790992703400-1",
+      "seq": 3,
+      "sev": "CONFIRMED",
+      "state": "activity=com.fairytrick.fairymahjong.MainActivity",
+      "thread": "main",
+      "ts_ms": 1790992703435
+    },
+    {
+      "component": "boot",
+      "event": "DEX_PARSED",
+      "package": "com.fairytrick.fairymahjong",
+      "result": "OK",
+      "run_id": "1790992703400-1",
+      "seq": 4,
+      "sev": "CONFIRMED",
+      "state": "classes=177 methods=1376",
+      "thread": "main",
+      "ts_ms": 1790992703458
+    },
+    {
+      "component": "boot",
+      "event": "RUNTIME_READY",
+      "extra": {
+        "background_color": 4294967295
+      },
+      "package": "com.fairytrick.fairymahjong",
+      "result": "OK",
+      "run_id": "1790992703400-1",
+      "seq": 5,
+      "sev": "CONFIRMED",
+      "state": "1080x1920",
+      "thread": "main",
+      "ts_ms": 1790992703478
+    },
+    {
+      "component": "boot",
+      "event": "CLASSES_LOADED",
+      "package": "com.fairytrick.fairymahjong",
+      "result": "OK",
+      "run_id": "1790992703400-1",
+      "seq": 6,
+      "sev": "CONFIRMED",
+      "state": "classes=177",
+      "thread": "main",
+      "ts_ms": 1790992703478
+    },
+    {
+      "activity": "com.fairytrick.fairymahjong.MainActivity",
+      "component": "activity",
+      "event": "ACTIVITY_RESOLVED",
+      "package": "com.fairytrick.fairymahjong",
+      "result": "OK",
+      "run_id": "1790992703400-1",
+      "seq": 7,
+      "sev": "CONFIRMED",
+      "state": "com.fairytrick.fairymahjong.MainActivity",
+      "thread": "main",
+      "ts_ms": 1790992703478
+    },
+    {
+      "activity": "com.fairytrick.fairymahjong.MainActivity",
+      "component": "activity",
+      "event": "APPLICATION_CREATE",
+      "package": "com.fairytrick.fairymahjong",
+      "result": "PENDING",
+      "run_id": "1790992703400-1",
+      "seq": 8,
+      "sev": "PENDING",
+      "state": "dex interpreter",
+      "thread": "main",
+      "ts_ms": 1790992703478
+    },
+    {
+      "activity": "com.fairytrick.fairymahjong.MainActivity",
+      "component": "vm",
+      "event": "EXCEPTION",
+      "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Le0;.<init> invoke_pc=0xb7 depth=5",
+      "package": "com.fairytrick.fairymahjong",
+      "result": "FAIL",
+      "run_id": "1790992703400-1",
+      "seq": 9,
+      "sev": "FAILURE",
+      "state": "nonfatal",
+      "thread": "main",
+      "ts_ms": 1790992704453
+    },
+    {
+      "activity": "com.fairytrick.fairymahjong.MainActivity",
+      "component": "vm",
+      "event": "EXCEPTION",
+      "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Lc0;.<init> invoke_pc=0x6 depth=4",
+      "package": "com.fairytrick.fairymahjong",
+      "result": "FAIL",
+      "run_id": "1790992703400-1",
+      "seq": 10,
+      "sev": "FAILURE",
+      "state": "nonfatal",
+      "thread": "main",
+      "ts_ms": 1790992704453
+    },
+    {
+      "activity": "com.fairytrick.fairymahjong.MainActivity",
+      "component": "vm",
+      "event": "EXCEPTION",
+      "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Lo4;.<init> invoke_pc=0x3b depth=3",
+      "package": "com.fairytrick.fairymahjong",
+      "result": "FAIL",
+      "run_id": "1790992703400-1",
+      "seq": 11,
+      "sev": "FAILURE",
+      "state": "nonfatal",
+      "thread": "main",
+      "ts_ms": 1790992704453
+    },
+    {
+      "activity": "com.fairytrick.fairymahjong.MainActivity",
+      "component": "vm",
+      "event": "EXCEPTION",
+      "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Lcom/fairytrick/fairymahjong/MainActivity;.a invoke_pc=0x99 depth=2",
+      "package": "com.fairytrick.fairymahjong",
+      "result": "FAIL",
+      "run_id": "1790992703400-1",
+      "seq": 12,
+      "sev": "FAILURE",
+      "state": "nonfatal",
+      "thread": "main",
+      "ts_ms": 1790992704453
+    },
+    {
+      "activity": "com.fairytrick.fairymahjong.MainActivity",
+      "component": "vm",
+      "event": "EXCEPTION",
+      "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNCAUGHT-TOP] Ljava/lang/IllegalStateException; escaped the app boundary at Lcom/fairytrick/fairymahjong/MainActivity;.onCreate invoke_pc=0x10 depth=1 [APP-BOUNDARY]",
+      "package": "com.fairytrick.fairymahjong",
+      "result": "FAIL",
+      "run_id": "1790992703400-1",
+      "seq": 13,
+      "sev": "FAILURE",
+      "state": "nonfatal",
+      "thread": "main",
+      "ts_ms": 1790992704453
+    },
+    {
+      "activity": "com.fairytrick.fairymahjong.MainActivity",
+      "component": "activity",
+      "event": "LIFECYCLE_STATE",
+      "extra": {
+        "activity": "Lcom/fairytrick/fairymahjong/MainActivity;",
+        "apk": "/home/z/my-project/run/diff366/stores/store_t88/data/app/com.fairytrick.fairymahjong/base.apk",
+        "final_state": "RESUMED",
+        "transitions": [
+          {
+            "from": "PROCESS_CREATED",
+            "reason": "Activity.onCreate() executed via DEX interpreter (ActivityThread.performLaunchActivity law)",
+            "success": true,
+            "to": "ACTIVITY_CREATED",
+            "virtual_ms": 0
+          },
+          {
+            "from": "ACTIVITY_CREATED",
+            "reason": "Activity.onStart() dispatched via DEX engine (framework stub answered — super-class law; record state advances regardless)",
+            "success": true,
+            "to": "STARTED",
+            "virtual_ms": 0
+          },
+          {
+            "from": "STARTED",
+            "reason": "Activity.onResume() dispatched via DEX engine (handleResumeActivity law)",
+            "success": true,
+            "to": "RESUMED",
+            "virtual_ms": 0
+          }
+        ]
+      },
+      "package": "com.fairytrick.fairymahjong",
+      "result": "OK",
+      "run_id": "1790992703400-1",
+      "seq": 14,
+      "sev": "CONFIRMED",
+      "state": "RESUMED",
+      "thread": "main",
+      "ts_ms": 1790992704455
+    },
+    {
+      "activity": "com.fairytrick.fairymahjong.MainActivity",
+      "component": "render",
+      "event": "RENDER_START",
+      "package": "com.fairytrick.fairymahjong",
+      "result": "PENDING",
+      "run_id": "1790992703400-1",
+      "seq": 15,
+      "sev": "PENDING",
+      "state": "measure/layout/draw pass",
+      "thread": "main",
+      "ts_ms": 1790992704462
+    },
+    {
+      "activity": "com.fairytrick.fairymahjong.MainActivity",
+      "component": "render",
+      "event": "TRACE_MARK",
+      "package": "com.fairytrick.fairymahjong",
+      "provenance": "stage_render_frame default walk",
+      "renderer_family": "CLASSIC_CANVAS",
+      "result": "OK",
+      "run_id": "1790992703400-1",
+      "seq": 16,
+      "sev": "RENDERER",
+      "state": "CLASSIC_CANVAS",
+      "thread": "main",
+      "ts_ms": 1790992704463
+    },
+    {
+      "activity": "com.fairytrick.fairymahjong.MainActivity",
+      "component": "capture",
+      "event": "FRAME_SUBMIT",
+      "package": "com.fairytrick.fairymahjong",
+      "renderer_family": "CLASSIC_CANVAS",
+      "result": "OK",
+      "run_id": "1790992703400-1",
+      "seq": 17,
+      "sev": "CONFIRMED",
+      "state": "1080x1920",
+      "thread": "main",
+      "ts_ms": 1790992704486
+    },
+    {
+      "activity": "com.fairytrick.fairymahjong.MainActivity",
+      "component": "capture",
+      "event": "FRAME_CAPTURE",
+      "extra": {
+        "bytes": 8294400,
+        "path": "/home/z/my-project/evidence/diff366/screen/t88_com.fairytrick.fairymahjong/screenshot.png"
+      },
+      "package": "com.fairytrick.fairymahjong",
+      "renderer_family": "CLASSIC_CANVAS",
+      "result": "OK",
+      "run_id": "1790992703400-1",
+      "seq": 18,
+      "sev": "CONFIRMED",
+      "state": "1080x1920",
+      "thread": "main",
+      "ts_ms": 1790992704561
+    },
+    {
+      "activity": "com.fairytrick.fairymahjong.MainActivity",
+      "component": "capture",
+      "event": "FRAME_ANALYSIS",
+      "extra": {
+        "dominant_color": [
+          "#ffffff"
+        ],
+        "dominant_pct": 100.0,
+        "height": 1920,
+        "non_default_pixels": 0,
+        "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093",
+        "size": "1080x1920",
+        "unique_colors": 1,
+        "verdict": "NO_ROOT",
+        "width": 1080
+      },
+      "package": "com.fairytrick.fairymahjong",
+      "renderer_family": "CLASSIC_CANVAS",
+      "result": "OK",
+      "run_id": "1790992703400-1",
+      "seq": 19,
+      "sev": "INFO",
+      "state": "NO_ROOT",
+      "thread": "main",
+      "ts_ms": 1790992704568
+    },
+    {
+      "activity": "com.fairytrick.fairymahjong.MainActivity",
+      "component": "capture",
+      "event": "TRACE_MARK",
+      "extra": {
+        "app_draw_ops": 0,
+        "app_owned_pixels": 0,
+        "app_owned_pixels_inside_content_bounds": 0,
+        "auth_root_valid": false,
+        "budget_exhausted": false,
+        "content_bounds": {
+          "b": 0,
+          "l": 0,
+          "r": 0,
+          "t": 0,
+          "valid": false
+        },
+        "deferred_earliest_ready_ms": 0,
+        "deferred_queue_size": 0,
+        "deferred_ui_pending": false,
+        "depth_max": 0,
+        "diag_owned_pixels": 0,
+        "diag_regions": 0,
+        "dialog_content_rendered": false,
+        "draw_walk_ran": false,
+        "first_missing_stage": "WINDOW_ROOT",
+        "inflation_failed": false,
+        "layout_ran": false,
+        "layout_source": null,
+        "measure_ran": false,
+        "no_root": true,
+        "nodes_skipped_depth": 0,
+        "nodes_visited": 0,
+        "render_exception": false,
+        "synthetic_suppressed": true,
+        "unreachable_children": 0,
+        "verdict_law": "21-P0-6 pixel ownership + correlated proof",
+        "verdict_regions_law": "V1/V7: WINDOW_BACKGROUND=dominant; AUTHORITATIVE_APP_CONTENT=non-dominant inside content bounds; WINDOW_CHROME=non-dominant outside; DIAGNOSTIC_OVERLAY=separate trace_overlay.png",
+        "window_background_px": 2073600,
+        "window_chrome_pixels": 0
+      },
+      "package": "com.fairytrick.fairymahjong",
+      "renderer_family": "CLASSIC_CANVAS",
+      "result": "CENSUS",
+      "run_id": "1790992703400-1",
+      "seq": 20,
+      "sev": "INFO",
+      "state": "NO_ROOT",
+      "thread": "main",
+      "ts_ms": 1790992704568
+    },
+    {
+      "activity": "com.fairytrick.fairymahjong.MainActivity",
+      "component": "render",
+      "event": "RENDER_START",
+      "package": "com.fairytrick.fairymahjong",
+      "renderer_family": "CLASSIC_CANVAS",
+      "result": "PENDING",
+      "run_id": "1790992703400-1",
+      "seq": 21,
+      "sev": "PENDING",
+      "state": "measure/layout/draw pass",
+      "thread": "main",
+      "ts_ms": 1790992704620
+    },
+    {
+      "activity": "com.fairytrick.fairymahjong.MainActivity",
+      "component": "capture",
+      "event": "FRAME_SUBMIT",
+      "package": "com.fairytrick.fairymahjong",
+      "renderer_family": "CLASSIC_CANVAS",
+      "result": "OK",
+      "run_id": "1790992703400-1",
+      "seq": 22,
+      "sev": "CONFIRMED",
+      "state": "1080x1920",
+      "thread": "main",
+      "ts_ms": 1790992704641
+    },
+    {
+      "activity": "com.fairytrick.fairymahjong.MainActivity",
+      "component": "capture",
+      "event": "FRAME_CAPTURE",
+      "extra": {
+        "bytes": 8294400,
+        "path": "/home/z/my-project/evidence/diff366/screen/t88_com.fairytrick.fairymahjong/screenshot.png"
+      },
+      "package": "com.fairytrick.fairymahjong",
+      "renderer_family": "CLASSIC_CANVAS",
+      "result": "OK",
+      "run_id": "1790992703400-1",
+      "seq": 23,
+      "sev": "CONFIRMED",
+      "state": "1080x1920",
+      "thread": "main",
+      "ts_ms": 1790992704717
+    },
+    {
+      "activity": "com.fairytrick.fairymahjong.MainActivity",
+      "component": "capture",
+      "event": "FRAME_ANALYSIS",
+      "extra": {
+        "dominant_color": [
+          "#ffffff"
+        ],
+        "dominant_pct": 100.0,
+        "height": 1920,
+        "non_default_pixels": 0,
+        "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093",
+        "size": "1080x1920",
+        "unique_colors": 1,
+        "verdict": "NO_ROOT",
+        "width": 1080
+      },
+      "package": "com.fairytrick.fairymahjong",
+      "renderer_family": "CLASSIC_CANVAS",
+      "result": "OK",
+      "run_id": "1790992703400-1",
+      "seq": 24,
+      "sev": "INFO",
+      "state": "NO_ROOT",
+      "thread": "main",
+      "ts_ms": 1790992704724
+    },
+    {
+      "activity": "com.fairytrick.fairymahjong.MainActivity",
+      "component": "capture",
+      "event": "TRACE_MARK",
+      "extra": {
+        "app_draw_ops": 0,
+        "app_owned_pixels": 0,
+        "app_owned_pixels_inside_content_bounds": 0,
+        "auth_root_valid": false,
+        "budget_exhausted": false,
+        "content_bounds": {
+          "b": 0,
+          "l": 0,
+          "r": 0,
+          "t": 0,
+          "valid": false
+        },
+        "deferred_earliest_ready_ms": 0,
+        "deferred_queue_size": 0,
+        "deferred_ui_pending": false,
+        "depth_max": 0,
+        "diag_owned_pixels": 0,
+        "diag_regions": 0,
+        "dialog_content_rendered": false,
+        "draw_walk_ran": false,
+        "first_missing_stage": "WINDOW_ROOT",
+        "inflation_failed": false,
+        "layout_ran": false,
+        "layout_source": null,
+        "measure_ran": false,
+        "no_root": true,
+        "nodes_skipped_depth": 0,
+        "nodes_visited": 0,
+        "render_exception": false,
+        "synthetic_suppressed": true,
+        "unreachable_children": 0,
+        "verdict_law": "21-P0-6 pixel ownership + correlated proof",
+        "verdict_regions_law": "V1/V7: WINDOW_BACKGROUND=dominant; AUTHORITATIVE_APP_CONTENT=non-dominant inside content bounds; WINDOW_CHROME=non-dominant outside; DIAGNOSTIC_OVERLAY=separate trace_overlay.png",
+        "window_background_px": 2073600,
+        "window_chrome_pixels": 0
+      },
+      "package": "com.fairytrick.fairymahjong",
+      "renderer_family": "CLASSIC_CANVAS",
+      "result": "CENSUS",
+      "run_id": "1790992703400-1",
+      "seq": 25,
+      "sev": "INFO",
+      "state": "NO_ROOT",
+      "thread": "main",
+      "ts_ms": 1790992704724
+    },
+    {
+      "activity": "com.fairytrick.fairymahjong.MainActivity",
+      "component": "boot",
+      "event": "RUN_END",
+      "extra": {
+        "status": 1
+      },
+      "package": "com.fairytrick.fairymahjong",
+      "renderer_family": "CLASSIC_CANVAS",
+      "result": "FAIL",
+      "run_id": "1790992703400-1",
+      "seq": 26,
+      "sev": "FAILURE",
+      "state": "Partial execution completed [F-016 exception-honesty: 2 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 849 IMPLEMENTED, 26 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=NO_ROOT, first_missing_stage=WINDOW_ROOT — SUCCESS requires authoritative app content]",
+      "thread": "main",
+      "ts_ms": 1790992704777
+    }
+  ],
+  "last_exception": {
+    "activity": "com.fairytrick.fairymahjong.MainActivity",
+    "component": "boot",
+    "event": "RUN_END",
+    "extra": {
+      "status": 1
+    },
+    "package": "com.fairytrick.fairymahjong",
+    "renderer_family": "CLASSIC_CANVAS",
+    "result": "FAIL",
+    "run_id": "1790992703400-1",
+    "seq": 26,
+    "sev": "FAILURE",
+    "state": "Partial execution completed [F-016 exception-honesty: 2 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 849 IMPLEMENTED, 26 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=NO_ROOT, first_missing_stage=WINDOW_ROOT — SUCCESS requires authoritative app content]",
+    "thread": "main",
+    "ts_ms": 1790992704777
+  },
+  "lifecycle": "RESUMED",
+  "renderer_family": "CLASSIC_CANVAS",
+  "run_id": "1790992703400-1",
+  "schema": "miniandroid.boot_trace/1.0",
+  "session_id": "EXP-001-20261003-015823-6117",
+  "severity_census": {
+    "CONFIRMED": 11,
+    "FAILURE": 6,
+    "INFO": 4,
+    "PENDING": 4,
+    "RENDERER": 1
+  },
+  "stages": [
+    {
+      "detail": "apk=/home/z/my-project/run/diff366/stores/store_t88/data/app/com.fairytrick.fairymahjong/base.apk",
+      "stage": "BOOT",
+      "state": "CONFIRMED"
+    },
+    {
+      "detail": "activity=com.fairytrick.fairymahjong.MainActivity",
+      "stage": "APK",
+      "state": "CONFIRMED"
+    },
+    {
+      "detail": "classes=177 methods=1376",
+      "stage": "DEX",
+      "state": "CONFIRMED"
+    },
+    {
+      "detail": "classes=177",
+      "stage": "CLASS-INIT",
+      "state": "CONFIRMED"
+    },
+    {
+      "detail": "RESUMED",
+      "stage": "LIFECYCLE",
+      "state": "CONFIRMED"
+    },
+    {
+      "detail": "",
+      "stage": "VIEWTREE",
+      "state": "NOT_REACHED"
+    },
+    {
+      "detail": "",
+      "stage": "MEASURE",
+      "state": "CONFIRMED"
+    },
+    {
+      "detail": "",
+      "stage": "LAYOUT",
+      "state": "CONFIRMED"
+    },
+    {
+      "detail": "",
+      "stage": "DRAW",
+      "state": "CONFIRMED"
+    },
+    {
+      "detail": "1080x1920",
+      "stage": "FRAME",
+      "state": "CONFIRMED"
+    }
+  ]
+}
