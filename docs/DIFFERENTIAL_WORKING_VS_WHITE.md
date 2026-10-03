@@ -278,15 +278,26 @@ painted with exactly the window background.
 |-----|------|------|------|---------|
 | opencalc | e364b001ee7abd66 | e364b001ee7abd66 | e364b001ee7abd66 | DETERMINISTIC |
 | unote | 4f1a9e4e8f64fae8 | 4f1a9e4e8f64fae8 | 4f1a9e4e8f64fae8 | DETERMINISTIC |
+| microtimer | da73010a37dd0189 | da73010a37dd0189 | da73010a37dd0189 | DETERMINISTIC |
 | chess | b5a7a35d5fe0564b | b5a7a35d5fe0564b | b5a7a35d5fe0564b | DETERMINISTIC |
 | bouncy | b6dde6074bf47264 | b6dde6074bf47264 | b6dde6074bf47264 | DETERMINISTIC |
+| dooz (control) | d602648e8e401895 | d602648e8e401895 | d602648e8e401895 | DETERMINISTIC |
 | fossifyclock | 31ddd4d5b8e6d18e | 31ddd4d5b8e6d18e | 31ddd4d5b8e6d18e | DETERMINISTIC |
 | blockblast | 31ddd4d5b8e6d18e | 31ddd4d5b8e6d18e | 31ddd4d5b8e6d18e | DETERMINISTIC |
 | asteroids | 31ddd4d5b8e6d18e | 31ddd4d5b8e6d18e | 31ddd4d5b8e6d18e | DETERMINISTIC |
 | spacevertex | 9d8c64b1f9f908b4 | 9d8c64b1f9f908b4 | 9d8c64b1f9f908b4 | DETERMINISTIC |
 | memory | 0666775d14475766 | 0666775d14475766 | 0666775d14475766 | DETERMINISTIC |
 
-(≥2 working + ≥3 white required; delivered 4 + 5.) First divergence identical across runs in
+(≥2 working + ≥3 white required; delivered 4 working + 5 white + 2 controls, 3-run each.)
+**Evidence-integrity closure (continuation §0, option A)**: the first publication of this
+report overclaimed 3-run coverage — `microtimer` and `dooz` had executed only `run1`
+(`three_run=False` in the pipeline table). The missing run2/run3 have now been **executed**
+(`scripts/diff366_run23.py`, same binary `4b2db3540575b1c4`, same stores, pkgaudit live
+re-hash match, source APKs still hidden): all four new runs are byte-identical to run1
+(microtimer `da73010a37dd0189…` ×3, REAL_APP_CONTENT; dooz `d602648e8e401895…` ×3,
+DEFAULT_BACKGROUND_ONLY; first divergence stable; per-run trace SHAs in the JSONL
+`trace_shas` field). The x9/x11 3-run claim is now true on persisted artifacts —
+no `single-run` residue remains in any ledger. First divergence identical across runs in
 every case — **no NONDETERMINISTIC divergences**. Trace SHA per run recorded in the JSONL.
 
 ## 11. WHY WORKING APPS WORK WHILE WHITE APPS FAIL (request §15 — causal analysis)

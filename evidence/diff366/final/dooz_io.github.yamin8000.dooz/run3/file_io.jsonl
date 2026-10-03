@@ -1,0 +1,6 @@
+{"seq":0,"op":"MKDIR","path":"/home/z/my-project/run/diff366/stores/store_dooz/data/data/io.github.yamin8000.dooz/files","result":"SUCCESS","subsystem":"Context.getFilesDir","caller":"Lvx0;.a","package":"io.github.yamin8000.dooz"}
+{"seq":1,"op":"OPEN","path":"/home/z/my-project/run/diff366/stores/store_dooz/data/data/io.github.yamin8000.dooz/files/datastore/settings.preferences_pb","result":"FAILURE","subsystem":"FileInputStream.open (DENIED: outside app namespace)","caller":"Ly8;.q","package":"io.github.yamin8000.dooz"}
+{"seq":2,"op":"EXISTS","path":"","result":"FAILURE","subsystem":"File.exists","caller":"Ly8;.q","package":"io.github.yamin8000.dooz"}
+{"seq":3,"op":"OPEN","path":"/home/z/my-project/run/diff366/stores/store_dooz/data/data/io.github.yamin8000.dooz/files/datastore/settings.preferences_pb","result":"FAILURE","subsystem":"FileInputStream.open (DENIED: outside app namespace)","caller":"Ly8;.q","package":"io.github.yamin8000.dooz"}
+{"seq":4,"op":"EXISTS","path":"","result":"FAILURE","subsystem":"File.exists","caller":"Ly8;.q","package":"io.github.yamin8000.dooz"}
+{"summary":{"total_ops":5,"failures":4,"events_emitted":5,"events_dropped":0,"package":"io.github.yamin8000.dooz","EXISTS":2,"MKDIR":1,"OPEN":2}}
