@@ -6509,3 +6509,62 @@ Stage Summary:
   byte-identical; sudoku app REAL_APP_CONTENT ×3; stopwatch honestly
   structurally blocked. GL frontier: EGL facade closed, ARM-translation
   boundary proven precise.
+
+---
+Task ID: 371-CLOSEOUT-FINAL
+Agent: Super Z (main agent)
+Task: #371 FINAL CLOSEOUT — Suntimes/time4j frontier completion + full regression + closeout.
+
+Work Log:
+- Container-reset repair: toolchain relayout (ecj/d8/aapt2/android-34),
+  EXT-01/02 re-fetched SHA-exact, blockblast/memory corpus re-fetched
+  (blockblast sha 64589a3a7e5c0f73 matches recorded), native probe libs
+  rebuilt (x86_64 gcc d5ec1f57fef3d271 + arm64 zig df30d6ec1aba3884),
+  monospace font law env restored, battery link lines completed with
+  build/jni/*.o, Makefile resource_trace target linked with THUNK_OBJECT.
+- Clean rebuild at d267c131 reproduced recorded BASE binary 6a6ef5b2a69f1f9d
+  byte-identically (same-path reproducibility law holds).
+- Suntimes re-run at BASE: chain re-established — TimeAxis$Builder.build
+  ISE "No time unit" (Moment.<clinit> 0 units) + PlatformTimezone NPE +
+  FileProvider parsePathStrategy IAE = 3 APP-BOUNDARY process deaths.
+- GENERIC FIX 1 — framework-enum values()/valueOf() accessor law
+  (dalvik_engine.cpp bridge_to_api + kOrdinals hoisted file-scope +
+  framework_enum_constants()): TimeUnit.values() now returns the 7
+  constants in declaration order (identity-coherent with the sget law),
+  valueOf unknown name -> IAE. Moment.<clinit> registers 7 axis units;
+  TimeAxis build ISE gone; olson CNFE caught per its existing handler;
+  Duration$Metric IAE confirmed caught/non-fatal (recorded "next
+  divergence" was recoverable, not fatal).
+- GENERIC FIX 2..6 — component <meta-data> manifest law (provider/service/
+  receiver/activity + android:resource AXML reference capture),
+  resolveContentProvider installed-authority law, ProviderInfo.metaData
+  seeding at attachInfo, loadXmlMetaData law, Resources.getXml law +
+  AXML-to-text decode feeding the K-35 XmlPullParser. FileProvider chain
+  passes end-to-end ([371-MD]→[371-RCP]→[371-XML]→[371-LXMD] all green).
+- GENERIC FIX 7 — TouchDispatcher AOSP claim law: first topmost claimant
+  wins (old walk overwrote target with later-walked lower-z siblings —
+  bottom-bar taps went to the full-screen ViewPager). Causal evidence:
+  F117-TAP target pager→button(2147), PerformClick dispatched=true,
+  listener ran ViewPager.setCurrentItem.
+- Suntimes PATCH: 0 process deaths; WelcomeActivity onCreate 736
+  instructions, ViewPager+indicator+Next/Back real listeners, full
+  lifecycle; canonical verdict REAL_APP_CONTENT (owned=61452 ops=4);
+  screenshot byte-identical ×3 (a49f90d65a8fc5c8). A/B isolated arms:
+  BASE 3 process deaths vs PATCH 0 (same APK/store/capture).
+- Next frontier precisely named: ViewPager page-fragment materialization
+  (pager children empty, mCurItem IGET-MISS, setCurrentItem cycle-stub) —
+  generic FragmentPagerAdapter container primitive, not Suntimes-specific.
+- FULL REGRESSION at final binary 267bf47d5d901054: anchors 5/5×3,
+  goldens 4/4, loading probe ALL PASS, gate A 95/0/2 (both stores),
+  negatives 17/17, reinstall 8/8, uninstall ALL PASS, battery 124/124,
+  multiapp 5/5, NATX 10/10×3 byte-identical, fan-out ×3 (tripeaks/gmdice/
+  sudoku/fishrings REAL_APP_CONTENT + stopwatch structural NO_ROOT),
+  flappycow 13cf47464d9787f4 + notes_secuso eb5ebd559cad1028 VERIFIED ×3
+  (recorded shas reproduced EXACTLY). Classifier untouched.
+
+Stage Summary:
+- time4j initialization frontier CLOSED at the runtime level (all
+  <clinit> chains complete, zero process deaths, REAL_APP_CONTENT);
+  remaining gap named precisely (ViewPager page-fragment materialization).
+- 7 generic laws landed; zero drift on every recorded anchor/golden sha.
+- Issue #371 final closeout ledger posted; work continues in #371 only.
