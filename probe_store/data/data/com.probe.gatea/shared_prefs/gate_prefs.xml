@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <boolean name="k_bool" value="true" />
+    <float name="k_float" value="2.5" />
+    <int name="k_int" value="-42" />
+    <long name="k_long" value="9876543210" />
+    <string name="k_string">gate-&lt;&amp;&gt;-value</string>
+    <int name="restart_counter" value="1" />
+</map>

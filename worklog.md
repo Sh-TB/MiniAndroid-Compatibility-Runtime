@@ -6345,3 +6345,67 @@ Stage Summary:
   pre-native path complete. New real-software proof banked ×3 for two NEW
   targets; all regression gates green at HEAD 58f2dde2; issue #371 kept
   OPEN with the final report posted for independent verification.
+
+---
+Task ID: 371-CLOSEOUT-S2
+Agent: Super Z (main agent)
+Task: FINAL CLOSEOUT #371 — S-2 native execution frontier (real dlopen/JNI
+execution, ABI selection law, native-execution probe APK, A/B causality).
+
+Work Log:
+- Phase A: read HEAD/issues/worklog; found prior ledger comment 5970492770
+  carried STALE content (51f7e5f9-era) — to be corrected in final report.
+- Environment recovery: rebuilt binary byte-identically to the recorded
+  58f2dde2 wave binary (b2b8c18bb92dab6a); canonical toolchain bootstrap
+  (aapt2/ecj/r8/android-34); gate_a_probe.apk rebuilt (df d0f07434…) with
+  restored lib fixture → probe 95/0/2 re-established at BASE.
+- Baseline gates at BASE binary b2b8c18bb92dab6a: determinism 5/5×3
+  byte-identical; goldens 4/4 REAL_APP_CONTENT; loading probe ALL PASS;
+  negatives 17/17; reinstall 8/8; uninstall gate PASS; gate A probe
+  93/2 on OLD binary (NAT-03/04 = S-2 expectation flips, recorded as the
+  A/B BASE signal).
+- S-2 IMPLEMENTED (generic, no package conditionals):
+  * src/jni/dlopen_exec.{h,cpp}: real host dlopen of extracted .so;
+    JNI_OnLoad handshake via minimal JavaVM (GetEnv/AttachCurrentThread);
+    minimal JNIEnv at SPEC SLOT INDICES (GetVersion=4, NewStringUTF=117,
+    GetStringUTFChars=119, ReleaseStringUTFChars=120, ExceptionOccurred=15,
+    ExceptionClear=17, ExceptionCheck=176, RegisterNatives=163, GetJavaVM=167
+    ...); unimplemented slots answer through a LOUD unsupported stub (counted,
+    stderr) — never silent zeros; JNI short/long symbol mangling +
+    RegisterNatives resolution; per-call local-ref string-box arena.
+  * src/jni/native_thunk.S: System V x86_64 dynamic call thunk — correct
+    INTEGER/SSE register class assignment (float bits in low half of SSE
+    slots), overflow stack args in SysV order; supports I/J/F/D/Z/B/C/S +
+    reference args.
+  * dalvik_engine.cpp System.loadLibrary/load: REAL load attempt when the
+    extracted file exists — success = live handle (trace row NATIVE-LOADED,
+    result=true); failures keep honest shapes: absent / not-extracted /
+    real dlerror (wrong ELF class for arm64-on-x86_64).
+  * dalvik_engine.cpp ACC_NATIVE dispatch: ordered layering JNIBridge
+    handlers → REAL dlopen symbol → fail-soft. Unresolved symbol on a class
+    whose loader loaded a lib → AOSP UnsatisfiedLinkError "No implementation
+    found for ... (tried ...)". Results cross back per DEX return type.
+  * main.cpp install ABI law: SUPPORTED_ABIS = [x86_64 (host-executable),
+    x86, arm64-v8a, armeabi-v7a (extraction-only)] — host-executable ABI
+    preferred exactly like real x86_64 Android devices; multi-ABI APKs get
+    EXECUTABLE native libs, arm-only APKs get precise refusal.
+  * dalvik_engine.cpp execute_invoke_static: JVMS 5.5 first-active-use law —
+    invoke-static now triggers ensure_class_initialized (NativeProbe.<clinit>
+    loadLibrary-in-static-init was never running before — first-divergence
+    root cause of the all-zero native results).
+  * fixtures/native_probe/: deterministic native_probe.c compiled for BOTH
+    ABIs (x86_64 via host gcc; aarch64 via zig cc — real ELF, extraction
+    fixture); fixtures/native_probe_apk/: S-2 probe APK (com.probe.nativelib)
+    with ops NATX-01..10 (ABI law, extraction identity, fib=610, add=9,
+    native-materialized string, bit-exact cross-boundary checksum, mixed
+    I/F/D/J register classes, missing-symbol ULE, missing-lib ULE, repeat
+    determinism); gate_a NAT-03/04 upgraded to closed-frontier expectations.
+- PATCH binary 934a58c0800e6b16: native probe NATX 10/10 PASS (3 stores
+  identical); gate A probe 95/0/2; determinism 5/5×3 ZERO drift; goldens
+  4/4; loading probe ALL PASS. A/B BASE vs PATCH: NAT-03/04 flip +
+  NATX-03..10 zero→real values — causality proven, same APK, isolated dirs.
+
+Stage Summary:
+- S-2 CLOSED: native execution is real (dlopen+JNI_OnLoad+dlsym+System V
+  dispatch), failures are honest AOSP shapes, no package conditionals.
+- Regression green at the PATCH binary for all gates re-run so far.

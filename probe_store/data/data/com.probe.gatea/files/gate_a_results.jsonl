@@ -1,0 +1,97 @@
+GATEA|ID-01|PASS|com.probe.gatea
+GATEA|ID-02|PASS|probe_store/data/app/com.probe.gatea/base.apk
+GATEA|ID-03|PASS|/data/data/com.probe.gatea
+GATEA|ID-04|PASS|versionName=0.7.0 providers=1 auth=com.probe.gatea.gateprovider
+GATEA|PROV-01|PASS|provider-ran=1 attachCtx=1 auth=com.probe.gatea.gateprovider
+GATEA|PROV-PREP|PASS|served-file len=17
+GATEA|PROV-02|PASS|insert→uri=Landroid/net/Uri;@38 providerCalls=1 name=alpha
+GATEA|PROV-03|PASS|cursor rows=1 cols=3 name:value=alpha:41
+GATEA|PROV-04|PASS|update rows=1 providerValue=99
+GATEA|PROV-05|PASS|delete rows=1 tableAfter=0 (state change)
+GATEA|PROV-06|PASS|openFileDescriptor bytes==direct (17B)
+GATEA|PROV-07|PASS|getType=vnd.probe.note parseId=41
+GATEA|PROV-08|PASS|IllegalArgument honest: Ljava/lang/IllegalArgumentException;@83
+GATEA|PROV-09|PASS|query unknown authority → documented null
+GATEA|SVC-01|PASS|startx2 → onCreate=1 onStartCommand=2 startId=2
+GATEA|SVC-02|PASS|bindService → onServiceConnected binder=live
+GATEA|SVC-03|PASS|unbind → service STAYS (started-by-startService)
+GATEA|SVC-04|PASS|stopService → onDestroy (destroys=1)
+GATEA|BCAST-01|PASS|manifest receiver delivered onReceive ctx=bound
+GATEA|BCAST-02|PASS|dynamic receiver delivered (1)
+GATEA|BCAST-03|PASS|unregister → no further delivery
+GATEA|BCAST-04|PASS|IllegalArgument honest: Ljava/lang/IllegalArgumentException;@107
+GATEA|DE-01|PASS|de-files=/data/user_de/0/com.probe.gatea/files written=8B isolated-from-CE=true
+GATEA|DIR-01|PASS|/data/data/com.probe.gatea/files exists=true
+GATEA|DIR-02|PASS|/data/data/com.probe.gatea/cache
+GATEA|DIR-03|PASS|/data/data/com.probe.gatea/code_cache
+GATEA|DIR-04|PASS|/data/data/com.probe.gatea/no_backup
+GATEA|DIR-05|PASS|/data/data/com.probe.gatea
+GATEA|DIR-06|PASS|/data/data/com.probe.gatea/databases/gatea.db
+GATEA|DIR-07|PASS|app_custom
+GATEA|DIR-08|PASS|/data/data/com.probe.gatea/files/streampath.txt
+GATEA|DIR-09|PASS|/storage/emulated/0/Android/data/com.probe.gatea/files/probe marker=true
+GATEA|DIR-10|PASS|/storage/emulated/0/Android/data/com.probe.gatea/cache
+GATEA|DIR-11|PASS|len=1 /storage/emulated/0/Android/data/com.probe.gatea/media
+GATEA|DIR-12|PASS|/storage/emulated/0/Android/obb/com.probe.gatea
+GATEA|FILE-01|PASS|created=true
+GATEA|FILE-02|PASS|exists=true isFile=true len=10
+GATEA|FILE-03|PASS|canRead=true canWrite=true
+GATEA|FILE-04|INFO|lastModified=0 (documented determinism law)
+GATEA|FILE-05|PASS|mkdir=true isDir=true
+GATEA|FILE-06|PASS|mkdirs=true isDir=true
+GATEA|FILE-07|PASS|list=2 listFiles=2
+GATEA|FILE-08|PASS|renamed=true oldGone=true newLen=12
+GATEA|FILE-09|PASS|abs=/data/data/com.probe.gatea/files/ren_dst.txt canonical=/data/data/com.probe.gatea/files/ren_dst.txt
+GATEA|FILE-10|PASS|parent=/data/data/com.probe.gatea/files name=ren_dst.txt isAbs=true
+GATEA|FILE-11|PASS|deleted=true existsAfter=false
+GATEA|IO-01|PASS|write+read-back=true len=17
+GATEA|IO-02|PASS|append len=26
+GATEA|IO-03|PASS|write(byte[],off,len) grew to 27
+GATEA|IO-04|PASS|first=115 chunk=4 skip=0 tail=109
+GATEA|IO-05|PASS|consumed=17 eofIsMinus1=true
+GATEA|IO-06|PASS|available=17
+GATEA|IO-07|PASS|write(int)=77 read=77 match=true
+GATEA|IO-08|PASS|fileList has stream_io.bin=true
+GATEA|IO-09|PASS|delete true-then-false=true/false
+GATEA|FD-01|PASS|offset=91865 declaredLen=75 offOk=true lenOk=true
+GATEA|FD-02|PASS|afd-stream-bytes=75 equal-to-direct=true
+GATEA|FD-03|PASS|fd=Ljava/io/FileDescriptor;@204
+GATEA|FD-04|PASS|fd=6 dup=7 fdOk=true
+GATEA|FD-05|PASS|closed; fd after close=-1
+GATEA|FD-06|PASS|text-asset openFd declaredLen=25 (AOSP: works only when STORED)
+GATEA|FD-07|INFO|raw openRawResourceFd -> Ljava/io/FileNotFoundException;@216 (AOSP: FNFE for compressed raw entries)
+GATEA|ASSET-01|PASS|list-root=[gate_stored.png, gate_text.txt, nested] nameLens=15,13,6,
+GATEA|ASSET-02|PASS|list(nested)=[sub.txt]
+GATEA|ASSET-03|PASS|Ljava/lang/String;@222
+GATEA|ASSET-04|PASS|Ljava/lang/String;@227
+GATEA|ASSET-05|PASS|FileNotFound honest: Ljava/io/FileNotFoundException;@233
+GATEA|RES-01|PASS|app_name id=0x7f040000
+GATEA|RES-02|PASS|Gate A Probe tag-roundtrip=true
+GATEA|RES-03|PASS|Ljava/lang/String;@241
+GATEA|RES-04|PASS|NotFound honest: Landroid/content/res/Resources$NotFoundException;@243
+GATEA|IMG-01|PASS|resource-bmp=8x8
+GATEA|IMG-02|PASS|file-bmp=8x8
+GATEA|IMG-03|PASS|bytes-bmp=8x8
+GATEA|PREF-01|PASS|commit=true
+GATEA|PREF-02|PASS|escaped-roundtrip=true set=Ljava/util/HashSet;@257
+GATEA|PREF-03|PASS|fresh-instance k_int=-42 contains=true
+GATEA|PREF-06|PASS|restart_counter=1
+GATEA|PREF-04|PASS|removed=true afterClear=0
+GATEA|DB-01|PASS|rows=1 last=row-1791047196922921462 isOpen=true
+GATEA|DB-02|PASS|databaseList=[gatea.db] has-gatea=true
+GATEA|DB-03|PASS|helper-db=true name=helper.db
+GATEA|CFG-01|PASS|locale default wins (-zh-rCN/-land unreachable)
+GATEA|CFG-02|PASS|default wins (-night unreachable at NIGHT_NO)
+GATEA|CFG-03|PASS|no-match falls back to default config
+GATEA|CFG-04|PASS|density best-match picked xhdpi 32px variant
+GATEA|CFG-05|PASS|font resource id=0x7f020000 TTF-magic=true
+GATEA|NAT-01|PASS|UnsatisfiedLink honest: Ljava/lang/UnsatisfiedLinkError;@280
+GATEA|NAT-02|PASS|nativeLibraryDir=/data/app/com.probe.gatea/lib/arm64-v8a
+GATEA|NAT-03|FAIL|nativeLibraryDir=/data/app/com.probe.gatea/lib/arm64-v8a
+GATEA|NAT-04|FAIL|real load failed: Ljava/lang/UnsatisfiedLinkError;@284
+GATEA|NAT-05|PASS|ULE not-found shape: dlopen failed: library "gatea_nosuch_lib" not found in the installed APK (no lib/arm64-v8a/libgatea_
+GATEA|ISO-01|PASS|cross-package exists()=false isolated=true
+GATEA|ISO-02|PASS|traversal exists()=false
+GATEA|ISO-03|PASS|host /etc/passwd exists()=false
+GATEA|ISO-04|PASS|FileNotFound honest: Ljava/io/FileNotFoundException;@296
+GATEA|IO-10|PASS|FileNotFound honest: Ljava/io/FileNotFoundException;@299
