@@ -21315,6 +21315,33 @@ void DalvikExecutionEngine::seed_framework_device_statics() {
     // Deterministic virtual-device ANDROID_ID (16 lowercase hex chars,
     // same shape as a real device; constant => Rule 12 determinism).
     resource_string_values_["android_id"] = "6f1c3a9d2e5b4780";
+    // ────────────────────────────────────────────────────────────────────
+    // CONT-366 ROOT-B — android.view.WindowInsets.CONSUMED (API 30+).
+    // AOSP (WindowInsets.java): CONSUMED is a public static final
+    // WindowInsets — "an empty insets instance where all insets have been
+    // consumed". It is NEVER null on any API-30+ device.
+    // Runtime evidence (memory v34, first-divergence trace):
+    //   ActionBarOverlayLayout.<init> (appcompat decor) →
+    //   androidx.core.view.WindowInsetsCompat <clinit> (s0;) → s0$k;
+    //   <clinit> → J0.a() == sget WindowInsets.CONSUMED → engine typed-
+    //   null → Kotlin/Objects.requireNonNull(x/h.g) NPE "getClass on null
+    //   object reference" → s0.v/u unwind → ActionBarOverlayLayout ctor
+    //   death → WHITE. Every appcompat-1.6+ decor inflation on the API-30
+    //   path touches this static through the same clinit chain.
+    // Seed: a REAL heap WindowInsets object (the deterministic empty/
+    // consumed instance) — not a string, not a stub. Runtime field
+    // identity + requireNonNull both observe an authentic object.
+    // ────────────────────────────────────────────────────────────────────
+    {
+        uint32_t wi_id = heap_.allocate("Landroid/view/WindowInsets;", 0, 0);
+        heap_.set_object_field(wi_id, "__insets_consumed__",
+                               DalvikValue::make_bool(true));
+        DalvikValue wi;
+        wi.type = DalvikType::OBJECT_REF;
+        wi.object_id = wi_id;
+        wi.class_desc = "Landroid/view/WindowInsets;";
+        seed("Landroid/view/WindowInsets;.CONSUMED", wi);
+    }
 }
 
 // ────────────────────────────────────────────────────────────────────
