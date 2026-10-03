@@ -6060,3 +6060,20 @@ Work Log:
 Stage Summary:
 - The x9/x11 3-run claim is now TRUE on persisted artifacts; discrepancy disclosed + closed by execution, not by claim downgrade.
 - New artifact: evidence/diff366/final/{microtimer,dooz}/run2,run3 + scripts/diff366_run23.py + scripts/diff366_run23_comment.py.
+
+---
+Task ID: CONT-ROOT-A
+Agent: Super Z (main)
+Task: MASTER CONTINUATION §3 ROOT-A — java.util/java.lang null contracts (Arrays.toString, Class.forName/newInstance, Kotlin Intrinsics interaction)
+
+Work Log:
+- SOURCE→LAW: OpenJDK Arrays.toString(null)→"null" string; Class.newInstance constructs or throws InstantiationException (never null); getModifiers=real DEX access_flags; isMemberClass/isAnonymousClass=$-name compiler subset; ContentProvider.getContext never null post-attachInfo.
+- EVIDENCE DISASSEMBLY: androidx FragmentTransaction.add (a.b) branch law reconstructed from bytecode — getModifiers typed-zero 0 → Modifier.isPublic(0)=false → !isPublic disjunct → ISE for top-level PUBLIC HomeFragment. InitializationProvider.onCreate null-guard from getContext() REC-MISS null.
+- FIXES (generic, no package conditionals): R-NEW-458 Arrays.toString law; R-NEW-459 Class getModifiers/isMemberClass/isAnonymousClass/isInterface/isAbstract/newInstance laws; R-NEW-460 ContentProvider.getContext law. All in dalvik_engine.cpp; registered in root_registry.json (530→533).
+- FANOUT (scripts/diff366_root_a_fanout.py, 8 apps): asteroids — Intrinsics NPE GONE, provider OK, arrest moved to GodotView native (next-div recorded); spacevertex — forName-NPE + Fragment-ISE GONE, view tree 8 views incl. app Scene class (was 2-node), arrest moved to APP_PIXELS (GL draw); bouncy/opencalc/unote/microtimer/dooz/memory — byte-identical (ZERO regression).
+- NEXT FIRST DIVERGENCES RECORDED: asteroids=GodotView native surface (ROOT E), spacevertex=Scene GL draw never fires (APP_PIXELS; ROOT D/E), memory=WindowInsets (ROOT B, next).
+- REGRESSION: working_vs_failing 5/5 x3 byte-identical + loading probe 23/23 + uninstall 16/16 ALL PASS on patched binary.
+
+Stage Summary:
+- ROOT-A complete: 3 generic laws, both ROOT-A white apps advanced past their recorded divergences, zero golden drift.
+- Fan-out evidence: evidence/diff366/root_a/ (8 app dirs + root_a_fanout.json).
