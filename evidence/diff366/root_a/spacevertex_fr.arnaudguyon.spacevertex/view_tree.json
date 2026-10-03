@@ -1,13 +1,13 @@
 {
-  "content_root_id": 391,
+  "content_root_id": 392,
   "experiment": "EXP-061",
   "node_source": "content-root-walk",
   "nodes": [
     {
       "android_view_id": 2131230763,
       "children": [
-        393,
-        395
+        394,
+        396
       ],
       "class": "Landroidx/appcompat/widget/FitWindowsLinearLayout;",
       "clickable": false,
@@ -16,8 +16,8 @@
       "height": 1920,
       "hint": "",
       "image_resource_id": 0,
-      "object_id": 391,
-      "parent_id": 364,
+      "object_id": 392,
+      "parent_id": 365,
       "text": "",
       "text_resource_id": 0,
       "view_type": "ViewGroup",
@@ -36,8 +36,8 @@
       "height": -2,
       "hint": "",
       "image_resource_id": 0,
-      "object_id": 393,
-      "parent_id": 391,
+      "object_id": 394,
+      "parent_id": 392,
       "text": "",
       "text_resource_id": 0,
       "view_type": "View",
@@ -49,7 +49,7 @@
     {
       "android_view_id": 16908290,
       "children": [
-        412
+        413
       ],
       "class": "Landroidx/appcompat/widget/ContentFrameLayout;",
       "clickable": false,
@@ -58,8 +58,8 @@
       "height": 1920,
       "hint": "",
       "image_resource_id": 0,
-      "object_id": 395,
-      "parent_id": 391,
+      "object_id": 396,
+      "parent_id": 392,
       "text": "",
       "text_resource_id": 0,
       "view_type": "ViewGroup",
@@ -71,9 +71,9 @@
     {
       "android_view_id": 0,
       "children": [
-        413,
-        422,
-        423
+        414,
+        423,
+        424
       ],
       "class": "Landroid/widget/RelativeLayout;",
       "clickable": false,
@@ -82,8 +82,8 @@
       "height": 1920,
       "hint": "",
       "image_resource_id": 0,
-      "object_id": 412,
-      "parent_id": 395,
+      "object_id": 413,
+      "parent_id": 396,
       "text": "",
       "text_resource_id": 0,
       "view_type": "ViewGroup",
@@ -102,8 +102,8 @@
       "height": 1920,
       "hint": "",
       "image_resource_id": 0,
-      "object_id": 413,
-      "parent_id": 412,
+      "object_id": 414,
+      "parent_id": 413,
       "text": "",
       "text_resource_id": 0,
       "view_type": "ImageView",
@@ -122,8 +122,8 @@
       "height": 1920,
       "hint": "",
       "image_resource_id": 0,
-      "object_id": 422,
-      "parent_id": 412,
+      "object_id": 423,
+      "parent_id": 413,
       "text": "",
       "text_resource_id": 0,
       "view_type": "ViewGroup",
@@ -135,7 +135,7 @@
     {
       "android_view_id": 2131230782,
       "children": [
-        424
+        425
       ],
       "class": "Landroid/widget/LinearLayout;",
       "clickable": false,
@@ -144,8 +144,8 @@
       "height": 1920,
       "hint": "",
       "image_resource_id": 0,
-      "object_id": 423,
-      "parent_id": 412,
+      "object_id": 424,
+      "parent_id": 413,
       "text": "",
       "text_resource_id": 0,
       "view_type": "ViewGroup",
@@ -164,8 +164,8 @@
       "height": 1920,
       "hint": "",
       "image_resource_id": 0,
-      "object_id": 424,
-      "parent_id": 423,
+      "object_id": 425,
+      "parent_id": 424,
       "text": "",
       "text_resource_id": 0,
       "view_type": "ViewGroup",

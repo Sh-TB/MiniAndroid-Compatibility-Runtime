@@ -1,12 +1,12 @@
 {
-  "content_root_id": 970,
+  "content_root_id": 971,
   "experiment": "EXP-061",
   "node_source": "content-root-walk",
   "nodes": [
     {
       "android_view_id": 0,
       "children": [
-        1313
+        1314
       ],
       "class": "Lho;",
       "clickable": false,
@@ -15,8 +15,8 @@
       "height": 1920,
       "hint": "",
       "image_resource_id": 0,
-      "object_id": 970,
-      "parent_id": 33,
+      "object_id": 971,
+      "parent_id": 34,
       "text": "",
       "text_resource_id": 0,
       "view_type": "ViewGroup",
@@ -35,8 +35,8 @@
       "height": 105,
       "hint": "",
       "image_resource_id": 0,
-      "object_id": 1313,
-      "parent_id": 970,
+      "object_id": 1314,
+      "parent_id": 971,
       "text": "",
       "text_resource_id": 0,
       "view_type": "ViewGroup",

@@ -1,7 +1,7 @@
 {
   "activity": "dubrowgn.microtimer.MainActivity",
   "apk_package": "dubrowgn.microtimer",
-  "duration_ms": 655,
+  "duration_ms": 647,
   "events_retained": 25,
   "events_total": 25,
   "first_divergence": null,
@@ -61,52 +61,52 @@
       "extra": {
         "boot_trace": true,
         "buffer_cap": 512,
-        "pid": 5919,
+        "pid": 6533,
         "trace_ui": false
       },
       "result": "PENDING",
-      "run_id": "1791002019882-1",
+      "run_id": "1791002451578-1",
       "seq": 1,
       "sev": "PENDING",
       "state": "apk=/home/z/my-project/run/diff366/stores/store_microtimer/data/app/dubrowgn.microtimer/base.apk",
       "thread": "main",
-      "ts_ms": 1791002019882
+      "ts_ms": 1791002451578
     },
     {
       "component": "boot",
       "event": "APK_LOADED",
       "package": "dubrowgn.microtimer",
       "result": "OK",
-      "run_id": "1791002019882-1",
+      "run_id": "1791002451578-1",
       "seq": 2,
       "sev": "CONFIRMED",
       "state": "pkg=dubrowgn.microtimer",
       "thread": "main",
-      "ts_ms": 1791002019883
+      "ts_ms": 1791002451579
     },
     {
       "component": "boot",
       "event": "MANIFEST_PARSED",
       "package": "dubrowgn.microtimer",
       "result": "OK",
-      "run_id": "1791002019882-1",
+      "run_id": "1791002451578-1",
       "seq": 3,
       "sev": "CONFIRMED",
       "state": "activity=dubrowgn.microtimer.MainActivity",
       "thread": "main",
-      "ts_ms": 1791002019883
+      "ts_ms": 1791002451579
     },
     {
       "component": "boot",
       "event": "DEX_PARSED",
       "package": "dubrowgn.microtimer",
       "result": "OK",
-      "run_id": "1791002019882-1",
+      "run_id": "1791002451578-1",
       "seq": 4,
       "sev": "CONFIRMED",
       "state": "classes=143 methods=1122",
       "thread": "main",
-      "ts_ms": 1791002019885
+      "ts_ms": 1791002451581
     },
     {
       "component": "boot",
@@ -116,24 +116,24 @@
       },
       "package": "dubrowgn.microtimer",
       "result": "OK",
-      "run_id": "1791002019882-1",
+      "run_id": "1791002451578-1",
       "seq": 5,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1791002019905
+      "ts_ms": 1791002451601
     },
     {
       "component": "boot",
       "event": "CLASSES_LOADED",
       "package": "dubrowgn.microtimer",
       "result": "OK",
-      "run_id": "1791002019882-1",
+      "run_id": "1791002451578-1",
       "seq": 6,
       "sev": "CONFIRMED",
       "state": "classes=143",
       "thread": "main",
-      "ts_ms": 1791002019905
+      "ts_ms": 1791002451601
     },
     {
       "activity": "dubrowgn.microtimer.MainActivity",
@@ -141,12 +141,12 @@
       "event": "ACTIVITY_RESOLVED",
       "package": "dubrowgn.microtimer",
       "result": "OK",
-      "run_id": "1791002019882-1",
+      "run_id": "1791002451578-1",
       "seq": 7,
       "sev": "CONFIRMED",
       "state": "dubrowgn.microtimer.MainActivity",
       "thread": "main",
-      "ts_ms": 1791002019905
+      "ts_ms": 1791002451601
     },
     {
       "activity": "dubrowgn.microtimer.MainActivity",
@@ -154,12 +154,12 @@
       "event": "APPLICATION_CREATE",
       "package": "dubrowgn.microtimer",
       "result": "PENDING",
-      "run_id": "1791002019882-1",
+      "run_id": "1791002451578-1",
       "seq": 8,
       "sev": "PENDING",
       "state": "dex interpreter",
       "thread": "main",
-      "ts_ms": 1791002019905
+      "ts_ms": 1791002451601
     },
     {
       "activity": "dubrowgn.microtimer.MainActivity",
@@ -195,12 +195,12 @@
       },
       "package": "dubrowgn.microtimer",
       "result": "OK",
-      "run_id": "1791002019882-1",
+      "run_id": "1791002451578-1",
       "seq": 9,
       "sev": "CONFIRMED",
       "state": "RESUMED",
       "thread": "main",
-      "ts_ms": 1791002020150
+      "ts_ms": 1791002451842
     },
     {
       "activity": "dubrowgn.microtimer.MainActivity",
@@ -208,12 +208,12 @@
       "event": "RENDER_START",
       "package": "dubrowgn.microtimer",
       "result": "PENDING",
-      "run_id": "1791002019882-1",
+      "run_id": "1791002451578-1",
       "seq": 10,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1791002020170
+      "ts_ms": 1791002451862
     },
     {
       "activity": "dubrowgn.microtimer.MainActivity",
@@ -221,12 +221,12 @@
       "event": "VIEWTREE_CREATED",
       "package": "dubrowgn.microtimer",
       "result": "OK",
-      "run_id": "1791002019882-1",
+      "run_id": "1791002451578-1",
       "seq": 11,
       "sev": "CONFIRMED",
-      "state": "root_id=107",
+      "state": "root_id=108",
       "thread": "main",
-      "ts_ms": 1791002020170
+      "ts_ms": 1791002451862
     },
     {
       "activity": "dubrowgn.microtimer.MainActivity",
@@ -236,12 +236,12 @@
       "provenance": "stage_render_frame default walk",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002019882-1",
+      "run_id": "1791002451578-1",
       "seq": 12,
       "sev": "RENDERER",
       "state": "CLASSIC_CANVAS",
       "thread": "main",
-      "ts_ms": 1791002020170
+      "ts_ms": 1791002451862
     },
     {
       "activity": "dubrowgn.microtimer.MainActivity",
@@ -250,12 +250,12 @@
       "package": "dubrowgn.microtimer",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002019882-1",
+      "run_id": "1791002451578-1",
       "seq": 13,
       "sev": "CONFIRMED",
       "state": "nonwhite=1029909 total=2073600 app_ops=22 diag_regions=0",
       "thread": "main",
-      "ts_ms": 1791002020210
+      "ts_ms": 1791002451901
     },
     {
       "activity": "dubrowgn.microtimer.MainActivity",
@@ -264,12 +264,12 @@
       "package": "dubrowgn.microtimer",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002019882-1",
+      "run_id": "1791002451578-1",
       "seq": 14,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1791002020211
+      "ts_ms": 1791002451902
     },
     {
       "activity": "dubrowgn.microtimer.MainActivity",
@@ -282,12 +282,12 @@
       "package": "dubrowgn.microtimer",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002019882-1",
+      "run_id": "1791002451578-1",
       "seq": 15,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1791002020285
+      "ts_ms": 1791002451977
     },
     {
       "activity": "dubrowgn.microtimer.MainActivity",
@@ -309,12 +309,12 @@
       "package": "dubrowgn.microtimer",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002019882-1",
+      "run_id": "1791002451578-1",
       "seq": 16,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
       "thread": "main",
-      "ts_ms": 1791002020301
+      "ts_ms": 1791002451993
     },
     {
       "activity": "dubrowgn.microtimer.MainActivity",
@@ -359,12 +359,12 @@
       "package": "dubrowgn.microtimer",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "CENSUS",
-      "run_id": "1791002019882-1",
+      "run_id": "1791002451578-1",
       "seq": 17,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
       "thread": "main",
-      "ts_ms": 1791002020301
+      "ts_ms": 1791002451993
     },
     {
       "activity": "dubrowgn.microtimer.MainActivity",
@@ -373,12 +373,12 @@
       "package": "dubrowgn.microtimer",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1791002019882-1",
+      "run_id": "1791002451578-1",
       "seq": 18,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1791002020354
+      "ts_ms": 1791002452045
     },
     {
       "activity": "dubrowgn.microtimer.MainActivity",
@@ -387,12 +387,12 @@
       "package": "dubrowgn.microtimer",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002019882-1",
+      "run_id": "1791002451578-1",
       "seq": 19,
       "sev": "CONFIRMED",
-      "state": "root_id=107",
+      "state": "root_id=108",
       "thread": "main",
-      "ts_ms": 1791002020354
+      "ts_ms": 1791002452045
     },
     {
       "activity": "dubrowgn.microtimer.MainActivity",
@@ -401,12 +401,12 @@
       "package": "dubrowgn.microtimer",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002019882-1",
+      "run_id": "1791002451578-1",
       "seq": 20,
       "sev": "CONFIRMED",
       "state": "nonwhite=1029909 total=2073600 app_ops=22 diag_regions=0",
       "thread": "main",
-      "ts_ms": 1791002020391
+      "ts_ms": 1791002452081
     },
     {
       "activity": "dubrowgn.microtimer.MainActivity",
@@ -415,12 +415,12 @@
       "package": "dubrowgn.microtimer",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002019882-1",
+      "run_id": "1791002451578-1",
       "seq": 21,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1791002020392
+      "ts_ms": 1791002452081
     },
     {
       "activity": "dubrowgn.microtimer.MainActivity",
@@ -433,12 +433,12 @@
       "package": "dubrowgn.microtimer",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002019882-1",
+      "run_id": "1791002451578-1",
       "seq": 22,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1791002020466
+      "ts_ms": 1791002452155
     },
     {
       "activity": "dubrowgn.microtimer.MainActivity",
@@ -460,12 +460,12 @@
       "package": "dubrowgn.microtimer",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002019882-1",
+      "run_id": "1791002451578-1",
       "seq": 23,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
       "thread": "main",
-      "ts_ms": 1791002020483
+      "ts_ms": 1791002452171
     },
     {
       "activity": "dubrowgn.microtimer.MainActivity",
@@ -510,12 +510,12 @@
       "package": "dubrowgn.microtimer",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "CENSUS",
-      "run_id": "1791002019882-1",
+      "run_id": "1791002451578-1",
       "seq": 24,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
       "thread": "main",
-      "ts_ms": 1791002020483
+      "ts_ms": 1791002452171
     },
     {
       "activity": "dubrowgn.microtimer.MainActivity",
@@ -527,20 +527,20 @@
       "package": "dubrowgn.microtimer",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002019882-1",
+      "run_id": "1791002451578-1",
       "seq": 25,
       "sev": "CONFIRMED",
       "state": "Execution completed successfully [F-NEW-200 stub-census: 1062 IMPLEMENTED, 19 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json]",
       "thread": "main",
-      "ts_ms": 1791002020537
+      "ts_ms": 1791002452225
     }
   ],
   "last_exception": null,
   "lifecycle": "RESUMED",
   "renderer_family": "CLASSIC_CANVAS",
-  "run_id": "1791002019882-1",
+  "run_id": "1791002451578-1",
   "schema": "miniandroid.boot_trace/1.0",
-  "session_id": "EXP-001-20261003-043339-2195",
+  "session_id": "EXP-001-20261003-044051-4291",
   "severity_census": {
     "CONFIRMED": 16,
     "INFO": 4,
@@ -574,7 +574,7 @@
       "state": "CONFIRMED"
     },
     {
-      "detail": "root_id=107",
+      "detail": "root_id=108",
       "stage": "VIEWTREE",
       "state": "CONFIRMED"
     },

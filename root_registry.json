@@ -4352,11 +4352,21 @@
    "fanout": "Both apps: [S1-PROVIDER] installed androidx.startup.InitializationProvider onCreate OK; StartupException/Lzc; frontier GONE. Regression: gates ALL PASS.",
    "first_evidence": "evidence/diff366/root_a/{asteroids,spacevertex}/*/run.log",
    "date": "2026-10-03"
+  },
+  {
+   "id": "R-NEW-461",
+   "title": "DIFFERENTIAL-366 ROOT-B: android.view.WindowInsets.CONSUMED static (API 30+) — appcompat decor static-init null contract",
+   "status": "IMPLEMENTED+TESTED",
+   "law": "AOSP WindowInsets.java: CONSUMED is a public static final WindowInsets (an all-consumed/empty instance), never null on API-30+. Runtime seed: a real heap WindowInsets object (__insets_consumed__=true) in seed_framework_device_statics — authentic object identity for requireNonNull + reflection. Evidence: memory v34 — androidx.core.view.WindowInsetsCompat (s0;) <clinit> -> s0$k <clinit> -> J0.a() = sget CONSUMED -> engine typed-null -> Objects.requireNonNull NPE -> s0.v/u unwind -> ActionBarOverlayLayout.<init> death -> WHITE.",
+   "fix": "WindowInsets.CONSUMED seed in seed_framework_device_statics (dalvik_engine.cpp)",
+   "fanout": "memory: WHITE -> REAL_APP_CONTENT (frame verdict real, 2 app draw ops, new sha 67845303a9460d86); next divergence recorded = java.net.URI.toString on null at MainActivity.onCreate pc=364 (WebView/zip-asset extraction path — new frontier, not yet fixed). AndroidX controls fossifyclock (EventBus root) + blockblast (Compose root) byte-identical (unrelated roots, no regression); goldens 5/5 x3 + probe 23/23 + uninstall 16/16 ALL PASS.",
+   "first_evidence": "evidence/diff366/root_a/memory_com.sanskritbasics.memory/",
+   "date": "2026-10-03"
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry↔docs single-source-of-truth restored); registry 372→374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots. | S80: three real games (Snake Deluxe, Mini Tetris, 2048) built + played on the runtime; R-NEW-401 external-cache bridge.",
- "total": 533,
- "count": 533,
+ "total": 534,
+ "count": 534,
  "meta": {
   "last_update": "S132 reuse-proof wave"
  },
