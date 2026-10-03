@@ -4,6 +4,8 @@
 
 #include <sqlite3.h>
 
+#include "../diagnostics/file_io_trace.h"  // #371 PHASE B6 (ST-10): sqlite-op provenance rows
+
 #include <algorithm>
 #include <cerrno>
 #include <cstdio>
@@ -151,6 +153,12 @@ framework::CallResult DatabaseShadow::open_helper_database(uint32_t helper_oid,
     int rc = h->db_name.empty() || h->db_name == ":memory:"
                  ? sqlite3_open_v2(":memory:", &raw, flags, nullptr)
                  : sqlite3_open_v2(st.path.c_str(), &raw, flags, nullptr);
+    // #371 PHASE B6 (ST-10): sqlite-op provenance row — the ONE databases_dir
+    // authority + real open result (AOSP SQLiteDatabase.openOrCreateDatabase).
+    miniandroid::diagnostics::FileIoTrace::instance().record(
+        "SQLITE-OPEN", st.path, rc == SQLITE_OK,
+        "db=" + h->db_name + (h->wal_requested ? " wal=requested" : ""),
+        "SQLiteOpenHelper");
     if (rc != SQLITE_OK) {
         std::cerr << "[SQLITE-SHADOW] open failed rc=" << rc << " path=" << st.path
                   << " err=" << (raw ? sqlite3_errmsg(raw) : "?") << std::endl;
@@ -171,6 +179,11 @@ framework::CallResult DatabaseShadow::open_helper_database(uint32_t helper_oid,
         sqlite3_exec(raw, "PRAGMA journal_mode=WAL;", nullptr, nullptr, &wal_err);
         st.wal_enabled = true;
         if (wal_err) sqlite3_free(wal_err);
+        // ST-10: WAL pragma is a real journal_mode mutation on the physical
+        // file family (db + -wal + -shm beside it while connections hold).
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "SQLITE-WAL", st.path + "-wal", true,
+            "journal_mode=WAL applied at open", "SQLiteOpenHelper");
     }
 
     // Version gate — real PRAGMA user_version, matching AOSP SQLiteOpenHelper.
@@ -375,6 +388,12 @@ framework::CallResult DatabaseShadow::db_dispatch(const framework::CallContext& 
         if (!raw) return framework::CallResult::not_handled();
         char* err = nullptr;
         int rc = sqlite3_exec(raw, ctx.args[0].string_val.c_str(), nullptr, nullptr, &err);
+        // ST-10 (#371): SQL write provenance row (real backend op).
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "SQLITE-EXEC", st ? st->path : std::string("<closed>"), rc == SQLITE_OK,
+            ctx.args[0].string_val.substr(
+                0, std::min<size_t>(80, ctx.args[0].string_val.size())),
+            ctx.receiver_class);
         if (rc != SQLITE_OK) {
             std::cerr << "[SQLITE-SHADOW] execSQL rc=" << rc << " err="
                       << (err ? err : "?") << " sql=\""

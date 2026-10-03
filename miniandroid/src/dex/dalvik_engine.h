@@ -1295,6 +1295,30 @@ public:
         std::vector<std::pair<std::string, std::string>> name_authorities) {
         manifest_provider_identity_ = std::move(name_authorities);
     }
+    // #371: per-provider grantUriPermissions (AOSP ProviderInfo law —
+    // FileProvider.attachInfo enforces it).
+    void set_manifest_provider_grants(
+        std::vector<std::pair<std::string, bool>> name_grants) {
+        manifest_provider_grants_ = std::move(name_grants);
+    }
+    // ── #371 PHASE B5 setters (manifest component transfer) ──
+    void set_manifest_services(
+        std::vector<std::pair<std::string, std::vector<std::string>>> svc) {
+        manifest_service_classes_ = std::move(svc);
+    }
+    void set_manifest_receiver_actions(
+        std::vector<std::pair<std::string, std::vector<std::string>>> rcv) {
+        manifest_receiver_actions_ = std::move(rcv);
+    }
+    // ── #371 PHASE B2 setter (G-4: ABI-scoped lib extraction identity) ──
+    // Called by the run flow when the package store holds extracted libs.
+    void set_native_lib_dir(const std::string& logical,
+                            const std::string& host,
+                            const std::string& abi) {
+        native_lib_dir_logical_ = logical;
+        native_lib_dir_host_ = host;
+        native_primary_abi_ = abi;
+    }
     // F-116 (R-NEW-384 family): manifest <meta-data> tables for the
     // PackageManager.getActivityInfo().metaData law (AOSP PackageItemInfo).
     void set_activity_meta_data(
@@ -2624,8 +2648,108 @@ public:
     std::vector<std::string> manifest_providers_;
     // GATE A: manifest <provider> name+authorities identity pairs.
     std::vector<std::pair<std::string, std::string>> manifest_provider_identity_;
+    // #371: manifest <provider> name → grantUriPermissions.
+    std::vector<std::pair<std::string, bool>> manifest_provider_grants_;
     // GATE A: provider object → bound context object (attachInfo law).
     std::map<uint32_t, uint32_t> provider_context_;
+    // ── #371 PHASE B1: ContentResolver authority→provider dispatch map ──
+    // AOSP law: ContentResolver.acquireProvider resolves the URI authority
+    // through the PMS provider map populated at installContentProviders time
+    // (one authority → one installed provider instance; multiple ';'-
+    // separated authorities each map to the same provider object).
+    std::map<std::string, uint32_t> provider_by_authority_;
+    std::map<uint32_t, std::string> provider_class_by_oid_;
+    // MatrixCursor row pool (heap oid → state). AOSP MatrixCursor: values
+    // live in an Object[] per row; Cursor accessors read row[col].
+    struct MatrixCursorState {
+        std::vector<std::string> columns;
+        std::vector<std::vector<DalvikValue>> rows;
+        int pos = -1;             // AbstractCursor pos, before-first = -1
+        bool closed = false;
+    };
+    std::map<uint32_t, MatrixCursorState> matrix_cursors_;
+    // ContentValues state (heap oid → key→value). AOSP ContentValues is a
+    // Parcelable key/value map; put() stores, get() retrieves by key.
+    std::map<uint32_t, std::vector<std::pair<std::string, DalvikValue>>>
+        content_values_;
+    // UriMatcher state (heap oid → rules). AOSP UriMatcher: addURI(authority,
+    // path, code); match(Uri) → code or the ctor's no-match code (-1).
+    struct UriMatcherState {
+        int no_match_code = -1;
+        std::vector<std::tuple<std::string, std::string, int>> rules;
+    };
+    std::map<uint32_t, UriMatcherState> uri_matchers_;
+    // IntentFilter state (heap oid → declared actions). AOSP IntentFilter:
+    // <init>(String... actions) / addAction(String); match by exact action.
+    std::map<uint32_t, std::vector<std::string>> intent_filters_;
+    // ── #371 PHASE B5: service + broadcast dispatch state ──
+    // AOSP ActiveServices law: startService instantiates the service class,
+    // runs onCreate then onStartCommand(intent, flags, startId); a second
+    // startService on a LIVE service only delivers onStartCommand;
+    // stopService/stopSelf run onDestroy. Manifest <service> classes come
+    // from the same manifest parse that feeds providers.
+    struct ServiceInstance {
+        uint32_t oid = 0;
+        std::string cls;
+        bool created = false;
+        bool destroyed = false;
+        bool started = false;   // startService path active (AOSP started service)
+        int bindings = 0;       // bindService count (AOSP bound connections)
+    };
+    std::map<std::string, ServiceInstance> live_services_;
+    // AOSP BroadcastReceiver dispatch law: sendBroadcast(Intent) resolves
+    // receivers whose intent-filter action matches the intent action —
+    // dynamic registerReceiver registrations AND manifest <receiver>
+    // entries with <intent-filter>. BroadcastReceiver instances registered
+    // dynamically are heap objects; manifest receivers are instantiated
+    // per delivery (AOSP LoadedApk receiver instantiation).
+    struct DynamicReceiver {
+        uint32_t oid = 0;
+        std::string cls;
+        std::vector<std::string> actions;
+    };
+    std::vector<DynamicReceiver> dynamic_receivers_;
+    // Manifest <receiver> name + intent-filter action pairs (parse-time).
+    std::vector<std::pair<std::string, std::vector<std::string>>>
+        manifest_receiver_actions_;
+    // Manifest <service> name + intent-filter action pairs (parse-time).
+    std::vector<std::pair<std::string, std::vector<std::string>>>
+        manifest_service_classes_;
+    // ── #371 PHASE B2: extracted native libs identity (G-4) ──
+    // Set by main.cpp install flow: logical nativeLibraryDir of the RUNNING
+    // package when the store holds ABI-scoped extracted libs; empty keeps
+    // the pre-G-4 phantom identity (packages installed before extraction).
+    std::string native_lib_dir_logical_;
+    std::string native_lib_dir_host_;
+    std::string native_primary_abi_;
+    // ── helpers (B1/B5) ──
+    // Parse "content://authority/path?query" into (scheme, authority, path,
+    // query). Returns false when the string is not a hierarchical content URI.
+    static bool parse_content_uri(const std::string& raw,
+                                  std::string& scheme,
+                                  std::string& authority,
+                                  std::string& path,
+                                  std::string& query);
+    // Resolve the provider heap object for a content URI authority.
+    // Returns 0 when the authority is unknown (caller throws the AOSP
+    // IllegalArgumentException "Unknown authority").
+    uint32_t resolve_provider_for_authority(const std::string& authority,
+                                            std::string& provider_cls);
+    // Invoke a provider method down the app class chain (try_recursive_invoke
+    // wrapper that reports honest failures).
+    bool invoke_provider_method(uint32_t provider_oid,
+                                const std::string& provider_cls,
+                                const std::string& method,
+                                std::vector<DalvikValue> args,
+                                DalvikValue& ret,
+                                std::string& err);
+    // Build a Uri heap object from a raw string (the Uri.parse law path).
+    uint32_t make_uri_object(const std::string& raw);
+    // ContentProvider.onCreate ordering law helper used by the service stage.
+    bool invoke_lifecycle_method(uint32_t oid, const std::string& cls,
+                                 const std::string& method,
+                                 std::vector<DalvikValue> args,
+                                 DalvikValue& ret);
     // S-1 FIX: the provider install stage (runs at bind entry, every path).
     void install_content_providers(DalvikExecutionResult& result);
     // FINAL CANONICAL MASTER RECONCILIATION Pass-3 (K-34): full asset bytes

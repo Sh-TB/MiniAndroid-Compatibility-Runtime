@@ -1109,6 +1109,202 @@ static void emit_provenance(std::ostream& os, JsonlSink& jl, const std::string& 
     os << "    }";
 }
 
+// ── #371 PHASE C: RUNTIME + DIAGNOSTICS sections ────────────────────────
+// The agent surface must answer not only WHAT IS INSTALLED but WHAT RAN:
+// file opens/streams/FD/prefs/SQLite/provider/broadcast/service rows (the
+// FileIoTrace JSONL) and the API call census with the FIRST DIVERGENCE
+// (first MISSING/ERROR call, or first FAILED file-IO row) — deterministic
+// machine-readable output, never a fake empty result.
+struct RuntimeInputs {
+    bool loaded = false;
+    size_t rows = 0;
+    std::map<std::string, size_t> op_counts;
+    std::vector<std::string> first_failures;   // first FAILURE rows (capped)
+    std::string first_failure_line;
+    size_t failures = 0;
+};
+
+struct ApiDiag {
+    bool loaded = false;
+    size_t calls = 0;
+    std::map<std::string, size_t> status_counts;
+    std::string first_missing;   // "class.method caller=..." — first divergence
+    std::string first_missing_detail;
+    std::string first_error;
+};
+
+static RuntimeInputs load_runtime_inputs(const std::string& path) {
+    RuntimeInputs rti;
+    std::ifstream in(path);
+    if (!in) return rti;
+    rti.loaded = true;
+    std::string line;
+    while (std::getline(in, line)) {
+        if (line.empty()) continue;
+        // Minimal flat-JSON field extraction (record shape is fixed).
+        auto grab = [&line](const char* key) -> std::string {
+            std::string pat = std::string("\"") + key + "\":\"";
+            size_t p = line.find(pat);
+            if (p == std::string::npos) return "";
+            p += pat.size();
+            std::string out;
+            for (size_t i = p; i < line.size(); ++i) {
+                if (line[i] == '\\' && i + 1 < line.size()) { out += line[i + 1]; ++i; continue; }
+                if (line[i] == '"') break;
+                out += line[i];
+            }
+            return out;
+        };
+        rti.rows++;
+        std::string op = grab("op");
+        if (!op.empty()) rti.op_counts[op]++;
+        std::string result = grab("result");
+        if (result == "FAILURE") {
+            rti.failures++;
+            if (rti.first_failures.size() < 8) {
+                std::string row = grab("op") + " path=" + grab("path") +
+                                  " subsystem=" + grab("subsystem") +
+                                  " caller=" + grab("caller");
+                rti.first_failures.push_back(row);
+            }
+        }
+    }
+    return rti;
+}
+
+static ApiDiag load_api_diag(const std::string& path) {
+    ApiDiag d;
+    std::ifstream in(path);
+    if (!in) return d;
+    std::string body((std::istreambuf_iterator<char>(in)),
+                     std::istreambuf_iterator<char>());
+    // calls: [{ "class": "...", "method": "...", "status": "...", "caller": "..." }, ...]
+    size_t pos = body.find("\"calls\"");
+    if (pos == std::string::npos) return d;
+    d.loaded = true;
+    size_t i = body.find('[', pos);
+    if (i == std::string::npos) return d;
+    int depth = 0;
+    size_t obj_start = std::string::npos;
+    for (; i < body.size(); ++i) {
+        char c = body[i];
+        if (c == '{') { if (depth == 0) obj_start = i; depth++; }
+        else if (c == '}') {
+            if (depth > 0) depth--;
+            if (depth == 0 && obj_start != std::string::npos) {
+                std::string obj = body.substr(obj_start, i - obj_start + 1);
+                auto grab = [&obj](const char* key) -> std::string {
+                    std::string pat = std::string("\"") + key + "\":\"";
+                    size_t p = obj.find(pat);
+                    if (p == std::string::npos) return "";
+                    p += pat.size();
+                    std::string out;
+                    for (size_t k = p; k < obj.size(); ++k) {
+                        if (obj[k] == '\\' && k + 1 < obj.size()) { out += obj[k + 1]; ++k; continue; }
+                        if (obj[k] == '"') break;
+                        out += obj[k];
+                    }
+                    return out;
+                };
+                d.calls++;
+                std::string cls = grab("class");
+                std::string mth = grab("method");
+                std::string st = grab("status");
+                if (!st.empty()) d.status_counts[st]++;
+                std::string id = cls + "." + mth + " caller=" + grab("caller");
+                if ((st == "MISSING" || st == "ERROR") &&
+                    d.first_missing.empty() && st == "MISSING")
+                    d.first_missing = id;
+                if (st == "ERROR" && d.first_error.empty()) d.first_error = id;
+                obj_start = std::string::npos;
+            }
+        }
+    }
+    return d;
+}
+
+static void emit_runtime(std::ostream& os, JsonlSink& jl,
+                         const RuntimeInputs& rti, const ApiDiag& api) {
+    os << "    \"runtime\": {\n";
+    os << "      \"fileIoTraceLoaded\": " << (rti.loaded ? "true" : "false")
+       << ",\n";
+    if (rti.loaded) {
+        os << "      \"fileIoRows\": " << rti.rows << ",\n";
+        os << "      \"fileIoFailures\": " << rti.failures << ",\n";
+        os << "      \"opCounts\": {";
+        bool first = true;
+        for (const auto& [op, n] : rti.op_counts) {
+            os << (first ? "" : ",") << "\"op:" << jesc(op) << "\": " << n;
+            first = false;
+        }
+        os << "},\n";
+        os << "      \"firstFailures\": [";
+        for (size_t i = 0; i < rti.first_failures.size(); ++i)
+            os << (i ? "," : "") << "\"" << jesc(rti.first_failures[i]) << "\"";
+        os << "],\n";
+    } else {
+        os << "      \"fileIoNote\": \"no --file-io trace supplied; re-run "
+              "with MINIANDROID_FILE_IO=<path> to bind runtime rows\",\n";
+    }
+    os << "      \"apiTraceLoaded\": " << (api.loaded ? "true" : "false")
+       << ",\n";
+    if (api.loaded) {
+        os << "      \"apiCalls\": " << api.calls << ",\n";
+        os << "      \"statusCounts\": {";
+        bool first2 = true;
+        for (const auto& [st, n] : api.status_counts) {
+            os << (first2 ? "" : ",") << "\"status:" << jesc(st) << "\": " << n;
+            first2 = false;
+        }
+        os << "}\n";
+    } else {
+        os << "      \"apiTraceNote\": \"no --api-trace supplied; run output "
+              "api_trace.json binds the runtime API census\"\n";
+    }
+    os << "    }";
+    jl.line("runtime", "rows=" + std::to_string(rti.rows) + " failures=" +
+                            std::to_string(rti.failures) + " apiCalls=" +
+                            std::to_string(api.calls));
+}
+
+static void emit_diagnostics(std::ostream& os, JsonlSink& jl,
+                             const RuntimeInputs& rti, const ApiDiag& api) {
+    // First divergence law (CONSTITUTION §16): the first MISSING api call
+    // wins; else the first ERROR api call; else the first FAILED file-IO
+    // row; else null (an honest "no divergence recorded").
+    std::string first_div, div_kind;
+    if (!api.first_missing.empty()) {
+        first_div = api.first_missing; div_kind = "MISSING_API";
+    } else if (!api.first_error.empty()) {
+        first_div = api.first_error; div_kind = "API_ERROR";
+    } else if (!rti.first_failure_line.empty()) {
+        first_div = rti.first_failure_line; div_kind = "FILE_IO_FAILURE";
+    } else if (!rti.first_failures.empty()) {
+        first_div = rti.first_failures[0]; div_kind = "FILE_IO_FAILURE";
+    }
+    os << "    \"diagnostics\": {\n";
+    os << "      \"firstDivergence\": ";
+    if (first_div.empty())
+        os << "null,\n";
+    else
+        os << "{\"kind\": \"" << div_kind << "\", \"where\": \""
+           << jesc(first_div) << "\"},\n";
+    os << "      \"firstMissingSemantic\": ";
+    if (api.first_missing.empty())
+        os << "null,\n";
+    else
+        os << "\"" << jesc(api.first_missing) << "\",\n";
+    os << "      \"runtimeTarget\": \"miniandroid build at repo HEAD\",\n";
+    os << "      \"lawChain\": \"source (AOSP) → semantic law → runtime "
+           "implementation → probe/test → runtime trace → first divergence "
+           "(this field)\",\n";
+    os << "      \"deterministicJsonl\": true\n";
+    os << "    }";
+    jl.line("diagnostics", "firstDivergence=" +
+                               (first_div.empty() ? std::string("none")
+                                                  : div_kind + ":" + first_div));
+}
+
 // ═════════════════════════════════════════════════════════════════════════
 // cmd_pkg_inspect — the GATE A inspection entry point
 // ═════════════════════════════════════════════════════════════════════════
@@ -1160,7 +1356,7 @@ int cmd_pkg_inspect(const InspectRequest& req) {
     if (req.what == "all") {
         for (const char* s : {"identity", "manifest", "entries", "dex", "resources",
                               "assets", "libs", "media", "data", "external", "dbs",
-                              "prefs", "provenance"})
+                              "prefs", "provenance", "runtime", "diagnostics"})
             want.insert(s);
     } else {
         std::string cur;
@@ -1300,6 +1496,23 @@ int cmd_pkg_inspect(const InspectRequest& req) {
         comma();
         std::cout << "\n";
         emit_provenance(std::cout, jl, pkg, record_body, apk_path, mode);
+    }
+    // #371 PHASE C: runtime + diagnostics (optional run traces).
+    RuntimeInputs rti;
+    ApiDiag api_diag;
+    if (!req.file_io_path.empty())
+        rti = load_runtime_inputs(req.file_io_path);
+    if (!req.api_trace_path.empty())
+        api_diag = load_api_diag(req.api_trace_path);
+    if (want.count("runtime")) {
+        comma();
+        std::cout << "\n";
+        emit_runtime(std::cout, jl, rti, api_diag);
+    }
+    if (want.count("diagnostics")) {
+        comma();
+        std::cout << "\n";
+        emit_diagnostics(std::cout, jl, rti, api_diag);
     }
 
     std::cout << (emitted_any ? "\n  " : "") << "}\n";

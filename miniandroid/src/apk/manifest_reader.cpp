@@ -559,6 +559,17 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
         ManifestInfo::ProviderInfo prov;
         prov.name = get_attribute_value(attrs, "name");
         prov.authorities = get_attribute_value(attrs, "authorities");
+        // #371: boolean provider attrs (AOSP PackageParser law). AXML bool
+        // attributes arrive as TYPE_INT_BOOLEAN (0x12) with value_data 0/1.
+        for (const auto& a : attrs) {
+            const std::string aname = get_string(a.name_index);
+            if (aname == "grantUriPermissions" &&
+                (a.value_data_type & 0xFF) == 0x12)
+                prov.grant_uri_permissions = a.value_data != 0;
+            else if (aname == "exported" &&
+                     (a.value_data_type & 0xFF) == 0x12)
+                prov.exported = a.value_data != 0;
+        }
         if (!prov.name.empty()) {
             result_.providers.push_back(prov);
             log("Provider: " + prov.name +
