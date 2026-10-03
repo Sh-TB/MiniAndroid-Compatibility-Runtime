@@ -147,3 +147,104 @@ a cold run aborted instead of failing a stage). All 10 wrapped
 `set +e`/`set -e`; no stage weakened, no golden touched. The EXT-01/02
 external fixtures were re-fetched SHA-exact (`009b4671…` / `121d479c…`)
 after the container reset.
+
+## 10. FINAL COMPLETION wave (#371, 2026-10-03) — G-1/G-3/G-4/G-8 closed; fan-out proof
+
+CURRENT HEAD `58f2dde2`; runtime binary sha16 `b2b8c18bb92dab6a`.
+
+### Gap closures (generic only; probe-asserted)
+
+| Gap | First missing semantic | Generic fix | Probe evidence |
+|-----|------------------------|-------------|----------------|
+| G-1/G-3 ContentResolver dispatch | no authority→provider map; no content:// routing; no Cursor transport | authority map populated at installContentProviders; query/insert/update/delete/getType/call/openFileDescriptor dispatch into the provider's DEX overrides with AOSP failure contracts (unknown-authority IAE; documented query null WITH trace row; FNFE for openFile without override); MatrixCursor row pool + Cursor interface; ContentValues typed map (box-unwrap); UriMatcher (#, *); ContentUris; Uri getAuthority/getQueryParameter/toString | probe PROV-02..09 (insert→Uri→state change; query rows; update count; delete→empty; PFD bytes == direct; getType; failure contracts) |
+| G-4 ABI-scoped lib extraction | nativeLibraryDir phantom; no extraction | install extracts primary ABI (arm64-v8a > armeabi-v7a > x86_64 > x86) into codePath lib dir + native_libs.json; nativeLibraryDir seeds the real logical dir (phantom only as recorded fallback) | probe NAT-02/03; loadLibrary extracted-shape detail (size+sha16); multiapp lib inventories |
+| G-8 device-protected storage | user_de paths DENIED (prefix-strip bug); no DE context | user_de prefix-strip fixed; DE fence gets its OWN backing (`data/user_de/0/<pkg>`); reverse law mapping added; createDeviceProtectedStorageContext + DE-aware dir family | probe DE-01 (spelling, 8-byte write, isolation from CE asserted) |
+| G-2 native execution | no native execution layer (BY DESIGN) | pre-native path completed: 3-shape precise ULE (absent / not-extracted / extracted-with-identity incl. sha16); env-gated REAL host dlopen records the REAL dlerror — never a fake success | probe NAT-01/04/05 |
+
+Fan-out-discovered generic engine laws (fixed in the same wave, no package
+conditionals): `List.remove(int)` removed-element law (was a silent false —
+probe PROV-05 exposed it), `FileInputStream(FileDescriptor)` reads the PFD's
+backing file via the fd's host_path (probe PROV-06),
+`ProviderInfo.grantUriPermissions` manifest law (androidx
+FileProvider.attachInfo threw SecurityException("Provider must grant uri
+permissions") — notes_secuso SplashActivity chain), Uri.toString law.
+
+Probe extension: `fixtures/gate_a_probe` **69 → 95 PASS / 0 FAIL / 2 INFO**
+(new op families: PROV-02..09, SVC-01..04, BCAST-01..04, DE-01,
+CFG-01..05, NAT-03..05). CFG ops prove the AOSP ResTable_config best-match
+law at the FROZEN device profile (-zh-rCN/-land/-night unreachable, density
+best-match xhdpi@420dpi, font resource bytes) — UPP-004's frozen-profile
+design verified by probe, device profile untouched.
+
+### Services/broadcasts (UPP-006 core legs, probe-justified)
+
+startService/startForegroundService/stopService/bindService/stopSelf
+ActiveServices lifecycle (started-vs-bound distinction: unbind keeps a
+started service alive), registerReceiver/unregisterReceiver/sendBroadcast
+dispatch to dynamic + manifest receivers with the bound context.
+Evidence: probe SVC-01..04, BCAST-01..04; SVC-*/BCAST-* trace rows.
+
+### ST-10 provenance completion (UPP-007)
+
+SQLITE-OPEN / SQLITE-EXEC / SQLITE-WAL and FONT-FACE rows now flow into the
+same MINIANDROID_FILE_IO JSONL evidence model; the probe asserts both
+families exist with real backing. First-divergence usefulness preserved
+(pkginspect `--what diagnostics` reports the first MISSING/ERROR API call
+or first FAILED file-IO row deterministically).
+
+### Phase C — agent inspection surface complete
+
+`pkginspect` now serves 15 sections: identity, manifest, entries, dex,
+resources, assets, libs, media, data, external, dbs, prefs, provenance,
+**runtime** (file-IO op counts + first failures + API status census bound
+via `--file-io` / `--api-trace`), **diagnostics** (firstDivergence kind +
+where, firstMissingSemantic, law chain, deterministic JSONL). Multi-package
+inspections run against installed apps AND games (multiapp harness 5/5:
+probe app, chess, bouncy, memory, blockblast).
+
+### Phase D — REAL NEW SOFTWARE FAN-OUT (mandatory proof)
+
+Protocol per target: install (real install path) → source APK hidden/moved
+away → launch strictly by installed package identity (`run --package`) →
+MINIANDROID_FILE_IO provenance → 40-frame time-driven capture → F-NEW-233
+frame analysis → screenshot metrics + SHA → 3 cold runs.
+
+| Target | Kind | Identity | Verdict (x3) | Pixels | Draw ops | Screenshot sha16 |
+|--------|------|----------|--------------|--------|----------|------------------|
+| flappycow (com.quchen.flappycow) | game | source==installed SHA ✓, source hidden ✓ | VERIFIED_REAL_APP_CONTENT ×3 (byte-identical) | REAL_APP_UI | 6 | `13cf47464d9787f4` |
+| notes_secuso (org.secuso.privacyfriendlynotes) | app (provider/FileProvider, prefs, DB) | ✓ / ✓ | VERIFIED_REAL_APP_CONTENT ×3 (byte-identical) | REAL_APP_UI | 3 | `eb5ebd559cad1028` |
+
+Neither target is among the four canonical pixel goldens (2048 / Snake
+Deluxe / MiniCraft / HelloWorld) nor the chess/dooz determinism anchors.
+
+### Phase E — causality (A/B against base binary 51f7e5f9, sha16 `c7f430427ebdcb75`)
+
+- flappycow: VERIFIED_REAL_APP_CONTENT at BOTH binaries (identical
+  screenshot sha) → the wave's contribution is the banked ×3 evidence +
+  crash-log equivalence (18 exceptions both — the app-internal Google Play
+  games-services chain, caught by the app; unchanged, never silenced).
+- notes_secuso: REAL_APP_CONTENT at both at 40 frames, BUT the base run
+  carries the FileProvider.attachInfo SecurityException escaping the app
+  boundary (crash.log Total Errors: 1) while the current HEAD run is
+  exception-free (Total Errors: 0). The grantUriPermissions law is thereby
+  PROVEN to fix a real crash on real software (the visual verdict was
+  already reachable via the deferred-UI frame capture; the crash was not).
+- Explicit distinction recorded: no target flipped WHITE→CONTENT due to
+  this wave; the wave's real-software yield is the crash elimination + the
+  banked 3-run REAL_APP_CONTENT evidence + the provider call-chain proof.
+- Explicit frontiers (unchanged, deterministic diagnostics): tripeaks /
+  klondike (deferred-UI APP_DRAW_OPS frontier), tictactoedeluxe (libGDX GL
+  backend — GdxRuntimeException at AndroidGraphics), suntimes (time4j
+  PlainDate.<clinit> NPE — first divergence recorded with the full unwind
+  chain), stopwatch (manifest declares NO launcher activity — the runtime
+  correctly does not fabricate one).
+
+### Phase F — regression at this HEAD
+
+goldens 4/4 REAL_APP_CONTENT (2048/snakedeluxe/minicraft pixel-truth +
+helloworld canonical); determinism 5/5 ×3 byte-identical (zero drift);
+loading probe 23/23; Gate A probe 95/0/2; negatives 17/17; reinstall 8/8;
+multiapp 5/5; uninstall 16/16; ROOT-A/B/C holds (spacevertex past forName,
+memory REAL_APP_CONTENT, suntimes provider-ISE-free); random corpus sample
+(seed 20261003) fishrings REAL_APP_CONTENT 44 draw ops (sha16
+a341e3ad9092f640); full battery re-run logged to run/battery_371_v3.log.

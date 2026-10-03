@@ -1,6 +1,7 @@
 # CAMPAIGN_STATE — MiniAndroid-Compatibility-Runtime
 
-HEAD at state update: F-NEW-234 wave (IAPK campaign) ← e9ce717b (MEGA-W2) ← 286b4994
+HEAD at state update: #371 FINAL COMPLETION wave 58f2dde2 (binary b2b8c18bb92dab6a)
+← 51f7e5f9 (MASTER-CONT-371 verification) ← 9c35863b (GATE A) ← F-NEW-234 e9ce717b
 Date: 2026-10-03 (INSTALLED-APP FILESYSTEM + MEDIA campaign)
 
 ## LAWS READ
@@ -54,6 +55,37 @@ The ONE master checklist lives at **docs/FINAL_COMPATIBILITY_CAMPAIGN.md**
   tmp APKs purged; local honest pool ~25 APKs; random ledger row 1 banked
   (seed 20261002).
 - Disk free: ~6.9G; run/ artifacts kept bounded.
+
+## #371 FINAL COMPLETION WAVE (2026-10-03) — gate closure + fan-out
+
+- Gate-A gaps: G-1/G-3 CLOSED (ContentResolver authority map + Cursor
+  transport + failure contracts; probe PROV-02..09), G-4 CLOSED (install-time
+  ABI-scoped lib extraction + real nativeLibraryDir; NAT-02/03), G-8 CLOSED
+  (user_de prefix-strip bug fixed + DE fence + createDeviceProtectedStorage
+  Context; DE-01), G-2 precision upgrade (3-shape ULE + env-gated real
+  dlopen/dlerror; EXECUTION stays S-2 frontier). G-5/G-6/G-7 closed in the
+  prior #371 wave.
+- Generic engine laws from the fan-out: List.remove(int) removed-element,
+  FileInputStream(FileDescriptor) PFD backing, ProviderInfo.grantUri
+  Permissions manifest law (FileProvider.attachInfo SecurityException root),
+  Uri.toString.
+- Services/broadcasts core legs (SVC-01..04, BCAST-01..04); IntentFilter
+  engine state; ST-10 provenance rows (SQLITE-OPEN/EXEC/WAL, FONT-FACE);
+  multi-config probe (CFG-01..05) at the UNTOUCHED frozen profile.
+- pkginspect = 15 sections incl. runtime + diagnostics (first divergence,
+  deterministic JSONL) — #371 Phase C complete.
+- PHASE D fan-out: flappycow (game) + notes_secuso (app) VERIFIED_REAL_APP_
+  CONTENT ×3, byte-identical screenshots (13cf47464d9787f4 / eb5ebd559cad
+  1028), source hidden, identity launch. A/B vs base 51f7e5f9: notes
+  SecurityException eliminated by the grantUriPermissions law (crash.log
+  1→0 errors); flappycow already at REAL_APP_CONTENT at base (evidence
+  banked, no flip claimed).
+- Deferred-UI re-test (CAMPAIGN next-target #3) EXECUTED: flappycow banked;
+  klondike/tripeaks stay APP_DRAW_OPS frontier; ballbreak OBSERVED
+  (PARTIAL_MARGINAL); tictactoedeluxe = libGDX GL frontier; stopwatch has
+  NO launcher activity in its manifest (correct non-launch).
+- Random corpus sample (seed 20261003): fishrings REAL_APP_CONTENT 44 draw
+  ops (sha16 a341e3ad9092f640).
 
 ## NEXT TARGETS (priority order)
 
