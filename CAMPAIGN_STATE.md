@@ -182,3 +182,33 @@ SELECTION_FROZEN).
 - Next leverage (no fix applied this wave): java.util/java.lang shadow null-contracts,
   androidx WindowInsets compat static-init, Fragment recreation law, ComposeView
   materialization, Godot native surface.
+
+---
+
+## CONTINUATION WAVE (master continuation §0–§15) — LIVE STATE
+
+HEAD at this update: `fb128799+` (PIXEL-TRUTH audit) ← 4e62b10b (§16 doc) ← 5dbfe5f2
+(ROOT-B/C) ← f398c0f2 (ROOT-B) ← 5fa4cd84 (ROOT-A) ← 205b2e2d (run23 closure) ←
+9289177d (#366 ledger) — date 2026-10-03.
+
+Canonical numbers (single live source = this section):
+- Root registry: **535 roots** (root_registry.json); canonical projection regenerated
+  id-for-id == 535 (`canonical/root_cause_registry.json`, `scripts/cont_m1_root_projection.py`)
+  — the historical "492 vs 530" mismatch is CLOSED (projection lag was the whole gap).
+- Canonical title registry: 150 rows (docs/evidence/canonical/registry.json).
+- Frozen corpus truth (M6 reconciliation, docs/FORENSIC_MISSING_EVIDENCE.jsonl): 202 total;
+  **79 executed-with-evidence** (71 OBSERVED + 8 VERIFIED), **119 NOT_TESTED** (explicitly
+  closed), **4 BLOCKED-DOWNLOAD** (FR-046/073/075/221). The older "41/161/96" numbers are a
+  stale FR-024-era snapshot — do not re-quote.
+- #366 differential: 11 apps × 3 runs byte-identical (microtimer+dooz run23 closure, option A);
+  ROOT-A/B/C generic fixes landed (R-NEW-458..462); memory WHITE→REAL_APP_CONTENT;
+  ROOT-D Compose honest 4-way separation; ROOT-E S-2 dlopen/JNI frontier reached cleanly.
+- User golden gate: 2048 / Snake Deluxe / MiniCraft / HelloWorld **4/4 REAL_APP_CONTENT** PASS
+  (scripts/user_golden_gate.py; chess+dooz are DETERMINISM anchors only — never visual success).
+- Regression gates at this HEAD: goldens 5/5 ×3 byte-identical, loading probe 23/23,
+  uninstall 16/16 — ALL PASS.
+- Telegram M3: forkgram `3baeecb3…` ×2 byte-identical face `bbb6cd10a834963d` at current HEAD;
+  official BLOCKED-APK-ABSENT (honest).
+- Upstream plan (#364): UPP-001..007 dispositions recorded (docs/UPSTREAM_REPLACEMENT_PLAN.jsonl).
+- Master checklist: repaired with evidence rows (docs/FINAL_COMPATIBILITY_CAMPAIGN.md §17).
+- Historical .agent/* state files labeled; their numbers are era snapshots, not current.

@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <long name="6migrateOffsetAccess" value="0" />
+    <long name="6migrateOffsetChannelId" value="0" />
+    <long name="6migrateOffsetChatId" value="0" />
+    <int name="6migrateOffsetDate" value="0" />
+    <int name="6migrateOffsetId" value="0" />
+    <long name="6migrateOffsetUserId" value="0" />
+    <boolean name="allowScreenCapture" value="false" />
+    <boolean name="appLocked" value="false" />
+    <long name="appUpdateCheckTime" value="1791006843313" />
+    <long name="autoDownloadConfigLoadTime" value="1791006942200" />
+    <int name="autoLockIn" value="3600" />
+    <int name="badPasscodeTries" value="0" />
+    <int name="botGuestRatingLoadTime" value="0" />
+    <int name="botRatingLoadTime" value="0" />
+    <int name="cache_limit_mb" value="2147483647" />
+    <string name="cfAccountID"></string>
+    <string name="cfApiToken"></string>
+    <boolean name="cfEnableStt" value="false" />
+    <boolean name="classic_mainTabsHidden_migrated_v1" value="true" />
+    <boolean name="contactsReimported" value="false" />
+    <int name="contactsSavedCount" value="0" />
+    <boolean name="draftsLoaded" value="false" />
+    <boolean name="filtersLoaded" value="false" />
+    <boolean name="forwardingOptionsHintShown" value="false" />
+    <boolean name="hasSecureData" value="false" />
+    <boolean name="hasValidDialogLoadIds" value="false" />
+    <int name="lastBroadcastId" value="-1" />
+    <int name="lastContactsSyncTime" value="1790924043" />
+    <int name="lastHintsSyncTime" value="1790916843" />
+    <int name="lastLocalId" value="-210000" />
+    <int name="lastMyLocationShareTime" value="0" />
+    <int name="lastPauseTime" value="0" />
+    <int name="lastSendMessageId" value="-210000" />
+    <long name="lastUpdatedGenericAnimations" value="0" />
+    <long name="lastUpdatedPremiumGiftsStickerPack" value="0" />
+    <long name="lastUptimeMillis" value="0" />
+    <int name="lockRecordAudioVideoHint" value="0" />
+    <int name="loginTime" value="0" />
+    <boolean name="mainTabsHiddenFork" value="true" />
+    <boolean name="notificationsSettingsLoaded4" value="false" />
+    <boolean name="notificationsSignUpSettingsLoaded" value="false" />
+    <string name="passcodeHash1"></string>
+    <long name="passcodeRetryInMs" value="0" />
+    <string name="passcodeSalt"></string>
+    <int name="passcodeType" value="0" />
+    <int name="passportConfigHash" value="0" />
+    <string name="passportConfigJson"></string>
+    <boolean name="proxyRotationEnabled" value="false" />
+    <int name="proxyRotationTimeout" value="1" />
+    <string name="pushAuthKey"></string>
+    <boolean name="pushStatSent" value="false" />
+    <string name="pushString2"></string>
+    <int name="pushType" value="2" />
+    <int name="ratingLoadTime" value="0" />
+    <boolean name="registeredForPush" value="false" />
+    <boolean name="replyingOptionsHintShown" value="false" />
+    <boolean name="saveIncomingPhotos" value="false" />
+    <long name="scheduledHintSeenAt" value="0" />
+    <int name="scheduledHintShows" value="0" />
+    <long name="scheduledOrNoSoundHintSeenAt" value="0" />
+    <int name="scheduledOrNoSoundHintShows" value="0" />
+    <int name="selectedAccount" value="0" />
+    <int name="sharingMyLocationUntil" value="0" />
+    <boolean name="showCallsTab" value="false" />
+    <boolean name="sortContactsByName" value="false" />
+    <boolean name="sortFilesByName" value="false" />
+    <string name="storageCacheDir"></string>
+    <boolean name="suggestContacts" value="true" />
+    <boolean name="syncContacts" value="false" />
+    <int name="textSelectionHintShows" value="0" />
+    <boolean name="unreadDialogsLoaded" value="false" />
+    <boolean name="useFingerprint" value="true" />
+    <int name="webappRatingLoadTime" value="0" />
+</map>

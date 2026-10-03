@@ -223,3 +223,60 @@ custom fixes.
 
 No third-party dependency was added (dup tools like rclone/jdupes/git-filter-repo
 were considered and NOT adopted: stdlib + git covered 100% of needs).
+
+## 12. CONT-T10 resolution — tracked disposable blob findings (2026-10-03, HEAD `fb128799`)
+
+Task CONT-T10 flagged four "tracked disposable blobs" from a forensic scan.
+Re-verification against the live index/working tree shows **all four were
+already resolved by earlier campaigns** — none is tracked at HEAD, none exists
+on disk, and ignore rules pre-exist. No UNTRACK/MOVE/IGNORE/rm action was
+required; dispositions below are KEEP-as-record (finding was stale).
+
+| Target | Size when last seen | On disk now | Tracked at HEAD? | Ever in history? | Ignore rule (pre-existing) | Disposition |
+|---|---:|---|---|---|---|---|
+| `tmp/archidx.json` | 88.4 MiB (92,735,562 B) | ABSENT | NO (`git ls-files --error-unmatch` fails) | added ≤ `fc9344be`, removed `d6237036` | `.gitignore:196` | KEEP (already externalized; ledgered) |
+| `tmp/index-v1.json` | 60.2 MiB (63,126,145 B) | ABSENT | NO | added ≤ `fc9344be`, removed `d6237036` | `.gitignore:197` | KEEP (already externalized; ledgered) |
+| `tmp/idx.jar` | 14.0 MiB (14,662,906 B) | ABSENT | NO | added ≤ `fc9344be`, removed `d6237036` | `.gitignore:198` | KEEP (already externalized; ledgered) |
+| `run/exp077` | ~44 MB (finding) | ABSENT (run/ holds 10 other dirs) | NO | NEVER committed at root `run/` (0 commits touch it) | `.gitignore:167` (`/run/`) | KEEP (local-only working data; never entered git) |
+
+STATUS — RESULT — EVIDENCE:
+
+1. `tmp/archidx.json` — STATUS: RESOLVED (prior campaign) · RESULT: untracked +
+   ignored + absent from disk; nothing to untrack/delete · EVIDENCE: removed by
+   `d6237036` (FINAL CAMPAIGN Phase 1, tmp 189.82→2.50 MiB), ledgered in
+   `docs/history/final_campaign_phase1/DISPOSITION_LEDGER.json` (sha256
+   `e9faee5b…`, disposition "DELETE — tmp/ must hold no required artifact;
+   zero canonical refs measured"); F-Droid index cache, class CACHE per
+   `docs/ARTIFACT_LIFECYCLE.md` §3 (re-derivable) → no archive copy needed
+   (no `archive/` convention exists; law §2 forbids archiving regenerable data).
+2. `tmp/index-v1.json` — STATUS: RESOLVED (prior campaign) · RESULT: same ·
+   EVIDENCE: same removal commit + ledger (sha256 `3ff35ae1…`); F-Droid v1
+   index cache, re-derivable.
+3. `tmp/idx.jar` — STATUS: RESOLVED (prior campaign) · RESULT: same · EVIDENCE:
+   same removal commit + ledger (sha256 `3b51619d…`); index JAR cache,
+   re-derivable.
+4. `run/exp077` — STATUS: RESOLVED / NEVER A GIT PROBLEM · RESULT: root
+   `run/exp077` was never tracked (0 historical commits) and is absent;
+   `.gitignore:167` (`/run/`, S58 rule) prevents recurrence · EVIDENCE:
+   `git log --all -- run/exp077` = empty; `git check-ignore -v` = `.gitignore:167:/run/`.
+   Note for the record: the ~44 MB "view_tree" artifacts the finding referred to
+   match `miniandroid/run/exp077/**` (6 view_tree blobs) which entered history
+   via the `miniandroid/run/` prefix before it was ignored (`.gitignore:161`)
+   and was subsequently removed from the tree; path is absent on disk today.
+
+Residual pack accounting (measured `git verify-pack -v`, cannot be reclaimed
+without history rewrite — forbidden per §6 and task constraints):
+
+```text
+blob 6596437e tmp/archidx.json    raw 88.4 MiB → 7.69 MiB in pack (compresses ~11.5x)
+blob 16309919 tmp/index-v1.json   raw 60.2 MiB → 13.98 MiB in pack (~4.3x)
+blob 18fc07dc tmp/idx.jar         raw 14.0 MiB → 13.98 MiB in pack (jar, incompressible)
+────────────────────────────────────────────────────────────────────────────
+residual reachable from fc9344be ancestors: ~35.65 MiB of 192.27 MiB pack
+```
+
+Repo object-store delta from this task: **0** (no index/history operations on
+the targets; only this documentation appended). `git count-objects -vH` before:
+4,405 loose / 54.58 MiB, 42,325 in-pack / 6 packs / 192.27 MiB size-pack —
+unchanged except the new blob for this section itself. Working-tree disk freed:
+0 (targets were already absent; no `rm` needed).

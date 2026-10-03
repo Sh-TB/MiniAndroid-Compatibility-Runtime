@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <float name="autoNightBrighnessThreshold" value="0.25" />
+    <string name="autoNightCityName"></string>
+    <int name="autoNightDayEndTime" value="480" />
+    <int name="autoNightDayStartTime" value="1320" />
+    <int name="autoNightLastSunCheckDay" value="-1" />
+    <long name="autoNightLocationLatitude3" value="4666723172467343360" />
+    <long name="autoNightLocationLongitude3" value="4666723172467343360" />
+    <boolean name="autoNightScheduleByLocation" value="false" />
+    <int name="autoNightSunriseTime" value="480" />
+    <int name="autoNightSunsetTime" value="1320" />
+    <boolean name="floatingDebugActive" value="false" />
+    <boolean name="hasEmailLogin" value="false" />
+    <long name="intro_crashed_time" value="0" />
+    <int name="lastKeepMediaCheckTime" value="1791006940" />
+    <string name="mobilePreset">13_13_13_13_1048576_10485760_1048576_524288_1_1_1_0_100_1</string>
+    <boolean name="newConfig" value="true" />
+    <string name="nighttheme">Dark Blue</string>
+    <string name="preset0">0_0_0_0_512000_512000_512000_524288_0_0_1_0_0_0</string>
+    <string name="preset1">0_0_0_0_512000_512000_512000_524288_0_0_1_0_0_1</string>
+    <string name="preset2">0_0_0_0_512000_512000_512000_524288_0_0_1_0_0_1</string>
+    <boolean name="record_via_sco" value="false" />
+    <string name="roamingPreset">1_1_1_1_1048576_512000_512000_524288_0_0_1_1_50_0</string>
+    <int name="selectedAutoNightType" value="0" />
+    <int name="translate_button_restricted_languages_version" value="2" />
+    <string name="translating_dialog_languages2"></string>
+    <boolean name="unifiedPushGatewayMigrated" value="true" />
+    <string name="wifiPreset">13_13_13_13_1048576_15728640_3145728_524288_1_1_1_0_100_1</string>
+</map>
