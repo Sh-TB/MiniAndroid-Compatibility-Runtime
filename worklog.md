@@ -6113,3 +6113,24 @@ Work Log:
 
 Stage Summary:
 - All continuation items executed or honestly blocked with evidence; three Issues updated in-place (same-Issue protocol); next frontier = S-2 native, Compose machinery, ActivityResult, provider meta-data, official-Telegram APK.
+
+---
+Task ID: CLOSED-FORENSIC-367-369
+Agent: Super Z (main)
+Task: Issues #367/#368/#369 — CLOSED ISSUE FORENSIC PROGRAM, batches 1/3 (50 HIGH/HARD), 2/3 (50 MEDIUM), 3/3 (8 FINAL) — 108 closed issues full forensic audit
+
+Work Log:
+- Fetched all 108 frozen batch issues + comments (scripts/batch367_fetch_all.py, forensic_data/batch367/).
+- Due-diligence regression at HEAD: 4 gates ALL PASS (goldens 4/4 REAL_APP_CONTENT, determinism 5/5x3, probe 23/23, uninstall 16/16) — but the CANONICAL 121-stage battery FAILED (6 stage families).
+- ROOT-CAUSED all battery failures honestly: (1) REAL RUNTIME BUG — ASSETS-WITHOUT-ARSC: asset open/list/openFd/bytes gated on ResourceRuntime.ensure_loaded which fails for arsc-less APKs, making ALL assets invisible (F-024 family 7 RED law bands); fixed GENERICALLY with direct-APK fallback (AOSP AssetManager law: assets are ARSC-independent), both dispatch sites + bytes + list + openFd (commit 9c3dc4d1); (2) STALE g11 HARNESS — updated to evolved CustomViewCtorHook AttributeSet signature + DEX-existence-over-prefix law (37/37); (3) STALE GATES — F-012 helper moved to evolved FHS store layout (data/data/<pkg>), pre-F-NEW-233 rc gates re-baselined with pixel goldens kept MANDATORY, never weakened; EXT fixture refetched SHA-verified 009b4671...cc41.
+- POST-FIX verification: BATTERY 121/121 ALL PASS (run/batch367_battery_v2.log) + all 4 gates re-verified on the fixed binary with ZERO golden drift.
+- Fresh current-HEAD re-run wave (evidence/batch367_rerun/): gmdice SUCCESS 892 colors; snakeneon SUCCESS 884 + frame delta TRUE; bouncy renders 413 (F-NEW-233 PARTIAL rc, laws hold); tictactoedeluxe SUCCESS 2022 + delta TRUE; androidgamesnake SUCCESS 41 + delta TRUE.
+- S107 three-run audit discovered as covering #68/#81/#121/#166 (VERIFIED_3RUN each); FR-166 stale PENDING row corrected by this audit.
+- All 108 issues classified with the 18 required fields (scripts/batch367_build_records.py): 95 verified current / 10 historical-only verification / 2 superseded (#4 EXP-067 -> R-NEW-423 ARSC/AXML waves; #8 -> canonical registries) / 1 partial closure (#350 S102-B: named LocalDensity blocker fixed; Compose draw frontier open per ROOT-D 4-way) / 0 false closures; S102-A/D registry coverage gaps recorded; MG-223 honestly historical-only (real-APK S99 observation, not re-fenced).
+- 18 canonical artifacts emitted (docs/CLOSED_BATCH_{1,2,3}_AUDIT.md/.jsonl, CLAIMS_VS_EVIDENCE.md, FALSE_CLOSURES.md, REGRESSION_STATUS.jsonl, EVIDENCE_INDEX.jsonl) — scripts/batch367_emit_artifacts.py.
+- Completion ledgers POSTED to the SAME Issues: #367 comment 5967124655, #368 comment 5967124882, #369 comment 5967125011 (STATUS-RESULT-EVIDENCE per-issue rows).
+
+Stage Summary:
+- All three batch Issues audited to their completion gates; Issues remain OPEN (per same-Issue protocol, no completion declaration).
+- Runtime improved generically: ASSETS-WITHOUT-ARSC law (assets no longer require resources.arsc) — validated by battery 121/121 + zero drift on all anchors.
+- Honest frontier recorded: Compose no-draw cases (ROOT-D), raumballer/tictactoe-classic NPE chains (F-NEW-168 faces), current-HEAD re-runs pending APK re-acquisition for hotdeath/bobball/pinyinfdroid, restart-after-game-over gap for androidgamesnake.
