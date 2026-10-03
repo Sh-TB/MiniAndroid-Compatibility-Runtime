@@ -212,3 +212,29 @@ Canonical numbers (single live source = this section):
 - Upstream plan (#364): UPP-001..007 dispositions recorded (docs/UPSTREAM_REPLACEMENT_PLAN.jsonl).
 - Master checklist: repaired with evidence rows (docs/FINAL_COMPATIBILITY_CAMPAIGN.md §17).
 - Historical .agent/* state files labeled; their numbers are era snapshots, not current.
+
+---
+
+## MASTER-CONT-371 WAVE — independent verification + Gate-A gap closure — LIVE STATE
+
+HEAD at this update: `9c35863b+` (MASTER-CONT-371) — date 2026-10-03.
+Binary lineage: clean rebuild reproduced Gate A binary `768085b1207ad55d`
+byte-identically; post-fix binary `75cb214df1374992`.
+
+Canonical numbers updated by this wave:
+- GATE A (#370) capability: **59/60 API-matrix rows TESTED** (was 57/60):
+  G-5 (AFD stream byte-equality), G-6 (list contains element-equality),
+  G-7 (File.getParent starvation) CLOSED with generic laws + probe
+  assertions; sole remaining GATE-A row = G-3 content:// query dispatch
+  (ContentResolver authority map + Cursor transport).
+- Verified-at-current-HEAD gates (all re-executed, none trusted): battery
+  124/124 (cold-state; tooling set-e bug fixed, no stage weakened),
+  goldens 4/4 REAL_APP_CONTENT, determinism 5/5×3 zero drift, loading
+  probe 23/23, uninstall 16/16, Gate A probe 69/0/2 (strengthened),
+  negatives 17/17, reinstall 8/8, multi-app 5/5.
+- ROOT hold verification: ROOT-A spacevertex past forName divergence;
+  ROOT-B memory REAL_APP_CONTENT; ROOT-C suntimes provider ISE absent.
+- Honest open rows (unchanged truth): UPP-001..006 adoption rows
+  (native S-2 execution, content:// Cursor, split APK, config/density,
+  Compose ROOT-D, broadcasts/services), GATE-A G-1/G-3/G-4/G-8, corpus
+  re-runs awaiting APK re-acquisition (hotdeath/bobball/pinyinfdroid).

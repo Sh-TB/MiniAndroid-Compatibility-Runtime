@@ -778,10 +778,59 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
     }
 
     if (m == "contains") {
+        // GATE A G-6 (issue #370 §4): OpenJDK ArrayList.contains law —
+        // element.equals(o), never reference identity. Two backing stores:
+        // (a) the canonical heap "array[i]" fields (the Arrays.asList /
+        //     engine-materialized lists live THERE — the shadow-private
+        //     vector never saw them), (b) this shadow's own element vector
+        //     (the Collection.add path). Pre-fix: identity-only compare
+        //     over (b) — an asList-backed list had an EMPTY private state,
+        //     so contains answered false for content-present lists (probe
+        //     IO-08 "fileList has stream_io.bin=false" while the file
+        //     existed; ASSET-01 nameLens disproved the trailing-NUL
+        //     materialization suspicion).
+        static const CallContext::Arg kNullArg{};
+        const CallContext::Arg& item =
+            ctx.args.empty() ? kNullArg : ctx.args[0];
+        if (heap_) {
+            int32_t n = 0;
+            if (heap_->get_object_array_length(obj_id, n) && n > 0) {
+                bool found = false;
+                for (int32_t i = 0; i < n && !found; ++i) {
+                    if (item.kind == CallContext::Arg::Kind::STRING) {
+                        std::string s;
+                        if (heap_->get_object_array_string_element(
+                                obj_id, static_cast<size_t>(i), s) &&
+                            s == item.string_val)
+                            found = true;
+                    } else if (item.kind == CallContext::Arg::Kind::OBJECT) {
+                        uint32_t e = 0;
+                        if (item.object_id != 0 &&
+                            heap_->get_object_array_ref_element(
+                                obj_id, static_cast<size_t>(i), e) &&
+                            e == item.object_id)
+                            found = true;
+                    }
+                }
+                // Array-backed list: the heap fields are authoritative —
+                // answer from them, never from the (empty) private vector.
+                return CallResult::handled_bool(found);
+            }
+        }
         auto* state = get_or_create(obj_id);
-        uint32_t item = ctx.arg_as_object(0, 0);
         for (uint32_t e : state->elements) {
-            if (e == item) return CallResult::handled_bool(true);
+            if (item.kind == CallContext::Arg::Kind::OBJECT &&
+                item.object_id != 0 && e == item.object_id)
+                return CallResult::handled_bool(true);
+            if (item.kind == CallContext::Arg::Kind::STRING && heap_ &&
+                e != 0) {
+                // AOSP: o.equals(element) — string content equality for
+                // string-heap elements, identity otherwise.
+                std::string es;
+                if (heap_->get_object_string_field(e, "__string_value__", es) &&
+                    es == item.string_val)
+                    return CallResult::handled_bool(true);
+            }
         }
         return CallResult::handled_bool(false);
     }
@@ -3595,13 +3644,30 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     }
     if (m == "getParent") {
         const auto* n = find_node(ctx.receiver_id);
+        // GATE A G-7 (issue #370 §4): the F-057 duality route calls this
+        // shadow for EVERY getParent receiver — including non-view classes
+        // (java.io.File.getParent). A receiver with NO ViewShadow node is
+        // not part of the view tree: for a view-family class the
+        // detached-view null stays authoritative (AOSP View.getParent can
+        // legitimately be null pre-attach); for any other receiver the
+        // call is NOT ours — not_handled lets class-based routing reach
+        // the owning law (R-NEW-347 File name-component law). Pre-fix the
+        // node-less branch answered handled_null for ALL receivers and the
+        // File law starved (probe FILE-10 parent=null for an absolute
+        // parent).
+        if (!n) {
+            const std::string cls =
+                ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class;
+            if (handles_class(cls)) return CallResult::handled_null();
+            return CallResult::not_handled();
+        }
         if (std::getenv("MINIANDROID_TAG_TRACE")) {
             std::cerr << "[TAG-TRACE] getParent view=" << ctx.receiver_id
                       << " found=" << (n ? 1 : 0)
                       << " parent=" << (n ? n->parent_id : 0)
                       << std::endl;
         }
-        if (!n || n->parent_id == 0) return CallResult::handled_null();
+        if (n->parent_id == 0) return CallResult::handled_null();
         // F-023 (AOSP View.getParent type law): the static return type is
         // ViewParent, but the RUNTIME object is always a ViewGroup (a View
         // subclass). Callers do `parent as? View` (Kotlin) or check-cast —

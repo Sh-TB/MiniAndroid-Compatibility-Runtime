@@ -1164,9 +1164,11 @@ elif [ -d "$F020_FIX_SRC" ]; then
         "$F020_FIX_SRC" /tmp/battery_f020/f020_snapshot.apk \
         > /tmp/battery_f020/build.log 2>&1
     gate "F-020 snapshot-law fixture build (ECJ+D8)" $?
+    set +e
     (cd "$MA" && timeout 120 ./build/miniandroid run /tmp/battery_f020/f020_snapshot.apk \
         -o /tmp/battery_f020/out > /tmp/battery_f020/run.log 2>&1)
     runrc=$?
+    set -e
     gate "F-020 snapshot-law fixture run (rc=0 SUCCESS)" "$(accept_f233_run "$runrc" /tmp/battery_f020/run.log)"
     rc=0
     grep -q "Status: SUCCESS" /tmp/battery_f020/run.log || grep -q "F-NEW-233 frame truth" /tmp/battery_f020/run.log || rc=1
@@ -1195,9 +1197,11 @@ elif [ -d "$F024_FIX_SRC" ]; then
         "$F024_FIX_SRC" /tmp/battery_f024/f024_eof_law.apk \
         > /tmp/battery_f024/build.log 2>&1
     gate "F-024 EOF-law fixture build (ECJ+D8)" $?
+    set +e
     (cd "$MA" && timeout 120 ./build/miniandroid run /tmp/battery_f024/f024_eof_law.apk \
         -o /tmp/battery_f024/out > /tmp/battery_f024/run.log 2>&1)
     runrc=$?
+    set -e
     gate "F-024 EOF-law fixture run (rc=0 SUCCESS)" "$(accept_f233_run "$runrc" /tmp/battery_f024/run.log)"
     rc=0
     grep -q "Status: SUCCESS" /tmp/battery_f024/run.log || grep -q "F-NEW-233 frame truth" /tmp/battery_f024/run.log || rc=1
@@ -1226,9 +1230,11 @@ elif [ -d "$F026_FIX_SRC" ]; then
         "$F026_FIX_SRC" /tmp/battery_f026/f020_executor.apk \
         > /tmp/battery_f026/build.log 2>&1
     gate "F-025 executor fixture build (ECJ+D8)" $?
+    set +e
     (cd "$MA" && timeout 120 ./build/miniandroid run /tmp/battery_f026/f020_executor.apk \
         -o /tmp/battery_f026/out > /tmp/battery_f026/run.log 2>&1)
     runrc=$?
+    set -e
     gate "F-025 executor fixture run (rc=0 SUCCESS)" "$(accept_f233_run "$runrc" /tmp/battery_f026/run.log)"
     rc=0
     grep -q "Status: SUCCESS" /tmp/battery_f026/run.log || grep -q "F-NEW-233 frame truth" /tmp/battery_f026/run.log || rc=1
@@ -1259,10 +1265,12 @@ elif [ -d "$F026_FIX_SRC" ]; then
         "$F026_FIX_SRC" /tmp/battery_f026sql/f026_room_sql_law.apk \
         > /tmp/battery_f026sql/build.log 2>&1
     gate "F-026+F-027 Room/SQLite law fixture build (ECJ+D8)" $?
+    set +e
     (cd "$MA" && timeout 120 ./build/miniandroid run /tmp/battery_f026sql/f026_room_sql_law.apk \
         -o /tmp/battery_f026sql/out --data-root /tmp/battery_f026sql/data \
         > /tmp/battery_f026sql/run.log 2>&1)
     runrc=$?
+    set -e
     gate "F-026+F-027 Room/SQLite law fixture run (rc=0 SUCCESS)" "$(accept_f233_run "$runrc" /tmp/battery_f026sql/run.log)"
     rc=0
     grep -q "Status: SUCCESS" /tmp/battery_f026sql/run.log || grep -q "F-NEW-233 frame truth" /tmp/battery_f026sql/run.log || rc=1
@@ -1293,9 +1301,11 @@ elif [ -d "$F028_FIX_SRC" ]; then
         "$F028_FIX_SRC" /tmp/battery_f028/f028_float_law.apk \
         > /tmp/battery_f028/build.log 2>&1
     gate "F-028 float-law fixture build (ECJ+D8)" $?
+    set +e
     (cd "$MA" && timeout 120 ./build/miniandroid run /tmp/battery_f028/f028_float_law.apk \
         -o /tmp/battery_f028/out > /tmp/battery_f028/run.log 2>&1)
     runrc=$?
+    set -e
     gate "F-028 float-law fixture run (rc=0 SUCCESS)" "$(accept_f233_run "$runrc" /tmp/battery_f028/run.log)"
     rc=0
     grep -q "Status: SUCCESS" /tmp/battery_f028/run.log || grep -q "F-NEW-233 frame truth" /tmp/battery_f028/run.log || rc=1
@@ -1327,9 +1337,11 @@ elif [ -d "$F030_FIX_SRC" ]; then
         "$F030_FIX_SRC" /tmp/battery_f030/f030_zero_law.apk \
         > /tmp/battery_f030/build.log 2>&1
     gate "F-030 zero-law fixture build (ECJ+D8)" $?
+    set +e
     (cd "$MA" && timeout 120 ./build/miniandroid run /tmp/battery_f030/f030_zero_law.apk \
         -o /tmp/battery_f030/out > /tmp/battery_f030/run.log 2>&1)
     runrc=$?
+    set -e
     gate "F-030 zero-law fixture run (rc=0 SUCCESS)" "$(accept_f233_run "$runrc" /tmp/battery_f030/run.log)"
     rc=0
     grep -q "Status: SUCCESS" /tmp/battery_f030/run.log || grep -q "F-NEW-233 frame truth" /tmp/battery_f030/run.log || rc=1
@@ -1359,9 +1371,11 @@ elif [ -d "$F040_FIX_SRC" ]; then
         "$F040_FIX_SRC" /tmp/battery_f040/f040_arrays_fill.apk \
         > /tmp/battery_f040/build.log 2>&1
     gate "F-040 arrays-fill fixture build (ECJ+D8)" $?
+    set +e
     (cd "$MA" && timeout 120 ./build/miniandroid run /tmp/battery_f040/f040_arrays_fill.apk \
         -o /tmp/battery_f040/out > /tmp/battery_f040/run.log 2>&1)
     runrc=$?
+    set -e
     gate "F-040 arrays-fill fixture run (rc=0 SUCCESS)" "$(accept_f233_run "$runrc" /tmp/battery_f040/run.log)"
     rc=0
     grep -q "Status: SUCCESS" /tmp/battery_f040/run.log || grep -q "F-NEW-233 frame truth" /tmp/battery_f040/run.log || rc=1
@@ -1391,9 +1405,11 @@ elif [ -d "$F044_FIX_SRC" ]; then
         "$F044_FIX_SRC" /tmp/battery_f044/f044_return_descriptor_law.apk \
         > /tmp/battery_f044/build.log 2>&1
     gate "F-044 return-descriptor fixture build (ECJ+D8)" $?
+    set +e
     (cd "$MA" && timeout 120 ./build/miniandroid run /tmp/battery_f044/f044_return_descriptor_law.apk \
         -o /tmp/battery_f044/out > /tmp/battery_f044/run.log 2>&1)
     runrc=$?
+    set -e
     gate "F-044 return-descriptor fixture run (rc=0 SUCCESS)" "$(accept_f233_run "$runrc" /tmp/battery_f044/run.log)"
     rc=0
     grep -q "Status: SUCCESS" /tmp/battery_f044/run.log || grep -q "F-NEW-233 frame truth" /tmp/battery_f044/run.log || rc=1
@@ -1424,9 +1440,11 @@ elif [ -d "$F050_FIX_SRC" ]; then
         "$F050_FIX_SRC" /tmp/battery_f050/f050_frame_pump.apk \
         > /tmp/battery_f050/build.log 2>&1
     gate "F-050 frame-pump fixture build (ECJ+D8)" $?
+    set +e
     (cd "$MA" && timeout 120 ./build/miniandroid run /tmp/battery_f050/f050_frame_pump.apk \
         -o /tmp/battery_f050/out > /tmp/battery_f050/run.log 2>&1)
     runrc=$?
+    set -e
     gate "F-050 frame-pump fixture run (rc=0 SUCCESS)" "$(accept_f233_run "$runrc" /tmp/battery_f050/run.log)"
     rc=0
     grep -q "Status: SUCCESS" /tmp/battery_f050/run.log || grep -q "F-NEW-233 frame truth" /tmp/battery_f050/run.log || rc=1
@@ -1467,9 +1485,11 @@ elif [ -d "$F074_FIX_SRC" ]; then
         "$F074_FIX_SRC" /tmp/battery_f074/f074_super_run.apk \
         > /tmp/battery_f074/build.log 2>&1
     gate "F-074 super-run fixture build (ECJ+D8)" $?
+    set +e
     (cd "$MA" && timeout 120 ./build/miniandroid run /tmp/battery_f074/f074_super_run.apk \
         -o /tmp/battery_f074/out > /tmp/battery_f074/run.log 2>&1)
     runrc=$?
+    set -e
     # Accept rc=0 (full SUCCESS) or rc=1 with the documented F-NEW-233
     # frame-truth PARTIAL verdict (laws hold; golden below stays mandatory).
     if [ $runrc -ne 0 ]; then

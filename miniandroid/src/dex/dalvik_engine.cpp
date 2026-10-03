@@ -5749,6 +5749,24 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             }
             if (!asset_path.empty() && pos_ptr != nullptr) {
                 const std::string& content = cached_asset_bytes(asset_path);
+                // GATE A G-5 diagnostic (env-gated, generic): hex-dump the
+                // first bytes of every stream read so two byte sources for
+                // the same logical entry can be compared in one run.
+                static thread_local const bool stream_hex =
+                    std::getenv("MINIANDROID_STREAM_HEX") != nullptr;
+                if (stream_hex) {
+                    std::string hex;
+                    char tmp[8];
+                    size_t n = std::min<size_t>(content.size(), 24);
+                    for (size_t hi = 0; hi < n; ++hi) {
+                        std::snprintf(tmp, sizeof(tmp), "%02x",
+                                      (unsigned char)content[hi]);
+                        hex += tmp;
+                    }
+                    std::cerr << "[STREAM-HEX] key=" << asset_path
+                              << " len=" << content.size()
+                              << " head=" << hex << std::endl;
+                }
                 size_t p = *pos_ptr;
                 if (p == static_cast<size_t>(-1) || p >= content.size()) {
                     return_val = DalvikValue::make_int(
@@ -30154,6 +30172,117 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         result = dst;
         return true;
     }
+    if (class_name == "Ljava/util/Arrays;" && method == "equals") {
+        // GATE A G-5 (issue #370 §4): java.util.Arrays.equals(a, b) law —
+        // OpenJDK java/util/Arrays.java: equal iff SAME LENGTH and
+        // element-wise equality (long/short/char ==, byte ==, boolean ==,
+        // float/double bitwise via doubleToLongBits/floatToIntBits,
+        // Object[]: Objects.equals(a[i], b[i]) — null-aware, identity when
+        // not value-typed). Pre-fix: NO handler — the static call fell
+        // through the generic bridge and answered false for EQUAL arrays;
+        // the probe's AFD-vs-direct byte compare recorded false even with
+        // byte-identical sources (hex-proven), misread as a compressed-vs-
+        // stored AFD serving bug. Real bytes were equal; the comparison
+        // law was missing.
+        auto arr_len_of = [&](const DalvikValue& v) -> int64_t {
+            if (v.type != DalvikType::OBJECT_REF || v.object_id == 0 ||
+                !heap_.has_object(v.object_id))
+                return -1;  // not an array object
+            auto lf = heap_.get_object_field(v.object_id, "__array_length__");
+            if (lf.has_value() && lf->type == DalvikType::INT32)
+                return lf->int_val;
+            auto lf2 = heap_.get_object_field(v.object_id,
+                                              "__new_array_length__");
+            if (lf2.has_value() && lf2->type == DalvikType::INT32)
+                return lf2->int_val;
+            return v.int_val > 0 ? v.int_val : 0;
+        };
+        auto arr_elem = [&](const DalvikValue& v,
+                            int64_t i) -> std::optional<DalvikValue> {
+            return heap_.get_object_field(v.object_id,
+                                          "array[" + std::to_string(i) + "]");
+        };
+        auto null_like = [](const DalvikValue& v) -> bool {
+            return v.type == DalvikType::NULL_REF ||
+                   (v.type == DalvikType::OBJECT_REF && v.object_id == 0);
+        };
+        auto elem_eq = [&](const DalvikValue& x,
+                           const DalvikValue& y) -> bool {
+            if (null_like(x) || null_like(y))
+                return null_like(x) && null_like(y);
+            if (x.type == DalvikType::STRING_REF &&
+                y.type == DalvikType::STRING_REF)
+                return x.string_val == y.string_val;
+            if (x.type == y.type && x.object_id == y.object_id) return true;
+            // Value-equal boxed/unboxed numeric pairs (int_val carries the
+            // primitive for both BYTE and INT32 materializations).
+            if ((x.type == DalvikType::INT32 ||
+                 x.type == DalvikType::BYTE) &&
+                (y.type == DalvikType::INT32 || y.type == DalvikType::BYTE))
+                return x.int_val == y.int_val;
+            if (x.type == DalvikType::INT64 && y.type == DalvikType::INT64)
+                return x.long_val == y.long_val;
+            if ((x.type == DalvikType::FLOAT32 ||
+                 x.type == DalvikType::FLOAT64) &&
+                (y.type == DalvikType::FLOAT32 ||
+                 y.type == DalvikType::FLOAT64))
+                return x.double_val == y.double_val;
+            return false;
+        };
+        if (args.empty()) {
+            status = ApiCallTrace::Status::STUBBED;
+            return false;
+        }
+        // Static invoke convention: the engine marshals invoke-static with
+        // args[0] = FIRST parameter (no receiver slot) — but some bridge
+        // entry paths still prepend a receiver slot (see the PFD.open
+        // arg-convention-proof law). Take the FIRST TWO object-ref-ish
+        // values (array refs or nulls) as the two compared arrays; strings
+        // and primitives never participate in an array equals.
+        const DalvikValue* a = nullptr;
+        const DalvikValue* b = nullptr;
+        for (size_t ai = 0; ai < args.size() && (!a || !b); ++ai) {
+            const DalvikValue& v = args[ai];
+            bool refish = v.type == DalvikType::OBJECT_REF ||
+                          v.type == DalvikType::NULL_REF;
+            if (!refish) continue;
+            if (!a) a = &v;
+            else b = &v;
+        }
+        if (!a || !b) {
+            status = ApiCallTrace::Status::STUBBED;
+            return false;
+        }
+        bool eq = false;
+        if (null_like(*a) || null_like(*b)) {
+            // OpenJDK: Arrays.equals(null, x) → NPE for primitives; the
+            // null-aware Object[] form answers false unless both null. The
+            // engine answers the null-aware form honestly.
+            eq = null_like(*a) && null_like(*b);
+        } else {
+            int64_t la = arr_len_of(*a), lb = arr_len_of(*b);
+            eq = la == lb && la >= 0;
+            for (int64_t i = 0; eq && i < la; ++i) {
+                auto ea = arr_elem(*a, i);
+                auto eb = arr_elem(*b, i);
+                if (!ea.has_value() || !eb.has_value()) {
+                    eq = false;
+                    break;
+                }
+                eq = elem_eq(*ea, *eb);
+            }
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_bool(eq);
+        static thread_local uint64_t g5_log = 0;
+        if (g5_log < 8) {
+            ++g5_log;
+            std::cerr << "[G5-ARRAYS-EQUALS] -> " << (eq ? "true" : "false")
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+        }
+        return true;
+    }
     if (class_name == "Ljava/util/Arrays;" && method == "fill") {
         // S55 R-NEW-361 diag: log EVERY fill entry, including calls whose
         // argc gate below REJECTS them (a wide-pair marshalling bug would
@@ -40880,6 +41009,109 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     if (class_name == "Ljava/util/ArrayList;" ||
         class_name.find("ArrayList") != std::string::npos ||
         class_name.find("List;") != std::string::npos) {
+        // GATE A G-6 (issue #370 §4): ArrayList/Arrays$ArrayList
+        // boolean contains(Object) + containsAll(Collection<?>) — OpenJDK
+        // law: contains(o) ≡ indexOf(o) >= 0, i.e. elementData[i]==null
+        // ? o==null : o.equals(elementData[i]); elements live in the
+        // canonical "array[i]" heap fields. Pre-fix: NO handler — the call
+        // fell through and answered false for content-present lists
+        // (probe IO-08 recorded "fileList has stream_io.bin=false" while
+        // stream_io.bin existed; ASSET-01 nameLens proved element Strings
+        // had exact lengths, disproving the recorded trailing-NUL
+        // materialization suspicion — the equality LAW was missing, not
+        // the materialization).
+        auto list_len = [&](uint32_t oid) -> int32_t {
+            auto lf = heap_.get_object_field(oid, "__array_length__");
+            return (lf.has_value() && lf->type == DalvikType::INT32)
+                       ? lf->int_val : 0;
+        };
+        auto list_elem_eq = [&](const DalvikValue& el,
+                                const DalvikValue& o) -> bool {
+            auto null_like = [](const DalvikValue& v) {
+                return v.type == DalvikType::NULL_REF ||
+                       (v.type == DalvikType::OBJECT_REF && v.object_id == 0);
+            };
+            if (null_like(el) || null_like(o))
+                return null_like(el) && null_like(o);
+            if (el.type == DalvikType::STRING_REF &&
+                o.type == DalvikType::STRING_REF)
+                return el.string_val == o.string_val;
+            if (el.type == o.type && el.object_id == o.object_id) return true;
+            // AOSP: o.equals(element) for everything else — dispatch on
+            // the element's runtime class when resolvable (String heap
+            // objects carry __string_value__; the String content law
+            // answers there).
+            if (el.type == DalvikType::OBJECT_REF && el.object_id != 0 &&
+                heap_.has_object(el.object_id)) {
+                DalvikValue eq_ret;
+                DalvikExecutionResult eq_res;
+                std::vector<DalvikValue> eq_args{el, o};
+                if (try_recursive_invoke(el.class_desc, "equals", eq_args,
+                                         eq_ret, eq_res,
+                                         "(Ljava/lang/Object;)Z"))
+                    return eq_ret.type == DalvikType::BOOLEAN
+                               ? eq_ret.int_val != 0
+                               : (eq_ret.type == DalvikType::INT32
+                                      ? eq_ret.int_val != 0
+                                      : false);
+            }
+            return false;
+        };
+        if ((method == "contains" || method == "containsAll") &&
+            args.size() >= 2) {
+            uint32_t this_id = args[0].object_id;
+            bool present = false;
+            if (heap_.has_object(this_id)) {
+                if (method == "contains") {
+                    int32_t n = list_len(this_id);
+                    for (int32_t i = 0; i < n; ++i) {
+                        auto el = heap_.get_object_field(
+                            this_id, "array[" + std::to_string(i) + "]");
+                        if (el.has_value() && list_elem_eq(*el, args[1])) {
+                            present = true;
+                            break;
+                        }
+                    }
+                } else {
+                    // containsAll: EVERY element of the argument collection
+                    // must be contained (OpenJDK AbstractCollection).
+                    present = true;
+                    int32_t an = list_len(args[1].object_id);
+                    for (int32_t i = 0; present && i < an; ++i) {
+                        auto want = heap_.get_object_field(
+                            args[1].object_id,
+                            "array[" + std::to_string(i) + "]");
+                        if (!want.has_value()) {
+                            present = false;
+                            break;
+                        }
+                        bool found = false;
+                        int32_t n = list_len(this_id);
+                        for (int32_t j = 0; j < n; ++j) {
+                            auto el = heap_.get_object_field(
+                                this_id,
+                                "array[" + std::to_string(j) + "]");
+                            if (el.has_value() && list_elem_eq(*el, *want)) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        present = found;
+                    }
+                }
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_bool(present);
+            static thread_local uint64_t g6_log = 0;
+            if (g6_log < 8) {
+                ++g6_log;
+                std::cerr << "[G6-LIST-CONTAINS] " << method << " -> "
+                          << (present ? "true" : "false") << " caller="
+                          << current_class_ << "." << current_method_
+                          << std::endl;
+            }
+            return true;
+        }
         if (method == "add" && args.size() == 2) {
             uint32_t this_id = args[0].object_id;
             auto* obj = heap_.get(this_id);

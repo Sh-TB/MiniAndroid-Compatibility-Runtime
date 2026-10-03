@@ -112,9 +112,38 @@ At HEAD `24326b44` after all fixes:
 ## 8. Capability percentage (explicit denominator)
 
 Denominator = the 60 verifiable capability rows of
-`INSTALL_ENVIRONMENT_API_MATRIX.jsonl`. 57 rows TESTED/PASS, 3 rows PARTIAL
-(fileList contains() gap G-6, AFD createInputStream byte-equality gap G-5,
-content:// query dispatch gap G-3 — all recorded with next actions in
-`INSTALL_ENVIRONMENT_GAPS.md`). **Capability = 57/60 ≈ 95%**, with the 3
-gaps explicitly enumerated and severity-ranked; percentage alone is NOT a
-completion claim — the ledger rows carry the per-item evidence.
+`INSTALL_ENVIRONMENT_API_MATRIX.jsonl`. 59 rows TESTED/PASS, 1 row PARTIAL
+(content:// query dispatch gap G-3 — recorded with its next action in
+`INSTALL_ENVIRONMENT_GAPS.md`). **Capability = 59/60 ≈ 98%**, with the
+remaining gap explicitly enumerated and severity-ranked; percentage alone
+is NOT a completion claim — the ledger rows carry the per-item evidence.
+
+## 9. Independent verification wave (#371, 2026-10-03) — G-5/G-6/G-7 closed
+
+The #371 MASTER CONTINUATION required re-verification at the CURRENT HEAD
+instead of trusting the completion comments. Clean rebuild from the synced
+tree first reproduced the recorded Gate A binary byte-identically
+(`768085b1207ad55d`), every gate was re-run green, and then the three
+open GATE-A gaps were root-caused and CLOSED with generic engine laws:
+
+| Gap | Disproven recorded suspicion | Real root cause (generic) | Fix | Evidence |
+|-----|------------------------------|---------------------------|-----|----------|
+| G-5 AFD stream equality | "0:0 spec serving compressed-vs-stored variant" | MISSING `java.util.Arrays.equals([B[B)Z` law — the static compare fell through the bridge and answered false for EQUAL arrays; hex diagnostic proved the two byte sources identical (PNG head `89504e47…` both, len 75 both) | Arrays.equals law (length + element-wise, null-aware, boxed forms) in the API bridge; FD-02 now ASSERTS equality | probe FD-02 `equal-to-direct=true` |
+| G-6 list contains() | "trailing NUL from array materialization" | CollectionShadow.contains compared object ids over its own never-populated vector; asList-backed lists live in the canonical heap `array[i]` fields. Fixed: heap-first element-equality (string content + identity) in CollectionShadow + post-shadow bridge contains/containsAll law; IO-08 now ASSERTS contains | probe IO-08 `fileList has stream_io.bin=true` |
+| G-7 File.getParent null | "relative-parent path capture" (ctor was already correct) | F-057 view-tree duality route routed EVERY getParent to ViewShadow; the node-less branch answered authoritative handled_null, starving the R-NEW-347 File law. Fixed with one structural scope law: node-less branch answers null only for view-family receivers (handles_class), otherwise not_handled | probe FILE-10 `parent=/data/data/com.probe.gatea/files` (assert) |
+
+Post-fix regression (binary sha16 `75cb214df1374992`): battery **124/124 ALL
+PASS**, user goldens **4/4 REAL_APP_CONTENT**, determinism anchors **5/5 ×3
+byte-identical (zero drift)**, loading probe **23/23**, uninstall **16/16**,
+Gate A probe **69 PASS / 0 FAIL / 2 INFO** (now with strengthened G-5/G-6/G-7
+assertions), negatives **17/17**, reinstall **8/8**, multi-app **5/5**.
+ROOT-B (memory) re-verified REAL_APP_CONTENT, ROOT-C (suntimes) provider
+ISE stays gone, ROOT-A (spacevertex) stays past the recorded forName
+divergence — no root fix regressed.
+
+Battery tooling honesty: the cold-state battery run exposed a latent
+tool-bug (10 unprotected run lines under `set -e` after the F-016 stages —
+a cold run aborted instead of failing a stage). All 10 wrapped
+`set +e`/`set -e`; no stage weakened, no golden touched. The EXT-01/02
+external fixtures were re-fetched SHA-exact (`009b4671…` / `121d479c…`)
+after the container reset.

@@ -6209,3 +6209,87 @@ Stage Summary:
 - Capability 57/60 rows TESTED (~95%); 3 open gaps (G-3 content:// query,
   G-5 AFD byte-equality, G-6 array String equality) recorded with next
   actions; completion ledger with 34 rows posted to issue #370.
+
+---
+Task ID: MASTER-CONT-371
+Agent: Super Z (main)
+Task: Issue #371 — MASTER CONTINUATION: independent verification of #364–#369
+claims at current HEAD + full #370 Gate A re-verification; gap report for
+#364–#371; completion ledgers posted to #371 (+#370 verification comment).
+
+Work Log:
+- PHASE 0: local synced 204aed6b → origin/main 9c35863b (Gate A execution
+  commit; #367–369 closed-issue program landed earlier at 428bc0bc). Issue
+  bodies/comments re-fetched for #364–#371. CURRENT HEAD = 9c35863b at wave
+  start; every gate below re-executed, none trusted from comments.
+- ENVIRONMENT RECOVERY (container reset): build toolchain restored via the
+  documented bootstrap (aapt2/ecj/r8/android-34 + DroidSansMono.ttf);
+  determinism anchor stores re-created; opencalculator_53.apk re-fetched
+  SHA-EXACT 2642613868a8a80f (matches root_registry R-NEW-231 evidence);
+  EXT-01/02 fixtures re-fetched SHA-exact 009b4671…/121d479c….
+- CLEAN REBUILD PROOF: `make clean && make` reproduces the recorded Gate A
+  binary BYTE-IDENTICALLY (sha16 768085b1207ad55d) — reproducibility proven,
+  not assumed.
+- GATE RE-RUNS (pre-fix, all green): loading probe 23/23; user goldens 4/4
+  REAL_APP_CONTENT (2048 535c / snakedeluxe 1203c / minicraft 2416c /
+  helloworld canonical); determinism 5/5 ×3 byte-identical; uninstall
+  16/16; Gate A probe 69 PASS/0 FAIL/2 INFO; negatives 17/17; reinstall
+  8/8; multi-app 5/5 (incl. render-FAIL blockblast inspection-complete);
+  battery 124/124 ALL PASS after EXT restore + one tooling fix.
+- BATTERY TOOL FIX (cold-state exposed, no stage weakened): 10 run lines
+  (`(cd $MA && timeout 120 …)`) execute under `set -e` enabled by the
+  F-016 stages — a cold run aborted mid-battery instead of failing a
+  stage. All 10 wrapped set +e/set -e. 121→124 stage-count delta is
+  branch-conditional counting (EXT corpus present), not added gates
+  (158 gate sites identical to 9c3dc4d1).
+- GATE-A GAP CLOSURE (issue #370 GAPS G-5/G-6/G-7, all generic, all
+  probe-asserted):
+  * G-5 CLOSED — recorded "compressed-vs-stored AFD serving" suspicion
+    DISPROVEN by a new env-gated stream hex diagnostic (MINIANDROID_STREAM_
+    HEX): direct and apkfd sources byte-identical (PNG 89504e47…, 75 B
+    both). Real root: MISSING java.util.Arrays.equals([B[B)Z — static
+    compare fell through and answered false for EQUAL arrays. Arrays.equals
+    law added (length + element-wise, null-aware, boxed/numeric forms);
+    probe FD-02 now ASSERTs equal-to-direct=true.
+  * G-6 CLOSED — "trailing-NUL materialization" suspicion DISPROVEN
+    (ASSET-01 nameLens exact). Real roots: (1) CollectionShadow.contains
+    did identity-only compares over its own never-populated vector while
+    asList lists live in canonical heap array[i] fields; (2) no bridge
+    contains/containsAll law. Fixed heap-first element-equality (string
+    content + identity + equals dispatch) in CollectionShadow + bridge
+    net; probe IO-08 now ASSERTs contains=true.
+  * G-7 CLOSED — F-057 view-tree duality route sent EVERY getParent to
+    ViewShadow; the node-less branch answered authoritative handled_null,
+    starving the R-NEW-347 File law (the ctor assembly was already
+    correct). One structural scope law: node-less branch answers null only
+    for view-family receivers (handles_class), otherwise not_handled.
+    Probe FILE-10 now ASSERTs parent non-null.
+- POST-FIX REGRESSION (binary 75cb214df1374992): battery 124/124; goldens
+  4/4; determinism 5/5×3 ZERO drift; probe 23/23; uninstall 16/16; Gate A
+  probe 69/0/2 (strengthened); negatives 17/17; reinstall 8/8; multi-app
+  5/5. ROOT re-verification: memory (ROOT-B) REAL_APP_CONTENT 2 draw ops;
+  suntimes (ROOT-C) provider ISE still gone; spacevertex (ROOT-A) stays
+  past the recorded forName divergence (0 hits).
+- ARTIFACTS: all 9 INSTALL_ENVIRONMENT_* regenerated at the new state
+  (API matrix 59/60 TESTED — only G-3 content:// dispatch remains PARTIAL;
+  GAPS.md G-5/G-6/G-7 closed with disproof records; CAPABILITY_GATE.md §9
+  verification wave appended).
+- GAP REPORT (#364→#371, honest): open rows = UPP-001..006 upstream
+  adoption rows (PENDING_RESEARCH/AVAILABLE_NOT_USED, incl. S-2 native
+  execution and content:// Cursor), GATE-A G-1/G-3 (ContentResolver
+  authority map + Cursor transport), G-4 (ABI-scoped lib extraction), G-8
+  (device-protected spellings), Compose no-draw (ROOT-D), render-FAIL
+  corpus re-runs awaiting APK re-acquisition. None converted to VERIFIED
+  without evidence; no Issue declared complete.
+- LEDGERS POSTED: #371 comment (full line-by-line STATUS|RESULT|EVIDENCE|
+  CURRENT HEAD|TEST COUNT + final-question answer), #370 verification
+  comment (final question answered YES with G-3 boundary + per-gap
+  template rows for the open rows).
+
+Stage Summary:
+- Independent verification upgrade: every #364–#370 completion claim that
+  could be re-executed at current HEAD WAS re-executed green; three Gate-A
+  gaps closed with generic laws; the authoritative #370 final question is
+  now answerable YES (with the G-3 content:// boundary recorded as a
+  typed gap, not a silent hole). Issues remain open per the same-Issue
+  protocol — no completion declarations.

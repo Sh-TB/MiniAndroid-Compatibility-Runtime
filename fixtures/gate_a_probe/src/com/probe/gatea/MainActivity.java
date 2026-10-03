@@ -262,8 +262,11 @@ public class MainActivity extends Activity {
         } catch (Throwable t) { fail("FILE-09", t); }
         try {
             File f = new File(getFilesDir(), "ren_dst.txt");
-            ok("FILE-10", "parent=" + f.getParent() + " name=" + f.getName()
-                    + " isAbs=" + f.isAbsolute());
+            if (f.getParent() != null)
+                ok("FILE-10", "parent=" + f.getParent() + " name=" + f.getName()
+                        + " isAbs=" + f.isAbsolute());
+            else fail("FILE-10", "parent=null (G-7: non-view getParent must "
+                    + "reach the File name-component law)");
         } catch (Throwable t) { fail("FILE-10", t); }
         try {
             File f = new File(getFilesDir(), "file_ops.txt");
@@ -336,8 +339,10 @@ public class MainActivity extends Activity {
             ok("IO-07", "write(int)=77 read=" + v + " match=" + (v == 77));
         } catch (Throwable t) { fail("IO-07", t); }
         try {
-            ok("IO-08", "fileList has stream_io.bin="
-                    + java.util.Arrays.asList(fileList()).contains("stream_io.bin"));
+            boolean has = java.util.Arrays.asList(fileList()).contains("stream_io.bin");
+            if (has) ok("IO-08", "fileList has stream_io.bin=true");
+            else fail("IO-08", "fileList has stream_io.bin=false (G-6: "
+                    + "contains must use element equality, not identity)");
         } catch (Throwable t) { fail("IO-08", t); }
         try {
             boolean first = deleteFile("single.bin");
@@ -363,8 +368,11 @@ public class MainActivity extends Activity {
             InputStream s = afd.createInputStream();
             byte[] viaFd = readAll(s);
             boolean eq = java.util.Arrays.equals(viaFd, storedBytes);
-            ok("FD-02", "afd-stream-bytes=" + viaFd.length + " equal-to-direct="
-                    + eq);
+            if (eq) ok("FD-02", "afd-stream-bytes=" + viaFd.length
+                    + " equal-to-direct=true");
+            else fail("FD-02", "afd-stream-bytes=" + viaFd.length
+                    + " equal-to-direct=false (G-5: AFD stream bytes must "
+                    + "equal the direct-open entry bytes)");
         } catch (Throwable t) { fail("FD-02", t); }
         try {
             AssetFileDescriptor afd = getAssets().openFd("gate_stored.png");
